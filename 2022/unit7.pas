@@ -11620,8 +11620,7 @@ begin
           // Menu
           Form7.Menu            := mmCLifor;
 
-          if not Assigned(Mostrartodososclientesefornecedores1.OnClick) then
-            Mostrartodososclientesefornecedores1.Checked := True;
+//          Mostrartodososclientesefornecedores1.Checked := True;
 
           // Sql
           sSelect   := 'select * from CLIFOR';
@@ -27410,7 +27409,7 @@ begin
   if oMenuItem <> Mostrartodososclientesefornecedores1 then
     Form7.sWhere  := 'where CLIFOR='+QuotedStr( Copy(oMenuItem.Caption,4,Length(oMenuItem.Caption)-2))+ ' ';
 
-  oMenuItem.Checked := True;
+//  oMenuItem.Checked := True;
   for I := 0 to Pred(Exibir1.Count) do
   begin
     if not bNosDinamicos then
@@ -27419,8 +27418,8 @@ begin
       Continue;
     end;
 
-    if (bNosDinamicos) and (Exibir1.Items[I].Caption <> oMenuItem.Caption) then
-      Exibir1.Items[I].Checked := False;
+//    if (bNosDinamicos) and (Exibir1.Items[I].Caption <> oMenuItem.Caption) then
+//      Exibir1.Items[I].Checked := False;
   end;
 
   Form7.Close;
