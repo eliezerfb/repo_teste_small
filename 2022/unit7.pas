@@ -21013,39 +21013,31 @@ begin
     except end;
   end;
   ibDataSet23AfterPost(DataSet);
-  //
 end;
 
 procedure TForm7.ibDataSet23BeforePost(DataSet: TDataSet);
 var
   sRegistro14 : String;
 begin
-  //
   try
     if Alltrim(Form7.ibDataSet23QUANTIDADE.AsString) <> '' then
     begin
-      //
-      //      Form7.ibDataSet23BASE.AsString := '100';       // 23 Before post 2
-      //
       if Form7.ibDataSet23BASE.Value < 0.01 then
       begin
-        //
         if Form7.ibDataSet14.Active then
         begin
-          //
           if (Alltrim(Form7.ibDataSet23CFOP.AsString)<>Alltrim(Form7.ibDataSet14CFOP.AsString)) and (AllTrim(Form7.ibDataSet23CFOP.AsString) <> '') then
           begin
-            //
             sRegistro14 := Form7.ibDataSet14REGISTRO.AsString;
             Form7.ibDataSet14.DisableControls;
             Form7.ibDataSet14.Locate('CFOP',Alltrim(Form7.ibDataSet23CFOP.AsString),[]);
-            //
+
             if Alltrim(Form7.ibDataSet14CFOP.AsString) = Alltrim(Form7.ibDataSet23CFOP.AsString) then
             begin
               Form7.ibDataSet23.Edit;
               Form7.ibDataSet23BASE.Value := Form7.ibDataSet14BASE.AsFloat;       // 23 Before post 2
             end;
-            //
+
             Form7.ibDataSet14.Locate('REGISTRO',sRegistro14,[]);
             Form7.ibDataSet14.EnableControls;
           end;
