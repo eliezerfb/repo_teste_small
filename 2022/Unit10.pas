@@ -7,7 +7,13 @@ uses
   Windows,
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, Mask, DBCtrls, SMALL_DBEdit,
-  Buttons, SmallFunc, DB, shellapi, ComCtrls, Grids,
+  Buttons
+  {$IFDEF VER150}
+  , SmallFunc
+  {$ELSE}
+  , SmallFunc_XE
+  {$ENDIF}
+  , DB, shellapi, ComCtrls, Grids,
   DBGrids, Printers, HtmlHelp, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
   xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs,
   uframePesquisaPadrao, uframePesquisaProduto, IBCustomDataSet, IBQuery,
@@ -450,10 +456,6 @@ type
     procedure SMALL_DBEdit1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure Image5Click(Sender: TObject);
-    procedure WebBrowser1NavigateComplete2(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
-    procedure WebBrowser1DocumentComplete(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
     procedure FormShow(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
@@ -553,6 +555,10 @@ type
     procedure SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
     procedure DBGrid4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure WebBrowser1NavigateComplete2(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
+    procedure WebBrowser1DocumentComplete(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -565,6 +571,8 @@ type
     procedure CarregaCit;
   public
     { Public declarations }
+
+    bDesvincularCampos: Boolean; // Sandro Silva 2024-01-04
 
     fQuantidade : Real;
     sNomeDoJPG, sSistema  : String;
@@ -784,7 +792,14 @@ begin
       Form7.IBDataSet99.Close;
     end;
 
+    {Sandro Silva 2024-01-04 inicio
     Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(StrToInt(sTotal));
+    }
+    if Form7.ArquivoAberto.Recno > StrToIntDef(sTotal, 0) then
+      Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(Form7.ArquivoAberto.Recno)
+    else
+      Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(StrToInt(sTotal));
+    {Sandro Silva 2024-01-04 fim}
 
     if sP1 then
     begin
@@ -2196,6 +2211,7 @@ begin
   framePesquisaProdComposicao.Visible := False;
   framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.Close;
   try
+    {Sandro Silva 2024-01-04 inicio
     for I := 0 to 29 do
     begin
       TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataSource := nil;
@@ -2203,6 +2219,19 @@ begin
       TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible    := False;
       TLAbel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
     end;
+    }
+    if Form10.bDesvincularCampos then
+    begin
+      for I := 0 to 29 do
+      begin
+        TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataSource := nil;
+        TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataField  := '';
+        TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible    := False;
+        TLAbel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
+      end;
+
+    end;
+    {Sandro Silva 2024-01-04 fim}
   except
   end;
 
@@ -2782,6 +2811,18 @@ begin
   end;
 end;
 
+procedure TForm10.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+begin
+  Form10.Tag := Form10.Tag + 1;
+end;
+
+procedure TForm10.WebBrowser1NavigateComplete2(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+begin
+  Form10.Tag := 33;
+end;
+
 procedure TForm10.DBGrid3DblClick(Sender: TObject);
   function LocalizaDBEditPosicionar(FieldName: String): TDBEdit;
   var
@@ -3301,6 +3342,7 @@ end;
 
 procedure TForm10.FormCreate(Sender: TObject);
 begin
+  Form10.bDesvincularCampos := True; // Sandro Silva 2024-01-04
   {Sandro Silva 2023-06-21 inicio}
   pnRelacaoComercial.BorderStyle := bsNone;
   pnRelacaoComercial.BevelOuter  := bvNone;
@@ -4355,18 +4397,6 @@ begin
   end;
 end;
 
-procedure TForm10.WebBrowser1NavigateComplete2(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
-begin
-  Form10.Tag := 33;
-end;
-
-procedure TForm10.WebBrowser1DocumentComplete(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
-begin
-  Form10.Tag := Form10.Tag + 1;
-end;
-
 procedure TForm10.FormShow(Sender: TObject);
 var
   I : Integer;
@@ -4520,7 +4550,13 @@ begin
     if Form7.sModulo = 'RECEBER' then
       iTopSegundaColuna := 18;
     {Sandro Silva 2023-06-22 fim}
-    
+
+
+    {Sandro Silva 2024-01-03 inicio}
+
+
+    {Sandro Silva 2024-01-03 fim}
+
     if Form7.sModulo <> 'ICM' then // Não entrar no "For to do" se estiver editando o módulo ICM, o mesmo tem uma aba somente para ele, com os campos fixos, diferente dos demais módulos que monta a tela dinamicamente
     begin
       for I := 1 to Form7.iCampos do
@@ -4653,7 +4689,7 @@ begin
                     TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).AutoSize := True;
                   end;
                 end;
-                
+
                 {Sandro Silva 2022-12-20 fim}
                 if Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'UF:' then
                 begin
@@ -4670,7 +4706,7 @@ begin
                   eLimiteCredDisponivel.Top       := iTop;
                   lblLimiteCredDisponivel.Top     := iTop + 1;
                 end;
-                
+
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top        :=  iTop;
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).DataField  := ''; // Evita problemas
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).DataSource := Form7.DataSourceAtual;

@@ -4628,11 +4628,21 @@ begin
   
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
 
+  {Sandro Silva 2024-01-03- inicio}
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='FILE'            Then Form7.spdNFe.TipoCertificado := spdNFeType.ckFile;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='SMARTCARD'       Then Form7.spdNFe.TipoCertificado := spdNFeType.ckSmartCard;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='ACTIVEDIRECTORY' Then Form7.spdNFe.TipoCertificado := spdNFeType.ckActiveDiretory;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='MEMORY'          Then Form7.spdNFe.TipoCertificado := spdNFeType.ckMemory;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='LOCALMACHINE'    Then Form7.spdNFe.TipoCertificado := spdNFeType.ckLocalMachine;
+  {
+  // F5800 Sugestão da Tecnospeed para quando não existir o tipo de certificado configurado no NFE.ini seja considera '' e não 'File'
+  // Executável com essa alteração será testado no cliente
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='FILE'            Then Form7.spdNFe.TipoCertificado := spdNFeType.ckFile;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='SMARTCARD'       Then Form7.spdNFe.TipoCertificado := spdNFeType.ckSmartCard;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='ACTIVEDIRECTORY' Then Form7.spdNFe.TipoCertificado := spdNFeType.ckActiveDiretory;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='MEMORY'          Then Form7.spdNFe.TipoCertificado := spdNFeType.ckMemory;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='LOCALMACHINE'    Then Form7.spdNFe.TipoCertificado := spdNFeType.ckLocalMachine;
+  {Sandro Silva 2024-01-03 fim}
 
   Form7.sFuso                := Mais1ini.ReadString('NFE' , 'FUSO','');
   if Form7.sFuso = '' then
@@ -8364,29 +8374,6 @@ begin
     if sModulo = 'VENDA' then
     begin
 
-      {Sandro Silva 2023-05-31 inicio
-      Form7.ibDataSet15.Append;
-
-      if Form7.sRPS = 'S' then
-      begin
-        Form48.Show;
-      end
-      else
-      begin
-        if ParamCount > 0 then
-        begin
-          if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
-          begin
-            Form12.ShowModal;
-          end
-          else
-            Form12.Show;
-        end
-        else
-          Form12.Show;
-      end;
-      }
-
       if Form7.sRPS = 'S' then
       begin
 
@@ -8420,7 +8407,6 @@ begin
             Form12.Show;
         end;
       end;
-      {Sandro Silva 2023-05-31 fim}
     end  else
     begin
       if sModulo = 'COMPRA' then
@@ -8460,8 +8446,12 @@ begin
           Abort;
         end else
         begin
+          Form10.bDesvincularCampos := False; // Sandro Silva 2024-01-04
           Form10.Show;
+//          Form7.TabelaAberta.Cancel; //2024-01-03
           Form10.Image201Click(Sender);
+//          Form7.TabelaAberta.Append; //2024-01-03
+          Form10.bDesvincularCampos := True; // Sandro Silva 2024-01-04
         end;
       end;
     end;
@@ -18019,7 +18009,8 @@ begin
   if Form7.ibDataSet9NOME.AsString = Form7.ibDataset2NOME.AsString then
   begin
     try
-      Form7.ibDataSet9.Delete;
+      if Form7.ibDataSet9.RecordCount > 0  then // Se ambos estiverem vazios, Form7.ibDataSet9NOME.AsString e Form7.ibDataset2NOME.AsString ocorre erro
+        Form7.ibDataSet9.Delete;
     except end;
   end;
 end;

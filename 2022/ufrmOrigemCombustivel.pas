@@ -57,7 +57,18 @@ var
 
 implementation
 
-uses Unit7, uFuncoesRetaguarda, smallfunc_xe, MSXML2_TLB, uDialogs;
+uses Unit7, uFuncoesRetaguarda
+  {Sandro Silva 2024-01-03 inicio
+  smallfunc_xe
+  }
+  {$IFDEF VER150}
+  , smallfunc
+  {$ELSE}
+  , smallfunc_xe
+  {$ENDIF}
+  {Sandro Silva 2024-01-03 fim}
+
+, MSXML2_TLB, uDialogs;
 
 {$R *.dfm}
 
