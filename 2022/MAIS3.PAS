@@ -10,7 +10,7 @@ uses
   {$ELSE}
   , smallfunc_xe
   {$ENDIF}
-  , ShellApi, HtmlHelp;
+  , ShellApi;
 
 type
     TSenhas = class(TForm)

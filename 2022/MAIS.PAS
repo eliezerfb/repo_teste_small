@@ -5,7 +5,7 @@ interface
 uses
   Windows, SysUtils, Messages, Classes, Controls, Graphics,
   Menus, StdCtrls, Buttons, ExtCtrls, Forms, Dialogs, shellapi,
-  mais3, unit2,unit3, IniFiles, Unit4, Unit10, Registry, HtmlHelp,
+  mais3, unit2,unit3, IniFiles, Unit4, Unit10, Registry,
   DBGrids, Grids, OleCtrls, SHDocVw, IBCustomDataSet, IBDatabase, Winsock,
   IBQuery, jpeg, Gauges, SpdNFeDataSets, IBServices, FileCtrl, xmldom, XMLIntf,
   {$IFDEF VER150}

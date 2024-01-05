@@ -14,7 +14,7 @@ uses
   , SmallFunc_XE
   {$ENDIF}
   , DB, shellapi, ComCtrls, Grids,
-  DBGrids, Printers, HtmlHelp, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
+  DBGrids, Printers, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
   xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs,
   uframePesquisaPadrao, uframePesquisaProduto, IBCustomDataSet, IBQuery,
   uframeCampo;
