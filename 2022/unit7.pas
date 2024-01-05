@@ -14372,7 +14372,9 @@ begin
               begin
                 if (Length(AllTrim(Form7.ibDataSet2CGC.AsString)) = 18) and (UpperCase(AllTrim(Form7.ibDataSet2IE.AsString))<>'ISENTO') then
                 begin
-                  if ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet2IE.AsString),Form7.ibDataSet2ESTADO.AsString) then
+                  // NESTE CASO SERA MANTIDO A ConsisteInscricaoEstadual DA UNIT7, SE USAR DA SMALLFUNC_XE FICA LENTO
+                  // DEVIDO A SEMPRE CARREGAR A DLL
+                  if (LimpaNumero(Form7.ibDataSet2IE.AsString) <> EmptyStr) and (ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet2IE.AsString),Form7.ibDataSet2ESTADO.AsString)) then
                   begin
                     DBGrid1.Canvas.Font.Color := clRed;
                     DBGrid1.Canvas.Font.Style := [fsUnderline];
