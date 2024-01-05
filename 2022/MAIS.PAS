@@ -3604,6 +3604,7 @@ begin
     SelStart := Length(Text)-1;
     SelAttributes.Style := [];
     SelAttributes.Height := 16;
+    SelAttributes.Color := clWhite; // 2024-01-05
 
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSql.Clear;
