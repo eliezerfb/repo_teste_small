@@ -5380,6 +5380,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
       Abort;
     end;
   end;
@@ -12400,6 +12401,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
   end;
   
@@ -17059,6 +17061,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
 
     Writeln(F,'<html><head><title>'+AllTrim(Form7.Acertodecontasde1.Caption)+'</title></head>');
@@ -17533,6 +17536,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
     
     Writeln(F,'<html><head><title>'+AllTrim(Form7.Acertodecontasde2.Caption)+'</title></head>');
@@ -27918,6 +27922,7 @@ end;
 procedure TForm7.Panel1Click(Sender: TObject);
 begin
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+  FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
 end;
 
 procedure TForm7.ImprimiraNFemformulrionumerado1Click(Sender: TObject);
