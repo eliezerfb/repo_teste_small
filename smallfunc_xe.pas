@@ -80,13 +80,18 @@ function LerParametroIni(sArquivo: String; sSecao: String;
 function GravarParametroIni(sArquivo: String; sSecao: String;
   sParametro: String; sValor: String): String;
 function AllTrim(Texto: String): String;
+function AllTrimCHR(pP1:String; pP2:String):String;
+function RTrim(pP1:String):String;
 function StrTran(sP1,sP2,sP3 : string):String;
 function ConverteAcentos(pP1:String):String;
 function ConverteAcentos2(pP1:String):String;
+function ConverteAcentosNome(pP1:String):String;
 function ConverteAcentosXML(pP1: String): String;
 function DateToStrInvertida(Data:TdateTime): String;
 function Numero_Sem_Endereco(sP1:String): String;
 function Endereco_Sem_Numero(sP1:String): String;
+function ExtraiEnderecoSemONumero(Texto: String): String;
+function ExtraiNumeroSemOEndereco(Texto: String): String;
 function PrimeiraMaiuscula(pP1:String):String;
 function Arredonda(fP1 : Real; iP2 : Integer): Real;
 function Arredonda2(fP1 : Double; iP2 : Integer): Double;
@@ -103,6 +108,7 @@ function GetLocalIP: string;
 {$ENDIF}
 function LimpaNumeroVirg(pP1:String):String;
 procedure FecharAplicacao(sNomeExecutavel: String);
+function CaracteresHTML(pP1:String):String;
 function VersaoExe(sNomeExe: String = ''): String; //2020-07-31 Sandro Silva function VersaoExe: String;
 function Right(S : String; numCaracteres : Byte) : String;
 function FORMATA_TELEFONE(Fone:String):String;
@@ -171,7 +177,18 @@ function Bisexto(AAno: Integer): Boolean;
 function LimpaLetrasPor_(pP1:String):String;
 function QuebraLinhaHtml(sTexto : string) : string;
 function LimpaNumeroDeixandoOponto(pP1:String):String;
+function LimpaNome(pP1:String):String;
+function SMALL_2of5(sP : String): String;
+function SMALL_2of5_2(sP : String): String;
+function Modulo_SICOOB(pP1:String):String;
+function Modulo_Duplo_Digito_Banrisul(pP1:String):String;
+function Modulo_10(pP1:String):String;
+function Modulo_11_Bradesco(pP1:String):String;
 function Modulo_11(pP1:String):String;
+function Modulo_11_Febraban(pP1:String):String;
+function HH(hWndCaller: HWND; pszFile: LPCWSTR; uCommand: UINT; dwData: DWORD_PTR): HWND;
+function MontaMascaraCasaDec(qtdCasas : integer) : string;
+function ConverteAcentos3(pP1:String):String;
 function ConverteAcentosIBPT(pP1:String):String;
 function ConverteCaracterEspecialXML(Value: String): String;
 function ConverteAcentosPHP(pP1:String):String;
@@ -508,6 +525,22 @@ begin
   Result := Trim(Texto);
 end;
 
+Function AllTrimCHR(pP1:String; pP2:String):String;
+begin
+   While Copy(pP1,Length(pP1),1) = pP2 do
+      pP1:=Copy(pP1,1,Length(pP1)-1);
+   While Copy(pP1,1,1) = pP2 do
+      pP1:=Copy(pP1,2,Length(pP1)-1);
+   Result:=pP1;
+end;
+
+Function RTrim(pP1:String):String;
+begin
+   While Copy(pP1,Length(pP1),1) = ' ' do
+      pP1:=Copy(pP1,1,Length(pP1)-1);
+   Result:=pP1;
+end;
+
 function StrTran(sP1,sP2,sP3 : string):String;
 //pP1 String, pP2 trecho a ser substituido, pP3 trecho novo
 begin
@@ -528,6 +561,21 @@ begin
     Result := strtran( Result
                     ,copy('ÁÀÂÄÃÉÈÊËÍÎÏÓÔÕÚÜÇáàâäãåéèêëíîïìóôõòöúüùûç*º',I,1)
                     ,copy('AAAAAEEEEIIIOOOUUCaaaaaaeeeeiiiiooooouuuuc .',I,1));
+end;
+
+function ConverteAcentosNome(pP1:String):String;
+var
+  I:Integer;
+begin
+  pP1 := ConverteAcentos(pP1);
+  Result:='';
+  for I := 1 to length(pP1) do
+  begin
+    if Pos(AnsiUpperCase(Copy(pP1,I,1)),'1234567890ABCDEFGHIJKLMNOPQRSTUVXYZW,/.-()%&') > 0 then
+      Result := Result+Copy(pP1,I,1)
+    else
+      Result := Result+' ';
+  end;
 end;
 
 function ConverteAcentos2(pP1:String):String;
@@ -593,6 +641,61 @@ begin
   //
   if Numero_Sem_Endereco(sP1) <> '0' then Result := StrTran(StrTran(StrTran(sP1,Numero_Sem_Endereco(sP1),''),',',''),'  ',' ') else Result :=  sP1;
   //
+end;
+
+function ExtraiEnderecoSemONumero(Texto: String): String;
+var
+ iPosicaoNumero: Integer;
+ i: Integer;
+ sNumero: String;
+begin
+  // Método criado para geração do XML da NF-e
+  // Para ser usado em outras rotinas, substituindo o outro método similar, deverá ser consultado o P.O. e analisando o impacto da mudança de comportamento
+  Texto := Trim(Texto); // Sandro Silva 2023-10-25 Espaçamentos no início e final do texto impedem de extrair corretamente a informação (Ficha 7498)
+  iPosicaoNumero := 0;
+  for i := Length(Texto) DownTo 0 do
+  begin
+    if Copy(Texto, i, 1) = ',' then
+    begin
+      iPosicaoNumero := i;
+      Break
+    end;
+  end;
+
+  if iPosicaoNumero = 0 then
+  begin
+    for i := Length(Texto) DownTo 0 do
+    begin
+      if Copy(Texto, i, 1) = ' ' then
+      begin
+        iPosicaoNumero := i;
+        Break
+      end;
+    end;
+  end;
+
+  Result := Copy(Texto, 1, iPosicaoNumero - 1);
+  // Validando quando o endereço não tiver um número e vírgula separando o texto que representaria o número
+  // Quando o endereço tiver somente o nome da rua (Rua Getulio Vargas) não retornar a última parte do nome da rua (Vargas) como sendo o número
+  if AnsiContainsText(Texto, ',') = False then
+  begin
+    sNumero := Copy(Texto, iPosicaoNumero, Length(Texto));
+    if (LimpaNumero(sNumero) = '') and (AnsiContainsText(sNumero, 'S/N') = False) then
+      Result := Texto;
+  end;
+end;
+
+function ExtraiNumeroSemOEndereco(Texto: String): String;
+begin
+  // Método criado para geração do XML da NF-e
+  // Para ser usado em outras rotinas, substituindo o outro método similar, deverá ser consultado o P.O. e analisando o impacto da mudança de comportamento
+  Texto := Trim(Texto); // Sandro Silva 2023-10-25 Espaçamentos no início e final do texto impedem de extrair corretamente a informação (Ficha 7498)
+  Result := StringReplace(Texto, ExtraiEnderecoSemONumero(Texto), '', [rfReplaceAll]);
+  Result := Trim(StringReplace(Result, ', ' , '', [rfReplaceAll]));
+  if Copy(Result, 1, 1) = ',' then
+    Result := Copy(Result, 2, Length(Result));
+  if Trim(Result) = '' then
+    Result := 'S/N';
 end;
 
 function PrimeiraMaiuscula(pP1: String): String;
@@ -793,6 +896,13 @@ begin
   WinExec(PAnsiChar(AnsiString('TASKKILL /F /IM "'+sNomeExecutavel+'"')),SW_HIDE); // Sandro Silva 2021-06-24 WinExec(PansiChar('TASKKILL /F /IM "'+sNomeExecutavel+'"'),SW_HIDE);
 end;
 
+function CaracteresHTML(pP1:String):String;
+begin
+  pP1 := StrTran(pP1,'<',' ');
+  pP1 := StrTran(pP1,'>',' ');
+  //
+  Result := ConverteAcentos(pP1);
+end;
 
 function VersaoExe(sNomeExe: String = ''): String; // 2020-07-31 Sandro Silva function VersaoExe: String;
 // Retorna a versão do executável. Quando não informar parâmetro sNomeExe usará como nome a aplicação em execução
@@ -2002,6 +2112,199 @@ begin
    end;
 end;
 
+Function Modulo_10(pP1:String):String;
+var
+  I, J, Z : Integer;
+begin
+  try
+    {acumula a soma da multiplicação dos digitos}
+    J := 0;
+    Z := 2;
+    for I := Length(pP1) downto 1 do
+    begin
+     //
+     try
+       J  := J  + StrToInt(Copy(IntToStr( StrToInt(Copy(pP1,I,1)) * Z ),1,1));
+       J  := J  + StrToInt(Copy(IntToStr( StrToInt(Copy(pP1,I,1)) * Z )+'0',2,1));
+     except end;
+     if Z = 2 then Z := 1 else Z:= 2;
+     //
+    end;
+    //
+    J  := 10 - (J  mod 10);
+    if (J  = 10) then J := 0;
+    {devolve o digito de controle}
+    Result:= IntToStr(J);
+  except Result :='0' end;
+end;
+
+Function LimpaNome(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:='';
+   for I := 1 to length(pP1) do
+   begin
+     if Pos(AnsiUpperCase(Copy(pP1,I,1)),'1234567890ABCDEFGHIJKLMNOPQRSTUVXZ') > 0 then
+        Result := Result+Copy(pP1,I,1) else Result := Result+'_';
+   end;
+end;
+
+function SMALL_2of5(sP : String): String;
+var
+  I : Integer;
+begin
+  Result := '';
+  sP := LimpaNumero(AllTrim(sP));
+  for I := 1 to Length(sP) div 2 do
+  begin
+    if (StrToInt(Copy(sP,(I*2)-1,2)) <= 49) then  Result := Result + Chr((StrToInt(Copy(sP,(I*2)-1,2))+48));
+    if (StrToInt(Copy(sP,(I*2)-1,2)) >= 50) then  Result := Result + Chr((StrToInt(Copy(sP,(I*2)-1,2))+142));
+  end;
+end;
+
+function SMALL_2of5_2(sP : String): String;
+var
+  I : Integer;
+begin
+  // 130 > 229
+  sP := LimpaNumero(AllTrim(sP));
+  for I := 1 to Length(sP) div 2 do
+  begin
+    Result := Result + Chr( (StrToInt(Copy(sP,(I*2)-1,2))+130) );
+  end;
+end;
+
+Function Modulo_SICOOB(pP1: String): String;
+var
+  S, I, II: integer;
+  SS : Real;
+begin
+  //
+  S    := 0;
+  II   := 0;
+  //
+  for I := 1 to 21 do
+  begin
+    try
+      II := II + 1;
+      S := S + StrToInt(Copy(pP1,I,1)) * StrToInt(Copy('3197',II,1));
+      if II = 4 then II := 0;
+    except
+    end;
+  end;
+  //
+  SS := S-(Int(S div 11)*11);
+  //
+  if (S-(Int(S div 11)*11)=0) or (S-(Int(S div 11)*11)=1) then
+  begin
+    Result := '0';
+  end else
+  begin
+    Result := FloatToStr( 11 - SS );
+  end;
+  //
+end;
+
+function Modulo_Duplo_Digito_Banrisul(pP1:String):String;
+var
+  J, Z : Integer;
+  Acumulado,I,Controle:integer;
+  Primeiro_digito : String;
+begin
+  try
+    //
+    // Modulo 10
+    // acumula a soma da multiplicação dos digitos
+    //
+    J := 0;
+    Z := 2;
+    //
+    for I := Length(pP1) downto 1 do
+    begin
+     try
+       if StrToInt(IntToStr( StrToInt(Copy(pP1,I,1)) * Z )) > 9 then
+       begin
+         J  := J  + (StrToInt( IntToStr(StrToInt(Copy(pP1,I,1)) * Z ))-9);
+       end else
+       begin
+         J  := J  + (StrToInt( IntToStr(StrToInt(Copy(pP1,I,1)) * Z )));
+       end;
+     except end;
+     if Z = 2 then Z := 1 else Z:= 2;
+    end;
+    //
+    J := 10 - (J - ((J div 10)*10));
+    if J >= 10 then J := 0;
+    //
+    // devolve o digito de controle
+    //
+    Primeiro_Digito := IntToStr(J);
+    //
+    Controle  :=2;
+    Acumulado :=0;
+    for I := length(pP1 + Primeiro_Digito) downto 1 do
+    begin
+      Acumulado:=Acumulado + (StrToInt(Copy(pP1 + Primeiro_Digito,I,1))*Controle);
+      Controle := Controle + 1;
+      if Controle > 7 then Controle:=2;
+    end;
+    //
+    Acumulado := 11 - (Acumulado - ((Acumulado div 11)*11));
+    if Acumulado = 11  then Acumulado:=0;
+    //
+    // Invalido
+    //
+    if (Acumulado = 10) then // or (Acumulado = 11) then
+    begin
+      Primeiro_Digito := IntToStr((StrToInt(Primeiro_Digito) + 1));
+      if StrToInt(Primeiro_Digito) >= 10 then Primeiro_Digito := '0';
+      Controle  :=2;
+      Acumulado :=0;
+      for I := length(pP1 + Primeiro_Digito) downto 1 do
+      begin
+        Acumulado:=Acumulado + (StrToInt(Copy(pP1 + Primeiro_Digito,I,1))*Controle);
+        Controle := Controle + 1;
+        if Controle > 7 then Controle:=2;
+      end;
+      Acumulado := 11 - (Acumulado - ((Acumulado div 11)*11));
+      if (Acumulado = 10) or (Acumulado = 11)  then Acumulado:=0;
+    end;
+    //
+    Result := Primeiro_Digito + IntToStr(Acumulado);
+    //
+  except Result :='0' end;
+end;
+
+function Modulo_11_bradesco(pP1:String):String;
+var
+   Acumulado,I,Controle:integer;
+begin
+  try
+    {acumula a soma da multiplicação dos digitos}
+    Pp1:=alltrim(pP1);
+    Controle:=2;
+    Acumulado:=0;
+    for I:=length(Pp1) downto 1 do
+    begin
+      Acumulado:=Acumulado + (StrToInt(Copy(Pp1,I,1))*Controle);
+      Controle := Controle + 1;
+      if Controle > 7 then Controle:=2;
+    end;
+    {calcula o digito}
+    Acumulado:=11-(Acumulado mod 11);
+    if Acumulado = 10 then
+    begin
+      Result := 'P';
+    end else
+    begin
+      if Acumulado = 11 then Acumulado:=0;
+      {devolve o digito de controle}
+      Result:=IntToStr(Acumulado);
+    end;
+  except Result :='0' end;
+end;
+
 function Modulo_11(pP1:String):String;
 var
    Acumulado,I,Controle:integer;
@@ -2023,6 +2326,61 @@ begin
      //devolve o digito de controle
      Result:=IntToStr(Acumulado);
    except Result :='0' end;
+end;
+
+Function Modulo_11_Febraban(pP1:String):String;
+var
+   Acumulado,I,Controle:integer;
+begin
+   try
+     {acumula a soma da multiplicação dos digitos}
+     Pp1:=alltrim(pP1);
+     Controle:=2;
+     Acumulado:=0;
+     for I:=length(Pp1) downto 1 do
+     begin
+        Acumulado:=Acumulado + (StrToInt(Copy(Pp1,I,1))*Controle);
+        Controle := Controle + 1;
+        if Controle > 9 then Controle:=2;
+     end;
+     {calcula o digito}
+     Acumulado:=11-(Acumulado mod 11);
+     if (Acumulado > 9) or (Acumulado < 1) then Acumulado := 1;
+     {devolve o digito de controle}
+     Result:=IntToStr(Acumulado);
+   except Result :='0' end;
+end;
+
+function HH(hWndCaller: HWND; pszFile: LPCWSTR; uCommand: UINT; dwData: DWORD_PTR): HWND;
+begin
+  HtmlHelp(hWndCaller, pszFile, uCommand, dwData);
+end;
+
+function MontaMascaraCasaDec(qtdCasas : integer) : string;
+begin
+  case qtdCasas of
+    0: Result := '#,##0';
+    1: Result := '#,##0.0';
+    2: Result := '#,##0.00';
+    3: Result := '#,##0.000';
+    4: Result := '#,##0.0000';
+    5: Result := '#,##0.00000';
+    6: Result := '#,##0.000000';
+    7: Result := '#,##0.0000000';
+    8: Result := '#,##0.00000000';
+    9: Result := '#,##0.000000000';
+  end;
+end;
+
+function ConverteAcentos3(pP1:String):String;
+var
+   I:Integer;
+begin
+   Result:=pP1;
+   for I := 1 to 44 do
+     Result :=  strtran( Result
+                      ,copy('ÁÀÂÄÃÉÈÊËÍÎÏÓÔÕÚÜÇáàâäãåéèêëíîïìóôõòöúüùûç*º',I,1)
+                      ,copy('____________________________________________',I,1));
 end;
 
 function ConverteAcentosIBPT(pP1:String):String;

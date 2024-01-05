@@ -6,7 +6,6 @@ uses
   uIImpressaoOrcamento, uIRetornaImpressaoOrcamento, uArquivosDAT,
   Classes, IBDataBase,
   {$IFDEF VER150}
-  SmallFunc,
   {$ELSE}
   smallfunc_xe,
   {$ENDIF}

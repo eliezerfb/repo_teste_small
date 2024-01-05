@@ -5,7 +5,6 @@ interface
 uses
   uIRetornaImpressaoOrcamento, IBQuery, IBDataBase, uConectaBancoSmall, Classes,
   {$IFDEF VER150}
-  SmallFunc
   {$ELSE}
   smallfunc_xe
   {$ENDIF}

@@ -12,7 +12,6 @@ uses
   , ShellAPI
   , StrUtils
   {$IFDEF VER150}
-  , SmallFunc
   {$ELSE}
   , smallfunc_xe
   {$ENDIF}

@@ -1,4 +1,4 @@
-unit uSalvaXMLContabilNFCeSAT;
+﻿unit uSalvaXMLContabilNFCeSAT;
 
 interface
 
@@ -9,7 +9,6 @@ uses
   , SmallFunc, smallfunc_xe
   }
   {$IFDEF VER150}
-  , smallfunc
   {$ELSE}
   , smallfunc_xe
   {$ENDIF}
