@@ -5060,7 +5060,12 @@ begin
   end else
   begin
     Form7.Panel_0.Visible := True;
-    Form7.Width  := Form1.Width -6;
+    {Dailon Parisotto (f-7757) 2023-01-03 Inicio}
+    Form7.Width  := Form1.Width;
+    {$IFDEF VER150}
+    Form7.Width  := Form7.Width - 6;
+    {$ENDIF}
+    {Dailon Parisotto (f-7757) 2023-01-03 Fim}
     Form7.Panel4.Visible  := True;
     Form1.Panel_3.Visible := True;
   end;
