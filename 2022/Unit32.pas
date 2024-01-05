@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Mask, SmallFunc, Printers, ComCtrls, ShellApi, DB,
+  ExtCtrls, StdCtrls, Mask, smallfunc_xe, Printers, ComCtrls, ShellApi, DB,
   IBCustomDataSet, IBQuery, uConectaBancoSmall;
 
 type

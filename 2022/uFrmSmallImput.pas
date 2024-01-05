@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uFrmPadrao, StdCtrls, Buttons, SmallFunc;
+  Dialogs, uFrmPadrao, StdCtrls, Buttons, smallfunc_xe;
 
 type
   TTipoCampo = (tpString,tpData,tpInteger,tpFloat);

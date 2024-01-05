@@ -4,7 +4,7 @@
 * Translated by: Ron Loewy, HyperAct, Inc.                                    *
 * Last Update: Oct. 21, 1997                                                  *
 ******************************************************************************)
-unit HtmlHelp;
+unit HtmlHelp_D7;
 
 interface
 
@@ -320,7 +320,7 @@ var
 (******************************************************************************
 *                                  HtmlHelp                                   *
 ******************************************************************************)
-function HH;
+function HH_;
 begin
    result := 0;
    if (Assigned(HtmlHelpA)) then begin

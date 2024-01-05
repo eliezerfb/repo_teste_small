@@ -31,7 +31,7 @@ var
 
 implementation
 
-uses SmallFunc
+uses smallfunc_xe
   , Mais
   , uSmallConsts;
 

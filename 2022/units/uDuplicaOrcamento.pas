@@ -32,7 +32,7 @@ type
 implementation
 
 uses
-  SysUtils, SmallFunc, uSmallResourceString, uDialogs;
+  SysUtils, smallfunc_xe, uSmallResourceString, uDialogs;
 
 { TDuplicaOrcamento }
 

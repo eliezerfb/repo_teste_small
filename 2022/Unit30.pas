@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Mask, DBCtrls, SMALL_DBEdit, ShellApi, Grids,
-  DBGrids, DB, SmallFunc, IniFiles, htmlHelp, Menus, Buttons, jpeg, IBQuery,
+  DBGrids, DB, smallfunc_xe, IniFiles
+  , Menus, Buttons, jpeg, IBQuery,
   uframeCampo, uframePesquisaPadrao, uframePesquisaServico, IBCustomDataSet;
 
 const COLOR_GRID_CINZA = $00F0F0F0;

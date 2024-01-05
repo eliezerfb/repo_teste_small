@@ -22,7 +22,6 @@ object Form12: TForm12
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
   OnShow = FormShow
@@ -2060,7 +2059,6 @@ object Form12: TForm12
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
-        ItemHeight = 16
         ParentFont = False
         TabOrder = 56
         Visible = False

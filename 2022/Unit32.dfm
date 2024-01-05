@@ -12,7 +12,6 @@ object Form32: TForm32
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
@@ -185,8 +184,8 @@ object Form32: TForm32
       Top = 190
       Width = 225
       Height = 21
-      Date = 39448.376154398100000000
-      Time = 39448.376154398100000000
+      Date = 39448.000000000000000000
+      Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 6
     end
@@ -212,6 +211,8 @@ object Form32: TForm32
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 56
     Top = 192
   end
@@ -220,6 +221,8 @@ object Form32: TForm32
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 56
     Top = 232
   end
@@ -228,6 +231,8 @@ object Form32: TForm32
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 96
     Top = 192
   end
@@ -236,6 +241,8 @@ object Form32: TForm32
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 96
     Top = 232
   end
@@ -244,6 +251,8 @@ object Form32: TForm32
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 56
     Top = 272
   end
@@ -252,6 +261,8 @@ object Form32: TForm32
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 96
     Top = 272
   end
@@ -260,6 +271,8 @@ object Form32: TForm32
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 136
     Top = 272
   end

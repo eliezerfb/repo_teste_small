@@ -3,7 +3,7 @@ unit uLayoutHTMLRelatorio;
 interface
 
 uses
-  SmallFunc, uSmallEnumerados;
+  smallfunc_xe, uSmallEnumerados;
 
 type
   TLayoutHTMLRelatorio = class

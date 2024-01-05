@@ -3,7 +3,6 @@ object Form1: TForm1
   Left = 363
   Top = 77
   Hint = 'Small Commerce'
-  HelpContext = 1
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False
   AlphaBlendValue = 250

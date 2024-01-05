@@ -22,7 +22,6 @@ object Form48: TForm48
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
   OnShow = FormShow

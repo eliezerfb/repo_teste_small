@@ -456,6 +456,17 @@ type
     procedure SMALL_DBEdit1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure Image5Click(Sender: TObject);
+<<<<<<< .mine
+
+
+
+
+=======
+    procedure WebBrowser1NavigateComplete2(Sender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
+    procedure WebBrowser1DocumentComplete(Sender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
+>>>>>>> .theirs
     procedure FormShow(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
@@ -4398,6 +4409,33 @@ begin
   end;
 end;
 
+<<<<<<< .mine
+
+
+
+
+
+
+
+
+
+
+
+
+=======
+procedure TForm10.WebBrowser1NavigateComplete2(Sender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+begin
+  Form10.Tag := 33;
+end;
+
+procedure TForm10.WebBrowser1DocumentComplete(Sender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+begin
+  Form10.Tag := Form10.Tag + 1;
+end;
+
+>>>>>>> .theirs
 procedure TForm10.FormShow(Sender: TObject);
 var
   I : Integer;

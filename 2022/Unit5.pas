@@ -26,7 +26,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, OleCtrls, SHDocVw, SmallFunc, Grids,
+  Dialogs, ExtCtrls, StdCtrls, OleCtrls, SHDocVw, smallfunc_xe, Grids,
   inifiles, shellapi, DBCtrls, DBGrids, Mask, SMALL_DBEdit;
 
 const FONT_SIZE_LABEL_PADRAO = 6;  

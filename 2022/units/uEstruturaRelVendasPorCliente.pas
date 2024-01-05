@@ -4,7 +4,7 @@ interface
 
 uses
   uIEstruturaRelVendasPorCliente, uIEstruturaTipoRelatorioPadrao, IBDatabase,
-  Classes, SysUtils, SmallFunc, IBQuery;
+  Classes, SysUtils, smallfunc_xe, IBQuery;
 
 type
   TEstruturaRelVendasPorCliente = class(TInterfacedObject, IEstruturaRelVendasPorCliente)

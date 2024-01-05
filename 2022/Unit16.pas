@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Grids, DBGrids, DB, Mask, Spin, ComCtrls,
-  SmallFunc, IniFiles;
+  smallfunc_xe, IniFiles;
 type
   TForm16 = class(TForm)
     Panel2: TPanel;

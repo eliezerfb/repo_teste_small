@@ -5,13 +5,14 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
   Caption = 'Pesquisa'
   ClientHeight = 421
   ClientWidth = 975
-  OldCreateOrder = True
   OnCreate = FormCreate
   OnShow = FormShow
+  ExplicitWidth = 991
+  ExplicitHeight = 460
+  PixelsPerInch = 96
   DesignSize = (
     975
     421)
-  PixelsPerInch = 96
   TextHeight = 16
   object lblTitulo2: TLabel
     Left = 20
@@ -71,8 +72,8 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     BevelInner = bvNone
     BevelOuter = bvNone
     BiDiMode = bdLeftToRight
-    Date = 35796.376154398150000000
-    Time = 35796.376154398150000000
+    Date = 35796.000000000000000000
+    Time = 0.376154398152721100
     DateFormat = dfLong
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlack
@@ -147,6 +148,8 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 144
     Top = 160
   end

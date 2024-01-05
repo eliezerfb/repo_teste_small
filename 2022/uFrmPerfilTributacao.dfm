@@ -341,7 +341,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 7
           OnChange = cboCSTPerfilTribChange
@@ -374,7 +373,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           OnChange = cboTipoItemPerfTribChange
@@ -405,7 +403,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 2
           OnChange = cboIPPTPerfTribChange
@@ -425,7 +422,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 3
           OnChange = cboIATPerfTribChange
@@ -445,7 +441,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 5
           OnChange = cboOrigemPerfTribChange
@@ -491,7 +486,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 6
           OnChange = cboCSOSNPerfilTribChange
@@ -533,7 +527,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 9
           OnChange = cboCFOP_NFCePerfTribChange
@@ -578,7 +571,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 10
           OnChange = cboCST_NFCePerfilTribChange
@@ -606,7 +598,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 11
           OnChange = cboCSOSN_NFCePerfilTribChange
@@ -760,7 +751,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 0
           OnChange = cboCST_IPI_PerTribChange
@@ -914,7 +904,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 0
             OnChange = cboCST_PISCOFINS_S_PerTribChange
@@ -1050,7 +1039,6 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 0
             OnChange = cboCST_PISCOFINS_E_PerTribChange

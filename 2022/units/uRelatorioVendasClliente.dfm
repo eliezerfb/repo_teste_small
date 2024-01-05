@@ -3,9 +3,9 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
   Top = 693
   Caption = 'Relat'#243'rio Vendas por cliente'
   ClientWidth = 762
-  OldCreateOrder = True
   OnClose = FormClose
   OnCreate = FormCreate
+  ExplicitWidth = 778
   PixelsPerInch = 96
   TextHeight = 13
   inherited btnCancelar: TBitBtn
@@ -122,8 +122,8 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
       Top = 14
       Width = 225
       Height = 21
-      Date = 35796.376154398100000000
-      Time = 35796.376154398100000000
+      Date = 35796.000000000000000000
+      Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 0
     end
@@ -132,8 +132,8 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
       Top = 54
       Width = 225
       Height = 21
-      Date = 35796.376154398100000000
-      Time = 35796.376154398100000000
+      Date = 35796.000000000000000000
+      Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 1
     end

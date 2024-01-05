@@ -12,7 +12,6 @@ object Form26: TForm26
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
   OnShow = FormShow
@@ -1518,6 +1517,7 @@ object Form26: TForm26
       ParentShowHint = False
       ShowHint = True
       TabOrder = 7
+      Text = ''
       OnChange = MaskEdit45Change
       OnExit = MaskEdit46Exit
       OnKeyDown = MaskEdit1KeyDown
@@ -1540,6 +1540,7 @@ object Form26: TForm26
       ParentShowHint = False
       ShowHint = True
       TabOrder = 8
+      Text = ''
       OnChange = MaskEdit45Change
       OnKeyDown = MaskEdit1KeyDown
     end
@@ -1587,6 +1588,7 @@ object Form26: TForm26
       ReadOnly = True
       ShowHint = True
       TabOrder = 9
+      Text = ''
       OnChange = MaskEdit45Change
       OnKeyDown = MaskEdit1KeyDown
     end
@@ -1610,6 +1612,7 @@ object Form26: TForm26
       ParentShowHint = False
       ShowHint = True
       TabOrder = 5
+      Text = ''
       OnChange = MaskEdit45Change
       OnKeyDown = MaskEdit1KeyDown
     end
@@ -1622,7 +1625,6 @@ object Form26: TForm26
       BevelOuter = bvNone
       Style = csDropDownList
       Ctl3D = False
-      ItemHeight = 13
       ParentCtl3D = False
       TabOrder = 0
       OnChange = cboBancosChange

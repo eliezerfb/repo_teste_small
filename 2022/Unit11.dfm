@@ -1,17 +1,16 @@
 object Form11: TForm11
   Left = 585
   Top = 385
-  Width = 500
-  Height = 320
   BorderIcons = []
   Caption = 'NF de produtor rural referenciada'
+  ClientHeight = 281
+  ClientWidth = 484
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnActivate = FormActivate
   PixelsPerInch = 96
@@ -130,7 +129,6 @@ object Form11: TForm11
     Font.Height = -13
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    ItemHeight = 16
     ParentFont = False
     TabOrder = 5
     OnKeyDown = Edit1KeyDown

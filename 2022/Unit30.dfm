@@ -14,7 +14,6 @@ object Form30: TForm30
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -1051,9 +1050,15 @@ object Form30: TForm30
         Height = 7
         TabOrder = 27
         Visible = False
+        ExplicitLeft = 15
+        ExplicitTop = 578
+        ExplicitWidth = 600
+        ExplicitHeight = 7
         inherited pnlPrincipal: TPanel
           Width = 600
           Height = 7
+          ExplicitWidth = 600
+          ExplicitHeight = 7
           inherited dbgItensPesq: TDBGrid
             Width = 600
             Height = 7
@@ -1074,11 +1079,15 @@ object Form30: TForm30
         ParentColor = False
         ParentCtl3D = False
         TabOrder = 9
+        ExplicitLeft = 440
+        ExplicitTop = 179
+        ExplicitWidth = 175
         inherited txtCampo: TEdit
           Width = 175
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
           OnEnter = fFrameIdentifi1txtCampoEnter
+          ExplicitWidth = 175
         end
         inherited gdRegistros: TDBGrid
           Top = 21
@@ -1097,9 +1106,14 @@ object Form30: TForm30
         ParentColor = False
         ParentCtl3D = False
         TabOrder = 8
+        ExplicitLeft = 15
+        ExplicitTop = 179
+        ExplicitWidth = 420
+        ExplicitHeight = 25
         inherited txtCampo: TEdit
           Width = 420
           OnEnter = fFrameDescricaotxtCampoEnter
+          ExplicitWidth = 420
         end
         inherited gdRegistros: TDBGrid
           Top = 21
@@ -1126,9 +1140,14 @@ object Form30: TForm30
         ParentColor = False
         ParentCtl3D = False
         TabOrder = 10
+        ExplicitLeft = 15
+        ExplicitTop = 219
+        ExplicitWidth = 170
+        ExplicitHeight = 24
         inherited txtCampo: TEdit
           Width = 170
           OnEnter = fFrameIdentifi2txtCampoEnter
+          ExplicitWidth = 170
         end
         inherited gdRegistros: TDBGrid
           Top = 21
@@ -1147,9 +1166,14 @@ object Form30: TForm30
         ParentColor = False
         ParentCtl3D = False
         TabOrder = 11
+        ExplicitLeft = 190
+        ExplicitTop = 219
+        ExplicitWidth = 170
+        ExplicitHeight = 25
         inherited txtCampo: TEdit
           Width = 170
           OnEnter = fFrameIdentifi3txtCampoEnter
+          ExplicitWidth = 170
         end
         inherited gdRegistros: TDBGrid
           Top = 21
@@ -1168,9 +1192,13 @@ object Form30: TForm30
         ParentColor = False
         ParentCtl3D = False
         TabOrder = 12
+        ExplicitLeft = 365
+        ExplicitTop = 219
+        ExplicitWidth = 165
         inherited txtCampo: TEdit
           Width = 165
           OnEnter = fFrameIdentifi4txtCampoEnter
+          ExplicitWidth = 165
         end
         inherited gdRegistros: TDBGrid
           Top = 21

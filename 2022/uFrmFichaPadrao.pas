@@ -78,8 +78,7 @@ uses uIconesSistema
     , Unit20
     , uVisualizaCadastro
     , uFuncoesBancoDados
-    , HtmlHelp
-    ;
+    , smallfunc_xe;
 
 {$R *.dfm}
 
