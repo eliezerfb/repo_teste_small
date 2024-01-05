@@ -25,7 +25,7 @@ uses
   , ShellApi
   , SpdNFeDataSets
   , spdNFe
-  , SmallFunc
+  , smallfunc_xe
   , unit7
   , unit11
   , unit29

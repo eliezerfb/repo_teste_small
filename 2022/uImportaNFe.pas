@@ -15,7 +15,7 @@ uses
   , Windows
   , Dialogs
   , DB
-  , SmallFunc
+  , smallfunc_xe
   , Mais
   , unit7
   , Unit24

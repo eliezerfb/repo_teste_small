@@ -13,7 +13,6 @@ object Form35: TForm35
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -184,7 +183,6 @@ object Form35: TForm35
     Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    ItemHeight = 13
     ParentFont = False
     TabOrder = 5
     Text = 'ComboBox1'
@@ -551,7 +549,6 @@ object Form35: TForm35
     Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    ItemHeight = 13
     ParentFont = False
     TabOrder = 9
     Text = 'Jato de tinta'

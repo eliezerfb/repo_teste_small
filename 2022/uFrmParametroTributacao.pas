@@ -122,7 +122,7 @@ implementation
 
 uses
   Unit7
-  , SmallFunc
+  , smallfunc_xe
   , uFuncoesRetaguarda, uFuncoesBancoDados, uDialogs;
 
 {$R *.dfm}

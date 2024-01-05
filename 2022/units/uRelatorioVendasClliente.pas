@@ -48,7 +48,7 @@ var
 implementation
 
 uses
-  SmallFunc, uEstruturaRelVendasPorCliente, uSmallResourceString,
+  smallfunc_xe, uEstruturaRelVendasPorCliente, uSmallResourceString,
   uRetornaOperacoesRelatorio, uUsuarioSections, uDialogs;
 
 {$R *.dfm}

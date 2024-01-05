@@ -13,7 +13,6 @@ object Form5: TForm5
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown

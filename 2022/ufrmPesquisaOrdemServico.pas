@@ -39,7 +39,7 @@ var
 implementation
 
 uses uSmallConsts
-  , SmallFunc
+  , smallfunc_xe
   , uFuncoesBancoDados
   ;
 

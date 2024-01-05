@@ -3,7 +3,7 @@ unit uSalvaXMLContabilNFeSaida;
 interface
 
 uses
-  uISalvaXMLDocsEletronicosContabil, IBDataBase, IBQuery, SmallFunc, ShellAPI, Windows,
+  uISalvaXMLDocsEletronicosContabil, IBDataBase, IBQuery, smallfunc_xe, ShellAPI, Windows,
   Forms, uConectaBancoSmall, Classes, DB, Dialogs;
 
 type

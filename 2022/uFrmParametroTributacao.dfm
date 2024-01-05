@@ -165,7 +165,6 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 1
             OnChange = cboOrigemChange
@@ -211,7 +210,6 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 2
             OnChange = cboCSTChange
@@ -244,7 +242,6 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 3
             OnChange = cboCSOSNChange
@@ -829,8 +826,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             ParentCtl3D = False
             TabOrder = 0
             OnExit = fraPerfilTribExit
+            ExplicitLeft = 104
+            ExplicitTop = 19
+            ExplicitWidth = 390
             inherited txtCampo: TEdit
               Width = 390
+              ExplicitWidth = 390
             end
             inherited gdRegistros: TDBGrid
               Width = 390
@@ -1383,6 +1384,8 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
       #9'ALIQ_COFINS_ENTRADA'
       'From PERFILTRIBUTACAO'
       'Where IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO')
+    ParamCheck = True
+    UniDirectional = False
     DataSource = DSCadastro
     Left = 640
     Top = 52

@@ -12,7 +12,6 @@ object frmSelectCertificate: TfrmSelectCertificate
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
   OnShow = FormShow

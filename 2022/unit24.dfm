@@ -17,7 +17,6 @@ object Form24: TForm24
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
-  OldCreateOrder = True
   OnActivate = FormActivate
   OnClose = FormClose
   OnKeyUp = FormKeyUp
@@ -3068,7 +3067,6 @@ object Form24: TForm24
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
-        ItemHeight = 16
         ParentFont = False
         TabOrder = 2
         OnChange = ComboBox12Change
@@ -3108,7 +3106,6 @@ object Form24: TForm24
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
-        ItemHeight = 16
         ParentFont = False
         TabOrder = 4
         OnChange = ComboBox13Change
@@ -3475,6 +3472,8 @@ object Form24: TForm24
       '  PIVA = :PIVA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 752
     Top = 6

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ExtCtrls, StdCtrls, Mask, SmallFunc,  WinTypes, WinProcs, Grids, DBGrids, DB, DBCtrls;
+  ComCtrls, ExtCtrls, StdCtrls, Mask, smallfunc_xe,  WinTypes, WinProcs, Grids, DBGrids, DB, DBCtrls;
 
 
 type

@@ -12,7 +12,6 @@ object FrmTermosUso: TFrmTermosUso
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -65,6 +64,7 @@ object FrmTermosUso: TFrmTermosUso
     Top = 64
     Width = 578
     Height = 335
+    ParentFont = False
     ReadOnly = True
     ScrollBars = ssVertical
     TabOrder = 0

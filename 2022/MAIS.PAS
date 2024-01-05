@@ -3,11 +3,9 @@ unit Mais;
 interface
 
 uses
-
-
   Windows, SysUtils, Messages, Classes, Controls, Graphics,
   Menus, StdCtrls, Buttons, ExtCtrls, Forms, Dialogs, shellapi,
-  mais3, unit2,unit3, IniFiles, Unit4, Unit10, Registry, HtmlHelp,
+  mais3, unit2,unit3, IniFiles, Unit4, Unit10, Registry,
   DBGrids, Grids, OleCtrls, SHDocVw, IBCustomDataSet, IBDatabase, Winsock,
   IBQuery, jpeg, Gauges, SpdNFeDataSets, IBServices, FileCtrl, xmldom, XMLIntf,
   {$IFDEF VER150}
@@ -287,7 +285,6 @@ type
     procedure FormActivate(Sender: TObject);
     procedure ConsultadepreosporCdigodeBarras1Click(Sender: TObject);
     procedure EscolheOBanco(Sender: TObject);
-    procedure EscolheOclifor(Sender: TObject);
     procedure EscolheOBloqueto(Sender: TObject);
     procedure EscolheCNAB400(Sender:TObject);
     procedure EscolheCNAB240(Sender:TObject);
@@ -3604,6 +3601,7 @@ begin
     SelStart := Length(Text)-1;
     SelAttributes.Style := [];
     SelAttributes.Height := 16;
+    SelAttributes.Color := clWhite; // 2024-01-05
 
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSql.Clear;
@@ -3680,18 +3678,6 @@ begin
   Mais1Ini.Free;
   Form7.sTitulo := sEscolhido;
   Form7.sRPS := 'N';
-  
-  Form7.Close;
-  Form7.Show;
-end;
-
-procedure Tform1.EscolheOclifor(Sender:TObject);
-begin
-  with Sender as TMenuItem do
-  begin
-    Form7.sWhere  := 'where CLIFOR='+QuotedStr( Copy(Caption,4,Length(Caption)-2))+ ' ';
-    Checked := True;
-  end;
   
   Form7.Close;
   Form7.Show;

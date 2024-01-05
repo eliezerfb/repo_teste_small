@@ -12,14 +12,13 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
+  PixelsPerInch = 96
   DesignSize = (
     884
     349)
-  PixelsPerInch = 96
   TextHeight = 13
   object lbLegenda: TLabel
     Left = 9
@@ -220,6 +219,7 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
       DefaultExpression = '0'
       FieldName = 'QUANTIDADEACUMULADA'
       Active = True
+      DisplayName = ''
       Expression = 'sum(QUANTIDADE)'
     end
   end

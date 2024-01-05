@@ -1,7 +1,6 @@
 object Form2: TForm2
   Left = 479
   Top = 134
-  HelpContext = 2
   AlphaBlendValue = 220
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
@@ -14,10 +13,12 @@ object Form2: TForm2
   Font.Height = -12
   Font.Name = 'System'
   Font.Style = []
+  KeyPreview = True
   Position = poDesktopCenter
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16

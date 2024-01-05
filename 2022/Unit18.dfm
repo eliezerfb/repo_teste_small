@@ -12,7 +12,6 @@ object Form18: TForm18
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = [fsBold]
-  OldCreateOrder = True
   Position = poScreenCenter
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
@@ -120,7 +119,6 @@ object Form18: TForm18
       Font.Height = -11
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
-      ItemHeight = 13
       ParentCtl3D = False
       ParentFont = False
       TabOrder = 2
@@ -209,6 +207,8 @@ object Form18: TForm18
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 328
     Top = 80
   end
@@ -217,6 +217,8 @@ object Form18: TForm18
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 328
     Top = 40
   end

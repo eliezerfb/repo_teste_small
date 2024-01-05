@@ -53,7 +53,7 @@ type
 
 implementation
 
-uses SmallFunc, uAssinaturaDigital, ShellApi, Math, uDadosEmitente,
+uses smallfunc_xe, uAssinaturaDigital, ShellApi, Math, uDadosEmitente,
   uIDadosEmitente, uSmallResourceString, uLayoutHTMLRelatorio, uDialogs;
 
 const

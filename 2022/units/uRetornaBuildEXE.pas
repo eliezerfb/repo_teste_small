@@ -16,7 +16,7 @@ type
 implementation
 
 uses
-  SmallFunc;
+  smallfunc_xe;
 
 { TRetornarBuildEXE }
 
@@ -55,7 +55,7 @@ begin
     {$ENDIF}
 
     if AbSomenteNumeros then
-      Result := SmallFunc.LimpaNumero(Result);
+      Result := LimpaNumero(Result);
   finally
     FreeMem(Pt);
   end;

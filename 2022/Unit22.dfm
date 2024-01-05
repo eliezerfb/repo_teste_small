@@ -14,7 +14,6 @@ object Form22: TForm22
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   Visible = True
   OnActivate = FormActivate

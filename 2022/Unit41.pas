@@ -5,7 +5,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Mask, SmallFunc, DB, IniFiles, Buttons, IBQuery
+  StdCtrls, ExtCtrls, Mask, smallfunc_xe, DB, IniFiles, Buttons, IBQuery
   , StrUtils;
 
 type

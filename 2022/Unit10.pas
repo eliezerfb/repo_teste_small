@@ -14,7 +14,7 @@ uses
   , SmallFunc_XE
   {$ENDIF}
   , DB, shellapi, ComCtrls, Grids,
-  DBGrids, Printers, HtmlHelp, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
+  DBGrids, Printers, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
   xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs,
   uframePesquisaPadrao, uframePesquisaProduto, IBCustomDataSet, IBQuery,
   uframeCampo;
@@ -4425,8 +4425,8 @@ begin
 
   Orelhas.ActivePage := Orelha_cadastro;
 
-  Form10.Width  := 845;
-  Form10.Height := 650;
+  Form10.Width  := 855; // 845;
+  Form10.Height := 655; // 650;
 
   btnOK.Left  := Panel2.Width - btnOK.Width - 10;
   btnRenogiarDivida.Left  := btnOK.Left - 10 - btnRenogiarDivida.Width;

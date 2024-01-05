@@ -7753,7 +7753,6 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Width = 195
           Height = 21
           Style = csDropDownList
-          ItemHeight = 13
           ItemIndex = 2
           TabOrder = 4
           Text = 'Usar custo de compra nas notas'
@@ -7770,7 +7769,6 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Width = 90
           Height = 21
           Style = csDropDownList
-          ItemHeight = 13
           ItemIndex = 0
           TabOrder = 2
           OnExit = cbIntegracaoFinanceiraExit
@@ -7792,8 +7790,12 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           ParentColor = False
           ParentCtl3D = False
           TabOrder = 5
+          ExplicitLeft = 150
+          ExplicitTop = 123
+          ExplicitWidth = 313
           inherited txtCampo: TEdit
             Width = 313
+            ExplicitWidth = 313
           end
           inherited gdRegistros: TDBGrid
             Width = 313
@@ -7927,7 +7929,6 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 0
             OnChange = ComboBox7Change

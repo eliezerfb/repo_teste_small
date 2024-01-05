@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uFrmPadrao, DB, IBCustomDataSet, IBQuery, Grids, DBGrids, smallfunc,
+  Dialogs, uFrmPadrao, DB, IBCustomDataSet, IBQuery, Grids, DBGrids, smallfunc_xe,
   ComCtrls, StdCtrls, Buttons;
 
 type

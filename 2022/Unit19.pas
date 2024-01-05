@@ -4,8 +4,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Mask, IniFiles, ComCtrls, Shellapi, DBCtrls, SMALL_DBEdit, SmallFunc,
-  ExtCtrls, HtmlHelp;
+  StdCtrls, Mask, IniFiles, ComCtrls, Shellapi, DBCtrls, SMALL_DBEdit, smallfunc_xe,
+  ExtCtrls
+  ;
 
 type
   TForm19 = class(TForm)

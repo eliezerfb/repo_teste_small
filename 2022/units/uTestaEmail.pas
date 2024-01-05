@@ -19,7 +19,7 @@ implementation
 
 uses SysUtils
   {$IFDEF VER150}
-  , SmallFunc
+  , smallfunc_xe
   {$ELSE}
   , smallfunc_xe
   {$ENDIF}

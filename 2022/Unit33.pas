@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, StdCtrls, ExtCtrls, ComObj, ActiveX, shellapi, SmallFunc; //, OleAuto;
+  Buttons, StdCtrls, ExtCtrls, ComObj, ActiveX, shellapi, smallfunc_xe; //, OleAuto;
 
 type
   TForm33 = class(TForm)

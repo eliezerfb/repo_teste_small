@@ -15,7 +15,7 @@ uses
   , Dialogs
   , DB
   , IBQuery
-  , SmallFunc
+  , smallfunc_xe
   , unit7
   ;
 

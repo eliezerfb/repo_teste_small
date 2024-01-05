@@ -23,7 +23,7 @@ type
 
 implementation
 
-uses TypInfo, DB, SmallFunc;
+uses TypInfo, DB, smallfunc_xe;
 
 { TTestaProdutoExiste }
 
