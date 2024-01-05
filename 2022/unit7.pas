@@ -2557,7 +2557,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uFrmPerfilTributacao
   , uFrmNaturezaOperacao
   , uFrmSituacaoOS
-  , uRelatorioVendasNotaFiscal;
+  , uRelatorioVendasNotaFiscal
+  , uDrawCellGridModulos;
 
 {$R *.DFM}
 
@@ -14407,7 +14408,7 @@ begin
               end;
             end;
           end;
-          
+
           if sModulo = 'FORNECED' then
           begin
             if ibDataSet2ATIVO.AsString='1' then DBGrid1.Canvas.Font.Color := clSilver else
@@ -14568,12 +14569,7 @@ begin
 
           dbGrid1.Canvas.FillRect(Rect);
 
-          if Field.Name = 'ibDataSet3CGC' then
-            dbGrid1.Canvas.StretchDraw(Rect,Form7.Image24.Picture.Graphic);
-          if Field.Name = 'ibDataSet18CGC' then
-            dbGrid1.Canvas.StretchDraw(Rect,Form7.Image24.Picture.Graphic);
-          if Field.Name = 'ibDataSet2CGC' then
-            dbGrid1.Canvas.StretchDraw(Rect,Form7.Image24.Picture.Graphic);
+          {Mauricio Parizotto 2024-01-03
 
           if Pos('WHATSAPP',UpperCase(Field.DisplayLabel)) <> 0 then
           begin
@@ -14584,6 +14580,7 @@ begin
             if LimpaNumero(Field.AsString) <> '' then
               dbGrid1.Canvas.StretchDraw(yRect,Form7.ImageWhatsApp.Picture.Graphic);  // Claro
           end;
+          }
 
           if (Field.FieldName = 'CONTATOS') then
           begin
@@ -14614,6 +14611,8 @@ begin
       end;
     end;
 
+    {Mauricio Parizotto 2024-01-03 - uDrawCellGridModulos
+
     if Field.Name = 'ibDataSet5COMPENS' then
     begin
       if Form7.ibDataSet5COMPENS.AsString = '' then
@@ -14624,6 +14623,7 @@ begin
       end;
     end;
 
+
     if Field.Name = 'ibDataSet1NOME' then
     begin
       if Form7.ibDataSet1NOME.AsString = '' then
@@ -14633,6 +14633,8 @@ begin
         dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,'<Plano de Contas>');
       end;
     end;
+
+
 
     if Field.Name = 'ibDataSet24MDESTINXML' then
     begin
@@ -14698,7 +14700,9 @@ begin
         end;
       end;
     end;
-    
+
+
+
     if Field.Name = 'ibDataSet15STATUS' then
     begin
       yRect := Rect;
@@ -14746,6 +14750,7 @@ begin
       end;
     end;
 
+
     if sModulo = 'RECEBER' then
     begin
       if Field.Name = 'ibDataSet7ATIVO' then
@@ -14776,6 +14781,7 @@ begin
         end;
       end;
     end;
+
 
     if (Field.Name = 'ibDataSet14SOBREIPI') or
        (Field.Name = 'ibDataSet14SOBREFRETE') or
@@ -14848,7 +14854,6 @@ begin
       dbGrid1.Canvas.TextOut(Rect.Left+dbGrid1.Canvas.TextWidth('99/99/9999_'),Rect.Top+2,Copy(DiaDaSemana(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,3) );
     end;
 
-    {Sandro Silva 2022-12-19 inicio}
     if Field.Name = 'ibDataSet7MOVIMENTO' then
     begin
       if Form7.ibDataSet7MOVIMENTO.AsString <> '' then
@@ -14861,7 +14866,7 @@ begin
       end;
     end;
 
-    {Sandro Silva 2022-12-19 fim}
+
     if Field.Name = 'ibDataSet1DATA' then
     begin
       if (DayOfWeek(Form7.ibDataSet1DATA.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet1DATA.AsDateTime) = 7) then
@@ -14879,6 +14884,7 @@ begin
         DBGrid1.Canvas.Font.Color   := clBlack;
       DBGrid1.Canvas.TextOut(Rect.Left + dbGrid1.Canvas.TextWidth('99/99/9999_'), Rect.Top + 2, Copy(DiaDaSemana(Form7.ibDataSet15EMISSAO.AsDateTime), 1, 3) );
     end;
+    }
 
     {$IFDEF VER150}
     begin
@@ -25687,8 +25693,6 @@ end;
 procedure TForm7.DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 begin
-  {$IFDEF VER150}
-  {$ELSE}
   if Pos(Column.Field.FieldName,sOrderBy) <> 0 then
     Column.Title.Font.Style := [fsBold]
   else
@@ -25708,7 +25712,24 @@ begin
     (Sender as TDBGrid).DefaultDrawColumnCell(Rect, DataCol, Column, State);
   end;
 
-  {$ENDIF}
+  DrawCell_Receber(Sender, Rect, DataCol, Column,State);
+
+  DrawCell_Pagar(Sender, Rect, DataCol, Column,State);
+
+  DrawCell_Estoque(Sender, Rect, DataCol, Column,State);
+
+  DrawCell_Vendas(Sender, Rect, DataCol, Column,State);
+
+  DrawCell_NaturezaOP(Sender, Rect, DataCol, Column,State);
+
+  DrawCell_Clientes(Sender, Rect, DataCol, Column,State);
+
+  DrawCell_Compras(Sender, Rect, DataCol, Column,State);
+
+  DrawCell_Caixa(Sender, Rect, DataCol, Column,State);
+
+  DrawCell_Bancos(Sender, Rect, DataCol, Column,State);
+
 end;
 
 procedure TForm7.GerarNFedeentrada1Click(Sender: TObject);
@@ -34366,5 +34387,6 @@ procedure TForm7.DBGrid4KeyDown(Sender: TObject; var Key: Word;
 begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 end;
+
 
 end.
