@@ -4425,10 +4425,10 @@ begin
 
   Orelhas.ActivePage := Orelha_cadastro;
 
-  Form10.Width  := 845;
+  Form10.Width  := 855; // 845;
   Form10.Height := 650;
 
-  btnOK.Left  := Panel2.Width - btnOK.Width - 20; aqui // 10;
+  btnOK.Left  := Panel2.Width - btnOK.Width - 10;
   btnRenogiarDivida.Left  := btnOK.Left - 10 - btnRenogiarDivida.Width;
 
   Form7.ArquivoAberto.DisableControls;
