@@ -13,9 +13,9 @@ type
     procedure WebBrowser1ProgressChange(Sender: TObject; Progress,
       ProgressMax: Integer);
     procedure WebBrowser1NavigateComplete2(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
+      const pDisp: IDispatch; const URL: OleVariant);
     procedure WebBrowser1DocumentComplete(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
+      const pDisp: IDispatch; const URL: OleVariant);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormActivate(Sender: TObject);
   private
@@ -44,13 +44,13 @@ begin
 end;
 
 procedure TForm6.WebBrowser1NavigateComplete2(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
+  const pDisp: IDispatch; const URL: OleVariant);
 begin
   Form6.Tag := 33;
 end;
 
 procedure TForm6.WebBrowser1DocumentComplete(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
+  const pDisp: IDispatch; const URL: OleVariant);
 begin
   Form6.Tag := Form6.Tag + 1;
 end;

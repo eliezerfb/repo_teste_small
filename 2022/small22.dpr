@@ -8,18 +8,18 @@ uses
   Messages,
   SysUtils,
   ShellApi,
-  Mais in 'MAIS.PAS' {Form1},
-  Mais3 in 'MAIS3.PAS' {Senhas},
-  Unit2 in 'UNIT2.PAS' {Form2},
-  Unit7 in 'unit7.pas' {Form7},
-  Unit9 in 'UNIT9.PAS' {Form9},
-  Unit14 in 'UNIT14.PAS' {Form14},
-  Unit12 in 'UNIT12.PAS' {Form12},
-  Unit48 in 'UNIT48.PAS' {Form48},
+  MAIS in 'MAIS.PAS' {Form1},
+  MAIS3 in 'MAIS3.PAS' {Senhas},
+  UNIT2 in 'UNIT2.PAS' {Form2},
+  unit7 in 'unit7.pas' {Form7},
+  UNIT9 in 'UNIT9.PAS' {Form9},
+  UNIT14 in 'UNIT14.PAS' {Form14},
+  UNIT12 in 'UNIT12.PAS' {Form12},
+  UNIT48 in 'UNIT48.PAS' {Form48},
   Unit10 in 'Unit10.pas' {Form10},
   Unit16 in 'Unit16.pas' {Form16},
   Unit17 in 'Unit17.pas' {Form17},
-  Unit99 in 'unit99.pas' {Form99},
+  unit99 in 'unit99.pas' {Form99},
   Unit18 in 'Unit18.pas' {Form18},
   Unit19 in 'Unit19.pas' {Form19},
   Unit20 in 'Unit20.pas' {Form20},
@@ -39,8 +39,8 @@ uses
   Unit43 in 'Unit43.pas' {Form43},
   Unit4 in 'Unit4.pas' {Form4},
   Unit13 in 'Unit13.pas' {Form13},
-  Unit3 in 'UNIT3.PAS' {Senhas2},
-  Unit24 in 'unit24.pas' {Form24},
+  UNIT3 in 'UNIT3.PAS' {Senhas2},
+  unit24 in 'unit24.pas' {Form24},
   Unit30 in 'Unit30.pas' {Form30},
   Unit40 in 'Unit40.pas' {Form40},
   Unit15 in 'Unit15.pas' {Form15},
@@ -62,7 +62,7 @@ uses
   uRateioVendasBalcao in 'uRateioVendasBalcao.pas',
   uAtualizaNovoCampoItens001CSOSN in 'uAtualizaNovoCampoItens001CSOSN.pas',
   uSmallNFeUtils in 'uSmallNFeUtils.pas',
-  SMALL_DBEdit in '..\..\..\componentes\Smallsoft\SMALL_DBEDIT.PAS',
+  SMALL_DBEDIT in '..\..\..\componentes\Smallsoft\SMALL_DBEDIT.PAS',
   ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
   uListaCnaes in 'uListaCnaes.pas',
   uGeraXmlNFeEntrada in 'uGeraXmlNFeEntrada.pas',
@@ -217,7 +217,8 @@ uses
   uEstruturaRelTotalizadorGeralVenda in 'units\uEstruturaRelTotalizadorGeralVenda.pas',
   uEstruturaRelVendasNotaFiscal in 'units\uEstruturaRelVendasNotaFiscal.pas',
   uRelatorioVendasNotaFiscal in 'units\uRelatorioVendasNotaFiscal.pas' {frmRelVendasNotaFiscal},
-  udmRelTotalizadorVendasGeral in 'units\udmRelTotalizadorVendasGeral.pas' {dmRelTotalizadorVendasGeral: TDataModule};
+  udmRelTotalizadorVendasGeral in 'units\udmRelTotalizadorVendasGeral.pas' {dmRelTotalizadorVendasGeral: TDataModule},
+  uDrawCellGridModulos in 'units\uDrawCellGridModulos.pas';
 
 {$R *.RES}
 
@@ -326,5 +327,6 @@ begin
     end;
   except
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
 end.

@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFrmPadrao, StdCtrls, Grids, DBGrids, Buttons, DB,
-  IBCustomDataSet, DBClient, Provider, ExtCtrls, pngimage, SmallFunc;
+  IBCustomDataSet, DBClient, Provider, ExtCtrls, pngimage, SmallFunc, Vcl.Mask,
+  Vcl.DBCtrls;
 
 type
   TFrmProdutosDevolucao = class(TFrmPadrao)
@@ -45,27 +46,25 @@ type
     ibdProdutosNotaVFCPST: TIBBCDField;
     ibdProdutosNotaICMS_DESONERADO: TIBBCDField;
     dspProdutosNota: TDataSetProvider;
-    cdsProdutosNotaMARCADO: TStringField;
-    cdsProdutosNotaNUMERONF: TStringField;
-    cdsProdutosNotaCODIGO: TStringField;
-    cdsProdutosNotaDESCRICAO: TStringField;
-    cdsProdutosNotaST: TStringField;
+    cdsProdutosNotaNUMERONF: TIBStringField;
+    cdsProdutosNotaCODIGO: TIBStringField;
+    cdsProdutosNotaST: TIBStringField;
     cdsProdutosNotaIPI: TFloatField;
     cdsProdutosNotaICM: TFloatField;
     cdsProdutosNotaBASE: TFloatField;
-    cdsProdutosNotaMEDIDA: TStringField;
+    cdsProdutosNotaMEDIDA: TIBStringField;
     cdsProdutosNotaQUANTIDADE: TFloatField;
     cdsProdutosNotaUNITARIO: TFloatField;
     cdsProdutosNotaTOTAL: TFloatField;
     cdsProdutosNotaPESO: TFloatField;
-    cdsProdutosNotaCST_PIS_COFINS: TStringField;
+    cdsProdutosNotaCST_PIS_COFINS: TIBStringField;
     cdsProdutosNotaALIQ_PIS: TBCDField;
     cdsProdutosNotaVICMS: TBCDField;
     cdsProdutosNotaVBC: TBCDField;
     cdsProdutosNotaVICMSST: TBCDField;
     cdsProdutosNotaVIPI: TBCDField;
-    cdsProdutosNotaCST_IPI: TStringField;
-    cdsProdutosNotaCST_ICMS: TStringField;
+    cdsProdutosNotaCST_IPI: TIBStringField;
+    cdsProdutosNotaCST_ICMS: TIBStringField;
     cdsProdutosNotaVBCFCP: TBCDField;
     cdsProdutosNotaPFCP: TBCDField;
     cdsProdutosNotaVFCP: TBCDField;
@@ -97,6 +96,8 @@ type
     cdsProdutosNotaVICMSST_ANT: TBCDField;
     cdsProdutosNotaVBCFCPST_ANT: TBCDField;
     cdsProdutosNotaVFCPST_ANT: TBCDField;
+    cdsProdutosNotaDESCRICAO: TWideStringField;
+    cdsProdutosNotaMARCADO: TWideStringField;
     procedure dbgPrincipalCellClick(Column: TColumn);
     procedure dbgPrincipalDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);

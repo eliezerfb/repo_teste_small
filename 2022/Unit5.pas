@@ -262,8 +262,17 @@ begin
   try
     //
     Form5.Left   := Form7.Left;
+
+    {Dailon Parisotto (f-7757) 2023-01-03 Inicio}
+    {$IFDEF VER150}
     Form5.Height := Form7.Height;
     Form5.Width  := Form7.Width;
+    {$ELSE}
+    Form5.Height := Form7.Height - 8;
+    Form5.Width  := Form7.Width - 8;
+    {$ENDIF}
+    {Dailon Parisotto (f-7757) 2023-01-03 Fim}
+
     Form5.Top    := Form7.Top;
     //
     iTop := 10;

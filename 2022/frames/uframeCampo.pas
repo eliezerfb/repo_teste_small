@@ -57,7 +57,7 @@ type
 implementation
 
 uses uFuncoesRetaguarda
-    , uDialogs;
+    , uDialogs, smallfunc_xe;
 
 {$R *.dfm}
 
@@ -246,7 +246,20 @@ begin
     begin
       if not (CampoCodigo.DataSet.State in [dsEdit]) then
         CampoCodigo.DataSet.Edit;
+      {2024-01-04
       CampoCodigo.Value := txtCampo.Text;
+      }
+      case CampoCodigo.DataType of
+        ftSmallint, ftInteger, ftWord, ftLargeint:
+        begin
+          if (LimpaNumero(txtCampo.Text) = txtCampo.Text) and (LimpaNumero(txtCampo.Text) <> '') then
+            CampoCodigo.Value := txtCampo.Text
+          else
+            txtCampo.Clear;
+        end
+      else
+        CampoCodigo.Value := txtCampo.Text;
+      end;
     end;
     {Sandro Silva 2023-09-28 fim}
   end else

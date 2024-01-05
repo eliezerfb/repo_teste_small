@@ -10,6 +10,7 @@ object fFrameCampo: TfFrameCampo
   ParentCtl3D = False
   TabOrder = 0
   OnExit = FrameExit
+  PixelsPerInch = 96
   DesignSize = (
     323
     22)
@@ -71,6 +72,8 @@ object fFrameCampo: TfFrameCampo
     Transaction = Form7.IBTransaction1
     BufferChunks = 100
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 100
     Top = 65535
   end

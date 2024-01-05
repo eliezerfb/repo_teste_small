@@ -241,6 +241,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
 end;
 
@@ -525,8 +526,8 @@ begin
           ibdEmitenteIE.AsString       := xmlNodeValue(sRetorno,'//IE');
           ibdEmitenteESTADO.AsString   := xmlNodeValue(sRetorno,'//UF');
           ibdEmitenteNOME.AsString     := PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome')));
-          ibdEmitenteENDERECO.AsString := PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')));
-          ibdEmitenteCOMPLE.AsString   := PrimeiraMaiuscula((xmlNodeValue(sRetorno,'//xBairro')));
+          ibdEmitenteENDERECO.AsString := Copy(Trim(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')))),1,35);
+          ibdEmitenteCOMPLE.AsString   := Copy(Trim(PrimeiraMaiuscula((xmlNodeValue(sRetorno,'//xBairro')))),1,20);
           ibdEmitenteCEP.AsString      := copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
           ibdEmitenteCNAE.AsString     := xmlNodeValue(sRetorno,'//CNAE');
 
