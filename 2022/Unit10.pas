@@ -367,7 +367,6 @@ type
     procedure StringGrid1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure dbgComposicaoKeyPress(Sender: TObject; var Key: Char);
-    procedure TabSheet4Show(Sender: TObject);
     procedure DBGrid3DblClick(Sender: TObject);
     procedure DBGrid3KeyPress(Sender: TObject; var Key: Char);
     procedure SMALL_DBEdit23KeyDown(Sender: TObject; var Key: Word;
@@ -494,7 +493,6 @@ type
     procedure Orelha_IPIEnter(Sender: TObject);
     procedure orelha_cadastroExit(Sender: TObject);
     procedure ComboBox8Change(Sender: TObject);
-    procedure Orelha_promoEnter(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure SMALL_DBEdit31Change(Sender: TObject);
     procedure _RRClick(Sender: TObject);
@@ -563,6 +561,19 @@ type
     { Private declarations }
     function MostraImagemEstoque: Boolean;
     procedure CarregaCit;
+    procedure BloquearAcessoUsuarioAbas;
+    function TestarSomenteLeitura: Boolean;
+    procedure BloqueiaCamposAbaICMS(AbBloquear: Boolean);
+    procedure BloqueiaCamposAbaIPI(AbBloquear: Boolean);
+    procedure BloqueiaCamposAbaPISCOFINS(AbBloquear: Boolean);
+    procedure BloqueiaCamposAbaComposicao(AbBloquear: Boolean);
+    procedure BloqueiaCamposAbaFoto(AbBloquear: Boolean);
+    procedure BloqueiaCamposAbaPreco(AbBloquear: Boolean);
+    procedure BloqueiaCamposAbaPromocao(AbBloquear: Boolean);
+    procedure BloqueiaCamposAbaConversao(AbBloquear: Boolean);
+    procedure BloqueiaCamposAbaTAGs(AbBloquear: Boolean);
+    procedure BloqueiaCamposAbaMarketPlace(AbBloquear: Boolean);
+    procedure BloqueiaCamposAbaGrade(AbBloquear: Boolean);
   public
     { Public declarations }
 
@@ -2239,6 +2250,7 @@ begin
 
     Form7.ibDataSet7.EnableControls;
   end;
+  Image5.Picture  := Image3.Picture;  
 end;
 
 procedure TForm10.DBGrid1KeyDown(Sender: TObject; var Key: Word;
@@ -2346,6 +2358,12 @@ begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 
   try
+    if TestarSomenteLeitura then
+    begin
+      // Se esta somente leitura não pode apagar registros
+      if (Shift = [SsCtrl]) and (key = vk_delete) then
+        Key := 0;
+    end;
     if ((Key = VK_DOWN) or (Key = VK_UP)) and (framePesquisaProdComposicao.dbgItensPesq.CanFocus) then
     begin
       Key := VK_SHIFT;
@@ -2762,23 +2780,6 @@ begin
       Form7.ibDataSet28.Next;
       if Form7.ibDataSet28.EOF then Form7.ibDataSet28.Append;
     end;
-  end;
-end;
-
-procedure TForm10.TabSheet4Show(Sender: TObject);
-begin
-  if Form7.bSoLeitura or Form7.bEstaSendoUsado then
-  begin
-    dbgComposicao.Enabled  := False;
-    Button8.Enabled  := False;
-    Button10.Enabled := False;
-    Button11.Enabled := False;
-  end else
-  begin
-    dbgComposicao.Enabled  := True;
-    Button8.Enabled  := True;
-    Button10.Enabled := True;
-    Button11.Enabled := True;
   end;
 end;
 
@@ -3665,7 +3666,6 @@ begin
   end;
 
   //{Sandro Silva 2023-08-21 inicio
-  Image5.Picture  := Image3.Picture;
   {
   if Image3.Picture.Graphic <> nil then
   begin
@@ -4381,6 +4381,8 @@ begin
 
   Panel_branco.Width := 840; // Sandro Silva 2023-06-22
 
+  Image5.Picture  := Image3.Picture; // Dailon parisotto 2023-12-28
+
   tInicio := time;
   Form10.orelhas.Visible := False;
 
@@ -4945,6 +4947,10 @@ begin
   Form10.Left := (Form7.Width - Form10.Width) div 2;
   Form10.Repaint;
   {Sandro Silva 2023-06-22 inicio}
+
+  {Dailon Parisotto (f-5075) 2023-12-27 Inicio}
+  BloquearAcessoUsuarioAbas;
+  {Dailon Parisotto (f-5075) 2023-12-27 Fim}
 end;
 
 procedure TForm10.Button9Click(Sender: TObject);
@@ -5347,14 +5353,6 @@ var
   I, J : Integer;
   bChave : Boolean;
 begin
-  if Form7.bSoLeitura or Form7.bEstaSendoUsado then
-  begin
-    StringGrid1.Enabled := False;
-  end else
-  begin
-    StringGrid1.Enabled := True;
-  end;
-  
   StringGrid1.Col := 0;
   StringGrid1.Row := 0;
 
@@ -5469,13 +5467,13 @@ begin
   Button13.Caption       := '&Webcam';
   VideoCap1.visible      := False;
   Image5.Visible         := True;
-
+  AtualizaTela(False);
   if not Form7.bSoLeitura then
   begin
     Orelhas.ActivePage := orelha_cadastro;
     if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
   end;
-  
+
   if (Form7.sModulo = 'ESTOQUE') then
   begin
     Button7.Visible := True;
@@ -5587,12 +5585,13 @@ begin
   ComboBox9.ItemIndex := -1;
   ComboBox10.ItemIndex := -1;
   ComboBox11.ItemIndex := -1;
-  
+
   ComboBox14.ItemIndex := -1;
   ComboBox15.ItemIndex := -1;
   
   VerificaSeEstaSendoUsado(True);
-  
+{ Dailon Parisotto (f-5075) 2023-12-28 INICIO
+
   if Form7.bSoLeitura or Form7.bEstaSendoUsado then
   begin
     ComboBox1.Enabled := False;
@@ -5678,6 +5677,7 @@ begin
     dbepCofinsSaida.Font.Color := ClWindowText;
     dbepCofinsEntrada.Font.Color  := ClWindowText;
   end;
+  Dailon Parisotto (f-5075) 2023-12-28 FIM}
   
   // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
   begin
@@ -6815,21 +6815,6 @@ begin
   end;
 end;
 
-procedure TForm10.Orelha_promoEnter(Sender: TObject);
-begin
-  if Form7.bSoLeitura then
-  begin
-    SMALL_DBEdit45.ReadOnly := True;
-    SMALL_DBEdit46.ReadOnly := True;
-    SMALL_DBEdit50.ReadOnly := True;
-  end else
-  begin
-    SMALL_DBEdit45.ReadOnly := False;
-    SMALL_DBEdit46.ReadOnly := False;
-    SMALL_DBEdit50.ReadOnly := False;
-  end;
-end;
-
 procedure TForm10.Button7Click(Sender: TObject);
 var
   sLinkDaFoto, s: String;
@@ -7311,9 +7296,12 @@ procedure TForm10.DBGrid5KeyDown(Sender: TObject; var Key: Word;
 begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
   
+  if TestarSomenteLeitura then
+    Exit;
   if Key = VK_DELETE then
   begin
-     Form7.IBDataSet6.Delete;
+    if (not Form7.IBDataSet6.IsEmpty) then
+      Form7.IBDataSet6.Delete;
   end;
 end;
 
@@ -7648,8 +7636,6 @@ begin
     StringGrid2.Cells[3,I+1] := sDescricao;
     //
   end;
-  //
-  StringGrid2.EditorMode := True;
 end;
 
 procedure TForm10.Orelha_TAGSExit(Sender: TObject);
@@ -7680,10 +7666,13 @@ end;
 procedure TForm10.StringGrid2SelectCell(Sender: TObject; ACol,
   ARow: Integer; var CanSelect: Boolean);
 begin
-  if ACol = 1 then
-    StringGrid2.Options := StringGrid1.Options + [goEditing]
-  else
-    StringGrid2.Options := StringGrid1.Options - [goEditing];
+  if StringGrid2.EditorMode then
+  begin
+    if ACol = 1 then
+      StringGrid2.Options := StringGrid1.Options + [goEditing]
+    else
+      StringGrid2.Options := StringGrid1.Options - [goEditing];
+  end;
 end;
 
 procedure TForm10.StringGrid2DrawCell(Sender: TObject; ACol, ARow: Integer;
@@ -7816,7 +7805,8 @@ begin
   Form7.ibDataSet28.UpdateRecord;
   Form7.ibDataSet28.Edit;
 
-  framePesquisaProdComposicao.Visible := (Form7.ibDataSet28.State in [dsEdit, dsInsert])
+  framePesquisaProdComposicao.Visible := (framePesquisaProdComposicao.Enabled)
+                                         and (Form7.ibDataSet28.State in [dsEdit, dsInsert])
                                          and (dbgComposicao.Columns.Grid.SelectedField.FieldName = Form7.ibDataSet28DESCRICAO.FieldName)
                                          and (Form7.ibDataSet28DESCRICAO.AsString <> EmptyStr);
 end;
@@ -7833,7 +7823,7 @@ begin
   begin
     if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) and (Key <> VK_DELETE) then
     begin
-      if not framePesquisaProdComposicao.Visible then
+      if (not framePesquisaProdComposicao.Visible) and (framePesquisaProdComposicao.Enabled) then
         framePesquisaProdComposicao.Visible := True
       else
         Form7.bFlag := False;
@@ -8131,8 +8121,310 @@ begin
   end;
 end;
 
+procedure TForm10.BloquearAcessoUsuarioAbas;
+begin
+  BloqueiaCamposAbaICMS(TestarSomenteLeitura);
+  BloqueiaCamposAbaIPI(TestarSomenteLeitura);
+  BloqueiaCamposAbaPISCOFINS(TestarSomenteLeitura);
+  BloqueiaCamposAbaGrade(TestarSomenteLeitura);
+  BloqueiaCamposAbaComposicao(TestarSomenteLeitura);
+  BloqueiaCamposAbaFoto(TestarSomenteLeitura);
+  BloqueiaCamposAbaPreco(TestarSomenteLeitura);
+  BloqueiaCamposAbaPromocao(TestarSomenteLeitura);
+  BloqueiaCamposAbaConversao(TestarSomenteLeitura);
+  BloqueiaCamposAbaTAGs(TestarSomenteLeitura);
+  BloqueiaCamposAbaMarketPlace(TestarSomenteLeitura);
+end;
 
+procedure TForm10.BloqueiaCamposAbaICMS(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
 
+  fraPerfilTrib.Enabled := bAtiva;
+  fraPerfilTrib.txtCampo.Enabled := bAtiva;
+  ComboBox9.Enabled := bAtiva;
+  SMALL_DBEdit31.Enabled := bAtiva;
+  SMALL_DBEdit67.Enabled := bAtiva;
+  ComboBox5.Enabled := bAtiva;
+  ComboBox6.Enabled := bAtiva;
+  SMALL_DBEdit37.Enabled := bAtiva;
+  cboOrigemProd.Enabled := bAtiva;
+  cboCSOSN_Prod.Enabled := bAtiva;
+  cboCST_Prod.Enabled := bAtiva;
+  SMALL_DBEdit38.Enabled := bAtiva;
+  ComboBox11.Enabled := bAtiva;
+  ComboBox15.Enabled := bAtiva;
+  SMALL_DBEdit66.Enabled := bAtiva;
+  ComboBox14.Enabled := bAtiva;
+
+  if not bAtiva then
+  begin
+    fraPerfilTrib.txtCampo.Font.Color := clGrayText;
+    ComboBox9.Font.Color := clGrayText;
+    SMALL_DBEdit31.Font.Color := clGrayText;
+    SMALL_DBEdit67.Font.Color := clGrayText;
+    ComboBox5.Font.Color := clGrayText;
+    ComboBox6.Font.Color := clGrayText;
+    SMALL_DBEdit37.Font.Color := clGrayText;
+    cboOrigemProd.Font.Color := clGrayText;
+    cboCSOSN_Prod.Font.Color := clGrayText;
+    cboCST_Prod.Font.Color := clGrayText;
+    SMALL_DBEdit38.Font.Color := clGrayText;
+    ComboBox11.Font.Color := clGrayText;
+    ComboBox15.Font.Color := clGrayText;
+    SMALL_DBEdit66.Font.Color := clGrayText;
+    ComboBox14.Font.Color := clGrayText;
+  end
+  else
+  begin
+    fraPerfilTrib.txtCampo.Font.Color := clBlack;
+    ComboBox9.Font.Color := clBlack;
+    SMALL_DBEdit31.Font.Color := clBlack;
+    SMALL_DBEdit67.Font.Color := clBlack;
+    ComboBox5.Font.Color := clBlack;
+    ComboBox6.Font.Color := clBlack;
+    SMALL_DBEdit37.Font.Color := clBlack;
+    cboOrigemProd.Font.Color := clBlack;
+    cboCSOSN_Prod.Font.Color := clBlack;
+    cboCST_Prod.Font.Color := clBlack;
+    SMALL_DBEdit38.Font.Color := clBlack;
+    ComboBox11.Font.Color := clBlack;
+    ComboBox15.Font.Color := clBlack;
+    SMALL_DBEdit66.Font.Color := clBlack;
+    ComboBox14.Font.Color := clBlack;
+  end;
+end;
+
+procedure TForm10.BloqueiaCamposAbaIPI(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
+
+  ComboBox1.Enabled := bAtiva;
+  SMALL_DBEdit41.Enabled := bAtiva;
+  SMALL_DBEdit68.Enabled := bAtiva;
+
+  if not bAtiva then
+  begin
+    ComboBox1.Font.Color := clGrayText;
+    SMALL_DBEdit41.Font.Color := clGrayText;
+    SMALL_DBEdit68.Font.Color := clGrayText;
+  end
+  else
+  begin
+    ComboBox1.Font.Color := clBlack;
+    SMALL_DBEdit41.Font.Color := clBlack;
+    SMALL_DBEdit68.Font.Color := clBlack;
+  end;
+end;
+
+procedure TForm10.BloqueiaCamposAbaPISCOFINS(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
+
+  ComboBox7.Enabled := bAtiva;
+  dbepPisSaida.Enabled := bAtiva;
+  dbepCofinsSaida.Enabled := bAtiva;
+  dbeIcmBCPISCOFINS.Enabled := bAtiva;
+  ComboBox10.Enabled := bAtiva;
+  dbepPisEntrada.Enabled := bAtiva;
+  dbepCofinsEntrada.Enabled := bAtiva;
+
+  if not bAtiva then
+  begin
+    ComboBox7.Font.Color := clGrayText;
+    dbepPisSaida.Font.Color := clGrayText;
+    dbepCofinsSaida.Font.Color := clGrayText;
+    dbeIcmBCPISCOFINS.Font.Color := clGrayText;
+    ComboBox10.Font.Color := clGrayText;
+    dbepPisEntrada.Font.Color := clGrayText;
+    dbepCofinsEntrada.Font.Color := clGrayText;
+  end
+  else
+  begin
+    ComboBox7.Font.Color := clBlack;
+    dbepPisSaida.Font.Color := clBlack;
+    dbepCofinsSaida.Font.Color := clBlack;
+    dbeIcmBCPISCOFINS.Font.Color := clBlack;
+    ComboBox10.Font.Color := clBlack;
+    dbepPisEntrada.Font.Color := clBlack;
+    dbepCofinsEntrada.Font.Color := clBlack;
+  end;
+end;
+
+procedure TForm10.BloqueiaCamposAbaComposicao(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
+
+  framePesquisaProdComposicao.Enabled := bAtiva;
+  Button8.Enabled                     := bAtiva;
+  Button10.Enabled                    := bAtiva;
+  Button11.Enabled                    := bAtiva;
+  SMALL_DBEdit33.ReadOnly             := not bAtiva;
+  SMALL_DBEdit34.ReadOnly             := not bAtiva;
+
+  if not bAtiva then
+    dbgComposicao.Options := dbgComposicao.Options - [dgEditing]
+  else
+    dbgComposicao.Options := dbgComposicao.Options + [dgEditing];
+end;
+
+procedure TForm10.BloqueiaCamposAbaFoto(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
+
+  Button13.Enabled := bAtiva;
+  Button7.Enabled := bAtiva;
+  Button22.Enabled := bAtiva;
+end;
+
+procedure TForm10.BloqueiaCamposAbaPreco(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
+
+  SMALL_DBEdit32.Enabled := bAtiva;
+  SMALL_DBEdit36.Enabled := bAtiva;
+  SMALL_DBEdit39.Enabled := bAtiva;
+  SMALL_DBEdit40.Enabled := bAtiva;
+  SMALL_DBEdit42.Enabled := bAtiva;
+  SMALL_DBEdit43.Enabled := bAtiva;
+  Button14.Enabled := bAtiva;
+  Button18.Enabled := bAtiva;
+  Button20.Enabled := bAtiva;
+
+  if not bAtiva then
+  begin
+    SMALL_DBEdit32.Font.Color := clGrayText;
+    SMALL_DBEdit36.Font.Color := clGrayText;
+    SMALL_DBEdit39.Font.Color := clGrayText;
+    SMALL_DBEdit40.Font.Color := clGrayText;
+    SMALL_DBEdit42.Font.Color := clGrayText;
+    SMALL_DBEdit43.Font.Color := clGrayText;
+  end
+  else
+  begin
+    SMALL_DBEdit32.Font.Color := clBlack;
+    SMALL_DBEdit36.Font.Color := clBlack;
+    SMALL_DBEdit39.Font.Color := clBlack;
+    SMALL_DBEdit40.Font.Color := clBlack;
+    SMALL_DBEdit42.Font.Color := clBlack;
+    SMALL_DBEdit43.Font.Color := clBlack;
+  end;
+end;
+
+procedure TForm10.BloqueiaCamposAbaPromocao(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
+
+  SMALL_DBEdit45.Enabled := bAtiva;
+  SMALL_DBEdit46.Enabled := bAtiva;
+  SMALL_DBEdit50.Enabled := bAtiva;
+  SMALL_DBEdit69.Enabled := bAtiva;
+  SMALL_DBEdit71.Enabled := bAtiva;
+  SMALL_DBEdit70.Enabled := bAtiva;
+  SMALL_DBEdit72.Enabled := bAtiva;
+
+  if not bAtiva then
+  begin
+    SMALL_DBEdit45.Font.Color := clGrayText;
+    SMALL_DBEdit46.Font.Color := clGrayText;
+    SMALL_DBEdit50.Font.Color := clGrayText;
+    SMALL_DBEdit69.Font.Color := clGrayText;
+    SMALL_DBEdit71.Font.Color := clGrayText;
+    SMALL_DBEdit70.Font.Color := clGrayText;
+    SMALL_DBEdit72.Font.Color := clGrayText;
+  end else
+  begin
+    SMALL_DBEdit45.Font.Color := clBlack;
+    SMALL_DBEdit46.Font.Color := clBlack;
+    SMALL_DBEdit50.Font.Color := clBlack;
+    SMALL_DBEdit69.Font.Color := clBlack;
+    SMALL_DBEdit71.Font.Color := clBlack;
+    SMALL_DBEdit70.Font.Color := clBlack;
+    SMALL_DBEdit72.Font.Color := clBlack;
+  end;
+end;
+
+procedure TForm10.BloqueiaCamposAbaConversao(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
+
+  ComboBox12.Enabled := bAtiva;
+  SMALL_DBEdit64.Enabled := bAtiva;
+  ComboBox13.Enabled := bAtiva;
+
+  if not bAtiva then
+  begin
+    ComboBox12.Font.Color := clGrayText;
+    SMALL_DBEdit64.Font.Color := clGrayText;
+    ComboBox13.Font.Color := clGrayText;
+  end else
+  begin
+    ComboBox12.Font.Color := clBlack;
+    SMALL_DBEdit64.Font.Color := clBlack;
+    ComboBox13.Font.Color := clBlack;
+  end;
+end;
+
+procedure TForm10.BloqueiaCamposAbaTAGs(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
+
+  StringGrid2.EditorMode := bAtiva;
+  
+  if not bAtiva then
+    StringGrid2.Options := StringGrid2.Options - [goEditing]
+  else
+    StringGrid2.Options := StringGrid2.Options + [goEditing];
+end;
+
+procedure TForm10.BloqueiaCamposAbaMarketPlace(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
+
+  CheckBox2.Enabled := bAtiva;
+end;
+
+procedure TForm10.BloqueiaCamposAbaGrade(AbBloquear: Boolean);
+var
+  bAtiva: Boolean;
+begin
+  bAtiva := (not AbBloquear);
+
+  StringGrid1.EditorMode := bAtiva;
+  Button1.Enabled        := bAtiva;
+  Button2.Enabled        := bAtiva;
+  Button3.Enabled        := bAtiva;
+
+  if not bAtiva then
+    StringGrid1.Options := StringGrid2.Options - [goEditing]
+  else
+    StringGrid1.Options := StringGrid2.Options + [goEditing];
+end;
+
+function TForm10.TestarSomenteLeitura: Boolean;
+begin
+  Result := ((Form7.bSoLeitura) or (Form7.bEstaSendoUsado));
+end;
 
 procedure TForm10.DBGrid4KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
