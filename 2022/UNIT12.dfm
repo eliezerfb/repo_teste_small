@@ -1239,6 +1239,7 @@ object Form12: TForm12
         Color = clWhite
         Ctl3D = False
         DataSource = Form7.DataSource16
+        DrawingStyle = gdsClassic
         FixedColor = 15790320
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -1777,6 +1778,7 @@ object Form12: TForm12
         Color = clWhite
         Ctl3D = False
         DataSource = Form7.DataSource35
+        DrawingStyle = gdsClassic
         FixedColor = clWindow
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -1944,6 +1946,7 @@ object Form12: TForm12
         Height = 5
         Color = 15790320
         DataSource = Form7.DataSource4
+        DrawingStyle = gdsClassic
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -2011,6 +2014,7 @@ object Form12: TForm12
         Height = 5
         Color = 15790320
         DataSource = Form7.DataSource14
+        DrawingStyle = gdsClassic
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -11
