@@ -10887,16 +10887,20 @@ begin
 
     dbGrid1.DataSource := DataSourceAtual;
 
-    {Mauricio Parizotto 2024-01-04 - não funciona corretamente, buga o grid
+    //{Mauricio Parizotto 2024-01-04
     try
-      if StrToInt('0'+LimpaNumero(sLinha)) <> 0 then
+      if StrToInt('0'+LimpaNumero(sLinha)) > 0 then
       begin
+        TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1) *-1);
+        TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1) * 1);
+
+        {
         I := TabelaAberta.MoveBy(StrToInt('0'+LimpaNumero(sLinha))*-1);
         TabelaAberta.MoveBy(I*-1);
+        }
       end;
     except
     end;
-    }
 
     try
       dbGrid1.SelectedIndex := StrToInt('0'+LimpaNumero(sColuna));
@@ -24253,10 +24257,13 @@ end;
 procedure TForm7.DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 begin
-  if Pos(Column.Field.FieldName,sOrderBy) <> 0 then
-    Column.Title.Font.Style := [fsBold]
-  else
-    Column.Title.Font.Style := [];
+  if TStringGrid(DBGrid1).Row = 1 then
+  begin
+    if Pos(Column.Field.FieldName,sOrderBy) <> 0 then
+      Column.Title.Font.Style := [fsBold]
+    else
+      Column.Title.Font.Style := [];
+  end;
 
   //Troca Cor Celula Selecionada
   with (Sender as TDBGrid).Canvas do
@@ -24289,7 +24296,6 @@ begin
   DrawCell_Caixa(Sender, Rect, DataCol, Column,State);
 
   DrawCell_Bancos(Sender, Rect, DataCol, Column,State);
-
 end;
 
 procedure TForm7.GerarNFedeentrada1Click(Sender: TObject);
