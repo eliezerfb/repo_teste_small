@@ -43,11 +43,10 @@ uses
   , uconstantes_chaves_privadas
   {$IFDEF VER150}
   , Grids
-  , uTestaEmail
   , DB
   {$ELSE}
   , Vcl.Grids
-  , uTestaEmail, Data.DB
+  , Data.DB
   {$ENDIF}
   ;
 
@@ -164,7 +163,6 @@ procedure DBGridExibeMemo(DBGrid: TDBGrid; Column: TColumn; Rect: TRect;
   State: TGridDrawState; sCampo: String);
 function processExists(exeFileName: string): Boolean;
 function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): TStringList;
-function ValidaEmail(AcEmail: String): Boolean;
 function GetCampoPKDataSet(sDataSet: TDataSet): String;
 function RetornaOperadora(sNumero: String): String;
 function ValidaEAN(AGTIN:String):Boolean;
@@ -1797,14 +1795,6 @@ begin
     if AcTexto <> EmptyStr then
       Result.Add(AcTexto);
   end;
-end;
-
-
-function ValidaEmail(AcEmail: String): Boolean;
-begin
-  Result := TTestaEmail.New
-                       .setEmail(AcEmail)
-                       .Testar;
 end;
 
 function GetCampoPKDataSet(sDataSet: TDataSet): String;
