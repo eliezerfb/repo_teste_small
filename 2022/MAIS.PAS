@@ -285,7 +285,6 @@ type
     procedure FormActivate(Sender: TObject);
     procedure ConsultadepreosporCdigodeBarras1Click(Sender: TObject);
     procedure EscolheOBanco(Sender: TObject);
-    procedure EscolheOclifor(Sender: TObject);
     procedure EscolheOBloqueto(Sender: TObject);
     procedure EscolheCNAB400(Sender:TObject);
     procedure EscolheCNAB240(Sender:TObject);
@@ -3679,18 +3678,6 @@ begin
   Mais1Ini.Free;
   Form7.sTitulo := sEscolhido;
   Form7.sRPS := 'N';
-  
-  Form7.Close;
-  Form7.Show;
-end;
-
-procedure Tform1.EscolheOclifor(Sender:TObject);
-begin
-  with Sender as TMenuItem do
-  begin
-    Form7.sWhere  := 'where CLIFOR='+QuotedStr( Copy(Caption,4,Length(Caption)-2))+ ' ';
-    Checked := True;
-  end;
   
   Form7.Close;
   Form7.Show;
