@@ -186,7 +186,10 @@ function Modulo_10(pP1:String):String;
 function Modulo_11_Bradesco(pP1:String):String;
 function Modulo_11(pP1:String):String;
 function Modulo_11_Febraban(pP1:String):String;
+{$IFDEF VER150}
+{$ELSE}
 function HH(hWndCaller: HWND; pszFile: LPCWSTR; uCommand: UINT; dwData: DWORD_PTR): HWND;
+{$ENDIF}
 function MontaMascaraCasaDec(qtdCasas : integer) : string;
 function ConverteAcentos3(pP1:String):String;
 function ConverteAcentosIBPT(pP1:String):String;
@@ -472,7 +475,7 @@ begin
     end;
 
   finally
-    FreeLibrary (LibHandle);
+    FreeLibrary(LibHandle);
   end;
 
 end;
@@ -2352,10 +2355,13 @@ begin
    except Result :='0' end;
 end;
 
+{$IFDEF VER150}
+{$ELSE}
 function HH(hWndCaller: HWND; pszFile: LPCWSTR; uCommand: UINT; dwData: DWORD_PTR): HWND;
 begin
   HtmlHelp(hWndCaller, pszFile, uCommand, dwData);
 end;
+{$ENDIF}
 
 function MontaMascaraCasaDec(qtdCasas : integer) : string;
 begin

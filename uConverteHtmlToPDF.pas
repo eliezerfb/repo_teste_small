@@ -14,6 +14,7 @@ uses
   SysUtils
   , Windows
   , ShellAPI
+  , smallfunc
   {$ELSE}
   System.SysUtils
   , Winapi.Windows
