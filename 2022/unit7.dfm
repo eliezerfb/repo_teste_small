@@ -7812,6 +7812,7 @@ object Form7: TForm7
     TitleFont.Style = []
     Visible = False
     OnDrawDataCell = DBGrid2DrawDataCell
+    OnDrawColumnCell = DBGrid2DrawColumnCell
     OnKeyDown = DBGrid2KeyDown
   end
   object DBGrid3: TDBGrid
@@ -7844,6 +7845,7 @@ object Form7: TForm7
     TitleFont.Style = []
     Visible = False
     OnDrawDataCell = DBGrid3DrawDataCell
+    OnDrawColumnCell = DBGrid3DrawColumnCell
     OnKeyDown = DBGrid3KeyDown
     OnKeyUp = DBGrid3KeyUp
   end
@@ -7895,6 +7897,7 @@ object Form7: TForm7
     Visible = False
     OnColEnter = DBGrid4ColEnter
     OnDrawDataCell = DBGrid4DrawDataCell
+    OnDrawColumnCell = DBGrid4DrawColumnCell
     OnKeyDown = DBGrid4KeyDown
   end
   object Panel10: TPanel

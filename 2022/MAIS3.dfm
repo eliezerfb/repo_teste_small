@@ -13,7 +13,6 @@ object Senhas: TSenhas
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = [fsBold]
-  OldCreateOrder = True
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -154,7 +153,6 @@ object Senhas: TSenhas
       Font.Height = -16
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
-      ItemHeight = 20
       ParentCtl3D = False
       ParentFont = False
       ParentShowHint = False

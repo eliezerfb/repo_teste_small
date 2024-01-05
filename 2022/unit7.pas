@@ -5,12 +5,13 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, Grids, DBGrids, DB, ExtCtrls, Menus, Unit9, IniFiles,
-  StdCtrls, Unit10, Unit11, Unit14, Unit16, SmallFunc, Mask, DBCtrls,
+  StdCtrls, Unit10, Unit11, Unit14, Unit16, Mask, DBCtrls, smallfunc_xe,
   SMALL_DBEdit, shellapi, Printers, ToolWin, ComCtrls, clipbrd, HtmlHelp, jpeg, MAPI, Variants,
   IBDatabase, IBCustomDataSet, IBTable, IBQuery, IBDatabaseInfo, IBServices,
   DBClient, LbAsym, LbRSA, LbCipher, LbClass, {MD5,} xmldom, XMLIntf,
   msxmldom, XMLDoc,
   {$IFDEF VER150}
+  SmallFunc,
   oxmldom, spdXMLUtils, spdType, CAPICOM_TLB,
   {$ELSE}
   {$ENDIF}
@@ -2313,6 +2314,12 @@ type
       const pDisp: IDispatch; const URL: OleVariant);
     procedure WebBrowser1NavigateComplete2(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
+    procedure DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure DBGrid3DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure DBGrid4DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -4629,11 +4636,21 @@ begin
   
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
 
+  {Sandro Silva 2024-01-03- inicio}
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='FILE'            Then Form7.spdNFe.TipoCertificado := spdNFeType.ckFile;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='SMARTCARD'       Then Form7.spdNFe.TipoCertificado := spdNFeType.ckSmartCard;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='ACTIVEDIRECTORY' Then Form7.spdNFe.TipoCertificado := spdNFeType.ckActiveDiretory;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='MEMORY'          Then Form7.spdNFe.TipoCertificado := spdNFeType.ckMemory;
   if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='LOCALMACHINE'    Then Form7.spdNFe.TipoCertificado := spdNFeType.ckLocalMachine;
+  {
+  // F5800 Sugestão da Tecnospeed para quando não existir o tipo de certificado configurado no NFE.ini seja considera '' e não 'File'
+  // Executável com essa alteração será testado no cliente
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='FILE'            Then Form7.spdNFe.TipoCertificado := spdNFeType.ckFile;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='SMARTCARD'       Then Form7.spdNFe.TipoCertificado := spdNFeType.ckSmartCard;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='ACTIVEDIRECTORY' Then Form7.spdNFe.TipoCertificado := spdNFeType.ckActiveDiretory;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='MEMORY'          Then Form7.spdNFe.TipoCertificado := spdNFeType.ckMemory;
+  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='LOCALMACHINE'    Then Form7.spdNFe.TipoCertificado := spdNFeType.ckLocalMachine;
+  {Sandro Silva 2024-01-03 fim}
 
   Form7.sFuso                := Mais1ini.ReadString('NFE' , 'FUSO','');
   if Form7.sFuso = '' then
@@ -5051,7 +5068,12 @@ begin
   end else
   begin
     Form7.Panel_0.Visible := True;
-    Form7.Width  := Form1.Width -6;
+    {Dailon Parisotto (f-7757) 2023-01-03 Inicio}
+    Form7.Width  := Form1.Width;
+    {$IFDEF VER150}
+    Form7.Width  := Form7.Width - 6;
+    {$ENDIF}
+    {Dailon Parisotto (f-7757) 2023-01-03 Fim}
     Form7.Panel4.Visible  := True;
     Form1.Panel_3.Visible := True;
   end;
@@ -5381,6 +5403,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
       Abort;
     end;
   end;
@@ -8360,29 +8383,6 @@ begin
     if sModulo = 'VENDA' then
     begin
 
-      {Sandro Silva 2023-05-31 inicio
-      Form7.ibDataSet15.Append;
-
-      if Form7.sRPS = 'S' then
-      begin
-        Form48.Show;
-      end
-      else
-      begin
-        if ParamCount > 0 then
-        begin
-          if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
-          begin
-            Form12.ShowModal;
-          end
-          else
-            Form12.Show;
-        end
-        else
-          Form12.Show;
-      end;
-      }
-
       if Form7.sRPS = 'S' then
       begin
 
@@ -8416,7 +8416,6 @@ begin
             Form12.Show;
         end;
       end;
-      {Sandro Silva 2023-05-31 fim}
     end  else
     begin
       if sModulo = 'COMPRA' then
@@ -8456,8 +8455,12 @@ begin
           Abort;
         end else
         begin
+          Form10.bDesvincularCampos := False; // Sandro Silva 2024-01-04
           Form10.Show;
+//          Form7.TabelaAberta.Cancel; //2024-01-03
           Form10.Image201Click(Sender);
+//          Form7.TabelaAberta.Append; //2024-01-03
+          Form10.bDesvincularCampos := True; // Sandro Silva 2024-01-04
         end;
       end;
     end;
@@ -10956,6 +10959,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
   end;
 
@@ -15626,6 +15630,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
 
     Writeln(F,'<html><head><title>'+AllTrim(Form7.Acertodecontasde1.Caption)+'</title></head>');
@@ -16104,6 +16109,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
     
     Writeln(F,'<html><head><title>'+AllTrim(Form7.Acertodecontasde2.Caption)+'</title></head>');
@@ -16586,7 +16592,8 @@ begin
   if Form7.ibDataSet9NOME.AsString = Form7.ibDataset2NOME.AsString then
   begin
     try
-      Form7.ibDataSet9.Delete;
+      if Form7.ibDataSet9.RecordCount > 0  then // Se ambos estiverem vazios, Form7.ibDataSet9NOME.AsString e Form7.ibDataset2NOME.AsString ocorre erro
+        Form7.ibDataSet9.Delete;
     except end;
   end;
 end;
@@ -17288,6 +17295,16 @@ begin
   //
 end;
 
+procedure TForm7.DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  //Mauricio Parizotto 2023-01-03
+  if Column.Field.DataType = ftMemo then
+  begin
+    DBGridExibeMemo(DBGrid2, Column, Rect, State, Column.FieldName);
+  end;
+end;
+
 procedure TForm7.DBGrid2DrawDataCell(Sender: TObject; const Rect: TRect;
   Field: TField; State: TGridDrawState);
 var
@@ -17334,6 +17351,16 @@ begin
     Form7.Panel9.Caption  := Format('%14.2n',[Form7.ibDataSet24MERCADORIA.AsFloat]);
   end;
   //
+end;
+
+procedure TForm7.DBGrid3DrawColumnCell(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  //Mauricio Parizotto 2023-01-03
+  if Column.Field.DataType = ftMemo then
+  begin
+    DBGridExibeMemo(DBGrid3, Column, Rect, State, Column.FieldName);
+  end;
 end;
 
 procedure TForm7.DBGrid3DrawDataCell(Sender: TObject; const Rect: TRect;
@@ -19262,6 +19289,16 @@ begin
   AgendaCommit(True);
 end;
 
+procedure TForm7.DBGrid4DrawColumnCell(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  //Mauricio Parizotto 2023-01-03
+  if Column.Field.DataType = ftMemo then
+  begin
+    DBGridExibeMemo(DBGrid4, Column, Rect, State, Column.FieldName);
+  end;
+end;
+
 procedure TForm7.DBGrid4DrawDataCell(Sender: TObject; const Rect: TRect;
   Field: TField; State: TGridDrawState);
 var
@@ -19547,39 +19584,31 @@ begin
     except end;
   end;
   ibDataSet23AfterPost(DataSet);
-  //
 end;
 
 procedure TForm7.ibDataSet23BeforePost(DataSet: TDataSet);
 var
   sRegistro14 : String;
 begin
-  //
   try
     if Alltrim(Form7.ibDataSet23QUANTIDADE.AsString) <> '' then
     begin
-      //
-      //      Form7.ibDataSet23BASE.AsString := '100';       // 23 Before post 2
-      //
       if Form7.ibDataSet23BASE.Value < 0.01 then
       begin
-        //
         if Form7.ibDataSet14.Active then
         begin
-          //
           if (Alltrim(Form7.ibDataSet23CFOP.AsString)<>Alltrim(Form7.ibDataSet14CFOP.AsString)) and (AllTrim(Form7.ibDataSet23CFOP.AsString) <> '') then
           begin
-            //
             sRegistro14 := Form7.ibDataSet14REGISTRO.AsString;
             Form7.ibDataSet14.DisableControls;
             Form7.ibDataSet14.Locate('CFOP',Alltrim(Form7.ibDataSet23CFOP.AsString),[]);
-            //
+
             if Alltrim(Form7.ibDataSet14CFOP.AsString) = Alltrim(Form7.ibDataSet23CFOP.AsString) then
             begin
               Form7.ibDataSet23.Edit;
               Form7.ibDataSet23BASE.Value := Form7.ibDataSet14BASE.AsFloat;       // 23 Before post 2
             end;
-            //
+
             Form7.ibDataSet14.Locate('REGISTRO',sRegistro14,[]);
             Form7.ibDataSet14.EnableControls;
           end;
@@ -24296,6 +24325,11 @@ begin
   DrawCell_Caixa(Sender, Rect, DataCol, Column,State);
 
   DrawCell_Bancos(Sender, Rect, DataCol, Column,State);
+  //Mauricio Parizotto 2023-01-03
+  if Column.Field.DataType = ftMemo then
+  begin
+    DBGridExibeMemo(DBGrid1, Column, Rect, State, Column.FieldName);
+  end;
 end;
 
 procedure TForm7.GerarNFedeentrada1Click(Sender: TObject);
@@ -26484,6 +26518,7 @@ end;
 procedure TForm7.Panel1Click(Sender: TObject);
 begin
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+  FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
 end;
 
 procedure TForm7.ImprimiraNFemformulrionumerado1Click(Sender: TObject);

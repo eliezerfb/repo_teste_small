@@ -12,7 +12,6 @@ object Form17: TForm17
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -549,7 +548,6 @@ object Form17: TForm17
       Font.Height = -11
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
-      ItemHeight = 16
       ParentFont = False
       TabOrder = 11
       OnChange = ComboBox7Change
@@ -567,7 +565,6 @@ object Form17: TForm17
       Font.Height = -11
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
-      ItemHeight = 16
       ParentFont = False
       TabOrder = 10
       OnChange = ComboBox1Change
@@ -735,6 +732,8 @@ object Form17: TForm17
       '  UF = :UF'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 632
     Top = 139
@@ -865,6 +864,8 @@ object Form17: TForm17
       '  ENCRYPTHASH = :ENCRYPTHASH'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 634
     Top = 197
     object ibdEmitenteCGC: TIBStringField

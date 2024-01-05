@@ -7,12 +7,14 @@ uses
 
   Windows, SysUtils, Messages, Classes, Controls, Graphics,
   Menus, StdCtrls, Buttons, ExtCtrls, Forms, Dialogs, shellapi,
-  mais3, unit2,unit3, IniFiles, Unit4, Unit10, SmallFunc, Registry, HtmlHelp,
+  mais3, unit2,unit3, IniFiles, Unit4, Unit10, Registry, HtmlHelp,
   DBGrids, Grids, OleCtrls, SHDocVw, IBCustomDataSet, IBDatabase, Winsock,
   IBQuery, jpeg, Gauges, SpdNFeDataSets, IBServices, FileCtrl, xmldom, XMLIntf,
   {$IFDEF VER150}
   oxmldom,
+  SmallFunc,
   {$ELSE}
+  smallfunc_xe,
   {$ENDIF}
   XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, MD5, DB, DateUtils,
   WinTypes, WinProcs, uFuncoesBancoDados,
@@ -1507,6 +1509,7 @@ begin
             Winexec('TASKKILL /F /IM "Small Commerce.exe"', SW_HIDE );
             Winexec('TASKKILL /F /IM small22.exe', SW_HIDE );
             Winexec('TASKKILL /F /IM nfe.exe', SW_HIDE );
+            FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
           end;
         end;
       end;
@@ -2167,10 +2170,18 @@ begin
   Panel4.Height  := Screen.Height;
 
   Form7.Top    := Form1.Panel_3.Top + 30;
+  {Dailon Parisotto (f-7757) 2023-01-03 Inicio}
+  {$IFDEF VER150}
   Form7.Left   := 0;
   Form7.Width  := Form1.Width -6;
   Form7.Height := Form1.Height - Form7.Top -6;
-  
+  {$ELSE}
+  Form7.Left   := Form1.Left;
+  Form7.Width  := Form1.Width;
+  Form7.Height := (Form1.Height - 9) - Form7.Top;
+  {$ENDIF}
+  {Dailon Parisotto (f-7757) 2023-01-03 Fim}
+
   iTop := 6;
   iFix := 0;
   iFixL := 70;
@@ -3845,6 +3856,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
   //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
@@ -4394,6 +4406,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
 
   {Mauricio Parizotto 2023-05-31 Inicio}
@@ -4987,6 +5000,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
 
     Mensagem22('Aguarde atualizando promoção.');
@@ -5118,6 +5132,7 @@ begin
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
         Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
         Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
       end;
     end;
   except
@@ -5138,6 +5153,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04    
   end;
 
   EnviarXMLContabilidadeAut;
@@ -5392,6 +5408,7 @@ begin
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
         Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
         Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04        
       end else
       begin
         //ShowMessage('Este número de licença não foi liberado para este serial.'); Mauricio Parizotto 2023-10-25}
@@ -5415,6 +5432,7 @@ begin
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
         Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
         Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04        
       end else
       begin
         if alltrim(sSerial) <> '' then
@@ -7864,6 +7882,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04      
     end;
 
     try
@@ -7993,6 +8012,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04      
     end;
 
     {$IFDEF VER150}
@@ -8267,6 +8287,7 @@ begin
         begin
           // Form1.DestroyWindowHandle;
           Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+          FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04          
         end else
         begin
           { Quando a senha não é válida }
@@ -8297,6 +8318,7 @@ begin
           Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
           Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
           Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+          FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04          
         end;
       end;
 
@@ -8322,6 +8344,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04      
     end;
 
 
@@ -10695,6 +10718,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
 end;
 
@@ -11922,6 +11946,7 @@ begin
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
   Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
   Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+  FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
 end;
 
 procedure TForm1.Complexo1Click(Sender: TObject);
@@ -11938,6 +11963,7 @@ begin
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
   Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
   Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+  FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
 end;
 
 procedure TForm1.ConverterosdadosparaSmallSaaS1Click(Sender: TObject);
@@ -12069,6 +12095,7 @@ begin
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
         Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
         Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
       end else
       begin
         //ShowMessage('Não foi possível encontrar o programa de conversão. Atualize o sistema.'); Mauricio Parizotto 2023-10-25
