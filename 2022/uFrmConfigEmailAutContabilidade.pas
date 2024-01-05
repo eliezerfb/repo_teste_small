@@ -41,7 +41,7 @@ var
 implementation
 
 uses uSmallConsts, uSmallResourceString, uExportaXML, DateUtils,
-  uNFeSections;
+  uNFeSections, uTestaEmail;
 
 {$R *.dfm}
 
@@ -106,7 +106,9 @@ begin
 
   if Trim(edtEmailContab.Text) <> EmptyStr then
   begin
-    if not ValidaEmail(edtEmailContab.Text) then
+    if (not TTestaEmail.New
+                       .setEmail(edtEmailContab.Text)
+                       .Testar) then
     begin
       Application.MessageBox(PChar(_cEmailInvalido), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
       edtEmailContab.SetFocus;

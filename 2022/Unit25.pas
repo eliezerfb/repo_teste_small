@@ -73,7 +73,7 @@ var
 implementation
 
 uses Unit7, Unit26, Mais, Unit22, Unit14, Unit40, uFuncoesBancoDados,
-  uFuncoesRetaguarda, uDialogs;
+  uFuncoesRetaguarda, uDialogs, uTestaEmail;
 
 {$R *.DFM}
 
@@ -1188,7 +1188,9 @@ var
 begin
   sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
 
-  if validaEmail(sEmail) then
+  if TTestaEmail.New
+                .setEmail(sEmail)
+                .Testar then
   begin
     if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
     begin
@@ -1320,7 +1322,9 @@ var
 begin
   sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
 
-  if validaEmail(sEmail) then
+  if TTestaEmail.New
+                .setEmail(sEmail)
+                .Testar then
   begin
     // Apaga o PDF anterior
     sArquivo := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9)+'_.pdf';
@@ -1502,7 +1506,9 @@ begin
   //
   sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
   //
-  if validaEmail(sEmail) then
+  if TTestaEmail.New
+                .setEmail(sEmail)
+                .Testar then
   begin
     btnEnviaEmail.Visible := True; // Sandro Silva 2022-12-23 Button7.Visible := True;
   end else

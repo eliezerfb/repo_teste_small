@@ -22,7 +22,8 @@ type
 implementation
 
 uses
-  uRetornaEmailsPessoa;
+  uRetornaEmailsPessoa
+  , uTestaEmail;
 
 { TRetornaCaptionEmailPopUpDocs }
 
@@ -50,9 +51,13 @@ begin
                                     .setCodigoCadastro(FcCodigoTranspor)
                                     .setTabela('TRANSPOR')
                                     .Retornar;
-  if ValidaEmail(cEmailCli) then
+  if TTestaEmail.New
+                .setEmail(cEmailCli)
+                .Testar  then
     Result := '<' + cEmailCli + '>';
-  if ValidaEmail(cEmailFor) then
+  if TTestaEmail.New
+                .setEmail(cEmailFor)
+                .Testar then
   begin
     if Result <> EmptyStr then
       Result := Result + ';';

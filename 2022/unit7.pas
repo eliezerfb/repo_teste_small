@@ -32,6 +32,7 @@ uses
   , uFuncoesRetaguarda
   , uSmallConsts
   , uArquivosDAT, System.Contnrs // Sandro Silva 2023-10-02
+  , uTestaEmail
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -2369,6 +2370,7 @@ type
     procedure SalvaXMLNFSaida(AcCaminho: String = '');
     function TestaNFSaidaFaturada: Boolean;
     procedure FechaModulos;
+    function TestarEmail(AcEmail: String): Boolean;
   public
     // Public declarations
 
@@ -8918,7 +8920,7 @@ begin
     //*)
     if Pos('EMAIL',DBGrid1.SelectedField.Name) <> 0 then
     begin
-      if (ValidaEmail(DBGrid1.SelectedField.AsString)) then
+      if TestarEmail(DBGrid1.SelectedField.AsString) then
         ShellExecute( 0, 'Open',pChar('mailto:'+AllTrim(DBGrid1.SelectedField.AsString)),'New', '', SW_SHOWMAXIMIZED);
     end else
     begin
@@ -14053,9 +14055,16 @@ begin
   except end;
 end;
 
+function TForm7.TestarEmail(AcEmail: String): Boolean;
+begin
+  Result := TTestaEmail.New
+                       .setEmail(AcEmail)
+                       .Testar;
+end;
+
 procedure TForm7.Emailpara1Click(Sender: TObject);
 begin
-  if (ibDataSet2ATIVO.AsString<>'1') and (ValidaEmail(ibDataSet2EMAIL.AsString)) then
+  if (ibDataSet2ATIVO.AsString<>'1') and (TestarEmail(ibDataSet2EMAIL.AsString)) then
      ShellExecute( 0, 'Open',pChar('mailto:'+AllTrim(ibDataSet2EMAIL.AsString)),'New', '', SW_SHOWMAXIMIZED);
 end;
 
@@ -14362,7 +14371,7 @@ begin
             begin
               if ibDataSet2MOSTRAR.AsString='1'  then DBGrid1.Canvas.Font.Color := clRed else DBGrid1.Canvas.Font.Color := clBlack;
 
-              if (Field.FieldName = 'EMAIL') and (ValidaEmail(Form7.ibDataSet2EMAIL.AsString)) then
+              if (Field.FieldName = 'EMAIL') and (TestarEmail(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 DBGrid1.Canvas.Font.Color := clBlue;
                 DBGrid1.Canvas.Font.Style := [fsUnderline];
@@ -14407,7 +14416,7 @@ begin
           begin
             if ibDataSet2ATIVO.AsString='1'  then DBGrid1.Canvas.Font.Color := clSilver else
             begin
-              if (Field.Name = 'ibDataSet29EMAIL') and (ValidaEmail(Form7.ibDataSet2EMAIL.AsString)) then
+              if (Field.Name = 'ibDataSet29EMAIL') and (TestarEmail(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 DBGrid1.Canvas.Font.Color := clBlue;
                 DBGrid1.Canvas.Font.Style := [fsUnderline];
@@ -14419,7 +14428,7 @@ begin
           begin
             if ibDataSet2ATIVO.AsString='1' then DBGrid1.Canvas.Font.Color := clSilver else
             begin
-              if (Field.Name = 'ibDataSet3EMAIL') and (ValidaEmail(Form7.ibDataSet2EMAIL.AsString)) then
+              if (Field.Name = 'ibDataSet3EMAIL') and (TestarEmail(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 DBGrid1.Canvas.Font.Color := clBlue;
                 DBGrid1.Canvas.Font.Style := [fsUnderline];
@@ -14429,7 +14438,7 @@ begin
 
           if sModulo = 'TRANSPORT' then
           begin
-            if (Field.Name = 'ibDataSet18EMAIL') and (ValidaEmail(Form7.ibDataSet18EMAIL.AsString)) then
+            if (Field.Name = 'ibDataSet18EMAIL') and (TestarEmail(Form7.ibDataSet18EMAIL.AsString)) then
             begin
               DBGrid1.Canvas.Font.Color := clBlue;
               DBGrid1.Canvas.Font.Style := [fsUnderline];
@@ -22118,7 +22127,7 @@ begin
           while (not Form7.ibDataSet2.Eof) and (sRegistro <> Form7.ibDataSet2.FieldByName('REGISTRO').AsString) do
           begin
             //
-            if VAlidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+            if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
             begin
               I := I + 1;
             end;
@@ -22130,7 +22139,7 @@ begin
           if sRegistro = Form7.ibDataSet2.FieldByName('REGISTRO').AsString then
           begin
             //
-            if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+            if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
             begin
               I := I + 1;
             end;
@@ -22152,7 +22161,7 @@ begin
       while not Form7.ibDataSet2.Eof do
       begin
         //
-        if VAlidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+        if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
         begin
           //
           if I <> 0 then
@@ -22301,7 +22310,7 @@ begin
 
               if Form7.ibDataSet7ATIVO.AsFloat <> 1 then
               begin
-                if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+                if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
                 begin
                   I := I + 1;
                 end;
@@ -22314,7 +22323,7 @@ begin
             begin
               if Form7.ibDataSet7ATIVO.AsFloat <> 1 then
               begin
-                if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+                if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
                 begin
                   I := I + 1;
                 end;
@@ -22339,7 +22348,7 @@ begin
               Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
               Form7.ibDataSet2.Open;
 
-              if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+              if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 sArquivo := '';
 
@@ -25462,7 +25471,7 @@ begin
           sEmail1  := '';
         end;
 
-        if (validaEmail(sEmail)) or (validaEmail(sEmail1)) then
+        if (TestarEmail(sEmail)) or (TestarEmail(sEmail1)) then
         begin
           cNomePDF := 'danfe_NF_' + Form7.ibDataSet15NUMERONF.AsString + '.pdf';
           try
@@ -25528,11 +25537,11 @@ begin
                                            .setPropaganda(Form1.sPropaganda)
                                            .RetornarTexto;
 
-            if (validaEmail(sEmail)) then
+            if (TestarEmail(sEmail)) then
             begin
               Unit7.EnviarEMail('',sEmail,'','Sua Nota Fiscal Eletrônica',pchar(cMensagem),pChar(cAnexo),False);
             end;
-            if (validaEmail(sEmail1)) then
+            if (TestarEmail(sEmail1)) then
             begin
               Unit7.EnviarEMail('',sEmail1,'','Sua Nota Fiscal Eletrônica',pchar(cMensagem),pChar(cAnexo),False);
             end;
@@ -29241,7 +29250,7 @@ begin
               Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
               Form7.ibDataSet2.Open;
 
-              if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+              if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 I := I + 1;
               end;
@@ -29251,7 +29260,7 @@ begin
 
             if sRegistro = Form7.ibDataSet7.FieldByName('REGISTRO').AsString then
             begin
-              if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+              if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 I := I + 1;
               end;
@@ -29280,7 +29289,7 @@ begin
               Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
               Form7.ibDataSet2.Open;
 
-              if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+              if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 sArquivo := '';
                 sArquivoPDF := Form1.sAtual+'\boletos_' + LimpaNumero(Form7.IBDataSet2CGC.AsString) + '.pdf'; // Sandro Silva 2022-12-22
@@ -31989,7 +31998,7 @@ var
   F : TextFile;
   sPDF : String;
 begin
-  if (validaEmail(Form7.ibDAtaSet2eMail.Asstring)) then
+  if (TestarEmail(Form7.ibDAtaSet2eMail.Asstring)) then
   begin
     BuscaNumeroNFSe(True);
     
@@ -32763,7 +32772,7 @@ begin
               Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
               Form7.ibDataSet2.Open;
               //
-              if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+              if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 I := I + 1;
               end;
@@ -32773,7 +32782,7 @@ begin
             //
             if sRegistro = Form7.ibDataSet7.FieldByName('REGISTRO').AsString then
             begin
-              if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+              if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 I := I + 1;
               end;
@@ -32803,7 +32812,7 @@ begin
               Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');
               Form7.ibDataSet2.Open;
               //
-              if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
+              if TestarEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
               begin
                 //
                 sArquivo := '';
@@ -33262,7 +33271,7 @@ begin
 
   cEmail := Form7.ibDataSet2EMAIL.AsString;
 
-  if (cEmail = EmptyStr) or (not validaEmail(cEmail)) then
+  if (cEmail = EmptyStr) or (not TestarEmail(cEmail)) then
     Exit;
 
   cCaminhoXML := Form1.sAtual + '\XmlDestinatario\';
@@ -33962,7 +33971,7 @@ begin
   cEmail := Trim(Copy(cEmail, Pos('<', cEmail) + 1,  length(cEmail)));
   cEmail := Copy(cEmail,1, length(cEmail)-1);
 
-  if not ValidaEmail(cEmail) then
+  if not TestarEmail(cEmail) then
     Exit;
 
   oArqDAT := TArquivosDAT.Create(Usuario);

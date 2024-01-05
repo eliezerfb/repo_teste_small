@@ -8,11 +8,12 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
   Font.Charset = ANSI_CHARSET
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
-  OldCreateOrder = True
   Position = poOwnerFormCenter
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  ExplicitWidth = 526
+  ExplicitHeight = 287
   PixelsPerInch = 96
   TextHeight = 13
   object Label4: TLabel

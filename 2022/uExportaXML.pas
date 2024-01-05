@@ -64,7 +64,8 @@ uses
   , DateUtils
   , uDialogs
   , uFuncoesRetaguarda
-  , uGeraRelatorioTotalizadorGeralVenda;
+  , uGeraRelatorioTotalizadorGeralVenda
+  , uTestaEmail;
 
 {$R *.dfm}
 
@@ -438,7 +439,10 @@ begin
     Exit;
   end;
 
-  if not ValidaEmail(edtEmailContab.Text) then
+
+  if not TTestaEmail.New
+                    .setEmail(edtEmailContab.Text)
+                    .Testar then
   begin
     //Application.MessageBox(Pchar(_cEmailInvalido), Pchar(_cTituloMsg), MB_OK + MB_ICONINFORMATION);
     MensagemSistema(_cEmailInvalido,msgAtencao);
