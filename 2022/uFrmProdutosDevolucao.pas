@@ -6,13 +6,6 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, uFrmPadrao, StdCtrls, Grids, DBGrids, Buttons, DB,
   IBCustomDataSet, DBClient, Provider, ExtCtrls, pngimage, smallfunc_xe,  Vcl.Mask, Vcl.DBCtrls;
-<<<<<<< .mine
-  IBCustomDataSet, DBClient, Provider, ExtCtrls, pngimage, SmallFunc, Vcl.Mask,
-  Vcl.DBCtrls;
-=======
-  IBCustomDataSet, DBClient, Provider, ExtCtrls, pngimage, smallfunc_xe;
-
->>>>>>> .theirs
 
 type
   TFrmProdutosDevolucao = class(TFrmPadrao)

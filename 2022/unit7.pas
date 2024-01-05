@@ -7,11 +7,6 @@ uses
   Forms, Dialogs, Grids, DBGrids, DB, ExtCtrls, Menus, Unit9, IniFiles,
   StdCtrls, Unit10, Unit11, Unit14, Unit16, Mask, DBCtrls, smallfunc_xe,
   SMALL_DBEdit, shellapi, Printers, ToolWin, ComCtrls, clipbrd, HtmlHelp, jpeg, MAPI, Variants,
-<<<<<<< .mine
-
-=======
-  , jpeg, MAPI, Variants,
->>>>>>> .theirs
   IBDatabase, IBCustomDataSet, IBTable, IBQuery, IBDatabaseInfo, IBServices,
   DBClient, LbAsym, LbRSA, LbCipher, LbClass, {MD5,} xmldom, XMLIntf,
   msxmldom, XMLDoc,
