@@ -17473,7 +17473,8 @@ begin
     ibDataSet1.Append;
     ibDataSet1DATA.AsDateTime    := ibDataSet8PAGAMENTO.AsDateTime + Time;
     ibDataSet1SAIDA.AsFloat      := ibDataSet8VALOR_PAGO.AsFloat;
-    ibDataSet1HISTORICO.AsString := 'Pag. doc. '+ibDataSet8DOCUMENTO.AsString+'-'+ibDataSet8NOME.AsString;
+    //ibDataSet1HISTORICO.AsString := 'Pag. doc. '+ibDataSet8DOCUMENTO.AsString+'-'+ibDataSet8NOME.AsString;
+    ibDataSet1HISTORICO.AsString := Copy('Pag. doc. '+ibDataSet8DOCUMENTO.AsString+'-'+ibDataSet8NOME.AsString,1,45);
     ibDataSet1NOME.AsString      := ibDataSet8CONTA.AsString;     // contas bancárias
     ibDataSet1.Post;
   end;
@@ -17606,11 +17607,7 @@ begin
                             ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
     if I = IDYES then
     begin
-
-
-      //
       // CONTAS A PAGAR
-      //
       Form7.sModulo := 'AUTOMATICO';
       //
       Form7.ibDataSet8.First;
@@ -17625,30 +17622,26 @@ begin
         end;
         Form7.ibDataSet8.Next;
         //
-        if ((Form7.ibDataSet8.Eof) and ((Form7.ibDataSet8VALOR_PAGO.AsFloat = 0) and (Form7.ibDataSet8NOME.AsString = sNome))) then Form7.ibDataSet8.First;
-        //
+        if ((Form7.ibDataSet8.Eof) and ((Form7.ibDataSet8VALOR_PAGO.AsFloat = 0) and (Form7.ibDataSet8NOME.AsString = sNome))) then
+          Form7.ibDataSet8.First;
       end;
       Form7.sModulo := 'PAGAR';
-      //
     end;
-  except end;
-  //
+  except
+  end;
+
   Form7.ibDataSet8.EnableControls;
-  //
 end;
 
 procedure TForm7.MenuItem71Click(Sender: TObject);
 begin
-  //
   if sModulo = 'PAGAR'  then
   begin
     Acertodecontasde1.Visible := False;
-    //
+
     Acertodecontasde2.Visible := True;
     Acertodecontasde2.Caption := 'Pagar contas de: '+Form7.ibDataSet8NOME.AsString;
-    //
   end;
-  //
 end;
 
 procedure TForm7.odas1Click(Sender: TObject);
