@@ -2324,7 +2324,7 @@ type
 
 
   private
-    FbDuplicandoProd: Boolean; 
+    FbDuplicandoProd: Boolean;
     FbImportandoXML: Boolean;
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
@@ -2371,6 +2371,7 @@ type
     procedure EscolheOclifor(Sender: TObject);
     procedure FormShowModulos(Mais1Ini : tIniFile; var sSerieNFSelecionada : string);
     function SomenteLeitura: Boolean;
+    procedure MarcaColunaOrderBy;
   public
     // Public declarations
 
@@ -11045,6 +11046,8 @@ begin
   Form7.Panel7.ShowHint := True;
 
   Screen.Cursor := crDefault;
+
+  MarcaColunaOrderBy;
 end;
 
 procedure TForm7.DefineLayoutFiltro;
@@ -24276,14 +24279,6 @@ end;
 procedure TForm7.DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 begin
-  if TStringGrid(DBGrid1).Row = 1 then
-  begin
-    if Pos(Column.Field.FieldName,sOrderBy) <> 0 then
-      Column.Title.Font.Style := [fsBold]
-    else
-      Column.Title.Font.Style := [];
-  end;
-
   //Troca Cor Celula Selecionada
   with (Sender as TDBGrid).Canvas do
   begin
@@ -24296,6 +24291,12 @@ begin
     end;
 
     (Sender as TDBGrid).DefaultDrawColumnCell(Rect, DataCol, Column, State);
+  end;
+
+  //Mauricio Parizotto 2023-01-03
+  if Column.Field.DataType = ftMemo then
+  begin
+    DBGridExibeMemo(DBGrid1, Column, Rect, State, Column.FieldName);
   end;
 
   DrawCell_Receber(Sender, Rect, DataCol, Column,State);
@@ -24315,11 +24316,7 @@ begin
   DrawCell_Caixa(Sender, Rect, DataCol, Column,State);
 
   DrawCell_Bancos(Sender, Rect, DataCol, Column,State);
-  //Mauricio Parizotto 2023-01-03
-  if Column.Field.DataType = ftMemo then
-  begin
-    DBGridExibeMemo(DBGrid1, Column, Rect, State, Column.FieldName);
-  end;
+
 end;
 
 procedure TForm7.GerarNFedeentrada1Click(Sender: TObject);
@@ -34450,6 +34447,26 @@ begin
     end;
 
     Mais1Ini.Free;
+  except
+  end;
+end;
+
+
+procedure TForm7.MarcaColunaOrderBy;
+var
+  i : integer;
+begin
+  try
+    if DBGrid1.Columns.Count = 1 then
+      Exit;
+
+    for I := 0 to DBGrid1.Columns.Count -1 do
+    begin
+      if Pos(DBGrid1.Columns[i].Field.FieldName,sOrderBy) <> 0 then
+        DBGrid1.Columns[i].Title.Font.Style := [fsBold]
+      else
+        DBGrid1.Columns[i].Title.Font.Style := [];
+    end;
   except
   end;
 end;
