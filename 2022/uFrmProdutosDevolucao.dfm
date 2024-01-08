@@ -323,7 +323,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       FieldName = 'DESCRICAO'
       Size = 45
     end
-    object cdsProdutosNotaCODIGO: TIBStringField
+    object cdsProdutosNotaCODIGO: TWideStringField
       FieldName = 'CODIGO'
       Origin = 'ITENS002.CODIGO'
       Size = 5
@@ -423,7 +423,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       Origin = 'ITENS002.CST_IPI'
       Size = 2
     end
-    object cdsProdutosNotaCST_ICMS: TIBStringField
+    object cdsProdutosNotaCST_ICMS: TWideStringField
       FieldName = 'CST_ICMS'
       Origin = 'ITENS002.CST_ICMS'
       Size = 3
