@@ -16,7 +16,7 @@ type
     ibdProdutosNota: TIBDataSet;
     dspProdutosNota: TDataSetProvider;
     cdsProdutosNota: TClientDataSet;
-    ibdProdutosNotaPRODUTO: TIBStringField;
+    ibdProdutosNotaPRODUTO: TWideStringField;
     ibdProdutosNotaPRECO_CUSTO: TFloatField;
     ibdProdutosNotaPRECO_VENDA: TFloatField;
     ibdProdutosNotaPERC_LUC: TFloatField;
@@ -27,8 +27,8 @@ type
     cdsProdutosNotaPRECO_NOVO: TFloatField;
     edtPercGeral: TEdit;
     lblTitulo: TLabel;
-    ibdProdutosNotaREGISTRO: TIBStringField;
-    cdsProdutosNotaREGISTRO: TIBStringField;
+    ibdProdutosNotaREGISTRO: TWideStringField;
+    cdsProdutosNotaREGISTRO: TWideStringField;
     cdsProdutosNotaPRODUTO: TWideStringField;
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
