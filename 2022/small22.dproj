@@ -285,6 +285,201 @@
         <DCCReference Include="units\uRetornaCaptionEmailPopUpDocs.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\interfaces\uITestaEmail.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uTestaEmail.pas"/>
+        <DCCReference Include="interfaces\uIItensInativosImpXMLEntrada.pas"/>
+        <DCCReference Include="units\uItensInativosImpXMLEntrada.pas"/>
+        <DCCReference Include="frames\uframePesquisaPadrao.pas">
+            <Form>framePesquisaPadrao</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="frames\uframePesquisaProduto.pas">
+            <Form>framePesquisaProduto</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="frames\uframeCampo.pas">
+            <Form>fFrameCampo</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="interfaces\uITestaProdutoExiste.pas"/>
+        <DCCReference Include="uFrmTermosUso.pas">
+            <Form>FrmTermosUso</Form>
+        </DCCReference>
+        <DCCReference Include="units\uTestaProdutoExiste.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uCriptografia.pas"/>
+        <DCCReference Include="interfaces\uITextoEmail.pas"/>
+        <DCCReference Include="units\uTextoEmailNFe.pas"/>
+        <DCCReference Include="interfaces\uITextoEmailFactory.pas"/>
+        <DCCReference Include="units\uTextoEmailFactory.pas"/>
+        <DCCReference Include="units\uTextoEmailCCe.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uSmallResourceString.pas"/>
+        <DCCReference Include="interfaces\uITestaClienteDevendo.pas"/>
+        <DCCReference Include="units\uTestaClienteDevendo.pas"/>
+        <DCCReference Include="interfaces\uIRetornaLimiteDisponivel.pas"/>
+        <DCCReference Include="units\uRetornaLimiteDisponivel.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uValidaRecursosDelphi7.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uRecursosSistema.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uTypesRecursos.pas"/>
+        <DCCReference Include="uConectaBancoCommerce.pas"/>
+        <DCCReference Include="uFuncoesBancoDados.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uSmallConsts.pas"/>
+        <DCCReference Include="units\uRelatorioVendasClliente.pas">
+            <Form>frmRelVendasPorCliente</Form>
+        </DCCReference>
+        <DCCReference Include="units\uChamaRelVendasCliente.pas"/>
+        <DCCReference Include="interfaces\uIChamaRelatorioCommerceFactory.pas"/>
+        <DCCReference Include="units\uChamaRelatorioCommerceFactory.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uSmallEnumerados.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uArquivosDAT.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uArquivoDATINFPadrao.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uEstoqueDAT.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uFrenteINI.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uSectionDATPadrao.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uSmallComINF.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uUsuarioINF.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\interfaces\uIAssinaturaDigital.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uAssinaturaDigital.pas"/>
+        <DCCReference Include="interfaces\uIEstruturaRelVendasPorCliente.pas"/>
+        <DCCReference Include="units\uEstruturaRelVendasPorCliente.pas"/>
+        <DCCReference Include="units\uEstruturaRelVendasPorClienteNota.pas"/>
+        <DCCReference Include="interfaces\uIDadosVendasPorClienteFactory.pas"/>
+        <DCCReference Include="units\uEstruturaRelVendasPorClienteCupom.pas"/>
+        <DCCReference Include="interfaces\uIRetornaOperacoesRelatorio.pas"/>
+        <DCCReference Include="units\uRetornaOperacoesRelatorio.pas"/>
+        <DCCReference Include="units\uFiltrosRodapeRelatorioVendasClienteNota.pas"/>
+        <DCCReference Include="units\uFiltrosRodapeRelatorioVendasClienteCupom.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uNFeINI.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uNFSeINI.pas"/>
+        <DCCReference Include="units\uRelatorioCatalogoProdudos.pas">
+            <Form>frmRelatorioCatalogoProduto</Form>
+        </DCCReference>
+        <DCCReference Include="units\uEstruturaRelCatalogoProdutos.pas"/>
+        <DCCReference Include="units\uFiltrosRodapeRelatorioCatalogoProdutos.pas"/>
+        <DCCReference Include="units\uLayoutHTMLRelatorio.pas"/>
+        <DCCReference Include="interfaces\uIChamaRelatorioPadrao.pas"/>
+        <DCCReference Include="interfaces\uIEstruturaTipoRelatorioPadrao.pas"/>
+        <DCCReference Include="units\uDadosEmitente.pas"/>
+        <DCCReference Include="units\uDadosRelatorioPadraoDAO.pas"/>
+        <DCCReference Include="units\uEstruturaTipoRelatorioPadrao.pas"/>
+        <DCCReference Include="units\uFormRelatorioPadrao.pas">
+            <Form>frmRelatorioPadrao</Form>
+        </DCCReference>
+        <DCCReference Include="interfaces\uIEstruturaRelatorioPadrao.pas"/>
+        <DCCReference Include="interfaces\uIDadosImpressaoDAO.pas"/>
+        <DCCReference Include="interfaces\uIFiltrosRodapeRelatorio.pas"/>
+        <DCCReference Include="interfaces\uIDadosEmitente.pas"/>
+        <DCCReference Include="uParametroTributacao.pas"/>
+        <DCCReference Include="frames\uframePesquisaServico.pas">
+            <Form>framePesquisaServico</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="uAtualizaTributacaoPerfilTrib.pas"/>
+        <DCCReference Include="uFrmPadrao.pas">
+            <Form>FrmPadrao</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmFichaPadrao.pas">
+            <Form>FrmFichaPadrao</Form>
+        </DCCReference>
+        <DCCReference Include="uIconesSistema.pas"/>
+        <DCCReference Include="uFrmParametroTributacao.pas">
+            <Form>FrmParametroTributacao</Form>
+        </DCCReference>
+        <DCCReference Include="units\uVisualizaCadastro.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\interfaces\uIImpressaoOrcamento.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\interfaces\uIRetornaImpressaoOrcamento.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uImpressaoOrcamento.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uRetornaImpressaoOrcamento.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uConectaBancoSmall.pas"/>
+        <DCCReference Include="units\uTextoEmailOrcamento.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uConverteHtmlToPDF.pas"/>
+        <DCCReference Include="units\uSalvaXMLContabilFactory.pas"/>
+        <DCCReference Include="units\uSalvaXMLContabilNFeSaida.pas"/>
+        <DCCReference Include="units\uSalvaXMLContabilNFeEntrada.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uSalvaXMLContabilNFCeSAT.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\interfaces\uISalvaXMLDocsEletronicosContabil.pas"/>
+        <DCCReference Include="interfaces\uISalvaXMLContabilFactory.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\smallfunc_xe.pas"/>
+        <DCCReference Include="units\uChamaRelResumoVendas.pas"/>
+        <DCCReference Include="units\uRelatorioResumoVendas.pas">
+            <Form>frmRelResumoVendas</Form>
+        </DCCReference>
+        <DCCReference Include="units\uEstruturaRelResumoVendas.pas"/>
+        <DCCReference Include="units\uFiltrosRodapeRelatorioPadrao.pas"/>
+        <DCCReference Include="units\uEstruturaRelResumoVendasNaoList.pas"/>
+        <DCCReference Include="interfaces\uIDuplicaProduto.pas"/>
+        <DCCReference Include="units\uDuplicaProduto.pas"/>
+        <DCCReference Include="interfaces\uIDuplicaOrcamento.pas"/>
+        <DCCReference Include="units\uDuplicaOrcamento.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uFrenteSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uNFeSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uNFSeSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uSmallComSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uEstoqueSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uUsuarioSections.pas"/>
+        <DCCReference Include="uFrmProdutosDevolucao.pas">
+            <Form>FrmProdutosDevolucao</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmSmallImput.pas">
+            <Form>FrmSmallImput</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmGridPesquisaPadrao.pas">
+            <Form>FrmGridPesquisaPadrao</Form>
+        </DCCReference>
+        <DCCReference Include="units\uImportaOrcamento.pas"/>
+        <DCCReference Include="uFrmPesquisaOrcamento.pas">
+            <Form>FrmPesquisaOrcamento</Form>
+        </DCCReference>
+        <DCCReference Include="units\uGeraCNAB240.pas"/>
+        <DCCReference Include="units\uGeraCNAB400.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uDialogs.pas"/>
+        <DCCReference Include="units\uImportaOrdemServico.pas"/>
+        <DCCReference Include="uFrmPesquisaOrdemServico.pas">
+            <Form>FrmPesquisaOrdemServico</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmConfigEmailAutContabilidade.pas">
+            <Form>frmConfigEmailAutContab</Form>
+        </DCCReference>
+        <DCCReference Include="ufrmOrigemCombustivel.pas">
+            <Form>FrmOrigemCombustivel</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\unit_compartilhada\MSXML2_TLB.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\interfaces\uIRetornaSQLGerencialInventario.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uRetornaSQLGerencialInventario.pas"/>
+        <DCCReference Include="uFrmPrecificacaoProduto.pas">
+            <Form>FrmPrecificacaoProduto</Form>
+        </DCCReference>
+        <DCCReference Include="uParcelasReceber.pas"/>
+        <DCCReference Include="uRaterioDiferencaEntreParcelasReceber.pas"/>
+        <DCCReference Include="uFrmPerfilTributacao.pas">
+            <Form>FrmPerfilTributacao</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmNaturezaOperacao.pas">
+            <Form>FrmNaturezaOperacao</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\unit_compartilhada\uConfSisBD.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uOSSections.pas"/>
+        <DCCReference Include="uFrmSituacaoOS.pas">
+            <Form>FrmSituacaoOS</Form>
+        </DCCReference>
+        <DCCReference Include="units\uOrdemServico.pas"/>
+        <DCCReference Include="uFrmAnexosOS.pas">
+            <Form>FrmAnexosOS</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\unit_compartilhada\uOutrasSections.pas"/>
+        <DCCReference Include="units\uRelatorioTotalGeralVenda.pas">
+            <Form>frmRelTotalizadorGeralVenda</Form>
+        </DCCReference>
+        <DCCReference Include="interfaces\uIGeraRelatorioTotalizadorGeralVenda.pas"/>
+        <DCCReference Include="units\uGeraRelatorioTotalizadorGeralVenda.pas"/>
+        <DCCReference Include="units\uChamaRelTotalizadorVendasGeral.pas"/>
+        <DCCReference Include="units\uEstruturaRelTotalizadorGeralVenda.pas"/>
+        <DCCReference Include="units\uEstruturaRelVendasNotaFiscal.pas"/>
+        <DCCReference Include="units\uRelatorioVendasNotaFiscal.pas">
+            <Form>frmRelVendasNotaFiscal</Form>
+        </DCCReference>
+        <DCCReference Include="units\udmRelTotalizadorVendasGeral.pas">
+            <Form>dmRelTotalizadorVendasGeral</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="units\uDrawCellGridModulos.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
