@@ -209,13 +209,13 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     UniDirectional = False
     Left = 280
     Top = 144
-    object ibdProdutosNotaREGISTRO: TIBStringField
+    object ibdProdutosNotaREGISTRO: TWideStringField
       FieldName = 'REGISTRO'
       Origin = 'ITENS002.REGISTRO'
       Required = True
       Size = 10
     end
-    object ibdProdutosNotaPRODUTO: TIBStringField
+    object ibdProdutosNotaPRODUTO: TWideStringField
       FieldName = 'PRODUTO'
       Origin = 'ITENS002.DESCRICAO'
       Size = 45
@@ -247,7 +247,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     BeforeDelete = cdsProdutosNotaBeforeDelete
     Left = 216
     Top = 144
-    object cdsProdutosNotaREGISTRO: TIBStringField
+    object cdsProdutosNotaREGISTRO: TWideStringField
       FieldName = 'REGISTRO'
       Required = True
       Size = 10
