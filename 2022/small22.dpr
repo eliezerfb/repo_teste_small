@@ -81,6 +81,8 @@ uses
   uRetornaEmailsPessoa in 'units\uRetornaEmailsPessoa.pas',
   uIRetornaCaptionEmailPopUpDocs in 'interfaces\uIRetornaCaptionEmailPopUpDocs.pas',
   uRetornaCaptionEmailPopUpDocs in 'units\uRetornaCaptionEmailPopUpDocs.pas',
+  uITestaEmail in 'interfaces\uITestaEmail.pas',
+  uTestaEmail in 'units\uTestaEmail.pas',
   uIItensInativosImpXMLEntrada in 'interfaces\uIItensInativosImpXMLEntrada.pas',
   uItensInativosImpXMLEntrada in 'units\uItensInativosImpXMLEntrada.pas',
   uframePesquisaPadrao in 'frames\uframePesquisaPadrao.pas' {framePesquisaPadrao: TFrame},
@@ -216,9 +218,7 @@ uses
   uEstruturaRelVendasNotaFiscal in 'units\uEstruturaRelVendasNotaFiscal.pas',
   uRelatorioVendasNotaFiscal in 'units\uRelatorioVendasNotaFiscal.pas' {frmRelVendasNotaFiscal},
   udmRelTotalizadorVendasGeral in 'units\udmRelTotalizadorVendasGeral.pas' {dmRelTotalizadorVendasGeral: TDataModule},
-  uDrawCellGridModulos in 'units\uDrawCellGridModulos.pas',
-  uITestaEmail in '..\..\unit_compartilhada\interfaces\uITestaEmail.pas',
-  uTestaEmail in '..\..\unit_compartilhada\uTestaEmail.pas';
+  uDrawCellGridModulos in 'units\uDrawCellGridModulos.pas';
 
 {$R *.RES}
 

@@ -16,7 +16,7 @@ interface
 
 uses
   SysUtils,{BDE,} DB,dialogs,windows, printers,  xmldom, XMLIntf, MsXml, DBGrids, ClipBrd,
-  msxmldom, XMLDoc, inifiles, dateutils, Registry, Classes, StdCtrls,
+  msxmldom, XMLDoc, inifiles, dateutils, Registry, uTestaEmail, Classes, StdCtrls,
   ShellAPI, jpeg, TLHelp32, IBCustomDataSet;
 
 // Sandro Silva 2022-12-22  var sDocParaGerarPDF : String;
@@ -113,6 +113,7 @@ uses
   function FusoHorarioPadrao(UF: String): String;
   function DefineFusoHorario(ArquivoIni: String; SecaoIni: String; ChaveIni: String; sUF: String; sFuso: String; bHorarioVerao: Boolean): String;
   function HabilitaHorarioVerao(ArquivoIni: String; SecaoIni: String; ChaveIni: String; sUF: String; bHabilita: Boolean): String;
+  function ValidaEmail(AcEmail: String): Boolean;
   function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): TStringList;
   procedure ValidaValor(Sender: TObject; var Key: Char; tipo: string);
   procedure ValidaAceitaApenasUmaVirgula(edit: TCustomEdit; var Key: Char);
@@ -128,7 +129,7 @@ uses
 
 implementation
 
-uses StrUtils;
+uses uITestaEmail, StrUtils;
 
 function RetornaNomeDoComputador : string;
 var
@@ -2622,6 +2623,13 @@ begin
     Result := 'S/N';
 end;
 {Sandro Silva 2023-10-16 fim}
+
+function ValidaEmail(AcEmail: String): Boolean;
+begin
+  Result := TTestaEmail.New
+                       .setEmail(AcEmail)
+                       .Testar;
+end;
 
 function RetornaListaQuebraLinha(AcTexto: string; AcCaracQuebra: String = ';'): TStringList;
 begin

@@ -283,6 +283,8 @@
         <DCCReference Include="units\uRetornaEmailsPessoa.pas"/>
         <DCCReference Include="interfaces\uIRetornaCaptionEmailPopUpDocs.pas"/>
         <DCCReference Include="units\uRetornaCaptionEmailPopUpDocs.pas"/>
+        <DCCReference Include="interfaces\uITestaEmail.pas"/>
+        <DCCReference Include="units\uTestaEmail.pas"/>
         <DCCReference Include="interfaces\uIItensInativosImpXMLEntrada.pas"/>
         <DCCReference Include="units\uItensInativosImpXMLEntrada.pas"/>
         <DCCReference Include="frames\uframePesquisaPadrao.pas">
@@ -478,8 +480,6 @@
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="units\uDrawCellGridModulos.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\interfaces\uITestaEmail.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uTestaEmail.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -501,6 +501,7 @@
                     <Source Name="MainSource">small22.dpr</Source>
                 </Source>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
@@ -1317,10 +1318,10 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

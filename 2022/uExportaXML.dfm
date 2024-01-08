@@ -11,6 +11,7 @@ object frmExportaXML: TfrmExportaXML
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
+  OldCreateOrder = False
   Position = poOwnerFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
@@ -53,8 +54,8 @@ object frmExportaXML: TfrmExportaXML
     Top = 30
     Width = 225
     Height = 21
-    Date = 35796.000000000000000000
-    Time = 0.376154398101789400
+    Date = 35796.376154398100000000
+    Time = 35796.376154398100000000
     DateFormat = dfLong
     TabOrder = 0
   end
@@ -63,8 +64,8 @@ object frmExportaXML: TfrmExportaXML
     Top = 75
     Width = 225
     Height = 21
-    Date = 35796.000000000000000000
-    Time = 0.376154398101789400
+    Date = 35796.376154398100000000
+    Time = 35796.376154398100000000
     DateFormat = dfLong
     TabOrder = 1
   end
