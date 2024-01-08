@@ -18,7 +18,7 @@ type
     ibdProdutosNota: TIBDataSet;
     ibdProdutosNotaMARCADO: TIBStringField;
     ibdProdutosNotaNUMERONF: TIBStringField;
-    ibdProdutosNotaCODIGO: TIBStringField;
+    ibdProdutosNotaCODIGO: TWideStringField;
     ibdProdutosNotaDESCRICAO: TIBStringField;
     ibdProdutosNotaST: TIBStringField;
     ibdProdutosNotaIPI: TFloatField;
@@ -63,7 +63,7 @@ type
     cdsProdutosNotaVICMSST: TBCDField;
     cdsProdutosNotaVIPI: TBCDField;
     cdsProdutosNotaCST_IPI: TIBStringField;
-    cdsProdutosNotaCST_ICMS: TIBStringField;
+    cdsProdutosNotaCST_ICMS: TWideStringField;
     cdsProdutosNotaVBCFCP: TBCDField;
     cdsProdutosNotaPFCP: TBCDField;
     cdsProdutosNotaVFCP: TBCDField;
