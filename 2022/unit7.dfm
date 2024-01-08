@@ -2525,19 +2525,6 @@ object Form7: TForm7
     ParentFont = False
     Visible = False
   end
-  object WebBrowser2: TWebBrowser
-    Left = 952
-    Top = 400
-    Width = 33
-    Height = 25
-    TabOrder = 17
-    ControlData = {
-      4C00000069030000950200000000000000000000000000000000000000000000
-      000000004C000000000000000000000001000000E0D057007335CF11AE690800
-      2B2E12620B000000000000004C0000000114020000000000C000000000000046
-      8000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000100000000000000000000000000000000000000}
-  end
   object Panel5: TPanel
     Left = 0
     Top = 50
@@ -11204,7 +11191,7 @@ object Form7: TForm7
     Font.Style = []
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 18
+    TabOrder = 17
     Visible = False
     OnKeyDown = SMALL_DBEdit1KeyDown
   end
@@ -11225,7 +11212,7 @@ object Form7: TForm7
     ParentFont = False
     ParentShowHint = False
     ShowHint = False
-    TabOrder = 19
+    TabOrder = 18
     object lblHomologacao: TLabel
       Left = 0
       Top = 0
