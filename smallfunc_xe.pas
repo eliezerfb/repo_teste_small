@@ -47,6 +47,8 @@ uses
   {$ELSE}
   , Vcl.Grids
   , Data.DB
+  , uITestaEmail
+  , uTestaEmail
   {$ENDIF}
   ;
 
@@ -187,6 +189,7 @@ function Modulo_11_Febraban(pP1:String):String;
 {$IFDEF VER150}
 {$ELSE}
 function HH(hWndCaller: HWND; pszFile: LPCWSTR; uCommand: UINT; dwData: DWORD_PTR): HWND;
+function ValidaEmail(email: String): Boolean;
 {$ENDIF}
 function MontaMascaraCasaDec(qtdCasas : integer) : string;
 function ConverteAcentos3(pP1:String):String;
@@ -2350,6 +2353,14 @@ end;
 function HH(hWndCaller: HWND; pszFile: LPCWSTR; uCommand: UINT; dwData: DWORD_PTR): HWND;
 begin
   HtmlHelp(hWndCaller, pszFile, uCommand, dwData);
+end;
+{$ENDIF}
+
+{$IFDEF VER150}
+{$ELSE}
+function ValidaEmail(email: String): Boolean;
+begin
+  Result := TTestaEmail.New.setEmail(email).Testar;
 end;
 {$ENDIF}
 
