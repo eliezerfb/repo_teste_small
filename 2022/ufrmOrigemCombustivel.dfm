@@ -12,15 +12,14 @@ object FrmOrigemCombustivel: TFrmOrigemCombustivel
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poMainFormCenter
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  PixelsPerInch = 96
   DesignSize = (
     387
     303)
-  PixelsPerInch = 96
   TextHeight = 13
   object lbLegenda: TLabel
     Left = 9
@@ -56,6 +55,7 @@ object FrmOrigemCombustivel: TFrmOrigemCombustivel
     Height = 233
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DSORIGEM
+    DrawingStyle = gdsClassic
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -143,6 +143,8 @@ object FrmOrigemCombustivel: TFrmOrigemCombustivel
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 64
     Top = 8
   end
