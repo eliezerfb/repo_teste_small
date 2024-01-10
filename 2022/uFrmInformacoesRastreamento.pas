@@ -29,11 +29,11 @@ type
     lbQuantidadeAcumulada: TLabel;
     CDSLOTES: TClientDataSet;
     DSLOTES: TDataSource;
-    CDSLOTESNUMERO: TIBStringField;
+    CDSLOTESNUMERO: TWideStringField;
     CDSLOTESQUANTIDADE: TFloatField;
     CDSLOTESDTFABRICACAO: TDateField;
     CDSLOTESDTVALIDADE: TDateField;
-    CDSLOTESCODIGOAGREGACAO: TIBStringField;
+    CDSLOTESCODIGOAGREGACAO: TWideStringField;
     DBGridRastro: TDBGrid;
     CDSLOTESQUANTIDADEACUMULADA: TAggregateField;
     DBTValorQuantidadeAcumulada: TDBText;
