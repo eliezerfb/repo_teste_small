@@ -2348,7 +2348,6 @@ type
     function TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double): Boolean;
     procedure VerificaSaldoEstoqueDispItemNota(AnQtdeInformada: Double);
     procedure DefineQuantidadeSaldoDisponivelNota;
-    procedure CalculaTotalNota;
     procedure DefinirCaptionHomologacaoPopUpMenuDocs;
     procedure DefineLayoutFiltro;
     function RetornarTotalQuantidadeItem(AcITem: String): Currency;
@@ -2473,6 +2472,8 @@ type
     {Dailon 2023-08-22 fim}
 
     procedure RefreshDados;
+    procedure TotalizaItensCompra;
+    procedure CalculaTotalNota;
     function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
     // Sandro Silva 2023-05-04 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
     function AliqICMdoCliente16: double;
@@ -19434,6 +19435,10 @@ procedure TForm7.ibDataSet23AfterPost(DataSet: TDataSet);
 begin
   if Form7.sModulo <> 'NAO' then
   begin
+    //Mauricio Parizotto 2024-01-10
+    TotalizaItensCompra;
+
+    (*
     try
       Form7.ibDataSet24.Edit;
       Form7.ibDataSet24MERCADORIA.AsFloat      := 0;
@@ -19502,6 +19507,8 @@ begin
     end;
 
     AgendaCommit(True);
+
+    *)
   end;
 end;
 
@@ -34464,6 +34471,72 @@ begin
     end;
   except
   end;
+end;
+
+
+procedure TForm7.TotalizaItensCompra;
+begin
+  try
+    Form7.ibDataSet24.Edit;
+    Form7.ibDataSet24MERCADORIA.AsFloat      := 0;
+    Form7.ibDataSet24ISS.AsFloat             := 0;
+    Form7.ibDataSet24SERVICOS.AsFloat        := 0;
+
+    Form7.ibDataSet24ICMS.AsFloat            := 0;
+    Form7.ibDataSet24BASEICM.AsFloat         := 0;
+    Form7.ibDataSet24ICMSSUBSTI.AsFloat      := 0;
+    Form7.ibDataSet24BASESUBSTI.AsFloat      := 0;
+    Form7.ibDataSet24IPI.AsFloat             := 0;
+    Form7.ibDataSet24VFCPST.AsFloat          := 0.00;// Sandro Silva 2023-04-11
+    Form7.ibDataSet24ICMS_DESONERADO.AsFloat := 0; //Mauricio Parizotto 2023-07-18
+
+    Form7.ibDataSet101.DisableControls;
+    Form7.ibDataSet101.Close;
+    Form7.ibDataSet101.SelectSQL.Clear;
+
+    // Acumula os totais para evitar passar item por item da nota, nota com muitos itens fica lento
+    Form7.ibDataSet101.SelectSQL.Add(
+      'select ' +
+      'sum(cast(coalesce(TOTAL, 0) as numeric(18, 2))) as TOTAL, ' +
+      'sum(cast(coalesce(VIPI, 0) as numeric(18, 2))) as VIPI, ' +
+      'sum(cast(coalesce(VBC, 0) as numeric(18, 2))) as VBC, ' +
+      'sum(cast(coalesce(VICMS, 0) as numeric(18, 2))) as VICMS, ' +
+      'sum(cast(coalesce(VBCST, 0) as numeric(18, 2))) as VBCST, ' +
+      'sum(cast(coalesce(VICMSST, 0) as numeric(18, 2))) as VICMSST, ' +
+      'sum(cast(coalesce(VFCPST, 0) as numeric(18, 2))) as VFCPST, ' +
+      'sum(cast(coalesce(ICMS_DESONERADO, 0) as numeric(18, 2))) as ICMS_DESONERADO ' +
+      'from ITENS002 '+
+      ' Where NUMERONF='+QuotedStr(Form7.ibDAtaSet24NUMERONF.AsString)+
+      '   and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');
+
+    Form7.ibDataSet101.Open;
+
+    Form7.ibDataSet101.First;
+
+    while not Form7.ibDataSet101.Eof do
+    begin
+      try
+        Form7.ibDataSet24MERCADORIA.AsFloat      := Form7.ibDataSet24MERCADORIA.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('TOTAL').AsFloat,2);
+        Form7.ibDataSet24IPI.Value               := Form7.ibDataSet24IPI.AsFloat        +  Arredonda(Form7.ibDataSet101.FieldByname('VIPI').AsFloat,2);
+        Form7.ibDataSet24BASEICM.AsFloat         := Form7.ibDataSet24BASEICM.AsFloat    +  Arredonda(Form7.ibDataSet101.FieldByname('VBC').AsFloat,2);
+        Form7.ibDataSet24ICMS.AsFloat            := Form7.ibDataSet24ICMS.AsFloat       +  Arredonda(Form7.ibDataSet101.FieldByname('VICMS').AsFloat,2);
+        Form7.ibDataSet24BASESUBSTI.AsFloat      := Form7.ibDataSet24BASESUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VBCST').AsFloat,2);
+        Form7.ibDataSet24ICMSSUBSTI.AsFloat      := Form7.ibDataSet24ICMSSUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VICMSST').AsFloat,2);
+        Form7.ibDataSet24VFCPST.AsFloat          := Form7.ibDataSet24VFCPST.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('VFCPST').AsFloat,2); // Sandro Silva 2023-04-11
+        if bDescontaICMSDeso then
+          Form7.ibDataSet24ICMS_DESONERADO.AsFloat := Form7.ibDataSet24ICMS_DESONERADO.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('ICMS_DESONERADO').AsFloat,2); // Mauricio Parizotto 2023-07-18
+      except
+      end;
+
+      ibDataSet101.Next;
+    end;
+
+    //Mauricio Parizotto 2023-07-19
+    CalculaTotalNota;
+  except
+  end;
+
+  AgendaCommit(True);
 end;
 
 end.
