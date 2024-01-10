@@ -8224,7 +8224,7 @@ begin
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B9','0')) > 0  then bFornecedoresLiberados := True else bFornecedoresLiberados := False; // Fornecedores
 
         Form7.Exibir1.Visible := True;
-        Form7.Mostrartodososclientesefornecedores1.Visible := True;
+        //2024-01-10 Form7.Mostrartodososclientesefornecedores1.Visible := True;
         Form7.N10.Visible := True;
 
         Label200.Visible   := False;
