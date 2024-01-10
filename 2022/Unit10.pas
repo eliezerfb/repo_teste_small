@@ -572,7 +572,7 @@ type
   public
     { Public declarations }
 
-    bDesvincularCampos: Boolean; // Sandro Silva 2024-01-04
+//    bDesvincularCampos: Boolean; // Sandro Silva 2024-01-04
 
     fQuantidade : Real;
     sNomeDoJPG, sSistema  : String;
@@ -586,7 +586,6 @@ type
 
     function JpgResize(sP1: String; iP2: Integer): boolean;
     function AtualizaMobile(sP1: Boolean) : Boolean;
-
   end;
 
 var
@@ -2220,6 +2219,7 @@ begin
       TLAbel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
     end;
     }
+    {Sandro Silva 2024-01-10 inicio
     if Form10.bDesvincularCampos then
     begin
       for I := 0 to 29 do
@@ -2229,8 +2229,8 @@ begin
         TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible    := False;
         TLAbel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
       end;
-
     end;
+    {Sandro Silva 2024-01-10 fim}
     {Sandro Silva 2024-01-04 fim}
   except
   end;
@@ -3342,7 +3342,7 @@ end;
 
 procedure TForm10.FormCreate(Sender: TObject);
 begin
-  Form10.bDesvincularCampos := True; // Sandro Silva 2024-01-04
+  //Form10.bDesvincularCampos := True; // Sandro Silva 2024-01-04
   {Sandro Silva 2023-06-21 inicio}
   pnRelacaoComercial.BorderStyle := bsNone;
   pnRelacaoComercial.BevelOuter  := bvNone;
@@ -4553,10 +4553,12 @@ begin
     {Sandro Silva 2023-06-22 fim}
 
 
-    {Sandro Silva 2024-01-03 inicio}
-
-
-    {Sandro Silva 2024-01-03 fim}
+    {Sandro Silva 2024-01-10 inicio}
+    for I := 0 to 29 do // mantido 29 que é o mesmo número de campos que são configurados na sequência da rotina
+    begin
+      TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataField  := '';
+    end;
+    {Sandro Silva 2024-01-10 fim}
 
     if Form7.sModulo <> 'ICM' then // Não entrar no "For to do" se estiver editando o módulo ICM, o mesmo tem uma aba somente para ele, com os campos fixos, diferente dos demais módulos que monta a tela dinamicamente
     begin

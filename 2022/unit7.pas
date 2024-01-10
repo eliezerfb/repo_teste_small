@@ -8457,12 +8457,12 @@ begin
           Abort;
         end else
         begin
-          Form10.bDesvincularCampos := False; // Sandro Silva 2024-01-04
+//          Form10.bDesvincularCampos := False; // Sandro Silva 2024-01-04
           Form10.Show;
 //          Form7.TabelaAberta.Cancel; //2024-01-03
           Form10.Image201Click(Sender);
 //          Form7.TabelaAberta.Append; //2024-01-03
-          Form10.bDesvincularCampos := True; // Sandro Silva 2024-01-04
+//          Form10.bDesvincularCampos := True; // Sandro Silva 2024-01-04
         end;
       end;
     end;
