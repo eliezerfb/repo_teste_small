@@ -451,7 +451,8 @@ begin
                         Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd-6),1,SizeDescricaoProd-6))+' '+Form7.ibDataSet4CODIGO.AsString;
                       end;
 
-                      Form7.ibDataSet4MEDIDA.AsString     := AllTrim(NodeTmp.ChildNodes['uCom'].Text);
+                      //Form7.ibDataSet4MEDIDA.AsString     := AllTrim(NodeTmp.ChildNodes['uCom'].Text); Mauricio Parizotto 2024-01-10
+                      Form7.ibDataSet4MEDIDA.AsString     := Copy(AllTrim(NodeTmp.ChildNodes['uCom'].Text) ,1,3);
                       Form7.ibDataSet4PRECO.AsFloat       := 0.01;
                       Form7.ibDataSet4ALTERADO.AsString   := '3';
 
