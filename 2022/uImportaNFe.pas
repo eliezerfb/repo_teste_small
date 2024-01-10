@@ -785,7 +785,8 @@ begin
             //
           until NodeSec = nil;
 
-
+          //Mauricio Parizotto 2024-01-10
+          Form7.TotalizaItensCompra;
 
           try
             Form7.ibDataSet24.Edit;
@@ -817,6 +818,9 @@ begin
 
           end;
           {Sandro Silva 2023-07-03 fim}
+
+          // Mauricio Parizotto 2024-01-10
+          Form7.CalculaTotalNota;
 
           try
             Form7.ibDataSet24NFEXML.AsString := sXML;
