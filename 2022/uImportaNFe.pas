@@ -232,8 +232,10 @@ begin
           NodeTmp  := NodeSec.ChildNodes['enderEmit']; // tag <prod> dentro de <det>
           NodeTmp.ChildNodes.First;
 
-          Form7.IBDataSet2ENDERE.AsString := PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xLgr'].XML,'//xLgr'))))+' '+AllTrim(NodeTmp.ChildNodes['nro'].Text));
-          Form7.IBDataSet2COMPLE.AsString := PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xBairro'].XML,'//xBairro')))));
+          //Form7.IBDataSet2ENDERE.AsString := PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xLgr'].XML,'//xLgr'))))+' '+AllTrim(NodeTmp.ChildNodes['nro'].Text)); Mauricio Parizotto 2024-01-10
+          Form7.IBDataSet2ENDERE.AsString := Copy(PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xLgr'].XML,'//xLgr'))))+' '+AllTrim(NodeTmp.ChildNodes['nro'].Text)) ,1,40);
+          //Form7.IBDataSet2COMPLE.AsString := PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xBairro'].XML,'//xBairro'))))); Mauricio Parizotto 2024-01-10
+          Form7.IBDataSet2COMPLE.AsString := Copy(PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xBairro'].XML,'//xBairro'))))),1,35);
           Form7.IBDataSet2CIDADE.AsString := CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xMun'].XML,'//xMun'))));
           Form7.IBDataSet2ESTADO.AsString := AllTrim(NodeTmp.ChildNodes['UF'].Text);
           Form7.IBDataSet2CEP.AsString    := Copy(AllTrim(NodeTmp.ChildNodes['CEP'].Text+'00000000'),1,5)+'-'+Copy(AllTrim(NodeTmp.ChildNodes['CEP'].Text+'00000000'),5,3);
