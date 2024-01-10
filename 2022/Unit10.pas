@@ -4627,34 +4627,9 @@ begin
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := AllTrim(Form7.TabelaAberta.Fields[I - 1].DisplayLabel) + ':';
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Repaint;
 
-                {Sandro Silva 2023-06-20 inicio}
                 if (Form7.sModulo = 'RECEBER') and (Form7.TabelaAberta.Fields[I-1].FieldName = 'FORMADEPAGAMENTO') then
                   TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := 'Forma de Pag.:';
-                {Sandro Silva 2023-06-20 fim}
 
-                {Sandro Silva 2023-07-24 inicio
-                if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
-                begin
-                  if I > 25 then
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 380 + 100
-                  else if I > 15 then
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 200 + 100
-                  else
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
-                  end else if (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22
-                  begin
-                    if I > 17 then
-                      TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 360 + 100
-                    else
-                      TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
-                end else
-                begin
-                  if I > 17 then
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 360 + 70
-                  else
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
-                end;
-                }
                 if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
                 begin
                   if I > 25 then
@@ -4677,9 +4652,7 @@ begin
                     TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
 
                 end;
-                {Sandro Silva 2023-07-24 fim}
 
-                {Sandro Silva 2022-12-20 inicio}
                 if (Form7.sModulo = 'ESTOQUE') then
                 begin
                   if Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'Identificador Contábil:' then
@@ -4691,7 +4664,6 @@ begin
                   end;
                 end;
 
-                {Sandro Silva 2022-12-20 fim}
                 if Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'UF:' then
                 begin
                   iTop := iTop - 25;
