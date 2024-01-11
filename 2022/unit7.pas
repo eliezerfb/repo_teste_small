@@ -34000,7 +34000,7 @@ begin
 
       // Menu
       Form7.Menu            := mmCLifor;
-      Mostrartodososclientesefornecedores1.Checked := True;
+      //2024-01-10 Mostrartodososclientesefornecedores1.Checked := True;
 
       // Sql
       sSelect   := 'select * from CLIFOR';
