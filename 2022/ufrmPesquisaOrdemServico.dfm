@@ -2,6 +2,7 @@ inherited FrmPesquisaOrdemServico: TFrmPesquisaOrdemServico
   Left = 557
   Top = 358
   Caption = 'Ordem de Servi'#231'o'
+  Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 16
   inherited lblTitulo2: TLabel
