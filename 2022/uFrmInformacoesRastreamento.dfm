@@ -114,6 +114,7 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
     Height = 209
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DSLOTES
+    DrawingStyle = gdsClassic
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -200,7 +201,7 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
     AfterOpen = CDSLOTESAfterOpen
     Left = 24
     Top = 120
-    object CDSLOTESNUMERO: TIBStringField
+    object CDSLOTESNUMERO: TWideStringField
       FieldName = 'NUMERO'
     end
     object CDSLOTESQUANTIDADE: TFloatField
@@ -212,7 +213,7 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
     object CDSLOTESDTVALIDADE: TDateField
       FieldName = 'DTVALIDADE'
     end
-    object CDSLOTESCODIGOAGREGACAO: TIBStringField
+    object CDSLOTESCODIGOAGREGACAO: TWideStringField
       FieldName = 'CODIGOAGREGACAO'
     end
     object CDSLOTESQUANTIDADEACUMULADA: TAggregateField
