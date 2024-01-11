@@ -22414,8 +22414,8 @@ begin
   Form7.Close;
   Form7.Show;
 
-  Notasfiscaiscanceladas1.Checked := True;
-  Notasfiscaisabertas1.Checked    := False;
+  // Sandro Silva 2024-01-11 Notasfiscaiscanceladas1.Checked := True;
+  // Sandro Silva 2024-01-11 Notasfiscaisabertas1.Checked    := False;
 end;
 
 procedure TForm7.Notasfiscaisabertas1Click(Sender: TObject);
@@ -22424,8 +22424,8 @@ begin
   Form7.Close;
   Form7.Show;
 
-  Notasfiscaiscanceladas1.Checked := False;
-  Notasfiscaisabertas1.Checked    := True;
+  // Sandro Silva 2024-01-11 Notasfiscaiscanceladas1.Checked := False;
+  // Sandro Silva 2024-01-11 Notasfiscaisabertas1.Checked    := True;
 end;
 
 procedure TForm7.odas4Click(Sender: TObject);
@@ -22434,8 +22434,8 @@ begin
   Form7.Close;
   Form7.Show;
 
-  Notasfiscaiscanceladas1.Checked := True;
-  Notasfiscaisabertas1.Checked    := False;
+  // Sandro Silva 2024-01-11 Notasfiscaiscanceladas1.Checked := True;
+  // Sandro Silva 2024-01-11 Notasfiscaisabertas1.Checked    := False;
 end;
 
 procedure TForm7.Exportar1Click(Sender: TObject);
