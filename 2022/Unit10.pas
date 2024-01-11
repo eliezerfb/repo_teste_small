@@ -559,6 +559,8 @@ type
       const pDisp: IDispatch; const URL: OleVariant);
     procedure WebBrowser1DocumentComplete(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
+    procedure fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -7902,6 +7904,16 @@ procedure TForm10.framePesquisaProdComposicaodbgItensPesqKeyPress(
 begin
   if Key = chr(13) then
     AtribuirItemPesquisaComposicao;
+end;
+
+procedure TForm10.fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  {Sandro Silva 2024-01-11 inicio}
+  if Key = VK_RETURN then
+     Form7.StatusTrocaPerfil := 'PR';
+  fraPerfilTrib.txtCampoKeyDown(Sender, Key, Shift);
+  {Sandro Silva 2024-01-11 fim}
 end;
 
 procedure TForm10.AtribuirItemPesquisaComposicao;

@@ -252,10 +252,17 @@ begin
       case CampoCodigo.DataType of
         ftSmallint, ftInteger, ftWord, ftLargeint:
         begin
+          {Sandro Silva 2024-01-11 inicio
           if (LimpaNumero(txtCampo.Text) = txtCampo.Text) and (LimpaNumero(txtCampo.Text) <> '') then
             CampoCodigo.Value := txtCampo.Text
           else
             txtCampo.Clear;
+          }
+          if (Trim(txtCampo.Text) = Query.Fields[1].AsString) and (Trim(txtCampo.Text) <> '') then
+            CampoCodigo.Value := Query.Fields[0].Value
+          else
+            txtCampo.Clear;
+          {Sandro Silva 2024-01-11 fim}
         end
       else
         CampoCodigo.Value := txtCampo.Text;
@@ -271,7 +278,14 @@ begin
     end
     else
     begin
+      {Sandro Silva 2024-01-11 inicio
       CampoCodigo.Value := Trim(txtCampo.Text);
+      }
+      if Trim(txtCampo.Text) <> '' then
+        CampoCodigo.Value := Trim(txtCampo.Text)
+      else
+        CampoCodigo.Clear;
+      {Sandro Silva 2024-01-11 fim}
     end;
   end;
   {Sandro Silva 2023-09-27 fim}
