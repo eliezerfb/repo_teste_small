@@ -112,10 +112,10 @@ RootDir=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=2023
+MajorVer=2024
 MinorVer=0
 Release=0
-Build=122
+Build=2
 Debug=0
 PreRelease=0
 Special=0
@@ -126,13 +126,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Zucchetti Software e Sistemas Ltda
 FileDescription=Small
-FileVersion=2023.0.0.122
+FileVersion=2024.0.0.2
 InternalName=Small
 LegalCopyright=Zucchetti Software e Sistemas Ltda
 LegalTrademarks=Zucchetti Software e Sistemas Ltda
 OriginalFilename=
 ProductName=Small
-ProductVersion=2023
+ProductVersion=2024
 Comments=
 [Excluded Packages]
 C:\Program Files (x86)\Borland\Delphi7\Projects\Bpl\spdNFCe_D7.bpl=Tecnospeed - Pacote para o componente TspdNFCe
