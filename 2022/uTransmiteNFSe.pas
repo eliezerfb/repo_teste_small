@@ -769,7 +769,8 @@ begin
 
               {Sandro Silva 2023-01-19 inicio}
               // Sandro Silva 2023-09-05 if (sPadraoSistema = 'ISSNETONLINE20') and (AnsiUpperCase(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString) + Form7.ibDataSet13ESTADO.AsString) = 'BRASILIADF') then
-              if (sPadraoSistema = 'ISSNETONLINE20') and (GetCidadeUF = 'BRASILIADF') then
+              if ((sPadraoSistema = 'ISSNETONLINE20') and (GetCidadeUF = 'BRASILIADF'))
+                 or ((sPadraoSistema = 'ABACO20') and (GetCidadeUF = 'RIOBRANCOAC')) then
               begin
                 if Trim(sResponsavelRetencao) <> '' then
                   Writeln(F,'ResponsavelRetencao=' + sResponsavelRetencao);
