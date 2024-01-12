@@ -6935,6 +6935,7 @@ var
   vCampo: array [0..30000] of Variant; // Cria uma matriz com 1000 elementos
   I, J : Integer; // e conteúdo variável
   F: TextFile;
+  vTipo : Word;
 begin
   Result := True;
 
@@ -6987,19 +6988,18 @@ begin
     vCampo[016] := Form7.ibDataSet2ESTADO.Value;      //  16 U.F. do Destinatário
     vCampo[017] := Form7.ibDataSet2IE.Value;          //  17 I.E. do Destinatário
     vCampo[018] := Form7.ibDataSet15SAIDAH.Value;     //  18 Hora de saída
-    //
+
     vCampo[086] := AllTrim(Form7.ibDataSet2IDENTIFICADOR1.AsString);  // Identificador 1 do cliente
     vCampo[087] := AllTrim(Form7.ibDataSet2IDENTIFICADOR2.AsString);  // Identificador 2 do cliente
     vCampo[088] := AllTrim(Form7.ibDataSet2IDENTIFICADOR3.AsString);  // Identificador 3 do cliente
     vCampo[089] := AllTrim(Form7.ibDataSet2IDENTIFICADOR4.AsString);  // Identificador 4 do cliente
-    //
+
     VCampo[076] := 'X'; // 76 X da nota de saida
     vCampo[077] := ' '; // 77 X da nota de entrada
     vCampo[034] := Form7.ibDataSet15TRANSPORTA.Value;   //  34 Transportadora Nome
     vCampo[035] := Form7.ibDataSet15FRETE12.Value;      //  35 Frete por conta (0 ou 1)
-    //
+
     // Transportadora
-    //
     if AllTrim(Form7.ibDataSet15TRANSPORTA.AsString)=AllTrim(Form7.ibDataSet18NOME.AsString) then
     begin
       vCampo[036] := Form7.ibDataSet15PLACA.Value;        //  36 Placa do veículo
@@ -7039,11 +7039,9 @@ begin
     vCampo[098] := Form7.ibDataSet15VENDEDOR.Value;     //  98 Nome do vendedor
     vCampo[090] := 'NSU: '+Form7.ibDataSet15NSU.Value;  //  90 NSU
     vCampo[091] := 'Geracao da NSU: '+Form7.ibDataSet15NSUD.AsString +' '+ Copy(Form7.ibDataSet15NSUH.AsString,1,5);  //  Geração da NSU:
-    //
+
     // Passa os dados do arquivo ITENS001 para os vetores
-    //
     I := 0;
-    //
 
     while (not Form7.ibDataSet16.Eof) do // Disable
     begin
@@ -7053,11 +7051,7 @@ begin
         Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
         Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
         Form7.ibDataSet4.Open;
-        //
-        // so para sair o 0,00
-        //
-//              Form7.ibDataSet16.Edit;
-        //
+
         vCampo[01000 + I] := Form7.ibDataSet16DESCRICAO.Value;  // 01000 Descrição do item
         vCampo[02000 + I] := Form7.ibDataSet16MEDIDA.Value;     // 02000 Unidades de medida do item
         vCampo[03000 + I] := Form7.ibDataSet16QUANTIDADE.Value; // 03000 Quantidades do item
@@ -7069,37 +7063,31 @@ begin
         //
         vCampo[08000 + I] := Form7.ibDataSet16ICM.Value;        // 08000 % ICM do item
         vCampo[09000 + I] := Form7.ibDataSet16CODIGO.Value;     // 09000 Códigos do item
-        //
+
         // Procura o produto no estoque
-        //
         if Form7.ibDataSet4CODIGO.Value = Form7.ibDataSet16CODIGO.Value then
         begin
           vCampo[11000 + I] := Form7.ibDataSet4CF.Value;          // 11000 CF do item
           vCampo[12000 + I] := Form7.ibDataSet4CST.Value;         // 12000 ST do item
           vCampo[13000 + I] := Form7.ibDataSet4REFERENCIA.Value;  // 13000 Referência
         end;
-        //
+
         vCampo[14000 + I] := Form7.ibDataSet16CFOP.Value;  // 14000 CFOP do item
         vCampo[15000 + I] := Form7.ibDataSet4LOCAL.Value;  // 15000 Local do item
-        //
+
         I := I + 1;
-        //
       end else
       begin
-        //
         // DESCRICAO NO CORPO DA NOTA
-        //
         if (Form7.ibDataSet16DESCRICAO.AsString <> '') then
         begin
           vCampo[01000 + I] := Form7.ibDataSet16DESCRICAO.Value;  // 150 Descrição do item
           I := I + 1;
         end;
-        //
       end;
       Form7.ibDataSet16.next;
-      //
     end;
-    //
+
     vCampo[020] := Form7.ibDataSet15SERVICOS.Value;   //  20 Base de Cálculo do ISS
     if Form7.ibDataSet15SERVICOS.AsFloat <> 0 then vCampo[021] := Form7.ibDataSet15ISS.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat * 100 else vCampo[021] := 0;
     vCampo[022] := Form7.ibDataSet15ISS.Value;          //  22 Valor total do ISS
@@ -7116,7 +7104,7 @@ begin
     vCampo[046] := Form7.ibDataSet15DESCONTO.Value;     //  29 Valor do desconto
     vCampo[069] := vCampo[0330];
     vCampo[085] := Form7.ibDataSet15MERCADORIA.Value;   //  Valor total dos produtos
-    //
+
     vCampo[063] := Alltrim(Extenso(vCampo[033]));
     // Imposto de renda: Se o valor for maior do que o Teto limite para tributação de IR sobre serviços tributa: Servicos >= ConfLimite then IR = Servicos * (( ConfIR / 100) * 1) else IR = 0;
     try
@@ -7124,15 +7112,13 @@ begin
     except end;
     //
     J := 0;
-    //
+
     // servicos
-    //
     Form7.ibDataSet35.First;
     while not Form7.ibDataSet35.Eof do
     begin
       if (Form7.ibDataSet35DESCRICAO.AsString <> '') then
       begin
-        //
         vCampo[2150 + J] := Form7.ibDataSet35DESCRICAO.Value;  // 2150 Descrição do item de servico
         vCampo[2300 + J] := Form7.ibDataSet35QUANTIDADE.Value; // 2300 Quantidades do item de servico
         if Form7.ibDataSet35QUANTIDADE.AsFloat <> 0 then vCampo[2350 + J] := Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet35QUANTIDADE.Asfloat;   // 2350 Valor unitário do item de servico
@@ -7140,35 +7126,39 @@ begin
         vCampo[2600 + J] := '   ';
         //
         J := J + 1;
-        //
       end;
       Form7.ibDataSet35.Next;
     end;
-    //
   end;
-  //
+
   Form7.SaveDialog1.FileName := 'SmallNF'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'.TXT';
   Form7.SaveDialog1.Title    := 'Exportar Nota Fiscal';
-  //
-  if not Form7.SaveDialog1.Execute then Exit;
+
+  if not Form7.SaveDialog1.Execute then
+    Exit;
+
   DeleteFile(pChar(Form7.SaveDialog1.FileName));
   AssignFile(F, Form7.SaveDialog1.FileName);
   Rewrite(F);
-  //
+
   for I := 1 to 30000 do
   begin
-    if (VarType(vCampo[I])= varString) then
+    vTipo := VarType(vCampo[I]);
+
+    //if (vTipo = varString) then Mauricio Parizotto 2024-01-10
+    if (vTipo = varUString) then
     begin
-      if Alltrim(vCampo[I]) <> '' then Writeln(F,StrZero(I,5,0)+'='+vCampo[I]);
+      if Alltrim(vCampo[I]) <> '' then
+        Writeln(F,StrZero(I,5,0)+'='+vCampo[I]);
     end;
-    if (VarType(vCampo[I])= varDouble) then
+
+    if (vTipo = varDouble) then
     begin
       Writeln(F,StrZero(I,5,0)+'='+StrZero(vCampo[I],14,4));
     end;
   end;
-  //
+
   CloseFile(F);
-  //
 end;
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
