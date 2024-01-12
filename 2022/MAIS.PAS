@@ -1479,6 +1479,7 @@ begin
           begin
             if FileExists(Form1.sAtual+'\smallcon.exe') then
             begin
+              {Sandro Silva 2024-01-12 inicio
               ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20231001.sma '+
                                                              '20231002.sma '+
                                                              '20231003.sma '+
@@ -1491,6 +1492,20 @@ begin
                                                              'nfce2023.sma '+
                                                              '2023_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
                                                              , '', SW_SHOW);
+              }
+              ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20241001.sma '+
+                                                             '20241002.sma '+
+                                                             '20241003.sma '+
+                                                             '20241004.sma '+
+                                                             '20241005.sma '+
+                                                             '20241006.sma '+
+                                                             '20241007.sma '+
+                                                             '20241008.sma '+
+                                                             '20241009.sma '+
+                                                             'nfce2024.sma '+
+                                                             '2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
+                                                             , '', SW_SHOW);
+              {Sandro Silva 2024-01-12 fim}
 
             end
             else
@@ -1499,7 +1514,7 @@ begin
 
             Winexec('TASKKILL /F /IM "smallcdf.exe"', SW_HIDE );
             Winexec('TASKKILL /F /IM "mobile.exe"', SW_HIDE );
-            Winexec('TASKKILL /F /IM "mkp.exe"', SW_HIDE ); 
+            Winexec('TASKKILL /F /IM "mkp.exe"', SW_HIDE );
             Winexec('TASKKILL /F /IM "Small Commerce.exe"', SW_HIDE );
             Winexec('TASKKILL /F /IM small22.exe', SW_HIDE );
             Winexec('TASKKILL /F /IM nfe.exe', SW_HIDE );
@@ -3929,16 +3944,9 @@ begin
   if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99') then
   begin
     //
-    {Sandro Silva 2022-12-28 inicio
-    if Form7.ibDataSet13ESTADO.AsString = 'SC' then
-      sPastaDoPaf := 'paf2022'
-    else
-      sPastaDoPaf := 'paf2022'; //Sandro Silva 2018-11-29 if Form7.ibDataSet13ESTADO.AsString = 'SC' then sPastaDoPaf := 'paf2018_8' else  sPastaDoPaf := 'paf2018';
-    }
     sPastaDoPaf := 'paf2023';
     if Form7.ibDataSet13ESTADO.AsString = 'SC' then
       sPastaDoPaf := 'paf2023';
-    {Sandro Silva 2022-12-28 inicio}
 
     if not FileExists(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\bematech2\bemafi32.ini')) then
       sPastaDoPaf := 'paf2023'; // Sandro Silva 2022-12-28 sPastaDoPaf := 'paf2021';
@@ -4357,7 +4365,7 @@ begin
   // Sandro Silva 2022-12-28 InstalaAtualizacao('cdf_to','9');
   InstalaAtualizacao('paf2022_','10');
   InstalaAtualizacao('paf2023_','10');// Sandro Silva 2022-12-28
-  
+
   if FileExists(Form1.sAtual+'\small.saas') then
   begin
     ShellExecute( 0, 'Open',pChar('http://www.smallsaas.com.br'),'', '', SW_SHOWMAXIMIZED);
@@ -4474,12 +4482,20 @@ begin
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
 
+  {Sandro Silva 2024-01-12 inicio
   if (StrToFloat(LimpaNumero(Mais1Ini.ReadString('Geral','Build 2023','2023.0.0.0'))) > StrToFloat(LimpaNumero(StrTran(Form22.sBuild,'Versão e Build:','')))) then
   begin
     //ShowMessage('A build: '+Mais1Ini.ReadString('Geral','Build 2023','2023.0.0.0')+' já foi instalada na pasta: '+ sAtual+' você esta tentando'+Chr(10)+' rodar a build: '+StrTran(Form22.sBuild,'Versão e Build:','')+', este programa vai ser fechado.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('A build: '+Mais1Ini.ReadString('Geral','Build 2023','2023.0.0.0')+' já foi instalada na pasta: '+ sAtual+' você esta tentando'+Chr(10)+' rodar a build: '+
                     StrTran(Form22.sBuild,'Versão e Build:','')+', este programa vai ser fechado.'
                     ,msgAtencao);
+  }
+  if (StrToFloat(LimpaNumero(Mais1Ini.ReadString('Geral','Build 2024','2024.0.0.0'))) > StrToFloat(LimpaNumero(StrTran(Form22.sBuild,'Versão e Build:','')))) then
+  begin
+    MensagemSistema('A build: '+Mais1Ini.ReadString('Geral','Build 2024','2024.0.0.0')+' já foi instalada na pasta: '+ sAtual+' você esta tentando'+Chr(10)+' rodar a build: '+
+                    StrTran(Form22.sBuild,'Versão e Build:','')+', este programa vai ser fechado.'
+                    ,msgAtencao);
+
 
     DefinirBuildEXEDAT;
     Instalarpackcomasltimasalteraes1Click(Sender);
@@ -5434,6 +5450,7 @@ begin
 
   if FileExists(Form1.sAtual+'\smallcon.exe') then
   begin
+    {Sandro Silva 2024-01-12 inicio
     ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20231001.sma '+
                                                    '20231002.sma '+
                                                    '20231003.sma '+
@@ -5447,6 +5464,21 @@ begin
                                                    '2023_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma '),
                                               '',
                                               SW_SHOW);
+    }
+    ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20241001.sma '+
+                                                   '20241002.sma '+
+                                                   '20241003.sma '+
+                                                   '20241004.sma '+
+                                                   '20241005.sma '+
+                                                   '20241006.sma '+
+                                                   '20241007.sma '+
+                                                   '20241008.sma '+
+                                                   '20241009.sma '+
+                                                   'nfce2024.sma '+
+                                                   '2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma '),
+                                              '',
+                                              SW_SHOW);
+    {Sandro Silva 2024-01-12 fim}
   end;
   {Sandro Silva 2022-12-28 fim}
 
