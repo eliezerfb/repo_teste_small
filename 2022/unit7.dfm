@@ -19855,7 +19855,6 @@ object Form7: TForm7
       end
       object odas4: TMenuItem
         Caption = 'Todas'
-        Checked = True
         OnClick = odas4Click
       end
     end
