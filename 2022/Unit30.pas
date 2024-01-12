@@ -176,6 +176,7 @@ type
     procedure OcultaListaDePesquisa;
     procedure MostraFoto;
     procedure CarregaSituacoes;
+    procedure PosicionarListaSituacao;
   public
     { Public declarations }
     sSistema, sDatafield : String;
@@ -464,12 +465,36 @@ begin
   //
   dbGrid3.Visible   := False;
   }
-  OcultaListaDePesquisa;  
+  OcultaListaDePesquisa;
+  {Dailon Parisotto (f-7797) 2024-01-10 Inicio}
+  PosicionarListaSituacao;
+  {Dailon Parisotto (f-7797) 2024-01-10 Fim}
   listSituacao.Visible  := True;
   //listSituacao.Height   := 53; // Sandro Silva 2023-10-17   ListBox1.Height   := 41; Mauricio Parizotto
   listSituacao.Height   := 161;
   SMALL_DBEdit7.SelectAll;
 end;
+
+{Dailon Parisotto (f-7797) 2024-01-10 Inicio}
+procedure TForm30.PosicionarListaSituacao;
+var
+  i: Integer;
+begin
+  if Trim(SMALL_DBEdit7.Text) <> EmptyStr then
+  begin
+    for I := 0 to Pred(listSituacao.Count) do
+    begin
+      if AnsiUpperCase(AllTrim(SMALL_DBEdit7.Text)) = AnSiUpperCase(Copy(listSituacao.Items[i], 1, Length(AllTrim(SMALL_DBEdit7.Text)))) then
+      begin
+        listSituacao.ItemIndex := i;
+        Break;
+      end;
+    end;
+  end
+  else
+    listSituacao.ItemIndex := 0;
+end;
+{Dailon Parisotto (f-7797) 2024-01-10 Fim}
 
 procedure TForm30.SMALL_DBEdit7Change(Sender: TObject);
 var
@@ -1254,7 +1279,7 @@ end;
 procedure TForm30.FormActivate(Sender: TObject);
 begin
   Form30.Top     := Form7.Top;
-  Form30.Left    := 0;
+  Form30.Left    := Form7.Left;
   Form30.Width   := Form7.Width;
   Form30.Height  := Form7.Height;
 
@@ -1557,6 +1582,10 @@ end;
 
 procedure TForm30.SMALL_DBEdit7Exit(Sender: TObject);
 begin
+  {Dailon Parisotto (f-7797) 2024-01-10 Inicio}
+  if listSituacao.ItemIndex < 0 then
+    Exit;
+  {Dailon Parisotto (f-7797) 2024-01-10 Fim}
   try
     SMALL_DBEdit7.Field.AsString := listSituacao.Items[listSituacao.ItemIndex]; // Sandro Silva 2023-10-17
   except

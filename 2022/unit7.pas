@@ -2348,7 +2348,6 @@ type
     function TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double): Boolean;
     procedure VerificaSaldoEstoqueDispItemNota(AnQtdeInformada: Double);
     procedure DefineQuantidadeSaldoDisponivelNota;
-    procedure CalculaTotalNota;
     procedure DefinirCaptionHomologacaoPopUpMenuDocs;
     procedure DefineLayoutFiltro;
     function RetornarTotalQuantidadeItem(AcITem: String): Currency;
@@ -2473,6 +2472,8 @@ type
     {Dailon 2023-08-22 fim}
 
     procedure RefreshDados;
+    procedure TotalizaItensCompra;
+    procedure CalculaTotalNota;
     function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
     // Sandro Silva 2023-05-04 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
     function AliqICMdoCliente16: double;
@@ -6934,6 +6935,7 @@ var
   vCampo: array [0..30000] of Variant; // Cria uma matriz com 1000 elementos
   I, J : Integer; // e conteúdo variável
   F: TextFile;
+  vTipo : Word;
 begin
   Result := True;
 
@@ -6986,19 +6988,18 @@ begin
     vCampo[016] := Form7.ibDataSet2ESTADO.Value;      //  16 U.F. do Destinatário
     vCampo[017] := Form7.ibDataSet2IE.Value;          //  17 I.E. do Destinatário
     vCampo[018] := Form7.ibDataSet15SAIDAH.Value;     //  18 Hora de saída
-    //
+
     vCampo[086] := AllTrim(Form7.ibDataSet2IDENTIFICADOR1.AsString);  // Identificador 1 do cliente
     vCampo[087] := AllTrim(Form7.ibDataSet2IDENTIFICADOR2.AsString);  // Identificador 2 do cliente
     vCampo[088] := AllTrim(Form7.ibDataSet2IDENTIFICADOR3.AsString);  // Identificador 3 do cliente
     vCampo[089] := AllTrim(Form7.ibDataSet2IDENTIFICADOR4.AsString);  // Identificador 4 do cliente
-    //
+
     VCampo[076] := 'X'; // 76 X da nota de saida
     vCampo[077] := ' '; // 77 X da nota de entrada
     vCampo[034] := Form7.ibDataSet15TRANSPORTA.Value;   //  34 Transportadora Nome
     vCampo[035] := Form7.ibDataSet15FRETE12.Value;      //  35 Frete por conta (0 ou 1)
-    //
+
     // Transportadora
-    //
     if AllTrim(Form7.ibDataSet15TRANSPORTA.AsString)=AllTrim(Form7.ibDataSet18NOME.AsString) then
     begin
       vCampo[036] := Form7.ibDataSet15PLACA.Value;        //  36 Placa do veículo
@@ -7038,11 +7039,9 @@ begin
     vCampo[098] := Form7.ibDataSet15VENDEDOR.Value;     //  98 Nome do vendedor
     vCampo[090] := 'NSU: '+Form7.ibDataSet15NSU.Value;  //  90 NSU
     vCampo[091] := 'Geracao da NSU: '+Form7.ibDataSet15NSUD.AsString +' '+ Copy(Form7.ibDataSet15NSUH.AsString,1,5);  //  Geração da NSU:
-    //
+
     // Passa os dados do arquivo ITENS001 para os vetores
-    //
     I := 0;
-    //
 
     while (not Form7.ibDataSet16.Eof) do // Disable
     begin
@@ -7052,11 +7051,7 @@ begin
         Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
         Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
         Form7.ibDataSet4.Open;
-        //
-        // so para sair o 0,00
-        //
-//              Form7.ibDataSet16.Edit;
-        //
+
         vCampo[01000 + I] := Form7.ibDataSet16DESCRICAO.Value;  // 01000 Descrição do item
         vCampo[02000 + I] := Form7.ibDataSet16MEDIDA.Value;     // 02000 Unidades de medida do item
         vCampo[03000 + I] := Form7.ibDataSet16QUANTIDADE.Value; // 03000 Quantidades do item
@@ -7068,37 +7063,31 @@ begin
         //
         vCampo[08000 + I] := Form7.ibDataSet16ICM.Value;        // 08000 % ICM do item
         vCampo[09000 + I] := Form7.ibDataSet16CODIGO.Value;     // 09000 Códigos do item
-        //
+
         // Procura o produto no estoque
-        //
         if Form7.ibDataSet4CODIGO.Value = Form7.ibDataSet16CODIGO.Value then
         begin
           vCampo[11000 + I] := Form7.ibDataSet4CF.Value;          // 11000 CF do item
           vCampo[12000 + I] := Form7.ibDataSet4CST.Value;         // 12000 ST do item
           vCampo[13000 + I] := Form7.ibDataSet4REFERENCIA.Value;  // 13000 Referência
         end;
-        //
+
         vCampo[14000 + I] := Form7.ibDataSet16CFOP.Value;  // 14000 CFOP do item
         vCampo[15000 + I] := Form7.ibDataSet4LOCAL.Value;  // 15000 Local do item
-        //
+
         I := I + 1;
-        //
       end else
       begin
-        //
         // DESCRICAO NO CORPO DA NOTA
-        //
         if (Form7.ibDataSet16DESCRICAO.AsString <> '') then
         begin
           vCampo[01000 + I] := Form7.ibDataSet16DESCRICAO.Value;  // 150 Descrição do item
           I := I + 1;
         end;
-        //
       end;
       Form7.ibDataSet16.next;
-      //
     end;
-    //
+
     vCampo[020] := Form7.ibDataSet15SERVICOS.Value;   //  20 Base de Cálculo do ISS
     if Form7.ibDataSet15SERVICOS.AsFloat <> 0 then vCampo[021] := Form7.ibDataSet15ISS.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat * 100 else vCampo[021] := 0;
     vCampo[022] := Form7.ibDataSet15ISS.Value;          //  22 Valor total do ISS
@@ -7115,7 +7104,7 @@ begin
     vCampo[046] := Form7.ibDataSet15DESCONTO.Value;     //  29 Valor do desconto
     vCampo[069] := vCampo[0330];
     vCampo[085] := Form7.ibDataSet15MERCADORIA.Value;   //  Valor total dos produtos
-    //
+
     vCampo[063] := Alltrim(Extenso(vCampo[033]));
     // Imposto de renda: Se o valor for maior do que o Teto limite para tributação de IR sobre serviços tributa: Servicos >= ConfLimite then IR = Servicos * (( ConfIR / 100) * 1) else IR = 0;
     try
@@ -7123,15 +7112,13 @@ begin
     except end;
     //
     J := 0;
-    //
+
     // servicos
-    //
     Form7.ibDataSet35.First;
     while not Form7.ibDataSet35.Eof do
     begin
       if (Form7.ibDataSet35DESCRICAO.AsString <> '') then
       begin
-        //
         vCampo[2150 + J] := Form7.ibDataSet35DESCRICAO.Value;  // 2150 Descrição do item de servico
         vCampo[2300 + J] := Form7.ibDataSet35QUANTIDADE.Value; // 2300 Quantidades do item de servico
         if Form7.ibDataSet35QUANTIDADE.AsFloat <> 0 then vCampo[2350 + J] := Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet35QUANTIDADE.Asfloat;   // 2350 Valor unitário do item de servico
@@ -7139,35 +7126,39 @@ begin
         vCampo[2600 + J] := '   ';
         //
         J := J + 1;
-        //
       end;
       Form7.ibDataSet35.Next;
     end;
-    //
   end;
-  //
+
   Form7.SaveDialog1.FileName := 'SmallNF'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'.TXT';
   Form7.SaveDialog1.Title    := 'Exportar Nota Fiscal';
-  //
-  if not Form7.SaveDialog1.Execute then Exit;
+
+  if not Form7.SaveDialog1.Execute then
+    Exit;
+
   DeleteFile(pChar(Form7.SaveDialog1.FileName));
   AssignFile(F, Form7.SaveDialog1.FileName);
   Rewrite(F);
-  //
+
   for I := 1 to 30000 do
   begin
-    if (VarType(vCampo[I])= varString) then
+    vTipo := VarType(vCampo[I]);
+
+    //if (vTipo = varString) then Mauricio Parizotto 2024-01-10
+    if (vTipo = varUString) then
     begin
-      if Alltrim(vCampo[I]) <> '' then Writeln(F,StrZero(I,5,0)+'='+vCampo[I]);
+      if Alltrim(vCampo[I]) <> '' then
+        Writeln(F,StrZero(I,5,0)+'='+vCampo[I]);
     end;
-    if (VarType(vCampo[I])= varDouble) then
+
+    if (vTipo = varDouble) then
     begin
       Writeln(F,StrZero(I,5,0)+'='+StrZero(vCampo[I],14,4));
     end;
   end;
-  //
+
   CloseFile(F);
-  //
 end;
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
@@ -19434,6 +19425,10 @@ procedure TForm7.ibDataSet23AfterPost(DataSet: TDataSet);
 begin
   if Form7.sModulo <> 'NAO' then
   begin
+    //Mauricio Parizotto 2024-01-10
+    TotalizaItensCompra;
+
+    (*
     try
       Form7.ibDataSet24.Edit;
       Form7.ibDataSet24MERCADORIA.AsFloat      := 0;
@@ -19502,6 +19497,8 @@ begin
     end;
 
     AgendaCommit(True);
+
+    *)
   end;
 end;
 
@@ -22407,8 +22404,8 @@ begin
   Form7.Close;
   Form7.Show;
 
-  Notasfiscaiscanceladas1.Checked := True;
-  Notasfiscaisabertas1.Checked    := False;
+  // Sandro Silva 2024-01-11 Notasfiscaiscanceladas1.Checked := True;
+  // Sandro Silva 2024-01-11 Notasfiscaisabertas1.Checked    := False;
 end;
 
 procedure TForm7.Notasfiscaisabertas1Click(Sender: TObject);
@@ -22417,8 +22414,8 @@ begin
   Form7.Close;
   Form7.Show;
 
-  Notasfiscaiscanceladas1.Checked := False;
-  Notasfiscaisabertas1.Checked    := True;
+  // Sandro Silva 2024-01-11 Notasfiscaiscanceladas1.Checked := False;
+  // Sandro Silva 2024-01-11 Notasfiscaisabertas1.Checked    := True;
 end;
 
 procedure TForm7.odas4Click(Sender: TObject);
@@ -22427,8 +22424,8 @@ begin
   Form7.Close;
   Form7.Show;
 
-  Notasfiscaiscanceladas1.Checked := True;
-  Notasfiscaisabertas1.Checked    := False;
+  // Sandro Silva 2024-01-11 Notasfiscaiscanceladas1.Checked := True;
+  // Sandro Silva 2024-01-11 Notasfiscaisabertas1.Checked    := False;
 end;
 
 procedure TForm7.Exportar1Click(Sender: TObject);
@@ -33993,7 +33990,7 @@ begin
 
       // Menu
       Form7.Menu            := mmCLifor;
-      Mostrartodososclientesefornecedores1.Checked := True;
+      //2024-01-10 Mostrartodososclientesefornecedores1.Checked := True;
 
       // Sql
       sSelect   := 'select * from CLIFOR';
@@ -34464,6 +34461,72 @@ begin
     end;
   except
   end;
+end;
+
+
+procedure TForm7.TotalizaItensCompra;
+begin
+  try
+    Form7.ibDataSet24.Edit;
+    Form7.ibDataSet24MERCADORIA.AsFloat      := 0;
+    Form7.ibDataSet24ISS.AsFloat             := 0;
+    Form7.ibDataSet24SERVICOS.AsFloat        := 0;
+
+    Form7.ibDataSet24ICMS.AsFloat            := 0;
+    Form7.ibDataSet24BASEICM.AsFloat         := 0;
+    Form7.ibDataSet24ICMSSUBSTI.AsFloat      := 0;
+    Form7.ibDataSet24BASESUBSTI.AsFloat      := 0;
+    Form7.ibDataSet24IPI.AsFloat             := 0;
+    Form7.ibDataSet24VFCPST.AsFloat          := 0.00;// Sandro Silva 2023-04-11
+    Form7.ibDataSet24ICMS_DESONERADO.AsFloat := 0; //Mauricio Parizotto 2023-07-18
+
+    Form7.ibDataSet101.DisableControls;
+    Form7.ibDataSet101.Close;
+    Form7.ibDataSet101.SelectSQL.Clear;
+
+    // Acumula os totais para evitar passar item por item da nota, nota com muitos itens fica lento
+    Form7.ibDataSet101.SelectSQL.Add(
+      'select ' +
+      'sum(cast(coalesce(TOTAL, 0) as numeric(18, 2))) as TOTAL, ' +
+      'sum(cast(coalesce(VIPI, 0) as numeric(18, 2))) as VIPI, ' +
+      'sum(cast(coalesce(VBC, 0) as numeric(18, 2))) as VBC, ' +
+      'sum(cast(coalesce(VICMS, 0) as numeric(18, 2))) as VICMS, ' +
+      'sum(cast(coalesce(VBCST, 0) as numeric(18, 2))) as VBCST, ' +
+      'sum(cast(coalesce(VICMSST, 0) as numeric(18, 2))) as VICMSST, ' +
+      'sum(cast(coalesce(VFCPST, 0) as numeric(18, 2))) as VFCPST, ' +
+      'sum(cast(coalesce(ICMS_DESONERADO, 0) as numeric(18, 2))) as ICMS_DESONERADO ' +
+      'from ITENS002 '+
+      ' Where NUMERONF='+QuotedStr(Form7.ibDAtaSet24NUMERONF.AsString)+
+      '   and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');
+
+    Form7.ibDataSet101.Open;
+
+    Form7.ibDataSet101.First;
+
+    while not Form7.ibDataSet101.Eof do
+    begin
+      try
+        Form7.ibDataSet24MERCADORIA.AsFloat      := Form7.ibDataSet24MERCADORIA.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('TOTAL').AsFloat,2);
+        Form7.ibDataSet24IPI.Value               := Form7.ibDataSet24IPI.AsFloat        +  Arredonda(Form7.ibDataSet101.FieldByname('VIPI').AsFloat,2);
+        Form7.ibDataSet24BASEICM.AsFloat         := Form7.ibDataSet24BASEICM.AsFloat    +  Arredonda(Form7.ibDataSet101.FieldByname('VBC').AsFloat,2);
+        Form7.ibDataSet24ICMS.AsFloat            := Form7.ibDataSet24ICMS.AsFloat       +  Arredonda(Form7.ibDataSet101.FieldByname('VICMS').AsFloat,2);
+        Form7.ibDataSet24BASESUBSTI.AsFloat      := Form7.ibDataSet24BASESUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VBCST').AsFloat,2);
+        Form7.ibDataSet24ICMSSUBSTI.AsFloat      := Form7.ibDataSet24ICMSSUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VICMSST').AsFloat,2);
+        Form7.ibDataSet24VFCPST.AsFloat          := Form7.ibDataSet24VFCPST.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('VFCPST').AsFloat,2); // Sandro Silva 2023-04-11
+        if bDescontaICMSDeso then
+          Form7.ibDataSet24ICMS_DESONERADO.AsFloat := Form7.ibDataSet24ICMS_DESONERADO.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('ICMS_DESONERADO').AsFloat,2); // Mauricio Parizotto 2023-07-18
+      except
+      end;
+
+      ibDataSet101.Next;
+    end;
+
+    //Mauricio Parizotto 2023-07-19
+    CalculaTotalNota;
+  except
+  end;
+
+  AgendaCommit(True);
 end;
 
 end.

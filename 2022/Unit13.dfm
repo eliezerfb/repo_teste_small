@@ -47,7 +47,7 @@ object Form13: TForm13
       Top = 15
       Width = 69
       Height = 13
-      BiDiMode = bdRightToLeft
+      BiDiMode = bdLeftToRight
       Caption = 'Grade do item:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -105,6 +105,7 @@ object Form13: TForm13
       Ctl3D = False
       DefaultColWidth = 91
       DefaultRowHeight = 32
+      DrawingStyle = gdsClassic
       FixedColor = clBtnShadow
       FixedCols = 0
       RowCount = 20
