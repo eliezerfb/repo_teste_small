@@ -4,8 +4,8 @@ object Form10: TForm10
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Ficha'
-  ClientHeight = 689
-  ClientWidth = 1462
+  ClientHeight = 680
+  ClientWidth = 1458
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
