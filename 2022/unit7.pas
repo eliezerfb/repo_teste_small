@@ -11316,6 +11316,8 @@ begin
   fQuantidadeAnterior := ibDataSet4QTD_ATUAL.AsFloat;
   fPrecoAnterior      := Form7.ibDataSet4PRECO.AsFloat;
   { Está variável também será usada no evento AfterPost }
+
+  Form7.StatusTrocaPerfil := 'OK'; // Sandro Silva 2024-01-15
 end;
 
 procedure TForm7.ibDataSet4DESCRICAOSetText(Sender: TField; const Text: String);
@@ -22358,6 +22360,7 @@ begin
     ibDataset99.SelectSql.Add('select gen_id(G_HASH_ESTOQUE,1) from rdb$database');
     ibDataset99.Open;
   except end;
+  Form7.StatusTrocaPerfil := 'OK'; // Sandro Silva 2024-01-15
 end;
 
 procedure TForm7.ImprimirtodasasOSfiltradas1Click(Sender: TObject);
@@ -25777,7 +25780,7 @@ begin
   {Dailon Parisotto 2023-10-09 fim}
   
   //Mauricio Parizotto 2023-09-18
-  if StatusTrocaPerfil = 'PR' then
+  if Form7.StatusTrocaPerfil = 'PR' then
     Exit;
 
   I := Application.MessageBox(Pchar('Atribuir o novo valor para todas as compras deste produto?'+ Chr(10)
@@ -32616,15 +32619,15 @@ begin
   {Dailon Parisotto 2023-10-09 fim}
 
   //Mauricio Parizotto 2023-09-26
-  if StatusTrocaPerfil = 'PR' then
+  if Form7.StatusTrocaPerfil = 'PR' then
     Exit;
 
   if ibDataSet4IDPERFILTRIBUTACAO.AsInteger > 0 then
   begin
-    StatusTrocaPerfil := 'PR';
+    Form7.StatusTrocaPerfil := 'PR';
     SetTibutacaoProduto(ibDataSet4IDPERFILTRIBUTACAO.AsInteger);
     Form10.orelha_ICMSShow(sender);
-    StatusTrocaPerfil := 'OK';
+    //Sandro Silva 2024-01-15 Form7.StatusTrocaPerfil := 'OK';
   end;
 
   Form10.fraPerfilTrib.CarregaDescricao;
@@ -32640,7 +32643,7 @@ begin
   if ibDataSet4IDPERFILTRIBUTACAO.AsInteger = 0 then
     Exit;
 
-  if StatusTrocaPerfil = 'PR' then
+  if Form7.StatusTrocaPerfil = 'PR' then
     Exit;
 
   ibDataSet4IDPERFILTRIBUTACAO.AsString := '';

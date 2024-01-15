@@ -10853,6 +10853,8 @@ object Form10: TForm10
           ParentColor = False
           ParentCtl3D = False
           TabOrder = 0
+          OnEnter = fraPerfilTribEnter
+          OnExit = fraPerfilTribExit
           ExplicitLeft = 110
           ExplicitTop = 25
           ExplicitWidth = 390

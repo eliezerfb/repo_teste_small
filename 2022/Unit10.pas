@@ -561,6 +561,8 @@ type
       const pDisp: IDispatch; const URL: OleVariant);
     procedure fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure fraPerfilTribEnter(Sender: TObject);
+    procedure fraPerfilTribExit(Sender: TObject);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -5895,6 +5897,7 @@ begin
       if Copy(Form10.ComboBox5.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IPPT.AsString)) then
       begin
         Form10.ComboBox5.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
       end;
     end;
 
@@ -5906,6 +5909,7 @@ begin
       if Copy(Form10.ComboBox6.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IAT.AsString)) then
       begin
         Form10.ComboBox6.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
       end;
     end;
 
@@ -5945,6 +5949,7 @@ begin
           if Copy(cboCSOSN_Prod.Items[I],1, Length(Trim(Form7.ibDataSet4CSOSN.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN.AsString)) then
           begin
             cboCSOSN_Prod.ItemIndex := I;
+            Break; // Sandro Silva 2024-01-15
           end;
         end;
 
@@ -5988,6 +5993,7 @@ begin
           if Copy(Form10.ComboBox15.Items[I],1,Length(Trim(Form7.ibDataSet4CSOSN_NFCE.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)) then
           begin
             Form10.ComboBox15.ItemIndex := I;
+            Break; // Sandro Silva 2024-01-15
           end;
         end;
         {Sandro Silva 2023-05-09 fim}
@@ -6014,6 +6020,7 @@ begin
         if Copy(cboOrigemProd.Items[I],1,1) = Copy(Form7.ibDataSet4CST.AsString+'000',1,1) then
         begin
           cboOrigemProd.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6038,6 +6045,7 @@ begin
         if Copy(cboCST_Prod.Items[I],1,2) = Copy(Form7.ibDataSet4CST.AsString+'000',2,2) then
         begin
           cboCST_Prod.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6061,6 +6069,7 @@ begin
         if Copy(Form10.ComboBox14.Items[I],1,2) = Copy(Form7.ibDataSet4CST_NFCE.AsString+'000',2,2) then
         begin
           Form10.ComboBox14.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6080,6 +6089,7 @@ begin
         if Copy(Form10.ComboBox1.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_IPI.AsString)) then
         begin
           Form10.ComboBox1.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6125,6 +6135,7 @@ begin
         if Copy(Form10.ComboBox7.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString)) then
         begin
           Form10.ComboBox7.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6170,6 +6181,7 @@ begin
         if Copy(Form10.ComboBox10.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString)) then
         begin
           Form10.ComboBox10.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6194,13 +6206,14 @@ begin
         if Copy(Form10.ComboBox9.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4TIPO_ITEM.AsString)) then
         begin
           Form10.ComboBox9.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
 
     //Mauricio Parizotto 2023-09-18
     //if ComboBox9.CanFocus then
-    //  ComboBox9.SetFocus;    
+    //  ComboBox9.SetFocus;
     if fraPerfilTrib.txtCampo.CanFocus then
       fraPerfilTrib.txtCampo.SetFocus;
 
@@ -6224,6 +6237,7 @@ begin
         if Copy(Form10.ComboBox11.Items[I],1,4) = UpperCase(AllTrim(Form7.ibDataSet4CFOP.AsString)) then
         begin
           Form10.ComboBox11.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -7906,12 +7920,23 @@ begin
     AtribuirItemPesquisaComposicao;
 end;
 
+procedure TForm10.fraPerfilTribEnter(Sender: TObject);
+begin
+  Form7.StatusTrocaPerfil := 'OK'; //Sandro Silva 2024-01-15
+end;
+
+procedure TForm10.fraPerfilTribExit(Sender: TObject);
+begin
+  fraPerfilTrib.FrameExit(Sender);
+  Form7.StatusTrocaPerfil := 'PR'; //Sandro Silva 2024-01-15
+end;
+
 procedure TForm10.fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   {Sandro Silva 2024-01-11 inicio}
-  if Key = VK_RETURN then
-     Form7.StatusTrocaPerfil := 'PR';
+  //if Key = VK_RETURN then
+  //   Form7.StatusTrocaPerfil := 'PR';
   fraPerfilTrib.txtCampoKeyDown(Sender, Key, Shift);
   {Sandro Silva 2024-01-11 fim}
 end;
