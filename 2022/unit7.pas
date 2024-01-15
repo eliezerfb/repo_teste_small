@@ -11007,6 +11007,9 @@ begin
     }
 
     try
+      DBGrid1.Visible   := True;
+      pnlFiltro.Visible := True;
+
       if Form7.DBGrid1.CanFocus then
         Form7.DBGrid1.SetFocus;
 
@@ -11603,6 +11606,27 @@ begin
   try
     //dbGrid1.DataSource := DataSource13; Mauricio Parizotto 2023-08-14  causa erro invalid transaction handle f-7258 
     dbGrid1.DataSource := nil;
+    {Dailon Parisotto (f-7803) 2024-01-11 Inicio}
+    DataSourceAtual    := nil;
+    TabelaAberta       := nil;
+    ArquivoAberto      := nil;
+    sSelect   := EmptyStr;
+    sWhere    := EmptyStr;
+    sOrderBy  := EmptyStr;
+    DBGrid1.Visible := False;
+    DBGrid2.Visible := False;
+    DBGrid3.Visible := False;
+    DBGrid4.Visible := False;
+    lblHomologacao.Visible := False;
+
+    pnlFiltro.Visible := False;
+    Panel2.Visible := False;
+    Panel9.Visible := False;
+    Panel10.Visible := False;
+
+    DBGrid1.Refresh;
+    Self.Repaint;
+    {Dailon Parisotto (f-7803) 2024-01-11 Fim}
   except
     on E: Exception do
     begin
