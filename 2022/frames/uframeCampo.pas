@@ -65,9 +65,7 @@ constructor TfFrameCampo.Create(AOwner: TComponent);
 begin
   inherited;
   FGravarSomenteTextoEncontrato := True;
-  //Mauricio Parizotto 2023-10-31
   FTipoPesquisa := tpLocate;
-//  FTipoPesquisa := tpSelect;
   FCampoVazioAbrirGridPesquisa    := False;
   FAutoSizeColunaNoGridDePesquisa := False;
 end;
@@ -146,6 +144,14 @@ var
   CampoChange: TNotifyEvent;
   sNomeCampoChave: String;
 begin
+  //Mauricio Parizotto 2024-01-15
+  if CampoCodigo.AsString = '' then
+  begin
+    txtCampo.Text := '';
+    Exit;
+  end;
+
+
   if (Trim(FTabela) = '') then // and (Trim(FSQL) = '') then
   begin
     MensagemSistema('Informe o nome da tabela ou a instrução SQL para selecionar os dados', msgErro); // Precisa ser informado a tabela ou o SQL, senão causa erro
@@ -172,11 +178,12 @@ begin
                       ' From ' + FTabela +
                       ' Where 1=1 ' +
                       FFiltro +
-                      ' Order by upper(' + sCampoDescricao + ')';
+                      ' Order by upper(' + sCampoDescricao + ') ';
   end;
   Query.Open;
 
-  if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then
+  //if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then Mauricio Parizotto 2024-01-16
+  if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive]) then
   begin
     CampoChange := txtCampo.onChange;
     txtCampo.onChange := nil;
@@ -184,13 +191,8 @@ begin
     txtCampo.onChange := CampoChange;
   end else
   begin
-    {Mauricio Parizotto 2023-1-20 Inicio}
-    //txtCampo.Text := '';
-    if FGravarSomenteTextoEncontrato then
-      txtCampo.Text := '';
-    {Mauricio Parizotto 2023-1-20 Fim}
+    txtCampo.Text := '';
   end;
-
 end;
 
 procedure TfFrameCampo.txtCampoChange(Sender: TObject);
@@ -209,60 +211,45 @@ end;
 
 procedure TfFrameCampo.FrameExit(Sender: TObject);
 begin
-  {Sandro Silva 2023-09-27 inicio
-  if Query.Locate('NOME', Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]) then
-  begin
-    txtCampo.Text           := Query.Fields[1].AsString;
+  //Mauricio Parizotto 2024-01-15
+  if not (CampoCodigo.DataSet.State in [dsEdit]) then
+    CampoCodigo.DataSet.Edit;
 
-    if CampoCodigo.AsInteger <> Query.Fields[0].AsInteger then
-      CampoCodigo.AsInteger := Query.Fields[0].AsInteger;
-  end else
+  //Limpa Campo
+  if Trim(txtCampo.Text) = '' then
   begin
     txtCampo.Clear;
     CampoCodigo.Value := null;
+    gdRegistros.Visible := False;
+    Self.Height := txtCampo.Height;
+    Self.SendToBack;
+    Exit;
   end;
-  }
+
   if Query.Locate(ALIAS_CAMPO_PESQUISADO, Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]) then
   begin
     if FGravarSomenteTextoEncontrato then
     begin
       txtCampo.Text := Query.Fields[1].AsString;
 
-      if not (CampoCodigo.DataSet.State in [dsEdit]) then
-        CampoCodigo.DataSet.Edit;
-
       if CampoCodigo.DataType in [ftSmallint, ftInteger, ftWord, ftLargeint] then
       begin
         if CampoCodigo.AsInteger <> Query.Fields[0].AsInteger then
           CampoCodigo.AsInteger := Query.Fields[0].AsInteger;
-      end
-      else
+      end else
       begin
         if CampoCodigo.Value <> Query.Fields[0].Value then
           CampoCodigo.Value := Query.Fields[0].Value;
       end;
-    end
-    else
+    end else
     begin
-      if not (CampoCodigo.DataSet.State in [dsEdit]) then
-        CampoCodigo.DataSet.Edit;
-      {2024-01-04
-      CampoCodigo.Value := txtCampo.Text;
-      }
       case CampoCodigo.DataType of
         ftSmallint, ftInteger, ftWord, ftLargeint:
         begin
-          {Sandro Silva 2024-01-11 inicio
-          if (LimpaNumero(txtCampo.Text) = txtCampo.Text) and (LimpaNumero(txtCampo.Text) <> '') then
-            CampoCodigo.Value := txtCampo.Text
-          else
-            txtCampo.Clear;
-          }
-          if (Trim(txtCampo.Text) = Query.Fields[1].AsString) and (Trim(txtCampo.Text) <> '') then
+          if (Trim(txtCampo.Text) = Query.Fields[1].AsString) then
             CampoCodigo.Value := Query.Fields[0].Value
           else
             txtCampo.Clear;
-          {Sandro Silva 2024-01-11 fim}
         end
       else
         CampoCodigo.Value := txtCampo.Text;
@@ -275,17 +262,9 @@ begin
     begin
       txtCampo.Clear;
       CampoCodigo.Value := null;
-    end
-    else
+    end else
     begin
-      {Sandro Silva 2024-01-11 inicio
       CampoCodigo.Value := Trim(txtCampo.Text);
-      }
-      if Trim(txtCampo.Text) <> '' then
-        CampoCodigo.Value := Trim(txtCampo.Text)
-      else
-        CampoCodigo.Clear;
-      {Sandro Silva 2024-01-11 fim}
     end;
   end;
   {Sandro Silva 2023-09-27 fim}
@@ -329,7 +308,7 @@ begin
     CampoAuxExiber+// Mauricio Parizotto 2023-11-21
     ' From ' + FTabela +
     ' Where (upper(' + sCampoDescricao + ') like upper(' + QuotedStr('%' + txtCampo.Text + '%') + ')) ' +
-    ' Order by upper(' + sCampoDescricao + ')';
+    ' Order by upper(' + sCampoDescricao + ') ';
 end;
 
 end.

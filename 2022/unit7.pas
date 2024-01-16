@@ -11315,9 +11315,6 @@ begin
   sNomeAnterior       := ibDataSet4DESCRICAO.AsString;
   fQuantidadeAnterior := ibDataSet4QTD_ATUAL.AsFloat;
   fPrecoAnterior      := Form7.ibDataSet4PRECO.AsFloat;
-  { Está variável também será usada no evento AfterPost }
-
-  Form7.StatusTrocaPerfil := 'OK'; // Sandro Silva 2024-01-15
 end;
 
 procedure TForm7.ibDataSet4DESCRICAOSetText(Sender: TField; const Text: String);
@@ -22360,7 +22357,6 @@ begin
     ibDataset99.SelectSql.Add('select gen_id(G_HASH_ESTOQUE,1) from rdb$database');
     ibDataset99.Open;
   except end;
-  Form7.StatusTrocaPerfil := 'OK'; // Sandro Silva 2024-01-15
 end;
 
 procedure TForm7.ImprimirtodasasOSfiltradas1Click(Sender: TObject);
@@ -32627,7 +32623,7 @@ begin
     Form7.StatusTrocaPerfil := 'PR';
     SetTibutacaoProduto(ibDataSet4IDPERFILTRIBUTACAO.AsInteger);
     Form10.orelha_ICMSShow(sender);
-    //Sandro Silva 2024-01-15 Form7.StatusTrocaPerfil := 'OK';
+    Form7.StatusTrocaPerfil := 'OK';
   end;
 
   Form10.fraPerfilTrib.CarregaDescricao;
