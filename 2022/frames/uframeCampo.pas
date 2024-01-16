@@ -85,7 +85,6 @@ begin
   else
     Query.Locate(ALIAS_CAMPO_PESQUISADO, Trim(txtCampo.Text), [loCaseInsensitive, loPartialKey]);
   end;
-
 end;
 
 procedure TfFrameCampo.txtCampoKeyDown(Sender: TObject; var Key: Word;
@@ -144,14 +143,6 @@ var
   CampoChange: TNotifyEvent;
   sNomeCampoChave: String;
 begin
-  //Mauricio Parizotto 2024-01-15
-  if CampoCodigo.AsString = '' then
-  begin
-    txtCampo.Text := '';
-    Exit;
-  end;
-
-
   if (Trim(FTabela) = '') then // and (Trim(FSQL) = '') then
   begin
     MensagemSistema('Informe o nome da tabela ou a instrução SQL para selecionar os dados', msgErro); // Precisa ser informado a tabela ou o SQL, senão causa erro
@@ -310,6 +301,7 @@ begin
     ' Where (upper(' + sCampoDescricao + ') like upper(' + QuotedStr('%' + txtCampo.Text + '%') + ')) ' +
     ' Order by upper(' + sCampoDescricao + ') ';
 end;
+
 
 end.
 

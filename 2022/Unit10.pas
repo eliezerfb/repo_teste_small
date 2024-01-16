@@ -8084,13 +8084,12 @@ begin
   end;
 end;
 
-
-
-
 procedure TForm10.DBGrid4KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 end;
+
+
 
 end.
