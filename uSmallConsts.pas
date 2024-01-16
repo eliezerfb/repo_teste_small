@@ -33,7 +33,7 @@ const
   _cIdentGeralRede        = 'Rede';
   _cIdentGeralBuild       = 'Build';
   _cIdentGeralBuild2020   = _cIdentGeralBuild + ' 2020';
-  _cIdentGeralBuild2023   = _cIdentGeralBuild + ' 2023';
+  _cIdentGeralBuild2023   = _cIdentGeralBuild + ' 2024'; //Sandro Silva 2024-01-12  _cIdentGeralBuild2023   = _cIdentGeralBuild + ' 2023';
 
   // SECTION USO (smallcom.inf)
   _cSectionUso              = 'Uso';

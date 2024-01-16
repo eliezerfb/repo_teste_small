@@ -31,7 +31,7 @@ uses
   , LbCipher, LbClass // 2020-07-21
   , JPeg, Menus
   , DateUtils
-  , ShellApi
+  //  , ShellApi
   , msxmldom
   , XMLDoc
   , xmldom
@@ -47,8 +47,8 @@ uses
   {$ELSE}
   , Vcl.Grids
   , Data.DB
-  , uITestaEmail
-  , uTestaEmail
+//  , uITestaEmail
+//  , uTestaEmail
   {$ENDIF}
   ;
 
@@ -189,7 +189,7 @@ function Modulo_11_Febraban(pP1:String):String;
 {$IFDEF VER150}
 {$ELSE}
 function HH(hWndCaller: HWND; pszFile: LPCWSTR; uCommand: UINT; dwData: DWORD_PTR): HWND;
-function ValidaEmail(email: String): Boolean;
+//function ValidaEmail(email: String): Boolean;
 {$ENDIF}
 function MontaMascaraCasaDec(qtdCasas : integer) : string;
 function ConverteAcentos3(pP1:String):String;
@@ -2358,10 +2358,15 @@ end;
 
 {$IFDEF VER150}
 {$ELSE}
+{
+
+usar unit_compartilhada\uEmail.pas
+
 function ValidaEmail(email: String): Boolean;
 begin
   Result := TTestaEmail.New.setEmail(email).Testar;
 end;
+}
 {$ENDIF}
 
 function MontaMascaraCasaDec(qtdCasas : integer) : string;
