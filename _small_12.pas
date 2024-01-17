@@ -34,19 +34,19 @@ uses
   //                                 //
   /////////////////////////////////////
 
-  function  DLLG2_DefineTimeout( MHandle:integer; TempoMaximo:integer ) :integer;  stdcall;external 'DLLG2.DLL';
-  function  DLLG2_LeTimeout(Porta : Integer) : Integer; stdcall; external 'dllg2.dll';
-  function  DLLG2_IniciaDriver(porta:Pchar):integer; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_EncerraDriver(MHandle:integer):integer; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_Versao(Versao : Pchar; TamVersao:integer):pchar; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_SetaArquivoLog(NomeArquivoLog:Pchar):integer; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_DefineTimeout(MHandle: integer; TempoMaximo: integer): integer; stdcall; external 'DLLG2.DLL';
+  function  DLLG2_LeTimeout(Porta: Integer): Integer; stdcall; external 'dllg2.dll';
+  function  DLLG2_IniciaDriver(porta: AnsiString): integer; stdcall; external 'DLLG2.DLL';
+  function  DLLG2_EncerraDriver(MHandle: integer): integer; stdcall; external 'DLLG2.DLL';
+  function  DLLG2_Versao(Versao: PAnsiChar; TamVersao: integer): PAnsiChar; stdcall; external 'DLLG2.DLL';
+  function  DLLG2_SetaArquivoLog(NomeArquivoLog: PAnsiChar):integer; stdcall;external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_SetaArquivoLog(NomeArquivoLog: Pchar):integer; stdcall;external 'DLLG2.DLL';
   function  DLLG2_LimpaParams(MHandle:integer):integer; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_AdicionaParam(MHandle:integer;NomePar:Pchar;VlrPar:Pchar;TipoPar:integer):integer; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_ExecutaComando(MHandle:integer;Comando:pchar):integer; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_AdicionaParam(MHandle:integer; NomePar: PAnsiChar;VlrPar:Pchar;TipoPar:integer):integer; stdcall;external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_AdicionaParam(MHandle:integer;NomePar:Pchar;VlrPar:Pchar;TipoPar:integer):integer; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_ExecutaComando(MHandle:integer;Comando: PAnsiChar):integer; stdcall;external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_ExecutaComando(MHandle:integer;Comando:pchar):integer; stdcall;external 'DLLG2.DLL';
   function  DLLG2_ObtemCodErro(MHandle:integer):integer;stdcall;external 'DLLG2.DLL';
-  function  DLLG2_Retorno(MHandle,Indice:integer;NomeRetorno:pchar;TamNomeRetorno:integer;VlrRetorno:pchar;TamVlrRetorno:integer):integer; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_ObtemNomeErro(MHandle:integer;NomeErro:pchar;TamNomeErro:integer):pchar; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_ObtemCircunstancia(MHandle:integer;Circunstancia:pchar;TamNomeCircus:integer):pchar; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_Retorno(MHandle,Indice:integer;NomeRetorno: PAnsiChar;TamNomeRetorno:integer; VlrRetorno: PAnsiChar; TamVlrRetorno: integer): integer; stdcall; external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_Retorno(MHandle,Indice:integer;NomeRetorno:pchar;TamNomeRetorno:integer;VlrRetorno:pchar;TamVlrRetorno:integer):integer; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_ObtemNomeErro(MHandle:integer;NomeErro: PAnsiChar; TamNomeErro: integer): PAnsiChar; stdcall;external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_ObtemNomeErro(MHandle:integer;NomeErro:pchar;TamNomeErro:integer):pchar; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_ObtemCircunstancia(MHandle:integer; Circunstancia: PAnsiChar; TamNomeCircus: integer): PAnsiChar; stdcall;external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_ObtemCircunstancia(MHandle:integer;Circunstancia:pchar;TamNomeCircus:integer):pchar; stdcall;external 'DLLG2.DLL';
   //
   function _ecf12_CodeErro(pP1: Integer; pP2: String):Integer;
   function _ecf12_Inicializa(Pp1: String): Boolean;
@@ -154,9 +154,15 @@ implementation
 // ---------------------------------- //
 function _ecf12_CodeErro(pP1: Integer; pP2: String):Integer;
 var
+  {Sandro Silva 2023-12-13 inicio
   nomeerro: array [0..255] of char;
   circunstancia: array [0..255] of char;
   Retorno: array [0..255] of char;
+  }
+  nomeerro: array [0..255] of AnsiChar;
+  circunstancia: array [0..255] of AnsiChar;
+  Retorno: array [0..255] of AnsiChar;
+  {Sandro Silva 2023-12-13 fim}
 begin
   //
   if (DLLG2_ObtemCodErro(iHd) <> 0) then
@@ -199,7 +205,7 @@ end;
 function _ecf12_Inicializa(Pp1: String): Boolean;
 var
   I : Integer;
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   Result := False;
@@ -212,7 +218,7 @@ begin
   begin
     if Length(AllTrim(Retorno)) <> 10 then
     begin
-      iHd := DLLG2_IniciaDriver(pChar(pP1));
+      iHd := DLLG2_IniciaDriver(AnsiString(pP1)); // Sandro Silva 2023-12-13 iHd := DLLG2_IniciaDriver(pChar(pP1));
       {Sandro Silva 2016-02-18 inicio}
       if Form1.iTimeOutDLLG2 > 5 then
         DLLG2_DefineTimeout(iHd, Form1.iTimeOutDLLG2);
@@ -234,7 +240,7 @@ begin
         begin
           Result := False;
           ShowMessage('FIT LOGGER'+Chr(10)+'Testando COM'+StrZero(I,1,0)+chr(10)+chr(10)+'Data: '+Retorno);
-          iHd := DLLG2_IniciaDriver(pChar('COM'+StrZero(I,1,0)));
+          iHd := DLLG2_IniciaDriver(AnsiString('COM'+StrZero(I,1,0))); // Sandro Silva 2023-12-13 iHd := DLLG2_IniciaDriver(pChar('COM'+StrZero(I,1,0)));
           {Sandro Silva 2016-02-18 inicio}
           if Form1.iTimeOutDLLG2 > 5 then
             DLLG2_DefineTimeout(iHd, Form1.iTimeOutDLLG2);
@@ -595,7 +601,7 @@ end;
 // -------------------------------//
 function _ecf12_SubTotal(Pp1: Boolean):Real;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                                // Limpa os parâmetros
@@ -636,7 +642,7 @@ end;
 // -------------------------------- //
 function _ecf12_NumeroDoCupom(Pp1: Boolean):String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -695,7 +701,7 @@ end;
 // -------------------------------- //
 function _ecf12_StatusGaveta(Pp1: Boolean):String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -825,7 +831,7 @@ end;
 
 function _ecf12_LeituraDaMFD(pP1, pP2, pP3: String):Boolean;
 var
-  Retorno: array [0..400] of char;
+  Retorno: array [0..400] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..400] of char;
   sTexto : String;
 begin
 
@@ -1059,7 +1065,7 @@ end;
 // ---------------------------------------------- //
 function _ecf12_RetornaVerao(pP1: Boolean):Boolean;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                         // Limpa os parâmetros
@@ -1106,7 +1112,7 @@ end;
 // -------------------------------- //
 function _ecf12_VersodoFirmware(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                               // Limpa os parâmetros
@@ -1126,7 +1132,7 @@ end;
 // -------------------------------- //
 function _ecf12_NmerodeSrie(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1145,7 +1151,7 @@ end;
 // -------------------------------- //
 function _ecf12_CGCIE(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1174,7 +1180,7 @@ end;
 // --------------------------------- //
 function _ecf12_Cancelamentos(pP1: Boolean): String;
 var
-  Retorno: array [0..606] of char;
+  Retorno: array [0..606] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..606] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1201,7 +1207,7 @@ end;
 // -------------------------------- //
 function _ecf12_Descontos(pP1: Boolean): String;
 var
-  Retorno: array [0..606] of char;
+  Retorno: array [0..606] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..606] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1225,7 +1231,7 @@ end;
 // -------------------------------- //
 function _ecf12_ContadorSeqencial(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1250,7 +1256,7 @@ end;
 // -------------------------------- //
 function _ecf12_Nmdeoperaesnofiscais(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1270,7 +1276,7 @@ end;
 
 function _ecf12_NmdeCuponscancelados(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1290,7 +1296,7 @@ end;
 
 function _ecf12_NmdeRedues(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1313,7 +1319,7 @@ end;
 
 function _ecf12_Nmdeintervenestcnicas(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1337,7 +1343,7 @@ end;
 // Sandro Silva 2017-10-09  Contador Geral de Relatório Gerencial
 function _ecf12_NmContadorGeraldeRelatrioGerencial(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1360,7 +1366,7 @@ end;
 
 function _ecf12_NmContadordeCuponsFiscal(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1384,7 +1390,7 @@ end;
 // Sandro Silva 2017-10-09 Contador de Cupons Crédito/Débito
 function _ecf12_NmContadordeCuponsCrditoDbito(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1407,7 +1413,7 @@ end;
 
 function _ecf12_Nmdesubstituiesdeproprietrio(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                                       // Limpa os parâmetros
@@ -1428,7 +1434,7 @@ end;
 
 function _ecf12_Clichdoproprietrio(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13   Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                               // Limpa os parâmetros
@@ -1449,7 +1455,7 @@ end;
 // ------------------------------------ //
 function _ecf12_NmdoCaixa(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1469,7 +1475,7 @@ end;
 
 function _ecf12_Nmdaloja(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1489,7 +1495,7 @@ end;
 
 function _ecf12_Moeda(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1509,7 +1515,7 @@ end;
 // ----------------------------------------- //
 function _ecf12_Dataehoradaimpressora(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1534,7 +1540,7 @@ end;
 
 function _ecf12_Datadaultimareduo(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
@@ -1555,7 +1561,7 @@ end;
 
 function _ecf12_Datadomovimento(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
@@ -1575,7 +1581,7 @@ end;
 // Ex: 161800120005000000000000000000000000000000000000000000000000000000 //
 function _ecf12_RetornaAliquotas(pP1: Boolean): String;
 var
-  Retorno: array [0..616] of char;
+  Retorno: array [0..616] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..616] of char;
   I : Integer;
 begin
   //
@@ -1637,7 +1643,7 @@ end;
 
 function _ecf12_leituraMemoriaFiscalEmDisco(pP1, pP2, pP3: String): Boolean;
 var
-  Retorno: array [0..400] of char;
+  Retorno: array [0..400] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..400] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                    // Limpa os parâmetros
@@ -1949,7 +1955,7 @@ end;
 
 function _ecf12_GrandeTotal(sP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -1975,7 +1981,7 @@ end;
 
 function _ecf12_TotalizadoresDasAliquotas(sP1: Boolean): String;
 var
-  Retorno: array [0..616] of char;
+  Retorno: array [0..616] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..616] of char;
   I : Integer;
 begin
   //
@@ -2029,7 +2035,7 @@ end;
 
 function _ecf12_CupomAberto(sP1: Boolean): boolean;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -2044,7 +2050,7 @@ end;
 
 function _ecf12_FaltaPagamento(sP1: Boolean): boolean;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                                // Limpa os parâmetros
@@ -2064,7 +2070,7 @@ end;
 
 function _ecf12_Marca(sP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -2080,7 +2086,7 @@ end;
 
 function _ecf12_Modelo(sP1: Boolean): String;
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -2096,7 +2102,7 @@ end;
 
 function _ecf12_Tipodaimpressora(pP1: Boolean): String; //
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -2112,7 +2118,7 @@ end;
 
 function _ecf12_VersaoSB(pP1: Boolean): String; //
 var
-  Retorno: array [0..255] of char;
+  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
 begin
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
@@ -2145,7 +2151,7 @@ end;
 
 function _ecf12_DadosDaUltimaReducao(pP1: Boolean): String; //
 var
-  Retorno: array [0..4000] of char;
+  Retorno: array [0..4000] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..4000] of char;
   sRetorno : String;
 begin
   //
