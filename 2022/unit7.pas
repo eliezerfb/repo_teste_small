@@ -11315,7 +11315,6 @@ begin
   sNomeAnterior       := ibDataSet4DESCRICAO.AsString;
   fQuantidadeAnterior := ibDataSet4QTD_ATUAL.AsFloat;
   fPrecoAnterior      := Form7.ibDataSet4PRECO.AsFloat;
-  { Está variável também será usada no evento AfterPost }
 end;
 
 procedure TForm7.ibDataSet4DESCRICAOSetText(Sender: TField; const Text: String);
@@ -25781,7 +25780,7 @@ begin
   {Dailon Parisotto 2023-10-09 fim}
   
   //Mauricio Parizotto 2023-09-18
-  if StatusTrocaPerfil = 'PR' then
+  if Form7.StatusTrocaPerfil = 'PR' then
     Exit;
 
   I := Application.MessageBox(Pchar('Atribuir o novo valor para todas as compras deste produto?'+ Chr(10)
@@ -32620,15 +32619,15 @@ begin
   {Dailon Parisotto 2023-10-09 fim}
 
   //Mauricio Parizotto 2023-09-26
-  if StatusTrocaPerfil = 'PR' then
+  if Form7.StatusTrocaPerfil = 'PR' then
     Exit;
 
   if ibDataSet4IDPERFILTRIBUTACAO.AsInteger > 0 then
   begin
-    StatusTrocaPerfil := 'PR';
+    Form7.StatusTrocaPerfil := 'PR';
     SetTibutacaoProduto(ibDataSet4IDPERFILTRIBUTACAO.AsInteger);
     Form10.orelha_ICMSShow(sender);
-    StatusTrocaPerfil := 'OK';
+    Form7.StatusTrocaPerfil := 'OK';
   end;
 
   Form10.fraPerfilTrib.CarregaDescricao;
@@ -32644,7 +32643,7 @@ begin
   if ibDataSet4IDPERFILTRIBUTACAO.AsInteger = 0 then
     Exit;
 
-  if StatusTrocaPerfil = 'PR' then
+  if Form7.StatusTrocaPerfil = 'PR' then
     Exit;
 
   ibDataSet4IDPERFILTRIBUTACAO.AsString := '';

@@ -559,6 +559,9 @@ type
       const pDisp: IDispatch; const URL: OleVariant);
     procedure WebBrowser1DocumentComplete(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
+    procedure fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fraPerfilTribExit(Sender: TObject);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -3624,7 +3627,7 @@ begin
       CheckBox2.Checked := False;
 
     {Mauricio Parizotto 2023-09-18 Inicio}
-    fraPerfilTrib.GravarSomenteTextoEncontrato := False; // Sandro Silva 20-24.01.04
+    //fraPerfilTrib.GravarSomenteTextoEncontrato := False; // Sandro Silva 20-24.01.04
     fraPerfilTrib.TipoDePesquisa  := tpLocate; //Mauricio Parizotto 2023-10-31
     fraPerfilTrib.CampoCodigo     := Form7.ibDataSet4IDPERFILTRIBUTACAO;
     fraPerfilTrib.sCampoDescricao := 'DESCRICAO';
@@ -5704,121 +5707,7 @@ begin
   
   // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
   begin
-    {Mauricio Parizotto 2023-09-04 Inicio
-    if Form7.sModulo = 'ESTOQUE' then
-    begin
-      if AllTrim(Form7.IbDataSet4ST.AsString) <> '' then
-      begin
-        Form7.ibDataSet14.Close;
-        Form7.ibDataSet14.SelectSQL.Clear;
-        Form7.ibDataSet14.SelectSQL.Add('select * FROM ICM where ST='+QuotedStr(Form7.IbDataSet4ST.AsString)+' ');
-        Form7.ibDataSet14.Open;
-      end else
-      begin
-        Form7.ibDataSet14.Close;
-        Form7.ibDataSet14.SelectSQL.Clear;
-        Form7.ibDataSet14.SelectSQL.Add('select * FROM ICM where CFOP='+QuotedStr('5102')+' or CFOP='+QuotedStr('5101')+' ');
-        Form7.ibDataSet14.Open;
-      end;
-
-      if Alltrim(Form7.ibDataSet14CFOP.AsString) <> '' then
-      begin
-        lblCIT.Caption := Form7.ibDataSet14CFOP.AsString + ' - ' + Form7.ibDataSet14NOME.AsString;
-      end else
-      begin
-        lblCIT.Caption := Form7.ibDataSet14NOME.AsString;
-      end;
-    end;
- 
-    Form7.ibDataSet14.Edit;
-
-    _RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';
-    _AP.Caption := 'AP '+Form7.ibDataSet14.FieldByname('AP_').AsString+'%';
-    _AM.Caption := 'AM '+Form7.ibDataSet14.FieldByname('AM_').AsString+'%';
-    _PA.Caption := 'PA '+Form7.ibDataSet14.FieldByname('PA_').AsString+'%';
-    _MA.Caption := 'MA '+Form7.ibDataSet14.FieldByname('MA_').AsString+'%';
-    _AC.Caption := 'AC '+Form7.ibDataSet14.FieldByname('AC_').AsString+'%';
-    _RO.Caption := 'RO '+Form7.ibDataSet14.FieldByname('RO_').AsString+'%';
-    _MT.Caption := 'MT '+Form7.ibDataSet14.FieldByname('MT_').AsString+'%';
-    _TO.Caption := 'TO '+Form7.ibDataSet14.FieldByname('TO_').AsString+'%';
-    _CE.Caption := 'CE '+Form7.ibDataSet14.FieldByname('CE_').AsString+'%';
-    _RN.Caption := 'RN '+Form7.ibDataSet14.FieldByname('RN_').AsString+'%';
-    _PI.Caption := 'PI '+Form7.ibDataSet14.FieldByname('PI_').AsString+'%';
-    _PB.Caption := 'PB '+Form7.ibDataSet14.FieldByname('PB_').AsString+'%';
-    _PE.Caption := 'PE '+Form7.ibDataSet14.FieldByname('PE_').AsString+'%';
-    _AL.Caption := 'AL '+Form7.ibDataSet14.FieldByname('AL_').AsString+'%';
-    _SE.Caption := 'SE '+Form7.ibDataSet14.FieldByname('SE_').AsString+'%';
-    _BA.Caption := 'BA '+Form7.ibDataSet14.FieldByname('BA_').AsString+'%';
-    _GO.Caption := 'GO '+Form7.ibDataSet14.FieldByname('GO_').AsString+'%';
-    _DF.Caption := 'DF '+Form7.ibDataSet14.FieldByname('DF_').AsString+'%';
-    _MG.Caption := 'MG '+Form7.ibDataSet14.FieldByname('MG_').AsString+'%';
-    _ES.Caption := 'ES '+Form7.ibDataSet14.FieldByname('ES_').AsString+'%';
-    _MS.Caption := 'MS '+Form7.ibDataSet14.FieldByname('MS_').AsString+'%';
-    _SP.Caption := 'SP '+Form7.ibDataSet14.FieldByname('SP_').AsString+'%';
-    _RJ.Caption := 'RJ '+Form7.ibDataSet14.FieldByname('RJ_').AsString+'%';
-    _PR.Caption := 'PR '+Form7.ibDataSet14.FieldByname('PR_').AsString+'%';
-    _SC.Caption := 'SC '+Form7.ibDataSet14.FieldByname('SC_').AsString+'%';
-    _RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
- 
-    _RR.font.size := 8;
-    _AP.font.size := 8;
-    _AM.font.size := 8;
-    _PA.font.size := 8;
-    _MA.font.size := 8;
-    _AC.font.size := 8;
-    _RO.font.size := 8;
-    _MT.font.size := 8;
-    _TO.font.size := 8;
-    _CE.font.size := 8;
-    _RN.font.size := 8;
-    _PI.font.size := 8;
-    _PB.font.size := 8;
-    _PE.font.size := 8;
-    _AL.font.size := 8;
-    _SE.font.size := 8;
-    _BA.font.size := 8;
-    _GO.font.size := 8;
-    _DF.font.size := 8;
-    _MG.font.size := 8;
-    _ES.font.size := 8;
-    _MS.font.size := 8;
-    _SP.font.size := 8;
-    _RJ.font.size := 8;
-    _PR.font.size := 8;
-    _SC.font.size := 8;
-    _RS.font.size := 8;
- 
-    if Form7.ibDataSet13ESTADO.AsString = 'RR' then _RR.Font.Color := clRed else _RR.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AP' then _AP.Font.Color := clRed else _AP.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AM' then _AM.Font.Color := clRed else _AM.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PA' then _PA.Font.Color := clRed else _PA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MA' then _MA.Font.Color := clRed else _MA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AC' then _AC.Font.Color := clRed else _AC.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RO' then _RO.Font.Color := clRed else _RO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MT' then _MT.Font.Color := clRed else _MT.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'TO' then _TO.Font.Color := clRed else _TO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'CE' then _CE.Font.Color := clRed else _CE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RN' then _RN.Font.Color := clRed else _RN.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PI' then _PI.Font.Color := clRed else _PI.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PB' then _PB.Font.Color := clRed else _PB.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PE' then _PE.Font.Color := clRed else _PE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AL' then _AL.Font.Color := clRed else _AL.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SE' then _SE.Font.Color := clRed else _SE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'BA' then _BA.Font.Color := clRed else _BA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'GO' then _GO.Font.Color := clRed else _GO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'DF' then _DF.Font.Color := clRed else _DF.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MG' then _MG.Font.Color := clRed else _MG.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'ES' then _ES.Font.Color := clRed else _ES.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MS' then _MS.Font.Color := clRed else _MS.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SP' then _SP.Font.Color := clRed else _SP.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RJ' then _RJ.Font.Color := clRed else _RJ.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PR' then _PR.Font.Color := clRed else _PR.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SC' then _SC.Font.Color := clRed else _SC.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RS' then _RS.Font.Color := clRed else _RS.Font.Color := clSilver;
-    }
-
     CarregaCit;
-
     {Mauricio Parizotto 2023-09-04 Fim}
   end;
  
@@ -5871,6 +5760,7 @@ begin
       if Copy(Form10.ComboBox5.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IPPT.AsString)) then
       begin
         Form10.ComboBox5.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
       end;
     end;
 
@@ -5882,6 +5772,7 @@ begin
       if Copy(Form10.ComboBox6.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IAT.AsString)) then
       begin
         Form10.ComboBox6.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
       end;
     end;
 
@@ -5912,23 +5803,18 @@ begin
         end;
         }
 
-
-
-
         // Com a inclusão do valor 61 - Tributação monofásica sobre combustíveis cobrado anteriormente nos CSOSN precisa mudar aqui onde seleciona o valor do combo
         if Trim(Form7.ibDataSet4CSOSN.AsString) <> '' then
         begin
           if Copy(cboCSOSN_Prod.Items[I],1, Length(Trim(Form7.ibDataSet4CSOSN.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN.AsString)) then
           begin
             cboCSOSN_Prod.ItemIndex := I;
+            Break; // Sandro Silva 2024-01-15
           end;
         end;
 
       end;
     end;
-
-
-
 
 
 
@@ -5964,6 +5850,7 @@ begin
           if Copy(Form10.ComboBox15.Items[I],1,Length(Trim(Form7.ibDataSet4CSOSN_NFCE.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)) then
           begin
             Form10.ComboBox15.ItemIndex := I;
+            Break; // Sandro Silva 2024-01-15
           end;
         end;
         {Sandro Silva 2023-05-09 fim}
@@ -5990,6 +5877,7 @@ begin
         if Copy(cboOrigemProd.Items[I],1,1) = Copy(Form7.ibDataSet4CST.AsString+'000',1,1) then
         begin
           cboOrigemProd.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6014,6 +5902,7 @@ begin
         if Copy(cboCST_Prod.Items[I],1,2) = Copy(Form7.ibDataSet4CST.AsString+'000',2,2) then
         begin
           cboCST_Prod.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6037,6 +5926,7 @@ begin
         if Copy(Form10.ComboBox14.Items[I],1,2) = Copy(Form7.ibDataSet4CST_NFCE.AsString+'000',2,2) then
         begin
           Form10.ComboBox14.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6056,6 +5946,7 @@ begin
         if Copy(Form10.ComboBox1.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_IPI.AsString)) then
         begin
           Form10.ComboBox1.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6101,6 +5992,7 @@ begin
         if Copy(Form10.ComboBox7.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString)) then
         begin
           Form10.ComboBox7.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6146,6 +6038,7 @@ begin
         if Copy(Form10.ComboBox10.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString)) then
         begin
           Form10.ComboBox10.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6170,15 +6063,14 @@ begin
         if Copy(Form10.ComboBox9.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4TIPO_ITEM.AsString)) then
         begin
           Form10.ComboBox9.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
 
-    //Mauricio Parizotto 2023-09-18
-    //if ComboBox9.CanFocus then
-    //  ComboBox9.SetFocus;    
-    if fraPerfilTrib.txtCampo.CanFocus then
-      fraPerfilTrib.txtCampo.SetFocus;
+    if Form7.StatusTrocaPerfil <> 'PR' then //Mauricio Parizotto 2024-01-15
+      if fraPerfilTrib.txtCampo.CanFocus then
+        fraPerfilTrib.txtCampo.SetFocus;
 
     if Form10.SMALL_DBEDITY.CanFocus then
       Form10.SMALL_DBEDITY.SetFocus;
@@ -6200,6 +6092,7 @@ begin
         if Copy(Form10.ComboBox11.Items[I],1,4) = UpperCase(AllTrim(Form7.ibDataSet4CFOP.AsString)) then
         begin
           Form10.ComboBox11.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -7882,6 +7775,21 @@ begin
     AtribuirItemPesquisaComposicao;
 end;
 
+procedure TForm10.fraPerfilTribExit(Sender: TObject);
+begin
+  fraPerfilTrib.FrameExit(Sender);
+end;
+
+procedure TForm10.fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  {Sandro Silva 2024-01-11 inicio}
+  //if Key = VK_RETURN then
+  //   Form7.StatusTrocaPerfil := 'PR';
+  fraPerfilTrib.txtCampoKeyDown(Sender, Key, Shift);
+  {Sandro Silva 2024-01-11 fim}
+end;
+
 procedure TForm10.AtribuirItemPesquisaComposicao;
 begin
   if allTrim(framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.FieldByName('DESCRICAO').AsString) <> EmptyStr then
@@ -8154,13 +8062,12 @@ begin
   end;
 end;
 
-
-
-
 procedure TForm10.DBGrid4KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 end;
+
+
 
 end.

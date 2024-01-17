@@ -965,7 +965,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_cadastro
+      ActivePage = orelha_ICMS
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -10445,7 +10445,7 @@ object Form10: TForm10
             Left = 24
             Top = 160
             Width = 50
-            Height = 21
+            Height = 24
             Ctl3D = True
             DataField = 'RR_'
             DataSource = Form7.DataSource14
@@ -10853,6 +10853,7 @@ object Form10: TForm10
           ParentColor = False
           ParentCtl3D = False
           TabOrder = 0
+          OnExit = fraPerfilTribExit
           ExplicitLeft = 110
           ExplicitTop = 25
           ExplicitWidth = 390
@@ -10861,6 +10862,7 @@ object Form10: TForm10
             22)
           inherited txtCampo: TEdit
             Width = 390
+            OnKeyDown = fraPerfilTribtxtCampoKeyDown
             ExplicitWidth = 390
           end
           inherited gdRegistros: TDBGrid
@@ -11459,7 +11461,7 @@ object Form10: TForm10
           Left = 10
           Top = 25
           Width = 152
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11478,7 +11480,7 @@ object Form10: TForm10
           Left = 161
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11497,7 +11499,7 @@ object Form10: TForm10
           Left = 313
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11516,7 +11518,7 @@ object Form10: TForm10
           Left = 237
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11535,7 +11537,7 @@ object Form10: TForm10
           Left = 389
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11554,7 +11556,7 @@ object Form10: TForm10
           Left = 465
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11573,7 +11575,7 @@ object Form10: TForm10
           Left = 541
           Top = 25
           Width = 94
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11730,7 +11732,7 @@ object Form10: TForm10
           Left = 20
           Top = 25
           Width = 658
-          Height = 19
+          Height = 22
           BevelInner = bvNone
           Color = clSilver
           Ctl3D = False
@@ -11751,7 +11753,7 @@ object Form10: TForm10
           Left = 676
           Top = 25
           Width = 125
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Enabled = False
