@@ -4431,8 +4431,10 @@ begin
   btnOK.Left  := Panel2.Width - btnOK.Width - 10;
   btnRenogiarDivida.Left  := btnOK.Left - 10 - btnRenogiarDivida.Width;
 
-  Form7.ArquivoAberto.DisableControls;
-  Form7.TabelaAberta.DisableControls;
+  if Form7.ArquivoAberto <> nil then
+    Form7.ArquivoAberto.DisableControls;
+  if Form7.TabelaAberta <> nil then
+    Form7.TabelaAberta.DisableControls;
 
   {Sandro Silva 2023-06-27 inicio}
   orelha_cadastro.PageIndex  :=  0;
@@ -4948,8 +4950,10 @@ begin
   end;
   {Sandro Silva 2022-11-14 fim}
 
-  Form7.ArquivoAberto.EnableControls;
-  Form7.TabelaAberta.EnableControls;
+  if Form7.ArquivoAberto <> nil then
+    Form7.ArquivoAberto.EnableControls;
+  if Form7.TabelaAberta <> nil then
+    Form7.TabelaAberta.EnableControls;
 
   Form10.orelhas.Visible := True;
 
@@ -4960,7 +4964,7 @@ begin
   Label201.Hint := 'Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10);
   Label201.ShowHint := True;
 
-  {Sandro Silva 2023-06-22 inicio} 
+  {Sandro Silva 2023-06-22 inicio}
   Form10.Left := (Form7.Width - Form10.Width) div 2;
   Form10.Repaint;
   {Sandro Silva 2023-06-22 inicio}

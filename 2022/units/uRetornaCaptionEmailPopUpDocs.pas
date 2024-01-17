@@ -22,7 +22,7 @@ type
 implementation
 
 uses
-  uRetornaEmailsPessoa;
+  uRetornaEmailsPessoa, uEmail;
 
 { TRetornaCaptionEmailPopUpDocs }
 

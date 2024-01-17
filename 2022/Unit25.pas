@@ -73,7 +73,7 @@ var
 implementation
 
 uses Unit7, Unit26, Mais, Unit22, Unit14, Unit40, uFuncoesBancoDados,
-  uFuncoesRetaguarda, uDialogs;
+  uFuncoesRetaguarda, uDialogs, uEmail;
 
 {$R *.DFM}
 
