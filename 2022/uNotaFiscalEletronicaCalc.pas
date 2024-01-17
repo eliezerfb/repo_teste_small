@@ -997,19 +997,13 @@ begin
             // Calcula VBCFCPST da mesma forma que é calculado VBCST na geração do XML
             {Sandro Silva 2023-05-18 fim}
 
-            //F-7824 Calcular FCPST somente quando não for devolução
-            //if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //Sandro Silva 2024-01-17
-            //begin
-
-              if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
-              begin
-                oItem.VFCPST  := (oItem.Vbcst * fPercentualFCPST / 100) - oItem.VFCP; // Valor do FCP retido por Substituição Tributária
-              end else
-              begin
-                oItem.VFCPST  := (oItem.Vbcst * fPercentualFCPST / 100); // Valor do FCP retido por Substituição Tributária
-              end;
-
-            //end;
+            if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
+            begin
+              oItem.VFCPST  := (oItem.Vbcst * fPercentualFCPST / 100) - oItem.VFCP; // Valor do FCP retido por Substituição Tributária
+            end else
+            begin
+              oItem.VFCPST  := (oItem.Vbcst * fPercentualFCPST / 100); // Valor do FCP retido por Substituição Tributária
+            end;
 
           end;
         end;
