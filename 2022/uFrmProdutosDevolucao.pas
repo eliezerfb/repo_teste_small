@@ -386,7 +386,7 @@ begin
             Form7.ibDataSet16VICMSST.AsFloat    := cdsProdutosNotaVICMSST.AsFloat;
             Form7.ibDataSet16VBCFCPST.AsFloat   := cdsProdutosNotaVBCFCPST.AsFloat;
             Form7.ibDataSet16PFCPST.AsFloat     := cdsProdutosNotaPFCPST.AsFloat;
-            Form7.ibDataSet16VFCPST.AsFloat     := cdsProdutosNotaVFCPST.AsFloat;
+            //F-7824 Sandro Silva 2024-01-17 Form7.ibDataSet16VFCPST.AsFloat     := cdsProdutosNotaVFCPST.AsFloat;
           end;
         end;
 
@@ -448,7 +448,7 @@ begin
     cdsProdutosNotaVBCST.AsFloat      := vQtdNova * (cdsProdutosNotaVBCST_ANT.AsFloat / vQtdAntes);
     cdsProdutosNotaVICMSST.AsFloat    := vQtdNova * (cdsProdutosNotaVICMSST_ANT.AsFloat / vQtdAntes);
     cdsProdutosNotaVBCFCPST.AsFloat   := vQtdNova * (cdsProdutosNotaVBCFCPST_ANT.AsFloat / vQtdAntes);
-    cdsProdutosNotaVFCPST.AsFloat     := vQtdNova * (cdsProdutosNotaVFCPST_ANT.AsFloat / vQtdAntes);
+    //F-7824 Sandro Silva 2024-01-17 cdsProdutosNotaVFCPST.AsFloat     := vQtdNova * (cdsProdutosNotaVFCPST_ANT.AsFloat / vQtdAntes);
   except
     MensagemSistema('Problema ao calcular valores. Verifique',msgErro);
   end;

@@ -33296,7 +33296,7 @@ begin
       begin
         //if Form7.ibDataSet16VBCFCPST.AsString = '' then
         //  Form7.ibDataSet16VBCFCPST.AsFloat := Form7.ibDataSet16BASE.AsFloat;
-        Form7.ibDataSet16VFCPST.AsFloat   := Arredonda(Form7.ibDataSet16VBCFCPST.AsFloat * Form7.ibDataSet16PFCPST.AsFloat / 100, 2);
+        //F-7824 Sandro Silva 2024-01-17 Form7.ibDataSet16VFCPST.AsFloat   := Arredonda(Form7.ibDataSet16VBCFCPST.AsFloat * Form7.ibDataSet16PFCPST.AsFloat / 100, 2);
       end;
     end;
   end;
