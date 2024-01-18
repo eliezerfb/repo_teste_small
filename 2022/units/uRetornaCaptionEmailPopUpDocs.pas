@@ -3,7 +3,7 @@ unit uRetornaCaptionEmailPopUpDocs;
 interface
 
 uses
-  uIRetornaCaptionEmailPopUpDocs, IBDatabase, SysUtils, smallfunc_xe;
+  uIRetornaCaptionEmailPopUpDocs, IBDatabase, SysUtils, smallfunc_xe, uEmail;
 
 type
   TRetornaCaptionEmailPopUpDocs = class(TInterfacedObject, IRetornaCaptionEmailPopUpDocs)

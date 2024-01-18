@@ -3,7 +3,7 @@ unit uFrmConfigEmailAutContabilidade;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, uEmail,
   Dialogs, uFrmPadrao, StdCtrls, uArquivosDat, smallfunc_xe, Buttons, ExtCtrls;
 
 type

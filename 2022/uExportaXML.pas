@@ -3,7 +3,7 @@ unit uExportaXML;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, uEmail,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, smallfunc_xe, uArquivosDAT,
   uSalvaXMLContabilFactory, IBQuery, uConectaBancoSmall, uSmallEnumerados;
 
