@@ -16494,7 +16494,8 @@ begin
          ))
       > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat)))
       }
-    if (dValorTotalDasFormas > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat)))
+    //Sandro Silva 2024-01-18  if (dValorTotalDasFormas > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat)))
+    if (StrToFloat(FormatFloat('0.00', dValorTotalDasFormas)) > StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat)))
     then
     begin
       //Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0; // Cartão
