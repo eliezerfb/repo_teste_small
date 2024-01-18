@@ -41,7 +41,7 @@ var
 implementation
 
 uses uSmallConsts, uSmallResourceString, uExportaXML, DateUtils,
-  uNFeSections;
+  uNFeSections, uEmail;
 
 {$R *.dfm}
 

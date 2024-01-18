@@ -344,7 +344,7 @@ begin
             end;
           end;
           // ----------------------------------------------------------- //
-          // Calcula os valores do contas a receber se estiver abilitado //
+          // Calcula os valores do contas a receber se estiver habilitado //
           // ----------------------------------------------------------- //
           sOP := '';
 

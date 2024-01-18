@@ -64,7 +64,7 @@ uses
   , DateUtils
   , uDialogs
   , uFuncoesRetaguarda
-  , uGeraRelatorioTotalizadorGeralVenda;
+  , uGeraRelatorioTotalizadorGeralVenda, uEmail;
 
 {$R *.dfm}
 

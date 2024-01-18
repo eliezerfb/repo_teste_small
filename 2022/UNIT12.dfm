@@ -13,8 +13,8 @@ object Form12: TForm12
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'NOTA FISCAL VENDA (SA'#205'DA)'
-  ClientHeight = 671
-  ClientWidth = 1004
+  ClientHeight = 898
+  ClientWidth = 1020
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -43,9 +43,8 @@ object Form12: TForm12
   object ScrollBox1: TScrollBox
     Left = 0
     Top = 0
-    Width = 1004
-    Height = 671
-    VertScrollBar.Position = 216
+    Width = 1020
+    Height = 898
     Align = alClient
     BorderStyle = bsNone
     Color = clWhite
@@ -57,11 +56,9 @@ object Form12: TForm12
     ParentColor = False
     ParentFont = False
     TabOrder = 0
-    ExplicitWidth = 1006
-    ExplicitHeight = 679
     object Panel1: TPanel
       Left = 10
-      Top = -206
+      Top = 10
       Width = 662
       Height = 825
       BevelOuter = bvNone
@@ -2070,7 +2067,7 @@ object Form12: TForm12
     end
     object Panel6: TPanel
       Left = 0
-      Top = 622
+      Top = 838
       Width = 675
       Height = 40
       BevelOuter = bvNone
@@ -2113,7 +2110,7 @@ object Form12: TForm12
     end
     object Panel9: TPanel
       Left = 800
-      Top = -126
+      Top = 90
       Width = 200
       Height = 200
       BevelOuter = bvNone
@@ -2132,7 +2129,7 @@ object Form12: TForm12
     end
     object Button3: TBitBtn
       Left = 768
-      Top = -176
+      Top = 40
       Width = 75
       Height = 25
       Caption = 'Button3'
@@ -2148,7 +2145,7 @@ object Form12: TForm12
     end
     object Panel2: TPanel
       Left = 688
-      Top = 96
+      Top = 312
       Width = 433
       Height = 209
       BevelOuter = bvNone
@@ -2334,13 +2331,16 @@ object Form12: TForm12
     end
     object N1: TMenuItem
       Caption = '-'
+      Visible = False
     end
     object Incluirnovoitemnoestoque1: TMenuItem
       Caption = 'Incluir novo item no estoque...'
+      Visible = False
       OnClick = Incluirnovoitemnoestoque1Click
     end
     object Incluirnovocliente1: TMenuItem
       Caption = 'Incluir novo cliente...'
+      Visible = False
       OnClick = Incluirnovocliente1Click
     end
   end

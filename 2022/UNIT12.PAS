@@ -303,7 +303,7 @@ implementation
 uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
   Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
   uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
-  ufrmPesquisaOrdemServico, uDialogs;
+  ufrmPesquisaOrdemServico, uDialogs, ufrmFichaCadastros;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -2576,6 +2576,10 @@ procedure TForm12.Incluirnovoitemnoestoque1Click(Sender: TObject);
 var
   sTitulo : String;
 begin
+  {
+
+  Reativar quando estiver concluída a migração do cadastro de prdoutos usando a tela padrão de cadastro
+
   if Form1.imgEstoque.Visible then
   begin
     sTitulo := Form7.sTitulo;
@@ -2613,12 +2617,17 @@ begin
     if Form7.sModulo <> 'RETRIBUTA' then
       Form7.ibDataSet16.EnableControls;
   end;
+  }
 end;
 
 procedure TForm12.Incluirnovocliente1Click(Sender: TObject);
 var
   sTitulo : String;
 begin
+  {
+
+  Reativar quando estiver concluída a migração do cadastro de clientes usando a tela padrão de cadastro
+
   if Form1.imgCliFor.Visible then
   begin
     sTitulo := Form7.sTitulo;
@@ -2627,10 +2636,20 @@ begin
     Form7.ibDataSet16.DisableControls;
     try
       Form1.bFechaTudo           := False;
+
       Form1.imgCliForClick(Sender);
       Form7.ibDataSet2.Append;
       Form7.Close;
-      Form10.ShowModal;
+
+      Form7.SetDataSetCadastros(Form7.IniFileUsuarioLogado);
+
+      //Form10.ShowModal;
+      if FrmFichaCadastros = nil then
+        FrmFichaCadastros := TFrmFichaCadastros.Create(Self);
+      FrmFichaCadastros.ShowModal;
+      FreeAndNil(FrmFichaCadastros);
+
+
 
       Form7.sModulo := 'VENDA';
       Form7.sTitulo := sTitulo;
@@ -2648,6 +2667,7 @@ begin
     if Form7.sModulo <> 'RETRIBUTA' then
       Form7.ibDataSet16.EnableControls;
   end;
+  }
 end;
 
 procedure TForm12.DBGrid3KeyUp(Sender: TObject; var Key: Word;

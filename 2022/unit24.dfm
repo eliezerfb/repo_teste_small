@@ -3319,10 +3319,12 @@ object Form24: TForm24
     Top = 6
     object Incluirnovoitemnoestoque1: TMenuItem
       Caption = 'Incluir novo item no estoque...'
+      Visible = False
       OnClick = Incluirnovoitemnoestoque1Click
     end
     object Incluirnovocliente1: TMenuItem
       Caption = 'Incluir novo fornecedor...'
+      Visible = False
       OnClick = Incluirnovocliente1Click
     end
   end

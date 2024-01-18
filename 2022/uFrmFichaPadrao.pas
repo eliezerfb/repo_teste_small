@@ -60,6 +60,7 @@ type
     { Private declarations }
   public
     bEstaSendoUsado : Boolean;
+    bSomenteLeitura: Boolean;
     procedure VerificaSeEstaSendoUsado;
     function GetDescritivoNavegacao:string;
     procedure KeyPressPadrao(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -300,9 +301,15 @@ begin
                                     TibDataSet(DSCadastro.DataSet).SelectSQL.Text+
                                     ' ) A');
 
-    Result := 'Ficha '+IntToStr(DSCadastro.DataSet.Recno)+' de '+IntToStr(sTotal);
+    if DSCadastro.DataSet.State = dsInsert then
+      Result := 'Ficha '+IntToStr(DSCadastro.DataSet.Recno)+' de '+IntToStr(sTotal + 1)
+    else
+      Result := 'Ficha '+IntToStr(DSCadastro.DataSet.Recno)+' de '+IntToStr(sTotal);
+
   except
+
   end;
+
 end;
 
 procedure TFrmFichaPadrao.KeyPressPadrao(Sender: TObject; var Key: Word;

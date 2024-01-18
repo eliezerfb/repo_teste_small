@@ -8,13 +8,14 @@ object Form2: TForm2
   ClientHeight = 571
   ClientWidth = 784
   Color = clWhite
+  Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'System'
   Font.Style = []
   KeyPreview = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate

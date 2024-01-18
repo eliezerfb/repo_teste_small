@@ -2497,7 +2497,9 @@ type
     procedure AuditaAlteracaoEstoqueManual;
     function TestarClienteExiste(AcTexto: String): Boolean;    
     function TestarProdutoExiste(AcTexto: String): Boolean;
-    property UsuarioLogado: String read getUsuarioLogado;   
+    property UsuarioLogado: String read getUsuarioLogado;
+    procedure SetDataSetCadastros(CaminhoIni: String);
+    function IniFileUsuarioLogado: String;
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -2569,7 +2571,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uFrmNaturezaOperacao
   , uFrmSituacaoOS
   , uRelatorioVendasNotaFiscal
-  , uDrawCellGridModulos;
+  , uDrawCellGridModulos, uEmail, ufrmFichaCadastros;
 
 {$R *.DFM}
 
@@ -8116,7 +8118,7 @@ begin
     Form7.IBTransaction1.CommitRetaining;
     if FrmPerfilTributacao = nil then
       FrmPerfilTributacao := TFrmPerfilTributacao.Create(Self);
-      
+
     FrmPerfilTributacao.Show;
     Exit;
   end;
@@ -8142,6 +8144,23 @@ begin
     FrmSituacaoOS.Show;
     Exit;
   end;
+
+  {Sandro Silva 2024-01-17 inicio
+
+  Reativar quando estiver concluída a migração do cadastro de clientes usando a tela padrão de cadastro
+
+  if sModulo = 'CLIENTES' then
+  begin
+    if Form7.IBTransaction1.Active then
+      Form7.IBTransaction1.CommitRetaining;
+    if FrmFichaCadastros = nil then
+      FrmFichaCadastros := TFrmFichaCadastros.Create(Self);
+
+    FrmFichaCadastros.Show;
+    Exit;
+  end;
+  {Sandro Silva 2024-01-17 fim}
+
 
   if sModulo = 'OS' then
   begin
@@ -8363,6 +8382,23 @@ begin
     FrmSituacaoOS.Show;
     Exit;
   end;
+
+  {Sandro Silva 2024-01-17 inicio
+
+  Reativar quando estiver concluída a migração do cadastro de clientes usando a tela padrão de cadastro
+
+  if sModulo = 'CLIENTES' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmFichaCadastros = nil then
+      FrmFichaCadastros := TFrmFichaCadastros.Create(Self);
+
+    FrmFichaCadastros.lblNovoClick(Sender);
+    FrmFichaCadastros.Show;
+    Exit;
+  end;
+  {Sandro Silva 2024-01-17 fim}
+
 
   if sModulo = 'OS' then
   begin
@@ -10452,7 +10488,8 @@ begin
 
     {$Endregion}
 
-    Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
+    //2024-01-17 Sandro Silva Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
+    Mais1ini := TIniFile.Create(IniFileUsuarioLogado);
     try
       if AllTrim(sModulo) <> '' then
       begin
@@ -15077,6 +15114,11 @@ begin
   //
   AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
   //
+end;
+
+function TForm7.IniFileUsuarioLogado: String;
+begin
+  Result := Form1.sAtual+'\'+Usuario+'.inf';
 end;
 
 procedure TForm7.CurvaABC1Click(Sender: TObject);
@@ -31838,6 +31880,49 @@ begin
 end;
 
 
+procedure TForm7.SetDataSetCadastros(CaminhoIni: String);
+var
+  Ini: TIniFile;
+begin
+  Ini := TIniFile.Create(CaminhoIni);
+
+  if sModulo = 'VENDEDOR' then
+  begin
+    Form7.sAjuda := 'config_vendedores.htm'; // Falta vendedores
+
+    // Menu
+    Form7.Menu              := Form7.mmVendedor;
+    Form7.Relatriodecomisses1.Visible := True;
+
+    // Sql
+    Form7.sSelect   := 'select * from CLIFOR';
+    Form7.sWhere    := 'where CLIFOR=''Vendedor''';
+
+    Form7.sModulo := 'CLIENTES';
+  end else
+  begin
+    Form7.sAjuda := 'clifor.htm';
+
+    // Menu
+    Form7.Menu            := Form7.mmCLifor;
+    //2024-01-10 Mostrartodososclientesefornecedores1.Checked := True;
+
+    // Sql
+    Form7.sSelect   := 'select * from CLIFOR';
+    Form7.sWhere    := Ini.ReadString(sModulo,'FILTRO','');
+  end;
+
+  // Arquivo
+
+  Form7.ArquivoAberto          := DataSource2.Dataset;
+  Form7.TabelaAberta           := ibDataSet2;
+  Form7.DataSourceAtual        := DataSource2;
+  Form7.sMostra   := Ini.ReadString(sModulo,'Mostrar','TTTFTTTT' + Replicate('F', 19));
+  sOrderBy  := 'order by '+ Ini.ReadString(sModulo,'ORDEM','NOME');
+  Form7.iCampos   := 27;
+  Ini.Free;
+end;
+
 procedure TForm7.ibDataSet18MUNICIPIOSetText(Sender: TField; const Text: String);
 var
   vEstado : string;
@@ -32926,6 +33011,9 @@ begin
 
     if FrmSituacaoOS <> nil then
       FreeAndNil(FrmSituacaoOS);
+
+    if FrmFichaCadastros <> nil then
+      FreeAndNil(FrmFichaCadastros);
   except
   end;
 end;  
@@ -33998,6 +34086,8 @@ begin
   {$Region'//// Módulo Clientes/Vendedor ////'}
   if (sModulo = 'CLIENTES') or (sModulo = 'VENDEDOR') then
   begin
+
+    {
     if sModulo = 'VENDEDOR' then
     begin
       sAjuda := 'config_vendedores.htm'; // Falta vendedores
@@ -34034,6 +34124,12 @@ begin
     sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
     sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTFTTTT' + Replicate('F', 19));
     iCampos   := 27;
+    }
+
+    SetDataSetCadastros(IniFileUsuarioLogado);
+    sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
+    sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
+    sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
 
     // Só FORNECEDORES
     if not Form1.bClientesLiberados then

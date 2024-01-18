@@ -388,7 +388,6 @@ type
     procedure Label45Click(Sender: TObject);
     procedure Image201Click(Sender: TObject);
     procedure Image205Click(Sender: TObject);
-    procedure Panel_1Enter(Sender: TObject);
     procedure Edit2Enter(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Label36MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -750,6 +749,7 @@ var
 begin
   // Posiciona o foco quando ativa
   Result := True;
+  {$Region'/// Atualiza Layout Estoque ////'}
   try
     if Form7.sModulo = 'ESTOQUE' then
     begin
@@ -774,24 +774,29 @@ begin
       end;
     end;
   except end;
+  {$Endregion}
 
   try
     if Form7.sModulo = 'CAIXA' then
     begin
+      {$Region'/// Atualiza Layout Caixa ////'}
       Form7.IBDataSet99.Close;
       Form7.IBDataSet99.SelectSQL.Clear;
       Form7.IBDataSet99.SelectSQL.Add('select count(REGISTRO) from caixa '+Form7.sWhere);
       Form7.IBDataSet99.Open;
       sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
       Form7.IBDataSet99.Close;
+      {$Endregion}
     end else
     begin
+      {$Region'/// Atualiza Layout demais tela ////'}
       Form7.IBDataSet99.Close;
       Form7.IBDataSet99.SelectSQL.Clear;
       Form7.IBDataSet99.SelectSQL.Add(StrTran(Form7.sSelect,'*','count(REGISTRO)')+' '+Form7.sWhere);
       Form7.IBDataSet99.Open;
       sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
       Form7.IBDataSet99.Close;
+      {$EndRegion}
     end;
 
     {Sandro Silva 2024-01-04 inicio
@@ -803,8 +808,10 @@ begin
       Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(StrToInt(sTotal));
     {Sandro Silva 2024-01-04 fim}
 
+    {$Region '/// Foca o campo disponível ///'}
     if sP1 then
     begin
+      // tenta focar num edit
       if Form10.SMALL_DBEdit1.CanFocus then
         Form10.SMALL_DBEdit1.SetFocus
       else if Form10.SMALL_DBEdit2.CanFocus then
@@ -816,9 +823,11 @@ begin
       else if Form10.SMALL_DBEdit5.CanFocus then
         Form10.SMALL_DBEdit5.SetFocus;
     end;
+    {$EndRegion}
 
     Form10.Caption := 'Ficha';
 
+    {$Region '//  Eliminar quando tiver criado form de cadastro clientes e vendedores//'}
     if Form7.sModulo = 'CLIENTES' then
     begin
       if AllTrim(Form7.ArquivoAberto.FieldByName('CLIFOR').AsString)<>'' then
@@ -843,6 +852,7 @@ begin
 
       Form10.Caption := form7.ibDataSet2NOME.AsString;
     end;
+    {$EndRegion}
 
     if Form7.sModulo = 'RECEBER' then
     begin
@@ -852,6 +862,7 @@ begin
       Form7.ibDataSet2.Open;
     end;
 
+    {$Region '//  Eliminar quando tiver criado form de cadastro clientes e vendedores//'}
     if (Form7.sModulo = 'CLIENTES') then
     begin
       Form10.Image5.Picture := nil;
@@ -889,8 +900,10 @@ begin
         Form10.Image5.Picture := Form10.Image3.Picture;
     end
     else
+    {$EndRegion}
       Form10.Image5.Picture := Form10.Image3.Picture;
 
+    {$Region '//  Atualiza Layout Estoque//'}
     if (Form7.sModulo = 'ESTOQUE') then
     begin
       Form10.Caption := Form7.ibDataSet4DESCRICAO.AsString;
@@ -941,7 +954,9 @@ begin
       else
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
+    {$EndRegion}
 
+    {$Region '//  Atualiza Layout Grupos//'}
     if Form7.sModulo = 'GRUPOS' then
     begin
       Form10.Image5.Picture := nil;
@@ -963,7 +978,7 @@ begin
           // Form7.ibDataset21.Post;
           Deletefile(pChar(Form10.sNomeDoJPG));
         end;
-        
+
         if Form7.ibDataset21FOTO.BlobSize <> 0 then
         begin
           BlobStream:= Form7.ibDataset21.CreateBlobStream(Form7.ibDataset21FOTO,bmRead);
@@ -983,8 +998,9 @@ begin
       else
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
+    {$EndRegion}
 
-
+    {$Region '/// Ajusta proporção imagem da foto ///'}
     // Mantem a proporção da imagem
     try
       if Form10.Image5.Picture.Width <> 0 then
@@ -1007,6 +1023,7 @@ begin
       end;
     except
     end;
+    {$EndRegion}
 
   except
   end;
@@ -3333,11 +3350,6 @@ begin
     MostraImagemEstoque; // Sandro Silva 2023-08-22
 end;
 
-procedure TForm10.Panel_1Enter(Sender: TObject);
-begin
-  AtualizaTela(True);
-end;
-
 procedure TForm10.Edit2Enter(Sender: TObject);
 begin
   Perform(Wm_NextDlgCtl,0,0);
@@ -3542,7 +3554,7 @@ begin
   Form10.Paint;
 
   Orelhas.ActivePage := orelha_cadastro;
-  Form10.Panel_1Enter(Sender);
+  AtualizaTela(True);// Form10.Panel_1Enter(Sender);
 end;
 
 procedure TForm10.Label37MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -4114,19 +4126,22 @@ end;
 procedure TForm10.Image23Click(Sender: TObject);
 begin
   try
+    {$Region '/// Modulo Estoque ///'}
     if Form7.sModulo = 'ESTOQUE' then
     begin
       if not Form7.bSoLeitura then
       begin
         Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
-        
+
         ShellExecute( 0, 'Open','pbrush.exe',pChar(Form10.sNomeDoJPG),'', SW_SHOWMAXIMIZED);
         //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25}
         MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
-        Form10.Panel_1Enter(Sender);
+        AtualizaTela(True); //Form10.Panel_1Enter(Sender);
       end;
     end;
-    
+    {$Endregion}
+
+    {$Region '/// Modulo Groupos ///'}
     if Form7.sModulo = 'GRUPOS' then
     begin
       if not Form7.bSoLeitura then
@@ -4136,9 +4151,10 @@ begin
         ShellExecute( 0, 'Open','pbrush.exe',pChar(Form10.sNomeDoJPG),'', SW_SHOWMAXIMIZED);
         //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
         MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
-        Form10.Panel_1Enter(Sender);
+        AtualizaTela(True);// Form10.Panel_1Enter(Sender);
       end;
     end;
+    {$Endregion}
   except 
   end;
 end;
@@ -4387,16 +4403,16 @@ begin
     begin
       DeleteFile(pChar(Form10.sNomeDoJPG));
     end;
-    
+
     Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
-    
+
     Sleep(1000);
-    
+
     ShellExecute( 0, 'Open',pChar(Form10.sNomeDoJPG),'','', SW_SHOWMAXIMIZED);
-    
+
     //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
-    AtualizaTela(True);    
+    AtualizaTela(True);
   except
   end;
 end;
@@ -4434,10 +4450,10 @@ begin
   btnOK.Left  := Panel2.Width - btnOK.Width - 10;
   btnRenogiarDivida.Left  := btnOK.Left - 10 - btnRenogiarDivida.Width;
 
-  if Form7.ArquivoAberto <> nil then
-    Form7.ArquivoAberto.DisableControls;
-  if Form7.TabelaAberta <> nil then
-    Form7.TabelaAberta.DisableControls;
+//  if Form7.ArquivoAberto <> nil then
+  Form7.ArquivoAberto.DisableControls;
+//  if Form7.TabelaAberta <> nil then
+  Form7.TabelaAberta.DisableControls;
 
   {Sandro Silva 2023-06-27 inicio}
   orelha_cadastro.PageIndex  :=  0;
@@ -4953,10 +4969,10 @@ begin
   end;
   {Sandro Silva 2022-11-14 fim}
 
-  if Form7.ArquivoAberto <> nil then
-    Form7.ArquivoAberto.EnableControls;
-  if Form7.TabelaAberta <> nil then
-    Form7.TabelaAberta.EnableControls;
+//  if Form7.ArquivoAberto <> nil then
+  Form7.ArquivoAberto.EnableControls;
+//  if Form7.TabelaAberta <> nil then
+  Form7.TabelaAberta.EnableControls;
 
   Form10.orelhas.Visible := True;
 
@@ -5267,24 +5283,24 @@ begin
       Image5.Visible       := False;
       VideoCAp1.Left       := 5;
       VideoCAp1.Top        := 5;
-      
+
       VideoCAp1.Width      := 640;
       VideoCAp1.Height     := 480;
-      
+
       VideoCap1.visible    := True;
-      
+
       try
         Videocap1.DriverIndex := 0;
-      except 
+      except
       end;
-      
+
       try
         VideoCap1.VideoPreview := True;
         VideoCap1.CapAudio     := False;
       except end;
-      
-      Button13.Caption := '&Captura';      
-    except 
+
+      Button13.Caption := '&Captura';
+    except
     end;
   end else
   begin
@@ -5293,13 +5309,13 @@ begin
       Image5.Picture.Bitmap.LoadFromClipboardFormat(cf_BitMap,ClipBoard.GetAsHandle(cf_Bitmap),0);
       VideoCap1.VideoPreview := False;
       VideoCap1.visible      := False;
-      
+
       jp := TJPEGImage.Create;
       jp.Assign(Form10.Image5.Picture.Bitmap);
       jp.CompressionQuality := 100;
-      
+
       jp.SaveToFile(Form10.sNomeDoJPG);
-      
+
       Button13.Caption     := '&Webcam';
       Image5.Visible       := True;
 
@@ -7681,28 +7697,28 @@ procedure TForm10.ButtoOpenPictureDialog1n22Click(Sender: TObject);
 begin
   OpenPictureDialog1.Execute;
   CHDir(Form1.sAtual);
-  
+
   if FileExists(OpenPictureDialog1.FileName) then
   begin
     Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
-    
+
     while FileExists(pChar(Form10.sNomeDoJPG)) do
     begin
       DeleteFile(pChar(Form10.sNomeDoJPG));
     end;
-    
+
     CopyFile(pChar(OpenPictureDialog1.FileName),pChar(Form10.sNomeDoJPG),True);
-    
+
     while not FileExists(pChar(Form10.sNomeDoJPG)) do
     begin
       Sleep(100);
     end;
-    
+
     Screen.Cursor             := crDefault;              // Cursor de Aguardo
-    
+
     Form10.Image3.Picture.LoadFromFile(pChar(Form10.sNomeDoJPG));
     Form10.Image5.Picture.LoadFromFile(pChar(Form10.sNomeDoJPG));
-    
+
     AtualizaTela(True);
   end;
 end;
