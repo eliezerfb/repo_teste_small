@@ -12,7 +12,6 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -188,6 +187,8 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = -5
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         inherited Image4: TImage
           Picture.Data = {00}

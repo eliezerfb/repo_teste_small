@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls, Mask, SmallFunc, ShellApi, HtmlHelp,
+  StdCtrls, ExtCtrls, ComCtrls, Mask, SmallFunc_xe, ShellApi, HtmlHelp,
   frame_teclado_1, Buttons, DB, IBCustomDataSet, IBQuery
   , uajustaresolucao, CheckLst, uframeCampoCaixasRelatorio;
 

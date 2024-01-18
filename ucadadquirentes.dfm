@@ -12,15 +12,14 @@ object FCadAdquirentes: TFCadAdquirentes
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
+  PixelsPerInch = 96
   DesignSize = (
     1011
     741)
-  PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 20
@@ -128,6 +127,8 @@ object FCadAdquirentes: TFCadAdquirentes
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = -5
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         inherited Image4: TImage
           Picture.Data = {00}

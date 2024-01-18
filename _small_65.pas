@@ -276,7 +276,7 @@ implementation
 
 uses
 //  RTLConsts
-   SmallFunc
+   SmallFunc_xe
   , SMALL_DBEdit
   , Fiscal
   , Unit2

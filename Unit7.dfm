@@ -13,17 +13,16 @@ object Form7: TForm7
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
   Position = poMainFormCenter
   OnActivate = FormActivate
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
+  PixelsPerInch = 96
   DesignSize = (
     305
     528)
-  PixelsPerInch = 96
   TextHeight = 13
   object Button1: TBitBtn
     Left = 33
@@ -72,9 +71,14 @@ object Form7: TForm7
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = 15
+      ExplicitTop = -3
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         Left = -758
         Top = 5
+        ExplicitLeft = -758
+        ExplicitTop = 5
         inherited Image4: TImage
           Picture.Data = {00}
         end
@@ -175,8 +179,8 @@ object Form7: TForm7
         Top = 54
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -192,8 +196,8 @@ object Form7: TForm7
         Top = 95
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -264,7 +268,6 @@ object Form7: TForm7
         Font.Height = -11
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = [fsBold]
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 5
         Text = 'ComboBox1'
@@ -328,9 +331,9 @@ object Form7: TForm7
         Top = 27
         Width = 89
         Height = 22
-        Date = 42233.570227627320000000
+        Date = 42233.000000000000000000
         Format = 'MM/yyyy'
-        Time = 42233.570227627320000000
+        Time = 0.570227627322310600
         TabOrder = 0
         OnKeyUp = DateTimePicker1KeyUp
       end
@@ -426,8 +429,8 @@ object Form7: TForm7
         Top = 39
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -443,8 +446,8 @@ object Form7: TForm7
         Top = 75
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -465,7 +468,6 @@ object Form7: TForm7
         Font.Height = -11
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = [fsBold]
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 2
         OnChange = ComboBox1Change
@@ -496,12 +498,18 @@ object Form7: TForm7
         Color = clWhite
         ParentColor = False
         TabOrder = 3
+        ExplicitTop = 129
+        ExplicitWidth = 105
+        ExplicitHeight = 69
         inherited chklbCaixas: TCheckListBox
           Top = 18
           Height = 49
+          ExplicitTop = 18
+          ExplicitHeight = 49
         end
         inherited chkCaixaFechamentoDeCaixa: TCheckBox
           Top = 1
+          ExplicitTop = 1
         end
       end
     end
@@ -546,9 +554,9 @@ object Form7: TForm7
         Top = 62
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
+        Date = 35796.000000000000000000
         Format = 'MMMM/yyyy'
-        Time = 35796.376154398150000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -630,8 +638,8 @@ object Form7: TForm7
         Top = 61
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -663,8 +671,8 @@ object Form7: TForm7
         Top = 101
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -694,9 +702,9 @@ object Form7: TForm7
         Top = 144
         Width = 77
         Height = 21
-        Date = 43434.486128298610000000
+        Date = 43434.000000000000000000
         Format = 'HH:mm'
-        Time = 43434.486128298610000000
+        Time = 0.486128298609401100
         Enabled = False
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -712,9 +720,9 @@ object Form7: TForm7
         Top = 144
         Width = 77
         Height = 21
-        Date = 43434.486128298610000000
+        Date = 43434.000000000000000000
         Format = 'HH:mm'
-        Time = 43434.486128298610000000
+        Time = 0.486128298609401100
         Enabled = False
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -855,8 +863,8 @@ object Form7: TForm7
         Top = 39
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -872,8 +880,8 @@ object Form7: TForm7
         Top = 84
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -895,7 +903,6 @@ object Form7: TForm7
         Font.Height = -11
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = [fsBold]
-        ItemHeight = 13
         ParentFont = False
         TabOrder = 3
         Items.Strings = (
@@ -966,8 +973,8 @@ object Form7: TForm7
         Top = 39
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -983,8 +990,8 @@ object Form7: TForm7
         Top = 84
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -1118,8 +1125,8 @@ object Form7: TForm7
         Top = 33
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -1152,8 +1159,8 @@ object Form7: TForm7
         Top = 73
         Width = 270
         Height = 21
-        Date = 35796.376154398150000000
-        Time = 35796.376154398150000000
+        Date = 35796.000000000000000000
+        Time = 0.376154398152721100
         DateFormat = dfLong
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -1183,9 +1190,9 @@ object Form7: TForm7
         Top = 116
         Width = 77
         Height = 21
-        Date = 43434.486128298610000000
+        Date = 43434.000000000000000000
         Format = 'HH:mm'
-        Time = 43434.486128298610000000
+        Time = 0.486128298609401100
         Enabled = False
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -1201,9 +1208,9 @@ object Form7: TForm7
         Top = 116
         Width = 77
         Height = 21
-        Date = 43434.486128298610000000
+        Date = 43434.000000000000000000
         Format = 'HH:mm'
-        Time = 43434.486128298610000000
+        Time = 0.486128298609401100
         Enabled = False
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -1249,13 +1256,12 @@ object Form7: TForm7
         Top = 160
         Width = 78
         Height = 59
-        OnClickCheck = chklbCaixasClickCheck
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -11
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = [fsBold]
-        ItemHeight = 13
+        ItemHeight = 20
         Items.Strings = (
           '001'
           '002'
@@ -1264,6 +1270,7 @@ object Form7: TForm7
           '005')
         ParentFont = False
         TabOrder = 8
+        OnClickCheck = chklbCaixasClickCheck
       end
     end
   end
@@ -1272,6 +1279,8 @@ object Form7: TForm7
     Transaction = Form1.IBTransaction2
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 93
     Top = 35
   end

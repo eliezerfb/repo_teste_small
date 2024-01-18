@@ -12,7 +12,6 @@ object Form27: TForm27
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -77,6 +76,8 @@ object Form27: TForm27
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = -5
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         inherited Image4: TImage
           Picture.Data = {00}
@@ -97,7 +98,6 @@ object Form27: TForm27
     Font.Height = -16
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
-    ItemHeight = 20
     ParentCtl3D = False
     ParentFont = False
     TabOrder = 2

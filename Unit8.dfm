@@ -12,16 +12,15 @@ object Form8: TForm8
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poMainFormCenter
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
+  PixelsPerInch = 96
   DesignSize = (
     514
     342)
-  PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 15
@@ -83,7 +82,6 @@ object Form8: TForm8
     Font.Height = -13
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    ItemHeight = 16
     ParentFont = False
     TabOrder = 2
     OnChange = cbMesaOrigemChange
@@ -101,7 +99,6 @@ object Form8: TForm8
     Font.Height = -13
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    ItemHeight = 16
     ParentFont = False
     TabOrder = 3
   end
@@ -149,6 +146,8 @@ object Form8: TForm8
   object IBQuery1: TIBQuery
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 224
     Top = 24
   end

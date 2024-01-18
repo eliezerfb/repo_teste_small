@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Mask, Grids, DBGrids, SmallFunc, DB, DBCtrls,
+  StdCtrls, ExtCtrls, Mask, Grids, DBGrids, SmallFunc_xe, DB, DBCtrls,
   SMALL_DBEdit, IniFiles, ShellApi, FileCtrl, jpeg, frame_teclado_1,
   Buttons, htmlhelp
   , StrUtils

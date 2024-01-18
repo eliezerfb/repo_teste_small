@@ -12,7 +12,6 @@ object Form6: TForm6
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poMainFormCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -213,9 +212,13 @@ object Form6: TForm6
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = 1
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         Left = -758
         Top = 5
+        ExplicitLeft = -758
+        ExplicitTop = 5
         inherited Image4: TImage
           Picture.Data = {00}
         end

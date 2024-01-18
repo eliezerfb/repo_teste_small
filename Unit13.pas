@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Grids, SmallFunc, Mask, DBCtrls, SMALL_DBEdit, ComCtrls,
+  StdCtrls, ExtCtrls, Grids, SmallFunc_xe, Mask, DBCtrls, SMALL_DBEdit, ComCtrls,
   frame_teclado_1, Buttons, DB, IBCustomDataSet, IBQuery
   , uajustaresolucao
   ;

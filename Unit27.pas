@@ -42,7 +42,7 @@ implementation
 
 uses
   Fiscal
-  , SmallFunc
+  , SmallFunc_xe
   , uajustaresolucao;
 
 {$R *.dfm}

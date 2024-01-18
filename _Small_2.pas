@@ -38,7 +38,7 @@ uses
   // Para trabalhar com a impressora fiscal YANCO é                                       //
   // necessário alterar, no arquivo BemaFI32.ini, a chave "ModeloImp" para YANCO.         //
   //////////////////////////////////////////////////////////////////////////////////////////
-  Windows, Messages, SmallFunc, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SmallFunc_xe, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB, DBCtrls, SMALL_DBEdit, IniFiles, Unit2,
   Unit7, unit22, MD5
   , ufuncoesfrentepaf

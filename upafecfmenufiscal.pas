@@ -30,7 +30,7 @@ procedure PafEcfLeituraMfdPorFaixaDeCOO;
 implementation
 
 uses
-  SmallFunc
+  SmallFunc_xe
   , fiscal
   , _Small_1
   , _Small_2

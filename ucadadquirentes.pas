@@ -8,7 +8,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, frame_teclado_1, StdCtrls, IniFiles, ComCtrls, Buttons,
-  SmallFunc, Grids, DB, DBGrids, DBClient, MD5
+  SmallFunc_xe, Grids, DB, DBGrids, DBClient, MD5
   , uajustaresolucao;
 
 const COLUNAGERENCIADORTEF   = 4;

@@ -81,7 +81,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Printers, OleCtrls, ShellAPI, Mask, Variants, Winsock
-  , Db, DBCtrls, DBTables, DBClient, DBGrids, Registry, Types, SysConst
+  , Db, DBCtrls
+  //, DBTables
+  , DBClient, DBGrids, Registry, Types, SysConst
   , Buttons, IniFiles, Clipbrd, Menus, Grids, FileCtrl, jpeg, ComCtrls
   , MidasLib, StrUtils, DateUtils, ShlObj, ActiveX, ComObj, SHDocVw//, Math
   {$IFDEF VER150}
@@ -1718,7 +1720,7 @@ var
 implementation
 
 uses
-   SmallFunc
+   SmallFunc_xe
   , SMALL_DBEdit
   , upafecfmensagens
   , Unit27 // Sandro Silva 2017-10-19

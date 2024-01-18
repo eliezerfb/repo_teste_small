@@ -76,7 +76,7 @@ implementation
 
 uses
   fiscal
-  , SmallFunc
+  , SmallFunc_xe
   , uajustaresolucao
   , Types;
 

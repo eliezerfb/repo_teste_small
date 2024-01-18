@@ -36,7 +36,7 @@ procedure TEFDeletarCopiasArquivos(FsDiretorio: String);
 implementation
 
 uses
-   SmallFunc
+   SmallFunc_xe
   , ufuncoesfrente
   , fiscal
   , uclassetransacaocartao

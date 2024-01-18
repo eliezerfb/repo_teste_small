@@ -61,7 +61,7 @@ implementation
 
 uses
   fiscal
-  , SmallFunc
+  , SmallFunc_xe
 //  , ufuncoesfrente
   , uajustaresolucao
   ;

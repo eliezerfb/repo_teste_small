@@ -14,7 +14,7 @@ uses
   , IBCustomDataSet
   , ufuncoesfrente
   , usmallsat
-  , smallfunc
+  , SmallFunc_xe
   , uclassetransacaocartao
   ;
 

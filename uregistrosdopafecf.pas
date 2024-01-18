@@ -20,7 +20,7 @@ procedure RegistrosDoPafEcfEstoquetotal;
 implementation
 
 uses
-  SmallFunc
+  SmallFunc_xe
   , ufuncoesfrente
   , fiscal
   , unit7

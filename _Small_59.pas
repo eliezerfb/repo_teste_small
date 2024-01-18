@@ -198,7 +198,7 @@ var
 implementation
 
 uses
-  smallfunc
+  SmallFunc_xe
   , SMALL_DBEDIT
   , Unit2
   , Unit22

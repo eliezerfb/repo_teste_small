@@ -70,7 +70,7 @@ implementation
 uses
   tnpdf
   , fiscal
-  , SmallFunc
+  , SmallFunc_xe
   , ufuncoesfrente
   ;
 

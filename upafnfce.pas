@@ -97,7 +97,7 @@ implementation
 uses fiscal
   , unit7
   , ufuncoesfrente
-  , SmallFunc
+  , SmallFunc_xe
 //  , uassinaxmlpafnfce
   ;
 

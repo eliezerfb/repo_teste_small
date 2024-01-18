@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, IniFiles, StrUtils, SmallFunc, ufuncoesfrente,
+  Dialogs, StdCtrls, ExtCtrls, IniFiles, StrUtils, SmallFunc_xe, ufuncoesfrente,
   frame_teclado_1, Buttons
   , uajustaresolucao
   ;

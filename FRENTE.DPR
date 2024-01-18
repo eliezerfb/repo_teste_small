@@ -8,10 +8,9 @@ uses
   Messages,
   SysUtils,
   Dialogs,
-  SmallFunc in '..\..\componentes\Smallsoft\Delphi 7\smallfunc.pas',
   SMALL_DBEDIT in '..\..\componentes\Smallsoft\SMALL_DBEDIT.pas',
   Unit22 in 'Unit22.pas' {Form22},
-  fiscal in 'FISCAL.PAS' {Form1},
+  FISCAL in 'FISCAL.PAS' {Form1},
   Unit2 in 'Unit2.pas' {Form2},
   Unit3 in 'Unit3.pas' {Form3},
   Unit4 in 'Unit4.pas' {Form4},
@@ -66,12 +65,15 @@ uses
   _Small_17 in '_Small_17.pas',
   _Small_59 in '_Small_59.pas',
   _small_65 in '_small_65.pas',
-  _Small_99 in '_small_99.pas',
+  _small_99 in '_small_99.pas',
   uConfiguracaoTEF in 'uConfiguracaoTEF.pas' {FConfiguracaoTEF},
   uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
   ufrmEditaMovimento in 'ufrmEditaMovimento.pas' {FEditaMovimento},
   uSmallEnumerados in '..\unit_compartilhada\uSmallEnumerados.pas',
-  uframeCampoCaixasRelatorio in 'uframeCampoCaixasRelatorio.pas' {frameCampoCaixasRel: TFrame};
+  uframeCampoCaixasRelatorio in 'uframeCampoCaixasRelatorio.pas' {frameCampoCaixasRel: TFrame},
+  smallfunc_xe in '..\unit_compartilhada\smallfunc_xe.pas',
+  uConectaBancoSmall in '..\unit_compartilhada\uConectaBancoSmall.pas',
+  uDialogs in '..\unit_compartilhada\uDialogs.pas';
 
 {$R *.RES}
 

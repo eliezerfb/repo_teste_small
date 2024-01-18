@@ -13,7 +13,6 @@ object Form12: TForm12
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnKeyUp = FormKeyUp
@@ -67,7 +66,7 @@ object Form12: TForm12
     Left = 20
     Top = 70
     Width = 981
-    Height = 39
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
@@ -112,6 +111,8 @@ object Form12: TForm12
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = -5
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         inherited Image4: TImage
           Picture.Data = {00}
