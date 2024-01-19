@@ -1557,6 +1557,7 @@ object Form24: TForm24
         Height = 126
         Color = clWhite
         DataSource = Form7.DataSource23
+        DrawingStyle = gdsClassic
         FixedColor = 15790320
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
