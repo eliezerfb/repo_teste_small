@@ -12,8 +12,8 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  ExplicitWidth = 532
-  ExplicitHeight = 304
+  ExplicitWidth = 526
+  ExplicitHeight = 287
   PixelsPerInch = 96
   TextHeight = 13
   object Label4: TLabel

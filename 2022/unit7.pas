@@ -3,7 +3,7 @@ unit Unit7;
 interface
 
 uses
-  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls, uEmail,
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, Grids, DBGrids, DB, ExtCtrls, Menus, Unit9, IniFiles,
   StdCtrls, Unit10, Unit11, Unit14, Unit16, Mask, DBCtrls, smallfunc_xe,
   SMALL_DBEdit, shellapi, Printers, ToolWin, ComCtrls, clipbrd,
@@ -2571,7 +2571,9 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uFrmNaturezaOperacao
   , uFrmSituacaoOS
   , uRelatorioVendasNotaFiscal
-  , uDrawCellGridModulos, uEmail, ufrmFichaCadastros;
+  , uDrawCellGridModulos
+  , uEmail
+  , ufrmFichaCadastros;
 
 {$R *.DFM}
 

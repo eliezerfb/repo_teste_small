@@ -3,7 +3,7 @@ unit uExportaXML;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, uEmail,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, smallfunc_xe, uArquivosDAT,
   uSalvaXMLContabilFactory, IBQuery, uConectaBancoSmall, uSmallEnumerados;
 
@@ -64,7 +64,8 @@ uses
   , DateUtils
   , uDialogs
   , uFuncoesRetaguarda
-  , uGeraRelatorioTotalizadorGeralVenda, uEmail;
+  , uGeraRelatorioTotalizadorGeralVenda
+  , uEmail;
 
 {$R *.dfm}
 
