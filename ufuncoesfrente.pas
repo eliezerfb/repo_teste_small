@@ -23,7 +23,7 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   {$IFDEF VER150}
   , IBDatabase, IBQuery, IBCustomDataSet
   , MD5
-  , SmallFunc_xe
+  , SmallFunc
   {$ELSE}
   , IBX.IBDatabase, IBX.IBQuery, IBX.IBCustomDataSet
   , MD5_unicode

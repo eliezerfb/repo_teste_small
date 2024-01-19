@@ -95,7 +95,10 @@ uses
   , htmlhelp
   , TLHelp32
   , UrlMon
-  , spdNFCeDataSets, spdNFCeType, spdNFCe, TypInfo // Informações de componentes Sandro Silva 2016-08-01
+  //, spdNFCeDataSets
+  //, spdNFCeType
+  //, spdNFCe
+  , TypInfo // Informações de componentes Sandro Silva 2016-08-01
 
   , IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdSSLOpenSSL, IdMultipartFormData, IdHTTP
 
@@ -105,7 +108,7 @@ uses
   , umfe
   , usmall_elginpay_pos
   , usincronizamobile
-  , uSmallEnumerados
+  , uSmallEnumerados, System.Contnrs, spdNFCeDataSets, spdNFCeType, spdNFCe
   ;
 
   const MARGEM_ESQUERDA_OBJ = 14; // Sandro Silva 2021-07-29 // 15
