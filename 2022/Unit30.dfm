@@ -1350,10 +1350,12 @@ object Form30: TForm30
     Top = 22
     object Incluirnovoitemnoestoque1: TMenuItem
       Caption = 'Incluir novo item no estoque...'
+      Visible = False
       OnClick = Incluirnovoitemnoestoque1Click
     end
     object Incluirnovocliente1: TMenuItem
       Caption = 'Incluir novo cliente...'
+      Visible = False
       OnClick = Incluirnovocliente1Click
     end
   end

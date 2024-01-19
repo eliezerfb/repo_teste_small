@@ -218,7 +218,9 @@ uses
   uEstruturaRelVendasNotaFiscal in 'units\uEstruturaRelVendasNotaFiscal.pas',
   uRelatorioVendasNotaFiscal in 'units\uRelatorioVendasNotaFiscal.pas' {frmRelVendasNotaFiscal},
   udmRelTotalizadorVendasGeral in 'units\udmRelTotalizadorVendasGeral.pas' {dmRelTotalizadorVendasGeral: TDataModule},
-  uDrawCellGridModulos in 'units\uDrawCellGridModulos.pas';
+  uDrawCellGridModulos in 'units\uDrawCellGridModulos.pas',
+  uEmail in '..\..\unit_compartilhada\uEmail.pas',
+  ufrmFichaCadastros in 'ufrmFichaCadastros.pas' {FrmFichaCadastros};
 
 {$R *.RES}
 

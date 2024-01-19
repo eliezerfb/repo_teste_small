@@ -388,7 +388,6 @@ type
     procedure Label45Click(Sender: TObject);
     procedure Image201Click(Sender: TObject);
     procedure Image205Click(Sender: TObject);
-    procedure Panel_1Enter(Sender: TObject);
     procedure Edit2Enter(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Label36MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -575,7 +574,7 @@ type
   public
     { Public declarations }
 
-    bDesvincularCampos: Boolean; // Sandro Silva 2024-01-04
+//    bDesvincularCampos: Boolean; // Sandro Silva 2024-01-04
 
     fQuantidade : Real;
     sNomeDoJPG, sSistema  : String;
@@ -589,7 +588,6 @@ type
 
     function JpgResize(sP1: String; iP2: Integer): boolean;
     function AtualizaMobile(sP1: Boolean) : Boolean;
-
   end;
 
 var
@@ -751,6 +749,7 @@ var
 begin
   // Posiciona o foco quando ativa
   Result := True;
+  {$Region'/// Atualiza Layout Estoque ////'}
   try
     if Form7.sModulo = 'ESTOQUE' then
     begin
@@ -775,24 +774,29 @@ begin
       end;
     end;
   except end;
+  {$Endregion}
 
   try
     if Form7.sModulo = 'CAIXA' then
     begin
+      {$Region'/// Atualiza Layout Caixa ////'}
       Form7.IBDataSet99.Close;
       Form7.IBDataSet99.SelectSQL.Clear;
       Form7.IBDataSet99.SelectSQL.Add('select count(REGISTRO) from caixa '+Form7.sWhere);
       Form7.IBDataSet99.Open;
       sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
       Form7.IBDataSet99.Close;
+      {$Endregion}
     end else
     begin
+      {$Region'/// Atualiza Layout demais tela ////'}
       Form7.IBDataSet99.Close;
       Form7.IBDataSet99.SelectSQL.Clear;
       Form7.IBDataSet99.SelectSQL.Add(StrTran(Form7.sSelect,'*','count(REGISTRO)')+' '+Form7.sWhere);
       Form7.IBDataSet99.Open;
       sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
       Form7.IBDataSet99.Close;
+      {$EndRegion}
     end;
 
     {Sandro Silva 2024-01-04 inicio
@@ -804,8 +808,10 @@ begin
       Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(StrToInt(sTotal));
     {Sandro Silva 2024-01-04 fim}
 
+    {$Region '/// Foca o campo disponível ///'}
     if sP1 then
     begin
+      // tenta focar num edit
       if Form10.SMALL_DBEdit1.CanFocus then
         Form10.SMALL_DBEdit1.SetFocus
       else if Form10.SMALL_DBEdit2.CanFocus then
@@ -817,9 +823,11 @@ begin
       else if Form10.SMALL_DBEdit5.CanFocus then
         Form10.SMALL_DBEdit5.SetFocus;
     end;
+    {$EndRegion}
 
     Form10.Caption := 'Ficha';
 
+    {$Region '//  Eliminar quando tiver criado form de cadastro clientes e vendedores//'}
     if Form7.sModulo = 'CLIENTES' then
     begin
       if AllTrim(Form7.ArquivoAberto.FieldByName('CLIFOR').AsString)<>'' then
@@ -844,6 +852,7 @@ begin
 
       Form10.Caption := form7.ibDataSet2NOME.AsString;
     end;
+    {$EndRegion}
 
     if Form7.sModulo = 'RECEBER' then
     begin
@@ -853,6 +862,7 @@ begin
       Form7.ibDataSet2.Open;
     end;
 
+    {$Region '//  Eliminar quando tiver criado form de cadastro clientes e vendedores//'}
     if (Form7.sModulo = 'CLIENTES') then
     begin
       Form10.Image5.Picture := nil;
@@ -890,8 +900,10 @@ begin
         Form10.Image5.Picture := Form10.Image3.Picture;
     end
     else
+    {$EndRegion}
       Form10.Image5.Picture := Form10.Image3.Picture;
 
+    {$Region '//  Atualiza Layout Estoque//'}
     if (Form7.sModulo = 'ESTOQUE') then
     begin
       Form10.Caption := Form7.ibDataSet4DESCRICAO.AsString;
@@ -942,7 +954,9 @@ begin
       else
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
+    {$EndRegion}
 
+    {$Region '//  Atualiza Layout Grupos//'}
     if Form7.sModulo = 'GRUPOS' then
     begin
       Form10.Image5.Picture := nil;
@@ -964,7 +978,7 @@ begin
           // Form7.ibDataset21.Post;
           Deletefile(pChar(Form10.sNomeDoJPG));
         end;
-        
+
         if Form7.ibDataset21FOTO.BlobSize <> 0 then
         begin
           BlobStream:= Form7.ibDataset21.CreateBlobStream(Form7.ibDataset21FOTO,bmRead);
@@ -984,8 +998,9 @@ begin
       else
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
+    {$EndRegion}
 
-
+    {$Region '/// Ajusta proporção imagem da foto ///'}
     // Mantem a proporção da imagem
     try
       if Form10.Image5.Picture.Width <> 0 then
@@ -1008,6 +1023,7 @@ begin
       end;
     except
     end;
+    {$EndRegion}
 
   except
   end;
@@ -2223,6 +2239,7 @@ begin
       TLAbel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
     end;
     }
+    {Sandro Silva 2024-01-10 inicio
     if Form10.bDesvincularCampos then
     begin
       for I := 0 to 29 do
@@ -2232,8 +2249,8 @@ begin
         TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible    := False;
         TLAbel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
       end;
-
     end;
+    {Sandro Silva 2024-01-10 fim}
     {Sandro Silva 2024-01-04 fim}
   except
   end;
@@ -3333,11 +3350,6 @@ begin
     MostraImagemEstoque; // Sandro Silva 2023-08-22
 end;
 
-procedure TForm10.Panel_1Enter(Sender: TObject);
-begin
-  AtualizaTela(True);
-end;
-
 procedure TForm10.Edit2Enter(Sender: TObject);
 begin
   Perform(Wm_NextDlgCtl,0,0);
@@ -3345,7 +3357,7 @@ end;
 
 procedure TForm10.FormCreate(Sender: TObject);
 begin
-  Form10.bDesvincularCampos := True; // Sandro Silva 2024-01-04
+  //Form10.bDesvincularCampos := True; // Sandro Silva 2024-01-04
   {Sandro Silva 2023-06-21 inicio}
   pnRelacaoComercial.BorderStyle := bsNone;
   pnRelacaoComercial.BevelOuter  := bvNone;
@@ -3542,7 +3554,7 @@ begin
   Form10.Paint;
 
   Orelhas.ActivePage := orelha_cadastro;
-  Form10.Panel_1Enter(Sender);
+  AtualizaTela(True);// Form10.Panel_1Enter(Sender);
 end;
 
 procedure TForm10.Label37MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -4114,19 +4126,22 @@ end;
 procedure TForm10.Image23Click(Sender: TObject);
 begin
   try
+    {$Region '/// Modulo Estoque ///'}
     if Form7.sModulo = 'ESTOQUE' then
     begin
       if not Form7.bSoLeitura then
       begin
         Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
-        
+
         ShellExecute( 0, 'Open','pbrush.exe',pChar(Form10.sNomeDoJPG),'', SW_SHOWMAXIMIZED);
         //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25}
         MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
-        Form10.Panel_1Enter(Sender);
+        AtualizaTela(True); //Form10.Panel_1Enter(Sender);
       end;
     end;
-    
+    {$Endregion}
+
+    {$Region '/// Modulo Groupos ///'}
     if Form7.sModulo = 'GRUPOS' then
     begin
       if not Form7.bSoLeitura then
@@ -4136,9 +4151,10 @@ begin
         ShellExecute( 0, 'Open','pbrush.exe',pChar(Form10.sNomeDoJPG),'', SW_SHOWMAXIMIZED);
         //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
         MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
-        Form10.Panel_1Enter(Sender);
+        AtualizaTela(True);// Form10.Panel_1Enter(Sender);
       end;
     end;
+    {$Endregion}
   except 
   end;
 end;
@@ -4387,16 +4403,16 @@ begin
     begin
       DeleteFile(pChar(Form10.sNomeDoJPG));
     end;
-    
+
     Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
-    
+
     Sleep(1000);
-    
+
     ShellExecute( 0, 'Open',pChar(Form10.sNomeDoJPG),'','', SW_SHOWMAXIMIZED);
-    
+
     //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
-    AtualizaTela(True);    
+    AtualizaTela(True);
   except
   end;
 end;
@@ -4434,7 +4450,9 @@ begin
   btnOK.Left  := Panel2.Width - btnOK.Width - 10;
   btnRenogiarDivida.Left  := btnOK.Left - 10 - btnRenogiarDivida.Width;
 
+//  if Form7.ArquivoAberto <> nil then
   Form7.ArquivoAberto.DisableControls;
+//  if Form7.TabelaAberta <> nil then
   Form7.TabelaAberta.DisableControls;
 
   {Sandro Silva 2023-06-27 inicio}
@@ -4556,10 +4574,12 @@ begin
     {Sandro Silva 2023-06-22 fim}
 
 
-    {Sandro Silva 2024-01-03 inicio}
-
-
-    {Sandro Silva 2024-01-03 fim}
+    {Sandro Silva 2024-01-10 inicio}
+    for I := 0 to 29 do // mantido 29 que é o mesmo número de campos que são configurados na sequência da rotina
+    begin
+      TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataField  := '';
+    end;
+    {Sandro Silva 2024-01-10 fim}
 
     if Form7.sModulo <> 'ICM' then // Não entrar no "For to do" se estiver editando o módulo ICM, o mesmo tem uma aba somente para ele, com os campos fixos, diferente dos demais módulos que monta a tela dinamicamente
     begin
@@ -4630,34 +4650,9 @@ begin
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := AllTrim(Form7.TabelaAberta.Fields[I - 1].DisplayLabel) + ':';
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Repaint;
 
-                {Sandro Silva 2023-06-20 inicio}
                 if (Form7.sModulo = 'RECEBER') and (Form7.TabelaAberta.Fields[I-1].FieldName = 'FORMADEPAGAMENTO') then
                   TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := 'Forma de Pag.:';
-                {Sandro Silva 2023-06-20 fim}
 
-                {Sandro Silva 2023-07-24 inicio
-                if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
-                begin
-                  if I > 25 then
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 380 + 100
-                  else if I > 15 then
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 200 + 100
-                  else
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
-                  end else if (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22
-                  begin
-                    if I > 17 then
-                      TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 360 + 100
-                    else
-                      TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
-                end else
-                begin
-                  if I > 17 then
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 360 + 70
-                  else
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
-                end;
-                }
                 if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
                 begin
                   if I > 25 then
@@ -4680,9 +4675,7 @@ begin
                     TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
 
                 end;
-                {Sandro Silva 2023-07-24 fim}
 
-                {Sandro Silva 2022-12-20 inicio}
                 if (Form7.sModulo = 'ESTOQUE') then
                 begin
                   if Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'Identificador Contábil:' then
@@ -4694,7 +4687,6 @@ begin
                   end;
                 end;
 
-                {Sandro Silva 2022-12-20 fim}
                 if Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'UF:' then
                 begin
                   iTop := iTop - 25;
@@ -4977,7 +4969,9 @@ begin
   end;
   {Sandro Silva 2022-11-14 fim}
 
+//  if Form7.ArquivoAberto <> nil then
   Form7.ArquivoAberto.EnableControls;
+//  if Form7.TabelaAberta <> nil then
   Form7.TabelaAberta.EnableControls;
 
   Form10.orelhas.Visible := True;
@@ -4989,7 +4983,7 @@ begin
   Label201.Hint := 'Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10);
   Label201.ShowHint := True;
 
-  {Sandro Silva 2023-06-22 inicio} 
+  {Sandro Silva 2023-06-22 inicio}
   Form10.Left := (Form7.Width - Form10.Width) div 2;
   Form10.Repaint;
   {Sandro Silva 2023-06-22 inicio}
@@ -5289,24 +5283,24 @@ begin
       Image5.Visible       := False;
       VideoCAp1.Left       := 5;
       VideoCAp1.Top        := 5;
-      
+
       VideoCAp1.Width      := 640;
       VideoCAp1.Height     := 480;
-      
+
       VideoCap1.visible    := True;
-      
+
       try
         Videocap1.DriverIndex := 0;
-      except 
+      except
       end;
-      
+
       try
         VideoCap1.VideoPreview := True;
         VideoCap1.CapAudio     := False;
       except end;
-      
-      Button13.Caption := '&Captura';      
-    except 
+
+      Button13.Caption := '&Captura';
+    except
     end;
   end else
   begin
@@ -5315,13 +5309,13 @@ begin
       Image5.Picture.Bitmap.LoadFromClipboardFormat(cf_BitMap,ClipBoard.GetAsHandle(cf_Bitmap),0);
       VideoCap1.VideoPreview := False;
       VideoCap1.visible      := False;
-      
+
       jp := TJPEGImage.Create;
       jp.Assign(Form10.Image5.Picture.Bitmap);
       jp.CompressionQuality := 100;
-      
+
       jp.SaveToFile(Form10.sNomeDoJPG);
-      
+
       Button13.Caption     := '&Webcam';
       Image5.Visible       := True;
 
@@ -7703,28 +7697,28 @@ procedure TForm10.ButtoOpenPictureDialog1n22Click(Sender: TObject);
 begin
   OpenPictureDialog1.Execute;
   CHDir(Form1.sAtual);
-  
+
   if FileExists(OpenPictureDialog1.FileName) then
   begin
     Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
-    
+
     while FileExists(pChar(Form10.sNomeDoJPG)) do
     begin
       DeleteFile(pChar(Form10.sNomeDoJPG));
     end;
-    
+
     CopyFile(pChar(OpenPictureDialog1.FileName),pChar(Form10.sNomeDoJPG),True);
-    
+
     while not FileExists(pChar(Form10.sNomeDoJPG)) do
     begin
       Sleep(100);
     end;
-    
+
     Screen.Cursor             := crDefault;              // Cursor de Aguardo
-    
+
     Form10.Image3.Picture.LoadFromFile(pChar(Form10.sNomeDoJPG));
     Form10.Image5.Picture.LoadFromFile(pChar(Form10.sNomeDoJPG));
-    
+
     AtualizaTela(True);
   end;
 end;

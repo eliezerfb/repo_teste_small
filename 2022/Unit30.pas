@@ -1413,6 +1413,10 @@ end;
 
 procedure TForm30.Incluirnovoitemnoestoque1Click(Sender: TObject);
 begin
+  {
+
+  Reativar quando estiver concluída a migração do cadastro de ESTOQUE usando a tela padrão de cadastro
+
   if Form1.imgEstoque.Visible then
   begin
     Form7.ibDataSet3.DisableControls;
@@ -1433,10 +1437,15 @@ begin
     Form7.ibDataSet3.EnableControls;
     Form7.ibDataSet16.EnableControls;
   end;
+  }
 end;
 
 procedure TForm30.Incluirnovocliente1Click(Sender: TObject);
 begin
+  {
+
+  Reativar quando estiver concluída a migração do cadastro de clientes usando a tela padrão de cadastro
+
   if Form1.imgEstoque.Visible then
   begin
     Form7.ibDataSet3.DisableControls;
@@ -1457,6 +1466,7 @@ begin
     Form7.ibDataSet3.EnableControls;
     Form7.ibDataSet16.EnableControls;
   end;
+  }
 end;
 
 procedure TForm30.DBMemo1Change(Sender: TObject);
