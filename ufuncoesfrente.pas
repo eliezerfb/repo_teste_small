@@ -23,7 +23,7 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   {$IFDEF VER150}
   , IBDatabase, IBQuery, IBCustomDataSet
   , MD5
-  , SmallFunc
+  //, SmallFunc
   {$ELSE}
   , IBX.IBDatabase, IBX.IBQuery, IBX.IBCustomDataSet
   , MD5_unicode
@@ -361,7 +361,8 @@ procedure SleepWithoutFreeze(msec: int64);
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
 
 var
-  cWinDir: array[0..200] of Char;
+  //cWinDir: array[0..200] of WideChar;
+  cWinDir: String;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
   Aplicacao: TMyApplication;
   bImportarServicoDeOsOrcamento: Boolean = True; // Controlar se importa ou não serviço listados em Orçamento/OS para NFC-e/SAT. Sempre inicia como True Sandro Silva 2021-08-17

@@ -31,13 +31,13 @@ uses
 
   Windows, Messages, Fiscal, SysUtils,Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB, DBCtrls,
-  IniFiles, ShellApi, Printers,
+  IniFiles, ShellApi, Printers
   {$IFDEF VER150}
-  IBCustomDataSet, IBQuery, IBDatabase,
+  , IBCustomDataSet, IBQuery, IBDatabase,
   {$ELSE}
   , IBX.IBDatabase, IBX.IBQuery, IBX.IBCustomDataSet
   {$ENDIF}
-  StrUtils, Variants
+  , StrUtils, Variants
   , usmallsat
   ;
 

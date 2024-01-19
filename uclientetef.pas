@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, frame_teclado_1, StdCtrls, IniFiles, ComCtrls, Buttons,
-  SmallFunc, Grids, ufuncoesfrente
+  SmallFunc_xe, Grids, ufuncoesfrente
   , uajustaresolucao
   ;
 

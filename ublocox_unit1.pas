@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs
   , IniFiles
-  , Smallfunc
+  , smallfunc_xe
   , ufuncoesfrente
   , ufuncoesfrentepaf
   , StdCtrls;

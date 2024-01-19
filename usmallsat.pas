@@ -27,7 +27,7 @@ uses
   DB,
   IBQuery, IBDatabase, IBCustomDataSet,
   base64code,
-  SmallFunc
+  //SmallFunc
   {$ELSE}
   WinApi.Windows, Winapi.Messages, Winapi.ShellAPI, Winapi.RichEdit,
   Winapi.WinSpool,

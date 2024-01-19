@@ -10,7 +10,7 @@ unit ufuncoesblocox;
 interface
 
 uses Controls, SysUtils, IBDatabase, DB, IBCustomDataSet, IBQuery,
-  Smallfunc, ufuncoesfrente, StrUtils, Forms, Dialogs,
+  SmallFunc_xe, ufuncoesfrente, StrUtils, Forms, Dialogs,
   DateUtils, LbCipher, LbClass, Classes, Windows, ShellApi
   , Contnrs // Sandro Silva 2018-11-26
   , msxml // Sandro Silva 2019-05-07
@@ -4963,7 +4963,7 @@ begin
         Result := False;
 
         //
-        Application.MessageBox(PAnsiChar('O certificado digital selecionado não pertence a empresa ' + {Emitente.CNPJ} sCNPJ +
+        Application.MessageBox(PWideChar('O certificado digital selecionado não pertence a empresa ' + {Emitente.CNPJ} sCNPJ +
                                #13 + #13 + BXReducaoZ.CertificadoSubjectName),
                                     'Atenção', MB_ICONWARNING + MB_OK);
       end;
@@ -4982,7 +4982,7 @@ begin
         Result := False;
 
         //
-        Application.MessageBox(PAnsiChar('O certificado digital selecionado expirou em ' + FormatDateTime('dd/mm/yyyy', BXReducaoZ.Certificado.ValidToDate) +
+        Application.MessageBox(PWideChar('O certificado digital selecionado expirou em ' + FormatDateTime('dd/mm/yyyy', BXReducaoZ.Certificado.ValidToDate) +
                              #13 + #13 + BXReducaoZ.CertificadoSubjectName),
                                     'Atenção', MB_ICONWARNING + MB_OK);
 
@@ -5650,7 +5650,7 @@ begin
 
     if AnsiContainsText(Application.ExeName, '\frente') then
     begin
-      if Application.MessageBox(PAnsiChar('Deseja visualizar a lista dos arquivos xml do Bloco X?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = ID_Yes then
+      if Application.MessageBox(PWideChar('Deseja visualizar a lista dos arquivos xml do Bloco X?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = ID_Yes then
       begin
         BXVisualizaXmlBlocoX(Emitente, IBTransaction.DefaultDatabase.DatabaseName, sTipo, Emitente.Configuracao.DiretorioAtual); // Sandro Silva 2020-06-18 BXVisualizaXmlBlocoX(FEmitente, FIBTransaction, sTipo, PAnsiChar(DiretorioAtual));
       end;
@@ -6030,7 +6030,8 @@ var
   lResponse: TStringStream;
   IdHTTP: TIdHTTP;
 begin
-  GetWindowsDirectory(cWinDir,200);
+  //GetWindowsDirectory(cWinDir,200);
+  cWinDir := SysWinDir;
   LbBlowfish := TLbBlowfish.Create(nil);
   LbBlowfish.CipherMode := cmECB;
 

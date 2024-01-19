@@ -126,7 +126,7 @@ uses
   ComObj, ActiveX, Contnrs, Classes, SysUtils, MSXML2_TLB,
   IniFiles, ufuncoesfrente
   {$IFDEF VER150}
-  , SmallFunc
+  //, SmallFunc
   {$ELSE}
   , smallfunc_xe
   {$ENDIF}

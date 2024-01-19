@@ -192,7 +192,7 @@ begin
             end;
           end;
         finally
-          FreeAndNil(Store);
+          //FreeAndNil(Store);
         end;
       end;
     end;

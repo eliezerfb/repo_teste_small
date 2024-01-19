@@ -3,7 +3,7 @@ unit _Small_11;
 interface
 
 uses
-  Windows, Messages, SmallFunc, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SmallFunc_xe, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB, DBCtrls, SMALL_DBEdit, IniFiles, Unit2, Unit22;
   // ------------------------------ //
   // Alterado 10/11/2005 - RONEI    //

@@ -26,7 +26,6 @@ uses
   Unit12 in 'Unit12.pas' {Form12},
   Unit14 in 'Unit14.pas' {Form14},
   Unit15 in 'Unit15.pas' {Form15},
-  base64code in 'base64code.pas',
   SelecionaCertificado in 'SelecionaCertificado.pas' {frmSelectCertificate},
   udadospos in 'udadospos.pas' {FDadosPOS},
   ucadadquirentes in 'ucadadquirentes.pas' {FCadAdquirentes},
@@ -73,7 +72,8 @@ uses
   uframeCampoCaixasRelatorio in 'uframeCampoCaixasRelatorio.pas' {frameCampoCaixasRel: TFrame},
   smallfunc_xe in '..\unit_compartilhada\smallfunc_xe.pas',
   uConectaBancoSmall in '..\unit_compartilhada\uConectaBancoSmall.pas',
-  uDialogs in '..\unit_compartilhada\uDialogs.pas';
+  uDialogs in '..\unit_compartilhada\uDialogs.pas',
+  md5_unicode in '..\unit_compartilhada\md5_unicode.pas';
 
 {$R *.RES}
 

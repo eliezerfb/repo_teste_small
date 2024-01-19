@@ -11,15 +11,14 @@ object FArquivosBlocoX: TFArquivosBlocoX
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnResize = FormResize
   OnShow = FormShow
+  PixelsPerInch = 96
   DesignSize = (
     1296
     636)
-  PixelsPerInch = 96
   TextHeight = 13
   object Label5: TLabel
     Left = 8
@@ -70,6 +69,7 @@ object FArquivosBlocoX: TFArquivosBlocoX
     Width = 1278
     Height = 167
     Anchors = [akLeft, akRight, akBottom]
+    ParentFont = False
     ReadOnly = True
     TabOrder = 0
   end
@@ -79,7 +79,6 @@ object FArquivosBlocoX: TFArquivosBlocoX
     Width = 145
     Height = 21
     Style = csDropDownList
-    ItemHeight = 13
     TabOrder = 1
     OnChange = cbTipoChange
     OnKeyUp = cbTipoKeyUp
@@ -94,7 +93,6 @@ object FArquivosBlocoX: TFArquivosBlocoX
     Width = 145
     Height = 21
     Style = csDropDownList
-    ItemHeight = 13
     ItemIndex = 3
     TabOrder = 2
     Text = 'Todos'
@@ -383,6 +381,8 @@ object FArquivosBlocoX: TFArquivosBlocoX
     AfterScroll = IBDSBLOCOXAfterScroll
     BufferChunks = 100
     CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
     Left = 48
     Top = 112
   end
@@ -391,6 +391,8 @@ object FArquivosBlocoX: TFArquivosBlocoX
     Transaction = IBTransaction
     BufferChunks = 100
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 128
     Top = 120
   end
@@ -400,14 +402,12 @@ object FArquivosBlocoX: TFArquivosBlocoX
     Top = 96
   end
   object IBTransaction: TIBTransaction
-    Active = False
     DefaultDatabase = IBDatabase
     DefaultAction = TARollback
     Params.Strings = (
       'read_committed'
       'rec_version'
       'nowait')
-    AutoStopAction = saNone
     Left = 48
     Top = 64
   end
@@ -428,9 +428,7 @@ object FArquivosBlocoX: TFArquivosBlocoX
   end
   object IBDatabase: TIBDatabase
     LoginPrompt = False
-    IdleTimer = 0
-    SQLDialect = 3
-    TraceFlags = []
+    ServerType = 'IBServer'
     AllowStreamedConnected = False
     Left = 16
     Top = 64

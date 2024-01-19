@@ -10,7 +10,7 @@ uses
   , ufuncoesfrente
   , ufuncoesfrentepaf
   , ufuncoesblocox, uclassetiposblocox, upafecfmensagens
-  , Smallfunc
+  , smallfunc_xe
   , xmldom, XMLIntf, msxmldom, msxml, Menus
   , LbCipher,
   LbClass;
@@ -424,7 +424,7 @@ procedure TFArquivosBlocoX.ConsultaRecibo1Click(Sender: TObject);
 var
   bTodas: Boolean;
 begin
-  bTodas := (Application.MessageBox(PAnsiChar('Consultar este XML e os demais listados com status AGUARDANDO?' + #13 + #13 + 'Tecle Não para consultar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
+  bTodas := (Application.MessageBox(PWideChar('Consultar este XML e os demais listados com status AGUARDANDO?' + #13 + #13 + 'Tecle Não para consultar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
   DBGrid1.DataSource.DataSet.DisableControls; // Sandro Silva 2019-06-19
   while True do
   begin
@@ -1218,7 +1218,7 @@ procedure TFArquivosBlocoX.Reprocessararquivos1Click(Sender: TObject);
 var
   bTodas: Boolean;
 begin
-  bTodas := (Application.MessageBox(PAnsiChar('Reprocessar este XML e os próximos listados?' + #13 + #13 + 'Tecle Não para reprocessar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
+  bTodas := (Application.MessageBox(PWideChar('Reprocessar este XML e os próximos listados?' + #13 + #13 + 'Tecle Não para reprocessar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
   DBGrid1.DataSource.DataSet.DisableControls; // Sandro Silva 2019-06-19
   while True do
   begin

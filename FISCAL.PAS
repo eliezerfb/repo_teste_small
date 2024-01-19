@@ -10177,7 +10177,7 @@ begin
 
     if Mais1Ini.ReadString('Frente de caixa', 'TEM TEF','XXX') = 'XXX' then
     begin
-      if Application.MessageBox(PAnsiChar('Usa TEF para pagamentos com cartão?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
+      if Application.MessageBox(PWideChar('Usa TEF para pagamentos com cartão?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
         ChamarTelaConfiguracaoTEF
       else
         Mais1Ini.WriteString('Frente de caixa', 'TEM TEF','Não');
@@ -22545,7 +22545,7 @@ begin
 
   bSoEmTela := False;
   if PAFNFCe then
-    bSoEmTela := (Application.MessageBox(PAnsiChar('Listar na tela?' + #13 + #13 + 'Sim: Lista na tela' + #13 + 'Não: Somente impressão'), 'Atenção', MB_YESNO + MB_ICONQUESTION) = id_yes);
+    bSoEmTela := (Application.MessageBox(PWideChar('Listar na tela?' + #13 + #13 + 'Sim: Lista na tela' + #13 + 'Não: Somente impressão'), 'Atenção', MB_YESNO + MB_ICONQUESTION) = id_yes);
 
   //Evitando problema de não exibir itens lançados nas mesas por 2 terminais diferentes. Um não exibe os dados do outro na primeira abertura da mesa. Ver com Gian/Fernanda}
   CommitaTudo(True); // MesasAbertas1Click
@@ -23866,7 +23866,7 @@ begin
   ChDir(Form1.sAtual); // Sandro Silva 2017-03-31
 
   if TamanhoLogoFrente > TAMANHO_REFERENCIA_ARQUIVO_LOGOTIPO then // Acima de 300 KB
-    Application.MessageBox(PAnsiChar('Reduza o tamanho do logotipo' + #13 + #13 + 'O tamanho do logotipo selecionado poderá deixar o sistema lento'), 'Alerta', MB_OK + MB_ICONWARNING);
+    Application.MessageBox(PWideChar('Reduza o tamanho do logotipo' + #13 + #13 + 'O tamanho do logotipo selecionado poderá deixar o sistema lento'), 'Alerta', MB_OK + MB_ICONWARNING);
 
 end;
 
@@ -32442,7 +32442,7 @@ end;
 procedure TForm1.CNAEdispensadoatransmissodosarquivosdoEstoque1Click(
   Sender: TObject);
 begin
-  if Application.MessageBox(PAnsiChar('A transmissão mensal do arquivo eletrônico do Estoque fica dispensada para os restaurantes, bares e similares,' + #10 +'conforme regra disposta no Ato COTEPE ICMS 09/2013 e ATO DIAT 17/2017.' +
+  if Application.MessageBox(PWideChar('A transmissão mensal do arquivo eletrônico do Estoque fica dispensada para os restaurantes, bares e similares,' + #10 +'conforme regra disposta no Ato COTEPE ICMS 09/2013 e ATO DIAT 17/2017.' +
                            #10 +#10 + 'A não transmissão é passível de penalidades fiscais.' +
                            #10 +#10 + 'Consulte seu Contador!' +
                            #10 +#10 + 'O CNAE da sua empresa está dispensado da transmissão?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = idNo then
@@ -34577,7 +34577,7 @@ begin
           if Form1.bStatusECF then // Sandro Silva 2020-06-25
           begin
 
-            if Application.MessageBox(PansiChar('NFC-e em contingência com transmissão pendente' + #13 + #13 + 'Deseja transmitir a contingência agora?'), PAnsiChar('Atenção - NFC-e em Contingência'), MB_YESNO + MB_DEFBUTTON1 + MB_ICONQUESTION) = id_Yes then
+            if Application.MessageBox(PWideChar('NFC-e em contingência com transmissão pendente' + #13 + #13 + 'Deseja transmitir a contingência agora?'), PAnsiChar('Atenção - NFC-e em Contingência'), MB_YESNO + MB_DEFBUTTON1 + MB_ICONQUESTION) = id_Yes then
             begin
 
               _ecf65_EnviarNFCeContingencia(Form1.IBDataSet150.FieldByName('DATA').AsDateTime, '', ''); //  , Form1.ibDataSet150.FieldByName('CAIXA').AsString); // Sandro Silva 2018-03-06  Form1.sCaixa);
@@ -34595,7 +34595,7 @@ begin
         begin
           if Form1.sCaixa <> Form1.ibDataSet150.FieldByName('CAIXA').AsString then
           begin
-            Application.MessageBox(PAnsiChar('NFC-e ' + Form1.ibDataSet150.FieldByName('NUMERONF').AsString + ' pertence ao caixa ' + Form1.ibDataSet150.FieldByName('CAIXA').AsString +
+            Application.MessageBox(PWideChar('NFC-e ' + Form1.ibDataSet150.FieldByName('NUMERONF').AsString + ' pertence ao caixa ' + Form1.ibDataSet150.FieldByName('CAIXA').AsString +
                                              #13 + #13 + 'Faça o envio pelo caixa ' + Form1.ibDataSet150.FieldByName('CAIXA').AsString), 'Atenção', MB_OK + MB_ICONWARNING);
           end
           else

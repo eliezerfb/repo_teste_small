@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages
   {$IFDEF VER150}// – Delphi 7
-  , SmallFunc
+  //, SmallFunc
   {$ELSE}
   , smallfunc_xe
   {$ENDIF}

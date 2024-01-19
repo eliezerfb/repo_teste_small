@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, Forms, ShellApi, Windows, StrUtils, Dialogs
-  , SmallFunc
+  , SmallFunc_xe
   , ufuncoesfrente
   ;
 
