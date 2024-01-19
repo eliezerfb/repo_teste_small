@@ -1953,7 +1953,7 @@ begin
                        Right('000' + aJ2[iJ2].NumeroItem, 3) +                                              // Número do item registrado no documento
                        Right(DupeString('0', 14) + aJ2[iJ2].CodigoProduto, 14) +                            // Código do produto ou serviço registrado no documento. 
                        Copy(aJ2[iJ2].Descricao + DupeString(' ', 100), 1, 100) +                            // Descrição do produto ou serviço constante no Cupom Fiscal
-                       sJ2Quantidade + // StrZero(((aJ2[iJ2].Quantidade) * 100), 7, 0) +                                       // Quantidade comercializada, sem a separação das casas decimais
+                       sJ2Quantidade +                                                                      // Quantidade comercializada, sem a separação das casas decimais
                        Copy(aJ2[iJ2].Unidade + Replicate(' ', 3), 1, 3) +                                   // Unidade de medida
                        StrZero(((aJ2[iJ2].ValorUnitario) * 100), 8, 0) +                                    // Valor unitário do produto ou serviço, sem a separação das casas decimais.
                        StrZero(((aJ2[iJ2].DescontoItem) * 100), 8, 0) +                                     // Valor do desconto incidente sobre o valor do item, com duas casas decimais.

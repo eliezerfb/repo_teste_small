@@ -12,7 +12,7 @@ object Form14: TForm14
   Font.Style = []
   Position = poDesktopCenter
   OnActivate = FormActivate
-  OnCloseQuery = FormCloseQuery
+  OnCloseQuery = FormCloseQuery 
   PixelsPerInch = 96
   DesignSize = (
     1002

@@ -1479,6 +1479,7 @@ type
     procedure ChamarTelaConfiguracaoTEF;
     procedure IniciarNovaVendaComDocAberto;
     procedure AbreEdicaoMovimento;
+    procedure AjustaDataSetTamanhoCampoDescricao(Sender: TObject);
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -3689,7 +3690,7 @@ begin
       end else
       begin
         Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',90),1,45));
-        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',90),46,44));
+        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',90),46,89));
       end;
     end
     else
@@ -8092,27 +8093,11 @@ begin
       //
       //ShowMessage('Teste 01 9719'); // Sandro Silva 2021-04-27
 
-      {Sandro Silva 2021-12-29 inicio
       SmallMsg('Este sistema não foi totalmente instalado nesta pasta ou'+Chr(10)+
                 'não está liberado para uso neste computador, instale'+Chr(10)+
                 'novamente o sistema informando o número serial da'+Chr(10)+
                 'sua licença de uso.'+Chr(10)+Chr(13)+
                 'Código: 001 '+sLicenca);
-      }
-      {Sandro Silva 2023-08-08 inicio
-      if Gerencial then
-        SmallMsg('Sistema bloqueado'+Chr(10)+
-                              'Este sistema só pode ser usado por empresa'+Chr(10)+
-                              'enquadrada como Microempreendedor Individual (MEI)'+Chr(10)+Chr(13)+
-                              'Código: 991 '+ sLicenca)
-      else
-      }
-        SmallMsg('Este sistema não foi totalmente instalado nesta pasta ou'+Chr(10)+
-                  'não está liberado para uso neste computador, instale'+Chr(10)+
-                  'novamente o sistema informando o número serial da'+Chr(10)+
-                  'sua licença de uso.'+Chr(10)+Chr(13)+
-                  'Código: 001 '+sLicenca);
-      {Sandro Silva 2021-12-29 fim}
 
       Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
         Form1.ClienteSmallMobile.sLogRetornoMobile);
@@ -8125,102 +8110,15 @@ begin
   end else
   begin
     //
-    {Sandro Silva 2023-05-25 inicio
-    iLimiteUsuariosSimultaneos := 2;
-    //
-    if Copy(sSerial,4,1) = 'F' then iLimiteUsuariosSimultaneos := 2;
-    if Copy(sSerial,4,1) = 'E' then iLimiteUsuariosSimultaneos := 7;
-    if Copy(sSerial,4,1) = 'D' then iLimiteUsuariosSimultaneos := 12;
-    if Copy(sSerial,4,1) = 'C' then iLimiteUsuariosSimultaneos := 2;
-    if Copy(sSerial,4,1) = 'B' then iLimiteUsuariosSimultaneos := 7;
-    if Copy(sSerial,4,1) = 'A' then iLimiteUsuariosSimultaneos := 12;
-    if Copy(sSerial,4,1) = 'W' then iLimiteUsuariosSimultaneos := 24;
-    if Copy(sSerial,4,1) = 'S' then iLimiteUsuariosSimultaneos := 2;
-
-    if Copy(sSerial,4,1) = 'N' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'O' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'P' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'Q' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários Small Mei
-    if Copy(sSerial,4,1) = 'R' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei
-    if Copy(sSerial,4,1) = 'M' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei
-    }
     iLimiteUsuariosSimultaneos := ValidaRecursos.SistemaLimiteUsuarios;
-    {Sandro Silva 2023-05-25 fim}
 
-
-    {Sandro Silva 2021-12-29 inicio
-    //
-    if    (Copy(sSerial,4,1) = 'C') or // 02 Usuários + OS
-          (Copy(sSerial,4,1) = 'B') or // 07 Usuários + OS
-          (Copy(sSerial,4,1) = 'A')    // 12 Usuários + OS
-      then
-      Form22.sTitulo := 'Small Commerce + Ordem de Serviço'
-    else if (Copy(sSerial,4,1) = 'S') then
-      Form22.sTitulo := 'Small Start'
-    else if (Copy(sSerial,4,1) = 'N') or // 12 Usuários Small Mei + OS
-            (Copy(sSerial,4,1) = 'O') or // 07 Usuários Small Mei + OS
-            (Copy(sSerial,4,1) = 'P')    // 02 Usuários Small Mei + OS
-     then
-      Form22.sTitulo := 'Small MEI + Ordem de Serviço'
-    else if (Copy(sSerial,4,1) = 'Q')   // 12 Usuários Small Mei
-         or (Copy(sSerial,4,1) = 'R')   // 07 Usuários Small Mei
-         or (Copy(sSerial,4,1) = 'M')   // 02 Usuários Small Mei
-     then
-      Form22.sTitulo := 'Small MEI'
-    else
-      Form22.sTitulo := 'Small Commerce';
-    }
-    {Sandro Silva 2022-04-11 inicio
-    Form22.sTitulo := 'Small Commerce';
-    if MEI then
-      Form22.sTitulo := 'Small Commerce (MEI)';
-    }
     Form22.sTitulo := 'Small';
     if Gerencial then
       Form22.sTitulo := 'Small (Gerencial)'; // Sandro Silva 2023-07-13 Form22.sTitulo := 'Small (MEI)';
-    {Sandro Silva 2022-04-11 fim}
 
-    {Sandro Silva 2021-12-29 fim}
-    //
     Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iLimiteUsuariosSimultaneos))+' usuários';
-    //
-    I := StrToInt('0'+LimpaNumero(Copy(sSerial,6,6)));
 
-    //
-    // é aqui a chave pra resolver os controles de seriais                                 X
-    //
-    {
-    //2018
-    if (sSerial = StrTran(StrTran(UpperCase('S13F'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S13S'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Start
-    or (sSerial = StrTran(StrTran(UpperCase('S13E'+Modulo_11(IntToStr(I+72))+StrZero(I,6,0)+'1'+ Chr(66+StrtoInt(Modulo_11(IntToStr(I+75))))),'I','X'),'L','Z')) // 05 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S13D'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S13W'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S13C'+Modulo_11(IntToStr(I+74))+StrZero(I,6,0)+'3'+ Chr(68+StrtoInt(Modulo_11(IntToStr(I+73))))),'I','X'),'L','Z')) // 02 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S13B'+Modulo_11(IntToStr(I+75))+StrZero(I,6,0)+'4'+ Chr(69+StrtoInt(Modulo_11(IntToStr(I+72))))),'I','X'),'L','Z')) // 05 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S13A'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S13W'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    //2019 // Sandro Silva 2018-10-09
-    or (sSerial = StrTran(StrTran(UpperCase('S14F'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S14S'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Start
-    or (sSerial = StrTran(StrTran(UpperCase('S14E'+Modulo_11(IntToStr(I+72))+StrZero(I,6,0)+'1'+ Chr(66+StrtoInt(Modulo_11(IntToStr(I+75))))),'I','X'),'L','Z')) // 05 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S14D'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S14W'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S14C'+Modulo_11(IntToStr(I+74))+StrZero(I,6,0)+'3'+ Chr(68+StrtoInt(Modulo_11(IntToStr(I+73))))),'I','X'),'L','Z')) // 02 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S14B'+Modulo_11(IntToStr(I+75))+StrZero(I,6,0)+'4'+ Chr(69+StrtoInt(Modulo_11(IntToStr(I+72))))),'I','X'),'L','Z')) // 05 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S14A'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S14W'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    //2020 // ER 02.06 Sandro Silva 2019-06-19
-    or (sSerial = StrTran(StrTran(UpperCase('S15F'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S15S'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Start
-    or (sSerial = StrTran(StrTran(UpperCase('S15E'+Modulo_11(IntToStr(I+72))+StrZero(I,6,0)+'1'+ Chr(66+StrtoInt(Modulo_11(IntToStr(I+75))))),'I','X'),'L','Z')) // 05 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S15D'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S15W'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S15C'+Modulo_11(IntToStr(I+74))+StrZero(I,6,0)+'3'+ Chr(68+StrtoInt(Modulo_11(IntToStr(I+73))))),'I','X'),'L','Z')) // 02 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S15B'+Modulo_11(IntToStr(I+75))+StrZero(I,6,0)+'4'+ Chr(69+StrtoInt(Modulo_11(IntToStr(I+72))))),'I','X'),'L','Z')) // 05 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S15A'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S15W'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    }
+    I := StrToInt('0'+LimpaNumero(Copy(sSerial,6,6)));
 
     // A partir da versão 2020 o controle não é mais feito pelo número de série do Small, mas pela data de registro
     // Aqui basta validar o serial desconsiderando a versão
@@ -8243,7 +8141,6 @@ begin
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('M'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Mei
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('T'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 01 Usuário Small Go
        )
-    // Sandro Silva 2022-11-30 and (StrToIntDef(Copy(sSerial, 2, 2), 0) >= 13) // Maior ou igual a S13. Segurança para evitar uso de serial muito antigo
         and (StrToIntDef(Copy(sSerial, 2, 2), 0) >= 14) // Maior ou igual a S14. Segurança para evitar uso de serial muito antigo
     then
     begin
@@ -20987,87 +20884,6 @@ begin
                         StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
                         StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
 
-          {Sandro Silva 2021-07-22 inicio 
-          if Form1.sModeloECF = '04' then
-            bVenda := _ecf04_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '05' then
-            bVenda := _ecf05_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '06' then
-            bVenda := _ecf06_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '07' then
-            bVenda := _ecf07_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '08' then
-            bVenda := _ecf08_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '09' then
-            bVenda := _ecf09_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '10' then
-            bVenda := _ecf10_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '11' then
-            bVenda := _ecf11_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-          }
           if Form1.sModeloECF = '12' then
           begin
             bVenda := _ecf12_VendaDeItem(sCodigo, // Código
@@ -27047,13 +26863,58 @@ begin
 
 end;
 
-procedure TForm1.IBDatabase2AfterConnect(Sender: TObject);
+
+{Sandro Silva 2023-12-27 inicio}
+procedure TForm1.AjustaDataSetTamanhoCampoDescricao(Sender: TObject);
+var
+  SizeDescricaoProd: Integer;
 begin
+
+  SizeDescricaoProd := TamanhoCampo(TIBDatabase(Sender).DefaultTransaction, 'ESTOQUE', 'DESCRICAO');
+  Form1.ibDataSet4DESCRICAO.Size  := SizeDescricaoProd;
+  Form1.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet27DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
+
+end;
+{Sandro Silva 2023-12-27 fim}
+
+
+procedure TForm1.IBDatabase2AfterConnect(Sender: TObject);
+var
+  SizeDescricaoProd: Integer;
+begin
+  {Sandro Silva 2023-12-28 inicio
+  SizeDescricaoProd := TamanhoCampo(TIBDatabase(Sender).DefaultTransaction, 'ESTOQUE', 'DESCRICAO');
+  Form1.ibDataSet4DESCRICAO.Size  := SizeDescricaoProd;
+  Form1.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet27DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
+  }
+  AjustaDataSetTamanhoCampoDescricao(Sender);
+
+  {Sandro Silva 2023-12-28 fim}
+
   AtualizaBase(IBDatabase2);
 end;
 
 procedure TForm1.IBDatabase1AfterConnect(Sender: TObject);
+var
+  SizeDescricaoProd: Integer;
 begin
+  {Sandro Silva 2023-12-28 inicio
+  SizeDescricaoProd := TamanhoCampo(TIBDatabase(Sender).DefaultTransaction, 'ESTOQUE', 'DESCRICAO');
+  Form1.ibDataSet4DESCRICAO.Size  := SizeDescricaoProd;
+  Form1.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet27DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
+  }
+  AjustaDataSetTamanhoCampoDescricao(Sender);  
+  {Sandro Silva 2023-12-28 fim}
+
   AtualizaBase(IBDatabase1);
 end;
 
