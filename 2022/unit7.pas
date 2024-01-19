@@ -8244,11 +8244,13 @@ begin
       end;
 
       TItensInativosImpXMLEnt.New
-                             .setDataBase(Self.IBDatabase1)
+                             //.setDataBase(Self.IBDatabase1) Mauricio Parizotto 2024-01-19
+                             .setDataBase(Self.IBDatabase1,Self.IBTransaction1)
                              .Executar(cProdutos);
 
-      if Self.IBTransaction1.Active then
-        Self.IBTransaction1.CommitRetaining;
+      //Mauricio Parizotto 2024-01-19
+      //if Self.IBTransaction1.Active then
+      //  Self.IBTransaction1.CommitRetaining;
     finally
       Form24.DBGrid1.DataSource.DataSet.RecNo := nRecNo;
       Form24.DBGrid1.DataSource.DataSet.EnableControls;

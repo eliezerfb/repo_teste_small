@@ -15,13 +15,14 @@ type
   public
     destructor Destroy; override;
     class function New: IItensInativosImpXMLEntrada;
-    function setDataBase(AoDataBase: TIBDataBase): IItensInativosImpXMLEntrada;
+    function setDataBase(AoDataBase: TIBDataBase;
+      AoTransaction: TIBTransaction): IItensInativosImpXMLEntrada;
     function Executar(AcItens: String): IItensInativosImpXMLEntrada;
   end;
 
 implementation
 
-uses SysUtils, Dialogs, Classes, uDialogs;
+uses SysUtils, Dialogs, Classes, uDialogs, uFuncoesBancoDados;
 
 { TItensInativosImpXMLEnt }
 
@@ -89,11 +90,13 @@ begin
   FibqItens.First;
 
   ibqUpdate := TIBQuery.Create(nil);
+
   try
     try
       while not FibqItens.Eof do
       begin
         ibqUpdate.Database := FibqItens.DataBase;
+        ibqUpdate.Transaction := FibqItens.Transaction;
         ibqUpdate.Close;
         ibqUpdate.SQL.Clear;
         ibqUpdate.SQL.Add('UPDATE ESTOQUE SET');
@@ -122,11 +125,13 @@ begin
 end;
 
 function TItensInativosImpXMLEnt.setDataBase(
-  AoDataBase: TIBDataBase): IItensInativosImpXMLEntrada;
+  AoDataBase: TIBDataBase;
+  AoTransaction: TIBTransaction): IItensInativosImpXMLEntrada;
 begin
   Result := Self;
 
   FibqItens.Database := AoDataBase;
+  FibqItens.Transaction := AoTransaction;
 end;
 
 end.
