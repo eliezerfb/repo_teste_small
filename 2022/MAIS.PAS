@@ -20,6 +20,7 @@ uses
   , DBCtrls
   , SMALL_DBEdit
   , uValidaRecursosDelphi7
+  , uLogSistema
   , uSmallEnumerados
   ;
 
@@ -455,6 +456,7 @@ type
     procedure DefinirBuildEXEDAT;
     procedure EnviarXMLContabilidadeAut;
     procedure ClickOKInformacoesInutilizacao(Sender: TObject);
+    procedure CarregaConfiguracoes;
 
   public
     fDias : Real;
@@ -12678,6 +12680,19 @@ begin
   try
     ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
     ConfSistema.BD.NFSE.ObsNaDescricao := not(ConfSistema.BD.NFSE.ObsNaDescricao);
+  finally
+    FreeAndNil(ConfSistema);
+  end;
+end;
+
+procedure TForm1.CarregaConfiguracoes;
+var
+  ConfSistema : TArquivosDAT;
+begin
+  //Carrega coniguraçõs do sistema
+  try
+    ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
+    GeraLogSistema := ConfSistema.BD.Outras.LogSistema;
   finally
     FreeAndNil(ConfSistema);
   end;

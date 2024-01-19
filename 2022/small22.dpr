@@ -217,7 +217,8 @@ uses
   uEstruturaRelTotalizadorGeralVenda in 'units\uEstruturaRelTotalizadorGeralVenda.pas',
   uEstruturaRelVendasNotaFiscal in 'units\uEstruturaRelVendasNotaFiscal.pas',
   uRelatorioVendasNotaFiscal in 'units\uRelatorioVendasNotaFiscal.pas' {frmRelVendasNotaFiscal},
-  udmRelTotalizadorVendasGeral in 'units\udmRelTotalizadorVendasGeral.pas' {dmRelTotalizadorVendasGeral: TDataModule};
+  udmRelTotalizadorVendasGeral in 'units\udmRelTotalizadorVendasGeral.pas' {dmRelTotalizadorVendasGeral: TDataModule},
+  uLogSistema in '..\..\unit_compartilhada\uLogSistema.pas';
 
 {$R *.RES}
 

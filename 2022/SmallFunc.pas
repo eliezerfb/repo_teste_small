@@ -126,6 +126,7 @@ uses
   function DescricaoComQuebraLinha(Descricao:string;EspacamentoEsquerdo:string;Tamanho:integer):string;
   procedure DBGridCopiarCampo(DBGrid: TDBGrid); overload;
   procedure DBGridCopiarCampo(DBGrid: TDBGrid; var Key: Word;  Shift: TShiftState); overload;
+  function SysComputerName: String;
 
 implementation
 
@@ -2870,6 +2871,17 @@ begin
   begin
     DBGridCopiarCampo(DBGrid);
   end;
+end;
+
+//Mauricio Parizotto 2023-08-08
+function SysComputerName: String;
+var
+  I: DWord;
+begin
+  I := MAX_COMPUTERNAME_LENGTH + 1;
+  SetLength(Result, I);
+  Windows.GetComputerName(PChar(Result), I);
+  Result := String(PChar(Result));
 end;
 
 end.
