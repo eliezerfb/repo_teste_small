@@ -4090,6 +4090,9 @@ begin
       Form1.AutoMarketplace1Click(Sender);
     end;
   end;
+
+  //Mauricio Parizotto 2023-11-27
+  CarregaConfiguracoes;
 end;
 
 procedure TForm1.ConsultadepreosporCdigodeBarras1Click(Sender: TObject);

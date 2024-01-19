@@ -30,6 +30,7 @@ uses
   IdHTTP
   , uFuncoesRetaguarda
   , uSmallConsts
+  , uLogSistema
   , uArquivosDAT // Sandro Silva 2023-10-02
   ;
 
@@ -5217,8 +5218,11 @@ begin
         if Form7.IBTransaction1.Active then
           Form7.IBTransaction1.Commit;
       except
-        //ShowMessage('Falha na conexão com o Banco de Dados. Erro 1848'); Mauricio Parizotto 2023-10-25
-        MensagemSistema('Falha na conexão com o Banco de Dados. Erro 1848',msgErro);
+        on e:exception do
+        begin
+          LogSistema('Commitatudo 5222 '+e.Message);
+          MensagemSistema('Falha na conexão com o Banco de Dados. Erro 1848',msgErro);
+        end;
       end;
 
       try
