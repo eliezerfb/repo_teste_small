@@ -203,39 +203,39 @@ type
     Button6: TButton;
     ibDataSet27: TibDataSet;
     DataSource27: TDataSource;
-    ibDataSet27CODIGO: TStringField;
-    ibDataSet27DESCRICAO: TStringField;
+    ibDataSet27CODIGO: TIBStringField;
+    ibDataSet27DESCRICAO: TIBStringField;
     ibDataSet27QUANTIDADE: TFloatField;
     ibDataSet27UNITARIO: TFloatField;
     ibDataSet27DATA: TDateField;
-    ibDataSet27TIPO: TStringField;
-    ibDataSet27PEDIDO: TStringField;
-    ibDataSet27CLIFOR: TStringField;
-    ibDataSet27VENDEDOR: TStringField;
+    ibDataSet27TIPO: TIBStringField;
+    ibDataSet27PEDIDO: TIBStringField;
+    ibDataSet27CLIFOR: TIBStringField;
+    ibDataSet27VENDEDOR: TIBStringField;
     ibDataSet27TOTAL: TFloatField;
     ibDataSet1: TibDataSet;
     ibDataSet1DATA: TDateField;
-    ibDataSet1NOME: TStringField;
-    ibDataSet1HISTORICO: TStringField;
+    ibDataSet1NOME: TIBStringField;
+    ibDataSet1HISTORICO: TIBStringField;
     ibDataSet1ENTRADA: TFloatField;
     ibDataSet1SAIDA: TFloatField;
     ibDataSet1SALDO: TFloatField;
-    ibDataSet1CONTA: TStringField;
+    ibDataSet1CONTA: TIBStringField;
     DataSource1: TDataSource;
     Button7: TButton;
     ibDataSet2: TibDataSet;
     DataSource2: TDataSource;
     ibDataSet7: TibDataSet;
-    ibDataSet7HISTORICO: TStringField;
-    ibDataSet7DOCUMENTO: TStringField;
-    ibDataSet7NOME: TStringField;
+    ibDataSet7HISTORICO: TIBStringField;
+    ibDataSet7DOCUMENTO: TIBStringField;
+    ibDataSet7NOME: TIBStringField;
     ibDataSet7EMISSAO: TDateField;
     ibDataSet7VENCIMENTO: TDateField;
     ibDataSet7VALOR_DUPL: TFloatField;
     ibDataSet7RECEBIMENT: TDateField;
     ibDataSet7VALOR_RECE: TFloatField;
     ibDataSet7VALOR_JURO: TFloatField;
-    ibDataSet7PORTADOR: TStringField;
+    ibDataSet7PORTADOR: TIBStringField;
     DataSource7: TDataSource;
     ibDataSet25: TibDataSet;
     ibDataSet25ACUMULADO1: TFloatField;
@@ -277,23 +277,23 @@ type
     ibDataSet14: TibDataSet;
     DataSource14: TDataSource;
     ibDataSet13: TibDataSet;
-    ibDataSet13NOME: TStringField;
-    ibDataSet13CONTATO: TStringField;
-    ibDataSet13ENDERECO: TStringField;
-    ibDataSet13COMPLE: TStringField;
-    ibDataSet13MUNICIPIO: TStringField;
-    ibDataSet13CEP: TStringField;
-    ibDataSet13ESTADO: TStringField;
-    ibDataSet13CGC: TStringField;
-    ibDataSet13IE: TStringField;
+    ibDataSet13NOME: TIBStringField;
+    ibDataSet13CONTATO: TIBStringField;
+    ibDataSet13ENDERECO: TIBStringField;
+    ibDataSet13COMPLE: TIBStringField;
+    ibDataSet13MUNICIPIO: TIBStringField;
+    ibDataSet13CEP: TIBStringField;
+    ibDataSet13ESTADO: TIBStringField;
+    ibDataSet13CGC: TIBStringField;
+    ibDataSet13IE: TIBStringField;
     DataSource13: TDataSource;
     ibDataSet25RECEBER: TFloatField;
     ibDataSet9: TibDataSet;
-    ibDataSet9NOME: TStringField;
+    ibDataSet9NOME: TIBStringField;
     ibDataSet9COMISSA1: TFloatField;
     ibDataSet9COMISSA2: TFloatField;
     DataSource9: TDataSource;
-    ibDataSet27CAIXA: TStringField;
+    ibDataSet27CAIXA: TIBStringField;
     ibDataSet25PAGAR: TFloatField;
     N2: TMenuItem;
     FunesadministrativasTEF1: TMenuItem;
@@ -305,11 +305,11 @@ type
     ibDataSet25DATA: TDateField;
     ibDataSet25DIFERENCA_: TFloatField;
     ibDataSet10: TibDataSet;
-    ibDataSet10CODIGO: TStringField;
-    ibDataSet10COR: TStringField;
-    ibDataSet10TAMANHO: TStringField;
-    ibDataSet10QTD: TStringField;
-    ibDataSet10ENTRADAS: TStringField;
+    ibDataSet10CODIGO: TIBStringField;
+    ibDataSet10COR: TIBStringField;
+    ibDataSet10TAMANHO: TIBStringField;
+    ibDataSet10QTD: TIBStringField;
+    ibDataSet10ENTRADAS: TIBStringField;
     DataSource10: TDataSource;
     Relatriodetributao1: TMenuItem;
     ibDataSet27VALORICM: TFloatField;
@@ -332,14 +332,14 @@ type
     ibDataSet25VALOR_3: TFloatField;
     ibDataSet25VALOR_4: TFloatField;
     Bloqueioporsenha1: TMenuItem;
-    ibDataSet27ALIQUICM: TStringField;
+    ibDataSet27ALIQUICM: TIBStringField;
     ibDataSet29: TibDataSet;
-    ibDataSet29NOME: TStringField;
+    ibDataSet29NOME: TIBStringField;
     ibDataSet29DESCONTO: TFloatField;
     DataSource29: TDataSource;
     DataSource30: TDataSource;
     Balana1: TMenuItem;
-    ibDataSet27MEDIDA: TStringField;
+    ibDataSet27MEDIDA: TIBStringField;
     GrandetotalGT1: TMenuItem;
     Vendabrutadodia1: TMenuItem;
     EF1: TMenuItem;
@@ -454,17 +454,17 @@ type
     ibDataSet27ITEM: TIBStringField;
     IBDatabaseInfo1: TIBDatabaseInfo;
     ibDataSet37: TIBDataSet;
-    ibDataSet37CODIGO: TStringField;
-    ibDataSet37DESCRICAO: TStringField;
+    ibDataSet37CODIGO: TIBStringField;
+    ibDataSet37DESCRICAO: TIBStringField;
     ibDataSet37QUANTIDADE: TFloatField;
     ibDataSet37UNITARIO: TFloatField;
     ibDataSet37TOTAL: TFloatField;
     ibDataSet37DATA: TDateField;
-    ibDataSet37TIPO: TStringField;
-    ibDataSet37PEDIDO: TStringField;
-    ibDataSet37CLIFOR: TStringField;
-    ibDataSet37VENDEDOR: TStringField;
-    ibDataSet37CAIXA: TStringField;
+    ibDataSet37TIPO: TIBStringField;
+    ibDataSet37PEDIDO: TIBStringField;
+    ibDataSet37CLIFOR: TIBStringField;
+    ibDataSet37VENDEDOR: TIBStringField;
+    ibDataSet37CAIXA: TIBStringField;
     ibDataSet37MEDIDA: TIBStringField;
     ibDataSet37ITEM: TIBStringField;
     ibDataSet37VALORICM: TFloatField;
@@ -472,12 +472,12 @@ type
     ibDataSet37REGISTRO: TIBStringField;
     Button1: TButton;
     ibDataSet16: TIBDataSet;
-    ibDataSet16NUMERONF: TStringField;
-    ibDataSet16CODIGO: TStringField;
-    ibDataSet16DESCRICAO: TStringField;
+    ibDataSet16NUMERONF: TIBStringField;
+    ibDataSet16CODIGO: TIBStringField;
+    ibDataSet16DESCRICAO: TIBStringField;
     ibDataSet16IPI: TFloatField;
     ibDataSet16ICM: TFloatField;
-    ibDataSet16MEDIDA: TStringField;
+    ibDataSet16MEDIDA: TIBStringField;
     ibDataSet16QUANTIDADE: TFloatField;
     ibDataSet16UNITARIO: TFloatField;
     ibDataSet16LISTA: TFloatField;
@@ -488,24 +488,24 @@ type
     ibDataSet16BASE: TFloatField;
     ibDataSet16BASEISS: TFloatField;
     ibDataSet16ALIQUOTA: TFloatField;
-    ibDataSet16ST: TStringField;
-    ibDataSet16CFOP: TStringField;
-    ibDataSet16NUMEROOS: TStringField;
+    ibDataSet16ST: TIBStringField;
+    ibDataSet16CFOP: TIBStringField;
+    ibDataSet16NUMEROOS: TIBStringField;
     ibDataSet16SINCRONIA: TFloatField;
     ibDataSet16REGISTRO: TIBStringField;
     ibDataSet35: TIBDataSet;
-    ibDataSet35NUMERONF: TStringField;
-    ibDataSet35CODIGO: TStringField;
-    ibDataSet35DESCRICAO: TStringField;
-    ibDataSet35TECNICO: TStringField;
-    ibDataSet35MEDIDA: TStringField;
+    ibDataSet35NUMERONF: TIBStringField;
+    ibDataSet35CODIGO: TIBStringField;
+    ibDataSet35DESCRICAO: TIBStringField;
+    ibDataSet35TECNICO: TIBStringField;
+    ibDataSet35MEDIDA: TIBStringField;
     ibDataSet35QUANTIDADE: TFloatField;
     ibDataSet35UNITARIO: TFloatField;
     ibDataSet35TOTAL: TFloatField;
-    ibDataSet35CFOP: TStringField;
+    ibDataSet35CFOP: TIBStringField;
     ibDataSet35ISS: TFloatField;
     ibDataSet35BASEISS: TFloatField;
-    ibDataSet35NUMEROOS: TStringField;
+    ibDataSet35NUMEROOS: TIBStringField;
     ibDataSet35REGISTRO: TIBStringField;
     SuprimentoReforodecaixa1: TMenuItem;
     IBTransaction2: TIBTransaction;
@@ -839,11 +839,11 @@ type
     ibDataSet4IIA_MUNI: TFloatField;
     Fusohorario1: TMenuItem;
     Label2: TLabel;
-    ibDataSet27CFOP: TStringField;
+    ibDataSet27CFOP: TIBStringField;
     ConsultarStatusdoServio1: TMenuItem;
     ConsultaStatusOperacionaldoSAT1: TMenuItem;
-    IBDataSet150CAIXA: TStringField;
-    IBDataSet150MODELO: TStringField;
+    IBDataSet150CAIXA: TIBStringField;
+    IBDataSet150MODELO: TIBStringField;
     PopupMenu4: TPopupMenu;
     Restaurar1: TMenuItem;
     N10: TMenuItem;
@@ -865,12 +865,12 @@ type
     ArquivocomInformaesdaReduoZdoPAFECF1: TMenuItem;
     EnvioaoFISCOESTOQUE: TMenuItem;
     IBQDadosRequisitoXXIV____: TIBQuery;
-    ibDataSet27SERIE: TStringField;
-    ibDataSet27SUBSERIE: TStringField;
+    ibDataSet27SERIE: TIBStringField;
+    ibDataSet27SUBSERIE: TIBStringField;
     EnviarDANFCEeXMLcompactado1: TMenuItem;
     VersodoManualdaNFCe1: TMenuItem;
-    ibDataSet4CSOSN_NFCE: TStringField;
-    ibDataSet4CST_NFCE: TStringField;
+    ibDataSet4CSOSN_NFCE: TIBStringField;
+    ibDataSet4CST_NFCE: TIBStringField;
     ibDataSet4ALIQUOTA_NFCE: TIBBCDField;
     RealatriosGerenciais1: TMenuItem;
     N24: TMenuItem;
@@ -889,7 +889,7 @@ type
     VersodoSchemadaNFCe2: TMenuItem;
     AvanodePapelnoFinaldeImpressoSAT1: TMenuItem;
     MovimentoDia1: TMenuItem;
-    ibDataSet27CSOSN: TStringField;
+    ibDataSet27CSOSN: TIBStringField;
     ransmitirContingncia1: TMenuItem;
     N26: TMenuItem;
     ransmitircontingncia2: TMenuItem;
@@ -937,7 +937,7 @@ type
     Impressorapadro1: TMenuItem;
     NFCeVersaoManualvm601: TMenuItem;
     N4001: TMenuItem;
-    ibDataSet13ibDataset88ENCRYPTHASH: TStringField;
+    ibDataSet13ibDataset88ENCRYPTHASH: TIBStringField;
     CDSR01: TClientDataSet;
     CDSR01SERIE: TStringField;
     CDSR01MODELOECF: TStringField;
@@ -955,7 +955,7 @@ type
     Panel8: TPanel;
     touch_OpcoesNFCe: TImage;
     LabelOpcoesNFCe: TLabel;
-    ibDataSet27SEQUENCIALCONTACLIENTEOS: TStringField;
+    ibDataSet27SEQUENCIALCONTACLIENTEOS: TIBStringField;
     Image11: TImage;
     Image12: TImage;
     Image88: TImage;
@@ -974,7 +974,7 @@ type
     FormatarIEdoemitentecom12dgitos1: TMenuItem;
     ibDataSet4TAGS_: TMemoField;
     EnviarchaveconsultapeloWhatsApp1: TMenuItem;
-    ibDataSet2WHATSAPP: TStringField;
+    ibDataSet2WHATSAPP: TIBStringField;
     CNAEdispensadoatransmissodosarquivosdoEstoque1: TMenuItem;
     NFCeVersaoSchemapl0091: TMenuItem;
     PopupMenu7: TPopupMenu;
@@ -991,11 +991,11 @@ type
     HorriodeVero1: TMenuItem;
     InformaesdoresponsveltcnicoNFCe1: TMenuItem;
     VersoLeiauteSat0081: TMenuItem;
-    IBDataSet150NFEIDSUBSTITUTO: TStringField;
-    ibDataSet7NN: TStringField;
+    IBDataSet150NFEIDSUBSTITUTO: TIBStringField;
+    ibDataSet7NN: TIBStringField;
     ConsultaChaveNFCe1: TMenuItem;
     EnviaremailcomXMLePDFacadavenda1: TMenuItem;
-    ibDataSet13LICENCA: TStringField;
+    ibDataSet13LICENCA: TIBStringField;
     Diaspararecebimentodaoperadoradecarto1: TMenuItem;
     Crdito1: TMenuItem;
     Dbito1: TMenuItem;
@@ -1009,7 +1009,7 @@ type
     MesasAbertasPAFNFCe: TMenuItem;
     lbMenuFiscalPAFNFCeInacessivel1: TLabel;
     pnlMenuFiscalPAFNFCeInacessivel: TPanel;
-    IBDataSet150ENCRYPTHASH: TStringField;
+    IBDataSet150ENCRYPTHASH: TIBStringField;
     InformarindIntermedNFCe1: TMenuItem;
     ValorLimiteTotalNFCeEstabelecidoSefaz1: TMenuItem;
     GerarxPagparaMeioPagamento99Outros1: TMenuItem;
@@ -1019,7 +1019,7 @@ type
     PesquisaNFCeemcontingncia: TMenuItem;
     SmartPOSElginPay1: TMenuItem;
     FunesAdministrativasPosElginPay1: TMenuItem;
-    ibDataSet27MARKETPLACE: TStringField;
+    ibDataSet27MARKETPLACE: TIBStringField;
     IBQMARKETPLACE: TIBQuery;
     DSMARKETPLACE: TDataSource;
     Etiquetadabalanainforma1: TMenuItem;
@@ -1034,7 +1034,7 @@ type
     ESTOQUEATUAL1: TMenuItem;
     SadasIdentificadaspeloCPFCNPJ1: TMenuItem;
     itemMenugerencial: TMenuItem;
-    IBDataSet150GERENCIAL: TStringField;
+    IBDataSet150GERENCIAL: TIBStringField;
     EmitirNFCedogerencial1: TMenuItem;
     FechamentodeCaixa1: TMenuItem;
     Iniciarnovavenda1: TMenuItem;
@@ -9432,9 +9432,9 @@ begin
       if Form1.sModeloECF = '65' then
       begin
         //
-        if FileExists(PAnsiChar(Form1.sAtual + '\nfce\nfceServidoresHom.ini')) = False then
+        if FileExists(PChar(Form1.sAtual + '\nfce\nfceServidoresHom.ini')) = False then //if FileExists(PAnsiChar(Form1.sAtual + '\nfce\nfceServidoresHom.ini')) = False then
           SmallMsg('Arquivo com configuração dos Servidor de Homologação não encontrado');
-        if FileExists(PAnsiChar(Form1.sAtual + '\nfce\nfceServidoresProd.ini')) = False then
+        if FileExists(PChar(Form1.sAtual + '\nfce\nfceServidoresProd.ini')) = False then
           SmallMsg('Arquivo com configuração dos Servidor de Produção não encontrado');
         Form1.spdNFCe1.CNPJ                  := LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString);
         Form1.spdNFCe1.ArquivoServidoresHom  := Form1.sAtual + '\nfce\nfceServidoresHom.ini';
@@ -11642,7 +11642,7 @@ begin
                     WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
                     CloseFile(F);
                     Sleep(100); // Sandro Silva 2017-06-14
-                    RenameFile(Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'),'c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
+                    RenameFile('c:\' + sDiretorio + '\' + sREQ + '\IntPos.tmp', 'c:\' + sDiretorio + '\' + sREQ + '\INTPOS.001');
                     Sleep(6000);
 
                     // 2015-09-08 if FunctionDetect('USER32.DLL','BlockInput',@xBlockInput) then xBlockInput(False);  // Enable  Keyboard & mouse
@@ -12559,7 +12559,7 @@ begin
             WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
             CloseFile(F);
             Sleep(100); // Sandro Silva 2017-06-14
-            RenameFile(Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'),'c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
+            RenameFile('c:\' + sDiretorio + '\' + sREQ + '\IntPos.tmp', 'c:\' + sDiretorio + '\' + sREQ + '\INTPOS.001');
             Sleep(1000); // Sandro Silva 2017-06-23
             TEFAguardarRetornoStatus('c:\'+sDiretorio+'\'+sRESP, sIdentificaTransacaoTEF); // Sandro Silva 2017-06-22 Form1.TEFAguardarRetornoStatus('c:\'+sDiretorio+'\'+sRESP, sIdentificaTransacaoTEF); // Sandro Silva 2017-06-22
 
@@ -12864,8 +12864,8 @@ begin
             WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
             CloseFile(F);
             Sleep(1000);
-            RenameFile(Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'),'c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
-            Sleep(6000); 
+            RenameFile('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp', 'c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
+            Sleep(6000);
             //
             // 2015-10-08 Sleep deixa muito tempo de intervalo entre a hora impressa e a DEMAIS.HORA Demais('CC');
             //
@@ -12896,7 +12896,7 @@ begin
               WriteLn(F,'999-999 = 0');                                                       // Trailer - REgistro Final, constante '0' .
               CloseFile(F);
               Sleep(1000); // Sandro Silva 2017-06-13
-              RenameFile(Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'),'c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
+              RenameFile('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp','c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
               Sleep(6000);
 
               Form1.OcultaPanelMensagem;
@@ -14764,6 +14764,7 @@ begin
     SelStart := Length(Text)-1;
     SelAttributes.Style  := [];
     SelAttributes.Height := AjustaAltura(16); // Sandro Silva 2017-09-26  16;
+    SelAttributes.Color := clWhite; // 2024-01-05
     //
     {Sandro Silva 2022-12-08 Início Unochapeco
     SelText := chr(10) + chr(10) +
@@ -24433,6 +24434,7 @@ begin
   then
   begin
     Form1.DBGrid1.Canvas.Font.Color := clWhite;
+    Form1.DBGrid1.Canvas.Brush.Color := COR_AZUL_CELULA_SELECIONADA;
   end
   else
   begin
@@ -25568,18 +25570,19 @@ var
   begin
     Result := StrToDateDef(Copy(sDescricao, 12, 2) + '/' + Copy(sDescricao, 9, 2) + '/' + Copy(sDescricao, 4, 4), Date);
   end;
+
   procedure DeletaArquivos(sAtual: String; sExtensao: String);
   var
     S: TSearchREc;
     I: Integer;
   begin
     //
-    I := FindFirst( pChar(sAtual + '\' + Trim(sExtensao)), faAnyFile, S);
+    I := FindFirst( sAtual + '\' + Trim(sExtensao), faAnyFile, S);
     //
     while I = 0 do
     begin
       try
-        DeleteFile(pChar(sAtual + '\' + S.Name));
+        DeleteFile(sAtual + '\' + S.Name);
       except
 
       end;
@@ -29199,7 +29202,15 @@ begin
       //
       // Draws the result pixel
       //
-      imgd.Canvas.Pixels[x, y] := rgb((r div tpix),(g div tpix),(b div tpix));
+      try
+        if (r > 0) and (g > 0) and (b > 0 ) then
+          imgd.Canvas.Pixels[x, y] := rgb((r div tpix),(g div tpix),(b div tpix));
+      except
+        on E: Exception do
+        begin
+          ShowMessage(E.Message);
+        end;
+      end;
       //
     end;
   end;

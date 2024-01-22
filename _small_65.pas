@@ -359,7 +359,7 @@ var
 begin
   Lista.Clear;
   //
-  I := FindFirst( PAnsiChar(sCaminho), faAnyFile, S); // Sandro Silva 2020-09-03 I := FindFirst( pChar(sCaminho), faAnyFile, S);
+  I := FindFirst(sCaminho, faAnyFile, S); // Sandro Silva 2020-09-03 I := FindFirst( pChar(sCaminho), faAnyFile, S);
   //
   while I = 0 do
   begin
@@ -451,15 +451,15 @@ begin
   //
   try
     //
-    if FileExists(PAnsiChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml')) then
+    if FileExists(PChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml')) then
     begin
-      _file.LoadFromFile(PAnsiChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml')); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml'));
+      _file.LoadFromFile(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml'); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml'));
       Result := _file.Text;
     end else
     begin
-      if FileExists(PAnsiChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml')) then
+      if FileExists(PChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml')) then
       begin
-        _file.LoadFromFile(PAnsiChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml')); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml'));
+        _file.LoadFromFile(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml'); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml'));
         Result := _file.Text;
       end;
     end;
@@ -488,9 +488,9 @@ begin
   //
   try
     //
-    if FileExists(PAnsiChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml')) then
+    if FileExists(PChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml')) then
     begin
-      _file.LoadFromFile(PAnsiChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml')); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml'));
+      _file.LoadFromFile(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml'); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml'));
       Result := _file.Text;
 
       Result := _ecf65_CorrigePadraoRespostaSefaz(Result);
@@ -618,7 +618,7 @@ begin
             else
             begin
               sRetorno := Form1.ibDataSet150.FieldByName('NFEXML').AsString; // XML cancelamento
-              if FileExists(PAnsiChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) = False then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) = False then
+              if FileExists(PChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) = False then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) = False then
               begin
                 // Salva o retorno para depois abaixo não ficar em loop esperando o arquivo de cancelamento em xmldestinatario
                 sXmlCancelamento := SalvaXmlCancelamentoEmXmlDestinatario(sRetorno, Form1.ibDAtaSet150.FieldByName('NFEID').AsString);
@@ -633,7 +633,7 @@ begin
             if (Pos('<cStat>135</cStat>',sRetorno) <> 0)   // Recebido pelo Sistema de Registro de Eventos, com vinculação do evento na NF-e,
               or (Pos('<cStat>136</cStat>',sRetorno) <> 0) // Recebido pelo Sistema de Registro de Eventos – vinculação do evento à respectiva NF-e prejudicada
               or (Pos('<cStat>573</cStat>',sRetorno) <> 0) // Duplicidade do evento de cancelamento
-              or FileExists(PAnsiChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) then // Sandro Silva 2020-09-03 or FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) then
+              or FileExists(PChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) then // Sandro Silva 2020-09-03 or FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) then
             begin
 
               if (Pos('<cStat>573</cStat>',sRetorno) <> 0) then // Duplicidade do evento de cancelamento
@@ -661,7 +661,7 @@ begin
               begin
                 //  Duplicidade
                 iTenta := 1;
-                while not FileExists(PAnsiChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) do // Sandro Silva 2020-09-03 while not FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) do
+                while not FileExists(PChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) do // Sandro Silva 2020-09-03 while not FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) do
                 begin
                   //
                   Sleep(100);
@@ -670,7 +670,7 @@ begin
                   //
                 end;
                 //
-                if FileExists(PAnsiChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) then
+                if FileExists(PChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) then
                 begin
                   //
                   sXmlCancelamento := _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString)); // Sandro Silva 2020-09-03 sXmlCancelamento := _ecf65_LoadXmlDestinatario(pChar(Form1.ibDataSet150.FieldByName('NFEID').AsString));
@@ -681,7 +681,7 @@ begin
               if sXmlCancelamento <> '' then
               begin
 
-                if FileExists(PAnsiChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) = False then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) = False then
+                if FileExists(PChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) = False then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) = False then
                   SalvaXmlCancelamentoEmXmlDestinatario(sXmlCancelamento, Form1.ibDAtaSet150.FieldByName('NFEID').AsString);
 
                 Form1.ibDataSet150.Edit;
@@ -5777,7 +5777,7 @@ var
   function Compactar(sZipFile: String): Boolean;
   begin
     if FileExists(sZipFile) then
-      DeleteFile(PAnsiChar(sZipFile)); // Sandro Silva 2020-09-03 DeleteFile(PChar(sZipFile)); 
+      DeleteFile(PChar(sZipFile)); // Sandro Silva 2020-09-03 DeleteFile(PChar(sZipFile));
 
     if FileExists('szip.exe') then
     begin
@@ -5800,20 +5800,20 @@ var
         Sleep(100);
       end;
       //
-      while not FileExists(PAnsiChar(sZipFile)) do // Sandro Silva 2020-09-03 while not FileExists(pChar(sZipFile)) do
+      while not FileExists(PChar(sZipFile)) do // Sandro Silva 2020-09-03 while not FileExists(pChar(sZipFile)) do
       begin
         Sleep(100);
       end;
       //
-      while FileExists(PAnsiChar(sPDFFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sPDFFile)) do
+      while FileExists(PChar(sPDFFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sPDFFile)) do
       begin
-        DeleteFile(PAnsiChar(sPDFFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sPDFFile));
+        DeleteFile(PChar(sPDFFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sPDFFile));
         Sleep(100);
       end;
 
-      while FileExists(PAnsiChar(sXMLFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sXMLFile)) do
+      while FileExists(PChar(sXMLFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sXMLFile)) do
       begin
-        DeleteFile(PAnsiChar(sXMLFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sXMLFile));
+        DeleteFile(PChar(sXMLFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sXMLFile));
         Sleep(100);
       end;
 
@@ -5842,9 +5842,9 @@ begin
     {Sandro Silva 2022-09-02 fim}
 
     //
-    while FileExists(PAnsiChar(sPDFFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sPDFFile)) do
+    while FileExists(PChar(sPDFFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sPDFFile)) do
     begin
-      DeleteFile(PAnsiChar(sPDFFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sPDFFile));
+      DeleteFile(PChar(sPDFFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sPDFFile));
       Sleep(100);
     end;
     //
@@ -5861,9 +5861,9 @@ begin
 
     Sleep(250); // Sandro Silva 2022-09-02 Aguardar salvar em disco
 
-    while FileExists(PAnsiChar(sXMLFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sXMLFile)) do
+    while FileExists(PChar(sXMLFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sXMLFile)) do
     begin
-      DeleteFile(PAnsiChar(sXMLFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sXMLFile));
+      DeleteFile(PChar(sXMLFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sXMLFile));
       Sleep(100);
     end;
 
@@ -5880,7 +5880,7 @@ begin
     if Form1.EnviarDANFCEeXMLcompactado1.Checked = False then
     begin
       //
-      if FileExists(PAnsiChar(sXMLFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sXMLFile)) then
+      if FileExists(PChar(sXMLFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sXMLFile)) then
       begin
 
         sTextoCorpoEmail := 'Segue em anexo seu XML da NFC-e.'+chr(10);
@@ -5891,7 +5891,7 @@ begin
         _ecf65_EnviarEMail('', sEmail, '', 'XML da NFC-e', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sXMLFile),False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('',sEmail,'','XML da NFC-e',pchar(sTextoCorpoEmail),pChar(sXMLFile),False);
       end;
 
-      if FileExists(PAnsiChar(sPDFFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sPDFFile)) then
+      if FileExists(PChar(sPDFFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sPDFFile)) then
       begin
         sTextoCorpoEmail := 'Segue em anexo seu DANFCE em arquivo PDF.'+chr(10);
         if Form1.sPropaganda <> '' then
@@ -5908,7 +5908,7 @@ begin
       //sZipFile := ExtractFilePath(Application.ExeName) + 'email\danfce_xml_' + FormatDateTime('yyyy-mm-dd-HH-nn-ss-zzzz', Now) + '.zip'; // Sandro Silva 2022-09-02 sZipFile := 'danfce_xml.zip';
       //sZipFile := ChangeFileExt(sPDFFile, 'zip');
       Compactar(sZipFile);
-      if FileExists(PAnsiChar(sZipFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sZipFile)) then
+      if FileExists(PChar(sZipFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sZipFile)) then
       begin
         sTextoCorpoEmail := 'Segue em anexo seu XML e DANFCE da NFC-e.'+chr(10);
         if Form1.sPropaganda <> '' then
@@ -6204,7 +6204,7 @@ begin
                   if xmlNodeValue(sRetorno, '//infInut/cStat') = '102' then
                   begin
                     sID := Copy(Form1.IBDataSet99.FieldByName('CODIGO').AsString,1,2) + aAno + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + aModelo + Right('000' + aSerie, 3) + Right('000000000' + aIni, 9) + Right('000000000' + aFim, 9);
-                    if FileExists(PAnsiChar(StringReplace(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-inut.xml', '\\', '\', [rfReplaceAll]))) then
+                    if FileExists(PChar(StringReplace(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-inut.xml', '\\', '\', [rfReplaceAll]))) then
                     begin
 
                       with TStringList.Create do
@@ -6306,7 +6306,7 @@ begin
       if xmlNodeValue(sRetorno, '//infInut/cStat') = '102' then
       begin
         sID := Copy(IBQINUTILIZA.FieldByName('CODIGO').AsString,1,2) + aAno + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + aModelo + Right('000' + aSerie, 3) + Right('000000000' + aIni, 9) + Right('000000000' + aFim, 9);
-        if FileExists(PAnsiChar(StringReplace(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-inut.xml', '\\', '\', [rfReplaceAll]))) then
+        if FileExists(PChar(StringReplace(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-inut.xml', '\\', '\', [rfReplaceAll]))) then
         begin
 
           with TStringList.Create do
@@ -7096,7 +7096,7 @@ function _ecf65_NmerodeSrie(pP1: Boolean): String;
 begin
   // Retorna "65" + nome do computador + 0 até completar 20 posições
   // Ex.: "65" + "PDV01" + "0000000000" = "NFC-ePDV010000000000"
-  Result := '65' + Copy(AnsiUpperCase(GetComputerNameFunc) + DupeString('0', 20), 1, 18);
+  Result := '65' + Copy(AnsiUpperCase(GetComputerNameFunc) + DupeString('0', 20), 1, 18); //   Result := '65' + Copy(AnsiUpperCase(GetComputerNameFunc) + DupeString('0', 20), 1, 18);
 end;
 
 // -------------------------------- //
@@ -7417,17 +7417,17 @@ var
           Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml'); // Gerar pelo XML em tempo carregado.
 
         // Não existindo arquivo aguarda se componente está terminando de salvar
-        if FileExists(PAnsiChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml')) = False then // Sandro Silva 2021-06-11
+        if FileExists(PChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml')) = False then // Sandro Silva 2021-06-11
           Sleep(150);
 
-        if FileExists(PAnsiChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml')) then
+        if FileExists(PChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml')) then
         begin
           sXMLRecuperado := _ecf65_LoadXmlRecuperado(schNFe);
           if (xmlNodeValue(sXMLEnviado, '//SignatureValue') = xmlNodeValue(sXMLRecuperado, '//SignatureValue')) then
           begin
-            if MoveFile(PWideChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml'), PWideChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + schNFe + '-nfce.xml')) then
+            if MoveFile(PChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml'), PChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + schNFe + '-nfce.xml')) then
             begin
-              if FileExists(PAnsiChar(Form1.spdNFCe1.DiretorioXmlDestinatario + schNFe + '-nfce.xml')) then
+              if FileExists(PChar(Form1.spdNFCe1.DiretorioXmlDestinatario + schNFe + '-nfce.xml')) then
                 Result := Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + schNFe + '-nfce.xml';
             end;
           end;
@@ -7518,7 +7518,7 @@ begin
 
     sArquivoLogContingencia := Form1.spdNFCe1.DiretorioLog + '\log_transmissao_contingencia_' + Form1.sCaixa + '_' + FormatDateTime('yyyymmddHHnnsszzz', Now) + '.html';
 
-    DeleteFile(PAnsiChar(sArquivoLogContingencia));
+    DeleteFile(PChar(sArquivoLogContingencia));
 
     _ecf65_ConsultarStatusServico(False);
 
@@ -8577,7 +8577,7 @@ begin
 
   Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible := False; // Sandro Silva 2017-08-22
 
-  if FileExists(PAnsiChar(sArquivoLogContingencia)) then
+  if FileExists(PChar(sArquivoLogContingencia)) then
   begin
     Application.ProcessMessages;
     Application.BringToFront;
@@ -10078,7 +10078,7 @@ begin
 
         sArquivoEnvio := Form1.spdNFCe1.DiretorioLog + '\' + SelecionaXmlEnvio(Form1.spdNFCe1.DiretorioLog + '\*' + xmlNodeValue(sRetorno, '//infProt/chNFe') + '-env-sinc-lot.xml', xmlNodeValue(sRetorno, '//protNFe/infProt/digVal'), '//DigestValue');
 
-        if FileExists(PansiChar(sArquivoEnvio)) then
+        if FileExists(PChar(sArquivoEnvio)) then
         begin
           slArquivoEnvio.LoadFromFile(sArquivoEnvio);
           sXmlEnvio := slArquivoEnvio.Text;
@@ -10628,16 +10628,16 @@ begin
 
             slListaXml.Clear;
 
-            if FileExists(PansiChar(sArquivoEnvio)) = False then // Se não encontrar o xml autorizado
+            if FileExists(PChar(sArquivoEnvio)) = False then // Se não encontrar o xml autorizado
             begin
 
               //Seleciona todos os xml                                                                                                          //MODELO+SERIE
               // Sandro Silva 2021-11-17 _ecf65_ListaArquivos(StringReplace(Form1.spdNFCe1.DiretorioLog + '\*' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '65001' + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '\\', '\', [rfReplaceAll]));
               _ecf65_ListaArquivos(StringReplace(Form1.spdNFCe1.DiretorioLog + '\*' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '65' + RightStr('00' + _ecf65_SerieAtual(IBQCONSULTA.Transaction), 3) + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '\\', '\', [rfReplaceAll]));
 
-              if FileExists(PAnsiChar(Form1.sAtual + '\arq_.txt')) then
+              if FileExists(PChar(Form1.sAtual + '\arq_.txt')) then
               begin
-                slListaXml.LoadFromFile(PAnsiChar(Form1.sAtual + '\arq_.txt'));
+                slListaXml.LoadFromFile(Form1.sAtual + '\arq_.txt');
 
                 sRetorno := ''; // Começa vazio Sandro Silva 2020-06-05
 
@@ -10648,7 +10648,7 @@ begin
                   // Procura o xml do lote de envio
                   sArquivoEnvio := slListaXml.Strings[iArquivoEnvio];
 
-                  if FileExists(PansiChar(sArquivoEnvio)) then // se achou o lote de envio
+                  if FileExists(PChar(sArquivoEnvio)) then // se achou o lote de envio
                   begin
 
                     slArquivoEnvio.Clear;
@@ -10856,8 +10856,8 @@ begin
 
   end; // if (sUFEmitente = 'BA') or (sUFEmitente = 'MG') then
 
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.tmp'));
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.txt'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.tmp'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.txt'));
 
   FreeAndNil(IBQCONSULTA);
   FreeAndNil(IBQSALVA);
@@ -10954,16 +10954,16 @@ begin
 
           slListaXml.Clear;
 
-          if FileExists(PansiChar(sArquivoEnvio)) = False then // Se não encontrar o xml autorizado
+          if FileExists(PChar(sArquivoEnvio)) = False then // Se não encontrar o xml autorizado
           begin
 
             //Seleciona todos os xml                                                                                                          //MODELO+SERIE
             // Sandro Silva 2021-11-17 _ecf65_ListaArquivos(StringReplace(Form1.spdNFCe1.DiretorioLog + '\*' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '65001' + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '\\', '\', [rfReplaceAll]));
             _ecf65_ListaArquivos(StringReplace(Form1.spdNFCe1.DiretorioLog + '\*' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '65' + RightStr('00' + _ecf65_SerieAtual(IBQCONSULTA.Transaction), 3) + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '\\', '\', [rfReplaceAll]));
 
-            if FileExists(PAnsiChar(Form1.sAtual + '\arq_.txt')) then
+            if FileExists(PChar(Form1.sAtual + '\arq_.txt')) then
             begin
-              slListaXml.LoadFromFile(PAnsiChar(Form1.sAtual + '\arq_.txt'));
+              slListaXml.LoadFromFile(Form1.sAtual + '\arq_.txt');
 
               for iArquivoEnvio := 0 to slListaXml.Count - 1 do
               begin
@@ -10971,7 +10971,7 @@ begin
                 //sArquivoEnvio := Form1.spdNFCe1.DiretorioLog + '\' + SelecionaXmlEnvio(Form1.spdNFCe1.DiretorioLog + '\*001' + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '', '');
                 sArquivoEnvio := slListaXml.Strings[iArquivoEnvio];
 
-                if FileExists(PansiChar(sArquivoEnvio)) then // se achou o lote de envio
+                if FileExists(PChar(sArquivoEnvio)) then // se achou o lote de envio
                 begin
 
                   slArquivoEnvio.Clear;
@@ -11084,8 +11084,8 @@ begin
   if bCommitarTudoNoFinal then
     Commitatudo(True);  // TForm1.ConsultaChaveNFCe1Click()
 
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.tmp'));
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.txt'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.tmp'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.txt'));
 
   FreeAndNil(IBQCONSULTA);
   FreeAndNil(IBQSALVA);
@@ -11096,12 +11096,12 @@ end;
 
 procedure _ecf65_ListaArquivos(sArquivo: String);
 begin
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.tmp'));
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.txt'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.tmp'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.txt'));
 
   ShellExecute(Application.Handle, 'runas', 'cmd.exe', PChar('/C dir "' + sArquivo + '" /s/B > "' + Form1.sAtual + '\arq_.tmp"'), nil, SW_HIDE);
 
-  while RenameFile(PansiChar(Form1.sAtual + '\arq_.tmp'), PAnsiChar(Form1.sAtual + '\arq_.txt')) = False do
+  while RenameFile(PChar(Form1.sAtual + '\arq_.tmp'), PChar(Form1.sAtual + '\arq_.txt')) = False do
   begin
     Sleep(250);
     Application.ProcessMessages;

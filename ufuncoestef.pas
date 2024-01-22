@@ -2511,7 +2511,7 @@ begin
   Result := 0;
   try
     //
-    I := FindFirst( pChar(sTipoComCaminho), faAnyFile, S);
+    I := FindFirst( sTipoComCaminho, faAnyFile, S);
     //
     while I = 0 do
     begin

@@ -2755,7 +2755,7 @@ var
   function Compactar(sZipFile: String): Boolean;
   begin
     if FileExists(sZipFile) then
-      DeleteFile(PansiChar(sZipFile));
+      DeleteFile(PChar(sZipFile));
 
     if FileExists('szip.exe') then
     begin
@@ -2782,20 +2782,20 @@ var
         Sleep(100);
       end;
       //
-      while not FileExists(PansiChar(sZipFile)) do
+      while not FileExists(PChar(sZipFile)) do
       begin
         Sleep(100);
       end;
       //
-      while FileExists(PansiChar(sFileCFeSAT)) do
+      while FileExists(PChar(sFileCFeSAT)) do
       begin
-        DeleteFile(PansiChar(sFileCFeSAT));
+        DeleteFile(PChar(sFileCFeSAT));
         Sleep(100);
       end;
 
-      while FileExists(PansiChar(sFileXML)) do
+      while FileExists(PChar(sFileXML)) do
       begin
-        DeleteFile(PansiChar(sFileXML));
+        DeleteFile(PChar(sFileXML));
         Sleep(100);
       end;
     end;
@@ -2830,9 +2830,9 @@ begin
     // Sandro Silva 2023-01-09 sFileCFeSAT := ExtractFilePath(Application.ExeName) + 'email\' + sFileCFeSAT + '.pdf'; // Sandro Silva 2022-09-02 sFileCFeSAT := ExtractFilePath(Application.ExeName) + 'CFeSAT\' + sFileCFeSAT + '.pdf';
     sFileCFeSAT := ExtractFilePath(Application.ExeName) + 'cfesat\' + sFileCFeSAT + '.pdf';
 
-    while FileExists(PansiChar(sFileXML)) do
+    while FileExists(PChar(sFileXML)) do
     begin
-      DeleteFile(PansiChar(sFileXML));
+      DeleteFile(PChar(sFileXML));
       Sleep(100);
     end;
 
@@ -2845,7 +2845,7 @@ begin
     if Form1.EnviarDANFCEeXMLcompactado1.Checked = False then
     begin
 
-      if FileExists(PansiChar(sFileXML)) then
+      if FileExists(PChar(sFileXML)) then
       begin
         sTextoCorpoEmail := 'Segue em anexo seu XML do Cupom Fiscal Eletrônico - SAT.'+chr(10);
         if Form1.sPropaganda <> '' then
@@ -2869,7 +2869,7 @@ begin
       //sZipFile := ExtractFilePath(Application.ExeName) + 'email\' + 'CFeSat_xml_pdf_' + FormatDateTime('yyyy-mm-dd-HH-nn-ss-zzzz', Now) + '.zip'; // Sandro Silva 2022-09-02 sZipFile := ExtractFilePath(Application.ExeName) + 'CFeSAT\' + 'CFeSat_xml_pdf.zip';
       //sZipFile := ChangeFileExt(sFileCFeSAT, 'zip');
       Compactar(sZipFile);
-      if FileExists(PansiChar(sZipFile)) then
+      if FileExists(PChar(sZipFile)) then
       begin
         sTextoCorpoEmail := 'Segue em anexo seu XML e Extrato Cupom Fiscal Eletrônico.'+chr(10); // Sandro Silva 2018-07-03 sTextoCorpoEmail := 'Segue em anexo seu XML e Extrato Cupom Fiscal Eletrônico - SAT.'+chr(10);
         if Form1.sPropaganda <> '' then

@@ -1,18 +1,17 @@
 object FormasP: TFormasP
   Left = 235
-  Top = 79
+  Top = 34
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Formas de pagamento'
   ClientHeight = 729
-  ClientWidth = 1008
+  ClientWidth = 1062
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  Position = poMainFormCenter
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnShow = FormShow
@@ -180,7 +179,7 @@ object FormasP: TFormasP
   object Panel2: TPanel
     Left = 0
     Top = 417
-    Width = 1008
+    Width = 1062
     Height = 312
     Align = alBottom
     BevelOuter = bvNone
@@ -189,6 +188,7 @@ object FormasP: TFormasP
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 14
+    ExplicitWidth = 1008
     inline Frame_teclado1: TFrame_teclado
       Left = -5
       Top = 0

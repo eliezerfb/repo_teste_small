@@ -47,6 +47,7 @@ const TEXTO_CAIXA_LIVRE            = 'CAIXA LIVRE';
 const TEXTO_CAIXA_EM_VENDA         = 'EM VENDA';
 
 const COR_AZUL = $00EAB231; // Sandro Silva 2021-08-17
+const COR_AZUL_CELULA_SELECIONADA = $00D77800;
 
 const FORMA_PAGAMENTO_A_VISTA         = 'A VISTA';
 const FORMA_PAGAMENTO_BOLETO          = 'BOLETO';
@@ -1608,7 +1609,7 @@ begin
 
       if Trim(sFileExporta) <> '' then
       begin
-        AssignFile(F,PansiChar(Trim(sFileExporta)));  // Direciona o arquivo F para EXPORTA.TXT
+        AssignFile(F, Trim(sFileExporta));  // Direciona o arquivo F para EXPORTA.TXT
         Rewrite(F);                  // Abre para gravação
         WriteLn(F,fNFe);
         CloseFile(F); // Fecha o arquivo
@@ -1667,7 +1668,7 @@ begin
 
       if Trim(sFileExporta) <> '' then
       begin
-        AssignFile(F,PansiChar(Trim(sFileExporta)));  // Direciona o arquivo F para EXPORTA.TXT
+        AssignFile(F, Trim(sFileExporta));  // Direciona o arquivo F para EXPORTA.TXT
         Rewrite(F);                  // Abre para gravação
         WriteLn(F,fNFe);
         CloseFile(F); // Fecha o arquivo
@@ -1693,7 +1694,7 @@ begin
   dwSize := 255;
   SetLength(sIpBuffer, dwSize);
   if GetComputerName(PChar(sIpBuffer),dwSize) then
-    Result := PAnsiChar(sIpBuffer);// PChar(sIpBuffer);
+    Result := PChar(sIpBuffer);// PChar(sIpBuffer);
 end;
 
 function SelecionaXmlEnvio(Path: String; sDigestValue: String;
@@ -1730,7 +1731,7 @@ var
 begin
   Lista.Clear;
   //
-  I := FindFirst( PansiChar(sAtual + '\' + AllTrim(sExtensao)), faAnyFile, S);
+  I := FindFirst( sAtual + '\' + Trim(sExtensao), faAnyFile, S); // Sandro Silva 2024-01-22 I := FindFirst( PansiChar(sAtual + '\' + Trim(sExtensao)), faAnyFile, S);
   //
   while I = 0 do
   begin
@@ -1912,6 +1913,7 @@ end;
 *)
 
 function Build: String;
+{
 var
   Size, Size2: DWord;
   Pt, Pt2: Pointer;
@@ -1924,6 +1926,41 @@ begin
   Result := PChar(pt2);
   FreeMem (Pt);
   //
+end;
+}
+var
+  Size, Size2: DWord;
+  Pt, Pt2: Pointer;
+
+  {$IFDEF VER150}
+  {$ELSE}
+  FI: PVSFixedFileInfo;
+  VerSize: DWORD;
+  {$ENDIF}
+begin
+  Size := GetFileVersionInfoSize(PChar (ParamStr (0)), Size2);
+  GetMem (Pt, Size);
+  try
+    {$IFDEF VER150}
+    GetFileVersionInfo (PChar (ParamStr (0)), 0, Size, Pt);
+    VerQueryValue(Pt,'\StringFileInfo\041604E4\FileVersion',Pt2, Size2);
+    Result := PChar (pt2);
+    {$ELSE}
+    GetFileVersionInfo (PChar (ParamStr (0)), 0, Size, Pt);
+
+    VerQueryValue(Pt, '\', Pointer(FI), VerSize);
+
+    Result:= Concat(IntToStr(FI.dwFileVersionMS shr 16), '.',
+                    IntToStr(FI.dwFileVersionMS and $FFFF), '.',
+                    IntToStr(FI.dwFileVersionLS shr 16), '.',
+                    IntToStr(FI.dwFileVersionLS and $FFFF));
+    {$ENDIF}
+
+    //if AbSomenteNumeros then
+    //  Result := LimpaNumero(Result);
+  finally
+    FreeMem(Pt);
+  end;
 end;
 
 function PAFNFCe: Boolean;
@@ -2025,9 +2062,9 @@ end;
 function SmallMessageBox(const Text, Caption: String; Flags: Longint): Integer;
 begin
   {$IFDEF VER150}
-  Result := Application.MessageBox(PChar(Text), PansiChar(Caption), Flags);
+  Result := Application.MessageBox(PChar(Text), PChar(Caption), Flags);
   {$ELSE}
-  Result := Application.MessageBox(PwideChar(Text), PwideChar(Caption), Flags);
+  Result := Application.MessageBox(PChar(Text), PChar(Caption), Flags);
   {$ENDIF}
 end;
 
@@ -2071,16 +2108,16 @@ begin
   //
   Mais1ini := TIniFile.Create('frente.ini');
   //
-  if FileExists(PAnsiChar('mail.exe')) and (Mais1Ini.ReadString('mail','Host','') <> '') then // Sandro Silva 2020-09-03 if FileExists(pChar('mail.exe')) and (Mais1Ini.ReadString('mail','Host','') <> '') then 
+  if FileExists(PChar('mail.exe')) and (Mais1Ini.ReadString('mail','Host','') <> '') then // Sandro Silva 2020-09-03 if FileExists(pChar('mail.exe')) and (Mais1Ini.ReadString('mail','Host','') <> '') then
   begin
     //
-    while FileExists(PAnsiChar('email.exe')) do // Sandro Silva 2020-09-03 while FileExists(pChar('email.exe')) do 
+    while FileExists(PChar('email.exe')) do // Sandro Silva 2020-09-03 while FileExists(pChar('email.exe')) do
     begin
       DeleteFile('email.exe');
       sleep(10);
     end;
     //
-    while not FileExists(PansiChar('email.exe')) do // Sandro Silva 2020-09-03 while not FileExists(pChar('email.exe')) do
+    while not FileExists(PChar('email.exe')) do // Sandro Silva 2020-09-03 while not FileExists(pChar('email.exe')) do
     begin
       CopyFile('mail.exe', 'email.exe', False);
       sleep(10);
@@ -2110,7 +2147,7 @@ begin
       begin
         lpSender.ulRecipClass := MAPI_ORIG;
         lpSender.lpszName     := PAnsiChar(sDe); // Sandro Silva 2020-09-03 lpSender.lpszName := PChar(sDe);
-        lpSender.lpszAddress  := PAnsiChar(sDe); // Sandro Silva 2020-09-03 lpSender.lpszAddress  := PChar(sDe); 
+        lpSender.lpszAddress  := PAnsiChar(sDe); // Sandro Silva 2020-09-03 lpSender.lpszAddress  := PChar(sDe);
         lpSender.ulReserved := 0;
         lpSender.ulEIDSize := 0;
         lpSender.lpEntryID := nil;
@@ -2705,7 +2742,7 @@ end;
 procedure TArquivo.SalvarArquivo(FileName: TFileName);
 begin
   try
-    AssignFile(FArquivo, pChar(FileName));
+    AssignFile(FArquivo, FileName);
     Rewrite(FArquivo);
     Writeln(FArquivo, FTexto);
     CloseFile(FArquivo);                                    // Fecha o arquivo

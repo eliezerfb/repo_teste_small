@@ -494,6 +494,8 @@ var
 begin
   if Column.FieldName = _cColunaAtivo then
   begin
+    dbgTEFs.Canvas.Font.Color := clWindow;
+    dbgTEFs.Canvas.Brush.Color := clWindow;
     dbgTEFs.Canvas.FillRect(Rect);
     iCheck := 0;
     if cdsTEFsATIVO.AsString = _cSim then
@@ -501,7 +503,7 @@ begin
     else
       iCheck := 0;
     rRect := Rect;
-    InflateRect(rRect,-2,-2);
+    InflateRect(rRect, -2, -2);
     DrawFrameControl(dbgTEFs.Canvas.Handle,rRect,DFC_BUTTON, DFCS_BUTTONCHECK or iCheck);
   end;
 end;

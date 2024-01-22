@@ -72,6 +72,461 @@ object Form2: TForm2
       ParentFont = False
       Visible = False
     end
+    object Panel5: TPanel
+      Left = 0
+      Top = 0
+      Width = 1024
+      Height = 370
+      BevelOuter = bvNone
+      BorderStyle = bsSingle
+      Color = clWhite
+      ParentBackground = False
+      TabOrder = 2
+      object touch_ESC: TImage
+        Left = 30
+        Top = 300
+        Width = 90
+        Height = 50
+        AutoSize = True
+        OnClick = touch_ESCClick
+      end
+      object touch_F1: TImage
+        Left = 130
+        Top = 300
+        Width = 90
+        Height = 50
+        AutoSize = True
+        OnClick = touch_F1Click
+      end
+      object Label13: TLabel
+        Left = 661
+        Top = 113
+        Width = 64
+        Height = 13
+        Caption = 'CNPJ/CPF:'
+        Color = clBlack
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label12: TLabel
+        Left = 661
+        Top = 162
+        Width = 43
+        Height = 13
+        Caption = 'Cliente:'
+        Color = clBlack
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label14: TLabel
+        Left = 661
+        Top = 260
+        Width = 58
+        Height = 13
+        Caption = 'Endere'#231'o:'
+        Color = clBlack
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label11: TLabel
+        Left = 661
+        Top = 268
+        Width = 4
+        Height = 13
+        Color = clBlack
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+        Visible = False
+      end
+      object Label28: TLabel
+        Left = 661
+        Top = 64
+        Width = 58
+        Height = 13
+        Caption = 'Vendedor:'
+        Color = clBlack
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object touch_F8: TImage
+        Left = 230
+        Top = 300
+        Width = 90
+        Height = 50
+        AutoSize = True
+        OnClick = touch_F8Click
+      end
+      object LabelF8: TLabel
+        Left = 230
+        Top = 305
+        Width = 94
+        Height = 43
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 'F8'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        Transparent = True
+        OnClick = touch_F8Click
+      end
+      object LabelESC: TLabel
+        Left = 30
+        Top = 305
+        Width = 94
+        Height = 43
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 'ESC'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        Transparent = True
+        OnClick = touch_ESCClick
+      end
+      object LabelF1: TLabel
+        Left = 130
+        Top = 305
+        Width = 94
+        Height = 43
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 'F1'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        Transparent = True
+        OnClick = touch_F1Click
+      end
+      object Label32: TLabel
+        Left = 661
+        Top = 211
+        Width = 38
+        Height = 13
+        Caption = 'e-Mail:'
+        Color = clBlack
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object lbMarketplace: TLabel
+        Left = 661
+        Top = 15
+        Width = 74
+        Height = 13
+        Caption = 'Marketplace:'
+        Color = clBlack
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+        Visible = False
+      end
+      object Edit10: TEdit
+        Left = 661
+        Top = 228
+        Width = 350
+        Height = 25
+        AutoSize = False
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 3
+        OnEnter = Edit10Enter
+        OnKeyDown = Edit10KeyDown
+      end
+      object Edit2: TEdit
+        Left = 661
+        Top = 130
+        Width = 350
+        Height = 25
+        AutoSize = False
+        Color = clWhite
+        Ctl3D = False
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 1
+        Text = ' '
+        OnEnter = Edit2Enter
+        OnExit = Edit2Exit
+        OnKeyDown = Edit2KeyDown
+        OnKeyUp = Edit9KeyUp
+      end
+      object Panel1: TPanel
+        Left = 661
+        Top = 277
+        Width = 350
+        Height = 81
+        BevelOuter = bvNone
+        BorderStyle = bsSingle
+        Color = clWhite
+        Ctl3D = False
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 5
+        object Edit1: TEdit
+          Left = 2
+          Top = 1
+          Width = 345
+          Height = 22
+          Color = clWhite
+          Ctl3D = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = [fsBold]
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 0
+          OnChange = Edit1Change
+          OnEnter = Edit3Enter
+          OnKeyDown = Edit1KeyDown
+          OnKeyUp = Edit9KeyUp
+        end
+        object Edit3: TEdit
+          Left = 2
+          Top = 22
+          Width = 345
+          Height = 22
+          Color = clWhite
+          Ctl3D = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = [fsBold]
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 1
+          OnChange = Edit3Change
+          OnEnter = Edit3Enter
+          OnKeyDown = Edit3KeyDown
+          OnKeyUp = Edit9KeyUp
+        end
+      end
+      object Edit8: TEdit
+        Left = 661
+        Top = 179
+        Width = 350
+        Height = 25
+        AutoSize = False
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 2
+        OnChange = Edit8Change
+        OnEnter = Edit8Enter
+        OnExit = Edit8Exit
+        OnKeyDown = Edit8KeyDown
+        OnKeyPress = Edit8KeyPress
+        OnKeyUp = Edit9KeyUp
+      end
+      object Edit9: TEdit
+        Left = 661
+        Top = 81
+        Width = 350
+        Height = 25
+        AutoSize = False
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        OnChange = Edit9Change
+        OnEnter = Edit9Enter
+        OnKeyDown = Edit9KeyDown
+        OnKeyPress = Edit9KeyPress
+        OnKeyUp = Edit9KeyUp
+      end
+      object DBGrid2: TDBGrid
+        Left = 661
+        Top = 105
+        Width = 350
+        Height = 6
+        Color = clWhite
+        Ctl3D = False
+        DataSource = Form1.DataSource2
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -15
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 4
+        TitleFont.Charset = ANSI_CHARSET
+        TitleFont.Color = clBlack
+        TitleFont.Height = -16
+        TitleFont.Name = 'Courier New'
+        TitleFont.Style = [fsBold]
+        Visible = False
+        OnDrawColumnCell = DBGrid2DrawColumnCell
+        OnDblClick = DBGrid2DblClick
+        OnExit = DBGrid2Exit
+        OnKeyPress = DBGrid2KeyPress
+        OnKeyUp = DBGrid2KeyUp
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'NOME'
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clSilver
+            Font.Height = -13
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = [fsBold]
+            Width = 320
+            Visible = True
+          end>
+      end
+      object Panel7: TPanel
+        Left = 16
+        Top = 28
+        Width = 335
+        Height = 253
+        BevelOuter = bvNone
+        BevelWidth = 2
+        BiDiMode = bdRightToLeftNoAlign
+        Color = 15267071
+        Ctl3D = False
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentBiDiMode = False
+        ParentBackground = False
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 6
+        object Memo2: TMemo
+          Left = 10
+          Top = 10
+          Width = 320
+          Height = 231
+          BorderStyle = bsNone
+          Color = 15267071
+          Ctl3D = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -17
+          Font.Name = 'Courier New'
+          Font.Style = [fsBold]
+          Lines.Strings = (
+            'TOTAL R$ 999,99')
+          ParentCtl3D = False
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 0
+          OnEnter = Memo2Enter
+        end
+      end
+      object chkDelivery: TCheckBox
+        Left = 744
+        Top = 161
+        Width = 265
+        Height = 17
+        Caption = 'Endere'#231'o cadastrado para delivery em'
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 7
+        Visible = False
+        OnClick = chkDeliveryClick
+      end
+      object EdMarketplace: TEdit
+        Left = 661
+        Top = 32
+        Width = 350
+        Height = 25
+        AutoSize = False
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 8
+        Visible = False
+        OnChange = EdMarketplaceChange
+        OnEnter = EdMarketplaceEnter
+        OnExit = EdMarketplaceExit
+        OnKeyDown = EdMarketplaceKeyDown
+        OnKeyPress = EdMarketplaceKeyPress
+        OnKeyUp = Edit9KeyUp
+      end
+    end
     object Panel4: TPanel
       Left = 0
       Top = 0
@@ -27644,6 +28099,7 @@ object Form2: TForm2
         TitleFont.Height = -16
         TitleFont.Name = 'Microsoft Sans Serif'
         TitleFont.Style = [fsBold]
+        OnDrawColumnCell = DBGrid1DrawColumnCell
         OnEnter = MaskEdit1Enter
         OnKeyPress = DBGrid1KeyPress
         OnKeyUp = DBGrid1KeyUp
@@ -27713,461 +28169,6 @@ object Form2: TForm2
         ParentFont = False
         ReadOnly = True
         TabOrder = 2
-      end
-    end
-    object Panel5: TPanel
-      Left = 0
-      Top = 0
-      Width = 1024
-      Height = 370
-      BevelOuter = bvNone
-      BorderStyle = bsSingle
-      Color = clWhite
-      ParentBackground = False
-      TabOrder = 2
-      object touch_ESC: TImage
-        Left = 30
-        Top = 300
-        Width = 90
-        Height = 50
-        AutoSize = True
-        OnClick = touch_ESCClick
-      end
-      object touch_F1: TImage
-        Left = 130
-        Top = 300
-        Width = 90
-        Height = 50
-        AutoSize = True
-        OnClick = touch_F1Click
-      end
-      object Label13: TLabel
-        Left = 661
-        Top = 113
-        Width = 64
-        Height = 13
-        Caption = 'CNPJ/CPF:'
-        Color = clBlack
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-      end
-      object Label12: TLabel
-        Left = 661
-        Top = 162
-        Width = 43
-        Height = 13
-        Caption = 'Cliente:'
-        Color = clBlack
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-      end
-      object Label14: TLabel
-        Left = 661
-        Top = 260
-        Width = 58
-        Height = 13
-        Caption = 'Endere'#231'o:'
-        Color = clBlack
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-      end
-      object Label11: TLabel
-        Left = 661
-        Top = 268
-        Width = 4
-        Height = 13
-        Color = clBlack
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-        Visible = False
-      end
-      object Label28: TLabel
-        Left = 661
-        Top = 64
-        Width = 58
-        Height = 13
-        Caption = 'Vendedor:'
-        Color = clBlack
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-      end
-      object touch_F8: TImage
-        Left = 230
-        Top = 300
-        Width = 90
-        Height = 50
-        AutoSize = True
-        OnClick = touch_F8Click
-      end
-      object LabelF8: TLabel
-        Left = 230
-        Top = 305
-        Width = 94
-        Height = 43
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 'F8'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-        OnClick = touch_F8Click
-      end
-      object LabelESC: TLabel
-        Left = 30
-        Top = 305
-        Width = 94
-        Height = 43
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 'ESC'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-        OnClick = touch_ESCClick
-      end
-      object LabelF1: TLabel
-        Left = 130
-        Top = 305
-        Width = 94
-        Height = 43
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 'F1'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-        OnClick = touch_F1Click
-      end
-      object Label32: TLabel
-        Left = 661
-        Top = 211
-        Width = 38
-        Height = 13
-        Caption = 'e-Mail:'
-        Color = clBlack
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-      end
-      object lbMarketplace: TLabel
-        Left = 661
-        Top = 15
-        Width = 74
-        Height = 13
-        Caption = 'Marketplace:'
-        Color = clBlack
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-        Visible = False
-      end
-      object Edit10: TEdit
-        Left = 661
-        Top = 228
-        Width = 350
-        Height = 25
-        AutoSize = False
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 3
-        OnEnter = Edit10Enter
-        OnKeyDown = Edit10KeyDown
-      end
-      object Edit2: TEdit
-        Left = 661
-        Top = 130
-        Width = 350
-        Height = 25
-        AutoSize = False
-        Color = clWhite
-        Ctl3D = False
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentCtl3D = False
-        ParentFont = False
-        TabOrder = 1
-        Text = ' '
-        OnEnter = Edit2Enter
-        OnExit = Edit2Exit
-        OnKeyDown = Edit2KeyDown
-        OnKeyUp = Edit9KeyUp
-      end
-      object Panel1: TPanel
-        Left = 661
-        Top = 277
-        Width = 350
-        Height = 81
-        BevelOuter = bvNone
-        BorderStyle = bsSingle
-        Color = clWhite
-        Ctl3D = False
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentCtl3D = False
-        ParentFont = False
-        TabOrder = 5
-        object Edit1: TEdit
-          Left = 2
-          Top = 1
-          Width = 345
-          Height = 22
-          Color = clWhite
-          Ctl3D = False
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = [fsBold]
-          ParentCtl3D = False
-          ParentFont = False
-          TabOrder = 0
-          OnChange = Edit1Change
-          OnEnter = Edit3Enter
-          OnKeyDown = Edit1KeyDown
-          OnKeyUp = Edit9KeyUp
-        end
-        object Edit3: TEdit
-          Left = 2
-          Top = 22
-          Width = 345
-          Height = 22
-          Color = clWhite
-          Ctl3D = False
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = [fsBold]
-          ParentCtl3D = False
-          ParentFont = False
-          TabOrder = 1
-          OnChange = Edit3Change
-          OnEnter = Edit3Enter
-          OnKeyDown = Edit3KeyDown
-          OnKeyUp = Edit9KeyUp
-        end
-      end
-      object Edit8: TEdit
-        Left = 661
-        Top = 179
-        Width = 350
-        Height = 25
-        AutoSize = False
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 2
-        OnChange = Edit8Change
-        OnEnter = Edit8Enter
-        OnExit = Edit8Exit
-        OnKeyDown = Edit8KeyDown
-        OnKeyPress = Edit8KeyPress
-        OnKeyUp = Edit9KeyUp
-      end
-      object Edit9: TEdit
-        Left = 661
-        Top = 81
-        Width = 350
-        Height = 25
-        AutoSize = False
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 0
-        OnChange = Edit9Change
-        OnEnter = Edit9Enter
-        OnKeyDown = Edit9KeyDown
-        OnKeyPress = Edit9KeyPress
-        OnKeyUp = Edit9KeyUp
-      end
-      object DBGrid2: TDBGrid
-        Left = 661
-        Top = 105
-        Width = 350
-        Height = 6
-        Color = clWhite
-        Ctl3D = False
-        DataSource = Form1.DataSource2
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -15
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
-        ParentCtl3D = False
-        ParentFont = False
-        TabOrder = 4
-        TitleFont.Charset = ANSI_CHARSET
-        TitleFont.Color = clBlack
-        TitleFont.Height = -16
-        TitleFont.Name = 'Courier New'
-        TitleFont.Style = [fsBold]
-        Visible = False
-        OnDrawColumnCell = DBGrid2DrawColumnCell
-        OnDblClick = DBGrid2DblClick
-        OnExit = DBGrid2Exit
-        OnKeyPress = DBGrid2KeyPress
-        OnKeyUp = DBGrid2KeyUp
-        Columns = <
-          item
-            Expanded = False
-            FieldName = 'NOME'
-            Font.Charset = ANSI_CHARSET
-            Font.Color = clSilver
-            Font.Height = -13
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = [fsBold]
-            Width = 320
-            Visible = True
-          end>
-      end
-      object Panel7: TPanel
-        Left = 16
-        Top = 28
-        Width = 335
-        Height = 253
-        BevelOuter = bvNone
-        BevelWidth = 2
-        BiDiMode = bdRightToLeftNoAlign
-        Color = 15267071
-        Ctl3D = False
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentBiDiMode = False
-        ParentBackground = False
-        ParentCtl3D = False
-        ParentFont = False
-        TabOrder = 6
-        object Memo2: TMemo
-          Left = 10
-          Top = 10
-          Width = 320
-          Height = 231
-          BorderStyle = bsNone
-          Color = 15267071
-          Ctl3D = False
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -17
-          Font.Name = 'Courier New'
-          Font.Style = [fsBold]
-          Lines.Strings = (
-            'TOTAL R$ 999,99')
-          ParentCtl3D = False
-          ParentFont = False
-          ReadOnly = True
-          TabOrder = 0
-          OnEnter = Memo2Enter
-        end
-      end
-      object chkDelivery: TCheckBox
-        Left = 744
-        Top = 161
-        Width = 265
-        Height = 17
-        Caption = 'Endere'#231'o cadastrado para delivery em'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 7
-        Visible = False
-        OnClick = chkDeliveryClick
-      end
-      object EdMarketplace: TEdit
-        Left = 661
-        Top = 32
-        Width = 350
-        Height = 25
-        AutoSize = False
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 8
-        Visible = False
-        OnChange = EdMarketplaceChange
-        OnEnter = EdMarketplaceEnter
-        OnExit = EdMarketplaceExit
-        OnKeyDown = EdMarketplaceKeyDown
-        OnKeyPress = EdMarketplaceKeyPress
-        OnKeyUp = Edit9KeyUp
       end
     end
     object Edit4: TEdit

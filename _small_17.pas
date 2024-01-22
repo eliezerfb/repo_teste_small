@@ -1066,8 +1066,8 @@ begin
     end
     else
     begin
-      Deletefile(PAnsiChar('.\DarumaATOCOTEPE_DARUMA.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\DarumaATOCOTEPE_DARUMA.txt'));
-      Deletefile(PAnsiChar('.\Espelho_MFD.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\Espelho_MFD.txt'));
+      DeleteFile(PChar('.\DarumaATOCOTEPE_DARUMA.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\DarumaATOCOTEPE_DARUMA.txt'));
+      DeleteFile(PChar('.\Espelho_MFD.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\Espelho_MFD.txt'));
       //
       //
       //
@@ -1094,7 +1094,7 @@ begin
         begin
 
           sArquivoAto1704 := '.\ATO_MFD_DATA.TXT';
-          DeleteFile(PAnsiChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 DeleteFile(pChar(sArquivoAto1704));
+          DeleteFile(PChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 DeleteFile(pChar(sArquivoAto1704));
 
           //
           pP2 := Copy(DateToStr(Form7.DateTimePicker1.Date),1,2)+Copy(DateToStr(Form7.DateTimePicker1.Date),4,2)+Copy(DateToStr(Form7.DateTimePicker1.Date),7,4);
@@ -1105,7 +1105,7 @@ begin
         end else
         begin
           sArquivoAto1704 := '.\ATO_MFD_COO.TXT';
-          Deletefile(PAnsiChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 Deletefile(pChar(sArquivoAto1704)); 
+          DeleteFile(PChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 Deletefile(pChar(sArquivoAto1704));
 
           {Sandro Silva 2015-08-20 inicio}
           pP2 := FormatFloat('000000', StrToIntDef(Form7.MaskEdit1.Text, 0));
@@ -1148,7 +1148,7 @@ begin
             Application.BringToFront;
             Application.ProcessMessages;
             // Sandro Silva 2017-08-01  ShowMessage('O seguinte arquivo será gravado: '+pP1);
-            Deletefile(PAnsiChar('.\Espelho_MFD.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\Espelho_MFD.txt'));
+            DeleteFile(PChar('.\Espelho_MFD.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\Espelho_MFD.txt'));
             Result := True;
           end else Result := False;
         end else

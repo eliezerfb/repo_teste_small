@@ -493,7 +493,7 @@ begin
     try
       AssignFile(myFile, PAnsiChar(sDiretorioAtual + '\log\blocox\log_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt'));
 
-      if FileExists(PAnsiChar(sDiretorioAtual + '\log\blocox\log_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt')) = False then
+      if FileExists(PChar(sDiretorioAtual + '\log\blocox\log_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt')) = False then
       begin
         {$I-}
         ReWrite(myFile);

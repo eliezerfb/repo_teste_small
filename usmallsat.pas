@@ -5614,9 +5614,9 @@ begin
     Inc(iTimeOutSeg, 3);
 
     sl.Text := sConteudo;
-    sl.SaveToFile(PAnsiChar(sCaminhoRequisicao + '\' + sArqRequisicao));
+    sl.SaveToFile(PChar(sCaminhoRequisicao + '\' + sArqRequisicao));
     Sleep(100); // Sandro Silva 2017-02-23
-    RenameFile(PAnsiChar(sCaminhoRequisicao + '\' + sArqRequisicao), PAnsiChar(sCaminhoRequisicao + '\' + sArqResposta)); // Sandro Silva 2019-06-04 RenameFile(sCaminhoRequisicao + '\' + sArqRequisicao, sCaminhoRequisicao + '\' + sArqResposta); 
+    RenameFile(PChar(sCaminhoRequisicao + '\' + sArqRequisicao), PChar(sCaminhoRequisicao + '\' + sArqResposta)); // Sandro Silva 2019-06-04 RenameFile(sCaminhoRequisicao + '\' + sArqRequisicao, sCaminhoRequisicao + '\' + sArqResposta);
     Sleep(100); // Sandro Silva 2019-06-04  Ficha 4656
     sl.Clear;
 
@@ -5625,17 +5625,17 @@ begin
     while (SecondsBetween(Now, dtTempo) < iTimeOutSeg) do
     begin
 
-      if FileExists(PAnsiChar(sCaminhoRetorno + '\' + sArqResposta)) then // Sandro Silva 2019-06-04 Ficha 4656 if FileExists(sCaminhoRetorno + '\' + sArqResposta) then
+      if FileExists(PChar(sCaminhoRetorno + '\' + sArqResposta)) then // Sandro Silva 2019-06-04 Ficha 4656 if FileExists(sCaminhoRetorno + '\' + sArqResposta) then
       begin
         try
           Sleep(500);// Tempo para gravação em disco
           while Trim(sl.Text) = '' do
           begin
-            sl.LoadFromFile(PAnsiChar(sCaminhoRetorno + '\' + sArqResposta)); // Sandro Silva 2019-06-04  Ficha 4656 sl.LoadFromFile(sCaminhoRetorno + '\' + sArqResposta);
+            sl.LoadFromFile(sCaminhoRetorno + '\' + sArqResposta); // Sandro Silva 2019-06-04  Ficha 4656 sl.LoadFromFile(sCaminhoRetorno + '\' + sArqResposta);
             Sleep(500);// Tempo para gravação em disco
           end;
 
-          DeleteFile(PAnsiChar(sCaminhoRetorno + '\' + sArqResposta)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRetorno + '\' + sArqResposta));
+          DeleteFile(PChar(sCaminhoRetorno + '\' + sArqResposta)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRetorno + '\' + sArqResposta));
 
           if xmlNodeValue(sl.Text, '//comando') = sComandoEnviado then // Se o comando retornado é o mesmo enviado sai do loop
           begin
@@ -5663,8 +5663,8 @@ begin
   end
   else
   begin
-    DeleteFile(PAnsiChar(sCaminhoRequisicao + '\' + sArqRequisicao)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRequisicao + '\' + sArqRequisicao));  // Sandro Silva 2017-03-01
-    DeleteFile(PAnsiChar(sCaminhoRequisicao + '\' + sArqResposta)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRequisicao + '\' + sArqResposta));  // Sandro Silva 2017-03-01
+    DeleteFile(PChar(sCaminhoRequisicao + '\' + sArqRequisicao)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRequisicao + '\' + sArqRequisicao));  // Sandro Silva 2017-03-01
+    DeleteFile(PChar(sCaminhoRequisicao + '\' + sArqResposta)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRequisicao + '\' + sArqResposta));  // Sandro Silva 2017-03-01
     Result := 'Tempo limite atingido. Servidor SAT não respondeu. Verifique se o Servidor está ativo';
   end;
 

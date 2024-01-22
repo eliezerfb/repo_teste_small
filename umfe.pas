@@ -483,7 +483,7 @@ var
 begin
   Lista.Clear;
   //
-  I := FindFirst( PAnsiChar(sAtual + '\' + Trim(sExtensao)), faAnyFile, S);
+  I := FindFirst( sAtual + '\' + Trim(sExtensao), faAnyFile, S);
   //
   while I = 0 do
   begin
@@ -631,7 +631,7 @@ begin
       end; // for iResp := 0 to slResp.Count - 1 do
       if SecondsBetween(Now, dtInicio) >= 30 then
       begin
-        DeleteFile(PAnsiChar(FUltimaSolicitacao + '.xml'));
+        DeleteFile(PChar(FUltimaSolicitacao + '.xml'));
         bBreak := True;
       end;
     end; // while bBreak = False do
@@ -769,8 +769,8 @@ begin
   else
     FUltimaSolicitacao := FCaminhoIntegrador + '\input\' + FCaixa + '-' + FChaveRequisicao; // Sandro Silva 2017-05-10  GuidCreate;
   slXML.SaveToFile(FUltimaSolicitacao + '.tmp');
-  DeleteFile(PAnsiChar(FUltimaSolicitacao + '.xml'));
-  RenameFile(PAnsiChar(FUltimaSolicitacao + '.tmp'), PAnsiChar(FUltimaSolicitacao + '.xml'));
+  DeleteFile(PChar(FUltimaSolicitacao + '.xml'));
+  RenameFile(PChar(FUltimaSolicitacao + '.tmp'), PChar(FUltimaSolicitacao + '.xml'));
   Sleep(50); // Tempo de renomear
 
   FXmlSolicitacao := slXML.Text;

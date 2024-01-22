@@ -15,6 +15,9 @@ function AjustaResolucao(Obj: TObject): Boolean;
 
 implementation
 
+uses
+  Vcl.Buttons;
+
 function AjustaLargura(pI: Integer): Integer;
 begin
   Result := Trunc(pI*Screen.Width div SCREEN_WIDTH_PADRAO);
@@ -83,7 +86,7 @@ begin
     for I := 0 To ComponentCount-1 do
     begin
       //
-      if Components[ I ] is TButton then
+      if (Components[ I ] is TButton) or (Components[ I ] is TBitBtn) then // Sandro Silva 2024-01-22 if Components[ I ] is TButton then
       begin
         //
 

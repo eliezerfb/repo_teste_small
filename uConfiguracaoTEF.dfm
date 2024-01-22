@@ -7,6 +7,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
   ClientHeight = 741
   ClientWidth = 994
   Color = clWhite
+  Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11

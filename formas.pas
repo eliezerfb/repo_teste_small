@@ -626,8 +626,8 @@ begin
   chkUsandoTefCarteirasDigitais.Font  := Label1.Font;
   {Sandro Silva 2021-08-30 fim}   
 
-  FormasP.Top    := Screen.Height - FormasP.Height div 2;
-  FormasP.Left   := Screen.Width - FormasP.Width div 2;
+  //Sandro Silva 2024.01.22 FormasP.Top    := Screen.Height - FormasP.Height div 2;
+  //Sandro Silva 2024.01.22 FormasP.Left   := Screen.Width - FormasP.Width div 2;
 end;
 
 procedure TFormasP.Button1Click(Sender: TObject);
