@@ -11112,7 +11112,7 @@ object Form10: TForm10
               '05-Opera'#231#227'o Tribut'#225'vel por Substitui'#231#227'o Tribut'#225'ria'
               '06-Opera'#231#227'o Tribut'#225'vel a Al'#237'quota Zero'
               '07-Opera'#231#227'o Isenta da Contribui'#231#227'o'
-              '08-Opera'#231#227'o sem '#1'n'#265
+              '08-Opera'#231#227'o sem Incid'#234'ncia da Contribui'#231#227'o'
               '09-Opera'#231#227'o com Suspens'#227'o da Contribui'#231#227'o'
               '49-Outras Opera'#231#245'es de Sa'#237'da'
               '99-Outras Opera'#231#245'es')
@@ -12326,13 +12326,13 @@ object Form10: TForm10
         object WebBrowser1: TWebBrowser
           Left = 1108
           Top = 16
-          Width = 959
-          Height = 669
+          Width = 639
+          Height = 446
           TabOrder = 4
           OnNavigateComplete2 = WebBrowser1NavigateComplete2
           OnDocumentComplete = WebBrowser1DocumentComplete
           ControlData = {
-            4C00000014420000182E00000000000000000000000000000000000000000000
+            4C0000000B420000182E00000000000000000000000000000000000000000000
             000000004C000000000000000000000001000000E0D057007335CF11AE690800
             2B2E12620A000000000000004C0000000114020000000000C000000000000046
             8000000000000000000000000000000000000000000000000000000000000000
