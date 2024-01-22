@@ -1124,12 +1124,12 @@ begin
       begin
         if I = 1 then
         begin
-          CopyFile(PAnsiChar(sArquivoAto1704), PAnsiChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar(sArquivoAto1704), pChar(pP1), False); 
+          CopyFile(PChar(sArquivoAto1704), PChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar(sArquivoAto1704), pChar(pP1), False);
 
           Application.BringToFront;
           Application.ProcessMessages;
           // Sandro Silva 2017-08-01  ShowMessage('O seguinte arquivo será gravado: ' + pP1);
-          Deletefile(PAnsiChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 Deletefile(pChar(sArquivoAto1704)); 
+          Deletefile(PChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 Deletefile(pChar(sArquivoAto1704));
           {Sandro Silva 2015-09-30 final}
           Result := True;
         end else
@@ -1144,7 +1144,7 @@ begin
         begin
           if FileExists('.\Espelho_MFD.txt') then
           begin
-            CopyFile(PAnsiChar('.\Espelho_MFD.txt'),PAnsiChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar('.\Espelho_MFD.txt'),pChar(pP1), False); 
+            CopyFile(PChar('.\Espelho_MFD.txt'), PChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar('.\Espelho_MFD.txt'),pChar(pP1), False);
             Application.BringToFront;
             Application.ProcessMessages;
             // Sandro Silva 2017-08-01  ShowMessage('O seguinte arquivo será gravado: '+pP1);
@@ -1534,7 +1534,7 @@ begin
   //
   DeleteFile(pP1);
   ShowMessage('O seguinte arquivo será gravado: '+pP1);
-  CopyFile(PansiChar('C:\RETORNO.TXT'),PAnsiChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar('C:\RETORNO.TXT'),pChar(pP1),True);
+  CopyFile(PChar('C:\RETORNO.TXT'), PChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar('C:\RETORNO.TXT'),pChar(pP1),True);
   Result := True;
   //
 end;

@@ -2073,7 +2073,7 @@ begin
   //  if Form1.SaveDialog1.Execute then
     begin
       //
-      DeleteFile(PAnsiChar(Form1.SaveDialog1.FileName));
+      DeleteFile(PChar(Form1.SaveDialog1.FileName));
       AssignFile(F, Form1.SaveDialog1.FileName);
       Rewrite(F);                           // Abre para gravação
       //

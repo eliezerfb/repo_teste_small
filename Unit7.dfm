@@ -4,8 +4,8 @@ object Form7: TForm7
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Leitura de mem'#243'ria fiscal'
-  ClientHeight = 528
-  ClientWidth = 305
+  ClientHeight = 517
+  ClientWidth = 299
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,8 +21,8 @@ object Form7: TForm7
   OnShow = FormShow
   PixelsPerInch = 96
   DesignSize = (
-    305
-    528)
+    299
+    517)
   TextHeight = 13
   object Button1: TBitBtn
     Left = 33
@@ -88,7 +88,7 @@ object Form7: TForm7
   object PageControl1: TPageControl
     Left = 1
     Top = -8
-    Width = 302
+    Width = 280
     Height = 253
     ActivePage = TabSheet8
     Anchors = [akLeft, akTop, akRight]
@@ -100,6 +100,7 @@ object Form7: TForm7
     ParentFont = False
     Style = tsFlatButtons
     TabOrder = 3
+    ExplicitWidth = 302
     object TabSheet1: TTabSheet
       Caption = 'TabSheet1'
       object Label1: TLabel
@@ -350,12 +351,12 @@ object Form7: TForm7
       Caption = 'TabSheet3'
       ImageIndex = 2
       DesignSize = (
-        294
+        272
         222)
       object Label8: TLabel
         Left = 11
         Top = 0
-        Width = 278
+        Width = 256
         Height = 37
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -367,6 +368,7 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         WordWrap = True
+        ExplicitWidth = 278
       end
       object Label9: TLabel
         Left = 11
@@ -517,12 +519,12 @@ object Form7: TForm7
       Caption = 'TabSheet4'
       ImageIndex = 3
       DesignSize = (
-        294
+        272
         222)
       object Label14: TLabel
         Left = 11
         Top = 0
-        Width = 278
+        Width = 256
         Height = 37
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -534,6 +536,7 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         WordWrap = True
+        ExplicitWidth = 278
       end
       object Label15: TLabel
         Left = 11
@@ -573,12 +576,12 @@ object Form7: TForm7
       ImageIndex = 4
       OnShow = TabSheet5Show
       DesignSize = (
-        294
+        272
         222)
       object Label17: TLabel
         Left = 11
         Top = 0
-        Width = 278
+        Width = 256
         Height = 37
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -590,6 +593,7 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         WordWrap = True
+        ExplicitWidth = 278
       end
       object Label16: TLabel
         Left = 11
@@ -768,12 +772,12 @@ object Form7: TForm7
       Caption = 'TabSheet6'
       ImageIndex = 5
       DesignSize = (
-        294
+        272
         222)
       object Label20: TLabel
         Left = 11
         Top = 0
-        Width = 278
+        Width = 256
         Height = 15
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -785,6 +789,7 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         WordWrap = True
+        ExplicitWidth = 278
       end
       object Label21: TLabel
         Left = 11
@@ -922,7 +927,7 @@ object Form7: TForm7
       Caption = 'TabSheet7'
       ImageIndex = 6
       DesignSize = (
-        294
+        272
         222)
       object Label24: TLabel
         Left = 11
@@ -941,7 +946,7 @@ object Form7: TForm7
       object Label25: TLabel
         Left = 11
         Top = 0
-        Width = 278
+        Width = 256
         Height = 15
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -953,6 +958,7 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         WordWrap = True
+        ExplicitWidth = 278
       end
       object Label26: TLabel
         Left = 11
@@ -1059,12 +1065,12 @@ object Form7: TForm7
       ImageIndex = 7
       OnShow = TabSheet8Show
       DesignSize = (
-        294
+        272
         222)
       object Label27: TLabel
         Left = 11
         Top = 0
-        Width = 278
+        Width = 256
         Height = 16
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -1076,6 +1082,7 @@ object Form7: TForm7
         Font.Style = [fsBold]
         ParentFont = False
         WordWrap = True
+        ExplicitWidth = 278
       end
       object Label28: TLabel
         Left = 11

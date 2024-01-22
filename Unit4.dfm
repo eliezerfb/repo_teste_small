@@ -4,8 +4,8 @@ object Form4: TForm4
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Tabela de al'#237'quotas'
-  ClientHeight = 353
-  ClientWidth = 412
+  ClientHeight = 342
+  ClientWidth = 406
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

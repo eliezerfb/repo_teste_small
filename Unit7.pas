@@ -268,7 +268,7 @@ begin
     Form7.Frame_teclado1.Led_REDE.Picture   := Form1.Frame_teclado1.Led_REDE.Picture;
     Form7.Frame_teclado1.Led_REDE.Hint      := Form1.Frame_teclado1.Led_REDE.Hint;
     //
-    ShortDateFormat := 'dd/mm/yyyy';
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
     DateTimePicker1.Date := Date;
     DateTimePicker2.Date := Date;
     if Form7.Label3.Caption = 'Data inicial:' then

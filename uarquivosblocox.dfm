@@ -2,8 +2,8 @@ object FArquivosBlocoX: TFArquivosBlocoX
   Left = 313
   Top = 150
   BorderStyle = bsDialog
-  ClientHeight = 636
-  ClientWidth = 1296
+  ClientHeight = 643
+  ClientWidth = 1298
   Color = clWindow
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -17,8 +17,8 @@ object FArquivosBlocoX: TFArquivosBlocoX
   OnShow = FormShow
   PixelsPerInch = 96
   DesignSize = (
-    1296
-    636)
+    1298
+    643)
   TextHeight = 13
   object Label5: TLabel
     Left = 8
@@ -29,11 +29,12 @@ object FArquivosBlocoX: TFArquivosBlocoX
   end
   object Label2: TLabel
     Left = 8
-    Top = 448
+    Top = 455
     Width = 97
     Height = 13
     Anchors = [akLeft, akBottom]
     Caption = 'Mensagem da Sefaz'
+    ExplicitTop = 448
   end
   object Label1: TLabel
     Left = 8
@@ -65,13 +66,20 @@ object FArquivosBlocoX: TFArquivosBlocoX
   end
   object reMensagem: TRichEdit
     Left = 8
-    Top = 464
-    Width = 1278
+    Top = 425
+    Width = 1264
     Height = 167
     Anchors = [akLeft, akRight, akBottom]
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
     ParentFont = False
     ReadOnly = True
     TabOrder = 0
+    ExplicitTop = 473
+    ExplicitWidth = 1282
   end
   object cbTipo: TComboBox
     Left = 8
@@ -107,8 +115,8 @@ object FArquivosBlocoX: TFArquivosBlocoX
   object DBGrid1: TDBGrid
     Left = 8
     Top = 120
-    Width = 1277
-    Height = 313
+    Width = 1279
+    Height = 320
     Hint = 'Clique com bot'#227'o contr'#225'rio exibe op'#231#245'es'
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DSBLOCOX
@@ -205,13 +213,14 @@ object FArquivosBlocoX: TFArquivosBlocoX
   object edEmitente: TEdit
     Left = 8
     Top = 1
-    Width = 1277
+    Width = 1279
     Height = 19
     Anchors = [akLeft, akTop, akRight]
     BorderStyle = bsNone
     ReadOnly = True
     TabOrder = 7
     Text = 'edEmitente'
+    ExplicitWidth = 1277
   end
   object BitBtn1: TBitBtn
     Left = 104

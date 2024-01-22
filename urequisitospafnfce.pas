@@ -7,7 +7,6 @@ uses
   IBQuery, DBClient, Db, IniFiles, StrUtils, DateUtils
   , IBDatabase
   , StdVCL
-  , base64code
   ;
 
 const PARAMETRO_PAFNFCE = 'PAFNFCE';

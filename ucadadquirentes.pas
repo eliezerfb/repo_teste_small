@@ -369,7 +369,7 @@ begin
     sAlerta := 'Nome da Adquirente já existe';
   if AnsiContainsText(E.Message, 'must have a value') then
     sAlerta := 'Preencha todas as colunas';
-  Application.MessageBox(PAnsiChar(sAlerta), 'Atenção', MB_ICONWARNING + MB_OK);
+  Application.MessageBox(PChar(sAlerta), 'Atenção', MB_ICONWARNING + MB_OK);
   Action := daAbort;
 end;
 

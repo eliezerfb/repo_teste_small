@@ -1475,7 +1475,7 @@ begin
     sLog      := FLog;
   end
   else
-    Application.MessageBox(PAnsiChar(sLog), 'Atenção', mrOk + MB_ICONWARNING)
+    Application.MessageBox(PChar(sLog), 'Atenção', mrOk + MB_ICONWARNING)
 
 end;
 

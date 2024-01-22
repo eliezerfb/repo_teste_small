@@ -238,7 +238,7 @@ uses StrUtils;
 // ------------------------------ //
 function _ecf15_CodeErro(pP1: Integer; pP2: String):Integer;
 var
-  sZDados : array[0..20] of Char;
+  sZDados : array[0..20] of AnsiChar;
   sErro : String;
 begin
   //
@@ -503,7 +503,7 @@ end;
 function _ecf15_Inicializa(Pp1: String):Boolean;
 var
   I : Integer;
-  sZDados: array[0..15] of Char;
+  sZDados: array[0..15] of AnsiChar;
   Mais1ini : tIniFile;
   iBPS : Integer;
   szTabelaRelatoriosGerenciais: AnsiString;
@@ -767,7 +767,7 @@ end;
 function _ecf15_Pagamento(Pp1: Boolean):Boolean;
 var
   //
-  szTotal: array[0..20] of Char;
+  szTotal: array[0..20] of AnsiChar;
   Mais1ini : TiniFile;
   //
 begin
@@ -868,7 +868,7 @@ end;
 // -------------------------------//
 function _ecf15_SubTotal(Pp1: Boolean):Real;
 var
-  szSubTotal: array[0..20] of Char;
+  szSubTotal: array[0..20] of AnsiChar;
 begin
   EPSON_Fiscal_Obter_SubTotal(szSubTotal);
   Result := StrToFloat('0'+AllTrim(szSubTotal))/100;
@@ -881,7 +881,7 @@ end;
 // ------------------------------ //
 function _ecf15_AbreNovoCupom(Pp1: Boolean):Boolean;
 var
-  sZDados : array[0..20] of Char;
+  sZDados : array[0..20] of AnsiChar;
 begin
   //
   iRetorno := EPSON_Fiscal_Abrir_Cupom(PAnsiChar(Form1.sCPF_CNPJ_Validado),'','','',2);
@@ -914,7 +914,7 @@ end;
 // -------------------------------- //
 function _ecf15_NumeroDoCupom(Pp1: Boolean):String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -930,7 +930,7 @@ end;
 // -------------------------- //
 function _ecf15_ccF(Pp1: Boolean):String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -945,7 +945,7 @@ end;
 // ------------------------------------------------------------------------- //
 function _ecf15_gnf(Pp1: Boolean):String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -961,7 +961,7 @@ end;
 (*{Sandro Silva 2015-09-15 inicio}
 function _ecf15_CER(Pp1: Boolean):String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -1081,7 +1081,7 @@ end;
 // --------------------------------------- //
 function _ecf15_GRG(Pp1: Boolean):String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -1096,7 +1096,7 @@ end;
 // -------------- //
 function _ecf15_CDC(Pp1: Boolean):String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -1158,7 +1158,7 @@ end;
 // -------------------------------- //
 function _ecf15_StatusGaveta(Pp1: Boolean):String;
 var
-  szDados: array[0..20] of Char;
+  szDados: array[0..20] of AnsiChar;
 begin
   //
   Sleep(100); // Tem que dar um tempo
@@ -1434,7 +1434,7 @@ end;
 function _ecf15_LeituraMemoriaFiscal(pP1, pP2: String):Boolean;
 var
   iTamBuff: DWord;
-  pszDados: array[0..1024] of Char;
+  pszDados: array[0..1024] of AnsiChar;
 begin
   if Form1.sTipo = 'c' then
   begin
@@ -1601,7 +1601,7 @@ end;
 // -------------------------------- //
 function _ecf15_ReducaoZ(pP1: Boolean):Boolean;
 var
-  szCRZ: array[0..5] of Char;
+  szCRZ: array[0..5] of AnsiChar;
 begin
   //
 //  iRetorno := EPSON_RelatorioFiscal_ReducaoZ(PAnsiChar(DateToStr(Date)),PAnsiChar(TimeToStr(Time)),'',szCRZ );
@@ -1646,7 +1646,7 @@ function _ecf15_LigaDesLigaVerao(pP1: Boolean):Boolean;
 {
 var
   bEstado: Boolean;
-  szCRZ: array[0..5] of Char;
+  szCRZ: array[0..5] of AnsiChar;
 }
 begin
   EPSON_Config_Horario_Verao();
@@ -1665,7 +1665,7 @@ end;
 // -------------------------------- //
 function _ecf15_VersodoFirmware(pP1: Boolean): String;
 var
-  sZDados : array[0..110] of Char;
+  sZDados : array[0..110] of AnsiChar;
 begin
   //
   iRetorno := EPSON_Obter_Dados_Impressora(szDados);
@@ -1680,7 +1680,7 @@ end;
 // -------------------------------- //
 function _ecf15_NmerodeSrie(pP1: Boolean): String;
 var
-  sZDados : array[0..110] of Char;
+  sZDados : array[0..110] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Dados_Impressora(szDados);
   Result   := Copy(AllTrim(szDados),0,20);
@@ -1694,7 +1694,7 @@ end;
 // -------------------------------- //
 function _ecf15_CGCIE(pP1: Boolean): String;
 var
-  szDadosUsuario: array[0..50] of Char;
+  szDadosUsuario: array[0..50] of AnsiChar;
 begin
   EPSON_Obter_Dados_Usuario ( szDadosUsuario );
   Result := szDadosUsuario;
@@ -1706,7 +1706,7 @@ end;
 // --------------------------------- //
 function _ecf15_Cancelamentos(pP1: Boolean): String;
 var
-  szCancelado: array[0..51] of Char;
+  szCancelado: array[0..51] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Total_Cancelado( szCancelado );
   _ecf15_codeErro(iRetorno,'');
@@ -1721,7 +1721,7 @@ end;
 // -------------------------------- //
 function _ecf15_Descontos(pP1: Boolean): String;
 var
-  szTotalDescontos: array[0..51] of Char;
+  szTotalDescontos: array[0..51] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Total_Descontos( szTotalDescontos );
   _ecf15_codeErro(iRetorno,'');
@@ -1734,7 +1734,7 @@ end;
 // -------------------------------- //
 function _ecf15_ContadorSeqencial(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -1748,7 +1748,7 @@ end;
 // -------------------------------- //
 function _ecf15_Nmdeoperaesnofiscais(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -1757,7 +1757,7 @@ end;
 
 function _ecf15_NmdeCuponscancelados(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -1766,7 +1766,7 @@ end;
 
 function _ecf15_NmdeRedues(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -1775,7 +1775,7 @@ end;
 
 function _ecf15_Nmdeintervenestcnicas(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -1784,7 +1784,7 @@ end;
 
 function _ecf15_Nmdesubstituiesdeproprietrio(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of Char;
+  szContadores: array[0..100] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
@@ -1793,7 +1793,7 @@ end;
 
 function _ecf15_Clichdoproprietrio(pP1: Boolean): String;
 var
-  szUsuario: array[0..160] of Char;
+  szUsuario: array[0..160] of AnsiChar;
 begin
   EPSON_Obter_Cliche_Usuario( szUsuario );
   Result := szUsuario;
@@ -1806,7 +1806,7 @@ end;
 // ------------------------------------ //
 function _ecf15_NmdoCaixa(pP1: Boolean): String;
 var
-  sZDados : array[0..10] of Char;
+  sZDados : array[0..10] of AnsiChar;
 begin
   EPSON_Obter_Numero_ECF_Loja(szDados);
   Result := Copy(sZDados,1,3);
@@ -1814,7 +1814,7 @@ end;
 
 function _ecf15_Nmdaloja(pP1: Boolean): String;
 var
-  sZDados : array[0..10] of Char;
+  sZDados : array[0..10] of AnsiChar;
 begin
   EPSON_Obter_Numero_ECF_Loja(szDados);
   Result := Copy(sZDados,4,4);
@@ -1822,7 +1822,7 @@ end;
 
 function _ecf15_Moeda(pP1: Boolean): String;
 var
-  sZDados : array[0..10] of Char;
+  sZDados : array[0..10] of AnsiChar;
 begin
   EPSON_Obter_Simbolo_Moeda(szDados);
   Result := Copy(AllTrim(szDados),1,1);
@@ -1834,7 +1834,7 @@ end;
 // ----------------------------------------- //
 function _ecf15_Dataehoradaimpressora(pP1: Boolean): String;
 var
-  sZDados: array[0..15] of Char;
+  sZDados: array[0..15] of AnsiChar;
 begin
   EPSON_Obter_Hora_Relogio(sZDados);
   Result := Copy(sZDados,1,4)+Copy(sZDados,7,8);        // Retorna o ano com 4 digitos no sistema assume 2 Ex: 310507
@@ -1843,7 +1843,7 @@ end;
 function _ecf15_Datadaultimareduo(pP1: Boolean): String;
 {
 var
-  sZDados: array[0..70] of Char;
+  sZDados: array[0..70] of AnsiChar;
 begin
   EPSON_Obter_Dados_Jornada(sZDados);
   Result := Copy(sZDados,40,6); // Retorna o número da última RZ
@@ -1862,7 +1862,7 @@ end;
 
 function _ecf15_Datadomovimento(pP1: Boolean): String;
 var
-  sZDados: array[0..15] of Char;
+  sZDados: array[0..15] of AnsiChar;
 begin
   EPSON_Obter_Data_Hora_Jornada(sZDados);
   Result := Copy(sZDados,1,4)+Copy(sZDados,7,8);        // Retorna o ano com 4 digitos no sistema assume 2 Ex: 310507
@@ -1874,7 +1874,7 @@ end;
 // Ex: 161800120005000000000000000000000000000000000000000000000000000000 //
 function _ecf15_RetornaAliquotas(pP1: Boolean): String;
 var
-  sZAliquotas: array[0..553] of Char;
+  sZAliquotas: array[0..553] of AnsiChar;
   I : Integer;
 begin
   //
@@ -1924,7 +1924,7 @@ end;
 function _ecf15_leituraMemoriaFiscalEmDisco(pP1, pP2, pP3: String): Boolean;
 var
   iTamBuff: DWord;
-  pszDados: array[0..1024] of Char;
+  pszDados: array[0..1024] of AnsiChar;
 begin
 
   if Form1.sTipo = 'c' then
@@ -2144,7 +2144,7 @@ end;
 
 function _ecf15_GrandeTotal(sP1: Boolean): String;
 var
-  szDados: array[0..20] of Char;
+  szDados: array[0..20] of AnsiChar;
 begin
   EPSON_Obter_GT(szDados);
   Result := sZDados;
@@ -2152,7 +2152,7 @@ end;
 
 function _ecf15_TotalizadoresDasAliquotas(sP1: Boolean): String;
 var
-  sZAliquotas: array[0..553] of Char;
+  sZAliquotas: array[0..553] of AnsiChar;
   I : Integer;
   sNN, sFF, sII : String;
 begin
@@ -2183,7 +2183,7 @@ end;
 
 function _ecf15_CupomAberto(sP1: Boolean): boolean;
 var
-  szEstado: array[0..60] of Char;
+  szEstado: array[0..60] of AnsiChar;
 begin
   EPSON_Obter_Estado_Cupom(szEstado);
   if Copy(szEstado,1,2) = '01' then Result := True else  Result := False;
@@ -2191,7 +2191,7 @@ end;
 
 function _ecf15_FaltaPagamento(sP1: Boolean): boolean;
 var
-  szEstado: array[0..60] of Char;
+  szEstado: array[0..60] of AnsiChar;
 begin
   EPSON_Obter_Estado_Cupom(szEstado);
   if Copy(szEstado,56,1) = '3' then Result := True else  Result := False;
@@ -2204,7 +2204,7 @@ end;
 
 function _ecf15_Marca(sP1: Boolean): String;
 var
-  sZDados : array[0..110] of Char;
+  sZDados : array[0..110] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Dados_Impressora(szDados);
   Result   := Alltrim(Copy(szDados,41,20));
@@ -2215,7 +2215,7 @@ end;
 
 function _ecf15_Modelo(sP1: Boolean): String;
 var
-  sZDados : array[0..110] of Char;
+  sZDados : array[0..110] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Dados_Impressora(szDados);
   Result   := AllTrim(Copy(szDados,61,20));
@@ -2226,7 +2226,7 @@ end;
 
 function _ecf15_Tipodaimpressora(pP1: Boolean): String; //
 var
-  sZDados : array[0..110] of Char;
+  sZDados : array[0..110] of AnsiChar;
 begin
   //
   iRetorno := EPSON_Obter_Dados_Impressora(szDados);
@@ -2238,7 +2238,7 @@ end;
 
 function _ecf15_VersaoSB(pP1: Boolean): String; //
 var
-  sZDados : array[0..110] of Char;
+  sZDados : array[0..110] of AnsiChar;
 begin
   iRetorno := EPSON_Obter_Dados_Impressora(szDados);
   Result   := AllTrim(Copy(szDados,101,8));
@@ -2264,7 +2264,7 @@ end;
 
 function _ecf15_Jornada_Aberta(pP1: Boolean): Boolean;
 var
-  // 2015-10-14 sZDados: array[0..70] of Char;
+  // 2015-10-14 sZDados: array[0..70] of AnsiChar;
   sZDados: AnsiString;
   sDataJornada: String;
   sDataFinalJornada: String;
@@ -2430,8 +2430,8 @@ end;
 //
 function _ecf15_CodigoModeloEcf(pP1: Boolean): String; //
 var
-  szCodigoNacionalECF: array[0..7] of Char;
-  szNomeArquivo: array[0..33] of Char;
+  szCodigoNacionalECF: array[0..7] of AnsiChar;
+  szNomeArquivo: array[0..33] of AnsiChar;
 begin
   Result := '150401';
   try

@@ -1477,7 +1477,7 @@ begin
                                       '0',                 // Acrescimo
                                       pP8,                 // Desconto
                                       AnsiString('01'),         // IndiceDepartamento
-                                      AnsiString(pP6),          // UnidadeMedida
+                                      AnsiString(pP6)          // UnidadeMedida
                                       ) <> 1 then
 
   {Sandro Silva 2023-12-13 fim}
@@ -2259,7 +2259,7 @@ begin
   try
     //ShowMessage(DLLName);  // 2015-06-16
 
-    DLL     := LoadLibrary(PAnsiChar(AnsiString(DARUMA_DLLNAME_03))); //carregando dll // Sandro Silva 2023-12-13 DLL     := LoadLibrary(PChar(DARUMA_DLLNAME_03)); //carregando dll
+    DLL     := LoadLibrary(PChar(AnsiString(DARUMA_DLLNAME_03))); //carregando dll // Sandro Silva 2023-12-13 DLL     := LoadLibrary(PChar(DARUMA_DLLNAME_03)); //carregando dll
     //DLL := LoadLibrary(Pchar('C:\Program Files (x86)\Sweda Informática Ltda\Ativação SAT Sweda\SATDLL.dll')); //carregando dll
     if DLL = 0 then
       raise Exception.Create('Não foi possível carregar a biblioteca ' + DARUMA_DLLNAME_03);

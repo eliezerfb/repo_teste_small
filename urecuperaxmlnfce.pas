@@ -62,7 +62,7 @@ begin
   DeleteFile(PAnsiChar(dirAtual + '\' + sArqTxt));
   Sleep(250);
 
-  ShellExecute(Application.Handle, 'runas', 'cmd.exe', PAnsiChar('/C dir "' + sArquivo + '" /s/B/O-D > "' + dirAtual + '\' + sArqTmp + '"'), nil, SW_HIDE);
+  ShellExecute(Application.Handle, 'runas', 'cmd.exe', PChar('/C dir "' + sArquivo + '" /s/B/O-D > "' + dirAtual + '\' + sArqTmp + '"'), nil, SW_HIDE);
 
   while RenameFile(PansiChar(dirAtual + '\' + sArqTmp), PAnsiChar(dirAtual + '\' + sArqTxt)) = False do
   begin

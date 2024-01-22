@@ -1383,7 +1383,7 @@ begin
     begin
       Result := -1; // 0 dias ainda pode usar
       {Sandro Silva 2021-06-22 inicio
-      Application.MessageBox(PansiChar('Cadastro do emitente desatualizado' + Chr(10) + Chr(10) +
+      Application.MessageBox(PChar('Cadastro do emitente desatualizado' + Chr(10) + Chr(10) +
         'Entre antes no programa "Small" e confirme os dados no Cadastro do emitente.'), 'Atenção', MB_OK + MB_ICONWARNING);
       }
       SmallMessageBox('Cadastro do emitente desatualizado' + Chr(10) + Chr(10) +
@@ -1398,7 +1398,7 @@ begin
       if AnsiContainsText(E.Message, 'Column unknown') and AnsiContainsText(E.Message, 'LICENCA') then
       begin
         {Sandro Silva 2021-06-22 inicio
-        Application.MessageBox(PansiChar('Seu banco de dados está desatualizado' + Chr(10) + Chr(10) +
+        Application.MessageBox(PChar('Seu banco de dados está desatualizado' + Chr(10) + Chr(10) +
           'Entre antes no programa "Small" para ajustar os arquivos.'), 'Atenção', MB_OK + MB_ICONWARNING);
         }
         SmallMessageBox('Seu banco de dados está desatualizado' + Chr(10) + Chr(10) +
@@ -2025,7 +2025,7 @@ end;
 function SmallMessageBox(const Text, Caption: String; Flags: Longint): Integer;
 begin
   {$IFDEF VER150}
-  Result := Application.MessageBox(PansiChar(Text), PansiChar(Caption), Flags);
+  Result := Application.MessageBox(PChar(Text), PansiChar(Caption), Flags);
   {$ELSE}
   Result := Application.MessageBox(PwideChar(Text), PwideChar(Caption), Flags);
   {$ENDIF}

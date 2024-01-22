@@ -116,7 +116,7 @@ begin
       if StrToFloat(Copy(Form1.sAliquotas,(I*4)-1,2) + ',' + Copy(Form1.sAliquotas,(I*4)+1,2)) <> 0 then
         Component2.Enabled := False;
     except
-      if (DecimalSeparator <> ',') or (DateSeparator <> '/') then
+      if (FormatSettings.DecimalSeparator <> ',') or (FormatSettings.DateSeparator <> '/') then
       begin
         Application.MessageBox(Pchar('As propriedades das configurações regionais do seu sistema não estão'     + Chr(10) +
                                      'de acordo com o padrão utilizado no Brasil.'                              + Chr(10) +
@@ -306,7 +306,7 @@ procedure TForm4.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP then Perform(Wm_NextDlgCtl,-1,0);
+  if Key = VK_UP then Perform(Wm_NextDlgCtl,1,0);
   if Key = VK_DOWN then Perform(Wm_NextDlgCtl,0,0);
 end;
 

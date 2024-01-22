@@ -81,7 +81,7 @@ begin
     end;
 
     {Sandro Silva 2021-02-26 inicio} 
-    IBQTEMP := CriaQuery(Form1.ibDataSet27.Transaction);
+    IBQTEMP := CriaIBQuery(Form1.ibDataSet27.Transaction);
     try
 
       IBQTEMP.Close;
@@ -100,7 +100,7 @@ begin
       if IBQTEMP.FieldByName('VALOR').AsFloat > 0 then
       begin
 
-        if Application.MessageBox(PAnsiChar('Hoje já houve ' + Form3.Caption + #10 + #10 + #10 +
+        if Application.MessageBox(PChar('Hoje já houve ' + Form3.Caption + #10 + #10 + #10 +
                                             'Confirma ' + Form3.Caption + ' de "R$' + FormatFloat(',0.00', Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat) + '?'),
                                  'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = idNo then
         begin
@@ -120,7 +120,7 @@ begin
 
   if (Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat > 9999) then
   begin // Ficha 4176
-    if Application.MessageBox(PAnsiChar('Confirma o valor "' + FormatFloat(',0.00', Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat) + '" para ' + Form3.Caption + '?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = idNo then
+    if Application.MessageBox(PChar('Confirma o valor "' + FormatFloat(',0.00', Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat) + '" para ' + Form3.Caption + '?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = idNo then
     begin
       Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0.00;
       SMALL_DBEdit1.SetFocus;

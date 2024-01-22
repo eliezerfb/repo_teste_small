@@ -4,8 +4,8 @@ object Form3: TForm3
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Refor'#231'o de caixa'
-  ClientHeight = 512
-  ClientWidth = 274
+  ClientHeight = 501
+  ClientWidth = 268
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

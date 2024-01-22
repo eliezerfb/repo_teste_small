@@ -217,7 +217,7 @@ begin
 
   if (Form1.ibDataSet13.FieldByName('ESTADO').AsString = '') then
   begin
-    Application.MessageBox(PAnsiChar('Acesse o Small e configure os dados do emitente ' + #13 +
+    Application.MessageBox(PChar('Acesse o Small e configure os dados do emitente ' + #13 +
                                  'e reinicie aplicação' + #13 + #13 +
                                  'Essa aplicação será fechada'),'Atenção', MB_ICONWARNING + MB_OK);
     FecharAplicacao(ExtractFileName(Application.ExeName));
@@ -266,8 +266,8 @@ begin
   Form1.GerenciadordeNFCe1.Caption              := 'Gerenciador'; // Sandro Silva 2023-06-23 'Gerenciador de Vendas';
   Form1.ImprimirDANFCE1.Caption                 := 'Imprimir o Comprovante da Movimentação'; // Sandro Silva 2023-06-23 'Imprimir o Comprovante da Venda';
   //
-  DecimalSeparator := ',';
-  DateSeparator    := '/';
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
   //
   Result := True;
   //
@@ -1077,15 +1077,15 @@ end;
 
 function _ecf99_Moeda(pP1: Boolean): String;
 begin
-  Result := Copy(CurrencyString,1,1);
+  Result := Copy(FormatSettings.CurrencyString,1,1);
 end;
 
 function _ecf99_Dataehoradaimpressora(pP1: Boolean): String;
 begin
   //Result := FormatDateTime('ddmmyyyyHHnnss', Now); // StrTran(StrTran(Copy(DateToStr(Date),1,8)+TimeToStr(Time),'/',''),':','');
-  ShortDateFormat := 'dd/mm/yy';   {Bug 2001 free}
+  FormatSettings.ShortDateFormat := 'dd/mm/yy';   {Bug 2001 free}
   Result := StrTran(StrTran(Copy(DateToStr(Date),1,8)+TimeToStr(Time),'/',''),':','');
-  ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
 end;
 
 function _ecf99_Datadaultimareduo(pP1: Boolean): String;
@@ -1417,12 +1417,12 @@ begin
     Form1.OcultaPanelMensagem; 
 
     if FileExists(sFilePDF) then
-      ShellExecute(Application.Handle, 'open', PAnsiChar(sFilePDF), '', '', SW_MAXIMIZE);
+      ShellExecute(Application.Handle, 'open', PChar(sFilePDF), '', '', SW_MAXIMIZE);
 
   except
     on E: Exception do
     begin
-      Application.MessageBox(PansiChar(E.Message+chr(10)+chr(10)+'Ao visualizar a movimentação'),'Atenção',mb_Ok + MB_ICONWARNING);
+      Application.MessageBox(PChar(E.Message + chr(10) + chr(10) + 'Ao visualizar a movimentação'), 'Atenção', mb_Ok + MB_ICONWARNING);
       Result := False;
     end;
   end;

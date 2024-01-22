@@ -491,11 +491,11 @@ var
 begin
   Result := false;
   LibPointer := NIL;
-  if LoadLibrary(PAnsiChar(LibName)) = 0 then exit;
-  LibHandle := GetModuleHandle(PAnsiChar(LibName));
+  if LoadLibrary(PChar(LibName)) = 0 then exit;
+  LibHandle := GetModuleHandle(PChar(LibName));
   if LibHandle <> 0 then
   begin
-    LibPointer := GetProcAddress(LibHandle, PAnsiChar(FuncName));
+    LibPointer := GetProcAddress(LibHandle, PChar(FuncName));
     if LibPointer <> NIL then Result := true;
   end;
 end;
@@ -541,7 +541,7 @@ begin
     _ecf59_ConfiguraDadosEmitente;
     if (Form1.ibDataSet13.FieldByName('ESTADO').AsString = '') then
     begin
-      Application.MessageBox(PAnsiChar('Acesse o Small e configure os dados do emitente ' + #13 +
+      Application.MessageBox(PChar('Acesse o Small e configure os dados do emitente ' + #13 +
                                    'e reinicie aplicação' + #13 + #13 +
                                    'Essa aplicação será fechada'),'Atenção', MB_ICONWARNING + MB_OK);
       FecharAplicacao(ExtractFileName(Application.ExeName));
@@ -850,7 +850,7 @@ begin
     begin
       if Trim(_59.CodigoAtivacao) = '' then
       begin
-        Application.MessageBox(PAnsiChar('Configure o código de ativação do ' + _59.TipoEquipamento + ' no arquivo FRENTE.INI' + #13 + // Sandro Silva 2018-07-03  'Configure o código de ativação do SAT no arquivo FRENTE.INI' + #13 +
+        Application.MessageBox(PChar('Configure o código de ativação do ' + _59.TipoEquipamento + ' no arquivo FRENTE.INI' + #13 + // Sandro Silva 2018-07-03  'Configure o código de ativação do SAT no arquivo FRENTE.INI' + #13 +
                                      'e reinicie aplicação' + #13 + #13 +
                                      'Essa aplicação será fechada'),'Atenção', MB_ICONWARNING + MB_OK);
         FecharAplicacao(ExtractFileName(Application.ExeName));
@@ -859,7 +859,7 @@ begin
 
       if Trim(_59.CaminhoSATDLL) = '' then
       begin
-        Application.MessageBox(PAnsiChar('Configure o caminho e nome da DLL de comunicação com ' + _59.TipoEquipamento + ' no arquivo FRENTE.INI' + #13 + // Sandro Silva 2018-07-03  'Configure o caminho e nome da DLL de comunicação com SAT no arquivo FRENTE.INI' + #13 +
+        Application.MessageBox(PChar('Configure o caminho e nome da DLL de comunicação com ' + _59.TipoEquipamento + ' no arquivo FRENTE.INI' + #13 + // Sandro Silva 2018-07-03  'Configure o caminho e nome da DLL de comunicação com SAT no arquivo FRENTE.INI' + #13 +
                                      'e reinicie aplicação' + #13 + #13 +
                                      'Essa aplicação será fechada'),'Atenção', MB_ICONWARNING + MB_OK);
         FecharAplicacao(ExtractFileName(Application.ExeName));
@@ -868,7 +868,7 @@ begin
 
       if Trim(_59.Fabricante) = '' then
       begin
-        Application.MessageBox(PAnsiChar('Configure o fabricante do equipamento ' + _59.TipoEquipamento + ' no arquivo FRENTE.INI' + #13 + // Sandro Silva 2018-07-03  'Configure o fabricante do equipamento SAT no arquivo FRENTE.INI' + #13 +
+        Application.MessageBox(PChar('Configure o fabricante do equipamento ' + _59.TipoEquipamento + ' no arquivo FRENTE.INI' + #13 + // Sandro Silva 2018-07-03  'Configure o fabricante do equipamento SAT no arquivo FRENTE.INI' + #13 +
                                      'e reinicie aplicação' + #13 + #13 +
                                      'Essa aplicação será fechada'),'Atenção', MB_ICONWARNING + MB_OK);
         FecharAplicacao(ExtractFileName(Application.ExeName));
@@ -929,7 +929,7 @@ begin
           if QtdAdquirentes = 0 then
           begin
 
-            Application.MessageBox(PansiChar('Configure os dados das adquirentes de cartões'), 'Atenção', MB_ICONWARNING + MB_OK);
+            Application.MessageBox(PChar('Configure os dados das adquirentes de cartões'), 'Atenção', MB_ICONWARNING + MB_OK);
 
             SalvarConfiguracao(FRENTE_INI, SECAO_MFE, CHAVE_VENDA_NO_CARTAO, 'Não');
 
@@ -1021,7 +1021,7 @@ begin
           begin
 
             {Sandro Silva 2021-03-05 inicio
-            Application.MessageBox(PansiChar('O número de série do equipamento mudou' + #10 + #10 +
+            Application.MessageBox(PChar('O número de série do equipamento mudou' + #10 + #10 +
               'Configure um novo número de caixa para identificar as vendas deste PDV' + #10 + #10 +
               'O número do caixa não pode ter sido usado anteriormente'),'Atenção', MB_ICONINFORMATION + MB_OK);
 
@@ -1030,10 +1030,10 @@ begin
             _59.Caixa      := _ecf59_ConfiguraCaixaSAT(_59.Caixa); // Sandro Silva 2017-02-22
             SalvarConfiguracao(FRENTE_INI, SECAO_FRENTE_CAIXA, 'Caixa', _59.Caixa);
 
-            Application.MessageBox(PansiChar('Essa aplicação será fechada' + #10 + #10 +
+            Application.MessageBox(PChar('Essa aplicação será fechada' + #10 + #10 +
               'Reinicie a aplicação para usar o novo número do caixa configurado'),'Atenção', MB_ICONINFORMATION + MB_OK);
             }
-            Application.MessageBox(PansiChar('O número de série do equipamento mudou' + #10 + #10 +
+            Application.MessageBox(PChar('O número de série do equipamento mudou' + #10 + #10 +
               'Será configurado um novo número de caixa para identificar as vendas deste PDV'),'Atenção', MB_ICONINFORMATION + MB_OK);
 
             GravarParametroIni(FRENTE_INI, SECAO_59, 'Numero', sNumeroSat);
@@ -1043,7 +1043,7 @@ begin
 
             Commitatudo(True);
 
-            Application.MessageBox(PansiChar('Essa aplicação será fechada' + #10 + #10 +
+            Application.MessageBox(PChar('Essa aplicação será fechada' + #10 + #10 +
               'Reinicie a aplicação para usar o novo número do caixa configurado'),'Atenção', MB_ICONINFORMATION + MB_OK);
 
             FecharAplicacao(ExtractFileName(Application.ExeName));
@@ -1058,7 +1058,7 @@ begin
           if Trim(ConverteAcentos2(_59.MensagemSEFAZ)) <> '' then
           begin
             sStatusOperacional := sStatusOperacional + #13 + 'Mensagem da SEFAZ: ' + _59.MensagemSEFAZ;
-            Application.MessageBox(PansiChar('Mensagem da SEFAZ:' + #13 + #13 + _59.MensagemSEFAZ), 'Informação', MB_ICONINFORMATION + MB_OK);
+            Application.MessageBox(PChar('Mensagem da SEFAZ:' + #13 + #13 + _59.MensagemSEFAZ), 'Informação', MB_ICONINFORMATION + MB_OK);
           end;
 
           if Form1.bBalancaAutonoma = False then // Sandro Silva 2019-01-23
@@ -1067,11 +1067,11 @@ begin
             begin
               if _59.ModoOperacao <> moServer then
                 if Trim(sStatusOperacional) <> '' then
-                  Application.MessageBox(PansiChar(sStatusOperacional),'Retorno Status Operacional', MB_ICONINFORMATION + MB_OK);
+                  Application.MessageBox(PChar(sStatusOperacional),'Retorno Status Operacional', MB_ICONINFORMATION + MB_OK);
             end;
 
             if _59.BloqueioAutonomo then
-              Application.MessageBox(PansiChar( 'Seu equipamento ' + _59.TipoEquipamento + ' está sob BLOQUEIO AUTÔNOMO, devido:' + #10 + // Sandro Silva 2018-07-03  'Seu equipamento SAT está sob BLOQUEIO AUTÔNOMO, devido:' + #10 +
+              Application.MessageBox(PChar( 'Seu equipamento ' + _59.TipoEquipamento + ' está sob BLOQUEIO AUTÔNOMO, devido:' + #10 + // Sandro Silva 2018-07-03  'Seu equipamento SAT está sob BLOQUEIO AUTÔNOMO, devido:' + #10 +
                                            '- Falta de comunicação com qualquer um dos Web services da SEFAZ;' + #10 +
                                            '- Presença de CF-e na memória de trabalho do equipamento ' + _59.TipoEquipamento + ', emitido e não transmitido a mais tempo do que o valor em horas pré-determinado;' + #10 +// Sandro Silva 2018-07-03  '- Presença de CF-e na memória de trabalho do equipamento SAT-CF-e, emitido e não transmitido a mais tempo do que o valor em horas pré-determinado;' + #10 +
                                            '- Vencimento do certificado digital do ' + _59.TipoEquipamento + ';'),'Retorno Status Operacional'// Sandro Silva 2018-07-03  '- Vencimento do certificado digital do SAT;'),'Retorno Status Operacional'
@@ -1236,7 +1236,7 @@ begin
 
           sMensagem := sMensagem + #10 + #13 + #10 + #13 + _59.StatusRetornoSAT(_59.Retorno) + #10 + #13 + #10 + #13 + 'Tentar novamente?';
 
-          if Application.MessageBox(PansiChar(sMensagem), 'Atenção', MB_ICONQUESTION + MB_YESNO + MB_DEFBUTTON1) = idNo then
+          if Application.MessageBox(PChar(sMensagem), 'Atenção', MB_ICONQUESTION + MB_YESNO + MB_DEFBUTTON1) = idNo then
           begin
             _59.ForcarComunicacaoComSat := False;
             Break;
@@ -1252,8 +1252,8 @@ begin
     end; // while True do
   end; // if Pp1 <> '' then
   //
-  DecimalSeparator := ',';
-  DateSeparator    := '/';
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
   //
 end;
 // ------------------------------ //
@@ -1716,14 +1716,14 @@ end;
 
 function _ecf59_Moeda(pP1: Boolean): String;
 begin
-  Result := Copy(CurrencyString,1,1);
+  Result := Copy(FormatSettings.CurrencyString,1,1);
 end;
 
 function _ecf59_Dataehoradaimpressora(pP1: Boolean): String;
 begin
-  ShortDateFormat := 'dd/mm/yy';   {Bug 2001 free}
+  FormatSettings.ShortDateFormat := 'dd/mm/yy';   {Bug 2001 free}
   Result := StrTran(StrTran(Copy(DateToStr(Date),1,8)+TimeToStr(Time),'/',''),':','');
-  ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
 end;
 
 function _ecf59_Datadaultimareduo(pP1: Boolean): String;
@@ -2469,7 +2469,7 @@ begin
 
           if (_59.LogComando <> '') then
           begin
-            Application.MessageBox(PansiChar(_59.LogComando), 'Atenção', MB_ICONWARNING + MB_OK);
+            Application.MessageBox(PChar(_59.LogComando), 'Atenção', MB_ICONWARNING + MB_OK);
           end;
 
         end
@@ -2685,12 +2685,12 @@ begin
     sFileCFeSAT := ExtractFilePath(Application.ExeName) + 'CFeSAT\' + sFileCFeSAT + '.pdf';
 
     if FileExists(sFileCFeSAT) then
-      ShellExecute(Application.Handle, 'open', PAnsiChar(sFileCFeSAT), '', '', SW_MAXIMIZE);
+      ShellExecute(Application.Handle, 'open', PChar(sFileCFeSAT), '', '', SW_MAXIMIZE);
 
   except
     on E: Exception do
     begin
-      Application.MessageBox(PansiChar(E.Message+chr(10)+chr(10)+'Ao visualizar o DANFCE'
+      Application.MessageBox(PChar(E.Message+chr(10)+chr(10)+'Ao visualizar o DANFCE'
       ),'Atenção',mb_Ok + MB_ICONWARNING);
       Result := False;
     end;
@@ -3035,12 +3035,12 @@ begin
           begin
             if _59.CodigoRetornoSAT = '' then
             begin
-              Application.MessageBox(PansiChar(_59.RespostaSat + #13 + #13 + 'A aplicação será finalizada'),'Atenção', MB_ICONWARNING + MB_OK);
+              Application.MessageBox(PChar(_59.RespostaSat + #13 + #13 + 'A aplicação será finalizada'),'Atenção', MB_ICONWARNING + MB_OK);
               FecharAplicacao(ExtractFileName(Application.ExeName));
               Abort;
             end
             else
-              Application.MessageBox(PansiChar(_59.CodigoRetornoSAT + ' ' + _59.MensagemSat),'Atenção', MB_ICONWARNING + MB_OK);
+              Application.MessageBox(PChar(_59.CodigoRetornoSAT + ' ' + _59.MensagemSat),'Atenção', MB_ICONWARNING + MB_OK);
           end
           else
           begin
@@ -3048,7 +3048,7 @@ begin
             begin
               if (_59.EmOperacao) or bMensagem then
               begin
-                //Application.MessageBox(PansiChar(_59.RespostaSAT),'SAT', MB_ICONINFORMATION + MB_OK);
+                //Application.MessageBox(PChar(_59.RespostaSAT),'SAT', MB_ICONINFORMATION + MB_OK);
                 if Form22.Visible then
                 begin
                   if (_59.CodigoRetornoSAT <> '08000') then
@@ -3071,7 +3071,7 @@ begin
 
         if bExibirMensagemSefaz then
           if Trim(_59.MensagemSEFAZ) <> '' then
-            Application.MessageBox(PansiChar(_59.CodigoRetornoSAT + ' ' + _59.MensagemSEFAZ), 'Atenção Mensagem da SEFAZ', MB_ICONINFORMATION + MB_OK);
+            Application.MessageBox(PChar(_59.CodigoRetornoSAT + ' ' + _59.MensagemSEFAZ), 'Atenção Mensagem da SEFAZ', MB_ICONINFORMATION + MB_OK);
       end;
 
     finally
@@ -3114,7 +3114,7 @@ begin
           Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible := False; // Sandro Silva 2017-02-24
 
         if _59.ConteudoStatusOperacional <> '' then
-          Application.MessageBox(PansiChar(_59.ConteudoStatusOperacional), 'Retorno Status Operacional', MB_ICONINFORMATION + MB_OK);
+          Application.MessageBox(PChar(_59.ConteudoStatusOperacional), 'Retorno Status Operacional', MB_ICONINFORMATION + MB_OK);
 
       except
 
@@ -3350,7 +3350,7 @@ begin
               begin
                 Result := '';
 
-                Application.MessageBox(PAnsiChar('O caixa ' + sCaixa + ' já foi utilizado anteriormente com ' +
+                Application.MessageBox(PChar('O caixa ' + sCaixa + ' já foi utilizado anteriormente com ' +
                                                  IfThen(IBQREDUCOES.FieldByName('SMALL').AsString = '59', 'SAT/MFE ', 'ECF ') + IBQREDUCOES.FieldByName('SERIE').AsString + #13 + #13 +
                                                  'Informe outro o número diferente de ' + sCaixa),
                                        'Atenção!', MB_ICONINFORMATION + MB_OK);
@@ -3363,7 +3363,7 @@ begin
         else
         begin
 
-          if Application.MessageBox(PansiChar('O caixa ' + sCaixa + ' já foi utilizado anteriormente' + #13 + #13 +
+          if Application.MessageBox(PChar('O caixa ' + sCaixa + ' já foi utilizado anteriormente' + #13 + #13 +
                                           'Certifique-se de que o número ' + sCaixa + ' não identifique outro PDV' + #13 + #13 +
                                           'Deseja continuar?'),
                                           'Atenção!', MB_ICONQUESTION + MB_YESNO) = ID_YES then
@@ -3503,7 +3503,7 @@ begin
 
       if Trim(xmlNodeValue(sResposta, '//alerta')) <> '' then
       begin
-        SmallMsgBox(PansiChar('Não foi possível obter a Assinatura Associada para o ' + _ecf59_Tipodaimpressora + #13 + Utf8ToAnsi(Trim(xmlNodeValue(sResposta, '//alerta')))), 'Atenção', MB_ICONWARNING + MB_OK);
+        SmallMsgBox(PChar('Não foi possível obter a Assinatura Associada para o ' + _ecf59_Tipodaimpressora + #13 + Utf8ToAnsi(Trim(xmlNodeValue(sResposta, '//alerta')))), 'Atenção', MB_ICONWARNING + MB_OK);
       end;
 
       // Se não conseguiu obter a assinatura associada

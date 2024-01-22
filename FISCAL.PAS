@@ -5095,7 +5095,7 @@ begin
       begin
         if AnsiContainsText(E.Message, 'Unable to complete network request to host') then
         begin
-          SmallMsgBox(PAnsiChar('Comunicação com banco de dados perdida' + #13 + 'A aplicação será fechada' + #13 + 'Tente abrir novamente'), 'Atenção', MB_OK + MB_ICONWARNING);
+          SmallMsgBox(PChar('Comunicação com banco de dados perdida' + #13 + 'A aplicação será fechada' + #13 + 'Tente abrir novamente'), 'Atenção', MB_OK + MB_ICONWARNING);
           FecharAplicacao(ExtractFileName(Application.ExeName));
         end;
       end;
@@ -6756,7 +6756,7 @@ begin
           Sleep(1000);// Aguardar append Sandro Silva 2020-09-02          
 
           // Faz uma cópia do arquivo gerado e adiciona a assinatura EAD
-          CopyFile(PAnsiChar(sP1), PAnsiChar(sArquivo1), False);
+          CopyFile(PChar(sP1), PChar(sArquivo1), False);
           Sleep(1000); // Sandro Silva 2017-07-31 Tempo para salvar em disco;
 
           sEAD := 'EAD' + sEAD; // 2015-09-30
@@ -9649,7 +9649,7 @@ begin
       else
         SmallMsgBox(PAnsiChar('Versão desatualizada' + #13 + 'Abra o Small Commerce e faça a atualização em' + #13 + #13 + 'Config\Atualizar programa pela Internet' + #13 + #13 + 'Essa aplicação será fechada'), 'Atenção', MB_OK + MB_ICONWARNING);
       }
-      SmallMsgBox(PAnsiChar('Versão desatualizada' + #13 + 'Abra o Small e faça a atualização em' + #13 + #13 + 'Config\Atualizar programa pela Internet' + #13 + #13 + 'Essa aplicação será fechada'), 'Atenção', MB_OK + MB_ICONWARNING);
+      SmallMsgBox(PChar('Versão desatualizada' + #13 + 'Abra o Small e faça a atualização em' + #13 + #13 + 'Config\Atualizar programa pela Internet' + #13 + #13 + 'Essa aplicação será fechada'), 'Atenção', MB_OK + MB_ICONWARNING);
       {Sandro Silva 2022-04-11 fim}
       FecharAplicacao(ExtractFileName(Application.ExeName));
     end;
@@ -10033,7 +10033,7 @@ begin
   Mais1Ini.Free;
   // Ano 200 bug free
   bNaoSaiComESC := False;
-  ShortDateFormat := 'dd/mm/yyyy';
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
   sPrazo  := '';
   sPorta  := '';
   fQuantidadeVendida := 1; // Produto pesado
@@ -10314,7 +10314,7 @@ begin
 
     if LerParametroIni(Form1.sArquivo, INI_SECAO_ECF, INI_CHAVE_NUMERO_CREDENCIAMENTO_PAF, '') = '' then
     begin
-      SmallMsgBox(PAnsiChar('Configure o Número de Credenciamento do PAF' + #13 + #13 + 'Essa informação é necessária para a geração dos arquivos relacionados ao Bloco X do PAF'), 'Atenção', MB_ICONWARNING + MB_OK);
+      SmallMsgBox(PChar('Configure o Número de Credenciamento do PAF' + #13 + #13 + 'Essa informação é necessária para a geração dos arquivos relacionados ao Bloco X do PAF'), 'Atenção', MB_ICONWARNING + MB_OK);
     end;
   end
   else
@@ -16932,7 +16932,7 @@ begin
   if (Form1.ClienteSmallMobile.sVendaImportando = '') then
     Edit1.SetFocus;
   //
-  if (DecimalSeparator <> ',') or (DateSeparator <> '/') then
+  if (FormatSettings.DecimalSeparator <> ',') or (FormatSettings.DateSeparator <> '/') then
   begin
     SmallMsgBox(Pchar('As propriedades das configurações regionais do seu sistema não estão'     + Chr(10) +
                        'de acordo com o padrão utilizado no Brasil.'                              + Chr(10) +
@@ -26762,7 +26762,7 @@ begin
           begin
             if FileExists(PChar(sFileZIP)) then
             begin
-              Application.MessageBox(Pchar('Arquivos exportados para:' + #13 + #13 + sFileZIP), PAnsiChar(Form7.Caption), MB_OK + MB_ICONINFORMATION);
+              Application.MessageBox(Pchar('Arquivos exportados para:' + #13 + #13 + sFileZIP), PChar(Form7.Caption), MB_OK + MB_ICONINFORMATION);
               //WinExec(PAnsiChar('%windir%\explorer.exe "' + ExtractFilePath(sFileZIP) + '"'), SW_NORMAL);
               ShellExecute(Application.Handle, PChar('open'), PChar('explorer.exe'), PChar(ExtractFilePath(sFileZIP)), nil, SW_NORMAL);
             end;
@@ -32008,7 +32008,7 @@ var
       end;
     end;
     PrinterNew.PrinterIndex := PrinterNew.PrinterIndex;
-    PrinterNew.SetPrinter(Device, Driver, PAnsiChar(sArquivoPDF), hDMode);
+    PrinterNew.SetPrinter(Device, Driver, PChar(sArquivoPDF), hDMode);
   end;
   {Sandro Silva 2018-03-23 fim}
 begin
@@ -32297,7 +32297,7 @@ begin
   // Equipamentos SAT/MFE da Tanca não aceitam no xml a IE do emitente com menos de 12 dígitos  
   sIE12Posicoes := LimpaNumero(Form1.ibDataSet13.FieldByName('IE').AsString);
   sIE12Posicoes := Right(DupeString('0', 12) + sIE12Posicoes, 12);
-  if SmallMsgBox(PAnsiChar('Ao efetuar vendas usar Inscrição Estadual com 12 dígitos' + #13 +
+  if SmallMsgBox(PChar('Ao efetuar vendas usar Inscrição Estadual com 12 dígitos' + #13 +
                            'Ex.: ' + LimpaNumero(Form1.ibDataSet13.FieldByName('IE').AsString) + ' -> ' + sIE12Posicoes + #13 +
                            #13 +
                            'Confirma?'), 'Atenção', MB_YESNO + MB_DEFBUTTON1 + MB_ICONQUESTION) = idYes then
@@ -33955,7 +33955,7 @@ begin
   if _59.AssinaturaAssociada <> '' then
     _ecf59_AssociarAssinatura(_59.CodigoAtivacao, _59.Emitente.CNPJ, _59.AssinaturaAssociada)
   else
-    SmallMsgBox(PAnsiChar('Nenhuma Assinatura encontrada' + #13 + #13 +
+    SmallMsgBox(PChar('Nenhuma Assinatura encontrada' + #13 + #13 +
                           'Verifique sua conexão com a Internet' + #13 + 'e tente vincular novamente' + #13 +
                           'Persistindo o erro acesse www.smallsoft.com.br, Suporte e escolha Autorização de uso SAT ou MF-e' + #13 +
                           'Você receberá por e-mail um arquivo com a assinatura. Salve esse arquivo na pasta Windows'), 'Atenção', MB_OK + MB_ICONWARNING);
@@ -34577,7 +34577,7 @@ begin
           if Form1.bStatusECF then // Sandro Silva 2020-06-25
           begin
 
-            if Application.MessageBox(PWideChar('NFC-e em contingência com transmissão pendente' + #13 + #13 + 'Deseja transmitir a contingência agora?'), PAnsiChar('Atenção - NFC-e em Contingência'), MB_YESNO + MB_DEFBUTTON1 + MB_ICONQUESTION) = id_Yes then
+            if Application.MessageBox(PChar('NFC-e em contingência com transmissão pendente' + #13 + #13 + 'Deseja transmitir a contingência agora?'), PChar('Atenção - NFC-e em Contingência'), MB_YESNO + MB_DEFBUTTON1 + MB_ICONQUESTION) = id_Yes then
             begin
 
               _ecf65_EnviarNFCeContingencia(Form1.IBDataSet150.FieldByName('DATA').AsDateTime, '', ''); //  , Form1.ibDataSet150.FieldByName('CAIXA').AsString); // Sandro Silva 2018-03-06  Form1.sCaixa);

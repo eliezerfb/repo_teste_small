@@ -8,18 +8,18 @@ object frameCampoCaixasRel: TframeCampoCaixasRel
   Color = clWhite
   ParentColor = False
   TabOrder = 0
+  PixelsPerInch = 96
   object chklbCaixas: TCheckListBox
     Left = 11
     Top = 24
     Width = 78
     Height = 59
-    OnClickCheck = chklbCaixasClickCheck
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlack
     Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
-    ItemHeight = 13
+    ItemHeight = 20
     Items.Strings = (
       '001'
       '002'
@@ -28,6 +28,7 @@ object frameCampoCaixasRel: TframeCampoCaixasRel
       '005')
     ParentFont = False
     TabOrder = 1
+    OnClickCheck = chklbCaixasClickCheck
     OnKeyPress = chklbCaixasKeyPress
   end
   object chkCaixaFechamentoDeCaixa: TCheckBox

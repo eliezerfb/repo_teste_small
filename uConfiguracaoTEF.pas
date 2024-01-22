@@ -348,7 +348,7 @@ begin
   except
     on e:exception do
     begin
-      Application.MessageBox(PAnsiChar('Não foi possível salvar a configuração do TEF.' + SLineBreak + e.Message), 'Atenção', MB_ICONINFORMATION + MB_OK);
+      Application.MessageBox(PChar('Não foi possível salvar a configuração do TEF.' + SLineBreak + e.Message), 'Atenção', MB_ICONINFORMATION + MB_OK);
     end;
   end;
 end;
@@ -372,7 +372,7 @@ begin
   end;
   if AnsiContainsText(E.Message, 'must have a value') then
     sAlerta := 'Preencha todas as colunas';
-  Application.MessageBox(PAnsiChar(sAlerta), 'Atenção', MB_ICONWARNING + MB_OK);
+  Application.MessageBox(PChar(sAlerta), 'Atenção', MB_ICONWARNING + MB_OK);
   Action := daAbort;
 end;
 
@@ -455,7 +455,7 @@ begin
   if cdsTEFs.IsEmpty then
     Exit;
     
-  if Application.MessageBox(PAnsiChar('Excluir a configuração do TEF ' + cdsTEFsNOME.AsString + '?'), 'Atenção', MB_ICONWARNING + MB_YESNO + MB_DEFBUTTON2) = idYes then
+  if Application.MessageBox(PChar('Excluir a configuração do TEF ' + cdsTEFsNOME.AsString + '?'), 'Atenção', MB_ICONWARNING + MB_YESNO + MB_DEFBUTTON2) = idYes then
   begin
     if (cdsTEFsNOME.AsString <> EmptyStr) and (FoIni.SectionExists(cdsTEFsNOME.AsString)) then
       FoIni.EraseSection(cdsTEFsNOME.AsString);

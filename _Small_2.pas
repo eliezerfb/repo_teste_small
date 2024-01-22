@@ -337,8 +337,8 @@ var
 begin
   Result := false;
   LibPointer := NIL;
-  if LoadLibrary(PAnsiChar(AnsiString(LibName))) = 0 then exit; // Sandro Silva 2023-12-13 if LoadLibrary(PChar(LibName)) = 0 then exit;
-  LibHandle := GetModuleHandle(PAnsiChar(AnsiString(LibName))); // Sandro Silva 2023-12-13 LibHandle := GetModuleHandle(PChar(LibName));
+  if LoadLibrary(PChar(LibName)) = 0 then Exit; // Sandro Silva 2023-12-13 if LoadLibrary(PChar(LibName)) = 0 then exit;
+  LibHandle := GetModuleHandle(PChar(LibName)); // Sandro Silva 2023-12-13 LibHandle := GetModuleHandle(PChar(LibName));
   if LibHandle <> 0 then
   begin
     LibPointer := GetProcAddress(LibHandle, PAnsiChar(AnsiString(FuncName))); // Sandro Silva 2023-12-13 LibPointer := GetProcAddress(LibHandle, PChar(FuncName));
