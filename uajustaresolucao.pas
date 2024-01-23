@@ -16,7 +16,7 @@ function AjustaResolucao(Obj: TObject): Boolean;
 implementation
 
 uses
-  Vcl.Buttons;
+  Vcl.Buttons, Vcl.Grids;
 
 function AjustaLargura(pI: Integer): Integer;
 begin
@@ -190,6 +190,7 @@ begin
 
         Dimensao(Components[I]);
         DimensionaFonte(Components[I], dHeight);
+        TDBGrid(Components[I]).DrawingStyle := gdsClassic; // Migração para Delphi Alexandria 2024-01-23 Sandro Silva
         //
       end;
       //
