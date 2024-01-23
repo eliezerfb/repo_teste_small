@@ -73,7 +73,8 @@ uses
   smallfunc_xe in '..\unit_compartilhada\smallfunc_xe.pas',
   uConectaBancoSmall in '..\unit_compartilhada\uConectaBancoSmall.pas',
   uDialogs in '..\unit_compartilhada\uDialogs.pas',
-  md5_unicode in '..\unit_compartilhada\md5_unicode.pas';
+  md5_unicode in '..\unit_compartilhada\md5_unicode.pas',
+  uFuncaoMD5 in '..\unit_compartilhada\uFuncaoMD5.pas';
 
 {$R *.RES}
 

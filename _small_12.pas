@@ -10,8 +10,8 @@ interface
 uses
 
   Windows, Messages, SmallFunc_xe, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Variants, ExtCtrls, Mask, Grids, DBGrids, DB//, DBTables
-  , DBCtrls, SMALL_DBEdit, IniFiles, Unit2, Unit22, Unit7, MD5;
+  StdCtrls, Variants, ExtCtrls, Mask, Grids, DBGrids, DB
+  , DBCtrls, SMALL_DBEdit, IniFiles, Unit2, Unit22, Unit7;
 
   // ------------------------------- //
   // Alterado 03/01/2006 - RONEI     //

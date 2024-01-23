@@ -13,7 +13,7 @@ interface
 uses
   Windows, Messages, SmallFunc_xe, Fiscal, SysUtils,Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB, //DBTables,
-  DBCtrls, SMALL_DBEdit, IniFiles, Unit2, FileCtrl, Unit22, Unit7, md5,
+  DBCtrls, SMALL_DBEdit, IniFiles, Unit2, FileCtrl, Unit22, Unit7,
   StrUtils
   , udarumaframeworkclass;
 

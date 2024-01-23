@@ -18,7 +18,7 @@ interface
 uses Classes, CAPICOM_TLB, MSXML2_TLB, ActiveX, ComObj, SysUtils, Dialogs,
   SmallFunc_xe, Windows, Forms
   , SynZip, usmallwebservice //FileCtrl
-  , MD5
+  , ufuncaoMD5
   ,ufuncoesfrente // Sandro Silva 2018-07-03 
   ;
 
@@ -635,11 +635,11 @@ begin
 
   for iFile := 0 to Length(aArq) - 1 do
   begin
-    sMD5     := sMD5 + MD5Print(MD5File(aArq[iFile]));
-    sMD5Nome := sMD5Nome + MD5Print(MD5String(aArq[iFile]));
+    sMD5     := sMD5 + MD5File(aArq[iFile]);
+    sMD5Nome := sMD5Nome + MD5File(aArq[iFile]);
   end;
 
-  Result := MD5Print(MD5String(sMD5 + sMD5Nome));
+  Result := MD5String(sMD5 + sMD5Nome);
 
   aArq := nil;
 

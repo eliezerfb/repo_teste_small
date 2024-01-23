@@ -23,7 +23,7 @@ uses IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs, Windows
   , WinSpool
   , WinSock // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
   , IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdHTTP
-  , MD5
+  , ufuncaoMD5
   //, DBGrids
   ;
 

@@ -82,26 +82,16 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Printers, OleCtrls, ShellAPI, Mask, Variants, Winsock
   , Db, DBCtrls
-  //, DBTables
   , DBClient, DBGrids, Registry, Types, SysConst
   , Buttons, IniFiles, Clipbrd, Menus, Grids, FileCtrl, jpeg, ComCtrls
   , MidasLib, StrUtils, DateUtils, ShlObj, ActiveX, ComObj, SHDocVw//, Math
-  {$IFDEF VER150}
-  , IBDatabase, IBCustomDataSet, IBDatabaseInfo, IBQuery, IBExtract
-  {$ELSE}
   , IBX.IBDatabase, IBX.IBCustomDataSet, IBX.IBDatabaseInfo, IBX.IBQuery, IBX.IBExtract
-  {$ENDIF}
-  , MD5, LbRSA, LbAsym, LbDSA, LbClass, LbCipher, LbUtils
+  , ufuncaoMD5, LbRSA, LbAsym, LbDSA, LbClass, LbCipher, LbUtils
   , htmlhelp
   , TLHelp32
   , UrlMon
-  //, spdNFCeDataSets
-  //, spdNFCeType
-  //, spdNFCe
   , TypInfo // Informações de componentes Sandro Silva 2016-08-01
-
   , IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdSSLOpenSSL, IdMultipartFormData, IdHTTP
-
   , frame_teclado_1
   , ufuncoesfrente // Sandro Silva 2018-07-03
   , uclassetransacaocartao // Sandro Silva 2017-06-14
@@ -1983,17 +1973,16 @@ begin
   Mais1Ini.WriteString('R01','19',Form1.LbBlowfish1.EncryptString('0112'));
   //
   Mais1Ini.WriteString('R01','99',
-  Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(
-  Form1.ibDataSet13.FieldByName('CGC').AsString+
-  LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)+
-  LimpaNumero(IE_SOFTWARE_HOUSE_PAF)+
-  IM_SOFTWARE_HOUSE_PAF+
-  RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF+
-  //RAZAO_SOCIAL_SMALLSOFT +
-  'Small Commerce'+
-  '0112'+
-  ''
-  ))) // Encrypta e grava o hash das informações
+  Form1.LbBlowfish1.EncryptString(MD5String(Form1.ibDataSet13.FieldByName('CGC').AsString+
+    LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)+
+    LimpaNumero(IE_SOFTWARE_HOUSE_PAF)+
+    IM_SOFTWARE_HOUSE_PAF+
+    RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF+
+    //RAZAO_SOCIAL_SMALLSOFT +
+    'Small Commerce'+
+    '0112'+
+    ''
+    )) // Encrypta e grava o hash das informações
   );
   //
   Mais1Ini.WriteString('DAV','I',Form1.LbBlowfish1.EncryptString('X'+LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)));
@@ -3747,24 +3736,24 @@ begin
                Copy('SMALL COMMERCE'+Replicate(' ',50),1,50)+ // Nome do aplicativo
                Copy(StrTran(Form22.sBuild,'Versão e Build: ','')+Replicate(' ',10),1,10)); // Versão e build
 
-    Writeln(F, 'N3'+Copy('APF_DLL2.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'APF_DLL2.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('BEMAFI32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'BEMAFI32.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('CONSULTA.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'CONSULTA.EXE')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('CONVECF.DLL'+Replicate(' ',50),1,50)       +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'CONVECF.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('NFE.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'NFE.EXE')))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('APF_DLL2.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'APF_DLL2.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('BEMAFI32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'BEMAFI32.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('CONSULTA.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'CONSULTA.EXE'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('CONVECF.DLL'+Replicate(' ',50),1,50)       +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'CONVECF.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('NFE.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'NFE.EXE'))+Replicate(' ',32),1,32))); // MD5
     // Sandro Silva 2022-12-02 Unochapeco Writeln(F, 'N3'+Copy('BLOCOX.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'BLOCOX.EXE')))+Replicate(' ',32),1,32))); // MD5 // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
-    Writeln(F, 'N3'+Copy('PESADO.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'PESADO.EXE')))+Replicate(' ',32),1,32))); // MD5 // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
-    Writeln(F, 'N3'+Copy('DARUMA32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DARUMA32.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('DARUMAFRAMEWORK.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DARUMAFRAMEWORK.DLL')))+Replicate(' ',32),1,32))); // MD5 2015-11-13
-    Writeln(F, 'N3'+Copy('DLL1EFC3.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DLL1EFC3.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('DLL32PHI.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DLL32PHI.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('DLLG2.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DLLG2.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('FRENTE.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'FRENTE.EXE')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('GENERAL32.DLL'+Replicate(' ',50),1,50)     +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'GENERAL32.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('ICASH.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'ICASH.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('INTERFACEEPSON.DLL'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'INTERFACEEPSON.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('SWECF.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'SWECF.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('TRDECF32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'TRDECF32.DLL')))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('PESADO.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'PESADO.EXE'))+Replicate(' ',32),1,32))); // MD5 // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
+    Writeln(F, 'N3'+Copy('DARUMA32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DARUMA32.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('DARUMAFRAMEWORK.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DARUMAFRAMEWORK.DLL'))+Replicate(' ',32),1,32))); // MD5 2015-11-13
+    Writeln(F, 'N3'+Copy('DLL1EFC3.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DLL1EFC3.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('DLL32PHI.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DLL32PHI.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('DLLG2.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DLLG2.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('FRENTE.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'FRENTE.EXE'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('GENERAL32.DLL'+Replicate(' ',50),1,50)     +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'GENERAL32.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('ICASH.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'ICASH.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('INTERFACEEPSON.DLL'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'INTERFACEEPSON.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('SWECF.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'SWECF.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('TRDECF32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'TRDECF32.DLL'))+Replicate(' ',32),1,32))); // MD5
     //
     Writeln(F, 'N9' +
                Right('00000000000000' + LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF), 14) +
@@ -3776,7 +3765,7 @@ begin
     AssinaturaDigital(pChar(Form1.sPastaDoExecutavel+'\LISTA.TXT'));
     CHDir(Form1.sAtual);
     //
-    Form1.sMD5DaLista := MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\LISTA.TXT')));
+    Form1.sMD5DaLista := MD5File(pChar(Form1.sPastaDoExecutavel+'\LISTA.TXT'));
     //
     Mais1ini := TIniFile.Create(Form1.sArquivo);
     //
@@ -5559,7 +5548,7 @@ begin
 
     IBQHASH.Close;
     IBQHASH.SQL.Clear;
-    IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.ibQuery1.FieldByname('TOTALREG').AsString))))+' where TABELA='+QuotedStr(sP1)+' ');
+    IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form1.LbBlowfish1.EncryptString(MD5String(Form1.ibQuery1.FieldByname('TOTALREG').AsString)))+' where TABELA='+QuotedStr(sP1)+' ');
     IBQHASH.ExecSQL;
 
     if IBQHASH.RowsAffected = 0 then
@@ -5567,7 +5556,7 @@ begin
       // Não existe ainda controle de hash da tabela
       IBQHASH.Close;
       IBQHASH.SQL.Clear;
-      IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.ibQuery1.FieldByname('TOTALREG').AsString)))) + ')');
+      IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form1.LbBlowfish1.EncryptString(MD5String(Form1.ibQuery1.FieldByname('TOTALREG').AsString))) + ')');
       IBQHASH.ExecSQL;
     end;
   except
@@ -5604,7 +5593,7 @@ begin
       IBQHASH.Close;
       IBQHASH.SQL.Clear;
       // Sandro Silva 2021-02-18 IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.ibQuery1.FieldByName('TOTALREG').AsString))))+' where TABELA='+QuotedStr(sP1)+' ');
-      IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(IBQTEMP.FieldByName('TOTALREG').AsString))))+' where TABELA='+QuotedStr(sP1)+' ');
+      IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form1.LbBlowfish1.EncryptString(MD5String(IBQTEMP.FieldByName('TOTALREG').AsString)))+' where TABELA='+QuotedStr(sP1)+' ');
       IBQHASH.ExecSQL;
 
       if IBQHASH.RowsAffected = 0 then
@@ -5612,7 +5601,7 @@ begin
         //2015-11-26 Não existe ainda controle de hash da tabela
         IBQHASH.Close;
         IBQHASH.SQL.Clear;
-        IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(IBQTEMP.FieldByName('TOTALREG').AsString)))) + ')');
+        IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form1.LbBlowfish1.EncryptString(MD5String(IBQTEMP.FieldByName('TOTALREG').AsString))) + ')');
         IBQHASH.ExecSQL;
       end;
 
@@ -5651,7 +5640,7 @@ begin
     IBQTEMP.SQL.Add('select ENCRYPTHASH from HASHS where TABELA='+QuotedStr(sP1)+' ');
     IBQTEMP.Open;
 
-    if IBQTEMP.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.ibQuery2.FieldByName('COUNT').AsString))) then
+    if IBQTEMP.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.ibQuery2.FieldByName('COUNT').AsString)) then
     begin
       Result := True;
     end else
@@ -6014,7 +6003,7 @@ end;
 function AssinaRegistroE2(sTexto: String): String; // Sandro Silva 2019-09-13 ER 02.06 UnoChapeco
 begin
   Form1.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-  Result := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sTexto)));
+  Result := Form1.LbBlowfish1.EncryptString(MD5String(sTexto));
 end;
 
 /////////////////////////////////
@@ -6572,8 +6561,8 @@ begin
     //
     if (pNome = 'ALTERACA') or (pNome = 'ESTOQUE') then 
     begin
-      sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)));
-      sAntigoSemCestENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)));
+      sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(MD5String(sAntigo));
+      sAntigoSemCestENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5String(sAntigoSemCest));
       //ShowMessage('Teste 01 9450 ' + #13 +
       //            'hash antigo ' + sAntigoENCRYPTHASH + #13 +
       //            'hash antigo sem cest ' + sAntigoSemCestENCRYPTHASH + #13 +
@@ -6583,8 +6572,8 @@ begin
     {Sandro Silva 2023-10-09 inicio}
     if (pNome = 'ORCAMENT') then
     begin
-      sAntigoOrcamentENCRYPTHASH          := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)));
-      sAntigoOrcamentSemCodigoENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoOrcamentSemCodigo)));
+      sAntigoOrcamentENCRYPTHASH          := Form1.LbBlowfish1.EncryptString(MD5String(sAntigo));
+      sAntigoOrcamentSemCodigoENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5String(sAntigoOrcamentSemCodigo));
     end;
     {Sandro Silva 2023-10-09 fim}
 
@@ -6596,34 +6585,34 @@ begin
       begin
 //        SmallMsg(DataSet.FieldByName('ENCRYPTHASH').AsString +chr(10)+ Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo))));
         // compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior, para assinar novamente após alteração feita pelo PAF
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigoSemCest))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigo))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
-          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5String(s)); // Encrypta e grava o hash do registro
         end;
       end else
       {Sandro Silva 2023-10-09 inicio}
       if pNome = 'ORCAMENT' then
       begin
         // compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior, para assinar novamente após alteração feita pelo PAF
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoOrcamentSemCodigo))))
-          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo))))
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigoOrcamentSemCodigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigo)))
           or (DataSet.FieldByName('ENCRYPTHASH').isNull)
-          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
-          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5String(s)); // Encrypta e grava o hash do registro
         end;
       end else
       {Sandro Silva 2023-10-09 fim}
       begin
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigo))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
         begin
-          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5String(s)); // Encrypta e grava o hash do registro
         end;
       end;
       //
     end else
     begin
-      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then  // Encrypta e compara o hash do registro
+      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(s))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) then  // Encrypta e compara o hash do registro
       begin
         Result := True;
       end else
@@ -6635,7 +6624,7 @@ begin
       if (pNome = 'ESTOQUE') and (Result = False) then
       begin
         // Se resultou False deve validar hash com a assinatura da Versão anterior. Pode ser que o registro ainda não foi alterado após atualizar para nova versão homologada sem campo CEST
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sSemCest))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) then
         begin
           Result := True;
         end else
@@ -6648,8 +6637,8 @@ begin
       // Essa mesma validação deve estar na rotina de "assinaregistro" do COMMERCE e do FRENTE
       if (pNome = 'ORCAMENT') and (Result = False) then
       begin
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoOrcamentSemCodigo))))
-          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigoOrcamentSemCodigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) then
         begin
           Result := True;
         end else
@@ -6659,7 +6648,12 @@ begin
       end;
       {Sandro Silva 2023-10-09 fim}
     end;
-  except SmallMsg('Erro ao criptografar head do registro do arquivo '+pNome) end;
+  except
+    on E: Exception do
+    begin
+      SmallMsg('Erro ao criptografar head do registro do arquivo ' + pNome + E.Message)
+    end;
+  end;
   //
 end;
 ///////////////////////////////////
@@ -7041,7 +7035,7 @@ begin
               if (pP1 = 'ALTERACA') or (pP1 = 'PAGAMENT') or (pP1 = 'REDUCOES') or (pP1 = 'DEMAIS') then
               begin
                 Form1.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-                sAssinaturaRegistro := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)));
+                sAssinaturaRegistro := Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta));
               end;
 
               IBQASSINADESCARGA.Close;
@@ -11505,7 +11499,7 @@ begin
 
           //
           //
-          Form1.sMD5DaLista := MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\LISTA.TXT')));
+          Form1.sMD5DaLista := MD5File(pChar(Form1.sPastaDoExecutavel+'\LISTA.TXT'));
           //
           Form1.sMD5DaLista := StrTran(Form1.sMD5DaLista,'"NL"','');
           //
@@ -21637,7 +21631,7 @@ begin
       Form1.IBDataSet99.First;
       while not Form1.IBDataSet99.Eof do
       begin
-        if (Form1.IBDataSet99.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.IBDataSet99.FieldByName('SERIE').AsString)))) then // Se o registro já foi violado não lista
+        if (Form1.IBDataSet99.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.IBDataSet99.FieldByName('SERIE').AsString))) then // Se o registro já foi violado não lista
           sNumerosDESerie := sNumerosDESerie + Form1.IBDataSet99.FieldByName('SERIE').AsString + chr(10);
         Form1.iBDataSet99.Next;
       end;
@@ -21660,26 +21654,26 @@ begin
                                'c2)Versão: '+StrTran(Form22.sBuild,'Versão e Build: ','')+chr(10)+
                                'c3)Nome do principal executável:'+chr(10)+
                                'FRENTE.EXE '+chr(10)+
-                               MD5Print(MD5File(pChar('FRENTE.EXE')))+chr(10)+
+                               MD5File(pChar('FRENTE.EXE'))+chr(10)+
                                'c4)Nome dos demais arquivos que executam funções a que se refere a alínea a do item 1 do Requisito XI e os respectivos códigos MD-5:'+chr(10)+
-                               'APF_DLL2.DLL '+chr(10)+MD5Print(MD5File(pChar('APF_DLL2.DLL')))+chr(10)+
-                               'BEMAFI32.DLL '+chr(10)+MD5Print(MD5File(pChar('BEMAFI32.DLL')))+chr(10)+
-                               'CONSULTA.EXE '+chr(10)+MD5Print(MD5File(pChar('CONSULTA.EXE')))+chr(10)+
-                               'CONVECF.DLL '+chr(10)+MD5Print(MD5File(pChar('CONVECF.DLL')))+chr(10)+
-                               'NFE.EXE '+chr(10)+MD5Print(MD5File(pChar('NFE.EXE')))+chr(10)+
+                               'APF_DLL2.DLL '+chr(10)+MD5File(pChar('APF_DLL2.DLL'))+chr(10)+
+                               'BEMAFI32.DLL '+chr(10)+MD5File(pChar('BEMAFI32.DLL'))+chr(10)+
+                               'CONSULTA.EXE '+chr(10)+MD5File(pChar('CONSULTA.EXE'))+chr(10)+
+                               'CONVECF.DLL '+chr(10)+MD5File(pChar('CONVECF.DLL'))+chr(10)+
+                               'NFE.EXE '+chr(10)+MD5File(pChar('NFE.EXE'))+chr(10)+
                                // Sandro Silva 2022-12-02 Unochapeco 'BLOCOX.EXE '+chr(10)+MD5Print(MD5File(pChar('BLOCOX.EXE')))+chr(10)+
-                               'PESADO.EXE '+chr(10)+MD5Print(MD5File(pChar('PESADO.EXE')))+chr(10)+
-                               'DARUMA32.DLL '+chr(10)+MD5Print(MD5File(pChar('DARUMA32.DLL')))+chr(10)+
-                               'DARUMAFRAMEWORK.DLL '+chr(10)+MD5Print(MD5File(pChar('DARUMAFRAMEWORK.DLL')))+chr(10)+
-                               'DLL1EFC3.DLL '+chr(10)+MD5Print(MD5File(pChar('DLL1EFC3.DLL')))+chr(10)+
-                               'DLL32PHI.DLL '+chr(10)+MD5Print(MD5File(pChar('DLL32PHI.DLL')))+chr(10)+
-                               'DLLG2.DLL '+chr(10)+MD5Print(MD5File(pChar('DLLG2.DLL')))+chr(10)+
-                               'FRENTE.EXE '+chr(10)+MD5Print(MD5File(pChar('FRENTE.EXE')))+chr(10)+
-                               'GENERAL32.DLL '+chr(10)+MD5Print(MD5File(pChar('GENERAL32.DLL')))+chr(10)+
-                               'ICASH.DLL '+chr(10)+MD5Print(MD5File(pChar('ICASH.DLL')))+chr(10)+
-                               'INTERFACEEPSON.DLL '+chr(10)+MD5Print(MD5File(pChar('INTERFACEEPSON.DLL')))+chr(10)+
-                               'SWECF.DLL '+chr(10)+MD5Print(MD5File(pChar('SWECF.DLL')))+chr(10)+
-                               'TRDECF32.DLL '+chr(10)+MD5Print(MD5File(pChar('TRDECF32.DLL')))+chr(10)+
+                               'PESADO.EXE '+chr(10)+MD5File(pChar('PESADO.EXE'))+chr(10)+
+                               'DARUMA32.DLL '+chr(10)+MD5File(pChar('DARUMA32.DLL'))+chr(10)+
+                               'DARUMAFRAMEWORK.DLL '+chr(10)+MD5File(pChar('DARUMAFRAMEWORK.DLL'))+chr(10)+
+                               'DLL1EFC3.DLL '+chr(10)+MD5File(pChar('DLL1EFC3.DLL'))+chr(10)+
+                               'DLL32PHI.DLL '+chr(10)+MD5File(pChar('DLL32PHI.DLL'))+chr(10)+
+                               'DLLG2.DLL '+chr(10)+MD5File(pChar('DLLG2.DLL'))+chr(10)+
+                               'FRENTE.EXE '+chr(10)+MD5File(pChar('FRENTE.EXE'))+chr(10)+
+                               'GENERAL32.DLL '+chr(10)+MD5File(MD5File(pChar('GENERAL32.DLL')))+chr(10)+
+                               'ICASH.DLL '+chr(10)+MD5File(pChar('ICASH.DLL'))+chr(10)+
+                               'INTERFACEEPSON.DLL '+chr(10)+MD5File(pChar('INTERFACEEPSON.DLL'))+chr(10)+
+                               'SWECF.DLL '+chr(10)+MD5File(pChar('SWECF.DLL'))+chr(10)+
+                               'TRDECF32.DLL '+chr(10)+MD5File(pChar('TRDECF32.DLL'))+chr(10)+
 
                                Chr(10)+
                                'c5)' +
@@ -27465,7 +27459,7 @@ begin
           'insert into ECFS (SERIE, ENCRYPTHASH) values (:SERIE, :ENCRYPTHASH)';
         IBQECFS.ParamByName('SERIE').AsString       := sNumeroSerie;
         Form1.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-        IBQECFS.ParamByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sNumeroSerie)));
+        IBQECFS.ParamByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5String(sNumeroSerie));
         try
           IBQECFS.ExecSQL;
           IBQECFS.Transaction.Commit;
@@ -27716,7 +27710,7 @@ begin
                     IBQECFS.SQL.Text :=
                       'insert into ECFS (SERIE, ENCRYPTHASH) values (:SERIE, :ENCRYPTHASH)';
                     IBQECFS.ParamByName('SERIE').AsString := sECF;
-                    IBQECFS.ParamByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sECF)));
+                    IBQECFS.ParamByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5String(sECF));
                     try
                       IBQECFS.ExecSQL;
                       IBQECFS.Transaction.Commit;

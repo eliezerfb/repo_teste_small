@@ -31,7 +31,7 @@ uses
 
   Windows, Messages, SmallFunc_xe, Fiscal, SysUtils,Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB, DBCtrls,
-  SMALL_DBEdit, IniFiles, Unit2, Unit22, Unit7, MD5, ufuncoesfrente;
+  SMALL_DBEdit, IniFiles, Unit2, Unit22, Unit7, ufuncaoMD5, ufuncoesfrente;
   //
   // EPSON
   //
@@ -1341,7 +1341,7 @@ begin
                                     PAnsiChar(Copy(Form1.sRazaoSocialSmallsoft, 1, 40)),
                                     PAnsiChar('FRENTE.EXE'),
                                     PAnsiChar(Build),
-                                    PAnsiChar(MD5Print(MD5File(PAnsiChar('FRENTE.EXE')))),
+                                    PAnsiChar(MD5File(PAnsiChar('FRENTE.EXE'))),
                                     PAnsiChar(VERSAO_ER_PAF_ECF));
           sNomeBinario    := Form1.SaveDialog1.FileName;
           sNomeBinarioMF  := StringReplace(ExtractFilePath(Form1.SaveDialog1.FileName) + ExtractFileName(Form1.SaveDialog1.FileName), ExtractFileExt(Form1.SaveDialog1.FileName), '.MF', [rfReplaceAll]);

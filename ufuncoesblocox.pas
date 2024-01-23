@@ -14,7 +14,7 @@ uses Controls, SysUtils, IBDatabase, DB, IBCustomDataSet, IBQuery,
   DateUtils, LbCipher, LbClass, Classes, Windows, ShellApi
   , Contnrs // Sandro Silva 2018-11-26
   , msxml // Sandro Silva 2019-05-07
-  , md5 // Sandro Silva 2019-06-12
+  , ufuncaoMD5 // Sandro Silva 2019-06-12
   , upafecfmensagens
   , ufuncoesfrentepaf
   , uclassetiposblocox
@@ -1495,7 +1495,7 @@ begin
         try
           sEncriptaHash := '';
           LbBlowfish1.GenerateKey(CHAVE_CIFRAR);
-          sEncriptaHash := LbBlowfish1.EncryptString(MD5Print(MD5String(CHAVE_CIFRAR)));
+          sEncriptaHash := LbBlowfish1.EncryptString(MD5String(CHAVE_CIFRAR));
         except
           sEncriptaHash := '';
         end;
@@ -6055,7 +6055,7 @@ begin
       LbBlowfish.GenerateKey(CHAVE_CIFRAR);
 
       sUF          := Copy(LbBlowfish.DecryptString(StringReplace(Trim(MaisIni.ReadString('UF','I','')), ' ', '', [rfReplaceAll])), 1, 2);
-      sMD5Lista    := MD5Print(MD5File(pChar(ExtractFileDir(Application.ExeName) + '\LISTA.TXT')));
+      sMD5Lista    := MD5File(pChar(ExtractFileDir(Application.ExeName) + '\LISTA.TXT'));
       snro_fabrica := LbBlowfish.DecryptString(StringReplace(Trim(MaisIni.ReadString('ECF','SERIE','')), ' ', '', [rfReplaceAll]));
       svalor_gt    := LbBlowfish.DecryptString(MaisIni.ReadString('ECF', 'GT', ''));
       sCNPJ        := LbBlowfish.DecryptString(MaisIni.ReadString('ECF','CGC', ''));

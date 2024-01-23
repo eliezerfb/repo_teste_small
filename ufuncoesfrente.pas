@@ -20,20 +20,12 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   , TlHelp32
   , Menus
   , MAPI
-  {$IFDEF VER150}
-  , IBDatabase, IBQuery, IBCustomDataSet
-  , MD5
-  //, SmallFunc
-  {$ELSE}
   , IBX.IBDatabase, IBX.IBQuery, IBX.IBCustomDataSet
-  , MD5_unicode
+  , ufuncaoMD5
   , smallfunc_xe
-  {$ENDIF}
   , ExtCtrls
   , DBClient
-//  , StdCtrls
   , uconstantes_chaves_privadas
-  //, uClasseValidaRecursos
   , uSmallConsts // Sandro Silva 2023-10-24
   , uValidaRecursosDelphi7
   , uclassetransacaocartao // Sandro Silva 2023-08-25
