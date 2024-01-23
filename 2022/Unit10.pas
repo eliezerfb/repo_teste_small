@@ -1851,6 +1851,8 @@ begin
     //ShowMessage('Erro 10/77 comunique o suporte técnico.')Mauricio Parizotto 2023-10-25
     MensagemSistema('Erro 10/77 comunique o suporte técnico.',msgErro);
   end;
+
+  SMALL_DBEdit1Change(Sender); //Mauricio Parizotto 2024-01-23
 end;
 
 procedure TForm10.SMALL_DBEdit1Exi(Sender: TObject);
