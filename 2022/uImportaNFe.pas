@@ -969,7 +969,8 @@ begin
       end;
     end;
     TItensInativosImpXMLEnt.New
-                           .setDataBase(Form7.IBDatabase1)
+                           //.setDataBase(Form7.IBDatabase1) Mauricio Parizotto 2024-01-19
+                           .setDataBase(Form7.IBDatabase1,Form7.IBTransaction1)
                            .Executar(sItens);
   except
     on E: Exception do
