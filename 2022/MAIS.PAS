@@ -4145,6 +4145,8 @@ begin
 
   Form7.Show;
 
+  Form7.sModuloAnterior := Form7.sModulo; //Mauricio Parizotto 2024-01-22
+
   Form38.Panel5.Visible := True;
   Form38.Button2.Visible := False;
   Form38.ShowModal; // Ok
