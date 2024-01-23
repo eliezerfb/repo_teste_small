@@ -11114,7 +11114,7 @@ object Form10: TForm10
               '05-Opera'#231#227'o Tribut'#225'vel por Substitui'#231#227'o Tribut'#225'ria'
               '06-Opera'#231#227'o Tribut'#225'vel a Al'#237'quota Zero'
               '07-Opera'#231#227'o Isenta da Contribui'#231#227'o'
-              '08-Opera'#231#227'o sem '#1'n'#265
+              '08-Opera'#231#227'o sem Incid'#234'ncia da Contribui'#231#227'o'
               '09-Opera'#231#227'o com Suspens'#227'o da Contribui'#231#227'o'
               '49-Outras Opera'#231#245'es de Sa'#237'da'
               '99-Outras Opera'#231#245'es')
