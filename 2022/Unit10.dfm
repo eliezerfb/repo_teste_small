@@ -12326,13 +12326,13 @@ object Form10: TForm10
         object WebBrowser1: TWebBrowser
           Left = 1108
           Top = 16
-          Width = 959
-          Height = 669
+          Width = 639
+          Height = 446
           TabOrder = 4
           OnNavigateComplete2 = WebBrowser1NavigateComplete2
           OnDocumentComplete = WebBrowser1DocumentComplete
           ControlData = {
-            4C00000014420000182E00000000000000000000000000000000000000000000
+            4C0000000B420000182E00000000000000000000000000000000000000000000
             000000004C000000000000000000000001000000E0D057007335CF11AE690800
             2B2E12620A000000000000004C0000000114020000000000C000000000000046
             8000000000000000000000000000000000000000000000000000000000000000
