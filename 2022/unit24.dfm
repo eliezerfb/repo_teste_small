@@ -2188,6 +2188,7 @@ object Form24: TForm24
         Height = 5
         Color = 15790320
         DataSource = Form7.DataSource2
+        DrawingStyle = gdsClassic
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -2221,6 +2222,7 @@ object Form24: TForm24
         Height = 10
         Color = 15790320
         DataSource = Form7.DataSource4
+        DrawingStyle = gdsClassic
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -11
