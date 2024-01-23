@@ -94,6 +94,7 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     Height = 237
     Anchors = [akLeft, akTop, akRight]
     DataSource = DSPesquisa
+    DrawingStyle = gdsClassic
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -13

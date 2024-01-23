@@ -160,6 +160,7 @@ object Form37: TForm37
         Height = 133
         Ctl3D = False
         DataSource = Form7.DataSource29
+        DrawingStyle = gdsClassic
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -13

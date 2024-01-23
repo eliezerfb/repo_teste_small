@@ -85,6 +85,7 @@ object Form43: TForm43
       Height = 130
       Anchors = [akLeft, akTop, akRight]
       DataSource = Form7.DataSource12
+      DrawingStyle = gdsClassic
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
       Font.Height = -13
