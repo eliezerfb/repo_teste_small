@@ -2259,16 +2259,35 @@ begin
 
   Form10.DBMemo1.Visible := False;
   Form10.DBMemo2.Visible := False;
-  
+
+  {Mauricio Parizotto 2024-01-22  Inicio
   sRegistroVolta := Form7.ArquivoAberto.FieldByname('REGISTRO').AsString;
-  
+
   if Form7.Visible then
   begin
     if Form7.DBGrid1.CanFocus then Form7.DBGrid1.SetFocus;
   end;
-  
+
   Form10.Hide;
   GravaRegistro(True);
+
+  }
+
+  if Form7.ArquivoAberto <> nil then
+  begin
+    sRegistroVolta := Form7.ArquivoAberto.FieldByname('REGISTRO').AsString;
+
+    if Form7.Visible then
+    begin
+      if Form7.DBGrid1.CanFocus then Form7.DBGrid1.SetFocus;
+    end;
+
+    GravaRegistro(True);
+  end;
+
+  Form10.Hide;
+
+  {Mauricio Parizotto 2024-01-22 Fim}
 
   //Mauricio Parizotto 2023-05-31
   if Form7.sModulo = 'RECEBER' then
