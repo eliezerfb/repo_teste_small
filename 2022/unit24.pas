@@ -1941,6 +1941,10 @@ end;
 
 procedure TForm24.SMALL_DBEdit41Change(Sender: TObject);
 begin
+  //Mauricio Parizotto 2024-01-23
+  if not SMALL_DBEdit41.Focused then
+    Exit;
+
   if (Form24.Visible) and (Form7.ibDataSet18.Active) then
   begin
     dBGrid2.Visible := True;
@@ -1977,7 +1981,6 @@ begin
       Form7.ibDataSet24TRANSPORTA.AsString := Form7.ibDataSet18NOME.AsString;
     end else
     begin
-//      Form29.ShowModal;
       Form7.ibDataSet24.Edit;
       if Pos(AnsiUpperCase(AllTrim(sText)),AnsiUpperCase(tProcura.FieldByName('NOME').AsString)) = 0 then
          Form7.ibDataSet24TRANSPORTA.AsString := '';
@@ -1987,7 +1990,6 @@ begin
     end;
     Form7.ibDataSet24.Edit;
     Form7.ibDataSet24.Post;
-    { Ver }
   end;
 
   if AllTrim(Form7.ibDataSet24TRANSPORTA.AsString) = '' then Form7.ibDataSet18.Append else
@@ -2762,6 +2764,8 @@ begin
 
   //Mauricio Parizotto 2023-06-06
   Form7.HintTotalNotaCompra;
+
+  dBGrid2.Visible := False;
 end;
 
 procedure TForm24.Incluirnovoitemnoestoque1Click(Sender: TObject);
