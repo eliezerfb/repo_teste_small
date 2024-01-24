@@ -3,9 +3,9 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
   Top = 502
   Caption = 'Resumo das vendas'
   ClientWidth = 769
-  OldCreateOrder = True
   OnClose = FormClose
   OnCreate = FormCreate
+  ExplicitWidth = 785
   PixelsPerInch = 96
   TextHeight = 13
   inherited btnVoltar: TBitBtn
@@ -38,8 +38,8 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
       Top = 14
       Width = 225
       Height = 21
-      Date = 35796.376154398100000000
-      Time = 35796.376154398100000000
+      Date = 35796.000000000000000000
+      Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 0
     end
@@ -48,8 +48,8 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
       Top = 54
       Width = 225
       Height = 21
-      Date = 35796.376154398100000000
-      Time = 35796.376154398100000000
+      Date = 35796.000000000000000000
+      Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 1
     end

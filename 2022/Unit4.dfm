@@ -12,7 +12,6 @@ object Form4: TForm4
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClick = FormClick
   PixelsPerInch = 96

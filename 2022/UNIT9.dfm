@@ -12,7 +12,6 @@ object Form9: TForm9
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
-  OldCreateOrder = True
   OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96

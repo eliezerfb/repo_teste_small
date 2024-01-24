@@ -22,7 +22,7 @@ uses
   , Mais
   , uFuncoesRetaguarda
   , Unit22
-  , SmallFunc
+  , smallfunc_xe
   , uValidaRecursosDelphi7
   , uDialogs;
 

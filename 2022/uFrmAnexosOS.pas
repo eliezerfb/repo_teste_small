@@ -3,10 +3,10 @@ unit uFrmAnexosOS;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, smallfunc,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, smallfunc_xe,
   Dialogs, uFrmPadrao, StdCtrls, Buttons, Grids, DBGrids, DB, JPEG, pngimage,
   IBCustomDataSet, ExtCtrls, ImgList, ShellAPI, Videocap, Clipbrd,
-  OleCtrls, SHDocVw;
+  OleCtrls, SHDocVw, System.ImageList;
 
 type
   TFrmAnexosOS = class(TFrmPadrao)

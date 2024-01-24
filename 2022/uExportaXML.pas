@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, ExtCtrls, SmallFunc, uArquivosDAT,
+  Dialogs, StdCtrls, ComCtrls, ExtCtrls, smallfunc_xe, uArquivosDAT,
   uSalvaXMLContabilFactory, IBQuery, uConectaBancoSmall, uSmallEnumerados;
 
 type
@@ -64,7 +64,8 @@ uses
   , DateUtils
   , uDialogs
   , uFuncoesRetaguarda
-  , uGeraRelatorioTotalizadorGeralVenda;
+  , uGeraRelatorioTotalizadorGeralVenda
+  , uEmail;
 
 {$R *.dfm}
 

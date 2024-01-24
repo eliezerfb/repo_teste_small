@@ -1,8 +1,8 @@
 inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
   Caption = 'Relat'#243'rio de vendas (notas fiscais)'
   ClientWidth = 765
-  OldCreateOrder = True
   OnClose = FormClose
+  ExplicitWidth = 781
   PixelsPerInch = 96
   TextHeight = 13
   inherited btnCancelar: TBitBtn
@@ -42,8 +42,8 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       Top = 14
       Width = 225
       Height = 21
-      Date = 35796.376154398100000000
-      Time = 35796.376154398100000000
+      Date = 35796.000000000000000000
+      Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 0
     end
@@ -52,8 +52,8 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       Top = 54
       Width = 225
       Height = 21
-      Date = 35796.376154398100000000
-      Time = 35796.376154398100000000
+      Date = 35796.000000000000000000
+      Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 1
     end

@@ -4,7 +4,8 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, ExtCtrls, StdCtrls,IniFiles, mais3, shellapi, HtmlHelp, SmallFunc,
+  Forms, Dialogs, ExtCtrls, StdCtrls,IniFiles, mais3, shellapi
+  , smallfunc_xe,
   Menus;
 
 type
@@ -144,6 +145,7 @@ type
     procedure Auditoria1Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure CheckBox37Click(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -594,6 +596,13 @@ begin
   Image9.Picture   :=  Form1.imgIndicadores.Picture;
   Image8.Picture   :=  Form1.imgBackup.Picture;
   Image10.Picture  :=  Form1.imgContaPagar.Picture;
+end;
+
+procedure TForm2.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('liberar_modulos.htm')));
 end;
 
 procedure TForm2.CheckBox9Click(Sender: TObject);
@@ -1173,6 +1182,7 @@ begin
     close;
     Form1.Close;
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
 end;
 

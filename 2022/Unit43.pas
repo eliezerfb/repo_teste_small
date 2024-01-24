@@ -6,7 +6,8 @@ interface
 uses
 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Grids, DBGrids, Mask, DBCtrls, SmallFunc, shellApi, HtmlHelp,
+  StdCtrls, Grids, DBGrids, Mask, DBCtrls, smallfunc_xe, shellApi
+  ,
   ExtCtrls, WinTypes, WinProcs, DB, Buttons;
 
 type

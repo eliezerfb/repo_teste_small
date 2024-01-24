@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Mask, DBCtrls, SMALL_DBEdit;
+  Dialogs, StdCtrls, Mask, DBCtrls, SMALL_DBEdit, Vcl.ExtCtrls;
 
 type
   TForm45 = class(TForm)

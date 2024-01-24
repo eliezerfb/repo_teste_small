@@ -7,8 +7,14 @@ uses
   Windows,
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles, Mask, DBCtrls, SMALL_DBEdit,
-  Buttons, SmallFunc, DB, shellapi, ComCtrls, Grids,
-  DBGrids, Printers, HtmlHelp, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
+  Buttons
+  {$IFDEF VER150}
+  , SmallFunc
+  {$ELSE}
+  , SmallFunc_XE
+  {$ENDIF}
+  , DB, shellapi, ComCtrls, Grids,
+  DBGrids, Printers, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
   xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs,
   uframePesquisaPadrao, uframePesquisaProduto, IBCustomDataSet, IBQuery,
   uframeCampo;
@@ -367,6 +373,7 @@ type
     procedure StringGrid1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure dbgComposicaoKeyPress(Sender: TObject; var Key: Char);
+    procedure TabSheet4Show(Sender: TObject);
     procedure DBGrid3DblClick(Sender: TObject);
     procedure DBGrid3KeyPress(Sender: TObject; var Key: Char);
     procedure SMALL_DBEdit23KeyDown(Sender: TObject; var Key: Word;
@@ -381,7 +388,6 @@ type
     procedure Label45Click(Sender: TObject);
     procedure Image201Click(Sender: TObject);
     procedure Image205Click(Sender: TObject);
-    procedure Panel_1Enter(Sender: TObject);
     procedure Edit2Enter(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Label36MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -449,10 +455,6 @@ type
     procedure SMALL_DBEdit1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure Image5Click(Sender: TObject);
-    procedure WebBrowser1NavigateComplete2(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
-    procedure WebBrowser1DocumentComplete(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
     procedure FormShow(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure Button12Click(Sender: TObject);
@@ -551,6 +553,13 @@ type
     procedure SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
     procedure DBGrid4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure WebBrowser1NavigateComplete2(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
+    procedure WebBrowser1DocumentComplete(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
+    procedure fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fraPerfilTribExit(Sender: TObject);
   private
     cCadJaValidado: String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -577,6 +586,8 @@ type
   public
     { Public declarations }
 
+//    bDesvincularCampos: Boolean; // Sandro Silva 2024-01-04
+
     fQuantidade : Real;
     sNomeDoJPG, sSistema  : String;
     sLinha : String;
@@ -589,7 +600,6 @@ type
 
     function JpgResize(sP1: String; iP2: Integer): boolean;
     function AtualizaMobile(sP1: Boolean) : Boolean;
-
   end;
 
 var
@@ -751,6 +761,7 @@ var
 begin
   // Posiciona o foco quando ativa
   Result := True;
+  {$Region'/// Atualiza Layout Estoque ////'}
   try
     if Form7.sModulo = 'ESTOQUE' then
     begin
@@ -775,30 +786,44 @@ begin
       end;
     end;
   except end;
+  {$Endregion}
 
   try
     if Form7.sModulo = 'CAIXA' then
     begin
+      {$Region'/// Atualiza Layout Caixa ////'}
       Form7.IBDataSet99.Close;
       Form7.IBDataSet99.SelectSQL.Clear;
       Form7.IBDataSet99.SelectSQL.Add('select count(REGISTRO) from caixa '+Form7.sWhere);
       Form7.IBDataSet99.Open;
       sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
       Form7.IBDataSet99.Close;
+      {$Endregion}
     end else
     begin
+      {$Region'/// Atualiza Layout demais tela ////'}
       Form7.IBDataSet99.Close;
       Form7.IBDataSet99.SelectSQL.Clear;
       Form7.IBDataSet99.SelectSQL.Add(StrTran(Form7.sSelect,'*','count(REGISTRO)')+' '+Form7.sWhere);
       Form7.IBDataSet99.Open;
       sTotal := Form7.IBDataSet99.fieldByname('COUNT').AsString;
       Form7.IBDataSet99.Close;
+      {$EndRegion}
     end;
 
+    {Sandro Silva 2024-01-04 inicio
     Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(StrToInt(sTotal));
+    }
+    if Form7.ArquivoAberto.Recno > StrToIntDef(sTotal, 0) then
+      Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(Form7.ArquivoAberto.Recno)
+    else
+      Form10.orelha_cadastro.Caption := 'Ficha '+IntToStr(Form7.ArquivoAberto.Recno)+' de '+IntToStr(StrToInt(sTotal));
+    {Sandro Silva 2024-01-04 fim}
 
+    {$Region '/// Foca o campo disponível ///'}
     if sP1 then
     begin
+      // tenta focar num edit
       if Form10.SMALL_DBEdit1.CanFocus then
         Form10.SMALL_DBEdit1.SetFocus
       else if Form10.SMALL_DBEdit2.CanFocus then
@@ -810,9 +835,11 @@ begin
       else if Form10.SMALL_DBEdit5.CanFocus then
         Form10.SMALL_DBEdit5.SetFocus;
     end;
+    {$EndRegion}
 
     Form10.Caption := 'Ficha';
 
+    {$Region '//  Eliminar quando tiver criado form de cadastro clientes e vendedores//'}
     if Form7.sModulo = 'CLIENTES' then
     begin
       if AllTrim(Form7.ArquivoAberto.FieldByName('CLIFOR').AsString)<>'' then
@@ -837,6 +864,7 @@ begin
 
       Form10.Caption := form7.ibDataSet2NOME.AsString;
     end;
+    {$EndRegion}
 
     if Form7.sModulo = 'RECEBER' then
     begin
@@ -846,6 +874,7 @@ begin
       Form7.ibDataSet2.Open;
     end;
 
+    {$Region '//  Eliminar quando tiver criado form de cadastro clientes e vendedores//'}
     if (Form7.sModulo = 'CLIENTES') then
     begin
       Form10.Image5.Picture := nil;
@@ -883,8 +912,10 @@ begin
         Form10.Image5.Picture := Form10.Image3.Picture;
     end
     else
+    {$EndRegion}
       Form10.Image5.Picture := Form10.Image3.Picture;
 
+    {$Region '//  Atualiza Layout Estoque//'}
     if (Form7.sModulo = 'ESTOQUE') then
     begin
       Form10.Caption := Form7.ibDataSet4DESCRICAO.AsString;
@@ -935,7 +966,9 @@ begin
       else
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
+    {$EndRegion}
 
+    {$Region '//  Atualiza Layout Grupos//'}
     if Form7.sModulo = 'GRUPOS' then
     begin
       Form10.Image5.Picture := nil;
@@ -957,7 +990,7 @@ begin
           // Form7.ibDataset21.Post;
           Deletefile(pChar(Form10.sNomeDoJPG));
         end;
-        
+
         if Form7.ibDataset21FOTO.BlobSize <> 0 then
         begin
           BlobStream:= Form7.ibDataset21.CreateBlobStream(Form7.ibDataset21FOTO,bmRead);
@@ -977,8 +1010,9 @@ begin
       else
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
+    {$EndRegion}
 
-
+    {$Region '/// Ajusta proporção imagem da foto ///'}
     // Mantem a proporção da imagem
     try
       if Form10.Image5.Picture.Width <> 0 then
@@ -1001,6 +1035,7 @@ begin
       end;
     except
     end;
+    {$EndRegion}
 
   except
   end;
@@ -1828,6 +1863,8 @@ begin
     //ShowMessage('Erro 10/77 comunique o suporte técnico.')Mauricio Parizotto 2023-10-25
     MensagemSistema('Erro 10/77 comunique o suporte técnico.',msgErro);
   end;
+
+  SMALL_DBEdit1Change(Sender); //Mauricio Parizotto 2024-01-23
 end;
 
 procedure TForm10.SMALL_DBEdit1Exi(Sender: TObject);
@@ -2207,6 +2244,7 @@ begin
   framePesquisaProdComposicao.Visible := False;
   framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.Close;
   try
+    {Sandro Silva 2024-01-04 inicio
     for I := 0 to 29 do
     begin
       TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataSource := nil;
@@ -2214,6 +2252,20 @@ begin
       TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible    := False;
       TLAbel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
     end;
+    }
+    {Sandro Silva 2024-01-10 inicio
+    if Form10.bDesvincularCampos then
+    begin
+      for I := 0 to 29 do
+      begin
+        TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataSource := nil;
+        TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataField  := '';
+        TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).Visible    := False;
+        TLAbel(Form10.Components[I+Label1.ComponentIndex]).Visible := False;
+      end;
+    end;
+    {Sandro Silva 2024-01-10 fim}
+    {Sandro Silva 2024-01-04 fim}
   except
   end;
 
@@ -2221,16 +2273,35 @@ begin
 
   Form10.DBMemo1.Visible := False;
   Form10.DBMemo2.Visible := False;
-  
+
+  {Mauricio Parizotto 2024-01-22  Inicio
   sRegistroVolta := Form7.ArquivoAberto.FieldByname('REGISTRO').AsString;
-  
+
   if Form7.Visible then
   begin
     if Form7.DBGrid1.CanFocus then Form7.DBGrid1.SetFocus;
   end;
-  
+
   Form10.Hide;
   GravaRegistro(True);
+
+  }
+
+  if Form7.ArquivoAberto <> nil then
+  begin
+    sRegistroVolta := Form7.ArquivoAberto.FieldByname('REGISTRO').AsString;
+
+    if Form7.Visible then
+    begin
+      if Form7.DBGrid1.CanFocus then Form7.DBGrid1.SetFocus;
+    end;
+
+    GravaRegistro(True);
+  end;
+
+  Form10.Hide;
+
+  {Mauricio Parizotto 2024-01-22 Fim}
 
   //Mauricio Parizotto 2023-05-31
   if Form7.sModulo = 'RECEBER' then
@@ -2783,6 +2854,35 @@ begin
   end;
 end;
 
+procedure TForm10.TabSheet4Show(Sender: TObject);
+begin
+  if Form7.bSoLeitura or Form7.bEstaSendoUsado then
+  begin
+    dbgComposicao.Enabled  := False;
+    Button8.Enabled  := False;
+    Button10.Enabled := False;
+    Button11.Enabled := False;
+  end else
+  begin
+    dbgComposicao.Enabled  := True;
+    Button8.Enabled  := True;
+    Button10.Enabled := True;
+    Button11.Enabled := True;
+  end;
+end;
+
+procedure TForm10.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+begin
+  Form10.Tag := Form10.Tag + 1;
+end;
+
+procedure TForm10.WebBrowser1NavigateComplete2(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+begin
+  Form10.Tag := 33;
+end;
+
 procedure TForm10.DBGrid3DblClick(Sender: TObject);
   function LocalizaDBEditPosicionar(FieldName: String): TDBEdit;
   var
@@ -3290,11 +3390,6 @@ begin
     MostraImagemEstoque; // Sandro Silva 2023-08-22
 end;
 
-procedure TForm10.Panel_1Enter(Sender: TObject);
-begin
-  AtualizaTela(True);
-end;
-
 procedure TForm10.Edit2Enter(Sender: TObject);
 begin
   Perform(Wm_NextDlgCtl,0,0);
@@ -3302,6 +3397,7 @@ end;
 
 procedure TForm10.FormCreate(Sender: TObject);
 begin
+  //Form10.bDesvincularCampos := True; // Sandro Silva 2024-01-04
   {Sandro Silva 2023-06-21 inicio}
   pnRelacaoComercial.BorderStyle := bsNone;
   pnRelacaoComercial.BevelOuter  := bvNone;
@@ -3498,7 +3594,7 @@ begin
   Form10.Paint;
 
   Orelhas.ActivePage := orelha_cadastro;
-  Form10.Panel_1Enter(Sender);
+  AtualizaTela(True);// Form10.Panel_1Enter(Sender);
 end;
 
 procedure TForm10.Label37MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -3583,6 +3679,7 @@ begin
       CheckBox2.Checked := False;
 
     {Mauricio Parizotto 2023-09-18 Inicio}
+    //fraPerfilTrib.GravarSomenteTextoEncontrato := False; // Sandro Silva 20-24.01.04
     fraPerfilTrib.TipoDePesquisa  := tpLocate; //Mauricio Parizotto 2023-10-31
     fraPerfilTrib.CampoCodigo     := Form7.ibDataSet4IDPERFILTRIBUTACAO;
     fraPerfilTrib.sCampoDescricao := 'DESCRICAO';
@@ -4068,19 +4165,22 @@ end;
 procedure TForm10.Image23Click(Sender: TObject);
 begin
   try
+    {$Region '/// Modulo Estoque ///'}
     if Form7.sModulo = 'ESTOQUE' then
     begin
       if not Form7.bSoLeitura then
       begin
         Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
-        
+
         ShellExecute( 0, 'Open','pbrush.exe',pChar(Form10.sNomeDoJPG),'', SW_SHOWMAXIMIZED);
         //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25}
         MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
-        Form10.Panel_1Enter(Sender);
+        AtualizaTela(True); //Form10.Panel_1Enter(Sender);
       end;
     end;
-    
+    {$Endregion}
+
+    {$Region '/// Modulo Groupos ///'}
     if Form7.sModulo = 'GRUPOS' then
     begin
       if not Form7.bSoLeitura then
@@ -4090,9 +4190,10 @@ begin
         ShellExecute( 0, 'Open','pbrush.exe',pChar(Form10.sNomeDoJPG),'', SW_SHOWMAXIMIZED);
         //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
         MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
-        Form10.Panel_1Enter(Sender);
+        AtualizaTela(True);// Form10.Panel_1Enter(Sender);
       end;
     end;
+    {$Endregion}
   except 
   end;
 end;
@@ -4341,30 +4442,18 @@ begin
     begin
       DeleteFile(pChar(Form10.sNomeDoJPG));
     end;
-    
+
     Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
-    
+
     Sleep(1000);
-    
+
     ShellExecute( 0, 'Open',pChar(Form10.sNomeDoJPG),'','', SW_SHOWMAXIMIZED);
-    
+
     //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
-    AtualizaTela(True);    
+    AtualizaTela(True);
   except
   end;
-end;
-
-procedure TForm10.WebBrowser1NavigateComplete2(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
-begin
-  Form10.Tag := 33;
-end;
-
-procedure TForm10.WebBrowser1DocumentComplete(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
-begin
-  Form10.Tag := Form10.Tag + 1;
 end;
 
 procedure TForm10.FormShow(Sender: TObject);
@@ -4396,13 +4485,15 @@ begin
 
   Orelhas.ActivePage := Orelha_cadastro;
 
-  Form10.Width  := 845;
-  Form10.Height := 650;
+  Form10.Width  := 855; // 845;
+  Form10.Height := 655; // 650;
 
   btnOK.Left  := Panel2.Width - btnOK.Width - 10;
   btnRenogiarDivida.Left  := btnOK.Left - 10 - btnRenogiarDivida.Width;
 
+//  if Form7.ArquivoAberto <> nil then
   Form7.ArquivoAberto.DisableControls;
+//  if Form7.TabelaAberta <> nil then
   Form7.TabelaAberta.DisableControls;
 
   {Sandro Silva 2023-06-27 inicio}
@@ -4419,6 +4510,14 @@ begin
   begin
     Form10.Top    := 0 + Form1.iVista;
   end;
+
+  {Dailon Parisotto (f-7756) 2023-01-03 Inicio}
+  {$IFNDEF VER150}
+  StringGrid2.DrawingStyle       := gdsClassic;
+  StringGrid2.GradientEndColor   := $00F0F0F0;
+  StringGrid2.GradientStartColor := $00F0F0F0;
+  {$ENDIF}
+  {Dailon Parisotto (f-7756) 2023-01-03 Fim}
 
   sRegistroVolta := Form7.ArquivoAberto.FieldByname('REGISTRO').AsString;
   sLinha         := StrZero(tStringGrid(Form7.DBGrid1).Row,4,0);
@@ -4514,7 +4613,15 @@ begin
     if Form7.sModulo = 'RECEBER' then
       iTopSegundaColuna := 18;
     {Sandro Silva 2023-06-22 fim}
-    
+
+
+    {Sandro Silva 2024-01-10 inicio}
+    for I := 0 to 29 do // mantido 29 que é o mesmo número de campos que são configurados na sequência da rotina
+    begin
+      TSMALL_DBEdit(Form10.Components[I+SMALL_DBEdit1.ComponentIndex]).DataField  := '';
+    end;
+    {Sandro Silva 2024-01-10 fim}
+
     if Form7.sModulo <> 'ICM' then // Não entrar no "For to do" se estiver editando o módulo ICM, o mesmo tem uma aba somente para ele, com os campos fixos, diferente dos demais módulos que monta a tela dinamicamente
     begin
       for I := 1 to Form7.iCampos do
@@ -4584,34 +4691,9 @@ begin
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := AllTrim(Form7.TabelaAberta.Fields[I - 1].DisplayLabel) + ':';
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Repaint;
 
-                {Sandro Silva 2023-06-20 inicio}
                 if (Form7.sModulo = 'RECEBER') and (Form7.TabelaAberta.Fields[I-1].FieldName = 'FORMADEPAGAMENTO') then
                   TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := 'Forma de Pag.:';
-                {Sandro Silva 2023-06-20 fim}
 
-                {Sandro Silva 2023-07-24 inicio
-                if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
-                begin
-                  if I > 25 then
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 380 + 100
-                  else if I > 15 then
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 200 + 100
-                  else
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
-                  end else if (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22
-                  begin
-                    if I > 17 then
-                      TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 360 + 100
-                    else
-                      TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
-                end else
-                begin
-                  if I > 17 then
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 360 + 70
-                  else
-                    TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
-                end;
-                }
                 if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
                 begin
                   if I > 25 then
@@ -4634,9 +4716,7 @@ begin
                     TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
 
                 end;
-                {Sandro Silva 2023-07-24 fim}
 
-                {Sandro Silva 2022-12-20 inicio}
                 if (Form7.sModulo = 'ESTOQUE') then
                 begin
                   if Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'Identificador Contábil:' then
@@ -4647,8 +4727,7 @@ begin
                     TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).AutoSize := True;
                   end;
                 end;
-                
-                {Sandro Silva 2022-12-20 fim}
+
                 if Form7.TabelaAberta.Fields[I-1].DisplayLabel+':' = 'UF:' then
                 begin
                   iTop := iTop - 25;
@@ -4664,7 +4743,7 @@ begin
                   eLimiteCredDisponivel.Top       := iTop;
                   lblLimiteCredDisponivel.Top     := iTop + 1;
                 end;
-                
+
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top        :=  iTop;
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).DataField  := ''; // Evita problemas
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).DataSource := Form7.DataSourceAtual;
@@ -4931,7 +5010,9 @@ begin
   end;
   {Sandro Silva 2022-11-14 fim}
 
+//  if Form7.ArquivoAberto <> nil then
   Form7.ArquivoAberto.EnableControls;
+//  if Form7.TabelaAberta <> nil then
   Form7.TabelaAberta.EnableControls;
 
   Form10.orelhas.Visible := True;
@@ -4943,7 +5024,7 @@ begin
   Label201.Hint := 'Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0)+chr(10);
   Label201.ShowHint := True;
 
-  {Sandro Silva 2023-06-22 inicio} 
+  {Sandro Silva 2023-06-22 inicio}
   Form10.Left := (Form7.Width - Form10.Width) div 2;
   Form10.Repaint;
   {Sandro Silva 2023-06-22 inicio}
@@ -5247,24 +5328,24 @@ begin
       Image5.Visible       := False;
       VideoCAp1.Left       := 5;
       VideoCAp1.Top        := 5;
-      
+
       VideoCAp1.Width      := 640;
       VideoCAp1.Height     := 480;
-      
+
       VideoCap1.visible    := True;
-      
+
       try
         Videocap1.DriverIndex := 0;
-      except 
+      except
       end;
-      
+
       try
         VideoCap1.VideoPreview := True;
         VideoCap1.CapAudio     := False;
       except end;
-      
-      Button13.Caption := '&Captura';      
-    except 
+
+      Button13.Caption := '&Captura';
+    except
     end;
   end else
   begin
@@ -5273,13 +5354,13 @@ begin
       Image5.Picture.Bitmap.LoadFromClipboardFormat(cf_BitMap,ClipBoard.GetAsHandle(cf_Bitmap),0);
       VideoCap1.VideoPreview := False;
       VideoCap1.visible      := False;
-      
+
       jp := TJPEGImage.Create;
       jp.Assign(Form10.Image5.Picture.Bitmap);
       jp.CompressionQuality := 100;
-      
+
       jp.SaveToFile(Form10.sNomeDoJPG);
-      
+
       Button13.Caption     := '&Webcam';
       Image5.Visible       := True;
 
@@ -5681,121 +5762,7 @@ begin
   
   // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
   begin
-    {Mauricio Parizotto 2023-09-04 Inicio
-    if Form7.sModulo = 'ESTOQUE' then
-    begin
-      if AllTrim(Form7.IbDataSet4ST.AsString) <> '' then
-      begin
-        Form7.ibDataSet14.Close;
-        Form7.ibDataSet14.SelectSQL.Clear;
-        Form7.ibDataSet14.SelectSQL.Add('select * FROM ICM where ST='+QuotedStr(Form7.IbDataSet4ST.AsString)+' ');
-        Form7.ibDataSet14.Open;
-      end else
-      begin
-        Form7.ibDataSet14.Close;
-        Form7.ibDataSet14.SelectSQL.Clear;
-        Form7.ibDataSet14.SelectSQL.Add('select * FROM ICM where CFOP='+QuotedStr('5102')+' or CFOP='+QuotedStr('5101')+' ');
-        Form7.ibDataSet14.Open;
-      end;
-
-      if Alltrim(Form7.ibDataSet14CFOP.AsString) <> '' then
-      begin
-        lblCIT.Caption := Form7.ibDataSet14CFOP.AsString + ' - ' + Form7.ibDataSet14NOME.AsString;
-      end else
-      begin
-        lblCIT.Caption := Form7.ibDataSet14NOME.AsString;
-      end;
-    end;
- 
-    Form7.ibDataSet14.Edit;
-
-    _RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';
-    _AP.Caption := 'AP '+Form7.ibDataSet14.FieldByname('AP_').AsString+'%';
-    _AM.Caption := 'AM '+Form7.ibDataSet14.FieldByname('AM_').AsString+'%';
-    _PA.Caption := 'PA '+Form7.ibDataSet14.FieldByname('PA_').AsString+'%';
-    _MA.Caption := 'MA '+Form7.ibDataSet14.FieldByname('MA_').AsString+'%';
-    _AC.Caption := 'AC '+Form7.ibDataSet14.FieldByname('AC_').AsString+'%';
-    _RO.Caption := 'RO '+Form7.ibDataSet14.FieldByname('RO_').AsString+'%';
-    _MT.Caption := 'MT '+Form7.ibDataSet14.FieldByname('MT_').AsString+'%';
-    _TO.Caption := 'TO '+Form7.ibDataSet14.FieldByname('TO_').AsString+'%';
-    _CE.Caption := 'CE '+Form7.ibDataSet14.FieldByname('CE_').AsString+'%';
-    _RN.Caption := 'RN '+Form7.ibDataSet14.FieldByname('RN_').AsString+'%';
-    _PI.Caption := 'PI '+Form7.ibDataSet14.FieldByname('PI_').AsString+'%';
-    _PB.Caption := 'PB '+Form7.ibDataSet14.FieldByname('PB_').AsString+'%';
-    _PE.Caption := 'PE '+Form7.ibDataSet14.FieldByname('PE_').AsString+'%';
-    _AL.Caption := 'AL '+Form7.ibDataSet14.FieldByname('AL_').AsString+'%';
-    _SE.Caption := 'SE '+Form7.ibDataSet14.FieldByname('SE_').AsString+'%';
-    _BA.Caption := 'BA '+Form7.ibDataSet14.FieldByname('BA_').AsString+'%';
-    _GO.Caption := 'GO '+Form7.ibDataSet14.FieldByname('GO_').AsString+'%';
-    _DF.Caption := 'DF '+Form7.ibDataSet14.FieldByname('DF_').AsString+'%';
-    _MG.Caption := 'MG '+Form7.ibDataSet14.FieldByname('MG_').AsString+'%';
-    _ES.Caption := 'ES '+Form7.ibDataSet14.FieldByname('ES_').AsString+'%';
-    _MS.Caption := 'MS '+Form7.ibDataSet14.FieldByname('MS_').AsString+'%';
-    _SP.Caption := 'SP '+Form7.ibDataSet14.FieldByname('SP_').AsString+'%';
-    _RJ.Caption := 'RJ '+Form7.ibDataSet14.FieldByname('RJ_').AsString+'%';
-    _PR.Caption := 'PR '+Form7.ibDataSet14.FieldByname('PR_').AsString+'%';
-    _SC.Caption := 'SC '+Form7.ibDataSet14.FieldByname('SC_').AsString+'%';
-    _RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
- 
-    _RR.font.size := 8;
-    _AP.font.size := 8;
-    _AM.font.size := 8;
-    _PA.font.size := 8;
-    _MA.font.size := 8;
-    _AC.font.size := 8;
-    _RO.font.size := 8;
-    _MT.font.size := 8;
-    _TO.font.size := 8;
-    _CE.font.size := 8;
-    _RN.font.size := 8;
-    _PI.font.size := 8;
-    _PB.font.size := 8;
-    _PE.font.size := 8;
-    _AL.font.size := 8;
-    _SE.font.size := 8;
-    _BA.font.size := 8;
-    _GO.font.size := 8;
-    _DF.font.size := 8;
-    _MG.font.size := 8;
-    _ES.font.size := 8;
-    _MS.font.size := 8;
-    _SP.font.size := 8;
-    _RJ.font.size := 8;
-    _PR.font.size := 8;
-    _SC.font.size := 8;
-    _RS.font.size := 8;
- 
-    if Form7.ibDataSet13ESTADO.AsString = 'RR' then _RR.Font.Color := clRed else _RR.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AP' then _AP.Font.Color := clRed else _AP.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AM' then _AM.Font.Color := clRed else _AM.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PA' then _PA.Font.Color := clRed else _PA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MA' then _MA.Font.Color := clRed else _MA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AC' then _AC.Font.Color := clRed else _AC.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RO' then _RO.Font.Color := clRed else _RO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MT' then _MT.Font.Color := clRed else _MT.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'TO' then _TO.Font.Color := clRed else _TO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'CE' then _CE.Font.Color := clRed else _CE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RN' then _RN.Font.Color := clRed else _RN.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PI' then _PI.Font.Color := clRed else _PI.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PB' then _PB.Font.Color := clRed else _PB.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PE' then _PE.Font.Color := clRed else _PE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AL' then _AL.Font.Color := clRed else _AL.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SE' then _SE.Font.Color := clRed else _SE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'BA' then _BA.Font.Color := clRed else _BA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'GO' then _GO.Font.Color := clRed else _GO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'DF' then _DF.Font.Color := clRed else _DF.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MG' then _MG.Font.Color := clRed else _MG.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'ES' then _ES.Font.Color := clRed else _ES.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MS' then _MS.Font.Color := clRed else _MS.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SP' then _SP.Font.Color := clRed else _SP.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RJ' then _RJ.Font.Color := clRed else _RJ.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PR' then _PR.Font.Color := clRed else _PR.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SC' then _SC.Font.Color := clRed else _SC.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RS' then _RS.Font.Color := clRed else _RS.Font.Color := clSilver;
-    }
-
     CarregaCit;
-
     {Mauricio Parizotto 2023-09-04 Fim}
   end;
  
@@ -5848,6 +5815,7 @@ begin
       if Copy(Form10.ComboBox5.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IPPT.AsString)) then
       begin
         Form10.ComboBox5.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
       end;
     end;
 
@@ -5859,6 +5827,7 @@ begin
       if Copy(Form10.ComboBox6.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IAT.AsString)) then
       begin
         Form10.ComboBox6.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
       end;
     end;
 
@@ -5889,23 +5858,18 @@ begin
         end;
         }
 
-
-
-
         // Com a inclusão do valor 61 - Tributação monofásica sobre combustíveis cobrado anteriormente nos CSOSN precisa mudar aqui onde seleciona o valor do combo
         if Trim(Form7.ibDataSet4CSOSN.AsString) <> '' then
         begin
           if Copy(cboCSOSN_Prod.Items[I],1, Length(Trim(Form7.ibDataSet4CSOSN.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN.AsString)) then
           begin
             cboCSOSN_Prod.ItemIndex := I;
+            Break; // Sandro Silva 2024-01-15
           end;
         end;
 
       end;
     end;
-
-
-
 
 
 
@@ -5941,6 +5905,7 @@ begin
           if Copy(Form10.ComboBox15.Items[I],1,Length(Trim(Form7.ibDataSet4CSOSN_NFCE.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)) then
           begin
             Form10.ComboBox15.ItemIndex := I;
+            Break; // Sandro Silva 2024-01-15
           end;
         end;
         {Sandro Silva 2023-05-09 fim}
@@ -5967,6 +5932,7 @@ begin
         if Copy(cboOrigemProd.Items[I],1,1) = Copy(Form7.ibDataSet4CST.AsString+'000',1,1) then
         begin
           cboOrigemProd.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -5991,6 +5957,7 @@ begin
         if Copy(cboCST_Prod.Items[I],1,2) = Copy(Form7.ibDataSet4CST.AsString+'000',2,2) then
         begin
           cboCST_Prod.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6014,6 +5981,7 @@ begin
         if Copy(Form10.ComboBox14.Items[I],1,2) = Copy(Form7.ibDataSet4CST_NFCE.AsString+'000',2,2) then
         begin
           Form10.ComboBox14.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6033,6 +6001,7 @@ begin
         if Copy(Form10.ComboBox1.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_IPI.AsString)) then
         begin
           Form10.ComboBox1.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6078,6 +6047,7 @@ begin
         if Copy(Form10.ComboBox7.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString)) then
         begin
           Form10.ComboBox7.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6123,6 +6093,7 @@ begin
         if Copy(Form10.ComboBox10.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString)) then
         begin
           Form10.ComboBox10.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -6147,15 +6118,14 @@ begin
         if Copy(Form10.ComboBox9.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4TIPO_ITEM.AsString)) then
         begin
           Form10.ComboBox9.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
 
-    //Mauricio Parizotto 2023-09-18
-    //if ComboBox9.CanFocus then
-    //  ComboBox9.SetFocus;    
-    if fraPerfilTrib.txtCampo.CanFocus then
-      fraPerfilTrib.txtCampo.SetFocus;
+    if Form7.StatusTrocaPerfil <> 'PR' then //Mauricio Parizotto 2024-01-15
+      if fraPerfilTrib.txtCampo.CanFocus then
+        fraPerfilTrib.txtCampo.SetFocus;
 
     if Form10.SMALL_DBEDITY.CanFocus then
       Form10.SMALL_DBEDITY.SetFocus;
@@ -6177,6 +6147,7 @@ begin
         if Copy(Form10.ComboBox11.Items[I],1,4) = UpperCase(AllTrim(Form7.ibDataSet4CFOP.AsString)) then
         begin
           Form10.ComboBox11.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
         end;
       end;
     end;
@@ -7754,28 +7725,28 @@ procedure TForm10.ButtoOpenPictureDialog1n22Click(Sender: TObject);
 begin
   OpenPictureDialog1.Execute;
   CHDir(Form1.sAtual);
-  
+
   if FileExists(OpenPictureDialog1.FileName) then
   begin
     Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
-    
+
     while FileExists(pChar(Form10.sNomeDoJPG)) do
     begin
       DeleteFile(pChar(Form10.sNomeDoJPG));
     end;
-    
+
     CopyFile(pChar(OpenPictureDialog1.FileName),pChar(Form10.sNomeDoJPG),True);
-    
+
     while not FileExists(pChar(Form10.sNomeDoJPG)) do
     begin
       Sleep(100);
     end;
-    
+
     Screen.Cursor             := crDefault;              // Cursor de Aguardo
-    
+
     Form10.Image3.Picture.LoadFromFile(pChar(Form10.sNomeDoJPG));
     Form10.Image5.Picture.LoadFromFile(pChar(Form10.sNomeDoJPG));
-    
+
     AtualizaTela(True);
   end;
 end;
@@ -7847,6 +7818,21 @@ procedure TForm10.framePesquisaProdComposicaodbgItensPesqKeyPress(
 begin
   if Key = chr(13) then
     AtribuirItemPesquisaComposicao;
+end;
+
+procedure TForm10.fraPerfilTribExit(Sender: TObject);
+begin
+  fraPerfilTrib.FrameExit(Sender);
+end;
+
+procedure TForm10.fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  {Sandro Silva 2024-01-11 inicio}
+  //if Key = VK_RETURN then
+  //   Form7.StatusTrocaPerfil := 'PR';
+  fraPerfilTrib.txtCampoKeyDown(Sender, Key, Shift);
+  {Sandro Silva 2024-01-11 fim}
 end;
 
 procedure TForm10.AtribuirItemPesquisaComposicao;
@@ -8431,5 +8417,7 @@ procedure TForm10.DBGrid4KeyDown(Sender: TObject; var Key: Word;
 begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 end;
+
+
 
 end.

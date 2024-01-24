@@ -17,7 +17,6 @@ object Form24: TForm24
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
-  OldCreateOrder = True
   OnActivate = FormActivate
   OnClose = FormClose
   OnKeyUp = FormKeyUp
@@ -1558,6 +1557,7 @@ object Form24: TForm24
         Height = 126
         Color = clWhite
         DataSource = Form7.DataSource23
+        DrawingStyle = gdsClassic
         FixedColor = 15790320
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -2188,6 +2188,7 @@ object Form24: TForm24
         Height = 5
         Color = 15790320
         DataSource = Form7.DataSource2
+        DrawingStyle = gdsClassic
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -2221,6 +2222,7 @@ object Form24: TForm24
         Height = 10
         Color = 15790320
         DataSource = Form7.DataSource4
+        DrawingStyle = gdsClassic
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -3068,7 +3070,6 @@ object Form24: TForm24
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
-        ItemHeight = 16
         ParentFont = False
         TabOrder = 2
         OnChange = ComboBox12Change
@@ -3108,7 +3109,6 @@ object Form24: TForm24
         Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
-        ItemHeight = 16
         ParentFont = False
         TabOrder = 4
         OnChange = ComboBox13Change
@@ -3322,10 +3322,12 @@ object Form24: TForm24
     Top = 6
     object Incluirnovoitemnoestoque1: TMenuItem
       Caption = 'Incluir novo item no estoque...'
+      Visible = False
       OnClick = Incluirnovoitemnoestoque1Click
     end
     object Incluirnovocliente1: TMenuItem
       Caption = 'Incluir novo fornecedor...'
+      Visible = False
       OnClick = Incluirnovocliente1Click
     end
   end
@@ -3475,6 +3477,8 @@ object Form24: TForm24
       '  PIVA = :PIVA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Filtered = True
     Left = 752
     Top = 6

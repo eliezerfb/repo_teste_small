@@ -21,7 +21,7 @@ uses
   {$ENDIF}
   , spdNFeType
   , spdNFe
-  , SmallFunc
+  , smallfunc_xe
   , unit7
   , unit11
   , unit29

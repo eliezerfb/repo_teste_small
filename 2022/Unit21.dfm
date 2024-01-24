@@ -12,7 +12,6 @@ object Form21: TForm21
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
   PixelsPerInch = 96

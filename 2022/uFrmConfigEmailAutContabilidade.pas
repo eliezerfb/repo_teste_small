@@ -3,8 +3,8 @@ unit uFrmConfigEmailAutContabilidade;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uFrmPadrao, StdCtrls, uArquivosDat, SmallFunc, Buttons, ExtCtrls;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, DateUtils,
+  Dialogs, uFrmPadrao, StdCtrls, uArquivosDat, smallfunc_xe, Buttons, ExtCtrls;
 
 type
   TfrmConfigEmailAutContab = class(TFrmPadrao)
@@ -40,8 +40,9 @@ var
 
 implementation
 
-uses uSmallConsts, uSmallResourceString, uExportaXML, DateUtils,
-  uNFeSections;
+uses uSmallConsts, uSmallResourceString, uExportaXML,
+  uNFeSections
+  , uEmail;
 
 {$R *.dfm}
 

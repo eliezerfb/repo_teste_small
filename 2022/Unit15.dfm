@@ -12,7 +12,6 @@ object Form15: TForm15
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -55,7 +54,6 @@ object Form15: TForm15
       Font.Height = -11
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
-      ItemHeight = 13
       ParentFont = False
       TabOrder = 0
       OnChange = ComboBox1Change
@@ -421,7 +419,6 @@ object Form15: TForm15
       Font.Height = -11
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
-      ItemHeight = 13
       ParentFont = False
       TabOrder = 2
       OnKeyPress = ComboBox2KeyPress
@@ -451,6 +448,8 @@ object Form15: TForm15
   object IBDataSet1: TIBDataSet
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
     Left = 264
     Top = 72
   end

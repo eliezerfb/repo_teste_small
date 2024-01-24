@@ -8,7 +8,7 @@ implementation
 
 uses
   SysUtils
-  , SmallFunc
+  , smallfunc_xe
   , Unit7
   , Unit30
   , Mais

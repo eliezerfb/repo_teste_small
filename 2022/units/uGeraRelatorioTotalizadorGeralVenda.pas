@@ -6,7 +6,7 @@ uses
   uIGeraRelatorioTotalizadorGeralVenda, uSmallEnumerados, IBDataBase,
   IBQuery, SysUtils, uConectaBancoSmall, uIEstruturaTipoRelatorioPadrao,
   DB, DBClient, udmRelTotalizadorVendasGeral, Variants, uNotaFiscalEletronica,
-  smallfunc, Windows;
+  smallfunc_xe, Windows;
 
 type
   TGeraRelatorioTotalizadorGeralVenda = class(TInterfacedObject, IGeraRelatorioTotalizadorGeralVenda)
@@ -500,7 +500,8 @@ begin
   begin
     if FileExists(ExtractFileName(AcCaminho)) then
     begin
-      DeleteFile(PAnsiChar(ExtractFileName(AcCaminho)));
+      //DeleteFile(PAnsiChar(ExtractFileName(AcCaminho))); Mauricio Parizotto 2023-12-29
+      DeleteFile(PChar(ExtractFileName(AcCaminho)));
       Sleep(150);
     end;
 
@@ -509,10 +510,13 @@ begin
 
     if FileExists(AcCaminho) then
     begin
-      DeleteFile(PAnsiChar(AcCaminho));
+      //DeleteFile(PAnsiChar(AcCaminho)); Mauricio Parizotto 2023-12-29
+      DeleteFile(PChar(AcCaminho));
       Sleep(150);
     end;
-    MoveFile(PAnsiChar(ExtractFileName(AcCaminho)), PAnsiChar(AcCaminho));
+
+    //MoveFile(PAnsiChar(ExtractFileName(AcCaminho)), PAnsiChar(AcCaminho)); Mauricio Parizotto 2023-12-29
+    MoveFile(PChar(ExtractFileName(AcCaminho)), PChar(AcCaminho));
     Sleep(150);
   end;
 end;

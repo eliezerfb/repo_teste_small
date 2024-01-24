@@ -3,16 +3,16 @@ unit Mais;
 interface
 
 uses
-
-
   Windows, SysUtils, Messages, Classes, Controls, Graphics,
   Menus, StdCtrls, Buttons, ExtCtrls, Forms, Dialogs, shellapi,
-  mais3, unit2,unit3, IniFiles, Unit4, Unit10, SmallFunc, Registry, HtmlHelp,
+  mais3, unit2,unit3, IniFiles, Unit4, Unit10, Registry,
   DBGrids, Grids, OleCtrls, SHDocVw, IBCustomDataSet, IBDatabase, Winsock,
   IBQuery, jpeg, Gauges, SpdNFeDataSets, IBServices, FileCtrl, xmldom, XMLIntf,
   {$IFDEF VER150}
   oxmldom,
+  SmallFunc,
   {$ELSE}
+  smallfunc_xe,
   {$ENDIF}
   XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, MD5, DB, DateUtils,
   WinTypes, WinProcs, uFuncoesBancoDados,
@@ -30,6 +30,8 @@ uses
   function DownloadDoArquivo(pP1: String; pP2: String): Boolean;
   function mensagem22(sP1 : String) : Boolean;
 //  procedure DropViewProcedure;
+
+  function ExecutaComando(comando:string):Boolean;  overload;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
 const BUILD_DO_BANCO = '2023048';// Sandro Silva 2023-12-29 const BUILD_DO_BANCO = '2023046'; //Mauricio Parizotto 2023-12-15 const BUILD_DO_BANCO = '2023044';
@@ -284,7 +286,6 @@ type
     procedure FormActivate(Sender: TObject);
     procedure ConsultadepreosporCdigodeBarras1Click(Sender: TObject);
     procedure EscolheOBanco(Sender: TObject);
-    procedure EscolheOclifor(Sender: TObject);
     procedure EscolheOBloqueto(Sender: TObject);
     procedure EscolheCNAB400(Sender:TObject);
     procedure EscolheCNAB240(Sender:TObject);
@@ -434,8 +435,6 @@ type
     procedure Debug1Click(Sender: TObject);
     procedure Image_bola_cliforClick(Sender: TObject);
     procedure Mensagemparaenviodeemail1Click(Sender: TObject);
-    procedure WebBrowser1DocumentComplete(Sender: TObject;
-      const pDisp: IDispatch; var URL: OleVariant);
     procedure Configuraes1Click(Sender: TObject);
     procedure Label_Bola_vendasClick(Sender: TObject);
     procedure FazerBackupAgora1Click(Sender: TObject);
@@ -447,6 +446,8 @@ type
     procedure EnvioautomticodeXML1Click(Sender: TObject);
     procedure Observaonadescriodosservios1Click(Sender: TObject);
     procedure ConfiguraesdaNFSe1Click(Sender: TObject);
+    procedure WebBrowser1DocumentComplete(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
 
 
   private
@@ -843,7 +844,7 @@ begin
 end;
 
 
-
+{ Mauricio Parizotto 2023-12-29
 function GetSystemPath(Folder: Integer): string;
 var
   PIDL: PItemIDList;
@@ -859,11 +860,13 @@ begin
   AMalloc.Free(PIDL);
   StrDispose(Path);
 end;
+}
 
 
 function ApagaArquivoNoDeskTop(sP1:String): boolean;
 begin
-  DeleteFile(pChar(GetSystemPath(0)+'\'+sP1));
+  //DeleteFile(pChar(GetSystemPath(0)+'\'+sP1)); Mauricio Parizotto 2023-12-29
+  DeleteFile(ExtractFilePath(Application.ExeName)+'sP1');
   DeleteFile(pChar('c:\Users\Public\Desktop\'+Sp1));
   DeleteFile(pChar('c:\Documents and Settings\All Users\Desktop\'+sP1));
   
@@ -1520,6 +1523,7 @@ begin
             Winexec('TASKKILL /F /IM "Small Commerce.exe"', SW_HIDE );
             Winexec('TASKKILL /F /IM small22.exe', SW_HIDE );
             Winexec('TASKKILL /F /IM nfe.exe', SW_HIDE );
+            FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
           end;
         end;
       end;
@@ -1617,8 +1621,8 @@ begin
   begin
     if AnsiUpperCase(ProcessFileName(FProcessEntry32.th32ProcessID)) = AnsiUpperCase(sNomeExeComCaminho)  then
     begin
-      WinExec(PChar('taskkill /PID ' + IntToStr(FProcessEntry32.th32ProcessID) + ' /F'), SW_HIDE);
-      // Break;
+      //WinExec(PChar('taskkill /PID ' + IntToStr(FProcessEntry32.th32ProcessID) + ' /F'), SW_HIDE); Mauricio Parizotto 2023-12-29
+      WinExec(PAnsiChar(AnsiString('taskkill /PID ' + IntToStr(FProcessEntry32.th32ProcessID) + ' /F')), SW_HIDE);
     end;
     ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
   end;
@@ -1752,9 +1756,10 @@ begin
         CopyFile(pChar(Form1.sAtual+'\'+pP1+'.~~1'),pChar(Form1.sAtual+'\'+pP1+'.exe'),false);
         Sleep(100);
       end;
-      //
-//      if FileExists(Form1.sAtual+'\'+pP1+'.EXE') then ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\'+pP1+'.exe'),'/verysilent','', SW_SHOWNORMAL);
-      if FileExists(Form1.sAtual+'\'+pP1+'.EXE') then Winexec(pChar(Form1.sAtual+'\'+pP1+'.exe /verysilent'), SW_HIDE );
+
+      if FileExists(Form1.sAtual+'\'+pP1+'.EXE') then
+        //Winexec(pChar(Form1.sAtual+'\'+pP1+'.exe /verysilent'), SW_HIDE );
+        WinExec(PAnsiChar(AnsiString( Form1.sAtual+'\'+pP1+'.exe /verysilent' )), SW_HIDE);
 
       while FileExists(Form1.sAtual+'\'+pP1+'.~~1') do
       begin
@@ -2179,10 +2184,18 @@ begin
   Panel4.Height  := Screen.Height;
 
   Form7.Top    := Form1.Panel_3.Top + 30;
+  {Dailon Parisotto (f-7757) 2023-01-03 Inicio}
+  {$IFDEF VER150}
   Form7.Left   := 0;
   Form7.Width  := Form1.Width -6;
   Form7.Height := Form1.Height - Form7.Top -6;
-  
+  {$ELSE}
+  Form7.Left   := Form1.Left;
+  Form7.Width  := Form1.Width;
+  Form7.Height := (Form1.Height - 9) - Form7.Top;
+  {$ENDIF}
+  {Dailon Parisotto (f-7757) 2023-01-03 Fim}
+
   iTop := 6;
   iFix := 0;
   iFixL := 70;
@@ -3523,6 +3536,31 @@ begin
   Screen.ActiveForm.Visible := False;
 end;
 
+procedure TForm1.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+var
+  vBody : string;
+  vRecurso : string;
+  documentoAtivo: variant;
+begin
+  try
+    documentoAtivo := WebBrowser1.Document;
+    vBody := documentoAtivo.Body.OuterHTML;
+
+    vBody := Trim(StringReplace(StringReplace(vBody,'<body>','',[rfReplaceAll]) ,'</body>','',[rfReplaceAll]));
+    vBody := Trim(StringReplace(StringReplace(vBody,'<BODY>','',[rfReplaceAll]) ,'</BODY>','',[rfReplaceAll]));
+
+	  //Mauricio Parizotto 2023-05-29
+    if AnsiContainsText(vBody,'Serial') then
+    begin
+      vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
+      ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
+      ExecutaComando('Commit;');
+	  end;
+  except
+  end;
+end;
+
 procedure TForm1.WMUser (var msg: TMessage);
 begin
   Application.Restore;
@@ -3580,6 +3618,7 @@ begin
     SelStart := Length(Text)-1;
     SelAttributes.Style := [];
     SelAttributes.Height := 16;
+    SelAttributes.Color := clWhite; // 2024-01-05
 
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSql.Clear;
@@ -3656,18 +3695,6 @@ begin
   Mais1Ini.Free;
   Form7.sTitulo := sEscolhido;
   Form7.sRPS := 'N';
-  
-  Form7.Close;
-  Form7.Show;
-end;
-
-procedure Tform1.EscolheOclifor(Sender:TObject);
-begin
-  with Sender as TMenuItem do
-  begin
-    Form7.sWhere  := 'where CLIFOR='+QuotedStr( Copy(Caption,4,Length(Caption)-2))+ ' ';
-    Checked := True;
-  end;
   
   Form7.Close;
   Form7.Show;
@@ -3832,6 +3859,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
   //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
@@ -4130,6 +4158,8 @@ begin
 
   Form7.Show;
 
+  Form7.sModuloAnterior := Form7.sModulo; //Mauricio Parizotto 2024-01-22
+
   Form38.Panel5.Visible := True;
   Form38.Button2.Visible := False;
   Form38.ShowModal; // Ok
@@ -4377,6 +4407,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
 
   {Mauricio Parizotto 2023-05-31 Inicio}
@@ -4978,6 +5009,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
 
     Mensagem22('Aguarde atualizando promoção.');
@@ -5109,6 +5141,7 @@ begin
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
         Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
         Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
       end;
     end;
   except
@@ -5129,6 +5162,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04    
   end;
 
   EnviarXMLContabilidadeAut;
@@ -5383,6 +5417,7 @@ begin
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
         Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
         Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04        
       end else
       begin
         //ShowMessage('Este número de licença não foi liberado para este serial.'); Mauricio Parizotto 2023-10-25}
@@ -5406,6 +5441,7 @@ begin
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
         Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
         Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04        
       end else
       begin
         if alltrim(sSerial) <> '' then
@@ -7871,6 +7907,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04      
     end;
 
     try
@@ -8000,6 +8037,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04      
     end;
 
     {$IFDEF VER150}
@@ -8225,7 +8263,7 @@ begin
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B9','0')) > 0  then bFornecedoresLiberados := True else bFornecedoresLiberados := False; // Fornecedores
 
         Form7.Exibir1.Visible := True;
-        Form7.Mostrartodososclientesefornecedores1.Visible := True;
+        //2024-01-10 Form7.Mostrartodososclientesefornecedores1.Visible := True;
         Form7.N10.Visible := True;
 
         Label200.Visible   := False;
@@ -8274,6 +8312,7 @@ begin
         begin
           // Form1.DestroyWindowHandle;
           Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+          FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04          
         end else
         begin
           { Quando a senha não é válida }
@@ -8304,6 +8343,7 @@ begin
           Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
           Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
           Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+          FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04          
         end;
       end;
 
@@ -8329,6 +8369,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04      
     end;
 
 
@@ -10702,6 +10743,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
 end;
 
@@ -11929,6 +11971,7 @@ begin
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
   Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
   Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+  FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
 end;
 
 procedure TForm1.Complexo1Click(Sender: TObject);
@@ -11945,6 +11988,7 @@ begin
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
   Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
   Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+  FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
 end;
 
 procedure TForm1.ConverterosdadosparaSmallSaaS1Click(Sender: TObject);
@@ -12076,6 +12120,7 @@ begin
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
         Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
         Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
       end else
       begin
         //ShowMessage('Não foi possível encontrar o programa de conversão. Atualize o sistema.'); Mauricio Parizotto 2023-10-25
@@ -12424,31 +12469,6 @@ begin
 end;
 
 
-procedure TForm1.WebBrowser1DocumentComplete(Sender: TObject;
-  const pDisp: IDispatch; var URL: OleVariant);
-var
-  vBody : string;
-  vRecurso : string;
-  documentoAtivo: variant;
-begin
-  try
-    documentoAtivo := WebBrowser1.Document;
-    vBody := documentoAtivo.Body.OuterHTML;
-
-    vBody := Trim(StringReplace(StringReplace(vBody,'<body>','',[rfReplaceAll]) ,'</body>','',[rfReplaceAll]));
-    vBody := Trim(StringReplace(StringReplace(vBody,'<BODY>','',[rfReplaceAll]) ,'</BODY>','',[rfReplaceAll]));
-
-	  //Mauricio Parizotto 2023-05-29
-    if AnsiContainsText(vBody,'Serial') then
-    begin	
-      vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
-      ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
-      ExecutaComando('Commit;');
-	  end;
-  except
-  end;
-end;
-
 procedure TForm1.RegistrodoPrograma(InfTermo:boolean);
 var
   sNFCE :String;
@@ -12710,6 +12730,21 @@ begin
     Observaonadescriodosservios1.Checked := ConfSistema.BD.NFSE.ObsNaDescricao;
   finally
     FreeAndNil(ConfSistema);
+  end;
+end;
+
+function ExecutaComando(comando:string):Boolean;  overload;
+begin
+  Result := False;
+
+  try
+    Form1.ibDataset200.Close;
+    Form1.ibDataset200.SelectSql.Text := comando;
+    Form1.ibDataset200.ExecSQL;
+    Form1.ibDataset200.Close;
+
+    Result := True;
+  except
   end;
 end;
 

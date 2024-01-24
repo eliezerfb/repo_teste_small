@@ -1,7 +1,6 @@
 object Senhas2: TSenhas2
   Left = 452
   Top = 538
-  HelpContext = 3
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Senha'
@@ -13,7 +12,6 @@ object Senhas2: TSenhas2
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = [fsBold]
-  OldCreateOrder = True
   OnActivate = FormActivate
   OnKeyUp = FormKeyUp
   PixelsPerInch = 96
@@ -68,7 +66,7 @@ object Senhas2: TSenhas2
       Left = 20
       Top = 50
       Width = 350
-      Height = 28
+      Height = 21
       BevelInner = bvNone
       BevelKind = bkFlat
       BevelOuter = bvSpace
@@ -89,8 +87,7 @@ object Senhas2: TSenhas2
       Left = 20
       Top = 120
       Width = 350
-      Height = 26
-      HelpContext = 3
+      Height = 21
       BevelInner = bvNone
       BevelKind = bkFlat
       BevelOuter = bvSpace

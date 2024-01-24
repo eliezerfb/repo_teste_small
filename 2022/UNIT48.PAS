@@ -5,7 +5,8 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, DB, Grids, DBGrids, StdCtrls, ExtCtrls, Mask,
-  DBCtrls, SMALL_DBEdit, SmallFunc, Menus, IniFiles, shellapi, Buttons, HtmlHelp, jpeg;
+  DBCtrls, SMALL_DBEdit, smallfunc_xe, Menus, IniFiles, shellapi, Buttons
+  , jpeg;
 
 function Retributa(pP1:Boolean):Boolean;
 function ApagaIntegracaoComOCaixa(pP1:Boolean):Boolean;

@@ -12,14 +12,13 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
+  PixelsPerInch = 96
   DesignSize = (
     884
     349)
-  PixelsPerInch = 96
   TextHeight = 13
   object lbLegenda: TLabel
     Left = 9
@@ -115,6 +114,7 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
     Height = 209
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DSLOTES
+    DrawingStyle = gdsClassic
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -201,7 +201,7 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
     AfterOpen = CDSLOTESAfterOpen
     Left = 24
     Top = 120
-    object CDSLOTESNUMERO: TIBStringField
+    object CDSLOTESNUMERO: TWideStringField
       FieldName = 'NUMERO'
     end
     object CDSLOTESQUANTIDADE: TFloatField
@@ -213,13 +213,14 @@ object FrmInformacoesRastreamento: TFrmInformacoesRastreamento
     object CDSLOTESDTVALIDADE: TDateField
       FieldName = 'DTVALIDADE'
     end
-    object CDSLOTESCODIGOAGREGACAO: TIBStringField
+    object CDSLOTESCODIGOAGREGACAO: TWideStringField
       FieldName = 'CODIGOAGREGACAO'
     end
     object CDSLOTESQUANTIDADEACUMULADA: TAggregateField
       DefaultExpression = '0'
       FieldName = 'QUANTIDADEACUMULADA'
       Active = True
+      DisplayName = ''
       Expression = 'sum(QUANTIDADE)'
     end
   end

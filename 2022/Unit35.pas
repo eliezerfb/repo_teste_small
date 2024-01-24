@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, Db, inifiles, Spin, SmallFunc,
+  ExtCtrls, StdCtrls, Buttons, Db, inifiles, Spin, smallfunc_xe,
   ComCtrls;
 
 type

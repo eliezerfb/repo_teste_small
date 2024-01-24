@@ -15,7 +15,7 @@ uses
   , Windows
   , Dialogs
   , DB
-  , SmallFunc
+  , smallfunc_xe
   , Mais
   , unit7
   , Unit24
@@ -232,8 +232,10 @@ begin
           NodeTmp  := NodeSec.ChildNodes['enderEmit']; // tag <prod> dentro de <det>
           NodeTmp.ChildNodes.First;
 
-          Form7.IBDataSet2ENDERE.AsString := PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xLgr'].XML,'//xLgr'))))+' '+AllTrim(NodeTmp.ChildNodes['nro'].Text));
-          Form7.IBDataSet2COMPLE.AsString := PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xBairro'].XML,'//xBairro')))));
+          //Form7.IBDataSet2ENDERE.AsString := PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xLgr'].XML,'//xLgr'))))+' '+AllTrim(NodeTmp.ChildNodes['nro'].Text)); Mauricio Parizotto 2024-01-10
+          Form7.IBDataSet2ENDERE.AsString := Copy(PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xLgr'].XML,'//xLgr'))))+' '+AllTrim(NodeTmp.ChildNodes['nro'].Text)) ,1,40);
+          //Form7.IBDataSet2COMPLE.AsString := PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xBairro'].XML,'//xBairro'))))); Mauricio Parizotto 2024-01-10
+          Form7.IBDataSet2COMPLE.AsString := Copy(PrimeiraMaiuscula(CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xBairro'].XML,'//xBairro'))))),1,35);
           Form7.IBDataSet2CIDADE.AsString := CaracteresHTML((AllTrim(XmlNodeValue(NodeTmp.ChildNodes['xMun'].XML,'//xMun'))));
           Form7.IBDataSet2ESTADO.AsString := AllTrim(NodeTmp.ChildNodes['UF'].Text);
           Form7.IBDataSet2CEP.AsString    := Copy(AllTrim(NodeTmp.ChildNodes['CEP'].Text+'00000000'),1,5)+'-'+Copy(AllTrim(NodeTmp.ChildNodes['CEP'].Text+'00000000'),5,3);
@@ -449,7 +451,8 @@ begin
                         Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd-6),1,SizeDescricaoProd-6))+' '+Form7.ibDataSet4CODIGO.AsString;
                       end;
 
-                      Form7.ibDataSet4MEDIDA.AsString     := AllTrim(NodeTmp.ChildNodes['uCom'].Text);
+                      //Form7.ibDataSet4MEDIDA.AsString     := AllTrim(NodeTmp.ChildNodes['uCom'].Text); Mauricio Parizotto 2024-01-10
+                      Form7.ibDataSet4MEDIDA.AsString     := Copy(AllTrim(NodeTmp.ChildNodes['uCom'].Text) ,1,3);
                       Form7.ibDataSet4PRECO.AsFloat       := 0.01;
                       Form7.ibDataSet4ALTERADO.AsString   := '3';
 
@@ -782,7 +785,8 @@ begin
             //
           until NodeSec = nil;
 
-
+          //Mauricio Parizotto 2024-01-10
+          Form7.TotalizaItensCompra;
 
           try
             Form7.ibDataSet24.Edit;
@@ -814,6 +818,9 @@ begin
 
           end;
           {Sandro Silva 2023-07-03 fim}
+
+          // Mauricio Parizotto 2024-01-10
+          Form7.CalculaTotalNota;
 
           try
             Form7.ibDataSet24NFEXML.AsString := sXML;
@@ -962,7 +969,8 @@ begin
       end;
     end;
     TItensInativosImpXMLEnt.New
-                           .setDataBase(Form7.IBDatabase1)
+                           //.setDataBase(Form7.IBDatabase1) Mauricio Parizotto 2024-01-19
+                           .setDataBase(Form7.IBDatabase1,Form7.IBTransaction1)
                            .Executar(sItens);
   except
     on E: Exception do

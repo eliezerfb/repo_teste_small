@@ -12,7 +12,6 @@ object Form31: TForm31
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnClose = FormClose
   PixelsPerInch = 96

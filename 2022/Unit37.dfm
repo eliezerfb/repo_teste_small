@@ -12,7 +12,6 @@ object Form37: TForm37
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -97,8 +96,8 @@ object Form37: TForm37
       Top = 50
       Width = 225
       Height = 21
-      Date = 35796.376154398100000000
-      Time = 35796.376154398100000000
+      Date = 35796.000000000000000000
+      Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 2
     end
@@ -107,8 +106,8 @@ object Form37: TForm37
       Top = 90
       Width = 225
       Height = 21
-      Date = 35796.376154398100000000
-      Time = 35796.376154398100000000
+      Date = 35796.000000000000000000
+      Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 3
     end

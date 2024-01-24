@@ -4,7 +4,7 @@ interface
 
 uses
   uIRetornaOperacoesRelatorio, IBDatabase, IBQuery, Classes, uSmallEnumerados,
-  CheckLst, SmallFunc;
+  CheckLst, smallfunc_xe;
 
 type
   TRetornaOperacoesRelatorio = class(TInterfacedObject, IRetornaOperacoesRelatorio)

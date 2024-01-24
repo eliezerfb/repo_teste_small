@@ -1,16 +1,15 @@
 object Form45: TForm45
   Left = 650
   Top = 484
-  Width = 655
-  Height = 196
   Caption = 'Fator de convers'#227'o'
+  ClientHeight = 157
+  ClientWidth = 639
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
   object Label85: TLabel
@@ -98,7 +97,6 @@ object Form45: TForm45
     Font.Height = -13
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    ItemHeight = 16
     ParentFont = False
     TabOrder = 0
   end
@@ -133,7 +131,6 @@ object Form45: TForm45
     Font.Height = -13
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    ItemHeight = 16
     ParentFont = False
     TabOrder = 2
   end

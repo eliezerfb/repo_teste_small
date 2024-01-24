@@ -8,7 +8,7 @@ uses
   Forms, Dialogs, Grids, DBGrids, DB,
   ExtCtrls, Menus,
   IniFiles,
-  SmallFunc, Mask, DBCtrls,
+  smallfunc_xe, Mask, DBCtrls,
   shellapi,
   IBTable, IBQuery, IBDatabaseInfo,
   Math, pngimage, strUtils, Buttons;

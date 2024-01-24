@@ -3,7 +3,7 @@ unit uGeraCNAB400;
 interface
 
 uses
-  Windows, Messages, SysUtils, Forms, Dialogs, SmallFunc, IniFiles;
+  Windows, Messages, SysUtils, Forms, Dialogs, smallfunc_xe, IniFiles;
 
   procedure GeraCNAB400;
 

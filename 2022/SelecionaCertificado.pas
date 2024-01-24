@@ -12,7 +12,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ExtCtrls, IniFiles, smallfunc, DB, DBClient, spdNFe,
+  Dialogs, StdCtrls, Buttons, ExtCtrls, IniFiles, smallfunc_xe, DB, DBClient, spdNFe,
   dbcgrids, Grids, DBGrids, DBCtrls;
 
 type

@@ -5,7 +5,8 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, DB, Grids, DBGrids, StdCtrls, ExtCtrls, Mask,
-  DBCtrls, SMALL_DBEdit, SmallFunc, Menus, IniFiles, Variants, HtmlHelp, ShellApi, jpeg,
+  DBCtrls, SMALL_DBEdit, smallfunc_xe, Menus, IniFiles, Variants
+  , ShellApi, jpeg,
   IBCustomDataSet, Buttons
   , StrUtils
   , Windows
@@ -2765,6 +2766,12 @@ end;
 
 procedure TForm24.Incluirnovoitemnoestoque1Click(Sender: TObject);
 begin
+
+  {
+
+  Reativar quando estiver concluída a migração do cadastro de ESTOQUE usando a tela padrão de cadastro
+
+
   if Form1.imgEstoque.Visible then
   begin
     //
@@ -2825,12 +2832,20 @@ begin
   // Altera o Grid de mercadorias para mostrar na NF
   Grid_Compra(True);
   //LogRetaguarda('unit24 exibiu colunas 2815'); // Sandro Silva 2023-12-04
+
+  }
 end;
 
 procedure TForm24.Incluirnovocliente1Click(Sender: TObject);
 var
   sTitulo : String;
 begin
+
+  {
+
+  Reativar quando estiver concluída a migração do cadastro de clientes usando a tela padrão de cadastro
+
+
   if Form1.imgEstoque.Visible then
   begin
     sTitulo := Form7.sTitulo;
@@ -2873,7 +2888,8 @@ begin
 
   // Altera o Grid de mercadorias para mostrar na NF
   Grid_Compra(True);
-  //LogRetaguarda('unit24 exibiu colunas 2864'); // Sandro Silva 2023-12-04  
+  //LogRetaguarda('unit24 exibiu colunas 2864'); // Sandro Silva 2023-12-04
+  }
 end;
 
 procedure TForm24.Label64Click(Sender: TObject);

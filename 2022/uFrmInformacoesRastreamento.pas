@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Mask, StrUtils, DBCtrls, ExtCtrls, Buttons, DB, smallfunc,
+  Dialogs, StdCtrls, Mask, StrUtils, DBCtrls, ExtCtrls, Buttons, DB, smallfunc_xe,
   DBClient, Grids, DBGrids, IBCustomDataSet;
 
 const COR_CAMPO_OBRIGATORIO = $0080FFFF;
@@ -29,11 +29,11 @@ type
     lbQuantidadeAcumulada: TLabel;
     CDSLOTES: TClientDataSet;
     DSLOTES: TDataSource;
-    CDSLOTESNUMERO: TIBStringField;
+    CDSLOTESNUMERO: TWideStringField;
     CDSLOTESQUANTIDADE: TFloatField;
     CDSLOTESDTFABRICACAO: TDateField;
     CDSLOTESDTVALIDADE: TDateField;
-    CDSLOTESCODIGOAGREGACAO: TIBStringField;
+    CDSLOTESCODIGOAGREGACAO: TWideStringField;
     DBGridRastro: TDBGrid;
     CDSLOTESQUANTIDADEACUMULADA: TAggregateField;
     DBTValorQuantidadeAcumulada: TDBText;

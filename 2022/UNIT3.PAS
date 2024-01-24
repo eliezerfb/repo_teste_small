@@ -4,7 +4,8 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, IniFiles, Unit99, SmallFunc, ShellApi, HtmlHelp;
+  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, IniFiles, Unit99, smallfunc_xe, ShellApi
+  ;
 
 type
     TSenhas2 = class(TForm)

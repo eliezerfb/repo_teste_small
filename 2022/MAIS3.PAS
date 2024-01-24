@@ -4,8 +4,13 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, IniFiles, Unit99, SmallFunc,
-  ShellApi, HtmlHelp;
+  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, IniFiles, Unit99
+  {$IFDEF VER150}
+  , SmallFunc
+  {$ELSE}
+  , smallfunc_xe
+  {$ENDIF}
+  , ShellApi;
 
 type
     TSenhas = class(TForm)
@@ -132,7 +137,8 @@ procedure TSenhas.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_F1 then
-    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('login.htm')));
+   HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('login.htm')));
+   //HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('login.htm')));
 end;
 
 procedure TSenhas.USUARIOExit(Sender: TObject);
@@ -224,6 +230,7 @@ procedure TSenhas.Button2Click(Sender: TObject);
 begin
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
   Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+  FecharAplicacao(ExtractFileName(Application.ExeName));
 
   if AllTrim(Usuario.Text) = EmptyStr then
     Usuario.Text := '<Usuário>';

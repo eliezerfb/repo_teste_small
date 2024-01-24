@@ -16,20 +16,20 @@ type
     ibdProdutosNota: TIBDataSet;
     dspProdutosNota: TDataSetProvider;
     cdsProdutosNota: TClientDataSet;
-    ibdProdutosNotaPRODUTO: TIBStringField;
+    ibdProdutosNotaPRODUTO: TWideStringField;
     ibdProdutosNotaPRECO_CUSTO: TFloatField;
     ibdProdutosNotaPRECO_VENDA: TFloatField;
     ibdProdutosNotaPERC_LUC: TFloatField;
     ibdProdutosNotaPRECO_NOVO: TFloatField;
-    cdsProdutosNotaPRODUTO: TStringField;
     cdsProdutosNotaPRECO_CUSTO: TFloatField;
     cdsProdutosNotaPRECO_VENDA: TFloatField;
     cdsProdutosNotaPERC_LUC: TFloatField;
     cdsProdutosNotaPRECO_NOVO: TFloatField;
     edtPercGeral: TEdit;
     lblTitulo: TLabel;
-    ibdProdutosNotaREGISTRO: TIBStringField;
-    cdsProdutosNotaREGISTRO: TStringField;
+    ibdProdutosNotaREGISTRO: TWideStringField;
+    cdsProdutosNotaREGISTRO: TWideStringField;
+    cdsProdutosNotaPRODUTO: TWideStringField;
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -63,7 +63,7 @@ implementation
 uses Unit7
   , uArquivosDAT
   , Mais
-  , SmallFunc
+  , smallfunc_xe
   , uDialogs, uFuncoesRetaguarda, uFuncoesBancoDados;
 
 {$R *.dfm}

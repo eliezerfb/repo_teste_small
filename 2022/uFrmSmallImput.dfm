@@ -6,9 +6,10 @@ inherited FrmSmallImput: TFrmSmallImput
   Caption = 'Imput'
   ClientHeight = 98
   ClientWidth = 362
-  OldCreateOrder = True
   Position = poScreenCenter
   OnShow = FormShow
+  ExplicitWidth = 378
+  ExplicitHeight = 137
   PixelsPerInch = 96
   TextHeight = 16
   object lblDescricao: TLabel

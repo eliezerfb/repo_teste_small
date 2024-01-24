@@ -8,7 +8,7 @@ uses
   , SysUtils
   , Forms
   , Dialogs
-  , SmallFunc
+  , smallfunc_xe
   , IniFiles
   ;
 

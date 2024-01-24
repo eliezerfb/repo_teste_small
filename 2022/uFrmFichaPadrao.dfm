@@ -6,10 +6,11 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
   ClientHeight = 618
   ClientWidth = 842
   Ctl3D = True
-  OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
+  ExplicitWidth = 864
+  ExplicitHeight = 674
   PixelsPerInch = 96
   TextHeight = 16
   object Panel_branco: TPanel
@@ -909,6 +910,8 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      ExplicitLeft = 4
+      ExplicitTop = 86
     end
   end
   object DSCadastro: TDataSource

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, SmallFunc, Mask;
+  Dialogs, StdCtrls, ExtCtrls, smallfunc_xe, Mask;
 
 const ID_TIPO_COBRANCA_ATUALIZA_BOLETOS = 10;
 

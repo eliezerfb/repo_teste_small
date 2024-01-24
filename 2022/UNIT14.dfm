@@ -13,7 +13,6 @@ object Form14: TForm14
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
-  OldCreateOrder = True
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate

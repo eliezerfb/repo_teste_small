@@ -5,7 +5,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, IniFiles, SmallFunc, ShellApi, checklst,
+  StdCtrls, ComCtrls, ExtCtrls, IniFiles, smallfunc_xe, ShellApi, checklst,
   Mask, DBCtrls, SMALL_DBEdit, Unit7, Buttons, StrUtils, FileCtrl;
 
 type
@@ -301,6 +301,7 @@ begin
             ShowMessage('Não foi possível gravar no arquivo .HTM   '+Chr(10)+Chr(10)+'Este programa será fechado.');
             Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
             Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+            FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
           end;
 
           CriaJpg('logotip.jpg');
@@ -319,6 +320,7 @@ begin
             MensagemSistema('Não foi possível gravar no arquivo .txt   '+Chr(10)+Chr(10)+'Este programa será fechado.',msgAtencao);
             Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
             Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+            FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
           end;
 
           WriteLn(F,AllTrim(Form7.ibDataSet13NOME.AsString));

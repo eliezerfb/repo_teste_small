@@ -5,10 +5,11 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
   Caption = 'Produtos Devolu'#231#227'o'
   ClientHeight = 483
   ClientWidth = 994
-  OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
+  ExplicitWidth = 1010
+  ExplicitHeight = 522
   PixelsPerInch = 96
   TextHeight = 16
   object lblTitulo: TLabel
@@ -124,15 +125,14 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     Height = 16
     AutoSize = True
     Picture.Data = {
-      0A54504E474F626A65637489504E470D0A1A0A0000000D494844520000001000
-      00001008060000001FF3FF61000000097048597300000B1300000B1301009A9C
-      18000000B9494441547801A590B10DC2301444CF8B44162D0BD066095A1A7600
-      2116A0A666004A28105DB6A0048B45E02512B61542B0E5AF7BD625F69D121B15
-      8E29CC2BA7C04ABAC019D6D029A7E048620EAD762C5D494A8195B4850D9C6006
-      3798C2DF5FB0921AB092AEB0803DACC08919FB02AB10C6763AB02EC1EB5741C5
-      890626F0D11353C31DBC8C77C154D8A430E7BEEE202BDC2FC80EF70B1EBCB00A
-      E324D5E0343226DA7B457EF0C2A27D6F870A92C36D4B5CD03E67535CF0065AAE
-      2211D61FC68D0000000049454E44AE426082}
+      0954506E67496D61676589504E470D0A1A0A0000000D49484452000000100000
+      001008060000001FF3FF61000000097048597300000B1300000B1301009A9C18
+      0000008D4944415478DA6364A01030D2D3000520DE06C49B80B8821C03560271
+      1894DD09338418034036D7007115106F04620B20BE06C4DAC41800D2BC1F4AEF
+      00E278209E0CC4E540FC809001C89A61602E10A71013887250CD4A48628F80D8
+      1188EF11328068CDD80C204933BA01246B4637E03E5A803D806A7E8027A0510C
+      F84F8ACDF80C205A33B6402419506C00005AAE22117E3D5D170000000049454E
+      44AE426082}
     Visible = False
   end
   object dbgPrincipal: TDBGrid
@@ -145,6 +145,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     Color = clWhite
     Ctl3D = False
     DataSource = DSProdutos
+    DrawingStyle = gdsClassic
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -305,30 +306,29 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     BeforeDelete = cdsProdutosNotaBeforeDelete
     Left = 216
     Top = 144
-    object cdsProdutosNotaMARCADO: TStringField
+    object cdsProdutosNotaMARCADO: TWideStringField
       DisplayLabel = ' '
       FieldName = 'MARCADO'
       Required = True
       FixedChar = True
       Size = 1
     end
-    object cdsProdutosNotaNUMERONF: TStringField
+    object cdsProdutosNotaNUMERONF: TIBStringField
       FieldName = 'NUMERONF'
       Origin = 'ITENS002.NUMERONF'
       Size = 12
     end
-    object cdsProdutosNotaCODIGO: TStringField
+    object cdsProdutosNotaDESCRICAO: TWideStringField
+      DisplayLabel = 'Descri'#231#227'o'
+      FieldName = 'DESCRICAO'
+      Size = 45
+    end
+    object cdsProdutosNotaCODIGO: TWideStringField
       FieldName = 'CODIGO'
       Origin = 'ITENS002.CODIGO'
       Size = 5
     end
-    object cdsProdutosNotaDESCRICAO: TStringField
-      DisplayLabel = 'Descri'#231#227'o'
-      FieldName = 'DESCRICAO'
-      Origin = 'ITENS002.DESCRICAO'
-      Size = 45
-    end
-    object cdsProdutosNotaST: TStringField
+    object cdsProdutosNotaST: TIBStringField
       FieldName = 'ST'
       Origin = 'ITENS002.ST'
       Size = 3
@@ -345,7 +345,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       FieldName = 'BASE'
       Origin = 'ITENS002.BASE'
     end
-    object cdsProdutosNotaMEDIDA: TStringField
+    object cdsProdutosNotaMEDIDA: TIBStringField
       FieldName = 'MEDIDA'
       Origin = 'ITENS002.MEDIDA'
       Size = 3
@@ -376,7 +376,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       FieldName = 'PESO'
       Origin = 'ITENS002.PESO'
     end
-    object cdsProdutosNotaCST_PIS_COFINS: TStringField
+    object cdsProdutosNotaCST_PIS_COFINS: TIBStringField
       FieldName = 'CST_PIS_COFINS'
       Origin = 'ITENS002.CST_PIS_COFINS'
       Size = 2
@@ -418,12 +418,12 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       Precision = 18
       Size = 2
     end
-    object cdsProdutosNotaCST_IPI: TStringField
+    object cdsProdutosNotaCST_IPI: TIBStringField
       FieldName = 'CST_IPI'
       Origin = 'ITENS002.CST_IPI'
       Size = 2
     end
-    object cdsProdutosNotaCST_ICMS: TStringField
+    object cdsProdutosNotaCST_ICMS: TWideStringField
       FieldName = 'CST_ICMS'
       Origin = 'ITENS002.CST_ICMS'
       Size = 3
@@ -566,6 +566,8 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       'From ITENS002 I'
       'Where I.NUMERONF =  :NUMERONF  '
       #9'and I.FORNECEDOR  =  :FORNECEDOR ')
+    ParamCheck = True
+    UniDirectional = False
     Left = 280
     Top = 144
     object ibdProdutosNotaMARCADO: TIBStringField

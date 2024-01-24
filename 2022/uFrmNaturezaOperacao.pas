@@ -3,8 +3,9 @@ unit uFrmNaturezaOperacao;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, SmallFunc,
-  Dialogs, uFrmFichaPadrao, DB, ComCtrls, StdCtrls, Buttons, ExtCtrls, StrUtils, HtmlHelp,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, smallfunc_xe,
+  Dialogs, uFrmFichaPadrao, DB, ComCtrls, StdCtrls, Buttons, ExtCtrls, StrUtils
+  ,
   DBCtrls, Mask, SMALL_DBEdit, IBCustomDataSet, IBQuery, Grids, DBGrids,
   uframeCampo;
 

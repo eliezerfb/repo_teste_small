@@ -15,7 +15,7 @@ uses
   , Dialogs
   , DB
   , IBQuery
-  , SmallFunc
+  , smallfunc_xe
   , unit7
   ;
 
@@ -26,6 +26,7 @@ uses
 implementation
 
 uses Unit22, Unit13, uFuncoesBancoDados, uFuncoesRetaguarda, uDialogs;
+
 
 procedure DropViewProcedure;
 begin
@@ -129,6 +130,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     Exit;
   end;
 

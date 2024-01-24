@@ -1,7 +1,6 @@
 object Senhas: TSenhas
   Left = 866
   Top = 540
-  HelpContext = 3
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Senha'
@@ -13,7 +12,6 @@ object Senhas: TSenhas
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = [fsBold]
-  OldCreateOrder = True
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -154,7 +152,6 @@ object Senhas: TSenhas
       Font.Height = -16
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
-      ItemHeight = 20
       ParentCtl3D = False
       ParentFont = False
       ParentShowHint = False
@@ -167,9 +164,8 @@ object Senhas: TSenhas
       Left = 20
       Top = 120
       Width = 350
-      Height = 26
+      Height = 21
       Hint = 'Digite a senha. do usu'#225'rio.   Tecle <F1> para obter mais ajuda.'
-      HelpContext = 3
       BevelInner = bvNone
       BevelOuter = bvNone
       Color = clWhite

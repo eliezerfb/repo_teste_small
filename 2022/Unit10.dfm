@@ -4,15 +4,14 @@ object Form10: TForm10
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Ficha'
-  ClientHeight = 689
-  ClientWidth = 1462
+  ClientHeight = 680
+  ClientWidth = 1458
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -1754,7 +1753,6 @@ object Form10: TForm10
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 0
             OnChange = ComboBox8Change
@@ -2595,6 +2593,7 @@ object Form10: TForm10
           Height = 10
           Ctl3D = True
           DataSource = Form7.DataSource2
+          DrawingStyle = gdsClassic
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -2628,6 +2627,7 @@ object Form10: TForm10
           Height = 50
           Ctl3D = True
           DataSource = Form7.DataSource21
+          DrawingStyle = gdsClassic
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -3183,7 +3183,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 9
           OnChange = cboCST_ProdChange
@@ -10448,7 +10447,7 @@ object Form10: TForm10
             Left = 24
             Top = 160
             Width = 50
-            Height = 21
+            Height = 24
             Ctl3D = True
             DataField = 'RR_'
             DataSource = Form7.DataSource14
@@ -10476,7 +10475,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 1
           OnChange = ComboBox9Change
@@ -10508,7 +10506,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 4
           OnChange = ComboBox5Change
@@ -10529,7 +10526,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 5
           OnChange = ComboBox6Change
@@ -10550,7 +10546,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 7
           OnChange = cboOrigemProdChange
@@ -10597,7 +10592,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 8
           OnChange = cboCSOSN_ProdChange
@@ -10640,7 +10634,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 11
           OnChange = ComboBox11Change
@@ -10686,7 +10679,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 13
           OnChange = ComboBox14Change
@@ -10715,7 +10707,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 12
           OnChange = ComboBox15Change
@@ -10864,11 +10855,17 @@ object Form10: TForm10
           ParentColor = False
           ParentCtl3D = False
           TabOrder = 0
+          OnExit = fraPerfilTribExit
+          ExplicitLeft = 110
+          ExplicitTop = 25
+          ExplicitWidth = 390
           DesignSize = (
             390
             22)
           inherited txtCampo: TEdit
             Width = 390
+            OnKeyDown = fraPerfilTribtxtCampoKeyDown
+            ExplicitWidth = 390
           end
           inherited gdRegistros: TDBGrid
             Width = 390
@@ -10949,7 +10946,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 0
           OnChange = ComboBox1Change
@@ -11102,7 +11098,6 @@ object Form10: TForm10
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 0
             OnChange = ComboBox7Change
@@ -11260,7 +11255,6 @@ object Form10: TForm10
             Font.Height = -13
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
-            ItemHeight = 16
             ParentFont = False
             TabOrder = 0
             OnChange = ComboBox10Change
@@ -11394,6 +11388,7 @@ object Form10: TForm10
           Ctl3D = False
           DefaultColWidth = 85
           DefaultRowHeight = 25
+          DrawingStyle = gdsClassic
           FixedColor = clWhite
           FixedCols = 0
           RowCount = 30
@@ -11605,6 +11600,7 @@ object Form10: TForm10
           BiDiMode = bdLeftToRight
           Ctl3D = False
           DataSource = Form7.DataSource30
+          DrawingStyle = gdsClassic
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
@@ -11738,7 +11734,7 @@ object Form10: TForm10
           Left = 20
           Top = 25
           Width = 658
-          Height = 19
+          Height = 22
           BevelInner = bvNone
           Color = clSilver
           Ctl3D = False
@@ -11759,7 +11755,7 @@ object Form10: TForm10
           Left = 676
           Top = 25
           Width = 125
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Enabled = False
@@ -11782,6 +11778,7 @@ object Form10: TForm10
           Height = 235
           Ctl3D = False
           DataSource = Form7.DataSource28
+          DrawingStyle = gdsClassic
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -11927,9 +11924,15 @@ object Form10: TForm10
           Height = 100
           TabOrder = 9
           Visible = False
+          ExplicitLeft = 20
+          ExplicitTop = 280
+          ExplicitWidth = 781
+          ExplicitHeight = 100
           inherited pnlPrincipal: TPanel
             Width = 781
             Height = 100
+            ExplicitWidth = 781
+            ExplicitHeight = 100
             inherited dbgItensPesq: TDBGrid
               Width = 781
               Height = 100
@@ -13513,7 +13516,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 0
           OnChange = ComboBox12Change
@@ -13530,7 +13532,6 @@ object Form10: TForm10
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ItemHeight = 16
           ParentFont = False
           TabOrder = 2
           OnChange = ComboBox13Change
@@ -13548,6 +13549,7 @@ object Form10: TForm10
           Height = 376
           Ctl3D = False
           DataSource = Form7.DataSource6
+          DrawingStyle = gdsClassic
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -13648,6 +13650,7 @@ object Form10: TForm10
           ColCount = 4
           Ctl3D = False
           DefaultColWidth = 158
+          DrawingStyle = gdsClassic
           RowCount = 10
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing]
           ParentCtl3D = False
@@ -15076,6 +15079,8 @@ object Form10: TForm10
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 504
     Top = 64
   end
