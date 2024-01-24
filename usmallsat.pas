@@ -5528,16 +5528,22 @@ end;
 
 procedure TRetorno.setFmensagem(const Value: String);
 begin
-  Fmensagem := Trim(Value);
+  Fmensagem := String(Trim(Value));
+  { Sandro Silva 2024-01-24
+  // Causa problema com caracteres especiais
   if Utf8ToAnsi(Value) <> '' then
     Fmensagem := Utf8ToAnsi(Value);
+  }
 end;
 
 procedure TRetorno.SetFmensagemSEFAZ(const Value: String);
 begin
   FmensagemSEFAZ := Trim(Value);
+  { Sandro Silva 2024-01-24
+  // Causa problema com caracteres especiais
   if Utf8ToAnsi(Value) <> '' then
     FmensagemSEFAZ := Utf8ToAnsi(Value);
+  }
 end;
 
 { TRequisicao }
