@@ -372,6 +372,7 @@ object Form15: TForm15
       Color = clWhite
       Ctl3D = False
       DataSource = Form7.DataSource40
+      DrawingStyle = gdsClassic
       FixedColor = clWhite
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText

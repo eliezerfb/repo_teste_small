@@ -11,13 +11,12 @@ object FConfiguracaoNFSe: TFConfiguracaoNFSe
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  PixelsPerInch = 96
   DesignSize = (
     781
     506)
-  PixelsPerInch = 96
   TextHeight = 13
   object DBGCONFIG: TDBGrid
     Left = 8
@@ -25,8 +24,22 @@ object FConfiguracaoNFSe: TFConfiguracaoNFSe
     Width = 763
     Height = 449
     Anchors = [akLeft, akTop, akRight]
+    BiDiMode = bdLeftToRight
+    Color = clWhite
+    Ctl3D = False
     DataSource = DSConfig
+    DrawingStyle = gdsClassic
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
     Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+    ParentBiDiMode = False
+    ParentCtl3D = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = False
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText

@@ -82,6 +82,7 @@ object Form18: TForm18
       Anchors = [akLeft, akTop, akRight, akBottom]
       Ctl3D = False
       DataSource = Form7.DataSource7
+      DrawingStyle = gdsClassic
       FixedColor = clWindow
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
