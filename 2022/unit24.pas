@@ -303,7 +303,7 @@ var
 
 implementation
 
-uses Mais, Unit7, Unit10, Unit18, Unit43, Unit12, Unit22, Unit45,
+uses Mais, Unit7, Unit10, uFrmParcelas, Unit43, Unit12, Unit22, Unit45,
   uFuncoesBancoDados, uDialogs, uFrmPrecificacaoProduto, uFuncoesRetaguarda;
 
 {$R *.DFM}
@@ -1559,17 +1559,21 @@ begin
       if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'PAGAR')
       and (Form7.ibDataSet24TOTAL.AsFloat > 0) then
       begin
-        Form18.IdentificadorPlanoContas := Form7.ibDataSet24IDENTIFICADORPLANOCONTAS.AsString; // Sandro Silva 2022-12-29
-
-        Form18.ShowModal;
-        {Sandro Silva 2022-12-29 inicio}
-        if Form1.DisponivelSomenteParaNos then
-        begin
-          if not (Form7.ibDataSet24.State in [dsEdit, dsInsert]) then
+        try
+          FrmParcelas := TFrmParcelas.Create(Self);
+          FrmParcelas.IdentificadorPlanoContas := Form7.ibDataSet24IDENTIFICADORPLANOCONTAS.AsString;
+          FrmParcelas.ShowModal;
+          {Sandro Silva 2022-12-29 inicio}
+          if Form1.DisponivelSomenteParaNos then
+          begin
+            if not (Form7.ibDataSet24.State in [dsEdit, dsInsert]) then
+              Form7.ibDataSet24.Edit;
+            Form7.ibDataSet24IDENTIFICADORPLANOCONTAS.AsString := FrmParcelas.IdentificadorPlanoContas;
+            Form7.ibDataSet24.Post;
             Form7.ibDataSet24.Edit;
-          Form7.ibDataSet24IDENTIFICADORPLANOCONTAS.AsString := Form18.IdentificadorPlanoContas;
-          Form7.ibDataSet24.Post;
-          Form7.ibDataSet24.Edit;
+          end;
+        finally
+          FreeAndNil(FrmParcelas);
         end;
         {Sandro Silva 2022-12-29 fim}
       end else
@@ -1580,9 +1584,6 @@ begin
       end;
     end;
 
-    //                                                           //
-    // Lay-Out no form7                                         //
-    //                                                         //
     Form7.ibDataSet23UNITARIO.Visible     := False;         //
     Form7.ibDataSet23CFOP.Visible         := True; // Sandro Silva 2023-03-27 Form7.ibDataSet23CFOP.Visible           := False;        //       //
     Form7.ibDataSet23BASE.Visible         := False;       //

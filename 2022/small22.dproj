@@ -150,8 +150,8 @@
         <DCCReference Include="unit99.pas">
             <Form>Form99</Form>
         </DCCReference>
-        <DCCReference Include="Unit18.pas">
-            <Form>Form18</Form>
+        <DCCReference Include="uFrmParcelas.pas">
+            <Form>FrmParcelas</Form>
         </DCCReference>
         <DCCReference Include="Unit19.pas">
             <Form>Form19</Form>
@@ -479,6 +479,7 @@
             <Form>dmRelTotalizadorVendasGeral</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="..\..\unit_compartilhada\uLogSistema.pas"/>
         <DCCReference Include="units\uDrawCellGridModulos.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uEmail.pas"/>
         <DCCReference Include="ufrmFichaCadastros.pas">
@@ -1324,8 +1325,8 @@
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
@@ -2142,8 +2143,8 @@
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

@@ -2548,7 +2548,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uTextoEmailFactory
   , uRetornaLimiteDisponivel
   , uIRetornaLimiteDisponivel
-  , Unit18
+  , uFrmParcelas
   , uListaCnaes
   , uAssinaturaDigital
 // Sandro Silva 2023-10-02  , uArquivosDAT
@@ -32227,9 +32227,9 @@ end;
 
 procedure TForm7.ibDataSet7AfterScroll(DataSet: TDataSet);
 begin
-  if Form18 <> nil then
+  if FrmParcelas <> nil then
   begin
-    Form18.SetPickListParaColuna;
+    FrmParcelas.SetPickListParaColuna;
   end;
 end;
 

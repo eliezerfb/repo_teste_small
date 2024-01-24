@@ -300,7 +300,7 @@ var
 
 implementation
 
-uses Unit7, Unit10, Mais, Unit18, Unit41, Unit43, Unit19,
+uses Unit7, Unit10, Mais, uFrmParcelas, Unit41, Unit43, Unit19,
   Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
   uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
   ufrmPesquisaOrdemServico, uDialogs, ufrmFichaCadastros;
@@ -1652,7 +1652,7 @@ end;
 procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais1Ini: TIniFile;
-//  sCodigo: String; // Sandro Silva 2023-11-07
+  ConsultaImprimeDanfe : Boolean;
 begin
    // Apaga ítens em branco
   try
@@ -1794,7 +1794,13 @@ begin
 
       if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,7) = 'RECEBER') and (Form7.ibDataSet15TOTAL.AsFloat > 0) then
       begin
-        Form18.ShowModal;
+        //Form18.ShowModal; Mauricio Parizotto 2024-01-24
+        try
+          FrmParcelas := TFrmParcelas.Create(Self);
+          FrmParcelas.ShowModal;
+        finally
+          FreeAndNil(FrmParcelas);
+        end;
       end else
       begin
         ApagaAsDuplicatasAnteriores(True);
@@ -1804,12 +1810,12 @@ begin
 
         Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
         if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then
-          Form18.CheckBox1.Checked := True
+          ConsultaImprimeDanfe := True
         else
-          Form18.CheckBox1.Checked := False;
+          ConsultaImprimeDanfe := False;
         Mais1Ini.Free;
 
-        if Form18.CheckBox1.Checked then
+        if ConsultaImprimeDanfe then
         begin
           Form7.bProximas := True;
           Form7.N6EnviarNFeConsultareImprimirDANFE1Click(Sender);

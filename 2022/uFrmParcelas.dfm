@@ -1,4 +1,4 @@
-object Form18: TForm18
+object FrmParcelas: TFrmParcelas
   Left = 615
   Top = 215
   BorderIcons = [biSystemMenu]
@@ -170,7 +170,7 @@ object Form18: TForm18
         Transparent = True
       end
     end
-    object CheckBox1: TCheckBox
+    object chkConsultaImprimeDanfe: TCheckBox
       Left = 10
       Top = 345
       Width = 343
@@ -187,7 +187,7 @@ object Form18: TForm18
       ParentFont = False
       TabOrder = 5
       Visible = False
-      OnClick = CheckBox1Click
+      OnClick = chkConsultaImprimeDanfeClick
     end
     object edtQtdParc: TEdit
       Left = 128

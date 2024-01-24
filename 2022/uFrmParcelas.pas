@@ -1,5 +1,5 @@
 // unit desdobramento parcelas
-unit Unit18;
+unit uFrmParcelas;
 
 interface
 
@@ -9,7 +9,7 @@ uses
   ExtCtrls, DB, ShellApi, IniFiles, Buttons, IBCustomDataSet, IBQuery;
 
 type
-    TForm18 = class(TForm)
+    TFrmParcelas = class(TForm)
     Panel1: TPanel;
     Label4: TLabel;
     SMALL_DBEdit1: TSMALL_DBEdit;
@@ -19,7 +19,7 @@ type
     Button4: TBitBtn;
     Panel9: TPanel;
     lbTotalParcelas: TLabel;
-    CheckBox1: TCheckBox;
+    chkConsultaImprimeDanfe: TCheckBox;
     edtQtdParc: TEdit;
     IBQINSTITUICAOFINANCEIRA: TIBQuery;
     IBQBANCOS: TIBQuery;
@@ -41,7 +41,7 @@ type
     procedure DBGrid1ColEnter(Sender: TObject);
     procedure DBGrid1Enter(Sender: TObject);
     procedure Button4Click(Sender: TObject);
-    procedure CheckBox1Click(Sender: TObject);
+    procedure chkConsultaImprimeDanfeClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure edtQtdParcEnter(Sender: TObject);
     procedure edtQtdParcExit(Sender: TObject);
@@ -77,7 +77,7 @@ type
   end;
 
 var
-  Form18: TForm18;
+  FrmParcelas: TFrmParcelas;
 
 implementation
 
@@ -87,7 +87,7 @@ uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFunco
 {$R *.DFM}
 
 
-procedure TForm18.SMALL_DBEdit1Exit(Sender: TObject);
+procedure TFrmParcelas.SMALL_DBEdit1Exit(Sender: TObject);
 Var
   I : Integer;
   dDiferenca : Double;
@@ -359,7 +359,7 @@ begin
   end;
 end;
 
-procedure TForm18.DBGrid1KeyPress(Sender: TObject; var Key: Char);
+procedure TFrmParcelas.DBGrid1KeyPress(Sender: TObject; var Key: Char);
 var
   dDiferenca : Double;
   MyBookmark: TBookmark;
@@ -509,7 +509,7 @@ begin
   end;
 end;
 
-procedure TForm18.SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
+procedure TFrmParcelas.SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   try
@@ -523,7 +523,7 @@ begin
   end;
 end;
 
-procedure TForm18.SMALL_DBEdit1Enter(Sender: TObject);
+procedure TFrmParcelas.SMALL_DBEdit1Enter(Sender: TObject);
 var
   Total : Real;
 begin
@@ -626,7 +626,7 @@ begin
   end;
 end;
 
-procedure TForm18.SMALL_DBEdit16KeyDown(Sender: TObject; var Key: Word;
+procedure TFrmParcelas.SMALL_DBEdit16KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   try
@@ -641,20 +641,20 @@ begin
   
 end;
 
-procedure TForm18.Label10MouseLeave(Sender: TObject);
+procedure TFrmParcelas.Label10MouseLeave(Sender: TObject);
 begin
   with Sender as tLabel do
     Font.Style := [];
 end;
 
-procedure TForm18.Label10MouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure TFrmParcelas.Label10MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
   with Sender as tLabel do
     Font.Style := [fsBold];
 end;
 
-procedure TForm18.FormShow(Sender: TObject);
+procedure TFrmParcelas.FormShow(Sender: TObject);
 var
   Total: Real;
   I: Integer;
@@ -672,18 +672,18 @@ begin
 
      if (Abs(Total - Form7.ibDataSet15TOTAL.AsFloat) > 0.01) then
      begin
-       Form18.SMALL_DBEdit1.Enabled := True;
-       Form18.DBGrid1.Enabled       := True;
+       SMALL_DBEdit1.Enabled := True;
+       DBGrid1.Enabled       := True;
      end else
      begin
-       Form18.SMALL_DBEdit1.Enabled := False;
-       Form18.DBGrid1.Enabled       := False;
+       SMALL_DBEdit1.Enabled := False;
+       DBGrid1.Enabled       := False;
      end;
 
      lbTotalParcelas.Caption := Format('%12.2n',[(Form7.ibDataSet15TOTAL.AsFloat)]);
   end else
   begin
-    Form18.DBGrid1.Enabled       := True;
+    DBGrid1.Enabled       := True;
     
     if Form7.sModulo <> 'CLIENTES' then
     begin
@@ -701,7 +701,7 @@ begin
 
   try
     if AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString) = 'CAIXA' then
-       Form18.Close;
+       Close;
 
     if Form7.sModulo <> 'CLIENTES' then
     begin
@@ -745,7 +745,7 @@ begin
     if (Form7.sModulo <> 'VENDA') and (Form7.sModulo <> 'COMPRA') and (Form7.sModulo <> 'CLIENTES') then
       Form7.sModulo := 'VENDA';
 
-    CheckBox1.Visible := False;
+    chkConsultaImprimeDanfe.Visible := False;
 
     if Form7.SModulo = 'CLIENTES' then
     begin
@@ -754,7 +754,7 @@ begin
       Form7.IBQuery1.SQL.Add('update RECEBER set ATIVO=9 where coalesce(ATIVO,9)<>1 and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+' and VALOR_RECE=0');
       Form7.IBQuery1.Open;
 
-      CheckBox1.Visible := False;
+      chkConsultaImprimeDanfe.Visible := False;
       
       Form7.ibDataSet7.EnableControls;
       for I := 1 to Form7.ibDataSet7.FieldCount do
@@ -787,9 +787,9 @@ begin
     begin
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
       if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then
-        CheckBox1.Checked := True
+        chkConsultaImprimeDanfe.Checked := True
       else
-        CheckBox1.Checked := False;
+        chkConsultaImprimeDanfe.Checked := False;
       Mais1Ini.Free;
       //
       Form7.ibDataSet7.EnableControls;
@@ -802,8 +802,8 @@ begin
       Form7.ibDataSet7PORTADOR.Visible   := True;
 
       {Sandro Silva 2023-06-16 inicio}
-      Form18.Width  := 995;//1000;// 906; // Largura normal
-      Form18.Height := 444; //500;
+      FrmParcelas.Width  := 995;//1000;// 906; // Largura normal
+      FrmParcelas.Height := 444; //500;
 
       lbTotalParcelas.Alignment := taLeftJustify;
       lbTotalParcelas.Left      := 5;
@@ -947,7 +947,7 @@ begin
   end;
 end;
 
-procedure TForm18.DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
+procedure TFrmParcelas.DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
   Field: TField; State: TGridDrawState);
 var
   OldBkMode : Integer;
@@ -989,7 +989,7 @@ begin
   end;
 end;
 
-procedure TForm18.DBGrid1KeyDown(Sender: TObject; var Key: Word;
+procedure TFrmParcelas.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   iColumnIndex : Integer; // Sandro Silva 2023-11-13 I : Integer;
@@ -1070,7 +1070,7 @@ begin
   end;
 end;
 
-procedure TForm18.DBGrid1ColEnter(Sender: TObject);
+procedure TFrmParcelas.DBGrid1ColEnter(Sender: TObject);
 begin
   try
     if (Form7.sModulo = 'VENDA') and (DbGrid1.SelectedIndex = 0) then
@@ -1084,29 +1084,25 @@ begin
 
 end;
 
-procedure TForm18.DBGrid1Enter(Sender: TObject);
+procedure TFrmParcelas.DBGrid1Enter(Sender: TObject);
 begin
   DbGrid1.SelectedIndex := 1;
   Form7.ibDataSet7.Tag := ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS; // Bloqueia fazer append/insert no dataset
 end;
 
-procedure TForm18.Button4Click(Sender: TObject);
+procedure TFrmParcelas.Button4Click(Sender: TObject);
 begin
-  {Sandro Silva 2023-07-12 inicio
-  Form18.Close;
-  }
   if ValidarDesdobramentoParcela then
-    Form18.Close;
-  {Sandro Silva 2023-07-12 fim}
+    Close;
 end;
 
-procedure TForm18.CheckBox1Click(Sender: TObject);
+procedure TFrmParcelas.chkConsultaImprimeDanfeClick(Sender: TObject);
 var
   Mais1ini : tInifile;
 begin
   try
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-    if CheckBox1.Checked then
+    if chkConsultaImprimeDanfe.Checked then
     begin
       Mais1Ini.WriteString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Sim');
     end else
@@ -1118,7 +1114,7 @@ begin
   end;
 end;
 
-procedure TForm18.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TFrmParcelas.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais1Ini : tIniFile;
   bButton : Integer;
@@ -1127,6 +1123,7 @@ var
   //sSenhaX, sSenha : String;
   ftotal1 : Real;
   Total : Real;
+  ConsultaImprimeDanfe : Boolean;
 begin
   if Form7.sModulo = 'VENDA' then
   begin
@@ -1170,7 +1167,7 @@ begin
   end;
 
   try
-    Form18.Close;
+    Close;
     if Form7.sModulo = 'CLIENTES' then
     begin
       // ACORDO
@@ -1324,25 +1321,25 @@ begin
     begin
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
       if Mais1Ini.ReadString('Nota Fiscal','Transmitir Consultar Imprimir Nf-e no final','Não') = 'Sim' then
-        Form18.CheckBox1.Checked := True
+        ConsultaImprimeDanfe := True
       else
-        Form18.CheckBox1.Checked := False;
+        ConsultaImprimeDanfe := False;
       Mais1Ini.Free;
 
-      if Form18.CheckBox1.Checked then
+      if ConsultaImprimeDanfe then
       begin
         Form7.bProximas := True;
         Form7.N6EnviarNFeConsultareImprimirDANFE1Click(Sender);
         Form7.bProximas := False;
       end;
 
-      if (Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) <> 0) or (Form18.CheckBox1.Checked = False) then
+      if (Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) <> 0) or (ConsultaImprimeDanfe = False) then
       begin
-        if (Form18.cboDocCobranca.Text <> '<Não imprimir documento>') and (AllTrim(Form18.cboDocCobranca.Text) <> '') then
+        if (cboDocCobranca.Text <> '<Não imprimir documento>') and (AllTrim(cboDocCobranca.Text) <> '') then
         begin
-          if Form18.cboDocCobranca.Text <> '<Imprimir Duplicata>' then
+          if cboDocCobranca.Text <> '<Imprimir Duplicata>' then
           begin
-            if Form18.cboDocCobranca.Text <> '<Imprimir Carnê>' then
+            if cboDocCobranca.Text <> '<Imprimir Carnê>' then
             begin
               {Sandro Silva 2023-06-20 inicio
               Form1.sEscolhido       := Form18.ComboBox1.Text;
@@ -1361,8 +1358,8 @@ begin
 
                 if Form7.ibDataSet7VALOR_DUPL.AsString <> '' then
                 begin
-                  Form1.sEscolhido       := Form18.cboDocCobranca.Text;
-                  Form1.sBancoBoleto     := Trim(StringReplace(Form18.cboDocCobranca.Text, 'Boleto de cobrança do', '', [rfReplaceAll]));
+                  Form1.sEscolhido       := cboDocCobranca.Text;
+                  Form1.sBancoBoleto     := Trim(StringReplace(cboDocCobranca.Text, 'Boleto de cobrança do', '', [rfReplaceAll]));
                   Form25.btnEnviaEmailTodos.Visible := True;
                   Form25.ShowModal;
                   Form25.btnEnviaEmailTodos.Visible := False;
@@ -1419,8 +1416,8 @@ begin
     end;
     {Sandro Silva 2023-07-12 inicio}
     Form7.ibDataSet7VALOR_DUPL.DisplayWidth := 14;
-    Form18.Width  := 600; // Largura normal
-    Form18.Height := 421; // Altura normal
+    FrmParcelas.Width  := 600; // Largura normal
+    FrmParcelas.Height := 421; // Altura normal
     lbTotalParcelas.Alignment := taRightJustify;
     lbTotalParcelas.Left      := 239;
     Form7.ibDataSet7FORMADEPAGAMENTO.Visible := False; // Sandro Silva 2023-06-16
@@ -1435,7 +1432,7 @@ begin
   //    
 end;
 
-procedure TForm18.ExibeOpcoesPreencherColunas;
+procedure TFrmParcelas.ExibeOpcoesPreencherColunas;
 begin
   if (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO')
      or
@@ -1463,7 +1460,7 @@ begin
 
 end;
 
-procedure TForm18.edtQtdParcEnter(Sender: TObject);
+procedure TFrmParcelas.edtQtdParcEnter(Sender: TObject);
 var
   Total : Real;
 begin
@@ -1498,7 +1495,7 @@ begin
   end;
 end;
 
-procedure TForm18.edtQtdParcExit(Sender: TObject);
+procedure TFrmParcelas.edtQtdParcExit(Sender: TObject);
 Var
   I : Integer;
   dDiferenca : Double;
@@ -1591,7 +1588,7 @@ begin
   end;
 end;
 
-procedure TForm18.DBGrid1ColExit(Sender: TObject);
+procedure TFrmParcelas.DBGrid1ColExit(Sender: TObject);
 var
   iRecno: Integer;
   sForma: String;
@@ -1711,7 +1708,7 @@ begin
 
 end;
 
-procedure TForm18.DBGrid1CellClick(Column: TColumn);
+procedure TFrmParcelas.DBGrid1CellClick(Column: TColumn);
 begin
   {Sandro Silva 2023-11-13 inicio}
   if Form7.sModulo = 'VENDA' then
@@ -1732,7 +1729,7 @@ begin
   ExibeOpcoesPreencherColunas;
 end;
 
-procedure TForm18.CarregacboDocCobranca;
+procedure TFrmParcelas.CarregacboDocCobranca;
 var
   Mais1Ini: tIniFile;
   sSecoes:  TStrings;
@@ -1781,7 +1778,7 @@ begin
   sSecoes.Free;
 end;
 
-procedure TForm18.GetBancosNFe(slBanco: TStringList);
+procedure TFrmParcelas.GetBancosNFe(slBanco: TStringList);
 begin
   slBanco.Clear;
   IBQBANCOS.First;
@@ -1793,7 +1790,7 @@ begin
 
 end;
 
-procedure TForm18.GetInstituicaoFinanceira(slInstituicao: TStringList);
+procedure TFrmParcelas.GetInstituicaoFinanceira(slInstituicao: TStringList);
 begin
   slInstituicao.Clear;
   IBQINSTITUICAOFINANCEIRA.First;
@@ -1805,7 +1802,7 @@ begin
   end; // while IBQ.Eof = False do
 end;
 
-procedure TForm18.SetPickListParaColuna;
+procedure TFrmParcelas.SetPickListParaColuna;
 const
   iDropDownRows = 20;
 begin
@@ -1814,14 +1811,14 @@ begin
 
     if Form7.ibDataSet7BANDEIRA.Visible then
     begin
-      if Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName = 'BANDEIRA' then
+      if DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA' then
       begin
-        Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].PickList.Clear;
+        DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList.Clear;
 
-        if FormaDePagamentoEnvolveCartao(Form18.DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+        if FormaDePagamentoEnvolveCartao(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
         begin
-          Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].PickList     := Form7.slPickListBandeira;
-          Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
+          DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList     := Form7.slPickListBandeira;
+          DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
         end;
 
       end;
@@ -1830,42 +1827,41 @@ begin
 
     if Form7.ibDataSet7FORMADEPAGAMENTO.Visible then
     begin
-
-      if Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO' then
+      if DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO' then
       begin
-        Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].PickList     := Form7.slPickListFormaDePagamento;
-        Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
+        DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].PickList     := Form7.slPickListFormaDePagamento;
+        DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
       end;
-
     end;
 
-    if Form18.DBGrid1.SelectedField.FieldName = 'PORTADOR' then
+    //Mauricio Parizotto 2024-01-24
+    if DBGrid1.SelectedField <> nil then
     begin
-
-      Form18.DBGrid1.Columns[Form18.DBGrid1.SelectedIndex].PickList.Clear;
-      if FormaDePagamentoEnvolveBancos(Form18.DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+      if DBGrid1.SelectedField.FieldName = 'PORTADOR' then
       begin
-        Form18.DBGrid1.Columns[Form18.DBGrid1.SelectedIndex].PickList := Form7.slPickListBanco;
-        Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
-      end;
+        DBGrid1.Columns[DBGrid1.SelectedIndex].PickList.Clear;
+        if FormaDePagamentoEnvolveBancos(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+        begin
+          DBGrid1.Columns[DBGrid1.SelectedIndex].PickList := Form7.slPickListBanco;
+          DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
+        end;
 
-      if FormaDePagamentoEnvolveCartao(Form18.DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
-      begin
-        Form18.DBGrid1.Columns[Form18.DBGrid1.SelectedIndex].PickList := Form7.slPickListInstituicao;
-        Form18.DBGrid1.Columns[IndexColumnFromName(Form18.DBGrid1, Form18.DBGrid1.Columns[Form18.DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
-      end;
-      
-    end
+        if FormaDePagamentoEnvolveCartao(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+        begin
+          DBGrid1.Columns[DBGrid1.SelectedIndex].PickList := Form7.slPickListInstituicao;
+          DBGrid1.Columns[IndexColumnFromName(DBGrid1, DBGrid1.Columns[DbGrid1.SelectedIndex].FieldName)].DropDownRows := iDropDownRows; // Sandro Silva 2023-11-20
+        end;
+      end
+    end;
   end;
-
 end;
 
-function TForm18.FormaDePagamentoEnvolveBancos(sForma: String): Boolean;
+function TFrmParcelas.FormaDePagamentoEnvolveBancos(sForma: String): Boolean;
 begin
   Result := (Pos('|' + IdFormasDePagamentoNFe(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) + '|', '|02|16|17|18|') > 0); /// envolvem bancos
 end;
 
-function TForm18.ValidarDesdobramentoParcela: Boolean;
+function TFrmParcelas.ValidarDesdobramentoParcela: Boolean;
 var
   slFormas: TStringList;
   sForma: String;
@@ -1972,13 +1968,13 @@ begin
 
 end;
 
-procedure TForm18.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+procedure TFrmParcelas.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   if ValidarDesdobramentoParcela = False then
     Abort;
 end;
 
-procedure TForm18.cboDocCobrancaEnter(Sender: TObject);
+procedure TFrmParcelas.cboDocCobrancaEnter(Sender: TObject);
 begin
   if Form7.sModulo = 'VENDA' then
   begin
@@ -1987,17 +1983,17 @@ begin
   end;
 end;
 
-procedure TForm18.DBGrid1Exit(Sender: TObject);
+procedure TFrmParcelas.DBGrid1Exit(Sender: TObject);
 begin
   Form7.ibDataSet7.Tag := 0; // Permiter fazer append/insert no dataset
 end;
 
-procedure TForm18.edtQtdParcKeyPress(Sender: TObject; var Key: Char);
+procedure TFrmParcelas.edtQtdParcKeyPress(Sender: TObject; var Key: Char);
 begin
   ValidaValor(Sender,Key,'I');
 end;
 
-procedure TForm18.ReparcelaValor(DataSet: TibDataSet; iParcelas: Integer;
+procedure TFrmParcelas.ReparcelaValor(DataSet: TibDataSet; iParcelas: Integer;
   dTotalParcelar: Double);
 var
   dTotal: Double;
@@ -2058,7 +2054,7 @@ begin
   DataSet.Post;
 end;
 
-procedure TForm18.RateiaDiferencaParcelaEntreAsDemais(ModuloAtual: String);
+procedure TFrmParcelas.RateiaDiferencaParcelaEntreAsDemais(ModuloAtual: String);
 (*
 var
   dDiferenca : Currency; // Sandro Silva 2023-11-21 Double;
@@ -2163,7 +2159,7 @@ begin
   FreeAndNil(Parcelas);
 end;
 
-function TForm18.TotalParcelasLancadas: Double;
+function TFrmParcelas.TotalParcelasLancadas: Double;
 var
   //iRecno: Integer;
   Parcelas: TRateioDiferencaEntreParcelasReceber;

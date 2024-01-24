@@ -613,7 +613,7 @@ var
 implementation
 
 uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
-  preco1, Unit20, Unit19, Mais3, Unit18, StrUtils, uTestaProdutoExiste,
+  preco1, Unit20, Unit19, Mais3, uFrmParcelas, StrUtils, uTestaProdutoExiste,
   uITestaProdutoExiste
   {Sandro Silva 2022-09-26 inicio}
   , WinInet
@@ -7418,17 +7418,6 @@ begin
     begin
       Form7.sTextoDoAcordo := Form7.sTextoDoAcordo + chr(13) + chr(10) + 'Valor atualizado calculado com a taxa de juros de '+AllTrim(Format('%15.4n',[Form1.fTaxa]))+' ao dia foi desconsiderado.'+chr(13)+chr(10);
     end;
-    
-    {Form7.ibDataSet15.Close;
-    Form7.ibDataSet15.SelectSql.Clear;
-    Form7.ibDataset15.SelectSql.Add('select first 1 * from VENDAS order by NUMERONF');
-    Form7.ibDataset15.Open;
-    //
-    Form7.ibDataSet15.Edit;
-    Form7.ibDataSet15DUPLICATAS.AsFloat  := 0;
-    Form7.ibDataSet15TOTAL.AsFloat       := fTotal1;
-    Form7.ibDataSet15CLIENTE.AsString    := Form7.IBDataSet2NOME.AsString;
-    Form7.ibDataSet15NUMERONF.AsString   := sNumeroNF; Mauricio Parizotto 2023-06-30}
 
     Form7.ibDataSet7.Close;
     Form7.ibDataSet7.Selectsql.Clear;
@@ -7439,24 +7428,17 @@ begin
     Form7.ibDataSet7.Open;
 
 
-    {while not Form7.ibDataSet7.Eof do
-    begin
-      Form7.ibDataSet15DUPLICATAS.AsFloat := Form7.ibDataSet15DUPLICATAS.AsFloat + 1;
-      Form7.ibDataSet7.Next;
+    //Mauricio Parizotto 2024-01-24
+    try
+      FrmParcelas := TFrmParcelas.Create(Self);
+      FrmParcelas.Caption := 'Renegociação de dívida';
+      FrmParcelas.vlrRenegociacao := fTotal1;
+      FrmParcelas.nrRenegociacao := sNumeroNF;
+      FrmParcelas.ShowModal;
+      //Form18.Caption := 'Desdobramento das duplicatas';
+    finally
+      FreeAndNil(FrmParcelas);
     end;
-    //
-    if Form7.ibDataSet15DUPLICATAS.AsFloat = 0 then
-      Form7.ibDataSet15DUPLICATAS.AsFloat  := 1;
-    //
-    Form7.ibDataset7.First; Mauricio Parizotto 2023-06-30}
-
-    Form18.Caption := 'Renegociação de dívida';
-    Form18.vlrRenegociacao := fTotal1;
-    Form18.nrRenegociacao := sNumeroNF;
-    Form18.ShowModal;
-    Form18.Caption := 'Desdobramento das duplicatas';
-
-    //Form7.ibDataSet15.Cancel;
   end;
 end;
 
