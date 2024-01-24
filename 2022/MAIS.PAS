@@ -14,7 +14,7 @@ uses
   {$ELSE}
   smallfunc_xe,
   {$ENDIF}
-  XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, MD5, DB, DateUtils,
+  XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, DB, DateUtils,
   WinTypes, WinProcs, uFuncoesBancoDados,
   LbCipher, LbClass, Tlhelp32, Psapi, strutils, ShlObj, ComObj, ActiveX
   , DBCtrls

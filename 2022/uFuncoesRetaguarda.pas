@@ -66,7 +66,7 @@ uses
   function FormaDePagamentoGeraCarneDuplicata(sForma: String): Boolean;
   function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
   function FormaDePagamentoGeraBoleto(sForma: String): Boolean;
-  function GeraMD5(valor :string):string;
+//  function GeraMD5(valor :string):string;
   function EstadoEmitente(Banco: TIBDatabase):string; //Mauricio Parizotto 2023-09-06
   function ProdutoComposto(IBTransaction: TIBTransaction; sCodigoProduto: String): Boolean;
   procedure FabricaComposto(const sCodigo: String; DataSetEstoque: TIBDataSet;
@@ -698,6 +698,7 @@ begin
   Result := (Pos('|' + sIdForma + '|', '||14|15|99|') > 0); // sem informar, duplicata mercantil ou boleto
 end;
 
+(*
 function GeraMD5(valor :string):string;
 {$IFDEF VER150}
 {$ELSE}
@@ -716,6 +717,7 @@ begin
   end;
   {$ENDIF}
 end;
+Mauricio Parizotto 2024-01-24*)
 
 function EstadoEmitente(Banco: TIBDatabase):string; //Mauricio Parizotto 2023-09-06
 var
