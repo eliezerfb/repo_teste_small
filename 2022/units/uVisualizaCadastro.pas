@@ -1238,11 +1238,7 @@ begin
     Form7.ibDataSet27.EnableControls;
     Form7.ibDataSet26.EnableControls;
     Form7.ibDataSet24.EnableControls;
-
-    //LogRetaguarda('Form7.ibDataSet24.EnableControls; 1227'); // Sandro Silva 2023-11-27
-
     Form7.ibDataSet23.EnableControls;
-    //LogRetaguarda('uvisualizacadastro ibDataSet23.EnableControls 1231'); // Sandro Silva 2023-12-04
     Form7.ibDataSet28.EnableControls;
     Form7.ibDataSet16.EnableControls;
     Form7.ibDataSet15.EnableControls;
@@ -1255,13 +1251,16 @@ begin
   
   if ((Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'KARDEX')) then
   begin
+    Form7.sModulo := 'ESTOQUE'; // Mauricio Parizotto 2024-01-25
+
     Form7.Close;
     Form7.Show;
     
     try
       Form7.ibDataSet28.Open;
       Form7.ibDataSet4.EnableControls;
-    except end;
+    except
+    end;
   end;
   
   AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
