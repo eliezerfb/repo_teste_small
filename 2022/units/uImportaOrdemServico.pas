@@ -186,7 +186,8 @@ begin
         Form7.ibDataSet3.Edit;
         Form7.ibDataSet3SITUACAO.AsString   := 'Fechada';
         Form7.ibDataSet3DATA_ENT.AsDateTime := Date;
-        Form7.ibDataSet3HORA_ENT.AsString   := TimeToStr(Time);
+        //Form7.ibDataSet3HORA_ENT.AsString   := TimeToStr(Time); Mauricio Parizotto 2024-01-25
+        Form7.ibDataSet3HORA_ENT.AsString   := Copy(TimeToStr(Time),1,5);
         //Form7.ibDataSet3NF.AsString         := Form7.ibDataSet15NUMERONF.AsString; Mauricio Parizotto 2023-12-26
         Form7.ibDataSet3.FieldByName(campoDocumento).AsString := Form7.ibDataSet15NUMERONF.AsString;
         Form7.ibDataSet3.Post;
@@ -244,7 +245,8 @@ begin
       Form7.ibDataSet3.Edit;
       Form7.ibDataSet3SITUACAO.AsString   := 'Fechada';
       Form7.ibDataSet3DATA_ENT.AsDateTime := Date;
-      Form7.ibDataSet3HORA_ENT.AsString   := TimeToStr(Time);
+      //Form7.ibDataSet3HORA_ENT.AsString   := TimeToStr(Time); Mauricio Parizotto 2024-01-25
+      Form7.ibDataSet3HORA_ENT.AsString   := Copy(TimeToStr(Time),1,5);
       Form7.ibDataSet3NF.AsString         := Form7.ibDataSet15NUMERONF.AsString;
       Form7.ibDataSet3.Post;
     end;
