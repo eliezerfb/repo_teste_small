@@ -2800,7 +2800,7 @@ var
   aRetorno: TRetornoSAT;
   sFile: String;
   MS: TStringStream; // Sandro Silva 2021-06-23 MS: TMemoryStream; // Sandro Silva 2016-10-07
-  SL: TStringList; // Sandro Silva 2016-10-07
+  //SL: TStringList; // Sandro Silva 2016-10-07
   sTextoLog: String;
   iItem: Integer;
 begin
@@ -2849,7 +2849,7 @@ begin
       if Chamadacdecl then
         sRetorno := _ExtrairLogs_cdecl(idSessao, PAnsiChar(FCodigoAtivacao))
       else
-        sRetorno := _ExtrairLogs_stdcall(idSessao, PAnsiChar(FCodigoAtivacao));
+        sRetorno := String(_ExtrairLogs_stdcall(idSessao, PAnsiChar(FCodigoAtivacao))); // 2024-01-25 sRetorno := _ExtrairLogs_stdcall(idSessao, PAnsiChar(FCodigoAtivacao));
 
     end;
     {Sandro Silva 2021-08-23 fim}
@@ -2882,7 +2882,13 @@ begin
         case iItem of
           0: FRetornoExtrairLogs.numeroSessao     := aRetorno[iItem];
           1: FRetornoExtrairLogs.EEEEE            := aRetorno[iItem];
-          2: FRetornoExtrairLogs.mensagem         := aRetorno[iItem];
+          // Sandro Silva 2024-01-24 2: FRetornoExtrairLogs.mensagem         := aRetorno[iItem];
+          2:
+          begin
+            FRetornoExtrairLogs.mensagem         := aRetorno[iItem];
+            if Utf8ToAnsi(FRetornoExtrairLogs.mensagem) <> '' then
+              FRetornoExtrairLogs.mensagem         := Utf8ToAnsi(FRetornoExtrairLogs.mensagem);
+          end;
           3: FRetornoExtrairLogs.cod              := aRetorno[iItem];
           4: FRetornoExtrairLogs.mensagemSEFAZ    := aRetorno[iItem];
           5: FRetornoExtrairLogs.ArquivoLogBase64 := aRetorno[iItem];
@@ -2904,25 +2910,28 @@ begin
 
           if FRetornoExtrairLogs.EEEEE = '15000' then
           begin
-            sTextoLog := Base64Decode(FRetornoExtrairLogs.ArquivoLogBase64);
+            sTextoLog := Utf8ToAnsi(Base64Decode(String(FRetornoExtrairLogs.ArquivoLogBase64)));
 
             sFile := ExtractFilePath(Application.ExeName) + 'log\' + FNumeroSerie + '_' + FCaixa + '_log_sat.txt';
 
             if DirectoryExists(ExtractFilePath(Application.ExeName) + 'log') = False then
               ForceDirectories(ExtractFilePath(Application.ExeName) + 'log');
 
-            SL := TStringList.Create;
+            //SL := TStringList.Create;
             MS := TStringStream.Create('');
             try
 
+              { Sandro Silva 2024-01-24
               if Utf8ToAnsi(sTextoLog) <> '' then
                 sTextoLog := Utf8ToAnsi(sTextoLog);
+              }
 
               MS.Size := 0;
               MS.WriteBuffer(Pointer(sTextoLog)^, Length(sTextoLog)*SizeOf(Char));
 
               MS.Seek(0, soBeginning);
 
+              (* Sandro Silva 2024-01-24
               {$IFDEF VER150}
               SL.Clear;
               SL.LoadFromStream(MS);
@@ -2930,15 +2939,19 @@ begin
               if mmLog <> nil then
                 mmLog.Lines.AddStrings(SL);
               {$ELSE}
-              TCustomMemoryStream(MS).SaveToFile(sfile);
+              ms.SaveToFile(sFile); // Sandro Silva 2024-01-24 TCustomMemoryStream(MS).SaveToFile(sfile);
               if mmLog <> nil then
                 mmLog.Lines.Add(MS.DataString);
               {$ENDIF}
+              *)
+              ms.SaveToFile(sFile);
+              if mmLog <> nil then
+                mmLog.Lines.Add(MS.DataString);
 
               Sleep(1000); // 2021-06-23 Sleep(5000);
 
             finally
-              SL.Free;
+              //SL.Free;
               ms.Free;
             end;
 
@@ -5402,7 +5415,13 @@ procedure TSmall59.Desinicializa;
 begin
   // Controla descarregamento da DLL
   try
-    FreeLibrary(FhDLL); //descarregando dll
+    try
+      // Quando executa ExtrairLogs, ao finalizar o sistema ocorre access violation quando tenta liberar a dll
+      // Pode ser algo na DLL. Testado com dll da DIMEP D-SAT 2.0
+      FreeLibrary(FhDLL); //descarregando dll
+    except
+
+    end;
 
     if Chamadacdecl then
     begin
