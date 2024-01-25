@@ -128,25 +128,6 @@ begin
           Sleep(100);
         end;
 
-        {
-        Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-        sCertificado := Trim(Mais1ini.ReadString('NFE','Certificado',''));
-        Mais1ini.Free;
-
-        if Trim(sCertificado) = '' then
-        begin
-          if (Copy(Form1.sSerial,4,1) <> 'N') and
-             (Copy(Form1.sSerial,4,1) <> 'O') and
-             (Copy(Form1.sSerial,4,1) <> 'P') and
-             (Copy(Form1.sSerial,4,1) <> 'Q') and
-             (Copy(Form1.sSerial,4,1) <> 'R') and
-             (Copy(Form1.sSerial,4,1) <> 'M') then
-          begin
-            Form1.SelecionarCertificadoDigital1Click(Form1.SelecionarCertificadoDigital1); // Sandro Silva 2023-05-31 Form1.SelecionarCertificadoDigital1Click(Sender);
-          end;
-        end;
-        }
-
         Form22.Image1.Visible := False;
         Mensagem22('');
         Form22.Repaint;

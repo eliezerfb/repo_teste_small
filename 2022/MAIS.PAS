@@ -4544,29 +4544,6 @@ begin
   end;
 
   DefinirBuildEXEDAT;
-  {Sandro Silva 2022-12-28 fim}
-
-  {Sandro Silva 2023-05-31 inicio
-  if sLicenca = '' then
-    iLimiteUsuariosSimultaneos := 2
-  else
-    iLimiteUsuariosSimultaneos := 12;
-
-  if Form1.sSerial = '' then
-  begin
-    Form1.sSerial  := Mais1Ini.ReadString('RR','Ser','');
-  end;
-  //
-  if Form1.sSerial = '' then
-  begin
-    Form1.sSerial  := Mais1Ini.ReadString('SC','Ser','');
-  end;
-  //
-  if Form1.sSerial = '' then
-  begin
-    Form1.sSerial  := Mais1Ini.ReadString('RJ','Ser','');
-  end;
-  }
 
   ConectaBancoCommerce; // Sandro Silva 2023-05-31
 
@@ -4604,76 +4581,10 @@ begin
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end else
   begin
-    //
-    {Sandro Silva 2023-05-31 inicio
-    iLimiteUsuariosSimultaneos := 2;
-    //
-    if Copy(Form1.sSerial,4,1) = 'A'  then iLimiteUsuariosSimultaneos := 12; // 12 Usuários + OS
-    if Copy(Form1.sSerial,4,1) = 'B'  then iLimiteUsuariosSimultaneos := 07; // 07 Usuários + OS
-    if Copy(Form1.sSerial,4,1) = 'C'  then iLimiteUsuariosSimultaneos := 02; // 02 Usuários + OS
-    //
-    if Copy(Form1.sSerial,4,1) = 'D' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários
-    if Copy(Form1.sSerial,4,1) = 'E' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários
-    if Copy(Form1.sSerial,4,1) = 'F' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários
-    //
-    if Copy(Form1.sSerial,4,1) = 'N' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários Small Mei + OS
-    if Copy(Form1.sSerial,4,1) = 'O' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei + OS
-    if Copy(Form1.sSerial,4,1) = 'P' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei + OS
-    //
-    if Copy(Form1.sSerial,4,1) = 'Q' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários Small Mei
-    if Copy(Form1.sSerial,4,1) = 'R' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei
-    if Copy(Form1.sSerial,4,1) = 'M' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei
-    //
-    if Copy(Form1.sSerial,4,1) = 'S' then iLimiteUsuariosSimultaneos := 02;  // 02 Usuários Small Start
-    if Copy(Form1.sSerial,4,1) = 'W' then iLimiteUsuariosSimultaneos := 256; // 256 Usuários Small Commerce
-    }
-
     iLimiteUsuariosSimultaneos := ValidaRecursos.SistemaLimiteUsuarios; // Sandro Silva 2023-05-31
-    //
+
     iReduzida := 0;
 
-    //
-    // Alterado aqui a iReduzida de forma paleativa para atender prazo de lançamento do Small Go,
-    // mas precisa ser revisto com mais tempo o impacto de eliminar essa variável
-    //
-
-    {Sandro Silva 2023-06-01 inicio
-    //
-    // Quando iReduzida for 2 é Mei
-    //
-    if Copy(Form1.sSerial,4,1) = 'N' then  iReduzida := 2; // 12 Usuários Small Mei + OS
-    if Copy(Form1.sSerial,4,1) = 'O' then  iReduzida := 2; // 07 Usuários Small Mei + OS
-    if Copy(Form1.sSerial,4,1) = 'P' then  iReduzida := 2; // 02 Usuários Small Mei + OS
-    if Copy(Form1.sSerial,4,1) = 'Q' then  iReduzida := 2; // 12 Usuários Small Mei
-    if Copy(Form1.sSerial,4,1) = 'R' then  iReduzida := 2; // 07 Usuários Small Mei
-    if Copy(Form1.sSerial,4,1) = 'M' then  iReduzida := 2; // 02 Usuários Small Mei
-
-    if Copy(Form1.sSerial,4,1) = 'S' then  iReduzida := 1; // 02 Usuários Small Start
-    if Copy(Form1.sSerial,4,1) = 'T' then  iReduzida := 1; // 01 Usuários Small Go
-    }
-
-    {Sandro Silva 2023-06-01 inicio
-    Form22.sTitulo := 'Small Commerce';
-    if (Copy(Form1.sSerial,4,1) = 'A') or
-       (Copy(Form1.sSerial,4,1) = 'B') or
-       (Copy(Form1.sSerial,4,1) = 'C') or
-       (Copy(Form1.sSerial,4,1) = 'W') then
-      Form22.sTitulo := 'Small Commerce + Ordem de Serviço';
-
-    if (Copy(Form1.sSerial,4,1) = 'N') or
-       (Copy(Form1.sSerial,4,1) = 'O') or
-       (Copy(Form1.sSerial,4,1) = 'P') then
-      Form22.sTitulo := 'Small Mei + Ordem de Serviço';
-
-    if (Copy(Form1.sSerial,4,1) = 'Q') or
-       (Copy(Form1.sSerial,4,1) = 'R') or
-       (Copy(Form1.sSerial,4,1) = 'M') then
-      Form22.sTitulo := 'Small Mei';
-
-    if (Copy(Form1.sSerial,4,1) = 'T') then
-      Form22.sTitulo := 'Small Go';
-
-    }
     Form22.sTitulo := ValidaRecursos.rsRecursoSistema.Produto;
 
     if AnsiContainsText(ValidaRecursos.rsRecursoSistema.Produto, ' Go') then
@@ -4693,13 +4604,6 @@ begin
       bEmpresaMei := True;
     end else
     begin
-      {Sandro Silva 2023-05-31 inicio
-      if Mais1Ini.ReadString('LICENCA','MEI','NAO') = 'NAO' then
-      begin
-        Form1.iReduzida := 0;
-      end;
-      {Sandro Silva 2023-05-31 fim}
-
       // Note que agora é no WIND0WS.L0G individual em cada maquina
       Mais2ini := TIniFile.Create('WIND0WS.L0G');
 
@@ -4839,16 +4743,6 @@ begin
 
   if Trim(sCertificado) = '' then
   begin
-    {Sandro Silva 2023-06-02 inicio
-    if (Copy(Form1.sSerial,4,1) <> 'N') and
-       (Copy(Form1.sSerial,4,1) <> 'O') and
-       (Copy(Form1.sSerial,4,1) <> 'P') and
-       (Copy(Form1.sSerial,4,1) <> 'Q') and
-       (Copy(Form1.sSerial,4,1) <> 'R') and
-       (Copy(Form1.sSerial,4,1) <> 'M') then
-    }
-    //if not bEmpresaMei then Mauricio Parizotto 2023-06-13
-
     if (not bEmpresaMei) and (ExecutaComandoEscalar(Form7.IBDatabase1,
                                                     ' Select Coalesce(E.CGC,'''') '+
                                                     ' From RDB$DATABASE R '+
