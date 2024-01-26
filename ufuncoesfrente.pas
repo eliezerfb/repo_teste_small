@@ -1581,15 +1581,15 @@ begin
 
           if (Copy(xmlNodeValue(IBQDFE.FieldByName('NFEXML').AsString, '//chNFe'), 21, 2) = '65') then  // Assim para identificar xml de cancelamento de NFC-e
           begin
-            sFileExporta := PansiChar(Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-nfce.xml');  // Direciona o arquivo F para EXPORTA.TXT
+            sFileExporta := Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-nfce.xml';  // Direciona o arquivo F para EXPORTA.TXT
             if (Pos('CANCEL', AnsiUpperCase(IBQDFE.FieldByName('STATUS').AsString)) <> 0) then
-              sFileExporta := PansiChar(Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-caneve.xml');  // Direciona o arquivo F para EXPORTA.TXT
+              sFileExporta := Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-caneve.xml';  // Direciona o arquivo F para EXPORTA.TXT
           end;
           if (xmlNodeValue(IBQDFE.FieldByName('NFEXML').AsString, '//ide/mod') = '59') then
           begin
-            sFileExporta := PansiChar(Diretorio+'\AD'+IBQDFE.FieldByName('NFEID').AsString+'.xml');  // Direciona o arquivo F para EXPORTA.TXT
+            sFileExporta := Diretorio+'\AD'+IBQDFE.FieldByName('NFEID').AsString+'.xml';  // Direciona o arquivo F para EXPORTA.TXT
             if (Pos('CANCEL', AnsiUpperCase(IBQDFE.FieldByName('STATUS').AsString)) <> 0) then
-              sFileExporta := PansiChar(Diretorio+'\ADC'+IBQDFE.FieldByName('NFEID').AsString+'.xml');  // Direciona o arquivo F para EXPORTA.TXT
+              sFileExporta := Diretorio+'\ADC'+IBQDFE.FieldByName('NFEID').AsString+'.xml';  // Direciona o arquivo F para EXPORTA.TXT
           end;
 
           //
@@ -1641,7 +1641,7 @@ begin
           // Componente NFCe está gerando os xml com 'ï»¿' no início do arquivo e causa erro ao exportar para contabilidade
           fNFe := StringReplace(fNFe, 'ï»¿','', [rfReplaceAll]); // Sandro Silva 2016-03-21
 
-          sFileExporta := PansiChar(Diretorio+'\'+
+          sFileExporta := Diretorio+'\'+
             xmlNodeValue(fNFe, '//cUF') +
             xmlNodeValue(fNFe, '//ano') +
             xmlNodeValue(fNFe, '//CNPJ') +
@@ -1649,7 +1649,7 @@ begin
             RightStr('000' + xmlNodeValue(fNFe, '//serie'), 3) +
             RightStr('000000000' + xmlNodeValue(fNFe, '//nNFIni'), 9) +
             RightStr('000000000' + xmlNodeValue(fNFe, '//nNFFin'), 9) +
-            '-inut.xml');  // Direciona o arquivo F para EXPORTA.TXT
+            '-inut.xml';  // Direciona o arquivo F para EXPORTA.TXT
 
           //
         except
@@ -2115,7 +2115,7 @@ begin
       sleep(10);
     end;
     //
-    ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), PAnsiChar(''), SW_SHOW); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open', 'email.exe',pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), '', SW_SHOW);
+    ShellExecute(0, 'Open', 'email.exe', PChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), PChar(''), SW_SHOW); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open', 'email.exe',pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), '', SW_SHOW);
     //
     Result := 1;
     //
@@ -2130,16 +2130,16 @@ begin
     //
     with Msg do
     begin
-      if (sAssunto <> '') then lpszSubject  := PAnsiChar(sAssunto); // Sandro Silva 2020-09-03 if (sAssunto <> '') then lpszSubject := PChar(sAssunto);
-      if (sTexto <> '')   then lpszNoteText := PAnsiChar(sTexto); //Corpo da Mensagem // Sandro Silva 2020-09-03 if (sTexto <> '')   then lpszNoteText := PChar(sTexto); //Corpo da Mensagem
+      if (sAssunto <> '') then lpszSubject  := PAnsiChar(AnsiString(sAssunto)); // Sandro Silva 2020-09-03 if (sAssunto <> '') then lpszSubject := PChar(sAssunto);
+      if (sTexto <> '')   then lpszNoteText := PAnsiChar(AnsiString(sTexto)); //Corpo da Mensagem // Sandro Silva 2020-09-03 if (sTexto <> '')   then lpszNoteText := PChar(sTexto); //Corpo da Mensagem
       //
       // remetente
       //
       if (sDe <> '') then
       begin
         lpSender.ulRecipClass := MAPI_ORIG;
-        lpSender.lpszName     := PAnsiChar(sDe); // Sandro Silva 2020-09-03 lpSender.lpszName := PChar(sDe);
-        lpSender.lpszAddress  := PAnsiChar(sDe); // Sandro Silva 2020-09-03 lpSender.lpszAddress  := PChar(sDe);
+        lpSender.lpszName     := PAnsiChar(AnsiString(sDe)); // Sandro Silva 2020-09-03 lpSender.lpszName := PChar(sDe);
+        lpSender.lpszAddress  := PAnsiChar(AnsiString(sDe)); // Sandro Silva 2020-09-03 lpSender.lpszAddress  := PChar(sDe);
         lpSender.ulReserved := 0;
         lpSender.ulEIDSize := 0;
         lpSender.lpEntryID := nil;
@@ -2158,8 +2158,8 @@ begin
         end;
         //
         lpRecepient.ulRecipClass := MAPI_TO;
-        lpRecepient.lpszName     := PAnsiChar(''); // Sandro Silva 2020-09-03 lpRecepient.lpszName := PChar('');
-        lpRecepient.lpszAddress  := PAnsiChar(sPara); // Sandro Silva 2020-09-03 lpRecepient.lpszAddress  := PChar(sPara); 
+        lpRecepient.lpszName     := PAnsiChar(AnsiString('')); // Sandro Silva 2020-09-03 lpRecepient.lpszName := PChar('');
+        lpRecepient.lpszAddress  := PAnsiChar(AnsiString(sPara)); // Sandro Silva 2020-09-03 lpRecepient.lpszAddress  := PChar(sPara);
         lpRecepient.ulReserved   := 0;
         lpRecepient.ulEIDSize    := 0;
         lpRecepient.lpEntryID    := nil;
@@ -2172,8 +2172,8 @@ begin
         if (sCC <> '') then
         begin
           lpComCopia.ulRecipClass := MAPI_CC;
-          lpComCopia.lpszName     := PAnsiChar(sCC); // Sandro Silva 2020-09-03 lpComCopia.lpszName     := PChar(sCC);
-          lpComCopia.lpszAddress  := PAnsiChar(sCC); // Sandro Silva 2020-09-03 lpComCopia.lpszAddress  := PChar(sCC);
+          lpComCopia.lpszName     := PAnsiChar(AnsiString(sCC)); // Sandro Silva 2020-09-03 lpComCopia.lpszName     := PChar(sCC);
+          lpComCopia.lpszAddress  := PAnsiChar(AnsiString(sCC)); // Sandro Silva 2020-09-03 lpComCopia.lpszAddress  := PChar(sCC);
           lpComCopia.ulReserved   := 0;
           lpComCopia.ulEIDSize    := 0;
           lpComCopia.lpEntryID    := nil;
@@ -2196,7 +2196,7 @@ begin
         //
         FileAttach.nPosition    := Cardinal($FFFFFFFF);
         FileAttach.lpFileType   := nil;
-        FileAttach.lpszPathName := PAnsiChar(sAnexo); // Sandro Silva 2020-09-03 FileAttach.lpszPathName := PChar(sAnexo);
+        FileAttach.lpszPathName := PAnsiChar(AnsiString(sAnexo)); // Sandro Silva 2020-09-03 FileAttach.lpszPathName := PChar(sAnexo);
         nFileCount              := 1;
         lpFiles                 := @FileAttach;
         //
@@ -2204,12 +2204,7 @@ begin
       //
       // carrega dll e o método sPara envio do email
       //
-      {$IFDEF VER150}
-      MAPIModule := LoadLibrary(PAnsiChar(MAPIDLL));
-      {$ELSE}
-      MAPIModule := LoadLibrary(PWideChar(MAPIDLL));
-      {$ENDIF}
-  //    MAPIModule.
+      MAPIModule := LoadLibrary(PChar(MAPIDLL));
       if MAPIModule = 0 then
       begin
         Result := -1

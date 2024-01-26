@@ -37,30 +37,30 @@ type
   private
     DLL: THandle;
     FLoad: Boolean;
-    _AlertaXmlPendenteBlocox: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; sTipo: PAnsiChar; sSerieECF: PAnsiChar; bExibirAlerta: Boolean; bRetaguarda: Boolean): Boolean; cdecl;
-    _AssinaXmlPendenteBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; sTipo: PAnsiChar): Boolean; cdecl;
-    _ConsultarReciboBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean; cdecl;
+    _AlertaXmlPendenteBlocox: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; sTipo: AnsiString; sSerieECF: AnsiString; bExibirAlerta: Boolean; bRetaguarda: Boolean): Boolean; cdecl;
+    _AssinaXmlPendenteBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; sTipo: AnsiString): Boolean; cdecl;
+    _ConsultarReciboBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; Recibo: AnsiString): Boolean; cdecl;
     _PermitirGerarXmlEstoqueBlocoX: function(): Boolean; cdecl;
-    _RestaurarArquivosBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; sTipo: PAnsiChar; sSerieECF: PAnsiChar; bApenasUltimo: Boolean): Boolean; cdecl;
-    _ServidorBlocoXSefazConfigurado: function(UF: PAnsiChar): Boolean; cdecl;
-    _TransmitirXmlPendenteBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; sTipo: PAnsiChar; sSerieECF: PAnsiChar; bAlerta: Boolean): Integer; cdecl;
-    _TrataErroRetornoTransmissaoBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; sXmlResposta: PAnsiChar; sTipo: PAnsiChar; sSerie: PAnsiChar; sDataReferencia: PAnsiChar): Boolean; cdecl;
-    _ValidaCertificadoDigitalBlocoX: function(sCNPJ: PAnsiChar): Boolean; cdecl; // Sandro Silva 2018-10-18 _ValidaCertificadoDigitalBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl;
-    _XmlEstoqueBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; dtInicial: PAnsiChar; dtFinal: PAnsiChar; bLimparRecibo: Boolean; bLimparXMLResposta: Boolean; bAssinarXML: Boolean; bForcarGeracao: Boolean): Boolean; cdecl;
-    _XmlEstoqueOmissoBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; dtInicial: PAnsiChar; dtFinal: PAnsiChar; bLimparRecibo: Boolean; bLimparXMLResposta: Boolean; bAssinarXML: Boolean; bForcarGeracao: Boolean): Boolean; cdecl;
-    _XmlReducaoZBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; SerieECF: PAnsiChar; dtReferencia: PAnsiChar; bLimparRecibo: Boolean; bLimparXMLResposta: Boolean; bAssinarXML: Boolean): Boolean; cdecl;
+    _RestaurarArquivosBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; sTipo: AnsiString; sSerieECF: AnsiString; bApenasUltimo: Boolean): Boolean; cdecl;
+    _ServidorBlocoXSefazConfigurado: function(UF: AnsiString): Boolean; cdecl;
+    _TransmitirXmlPendenteBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; sTipo: AnsiString; sSerieECF: AnsiString; bAlerta: Boolean): Integer; cdecl;
+    _TrataErroRetornoTransmissaoBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; sXmlResposta: AnsiString; sTipo: AnsiString; sSerie: AnsiString; sDataReferencia: AnsiString): Boolean; cdecl;
+    _ValidaCertificadoDigitalBlocoX: function(sCNPJ: AnsiString): Boolean; cdecl; // Sandro Silva 2018-10-18 _ValidaCertificadoDigitalBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString): Boolean; cdecl;
+    _XmlEstoqueBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; dtInicial: AnsiString; dtFinal: AnsiString; bLimparRecibo: Boolean; bLimparXMLResposta: Boolean; bAssinarXML: Boolean; bForcarGeracao: Boolean): Boolean; cdecl;
+    _XmlEstoqueOmissoBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; dtInicial: AnsiString; dtFinal: AnsiString; bLimparRecibo: Boolean; bLimparXMLResposta: Boolean; bAssinarXML: Boolean; bForcarGeracao: Boolean): Boolean; cdecl;
+    _XmlReducaoZBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; SerieECF: AnsiString; dtReferencia: AnsiString; bLimparRecibo: Boolean; bLimparXMLResposta: Boolean; bAssinarXML: Boolean): Boolean; cdecl;
     _SelecionaCertificadoDigitalBlocoX: function(): Boolean; cdecl;
-    _ConsultarPendenciasDesenvolvedorPafEcfBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl;
-    _IdentificaRetornosComErroTratando: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; Tipo: PAnsiChar): Boolean; cdecl;
-    _VisualizaXmlBlocoX: function(CaminhoBanco: PAnsiChar; sTipo: PAnsiChar;DiretorioAtual: PAnsiChar ): Boolean; cdecl;
-    _ReprocessarArquivoBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean; cdecl;
-    _CancelarArquivoBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean; cdecl;
-    _GerarAoFISCOREDUCAOZBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl;
-    _GerarEstoqueAnoAnteriorBlocoX: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl; // Sandro Silva 2022-11-22
-    _GerarEstoqueMudancaDeTributacao: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl; // Sandro Silva 2022-11-22
-    _GerarEstoqueSuspensaoOuBaixaDeIE: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl; // Sandro Silva 2022-11-22
-    _GerarEstoqueMudancaDeRegime: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl; // Sandro Silva 2022-11-22
-    _GerarEstoqueAtual: function(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar): Boolean; cdecl; // Sandro Silva 2022-11-22
+    _ConsultarPendenciasDesenvolvedorPafEcfBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString): Boolean; cdecl;
+    _IdentificaRetornosComErroTratando: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; Tipo: AnsiString): Boolean; cdecl;
+    _VisualizaXmlBlocoX: function(CaminhoBanco: AnsiString; sTipo: AnsiString;DiretorioAtual: AnsiString ): Boolean; cdecl;
+    _ReprocessarArquivoBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; Recibo: AnsiString): Boolean; cdecl;
+    _CancelarArquivoBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString; Recibo: AnsiString): Boolean; cdecl;
+    _GerarAoFISCOREDUCAOZBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString): Boolean; cdecl;
+    _GerarEstoqueAnoAnteriorBlocoX: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString): Boolean; cdecl; // Sandro Silva 2022-11-22
+    _GerarEstoqueMudancaDeTributacao: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString): Boolean; cdecl; // Sandro Silva 2022-11-22
+    _GerarEstoqueSuspensaoOuBaixaDeIE: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString): Boolean; cdecl; // Sandro Silva 2022-11-22
+    _GerarEstoqueMudancaDeRegime: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString): Boolean; cdecl; // Sandro Silva 2022-11-22
+    _GerarEstoqueAtual: function(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString): Boolean; cdecl; // Sandro Silva 2022-11-22
 
     FEmitente: TEmitente;
     FIBDATABASE: TIBDatabase;
@@ -114,22 +114,22 @@ type
     procedure ValidaMd5DoListaNoCriptografado;
     function VisualizaXmlBlocoX(CaminhoBanco: String;
       DiretorioAtual: String; sTipo: String): Boolean;
-    function ReprocessarArquivoBlocoX(CaminhoBanco: PAnsiChar;
-      DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean;
+    function ReprocessarArquivoBlocoX(CaminhoBanco: String;
+      DiretorioAtual: String; Recibo: String): Boolean;
     function CancelarArquivoBlocoX(CaminhoBanco: PAnsiChar;
       DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean;
-    function GerarAoFISCOREDUCAOZBlocox(CaminhoBanco: PAnsiChar;
-      DiretorioAtual: PAnsiChar): Boolean;
-    function GerarEstoqueAnoAnterior(CaminhoBanco: PAnsiChar;
-      DiretorioAtual: PAnsiChar): Boolean;
-    function GerarEstoqueMudancaDeTributacao(CaminhoBanco: PAnsiChar;
-      DiretorioAtual: PAnsiChar): Boolean;
-    function GerarEstoqueSuspensaoOuBaixaDeIE(CaminhoBanco: PAnsiChar;
-      DiretorioAtual: PAnsiChar): Boolean;
-    function GerarEstoqueMudancaDeRegime(CaminhoBanco: PAnsiChar;
-      DiretorioAtual: PAnsiChar): Boolean;
-    function GerarEstoqueAtual(CaminhoBanco: PAnsiChar;
-      DiretorioAtual: PAnsiChar): Boolean;
+    function GerarAoFISCOREDUCAOZBlocox(CaminhoBanco: String;
+      DiretorioAtual: String): Boolean;
+    function GerarEstoqueAnoAnterior(CaminhoBanco: String;
+      DiretorioAtual: String): Boolean;
+    function GerarEstoqueMudancaDeTributacao(CaminhoBanco: String;
+      DiretorioAtual: String): Boolean;
+    function GerarEstoqueSuspensaoOuBaixaDeIE(CaminhoBanco: String;
+      DiretorioAtual: String): Boolean;
+    function GerarEstoqueMudancaDeRegime(CaminhoBanco: String;
+      DiretorioAtual: String): Boolean;
+    function GerarEstoqueAtual(CaminhoBanco: String;
+      DiretorioAtual: String): Boolean;
   end;
 
 var
@@ -298,7 +298,7 @@ begin
   if FLoad = False then
     Result := BXValidaCertificadoDigital(sCNPJ)
   else
-    Result := _ValidaCertificadoDigitalBlocoX(PAnsiChar(sCNPJ));
+    Result := _ValidaCertificadoDigitalBlocoX(AnsiString(sCNPJ));
 end;
 
 function TSmallBlocoX.XmlReducaoZ(CaminhoBanco: String; DiretorioAtual: String;
@@ -331,7 +331,7 @@ begin
   end
   else
   begin
-    Result := _XmlReducaoZBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual), PAnsiChar(SerieECF), PAnsiChar(sdtReferencia), bLimparRecibo, bLimparXMLResposta, bAssinarXML);
+    Result := _XmlReducaoZBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(SerieECF), AnsiString(sdtReferencia), bLimparRecibo, bLimparXMLResposta, bAssinarXML);
   end;
 
 end;
@@ -380,7 +380,7 @@ begin
   end
   else
   begin
-    Result := _XmlEstoqueBlocoX(PansiChar(CaminhoBanco), PAnsiChar(DiretorioAtual), PAnsiChar(sdtInicial), PAnsiChar(sdtFinal), True, True, True, bForcarGeracao);
+    Result := _XmlEstoqueBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(sdtInicial), AnsiString(sdtFinal), True, True, True, bForcarGeracao);
   end;
 
 end;
@@ -418,7 +418,7 @@ begin
   end
   else
   begin
-    Result := _XmlEstoqueOmissoBlocoX(PansiChar(CaminhoBanco), PAnsiChar(DiretorioAtual), PAnsiChar(sdtInicial), PAnsiChar(sdtFinal), True, True, True, bForcarGeracao);
+    Result := _XmlEstoqueOmissoBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(sdtInicial), AnsiString(sdtFinal), True, True, True, bForcarGeracao);
   end;
 
 end;
@@ -453,7 +453,7 @@ begin
 
   end
   else
-    Result := _TransmitirXmlPendenteBlocoX(PansiChar(CaminhoBanco), PAnsiChar(DiretorioAtual), PAnsiChar(sTipo), PAnsiChar(sSerieECF), bAlerta);
+    Result := _TransmitirXmlPendenteBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(sTipo), AnsiString(sSerieECF), bAlerta);
 end;
 
 function TSmallBlocoX.ConsultarRecibo(CaminhoBanco: String;
@@ -487,7 +487,7 @@ begin
   end
   else
   begin
-    Result := _ConsultarReciboBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual), PAnsiChar(Recibo));
+    Result := _ConsultarReciboBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(Recibo));
   end;
 
 end;
@@ -497,7 +497,7 @@ begin
   if Fload = False then
     Result := BXServidorSefazConfigurado(UF)
   else
-    Result := _ServidorBlocoXSefazConfigurado(PAnsiChar(UF));
+    Result := _ServidorBlocoXSefazConfigurado(AnsiString(UF));
 end;
 
 function TSmallBlocoX.AlertaXmlPendente(CaminhoBanco: String;
@@ -537,7 +537,7 @@ begin
   end
   else
   begin
-    Result := _AlertaXmlPendenteBlocox(PansiChar(CaminhoBanco), PAnsiChar(DiretorioAtual), PAnsiChar(sTipo), PAnsiChar(sSerieECF), bExibirAlerta, bRetaguarda);
+    Result := _AlertaXmlPendenteBlocox(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(sTipo), AnsiString(sSerieECF), bExibirAlerta, bRetaguarda);
   end;
 end;
 
@@ -549,7 +549,7 @@ begin
   if Fload = False then
   begin
     Result := False;
-    
+
     ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
 
     if FIBDATABASE.Connected then
@@ -575,7 +575,7 @@ begin
   end
   else
   begin
-    Result := _RestaurarArquivosBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual), PAnsiChar(sTipo), PAnsiChar(sSerieECF), bApenasUltimo);
+    Result := _RestaurarArquivosBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(sTipo), AnsiString(sSerieECF), bApenasUltimo);
   end;
 
 end;
@@ -613,7 +613,7 @@ begin
   end
   else
   begin
-    Result := _TrataErroRetornoTransmissaoBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual), PAnsiChar(sXmlResposta), PAnsiChar(sTipo), PAnsiChar(sSerie), PAnsiChar(sDataReferencia));
+    Result := _TrataErroRetornoTransmissaoBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(sXmlResposta), AnsiString(sTipo), AnsiString(sSerie), AnsiString(sDataReferencia));
   end;
 
 end;
@@ -666,7 +666,7 @@ begin
   end
   else
   begin
-    Result := _ConsultarPendenciasDesenvolvedorPafEcfBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+    Result := _ConsultarPendenciasDesenvolvedorPafEcfBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual));
   end;
 
 end;
@@ -703,7 +703,7 @@ begin
   end
   else
   begin
-    Result := _IdentificaRetornosComErroTratando(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual), PAnsiChar(sTipo)); // Sandro Silva 2020-06-22 Result := _IdentificaRetornosComErroTratando(PAnsiChar(CaminhoBanco), PAnsiChar(sTipo), PAnsiChar(DiretorioAtual));
+    Result := _IdentificaRetornosComErroTratando(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(sTipo)); // Sandro Silva 2020-06-22 Result := _IdentificaRetornosComErroTratando(PAnsiChar(CaminhoBanco), PAnsiChar(sTipo), PAnsiChar(DiretorioAtual));
 
   end;
 
@@ -766,7 +766,7 @@ begin
       end;
 
       ShowMessage(sMD5Cripta);
-      
+
       if AnsiUpperCase(sMD5Cripta) <> AnsiUpperCase(sCNPJ+sMD5Lista) then
       begin
 
@@ -916,7 +916,7 @@ begin
   end
   else
   begin
-    Result := _VisualizaXmlBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(sTipo), PAnsiChar(DiretorioAtual));
+    Result := _VisualizaXmlBlocoX(AnsiString(CaminhoBanco), AnsiString(sTipo), AnsiString(DiretorioAtual));
   end;
 
 end;
@@ -926,7 +926,7 @@ end;
 //////////////////////////////
 
 function TSmallBlocoX.ReprocessarArquivoBlocoX(CaminhoBanco,
-  DiretorioAtual, Recibo: PAnsiChar): Boolean;
+  DiretorioAtual, Recibo: String): Boolean;
 begin
   if Fload = False then
   begin
@@ -956,7 +956,7 @@ begin
   end
   else
   begin
-    Result := _ReprocessarArquivoBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual), PAnsiChar(Recibo));
+    Result := _ReprocessarArquivoBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(Recibo));
   end;
 
 end;
@@ -992,13 +992,13 @@ begin
   end
   else
   begin
-    Result := _CancelarArquivoBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual), PAnsiChar(Recibo));
+    Result := _CancelarArquivoBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(Recibo));
   end;
 
 end;
 
 function TSmallBlocoX.GerarAoFISCOREDUCAOZBlocox(CaminhoBanco,
-  DiretorioAtual: PAnsiChar): Boolean;
+  DiretorioAtual: String): Boolean;
 begin
 
   if Fload = False then
@@ -1029,13 +1029,13 @@ begin
   end
   else
   begin
-    Result := _GerarAoFISCOREDUCAOZBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+    Result := _GerarAoFISCOREDUCAOZBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual));
   end;
 
 end;
 
 function TSmallBlocoX.GerarEstoqueAnoAnterior(CaminhoBanco,
-  DiretorioAtual: PAnsiChar): Boolean;
+  DiretorioAtual: String): Boolean;
 // Sandro Silva 2022-11-22
 begin
 
@@ -1068,13 +1068,13 @@ begin
   end
   else
   begin
-    Result := _GerarEstoqueAnoAnteriorBlocoX(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+    Result := _GerarEstoqueAnoAnteriorBlocoX(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual));
   end;
 
 end;
 
 function TSmallBlocoX.GerarEstoqueMudancaDeTributacao(CaminhoBanco,
-  DiretorioAtual: PAnsiChar): Boolean;
+  DiretorioAtual: String): Boolean;
 begin
 
   if Fload = False then
@@ -1106,13 +1106,13 @@ begin
   end
   else
   begin
-    Result := _GerarEstoqueMudancaDeTributacao(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+    Result := _GerarEstoqueMudancaDeTributacao(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual));
   end;
 
 end;
 
 function TSmallBlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(CaminhoBanco,
-  DiretorioAtual: PAnsiChar): Boolean;
+  DiretorioAtual: String): Boolean;
 begin
 
   if Fload = False then
@@ -1144,13 +1144,13 @@ begin
   end
   else
   begin
-    Result := _GerarEstoqueSuspensaoOuBaixaDeIE(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+    Result := _GerarEstoqueSuspensaoOuBaixaDeIE(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual));
   end;
 
 end;
 
 function TSmallBlocoX.GerarEstoqueMudancaDeRegime(CaminhoBanco,
-  DiretorioAtual: PAnsiChar): Boolean;
+  DiretorioAtual: String): Boolean;
 begin
 
   if Fload = False then
@@ -1182,13 +1182,13 @@ begin
   end
   else
   begin
-    Result := _GerarEstoqueMudancaDeRegime(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+    Result := _GerarEstoqueMudancaDeRegime(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual));
   end;
 
 end;
 
 function TSmallBlocoX.GerarEstoqueAtual(CaminhoBanco,
-  DiretorioAtual: PAnsiChar): Boolean;
+  DiretorioAtual: String): Boolean;
 begin
 
   if Fload = False then
@@ -1220,7 +1220,7 @@ begin
   end
   else
   begin
-    Result := _GerarEstoqueAtual(PAnsiChar(CaminhoBanco), PAnsiChar(DiretorioAtual));
+    Result := _GerarEstoqueAtual(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual));
   end;
 
 end;

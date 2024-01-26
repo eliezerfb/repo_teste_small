@@ -41,7 +41,7 @@ uses
   , fiscal
   , uclassetransacaocartao
   , unit10
-  , _Small_IntegradorFiscal
+//  , _Small_IntegradorFiscal
   , unit22
   , uajustaresolucao
 

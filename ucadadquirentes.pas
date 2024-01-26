@@ -91,7 +91,9 @@ var
 
 implementation
 
-uses fiscal, _Small_59, StrUtils, _Small_IntegradorFiscal, ufuncoesfrente;
+uses fiscal, _Small_59, StrUtils
+, _Small_IntegradorFiscal
+, ufuncoesfrente;
 
 {$R *.dfm}
 

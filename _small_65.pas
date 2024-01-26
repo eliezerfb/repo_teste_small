@@ -287,7 +287,7 @@ uses
   , ucadadquirentes
   , urecuperaxmlnfce
   , umfe
-  , _Small_IntegradorFiscal // Sandro Silva 2018-07-03
+//  , _Small_IntegradorFiscal // Sandro Silva 2018-07-03
   ,  ufuncoesfrente // Sandro Silva 2018-07-03
   , uValidaRecursosDelphi7;
 

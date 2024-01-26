@@ -48,7 +48,9 @@ var
 
 implementation
 
-uses Unit2, fiscal, Unit15, _Small_IntegradorFiscal, umfe;
+uses Unit2, fiscal, Unit15
+//, _Small_IntegradorFiscal
+, umfe;
 
 {$R *.dfm}
 

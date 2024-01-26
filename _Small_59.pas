@@ -205,7 +205,7 @@ uses
   , ufuncoesfrente
   , _Small_IntegradorFiscal
   , Unit10
-  , umfe // Sandro Silva 2022-05-17 Após o prado de 07/11/2022, tirar essa uses e eliminar as dependências relacionadas ao Integrador e Validador Fiscal das demais unit do projeto
+  , umfe // Sandro Silva 2022-05-17 Após o prazo de 07/11/2022, tirar essa uses e eliminar as dependências relacionadas ao Integrador e Validador Fiscal das demais unit do projeto
   , ucadadquirentes
 //  , upafecfmensagens
   , udadospos

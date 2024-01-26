@@ -353,8 +353,12 @@ begin
 end;
 
 function _ecf02_ConfigAliquota(sAliquota: String): Boolean;
+var
+  asAliquota: AnsiString;
 begin
-  Result := (Bematech_FI_ProgramaAliquota(AnsiString(sAliquota), 0) = 1); // Sandro Silva 2023-12-13 Result := (Bematech_FI_ProgramaAliquota(PChar(sAliquota), 0) = 1);
+  // 2024-01-25 Result := (Bematech_FI_ProgramaAliquota(AnsiString(sAliquota), 0) = 1); // Sandro Silva 2023-12-13 Result := (Bematech_FI_ProgramaAliquota(PChar(sAliquota), 0) = 1);
+  Result := (Bematech_FI_ProgramaAliquota(asAliquota, 0) = 1);
+  sAliquota := asAliquota;
 end;
 
 function _ecf02_TestaLigadaePapel(pP1:Boolean):Boolean;
@@ -390,7 +394,7 @@ var
   iACK, iST1, iST2{, iST3}: Integer;
   vErro    : array [0..99] of String;  // Cria uma matriz com  100 elementos
   I        : Integer;
-  sErro:string;
+  sErro: string;
 begin
   //
   for I := 0 to 99 do vErro[I] := 'Comando não executado.';
@@ -510,7 +514,7 @@ end;
 function _ecf02_VerificaFormaPgto(Forma:String):String;
 var
   Retorno,i,j:integer;
-  sFormasPagamento:String;
+  sFormasPagamento: AnsiString;
 begin
    Result:='XX';
    sFormasPagamento:=Replicate(' ',3016);
@@ -534,11 +538,11 @@ end;
 
 function _ecf02_VerificaDescricaoFormaPgto(Forma:String):String;
 var
-  sFormasPagamento:String;
+  sFormasPagamento: AnsiString;
 begin
    if (isNumericString(Forma)) and (Alltrim(Forma)<> '') then
     begin
-      sFormasPagamento:=Replicate(' ',3016);
+      sFormasPagamento := Replicate(' ',3016);
       if (Bematech_FI_VerificaFormasPagamento( sFormasPagamento )<>1) then
         Result:=''
       else
@@ -555,7 +559,7 @@ end;
 function _ecf02_Inicializa(Pp1: String):Boolean;
 var
   iRetorno : Integer;
-  sFlag: String;
+  sFlag: AnsiString;
 //  Mais1Ini : tIniFile;
 begin
   //
@@ -568,7 +572,7 @@ begin
   {Sandro Silva 2016-03-01 inicio}
   try
     sFlag := '1';
-    Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(AnsiString(sFlag)); // Sandro Silva 2023-12-13 Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(pchar(sFlag));
+    Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(sFlag); // Sandro Silva 2023-12-13 Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(pchar(sFlag));
     _ecf02_RetornoStatusImpressora(True);
   except
   end;
@@ -632,10 +636,10 @@ begin
     //
     if Form1.fTotal >= Form1.ibDataSet25RECEBER.AsFloat then
     begin
-      Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('D', '$', AnsiString(StrZero((Form1.fTotal - Form1.ibDataSet25RECEBER.AsFloat) * 100, 12, 0))); // Sandro Silva 2023-12-13 Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('D','$',pchar(StrZero((Form1.fTotal-Form1.ibDataSet25RECEBER.AsFloat)*100,12,0)));
+      Form1.Retorno := Bematech_FI_IniciaFechamentoCupom(AnsiString('D'), AnsiString('$'), AnsiString(StrZero((Form1.fTotal - Form1.ibDataSet25RECEBER.AsFloat) * 100, 12, 0))); // Sandro Silva 2023-12-13 Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('D','$',pchar(StrZero((Form1.fTotal-Form1.ibDataSet25RECEBER.AsFloat)*100,12,0)));
     end else
     begin
-      Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('A', '$', AnsiString(StrZero((Form1.ibDataSet25RECEBER.AsFloat - Form1.fTotal) * 100, 12, 0))); // Sandro Silva 2023-12-13 Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('A','$',pchar(StrZero((Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal)*100,12,0)));
+      Form1.Retorno := Bematech_FI_IniciaFechamentoCupom(AnsiString('A'), AnsiString('$'), AnsiString(StrZero((Form1.ibDataSet25RECEBER.AsFloat - Form1.fTotal) * 100, 12, 0))); // Sandro Silva 2023-12-13 Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('A','$',pchar(StrZero((Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal)*100,12,0)));
     end;
     //
     if Form1.Retorno = 1 then
@@ -691,7 +695,7 @@ begin
   if Form1.ibDataSet25VALOR07.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label24.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR07.AsFloat*100])),15),1,12)));    // Dinheiro
   if Form1.ibDataSet25VALOR08.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label25.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR08.AsFloat*100])),15),1,12)));    // Dinheiro
   //
-  Result:=(_ecf02_CodeErro(Bematech_FI_TerminaFechamentoCupom(Copy('MD5: '+ AnsiString(Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional)), 1, 384)) ) = 1);
+  Result:=(_ecf02_CodeErro(Bematech_FI_TerminaFechamentoCupom(AnsiString(Copy('MD5: '+ AnsiString(Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional)), 1, 384))) ) = 1);
   {Sandro Silva 2023-12-13 fim}
   //
   // Result:=true;
@@ -769,7 +773,7 @@ end;
 
 function _ecf02_SubTotal(Pp1: Boolean):Real;
 var
-  sSubTotal: String;
+  sSubTotal: AnsiString;
   bChave: Boolean;
 begin
   //
@@ -817,15 +821,17 @@ begin
     // Sandro Silva 2017-08-22 Bematech orientou a não tentar abrir cupom quando já estiver aberto, porque irá zerar o subtotal do cupom
     // Sandro Silva 2019-08-26  if (Form1.bECF0909 = False) then // ECF não é do convênio 09/09 e se o cupom já estiver aberto ignora a checagem de erro
     if AnsiContainsText(Form1.sModeloFabricante, '4200 TH') = False then // ECF não é do convênio 09/09 e se o cupom já estiver aberto ignora a checagem de // Sandro Silva 2019-08-26 ER 02.06 UnoChapeco
-      Bematech_FI_AbreCupom(Form1.sCPF_CNPJ_Validado);
+      Bematech_FI_AbreCupom(AnsiString(Form1.sCPF_CNPJ_Validado));
   end else
   begin
-    Result := (_ecf02_CodeErro(Bematech_FI_AbreCupom(Form1.sCPF_CNPJ_Validado))=1);
+    Result := (_ecf02_CodeErro(Bematech_FI_AbreCupom(AnsiString(Form1.sCPF_CNPJ_Validado)))=1);
     if not Result then
     begin
       Result:=(Bematech_FI_FechaComprovanteNaoFiscalVinculado()=1);
-      if not result then Result := (Bematech_FI_FechaRelatorioGerencial()=1);
-      if Result then Bematech_FI_FechaComprovanteNaoFiscalVinculado();
+      if not result then
+        Result := (Bematech_FI_FechaRelatorioGerencial()=1);
+      if Result then
+        Bematech_FI_FechaComprovanteNaoFiscalVinculado();
    end;
   end;
   //
@@ -847,45 +853,59 @@ end;
 // Retorna o número do Cupom        //
 // -------------------------------- //
 function _ecf02_NumeroDoCupom(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  _ecf02_CodeErro(Bematech_FI_NumeroCupom( Result ));
+  sRetorno := Replicate(' ',6);
+  _ecf02_CodeErro(Bematech_FI_NumeroCupom( AnsiString(sRetorno) ));
+  Result := sRetorno;
 end;
 
 // -------------------------------- //
 // Retorna o número do Cupom CCF    //
 // -------------------------------- //
 function _ecf02_ccF(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
-   Result:=Replicate(' ',6);
-  _ecf02_CodeErro(Bematech_FI_ContadorCupomFiscalMFD( Result ));
+   sRetorno:=Replicate(' ',6);
+  _ecf02_CodeErro(Bematech_FI_ContadorCupomFiscalMFD( AnsiString(sRetorno) ));
+  Result := sRetorno;
 end;
 
 // ------------------------------------------------------------------------- //
 // Retorna o número de operações não fiscais executadas na impressora. GNF   //
 // ------------------------------------------------------------------------- //
 function _ecf02_GNF(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  _ecf02_CodeErro(Bematech_FI_NumeroOperacoesNaoFiscais( Result ));
+  sRetorno:=Replicate(' ',6);
+  _ecf02_CodeErro(Bematech_FI_NumeroOperacoesNaoFiscais( AnsiString(sRetorno) ));
+  Result := sRetorno;
 end;
 
 // --------------------------------------- //
 // Contador Geral de Relatorio Gerencial   //
 // --------------------------------------- //
 function _ecf02_GRG(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  _ecf02_CodeErro(Bematech_FI_ContadorRelatoriosGerenciaisMFD( Result ));
+  sRetorno:=Replicate(' ',6);
+  _ecf02_CodeErro(Bematech_FI_ContadorRelatoriosGerenciaisMFD( AnsiString(sRetorno) ));
+  Result := sRetorno;
 end;
 
 // -------------- //
 // Contador CDC   //
 // -------------- //
 function _ecf02_CDC(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  _ecf02_CodeErro(Bematech_FI_ContadorComprovantesCreditoMFD( Result ));
+  sRetorno:=Replicate(' ',6);
+  _ecf02_CodeErro(Bematech_FI_ContadorComprovantesCreditoMFD( AnsiString(sRetorno) ));
 end;
 
 // ------------------------------------------------------------------------- //
@@ -893,7 +913,7 @@ end;
 // ------------------------------------------------------------------------- //
 function _ecf02_CER(Pp1: Boolean):String;
 var
-  s : String;
+  s : AnsiString;
 begin
   //
   s :=Replicate(' ',659);
@@ -949,10 +969,16 @@ begin
   //
   if Form1.iStatusGaveta = 0 then
   begin
-    if I  = 0 then Result:='000' else Result:='255';
+    if I  = 0 then
+      Result:='000'
+    else
+      Result:='255';
   end else
   begin
-    if I  = 0 then Result:='255' else Result:='000';
+    if I  = 0 then
+      Result:='255'
+    else
+      Result:='000';
   end;
   //
 end;
@@ -1078,6 +1104,12 @@ var
     end;
   end;
 begin
+
+
+Não está gerado arquivo igual a delphi 7
+Validar a assinatura
+
+
   I := 1; // Sandro Silva 2016-04-01
   {Sandro Silva 2017-08-02 inicio}
   if (Form7.sMfd = 'MFPERIODO') or (Form7.sMfd = 'MFDPERIODO') then
@@ -1143,7 +1175,7 @@ begin
       //
       while FileExists(pP1) do
       begin
-        DeleteFile(pchar(pP1));
+        DeleteFile(pP1);
         Sleep(10);
       end;
       //
@@ -1460,7 +1492,10 @@ begin
 //  if I <> 1 then
   _ecf02_CodeErro(I);
   //
-  if I=1 then Result := True else Result := False;
+  if I=1 then
+    Result := True
+  else
+    Result := False;
   //
 end;
 
@@ -1495,7 +1530,10 @@ function _ecf02_RetornaVerao(pP1: Boolean):Boolean;
 var
   I : Integer;
 begin
-  if Bematech_FI_FlagsFiscais( I )=1 then Result:=(Copy(Right(Replicate('0',8)+IntToBin( I ),8),6,1)='1') else Result:=False;
+  if Bematech_FI_FlagsFiscais( I )=1 then
+    Result:=(Copy(Right(Replicate('0',8)+IntToBin( I ),8),6,1)='1')
+  else
+    Result:=False;
 end;
 
 // -------------------------------- //
@@ -1510,10 +1548,15 @@ end;
 // Retorna a versão do firmware     //
 // -------------------------------- //
 function _ecf02_VersodoFirmware(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
+  sRetorno:=Replicate(' ',4);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
-  if Bematech_FI_VersaoFirmware(Result) <> 1 then Result:='';
+  if Bematech_FI_VersaoFirmware(AnsiString(sRetorno)) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 
 end;
 
@@ -1523,13 +1566,15 @@ end;
 function _ecf02_NmerodeSrie(pP1: Boolean): String;
 var
   I: Integer;
+  sRetorno: AnsiString;
 begin
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
   //
   if Form1.sMFD_ = 'Sim' then
   begin
-    Result := Replicate(' ',20);
-    Bematech_FI_NumeroSerieMFD(Result);
+    sRetorno := Replicate(' ',20);
+    Bematech_FI_NumeroSerieMFD(sRetorno);
+    Result := sRetorno;
     //
     if Length(Alltrim(Result)) <> 20 then
     begin
@@ -1541,10 +1586,16 @@ begin
     end;
   end else
   begin
-     Result := replicate(' ',20);
-     if _ecf02_CodeErro(Bematech_FI_NumeroSerie(Result))<> 1 then Result:='';
-     for i:=1 to 20 do if ord(Result[i])=0 then break;
-     if I > 0 then Result:=AllTrim(Copy(Result,1,i-1));
+    sRetorno := replicate(' ',20);
+    if _ecf02_CodeErro(Bematech_FI_NumeroSerie(sRetorno))<> 1 then
+      Result:=''
+    else;
+      Result := sRetorno;
+    for i:=1 to 20 do
+      if ord(Result[i])=0 then
+        break;
+    if I > 0 then
+      Result:=AllTrim(Copy(Result,1,i-1));
   end;
   //
   {
@@ -1603,38 +1654,56 @@ end;
 // -------------------------------- //
 function _ecf02_CGCIE(pP1: Boolean): String;
 var
-  sCGC,sIE:string;
+  sCGC,sIE: Ansistring;
 begin
   sCGC := Replicate(' ',18);
   sIE  := Replicate(' ',15);
-  if _ecf02_CodeErro(Bematech_FI_CGC_IE( sCGC, sIE )) <> 1 then Result := '' else Result := sCGC+'-'+sIE;
+  if _ecf02_CodeErro(Bematech_FI_CGC_IE( AnsiString(sCGC), AnsiString(sIE) )) <> 1 then
+    Result := ''
+  else
+    Result := sCGC + '-' + sIE;
 end;
 
 // --------------------------------- //
 // Retorna o valor  de cancelamentos //
 // --------------------------------- //
 function _ecf02_Cancelamentos(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',14);
-  if Bematech_FI_Cancelamentos( Result ) <> 1 then Result:='';
+  sRetorno:=Replicate(' ',14);
+  if Bematech_FI_Cancelamentos( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 // -------------------------------- //
 // Retorna o valor de descontos     //
 // -------------------------------- //
 function _ecf02_Descontos(pP1: Boolean): String;
+var
+  sRetorno: String;
 begin
-  Result:=Replicate(' ',14);
-  if Bematech_FI_Descontos( Result ) <> 1 then Result:='';
+  sRetorno:=Replicate(' ',14);
+  if Bematech_FI_Descontos( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 // -------------------------------- //
 // Retorna o contador sequencial    //
 // -------------------------------- //
 function _ecf02_ContadorSeqencial(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  if Bematech_FI_NumeroCupom( Result ) <> 1 then Result:='';
+  sRetorno:=Replicate(' ',6);
+  if Bematech_FI_NumeroCupom( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 // -------------------------------- //
@@ -1642,43 +1711,72 @@ end;
 // não fiscais acumuladas           //
 // -------------------------------- //
 function _ecf02_Nmdeoperaesnofiscais(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',631);
-  if Bematech_FI_DadosUltimaReducao( Result ) <> 1 then Result:='' else Result:=Copy(Result,586,6);
+  sRetorno:=Replicate(' ',631);
+  if Bematech_FI_DadosUltimaReducao( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result:=Copy(sRetorno,586,6);
 end;
 
 function _ecf02_NmdeCuponscancelados(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
-  if (Bematech_FI_NumeroCuponsCancelados( Result ) <> 1) then Result:='';
+  sRetorno:=Replicate(' ',4);
+  if (Bematech_FI_NumeroCuponsCancelados( AnsiString(sRetorno) ) <> 1) then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 function _ecf02_NmdeRedues(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
+  sRetorno:=Replicate(' ',4);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
-  if (Bematech_FI_NumeroReducoes( Result ) <> 1) then Result:='' else Result:=StrZero(StrToInt(Result)+1,4,0);//soma um para gravar certo no arq. de reduções.
+  if (Bematech_FI_NumeroReducoes( AnsiString(sRetorno) ) <> 1) then
+    Result:=''
+  else
+    Result:=StrZero(StrToInt(sRetorno)+1,4,0);//soma um para gravar certo no arq. de reduções.
 
 end;
 
 function _ecf02_Nmdeintervenestcnicas(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
+  sRetorno:=Replicate(' ',4);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
-  if (Bematech_FI_NumeroIntervencoes( Result ) <> 1) then Result:='';
+  if (Bematech_FI_NumeroIntervencoes( AnsiString(sRetorno) ) <> 1) then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
-
 function _ecf02_Nmdesubstituiesdeproprietrio(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
-  if (Bematech_FI_NumeroSubstituicoesProprietario( Result ) <> 1) then Result:='';
+  sRetorno:=Replicate(' ',4);
+  if (Bematech_FI_NumeroSubstituicoesProprietario( AnsiString(sRetorno) ) <> 1) then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 function _ecf02_Clichdoproprietrio(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',186);
-  if (Bematech_FI_ClicheProprietario( Result ) <> 1) then Result:='';
+  sRetorno := Replicate(' ',186);
+  if (Bematech_FI_ClicheProprietario( AnsiString(sRetorno) ) <> 1) then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 // ------------------------------------ //
@@ -1688,73 +1786,104 @@ end;
 function _ecf02_NmdoCaixa(pP1: Boolean): String;
 var
   i: Integer;
+  sNumero: AnsiString;
 begin
   //
+{
   Result:=Replicate(' ',4);
-  SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco  
+  SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
   // Sandro Silva 2018-10-04  _ecf02_CodeErro(Bematech_FI_NumeroCaixa( Result ));
   i := 0;
   while Trim(Result) = '' do
   begin
     inc(i);
-    _ecf02_CodeErro(Bematech_FI_NumeroCaixa( Result ));
+    _ecf02_CodeErro(Bematech_FI_NumeroCaixa( AnsiString(Result) ));
     if (Trim(Result) <> '') or (i > 3) then
       Break;
     Sleep(1000);
   end;
   Result := Right(AllTrim(pChar(Result)),3);
-  //
+}
+  sNumero:=Replicate(' ',4);
+  SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
+  // Sandro Silva 2018-10-04  _ecf02_CodeErro(Bematech_FI_NumeroCaixa( sNumero ));
+  i := 0;
+  while Trim(sNumero) = '' do
+  begin
+    inc(i);
+    _ecf02_CodeErro(Bematech_FI_NumeroCaixa( sNumero ));
+    if (Trim(sNumero) <> '') or (i > 3) then
+      Break;
+    Sleep(1000);
+  end;
+  Result := Right(AllTrim(pAnsiChar(sNumero)),3);
+
 end;
 
 function _ecf02_Nmdaloja(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
-  _ecf02_CodeErro(Bematech_FI_NumeroLoja( Result ));
+  sRetorno:=Replicate(' ',4);
+  _ecf02_CodeErro(Bematech_FI_NumeroLoja( AnsiString(sRetorno) ));
+  Result := sRetorno;
 end;
 
 function _ecf02_Moeda(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',2);
-  _ecf02_CodeErro(Bematech_FI_SimboloMoeda( Result ));
-  Result:=StrTran(AllTrim(Result),'$','');
+  sRetorno:=Replicate(' ',2);
+  _ecf02_CodeErro(Bematech_FI_SimboloMoeda( AnsiString(sRetorno) ));
+  Result:=StrTran(AllTrim(sRetorno),'$','');
 end;
 
 function _ecf02_Dataehoradaimpressora(pP1: Boolean): String;
 var
-  sData,sHora:String;
+  sData,sHora: AnsiString;
   //I : Integer;
 begin
- sData := Replicate(' ',6);
- sHora := Replicate(' ',6);
- SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
- // _ecf02_CodeErro(Bematech_FI_DataHoraImpressora(sData,sHora));
- Bematech_FI_DataHoraImpressora(sData,sHora);
+  sData := Replicate(' ',6);
+  sHora := Replicate(' ',6);
+  SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
+  // _ecf02_CodeErro(Bematech_FI_DataHoraImpressora(sData,sHora));
+  Bematech_FI_DataHoraImpressora(sData, sHora);
 
- //ShowMessage('Teste 1');
- //_ecf02_CodeErro(I);
+  //ShowMessage('Teste 1');
+  //_ecf02_CodeErro(I);
 
- //
- // ShowMessage(sData+sHora);
- //
- Result:=StrTran(sData+sHora,',','');//DDMMAAHHMMSS
- //
- // ShowMessage(Result);
- //
+  //
+  // ShowMessage(sData+sHora);
+  //
+  Result:=StrTran(sData+sHora,',','');//DDMMAAHHMMSS
+  //
+  // ShowMessage(Result);
+  //
 
 end;
 
 function _ecf02_Datadaultimareduo(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
+  sRetorno:=Replicate(' ',6);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
-  if Bematech_FI_DataMovimento( Result ) <> 1 then Result:='';
+  if Bematech_FI_DataMovimento( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 
 function _ecf02_Datadomovimento(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  if Bematech_FI_DataMovimento( Result ) <> 1 then Result:='';
+  sRetorno:=Replicate(' ',6);
+  if Bematech_FI_DataMovimento( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 // Deve retornar uma String com:                                          //
@@ -1765,14 +1894,14 @@ end;
 
 function _ecf02_VerificaAliquotasIss: String;
 var
-  AliquotasIss: String;
+  AliquotasIss: AnsiString;
   iRetorno: Integer;
 begin
   try
     AliquotasIss := Replicate(' ',79);
-    SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco    
+    SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
     iRetorno := Bematech_FI_VerificaAliquotasIss( AliquotasIss );
-    Result := PansiChar(AliquotasIss);
+    Result := PansiChar(AliquotasIss); // Precisa para eliminar caracter de final de String
     if _ecf02_CodeErro(iRetorno) <> 1 then
     begin
       Result := '';
@@ -1784,7 +1913,7 @@ end;
 
 function _ecf02_RetornaAliquotas(pP1: Boolean): String;
 var
-  sISS, sAliquotas, sIndiceAliquotas : String;
+  sISS, sAliquotas, sIndiceAliquotas : AnsiString;
   i:integer;
 begin
 //  AliquotasIss:=Replicate(' ',79);
@@ -1817,16 +1946,16 @@ begin
 
 end;
 
-
 function _ecf02_Vincula(pP1: String): Boolean;
 begin
-   Result:=False;
+  Result:=False;
 end;
 
 
 function _ecf02_FlagsDeISS(pP1: Boolean): String;
 var
-  sIndiceAliquotas:string;
+  sIndiceAliquotas: Ansistring;
+  sRetorno: AnsiString;
 begin
   sIndiceAliquotas:=Replicate('0',48);
   Bematech_FI_VerificaIndiceAliquotasIss( sIndiceAliquotas );
@@ -1890,11 +2019,10 @@ begin
   //
 end;
 
-
 function _ecf02_CupomNaoFiscalVinculado(sP1: String; iP2: Integer ): Boolean; //iP2 = Número do Cupom vinculado
 var
   J, I: Integer;
-  sLinha: String;
+  sLinha: AnsiString;
 begin
   Result := False;
   //
@@ -1939,7 +2067,7 @@ begin
                 sLinha := sLinha + Chr(10);
               Result := _ecf02_TestaLigadaePapel(true);
               if Result then
-                Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( AnsiString( sLinha ) )=1); // Sandro Silva 2023-12-13 if Result then Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
+                Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( sLinha  )=1); // Sandro Silva 2023-12-13 if Result then Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
               if Result then
                 Result := _ecf02_TestaLigadaePapel(true);
               sLinha := '';
@@ -1953,7 +2081,7 @@ begin
         sLinha := Chr(10)+chr(10)+Chr(10);
         Result := _ecf02_TestaLigadaePapel(true);
         if Result then
-          Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( AnsiString( sLinha ) ) = 1); // Sandro Silva 2023-12-13 if Result then Result:=(Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
+          Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( sLinha  ) = 1); // Sandro Silva 2023-12-13 if Result then Result:=(Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
         if Result then
           Result := _ecf02_TestaLigadaePapel(true);
       end;
@@ -1969,14 +2097,14 @@ function _ecf02_ImpressaoNaoSujeitoaoICMS(sP1: String): Boolean;
 var
   //
   I, J, iResult : Integer;
-  sGRG, sLinha: String;
+  sGRG, sLinha: AnsiString;
   tInicio : tTime;
   Hora, Min, Seg, cent : Word;
   bImprimindoConferenciaMesa: Boolean; // 2015-09-08 Indica quando está fazendo a impressão do TEF. Envia linha a linha para a impressora
   //
   function Imprimir(sTexto: String): Integer;
   var
-    sTexto2: String;
+    sTexto2: AnsiString;
     i: Integer;
     bQuebra: Boolean;
   begin
@@ -2011,7 +2139,7 @@ begin
   //
   if _ecf02_TestaLigadaePapel(true)
    or (Pos('IDENTIFICAÇÃO DO PAF-ECF',sP1)<>0)  // Sandro Silva 2017-11-07 Polimig
-   or (Pos('Parametros de Configuracao',sP1)<>0) // Sandro Silva 2017-11-07 Polimig 
+   or (Pos('Parametros de Configuracao',sP1)<>0) // Sandro Silva 2017-11-07 Polimig
    then
   begin
     //
@@ -2155,7 +2283,7 @@ begin
                   //
                   if iResult = 1 then
                   begin
-                    iResult := Bematech_FI_UsaRelatorioGerencialMFD(AnsiString(sLinha)); // Sandro Silva 2023-12-13 iResult := Bematech_FI_UsaRelatorioGerencialMFD(pchar(sLinha));
+                    iResult := Bematech_FI_UsaRelatorioGerencialMFD(sLinha); // Sandro Silva 2023-12-13 iResult := Bematech_FI_UsaRelatorioGerencialMFD(pchar(sLinha));
                   end;
                   //
                   DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
@@ -2237,17 +2365,32 @@ begin
 end;
 
 function _ecf02_GrandeTotal(sP1: Boolean): String;
+var
+  sGT: AnsiString;
 begin
   // Caso falhar o retorno do GT, incluir um SleepEntreMetodos e executar Bematech_FI_GrandeTotal() novamente
-  Result := Replicate(' ',18);
+  {
+  Result := AnsiString(Replicate(' ',18));
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
   if Bematech_FI_GrandeTotal( Result ) <> 1 then Result := '0';
+  }
+  Result := '0';
+  sGT := Replicate(' ',18);
+  SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
+  if Bematech_FI_GrandeTotal( sGT ) = 1 then
+    Result := sGT;
+
 end;
 
 function _ecf02_TotalizadoresDasAliquotas(sP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result := Replicate(' ',445);
-  if Bematech_FI_VerificaTotalizadoresParciais( Result ) <> 1 then Result := '' else Result := Copy(Result,1,224)+Copy(Result,226,14)+Copy(Result,241,14)+Copy(Result,256,14);
+  sRetorno := Replicate(' ',445);
+  if Bematech_FI_VerificaTotalizadoresParciais( AnsiString(sRetorno) ) <> 1 then
+    Result := ''
+  else
+    Result := Copy(sRetorno,1,224)+Copy(sRetorno,226,14)+Copy(sRetorno,241,14)+Copy(sRetorno,256,14);
 end;
 
 function _ecf02_CupomAberto(sP1: Boolean): boolean;
@@ -2276,7 +2419,7 @@ end;
 
 function _ecf02_DadosUltimaReducaoZ(sP1: Boolean): String;
 var
-  sDados : String;
+  sDados : AnsiString;
 begin
   sDados := Replicate(' ',1278);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
@@ -2287,7 +2430,7 @@ end;
 
 function _ecf02_Marca(sP1: Boolean): String;
 var
-  sMarca, sModelo, sTipo: String;
+  sMarca, sModelo, sTipo: AnsiString;
 begin
   if Form1.sMFD_ = 'Sim' then
   begin
@@ -2304,7 +2447,7 @@ end;
 
 function _ecf02_Modelo(sP1: Boolean): String;
 var
-  sMarca, sModelo, sTipo: String;
+  sMarca, sModelo, sTipo: AnsiString;
 begin
   if Form1.sMFD_ = 'Sim' then
   begin
@@ -2321,7 +2464,7 @@ end;
 
 function _ecf02_Tipodaimpressora(pP1: Boolean): String; //
 var
-  sMarca, sModelo, sTipo: String;
+  sMarca, sModelo, sTipo: AnsiString;
 begin
   if Form1.sMFD_ = 'Sim' then
   begin
@@ -2353,7 +2496,7 @@ end;
 
 function _ecf02_DadosDaUltimaReducao(pP1: Boolean): String; //
 var
-  sRetorno : String;
+  sRetorno : AnsiString;
 begin
   {
   DadosReducao: Variável STRING com o tamanho de 1278 posições para receber os dados da última redução.
@@ -2396,7 +2539,7 @@ begin
   Data do movimento:                                          1273,6
   }
   sRetorno := Replicate(' ',1278);
-  Bematech_FI_DadosUltimaReducaoMFD(sRetorno);
+  Bematech_FI_DadosUltimaReducaoMFD(AnsiString(sRetorno));
 
   //
   Result := Copy(sRetorno,1273,  6)+ //   1,  6 Data
@@ -2430,7 +2573,7 @@ end;
 
 function _ecf02_DataUltimaReducao: String;
 var
-  Data, Hora: String;
+  Data, Hora: AnsiString;
   iConta: Integer;
   iRetorno: Integer;
 begin
@@ -2464,7 +2607,7 @@ end;
 
 function _ecf02_HoraUltimaReducao: String;
 var
-  Data, Hora: String;
+  Data, Hora: AnsiString;
   iConta: Integer;
   iRetorno: Integer;
 begin
@@ -2506,7 +2649,7 @@ begin
   ST3 := 0;
 
   if _ecf02_CupomAberto(True) = False then // Sandro Silva 2016-09-14
-    Bematech_FI_TerminaFechamentoCupom(' ');// Sandro Silva 2016-03-03 Precisa ter comando fiscal para o ST3
+    Bematech_FI_TerminaFechamentoCupom(AnsiString(' '));// Sandro Silva 2016-03-03 Precisa ter comando fiscal para o ST3
   Bematech_FI_RetornoImpressoraMFD( ACK, ST1, ST2, ST3 );
 
   Result := '';
@@ -2520,9 +2663,3 @@ begin
 end;
 
 end.
-
-
-
-
-
-
