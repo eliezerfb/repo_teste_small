@@ -721,7 +721,9 @@ end;
 
 procedure TForm30.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  if Form7.ibDataSet3.Modified then Form7.ibDataSet3.Post;
+  if Form7.ibDataSet3.Modified then
+    Form7.ibDataSet3.Post;
+
   Form7.ibDataSet3.Edit;
 
   Form7.ibDataSet35DESCRICAO.DisplayWidth := 29;

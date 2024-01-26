@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 903
-  ClientWidth = 1379
+  ClientHeight = 1171
+  ClientWidth = 1554
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -26,8 +26,8 @@ object Form7: TForm7
   PixelsPerInch = 96
   TextHeight = 16
   object Label1: TLabel
-    Left = 279
-    Top = 420
+    Left = 224
+    Top = 367
     Width = 26
     Height = 13
     Caption = 'Caixa'
@@ -40,8 +40,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label2: TLabel
-    Left = 279
-    Top = 548
+    Left = 224
+    Top = 416
     Width = 23
     Height = 13
     Caption = 'Clifor'
@@ -54,8 +54,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label4: TLabel
-    Left = 279
-    Top = 579
+    Left = 224
+    Top = 467
     Width = 39
     Height = 13
     Caption = 'Estoque'
@@ -68,8 +68,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label5: TLabel
-    Left = 279
-    Top = 1027
+    Left = 224
+    Top = 859
     Width = 60
     Height = 13
     Caption = 'Mov Bancos'
@@ -85,8 +85,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label6: TLabel
-    Left = 279
-    Top = 659
+    Left = 224
+    Top = 516
     Width = 41
     Height = 13
     Caption = 'Receber'
@@ -99,8 +99,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label7: TLabel
-    Left = 287
-    Top = 929
+    Left = 224
+    Top = 713
     Width = 28
     Height = 13
     Caption = 'Pagar'
@@ -113,8 +113,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label8: TLabel
-    Left = 279
-    Top = 786
+    Left = 224
+    Top = 563
     Width = 46
     Height = 13
     Caption = 'Vendedor'
@@ -127,8 +127,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label11: TLabel
-    Left = 622
-    Top = 1034
+    Left = 512
+    Top = 859
     Width = 82
     Height = 13
     Caption = 'Contas banc'#225'rias'
@@ -141,8 +141,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label12: TLabel
-    Left = 279
-    Top = 858
+    Left = 224
+    Top = 611
     Width = 66
     Height = 13
     Caption = 'Plano de cont'
@@ -155,8 +155,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label13: TLabel
-    Left = 622
-    Top = 867
+    Left = 512
+    Top = 611
     Width = 41
     Height = 13
     Caption = 'Emitente'
@@ -169,8 +169,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label14: TLabel
-    Left = 279
-    Top = 898
+    Left = 224
+    Top = 660
     Width = 19
     Height = 13
     Caption = 'ICM'
@@ -183,7 +183,7 @@ object Form7: TForm7
     Visible = False
   end
   object Label15: TLabel
-    Left = 279
+    Left = 224
     Top = 219
     Width = 36
     Height = 13
@@ -201,8 +201,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label16: TLabel
-    Left = 695
-    Top = 227
+    Left = 512
+    Top = 219
     Width = 71
     Height = 13
     Caption = 'Itens de venda'
@@ -218,8 +218,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label18: TLabel
-    Left = 279
-    Top = 961
+    Left = 224
+    Top = 761
     Width = 45
     Height = 13
     Caption = 'Transport'
@@ -232,8 +232,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label19: TLabel
-    Left = 662
-    Top = 418
+    Left = 512
+    Top = 367
     Width = 53
     Height = 13
     Caption = 'Nota Fiscal'
@@ -246,8 +246,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label21: TLabel
-    Left = 622
-    Top = 899
+    Left = 512
+    Top = 660
     Width = 37
     Height = 13
     Caption = 'Grupos '
@@ -260,8 +260,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label31: TLabel
-    Left = 662
-    Top = 251
+    Left = 512
+    Top = 270
     Width = 76
     Height = 13
     Caption = 'Itens de compra'
@@ -274,8 +274,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label32: TLabel
-    Left = 279
-    Top = 252
+    Left = 224
+    Top = 270
     Width = 41
     Height = 13
     Caption = 'Compras'
@@ -288,8 +288,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label10: TLabel
-    Left = 622
-    Top = 931
+    Left = 512
+    Top = 711
     Width = 38
     Height = 16
     Caption = 'Grade'
@@ -303,8 +303,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label36: TLabel
-    Left = 622
-    Top = 961
+    Left = 512
+    Top = 759
     Width = 77
     Height = 16
     Caption = 'Composi'#231#227'o'
@@ -318,8 +318,8 @@ object Form7: TForm7
     Visible = False
   end
   object Image24: TImage
-    Left = 963
-    Top = 420
+    Left = 1170
+    Top = 287
     Width = 130
     Height = 18
     Picture.Data = {
@@ -549,8 +549,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label37: TLabel
-    Left = 287
-    Top = 993
+    Left = 224
+    Top = 810
     Width = 45
     Height = 13
     Caption = 'Conv'#234'nio'
@@ -563,8 +563,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label22: TLabel
-    Left = 279
-    Top = 337
+    Left = 224
+    Top = 316
     Width = 13
     Height = 13
     Caption = 'Os'
@@ -577,8 +577,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label44: TLabel
-    Left = 662
-    Top = 497
+    Left = 512
+    Top = 416
     Width = 24
     Height = 13
     Caption = 'Serie'
@@ -591,8 +591,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label35: TLabel
-    Left = 662
-    Top = 577
+    Left = 512
+    Top = 467
     Width = 39
     Height = 13
     Caption = 'Alteraca'
@@ -605,8 +605,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label33: TLabel
-    Left = 662
-    Top = 664
+    Left = 512
+    Top = 516
     Width = 25
     Height = 13
     Caption = 'Fluxo'
@@ -619,8 +619,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label34: TLabel
-    Left = 622
-    Top = 792
+    Left = 512
+    Top = 563
     Width = 39
     Height = 13
     Caption = 'Resumo'
@@ -633,8 +633,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label17: TLabel
-    Left = 662
-    Top = 337
+    Left = 512
+    Top = 316
     Width = 67
     Height = 13
     Caption = 'Itens Servi'#231'os'
@@ -646,26 +646,9 @@ object Form7: TForm7
     ParentFont = False
     Visible = False
   end
-  object Label30: TLabel
-    Left = 566
-    Top = 142
-    Width = 41
-    Height = 13
-    Caption = 'Curingas'
-    Color = clBtnFace
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clRed
-    Font.Height = -11
-    Font.Name = 'Microsoft Sans Serif'
-    Font.Style = [fsUnderline]
-    ParentColor = False
-    ParentFont = False
-    Transparent = True
-    Visible = False
-  end
   object Label3: TLabel
-    Left = 622
-    Top = 1001
+    Left = 512
+    Top = 808
     Width = 56
     Height = 16
     Caption = 'Etiquetas'
@@ -679,8 +662,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label9: TLabel
-    Left = 648
-    Top = 1067
+    Left = 512
+    Top = 906
     Width = 66
     Height = 16
     Caption = 'Orcamento'
@@ -693,8 +676,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label20: TLabel
-    Left = 1030
-    Top = 966
+    Left = 942
+    Top = 870
     Width = 40
     Height = 13
     Caption = 'Conf OS'
@@ -881,8 +864,8 @@ object Form7: TForm7
     Visible = False
   end
   object Image10: TImage
-    Left = 1131
-    Top = 971
+    Left = 1168
+    Top = 347
     Width = 124
     Height = 19
     AutoSize = True
@@ -1113,8 +1096,8 @@ object Form7: TForm7
     Visible = False
   end
   object Image11: TImage
-    Left = 1131
-    Top = 995
+    Left = 1168
+    Top = 371
     Width = 124
     Height = 19
     AutoSize = True
@@ -1345,8 +1328,8 @@ object Form7: TForm7
     Visible = False
   end
   object Image12: TImage
-    Left = 963
-    Top = 387
+    Left = 1170
+    Top = 254
     Width = 130
     Height = 18
     Picture.Data = {
@@ -1576,8 +1559,8 @@ object Form7: TForm7
     Visible = False
   end
   object Image13: TImage
-    Left = 1251
-    Top = 803
+    Left = 1208
+    Top = 315
     Width = 39
     Height = 20
     AutoSize = True
@@ -1663,8 +1646,8 @@ object Form7: TForm7
     Visible = False
   end
   object Image14: TImage
-    Left = 1291
-    Top = 803
+    Left = 1248
+    Top = 315
     Width = 39
     Height = 20
     AutoSize = True
@@ -1750,8 +1733,8 @@ object Form7: TForm7
     Visible = False
   end
   object Image18: TImage
-    Left = 1211
-    Top = 803
+    Left = 1168
+    Top = 315
     Width = 39
     Height = 20
     AutoSize = True
@@ -2423,8 +2406,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label27: TLabel
-    Left = 223
-    Top = 1187
+    Left = 224
+    Top = 1112
     Width = 41
     Height = 13
     Alignment = taCenter
@@ -2440,24 +2423,9 @@ object Form7: TForm7
     Transparent = True
     Visible = False
   end
-  object Label28: TLabel
-    Left = 1032
-    Top = 140
-    Width = 76
-    Height = 30
-    Caption = 'popup dbgrid m'#243'dulos'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clRed
-    Font.Height = -12
-    Font.Name = 'Microsoft Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    Visible = False
-    WordWrap = True
-  end
   object Label24: TLabel
-    Left = 279
-    Top = 1074
+    Left = 224
+    Top = 908
     Width = 82
     Height = 13
     Caption = 'Convers'#227'o CFOP'
@@ -2470,8 +2438,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label29: TLabel
-    Left = 279
-    Top = 1114
+    Left = 224
+    Top = 958
     Width = 77
     Height = 13
     Caption = 'Perfil Tributa'#231#227'o'
@@ -2484,8 +2452,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label38: TLabel
-    Left = 648
-    Top = 1099
+    Left = 512
+    Top = 955
     Width = 144
     Height = 16
     Caption = 'Orcamento Observa'#231#227'o'
@@ -2498,8 +2466,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label39: TLabel
-    Left = 279
-    Top = 1150
+    Left = 224
+    Top = 1009
     Width = 107
     Height = 13
     Caption = 'Par'#226'metros Tributa'#231#227'o'
@@ -2512,8 +2480,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label40: TLabel
-    Left = 287
-    Top = 1226
+    Left = 224
+    Top = 1067
     Width = 60
     Height = 13
     Caption = 'Situa'#231#227'o OS'
@@ -2535,7 +2503,7 @@ object Form7: TForm7
     Ctl3D = True
     ParentBackground = False
     ParentCtl3D = False
-    TabOrder = 14
+    TabOrder = 13
     Visible = False
     object Image201_X: TImage
       Left = 0
@@ -5136,7 +5104,7 @@ object Form7: TForm7
     Ctl3D = True
     ParentBackground = False
     ParentCtl3D = False
-    TabOrder = 15
+    TabOrder = 14
     Visible = False
     object Image201_R: TImage
       Left = 0
@@ -7816,8 +7784,8 @@ object Form7: TForm7
     OnKeyDown = DBGrid2KeyDown
   end
   object DBGrid3: TDBGrid
-    Left = 1072
-    Top = 645
+    Left = 1312
+    Top = 546
     Width = 100
     Height = 30
     BiDiMode = bdLeftToRight
@@ -7867,8 +7835,8 @@ object Form7: TForm7
     TabOrder = 4
   end
   object DBGrid4: TDBGrid
-    Left = 1072
-    Top = 843
+    Left = 1312
+    Top = 594
     Width = 100
     Height = 30
     BiDiMode = bdLeftToRight
@@ -7901,8 +7869,8 @@ object Form7: TForm7
     OnKeyDown = DBGrid4KeyDown
   end
   object Panel10: TPanel
-    Left = 1056
-    Top = 722
+    Left = 1187
+    Top = 596
     Width = 100
     Height = 24
     BevelOuter = bvNone
@@ -7917,21 +7885,12 @@ object Form7: TForm7
     ParentFont = False
     TabOrder = 5
   end
-  object Button9: TButton
-    Left = 1200
-    Top = 483
-    Width = 75
-    Height = 25
-    Caption = 'Button9'
-    TabOrder = 8
-    Visible = False
-  end
   object WebBrowser1: TWebBrowser
     Left = 10000
     Top = 0
     Width = 361
     Height = 291
-    TabOrder = 9
+    TabOrder = 8
     OnDownloadComplete = WebBrowser1DownloadComplete
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     OnDocumentComplete = WebBrowser1DocumentComplete
@@ -7960,22 +7919,24 @@ object Form7: TForm7
     ParentBackground = False
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 10
+    TabOrder = 9
     Visible = False
     OnClick = Panel1Click
   end
   object Panel3: TPanel
     Left = 0
-    Top = 863
-    Width = 1379
+    Top = 1131
+    Width = 1554
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
     Color = clWhite
     Ctl3D = False
     ParentCtl3D = False
-    TabOrder = 11
+    TabOrder = 10
     Visible = False
+    ExplicitTop = 863
+    ExplicitWidth = 1379
     object Button2: TButton
       Left = 260
       Top = 10
@@ -8039,7 +8000,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1379
+    Width = 1554
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -8047,8 +8008,9 @@ object Form7: TForm7
     Ctl3D = False
     ParentBackground = False
     ParentCtl3D = False
-    TabOrder = 12
+    TabOrder = 11
     OnMouseMove = Panel4MouseMove
+    ExplicitWidth = 1379
   end
   object Panel_0: TPanel
     Left = 0
@@ -8062,7 +8024,7 @@ object Form7: TForm7
     ParentCtl3D = False
     ParentShowHint = False
     ShowHint = False
-    TabOrder = 13
+    TabOrder = 12
     OnMouseMove = Panel_0MouseMove
     object imgLibBloq: TImage
       Left = 350
@@ -11163,19 +11125,9 @@ object Form7: TForm7
       OnClick = btnRetornoCNAB240Click
     end
   end
-  object Button10: TButton
-    Left = 1200
-    Top = 392
-    Width = 75
-    Height = 25
-    Caption = 'Button10'
-    TabOrder = 16
-    Visible = False
-    OnClick = Button10Click
-  end
   object SMALL_DBEdit3: TSMALL_DBEdit
-    Left = 1380
-    Top = 560
+    Left = 644
+    Top = 608
     Width = 100
     Height = 20
     AutoSize = False
@@ -11191,13 +11143,13 @@ object Form7: TForm7
     Font.Style = []
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 17
+    TabOrder = 15
     Visible = False
     OnKeyDown = SMALL_DBEdit1KeyDown
   end
   object pnlFiltro: TPanel
-    Left = 937
-    Top = 753
+    Left = 1185
+    Top = 545
     Width = 113
     Height = 44
     BevelOuter = bvNone
@@ -11212,7 +11164,7 @@ object Form7: TForm7
     ParentFont = False
     ParentShowHint = False
     ShowHint = False
-    TabOrder = 18
+    TabOrder = 16
     object lblHomologacao: TLabel
       Left = 0
       Top = 0
@@ -11258,8 +11210,8 @@ object Form7: TForm7
     BiDiMode = bdLeftToRight
     OwnerDraw = True
     ParentBiDiMode = False
-    Left = 190
-    Top = 462
+    Left = 143
+    Top = 334
     object Arquivos1: TMenuItem
       Caption = '&Arquivo'
       OnClick = Arquivos1Click
@@ -11353,8 +11305,8 @@ object Form7: TForm7
   end
   object DataSource1: TDataSource
     DataSet = ibDataSet1
-    Left = 96
-    Top = 463
+    Left = 83
+    Top = 335
   end
   object ibDataSet1: TIBDataSet
     Database = IBDatabase1
@@ -11419,7 +11371,7 @@ object Form7: TForm7
     UniDirectional = False
     Filtered = True
     Left = 8
-    Top = 463
+    Top = 335
     object ibDataSet1DATA: TDateField
       DisplayLabel = 'Data'
       DisplayWidth = 14
@@ -11489,13 +11441,13 @@ object Form7: TForm7
     Font.Height = -13
     Font.Name = 'System'
     Font.Style = []
-    Left = 940
-    Top = 131
+    Left = 836
+    Top = 227
   end
   object DataSource2: TDataSource
     DataSet = IBDataSet2
-    Left = 96
-    Top = 544
+    Left = 83
+    Top = 384
   end
   object ibDataSet4: TIBDataSet
     Database = IBDatabase1
@@ -11757,7 +11709,7 @@ object Form7: TForm7
     UniDirectional = False
     Filtered = True
     Left = 8
-    Top = 625
+    Top = 434
     object ibDataSet4CODIGO: TIBStringField
       DisplayLabel = 'C'#243'digo   '
       FieldName = 'CODIGO'
@@ -12335,8 +12287,8 @@ object Form7: TForm7
   end
   object DataSource4: TDataSource
     DataSet = ibDataSet4
-    Left = 96
-    Top = 625
+    Left = 83
+    Top = 434
   end
   object ibDataSet5: TIBDataSet
     Database = IBDatabase1
@@ -12411,7 +12363,7 @@ object Form7: TForm7
     UniDirectional = False
     Filtered = True
     Left = 8
-    Top = 1027
+    Top = 827
     object ibDataSet5EMISSAO: TDateField
       DisplayLabel = 'Emiss'#227'o'
       DisplayWidth = 10
@@ -12509,8 +12461,8 @@ object Form7: TForm7
   end
   object DataSource5: TDataSource
     DataSet = ibDataSet5
-    Left = 96
-    Top = 1027
+    Left = 83
+    Top = 827
   end
   object ibDataSet7: TIBDataSet
     Database = IBDatabase1
@@ -12619,7 +12571,7 @@ object Form7: TForm7
     DataSource = DataSource15
     OnFilterRecord = ibDataSet7FilterRecord
     Left = 8
-    Top = 706
+    Top = 482
     object ibDataSet7ATIVO: TSmallintField
       DisplayLabel = '...'
       DisplayWidth = 5
@@ -12798,8 +12750,8 @@ object Form7: TForm7
   end
   object DataSource7: TDataSource
     DataSet = ibDataSet7
-    Left = 96
-    Top = 706
+    Left = 83
+    Top = 482
   end
   object ibDataSet9: TIBDataSet
     Database = IBDatabase1
@@ -12854,7 +12806,7 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Left = 8
-    Top = 787
+    Top = 531
     object ibDataSet9NOME: TIBStringField
       DisplayLabel = 'Nome'
       DisplayWidth = 35
@@ -12899,14 +12851,14 @@ object Form7: TForm7
   end
   object DataSource9: TDataSource
     DataSet = ibDataSet9
-    Left = 96
-    Top = 787
+    Left = 83
+    Top = 531
   end
   object mmCLifor: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 543
+    Left = 143
+    Top = 383
     object MenuItem1: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem1Click
@@ -13158,8 +13110,8 @@ object Form7: TForm7
   object mmEstoque: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 624
+    Left = 143
+    Top = 433
     object MenuItem23: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem23Click
@@ -13405,8 +13357,8 @@ object Form7: TForm7
   object mmMovBancos: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 1027
+    Left = 143
+    Top = 827
     object MenuItem34: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem34Click
@@ -13499,8 +13451,8 @@ object Form7: TForm7
   object mmReceber: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 706
+    Left = 143
+    Top = 482
     object MenuItem56: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem56Click
@@ -13824,8 +13776,8 @@ object Form7: TForm7
   object mmVendedor: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 787
+    Left = 143
+    Top = 531
     object MenuItem78: TMenuItem
       Caption = '&Arquivo'
       object Relatriodevendasporvendedor1: TMenuItem
@@ -13954,8 +13906,8 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Filtered = True
-    Left = 456
-    Top = 1027
+    Left = 368
+    Top = 829
     object ibDataSet11NOME: TIBStringField
       DisplayLabel = 'Nome'
       FieldName = 'NOME'
@@ -14019,8 +13971,8 @@ object Form7: TForm7
   end
   object DataSource11: TDataSource
     DataSet = ibDataSet11
-    Left = 582
-    Top = 1027
+    Left = 440
+    Top = 829
   end
   object ibDataSet12: TIBDataSet
     Database = IBDatabase1
@@ -14083,7 +14035,7 @@ object Form7: TForm7
     UniDirectional = False
     Filtered = True
     Left = 8
-    Top = 860
+    Top = 580
     object ibDataSet12CONTA: TIBStringField
       DisplayLabel = 'Conta'
       DisplayWidth = 6
@@ -14153,14 +14105,14 @@ object Form7: TForm7
   end
   object DataSource12: TDataSource
     DataSet = ibDataSet12
-    Left = 96
-    Top = 860
+    Left = 83
+    Top = 580
   end
   object mmPlanoContas: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 860
+    Left = 143
+    Top = 580
     object MenuItem45: TMenuItem
       Caption = '&Arquivo'
       object Balancetegerencial1: TMenuItem
@@ -14337,8 +14289,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 861
+    Left = 368
+    Top = 582
     object ibDataSet13CGC: TIBStringField
       DisplayLabel = 'CPF/CNPJ'
       FieldName = 'CGC'
@@ -14475,8 +14427,8 @@ object Form7: TForm7
   end
   object DataSource13: TDataSource
     DataSet = ibDataSet13
-    Left = 582
-    Top = 868
+    Left = 441
+    Top = 582
   end
   object ibDataSet14: TIBDataSet
     Database = IBDatabase1
@@ -14641,7 +14593,7 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Left = 8
-    Top = 893
+    Top = 629
     object ibDataSet14CFOP: TIBStringField
       FieldName = 'CFOP'
       EditMask = '99999;1;_'
@@ -15011,14 +14963,14 @@ object Form7: TForm7
   end
   object DataSource14: TDataSource
     DataSet = ibDataSet14
-    Left = 96
-    Top = 893
+    Left = 83
+    Top = 629
   end
   object mmICM: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 893
+    Left = 143
+    Top = 629
     object MenuItem106: TMenuItem
       Caption = '&Arquivo'
       object ConversodeCFOP1: TMenuItem
@@ -15277,7 +15229,7 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Left = 8
-    Top = 219
+    Top = 187
     object ibDataSet15NUMERONF: TIBStringField
       DisplayLabel = 'NF/S'#233'rie'
       DisplayWidth = 16
@@ -15672,8 +15624,8 @@ object Form7: TForm7
   end
   object DataSource15: TDataSource
     DataSet = ibDataSet15
-    Left = 96
-    Top = 219
+    Left = 83
+    Top = 187
   end
   object ibDataSet16: TIBDataSet
     Database = IBDatabase1
@@ -15840,8 +15792,8 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     DataSource = DataSource15
-    Left = 456
-    Top = 219
+    Left = 368
+    Top = 187
     object ibDataSet16NUMERONF: TIBStringField
       DisplayWidth = 13
       FieldName = 'NUMERONF'
@@ -16160,8 +16112,8 @@ object Form7: TForm7
   end
   object DataSource16: TDataSource
     DataSet = ibDataSet16
-    Left = 582
-    Top = 219
+    Left = 406
+    Top = 187
   end
   object ibDataSet18: TIBDataSet
     Database = IBDatabase1
@@ -16230,7 +16182,7 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Left = 8
-    Top = 959
+    Top = 727
     object ibDataSet18CGC: TIBStringField
       DisplayLabel = 'CPF/CNPJ'
       DisplayWidth = 20
@@ -16304,13 +16256,13 @@ object Form7: TForm7
   end
   object DataSource18: TDataSource
     DataSet = ibDataSet18
-    Left = 96
-    Top = 959
+    Left = 83
+    Top = 727
   end
   object DataSource19: TDataSource
     DataSet = ibDataSet19
-    Left = 582
-    Top = 467
+    Left = 435
+    Top = 338
   end
   object ibDataSet19: TIBDataSet
     Database = IBDatabase1
@@ -16371,8 +16323,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 463
+    Left = 367
+    Top = 338
     object ibDataSet19DESCRICAO: TIBStringField
       DisplayLabel = 'Descri'#231#227'o'
       DisplayWidth = 25
@@ -16424,8 +16376,8 @@ object Form7: TForm7
     end
   end
   object MainMenu99: TMainMenu
-    Left = 1324
-    Top = 403
+    Left = 894
+    Top = 144
   end
   object ibDataSet21: TIBDataSet
     Database = IBDatabase1
@@ -16470,8 +16422,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 894
+    Left = 368
+    Top = 631
     object ibDataSet21NOME: TIBStringField
       DisplayLabel = 'Nome do grupo'
       FieldName = 'NOME'
@@ -16494,8 +16446,8 @@ object Form7: TForm7
   end
   object DataSource21: TDataSource
     DataSet = ibDataSet21
-    Left = 582
-    Top = 900
+    Left = 442
+    Top = 631
   end
   object ibDataSet23: TIBDataSet
     Database = IBDatabase1
@@ -16642,8 +16594,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 301
+    Left = 367
+    Top = 237
     object ibDataSet23NUMERONF: TIBStringField
       DisplayWidth = 14
       FieldName = 'NUMERONF'
@@ -16965,8 +16917,8 @@ object Form7: TForm7
   end
   object DataSource23: TDataSource
     DataSet = ibDataSet23
-    Left = 582
-    Top = 300
+    Left = 438
+    Top = 237
   end
   object ibDataSet24: TIBDataSet
     Database = IBDatabase1
@@ -17138,7 +17090,7 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Left = 8
-    Top = 301
+    Top = 237
     object ibDataSet24NUMERONF: TIBStringField
       DisplayLabel = 'NF/S'#233'rie'
       DisplayWidth = 16
@@ -17439,8 +17391,8 @@ object Form7: TForm7
   end
   object DataSource24: TDataSource
     DataSet = ibDataSet24
-    Left = 96
-    Top = 301
+    Left = 83
+    Top = 237
   end
   object ibDataSet25: TIBDataSet
     Database = IBDatabase1
@@ -17539,8 +17491,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 755
+    Left = 368
+    Top = 485
     object ibDataSet25DATA: TDateField
       FieldName = 'DATA'
     end
@@ -17631,8 +17583,8 @@ object Form7: TForm7
   end
   object DataSource25: TDataSource
     DataSet = ibDataSet25
-    Left = 582
-    Top = 761
+    Left = 438
+    Top = 485
   end
   object ibDataSet26: TIBDataSet
     Database = IBDatabase1
@@ -17684,8 +17636,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 828
+    Left = 368
+    Top = 534
     object ibDataSet26DATA: TDateField
       FieldName = 'DATA'
       Origin = '"RESUMO"."DATA"'
@@ -17720,8 +17672,8 @@ object Form7: TForm7
   end
   object DataSource26: TDataSource
     DataSet = ibDataSet26
-    Left = 582
-    Top = 833
+    Left = 438
+    Top = 534
   end
   object ibDataSet27: TIBDataSet
     Database = IBDatabase1
@@ -17855,8 +17807,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 626
+    Left = 367
+    Top = 436
     object ibDataSet27CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Size = 5
@@ -18037,21 +17989,21 @@ object Form7: TForm7
   end
   object DataSource27: TDataSource
     DataSet = ibDataSet27
-    Left = 582
-    Top = 626
+    Left = 435
+    Top = 436
   end
   object PrinterSetupDialog1: TPrinterSetupDialog
-    Left = 940
-    Top = 219
+    Left = 667
+    Top = 227
   end
   object PrintDialog1: TPrintDialog
     Collate = True
-    Left = 940
-    Top = 163
+    Left = 764
+    Top = 227
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
-    Left = 1000
+    Left = 656
     Top = 144
     object Colunas1: TMenuItem
       Caption = '&Colunas...'
@@ -18318,8 +18270,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 927
+    Left = 368
+    Top = 681
     object ibDataSet10CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Size = 6
@@ -18348,8 +18300,8 @@ object Form7: TForm7
   end
   object DataSource10: TDataSource
     DataSet = ibDataSet10
-    Left = 582
-    Top = 933
+    Left = 440
+    Top = 681
   end
   object ibDataSet28: TIBDataSet
     Database = IBDatabase1
@@ -18395,8 +18347,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 961
+    Left = 368
+    Top = 730
     object ibDataSet28CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Size = 5
@@ -18421,14 +18373,14 @@ object Form7: TForm7
   end
   object DataSource28: TDataSource
     DataSet = ibDataSet28
-    Left = 582
-    Top = 961
+    Left = 438
+    Top = 731
   end
   object mmTransport: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 959
+    Left = 143
+    Top = 727
     object MenuItem15: TMenuItem
       Caption = '&Arquivo'
       object MenuItem58: TMenuItem
@@ -18491,8 +18443,8 @@ object Form7: TForm7
   end
   object DataSource29: TDataSource
     DataSet = ibDataSet29
-    Left = 96
-    Top = 993
+    Left = 83
+    Top = 777
   end
   object ibDataSet29: TIBDataSet
     Database = IBDatabase1
@@ -18546,7 +18498,7 @@ object Form7: TForm7
     UniDirectional = False
     Filtered = True
     Left = 8
-    Top = 993
+    Top = 777
     object ibDataSet29NOME: TIBStringField
       DisplayLabel = 'Conv'#234'nio'
       DisplayWidth = 30
@@ -18589,8 +18541,8 @@ object Form7: TForm7
   object mmConvenio: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 993
+    Left = 143
+    Top = 777
     object MenuItem118: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem118Click
@@ -18699,8 +18651,8 @@ object Form7: TForm7
     UniDirectional = False
     Filtered = True
     OnFilterRecord = ibDataSet30FilterRecord
-    Left = 456
-    Top = 544
+    Left = 367
+    Top = 387
     object ibDataSet30CODIGO: TIBStringField
       DisplayLabel = 'C'#243'digo'
       FieldName = 'CODIGO'
@@ -18752,14 +18704,14 @@ object Form7: TForm7
   end
   object DataSource30: TDataSource
     DataSet = ibDataSet30
-    Left = 582
-    Top = 546
+    Left = 434
+    Top = 387
   end
   object mmPagar: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 926
+    Left = 143
+    Top = 678
     object MenuItem67: TMenuItem
       Caption = '&Arquivo'
       object MenuItem68: TMenuItem
@@ -19066,7 +19018,7 @@ object Form7: TForm7
     UniDirectional = False
     Filtered = True
     Left = 8
-    Top = 926
+    Top = 678
     object ibDataSet8ATIVO: TIntegerField
       DisplayLabel = '...'
       DisplayWidth = 5
@@ -19160,8 +19112,8 @@ object Form7: TForm7
   end
   object DataSource8: TDataSource
     DataSet = ibDataSet8
-    Left = 96
-    Top = 926
+    Left = 83
+    Top = 678
   end
   object ibDataSet3: TIBDataSet
     Database = IBDatabase1
@@ -19282,7 +19234,7 @@ object Form7: TForm7
     UniDirectional = False
     Filtered = True
     Left = 8
-    Top = 382
+    Top = 286
     object ibDataSet3NUMERO: TIBStringField
       DisplayLabel = 'N'#250'mero'
       FieldName = 'NUMERO'
@@ -19448,14 +19400,14 @@ object Form7: TForm7
   end
   object DataSource3: TDataSource
     DataSet = ibDataSet3
-    Left = 96
-    Top = 382
+    Left = 83
+    Top = 286
   end
   object mmOS: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 381
+    Left = 143
+    Top = 285
     object MenuItem12: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem12Click
@@ -19690,8 +19642,8 @@ object Form7: TForm7
   object mmVendas: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 192
-    Top = 219
+    Left = 145
+    Top = 187
     object MenuItem13: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem23Click
@@ -19881,8 +19833,8 @@ object Form7: TForm7
   object mmCompras: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 300
+    Left = 143
+    Top = 236
     object MenuItem183: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem183Click
@@ -20096,8 +20048,8 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Filtered = True
-    Left = 456
-    Top = 382
+    Left = 368
+    Top = 286
     object ibDataSet35NUMERONF: TIBStringField
       DisplayWidth = 13
       FieldName = 'NUMERONF'
@@ -20180,8 +20132,8 @@ object Form7: TForm7
   end
   object DataSource35: TDataSource
     DataSet = ibDataSet35
-    Left = 582
-    Top = 385
+    Left = 438
+    Top = 286
   end
   object IBDatabase1: TIBDatabase
     Connected = True
@@ -20193,7 +20145,7 @@ object Form7: TForm7
     ServerType = 'IBServer'
     AllowStreamedConnected = False
     Left = 16
-    Top = 139
+    Top = 126
   end
   object IBDataSet2: TIBDataSet
     Database = IBDatabase1
@@ -20327,7 +20279,7 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Left = 8
-    Top = 544
+    Top = 384
     object IBDataSet2CGC: TIBStringField
       DisplayLabel = 'CPF/CNPJ'
       DisplayWidth = 21
@@ -20582,8 +20534,8 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 131
+    Left = 824
+    Top = 1006
   end
   object IBDataSet100: TIBDataSet
     Database = IBDatabase1
@@ -20592,8 +20544,8 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     UniDirectional = False
-    Left = 584
-    Top = 131
+    Left = 896
+    Top = 1006
   end
   object ibDataset40: TIBDataSet
     Database = IBDatabase1
@@ -20639,8 +20591,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 995
+    Left = 368
+    Top = 779
     object ibDataset40CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Visible = False
@@ -20667,13 +20619,13 @@ object Form7: TForm7
   end
   object DataSource40: TDataSource
     DataSet = ibDataset40
-    Left = 584
-    Top = 995
+    Left = 440
+    Top = 780
   end
   object IBDatabaseInfo1: TIBDatabaseInfo
     Database = IBDatabase1
     Left = 104
-    Top = 139
+    Top = 126
   end
   object ibDataSet37: TIBDataSet
     Database = IBDatabase1
@@ -20757,8 +20709,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 455
-    Top = 1063
+    Left = 367
+    Top = 878
     object ibDataSet37CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Visible = False
@@ -20869,8 +20821,8 @@ object Form7: TForm7
   end
   object DataSource37: TDataSource
     DataSet = ibDataSet37
-    Left = 577
-    Top = 1063
+    Left = 409
+    Top = 878
   end
   object IBBackupService1: TIBBackupService
     ServerName = 'localhost'
@@ -20888,7 +20840,7 @@ object Form7: TForm7
     DatabaseName = 'C:\Projeto 2021\2021\small.fdb'
     Options = []
     PreAllocate = 0
-    Left = 872
+    Left = 928
     Top = 227
   end
   object IBRestoreService1: TIBRestoreService
@@ -20908,7 +20860,7 @@ object Form7: TForm7
     PreAllocate = 0
     ReadOnly = False
     RestoreType = rtDatabase
-    Left = 904
+    Left = 960
     Top = 227
   end
   object IBTransaction1: TIBTransaction
@@ -20917,7 +20869,7 @@ object Form7: TForm7
       'isc_tpb_concurrency'
       'isc_tpb_nowait')
     Left = 192
-    Top = 139
+    Top = 126
   end
   object IBDataSet119: TIBDataSet
     Database = IBDatabase1
@@ -20978,8 +20930,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 840
-    Top = 959
+    Left = 752
+    Top = 863
     object IBDataSet119DESCRICAO: TIBStringField
       DisplayLabel = 'Descri'#231#227'o'
       DisplayWidth = 25
@@ -21039,8 +20991,8 @@ object Form7: TForm7
   end
   object DataSource119: TDataSource
     DataSet = IBDataSet119
-    Left = 990
-    Top = 959
+    Left = 902
+    Top = 863
   end
   object IBQuery1: TIBQuery
     Database = IBDatabase1
@@ -21049,20 +21001,20 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 944
-    Top = 843
+    Left = 856
+    Top = 747
   end
   object SaveDialog1: TSaveDialog
     DefaultExt = 'TXT'
     FileName = 'ARQUIVO'
     InitialDir = 'C:\'
     Title = 'Salvar arquivo'
-    Left = 904
-    Top = 131
+    Left = 664
+    Top = 288
   end
   object OpenDialog1: TOpenDialog
-    Left = 904
-    Top = 163
+    Left = 664
+    Top = 339
   end
   object IBDataSet39: TIBDataSet
     Database = IBDatabase1
@@ -21111,8 +21063,8 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Filtered = True
-    Left = 840
-    Top = 995
+    Left = 752
+    Top = 899
     object IBDataSet39CODIGO: TIBStringField
       FieldName = 'CODIGO'
       Origin = '"MUNICIPIOS"."CODIGO"'
@@ -21137,8 +21089,8 @@ object Form7: TForm7
   end
   object DataSource39: TDataSource
     DataSet = IBDataSet39
-    Left = 992
-    Top = 995
+    Left = 904
+    Top = 899
   end
   object IBDataSet101: TIBDataSet
     Database = IBDatabase1
@@ -21152,24 +21104,24 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     UniDirectional = False
-    Left = 424
-    Top = 131
+    Left = 752
+    Top = 1006
   end
   object LbBlowfish1: TLbBlowfish
     CipherMode = cmECB
-    Left = 800
-    Top = 547
+    Left = 664
+    Top = 411
   end
   object LbRSASSA1: TLbRSASSA
     HashMethod = hmMD5
     PrimeTestIterations = 20
     KeySize = aks512
-    Left = 832
-    Top = 547
+    Left = 728
+    Top = 411
   end
   object XMLDocument: TXMLDocument
-    Left = 800
-    Top = 635
+    Left = 664
+    Top = 475
     DOMVendorDesc = 'MSXML'
   end
   object IBQuery2: TIBQuery
@@ -21179,26 +21131,26 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 824
-    Top = 875
+    Left = 784
+    Top = 747
   end
   object XMLDocument1: TXMLDocument
-    Left = 808
-    Top = 723
+    Left = 760
+    Top = 475
   end
   object SaveDialog2: TSaveDialog
     Options = []
     Title = 'Salvar na pasta'
-    Left = 848
-    Top = 147
+    Left = 742
+    Top = 288
   end
   object OpenDialog2: TOpenDialog
-    Left = 792
+    Left = 744
     Top = 339
   end
   object OpenDialog3: TOpenDialog
-    Left = 832
-    Top = 211
+    Left = 824
+    Top = 339
   end
   object IBQuery3: TIBQuery
     Database = IBDatabase1
@@ -21207,8 +21159,8 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 944
-    Top = 875
+    Left = 856
+    Top = 779
   end
   object IBDataSet97: TIBDataSet
     Database = IBDatabase1
@@ -21222,19 +21174,19 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     UniDirectional = False
-    Left = 840
-    Top = 1027
+    Left = 752
+    Top = 931
   end
   object DataSource97: TDataSource
     DataSet = IBDataSet97
-    Left = 993
-    Top = 1031
+    Left = 905
+    Top = 935
   end
   object MainMenu13: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 614
-    Top = 1061
+    Left = 446
+    Top = 878
     object MenuItem14: TMenuItem
       Caption = '&Arquivo'
       object Relatriodeoramentospendentes2: TMenuItem
@@ -21316,22 +21268,10 @@ object Form7: TForm7
       end
     end
   end
-  object LbBlowfish2: TLbBlowfish
-    CipherMode = cmECB
-    Left = 800
-    Top = 139
-  end
-  object LbRSASSA2: TLbRSASSA
-    HashMethod = hmMD5
-    PrimeTestIterations = 20
-    KeySize = aks512
-    Left = 800
-    Top = 195
-  end
   object DataSource49: TDataSource
     DataSet = IBDataSet49
-    Left = 1128
-    Top = 931
+    Left = 1040
+    Top = 835
   end
   object IBDataSet49: TIBDataSet
     Database = IBDatabase1
@@ -21380,8 +21320,8 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Filtered = True
-    Left = 1096
-    Top = 963
+    Left = 1080
+    Top = 747
     object IBDataSet49SIGLA: TIBStringField
       DisplayWidth = 3
       FieldName = 'SIGLA'
@@ -21412,8 +21352,8 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 1416
-    Top = 859
+    Left = 704
+    Top = 739
   end
   object IBQuery4: TIBQuery
     Database = IBDatabase1
@@ -21422,8 +21362,8 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 1008
-    Top = 843
+    Left = 920
+    Top = 747
   end
   object IBQuery5: TIBQuery
     Database = IBDatabase1
@@ -21432,8 +21372,8 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 1416
-    Top = 891
+    Left = 704
+    Top = 771
   end
   object IBQuery14: TIBQuery
     Database = IBDatabase1
@@ -21442,8 +21382,8 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 824
-    Top = 843
+    Left = 784
+    Top = 782
   end
   object IBDataSet128: TIBDataSet
     Database = IBDatabase1
@@ -21510,16 +21450,16 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 1096
-    Top = 923
+    Left = 1008
+    Top = 747
   end
   object spdNFeDataSets: TspdNFeDataSets
     VersaoEsquema = pl_009
     ValidaRegrasNegocio = False
     ValidaRegrasNegocioTecno = False
     UsarDatasetExportacao = False
-    Left = 1128
-    Top = 136
+    Left = 800
+    Top = 536
   end
   object spdNFe: TspdNFe
     VersaoManual = vm50a
@@ -21573,7 +21513,7 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50a\vm50a\'
+      '0avm50avm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21609,7 +21549,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21622,16 +21562,16 @@ object Form7: TForm7
     DiretorioDownloads = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Downloads\'
     MaxSizeLoteEnvio = 500
     DanfeSimplificado = False
-    Left = 1128
-    Top = 200
+    Left = 733
+    Top = 536
   end
   object PopupMenu2: TPopupMenu
-    Left = 1000
-    Top = 200
+    Left = 736
+    Top = 144
   end
   object MainMenu00: TMainMenu
-    Left = 1000
-    Top = 288
+    Left = 816
+    Top = 144
   end
   object IBDataSet6: TIBDataSet
     Database = IBDatabase1
@@ -21677,8 +21617,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 456
-    Top = 1142
+    Left = 364
+    Top = 982
     object IBDataSet6CODIGO: TIBStringField
       DisplayLabel = 'C'#243'digo'
       FieldName = 'CODIGO'
@@ -21708,8 +21648,8 @@ object Form7: TForm7
   end
   object DataSource6: TDataSource
     DataSet = IBDataSet6
-    Left = 577
-    Top = 1142
+    Left = 441
+    Top = 982
   end
   object IBDataSet99999: TIBDataSet
     Database = IBDatabase1
@@ -21840,8 +21780,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 1160
-    Top = 1072
+    Left = 1048
+    Top = 888
     object IBDataSet99999NOME: TIBStringField
       DisplayWidth = 35
       FieldName = 'NOME'
@@ -21862,8 +21802,8 @@ object Form7: TForm7
   end
   object DataSource17: TDataSource
     DataSet = IBDataSet99999
-    Left = 1192
-    Top = 1072
+    Left = 1120
+    Top = 832
   end
   object IBDataSet88888: TIBDataSet
     Database = IBDatabase1
@@ -21877,12 +21817,12 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     UniDirectional = False
-    Left = 1120
-    Top = 1075
+    Left = 1160
+    Top = 747
   end
   object OpenDialog4: TOpenDialog
-    Left = 792
-    Top = 424
+    Left = 902
+    Top = 339
   end
   object spdNFeDPEC1: TspdNFeDPEC
     VersaoManual = vm50
@@ -21931,7 +21871,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21962,7 +21902,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21971,8 +21911,8 @@ object Form7: TForm7
     EntregaXML = exEmail
     AtualizarArquivoServidores = False
     DiagnosticMode = False
-    Left = 1240
-    Top = 912
+    Left = 664
+    Top = 536
   end
   object IdHTTP1: TIdHTTP
     ProxyParams.BasicAuthentication = False
@@ -21988,8 +21928,8 @@ object Form7: TForm7
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 1328
-    Top = 168
+    Left = 960
+    Top = 144
   end
   object IBQueryCoringa: TIBQuery
     Database = IBDatabase1
@@ -21998,14 +21938,14 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 1416
-    Top = 931
+    Left = 704
+    Top = 811
   end
   object mmServicos: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 1181
+    Left = 143
+    Top = 1080
     object MenuItem19: TMenuItem
       Caption = '&Arquivo'
       object ImportarOrdemdeServio1: TMenuItem
@@ -22067,8 +22007,8 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 1008
-    Top = 875
+    Left = 920
+    Top = 779
   end
   object IBQALIQUOTAISS: TIBQuery
     Database = IBDatabase1
@@ -22077,13 +22017,13 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 248
-    Top = 132
+    Left = 280
+    Top = 126
   end
   object DSConsulta: TDataSource
     DataSet = ibqConsulta
-    Left = 1368
-    Top = 1016
+    Left = 1072
+    Top = 952
   end
   object ibqConsulta: TIBDataSet
     Database = IBDatabase1
@@ -22214,8 +22154,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 1336
-    Top = 1016
+    Left = 1008
+    Top = 952
   end
   object CDSItensNotaAux: TClientDataSet
     Aggregates = <>
@@ -22241,8 +22181,8 @@ object Form7: TForm7
     IndexDefs = <>
     Params = <>
     StoreDefs = True
-    Left = 616
-    Top = 219
+    Left = 444
+    Top = 187
     object CDSItensNotaAuxDESCRICAO: TStringField
       FieldName = 'DESCRICAO'
       Size = 200
@@ -22261,8 +22201,8 @@ object Form7: TForm7
   object mmConvercaoCFOP: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 1067
+    Left = 143
+    Top = 877
     object MenuItem129: TMenuItem
       Caption = '&Arquivo'
       object ConfiguraodeICMSeISS1: TMenuItem
@@ -22321,8 +22261,8 @@ object Form7: TForm7
   end
   object DSConversaoCFOP: TDataSource
     DataSet = ibdConversaoCFOP
-    Left = 96
-    Top = 1067
+    Left = 83
+    Top = 877
   end
   object ibdConversaoCFOP: TIBDataSet
     Database = IBDatabase1
@@ -22367,7 +22307,7 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Left = 8
-    Top = 1067
+    Top = 877
     object ibdConversaoCFOPCFOP_ORIGEM: TIBStringField
       DisplayLabel = 'CFOP Origem'
       DisplayWidth = 6
@@ -22394,8 +22334,8 @@ object Form7: TForm7
   object mmPerfilTributa: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 1107
+    Left = 143
+    Top = 927
     object MenuItem130: TMenuItem
       Caption = '&Arquivo'
       object Parmetrosdetributao1: TMenuItem
@@ -22454,8 +22394,8 @@ object Form7: TForm7
   end
   object DSPerfilTributa: TDataSource
     DataSet = ibdPerfilTributa
-    Left = 96
-    Top = 1107
+    Left = 83
+    Top = 927
   end
   object ibdPerfilTributa: TIBDataSet
     Database = IBDatabase1
@@ -22556,7 +22496,7 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Left = 8
-    Top = 1107
+    Top = 927
     object ibdPerfilTributaDESCRICAO: TIBStringField
       DisplayLabel = 'Nome do Perfil'
       FieldName = 'DESCRICAO'
@@ -22747,8 +22687,8 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
     UniDirectional = False
-    Left = 455
-    Top = 1095
+    Left = 366
+    Top = 927
     object IbdOrcamentObsREGISTRO: TIBStringField
       FieldName = 'REGISTRO'
       Origin = 'ORCAMENTOBS.REGISTRO'
@@ -22770,19 +22710,19 @@ object Form7: TForm7
   end
   object dsOrcamentObs: TDataSource
     DataSet = IbdOrcamentObs
-    Left = 577
-    Top = 1095
+    Left = 441
+    Top = 927
   end
   object DSParametroTributa: TDataSource
     DataSet = ibdParametroTributa
-    Left = 96
-    Top = 1141
+    Left = 83
+    Top = 977
   end
   object mmParametroTributa: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 1141
+    Left = 143
+    Top = 977
     object MenuItem131: TMenuItem
       Caption = '&Arquivo'
       object Perfildetributao1: TMenuItem
@@ -22907,7 +22847,7 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Left = 8
-    Top = 1141
+    Top = 977
     object ibdParametroTributaCFOP_ENTRADA: TIBStringField
       DisplayLabel = 'CFOP'
       FieldName = 'CFOP_ENTRADA'
@@ -23015,7 +22955,7 @@ object Form7: TForm7
     ParamCheck = True
     UniDirectional = False
     Left = 8
-    Top = 1219
+    Top = 1028
     object ibdSituacaoOSSITUACAO: TIBStringField
       DisplayLabel = 'Situa'#231#227'o'
       FieldName = 'SITUACAO'
@@ -23033,14 +22973,14 @@ object Form7: TForm7
   end
   object DSSitucaoOS: TDataSource
     DataSet = ibdSituacaoOS
-    Left = 96
-    Top = 1219
+    Left = 83
+    Top = 1028
   end
   object mmSituacaoOS: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
-    Left = 190
-    Top = 1219
+    Left = 143
+    Top = 1028
     object MenuItem216: TMenuItem
       Caption = '&Arquivo'
       object MenuItem226: TMenuItem

@@ -879,7 +879,6 @@ type
     ibDataSet27ALIQUICM: TIBStringField;
     ibDataSet27REGISTRO: TIBStringField;
     ibDataSet15REGISTRO: TIBStringField;
-    Label30: TLabel;
     ibDataSet16REGISTRO: TIBStringField;
     ibDataSet35REGISTRO: TIBStringField;
     ibDataSet18REGISTRO: TIBStringField;
@@ -1140,8 +1139,6 @@ type
     GerarNotaFiscalSrie22: TMenuItem;
     N55: TMenuItem;
     Relatriodeoramentospendentes2: TMenuItem;
-    LbBlowfish2: TLbBlowfish;
-    LbRSASSA2: TLbRSASSA;
     ibDataSet4ENCRYPTHASH: TIBStringField;
     ibDataSet27ITEM: TIBStringField;
     ibDataSet27HORA: TIBStringField;
@@ -1210,7 +1207,6 @@ type
     N56: TMenuItem;
     RelatriodeIPI1: TMenuItem;
     RelatriodePISCOFINS1: TMenuItem;
-    Button9: TButton;
     ibDataSet14CSTPISCOFINS: TIBStringField;
     ibDataSet23CST_PIS_COFINS: TIBStringField;
     ibDataSet23ALIQ_PIS: TIBBCDField;
@@ -1379,7 +1375,6 @@ type
     Anlisedofaturamento1: TMenuItem;
     AnliseMensal1: TMenuItem;
     Analiseanual1: TMenuItem;
-    Button10: TButton;
     ibDataSet15ENCRYPTHASH: TIBStringField;
     ibDataSet16ENCRYPTHASH: TIBStringField;
     ibDataSet13ENCRYPTHASH: TIBStringField;
@@ -1443,7 +1438,6 @@ type
     N66: TMenuItem;
     DuplicatestaNFe1: TMenuItem;
     PrvisualizarDANFE1: TMenuItem;
-    Label28: TLabel;
     IBQALIQUOTAISS: TIBQuery;
     ibDataSet27CSOSN: TIBStringField;
     RelatriodePISCOFINSCupomFiscal1: TMenuItem;
@@ -22179,13 +22173,17 @@ begin
 end;
 
 procedure TForm7.Gerarnotafiscalsrie11Click(Sender: TObject);
+var
+  numOS : string;
 begin
+  numOS := ibDataSet3NUMERO.AsString;
+
   // Gera a nota fiscal
   if Form1.bNotaVendaLiberada then
   begin
     if Form7.ibDataSet3NF.AsString = '' then
     begin
-      if Application.MessageBox(Pchar('Confirma a importação da OS '+ibDataSet3NUMERO.AsString+' para a Nota Fiscal?'
+      if Application.MessageBox(Pchar('Confirma a importação da OS '+numOS+' para a Nota Fiscal?'
                                                   + chr(10)
                                                   + Chr(10))
                                                   ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
@@ -22194,7 +22192,7 @@ begin
         Form7.Vendas_1Click(Sender);                        // Nota fiscal série 1
         Form7.Image101Click(Sender);                        // Nova Nota
         Form7.sModulo := 'OS';
-        ImportaOS(Form7.ibDataSet3NUMERO.AsString);
+        ImportaOS(numOS);
         Form7.sModulo := 'VENDA';
       end;
     end else
@@ -22209,13 +22207,17 @@ begin
 end;
 
 procedure TForm7.Gerarnotafiscalsrie21Click(Sender: TObject);
+var
+  numOS : string;
 begin
+  numOS := ibDataSet3NUMERO.AsString;
+
   // Gera a nota fiscal
   if Form1.bNotaVendaLiberada then
   begin
     if Form7.ibDataSet3NF.AsString = '' then
     begin
-      if Application.MessageBox(Pchar('Confirma a importação da OS '+ibDataSet3NUMERO.AsString+' para a Nota Fiscal?'
+      if Application.MessageBox(Pchar('Confirma a importação da OS '+numOS+' para a Nota Fiscal?'
                                                   + chr(10)
                                                   + Chr(10))
                                                   ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
@@ -22224,7 +22226,7 @@ begin
         Form7.NotasfiscaisdesadavendasSrie11Click(Sender);  // Nota fiscal série 002
         Form7.Image101Click(Sender);                        // Nova Nota
         Form7.sModulo := 'OS';
-        ImportaOS(Form7.ibDataSet3NUMERO.AsString);
+        ImportaOS(numOS);
         Form7.sModulo := 'VENDA';
       end;
     end else
@@ -30884,7 +30886,11 @@ begin
 end;
 
 procedure TForm7.GerarNotaFiscaldeServio2Click(Sender: TObject);
+var
+  numOS : string;
 begin
+  numOS := ibDataSet3NUMERO.AsString;
+
   // Gera a nota fiscal
   if Form1.bNotaVendaLiberada then
   begin
@@ -30900,7 +30906,7 @@ begin
         Form1.imgServicosClick(Sender);                     // Nota fiscal Nota Fiscal de Servico
         Form7.Image101Click(Sender);                        // Nova Nota
         Form7.sModulo := 'OS';
-        ImportaOS(Form7.ibDataSet3NUMERO.AsString);
+        ImportaOS(numOS);
         Form7.sModulo := 'VENDA';
       end;
     end else
