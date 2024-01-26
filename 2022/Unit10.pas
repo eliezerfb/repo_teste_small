@@ -562,6 +562,7 @@ type
     procedure fraPerfilTribExit(Sender: TObject);
   private
     cCadJaValidado: String;
+    FotoOld : String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
     procedure DefinirVisibleConsultaProdComposicao;
     procedure AtribuirItemPesquisaComposicao;
@@ -2321,7 +2322,7 @@ begin
 
     Form7.ibDataSet7.EnableControls;
   end;
-  Image5.Picture  := Image3.Picture;  
+  Image5.Picture  := Image3.Picture;
 end;
 
 procedure TForm10.DBGrid1KeyDown(Sender: TObject; var Key: Word;
@@ -6830,6 +6831,7 @@ var
 
 begin
   // Procura pelo código de barras no no google
+  FotoOld := Form7.ibDataset4FOTO.AsString; // Mauricio Parizotto 2024-01-26
   
   Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
   
@@ -6873,8 +6875,6 @@ begin
         // Adicionando o código HTML ao MEMO
         
         try
-          // Exemplo: 737052683522  3380814050918   884116107460  7894900010015
-          
           Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
           J := 0;
           
@@ -6888,25 +6888,21 @@ begin
                   DownloadArquivoImg(PChar(sLinkDaFoto), PChar(Form10.sNomeDoJPG));
                   if FileExists(Form10.sNomeDoJPG) then
                   begin
-                    //try
-                      // Sandro Silva 2022-09-27 AtualizaTela(True);
                     if AtualizaTela(True) then
                     begin
-                    //finally
-                      //
                       if Form7.ibDataset4FOTO.BlobSize <> 0 then
                       begin
                         J := J + 1;
                         if J >= 7 then
                         begin
-                          {Sandro Silva 2022-09-27 inicio
-                          CopyFile(pChar('res' + Form7.IBDataSet4REGISTRO.AsString + '.jpg'), pChar(Form10.sNomeDoJPG), False);
+                          //Form7.ibDataset4FOTO.Value := Form7.ibDataset4FOTO.OldValue;
+
+                          if VarIsNull(Form7.ibDataset4FOTO.OldValue) then
+                            Form7.ibDataset4FOTO.Clear
+                          else
+                            Form7.ibDataset4FOTO.Value := FotoOld; //Usando variavel pois valor do OldValue não estava correto
+
                           AtualizaTela(True);
-                          }
-                          Form7.ibDataset4FOTO.Value := Form7.ibDataset4FOTO.OldValue;
-                          AtualizaTela(True);
-                          {Sandro Silva 2022-09-27 fim}
-                          //s := '';
                           Break;
                         end else
                         begin
@@ -6918,9 +6914,16 @@ begin
                             //s := '';
                             Break;
                           end;
+
                           if I = IDCANCEL then
                           begin
-                            Form7.ibDataset4FOTO.Value := Form7.ibDataset4FOTO.OldValue;
+                            //Form7.ibDataset4FOTO.Value := Form7.ibDataset4FOTO.OldValue; Mauricio Parizotto 2024-01-26
+
+                            if VarIsNull(Form7.ibDataset4FOTO.OldValue) then
+                              Form7.ibDataset4FOTO.Clear
+                            else
+                              Form7.ibDataset4FOTO.Value := FotoOld; //Usando variavel pois valor do OldValue não estava correto
+
                             AtualizaTela(True);
                             Break;
                           end;
