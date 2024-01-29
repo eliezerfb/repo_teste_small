@@ -20136,7 +20136,6 @@ object Form7: TForm7
     Top = 286
   end
   object IBDatabase1: TIBDatabase
-    Connected = True
     DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
