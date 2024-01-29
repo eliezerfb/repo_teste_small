@@ -208,6 +208,7 @@ uses
   uOSSections in '..\..\unit_compartilhada\uOSSections.pas',
   uFrmSituacaoOS in 'uFrmSituacaoOS.pas' {FrmSituacaoOS},
   uOrdemServico in 'units\uOrdemServico.pas',
+  uFuncaoMD5 in '..\..\unit_compartilhada\uFuncaoMD5.pas',
   uFrmAnexosOS in 'uFrmAnexosOS.pas' {FrmAnexosOS},
   uOutrasSections in '..\..\unit_compartilhada\uOutrasSections.pas',
   uRelatorioTotalGeralVenda in 'units\uRelatorioTotalGeralVenda.pas' {frmRelTotalizadorGeralVenda},

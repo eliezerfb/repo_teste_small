@@ -16,7 +16,7 @@ uses
 
 implementation
 
-uses Unit7, Mais, uFuncoesRetaguarda, uDialogs;
+uses Unit7, Mais, uFuncoesRetaguarda, uDialogs, uFuncaoMD5;
 
 function AtualizaDescricaoCliFor(sNomeNovo, sNomeAtual :string; Banco: TIBDatabase):Boolean;
 var
@@ -92,7 +92,7 @@ begin
       // VENDAS
       if not ExecutaComando(' update VENDAS set CLIENTE='+QuotedStr(sNomeNovo)+
                             //'  , ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+
-                            '  , ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))+
+                            '  , ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5String(Form1.sPasta)))+
                             ' where CLIENTE='+QuotedStr(sNomeAtual),
                             IBTRANSACTION) then
       begin
@@ -134,7 +134,7 @@ begin
       // ORCAMENTO
       if not ExecutaComando(' update ORCAMENT set CLIFOR='+QuotedStr(sNomeNovo)+
                             //'   , ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+
-                            '   , ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))+
+                            '   , ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5String(Form1.sPasta)))+
                             ' where CLIFOR='+QuotedStr(sNomeAtual),
                             IBTRANSACTION) then
       begin
@@ -146,7 +146,7 @@ begin
       // ALTERACA
       if not ExecutaComando(' update ALTERACA set CLIFOR='+QuotedStr(sNomeNovo)+
                             //'  , ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta))))+
-                            '  , ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(GeraMD5(Form1.sPasta)))+
+                            '  , ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5String(Form1.sPasta)))+
                             ' where CLIFOR='+QuotedStr(sNomeAtual),
                             IBTRANSACTION) then
       begin

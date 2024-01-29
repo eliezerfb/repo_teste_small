@@ -460,6 +460,7 @@
             <Form>FrmSituacaoOS</Form>
         </DCCReference>
         <DCCReference Include="units\uOrdemServico.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uFuncaoMD5.pas"/>
         <DCCReference Include="uFrmAnexosOS.pas">
             <Form>FrmAnexosOS</Form>
         </DCCReference>
@@ -484,7 +485,6 @@
         <DCCReference Include="..\..\unit_compartilhada\uEmail.pas"/>
         <DCCReference Include="ufrmFichaCadastros.pas">
             <Form>FrmFichaCadastros</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
