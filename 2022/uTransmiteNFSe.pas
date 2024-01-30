@@ -421,7 +421,11 @@ begin
 
             Writeln(F,'CPFCNPJRemetente='+LimpaNumero(Form7.ibDAtaSet13CGC.AsString));             // CNPJ do Emitente
             Writeln(F,'InscricaoMunicipalRemetente='+LimpaNumero(Form7.ibDAtaSet13IM.AsString));   // IM do Emitente
-            Writeln(F,'ValorTotalServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.')); // Valor Total de serviços
+
+            if (sPadraoSistema = 'SAATRI') and (GetCidadeUF = 'BOAVISTARR') then
+              Writeln(F,'ValorTotalServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat)),',','.')) // Valor Total de serviços
+            else
+              Writeln(F,'ValorTotalServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.')); // Valor Total de serviços
             Writeln(F,'ValorTotalDeducoes=0.00');
             Writeln(F,'ValorTotalBaseCalculo='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.')); // Valor Total de serviços
 
@@ -863,9 +867,17 @@ begin
               Writeln(F,'');
               Writeln(F,'DiscriminacaoServico='+sDescricaoDosServicos);
               Writeln(F,'QuantidadeServicos=1'); //
-              Writeln(F,'ValorUnitarioServico='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.'));
               Writeln(F,'UnidadeServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)));
-              Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.'));
+              if (sPadraoSistema = 'SAATRI') and (GetCidadeUF = 'BOAVISTARR') then
+              begin
+                Writeln(F,'ValorUnitarioServico='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat)),',','.'));
+                Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat)),',','.'));
+              end
+              else
+              begin
+                Writeln(F,'ValorUnitarioServico='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.'));
+                Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.'));
+              end;
 
               // Situações tributárias obtidas na prefeitura
               if AllTrim(RetornaValorDaTagNoCampo('Tributavel',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
