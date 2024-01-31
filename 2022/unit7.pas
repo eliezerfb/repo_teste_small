@@ -11911,42 +11911,14 @@ end;
 procedure TForm7.ibDataSet3NewRecord(DataSet: TDataSet);
 var
   sNumero : String;
-  cGenerator: String;
-  qryAux: TIBQuery;
   ConfSistema : TArquivosDAT;
 begin
-  {
-  Dailon Parisotto (f-5604) 2024-01-31 Inicio
-  Enquanto o sNumero for em branco (Novo ou quando já existe com o numero gerado) fica tentando gerar novo numero
-  }
-  while (sNumero = EmptyStr) do
-  begin
-    IBDataSet99.Close;
-    qryAux := CriaIBQuery(Form7.IBTransaction1);
-    try
-      IBDataSet99.SelectSQL.Clear;
-      IBDataSet99.SelectSQL.Add('select gen_id(G_NUMEROOS,1) from rdb$database');
-      IBDataSet99.Open;
-      cGenerator := StrZero(StrtoFloat(AllTrim(ibDataSet99.FieldByname('GEN_ID').AsString)),10,0);
-
-      qryAux.Close;
-      qryAux.SQL.Add('SELECT');
-      qryAux.SQL.Add('  COUNT(REGISTRO) AS QTDE');
-      qryAux.SQL.Add('FROM OS');
-      qryAux.SQL.Add('WHERE');
-      qryAux.SQL.Add('(NUMERO=:XNUMERO)');
-      qryAux.ParamByName('XNUMERO').AsString := cGenerator;
-      qryAux.Open;
-
-      if qryAux.FieldByName('QTDE').AsInteger <= 0 then
-        sNumero := cGenerator;
-    finally
-      FreeAndNil(qryAux);
-      IBDataSet99.Close;
-    end;
-  end;
-  {Dailon Parisotto (f-5604) 2024-01-31 Fim}
-
+  IBDataSet99.Close;
+  IBDataSet99.SelectSQL.Clear;
+  IBDataSet99.SelectSQL.Add('select gen_id(G_NUMEROOS,1) from rdb$database');
+  IBDataSet99.Open;
+  sNumero := StrZero(StrtoFloat(AllTrim(ibDataSet99.FieldByname('GEN_ID').AsString)),10,0);
+  IBDataSet99.Close;
   {Mauricio Parizotto 2023-11-21 Inicio
   try
     IBDataSet99.Close;
