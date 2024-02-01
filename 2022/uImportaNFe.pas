@@ -32,12 +32,10 @@ uses uFuncoesRetaguarda, uParametroTributacao, uDialogs,
   uFuncoesBancoDados;
 
 function ImportaNF(pP1: boolean; sP1: String):Boolean;
-
-function RetornarCodProdInativo: String;
-begin
-  Result := QuotedStr(Form7.ibDataSet4CODIGO.AsString) + ',';
-end;
-
+  function RetornarCodProdInativo: String;
+  begin
+    Result := QuotedStr(Form7.ibDataSet4CODIGO.AsString) + ',';
+  end;
 var
   NodePrim, NodePai, NodeSec, NodeTmp: IXMLNode; // Node é um nó do XML
   Hora, Min, Seg, cent : Word;
@@ -72,6 +70,8 @@ var
 
   IBQConversaoCFOP: TIBQuery;
   SizeDescricaoProd : integer;
+
+  CaminhoArquivo : string;
 begin
   Result := True;
 
@@ -87,14 +87,25 @@ begin
       if not Form7.OpenDialog1.Execute then
         Exit;
 
-      if LowerCase(Right(Form7.OpenDialog1.FileName,4))='.xml' then
+      //Mauricio Parizotto 2024-02-01
+      CaminhoArquivo := Form7.OpenDialog1.FileName;
+      if pos(CaminhoArquivo,'.') = 0 then
+        CaminhoArquivo := CaminhoArquivo+'.xml';
+
+      if not FileExists(CaminhoArquivo) then
+        Exit;
+
+      //if LowerCase(Right(Form7.OpenDialog1.FileName,4))='.xml' then
+      if LowerCase(Right(CaminhoArquivo,4))='.xml' then
       begin
         try
           Form7.XMLDocument1.DOMVendor := GetDOMVendor('Open XML');
-          Form7.XMLDocument1.LoadFromFile(Form7.OpenDialog1.FileName);
+          //Form7.XMLDocument1.LoadFromFile(Form7.OpenDialog1.FileName); Mauricio Parizotto 2024-02-01
+          Form7.XMLDocument1.LoadFromFile(CaminhoArquivo);
         except
           Form7.XMLDocument1.DOMVendor := GetDOMVendor('MSXML');
-          Form7.XMLDocument1.LoadFromFile(Form7.OpenDialog1.FileName);
+          //Form7.XMLDocument1.LoadFromFile(Form7.OpenDialog1.FileName); Mauricio Parizotto 2024-02-01
+          Form7.XMLDocument1.LoadFromFile(CaminhoArquivo);
         end;
       end;
 
