@@ -2968,17 +2968,19 @@ begin
   end;
   {Sandro Silva 2023-06-29 fim}
 
-  if Form7.ibDataSet15FINNFE.AsString <> '2' then
+  if ((Form7.ibDataSet15FINNFE.AsString <> '2') or ((Form7.ibDataSet15FINNFE.AsString = '2') and (not Form7.ibDataSet7.IsEmpty))) then
   begin
-    // Dados da Carga Transportada
-    Form7.spdNFeDataSets.Campo('qVol_X27').Value     := LimpaNumero(Form7.ibDataSet15.FieldByname('VOLUMES').AsString); // Quantidade de Volumes transportados
-    Form7.spdNFeDataSets.Campo('esp_X28').Value      := ConverteAcentos2(Form7.ibDataSet15.FieldByname('ESPECIE').AsString); // Espécie de Carga Transportada
-    Form7.spdNFeDataSets.Campo('marca_X29').Value    := ConverteAcentos2(Form7.ibDataSet15.FieldByname('MARCA').AsString); // MArca da Carga Transportada
-    Form7.spdNFeDataSets.Campo('nVol_X30').Value     := ConverteAcentos2(Form7.ibDataSet15.FieldByname('NVOL').AsString);; // Numeração dos Volumes transportados
+    if (Form7.ibDataSet15FINNFE.AsString <> '2') then
+    begin
+      // Dados da Carga Transportada
+      Form7.spdNFeDataSets.Campo('qVol_X27').Value     := LimpaNumero(Form7.ibDataSet15.FieldByname('VOLUMES').AsString); // Quantidade de Volumes transportados
+      Form7.spdNFeDataSets.Campo('esp_X28').Value      := ConverteAcentos2(Form7.ibDataSet15.FieldByname('ESPECIE').AsString); // Espécie de Carga Transportada
+      Form7.spdNFeDataSets.Campo('marca_X29').Value    := ConverteAcentos2(Form7.ibDataSet15.FieldByname('MARCA').AsString); // MArca da Carga Transportada
+      Form7.spdNFeDataSets.Campo('nVol_X30').Value     := ConverteAcentos2(Form7.ibDataSet15.FieldByname('NVOL').AsString);; // Numeração dos Volumes transportados
 
-    Form7.spdNFeDataSets.Campo('pesoL_X31').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDataSet15.FieldByname('PESOLIQUI').AsFloat)),',','.'); // Peso Líquido
-    Form7.spdNFeDataSets.Campo('pesoB_X32').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDataSet15.FieldByname('PESOBRUTO').AsFloat)),',','.'); // Peso Bruto
-
+      Form7.spdNFeDataSets.Campo('pesoL_X31').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDataSet15.FieldByname('PESOLIQUI').AsFloat)),',','.'); // Peso Líquido
+      Form7.spdNFeDataSets.Campo('pesoB_X32').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDataSet15.FieldByname('PESOBRUTO').AsFloat)),',','.'); // Peso Bruto
+    end;
     {
     // Dados De Cobrança
     // 1 Fatura  - 3 Duplicatas //
