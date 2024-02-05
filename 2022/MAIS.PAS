@@ -492,6 +492,7 @@ type
     ConfPreco : String;
     ConfAceitaCGCDuplo: String;
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, Confduplo,ConfNegat, ConfFoto, ConfMArca, ConfEspecie: String;
+    ConfPermitFabricarSemQtd : Boolean;
     ConfSvc, ConfItens   : Integer;
     ConfLimite  : Real;
     ConfIR      : Real;
@@ -12609,7 +12610,9 @@ begin
   //Carrega coniguraçõs do sistema
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
-    GeraLogSistema := ConfSistema.BD.Outras.LogSistema;
+
+    GeraLogSistema            := ConfSistema.BD.Outras.LogSistema;
+    ConfPermitFabricarSemQtd  := ConfSistema.BD.Outras.FabricaProdutoSemQtd; //Mauricio Parizotto 2024-02-02
   finally
     FreeAndNil(ConfSistema);
   end;

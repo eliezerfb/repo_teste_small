@@ -17919,7 +17919,10 @@ begin
           //
           if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
           begin
-            if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) and (ProdutoComposto(Form7.ibDataSet4.Transaction, Form7.ibDataSet4CODIGO.AsString) = False) then // Sandro Silva 2023-11-28 if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) then
+            //if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) and (ProdutoComposto(Form7.ibDataSet4.Transaction, Form7.ibDataSet4CODIGO.AsString) = False) then // Sandro Silva 2023-11-28 if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) then Mauricio Parizotto 2024-0-05
+            if ( (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) and (ProdutoComposto(Form7.ibDataSet4.Transaction, Form7.ibDataSet4CODIGO.AsString) = False) ) //Produdo sem composição
+              or ( (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (not Form1.ConfPermitFabricarSemQtd) and (TestarNatOperacaoMovEstoque) and (ProdutoComposto(Form7.ibDataSet4.Transaction, Form7.ibDataSet4CODIGO.AsString) = True) ) //Produdo com composição
+            then
               VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat)
             else
             begin
@@ -18479,11 +18482,27 @@ end;
 procedure TForm7.DefineQuantidadeSaldoDisponivelNota;
 var
   AnQtdeDisponivel: Currency;
+  ProdComposto : Boolean;
 begin
+  {Mauricio Parizotto 2024-02-05 Inicio}
+  ProdComposto := ProdutoComposto(Form7.ibDataSet16.Transaction,
+                                  Form7.ibDataSet16CODIGO.AsString);
+  {
   if (Form1.ConfNegat <> 'Não') then
     Exit;
+  }
+
+  if (Form1.ConfNegat <> 'Não') and (not ProdComposto) then
+    Exit;
+
+  if (Form1.ConfPermitFabricarSemQtd) and (ProdComposto) then
+    Exit;
+
+  {Mauricio Parizotto 2024-02-05 Fim}
+
   if (ibDataSet16TOTAL.Value > 0) then
     Exit;
+
   if TestarNatOperacaoMovEstoque then
   begin
     AnQtdeDisponivel := RetornarSaldoDisponivelItemNota(Form7.ibDataSet16CODIGO.AsString);
@@ -18594,11 +18613,26 @@ end;
 function TForm7.TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double): Boolean;
 var
   nSaldoDisp: Currency;
+  ProdComposto : Boolean;
 begin
   Result := True;
 
+  {Mauricio Parizotto 2024-02-05 Inicio}
+  ProdComposto := ProdutoComposto(Form7.ibDataSet16.Transaction,
+                                  Form7.ibDataSet16CODIGO.AsString);
+
+  {
   if (Form1.ConfNegat <> 'Não') then
     Exit;
+  }
+
+  if (Form1.ConfNegat <> 'Não') and (not ProdComposto) then
+    Exit;
+
+  if (Form1.ConfPermitFabricarSemQtd) and (ProdComposto) then
+    Exit;
+
+  {Mauricio Parizotto 2024-02-05 Fim}
 
   if TestarNatOperacaoMovEstoque then
   begin
@@ -18614,10 +18648,6 @@ begin
       Form7.ibDataSet16QUANTIDADE.OnChange  := nil;
       try
         Result := False;
-        {
-        ShowMessage('Não é possível efetuar a venda deste item, saldo insuficiente em estoque para a quantidade informada. Cod. 3.' + sLineBreak +
-                    'Saldo atual: ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), nSaldoDisp) + '.');
-        Mauricio Parizotto 2023-10-25}
         MensagemSistema('Não é possível efetuar a venda deste item, saldo insuficiente em estoque para a quantidade informada. Cod. 3.' + sLineBreak +
                         'Saldo atual: ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), nSaldoDisp) + '.'
                         ,msgAtencao);
