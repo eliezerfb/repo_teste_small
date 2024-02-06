@@ -29,6 +29,7 @@ uses
   , Windows
   , IdBaseComponent, IdCoder, IdCoder3to4, IdCoderMIME
   , LbCipher, LbClass // 2020-07-21
+  , MidasLib // Mauricio Parizotto 2024-01-23
   , JPeg, Menus
   , DateUtils
   //  , ShellApi
