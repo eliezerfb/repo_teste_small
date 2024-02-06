@@ -12758,6 +12758,7 @@ object Form7: TForm7
     Transaction = IBTransaction1
     AfterDelete = ibDataSet9AfterDelete
     AfterPost = ibDataSet9AfterPost
+    BeforeDelete = ibDataSet9BeforeDelete
     BeforeEdit = ibDataSet9BeforeEdit
     BeforeInsert = ibDataSet9BeforeInsert
     OnDeleteError = IBDataSet2DeleteError
@@ -16120,6 +16121,7 @@ object Form7: TForm7
     Transaction = IBTransaction1
     AfterDelete = ibDataSet18AfterDelete
     AfterPost = ibDataSet18AfterPost
+    BeforeDelete = ibDataSet18BeforeDelete
     BeforeInsert = ibDataSet18BeforeInsert
     OnDeleteError = IBDataSet2DeleteError
     OnEditError = IBDataSet2EditError
@@ -16384,6 +16386,7 @@ object Form7: TForm7
     Transaction = IBTransaction1
     AfterDelete = ibDataSet21AfterDelete
     AfterPost = ibDataSet21AfterPost
+    BeforeDelete = ibDataSet21BeforeDelete
     BeforeEdit = ibDataSet21BeforeEdit
     BeforeInsert = ibDataSet21BeforeInsert
     OnDeleteError = IBDataSet2DeleteError
@@ -20632,6 +20635,7 @@ object Form7: TForm7
     AfterDelete = ibDataSet37AfterDelete
     AfterOpen = ibDataSet37AfterOpen
     AfterPost = ibDataSet37AfterPost
+    BeforeDelete = ibDataSet37BeforeDelete
     BeforePost = ibDataSet37BeforePost
     BufferChunks = 1000
     CachedUpdates = False

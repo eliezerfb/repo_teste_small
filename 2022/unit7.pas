@@ -35,6 +35,8 @@ uses
   , uLogSistema
   , uArquivosDAT // Sandro Silva 2023-10-02
   , System.Contnrs
+  , TypInfo
+  , uSmallEnumerados
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -2316,6 +2318,10 @@ type
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure DBGrid4DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure ibDataSet37BeforeDelete(DataSet: TDataSet);
+    procedure ibDataSet9BeforeDelete(DataSet: TDataSet);
+    procedure ibDataSet18BeforeDelete(DataSet: TDataSet);
+    procedure ibDataSet21BeforeDelete(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2367,6 +2373,9 @@ type
     procedure FormShowModulos(Mais1Ini : tIniFile; var sSerieNFSelecionada : string);
     function SomenteLeitura: Boolean;
     procedure MarcaColunaOrderBy;
+    procedure RegistraExclusaoRegistro(AoDataSet: TDataSet; AcModulo: String = ''; AcHistoricoExtra: String = '');
+    function RetornarHistoricoPorModulo: String;
+    function RetornaTipoModulo: tModulosCommerce;
   public
     // Public declarations
 
@@ -2546,7 +2555,6 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uListaCnaes
   , uAssinaturaDigital
 // Sandro Silva 2023-10-02  , uArquivosDAT
-  , uSmallEnumerados
   , uNFSeINI
   , uAtualizaBancoDados
   , uAtualizaTributacaoPerfilTrib
@@ -11515,23 +11523,13 @@ end;
 procedure TForm7.ibDataSet1BeforeDelete(DataSet: TDataSet);
 begin
   if sModulo = 'CAIXA' then
-  begin
-    Audita('APAGOU', sModulo, Senhas.UsuarioPub,
-    ibDataSet1DATA.AsString + ' - ' + Alltrim(ibDataSet1HISTORICO.AsString),
-    ((ibDataSet1SAIDA.AsFloat*-1)+ibDataSet1ENTRADA.AsFloat)
-    ,0);   // Ato, Modulo, Usuário, Histórico
-  end;
+    RegistraExclusaoRegistro(ibDataSet1);
 end;
 
 procedure TForm7.ibDataSet5BeforeDelete(DataSet: TDataSet);
 begin
   if sModulo = 'BANCOS' then
-  begin
-    Audita('APAGOU', sModulo, Senhas.UsuarioPub,
-    Alltrim(ibDataSet5EMISSAO.AsString +' - ' +Alltrim(ibDataSet5DOCUMENTO.AsString + ' - ' + ibDataSet5HISTORICO.AsString)),
-    ((ibDataSet5SAIDA_.AsFloat*-1)+ibDataSet5ENTRADA_.AsFloat)
-    ,0);   // Ato, Modulo, Usuário, Histórico
-  end;
+    RegistraExclusaoRegistro(ibDataSet5);
 end;
 
 procedure TForm7.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -12859,7 +12857,9 @@ begin
     ibDataset99.SelectSql.Add('select gen_id(G_HASH_ESTOQUE,-1) from rdb$database');
     ibDataset99.Open;
   except end;
-  
+
+  RegistraExclusaoRegistro(ibDataSet4);
+
   Screen.Cursor := crDefault; // Cursor de Aguardo
 end;
 
@@ -14655,6 +14655,11 @@ begin
   Form1.imgCaixaClick(Sender);
 end;
 
+procedure TForm7.ibDataSet9BeforeDelete(DataSet: TDataSet);
+begin
+  RegistraExclusaoRegistro(ibDataSet9, EmptyStr, ' (VENDEDOR)');
+end;
+
 procedure TForm7.ibDataSet9BeforeEdit(DataSet: TDataSet);
 begin
   { É necessário saber o Nome anterior no caso de    }
@@ -14807,6 +14812,11 @@ begin
   Screen.Cursor := crDefault;
   AgendaCommit(True);
   //
+end;
+
+procedure TForm7.ibDataSet21BeforeDelete(DataSet: TDataSet);
+begin
+  RegistraExclusaoRegistro(ibDataSet21);
 end;
 
 procedure TForm7.ibDataSet21BeforeEdit(DataSet: TDataSet);
@@ -15639,6 +15649,7 @@ begin
       Abort;
     end;
   end;
+  RegistraExclusaoRegistro(ibDataSet29)
 end;
 
 procedure TForm7.ibDataSet29DESCONTOSetText(Sender: TField;
@@ -15969,6 +15980,7 @@ begin
       Abort;
     end;
   end;
+  RegistraExclusaoRegistro(ibDataSet12);
 end;
 
 procedure TForm7.ibDataSet14NOMESetText(Sender: TField; const Text: String);
@@ -16641,6 +16653,8 @@ begin
         Form7.ibDataSet9.Delete;
     except end;
   end;
+
+  RegistraExclusaoRegistro(IBDataSet2);
 end;
 
 procedure TForm7.Image_FechaClick(Sender: TObject);
@@ -16805,6 +16819,8 @@ begin
     IBDataSet99.SelectSQL.Add('select gen_id(G_NUMEROOS,-1) from rdb$database');
     IBDataSet99.Open;
   end;
+
+  RegistraExclusaoRegistro(ibDataSet3);
 end;
 
 procedure TForm7.Agendada1Click(Sender: TObject);
@@ -20549,6 +20565,8 @@ begin
   //
   Screen.Cursor := crDefault; // Cursor de Aguardo
   Form7.sModulo := ssModulo;
+
+  RegistraExclusaoRegistro(ibDataSet15, 'VENDA');
   //
 end;
 
@@ -20628,6 +20646,7 @@ begin
       //
     end else Abort;
   end;
+  RegistraExclusaoRegistro(ibDataSet24);
   //
 end;
 
@@ -21410,6 +21429,11 @@ begin
   except Abort end;
   fValorAnterior := 0;
   //
+end;
+
+procedure TForm7.ibDataSet18BeforeDelete(DataSet: TDataSet);
+begin
+  RegistraExclusaoRegistro(ibDataSet18);
 end;
 
 procedure TForm7.ibDataSet18BeforeInsert(DataSet: TDataSet);
@@ -22958,24 +22982,14 @@ begin
       Abort;
     end;
 
-    Audita('APAGOU', sModulo, Senhas.UsuarioPub,
-    Alltrim(ibDataSet7DOCUMENTO.AsString + ' - ' + AllTrim(Copy(sS+replicate(' ',60),1,60))),
-    (ibDataSet7VALOR_DUPL.AsFloat),0
-    );   // Ato, Modulo, Usuário, Histórico
+    RegistraExclusaoRegistro(ibDataSet7, EmptyStr, ' - ' + AllTrim(Copy(sS+replicate(' ',60),1,60)));
   end;
 end;
 
 procedure TForm7.ibDataSet8BeforeDelete(DataSet: TDataSet);
 begin
-  //
   if sModulo = 'PAGAR' then
-  begin
-    Audita('APAGOU', sModulo, Senhas.UsuarioPub,
-    Alltrim(ibDataSet8VENCIMENTO.AsString +' - ' +Alltrim(ibDataSet8DOCUMENTO.AsString + ' - ' + ibDataSet8HISTORICO.AsString)),
-    (ibDataSet8VALOR_DUPL.AsFloat)
-    ,0);   // Ato, Modulo, Usuário, Histórico
-  end;
-  //
+    RegistraExclusaoRegistro(ibDataSet8);
 end;
 
 procedure TForm7.ibDataSet8BeforePost(DataSet: TDataSet);
@@ -25137,6 +25151,11 @@ end;
 procedure TForm7.ibDataSet27BeforePost(DataSet: TDataSet);
 begin
   AssinaRegistro('ALTERACA',DataSet, True);
+end;
+
+procedure TForm7.ibDataSet37BeforeDelete(DataSet: TDataSet);
+begin
+  RegistraExclusaoRegistro(ibDataSet37);
 end;
 
 procedure TForm7.ibDataSet37BeforePost(DataSet: TDataSet);
@@ -34659,6 +34678,73 @@ begin
   end;
 
   AgendaCommit(True);
+end;
+
+procedure TForm7.RegistraExclusaoRegistro(AoDataSet: TDataSet; AcModulo: String = ''; AcHistoricoExtra: String = '');
+var
+  cHistorico: String;
+  cModuloAnt: String;
+begin
+  cModuloAnt := sModulo;
+  try
+    if AcModulo <> EmptyStr then
+      sModulo := AcModulo;
+
+    cHistorico := Copy('REG.: ' + AoDataSet.FieldByName('REGISTRO').AsString + ' - ' + RetornarHistoricoPorModulo + AcHistoricoExtra, 1, 1000);
+
+    // Ato, Modulo, Usuário, Histórico
+    case RetornaTipoModulo of
+      tmcPagar  : Audita('APAGOU', sModulo, Senhas.UsuarioPub, cHistorico, (ibDataSet8VALOR_DUPL.AsFloat), 0);
+      tmcReceber: Audita('APAGOU', sModulo, Senhas.UsuarioPub, cHistorico, (ibDataSet7VALOR_DUPL.AsFloat), 0);
+      tmcBancos : Audita('APAGOU', sModulo, Senhas.UsuarioPub, cHistorico, ((ibDataSet5SAIDA_.AsFloat*-1)+ibDataSet5ENTRADA_.AsFloat), 0);
+      tmcCaixa  : Audita('APAGOU', sModulo, Senhas.UsuarioPub, cHistorico, ((ibDataSet1SAIDA.AsFloat*-1)+ibDataSet1ENTRADA.AsFloat), 0);
+      else Audita('APAGOU', sModulo, Senhas.UsuarioPub, cHistorico, 0, 0);
+    end;
+  finally
+    sModulo := cModuloAnt;
+  end;
+end;
+
+function TForm7.RetornaTipoModulo: tModulosCommerce;
+var
+  i: Integer;
+  cNomeEnum: String;
+begin
+  Result := tmcNaoMapeado;
+
+  for i := Ord(Low(tModulosCommerce)) to Ord(High(tModulosCommerce)) do
+  begin
+    cNomeEnum := AnsiUpperCase(Copy(GetEnumName(TypeInfo(tModulosCommerce), i), 4, Length(GetEnumName(TypeInfo(tModulosCommerce), i))));
+    cNomeEnum := StringReplace(cNomeEnum, ' ', EmptyStr, [rfReplaceAll]);
+    if cNomeEnum = StringReplace(AnsiUpperCase(sModulo), ' ', EmptyStr, [rfReplaceAll]) then
+    begin
+      Result := tModulosCommerce(i);
+      Break;
+    end;
+  end;
+end;
+
+function TForm7.RetornarHistoricoPorModulo: String;
+var
+  i: Integer;
+begin
+  case RetornaTipoModulo of
+    tmcVenda    : Result := 'NÚMERO NF: ' + ibDataSet15NUMERONF.AsString + ', CLIENTE: ' + ibDataSet15CLIENTE.AsString;
+    tmcCompra   : Result := 'NÚMERO NF: ' + ibDataSet24NUMERONF.AsString + ', FORNECEDOR: ' + ibDataSet24FORNECEDOR.AsString;
+    tmcEstoque  : Result := 'CÓDIGO: ' + ibDataSet4CODIGO.AsString + ', DESCRIÇÃO: ' + ibDataSet4DESCRICAO.AsString;
+    tmcOS       : Result := 'NÚMERO: ' + ibDataSet3NUMERO.AsString + ', CLIENTE: ' + ibDataSet3CLIENTE.AsString;
+    tmcClientes : Result := 'NOME: ' + IBDataSet2NOME.AsString;
+    tmcBancos   : Result := Alltrim(ibDataSet5EMISSAO.AsString +' - ' +Alltrim(ibDataSet5DOCUMENTO.AsString + ' - ' + ibDataSet5HISTORICO.AsString));
+    tmcPagar    : Result := Alltrim(ibDataSet8VENCIMENTO.AsString + ' - ' +Alltrim(ibDataSet8DOCUMENTO.AsString + ' - ' + ibDataSet8HISTORICO.AsString));
+    tmcReceber  : Result := Alltrim(ibDataSet7DOCUMENTO.AsString);
+    tmcCaixa    : Result := ibDataSet1DATA.AsString + ' - ' + Alltrim(ibDataSet1HISTORICO.AsString);
+    tmcOrcamento: Result := 'PEDIDO: ' + ibDataSet37PEDIDO.AsString + ', ITEM: ' + ibDataSet37DESCRICAO.AsString;
+    tmcConvenio : Result := 'NOME: ' + ibDataSet29NOME.AsString;
+    tmcContas   : Result := 'CONTA: ' + ibDataSet12CONTA.AsString + ', NOME: ' + ibDataSet12NOME.AsString;
+    tmcTransport: Result := 'NOME: ' + ibDataSet18NOME.AsString + ', PLACA: ' + ibDataSet18PLACA.AsString;
+    tmcGrupos   : Result := 'NOME: ' + ibDataSet21NOME.AsString;
+    else Result := 'MÓDULO ' + AnsiUpperCase(sModulo) + ' NÃO MAPEADO.';
+  end;
 end;
 
 end.
