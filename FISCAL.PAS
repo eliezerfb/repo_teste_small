@@ -26694,9 +26694,9 @@ begin
       ChDir(Form1.sAtual); // Windows voltar para a pasta do executável Sandro Silva 2018-03-12
 
       // Sem validar se existem xml no diretório causa erro no szip.exe}
-      if FileExists(Form1.sAtual + '\CONTABIL\*.xml') then
+      //if FileExists(Form1.sAtual + '\CONTABIL\*.xml') then  // Mauricio Parizotto 2024-02-06
+      if HasFile(Form1.sAtual + '\CONTABIL\*.xml') then
       begin
-
         if FileExists('szip.exe') then
         begin
           // Se existir o arquivo .zip ele deve ser deletado antes. Está compactando os novos arquivos com os que já estão no .zip
