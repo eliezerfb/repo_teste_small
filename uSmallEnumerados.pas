@@ -10,6 +10,10 @@ type
   tTipoImpressaoOrcamento = (ttioPDF, ttioHTML, ttioPadraoWindows, ttioTXT);
   tTipoDocFrente = (ttdcMesaContaCliente = 1, ttdcSAT = 59, ttdcNFCe = 65, ttdcGerencial = 99);
   tDocsImprimirTotGeralVenda = (tditgvNFCe, tditgvSAT, tditgvNFe, tditgvCupom);
+  tModulosCommerce = (tmcNaoMapeado, tmcVenda, tmcCompra, tmcEstoque, tmcOS,
+                      tmcClientes, tmcBancos, tmcPagar, tmcReceber, tmcCaixa,
+                      tmcOrcamento, tmcConvenio, tmcContas, tmcTransport,
+                      tmcGrupos);
 
 implementation
 
