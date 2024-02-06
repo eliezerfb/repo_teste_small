@@ -191,6 +191,9 @@ function Modulo_11_Febraban(pP1:String):String;
 function HH(hWndCaller: HWND; pszFile: LPCWSTR; uCommand: UINT; dwData: DWORD_PTR): HWND;
 //function ValidaEmail(email: String): Boolean;
 {$ENDIF}
+function TruncaDecimal(pP1: Real; pP2: Integer): Real;
+function Potencia(pP1,pP2:Integer):Integer;
+function BinToInt(pP1:String ):Integer;
 function MontaMascaraCasaDec(qtdCasas : integer) : string;
 function ConverteAcentos3(pP1:String):String;
 function ConverteAcentosIBPT(pP1:String):String;
@@ -2368,6 +2371,46 @@ begin
 end;
 }
 {$ENDIF}
+
+function Potencia(pP1, pP2: Integer): Integer;
+var
+  i:integer;
+begin
+//  Result:=0;
+  if pP2=0 then
+    Result:=1
+  else
+     if pP2=1 then
+        Result:= pP1
+     else
+       begin
+         Result:=pP1;
+         For i:= 1 to pP2-1 do Result:=Result*pP1;
+       end;
+end;
+
+function BinToInt(pP1:String ):Integer;
+var
+  I:integer;
+  sTemp:String;
+begin
+   Result := 0 ;
+   sTemp:='';
+   // inverte
+   for I:= 1 to length(pP1) do sTemp:=Copy(pP1,I,1)+sTemp;
+   for I:= 1 to length(sTemp) do
+   begin
+     if Result >= 0 then
+       if (StrToInt(Copy(sTemp,I,1))) > 1 then Result:=-1 else // se o n for > 1 não é binário
+          Result := Result+ (StrToInt(Copy(sTemp,I,1)) * Potencia(2,I-1));
+   end;
+end;
+
+function TruncaDecimal(pP1: Real; pP2: Integer): Real;
+// não faz sentido essa função. Remover uso e declaração da mesma
+begin
+  Result := pP1;
+end;
 
 function MontaMascaraCasaDec(qtdCasas : integer) : string;
 begin
