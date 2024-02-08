@@ -2420,7 +2420,8 @@ begin
 
   // No caso de nota fiscal de devolucao
   // Sandro Silva 2023-05-18 if (Form7.ibDataSet15FINNFE.AsString = '4') and (AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) = '') then
-  if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) = '') then
+  //if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) = '') then //Mauricio Parizotto 2024-02-02 estava considerando o último item, e esse podia ser uma observação fihca 7876
+  if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (fIPIDevolvido > 0) then // ficha 7876
   begin
     Form7.spdNFeDataSets.campo('vIPIDevol_W12a').Value  := FormatFloatXML(Arredonda2(fIPIDevolvido,2)); // Valor Total do IPI devolvido
     Form7.spdNFeDataSets.Campo('vIPI_W12').Value        := '0.00'; // Valor Total do IPI
