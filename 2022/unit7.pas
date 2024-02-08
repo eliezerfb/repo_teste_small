@@ -7531,21 +7531,24 @@ begin
 end;
 
 
-function TotalizaOS(sP1: Boolean):Boolean;
+function TotalizaOS(TotProd, TotServ: Boolean):Boolean;
 var
   MyBookMark, MyBookMark1 : TBookMark;
 begin
   Form7.ibDataSet3.Edit;
 
   // Produtos
-  MyBookMark := Form7.ibDataSet16.GetBookMark();
-  Form7.ibDataSet16.DisableControls;
-  Form7.ibDataSet16.First;
-  Form7.ibDataSet3TOTAL_PECA.AsFloat := 0;
-  while not Form7.ibDataSet16.Eof do // disable
+  if TotProd then // Mauricio Parizotto 2024-02-08
   begin
-    Form7.ibDataSet3TOTAL_PECA.AsFloat := Form7.ibDataSet3TOTAL_PECA.AsFloat + Form7.ibDataSet16TOTAL.AsFloat;
-    Form7.ibDataSet16.Next;
+    MyBookMark := Form7.ibDataSet16.GetBookMark();
+    Form7.ibDataSet16.DisableControls;
+    Form7.ibDataSet16.First;
+    Form7.ibDataSet3TOTAL_PECA.AsFloat := 0;
+    while not Form7.ibDataSet16.Eof do // disable
+    begin
+      Form7.ibDataSet3TOTAL_PECA.AsFloat := Form7.ibDataSet3TOTAL_PECA.AsFloat + Form7.ibDataSet16TOTAL.AsFloat;
+      Form7.ibDataSet16.Next;
+    end;
   end;
 
   Form7.ibDataSet16.GotoBookmark(MyBookMark);
@@ -7554,14 +7557,17 @@ begin
   Form7.ibDataSet16.Edit;
 
   // Servicos
-  MyBookMark1 := Form7.ibDataSet35.GetBookMark();
-  Form7.ibDataSet35.DisableControls;
-  Form7.ibDataSet35.First;
-  Form7.ibDataSet3TOTAL_SERV.AsFloat := 0;
-  while not Form7.ibDataSet35.Eof do
+  if TotServ then // Mauricio Parizotto 2024-02-08
   begin
-    Form7.ibDataSet3TOTAL_SERV.AsFloat := Form7.ibDataSet3TOTAL_SERV.AsFloat + Form7.ibDataSet35TOTAL.AsFloat;
-    Form7.ibDataSet35.Next;
+    MyBookMark1 := Form7.ibDataSet35.GetBookMark();
+    Form7.ibDataSet35.DisableControls;
+    Form7.ibDataSet35.First;
+    Form7.ibDataSet3TOTAL_SERV.AsFloat := 0;
+    while not Form7.ibDataSet35.Eof do
+    begin
+      Form7.ibDataSet3TOTAL_SERV.AsFloat := Form7.ibDataSet3TOTAL_SERV.AsFloat + Form7.ibDataSet35TOTAL.AsFloat;
+      Form7.ibDataSet35.Next;
+    end;
   end;
 
   Form7.ibDataSet35.GotoBookmark(MyBookMark1);
@@ -16779,7 +16785,7 @@ end;
 
 procedure TForm7.ibDataSet3TOTAL_FRETChange(Sender: TField);
 begin
-  TotalizaOS(True);
+  TotalizaOS(True,True);
 end;
 
 procedure TForm7.imgVisualizarClick(Sender: TObject);
@@ -17591,7 +17597,7 @@ begin
     end;
 
     if Form7.sModulo = 'OS' then
-      TotalizaOS(True);
+      TotalizaOS(True,False);
 
     if Form7.sModulo = 'VENDA' then
       TotalizaServicos(True);
@@ -19387,7 +19393,8 @@ begin
     AtualizarListaItensAuxiliar;
     
   if Form7.sModulo = 'OS' then
-    TotalizaOS(True);
+    TotalizaOS(True,False);
+
   AgendaCommit(True);
 end;
 
@@ -19515,7 +19522,8 @@ end;
 procedure TForm7.ibDataSet35AfterDelete(DataSet: TDataSet);
 begin
   if Form7.sModulo = 'OS' then
-    TotalizaOS(True);
+    TotalizaOS(False,True);
+
   if Form7.sModulo = 'VENDA' then
     TotalizaServicos(True);
   AgendaCommit(True);
@@ -19523,24 +19531,21 @@ end;
 
 procedure TForm7.ibDataSet35TOTALChange(Sender: TField);
 begin
-  //
   if Form7.ibDataSet35QUANTIDADE.AsFloat > 0 then
   begin
-    //
     // Sandro Silva 2023-11-20 if Format('%12.4n',[(Form7.ibDataSet35TOTAL.AsFloat)]) <> Format('%12.4n',[(Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat)]) then
     if Format('%12.4n',[(Form7.ibDataSet35TOTAL.AsFloat)]) <> Format('%12.4n',[Arredonda(Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat,StrToInt(Form1.ConfPreco))]) then
     begin
-      //
       Form7.ibDataSet35.Edit;
       Form7.ibDataSet35TOTAL.AsFloat := Arredonda(Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat,StrToInt(Form1.ConfPreco));
-      //
     end;
     //
     if Form7.sModulo = 'OS' then
-      TotalizaOS(True);
+      TotalizaOS(False,True);
+
     if Form7.sModulo = 'VENDA' then
       TotalizaServicos(True);
-    //
+
   end;
 end;
 
@@ -20276,7 +20281,6 @@ end;
 
 procedure TForm7.ibDataSet35UNITARIOChange(Sender: TField);
 begin
-  //
   if Form7.ibDataSet35QUANTIDADE.AsFloat > 0 then
   begin
 //    if Format('%12.4n',[(Form7.ibDataSet35UNITARIO.AsFloat)]) <> Format('%12.4n',[(Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet35QUANTIDADE.AsFloat)]) then
@@ -20287,11 +20291,11 @@ begin
       Form7.ibDataSet35TOTAL.AsString := StrZero(Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat,12,4);
     end;
     if Form7.sModulo = 'OS' then
-      TotalizaOS(True);
+      TotalizaOS(False,True);
+
     if Form7.sModulo = 'VENDA' then
       TotalizaServicos(True);
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet15BeforeDelete(DataSet: TDataSet);
@@ -21741,7 +21745,7 @@ end;
 
 procedure TForm7.ibDataSet3DESCONTOChange(Sender: TField);
 begin
-  TotalizaOS(True);
+  TotalizaOS(True,True);
 end;
 
 procedure TForm7.ibDataSet21NewRecord(DataSet: TDataSet);
