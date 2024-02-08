@@ -8806,7 +8806,7 @@ begin
         Form7.ibDataSet14SOBREIPI.AsString := 'N'
       else
         Form7.ibDataSet14SOBREIPI.AsString := 'S';
-
+      Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
     end;
@@ -8819,7 +8819,7 @@ begin
         Form7.ibDataSet14FRETESOBREIPI.AsString := 'N'
       else
         Form7.ibDataSet14FRETESOBREIPI.AsString := 'S';
-
+      Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
     end;
@@ -8856,7 +8856,7 @@ begin
         Form7.ibDataSet14SOBREOUTRAS.AsString := 'N'
       else
         Form7.ibDataSet14SOBREOUTRAS.AsString := 'S';
-
+      Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
     end;

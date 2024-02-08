@@ -103,6 +103,7 @@ type
     procedure ComboBox7Change(Sender: TObject);
     procedure tbsNaturezaEnter(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
+    procedure DBCheckSobreClick(Sender: TObject);
   private
     { Private declarations }
     procedure AtualizaObjComValorDoBanco;
@@ -523,6 +524,23 @@ begin
     Label43.Caption := '% PIS:';
     Label49.Caption := '% COFINS:';
   end;
+end;
+
+procedure TFrmNaturezaOperacao.DBCheckSobreClick(Sender: TObject);
+var
+  oCampo: TDBCheckBox;
+  cValor: String;
+begin
+  if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataSet14.Edit;
+
+  oCampo := (Sender as TDBCheckBox);
+
+  cValor := 'N';
+  if oCampo.Checked then
+    cValor := 'S';
+
+  Form7.ibDataSet14.FieldByName(oCampo.DataField).AsString := cValor;
 end;
 
 procedure TFrmNaturezaOperacao.tbsNaturezaEnter(Sender: TObject);
