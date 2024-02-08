@@ -13848,6 +13848,7 @@ object Form7: TForm7
     Transaction = IBTransaction1
     AfterDelete = ibDataSet11AfterDelete
     AfterPost = ibDataSet11AfterPost
+    BeforeDelete = ibDataSet11BeforeDelete
     BeforeEdit = ibDataSet11BeforeEdit
     BeforeInsert = ibDataSet11BeforeInsert
     BeforePost = ibDataSet11BeforePost
@@ -22271,6 +22272,7 @@ object Form7: TForm7
     Database = IBDatabase1
     Transaction = IBTransaction1
     AfterDelete = ibdConversaoCFOPAfterDelete
+    BeforeDelete = ibdConversaoCFOPBeforeDelete
     BeforeEdit = ibdConversaoCFOPBeforeEdit
     BeforeInsert = ibdConversaoCFOPBeforeInsert
     OnDeleteError = IBDataSet2DeleteError
@@ -22786,6 +22788,7 @@ object Form7: TForm7
     Database = IBDatabase1
     Transaction = IBTransaction1
     AfterDelete = ibdParametroTributaAfterDelete
+    BeforeDelete = ibdParametroTributaBeforeDelete
     BeforeEdit = ibdParametroTributaBeforeEdit
     BeforeInsert = ibdParametroTributaBeforeInsert
     OnDeleteError = IBDataSet2DeleteError

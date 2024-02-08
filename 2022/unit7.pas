@@ -2322,6 +2322,9 @@ type
     procedure ibDataSet9BeforeDelete(DataSet: TDataSet);
     procedure ibDataSet18BeforeDelete(DataSet: TDataSet);
     procedure ibDataSet21BeforeDelete(DataSet: TDataSet);
+    procedure ibdParametroTributaBeforeDelete(DataSet: TDataSet);
+    procedure ibdConversaoCFOPBeforeDelete(DataSet: TDataSet);
+    procedure ibDataSet11BeforeDelete(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -15493,6 +15496,7 @@ begin
       Abort;
     end;
   end;
+  RegistraExclusaoRegistro(ibDataSet14);
 end;
 
 procedure TForm7.ibDataSet28AfterDelete(DataSet: TDataSet);
@@ -22486,6 +22490,11 @@ begin
   AgendaCommit(True);
 end;
   
+procedure TForm7.ibDataSet11BeforeDelete(DataSet: TDataSet);
+begin
+  RegistraExclusaoRegistro(ibDataSet11);
+end;
+
 procedure TForm7.ibDataSet11BeforeEdit(DataSet: TDataSet);
 begin
   { É necessário saber o Nome anterior no caso de    }
@@ -32431,6 +32440,11 @@ begin
   AgendaCommit(True);
 end;
 
+procedure TForm7.ibdConversaoCFOPBeforeDelete(DataSet: TDataSet);
+begin
+  RegistraExclusaoRegistro(ibdConversaoCFOP);
+end;
+
 procedure TForm7.ibdConversaoCFOPBeforeEdit(DataSet: TDataSet);
 begin
   sNumeroAnterior := ibdConversaoCFOPREGISTRO.AsString;
@@ -32651,6 +32665,7 @@ begin
       Abort;
     end;
   end;
+  RegistraExclusaoRegistro(ibdPerfilTributa);
 end;
 
 procedure TForm7.ibDataSet37AfterOpen(DataSet: TDataSet);
@@ -32770,6 +32785,11 @@ end;
 procedure TForm7.ibdParametroTributaAfterDelete(DataSet: TDataSet);
 begin
   AgendaCommit(True);
+end;
+
+procedure TForm7.ibdParametroTributaBeforeDelete(DataSet: TDataSet);
+begin
+  RegistraExclusaoRegistro(ibdParametroTributa);
 end;
 
 procedure TForm7.ibdParametroTributaBeforeEdit(DataSet: TDataSet);
@@ -34698,7 +34718,10 @@ begin
       tmcReceber: Audita('APAGOU', sModulo, Senhas.UsuarioPub, cHistorico, (ibDataSet7VALOR_DUPL.AsFloat), 0);
       tmcBancos : Audita('APAGOU', sModulo, Senhas.UsuarioPub, cHistorico, ((ibDataSet5SAIDA_.AsFloat*-1)+ibDataSet5ENTRADA_.AsFloat), 0);
       tmcCaixa  : Audita('APAGOU', sModulo, Senhas.UsuarioPub, cHistorico, ((ibDataSet1SAIDA.AsFloat*-1)+ibDataSet1ENTRADA.AsFloat), 0);
-      else Audita('APAGOU', sModulo, Senhas.UsuarioPub, cHistorico, 0, 0);
+      tmcParametroTributacao : Audita('APAGOU', 'PARAMTRIBU', Senhas.UsuarioPub, cHistorico, 0, 0);
+      tmcPerfilTributacao    : Audita('APAGOU', 'PERFILTRIB', Senhas.UsuarioPub, cHistorico, 0, 0);
+      tmcConversaoCFOP       : Audita('APAGOU', 'CONVERCFOP', Senhas.UsuarioPub, cHistorico, 0, 0);
+      else Audita('APAGOU', Copy(sModulo,1,10), Senhas.UsuarioPub, cHistorico, 0, 0);
     end;
   finally
     sModulo := cModuloAnt;
@@ -34743,6 +34766,11 @@ begin
     tmcContas   : Result := 'CONTA: ' + ibDataSet12CONTA.AsString + ', NOME: ' + ibDataSet12NOME.AsString;
     tmcTransport: Result := 'NOME: ' + ibDataSet18NOME.AsString + ', PLACA: ' + ibDataSet18PLACA.AsString;
     tmcGrupos   : Result := 'NOME: ' + ibDataSet21NOME.AsString;
+    tmcParametroTributacao: Result := 'CFOP ENTRADA: ' + ibdParametroTributaCFOP_ENTRADA.AsString + ', ID PERFIL TRIBUTAÇÃO: ' + ibdParametroTributaIDPERFILTRIBUTACAO.AsString;
+    tmcPerfilTributacao   : Result := 'NOME: ' + ibdPerfilTributaDESCRICAO.AsString;
+    tmcConversaoCFOP      : Result := 'CFOP ORIGEM: ' + ibdConversaoCFOPCFOP_ORIGEM.AsString + ', CFOP CONVERSÃO: ' + ibdConversaoCFOPCFOP_CONVERSAO.AsString;
+    tmcICM                : Result := 'NOME: ' + ibDataSet14NOME.AsString + ', CFOP: ' + ibDataSet14CFOP.AsString;
+    tmc2Contas            : Result := 'NOME: ' + ibDataSet11NOME.AsString + ', AGÊNCIA: ' + ibDataSet11AGENCIA.AsString + ', CONTA: ' + ibDataSet11CONTA.AsString;
     else Result := 'MÓDULO ' + AnsiUpperCase(sModulo) + ' NÃO MAPEADO.';
   end;
 end;
