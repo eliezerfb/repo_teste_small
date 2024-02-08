@@ -2128,7 +2128,8 @@ begin
       sleep(10);
     end;
 
-    ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), PAnsiChar(''), SW_SHOW); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open', 'email.exe',pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), '', SW_SHOW);
+    //ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), PAnsiChar(''), SW_SHOW); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open', 'email.exe',pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), '', SW_SHOW); // Mauricio Parizotto 2024-02-08
+    ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(AnsiString(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"')), PAnsiChar(''), SW_SHOW);
 
     Result := 1;
   end else
