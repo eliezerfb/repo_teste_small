@@ -728,13 +728,14 @@ object Form12: TForm12
         Font.Style = []
         ParentFont = False
       end
-      object Image2: TImage
+      object imgLogoNFe: TImage
         Left = 10
         Top = 5
         Width = 140
         Height = 88
         Center = True
-        OnClick = Image2Click
+        Proportional = True
+        OnClick = imgLogoNFeClick
       end
       object Label6: TLabel
         Left = 10
