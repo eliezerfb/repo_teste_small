@@ -7706,7 +7706,7 @@ begin
               end;
             end;
 
-            if (Pos( LimpaLEtras(AllTrim(Form7.ibDataSet14OBS.AsString)), LimpaLetras(AllTrim(Form7.ibDataSet15COMPLEMENTO.AsString)) ) = 0) then
+            //if (Pos( LimpaLEtras(AllTrim(Form7.ibDataSet14OBS.AsString)), LimpaLetras(AllTrim(Form7.ibDataSet15COMPLEMENTO.AsString)) ) = 0) then Mauricio Parizotto 2024-02-08 ficha 7828
             begin
               if (Pos(AllTrim(Form12.sObservacaoAntiga), Form7.ibDataSet15COMPLEMENTO.AsString) = 0) then
               begin
