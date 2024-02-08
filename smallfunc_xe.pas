@@ -71,7 +71,7 @@ function CpfCgc(pP1: String): Boolean;
 function FormataCpfCgc(pP1:String):String;
 function LimpaNumero(pP1:String):String;
 //2020-10-29 function ConsisteInscricaoEstadual(sIE, sUF: String): Boolean; StdCall; External 'DllInscE32.Dll';
-function ConsisteInscricaoEstadual(sIE: String; sUF: String): Boolean;
+//function ConsisteInscricaoEstadual(sIE: String; sUF: String): Boolean; Comentado para não dar conflito com usada na unit7 talvez necessário trocar para AnsiString
 function DecodeBase64(Value: String): String;
 function EncodeBase64(Value: String): String;
 {$IFNDEF VER150}
@@ -202,6 +202,7 @@ function ConverteCaracterEspecialXML(Value: String): String;
 function ConverteAcentosPHP(pP1:String):String;
 procedure SleepWithoutFreeze(msec: int64);
 function DiasDesteMes: Integer;
+function HasFile(Directory: String): boolean;
 
 var
   IMG: TImage;
@@ -2510,6 +2511,13 @@ begin
 end;
 
 
-
+function HasFile(Directory: String): boolean;
+var
+  I: Integer;
+  SearchRec: TSearchRec;
+begin
+  I := FindFirst(Directory, 0, SearchRec);
+  Result := I = 0;
+end;
 
 end.
