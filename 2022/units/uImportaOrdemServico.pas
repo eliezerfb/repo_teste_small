@@ -134,25 +134,14 @@ begin
         end;
       end;
 
-      //Mauricio Parizotto 2024-02-01
-      // Serviços
-      Form7.ibDataSet35.Close;
-      Form7.ibDataSet35.SelectSQL.Text := ' Select * from ITENS003 '+
-                                          ' Where NUMEROOS='+QuotedStr(Form7.ibDataSet3NUMERO.AsString)+
-                                          ' Order by REGISTRO';
-      Form7.ibDataSet35.Open;
-      Form7.ibDataSet35.First;
-
       if iB = IDYES then
       begin
         // Serviços
-        {Mauricio Parizotto 2024-02-01
         Form7.ibDataSet35.Close;
         Form7.ibDataSet35.SelectSQL.Clear;
         Form7.ibDataSet35.SelectSQL.Add('select * from ITENS003 where NUMEROOS='+QuotedStr(Form7.ibDataSet3NUMERO.AsString)+' order by REGISTRO');
         Form7.ibDataSet35.Open;
         Form7.ibDataSet35.First;
-        }
 
         // Serviços
         while not (Form7.ibDataSet35.EOF) do
