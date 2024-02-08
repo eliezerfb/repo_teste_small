@@ -18,7 +18,7 @@ object Form25: TForm25
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Image1: TImage
+  object imgBoleto: TImage
     Left = 20
     Top = 15
     Width = 662

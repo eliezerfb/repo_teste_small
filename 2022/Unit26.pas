@@ -126,6 +126,8 @@ type
     chkCNAB400: TCheckBox;
     chkCNAB240: TCheckBox;
     Label35: TLabel;
+    cboFormato: TComboBox;
+    Label36: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure MaskEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -152,7 +154,7 @@ var
 
 implementation
 
-uses Unit25, Unit7, Mais, uDialogs;
+uses Unit25, Unit7, Mais, uDialogs, uFuncoesBancoDados;
 
 {$R *.DFM}
 
@@ -172,8 +174,18 @@ end;
 
 
 procedure TForm26.FormActivate(Sender: TObject);
+var
+  sFormatoBoleto : string;
 begin
   Form26.Caption := 'Configuração do '+AnsiLowercase(Form25.Caption);
+
+  //Mauricio Parizotto 2024-02-05
+  sFormatoBoleto := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction,
+                                          ' Select Coalesce(FORMATOBOLETO,''Padrão'') '+
+                                          ' From BANCOS '+
+                                          ' Where NOME ='+QuotedStr(Form1.sBancoBoleto));
+
+  cboFormato.ItemIndex := cboFormato.Items.IndexOf(sFormatoBoleto);
 end;
 
 
@@ -348,6 +360,14 @@ begin
     MensagemSistema('Informe se é CNAB400 ou CNAB240.',msgAtencao);
     Exit;
   end;
+
+  //Mauricio Parizotto 2024-02-05
+  ExecutaComando(' Update BANCOS '+
+                 '   set FORMATOBOLETO = '+QuotedStr(cboFormato.Text)+
+                 ' Where NOME ='+QuotedStr(Form1.sBancoBoleto),
+                 Form7.ibDataSet7.Transaction);
+
+  Form25.sFormatoBoleto := cboFormato.Text;
 
   Close;
 end;
