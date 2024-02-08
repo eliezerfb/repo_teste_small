@@ -13,7 +13,8 @@ type
   tModulosCommerce = (tmcNaoMapeado, tmcVenda, tmcCompra, tmcEstoque, tmcOS,
                       tmcClientes, tmcBancos, tmcPagar, tmcReceber, tmcCaixa,
                       tmcOrcamento, tmcConvenio, tmcContas, tmcTransport,
-                      tmcGrupos);
+                      tmcGrupos, tmcParametroTributacao, tmcPerfilTributacao,
+                      tmcConversaoCFOP, tmcICM, tmc2Contas);
 
 implementation
 
