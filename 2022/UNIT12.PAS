@@ -115,7 +115,7 @@ type
     Importaroramentos1: TMenuItem;
     ImportarOS2: TMenuItem;
     Label71: TLabel;
-    Image2: TImage;
+    imgLogoNFe: TImage;
     DBGrid4: TDBGrid;
     Label6: TLabel;
     Label57: TLabel;
@@ -155,7 +155,7 @@ type
     lblHomologacao: TLabel;
     procedure DBGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure DBLookupComboBox2Exit(Sender: TObject);
-    procedure Image2Click(Sender: TObject);
+    procedure imgLogoNFeClick(Sender: TObject);
     procedure SMALL_DBEdit11Exit(Sender: TObject);
     procedure SMALL_DBEdit39Exit(Sender: TObject);
     procedure SMALL_DBEdit39Change(Sender: TObject);
@@ -445,23 +445,27 @@ end;
 function ResizeLogoDanfe(P1:Boolean): Boolean;
 var
   Rect  : tRect;
+  vWidth, vHeight : integer;
 begin
-  if (Form12.Image2.Picture.Width <> 140) or  (Form12.Image2.Picture.Height <> 88) then
+  {Mauricio Parizotto 2024-01-31 Inicio}
+  vWidth := 140*3;
+  vHeight := 88*3;
+  {
+  if (Form12.imgLogoNFe.Picture.Width <> vWidth) or  (Form12.imgLogoNFe.Picture.Height <> vHeight) then
   begin
-    //Form1.Image1.Picture.LoadFromFile('LOGONFE.BMP'); Mauricio Parizotto 2023-10-31
     Form1.Image1.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP');
 
     Rect.Top := 0;
     Rect.Left := 0;
 
-    if (Form1.Image1.Picture.Width div 140) >= (Form1.Image1.Picture.Height div 88) then
+    if (Form1.Image1.Picture.Width div vWidth) >= (Form1.Image1.Picture.Height div vHeight) then
     begin
-      Rect.Right  := Form1.Image1.Picture.Width div ((Form1.Image1.Picture.Width div 140)+1);
-      Rect.Bottom := Form1.Image1.Picture.Height div ((Form1.Image1.Picture.Width div 140)+1);
+      Rect.Right  := Form1.Image1.Picture.Width div ((Form1.Image1.Picture.Width div vWidth)+1);
+      Rect.Bottom := Form1.Image1.Picture.Height div ((Form1.Image1.Picture.Width div vWidth)+1);
     end else
     begin
-      Rect.Right  := Form1.Image1.Picture.Width div ((Form1.Image1.Picture.Height div 88)+1);
-      Rect.Bottom := Form1.Image1.Picture.Height div ((Form1.Image1.Picture.Height div 88)+1);
+      Rect.Right  := Form1.Image1.Picture.Width div ((Form1.Image1.Picture.Height div vHeight)+1);
+      Rect.Bottom := Form1.Image1.Picture.Height div ((Form1.Image1.Picture.Height div vHeight)+1);
     end;
 
     Form1.Image1.Canvas.stretchdraw(Rect,Form1.Image1.Picture.Graphic);
@@ -469,17 +473,50 @@ begin
     Form1.Image1.Picture.Bitmap.Width  := Rect.Right;
     Form1.Image1.Picture.Bitmap.Height := Rect.Bottom;
 
-    Form1.Image1.Picture.Bitmap.Width  := 140;
-    Form1.Image1.Picture.Bitmap.Height := 88;
+    Form1.Image1.Picture.Bitmap.Width  := vWidth;
+    Form1.Image1.Picture.Bitmap.Height := vHeight;
 
-    //Form1.Image1.Picture.SaveToFile('LOGONFE.BMP'); Mauricio Parizotto 2023-10-31
     Form1.Image1.Picture.SaveToFile(Form1.sAtual+'\LOGONFE.BMP');
   end;
 
-  //form12.Image2.Picture.LoadFromFile('LOGONFE.BMP'); Mauricio Parizotto 2023-10-31
-  form12.Image2.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP');
+  form12.imgLogoNFe.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP');
 
   Result := True;
+  }
+
+  if (Form12.imgLogoNFe.Picture.Width > vWidth) or  (Form12.imgLogoNFe.Picture.Height > vHeight) then
+  begin
+    Form1.Image1.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP');
+
+    Rect.Top := 0;
+    Rect.Left := 0;
+
+    if trunc( Form1.Image1.Picture.Height / ((Form1.Image1.Picture.Width / vWidth)) ) <= vHeight  then
+    begin
+      Rect.Right  := vWidth;
+      Rect.Bottom := trunc( Form1.Image1.Picture.Height / ((Form1.Image1.Picture.Width / vWidth)) );
+    end else
+    begin
+      Rect.Right  := trunc( Form1.Image1.Picture.Width / ((Form1.Image1.Picture.Height / vHeight)) );
+      Rect.Bottom := vHeight;
+    end;
+
+    Form1.Image1.Canvas.stretchdraw(Rect,Form1.Image1.Picture.Graphic);
+
+    Form1.Image1.Picture.Bitmap.Width  := Rect.Right;
+    Form1.Image1.Picture.Bitmap.Height := Rect.Bottom;
+
+    Form1.Image1.Picture.Bitmap.Width  := vWidth;
+    Form1.Image1.Picture.Bitmap.Height := vHeight;
+
+    Form1.Image1.Picture.SaveToFile(Form1.sAtual+'\LOGONFE.BMP');
+  end;
+
+  form12.imgLogoNFe.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP');
+
+  Result := True;
+
+  {Mauricio Parizotto 2024-01-31 Fim}
 end;
 
 
@@ -601,22 +638,23 @@ begin
   end;
 end;
 
-procedure TForm12.Image2Click(Sender: TObject);
+procedure TForm12.imgLogoNFeClick(Sender: TObject);
 begin
   if FileExists(Form1.sAtual+'\LOGONFE.BMP') then
-    //Image2.Picture.LoadFromFile('LOGONFE.BMP');
-    Image2.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP');
+    imgLogoNFe.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP');
+
   if not FileExists(Form1.sAtual+'\LOGONFE.BMP') then
-     Image2.Picture.SaveToFile('LOGONFE.BMP');
+     imgLogoNFe.Picture.SaveToFile('LOGONFE.BMP');
+
   ShellExecute( 0, 'Open','pbrush.exe','LOGONFE.BMP', '', SW_SHOW);
 
   //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
   MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
 
   if FileExists(Form1.sAtual+'\LOGONFE.BMP') then
-    Image2.Picture.LoadFromFile('LOGONFE.BMP');
+    imgLogoNFe.Picture.LoadFromFile('LOGONFE.BMP');
 
-  Image2.Picture.SaveToFile('LOGONFE.BMP');
+  imgLogoNFe.Picture.SaveToFile('LOGONFE.BMP');
 
   ResizeLogoDanfe(True);
 end;
@@ -1430,15 +1468,13 @@ begin
 
   if not FileExists(Form1.sAtual+'\LOGONFE.BMP') then
   begin
-    //Form24.ImageFixa.Picture.SaveToFile('LOGONFE.BMP');
     Form24.ImageFixa.Picture.SaveToFile(Form1.sAtual+'\LOGONFE.BMP');
   end;
 
   if FileExists(Form1.sAtual+'\LOGONFE.BMP') then
-    //Image2.Picture.LoadFromFile('LOGONFE.BMP') Mauriico Pariotto 2032-10-31
-    Image2.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP')
+    imgLogoNFe.Picture.LoadFromFile(Form1.sAtual+'\LOGONFE.BMP')
   else
-    Image2.Picture := Form24.ImageFixa.Picture;
+    imgLogoNFe.Picture := Form24.ImageFixa.Picture;
 
   ResizeLogoDanfe(True);
 

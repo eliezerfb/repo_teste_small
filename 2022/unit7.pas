@@ -52,7 +52,8 @@ function AgendaCommit(P1:Boolean): Boolean;
 function DefineJanela(bP1 : Boolean) : Boolean;
 function Audita(pP1, pP2, pP3, pP4 : String; pP5, pP6: Double) : Boolean;
 function AssinaturaDigital(sP1:String): String;
-function ConsisteInscricaoEstadual(sIE, sUF: String): Boolean; StdCall; External 'DllInscE32.Dll';
+//function ConsisteInscricaoEstadual(sIE, sUF: String): Boolean; StdCall; External 'DllInscE32.Dll';
+function ConsisteInscricaoEstadual(sIE, sUF: AnsiString): Boolean; StdCall; External 'DllInscE32.Dll';
 function DistribuicaoNFe(sP1:String) : Boolean;
 function DistribuicaoNFEInutilizada(sP1:String) : Boolean;
 function DistribuicaoNFe2(sP1: String) : Boolean;
@@ -7530,21 +7531,24 @@ begin
 end;
 
 
-function TotalizaOS(sP1: Boolean):Boolean;
+function TotalizaOS(TotProd, TotServ: Boolean):Boolean;
 var
   MyBookMark, MyBookMark1 : TBookMark;
 begin
   Form7.ibDataSet3.Edit;
 
   // Produtos
-  MyBookMark := Form7.ibDataSet16.GetBookMark();
-  Form7.ibDataSet16.DisableControls;
-  Form7.ibDataSet16.First;
-  Form7.ibDataSet3TOTAL_PECA.AsFloat := 0;
-  while not Form7.ibDataSet16.Eof do // disable
+  if TotProd then // Mauricio Parizotto 2024-02-08
   begin
-    Form7.ibDataSet3TOTAL_PECA.AsFloat := Form7.ibDataSet3TOTAL_PECA.AsFloat + Form7.ibDataSet16TOTAL.AsFloat;
-    Form7.ibDataSet16.Next;
+    MyBookMark := Form7.ibDataSet16.GetBookMark();
+    Form7.ibDataSet16.DisableControls;
+    Form7.ibDataSet16.First;
+    Form7.ibDataSet3TOTAL_PECA.AsFloat := 0;
+    while not Form7.ibDataSet16.Eof do // disable
+    begin
+      Form7.ibDataSet3TOTAL_PECA.AsFloat := Form7.ibDataSet3TOTAL_PECA.AsFloat + Form7.ibDataSet16TOTAL.AsFloat;
+      Form7.ibDataSet16.Next;
+    end;
   end;
 
   Form7.ibDataSet16.GotoBookmark(MyBookMark);
@@ -7553,14 +7557,17 @@ begin
   Form7.ibDataSet16.Edit;
 
   // Servicos
-  MyBookMark1 := Form7.ibDataSet35.GetBookMark();
-  Form7.ibDataSet35.DisableControls;
-  Form7.ibDataSet35.First;
-  Form7.ibDataSet3TOTAL_SERV.AsFloat := 0;
-  while not Form7.ibDataSet35.Eof do
+  if TotServ then // Mauricio Parizotto 2024-02-08
   begin
-    Form7.ibDataSet3TOTAL_SERV.AsFloat := Form7.ibDataSet3TOTAL_SERV.AsFloat + Form7.ibDataSet35TOTAL.AsFloat;
-    Form7.ibDataSet35.Next;
+    MyBookMark1 := Form7.ibDataSet35.GetBookMark();
+    Form7.ibDataSet35.DisableControls;
+    Form7.ibDataSet35.First;
+    Form7.ibDataSet3TOTAL_SERV.AsFloat := 0;
+    while not Form7.ibDataSet35.Eof do
+    begin
+      Form7.ibDataSet3TOTAL_SERV.AsFloat := Form7.ibDataSet3TOTAL_SERV.AsFloat + Form7.ibDataSet35TOTAL.AsFloat;
+      Form7.ibDataSet35.Next;
+    end;
   end;
 
   Form7.ibDataSet35.GotoBookmark(MyBookMark1);
@@ -8805,7 +8812,7 @@ begin
         Form7.ibDataSet14SOBREIPI.AsString := 'N'
       else
         Form7.ibDataSet14SOBREIPI.AsString := 'S';
-
+      Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
     end;
@@ -8818,7 +8825,7 @@ begin
         Form7.ibDataSet14FRETESOBREIPI.AsString := 'N'
       else
         Form7.ibDataSet14FRETESOBREIPI.AsString := 'S';
-
+      Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
     end;
@@ -8855,7 +8862,7 @@ begin
         Form7.ibDataSet14SOBREOUTRAS.AsString := 'N'
       else
         Form7.ibDataSet14SOBREOUTRAS.AsString := 'S';
-
+      Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
     end;
@@ -9477,21 +9484,49 @@ begin
 
             if FST > 0 then
             begin
+              {Mauricio Parizotto 2024-01-31 Inicio
               if Pos(Form7.sAproveitamento,Form7.ibDataSet15COMPLEMENTO.AsString) <> 0 then
               begin
                 if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
                   Form7.ibDataset15.Edit;
-                Form7.ibDataSet15COMPLEMENTO.AsString := StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,Form7.sAproveitamento,'');                      // Retira o anterios
+                ibDataSet15COMPLEMENTO.AsString := StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,sAproveitamento,'');                      // Retira o anterios
               end;
 
-              Form7.sAproveitamento := StrTran(Form7.ibDataSet14OBS.AsString,'R$;','R$ '+Alltrim(Format('%12.2n',[fST])) +'; ');  // Gera o novo e grava em sAproveitamento
+              sAproveitamento := StrTran(Form7.ibDataSet14OBS.AsString,'R$;','R$ '+Alltrim(Format('%12.2n',[fST])) +'; ');  // Gera o novo e grava em sAproveitamento
 
-              if Pos(Form7.sAproveitamento,Form7.ibDataSet15COMPLEMENTO.AsString) = 0 then
+              if Pos(sAproveitamento,ibDataSet15COMPLEMENTO.AsString) = 0 then
               begin
                 if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
                   Form7.ibDataset15.Edit;
-                Form7.ibDataSet15COMPLEMENTO.AsString := Form7.sAproveitamento + Form7.ibDataSet15COMPLEMENTO.AsString;                                // Coloca o novo
+
+                ibDataSet15COMPLEMENTO.AsString := sAproveitamento + ibDataSet15COMPLEMENTO.AsString;                                // Coloca o novo
               end;
+              }
+
+              //Alterado para copiar texto padrão até a palavra CORRESPONDENTE somente, para alterar somente o valor, cliente configura mais informações na observação
+              if Pos(Copy(Form7.sAproveitamento,1, Pos('CORRESPONDENTE',Form7.sAproveitamento) ),    Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1, Pos('CORRESPONDENTE',Form7.ibDataSet15COMPLEMENTO.AsString)  )) <> 0 then
+              begin
+                if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+                  Form7.ibDataset15.Edit;
+
+                ibDataSet15COMPLEMENTO.AsString := StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,Copy(sAproveitamento,1, Pos('CORRESPONDENTE',Form7.sAproveitamento) -1 ),'');                      // Retira o anterios
+              end;
+
+              sAproveitamento := StrTran(Form7.ibDataSet14OBS.AsString,'R$;','R$ '+Alltrim(Format('%12.2n',[fST])) +'; ');  // Gera o novo e grava em sAproveitamento
+
+              if Pos(sAproveitamento,ibDataSet15COMPLEMENTO.AsString) = 0 then
+              begin
+                if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+                  Form7.ibDataset15.Edit;
+
+                //Se ja tinha mensagem, apenas preenche com o resto
+                if Pos('CORRESPONDENTE Á',ibDataSet15COMPLEMENTO.AsString) > 0 then
+                  ibDataSet15COMPLEMENTO.AsString := Copy(sAproveitamento, 1, Pos('CORRESPONDENTE',Form7.sAproveitamento) -1  ) + ibDataSet15COMPLEMENTO.AsString
+                else
+                  ibDataSet15COMPLEMENTO.AsString := sAproveitamento + ibDataSet15COMPLEMENTO.AsString
+              end;
+
+              {Mauricio Parizotto 2024-01-31 Fim}
             end;
             {Sandro Silva 2023-12-12 fim}
           except
@@ -9538,10 +9573,9 @@ begin
           begin
             ibDataSet16.First;
             fTotal9 := 0;
-            //
+
             while not Form7.ibDataSet16.Eof do // Disable
             begin
-              //
               if Form7.ibDataSet16BASEISS.AsFloat <> 100 then
               begin
                 if (Pos(Alltrim(Form7.ibDataSet16.FieldByname('CFOP').AsString),Form1.CFOP5124) = 0) then// 5104 Industrialização efetuada para outra empresa não soma na base
@@ -9549,7 +9583,7 @@ begin
                   fTotal9 := fTotal9 + Arredonda(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat,2);
                 end;
               end;
-              //
+
               ibDataSet16.Next;
             end;
 
@@ -9655,7 +9689,7 @@ begin
       Form1.fRetencoes := 0;
       //
       Form48.SMALL_DBEdit16.Hint := '';
-      //
+
       if Form7.sRPS = 'S' then
       begin
         if Pos('(I)',Form7.ibDataset15MARCA.AsString) <> 0 then
@@ -9682,7 +9716,7 @@ begin
             end;
           except
           end;
-          //
+
           try
             // Cofins
             if AllTrim(RetornaValorDaTagNoCampo('AliquotaCOFINS',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
@@ -10541,14 +10575,14 @@ begin
           dbGrid2.Height  := (dbGrid1.Height div 2) - Panel9.Height;
           dbGrid2.Width   := 395;
         end;
-        //
+
         dbGrid2.Visible := True;
-        //
+
         Panel9.Top     := dbGrid2.Top + dbGrid2.Height -1;
         Panel9.Left    := dbGrid2.Left;
         Panel9.width   := dbGrid2.Width;
         Panel9.Visible := True;
-        //
+
         if (sModulo = 'COMPRA') then
         begin
           dbGrid3.Left    := Form7.Width - 447 -5;
@@ -10563,21 +10597,21 @@ begin
           dbGrid3.Height  := dbGrid1.Height - dbGrid2.Height - Panel9.Height - 5 -4;
           dbGrid3.Width   := 395;
         end;
-        //
+
         dBgrid3.Visible        := True;
-        //
+
         Panel10.Top     := dbGrid3.Top + dbGrid3.Height -1;
         Panel10.Left    := dbGrid3.Left;
         Panel10.Width   := dbGrid3.Width;
-        //
+
         Panel10.Visible := True;
-        //
+
         dbGrid1.Width   := dbGrid1.Width - dbGrid3.Width - 15;
-        //
+
         Form7.ibDataSet16UNITARIO.Visible       := False;
         Form7.ibDataSet16CFOP.Visible           := False;
         Form7.ibDataSet16DESCRICAO.DisplayWidth := 41;
-        //
+
         Form7.ibDataSet23UNITARIO.Visible       := False;
         Form7.ibDataSet23IPI.Visible            := False;
         Form7.ibDataSet23ICM.Visible            := False;
@@ -10685,11 +10719,11 @@ begin
             imgNovo.Visible := True;
             imgExcluir.Visible := True;
             imgLibBloq.Visible := True; Form7.Label208.Caption  := 'Liberar';
-            //
+
             lblNovo.Visible := True;
             lblExcluir.Visible := True;
             Label208.Visible := True;
-            //
+
             if (Form7.Menu <> MainMenu99) then
               Form7.Menu.Items[1].Enabled := True;
           end;
@@ -11081,7 +11115,8 @@ begin
 
   Screen.Cursor := crDefault;
 
-  MarcaColunaOrderBy;end;
+  MarcaColunaOrderBy;
+end;
 
 procedure TForm7.DefineLayoutFiltro;
 begin
@@ -11911,14 +11946,42 @@ end;
 procedure TForm7.ibDataSet3NewRecord(DataSet: TDataSet);
 var
   sNumero : String;
+  cGenerator: String;
+  qryAux: TIBQuery;
   ConfSistema : TArquivosDAT;
 begin
-  IBDataSet99.Close;
-  IBDataSet99.SelectSQL.Clear;
-  IBDataSet99.SelectSQL.Add('select gen_id(G_NUMEROOS,1) from rdb$database');
-  IBDataSet99.Open;
-  sNumero := StrZero(StrtoFloat(AllTrim(ibDataSet99.FieldByname('GEN_ID').AsString)),10,0);
-  IBDataSet99.Close;
+  {
+  Dailon Parisotto (f-5604) 2024-01-31 Inicio
+  Enquanto o sNumero for em branco (Novo ou quando ja existe com o numero gerado) fica tentando gerar novo numero
+  }
+  while (sNumero = EmptyStr) do
+  begin
+    IBDataSet99.Close;
+    qryAux := CriaIBQuery(Form7.IBTransaction1);
+    try
+      IBDataSet99.SelectSQL.Clear;
+      IBDataSet99.SelectSQL.Add('select gen_id(G_NUMEROOS,1) from rdb$database');
+      IBDataSet99.Open;
+      cGenerator := StrZero(StrtoFloat(AllTrim(ibDataSet99.FieldByname('GEN_ID').AsString)),10,0);
+
+      qryAux.Close;
+      qryAux.SQL.Add('SELECT');
+      qryAux.SQL.Add('  COUNT(REGISTRO) AS QTDE');
+      qryAux.SQL.Add('FROM OS');
+      qryAux.SQL.Add('WHERE');
+      qryAux.SQL.Add('(NUMERO=:XNUMERO)');
+      qryAux.ParamByName('XNUMERO').AsString := cGenerator;
+      qryAux.Open;
+
+      if qryAux.FieldByName('QTDE').AsInteger <= 0 then
+        sNumero := cGenerator;
+    finally
+      FreeAndNil(qryAux);
+      IBDataSet99.Close;
+    end;
+  end;
+  {Dailon Parisotto (f-5604) 2024-01-31 Fim}
+
   {Mauricio Parizotto 2023-11-21 Inicio
   try
     IBDataSet99.Close;
@@ -16722,7 +16785,7 @@ end;
 
 procedure TForm7.ibDataSet3TOTAL_FRETChange(Sender: TField);
 begin
-  TotalizaOS(True);
+  TotalizaOS(True,True);
 end;
 
 procedure TForm7.imgVisualizarClick(Sender: TObject);
@@ -17534,7 +17597,7 @@ begin
     end;
 
     if Form7.sModulo = 'OS' then
-      TotalizaOS(True);
+      TotalizaOS(True,False);
 
     if Form7.sModulo = 'VENDA' then
       TotalizaServicos(True);
@@ -19330,7 +19393,8 @@ begin
     AtualizarListaItensAuxiliar;
     
   if Form7.sModulo = 'OS' then
-    TotalizaOS(True);
+    TotalizaOS(True,False);
+
   AgendaCommit(True);
 end;
 
@@ -19458,7 +19522,8 @@ end;
 procedure TForm7.ibDataSet35AfterDelete(DataSet: TDataSet);
 begin
   if Form7.sModulo = 'OS' then
-    TotalizaOS(True);
+    TotalizaOS(False,True);
+
   if Form7.sModulo = 'VENDA' then
     TotalizaServicos(True);
   AgendaCommit(True);
@@ -19466,24 +19531,21 @@ end;
 
 procedure TForm7.ibDataSet35TOTALChange(Sender: TField);
 begin
-  //
   if Form7.ibDataSet35QUANTIDADE.AsFloat > 0 then
   begin
-    //
     // Sandro Silva 2023-11-20 if Format('%12.4n',[(Form7.ibDataSet35TOTAL.AsFloat)]) <> Format('%12.4n',[(Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat)]) then
     if Format('%12.4n',[(Form7.ibDataSet35TOTAL.AsFloat)]) <> Format('%12.4n',[Arredonda(Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat,StrToInt(Form1.ConfPreco))]) then
     begin
-      //
       Form7.ibDataSet35.Edit;
       Form7.ibDataSet35TOTAL.AsFloat := Arredonda(Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat,StrToInt(Form1.ConfPreco));
-      //
     end;
     //
     if Form7.sModulo = 'OS' then
-      TotalizaOS(True);
+      TotalizaOS(False,True);
+
     if Form7.sModulo = 'VENDA' then
       TotalizaServicos(True);
-    //
+
   end;
 end;
 
@@ -20219,7 +20281,6 @@ end;
 
 procedure TForm7.ibDataSet35UNITARIOChange(Sender: TField);
 begin
-  //
   if Form7.ibDataSet35QUANTIDADE.AsFloat > 0 then
   begin
 //    if Format('%12.4n',[(Form7.ibDataSet35UNITARIO.AsFloat)]) <> Format('%12.4n',[(Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet35QUANTIDADE.AsFloat)]) then
@@ -20230,11 +20291,11 @@ begin
       Form7.ibDataSet35TOTAL.AsString := StrZero(Form7.ibDataSet35UNITARIO.AsFloat * Form7.ibDataSet35QUANTIDADE.AsFloat,12,4);
     end;
     if Form7.sModulo = 'OS' then
-      TotalizaOS(True);
+      TotalizaOS(False,True);
+
     if Form7.sModulo = 'VENDA' then
       TotalizaServicos(True);
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet15BeforeDelete(DataSet: TDataSet);
@@ -21684,7 +21745,7 @@ end;
 
 procedure TForm7.ibDataSet3DESCONTOChange(Sender: TField);
 begin
-  TotalizaOS(True);
+  TotalizaOS(True,True);
 end;
 
 procedure TForm7.ibDataSet21NewRecord(DataSet: TDataSet);
