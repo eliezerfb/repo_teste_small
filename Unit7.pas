@@ -441,7 +441,7 @@ procedure TForm7.FormCreate(Sender: TObject);
 var
   iObj: Integer;
 begin
-  Form7.Width  := 300; // Sandro Silva 2021-07-12
+  Form7.Width  := 302; // Sandro Silva 2021-07-12
   Form7.Height := 615; // Sandro Silva 2017-10-23
   AjustaResolucao(Form7);// Sandro Silva 2016-08-19
   AjustaResolucao(Form7.Frame_teclado1);// Sandro Silva 2016-08-19
