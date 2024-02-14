@@ -4,15 +4,18 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Mask, DBCtrls, SMALL_DBEdit, smallfunc_xe, IniFiles, Printers, ShellApi, jpeg, TnPdf;
+  ExtCtrls, StdCtrls, Mask, DBCtrls, SMALL_DBEdit, smallfunc_xe, IniFiles, Printers, ShellApi, jpeg, TnPdf,
+  IBX.IBQuery, IBX.IBDatabase;
 
   procedure DesenhaBoletoLayoutPadrao(Impressao: TCanvas; CodBanco, sAgencia, sCodCedente, sConvenio, sCarteira, sNossoNumero, sMascara : string);
   procedure DesenhaBoletoLayoutCarne(Impressao: TCanvas; CodBanco, sAgencia, sCodCedente, sConvenio, sCarteira, sNossoNumero, sMascara : string; Posicao:integer);
   function GetNossoNumero(CodBanco,sAgencia,sConvenio,sCarteira,sNossoNumero,sCodCedente : string):string;
+  function GetNumParcela(documento,nota:string):string;
+  function GetTotParcela(nota:string):string;
 
 implementation
 
-uses Unit25, unit7;
+uses Unit25, unit7, uFuncoesBancoDados, uSmallConsts;
 
 function Largura(MM : Double) : Longint;
 var
@@ -456,18 +459,6 @@ begin
     rRect.Bottom  := rRect.Top  + 225;
     rRect.Right   := rRect.Left + 980;
 
-    {
-    if Form25.Tag = 0 then  // Impressão na impressora
-    begin
-      rRect.Bottom  := rRect.Top  + (40 * Round(Printer.PageWidth / GetDeviceCaps(Printer.Handle,HORZSIZE) / 4));
-      rRect.Right   := rRect.Left + (168 * Round(Printer.PageWidth / GetDeviceCaps(Printer.Handle,HORZSIZE) / 4));
-    end else
-    begin
-      rRect.Bottom  := rRect.Top  + Form25.Image7.Picture.Graphic.Height;
-      rRect.Right   := rRect.Left + Form25.Image7.Picture.Graphic.Width;
-    end;
-    }
-
     Impressao.StretchDraw(rRect,Form25.Image7.Picture.Graphic);
   end else
   begin
@@ -534,7 +525,7 @@ begin
   Impressao.Font.Name   := 'Courier New';  // Fonte
   Impressao.Font.Size   := 9;              // Tamanho da Fonte
 
-  Impressao.TextOut(largura(40),altura(12.5+iVia),AllTrim(Form25.Edit1.Text));                        // Local de pagamento
+  Impressao.TextOut(largura(40),altura(13.5+iVia),AllTrim(Form25.Edit1.Text));                        // Local de pagamento
 
   // Data atualizada com juros de mora
   if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
@@ -582,8 +573,8 @@ begin
   begin
     if (Form7.ibDataSet7VALOR_JURO.AsFloat - Form7.ibDataSet7VALOR_DUPL.AsFloat) >= 0.01 then
     begin
-      Impressao.TextOut(Largura(151-8),Altura(54.5+iVia)-3,Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_JURO.AsFloat-Form7.ibDataSet7VALOR_DUPL.AsFloat]),16)); // Data atualizada com juros de mora
-      Impressao.TextOut(Largura(151-8),Altura(66.5+iVia),Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_JURO.AsFloat]),16)); // Valor cobrado
+      Impressao.TextOut(Largura(150),Altura(38.5+iVia)-3,Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_JURO.AsFloat-Form7.ibDataSet7VALOR_DUPL.AsFloat]),16)); // Data atualizada com juros de mora
+      Impressao.TextOut(Largura(150),Altura(43.5+iVia),Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_JURO.AsFloat]),16)); // Valor cobrado
     end;
   end;
 
@@ -733,7 +724,8 @@ begin
   Impressao.Font.sTyle  := [];         // Estilo da fonte
   Impressao.Font.Name   := 'Times New Roman';
 
-  Impressao.TextOut(largura(0),altura(11+iVia),'Vencimento');
+  Impressao.TextOut(largura(0),altura(11+iVia),'Parcela');
+  Impressao.TextOut(largura(14),altura(11+iVia),'Vencimento');
   Impressao.TextOut(largura(0),altura(16+iVia),'Agência/Código Beneficiário');
   Impressao.TextOut(largura(0),altura(21+iVia),'Espécie');
   Impressao.TextOut(largura(14),altura(21+iVia),'Quantidade');
@@ -753,13 +745,16 @@ begin
   Impressao.Font.Name   := 'Courier New';  // Fonte
   Impressao.Font.Size   := 8;              // Tamanho da Fonte
 
+  //Parcela
+  Impressao.TextOut(largura(2),altura(13.5+iVia), GetNumParcela(Form7.ibDataSet7DOCUMENTO.AsString,Form7.ibDataSet7NUMERONF.AsString) + '/'+ GetTotParcela(Form7.ibDataSet7NUMERONF.AsString));
+
   // Data atualizada com juros de mora
   if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
   begin
-    Impressao.TextOut(largura(8),altura(13.5+iVia),Right(Replicate(' ',30)+DateToStr(DATE),16)); // Vencimento
+    Impressao.TextOut(largura(19),altura(13.5+iVia),Right(DateToStr(DATE),16)); // Vencimento
   end else
   begin
-    Impressao.TextOut(largura(8),altura(13.5+iVia),Right(Replicate(' ',30)+Form7.ibDataSet7VENCIMENTO.AsString,16)); // Vencimento
+    Impressao.TextOut(largura(19),altura(13.5+iVia),Right(Form7.ibDataSet7VENCIMENTO.AsString,16)); // Vencimento
   end;
 
   //Espécie
@@ -812,9 +807,13 @@ begin
   Impressao.MoveTo(largura(0),altura(31+iVia));
   Impressao.Lineto(largura(38),altura(31+iVia));
 
+  // Traço que corta em frente o Vencimento
+  Impressao.MoveTo(largura(13),altura(11+iVia));
+  Impressao.Lineto(largura(13),altura(16+iVia));
+
   // Traço que corta em frente a Quantidade
-  Impressao.MoveTo(largura(12),altura(21+iVia));
-  Impressao.Lineto(largura(12),altura(26+iVia));
+  Impressao.MoveTo(largura(13),altura(21+iVia));
+  Impressao.Lineto(largura(13),altura(26+iVia));
 
   //
   Impressao.MoveTo(largura(0),altura(34+iVia));
@@ -977,6 +976,52 @@ begin
       end;
     end;
   end;
+end;
+
+
+function GetNumParcela(documento,nota:string):string;
+var
+  qyAux: TIBQuery;
+  trAux: TIBTransaction;
+begin
+  Result := '01';
+  try
+    trAux := CriaIBTransaction(Form7.IBDatabase1);
+    qyAux := CriaIBQuery(trAux);
+
+    qyAux.SQL.Text := ' Select'+
+                      ' 	rdb$get_context(''USER_TRANSACTION'', ''row#'') as NUMERO,'+
+                      ' 	rdb$set_context(''USER_TRANSACTION'', ''row#'','+
+                      ' 	coalesce(cast(rdb$get_context(''USER_TRANSACTION'', ''row#'') as integer), 0) + 1),'+
+                      ' 	DOCUMENTO '+
+                      ' From RECEBER'+
+                      ' Where NUMERONF = '+QuotedStr(nota)+
+                      ' 	and coalesce(ATIVO,9)<>1'+
+                      ' 	and FORMADEPAGAMENTO = '+QuotedStr(_cFormaPgtoBoleto)+
+                      ' Order By DOCUMENTO';
+    qyAux.Open;
+
+    if qyAux.Locate('DOCUMENTO',documento,[]) then
+      Result := StrZero(qyAux.FieldByName('NUMERO').AsFloat,2,0);
+
+  finally
+    trAux.Rollback;
+    FreeAndNil(qyAux);
+    FreeAndNil(trAux);
+  end;
+end;
+
+function GetTotParcela(nota:string):string;
+begin
+  Result := StrZero(
+              ExecutaComandoEscalar(Form7.ibDataSet7.Transaction,
+                                    ' Select'+
+                                    '  Count(*) '+
+                                    ' From RECEBER'+
+                                    ' Where NUMERONF = '+QuotedStr(nota)+
+                                    '   and coalesce(ATIVO,9)<>1 '+
+                                    '   and FORMADEPAGAMENTO = '+QuotedStr(_cFormaPgtoBoleto))
+            ,2,0);
 end;
 
 
