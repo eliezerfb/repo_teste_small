@@ -2341,7 +2341,7 @@ type
     function getZiparXML: String;
     function ValidaLimiteDeEmissaoDeVenda(dtBaseVerificar: TDate): Boolean;
     procedure HintTotalNotaVenda(fRetencao : Real);
-    function TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double): Boolean;
+    function TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double; CodProd : string): Boolean;
     procedure VerificaSaldoEstoqueDispItemNota(AnQtdeInformada: Double);
     procedure DefineQuantidadeSaldoDisponivelNota;
     procedure DefinirCaptionHomologacaoPopUpMenuDocs;
@@ -17772,7 +17772,7 @@ begin
           begin
             Form7.ibDataSet4.Close;
             Form7.ibDataSet4.Selectsql.Clear;
-            Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
+            Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString));
             Form7.ibDataSet4.Open;
           end;
         end;
@@ -17916,7 +17916,6 @@ begin
           end;
           {Sandro Silva 2023-05-12 fim}
 
-          //
           if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
           begin
             //if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) and (ProdutoComposto(Form7.ibDataSet4.Transaction, Form7.ibDataSet4CODIGO.AsString) = False) then // Sandro Silva 2023-11-28 if (ibDataSet4QTD_ATUAL.AsFloat <= 0) and (Form1.ConfNegat = 'Não') and (TestarNatOperacaoMovEstoque) then Mauricio Parizotto 2024-0-05
@@ -17933,7 +17932,6 @@ begin
                 ///////////////////////
                 if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then
                 begin
-                  //
                   sCodigo := Form7.ibDataSet4.FieldByname('CODIGO').AsString;
                   Form7.ibDataSet16.Edit;
                   Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
@@ -18610,7 +18608,7 @@ begin
   end;
 end;
 
-function TForm7.TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double): Boolean;
+function TForm7.TestarSaldoEstoqueDisponivelNota(AnQtdeInformada: Double; CodProd : string): Boolean;
 var
   nSaldoDisp: Currency;
   ProdComposto : Boolean;
@@ -18618,8 +18616,8 @@ begin
   Result := True;
 
   {Mauricio Parizotto 2024-02-05 Inicio}
-  ProdComposto := ProdutoComposto(Form7.ibDataSet16.Transaction,
-                                  Form7.ibDataSet16CODIGO.AsString);
+  ProdComposto := ProdutoComposto(Form7.ibDataSet4.Transaction,
+                                  CodProd);
 
   {
   if (Form1.ConfNegat <> 'Não') then
@@ -18697,7 +18695,7 @@ begin
       Form7.ibDataSet4.Open;
     end;
 
-    if not TestarSaldoEstoqueDisponivelNota(AnQtdeInformada) then
+    if not TestarSaldoEstoqueDisponivelNota(AnQtdeInformada,Form7.ibDataSet4CODIGO.AsString) then
       LimpaCamposItensNota
     else
     begin

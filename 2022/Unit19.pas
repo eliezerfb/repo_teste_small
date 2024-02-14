@@ -631,7 +631,6 @@ end;
 procedure TForm19.FormCreate(Sender: TObject);
 var
   Mais1Ini, Mais2Ini: TIniFile;
-  ConfSistema : TArquivosDAT;
 begin
   // Lê as configurações no .INF
   Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
@@ -657,14 +656,6 @@ begin
   if Mais1Ini.ReadString('Permitir','Vendas abaixo do custo','Sim') = 'Não' then chkVendasAbaixoCusto.Checked := False else chkVendasAbaixoCusto.Checked := True;
   if Mais1Ini.ReadString('Permitir','Estoque negativo','Sim') = 'Não' then chkEstoqueNegativoNF.Checked := False else chkEstoqueNegativoNF.Checked := True;
   if Mais1Ini.ReadString('Permitir','Duplos','Sim') = 'Não' then chkItensDuplicadosNF.Checked := False else chkItensDuplicadosNF.Checked := True;
-
-  //Mauricio Parizotto 2024-02-02
-  try
-    ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
-    chkFabricaProdSemQtd.Checked  := ConfSistema.BD.Outras.FabricaProdutoSemQtd;
-  finally
-    FreeAndNil(ConfSistema);
-  end;
 
   Form19.Top  := 70;
   Form19.Left := Screen.Width - Form19.Width;
