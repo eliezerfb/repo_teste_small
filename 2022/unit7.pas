@@ -16124,7 +16124,7 @@ begin
       try
         ibDataSet100.Close;
         ibDataSet100.SelectSql.Clear;
-        ibDataSet100.SelectSql.Add('INSERT INTO PAGAR (HISTORICO, PORTADOR, DOCUMENTO, NOME, EMISSAO, VENCIMENTO, VALOR_DUPL, CONTA, NUMERONF, REGISTRO, ATIVO)');
+        ibDataSet100.SelectSql.Add('INSERT INTO PAGAR (HISTORICO, PORTADOR, DOCUMENTO, NOME, EMISSAO, VENCIMENTO, VALOR_DUPL, CONTA, NUMERONF, REGISTRO)');
         ibDataSet100.SelectSQL.Add('VALUES (');
         ibDataSet100.SelectSQL.Add(QuotedStr(ibDataSet8HISTORICO.AsString));
         ibDataSet100.SelectSQL.Add(',' + QuotedStr(ibDataSet8PORTADOR.AsString));
@@ -16136,7 +16136,6 @@ begin
         ibDataSet100.SelectSQL.Add(',' + QuotedStr(ibDataSet8CONTA.AsString));
         ibDataSet100.SelectSQL.Add(',' + QuotedStr(ibDataSet8NUMERONF.AsString));
         ibDataSet100.SelectSQL.Add(',' + QuotedStr(cNovoID));
-        ibDataSet100.SelectSQL.Add(',' + ibDataSet8ATIVO.AsString);
         ibDataSet100.SelectSQL.Add(')');
         ibDataSet100.Open;
       finally
