@@ -4608,6 +4608,38 @@ begin
   end;
 end;
 
+{Dailon Parisotto (f-7811) 2024-02-14 Inicio}
+function RetornaModoOperacaoNFe: TModoOperacao;
+const
+  // UFs listadas no link: https://www.nfe.fazenda.gov.br/portal/disponibilidade.aspx?versao=0.00&tipoConteudo=P2c98tUpxrI=
+  // No final da pagina
+  UFsSVCAN = ';AC;AL;AP;CE;DF;ES;MG;PA;PB;PI;RJ;RN;RO;RR;RS;SC;SE;SP;TO;';
+  UFsSVCRS = ';AM;BA;GO;MA;MS;MT;PE;PR;';
+var
+  cUF: String;
+begin
+  Result := moNormal;
+
+  if Form1.bModoSVC then
+  begin
+    cUF := Form7.ibDataSet13ESTADO.AsString;
+    if cUF = EmptyStr then
+      cUF := 'SC';
+
+    if Pos(';' + cUF + ';', UFsSVCAN) > 0 then
+    begin
+      Result := moSVCAN;
+      Exit;
+    end;
+    if Pos(';' + cUF + ';', UFsSVCRS) > 0 then
+    begin
+      Result := moSVCRS;
+      Exit;
+    end;
+  end;
+end;
+{Dailon Parisotto (f-7811) 2024-02-14 Fim}
+
 function ConfiguraNFE : Boolean;
 var
   Mais1Ini: TIniFile;
@@ -4620,16 +4652,34 @@ begin
   if LimpaNumero(Form7.ibDataSet13CGC.AsString) <> '' then
     Form7.spdNFe.CNPJ := LimpaNumero(Form7.ibDataSet13CGC.AsString);
 
+  {Dailon Parisotto (f-7811) 2024-02-14 Inicio
+
   if Form1.bModoScan then
   begin
     Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHomScan.ini';
     Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProdScan.ini';
   end else
   begin
-    Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHom.ini';
-    Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProd.ini';
+    if Form1.bModoSVC then
+    begin
+      Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHomSVC.ini';
+      Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProdSVC.ini';
+    end else
+    begin
+      Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHom.ini';
+      Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProd.ini';
+    end;
   end;
-  
+
+  }
+
+  Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHom.ini';
+  Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProd.ini';
+
+  Form7.spdNFe.ModoOperacao := RetornaModoOperacaoNFe;
+
+  {Dailon Parisotto (f-7811) 2024-02-14 Fim}
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
 
   {Sandro Silva 2024-01-03- inicio}
