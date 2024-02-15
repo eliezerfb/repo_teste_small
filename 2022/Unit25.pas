@@ -3,8 +3,8 @@ unit Unit25;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Mask, DBCtrls, SMALL_DBEdit, smallfunc_xe, IniFiles, Printers, ShellApi, jpeg, TnPdf, DB,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, synPDF,
+  ExtCtrls, StdCtrls, Mask, DBCtrls, SMALL_DBEdit, smallfunc_xe, IniFiles, Printers, ShellApi, jpeg, DB,
   Buttons;
 
 type
@@ -1184,7 +1184,9 @@ end;
 procedure TForm25.btnEnviaEmailClick(Sender: TObject);
 var
   sEmail : String;
-  PDF: TPrintPDF;
+//  PDF: TPrintPDF;
+  PDF :TPdfDocumentGDI;
+  PAGE : TPdfPage;
 begin
   sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
 
@@ -1200,7 +1202,8 @@ begin
       end;
 
       // Cria o PDF
-      // Sandro Silva 2022-12-22 sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
+
+      {Mauricio Parizotto 2024-02-15 Inicio
       PDF := TPrintPDF.Create(Self);
 
       // Configurações do documento
@@ -1227,6 +1230,30 @@ begin
 
       // PDF.DrawBitmap(0,0, Form25.Image2.Picture.Bitmap);
       PDF.EndDoc;
+      }
+
+      try
+        PDF:=TPdfDocumentGDI.Create();
+        PDF.Info.Author       := 'Small';
+        PDF.Info.Creator      := 'Small';
+        PDF.Info.Title        := 'Boletos';
+        PDF.Info.Subject      := 'Boletos de cobrança';
+        PDF.Info.CreationDate := now;
+        PDF.DefaultPaperSize := psA4; //Tamanho A4
+        PDF.ForceJPEGCompression := 0;
+
+        PAGE := pdf.AddPage;
+        PAGE.PageLandscape := False;
+
+        PDF.VCLCanvas.Draw(0,0,Form25.Image2.Picture.Graphic);
+
+        PDF.SaveToFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
+      finally
+        FreeAndNil(PDF);
+      end;
+
+      {Mauricio Parizotto 2024-02-15 Fim}
+
 
       // Fecha o documento pdf
       if FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') then
@@ -1243,11 +1270,6 @@ begin
       end;
     end else
     begin
-      {
-      ShowMessage('Não é possível imprimir este boleto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
-      +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
-      +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.');
-      Mauricio Parizotto 2023-10-25}
       MensagemSistema('Não é possível imprimir este boleto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
                       +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
                       +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.'
@@ -1315,8 +1337,10 @@ procedure TForm25.btnEnviaEmailTodosClick(Sender: TObject);
 var
   sArquivo: String;
   sEmail : String;
-  PDF: TPrintPDF;
+//  PDF: TPrintPDF;
   YY : Integer;
+  PDF :TPdfDocumentGDI;
+  PAGE : TPdfPage;
 begin
   sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
 
@@ -1332,7 +1356,7 @@ begin
     end;
 
     // Cria o PDF
-    // Sandro Silva 2022-12-22 sDocParaGerarPDF := Copy(AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'XXXXXXXXX',1,9);
+    {
     PDF := TPrintPDF.Create(Self);
 
     // Configurações do documento
@@ -1354,51 +1378,74 @@ begin
 
     // Inicia o documento pdf
     PDF.BeginDoc;
+    }
 
-    YY := 0;
-    //
-    Form7.ibDataSet7.First;
-    while not Form7.ibDataSet7.Eof do
-    begin
-      if Form7.ibDataSet7NOME.AsString = Form7.ibDataSet2NOME.AsString then
+    try
+      PDF:=TPdfDocumentGDI.Create();
+      PDF.Info.Author       := 'Small';
+      PDF.Info.Creator      := 'Small';
+      PDF.Info.Title        := 'Boletos';
+      PDF.Info.Subject      := 'Boletos de cobrança';
+      PDF.Info.CreationDate := now;
+      PDF.DefaultPaperSize := psA4; //Tamanho A4
+      PDF.ForceJPEGCompression := 0;
+
+
+      YY := 0;
+      //
+      Form7.ibDataSet7.First;
+      while not Form7.ibDataSet7.Eof do
       begin
-        if Form7.ibDataSet7VALOR_RECE.AsFloat = 0 then
+        if Form7.ibDataSet7NOME.AsString = Form7.ibDataSet2NOME.AsString then
         begin
-          while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
+          if Form7.ibDataSet7VALOR_RECE.AsFloat = 0 then
           begin
-            DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
-            sleep(1000);
+            while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
+            begin
+              DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
+              sleep(1000);
+            end;
+
+            Form25.Show;
+            Form25.btnCriaImagemBoletoClick(Sender);
+
+            //while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
+            begin
+              Sleep(1000);
+            end;
+
+            // Print Image
+            YY := YY + 1;
+//            if YY >= 2 then
+  //            PDF.NewPage; // Add New Page
+
+  //          PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
+
+            PAGE := pdf.AddPage;
+            PAGE.PageLandscape := False;
+
+            PDF.VCLCanvas.Draw(0,0,Form25.Image2.Picture.Graphic);
           end;
-
-          Form25.Show;
-          Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
-
-          while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
-          begin
-            Sleep(1000);
-          end;
-
-          // Print Image
-          YY := YY + 1;
-          if YY >= 2 then PDF.NewPage; // Add New Page
-
-          PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
         end;
+
+        if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
+        begin
+          GravaPortadorNossoNumCodeBar;
+        end;
+
+        Screen.Cursor            := crHourGlass;
+
+        Form25.btnProximoClick(Sender); // Form7.ibDataSet7.Next; // Sandro Silva 2022-12-23 Form25.Button1Click(Sender); // Form7.ibDataSet7.Next;
+        Form7.Repaint;
       end;
 
-      if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
-      begin
-        GravaPortadorNossoNumCodeBar;
-      end;
-
-      Screen.Cursor            := crHourGlass;
-
-      Form25.btnProximoClick(Sender); // Form7.ibDataSet7.Next; // Sandro Silva 2022-12-23 Form25.Button1Click(Sender); // Form7.ibDataSet7.Next;
-      Form7.Repaint;
+      //PDF.EndDoc;
+      PDF.SaveToFile(Form1.sAtual+'\'+sArquivo);
+    finally
+      FreeAndNil(PDF);
     end;
 
-    // PDF.DrawBitmap(0,0, Form25.Image2.Picture.Bitmap);
-    PDF.EndDoc;
+    {Mauricio Parizotto 2024-02-15 Fim}
 
     // Fecha o documento pdf
     if FileExists(Form1.sAtual+'\'+sArquivo) then
