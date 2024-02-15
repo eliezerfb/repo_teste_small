@@ -192,8 +192,8 @@ begin
     NotaFiscal.Iss        := 0;
 
     { Dailon (f-7194) 2023-08-01 Inicio}
-    if AbCalcPesoLiq then
-      NotaFiscal.Pesoliqui  := 0;
+//    if AbCalcPesoLiq then
+//      NotaFiscal.Pesoliqui  := 0;
     { Dailon (f-7194) 2023-08-01 Fim}
 
     NotaFiscal.Basesubsti := 0;
@@ -1300,7 +1300,7 @@ var
 begin
   bTemItemComPeso := False;
 
-  if not(NFeFinalidadeDevolucao(NotaFiscal.Finnfe)) and not((NFeFinalidadeComplemento(NotaFiscal.Finnfe))) then
+  if not((NFeFinalidadeComplemento(NotaFiscal.Finnfe))) then
   begin
     for i := 0 to NotaFiscal.Itens.Count -1 do
     begin
