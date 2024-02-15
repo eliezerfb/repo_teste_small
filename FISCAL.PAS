@@ -4029,10 +4029,10 @@ begin
           //
           if P1 then
           begin
-            SmallMsg(PAnsiChar(Form1.sStatusECF + chr(10)+
+            SmallMsg(Form1.sStatusECF + chr(10)+
                       'O funcionamento deste PDV está impedido exceto para: '+chr(10)+Chr(10)+
                       '  Consulta de preços'+Chr(10)+
-                      '  Funções gerenciais'));
+                      '  Funções gerenciais');
           end;
           //
           Form1.bStatusFiscal := False;
@@ -4395,7 +4395,7 @@ begin
                   //
                   if P1 then
                   begin
-                    SmallMsg(pChar(sMotivo));
+                    SmallMsg(sMotivo);
                   end;
                   Form1.sStatusECF := 'ECF - Não autorizado.';
                   //
@@ -4423,7 +4423,7 @@ begin
           sMotivo    := 'Requisito XXIV - PAF-ECF'+chr(10)+chr(13)+'O valor acumulado no Totalizador Geral (GT) do ECF conectado neste momento não'+Chr(10)+'corresponde ao armazenado em arquivo auxiliar criptografado.'+chr(10)+'';
           if P1 then
           begin
-            SmallMsg(pChar(sMotivo));
+            SmallMsg(sMotivo);
           end;
           Form1.sStatusECF := 'ECF - Não autorizado.';
           //
@@ -4496,10 +4496,10 @@ begin
         //
         if P1 then
         begin
-          SmallMsg(pChar(sMotivo+chr(10)+
+          SmallMsg(sMotivo+chr(10)+
                     'O funcionamento deste ECF está impedido exceto para: '+chr(10)+Chr(10)+
                     '  Consulta de preços'+Chr(10)+
-                    '  Emissão de documentos fiscais PED (Entre no Small Commerce - Retaguarda)'));
+                    '  Emissão de documentos fiscais PED (Entre no Small Commerce - Retaguarda)');
         end;
         //
         Form1.bStatusFiscal := False;
@@ -4569,7 +4569,7 @@ begin
 
         end;
 
-        SmallMsg(PChar(sAlertaMD5));
+        SmallMsg(sAlertaMD5);
 
         Form1.bStatusFiscal := False;
 
@@ -29041,23 +29041,21 @@ end;
 procedure SmallMsg(sMsg: String);
 // Substituir ShowMessage por SmallMsg para tratar a exibição de mensagem quando importando Mobile
 begin
-  if Form1.ClienteSmallMobile.ImportandoMobile // Sandro Silva 2022-08-08 if (ImportandoMobile)
+  if Form1.ClienteSmallMobile.ImportandoMobile
     and ((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99')) then
-    Form1.ClienteSmallMobile.LogRetornoMobile( // Sandro Silva 2022-08-08 LogRetornoMobile(
-      sMsg)
+    Form1.ClienteSmallMobile.LogRetornoMobile(sMsg)
   else
   begin
-    Application.ProcessMessages; // Sandro Silva 2017-08-01
+    Application.ProcessMessages;
     ShowMessage(sMsg);
   end;
 end;
 
 function SmallMsgBox(const Text, Caption: PChar; Flags: Longint): Integer;
 begin
-  if Form1.ClienteSmallMobile.ImportandoMobile then // Sandro Silva 2022-08-08 if ImportandoMobile then
+  if Form1.ClienteSmallMobile.ImportandoMobile then
   begin
-    Form1.ClienteSmallMobile.LogRetornoMobile( // Sandro Silva 2022-08-08 LogRetornoMobile(
-      Text);
+    Form1.ClienteSmallMobile.LogRetornoMobile(Text);
     Result := IDYES;
   end
   else
