@@ -5,7 +5,7 @@ object Form7: TForm7
   BorderStyle = bsDialog
   Caption = 'Leitura de mem'#243'ria fiscal'
   ClientHeight = 517
-  ClientWidth = 299
+  ClientWidth = 302
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,7 +21,7 @@ object Form7: TForm7
   OnShow = FormShow
   PixelsPerInch = 96
   DesignSize = (
-    299
+    302
     517)
   TextHeight = 13
   object Button1: TBitBtn
@@ -88,7 +88,7 @@ object Form7: TForm7
   object PageControl1: TPageControl
     Left = 1
     Top = -8
-    Width = 280
+    Width = 293
     Height = 253
     ActivePage = TabSheet8
     Anchors = [akLeft, akTop, akRight]
@@ -100,7 +100,7 @@ object Form7: TForm7
     ParentFont = False
     Style = tsFlatButtons
     TabOrder = 3
-    ExplicitWidth = 302
+    ExplicitWidth = 290
     object TabSheet1: TTabSheet
       Caption = 'TabSheet1'
       object Label1: TLabel
@@ -351,12 +351,12 @@ object Form7: TForm7
       Caption = 'TabSheet3'
       ImageIndex = 2
       DesignSize = (
-        272
+        285
         222)
       object Label8: TLabel
         Left = 11
         Top = 0
-        Width = 256
+        Width = 269
         Height = 37
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -519,12 +519,12 @@ object Form7: TForm7
       Caption = 'TabSheet4'
       ImageIndex = 3
       DesignSize = (
-        272
+        285
         222)
       object Label14: TLabel
         Left = 11
         Top = 0
-        Width = 256
+        Width = 269
         Height = 37
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -576,12 +576,12 @@ object Form7: TForm7
       ImageIndex = 4
       OnShow = TabSheet5Show
       DesignSize = (
-        272
+        285
         222)
       object Label17: TLabel
         Left = 11
         Top = 0
-        Width = 256
+        Width = 269
         Height = 37
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -772,12 +772,12 @@ object Form7: TForm7
       Caption = 'TabSheet6'
       ImageIndex = 5
       DesignSize = (
-        272
+        285
         222)
       object Label20: TLabel
         Left = 11
         Top = 0
-        Width = 256
+        Width = 269
         Height = 15
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -927,7 +927,7 @@ object Form7: TForm7
       Caption = 'TabSheet7'
       ImageIndex = 6
       DesignSize = (
-        272
+        285
         222)
       object Label24: TLabel
         Left = 11
@@ -946,7 +946,7 @@ object Form7: TForm7
       object Label25: TLabel
         Left = 11
         Top = 0
-        Width = 256
+        Width = 269
         Height = 15
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -1065,12 +1065,12 @@ object Form7: TForm7
       ImageIndex = 7
       OnShow = TabSheet8Show
       DesignSize = (
-        272
+        285
         222)
       object Label27: TLabel
         Left = 11
         Top = 0
-        Width = 256
+        Width = 269
         Height = 16
         Anchors = [akLeft, akTop, akRight]
         AutoSize = False
@@ -1268,7 +1268,7 @@ object Form7: TForm7
         Font.Height = -11
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = [fsBold]
-        ItemHeight = 20
+        ItemHeight = 13
         Items.Strings = (
           '001'
           '002'
