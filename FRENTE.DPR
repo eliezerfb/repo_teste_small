@@ -74,7 +74,8 @@ uses
   uConectaBancoSmall in '..\unit_compartilhada\uConectaBancoSmall.pas',
   uDialogs in '..\unit_compartilhada\uDialogs.pas',
   md5_unicode in '..\unit_compartilhada\md5_unicode.pas',
-  uFuncaoMD5 in '..\unit_compartilhada\uFuncaoMD5.pas';
+  uFuncaoMD5 in '..\unit_compartilhada\uFuncaoMD5.pas',
+  usmallsat in 'usmallsat.pas';
 
 {$R *.RES}
 

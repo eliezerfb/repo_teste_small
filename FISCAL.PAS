@@ -29028,6 +29028,7 @@ begin
 
     Form1.Panel3.Caption  := '';
     // Usando Label para quebra de linha automática
+    Form1.lblMensagemAlerta.BiDiMode  := bdLeftToRight; // Sandro Silva 2024-01-24
     Form1.lblMensagemAlerta.Font.Size  := LabelF1.Font.Size + 1; // Sandro Silva 2017-05-12 13;
     Form1.lblMensagemAlerta.Font.Style := [];
     Form1.lblMensagemAlerta.Caption    := sMensagem;
