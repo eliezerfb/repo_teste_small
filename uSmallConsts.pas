@@ -10,6 +10,7 @@ const
   _cNaoSeAplica = 'Não se aplica';
   _cFormatDate = 'dd/mm/yyyy';
   _cArquivo10MB = 10485760;
+  _cFormaPgtoBoleto = 'Boleto Bancário';
 
   _cZerosNFeID = '0000000000000000000000000000000000000000000';  
 
