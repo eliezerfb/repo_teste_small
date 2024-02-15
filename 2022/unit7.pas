@@ -28190,6 +28190,7 @@ begin
                       MyBookMark1 := Form7.ibDataSet7.GetBookMark();
 
                       // Cria o PDF
+                      (*
                       {Mauricio Parizotto 2024-02-15 Inicio
                       PDF := TPrintPDF.Create(Self);
 
@@ -28250,7 +28251,7 @@ begin
                                   Mais1Ini.Free;
                                 except
                                 end;
-                              
+
                                 if (AllTrim(Form1.sEscolhido) <> '') or (Form1.DisponivelSomenteParaNos) then // Sandro Silva 2022-12-22 if AllTrim(Form1.sEscolhido) <> '' then
                                 begin
                                   Form25.Show; // Em Form7.Emaildecobrana2Click()
@@ -28271,7 +28272,7 @@ begin
                                   {Sandro Silva 2022-12-23 fim}
 
                                   Form7.Repaint;
-                                
+
                                   while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
                                   begin
                                     Sleep(1000);
@@ -28313,8 +28314,79 @@ begin
                         sArquivo := sArquivoPDF // Sandro Silva 2022-12-22 sArquivo := Form1.sAtual + '\boletos.pdf'
                       else
                         sArquivo := '';
+                      *)
+                      try
+                        PDF:=TPdfDocumentGDI.Create();
+                        PDF.Info.Author       := 'Small';
+                        PDF.Info.Creator      := 'Small';
+                        PDF.Info.Title        := 'Boletos';
+                        PDF.Info.Subject      := 'Boletos de cobrança';
+                        PDF.Info.CreationDate := now;
+                        PDF.DefaultPaperSize := psA4; //Tamanho A4
+                        PDF.ForceJPEGCompression := 0;
+
+                        PAGE := pdf.AddPage;
+                        PAGE.PageLandscape := False;
+
+                        while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
+                        begin
+                          DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
+                          Sleep(1000);
+                        end;
+
+                        Form1.sEscolhido := '';
+                        Form1.sBancoBoleto := '';
+
+                        try
+                          sSecoes := TStringList.Create;
+                          Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
+                          Mais1Ini.ReadSections(sSecoes);
+
+                          for J := 0 to (sSecoes.Count - 1) do
+                          begin
+                            if ((Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',8,3))
+                             or (Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',10,3)))
+                            and ((Mais1Ini.ReadString(sSecoes[J],'CNAB400','') = 'Sim')
+                            or (Mais1Ini.ReadString(sSecoes[J],'CNAB240','') = 'Sim')) then
+                            begin
+                              Form1.sEscolhido := sSecoes[J];
+                            end;
+                          end;
+
+                          Mais1Ini.Free;
+                        except
+                        end;
+
+                        begin
+                          Form25.Show; // Em Form7.Emaildecobrana1Click()
+                          Form7.Repaint;
+
+                          while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
+                          begin
+                            Sleep(1000);
+                          end;
+
+  //                        PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
+
+  //                        PDF.EndDoc;
+
+                          PDF.VCLCanvas.Draw(0,0,Form25.Image2.Picture.Graphic);
+
+                          PDF.SaveToFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
+
+                          // Fecha o pdf
+                          if FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') then
+                            sArquivo := Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'
+                          else
+                            sArquivo := '';
+                        end;
+                      finally
+                        FreeAndNil(PDF);
+                      end;
+
                     except
                     end;
+
 
                     Form25.Close;
                     Form7.Repaint;
