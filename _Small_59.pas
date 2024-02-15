@@ -77,7 +77,7 @@ uses
 
   const SAT_MENSAGEM_AGUARDANDO_RESPOSTA_DO_SERVIDOR = 'Aguardando resposta do Servidor'; // Sandro Silva 2021-08-27 const SAT_MENSAGEM_AGUARDANDO_RESPOSTA_DO_SERVIDOR_SAT = 'Aguardando resposta do Servidor SAT';
 
-  function ConsisteInscricaoEstadual(sIE, sUF: String): Boolean; StdCall; External 'DllInscE32.Dll';
+  function ConsisteInscricaoEstadual(sIE, sUF: AnsiString): Boolean; StdCall; External 'DllInscE32.Dll';
   function MontaXMLVenda(sCaixa: String; dtData: TDate;
     sCupom: String; var sLog: String): AnsiString;
   function FormataFloatXML(dValor: Double; iDecimais: Integer): String;
