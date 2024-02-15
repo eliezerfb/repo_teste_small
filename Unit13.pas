@@ -497,7 +497,6 @@ var
   dQtdGrade: Real; // Sandro Silva 2019-03-18
   dQtdCanceladaSemCommit: Double; // Sandro Silva 2019-03-19
   dQtdVendaSemCommit: Double; // Sandro Silva 2019-03-19
-  cTeste: String;
 begin
   //
   try
