@@ -1234,8 +1234,8 @@ begin
 
       try
         PDF:=TPdfDocumentGDI.Create();
-        PDF.Info.Author       := 'Small Commerce';
-        PDF.Info.Creator      := 'Small Commerce';
+        PDF.Info.Author       := 'Small';
+        PDF.Info.Creator      := 'Small';
         PDF.Info.Title        := 'Boletos';
         PDF.Info.Subject      := 'Boletos de cobrança';
         PDF.Info.CreationDate := now;
@@ -1382,8 +1382,8 @@ begin
 
     try
       PDF:=TPdfDocumentGDI.Create();
-      PDF.Info.Author       := 'Small Commerce';
-      PDF.Info.Creator      := 'Small Commerce';
+      PDF.Info.Author       := 'Small';
+      PDF.Info.Creator      := 'Small';
       PDF.Info.Title        := 'Boletos';
       PDF.Info.Subject      := 'Boletos de cobrança';
       PDF.Info.CreationDate := now;
