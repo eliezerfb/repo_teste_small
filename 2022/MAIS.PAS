@@ -8590,7 +8590,7 @@ end;
 
 procedure TForm1.ConfigurarlogotipodoDANFE1Click(Sender: TObject);
 begin
-  Form12.Image2Click(Sender);
+  Form12.imgLogoNFeClick(Sender);
 end;
 
 procedure TForm1.ConfigurarServidoresHomologao1Click(Sender: TObject);
