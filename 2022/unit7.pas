@@ -16209,6 +16209,10 @@ begin
 end;
 
 procedure TForm7.ibDataSet8VALOR_PAGOValidate(Sender: TField);
+var
+  cNovoID: String;
+  cPrimNumDoc: String;
+  qryGenerator: TIBQuery;
 begin
   if ibDataSet1.Locate('HISTORICO',copy('Pag. doc. '+ibDataSet8DOCUMENTO.AsString+'-'+ibDataSet8NOME.AsString,1,25),[loPartialKey]) then
   begin
@@ -16217,6 +16221,51 @@ begin
       ibDataSet1.Delete;
     end;
   end;
+
+  {Dailon Parisotto (f-6594) 2023-02-01 Inicio}
+  if (ibDataSet8VALOR_PAGO.Value > 0) then
+  begin
+    if (ibDataSet8VALOR_PAGO.Value < ibDataSet8VALOR_DUPL.Value)
+      and (MensagemSistemaPergunta('Criar uma nova conta a pagar no restante do valor?', [mb_YesNo, mb_DefButton1]) = mrYes) then
+    begin
+      qryGenerator := CriaIBQuery(IBTransaction1);
+      try
+        qryGenerator.Close;
+        qryGenerator.SQL.Clear;
+        qryGenerator.SQL.Add('select gen_id(G_PAGAR,1) from rdb$database');
+        qryGenerator.Open;
+
+        cNovoID := StrZero(StrToInt(qryGenerator.FieldByname('GEN_ID').AsString),10,0);
+      finally
+        FreeAndNil(qryGenerator);
+      end;
+      if copy(ibDataSet8DOCUMENTO.AsString,1,1) = '0' then
+        cPrimNumDoc := 'A'
+      else
+        cPrimNumDoc := Chr(Ord(ibDataSet8DOCUMENTO.AsString[1])+1);
+      try
+        ibDataSet100.Close;
+        ibDataSet100.SelectSql.Clear;
+        ibDataSet100.SelectSql.Add('INSERT INTO PAGAR (HISTORICO, PORTADOR, DOCUMENTO, NOME, EMISSAO, VENCIMENTO, VALOR_DUPL, CONTA, NUMERONF, REGISTRO)');
+        ibDataSet100.SelectSQL.Add('VALUES (');
+        ibDataSet100.SelectSQL.Add(QuotedStr(ibDataSet8HISTORICO.AsString));
+        ibDataSet100.SelectSQL.Add(',' + QuotedStr(ibDataSet8PORTADOR.AsString));
+        ibDataSet100.SelectSQL.Add(',' + QuotedStr(cPrimNumDoc + Copy(ibDataSet8DOCUMENTO.AsString, 2, 9)));
+        ibDataSet100.SelectSQL.Add(',' + QuotedStr(ibDataSet8NOME.AsString));
+        ibDataSet100.SelectSQL.Add(',' + QuotedStr(DateToStrInvertida(Date)));
+        ibDataSet100.SelectSQL.Add(',' + QuotedStr(DateToStrInvertida(Date)));
+        ibDataSet100.SelectSQL.Add(',' + QuotedStr(StrTran(StrZero(ibDataSet8VALOR_DUPL.Value - ibDataSet8VALOR_PAGO.Value, 10, 2),',','.')));
+        ibDataSet100.SelectSQL.Add(',' + QuotedStr(ibDataSet8CONTA.AsString));
+        ibDataSet100.SelectSQL.Add(',' + QuotedStr(ibDataSet8NUMERONF.AsString));
+        ibDataSet100.SelectSQL.Add(',' + QuotedStr(cNovoID));
+        ibDataSet100.SelectSQL.Add(')');
+        ibDataSet100.Open;
+      finally
+        ibDataSet100.Close;
+      end;
+    end;
+  end;
+  {Dailon Parisotto (f-6594) 2023-02-01 Fim}
 
   if ibDataSet8VALOR_PAGO.Value > 0
     then if ibDataSet8PAGAMENTO.AsString = ''
@@ -24993,7 +25042,14 @@ begin
     //
     if (Form7.ibDataset7.State in ([dsEdit, dsInsert])) then Form7.ibDataset7.Post;
 //    Form7.ibDataSet7.Post;
-    Form7.ibDataSet7.Edit;
+      Form7.ibDataSet7.Edit;
+    {Dailon Parisotto (f-6594) 2023-02-01 Inicio}
+    if sModulo = 'PAGAR' then
+    begin
+      if (Form7.ibDataset8.State in ([dsEdit, dsInsert])) then Form7.ibDataset8.Post;
+        Form7.ibDataSet8.Edit;
+    end;
+    {Dailon Parisotto (f-6594) 2023-02-01 Fim}
     //
     Form1.IBDataSet200.Close;
     Form1.IBDataSet200.Open;
@@ -25659,7 +25715,6 @@ begin
         begin
           //ShowMessage('Informe o <Plano de contas para a diferença>.'); Mauricio Parizotto 2023-10-25
           MensagemSistema('Informe o <Plano de contas para a diferença>.');
-          
           Form7.ComboBox2.SetFocus;
           Abort;
         end;
