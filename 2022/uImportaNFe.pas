@@ -82,14 +82,20 @@ begin
     begin
       // Importa de um arquivo XML informado pelo usuário
       Form7.OpenDialog1.FileName := '';
+      Form7.OpenDialog1.Filter := 'XML|*.xml';  //Mauricio Parizotto 2024-02-15
       Form7.OpenDialog1.Title    := 'Importar Nota Fiscal';
 
       if not Form7.OpenDialog1.Execute then
+      begin
+        Form7.OpenDialog1.Filter := '';
         Exit;
+      end;
+
+      Form7.OpenDialog1.Filter := '';
 
       //Mauricio Parizotto 2024-02-01
       CaminhoArquivo := Form7.OpenDialog1.FileName;
-      if pos(CaminhoArquivo,'.') = 0 then
+      if pos('.',CaminhoArquivo) = 0 then
         CaminhoArquivo := CaminhoArquivo+'.xml';
 
       if not FileExists(CaminhoArquivo) then
