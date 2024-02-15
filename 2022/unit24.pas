@@ -285,7 +285,7 @@ type
     function TestaNotaDescontaICMSDesonerado: Boolean;
     { Private declarations }
   public
-    ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, ConfNegat, confDuplo: String;
+    ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, confDuplo: String;
     ConfItens   : Integer;
     ConfLimite  : Real;
     ConfIR      : Real;

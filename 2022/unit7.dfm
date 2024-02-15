@@ -20137,7 +20137,7 @@ object Form7: TForm7
     Top = 286
   end
   object IBDatabase1: TIBDatabase
-    DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
+    DatabaseName = 'D:\desenvolvimento1\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
       'password=masterkey')
@@ -21903,7 +21903,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

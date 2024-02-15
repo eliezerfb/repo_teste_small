@@ -51,7 +51,8 @@ var
 
 implementation
 
-uses Unit7, Mais, Unit24, Unit12, Unit10, Unit14, Unit30, uDialogs;
+uses Unit7, Mais, Unit24, Unit12, Unit10, Unit14, Unit30, uDialogs,
+  uFuncoesRetaguarda;
 
 {$R *.DFM}
 
@@ -59,8 +60,6 @@ procedure TForm13.FormActivate(Sender: TObject);
 var
   I, J : Integer;
 begin
-  //
-//  Form13.Caption := Form7.sModulo;
   if (Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'VENDA') then Form1.rReserva := 0;
   //
   iLinhas  := 20;
@@ -533,12 +532,15 @@ procedure TForm13.StringGrid1SetEditText(Sender: TObject; ACol,
   ARow: Integer; const Value: String);
 var
   I, J : Integer;
+  ProdComposto : Boolean;
 begin
-  //
   // verifica se tem quantidade ou não
-  //
   if bSaida then
   begin
+    //Mauricio Parizotto 2024-02-05
+    ProdComposto := ProdutoComposto(Form7.ibDataSet4.Transaction,
+                                    Form7.ibDataSet4CODIGO.AsString);
+
     for I := 0 to 99 do
     begin
       for J := 0 to 99 do
@@ -548,14 +550,11 @@ begin
           try
             if (I <> 0) and (J <> 0) then
             begin
+              {Mauricio Parizotto 2024-02-05 Inicio
               if Form1.ConfNegat = 'Não' then
               begin
                 if StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid1.Cells[I,J]))) > StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid2.Cells[I,J]))) then
                 begin
-                  {
-                  ShowMessage('Não tem '+AllTrim(StrTran(Form13.StringGrid1.Cells[I,J],'-',''))+' '+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+' '+Form13.StringGrid1.Cells[I,0]+' '+Form13.StringGrid1.Cells[0,J]+' no estoque.'+Chr(10)+
-                  'Só tem '+AllTrim(Form13.StringGrid2.Cells[I,J])+'.');
-                  Mauricio Parizotto 2023-10-25}
                   MensagemSistema('Não tem '+AllTrim(StrTran(Form13.StringGrid1.Cells[I,J],'-',''))+' '+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+' '+Form13.StringGrid1.Cells[I,0]+' '+Form13.StringGrid1.Cells[0,J]+' no estoque.'+Chr(10)+
                                   'Só tem '+AllTrim(Form13.StringGrid2.Cells[I,J])+'.'
                                   ,msgAtencao);
@@ -563,13 +562,41 @@ begin
                   Form13.StringGrid1.Cells[I,J] := '0,0';
                 end;
               end;
+              }
+
+              //Sem composição
+              if (Form1.ConfNegat = 'Não') and (not ProdComposto) then
+              begin
+                if StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid1.Cells[I,J]))) > StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid2.Cells[I,J]))) then
+                begin
+                  MensagemSistema('Não tem '+AllTrim(StrTran(Form13.StringGrid1.Cells[I,J],'-',''))+' '+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+' '+Form13.StringGrid1.Cells[I,0]+' '+Form13.StringGrid1.Cells[0,J]+' no estoque.'+Chr(10)+
+                                  'Só tem '+AllTrim(Form13.StringGrid2.Cells[I,J])+'.'
+                                  ,msgAtencao);
+
+                  Form13.StringGrid1.Cells[I,J] := '0,0';
+                end;
+              end;
+
+              //Com composição
+              if (not Form1.ConfPermitFabricarSemQtd) and (ProdComposto) then
+              begin
+                if StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid1.Cells[I,J]))) > StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid2.Cells[I,J]))) then
+                begin
+                  MensagemSistema('Não tem '+AllTrim(StrTran(Form13.StringGrid1.Cells[I,J],'-',''))+' '+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+' '+Form13.StringGrid1.Cells[I,0]+' '+Form13.StringGrid1.Cells[0,J]+' no estoque.'+Chr(10)+
+                                  'Só tem '+AllTrim(Form13.StringGrid2.Cells[I,J])+'.'
+                                  ,msgAtencao);
+
+                  Form13.StringGrid1.Cells[I,J] := '0,0';
+                end;
+              end;
+
+              {Mauricio Parizotto 2024-02-05 Fim}
             end;
           except Form13.StringGrid1.Cells[I,J] := ''  end;
         end;
       end;
     end;
   end;
-////////////////////////////      //
 end;
 
 procedure TForm13.FormCreate(Sender: TObject);

@@ -288,27 +288,27 @@ object Form19: TForm19
       ImageIndex = 1
       object Label35: TLabel
         Left = 92
-        Top = 113
+        Top = 142
         Width = 213
         Height = 13
         Caption = '% m'#225'ximo de desconto no item do or'#231'amento'
       end
       object Label36: TLabel
         Left = 92
-        Top = 141
+        Top = 170
         Width = 214
         Height = 13
         Caption = '% m'#225'ximo de desconto no total do or'#231'amento'
       end
-      object CheckBox9: TCheckBox
+      object chkItensDuplicadosNF: TCheckBox
         Left = 15
-        Top = 75
+        Top = 104
         Width = 194
         Height = 17
         Caption = 'Itens duplos na Nota Fiscal'
-        TabOrder = 0
+        TabOrder = 3
       end
-      object CheckBox2: TCheckBox
+      object chkEstoqueNegativoNF: TCheckBox
         Left = 15
         Top = 45
         Width = 306
@@ -316,33 +316,41 @@ object Form19: TForm19
         Caption = 'Estoque negativo na emiss'#227'o da Nota Fiscal'
         TabOrder = 1
       end
-      object CheckBox1: TCheckBox
+      object chkVendasAbaixoCusto: TCheckBox
         Left = 15
         Top = 15
         Width = 137
         Height = 17
         Caption = 'Vendas abaixo do custo'
-        TabOrder = 2
+        TabOrder = 0
       end
       object SMALL_DBEdit4: TSMALL_DBEdit
         Left = 15
-        Top = 105
+        Top = 134
         Width = 66
         Height = 19
         DataField = 'DIFERENCA_'
         DataSource = Form7.DataSource25
-        TabOrder = 3
+        TabOrder = 4
         OnKeyDown = SMALL_DBEdit1KeyDown
       end
       object SMALL_DBEdit5: TSMALL_DBEdit
         Left = 15
-        Top = 133
+        Top = 162
         Width = 66
         Height = 19
         DataField = 'PAGAR'
         DataSource = Form7.DataSource25
-        TabOrder = 4
+        TabOrder = 5
         OnKeyDown = SMALL_DBEdit1KeyDown
+      end
+      object chkFabricaProdSemQtd: TCheckBox
+        Left = 15
+        Top = 74
+        Width = 306
+        Height = 17
+        Caption = 'Fabrica'#231#227'o de produtos com quantidade insuficiente'
+        TabOrder = 2
       end
     end
     object Orelha_juros: TTabSheet
@@ -410,7 +418,7 @@ object Form19: TForm19
           Left = 87
           Top = 25
           Width = 70
-          Height = 20
+          Height = 19
           TabOrder = 0
           Text = '0,00'
           OnExit = edtJurosDiaExit
@@ -421,7 +429,7 @@ object Form19: TForm19
           Left = 87
           Top = 51
           Width = 70
-          Height = 20
+          Height = 19
           TabOrder = 1
           Text = '0,00'
           OnExit = edtJurosMesExit
@@ -432,7 +440,7 @@ object Form19: TForm19
           Left = 87
           Top = 77
           Width = 70
-          Height = 20
+          Height = 19
           TabOrder = 2
           Text = '0,00'
           OnExit = edtJurosAnoExit
@@ -1413,7 +1421,7 @@ object Form19: TForm19
       Height = 25
       Caption = '&Ok'
       TabOrder = 0
-      OnClick = Button4Click
+      OnClick = btnOKClick
     end
   end
   object Panel4: TPanel
@@ -1434,7 +1442,7 @@ object Form19: TForm19
       Height = 25
       Caption = '&Ok'
       TabOrder = 0
-      OnClick = Button4Click
+      OnClick = btnOKClick
     end
   end
   object Panel3: TPanel
@@ -1448,7 +1456,7 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 3
-    object Button3: TButton
+    object btnCancelar: TButton
       Left = 380
       Top = 5
       Width = 120
@@ -1461,10 +1469,10 @@ object Form19: TForm19
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      OnClick = Button3Click
-      OnKeyDown = Button4KeyDown
+      OnClick = btnCancelarClick
+      OnKeyDown = btnOKKeyDown
     end
-    object Button4: TButton
+    object btnOK: TButton
       Left = 530
       Top = 5
       Width = 120
@@ -1477,8 +1485,8 @@ object Form19: TForm19
       Font.Style = []
       ParentFont = False
       TabOrder = 1
-      OnClick = Button4Click
-      OnKeyDown = Button4KeyDown
+      OnClick = btnOKClick
+      OnKeyDown = btnOKKeyDown
     end
   end
   object Panel5: TPanel

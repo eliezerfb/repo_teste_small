@@ -39,9 +39,9 @@ type
     Edit14: TEdit;
     Edit15: TEdit;
     Edit16: TEdit;
-    CheckBox9: TCheckBox;
-    CheckBox2: TCheckBox;
-    CheckBox1: TCheckBox;
+    chkItensDuplicadosNF: TCheckBox;
+    chkEstoqueNegativoNF: TCheckBox;
+    chkVendasAbaixoCusto: TCheckBox;
     GroupBox1: TGroupBox;
     rbJurosSimples: TRadioButton;
     rbJurosComposto: TRadioButton;
@@ -98,8 +98,8 @@ type
     Panel4: TPanel;
     Button6: TButton;
     Panel3: TPanel;
-    Button3: TButton;
-    Button4: TButton;
+    btnCancelar: TButton;
+    btnOK: TButton;
     Panel5: TPanel;
     Orelha_email: TTabSheet;
     Label1: TLabel;
@@ -139,9 +139,10 @@ type
     edtJurosMes: TEdit;
     edtJurosAno: TEdit;
     lblMulta: TLabel;
+    chkFabricaProdSemQtd: TCheckBox;
     procedure FormActivate(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -162,7 +163,7 @@ type
       Shift: TShiftState);
     procedure rbJurosSimplesKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure Button4KeyDown(Sender: TObject; var Key: Word;
+    procedure btnOKKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure rbJurosCompostoClick(Sender: TObject);
     procedure rbJurosSimplesClick(Sender: TObject);
@@ -201,7 +202,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit14, Unit22, Unit12, Unit10, Unit2, Unit4,
-  Unit24, Unit8, uDialogs;
+  Unit24, Unit8, uDialogs, uArquivosDAT;
 
 {$R *.DFM}
 
@@ -281,6 +282,8 @@ end;
 procedure TForm19.FormActivate(Sender: TObject);
 var
   Mais1Ini, Mais2Ini, Mais3Ini, Mais4ini: TIniFile;
+
+  ConfSistema : TArquivosDAT;
 begin
   {Dailon Parisotto 2023-10-13 Inicio
   if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
@@ -368,9 +371,17 @@ begin
   ComboBoxNF2.Text        := Mais3Ini.ReadString('Nota Fiscal 2','Porta','LPT1');
   ComboBoxBloqueto.Text    := Mais3Ini.ReadString('Bloqueto','Porta','LPT1');
 
-  if Mais1Ini.ReadString('Permitir','Vendas abaixo do custo','Sim') = 'Não' then CheckBox1.Checked  := False else CheckBox1.Checked := True;
-  if Mais1Ini.ReadString('Permitir','Estoque negativo','Sim')       = 'Não' then CheckBox2.Checked  := False else CheckBox2.Checked := True;
-  if Mais1Ini.ReadString('Permitir','Duplos','Não')                 = 'Não' then CheckBox9.Checked  := False else CheckBox9.Checked := True;
+  if Mais1Ini.ReadString('Permitir','Vendas abaixo do custo','Sim') = 'Não' then chkVendasAbaixoCusto.Checked  := False else chkVendasAbaixoCusto.Checked := True;
+  if Mais1Ini.ReadString('Permitir','Estoque negativo','Sim')       = 'Não' then chkEstoqueNegativoNF.Checked  := False else chkEstoqueNegativoNF.Checked := True;
+  if Mais1Ini.ReadString('Permitir','Duplos','Não')                 = 'Não' then chkItensDuplicadosNF.Checked  := False else chkItensDuplicadosNF.Checked := True;
+
+  //Mauricio Parizotto 2024-02-02
+  try
+    ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
+    chkFabricaProdSemQtd.Checked  := ConfSistema.BD.Outras.FabricaProdutoSemQtd;
+  finally
+    FreeAndNil(ConfSistema);
+  end;
 
   ComboBox1.Text        := Mais1Ini.ReadString('Outros','Casas decimais na quantidade','2');
   ComboBox7.Text        := Mais1Ini.ReadString('Outros','Casas decimais na quantidade de serviços','0');
@@ -449,9 +460,10 @@ begin
   bChave := False;
 end;
 
-procedure TForm19.Button4Click(Sender: TObject);
+procedure TForm19.btnOKClick(Sender: TObject);
 var
   Mais4Ini, Mais2Ini, Mais1Ini, Mais3Ini: TIniFile;
+  ConfSistema : TArquivosDAT;
 begin
   // { Grava as configurações no .INF }
   Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
@@ -478,9 +490,17 @@ begin
   Mais3Ini.WriteString('Nota Fiscal 2','Porta',AllTrim(ComboBoxNF2.Text));
   Mais3Ini.WriteString('Bloqueto','Porta',AllTrim(ComboBoxBloqueto.Text));
 
-  if CheckBox1.Checked = True then Mais1Ini.WriteString('Permitir','Vendas abaixo do custo','Sim') else Mais1Ini.WriteString('Permitir','Vendas abaixo do custo','Não');
-  if CheckBox2.Checked = True then Mais1Ini.WriteString('Permitir','Estoque negativo','Sim') else Mais1Ini.WriteString('Permitir','Estoque negativo','Não');
-  if CheckBox9.Checked = True then Mais1Ini.WriteString('Permitir','Duplos','Sim') else Mais1Ini.WriteString('Permitir','Duplos','Não');
+  if chkVendasAbaixoCusto.Checked = True then Mais1Ini.WriteString('Permitir','Vendas abaixo do custo','Sim') else Mais1Ini.WriteString('Permitir','Vendas abaixo do custo','Não');
+  if chkEstoqueNegativoNF.Checked = True then Mais1Ini.WriteString('Permitir','Estoque negativo','Sim') else Mais1Ini.WriteString('Permitir','Estoque negativo','Não');
+  if chkItensDuplicadosNF.Checked = True then Mais1Ini.WriteString('Permitir','Duplos','Sim') else Mais1Ini.WriteString('Permitir','Duplos','Não');
+
+  //Mauricio Parizotto 2024-02-02
+  try
+    ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
+    ConfSistema.BD.Outras.FabricaProdutoSemQtd := chkFabricaProdSemQtd.Checked;
+  finally
+    FreeAndNil(ConfSistema);
+  end;
 
   if LimpaNumero(ComboBox1.Text) = '' then ComboBox1.TExt := '1';
   if LimpaNumero(ComboBox7.Text) = '' then ComboBox1.TExt := '0';
@@ -594,6 +614,7 @@ begin
   Mais4Ini.Free;
 
   Form1.ConfNegat   := Mais1Ini.ReadString('Permitir','Estoque negativo','Sim');
+  Form1.ConfPermitFabricarSemQtd := chkFabricaProdSemQtd.Checked;
 
   Mais1Ini.Free;
   Mais2Ini.Free;
@@ -602,7 +623,7 @@ begin
   Close;
 end;
 
-procedure TForm19.Button3Click(Sender: TObject);
+procedure TForm19.btnCancelarClick(Sender: TObject);
 begin
   Form19.Close;
 end;
@@ -632,10 +653,10 @@ begin
   MaskEdit1.Text  := Mais1Ini.ReadString('Atendimento','Inicial','08:00:00');
   MaskEdit8.Text  := Mais1Ini.ReadString('Atendimento','Final','18:00:00');
 
-  if Mais1Ini.ReadString('Permitir','Vendas abaixo do custo','Sim') = 'Não' then CheckBox1.Checked := False else CheckBox1.Checked := True;
-  if Mais1Ini.ReadString('Permitir','Estoque negativo','Sim') = 'Não' then CheckBox2.Checked := False else CheckBox2.Checked := True;
-  if Mais1Ini.ReadString('Permitir','Duplos','Sim') = 'Não' then CheckBox9.Checked := False else CheckBox9.Checked := True;
-  
+  if Mais1Ini.ReadString('Permitir','Vendas abaixo do custo','Sim') = 'Não' then chkVendasAbaixoCusto.Checked := False else chkVendasAbaixoCusto.Checked := True;
+  if Mais1Ini.ReadString('Permitir','Estoque negativo','Sim') = 'Não' then chkEstoqueNegativoNF.Checked := False else chkEstoqueNegativoNF.Checked := True;
+  if Mais1Ini.ReadString('Permitir','Duplos','Sim') = 'Não' then chkItensDuplicadosNF.Checked := False else chkItensDuplicadosNF.Checked := True;
+
   Form19.Top  := 70;
   Form19.Left := Screen.Width - Form19.Width;
 
@@ -809,7 +830,7 @@ begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config.htm')));
 end;
 
-procedure TForm19.Button4KeyDown(Sender: TObject; var Key: Word;
+procedure TForm19.btnOKKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config.htm')));
@@ -838,12 +859,12 @@ end;
 
 procedure TForm19.Edit7Enter(Sender: TObject);
 begin
-  Button4.SetFocus;
+  btnOK.SetFocus;
 end;
 
 procedure TForm19.Edit8Enter(Sender: TObject);
 begin
-  Button4.SetFocus;
+  btnOK.SetFocus;
 end;
 
 procedure TForm19.Image7Click(Sender: TObject);
@@ -1297,9 +1318,9 @@ begin
   Form19.Width  := 640;
   Form19.Height := 480;
 
-  Button4.Left  := Panel3.Width - Button4.Width - 10;
-  Button3.Left  := Button4.Left - 140;
-  //
+  btnOK.Left  := Panel3.Width - btnOK.Width - 10;
+  btnCancelar.Left  := btnOK.Left - 140;
+
   ComboBoxImpressora.Items.Clear;
   comboBoxNF.Items.clear;
   comboBoxNF2.Items.clear;

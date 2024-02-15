@@ -27,13 +27,14 @@ uses Unit7
     , Mais
     , Unit13
     , uDialogs
-    ;
+    , uFuncoesRetaguarda;
 
 procedure ImportaOrcamento(NumeroOrcamento:string; sTipo : String);
 var
   iDupl, I, iB : Integer;
   sReg, sEstado : String;
   sRegistro1, sModuloREs, sPortador, sValor, sVencimento : STring;
+  ProdComposto : Boolean;
 begin
   // N do caixa
   if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
@@ -140,12 +141,14 @@ begin
 
                   if (Form7.IbDataSet37DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString)  and (AllTrim(Form7.IbDataSet37DESCRICAO.AsString) <> '') then
                   begin
-                    if (Form1.ConfNegat = 'Não') and (Form7.ibDataSet4QTD_ATUAL.AsFloat < Form7.IbDataSet37QUANTIDADE.AsFloat) and ((sTipo <> 'BALCAO') and (sTipo <> 'VENDA')) then
+                    ProdComposto := ProdutoComposto(Form7.ibDataSet4.Transaction,
+                                    Form7.ibDataSet4CODIGO.AsString);
+
+                    //if (Form1.ConfNegat = 'Não') and (Form7.ibDataSet4QTD_ATUAL.AsFloat < Form7.IbDataSet37QUANTIDADE.AsFloat) and ((sTipo <> 'BALCAO') and (sTipo <> 'VENDA')) then Mauricio Parizotto 2024-02-05
+                    if ((Form1.ConfNegat = 'Não') and (Form7.ibDataSet4QTD_ATUAL.AsFloat < Form7.IbDataSet37QUANTIDADE.AsFloat) and ((sTipo <> 'BALCAO') and (sTipo <> 'VENDA')) and (not ProdComposto)) //Sem composição
+                      or ((not Form1.ConfPermitFabricarSemQtd) and (Form7.ibDataSet4QTD_ATUAL.AsFloat < Form7.IbDataSet37QUANTIDADE.AsFloat) and ((sTipo <> 'BALCAO') and (sTipo <> 'VENDA')) and (ProdComposto)) //Com composição
+                    then
                     begin
-                      {
-                      ShowMessage('Não é possível efetuar a venda de '+Form7.IbDataSet37DESCRICAO.AsString+chr(10)
-                      +'só tem ' + Form7.ibDataSet4QTD_ATUAL.AsString + ' no estoque');
-                      Mauricio Parizotto 2023-10-25}
                       MensagemSistema('Não é possível efetuar a venda de '+Form7.IbDataSet37DESCRICAO.AsString+chr(10)
                                       +'só tem ' + Form7.ibDataSet4QTD_ATUAL.AsString + ' no estoque'
                                       ,msgAtencao);

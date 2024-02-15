@@ -754,14 +754,13 @@ begin
   IBQCOMPOSTO := CriaIBQuery(IBTransaction);
 
   try
-
     IBQCOMPOSTO.Close;
     IBQCOMPOSTO.SQL.Clear;
     IBQCOMPOSTO.SQL.Text :=
-      'select count(CODIGO) as CONTADOR ' +
-      'from COMPOSTO C ' +
-      'where coalesce(C.DESCRICAO, '''') <> '''' ' +
-      ' and C.CODIGO = ' + QuotedStr(sCodigoProduto);
+                            ' Select count(CODIGO) as CONTADOR ' +
+                            ' From COMPOSTO C ' +
+                            ' Where coalesce(C.DESCRICAO, '''') <> '''' ' +
+                            '   and C.CODIGO = ' + QuotedStr(sCodigoProduto);
     IBQCOMPOSTO.Open;
 
     if IBQCOMPOSTO.FieldByName('CONTADOR').AsInteger > 0 then
@@ -769,7 +768,6 @@ begin
   finally
     FreeAndNil(IBQCOMPOSTO);
   end;
-
 end;
 
 procedure FabricaComposto(const sCodigo: String; DataSetEstoque: TIBDataSet;
