@@ -7698,6 +7698,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           TabOrder = 13
           ValueChecked = 'S'
           ValueUnchecked = 'N'
+          OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckSobreOutras: TDBCheckBox
@@ -7712,6 +7713,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           TabOrder = 14
           ValueChecked = 'S'
           ValueUnchecked = 'N'
+          OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckFRETESOBREIPI: TDBCheckBox
@@ -7726,6 +7728,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           TabOrder = 15
           ValueChecked = 'S'
           ValueUnchecked = 'N'
+          OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
         object DBMemo4: TDBMemo

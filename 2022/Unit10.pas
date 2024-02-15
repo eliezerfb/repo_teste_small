@@ -4383,7 +4383,7 @@ begin
 
   if Sender.ClassType = TSMALL_DBEdit then
   begin
-     if (((TSMALL_DBEdit(Sender).DataField = 'NOME')
+     if ((((TSMALL_DBEdit(Sender).DataField = 'NOME') and (Form7.sModulo <> 'ESTOQUE'))
           or (TSMALL_DBEdit(Sender).DataField = 'CGC')
           or (TSMALL_DBEdit(Sender).DataField = 'DESCRICAO'))
         and ((Form7.sModulo = 'RECEBER') or
