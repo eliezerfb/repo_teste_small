@@ -28,7 +28,7 @@ object Form19: TForm19
     Top = 20
     Width = 791
     Height = 561
-    ActivePage = Orelha_relatorios
+    ActivePage = Orelha_permitir
     Align = alClient
     TabOrder = 0
     object Orelha_relatorios: TTabSheet
@@ -349,7 +349,9 @@ object Form19: TForm19
         Top = 74
         Width = 306
         Height = 17
-        Caption = 'Fabrica'#231#227'o de produtos com quantidade insuficiente'
+        Caption = 
+          'Fabrica'#231#227'o de produtos com quantidade insuficiente na nota fisca' +
+          'l'
         TabOrder = 2
       end
     end
