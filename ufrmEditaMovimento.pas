@@ -44,7 +44,6 @@ type
     procedure DBGridItensCellClick(Column: TColumn);
   private
     { Private declarations }
-    FoMessageEvent: TMessageEvent;
     FCaixa: String;
     FPedido: String;
     FSelectOld: String;
@@ -56,7 +55,6 @@ type
     function TotalizaMovimento(DataSet: TDataSet): Double;
     function ItemCancelado(Field: TField): Boolean;
     function NaoEditavel(Field: TField): Boolean;
-    procedure ScrollMouse(var Msg: TMsg; var Handled: Boolean);
     procedure AlertaDeProdutoNaoEditavel;
     function ItemComEdicaoTabelaAlteracaBloqueada(sItem: String): Boolean;
     function ProdutoComEstoqueNegativo(IBTransaction: TIBTransaction;
@@ -121,11 +119,6 @@ begin
 
   FIBDATASETALTERACA := TIBDataSet.Create(nil);
   FIBDATASETALTERACA.AfterScroll := FIBDATASETALTERACAAfterScroll;
-
-  FoMessageEvent := Application.OnMessage;
-
-  Application.OnMessage := ScrollMouse;
-
 end;
 
 procedure TFEditaMovimento.DBGridItensDrawColumnCell(Sender: TObject;
@@ -373,7 +366,6 @@ end;
 procedure TFEditaMovimento.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  Application.OnMessage := FoMessageEvent;
   Form1.bEditandoMovimento := False;
   Form1.ibDataSet27.SelectSQL.Text := FSelectOld;
   TFloatField(Form1.ibDataSet27.FieldByName('UNITARIO')).EditFormat   := FEditFormatUnitario; // Sandro Silva 2023-11-23
@@ -494,32 +486,6 @@ begin
   {Sandro Silva 2023-12-04 inicio}
   AlertaDeProdutoNaoEditavel;
   {Sandro Silva 2023-12-04 fim}
-end;
-
-procedure TFEditaMovimento.ScrollMouse(var Msg: TMsg;
-  var Handled: Boolean);
-var
-  i: Smallint;
-begin
-  if Msg.message = WM_MOUSEWHEEL then
-  begin
-    Msg.message := WM_KEYDOWN;
-    Msg.lParam := 0;
-    i := HiWord(Msg.wParam) ;
-    if i > 0 then
-    begin
-      if DBGridItens.DataSource.DataSet.RecNo = 1 then
-        Exit;
-      Msg.wParam := VK_UP
-    end
-    else
-    begin
-      if DBGridItens.DataSource.DataSet.RecNo = DBGridItens.DataSource.DataSet.RecordCount then
-        Exit;
-      Msg.wParam := VK_DOWN;
-    end;
-    Handled := False;
-  end;
 end;
 
 procedure TFEditaMovimento.DBGridItensCellClick(Column: TColumn);

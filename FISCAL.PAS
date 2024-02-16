@@ -26641,9 +26641,7 @@ var
     end;
   end;
 begin
-  //
   // Form só para pedir o período e o e-mail do contador.
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfce.ini');
   sEmail   := Alltrim(Mais1Ini.ReadString('XML','e-mail contabilidade',''));
   Form7.DateTimePicker1.Date    := StrToDate(Mais1Ini.ReadString('XML','Periodo Inicial',DateToStr(DATE-30)));
@@ -26672,7 +26670,7 @@ begin
       sEmail := ''
     else
       sEmail := Small_InputBox('e-mail da contabilidade','Informe um e-mail válido para enviar o XML para contabilidade:',sEmail);
-    //
+
     Mais1Ini.WriteString('XML','e-mail contabilidade',AllTrim(sEmail));
     Mais1Ini.WriteString('XML','Periodo Inicial',DateToStr(Form7.DateTimePicker1.Date));
     Mais1Ini.WriteString('XML','Periodo Final',DateToStr(Form7.DateTimePicker2.Date));
@@ -26680,8 +26678,6 @@ begin
     //
     if Form7.DateTimePicker1.Date <> StrToDate('01/01/1998') then
     begin
-      //
-
       Form1.ExibePanelMensagem('Aguarde... Exportando XML');
 
       DistribuicaoDFe(Form7.DateTimePicker1.Date, Form7.DateTimePicker2.Date, Form1.sAtual + '\CONTABIL', Form1.IBDataSet150.Transaction);
@@ -26689,9 +26685,9 @@ begin
       ChDir(Form1.sAtual); // Windows voltar para a pasta do executável Sandro Silva 2018-03-12
 
       // Sem validar se existem xml no diretório causa erro no szip.exe}
-      if FileExists(Form1.sAtual + '\CONTABIL\*.xml') then
+      //if FileExists(Form1.sAtual + '\CONTABIL\*.xml') then  // Mauricio Parizotto 2024-02-06
+      if HasFile(Form1.sAtual + '\CONTABIL\*.xml') then
       begin
-
         if FileExists('szip.exe') then
         begin
           // Se existir o arquivo .zip ele deve ser deletado antes. Está compactando os novos arquivos com os que já estão no .zip
@@ -26716,8 +26712,6 @@ begin
 
           if ValidaEmail(sEmail) then
           begin
-            //
-
             if (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'CE') or (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'SP') then // Sandro Silva 2021-04-28 if bTemCFeSAT then
             begin
               sAssuntoEmail := 'NFC-e´s (Notas Fiscais Consumidor Eletrônicas) e CF-e (Cupom Fiscal Eletrônico)'; // Sandro Silva 2018-08-01
@@ -26741,6 +26735,7 @@ begin
                 bEnviar := False;
               end;
             end;
+
             if bEnviar then
             begin
               _ecf65_EnviarEMail('',sEmail,'',sAssuntoEmail,

@@ -605,7 +605,14 @@ begin
                 if Form1.ibDataSet10.FieldByName('ENTRADAS').AsString = '' then Form1.ibDataSet10.FieldByName('ENTRADAS').AsString := '0,00';
                 if Form13.StringGrid2.Cells[I,J] = '' then Form13.StringGrid2.Cells[I,J]  := '0,00';
                 //
+                {Dailon Parisotto (f-117) 2024-02-15 Inicio
+
+                Necessário remover os espaços em branco no inicio
                 Form1.ibDataSet10.FieldByName('QTD').AsString := Format('%12.4n',[(iMultiplicador*StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid1.Cells[I,J]))))+(StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid2.Cells[I,J]))))]);
+
+                }
+                Form1.ibDataSet10.FieldByName('QTD').AsString := Trim(Format('%12.4n',[(iMultiplicador*StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid1.Cells[I,J]))))+(StrToFloat(LimpaNumeroDeixandoAVirgula(AllTrim(Form13.StringGrid2.Cells[I,J]))))]));
+                {Dailon Parisotto (f-117) 2024-02-15 Fim}
                 //
               end;
               Form1.ibDataSet10.Post;

@@ -1581,14 +1581,18 @@ begin
 
           if (Copy(xmlNodeValue(IBQDFE.FieldByName('NFEXML').AsString, '//chNFe'), 21, 2) = '65') then  // Assim para identificar xml de cancelamento de NFC-e
           begin
+            //sFileExporta := PansiChar(Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-nfce.xml');  // Direciona o arquivo F para EXPORTA.TXT Mauricio Parizotto 2024-02-06
             sFileExporta := Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-nfce.xml';  // Direciona o arquivo F para EXPORTA.TXT
             if (Pos('CANCEL', AnsiUpperCase(IBQDFE.FieldByName('STATUS').AsString)) <> 0) then
+              //sFileExporta := PansiChar(Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-caneve.xml');  // Direciona o arquivo F para EXPORTA.TXT Mauricio Parizotto 2024-02-06
               sFileExporta := Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-caneve.xml';  // Direciona o arquivo F para EXPORTA.TXT
           end;
           if (xmlNodeValue(IBQDFE.FieldByName('NFEXML').AsString, '//ide/mod') = '59') then
           begin
+            //sFileExporta := PansiChar(Diretorio+'\AD'+IBQDFE.FieldByName('NFEID').AsString+'.xml');  // Direciona o arquivo F para EXPORTA.TXT Mauricio Parizotto 2024-02-06
             sFileExporta := Diretorio+'\AD'+IBQDFE.FieldByName('NFEID').AsString+'.xml';  // Direciona o arquivo F para EXPORTA.TXT
             if (Pos('CANCEL', AnsiUpperCase(IBQDFE.FieldByName('STATUS').AsString)) <> 0) then
+              //sFileExporta := PansiChar(Diretorio+'\ADC'+IBQDFE.FieldByName('NFEID').AsString+'.xml');  // Direciona o arquivo F para EXPORTA.TXT Mauricio Parizotto 2024-02-06
               sFileExporta := Diretorio+'\ADC'+IBQDFE.FieldByName('NFEID').AsString+'.xml';  // Direciona o arquivo F para EXPORTA.TXT
           end;
 
@@ -1640,6 +1644,18 @@ begin
           fNFe := IBQDFE.FieldByName('XML').AsString;
           // Componente NFCe está gerando os xml com 'ï»¿' no início do arquivo e causa erro ao exportar para contabilidade
           fNFe := StringReplace(fNFe, 'ï»¿','', [rfReplaceAll]); // Sandro Silva 2016-03-21
+
+          {Mauricio Parizotto 2024-02-06
+          sFileExporta := PansiChar(Diretorio+'\'+
+            xmlNodeValue(fNFe, '//cUF') +
+            xmlNodeValue(fNFe, '//ano') +
+            xmlNodeValue(fNFe, '//CNPJ') +
+            xmlNodeValue(fNFe, '//mod') +
+            RightStr('000' + xmlNodeValue(fNFe, '//serie'), 3) +
+            RightStr('000000000' + xmlNodeValue(fNFe, '//nNFIni'), 9) +
+            RightStr('000000000' + xmlNodeValue(fNFe, '//nNFFin'), 9) +
+            '-inut.xml');  // Direciona o arquivo F para EXPORTA.TXT
+          }
 
           sFileExporta := Diretorio+'\'+
             xmlNodeValue(fNFe, '//cUF') +
@@ -2093,48 +2109,40 @@ var
   SM: TFNMapiSendMail;
   MAPIModule: HModule;
   Flags: Cardinal;
-  //
 begin
-  //
   GetDir(0,sAtual);
-  //
+
   Mais1ini := TIniFile.Create('frente.ini');
-  //
+
   if FileExists(PChar('mail.exe')) and (Mais1Ini.ReadString('mail','Host','') <> '') then // Sandro Silva 2020-09-03 if FileExists(pChar('mail.exe')) and (Mais1Ini.ReadString('mail','Host','') <> '') then
   begin
-    //
     while FileExists(PChar('email.exe')) do // Sandro Silva 2020-09-03 while FileExists(pChar('email.exe')) do
     begin
       DeleteFile('email.exe');
       sleep(10);
     end;
-    //
+
     while not FileExists(PChar('email.exe')) do // Sandro Silva 2020-09-03 while not FileExists(pChar('email.exe')) do
     begin
       CopyFile('mail.exe', 'email.exe', False);
       sleep(10);
     end;
-    //
-    ShellExecute(0, 'Open', 'email.exe', PChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), PChar(''), SW_SHOW); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open', 'email.exe',pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), '', SW_SHOW);
-    //
+
+    //ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), PAnsiChar(''), SW_SHOW); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open', 'email.exe',pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), '', SW_SHOW); // Mauricio Parizotto 2024-02-08
+    ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(AnsiString(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"')), PAnsiChar(''), SW_SHOW);
+
     Result := 1;
-    //
   end else
   begin
-    //
-    //
-    //
     // cria propriedades da mensagem
-    //
     FillChar(Msg, SizeOf(Msg), 0);
     //
     with Msg do
     begin
       if (sAssunto <> '') then lpszSubject  := PAnsiChar(AnsiString(sAssunto)); // Sandro Silva 2020-09-03 if (sAssunto <> '') then lpszSubject := PChar(sAssunto);
       if (sTexto <> '')   then lpszNoteText := PAnsiChar(AnsiString(sTexto)); //Corpo da Mensagem // Sandro Silva 2020-09-03 if (sTexto <> '')   then lpszNoteText := PChar(sTexto); //Corpo da Mensagem
-      //
+
       // remetente
-      //
       if (sDe <> '') then
       begin
         lpSender.ulRecipClass := MAPI_ORIG;
@@ -2145,12 +2153,10 @@ begin
         lpSender.lpEntryID := nil;
         lpOriginator := @lpSender;
       end;
-      //
+
       // destinatário
-      //
       if (sPara <> '') then
       begin
-        //
         if not bConfirma then
         begin
           sPara := StrTran(StrTran(sPara,';','><'),' ','');
@@ -2165,10 +2171,8 @@ begin
         lpRecepient.lpEntryID    := nil;
         nRecipCount := 1;
         lpRecips := @lpRecepient;
-        //
       end else
       begin
-        //
         if (sCC <> '') then
         begin
           lpComCopia.ulRecipClass := MAPI_CC;

@@ -71,14 +71,13 @@ type
     procedure dbgTEFsEnter(Sender: TObject);
   private
     FoIni: TIniFile;
-    FoMessageEvent: TMessageEvent;
     function SalvarINI: Boolean;
     procedure DeletarRecord(Sender: TObject);
     procedure CarregarINI;
     procedure AjustaLayout;
     function TestarConfiguracoes: Boolean;
     procedure DefineTemTEFINI;
-    procedure ScrollMouse(var Msg: TMsg; var Handled: Boolean);
+    function GetNumScrollLines: Integer;
   public
   end;
 
@@ -212,15 +211,17 @@ const
   _cChaveID = 'idxIDNOME';
 begin
   FoIni     := TIniFile.Create(FRENTE_INI);
-  FoMessageEvent := Application.OnMessage;
-
-  Application.OnMessage := ScrollMouse;
 
   AjustaLayout;
 
   cdsTEFs.CreateDataSet;
   cdsTEFs.IndexDefs.Add(_cChaveID, _cColunaIDNOME, [ixUnique]);
   cdsTEFs.IndexName := _cChaveID;
+end;
+
+function TFConfiguracaoTEF.GetNumScrollLines: Integer;
+begin
+  SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, @Result, 0);
 end;
 
 procedure TFConfiguracaoTEF.FormShow(Sender: TObject);
@@ -287,7 +288,6 @@ end;
 
 procedure TFConfiguracaoTEF.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  Application.OnMessage := FoMessageEvent;
   DefineTemTEFINI;
 end;
 
@@ -578,31 +578,6 @@ procedure TFConfiguracaoTEF.cdsTEFsIDNOMESetText(Sender: TField;
   const Text: String);
 begin
   Sender.AsString := AnsiUpperCase(Trim(Text));
-end;
-
-procedure TFConfiguracaoTEF.ScrollMouse(var Msg: TMsg; var Handled: Boolean);
-var
-  i: smallint;
-begin
-  if Msg.message = WM_MOUSEWHEEL then
-  begin
-    Msg.message := WM_KEYDOWN;
-    Msg.lParam := 0;
-    i := HiWord(Msg.wParam) ;
-    if i > 0 then
-    begin
-      if cdsTEFs.RecNo = 1 then
-        Exit;
-      Msg.wParam := VK_UP
-    end
-    else
-    begin
-      if cdsTEFs.RecNo = cdsTEFs.RecordCount then
-        Exit;
-      Msg.wParam := VK_DOWN;
-    end;
-    Handled := False;
-  end;
 end;
 
 procedure TFConfiguracaoTEF.cdsTEFsAfterPost(DataSet: TDataSet);

@@ -103,7 +103,7 @@ uses
   const NFCE_STATUS_AUTORIZADO_USO_EM_PRODUCAO    = 'Autorizado o uso da NFC-e';
   const NFCE_STATUS_CANCELAMENTO                  = 'Cancelamento Registrado e vinculado a NFCe';
 
-  function ConsisteInscricaoEstadual(sIE, sUF: String): Boolean; StdCall; External 'DllInscE32.Dll';
+  function ConsisteInscricaoEstadual(sIE, sUF: AnsiString): Boolean; StdCall; External 'DllInscE32.Dll';
   //
   function _ecf65_CodeErro(Pp1: Integer):Integer;
   function _ecf65_Inicializa(Pp1: String):Boolean;
