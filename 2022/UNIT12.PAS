@@ -893,22 +893,9 @@ begin
       Form7.ibDataSet16.Next;
     end;
 
-  // nao voltar Form7.ibDataSet16.EnableControls;
-    //
     Retributa(True);
-//    Form7.ibDataset16.Edit;
     if Form7.ibDataSet16.Modified then
       Form7.ibDataSet16.Post;
-    //
-    {Sandro Silva 2023-05-10 inicio
-    if pos('DEVOLUÇÃO',AnsiUpperCase(SMALL_DBEdit40.Text)) <> 0 then
-    begin
-      Form12.Edit2.Text := '4-Devolução de mercadoria';
-      Form7.ibDataSet15FINNFE.AsString   := '4';
-      ExibeColunasFCPST(True);
-      SMALL_DBEdit40Enter(Sender);
-    end;
-    }
   end;
 
   if SMALL_DBEdit40.Text <> '' then
@@ -933,7 +920,9 @@ begin
       end;
       {Sandro Silva 2023-05-10 fim}
 
-      ObservacaoOperacao(False); // On exit
+      Form7.ibDataSet14.Locate('NOME',AllTrim( Form7.ibDataSet15OPERACAO.AsString  ),[loCaseInsensitive, loPartialKey]); //Mauricio Parizotto 2024-02-05
+
+      ObservacaoOperacao(False);
     end else
     begin
       if AllTrim(SMALL_DBEdit40.Text)<>AllTrim(Form7.ibDataSet14NOME.AsString) then

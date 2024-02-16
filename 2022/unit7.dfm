@@ -12755,6 +12755,7 @@ object Form7: TForm7
     Transaction = IBTransaction1
     AfterDelete = ibDataSet9AfterDelete
     AfterPost = ibDataSet9AfterPost
+    BeforeDelete = ibDataSet9BeforeDelete
     BeforeEdit = ibDataSet9BeforeEdit
     BeforeInsert = ibDataSet9BeforeInsert
     OnDeleteError = IBDataSet2DeleteError
@@ -13844,6 +13845,7 @@ object Form7: TForm7
     Transaction = IBTransaction1
     AfterDelete = ibDataSet11AfterDelete
     AfterPost = ibDataSet11AfterPost
+    BeforeDelete = ibDataSet11BeforeDelete
     BeforeEdit = ibDataSet11BeforeEdit
     BeforeInsert = ibDataSet11BeforeInsert
     BeforePost = ibDataSet11BeforePost
@@ -16117,6 +16119,7 @@ object Form7: TForm7
     Transaction = IBTransaction1
     AfterDelete = ibDataSet18AfterDelete
     AfterPost = ibDataSet18AfterPost
+    BeforeDelete = ibDataSet18BeforeDelete
     BeforeInsert = ibDataSet18BeforeInsert
     OnDeleteError = IBDataSet2DeleteError
     OnEditError = IBDataSet2EditError
@@ -16381,6 +16384,7 @@ object Form7: TForm7
     Transaction = IBTransaction1
     AfterDelete = ibDataSet21AfterDelete
     AfterPost = ibDataSet21AfterPost
+    BeforeDelete = ibDataSet21BeforeDelete
     BeforeEdit = ibDataSet21BeforeEdit
     BeforeInsert = ibDataSet21BeforeInsert
     OnDeleteError = IBDataSet2DeleteError
@@ -20133,7 +20137,7 @@ object Form7: TForm7
     Top = 286
   end
   object IBDatabase1: TIBDatabase
-    DatabaseName = 'D:\desenvolvimento\executaveis\Small Commerce\small.fdb'
+    DatabaseName = 'D:\desenvolvimento1\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
       'password=masterkey')
@@ -20629,6 +20633,7 @@ object Form7: TForm7
     AfterDelete = ibDataSet37AfterDelete
     AfterOpen = ibDataSet37AfterOpen
     AfterPost = ibDataSet37AfterPost
+    BeforeDelete = ibDataSet37BeforeDelete
     BeforePost = ibDataSet37BeforePost
     BufferChunks = 1000
     CachedUpdates = False
@@ -21509,7 +21514,7 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      '0avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21545,7 +21550,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21867,7 +21872,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21898,7 +21903,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22264,6 +22269,7 @@ object Form7: TForm7
     Database = IBDatabase1
     Transaction = IBTransaction1
     AfterDelete = ibdConversaoCFOPAfterDelete
+    BeforeDelete = ibdConversaoCFOPBeforeDelete
     BeforeEdit = ibdConversaoCFOPBeforeEdit
     BeforeInsert = ibdConversaoCFOPBeforeInsert
     OnDeleteError = IBDataSet2DeleteError
@@ -22779,6 +22785,7 @@ object Form7: TForm7
     Database = IBDatabase1
     Transaction = IBTransaction1
     AfterDelete = ibdParametroTributaAfterDelete
+    BeforeDelete = ibdParametroTributaBeforeDelete
     BeforeEdit = ibdParametroTributaBeforeEdit
     BeforeInsert = ibdParametroTributaBeforeInsert
     OnDeleteError = IBDataSet2DeleteError
