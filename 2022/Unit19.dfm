@@ -350,7 +350,7 @@ object Form19: TForm19
         Width = 421
         Height = 17
         Caption = 
-          'Fabrica'#231#227'o de produtos com quantidade insuficiente na nota fisca' +
+          'Fabrica'#231#227'o de produtos com quantidade insuficiente na Nota Fisca' +
           'l'
         TabOrder = 2
       end
