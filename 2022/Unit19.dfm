@@ -347,7 +347,7 @@ object Form19: TForm19
       object chkFabricaProdSemQtd: TCheckBox
         Left = 15
         Top = 74
-        Width = 306
+        Width = 421
         Height = 17
         Caption = 
           'Fabrica'#231#227'o de produtos com quantidade insuficiente na nota fisca' +
