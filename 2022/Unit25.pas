@@ -17,9 +17,9 @@ type
     PrinterSetupDialog1: TPrinterSetupDialog;
     Edit1: TEdit;
     Edit2: TEdit;
-    imgBoleto: TImage;
+    imgBoletoVisual: TImage;
     Image7: TImage;
-    Image2: TImage;
+    imgBoletoEnvia: TImage;
     Panel1: TPanel;
     btnConfigurarBoleto: TBitBtn;
     btnAnterior: TBitBtn;
@@ -28,7 +28,6 @@ type
     btnImprimirTodos: TBitBtn;
     btnEnviaEmail: TBitBtn;
     btnEnviaEmailTodos: TBitBtn;
-    btnCriaImagemBoleto: TBitBtn;
     chkDataAtualizadaJurosMora: TCheckBox;
     PrintDialog1: TPrintDialog;
     procedure btnAnteriorClick(Sender: TObject);
@@ -40,7 +39,7 @@ type
     procedure FormActivate(Sender: TObject);
     procedure btnImprimirClick(Sender: TObject);
     procedure btnImprimirTodosClick(Sender: TObject);
-    procedure btnCriaImagemBoletoClick(Sender: TObject);
+    procedure CriaImagemBoleto;
     procedure btnEnviaEmailClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure chkDataAtualizadaJurosMoraClick(Sender: TObject);
@@ -95,16 +94,23 @@ end;
 
 function CriaBoletoJpg(FileNameJpg: String) :Boolean;
 var
-  jp: TJPEGImage;  //Requires the "jpeg" unit added to "uses" clause.
-  rRect: Trect;
-  jpgTemp: String; // Sandro Silva 2022-12-28
+//  jp: TJPEGImage;
+//  rRect: Trect;
+  jpgTemp: String;
 begin
   try
+    {Mauricio Parizotto 2023-02-16 Inicio}
     jpgTemp := 'boleto_temp_' + FormatDateTime('yyyy-mm-dd-HH-nn-ss-zzz', Now) + '.tmp'; // Sandro Silva 2022-12-28
 
-    Form25.Image2.Width  := (Form25.imgBoleto.Width  + 40) * 1;
-    Form25.Image2.Height := (Form25.imgBoleto.Height + 40) * 1;
+//    Form25.Image2.Width  := (Form25.imgBoleto.Width  + 40) * 1;
+//    Form25.Image2.Height := (Form25.imgBoleto.Height + 40) * 1;
 
+    Form25.imgBoletoEnvia.Width  := Form25.imgBoletoVisual.Width;
+    Form25.imgBoletoEnvia.Height := Form25.imgBoletoVisual.Height;
+
+    Form25.imgBoletoEnvia.Picture := Form25.imgBoletoVisual.Picture;
+
+    {
     rRect.Top    := 20;
     rRect.Left   := 20;
     rRect.Bottom := rRect.Top  + Form25.imgBoleto.Picture.Graphic.Height;
@@ -117,9 +123,9 @@ begin
     jp.CompressionQuality := 100;
     jp.SaveToFile(jpgTemp);
     jp.Free;
+    }
 
-    if Form1.DisponivelSomenteParaNos then
-      Sleep(250);
+    Form25.imgBoletoEnvia.Picture.SaveToFile(jpgTemp);
 
     while FileExists(FileNameJpg) do
       DeleteFile(FileNameJpg);
@@ -129,6 +135,7 @@ begin
   end;
 
   Result := True;
+  {Mauricio Parizotto 2023-02-16 Fim}
 end;
 
 
@@ -773,6 +780,7 @@ begin
 
     *)
 
+    {
     if not Imprimir then
     begin
       DesenhaBoletoLayoutPadrao(Impressao, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text);
@@ -783,6 +791,12 @@ begin
       else
         DesenhaBoletoLayoutCarne(Impressao, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
     end;
+    }
+
+    if Form25.sFormatoBoleto = 'Padrão' then
+      DesenhaBoletoLayoutPadrao(Impressao, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
+    else
+      DesenhaBoletoLayoutCarne(Impressao, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
 
     FinalizaImpressao(Imprimir);
 
@@ -834,7 +848,7 @@ begin
   Form7.ibDataSet7.MoveBy(-1);
 
   ValidaEmailPagador;
-  Form25.btnCriaImagemBoletoClick(Sender);
+  Form25.CriaImagemBoleto;
 end;
 
 procedure TForm25.btnProximoClick(Sender: TObject);
@@ -842,7 +856,7 @@ begin
   Form7.ibDataSet7.MoveBy(1);
 
   ValidaEmailPagador;
-  Form25.btnCriaImagemBoletoClick(Sender);
+  Form25.CriaImagemBoleto;
 end;
 
 procedure TForm25.Edit1KeyDown(Sender: TObject; var Key: Word;
@@ -1041,7 +1055,7 @@ begin
 }
 begin
   ValidaEmailPagador;
-  Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
+  Form25.CriaImagemBoleto;
 end;
 
 procedure TForm25.btnImprimirClick(Sender: TObject);
@@ -1077,7 +1091,7 @@ begin
           begin
             ImprimirBoleto;
             ValidaEmailPagador;
-            Form25.btnCriaImagemBoletoClick(Sender);
+            Form25.CriaImagemBoleto;
           end;
 
           Form7.ibDataSet7.Next;
@@ -1098,7 +1112,7 @@ begin
   {$Endregion}
 end;
 
-procedure TForm25.btnCriaImagemBoletoClick(Sender: TObject);
+procedure TForm25.CriaImagemBoleto;
 begin
   Form25.Tag := 1; // Para saber se é impressão em PDF
   GeraImagemDoBoletoComOCodigoDeBarras(False);
@@ -1119,6 +1133,8 @@ begin
   begin
     if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
     begin
+      CriaImagemBoleto;
+
       // Apaga o PDF anterior
       while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') do
       begin
@@ -1170,7 +1186,7 @@ begin
         PAGE := pdf.AddPage;
         PAGE.PageLandscape := False;
 
-        PDF.VCLCanvas.Draw(0,0,Form25.Image2.Picture.Graphic);
+        PDF.VCLCanvas.Draw(20,0,Form25.imgBoletoEnvia.Picture.Graphic);
 
         PDF.SaveToFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
       finally
@@ -1255,7 +1271,7 @@ end;
 
 procedure TForm25.chkDataAtualizadaJurosMoraClick(Sender: TObject);
 begin
-  Form25.btnCriaImagemBoletoClick(Sender); // Sandro Silva 2022-12-23 Form25.Button2Click(Sender);
+  Form25.CriaImagemBoleto;
 end;
 
 procedure TForm25.btnEnviaEmailTodosClick(Sender: TObject);
@@ -1332,7 +1348,7 @@ begin
             end;
 
             Form25.Show;
-            Form25.btnCriaImagemBoletoClick(Sender);
+            Form25.CriaImagemBoleto;
 
             //while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
             begin
@@ -1349,7 +1365,7 @@ begin
             PAGE := pdf.AddPage;
             PAGE.PageLandscape := False;
 
-            PDF.VCLCanvas.Draw(0,0,Form25.Image2.Picture.Graphic);
+            PDF.VCLCanvas.Draw(0,0,Form25.imgBoletoEnvia.Picture.Graphic);
           end;
         end;
 
@@ -1699,10 +1715,10 @@ begin
     Impressao        := Printer.Canvas;
   end else
   begin
-    Form25.imgBoleto.Height := 1039;
-    Impressao            := Form25.imgBoleto.Canvas;
+    Form25.imgBoletoVisual.Height := 1039;
+    Impressao            := Form25.imgBoletoVisual.Canvas;
     Impressao.Pen.Color  := clWhite;
-    Impressao.Rectangle(0,0,Form25.imgBoleto.Width,1200);
+    Impressao.Rectangle(5,0,Form25.imgBoletoVisual.Width,1200);
   end;
 end;
 
@@ -1714,8 +1730,8 @@ begin
     Printer.EndDoc;
   end else
   begin
-    Form25.imgBoleto.Refresh;
-    Form25.imgBoleto.Top := -525;
+    Form25.imgBoletoVisual.Refresh;
+    Form25.imgBoletoVisual.Top := -525;
   end;
 end;
 

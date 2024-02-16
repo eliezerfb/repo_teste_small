@@ -21124,7 +21124,7 @@ begin
 
   //                        PDF.EndDoc;
 
-                          PDF.VCLCanvas.Draw(0,0,Form25.Image2.Picture.Graphic);
+                          PDF.VCLCanvas.Draw(0,0,Form25.imgBoletoEnvia.Picture.Graphic);
 
                           PDF.SaveToFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
 
@@ -28144,7 +28144,7 @@ begin
                                   PAGE := PDF.AddPage;
                                   PAGE.PageLandscape := False;
 
-                                  PDF.VCLCanvas.Draw(0,0,Form25.Image2.Picture.Graphic);
+                                  PDF.VCLCanvas.Draw(0,0,Form25.imgBoletoEnvia.Picture.Graphic);
 
                                 end;
                               end;
@@ -31695,7 +31695,7 @@ begin
                                   PAGE := pdf.AddPage;
                                   PAGE.PageLandscape := False;
 
-                                  PDF.VCLCanvas.Draw(0,0,Form25.Image2.Picture.Graphic);
+                                  PDF.VCLCanvas.Draw(0,0,Form25.imgBoletoEnvia.Picture.Graphic);
                                 end;
                               end;
                             end;

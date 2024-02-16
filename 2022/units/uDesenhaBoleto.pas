@@ -446,6 +446,7 @@ begin
   Impressao.Font.sTyle  := [fsBold];    // Estilo da fonte
 
   {$Region'//// Logo Banco ////'}
+
   sBanco := 'banco'+CodBanco+'.bmp'; // banco001.bmp = Banco do Brasil; banco237.bmp = Bradesco
 
   //Logo boleto
@@ -453,16 +454,21 @@ begin
   begin
     Form25.Image7.Picture.LoadFromFile(sBanco);
 
-    rRect.Top     := Altura(iVia+5);
-    rRect.Left    := Largura(39);
-
-    rRect.Bottom  := rRect.Top  + 225;
-    rRect.Right   := rRect.Left + 980;
+    if Form25.Tag = 0 then  // Impressão na impressora
+    begin
+      rRect.Top     := Altura(iVia+5);
+      rRect.Left    := Largura(39);
+      rRect.Bottom  := rRect.Top  + 225;
+      rRect.Right   := rRect.Left + 980;
+    end else
+    begin
+      rRect.Top     := Altura(iVia+5);
+      rRect.Left    := Largura(39);
+      rRect.Bottom  := 48;
+      rRect.Right   := 295;
+    end;
 
     Impressao.StretchDraw(rRect,Form25.Image7.Picture.Graphic);
-  end else
-  begin
-    Impressao.TextOut(largura(8),altura(5+iVia),Copy(AllTrim(Form7.ibDataSet11NOME.AsString)+Replicate(' ',26),1,26)); // Nome do banco
   end;
 
   {$Endregion}
@@ -707,16 +713,21 @@ begin
   begin
     Form25.Image7.Picture.LoadFromFile(sBanco);
 
-    rRect.Top     := Altura(iVia+5);
-    rRect.Left    := Largura(0);
-
-    rRect.Bottom  := rRect.Top  + 225;
-    rRect.Right   := rRect.Left + 980;
+    if Form25.Tag = 0 then  // Impressão na impressora
+    begin
+      rRect.Top     := Altura(iVia+5);
+      rRect.Left    := Largura(0);
+      rRect.Bottom  := rRect.Top  + 225;
+      rRect.Right   := rRect.Left + 980;
+    end else
+    begin
+      rRect.Top     := Altura(iVia+5);
+      rRect.Left    := Largura(0);
+      rRect.Bottom  := 48;
+      rRect.Right   := 145;
+    end;
 
     Impressao.StretchDraw(rRect,Form25.Image7.Picture.Graphic);
-  end else
-  begin
-    Impressao.TextOut(largura(8),altura(5+iVia),Copy(AllTrim(Form7.ibDataSet11NOME.AsString)+Replicate(' ',26),1,26)); // Nome do banco
   end;
 
   {$Region'//// Titulos ////'}

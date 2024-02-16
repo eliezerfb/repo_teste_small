@@ -5,7 +5,7 @@ object Form25: TForm25
   BorderStyle = bsDialog
   Caption = 'Boleto de cobran'#231'a banc'#225'ria'
   ClientHeight = 536
-  ClientWidth = 709
+  ClientWidth = 765
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,15 +18,15 @@ object Form25: TForm25
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object imgBoleto: TImage
+  object imgBoletoVisual: TImage
     Left = 20
     Top = 15
-    Width = 662
+    Width = 725
     Height = 460
   end
   object Image7: TImage
-    Left = 693
-    Top = 8
+    Left = 853
+    Top = 32
     Width = 168
     Height = 40
     AutoSize = True
@@ -666,11 +666,12 @@ object Form25: TForm25
       FFFF}
     Visible = False
   end
-  object Image2: TImage
-    Left = 692
-    Top = 146
+  object imgBoletoEnvia: TImage
+    Left = 853
+    Top = 178
     Width = 40
     Height = 40
+    Visible = False
   end
   object Edit3: TEdit
     Left = 325
@@ -916,29 +917,13 @@ object Form25: TForm25
       OnClick = btnEnviaEmailTodosClick
     end
   end
-  object btnCriaImagemBoleto: TBitBtn
-    Left = 363
-    Top = 25
-    Width = 100
-    Height = 25
-    Caption = 'jpg'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'Microsoft Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 8
-    Visible = False
-    OnClick = btnCriaImagemBoletoClick
-  end
   object chkDataAtualizadaJurosMora: TCheckBox
     Left = 480
     Top = 460
     Width = 217
     Height = 17
     Caption = 'Data atualizada com juros de mora'
-    TabOrder = 9
+    TabOrder = 8
     OnClick = chkDataAtualizadaJurosMoraClick
   end
   object PrinterSetupDialog1: TPrinterSetupDialog
