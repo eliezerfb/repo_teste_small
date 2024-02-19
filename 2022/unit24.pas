@@ -148,7 +148,6 @@ type
     Label85: TLabel;
     ComboBox12: TComboBox;
     Label86: TLabel;
-    SMALL_DBEdit64: TSMALL_DBEdit;
     Label87: TLabel;
     ComboBox13: TComboBox;
     Label89: TLabel;
@@ -169,6 +168,7 @@ type
     SMALL_DBEdit16: TSMALL_DBEdit;
     cbDescontaICMSDesonerado: TCheckBox;
     btnPrecificar: TBitBtn;
+    edtFatorC: TEdit;
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -256,7 +256,6 @@ type
     procedure ComboBox12Change(Sender: TObject);
     procedure ComboBox13Change(Sender: TObject);
     procedure ComboBox12Exit(Sender: TObject);
-    procedure SMALL_DBEdit64Exit(Sender: TObject);
     procedure ComboBox13Exit(Sender: TObject);
     procedure ComboBox12KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -274,6 +273,8 @@ type
     procedure edFretePorContaExit(Sender: TObject);
     procedure cbDescontaICMSDesoneradoClick(Sender: TObject);
     procedure btnPrecificarClick(Sender: TObject);
+    procedure edtFatorCKeyPress(Sender: TObject; var Key: Char);
+    procedure edtFatorCExit(Sender: TObject);
   private
     function RetornarWhereAtivoEstoque: String;
     function RetornarWhereProdDiferenteItemPrincipal: String;
@@ -724,12 +725,11 @@ begin
       //
       while (not Form7.ibDataSet23.Eof) and (I<ConfItens) do // Disable
       begin
-        //
         Form7.ibDataSet4.Close;                                                //
         Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
         Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');  //
         Form7.ibDataSet4.Open;
-        //
+
         if (Form7.ibDataSet23DESCRICAO.AsString <> '') and (Form7.ibDataSet23QUANTIDADE.AsFloat > 0) then
         begin
 
@@ -1243,9 +1243,12 @@ begin
           // Procura o produto no estoque
           Form7.ibDataSet4.Close;
           Form7.ibDataSet4.Selectsql.Clear;
-          Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');
+          Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString));
           Form7.ibDataSet4.Open;
           Form7.ibDataSet4.Edit;
+
+          //Mauricio Parizotto 2024-02-19
+          edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString, Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
 
           try
             //Remove marcação de prduto novo
@@ -2182,6 +2185,9 @@ begin
       Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');  //
       Form7.ibDataSet4.Open;
+
+      //Mauricio Parizotto 2024-02-19
+      edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
     end;
   end;
 
@@ -2271,12 +2277,11 @@ end;
 
 procedure TForm24.DBGrid1CellClick(Column: TColumn);
 begin
-  //
   Form7.ibDataSet4.Close;                                                //
   Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
   Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');  //
   Form7.ibDataSet4.Open;
-  //
+
   if (Form7.ibDataSet4CODIGO.AsString <> Form7.ibDataSet23CODIGO.AsString) or (AllTrim(Form7.ibDataSet23CODIGO.AsString)='') then
   begin
     Form7.ibDataSet4.Close;                                                //
@@ -2284,14 +2289,14 @@ begin
     Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet23DESCRICAO.AsString)+' ');  //
     Form7.ibDataSet4.Open;
   end;
-  //
-  //
+
+  //Mauricio Parizotto 2024-02-19
+  edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
 end;
 
 procedure TForm24.DBGrid1ColExit(Sender: TObject);
 begin
   exit;
-//  Form1.bFlag := True;
   Form7.ibDataSet23DESCRICAOChange(Form7.ibDataSet23DESCRICAO);
   Form7.ibDataSet23QTD_ORIGINALChange(Form7.ibDataSet23QTD_ORIGINAL);
   Form7.ibDataSet23UNITARIO_OChange(Form7.ibDataSet23UNITARIO_O);
@@ -2493,14 +2498,16 @@ begin
       // Procura o produto no estoque
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
-      Form7.ibDataSet4.Close;                                                //
-      Form7.ibDataSet4.Selectsql.Clear;                                      //
-      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');  //
+      Form7.ibDataSet4.Close;
+      Form7.ibDataSet4.Selectsql.Clear;
+      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString));
       Form7.ibDataSet4.Open;
-      //
+
+      //Mauricio Parizotto 2024-02-19
+      edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
+
       if Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
       begin
-        //
         if Form7.ibDataSet23SINCRONIA.AsFloat = Form7.ibDataSet23QUANTIDADE.AsFloat then    // Resolvi este problema as 4 da madrugada no NoteBook em casa
         begin
           try
@@ -2523,13 +2530,15 @@ begin
 
   Form7.sModulo := 'COMPRA';
 
-  Form7.ibDataSet4.Close;                                                //
-  Form7.ibDataSet4.Selectsql.Clear;                                      // relacionado
+  Form7.ibDataSet4.Close;
+  Form7.ibDataSet4.Selectsql.Clear;
   Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where Coalesce(ST,'+QuotedStr('')+')<>'+QuotedStr('SVC')+' order by upper(DESCRICAO)');  //
   Form7.ibDataSet4.Open;
 
+  //Mauricio Parizotto 2024-02-19
+  edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
+
   Form7.ibDataSet23.EnableControls;
-  //LogRetaguarda('unit24 ibDataSet23.EnableControls 2516'); // Sandro Silva 2023-12-04
 
   if Form7.ibDataSet24FRETE12.AsString = '0' then
     edFretePorConta.Text := '0-Remetente'
@@ -2904,6 +2913,52 @@ begin
   Label64.Caption := 'Mod: '+Form7.ibDataSet24MODELO.AsString;
 end;
 
+procedure TForm24.edtFatorCExit(Sender: TObject);
+begin
+  try
+    if (Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '') then
+    begin
+      if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset4.Edit;
+
+      Form7.ibDataSet4FATORC.AsFloat := StrToFloatDef(edtFatorC.Text,1);
+      Form7.ibDataset4.Post;
+
+      Form7.ibDataset4.Edit;
+      if Form7.ibDataSet4FATORC.AsFloat = 0 then
+        Form7.ibDataSet4FATORC.AsFloat :=1;
+
+      Exemplo(True);
+
+      try
+        if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then Form7.ibDataset23.Edit;
+        if (Form7.ibDataSet4FATORC.AsFloat = 1) then
+        begin
+          Form7.ibDataSet23QUANTIDADE.AsFloat := Form7.ibDataSet23QTD_ORIGINAL.AsFloat;
+          Form7.ibDataSet23UNITARIO.AsFloat   := Form7.ibDataSet23UNITARIO_O.AsFloat;
+        end else
+        begin
+          Form7.ibDataSet23QUANTIDADE.AsFloat := (Form7.ibDataSet23QTD_ORIGINAL.AsFloat * Form7.ibDataSet4FATORC.AsFloat);
+          Form7.ibDataSet23UNITARIO.AsFloat   := (Form7.ibDataSet23UNITARIO_O.AsFloat / Form7.ibDataSet4FATORC.AsFloat);
+        end;
+      except
+      end;
+    end else
+    begin
+      Form24.Label89.Caption := '';
+    end;
+  except
+    on E: Exception do
+      //ShowMessage('Erro 2 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
+      MensagemSistema('Erro 2 FC: '+chr(10)+E.Message,msgErro);
+  end;
+end;
+
+procedure TForm24.edtFatorCKeyPress(Sender: TObject; var Key: Char);
+begin
+  ValidaValor(Sender, Key,'F');
+end;
+
 procedure TForm24.Edit2Exit(Sender: TObject);
 begin
   try
@@ -2972,36 +3027,6 @@ procedure TForm24.DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
 var
   Qtd : integer;
 begin
-  {Mauricio Parizotto 2023-10-18 Inicio
-  //
-  if Field.Name = 'ibDataSet23DESCRICAO' then
-  begin
-    //
-    if Form7.ibDataSet4CODIGO.AsString <> Form7.ibDataSet23CODIGO.AsString then
-    begin
-      if not dBgrid3.Visible then
-      begin
-        Form7.ibDataSet4.DisableControls;
-        Form7.ibDataSet4.Close;
-        Form7.ibDataSet4.Selectsql.Clear;
-        Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');
-        Form7.ibDataSet4.Open;
-        Form7.ibDataSet4.EnableControls;
-      end;
-    end;
-    //
-    if Form7.ibDataSet4ALTERADO.AsString = '3' then
-    begin
-      dbGrid1.Canvas.StretchDraw(Rect,Form24.ImageNovo.Picture.Graphic);   // Item novo
-      dbGrid1.Canvas.TextOut(Rect.Left+22,Rect.Top+2,Field.AsString);
-    end;
-    //
-    //
-  end;
-  //
-  //
-  }
-
   //Verifica se o produto é novo
   if Field.Name = 'ibDataSet23DESCRICAO' then
   begin
@@ -3120,6 +3145,9 @@ begin
       dBGrid3.Visible := False;
       dbGrid1.SelectedIndex := 1;
       dbGrid1.SetFocus;
+
+      //Mauricio Parizotto 2024-02-19
+      edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
     end;
   end;
 end;
@@ -3138,10 +3166,13 @@ var
 begin
   if Form7.ibDataSet4DESCRICAO.AsString <> Form7.ibDataSet23DESCRICAO.AsString then
   begin
-    Form7.ibDataSet4.Close;                                                //
-    Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
-    Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet23DESCRICAO.AsString)+' ');  //
+    Form7.ibDataSet4.Close;
+    Form7.ibDataSet4.Selectsql.Clear;
+    Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet23DESCRICAO.AsString));
     Form7.ibDataSet4.Open;
+
+    //Mauricio Parizotto 2024-02-19
+    edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
   end;
 
   if Form7.ibDataSet4DESCRICAO.AsString <> '' then
@@ -3187,6 +3218,9 @@ begin
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(sCodigo)+' ');
       Form7.ibDataSet4.Open;
 
+      //Mauricio Parizotto 2024-02-19
+      edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
+
       if sCodigo = Form7.ibDataSet4CODIGO.AsString then
       begin
         if Form7.ibDataSet4ALTERADO.AsString = '3' then
@@ -3201,11 +3235,14 @@ begin
       Form7.ibDataSet23.Selectsql.Add('select * from ITENS002 where NUMERONF=:NUMERONF and FORNECEDOR=:FORNECEDOR');
       Form7.ibDataSet23.Open;
 
-      Form7.ibDataSet4.Close;                                                //
-      Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
-      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form24.ibDataSet44CODIGO.AsString)+' ');  //
+      Form7.ibDataSet4.Close;
+      Form7.ibDataSet4.Selectsql.Clear;
+      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form24.ibDataSet44CODIGO.AsString));
       Form7.ibDataSet4.Open;
-      
+
+      //Mauricio Parizotto 2024-02-19
+      edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
+
       Form24.edtAlteraEntrada.Text :=  '';
       
       Form7.ibDataSet23.Locate('DESCRICAO',Form24.ibDataSet44DESCRICAO.AsString,[]);
@@ -3553,42 +3590,6 @@ begin
   end;
 end;
 
-
-procedure TForm24.SMALL_DBEdit64Exit(Sender: TObject);
-begin
-  try
-    if (Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and (AllTrim(Form7.ibDataSet23CODIGO.AsString) <> '') then
-    begin
-      if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-        Form7.ibDataset4.Post;
-      Form7.ibDataset4.Edit;
-      if Form7.ibDataSet4FATORC.AsFloat = 0 then
-        Form7.ibDataSet4FATORC.AsFloat :=1;
-      Exemplo(True);
-      //
-      try
-        if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then Form7.ibDataset23.Edit;
-        if (Form7.ibDataSet4FATORC.AsFloat = 0) or (Form7.ibDataSet4FATORC.AsFloat = 1) then
-        begin
-          Form7.ibDataSet23QUANTIDADE.AsFloat := Form7.ibDataSet23QTD_ORIGINAL.AsFloat;
-          Form7.ibDataSet23UNITARIO.AsFloat   := Form7.ibDataSet23UNITARIO_O.AsFloat;
-        end else
-        begin
-          Form7.ibDataSet23QUANTIDADE.AsFloat := (Form7.ibDataSet23QTD_ORIGINAL.AsFloat * Form7.ibDataSet4FATORC.AsFloat);
-          Form7.ibDataSet23UNITARIO.AsFloat   := (Form7.ibDataSet23UNITARIO_O.AsFloat / Form7.ibDataSet4FATORC.AsFloat);
-        end;
-      except end;
-      //
-    end else
-    begin
-      Form24.Label89.Caption := '';
-    end;
-  except
-    on E: Exception do
-      //ShowMessage('Erro 2 FC: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
-      MensagemSistema('Erro 2 FC: '+chr(10)+E.Message,msgErro);
-  end;
-end;
 
 procedure TForm24.ComboBox13Exit(Sender: TObject);
 begin

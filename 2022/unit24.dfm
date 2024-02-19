@@ -3076,28 +3076,6 @@ object Form24: TForm24
         OnExit = ComboBox12Exit
         OnKeyUp = ComboBox12KeyUp
       end
-      object SMALL_DBEdit64: TSMALL_DBEdit
-        Left = 15
-        Top = 168
-        Width = 120
-        Height = 22
-        AutoSize = False
-        BevelInner = bvLowered
-        BevelOuter = bvNone
-        Ctl3D = True
-        DataField = 'FATORC'
-        DataSource = Form7.DataSource4
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentCtl3D = False
-        ParentFont = False
-        TabOrder = 3
-        OnExit = SMALL_DBEdit64Exit
-        OnKeyUp = ComboBox12KeyUp
-      end
       object ComboBox13: TComboBox
         Left = 15
         Top = 208
@@ -3299,6 +3277,23 @@ object Form24: TForm24
         Visible = False
         OnChange = edtAlteraEntradaChange
         OnKeyDown = edtAlteraEntradaKeyDown
+      end
+      object edtFatorC: TEdit
+        Left = 15
+        Top = 167
+        Width = 120
+        Height = 22
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 3
+        Text = '1'
+        OnExit = edtFatorCExit
+        OnKeyPress = edtFatorCKeyPress
+        OnKeyUp = ComboBox12KeyUp
       end
     end
     object ok: TBitBtn

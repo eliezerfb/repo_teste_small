@@ -72,7 +72,7 @@ uses
   procedure FabricaComposto(const sCodigo: String; DataSetEstoque: TIBDataSet;
     dQtdMovimentada: Double; var bFabrica: Boolean; iHierarquia: Integer; var sModulo: String); // Sandro Silva 2023-11-06
   function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
-  //procedure MensagemSistema(Mensagem:string; Tipo : TmensagemSis = msgInformacao); //Mauricio Parizotto 2023-09-13
+  function GetFatorConversaoItemCompra(CodRegItem:string; valPadrao: Double; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-02-19
 
 
 implementation
@@ -1091,12 +1091,33 @@ begin
   (Sender as TDBGrid).Canvas.Font.Color  := clblack;
   SetBkMode((Sender as TDBGrid).Canvas.Handle, OldBkMode);
 
-  ///////////
   (Sender as TDBGrid).Canvas.Font.Style := [];
 
   if gdSelected in State then // Se a coluna estiver selecionada deixa a fonte branca para ter contraste
     (Sender as TDBGrid).Canvas.Font.Color := clWhite;
 end;
+
+function GetFatorConversaoItemCompra(CodRegItem:string; valPadrao: Double; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-02-19
+begin
+  Result := 1;
+
+  try
+    Result := ExecutaComandoEscalar(Transaction,
+                                    ' Select '+
+                                    ' 	Case'+
+                                    ' 		When Coalesce(QUANTIDADE,1) / Coalesce(QTD_ORIGINAL,1) = 1 then Coalesce(E.FATORC,1)'+
+                                    ' 		Else Coalesce(QUANTIDADE,1) / Coalesce(QTD_ORIGINAL,1)'+
+                                    ' 	End FATORC	'+
+                                    ' From ITENS002 I'+
+                                    ' 	Left Join ESTOQUE E on E.DESCRICAO = I.DESCRICAO'+
+                                    ' Where I.REGISTRO = '+QuotedStr(CodRegItem)
+                                    ,FloatToStr(valPadrao) );
+  except
+  end;
+
+end;
+
+
 
 end.
 
