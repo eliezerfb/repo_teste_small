@@ -2582,7 +2582,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uRelatorioVendasNotaFiscal
   , uDrawCellGridModulos
   , uEmail
-  , ufrmFichaCadastros, uFuncaoMD5;
+  , ufrmFichaCadastros, uFuncaoMD5, uDesenhaBoleto;
 
 {$R *.DFM}
 
@@ -21221,15 +21221,12 @@ begin
                         PDF.Info.CreationDate := now;
                         PDF.DefaultPaperSize := psA4; //Tamanho A4
                         PDF.ForceJPEGCompression := 0;
+                        PDF.AddTrueTypeFont('Interleaved 2of5 Text');
+                        PDF.EmbeddedTTF := True;
+                        PDF.EmbeddedWholeTTF := true;
 
                         PAGE := pdf.AddPage;
                         PAGE.PageLandscape := False;
-
-                        while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
-                        begin
-                          DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
-                          Sleep(1000);
-                        end;
 
                         Form1.sEscolhido := '';
                         Form1.sBancoBoleto := '';
@@ -21255,19 +21252,16 @@ begin
                         end;
 
                         begin
-                          Form25.Show; // Em Form7.Emaildecobrana1Click()
+                          Form25.Show;
                           Form7.Repaint;
+                          Form25.CarregaConfiguracao;
+                          Form25.CarregaDadosParcela;
 
-                          while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
-                          begin
-                            Sleep(1000);
-                          end;
-
-  //                        PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
-
-  //                        PDF.EndDoc;
-
-                          PDF.VCLCanvas.Draw(0,0,Form25.imgBoletoEnvia.Picture.Graphic);
+                          //Mauricio Parizotto 2024-02-19
+                          if Form25.sFormatoBoleto = 'Padrão' then
+                            DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
+                          else
+                            DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
 
                           PDF.SaveToFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
 
@@ -28324,15 +28318,12 @@ begin
                         PDF.Info.CreationDate := now;
                         PDF.DefaultPaperSize := psA4; //Tamanho A4
                         PDF.ForceJPEGCompression := 0;
+                        PDF.AddTrueTypeFont('Interleaved 2of5 Text');
+                        PDF.EmbeddedTTF := True;
+                        PDF.EmbeddedWholeTTF := true;
 
                         PAGE := pdf.AddPage;
                         PAGE.PageLandscape := False;
-
-                        while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
-                        begin
-                          DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
-                          Sleep(1000);
-                        end;
 
                         Form1.sEscolhido := '';
                         Form1.sBancoBoleto := '';
@@ -28358,19 +28349,16 @@ begin
                         end;
 
                         begin
-                          Form25.Show; // Em Form7.Emaildecobrana1Click()
+                          Form25.Show;
                           Form7.Repaint;
+                          Form25.CarregaConfiguracao;
+                          Form25.CarregaDadosParcela;
 
-                          while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
-                          begin
-                            Sleep(1000);
-                          end;
-
-  //                        PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
-
-  //                        PDF.EndDoc;
-
-                          PDF.VCLCanvas.Draw(0,0,Form25.Image2.Picture.Graphic);
+                          //Mauricio Parizotto 2024-02-19
+                          if Form25.sFormatoBoleto = 'Padrão' then
+                            DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
+                          else
+                            DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
 
                           PDF.SaveToFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
 
@@ -28383,7 +28371,6 @@ begin
                       finally
                         FreeAndNil(PDF);
                       end;
-
                     except
                     end;
 
@@ -30228,10 +30215,6 @@ var
   I, YY, J : Integer;
   sMandados : String;
   MyBookMark1 : TBookMark;
-//  PDF: TPrintPDF;
-//  sArquivoPDF: String; // Sandro Silva 2022-12-22
-//  PDF :TPdfDocumentGDI;
-//  PAGE : TPdfPage;
 begin
   Form40.MaskEdit1.Visible := False;
   Form40.Edit1.Visible     := False;
@@ -30415,6 +30398,9 @@ begin
                         PDF.Info.CreationDate := now;
                         PDF.DefaultPaperSize := psA4; //Tamanho A4
                         PDF.ForceJPEGCompression := 0;
+                        PDF.AddTrueTypeFont('Interleaved 2of5 Text');
+                        PDF.EmbeddedTTF := True;
+                        PDF.EmbeddedWholeTTF := true;
 
                         Form7.ibDataSet7.First;
                         while not Form7.ibDataSet7.Eof do
@@ -31704,10 +31690,9 @@ var
   bButton    : Integer;
   MyBookMark : tBookMark;
   Mais1Ini : tIniFile;
-  I, II, YY, J : Integer;
+  I, II,  J : Integer;
   sMandados : String;
   MyBookMark1 : TBookMark;
-//  PDF: TPrintPDF;
   sArquivoPDF: String; // Sandro Silva 2022-12-22
   PDF :TPdfDocumentGDI;
   PAGE : TPdfPage;
@@ -31770,8 +31755,6 @@ begin
         Mais1ini.Free;
         Screen.Cursor            := crHourGlass;
         
-        YY := 0;
-        //
         while not Form7.ibDataSet7.Eof do
         begin
           if (Pos(Form7.ibDataSet7NOME.AsString,sMandados)=0) and (Form7.ibDataSet7ATIVO.AsFloat=0) then
@@ -31839,6 +31822,9 @@ begin
                         PDF.Info.CreationDate := now;
                         PDF.DefaultPaperSize := psA4; //Tamanho A4
                         PDF.ForceJPEGCompression := 0;
+                        PDF.AddTrueTypeFont('Interleaved 2of5 Text');
+                        PDF.EmbeddedTTF := True;
+                        PDF.EmbeddedWholeTTF := true;
 
                         Form7.ibDataSet7.First;
                         while not Form7.ibDataSet7.Eof do
@@ -31849,12 +31835,6 @@ begin
                             begin
                               if Form7.ibDataSet7VALOR_RECE.AsFloat = 0 then
                               begin
-                                while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
-                                begin
-                                  DeleteFile(pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg'));
-                                  Sleep(1000);
-                                end;
-
                                 Form1.sEscolhido := '';
                                 Form1.sBancoBoleto := '';
 
@@ -31882,6 +31862,8 @@ begin
                                 begin
                                   Form1.sBancoBoleto     := '';
                                   Form25.Show;
+                                  Form25.CarregaConfiguracao;
+                                  Form25.CarregaDadosParcela;
 
                                   {Sandro Silva 2022-12-23 inicio}
                                   if Form1.DisponivelSomenteParaNos then
@@ -31895,22 +31877,13 @@ begin
 
                                   Form7.Repaint;
 
-                                  while not FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.jpg') do
-                                  begin
-                                    Sleep(1000);
-                                  end;
-
-                                  // Print Image
-                                  YY := YY + 1;
-//                                  if YY >= 2 then
-  //                                  PDF.NewPage; // Add New Page
-
-  //                                PDF.DrawJPEG(0, 0, Form25.Image2.Picture.Bitmap);
-
                                   PAGE := pdf.AddPage;
                                   PAGE.PageLandscape := False;
 
-                                  PDF.VCLCanvas.Draw(0,0,Form25.imgBoletoEnvia.Picture.Graphic);
+                                  if Form25.sFormatoBoleto = 'Padrão' then
+                                    DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
+                                  else
+                                    DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
                                 end;
                               end;
                             end;
@@ -31923,7 +31896,6 @@ begin
                         end;
 
                         Form7.ibDataSet7.GotoBookmark(MyBookMark1);
-//                      PDF.EndDoc;
 
                         PDF.SaveToFile(sArquivoPDF);
                       finally

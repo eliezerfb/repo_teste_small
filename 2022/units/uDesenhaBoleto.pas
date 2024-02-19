@@ -4,14 +4,21 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Mask, DBCtrls, SMALL_DBEdit, smallfunc_xe, IniFiles, Printers, ShellApi, jpeg, TnPdf,
+  ExtCtrls, StdCtrls, Mask, DBCtrls, SMALL_DBEdit, smallfunc_xe, IniFiles, Printers, ShellApi, jpeg,
   IBX.IBQuery, IBX.IBDatabase;
 
-  procedure DesenhaBoletoLayoutPadrao(Impressao: TCanvas; CodBanco, sAgencia, sCodCedente, sConvenio, sCarteira, sNossoNumero, sMascara : string);
-  procedure DesenhaBoletoLayoutCarne(Impressao: TCanvas; CodBanco, sAgencia, sCodCedente, sConvenio, sCarteira, sNossoNumero, sMascara : string; Posicao:integer);
+type
+  TGeracao = (grPrint, grImagem, grPDF);
+
+var
+  vTipoG : TGeracao;
+
+  procedure DesenhaBoletoLayoutPadrao(Impressao: TCanvas; tipoGer : TGeracao; CodBanco, sAgencia, sCodCedente, sConvenio, sCarteira, sNossoNumero, sMascara : string);
+  procedure DesenhaBoletoLayoutCarne(Impressao: TCanvas; tipoGer : TGeracao; CodBanco, sAgencia, sCodCedente, sConvenio, sCarteira, sNossoNumero, sMascara : string; Posicao:integer);
   function GetNossoNumero(CodBanco,sAgencia,sConvenio,sCarteira,sNossoNumero,sCodCedente : string):string;
   function GetNumParcela(documento,nota:string):string;
   function GetTotParcela(nota:string):string;
+
 
 implementation
 
@@ -22,7 +29,7 @@ var
   mmPointX : Real;
   PageSize, OffSetUL : TPoint;
 begin
-  if Form25.Tag = 0 then
+  if vTipoG = grPrint then
   begin
     MM := MM + 5;
     mmPointX := Printer.PageWidth / GetDeviceCaps(Printer.Handle,HORZSIZE);
@@ -30,10 +37,18 @@ begin
     Escape (Printer.Handle,GETPHYSPAGESIZE,0,nil,@PageSize);
     if MM > 0 then Result := round ((MM * mmPointX) - OffSetUL.X) else Result := round (MM * mmPointX);
     Result := round(Result * 1.1);
-  end else
+  end;
+
+  if vTipoG = grImagem then
   begin
-    // Em PDF
     Result := Round(MM * 3.8);
+  end;
+
+
+  if vTipoG = grPDF then
+  begin
+    MM := MM + 5;
+    Result := Round(MM * 4);
   end;
 end;
 
@@ -43,21 +58,27 @@ var
   mmPointY : Real;
   PageSize, OffSetUL : TPoint;
 begin
-  if Form25.Tag = 0 then  // Impressão na impressora
+  if vTipoG = grPrint then
   begin
     mmPointY := Printer.PageHeight / GetDeviceCaps(Printer.Handle,VERTSIZE);
     Escape(Printer.Handle,GETPRINTINGOFFSET,0,nil,@OffSetUL);
     Escape(Printer.Handle,GETPHYSPAGESIZE,0,nil,@PageSize);
     if MM > 0 then Result := round((MM * mmPointY) - OffSetUL.Y) else Result := round(MM * mmPointY);
     Result := round(Result * 1.45);
-  end else
+  end;
+
+  if vTipoG = grImagem then
   begin
-    // Em PDF
     Result := Round(MM  * 5);
+  end;
+
+  if vTipoG = grPDF then
+  begin
+    Result := Round(MM  * 5.5);
   end;
 end;
 
-procedure DesenhaBoletoLayoutPadrao(Impressao: TCanvas; CodBanco, sAgencia, sCodCedente, sConvenio, sCarteira, sNossoNumero, sMascara : string);
+procedure DesenhaBoletoLayoutPadrao(Impressao: TCanvas; tipoGer : TGeracao; CodBanco, sAgencia, sCodCedente, sConvenio, sCarteira, sNossoNumero, sMascara : string);
 var
   rRect : Trect;
   ivia, I, J : Integer;
@@ -65,15 +86,17 @@ var
   NumBancoBoleto : string;
   NossoNumeroImpr : string;
 begin
+  vTipoG := tipoGer;
+
   Impressao.Pen.Color   := clBlack;
-  Impressao.Pen.Width   := 1;                 // Largura da Linha + (J * 40 * Tamanho)
+  Impressao.Pen.Width   := 1;
 
   for J := 1 to 2 do
   begin
     Impressao.Font.Name   := 'Times New Roman';      // Fonte
     Impressao.Font.sTyle  := [fsBold];             // Estilo da fonte
 
-    if Form25.Tag = 0 then  // Impressão na impressora
+    if tipoGer = grPrint then  // Impressão na impressora
     begin
       if J = 1 then
         iVia := 6
@@ -101,7 +124,7 @@ begin
     begin
       Form25.Image7.Picture.LoadFromFile(sBanco);
 
-      if Form25.Tag = 0 then  // Impressão na impressora
+      if tipoGer = grPrint then  // Impressão na impressora
       begin
         rRect.Top     := Altura(iVia+3);
         rRect.Left    := Largura(1);
@@ -179,7 +202,7 @@ begin
     Impressao.TextOut(largura(-8+009),altura(78+iVia),'Sacador Avalista');
     Impressao.TextOut(largura(-8+151-8),altura(70+iVia),'Cod. Baixa:');
 
-    if Form25.Tag = 0 then  // Impressão na impressora
+    if tipoGer = grPrint then  // Impressão na impressora
     begin
       if J = 1 then Impressao.TextOut(largura(-8+135-10+9),altura(78+iVia),'Autenticação mecânica/RECIBO DO Pagador');
       if J = 2 then Impressao.TextOut(largura(-8+135-10),altura(78+iVia),'Autenticação mecânica/FICHA DE COMPENSAÇÃO');
@@ -299,21 +322,48 @@ begin
       Impressao.TextOut(Largura(002),Altura(84+2+iVia),'OUVIDORIA BANRISUL - 0800 644 2200');
     end;
 
+    {$Region'//// Código de Barras ////'}
     if J = 2 then
     begin
       Impressao.Font.Name   := 'Interleaved 2of5 Text';   // Fonte
       Impressao.Font.Size   := 19;                        // Tamanho da Fonte
       Impressao.Font.sTyle  := [];                        // Estilo da fonte
 
+      Impressao.Pen.Width  := 10;
+      Impressao.Pen.Color := clWhite;
+
       Impressao.TextOut(largura(-8+009),altura(081+4+iVia),'('+SMALL_2of5(Form25.sNumero)+')');
-      Impressao.TextOut(largura(-8+009),altura(084+4+iVia),'('+SMALL_2of5(Form25.sNumero)+')');
-      Impressao.TextOut(largura(-8+009),altura(86.5+4+iVia),'('+SMALL_2of5(Form25.sNumero)+')');
+      if tipoGer = grPDF then
+      begin
+        Impressao.MoveTo(largura(1),altura(89+iVia));
+        Impressao.Lineto(largura(110),altura(89+iVia));
+      end;
+
+      Impressao.TextOut(largura(-8+009),altura(088+iVia),'('+SMALL_2of5(Form25.sNumero)+')');
+      if tipoGer = grPDF then
+      begin
+        Impressao.MoveTo(largura(1),altura(91.5+iVia));
+        Impressao.Lineto(largura(110),altura(91.5+iVia));
+      end;
+
+      Impressao.TextOut(largura(-8+009),altura(90.5+iVia),'('+SMALL_2of5(Form25.sNumero)+')');
 
       Impressao.Font.Name   := 'Microsoft Sans Serif';               // Fonte
       Impressao.Font.Size   := 6;                       // Tamanho da Fonte
-      Impressao.TextOut(largura(-8+009),altura(90+4+iVia),Replicate(' ',200));
+      Impressao.TextOut(largura(-8+009),altura(94+iVia),Replicate(' ',200));
+
+      if tipoGer = grPDF then
+      begin
+        Impressao.MoveTo(largura(1),altura(94+iVia));
+        Impressao.Lineto(largura(110),altura(94+iVia));
+      end;
+
+      Impressao.Pen.Color := clBlack;
     end;
 
+    {$Endregion}
+
+    {$Region'//// Linhas ////'}
     Impressao.Pen.Width   := 2;
     Impressao.MoveTo(largura(-8+055),altura(06+iVia)); // Linha mais larga ao lado do código do banco
     Impressao.Lineto(largura(-8+055),altura(11+iVia)); //
@@ -394,6 +444,9 @@ begin
     Impressao.Lineto(largura(-8+150-8),altura(70+iVia));   //
     Impressao.Lineto(largura(-8+200-18),altura(70+iVia));   //
 
+    {$Endregion}
+
+    {$Region'//// Picote ////'}
     if J = 2 then
     begin
       // Picote //
@@ -411,12 +464,13 @@ begin
       Impressao.Font.Size   := 15;                      // Tamanho da Fonte
       Impressao.TextOut(largura(1),altura(-8+iVia),'#');
     end;
+    {$Endregion}
   end;
 end;
 
 
 
-procedure DesenhaBoletoLayoutCarne(Impressao: TCanvas; CodBanco, sAgencia, sCodCedente, sConvenio, sCarteira, sNossoNumero, sMascara : string; Posicao:integer);
+procedure DesenhaBoletoLayoutCarne(Impressao: TCanvas; tipoGer : TGeracao; CodBanco, sAgencia, sCodCedente, sConvenio, sCarteira, sNossoNumero, sMascara : string; Posicao:integer);
 var
   rRect : Trect;
   ivia, I : Integer;
@@ -424,6 +478,8 @@ var
   NumBancoBoleto : string;
   NossoNumeroImpr : string;
 begin
+  vTipoG := tipoGer;
+
   Impressao.Pen.Color   := clBlack;
   Impressao.Pen.Width   := 1;                 // Largura da Linha + (J * 40 * Tamanho)
 
@@ -438,7 +494,11 @@ begin
 
   {$Region'//// Boleto Principal ////'}
 
-  Impressao.Font.Size   := 11;          // Tamanho da Fonte
+  if tipoGer = grPrint then  // Impressora
+    Impressao.Font.Size   := 11
+  else
+    Impressao.Font.Size   := 10;
+
   Impressao.TextOut(largura(93),altura(6.3+iVia),Form25.FormataCodBarra(Form25.GeraCodBarra(CodBanco)));
 
   Impressao.Font.Name   := 'Times New Roman';      // Fonte
@@ -454,7 +514,7 @@ begin
   begin
     Form25.Image7.Picture.LoadFromFile(sBanco);
 
-    if Form25.Tag = 0 then  // Impressão na impressora
+    if tipoGer = grPrint then  // Impressora
     begin
       rRect.Top     := Altura(iVia+5);
       rRect.Left    := Largura(39);
@@ -464,8 +524,8 @@ begin
     begin
       rRect.Top     := Altura(iVia+5);
       rRect.Left    := Largura(39);
-      rRect.Bottom  := 48;
-      rRect.Right   := 295;
+      rRect.Bottom  := Altura(iVia+11.6);
+      rRect.Right   := 325;
     end;
 
     Impressao.StretchDraw(rRect,Form25.Image7.Picture.Graphic);
@@ -616,12 +676,29 @@ begin
   Impressao.Font.sTyle  := [];                        // Estilo da fonte
 
   {$Region'//// Código de Barras ////'}
+  if tipoGer = grPrint then
+    Impressao.Pen.Width   := 20
+  else
+    Impressao.Pen.Width   := 10;
+
+  Impressao.Pen.Color := clWhite;
   Impressao.TextOut(largura(41),altura(060+iVia),'('+SMALL_2of5(Form25.sNumero)+')');
+
+  Impressao.MoveTo(largura(40),altura(64+iVia));
+  Impressao.Lineto(largura(142.5),altura(64+iVia));
+
   Impressao.TextOut(largura(41),altura(063+iVia),'('+SMALL_2of5(Form25.sNumero)+')');
+  Impressao.MoveTo(largura(40),altura(66.5+iVia));
+  Impressao.Lineto(largura(142.5),altura(66.5+iVia));
+
   Impressao.TextOut(largura(41),altura(65.5+iVia),'('+SMALL_2of5(Form25.sNumero)+')');
-  Impressao.Font.Name   := 'Microsoft Sans Serif';               // Fonte
-  Impressao.Font.Size   := 6;                       // Tamanho da Fonte
-  Impressao.TextOut(largura(41),altura(69+iVia),Replicate(' ',200));
+  Impressao.MoveTo(largura(40),altura(69.1+iVia));
+  Impressao.Lineto(largura(142.5),altura(69.1+iVia));
+  Impressao.MoveTo(largura(40),altura(69.6+iVia));
+  Impressao.Lineto(largura(142.5),altura(69.6+iVia));
+
+  Impressao.Pen.Color := clBlack;
+
   {$Endregion}
 
   {$Region'//// Linhas ////'}
@@ -662,8 +739,8 @@ begin
   Impressao.Lineto(largura(200-18),altura(41+iVia));
 
   // Traço que corta em frete ao Nr. do documento e carteira
-  Impressao.MoveTo(largura(62),altura(21+iVia));
-  Impressao.Lineto(largura(62),altura(31+iVia));
+  Impressao.MoveTo(largura(63),altura(21+iVia));
+  Impressao.Lineto(largura(63),altura(31+iVia));
 
   // Traço que corta em frente ao Espécie doc.
   Impressao.MoveTo(largura(88),altura(21+iVia));
@@ -713,7 +790,7 @@ begin
   begin
     Form25.Image7.Picture.LoadFromFile(sBanco);
 
-    if Form25.Tag = 0 then  // Impressão na impressora
+    if tipoGer = grPrint then  // Impressora
     begin
       rRect.Top     := Altura(iVia+5);
       rRect.Left    := Largura(0);
@@ -723,8 +800,8 @@ begin
     begin
       rRect.Top     := Altura(iVia+5);
       rRect.Left    := Largura(0);
-      rRect.Bottom  := 48;
-      rRect.Right   := 145;
+      rRect.Bottom  := Altura(iVia+11.6);
+      rRect.Right   := 160;
     end;
 
     Impressao.StretchDraw(rRect,Form25.Image7.Picture.Graphic);

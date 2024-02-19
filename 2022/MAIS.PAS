@@ -3823,24 +3823,6 @@ begin
   if (FormatSettings.DecimalSeparator <> ',') or (FormatSettings.DateSeparator <> '/') then
   {$ENDIF}
   begin
-    {
-    Application.MessageBox(Pchar('As propriedades das configurações regionais do seu sistema não estão'     + Chr(10) +
-                                 'de acordo com o padrão utilizado no Brasil.'                              + Chr(10) +
-                                 Chr(10) +
-                                 'Estas configurações regionais alteram o modo como números, moedas, datas' + Chr(10) +
-                                 'e horas são exibidos.'                                                    + Chr(10) +
-                                 Chr(10) +
-                                 'Altere estas configurações para:' + Chr(10) +
-                                 Chr(10) +
-                                 Chr(10) +
-                                 '                  Português (Brasileiro)' + Chr(10) +
-                                 Chr(10)+
-                                 'Verifique também o separador decimal, que deve ser "," e ' + chr(10)+
-                                 'o separador de data que deve ser "/".')
-
-                                 ,'Atenção',mb_Ok + MB_ICONWARNING);
-     Mauricio Parizotto 2023-10-24}
-
      MensagemSistema('As propriedades das configurações regionais do seu sistema não estão'     + Chr(10) +
                      'de acordo com o padrão utilizado no Brasil.'                              + Chr(10) +
                      Chr(10) +

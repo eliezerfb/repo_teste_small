@@ -5,7 +5,7 @@ object Form25: TForm25
   BorderStyle = bsDialog
   Caption = 'Boleto de cobran'#231'a banc'#225'ria'
   ClientHeight = 536
-  ClientWidth = 765
+  ClientWidth = 714
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,7 +21,7 @@ object Form25: TForm25
   object imgBoletoVisual: TImage
     Left = 20
     Top = 15
-    Width = 725
+    Width = 685
     Height = 460
   end
   object Image7: TImage
@@ -666,13 +666,6 @@ object Form25: TForm25
       FFFF}
     Visible = False
   end
-  object imgBoletoEnvia: TImage
-    Left = 853
-    Top = 178
-    Width = 40
-    Height = 40
-    Visible = False
-  end
   object Edit3: TEdit
     Left = 325
     Top = 140
@@ -886,7 +879,7 @@ object Form25: TForm25
       OnClick = btnImprimirTodosClick
     end
     object btnEnviaEmail: TBitBtn
-      Left = 520
+      Left = 514
       Top = 20
       Width = 80
       Height = 25
