@@ -26664,15 +26664,17 @@ var
   sBodyEmail: String;
   sFileZIP: String;
   bEnviar: Boolean;
+  {
   function TamanhoArquivo(Arquivo: string): Integer;
   begin
     with TFileStream.Create(Arquivo, fmOpenRead or fmShareExclusive) do
     try
       Result := Size;
     finally
-     Free;
+      Free;
     end;
   end;
+  }
 begin
   // Form só para pedir o período e o e-mail do contador.
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfce.ini');

@@ -546,14 +546,13 @@ var
 implementation
 
 uses AJBarcode
-  //, DelphiZXingQRCode
   ;
 
 procedure Register;
 begin
   RegisterComponents('Smallsoft', [TSmall59]);
 end;
-
+{
 function TamanhoArquivo(Arquivo: String): Integer;
 begin
   Result := 0;
@@ -570,7 +569,8 @@ begin
   except
   end;
 end;
-
+}
+{
 procedure RenameLog(Arquivo: String);
 var
   sFile: String;
@@ -584,7 +584,7 @@ begin
 
   end;
 end;
-
+}
 function UFDescricao(sCodigo: String): String;
 begin
   //Norte
