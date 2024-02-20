@@ -634,10 +634,10 @@ type
     Acertodecontasde2: TMenuItem;
     MenuItem75: TMenuItem;
     MenuItem76: TMenuItem;
-    MenuItem77: TMenuItem;
-    Ajuda6: TMenuItem;
-    N26: TMenuItem;
-    Sobreoprograma7: TMenuItem;
+    miAjudaPagar: TMenuItem;
+    miExibirAjudaPagar: TMenuItem;
+    miTermoUsoPagar: TMenuItem;
+    miSobreSistemaPagar: TMenuItem;
     ibDataSet8: TibDataSet;
     ibDataSet8HISTORICO: TIBStringField;
     ibDataSet8DOCUMENTO: TIBStringField;
@@ -1673,7 +1673,7 @@ type
     procedure miSobreSistemaEstoqueClick(Sender: TObject);
     procedure Sobreoprograma5Click(Sender: TObject);
     procedure miSobreSistemaReceberClick(Sender: TObject);
-    procedure Sobreoprograma7Click(Sender: TObject);
+    procedure miSobreSistemaPagarClick(Sender: TObject);
     procedure miSobreSistemaVendedorClick(Sender: TObject);
     procedure Sobreoprograma9Click(Sender: TObject);
     procedure miSobreSistemaPlanoContasClick(Sender: TObject);
@@ -2340,6 +2340,7 @@ type
     procedure miTermoUsoVendedorClick(Sender: TObject);
     procedure miTermoUsoPlanoContasClick(Sender: TObject);
     procedure miTermoUsoICMClick(Sender: TObject);
+    procedure miTermoUsoPagarClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -9414,7 +9415,7 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma7Click(Sender: TObject);
+procedure TForm7.miSobreSistemaPagarClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
@@ -30813,6 +30814,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoOSClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoPagarClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;
