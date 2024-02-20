@@ -11684,7 +11684,7 @@ begin
     if sTitulo = 'Cadastro dos vendedores' then
       sModulo := 'VENDEDOR'; // Não grava o Filtro registro coluna etc
 
-    if (sModulo <> 'CONFIG') and (Alltrim(sModulo)<>'') and (TabelaAberta.Active) then
+    if (sModulo <> 'CONFIG') and (Alltrim(sModulo)<>'') and (Assigned(TabelaAberta)) and (TabelaAberta.Active) then
     begin
       //Mauricio Parizotto 2023-12-04
       try
@@ -34981,7 +34981,7 @@ begin
   begin
     sAjuda := 'est_grupos.htm'; // Falta grupo
 
-    Form7.Menu         := MainMenu99;
+    Form7.Menu         := mmGrupos;
 
     ArquivoAberto   := DataSource21.Dataset;
     TabelaAberta    := ibDataSet21;
