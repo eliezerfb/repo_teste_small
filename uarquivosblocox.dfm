@@ -78,8 +78,6 @@ object FArquivosBlocoX: TFArquivosBlocoX
     ParentFont = False
     ReadOnly = True
     TabOrder = 0
-    ExplicitTop = 425
-    ExplicitWidth = 1264
   end
   object cbTipo: TComboBox
     Left = 8

@@ -385,7 +385,7 @@ begin
 
         if IBDSBLOCOX.FieldByName('TIPO').AsString = 'REDUCAO' then
         begin
-          Blocox.XmlReducaoZ(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName, FsAtual, IBDSBLOCOX.FieldByName('SERIE').AsString, IBDSBLOCOX.FieldByName('DATAREFERENCIA').AsString, True, True, True)
+          Blocox.XmlReducaoZ(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(FsAtual), AnsiString(IBDSBLOCOX.FieldByName('SERIE').AsString), AnsiString(IBDSBLOCOX.FieldByName('DATAREFERENCIA').AsString), True, True, True)
         end;
 
         if IBDSBLOCOX.FieldByName('TIPO').AsString = 'ESTOQUE' then
@@ -394,7 +394,7 @@ begin
             dtFinal   := IBDSBLOCOX.FieldByName('DATAREFERENCIA').AsDateTime;
             dtInicial := StrToDate('01/' + FormatDateTime('mm/yyyy', dtFinal));
 
-            Blocox.XmlEstoqueOmisso(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName, FsAtual, FormatDateTime('dd/mm/yyyy', dtInicial), FormatDateTime('dd/mm/yyyy', dtFinal), True, True, True, True);
+            Blocox.XmlEstoqueOmisso(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(FsAtual), AnsiString(FormatDateTime('dd/mm/yyyy', dtInicial)), AnsiString(FormatDateTime('dd/mm/yyyy', dtFinal)), True, True, True, True);
 
           except
             on E: Exception do
@@ -431,7 +431,7 @@ begin
     if AnsiContainsText(DBGrid1.DataSource.DataSet.FieldByName('XMLRESPOSTA').AsString, '<SituacaoProcessamentoCodigo>0') then // 0: Aguardando
     begin
       if DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString <> '' then
-        Blocox.ConsultarRecibo(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName, sAtual, DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString);
+        Blocox.ConsultarRecibo(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(sAtual), AnsiString(DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString));
     end;
     if bTodas then
       DBGrid1.DataSource.DataSet.Next;
@@ -1047,7 +1047,7 @@ begin
 
     if IBQBLOCOX.FieldByName('DATAREFERENCIA').AsString = '' then
     begin
-      Blocox.XmlEstoqueOmisso(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName, FsAtual, '01/' + Copy(sDtReferencia, 4, 7), sDtReferencia, True, True, True, True);
+      Blocox.XmlEstoqueOmisso(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(FsAtual), AnsiString('01/' + Copy(sDtReferencia, 4, 7)), AnsiString(sDtReferencia), True, True, True, True);
     end
     else
     begin
@@ -1099,7 +1099,7 @@ begin
       if IBQBLOCOX.FieldByName('SERIE').AsString <> '' then
         ShowMessage('XML já existe')
       else
-        Blocox.XmlReducaoZ(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName, FsAtual, sSerie, sDtReferencia, True, True, True);
+        Blocox.XmlReducaoZ(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(FsAtual), AnsiString(sSerie), AnsiString(sDtReferencia), True, True, True);
     end;
 
   except
@@ -1116,7 +1116,7 @@ end;
 procedure TFArquivosBlocoX.ConsultaPendnciaUsuriosPAF1Click(
   Sender: TObject);
 begin
-  BlocoX.ConsultarPendenciasDesenvolvedorPafEcf(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName, FsAtual);
+  BlocoX.ConsultarPendenciasDesenvolvedorPafEcf(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(FsAtual));
 end;
 
 procedure TFArquivosBlocoX.PopupMenu1Popup(Sender: TObject);
@@ -1223,7 +1223,7 @@ begin
   while True do
   begin
     if (AnsiContainsText(DBGrid1.DataSource.DataSet.FieldByName('XMLRESPOSTA').AsString, '<SituacaoProcessamentoCodigo>2') or AnsiContainsText(DBGrid1.DataSource.DataSet.FieldByName('XMLRESPOSTA').AsString, '<SituacaoProcessamentoCodigo>3')) then // 2:Erro 3:Cancelado
-      BlocoX.ReprocessarArquivoBlocoX(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName, satual, DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString);
+      BlocoX.ReprocessarArquivoBlocoX(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(satual), AnsiString(DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString));
     if bTodas then
       DBGrid1.DataSource.DataSet.Next;
 

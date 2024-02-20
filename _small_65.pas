@@ -673,7 +673,7 @@ begin
                 if FileExists(PChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) then
                 begin
                   //
-                  sXmlCancelamento := _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString)); // Sandro Silva 2020-09-03 sXmlCancelamento := _ecf65_LoadXmlDestinatario(pChar(Form1.ibDataSet150.FieldByName('NFEID').AsString));
+                  sXmlCancelamento := _ecf65_LoadXmlDestinatario(Form1.ibDataSet150.FieldByName('NFEID').AsString); // Sandro Silva 2024-02-16 sXmlCancelamento := _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString));
                   //
                 end;
               end;
@@ -4510,11 +4510,11 @@ begin
       end;
       //
       try
-        if _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString)) <> '' then
+        if _ecf65_LoadXmlDestinatario(Form1.ibDataSet150.FieldByName('NFEID').AsString) <> '' then // Sandro Silva 2024-02-16 if _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString)) <> '' then
         begin
           if (Form1.ibDataSet150.State in [dsEdit, dsInsert]) = False then
             Form1.ibDataSet150.Edit;
-          Form1.ibDataSet150.FieldByName('NFEXML').AsString := _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString));
+          Form1.ibDataSet150.FieldByName('NFEXML').AsString := _ecf65_LoadXmlDestinatario(Form1.ibDataSet150.FieldByName('NFEID').AsString); // Sandro Silva 2024-02-16 Form1.ibDataSet150.FieldByName('NFEXML').AsString := _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString));
         end;
       except
       end;

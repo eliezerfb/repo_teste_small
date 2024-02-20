@@ -114,22 +114,22 @@ type
     procedure ValidaMd5DoListaNoCriptografado;
     function VisualizaXmlBlocoX(CaminhoBanco: String;
       DiretorioAtual: String; sTipo: String): Boolean;
-    function ReprocessarArquivoBlocoX(CaminhoBanco: String;
-      DiretorioAtual: String; Recibo: String): Boolean;
-    function CancelarArquivoBlocoX(CaminhoBanco: PAnsiChar;
-      DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean;
-    function GerarAoFISCOREDUCAOZBlocox(CaminhoBanco: String;
-      DiretorioAtual: String): Boolean;
-    function GerarEstoqueAnoAnterior(CaminhoBanco: String;
-      DiretorioAtual: String): Boolean;
-    function GerarEstoqueMudancaDeTributacao(CaminhoBanco: String;
-      DiretorioAtual: String): Boolean;
-    function GerarEstoqueSuspensaoOuBaixaDeIE(CaminhoBanco: String;
-      DiretorioAtual: String): Boolean;
-    function GerarEstoqueMudancaDeRegime(CaminhoBanco: String;
-      DiretorioAtual: String): Boolean;
-    function GerarEstoqueAtual(CaminhoBanco: String;
-      DiretorioAtual: String): Boolean;
+    function ReprocessarArquivoBlocoX(CaminhoBanco: AnsiString;
+      DiretorioAtual: AnsiString; Recibo: AnsiString): Boolean;
+    function CancelarArquivoBlocoX(CaminhoBanco: AnsiString;
+      DiretorioAtual: AnsiString; Recibo: AnsiString): Boolean;
+    function GerarAoFISCOREDUCAOZBlocox(CaminhoBanco: AnsiString;
+      DiretorioAtual: AnsiString): Boolean;
+    function GerarEstoqueAnoAnterior(CaminhoBanco: AnsiString;
+      DiretorioAtual: AnsiString): Boolean;
+    function GerarEstoqueMudancaDeTributacao(CaminhoBanco: AnsiString;
+      DiretorioAtual: AnsiString): Boolean;
+    function GerarEstoqueSuspensaoOuBaixaDeIE(CaminhoBanco: AnsiString;
+      DiretorioAtual: AnsiString): Boolean;
+    function GerarEstoqueMudancaDeRegime(CaminhoBanco: AnsiString;
+      DiretorioAtual: AnsiString): Boolean;
+    function GerarEstoqueAtual(CaminhoBanco: AnsiString;
+      DiretorioAtual: AnsiString): Boolean;
   end;
 
 var
@@ -703,7 +703,7 @@ begin
   end
   else
   begin
-    Result := _IdentificaRetornosComErroTratando(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(sTipo)); // Sandro Silva 2020-06-22 Result := _IdentificaRetornosComErroTratando(PAnsiChar(CaminhoBanco), PAnsiChar(sTipo), PAnsiChar(DiretorioAtual));
+    Result := _IdentificaRetornosComErroTratando(AnsiString(CaminhoBanco), AnsiString(DiretorioAtual), AnsiString(sTipo)); // Sandro Silva 2020-06-22 Result := _IdentificaRetornosComErroTratando(AnsiString(CaminhoBanco), AnsiString(sTipo), AnsiString(DiretorioAtual));
 
   end;
 
@@ -926,7 +926,7 @@ end;
 //////////////////////////////
 
 function TSmallBlocoX.ReprocessarArquivoBlocoX(CaminhoBanco,
-  DiretorioAtual, Recibo: String): Boolean;
+  DiretorioAtual, Recibo: AnsiString): Boolean;
 begin
   if Fload = False then
   begin
@@ -962,7 +962,7 @@ begin
 end;
 
 function TSmallBlocoX.CancelarArquivoBlocoX(CaminhoBanco, DiretorioAtual,
-  Recibo: PAnsiChar): Boolean;
+  Recibo: AnsiString): Boolean;
 begin
   if Fload = False then
   begin
@@ -998,7 +998,7 @@ begin
 end;
 
 function TSmallBlocoX.GerarAoFISCOREDUCAOZBlocox(CaminhoBanco,
-  DiretorioAtual: String): Boolean;
+  DiretorioAtual: AnsiString): Boolean;
 begin
 
   if Fload = False then
@@ -1035,7 +1035,7 @@ begin
 end;
 
 function TSmallBlocoX.GerarEstoqueAnoAnterior(CaminhoBanco,
-  DiretorioAtual: String): Boolean;
+  DiretorioAtual: AnsiString): Boolean;
 // Sandro Silva 2022-11-22
 begin
 
@@ -1074,7 +1074,7 @@ begin
 end;
 
 function TSmallBlocoX.GerarEstoqueMudancaDeTributacao(CaminhoBanco,
-  DiretorioAtual: String): Boolean;
+  DiretorioAtual: AnsiString): Boolean;
 begin
 
   if Fload = False then
@@ -1112,7 +1112,7 @@ begin
 end;
 
 function TSmallBlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(CaminhoBanco,
-  DiretorioAtual: String): Boolean;
+  DiretorioAtual: AnsiString): Boolean;
 begin
 
   if Fload = False then
@@ -1150,7 +1150,7 @@ begin
 end;
 
 function TSmallBlocoX.GerarEstoqueMudancaDeRegime(CaminhoBanco,
-  DiretorioAtual: String): Boolean;
+  DiretorioAtual: AnsiString): Boolean;
 begin
 
   if Fload = False then
@@ -1188,7 +1188,7 @@ begin
 end;
 
 function TSmallBlocoX.GerarEstoqueAtual(CaminhoBanco,
-  DiretorioAtual: String): Boolean;
+  DiretorioAtual: AnsiString): Boolean;
 begin
 
   if Fload = False then

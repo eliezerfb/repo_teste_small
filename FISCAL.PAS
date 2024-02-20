@@ -6644,6 +6644,7 @@ end;
 function LeArquivoPorFileStream(sArquivo: String): String;
 // Sandro Silva 2020-09-03
 // Lê o conteúdo do arquivo através de Stream
+{
 var
   FileStream: TFileStream;
   MyString: String;
@@ -6660,11 +6661,25 @@ begin
 
   end;
   FreeAndNil(FileStream);
+}
+var
+  FileStream: TStreamReader;
+  MyString: String;
+begin
+  Result := '';
+  FileStream := TStreamReader.Create(sArquivo, TEncoding.ANSI); // Abre o arquivo para leitura
+  try
+    Result := FileStream.ReadToEnd();
+  except
+
+  end;
+  FreeAndNil(FileStream);
 end;
 
 procedure GravaArquivoPorFileStream(sArquivo: String; sAssinatura: String);
 // Sandro Silva 2020-09-03
 // Grava o conteúdo do arquivo através de Stream
+{
 var
   MyString: String;
   FileStream: TFileStream;
@@ -6673,6 +6688,19 @@ begin
   FileStream := TFileStream.Create(sArquivo, fmCreate or fmOpenWrite or fmShareDenyNone); // Abre o arquivo para leitura e gravação
   try
     FileStream.WriteBuffer(MyString[1], Length(MyString));
+  except
+  end;
+  FreeAndNil(FileStream);
+}
+var
+  MyString: String;
+  FileStream: TStreamWriter;
+begin
+  MyString   := LeArquivoPorFileStream(sArquivo) + sAssinatura;
+  FileStream := TStreamWriter.Create(sArquivo, false, TEncoding.ANSI);
+  try
+    FileStream.WriteLine;
+    FileStream.WriteLine(MyString);
   except
   end;
   FreeAndNil(FileStream);
@@ -6769,7 +6797,7 @@ begin
           end
           else
           begin
-            AssignFile(FileSign, sArquivo1);
+            AssignFile(FileSign, sArquivo1); // 2024-02-16 AssignFile(FileSign, PAnsiChar(sArquivo1));
             Append(FileSign);
             Writeln(FileSign, sEAD);
             CloseFile(FileSign);                            // Fecha o arquivo
@@ -23924,7 +23952,7 @@ begin
 
     BlocoXSelecionaCertificadoDigital;
 
-    if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-13 if _BlocoX.ValidaCertificadoDigital(PAnsiChar(Form1.IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual)) = False then
+    if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then  // Sandro Silva 2024-02-16 if _BlocoX.ValidaCertificadoDigital(PAnsiChar(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString))) = False then
     begin
       MensagemAlertaCertificado;
     end;
@@ -28440,6 +28468,7 @@ begin
 
           end;
 
+          //2024-02-16 _BlocoX.XmlReducaoZ(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar(SerieECF), PAnsiChar(IBQREDUCAO.FieldByName('DATA').AsString), True, True, True);
           _BlocoX.XmlReducaoZ(IBDatabase1.DatabaseName, Form1.sAtual, SerieECF, IBQREDUCAO.FieldByName('DATA').AsString, True, True, True);
 
         end;
@@ -28616,6 +28645,7 @@ begin
 
   if bOk then
   begin
+    //2024-02-16 _BlocoX.IdentificaRetornosComErroTratandoTodos(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar('ESTOQUE'));
     _BlocoX.IdentificaRetornosComErroTratandoTodos(IBDatabase1.DatabaseName, Form1.sAtual, 'ESTOQUE');
 
     Form1.Display('Aguarde... REQUISITO LIX - Consultando','Aguarde... REQUISITO LIX - Consultando'); // Sandro Silva 2018-11-27
@@ -28673,6 +28703,7 @@ begin
 
 //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
 
+      // 2024-02-16 _BlocoX.ConsultarRecibo(PAnsiChar(Form1.IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), '');
       _BlocoX.ConsultarRecibo(Form1.IBDatabase1.DatabaseName, Form1.sAtual, '');
     end;
 
@@ -28701,6 +28732,7 @@ begin
 
   if bOk then
   begin
+    //2024-02-16 _BlocoX.IdentificaRetornosComErroTratandoTodos(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar('REDUCAO'));
     _BlocoX.IdentificaRetornosComErroTratandoTodos(IBDatabase1.DatabaseName, Form1.sAtual, 'REDUCAO');
 
     Form1.BlocoxConsultarRecibo1;
@@ -29971,6 +30003,7 @@ begin
       or (AnsiContainsText(sTipo, 'ESTOQUE')) then
     begin
       try
+        // 2024-02-16 _BlocoX.RestaurarArquivosXML(PAnsiChar(Form1.IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar(sTipo), PAnsiChar(sSerieECF), bApenasUltimo);
         _BlocoX.RestaurarArquivosXML(Form1.IBDatabase1.DatabaseName, Form1.sAtual, sTipo, sSerieECF, bApenasUltimo);
       except
       end;
@@ -33705,7 +33738,8 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarAoFISCOREDUCAOZBlocox(IBDatabase1.DatabaseName, Form1.sAtual);
+    // 2024-02-16 _BlocoX.GerarAoFISCOREDUCAOZBlocox(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+    _BlocoX.GerarAoFISCOREDUCAOZBlocox(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
 
     Commitatudo2(True); // EnvioaoFISCOESTOQUEClick 2017-03-22
     CommitaTudo(True);// EnvioaoFISCOESTOQUEClick 2017-03-22
@@ -33765,7 +33799,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueAnoAnterior(IBDatabase1.DatabaseName, Form1.sAtual);
+    _BlocoX.GerarEstoqueAnoAnterior(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33794,7 +33828,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueMudancaDeTributacao(IBDatabase1.DatabaseName, Form1.sAtual);
+    _BlocoX.GerarEstoqueMudancaDeTributacao(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33823,7 +33857,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(IBDatabase1.DatabaseName, Form1.sAtual);
+    _BlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33853,7 +33887,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueMudancaDeRegime(IBDatabase1.DatabaseName, Form1.sAtual);
+    _BlocoX.GerarEstoqueMudancaDeRegime(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33883,7 +33917,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueAtual(IBDatabase1.DatabaseName, Form1.sAtual);
+    _BlocoX.GerarEstoqueAtual(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
