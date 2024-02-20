@@ -382,6 +382,7 @@ begin
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '353' then MaskEdit45.Text := '9ccccccc0000nnnnnnnnd0kkk';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '041' then MaskEdit45.Text := '21aaaacccccccnnnnnnnn40bb';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '341' then MaskEdit45.Text := 'KKKNNNNNNNNmAAAACCCCCC000';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '077' then MaskEdit45.Text := 'AAAAKKKXXXXXXXNNNNNNNNNNN'; // Mauricio Parizotto 2024-02-19
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '409' then MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '136' then MaskEdit45.Text := 'AAAACCCCCCCCCCNNNNNNNNNNN'; // Mauricio Parizotto 2023-12-07
 
@@ -398,6 +399,7 @@ begin
       if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Santander');
       if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Banrisul');
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Itaú');
+      if Form26.MaskEdit45.Text = 'AAAAKKKXXXXXXXNNNNNNNNNNN' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Inter'); //Mauricio Parizotto 2024-02-19
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Unibanco');
       if Form26.MaskEdit45.Text = 'AAAACCCCCCCCCCNNNNNNNNNNN' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Unicred'); // Mauricio Parizotto 2023-12-07
     end;
@@ -506,6 +508,14 @@ begin
     //chkCNAB240.Checked := False;
     chkCNAB400.Enabled := True;
     chkCNAB240.Enabled := True;
+  end;
+
+  //Mauricio Parizotto 2024-02-19
+  if cboBancos.Text = 'Inter' then
+  begin
+    MaskEdit45.Text := 'AAAAKKKXXXXXXXNNNNNNNNNNN';
+    chkCNAB400.Checked := False;
+    chkCNAB240.Checked := True;
   end;
 
   if cboBancos.Text = 'Unibanco' then

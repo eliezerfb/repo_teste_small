@@ -1059,6 +1059,7 @@ begin
       if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Santander');
       if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banrisul');
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Itaú');
+      if Form26.MaskEdit45.Text = 'AAAAKKKXXXXXXXNNNNNNNNNNN' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Inter');
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unibanco');
       if Form26.MaskEdit45.Text = 'AAAACCCCCCCCCCNNNNNNNNNNN' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unicred'); //Mauricio Parizotto 202-12-07
 

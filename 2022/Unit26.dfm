@@ -1638,6 +1638,7 @@ object Form26: TForm26
         'Bradesco'
         'Caixa Econ'#244'mica'
         'Ita'#250
+        'Inter'
         'Santander'
         'SICOOB'
         'SICREDI'

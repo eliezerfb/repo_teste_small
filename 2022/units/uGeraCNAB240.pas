@@ -16,12 +16,17 @@ type TBanco = (bOutro
               , bItau
               , bSicoob
               , bAilos
-              , bUnicred);
+              , bUnicred
+              , bInter);
 
   procedure GeraCNAB240;
   procedure GeraCNAB240SegmentoR(var F: TextFile; iReg : integer; sComandoMovimento : string; Banco : TBanco);
 
   procedure GeraCNAB240SegmentoHeaderL_Unicred(var F: TextFile; iReg : integer; sComandoMovimento : string;
+        sLayoutdoLote, sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento, sEspecieDoTitulo, sCodigoDoconvenio,
+        sNumeroContratoOP : string;
+        iRemessa : integer);
+  procedure GeraCNAB240SegmentoHeaderL_Inter(var F: TextFile; iReg : integer; sComandoMovimento : string;
         sLayoutdoLote, sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento, sEspecieDoTitulo, sCodigoDoconvenio,
         sNumeroContratoOP : string;
         iRemessa : integer);
@@ -72,6 +77,7 @@ var
   ValorJuros : Real;
 begin
   try
+    {$Region'//// Inicializa ////'}
     try
       ForceDirectories(pchar(Form1.sAtual + '\remessa'));
     except
@@ -93,6 +99,12 @@ begin
     if CodBanco = '136' then
       Banco := bUnicred;
 
+    if CodBanco = '077' then
+      Banco := bInter;
+
+    {$Endregion}
+
+
     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '748' then
     begin
       // SICREDI
@@ -113,7 +125,7 @@ begin
     AssignFile(F,Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa);
     Rewrite(F);   // Abre para gravação
 
-    // Criar um generator para cada banco
+    {$Region'//// Criar um generator para cada banco ////'}
     try
       try
         Form7.ibDataset99.Close;
@@ -141,15 +153,18 @@ begin
     except
       iRemessa := 1
     end;
+    {$Endregion}
 
     // Zerezima
     iReg    := 2;
     vTotal  := 0;
     iLote   := 1;
 
+    //Define Variáveis
+
+    {$Region'//// BANCO DO BRASIL ////'}
     if CodBanco = '001' then
     begin
-      // BANCO DO BRASIL
       if Pos('-',Form26.MaskEdit44.Text) = 0 then ShowMessage('Configure o código da agência 0000-0');
       if Pos('-',Form26.MaskEdit46.Text) = 0 then ShowMessage('Configure o Número da Código do Cedente 00000-0');
       if Pos('/',Form26.MaskEdit43.Text) = 0 then ShowMessage('Configure a carteira/variação 00/000');
@@ -173,10 +188,11 @@ begin
       sAvisoDebitoAuto       := '2';
       sNumeroContratoOP      := '0000000000';
     end;
+    {$Endregion}
 
+    {$Region'//// SICOOB ////'}
     if Banco = bSicoob then
     begin
-      // SICOOB
       sNomeDoBanco           := 'SICOOB';
       sCodigoDoConvenio      := Copy(Replicate(' ',20),1,20);
       sLayoutArquivo         := '081';
@@ -196,10 +212,11 @@ begin
       sAvisoDebitoAuto       := '0';
       sNumeroContratoOP      := '0000000000';
     end;
+    {$Endregion}
 
+    {$Region'//// SICREDI ////'}
     if CodBanco = '748' then
     begin
-      // SICREDI
       sNomeDoBanco           := 'SICREDI';
       sCodigoDoConvenio      := Copy(Replicate(' ',20),1,20);
       sLayoutArquivo         := '081';
@@ -219,10 +236,11 @@ begin
       sAvisoDebitoAuto       := '2';
       sNumeroContratoOP      := '0000000000';
     end;
+    {$Endregion}
 
+    {$Region'//// AILOS ////'}
     if Banco = bAilos then
     begin
-      // AILOS
       sNomeDoBanco           := 'AILOS';
       sCodigoDoConvenio      := Copy(AllTrim(Form26.MaskEdit50.Text)+REplicate(' ',20),1,20);
       sLayoutArquivo         := '087';
@@ -242,10 +260,11 @@ begin
       sAvisoDebitoAuto       := '2';
       sNumeroContratoOP      := '0000000000';
     end;
+    {$Endregion}
 
+    {$Region'//// ITAÚ ////'}
     if Banco = bItau then
     begin
-      // ITAÚ
       sNomeDoBanco           := 'BANCO ITAU SA';
       sCodigoDoConvenio      := REplicate(' ',20);
       sLayoutArquivo         := '040';
@@ -284,10 +303,11 @@ begin
       sAvisoDebitoAuto       := '0';
       sNumeroContratoOP      := '0000000000';
     end;
+    {$Endregion}
 
+    {$Region'//// Banrisul ////'}
     if CodBanco = '041' then
     begin
-      // Banrisul
       sNomeDoBanco           := 'BANRISUL';
       sCodigoDoConvenio      := Copy(AllTrim(Form26.MaskEdit50.Text)+REplicate(' ',20),1,20);
       sLayoutArquivo         := '103';
@@ -326,10 +346,11 @@ begin
       sAvisoDebitoAuto       := '2';
       sNumeroContratoOP      := '0000805076';
     end;
+    {$Endregion}
 
+    {$Region'//// Unicred ////'}
     if Banco = bUnicred then
     begin
-      // Unicred
       sNomeDoBanco           := 'UNICRED DO BRASIL';
       sCodigoDoConvenio      := Replicate(' ',20);
       sLayoutArquivo         := '085';
@@ -371,7 +392,33 @@ begin
       sAvisoDebitoAuto       := '2';
       sNumeroContratoOP      := '0000000000';
     end;
+    {$Endregion}
 
+    {$Region'//// INTER ////'}
+    if Banco = bInter then
+    begin
+      sNomeDoBanco           := 'BANCO INTER';
+      sCodigoDoConvenio      := Copy(StrZero(StrToInt('0'+LimpaNumero(Form26.MaskEdit50.Text)),9,0),1,9)+'0014'+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',1,2)+Copy(AllTrim(Form26.MaskEdit43.Text)+'00/000',4,3)+'  ';
+      sLayoutArquivo         := '107';
+      sDensidade             := '01600';
+      sLayoutdoLote          := '046';
+      sAgencia               := '00001';
+      sDVDaAgencia           := '9';
+      sNumeroContaCorrente   := Right('000000000000'+Copy(Form26.MaskEdit46.Text,1,Pos('-',Form26.MaskEdit46.Text)-1),12);
+      sDigitocontacorrente   := Copy(Right(Replicate(' ',13)+Form26.MaskEdit46.Text,1),1,1);
+      sCodigoDaCarteira      := '7';
+      sFormaDeCadastrar      := '1';
+      sTipoDocumento         := '1';
+      sEspecieDoTitulo       := '02';
+      sNumeroDeDiasParaBaixa := '   ';
+      sCodigoParaBaixa       := '0';
+      sDigitoAgencia         := ' ';
+      sAvisoDebitoAuto       := '2';
+      sNumeroContratoOP      := '0000000000';
+    end;
+    {$Endregion}
+
+    {$Region'//// PADRAO CNAB ////'}
     if sNomeDoBanco = '' then
     begin
       sNomeDoBanco           := 'BANCO PADRAO CNAB';
@@ -393,11 +440,12 @@ begin
       sAvisoDebitoAuto       := '2';
       sNumeroContratoOP      := '0000000000';
     end;
+    {$Endregion}
 
 
     try
+      {$Region'//// HEADER ARQUIVO ////'}
       // Registro Header de Arquivo (Tipo = 0)
-      // Banco do Brasil  HEADER
       WriteLn(F,Copy(AllTrim(Form26.MaskEdit42.Text),1,3)                                         + // 001 a 003 (003) Código do Banco na Compensação
         '0000'                                                                                    + // 004 a 007 (004) Lote de Serviço
         '0'                                                                                       + // 008 a 008 (001) Tipo de Registro "0" header
@@ -405,11 +453,8 @@ begin
         Copy('2',1,1)                                                                             + // 018 a 018 (001) Tipo de Inscrição da Empresa
         Copy(Right(Replicate('0',14)+LimpaNumero(Form7.IBDataSet13CGC.AsString),14),1,014)        + // 019 a 032 (014) Número de Inscrição da Empresa
         copy(sCodigoDoconvenio,1,20)                                                              + // 033 a 052 (020) Código do Convênio no Banco
-        Copy('0'+Copy(sAgencia+'0000-0',1,4),1,5)                                                 + // 053 a 057 (005) Agência Mantenedora da Conta
+        Copy('0'+Copy(sAgencia+'0000',1,4),1,5)                                                   + // 053 a 057 (005) Agência Mantenedora da Conta
         Copy(sDVdaAgencia,1,1)                                                                    + // 058 a 058 (001) Dígito Verificador da Agência
-        //Copy(sNumeroContaCorrente,1,12)                                                           + // 059 a 070 (012) Número da Conta Corrente
-        //Copy(sDigitocontacorrente,1,1)                                                            + // 071 a 071 (001) Dígito Verificador da Conta
-        //Copy(sDigitoAgencia,1,1)                                                                  + // 072 a 072 (001) Dígito Verificador da Ag/Conta
 
         IfThen(Banco <> bUnicred,
               Copy(sNumeroContaCorrente,1,12)                                                      + // 059 a 070 (012) Número da Conta Corrente
@@ -437,9 +482,12 @@ begin
         Copy(Replicate(' ',29),1,29)                                                                // 212 a 240 (029) Uso Exclusivo FEBRABAN / CNAB
         );
 
-      if Banco <> bUnicred then
+      {$Endregion}
+
+      {$Region'//// HEADER DE LOTE ////'}
+      if (Banco <> bUnicred)
+        and (Banco <> bInter)  then
       begin
-        // Registro Header de Lote (Tipo = 1)
         WriteLn(F,Copy(AllTrim(Form26.MaskEdit42.Text),1,3)                                         + // 001 a 003 (003) Código do Banco na Compensação
         '0001'                                                                                    + // 004 a 007 (004) Lote de Serviço
         '1'                                                                                       + // 008 a 008 (001) Tipo de Registro
@@ -464,16 +512,27 @@ begin
         Copy('00000000',1,8)                                                                      + // 200 a 207 (008) Data do Crédito
         Copy(Replicate(' ',33),1,33)                                                              // 208 a 240 (033) Uso Exclusivo FEBRABAN / CNAB Mauricio Parizotto 2023-12-08
         );
-      end else
+      end;
+
+      if Banco = bUnicred then
       begin
         GeraCNAB240SegmentoHeaderL_Unicred(F, iReg, sComandoMovimento, sLayoutdoLote, sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento, sEspecieDoTitulo, sCodigoDoconvenio,
                                            sNumeroContratoOP,
                                            iRemessa);
       end;
+
+      //Mauricio Parizotto 2024-02-20
+      if Banco = bInter then
+      begin
+        GeraCNAB240SegmentoHeaderL_Inter(F, iReg, sComandoMovimento, sLayoutdoLote, sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento, sEspecieDoTitulo, sCodigoDoconvenio,
+                                           sNumeroContratoOP,
+                                           iRemessa);
+      end;
+
+      {$Endregion}
     except
       on E: Exception do
       begin
-        //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING);
         MensagemSistema(E.Message,msgErro);
       end;
     end;
@@ -921,6 +980,37 @@ begin
         'R'                                                                                       + // 009 a 009 (001) Tipo de Operação
         '01'                                                                                      + // 010 a 011 (002) Tipo de Serviço
         Replicate(' ',002)                                                                        + // 012 a 013 (002) Uso Exclusivo da FEBRABAN/CNAB
+        Copy(sLayoutdoLote,1,3)                                                                   + // 014 a 016 (003) Nº da Versão do Layout do Lote
+        ' '                                                                                       + // 017 a 017 (001) Uso Exclusivo da FEBRABAN/CNAB
+        Copy('2',1,1)                                                                             + // 018 a 018 (001) Tipo de Inscrição da Empresa
+        Copy(Right(Replicate('0',15)+LimpaNumero(Form7.IBDataSet13CGC.AsString),15),1,015)        + // 019 a 033 (015) Número de Inscrição da Empresa
+        copy(sCodigoDoconvenio,1,20)                                                              + // 034 a 053 (020) Código do Convênio no Banco
+        Copy('0'+sAgencia,1,5)                                                                    + // 054 a 058 (005) Agência Mantenedora da Conta
+        Copy(sDVdaAgencia,1,1)                                                                    + // 059 a 059 (001) Dígito Verificador da Agência
+        '0'+ sNumeroContaCorrente + Copy(sDigitocontacorrente,1,1)                                + // 060 a 073 (014) Número da Conta Corrente
+        Copy(UpperCase(Form7.IbDataSet13NOME.AsString)+Replicate(' ',30),1,030)                   + // 074 a 103 (030) Nome da Empresa
+        Replicate(' ',40)                                                                         + // 104 a 143 (040) Mensagem 1
+        Replicate(' ',40)                                                                         + // 144 a 183 (040) Mensagem 2
+        Copy(StrZero(iRemessa,8,0),1,008)                                                         + // 184 a 191 (008) Número Remessa/Retorno
+        Copy(Copy(DateToStr(Date),1,2)+Copy(DateToStr(Date),4,2)+Copy(DateToStr(Date),7,4),1,008) + // 192 a 199 (008) Data de Gravação Remessa/Retorno
+        Copy('00000000',1,8)                                                                      + // 200 a 207 (008) Data do Crédito
+        Replicate('0',2)                                                                          + // 208 a 209 (002) Files
+        Replicate(' ',31)                                                                           // 210 a 240 (031) Uso Exclusivo FEBRABAN / CNAB
+        );
+end;
+
+procedure GeraCNAB240SegmentoHeaderL_Inter(var F: TextFile; iReg : integer; sComandoMovimento : string;
+        sLayoutdoLote, sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento, sEspecieDoTitulo, sCodigoDoconvenio,
+        sNumeroContratoOP : string;
+        iRemessa : integer);
+begin
+  // Registro Header de Lote (Tipo = 1)
+  WriteLn(F,'077'                                                                                 + // 001 a 003 (003) Código do Banco na Compensação
+        '0001'                                                                                    + // 004 a 007 (004) Lote de Serviço
+        '1'                                                                                       + // 008 a 008 (001) Tipo de Registro
+        'C'                                                                                       + // 009 a 009 (001) Tipo de Operação
+        '03'                                                                                      + // 010 a 011 (002) Tipo de Serviço
+        '11'                                                                                      + // 012 a 013 (002) Forma de Lançamento
         Copy(sLayoutdoLote,1,3)                                                                   + // 014 a 016 (003) Nº da Versão do Layout do Lote
         ' '                                                                                       + // 017 a 017 (001) Uso Exclusivo da FEBRABAN/CNAB
         Copy('2',1,1)                                                                             + // 018 a 018 (001) Tipo de Inscrição da Empresa
