@@ -11211,7 +11211,6 @@ object Form7: TForm7
     Top = 334
     object Arquivos1: TMenuItem
       Caption = '&Arquivo'
-      OnClick = Arquivos1Click
       object FluxodeCaixa1: TMenuItem
         Caption = '&Imprimir'
         OnClick = imgImprimirClick
@@ -11226,6 +11225,7 @@ object Form7: TForm7
     end
     object miRelatoriosCaixa: TMenuItem
       Caption = '&Relat'#243'rios'
+      OnClick = miRelatoriosCaixaClick
       object Caixa1: TMenuItem
         Caption = 'Caixa'
         OnClick = Caixa1Click
@@ -12912,6 +12912,7 @@ object Form7: TForm7
     end
     object miRelatoriosClifor: TMenuItem
       Caption = '&Relat'#243'rios'
+      OnClick = miRelatoriosCliforClick
       object Histrico1: TMenuItem
         Caption = 'Hist'#243'rico de:'
         OnClick = Histrico1Click

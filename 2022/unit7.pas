@@ -1749,7 +1749,6 @@ type
     procedure ibDataSet4REFERENCIASetText(Sender: TField; const Text: String);
     procedure ibDataSet12NewRecord(DataSet: TDataSet);
     procedure ibDataSet3NewRecord(DataSet: TDataSet);
-    procedure Arquivos1Click(Sender: TObject);
     procedure Caixa1Click(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -2381,6 +2380,8 @@ type
     procedure miTermoUsoServicoClick(Sender: TObject);
     procedure miTermoUsoOrcamentoClick(Sender: TObject);
     procedure miTermoUsoGrupoClick(Sender: TObject);
+    procedure miRelatoriosCliforClick(Sender: TObject);
+    procedure miRelatoriosCaixaClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -12124,11 +12125,6 @@ begin
   ibDataSet2.Append;
 end;
 
-procedure TForm7.Arquivos1Click(Sender: TObject);
-begin
-  Caixa1.Caption := 'Caixa do dia '+DateTimeToStr(Form7.ibDataSet1DATA.AsDateTime);
-end;
-
 procedure TForm7.Caixa1Click(Sender: TObject);
 var
   dData : TDateTime;
@@ -12854,10 +12850,6 @@ begin
   if LimpaNumero(ibDataSet2WHATSAPP.AsString) = '' then Enviartorpedo1.Enabled := False else Enviartorpedo1.Enabled := True;
   //
   Emailpara1.Caption        := 'Enviar um e-mail para: '+Alltrim(ibDataSet2NOME.AsString);
-  Histrico1.Caption         := 'Histórico de: '+Alltrim(ibDataSet2NOME.AsString);
-  VendasPara.Caption        := 'Vendas para: '+Alltrim(ibDataSet2NOME.AsString);
-  Resumodevendas1.Caption   := 'Resumo das vendas para: '+Alltrim(ibDataSet2NOME.AsString);
-  Resumodascomrpas1.Caption := 'Resumo das compras de: '+Alltrim(ibDataSet2NOME.AsString);
   //
   if ( Pos('@',ibDataSet2EMAIL.AsString) = 0) then Emailpara1.Enabled := False else Emailpara1.Enabled := True;
   if AllTrim(sWhere) = '' then
@@ -30746,6 +30738,19 @@ begin
   Mais1Ini.Free;
   //
   //sSerieNFSelecionada := '920';
+end;
+
+procedure TForm7.miRelatoriosCaixaClick(Sender: TObject);
+begin
+  Caixa1.Caption := 'Caixa do dia '+DateTimeToStr(Form7.ibDataSet1DATA.AsDateTime);
+end;
+
+procedure TForm7.miRelatoriosCliforClick(Sender: TObject);
+begin
+  Histrico1.Caption         := 'Histórico de: '+Alltrim(ibDataSet2NOME.AsString);
+  VendasPara.Caption        := 'Vendas para: '+Alltrim(ibDataSet2NOME.AsString);
+  Resumodevendas1.Caption   := 'Resumo das vendas para: '+Alltrim(ibDataSet2NOME.AsString);
+  Resumodascomrpas1.Caption := 'Resumo das compras de: '+Alltrim(ibDataSet2NOME.AsString);
 end;
 
 procedure TForm7.miRelCompRestICMSClick(Sender: TObject);
