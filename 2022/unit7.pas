@@ -1569,10 +1569,10 @@ type
     MenuItem201: TMenuItem;
     MenuItem202: TMenuItem;
     MenuItem203: TMenuItem;
-    MenuItem204: TMenuItem;
-    MenuItem213: TMenuItem;
-    MenuItem214: TMenuItem;
-    MenuItem215: TMenuItem;
+    miAjudaParamTributa: TMenuItem;
+    miExibirAjudaParamTributa: TMenuItem;
+    miTermoUsoParamTributa: TMenuItem;
+    miSobreSistemaParamTributa: TMenuItem;
     ibdParametroTributa: TIBDataSet;
     ibdParametroTributaIDPARAMETROTRIBUTACAO: TIntegerField;
     ibdParametroTributaCFOP_ENTRADA: TIBStringField;
@@ -2352,6 +2352,7 @@ type
     procedure miTermoUsoBancoClick(Sender: TObject);
     procedure miTermoUsoConvCFOPClick(Sender: TObject);
     procedure miTermoUsoPerfilTribClick(Sender: TObject);
+    procedure miTermoUsoParamTributaClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -30840,6 +30841,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoPagarClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoParamTributaClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;
