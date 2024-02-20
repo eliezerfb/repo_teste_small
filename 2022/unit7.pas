@@ -568,10 +568,10 @@ type
     MenuItem94: TMenuItem;
     MenuItem97: TMenuItem;
     MenuItem98: TMenuItem;
-    MenuItem99: TMenuItem;
-    MenuItem122: TMenuItem;
-    MenuItem125: TMenuItem;
-    MenuItem126: TMenuItem;
+    miAjudaTransport: TMenuItem;
+    miExibirAjudaTransport: TMenuItem;
+    miTermoUsoTransport: TMenuItem;
+    miSobreSistemaTransport: TMenuItem;
     Image24: TImage;
     ibDataSet18EMAIL: TIBStringField;
     ibDataSet13EMAIL: TIBStringField;
@@ -1640,6 +1640,7 @@ type
     Relatrios1: TMenuItem;
     Relatrios2: TMenuItem;
     Relatrios3: TMenuItem;
+    RElatrios4: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2341,6 +2342,7 @@ type
     procedure miTermoUsoPlanoContasClick(Sender: TObject);
     procedure miTermoUsoICMClick(Sender: TObject);
     procedure miTermoUsoPagarClick(Sender: TObject);
+    procedure miTermoUsoTransportClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -30829,6 +30831,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoReceberClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoTransportClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;
