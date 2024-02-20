@@ -1638,6 +1638,7 @@ type
     miRelatoriosCaixa: TMenuItem;
     miRelatoriosClifor: TMenuItem;
     miRelatoriosEstoque: TMenuItem;
+    miExcluirOS: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2333,6 +2334,7 @@ type
     procedure miTermoUsoCaixaClick(Sender: TObject);
     procedure miTermoUsoCliforClick(Sender: TObject);
     procedure miTermoUsoEstoqueClick(Sender: TObject);
+    procedure miExcluirOSClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -9375,6 +9377,11 @@ end;
 procedure TForm7.miSobreSistemaClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
+end;
+
+procedure TForm7.miExcluirOSClick(Sender: TObject);
+begin
+  ExcluirOS;
 end;
 
 procedure TForm7.miExibirAjudaCaixaClick(Sender: TObject);

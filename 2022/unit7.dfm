@@ -19504,6 +19504,10 @@ object Form7: TForm7
         Caption = '&Alterar'
         OnClick = Image106Click
       end
+      object miExcluirOS: TMenuItem
+        Caption = 'E&xcluir'
+        OnClick = miExcluirOSClick
+      end
     end
     object MenuItem146: TMenuItem
       Caption = 'E&xibir'
