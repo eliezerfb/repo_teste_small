@@ -1520,10 +1520,10 @@ type
     MenuItem187: TMenuItem;
     MenuItem188: TMenuItem;
     MenuItem189: TMenuItem;
-    MenuItem190: TMenuItem;
-    MenuItem191: TMenuItem;
-    MenuItem192: TMenuItem;
-    MenuItem193: TMenuItem;
+    miAjudaPerfilTrib: TMenuItem;
+    miExibirAjudaPerfilTrib: TMenuItem;
+    miTermoUsoPerfilTrib: TMenuItem;
+    miSobreSistemaPerfilTrib: TMenuItem;
     DSPerfilTributa: TDataSource;
     ibdPerfilTributa: TIBDataSet;
     ibdPerfilTributaIDPERFILTRIBUTACAO: TIntegerField;
@@ -2351,6 +2351,7 @@ type
     procedure Relatrios5Click(Sender: TObject);
     procedure miTermoUsoBancoClick(Sender: TObject);
     procedure miTermoUsoConvCFOPClick(Sender: TObject);
+    procedure miTermoUsoPerfilTribClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -30839,6 +30840,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoPagarClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoPerfilTribClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;
