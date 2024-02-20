@@ -174,7 +174,7 @@ type
     MenuItem41: TMenuItem;
     MenuItem42: TMenuItem;
     MenuItem43: TMenuItem;
-    MenuItem44: TMenuItem;
+    miAjudaBanco: TMenuItem;
     mmReceber: TMainMenu;
     MenuItem56: TMenuItem;
     MenuItem57: TMenuItem;
@@ -282,14 +282,14 @@ type
     miTermoUsoClifor: TMenuItem;
     miSobreSistemaClifor: TMenuItem;
     miExibirAjudaEstoque: TMenuItem;
-    ApplicationHelpContext11: TMenuItem;
+    miExibirAjudaBanco: TMenuItem;
     miExibirAjudaReceber: TMenuItem;
     miExibirAjudaVendedor: TMenuItem;
     miExibirAjudaPlanoContas: TMenuItem;
     miTermoUsoEstoque: TMenuItem;
     miSobreSistemaEstoque: TMenuItem;
-    N32: TMenuItem;
-    Sobreoprograma5: TMenuItem;
+    miTermoUsoBanco: TMenuItem;
+    miSobreSistemaBanco: TMenuItem;
     miTermoUsoReceber: TMenuItem;
     miSobreSistemaReceber: TMenuItem;
     miTermoUsoVendedor: TMenuItem;
@@ -1677,7 +1677,7 @@ type
     procedure miExibirAjudaCaixaClick(Sender: TObject);
     procedure Sobreoprograma3Click(Sender: TObject);
     procedure miSobreSistemaEstoqueClick(Sender: TObject);
-    procedure Sobreoprograma5Click(Sender: TObject);
+    procedure miSobreSistemaBancoClick(Sender: TObject);
     procedure miSobreSistemaReceberClick(Sender: TObject);
     procedure miSobreSistemaPagarClick(Sender: TObject);
     procedure miSobreSistemaVendedorClick(Sender: TObject);
@@ -2349,6 +2349,7 @@ type
     procedure miTermoUsoTransportClick(Sender: TObject);
     procedure miTermoUsoConvenioClick(Sender: TObject);
     procedure Relatrios5Click(Sender: TObject);
+    procedure miTermoUsoBancoClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -9413,7 +9414,7 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma5Click(Sender: TObject);
+procedure TForm7.miSobreSistemaBancoClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
@@ -30789,6 +30790,11 @@ begin
   end;
   }
   //
+end;
+
+procedure TForm7.miTermoUsoBancoClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
 end;
 
 procedure TForm7.miTermoUsoCaixaClick(Sender: TObject);

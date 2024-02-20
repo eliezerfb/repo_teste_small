@@ -13378,11 +13378,11 @@ object Form7: TForm7
         Caption = '-'
       end
       object MenuItem35: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object Imprimircheque1: TMenuItem
-        Caption = 'Imprimir &cheque...'
+        Caption = 'Imprimir &cheque'
         OnClick = Imprimircheque1Click
       end
       object MenuItem36: TMenuItem
@@ -13397,17 +13397,17 @@ object Form7: TForm7
       end
     end
     object MenuItem38: TMenuItem
-      Caption = '&Edita'
+      Caption = '&Editar'
       object MenuItem39: TMenuItem
-        Caption = '&Novo...'
+        Caption = '&Novo'
         OnClick = Image101Click
       end
       object MenuItem40: TMenuItem
-        Caption = '&Alterar...'
+        Caption = '&Alterar'
         OnClick = Image106Click
       end
       object MenuItem41: TMenuItem
-        Caption = 'E&xcluir...'
+        Caption = 'E&xcluir'
         OnClick = Image102Click
       end
     end
@@ -13427,25 +13427,26 @@ object Form7: TForm7
       end
     end
     object MenuItem42: TMenuItem
-      Caption = '&Procura'
+      Caption = '&Procurar'
       OnClick = Image103Click
     end
     object MenuItem43: TMenuItem
-      Caption = '&Caractere'
+      Caption = '&Fonte'
       OnClick = Image6Click
     end
-    object MenuItem44: TMenuItem
-      Caption = '?'
-      object ApplicationHelpContext11: TMenuItem
-        Caption = 'Ajuda'
+    object miAjudaBanco: TMenuItem
+      Caption = 'Ajuda'
+      object miExibirAjudaBanco: TMenuItem
+        Caption = 'Exibir ajuda'
         OnClick = miExibirAjudaCaixaClick
       end
-      object N32: TMenuItem
-        Caption = '-'
+      object miTermoUsoBanco: TMenuItem
+        Caption = 'Termo de uso'
+        OnClick = miTermoUsoBancoClick
       end
-      object Sobreoprograma5: TMenuItem
-        Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma5Click
+      object miSobreSistemaBanco: TMenuItem
+        Caption = 'Sobre o sistema'
+        OnClick = miSobreSistemaBancoClick
       end
     end
   end
