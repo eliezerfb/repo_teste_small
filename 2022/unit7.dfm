@@ -14986,7 +14986,7 @@ object Form7: TForm7
         OnClick = ConversodeCFOP1Click
       end
       object MenuItem107: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object MenuItem108: TMenuItem
@@ -14998,39 +14998,40 @@ object Form7: TForm7
       end
     end
     object MenuItem110: TMenuItem
-      Caption = '&Edita'
+      Caption = '&Editar'
       object MenuItem111: TMenuItem
-        Caption = '&Novo...'
+        Caption = '&Novo'
         OnClick = Image101Click
       end
       object MenuItem112: TMenuItem
-        Caption = '&Alterar...'
+        Caption = '&Alterar'
         OnClick = Image106Click
       end
       object MenuItem113: TMenuItem
-        Caption = 'E&xcluir...'
+        Caption = 'E&xcluir'
         OnClick = Image102Click
       end
     end
     object MenuItem114: TMenuItem
-      Caption = '&Procura'
+      Caption = '&Procurar'
       OnClick = Image103Click
     end
     object MenuItem115: TMenuItem
-      Caption = '&Caractere'
+      Caption = '&Fonte'
       OnClick = Image6Click
     end
-    object MenuItem116: TMenuItem
-      Caption = '?'
-      object MenuItem117: TMenuItem
-        Caption = 'Ajuda'
-        OnClick = MenuItem117Click
+    object miAjudaICM: TMenuItem
+      Caption = 'Ajuda'
+      object miExibirAjudaICM: TMenuItem
+        Caption = 'Exibir ajuda'
+        OnClick = miExibirAjudaICMClick
       end
-      object MenuItem120: TMenuItem
-        Caption = '-'
+      object miTermoUsoICM: TMenuItem
+        Caption = 'Termo de uso'
+        OnClick = miTermoUsoICMClick
       end
-      object MenuItem121: TMenuItem
-        Caption = 'Sobre o programa...'
+      object miSobreSistemaICM: TMenuItem
+        Caption = 'Sobre o sistema'
         OnClick = miSobreSistemaPlanoContasClick
       end
     end
@@ -21274,7 +21275,7 @@ object Form7: TForm7
       Caption = '?               '
       object MenuItem127: TMenuItem
         Caption = 'Ajuda'
-        OnClick = MenuItem117Click
+        OnClick = miExibirAjudaICMClick
       end
       object MenuItem133: TMenuItem
         Caption = '-'
@@ -22006,7 +22007,7 @@ object Form7: TForm7
       Caption = '?'
       object MenuItem149: TMenuItem
         Caption = 'Ajuda'
-        OnClick = MenuItem117Click
+        OnClick = miExibirAjudaICMClick
       end
       object MenuItem150: TMenuItem
         Caption = '-'

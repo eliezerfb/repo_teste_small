@@ -311,10 +311,10 @@ type
     MenuItem113: TMenuItem;
     MenuItem114: TMenuItem;
     MenuItem115: TMenuItem;
-    MenuItem116: TMenuItem;
-    MenuItem117: TMenuItem;
-    MenuItem120: TMenuItem;
-    MenuItem121: TMenuItem;
+    miAjudaICM: TMenuItem;
+    miExibirAjudaICM: TMenuItem;
+    miTermoUsoICM: TMenuItem;
+    miSobreSistemaICM: TMenuItem;
     ibDataSet15: TibDataSet;
     DataSource15: TDataSource;
     Label15: TLabel;
@@ -2049,7 +2049,7 @@ type
     procedure Relatriodetotaldeserviosporvendedor1Click(Sender: TObject);
     procedure Resumodascompras1Click(Sender: TObject);
     procedure Resumodascomrpas1Click(Sender: TObject);
-    procedure MenuItem117Click(Sender: TObject);
+    procedure miExibirAjudaICMClick(Sender: TObject);
     procedure ibDataSet1BeforePost(DataSet: TDataSet);
     procedure ibDataSet5BeforePost(DataSet: TDataSet);
     procedure ibDataSet7BeforeEdit(DataSet: TDataSet);
@@ -2339,6 +2339,7 @@ type
     procedure miTermoUsoReceberClick(Sender: TObject);
     procedure miTermoUsoVendedorClick(Sender: TObject);
     procedure miTermoUsoPlanoContasClick(Sender: TObject);
+    procedure miTermoUsoICMClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -23122,7 +23123,7 @@ begin
   Form38.Label21.Visible := False;
 end;
 
-procedure TForm7.MenuItem117Click(Sender: TObject);
+procedure TForm7.miExibirAjudaICMClick(Sender: TObject);
 begin
   HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(sAjuda)));
 end;
@@ -30802,6 +30803,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoEstoqueClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoICMClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;
