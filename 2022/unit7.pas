@@ -1615,10 +1615,10 @@ type
     MenuItem232: TMenuItem;
     MenuItem233: TMenuItem;
     MenuItem234: TMenuItem;
-    MenuItem235: TMenuItem;
-    MenuItem236: TMenuItem;
-    MenuItem237: TMenuItem;
-    MenuItem238: TMenuItem;
+    miAjudaSituacaoOS: TMenuItem;
+    miExibirAjudaSituacaoOS: TMenuItem;
+    miTermoUsoSituacaoOS: TMenuItem;
+    miSobreSistemaSituacaoOS: TMenuItem;
     Label40: TLabel;
     ibdSituacaoOSIDSITUACAO: TIntegerField;
     ibdSituacaoOSSITUACAO: TIBStringField;
@@ -2353,6 +2353,7 @@ type
     procedure miTermoUsoConvCFOPClick(Sender: TObject);
     procedure miTermoUsoPerfilTribClick(Sender: TObject);
     procedure miTermoUsoParamTributaClick(Sender: TObject);
+    procedure miTermoUsoSituacaoOSClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -30861,6 +30862,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoReceberClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoSituacaoOSClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;
