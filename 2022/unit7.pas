@@ -1498,10 +1498,10 @@ type
     MenuItem161: TMenuItem;
     MenuItem162: TMenuItem;
     MenuItem163: TMenuItem;
-    MenuItem171: TMenuItem;
-    MenuItem172: TMenuItem;
-    MenuItem173: TMenuItem;
-    MenuItem174: TMenuItem;
+    miAjudaConvCFOP: TMenuItem;
+    miExibirAjudaConvCFOP: TMenuItem;
+    miTermoUsoConvCFOP: TMenuItem;
+    miSobreSistemaConvCFOP: TMenuItem;
     DSConversaoCFOP: TDataSource;
     ibdConversaoCFOP: TIBDataSet;
     ibdConversaoCFOPCFOP_ORIGEM: TIBStringField;
@@ -2350,6 +2350,7 @@ type
     procedure miTermoUsoConvenioClick(Sender: TObject);
     procedure Relatrios5Click(Sender: TObject);
     procedure miTermoUsoBancoClick(Sender: TObject);
+    procedure miTermoUsoConvCFOPClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -30808,6 +30809,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoComprasClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoConvCFOPClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;
