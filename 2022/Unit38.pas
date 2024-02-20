@@ -342,7 +342,7 @@ begin
           RelatorioPisCofinsCupom(F,dInicio,dFinal);
         end;
 
-        if Form7.sModulo = 'Complemento/Restituição por ICMS ST...' then
+        if Form7.sModulo = 'Complemento/Restituição por ICMS ST' then
         begin
           RelatorioCompleRestICMS_ST(F,dInicio,dFinal);
         end;

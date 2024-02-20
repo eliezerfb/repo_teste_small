@@ -753,10 +753,10 @@ type
     Label44: TLabel;
     mmVendas: TMainMenu;
     MenuItem13: TMenuItem;
-    MenuItem141: TMenuItem;
-    RelVendasServico: TMenuItem;
-    MenuItem143: TMenuItem;
-    RelResumoVendas: TMenuItem;
+    miRelVendasNotaFiscal: TMenuItem;
+    miRelVendasServico: TMenuItem;
+    miRelVendasCupomFiscal: TMenuItem;
+    miRelResumoVendasVendas: TMenuItem;
     MenuItem164: TMenuItem;
     MenuItem165: TMenuItem;
     MenuItem166: TMenuItem;
@@ -767,9 +767,8 @@ type
     MenuItem177: TMenuItem;
     MenuItem178: TMenuItem;
     MenuItem179: TMenuItem;
-    MenuItem180: TMenuItem;
-    MenuItem181: TMenuItem;
-    MenuItem182: TMenuItem;
+    miExibirAjudaVendas: TMenuItem;
+    miSobreSistemaVendas: TMenuItem;
     mmCompras: TMainMenu;
     MenuItem183: TMenuItem;
     MenuItem196: TMenuItem;
@@ -992,7 +991,7 @@ type
     IBBackupService1: TIBBackupService;
     IBRestoreService1: TIBRestoreService;
     IBTransaction1: TIBTransaction;
-    Relatriodecorrelao1: TMenuItem;
+    miRelCorrelacao: TMenuItem;
     Sosclientescomcontasatrasadas1: TMenuItem;
     Sosclientescomsuascontasemdia1: TMenuItem;
     Sosclientescomcontasareceber1: TMenuItem;
@@ -1015,7 +1014,6 @@ type
     IBQuery1: TIBQuery;
     SaveDialog1: TSaveDialog;
     Exportar1: TMenuItem;
-    N23: TMenuItem;
     N49: TMenuItem;
     ImportarOS1: TMenuItem;
     ImportarCupomFiscal1: TMenuItem;
@@ -1030,7 +1028,7 @@ type
     IBDataSet39UF: TIBStringField;
     IBDataSet39REGISTRO: TIBStringField;
     Movimentaodositemskardex1: TMenuItem;
-    Vendasporvendedor1: TMenuItem;
+    miRelVendasVendedor: TMenuItem;
     ibDataSet37NUMERONF: TIBStringField;
     Relatriodetotaldeserviosporvendedor1: TMenuItem;
     IBDataSet101: TIBDataSet;
@@ -1374,7 +1372,7 @@ type
     ibDataSet4DESCONT2: TFloatField;
     Vendas_XXX: TMenuItem;
     NotasfiscaisdesadavendassrieXXX1: TMenuItem;
-    Relatriodeprodutosmonofsico1: TMenuItem;
+    miRelProdMonofasicosCupom: TMenuItem;
     Relatriodeprodutosmonofsicos1: TMenuItem;
     Anlisedofaturamento1: TMenuItem;
     AnliseMensal1: TMenuItem;
@@ -1397,7 +1395,7 @@ type
     EnviarmensagemWhatsAppparatodos1: TMenuItem;
     Notasfiscaisdesadavendassrie9201: TMenuItem;
     NotasfiscaisdesadavendascomCPFsrie9201: TMenuItem;
-    RelCompRestICMS: TMenuItem;
+    miRelCompRestICMS: TMenuItem;
     ClculodoCustodaltimaNota1: TMenuItem;
     Manifesto1: TMenuItem;
     PositivoVerde: TImage;
@@ -1638,6 +1636,8 @@ type
     ibDataSet14CBENEF: TIBStringField;
     otalizadorgeraldevenda1: TMenuItem;
     ibDataSet3NFSE: TIBStringField;
+    miRelatoriosVendas: TMenuItem;
+    miTermoUsoVendas: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -1975,7 +1975,7 @@ type
     procedure ibDataSet11BeforePost(DataSet: TDataSet);
     procedure Gerarnotafiscalsrie11Click(Sender: TObject);
     procedure Gerarnotafiscalsrie21Click(Sender: TObject);
-    procedure Relatriodecorrelao1Click(Sender: TObject);
+    procedure miRelCorrelacaoClick(Sender: TObject);
     procedure Sosclientescomcontasatrasadas1Click(Sender: TObject);
     procedure Sosclientescomsuascontasemdia1Click(Sender: TObject);
     procedure Sosclientescomcontasareceber1Click(Sender: TObject);
@@ -2003,7 +2003,7 @@ type
     procedure IBDataSet2CIDADESetText(Sender: TField; const Text: String);
     procedure Movimentaodositemskardex1Click(Sender: TObject);
     procedure ibDataSet30SERIALSetText(Sender: TField; const Text: String);
-    procedure Vendasporvendedor1Click(Sender: TObject);
+    procedure miRelVendasVendedorClick(Sender: TObject);
     procedure ibDataSet15AfterPost(DataSet: TDataSet);
     procedure ibDataSet24AfterPost(DataSet: TDataSet);
     procedure ibDataSet3AfterPost(DataSet: TDataSet);
@@ -2195,7 +2195,7 @@ type
     procedure IBDataSet2CREDITOSetText(Sender: TField; const Text: String);
     procedure Vendas_XXXClick(Sender: TObject);
     procedure NotasfiscaisdesadavendassrieXXX1Click(Sender: TObject);
-    procedure Relatriodeprodutosmonofsico1Click(Sender: TObject);
+    procedure miRelProdMonofasicosCupomClick(Sender: TObject);
     procedure ibDataSet4CFSetText(Sender: TField; const Text: String);
     procedure AnliseMensal1Click(Sender: TObject);
     procedure ibDataSet15BeforePost(DataSet: TDataSet);
@@ -2211,7 +2211,7 @@ type
     procedure EnviarmensagemWhatsAppparatodos1Click(Sender: TObject);
     procedure ibDataSet4OBSValidate(Sender: TField);
     procedure Notasfiscaisdesadavendassrie9201Click(Sender: TObject);
-    procedure RelCompRestICMSClick(Sender: TObject);
+    procedure miRelCompRestICMSClick(Sender: TObject);
     procedure ClculodoCustodaltimaNota1Click(Sender: TObject);
     procedure Manifesto1Click(Sender: TObject);
     procedure EnvioaoFISCOREDUOZ1Click(Sender: TObject);
@@ -2327,6 +2327,7 @@ type
     procedure ibdParametroTributaBeforeDelete(DataSet: TDataSet);
     procedure ibdConversaoCFOPBeforeDelete(DataSet: TDataSet);
     procedure ibDataSet11BeforeDelete(DataSet: TDataSet);
+    procedure miTermoUsoVendasClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2381,6 +2382,7 @@ type
     procedure RegistraExclusaoRegistro(AoDataSet: TDataSet; AcModulo: String = ''; AcHistoricoExtra: String = '');
     function RetornarHistoricoPorModulo: String;
     function RetornaTipoModulo: tModulosCommerce;
+    procedure AbreHelpTermoUso;
   public
     // Public declarations
 
@@ -22461,7 +22463,7 @@ begin
   end;
 end;
 
-procedure TForm7.Relatriodecorrelao1Click(Sender: TObject);
+procedure TForm7.miRelCorrelacaoClick(Sender: TObject);
 var
   F : TextFile;
 begin
@@ -22811,7 +22813,7 @@ begin
   end;  
 end;
 
-procedure TForm7.Vendasporvendedor1Click(Sender: TObject);
+procedure TForm7.miRelVendasVendedorClick(Sender: TObject);
 begin
   //
   sModuloAnterior := sModulo;
@@ -29401,7 +29403,7 @@ begin
   Mais1Ini.Free;
 end;
 
-procedure TForm7.Relatriodeprodutosmonofsico1Click(Sender: TObject);
+procedure TForm7.miRelProdMonofasicosCupomClick(Sender: TObject);
 begin
   //
   sModuloAnterior := sModulo;
@@ -30688,7 +30690,7 @@ begin
   //sSerieNFSelecionada := '920';
 end;
 
-procedure TForm7.RelCompRestICMSClick(Sender: TObject);
+procedure TForm7.miRelCompRestICMSClick(Sender: TObject);
 begin
   //
   sModuloAnterior := sModulo;
@@ -30696,7 +30698,7 @@ begin
   Form38.Label3.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
-  sModulo := 'Complemento/Restituição por ICMS ST...';
+  sModulo := 'Complemento/Restituição por ICMS ST';
   //
   Form38.ShowModal; // Ok
   //
@@ -30767,6 +30769,17 @@ begin
   }
   //
 end;
+
+procedure TForm7.miTermoUsoVendasClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.AbreHelpTermoUso;
+begin
+  HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('CONTRATO.HTM')));
+end;
+
 
 procedure TForm7.ChamarTelaXMLContab;
 begin
@@ -32447,11 +32460,11 @@ begin
   
   DuplicatestaNFe1.Enabled                 := True;
 
-  RelVendasServico.Enabled                 := True;
-  Relatriodeprodutosmonofsico1.Enabled     := True;
-  RelCompRestICMS.Enabled                  := True;
-  RelResumoVendas.Enabled                  := True;
-  Relatriodecorrelao1.Enabled              := True;
+  miRelVendasServico.Enabled               := Form1.ValidaRecursos.PermiteRecursoParaProduto;
+  miRelProdMonofasicosCupom.Enabled        := Form1.ValidaRecursos.PermiteRecursoParaProduto;
+  miRelCompRestICMS.Enabled                := Form1.ValidaRecursos.PermiteRecursoParaProduto;
+  miRelResumoVendasVendas.Enabled          := Form1.ValidaRecursos.PermiteRecursoParaProduto;
+  miRelCorrelacao.Enabled                  := Form1.ValidaRecursos.PermiteRecursoParaProduto;
 
   PrevCompra.Enabled                       := True;
 
@@ -32480,15 +32493,8 @@ begin
 
     DuplicatestaNFe1.Enabled                 := False;
 
-    RelVendasServico.Enabled                 := False;
-    Relatriodeprodutosmonofsico1.Enabled     := False;
-    RelCompRestICMS.Enabled                  := False;
-    RelResumoVendas.Enabled                  := False;
-    Relatriodecorrelao1.Enabled              := False;
-
     PrevCompra.Enabled                       := False;
- end;
-
+  end;
 end;
 
 procedure TForm7.RefreshDados;
