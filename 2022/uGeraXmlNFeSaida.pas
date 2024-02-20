@@ -2889,7 +2889,9 @@ begin
     Form7.spdNFeDataSets.SalvarPart('YA');
   end;
   }
-  if (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4') or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '3') or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '2') then // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
+  if ((Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '2') and (Trim(Copy(Uppercase(Form7.ibDataSet14.FieldByname('INTEGRACAO').AsString)+'       ',1,7)) = EmptyStr))
+      or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '3')
+      or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4') then // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
   begin
     Form7.spdNFeDataSets.IncluirPart('YA');
     Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '90';  // Sem Pagamento
