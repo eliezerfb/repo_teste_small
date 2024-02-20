@@ -766,7 +766,7 @@ type
     MenuItem170: TMenuItem;
     MenuItem177: TMenuItem;
     MenuItem178: TMenuItem;
-    MenuItem179: TMenuItem;
+    miAjudaVendas: TMenuItem;
     miExibirAjudaVendas: TMenuItem;
     miSobreSistemaVendas: TMenuItem;
     mmCompras: TMainMenu;
@@ -783,10 +783,9 @@ type
     MenuItem212: TMenuItem;
     MenuItem219: TMenuItem;
     MenuItem220: TMenuItem;
-    MenuItem221: TMenuItem;
-    MenuItem222: TMenuItem;
-    MenuItem223: TMenuItem;
-    MenuItem224: TMenuItem;
+    miAjudaCompras: TMenuItem;
+    miExibirAjudaCompras: TMenuItem;
+    miSobreSistemaCompras: TMenuItem;
     Exibir5: TMenuItem;
     Vendas_1: TMenuItem;
     Compras_1: TMenuItem;
@@ -1018,7 +1017,6 @@ type
     ImportarOS1: TMenuItem;
     ImportarCupomFiscal1: TMenuItem;
     ImportarOramento1: TMenuItem;
-    N50: TMenuItem;
     ImportarNotaFiscal1: TMenuItem;
     OpenDialog1: TOpenDialog;
     IBDataSet39: TIBDataSet;
@@ -1638,6 +1636,8 @@ type
     ibDataSet3NFSE: TIBStringField;
     miRelatoriosVendas: TMenuItem;
     miTermoUsoVendas: TMenuItem;
+    miRelatorioCompras: TMenuItem;
+    miTermoUsoCompras: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2328,6 +2328,7 @@ type
     procedure ibdConversaoCFOPBeforeDelete(DataSet: TDataSet);
     procedure ibDataSet11BeforeDelete(DataSet: TDataSet);
     procedure miTermoUsoVendasClick(Sender: TObject);
+    procedure miTermoUsoComprasClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -30768,6 +30769,11 @@ begin
   end;
   }
   //
+end;
+
+procedure TForm7.miTermoUsoComprasClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
 end;
 
 procedure TForm7.miTermoUsoVendasClick(Sender: TObject);
