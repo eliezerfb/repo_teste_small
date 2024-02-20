@@ -202,6 +202,8 @@ function ConverteCaracterEspecialXML(Value: String): String;
 function ConverteAcentosPHP(pP1:String):String;
 procedure SleepWithoutFreeze(msec: int64);
 function DiasDesteMes: Integer;
+function TamanhoArquivo(Arquivo: string): Integer;
+procedure RenameLog(Arquivo: String);
 function HasFile(Directory: String): boolean;
 
 var
@@ -2510,6 +2512,36 @@ begin
   Result := DiasPorMes(Year(Date), Month(Date));
 end;
 
+function TamanhoArquivo(Arquivo: string): Integer;
+begin
+  Result := 0;
+  try
+    if FileExists(Arquivo) then
+    begin
+      with TFileStream.Create(Arquivo, fmOpenRead or fmShareExclusive) do
+        try
+          Result := Size;
+        finally
+          Free;
+        end;
+    end;
+  except
+  end;
+end;
+
+procedure RenameLog(Arquivo: String);
+var
+  sFile: String;
+  sExtensao: String;
+begin
+  try
+    sFile := ExtractFileName(Arquivo);
+    sExtensao := ExtractFileExt(Arquivo);
+    RenameFile(Arquivo, ExtractFilePath(Arquivo) + StringReplace(sFile, sExtensao, '_' + FormatDateTime('yyyymmddHHnnss', Now) + sExtensao , [rfReplaceAll]));
+  except
+
+  end;
+end;
 
 function HasFile(Directory: String): boolean;
 var
