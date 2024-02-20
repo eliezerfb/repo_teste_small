@@ -1412,10 +1412,10 @@ type
     MenuItem95: TMenuItem;
     MenuItem96: TMenuItem;
     MenuItem103: TMenuItem;
-    MenuItem148: TMenuItem;
-    MenuItem149: TMenuItem;
-    MenuItem150: TMenuItem;
-    MenuItem152: TMenuItem;
+    miAjudaServico: TMenuItem;
+    miExibirAjudaServico: TMenuItem;
+    miTermoUsoServico: TMenuItem;
+    miSobreSistemaServico: TMenuItem;
     Label27: TLabel;
     ImportarOrdemdeServio1: TMenuItem;
     ImportarOramento2: TMenuItem;
@@ -1646,6 +1646,11 @@ type
     miNovoConvenio: TMenuItem;
     miAlterarConvenio: TMenuItem;
     miExcluirConvenio: TMenuItem;
+    Editar2: TMenuItem;
+    Novo2: TMenuItem;
+    Alterar2: TMenuItem;
+    Fonte1: TMenuItem;
+    Procu1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2354,6 +2359,7 @@ type
     procedure miTermoUsoPerfilTribClick(Sender: TObject);
     procedure miTermoUsoParamTributaClick(Sender: TObject);
     procedure miTermoUsoSituacaoOSClick(Sender: TObject);
+    procedure miTermoUsoServicoClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -16916,6 +16922,11 @@ begin
   Abertas1.Checked          := False;
   Fechadas1.Checked         := False;
   //
+end;
+
+procedure TForm7.miTermoUsoServicoClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
 end;
 
 procedure TForm7.Image210Click(Sender: TObject);
