@@ -591,10 +591,10 @@ type
     MenuItem128: TMenuItem;
     MenuItem135: TMenuItem;
     MenuItem136: TMenuItem;
-    MenuItem137: TMenuItem;
-    MenuItem138: TMenuItem;
-    MenuItem139: TMenuItem;
-    MenuItem140: TMenuItem;
+    miAjudaConvenio: TMenuItem;
+    miExibirAjudaConvenio: TMenuItem;
+    miTermoUsoConvenio: TMenuItem;
+    miSobreSistemaConvenio: TMenuItem;
     Relatriodetodososconvnios1: TMenuItem;
     ibDataSet13COPE: TFloatField;
     ibDataSet13RESE: TFloatField;
@@ -1641,6 +1641,11 @@ type
     Relatrios2: TMenuItem;
     Relatrios3: TMenuItem;
     RElatrios4: TMenuItem;
+    miEditarConvenio: TMenuItem;
+    Relatrios5: TMenuItem;
+    miNovoConvenio: TMenuItem;
+    miAlterarConvenio: TMenuItem;
+    miExcluirConvenio: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -1786,7 +1791,6 @@ type
     procedure ibDataSet11PLANOSetText(Sender: TField; const Text: String);
     procedure ibDataSet2DATANASSetText(Sender: TField; const Text: String);
     procedure MenuItem119Click(Sender: TObject);
-    procedure MenuItem118Click(Sender: TObject);
     procedure Relatriodetodososconvnios1Click(Sender: TObject);
     procedure ibDataSet29NOMESetText(Sender: TField; const Text: String);
     procedure ibDataSet2CONVENIOSetText(Sender: TField; const Text: String);
@@ -2343,6 +2347,8 @@ type
     procedure miTermoUsoICMClick(Sender: TObject);
     procedure miTermoUsoPagarClick(Sender: TObject);
     procedure miTermoUsoTransportClick(Sender: TObject);
+    procedure miTermoUsoConvenioClick(Sender: TObject);
+    procedure Relatrios5Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -15681,11 +15687,6 @@ begin
       ArquivoAberto.MoveBy(+1);
   Form37.ShowModal;
   Form37.Caption := 'Relatório de comissões';
-end;
-
-procedure TForm7.MenuItem118Click(Sender: TObject);
-begin
-  MenuItem119.Caption    := 'Relatório do convênio '+AllTrim(ibDataSet29NOME.AsString)+'...';
 end;
 
 procedure TForm7.Relatriodetodososconvnios1Click(Sender: TObject);
@@ -30805,6 +30806,11 @@ begin
   AbreHelpTermoUso;
 end;
 
+procedure TForm7.miTermoUsoConvenioClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
 procedure TForm7.miTermoUsoEstoqueClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
@@ -32678,6 +32684,11 @@ begin
                         .setImagem(imgImprimir.Picture)
                         .setUsuario(Usuario)
                         .ChamarTela;
+end;
+
+procedure TForm7.Relatrios5Click(Sender: TObject);
+begin
+  MenuItem119.Caption    := 'Convênio '+AllTrim(ibDataSet29NOME.AsString);
 end;
 
 function TForm7.GetMensagemCertificado(vLocal:string='') : string;

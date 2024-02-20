@@ -18560,17 +18560,8 @@ object Form7: TForm7
     Top = 777
     object MenuItem118: TMenuItem
       Caption = '&Arquivo'
-      OnClick = MenuItem118Click
-      object MenuItem119: TMenuItem
-        Caption = 'Relat'#243'rio de conv'#234'nio...'
-        OnClick = MenuItem119Click
-      end
-      object Relatriodetodososconvnios1: TMenuItem
-        Caption = 'Relat'#243'rio de todos os conv'#234'nios...'
-        OnClick = Relatriodetodososconvnios1Click
-      end
       object MenuItem123: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object N17: TMenuItem
@@ -18581,25 +18572,53 @@ object Form7: TForm7
         OnClick = Sair1Click
       end
     end
+    object Relatrios5: TMenuItem
+      Caption = '&Relat'#243'rios'
+      OnClick = Relatrios5Click
+      object MenuItem119: TMenuItem
+        Caption = 'Conv'#234'nio'
+        OnClick = MenuItem119Click
+      end
+      object Relatriodetodososconvnios1: TMenuItem
+        Caption = 'Todos os conv'#234'nios'
+        OnClick = Relatriodetodososconvnios1Click
+      end
+    end
+    object miEditarConvenio: TMenuItem
+      Caption = '&Editar'
+      object miNovoConvenio: TMenuItem
+        Caption = '&Novo'
+        OnClick = Image101Click
+      end
+      object miAlterarConvenio: TMenuItem
+        Caption = '&Alterar'
+        OnClick = Image106Click
+      end
+      object miExcluirConvenio: TMenuItem
+        Caption = 'E&xcluir'
+        OnClick = Image102Click
+      end
+    end
     object MenuItem135: TMenuItem
-      Caption = '&Procura'
+      Caption = '&Procurar'
       OnClick = Image103Click
     end
     object MenuItem136: TMenuItem
-      Caption = '&Caractere'
+      Caption = '&Fonte'
       OnClick = Image6Click
     end
-    object MenuItem137: TMenuItem
-      Caption = '?'
-      object MenuItem138: TMenuItem
-        Caption = 'Ajuda'
+    object miAjudaConvenio: TMenuItem
+      Caption = 'Ajuda'
+      object miExibirAjudaConvenio: TMenuItem
+        Caption = 'Exibir ajuda'
         OnClick = miExibirAjudaVendedorClick
       end
-      object MenuItem139: TMenuItem
-        Caption = '-'
+      object miTermoUsoConvenio: TMenuItem
+        Caption = 'Termo de uso'
+        OnClick = miTermoUsoConvenioClick
       end
-      object MenuItem140: TMenuItem
-        Caption = 'Sobre o programa...'
+      object miSobreSistemaConvenio: TMenuItem
+        Caption = 'Sobre o sistema'
         OnClick = miSobreSistemaVendedorClick
       end
     end
