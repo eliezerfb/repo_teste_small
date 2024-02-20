@@ -962,7 +962,7 @@ begin
               WriteLn(F,'  <td width=100></td>');
               WriteLn(F,'  <td>');
 
-              if Form7.Livrodereceitas1.Caption = 'Relatório de composição...' then
+              if Form7.Livrodereceitas1.Caption = 'Relatório de composição' then
               begin
                 WriteLn(F,'   <br><b>Composição</b><br>');
               end else

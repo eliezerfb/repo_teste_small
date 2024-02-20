@@ -162,7 +162,7 @@ type
     MenuItem30: TMenuItem;
     MenuItem31: TMenuItem;
     MenuItem32: TMenuItem;
-    MenuItem33: TMenuItem;
+    miAjudaEstoque: TMenuItem;
     mmMovBancos: TMainMenu;
     MenuItem34: TMenuItem;
     MenuItem35: TMenuItem;
@@ -281,13 +281,13 @@ type
     miExibirAjudaClifor: TMenuItem;
     miTermoUsoClifor: TMenuItem;
     miSobreSistemaClifor: TMenuItem;
-    Ajuda4: TMenuItem;
+    miExibirAjuda: TMenuItem;
     ApplicationHelpContext11: TMenuItem;
     Ajuda5: TMenuItem;
     Ajuda7: TMenuItem;
     Ajuda9: TMenuItem;
-    N31: TMenuItem;
-    Sobreoprograma4: TMenuItem;
+    miTermoUsoEstoque: TMenuItem;
+    miSobreSistemaEstoque: TMenuItem;
     N32: TMenuItem;
     Sobreoprograma5: TMenuItem;
     N33: TMenuItem;
@@ -1200,7 +1200,6 @@ type
     ibDataSet23CST_IPI: TIBStringField;
     Livrodereceitas1: TMenuItem;
     Cardpio1: TMenuItem;
-    N56: TMenuItem;
     RelatriodeIPI1: TMenuItem;
     RelatriodePISCOFINS1: TMenuItem;
     ibDataSet14CSTPISCOFINS: TIBStringField;
@@ -1638,6 +1637,7 @@ type
     miRelatoriosOS: TMenuItem;
     miRelatoriosCaixa: TMenuItem;
     miRelatoriosClifor: TMenuItem;
+    miRelatoriosEstoque: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -1668,7 +1668,7 @@ type
     procedure miSobreSistemaClick(Sender: TObject);
     procedure miExibirAjudaCaixaClick(Sender: TObject);
     procedure Sobreoprograma3Click(Sender: TObject);
-    procedure Sobreoprograma4Click(Sender: TObject);
+    procedure miSobreSistemaEstoqueClick(Sender: TObject);
     procedure Sobreoprograma5Click(Sender: TObject);
     procedure Sobreoprograma6Click(Sender: TObject);
     procedure Sobreoprograma7Click(Sender: TObject);
@@ -2332,6 +2332,7 @@ type
     procedure miTermoUsoOSClick(Sender: TObject);
     procedure miTermoUsoCaixaClick(Sender: TObject);
     procedure miTermoUsoCliforClick(Sender: TObject);
+    procedure miTermoUsoEstoqueClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -9386,7 +9387,7 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma4Click(Sender: TObject);
+procedure TForm7.miSobreSistemaEstoqueClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
@@ -26044,7 +26045,7 @@ begin
 
   Form9.Show;
 
-  if Form7.Livrodereceitas1.Caption = 'Relatório de composição...' then
+  if Form7.Livrodereceitas1.Caption = 'Relatório de composição' then
   begin
     Form14.Caption := 'Relatório de composição';
   end else
@@ -30785,6 +30786,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoComprasClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoEstoqueClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;
