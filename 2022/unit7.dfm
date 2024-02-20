@@ -13098,7 +13098,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaCaixaClick
       end
       object miTermoUsoClifor: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoCliforClick
       end
       object miSobreSistemaClifor: TMenuItem
@@ -13346,7 +13346,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaCaixaClick
       end
       object miTermoUsoEstoque: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoEstoqueClick
       end
       object miSobreSistemaEstoque: TMenuItem
@@ -13441,7 +13441,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaCaixaClick
       end
       object miTermoUsoBanco: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoBancoClick
       end
       object miSobreSistemaBanco: TMenuItem
@@ -13767,7 +13767,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaCaixaClick
       end
       object miTermoUsoReceber: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoReceberClick
       end
       object miSobreSistemaReceber: TMenuItem
@@ -13840,7 +13840,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaVendedorClick
       end
       object miTermoUsoVendedor: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoVendedorClick
       end
       object miSobreSistemaVendedor: TMenuItem
@@ -14191,7 +14191,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaPlanoContasClick
       end
       object miTermoUsoPlanoContas: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoPlanoContasClick
       end
       object miSobreSistemaPlanoContas: TMenuItem
@@ -15028,7 +15028,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaICMClick
       end
       object miTermoUsoICM: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoICMClick
       end
       object miSobreSistemaICM: TMenuItem
@@ -18448,7 +18448,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaVendedorClick
       end
       object miTermoUsoTransport: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoTransportClick
       end
       object miSobreSistemaTransport: TMenuItem
@@ -18615,7 +18615,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaVendedorClick
       end
       object miTermoUsoConvenio: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoConvenioClick
       end
       object miSobreSistemaConvenio: TMenuItem
@@ -18970,7 +18970,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaCaixaClick
       end
       object miTermoUsoPagar: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoPagarClick
       end
       object miSobreSistemaPagar: TMenuItem
@@ -22054,7 +22054,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaICMClick
       end
       object miTermoUsoServico: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoServicoClick
       end
       object miSobreSistemaServico: TMenuItem
@@ -22314,7 +22314,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaVendedorClick
       end
       object miTermoUsoConvCFOP: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoConvCFOPClick
       end
       object miSobreSistemaConvCFOP: TMenuItem
@@ -22449,7 +22449,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaVendedorClick
       end
       object miTermoUsoPerfilTrib: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoPerfilTribClick
       end
       object miSobreSistemaPerfilTrib: TMenuItem
@@ -22837,7 +22837,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaVendedorClick
       end
       object miTermoUsoParamTributa: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoParamTributaClick
       end
       object miSobreSistemaParamTributa: TMenuItem
@@ -23093,7 +23093,7 @@ object Form7: TForm7
         OnClick = miExibirAjudaVendedorClick
       end
       object miTermoUsoSituacaoOS: TMenuItem
-        Caption = 'Termo de uso'
+        Caption = 'Termos de uso'
         OnClick = miTermoUsoSituacaoOSClick
       end
       object miSobreSistemaSituacaoOS: TMenuItem
