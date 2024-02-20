@@ -13457,42 +13457,27 @@ object Form7: TForm7
     object MenuItem56: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem56Click
-      object Inadimlencia1: TMenuItem
-        Caption = 'Relat'#243'rio de inadimpl'#234'ncia'
-        OnClick = Inadimlencia1Click
-      end
-      object Resumodainadimplncia1: TMenuItem
-        Caption = 'Resumo da inadimpl'#234'ncia'
-        OnClick = Resumodainadimplncia1Click
-      end
-      object Rankingdedevedores2: TMenuItem
-        Caption = 'Ranking de devedores...'
-        OnClick = Rankingdedevedores2Click
-      end
-      object N29: TMenuItem
-        Caption = '-'
-      end
       object Cartadecobrana1: TMenuItem
         Caption = 'Escrever carta de cobran'#231'a'
         OnClick = Cartadecobrana1Click
       end
       object Imprimiretiquetaparacobrana1: TMenuItem
-        Caption = 'Imprimir etiqueta para cobran'#231'a...'
+        Caption = 'Imprimir etiqueta para cobran'#231'a'
         OnClick = Imprimiretiquetaparacobrana1Click
       end
       object Imprimircartadecobrana1: TMenuItem
-        Caption = 'Imprimir carta de cobran'#231'a...'
+        Caption = 'Imprimir carta de cobran'#231'a'
         OnClick = Imprimircartadecobrana1Click
       end
       object N51: TMenuItem
         Caption = '-'
       end
       object Emaildecobrana1: TMenuItem
-        Caption = 'E-mail de cobran'#231'a...'
+        Caption = 'E-mail de cobran'#231'a'
         OnClick = Emaildecobrana1Click
       end
       object Emaildecobrana2: TMenuItem
-        Caption = 'E-mail de cobran'#231'a totalizado por cliente...'
+        Caption = 'E-mail de cobran'#231'a totalizado por cliente'
         OnClick = Emaildecobrana2Click
       end
       object Gerarboletoeenviodeemaildecobranatotalizadoporcliente1: TMenuItem
@@ -13503,7 +13488,7 @@ object Form7: TForm7
         Caption = '-'
       end
       object EnviarmensagemWhatsAppparatodos1: TMenuItem
-        Caption = 'WhatsApp de cobran'#231'a totalizado por cliente...'
+        Caption = 'WhatsApp de cobran'#231'a totalizado por cliente'
         OnClick = EnviarmensagemWhatsAppparatodos1Click
       end
       object N48: TMenuItem
@@ -13519,11 +13504,11 @@ object Form7: TForm7
         Caption = 'Arquivo CNAB 400'
       end
       object Carn1: TMenuItem
-        Caption = 'Carn'#234'...'
+        Caption = 'Carn'#234
         OnClick = Carn1Click
       end
       object Duplicata1: TMenuItem
-        Caption = 'Duplicata...'
+        Caption = 'Duplicata'
         OnClick = Duplicata1Click
       end
       object N9: TMenuItem
@@ -13534,7 +13519,7 @@ object Form7: TForm7
         OnClick = Imprimirrecibo2Click
       end
       object MenuItem57: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object N11: TMenuItem
@@ -13545,26 +13530,41 @@ object Form7: TForm7
         OnClick = Sair1Click
       end
     end
+    object Relatrios1: TMenuItem
+      Caption = '&Relat'#243'rios'
+      object Inadimlencia1: TMenuItem
+        Caption = 'Inadimpl'#234'ncia'
+        OnClick = Inadimlencia1Click
+      end
+      object Resumodainadimplncia1: TMenuItem
+        Caption = 'Resumo da inadimpl'#234'ncia'
+        OnClick = Resumodainadimplncia1Click
+      end
+      object Rankingdedevedores2: TMenuItem
+        Caption = 'Ranking de devedores...'
+        OnClick = Rankingdedevedores2Click
+      end
+    end
     object MenuItem60: TMenuItem
-      Caption = '&Edita'
+      Caption = '&Editar'
       OnClick = MenuItem60Click
       object MenuItem61: TMenuItem
-        Caption = '&Novo...'
+        Caption = '&Novo'
         OnClick = Image101Click
       end
       object MenuItem62: TMenuItem
-        Caption = '&Alterar...'
+        Caption = '&Alterar'
         OnClick = Image106Click
       end
       object MenuItem63: TMenuItem
-        Caption = 'E&xcluir...'
+        Caption = 'E&xcluir'
         OnClick = Image102Click
       end
       object N44: TMenuItem
         Caption = '-'
       end
       object Receberconvnio1: TMenuItem
-        Caption = 'Receber conv'#234'nio...'
+        Caption = 'Receber conv'#234'nio'
         OnClick = Receberconvnio1Click
       end
       object Acertodecontasde1: TMenuItem
@@ -13752,25 +13752,26 @@ object Form7: TForm7
       end
     end
     object MenuItem64: TMenuItem
-      Caption = '&Procura'
+      Caption = '&Procurar'
       OnClick = Image103Click
     end
     object MenuItem65: TMenuItem
-      Caption = '&Caractere'
+      Caption = '&Fonte'
       OnClick = Image6Click
     end
-    object MenuItem66: TMenuItem
-      Caption = '?'
-      object Ajuda5: TMenuItem
-        Caption = 'Ajuda'
+    object miAjudaReceber: TMenuItem
+      Caption = 'Ajuda'
+      object miExibirAjudaReceber: TMenuItem
+        Caption = 'Exibir ajuda'
         OnClick = miExibirAjudaCaixaClick
       end
-      object N33: TMenuItem
-        Caption = '-'
+      object miTermoUsoReceber: TMenuItem
+        Caption = 'Termo de uso'
+        OnClick = miTermoUsoReceberClick
       end
-      object Sobreoprograma6: TMenuItem
-        Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma6Click
+      object miSobreSistemaReceber: TMenuItem
+        Caption = 'Sobre o sistema'
+        OnClick = miSobreSistemaReceberClick
       end
     end
   end
@@ -19644,7 +19645,7 @@ object Form7: TForm7
       end
       object miSobreSistemaOS: TMenuItem
         Caption = 'Sobre o sistema'
-        OnClick = Sobreoprograma6Click
+        OnClick = miSobreSistemaReceberClick
       end
     end
   end

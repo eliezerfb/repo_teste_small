@@ -185,7 +185,7 @@ type
     MenuItem63: TMenuItem;
     MenuItem64: TMenuItem;
     MenuItem65: TMenuItem;
-    MenuItem66: TMenuItem;
+    miAjudaReceber: TMenuItem;
     mmVendedor: TMainMenu;
     MenuItem78: TMenuItem;
     MenuItem79: TMenuItem;
@@ -283,15 +283,15 @@ type
     miSobreSistemaClifor: TMenuItem;
     miExibirAjuda: TMenuItem;
     ApplicationHelpContext11: TMenuItem;
-    Ajuda5: TMenuItem;
+    miExibirAjudaReceber: TMenuItem;
     Ajuda7: TMenuItem;
     Ajuda9: TMenuItem;
     miTermoUsoEstoque: TMenuItem;
     miSobreSistemaEstoque: TMenuItem;
     N32: TMenuItem;
     Sobreoprograma5: TMenuItem;
-    N33: TMenuItem;
-    Sobreoprograma6: TMenuItem;
+    miTermoUsoReceber: TMenuItem;
+    miSobreSistemaReceber: TMenuItem;
     N34: TMenuItem;
     Sobreoprograma8: TMenuItem;
     N36: TMenuItem;
@@ -738,7 +738,6 @@ type
     ibDataSet3NF: TIBStringField;
     ibDataSet3GARANTIA: TDateField;
     Grade1: TMenuItem;
-    N29: TMenuItem;
     Cartadecobrana1: TMenuItem;
     Imprimiretiquetaparacobrana1: TMenuItem;
     Imprimircartadecobrana1: TMenuItem;
@@ -1639,6 +1638,7 @@ type
     miRelatoriosClifor: TMenuItem;
     miRelatoriosEstoque: TMenuItem;
     miExcluirOS: TMenuItem;
+    Relatrios1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -1671,7 +1671,7 @@ type
     procedure Sobreoprograma3Click(Sender: TObject);
     procedure miSobreSistemaEstoqueClick(Sender: TObject);
     procedure Sobreoprograma5Click(Sender: TObject);
-    procedure Sobreoprograma6Click(Sender: TObject);
+    procedure miSobreSistemaReceberClick(Sender: TObject);
     procedure Sobreoprograma7Click(Sender: TObject);
     procedure Sobreoprograma8Click(Sender: TObject);
     procedure Sobreoprograma9Click(Sender: TObject);
@@ -2335,6 +2335,7 @@ type
     procedure miTermoUsoCliforClick(Sender: TObject);
     procedure miTermoUsoEstoqueClick(Sender: TObject);
     procedure miExcluirOSClick(Sender: TObject);
+    procedure miTermoUsoReceberClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -9404,7 +9405,7 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma6Click(Sender: TObject);
+procedure TForm7.miSobreSistemaReceberClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
@@ -30803,6 +30804,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoOSClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoReceberClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;
