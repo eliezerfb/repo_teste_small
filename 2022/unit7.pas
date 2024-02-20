@@ -1117,21 +1117,20 @@ type
     ibDataSet14CSOSN: TIBStringField;
     IBDataSet97: TIBDataSet;
     DataSource97: TDataSource;
-    MainMenu13: TMainMenu;
+    mmOrcamento: TMainMenu;
     MenuItem14: TMenuItem;
     MenuItem16: TMenuItem;
     MenuItem17: TMenuItem;
     MenuItem18: TMenuItem;
     MenuItem104: TMenuItem;
     MenuItem105: TMenuItem;
-    MenuItem124: TMenuItem;
-    MenuItem127: TMenuItem;
-    MenuItem133: TMenuItem;
-    MenuItem134: TMenuItem;
+    miAjudaOrcamento: TMenuItem;
+    miExibirAjudaOrcamento: TMenuItem;
+    miTermoUsoOrcamento: TMenuItem;
+    miSobreSistemaOrcamento: TMenuItem;
     GerarNotaFiscalSrie12: TMenuItem;
     N54: TMenuItem;
     GerarNotaFiscalSrie22: TMenuItem;
-    N55: TMenuItem;
     Relatriodeoramentospendentes2: TMenuItem;
     ibDataSet4ENCRYPTHASH: TIBStringField;
     ibDataSet27ITEM: TIBStringField;
@@ -1651,6 +1650,26 @@ type
     Alterar2: TMenuItem;
     Fonte1: TMenuItem;
     Procu1: TMenuItem;
+    miRelatoriosOrcamento: TMenuItem;
+    miEditarOrcamento: TMenuItem;
+    miNovoOrcamento: TMenuItem;
+    miAlterarOrcamento: TMenuItem;
+    miExcluirOrcamento: TMenuItem;
+    mmGrupos: TMainMenu;
+    MenuItem11: TMenuItem;
+    MenuItem99: TMenuItem;
+    MenuItem116: TMenuItem;
+    MenuItem117: TMenuItem;
+    MenuItem122: TMenuItem;
+    MenuItem124: TMenuItem;
+    MenuItem125: TMenuItem;
+    MenuItem126: TMenuItem;
+    MenuItem138: TMenuItem;
+    MenuItem139: TMenuItem;
+    miAjudaGrupo: TMenuItem;
+    miExibirAjudaGrupo: TMenuItem;
+    miTermoUsoGrupo: TMenuItem;
+    miSobreSistemaGrupo: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2360,6 +2379,8 @@ type
     procedure miTermoUsoParamTributaClick(Sender: TObject);
     procedure miTermoUsoSituacaoOSClick(Sender: TObject);
     procedure miTermoUsoServicoClick(Sender: TObject);
+    procedure miTermoUsoOrcamentoClick(Sender: TObject);
+    procedure miTermoUsoGrupoClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -30842,7 +30863,17 @@ begin
   AbreHelpTermoUso;
 end;
 
+procedure TForm7.miTermoUsoGrupoClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
 procedure TForm7.miTermoUsoICMClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoOrcamentoClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;
@@ -34315,7 +34346,7 @@ begin
     iCampos                := 8;
 
     // Menu
-    Form7.Menu         := MainMenu13;
+    Form7.Menu         := mmOrcamento;
 
     // Arquivo
     ArquivoAberto          := DataSource97.Dataset;

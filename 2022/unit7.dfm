@@ -246,8 +246,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label21: TLabel
-    Left = 512
-    Top = 660
+    Left = 574
+    Top = 663
     Width = 37
     Height = 13
     Caption = 'Grupos '
@@ -21225,20 +21225,13 @@ object Form7: TForm7
     Left = 905
     Top = 935
   end
-  object MainMenu13: TMainMenu
+  object mmOrcamento: TMainMenu
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 446
     Top = 878
     object MenuItem14: TMenuItem
       Caption = '&Arquivo'
-      object Relatriodeoramentospendentes2: TMenuItem
-        Caption = 'Relat'#243'rio de or'#231'amentos pendentes'
-        OnClick = Relatriodeoramentospendentes2Click
-      end
-      object N55: TMenuItem
-        Caption = '-'
-      end
       object GerarNotaFiscalSrie12: TMenuItem
         Caption = 'Gerar Nota Fiscal S'#233'rie 1'
         OnClick = GerarNotaFiscalSrie12Click
@@ -21273,9 +21266,27 @@ object Form7: TForm7
         OnClick = Sair1Click
       end
     end
-    object MenuItem104: TMenuItem
-      Caption = '&Procura'
-      OnClick = Image103Click
+    object miRelatoriosOrcamento: TMenuItem
+      Caption = '&Relat'#243'rios'
+      object Relatriodeoramentospendentes2: TMenuItem
+        Caption = 'Or'#231'amentos pendentes'
+        OnClick = Relatriodeoramentospendentes2Click
+      end
+    end
+    object miEditarOrcamento: TMenuItem
+      Caption = '&Editar'
+      object miNovoOrcamento: TMenuItem
+        Caption = '&Novo'
+        OnClick = Image101Click
+      end
+      object miAlterarOrcamento: TMenuItem
+        Caption = '&Alterar'
+        OnClick = DBGrid1DblClick
+      end
+      object miExcluirOrcamento: TMenuItem
+        Caption = '&Excluir'
+        OnClick = Image102Click
+      end
     end
     object Exibir8: TMenuItem
       Caption = 'E&xibir'
@@ -21292,21 +21303,26 @@ object Form7: TForm7
         OnClick = Oramentosfinalizados1Click
       end
     end
+    object MenuItem104: TMenuItem
+      Caption = '&Procurar'
+      OnClick = Image103Click
+    end
     object MenuItem105: TMenuItem
-      Caption = '&Caractere'
+      Caption = '&Fonte'
       OnClick = Image6Click
     end
-    object MenuItem124: TMenuItem
-      Caption = '?               '
-      object MenuItem127: TMenuItem
-        Caption = 'Ajuda'
+    object miAjudaOrcamento: TMenuItem
+      Caption = 'Ajuda'
+      object miExibirAjudaOrcamento: TMenuItem
+        Caption = 'Exibir ajuda'
         OnClick = miExibirAjudaICMClick
       end
-      object MenuItem133: TMenuItem
-        Caption = '-'
+      object miTermoUsoOrcamento: TMenuItem
+        Caption = 'Termos de uso'
+        OnClick = miTermoUsoOrcamentoClick
       end
-      object MenuItem134: TMenuItem
-        Caption = 'Sobre o programa...'
+      object miSobreSistemaOrcamento: TMenuItem
+        Caption = 'Sobre o sistema'
         OnClick = miSobreSistemaPlanoContasClick
       end
     end
@@ -23099,6 +23115,64 @@ object Form7: TForm7
       object miSobreSistemaSituacaoOS: TMenuItem
         Caption = 'Sobre o sistema'
         OnClick = miSobreSistemaVendedorClick
+      end
+    end
+  end
+  object mmGrupos: TMainMenu
+    AutoHotkeys = maManual
+    OwnerDraw = True
+    Left = 515
+    Top = 631
+    object MenuItem11: TMenuItem
+      Caption = '&Arquivo'
+      object MenuItem99: TMenuItem
+        Caption = '&Imprimir...'
+        OnClick = imgImprimirClick
+      end
+      object MenuItem116: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem117: TMenuItem
+        Caption = '&Sair'
+        OnClick = Sair1Click
+      end
+    end
+    object MenuItem122: TMenuItem
+      Caption = '&Editar'
+      object MenuItem124: TMenuItem
+        Caption = '&Novo'
+        OnClick = Image101Click
+      end
+      object MenuItem125: TMenuItem
+        Caption = '&Alterar'
+        OnClick = Image106Click
+      end
+      object MenuItem126: TMenuItem
+        Caption = '&Excluir'
+        OnClick = Image102Click
+      end
+    end
+    object MenuItem138: TMenuItem
+      Caption = '&Procurar'
+      OnClick = Image103Click
+    end
+    object MenuItem139: TMenuItem
+      Caption = '&Fonte'
+      OnClick = Image6Click
+    end
+    object miAjudaGrupo: TMenuItem
+      Caption = 'Ajuda'
+      object miExibirAjudaGrupo: TMenuItem
+        Caption = 'Exibir ajuda'
+        OnClick = miExibirAjudaICMClick
+      end
+      object miTermoUsoGrupo: TMenuItem
+        Caption = 'Termos de uso'
+        OnClick = miTermoUsoGrupoClick
+      end
+      object miSobreSistemaGrupo: TMenuItem
+        Caption = 'Sobre o sistema'
+        OnClick = miSobreSistemaPlanoContasClick
       end
     end
   end
