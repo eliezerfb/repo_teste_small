@@ -263,7 +263,7 @@ type
     MenuItem52: TMenuItem;
     MenuItem53: TMenuItem;
     MenuItem54: TMenuItem;
-    MenuItem55: TMenuItem;
+    miAjudaPlanoContas: TMenuItem;
     ibDataSet13: TibDataSet;
     DataSource13: TDataSource;
     ibDataSet13NOME: TIBStringField;
@@ -281,11 +281,11 @@ type
     miExibirAjudaClifor: TMenuItem;
     miTermoUsoClifor: TMenuItem;
     miSobreSistemaClifor: TMenuItem;
-    miExibirAjuda: TMenuItem;
+    miExibirAjudaEstoque: TMenuItem;
     ApplicationHelpContext11: TMenuItem;
     miExibirAjudaReceber: TMenuItem;
     miExibirAjudaVendedor: TMenuItem;
-    Ajuda9: TMenuItem;
+    miExibirAjudaPlanoContas: TMenuItem;
     miTermoUsoEstoque: TMenuItem;
     miSobreSistemaEstoque: TMenuItem;
     N32: TMenuItem;
@@ -294,8 +294,8 @@ type
     miSobreSistemaReceber: TMenuItem;
     miTermoUsoVendedor: TMenuItem;
     miSobreSistemaVendedor: TMenuItem;
-    N36: TMenuItem;
-    Sobreoprograma10: TMenuItem;
+    miTermoUsoPlanoContas: TMenuItem;
+    miSobreSistemaPlanoContas: TMenuItem;
     ibDataSet14: TibDataSet;
     DataSource14: TDataSource;
     Label14: TLabel;
@@ -547,7 +547,6 @@ type
     ibDataSet19SERIE: TIBStringField;
     ibDataSet9NOME: TIBStringField;
     ibDataSet7CONTA: TIBStringField;
-    N60: TMenuItem;
     Analisegrafica1: TMenuItem;
     N61: TMenuItem;
     Analisegrficadascontas1: TMenuItem;
@@ -1640,6 +1639,7 @@ type
     miExcluirOS: TMenuItem;
     Relatrios1: TMenuItem;
     Relatrios2: TMenuItem;
+    Relatrios3: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -1676,7 +1676,7 @@ type
     procedure Sobreoprograma7Click(Sender: TObject);
     procedure miSobreSistemaVendedorClick(Sender: TObject);
     procedure Sobreoprograma9Click(Sender: TObject);
-    procedure Sobreoprograma10Click(Sender: TObject);
+    procedure miSobreSistemaPlanoContasClick(Sender: TObject);
     procedure miSobreSistemaCliforClick(Sender: TObject);
     procedure ibDataSet15MERCADORIAChange(Sender: TField);
     procedure FormCreate(Sender: TObject);
@@ -1770,7 +1770,7 @@ type
     procedure CurvaABCdoestoque1Click(Sender: TObject);
     procedure Duplicata1Click(Sender: TObject);
     procedure Carn1Click(Sender: TObject);
-    procedure Ajuda9Click(Sender: TObject);
+    procedure miExibirAjudaPlanoContasClick(Sender: TObject);
     procedure miExibirAjudaVendedorClick(Sender: TObject);
     procedure ibDataSet2OBSSetText(Sender: TField; const Text: String);
     procedure Analisegrafica1Click(Sender: TObject);
@@ -2338,6 +2338,7 @@ type
     procedure miExcluirOSClick(Sender: TObject);
     procedure miTermoUsoReceberClick(Sender: TObject);
     procedure miTermoUsoVendedorClick(Sender: TObject);
+    procedure miTermoUsoPlanoContasClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -9427,7 +9428,7 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma10Click(Sender: TObject);
+procedure TForm7.miSobreSistemaPlanoContasClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
@@ -15290,7 +15291,7 @@ begin
   ShellExecute( 0, 'Open', 'smalldupl.exe',pChar(Form7.ibDataSet7DOCUMENTO.AsString+' '+'2'), '', SW_SHOW);
 end;
 
-procedure TForm7.Ajuda9Click(Sender: TObject);
+procedure TForm7.miExibirAjudaPlanoContasClick(Sender: TObject);
 begin
   //
   HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(sAjuda)));
@@ -30806,6 +30807,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoOSClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoPlanoContasClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;

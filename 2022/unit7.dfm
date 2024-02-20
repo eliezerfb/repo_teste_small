@@ -13341,7 +13341,7 @@ object Form7: TForm7
     end
     object miAjudaEstoque: TMenuItem
       Caption = 'Ajuda'
-      object miExibirAjuda: TMenuItem
+      object miExibirAjudaEstoque: TMenuItem
         Caption = 'Exibir ajuda'
         OnClick = miExibirAjudaCaixaClick
       end
@@ -14122,6 +14122,20 @@ object Form7: TForm7
     Top = 580
     object MenuItem45: TMenuItem
       Caption = '&Arquivo'
+      object MenuItem46: TMenuItem
+        Caption = '&Imprimir'
+        OnClick = imgImprimirClick
+      end
+      object MenuItem47: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem48: TMenuItem
+        Caption = '&Sair'
+        OnClick = Sair1Click
+      end
+    end
+    object Relatrios3: TMenuItem
+      Caption = '&Relat'#243'rios'
       object Balancetegerencial1: TMenuItem
         Caption = 'Balancete gerencial mensal'
         OnClick = Balancetegerencial1Click
@@ -14145,56 +14159,43 @@ object Form7: TForm7
         Caption = 'An'#225'lise gr'#225'fica das contas'
         OnClick = Analisegrafica1Click
       end
-      object N60: TMenuItem
-        Caption = '-'
-      end
-      object MenuItem46: TMenuItem
-        Caption = '&Imprimir...'
-        OnClick = imgImprimirClick
-      end
-      object MenuItem47: TMenuItem
-        Caption = '-'
-      end
-      object MenuItem48: TMenuItem
-        Caption = '&Sair'
-        OnClick = Sair1Click
-      end
     end
     object MenuItem49: TMenuItem
-      Caption = '&Edita'
+      Caption = '&Editar'
       object MenuItem50: TMenuItem
-        Caption = '&Novo...'
+        Caption = '&Novo'
         OnClick = Image101Click
       end
       object MenuItem51: TMenuItem
-        Caption = '&Alterar...'
+        Caption = '&Alterar'
         OnClick = Image106Click
       end
       object MenuItem52: TMenuItem
-        Caption = 'E&xcluir...'
+        Caption = 'E&xcluir'
         OnClick = Image102Click
       end
     end
     object MenuItem53: TMenuItem
-      Caption = '&Procura'
+      Caption = '&Procurar'
       OnClick = Image103Click
     end
     object MenuItem54: TMenuItem
-      Caption = '&Caractere'
+      Caption = '&Fonte'
       OnClick = Image6Click
     end
-    object MenuItem55: TMenuItem
-      Caption = '?'
-      object Ajuda9: TMenuItem
-        Caption = 'Ajuda'
-        OnClick = Ajuda9Click
+    object miAjudaPlanoContas: TMenuItem
+      Caption = 'Ajuda'
+      object miExibirAjudaPlanoContas: TMenuItem
+        Caption = 'Exibir ajuda'
+        OnClick = miExibirAjudaPlanoContasClick
       end
-      object N36: TMenuItem
-        Caption = '-'
+      object miTermoUsoPlanoContas: TMenuItem
+        Caption = 'Termo de uso'
+        OnClick = miTermoUsoPlanoContasClick
       end
-      object Sobreoprograma10: TMenuItem
-        Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma10Click
+      object miSobreSistemaPlanoContas: TMenuItem
+        Caption = 'Sobre o sistema'
+        OnClick = miSobreSistemaPlanoContasClick
       end
     end
   end
@@ -15030,7 +15031,7 @@ object Form7: TForm7
       end
       object MenuItem121: TMenuItem
         Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma10Click
+        OnClick = miSobreSistemaPlanoContasClick
       end
     end
   end
@@ -21280,7 +21281,7 @@ object Form7: TForm7
       end
       object MenuItem134: TMenuItem
         Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma10Click
+        OnClick = miSobreSistemaPlanoContasClick
       end
     end
   end
@@ -22012,7 +22013,7 @@ object Form7: TForm7
       end
       object MenuItem152: TMenuItem
         Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma10Click
+        OnClick = miSobreSistemaPlanoContasClick
       end
     end
   end
