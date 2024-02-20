@@ -2401,7 +2401,17 @@ begin
       ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2023-12-26 Fim}
-  
+
+
+  {Mauricio Parizotto 2024-02-19 Inicio}
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'AUDIT0RIA', 'HISTORICO') < 1000 then
+  begin
+    if ExecutaComando('ALTER TABLE AUDIT0RIA ALTER COLUMN HISTORICO TYPE VARCHAR(1000);') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-02-19 Fim}
+
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 

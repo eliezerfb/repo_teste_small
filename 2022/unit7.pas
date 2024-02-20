@@ -4193,7 +4193,8 @@ begin
         
         Form7.ibDataSet1.Append;
         Form7.ibDataSet1DATA.Value      := Form7.ibDataSet15EMISSAO.Value;
-        Form7.ibDataSet1HISTORICO.Value := 'Nota Fiscal: '+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+' de '+Form7.ibDataSet15CLIENTE.asString;
+        //Form7.ibDataSet1HISTORICO.Value := 'Nota Fiscal: '+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+' de '+Form7.ibDataSet15CLIENTE.asString; Mauricio Parizotto 2024-02-19
+        Form7.ibDataSet1HISTORICO.Value := Copy('Nota Fiscal: '+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+' de '+Form7.ibDataSet15CLIENTE.asString,1,45);
         Form7.ibDataSet1ENTRADA.Value   := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
         Form7.ibDataSet1NOME.AsString   := Form7.ibDataSet12NOME.AsString;
         Form7.ibDataSet1.Post;

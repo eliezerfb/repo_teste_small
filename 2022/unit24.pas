@@ -503,10 +503,11 @@ begin
       Form7.ibDataSet12.First;
       Form7.ibDataSet1.Append;
       Form7.ibDataSet1DATA.Value      := Form7.ibDataSet24EMISSAO.Value;
-      Form7.ibDataSet1HISTORICO.Value := 'Nota Fiscal: '+Copy(Form7.ibDataSet24NUMERONF.AsString,1,9)+' de '+Form7.ibDataSet24FORNECEDOR.asString;
+      //Form7.ibDataSet1HISTORICO.Value := 'Nota Fiscal: '+Copy(Form7.ibDataSet24NUMERONF.AsString,1,9)+' de '+Form7.ibDataSet24FORNECEDOR.asString; Mauricio Parizotto 2024-02-19
+      Form7.ibDataSet1HISTORICO.Value := Copy('Nota Fiscal: '+Copy(Form7.ibDataSet24NUMERONF.AsString,1,9)+' de '+Form7.ibDataSet24FORNECEDOR.asString,1,45);
       Form7.ibDataSet1SAIDA.Value     := Form7.ibDataSet24TOTAL.Value;
       Form7.ibDataSet1.Post;
-      //
+
       if (Form7.ibDataSet14CONTA.AsString = '') then
       begin
         if (Form7.ibDataSet24TOTAL.AsFloat>0) then
