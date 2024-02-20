@@ -88,7 +88,7 @@ type
     Edita1: TMenuItem;
     Procura1: TMenuItem;
     Caractere1: TMenuItem;
-    N3: TMenuItem;
+    miAjudaCaixa: TMenuItem;
     DataSource1: TDataSource;
     ibDataSet1: TibDataSet;
     FontDialog1: TFontDialog;
@@ -275,9 +275,9 @@ type
     ibDataSet13CGC: TIBStringField;
     ibDataSet13TELEFO: TIBStringField;
     Label13: TLabel;
-    Ajuda1: TMenuItem;
-    N18: TMenuItem;
-    Sobreoprograma1: TMenuItem;
+    miExibirAjudaCaixa: TMenuItem;
+    miTermoUsoCaixa: TMenuItem;
+    miSobreSistema: TMenuItem;
     ajuda2: TMenuItem;
     N20: TMenuItem;
     Sobreoprograma2: TMenuItem;
@@ -657,7 +657,6 @@ type
     N24: TMenuItem;
     Exibir1: TMenuItem;
     Mostrartodososclientesefornecedores1: TMenuItem;
-    N25: TMenuItem;
     Exibir2: TMenuItem;
     odas1: TMenuItem;
     Receber2: TMenuItem;
@@ -1638,6 +1637,7 @@ type
     miTermoUsoCompras: TMenuItem;
     miTermoUsoOS: TMenuItem;
     miRelatoriosOS: TMenuItem;
+    miRelatoriosCaixa: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -1665,8 +1665,8 @@ type
     procedure Listadepreos1Click(Sender: TObject);
     procedure Etiquetas1Click(Sender: TObject);
     procedure Contasbancrias1Click(Sender: TObject);
-    procedure Sobreoprograma1Click(Sender: TObject);
-    procedure Ajuda1Click(Sender: TObject);
+    procedure miSobreSistemaClick(Sender: TObject);
+    procedure miExibirAjudaCaixaClick(Sender: TObject);
     procedure Sobreoprograma3Click(Sender: TObject);
     procedure Sobreoprograma4Click(Sender: TObject);
     procedure Sobreoprograma5Click(Sender: TObject);
@@ -2330,6 +2330,7 @@ type
     procedure miTermoUsoVendasClick(Sender: TObject);
     procedure miTermoUsoComprasClick(Sender: TObject);
     procedure miTermoUsoOSClick(Sender: TObject);
+    procedure miTermoUsoCaixaClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -9369,12 +9370,12 @@ begin
   Form7.Show;
 end;
 
-procedure TForm7.Sobreoprograma1Click(Sender: TObject);
+procedure TForm7.miSobreSistemaClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Ajuda1Click(Sender: TObject);
+procedure TForm7.miExibirAjudaCaixaClick(Sender: TObject);
 begin
   HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(sAjuda)));
 end;
@@ -30770,6 +30771,11 @@ begin
   end;
   }
   //
+end;
+
+procedure TForm7.miTermoUsoCaixaClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
 end;
 
 procedure TForm7.miTermoUsoComprasClick(Sender: TObject);
