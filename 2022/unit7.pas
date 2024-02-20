@@ -150,7 +150,7 @@ type
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
     MenuItem10: TMenuItem;
-    MenuItem11: TMenuItem;
+    miAjudaClifor: TMenuItem;
     mmEstoque: TMainMenu;
     MenuItem23: TMenuItem;
     MenuItem24: TMenuItem;
@@ -278,9 +278,9 @@ type
     miExibirAjudaCaixa: TMenuItem;
     miTermoUsoCaixa: TMenuItem;
     miSobreSistema: TMenuItem;
-    ajuda2: TMenuItem;
-    N20: TMenuItem;
-    Sobreoprograma2: TMenuItem;
+    miExibirAjudaClifor: TMenuItem;
+    miTermoUsoClifor: TMenuItem;
+    miSobreSistemaClifor: TMenuItem;
     Ajuda4: TMenuItem;
     ApplicationHelpContext11: TMenuItem;
     Ajuda5: TMenuItem;
@@ -653,7 +653,6 @@ type
     DataSource8: TDataSource;
     N21: TMenuItem;
     ibDataSet4LOCAL: TIBStringField;
-    N22: TMenuItem;
     N24: TMenuItem;
     Exibir1: TMenuItem;
     Mostrartodososclientesefornecedores1: TMenuItem;
@@ -1638,6 +1637,7 @@ type
     miTermoUsoOS: TMenuItem;
     miRelatoriosOS: TMenuItem;
     miRelatoriosCaixa: TMenuItem;
+    miRelatoriosClifor: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -1675,7 +1675,7 @@ type
     procedure Sobreoprograma8Click(Sender: TObject);
     procedure Sobreoprograma9Click(Sender: TObject);
     procedure Sobreoprograma10Click(Sender: TObject);
-    procedure Sobreoprograma2Click(Sender: TObject);
+    procedure miSobreSistemaCliforClick(Sender: TObject);
     procedure ibDataSet15MERCADORIAChange(Sender: TField);
     procedure FormCreate(Sender: TObject);
     procedure ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -2331,6 +2331,7 @@ type
     procedure miTermoUsoComprasClick(Sender: TObject);
     procedure miTermoUsoOSClick(Sender: TObject);
     procedure miTermoUsoCaixaClick(Sender: TObject);
+    procedure miTermoUsoCliforClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -9420,7 +9421,7 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma2Click(Sender: TObject);
+procedure TForm7.miSobreSistemaCliforClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
@@ -30774,6 +30775,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoCaixaClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoCliforClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;

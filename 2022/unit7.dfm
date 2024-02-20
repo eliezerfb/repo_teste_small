@@ -12884,20 +12884,34 @@ object Form7: TForm7
         Caption = '-'
       end
       object Cartaparamaladireta1: TMenuItem
-        Caption = 'Escrever carta para &mala direta...'
+        Caption = 'Escrever carta para &mala direta'
         OnClick = Cartaparamaladireta1Click
       end
       object Etiquetaparamaladireta1: TMenuItem
-        Caption = 'Imprimir e&tiqueta para mala direta...'
+        Caption = 'Imprimir e&tiqueta para mala direta'
         OnClick = Etiquetaparamaladireta1Click
       end
       object Imprimircarta1: TMenuItem
-        Caption = 'Imprimir &carta para mala direta...'
+        Caption = 'Imprimir &carta para mala direta'
         OnClick = Imprimircarta1Click
       end
-      object N4: TMenuItem
+      object N24: TMenuItem
         Caption = '-'
       end
+      object MenuItem2: TMenuItem
+        Caption = '&Imprimir'
+        OnClick = imgImprimirClick
+      end
+      object MenuItem3: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem4: TMenuItem
+        Caption = '&Sair'
+        OnClick = Sair1Click
+      end
+    end
+    object miRelatoriosClifor: TMenuItem
+      Caption = 'Relat'#243'rios'
       object Histrico1: TMenuItem
         Caption = 'Hist'#243'rico de:'
         OnClick = Histrico1Click
@@ -12907,26 +12921,26 @@ object Form7: TForm7
         OnClick = vendasparaClick
       end
       object Resumodevendas1: TMenuItem
-        Caption = 'Resumo de vendas...'
+        Caption = 'Resumo de vendas'
         OnClick = Resumodevendas1Click
       end
       object Resumodascomrpas1: TMenuItem
-        Caption = 'Resumo das compras...'
+        Caption = 'Resumo das compras'
         OnClick = Resumodascomrpas1Click
       end
-      object N22: TMenuItem
+      object N4: TMenuItem
         Caption = '-'
       end
       object CurvaABC1: TMenuItem
-        Caption = 'Curva ABC de clientes...'
+        Caption = 'Curva ABC de clientes'
         OnClick = CurvaABC1Click
       end
       object Ranquingdeclientes1: TMenuItem
-        Caption = 'Ranking de clientes...'
+        Caption = 'Ranking de clientes'
         OnClick = Ranquingdeclientes1Click
       end
       object Rankingdedevedores1: TMenuItem
-        Caption = 'Ranking de devedores...'
+        Caption = 'Ranking de devedores'
         OnClick = Rankingdedevedores1Click
       end
       object lbumdefotografias1: TMenuItem
@@ -12941,44 +12955,30 @@ object Form7: TForm7
         OnClick = Clientescontactadospormsporvendedor1Click
       end
       object Clientescontactadospordia1: TMenuItem
-        Caption = 'Clientes contactados por dia...'
+        Caption = 'Clientes contactados por dia'
         OnClick = Clientescontactadospordia1Click
       end
       object Clientescontactadospordiaeporvendedor1: TMenuItem
-        Caption = 'Clientes contactados por dia e por vendedor...'
+        Caption = 'Clientes contactados por dia e por vendedor'
         OnClick = Clientescontactadospordiaeporvendedor1Click
       end
       object Produtividadedecontatos1: TMenuItem
-        Caption = 'Contatos de hora em hora...'
+        Caption = 'Contatos de hora em hora'
         OnClick = Produtividadedecontatos1Click
-      end
-      object N24: TMenuItem
-        Caption = '-'
-      end
-      object MenuItem2: TMenuItem
-        Caption = '&Imprimir...'
-        OnClick = imgImprimirClick
-      end
-      object MenuItem3: TMenuItem
-        Caption = '-'
-      end
-      object MenuItem4: TMenuItem
-        Caption = '&Sair'
-        OnClick = Sair1Click
       end
     end
     object MenuItem5: TMenuItem
-      Caption = '&Edita'
+      Caption = '&Editar'
       object MenuItem6: TMenuItem
-        Caption = '&Novo...'
+        Caption = '&Novo'
         OnClick = Image101Click
       end
       object MenuItem7: TMenuItem
-        Caption = '&Alterar...'
+        Caption = '&Alterar'
         OnClick = Image106Click
       end
       object MenuItem8: TMenuItem
-        Caption = 'E&xcluir...'
+        Caption = 'E&xcluir'
         OnClick = Image102Click
       end
       object N40: TMenuItem
@@ -13084,25 +13084,26 @@ object Form7: TForm7
       end
     end
     object MenuItem9: TMenuItem
-      Caption = '&Procura'
+      Caption = '&Procurar'
       OnClick = Image103Click
     end
     object MenuItem10: TMenuItem
-      Caption = '&Caractere'
+      Caption = '&Fonte'
       OnClick = Image6Click
     end
-    object MenuItem11: TMenuItem
-      Caption = '?'
-      object ajuda2: TMenuItem
-        Caption = 'Ajuda'
+    object miAjudaClifor: TMenuItem
+      Caption = 'Ajuda'
+      object miExibirAjudaClifor: TMenuItem
+        Caption = 'Exibir ajuda'
         OnClick = miExibirAjudaCaixaClick
       end
-      object N20: TMenuItem
-        Caption = '-'
+      object miTermoUsoClifor: TMenuItem
+        Caption = 'Termo de uso'
+        OnClick = miTermoUsoCliforClick
       end
-      object Sobreoprograma2: TMenuItem
-        Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma2Click
+      object miSobreSistemaClifor: TMenuItem
+        Caption = 'Sobre o sistema'
+        OnClick = miSobreSistemaCliforClick
       end
     end
   end
