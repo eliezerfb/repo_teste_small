@@ -13993,7 +13993,7 @@ object Form1: TForm1
       Caption = '-'
     end
     object SobreoPrograma1: TMenuItem
-      Caption = 'Sobre o &Programa...'
+      Caption = 'Sobre o sistema'
       OnClick = Sobreoprograma1Click
     end
   end
