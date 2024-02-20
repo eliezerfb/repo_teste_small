@@ -19423,17 +19423,6 @@ object Form7: TForm7
           OnClick = Cadastrodesituaes1Click
         end
       end
-      object N12: TMenuItem
-        Caption = '-'
-      end
-      object RelatriodepeasemOSabertas1: TMenuItem
-        Caption = 'Relat'#243'rio de pe'#231'as em OS abertas...'
-        OnClick = RelatriodepeasemOSabertas1Click
-      end
-      object Relatriodetotaldeserviosporvendedor1: TMenuItem
-        Caption = 'Relat'#243'rio de total de servi'#231'os por t'#233'cnico...'
-        OnClick = Relatriodetotaldeserviosporvendedor1Click
-      end
       object N27: TMenuItem
         Caption = '-'
       end
@@ -19479,7 +19468,7 @@ object Form7: TForm7
         Caption = '-'
       end
       object MenuItem20: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object MenuItem21: TMenuItem
@@ -19490,15 +19479,26 @@ object Form7: TForm7
         OnClick = Sair1Click
       end
     end
+    object miRelatoriosOS: TMenuItem
+      Caption = 'Relat'#243'rios'
+      object RelatriodepeasemOSabertas1: TMenuItem
+        Caption = 'Relat'#243'rio de pe'#231'as em OS abertas'
+        OnClick = RelatriodepeasemOSabertas1Click
+      end
+      object Relatriodetotaldeserviosporvendedor1: TMenuItem
+        Caption = 'Relat'#243'rio de total de servi'#231'os por t'#233'cnico'
+        OnClick = Relatriodetotaldeserviosporvendedor1Click
+      end
+    end
     object MenuItem100: TMenuItem
-      Caption = '&Edita'
+      Caption = '&Editar'
       OnClick = MenuItem60Click
       object MenuItem101: TMenuItem
-        Caption = '&Novo...'
+        Caption = '&Novo'
         OnClick = Image101Click
       end
       object MenuItem102: TMenuItem
-        Caption = '&Alterar...'
+        Caption = '&Alterar'
         OnClick = Image106Click
       end
     end
@@ -19618,24 +19618,25 @@ object Form7: TForm7
       end
     end
     object MenuItem153: TMenuItem
-      Caption = '&Procura'
+      Caption = '&Procurar'
       OnClick = Image103Click
     end
     object MenuItem154: TMenuItem
-      Caption = '&Caractere'
+      Caption = '&Fonte'
       OnClick = Image6Click
     end
-    object MenuItem155: TMenuItem
-      Caption = '?'
-      object MenuItem156: TMenuItem
-        Caption = 'Ajuda'
+    object miAjudaOS: TMenuItem
+      Caption = 'Ajuda'
+      object miExibirAjudaOS: TMenuItem
+        Caption = 'Exibir ajuda'
         OnClick = Ajuda1Click
       end
-      object MenuItem157: TMenuItem
-        Caption = '-'
+      object miTermoUsoOS: TMenuItem
+        Caption = 'Termos de uso'
+        OnClick = miTermoUsoOSClick
       end
-      object MenuItem158: TMenuItem
-        Caption = 'Sobre o programa...'
+      object miSobreSistemaOS: TMenuItem
+        Caption = 'Sobre o sistema'
         OnClick = Sobreoprograma6Click
       end
     end
