@@ -197,7 +197,7 @@ type
     MenuItem85: TMenuItem;
     MenuItem86: TMenuItem;
     MenuItem87: TMenuItem;
-    MenuItem88: TMenuItem;
+    miAjudaVendedor: TMenuItem;
     Fluxodecaixa2: TMenuItem;
     Cartaparamaladireta1: TMenuItem;
     N4: TMenuItem;
@@ -284,7 +284,7 @@ type
     miExibirAjuda: TMenuItem;
     ApplicationHelpContext11: TMenuItem;
     miExibirAjudaReceber: TMenuItem;
-    Ajuda7: TMenuItem;
+    miExibirAjudaVendedor: TMenuItem;
     Ajuda9: TMenuItem;
     miTermoUsoEstoque: TMenuItem;
     miSobreSistemaEstoque: TMenuItem;
@@ -292,8 +292,8 @@ type
     Sobreoprograma5: TMenuItem;
     miTermoUsoReceber: TMenuItem;
     miSobreSistemaReceber: TMenuItem;
-    N34: TMenuItem;
-    Sobreoprograma8: TMenuItem;
+    miTermoUsoVendedor: TMenuItem;
+    miSobreSistemaVendedor: TMenuItem;
     N36: TMenuItem;
     Sobreoprograma10: TMenuItem;
     ibDataSet14: TibDataSet;
@@ -1639,6 +1639,7 @@ type
     miRelatoriosEstoque: TMenuItem;
     miExcluirOS: TMenuItem;
     Relatrios1: TMenuItem;
+    Relatrios2: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -1673,7 +1674,7 @@ type
     procedure Sobreoprograma5Click(Sender: TObject);
     procedure miSobreSistemaReceberClick(Sender: TObject);
     procedure Sobreoprograma7Click(Sender: TObject);
-    procedure Sobreoprograma8Click(Sender: TObject);
+    procedure miSobreSistemaVendedorClick(Sender: TObject);
     procedure Sobreoprograma9Click(Sender: TObject);
     procedure Sobreoprograma10Click(Sender: TObject);
     procedure miSobreSistemaCliforClick(Sender: TObject);
@@ -1770,7 +1771,7 @@ type
     procedure Duplicata1Click(Sender: TObject);
     procedure Carn1Click(Sender: TObject);
     procedure Ajuda9Click(Sender: TObject);
-    procedure Ajuda7Click(Sender: TObject);
+    procedure miExibirAjudaVendedorClick(Sender: TObject);
     procedure ibDataSet2OBSSetText(Sender: TField; const Text: String);
     procedure Analisegrafica1Click(Sender: TObject);
     procedure ibDataSet4BeforePost(DataSet: TDataSet);
@@ -2336,6 +2337,7 @@ type
     procedure miTermoUsoEstoqueClick(Sender: TObject);
     procedure miExcluirOSClick(Sender: TObject);
     procedure miTermoUsoReceberClick(Sender: TObject);
+    procedure miTermoUsoVendedorClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -9415,7 +9417,7 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma8Click(Sender: TObject);
+procedure TForm7.miSobreSistemaVendedorClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
@@ -15295,7 +15297,7 @@ begin
   //
 end;
 
-procedure TForm7.Ajuda7Click(Sender: TObject);
+procedure TForm7.miExibirAjudaVendedorClick(Sender: TObject);
 begin
   HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(sAjuda)));
 end;
@@ -30814,6 +30816,11 @@ begin
 end;
 
 procedure TForm7.miTermoUsoVendasClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoVendedorClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
 end;

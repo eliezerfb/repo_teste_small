@@ -13782,20 +13782,8 @@ object Form7: TForm7
     Top = 531
     object MenuItem78: TMenuItem
       Caption = '&Arquivo'
-      object Relatriodevendasporvendedor1: TMenuItem
-        Caption = 'Relat'#243'rio de vendas por vendedor...'
-        OnClick = miRelVendasVendedorClick
-      end
-      object Relatriodecomisses1: TMenuItem
-        Caption = 'Relat'#243'rio de comiss'#245'es...'
-        OnClick = Relatriodecomisses1Click
-      end
-      object Relatriodetotaldeserviosportcnico1: TMenuItem
-        Caption = 'Relat'#243'rio de total de servi'#231'os por t'#233'cnico...'
-        OnClick = Relatriodetotaldeserviosporvendedor1Click
-      end
       object MenuItem79: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object MenuItem80: TMenuItem
@@ -13806,41 +13794,57 @@ object Form7: TForm7
         OnClick = Sair1Click
       end
     end
+    object Relatrios2: TMenuItem
+      Caption = '&Relat'#243'rios'
+      object Relatriodevendasporvendedor1: TMenuItem
+        Caption = 'Vendas por vendedor'
+        OnClick = miRelVendasVendedorClick
+      end
+      object Relatriodecomisses1: TMenuItem
+        Caption = 'Comiss'#245'es'
+        OnClick = Relatriodecomisses1Click
+      end
+      object Relatriodetotaldeserviosportcnico1: TMenuItem
+        Caption = 'Total de servi'#231'os por t'#233'cnico'
+        OnClick = Relatriodetotaldeserviosporvendedor1Click
+      end
+    end
     object MenuItem82: TMenuItem
-      Caption = '&Edita'
+      Caption = '&Editar'
       object MenuItem83: TMenuItem
-        Caption = '&Novo...'
+        Caption = '&Novo'
         OnClick = Image101Click
       end
       object MenuItem84: TMenuItem
-        Caption = '&Alterar...'
+        Caption = '&Alterar'
         OnClick = Image106Click
       end
       object MenuItem85: TMenuItem
-        Caption = 'E&xcluir...'
+        Caption = 'E&xcluir'
         OnClick = Image102Click
       end
     end
     object MenuItem86: TMenuItem
-      Caption = '&Procura'
+      Caption = '&Procurar'
       OnClick = Image103Click
     end
     object MenuItem87: TMenuItem
-      Caption = '&Caractere'
+      Caption = '&Fonte'
       OnClick = Image6Click
     end
-    object MenuItem88: TMenuItem
-      Caption = '?'
-      object Ajuda7: TMenuItem
-        Caption = 'Ajuda'
-        OnClick = Ajuda7Click
+    object miAjudaVendedor: TMenuItem
+      Caption = 'Ajuda'
+      object miExibirAjudaVendedor: TMenuItem
+        Caption = 'Exibir ajuda'
+        OnClick = miExibirAjudaVendedorClick
       end
-      object N34: TMenuItem
-        Caption = '-'
+      object miTermoUsoVendedor: TMenuItem
+        Caption = 'Termo de uso'
+        OnClick = miTermoUsoVendedorClick
       end
-      object Sobreoprograma8: TMenuItem
-        Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma8Click
+      object miSobreSistemaVendedor: TMenuItem
+        Caption = 'Sobre o sistema'
+        OnClick = miSobreSistemaVendedorClick
       end
     end
   end
@@ -18435,14 +18439,14 @@ object Form7: TForm7
       Caption = '?'
       object MenuItem122: TMenuItem
         Caption = 'Ajuda'
-        OnClick = Ajuda7Click
+        OnClick = miExibirAjudaVendedorClick
       end
       object MenuItem125: TMenuItem
         Caption = '-'
       end
       object MenuItem126: TMenuItem
         Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma8Click
+        OnClick = miSobreSistemaVendedorClick
       end
     end
   end
@@ -18583,14 +18587,14 @@ object Form7: TForm7
       Caption = '?'
       object MenuItem138: TMenuItem
         Caption = 'Ajuda'
-        OnClick = Ajuda7Click
+        OnClick = miExibirAjudaVendedorClick
       end
       object MenuItem139: TMenuItem
         Caption = '-'
       end
       object MenuItem140: TMenuItem
         Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma8Click
+        OnClick = miSobreSistemaVendedorClick
       end
     end
   end
@@ -22260,14 +22264,14 @@ object Form7: TForm7
       Caption = '?'
       object MenuItem172: TMenuItem
         Caption = 'Ajuda'
-        OnClick = Ajuda7Click
+        OnClick = miExibirAjudaVendedorClick
       end
       object MenuItem173: TMenuItem
         Caption = '-'
       end
       object MenuItem174: TMenuItem
         Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma8Click
+        OnClick = miSobreSistemaVendedorClick
       end
     end
   end
@@ -22394,14 +22398,14 @@ object Form7: TForm7
       Caption = '?'
       object MenuItem191: TMenuItem
         Caption = 'Ajuda'
-        OnClick = Ajuda7Click
+        OnClick = miExibirAjudaVendedorClick
       end
       object MenuItem192: TMenuItem
         Caption = '-'
       end
       object MenuItem193: TMenuItem
         Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma8Click
+        OnClick = miSobreSistemaVendedorClick
       end
     end
   end
@@ -22781,14 +22785,14 @@ object Form7: TForm7
       Caption = '?'
       object MenuItem213: TMenuItem
         Caption = 'Ajuda'
-        OnClick = Ajuda7Click
+        OnClick = miExibirAjudaVendedorClick
       end
       object MenuItem214: TMenuItem
         Caption = '-'
       end
       object MenuItem215: TMenuItem
         Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma8Click
+        OnClick = miSobreSistemaVendedorClick
       end
     end
   end
@@ -23036,14 +23040,14 @@ object Form7: TForm7
       Caption = '?'
       object MenuItem236: TMenuItem
         Caption = 'Ajuda'
-        OnClick = Ajuda7Click
+        OnClick = miExibirAjudaVendedorClick
       end
       object MenuItem237: TMenuItem
         Caption = '-'
       end
       object MenuItem238: TMenuItem
         Caption = 'Sobre o programa...'
-        OnClick = Sobreoprograma8Click
+        OnClick = miSobreSistemaVendedorClick
       end
     end
   end
