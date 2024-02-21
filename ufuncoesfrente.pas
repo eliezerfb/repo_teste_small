@@ -1509,15 +1509,17 @@ var
   F : TExtfile;
   fNFe : String;
   sFileExporta: String;
+  {
   function TamanhoArquivo(Arquivo: string): Integer;
   begin
     with TFileStream.Create(Arquivo, fmOpenRead or fmShareExclusive) do
     try
       Result := Size;
     finally
-     Free;
+      Free;
     end;
   end;
+  }
 begin
   IBQDFE := CriaIBQuery(IBTRANSACTION);
   Result := True;

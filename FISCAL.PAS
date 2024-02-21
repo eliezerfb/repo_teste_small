@@ -3647,8 +3647,7 @@ begin
   // CONSUMO
   //
   try
-    //
-    //
+
     Form1.Memo1.Visible  := False;
     Form1.Panel5.Visible := False;
     Form1.Memo2.Visible  := False;
@@ -3660,7 +3659,6 @@ begin
       Form1.Panel2.BringToFront; // Sandro Silva 2016-08-03
     end;
 
-    //
     if (Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '99') then
     begin
       Form1.Panel5.Visible := True;
@@ -3668,37 +3666,35 @@ begin
     begin
       Form1.Panel5.Visible := False;
     end;
-    //
+
     Form1.Memo1.Lines.Delete(Form1.Memo1.Lines.Count-1);
-    //
+
     if P1 <> TRACO_CUPOM_TELA then
     begin
       if Length(P1) < 45 then
       begin
-        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',45),1,45));
+        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ', 45), 1, 45));
       end else
       begin
-        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',90),1,45));
-        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',90),46,89));
+        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ', 90), 1, 45));
+        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ', 90), 46, 44));
       end;
     end
     else
     begin
-      Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',45),1,45));
+      Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ', 45), 1, 45));
     end;
 
-    //
     Form1.Memo1.Lines.Add(TRACO_CUPOM_TELA);
     //
     //    if Form1.Image3.Visible then iCorte := 0 else iCorte := Form1.Memo3.Height;
     //
     Form1.AjustarObjetosCupomNaTela;
   except end;
-  //
+
   Form1.Teclas_touch(True);
-  //
+
   Result := True;
-  //
 end;
 
 function MD5_Da_Lista(P1: Boolean): boolean;
@@ -26659,15 +26655,17 @@ var
   sBodyEmail: String;
   sFileZIP: String;
   bEnviar: Boolean;
+  {
   function TamanhoArquivo(Arquivo: string): Integer;
   begin
     with TFileStream.Create(Arquivo, fmOpenRead or fmShareExclusive) do
     try
       Result := Size;
     finally
-     Free;
+      Free;
     end;
   end;
+  }
 begin
   // Form só para pedir o período e o e-mail do contador.
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfce.ini');
