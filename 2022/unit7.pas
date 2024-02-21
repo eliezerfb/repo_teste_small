@@ -27946,18 +27946,25 @@ begin
        bMudei then
     begin
       bMudei := False;
-      
-      if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then Form7.ibDataset23.Edit;
 
-      if (Form7.ibDataSet4FATORC.AsFloat = 0) or (Form7.ibDataSet4FATORC.AsFloat = 1) then
+      {Mauriico Parizotto 2024-02-21 Inicio}
+      if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset23.Edit;
+
+      //if (Form7.ibDataSet4FATORC.AsFloat = 0) or (Form7.ibDataSet4FATORC.AsFloat = 1) then
+      if (StrToFloatDef(Form24.edtFatorC.Text,1) = 0) or (StrToFloatDef(Form24.edtFatorC.Text,1) = 1) then
+      
       begin
         Form7.ibDataSet23QUANTIDADE.AsFloat := Form7.ibDataSet23QTD_ORIGINAL.AsFloat;
         Form7.ibDataSet23UNITARIO.AsFloat   := Form7.ibDataSet23UNITARIO_O.AsFloat;
       end else
       begin
-        Form7.ibDataSet23QUANTIDADE.AsFloat := (Form7.ibDataSet23QTD_ORIGINAL.AsFloat * Form7.ibDataSet4FATORC.AsFloat);
-        Form7.ibDataSet23UNITARIO.AsFloat   := (Form7.ibDataSet23UNITARIO_O.AsFloat / Form7.ibDataSet4FATORC.AsFloat);
+        //Form7.ibDataSet23QUANTIDADE.AsFloat := (Form7.ibDataSet23QTD_ORIGINAL.AsFloat * Form7.ibDataSet4FATORC.AsFloat);
+        //Form7.ibDataSet23UNITARIO.AsFloat   := (Form7.ibDataSet23UNITARIO_O.AsFloat / Form7.ibDataSet4FATORC.AsFloat);
+        Form7.ibDataSet23QUANTIDADE.AsFloat := (Form7.ibDataSet23QTD_ORIGINAL.AsFloat * StrToFloatDef(Form24.edtFatorC.Text,1));
+        Form7.ibDataSet23UNITARIO.AsFloat   := (Form7.ibDataSet23UNITARIO_O.AsFloat / StrToFloatDef(Form24.edtFatorC.Text,1));
       end;
+      {Mauriico Parizotto 2024-02-21 Fim}
 
       Form7.ProdutoOld.sDescricao  := Form7.ibDataSet23DESCRICAO.AsString;
       Form7.ProdutoOld.sQuantidade := Form7.ibDataSet23QTD_ORIGINAL.AsString;

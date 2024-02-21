@@ -2984,6 +2984,23 @@ object Form24: TForm24
         ParentFont = False
         Transparent = True
       end
+      object edtFatorC: TEdit
+        Left = 15
+        Top = 167
+        Width = 120
+        Height = 22
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 3
+        Text = '1'
+        OnExit = edtFatorCExit
+        OnKeyPress = edtFatorCKeyPress
+        OnKeyUp = cboUnidadeEntradaKeyUp
+      end
       object cbDescontaICMSDesonerado: TCheckBox
         Left = 115
         Top = 343
@@ -3020,7 +3037,7 @@ object Form24: TForm24
         ParentFont = False
         TabOrder = 14
         OnExit = SMALL_DBEdit16Exit
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit44: TSMALL_DBEdit
         Left = 15
@@ -3032,7 +3049,7 @@ object Form24: TForm24
         Enabled = False
         ReadOnly = True
         TabOrder = 1
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit45: TSMALL_DBEdit
         Left = 15
@@ -3045,7 +3062,7 @@ object Form24: TForm24
         ReadOnly = True
         TabOrder = 0
         OnChange = SMALL_DBEdit45Change
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object Button2: TBitBtn
         Left = 275
@@ -3059,7 +3076,7 @@ object Form24: TForm24
         TabOrder = 7
         OnClick = Button2Click
       end
-      object ComboBox12: TComboBox
+      object cboUnidadeEntrada: TComboBox
         Left = 15
         Top = 128
         Width = 120
@@ -3072,11 +3089,11 @@ object Form24: TForm24
         Font.Style = []
         ParentFont = False
         TabOrder = 2
-        OnChange = ComboBox12Change
-        OnExit = ComboBox12Exit
-        OnKeyUp = ComboBox12KeyUp
+        OnChange = cboUnidadeEntradaChange
+        OnExit = cboUnidadeEntradaExit
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
-      object ComboBox13: TComboBox
+      object cboUnidadeSaida: TComboBox
         Left = 15
         Top = 208
         Width = 120
@@ -3089,9 +3106,9 @@ object Form24: TForm24
         Font.Style = []
         ParentFont = False
         TabOrder = 4
-        OnChange = ComboBox13Change
-        OnExit = ComboBox13Exit
-        OnKeyUp = ComboBox12KeyUp
+        OnChange = cboUnidadeSaidaChange
+        OnExit = cboUnidadeSaidaExit
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit51: TSMALL_DBEdit
         Left = 15
@@ -3112,7 +3129,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 8
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit55: TSMALL_DBEdit
         Left = 115
@@ -3133,7 +3150,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 12
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit54: TSMALL_DBEdit
         Left = 15
@@ -3154,7 +3171,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 11
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit52: TSMALL_DBEdit
         Left = 115
@@ -3175,7 +3192,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 9
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit53: TSMALL_DBEdit
         Left = 216
@@ -3196,7 +3213,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 10
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit56: TSMALL_DBEdit
         Left = 216
@@ -3217,7 +3234,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 13
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object btnPrecificar: TBitBtn
         Left = 150
@@ -3277,23 +3294,6 @@ object Form24: TForm24
         Visible = False
         OnChange = edtAlteraEntradaChange
         OnKeyDown = edtAlteraEntradaKeyDown
-      end
-      object edtFatorC: TEdit
-        Left = 15
-        Top = 167
-        Width = 120
-        Height = 22
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 3
-        Text = '1'
-        OnExit = edtFatorCExit
-        OnKeyPress = edtFatorCKeyPress
-        OnKeyUp = ComboBox12KeyUp
       end
     end
     object ok: TBitBtn
