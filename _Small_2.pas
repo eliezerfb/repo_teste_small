@@ -1104,12 +1104,6 @@ var
     end;
   end;
 begin
-
-
-Não está gerado arquivo igual a delphi 7
-Validar a assinatura
-
-
   I := 1; // Sandro Silva 2016-04-01
   {Sandro Silva 2017-08-02 inicio}
   if (Form7.sMfd = 'MFPERIODO') or (Form7.sMfd = 'MFDPERIODO') then
