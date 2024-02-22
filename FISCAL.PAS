@@ -29073,7 +29073,8 @@ begin
   else
   begin
     Application.ProcessMessages;
-    ShowMessage(sMsg);
+    //ShowMessage(sMsg);
+    SmallMsgBox(PChar(sMsg), '', MB_OK);
   end;
 end;
 
