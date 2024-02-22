@@ -19729,84 +19729,11 @@ begin
   begin
     //Mauricio Parizotto 2024-01-10
     TotalizaItensCompra;
-
-    (*
-    try
-      Form7.ibDataSet24.Edit;
-      Form7.ibDataSet24MERCADORIA.AsFloat      := 0;
-      Form7.ibDataSet24ISS.AsFloat             := 0;
-      Form7.ibDataSet24SERVICOS.AsFloat        := 0;
-
-      Form7.ibDataSet24ICMS.AsFloat            := 0;
-      Form7.ibDataSet24BASEICM.AsFloat         := 0;
-      Form7.ibDataSet24ICMSSUBSTI.AsFloat      := 0;
-      Form7.ibDataSet24BASESUBSTI.AsFloat      := 0;
-      Form7.ibDataSet24IPI.AsFloat             := 0;
-      Form7.ibDataSet24VFCPST.AsFloat          := 0.00;// Sandro Silva 2023-04-11
-      Form7.ibDataSet24ICMS_DESONERADO.AsFloat := 0; //Mauricio Parizotto 2023-07-18
-
-      Form7.ibDataSet101.DisableControls;
-      Form7.ibDataSet101.Close;
-      Form7.ibDataSet101.SelectSQL.Clear;
-      {Sandro Silva 2023-08-23 inicio
-      Form7.ibDataSet101.SelectSQL.Add(' Select * from ITENS002'+
-                                       ' Where NUMERONF='+QuotedStr(Form7.ibDAtaSet24NUMERONF.AsString)+
-                                       '   and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');
-      }
-      // Acumula os totais para evitar passar item por item da nota, nota com muitos itens fica lento
-      Form7.ibDataSet101.SelectSQL.Add(
-        'select ' +
-        'sum(cast(coalesce(TOTAL, 0) as numeric(18, 2))) as TOTAL, ' +
-        'sum(cast(coalesce(VIPI, 0) as numeric(18, 2))) as VIPI, ' +
-        'sum(cast(coalesce(VBC, 0) as numeric(18, 2))) as VBC, ' +
-        'sum(cast(coalesce(VICMS, 0) as numeric(18, 2))) as VICMS, ' +
-        'sum(cast(coalesce(VBCST, 0) as numeric(18, 2))) as VBCST, ' +
-        'sum(cast(coalesce(VICMSST, 0) as numeric(18, 2))) as VICMSST, ' +
-        'sum(cast(coalesce(VFCPST, 0) as numeric(18, 2))) as VFCPST, ' +
-        'sum(cast(coalesce(ICMS_DESONERADO, 0) as numeric(18, 2))) as ICMS_DESONERADO ' +
-        'from ITENS002 '+
-        ' Where NUMERONF='+QuotedStr(Form7.ibDAtaSet24NUMERONF.AsString)+
-        '   and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');
-
-      {Sandro Silva 2023-08-23 fim}
-      Form7.ibDataSet101.Open;
-
-      Form7.ibDataSet101.First;
-
-      while not Form7.ibDataSet101.Eof do
-      begin
-        try
-          Form7.ibDataSet24MERCADORIA.AsFloat      := Form7.ibDataSet24MERCADORIA.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('TOTAL').AsFloat,2);
-          Form7.ibDataSet24IPI.Value               := Form7.ibDataSet24IPI.AsFloat        +  Arredonda(Form7.ibDataSet101.FieldByname('VIPI').AsFloat,2);
-          Form7.ibDataSet24BASEICM.AsFloat         := Form7.ibDataSet24BASEICM.AsFloat    +  Arredonda(Form7.ibDataSet101.FieldByname('VBC').AsFloat,2);
-          Form7.ibDataSet24ICMS.AsFloat            := Form7.ibDataSet24ICMS.AsFloat       +  Arredonda(Form7.ibDataSet101.FieldByname('VICMS').AsFloat,2);
-          Form7.ibDataSet24BASESUBSTI.AsFloat      := Form7.ibDataSet24BASESUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VBCST').AsFloat,2);
-          Form7.ibDataSet24ICMSSUBSTI.AsFloat      := Form7.ibDataSet24ICMSSUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VICMSST').AsFloat,2);
-          Form7.ibDataSet24VFCPST.AsFloat          := Form7.ibDataSet24VFCPST.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('VFCPST').AsFloat,2); // Sandro Silva 2023-04-11
-          {Dailon 2023-08-22 inicio}
-          if bDescontaICMSDeso then
-            Form7.ibDataSet24ICMS_DESONERADO.AsFloat := Form7.ibDataSet24ICMS_DESONERADO.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('ICMS_DESONERADO').AsFloat,2); // Mauricio Parizotto 2023-07-18
-          {Dailon 2023-08-22 fim}
-        except
-        end;
-        
-        ibDataSet101.Next;
-      end;
-
-      //Mauricio Parizotto 2023-07-19
-      CalculaTotalNota;
-    except
-    end;
-
-    AgendaCommit(True);
-
-    *)
   end;
 end;
 
 procedure TForm7.ibDataSet23BeforeDelete(DataSet: TDataSet);
 begin
-  //
   Form1.rReserva := 0;
   //
   Form7.ibDataSet4.Close;                                                //
@@ -19816,9 +19743,7 @@ begin
   //
   if (Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet23CODIGO.AsString) and (AllTrim(Form7.ibDataSet4CODIGO.AsString)<>'') then
   begin
-    //
     // Grade
-    //
     Form7.ibDataSet10.Close;
     Form7.ibDataSet10.SelectSQL.Clear;
     Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
@@ -19828,9 +19753,7 @@ begin
     if (Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString) then
     begin
       try
-        //
         // Grade // Quando deleta um item na compra
-        //
         Form13.Button2.Enabled := False;
         Form7.sModulo := 'GRADE';
         Form13.Label1.Caption := 'Deletando um item da compra';
@@ -19846,7 +19769,6 @@ begin
     //////////////////////////
     if ibDataSet4.FieldByname('SERIE').Value = 1 then
     begin
-      //
       ibDataSet30.Close;
       ibDataSet30.SelectSQL.Clear;
       ibDataSet30.Selectsql.Add('select * from SERIE where CODIGO='+QuotedStr(ibDataSet4CODIGO.AsString));
@@ -28051,18 +27973,25 @@ begin
        bMudei then
     begin
       bMudei := False;
-      
-      if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then Form7.ibDataset23.Edit;
 
-      if (Form7.ibDataSet4FATORC.AsFloat = 0) or (Form7.ibDataSet4FATORC.AsFloat = 1) then
+      {Mauriico Parizotto 2024-02-21 Inicio}
+      if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset23.Edit;
+
+      //if (Form7.ibDataSet4FATORC.AsFloat = 0) or (Form7.ibDataSet4FATORC.AsFloat = 1) then
+      if (StrToFloatDef(Form24.edtFatorC.Text,1) = 0) or (StrToFloatDef(Form24.edtFatorC.Text,1) = 1) then
+      
       begin
         Form7.ibDataSet23QUANTIDADE.AsFloat := Form7.ibDataSet23QTD_ORIGINAL.AsFloat;
         Form7.ibDataSet23UNITARIO.AsFloat   := Form7.ibDataSet23UNITARIO_O.AsFloat;
       end else
       begin
-        Form7.ibDataSet23QUANTIDADE.AsFloat := (Form7.ibDataSet23QTD_ORIGINAL.AsFloat * Form7.ibDataSet4FATORC.AsFloat);
-        Form7.ibDataSet23UNITARIO.AsFloat   := (Form7.ibDataSet23UNITARIO_O.AsFloat / Form7.ibDataSet4FATORC.AsFloat);
+        //Form7.ibDataSet23QUANTIDADE.AsFloat := (Form7.ibDataSet23QTD_ORIGINAL.AsFloat * Form7.ibDataSet4FATORC.AsFloat);
+        //Form7.ibDataSet23UNITARIO.AsFloat   := (Form7.ibDataSet23UNITARIO_O.AsFloat / Form7.ibDataSet4FATORC.AsFloat);
+        Form7.ibDataSet23QUANTIDADE.AsFloat := (Form7.ibDataSet23QTD_ORIGINAL.AsFloat * StrToFloatDef(Form24.edtFatorC.Text,1));
+        Form7.ibDataSet23UNITARIO.AsFloat   := (Form7.ibDataSet23UNITARIO_O.AsFloat / StrToFloatDef(Form24.edtFatorC.Text,1));
       end;
+      {Mauriico Parizotto 2024-02-21 Fim}
 
       Form7.ProdutoOld.sDescricao  := Form7.ibDataSet23DESCRICAO.AsString;
       Form7.ProdutoOld.sQuantidade := Form7.ibDataSet23QTD_ORIGINAL.AsString;

@@ -521,9 +521,11 @@ begin
                     Form1.bFlag := False;
                     Form7.sModulo := 'NAO';
 
+                    Form24.edtFatorC.Text := FloatToStr(Form7.ibDataSet4FATORC.AsFloat);//Mauricio Parizotto 2024-02-21
+
                     Form7.ibDAtaSet23.Append;
                     Form7.ibDataSet23CODIGO.AsString       := Form7.ibDataSet4CODIGO.AsString; // Importar NF
-                    Form7.ibDataSet23DESCRICAO.AsString    := Form7.ibDataSet4DESCRICAO.AsString; 
+                    Form7.ibDataSet23DESCRICAO.AsString    := Form7.ibDataSet4DESCRICAO.AsString;
                     Form7.ibDataSet23QTD_ORIGINAL.AsString := StrTran(NodeTmp.ChildNodes['qCom'].Text,'.',',');
                     Form7.ibDataSet23TOTAL.AsString        := StrTran(NodeTmp.ChildNodes['vProd'].Text,'.',',');
 
