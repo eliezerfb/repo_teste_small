@@ -583,8 +583,8 @@ begin
   if FoArquivoDAT.Usuario.Html.TipoRelatorio in [ttiHTML, ttiPDF] then
   begin
     QryEmitente := TDadosEmitente.New
-                                  .setDataBase(FoDataBase)
-                                  .getQuery;
+                                 .setDataBase(FoDataBase)
+                                 .getQuery;
 
     FlsImpressao.Add(TLayoutHTMLRelatorio.RetornarCabecalho(QryEmitente.FieldByName('NOME').AsString));
   end;

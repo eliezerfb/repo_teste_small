@@ -225,10 +225,14 @@ uses
   ufrmFichaCadastros in 'ufrmFichaCadastros.pas' {FrmFichaCadastros},
   uDesenhaBoleto in 'units\uDesenhaBoleto.pas',
   ufrmRelatorioProdMonofasicoCupom in 'ufrmRelatorioProdMonofasicoCupom.pas' {frmRelProdMonofasicoCupom},
-  uIGeraRelatorioProdMonofasicoCupom in 'interfaces\uIGeraRelatorioProdMonofasicoCupom.pas',
+  uIGeraRelatorioProdMonofasico in 'interfaces\uIGeraRelatorioProdMonofasico.pas',
   uGeraRelatorioProdMonofasicoCupom in 'units\uGeraRelatorioProdMonofasicoCupom.pas',
   uEstruturaRelProdMonofasicoCupom in 'units\uEstruturaRelProdMonofasicoCupom.pas',
-  udmRelProdMonofasicoCupom in 'units\udmRelProdMonofasicoCupom.pas' {dmRelProdMonofasicoCupom: TDataModule};
+  udmRelProdMonofasicoCupom in 'units\udmRelProdMonofasicoCupom.pas' {dmRelProdMonofasicoCupom: TDataModule},
+  ufrmRelatorioProdMonofasicoNota in 'ufrmRelatorioProdMonofasicoNota.pas' {frmRelProdMonofasicoNota},
+  uGeraRelatorioProdMonofasicoNota in 'units\uGeraRelatorioProdMonofasicoNota.pas',
+  udmRelProdMonofasicoNota in 'units\udmRelProdMonofasicoNota.pas' {dmRelProdMonofasicoNota: TDataModule},
+  uEstruturaRelProdMonofasicoNota in 'units\uEstruturaRelProdMonofasicoNota.pas';
 
 {$R *.RES}
 

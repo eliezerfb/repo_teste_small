@@ -1,23 +1,15 @@
-unit udmRelProdMonofasicoCupom;
+unit udmRelProdMonofasicoNota;
 
 interface
 
 uses
   System.SysUtils, System.Classes, IBX.IBCustomDataSet, IBX.IBQuery, Data.DB,
-  Datasnap.DBClient, IBX.IBDatabase;
+  Datasnap.DBClient, IBX.IBDataBase;
 
 type
-  TdmRelProdMonofasicoCupom = class(TDataModule)
+  TdmRelProdMonofasicoNota = class(TDataModule)
     cdsDados: TClientDataSet;
-    qryDados: TIBQuery;
-    cdsCFOP: TClientDataSet;
-    cdsCSTICMSCSOSN: TClientDataSet;
-    cdsCFOPCFOP: TWideStringField;
-    cdsCSTICMSCSOSNCSTICMS: TWideStringField;
-    cdsCSTICMSCSOSNCSOSN: TWideStringField;
     cdsDadosDATA: TDateTimeField;
-    cdsDadosCAIXA: TWideStringField;
-    cdsDadosCUPOM: TWideStringField;
     cdsDadosCODIGO: TWideStringField;
     cdsDadosDESCRICAO: TWideStringField;
     cdsDadosTOTAL: TFMTBCDField;
@@ -30,13 +22,20 @@ type
     cdsDadosNCM: TWideStringField;
     cdsDadosCSTICMS: TWideStringField;
     cdsDadosCSOSN: TWideStringField;
+    qryDados: TIBQuery;
+    cdsCFOP: TClientDataSet;
+    cdsCFOPCFOP: TWideStringField;
     cdsCFOPTOTAL: TFMTBCDField;
+    cdsCSTICMSCSOSN: TClientDataSet;
+    cdsCSTICMSCSOSNCSTICMS: TWideStringField;
+    cdsCSTICMSCSOSNCSOSN: TWideStringField;
     cdsCSTICMSCSOSNTOTAL: TFMTBCDField;
+    cdsDadosNF: TWideStringField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
+    procedure setTransaction(const Value: TIBTransaction);
   private
     FoTransaction: TIBTransaction;
-    procedure setTransaction(const Value: TIBTransaction);
   public
     property Transaction: TIBTransaction read FoTransaction write setTransaction;
 
@@ -44,7 +43,7 @@ type
   end;
 
 var
-  dmRelProdMonofasicoCupom: TdmRelProdMonofasicoCupom;
+  dmRelProdMonofasicoNota: TdmRelProdMonofasicoNota;
 
 implementation
 
@@ -53,68 +52,65 @@ implementation
 {$R *.dfm}
 
 uses
-  smallfunc_xe, uRateioVendasBalcao, uSmallEnumerados, uDadosEmitente;
+  smallfunc_xe, uSmallEnumerados, uDadosEmitente;
 
-{ TdmRelProdMonofasicoCupom }
+{ TdmRelProdMonofasicoNota }
 
-procedure TdmRelProdMonofasicoCupom.CarregaDados(AbDataIni, AbDataFim: TDate);
+procedure TdmRelProdMonofasicoNota.CarregaDados(AbDataIni, AbDataFim: TDate);
 var
   qryEmitente: TIBQuery;
-  oRateio: TRateioBalcao;
-  cCFOPAtual: String;
-  cCSTCSOSN: String;
-  nTotalItem: Double;
+  nDescontoRateado, nTotalItem: Double;
+  cCFOPAtual, cCSTCSOSN: String;
 begin
   qryDados.Close;
   qryDados.SQL.Clear;
   qryDados.SQL.Add('SELECT');
-  qryDados.SQL.Add('    ALTERACA.CAIXA');
-  qryDados.SQL.Add('    , ALTERACA.DATA');
-  qryDados.SQL.Add('    , ALTERACA.PEDIDO');
-  qryDados.SQL.Add('    , ALTERACA.ITEM');
-  qryDados.SQL.Add('    , ALTERACA.CFOP');
-  qryDados.SQL.Add('    , ALTERACA.TOTAL');
-  qryDados.SQL.Add('    , ALTERACA.CODIGO');
-  qryDados.SQL.Add('    , ALTERACA.DESCRICAO');
-  qryDados.SQL.Add('    , ALTERACA.CST_PIS_COFINS');
-  qryDados.SQL.Add('    , ALTERACA.ALIQ_PIS');
-  qryDados.SQL.Add('    , ALTERACA.ALIQ_COFINS');
+  qryDados.SQL.Add('    VENDAS.EMISSAO');
+  qryDados.SQL.Add('    , VENDAS.NUMERONF');
+  qryDados.SQL.Add('    , VENDAS.DESCONTO');
+  qryDados.SQL.Add('    , VENDAS.MERCADORIA');
+  qryDados.SQL.Add('    , ITENS001.CODIGO');
+  qryDados.SQL.Add('    , ITENS001.DESCRICAO');
+  qryDados.SQL.Add('    , ITENS001.TOTAL');
+  qryDados.SQL.Add('    , ITENS001.CST_PIS_COFINS');
+  qryDados.SQL.Add('    , ITENS001.ALIQ_PIS');
+  qryDados.SQL.Add('    , ITENS001.ALIQ_COFINS');
+  qryDados.SQL.Add('    , ITENS001.CFOP');
   qryDados.SQL.Add('    , ESTOQUE.CF');
-  qryDados.SQL.Add('    , ALTERACA.CST_ICMS');
-  qryDados.SQL.Add('    , ALTERACA.CSOSN');
-  qryDados.SQL.Add('FROM ALTERACA');
-  qryDados.SQL.Add('INNER JOIN ESTOQUE ON (ESTOQUE.CODIGO=ALTERACA.CODIGO)');
+  qryDados.SQL.Add('    , ITENS001.CST_ICMS');
+  qryDados.SQL.Add('    , ITENS001.CSOSN');
+  qryDados.SQL.Add('FROM ITENS001');
+  qryDados.SQL.Add('INNER JOIN VENDAS ON (VENDAS.NUMERONF=ITENS001.NUMERONF)');
+  qryDados.SQL.Add('INNER JOIN ESTOQUE ON (ITENS001.CODIGO=ESTOQUE.CODIGO)');
   qryDados.SQL.Add('WHERE');
-  qryDados.SQL.Add('(ALTERACA.DATA<='+QuotedStr(DateToStrInvertida(AbDataFim))+') AND (ALTERACA.DATA>='+QuotedStr(DateToStrInvertida(AbDataIni))+')');
-  qryDados.SQL.Add('AND ((ALTERACA.TIPO='+QuotedStr('BALCAO')+') OR (ALTERACA.TIPO='+QuotedStr('VENDA')+'))');
-  qryDados.SQL.Add('AND (ALTERACA.CST_PIS_COFINS=''04'')');
-  qryDados.SQL.Add('AND ((SELECT COALESCE(NFCE.MODELO,'''') FROM NFCE WHERE (NFCE.CAIXA=ALTERACA.CAIXA) AND (NFCE.NUMERONF=ALTERACA.PEDIDO)) <> ''99'')');
-  qryDados.SQL.Add('ORDER BY ALTERACA.DATA, ALTERACA.PEDIDO');
+  qryDados.SQL.Add('(VENDAS.EMITIDA=''S'')');
+  qryDados.SQL.Add('AND (ITENS001.CST_PIS_COFINS=''04'')');
+  qryDados.SQL.Add('AND (VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(AbDataIni))+') AND (VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(AbDataFim))+')');
+  qryDados.SQL.Add('AND (COALESCE(ITENS001.CST_PIS_COFINS,''XX'')<>''XX'')');
+  qryDados.SQL.Add('ORDER BY VENDAS.EMISSAO, VENDAS.NUMERONF');
   qryDados.Open;
   qryDados.First;
-
-  oRateio := TRateioBalcao.Create;
 
   try
     qryEmitente := TDadosEmitente.New
                                  .setDataBase(FoTransaction.DefaultDatabase)
                                  .getQuery;
 
-    oRateio.IBTransaction := FoTransaction;
-
     while not qryDados.Eof do
     begin
-      nTotalItem := 0;
+      try
+        nDescontoRateado := 0;
+        if qryDados.FieldByname('DESCONTO').AsFloat <> 0 then
+          nDescontoRateado  := Arredonda((qryDados.FieldByname('DESCONTO').AsFloat / qryDados.FieldByname('MERCADORIA').AsFloat * qryDados.FieldByname('TOTAL').AsFloat), 2);
+      except
+        nDescontoRateado := 0;
+      end;
 
-      oRateio.CalcularRateio(qryDados.FieldByName('CAIXA').AsString, qryDados.FieldByName('PEDIDO').AsString, qryDados.FieldByName('ITEM').AsString);
-
-
-      nTotalItem := qryDados.FieldByName('TOTAL').AsFloat + oRateio.DescontoItem + oRateio.RateioDescontoItem + oRateio.RateioAcrescimoItem;
+      nTotalItem := qryDados.FieldByname('TOTAL').AsFloat - nDescontoRateado;
 
       cdsDados.Append;
-      cdsDadosDATA.Value         := qryDados.FieldByName('DATA').Value;
-      cdsDadosCAIXA.Value        := qryDados.FieldByName('CAIXA').Value;
-      cdsDadosCUPOM.Value        := qryDados.FieldByName('PEDIDO').Value;
+      cdsDadosDATA.Value         := qryDados.FieldByName('EMISSAO').Value;
+      cdsDadosNF.Value           := qryDados.FieldByName('NUMERONF').Value;
       cdsDadosCODIGO.Value       := qryDados.FieldByName('CODIGO').Value;
       cdsDadosDESCRICAO.Value    := StrTran(StrTran(qryDados.FieldByName('DESCRICAO').Value,'<',EmptyStr),'>',EmptyStr);
       cdsDadosTOTAL.AsFloat      := Arredonda(nTotalItem, 2);
@@ -132,8 +128,12 @@ begin
       cdsDadosCSOSN.Visible          := (tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) <> tcrteRegimeNormal);
       cdsCSTICMSCSOSNCSTICMS.Visible := (tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) = tcrteRegimeNormal);
       cdsCSTICMSCSOSNCSOSN.Visible   := (tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) <> tcrteRegimeNormal);
-
       cdsDados.Post;
+
+
+      cCFOPAtual := Trim(qryDados.FieldByName('CFOP').AsString);
+      if cCFOPAtual = '' then
+        cCFOPAtual := ' ';
 
       // CFOP INICIO
       cCFOPAtual := Trim(qryDados.FieldByName('CFOP').AsString);
@@ -174,33 +174,31 @@ begin
       end;
       cdsCSTICMSCSOSNTOTAL.AsFloat := Arredonda(cdsCSTICMSCSOSNTOTAL.AsFloat + nTotalItem, 2);
       cdsCSTICMSCSOSN.Post;
-      // CSTICMS/CSOSN FIM
+
       qryDados.Next;
     end;
   finally
     cdsDados.First;
     cdsCFOP.First;
     cdsCSTICMSCSOSN.First;
-
-    FreeAndNil(oRateio);
   end;
 end;
 
-procedure TdmRelProdMonofasicoCupom.DataModuleCreate(Sender: TObject);
+procedure TdmRelProdMonofasicoNota.DataModuleCreate(Sender: TObject);
 begin
   cdsDados.CreateDataSet;
   cdsCFOP.CreateDataSet;
   cdsCSTICMSCSOSN.CreateDataSet;
 end;
 
-procedure TdmRelProdMonofasicoCupom.DataModuleDestroy(Sender: TObject);
+procedure TdmRelProdMonofasicoNota.DataModuleDestroy(Sender: TObject);
 begin
   cdsDados.Close;
   cdsCFOP.Close;
   cdsCSTICMSCSOSN.Close;
 end;
 
-procedure TdmRelProdMonofasicoCupom.setTransaction(const Value: TIBTransaction);
+procedure TdmRelProdMonofasicoNota.setTransaction(const Value: TIBTransaction);
 begin
   FoTransaction := Value;
 
