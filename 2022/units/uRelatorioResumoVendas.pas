@@ -649,7 +649,7 @@ begin
   DataSetEstoque.DisableControls;
   nRecNo := DataSetEstoque.RecNo;
   try
-    if Trim(FcWhereEstoque) = EmptyStr then
+    if (Trim(FcWhereEstoque) = EmptyStr) or (DataSetEstoque.IsEmpty) then
     begin
       DataSetEstoque.Close;
       DataSetEstoque.SelectSQL.Text := 'SELECT * FROM ESTOQUE ' + OrderBy;

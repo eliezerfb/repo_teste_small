@@ -2381,6 +2381,7 @@ type
     procedure RegistraExclusaoRegistro(AoDataSet: TDataSet; AcModulo: String = ''; AcHistoricoExtra: String = '');
     function RetornarHistoricoPorModulo: String;
     function RetornaTipoModulo: tModulosCommerce;
+    function MovimentaEstoqueAlteracaBloqueados: Boolean;
   public
     // Public declarations
 
@@ -2523,7 +2524,7 @@ type
   function JaTem(p1:tibDataSet; p2:tField; p3: boolean):Boolean;
   function CriaJpg(sP1: String) :Boolean;
   function MostraLabels(tSp1: tImage; tSp2: TLabel): Boolean;
-  function TraduzSql(P1: String;P2 :Boolean): String;
+  function TraduzSql(P1: String;P2 :Boolean; AoDataSet: TIBDataSet = nil): String;
   function ConfiguraNFE : Boolean;
 //  function ConsultaProcesso(sP1:String): boolean;
   function BaixaEstoqueDaNFeAutorizada(sPp1: String): boolean;
@@ -5510,10 +5511,13 @@ begin
   Result := True;
 end;
 
-function TraduzSql(P1: String;P2 :Boolean): String;
+function TraduzSql(P1: String;P2 :Boolean; AoDataSet: TIBDataSet = nil): String;
 var
   I : Integer;
 begin
+  if not Assigned(AoDataSet) then
+    AoDataSet := Form7.TabelaAberta;
+
   P1 := StrTran(P1,'COALESCE(ATIVO,0)=0', 'só ativos');
   P1 := StrTran(P1,'COALESCE(ATIVO,0)=1', 'só inativos');
 
@@ -5537,7 +5541,7 @@ begin
   P1 := StrTran(P1,' IE', ' Inscrição');
   P1 := StrTran(P1,'(IE)', ' Inscrição');
 
-  if Copy(Form7.TabelaAberta.SelectSQL.Text,1,12)='select first' then
+  if Copy(AoDataSet.SelectSQL.Text,1,12)='select first' then
     P1 := StrTran(P1, 'Listando' ,'Mostrando os últimos '+Form7.sMaxReg+' registros' );
 
   P1 := StrTran(P1,' and EMITIDA='+QuotedStr('X'), ', canceladas ');
@@ -5570,14 +5574,14 @@ begin
   P1 := StrTran(P1, '  ' ,' ');
   P1 := StrTran(P1, 'só quando só' ,'só');
 
-  for I := 1 to Form7.TabelaAberta.FieldCount do
+  for I := 1 to AoDataSet.FieldCount do
   begin
-    if Form7.TabelaAberta.Fields[I-1].FieldName <> Form7.TabelaAberta.Fields[I-1].DisplayLabel then
+    if AoDataSet.Fields[I-1].FieldName <> AoDataSet.Fields[I-1].DisplayLabel then
     begin
-      if (Form7.TabelaAberta.Fields[I-1].FieldName <> 'IPI')
-        and (copy(Form7.TabelaAberta.Fields[I-1].FieldName,1,3) <> 'CST') then
+      if (AoDataSet.Fields[I-1].FieldName <> 'IPI')
+        and (copy(AoDataSet.Fields[I-1].FieldName,1,3) <> 'CST') then
       begin
-        P1 := StrTran(P1,' '+Form7.TabelaAberta.Fields[I-1].FieldName,' '+Form7.TabelaAberta.Fields[I-1].DisplayLabel);
+        P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel);
       end;
     end;
   end;
@@ -10164,6 +10168,190 @@ begin
     lblRecebPagto.Caption := 'Recebimento:';
 end;
 
+function TForm7.MovimentaEstoqueAlteracaBloqueados: Boolean;
+var
+  cModuloAnt: String;
+begin
+  // Result Representa se deve agendar o Commit
+  Result := False;
+  try
+    // Processa os produtos que ainda não foram baixados do estoque por motivo de Dead Look
+    cModuloAnt := sModulo;
+    try
+      sModulo := 'NAO';
+      // Teste LOKED Ronei
+      ibDataSet27.Close;
+      ibDataSet27.SelectSQL.Clear;
+      ibDataSet27.SelectSQL.Add('select * from ALTERACA where TIPO='+QuotedStr('LOKED')+' or TIPO='+QuotedStr('CANLOK')+' or TIPO='+QuotedStr('KOLNAC'));
+      ibDataSet27.Open;
+
+      ibDataSet27.First;
+      while not ibDataSet27.Eof do
+      begin
+        try
+          if AllTrim(Form7.ibDataSet27CODIGO.AsString)<>'' then
+          begin
+            Result := True;
+
+            Form7.ibDataSet4.Close;
+            Form7.ibDataSet4.SelectSQL.Clear;
+            Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet27CODIGO.AsString)+' ');
+            Form7.ibDataSet4.Open;
+
+            if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet27CODIGO.AsString then
+            begin
+              ibDataSet4.Edit;
+
+              if (Form7.ibDataSet27TIPO.AsString = 'CANLOK') or (Form7.ibDataSet27TIPO.AsString = 'KOLNAC') then
+              begin
+                ibDataSet4QTD_ATUAL.AsFloat    := ibDataSet4QTD_ATUAL.AsFloat + ibDataSet27QUANTIDADE.AsFloat; // Mantem a sincronia
+              end else
+              begin
+                ibDataSet4QTD_ATUAL.AsFloat    := ibDataSet4QTD_ATUAL.AsFloat - ibDataSet27QUANTIDADE.AsFloat; // Mantem a sincronia
+              end;
+
+              ibDataSet4ULT_VENDA.AsDateTime := ibDataSet27DATA.AsDateTime; // Mantem a sincronia
+              ibDataSet4.Post;
+            end;
+
+            ibDataSet27.Edit;
+            if AllTrim(ibDataSet27SERIE.AsString)='' then
+            begin
+              if Form7.ibDataSet27TIPO.AsString = 'LOKED' then
+              begin
+                ibDataSet27TIPO.AsString  := 'BALCAO'; // Resolvi este problema baseado no sincronia
+              end;
+
+              if Form7.ibDataSet27TIPO.AsString = 'CANLOK' then
+              begin
+                ibDataSet27TIPO.AsString  := 'CANCEL'; // Resolvi este problema baseado no sincronia
+              end;
+
+              if Form7.ibDataSet27TIPO.AsString = 'KOLNAC' then
+              begin
+                ibDataSet27DESCRICAO.AsString := '<CANCELADO>';
+                ibDataSet27TIPO.AsString      := 'CANCEL'; // Resolvi este problema baseado no sincronia
+              end;
+            end else
+            begin
+              ibDataSet27TIPO.AsString  := 'VENDA'; // Resolvi este problema baseado no sincronia
+            end;
+          end;
+        except
+        end;
+
+        ibDataSet27.Next;
+      end;
+
+      if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+        ibDataSet27.Post;
+
+      try
+        ibDataSet16.Close;
+        ibDataSet16.SelectSQL.Clear;
+        ibDataSet16.SelectSQL.Add('update ITENS001 set SINCRONIA=QUANTIDADE where coalesce(SINCRONIA,9999999)=9999999');
+        ibDataSet16.Open;
+      except
+      end;
+
+      ibDataSet16.Close;
+      ibDataSet16.SelectSQL.Clear;
+      ibDataSet16.SelectSQL.Add('select * from ITENS001, VENDAS where ITENS001.NUMERONF=VENDAS.NUMERONF and Coalesce(EMITIDA,''R'')=''S'' and coalesce(ITENS001.QUANTIDADE,0) <> coalesce(ITENS001.SINCRONIA,0)');
+      ibDataSet16.Open;
+
+      ibDAtaSet16.First;
+
+      while not ibDataSet16.Eof do
+      begin
+        Result := True;
+
+        try
+          Form7.ibQuery1.Close;
+          Form7.IBQuery1.SQL.Clear;
+          Form7.IBQuery1.SQL.Add('select EMITIDA from VENDAS where NUMERONF='+QuotedStr(Form7.ibDataSet16NUMERONF.AsString)+'');
+          Form7.IBQuery1.Open;
+
+          if Form7.ibQuery1.FieldByName('EMITIDA').AsString = 'S' then
+          begin
+            if AllTrim(Form7.ibDataSet16CODIGO.AsString)<>'' then
+            begin
+              Form7.ibDataSet4.Close;
+              Form7.ibDataSet4.SelectSQL.Clear;
+              Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');
+              Form7.ibDataSet4.Open;
+
+              if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet16CODIGO.AsString then
+              begin
+                ibDataSet4.Edit;
+                ibDataSet4QTD_ATUAL.AsFloat    := ibDataSet4QTD_ATUAL.AsFloat - ibDataSet16QUANTIDADE.AsFloat; // Mantem a sincronia
+                ibDataSet4ULT_VENDA.AsDateTime := Date; // Mantem a sincronia
+                ibDataSet4.Post;
+                ibDataSet16.Edit;
+                ibDataSet16SINCRONIA.AsFloat   := ibDataSet16QUANTIDADE.AsFloat; // Resolvi este problema as 4 da madrugada no NoteBook em casa
+                ibDataSet16.Post;
+              end;
+            end;
+          end;
+        except
+        end;
+
+        ibDataSet16.Next;
+      end;
+
+      try
+        ibDataSet23.Close;
+        ibDataSet23.SelectSQL.Clear;
+        ibDataSet23.SelectSQL.Add('update ITENS002 set SINCRONIA=QUANTIDADE where coalesce(SINCRONIA,9999999)=9999999');
+        ibDataSet23.Open;
+      except
+      end;
+
+      ibDataSet23.Close;
+      ibDataSet23.SelectSQL.Clear;
+      ibDataSet23.SelectSQL.Add('select * from ITENS002 where coalesce(QUANTIDADE,0) <> coalesce(SINCRONIA,0)');
+      ibDataSet23.Open;
+
+      ibDAtaSet23.First;
+
+      while not ibDataSet23.Eof do
+      begin
+        Result := True;
+
+        try
+          if AllTrim(Form7.ibDataSet23CODIGO.AsString)<>'' then
+          begin
+            Form7.ibDataSet4.Close;
+            Form7.ibDataSet4.SelectSQL.Clear;
+            Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');
+            Form7.ibDataSet4.Open;
+
+            if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet23CODIGO.AsString then
+            begin
+              ibDataSet4.Edit;
+              ibDataSet4QTD_ATUAL.AsFloat := ibDataSet4QTD_ATUAL.AsFloat + ibDataSet23QUANTIDADE.AsFloat; // Mantem a sincronia
+              ibDataSet4.Post;
+
+              ibDataSet23.Edit;
+              ibDataSet23SINCRONIA.AsFloat   := ibDataSet23QUANTIDADE.AsFloat;       // Resolvi este problema as 4 da madrugada no NoteBook em casa
+
+              if ibDataSet23CUSTO.AsFloat = 0 then
+                ibDataSet23CUSTO.Value         := Form7.ibDataSet4CUSTOCOMPR.AsFloat;   // Custo de compra            //
+
+              ibDataSet23.Post;
+            end;
+          end;
+        except
+        end;
+
+        ibDataSet23.Next;
+      end;
+    finally
+      sModulo := cModuloAnt;
+    end;
+  except
+  end;
+end;
+
 procedure TForm7.FormShow(Sender: TObject);
 var
   Mais1Ini : TiniFile;
@@ -10248,8 +10436,12 @@ begin
     AgendaCommit(False);
 
 
-    {$Region'//// Módulo Estoque ////'}
+    {$Region'//// Módulo Estoque/Venda ////'}
+    {Dailon Parisotto (f-7712) 2024-02-16 Inicio
     if (sModulo = 'ESTOQUE') and (not Form12.Visible) and (not Form30.Visible) then
+    }
+    if ((sModulo = 'ESTOQUE') or (sModulo = 'VENDA')) and (not Form12.Visible) and (not Form30.Visible) then
+    {Dailon Parisotto (f-7712) 2024-02-16 Fim}
     begin
       ibDataSet27.DisableControls;
       ibDataSet4.DisableControls;
@@ -10261,181 +10453,9 @@ begin
       AtualizaPromocao(True);
       bA := False;
 
-      try
-        // Processa os produtos que ainda não foram baixados do estoque por motivo de Dead Look
-        sModulo := 'NAO';
-
-        // Teste LOKED Ronei
-        ibDataSet27.Close;
-        ibDataSet27.SelectSQL.Clear;
-        ibDataSet27.SelectSQL.Add('select * from ALTERACA where TIPO='+QuotedStr('LOKED')+' or TIPO='+QuotedStr('CANLOK')+' or TIPO='+QuotedStr('KOLNAC'));
-        ibDataSet27.Open;
-
-        ibDataSet27.First;
-        while not ibDataSet27.Eof do
-        begin
-          try
-            if AllTrim(Form7.ibDataSet27CODIGO.AsString)<>'' then
-            begin
-              bA := True;
-
-              Form7.ibDataSet4.Close;
-              Form7.ibDataSet4.SelectSQL.Clear;
-              Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet27CODIGO.AsString)+' ');
-              Form7.ibDataSet4.Open;
-
-              if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet27CODIGO.AsString then
-              begin
-                ibDataSet4.Edit;
-
-                if (Form7.ibDataSet27TIPO.AsString = 'CANLOK') or (Form7.ibDataSet27TIPO.AsString = 'KOLNAC') then
-                begin
-                  ibDataSet4QTD_ATUAL.AsFloat    := ibDataSet4QTD_ATUAL.AsFloat + ibDataSet27QUANTIDADE.AsFloat; // Mantem a sincronia
-                end else
-                begin
-                  ibDataSet4QTD_ATUAL.AsFloat    := ibDataSet4QTD_ATUAL.AsFloat - ibDataSet27QUANTIDADE.AsFloat; // Mantem a sincronia
-                end;
-
-                ibDataSet4ULT_VENDA.AsDateTime := ibDataSet27DATA.AsDateTime; // Mantem a sincronia
-                ibDataSet4.Post;
-              end;
-
-              ibDataSet27.Edit;
-              if AllTrim(ibDataSet27SERIE.AsString)='' then
-              begin
-                if Form7.ibDataSet27TIPO.AsString = 'LOKED' then
-                begin
-                  ibDataSet27TIPO.AsString  := 'BALCAO'; // Resolvi este problema baseado no sincronia
-                end;
-
-                if Form7.ibDataSet27TIPO.AsString = 'CANLOK' then
-                begin
-                  ibDataSet27TIPO.AsString  := 'CANCEL'; // Resolvi este problema baseado no sincronia
-                end;
-
-                if Form7.ibDataSet27TIPO.AsString = 'KOLNAC' then
-                begin
-                  ibDataSet27DESCRICAO.AsString := '<CANCELADO>';
-                  ibDataSet27TIPO.AsString      := 'CANCEL'; // Resolvi este problema baseado no sincronia
-                end;
-              end else
-              begin
-                ibDataSet27TIPO.AsString  := 'VENDA'; // Resolvi este problema baseado no sincronia
-              end;
-            end;
-          except
-          end;
-
-          ibDataSet27.Next;
-        end;
-
-        if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-          ibDataSet27.Post;
-
-        try
-          ibDataSet16.Close;
-          ibDataSet16.SelectSQL.Clear;
-          ibDataSet16.SelectSQL.Add('update ITENS001 set SINCRONIA=QUANTIDADE where coalesce(SINCRONIA,9999999)=9999999');
-          ibDataSet16.Open;
-        except
-        end;
-
-        ibDataSet16.Close;
-        ibDataSet16.SelectSQL.Clear;
-        ibDataSet16.SelectSQL.Add('select * from ITENS001, VENDAS where ITENS001.NUMERONF=VENDAS.NUMERONF and Coalesce(EMITIDA,''R'')=''S'' and coalesce(ITENS001.QUANTIDADE,0) <> coalesce(ITENS001.SINCRONIA,0)');
-        ibDataSet16.Open;
-
-        ibDAtaSet16.First;
-
-        while not ibDataSet16.Eof do
-        begin
-          bA := True;
-
-          try
-            Form7.ibQuery1.Close;
-            Form7.IBQuery1.SQL.Clear;
-            Form7.IBQuery1.SQL.Add('select EMITIDA from VENDAS where NUMERONF='+QuotedStr(Form7.ibDataSet16NUMERONF.AsString)+'');
-            Form7.IBQuery1.Open;
-
-            if Form7.ibQuery1.FieldByName('EMITIDA').AsString = 'S' then
-            begin
-              if AllTrim(Form7.ibDataSet16CODIGO.AsString)<>'' then
-              begin
-                Form7.ibDataSet4.Close;
-                Form7.ibDataSet4.SelectSQL.Clear;
-                Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');
-                Form7.ibDataSet4.Open;
-
-                if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet16CODIGO.AsString then
-                begin
-                  ibDataSet4.Edit;
-                  ibDataSet4QTD_ATUAL.AsFloat    := ibDataSet4QTD_ATUAL.AsFloat - ibDataSet16QUANTIDADE.AsFloat; // Mantem a sincronia
-                  ibDataSet4ULT_VENDA.AsDateTime := Date; // Mantem a sincronia
-                  ibDataSet4.Post;
-                  ibDataSet16.Edit;
-                  ibDataSet16SINCRONIA.AsFloat   := ibDataSet16QUANTIDADE.AsFloat; // Resolvi este problema as 4 da madrugada no NoteBook em casa
-                  ibDataSet16.Post;
-                end;
-              end;
-            end;
-          except
-          end;
-
-          ibDataSet16.Next;
-        end;
-
-        try
-          ibDataSet23.Close;
-          ibDataSet23.SelectSQL.Clear;
-          ibDataSet23.SelectSQL.Add('update ITENS002 set SINCRONIA=QUANTIDADE where coalesce(SINCRONIA,9999999)=9999999');
-          ibDataSet23.Open;
-        except
-        end;
-
-        ibDataSet23.Close;
-        ibDataSet23.SelectSQL.Clear;
-        ibDataSet23.SelectSQL.Add('select * from ITENS002 where coalesce(QUANTIDADE,0) <> coalesce(SINCRONIA,0)');
-        ibDataSet23.Open;
-
-        ibDAtaSet23.First;
-
-        while not ibDataSet23.Eof do
-        begin
-          bA := True;
-
-          try
-            if AllTrim(Form7.ibDataSet23CODIGO.AsString)<>'' then
-            begin
-              Form7.ibDataSet4.Close;
-              Form7.ibDataSet4.SelectSQL.Clear;
-              Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet23CODIGO.AsString)+' ');
-              Form7.ibDataSet4.Open;
-
-              if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet23CODIGO.AsString then
-              begin
-                ibDataSet4.Edit;
-                ibDataSet4QTD_ATUAL.AsFloat := ibDataSet4QTD_ATUAL.AsFloat + ibDataSet23QUANTIDADE.AsFloat; // Mantem a sincronia
-                ibDataSet4.Post;
-
-                ibDataSet23.Edit;
-                ibDataSet23SINCRONIA.AsFloat   := ibDataSet23QUANTIDADE.AsFloat;       // Resolvi este problema as 4 da madrugada no NoteBook em casa
-
-                if ibDataSet23CUSTO.AsFloat = 0 then
-                  ibDataSet23CUSTO.Value         := Form7.ibDataSet4CUSTOCOMPR.AsFloat;   // Custo de compra            //
-
-                ibDataSet23.Post;
-              end;
-            end;
-          except
-          end;
-
-          ibDataSet23.Next;
-        end;
-      except
-      end;
-
-      sModulo := 'ESTOQUE';
-
+      {Dailon Parisotto (f-7712) 2024-02-16 Inicio}
+      bA := MovimentaEstoqueAlteracaBloqueados;
+      {Dailon Parisotto (f-7712) 2024-02-16 Fim}
       // Se der um try não grava nada
       try
         Form7.ibQuery5.Close;
@@ -10508,8 +10528,6 @@ begin
       ibDataSet23.EnableControls;
       //LogRetaguarda('unit7 ibDataSet23.EnableControls 10159'); // Sandro Silva 2023-12-04
       ibDataSet12.EnableControls;
-
-      sModulo := 'ESTOQUE';
     end;
 
     {$Endregion}
@@ -11901,6 +11919,8 @@ begin
 end;
 
 procedure TForm7.Resumodasvendas1Click(Sender: TObject);
+var
+  oIni : tIniFile;
 begin
   Form7.ibDataSet99.Close;
   Form7.ibDataSet99.SelectSql.Clear;
@@ -11919,8 +11939,20 @@ begin
     begin
       frmRelResumoVendas.WhereEstoque     := sWhere;
       frmRelResumoVendas.OrderBy          := sOrderBy;
+    end
+    else
+    begin
+      // Se não for estoque então pega do INI o WHERE do ESTOQUE
+      // para atualizar os valores igual na rotina ESTOQUE
+      oIni := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
+      try
+        frmRelResumoVendas.WhereEstoque     := oIni.ReadString('ESTOQUE','FILTRO',EmptyStr);
+        frmRelResumoVendas.OrderBy          := EmptyStr;
+      finally
+        FreeAndNil(oIni);
+      end;
     end;
-    frmRelResumoVendas.SqlTraduzido       := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por lucro bruto',True);
+    frmRelResumoVendas.SqlTraduzido       := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por lucro bruto',True, ibDataSet4);
     frmRelResumoVendas.ShowModal;
   finally
     AgendaCommit(True);
