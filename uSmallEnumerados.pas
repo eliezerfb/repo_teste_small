@@ -15,6 +15,7 @@ type
                       tmcOrcamento, tmcConvenio, tmcContas, tmcTransport,
                       tmcGrupos, tmcParametroTributacao, tmcPerfilTributacao,
                       tmcConversaoCFOP, tmcICM, tmc2Contas);
+  tCRTEmitente = (tcrteSimplesNacional = 1, tcrteSimplesNacionalExcessoSublimite = 2, tcrteRegimeNormal = 3);
 
 implementation
 
