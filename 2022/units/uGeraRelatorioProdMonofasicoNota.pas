@@ -25,7 +25,6 @@ type
     function setUsuario(AcUsuario: String): IGeraRelatorioProdMonofasico;
     function getEstruturaRelatorio: IEstruturaTipoRelatorioPadrao;
     function GeraRelatorio: IGeraRelatorioProdMonofasico;
-    function Imprimir: IGeraRelatorioProdMonofasico;
   end;
 
 implementation
@@ -102,11 +101,6 @@ end;
 function TGeraRelatorioProdMonofasicoNota.getEstruturaRelatorio: IEstruturaTipoRelatorioPadrao;
 begin
   Result := FoEstrutura;
-end;
-
-function TGeraRelatorioProdMonofasicoNota.Imprimir: IGeraRelatorioProdMonofasico;
-begin
-  Result := Self;
 end;
 
 class function TGeraRelatorioProdMonofasicoNota.New: IGeraRelatorioProdMonofasico;

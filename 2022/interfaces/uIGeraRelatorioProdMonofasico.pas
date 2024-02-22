@@ -13,7 +13,6 @@ type
   function setUsuario(AcUsuario: String): IGeraRelatorioProdMonofasico;
   function getEstruturaRelatorio: IEstruturaTipoRelatorioPadrao;
   function GeraRelatorio: IGeraRelatorioProdMonofasico;
-  function Imprimir: IGeraRelatorioProdMonofasico;
   end;
 
 implementation
