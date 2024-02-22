@@ -112,9 +112,9 @@ begin
     if Imprimir then
     begin
       if Form25.sFormatoBoleto = 'Padrão' then
-        DesenhaBoletoLayoutPadrao(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
+        DesenhaBoletoLayoutPadrao(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text)
       else
-        DesenhaBoletoLayoutCarne(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
+        DesenhaBoletoLayoutCarne(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text,1);
 
       Printer.EndDoc;
     end;
@@ -422,9 +422,9 @@ begin
         PAGE.PageLandscape := False;
 
         if Form25.sFormatoBoleto = 'Padrão' then
-          DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
+          DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text)
         else
-          DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
+          DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text,1);
 
         PDF.SaveToFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
       finally
@@ -571,10 +571,10 @@ begin
             if Form25.sFormatoBoleto = 'Padrão' then
             begin
               posicao := 0;
-              DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text);
+              DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text);
             end else
             begin
-              DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,posicao);
+              DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text,posicao);
 
               if posicao = 3 then
                 posicao := 0;
@@ -771,7 +771,7 @@ begin
           CarregaDadosParcela;
           GravaPortadorNossoNumCodeBar;
 
-          DesenhaBoletoLayoutCarne(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,posicao);
+          DesenhaBoletoLayoutCarne(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text,posicao);
 
           //Imprime pagina
           if posicao = 3 then
@@ -822,7 +822,8 @@ begin
     if Pos('CAIXA',UpperCase(Form7.ibDataSet11NOME.AsString))    <> 0 then Form26.MaskEdit42.Text := '104';
     if Pos('BANRISUL',UpperCase(Form7.ibDataSet11NOME.AsString)) <> 0 then Form26.MaskEdit42.Text := '041';
     if Pos('SANTANDER',UpperCase(Form7.ibDataSet11NOME.AsString))<> 0 then Form26.MaskEdit42.Text := '033';
-    if Pos('Unicred',UpperCase(Form7.ibDataSet11NOME.AsString))  <> 0 then Form26.MaskEdit42.Text := '136'; //Mauricio Parizotto 2023-12-07
+    if Pos('UNICRED',UpperCase(Form7.ibDataSet11NOME.AsString))  <> 0 then Form26.MaskEdit42.Text := '136'; //Mauricio Parizotto 2023-12-07
+    if Pos('INTER',UpperCase(Form7.ibDataSet11NOME.AsString))  <> 0 then Form26.MaskEdit42.Text := '077'; //Mauricio Parizotto 2024-02-22
   end;
 end;
 
@@ -860,11 +861,11 @@ begin
     Form26.MaskEdit49.Text := StrZero( Form7.ibDataSet7VENCIMENTO.AsDAteTime - StrtoDate('01/01/'+InttoStr(Year(Date))),3,0)+Right(IntToStr(Year(DAte)),2);
   end;
 
-  Form26.MaskEdit47.Text := Form7.ibDataSet7NN.AsString;
+  Form26.medtNossoNu.Text := Form7.ibDataSet7NN.AsString;
 
   if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '136' then // Unicred
   begin
-    Form26.MaskEdit47.Text := Right('00000000000'+LimpaNumero( Form7.ibDataSet7NN.AsString),10) +'-'+Modulo_11_Febraban(LimpaNumero( Form7.ibDataSet7NN.AsString));
+    Form26.medtNossoNu.Text := Right('00000000000'+LimpaNumero( Form7.ibDataSet7NN.AsString),10) +'-'+Modulo_11_Febraban(LimpaNumero( Form7.ibDataSet7NN.AsString));
   end;
 
   Form26.MaskEdit43.Text := Form26.MaskEdit43.Text + Modulo_11_febraban(LimpaNumero(Form26.MaskEdit43.Text));  // Modulo 11
@@ -933,7 +934,7 @@ begin
   imgBoletoVisual.Canvas.Pen.Color  := clWhite;
   imgBoletoVisual.Canvas.Rectangle(5,0,imgBoletoVisual.Width,1200);
 
-  DesenhaBoletoLayoutPadrao(imgBoletoVisual.Canvas, grImagem ,Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text);
+  DesenhaBoletoLayoutPadrao(imgBoletoVisual.Canvas, grImagem ,Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text);
 
   imgBoletoVisual.Refresh;
   imgBoletoVisual.Top := -525;

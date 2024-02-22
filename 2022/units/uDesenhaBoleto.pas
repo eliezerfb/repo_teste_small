@@ -150,6 +150,10 @@ begin
     if NumBancoBoleto = '136' then
       NumBancoBoleto := '136-8';
 
+    //Mauricio Parizotto 2024-02-22
+    if NumBancoBoleto = '077' then
+      NumBancoBoleto := '077-9';
+
     if Length(LimpaNumero(NumBancoBoleto)) = 3 then
     begin
       Impressao.TextOut(largura(-8+58),altura(6+iVia),Copy(NumBancoBoleto,1,3));   // Código do banco mais o dígito verificador
@@ -162,17 +166,17 @@ begin
     Impressao.Font.sTyle  := [];         // Estilo da fonte
 
     Impressao.TextOut(largura(-8+009),altura(11+iVia),'Local de pagamento');
-    Impressao.TextOut(largura(-8+151-8),altura(11+iVia),'Vencimento');
+    Impressao.TextOut(largura(-8+148-8),altura(11+iVia),'Vencimento');
     Impressao.TextOut(largura(-8+009),altura(18+iVia),'Beneficiário');
-    Impressao.TextOut(largura(-8+106-8),altura(18+iVia),'CNPJ/CPF');
-    Impressao.TextOut(largura(-8+151-8),altura(18+iVia),'Agência/Código Beneficiário');
+    Impressao.TextOut(largura(-8+104-8),altura(18+iVia),'CNPJ/CPF');
+    Impressao.TextOut(largura(-8+148-8),altura(18+iVia),'Agência/Código Beneficiário');
 
     Impressao.TextOut(largura(-8+009),altura(25+iVia),'Data do documento');
     Impressao.TextOut(largura(-8+037),altura(25+iVia),'Nr. do documento');
     Impressao.TextOut(largura(-8+068),altura(25+iVia),'Espécie doc.');
     Impressao.TextOut(largura(-8+088),altura(25+iVia),'Aceite');
     Impressao.TextOut(largura(-8+098),altura(25+iVia),'Data processamento');
-    Impressao.TextOut(largura(-8+151-8),altura(25+iVia),'Nosso número');
+    Impressao.TextOut(largura(-8+148-8),altura(25+iVia),'Nosso número');
 
     Impressao.TextOut(largura(-8+009),altura(32+iVia),'Uso do banco');
     Impressao.TextOut(largura(-8+037),altura(32+iVia),'Carteira');
@@ -180,7 +184,7 @@ begin
     Impressao.TextOut(largura(-8+078),altura(32+iVia),'Quantidade');
 
     Impressao.TextOut(largura(-8+116-8),altura(32+iVia),'Valor');
-    Impressao.TextOut(largura(-8+151-8),altura(32+iVia),'(=)Valor do documento');
+    Impressao.TextOut(largura(-8+148-8),altura(32+iVia),'(=)Valor do documento');
 
     if (J = 1) then
     begin
@@ -191,16 +195,16 @@ begin
       Impressao.TextOut(largura(-8+009),altura(39+iVia),'Instruções: (Todas as informações deste boleto são de exclusiva responsabilidade do Beneficiário)');
     end;
 
-    Impressao.TextOut(largura(-8+151-8),altura(39+iVia),'(-)Desconto');
+    Impressao.TextOut(largura(-8+148-8),altura(39+iVia),'(-)Desconto');
 
-    Impressao.TextOut(largura(-8+151-8),altura(45+iVia),'(-)Outras deduções/Abatimento');
-    Impressao.TextOut(largura(-8+151-8),altura(51+iVia),'(+)Mora/Multa/Juros');
-    Impressao.TextOut(largura(-8+151-8),altura(57+iVia),'(+)Outros acrécimos');
+    Impressao.TextOut(largura(-8+148-8),altura(45+iVia),'(-)Outras deduções/Abatimento');
+    Impressao.TextOut(largura(-8+148-8),altura(51+iVia),'(+)Mora/Multa/Juros');
+    Impressao.TextOut(largura(-8+148-8),altura(57+iVia),'(+)Outros acrécimos');
 
     Impressao.TextOut(largura(-8+009),altura(63+iVia),'Nome do Pagador/CPF/CNPJ/Endereço');
-    Impressao.TextOut(largura(-8+151-8),altura(63+iVia),'(=)Valor cobrado');
+    Impressao.TextOut(largura(-8+148-8),altura(63+iVia),'(=)Valor cobrado');
     Impressao.TextOut(largura(-8+009),altura(78+iVia),'Sacador Avalista');
-    Impressao.TextOut(largura(-8+151-8),altura(70+iVia),'Cod. Baixa:');
+    Impressao.TextOut(largura(-8+148-8),altura(70+iVia),'Cod. Baixa:');
 
     if tipoGer = grPrint then  // Impressão na impressora
     begin
@@ -216,22 +220,22 @@ begin
     Impressao.Font.Name   := 'Courier New';  // Fonte
     Impressao.Font.Size   := 11;             // Tamanho da Fonte
 
-    Impressao.TextOut(largura(-8+009),altura(14+iVia),AllTrim(Form25.Edit1.Text));                        // Local de pagamento
+    Impressao.TextOut(largura(-8+009),altura(14+iVia),Trim(Form25.Edit1.Text));                        // Local de pagamento
 
     // Data atualizada com juros de mora
     if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
     begin
-      Impressao.TextOut(largura(-8+151-8),altura(14+iVia),Right(Replicate(' ',30)+DateToStr(DATE),16)); // Vencimento
+      Impressao.TextOut(largura(-8+155-8),altura(14+iVia),DateToStr(DATE)); // Vencimento
     end else
     begin
-      Impressao.TextOut(largura(-8+151-8),altura(14+iVia),Right(Replicate(' ',30)+Form7.ibDataSet7VENCIMENTO.AsString,16)); // Vencimento
+      Impressao.TextOut(largura(-8+155-8),altura(14+iVia),Form7.ibDataSet7VENCIMENTO.AsString); // Vencimento
     end;
 
     Impressao.TextOut(largura(-8+009),altura(21+iVia),AllTrim(Copy(Form7.ibDataSet13NOME.AsString+Replicate(' ',35),1,35))); // Beneficiário
-    Impressao.TextOut(largura(-8+98),altura(21+iVia),AllTrim(Form7.ibDataSet13CGC.AsString));        // CNPJ
+    Impressao.TextOut(largura(-8+96),altura(21+iVia),AllTrim(Form7.ibDataSet13CGC.AsString));        // CNPJ
 
     // Código do Beneficiário
-    Impressao.TextOut(largura(-8+151-8),altura(21+iVia),Right(Replicate(' ',30)+AllTrim(sAgencia)+'/'+AllTrim(sCodCedente),16));
+    Impressao.TextOut(largura(-8+148-8),altura(21+iVia),Right(Replicate(' ',30)+AllTrim(sAgencia)+'/'+AllTrim(sCodCedente),16));
 
     Impressao.TextOut(largura(-8+009),altura(28+iVia),Form7.ibDataSet7EMISSAO.AsString); // Data do documento
     Impressao.TextOut(largura(-8+040),altura(28+iVia),AllTrim(Form7.ibDataset7DOCUMENTO.AsString));
@@ -241,8 +245,13 @@ begin
 
     // Nosso Número / Cód. Documento
     NossoNumeroImpr := GetNossoNumero(CodBanco,sAgencia,sConvenio,sCarteira,sNossoNumero,sCodCedente);
-    Impressao.Font.Size   := 10;             // Tamanho da Fonte
-    Impressao.TextOut(largura(-8+151-6),altura(28+iVia),NossoNumeroImpr);
+
+    if CodBanco = '077' then
+      Impressao.Font.Size   := 9
+    else
+      Impressao.Font.Size   := 10;
+
+    Impressao.TextOut(largura(-8+140),altura(28+iVia),NossoNumeroImpr);
     Impressao.Font.Size   := 11;
 
     if ((AllTrim(sCarteira) = '24') or (AllTrim(sCarteira) = '14'))  and (CodBanco = '104') then
@@ -260,15 +269,15 @@ begin
     end;
 
     Impressao.TextOut(largura(-8+062),altura(35+iVia),'R$');
-    Impressao.TextOut(largura(-8+151-8),altura(35+iVia),Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_DUPL.AsFloat]),16)); // Valor do documento
+    Impressao.TextOut(largura(-8+148-8),altura(35+iVia),Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_DUPL.AsFloat]),16)); // Valor do documento
 
     // Data atualizada com juros de mora
     if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
     begin
       if (Form7.ibDataSet7VALOR_JURO.AsFloat - Form7.ibDataSet7VALOR_DUPL.AsFloat) >= 0.01 then
       begin
-        Impressao.TextOut(Largura(-8+151-8),Altura(54+iVia)-3,Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_JURO.AsFloat-Form7.ibDataSet7VALOR_DUPL.AsFloat]),16)); // Data atualizada com juros de mora
-        Impressao.TextOut(Largura(-8+151-8),Altura(66+iVia),Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_JURO.AsFloat]),16)); // Valor cobrado
+        Impressao.TextOut(Largura(-8+148-8),Altura(54+iVia)-3,Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_JURO.AsFloat-Form7.ibDataSet7VALOR_DUPL.AsFloat]),16)); // Data atualizada com juros de mora
+        Impressao.TextOut(Largura(-8+148-8),Altura(66+iVia),Right(Replicate(' ',30)+Format('%12.2n',[Form7.ibDataSet7VALOR_JURO.AsFloat]),16)); // Valor cobrado
       end;
     end;
 
@@ -372,77 +381,77 @@ begin
     Impressao.Pen.Width   := 1;                     // Largura da Linha
 
     // Traço inferior da 1 linha //
-    Impressao.MoveTo(largura(-8+008),altura(18+iVia));        //
-    Impressao.Lineto(largura(-8+200-18),altura(18+iVia));        //
+    Impressao.MoveTo(largura(-8+008),altura(18+iVia));
+    Impressao.Lineto(largura(-8+200-18),altura(18+iVia));
 
     // Traço inferior da 2 linha //
-    Impressao.MoveTo(largura(-8+008),altura(25+iVia));        //
-    Impressao.Lineto(largura(-8+200-18),altura(25+iVia));        //
+    Impressao.MoveTo(largura(-8+008),altura(25+iVia));
+    Impressao.Lineto(largura(-8+200-18),altura(25+iVia));
 
     // Traço inferior da 3 linha //
-    Impressao.MoveTo(largura(-8+008),altura(32+iVia));        //
-    Impressao.Lineto(largura(-8+200-18),altura(32+iVia));        //
+    Impressao.MoveTo(largura(-8+008),altura(32+iVia));
+    Impressao.Lineto(largura(-8+200-18),altura(32+iVia));
 
     // Traço inferior da 4 linha //
-    Impressao.MoveTo(largura(-8+008),altura(39+iVia));        //
-    Impressao.Lineto(largura(-8+200-18),altura(39+iVia));        //
+    Impressao.MoveTo(largura(-8+008),altura(39+iVia));
+    Impressao.Lineto(largura(-8+200-18),altura(39+iVia));
 
     // Traço inferior do texto livre //
-    Impressao.MoveTo(largura(-8+008),altura(63+iVia));        //
-    Impressao.Lineto(largura(-8+200-18),altura(63+iVia));        //
+    Impressao.MoveTo(largura(-8+008),altura(63+iVia));
+    Impressao.Lineto(largura(-8+200-18),altura(63+iVia));
 
     // Traço inferior da 4 linha //
-    Impressao.MoveTo(largura(-8+150-8),altura(45+iVia));        //
-    Impressao.Lineto(largura(-8+200-18),altura(45+iVia));        //
+    Impressao.MoveTo(largura(-8+147-8),altura(45+iVia));
+    Impressao.Lineto(largura(-8+200-18),altura(45+iVia));
 
     // Traço inferior da 4 linha //
-    Impressao.MoveTo(largura(-8+150-8),altura(51+iVia));        //
-    Impressao.Lineto(largura(-8+200-18),altura(51+iVia));        //
+    Impressao.MoveTo(largura(-8+147-8),altura(51+iVia));
+    Impressao.Lineto(largura(-8+200-18),altura(51+iVia));
 
     // Traço inferior da 4 linha //
-    Impressao.MoveTo(largura(-8+150-8),altura(57+iVia));        //
-    Impressao.Lineto(largura(-8+200-18),altura(57+iVia));        //
+    Impressao.MoveTo(largura(-8+147-8),altura(57+iVia));
+    Impressao.Lineto(largura(-8+200-18),altura(57+iVia));
 
-    // Traço que corta em frete ao Nr. do documento e carteira  //
-    Impressao.MoveTo(largura(-8+36),altura(25+iVia));         //
-    Impressao.Lineto(largura(-8+36),altura(39+iVia));         //
+    // Traço que corta em frete ao Nr. do documento e carteira
+    Impressao.MoveTo(largura(-8+36),altura(25+iVia));
+    Impressao.Lineto(largura(-8+36),altura(39+iVia));
 
-    // Traço que corta em frente ao Espécie doc.                //
-    Impressao.MoveTo(largura(-8+67),altura(25+iVia));         //
-    Impressao.Lineto(largura(-8+67),altura(32+iVia));         //
+    // Traço que corta em frente ao Espécie doc.
+    Impressao.MoveTo(largura(-8+67),altura(25+iVia));
+    Impressao.Lineto(largura(-8+67),altura(32+iVia));
 
-    // Traço que corta em frente ao Aceite                      //
-    Impressao.MoveTo(largura(-8+87),altura(25+iVia));         //
-    Impressao.Lineto(largura(-8+87),altura(32+iVia));         //
+    // Traço que corta em frente ao Aceite
+    Impressao.MoveTo(largura(-8+87),altura(25+iVia));
+    Impressao.Lineto(largura(-8+87),altura(32+iVia));
 
-    // Traço que corta em frente a data processamento           //
-    Impressao.MoveTo(largura(-8+97),altura(25+iVia));         //
-    Impressao.Lineto(largura(-8+97),altura(32+iVia));         //
+    // Traço que corta em frente a data processamento
+    Impressao.MoveTo(largura(-8+97),altura(25+iVia));
+    Impressao.Lineto(largura(-8+97),altura(32+iVia));
 
-    // Traço que corta em frente a Espécie                      //
-    Impressao.MoveTo(largura(-8+57),altura(32+iVia));         //
-    Impressao.Lineto(largura(-8+57),altura(39+iVia));         //
+    // Traço que corta em frente a Espécie
+    Impressao.MoveTo(largura(-8+57),altura(32+iVia));
+    Impressao.Lineto(largura(-8+57),altura(39+iVia));
 
-    // Traço que corta em frente a Quantidade                   //
-    Impressao.MoveTo(largura(-8+77),altura(32+iVia));         //
-    Impressao.Lineto(largura(-8+77),altura(39+iVia));         //
+    // Traço que corta em frente a Quantidade
+    Impressao.MoveTo(largura(-8+77),altura(32+iVia));
+    Impressao.Lineto(largura(-8+77),altura(39+iVia));
 
-    // Traço que corta                                          //
-    Impressao.MoveTo(largura(-8+107),altura(32+iVia));         //
-    Impressao.Lineto(largura(-8+107),altura(39+iVia));         //
+    // Traço que corta
+    Impressao.MoveTo(largura(-8+107),altura(32+iVia));
+    Impressao.Lineto(largura(-8+107),altura(39+iVia));
 
     // Retangulo principal //
     Impressao.MoveTo(largura(-8+008),altura(11+iVia));           // Linha da Margem Superior
-    Impressao.Lineto(largura(-8+200-18),altura(11+iVia));           // Linha da Margem Superior
-    Impressao.Lineto(largura(-8+200-18),altura(78+iVia));           // Linha da Margem Direita
+    Impressao.Lineto(largura(-8+200-18),altura(11+iVia));        // Linha da Margem Superior
+    Impressao.Lineto(largura(-8+200-18),altura(78+iVia));        // Linha da Margem Direita
     Impressao.Lineto(largura(-8+008),altura(78+iVia));           // Linha da Margem Inferior
     Impressao.Lineto(largura(-8+008),altura(11+iVia));           // Linha da Margem Esquerda
 
     // Retangulo do valor e data //
-    Impressao.MoveTo(largura(-8+150-8),altura(11+iVia));   //
-    Impressao.Lineto(largura(-8+150-8),altura(70+iVia));   //
-    Impressao.Lineto(largura(-8+150-8),altura(70+iVia));   //
-    Impressao.Lineto(largura(-8+200-18),altura(70+iVia));   //
+    Impressao.MoveTo(largura(-8+147-8),altura(11+iVia));
+    Impressao.Lineto(largura(-8+147-8),altura(70+iVia));
+    Impressao.Lineto(largura(-8+147-8),altura(70+iVia));
+    Impressao.Lineto(largura(-8+200-18),altura(70+iVia));
 
     {$Endregion}
 
@@ -516,10 +525,10 @@ begin
 
     if tipoGer = grPrint then  // Impressora
     begin
-      rRect.Top     := Altura(iVia+5);
+      rRect.Top     := Altura(iVia+4.7);
       rRect.Left    := Largura(39);
-      rRect.Bottom  := rRect.Top  + 225;
-      rRect.Right   := rRect.Left + 980;
+      rRect.Bottom  := rRect.Top  + 222;
+      rRect.Right   := rRect.Left + 975;
     end else
     begin
       rRect.Top     := Altura(iVia+5);
@@ -538,6 +547,10 @@ begin
   NumBancoBoleto := CodBanco;
   if NumBancoBoleto = '136' then
     NumBancoBoleto := '136-8';
+
+  //Mauricio Parizotto 2024-02-22
+  if NumBancoBoleto = '077' then
+    NumBancoBoleto := '077-9';
 
   if Length(LimpaNumero(NumBancoBoleto)) = 3 then
   begin
@@ -792,10 +805,10 @@ begin
 
     if tipoGer = grPrint then  // Impressora
     begin
-      rRect.Top     := Altura(iVia+5);
+      rRect.Top     := Altura(iVia+4.7);
       rRect.Left    := Largura(0);
-      rRect.Bottom  := rRect.Top  + 225;
-      rRect.Right   := rRect.Left + 980;
+      rRect.Bottom  := rRect.Top  + 222;
+      rRect.Right   := rRect.Left + 975;
     end else
     begin
       rRect.Top     := Altura(iVia+5);
@@ -860,7 +873,7 @@ begin
   Impressao.TextOut(largura(21),altura(42+iVia),AllTrim(Form7.ibDataset7DOCUMENTO.AsString));
 
   //Nosso número
-  Impressao.TextOut(largura(10),altura(46+iVia),NossoNumeroImpr);
+  Impressao.TextOut(largura(8),altura(46+iVia),NossoNumeroImpr);
 
   //Beneficiário
   Impressao.TextOut(largura(0),altura(50+iVia),AllTrim(Copy(Form7.ibDataSet13NOME.AsString,1,23))); // Beneficiário
@@ -961,6 +974,7 @@ end;
 
 function GetNossoNumero(CodBanco,sAgencia,sConvenio,sCarteira,sNossoNumero,sCodCedente : string):string;
 begin
+  (*
   if (CodBanco = '033') or (CodBanco = '353') then // SANTANDER
   begin
     // Módulo 11 para cálculo de dígito verificador de agência, código de Beneficiário e nosso-número
@@ -1063,6 +1077,111 @@ begin
         end;
       end;
     end;
+  end;   *)
+
+
+  Form25.sNossoNum := (AllTrim(LimpaNumero(sCarteira)) + '/'
+                      + (StrZero(StrtoInt('0'+LimpaNumero(sConvenio)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0)) +'-'+
+                      Modulo_11((StrZero(StrtoInt('0'+LimpaNumero(sConvenio)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0))));
+
+  Result := Right(Replicate(' ',30)+Form25.sNossoNum,16);
+
+
+  if (CodBanco = '033') or (CodBanco = '353') then // SANTANDER
+  begin
+    // Módulo 11 para cálculo de dígito verificador de agência, código de Beneficiário e nosso-número
+    // do banco do brasil conforme http://www.bb.com.br/appbb/portal/emp/ep/srv/CobrancaIntegrBB.jsp#6
+    Form25.sNossoNum := Copy(StrZero(StrToFloat('0'+LimpaNumero(Form7.ibDataSet7NN.AsString)),7,0),1,07)+'-'+Modulo_11(LimpaNumero(Form7.ibDataSet7NN.AsString));
+
+    Result:= Right(Replicate(' ',30)+Form25.sNossoNum,13+3);
+  end;
+
+  if CodBanco = '001' then // Banco do Brasil
+  begin
+    // Módulo 11 para cálculo de dígito verificador de agência, código de Beneficiário e nosso-número
+    // do banco do brasil conforme http://www.bb.com.br/appbb/portal/emp/ep/srv/CobrancaIntegrBB.jsp#6
+    Form25.sNossoNum := Copy(Right('000000'+LimpaNumero(sConvenio),7),1,7)+Copy(StrZero(StrToFloat('0'+LimpaNumero(Form7.ibDataSet7NN.AsString)),10,0),1,010);
+
+    Result := Right(Replicate(' ',30)+Form25.sNossoNum,17);
+  end;
+
+  if CodBanco = '341' then // Itaú ITAU
+  begin
+    Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/'
+      + StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),8,0) +'-'+
+      Modulo_10(Copy(sAgencia+'0000',1,4)+Copy(sCodCedente+'00000',1,5)+Copy(sCarteira+'000',1,3)+Right('00000000'+sNossoNumero,8));
+
+    Result := Form25.sNossoNum;
+  end;
+
+  if CodBanco = '237' then // BRADESCO
+  begin
+    Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + '0'+ sNossoNumero + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+'0'+LimpaNumero(sNossoNumero));
+    Result := Form25.sNossoNum;
+  end;
+
+  if CodBanco = '041' then // Banrisul
+  begin
+    Form25.sNossoNum := (StrZero(0,3,0) + StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0)) +'-'+
+      Modulo_Duplo_Digito_Banrisul((StrZero(0,3,0)+StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0)));
+
+    Result := Right(Replicate(' ',30)+Form25.sNossoNum,16);
+  end;
+
+  if CodBanco = '104' then // CAIXA
+  begin
+    Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/'
+      + StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),15,0) +'-'+
+      Modulo_11((
+        StrZero(StrtoInt('0'+LimpaNumero(sCarteira)),2,0)+
+        StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),15,0)
+        ));
+
+    Result := Right(Replicate(' ',30)+Form25.sNossoNum,20);
+  end;
+
+  if CodBanco = '756' then // SICOOB
+  begin
+    Form25.sNossoNum := Right(Replicate(' ',30)+
+      StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),7,0)+'-'+
+      Modulo_sicoob(
+        Copy(sAgencia,1,4)+
+        StrZero(StrtoInt('0'+LimpaNumero(sCodCedente)),10,0)+
+        StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),7,0))
+        ,16);
+
+    Result := Right(Replicate(' ',30)+Form25.sNossoNum,16);
+  end;
+
+  if CodBanco = '748' then // SICREDI
+  begin
+    Form25.sNossoNum := Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)),3,2)+'/2'+Copy(Form7.ibDataSet7NN.AsString,6,5)+'-'+Modulo_11(LimpaNumero(sAgencia)+LimpaNumero(sCodCedente)+Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)),3,2)+'2'+Right(StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),15,0),5));
+
+    Result := Right(Replicate(' ',30)+Form25.sNossoNum,16);
+  end;
+
+  if CodBanco = '085' then // AILOS
+  begin
+    Form25.sNossoNum := Right('00000000'+LimpaNumero(sCodCedente),8) + Right('00000000'+LimpaNumero(sNossoNumero),9);
+
+    Result := Right(Replicate(' ',30)+Form25.sNossoNum,17);
+  end;
+
+  //Mauricio Parizotto 2023-12-07
+  if CodBanco = '136' then // Unicred
+  begin
+    Form25.sNossoNum := sNossoNumero;
+
+    Result := Right(Replicate(' ',30)+Form25.sNossoNum,17);
+  end;
+
+  //Mauricio Parizotto 2024-02-22
+  if CodBanco = '077' then // Inter
+  begin
+    Form25.sNossoNum := Right(Replicate('0',10)+sNossoNumero,10);
+    Form25.sNossoNum := Form25.sNossoNum + '-'+ Modulo_10(Form25.sNossoNum);
+
+    Result := Trim(sAgencia)+'/'+Trim(sCarteira)+'/'+Trim(Form25.sNossoNum);
   end;
 end;
 

@@ -318,7 +318,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image24: TImage
-    Left = 1170
+    Left = 1050
     Top = 287
     Width = 130
     Height = 18
@@ -690,7 +690,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image8: TImage
-    Left = 1232
+    Left = 1112
     Top = 131
     Width = 20
     Height = 40
@@ -777,7 +777,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image9: TImage
-    Left = 1200
+    Left = 1080
     Top = 131
     Width = 20
     Height = 40
@@ -864,7 +864,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image10: TImage
-    Left = 1168
+    Left = 1048
     Top = 347
     Width = 124
     Height = 19
@@ -1096,7 +1096,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image11: TImage
-    Left = 1168
+    Left = 1048
     Top = 371
     Width = 124
     Height = 19
@@ -1328,7 +1328,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image12: TImage
-    Left = 1170
+    Left = 1050
     Top = 254
     Width = 130
     Height = 18
@@ -1559,7 +1559,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image13: TImage
-    Left = 1208
+    Left = 1088
     Top = 315
     Width = 39
     Height = 20
@@ -1646,7 +1646,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image14: TImage
-    Left = 1248
+    Left = 1128
     Top = 315
     Width = 39
     Height = 20
@@ -1733,7 +1733,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image18: TImage
-    Left = 1168
+    Left = 1048
     Top = 315
     Width = 39
     Height = 20
@@ -1820,7 +1820,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image1: TImage
-    Left = 1168
+    Left = 1048
     Top = 131
     Width = 20
     Height = 40
@@ -1889,7 +1889,7 @@ object Form7: TForm7
     Visible = False
   end
   object positivo: TImage
-    Left = 1202
+    Left = 1082
     Top = 211
     Width = 20
     Height = 40
@@ -1976,7 +1976,7 @@ object Form7: TForm7
     Visible = False
   end
   object Positivovermelho: TImage
-    Left = 1170
+    Left = 1050
     Top = 211
     Width = 20
     Height = 40
@@ -2070,7 +2070,7 @@ object Form7: TForm7
     Visible = False
   end
   object PositivoDownloadXML: TImage
-    Left = 1234
+    Left = 1114
     Top = 211
     Width = 20
     Height = 40
@@ -2319,7 +2319,7 @@ object Form7: TForm7
     Visible = False
   end
   object PositivoVerde: TImage
-    Left = 1266
+    Left = 1146
     Top = 211
     Width = 20
     Height = 40
@@ -10807,7 +10807,7 @@ object Form7: TForm7
     end
   end
   object Panel2: TPanel
-    Left = 1402
+    Left = 1186
     Top = 131
     Width = 395
     Height = 215
@@ -21514,7 +21514,7 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21550,7 +21550,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21872,7 +21872,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21903,7 +21903,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

@@ -21259,9 +21259,9 @@ begin
 
                           //Mauricio Parizotto 2024-02-19
                           if Form25.sFormatoBoleto = 'Padrão' then
-                            DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
+                            DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text)
                           else
-                            DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
+                            DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text,1);
 
                           PDF.SaveToFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
 
@@ -28356,9 +28356,9 @@ begin
 
                           //Mauricio Parizotto 2024-02-19
                           if Form25.sFormatoBoleto = 'Padrão' then
-                            DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
+                            DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text)
                           else
-                            DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
+                            DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text,1);
 
                           PDF.SaveToFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
 
@@ -31881,9 +31881,9 @@ begin
                                   PAGE.PageLandscape := False;
 
                                   if Form25.sFormatoBoleto = 'Padrão' then
-                                    DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
+                                    DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text)
                                   else
-                                    DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
+                                    DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text,1);
                                 end;
                               end;
                             end;
