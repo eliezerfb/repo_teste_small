@@ -41,7 +41,7 @@ function TEstruturaRelProdMonofasicoCupom.getColunasNaoTotalizar(out AcColunas: 
 begin
   Result := Self;
 
-  AcColunas := EmptyStr;
+  AcColunas := ';PISPERC;COFINSPERC;';
 end;
 
 function TEstruturaRelProdMonofasicoCupom.getDAO: IDadosImpressaoDAO;

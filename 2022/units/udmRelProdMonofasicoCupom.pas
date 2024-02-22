@@ -53,7 +53,7 @@ implementation
 {$R *.dfm}
 
 uses
-  smallfunc_xe, uRateioVendasBalcao;
+  smallfunc_xe, uRateioVendasBalcao, uSmallEnumerados;
 
 { TdmRelProdMonofasicoCupom }
 
@@ -88,6 +88,7 @@ begin
   qryDados.SQL.Add('(ALTERACA.DATA<='+QuotedStr(DateToStrInvertida(AbDataFim))+') AND (ALTERACA.DATA>='+QuotedStr(DateToStrInvertida(AbDataIni))+')');
   qryDados.SQL.Add('AND ((ALTERACA.TIPO='+QuotedStr('BALCAO')+') OR (ALTERACA.TIPO='+QuotedStr('VENDA')+'))');
   qryDados.SQL.Add('AND (ALTERACA.CST_PIS_COFINS=''04'')');
+  qryDados.SQL.Add('AND ((SELECT COALESCE(NFCE.MODELO,'''') FROM NFCE WHERE (NFCE.CAIXA=ALTERACA.CAIXA) AND (NFCE.NUMERONF=ALTERACA.PEDIDO)) <> ''99'')');
   qryDados.SQL.Add('ORDER BY ALTERACA.DATA, ALTERACA.PEDIDO');
   qryDados.Open;
   qryDados.First;
@@ -128,10 +129,10 @@ begin
       cdsDadosCSTICMS.AsString   := qryDados.FieldByName('CST_ICMS').Value;
       cdsDadosCSOSN.AsString     := qryDados.FieldByName('CSOSN').Value;
 
-      cdsDadosCSTICMS.Visible        := (qryEmitente.FieldByName('CRT').AsInteger = 3);
-      cdsDadosCSOSN.Visible          := (qryEmitente.FieldByName('CRT').AsInteger <> 3);
-      cdsCSTICMSCSOSNCSTICMS.Visible := (qryEmitente.FieldByName('CRT').AsInteger = 3);
-      cdsCSTICMSCSOSNCSOSN.Visible   := (qryEmitente.FieldByName('CRT').AsInteger <> 3);
+      cdsDadosCSTICMS.Visible        := (tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) = tcrteRegimeNormal);
+      cdsDadosCSOSN.Visible          := (tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) <> tcrteRegimeNormal);
+      cdsCSTICMSCSOSNCSTICMS.Visible := (tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) = tcrteRegimeNormal);
+      cdsCSTICMSCSOSNCSOSN.Visible   := (tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) <> tcrteRegimeNormal);
 
       cdsDados.Post;
 
@@ -153,7 +154,7 @@ begin
       // CFOP INICIO FIM
 
       // CSTICMS/CSOSN INCIO
-      if qryEmitente.FieldByName('CRT').AsInteger = 3 then
+      if tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) = tcrteRegimeNormal then
         cCSTCSOSN := Trim(qryDados.FieldByName('CST_ICMS').AsString)
       else
         cCSTCSOSN := Trim(qryDados.FieldByName('CSOSN').AsString);
