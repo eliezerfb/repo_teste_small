@@ -5408,7 +5408,7 @@ begin
             Form1.ExibePanelMensagem('Atenção! ' + NFCE_NAO_HOUVE_RETORNO_SERVIDOR + Chr(10) + 'Será gerada uma nova NFC-e em contingência');  // Sandro Silva 2018-08-23
           end
           else
-            SmallMsg(PAnsiChar('Small - NFC-e ' + ' - ' + FormatDateTime('dd/mm/yyyy HH:nn:ss', Now) + ' ' + Form22.sBuild + Chr(10) + Chr(10) + sLogErro)); // Sandro Silva 2020-09-03 SmallMsg(PChar('Small - NFC-e ' + ' - ' + FormatDateTime('dd/mm/yyyy HH:nn:ss', Now) + ' ' + Form22.sBuild + Chr(10) + Chr(10) + sLogErro));
+            SmallMsg('Small - NFC-e ' + ' - ' + FormatDateTime('dd/mm/yyyy HH:nn:ss', Now) + ' ' + Form22.sBuild + Chr(10) + Chr(10) + sLogErro);
         end;
       end
       else
