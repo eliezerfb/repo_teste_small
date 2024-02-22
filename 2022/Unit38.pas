@@ -4559,7 +4559,16 @@ begin
 
   Form7.ibDataSet27.Close;
   Form7.ibDataSet27.SelectSQL.Clear;
-  Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') and (CST_PIS_COFINS=''04'') order by DATA, PEDIDO');
+  Form7.ibDataSet27.SelectSQL.Add('select');
+  Form7.ibDataSet27.SelectSQL.Add('*');
+  Form7.ibDataSet27.SelectSQL.Add('from ALTERACA');
+  Form7.ibDataSet27.SelectSQL.Add('where (DATA<='+QuotedStr(DateToStrInvertida(dFinal))+') and (DATA>='+QuotedStr(DateToStrInvertida(dInicio))+')');
+  Form7.ibDataSet27.SelectSQL.Add('and ((TIPO='+QuotedStr('BALCAO')+') or (TIPO='+QuotedStr('VENDA')+')) and (CST_PIS_COFINS=''04'')');
+  {Dailon Parisotto (f-142) 2024-02-19 Inicio}
+  // Validação para desconsiderar gerencial
+  Form7.ibDataSet27.SelectSQL.Add('AND ((SELECT COALESCE(MODELO,'''') FROM NFCE WHERE (NFCE.CAIXA=ALTERACA.CAIXA) AND (NFCE.NUMERONF=ALTERACA.PEDIDO)) <> ''99'')');
+  {Dailon Parisotto (f-142) 2024-02-19 Fim}
+  Form7.ibDataSet27.SelectSQL.Add('order by DATA, PEDIDO');
   Form7.ibDataSet27.Open;
   Form7.ibDataSet27.First;
 
