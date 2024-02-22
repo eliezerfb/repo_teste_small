@@ -88,7 +88,7 @@ type
     Edita1: TMenuItem;
     Procura1: TMenuItem;
     Caractere1: TMenuItem;
-    N3: TMenuItem;
+    miAjudaCaixa: TMenuItem;
     DataSource1: TDataSource;
     ibDataSet1: TibDataSet;
     FontDialog1: TFontDialog;
@@ -150,7 +150,7 @@ type
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
     MenuItem10: TMenuItem;
-    MenuItem11: TMenuItem;
+    miAjudaClifor: TMenuItem;
     mmEstoque: TMainMenu;
     MenuItem23: TMenuItem;
     MenuItem24: TMenuItem;
@@ -162,7 +162,7 @@ type
     MenuItem30: TMenuItem;
     MenuItem31: TMenuItem;
     MenuItem32: TMenuItem;
-    MenuItem33: TMenuItem;
+    miAjudaEstoque: TMenuItem;
     mmMovBancos: TMainMenu;
     MenuItem34: TMenuItem;
     MenuItem35: TMenuItem;
@@ -174,7 +174,7 @@ type
     MenuItem41: TMenuItem;
     MenuItem42: TMenuItem;
     MenuItem43: TMenuItem;
-    MenuItem44: TMenuItem;
+    miAjudaBanco: TMenuItem;
     mmReceber: TMainMenu;
     MenuItem56: TMenuItem;
     MenuItem57: TMenuItem;
@@ -185,7 +185,7 @@ type
     MenuItem63: TMenuItem;
     MenuItem64: TMenuItem;
     MenuItem65: TMenuItem;
-    MenuItem66: TMenuItem;
+    miAjudaReceber: TMenuItem;
     mmVendedor: TMainMenu;
     MenuItem78: TMenuItem;
     MenuItem79: TMenuItem;
@@ -197,7 +197,7 @@ type
     MenuItem85: TMenuItem;
     MenuItem86: TMenuItem;
     MenuItem87: TMenuItem;
-    MenuItem88: TMenuItem;
+    miAjudaVendedor: TMenuItem;
     Fluxodecaixa2: TMenuItem;
     Cartaparamaladireta1: TMenuItem;
     N4: TMenuItem;
@@ -263,7 +263,7 @@ type
     MenuItem52: TMenuItem;
     MenuItem53: TMenuItem;
     MenuItem54: TMenuItem;
-    MenuItem55: TMenuItem;
+    miAjudaPlanoContas: TMenuItem;
     ibDataSet13: TibDataSet;
     DataSource13: TDataSource;
     ibDataSet13NOME: TIBStringField;
@@ -275,27 +275,27 @@ type
     ibDataSet13CGC: TIBStringField;
     ibDataSet13TELEFO: TIBStringField;
     Label13: TLabel;
-    Ajuda1: TMenuItem;
-    N18: TMenuItem;
-    Sobreoprograma1: TMenuItem;
-    ajuda2: TMenuItem;
-    N20: TMenuItem;
-    Sobreoprograma2: TMenuItem;
-    Ajuda4: TMenuItem;
-    ApplicationHelpContext11: TMenuItem;
-    Ajuda5: TMenuItem;
-    Ajuda7: TMenuItem;
-    Ajuda9: TMenuItem;
-    N31: TMenuItem;
-    Sobreoprograma4: TMenuItem;
-    N32: TMenuItem;
-    Sobreoprograma5: TMenuItem;
-    N33: TMenuItem;
-    Sobreoprograma6: TMenuItem;
-    N34: TMenuItem;
-    Sobreoprograma8: TMenuItem;
-    N36: TMenuItem;
-    Sobreoprograma10: TMenuItem;
+    miExibirAjudaCaixa: TMenuItem;
+    miTermoUsoCaixa: TMenuItem;
+    miSobreSistema: TMenuItem;
+    miExibirAjudaClifor: TMenuItem;
+    miTermoUsoClifor: TMenuItem;
+    miSobreSistemaClifor: TMenuItem;
+    miExibirAjudaEstoque: TMenuItem;
+    miExibirAjudaBanco: TMenuItem;
+    miExibirAjudaReceber: TMenuItem;
+    miExibirAjudaVendedor: TMenuItem;
+    miExibirAjudaPlanoContas: TMenuItem;
+    miTermoUsoEstoque: TMenuItem;
+    miSobreSistemaEstoque: TMenuItem;
+    miTermoUsoBanco: TMenuItem;
+    miSobreSistemaBanco: TMenuItem;
+    miTermoUsoReceber: TMenuItem;
+    miSobreSistemaReceber: TMenuItem;
+    miTermoUsoVendedor: TMenuItem;
+    miSobreSistemaVendedor: TMenuItem;
+    miTermoUsoPlanoContas: TMenuItem;
+    miSobreSistemaPlanoContas: TMenuItem;
     ibDataSet14: TibDataSet;
     DataSource14: TDataSource;
     Label14: TLabel;
@@ -311,10 +311,10 @@ type
     MenuItem113: TMenuItem;
     MenuItem114: TMenuItem;
     MenuItem115: TMenuItem;
-    MenuItem116: TMenuItem;
-    MenuItem117: TMenuItem;
-    MenuItem120: TMenuItem;
-    MenuItem121: TMenuItem;
+    miAjudaICM: TMenuItem;
+    miExibirAjudaICM: TMenuItem;
+    miTermoUsoICM: TMenuItem;
+    miSobreSistemaICM: TMenuItem;
     ibDataSet15: TibDataSet;
     DataSource15: TDataSource;
     Label15: TLabel;
@@ -547,7 +547,6 @@ type
     ibDataSet19SERIE: TIBStringField;
     ibDataSet9NOME: TIBStringField;
     ibDataSet7CONTA: TIBStringField;
-    N60: TMenuItem;
     Analisegrafica1: TMenuItem;
     N61: TMenuItem;
     Analisegrficadascontas1: TMenuItem;
@@ -569,10 +568,10 @@ type
     MenuItem94: TMenuItem;
     MenuItem97: TMenuItem;
     MenuItem98: TMenuItem;
-    MenuItem99: TMenuItem;
-    MenuItem122: TMenuItem;
-    MenuItem125: TMenuItem;
-    MenuItem126: TMenuItem;
+    miAjudaTransport: TMenuItem;
+    miExibirAjudaTransport: TMenuItem;
+    miTermoUsoTransport: TMenuItem;
+    miSobreSistemaTransport: TMenuItem;
     Image24: TImage;
     ibDataSet18EMAIL: TIBStringField;
     ibDataSet13EMAIL: TIBStringField;
@@ -592,10 +591,10 @@ type
     MenuItem128: TMenuItem;
     MenuItem135: TMenuItem;
     MenuItem136: TMenuItem;
-    MenuItem137: TMenuItem;
-    MenuItem138: TMenuItem;
-    MenuItem139: TMenuItem;
-    MenuItem140: TMenuItem;
+    miAjudaConvenio: TMenuItem;
+    miExibirAjudaConvenio: TMenuItem;
+    miTermoUsoConvenio: TMenuItem;
+    miSobreSistemaConvenio: TMenuItem;
     Relatriodetodososconvnios1: TMenuItem;
     ibDataSet13COPE: TFloatField;
     ibDataSet13RESE: TFloatField;
@@ -635,10 +634,10 @@ type
     Acertodecontasde2: TMenuItem;
     MenuItem75: TMenuItem;
     MenuItem76: TMenuItem;
-    MenuItem77: TMenuItem;
-    Ajuda6: TMenuItem;
-    N26: TMenuItem;
-    Sobreoprograma7: TMenuItem;
+    miAjudaPagar: TMenuItem;
+    miExibirAjudaPagar: TMenuItem;
+    miTermoUsoPagar: TMenuItem;
+    miSobreSistemaPagar: TMenuItem;
     ibDataSet8: TibDataSet;
     ibDataSet8HISTORICO: TIBStringField;
     ibDataSet8DOCUMENTO: TIBStringField;
@@ -653,11 +652,9 @@ type
     DataSource8: TDataSource;
     N21: TMenuItem;
     ibDataSet4LOCAL: TIBStringField;
-    N22: TMenuItem;
     N24: TMenuItem;
     Exibir1: TMenuItem;
     Mostrartodososclientesefornecedores1: TMenuItem;
-    N25: TMenuItem;
     Exibir2: TMenuItem;
     odas1: TMenuItem;
     Receber2: TMenuItem;
@@ -697,10 +694,9 @@ type
     MenuItem147: TMenuItem;
     MenuItem153: TMenuItem;
     MenuItem154: TMenuItem;
-    MenuItem155: TMenuItem;
-    MenuItem156: TMenuItem;
-    MenuItem157: TMenuItem;
-    MenuItem158: TMenuItem;
+    miAjudaOS: TMenuItem;
+    miExibirAjudaOS: TMenuItem;
+    miSobreSistemaOS: TMenuItem;
     Abertas1: TMenuItem;
     Fechadas1: TMenuItem;
     ibDataSet3NUMERO: TIBStringField;
@@ -727,7 +723,6 @@ type
     ibDataSet9FUNCAO: TIBStringField;
     ibDataSet9ATIVO: TSmallintField;
     Agendada1: TMenuItem;
-    N12: TMenuItem;
     Cadastrodetcnicos1: TMenuItem;
     RelatriodepeasemOSabertas1: TMenuItem;
     Imprimirrecibo1: TMenuItem;
@@ -742,7 +737,6 @@ type
     ibDataSet3NF: TIBStringField;
     ibDataSet3GARANTIA: TDateField;
     Grade1: TMenuItem;
-    N29: TMenuItem;
     Cartadecobrana1: TMenuItem;
     Imprimiretiquetaparacobrana1: TMenuItem;
     Imprimircartadecobrana1: TMenuItem;
@@ -753,10 +747,10 @@ type
     Label44: TLabel;
     mmVendas: TMainMenu;
     MenuItem13: TMenuItem;
-    MenuItem141: TMenuItem;
-    RelVendasServico: TMenuItem;
-    MenuItem143: TMenuItem;
-    RelResumoVendas: TMenuItem;
+    miRelVendasNotaFiscal: TMenuItem;
+    miRelVendasServico: TMenuItem;
+    miRelVendasCupomFiscal: TMenuItem;
+    miRelResumoVendasVendas: TMenuItem;
     MenuItem164: TMenuItem;
     MenuItem165: TMenuItem;
     MenuItem166: TMenuItem;
@@ -766,10 +760,9 @@ type
     MenuItem170: TMenuItem;
     MenuItem177: TMenuItem;
     MenuItem178: TMenuItem;
-    MenuItem179: TMenuItem;
-    MenuItem180: TMenuItem;
-    MenuItem181: TMenuItem;
-    MenuItem182: TMenuItem;
+    miAjudaVendas: TMenuItem;
+    miExibirAjudaVendas: TMenuItem;
+    miSobreSistemaVendas: TMenuItem;
     mmCompras: TMainMenu;
     MenuItem183: TMenuItem;
     MenuItem196: TMenuItem;
@@ -784,10 +777,9 @@ type
     MenuItem212: TMenuItem;
     MenuItem219: TMenuItem;
     MenuItem220: TMenuItem;
-    MenuItem221: TMenuItem;
-    MenuItem222: TMenuItem;
-    MenuItem223: TMenuItem;
-    MenuItem224: TMenuItem;
+    miAjudaCompras: TMenuItem;
+    miExibirAjudaCompras: TMenuItem;
+    miSobreSistemaCompras: TMenuItem;
     Exibir5: TMenuItem;
     Vendas_1: TMenuItem;
     Compras_1: TMenuItem;
@@ -992,7 +984,7 @@ type
     IBBackupService1: TIBBackupService;
     IBRestoreService1: TIBRestoreService;
     IBTransaction1: TIBTransaction;
-    Relatriodecorrelao1: TMenuItem;
+    miRelCorrelacao: TMenuItem;
     Sosclientescomcontasatrasadas1: TMenuItem;
     Sosclientescomsuascontasemdia1: TMenuItem;
     Sosclientescomcontasareceber1: TMenuItem;
@@ -1015,12 +1007,10 @@ type
     IBQuery1: TIBQuery;
     SaveDialog1: TSaveDialog;
     Exportar1: TMenuItem;
-    N23: TMenuItem;
     N49: TMenuItem;
     ImportarOS1: TMenuItem;
     ImportarCupomFiscal1: TMenuItem;
     ImportarOramento1: TMenuItem;
-    N50: TMenuItem;
     ImportarNotaFiscal1: TMenuItem;
     OpenDialog1: TOpenDialog;
     IBDataSet39: TIBDataSet;
@@ -1030,7 +1020,7 @@ type
     IBDataSet39UF: TIBStringField;
     IBDataSet39REGISTRO: TIBStringField;
     Movimentaodositemskardex1: TMenuItem;
-    Vendasporvendedor1: TMenuItem;
+    miRelVendasVendedor: TMenuItem;
     ibDataSet37NUMERONF: TIBStringField;
     Relatriodetotaldeserviosporvendedor1: TMenuItem;
     IBDataSet101: TIBDataSet;
@@ -1127,21 +1117,20 @@ type
     ibDataSet14CSOSN: TIBStringField;
     IBDataSet97: TIBDataSet;
     DataSource97: TDataSource;
-    MainMenu13: TMainMenu;
+    mmOrcamento: TMainMenu;
     MenuItem14: TMenuItem;
     MenuItem16: TMenuItem;
     MenuItem17: TMenuItem;
     MenuItem18: TMenuItem;
     MenuItem104: TMenuItem;
     MenuItem105: TMenuItem;
-    MenuItem124: TMenuItem;
-    MenuItem127: TMenuItem;
-    MenuItem133: TMenuItem;
-    MenuItem134: TMenuItem;
+    miAjudaOrcamento: TMenuItem;
+    miExibirAjudaOrcamento: TMenuItem;
+    miTermoUsoOrcamento: TMenuItem;
+    miSobreSistemaOrcamento: TMenuItem;
     GerarNotaFiscalSrie12: TMenuItem;
     N54: TMenuItem;
     GerarNotaFiscalSrie22: TMenuItem;
-    N55: TMenuItem;
     Relatriodeoramentospendentes2: TMenuItem;
     ibDataSet4ENCRYPTHASH: TIBStringField;
     ibDataSet27ITEM: TIBStringField;
@@ -1208,7 +1197,6 @@ type
     ibDataSet23CST_IPI: TIBStringField;
     Livrodereceitas1: TMenuItem;
     Cardpio1: TMenuItem;
-    N56: TMenuItem;
     RelatriodeIPI1: TMenuItem;
     RelatriodePISCOFINS1: TMenuItem;
     ibDataSet14CSTPISCOFINS: TIBStringField;
@@ -1374,7 +1362,7 @@ type
     ibDataSet4DESCONT2: TFloatField;
     Vendas_XXX: TMenuItem;
     NotasfiscaisdesadavendassrieXXX1: TMenuItem;
-    Relatriodeprodutosmonofsico1: TMenuItem;
+    miRelProdMonofasicosCupom: TMenuItem;
     Relatriodeprodutosmonofsicos1: TMenuItem;
     Anlisedofaturamento1: TMenuItem;
     AnliseMensal1: TMenuItem;
@@ -1397,7 +1385,7 @@ type
     EnviarmensagemWhatsAppparatodos1: TMenuItem;
     Notasfiscaisdesadavendassrie9201: TMenuItem;
     NotasfiscaisdesadavendascomCPFsrie9201: TMenuItem;
-    RelCompRestICMS: TMenuItem;
+    miRelCompRestICMS: TMenuItem;
     ClculodoCustodaltimaNota1: TMenuItem;
     Manifesto1: TMenuItem;
     PositivoVerde: TImage;
@@ -1423,10 +1411,10 @@ type
     MenuItem95: TMenuItem;
     MenuItem96: TMenuItem;
     MenuItem103: TMenuItem;
-    MenuItem148: TMenuItem;
-    MenuItem149: TMenuItem;
-    MenuItem150: TMenuItem;
-    MenuItem152: TMenuItem;
+    miAjudaServico: TMenuItem;
+    miExibirAjudaServico: TMenuItem;
+    miTermoUsoServico: TMenuItem;
+    miSobreSistemaServico: TMenuItem;
     Label27: TLabel;
     ImportarOrdemdeServio1: TMenuItem;
     ImportarOramento2: TMenuItem;
@@ -1509,10 +1497,10 @@ type
     MenuItem161: TMenuItem;
     MenuItem162: TMenuItem;
     MenuItem163: TMenuItem;
-    MenuItem171: TMenuItem;
-    MenuItem172: TMenuItem;
-    MenuItem173: TMenuItem;
-    MenuItem174: TMenuItem;
+    miAjudaConvCFOP: TMenuItem;
+    miExibirAjudaConvCFOP: TMenuItem;
+    miTermoUsoConvCFOP: TMenuItem;
+    miSobreSistemaConvCFOP: TMenuItem;
     DSConversaoCFOP: TDataSource;
     ibdConversaoCFOP: TIBDataSet;
     ibdConversaoCFOPCFOP_ORIGEM: TIBStringField;
@@ -1531,10 +1519,10 @@ type
     MenuItem187: TMenuItem;
     MenuItem188: TMenuItem;
     MenuItem189: TMenuItem;
-    MenuItem190: TMenuItem;
-    MenuItem191: TMenuItem;
-    MenuItem192: TMenuItem;
-    MenuItem193: TMenuItem;
+    miAjudaPerfilTrib: TMenuItem;
+    miExibirAjudaPerfilTrib: TMenuItem;
+    miTermoUsoPerfilTrib: TMenuItem;
+    miSobreSistemaPerfilTrib: TMenuItem;
     DSPerfilTributa: TDataSource;
     ibdPerfilTributa: TIBDataSet;
     ibdPerfilTributaIDPERFILTRIBUTACAO: TIntegerField;
@@ -1580,10 +1568,10 @@ type
     MenuItem201: TMenuItem;
     MenuItem202: TMenuItem;
     MenuItem203: TMenuItem;
-    MenuItem204: TMenuItem;
-    MenuItem213: TMenuItem;
-    MenuItem214: TMenuItem;
-    MenuItem215: TMenuItem;
+    miAjudaParamTributa: TMenuItem;
+    miExibirAjudaParamTributa: TMenuItem;
+    miTermoUsoParamTributa: TMenuItem;
+    miSobreSistemaParamTributa: TMenuItem;
     ibdParametroTributa: TIBDataSet;
     ibdParametroTributaIDPARAMETROTRIBUTACAO: TIntegerField;
     ibdParametroTributaCFOP_ENTRADA: TIBStringField;
@@ -1626,10 +1614,10 @@ type
     MenuItem232: TMenuItem;
     MenuItem233: TMenuItem;
     MenuItem234: TMenuItem;
-    MenuItem235: TMenuItem;
-    MenuItem236: TMenuItem;
-    MenuItem237: TMenuItem;
-    MenuItem238: TMenuItem;
+    miAjudaSituacaoOS: TMenuItem;
+    miExibirAjudaSituacaoOS: TMenuItem;
+    miTermoUsoSituacaoOS: TMenuItem;
+    miSobreSistemaSituacaoOS: TMenuItem;
     Label40: TLabel;
     ibdSituacaoOSIDSITUACAO: TIntegerField;
     ibdSituacaoOSSITUACAO: TIBStringField;
@@ -1638,6 +1626,65 @@ type
     ibDataSet14CBENEF: TIBStringField;
     otalizadorgeraldevenda1: TMenuItem;
     ibDataSet3NFSE: TIBStringField;
+    miRelatoriosVendas: TMenuItem;
+    miTermoUsoVendas: TMenuItem;
+    miRelatorioCompras: TMenuItem;
+    miTermoUsoCompras: TMenuItem;
+    miTermoUsoOS: TMenuItem;
+    miRelatoriosOS: TMenuItem;
+    miRelatoriosCaixa: TMenuItem;
+    miRelatoriosClifor: TMenuItem;
+    miRelatoriosEstoque: TMenuItem;
+    miExcluirOS: TMenuItem;
+    Relatrios1: TMenuItem;
+    Relatrios2: TMenuItem;
+    Relatrios3: TMenuItem;
+    RElatrios4: TMenuItem;
+    miEditarConvenio: TMenuItem;
+    Relatrios5: TMenuItem;
+    miNovoConvenio: TMenuItem;
+    miAlterarConvenio: TMenuItem;
+    miExcluirConvenio: TMenuItem;
+    Editar2: TMenuItem;
+    Novo2: TMenuItem;
+    Alterar2: TMenuItem;
+    Fonte1: TMenuItem;
+    Procu1: TMenuItem;
+    miRelatoriosOrcamento: TMenuItem;
+    miEditarOrcamento: TMenuItem;
+    miNovoOrcamento: TMenuItem;
+    miAlterarOrcamento: TMenuItem;
+    miExcluirOrcamento: TMenuItem;
+    mmGrupos: TMainMenu;
+    MenuItem11: TMenuItem;
+    MenuItem99: TMenuItem;
+    MenuItem116: TMenuItem;
+    MenuItem117: TMenuItem;
+    MenuItem122: TMenuItem;
+    MenuItem124: TMenuItem;
+    MenuItem125: TMenuItem;
+    MenuItem126: TMenuItem;
+    MenuItem138: TMenuItem;
+    MenuItem139: TMenuItem;
+    miAjudaGrupo: TMenuItem;
+    miExibirAjudaGrupo: TMenuItem;
+    miTermoUsoGrupo: TMenuItem;
+    miSobreSistemaGrupo: TMenuItem;
+    mmContasBancarias: TMainMenu;
+    MenuItem33: TMenuItem;
+    MenuItem44: TMenuItem;
+    MenuItem55: TMenuItem;
+    MenuItem66: TMenuItem;
+    MenuItem77: TMenuItem;
+    MenuItem88: TMenuItem;
+    MenuItem120: TMenuItem;
+    MenuItem121: TMenuItem;
+    MenuItem127: TMenuItem;
+    MenuItem133: TMenuItem;
+    MenuItem134: TMenuItem;
+    MenuItem137: TMenuItem;
+    MenuItem140: TMenuItem;
+    MenuItem141: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -1665,17 +1712,17 @@ type
     procedure Listadepreos1Click(Sender: TObject);
     procedure Etiquetas1Click(Sender: TObject);
     procedure Contasbancrias1Click(Sender: TObject);
-    procedure Sobreoprograma1Click(Sender: TObject);
-    procedure Ajuda1Click(Sender: TObject);
+    procedure miSobreSistemaClick(Sender: TObject);
+    procedure miExibirAjudaCaixaClick(Sender: TObject);
     procedure Sobreoprograma3Click(Sender: TObject);
-    procedure Sobreoprograma4Click(Sender: TObject);
-    procedure Sobreoprograma5Click(Sender: TObject);
-    procedure Sobreoprograma6Click(Sender: TObject);
-    procedure Sobreoprograma7Click(Sender: TObject);
-    procedure Sobreoprograma8Click(Sender: TObject);
+    procedure miSobreSistemaEstoqueClick(Sender: TObject);
+    procedure miSobreSistemaBancoClick(Sender: TObject);
+    procedure miSobreSistemaReceberClick(Sender: TObject);
+    procedure miSobreSistemaPagarClick(Sender: TObject);
+    procedure miSobreSistemaVendedorClick(Sender: TObject);
     procedure Sobreoprograma9Click(Sender: TObject);
-    procedure Sobreoprograma10Click(Sender: TObject);
-    procedure Sobreoprograma2Click(Sender: TObject);
+    procedure miSobreSistemaPlanoContasClick(Sender: TObject);
+    procedure miSobreSistemaCliforClick(Sender: TObject);
     procedure ibDataSet15MERCADORIAChange(Sender: TField);
     procedure FormCreate(Sender: TObject);
     procedure ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -1717,7 +1764,6 @@ type
     procedure ibDataSet4REFERENCIASetText(Sender: TField; const Text: String);
     procedure ibDataSet12NewRecord(DataSet: TDataSet);
     procedure ibDataSet3NewRecord(DataSet: TDataSet);
-    procedure Arquivos1Click(Sender: TObject);
     procedure Caixa1Click(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -1768,8 +1814,8 @@ type
     procedure CurvaABCdoestoque1Click(Sender: TObject);
     procedure Duplicata1Click(Sender: TObject);
     procedure Carn1Click(Sender: TObject);
-    procedure Ajuda9Click(Sender: TObject);
-    procedure Ajuda7Click(Sender: TObject);
+    procedure miExibirAjudaPlanoContasClick(Sender: TObject);
+    procedure miExibirAjudaVendedorClick(Sender: TObject);
     procedure ibDataSet2OBSSetText(Sender: TField; const Text: String);
     procedure Analisegrafica1Click(Sender: TObject);
     procedure ibDataSet4BeforePost(DataSet: TDataSet);
@@ -1783,7 +1829,6 @@ type
     procedure ibDataSet11PLANOSetText(Sender: TField; const Text: String);
     procedure ibDataSet2DATANASSetText(Sender: TField; const Text: String);
     procedure MenuItem119Click(Sender: TObject);
-    procedure MenuItem118Click(Sender: TObject);
     procedure Relatriodetodososconvnios1Click(Sender: TObject);
     procedure ibDataSet29NOMESetText(Sender: TField; const Text: String);
     procedure ibDataSet2CONVENIOSetText(Sender: TField; const Text: String);
@@ -1975,7 +2020,7 @@ type
     procedure ibDataSet11BeforePost(DataSet: TDataSet);
     procedure Gerarnotafiscalsrie11Click(Sender: TObject);
     procedure Gerarnotafiscalsrie21Click(Sender: TObject);
-    procedure Relatriodecorrelao1Click(Sender: TObject);
+    procedure miRelCorrelacaoClick(Sender: TObject);
     procedure Sosclientescomcontasatrasadas1Click(Sender: TObject);
     procedure Sosclientescomsuascontasemdia1Click(Sender: TObject);
     procedure Sosclientescomcontasareceber1Click(Sender: TObject);
@@ -2003,7 +2048,7 @@ type
     procedure IBDataSet2CIDADESetText(Sender: TField; const Text: String);
     procedure Movimentaodositemskardex1Click(Sender: TObject);
     procedure ibDataSet30SERIALSetText(Sender: TField; const Text: String);
-    procedure Vendasporvendedor1Click(Sender: TObject);
+    procedure miRelVendasVendedorClick(Sender: TObject);
     procedure ibDataSet15AfterPost(DataSet: TDataSet);
     procedure ibDataSet24AfterPost(DataSet: TDataSet);
     procedure ibDataSet3AfterPost(DataSet: TDataSet);
@@ -2047,7 +2092,7 @@ type
     procedure Relatriodetotaldeserviosporvendedor1Click(Sender: TObject);
     procedure Resumodascompras1Click(Sender: TObject);
     procedure Resumodascomrpas1Click(Sender: TObject);
-    procedure MenuItem117Click(Sender: TObject);
+    procedure miExibirAjudaICMClick(Sender: TObject);
     procedure ibDataSet1BeforePost(DataSet: TDataSet);
     procedure ibDataSet5BeforePost(DataSet: TDataSet);
     procedure ibDataSet7BeforeEdit(DataSet: TDataSet);
@@ -2195,7 +2240,7 @@ type
     procedure IBDataSet2CREDITOSetText(Sender: TField; const Text: String);
     procedure Vendas_XXXClick(Sender: TObject);
     procedure NotasfiscaisdesadavendassrieXXX1Click(Sender: TObject);
-    procedure Relatriodeprodutosmonofsico1Click(Sender: TObject);
+    procedure miRelProdMonofasicosCupomClick(Sender: TObject);
     procedure ibDataSet4CFSetText(Sender: TField; const Text: String);
     procedure AnliseMensal1Click(Sender: TObject);
     procedure ibDataSet15BeforePost(DataSet: TDataSet);
@@ -2211,7 +2256,7 @@ type
     procedure EnviarmensagemWhatsAppparatodos1Click(Sender: TObject);
     procedure ibDataSet4OBSValidate(Sender: TField);
     procedure Notasfiscaisdesadavendassrie9201Click(Sender: TObject);
-    procedure RelCompRestICMSClick(Sender: TObject);
+    procedure miRelCompRestICMSClick(Sender: TObject);
     procedure ClculodoCustodaltimaNota1Click(Sender: TObject);
     procedure Manifesto1Click(Sender: TObject);
     procedure EnvioaoFISCOREDUOZ1Click(Sender: TObject);
@@ -2327,6 +2372,32 @@ type
     procedure ibdParametroTributaBeforeDelete(DataSet: TDataSet);
     procedure ibdConversaoCFOPBeforeDelete(DataSet: TDataSet);
     procedure ibDataSet11BeforeDelete(DataSet: TDataSet);
+    procedure miTermoUsoVendasClick(Sender: TObject);
+    procedure miTermoUsoComprasClick(Sender: TObject);
+    procedure miTermoUsoOSClick(Sender: TObject);
+    procedure miTermoUsoCaixaClick(Sender: TObject);
+    procedure miTermoUsoCliforClick(Sender: TObject);
+    procedure miTermoUsoEstoqueClick(Sender: TObject);
+    procedure miExcluirOSClick(Sender: TObject);
+    procedure miTermoUsoReceberClick(Sender: TObject);
+    procedure miTermoUsoVendedorClick(Sender: TObject);
+    procedure miTermoUsoPlanoContasClick(Sender: TObject);
+    procedure miTermoUsoICMClick(Sender: TObject);
+    procedure miTermoUsoPagarClick(Sender: TObject);
+    procedure miTermoUsoTransportClick(Sender: TObject);
+    procedure miTermoUsoConvenioClick(Sender: TObject);
+    procedure Relatrios5Click(Sender: TObject);
+    procedure miTermoUsoBancoClick(Sender: TObject);
+    procedure miTermoUsoConvCFOPClick(Sender: TObject);
+    procedure miTermoUsoPerfilTribClick(Sender: TObject);
+    procedure miTermoUsoParamTributaClick(Sender: TObject);
+    procedure miTermoUsoSituacaoOSClick(Sender: TObject);
+    procedure miTermoUsoServicoClick(Sender: TObject);
+    procedure miTermoUsoOrcamentoClick(Sender: TObject);
+    procedure miTermoUsoGrupoClick(Sender: TObject);
+    procedure miRelatoriosCliforClick(Sender: TObject);
+    procedure miRelatoriosCaixaClick(Sender: TObject);
+    procedure MenuItem140Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2381,6 +2452,7 @@ type
     procedure RegistraExclusaoRegistro(AoDataSet: TDataSet; AcModulo: String = ''; AcHistoricoExtra: String = '');
     function RetornarHistoricoPorModulo: String;
     function RetornaTipoModulo: tModulosCommerce;
+    procedure AbreHelpTermoUso;
     function MovimentaEstoqueAlteracaBloqueados: Boolean;
   public
     // Public declarations
@@ -9369,12 +9441,17 @@ begin
   Form7.Show;
 end;
 
-procedure TForm7.Sobreoprograma1Click(Sender: TObject);
+procedure TForm7.miSobreSistemaClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Ajuda1Click(Sender: TObject);
+procedure TForm7.miExcluirOSClick(Sender: TObject);
+begin
+  ExcluirOS;
+end;
+
+procedure TForm7.miExibirAjudaCaixaClick(Sender: TObject);
 begin
   HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(sAjuda)));
 end;
@@ -9384,27 +9461,27 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma4Click(Sender: TObject);
+procedure TForm7.miSobreSistemaEstoqueClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma5Click(Sender: TObject);
+procedure TForm7.miSobreSistemaBancoClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma6Click(Sender: TObject);
+procedure TForm7.miSobreSistemaReceberClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma7Click(Sender: TObject);
+procedure TForm7.miSobreSistemaPagarClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma8Click(Sender: TObject);
+procedure TForm7.miSobreSistemaVendedorClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
@@ -9414,12 +9491,12 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma10Click(Sender: TObject);
+procedure TForm7.miSobreSistemaPlanoContasClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
-procedure TForm7.Sobreoprograma2Click(Sender: TObject);
+procedure TForm7.miSobreSistemaCliforClick(Sender: TObject);
 begin
   Form1.Sobreoprograma1Click(Sender);
 end;
@@ -11642,7 +11719,7 @@ begin
     if sTitulo = 'Cadastro dos vendedores' then
       sModulo := 'VENDEDOR'; // Não grava o Filtro registro coluna etc
 
-    if (sModulo <> 'CONFIG') and (Alltrim(sModulo)<>'') and (TabelaAberta.Active) then
+    if (sModulo <> 'CONFIG') and (Alltrim(sModulo)<>'') and (Assigned(TabelaAberta)) and (TabelaAberta.Active) then
     begin
       //Mauricio Parizotto 2023-12-04
       try
@@ -12094,11 +12171,6 @@ begin
   {Mauricio Parizotto 2023-11-21 Fim}
 
   ibDataSet2.Append;
-end;
-
-procedure TForm7.Arquivos1Click(Sender: TObject);
-begin
-  Caixa1.Caption := 'Caixa do dia '+DateTimeToStr(Form7.ibDataSet1DATA.AsDateTime);
 end;
 
 procedure TForm7.Caixa1Click(Sender: TObject);
@@ -12826,10 +12898,6 @@ begin
   if LimpaNumero(ibDataSet2WHATSAPP.AsString) = '' then Enviartorpedo1.Enabled := False else Enviartorpedo1.Enabled := True;
   //
   Emailpara1.Caption        := 'Enviar um e-mail para: '+Alltrim(ibDataSet2NOME.AsString);
-  Histrico1.Caption         := 'Histórico de: '+Alltrim(ibDataSet2NOME.AsString);
-  VendasPara.Caption        := 'Vendas para: '+Alltrim(ibDataSet2NOME.AsString);
-  Resumodevendas1.Caption   := 'Resumo das vendas para: '+Alltrim(ibDataSet2NOME.AsString);
-  Resumodascomrpas1.Caption := 'Resumo das compras de: '+Alltrim(ibDataSet2NOME.AsString);
   //
   if ( Pos('@',ibDataSet2EMAIL.AsString) = 0) then Emailpara1.Enabled := False else Emailpara1.Enabled := True;
   if AllTrim(sWhere) = '' then
@@ -15305,14 +15373,14 @@ begin
   ShellExecute( 0, 'Open', 'smalldupl.exe',pChar(Form7.ibDataSet7DOCUMENTO.AsString+' '+'2'), '', SW_SHOW);
 end;
 
-procedure TForm7.Ajuda9Click(Sender: TObject);
+procedure TForm7.miExibirAjudaPlanoContasClick(Sender: TObject);
 begin
   //
   HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(sAjuda)));
   //
 end;
 
-procedure TForm7.Ajuda7Click(Sender: TObject);
+procedure TForm7.miExibirAjudaVendedorClick(Sender: TObject);
 begin
   HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(sAjuda)));
 end;
@@ -15691,11 +15759,6 @@ begin
       ArquivoAberto.MoveBy(+1);
   Form37.ShowModal;
   Form37.Caption := 'Relatório de comissões';
-end;
-
-procedure TForm7.MenuItem118Click(Sender: TObject);
-begin
-  MenuItem119.Caption    := 'Relatório do convênio '+AllTrim(ibDataSet29NOME.AsString)+'...';
 end;
 
 procedure TForm7.Relatriodetodososconvnios1Click(Sender: TObject);
@@ -16909,6 +16972,11 @@ begin
   //
 end;
 
+procedure TForm7.MenuItem140Click(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
 procedure TForm7.MenuItem147Click(Sender: TObject);
 begin
   //
@@ -16920,6 +16988,11 @@ begin
   Abertas1.Checked          := False;
   Fechadas1.Checked         := False;
   //
+end;
+
+procedure TForm7.miTermoUsoServicoClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
 end;
 
 procedure TForm7.Image210Click(Sender: TObject);
@@ -22409,7 +22482,7 @@ begin
   end;
 end;
 
-procedure TForm7.Relatriodecorrelao1Click(Sender: TObject);
+procedure TForm7.miRelCorrelacaoClick(Sender: TObject);
 var
   F : TextFile;
 begin
@@ -22759,7 +22832,7 @@ begin
   end;  
 end;
 
-procedure TForm7.Vendasporvendedor1Click(Sender: TObject);
+procedure TForm7.miRelVendasVendedorClick(Sender: TObject);
 begin
   //
   sModuloAnterior := sModulo;
@@ -23052,7 +23125,7 @@ begin
   Form38.Label21.Visible := False;
 end;
 
-procedure TForm7.MenuItem117Click(Sender: TObject);
+procedure TForm7.miExibirAjudaICMClick(Sender: TObject);
 begin
   HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar(sAjuda)));
 end;
@@ -25986,7 +26059,7 @@ begin
 
   Form9.Show;
 
-  if Form7.Livrodereceitas1.Caption = 'Relatório de composição...' then
+  if Form7.Livrodereceitas1.Caption = 'Relatório de composição' then
   begin
     Form14.Caption := 'Relatório de composição';
   end else
@@ -29349,7 +29422,7 @@ begin
   Mais1Ini.Free;
 end;
 
-procedure TForm7.Relatriodeprodutosmonofsico1Click(Sender: TObject);
+procedure TForm7.miRelProdMonofasicosCupomClick(Sender: TObject);
 begin
   //
   sModuloAnterior := sModulo;
@@ -30635,7 +30708,20 @@ begin
   //sSerieNFSelecionada := '920';
 end;
 
-procedure TForm7.RelCompRestICMSClick(Sender: TObject);
+procedure TForm7.miRelatoriosCaixaClick(Sender: TObject);
+begin
+  Caixa1.Caption := 'Caixa do dia '+DateTimeToStr(Form7.ibDataSet1DATA.AsDateTime);
+end;
+
+procedure TForm7.miRelatoriosCliforClick(Sender: TObject);
+begin
+  Histrico1.Caption         := 'Histórico de: '+Alltrim(ibDataSet2NOME.AsString);
+  VendasPara.Caption        := 'Vendas para: '+Alltrim(ibDataSet2NOME.AsString);
+  Resumodevendas1.Caption   := 'Resumo das vendas para: '+Alltrim(ibDataSet2NOME.AsString);
+  Resumodascomrpas1.Caption := 'Resumo das compras de: '+Alltrim(ibDataSet2NOME.AsString);
+end;
+
+procedure TForm7.miRelCompRestICMSClick(Sender: TObject);
 begin
   //
   sModuloAnterior := sModulo;
@@ -30643,7 +30729,7 @@ begin
   Form38.Label3.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
-  sModulo := 'Complemento/Restituição por ICMS ST...';
+  sModulo := 'Complemento/Restituição por ICMS ST';
   //
   Form38.ShowModal; // Ok
   //
@@ -30714,6 +30800,112 @@ begin
   }
   //
 end;
+
+procedure TForm7.miTermoUsoBancoClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoCaixaClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoCliforClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoComprasClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoConvCFOPClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoConvenioClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoEstoqueClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoGrupoClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoICMClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoOrcamentoClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoOSClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoPagarClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoParamTributaClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoPerfilTribClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoPlanoContasClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoReceberClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoSituacaoOSClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoTransportClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoVendasClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.miTermoUsoVendedorClick(Sender: TObject);
+begin
+  AbreHelpTermoUso;
+end;
+
+procedure TForm7.AbreHelpTermoUso;
+begin
+  HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('CONTRATO.HTM')));
+end;
+
 
 procedure TForm7.ChamarTelaXMLContab;
 begin
@@ -32380,11 +32572,11 @@ begin
   
   DuplicatestaNFe1.Enabled                 := True;
 
-  RelVendasServico.Enabled                 := True;
-  Relatriodeprodutosmonofsico1.Enabled     := True;
-  RelCompRestICMS.Enabled                  := True;
-  RelResumoVendas.Enabled                  := True;
-  Relatriodecorrelao1.Enabled              := True;
+  miRelVendasServico.Enabled               := Form1.ValidaRecursos.PermiteRecursoParaProduto;
+  miRelProdMonofasicosCupom.Enabled        := Form1.ValidaRecursos.PermiteRecursoParaProduto;
+  miRelCompRestICMS.Enabled                := Form1.ValidaRecursos.PermiteRecursoParaProduto;
+  miRelResumoVendasVendas.Enabled          := Form1.ValidaRecursos.PermiteRecursoParaProduto;
+  miRelCorrelacao.Enabled                  := Form1.ValidaRecursos.PermiteRecursoParaProduto;
 
   PrevCompra.Enabled                       := True;
 
@@ -32413,15 +32605,8 @@ begin
 
     DuplicatestaNFe1.Enabled                 := False;
 
-    RelVendasServico.Enabled                 := False;
-    Relatriodeprodutosmonofsico1.Enabled     := False;
-    RelCompRestICMS.Enabled                  := False;
-    RelResumoVendas.Enabled                  := False;
-    Relatriodecorrelao1.Enabled              := False;
-
     PrevCompra.Enabled                       := False;
- end;
-
+  end;
 end;
 
 procedure TForm7.RefreshDados;
@@ -32530,6 +32715,11 @@ begin
                         .setImagem(imgImprimir.Picture)
                         .setUsuario(Usuario)
                         .ChamarTela;
+end;
+
+procedure TForm7.Relatrios5Click(Sender: TObject);
+begin
+  MenuItem119.Caption    := 'Convênio '+AllTrim(ibDataSet29NOME.AsString);
 end;
 
 function TForm7.GetMensagemCertificado(vLocal:string='') : string;
@@ -34115,7 +34305,7 @@ begin
     iCampos                := 8;
 
     // Menu
-    Form7.Menu         := MainMenu13;
+    Form7.Menu         := mmOrcamento;
 
     // Arquivo
     ArquivoAberto          := DataSource97.Dataset;
@@ -34750,7 +34940,7 @@ begin
   begin
     sAjuda := 'est_grupos.htm'; // Falta grupo
 
-    Form7.Menu         := MainMenu99;
+    Form7.Menu         := mmGrupos;
 
     ArquivoAberto   := DataSource21.Dataset;
     TabelaAberta    := ibDataSet21;
@@ -34772,7 +34962,7 @@ begin
 
     sAjuda := 'bancos.htm'; // Falta contas bancárias
 
-    Form7.Menu := MainMenu99;
+    Form7.Menu := mmContasBancarias;
 
     ArquivoAberto   := DataSource11.Dataset;
     TabelaAberta    := ibDataSet11;
