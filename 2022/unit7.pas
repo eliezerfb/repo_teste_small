@@ -2655,7 +2655,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uRelatorioVendasNotaFiscal
   , uDrawCellGridModulos
   , uEmail
-  , ufrmFichaCadastros, uFuncaoMD5, uDesenhaBoleto;
+  , ufrmFichaCadastros, uFuncaoMD5, uDesenhaBoleto
+  , ufrmRelatorioProdMonofasicoCupom;
 
 {$R *.DFM}
 
@@ -29433,6 +29434,16 @@ begin
   Form7.sModulo := 'Relatório de produtos monofásicos (Cupom Fiscal)';
   Form38.ShowModal; // Ok
   //
+
+  frmRelProdMonofasicoCupom := TfrmRelProdMonofasicoCupom.Create(nil);
+  try
+    frmRelProdMonofasicoCupom.Transaction := IBTransaction1;
+    frmRelProdMonofasicoCupom.Usuario     := UsuarioLogado;
+    frmRelProdMonofasicoCupom.Imagem      := imgImprimir.Picture;
+    frmRelProdMonofasicoCupom.ShowModal;
+  finally
+    FreeAndNil(frmRelProdMonofasicoCupom);
+  end;
 end;
 
 procedure TForm7.ibDataSet4CFSetText(Sender: TField; const Text: String);

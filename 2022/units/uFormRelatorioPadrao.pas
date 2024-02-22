@@ -7,10 +7,11 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ExtCtrls, IBDatabase, uSmallEnumerados,
-  uIEstruturaRelatorioPadrao, uIEstruturaTipoRelatorioPadrao, uArquivosDAT;
+  uIEstruturaRelatorioPadrao, uIEstruturaTipoRelatorioPadrao, uArquivosDAT,
+  uFrmPadrao;
 
 type
-  TfrmRelatorioPadrao = class(TForm)
+  TfrmRelatorioPadrao = class(TFrmPadrao)
     btnCancelar: TBitBtn;
     ImgRel: TImage;
     btnAvancar: TBitBtn;

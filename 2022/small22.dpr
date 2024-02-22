@@ -223,7 +223,12 @@ uses
   uDrawCellGridModulos in 'units\uDrawCellGridModulos.pas',
   uEmail in '..\..\unit_compartilhada\uEmail.pas',
   ufrmFichaCadastros in 'ufrmFichaCadastros.pas' {FrmFichaCadastros},
-  uDesenhaBoleto in 'units\uDesenhaBoleto.pas';
+  uDesenhaBoleto in 'units\uDesenhaBoleto.pas',
+  ufrmRelatorioProdMonofasicoCupom in 'ufrmRelatorioProdMonofasicoCupom.pas' {frmRelProdMonofasicoCupom},
+  uIGeraRelatorioProdMonofasicoCupom in 'interfaces\uIGeraRelatorioProdMonofasicoCupom.pas',
+  uGeraRelatorioProdMonofasicoCupom in 'units\uGeraRelatorioProdMonofasicoCupom.pas',
+  uEstruturaRelProdMonofasicoCupom in 'units\uEstruturaRelProdMonofasicoCupom.pas',
+  udmRelProdMonofasicoCupom in 'units\udmRelProdMonofasicoCupom.pas' {dmRelProdMonofasicoCupom: TDataModule};
 
 {$R *.RES}
 

@@ -1,4 +1,4 @@
-object frmRelatorioPadrao: TfrmRelatorioPadrao
+inherited frmRelatorioPadrao: TfrmRelatorioPadrao
   Left = 1058
   Top = 599
   BorderIcons = [biSystemMenu]
@@ -12,7 +12,6 @@ object frmRelatorioPadrao: TfrmRelatorioPadrao
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
