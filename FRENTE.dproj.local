@@ -4,14 +4,28 @@
     <Transaction>2024/01/19 16:39:38.000.489,D:\desenvolvimento\fontes\delphi\Small Commerce\Projeto-Frente-de-Caixa\base64code.pas=</Transaction>
     <Transaction>2024/01/23 11:39:16.000.040,=D:\desenvolvimento\fontes\delphi\Small Commerce\unit_compartilhada\uFuncaoMD5.pas</Transaction>
     <Transaction>2024/01/25 10:06:55.000.942,=D:\desenvolvimento\fontes\delphi\Small Commerce\Projeto-Frente-de-Caixa\usmallsat.pas</Transaction>
-  </Transactions>  <ProjectSortOrder AutoSort="0" SortType="0">
-    <File Path="smallmanifest.rc"/>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="..\..\Small Commerce"/>
+    <File Path="..\unit_compartilhada"/>
+    <File Path="..\unit_compartilhada\uTypesRecursos.pas"/>
+    <File Path="..\unit_compartilhada\uValidaRecursosDelphi7.pas"/>
+    <File Path="..\unit_compartilhada\uRecursosSistema.pas"/>
+    <File Path="..\unit_compartilhada\uCriptografia.pas"/>
+    <File Path="..\unit_compartilhada\uSmallConsts.pas"/>
+    <File Path="..\unit_compartilhada\uSmallEnumerados.pas"/>
+    <File Path="..\unit_compartilhada\smallfunc_xe.pas"/>
+    <File Path="..\unit_compartilhada\uConectaBancoSmall.pas"/>
+    <File Path="..\unit_compartilhada\uDialogs.pas"/>
+    <File Path="..\unit_compartilhada\md5_unicode.pas"/>
+    <File Path="..\unit_compartilhada\uFuncaoMD5.pas"/>
     <File Path="..\..\..\delphi"/>
     <File Path="..\..\componentes"/>
     <File Path="..\..\componentes\Smallsoft"/>
     <File Path="..\..\componentes\Smallsoft\SMALL_DBEDIT.pas"/>
     <File Path="..\..\componentes\Smallsoft\ucredencialtecnospeed.pas"/>
     <File Path="..\..\uconstantes_chaves_privadas.pas"/>
+    <File Path="smallmanifest.rc"/>
     <File Path="Unit22.pas"/>
     <File Path="Unit22.dfm"/>
     <File Path="FISCAL.PAS"/>
@@ -73,19 +87,6 @@
     <File Path="ufuncoestef.pas"/>
     <File Path="usincronizamobile.pas"/>
     <File Path="upafnfce.pas"/>
-    <File Path="..\..\Small Commerce"/>
-    <File Path="..\unit_compartilhada"/>
-    <File Path="..\unit_compartilhada\uTypesRecursos.pas"/>
-    <File Path="..\unit_compartilhada\uValidaRecursosDelphi7.pas"/>
-    <File Path="..\unit_compartilhada\uRecursosSistema.pas"/>
-    <File Path="..\unit_compartilhada\uCriptografia.pas"/>
-    <File Path="..\unit_compartilhada\uSmallConsts.pas"/>
-    <File Path="..\unit_compartilhada\uSmallEnumerados.pas"/>
-    <File Path="..\unit_compartilhada\smallfunc_xe.pas"/>
-    <File Path="..\unit_compartilhada\uConectaBancoSmall.pas"/>
-    <File Path="..\unit_compartilhada\uDialogs.pas"/>
-    <File Path="..\unit_compartilhada\md5_unicode.pas"/>
-    <File Path="..\unit_compartilhada\uFuncaoMD5.pas"/>
     <File Path="uFuncoesPOS.pas"/>
     <File Path="uConverteDocumentoParaDocFiscal.pas"/>
     <File Path="_Small_2.pas"/>

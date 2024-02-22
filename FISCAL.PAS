@@ -1923,7 +1923,7 @@ end;
 procedure DesabilitaHabilitaImpressoes(bHabilita: Boolean);
 begin
   Form1.Confernciademesa1.Enabled              := bHabilita;
-  Form1.RetornodeVariveisdaImpressora1.Enabled := bHabilita;
+  Form1.RetornodeVariveisdaImpressora1.Enabled := True; //bHabilita;
   Form1.SuprimentoReforodecaixa1.Enabled       := bHabilita;
   Form1.Sangria1.Enabled                       := bHabilita;
   Form1.Fechamentodocaixa1.Enabled             := bHabilita;
@@ -6704,7 +6704,8 @@ end;
 
 function AssinaturaDigital(sP1: String): String;
 var
-  sEAD, sChavePublica, sChavePrivada, sAtualX, sArquivo1 : String;
+  sEAD: AnsiString;
+  sChavePublica, sChavePrivada, sAtualX, sArquivo1 : String;
   FileSign: TextFile;
 begin
   //
@@ -6736,7 +6737,7 @@ begin
         //
         if pos('.TXT',UpperCAse(sP1)) <> 0 then
         begin
-          generateEAD(pAnsiChar(sP1), pAnsiChar(sChavePublica), pAnsiChar(sChavePrivada), pAnsiChar(sEAD), 1);
+          generateEAD(AnsiString(sP1), AnsiString(sChavePublica), AnsiString(sChavePrivada), AnsiString(sEAD), 1);
         end else
         begin
           //
@@ -6753,7 +6754,7 @@ begin
             sArquivo1 := Form1.sPastaDoexecutavel+'\DOWNLOADMF.TXT';
 
           //
-          generateEAD(pAnsiChar(sP1), pAnsiChar(sChavePublica), pAnsiChar(sChavePrivada), pAnsiChar(sEAD), 0);
+          generateEAD(AnsiString(sP1), AnsiString(sChavePublica), AnsiString(sChavePrivada), AnsiString(sEAD), 0);
           Sleep(1000);// Aguardar append Sandro Silva 2020-09-02
 
           // Faz uma cópia do arquivo gerado e adiciona a assinatura EAD
@@ -15615,6 +15616,7 @@ var
   iItem: Integer;
 begin    
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
+  RetornodeVariveisdaImpressora1.Visible := True; /// Sandro Silva 2024-02-21
   //
   x1024x768.Visible := False;
   //
@@ -23174,7 +23176,7 @@ end;
 procedure TForm1.Estoquetotal1Click(Sender: TObject);
 begin
   // 2022-03-29 Movido para uni
-  RegistrosDoPafEcfEstoquetotal;
+  RegistrosDoPafEcfEstoquetotal;     aqui parei
 end;
 
 procedure TForm1.Estoqueparcial1Click(Sender: TObject);
@@ -29068,7 +29070,7 @@ begin
   else
   begin
     Application.ProcessMessages;
-    ShowMessage(sMsg);
+    SmallMsgBox(PChar(sMsg), '', mb_ok); // ShowMessage(sMsg);
   end;
 end;
 
