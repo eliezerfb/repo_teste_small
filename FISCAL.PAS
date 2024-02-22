@@ -29074,7 +29074,7 @@ begin
   begin
     Application.ProcessMessages;
     //ShowMessage(sMsg);
-    SmallMsgBox(PChar(sMsg), '', MB_OK);
+    SmallMsgBox(PChar(sMsg), PChar(Application.Title), MB_OK);
   end;
 end;
 
