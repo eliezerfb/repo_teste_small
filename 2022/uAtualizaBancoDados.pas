@@ -2402,7 +2402,14 @@ begin
   end;
   {Mauricio Parizotto 2023-12-26 Fim}
 
-
+  {Mauricio Parizotto 2024-02-05 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'FORMATOBOLETO') = False then
+  begin
+    if ExecutaComando('alter table BANCOS add FORMATOBOLETO varchar(10)') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-02-05 Fim}
+  
   {Mauricio Parizotto 2024-02-19 Inicio}
   if TamanhoCampo(Form1.ibDataSet200.Transaction, 'AUDIT0RIA', 'HISTORICO') < 1000 then
   begin
@@ -2410,7 +2417,6 @@ begin
       ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2024-02-19 Fim}
-
 
   Form22.Repaint;
   Mensagem22('Aguarde...');

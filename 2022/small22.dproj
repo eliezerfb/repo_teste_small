@@ -494,6 +494,7 @@
         <DCCReference Include="ufrmFichaCadastros.pas">
             <Form>FrmFichaCadastros</Form>
         </DCCReference>
+        <DCCReference Include="units\uDesenhaBoleto.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
