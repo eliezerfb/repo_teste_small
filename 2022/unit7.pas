@@ -23500,7 +23500,7 @@ begin
             Panel7.Repaint;
             
             Form7.ibDataSet15.Edit;
-            Form7.ibDataset15STATUS.AsString       := Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9);
+            Form7.ibDataset15STATUS.AsString       := Copy(Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9), 1, Form7.ibDataset15STATUS.Size);
             Form7.ibDataSet15NFEPROTOCOLO.AsString := Copy(sRetorno+'   ',Pos('<nProt>',sRetorno)+7,Pos('</nProt>',sRetorno)-Pos('<nProt>',sRetorno)-7);
             Form7.ibDataSet15.Post;
             Form7.ibDataSet15.Edit;
