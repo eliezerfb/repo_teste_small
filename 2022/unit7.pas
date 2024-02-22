@@ -1670,6 +1670,21 @@ type
     miExibirAjudaGrupo: TMenuItem;
     miTermoUsoGrupo: TMenuItem;
     miSobreSistemaGrupo: TMenuItem;
+    mmContasBancarias: TMainMenu;
+    MenuItem33: TMenuItem;
+    MenuItem44: TMenuItem;
+    MenuItem55: TMenuItem;
+    MenuItem66: TMenuItem;
+    MenuItem77: TMenuItem;
+    MenuItem88: TMenuItem;
+    MenuItem120: TMenuItem;
+    MenuItem121: TMenuItem;
+    MenuItem127: TMenuItem;
+    MenuItem133: TMenuItem;
+    MenuItem134: TMenuItem;
+    MenuItem137: TMenuItem;
+    MenuItem140: TMenuItem;
+    MenuItem141: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2382,6 +2397,7 @@ type
     procedure miTermoUsoGrupoClick(Sender: TObject);
     procedure miRelatoriosCliforClick(Sender: TObject);
     procedure miRelatoriosCaixaClick(Sender: TObject);
+    procedure MenuItem140Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -16922,6 +16938,11 @@ begin
   Abertas1.Checked          := True ;
   Fechadas1.Checked         := False;
   //
+end;
+
+procedure TForm7.MenuItem140Click(Sender: TObject);
+begin
+  AbreHelpTermoUso;
 end;
 
 procedure TForm7.MenuItem147Click(Sender: TObject);
@@ -35008,7 +35029,7 @@ begin
 
     sAjuda := 'bancos.htm'; // Falta contas bancárias
 
-    Form7.Menu := MainMenu99;
+    Form7.Menu := mmContasBancarias;
 
     ArquivoAberto   := DataSource11.Dataset;
     TabelaAberta    := ibDataSet11;

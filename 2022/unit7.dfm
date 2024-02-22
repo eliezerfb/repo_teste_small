@@ -127,8 +127,8 @@ object Form7: TForm7
     Visible = False
   end
   object Label11: TLabel
-    Left = 512
-    Top = 859
+    Left = 617
+    Top = 860
     Width = 82
     Height = 13
     Caption = 'Contas banc'#225'rias'
@@ -23172,6 +23172,64 @@ object Form7: TForm7
         OnClick = miTermoUsoGrupoClick
       end
       object miSobreSistemaGrupo: TMenuItem
+        Caption = 'Sobre o sistema'
+        OnClick = miSobreSistemaPlanoContasClick
+      end
+    end
+  end
+  object mmContasBancarias: TMainMenu
+    AutoHotkeys = maManual
+    OwnerDraw = True
+    Left = 537
+    Top = 829
+    object MenuItem33: TMenuItem
+      Caption = '&Arquivo'
+      object MenuItem44: TMenuItem
+        Caption = '&Imprimir...'
+        OnClick = imgImprimirClick
+      end
+      object MenuItem55: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem66: TMenuItem
+        Caption = '&Sair'
+        OnClick = Sair1Click
+      end
+    end
+    object MenuItem77: TMenuItem
+      Caption = '&Editar'
+      object MenuItem88: TMenuItem
+        Caption = '&Novo'
+        OnClick = Image101Click
+      end
+      object MenuItem120: TMenuItem
+        Caption = '&Alterar'
+        OnClick = Image106Click
+      end
+      object MenuItem121: TMenuItem
+        Caption = '&Excluir'
+        OnClick = Image102Click
+      end
+    end
+    object MenuItem127: TMenuItem
+      Caption = '&Procurar'
+      OnClick = Image103Click
+    end
+    object MenuItem133: TMenuItem
+      Caption = '&Fonte'
+      OnClick = Image6Click
+    end
+    object MenuItem134: TMenuItem
+      Caption = 'Ajuda'
+      object MenuItem137: TMenuItem
+        Caption = 'Exibir ajuda'
+        OnClick = miExibirAjudaICMClick
+      end
+      object MenuItem140: TMenuItem
+        Caption = 'Termos de uso'
+        OnClick = MenuItem140Click
+      end
+      object MenuItem141: TMenuItem
         Caption = 'Sobre o sistema'
         OnClick = miSobreSistemaPlanoContasClick
       end
