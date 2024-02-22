@@ -192,8 +192,8 @@ begin
     NotaFiscal.Iss        := 0;
 
     { Dailon (f-7194) 2023-08-01 Inicio}
-    if AbCalcPesoLiq then
-      NotaFiscal.Pesoliqui  := 0;
+//    if AbCalcPesoLiq then
+//      NotaFiscal.Pesoliqui  := 0;
     { Dailon (f-7194) 2023-08-01 Fim}
 
     NotaFiscal.Basesubsti := 0;
@@ -239,7 +239,8 @@ begin
 
         { Dailon (f-7194) 2023-08-01 Inicio}
         if AbCalcPesoLiq then
-          NotaFiscal.Pesoliqui  := NotaFiscal.Pesoliqui + (oItem.Peso * oItem.Quantidade);
+          CalculaPesoLiquido;
+//          NotaFiscal.Pesoliqui  := NotaFiscal.Pesoliqui + (oItem.Peso * oItem.Quantidade);
         { Dailon (f-7194) 2023-08-01 Fim}
 
         NotaFiscal.VFCPST     := NotaFiscal.VFCPST     + Arredonda(oItem.VFCPST,2);
@@ -1295,18 +1296,28 @@ procedure TNotaFiscalEletronicaCalc.CalculaPesoLiquido;
 var
   i : integer;
   oItem : TITENS001;
+  bTemItemComPeso: Boolean;
 begin
-  if not(NFeFinalidadeDevolucao(NotaFiscal.Finnfe)) and not((NFeFinalidadeComplemento(NotaFiscal.Finnfe))) then
-  begin
-    NotaFiscal.Pesoliqui  := 0;
+  bTemItemComPeso := False;
 
+  if not((NFeFinalidadeComplemento(NotaFiscal.Finnfe))) then
+  begin
     for i := 0 to NotaFiscal.Itens.Count -1 do
     begin
       oItem := NotaFiscal.Itens.GetItem(i);
-      
+
+      if not bTemItemComPeso then
+      begin
+        bTemItemComPeso := (oItem.Peso > 0);
+        if bTemItemComPeso then
+          NotaFiscal.Pesoliqui := 0;
+      end;
+
       if oItem.Quantidade <> 0 then
       begin
-        NotaFiscal.Pesoliqui := NotaFiscal.Pesoliqui + oItem.Peso * oItem.Quantidade;
+        // Sempre que tiver algum item com peso deve recalcular, caso não tenha não muda
+        if bTemItemComPeso then
+          NotaFiscal.Pesoliqui := NotaFiscal.Pesoliqui + oItem.Peso * oItem.Quantidade;
       end;
     end;
   end;
