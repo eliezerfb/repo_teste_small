@@ -23176,7 +23176,7 @@ end;
 procedure TForm1.Estoquetotal1Click(Sender: TObject);
 begin
   // 2022-03-29 Movido para uni
-  RegistrosDoPafEcfEstoquetotal;     aqui parei
+  RegistrosDoPafEcfEstoquetotal;
 end;
 
 procedure TForm1.Estoqueparcial1Click(Sender: TObject);
@@ -29070,7 +29070,8 @@ begin
   else
   begin
     Application.ProcessMessages;
-    SmallMsgBox(PChar(sMsg), '', mb_ok); // ShowMessage(sMsg);
+    //ShowMessage(sMsg);
+    SmallMsgBox(PChar(sMsg), PChar(Application.Title), MB_OK);
   end;
 end;
 
