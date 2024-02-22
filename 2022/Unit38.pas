@@ -260,15 +260,17 @@ begin
           begin
             if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '1') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '2') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '3') then
             begin
-              if AllTrim(Form7.ibDataSet14NOME.AsString) <> '' then
+              if AllTrim(Form7.ibDataSet14NOME.AsString) <> EmptyStr then
+              begin
                 chkOperacoes.Items.add(Form7.ibDataSet14NOME.AsString);
 
-              if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,5) = 'CAIXA') or (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,5) = 'PAGAR') then
-              begin
-                chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := True;
-              end else
-              begin
-                chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := False;
+                if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,5) = 'CAIXA') or (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,5) = 'PAGAR') then
+                begin
+                  chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := True;
+                end else
+                begin
+                  chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := False;
+                end;
               end;
             end;
           end;
