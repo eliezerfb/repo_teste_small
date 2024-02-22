@@ -5888,7 +5888,7 @@ begin
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
-        _ecf65_EnviarEMail('', sEmail, '', 'XML da NFC-e', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sXMLFile),False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('',sEmail,'','XML da NFC-e',pchar(sTextoCorpoEmail),pChar(sXMLFile),False);
+        _ecf65_EnviarEMail('', sEmail, '', 'XML da NFC-e', PChar(sTextoCorpoEmail), PChar(sXMLFile), False);
       end;
 
       if FileExists(PChar(sPDFFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sPDFFile)) then
@@ -5898,7 +5898,7 @@ begin
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
-        _ecf65_EnviarEMail('',sEmail,'','DANFCE (Documento Auxiliar da NFC-e)', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sPDFFile),False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('',sEmail,'','DANFCE (Documento Auxiliar da NFC-e)',pchar(sTextoCorpoEmail),pChar(sPDFFile),False);
+        _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e)', PChar(sTextoCorpoEmail), PChar(sPDFFile), False);
       end;
 
     end
@@ -5915,7 +5915,7 @@ begin
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
-        _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e) e XML', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sZipFile), False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e) e XML', pchar(sTextoCorpoEmail), pChar(sZipFile), False);
+        _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e) e XML', PChar(sTextoCorpoEmail), PChar(sZipFile), False);
       end;
 
     end;
