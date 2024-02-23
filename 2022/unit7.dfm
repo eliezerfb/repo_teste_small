@@ -13543,7 +13543,7 @@ object Form7: TForm7
         OnClick = Resumodainadimplncia1Click
       end
       object Rankingdedevedores2: TMenuItem
-        Caption = 'Ranking de devedores...'
+        Caption = 'Ranking de devedores'
         OnClick = Rankingdedevedores2Click
       end
     end
@@ -21256,7 +21256,7 @@ object Form7: TForm7
         Caption = '-'
       end
       object MenuItem16: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object MenuItem17: TMenuItem
@@ -23127,7 +23127,7 @@ object Form7: TForm7
     object MenuItem11: TMenuItem
       Caption = '&Arquivo'
       object MenuItem99: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object MenuItem116: TMenuItem
@@ -23185,7 +23185,7 @@ object Form7: TForm7
     object MenuItem33: TMenuItem
       Caption = '&Arquivo'
       object MenuItem44: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object MenuItem55: TMenuItem
