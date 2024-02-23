@@ -73,6 +73,7 @@ const
   _cIdentXMLEmailContabilidade = 'e-mail contabilidade';
   _cIdentEnvioAutomatico = 'Envio automatico';
   _cIdentIncluirRelatorioTotalizador = 'Incluir Relatorio Totalizador';
+  _cIdentIncluirRelatorioMonofasicos = 'Incluir Relatorio Produtos monofásico';
   _cIdentNFeSaida = 'NFE SAIDA';
   _cIdentNFeEntrada = 'NFE ENTRADA';
   _cIdentNFCe = 'NFCE';
