@@ -1,6 +1,6 @@
 object FEmissorNFSe: TFEmissorNFSe
-  Left = 433
-  Top = 195
+  Left = 673
+  Top = 414
   Width = 800
   Height = 400
   HorzScrollBar.Visible = False
