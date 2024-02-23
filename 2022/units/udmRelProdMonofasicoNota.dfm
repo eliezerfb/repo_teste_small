@@ -14,17 +14,17 @@ object dmRelProdMonofasicoNota: TdmRelProdMonofasicoNota
       item
         Name = 'NF'
         DataType = ftWideString
-        Size = 20
+        Size = 12
       end
       item
         Name = 'CODIGO'
         DataType = ftWideString
-        Size = 20
+        Size = 6
       end
       item
         Name = 'DESCRICAO'
         DataType = ftWideString
-        Size = 20
+        Size = 120
       end
       item
         Name = 'TOTAL'
@@ -35,7 +35,7 @@ object dmRelProdMonofasicoNota: TdmRelProdMonofasicoNota
       item
         Name = 'CST'
         DataType = ftWideString
-        Size = 20
+        Size = 3
       end
       item
         Name = 'PISPERC'
@@ -64,22 +64,22 @@ object dmRelProdMonofasicoNota: TdmRelProdMonofasicoNota
       item
         Name = 'CFOP'
         DataType = ftWideString
-        Size = 20
+        Size = 4
       end
       item
         Name = 'NCM'
         DataType = ftWideString
-        Size = 20
+        Size = 10
       end
       item
         Name = 'CSTICMS'
         DataType = ftWideString
-        Size = 20
+        Size = 6
       end
       item
         Name = 'CSOSN'
         DataType = ftWideString
-        Size = 20
+        Size = 6
       end>
     IndexDefs = <>
     Params = <>
@@ -92,14 +92,17 @@ object dmRelProdMonofasicoNota: TdmRelProdMonofasicoNota
     end
     object cdsDadosNF: TWideStringField
       FieldName = 'NF'
+      Size = 12
     end
     object cdsDadosCODIGO: TWideStringField
       DisplayLabel = 'C'#243'digo'
       FieldName = 'CODIGO'
+      Size = 6
     end
     object cdsDadosDESCRICAO: TWideStringField
       DisplayLabel = 'Descri'#231#227'o'
       FieldName = 'DESCRICAO'
+      Size = 120
     end
     object cdsDadosTOTAL: TFMTBCDField
       DisplayLabel = 'Total'
@@ -109,6 +112,7 @@ object dmRelProdMonofasicoNota: TdmRelProdMonofasicoNota
     end
     object cdsDadosCST: TWideStringField
       FieldName = 'CST'
+      Size = 3
     end
     object cdsDadosPISPERC: TFMTBCDField
       DisplayLabel = '% PIS'
@@ -136,16 +140,20 @@ object dmRelProdMonofasicoNota: TdmRelProdMonofasicoNota
     end
     object cdsDadosCFOP: TWideStringField
       FieldName = 'CFOP'
+      Size = 4
     end
     object cdsDadosNCM: TWideStringField
       FieldName = 'NCM'
+      Size = 10
     end
     object cdsDadosCSTICMS: TWideStringField
       DisplayLabel = 'CST ICMS'
       FieldName = 'CSTICMS'
+      Size = 6
     end
     object cdsDadosCSOSN: TWideStringField
       FieldName = 'CSOSN'
+      Size = 6
     end
   end
   object qryDados: TIBQuery
