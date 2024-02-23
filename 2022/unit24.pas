@@ -1239,6 +1239,9 @@ begin
       Writeln(F,'CUSTO COMPRA = (VALOR UNITARIO + ((TOTAL ICMS ST + TOTAL VIPI)/ QUANTIDADE) ) + (( VALOR UNITARIO / TOTAL MERCADORIAS ) * ( FRETE + SEGURO + OUTRAS DESPESAS - DESCONTO ))');
       Writeln(F,Replicate('-',80));
 
+      // Precis posicionar no primeiro porque outra rotina pode ter movimentado o ponteiro do dataset e deixado no final (.Eof True)
+      Form7.ibDataSet23.First; // Sandro Silva 2024-02-23
+
       while not Form7.ibDataSet23.Eof do
       begin
         Form7.ibDataSet23.Edit;
