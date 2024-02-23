@@ -232,7 +232,9 @@ uses
   ufrmRelatorioProdMonofasicoNota in 'ufrmRelatorioProdMonofasicoNota.pas' {frmRelProdMonofasicoNota},
   uGeraRelatorioProdMonofasicoNota in 'units\uGeraRelatorioProdMonofasicoNota.pas',
   udmRelProdMonofasicoNota in 'units\udmRelProdMonofasicoNota.pas' {dmRelProdMonofasicoNota: TDataModule},
-  uEstruturaRelProdMonofasicoNota in 'units\uEstruturaRelProdMonofasicoNota.pas';
+  uEstruturaRelProdMonofasicoNota in 'units\uEstruturaRelProdMonofasicoNota.pas',
+  uIGeraRelatorioProdMonofasicoCupomNota in 'interfaces\uIGeraRelatorioProdMonofasicoCupomNota.pas',
+  uGeraRelatorioProdMonofasicoCupomNota in 'units\uGeraRelatorioProdMonofasicoCupomNota.pas';
 
 {$R *.RES}
 

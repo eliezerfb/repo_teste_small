@@ -12,7 +12,8 @@ type
   function setPeriodo(AdDataIni, AdDataFim: TDateTime): IGeraRelatorioProdMonofasico;
   function setUsuario(AcUsuario: String): IGeraRelatorioProdMonofasico;
   function getEstruturaRelatorio: IEstruturaTipoRelatorioPadrao;
-  function GeraRelatorio: IGeraRelatorioProdMonofasico;
+  function GeraRelatorio(AbComTotCFOPCSTCSOSN: Boolean = True; AbGeraCabecalho: Boolean = True): IGeraRelatorioProdMonofasico;
+  function setEstrutura(AoEstrutura: IEstruturaTipoRelatorioPadrao): IGeraRelatorioProdMonofasico;
   end;
 
 implementation

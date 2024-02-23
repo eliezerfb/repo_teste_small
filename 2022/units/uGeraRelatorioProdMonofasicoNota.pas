@@ -17,6 +17,7 @@ type
     FodmDados: TdmRelProdMonofasicoNota;
     procedure CarregaDados;
     constructor Create;
+    procedure GeraRelatorioCupomNota(AbGeraCabecalho: Boolean = True);
   public
     destructor Destroy; override;
     class function New: IGeraRelatorioProdMonofasico;
@@ -24,7 +25,8 @@ type
     function setPeriodo(AdDataIni, AdDataFim: TDateTime): IGeraRelatorioProdMonofasico;
     function setUsuario(AcUsuario: String): IGeraRelatorioProdMonofasico;
     function getEstruturaRelatorio: IEstruturaTipoRelatorioPadrao;
-    function GeraRelatorio: IGeraRelatorioProdMonofasico;
+    function GeraRelatorio(AbComTotCFOPCSTCSOSN: Boolean = True; AbGeraCabecalho: Boolean = True): IGeraRelatorioProdMonofasico;
+    function setEstrutura(AoEstrutura: IEstruturaTipoRelatorioPadrao): IGeraRelatorioProdMonofasico;
   end;
 
 implementation
@@ -51,7 +53,7 @@ begin
   inherited;
 end;
 
-function TGeraRelatorioProdMonofasicoNota.GeraRelatorio: IGeraRelatorioProdMonofasico;
+function TGeraRelatorioProdMonofasicoNota.GeraRelatorio(AbComTotCFOPCSTCSOSN: Boolean = True; AbGeraCabecalho: Boolean = True): IGeraRelatorioProdMonofasico;
 var
   oEstruturaRel: IEstruturaRelatorioPadrao;
   cTitulo: String;
@@ -60,14 +62,81 @@ begin
 
   CarregaDados;
 
-  FoEstrutura := TEstruturaTipoRelatorioPadrao.New
-                                       .setUsuario(FcUsuario);
+  if not Assigned(FoEstrutura) then
+    FoEstrutura := TEstruturaTipoRelatorioPadrao.New
+                                                .setUsuario(FcUsuario);
 
+  if not AbComTotCFOPCSTCSOSN then
+    GeraRelatorioCupomNota(AbGeraCabecalho)
+  else
+  begin
+    // Gera o cabeçalho
+    if AbGeraCabecalho then
+      FoEstrutura.GerarImpressaoCabecalho(TEstruturaRelProdMonofasicoNota.New
+                                                                         .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                                         .setDataBase(FoTransaction.DefaultDatabase)
+                                                                                ));
+
+    // Dados dos itens
+    oEstruturaRel := TEstruturaRelProdMonofasicoNota.New
+                                                     .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                     .setDataBase(FoTransaction.DefaultDatabase)
+                                                                                     .CarregarDados(FodmDados.cdsDados)
+                                                            );
+
+    if not AbComTotCFOPCSTCSOSN then
+      oEstruturaRel.FiltrosRodape.setFiltroData('Período analisado, de '+DateToStr(FdDataIni)+' até '+DateToStr(FdDataFim));
+
+    if AbGeraCabecalho then
+      FoEstrutura.GerarImpressaoAgrupado(oEstruturaRel, EmptyStr)
+    else
+    begin
+      TEstruturaRelProdMonofasicoNota.New.getTitulo(cTitulo);
+
+      FoEstrutura.GerarImpressaoAgrupado(oEstruturaRel, cTitulo);
+
+      cTitulo := EmptyStr;
+    end;
+
+    if AbComTotCFOPCSTCSOSN then
+    begin
+      // Totalizador CFOP
+      oEstruturaRel := TEstruturaRelProdMonofasicoNota.New
+                                                       .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                       .setDataBase(FoTransaction.DefaultDatabase)
+                                                                                       .CarregarDados(FodmDados.cdsCFOP)
+                                                              );
+      FoEstrutura.GerarImpressaoAgrupado(oEstruturaRel, 'Acumulado por CFOP');
+
+      // Totalizador CSTICMS/CSOSN
+      oEstruturaRel := TEstruturaRelProdMonofasicoNota.New
+                                                       .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                       .setDataBase(FoTransaction.DefaultDatabase)
+                                                                                       .CarregarDados(FodmDados.cdsCSTICMSCSOSN)
+                                                              );
+
+      cTitulo := FodmDados.cdsCSTICMSCSOSNCSTICMS.DisplayLabel;
+      if FodmDados.cdsCSTICMSCSOSNCSOSN.Visible then
+        cTitulo := FodmDados.cdsCSTICMSCSOSNCSOSN.DisplayLabel;
+
+      oEstruturaRel.FiltrosRodape.setFiltroData('Período analisado, de '+DateToStr(FdDataIni)+' até '+DateToStr(FdDataFim));
+
+      FoEstrutura.GerarImpressaoAgrupado(oEstruturaRel, 'Acumulado por ' + cTitulo);
+    end;
+  end;
+end;
+
+procedure TGeraRelatorioProdMonofasicoNota.GeraRelatorioCupomNota(AbGeraCabecalho: Boolean);
+var
+  oEstruturaRel: IEstruturaRelatorioPadrao;
+  cTitulo: String;
+begin
   // Gera o cabeçalho
-  FoEstrutura.GerarImpressaoCabecalho(TEstruturaRelProdMonofasicoNota.New
-                                                                      .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                                                      .setDataBase(FoTransaction.DefaultDatabase)
-                                                                             ));
+  if AbGeraCabecalho then
+    FoEstrutura.GerarImpressaoCabecalho(TEstruturaRelProdMonofasicoNota.New
+                                                                       .setDAO(TDadosRelatorioPadraoDAO.New
+                                                                                                       .setDataBase(FoTransaction.DefaultDatabase)
+                                                                              ));
 
   // Dados dos itens
   oEstruturaRel := TEstruturaRelProdMonofasicoNota.New
@@ -75,27 +144,19 @@ begin
                                                                                    .setDataBase(FoTransaction.DefaultDatabase)
                                                                                    .CarregarDados(FodmDados.cdsDados)
                                                           );
-  FoEstrutura.GerarImpressaoAgrupado(oEstruturaRel, EmptyStr);
 
-  // Totalizador CFOP
-  oEstruturaRel := TEstruturaRelProdMonofasicoNota.New
-                                                   .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                                   .setDataBase(FoTransaction.DefaultDatabase)
-                                                                                   .CarregarDados(FodmDados.cdsCFOP)
-                                                          );
-  FoEstrutura.GerarImpressaoAgrupado(oEstruturaRel, 'Acumulado por CFOP');
+  oEstruturaRel.FiltrosRodape.setFiltroData('Período analisado, de '+DateToStr(FdDataIni)+' até '+DateToStr(FdDataFim));
 
-  // Totalizador CSTICMS/CSOSN
-  oEstruturaRel := TEstruturaRelProdMonofasicoNota.New
-                                                   .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                                   .setDataBase(FoTransaction.DefaultDatabase)
-                                                                                   .CarregarDados(FodmDados.cdsCSTICMSCSOSN)
-                                                          );
-  cTitulo := FodmDados.cdsCSTICMSCSOSNCSTICMS.DisplayLabel;
-  if FodmDados.cdsCSTICMSCSOSNCSOSN.Visible then
-    cTitulo := FodmDados.cdsCSTICMSCSOSNCSOSN.DisplayLabel;
+  if AbGeraCabecalho then
+    FoEstrutura.GerarImpressaoAgrupado(oEstruturaRel, EmptyStr)
+  else
+  begin
+    TEstruturaRelProdMonofasicoNota.New.getTitulo(cTitulo);
 
-  FoEstrutura.GerarImpressaoAgrupado(oEstruturaRel, 'Acumulado por ' + cTitulo);
+    FoEstrutura.GerarImpressaoAgrupado(oEstruturaRel, cTitulo);
+
+    cTitulo := EmptyStr;
+  end;
 end;
 
 function TGeraRelatorioProdMonofasicoNota.getEstruturaRelatorio: IEstruturaTipoRelatorioPadrao;
@@ -106,6 +167,13 @@ end;
 class function TGeraRelatorioProdMonofasicoNota.New: IGeraRelatorioProdMonofasico;
 begin
   Result := Self.Create;
+end;
+
+function TGeraRelatorioProdMonofasicoNota.setEstrutura(AoEstrutura: IEstruturaTipoRelatorioPadrao): IGeraRelatorioProdMonofasico;
+begin
+  Result := Self;
+
+  FoEstrutura := AoEstrutura;
 end;
 
 function TGeraRelatorioProdMonofasicoNota.setPeriodo(AdDataIni, AdDataFim: TDateTime): IGeraRelatorioProdMonofasico;
