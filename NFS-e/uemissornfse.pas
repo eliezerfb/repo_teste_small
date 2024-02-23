@@ -547,10 +547,8 @@ begin
               Sleep(100);
 
               I := 0;
-
               while (RetornaValorDaTagNoCampo('Status',smmXML) = 'EM PROCESSAMENTO') or (Pos('NFS-E NAO AUTORIZADA',RetornaValorDaTagNoCampo('Status',smmXML))<>0) and (I < 10) do
               begin
-ShowMessage('While----'+smmXML);
                 edtNumeroNFSe.Text   := '';
                 edtNumeroRPS.Text    := RetornaValorDaTagNoCampo('NumeroDoRPS' ,smmXML);
                 edtSerieRPS.Text     := RetornaValorDaTagNoCampo('SerieDoRPS'  ,smmXML);
@@ -626,14 +624,8 @@ begin
   try
   mmTipado.Clear;
 
-showmessage('getRetornoV2Tipado');
-
   for i := 0 to NFSe.RetornoWS.Count - 1 do
   begin
-
-showmessage(NFSe.RetornoWS.Items[i].Status);
-showmessage(NFSe.RetornoJson);
-
     // Sandro Silva 2023-01-11 if (NFSe.RetornoWS.Items[i].Status = 'EMPROCESSAMENTO') or (Pos('não foi processado',NFSe.RetornoJson)<>0) then
     if (NFSe.RetornoWS.Items[i].Status = 'EMPROCESSAMENTO') or (Pos('não foi processado',NFSe.RetornoJson)<>0)
       or ((Trim(edtCidade.Text) = 'BRASILIADF') and (Pos('Lote aguardando processamento', NFSe.RetornoJson) <> 0))
@@ -732,9 +724,6 @@ showmessage(NFSe.RetornoJson);
       end;
     end;
   end;
-
-showmessage('Fim smmXml =  '+smmXml);
-
   except
     on e:exception do
       ShowMessage('Erro: '+e.Message);
@@ -751,9 +740,6 @@ procedure TFEmissorNFSe.btnConsultarNotaClick(Sender: TObject);
 begin
   try
     CheckConfig;
-    //
-    //  NFSe.Consultar('', edtNumeroRPS.Text, edtSerieRPS.Text, '1', '');
-    //
   {
     ShowMessage(
   '.Número NFSe : '+'|'+edtNumeroNFSe.Text+'|'+chr(10)+
@@ -762,7 +748,7 @@ begin
   '.Tipo RPS    : '+edtTipoRPS.Text      +chr(10)+
   '.Protocolo   : '+edtNumProtocolo.Text);
   }
-    //
+
     if Length(AllTrim(edtNumeroNFSe.Text)) > 12 then
     begin
       NFSe.Consultar(AllTrim(edtNumeroNFSe.Text), '', '', '', '');
@@ -770,9 +756,9 @@ begin
     begin
       NFSe.Consultar(edtNumeroNFSe.Text, edtNumeroRPS.Text, edtSerieRPS.Text, edtTipoRPS.Text, edtNumProtocolo.Text);
     end;
-    
+
     Sleep(1000);
-    //
+
     getRetornoV2Tipado;
     getRetornoV2Json;
   except
@@ -933,7 +919,6 @@ procedure TFEmissorNFSe.Button2Click(Sender: TObject);
 var
   Mais1Ini : tIniFile;
 begin
-  //
   Mais1ini := TIniFile.Create(sAtual+'\nfseConfig.ini');
   //
   if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','IncentivadorCultural'     ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','IncentivadorCultural'     ,'2');
@@ -957,14 +942,12 @@ begin
   FreeAndNil(FConfiguracaoNFSe);
   //
   Close;
-  //
 end;
 
 procedure TFEmissorNFSe.ConfiguraCredencialTecnospeed;
 var
   CredencialTecnospeed: TCredenciaisTecnospeed;
 begin
-
   NFSe.ConfigurarSoftwareHouse(edtCNPJSoftwareHouse.Text,edtTokenSoftwareHouse.Text);
 
   try
@@ -978,8 +961,6 @@ begin
     FreeAndNil(CredencialTecnospeed);
   except
   end;
-  //
-
 end;
 
 procedure TFEmissorNFSe.FormActivate(Sender: TObject);
