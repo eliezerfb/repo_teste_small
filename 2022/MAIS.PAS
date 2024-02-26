@@ -206,7 +206,6 @@ type
     IBDataSetGrafico2: TIBDataSet;
     IBDataSetGrafico3: TIBDataSet;
     Registrodoprogramaonline1: TMenuItem;
-    N7: TMenuItem;
     WebBrowser2: TWebBrowser;
     Label_bola_NFE: TLabel;
     Image_bola_caixa: TImage;
@@ -262,7 +261,6 @@ type
     Simples1: TMenuItem;
     Complexo1: TMenuItem;
     N16: TMenuItem;
-    ConverterosdadosparaSmallSaaS1: TMenuItem;
     N17: TMenuItem;
     N18: TMenuItem;
     ConfiguraesdaNFSe2: TMenuItem;
@@ -430,7 +428,6 @@ type
     procedure imgServicosClick(Sender: TObject);
     procedure Simples1Click(Sender: TObject);
     procedure Complexo1Click(Sender: TObject);
-    procedure ConverterosdadosparaSmallSaaS1Click(Sender: TObject);
     procedure ConfiguraesdaNFSe2Click(Sender: TObject);
     procedure Debug1Click(Sender: TObject);
     procedure Image_bola_cliforClick(Sender: TObject);
@@ -3946,6 +3943,11 @@ begin
   if FileExists(Form1.sAtual+'\mei.exe') then
     DeleteFile(pChar(Form1.sAtual+'\mei.exe'));
   {Dailon (f-7308) 2023-08-28 fim}
+
+  {Dailon Parisotto (f-164) 2024-02-26 Inicio}
+  if FileExists(Form1.sAtual+'\saas_.exe') then
+    DeleteFile(pChar(Form1.sAtual+'\saas_.exe'));
+  {Dailon Parisotto (f-164) 2024-02-26 Fim}
 
   //Mauricio Parizotto 2023-12-27 
   if (FileExists(Form1.sAtual+'\backup_.exe')) and (FileExists(Form1.sAtual+'\backup.exe')) then
@@ -11864,153 +11866,6 @@ begin
   Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
   Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
   FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
-end;
-
-procedure TForm1.ConverterosdadosparaSmallSaaS1Click(Sender: TObject);
-var
-  sCNPJ, sSenha  : String;
-  sSenhaX : String;
-  I : Integer;
-  Mais1Ini : tIniFile;
-begin
-  sCNPJ := Form7.ibDataSet13CGC.AsString;
-
-  Form22.Show;
-  Mensagem22('');
-  Senhas2.ShowModal;
-  Form22.Image1.Visible := False;
-  Form22.Repaint;
-  
-  Senha2:=Senhas2.SenhaPub2;
-  Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
-  sSenhaX := Mais1Ini.ReadString('Administrador','Chave','15706143431572013809150491382314104');
-  sSenha := '';
-  // ----------------------------- //
-  // Fórmula para ler a nova senha //
-  // ----------------------------- //
-  for I := 1 to (Length(sSenhaX) div 5) do
-    sSenha := Chr((StrToInt(
-                  Copy(sSenhaX,(I*5)-4,5)
-                  )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
-  // ----------------------------- //
-  if AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2) then
-  begin
-    //
-    I := Application.MessageBox(Pchar('Este procedimento vai converter os dados Small Commerce para o Small SaaS.'+ chr(10)
-                            + Chr(10)
-                            +'Confirma?'+ Chr(10)
-                            + Chr(10)
-                            +' Se estiver em dúvida clique no botão <Não>'+ Chr(10))
-                            ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
-    if I = IDYES then
-    begin
-      if FileExists(Form1.sAtual+'\saas_.exe') then
-      begin
-        try
-          Commitatudo(True); // SQL - Commando
-        except
-        end;
-
-        try
-          if not FechaTudo(bFechaTudo) then
-            Exit;
-          Form7.ibDataSet13.Close;
-        except
-        end;
-
-        Winexec('TASKKILL /F /IM "mobile.exe"' , SW_HIDE ); // // Form1Close
-        Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
-
-        while Form7.ibDataSet13.Active do Sleep(100);
-        
-        if Form7.IBDatabaseInfo1.UserNames.Count = 1 then
-        begin
-          try
-            Form7.IBDatabase1.Connected := False;
-          except
-          end;
-
-          ShellExecute( 0, 'Open', pChar(Form1.sAtual+'\saas_.exe'),'', '', SW_SHOW);
-          sleep(3000);
-          //
-          while ConsultaProcesso('saas_.exe') do
-          begin
-            sleep(1000);
-          end;
-
-          if not FileExists(Form1.sAtual+'\small.fdb') then
-          begin
-            if FileExists(Form1.sAtual+'\small.saas') then
-            begin
-              try
-                ApagaArquivoNoDeskTop('Small Commerce.lnk');
-                ApagaArquivoNoDeskTop('Small Start.lnk');
-                ApagaArquivoNoDeskTop('Small Mei.lnk');
-                ApagaArquivoNoDeskTop('PAF-ECF (Programa Aplicativo Fiscal).lnk');
-                ApagaArquivoNoDeskTop('Vendas (MEI).lnk');
-                ApagaArquivoNoDeskTop('NFC-e (Nota Fiscal Consumidor Eletrônica).lnk');
-                ApagaArquivoNoDeskTop('Orçamento (Documento Auxiliar de Venda).lnk');
-                ApagaArquivoNoDeskTop('CF-e-SAT (Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos).lnk');
-                ApagaArquivoNoDeskTop('PAF-NFC-e (Programa Aplicativo Fiscal).lnk');
-                ApagaArquivoNoDeskTop('Consulta de Preços.lnk');
-                ApagaArquivoNoDeskTop('Consulta.lnk');
-              except
-              end;
-
-              // Criar atalho no desktop
-              {
-              ShowMessage('Sistema convertido para Small SaaS. Agora você poderá acessar seu sistema de'
-              +chr(10)
-              +'qualquer dispositivo em qualquer lugar pela internet.'
-              +chr(10)
-              +chr(10)
-              +'Bem vindo ao Small SaaS!'
-              +chr(10));
-              Mauricio Parizotto 2023-10-25}
-              MensagemSistema('Sistema convertido para Small SaaS. Agora você poderá acessar seu sistema de'
-                              +chr(10)
-                              +'qualquer dispositivo em qualquer lugar pela internet.'
-                              +chr(10)
-                              +chr(10)
-                              +'Bem vindo ao Small SaaS!'
-                              +chr(10));
-
-              ShellExecute( 0, 'Open',PChar('https://www.smallsaas.com.br'),'', '', SW_SHOWMAXIMIZED);
-            end else
-            begin
-              //ShowMessage('Não foi possível converter os dados.'); Mauricio Parizotto 2023-10-25
-              MensagemSistema('Não foi possível converter os dados.',msgAtencao);
-            end;
-          end else
-          begin
-            //ShowMessage('Não foi possível converter os dados.'); Mauricio Parizotto 2023-10-25
-            MensagemSistema('Não foi possível converter os dados.',msgAtencao);
-          end;
-        end else
-        begin
-          //ShowMessage('Não foi possível converter os dados. Desconecte todos os usuários e tente novamente.'); Mauricio Parizotto 2023-10-25
-          MensagemSistema('Não foi possível converter os dados. Desconecte todos os usuários e tente novamente.',msgAtencao);
-        end;
-
-        Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
-        Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
-        Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
-      end else
-      begin
-        //ShowMessage('Não foi possível encontrar o programa de conversão. Atualize o sistema.'); Mauricio Parizotto 2023-10-25
-        MensagemSistema('Não foi possível encontrar o programa de conversão. Atualize o sistema.',msgAtencao);
-      end;
-    end else
-    begin
-      //ShowMessage('Nada foi convertido. Continue usando o Small Commerce.'); Mauricio Parizotto 2023-10-25
-      MensagemSistema('Nada foi convertido. Continue usando o Small Commerce.',msgAtencao);
-    end;
-  end else
-    //ShowMessage('Senha do administrador inválida.'); Mauricio Parizotto 2023-10-25
-    MensagemSistema('Senha do administrador inválida.',msgAtencao);
-  
-  Form22.Close;
 end;
 
 procedure TForm1.ConfiguraesdaNFSe2Click(Sender: TObject);
