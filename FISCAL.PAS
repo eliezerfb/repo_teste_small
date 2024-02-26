@@ -10738,16 +10738,16 @@ begin
 
     Mais1Ini.Free;
     DeleteFile(aWinDir + '\peso.txt');
-    if FileExists((Form1.sAtual + '\balanca\input\pesar.xml')) then
+    if FileExists(Form1.sAtual + '\balanca\input\pesar.xml') then
     begin
-      DeleteFile((Form1.sAtual + '\balanca\input\pesar.xml'));
-      DeleteFile((Form1.sAtual + '\balanca\input\pesar.tmp'));
+      DeleteFile(Form1.sAtual + '\balanca\input\pesar.xml');
+      DeleteFile(Form1.sAtual + '\balanca\input\pesar.tmp');
       Sleep(250);
     end;
-    if FileExists((Form1.sAtual + '\balanca\output\peso.xml')) then
+    if FileExists(Form1.sAtual + '\balanca\output\peso.xml') then
     begin
-      DeleteFile((Form1.sAtual + '\balanca\output\peso.xml'));
-      DeleteFile((Form1.sAtual + '\balanca\output\peso.res'));
+      DeleteFile(Form1.sAtual + '\balanca\output\peso.xml');
+      DeleteFile(Form1.sAtual + '\balanca\output\peso.res');
       Sleep(250);
     end;
 

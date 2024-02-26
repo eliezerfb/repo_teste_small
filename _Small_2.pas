@@ -1895,7 +1895,7 @@ begin
     AliquotasIss := Replicate(' ',79);
     SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
     iRetorno := Bematech_FI_VerificaAliquotasIss( AliquotasIss );
-    Result := PansiChar(AliquotasIss); // Precisa para eliminar caracter de final de String
+    Result := PAnsiChar(AliquotasIss); // Precisa para eliminar caracter de final de String
     if _ecf02_CodeErro(iRetorno) <> 1 then
     begin
       Result := '';
