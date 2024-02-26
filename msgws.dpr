@@ -21,10 +21,18 @@ uses
   DateUtils,
   ufuncoesfrente in 'ufuncoesfrente.pas',
   ufuncoesblocox in 'ufuncoesblocox.pas',
-  SmallFunc in '..\SmallFunc.pas',
-  uconstantes_chaves_privadas in '..\..\uconstantes_chaves_privadas.pas',  
+  uconstantes_chaves_privadas in '..\..\uconstantes_chaves_privadas.pas',
   uclassetiposblocox in 'uclassetiposblocox.pas',
-  uarquivosblocox in 'uarquivosblocox.pas' {FArquivosBlocoX};
+  uarquivosblocox in 'uarquivosblocox.pas' {FArquivosBlocoX},
+  smallfunc_xe in '..\unit_compartilhada\smallfunc_xe.pas',
+  uConectaBancoSmall in '..\unit_compartilhada\uConectaBancoSmall.pas',
+  uValidaRecursosDelphi7 in '..\unit_compartilhada\uValidaRecursosDelphi7.pas',
+  uRecursosSistema in '..\unit_compartilhada\uRecursosSistema.pas',
+  uTypesRecursos in '..\unit_compartilhada\uTypesRecursos.pas',
+  uCriptografia in '..\unit_compartilhada\uCriptografia.pas',
+  uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
+  uDialogs in '..\unit_compartilhada\uDialogs.pas',
+  uFuncaoMD5 in '..\unit_compartilhada\uFuncaoMD5.pas';
 
 {$R *.res}
 
