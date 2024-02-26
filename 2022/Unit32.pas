@@ -133,7 +133,14 @@ begin
   //
   ibQuery4.Close;
   ibQuery4.Sql.Clear;
-  ibQuery4.SQL.Add('select * from ESTOQUE order by DESCRICAO');
+  {Dailon Parisotto (f-167) 2024-02-26 Inicio
+
+    ibQuery4.SQL.Add('select * from ESTOQUE order by DESCRICAO');
+
+  }
+  ibQuery4.SQL.Add('select * from ESTOQUE WHERE ((DAT_INICIO <= :XDATA) OR (COALESCE(DAT_INICIO,'''') = '''')) order by DESCRICAO');
+  IBQuery4.ParamByName('XDATA').AsDate := DateTimePicker1.Date;
+  {Dailon Parisotto (f-167) 2024-02-26 Fim}
   ibQuery4.Open;
   //
   ibQuery4.First;
