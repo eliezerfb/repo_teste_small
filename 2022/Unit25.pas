@@ -325,7 +325,8 @@ begin
           end;
         end;
 
-        Unit7.EnviarEMail('',sEmail,'','Boleto','Boleto',pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'), False);
+        //2024-02-26 Unit7.EnviarEMail('',sEmail,'','Boleto','Boleto',pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'), False);
+        EnviarEMail('', sEmail, '', 'Boleto', 'Boleto', Form1.sAtual + '\boleto_' + AllTrim(Form7.ibDataSet7DOCUMENTO.AsString) + '.pdf', False);
       end;
     end;
   end;
@@ -476,7 +477,8 @@ begin
     // Fecha o documento pdf
     if FileExists(Form1.sAtual+'\'+sArquivo) then
     begin
-      Unit7.EnviarEMail('',sEmail,'','Boleto','Boleto',pChar(Form1.sAtual+'\'+sArquivo), False);
+      //2024-02-26 Unit7.EnviarEMail('',sEmail,'','Boleto','Boleto',pChar(Form1.sAtual+'\'+sArquivo), False);
+      EnviarEMail('', sEmail, '', 'Boleto','Boleto', Form1.sAtual+'\'+sArquivo, False);
     end;
   end;
 

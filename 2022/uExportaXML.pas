@@ -241,7 +241,8 @@ begin
             cAnexo := cAnexo + ';' + cRelTotalizador;
         end;
 
-        Unit7.EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
+        //2024-02-26 Unit7.EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
+        EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
 
         Result := True;
 
