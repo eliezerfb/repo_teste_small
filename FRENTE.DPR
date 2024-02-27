@@ -75,7 +75,11 @@ uses
   uDialogs in '..\unit_compartilhada\uDialogs.pas',
   md5_unicode in '..\unit_compartilhada\md5_unicode.pas',
   uFuncaoMD5 in '..\unit_compartilhada\uFuncaoMD5.pas',
-  usmallsat in 'usmallsat.pas';
+  usmallsat in 'usmallsat.pas',
+  uEmail in '..\unit_compartilhada\uEmail.pas',
+  uITestaEmail in '..\unit_compartilhada\interfaces\uITestaEmail.pas',
+  uTestaEmail in '..\unit_compartilhada\uTestaEmail.pas'
+  ;
 
 {$R *.RES}
 

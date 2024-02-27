@@ -214,7 +214,7 @@ uses
   , uclassetransacaocartao
   , umontaxmlvendasat
   , Unit12
-  , uConverteDocumentoParaDocFiscal;
+  , uConverteDocumentoParaDocFiscal, uEmail;
 
 function FormataFloatXML(dValor: Double; iDecimais: Integer): String;
 begin

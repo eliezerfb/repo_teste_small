@@ -289,7 +289,7 @@ uses
   , umfe
   , _Small_IntegradorFiscal // Sandro Silva 2018-07-03
   ,  ufuncoesfrente // Sandro Silva 2018-07-03
-  , uValidaRecursosDelphi7;
+  , uValidaRecursosDelphi7, uEmail;
 
 function AlertaCredenciadoraCartao(sNomeRede: String): String;
 begin
