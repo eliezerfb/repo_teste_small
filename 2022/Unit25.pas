@@ -53,6 +53,7 @@ type
     function GeraImagemDoBoletoComOCodigoDeBarras(Imprimir: Boolean): Boolean;
     procedure IniciaImpresao(var Impressao: TCanvas);
     procedure GeraVisualizacaoBoleto;
+    procedure SetFormaBoleto;
   public
     { Public declarations }
     sNossoNum : String;
@@ -75,7 +76,7 @@ var
 implementation
 
 uses Unit7, Unit26, Mais, Unit22, Unit14, Unit40, uFuncoesBancoDados,
-  uFuncoesRetaguarda, uDialogs, uEmail, uDesenhaBoleto;
+  uFuncoesRetaguarda, uDialogs, uEmail, uDesenhaBoleto, uSmallConsts;
 
 {$R *.DFM}
 
@@ -104,13 +105,14 @@ begin
 
   try
     CarregaDadosParcela;
-
     GeraVisualizacaoBoleto;
 
-    IniciaImpresao(Impressao); //Mauricio Parizotto 2024-02-07
+    //IniciaImpresao(Impressao); Mauricio Parizotto 2024-02-27
 
     if Imprimir then
     begin
+      IniciaImpresao(Impressao); //Mauricio Parizotto 2024-02-27
+
       if Form25.sFormatoBoleto = 'Padrão' then
         DesenhaBoletoLayoutPadrao(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
       else
@@ -337,6 +339,23 @@ end;
 
 procedure TForm25.btnImprimirTodosClick(Sender: TObject);
 begin
+
+  {$Region'//// Seta Forma de Pagamento ////'}
+  try
+    Form7.ibDataSet7.DisableControls;
+    Form7.ibDataSet7.First;
+
+    while not Form7.ibDataSet7.Eof do
+    begin
+      SetFormaBoleto;
+      Form7.ibDataSet7.Next;
+    end;
+  finally
+    Form7.ibDataSet7.First;
+    Form7.ibDataSet7.EnableControls;
+  end;
+  {$Endregion}
+
   {$region'//// Padrão ///'}
   if sFormatoBoleto = 'Padrão' then
   begin
@@ -375,7 +394,7 @@ begin
   end;
   {$Endregion}
 
-  {$region'//// Carne ///'}
+  {$region'//// Carnê ///'}
   if sFormatoBoleto = 'Carnê' then
   begin
     GeraCarneTodos;
@@ -398,6 +417,7 @@ begin
     begin
       CarregaConfiguracao;
       CarregaDadosParcela;
+      SetFormaBoleto;
 
       // Apaga o PDF anterior
       while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') do
@@ -650,7 +670,7 @@ begin
   if sInstituicaoFinanceira <> '' then
     Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString   := sInstituicaoFinanceira;
 
-  Form7.ibDataSet7FORMADEPAGAMENTO.AsString := 'Boleto Bancário'; // Sandro Silva 2023-07-13 Form7.ibDataSet7FORMADEPAGAMENTO.AsString := '15-Boleto Bancário';
+  //Form7.ibDataSet7FORMADEPAGAMENTO.AsString := _cFormaPgtoBoleto; // Sandro Silva 2023-07-13 Form7.ibDataSet7FORMADEPAGAMENTO.AsString := '15-Boleto Bancário'; Mauricio Parizotto 2024-02-27
 
   {Mauricio Parizotto 2023-10-02 Inicio}
   if sTipoMulta = 'Percentual' then
@@ -671,6 +691,8 @@ procedure TForm25.ImprimirBoleto;
 begin
   if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
   begin
+    SetFormaBoleto;
+
     if GeraImagemDoBoletoComOCodigoDeBarras(True) then
     begin
       if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
@@ -940,6 +962,14 @@ begin
   imgBoletoVisual.Refresh;
   imgBoletoVisual.Top := -525;
 end;
+
+procedure Tform25.SetFormaBoleto;
+begin
+  Form7.ibDataSet7.Edit;
+  Form7.ibDataSet7FORMADEPAGAMENTO.AsString := _cFormaPgtoBoleto;
+  Form7.ibDataSet7.Post;
+end;
+
 
 end.
 

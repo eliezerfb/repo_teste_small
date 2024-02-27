@@ -1070,13 +1070,16 @@ end;
 function GetNumParcela(documento,nota:string):string;
 var
   qyAux: TIBQuery;
-  trAux: TIBTransaction;
 begin
   Result := '01';
   try
-    trAux := CriaIBTransaction(Form7.IBDatabase1);
-    qyAux := CriaIBQuery(trAux);
+    qyAux := CriaIBQuery(Form7.ibDataSet7.Transaction);
 
+    //Zera o contador
+    qyAux.SQL.Text := 'select rdb$set_context(''USER_TRANSACTION'', ''row#'',0) from RDB$DATABASE';
+    qyAux.Open;
+
+    qyAux.Close;
     qyAux.SQL.Text := ' Select'+
                       ' 	rdb$get_context(''USER_TRANSACTION'', ''row#'') as NUMERO,'+
                       ' 	rdb$set_context(''USER_TRANSACTION'', ''row#'','+
@@ -1086,16 +1089,14 @@ begin
                       ' Where NUMERONF = '+QuotedStr(nota)+
                       ' 	and coalesce(ATIVO,9)<>1'+
                       ' 	and FORMADEPAGAMENTO = '+QuotedStr(_cFormaPgtoBoleto)+
-                      ' Order By DOCUMENTO';
+                      ' Order By VENCIMENTO';
     qyAux.Open;
 
     if qyAux.Locate('DOCUMENTO',documento,[]) then
       Result := StrZero(qyAux.FieldByName('NUMERO').AsFloat,2,0);
 
   finally
-    trAux.Rollback;
     FreeAndNil(qyAux);
-    FreeAndNil(trAux);
   end;
 end;
 
