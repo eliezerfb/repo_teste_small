@@ -280,6 +280,7 @@ type
     function getPodeFecharTela: Boolean;
     function TestarLimiteDisponivel: Boolean;
     procedure DefineVisibleHomologacao;
+    procedure AjustaTamnhoColunasGridProduto;
   public
     { Public declarations }  
     vNotaFiscal : TNotaFiscalEletronicaCalc;
@@ -815,6 +816,7 @@ begin
     Form7.ibDataSet16CST_ICMS.Visible       := True;
     Form7.ibDataSet16VICMS.Visible          := True;
     Form7.ibDataSet16VBC.Visible            := True;
+    Form7.ibDataSet16ICM.Visible            := True;
     Form7.ibDataSet16VBCST.Visible          := True;
     Form7.ibDataSet16VICMSST.Visible        := True;
     Form7.ibDataSet16VIPI.Visible           := True;
@@ -842,6 +844,7 @@ begin
     Form7.ibDataSet16CST_ICMS.Visible       := False;
     Form7.ibDataSet16VICMS.Visible          := False;
     Form7.ibDataSet16VBC.Visible            := False;
+    Form7.ibDataSet16ICM.Visible            := False;
     Form7.ibDataSet16VBCST.Visible          := False;
     Form7.ibDataSet16VICMSST.Visible        := False;
     Form7.ibDataSet16VIPI.Visible           := False;
@@ -862,7 +865,32 @@ begin
 
   AtivaPesquisaNaturezaOP;
 
+  AjustaTamnhoColunasGridProduto;
+
   SMALL_DBEdit40.SelectAll;
+end;
+
+procedure TForm12.AjustaTamnhoColunasGridProduto;
+var
+  i: Integer;
+begin
+  for i := 0 to Pred(DBGrid1.Columns.Count) do
+  begin
+    // Valores até 999999,99
+    if (DBGrid1.Columns[i].FieldName = Form7.ibDataSet16VBC.FieldName)
+       or (DBGrid1.Columns[i].FieldName = Form7.ibDataSet16VICMS.FieldName)
+       or (DBGrid1.Columns[i].FieldName = Form7.ibDataSet16VBCST.FieldName)
+       or (DBGrid1.Columns[i].FieldName = Form7.ibDataSet16VICMSST.FieldName)
+       or (DBGrid1.Columns[i].FieldName = Form7.ibDataSet16VIPI.FieldName)
+       or (DBGrid1.Columns[i].FieldName = Form7.ibDataSet16VBCFCPST.FieldName)
+       or (DBGrid1.Columns[i].FieldName = Form7.ibDataSet16VFCPST.FieldName) then
+      DBGrid1.Columns[i].Width := 80;
+    // Percentual
+    if (DBGrid1.Columns[i].FieldName = Form7.ibDataSet16ICM.FieldName)
+       or (DBGrid1.Columns[i].FieldName = Form7.ibDataSet16IPI.FieldName)
+       or (DBGrid1.Columns[i].FieldName = Form7.ibDataSet16PFCPST.FieldName) then
+      DBGrid1.Columns[i].Width := 50;
+  end;
 end;
 
 procedure TForm12.SMALL_DBEdit40Exit(Sender: TObject);
