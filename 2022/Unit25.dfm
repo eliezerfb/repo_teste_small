@@ -684,7 +684,7 @@ object Form25: TForm25
     Text = 'N'
     OnKeyDown = Edit1KeyDown
   end
-  object Edit4: TEdit
+  object edtInstrucaoL1: TEdit
     Left = 28
     Top = 215
     Width = 450
@@ -702,7 +702,7 @@ object Form25: TForm25
     TabOrder = 0
     OnKeyDown = Edit1KeyDown
   end
-  object Edit5: TEdit
+  object edtInstrucaoL2: TEdit
     Left = 28
     Top = 230
     Width = 450
@@ -720,9 +720,9 @@ object Form25: TForm25
     TabOrder = 1
     OnKeyDown = Edit1KeyDown
   end
-  object Edit6: TEdit
+  object edtInstrucaoL3: TEdit
     Left = 28
-    Top = 245
+    Top = 239
     Width = 450
     Height = 18
     AutoSize = False
@@ -738,9 +738,9 @@ object Form25: TForm25
     TabOrder = 2
     OnKeyDown = Edit1KeyDown
   end
-  object Edit7: TEdit
+  object edtInstrucaoL4: TEdit
     Left = 28
-    Top = 260
+    Top = 254
     Width = 450
     Height = 18
     AutoSize = False

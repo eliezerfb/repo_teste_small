@@ -10,10 +10,10 @@ uses
 type
   TForm25 = class(TForm)
     Edit3: TEdit;
-    Edit4: TEdit;
-    Edit5: TEdit;
-    Edit6: TEdit;
-    Edit7: TEdit;
+    edtInstrucaoL1: TEdit;
+    edtInstrucaoL2: TEdit;
+    edtInstrucaoL3: TEdit;
+    edtInstrucaoL4: TEdit;
     PrinterSetupDialog1: TPrinterSetupDialog;
     Edit1: TEdit;
     Edit2: TEdit;
@@ -259,10 +259,10 @@ begin
       Edit2.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Espécie','DM');  //      espécie documento ---> 5   32
       Edit3.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Aceite','');     //                 aceite ---> 5   36
 
-      Edit4.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções1','');  // linha 1 das instruções ---> 10   4
-      Edit5.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções2','');  // linha 2 das instruções ---> 10   4
-      Edit6.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções3','');  // linha 3 das instruções ---> 10   4
-      Edit7.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções4','');  // linha 4 das instruções ---> 10   4
+      edtInstrucaoL1.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções1','');  // linha 1 das instruções ---> 10   4
+      edtInstrucaoL2.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções2','');  // linha 2 das instruções ---> 10   4
+      edtInstrucaoL3.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções3','');  // linha 3 das instruções ---> 10   4
+      edtInstrucaoL4.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções4','');  // linha 4 das instruções ---> 10   4
 
       Form26.MaskEdit42.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Código do banco','');
       Form26.MaskEdit43.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Carteria','');
@@ -354,13 +354,15 @@ begin
       try
         if not Form25.PrintDialog1.Execute then
           Exit;
+
         while (not Form7.ibDataSet7.EOF) and (bOk) do
         begin
           if FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
           begin
-            ImprimirBoleto;
-            ValidaEmailPagador;
-            GeraImagemDoBoletoComOCodigoDeBarras(False);
+            //ImprimirBoleto;
+            //ValidaEmailPagador;
+            GeraImagemDoBoletoComOCodigoDeBarras(True);
+            GravaPortadorNossoNumCodeBar;
           end;
 
           Form7.ibDataSet7.Next;
@@ -468,10 +470,10 @@ begin
     Mais1Ini.WriteString(Form1.sEscolhido,'Espécie',AllTrim(Edit2.Text));                 //      espécie documento ---> 5   32
     Mais1Ini.WriteString(Form1.sEscolhido,'Aceite',AllTrim(Edit3.Text));   //                 aceite ---> 5   36
 
-    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções1',AllTrim(Edit4.Text));  // linha 1 das instruções ---> 10   4
-    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções2',AllTrim(Edit5.Text));  // linha 2 das instruções ---> 10   4
-    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções3',AllTrim(Edit6.Text));  // linha 3 das instruções ---> 10   4
-    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções4',AllTrim(Edit7.Text));  // linha 4 das instruções ---> 10   4
+    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções1',AllTrim(edtInstrucaoL1.Text));  // linha 1 das instruções ---> 10   4
+    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções2',AllTrim(edtInstrucaoL2.Text));  // linha 2 das instruções ---> 10   4
+    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções3',AllTrim(edtInstrucaoL3.Text));  // linha 3 das instruções ---> 10   4
+    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções4',AllTrim(edtInstrucaoL4.Text));  // linha 4 das instruções ---> 10   4
     
     Mais1Ini.WriteString(Form1.sEscolhido,'Código do banco',AllTrim(Form26.MaskEdit42.Text));  //     Repetir a 2 coluna em
 
@@ -768,9 +770,10 @@ begin
             IniciaImpresao(Impressao);
 
           CarregaDadosParcela;
-          GravaPortadorNossoNumCodeBar;
 
           DesenhaBoletoLayoutCarne(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,posicao);
+
+          GravaPortadorNossoNumCodeBar;
 
           //Imprime pagina
           if posicao = 3 then
