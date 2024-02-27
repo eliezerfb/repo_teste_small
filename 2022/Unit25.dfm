@@ -19,8 +19,8 @@ object Form25: TForm25
   PixelsPerInch = 96
   TextHeight = 13
   object imgBoletoVisual: TImage
-    Left = 20
-    Top = 15
+    Left = 21
+    Top = 8
     Width = 685
     Height = 460
   end
@@ -722,7 +722,7 @@ object Form25: TForm25
   end
   object edtInstrucaoL3: TEdit
     Left = 28
-    Top = 239
+    Top = 245
     Width = 450
     Height = 18
     AutoSize = False
@@ -740,7 +740,7 @@ object Form25: TForm25
   end
   object edtInstrucaoL4: TEdit
     Left = 28
-    Top = 254
+    Top = 260
     Width = 450
     Height = 18
     AutoSize = False
