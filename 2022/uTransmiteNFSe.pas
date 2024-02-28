@@ -442,9 +442,12 @@ begin
             end else
             {Sandro Silva 2023-01-09 fim}
             begin
-              Writeln(F,'NumeroRps='+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9));  // Número sequencial do RPS
+              if (sPadraoSistema = 'PRESCON') and (GetCidadeUF = 'CAMPOSDOJORDAOSP') then
+                Writeln(F,'NumeroRps='+Copy(Copy(Form7.ibDataSet15NUMERONF.AsString,1,9),4,6))  // Número sequencial do RPS
+              else
+                Writeln(F,'NumeroRps='+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9));  // Número sequencial do RPS
             end;
-            
+
             if (sPadraoSistema = 'IPM20') then
             begin
               Writeln(F,'SerieRps=01');    // Série
