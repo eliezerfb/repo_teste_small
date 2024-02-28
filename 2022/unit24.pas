@@ -2587,7 +2587,10 @@ begin
   // Atenção a rotina acima altera a quantidade no estoque
   sDataAntiga := DateToStrInvertida(Form7.ibDataSet24EMISSAO.AsDateTime);
 
-  Form7.bDescontaICMSDeso := TestaNotaDescontaICMSDesonerado;  
+  Form7.bDescontaICMSDeso := TestaNotaDescontaICMSDesonerado;
+
+  if DBGrid1.DataSource.DataSet.Active then
+    DBGrid1.DataSource.DataSet.First;
 end;
 
 procedure TForm24.FormActivate(Sender: TObject);
