@@ -12374,7 +12374,8 @@ end;
 procedure TForm1.RegistrodoPrograma(TermoAceito:boolean);
 var
   sNFCE :String;
-  sTermoUso : string;
+  sTermoUso, sCertificado : string;
+  sCertificadoValidade : string;
   sURL : string;
 begin
   sPublicCheck := GeraCheck;
@@ -12425,6 +12426,15 @@ begin
 
       }
 
+      //Mauricio Parizotto 2024-02-29
+      if TSistema.GetInstance.CertificadoTipo <> '' then
+      begin
+        sCertificadoValidade := FormatDateTime('yyyy-MM-dd',TSistema.GetInstance.CertificadoDtVal);
+
+        sCertificado := '&certificado_tp='+TSistema.GetInstance.CertificadoTipo+
+                        '&certificado_vl='+sCertificadoValidade;
+      end;
+
       sURL := 'http://www.smallsoft.com.br/legal.php?'+
               'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
               '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
@@ -12444,16 +12454,13 @@ begin
               '&origem='    + sOrigem +
               '&Check='     + Form1.sPublicCheck +
               '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20))+
-              '&certificado_tp='+TSistema.GetInstance.CertificadoTipo+//Mauricio Parizotto 2024-02-22
-              '&certificado_vl='+DateToStr(TSistema.GetInstance.CertificadoDtVal)+//Mauricio Parizotto 2024-02-22
+              sCertificado+
               sTermoUso;
               //+ '&retorno=json' // opção para quando tiver mudado o componente e usar recurso de API propriamente dito. Retornará somente o JSON
 
       Form1.WebBrowser1.Navigate(pChar(sURL));
 
       LogSistema(sURL,lgInformacao);
-
-
     end;
   except
   end;
@@ -12463,14 +12470,6 @@ end;
 
 procedure TForm1.MensagemRecursoIndisponivel(sMensagem: String);
 begin
-  {
-  Application.MessageBox(
-    PChar(sMensagem + Chr(10) + Chr(10) +
-      'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
-      'entre em contato com a Zucchetti pelo telefone 0800 645 2008'),
-    'Atenção', MB_ICONWARNING + MB_OK);
-   Mauricio Parizotto 2023-10-24}
-
    MensagemSistema(sMensagem + Chr(10) + Chr(10) +
                   'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
                   'entre em contato com a Zucchetti pelo telefone 0800 645 2008'
@@ -12486,7 +12485,6 @@ begin
   end
   else
     Result := True;
-
 end;
 
 procedure TForm1.Configuraes1Click(Sender: TObject);

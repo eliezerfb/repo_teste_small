@@ -4832,8 +4832,14 @@ begin
   if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A3') then
     TipoCertificado := 'A3';
 
-  TSistema.GetInstance.CertificadoDtVal := Form7.spdNFe.GetVencimentoCertificado;
-  TSistema.GetInstance.CertificadoTipo  := TipoCertificado;
+  try
+    if TipoCertificado <> '' then
+    begin
+      TSistema.GetInstance.CertificadoDtVal := Form7.spdNFe.GetVencimentoCertificado;
+      TSistema.GetInstance.CertificadoTipo  := TipoCertificado;
+    end;
+  except
+  end;
   {Mauricio Parizotto 2024-02-22 Fim}
 
   Result := True;
@@ -32620,6 +32626,12 @@ begin
   if vLocal = 'ABERTURA' then
   begin
     Result := #13#10;
+  end;
+
+  //Nenhum certificado
+  if TSistema.GetInstance.CertificadoTipo = '' then
+  begin
+    Exit;
   end;
 
   try
