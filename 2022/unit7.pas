@@ -7340,7 +7340,7 @@ var
   MAPIModule: HModule;
   Flags: Cardinal;
   slAnexos: TStringList;
-  Attachments: PAttachAccessArray;  
+  Attachments: PAttachAccessArray;
 
   i: Integer;
   //
