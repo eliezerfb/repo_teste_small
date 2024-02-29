@@ -43,6 +43,7 @@ type
   private
     procedure DefinirVisibleGerencial;
     procedure CarregaDadosGerencial;
+    function RetornarSQLEstoque: String;
     { Private declarations }
   public
     { Public declarations }
@@ -74,6 +75,11 @@ begin
                                                      .getSQL);
 
   qryGerencial.Open;
+end;
+
+function TForm32.RetornarSQLEstoque: String;
+begin
+  Result := 'select * from ESTOQUE WHERE ((DAT_INICIO <= :XDATA) OR (COALESCE(DAT_INICIO,'''') = '''')) order by DESCRICAO';
 end;
 
 procedure TForm32.Button5Click(Sender: TObject);
@@ -138,7 +144,7 @@ begin
     ibQuery4.SQL.Add('select * from ESTOQUE order by DESCRICAO');
 
   }
-  ibQuery4.SQL.Add('select * from ESTOQUE WHERE ((DAT_INICIO <= :XDATA) OR (COALESCE(DAT_INICIO,'''') = '''')) order by DESCRICAO');
+  ibQuery4.SQL.Add(RetornarSQLEstoque);
   IBQuery4.ParamByName('XDATA').AsDate := DateTimePicker1.Date;
   {Dailon Parisotto (f-167) 2024-02-26 Fim}
   ibQuery4.Open;
@@ -422,7 +428,12 @@ begin
   //
   ibQuery4.Close;
   ibQuery4.Sql.Clear;
-  ibQuery4.SQL.Add('select * from ESTOQUE order by DESCRICAO');
+
+  {Dailon Parisotto (f-167) 2024-02-26 Inicio}
+  ibQuery4.SQL.Add(RetornarSQLEstoque);
+  IBQuery4.ParamByName('XDATA').AsDate := DateTimePicker1.Date;
+  {Dailon Parisotto (f-167) 2024-02-26 Fim}
+
   ibQuery4.Open;
   //
   ibQuery4.First;
