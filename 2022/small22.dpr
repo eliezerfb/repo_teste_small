@@ -223,7 +223,8 @@ uses
   uDrawCellGridModulos in 'units\uDrawCellGridModulos.pas',
   uEmail in '..\..\unit_compartilhada\uEmail.pas',
   ufrmFichaCadastros in 'ufrmFichaCadastros.pas' {FrmFichaCadastros},
-  uDesenhaBoleto in 'units\uDesenhaBoleto.pas';
+  uDesenhaBoleto in 'units\uDesenhaBoleto.pas',
+  uSistema in 'units\uSistema.pas';
 
 {$R *.RES}
 

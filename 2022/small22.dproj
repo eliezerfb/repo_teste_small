@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -526,6 +526,12 @@
             </Platforms>
             <Deployment Version="3">
                 <DeployFile LocalName="..\..\..\..\..\Executaveis\Small Commerce\small22.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>small22.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\..\..\..\Executaveis\Small Commerce\small22.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>small22.exe</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -1344,6 +1350,12 @@
             </Deployment>
             <Deployment Version="3">
                 <DeployFile LocalName="..\..\..\..\..\Executaveis\Small Commerce\small22.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>small22.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\..\..\..\Executaveis\Small Commerce\small22.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>small22.exe</RemoteName>
                         <Overwrite>true</Overwrite>

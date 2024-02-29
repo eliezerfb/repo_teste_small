@@ -2655,7 +2655,11 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uRelatorioVendasNotaFiscal
   , uDrawCellGridModulos
   , uEmail
-  , ufrmFichaCadastros, uFuncaoMD5, uDesenhaBoleto;
+  , ufrmFichaCadastros
+  , uFuncaoMD5
+  , uDesenhaBoleto
+  , uSistema
+  ;
 
 {$R *.DFM}
 
@@ -4730,6 +4734,7 @@ end;
 function ConfiguraNFE : Boolean;
 var
   Mais1Ini: TIniFile;
+  TipoCertificado : string;
 begin
   Form1.ConfiguraCredencialTecnospeed; // Sandro Silva 2022-12-15
 
@@ -4896,6 +4901,23 @@ begin
   Form7.spdNFe.DanfeSettings.ModeloDanfeSimplificado   := Form1.sAtual + '\nfe\Templates\vm60\danfe\RetratoSimplificado.rtm';
   Form7.spdNFe.DanfeSettings.ModeloDanfeXmlResumo      := Form1.sAtual + '\nfe\Templates\vm60\danfe\Resumo.rtm';
   Form7.spdNFe.DanfeSettings.ModeloRTMCCe              := Form1.sAtual + '\nfe\Templates\cce\Impressao\modeloCCe.rtm';
+
+  {Mauricio Parizotto 2024-02-22 Inicio}
+  if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A1') then
+    TipoCertificado := 'A1';
+
+  if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A3') then
+    TipoCertificado := 'A3';
+
+  try
+    if TipoCertificado <> '' then
+    begin
+      TSistema.GetInstance.CertificadoDtVal := Form7.spdNFe.GetVencimentoCertificado;
+      TSistema.GetInstance.CertificadoTipo  := TipoCertificado;
+    end;
+  except
+  end;
+  {Mauricio Parizotto 2024-02-22 Fim}
 
   Result := True;
 end;
@@ -32747,9 +32769,18 @@ begin
     Result := #13#10;
   end;
 
+  //Nenhum certificado
+  if TSistema.GetInstance.CertificadoTipo = '' then
+  begin
+    Exit;
+  end;
+
   try
-    ConfiguraNFE; // Sandro Silva 2023-07-21 Precisa carregar a configuração para usar o componente spdNFe
-    DtVencimento := spdNFe.GetVencimentoCertificado;
+    {Mauricio Parizotto 2024-02-22 Inicio}
+    //ConfiguraNFE; // Sandro Silva 2023-07-21 Precisa carregar a configuração para usar o componente spdNFe
+    //DtVencimento := spdNFe.GetVencimentoCertificado;
+    DtVencimento := TSistema.GetInstance.CertificadoDtVal;
+    {Mauricio Parizotto 2024-02-22 Fim}
 
     if DtVencimento >= Date then
       Result := Result+'Seu certificado digital irá vencer em '+FormatFloat('0', DtVencimento - Date) + ' dia(s) '+'('+DateToStr(DtVencimento)+').'

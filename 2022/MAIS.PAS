@@ -445,6 +445,7 @@ type
     procedure ConfiguraesdaNFSe1Click(Sender: TObject);
     procedure WebBrowser1DocumentComplete(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
+    procedure FormDestroy(Sender: TObject);
 
 
   private
@@ -499,7 +500,7 @@ type
 
     ValidaRecursos: TValidaRecurso; // Sandro Silva 2023-05-31
     { Public declarations }
-    procedure RegistrodoPrograma(InfTermo: boolean);
+    procedure RegistrodoPrograma(TermoAceito: boolean);
     procedure WMUser (var msg: TMessage); message wm_User;
     function AvisoNFECompra(bP1 : Boolean):Boolean;
     function AvisoOS(bP1 : Boolean):Boolean;
@@ -563,7 +564,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmConfigEmailAutContabilidade
   , uDialogs
   , uFuncoesRetaguarda
-  , uSmallResourceString;
+  , uSmallResourceString, uSistema;
 
 {$R *.DFM}
 
@@ -4103,9 +4104,6 @@ begin
       Form1.AutoMarketplace1Click(Sender);
     end;
   end;
-
-  //Mauricio Parizotto 2023-11-27
-  CarregaConfiguracoes;
 end;
 
 procedure TForm1.ConsultadepreosporCdigodeBarras1Click(Sender: TObject);
@@ -4428,6 +4426,11 @@ begin
 
   //Mauricio Parizotto 2023-09-22
   CarregaIconesSistema;
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  TSistema.destroy;
 end;
 
 procedure TForm1.DadosdoEmitente1Click(Sender: TObject);
@@ -8251,6 +8254,10 @@ begin
       FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04      
     end;
 
+
+    //Mauricio Parizotto 2024-02-22
+    CarregaConfiguracoes;
+    ConfiguraNFE;
 
     MontaTela(True);
     
@@ -12199,10 +12206,12 @@ begin
 end;
 
 
-procedure TForm1.RegistrodoPrograma(InfTermo:boolean);
+procedure TForm1.RegistrodoPrograma(TermoAceito:boolean);
 var
   sNFCE :String;
-  sTermoUso : string;
+  sTermoUso, sCertificado : string;
+  sCertificadoValidade : string;
+  sURL : string;
 begin
   sPublicCheck := GeraCheck;
 
@@ -12221,12 +12230,12 @@ begin
     begin
       //Mauricio Parizotto 2023-05-15
       //Campo termo_uso_aceito no site
-      if InfTermo then
+      if TermoAceito then
       begin
         sTermoUso := '&termo_uso=' +  FormatDateTime('yyyy-MM-dd hh:mm:ss',now);
       end;
 
-      //Form1.WebBrowser1.Navigate(pChar('http://192.168.210.29/legal.php?'+ // legal local dev
+      {Mauricio Parizotto 2024-02-23 Inicio
       Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
                                     'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
                                     '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
@@ -12249,6 +12258,44 @@ begin
                                     sTermoUso
                                     //+ '&retorno=json' // opção para quando tiver mudado o componente e usar recurso de API propriamente dito. Retornará somente o JSON
                                     );
+
+      }
+
+      //Mauricio Parizotto 2024-02-29
+      if TSistema.GetInstance.CertificadoTipo <> '' then
+      begin
+        sCertificadoValidade := FormatDateTime('yyyy-MM-dd',TSistema.GetInstance.CertificadoDtVal);
+
+        sCertificado := '&certificado_tp='+TSistema.GetInstance.CertificadoTipo+
+                        '&certificado_vl='+sCertificadoValidade;
+      end;
+
+      sURL := 'http://www.smallsoft.com.br/legal.php?'+
+              'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
+              '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
+              '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
+              '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
+              '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
+              '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
+              '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
+              '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
+              '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
+              '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
+              '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
+              '&nfce='      + sNFCE +
+              '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
+              '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
+              '&conve='     + sConve  +
+              '&origem='    + sOrigem +
+              '&Check='     + Form1.sPublicCheck +
+              '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20))+
+              sCertificado+
+              sTermoUso;
+              //+ '&retorno=json' // opção para quando tiver mudado o componente e usar recurso de API propriamente dito. Retornará somente o JSON
+
+      Form1.WebBrowser1.Navigate(pChar(sURL));
+
+      LogSistema(sURL,lgInformacao);
     end;
   except
   end;
@@ -12258,14 +12305,6 @@ end;
 
 procedure TForm1.MensagemRecursoIndisponivel(sMensagem: String);
 begin
-  {
-  Application.MessageBox(
-    PChar(sMensagem + Chr(10) + Chr(10) +
-      'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
-      'entre em contato com a Zucchetti pelo telefone 0800 645 2008'),
-    'Atenção', MB_ICONWARNING + MB_OK);
-   Mauricio Parizotto 2023-10-24}
-
    MensagemSistema(sMensagem + Chr(10) + Chr(10) +
                   'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
                   'entre em contato com a Zucchetti pelo telefone 0800 645 2008'
@@ -12281,7 +12320,6 @@ begin
   end
   else
     Result := True;
-
 end;
 
 procedure TForm1.Configuraes1Click(Sender: TObject);

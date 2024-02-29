@@ -21,6 +21,7 @@ object Form1: TForm1
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp
   OnMouseMove = FormMouseMove
   OnShow = FormShow
