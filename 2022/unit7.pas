@@ -21094,10 +21094,10 @@ begin
           //
           if (FileExists(pChar(Form40.OpenDialog1.FileName))) and (Alltrim(Form40.OpenDialog1.FileName)<>'') then
           begin
-            EnviarEMail('', sEmail,'', sAssunto, sMSG, Form40.OpenDialog1.FileName, False); //2024-02-26 EnviarEMail('',sEmail,'',sAssunto,sMSG,pChar(Form40.OpenDialog1.FileName), False);
+            EnviarEMail('', sEmail,'', PChar(sAssunto), PChar(sMSG), PChar(Form40.OpenDialog1.FileName), False); //2024-02-26 EnviarEMail('',sEmail,'',sAssunto,sMSG,pChar(Form40.OpenDialog1.FileName), False);
           end else
           begin
-            EnviarEMail('', sEmail, '', sAssunto, sMSG, '', False);
+            EnviarEMail('', sEmail, '', PChar(sAssunto), PChar(sMSG), '', False);
           end;
           //
           I := I + 1;
@@ -21402,7 +21402,7 @@ begin
                 sMsg := StrTran(sMsg,'<CIDADE_EMITENTE>',     Form7.ibDataSet13MUNICIPIO.AsString);
                 sMsg := StrTran(sMsg,'<UF_EMITENTE>',         UpperCase(Form7.ibDataSet13ESTADO.AsString));
 
-                EnviarEMail('', sEmail, '', sAssunto, sMSG, sArquivo, False);
+                EnviarEMail('', sEmail, '', PChar(sAssunto), PChar(sMSG), PChar(sArquivo), False);
 
                 I := I + 1;
                 //
@@ -23876,15 +23876,17 @@ begin
                 //chr(10)+
                 //chr(10)+'OBS: Por segurança o arquivo XML foi zipado.'),Alltrim(Form1.sAtual + '\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve'+'.zip') ,False);
 
-                EnviarEMail('', sEmail, '', 'Cancelamento de NF-e (Nota Fiscal Eletrônica)', 'Segue em anexo o cancelamento sua NF-e em arquivo XML.'+chr(10)+Form1.sPropaganda+
+                EnviarEMail('',sEmail,'','Cancelamento de NF-e (Nota Fiscal Eletrônica)',pchar('Segue em anexo o cancelamento sua NF-e em arquivo XML.'+chr(10)+Form1.sPropaganda+
                 chr(10)+
-                chr(10)+'OBS: Por segurança o arquivo XML foi zipado.', Alltrim(Form1.sAtual + '\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve'+'.zip'), False);
+                chr(10)+'OBS: Por segurança o arquivo XML foi zipado.'), PChar(Alltrim(Form1.sAtual + '\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve'+'.zip')), False);
+
+
               end else
               begin
                 //2024-02-26 Unit7.EnviarEMail('',sEmail,'','Cancelamento de NF-e (Nota Fiscal Eletrônica)',pchar('Segue em anexo o cancelamento sua NF-e em arquivo XML.'+chr(10)+Form1.sPropaganda+
                 //chr(10)),pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml')),False);
-                EnviarEMail('', sEmail, '', 'Cancelamento de NF-e (Nota Fiscal Eletrônica)', 'Segue em anexo o cancelamento sua NF-e em arquivo XML.'+chr(10)+Form1.sPropaganda+
-                chr(10), pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml')), False);
+                EnviarEMail('', sEmail, '', PChar('Cancelamento de NF-e (Nota Fiscal Eletrônica)'), PChar('Segue em anexo o cancelamento sua NF-e em arquivo XML.'+chr(10)+Form1.sPropaganda+
+                chr(10)), pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml')), False);
               end;
             end;
 
@@ -28577,9 +28579,9 @@ begin
                   //
                   sMsg := StrTran(sMsg,'<TOTAL_ATUALIZADO>'    ,AllTrim(Format('%12.2n',[Form7.IBQuery1.FieldByName('SUM').AsFloat])));
                 end;
-
-                EnviarEMail('',sEmail,'',sAssunto,sMSG,sArquivo, False);
-				
+                //
+                EnviarEMail('', sEmail, '', PChar(sAssunto), PChar(sMSG), PChar(sArquivo), False);
+                //
                 I := I + 1;
 
                 Mais1ini := TIniFile.Create('frente.ini');
@@ -31166,19 +31168,19 @@ begin
     if (FileExists(pChar(sPDF))) and (Form7.ibDataSet15EMITIDA.AsString = 'S') then
     begin
       //2024-02-26 Unit7.EnviarEMail('',Form7.ibDAtaSet2eMail.Asstring,'','Sua NFS-e',pchar('Segue em anexo sua NFS-e em arquivo PDF.'+chr(10)+Form1.sPropaganda),pChar(sPDF),False);
-      EnviarEMail('', Form7.ibDAtaSet2eMail.Asstring, '', 'Sua NFS-e', 'Segue em anexo sua NFS-e em arquivo PDF.'+chr(10)+Form1.sPropaganda, sPDF, False);
+      EnviarEMail('', Form7.ibDAtaSet2eMail.Asstring, '', PChar('Sua NFS-e'), PChar('Segue em anexo sua NFS-e em arquivo PDF.'+chr(10)+Form1.sPropaganda), PChar(sPDF), False);
     end else
     begin
       if RetornaValorDaTagNoCampo('LinkVisualizacaoNfse',fNFe) <> '' then
       begin
         //2024-02-26 Unit7.EnviarEMail('',Form7.ibDAtaSet2eMail.Asstring,'','Sua NFS-e',pchar('Segue link da sua NFS-e:'+chr(10)+chr(10)+pChar(RetornaValorDaTagNoCampo('LinkVisualizacaoNfse',fNFe))+chr(10)+Form1.sPropaganda),'',False);
-        EnviarEMail('', Form7.ibDAtaSet2eMail.Asstring, '', 'Sua NFS-e', 'Segue link da sua NFS-e:'+chr(10)+chr(10)+pChar(RetornaValorDaTagNoCampo('LinkVisualizacaoNfse',fNFe))+chr(10)+Form1.sPropaganda, '', False);
+        EnviarEMail('', Form7.ibDAtaSet2eMail.Asstring, '', PChar('Sua NFS-e'), PChar('Segue link da sua NFS-e:'+chr(10)+chr(10)+pChar(RetornaValorDaTagNoCampo('LinkVisualizacaoNfse',fNFe))+chr(10)+Form1.sPropaganda), PChar(''), False);
       end else
       begin
         if RetornaValorDaTagNoCampo('link',fNFe) <> '' then
         begin
           //2024-02-26 Unit7.EnviarEMail('',Form7.ibDAtaSet2eMail.Asstring,'','Sua NFS-e',pchar('Segue link da sua NFS-e:'+chr(10)+chr(10)+pChar(RetornaValorDaTagNoCampo('link',fNFe))+chr(10)+Form1.sPropaganda),'',False);
-          EnviarEMail('', Form7.ibDAtaSet2eMail.Asstring,'', 'Sua NFS-e', 'Segue link da sua NFS-e:'+chr(10)+chr(10)+pChar(RetornaValorDaTagNoCampo('link',fNFe))+chr(10)+Form1.sPropaganda, '', False);
+          EnviarEMail('', Form7.ibDAtaSet2eMail.Asstring,'', PChar('Sua NFS-e'), PChar('Segue link da sua NFS-e:'+chr(10)+chr(10)+pChar(RetornaValorDaTagNoCampo('link',fNFe))+chr(10)+Form1.sPropaganda), PChar(''), False);
         end else
         begin
           fNFe := ConverteAcentos(Form7.ibDataSet15RECIBOXML.AsString);
@@ -31198,7 +31200,7 @@ begin
             CloseFile(F); // Fecha o arquivo
 
             //2024-02-26 Unit7.EnviarEMail('',Form7.ibDAtaSet2eMail.Asstring,'','Sua NFS-e',pchar('Segue em anexo sua NFS-e em arquivo HTML.'+chr(10)+Form1.sPropaganda),pChar(Form1.sAtual+'\tempo.html'),False);
-            EnviarEMail('', Form7.ibDAtaSet2eMail.Asstring,'', 'Sua NFS-e', 'Segue em anexo sua NFS-e em arquivo HTML.'+chr(10)+Form1.sPropaganda, Form1.sAtual+'\tempo.html', False);
+            EnviarEMail('', Form7.ibDAtaSet2eMail.Asstring,'', PChar('Sua NFS-e'), PChar('Segue em anexo sua NFS-e em arquivo HTML.'+chr(10)+Form1.sPropaganda), PChar(Form1.sAtual+'\tempo.html'), False);
 
             Screen.Cursor            := crDefault;
           end;
@@ -32231,7 +32233,7 @@ begin
                   sMsg := StrTran(sMsg,'<TOTAL_ATUALIZADO>'    ,AllTrim(Format('%12.2n',[Form7.IBQuery1.FieldByName('SUM').AsFloat])));
                 end;
 
-                EnviarEMail('',sEmail,'',sAssunto,sMSG,sArquivo, False);
+                EnviarEMail('',sEmail,'',PChar(sAssunto),PChar(sMSG),PChar(sArquivo), False);
 
                 I := I + 1;
 
@@ -32544,7 +32546,7 @@ begin
                                    .RetornarTexto;
 
     //2024-02-26 EnviarEMail('',cEmail,'','Carta de correção Eletrônica emitida', pchar(cMensagem), cAnexo, False);
-    EnviarEMail('', cEmail,'', 'Carta de correção Eletrônica emitida', cMensagem, cAnexo, False);
+    EnviarEMail('', cEmail,'', PChar('Carta de correção Eletrônica emitida'), PChar(cMensagem), PChar(cAnexo), False);
   finally
     if FileExists(cCaminhoPDF + cNomeArqPDF) then
       DeleteFile(PChar(cCaminhoPDF + cNomeArqPDF));
@@ -33218,7 +33220,7 @@ begin
                                    .setNumeroDocumento(IBDataSet97.FieldByName('Orçamento').AsString)
                                    .RetornarTexto;
     // Envia o e-mail
-    EnviarEMail('', cEmail, '', 'Seu Orçamento', cMensagem, cCaminhoArq, False);
+    EnviarEMail('', cEmail, '', PChar('Seu Orçamento'), PChar(cMensagem), PChar(cCaminhoArq), False);
   finally
     FreeAndNil(oArqDAT);
   end;
