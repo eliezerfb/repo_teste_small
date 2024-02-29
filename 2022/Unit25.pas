@@ -10,10 +10,10 @@ uses
 type
   TForm25 = class(TForm)
     Edit3: TEdit;
-    Edit4: TEdit;
-    Edit5: TEdit;
-    Edit6: TEdit;
-    Edit7: TEdit;
+    edtInstrucaoL1: TEdit;
+    edtInstrucaoL2: TEdit;
+    edtInstrucaoL3: TEdit;
+    edtInstrucaoL4: TEdit;
     PrinterSetupDialog1: TPrinterSetupDialog;
     Edit1: TEdit;
     Edit2: TEdit;
@@ -53,6 +53,8 @@ type
     function GeraImagemDoBoletoComOCodigoDeBarras(Imprimir: Boolean): Boolean;
     procedure IniciaImpresao(var Impressao: TCanvas);
     procedure GeraVisualizacaoBoleto;
+    procedure SetFormaBoleto;
+    function ValidaMesmoBanco: Boolean;
   public
     { Public declarations }
     sNossoNum : String;
@@ -62,6 +64,7 @@ type
     procedure CarregaConfiguracao;
     procedure CarregaDadosParcela;
     procedure GravaPortadorNossoNumCodeBar;
+    procedure EventoShow;
     function GeraCodBarra(codBanco:string): string;
     function FormataCodBarra(codBarra: string): string;
   end;
@@ -75,7 +78,7 @@ var
 implementation
 
 uses Unit7, Unit26, Mais, Unit22, Unit14, Unit40, uFuncoesBancoDados,
-  uFuncoesRetaguarda, uDialogs, uEmail, uDesenhaBoleto;
+  uFuncoesRetaguarda, uDialogs, uEmail, uDesenhaBoleto, uSmallConsts;
 
 {$R *.DFM}
 
@@ -104,13 +107,14 @@ begin
 
   try
     CarregaDadosParcela;
-
     GeraVisualizacaoBoleto;
 
-    IniciaImpresao(Impressao); //Mauricio Parizotto 2024-02-07
+    //IniciaImpresao(Impressao); Mauricio Parizotto 2024-02-27
 
     if Imprimir then
     begin
+      IniciaImpresao(Impressao); //Mauricio Parizotto 2024-02-27
+
       if Form25.sFormatoBoleto = 'Padrão' then
         DesenhaBoletoLayoutPadrao(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
       else
@@ -170,152 +174,11 @@ begin
 end;  
 
 procedure TForm25.FormShow(Sender: TObject);
-var
-  Mais1Ini: TIniFile;
-  I: Integer;
 begin
-  //Mauricio Parizotto 2024-02-05
-  sFormatoBoleto := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction,
-                                          ' Select Coalesce(FORMATOBOLETO,''Padrão'') '+
-                                          ' From BANCOS '+
-                                          ' Where NOME ='+QuotedStr(Form1.sBancoBoleto));
+  EventoShow;
 
-  //Mauricio Parizotto 2023-06-16
-  if Form1.sBancoBoleto <> '' then
-  begin
-    try
-      sInstituicaoFinanceira := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
-                                                      ' Select Coalesce(INSTITUICAOFINANCEIRA,'''') From BANCOS '+
-                                                      ' Where NOME ='+QuotedStr(Form1.sBancoBoleto));
-    except
-      sInstituicaoFinanceira := '';
-    end;
-  end else
-  begin
-    sInstituicaoFinanceira := '';
-  end;
-
-  try
-    //Form25.Caption := StrTran(Form1.sEscolhido,'Boleto','Bloqueto'); Mauricio Parizotto 2023-10-02
-    Form25.Caption := Form1.sEscolhido;
-
-    for I:= 1 to 65 do vLinha[I]  := ' ';
-    for I:= 1 to 20 do vLinha[I]  := ' ';
-    for I:= 1 to 20 do vCampo[I]  := ' ';
-
-    if Trim(Form1.sEscolhido) <> '' then // Sandro Silva 2022-12-22 Só entra se o
-    begin
-      // Carrega as configurações para boleto conforme o portador setado em Form1.sEscolhido
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-
-      Form26.MaskEdit1.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L1','1');   //     local de pagamento ---> 1    4
-      Form26.MaskEdit2.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L2','1');   //             vencimento ---> 1   51
-      Form26.MaskEdit3.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L3','5');   //         data documento ---> 5    4
-      Form26.MaskEdit4.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L4','5');   //              documento ---> 5   15
-      Form26.MaskEdit5.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L5','5');   //      espécie documento ---> 5   32
-      Form26.MaskEdit6.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L6','5');   //                 aceite ---> 5   36
-      Form26.MaskEdit7.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L7','5');   //             processado ---> 5   39
-      Form26.MaskEdit8.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L8','6');   //     valor do documento ---> 6   52
-      Form26.MaskEdit9.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L9', '10');  // linha 1 das instruções ---> 10   4
-      Form26.MaskEdit10.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L10','11'); // linha 1 das instruções ---> 10   4
-      Form26.MaskEdit11.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L11','12'); // linha 1 das instruções ---> 10   4
-      Form26.MaskEdit12.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L12','13'); // linha 1 das instruções ---> 10   4
-      Form26.MaskEdit13.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L13','14'); // linha 1 das instruções ---> 10   4
-      Form26.MaskEdit14.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L14','15'); //         nome do Pagador ---> 15   8
-      Form26.MaskEdit15.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L15','16'); //     endereço do Pagador ---> 15   8
-      Form26.MaskEdit16.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L16','17'); //             CEP Pagador ---> 15   8
-      Form26.MaskEdit17.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L17','17'); //       cidade do Pagador ---> 15   8
-      Form26.MaskEdit18.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L18','17'); //       estado do Pagador ---> 15   8
-      Form26.MaskEdit19.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L19','15'); //          CGC do Pagador ---> 15   8
-      Form26.MaskEdit20.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L20','00'); //          Valor extenso ---> 00   0
-
-      Form26.MaskEdit21.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C1','4');  //     local de pagamento ---> 1    4
-      Form26.MaskEdit22.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C2','51'); //             vencimento ---> 1   51
-      Form26.MaskEdit23.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C3','04'); //         data documento ---> 5    4
-      Form26.MaskEdit24.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C4','15'); //              documento ---> 5   15
-      Form26.MaskEdit25.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C5','32'); //      espécie documento ---> 5   32
-      Form26.MaskEdit26.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C6','36'); //                 aceite ---> 5   36
-      Form26.MaskEdit27.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C7','39'); //             processado ---> 5   39
-      Form26.MaskEdit28.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C8','52'); //     valor do documento ---> 6   52
-      Form26.MaskEdit29.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C9','4');  // linha 1 das instruções ---> 10   4
-      Form26.MaskEdit30.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C10','4'); // linha 1 das instruções ---> 10   4
-      Form26.MaskEdit31.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C11','4'); // linha 1 das instruções ---> 10   4
-      Form26.MaskEdit32.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C12','4'); // linha 1 das instruções ---> 10   4
-      Form26.MaskEdit33.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C13','4'); // linha 1 das instruções ---> 10   4
-      Form26.MaskEdit34.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C14','8'); //         nome do Pagador ---> 15   8
-      Form26.MaskEdit35.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C15','8'); //     endereço do Pagador ---> 15   8
-      Form26.MaskEdit36.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C16','8'); //             CEP Pagador ---> 15   8
-      Form26.MaskEdit37.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C17','18'); //       cidade do Pagador ---> 15   8
-      Form26.MaskEdit38.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C18','50'); //       estado do Pagador ---> 15   8
-      Form26.MaskEdit39.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C19','50'); //          CGC do Pagador ---> 15   8
-      Form26.MaskEdit40.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C20','0'); //          Valor extenso ---> 00   0
-      Form26.MaskEdit41.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Altura','24');   //  tamanho da página ---> 24
-
-      Form26.MaskEdit400.Text := AllTrim(Mais1Ini.ReadString(Form1.sEscolhido,'Tamanho do valor por extenso','00')); // Valor extenso ---> 00   0
-
-      Form26.MaskEdit51.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'Repetir a 2 coluna em','00');  //     Repetir a 2 coluna em
-
-      Edit1.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Local','');      //     local de pagamento ---> 1    4
-      Edit2.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Espécie','DM');  //      espécie documento ---> 5   32
-      Edit3.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Aceite','');     //                 aceite ---> 5   36
-
-      Edit4.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções1','');  // linha 1 das instruções ---> 10   4
-      Edit5.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções2','');  // linha 2 das instruções ---> 10   4
-      Edit6.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções3','');  // linha 3 das instruções ---> 10   4
-      Edit7.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções4','');  // linha 4 das instruções ---> 10   4
-
-      Form26.MaskEdit42.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Código do banco','');
-      Form26.MaskEdit43.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Carteria','');
-      Form26.MaskEdit50.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Código do convênio','');
-      Form26.MaskEdit44.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Agência','');
-      Form26.MaskEdit46.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Conta','');
-      Form26.MaskEdit45.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Livre','0000000000000000000000000');
-
-      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('AILOS');
-      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('SICREDI');
-      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('SICOOB');
-      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Caixa Econômica');
-      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banco do Brasil 7 posições');
-      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banco do Brasil 6 posições');
-      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Bradesco');
-      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Santander');
-      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banrisul');
-      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Itaú');
-      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unibanco');
-      if Form26.MaskEdit45.Text = 'AAAACCCCCCCCCCNNNNNNNNNNN' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unicred'); //Mauricio Parizotto 202-12-07
-
-      if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB400','') = 'Sim' then
-        Form26.chkCNAB400.State := cbChecked
-      else
-        Form26.chkCNAB400.State := cbUnchecked;
-
-      if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB240','') = 'Sim' then
-        Form26.chkCNAB240.State := cbChecked
-      else
-        Form26.chkCNAB240.State := cbUnchecked;
-
-      // Data atualizada com juros de mora
-      if Mais1Ini.ReadString(Form1.sEscolhido,'Mora','Não') = 'Sim' then
-      begin
-        Form25.chkDataAtualizadaJurosMora.Checked := True; // Sandro Silva 2022-12-28 Form25.CheckBox1.Checked := True;
-      end else
-      begin
-        Form25.chkDataAtualizadaJurosMora.Checked := False; // Sandro Silva 2022-12-28 Form25.CheckBox1.Checked := False;
-      end;
-
-
-      //Mauricio Parizotto 2023-10-02
-      sTipoMulta := Mais1Ini.ReadString('Outros','Tipo multa','Percentual');
-      vMulta := Mais1Ini.ReadFloat('Outros','Multa',0);
-
-      Mais1Ini.Free;
-    end;
-  except
-
-  end;
-
-  if btnImprimirTodos.CanFocus then // Sandro Silva 2022-12-23 if Button4.CanFocus then
-    btnImprimirTodos.SetFocus; // Sandro Silva 2022-12-23 Button4.SetFocus;
+  if btnImprimirTodos.CanFocus then
+    btnImprimirTodos.SetFocus;
 end;
 
 procedure TForm25.FormActivate(Sender: TObject);
@@ -337,6 +200,23 @@ end;
 
 procedure TForm25.btnImprimirTodosClick(Sender: TObject);
 begin
+
+  {$Region'//// Seta Forma de Pagamento ////'}
+  try
+    Form7.ibDataSet7.DisableControls;
+    Form7.ibDataSet7.First;
+
+    while not Form7.ibDataSet7.Eof do
+    begin
+      SetFormaBoleto;
+      Form7.ibDataSet7.Next;
+    end;
+  finally
+    Form7.ibDataSet7.First;
+    Form7.ibDataSet7.EnableControls;
+  end;
+  {$Endregion}
+
   {$region'//// Padrão ///'}
   if sFormatoBoleto = 'Padrão' then
   begin
@@ -354,13 +234,15 @@ begin
       try
         if not Form25.PrintDialog1.Execute then
           Exit;
+
         while (not Form7.ibDataSet7.EOF) and (bOk) do
         begin
-          if FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
+          if (FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString)) and (ValidaMesmoBanco) then // Mauricio Parizotto 2024-02-28
           begin
-            ImprimirBoleto;
-            ValidaEmailPagador;
-            GeraImagemDoBoletoComOCodigoDeBarras(False);
+            //ImprimirBoleto;
+            //ValidaEmailPagador;
+            GeraImagemDoBoletoComOCodigoDeBarras(True);
+            GravaPortadorNossoNumCodeBar;
           end;
 
           Form7.ibDataSet7.Next;
@@ -373,12 +255,10 @@ begin
   end;
   {$Endregion}
 
-  {$region'//// Carne ///'}
   if sFormatoBoleto = 'Carnê' then
   begin
     GeraCarneTodos;
   end;
-  {$Endregion}
 end;
 
 
@@ -392,10 +272,11 @@ begin
 
   if validaEmail(sEmail) then
   begin
-    if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
+    if ValidaMesmoBanco then // Mauricio Parizotto 2024-02-28
     begin
       CarregaConfiguracao;
       CarregaDadosParcela;
+      SetFormaBoleto;
 
       // Apaga o PDF anterior
       while FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') do
@@ -446,13 +327,6 @@ begin
 
         Unit7.EnviarEMail('',sEmail,'','Boleto','Boleto',pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'), False);
       end;
-    end else
-    begin
-      MensagemSistema('Não é possível imprimir este boleto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
-                      +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
-                      +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.'
-                      ,msgAtencao);
-
     end;
   end;
 end;
@@ -468,10 +342,10 @@ begin
     Mais1Ini.WriteString(Form1.sEscolhido,'Espécie',AllTrim(Edit2.Text));                 //      espécie documento ---> 5   32
     Mais1Ini.WriteString(Form1.sEscolhido,'Aceite',AllTrim(Edit3.Text));   //                 aceite ---> 5   36
 
-    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções1',AllTrim(Edit4.Text));  // linha 1 das instruções ---> 10   4
-    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções2',AllTrim(Edit5.Text));  // linha 2 das instruções ---> 10   4
-    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções3',AllTrim(Edit6.Text));  // linha 3 das instruções ---> 10   4
-    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções4',AllTrim(Edit7.Text));  // linha 4 das instruções ---> 10   4
+    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções1',AllTrim(edtInstrucaoL1.Text));  // linha 1 das instruções ---> 10   4
+    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções2',AllTrim(edtInstrucaoL2.Text));  // linha 2 das instruções ---> 10   4
+    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções3',AllTrim(edtInstrucaoL3.Text));  // linha 3 das instruções ---> 10   4
+    Mais1Ini.WriteString(Form1.sEscolhido,'Instruções4',AllTrim(edtInstrucaoL4.Text));  // linha 4 das instruções ---> 10   4
     
     Mais1Ini.WriteString(Form1.sEscolhido,'Código do banco',AllTrim(Form26.MaskEdit42.Text));  //     Repetir a 2 coluna em
 
@@ -648,7 +522,7 @@ begin
   if sInstituicaoFinanceira <> '' then
     Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString   := sInstituicaoFinanceira;
 
-  Form7.ibDataSet7FORMADEPAGAMENTO.AsString := 'Boleto Bancário'; // Sandro Silva 2023-07-13 Form7.ibDataSet7FORMADEPAGAMENTO.AsString := '15-Boleto Bancário';
+  //Form7.ibDataSet7FORMADEPAGAMENTO.AsString := _cFormaPgtoBoleto; // Sandro Silva 2023-07-13 Form7.ibDataSet7FORMADEPAGAMENTO.AsString := '15-Boleto Bancário'; Mauricio Parizotto 2024-02-27
 
   {Mauricio Parizotto 2023-10-02 Inicio}
   if sTipoMulta = 'Percentual' then
@@ -667,8 +541,10 @@ end;
 
 procedure TForm25.ImprimirBoleto;
 begin
-  if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
+  if ValidaMesmoBanco then // Mauricio Parizotto 2024-02-28
   begin
+    SetFormaBoleto;
+
     if GeraImagemDoBoletoComOCodigoDeBarras(True) then
     begin
       if UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (' then
@@ -676,12 +552,6 @@ begin
         GravaPortadorNossoNumCodeBar;
       end;
     end;
-  end else
-  begin
-    MensagemSistema('Não é possível imprimir este boleto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
-                    +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
-                    +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.'
-                    ,msgAtencao);
   end;
 end;
 
@@ -760,7 +630,7 @@ begin
 
       while (not Form7.ibDataSet7.EOF) do
       begin
-        if FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
+        if (FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString)) and (ValidaMesmoBanco) then // Mauricio Parizotto 2024-02-28
         begin
           inc(posicao);
 
@@ -768,9 +638,10 @@ begin
             IniciaImpresao(Impressao);
 
           CarregaDadosParcela;
-          GravaPortadorNossoNumCodeBar;
 
           DesenhaBoletoLayoutCarne(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,posicao);
+
+          GravaPortadorNossoNumCodeBar;
 
           //Imprime pagina
           if posicao = 3 then
@@ -936,6 +807,178 @@ begin
 
   imgBoletoVisual.Refresh;
   imgBoletoVisual.Top := -525;
+end;
+
+procedure Tform25.SetFormaBoleto;
+begin
+  Form7.ibDataSet7.Edit;
+  Form7.ibDataSet7FORMADEPAGAMENTO.AsString := _cFormaPgtoBoleto;
+  Form7.ibDataSet7.Post;
+end;
+
+
+procedure Tform25.EventoShow;
+var
+  Mais1Ini: TIniFile;
+  I: Integer;
+begin
+  //Mauricio Parizotto 2024-02-05
+  sFormatoBoleto := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction,
+                                          ' Select Coalesce(FORMATOBOLETO,''Padrão'') '+
+                                          ' From BANCOS '+
+                                          ' Where NOME ='+QuotedStr(Form1.sBancoBoleto));
+
+  //Mauricio Parizotto 2023-06-16
+  if Form1.sBancoBoleto <> '' then
+  begin
+    try
+      sInstituicaoFinanceira := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
+                                                      ' Select Coalesce(INSTITUICAOFINANCEIRA,'''') From BANCOS '+
+                                                      ' Where NOME ='+QuotedStr(Form1.sBancoBoleto));
+    except
+      sInstituicaoFinanceira := '';
+    end;
+  end else
+  begin
+    sInstituicaoFinanceira := '';
+  end;
+
+  try
+    //Form25.Caption := StrTran(Form1.sEscolhido,'Boleto','Bloqueto'); Mauricio Parizotto 2023-10-02
+    Form25.Caption := Form1.sEscolhido;
+
+    for I:= 1 to 65 do vLinha[I]  := ' ';
+    for I:= 1 to 20 do vLinha[I]  := ' ';
+    for I:= 1 to 20 do vCampo[I]  := ' ';
+
+    if Trim(Form1.sEscolhido) <> '' then // Sandro Silva 2022-12-22 Só entra se o
+    begin
+      // Carrega as configurações para boleto conforme o portador setado em Form1.sEscolhido
+      Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
+
+      Form26.MaskEdit1.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L1','1');   //     local de pagamento ---> 1    4
+      Form26.MaskEdit2.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L2','1');   //             vencimento ---> 1   51
+      Form26.MaskEdit3.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L3','5');   //         data documento ---> 5    4
+      Form26.MaskEdit4.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L4','5');   //              documento ---> 5   15
+      Form26.MaskEdit5.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L5','5');   //      espécie documento ---> 5   32
+      Form26.MaskEdit6.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L6','5');   //                 aceite ---> 5   36
+      Form26.MaskEdit7.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L7','5');   //             processado ---> 5   39
+      Form26.MaskEdit8.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L8','6');   //     valor do documento ---> 6   52
+      Form26.MaskEdit9.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'L9', '10');  // linha 1 das instruções ---> 10   4
+      Form26.MaskEdit10.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L10','11'); // linha 1 das instruções ---> 10   4
+      Form26.MaskEdit11.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L11','12'); // linha 1 das instruções ---> 10   4
+      Form26.MaskEdit12.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L12','13'); // linha 1 das instruções ---> 10   4
+      Form26.MaskEdit13.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L13','14'); // linha 1 das instruções ---> 10   4
+      Form26.MaskEdit14.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L14','15'); //         nome do Pagador ---> 15   8
+      Form26.MaskEdit15.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L15','16'); //     endereço do Pagador ---> 15   8
+      Form26.MaskEdit16.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L16','17'); //             CEP Pagador ---> 15   8
+      Form26.MaskEdit17.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L17','17'); //       cidade do Pagador ---> 15   8
+      Form26.MaskEdit18.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L18','17'); //       estado do Pagador ---> 15   8
+      Form26.MaskEdit19.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L19','15'); //          CGC do Pagador ---> 15   8
+      Form26.MaskEdit20.Text := Mais1Ini.ReadString(Form1.sEscolhido,'L20','00'); //          Valor extenso ---> 00   0
+
+      Form26.MaskEdit21.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C1','4');  //     local de pagamento ---> 1    4
+      Form26.MaskEdit22.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C2','51'); //             vencimento ---> 1   51
+      Form26.MaskEdit23.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C3','04'); //         data documento ---> 5    4
+      Form26.MaskEdit24.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C4','15'); //              documento ---> 5   15
+      Form26.MaskEdit25.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C5','32'); //      espécie documento ---> 5   32
+      Form26.MaskEdit26.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C6','36'); //                 aceite ---> 5   36
+      Form26.MaskEdit27.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C7','39'); //             processado ---> 5   39
+      Form26.MaskEdit28.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C8','52'); //     valor do documento ---> 6   52
+      Form26.MaskEdit29.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C9','4');  // linha 1 das instruções ---> 10   4
+      Form26.MaskEdit30.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C10','4'); // linha 1 das instruções ---> 10   4
+      Form26.MaskEdit31.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C11','4'); // linha 1 das instruções ---> 10   4
+      Form26.MaskEdit32.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C12','4'); // linha 1 das instruções ---> 10   4
+      Form26.MaskEdit33.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C13','4'); // linha 1 das instruções ---> 10   4
+      Form26.MaskEdit34.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C14','8'); //         nome do Pagador ---> 15   8
+      Form26.MaskEdit35.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C15','8'); //     endereço do Pagador ---> 15   8
+      Form26.MaskEdit36.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C16','8'); //             CEP Pagador ---> 15   8
+      Form26.MaskEdit37.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C17','18'); //       cidade do Pagador ---> 15   8
+      Form26.MaskEdit38.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C18','50'); //       estado do Pagador ---> 15   8
+      Form26.MaskEdit39.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C19','50'); //          CGC do Pagador ---> 15   8
+      Form26.MaskEdit40.Text := Mais1Ini.ReadString(Form1.sEscolhido,'C20','0'); //          Valor extenso ---> 00   0
+      Form26.MaskEdit41.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Altura','24');   //  tamanho da página ---> 24
+
+      Form26.MaskEdit400.Text := AllTrim(Mais1Ini.ReadString(Form1.sEscolhido,'Tamanho do valor por extenso','00')); // Valor extenso ---> 00   0
+
+      Form26.MaskEdit51.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'Repetir a 2 coluna em','00');  //     Repetir a 2 coluna em
+
+      Edit1.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Local','');      //     local de pagamento ---> 1    4
+      Edit2.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Espécie','DM');  //      espécie documento ---> 5   32
+      Edit3.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Aceite','');     //                 aceite ---> 5   36
+
+      edtInstrucaoL1.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções1','');  // linha 1 das instruções ---> 10   4
+      edtInstrucaoL2.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções2','');  // linha 2 das instruções ---> 10   4
+      edtInstrucaoL3.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções3','');  // linha 3 das instruções ---> 10   4
+      edtInstrucaoL4.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções4','');  // linha 4 das instruções ---> 10   4
+
+      Form26.MaskEdit42.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Código do banco','');
+      Form26.MaskEdit43.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Carteria','');
+      Form26.MaskEdit50.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Código do convênio','');
+      Form26.MaskEdit44.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Agência','');
+      Form26.MaskEdit46.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Conta','');
+      Form26.MaskEdit45.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Livre','0000000000000000000000000');
+
+      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('AILOS');
+      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('SICREDI');
+      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('SICOOB');
+      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Caixa Econômica');
+      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banco do Brasil 7 posições');
+      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banco do Brasil 6 posições');
+      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Bradesco');
+      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Santander');
+      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banrisul');
+      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Itaú');
+      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unibanco');
+      if Form26.MaskEdit45.Text = 'AAAACCCCCCCCCCNNNNNNNNNNN' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unicred'); //Mauricio Parizotto 202-12-07
+
+      if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB400','') = 'Sim' then
+        Form26.chkCNAB400.State := cbChecked
+      else
+        Form26.chkCNAB400.State := cbUnchecked;
+
+      if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB240','') = 'Sim' then
+        Form26.chkCNAB240.State := cbChecked
+      else
+        Form26.chkCNAB240.State := cbUnchecked;
+
+      // Data atualizada com juros de mora
+      if Mais1Ini.ReadString(Form1.sEscolhido,'Mora','Não') = 'Sim' then
+      begin
+        Form25.chkDataAtualizadaJurosMora.Checked := True; // Sandro Silva 2022-12-28 Form25.CheckBox1.Checked := True;
+      end else
+      begin
+        Form25.chkDataAtualizadaJurosMora.Checked := False; // Sandro Silva 2022-12-28 Form25.CheckBox1.Checked := False;
+      end;
+
+
+      //Mauricio Parizotto 2023-10-02
+      sTipoMulta := Mais1Ini.ReadString('Outros','Tipo multa','Percentual');
+      vMulta := Mais1Ini.ReadFloat('Outros','Multa',0);
+
+      Mais1Ini.Free;
+    end;
+  except
+  end;
+end;
+
+
+function TForm25.ValidaMesmoBanco:Boolean; // Mauricio Parizotto 2024-02-28
+begin
+  Result := False;
+
+  if (UpperCase(Copy(AllTrim(Form7.ibDataSet7PORTADOR.AsString),1,7)) <> 'BANCO (') or (Pos('('+Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+')',Form7.ibDataSet7PORTADOR.AsString)<>0) then
+  begin
+    Result := True;
+  end else
+  begin
+    Result := False;
+
+    MensagemSistema('Não é possível imprimir este boleto.'+chr(10)+'Esta conta já foi enviada para o '+Form7.ibDataSet7PORTADOR.AsString
+                      +chr(10)+chr(10)+'Para enviar para outro banco clique ao contrário sobre a conta e no menu clique em "Baixar esta conta no banco".'
+                      +chr(10)+'Em seguida gere o arquivo de remessa e envie para o banco.'
+                      ,msgAtencao);
+  end;
 end;
 
 end.

@@ -281,14 +281,14 @@ begin
       Impressao.TextOut(largura(-8+010),altura(49+iVia),AllTrim(Form7.ibDataSet13CEP.AsString)+' '+AllTrim(Form7.ibDataSet13MUNICIPIO.AsString)+' '+AllTrim(Form7.ibDataSet13ESTADO.AsString)); // Endereço do emitente
     end else
     begin
-      Impressao.TextOut(largura(-8+010),altura(43+iVia),Form25.Edit4.Text); // Texto
-      Impressao.TextOut(largura(-8+010),altura(46+iVia),Form25.Edit5.Text); // Texto
-      Impressao.TextOut(largura(-8+010),altura(49+iVia),Form25.Edit6.Text); // Texto
+      Impressao.TextOut(largura(-8+010),altura(43+iVia),Form25.edtInstrucaoL1.Text); // Texto
+      Impressao.TextOut(largura(-8+010),altura(46+iVia),Form25.edtInstrucaoL2.Text); // Texto
+      Impressao.TextOut(largura(-8+010),altura(49+iVia),Form25.edtInstrucaoL3.Text); // Texto
 
       // RENEGOCIACAO
       if Copy(Form7.ibDataSet7HISTORICO.AsString,1,16) = 'CODIGO DO ACORDO' then
       begin
-        Form25.Edit7.Visible := False;
+        Form25.edtInstrucaoL4.Visible := False;
         Impressao.TextOut(largura(-8+010),altura(52+iVia),Form7.ibDataSet7HISTORICO.AsString); // Texto
       end else
       begin
@@ -296,11 +296,11 @@ begin
         if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
         begin
           Impressao.TextOut(largura(-8+010),altura(52+iVia),'VENCIMENTO ORIGINAL: '+Form7.ibDataSet7VENCIMENTO.AsString); // Texto
-          Form25.Edit7.Visible := False;
+          Form25.edtInstrucaoL4.Visible := False;
         end else
         begin
-          Impressao.TextOut(largura(-8+010),altura(52+iVia),Form25.Edit7.Text); // Texto
-          Form25.Edit7.Visible := True;
+          Impressao.TextOut(largura(-8+010),altura(52+iVia),Form25.edtInstrucaoL4.Text); // Texto
+          Form25.edtInstrucaoL4.Visible := True;
         end;
       end;
     end;
@@ -644,26 +644,26 @@ begin
     end;
   end;
 
-  Impressao.TextOut(largura(010),altura(43+iVia),Form25.Edit4.Text); // Texto
-  Impressao.TextOut(largura(010),altura(46+iVia),Form25.Edit5.Text); // Texto
-  Impressao.TextOut(largura(010),altura(49+iVia),Form25.Edit6.Text); // Texto
+  Impressao.TextOut(largura(40),altura(34+iVia),Form25.edtInstrucaoL1.Text); // Texto
+  Impressao.TextOut(largura(40),altura(37+iVia),Form25.edtInstrucaoL2.Text); // Texto
+  Impressao.TextOut(largura(40),altura(40+iVia),Form25.edtInstrucaoL3.Text); // Texto
 
   // RENEGOCIACAO
   if Copy(Form7.ibDataSet7HISTORICO.AsString,1,16) = 'CODIGO DO ACORDO' then
   begin
-    Form25.Edit7.Visible := False;
-    Impressao.TextOut(largura(010),altura(52+iVia),Form7.ibDataSet7HISTORICO.AsString); // Texto
+    Form25.edtInstrucaoL4.Visible := False;
+    Impressao.TextOut(largura(40),altura(43+iVia),Form7.ibDataSet7HISTORICO.AsString); // Texto
   end else
   begin
     // Data atualizada com juros de mora
     if (Form25.chkDataAtualizadaJurosMora.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then // Sandro Silva 2022-12-28 if (Form25.CheckBox1.Checked) and (Form7.ibDataSet7VENCIMENTO.AsDAteTime < Date) then
     begin
-      Impressao.TextOut(largura(010),altura(52+iVia),'VENCIMENTO ORIGINAL: '+Form7.ibDataSet7VENCIMENTO.AsString); // Texto
-      Form25.Edit7.Visible := False;
+      Impressao.TextOut(largura(40),altura(43+iVia),'VENCIMENTO ORIGINAL: '+Form7.ibDataSet7VENCIMENTO.AsString); // Texto
+      Form25.edtInstrucaoL4.Visible := False;
     end else
     begin
-      Impressao.TextOut(largura(010),altura(52+iVia),Form25.Edit7.Text); // Texto
-      Form25.Edit7.Visible := True;
+      Impressao.TextOut(largura(40),altura(43+iVia),Form25.edtInstrucaoL4.Text); // Texto
+      Form25.edtInstrucaoL4.Visible := True;
     end;
   end;
 
@@ -1070,13 +1070,16 @@ end;
 function GetNumParcela(documento,nota:string):string;
 var
   qyAux: TIBQuery;
-  trAux: TIBTransaction;
 begin
   Result := '01';
   try
-    trAux := CriaIBTransaction(Form7.IBDatabase1);
-    qyAux := CriaIBQuery(trAux);
+    qyAux := CriaIBQuery(Form7.ibDataSet7.Transaction);
 
+    //Zera o contador
+    qyAux.SQL.Text := 'select rdb$set_context(''USER_TRANSACTION'', ''row#'',0) from RDB$DATABASE';
+    qyAux.Open;
+
+    qyAux.Close;
     qyAux.SQL.Text := ' Select'+
                       ' 	rdb$get_context(''USER_TRANSACTION'', ''row#'') as NUMERO,'+
                       ' 	rdb$set_context(''USER_TRANSACTION'', ''row#'','+
@@ -1086,16 +1089,14 @@ begin
                       ' Where NUMERONF = '+QuotedStr(nota)+
                       ' 	and coalesce(ATIVO,9)<>1'+
                       ' 	and FORMADEPAGAMENTO = '+QuotedStr(_cFormaPgtoBoleto)+
-                      ' Order By DOCUMENTO';
+                      ' Order By VENCIMENTO';
     qyAux.Open;
 
     if qyAux.Locate('DOCUMENTO',documento,[]) then
       Result := StrZero(qyAux.FieldByName('NUMERO').AsFloat,2,0);
 
   finally
-    trAux.Rollback;
     FreeAndNil(qyAux);
-    FreeAndNil(trAux);
   end;
 end;
 
