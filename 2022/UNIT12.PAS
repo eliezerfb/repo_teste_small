@@ -1903,7 +1903,9 @@ procedure TForm12.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   I : Integer;
+  bUsouDownUp: Boolean;
 begin
+  bUsouDownUp := (Key = VK_DOWN) or (Key = VK_UP);
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 
   Form7.ibDataSet16.EnableControls;
@@ -1968,7 +1970,7 @@ begin
         end;
       end else
       begin
-        if Key = VK_DELETE then
+        if (Key = VK_DELETE) or (bUsouDownUp) then
           Form1.bFlag := True
         else
           Form1.bFlag := False;
