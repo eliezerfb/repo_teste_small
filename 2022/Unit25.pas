@@ -480,7 +480,7 @@ begin
     if FileExists(Form1.sAtual+'\'+sArquivo) then
     begin
       //2024-02-26 Unit7.EnviarEMail('',sEmail,'','Boleto','Boleto',pChar(Form1.sAtual+'\'+sArquivo), False);
-      EnviarEMail('', sEmail, '', 'Boleto','Boleto', Form1.sAtual+'\'+sArquivo, False);
+      EnviarEMail('', sEmail, '', PChar('Boleto'), PChar('Boleto'), PChar(Form1.sAtual+'\'+sArquivo), False);
     end;
   end;
 
