@@ -14,7 +14,7 @@ type
     Image1: TImage;
     Button3: TBitBtn;
     btnAvancar: TBitBtn;
-    Button2: TBitBtn;
+    btnCancelar: TBitBtn;
     Panel5: TPanel;
     Label10: TLabel;
     Label11: TLabel;
@@ -57,7 +57,7 @@ type
     btnMarcarTodos: TBitBtn;
     btnDesmarcarTodos: TBitBtn;
     procedure btnAvancarClick(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -528,10 +528,15 @@ begin
   end;
 end;
 
-procedure TForm38.Button2Click(Sender: TObject);
+procedure TForm38.btnCancelarClick(Sender: TObject);
 begin
   Form38.Caption := 'Cancelar';
-  FechaForm38(True);
+  {Mauricio Parizotto 2024-03-01 Inicio}
+  //FechaForm38(True);
+  Form7.sModulo := Form7.sModuloAnterior;
+  Form38.Tag    := 0;
+  Close;
+  {Mauricio Parizotto 2024-03-01 Fim}
 end;
 
 procedure TForm38.FormActivate(Sender: TObject);
