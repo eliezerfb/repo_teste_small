@@ -145,7 +145,7 @@ object Form38: TForm38
       TabOrder = 1
       OnClick = btnAvancarClick
     end
-    object Button2: TBitBtn
+    object btnCancelar: TBitBtn
       Left = 330
       Top = 220
       Width = 100
@@ -158,7 +158,7 @@ object Form38: TForm38
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      OnClick = Button2Click
+      OnClick = btnCancelarClick
     end
     object DateTimePicker1: TDateTimePicker
       Left = 200

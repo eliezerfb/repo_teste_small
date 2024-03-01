@@ -4144,10 +4144,10 @@ begin
   Form7.sModuloAnterior := Form7.sModulo; //Mauricio Parizotto 2024-01-22
 
   Form38.Panel5.Visible := True;
-  Form38.Button2.Visible := False;
+  Form38.btnCancelar.Visible := False;
   Form38.ShowModal; // Ok
   Form38.Panel5.Visible := False;
-  Form38.Button2.Visible := True;
+  Form38.btnCancelar.Visible := True;
 
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
