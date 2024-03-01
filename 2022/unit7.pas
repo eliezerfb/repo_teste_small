@@ -8116,16 +8116,12 @@ begin
       ibDataSet5.SelectSQL.Add(sW);
       ibDataset5.Open;
     end;
-    //
+
     Form7.ibDataSet5.Locate('REGISTRO',sRegistroS,[]);
     Form7.ibDataSet5.EnableControls;
-    //
   end;
-  //
-//  if Pos(' and ',ibDataSet5.SelectSQL.Text)<>0 then ibDataSet5SALDO_BANC.Visible := False else ibDataSet5SALDO_BANC.Visible := True;
-  //
+
   Screen.Cursor            := crDefault;
-  //
 end;
 
 procedure TForm7.Image102Click(Sender: TObject);
@@ -34591,13 +34587,15 @@ begin
 
     if (Pos(' CONTA=',sWhere) <> 0) then
     begin
-      Form7.sTitulo  := 'Conciliação Bancária - '+Form1.sEscolhido;
-      Form7.sRPS := 'N';
+      sTitulo  := 'Conciliação Bancária - '+Form1.sEscolhido;
+      sRPS := 'N';
     end else
     begin
-      Form7.sTitulo  := 'Controle bancário - '+Form1.sEscolhido;
-      Form7.sRPS := 'N';
+      sTitulo  := 'Controle bancário - '+Form1.sEscolhido;
+      sRPS := 'N';
     end;
+
+    Form7.Caption := StrTran(sTitulo,'(RPS) RPS','(RPS)');
   end;
   {$Endregion}
 
