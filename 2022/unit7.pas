@@ -23877,7 +23877,7 @@ begin
                 //chr(10)+'OBS: Por segurança o arquivo XML foi zipado.'),Alltrim(Form1.sAtual + '\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve'+'.zip') ,False);
 
                 EnviarEMail('',sEmail,'','Cancelamento de NF-e (Nota Fiscal Eletrônica)',pchar('Segue em anexo o cancelamento sua NF-e em arquivo XML.'+chr(10)+Form1.sPropaganda+
-                chr(10)+=======
+                chr(10)+
                 chr(10)+'OBS: Por segurança o arquivo XML foi zipado.'), PChar(Alltrim(Form1.sAtual + '\XML\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve'+'.zip')), False);
 
 
