@@ -549,7 +549,7 @@ begin
   if Fload = False then
   begin
     Result := False;
-    
+
     ConectaIBDataBase(FIBDATABASE, CaminhoBanco);
 
     if FIBDATABASE.Connected then
@@ -766,7 +766,7 @@ begin
       end;
 
       ShowMessage(sMD5Cripta);
-      
+
       if AnsiUpperCase(sMD5Cripta) <> AnsiUpperCase(sCNPJ+sMD5Lista) then
       begin
 

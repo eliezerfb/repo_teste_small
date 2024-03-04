@@ -3,15 +3,15 @@ unit uregistrosdopafecf;
 interface
 
 uses
-  Controls
-  , IniFiles
-  , Classes
-  , StrUtils
-  , SysUtils
-  , IBQuery
-  , DBClient
-  , DB
-  , Forms
+  Vcl.Controls
+  , System.IniFiles
+  , System.Classes
+  , System.StrUtils
+  , System.SysUtils
+  , IBX.IBQuery
+  , Datasnap.DBClient
+  , Data.DB
+  , Vcl.Forms
   ;
 
 procedure RegistrosDoPafEcfEstoquetotal;
@@ -63,7 +63,7 @@ const SELECT_ECF =
       TipoDocumento: String; // Tipo de documento emitido (1-Nota Fiscal manual, 2-Nota Fiscal modelo 55 – NF-e, 3-Nota Fiscal modelo 65 – NFC-e)
       Evidencia: String; // Controlar se está evidenciado
     end;
-    
+
     TJ2 = record
       Tipo: String; // J2
       CNPJEmissor: String; // CNPJ do emissor do Documento Fiscal
@@ -85,7 +85,7 @@ const SELECT_ECF =
       SubSerie: String;
       ChaveAcesso: String; // Chave de Acesso da Nota Fiscal Eletrônica
       TipoDocumento: String; // Tipo de documento emitido (1-Nota Fiscal manual, 2-Nota Fiscal modelo 55 – NF-e, 3-Nota Fiscal modelo 65 – NFC-e)
-      Evidencia: String; // Controlar se está evidenciado      
+      Evidencia: String; // Controlar se está evidenciado
     end;
 
     TA2 = record
@@ -102,11 +102,11 @@ var
   Mais1Ini : tIniFile;
   NumRead, I : Integer;
   sTexto: String;
-  Buf: array[1..524288] of Char;
+  //Buf: array[1..524288] of Char;
   //
   sMensuracao, sUnd : String;
   F : TextFile;
-  FNovo : file;
+  FNovo : TextFile; //FNovo : file;
   sCodigo : String;
   sDataUltimaZ, sModelo_ECF, sSituacaoTributaria, sAliquota, sEvidenciaA2, sEvidenciaReducoes, sEvidencia, sEvidenciaDeExclusao : String;
   rDesconto, rAcrescimo : Real;
@@ -207,7 +207,7 @@ var
   sR05CasasQtd: String; // Sandro Silva 2017-11-09 Polimig
   sR05Quantidade: String; // Sandro Silva 2017-11-09 Polimig
   dR05Total: Double; // Sandro Silva 2017-11-09 Polimig
-  sR05AlteracaCOO: String; // Sandro Silva 2018-02-08 
+  sR05AlteracaCOO: String; // Sandro Silva 2018-02-08
   dR04SubTotal: Currency;// Double; // Sandro Silva 2017-11-09 Polimig
   dR04TotalLiquido: Currency; // Sandro Silva 2018-06-14
   sS2Conta: String; // Sandro Silva 2017-11-09 Polimig
@@ -268,6 +268,7 @@ var
   var
     iEstoqueDia: Integer;
     I: Integer;
+    sLinha: String;
   begin
     ListaDeArquivos(slArq, pchar(Form1.sAtualOnLine + '\estoquedia\'), '*.dia');
 
@@ -296,6 +297,8 @@ var
     begin
       if FileExists(Form1.sAtualOnLine + '\estoquedia\' + sArqEstoqueAtual) then
       begin
+        { Sandro Silva 2024-02-26
+        // Com Delphi 11 fica travado, causando erro raised exception se usar BlockRead
         //
         AssignFile(FNovo, Form1.sAtualOnLine + '\estoquedia\' + sArqEstoqueAtual);
         Reset(FNovo, 1);
@@ -309,6 +312,19 @@ var
         //
         CloseFile(FNovo);       // Fecha o arquivo
         //
+        }
+        AssignFile(FNovo, Form1.sAtualOnLine + '\estoquedia\' + sArqEstoqueAtual);
+        Reset(FNovo);
+        try
+          while not Eof(FNovo) Do
+          begin
+            ReadLn(FNovo, sLinha);
+            sTexto := sTexto + StrTran(sLinha, Chr(0), ' ');
+          end;
+        except
+
+        end;
+        CloseFile(FNovo);       // Fecha o arquivo
       end;
     end;
 

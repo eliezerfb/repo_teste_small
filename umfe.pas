@@ -1276,7 +1276,7 @@ end;
 procedure TArquivo.SalvarArquivo(FileName: TFileName);
 begin
   try
-    AssignFile(FArquivo, PAnsiChar(AnsiString(FileName))); // Sandro Silva 2021-06-28 AssignFile(FArquivo, PAnsiChar(FileName));
+    AssignFile(FArquivo, FileName); // Sandro Silva 2021-06-28 AssignFile(FArquivo, PAnsiChar(FileName));
     Rewrite(FArquivo);
     Writeln(FArquivo, FTexto);
     CloseFile(FArquivo);

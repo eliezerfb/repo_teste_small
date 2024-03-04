@@ -981,12 +981,12 @@ begin
   //CreateDir(PChar(PASTA_RECIBOS_ESTOQUE_BLOCO_X));
   //CreateDir(PChar(PASTA_RECIBOS_REDUCOES_BLOCO_X));
 
-  CreateDir(PAnsiChar('c:\BlocoX'));
-  CreateDir(PAnsiChar(PASTA_REDUCOES_BLOCO_X));
-  CreateDir(PAnsiChar(PASTA_ESTOQUE_BLOCO_X));
-  CreateDir(PAnsiChar('c:\BlocoX\Recibos - Bloco X'));
-  CreateDir(PAnsiChar(PASTA_RECIBOS_ESTOQUE_BLOCO_X));
-  CreateDir(PAnsiChar(PASTA_RECIBOS_REDUCOES_BLOCO_X));
+  CreateDir('c:\BlocoX');
+  CreateDir(PASTA_REDUCOES_BLOCO_X);
+  CreateDir(PASTA_ESTOQUE_BLOCO_X);
+  CreateDir('c:\BlocoX\Recibos - Bloco X');
+  CreateDir(PASTA_RECIBOS_ESTOQUE_BLOCO_X);
+  CreateDir(PASTA_RECIBOS_REDUCOES_BLOCO_X);
 
 end;
 

@@ -54,7 +54,9 @@ var
 
 implementation
 
-uses fiscal, _Small_IntegradorFiscal, ufuncoesfrente, uajustaresolucao;
+uses fiscal
+//, _Small_IntegradorFiscal
+, ufuncoesfrente, uajustaresolucao;
 
 {$R *.DFM}
 

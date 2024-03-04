@@ -2168,7 +2168,7 @@ begin
         end;
         //
         lpRecepient.ulRecipClass := MAPI_TO;
-        lpRecepient.lpszName     := PAnsiChar(''); // Sandro Silva 2020-09-03 lpRecepient.lpszName := PChar('');
+        lpRecepient.lpszName     := PAnsiChar(AnsiString('')); // Sandro Silva 2020-09-03 lpRecepient.lpszName := PChar('');
         lpRecepient.lpszAddress  := PAnsiChar(AnsiString(sPara)); // Sandro Silva 2020-09-03 lpRecepient.lpszAddress  := PChar(sPara);
         lpRecepient.ulReserved   := 0;
         lpRecepient.ulEIDSize    := 0;
@@ -2212,12 +2212,7 @@ begin
       //
       // carrega dll e o método sPara envio do email
       //
-      {$IFDEF VER150}
-      MAPIModule := LoadLibrary(PAnsiChar(MAPIDLL));
-      {$ELSE}
-      MAPIModule := LoadLibrary(PWideChar(MAPIDLL));
-      {$ENDIF}
-  //    MAPIModule.
+      MAPIModule := LoadLibrary(PChar(MAPIDLL));
       if MAPIModule = 0 then
       begin
         Result := -1

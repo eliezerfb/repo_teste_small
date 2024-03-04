@@ -491,9 +491,9 @@ begin
     {Sandro Silva 2021-09-10 fim}
 
     try
-      AssignFile(myFile, PAnsiChar(sDiretorioAtual + '\log\blocox\log_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt'));
+      AssignFile(myFile, sDiretorioAtual + '\log\blocox\log_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt');
 
-      if FileExists(PChar(sDiretorioAtual + '\log\blocox\log_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt')) = False then
+      if FileExists(sDiretorioAtual + '\log\blocox\log_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt') = False then
       begin
         {$I-}
         ReWrite(myFile);
@@ -5652,7 +5652,7 @@ begin
     begin
       if Application.MessageBox(PWideChar('Deseja visualizar a lista dos arquivos xml do Bloco X?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = ID_Yes then
       begin
-        BXVisualizaXmlBlocoX(Emitente, IBTransaction.DefaultDatabase.DatabaseName, sTipo, Emitente.Configuracao.DiretorioAtual); // Sandro Silva 2020-06-18 BXVisualizaXmlBlocoX(FEmitente, FIBTransaction, sTipo, PAnsiChar(DiretorioAtual));
+        BXVisualizaXmlBlocoX(Emitente, IBTransaction.DefaultDatabase.DatabaseName, sTipo, Emitente.Configuracao.DiretorioAtual);
       end;
     end;
   except
