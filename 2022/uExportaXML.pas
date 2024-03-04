@@ -120,7 +120,6 @@ var
   cTipoGeracao, cDocs, cAnexo, cTitulo, cCorpo: String;
   cZipNFeSaida, cZipNFeEntrada, cZipNFCeSAT, cRelTotalizador, cRelMonofasicos: String;
   bTamanhoZip: Boolean;
-  enTipoRelatorioAnt: tTipoRelatorio;
 begin
   Result := False;
   bTamanhoZip := True;
@@ -231,42 +230,38 @@ begin
         cCorpo := StringReplace(cCorpo, '<CNPJEMPRESA>', Form7.ibDataSet13CGC.AsString, []);
         cCorpo := StringReplace(cCorpo, '<PERIODO>', DateToStr(dtInicial.Date) + ' à ' + DateToStr(dtFinal.Date), []);
 
+        if FileExists(cRelMonofasicos) then
+          cAnexo := cAnexo + ';' + cRelMonofasicos;
         if (FbBackGround) then
         begin
-          enTipoRelatorioAnt := FoArquivoDAT.Usuario.Html.TipoRelatorio;
-          try
-            FoArquivoDAT.Usuario.Html.TipoRelatorio := ttiPDF;
-            if (FoArquivoDAT.NFe.XML.IncluirRelatorioTotalizador) then
-            begin
-              TGeraRelatorioTotalizadorGeralVenda.New
+          if (FoArquivoDAT.NFe.XML.IncluirRelatorioTotalizador) then
+          begin
+            TGeraRelatorioTotalizadorGeralVenda.New
+                                               .setTransaction(Form7.IBTransaction1)
+                                               .setUsuario(Form7.UsuarioLogado)
+                                               .setPeriodo(dtInicial.Date, dtFinal.Date)
+                                               .GeraRelatorio
+                                               .Salvar(cRelTotalizador, ttiPDF);
+
+            if FileExists(cRelTotalizador) then
+              cAnexo := cAnexo + ';' + cRelTotalizador;
+          end;
+
+          if (FoArquivoDAT.NFe.XML.IncluirRelatorioMonofasicos) then
+          begin
+            TGeraRelatorioProdMonofasicoCupomNota.New
                                                  .setTransaction(Form7.IBTransaction1)
                                                  .setUsuario(Form7.UsuarioLogado)
                                                  .setPeriodo(dtInicial.Date, dtFinal.Date)
                                                  .GeraRelatorio
-                                                 .Salvar(cRelTotalizador, ttiPDF);
+                                                 .Salvar(cRelMonofasicos, ttiPDF);
 
-              if FileExists(cRelTotalizador) then
-                cAnexo := cAnexo + ';' + cRelTotalizador;
-            end;
-
-            if (FoArquivoDAT.NFe.XML.IncluirRelatorioMonofasicos) then
-            begin
-              TGeraRelatorioProdMonofasicoCupomNota.New
-                                                   .setTransaction(Form7.IBTransaction1)
-                                                   .setUsuario(Form7.UsuarioLogado)
-                                                   .setPeriodo(dtInicial.Date, dtFinal.Date)
-                                                   .GeraRelatorio
-                                                   .Salvar(cRelMonofasicos, ttiPDF);
-
-              if FileExists(cRelMonofasicos) then
-                cAnexo := cAnexo + ';' + cRelMonofasicos;
-            end;
-          finally
-            FoArquivoDAT.Usuario.Html.TipoRelatorio := enTipoRelatorioAnt;
+            if FileExists(cRelMonofasicos) then
+              cAnexo := cAnexo + ';' + cRelMonofasicos;
           end;
         end;
 
-        uEmail.EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
+        Unit7.EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
 
         Result := True;
 
@@ -410,7 +405,7 @@ begin
   FormatSettings.ShortDateFormat := _cFormatDate;
   {$ENDIF}
   FbBackGround := False;  
-  FoArquivoDAT := TArquivosDAT.Create(Form7.UsuarioLogado);
+  FoArquivoDAT := TArquivosDAT.Create(EmptyStr);
 
   CarregaArquivoINI;
 end;
