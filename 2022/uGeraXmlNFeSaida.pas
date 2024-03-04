@@ -1756,7 +1756,7 @@ begin
             Form7.spdNFeDataSets.Campo('pICMS_N160').Value := FormatFloatXML((FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vICMS_N17').Value) / FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vBC_N15').Value)) * 100); // Descobre o percentual de ICMS
           }
 
-          Form7.spdNFeDataSets.Campo('pICMS_N160').Value := FormatFloatXML(Form7.ibDataSet16.FieldByname('ICM').AsFloat);
+          Form7.spdNFeDataSets.Campo('pICMS_N16').Value := FormatFloatXML(Form7.ibDataSet16.FieldByname('ICM').AsFloat);
           {Dailon Parisotto (f-166) 2024-02-27 Fim}
         end;
         {Sandro Silva 2023-05-28 fim}
