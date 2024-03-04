@@ -15,13 +15,17 @@ uses
 
 function ValidaEmail(email: String): Boolean;
 //function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: String; bConfirma: Boolean): Integer;
+function EnviarEmailMapiCerto(
+            const Subject, MessageText, MailFromAddress, MailToAddress: String;
+            const AttachmentFileNames: TStringList; bConfirma: Boolean): Integer;
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
+{//Sandro Silva 2024-03-04
 function EnviarEmailMapi(
             const Subject, MessageText, MailFromName, MailFromAddress,
                   MailToName, MailToAddress: String;
             const AttachmentFileNames: array of String; bConfirma: Boolean): Integer;
 procedure EnviarMAPIEmail2;
-
+}
 
 implementation
 
@@ -36,6 +40,102 @@ begin
   Result := TTestaEmail.New.setEmail(email).Testar;
 end;
 
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+function EnviarEmailMapiCerto(
+            const Subject, MessageText, MailFromAddress, MailToAddress: String;
+            const AttachmentFileNames: TStringList; bConfirma: Boolean): Integer;
+//Originally by Brian Long: The Delphi Magazine issue 60 - Delphi And Email
+var
+  MAPIError: DWord;
+  MapiMessage: TMapiMessage;
+  Originator, Recipient: TMapiRecipDesc;
+  Files, FilesTmp: PMapiFileDesc;
+  FilesCount: Integer;
+
+  MAPIModule: HModule;
+  Flags: Cardinal;
+  SM: TFNMapiSendMail;
+  aMailFiles: TStringList;
+  FileName: String;
+begin
+   FillChar(MapiMessage, Sizeof(TMapiMessage), 0);
+
+   MapiMessage.lpszSubject  := PAnsiChar(AnsiString(Subject));
+   MapiMessage.lpszNoteText := PAnsiChar(AnsiString(MessageText));
+
+   FillChar(Originator, Sizeof(TMapiRecipDesc), 0);
+
+   //Originator.lpszName    := PAnsiChar(AnsiString(MailFromName));
+   Originator.lpszAddress := PAnsiChar(AnsiString(MailFromAddress));
+   // MapiMessage.lpOriginator := @Originator;
+   MapiMessage.lpOriginator := nil;
+
+
+   MapiMessage.nRecipCount := 1;
+   FillChar(Recipient, Sizeof(TMapiRecipDesc), 0);
+   Recipient.ulRecipClass := MAPI_TO;
+   //Recipient.lpszName     := PAnsiChar(AnsiString(MailToName));
+   //Recipient.lpszAddress  := PAnsiChar(AnsiString(MailToAddress));
+   Recipient.lpszAddress  := StrNew(PAnsiChar(AnsiString(MailToAddress)));
+   MapiMessage.lpRecips := @Recipient;
+
+   if (AttachmentFileNames <> nil) then
+   begin
+     if AttachmentFileNames.Count > 0 then
+     begin
+       //MapiMessage.nFileCount := Length(AttachmentFileNames) + 1;
+       MapiMessage.nFileCount := AttachmentFileNames.Count;
+       Files := AllocMem(SizeOf(TMapiFileDesc) * (MapiMessage.nFileCount + 1));
+       MapiMessage.lpFiles := Files;
+       FilesTmp := Files;
+
+       //for FilesCount := Low(AttachmentFileNames) to High(AttachmentFileNames) do
+       for FilesCount := 0 to AttachmentFileNames.Count -1 do
+       begin
+         FileName :=  AttachmentFileNames.Strings[FilesCount];
+         if FileExists(PChar(FileName)) then
+         begin
+           FilesTmp.ulReserved := 0;
+           FilesTmp.flFlags := 0;
+           FilesTmp.nPosition := ULONG($FFFFFFFF); //$FFFFFFFF;
+           FilesTmp.lpszPathName := StrNew(PAnsiChar(AnsiString(FileName)));
+           Inc(FilesTmp)
+         end;
+       end;
+
+       MapiMessage.lpFiles := Files;
+     end;
+   end;
+
+   Result := 1;
+   // carrega dll e o método sPara envio do email
+   MAPIModule := LoadLibrary(PChar(MAPIDLL));
+   if MAPIModule > 0 then
+   begin
+     try
+      if bConfirma then
+        Flags := MAPI_DIALOG or MAPI_LOGON_UI
+      else
+        Flags := 0;
+       //
+       @SM := GetProcAddress(MAPIModule, 'MAPISendMail');
+       if @SM <> nil then
+       begin
+         Result := SM(0, Application.Handle, MapiMessage, Flags, 0);
+       end else
+       begin
+         Result := 1;
+       end;
+     except
+     end;
+   end;
+   FreeLibrary(MAPIModule);
+end;
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+
+(*//Sandro Silva 2024-03-04
 function EnviarEmailMapi(
             const Subject, MessageText, MailFromName, MailFromAddress,
                   MailToName, MailToAddress: String;
@@ -140,6 +240,7 @@ begin
 
 
 end;
+*)
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
 const
@@ -149,7 +250,7 @@ var
   sAtual : String;
   slAnexos: TStringList;
   i: Integer;
-  FileNames: array of string;
+  // 2024-03-04 FileNames: array of string;
 begin
   //
   GetDir(0,sAtual);
@@ -185,8 +286,9 @@ begin
     slAnexos := TStringList.Create;
     slAnexos.Clear;
 
-    slAnexos :=RetornaListaQuebraLinha(cAnexo);
+    slAnexos := RetornaListaQuebraLinha(cAnexo);
 
+    {Sandro Silva 2024-03-04
     SetLength(FileNames, slAnexos.Count);
 
     for i := 0 to slAnexos.Count -1 do
@@ -199,7 +301,11 @@ begin
 //    EnviarMAPIEmail2;
 
     FileNames := nil;
+    }
 
+    EnviarEmailMapiCerto(PChar(sAssunto), PChar(sTexto), PChar(sDe), PChar(sPara), slAnexos, bConfirma);
+
+    FreeAndNil(slAnexos);
   end;
 
   Mais1Ini.Free;
@@ -207,6 +313,7 @@ begin
   CHDir(sAtual);
 end;
 
+(*//Sandro Silva 2024-03-04
 procedure EnviarMAPIEmail2;
 var
   MapiMessage: TMapiMessage;
@@ -353,5 +460,5 @@ begin
       FreeMem(PFiles, MapiMessage.nFileCount * sizeof(TMapiFileDesc));
   end;
 end;
-
+*)
 end.
