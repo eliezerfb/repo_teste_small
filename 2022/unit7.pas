@@ -12198,6 +12198,7 @@ var
   dData : TDateTime;
   F: TextFile;
   fTotal, fTotal1, fTotal2 : Real;
+  nSaldoAnt: Real;
 begin
   fTotal := 0;
   Screen.Cursor := crHourGlass;
@@ -12207,6 +12208,13 @@ begin
   ibDataSet1.Locate('DATA',dData,[]);
   //ibDataSet1.MoveBy(-1);
   //
+  nSaldoAnt := Form7.ibDataSet1SALDO.AsFloat;
+
+  if Form7.ibDataSet1ENTRADA.AsFloat > 0 then
+    nSaldoAnt := nSaldoAnt - Form7.ibDataSet1ENTRADA.AsFloat;
+  if Form7.ibDataSet1SAIDA.AsFloat > 0 then
+    nSaldoAnt := nSaldoAnt + Form7.ibDataSet1SAIDA.AsFloat;
+
   if Form1.bHtml1 then
   begin
     //
@@ -12229,7 +12237,7 @@ begin
     Writeln(F,'  <td   bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Saldo anterior</td>');
     Writeln(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1></td>');
     Writeln(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1></td>');
-    Writeln(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1>'+Format('%12.2n',[Form7.ibDataSet1SALDO.AsFloat])+'</td>');
+    Writeln(F,'  <td   bgcolor=#'+Form1.sHtmlCor+' align=Right><font face="Microsoft Sans Serif" size=1>'+Format('%12.2n',[nSaldoAnt])+'</td>');
     WriteLn(F,' </tr>');
     //
   end else
@@ -12246,7 +12254,7 @@ begin
     Writeln(F,'CAIXA DO DIA '+DateTimeToStr(dData));
     Writeln(F,'');
     Writeln(F,'                                         Saldo anterior.: '+
-                                           Format('%12.2n',[Form7.ibDataSet1SALDO.AsFloat]));
+                                           Format('%12.2n',[nSaldoAnt]));
     Writeln(F,'');
     Writeln(F,'Histórico                                    Entrada      Saída       ');
     Writeln(F,'-------------------------------------------- ------------ ------------');
@@ -12256,8 +12264,12 @@ begin
   fTotal1 := 0;
   fTotal2 := 0;
 
+  {Dailon Parisotto (f-184) 2024-03-04 Inicio
+
   if not ibDataSet1.BOF then
     ibDataSet1.MoveBy(1);
+
+  Dailon Parisotto (f-184) 2024-03-04 Fim}
   while not Form7.ibDataSet1.EOF and (dData = ibDataSet1DATA.AsDateTime) do
   begin
     //
