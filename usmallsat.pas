@@ -44,6 +44,7 @@ uses
   , DelphiZXIngQRCode
   , tnpdf
   , umfe
+  , SynPDF
 
   ;
 
@@ -3466,6 +3467,7 @@ const PERCENTUAL_LARGURA_LOGO_X_LARGURA_PAPEL = 0.2721518987341772;
 const LARGURA_REFERENCIA_PAPEL_BOBINA = 640; //639
 const LARGURA_IMPRESSAO_VALOR_FORMAS_PAGAMENTO = 80;
 var
+  FileName: String;
   Tipo: TTipoExtrato;
   QRCodeBMP: TBitmap;
   Logotipo: TBitmap;
@@ -3501,7 +3503,8 @@ var
   sFileCFeSAT: String;
   Pagina: Array of TImage; // Imagem que receberá os textos e outras imagem
   iAlturaPDF: Integer;
-  PDF: TPrintPDF;
+  PDF: TPdfDocumentGDI; //Sandro Silva 2024-02-15 PDF: TPrintPDF;
+  PAGE : TPdfPage;
   iPagina: Integer;
   sRazaoEmitente: String;
   iLinhasFinal: Integer;
@@ -4813,7 +4816,7 @@ begin
     begin
       try
 
-        Printer.Abort;
+        // Sandro Silva 2024-02-15 Printer.Abort;
 
         try
           if sFileExport = '' then // 2015-06-30
@@ -4826,6 +4829,7 @@ begin
               ForceDirectories(ExtractFilePath(Application.ExeName) + 'CFeSAT');
           end;
 
+          (*
           // Cria o PDF
 
           {Create TPrintPDF VCL}
@@ -4875,9 +4879,63 @@ begin
               PDF.NewPage;
             FreeAndNil(Pagina[iPagina]);
           end;
+          *)
+
+          // Cria o PDF
+
+          {Create TPrintPDF VCL}
+          PDF := TPdfDocumentGDI.Create();
+          PDF.DefaultPaperSize := psUserDefined;
+          PDF.DefaultPageWidth := iLarguraFisica;
+
+          {Set Doc Info}
+          PDF.Info.Title        := ExtractFileName(sFileCFeSAT);
+          PDF.Info.Creator      := 'Zucchetti - ' + ExtractFileName(Application.ExeName); // Sandro Silva 2022-12-02 Unochapeco
+          PDF.Info.Author       := xmlNodeValue(sCFeXML, '//emit/xNome');
+          PDF.Info.CreationDate := now;
+          if FEmitente.UF = 'CE' then
+            PDF.Info.Keywords    := 'Cupom Fiscal Eletrônico, CF-e, MFE' // Sandro Silva 2018-08-01
+          else
+            PDF.Info.Keywords    := 'Cupom Fiscal Eletrônico, CF-e-SAT, SAT';
+          {Set Filename to save}
+          if sFileExport = '' then // 2015-06-30
+            PDF.Info.Subject     := ExtractFileName(sFileCFeSAT)
+          else
+            PDF.Info.Subject     := sFileExport;
+
+          {Use Compression: VCL Must compile with ZLIB comes with D3 above}
+          PDF.ForceJPEGCompression := 0;
+
+          {Set Page Size}
+          PAGE := pdf.AddPage;
+          PAGE.PageLandscape := False;
+
+          PAGE.PageWidth   := iLarguraPapel;
+          PAGE.PageHeight  := ALTURA_PAGINA_PDF; // Sandro Silva 2017-04-17  2374;
+
+          {Set Filename to save}
+          if sFileExport = '' then // 2015-06-30
+            FileName  := ExtractFilePath(Application.ExeName) + 'CFeSAT\' + sFileCFeSAT + '.pdf'
+          else
+            FileName  := sFileExport;
+
+          {Start Printing...}
+          //PDF.BeginDoc;
+
+          for iPagina := 0 to Length(Pagina) -1 do
+          begin
+
+            {Print Image}
+            PDF.VCLCanvas.Draw(0, 0, Pagina[iPagina].Picture.Graphic);
+
+            if iPagina < Length(Pagina) -1 then
+              {Add New Page}
+              PAGE := Pdf.AddPage;
+            FreeAndNil(Pagina[iPagina]);
+          end;
 
           {End Printing}
-          sRetornoGeraPDF := PDF.EndDoc;
+          //sRetornoGeraPDF := PDF.EndDoc;
           if sRetornoGeraPDF <> '' then
             FLogRetornoMobile := sRetornoGeraPDF;// Sandro Silva 2016-11-09  SmallMsgBox(PChar(sRetornoGeraPDF), 'Atenção', MB_ICONWARNING + MB_OK);
 
@@ -4885,9 +4943,11 @@ begin
         except
           on E: Exception do
           begin
-            sRetornoGeraPDF := PDF.FileName + ' já está aberto';
+            sRetornoGeraPDF := FileName + ' já está aberto';
           end;
         end;
+
+        PDF.SaveToFile(FileName);
 
         {FREE TPrintPDF VCL}
         if PDF <> nil then
