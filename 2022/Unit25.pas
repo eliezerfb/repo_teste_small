@@ -325,7 +325,7 @@ begin
           end;
         end;
 
-        //2024-02-26 Unit7.EnviarEMail('',sEmail,'','Boleto','Boleto',pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'), False);
+        // 2024-02-26 Unit7.EnviarEMail('',sEmail,'','Boleto','Boleto',pChar(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'), False);
         EnviarEMail('', sEmail, '', PChar('Boleto'), PChar('Boleto'), PChar(Form1.sAtual + '\boleto_' + AllTrim(Form7.ibDataSet7DOCUMENTO.AsString) + '.pdf'), False);
       end;
     end;

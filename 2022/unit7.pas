@@ -9386,20 +9386,18 @@ end;
 
 procedure TForm7.Imprimirpedidosdevenda1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
-  Form7.sModulo := 'Relatório de vendas (Cupom Fiscal)';
+  sModulo := 'Relatório de vendas (Cupom Fiscal)';
   Form38.Label17.Visible := True;
   Form38.Edit1.Visible   := True;
   Form38.cbListarCodigos.Visible := True;
   Form38.ShowModal; // Ok
   Form38.Label17.Visible := False;
   Form38.Edit1.Visible   := False;
-  //
 end;
 
 procedure TForm7.Listadepreos1Click(Sender: TObject);
@@ -27104,13 +27102,13 @@ var
 begin
   Form7.sModulo := 'CONTATOS';
   Form38.Panel5.Visible := True;
-  Form38.Button2.Visible := True;
+  Form38.btnCancelar.Visible := True;
   Form38.ShowModal; // Ok
   Form38.Panel5.Visible := False;
-  Form38.Button2.Visible := True;
-  //
+  Form38.btnCancelar.Visible := True;
+
   Form7.sModulo := 'CLIENTES';
-  //
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
   if Form38.Caption <> 'Cancelar' then
@@ -27306,10 +27304,10 @@ var
 begin
   Form7.sModulo := 'CONTATOS';
   Form38.Panel5.Visible := True;
-  Form38.Button2.Visible := True;
+  Form38.btnCancelar.Visible := True;
   Form38.ShowModal; // Ok
   Form38.Panel5.Visible := False;
-  Form38.Button2.Visible := True;
+  Form38.btnCancelar.Visible := True;
 
   Form7.sModulo := 'CLIENTES';
 
@@ -27479,10 +27477,10 @@ var
 begin
   Form7.sModulo := 'CONTATOS';
   Form38.Panel5.Visible := True;
-  Form38.Button2.Visible := True;
+  Form38.btnCancelar.Visible := True;
   Form38.ShowModal; // Ok
   Form38.Panel5.Visible := False;
-  Form38.Button2.Visible := True;
+  Form38.btnCancelar.Visible := True;
 
   Form7.sModulo := 'CLIENTES';
 
@@ -28888,10 +28886,10 @@ begin
   try
     Form7.sModulo := 'CONTATOS';
     Form38.Panel5.Visible := True;
-    Form38.Button2.Visible := True;
+    Form38.btnCancelar.Visible := True;
     Form38.ShowModal; // Ok
     Form38.Panel5.Visible := False;
-    Form38.Button2.Visible := True;
+    Form38.btnCancelar.Visible := True;
 
     Form7.sModulo := 'CLIENTES';
 
