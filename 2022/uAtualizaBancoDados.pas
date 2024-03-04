@@ -2418,6 +2418,22 @@ begin
   end;
   {Mauricio Parizotto 2024-02-19 Fim}
 
+
+  {Mauricio Parizotto 2024-02-28 Inicio}
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'CODEBAR', 'EAN') < 60 then
+  begin
+    if ExecutaComando('ALTER TABLE CODEBAR ALTER COLUMN EAN TYPE VARCHAR(60);') then
+      ExecutaComando('Commit');
+  end;
+
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'ITENS002', 'EAN_ORIGINAL') < 60 then
+  begin
+    if ExecutaComando('ALTER TABLE ITENS002 ALTER COLUMN EAN_ORIGINAL TYPE VARCHAR(60);') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-02-28 Fim}
+
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 

@@ -894,11 +894,11 @@ try
         WriteLn(F,
           Copy('9',1,001)                                                                                                            + // 1 Identificação Registro Trailler: "9"
           Copy(Replicate(' ',193),1,193)                                                                                             + // 2 Complemento do Registro: Brancos
-          Copy(AllTrim(Form25.Edit4.Text)+' '+AllTrim(Form25.Edit5.Text)+' '+AllTrim(Form25.Edit6.Text)+' '+AllTrim(Form25.Edit7.Text)+Replicate(' ',200),001,40)+ // 3 "Mensagem responsabilidade Beneficiário:
-          Copy(AllTrim(Form25.Edit4.Text)+' '+AllTrim(Form25.Edit5.Text)+' '+AllTrim(Form25.Edit6.Text)+' '+AllTrim(Form25.Edit7.Text)+Replicate(' ',200),041,40)+ // 4 "Mensagem responsabilidade Beneficiário:
-          Copy(AllTrim(Form25.Edit4.Text)+' '+AllTrim(Form25.Edit5.Text)+' '+AllTrim(Form25.Edit6.Text)+' '+AllTrim(Form25.Edit7.Text)+Replicate(' ',200),081,40)+ // 5 "Mensagem responsabilidade Beneficiário:
-          Copy(AllTrim(Form25.Edit4.Text)+' '+AllTrim(Form25.Edit5.Text)+' '+AllTrim(Form25.Edit6.Text)+' '+AllTrim(Form25.Edit7.Text)+Replicate(' ',200),121,40)+ // 6 "Mensagem responsabilidade Beneficiário:
-          Copy(AllTrim(Form25.Edit4.Text)+' '+AllTrim(Form25.Edit5.Text)+' '+AllTrim(Form25.Edit6.Text)+' '+AllTrim(Form25.Edit7.Text)+Replicate(' ',200),161,40)+ // 7 "Mensagem responsabilidade Beneficiário:
+          Copy(AllTrim(Form25.edtInstrucaoL1.Text)+' '+AllTrim(Form25.edtInstrucaoL2.Text)+' '+AllTrim(Form25.edtInstrucaoL3.Text)+' '+AllTrim(Form25.edtInstrucaoL4.Text)+Replicate(' ',200),001,40)+ // 3 "Mensagem responsabilidade Beneficiário:
+          Copy(AllTrim(Form25.edtInstrucaoL1.Text)+' '+AllTrim(Form25.edtInstrucaoL2.Text)+' '+AllTrim(Form25.edtInstrucaoL3.Text)+' '+AllTrim(Form25.edtInstrucaoL4.Text)+Replicate(' ',200),041,40)+ // 4 "Mensagem responsabilidade Beneficiário:
+          Copy(AllTrim(Form25.edtInstrucaoL1.Text)+' '+AllTrim(Form25.edtInstrucaoL2.Text)+' '+AllTrim(Form25.edtInstrucaoL3.Text)+' '+AllTrim(Form25.edtInstrucaoL4.Text)+Replicate(' ',200),081,40)+ // 5 "Mensagem responsabilidade Beneficiário:
+          Copy(AllTrim(Form25.edtInstrucaoL1.Text)+' '+AllTrim(Form25.edtInstrucaoL2.Text)+' '+AllTrim(Form25.edtInstrucaoL3.Text)+' '+AllTrim(Form25.edtInstrucaoL4.Text)+Replicate(' ',200),121,40)+ // 6 "Mensagem responsabilidade Beneficiário:
+          Copy(AllTrim(Form25.edtInstrucaoL1.Text)+' '+AllTrim(Form25.edtInstrucaoL2.Text)+' '+AllTrim(Form25.edtInstrucaoL3.Text)+' '+AllTrim(Form25.edtInstrucaoL4.Text)+Replicate(' ',200),161,40)+ // 7 "Mensagem responsabilidade Beneficiário:
           Copy(StrZero(iReg+1,6,0),1,006)                                                                                            + // 8 Seqüencial do Registro: Incrementado em 1 a cada registro
           ''
           );

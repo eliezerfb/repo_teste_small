@@ -21,6 +21,7 @@ object Form1: TForm1
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp
   OnMouseMove = FormMouseMove
   OnShow = FormShow
@@ -13972,13 +13973,6 @@ object Form1: TForm1
       end
     end
     object N16: TMenuItem
-      Caption = '-'
-    end
-    object ConverterosdadosparaSmallSaaS1: TMenuItem
-      Caption = 'Converter os dados para Small SaaS...'
-      OnClick = ConverterosdadosparaSmallSaaS1Click
-    end
-    object N7: TMenuItem
       Caption = '-'
     end
     object Registrodoprogramaonline1: TMenuItem

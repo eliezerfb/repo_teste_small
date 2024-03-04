@@ -82,7 +82,8 @@ var
 implementation
 
 uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados,
-  uFuncoesRetaguarda, StrUtils, uDialogs, uRaterioDiferencaEntreParcelasReceber;
+  uFuncoesRetaguarda, StrUtils, uDialogs, uRaterioDiferencaEntreParcelasReceber,
+  uSmallConsts;
 
 {$R *.DFM}
 
@@ -1890,6 +1891,13 @@ begin
       DBGrid1.DataSource.DataSet.First;
       while DBGrid1.DataSource.DataSet.Eof = False do
       begin
+        //Mauricio Parizotto 2024-02-27
+        if (DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString = '' )
+          and (AnsiContainsText(cboDocCobranca.Text,'Boleto de cobrança'))then
+        begin
+          DBGrid1.DataSource.DataSet.Edit;
+          DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString := _cFormaPgtoBoleto;
+        end;
 
         sForma := ValidaFormadePagamentoDigitada(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString, slFormas);
         if (sForma <> DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
@@ -1903,7 +1911,7 @@ begin
           DBGrid1.DataSource.DataSet.Edit;
           DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString := sForma;
         end;
-        
+
         if FormaDePagamentoEnvolveBancos(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then // envolvem bancos
         begin
           IBQBANCOS.First;

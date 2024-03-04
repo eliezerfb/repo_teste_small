@@ -2656,7 +2656,11 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , uRelatorioVendasNotaFiscal
   , uDrawCellGridModulos
   , uEmail
-  , ufrmFichaCadastros, uFuncaoMD5, uDesenhaBoleto;
+  , ufrmFichaCadastros
+  , uFuncaoMD5
+  , uDesenhaBoleto
+  , uSistema
+  ;
 
 {$R *.DFM}
 
@@ -4731,6 +4735,7 @@ end;
 function ConfiguraNFE : Boolean;
 var
   Mais1Ini: TIniFile;
+  TipoCertificado : string;
 begin
   Form1.ConfiguraCredencialTecnospeed; // Sandro Silva 2022-12-15
 
@@ -4897,6 +4902,23 @@ begin
   Form7.spdNFe.DanfeSettings.ModeloDanfeSimplificado   := Form1.sAtual + '\nfe\Templates\vm60\danfe\RetratoSimplificado.rtm';
   Form7.spdNFe.DanfeSettings.ModeloDanfeXmlResumo      := Form1.sAtual + '\nfe\Templates\vm60\danfe\Resumo.rtm';
   Form7.spdNFe.DanfeSettings.ModeloRTMCCe              := Form1.sAtual + '\nfe\Templates\cce\Impressao\modeloCCe.rtm';
+
+  {Mauricio Parizotto 2024-02-22 Inicio}
+  if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A1') then
+    TipoCertificado := 'A1';
+
+  if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A3') then
+    TipoCertificado := 'A3';
+
+  try
+    if TipoCertificado <> '' then
+    begin
+      TSistema.GetInstance.CertificadoDtVal := Form7.spdNFe.GetVencimentoCertificado;
+      TSistema.GetInstance.CertificadoTipo  := TipoCertificado;
+    end;
+  except
+  end;
+  {Mauricio Parizotto 2024-02-22 Fim}
 
   Result := True;
 end;
@@ -21284,16 +21306,14 @@ begin
                         end;
 
                         begin
-                          Form25.Show;
+                          Form1.sBancoBoleto     := Trim(StringReplace(Form1.sEscolhido, 'Boleto de cobrança do', '', [rfReplaceAll]));
+                          Form25.EventoShow;
                           Form7.Repaint;
                           Form25.CarregaConfiguracao;
                           Form25.CarregaDadosParcela;
 
                           //Mauricio Parizotto 2024-02-19
-                          if Form25.sFormatoBoleto = 'Padrão' then
-                            DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
-                          else
-                            DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
+                          DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text);
 
                           PDF.SaveToFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
 
@@ -28207,7 +28227,7 @@ begin
               // Relaciona os clientes com o arquivo de vendas
               Form7.ibDataSet2.Close;
               Form7.ibDataSet2.Selectsql.Clear;
-              Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
+              Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString));
               Form7.ibDataSet2.Open;
 
               if ValidaEmail(AllTrim(Form7.ibDataSet2EMAIL.AsString)) then
@@ -28371,58 +28391,79 @@ begin
                         PDF.EmbeddedTTF := True;
                         PDF.EmbeddedWholeTTF := true;
 
-                        PAGE := pdf.AddPage;
-                        PAGE.PageLandscape := False;
-
-                        Form1.sEscolhido := '';
-                        Form1.sBancoBoleto := '';
-
-                        try
-                          sSecoes := TStringList.Create;
-                          Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-                          Mais1Ini.ReadSections(sSecoes);
-
-                          for J := 0 to (sSecoes.Count - 1) do
+                        Form7.ibDataSet7.First;
+                        while not Form7.ibDataSet7.Eof do
+                        begin
+                          if Form7.ibDataSet7NOME.AsString = Form7.ibDataSet2NOME.AsString then
                           begin
-                            if ((Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',8,3))
-                             or (Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',10,3)))
-                            and ((Mais1Ini.ReadString(sSecoes[J],'CNAB400','') = 'Sim')
-                            or (Mais1Ini.ReadString(sSecoes[J],'CNAB240','') = 'Sim')) then
+                            if Form7.ibDataSet7NOME.AsString = Form7.ibDataSet2NOME.AsString then
                             begin
-                              Form1.sEscolhido := sSecoes[J];
+                              if ibDataSet7ATIVO.AsString <> '1' then // Não imprime boleto inativo
+                              begin
+                                if Form7.ibDataSet7VALOR_RECE.AsFloat = 0 then
+                                begin
+                                  Form1.sEscolhido := '';
+                                  Form1.sBancoBoleto := '';
+
+                                  try
+                                    sSecoes := TStringList.Create;
+                                    Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
+                                    Mais1Ini.ReadSections(sSecoes);
+
+                                    for J := 0 to (sSecoes.Count - 1) do
+                                    begin
+                                      if ((Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',8,3))
+                                       or (Copy(Mais1Ini.ReadString(sSecoes[J],'Código do banco',''),1,3) = Copy(Form7.ibDataset7PORTADOR.AsString+'XXXXXXXXXXXXX',10,3)))
+                                      and ((Mais1Ini.ReadString(sSecoes[J],'CNAB400','') = 'Sim')
+                                        or (Mais1Ini.ReadString(sSecoes[J],'CNAB240','') = 'Sim')) then
+                                      begin
+                                        Form1.sEscolhido := sSecoes[J];
+                                      end;
+                                    end;
+
+                                    Mais1Ini.Free;
+                                  except
+                                  end;
+
+                                  if (AllTrim(Form1.sEscolhido) <> '') or (Form1.DisponivelSomenteParaNos) then // Sandro Silva 2022-12-22 if AllTrim(Form1.sEscolhido) <> '' then
+                                  begin
+                                    Form1.sBancoBoleto     := Trim(StringReplace(Form1.sEscolhido, 'Boleto de cobrança do', '', [rfReplaceAll]));
+                                    Form25.EventoShow;
+                                    Form25.CarregaConfiguracao;
+                                    Form25.CarregaDadosParcela;
+                                    Form7.Repaint;
+
+                                    //Mauricio Parizotto 2024-02-19
+
+                                    PAGE := pdf.AddPage;
+                                    PAGE.PageLandscape := False;
+                                    DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text);
+                                  end;
+                                end;
+                              end;
                             end;
                           end;
 
-                          Mais1Ini.Free;
-                        except
+                          Screen.Cursor            := crHourGlass;
+                          Form7.ibDataSet7.Next;
+                          Form25.Close;
                         end;
 
-                        begin
-                          Form25.Show;
-                          Form7.Repaint;
-                          Form25.CarregaConfiguracao;
-                          Form25.CarregaDadosParcela;
+                        Form7.ibDataSet7.GotoBookmark(MyBookMark1);
 
-                          //Mauricio Parizotto 2024-02-19
-                          if Form25.sFormatoBoleto = 'Padrão' then
-                            DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
-                          else
-                            DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
+                        PDF.SaveToFile(sArquivoPDF);
 
-                          PDF.SaveToFile(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf');
+                        // Fecha o pdf
+                        if FileExists(sArquivoPDF) then
+                          sArquivo := sArquivoPDF
+                        else
+                          sArquivo := '';
 
-                          // Fecha o pdf
-                          if FileExists(Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf') then
-                            sArquivo := Form1.sAtual+'\boleto_'+AllTrim(Form7.ibDataSet7DOCUMENTO.AsString)+'.pdf'
-                          else
-                            sArquivo := '';
-                        end;
                       finally
                         FreeAndNil(PDF);
                       end;
                     except
                     end;
-
 
                     Form25.Close;
                     Form7.Repaint;
@@ -28482,7 +28523,7 @@ begin
                 sMsg := StrTran(sMsg,'<LOCAL_E_DATA>'  ,Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
                                                                                   + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
                                                                                      + Copy(DateTimeToStr(Date),7,4));
-                //
+
                 sMsg := StrTran(sMsg,'<TELEFONE_DO_EMITENTE>',Form7.ibDataSet13TELEFO.AsString);
                 sMsg := StrTran(sMsg,'<NOME_EMITENTE>',       Form7.ibDataSet13NOME.AsString);
                 sMsg := StrTran(sMsg,'<ENDERECO_EMITENTE>',   Form7.ibDataSet13ENDERECO.AsString);
@@ -28490,7 +28531,7 @@ begin
                 sMsg := StrTran(sMsg,'<CEP_EMITENTE>',        Form7.ibDataSet13CEP.AsString);
                 sMsg := StrTran(sMsg,'<CIDADE_EMITENTE>',     Form7.ibDataSet13MUNICIPIO.AsString);
                 sMsg := StrTran(sMsg,'<UF_EMITENTE>',         UpperCase(Form7.ibDataSet13ESTADO.AsString));
-                
+
                 // TOTAL ATRASADO - Total acumulado
                 if Pos('<PARCELAS_VENCIDAS>',sMsg) <> 0 then
                 begin
@@ -28501,7 +28542,7 @@ begin
                   Form7.ibQuery1.Open;
                   //
                   sParcelas := '';
-                  //
+
                   while not Form7.ibQuery1.eof do
                   begin
                     sParcelas := sParcelas +
@@ -28526,10 +28567,10 @@ begin
                   Form7.ibQuery1.Sql.Clear;
                   Form7.ibQuery1.Sql.Add('select sum(VALOR_DUPL) from RECEBER where coalesce(VALOR_RECE,0)=0 and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9)<>1 and NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' group by NOME');
                   Form7.ibQuery1.Open;
-                  //
+
                   sMsg := StrTran(sMsg,'<TOTAL_ATRASADO>'    ,AllTrim(Format('%12.2n',[Form7.IBQuery1.FieldByName('SUM').AsFloat])));
                 end;
-                //
+
                 if Pos('<TOTAL_ATUALIZADO>',sMsg) <> 0 then
                 begin
                   // sql para somar o total atrasado deste cliente
@@ -28539,22 +28580,20 @@ begin
                   Form7.ibQuery1.Open;
                   //
                   sMsg := StrTran(sMsg,'<TOTAL_ATUALIZADO>'    ,AllTrim(Format('%12.2n',[Form7.IBQuery1.FieldByName('SUM').AsFloat])));
-                  //
                 end;
-                //
+                
                 EnviarEMail('', sEmail, '', PChar(sAssunto), PChar(sMSG), PChar(sArquivo), False);
-                //
+                
                 I := I + 1;
-                //
+
                 Mais1ini := TIniFile.Create('frente.ini');
                 Mais1Ini.WriteString('mail','Registro',pchar(Form7.ibDataSet7.FieldByName('REGISTRO').AsString));
                 Mais1Ini.Free;
-                //
-                //
+
                 Form7.Panel1.Top  := (Form7.Height - Panel1.Height) div 2;
                 Form7.Panel1.Left := (Form7.Width - Panel1.Width) div 2;
                 Form7.Panel1.Visible := True;
-                //
+
                 Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mail´s enviados.';
                 Form7.Panel1.Repaint;
               end;
@@ -32032,8 +32071,8 @@ begin
 
                                 if (AllTrim(Form1.sEscolhido) <> '') or (Form1.DisponivelSomenteParaNos) then // Sandro Silva 2022-12-22 if AllTrim(Form1.sEscolhido) <> '' then
                                 begin
-                                  Form1.sBancoBoleto     := '';
-                                  Form25.Show;
+                                  Form1.sBancoBoleto     := Trim(StringReplace(Form1.sEscolhido, 'Boleto de cobrança do', '', [rfReplaceAll]));
+                                  Form25.EventoShow;
                                   Form25.CarregaConfiguracao;
                                   Form25.CarregaDadosParcela;
 
@@ -32052,10 +32091,7 @@ begin
                                   PAGE := pdf.AddPage;
                                   PAGE.PageLandscape := False;
 
-                                  if Form25.sFormatoBoleto = 'Padrão' then
-                                    DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text)
-                                  else
-                                    DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,1);
+                                  DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text);
                                 end;
                               end;
                             end;
@@ -32752,9 +32788,18 @@ begin
     Result := #13#10;
   end;
 
+  //Nenhum certificado
+  if TSistema.GetInstance.CertificadoTipo = '' then
+  begin
+    Exit;
+  end;
+
   try
-    ConfiguraNFE; // Sandro Silva 2023-07-21 Precisa carregar a configuração para usar o componente spdNFe
-    DtVencimento := spdNFe.GetVencimentoCertificado;
+    {Mauricio Parizotto 2024-02-22 Inicio}
+    //ConfiguraNFE; // Sandro Silva 2023-07-21 Precisa carregar a configuração para usar o componente spdNFe
+    //DtVencimento := spdNFe.GetVencimentoCertificado;
+    DtVencimento := TSistema.GetInstance.CertificadoDtVal;
+    {Mauricio Parizotto 2024-02-22 Fim}
 
     if DtVencimento >= Date then
       Result := Result+'Seu certificado digital irá vencer em '+FormatFloat('0', DtVencimento - Date) + ' dia(s) '+'('+DateToStr(DtVencimento)+').'

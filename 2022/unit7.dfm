@@ -16854,7 +16854,7 @@ object Form7: TForm7
       Origin = 'ITENS002.EAN_ORIGINAL'
       Visible = False
       FixedChar = True
-      Size = 15
+      Size = 60
     end
     object ibDataSet23VBCFCP: TIBBCDField
       DisplayLabel = 'BC FCP'
@@ -21693,7 +21693,7 @@ object Form7: TForm7
       DisplayLabel = 'C'#243'digo Barras'
       FieldName = 'EAN'
       Origin = 'CODEBAR.EAN'
-      Size = 15
+      Size = 60
     end
     object IBDataSet6FORNECEDOR: TIBStringField
       DisplayLabel = 'Fornecedor'

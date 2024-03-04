@@ -1187,7 +1187,6 @@ begin
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   Form7.ibDataSet4.DisableControls;
   Form7.ibDataSet23.DisableControls;
-  //LogRetaguarda('unit24 ibDataSet23.DisableControls 1184'); // Sandro Silva 2023-12-04
 
   Form24.Panel5.Visible := False;
   Form24.Panel9.Visible := False;
@@ -1222,7 +1221,6 @@ begin
         Form7.ibDataSet24MODELO.AsString  := Trim(Copy(Form7.ibDataSet24NFEID.AsString,21,2));
     except
       on E: Exception do
-        //ShowMessage('Erro ao gravar NF-e: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
         MensagemSistema('Erro ao gravar NF-e: '+chr(10)+E.Message,msgErro);
     end;
 
@@ -1286,11 +1284,15 @@ begin
 
               try
                 try
+                  {$Region'//// Custo Médio/Compra/Preço Venda ////'}
+
                   // Primeiro atualiza o custo depois a quantidade
                   try
                     if (Form7.ibDataSet23UNITARIO.Asfloat <> 0) then
                     begin
-                      if (AllTrim(Form7.ibDataSet14INTEGRACAO.AsString) <> '') then
+                      //if (AllTrim(Form7.ibDataSet14INTEGRACAO.AsString) <> '') then Mauricio Parizotto 2024-02-27
+                      if (AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString),'PAGAR'))
+                        or (AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString),'CAIXA')) then
                       begin
                         // Fórmula do custo de compra                                                                     //
                         // Custo Compra = (Valor Unitário + ICMSST + VIPI) + (( Valor Unitário / Valor das mercadorias )  //
@@ -1298,20 +1300,8 @@ begin
                         //                                                                                                //
                         // Obs: O Custo de Compra é a soma do valor pago ao fornecedor mais as                            //
                         // despesas proporcionais de frete seguro e outras.                                               //
-                        //
                         if (Form7.ibDataSet4ULT_COMPRA.AsDateTime <= Form7.ibDataSet24EMISSAO.AsDateTime) then
                         begin
-                          {Sandro Silva 2023-10-16 inicio
-                          Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
-                                                                + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
-                                                                   / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
-                                                                  ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
-                                                                     Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
-                                                                     Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
-                                                                     Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
-                                                                  )); //
-                          }
-
                           //Se alterar aqui, alerar sql da tela FrmPrecificacaoProduto
                           Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat + Form7.ibDataSet23VFCPST.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI + FCP ST
                                                                 + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
@@ -1328,17 +1318,6 @@ begin
                             Form7.ibDataSet4CUSTOCOMPR.AsFloat := 0.00;
                           {Sandro Silva 2023-03-02 fim}
 
-                          {Sandro Silva 2023-10-16 inicio
-                          sCustoCompra := Form7.ibDataSet4CUSTOCOMPR.AsString +
-                                          ' = ( ' + Form7.ibDataSet23UNITARIO.AsString + ' + ' +
-                                          '(( ' + Form7.ibDataSet23VICMSST.AsString + ' + ' + Form7.ibDataSet23VIPI.AsString + ') / ' + Form7.ibDataSet23QUANTIDADE.AsString+ '))'+
-                                          '+ (( ' + Form7.ibDataSet23UNITARIO.AsString +
-                                          ' / ' +  Form7.ibDataSet24MERCADORIA.AsString + ' ) * ' +
-                                          ' ( ' + Form7.ibDataSet24FRETE.AsString + ' + ' +
-                                          Form7.ibDataSet24SEGURO.AsString + ' + ' +
-                                          Form7.ibDataSet24DESPESAS.AsString + ' - ' +
-                                          Form7.ibDataSet24DESCONTO.AsString + ' ))';
-                          }
                           sCustoCompra := Form7.ibDataSet4CUSTOCOMPR.AsString +
                                           ' = ( ' + Form7.ibDataSet23UNITARIO.AsString + ' + ' +
                                           '(( ' + Form7.ibDataSet23VICMSST.AsString + ' + ' + Form7.ibDataSet23VIPI.AsString + ' + ' + Form7.ibDataSet23VFCPST.AsString + ') / ' + Form7.ibDataSet23QUANTIDADE.AsString + '))' +
@@ -1429,26 +1408,14 @@ begin
                             Form7.ibDataSet4ALTERADO.AsString  := '1';
                           end;
                         end;
-                        ///////////////////////////////////////////////////////////////////////////
+
+
                         // Fórmula do custo médio                                                //
-                        //                                                                                                //
-                        // Fórmula do custo de medio                                                                      //
                         // Custo Medio = (Valor Unitário + ICMSST + VIPI) + (( Valor Unitário / Valor das mercadorias )   //
                         //                 * ( frete + Seguro + Outras )) - Credito de ICMS                               //
                         //                                                                                                //
                         // Obs: O Custo de medio é a media ponderada dasoma do valor pago ao fornecedor mais as           //
                         // despesas proporcionais de frete seguro e outras menos o crédito de ICMS.                       //
-                        //
-                        {Sandro Silva 2023-10-17 inicio
-                        Form7.ibDataSet23CUSTO.AsFloat        := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI
-                                                                  + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
-                                                                   / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
-                                                                  ( Form7.ibDataSet24FRETE.AsFloat +         // o frete  //
-                                                                     Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
-                                                                     Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
-                                                                     Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
-                                                                     )) - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.AsFloat); // menos o crédito de ICMS
-                        }
                         try
                           // itens002.custo armazena o custo médio
                           Form7.ibDataSet23CUSTO.AsFloat        := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat + Form7.ibDataSet23VFCPST.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI + FCPST
@@ -1468,9 +1435,9 @@ begin
                         end;
                         {Sandro Silva 2023-10-17 fim}
 
-                        //
                         Form7.ibDataSet4.Post;
                       end;
+
                     end;
                   except
                     on E: Exception do
@@ -1478,6 +1445,9 @@ begin
                       MensagemSistema('Erro ao calcular custo médio: '+chr(10)+E.Message,msgErro);
                   end;
 
+                  {$Endregion}
+
+                  {$Region'//// Entrada Estoque ////'}
                   try
                     if Form7.ibDataSet23SINCRONIA.AsFloat <> Form7.ibDataSet23QUANTIDADE.AsFloat then
                     begin
@@ -1497,6 +1467,7 @@ begin
                     end;
                   except
                   end;
+                  {$Endregion}
                 except
                 end;
 
@@ -1505,10 +1476,8 @@ begin
               end;
 
               try
-                //////////////////////////////////////////////////////////////////////////////////////////////////
                 // Fórmula do custo médio                                                                       //
                 // Custo Médio = (CUSTO DE CADA COMPRA * QUANTIDADE DE CADA COMPRA) / QUANTIDADE TOTAL COMPRADA //
-                //                                                                                              //
 
                 if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
                   Form7.ibDataset4.Edit;
@@ -1553,11 +1522,8 @@ begin
       Form1.bFlag := True;
       Form7.sModulo := 'COMPRAS';
 
-      // Atenção a rotina acima altera a quantidade no estoque
-      /////////////////////////////////////////////////////////////////////////////////
-      //
+
       // Desdobramento das duplicatas
-      //
       Form7.sModulo := 'COMPRA';
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet24OPERACAO.AsString,[]);
 
@@ -1596,15 +1562,15 @@ begin
       end;
     end;
 
-    Form7.ibDataSet23UNITARIO.Visible     := False;         //
+    Form7.ibDataSet23UNITARIO.Visible     := False;
     Form7.ibDataSet23CFOP.Visible         := True; // Sandro Silva 2023-03-27 Form7.ibDataSet23CFOP.Visible           := False;        //       //
-    Form7.ibDataSet23BASE.Visible         := False;       //
+    Form7.ibDataSet23BASE.Visible         := False;
     Form7.ibDataSet23VICMS.Visible        := False;
     Form7.ibDataSet23VBC.Visible          := False;
     Form7.ibDataSet23VBCST.Visible        := False;
     Form7.ibDataSet23VICMSST.Visible      := False;
     Form7.ibDataSet23VIPI.Visible         := False;
-    // Sandro Silva 2023-03-29 Form7.ibDataSet23DESCRICAO.DisplayWidth := 35;         //
+    // Sandro Silva 2023-03-29 Form7.ibDataSet23DESCRICAO.DisplayWidth := 35;
 
     {Sandro Silva 2023-03-29 inicio}
     Form7.ibDataSet23UNITARIO_O.Visible   := False;
@@ -1644,7 +1610,6 @@ begin
 
   Form7.ibDataSet4.EnableControls;
   Form7.ibDataSet23.EnableControls;
-  //LogRetaguarda('unit24 ibDataSet23.EnableControls 1629'); // Sandro Silva 2023-12-04
 
   if Form7.Visible then
   begin
@@ -2587,7 +2552,10 @@ begin
   // Atenção a rotina acima altera a quantidade no estoque
   sDataAntiga := DateToStrInvertida(Form7.ibDataSet24EMISSAO.AsDateTime);
 
-  Form7.bDescontaICMSDeso := TestaNotaDescontaICMSDesonerado;  
+  Form7.bDescontaICMSDeso := TestaNotaDescontaICMSDesonerado;
+
+  if DBGrid1.DataSource.DataSet.Active then
+    DBGrid1.DataSource.DataSet.First;
 end;
 
 procedure TForm24.FormActivate(Sender: TObject);
