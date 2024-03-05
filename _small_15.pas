@@ -94,7 +94,7 @@ uses
   function EPSON_Obter_Simbolo_Moeda( szDados: PAnsiChar ): Integer; stdcall; external 'InterfaceEpson.dll';
   function EPSON_Obter_Dados_Impressora( szDados: PAnsiChar ): Integer; stdcall; external 'InterfaceEpson.dll';
   function EPSON_Obter_Estado_Cupom( szEstado: PAnsiChar ): Integer; stdcall; external 'InterfaceEpson.dll';
-  function EPSON_Obter_Estado_Horario_Verao( bEstado: pBoolean): Integer; stdcall; external 'InterfaceEpson.dll';
+  function EPSON_Obter_Estado_Horario_Verao(var Estado: Integer): Integer; stdcall; external 'InterfaceEpson.dll'; // Sandro Silva 2024-03-05 function EPSON_Obter_Estado_Horario_Verao( bEstado: pBoolean): Integer; stdcall; external 'InterfaceEpson.dll';
   function EPSON_Obter_Codigo_Nacional_ECF(pszCodigoNacionalECF:PAnsiChar; pszNomeArquivo:PAnsiChar): Integer;StdCall; External 'InterfaceEpson.dll'; // Sandro Silva 2016-03-23
   //
   function EPSON_Config_Forma_Pagamento( bVinculado: Boolean; pszNumeroMeio, pszDescricao: PAnsiChar ): Integer; stdcall; external 'InterfaceEpson.dll';
@@ -735,10 +735,12 @@ begin
   begin
     if Form1.fTotal >= Form1.ibDataSet25RECEBER.AsFloat then
     begin
-      iRetorno := EPSON_Fiscal_Desconto_Acrescimo_Subtotal(PAnsiChar(StrZero((Form1.fTotal-Form1.ibDataSet25RECEBER.AsFloat)*100,11,0)), 2, True, False); // Desconto
+      //2024-03-05 iRetorno := EPSON_Fiscal_Desconto_Acrescimo_Subtotal(PAnsiChar(StrZero((Form1.fTotal-Form1.ibDataSet25RECEBER.AsFloat)*100,11,0)), 2, True, False); // Desconto
+      iRetorno := EPSON_Fiscal_Desconto_Acrescimo_Subtotal(PAnsiChar(AnsiString(StrZero((Form1.fTotal-Form1.ibDataSet25RECEBER.AsFloat)*100,11,0))), 2, True, False); // Desconto
     end else
     begin
-      iRetorno := EPSON_Fiscal_Desconto_Acrescimo_Subtotal(PAnsiChar(StrZero((Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal)*100,11,0)), 2, False, False); // Acréscimo
+      // 2024-03-05 iRetorno := EPSON_Fiscal_Desconto_Acrescimo_Subtotal(PAnsiChar(StrZero((Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal)*100,11,0)), 2, False, False); // Acréscimo
+      iRetorno := EPSON_Fiscal_Desconto_Acrescimo_Subtotal(PAnsiChar(AnsiString(StrZero((Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal)*100,11,0))), 2, False, False); // Acréscimo
     end;
   end
   else
@@ -767,10 +769,11 @@ end;
 function _ecf15_Pagamento(Pp1: Boolean):Boolean;
 var
   //
-  szTotal: array[0..20] of AnsiChar;
+  szTotal:Ansistring;//2024-03-05 szTotal: array[0..20] of AnsiChar;
   Mais1ini : TiniFile;
   //
 begin
+  szTotal := AnsiString(StringOfChar(' ', 20));
   //
   Mais1ini  := TIniFile.Create('frente.ini');
   //
@@ -790,6 +793,7 @@ begin
   //
   Sleep(300);
   //
+  {2024-03-05
   if Form1.ibDataSet25ACUMULADO1.AsFloat <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(sCheque)   ,PAnsiChar(StrZero(Form1.ibDataSet25ACUMULADO1.AsFloat * 100,13,0)), 2, '', '' );
   if Form1.ibDataSet25ACUMULADO2.AsFloat <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(sDinheiro) ,PAnsiChar(StrZero(Form1.ibDataSet25ACUMULADO2.AsFloat * 100,13,0)), 2, '', '' );
   if Form1.ibDataSet25PAGAR.AsFloat      <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(sCartao)   ,PAnsiChar(StrZero(Form1.ibDataSet25PAGAR.AsFloat      * 100,13,0)), 2, '', '' );
@@ -802,9 +806,24 @@ begin
   if Form1.ibDataSet25VALOR06.AsFloat    <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(sExtra6)   ,PAnsiChar(StrZero(Form1.ibDataSet25VALOR06.AsFloat    * 100,13,0)), 2, '', '' );
   if Form1.ibDataSet25VALOR07.AsFloat    <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(sExtra7)   ,PAnsiChar(StrZero(Form1.ibDataSet25VALOR07.AsFloat    * 100,13,0)), 2, '', '' );
   if Form1.ibDataSet25VALOR08.AsFloat    <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(sExtra8)   ,PAnsiChar(StrZero(Form1.ibDataSet25VALOR08.AsFloat    * 100,13,0)), 2, '', '' );
+  }
+  if Form1.ibDataSet25ACUMULADO1.AsFloat <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sCheque))   ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25ACUMULADO1.AsFloat * 100,13,0))), 2, '', '' );
+  if Form1.ibDataSet25ACUMULADO2.AsFloat <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sDinheiro)) ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25ACUMULADO2.AsFloat * 100,13,0))), 2, '', '' );
+  if Form1.ibDataSet25PAGAR.AsFloat      <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sCartao))   ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25PAGAR.AsFloat      * 100,13,0))), 2, '', '' );
+  if Form1.ibDataSet25DIFERENCA_.Asfloat <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sPrazo))    ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25DIFERENCA_.AsFloat * 100,13,0))), 2, '', '' );
+  if Form1.ibDataSet25VALOR01.AsFloat    <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sExtra1))   ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25VALOR01.AsFloat    * 100,13,0))), 2, '', '' );
+  if Form1.ibDataSet25VALOR02.AsFloat    <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sExtra2))   ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25VALOR02.AsFloat    * 100,13,0))), 2, '', '' );
+  if Form1.ibDataSet25VALOR03.AsFloat    <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sExtra3))   ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25VALOR03.AsFloat    * 100,13,0))), 2, '', '' );
+  if Form1.ibDataSet25VALOR04.AsFloat    <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sExtra4))   ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25VALOR04.AsFloat    * 100,13,0))), 2, '', '' );
+  if Form1.ibDataSet25VALOR05.AsFloat    <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sExtra5))   ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25VALOR05.AsFloat    * 100,13,0))), 2, '', '' );
+  if Form1.ibDataSet25VALOR06.AsFloat    <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sExtra6))   ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25VALOR06.AsFloat    * 100,13,0))), 2, '', '' );
+  if Form1.ibDataSet25VALOR07.AsFloat    <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sExtra7))   ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25VALOR07.AsFloat    * 100,13,0))), 2, '', '' );
+  if Form1.ibDataSet25VALOR08.AsFloat    <> 0 then iRetorno := EPSON_Fiscal_Pagamento(PAnsiChar(AnsiString(sExtra8))   ,PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25VALOR08.AsFloat    * 100,13,0))), 2, '', '' );
+
   //
   _ecf15_codeErro(iRetorno,'');
 
+  {2024-03-05
   iRetorno := EPSON_Fiscal_Imprimir_Mensagem(
     PAnsiChar('MD5: '+Form1.sMD5DaLista),
     PAnsiChar(Copy(StrTran(Form1.sMensagemPromocional,chr(10),' - ')+Replicate(' ',640),1,55)),
@@ -815,6 +834,18 @@ begin
     PAnsiChar(Copy(StrTran(Form1.sMensagemPromocional,chr(10),' - ')+Replicate(' ',640),(55*5)+1,55)),
     PAnsiChar(Copy(StrTran(Form1.sMensagemPromocional,chr(10),' - ')+Replicate(' ',640),(55*6)+1,55))
     );
+    }
+  iRetorno := EPSON_Fiscal_Imprimir_Mensagem(
+    PAnsiChar(AnsiString('MD5: '+Form1.sMD5DaLista)),
+    PAnsiChar(AnsiString(Copy(StrTran(Form1.sMensagemPromocional,chr(10),' - ')+Replicate(' ',640),1,55))),
+    PAnsiChar(AnsiString(Copy(StrTran(Form1.sMensagemPromocional,chr(10),' - ')+Replicate(' ',640),(55*1)+1,55))),
+    PAnsiChar(AnsiString(Copy(StrTran(Form1.sMensagemPromocional,chr(10),' - ')+Replicate(' ',640),(55*2)+1,55))),
+    PAnsiChar(AnsiString(Copy(StrTran(Form1.sMensagemPromocional,chr(10),' - ')+Replicate(' ',640),(55*3)+1,55))),
+    PAnsiChar(AnsiString(Copy(StrTran(Form1.sMensagemPromocional,chr(10),' - ')+Replicate(' ',640),(55*4)+1,55))),
+    PAnsiChar(AnsiString(Copy(StrTran(Form1.sMensagemPromocional,chr(10),' - ')+Replicate(' ',640),(55*5)+1,55))),
+    PAnsiChar(AnsiString(Copy(StrTran(Form1.sMensagemPromocional,chr(10),' - ')+Replicate(' ',640),(55*6)+1,55)))
+    );
+
 
   //ShowMessage('Teste 1 impressão mensagem promocional ' + IntToStr(iRetorno));
 
@@ -826,7 +857,7 @@ begin
   //ShowMessage('Teste 1 depois de fechar ' + IntToStr(iRetorno));
 
   _ecf15_codeErro(iRetorno,'');
-  iRetorno := EPSON_Fiscal_Fechar_CupomEx ( szTotal );
+  iRetorno := EPSON_Fiscal_Fechar_CupomEx (PAnsiChar(szTotal));// 2024-03-05 iRetorno := EPSON_Fiscal_Fechar_CupomEx ( szTotal );
   Result := True;
 
   //Result := iRetorno = 0; // 2015-09-18
@@ -881,11 +912,13 @@ end;
 // ------------------------------ //
 function _ecf15_AbreNovoCupom(Pp1: Boolean):Boolean;
 var
-  sZDados : array[0..20] of AnsiChar;
+  //2024-03-05 sZDados : array[0..20] of AnsiChar;
+  szDados:AnsiString;
 begin
+  szDados := AnsiString(StringOfChar(' ', 20));
   //
-  iRetorno := EPSON_Fiscal_Abrir_Cupom(PAnsiChar(Form1.sCPF_CNPJ_Validado),'','','',2);
-  EPSON_Obter_Estado_Impressora(szDados);
+  iRetorno := EPSON_Fiscal_Abrir_Cupom(PAnsiChar(AnsiString(Form1.sCPF_CNPJ_Validado)),'','','',2); // 2024-03-05 iRetorno := EPSON_Fiscal_Abrir_Cupom(PAnsiChar(Form1.sCPF_CNPJ_Validado),'','','',2);
+  EPSON_Obter_Estado_Impressora((PansiChar(szDados)); // 2024-03-05 EPSON_Obter_Estado_Impressora(szDados);
   {Sandro Silva 2015-10-08 inicio
   if iRetorno <> 0 then _ecf15_codeErro(iRetorno,'');
   Result := True;
@@ -1120,7 +1153,7 @@ end;
 // ------------------------------ //
 function _ecf15_CancelaItemN(pP1, pP2 : String):Boolean;
 begin
-  iRetorno := EPSON_Fiscal_Cancelar_Item (PAnsiChar(IntToStr(StrToInt(pP1))));
+  iRetorno := EPSON_Fiscal_Cancelar_Item (PAnsiChar(AnsiString(IntToStr(StrToInt(pP1))))); // 2024-03-05 iRetorno := EPSON_Fiscal_Cancelar_Item (PAnsiChar(IntToStr(StrToInt(pP1))));
   _ecf15_codeErro(iRetorno,'');
   if iRetorno = 0 then Result := True else Result := False;
   // ------------------------------------------------------------------ //
@@ -1182,7 +1215,7 @@ end;
 // -------------------------------- //
 function _ecf15_Sangria(Pp1: Real):Boolean;
 begin
-  iRetorno := EPSON_NaoFiscal_Sangria( PAnsiChar(StrZero(pP1*100,8,0)) , 2);
+  iRetorno := EPSON_NaoFiscal_Sangria(PAnsiChar(AnsiString(StrZero(pP1*100,8,0))) , 2); // 2024-03-05 iRetorno := EPSON_NaoFiscal_Sangria( PAnsiChar(StrZero(pP1*100,8,0)) , 2);
   _ecf15_codeErro(iRetorno,'');
   Result := True;
   //
@@ -1196,7 +1229,7 @@ end;
 // -------------------------------- //
 function _ecf15_Suprimento(Pp1: Real):Boolean;
 begin
-  iRetorno := EPSON_NaoFiscal_Fundo_Troco( PAnsiChar(StrZero(pP1*100,8,0)), 2);
+  iRetorno := EPSON_NaoFiscal_Fundo_Troco(PAnsiChar(AnsiString(StrZero(pP1*100,8,0))), 2); // 2024-03-05 iRetorno := EPSON_NaoFiscal_Fundo_Troco( PAnsiChar(StrZero(pP1*100,8,0)), 2);
   _ecf15_codeErro(iRetorno,'');
   Result := True;
   //
@@ -1211,7 +1244,7 @@ end;
 function _ecf15_NovaAliquota(Pp1: String):Boolean;
 begin
   //
-  EPSON_Config_Aliquota(PAnsiChar(Pp1),false);
+  EPSON_Config_Aliquota(PAnsiChar(AnsiString(Pp1)),false); // 2024-03-05 EPSON_Config_Aliquota(PAnsiChar(Pp1),false);
   Result := True;
   //
   // Ok Testado 10
@@ -1224,9 +1257,14 @@ function _ecf15_LeituraDaMFD(pP1, pP2, pP3: String):Boolean;
 var
   iEspelhos, iAtoCotepe : Integer;
   iRetorno: Integer;
+  {
   sNomeBinario: String;
   sNomeBinarioMF: String;
   sNomeBinarioMFD: String;
+  }
+  sNomeBinario: AnsiString;
+  sNomeBinarioMF: AnsiString;
+  sNomeBinarioMFD: AnsiString;
   dwTipoEntrada: Integer; //2015-08-19
 begin
   Screen.Cursor := crHourGlass; // Cursor normal
@@ -1282,7 +1320,8 @@ begin
           pP2   := StrTran(DateToStr(Form7.DateTimePicker1.Date),'/','');
           pP3   := StrTran(DateToStr(Form7.DateTimePicker2.Date),'/','');
           //
-          iRetorno := EPSON_Obter_Dados_MF_MFD( PAnsiChar(pP2), PAnsiChar(pP3), 0, iEspelhos, iAtoCotepe, 0, 'c:\_EPS');
+          //2024-03-05 iRetorno := EPSON_Obter_Dados_MF_MFD( PAnsiChar(pP2), PAnsiChar(pP3), 0, iEspelhos, iAtoCotepe, 0, 'c:\_EPS');
+          iRetorno := EPSON_Obter_Dados_MF_MFD( PAnsiChar(AnsiString(pP2)), PAnsiChar(AnsiString(pP3)), 0, iEspelhos, iAtoCotepe, 0, PAnsiChar(AnsiString('c:\_EPS')));
           //
         end else
         begin
@@ -1297,7 +1336,8 @@ begin
             iEspelhos     := 255;
             iAtoCotepe    := 0;
           end;
-          iRetorno := EPSON_Obter_Dados_MF_MFD(PAnsiChar(pP2), PAnsiChar(pP3), dwTipoEntrada, iEspelhos, iAtoCotepe, 0, 'c:\_EPS');
+          //2024-03-05 iRetorno := EPSON_Obter_Dados_MF_MFD(PAnsiChar(pP2), PAnsiChar(pP3), dwTipoEntrada, iEspelhos, iAtoCotepe, 0, 'c:\_EPS');
+          iRetorno := EPSON_Obter_Dados_MF_MFD(PAnsiChar(AnsiString(pP2)), PAnsiChar(AnsiString(pP3)), dwTipoEntrada, iEspelhos, iAtoCotepe, 0, PAnsiChar(AnsiString('c:\_EPS')));
         end;
         //
         if iRetorno = 0 then
@@ -1334,6 +1374,7 @@ begin
         if (Form7.sMfd = 'MFDCOMPLETA') then
         begin // MFD
           //iRetorno :=
+          {2024-03-05
           EPSON_Config_Dados_PAFECF(PAnsiChar(LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)),
                                     PAnsiChar(LimpaNumero(IE_SOFTWARE_HOUSE_PAF)),
                                     PAnsiChar(IM_SOFTWARE_HOUSE_PAF),
@@ -1348,6 +1389,21 @@ begin
           sNomeBinarioMFD := StringReplace(ExtractFilePath(Form1.SaveDialog1.FileName) + ExtractFileName(Form1.SaveDialog1.FileName), ExtractFileExt(Form1.SaveDialog1.FileName), '.MFD', [rfReplaceAll]);
 
           iRetorno := EPSON_Obter_Arquivo_Binario_MFD(PAnsiChar(sNomeBinarioMFD));
+          }
+          EPSON_Config_Dados_PAFECF(PAnsiChar(AnsiString(LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF))),
+                                    PAnsiChar(AnsiString(LimpaNumero(IE_SOFTWARE_HOUSE_PAF))),
+                                    PAnsiChar(AnsiString(IM_SOFTWARE_HOUSE_PAF)),
+                                    // 2015-09-08 PAnsiChar(Copy('Smallsoft Tecnologia em Informática EIRELI', 1, 40)),
+                                    PAnsiChar(AnsiString(Copy(Form1.sRazaoSocialSmallsoft, 1, 40))),
+                                    PAnsiChar(AnsiString('FRENTE.EXE')),
+                                    PAnsiChar(AnsiString(Build)),
+                                    PAnsiChar(AnsiString(MD5File(PAnsiChar('FRENTE.EXE')))),
+                                    PAnsiChar(AnsiString(VERSAO_ER_PAF_ECF)));
+          sNomeBinario    := Form1.SaveDialog1.FileName;
+          sNomeBinarioMF  := StringReplace(ExtractFilePath(Form1.SaveDialog1.FileName) + ExtractFileName(Form1.SaveDialog1.FileName), ExtractFileExt(Form1.SaveDialog1.FileName), '.MF', [rfReplaceAll]);
+          sNomeBinarioMFD := StringReplace(ExtractFilePath(Form1.SaveDialog1.FileName) + ExtractFileName(Form1.SaveDialog1.FileName), ExtractFileExt(Form1.SaveDialog1.FileName), '.MFD', [rfReplaceAll]);
+
+          iRetorno := EPSON_Obter_Arquivo_Binario_MFD(PAnsiChar(AnsiString(sNomeBinarioMFD)));
 
           if iRetorno = 0 then
           begin
@@ -1434,25 +1490,29 @@ end;
 function _ecf15_LeituraMemoriaFiscal(pP1, pP2: String):Boolean;
 var
   iTamBuff: DWord;
-  pszDados: array[0..1024] of AnsiChar;
+  pszDados: AnsiString;// Sandro Silva 2024-03-05 array[0..1024] of AnsiChar;
 begin
   if Form1.sTipo = 'c' then
   begin
     if Length(pP1) = 6 then
     begin
-      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(Copy(pP1,1,4)+'20'+Copy(pP1,5,2)), PAnsiChar(Copy(pP2,1,4)+'20'+Copy(pP2,5,2)), 1+4, pszDados,'teste.txt', @iTamBuff, 1024); // 3 Por data Simplifcado 4 Imprimir
+      //Sandro Silva 2024-03-05 iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(Copy(pP1,1,4)+'20'+Copy(pP1,5,2)), PAnsiChar(Copy(pP2,1,4)+'20'+Copy(pP2,5,2)), 1+4, pszDados,'teste.txt', @iTamBuff, 1024); // 3 Por data Simplifcado 4 Imprimir
+      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(AnsiString(Copy(pP1,1,4)+'20'+Copy(pP1,5,2))), PAnsiChar(AnsiString(Copy(pP2,1,4)+'20'+Copy(pP2,5,2))), 1+4, PAnsiChar(pszDados),'teste.txt', @iTamBuff, 1024); // 3 Por data Simplifcado 4 Imprimir
     end else
     begin
-      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(pP1), PAnsiChar(pP2), 0+4, pszDados,'teste.txt', @iTamBuff, 1024); // 3 Por intervalo de redz Simplifcado 4 Imprimir
+      // 2024-03-05 iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(pP1), PAnsiChar(pP2), 0+4, pszDados,'teste.txt', @iTamBuff, 1024); // 3 Por intervalo de redz Simplifcado 4 Imprimir
+      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(AnsiString(pP1)), PAnsiChar(AnsiString(pP2)), 0+4, PAnsiChar(pszDados),'teste.txt', @iTamBuff, 1024); // 3 Por intervalo de redz Simplifcado 4 Imprimir
     end;
   end else
   begin
     if Length(pP1) = 6 then
     begin
-      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(Copy(pP1,1,4)+'20'+Copy(pP1,5,2)), PAnsiChar(Copy(pP2,1,4)+'20'+Copy(pP2,5,2)), 3+4, pszDados,'teste.txt', @iTamBuff, 1024 ); // 3 Por data Simplifcado 4 Imprimir
+      //2024-03-05 iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(Copy(pP1,1,4)+'20'+Copy(pP1,5,2)), PAnsiChar(Copy(pP2,1,4)+'20'+Copy(pP2,5,2)), 3+4, pszDados,'teste.txt', @iTamBuff, 1024 ); // 3 Por data Simplifcado 4 Imprimir
+      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(AnsiString(Copy(pP1,1,4)+'20'+Copy(pP1,5,2))), PAnsiChar(AnsiString(Copy(pP2,1,4)+'20'+Copy(pP2,5,2))), 3+4, PAnsiChar(pszDados),'teste.txt', @iTamBuff, 1024 ); // 3 Por data Simplifcado 4 Imprimir
     end else
     begin
-      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(pP1), PAnsiChar(pP2), 2+4, pszDados,'teste.txt', @iTamBuff, 1024 ); // 3 Por intervalo de redz Simplifcado 4 Imprimir
+      //2024-03-05 iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(pP1), PAnsiChar(pP2), 2+4, pszDados,'teste.txt', @iTamBuff, 1024 ); // 3 Por intervalo de redz Simplifcado 4 Imprimir
+      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(AnsiString(pP1)), PAnsiChar(AnsiString(pP2)), 2+4, PAnsiChar(pszDados), 'teste.txt', @iTamBuff, 1024 ); // 3 Por intervalo de redz Simplifcado 4 Imprimir
     end;
   end;
   Result := True;
@@ -1557,10 +1617,12 @@ begin
 
     if StrToInt(Form1.ConfPreco) = 3 then
     begin
-       iRetorno := EPSON_Fiscal_Vender_Item( PAnsiChar(pP1), PAnsiChar(pP2), PAnsiChar(Copy(pP4,1,7)), 3, PAnsiChar(pP6), PAnsiChar(StrZero(Form1.ibDataSet4PRECO.AsFloat*1000,7,0)) , 3,PAnsiChar(pP3), 2);
+       // 2024-03-05 iRetorno := EPSON_Fiscal_Vender_Item( PAnsiChar(pP1), PAnsiChar(pP2), PAnsiChar(Copy(pP4,1,7)), 3, PAnsiChar(pP6), PAnsiChar(StrZero(Form1.ibDataSet4PRECO.AsFloat*1000,7,0)) , 3,PAnsiChar(pP3), 2);
+       iRetorno := EPSON_Fiscal_Vender_Item(PAnsiChar(AnsiString(pP1)), PAnsiChar(AnsiString(pP2)), PAnsiChar(AnsiString(Copy(pP4,1,7))), 3, PAnsiChar(AnsiString(pP6)), PAnsiChar(AnsiString(StrZero(Form1.ibDataSet4PRECO.AsFloat*1000,7,0))) , 3,PAnsiChar(AnsiString(pP3)), 2);
     end else
     begin
-      iRetorno := EPSON_Fiscal_Vender_Item( PAnsiChar(pP1), PAnsiChar(pP2), PAnsiChar(Copy(pP4,1,7)), 3, PAnsiChar(pP6), PAnsiChar(pP5), 2,PAnsiChar(pP3), 2);
+      //2024-03-05 iRetorno := EPSON_Fiscal_Vender_Item( PAnsiChar(pP1), PAnsiChar(pP2), PAnsiChar(Copy(pP4,1,7)), 3, PAnsiChar(pP6), PAnsiChar(pP5), 2,PAnsiChar(pP3), 2);
+      iRetorno := EPSON_Fiscal_Vender_Item( PAnsiChar(AnsiString(pP1)), PAnsiChar(AnsiString(pP2)), PAnsiChar(AnsiString(Copy(pP4,1,7))), 3, PAnsiChar(AnsiString(pP6)), PAnsiChar(AnsiString(pP5)), 2,PAnsiChar(AnsiString(pP3)), 2);
     end;
 
   end
@@ -1576,10 +1638,12 @@ begin
     // Definido para sempre vender arredondando. Parâmetro dwArredondaTrunca = 2
     if StrToInt(Form1.ConfPreco) = 3 then
     begin
-      iRetorno := EPSON_Fiscal_Vender_Item_AD( PAnsiChar(pP1), PAnsiChar(pP2), PAnsiChar(Copy(pP4,1,7)), 3, PAnsiChar(pP6), PAnsiChar(StrZero(Form1.ibDataSet4PRECO.AsFloat*1000,7,0)), 3, PAnsiChar(pP3), 2, 2, 2);
+      //2024-03-05 iRetorno := EPSON_Fiscal_Vender_Item_AD( PAnsiChar(pP1), PAnsiChar(pP2), PAnsiChar(Copy(pP4,1,7)), 3, PAnsiChar(pP6), PAnsiChar(StrZero(Form1.ibDataSet4PRECO.AsFloat*1000,7,0)), 3, PAnsiChar(pP3), 2, 2, 2);
+      iRetorno := EPSON_Fiscal_Vender_Item_AD( PAnsiChar(AnsiString(pP1)), PAnsiChar(AnsiString(pP2)), PAnsiChar(AnsiString(Copy(pP4,1,7))), 3, PAnsiChar(AnsiString(pP6)), PAnsiChar(AnsiString(StrZero(Form1.ibDataSet4PRECO.AsFloat*1000,7,0))), 3, PAnsiChar(AnsiString(pP3)), 2, 2, 2);
     end else
     begin
-      iRetorno := EPSON_Fiscal_Vender_Item_AD( PAnsiChar(pP1), PAnsiChar(pP2), PAnsiChar(Copy(pP4,1,7)), 3, PAnsiChar(pP6), PAnsiChar(pP5), 2,PAnsiChar(pP3), 2, 2, 2);
+      //2024-03-05 iRetorno := EPSON_Fiscal_Vender_Item_AD( PAnsiChar(pP1), PAnsiChar(pP2), PAnsiChar(Copy(pP4,1,7)), 3, PAnsiChar(pP6), PAnsiChar(pP5), 2,PAnsiChar(pP3), 2, 2, 2);
+      iRetorno := EPSON_Fiscal_Vender_Item_AD( PAnsiChar(AnsiString(pP1)), PAnsiChar(AnsiString(pP2)), PAnsiChar(AnsiString(Copy(pP4,1,7))), 3, PAnsiChar(AnsiString(pP6)), PAnsiChar(AnsiString(pP5)), 2,PAnsiChar(AnsiString(pP3)), 2, 2, 2);
     end;
   end;
   {Sandro Silva 2018-10-08 fim}
@@ -1590,8 +1654,12 @@ begin
   //
   REsult := True;
   //
+  {2024-03-05
   if (StrToInt(pP8) <> 0) then EPSON_Fiscal_Desconto_Acrescimo_Item( PAnsiChar(pP8), 2, True, False);
   if (StrToInt(pP7) <> 0) then EPSON_Fiscal_Desconto_Acrescimo_Item( PAnsiChar(pP7), 2, True, True);
+  }
+  if (StrToInt(pP8) <> 0) then EPSON_Fiscal_Desconto_Acrescimo_Item( PAnsiChar(AnsiString(pP8)), 2, True, False);
+  if (StrToInt(pP7) <> 0) then EPSON_Fiscal_Desconto_Acrescimo_Item( PAnsiChar(AnsiString(pP7)), 2, True, True);
   //
 end;
 
@@ -1601,11 +1669,13 @@ end;
 // -------------------------------- //
 function _ecf15_ReducaoZ(pP1: Boolean):Boolean;
 var
-  szCRZ: array[0..5] of AnsiChar;
+  //2024-03-05 szCRZ: array[0..5] of AnsiChar;
+  szCRZ: AnsiString;
 begin
+  szCRZ := AnsiString(StringOfChar(' ', 5));
   //
 //  iRetorno := EPSON_RelatorioFiscal_ReducaoZ(PAnsiChar(DateToStr(Date)),PAnsiChar(TimeToStr(Time)),'',szCRZ );
-  iRetorno := EPSON_RelatorioFiscal_RZ('','','',szCRZ );
+  iRetorno := EPSON_RelatorioFiscal_RZ('','','', PAnsiChar(szCRZ)); //2024-03-05 iRetorno := EPSON_RelatorioFiscal_RZ('','','',szCRZ );
   _ecf15_codeErro(iRetorno,'');
   Result := True;
   //
@@ -1632,10 +1702,11 @@ end;
 // ---------------------------------------------- //
 function _ecf15_RetornaVerao(pP1: Boolean):Boolean;
 var
-  bEstado: Boolean;
+  Estado: Integer; //Sandro Silva 2024-03-05 bEstado: Boolean;
 begin
-  EPSON_Obter_Estado_Horario_Verao(@bEstado);
-  Result := bEstado;
+  Estado := 0;
+  EPSON_Obter_Estado_Horario_Verao(Estado); // Sandro Silva 2024-03-05 EPSON_Obter_Estado_Horario_Verao(@bEstado);
+  Result := (Estado = 1);
 end;
 
 // -------------------------------- //
@@ -1924,28 +1995,33 @@ end;
 function _ecf15_leituraMemoriaFiscalEmDisco(pP1, pP2, pP3: String): Boolean;
 var
   iTamBuff: DWord;
-  pszDados: array[0..1024] of AnsiChar;
+  //2024-03-05 pszDados: array[0..1024] of AnsiChar;
+  pszDados:AnsiString;
 begin
 
   if Form1.sTipo = 'c' then
   begin
     if Length(pP2) = 6 then
     begin
-      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(Copy(pP2,1,4)+'20'+Copy(pP2,5,2)), PAnsiChar(Copy(pP3,1,4)+'20'+Copy(pP3,5,2)), 1+16, pszDados,PAnsiChar(pP1), @iTamBuff, 1024 ); // 3 Por data Simplifcado 4 Imprimir
+      //2024-03-05 iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(Copy(pP2,1,4)+'20'+Copy(pP2,5,2)), PAnsiChar(Copy(pP3,1,4)+'20'+Copy(pP3,5,2)), 1+16, pszDados,PAnsiChar(pP1), @iTamBuff, 1024 ); // 3 Por data Simplifcado 4 Imprimir
+      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(AnsiString(Copy(pP2,1,4)+'20'+Copy(pP2,5,2))), PAnsiChar(AnsiString(Copy(pP3,1,4)+'20'+Copy(pP3,5,2))), 1+16, PAnsiChar(pszDados), PAnsiChar(AnsiString(pP1)), @iTamBuff, 1024 ); // 3 Por data Simplifcado 4 Imprimir
     end else
     begin
       if StrToInt(pP3) > StrToInt(_ecf15_NmdeRedues(True)) then pP3 := StrZero(StrToInt(_ecf15_NmdeRedues(True)),4,0);
-      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(pP2), PAnsiChar(pP3), 0+16, pszDados,PAnsiChar(pP1), @iTamBuff, 1024 ); // 3 Por intervalo de redz Simplifcado 4 Imprimir
+      //2024-03-05 iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(pP2), PAnsiChar(pP3), 0+16, pszDados,PAnsiChar(pP1), @iTamBuff, 1024 ); // 3 Por intervalo de redz Simplifcado 4 Imprimir
+      iRetorno := EPSON_RelatorioFiscal_Leitura_MF(PAnsiChar(AnsiString(pP2)), PAnsiChar(AnsiString(pP3)), 0+16, PansiChar(pszDados), PAnsiChar(AnsiString(pP1)), @iTamBuff, 1024 ); // 3 Por intervalo de redz Simplifcado 4 Imprimir
     end;
   end else
   begin
     if Length(pP2) = 6 then
     begin
-      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(Copy(pP2,1,4)+'20'+Copy(pP2,5,2)), PAnsiChar(Copy(pP3,1,4)+'20'+Copy(pP3,5,2)), 3+16, pszDados,PAnsiChar(pP1), @iTamBuff, 1024 ); // 3 Por data Simplifcado 4 Imprimir
+      //2024-03-05 iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(Copy(pP2,1,4)+'20'+Copy(pP2,5,2)), PAnsiChar(Copy(pP3,1,4)+'20'+Copy(pP3,5,2)), 3+16, pszDados,PAnsiChar(pP1), @iTamBuff, 1024 ); // 3 Por data Simplifcado 4 Imprimir
+      iRetorno := EPSON_RelatorioFiscal_Leitura_MF(PAnsiChar(AnsiString(Copy(pP2,1,4)+'20'+Copy(pP2,5,2))), PAnsiChar(AnsiString(Copy(pP3,1,4)+'20'+Copy(pP3,5,2))), 3+16, PAnsiChar(pszDados),PAnsiChar(AnsiString(pP1)), @iTamBuff, 1024 ); // 3 Por data Simplifcado 4 Imprimir
     end else
     begin
       if StrToInt(pP3) > StrToInt(_ecf15_NmdeRedues(True)) then pP3 := StrZero(StrToInt(_ecf15_NmdeRedues(True)),4,0);
-      iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(pP2), PAnsiChar(pP3), 2+16, pszDados,PAnsiChar(pP1), @iTamBuff, 1024 ); // 3 Por intervalo de redz Simplifcado 4 Imprimir
+      //2024-03-05 iRetorno := EPSON_RelatorioFiscal_Leitura_MF( PAnsiChar(pP2), PAnsiChar(pP3), 2+16, pszDados,PAnsiChar(pP1), @iTamBuff, 1024 ); // 3 Por intervalo de redz Simplifcado 4 Imprimir
+      iRetorno := EPSON_RelatorioFiscal_Leitura_MF(PAnsiChar(AnsiString(pP2)), PAnsiChar(AnsiString(pP3)), 2+16, PAnsiChar(pszDados), PAnsiChar(AnsiString(pP1)), @iTamBuff, 1024 ); // 3 Por intervalo de redz Simplifcado 4 Imprimir
     end;
   end;
   _ecf15_codeErro(iRetorno,'');
@@ -1965,9 +2041,15 @@ begin
     //
     Sleep(500);
     //
+    {2024-03-05
     if Form1.ibDataSet25PAGAR.AsFloat >      0 then iRetorno := EPSON_NaoFiscal_Abrir_CCD(PAnsiChar(Copy(sCartao ,2,1)), PAnsiChar(StrZero(Form1.ibDataSet25PAGAR.AsFloat        * 100,13,0)),2,'1'); // Cartao
     if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then iRetorno := EPSON_NaoFiscal_Abrir_CCD(PAnsiChar(Copy(sPrazo  ,2,1)), PAnsiChar(StrZero(Form1.ibDataSet25DIFERENCA_.AsFloat   * 100,13,0)),2,'1'); // A prazo
     if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then iRetorno := EPSON_NaoFiscal_Abrir_CCD(PAnsiChar(Copy(sCheque ,2,1)), PAnsiChar(StrZero(Form1.ibDataSet25ACUMULADO1.AsFloat   * 100,13,0)),2,'1'); // Cheque
+    }
+    if Form1.ibDataSet25PAGAR.AsFloat >      0 then iRetorno := EPSON_NaoFiscal_Abrir_CCD(PAnsiChar(AnsiString(Copy(sCartao ,2,1))), PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25PAGAR.AsFloat        * 100,13,0))),2,'1'); // Cartao
+    if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then iRetorno := EPSON_NaoFiscal_Abrir_CCD(PAnsiChar(AnsiString(Copy(sPrazo  ,2,1))), PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25DIFERENCA_.AsFloat   * 100,13,0))),2,'1'); // A prazo
+    if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then iRetorno := EPSON_NaoFiscal_Abrir_CCD(PAnsiChar(AnsiString(Copy(sCheque ,2,1))), PAnsiChar(AnsiString(StrZero(Form1.ibDataSet25ACUMULADO1.AsFloat   * 100,13,0))),2,'1'); // Cheque
+
     //
     J := 1;
     for I := 1 to Length(sP1) do
@@ -1976,7 +2058,7 @@ begin
       begin
         if (Copy(sP1,I,1) = Chr(10)) or (I-J>=55) then // Linha pode ter no maximo 55 caracteres;
         begin
-          iRetorno := EPSON_NaoFiscal_Imprimir_Linha (PAnsiChar(Copy(sP1,J,I-J)));
+          iRetorno := EPSON_NaoFiscal_Imprimir_Linha (PAnsiChar(AnsiString(Copy(sP1,J,I-J)))); // 2024-03-05 iRetorno := EPSON_NaoFiscal_Imprimir_Linha (PAnsiChar(Copy(sP1,J,I-J)));
           J := I + 1;
         end;
       end;
@@ -2096,7 +2178,7 @@ begin
             if (Copy(sP1,I,1) <> chr(10)) then sLinha := sLinha+Copy(sP1,I,1);
             //
             if sLinha = '' then sLinha := ' ';
-            iRetorno  := EPSON_NaoFiscal_Imprimir_Linha(PAnsiChar(sLinha));
+            iRetorno  := EPSON_NaoFiscal_Imprimir_Linha(PAnsiChar(AnsiString(sLinha))); //2024-03-05 iRetorno  := EPSON_NaoFiscal_Imprimir_Linha(PAnsiChar(sLinha));
             sLinha    := '';
             //
           end else
@@ -2108,7 +2190,7 @@ begin
         end;
       end;
       //
-      for I := 1 to 3 do if iRetorno = 0 then iRetorno := EPSON_NaoFiscal_Imprimir_Linha(PAnsiChar('           '));
+      for I := 1 to 3 do if iRetorno = 0 then iRetorno := EPSON_NaoFiscal_Imprimir_Linha(PAnsiChar(AnsiString('           '))); // 2024-03-05 for I := 1 to 3 do if iRetorno = 0 then iRetorno := EPSON_NaoFiscal_Imprimir_Linha(PAnsiChar('           '));
       //
     end;
     //
@@ -2270,6 +2352,7 @@ var
   sDataFinalJornada: String;
 begin
   // 2015-10-14   EPSON_Obter_Dados_Jornada(sZDados);
+  aqui
   sZDados := AnsiString(StringOfChar(' ', 68)); // 2015-10-14
   EPSON_Obter_Dados_Jornada(PAnsiChar(sZDados));
   // 2015-10-07 if Copy(sZDados,65,1) = '1' then Result := True else Result := False;
