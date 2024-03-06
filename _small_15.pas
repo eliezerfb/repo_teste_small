@@ -2352,7 +2352,10 @@ var
   sDataFinalJornada: String;
 begin
   // 2015-10-14   EPSON_Obter_Dados_Jornada(sZDados);
-  aqui
+
+  aqui testar geração arquivos
+
+
   sZDados := AnsiString(StringOfChar(' ', 68)); // 2015-10-14
   EPSON_Obter_Dados_Jornada(PAnsiChar(sZDados));
   // 2015-10-07 if Copy(sZDados,65,1) = '1' then Result := True else Result := False;
