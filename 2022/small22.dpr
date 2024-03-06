@@ -224,7 +224,10 @@ uses
   uEmail in '..\..\unit_compartilhada\uEmail.pas',
   ufrmFichaCadastros in 'ufrmFichaCadastros.pas' {FrmFichaCadastros},
   uDesenhaBoleto in 'units\uDesenhaBoleto.pas',
-  uSistema in 'units\uSistema.pas';
+  uSistema in 'units\uSistema.pas',
+  uObjetoConsultaCEP in 'units\uObjetoConsultaCEP.pas',
+  uIConsultaCEP in 'interfaces\uIConsultaCEP.pas',
+  uConsultaCEP in 'units\uConsultaCEP.pas';
 
 {$R *.RES}
 
