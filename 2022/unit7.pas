@@ -24161,14 +24161,14 @@ begin
       Application.MessageBox(pChar(chr(10) +'Aguarde, não é possível enviar esta NF-e no momento.'+Chr(10)+
       'Serviço Paralisado sem Previsão.'+Chr(10)+
       chr(10)+
-      'OBS: Tente ativar o modo SCAN (Configurações; Configuração da NF-e; (SCAN) Sistema de Contingência do Ambiente Nacional). Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+      'OBS: Tente ativar o modo SCAN (Configurações; Configuração da NF-e; (SCAN) Sistema de Contingência do Ambiente Nacional).'),
       'Atenção',mb_Ok + MB_ICONWARNING);
       Mauricio Parizotto 2023-10-24}
       
       MensagemSistema(chr(10) +'Aguarde, não é possível enviar esta NF-e no momento.'+Chr(10)+
                       'Serviço Paralisado sem Previsão.'+Chr(10)+
                       chr(10)+
-                      'OBS: Tente ativar o modo SCAN (Configurações; Configuração da NF-e; (SCAN) Sistema de Contingência do Ambiente Nacional). Não ligue para o suporte técnico da Smallsoft® por este motivo.'
+                      'OBS: Tente ativar o modo SCAN (Configurações; Configuração da NF-e; (SCAN) Sistema de Contingência do Ambiente Nacional).'
                       ,msgAtencao);
     end;
 
@@ -24176,16 +24176,12 @@ begin
     begin
       {
       Application.MessageBox(pChar(chr(10) +'Aguarde, não é possível enviar esta NF-e no momento.'+Chr(10)+
-      'Serviço Paralisado Momentaneamente (curto prazo).'+Chr(10)+
-      chr(10)+
-      'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+      'Serviço Paralisado Momentaneamente (curto prazo).'),
       'Atenção',mb_Ok + MB_ICONWARNING);
       Mauricio Parizotto 2023-10-24}
 
       MensagemSistema(chr(10) +'Aguarde, não é possível enviar esta NF-e no momento.'+Chr(10)+
-                      'Serviço Paralisado Momentaneamente (curto prazo).'+Chr(10)+
-                      chr(10)+
-                      'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'
+                      'Serviço Paralisado Momentaneamente (curto prazo).'
                       ,msgAtencao);
     end;
     
@@ -24223,10 +24219,7 @@ begin
         +chr(10)+'    * E-CNPJ'
         +chr(10)+'2. Certificados Certisign A1 e A3'
         +chr(10)+'3. Certificados dos Correios A1 e A3'
-        +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-        +chr(10)
-        +chr(10)
-        +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+        +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'),
         'Atenção',mb_Ok + MB_ICONWARNING);
         Mauricio Parizotto 2023-10-24}
 
@@ -24247,10 +24240,7 @@ begin
                         +chr(10)+'    * E-CNPJ'
                         +chr(10)+'2. Certificados Certisign A1 e A3'
                         +chr(10)+'3. Certificados dos Correios A1 e A3'
-                        +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-                        +chr(10)
-                        +chr(10)
-                        +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'
+                        +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'
                         ,msgAtencao);
       end else
       begin
@@ -24264,10 +24254,7 @@ begin
         +chr(10) +'Não foi possível acessar o servidor da receita.'
         +Chr(10)
         +chr(10)+'1 - Verifique sua conexão de internet'
-        +chr(10)+'2 - Verifique a disponibilidade dos serviços (Configurações da NF-e; Disponibilidade dos Serviços)'
-        + chr(10)
-        + chr(10)
-        +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+        +chr(10)+'2 - Verifique a disponibilidade dos serviços (Configurações da NF-e; Disponibilidade dos Serviços).'),
         'Atenção',mb_Ok + MB_ICONWARNING);
         Mauricio Parizotto 2023-10-24}
 
@@ -24278,10 +24265,7 @@ begin
                                   +chr(10) +'Não foi possível acessar o servidor da receita.'
                                   +Chr(10)
                                   +chr(10)+'1 - Verifique sua conexão de internet'
-                                  +chr(10)+'2 - Verifique a disponibilidade dos serviços (Configurações da NF-e; Disponibilidade dos Serviços)'
-                                  + chr(10)
-                                  + chr(10)
-                                  +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'
+                                  +chr(10)+'2 - Verifique a disponibilidade dos serviços (Configurações da NF-e; Disponibilidade dos Serviços).'
                                   ,msgAtencao);
       end;
     end;
