@@ -1204,7 +1204,6 @@ type
     ibDataSet23ALIQ_PIS: TIBBCDField;
     ibDataSet23ALIQ_COFINS: TIBBCDField;
     SPEDPISCOFINS1: TMenuItem;
-    DawnloaddoXMLdiretamentedositedaSEFAZ1: TMenuItem;
     WebBrowser1: TWebBrowser;
     CCartadeCorreoEletronicaCCe1: TMenuItem;
     ibDataSet15ICCE: TIntegerField;
@@ -2454,6 +2453,7 @@ type
     function RetornaTipoModulo: tModulosCommerce;
     procedure AbreHelpTermoUso;
     function MovimentaEstoqueAlteracaBloqueados: Boolean;
+    procedure ExportarXMLNF;
   public
     // Public declarations
 
@@ -7088,7 +7088,7 @@ end;
 
 
 
-function ExportaNF(pP1:Boolean):Boolean;
+(*function ExportaNF(pP1:Boolean):Boolean;
 var
   vCampo: array [0..30000] of Variant; // Cria uma matriz com 1000 elementos
   I, J : Integer; // e conteúdo variável
@@ -7317,7 +7317,7 @@ begin
   end;
 
   CloseFile(F);
-end;
+end;    *)
 
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
 const
@@ -14975,8 +14975,8 @@ procedure TForm7.MenuItem23Click(Sender: TObject);
 begin
   //
   Form7.EnvioaoFISCOREDUOZ1.Visible := True;
-  ImprimiraNFemformulrionumerado1.Visible := True;
-  ImprimirtodasasNFfiltradas1.Visible     := True;
+  ImprimiraNFemformulrionumerado1.Visible := (TestarNFeHomologacao);
+  ImprimirtodasasNFfiltradas1.Visible     := (TestarNFeHomologacao);
   ImprimirNF3.Visible                     := True;
   //
   if FileExists(Form1.sAtual+'\orca.exe') then
@@ -22786,7 +22786,15 @@ end;
 
 procedure TForm7.Exportar1Click(Sender: TObject);
 begin
+  {Dailon Parisotto (f-204) 2024-03-06 Inicio
+
   ExportaNF(True);
+
+  }
+
+  ExportarXMLNF;
+
+  {Dailon Parisotto (f-204) 2024-03-06 Fim}
 end;
 
 procedure TForm7.ImportarOS1Click(Sender: TObject);
@@ -25241,7 +25249,7 @@ procedure TForm7.ConsultarvalidadedaNFe1Click(Sender: TObject);
 var
   sUf, sRetorno, sNota : String;
 begin
-  sUF := UpperCase(AllTrim(Form1.Small_InputForm('Consultar validade da NF-e','UF do Emitente da NF-e:',''))); // Nf de venda
+  (*sUF := UpperCase(AllTrim(Form1.Small_InputForm('Consultar validade da NF-e','UF do Emitente da NF-e:',''))); // Nf de venda
 
   if Pos('1'+UpperCase(sUF)+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX212') = 0 then
   begin
@@ -25286,7 +25294,7 @@ begin
   {$ENDIF}
 
   Form7.Panel7.Caption  := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
-  Form7.Panel7.Repaint;
+  Form7.Panel7.Repaint;  *)
 end;
 
 procedure TForm7.ibDataSet16BeforePost(DataSet: TDataSet);
@@ -25524,7 +25532,7 @@ end;
 
 procedure TForm7.Importarretornodevendaambulante1Click(Sender: TObject);
 begin
-  ImportaNF(False,'');
+  // ImportaNF(False,'');
 end;
 
 procedure TForm7.ibDataSet24BeforeEdit(DataSet: TDataSet);
@@ -33433,7 +33441,7 @@ begin
   Result := Senhas.UsuarioPub;
 end;
 
-procedure TForm7.ExportarXML1Click(Sender: TObject);
+procedure TForm7.ExportarXMLNF;
 var
   oDialog: TSaveDialog;
   cCaminho: String;
@@ -33445,13 +33453,13 @@ begin
   begin
     MensagemSistema(_cNaoTemXMLNFSaidaExportar, msgInformacao);
     Exit;
-  end;    
-    
+  end;
+
   oDialog := TSaveDialog.Create(nil);
   try
-    oDialog.Title    := 'Exportar XML'; 
+    oDialog.Title    := 'Exportar XML';
     oDialog.FileName := Form7.ibDataSet15NFEID.AsString;
-    oDialog.Filter := 'Arquivo XML (.xml)|*.xml';    
+    oDialog.Filter := 'Arquivo XML (.xml)|*.xml';
 
     if not oDialog.Execute then
       Exit;
@@ -33464,6 +33472,11 @@ begin
   finally
     FreeAndNil(oDialog);
   end;
+end;
+
+procedure TForm7.ExportarXML1Click(Sender: TObject);
+begin
+  ExportarXMLNF;
 end;
 
 procedure TForm7.SalvaXMLNFSaida(AcCaminho: String = '');
