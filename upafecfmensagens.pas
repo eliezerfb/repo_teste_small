@@ -561,11 +561,7 @@ begin
                                 +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
                                 +chr(10)
                                 +chr(10)+'Selecione um certificado acessando'
-                                +chr(10)+'F10 Menu Gerencial/Configurações/Selecionar certificado digital'
-                                +chr(10)
-                                +chr(10)
-                                +chr(10)
-                                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                                +chr(10)+'F10 Menu Gerencial/Configurações/Selecionar certificado digital.'),
                                     'Atenção', MB_ICONWARNING + MB_OK);
 end;
 
