@@ -238,11 +238,12 @@ uses StrUtils;
 // ------------------------------ //
 function _ecf15_CodeErro(pP1: Integer; pP2: String):Integer;
 var
-  sZDados : array[0..20] of AnsiChar;
+  szDados: AnsiString;//2024-03-06 sZDados : array[0..20] of AnsiChar;
   sErro : String;
 begin
   //
-  EPSON_Obter_Estado_Impressora(szDados);
+  szDados := AnsiString(StringOfChar(' ', 20));
+  EPSON_Obter_Estado_Impressora(PAnsiChar(szDados)); //2024-03-06 EPSON_Obter_Estado_Impressora(szDados);
   //
 //  ShowMessage(sZDados);
 // 000000001000c0810000
@@ -503,9 +504,9 @@ end;
 function _ecf15_Inicializa(Pp1: String):Boolean;
 var
   I : Integer;
-  sZDados: array[0..15] of AnsiChar;
-  Mais1ini : tIniFile;
-  iBPS : Integer;
+  szDados: AnsiString; // 2024-03-06 sZDados: array[0..15] of AnsiChar;
+  Mais1ini: tIniFile;
+  iBPS: Integer;
   szTabelaRelatoriosGerenciais: AnsiString;
   szTabelaPagamentos: AnsiString;
   //Timer1: TTime;
@@ -612,7 +613,8 @@ begin
   if Form22.Label6.Caption = 'Detectando porta de comunicação...' then
   begin
     //
-    EPSON_Obter_Data_Hora_Jornada(sZDados);
+    szDados := AnsiString(StringOfChar(' ', 15));
+    EPSON_Obter_Data_Hora_Jornada(PAnsiChar(sZDados)); //2024-03-06 EPSON_Obter_Data_Hora_Jornada(sZDados);
     {Sandro Silva 2015-10-06 inicio
     if not _ecf15_Jornada_Aberta(True) then
       EPSON_RelatorioFiscal_Abrir_Dia();
@@ -789,7 +791,7 @@ begin
   sExtra6   := StrZero(Mais1Ini.ReadInteger('Frente de caixa','Ordem forma extra 6',10),2,0);
   sExtra7   := StrZero(Mais1Ini.ReadInteger('Frente de caixa','Ordem forma extra 7',11),2,0);
   sExtra8   := StrZero(Mais1Ini.ReadInteger('Frente de caixa','Ordem forma extra 8',12),2,0);
-  Mais1ini.Free; // Sandro Silva 2018-11-21 Memória 
+  Mais1ini.Free; // Sandro Silva 2018-11-21 Memória
   //
   Sleep(300);
   //
@@ -899,9 +901,11 @@ end;
 // -------------------------------//
 function _ecf15_SubTotal(Pp1: Boolean):Real;
 var
-  szSubTotal: array[0..20] of AnsiChar;
+  szSubTotal: Ansistring;//2024-03-06 szSubTotal: array[0..20] of AnsiChar;
 begin
-  EPSON_Fiscal_Obter_SubTotal(szSubTotal);
+  szSubTotal := AnsiString(StringOfChar(' ', 20));
+
+  EPSON_Fiscal_Obter_SubTotal(PAnsiChar(szSubTotal)); // 2024-03-06 EPSON_Fiscal_Obter_SubTotal(szSubTotal);
   Result := StrToFloat('0'+AllTrim(szSubTotal))/100;
   // Testado OK - 10
 end;
@@ -913,12 +917,12 @@ end;
 function _ecf15_AbreNovoCupom(Pp1: Boolean):Boolean;
 var
   //2024-03-05 sZDados : array[0..20] of AnsiChar;
-  szDados:AnsiString;
+  szDados: AnsiString;
 begin
   szDados := AnsiString(StringOfChar(' ', 20));
   //
   iRetorno := EPSON_Fiscal_Abrir_Cupom(PAnsiChar(AnsiString(Form1.sCPF_CNPJ_Validado)),'','','',2); // 2024-03-05 iRetorno := EPSON_Fiscal_Abrir_Cupom(PAnsiChar(Form1.sCPF_CNPJ_Validado),'','','',2);
-  EPSON_Obter_Estado_Impressora((PansiChar(szDados)); // 2024-03-05 EPSON_Obter_Estado_Impressora(szDados);
+  EPSON_Obter_Estado_Impressora(PAnsiChar(szDados)); // 2024-03-05 EPSON_Obter_Estado_Impressora(szDados);
   {Sandro Silva 2015-10-08 inicio
   if iRetorno <> 0 then _ecf15_codeErro(iRetorno,'');
   Result := True;
@@ -947,9 +951,11 @@ end;
 // -------------------------------- //
 function _ecf15_NumeroDoCupom(Pp1: Boolean):String;
 var
-  szContadores: array[0..100] of AnsiChar;
+  szContadores: AnsiString;//2024-03-06 szContadores: array[0..100] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Contadores( szContadores );
+  szContadores := AnsiString(StringOfChar(' ', 100));
+
+  iRetorno := EPSON_Obter_Contadores(PAnsiChar(szContadores));// 2024-03-06 iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
   Result := Copy(szContadores,1,6);
   //
@@ -957,15 +963,16 @@ begin
   //
 end;
 
-
 // -------------------------- //
 // Retorna o número do CCF    //
 // -------------------------- //
 function _ecf15_ccF(Pp1: Boolean):String;
 var
-  szContadores: array[0..100] of AnsiChar;
+  szContadores: AnsiString;// 2024-03-06 szContadores: array[0..100] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Contadores( szContadores );
+  szContadores := AnsiString(StringOfChar(' ', 100));
+
+  iRetorno := EPSON_Obter_Contadores(PAnsiChar(szContadores));//2024-03-06 iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
   {Sandro Silva 2015-08-18 inicio
   Result := Copy(szContadores,42,6);
@@ -978,14 +985,17 @@ end;
 // ------------------------------------------------------------------------- //
 function _ecf15_gnf(Pp1: Boolean):String;
 var
-  szContadores: array[0..100] of AnsiChar;
+  szContadores: AnsiString;// 2024-03-06 szContadores: array[0..100] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Contadores( szContadores );
+  szContadores := AnsiString(StringOfChar(' ', 100));
+
+  iRetorno := EPSON_Obter_Contadores(PAnsiChar(szContadores));//2024-03-06 iRetorno := EPSON_Obter_Contadores( szContadores );
+
   _ecf15_codeErro(iRetorno,'');
   {Sandro Silva 2015-08-18 inicio
   Result := Copy(szContadores,18,6);
   }
-  Result := Copy(szContadores,19,6);  
+  Result := Copy(szContadores,19,6);
 end;
 
 // ------------------------------------------------------------------------- //
@@ -1114,9 +1124,11 @@ end;
 // --------------------------------------- //
 function _ecf15_GRG(Pp1: Boolean):String;
 var
-  szContadores: array[0..100] of AnsiChar;
+  szContadores: AnsiString;// 2024-03-06 szContadores: array[0..100] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Contadores( szContadores );
+  szContadores := AnsiString(StringOfChar(' ', 100));
+  iRetorno := EPSON_Obter_Contadores(PAnsiChar(szContadores));//2024-03-06 iRetorno := EPSON_Obter_Contadores( szContadores );
+
   _ecf15_codeErro(iRetorno,'');
   {Sandro Silva 2015-08-18 inicio
   Result := Copy(szContadores,36,6);
@@ -1129,9 +1141,11 @@ end;
 // -------------- //
 function _ecf15_CDC(Pp1: Boolean):String;
 var
-  szContadores: array[0..100] of AnsiChar;
+  szContadores: AnsiString;// 2024-03-06 szContadores: array[0..100] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Contadores( szContadores );
+  szContadores := AnsiString(StringOfChar(' ', 100));
+  iRetorno := EPSON_Obter_Contadores(PAnsiChar(szContadores));//2024-03-06 iRetorno := EPSON_Obter_Contadores( szContadores );
+
   _ecf15_codeErro(iRetorno,'');
   {Sandro Silva 2015-08-18 inicio
   Result := Copy(szContadores,24,6);
@@ -1191,11 +1205,12 @@ end;
 // -------------------------------- //
 function _ecf15_StatusGaveta(Pp1: Boolean):String;
 var
-  szDados: array[0..20] of AnsiChar;
+  szDados: AnsiString;//2024-03-06 szDados: array[0..20] of AnsiChar;
 begin
+  szDados := AnsiString(StringOfChar(' ', 20));
   //
   Sleep(100); // Tem que dar um tempo
-  EPSON_Obter_Estado_Impressora( szDados );
+  EPSON_Obter_Estado_Impressora(PAnsiChar(szDados));
   //
   if Form1.iStatusGaveta = 0 then
   begin
@@ -1457,7 +1472,7 @@ begin
           end
           else
           begin
-            iRetorno :=   EPSON_Obter_Arquivo_Binario_MF(PAnsiChar(sNomeBinarioMF));
+            iRetorno :=   EPSON_Obter_Arquivo_Binario_MF(PAnsiChar(AnsiString(sNomeBinarioMF))); // 2024-03-06 iRetorno :=   EPSON_Obter_Arquivo_Binario_MF(PAnsiChar(sNomeBinarioMF));
           end;
           {Sandro Silva 2017-08-24 final}
 
@@ -1492,6 +1507,7 @@ var
   iTamBuff: DWord;
   pszDados: AnsiString;// Sandro Silva 2024-03-05 array[0..1024] of AnsiChar;
 begin
+  //pszDados := AnsiString(StringOfChar(' ', 1024));
   if Form1.sTipo = 'c' then
   begin
     if Length(pP1) = 6 then
@@ -1736,10 +1752,11 @@ end;
 // -------------------------------- //
 function _ecf15_VersodoFirmware(pP1: Boolean): String;
 var
-  sZDados : array[0..110] of AnsiChar;
+  szDados: AnsiString;//2024-03-05 sZDados : array[0..110] of AnsiChar;
 begin
+  szDados := AnsiString(StringOfChar(' ', 110));
   //
-  iRetorno := EPSON_Obter_Dados_Impressora(szDados);
+  iRetorno := EPSON_Obter_Dados_Impressora(PAnsiChar(szDados)); // 2024-03-06 iRetorno := EPSON_Obter_Dados_Impressora(szDados);
   Result   := Copy(AllTrim(szDados),100,8);
    _ecf15_codeErro(iRetorno,Estado);
   //
@@ -1751,9 +1768,11 @@ end;
 // -------------------------------- //
 function _ecf15_NmerodeSrie(pP1: Boolean): String;
 var
-  sZDados : array[0..110] of AnsiChar;
+  szDados: AnsiString;//2024-03-05 sZDados : array[0..110] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Dados_Impressora(szDados);
+  szDados := AnsiString(StringOfChar(' ', 110));
+  //
+  iRetorno := EPSON_Obter_Dados_Impressora(PAnsiChar(szDados)); // 2024-03-06 iRetorno := EPSON_Obter_Dados_Impressora(szDados);
   Result   := Copy(AllTrim(szDados),0,20);
    _ecf15_codeErro(iRetorno,Estado);
   //
@@ -1765,9 +1784,10 @@ end;
 // -------------------------------- //
 function _ecf15_CGCIE(pP1: Boolean): String;
 var
-  szDadosUsuario: array[0..50] of AnsiChar;
+  szDadosUsuario: AnsiString;//2024-03-06 szDadosUsuario: array[0..50] of AnsiChar;
 begin
-  EPSON_Obter_Dados_Usuario ( szDadosUsuario );
+  szDadosUsuario := AnsiString(StringOfChar(' ', 50));
+  EPSON_Obter_Dados_Usuario (PAnsiChar(szDadosUsuario)); // 2024-03-06 EPSON_Obter_Dados_Usuario ( szDadosUsuario );
   Result := szDadosUsuario;
 end;
 
@@ -1777,14 +1797,15 @@ end;
 // --------------------------------- //
 function _ecf15_Cancelamentos(pP1: Boolean): String;
 var
-  szCancelado: array[0..51] of AnsiChar;
+  szCancelado: AnsiString;//2024-03-06 szCancelado: array[0..51] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Total_Cancelado( szCancelado );
+  szCancelado := AnsiString(StringOfChar(' ', 51));
+
+  iRetorno := EPSON_Obter_Total_Cancelado(PAnsiChar(szCancelado));// 2024-03-05 iRetorno := EPSON_Obter_Total_Cancelado( szCancelado );
   _ecf15_codeErro(iRetorno,'');
 //000000000000000090000000000000000000000000000000000
   Result := Copy(szCancelado,1,17);
 end;
-
 
 // -------------------------------- //
 // Retorna o valor de descontos     //
@@ -1792,9 +1813,11 @@ end;
 // -------------------------------- //
 function _ecf15_Descontos(pP1: Boolean): String;
 var
-  szTotalDescontos: array[0..51] of AnsiChar;
+  szTotalDescontos: AnsiString;//2024-03-06 szTotalDescontos: array[0..51] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Total_Descontos( szTotalDescontos );
+  szTotalDescontos := AnsiString(StringOfChar(' ', 51));
+
+  iRetorno := EPSON_Obter_Total_Descontos(PAnsiChar(szTotalDescontos)); // 2024-03-06 iRetorno := EPSON_Obter_Total_Descontos( szTotalDescontos );
   _ecf15_codeErro(iRetorno,'');
   Result := Copy(szTotalDescontos,1,17);
 end;
@@ -1805,9 +1828,11 @@ end;
 // -------------------------------- //
 function _ecf15_ContadorSeqencial(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of AnsiChar;
+  szContadores: AnsiString;//2024-03-06 szContadores: array[0..100] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Contadores( szContadores );
+  szContadores := AnsiString(StringOfChar(' ', 100));
+
+  iRetorno := EPSON_Obter_Contadores(PAnsiChar(szContadores)); // 2024-03-06 iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
   Result := Copy(szContadores,1,6);
 end;
@@ -1819,54 +1844,65 @@ end;
 // -------------------------------- //
 function _ecf15_Nmdeoperaesnofiscais(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of AnsiChar;
+  szContadores: AnsiString;//2024-03-06 szContadores: array[0..100] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Contadores( szContadores );
+  szContadores := AnsiString(StringOfChar(' ', 100));
+
+  iRetorno := EPSON_Obter_Contadores(PAnsiChar(szContadores)); // 2024-03-06 iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
   Result := Copy(szContadores,31,6);
 end;
 
 function _ecf15_NmdeCuponscancelados(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of AnsiChar;
+  szContadores: AnsiString;//2024-03-06 szContadores: array[0..100] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Contadores( szContadores );
+  szContadores := AnsiString(StringOfChar(' ', 100));
+
+  iRetorno := EPSON_Obter_Contadores(PAnsiChar(szContadores)); // 2024-03-06 iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
   Result := Copy(szContadores,49,6);
 end;
 
 function _ecf15_NmdeRedues(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of AnsiChar;
+  szContadores: AnsiString;//2024-03-06 szContadores: array[0..100] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Contadores( szContadores );
+  szContadores := AnsiString(StringOfChar(' ', 100));
+
+  iRetorno := EPSON_Obter_Contadores(PAnsiChar(szContadores)); // 2024-03-06 iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
   Result := Copy(szContadores,7,6);
 end;
 
 function _ecf15_Nmdeintervenestcnicas(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of AnsiChar;
+  szContadores: AnsiString;//2024-03-06 szContadores: array[0..100] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Contadores( szContadores );
+  szContadores := AnsiString(StringOfChar(' ', 100));
+
+  iRetorno := EPSON_Obter_Contadores(PAnsiChar(szContadores)); // 2024-03-06 iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
   Result := Copy(szContadores,13,6);
 end;
 
 function _ecf15_Nmdesubstituiesdeproprietrio(pP1: Boolean): String;
 var
-  szContadores: array[0..100] of AnsiChar;
+  szContadores: AnsiString;//2024-03-06 szContadores: array[0..100] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Contadores( szContadores );
+  szContadores := AnsiString(StringOfChar(' ', 100));
+
+  iRetorno := EPSON_Obter_Contadores(PAnsiChar(szContadores)); // 2024-03-06 iRetorno := EPSON_Obter_Contadores( szContadores );
   _ecf15_codeErro(iRetorno,'');
   Result := Copy(szContadores,13,6);
 end;
 
 function _ecf15_Clichdoproprietrio(pP1: Boolean): String;
 var
-  szUsuario: array[0..160] of AnsiChar;
+  szUsuario: AnsiString;//2024-03-06 szUsuario: array[0..160] of AnsiChar;
 begin
-  EPSON_Obter_Cliche_Usuario( szUsuario );
+  szUsuario := AnsiString(StringOfChar(' ', 160));
+  iRetorno := EPSON_Obter_Cliche_Usuario(PAnsiChar(szUsuario));//2024-03-06 EPSON_Obter_Cliche_Usuario( szUsuario );
   Result := szUsuario;
 end;
 
@@ -1877,25 +1913,29 @@ end;
 // ------------------------------------ //
 function _ecf15_NmdoCaixa(pP1: Boolean): String;
 var
-  sZDados : array[0..10] of AnsiChar;
+  szDados: AnsiString;//2024-03-06 sZDados : array[0..10] of AnsiChar;
 begin
-  EPSON_Obter_Numero_ECF_Loja(szDados);
+  szDados := AnsiString(StringOfChar(' ', 10));
+  EPSON_Obter_Numero_ECF_Loja(PAnsiChar(szDados));//2024-03-06 EPSON_Obter_Numero_ECF_Loja(szDados);
   Result := Copy(sZDados,1,3);
 end;
 
 function _ecf15_Nmdaloja(pP1: Boolean): String;
 var
-  sZDados : array[0..10] of AnsiChar;
+  szDados: AnsiString;//2024-03-06 sZDados : array[0..10] of AnsiChar;
 begin
-  EPSON_Obter_Numero_ECF_Loja(szDados);
+  szDados := AnsiString(StringOfChar(' ', 10));
+  EPSON_Obter_Numero_ECF_Loja(PansiChar(szDados)); // 2024-03-06 EPSON_Obter_Numero_ECF_Loja(szDados);
   Result := Copy(sZDados,4,4);
 end;
 
 function _ecf15_Moeda(pP1: Boolean): String;
 var
-  sZDados : array[0..10] of AnsiChar;
+  szDados: AnsiString;//2024-03-06 sZDados : array[0..10] of AnsiChar;
 begin
-  EPSON_Obter_Simbolo_Moeda(szDados);
+  szDados := AnsiString(StringOfChar(' ', 5));
+
+  EPSON_Obter_Simbolo_Moeda(PAnsiChar(szDados));//2024-03-06 EPSON_Obter_Simbolo_Moeda(szDados);
   Result := Copy(AllTrim(szDados),1,1);
 end;
 
@@ -1905,9 +1945,10 @@ end;
 // ----------------------------------------- //
 function _ecf15_Dataehoradaimpressora(pP1: Boolean): String;
 var
-  sZDados: array[0..15] of AnsiChar;
+  szDados: AnsiString;//2024-03-06 sZDados: array[0..15] of AnsiChar;
 begin
-  EPSON_Obter_Hora_Relogio(sZDados);
+  szDados := AnsiString(StringOfChar(' ', 15));
+  EPSON_Obter_Hora_Relogio(PAnsiCHar(sZDados));// 2024-03-06 EPSON_Obter_Hora_Relogio(sZDados);
   Result := Copy(sZDados,1,4)+Copy(sZDados,7,8);        // Retorna o ano com 4 digitos no sistema assume 2 Ex: 310507
 end;
 
@@ -1933,9 +1974,10 @@ end;
 
 function _ecf15_Datadomovimento(pP1: Boolean): String;
 var
-  sZDados: array[0..15] of AnsiChar;
+  szDados: AnsiString;//2024-03-06 sZDados: array[0..15] of AnsiChar;
 begin
-  EPSON_Obter_Data_Hora_Jornada(sZDados);
+  szDados := AnsiString(StringOfChar(' ', 15));
+  EPSON_Obter_Data_Hora_Jornada(PansiChar(sZDados)); // 2024-03-06 EPSON_Obter_Data_Hora_Jornada(sZDados);
   Result := Copy(sZDados,1,4)+Copy(sZDados,7,8);        // Retorna o ano com 4 digitos no sistema assume 2 Ex: 310507
 end;
 
@@ -1945,11 +1987,12 @@ end;
 // Ex: 161800120005000000000000000000000000000000000000000000000000000000 //
 function _ecf15_RetornaAliquotas(pP1: Boolean): String;
 var
-  sZAliquotas: array[0..553] of AnsiChar;
+  szAliquotas: AnsiString;//2024-03-06 sZAliquotas: array[0..553] of AnsiChar;
   I : Integer;
 begin
+  szAliquotas := AnsiString(StringOfChar(' ', 553));
   //
-  iRetorno := EPSON_Obter_Tabela_Aliquotas( sZaliquotas );
+  iRetorno := EPSON_Obter_Tabela_Aliquotas(PAnsiChar(sZaliquotas)); // 2024-03-06 iRetorno := EPSON_Obter_Tabela_Aliquotas( sZaliquotas );
 
   //ShowMessage(sZAliquotas);
 
@@ -1996,9 +2039,10 @@ function _ecf15_leituraMemoriaFiscalEmDisco(pP1, pP2, pP3: String): Boolean;
 var
   iTamBuff: DWord;
   //2024-03-05 pszDados: array[0..1024] of AnsiChar;
-  pszDados:AnsiString;
+  pszDados: AnsiString;
 begin
 
+  pszDados := AnsiString(StringOfChar(' ', 1024));
   if Form1.sTipo = 'c' then
   begin
     if Length(pP2) = 6 then
@@ -2035,7 +2079,7 @@ function _ecf15_CupomNaoFiscalVinculado(sP1: String; iP2: Integer ): Boolean;
 var
   J, I : Integer;
 begin
-  Result := False; // Sandro Silva 2016-04-12 
+  Result := False; // Sandro Silva 2016-04-12
   //
   begin
     //
@@ -2226,25 +2270,27 @@ end;
 
 function _ecf15_GrandeTotal(sP1: Boolean): String;
 var
-  szDados: array[0..20] of AnsiChar;
+  szDados: AnsiString;// 2024-03-06 szDados: array[0..20] of AnsiChar;
 begin
-  EPSON_Obter_GT(szDados);
+  szDados := AnsiString(StringOfChar(' ', 20));
+  EPSON_Obter_GT(PAnsiChar(szDados)); // 2024-03-06 EPSON_Obter_GT(szDados);
   Result := sZDados;
 end;
 
 function _ecf15_TotalizadoresDasAliquotas(sP1: Boolean): String;
 var
-  sZAliquotas: array[0..553] of AnsiChar;
+  szAliquotas: AnsiString;//2024-03-06 sZAliquotas: array[0..553] of AnsiChar;
   I : Integer;
   sNN, sFF, sII : String;
 begin
+  szAliquotas := AnsiString(StringOfChar(' ', 553));
   //
   Result := '';
   sII    := '00000000000000';
   SFF    := '00000000000000';
   sNN    := '00000000000000';
   //
-  iRetorno := EPSON_Obter_Tabela_Aliquotas( sZaliquotas );
+  iRetorno := EPSON_Obter_Tabela_Aliquotas(PAnsiChar(sZaliquotas)); // 2024-03-06 iRetorno := EPSON_Obter_Tabela_Aliquotas( sZaliquotas );
   //
   //
   for I := 1 to 19 do
@@ -2261,24 +2307,29 @@ begin
   //
 end;
 
-
-
 function _ecf15_CupomAberto(sP1: Boolean): boolean;
 var
-  szEstado: array[0..60] of AnsiChar;
+  szEstado: AnsiString;//2024-03-06 szEstado: array[0..60] of AnsiChar;
 begin
-  EPSON_Obter_Estado_Cupom(szEstado);
-  if Copy(szEstado,1,2) = '01' then Result := True else  Result := False;
+  szEstado := AnsiString(StringOfChar(' ', 57));
+  EPSON_Obter_Estado_Cupom(PAnsiChar(szEstado)); // 2024-03-06 EPSON_Obter_Estado_Cupom(szEstado);
+  if Copy(szEstado, 1, 2) = '01' then
+    Result := True
+  else
+    Result := False;
 end;
 
 function _ecf15_FaltaPagamento(sP1: Boolean): boolean;
 var
-  szEstado: array[0..60] of AnsiChar;
+  szEstado: AnsiString;//2024-03-06 szEstado: array[0..60] of AnsiChar;
 begin
-  EPSON_Obter_Estado_Cupom(szEstado);
-  if Copy(szEstado,56,1) = '3' then Result := True else  Result := False;
+  szEstado := AnsiString(StringOfChar(' ', 57));
+  EPSON_Obter_Estado_Cupom(PAnsiChar(szEstado)); // 2024-03-06 EPSON_Obter_Estado_Cupom(szEstado);
+  if Copy(szEstado, 56, 1) = '3'
+    then Result := True
+  else
+    Result := False;
 end;
-
 
 //
 // PAF
@@ -2286,9 +2337,10 @@ end;
 
 function _ecf15_Marca(sP1: Boolean): String;
 var
-  sZDados : array[0..110] of AnsiChar;
+  szDados: AnsiString;//2024-03-06 sZDados : array[0..110] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Dados_Impressora(szDados);
+  szDados := AnsiString(StringOfChar(' ', 110));
+  iRetorno := EPSON_Obter_Dados_Impressora(PAnsiChar(szDados)); // 2024-03-06 iRetorno := EPSON_Obter_Dados_Impressora(szDados);
   Result   := Alltrim(Copy(szDados,41,20));
   //
   // Ok
@@ -2297,9 +2349,10 @@ end;
 
 function _ecf15_Modelo(sP1: Boolean): String;
 var
-  sZDados : array[0..110] of AnsiChar;
+  szDados: AnsiString;//2024-03-06 sZDados : array[0..110] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Dados_Impressora(szDados);
+  szDados := AnsiString(StringOfChar(' ', 110));
+  iRetorno := EPSON_Obter_Dados_Impressora(PAnsiChar(szDados)); // 2024-03-06 iRetorno := EPSON_Obter_Dados_Impressora(szDados);
   Result   := AllTrim(Copy(szDados,61,20));
   //
   // Ok
@@ -2308,10 +2361,10 @@ end;
 
 function _ecf15_Tipodaimpressora(pP1: Boolean): String; //
 var
-  sZDados : array[0..110] of AnsiChar;
+  szDados: AnsiString;//2024-03-06 sZDados : array[0..110] of AnsiChar;
 begin
-  //
-  iRetorno := EPSON_Obter_Dados_Impressora(szDados);
+  szDados := AnsiString(StringOfChar(' ', 110));
+  iRetorno := EPSON_Obter_Dados_Impressora(PAnsiChar(szDados)); // 2024-03-06 iRetorno := EPSON_Obter_Dados_Impressora(szDados);
   Result   := AllTrim(Copy(szDados,81,20));
   //
   // Ok
@@ -2320,9 +2373,10 @@ end;
 
 function _ecf15_VersaoSB(pP1: Boolean): String; //
 var
-  sZDados : array[0..110] of AnsiChar;
+  szDados: AnsiString;//2024-03-06 sZDados : array[0..110] of AnsiChar;
 begin
-  iRetorno := EPSON_Obter_Dados_Impressora(szDados);
+  szDados := AnsiString(StringOfChar(' ', 110));
+  iRetorno := EPSON_Obter_Dados_Impressora(PAnsiChar(szDados)); // 2024-03-06 iRetorno := EPSON_Obter_Dados_Impressora(szDados);
   Result   := AllTrim(Copy(szDados,101,8));
   //
   // Ok
@@ -2352,12 +2406,8 @@ var
   sDataFinalJornada: String;
 begin
   // 2015-10-14   EPSON_Obter_Dados_Jornada(sZDados);
-
-  aqui testar geração arquivos
-
-
   sZDados := AnsiString(StringOfChar(' ', 68)); // 2015-10-14
-  EPSON_Obter_Dados_Jornada(PAnsiChar(sZDados));
+  EPSON_Obter_Dados_Jornada(PAnsiChar(AnsiString(sZDados))); //2024-03-06 EPSON_Obter_Dados_Jornada(PAnsiChar(sZDados));
   // 2015-10-07 if Copy(sZDados,65,1) = '1' then Result := True else Result := False;
   {Sandro Silva 2017-07-04 inicio
   if Copy(sZDados,65,1) = '1' then
@@ -2368,7 +2418,7 @@ begin
   else
     Result := False;
   }
-  sDataJornada := Copy(sZDados, 1, 2) + '/' + Copy(sZDados, 3, 2) + '/' + Copy(sZDados, 5, 4);
+  sDataJornada      := Copy(sZDados, 1, 2) + '/' + Copy(sZDados, 3, 2) + '/' + Copy(sZDados, 5, 4);
   sDataFinalJornada := Copy(sZDados, 15, 2) + '/' + Copy(sZDados, 17, 2) + '/' + Copy(sZDados, 19, 4);// Sandro Silva 2017-08-24
   //ShowMessage('Dados da jornada' + #13 + sZDados);
   if Trim(Copy(sZDados, 15, 8)) <> '' then
@@ -2404,7 +2454,7 @@ begin
   //
   sRetorno := Replicate(' ',1167);
   //
-  EPSON_Obter_Dados_Ultima_RZ(PAnsiChar(sRetorno));
+  EPSON_Obter_Dados_Ultima_RZ(PAnsiChar(AnsiString(sRetorno))); //2024-05-06 EPSON_Obter_Dados_Ultima_RZ(PAnsiChar(sRetorno));
 
   {Sandro Silva 2016-11-29 inicio}
   // Se fizer RZ do dia anterior, abrir cupom, não lançar item, fechar e abrir o frente
@@ -2416,9 +2466,10 @@ begin
       Form1.icupom := StrToIntDef(_ecf15_NumeroDoCupom(True), 0);
       Form1.Button4Click(Form1.Button4);
     end;
-    EPSON_Obter_Dados_Ultima_RZ(PAnsiChar(sRetorno));
+    EPSON_Obter_Dados_Ultima_RZ(PAnsiChar(AnsiString(sRetorno))); //2024-03-06 EPSON_Obter_Dados_Ultima_RZ(PAnsiChar(sRetorno));
   end;
   {Sandro Silva 2016-11-29 final}
+  {2024-03-06
   //
   // 1	,	8   : Data de Emissão da Redução Z
   // 9	,	6   : Hora de Emissão da Redução Z
@@ -2446,14 +2497,14 @@ begin
   // 241	,	17 : Acréscimo Não-Fiscal
   // 259	,	125 : Tributos (ICMS, ISSQN, F, I, N, FS, IS, NS);
 
-     // 259, 15
-     // 274
-     // 289
-     // 304
-     // 319
-     // 334
-     // 349
-     // 379
+  // 259, 15
+  // 274
+  // 289
+  // 304
+  // 319
+  // 334
+  // 349
+  // 379
 
 
 
@@ -2488,7 +2539,7 @@ begin
     end;
   end;
   //
-//  ShowMessage(sRetorno);
+  //  ShowMessage(sRetorno);
   //
 
   Result := Copy(Copy(sRetorno,1160,8),1,4) + Copy(Copy(sRetorno,1160,8),7,2) + //   1,  6 Data
@@ -2506,6 +2557,94 @@ begin
             sN+ // 369, 14 Totalizador de não incidência de ICMS
             sS+ // 383, 14 Totalizador de substituição tributária de ICMS
             '';
+  }
+  //
+  // 1	,	8   : Data de Emissão da Redução Z
+  // 9	,	6   : Hora de Emissão da Redução Z
+  // 15	,	6 : COO Inicial (Abertura da Jornada Fiscal)
+  // 21	,	6 : COO Final (Redução Z)
+  // 27	,	6 : CRZ
+  // 33	,	6 : CRO
+  // 39	,	6 : GNF
+  // 45	,	6 : CDC
+  // 51	,	6 : NFC
+  // 57	,	6 : GRG
+  // 63	,	6 : CCF
+  // 69	,	6 : CFC
+  // 75	,	6 : CFD
+  // 81	,	6 : NCN
+  // 87	,	18 : Totalizador Geral
+  // 105	,	17 : Cancelamento ICMS
+  // 122	,	17 : Cancelamento ISSQN
+  // 139	,	17 : Cancelamento Não-Fiscal
+  // 156	,	17 : Desconto ICMS
+  // 173	,	17 : Desconto ISSQN
+  // 190	,	17 : Desconto Não-Fiscal
+  // 207	,	17 : Acréscimo ICMS
+  // 224	,	17 : Acréscimo ISSQN
+  // 241	,	17 : Acréscimo Não-Fiscal
+  // 259	,	125 : Tributos (ICMS, ISSQN, F, I, N, FS, IS, NS);
+
+  // 259, 15
+  // 274
+  // 289
+  // 304
+  // 319
+  // 334
+  // 349
+  // 379
+
+
+
+  // 384	,	408 : Totalizadores Parciais Tributados
+  // 792	,	13 : Sangria
+  // 805	,	13 : Fundo de Troco
+  // 818	,	340 : Totalizadores Não Fiscais sendo que os 4 últimos bytes de cada totalizador refere-se ao CON (Contador de Totalizadores Não-Fiscais).
+  // 1158	,	2 : Número de Alíquotas cadastradas.
+  // 1160	,	8 : Data do Movimento.
+  //
+  sTotal := '';
+  for I := 1 to 16 do
+  begin
+    if I <= StrToIntDef(Copy(sRetorno,1158,2), 0) then // Número de Alíquotas cadastradas.
+    begin
+      sTotal := sTotal + StrZero(StrToIntDef(Copy(Copy(sRetorno,384	, 408),(I*17)-17+1,17), 0),14,0);
+    end else
+    begin
+      sTotal := sTotal + Replicate('0',14);
+      if I <= StrToIntDef(Copy(sRetorno,1158,2), 0)+2 then // Número de Alíquotas cadastradas + 2 = isenção de ICMS
+      begin
+        sI := StrZero(StrToIntDef(Copy(Copy(sRetorno,384	, 408),(I*17)-17+1,17), 0),14,0);
+      end;
+      if I <= StrToIntDef(Copy(sRetorno,1158,2), 0)+3 then // Número de Alíquotas cadastradas + 3 = não incidência de ICMS
+      begin
+        sN := StrZero(StrToIntDef(Copy(Copy(sRetorno,384	, 408),(I*17)-17+1,17), 0),14,0);
+      end;
+      if I <= StrToIntDef(Copy(sRetorno,1158,2), 0)+1 then // Número de Alíquotas cadastradas + 1 = substituição tributária de ICMS
+      begin
+        sS := StrZero(StrToIntDef(Copy(Copy(sRetorno,384	, 408),(I*17)-17+1,17), 0),14,0);
+      end;
+    end;
+  end;
+  //
+//  ShowMessage(sRetorno);
+  //
+
+  Result := Copy(Copy(sRetorno,1160,8),1,4) + Copy(Copy(sRetorno,1160,8),7,2) + //   1,  6 Data
+            Copy(sRetorno,21,6)                                               + //   7,  6 COO
+            Copy(sRetorno,87,18)                                              + //  13, 18 GT
+            Copy(Copy(sRetorno,27,6),3,4)                                     + //  31,  4 CRZ
+            Copy(Form1.sAliquotas,3,64)+ //  35, 64 Aliquotas
+            sTotal + //   Copy(sRetorno, 118,224)+ //  99,224 Totalizadores das aliquotas
+            Strzero(StrToIntDef(_ecf15_Nmdeintervenestcnicas(True), 0),4,0) + // 323,  4 Contador de reinício de operação
+            //
+            Strzero(StrToIntDef(Copy(sRetorno, 105, 17), 0),14,0) + // 327, 14 Totalizador de cancelamentos em ICMS
+            Strzero(StrToIntDef(Copy(sRetorno, 156, 17), 0),14,0) + // 341, 14 Totalizador de descontos em ICMS
+            //
+            sI+ // 355, 14 Totalizador de isenção de ICMS
+            sN+ // 369, 14 Totalizador de não incidência de ICMS
+            sS+ // 383, 14 Totalizador de substituição tributária de ICMS
+            '';
   //
   // Ok Testado
   //
@@ -2516,12 +2655,19 @@ end;
 //
 function _ecf15_CodigoModeloEcf(pP1: Boolean): String; //
 var
+  {2024-03-06
   szCodigoNacionalECF: array[0..7] of AnsiChar;
   szNomeArquivo: array[0..33] of AnsiChar;
+  }
+  szCodigoNacionalECF: AnsiString;
+  szNomeArquivo: AnsiString;
 begin
+  szCodigoNacionalECF := AnsiString(StringOfChar(' ', 6));
+  szNomeArquivo := AnsiString(StringOfChar(' ', 32));
+
   Result := '150401';
   try
-    EPSON_Obter_Codigo_Nacional_ECF (szCodigoNacionalECF , szNomeArquivo);
+    EPSON_Obter_Codigo_Nacional_ECF (PAnsiChar(AnsiString(szCodigoNacionalECF)), PAnsiChar(AnsiString(szNomeArquivo))); // 2024-03-06 EPSON_Obter_Codigo_Nacional_ECF (szCodigoNacionalECF , szNomeArquivo);
     Result := LimpaNumero(szCodigoNacionalECF);
   except
   end;
