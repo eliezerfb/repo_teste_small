@@ -289,7 +289,7 @@ uses
   , umfe
 //  , _Small_IntegradorFiscal // Sandro Silva 2018-07-03
   ,  ufuncoesfrente // Sandro Silva 2018-07-03
-  , uValidaRecursosDelphi7;
+  , uValidaRecursosDelphi7, uEmail;
 
 function AlertaCredenciadoraCartao(sNomeRede: String): String;
 begin
@@ -5777,12 +5777,12 @@ var
   function Compactar(sZipFile: String): Boolean;
   begin
     if FileExists(sZipFile) then
-      DeleteFile(PChar(sZipFile)); // Sandro Silva 2020-09-03 DeleteFile(PChar(sZipFile));
+      DeleteFile(sZipFile); // Sandro Silva 2020-09-03 DeleteFile(PChar(sZipFile));
 
     if FileExists('szip.exe') then
     begin
       if FileExists(sPDFFile) then
-        ShellExecuteA(Application.Handle, PAnsiChar('Open'), PAnsiChar('szip.exe'), PAnsiChar('backup "'+Alltrim(sPDFFile)+'" "'+ sZipFile + '"'), PAnsiChar(''), SW_SHOWMAXIMIZED); // Sandro Silva 2020-10-27 ShellExecuteA( 0, PAnsiChar('Open'), PAnsiChar('szip.exe'), PAnsiChar('backup "'+Alltrim(sPDFFile)+'" "'+ sZipFile + '"'), PAnsiChar(''), SW_SHOWMAXIMIZED); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(sPDFFile)+'" "'+ sZipFile + '"'), '', SW_SHOWMAXIMIZED);
+        ShellExecute(Application.Handle, PChar('Open'), PChar('szip.exe'), PChar('backup "' + Alltrim(sPDFFile) + '" "' + sZipFile + '"'), PChar(''), SW_SHOWMAXIMIZED);
 
       while ConsultaProcesso('szip.exe') do
       begin
@@ -5791,7 +5791,7 @@ var
       end;
 
       if FileExists(sXMLFile) then
-        ShellExecute(Application.Handle, PChar('Open'), PChar('szip.exe'), PChar('backup "'+Alltrim(sXMLFile)+'" "'+ sZipFile + '"'), PChar(''), SW_SHOWMAXIMIZED); // Sandro Silva 2020-10-27  ShellExecute( 0, PAnsiChar('Open'), PAnsiChar('szip.exe'), PAnsiChar('backup "'+Alltrim(sXMLFile)+'" "'+ sZipFile + '"'), PAnsiChar(''), SW_SHOWMAXIMIZED); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(sXMLFile)+'" "'+ sZipFile + '"'), '', SW_SHOWMAXIMIZED);
+        ShellExecute(Application.Handle, PChar('Open'), PChar('szip.exe'), PChar('backup "'+Alltrim(sXMLFile)+'" "'+ sZipFile + '"'), PChar(''), SW_SHOWMAXIMIZED);
 
       //
       while ConsultaProcesso('szip.exe') do
@@ -5800,20 +5800,20 @@ var
         Sleep(100);
       end;
       //
-      while not FileExists(PChar(sZipFile)) do // Sandro Silva 2020-09-03 while not FileExists(pChar(sZipFile)) do
+      while not FileExists(sZipFile) do
       begin
         Sleep(100);
       end;
       //
-      while FileExists(PChar(sPDFFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sPDFFile)) do
+      while FileExists(sPDFFile) do
       begin
-        DeleteFile(PChar(sPDFFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sPDFFile));
+        DeleteFile(sPDFFile);
         Sleep(100);
       end;
 
-      while FileExists(PChar(sXMLFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sXMLFile)) do
+      while FileExists(sXMLFile) do
       begin
-        DeleteFile(PChar(sXMLFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sXMLFile));
+        DeleteFile(sXMLFile);
         Sleep(100);
       end;
 
@@ -5842,9 +5842,9 @@ begin
     {Sandro Silva 2022-09-02 fim}
 
     //
-    while FileExists(PChar(sPDFFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sPDFFile)) do
+    while FileExists(sPDFFile) do // Sandro Silva 2020-09-03 while FileExists(pChar(sPDFFile)) do
     begin
-      DeleteFile(PChar(sPDFFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sPDFFile));
+      DeleteFile(sPDFFile); // Sandro Silva 2020-09-03 DeleteFile(pChar(sPDFFile));
       Sleep(100);
     end;
     //
@@ -5861,9 +5861,9 @@ begin
 
     Sleep(250); // Sandro Silva 2022-09-02 Aguardar salvar em disco
 
-    while FileExists(PChar(sXMLFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sXMLFile)) do
+    while FileExists(sXMLFile) do // Sandro Silva 2020-09-03 while FileExists(pChar(sXMLFile)) do
     begin
-      DeleteFile(PChar(sXMLFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sXMLFile));
+      DeleteFile(sXMLFile); // Sandro Silva 2020-09-03 DeleteFile(pChar(sXMLFile));
       Sleep(100);
     end;
 
@@ -5880,7 +5880,7 @@ begin
     if Form1.EnviarDANFCEeXMLcompactado1.Checked = False then
     begin
       //
-      if FileExists(PChar(sXMLFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sXMLFile)) then
+      if FileExists(sXMLFile) then // Sandro Silva 2020-09-03 if FileExists(pChar(sXMLFile)) then
       begin
 
         sTextoCorpoEmail := 'Segue em anexo seu XML da NFC-e.'+chr(10);
@@ -5888,17 +5888,17 @@ begin
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
-        _ecf65_EnviarEMail('', sEmail, '', 'XML da NFC-e', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sXMLFile),False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('',sEmail,'','XML da NFC-e',pchar(sTextoCorpoEmail),pChar(sXMLFile),False);
+        _ecf65_EnviarEMail('', sEmail, '', 'XML da NFC-e', PChar(sTextoCorpoEmail), PChar(sXMLFile), False);
       end;
 
-      if FileExists(PChar(sPDFFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sPDFFile)) then
+      if FileExists(sPDFFile) then // Sandro Silva 2020-09-03 if FileExists(pChar(sPDFFile)) then
       begin
         sTextoCorpoEmail := 'Segue em anexo seu DANFCE em arquivo PDF.'+chr(10);
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
-        _ecf65_EnviarEMail('',sEmail,'','DANFCE (Documento Auxiliar da NFC-e)', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sPDFFile),False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('',sEmail,'','DANFCE (Documento Auxiliar da NFC-e)',pchar(sTextoCorpoEmail),pChar(sPDFFile),False);
+        _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e)', PChar(sTextoCorpoEmail), PChar(sPDFFile), False);
       end;
 
     end
@@ -5908,14 +5908,14 @@ begin
       //sZipFile := ExtractFilePath(Application.ExeName) + 'email\danfce_xml_' + FormatDateTime('yyyy-mm-dd-HH-nn-ss-zzzz', Now) + '.zip'; // Sandro Silva 2022-09-02 sZipFile := 'danfce_xml.zip';
       //sZipFile := ChangeFileExt(sPDFFile, 'zip');
       Compactar(sZipFile);
-      if FileExists(PChar(sZipFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sZipFile)) then
+      if FileExists(sZipFile) then // Sandro Silva 2020-09-03 if FileExists(pChar(sZipFile)) then
       begin
         sTextoCorpoEmail := 'Segue em anexo seu XML e DANFCE da NFC-e.'+chr(10);
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
-        _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e) e XML', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sZipFile), False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e) e XML', pchar(sTextoCorpoEmail), pChar(sZipFile), False);
+        _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e) e XML', PChar(sTextoCorpoEmail), PChar(sZipFile), False);
       end;
 
     end;

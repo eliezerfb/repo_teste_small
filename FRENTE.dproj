@@ -239,6 +239,9 @@
         <DCCReference Include="..\unit_compartilhada\md5_unicode.pas"/>
         <DCCReference Include="..\unit_compartilhada\uFuncaoMD5.pas"/>
         <DCCReference Include="usmallsat.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uEmail.pas"/>
+        <DCCReference Include="..\unit_compartilhada\interfaces\uITestaEmail.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uTestaEmail.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -270,7 +273,7 @@
                 <Platform value="Win64">False</Platform>
             </Platforms>
             <Deployment Version="3">
-                <DeployFile LocalName="FRENTE.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\..\..\Executaveis\Small Commerce\FRENTE.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>FRENTE.exe</RemoteName>
                         <Overwrite>true</Overwrite>

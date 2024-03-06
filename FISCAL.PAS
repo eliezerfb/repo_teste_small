@@ -26761,7 +26761,7 @@ begin
           sFileZIP := Alltrim(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_nfce.zip');
 
           if FileExists(sFileZIP) then
-            DeleteFile((sFileZIP));
+            DeleteFile(sFileZIP);
 
           ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(Form1.sAtual + '\CONTABIL\*.xml')+'" "'+ sFileZIP + '"'), '', SW_SHOWMAXIMIZED);
 
@@ -26772,7 +26772,7 @@ begin
             sleep(100);
           end;
           //
-          while not FileExists((sFileZIP)) do
+          while not FileExists(sFileZIP) do
           begin
             sleep(100);
           end;
@@ -26814,7 +26814,7 @@ begin
           end;
           if (Form7.CheckBox2.Checked) then
           begin
-            if FileExists((sFileZIP)) then
+            if FileExists(sFileZIP) then
             begin
               Application.MessageBox(Pchar('Arquivos exportados para:' + #13 + #13 + sFileZIP), PChar(Form7.Caption), MB_OK + MB_ICONINFORMATION);
               //WinExec(PAnsiChar('%windir%\explorer.exe "' + ExtractFilePath(sFileZIP) + '"'), SW_NORMAL);

@@ -214,7 +214,7 @@ uses
   , uclassetransacaocartao
   , umontaxmlvendasat
   , Unit12
-  , uConverteDocumentoParaDocFiscal;
+  , uConverteDocumentoParaDocFiscal, uEmail;
 
 function FormataFloatXML(dValor: Double; iDecimais: Integer): String;
 begin
@@ -2755,14 +2755,14 @@ var
   function Compactar(sZipFile: String): Boolean;
   begin
     if FileExists(sZipFile) then
-      DeleteFile(PChar(sZipFile));
+      DeleteFile(sZipFile);
 
     if FileExists('szip.exe') then
     begin
 
       // Primeiro compacta o xml
       if FileExists(sFileXML) then
-        ShellExecuteA(Application.Handle, PAnsiChar('Open'), PAnsiChar('szip.exe'), PAnsiChar('backup "'+Alltrim(sFileXML)+'" "'+ sZipFile + '"'), PAnsiChar(''), SW_SHOWMAXIMIZED); // Ficha 5157 Sandro Silva 2020-10-27  ShellExecuteW( 0,           'Open',            'szip.exe',  PWideChar('backup "'+Alltrim(sFileXML)+'" "'+ sZipFile + '"'),           '', SW_SHOWMINIMIZED); // Sandro Silva 2020-09-14 ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(sFileXML)+'" "'+ sZipFile + '"'), '', SW_SHOWMAXIMIZED);
+        ShellExecute(Application.Handle, PChar('Open'), PChar('szip.exe'), PChar('backup "' + Alltrim(sFileXML) + '" "'+ sZipFile + '"'), PChar(''), SW_SHOWMAXIMIZED);
 
       //
       while ConsultaProcesso('szip.exe') do
@@ -2773,7 +2773,7 @@ var
 
       // PDF demora mais causa travamento do szip.exe se compactado antes do xml
       if FileExists(sFileCFeSAT) then
-        ShellExecuteA(Application.Handle, PAnsiChar('Open'), PAnsiChar('szip.exe'), PAnsiChar('backup "'+Alltrim(sFileCFeSAT)+'" "'+ sZipFile + '"'), PAnsiChar(''), SW_SHOWMAXIMIZED); // Ficha 5157 Sandro Silva 2020-10-27  ShellExecuteW( 0, 'Open','szip.exe',PWideChar('backup "'+Alltrim(sFileCFeSAT)+'" "'+ sZipFile + '"'), '', SW_SHOWMINIMIZED); // Sandro Silva 2020-09-14 ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(sFileCFeSAT)+'" "'+ sZipFile + '"'), '', SW_SHOWMAXIMIZED);
+        ShellExecute(Application.Handle, PChar('Open'), PChar('szip.exe'), PChar('backup "' + Alltrim(sFileCFeSAT) + '" "' + sZipFile + '"'), PChar(''), SW_SHOWMAXIMIZED);
 
       //
       while ConsultaProcesso('szip.exe') do
@@ -2782,20 +2782,20 @@ var
         Sleep(100);
       end;
       //
-      while not FileExists(PChar(sZipFile)) do
+      while not FileExists(sZipFile) do
       begin
         Sleep(100);
       end;
       //
-      while FileExists(PChar(sFileCFeSAT)) do
+      while FileExists(sFileCFeSAT) do
       begin
-        DeleteFile(PChar(sFileCFeSAT));
+        DeleteFile(sFileCFeSAT);
         Sleep(100);
       end;
 
-      while FileExists(PChar(sFileXML)) do
+      while FileExists(sFileXML) do
       begin
-        DeleteFile(PChar(sFileXML));
+        DeleteFile(sFileXML);
         Sleep(100);
       end;
     end;

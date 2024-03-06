@@ -317,7 +317,7 @@ function MFE: Boolean;
 function Build: String;
 function SmallMessageBox(const Text, Caption: String; Flags: Longint): Integer;
 function ValidaEmail(sP1: String):Boolean;
-function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: String; bConfirma: Boolean): Integer;
+//2024-02-26 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: String; bConfirma: Boolean): Integer;
 function CriaCDSALIQ: TClientDataSet;
 function CriaCDSCFOP: TClientDataSet;
 function ConverteAcentosXML(pP1: String): String;
@@ -2101,6 +2101,7 @@ begin
   //
 end;
 
+(*2024-02-26
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: String; bConfirma: Boolean): Integer;
 var
   Mais1Ini : tIniFile;
@@ -2131,7 +2132,8 @@ begin
     end;
 
     //ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), PAnsiChar(''), SW_SHOW); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open', 'email.exe',pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), '', SW_SHOW); // Mauricio Parizotto 2024-02-08
-    ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(AnsiString(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"')), PAnsiChar(''), SW_SHOW);
+    //ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(AnsiString(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"')), PAnsiChar(''), SW_SHOW);
+    ShellExecute(0, 'Open', PChar('email.exe'), PChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), PChar(''), SW_SHOW);
 
     Result := 1;
   end else
@@ -2252,6 +2254,7 @@ begin
   CHDir(sAtual);
   //
 end;
+*)
 
 function CriaCDSALIQ: TClientDataSet;
 begin
