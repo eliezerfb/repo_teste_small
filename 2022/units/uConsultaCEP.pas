@@ -102,7 +102,7 @@ begin
 
       if oRESTResponse.StatusCode = 200 then
       begin
-        if Pos('"erro": "true"', oRESTRequest.Response.JSONValue.ToString) > 0 then
+        if Pos('"ERRO":', AnsiUpperCase(oRESTRequest.Response.JSONValue.ToString)) > 0 then
           raise Exception.Create(Format(_cMgsCEPInvalido, [FcCEP]))
         else
           FoObjCEP := (TObjetoConsultaCEP.JsonToObject(oRESTRequest.Response.JSONValue.ToString) as TObjetoConsultaCEP);
