@@ -405,11 +405,9 @@ begin
     Exit;
 
   // Endereço
-  if SMALL_DBEdit3.DataSource.DataSet.FieldByName(SMALL_DBEdit3.DataField).AsString = EmptyStr then
-    SMALL_DBEdit3.DataSource.DataSet.FieldByName(SMALL_DBEdit3.DataField).AsString := Copy(AoObjeto.logradouro,1, SMALL_DBEdit3.DataSource.DataSet.FieldByName(SMALL_DBEdit3.DataField).Size);
+  SMALL_DBEdit3.DataSource.DataSet.FieldByName(SMALL_DBEdit3.DataField).AsString := Copy(AoObjeto.logradouro,1, SMALL_DBEdit3.DataSource.DataSet.FieldByName(SMALL_DBEdit3.DataField).Size);
   // Bairro
-  if SMALL_DBEdit10.DataSource.DataSet.FieldByName(SMALL_DBEdit10.DataField).AsString = EmptyStr then
-    SMALL_DBEdit10.DataSource.DataSet.FieldByName(SMALL_DBEdit10.DataField).AsString := Copy(AoObjeto.bairro,1, SMALL_DBEdit10.DataSource.DataSet.FieldByName(SMALL_DBEdit10.DataField).Size);
+  SMALL_DBEdit10.DataSource.DataSet.FieldByName(SMALL_DBEdit10.DataField).AsString := Copy(AoObjeto.bairro,1, SMALL_DBEdit10.DataSource.DataSet.FieldByName(SMALL_DBEdit10.DataField).Size);
   // Municipio
   if SMALL_DBEdit4.DataSource.DataSet.FieldByName(SMALL_DBEdit4.DataField).Asstring <> AoObjeto.localidade then
     SMALL_DBEdit4.DataSource.DataSet.FieldByName(SMALL_DBEdit4.DataField).AsString := Copy(AoObjeto.localidade,1, SMALL_DBEdit4.DataSource.DataSet.FieldByName(SMALL_DBEdit4.DataField).Size);
