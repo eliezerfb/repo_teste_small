@@ -159,6 +159,7 @@ uses
   //
   function ECF_ContadorCupomFiscalMFD(CuponsEmitidos : PAnsiChar): Integer; StdCall; External 'CONVECF.DLL';
   function ECF_ContadorRelatoriosGerenciaisMFD (Relatorios : PAnsiChar): Integer; StdCall; External 'CONVECF.DLL';
+  function ECF_VerificaRelatorioGerencialMFD(Relatorios : AnsiString): Integer;StdCall; External 'ConvEcf.dll'; // 2024-03-07
 
 
   //
@@ -247,6 +248,37 @@ uses
   //
 
 implementation
+
+function _ecf14_VerificaRelatorioCadastrado(sTexto: String): Boolean;
+var
+  sDadosImpressora: AnsiString;
+  sRela: String;
+  slRela: TStringList;
+  i: Integer;
+begin
+  Result := False;
+
+  sDadosImpressora := Replicate(' ', 659);
+  ECF_VerificaRelatorioGerencialMFD(sDadosImpressora);
+  {
+  '0000                 ,0000Fechamento       ,0000IDENT DO PAF     ,0000VENDA PRAZO      ,0000CARTAO TEF       ,0000Saida Op.        ,0000DAV EMITIDOS     ,0000                 ,0000                 ,0000                 ,0000                 ,0000CONF MESA        ,0000TRANSF MESA      ,0000MESAS ABERTAS    ,0000PARAM CONFIG     ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0001PARÂMETROS ECF   '
+  }
+
+  slRela := TStringList.Create;
+  slRela.StrictDelimiter := True;
+  slRela.Delimiter       := ',';
+  slRela.DelimitedText   := PAnsiChar(AnsiString(sDadosImpressora));
+  for I := 0 to slRela.Count - 1 do
+  begin
+    if Pos(AnsiUpperCase(sTexto), AnsiUpperCase(slRela.Strings[i])) > 0 then
+    begin
+      Result := True;
+      Break;
+    end;
+  end;
+
+  FreeAndNil(slRela);
+end;
 
 Function _ecf14_TestaLigadaePapel(pP1:Boolean):Boolean;
 var
@@ -378,12 +410,11 @@ begin
   Result:=pP1;
 end;
 
-
 // Verifica se a forma de pagamento está cadastrada
 function _ecf14_VerificaFormaPgto(Forma:String):String;
 var
   Retorno,i,j:integer;
-  sFormasPagamento:String;
+  sFormasPagamento: AnsiString;
 begin
    Result := 'XX';
    sFormasPagamento := Replicate(' ', 3016);
@@ -407,7 +438,7 @@ end;
 
 function _ecf14_VerificaDescricaoFormaPgto(Forma:String):String;
 var
-  sFormasPagamento:String;
+  sFormasPagamento: AnsiString;
 begin
   if (isNumericString(Forma)) and (Alltrim(Forma)<> '') then
   begin
@@ -467,6 +498,9 @@ begin
   ECF_NomeiaRelatorioGerencialMFD(pchar('14'),pchar('MESAS ABERTAS'));
   ECF_NomeiaRelatorioGerencialMFD(pchar('15'),pchar('PARAM CONFIG'));
   }
+
+
+  {2024-03-07
   ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('03'),PAnsiChar('IDENT DO PAF'));
   ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('04'),PAnsiChar('VENDA PRAZO'));
   // 2016-02-04 ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('05'),PAnsiChar('TEF'));
@@ -484,7 +518,52 @@ begin
   ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('13'),PAnsiChar('TRANSF MESA'));
   ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('14'),PAnsiChar('MESAS ABERTAS'));
   ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('15'),PAnsiChar('PARAM CONFIG'));
-  {Sandro Silva 2023-12-13 fim}
+  }
+
+
+  if _ecf14_VerificaRelatorioCadastrado('IDENT DO PAF') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('03'),PAnsiChar('IDENT DO PAF'));
+
+  if _ecf14_VerificaRelatorioCadastrado('VENDA PRAZO') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('04'),PAnsiChar('VENDA PRAZO'));
+  // 2016-02-04 ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('05'),PAnsiChar('TEF'));
+
+  if _ecf14_VerificaRelatorioCadastrado('CARTAO TEF') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('05'),PAnsiChar('CARTAO TEF'));
+
+  if _ecf14_VerificaRelatorioCadastrado('MEIOS DE PAGTO') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('06'),PAnsiChar('MEIOS DE PAGTO'));
+
+  if _ecf14_VerificaRelatorioCadastrado('DAV EMITIDOS') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('07'),PAnsiChar('DAV EMITIDOS'));
+
+  if _ecf14_VerificaRelatorioCadastrado('ORCAMENT (DAV)') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('08'),PAnsiChar('ORCAMENT (DAV)'));
+  // 2016-02-04 ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('09'),PAnsiChar('CONF CONTA'));
+  // Sandro Silva 2016-02-11 ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('10'),PAnsiChar('TRANSF CONTA'));
+  // Sandro Silva 2016-02-11 ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('11'),PAnsiChar('CONTAS ABERTAS'));
+
+  if _ecf14_VerificaRelatorioCadastrado('CONF CONTA CLI') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('09'),PAnsiChar('CONF CONTA CLI')); // 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+
+  if _ecf14_VerificaRelatorioCadastrado('TRANSF CONT CLI') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('10'),PAnsiChar('TRANSF CONT CLI')); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+
+  if _ecf14_VerificaRelatorioCadastrado('CONT CLI ABERTA') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('11'),PAnsiChar('CONT CLI ABERTA')); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+
+  if _ecf14_VerificaRelatorioCadastrado('CONF MESA') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('12'),PAnsiChar('CONF MESA'));
+
+  if _ecf14_VerificaRelatorioCadastrado('TRANSF MESA') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('13'),PAnsiChar('TRANSF MESA'));
+
+  if _ecf14_VerificaRelatorioCadastrado('MESAS ABERTAS') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('14'),PAnsiChar('MESAS ABERTAS'));
+
+  if _ecf14_VerificaRelatorioCadastrado('PARAM CONFIG') = False then
+    ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('15'),PAnsiChar('PARAM CONFIG'));
+
   //
   // Ok
   //
@@ -585,7 +664,7 @@ begin
   begin
     Result:=(ECF_CancelaCupom()=1);
     if Result then if _ecf14_CupomAberto(True) then Result:=False; //se o cupom está aberto é porque não cancelou
-    
+
     if Result = False then
       ShowMessage('Cancelamento não permitido'); // Sandro Silva 2018-10-18
   end;
@@ -593,16 +672,16 @@ end;
 
 function _ecf14_SubTotal(Pp1: Boolean):Real;
 var
-  sSubTotal:String;
+  sSubTotal: AnsiString;
 begin
-  sSubTotal:=Replicate(' ',14);
+  sSubTotal := Replicate(' ',14);
   if pP1 then
    begin
      _ecf14_CodeErro(ECF_SubTotal(PAnsiChar(AnsiString(sSubTotal)))); // Sandro Silva 2024-03-06 _ecf14_CodeErro(ECF_SubTotal( AnsiString(sSubTotal) )); // Sandro Silva 2023-12-14 _ecf14_CodeErro(ECF_SubTotal( sSubTotal ));
    end
   else
    if ECF_SubTotal(PAnsiChar(AnsiString(sSubTotal))) = 0 then // Sandro Silva 2024-03-06 if ECF_SubTotal( AnsiString(sSubTotal) )=0 then // Sandro Silva 2023-12-14 if ECF_SubTotal( sSubTotal )=0 then
-     sSubTotal:='0';// se pp1 for falso não verifica o erro
+     sSubTotal := '0';// se pp1 for falso não verifica o erro
   Result := StrToFloatDef(sSubTotal, 0) / 100; // Sandro Silva 2023-12-14 Result := StrToFloat(sSubTotal)/100;
 end;
 
@@ -632,59 +711,99 @@ end;
 // -------------------------------- //
 // Retorna o número do Cupom        //
 // -------------------------------- //
-function _ecf14_NumeroDoCupom(Pp1: Boolean):String;
+function _ecf14_NumeroDoCupom(Pp1: Boolean): String;
+var
+  sNumeroCupom: AnsiString;
 begin
+  {2024-03-07
   Result := Replicate(' ',6);
   _ecf14_CodeErro(ECF_NumeroCupom(PAnsiChar(AnsiString(Result)))); // 2024-03-06 _ecf14_CodeErro(ECF_NumeroCupom( Result ));
+  }
+  sNumeroCupom := Replicate(' ',6);
+  _ecf14_CodeErro(ECF_NumeroCupom(PAnsiChar(AnsiString(sNumeroCupom)))); // 2024-03-06 _ecf14_CodeErro(ECF_NumeroCupom( Result ));
+  Result := sNumeroCupom;
 end;
 
 // -------------------------- //
 // Retorna o número do CCF    //
 // -------------------------- //
-function _ecf14_ccF(Pp1: Boolean):String;
+function _ecf14_ccF(Pp1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := Replicate(' ',6);
   ECF_ContadorCupomFiscalMFD(PAnsiChar(AnsiString(Result))); // Sandro Silva 2024-03-06 ECF_ContadorCupomFiscalMFD(PAnsiChar(Result)); // Sandro Silva 2023-12-13 ECF_ContadorCupomFiscalMFD(pChar(Result));
+  }
+  sRetorno := Replicate(' ', 6);
+  ECF_ContadorCupomFiscalMFD(PAnsiChar(AnsiString(sRetorno))); // Sandro Silva 2024-03-06 ECF_ContadorCupomFiscalMFD(PAnsiChar(Result)); // Sandro Silva 2023-12-13 ECF_ContadorCupomFiscalMFD(pChar(Result));
+  Result := sRetorno;
 end;
 
 // ------------------------------------------------------------------------- //
 // Retorna o número de operações não fiscais executadas na impressora. GNF   //
 // ------------------------------------------------------------------------- //
 function _ecf14_gnf(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := Replicate(' ',6);
   ECF_NumeroOperacoesNaoFiscais(PAnsiChar(AnsiString(Result))); // 2024-03-06 ECF_NumeroOperacoesNaoFiscais(Result);
+  }
+  sRetorno := Replicate(' ',6);
+  ECF_NumeroOperacoesNaoFiscais(PAnsiChar(AnsiString(sRetorno))); // 2024-03-06 ECF_NumeroOperacoesNaoFiscais(Result);
+  Result := sRetorno;
 end;
 
 //
 // Retorna a quantidade de relatórios gerenciais emitidos.
 //
 function _ecf14_CDC(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := Replicate(' ',4);
   ECF_ContadorComprovantesCreditoMFD(PAnsiChar(AnsiString(Result))); // Sandro Silva 2024-03-06 ECF_ContadorComprovantesCreditoMFD(PAnsiChar(Result)); // Sandro Silva 2023-12-13 ECF_ContadorComprovantesCreditoMFD(pChar(Result));
   Result := '00' + Result;
+  }
+  sRetorno := Replicate(' ', 4);
+  ECF_ContadorComprovantesCreditoMFD(PAnsiChar(AnsiString(sRetorno))); // Sandro Silva 2024-03-06 ECF_ContadorComprovantesCreditoMFD(PAnsiChar(Result)); // Sandro Silva 2023-12-13 ECF_ContadorComprovantesCreditoMFD(pChar(Result));
+  Result := '00' + sRetorno;
 end;
 
 //
 // Retorna a quantidade de relatórios gerenciais emitidos.
 //
 function _ecf14_GRG(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := Replicate(' ',6);
   ECF_ContadorRelatoriosGerenciaisMFD(PAnsiChar(AnsiString(Result))); // Sandro Silva 2024-03-06 ECF_ContadorRelatoriosGerenciaisMFD(PAnsiChar(Result)); // Sandro Silva 2023-12-13 ECF_ContadorRelatoriosGerenciaisMFD(pChar(Result));
+  }
+  sRetorno := Replicate(' ',6);
+  ECF_ContadorRelatoriosGerenciaisMFD(PAnsiChar(AnsiString(sRetorno))); // Sandro Silva 2024-03-06 ECF_ContadorRelatoriosGerenciaisMFD(PAnsiChar(Result)); // Sandro Silva 2023-12-13 ECF_ContadorRelatoriosGerenciaisMFD(pChar(Result));
+  Result := sRetorno;
 end;
-
 
 // ------------------------------------------------------------------------- //
 // Retorna o número de operações não fiscais executadas na impressora. CER   //
 // ------------------------------------------------------------------------- //
 function _ecf14_CER(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := Replicate(' ',6);
   ECF_ContadorRelatoriosGerenciaisMFD(PAnsiChar(AnsiString(Result))); // Sandro Silva 2024-03-06 ECF_ContadorRelatoriosGerenciaisMFD(PAnsiChar(Result)); // Sandro Silva 2023-12-13 ECF_ContadorRelatoriosGerenciaisMFD(pChar(Result));
+  }
+  sRetorno := Replicate(' ',6);
+  ECF_ContadorRelatoriosGerenciaisMFD(PAnsiChar(AnsiString(sRetorno))); // Sandro Silva 2024-03-06 ECF_ContadorRelatoriosGerenciaisMFD(PAnsiChar(Result)); // Sandro Silva 2023-12-13 ECF_ContadorRelatoriosGerenciaisMFD(pChar(Result));
+  Result := sRetorno;
 end;
-
 
 
 // ------------------------------ //
@@ -764,7 +883,7 @@ end;
 function _ecf14_LeituraDaMFD(pP1, pP2, pP3: String):Boolean;
 var
   I : Integer;
-  sArquivoOrigem, sTipoDownload, sCOOInicial, sCOOFinal, sTipoFormato, sUsuario, sArquivoDestino : String;
+  sArquivoOrigem, sTipoDownload, sCOOInicial, sCOOFinal, sTipoFormato, sUsuario, sArquivoDestino : AnsiString;
 begin
   //
   sArquivoOrigem  := 'c:\MF.BIN';
@@ -861,7 +980,7 @@ end;
 // -------------------------------- //
 function _ecf14_VendaDeItem(pP1, pP2, pP3, pP4, pP5, pP6, pP7, pP8: String):Boolean;
 var
-  sTipoDesc,sTipoQuant,sDesc:string;
+  sTipoDesc,sTipoQuant,sDesc: AnsiString;
 begin
 //  if _ecf14_TestaLigadaePapel(True) then
 // begin
@@ -905,7 +1024,7 @@ end;
 // -------------------------------- //
 function _ecf14_ReducaoZ(pP1: Boolean):Boolean;
 var
-  sData,sHora:String;
+  sData,sHora: AnsiString;
 begin
   sData:=DateToStr(Date);
   sHora:=TimeToStr(Time);
@@ -928,7 +1047,10 @@ function _ecf14_RetornaVerao(pP1: Boolean):Boolean;
 var
   I : Integer;
 begin
-  if ECF_FlagsFiscais( I )=1 then Result:=(Copy(Right(Replicate('0',8)+IntToBin( I ),8),6,1)='1') else Result:=False;
+  if ECF_FlagsFiscais( I )=1 then
+    Result:=(Copy(Right(Replicate('0',8)+IntToBin( I ),8),6,1)='1')
+  else
+    Result:=False;
 end;
 
 // -------------------------------- //
@@ -944,9 +1066,17 @@ end;
 // Retorna a versão do firmware     //
 // -------------------------------- //
 function _ecf14_VersodoFirmware(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := Replicate(' ',4);
   if ECF_VersaoFirmware(PAnsiChar(AnsiString(Result))) <> 1 then Result := ''; // 2024-03-06 if ECF_VersaoFirmware(Result) <> 1 then Result:='';
+  }
+  sRetorno := Replicate(' ',4);
+  if ECF_VersaoFirmware(PAnsiChar(AnsiString(sRetorno))) <> 1 then
+    sRetorno := ''; // 2024-03-06 if ECF_VersaoFirmware(Result) <> 1 then Result:='';
+  Result := sRetorno;
 end;
 
 // -------------------------------- //
@@ -955,14 +1085,26 @@ end;
 function _ecf14_NmerodeSrie(pP1: Boolean): String;
 var
   i:integer;
+  sRetorno: AnsiString;
 begin
+  {
   // reserva 20 bytes para a variável
   Result := replicate(' ',20);
     if _ecf14_CodeErro(ECF_NumeroSerieMFD(PAnsiChar(AnsiString(Result)))) <> 1 then // Sandro Silva 2024-03-06 if _ecf14_CodeErro(ECF_NumeroSerieMFD( AnsiString(Result) )) <> 1 then // Sandro Silva 2023-12-14 if _ecf14_CodeErro(ECF_NumeroSerieMFD( Result )) <> 1 then
     Result:='';
+  }
+  // reserva 20 bytes para a variável
+  sRetorno := replicate(' ', 20);
+  if _ecf14_CodeErro(ECF_NumeroSerieMFD(PAnsiChar(AnsiString(sRetorno)))) <> 1 then // Sandro Silva 2024-03-06 if _ecf14_CodeErro(ECF_NumeroSerieMFD( AnsiString(Result) )) <> 1 then // Sandro Silva 2023-12-14 if _ecf14_CodeErro(ECF_NumeroSerieMFD( Result )) <> 1 then
+    sRetorno := '';
+  Result := sRetorno;
   //a rotina abaixo retira os chr(0)s que voltam na variável
-  for i:=1 to 20 do if ord(Result[i])=0 then Break;
-  if i>0 then Result:=AllTrim(Copy(Result,1,i-1));
+  for i := 1 to 20 do
+    if ord(Result[i]) = 0 then
+      Break;
+
+  if i>0 then
+    Result := AllTrim(Copy(Result, 1, i-1));
 end;
 
 // -------------------------------- //
@@ -970,38 +1112,65 @@ end;
 // -------------------------------- //
 function _ecf14_CGCIE(pP1: Boolean): String;
 var
-  sCGC,sIE:string;
+  sCGC,sIE: AnsiString;
 begin
   sCGC := Replicate(' ',18);
   sIE  := Replicate(' ',15);
-  if _ecf14_CodeErro(ECF_CGC_IE(PAnsiChar(AnsiString(sCGC)), PAnsiChar(AnsiString(sIE)))) <> 1 then Result := '' else Result := sCGC+'-'+sIE; // 2024-03-06 if _ecf14_CodeErro(ECF_CGC_IE( sCGC, sIE )) <> 1 then Result := '' else Result := sCGC+'-'+sIE;
+  if _ecf14_CodeErro(ECF_CGC_IE(PAnsiChar(AnsiString(sCGC)), PAnsiChar(AnsiString(sIE)))) <> 1 then
+    Result := ''
+  else
+    Result := sCGC+'-'+sIE; // 2024-03-06 if _ecf14_CodeErro(ECF_CGC_IE( sCGC, sIE )) <> 1 then Result := '' else Result := sCGC+'-'+sIE;
 end;
 
 // --------------------------------- //
 // Retorna o valor  de cancelamentos //
 // --------------------------------- //
 function _ecf14_Cancelamentos(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result:=Replicate(' ',14);
   if ECF_Cancelamentos(PAnsiChar(AnsiString(Result))) <> 1 then Result := ''; // 2024-03-06 if ECF_Cancelamentos( Result ) <> 1 then Result:='';
+  }
+  sRetorno := Replicate(' ',14);
+  if ECF_Cancelamentos(PAnsiChar(AnsiString(sRetorno))) <> 1 then
+    sRetorno := ''; // 2024-03-06 if ECF_Cancelamentos( Result ) <> 1 then Result:='';
+  Result := sRetorno;
 end;
 
 // -------------------------------- //
 // Retorna o valor de descontos     //
 // -------------------------------- //
 function _ecf14_Descontos(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result:=Replicate(' ',14);
   if ECF_Descontos(PAnsiChar(AnsiString(Result))) <> 1 then Result := ''; //2024-03-06 if ECF_Descontos( Result ) <> 1 then Result:='';
+  }
+  sRetorno := Replicate(' ',14);
+  if ECF_Descontos(PAnsiChar(AnsiString(sRetorno))) <> 1 then
+    sRetorno := ''; //2024-03-06 if ECF_Descontos( Result ) <> 1 then Result:='';
+  Result := sRetorno;
 end;
 
 // -------------------------------- //
 // Retorna o contador sequencial    //
 // -------------------------------- //
 function _ecf14_ContadorSeqencial(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result:=Replicate(' ',6);
   if ECF_NumeroCupom(PAnsiChar(AnsiString(Result))) <> 1 then Result:=''; // 2024-03-06 if ECF_NumeroCupom( Result ) <> 1 then Result:='';
+  }
+  sRetorno := Replicate(' ',6);
+  if ECF_NumeroCupom(PAnsiChar(AnsiString(sRetorno))) <> 1 then
+    sRetorno := ''; // 2024-03-06 if ECF_NumeroCupom( Result ) <> 1 then Result:='';
+  Result := sRetorno;
 end;
 
 // -------------------------------- //
@@ -1009,56 +1178,105 @@ end;
 // não fiscais acumuladas           //
 // -------------------------------- //
 function _ecf14_Nmdeoperaesnofiscais(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := Replicate(' ', 631);
   if ECF_DadosUltimaReducao(PAnsiChar(AnsiString(Result))) <> 1 then //2024-03-06 if ECF_DadosUltimaReducao(AnsiString(Result) ) <> 1 then
     Result := ''
   else
     Result := Copy(Result, 586, 6);
+  }
+  sRetorno := Replicate(' ', 631);
+  if ECF_DadosUltimaReducao(PAnsiChar(AnsiString(sRetorno))) <> 1 then //2024-03-06 if ECF_DadosUltimaReducao(AnsiString(Result) ) <> 1 then
+    Result := ''
+  else
+    Result := Copy(sRetorno, 586, 6);
 end;
 
 function _ecf14_NmdeCuponscancelados(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result:=Replicate(' ',4);
   if (ECF_NumeroCuponsCancelados(PansiChar(AnsiString(Result))) <> 1) then Result := ''; // 2024-03-06 if (ECF_NumeroCuponsCancelados( Result ) <> 1) then Result:='';
+  }
+  sRetorno := Replicate(' ',4);
+  if (ECF_NumeroCuponsCancelados(PansiChar(AnsiString(sRetorno))) <> 1) then
+    sRetorno := ''; // 2024-03-06 if (ECF_NumeroCuponsCancelados( Result ) <> 1) then Result:='';
+  Result := sRetorno;
 end;
 
 function _ecf14_NmdeRedues(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
   {Sandro Silva 2023-12-14 inicio
   Result:=Replicate(' ',4);
   if (ECF_NumeroReducoes( Result ) <> 1) then Result:='' else Result:=StrZero(StrToInt(Result)+1,4,0);//soma um para gravar certo no arq. de reduções.
   }
+  {
   Result := AnsiString(Replicate(' ', 4));
   if (ECF_NumeroReducoes(PAnsiChar(AnsiString(Result))) <> 1) then // 2024-03-06 if (ECF_NumeroReducoes( Result ) <> 1) then
     Result := ''
   else
     Result := StrZero(StrToIntDef(Result, 0) + 1, 4, 0);//soma um para gravar certo no arq. de reduções.
+  }
+  sRetorno := AnsiString(Replicate(' ', 4));
+  if (ECF_NumeroReducoes(PAnsiChar(AnsiString(sRetorno))) <> 1) then // 2024-03-06 if (ECF_NumeroReducoes( Result ) <> 1) then
+    Result := ''
+  else
+    Result := StrZero(StrToIntDef(sRetorno, 0) + 1, 4, 0);//soma um para gravar certo no arq. de reduções.
 end;
 
 function _ecf14_Nmdeintervenestcnicas(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := AnsiString(Replicate(' ',4)); // Sandro Silva 2023-12-14 Result := (Replicate(' ',4);
   if (ECF_NumeroIntervencoes(PAnsiChar(AnsiString(Result))) <> 1) then Result := ''; // 2024-03-06 if (ECF_NumeroIntervencoes( Result ) <> 1) then Result:='';
+  }
+  sRetorno := AnsiString(Replicate(' ',4)); // Sandro Silva 2023-12-14 Result := (Replicate(' ',4);
+  if (ECF_NumeroIntervencoes(PAnsiChar(AnsiString(sRetorno))) <> 1) then
+    Result := ''; // 2024-03-06 if (ECF_NumeroIntervencoes( Result ) <> 1) then Result:='';
+  Result := sRetorno;
 end;
 
 
 function _ecf14_Nmdesubstituiesdeproprietrio(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
   {Sandro Silva 2023-12-14 inicio
   Result:=Replicate(' ',4);
   if (ECF_NumeroSubstituicoesProprietario( Result ) <> 1) then Result:='';
   }
+  {
   Result := AnsiString(Replicate(' ', 4));
   if (ECF_NumeroSubstituicoesProprietario(PAnsiCHar(AnsiString(Result))) <> 1) then// 2024-03-06 if (ECF_NumeroSubstituicoesProprietario( Result ) <> 1) then
     Result := '';
-
+  }
+  sRetorno := AnsiString(Replicate(' ', 4));
+  if (ECF_NumeroSubstituicoesProprietario(PAnsiCHar(AnsiString(sRetorno))) <> 1) then// 2024-03-06 if (ECF_NumeroSubstituicoesProprietario( Result ) <> 1) then
+    sRetorno := '';
+  Result := sRetorno;
 end;
 
 function _ecf14_Clichdoproprietrio(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result:=Replicate(' ',186);
   if (ECF_ClicheProprietario(PAnsiChar(AnsiString(Result))) <> 1) then Result:=''; // 2024-03-06 if (ECF_ClicheProprietario( Result ) <> 1) then Result:='';
+  }
+  sRetorno := Replicate(' ',186);
+  if (ECF_ClicheProprietario(PAnsiChar(AnsiString(sRetorno))) <> 1) then
+    sRetorno := ''; // 2024-03-06 if (ECF_ClicheProprietario( Result ) <> 1) then Result:='';
+  Result := sRetorno;
 end;
 
 // ------------------------------------ //
@@ -1066,39 +1284,60 @@ end;
 // Ex: 001                              //
 // ------------------------------------ //
 function _ecf14_NmdoCaixa(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {2024-03-07
   Result := AnsiString(Replicate(' ', 4)); // Sandro Silva 2023-12-14 Result := Replicate(' ',4);
   _ecf14_CodeErro(ECF_NumeroCaixa(PAnsiChar(AnsiString(Result)))); // 2024-03-06 _ecf14_CodeErro(ECF_NumeroCaixa( Result ));
   Result := Right(Result, 3);
+  }
+  sRetorno := Replicate(' ', 4);
+  _ecf14_CodeErro(ECF_NumeroCaixa(PAnsiChar(AnsiString(sRetorno)))); // 2024-03-06 _ecf14_CodeErro(ECF_NumeroCaixa( Result ));
+  Result := Right(sRetorno, 3);
 end;
 
 function _ecf14_Nmdaloja(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := AnsiString(Replicate(' ', 4)); // Sandro Silva 2023-12-14 Result:=Replicate(' ',4);
   _ecf14_CodeErro(ECF_NumeroLoja(PAnsiChar(AnsiString(Result)))); // 2024-03-06 _ecf14_CodeErro(ECF_NumeroLoja( Result ));
+  }
+  sRetorno := AnsiString(Replicate(' ', 4)); // Sandro Silva 2023-12-14 Result:=Replicate(' ',4);
+  _ecf14_CodeErro(ECF_NumeroLoja(PAnsiChar(AnsiString(sRetorno)))); // 2024-03-06 _ecf14_CodeErro(ECF_NumeroLoja( Result ));
+  Result := sRetorno;
 end;
 
 function _ecf14_Moeda(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := AnsiString(Replicate(' ', 2)); // Sandro Silva 2023-12-14   Result:=Replicate(' ',2);
   _ecf14_CodeErro(ECF_SimboloMoeda(PAnsiChar(AnsiString(Result)))); // 2024-03-06 _ecf14_CodeErro(ECF_SimboloMoeda( Result ));
   Result:=StrTran(AllTrim(Result),'$','');
+  }
+  sRetorno := AnsiString(Replicate(' ', 2)); // Sandro Silva 2023-12-14   Result:=Replicate(' ',2);
+  _ecf14_CodeErro(ECF_SimboloMoeda(PAnsiChar(AnsiString(sRetorno)))); // 2024-03-06 _ecf14_CodeErro(ECF_SimboloMoeda( Result ));
+  Result := StrTran(AllTrim(sRetorno),'$','');
 end;
 
 function _ecf14_Dataehoradaimpressora(pP1: Boolean): String;
 var
- sData,sHora:String;
+  sData, sHora: AnsiString;
 begin
- sData := Replicate(' ',6);
- sHora := Replicate(' ',6);
- _ecf14_CodeErro(ECF_DataHoraImpressora(PansiChar(AnsiString(sData)), PAnsiChar(AnsiString(sHora)))); // Sandro Silva 2024-03-06 _ecf14_CodeErro(ECF_DataHoraImpressora(AnsiString(sData), AnsiString(sHora))); // Sandro Silva 2023-12-14 _ecf14_CodeErro(ECF_DataHoraImpressora(sData,sHora));
- Result := sData + sHora;//DDMMAAHHMMSS
+  sData := Replicate(' ',6);
+  sHora := Replicate(' ',6);
+  _ecf14_CodeErro(ECF_DataHoraImpressora(PansiChar(AnsiString(sData)), PAnsiChar(AnsiString(sHora)))); // Sandro Silva 2024-03-06 _ecf14_CodeErro(ECF_DataHoraImpressora(AnsiString(sData), AnsiString(sHora))); // Sandro Silva 2023-12-14 _ecf14_CodeErro(ECF_DataHoraImpressora(sData,sHora));
+  Result := sData + sHora;//DDMMAAHHMMSS
 end;
 
 function _ecf14_DataUltimaReducao: String;
 var
-  sData: string;
-  sHora: string;
+  sData: AnsiString;
+  sHora: AnsiString;
 begin
   Result := '00/00/2000';
   sData := Replicate(' ',6);
@@ -1123,18 +1362,34 @@ begin
 end;
 
 function _ecf14_Datadaultimareduo(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := Replicate(' ', 6);
   if ECF_DataMovimento(PAnsiChar(AnsiString(Result))) <> 1 then //2024-03-06 if ECF_DataMovimento( AnsiString(Result) ) <> 1 then
     Result := '';
+  }
+  sRetorno := Replicate(' ', 6);
+  if ECF_DataMovimento(PAnsiChar(AnsiString(sRetorno))) <> 1 then //2024-03-06 if ECF_DataMovimento( AnsiString(Result) ) <> 1 then
+    sRetorno := '';
+  Result := sRetorno;
 end;
 
 
 function _ecf14_Datadomovimento(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := Replicate(' ', 6);
   if ECF_DataMovimento(PAnsiChar(AnsiString(Result))) <> 1 then //2024-03-06 if ECF_DataMovimento(AnsiString(Result)) <> 1 then
     Result := '';
+  }
+  sRetorno := Replicate(' ', 6);
+  if ECF_DataMovimento(PAnsiChar(AnsiString(sRetorno))) <> 1 then //2024-03-06 if ECF_DataMovimento(AnsiString(Result)) <> 1 then
+    sRetorno := '';
+  Result := sRetorno;
 end;
 
 // Deve retornar uma String com:                                          //
@@ -1145,8 +1400,10 @@ end;
 
 function _ecf14_RetornaAliquotas(pP1: Boolean): String;
 var
-  sISS, sAliquotas, sIndiceAliquotas : String;
-  i:integer;
+  //sISS, sAliquotas, sIndiceAliquotas : String;
+  sISS: String;
+  sAliquotas, sIndiceAliquotas : AnsiString;
+  i: integer;
 begin
 //  AliquotasIss:=Replicate(' ',79);
 //  iRetorno := ECF_VerificaAliquotasIss( AliquotasIss );
@@ -1154,38 +1411,36 @@ begin
   sAliquotas := Replicate(' ', 79);
   if _ecf14_CodeErro(ECF_RetornoAliquotas(PAnsiChar(AnsiString(sAliquotas)))) = 1 then// 2024-03-06 if _ecf14_CodeErro(ECF_RetornoAliquotas(AnsiString(sAliquotas) )) = 1 then
   begin
-    Result:=Copy(AllTrim(LimpaNumero(sAliquotas))+Replicate('0',64),1,64);//tira as vírgulas
-    sISS:='';
+    Result := Copy(AllTrim(LimpaNumero(sAliquotas))+Replicate('0',64),1,64);//tira as vírgulas
+    sISS := '';
     //verifica qual é a aliquota de ISS
-    sIndiceAliquotas:=Replicate(' ',48);
+    sIndiceAliquotas := Replicate(' ',48);
     if _ecf14_CodeErro(ECF_VerificaIndiceAliquotasIss(PAnsiChar(AnsiString(sIndiceAliquotas)))) = 1 then//2024-03-06 if _ecf14_CodeErro(ECF_VerificaIndiceAliquotasIss(AnsiString(sIndiceAliquotas) ))=1 then
     begin
-      for i:=1 to 16 do
+      for i := 1 to 16 do
       begin
          if pos(StrZero(i,2,0),sIndiceAliquotas) > 0 then
           begin
-            sISS:=sISS+Copy(Result,((i-1)*4)+1,4);
+            sISS := sISS+Copy(Result,((i-1)*4)+1,4);
           end
          else
-            sISS:=sISS+'0000';
+            sISS := sISS+'0000';
       end;
 //      showmessage(Result+chr(10)+inttostr(Length(Result)));
-      Result:='16'+Result+sISS;
+      Result := '16'+Result+sISS;
 //      showmessage(Result+chr(10)+inttostr(Length(Result)));
     end;
   end;
 end;
 
-
 function _ecf14_Vincula(pP1: String): Boolean;
 begin
-   Result:=False;
+  Result:=False;
 end;
-
 
 function _ecf14_FlagsDeISS(pP1: Boolean): String;
 var
-  sIndiceAliquotas: String;
+  sIndiceAliquotas: AnsiString;
 begin
   sIndiceAliquotas := Replicate('0',48);
   ECF_VerificaIndiceAliquotasIss(PAnsiChar(AnsiString(sIndiceAliquotas))); //2024-03-06 ECF_VerificaIndiceAliquotasIss( sIndiceAliquotas );
@@ -1208,7 +1463,7 @@ begin
       delete(sIndiceAliquotas,1,2);
     end;
   end;
-  Result:=chr(BinToInt(Copy(Result,1,8)))+chr(BinToInt(Copy(Result,9,8)));
+  Result := chr(BinToInt(Copy(Result, 1, 8))) + chr(BinToInt(Copy(Result, 9, 8)));
 end;
 
 function _ecf14_FechaPortaDeComunicacao(pP1: Boolean): Boolean;
@@ -1252,7 +1507,6 @@ begin
 // ShowMessage(pChar(pP1)+chr(10)+pChar(Form1.sAtual+'\'+'Retorno.txt'));
   Result := True;
 end;
-
 
 function _ecf14_CupomNaoFiscalVinculado(sP1: String; iP2: Integer ): Boolean; //iP2 = Número do Cupom vinculado
 var
@@ -1435,12 +1689,14 @@ begin
         if (Copy(sP1,I,1) = chr(10)) or ( Length(sLinha) >=47 ) then // Linha pode ter no maximo 55 caracteres;
         begin
           //
-          if (Copy(sP1,I,1) <> chr(10)) then sLinha := sLinha+Copy(sP1,I,1);
+          if (Copy(sP1,I,1) <> chr(10)) then
+            sLinha := sLinha+Copy(sP1,I,1);
           //
           if sLinha = '' then sLinha := ' ';
           //2024-03-06 Result := (ECF_UsaRelatorioGerencialMFD(PAnsiChar(sLinha))=1);; // Sandro Silva 2023-12-13 Result := (ECF_UsaRelatorioGerencialMFD(pchar(sLinha))=1);;
           Result := (ECF_UsaRelatorioGerencialMFD(PAnsiChar(AnsiString(sLinha))) = 1);
-          if Result then Result:=_ecf14_TestaLigadaePapel(true);
+          if Result then
+            Result := _ecf14_TestaLigadaePapel(true);
           sLinha    := '';
           //
         end else
@@ -1465,8 +1721,9 @@ end;
 
 function _ecf14_FechaCupom2(sP1: Boolean): Boolean;
 begin
-  Result:=(ECF_FechaComprovanteNaoFiscalVinculado()=1);
-  if not result then Result := (ECF_FechaRelatorioGerencial()=1);
+  Result := (ECF_FechaComprovanteNaoFiscalVinculado()=1);
+  if not result then
+    Result := (ECF_FechaRelatorioGerencial()=1);
 end;
 
 function _ecf14_ImprimeCheque(rP1: Real; sP2: String): Boolean;
@@ -1475,18 +1732,35 @@ begin
 end;
 
 function _ecf14_GrandeTotal(sP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result := Replicate(' ',18);
   if _ecf14_CodeErro(ECF_GrandeTotal(PAnsiChar(AnsiString(Result)))) <> 1 then Result := '0'; // 2024-03-06 if _ecf14_CodeErro(ECF_GrandeTotal( Result )) <> 1 then Result:='0';
+  }
+  sRetorno := Replicate(' ',18);
+  if _ecf14_CodeErro(ECF_GrandeTotal(PAnsiChar(AnsiString(sRetorno)))) <> 1 then
+    sRetorno := '0'; // 2024-03-06 if _ecf14_CodeErro(ECF_GrandeTotal( Result )) <> 1 then Result:='0';
+  Result := sRetorno;
 end;
 
 function _ecf14_TotalizadoresDasAliquotas(sP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
+  {
   Result:=Replicate(' ',445);
   if ECF_VerificaTotalizadoresParciais(PAnsiChar(AnsiString(Result))) <> 1 then // 2024-03-06 if ECF_VerificaTotalizadoresParciais(AnsiString(Result)) <> 1 then
     Result := ''
   else
     Result := Copy(Result, 1, 224) + Copy(Result, 226, 14) + Copy(Result, 241, 14) + Copy(Result, 256, 14);
+  }
+  sRetorno := Replicate(' ',445);
+  if ECF_VerificaTotalizadoresParciais(PAnsiChar(AnsiString(sRetorno))) <> 1 then // 2024-03-06 if ECF_VerificaTotalizadoresParciais(AnsiString(Result)) <> 1 then
+    Result := ''
+  else
+    Result := Copy(sRetorno, 1, 224) + Copy(sRetorno, 226, 14) + Copy(sRetorno, 241, 14) + Copy(sRetorno, 256, 14);
 end;
 
 function _ecf14_CupomAberto(sP1: Boolean): boolean;
@@ -1535,7 +1809,7 @@ end;
 
 function _ecf14_DadosUltimaReducaoZ(sP1: Boolean): String;
 var
-  sDados : String;
+  sDados: AnsiString;
 begin
   sDados := Replicate(' ',1278);
   ECF_DadosUltimaReducaoMFD(PAnsiChar(AnsiString(sDados))); // Sandro Silva 2024-03-06 ECF_DadosUltimaReducaoMFD(PAnsiChar(sDados)); // Sandro Silva 2023-12-13 ECF_DadosUltimaReducaoMFD(pChar(sDados));
@@ -1544,7 +1818,7 @@ end;
 
 function _ecf14_Marca(sP1: Boolean): String;
 var
-  sMarca, sModelo, sTipo: String;
+  sMarca, sModelo, sTipo: AnsiString;
 begin
   sMarca  := Replicate(' ',15);
   sModelo := Replicate(' ',20);
@@ -1555,7 +1829,7 @@ end;
 
 function _ecf14_Modelo(sP1: Boolean): String;
 var
-  sMarca, sModelo, sTipo: String;
+  sMarca, sModelo, sTipo: AnsiString;
 begin
   sMarca  := Replicate(' ',15);
   sModelo := Replicate(' ',20);
@@ -1566,7 +1840,7 @@ end;
 
 function _ecf14_Tipodaimpressora(pP1: Boolean): String; //
 var
-  sMarca, sModelo, sTipo: String;
+  sMarca, sModelo, sTipo: AnsiString;
 begin
   sMarca  := Replicate(' ',15);
   sModelo := Replicate(' ',20);
@@ -1592,7 +1866,7 @@ end;
 
 function _ecf14_DadosDaUltimaReducao(pP1: Boolean): String; //
 var
-  sRetorno : String;
+  sRetorno : AnsiString;
 begin
   {
   DadosReducao: Variável STRING com o tamanho de 1278 posições para receber os dados da última redução.
@@ -1665,8 +1939,5 @@ begin
     Result := Form1.sCodigoIdentificaEcf;
 end;
 
-
 end.
-
-
 
