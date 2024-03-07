@@ -9,7 +9,7 @@ uses
   ,ShellApi, Grids,
   DBGrids, smallfunc_xe, strutils,
   WinTypes, WinProcs, IniFiles, Buttons, DB, ComCtrls, Clipbrd, OleCtrls, SHDocVw, Registry,
-  IBCustomDataSet;
+  IBCustomDataSet, uObjetoConsultaCEP;
 
 type
   TForm17 = class(TForm)
@@ -122,8 +122,11 @@ type
       UpdateKind: TUpdateKind; var UpdateAction: TIBUpdateAction);
     procedure ibdEmitenteMUNICIPIOSetText(Sender: TField;
       const Text: String);
+    procedure SMALL_DBEdit5Exit(Sender: TObject);
   private
+    FcCEPAtual: String;
     function RetornarWhereMunicipio(AcMunicipio: String): String;
+    procedure DefineCamposCEP(AoObjeto: TObjetoConsultaCEP);
   public
     { Public declarations }
   end;
@@ -133,7 +136,9 @@ var
 
 implementation
 
-uses Unit7, Unit10, Unit19, Mais, uListaCnaes, Mais3, uDialogs;
+uses
+  Unit7, Unit10, Unit19, Mais, uListaCnaes, Mais3, uDialogs,
+  uConsultaCEP;
 
 {$R *.DFM}
 
@@ -372,8 +377,50 @@ begin
   end;
 end;
 
+procedure TForm17.SMALL_DBEdit5Exit(Sender: TObject);
+begin
+  if (FcCEPAtual <> SMALL_DBEdit5.Text) and (length(LimpaNumero(SMALL_DBEdit5.Text)) = 8) then
+  begin
+    try
+      DefineCamposCEP(TConsultaCEP.New
+                                  .setCEP(SMALL_DBEdit5.Text)
+                                  .SolicitarDados
+                                  .getObjeto
+                     );
+    except
+      on e:exception do
+      begin
+        MensagemSistema(e.Message, msgErro);
+
+        if FcCEPAtual <> SMALL_DBEdit5.Text then
+          SMALL_DBEdit5.DataSource.DataSet.FieldByName(SMALL_DBEdit5.DataField).AsString := FcCEPAtual;
+      end;
+    end;
+  end;
+end;
+
+procedure TForm17.DefineCamposCEP(AoObjeto: TObjetoConsultaCEP);
+begin
+  if not Assigned(AoObjeto) then
+    Exit;
+
+  // Endereço
+  SMALL_DBEdit3.DataSource.DataSet.FieldByName(SMALL_DBEdit3.DataField).AsString := Copy(AoObjeto.logradouro,1, SMALL_DBEdit3.DataSource.DataSet.FieldByName(SMALL_DBEdit3.DataField).Size);
+  // Bairro
+  SMALL_DBEdit10.DataSource.DataSet.FieldByName(SMALL_DBEdit10.DataField).AsString := Copy(AoObjeto.bairro,1, SMALL_DBEdit10.DataSource.DataSet.FieldByName(SMALL_DBEdit10.DataField).Size);
+  // Municipio
+  if SMALL_DBEdit4.DataSource.DataSet.FieldByName(SMALL_DBEdit4.DataField).Asstring <> AoObjeto.localidade then
+    SMALL_DBEdit4.DataSource.DataSet.FieldByName(SMALL_DBEdit4.DataField).AsString := Copy(AoObjeto.localidade,1, SMALL_DBEdit4.DataSource.DataSet.FieldByName(SMALL_DBEdit4.DataField).Size);
+  // Estado
+  if SMALL_DBEdit6.DataSource.DataSet.FieldByName(SMALL_DBEdit6.DataField).AsString <> AoObjeto.uf then
+    SMALL_DBEdit6.DataSource.DataSet.FieldByName(SMALL_DBEdit6.DataField).AsString := Copy(AoObjeto.uf,1, SMALL_DBEdit6.DataSource.DataSet.FieldByName(SMALL_DBEdit6.DataField).Size);
+end;
+
 procedure TForm17.SMALL_DBEdit6Enter(Sender: TObject);
 begin
+  if (Sender = SMALL_DBEdit5) then
+    FcCEPAtual := SMALL_DBEdit5.Text;
+
   if dbgPesquisa.Visible then
   begin
     if (DSEmitente.DataSet.State in ([dsEdit, dsInsert])) then

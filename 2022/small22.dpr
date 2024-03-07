@@ -235,7 +235,10 @@ uses
   uEstruturaRelProdMonofasicoNota in 'units\uEstruturaRelProdMonofasicoNota.pas',
   uIGeraRelatorioProdMonofasicoCupomNota in 'interfaces\uIGeraRelatorioProdMonofasicoCupomNota.pas',
   uGeraRelatorioProdMonofasicoCupomNota in 'units\uGeraRelatorioProdMonofasicoCupomNota.pas',
-  uSistema in 'units\uSistema.pas';
+  uSistema in 'units\uSistema.pas',
+  uObjetoConsultaCEP in 'units\uObjetoConsultaCEP.pas',
+  uIConsultaCEP in 'interfaces\uIConsultaCEP.pas',
+  uConsultaCEP in 'units\uConsultaCEP.pas';
 
 {$R *.RES}
 
