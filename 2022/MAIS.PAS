@@ -4156,13 +4156,13 @@ begin
     Form7.ibDataSet12MES.ReadOnly := False;
     Form7.ibDataSet12ANO.ReadOnly := False;
     Form7.ibDataSet12SALDO.ReadOnly := False;
-    //
+
     Form7.ibDataSet12.Close;
     Form7.ibDataSet12.SelectSQL.Clear;
     Form7.ibDataSet12.SelectSQL.Add('select * from CONTAS order by upper(NOME)');
     Form7.ibDataSet12.Open;
     Form7.ibDataSet12.First;
-    //
+
     Form7.ibDataSet12.DisableControls;
 
     while not Form7.ibDataSet12.EOF do
