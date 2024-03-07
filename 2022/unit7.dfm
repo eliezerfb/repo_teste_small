@@ -19697,13 +19697,13 @@ object Form7: TForm7
         Caption = 'Exportar'
         OnClick = Exportar1Click
       end
-      object ExportarNFesemarquivoXML1: TMenuItem
-        Caption = 'Exportar XML'#39's para contabilidade'
-        OnClick = ExportarNFesemarquivoXML1Click
-      end
       object ExportarNFesfiltradasemarquivoXML1: TMenuItem
         Caption = 'Exportar NFe'#39's filtradas em arquivo XML '
         OnClick = ExportarNFesfiltradasemarquivoXML1Click
+      end
+      object ExportarNFesemarquivoXML1: TMenuItem
+        Caption = 'Enviar XML'#39's por e-mail para contabilidade'
+        OnClick = ExportarNFesemarquivoXML1Click
       end
       object N49: TMenuItem
         Caption = '-'
@@ -19735,11 +19735,11 @@ object Form7: TForm7
         Caption = '-'
       end
       object ImprimiraNFemformulrionumerado1: TMenuItem
-        Caption = 'Imprimir a NF'
+        Caption = 'Imprimir a NF em formul'#225'rio cont'#237'nuo'
         OnClick = ImprimiraNFemformulrionumerado1Click
       end
       object ImprimirtodasasNFfiltradas1: TMenuItem
-        Caption = 'Imprimir todas as NF filtradas'
+        Caption = 'Imprimir todas as NF filtradas em formul'#225'rio cont'#237'nuo'
         OnClick = ImprimirtodasasNFfiltradas1Click
       end
       object N57: TMenuItem
@@ -19835,6 +19835,7 @@ object Form7: TForm7
       object Compras_1: TMenuItem
         Caption = 'Notas fiscais de entrada (compras)'
         Enabled = False
+        Visible = False
         OnClick = Compras_1Click
       end
       object N19: TMenuItem
@@ -19893,9 +19894,6 @@ object Form7: TForm7
         Caption = 'Importar XML NF-e'
         OnClick = ImportarNotaFiscal1Click
       end
-      object DawnloaddoXMLdiretamentedositedaSEFAZ1: TMenuItem
-        Caption = 'Buscar XML no site da SEFAZ'
-      end
       object ConsultarNFesemitidasparameuCNPJ1: TMenuItem
         Caption = 'Consultar NF-e'#180's emitidas para meu CNPJ'
         Visible = False
@@ -19903,10 +19901,12 @@ object Form7: TForm7
       end
       object ConsultarvalidadedaNFe1: TMenuItem
         Caption = 'Consultar validade da NF-e'
+        Visible = False
         OnClick = ConsultarvalidadedaNFe1Click
       end
       object Importarretornodevendaambulante1: TMenuItem
         Caption = 'Importar retorno de venda ambulante'
+        Visible = False
         OnClick = Importarretornodevendaambulante1Click
       end
       object ClculodoCustodaltimaNota1: TMenuItem
@@ -19918,14 +19918,14 @@ object Form7: TForm7
         Caption = '-'
       end
       object ExportarNfesdeentrdaparacontabilidade1: TMenuItem
-        Caption = 'Exportar XML'#39's para contabilidade'
+        Caption = 'Enviar XML'#8217's por e-mail para a contabilidade'
         OnClick = ExportarNfesdeentrdaparacontabilidade1Click
       end
       object N41: TMenuItem
         Caption = '-'
       end
       object ImprimirNF3: TMenuItem
-        Caption = 'Imprimir NF'
+        Caption = 'Imprimir a NF em formul'#225'rio cont'#237'nuo'
         OnClick = ImprimirNF3Click
       end
       object GerarNFedeentrada1: TMenuItem
@@ -19976,6 +19976,7 @@ object Form7: TForm7
     end
     object Exibir6: TMenuItem
       Caption = 'E&xibir'
+      Visible = False
       object Vendas2: TMenuItem
         Caption = 'Notas fiscais de sa'#237'da (vendas) s'#233'rie 001'
         Enabled = False

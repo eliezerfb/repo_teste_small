@@ -2,9 +2,9 @@ object frmExportaXML: TfrmExportaXML
   Left = 1464
   Top = 780
   BorderStyle = bsDialog
-  Caption = 'Exportar XML'
-  ClientHeight = 285
-  ClientWidth = 443
+  Caption = 'Enviar XML'
+  ClientHeight = 293
+  ClientWidth = 445
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
