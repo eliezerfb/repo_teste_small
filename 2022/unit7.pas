@@ -2658,6 +2658,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , ufrmFichaCadastros
   , uFuncaoMD5
   , uDesenhaBoleto
+  , ufrmRelatorioProdMonofasicoCupom
+  , ufrmRelatorioProdMonofasicoNota
   , uSistema
   ;
 
@@ -29473,15 +29475,15 @@ end;
 
 procedure TForm7.miRelProdMonofasicosCupomClick(Sender: TObject);
 begin
-  //
-  sModuloAnterior := sModulo;
-  Form38.Label2.Visible := True;
-  Form38.Label3.Visible := True;
-  Form38.DateTimePicker1.Visible := True;
-  Form38.DateTimePicker2.Visible := True;
-  Form7.sModulo := 'Relatório de produtos monofásicos (Cupom Fiscal)';
-  Form38.ShowModal; // Ok
-  //
+  frmRelProdMonofasicoCupom := TfrmRelProdMonofasicoCupom.Create(nil);
+  try
+    frmRelProdMonofasicoCupom.Transaction := IBTransaction1;
+    frmRelProdMonofasicoCupom.Usuario     := UsuarioLogado;
+    frmRelProdMonofasicoCupom.Imagem      := imgImprimir.Picture;
+    frmRelProdMonofasicoCupom.ShowModal;
+  finally
+    FreeAndNil(frmRelProdMonofasicoCupom);
+  end;
 end;
 
 procedure TForm7.ibDataSet4CFSetText(Sender: TField; const Text: String);
@@ -31628,14 +31630,15 @@ end;
 
 procedure TForm7.RelatriodeprodutosmonofsicosNFe1Click(Sender: TObject);
 begin
-  sModuloAnterior := sModulo;
-
-  Form38.Label2.Visible := True;
-  Form38.Label3.Visible := True;
-  Form38.DateTimePicker1.Visible := True;
-  Form38.DateTimePicker2.Visible := True;
-  Form7.sModulo := 'Relatório de produtos monofásicos (NF-e)';
-  Form38.ShowModal; // Ok
+  frmRelProdMonofasicoNota := TfrmRelProdMonofasicoNota.Create(nil);
+  try
+    frmRelProdMonofasicoNota.Transaction := IBTransaction1;
+    frmRelProdMonofasicoNota.Usuario     := UsuarioLogado;
+    frmRelProdMonofasicoNota.Imagem      := imgImprimir.Picture;
+    frmRelProdMonofasicoNota.ShowModal;
+  finally
+    FreeAndNil(frmRelProdMonofasicoNota);
+  end;
 end;
 
 procedure TForm7.DuplicatestaNFe1Click(Sender: TObject);

@@ -19,6 +19,7 @@ type
     cbNFeEntrada: TCheckBox;
     cbNFCeSAT: TCheckBox;
     cbIncluirRelatorio: TCheckBox;
+    cbIncluirRelMonofasicos: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -65,7 +66,8 @@ begin
   cbNFeEntrada.Checked       := FoArqDat.NFe.XML.NFeEntrada;
   cbNFCeSAT.Checked          := FoArqDat.NFe.XML.NFCe;
   edtEmailContab.Text        := FoArqDat.NFe.XML.EmailContabilidade;
-  cbIncluirRelatorio.Checked := FoArqDat.NFe.XML.IncluirRelatorioTotalizador;  
+  cbIncluirRelatorio.Checked := FoArqDat.NFe.XML.IncluirRelatorioTotalizador;
+  cbIncluirRelMonofasicos.Checked := FoArqDat.NFe.XML.IncluirRelatorioMonofasicos;
 end;
 
 procedure TfrmConfigEmailAutContab.FormActivate(Sender: TObject);
@@ -83,6 +85,7 @@ begin
   FoArqDat.NFe.XML.NFCe               := cbNFCeSAT.Checked;
   FoArqDat.NFe.XML.EmailContabilidade := edtEmailContab.Text;
   FoArqDat.NFe.XML.IncluirRelatorioTotalizador := cbIncluirRelatorio.Checked;
+  FoArqDat.NFe.XML.IncluirRelatorioMonofasicos := cbIncluirRelMonofasicos.Checked;
 end;
 
 function TfrmConfigEmailAutContab.FazVerificacoes: Boolean;
@@ -174,18 +177,20 @@ end;
 
 procedure TfrmConfigEmailAutContab.cbAtivarEnvioClick(Sender: TObject);
 begin
-  cbNFeSaida.Enabled         := cbAtivarEnvio.Checked;
-  cbNFeEntrada.Enabled       := cbAtivarEnvio.Checked;
-  cbNFCeSAT.Enabled          := cbAtivarEnvio.Checked;
-  edtEmailContab.Enabled     := cbAtivarEnvio.Checked;
-  cbIncluirRelatorio.Enabled := cbAtivarEnvio.Checked;
+  cbNFeSaida.Enabled              := cbAtivarEnvio.Checked;
+  cbNFeEntrada.Enabled            := cbAtivarEnvio.Checked;
+  cbNFCeSAT.Enabled               := cbAtivarEnvio.Checked;
+  edtEmailContab.Enabled          := cbAtivarEnvio.Checked;
+  cbIncluirRelatorio.Enabled      := cbAtivarEnvio.Checked;
+  cbIncluirRelMonofasicos.Enabled := cbAtivarEnvio.Checked;
 
   if (not cbAtivarEnvio.Checked) then
   begin
-    cbNFeSaida.Checked         := False;
-    cbNFeEntrada.Checked       := False;
-    cbNFCeSAT.Checked          := False;
-    cbIncluirRelatorio.Checked := False;
+    cbNFeSaida.Checked              := False;
+    cbNFeEntrada.Checked            := False;
+    cbNFCeSAT.Checked               := False;
+    cbIncluirRelatorio.Checked      := False;
+    cbIncluirRelMonofasicos.Checked := False;
   end;
 end;
 

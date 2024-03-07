@@ -166,10 +166,13 @@ begin
   else
     FlsImpressao.Add('<br>');
 
-  FlsImpressao.Add('<br><font size=4 color=#000000><b>' + FcTitulo + '</b></font><br></center><br>');
-  FlsImpressao.Add('<center>');
-  FlsImpressao.Add('<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-  FlsImpressao.Add(' <tr>');
+  if FcTitulo <> EmptyStr then
+  begin
+    FlsImpressao.Add('<br><font size=4 color=#000000><b>' + FcTitulo + '</b></font><br></center><br>');
+    FlsImpressao.Add('<center>');
+    FlsImpressao.Add('<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+    FlsImpressao.Add(' <tr>');
+  end;
 end;
 
 procedure TEstruturaTipoRelatorioPadrao.MontaDadosHTML;
@@ -580,8 +583,8 @@ begin
   if FoArquivoDAT.Usuario.Html.TipoRelatorio in [ttiHTML, ttiPDF] then
   begin
     QryEmitente := TDadosEmitente.New
-                                  .setDataBase(FoDataBase)
-                                  .getQuery;
+                                 .setDataBase(FoDataBase)
+                                 .getQuery;
 
     FlsImpressao.Add(TLayoutHTMLRelatorio.RetornarCabecalho(QryEmitente.FieldByName('NOME').AsString));
   end;

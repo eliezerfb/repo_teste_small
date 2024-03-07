@@ -494,7 +494,28 @@
         <DCCReference Include="ufrmFichaCadastros.pas">
             <Form>FrmFichaCadastros</Form>
         </DCCReference>
-        <DCCReference Include="units\uDesenhaBoleto.pas"/>
+        <DCCReference Include="units\uDesenhaBoleto.pas"/>        
+        <DCCReference Include="ufrmRelatorioProdMonofasicoCupom.pas">
+            <Form>frmRelProdMonofasicoCupom</Form>
+        </DCCReference>
+        <DCCReference Include="interfaces\uIGeraRelatorioProdMonofasico.pas"/>
+        <DCCReference Include="units\uGeraRelatorioProdMonofasicoCupom.pas"/>
+        <DCCReference Include="units\uEstruturaRelProdMonofasicoCupom.pas"/>
+        <DCCReference Include="units\udmRelProdMonofasicoCupom.pas">
+            <Form>dmRelProdMonofasicoCupom</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="ufrmRelatorioProdMonofasicoNota.pas">
+            <Form>frmRelProdMonofasicoNota</Form>
+        </DCCReference>
+        <DCCReference Include="units\uGeraRelatorioProdMonofasicoNota.pas"/>
+        <DCCReference Include="units\udmRelProdMonofasicoNota.pas">
+            <Form>dmRelProdMonofasicoNota</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="units\uEstruturaRelProdMonofasicoNota.pas"/>
+        <DCCReference Include="interfaces\uIGeraRelatorioProdMonofasicoCupomNota.pas"/>
+        <DCCReference Include="units\uGeraRelatorioProdMonofasicoCupomNota.pas"/>
         <DCCReference Include="units\uSistema.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

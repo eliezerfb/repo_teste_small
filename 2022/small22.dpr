@@ -224,6 +224,17 @@ uses
   uEmail in '..\..\unit_compartilhada\uEmail.pas',
   ufrmFichaCadastros in 'ufrmFichaCadastros.pas' {FrmFichaCadastros},
   uDesenhaBoleto in 'units\uDesenhaBoleto.pas',
+  ufrmRelatorioProdMonofasicoCupom in 'ufrmRelatorioProdMonofasicoCupom.pas' {frmRelProdMonofasicoCupom},
+  uIGeraRelatorioProdMonofasico in 'interfaces\uIGeraRelatorioProdMonofasico.pas',
+  uGeraRelatorioProdMonofasicoCupom in 'units\uGeraRelatorioProdMonofasicoCupom.pas',
+  uEstruturaRelProdMonofasicoCupom in 'units\uEstruturaRelProdMonofasicoCupom.pas',
+  udmRelProdMonofasicoCupom in 'units\udmRelProdMonofasicoCupom.pas' {dmRelProdMonofasicoCupom: TDataModule},
+  ufrmRelatorioProdMonofasicoNota in 'ufrmRelatorioProdMonofasicoNota.pas' {frmRelProdMonofasicoNota},
+  uGeraRelatorioProdMonofasicoNota in 'units\uGeraRelatorioProdMonofasicoNota.pas',
+  udmRelProdMonofasicoNota in 'units\udmRelProdMonofasicoNota.pas' {dmRelProdMonofasicoNota: TDataModule},
+  uEstruturaRelProdMonofasicoNota in 'units\uEstruturaRelProdMonofasicoNota.pas',
+  uIGeraRelatorioProdMonofasicoCupomNota in 'interfaces\uIGeraRelatorioProdMonofasicoCupomNota.pas',
+  uGeraRelatorioProdMonofasicoCupomNota in 'units\uGeraRelatorioProdMonofasicoCupomNota.pas',
   uSistema in 'units\uSistema.pas';
 
 {$R *.RES}
