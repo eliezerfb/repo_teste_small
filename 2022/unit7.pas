@@ -20900,7 +20900,7 @@ procedure TForm7.MenuItem183Click(Sender: TObject);
 begin
   ImprimirNF3.Visible                     := (TestarNFeHomologacao);
   //
-  ImprimirNF3.Caption := 'Imprimir NF número '+ Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) +' de '+Form7.ibDataSet24FORNECEDOR.AsString;
+  //ImprimirNF3.Caption := 'Imprimir NF número '+ Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) +' de '+Form7.ibDataSet24FORNECEDOR.AsString;
   DevolverNF1.Caption := 'Devolver NF número '+ Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) +' de '+Form7.ibDataSet24FORNECEDOR.AsString;
   //
   if FileExists(Form1.sAtual+'\CaulculoDoCustoDaUlimtaNota.txt') then ClculodoCustodaltimaNota1.Enabled := True else ClculodoCustodaltimaNota1.Enabled := False;

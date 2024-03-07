@@ -19921,7 +19921,7 @@ object Form7: TForm7
         Caption = '-'
       end
       object ImprimirNF3: TMenuItem
-        Caption = 'Imprimir NF'
+        Caption = 'Imprimir a NF em formul'#225'rio cont'#237'nuo'
         OnClick = ImprimirNF3Click
       end
       object GerarNFedeentrada1: TMenuItem
