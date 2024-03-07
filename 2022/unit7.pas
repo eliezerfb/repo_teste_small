@@ -14977,7 +14977,7 @@ begin
   Form7.EnvioaoFISCOREDUOZ1.Visible := True;
   ImprimiraNFemformulrionumerado1.Visible := (TestarNFeHomologacao);
   ImprimirtodasasNFfiltradas1.Visible     := (TestarNFeHomologacao);
-  ImprimirNF3.Visible                     := True;
+  ImprimirNF3.Visible                     := (TestarNFeHomologacao);
   //
   if FileExists(Form1.sAtual+'\orca.exe') then
   begin
@@ -20898,6 +20898,7 @@ end;
 
 procedure TForm7.MenuItem183Click(Sender: TObject);
 begin
+  ImprimirNF3.Visible                     := (TestarNFeHomologacao);
   //
   ImprimirNF3.Caption := 'Imprimir NF número '+ Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) +' de '+Form7.ibDataSet24FORNECEDOR.AsString;
   DevolverNF1.Caption := 'Devolver NF número '+ Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) +' de '+Form7.ibDataSet24FORNECEDOR.AsString;
