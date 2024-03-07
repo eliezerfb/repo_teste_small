@@ -247,7 +247,7 @@ begin
         {Sandro Silva 2023-05-25 inicio}
         //if oItem.Icm = 0.00 then
         //begin
-        if (oItem.Vicms > 0.00) and (oItem.Vbc > 0.00) then
+        if (oItem.Vicms > 0.00) and (oItem.Vbc > 0.00) and (oItem.Icm <= 0) then
         begin
           // Descobre o percentual de ICMS
           //oItem.Icm := Arredonda((oItem.Vicms / oItem.Vbc) * 100, 2);

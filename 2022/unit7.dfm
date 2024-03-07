@@ -15866,11 +15866,6 @@ object Form7: TForm7
       FieldName = 'PESO'
       Visible = False
     end
-    object ibDataSet16ICM: TFloatField
-      DisplayLabel = '% ICMS'
-      FieldName = 'ICM'
-      Visible = False
-    end
     object ibDataSet16ISS: TFloatField
       DisplayLabel = '% ISS'
       FieldName = 'ISS'
@@ -15915,24 +15910,30 @@ object Form7: TForm7
       Visible = False
       Size = 10
     end
-    object ibDataSet16VICMS: TIBBCDField
-      DisplayLabel = 'Valor do ICMS'
-      FieldName = 'VICMS'
-      Origin = 'ITENS001.VICMS'
-      Visible = False
-      Precision = 18
-      Size = 2
-    end
     object ibDataSet16VBC: TIBBCDField
-      DisplayLabel = 'BC Icms'
+      DisplayLabel = 'R$ BC ICMS'
       FieldName = 'VBC'
       Origin = 'ITENS001.VBC'
       Visible = False
       Precision = 18
       Size = 2
     end
+    object ibDataSet16VICMS: TIBBCDField
+      DisplayLabel = 'R$ ICMS'
+      FieldName = 'VICMS'
+      Origin = 'ITENS001.VICMS'
+      Visible = False
+      Precision = 18
+      Size = 2
+    end
+    object ibDataSet16ICM: TFloatField
+      DisplayLabel = '% ICMS'
+      FieldName = 'ICM'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+    end
     object ibDataSet16VBCST: TIBBCDField
-      DisplayLabel = 'BC ST'
+      DisplayLabel = 'R$ BC ST'
       FieldName = 'VBCST'
       Origin = 'ITENS001.VBCST'
       Visible = False
@@ -15940,9 +15941,17 @@ object Form7: TForm7
       Size = 2
     end
     object ibDataSet16VICMSST: TIBBCDField
-      DisplayLabel = 'Valor ICMS ST'
+      DisplayLabel = 'R$ ICMS ST'
       FieldName = 'VICMSST'
       Origin = 'ITENS001.VICMSST'
+      Visible = False
+      Precision = 18
+      Size = 2
+    end
+    object ibDataSet16VIPI: TIBBCDField
+      DisplayLabel = 'R$ IPI'
+      FieldName = 'VIPI'
+      Origin = 'ITENS001.VIPI'
       Visible = False
       Precision = 18
       Size = 2
@@ -15951,14 +15960,6 @@ object Form7: TForm7
       DisplayLabel = '% IPI'
       FieldName = 'IPI'
       Visible = False
-    end
-    object ibDataSet16VIPI: TIBBCDField
-      DisplayLabel = 'Valor IPI'
-      FieldName = 'VIPI'
-      Origin = 'ITENS001.VIPI'
-      Visible = False
-      Precision = 18
-      Size = 2
     end
     object ibDataSet16CST_IPI: TIBStringField
       DisplayLabel = 'CST IPI'
@@ -16086,12 +16087,23 @@ object Form7: TForm7
       Size = 2
     end
     object ibDataSet16VBCFCPST: TIBBCDField
-      DisplayLabel = 'BC FCP ST'
+      DisplayLabel = 'R$ BC FCP ST'
       DisplayWidth = 19
       FieldName = 'VBCFCPST'
       Origin = 'ITENS001.VBCFCPST'
       Visible = False
       OnChange = ibDataSet16VBCFCPSTChange
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 15
+      Size = 2
+    end
+    object ibDataSet16VFCPST: TIBBCDField
+      DisplayLabel = 'R$ FCP ST'
+      DisplayWidth = 10
+      FieldName = 'VFCPST'
+      Origin = 'ITENS001.VFCPST'
+      Visible = False
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
       Precision = 15
@@ -16108,17 +16120,6 @@ object Form7: TForm7
       EditFormat = '##0.00'
       Precision = 15
       Size = 4
-    end
-    object ibDataSet16VFCPST: TIBBCDField
-      DisplayLabel = 'FCP ST'
-      DisplayWidth = 10
-      FieldName = 'VFCPST'
-      Origin = 'ITENS001.VFCPST'
-      Visible = False
-      DisplayFormat = '#,##0.00'
-      EditFormat = '##0.00'
-      Precision = 15
-      Size = 2
     end
   end
   object DataSource16: TDataSource
