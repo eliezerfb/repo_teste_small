@@ -249,37 +249,6 @@ uses
 
 implementation
 
-function _ecf14_VerificaRelatorioCadastrado(sTexto: String): Boolean;
-var
-  sDadosImpressora: AnsiString;
-  sRela: String;
-  slRela: TStringList;
-  i: Integer;
-begin
-  Result := False;
-
-  sDadosImpressora := Replicate(' ', 659);
-  ECF_VerificaRelatorioGerencialMFD(sDadosImpressora);
-  {
-  '0000                 ,0000Fechamento       ,0000IDENT DO PAF     ,0000VENDA PRAZO      ,0000CARTAO TEF       ,0000Saida Op.        ,0000DAV EMITIDOS     ,0000                 ,0000                 ,0000                 ,0000                 ,0000CONF MESA        ,0000TRANSF MESA      ,0000MESAS ABERTAS    ,0000PARAM CONFIG     ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0001PARÂMETROS ECF   '
-  }
-
-  slRela := TStringList.Create;
-  slRela.StrictDelimiter := True;
-  slRela.Delimiter       := ',';
-  slRela.DelimitedText   := PAnsiChar(AnsiString(sDadosImpressora));
-  for I := 0 to slRela.Count - 1 do
-  begin
-    if Pos(AnsiUpperCase(sTexto), AnsiUpperCase(slRela.Strings[i])) > 0 then
-    begin
-      Result := True;
-      Break;
-    end;
-  end;
-
-  FreeAndNil(slRela);
-end;
-
 Function _ecf14_TestaLigadaePapel(pP1:Boolean):Boolean;
 var
    iACK,iST1,iST2:integer;
@@ -462,6 +431,39 @@ end;
 function _ecf14_Inicializa(Pp1: String):Boolean;
 var
   I : Integer;
+  sDadosImpressora: AnsiString;
+  function _ecf14_VerificaRelatorioCadastrado(sTexto: String; sDadosImpressora: AnsiString): Boolean;
+  var
+    //
+    sRela: String;
+    slRela: TStringList;
+    i: Integer;
+  begin
+    Result := False;
+    if Trim(sDadosImpressora) = '' then
+    begin
+      sDadosImpressora := Replicate(' ', 659);
+      ECF_VerificaRelatorioGerencialMFD(sDadosImpressora);
+    end;
+    {
+    '0000                 ,0000Fechamento       ,0000IDENT DO PAF     ,0000VENDA PRAZO      ,0000CARTAO TEF       ,0000Saida Op.        ,0000DAV EMITIDOS     ,0000                 ,0000                 ,0000                 ,0000                 ,0000CONF MESA        ,0000TRANSF MESA      ,0000MESAS ABERTAS    ,0000PARAM CONFIG     ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0000                 ,0001PARÂMETROS ECF   '
+    }
+
+    slRela := TStringList.Create;
+    slRela.StrictDelimiter := True;
+    slRela.Delimiter       := ',';
+    slRela.DelimitedText   := PAnsiChar(AnsiString(sDadosImpressora));
+    for I := 0 to slRela.Count - 1 do
+    begin
+      if Pos(AnsiUpperCase(sTexto), AnsiUpperCase(slRela.Strings[i])) > 0 then
+      begin
+        Result := True;
+        Break;
+      end;
+    end;
+
+    FreeAndNil(slRela);
+  end;
 begin
   //
   // teste
@@ -520,48 +522,51 @@ begin
   ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('15'),PAnsiChar('PARAM CONFIG'));
   }
 
+  sDadosImpressora := Replicate(' ', 659);
+  ECF_VerificaRelatorioGerencialMFD(sDadosImpressora);// Lê os relatórios gerenciais do ECF
 
-  if _ecf14_VerificaRelatorioCadastrado('IDENT DO PAF') = False then
+
+  if _ecf14_VerificaRelatorioCadastrado('IDENT DO PAF', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('03'),PAnsiChar('IDENT DO PAF'));
 
-  if _ecf14_VerificaRelatorioCadastrado('VENDA PRAZO') = False then
+  if _ecf14_VerificaRelatorioCadastrado('VENDA PRAZO', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('04'),PAnsiChar('VENDA PRAZO'));
   // 2016-02-04 ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('05'),PAnsiChar('TEF'));
 
-  if _ecf14_VerificaRelatorioCadastrado('CARTAO TEF') = False then
+  if _ecf14_VerificaRelatorioCadastrado('CARTAO TEF', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('05'),PAnsiChar('CARTAO TEF'));
 
-  if _ecf14_VerificaRelatorioCadastrado('MEIOS DE PAGTO') = False then
+  if _ecf14_VerificaRelatorioCadastrado('MEIOS DE PAGTO', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('06'),PAnsiChar('MEIOS DE PAGTO'));
 
-  if _ecf14_VerificaRelatorioCadastrado('DAV EMITIDOS') = False then
+  if _ecf14_VerificaRelatorioCadastrado('DAV EMITIDOS', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('07'),PAnsiChar('DAV EMITIDOS'));
 
-  if _ecf14_VerificaRelatorioCadastrado('ORCAMENT (DAV)') = False then
+  if _ecf14_VerificaRelatorioCadastrado('ORCAMENT (DAV)', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('08'),PAnsiChar('ORCAMENT (DAV)'));
   // 2016-02-04 ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('09'),PAnsiChar('CONF CONTA'));
   // Sandro Silva 2016-02-11 ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('10'),PAnsiChar('TRANSF CONTA'));
   // Sandro Silva 2016-02-11 ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('11'),PAnsiChar('CONTAS ABERTAS'));
 
-  if _ecf14_VerificaRelatorioCadastrado('CONF CONTA CLI') = False then
+  if _ecf14_VerificaRelatorioCadastrado('CONF CONTA CLI', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('09'),PAnsiChar('CONF CONTA CLI')); // 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
 
-  if _ecf14_VerificaRelatorioCadastrado('TRANSF CONT CLI') = False then
+  if _ecf14_VerificaRelatorioCadastrado('TRANSF CONT CLI', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('10'),PAnsiChar('TRANSF CONT CLI')); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
 
-  if _ecf14_VerificaRelatorioCadastrado('CONT CLI ABERTA') = False then
+  if _ecf14_VerificaRelatorioCadastrado('CONT CLI ABERTA', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('11'),PAnsiChar('CONT CLI ABERTA')); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
 
-  if _ecf14_VerificaRelatorioCadastrado('CONF MESA') = False then
+  if _ecf14_VerificaRelatorioCadastrado('CONF MESA', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('12'),PAnsiChar('CONF MESA'));
 
-  if _ecf14_VerificaRelatorioCadastrado('TRANSF MESA') = False then
+  if _ecf14_VerificaRelatorioCadastrado('TRANSF MESA', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('13'),PAnsiChar('TRANSF MESA'));
 
-  if _ecf14_VerificaRelatorioCadastrado('MESAS ABERTAS') = False then
+  if _ecf14_VerificaRelatorioCadastrado('MESAS ABERTAS', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('14'),PAnsiChar('MESAS ABERTAS'));
 
-  if _ecf14_VerificaRelatorioCadastrado('PARAM CONFIG') = False then
+  if _ecf14_VerificaRelatorioCadastrado('PARAM CONFIG', sDadosImpressora) = False then
     ECF_NomeiaRelatorioGerencialMFD(PAnsiChar('15'),PAnsiChar('PARAM CONFIG'));
 
   //
