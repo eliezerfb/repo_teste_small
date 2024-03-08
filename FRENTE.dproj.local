@@ -4,12 +4,14 @@
     <Transaction>2024/01/19 16:39:38.000.489,D:\desenvolvimento\fontes\delphi\Small Commerce\Projeto-Frente-de-Caixa\base64code.pas=</Transaction>
     <Transaction>2024/01/23 11:39:16.000.040,=D:\desenvolvimento\fontes\delphi\Small Commerce\unit_compartilhada\uFuncaoMD5.pas</Transaction>
     <Transaction>2024/01/25 10:06:55.000.942,=D:\desenvolvimento\fontes\delphi\Small Commerce\Projeto-Frente-de-Caixa\usmallsat.pas</Transaction>
-    <Transaction>2024/02/26 16:33:05.987,=D:\desenvolvimento\fontes\delphi\Small Commerce\unit_compartilhada\uEmail.pas</Transaction>
-    <Transaction>2024/02/26 16:33:56.592,=D:\desenvolvimento\fontes\delphi\Small Commerce\unit_compartilhada\uTestaEmail.pas</Transaction>
-  </Transactions> 
+    <Transaction>2024/02/26 16:33:05.000.987,=D:\desenvolvimento\fontes\delphi\Small Commerce\unit_compartilhada\uEmail.pas</Transaction>
+    <Transaction>2024/02/26 16:33:56.000.592,=D:\desenvolvimento\fontes\delphi\Small Commerce\unit_compartilhada\uTestaEmail.pas</Transaction>
+  </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="..\..\Small Commerce"/>
     <File Path="..\unit_compartilhada"/>
+    <File Path="..\unit_compartilhada\interfaces"/>
+    <File Path="..\unit_compartilhada\interfaces\uITestaEmail.pas"/>
     <File Path="..\unit_compartilhada\uTypesRecursos.pas"/>
     <File Path="..\unit_compartilhada\uValidaRecursosDelphi7.pas"/>
     <File Path="..\unit_compartilhada\uRecursosSistema.pas"/>

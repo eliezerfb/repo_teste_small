@@ -5996,10 +5996,8 @@ begin
       if bExibirMensagem then
         Application.MessageBox(PChar(Chr(13) + 'Aguarde, não é possível enviar esta NFC-e no momento.' + Chr(13) +
         Chr(13) +
-        'Serviço Paralisado sem Previsão.' + Chr(13) +
-        IfThen(xmlNodeValue(sRetorno, '//xObs') <> '', xmlNodeValue(sRetorno, '//xObs') + Chr(13), '') + // Sandro Silva 2019-08-09
-        Chr(13) +
-        'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'), Unochapeco
+        'Serviço Paralisado sem Previsão.' +
+        IfThen(xmlNodeValue(sRetorno, '//xObs') <> '', Chr(13) + xmlNodeValue(sRetorno, '//xObs') + '.', '')),
         'Atenção', mb_Ok + MB_ICONWARNING);
       //
     end
@@ -6009,10 +6007,8 @@ begin
       if bExibirMensagem then
         Application.MessageBox(PChar(chr(13) +'Aguarde, não é possível enviar esta NFC-e no momento.'+Chr(13)+
         Chr(13)+
-        'Serviço Paralisado Momentaneamente (curto prazo).'+Chr(13)+
-        IfThen(xmlNodeValue(sRetorno, '//xObs') <> '', xmlNodeValue(sRetorno, '//xObs') + Chr(13), '') + // Sandro Silva 2019-08-09
-        chr(13)+
-        'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+        'Serviço Paralisado Momentaneamente (curto prazo).'+
+        IfThen(xmlNodeValue(sRetorno, '//xObs') <> '', Chr(13)+xmlNodeValue(sRetorno, '//xObs') + '.', '')),
         'Atenção', mb_Ok + MB_ICONWARNING);
       //
     end
@@ -6048,10 +6044,7 @@ begin
               +chr(10)+'    * E-CNPJ'
               +chr(10)+'2. Certificados Certisign A1 e A3'
               +chr(10)+'3. Certificados dos Correios A1 e A3'
-              +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-              +chr(10)
-              +chr(10)
-              +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+              +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'),
               'Atenção',mb_Ok + MB_ICONWARNING);
             //
           end else
@@ -6067,10 +6060,7 @@ begin
               +chr(10) +'Não foi possível acessar o servidor da receita.'
               +Chr(10)
               +chr(10)+'1 - Verifique sua conexão de internet'
-              +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...)'
-              + chr(10)
-              + chr(10)
-              +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+              +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...).'),
               'Atenção',mb_Ok + MB_ICONWARNING);
             //
           end; // if Pos('CERTIFICADO',Uppercase(sException)) <> 0 then
@@ -6494,10 +6484,7 @@ begin
                   +chr(10)+'    * E-CNPJ'
                   +chr(10)+'2. Certificados Certisign A1 e A3'
                   +chr(10)+'3. Certificados dos Correios A1 e A3'
-                  +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-                  +chr(10)
-                  +chr(10)
-                  +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                  +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'),
                   'Atenção',mb_Ok + MB_ICONWARNING);
                 //
                 Abort;
@@ -6518,10 +6505,7 @@ begin
                 +Chr(10)
                 +chr(10)+'1 - Verifique sua conexão de internet'
                 +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...)'
-                +chr(10)+'3 - Verifique seu certificado digital'
-                +chr(10)
-                +chr(10)
-                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                +chr(10)+'3 - Verifique seu certificado digital.'),
                 'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end;
@@ -6557,9 +6541,7 @@ begin
                 //
                 Application.MessageBox(PChar(chr(13) + 'Aguarde, não é possível enviar esta NFC-e no momento.' + Chr(13) +
                   Chr(13) +
-                  'Serviço Paralisado sem Previsão.' + Chr(13) +
-                  chr(13) +
-                  'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                  'Serviço Paralisado sem Previsão.'),
                   'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end
@@ -6571,9 +6553,7 @@ begin
                 //
                 Application.MessageBox(PChar(chr(13) + 'Aguarde, não é possível enviar esta NFC-e no momento.' + Chr(13) +
                   Chr(13)+
-                  'Serviço Paralisado Momentaneamente (curto prazo).' + Chr(13) +
-                  Chr(13)+
-                  'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                  'Serviço Paralisado Momentaneamente (curto prazo).'),
                   'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end
@@ -6597,10 +6577,7 @@ begin
                       +chr(10)+'1 - Verifique sua conexão de internet'
                       +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...)'
                       +chr(10)+'3 - Verifique seu certificado digital'
-                      + IfThen(Form1.spdNFCe1.NomeCertificado.Text = '', chr(10)+'4 - Selecione o certificado digital', '')
-                      +chr(10)
-                      +chr(10)
-                      +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                      + IfThen(Form1.spdNFCe1.NomeCertificado.Text = '', chr(10)+'4 - Selecione o certificado digital.', '.')),
                       'Atenção',mb_Ok + MB_ICONWARNING);
                    end else
                    begin
@@ -6660,10 +6637,7 @@ begin
                   +chr(10)+'    * E-CNPJ'
                   +chr(10)+'2. Certificados Certisign A1 e A3'
                   +chr(10)+'3. Certificados dos Correios A1 e A3'
-                  +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-                  +chr(10)
-                  +chr(10)
-                  +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                  +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'),
                   'Atenção',mb_Ok + MB_ICONWARNING);
                 //
                 Abort;
@@ -6684,10 +6658,7 @@ begin
                   +Chr(10)
                   +chr(10)+'1 - Verifique sua conexão de internet'
                   +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...)'
-                  +chr(10)+'3 - Verifique seu certificado digital'
-                  +chr(10)
-                  +chr(10)
-                  +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                  +chr(10)+'3 - Verifique seu certificado digital.'),
                   'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end;
