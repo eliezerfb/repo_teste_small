@@ -9562,10 +9562,7 @@ begin
                           +chr(10)+'    * E-CNPJ'
                           +chr(10)+'2. Certificados Certisign A1 e A3'
                           +chr(10)+'3. Certificados dos Correios A1 e A3'
-                          +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-                          +chr(10)
-                          +chr(10)
-                          +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'),  // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                          +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'),
                           'Atenção',mb_Ok + MB_ICONWARNING);
             end;
             //
@@ -23948,10 +23945,7 @@ begin
                     +chr(10)+'    * E-CNPJ'
                     +chr(10)+'2. Certificados Certisign A1 e A3'
                     +chr(10)+'3. Certificados dos Correios A1 e A3'
-                    +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-                    +chr(10)
-                    +chr(10)
-                    +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                    +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'),
                     'Atenção',mb_Ok + MB_ICONWARNING);
         Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
           Form1.ClienteSmallMobile.sLogRetornoMobile);
