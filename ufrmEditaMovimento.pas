@@ -51,7 +51,7 @@ type
     FEditFormatUnitario: String;
     FEditFormatQuantidade: String;
     aItemEdicaoBloqueada: array of String;
-    bBloquearTodaColunaQuantidades: Boolean; // Sandro Silva 2023-12-03
+    bBloquearTodaColunaQuantidades: Boolean;// Sandro Silva 2023-12-03
     function TotalizaMovimento(DataSet: TDataSet): Double;
     function ItemCancelado(Field: TField): Boolean;
     function NaoEditavel(Field: TField): Boolean;
@@ -59,10 +59,11 @@ type
     function ItemComEdicaoTabelaAlteracaBloqueada(sItem: String): Boolean;
     function ProdutoComEstoqueNegativo(IBTransaction: TIBTransaction;
       sCodigo: String): Boolean;
+    procedure setCaixa(const Value: String);
   public
     { Public declarations }
     property Pedido: String read FPedido write FPedido;
-    property Caixa: String read FCaixa write FCaixa;
+    property Caixa: String read FCaixa write setCaixa;
     function SelectSqlAlteracaEdicao: String;
     function SelecionaItens: Boolean;
   end;
@@ -497,12 +498,34 @@ end;
 
 function TFEditaMovimento.SelectSqlAlteracaEdicao: String;
 begin
+  { 2024-03-08
   Result :=
     'select * ' +
     'from ALTERACA ' +
     'where PEDIDO = ' + QuotedStr(FPedido) +
     ' and CAIXA = ' + QuotedStr(FCaixa) +
     ' order by REGISTRO';
+
+  }
+  if FCaixa = '' then  // Quando é mesa/conta
+    Result :=
+      'select * ' +
+      'from ALTERACA ' +
+      'where PEDIDO = ' + QuotedStr(FPedido) +
+      ' and (TIPO = ''MESA'' or TIPO = ''DEKOL'') ' +
+      ' order by REGISTRO'
+  else
+    Result :=
+      'select * ' +
+      'from ALTERACA ' +
+      'where PEDIDO = ' + QuotedStr(FPedido) +
+      ' and CAIXA = ' + QuotedStr(FCaixa) +
+      ' order by REGISTRO';
+end;
+
+procedure TFEditaMovimento.setCaixa(const Value: String);
+begin
+  FCaixa := Value;
 end;
 
 function TFEditaMovimento.SelecionaItens: Boolean;

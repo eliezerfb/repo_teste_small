@@ -20153,6 +20153,17 @@ begin
       end;
     end;
     //
+
+    {Sandro Silva 20234-03-08 inicio}
+    if Form1.Memo1.Visible then // Quando tem cupom aberto não
+    begin
+      if (Shift = [ssCtrl]) and ((Key = 69) or (Key = 101)) then // Ctrl + E/e
+        AbreEdicaoMovimento;
+    end;
+    {Sandro Silva 2024-03-08 fim}
+    //
+
+
   end else
   begin
     //
@@ -35429,8 +35440,11 @@ end;
 procedure TForm1.AbreEdicaoMovimento;
 var
   IBQTEMP: TIBQuery;
+  sSelectItens: String;
 begin
-  if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
+  //2024-03-08 if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
+  // Permite editar a venda quando é NFC-e/SAT/Gerencial ou mesa/conta com NFC-e/SAT/Gerencial
+  if (Form1.sModeloECF_Reserva <> '59') and (Form1.sModeloECF_Reserva <> '65')  and (Form1.sModeloECF_Reserva <> '99')  then
     Exit;
 
   if SenhaAdministradorOk = False then
@@ -35442,6 +35456,7 @@ begin
 
     Commitatudo(True);
 
+    { Sandro Silva 2024-03-08
     IBQTEMP.Close;
     IBQTEMP.SQL.Text :=
       'select first 1 distinct PEDIDO ' +
@@ -35449,15 +35464,37 @@ begin
       'where PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) +
       ' and CAIXA = ' + QuotedStr(Form1.sCaixa);
     IBQTEMP.Open;
+    }
+
+    if Form1.sModeloECF = '01' then // Quando é mesa/conta
+      sSelectItens :=
+        'select first 1 distinct PEDIDO ' +
+        'from ALTERACA ' +
+        'where PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) +
+        ' and (TIPO = ''MESA'' or TIPO = ''DEKOL'')'
+    else
+      sSelectItens :=
+        'select first 1 distinct PEDIDO ' +
+        'from ALTERACA ' +
+        'where PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) +
+        ' and CAIXA = ' + QuotedStr(Form1.sCaixa);
+
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text := sSelectItens;
+    IBQTEMP.Open;
 
     if IBQTEMP.FieldByName('PEDIDO').AsString = '' then
-      Exit;  
+      Exit;
 
     Timer2.Enabled := False;
 
     Application.CreateForm(TFEditaMovimento, FEditaMovimento);
     FEditaMovimento.Pedido := FormataNumeroDoCupom(Form1.icupom);
-    FEditaMovimento.Caixa  := Form1.sCaixa;
+    //2024-03-08 FEditaMovimento.Caixa  := Form1.sCaixa;
+    if Form1.sModeloECF = '01' then
+      FEditaMovimento.Caixa  := ''
+    else
+      FEditaMovimento.Caixa  := Form1.sCaixa;
     if FEditaMovimento.SelecionaItens then
       FEditaMovimento.ShowModal;
   finally
