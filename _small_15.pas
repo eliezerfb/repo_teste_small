@@ -1100,7 +1100,7 @@ begin
 
   szTabelaRelatoriosGerenciais := AnsiString(StringOfChar(' ', 421));
   //iRetorno :=
-  EPSON_Obter_Tabela_Relatorios_Gerenciais (PAnsiChar(szTabelaRelatoriosGerenciais));
+  EPSON_Obter_Tabela_Relatorios_Gerenciais(PAnsiChar(szTabelaRelatoriosGerenciais));
 
   //O buffer retornado na variável pszTabelaRelatoriosGerencias, é composto por 20 sequencias de 420 caracteres cada.
   //Cada sequência corresponderá a um dos 20 Relatórios Gerenciais possíveis de serem cadastradas no ECF,
@@ -1167,7 +1167,7 @@ end;
 // ------------------------------ //
 function _ecf15_CancelaItemN(pP1, pP2 : String):Boolean;
 begin
-  iRetorno := EPSON_Fiscal_Cancelar_Item (PAnsiChar(AnsiString(IntToStr(StrToInt(pP1))))); // 2024-03-05 iRetorno := EPSON_Fiscal_Cancelar_Item (PAnsiChar(IntToStr(StrToInt(pP1))));
+  iRetorno := EPSON_Fiscal_Cancelar_Item(PAnsiChar(AnsiString(IntToStr(StrToInt(pP1))))); // 2024-03-05 iRetorno := EPSON_Fiscal_Cancelar_Item (PAnsiChar(IntToStr(StrToInt(pP1))));
   _ecf15_codeErro(iRetorno,'');
   if iRetorno = 0 then Result := True else Result := False;
   // ------------------------------------------------------------------ //
@@ -1507,7 +1507,7 @@ var
   iTamBuff: DWord;
   pszDados: AnsiString;// Sandro Silva 2024-03-05 array[0..1024] of AnsiChar;
 begin
-  //pszDados := AnsiString(StringOfChar(' ', 1024));
+  pszDados := AnsiString(StringOfChar(' ', 1024));
   if Form1.sTipo = 'c' then
   begin
     if Length(pP1) = 6 then
@@ -2448,8 +2448,8 @@ end;
 function _ecf15_DadosDaUltimaReducao(pP1: Boolean): String; //
 var
   I : Integer;
-  sRetorno : String;
-  sTotal, sI, sN, sS : STring;
+  sRetorno : AnsiString;
+  sTotal, sI, sN, sS : String;
 begin
   //
   sRetorno := Replicate(' ',1167);
