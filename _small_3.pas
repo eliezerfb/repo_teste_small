@@ -863,7 +863,7 @@ begin
       setlength(sRetorno,4);
       // sRetorno := Replicate(' ',4);
       // sRetorno := '    ';
-      _ecf03.Daruma_FI_RetornaErroExtendido(sRetorno);
+      _ecf03.Daruma_FI_RetornaErroExtendido(AnsiString(sRetorno)); // 2024-03-11 _ecf03.Daruma_FI_RetornaErroExtendido(sRetorno);
       //
       if StrToInt(sRetorno) = 42 then
       begin
@@ -941,7 +941,7 @@ begin
   begin
     //
     _ecf03.Daruma_Registry_Porta(AnsiString(pP1)); // Sandro Silva 2023-12-13 _ecf03.Daruma_Registry_Porta(pchar(pP1));
-    Retorno := _ecf03.Daruma_FI_NumeroSerie(sString);
+    Retorno := _ecf03.Daruma_FI_NumeroSerie(AnsiString(sString)); // 2024-03-11 Retorno := _ecf03.Daruma_FI_NumeroSerie(sString);
     //
     for I := 1 to 7 do
     begin
@@ -949,7 +949,7 @@ begin
       begin
         ShowMessage('DARUMA'+Chr(10)+'Testando COM'+StrZero(I,1,0));
         _ecf03.Daruma_Registry_Porta(AnsiString('COM'+StrZero(I,1,0))); // Sandro Silva 2023-12-13 _ecf03.Daruma_Registry_Porta(pchar('COM'+StrZero(I,1,0)));
-        Retorno := _ecf03.Daruma_FI_NumeroSerie(sString);
+        Retorno := _ecf03.Daruma_FI_NumeroSerie(AnsiString(sString)); //2024-03-11 Retorno := _ecf03.Daruma_FI_NumeroSerie(sString);
         if Retorno = 1 then
           Form1.sPorta := 'COM'+StrZero(I,1,0);
       end;
@@ -1113,10 +1113,11 @@ begin
   }
   if (AllTrim(sNomeCliente)<>'') or (AllTrim(sCNPJCPF)<>'') then
   begin
-    _ecf03.Daruma_FI_IdentificaConsumidor(Copy(AllTrim(sNomeCliente), 1, 35),AllTrim(sEndereco1)+ ' ' +AllTrim(sEndereco2),AllTrim(sCNPJCPF)); // Identifica o consumidor // Sandro Silva 2019-08-09 _ecf03.Daruma_FI_IdentificaConsumidor(AllTrim(sNomeCliente),AllTrim(sEndereco1)+ ' ' +AllTrim(sEndereco2),AllTrim(sCNPJCPF)); // Identifica o consumidor
+    //2024-03-11 _ecf03.Daruma_FI_IdentificaConsumidor(Copy(AllTrim(sNomeCliente), 1, 35),AllTrim(sEndereco1)+ ' ' +AllTrim(sEndereco2),AllTrim(sCNPJCPF)); // Identifica o consumidor // Sandro Silva 2019-08-09 _ecf03.Daruma_FI_IdentificaConsumidor(AllTrim(sNomeCliente),AllTrim(sEndereco1)+ ' ' +AllTrim(sEndereco2),AllTrim(sCNPJCPF)); // Identifica o consumidor
+    _ecf03.Daruma_FI_IdentificaConsumidor(AnsiString(Copy(AllTrim(sNomeCliente), 1, 35)), AnsiString(Trim(sEndereco1)+ ' ' + Trim(sEndereco2)), AnsiString(Trim(sCNPJCPF)));
   end;
   {Sandro Silva 2017-11-13 final HOMOLOGA 2017}
-  _ecf03.Daruma_FI_TerminaFechamentoCupom('MD5: '+Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional));
+  _ecf03.Daruma_FI_TerminaFechamentoCupom(AnsiString('MD5: '+Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional)));//2024-03-11 _ecf03.Daruma_FI_TerminaFechamentoCupom('MD5: '+Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional));
   //
   Result := True;
   //
@@ -1128,7 +1129,11 @@ end;
 // --------------------- //
 function _ecf03_CancelaUltimoItem(Pp1: Boolean):Boolean;
 begin
-  if _ecf03_codeErro(_ecf03.Daruma_FI_CancelaItemAnterior()) = 0 then Result := True else Result := False;
+  // 2024-03-11 if _ecf03_codeErro(_ecf03.Daruma_FI_CancelaItemAnterior()) = 0 then Result := True else Result := False;
+  if _ecf03_codeErro(_ecf03.Daruma_FI_CancelaItemAnterior()) = 0 then
+    Result := True
+  else
+    Result := False;
 end;
 
 // ---------------------- //
@@ -1137,7 +1142,10 @@ end;
 function _ecf03_CancelaUltimoCupom(Pp1: Boolean):Boolean;
 begin
 //  if _ecf03_codeErro(Daruma_FI_CancelaCupom()) = 0 then Result := True else Result := False;
-  if _ecf03.Daruma_FI_CancelaCupom() = 1 then Result := True else Result := False;
+  if _ecf03.Daruma_FI_CancelaCupom() = 1 then
+    Result := True
+  else
+    Result := False;
   if Result = False then
     ShowMessage('Cancelamento não permitido'); // Sandro Silva 2018-10-18
 end;
@@ -1152,14 +1160,18 @@ begin
   sSubTotal := Replicate(' ',14);
   //
 
-  if _ecf03.Daruma_FI_SubTotal(sSubTotal) = 1 then
+  if _ecf03.Daruma_FI_SubTotal(AnsiString(sSubTotal)) = 1 then //2024-03-11if _ecf03.Daruma_FI_SubTotal(sSubTotal) = 1 then
   begin
     //
     Result  := StrToFloat(sSubTotal) / 100;
-    if form1.ConfPreco = '1' then Result  := StrToFloat(sSubTotal) / 10;
-    if form1.ConfPreco = '2' then Result  := StrToFloat(sSubTotal) / 100;
-    if form1.ConfPreco = '3' then Result  := StrToFloat(sSubTotal) / 1000;
-    if form1.ConfPreco = '4' then Result  := StrToFloat(sSubTotal) / 10000;
+    if form1.ConfPreco = '1' then
+      Result  := StrToFloat(sSubTotal) / 10;
+    if form1.ConfPreco = '2' then Result  :=
+      StrToFloat(sSubTotal) / 100;
+    if form1.ConfPreco = '3' then Result  :=
+      StrToFloat(sSubTotal) / 1000;
+    if form1.ConfPreco = '4' then Result  :=
+      StrToFloat(sSubTotal) / 10000;
     //
   end
   else
@@ -1194,7 +1206,7 @@ function _ecf03_NumeroDoCupom(Pp1: Boolean):String;
 begin
   SetLEngth(Result,6);
   Result := '000000';
-  _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroCupom(Result));
+  _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroCupom(AnsiString(Result))); //2024-03-11 _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroCupom(Result));
   Result := LimpaNumero(Result);
 end;
 
@@ -1205,7 +1217,7 @@ end;
 function _ecf03_ccF(Pp1: Boolean):String;
 begin
   Result := Replicate('0',6);
-  _ecf03.Daruma_FIMFD_RetornaInformacao('30',Result);
+  _ecf03.Daruma_FIMFD_RetornaInformacao('30',Result); aqui
 end;
 
 // ------------------------------------------------------------------------- //
