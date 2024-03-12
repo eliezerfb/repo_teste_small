@@ -584,6 +584,7 @@ type
     procedure BloqueiaCamposAbaTAGs(AbBloquear: Boolean);
     procedure BloqueiaCamposAbaMarketPlace(AbBloquear: Boolean);
     procedure BloqueiaCamposAbaGrade(AbBloquear: Boolean);
+    function RetornarDescrCaracTagsObs: String;
   public
     { Public declarations }
 
@@ -1656,7 +1657,7 @@ begin
         dBGrid1.Font       := Font;
         dBGrid1.DataSource := Form7.DataSource12; // Convênios
       end;
- 
+
       if ((vDataField = 'NOME') and (Form7.sModulo = 'RECEBER'))
         or ((vDataField = 'NOME') and (Form7.sModulo = 'PAGAR'  )) then
       begin
@@ -1668,9 +1669,9 @@ begin
         dBGrid1.Font       := Font;
         dBGrid1.DataSource := Form7.DataSource2; // Clifor
       end;
- 
+
       dBgrid3.Columns.Items[1].Visible   := False;
- 
+
       if (vDataField = 'CONVENIO') and (Form7.sModulo = 'CLIENTES') then
       begin
         dBGrid3.Visible    := True;
@@ -1855,7 +1856,7 @@ begin
         dBGrid3.Width      := Width;
         dBGrid3.Font       := Font;
         dBGrid3.DataSource := Form7.DSConsulta;
-        dBgrid3.Columns.Items[0].FieldName := 'NOME';        
+        dBgrid3.Columns.Items[0].FieldName := 'NOME';
         dBGrid3.Columns[0].Width := 310;
       end;
       {Sandro Silva 2023-06-21 fim}
@@ -2028,7 +2029,7 @@ begin
               TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
               TSMALL_DBEdit(Sender).Field.DataSet.Post;
             end else
-              TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);            
+              TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
           end;
         end;
       end;
@@ -2219,7 +2220,7 @@ begin
   eLimiteCredDisponivel.Text := EmptyStr;
   if not Self.Showing then
     Exit;
-  
+
   if (Form7.sModulo = 'CLIENTES') and (Form7.IBDataSet2CREDITO.AsCurrency > 0) then
   begin
     nValor := TRetornaLimiteDisponivel.New
@@ -2339,7 +2340,7 @@ var
   I, J : Integer;
 begin
   rQtd := 0;
-  
+
   for I := 0 to 19 do
     for J := 0 to 19 do
       if AllTrim(Form10.StringGrid1.Cells[I,J]) <> '' then
@@ -2364,7 +2365,7 @@ begin
       end;
     end;
   except StringGrid1.Cells[aCol,aRow] := '' end;
-  
+
   if ACol = 0 then
     StringGrid1.Canvas.Font.Color := clREd
     else
@@ -2405,7 +2406,7 @@ var
 begin
   if (StringGrid1.Col = 0) and (StringGrid1.Row = 0) then
     StringGrid1.Row := 1;
-  
+
   if (StringGrid1.Col <> 0) and (StringGrid1.Row <> 0) then
   begin
     iColunas := 0;
@@ -2511,37 +2512,37 @@ begin
   begin
     Button8.SetFocus;
     if Form7.ibDataSet25ACUMULADO1.AsFloat <= fQuantidade then
-    begin      
+    begin
       Form7.bFabrica := True;
-      
+
       sCodigo := Form7.ibDataSet4CODIGO.AsString;
-      
+
       Form7.ibDataSet4.DisableControls;
-      
+
       Form7.IBDataSet4.Close;
       Form7.IBDataSet4.SelectSQL.Clear;
       Form7.IBDataSet4.SelectSQL.Add('select * from ESTOQUE');
       Form7.IBDataSet4.Open;
-      
+
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
       Form7.ibDataSet4.EnableControls;
-      
+
       Form7.ibDataSet28.First;
       while not Form7.ibDataSet28.Eof do
       begin
         Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-        
+
         Form7.ibDataSet4.Edit;
         Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat - (Form7.ibDataSet28QUANTIDADE.AsFloat * Form7.ibDataSet25ACUMULADO1.AsFloat );
         Form7.ibDataSet4.Post;
-        
-        Form7.ibDataSet28.Next;        
+
+        Form7.ibDataSet28.Next;
       end;
-      
+
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
       Form7.ibDataSet4.Edit;
       Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + Form7.ibDataSet25ACUMULADO1.AsFloat;
-      
+
       if Form1.bHtml1 then
       begin
         AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
@@ -2550,7 +2551,7 @@ begin
         WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center>');
         WriteLn(F,'<img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
         WriteLn(F,'<br><font size=3 color=#000000><b>'+AllTrim(Form7.ibDataSet13NOME.AsString)+'</b></font><p><p>');
-        
+
         Writeln(F,'<p><font face="Microsoft Sans Serif" size=3><b>ORDEM DE PRODUÇÃO</b>');
         Writeln(F,'<br>');
         Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>FABRICAR '+FloatToStr(Form7.ibDataSet25ACUMULADO1.AsFloat)+ ' ' +UpperCase(Form7.ibDataSet4DESCRICAO.AsSTring)+'</b>');
@@ -2563,7 +2564,7 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Qtd X '+FloatToStr(Form7.ibDataSet25ACUMULADO1.AsFloat)+'</td>');
         WriteLn(F,' </tr>');
-        
+
         Form7.ibDataSet28.First;
         while not Form7.ibDataSet28.Eof do
         begin
@@ -2578,19 +2579,19 @@ begin
             Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%14.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat*Form7.ibDataSet25ACUMULADO1.AsFloat])+'</td>');
             WriteLn(F,' </tr>');
           end;
-          
+
           Form7.ibDataSet28.Next;
         end;
-        
+
         WriteLn(F,' </tr>');
         WriteLn(F,'</table>');
         WriteLn(F,'<br>');
         WriteLn(F,'</center><center><br><font face="Microsoft Sans Serif" size=1></b>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
         + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
         + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br></center>');
-        
+
         // WWW
-        
+
         if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
         begin
           WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -2598,13 +2599,13 @@ begin
         begin
           WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
         end;
-        
+
         if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
         WriteLn(F,'</html>');
-        
+
         CloseFile(F);
-        
-        AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));        
+
+        AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
       end else
       begin
         Form7.ibDataSet28.First;
@@ -2620,13 +2621,13 @@ begin
           Writeln(F,'');
           Writeln(F,'Cód   Descrição                               Qtd        Qtd X '+FloatToStr(Form7.ibDataSet25ACUMULADO1.AsFloat));
           Writeln(F,'----- --------------------------------------- ---------- --------------');
-          
+
           Form7.ibDataSet28.First;
           while not Form7.ibDataSet28.Eof do
           begin
-            
+
             Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-            
+
             if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
             begin
               Writeln(F,Form7.ibDataSet4CODIGO.AsString+' '
@@ -2634,10 +2635,10 @@ begin
                        +Format('%10.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat])+' '
                        +Format('%14.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat*Form7.ibDataSet25ACUMULADO1.AsFloat]));
             end;
-            
+
             Form7.ibDataSet28.Next;
           end;
-          
+
           // Totalizador
           Writeln(F,'----- --------------------------------------- ---------- --------------');
           Writeln(F,'');
@@ -2650,15 +2651,15 @@ begin
           WriteLn(F,'www.smallsoft.com.br');
           CloseFile(F);
           ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOWMAXIMIZED);
-        end;       
+        end;
       end;
-      
+
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
       Form7.ibDataSet4.EnableControls;
-      
+
       Form7.bFabrica := False;
-      
-    end else 
+
+    end else
     	//ShowMEssage('Não é possível fabricar essa quantidade.'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Não é possível fabricar essa quantidade.',msgAtencao);
   end;
@@ -2675,32 +2676,32 @@ begin
     if Form7.ibDataSet25ACUMULADO2.AsFloat <= Form7.ibDataSet4QTD_ATUAL.AsFloat then
     begin
       Form7.bFabrica := True;
-      
+
       sCodigo := Form7.ibDataSet4CODIGO.AsString;
       Form7.ibDataSet4.DisableControls;
-      
+
       Form7.IBDataSet4.Close;
       Form7.IBDataSet4.SelectSQL.Clear;
       Form7.IBDataSet4.SelectSQL.Add('select * from ESTOQUE');
       Form7.IBDataSet4.Open;
-      
+
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
-      
+
       Form7.ibDataSet28.First;
       while not Form7.ibDataSet28.Eof do
       begin
         Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-        
+
         Form7.ibDataSet4.Edit;
         Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + (Form7.ibDataSet28QUANTIDADE.AsFloat * Form7.ibDataSet25ACUMULADO2.AsFloat );
         Form7.ibDataSet4.Post;
         Form7.ibDataSet28.Next;
       end;
-      
+
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
       Form7.ibDataSet4.Edit;
       Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat - Form7.ibDataSet25ACUMULADO2.AsFloat;
-      
+
       if Form1.bHtml1 then
       begin
         AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
@@ -2709,7 +2710,7 @@ begin
         WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center>');
         WriteLn(F,'<img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
         WriteLn(F,'<br><font size=3 color=#000000><b>'+AllTrim(Form7.ibDataSet13NOME.AsString)+'</b></font><p><p>');
-        
+
         Writeln(F,'<p><font face="Microsoft Sans Serif" size=3><b>ORDEM DE PRODUÇÃO</b>');
         Writeln(F,'<br>');
         Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>DESMONTAR '+FloatToStr(Form7.ibDataSet25ACUMULADO2.AsFloat)+ ' ' +UpperCase(Form7.ibDataSet4DESCRICAO.AsSTring)+'</b>');
@@ -2722,12 +2723,12 @@ begin
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Quantidade</td>');
         WriteLn(F,'  <td bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>Qtd X '+FloatToStr(Form7.ibDataSet25ACUMULADO2.AsFloat)+'</td>');
         WriteLn(F,' </tr>');
-        
+
         Form7.ibDataSet28.First;
         while not Form7.ibDataSet28.Eof do
         begin
           Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-          
+
           if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
           begin
             WriteLn(F,' <tr>');
@@ -2737,17 +2738,17 @@ begin
             Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%14.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat*Form7.ibDataSet25ACUMULADO2.AsFloat])+'</td>');
             WriteLn(F,' </tr>');
           end;
-          
+
           Form7.ibDataSet28.Next;
         end;
-        
+
         WriteLn(F,' </tr>');
         WriteLn(F,'</table>');
         WriteLn(F,'<br>');
         WriteLn(F,'</center><center><br><font face="Microsoft Sans Serif" size=1></b>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
         + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
         + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br></center>');
-        
+
         // WWW
         if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
         begin
@@ -2756,12 +2757,12 @@ begin
         begin
           WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
         end;
-        
+
         if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
         WriteLn(F,'</html>');
-        
+
         CloseFile(F);
-        
+
         AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
       end else
       begin
@@ -2778,12 +2779,12 @@ begin
           Writeln(F,'');
           Writeln(F,'Cód   Descrição                               Qtd        Qtd X '+FloatToStr(Form7.ibDataSet25ACUMULADO2.AsFloat));
           Writeln(F,'----- --------------------------------------- ---------- --------------');
-          
+
           Form7.ibDataSet28.First;
           while not Form7.ibDataSet28.Eof do
           begin
             Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet28DESCRICAO.AsString,[]);
-            
+
             if  Form7.ibDataSet4DESCRICAO.AsString = Form7.ibDataSet28DESCRICAO.AsString then
             begin
               Writeln(F,Form7.ibDataSet4CODIGO.AsString+' '
@@ -2791,10 +2792,10 @@ begin
                        +Format('%10.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat])+' '
                        +Format('%14.'+Form1.ConfCasas+'n',[Form7.ibDataSet28QUANTIDADE.AsFloat*Form7.ibDataSet25ACUMULADO2.AsFloat]));
             end;
-            
+
             Form7.ibDataSet28.Next;
           end;
-          
+
           // Totalizador
           Writeln(F,'----- --------------------------------------- ---------- --------------');
           Writeln(F,'');
@@ -2806,14 +2807,14 @@ begin
           WriteLn(F,'Relatório gerado pelo sistema Smallsoft');
           WriteLn(F,'www.smallsoft.com.br');
           CloseFile(F);
-          ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOWMAXIMIZED);          
-        end;        
+          ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOWMAXIMIZED);
+        end;
       end;
-      
+
       Form7.ibDataSet4.Locate('CODIGO',sCodigo,[]);
       Form7.ibDataSet4.EnableControls;
-      
-      Form7.bFabrica := False;      
+
+      Form7.bFabrica := False;
     end else
       //ShowMEssage('Não é possível desmontar essa quantidade.'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Não é possível desmontar essa quantidade.',msgAtencao);
@@ -3049,7 +3050,7 @@ begin
     Form7.ibDataSet30.Edit;
     Form7.ibDataSet30.Post;
   end;
-  
+
   if Form10.CheckBox1.Checked then
   begin
     Form10.CheckBox1.Checked := True;
@@ -3140,13 +3141,13 @@ begin
     WriteLn(F,'N série       NF Comp Pago           Data Comp  NF vend Recebido       Data venda');
     WriteLn(F,'------------- ------- -------------- ---------- ------- -------------- ----------');
   end;
-  
+
   Form7.ibDataSet15.DisableControls;
-  
+
   Form7.ibDataSet24.DisableControls;
 
   //LogRetaguarda('ibDataSet24.DisableControls; 3041'); // Sandro Silva 2023-11-27
-  
+
   Form7.ibDataSet30.First;
   while not Form7.ibDataSet30.EOF do
   begin
@@ -3158,7 +3159,7 @@ begin
       Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet30NFCOMPRA.AsString+'</td>');
       Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet30VALCOMPRA.AsFloat])+'</td>'); // Valor
       Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet30DATCOMPRA.AsString+'</td>');
-      
+
       // NF de venda
       Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet30NFVENDA.AsString,1,6)+'</td>');
       Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet30VALVENDA.AsFloat])+'</td>'); // Valor
@@ -3171,8 +3172,8 @@ begin
       Write(F,Copy(Form7.ibDataSet30NFCOMPRA.AsString+Replicate(' ',7),1,7)+' ');
       Write(F,Format('%14.'+Form1.ConfPreco+'n',[Form7.ibDataSet30VALCOMPRA.AsFloat])+' '); // Valor
       Write(F,Form7.ibDataSet30DATCOMPRA.AsString+' ');
-      
-      // NF de venda      
+
+      // NF de venda
       Write(F,Copy(Copy(Form7.ibDataSet30NFVENDA.AsString,1,6)+Replicate(' ',7),1,7)+' ');
       Write(F,Format('%14.'+Form1.ConfPreco+'n',[Form7.ibDataSet30VALVENDA.AsFloat])+' '); // Valor
       WriteLn(F,Form7.ibDataSet30DATVENDA.AsString+' ');
@@ -3188,7 +3189,7 @@ begin
     WriteLn(F,'<center><br><font face="Microsoft Sans Serif" size=1></b>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
     + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
     + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br></center>');
-    
+
     // WWW
     if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
     begin
@@ -3197,12 +3198,12 @@ begin
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
     end;
-    
+
     if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
     WriteLn(F,'</html>');
     CloseFile(F);
-    
-    AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);    
+
+    AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
   end else
   begin
     WriteLn(F,'');
@@ -3212,7 +3213,7 @@ begin
     CloseFile(F);
     ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOWMAXIMIZED);
   end;
-  
+
   Form7.ibDataSet15.EnableControls;
   Form7.ibDataSet24.EnableControls;
 
@@ -3266,7 +3267,7 @@ begin
     Write(F,Copy(Form7.ibDataSet30NFVENDA.AsString+Replicate(' ',7),1,7)+' ');
     Writeln(F,Form7.ibDataSet30DATVENDA.AsString+' ');
   end;
-  
+
   if Form1.bHtml1 then
   begin
     WriteLn(F,' </tr>');
@@ -3284,23 +3285,23 @@ begin
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
     end;
-    
+
     if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
     WriteLn(F,'</html>');
     CloseFile(F);
-    
-    AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);    
+
+    AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
   end else
   begin
     WriteLn(F,'');
     WriteLn(F,'Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
     + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
     + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'');
-    
+
     CloseFile(F);
     ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOWMAXIMIZED);
   end;
-  
+
   Form7.ibDataSet15.EnableControls;
   Form7.ibDataSet24.EnableControls;
 
@@ -3342,7 +3343,7 @@ procedure TForm10.Image201Click(Sender: TObject);
 begin
   Form10.Button4.SetFocus;
   Form10.Button4Click(Sender);
- 
+
   if not Form7.bSoLeitura then
   begin
     if Form7.sModulo = 'ESTOQUE' then
@@ -3358,7 +3359,7 @@ begin
     begin
       try
          Form7.ArquivoAberto.Append;
-      except end;  
+      except end;
     end;
   end;
 
@@ -3371,7 +3372,7 @@ procedure TForm10.Image205Click(Sender: TObject);
 begin
   try
     Form7.ArquivoAberto.MoveBy(1);
-  except 
+  except
   end;
 
   try
@@ -3384,7 +3385,7 @@ begin
     else
       bNovo := False;
 
-  except 
+  except
   end;
 
   if (Form7.sModulo = 'ESTOQUE') then
@@ -3451,18 +3452,18 @@ begin
       for I := 0 to 19 do
        for J := 0 to 19 do
          StringGrid1.Cells[I,J] := '';
-      
+
       Form7.ibDataSet10.DisableControls;
       Form7.ibDataSet10.First;
-      
+
       while not Form7.ibDataSet10.EOF do
         if Form7.ibDataSet10CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then Form7.ibDataSet10.Delete else Form7.ibDataSet10.Next;
-      
+
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
       for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('X'+StrZero(I,2,0)),Form10.StringGrid1.Cells[0,I]);
       for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('Y'+StrZero(I,2,0)),Form10.StringGrid1.Cells[I,0]);
       Mais1ini.Free;
-    end;    
+    end;
   end;
 end;
 
@@ -3481,12 +3482,12 @@ begin
   Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
   try
     rQtd := 0;
-    
+
     for I := 0 to 19 do
       for J := 0 to 19 do
         if AllTrim(Form10.StringGrid1.Cells[I,J]) <> '' then
           if (I <> 0) and (J <> 0) then rQtd := rQtd + StrToFloat(LimpaNumeroDeixandoAVirgula(Form10.StringGrid1.Cells[I,J]));
-    
+
     if rQtd <> 0 then
     begin
       if StrToFloat(Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_ATUAL.AsFloat - rQtd])) = 0 then
@@ -3496,13 +3497,13 @@ begin
         Form7.ibDataSet10.SelectSQL.Clear;
         Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' ');
         Form7.ibDataSet10.Open;
-        
+
         for I := 0 to 19 do
         begin
           for J := 0 to 19 do
           begin
             if (AllTrim(Form10.StringGrid1.Cells[I,0]) <> '') and (AllTrim(Form10.StringGrid1.Cells[0,J]) <> '') and (Form10.StringGrid1.Cells[I,J] = '') then Form10.StringGrid1.Cells[I,J] := '0,00';
-            
+
             if AllTrim(form10.StringGrid1.Cells[I,J]) <> '' then
             begin
               Form7.ibDataSet10.First;
@@ -3562,7 +3563,7 @@ begin
         except
         end;
       end;
-      
+
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
       for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('X'+StrZero(I,2,0)),Form10.StringGrid1.Cells[0,I]);
       for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('Y'+StrZero(I,2,0)),Form10.StringGrid1.Cells[I,0]);
@@ -3583,14 +3584,14 @@ begin
         if Form7.ibDataSet10CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then Form7.ibDataSet10.Delete else Form7.ibDataSet10.Next;
     end;
   except end;
- 
+
   Screen.Cursor             := crDefault;
 end;
 
 procedure TForm10.Image202Click(Sender: TObject);
 begin
   Form20.ShowModal;
-  
+
   Form7.iFoco := 0;
   Form10.Paint;
 
@@ -3688,7 +3689,7 @@ begin
     fraPerfilTrib.CarregaDescricao;
     {Mauricio Parizotto 2023-09-18 Fim}
   end;
-  
+
   if Form7.sModulo = 'CLIENTES' then
   begin
     Form10.Image1.Visible := True;
@@ -3696,12 +3697,12 @@ begin
   begin
     Form10.Image1.Visible := False;
   end;
-  
+
   Image5.Left     := 20;
   Image5.Top      := 80;
   Image5.Width    := 640 div 2;
   Image5.Height   := 480 div 2;
-  
+
   orelha_cadastro.TabVisible   := True;
   orelha_serial.TabVisible     := False;
   orelha_composicao.TabVisible := False;
@@ -3756,7 +3757,7 @@ begin
   begin
     Form10.orelha_cadastro.TabVisible   := True;
     Form10.orelha_foto.TabVisible       := True;
-    
+
     if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
     begin
       Form10.orelha_COMISSAO.TabVisible       := True;
@@ -3800,9 +3801,9 @@ begin
 
   end;
   {Sandro Silva 2023-08-21 fim}
-  
+
   bNovo := False;
-  
+
   if Form7.sModulo = 'RECEBER' then
   begin
     {Sandro Silva 2023-06-22 inicio
@@ -3965,12 +3966,12 @@ begin
       Form10.SMALL_DBEdit27.ReadOnly := False;
       Form10.SMALL_DBEdit28.ReadOnly := False;
       Form10.SMALL_DBEdit29.ReadOnly := False;
-      
+
       Form10.SMALL_DBEdit26.Font.Color := clWindowText;
       Form10.SMALL_DBEdit27.Font.Color := clWindowText;
       Form10.SMALL_DBEdit28.Font.Color := clWindowText;
       Form10.SMALL_DBEdit29.Font.Color := clWindowText;
-      
+
       try
         Form7.IBDataSet2.Edit;
       except
@@ -3978,7 +3979,7 @@ begin
         Form10.SMALL_DBEdit27.ReadOnly := True;
         Form10.SMALL_DBEdit28.ReadOnly := True;
         Form10.SMALL_DBEdit29.ReadOnly := True;
-        
+
         Form10.SMALL_DBEdit26.Font.Color := clGrayText;
         Form10.SMALL_DBEdit27.Font.Color := clGrayText;
         Form10.SMALL_DBEdit28.Font.Color := clGrayText;
@@ -4073,14 +4074,14 @@ begin
         sNome   := StrTran(AllTrim(Form1.Small_InputForm('Personalização do sistema','Nome do campo:',Caption)),':','');
         Caption := sNome+':';
         Repaint;
-        
+
         SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
         SmallIni.WriteString(Form7.sModulo,NAME,sNome);
         SmallIni.Free;
-      end;     
+      end;
     end;
-    
-    Mais.LeLabels(True);    
+
+    Mais.LeLabels(True);
   end;
 end;
 
@@ -4096,7 +4097,7 @@ begin
         Font.Style := [fsBold,fsUnderline];
         Font.Color := clBlue;
         Repaint;
-      end;  
+      end;
     end;
   end;
 end;
@@ -4159,7 +4160,7 @@ begin
     Form7.Show;
     AgendaCommit(True);
   end;
-  
+
   Form10.close;
 end;
 
@@ -4187,7 +4188,7 @@ begin
       if not Form7.bSoLeitura then
       begin
         Image5.Picture.SaveToFile(Form10.sNomeDoJPG);
-        
+
         ShellExecute( 0, 'Open','pbrush.exe',pChar(Form10.sNomeDoJPG),'', SW_SHOWMAXIMIZED);
         //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
         MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
@@ -4195,7 +4196,7 @@ begin
       end;
     end;
     {$Endregion}
-  except 
+  except
   end;
 end;
 
@@ -4244,7 +4245,7 @@ end;
 procedure TForm10.DBMemo2Enter(Sender: TObject);
 begin
   sContatos := Form7.IBDataSet2CONTATOS.AsString;
-  
+
   if Form7.sModulo = 'RECEBER' then
   begin
     try
@@ -4260,7 +4261,7 @@ begin
     if Form7.ArquivoAberto.Modified then Form7.ArquivoAberto.Post;
     Form7.ArquivoAberto.Edit;
   end;
-  
+
   SendMessage(dbMemo2.Handle, WM_VSCROLL, SB_BOTTOM, 0); //vai pra ultima linha
   SendMessage(dbMemo2.Handle, WM_HSCROLL, SB_RIGHT, 0); //vai pra ultima coluna
   dbMemo2.SelStart := Length(dbMemo2.Text); //move o cursor pra o final da ultima linha
@@ -4280,7 +4281,7 @@ begin
       Audita('CONTATOS','SMALL', Senhas.UsuarioPub, Copy(Form7.IBDataSet2NOME.AsString, 1, 80),0,0); // Ato, Modulo, Usuário, Histórico, Valor
     /////////////////////////////////////////////// 2022-07-21
   end;
-  
+
   if Form7.sModulo = 'RECEBER' then
   begin
     try
@@ -4338,12 +4339,12 @@ begin
       sNome   := StrTran(AllTrim(Form1.Small_InputForm('Personalização do sistema','Nome do campo:',Caption)),':','');
       Caption := sNome+':';
       Repaint;
-      
+
       SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
       SmallIni.WriteString(Form7.sModulo,NAME,sNome);
       SmallIni.Free;
     end;
-    
+
     Mais.LeLabels(True);
   end;
 end;
@@ -4609,7 +4610,7 @@ begin
       iContadorCampoEstoque := 23; // Sandro Silva 2023-01-18 iContadorCampoEstoque := 24;
       iTopSegundaColuna := 16;
     end;
-    {Sandro Silva 2022-12-20 fim}    
+    {Sandro Silva 2022-12-20 fim}
     {Sandro Silva 2023-06-22 inicio}
     if Form7.sModulo = 'RECEBER' then
       iTopSegundaColuna := 18;
@@ -4960,7 +4961,7 @@ begin
       {Sandro Silva 2023-06-22 inicio}
       Form10.Width  := 945;
       Panel_branco.Width  := Form10.Width - 15;
-      {Sandro Silva 2023-06-22 fim}      
+      {Sandro Silva 2023-06-22 fim}
       // Recibo
       Button9.Visible := True;
     end;
@@ -5055,7 +5056,7 @@ var
   sParcelaReplicada: String; // Sandro Silva 2023-01-06
 begin
   Form7.iFoco := 0;
-  
+
   with Form7 do
   begin
     if Form7.sModulo = 'RECEBER' then
@@ -5197,7 +5198,7 @@ begin
 
       ibDataSet7.Post;                              // Grava
     end;
-    
+
     if sModulo = 'PAGAR' then
     begin
       if AllTrim(ibDataSet8DOCUMENTO.AsString) <> '' then
@@ -5288,7 +5289,7 @@ begin
                   vCampo[2] := strtran(vCampo[2],' fev.'  ,' mar.');
                   vCampo[2] := strtran(vCampo[2],' jan.'  ,' fev.');
                 end;
-      
+
       ibDataSet8.Append;                            // Registro Novo
       ibDataSet8DOCUMENTO.asString    := vCampo[1]; // documento
       ibDataSet8HISTORICO.AsString    := vCampo[2]; // Histórico
@@ -5300,7 +5301,7 @@ begin
       ibDataSet8.Post;                              // Grava
     end;
   end;
-  
+
   if SMALL_DBEdit1.Visible = True then
   begin
     if SMALL_DBEdit1.CanFocus then
@@ -5419,13 +5420,13 @@ begin
       sNome   := StrTran(AllTrim(Form1.Small_InputForm('Personalização do sistema','Nome do campo:',Caption)),':','');
       Caption := sNome+':';
       Repaint;
-      
+
       SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
       SmallIni.WriteString(Form7.sModulo,NAME,sNome);
       SmallIni.Free;
     end;
-    
-    Mais.LeLabels(True);    
+
+    Mais.LeLabels(True);
   end;
 end;
 
@@ -5440,26 +5441,26 @@ begin
 
   begin
     StringGrid1.RowCount := 20;
-    
+
     StringGrid1.Col := 1;
     StringGrid1.Row := 1;
-    
+
     for I := 0 to 19 do
      for J := 0 to 19 do
        StringGrid1.Cells[I,J] := '';
-    
+
     Form10.Caption := form7.ibDataSet4DESCRICAO.AsString;
     Form10.StringGrid1.Repaint;
-    
+
     bChave := True;
-    
+
     Form7.ibDataSet10.DisableControls;
     Form7.ibDataSet10.Close;
     Form7.ibDataSet10.SelectSQL.Clear;
     Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
     Form7.ibDataSet10.Open;
     Form7.ibDataSet10.First;
-    
+
     while (Form7.ibDataSet10CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and not (Form7.ibDataSet10.EOF) do
     begin
       if AllTrim(Form7.ibDataSet10QTD.AsString) <> '' then
@@ -5472,7 +5473,7 @@ begin
       end;
       Form7.ibDataSet10.Next;
     end;
-    
+
     if bChave then
     begin
       // Lê os dados a partir de um .ini
@@ -5487,7 +5488,7 @@ end;
 procedure TForm10.orelha_serialShow(Sender: TObject);
 begin
   if CheckBox1.CanFocus then CheckBox1.SetFocus;
-  
+
   if Form7.bSoLeitura or Form7.bEstaSendoUsado then
   begin
     dbGrid4.ReadOnly    := True;
@@ -5497,15 +5498,15 @@ begin
     dbGrid4.ReadOnly    := False;
     CheckBox1.Enabled   := True;
   end;
-  
+
   StringGrid1.Col := 0;
   StringGrid1.Row := 0;
-  
+
   if (Form10.Caption <> Form7.ibDataSet4DESCRICAO.AsString) or (AllTrim(form7.ibDataSet4DESCRICAO.AsString) = '')  then
   begin
     Form10.Caption := Form7.ibDataSet4DESCRICAO.AsString;
   end;
-  
+
   if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then
   begin
     Form10.CheckBox1.Checked := True;
@@ -5525,7 +5526,7 @@ begin
     Button16.Visible         := False;
     Button17.Visible         := False;
   end;
-  
+
   Form7.ibDataSet30.Last;
 end;
 
@@ -5545,7 +5546,7 @@ begin
       Form10.sNomeDoJPG := Form1.sAtual+'\tempo1'+Form7.IBDataSet2REGISTRO.AsString+'.jpg';
     end;
   end;
-  
+
   Button13.Caption       := '&Webcam';
   VideoCap1.visible      := False;
   Image5.Visible         := True;
@@ -5574,28 +5575,28 @@ begin
   begin
     try
       sCodigo := Form7.ibDataSet4CODIGO.AsString;
-      
+
       Form7.ibDataSet25ACUMULADO1.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
       Form7.ibDataSet25ACUMULADO1.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
       Form7.ibDataSet25ACUMULADO2.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
       Form7.ibDataSet25ACUMULADO2.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
-      
+
       Form7.ibDataSet28.DisableControls;
-      
+
       Form7.ibDataSet28.Close;
       Form7.ibDataSet28.SelectSQL.Clear;
       Form7.ibDataSet28.SelectSQL.Add('select * from COMPOSTO where CODIGO='+QuotedStr(sCodigo)+' ');
       Form7.ibDataSet28.Open;
-      
+
       Form7.ibDataSet25.Append;
       Form7.ibDataSet25ACUMULADO2.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat; // them que calcular o menor quantidade dividido pelo que vai
-      
+
       fQuantidade      := 9999999999;
       fCusto           := 0;
-      
+
       Button10.Enabled := False;
       Button8.Enabled  := False;
-      
+
       Form7.ibDataSet28.First;
       while not Form7.ibDataSet28.Eof do
       begin
@@ -5603,7 +5604,7 @@ begin
         Form7.ibQuery4.Sql.Clear;
         Form7.ibQuery4.SQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet28DESCRICAO.AsString)+' ');
         Form7.ibQuery4.Open;
-        
+
         if (Form7.ibQuery4.FieldByName('DESCRICAO').AsString = Form7.ibDataSet28DESCRICAO.AsString) and (AllTrim(Form7.ibDataSet28DESCRICAO.AsString) <> '') then
         begin
           if fQuantidade > (Form7.ibQuery4.FieldByName('QTD_ATUAL').AsFloat / Form7.ibDataSet28QUANTIDADE.AsFloat)  then
@@ -5611,9 +5612,9 @@ begin
             Form7.ibDataSet25.Edit;
             fQuantidade := Form7.ibQuery4.FieldByName('QTD_ATUAL').AsFloat / Form7.ibDataSet28QUANTIDADE.AsFloat;
           end;
-        
+
           fCusto := fCusto + (Form7.ibQuery4.FieldByName('CUSTOCOMPR').AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat);
-        
+
           if Form7.bSoLeitura or Form7.bEstaSendoUsado then
           begin
             Button10.Enabled := False;
@@ -5622,20 +5623,20 @@ begin
           begin
             Button10.Enabled := True;
             Button8.Enabled  := True;
-          end;          
+          end;
         end else
         begin
           Form7.ibDataSet28.Edit;
           Form7.ibDataSet28DESCRICAO.AsString := '';
           Form7.ibDataSet28CODIGO.AsString    := '';
         end;
-        
+
         Form7.ibDataSet28.Next;
       end;
-      
+
       Form7.ibDataSet25.Edit;
       if fQuantidade = 9999999999 then Form7.ibDataSet25ACUMULADO1.AsFloat := 0 else Form7.ibDataSet25ACUMULADO1.AsFloat := fQuantidade;
-      
+
       if Button10.Enabled then
       begin
         try
@@ -5647,7 +5648,7 @@ begin
         except end;
       end;
     except end;
-    
+
     Form7.ibDataSet28.EnableControls;
   end;
 end;
@@ -5670,7 +5671,7 @@ begin
 
   ComboBox14.ItemIndex := -1;
   ComboBox15.ItemIndex := -1;
-  
+
   VerificaSeEstaSendoUsado(True);
 { Dailon Parisotto (f-5075) 2023-12-28 INICIO
 
@@ -5686,10 +5687,10 @@ begin
     ComboBox9.Enabled := False;
     ComboBox10.Enabled := False;
     ComboBox11.Enabled := False;
-    
+
     ComboBox14.Enabled := False;
     ComboBox15.Enabled := False;
-    
+
     SMALL_DBEdit31.Enabled    := False;
     SMALL_DBEdit37.Enabled    := False;
     SMALL_DBEdit38.Enabled    := False;
@@ -5728,10 +5729,10 @@ begin
     ComboBox9.Enabled := True;
     ComboBox10.Enabled := True;
     ComboBox11.Enabled := True;
-    
+
     ComboBox14.Enabled := True;
     ComboBox15.Enabled := True;
-    
+
     SMALL_DBEdit31.Enabled    := True;
     SMALL_DBEdit37.Enabled    := True;
     SMALL_DBEdit38.Enabled    := True;
@@ -5740,7 +5741,7 @@ begin
     dbepPisEntrada.Enabled    := True;
     dbepCofinsSaida.Enabled   := True;
     dbepCofinsEntrada.Enabled    := True;
-    
+
     SMALL_DBEdit31.ReadOnly   := False;
     SMALL_DBEdit37.ReadOnly   := False;
     SMALL_DBEdit38.ReadOnly   := False;
@@ -5749,7 +5750,7 @@ begin
     dbepPisEntrada.ReadOnly   := False;
     dbepCofinsSaida.ReadOnly  := False;
     dbepCofinsEntrada.ReadOnly   := False;
-    
+
     SMALL_DBEdit31.Font.Color  := ClWindowText;
     SMALL_DBEdit37.Font.Color  := ClWindowText;
     SMALL_DBEdit38.Font.Color  := ClWindowText;
@@ -5760,20 +5761,20 @@ begin
     dbepCofinsEntrada.Font.Color  := ClWindowText;
   end;
   Dailon Parisotto (f-5075) 2023-12-28 FIM}
-  
+
   // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
   begin
     CarregaCit;
     {Mauricio Parizotto 2023-09-04 Fim}
   end;
- 
+
   if Form7.ibDataSet13CRT.AsString = '1' then
   begin
     Form10.Label36.Visible          := True;
     cboCSOSN_Prod.Visible           := True;
     Form10.Label37.Visible          := False;
     cboCST_Prod.Visible             := False;
- 
+
     Form10.Label72.Visible          := True;
     Form10.ComboBox15.Visible       := True;
     Form10.Label84.Visible          := False;
@@ -5784,13 +5785,13 @@ begin
     cboCSOSN_Prod.Visible           := False;
     Form10.Label37.Visible          := True;
     cboCST_Prod.Visible             := True;
-  
+
     Form10.Label72.Visible          := False;
     Form10.ComboBox15.Visible       := False;
     Form10.Label84.Visible          := True;
     Form10.ComboBox14.Visible       := True;
   end;
-  
+
   if Form7.ibDataSet13ESTADO.AsString = 'SP' then
   begin
     Label83.Caption := StrTran(Label83.Caption,'NFC-e','SAT');
@@ -6249,7 +6250,7 @@ begin
   // 54 - Saída Imune
   // 55 - Saída com Suspensão
   // 99 - Outras Saídas
-  
+
   if Form10.caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4CST_IPI.AsString := Copy(Form10.ComboBox1.Items[Form10.ComboBox1.ItemIndex]+'  ',1,2);
@@ -6363,7 +6364,7 @@ begin
   // 09 - Serviços
   // 10 - Outros insumos
   // 99 - Outras
-  
+
   if Form10.Caption = form7.ibDataSet4DESCRICAO.AsString then
   begin
     Form7.ibDataSet4TIPO_ITEM.AsString := Copy(Form10.ComboBox9.Items[Form10.ComboBox9.ItemIndex]+'  ',1,2);
@@ -6460,11 +6461,11 @@ end;
 procedure TForm10.Orelha_precoShow(Sender: TObject);
 begin
   // Descrobre o percentual de Comissao
-  
+
   Image6.Picture := Form1.imgEstoque.Picture;
-  
+
   if not (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then Form7.ibDataset13.Edit;
-  
+
   Form7.ibDataSet13CVEN.AsFloat := 0;
   if Form7.ibDataSet4COMISSAO.AsFloat <> 0 then
   begin
@@ -6479,9 +6480,9 @@ begin
       Form7.ibDataSet9.Next;
     end;
   end;
-  
+
   Form7.ibDataSet13ICMS.AsFloat := 0;
-  
+
   try
     if Form7.ibDataSet13ICMS.AsFloat = 0 then
     begin
@@ -6501,7 +6502,7 @@ begin
         Form7.ibDataSet14.Next;
       end;
     end;
-    
+
     if AllTrim(Form7.ibDataSet4ST.AsSTring) <> '' then
     begin
       Form7.ibDataSet14.First;
@@ -6832,11 +6833,11 @@ var
 begin
   // Procura pelo código de barras no no google
   FotoOld := Form7.ibDataset4FOTO.AsString; // Mauricio Parizotto 2024-01-26
-  
+
   Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
-  
+
   Image5.Picture.SaveToFile('res'+Form7.IBDataSet4REGISTRO.AsString+'.jpg');
-  
+
   try
     begin
       begin
@@ -6851,33 +6852,33 @@ begin
           //WebBrowser1.Navigate(pChar('http://www.google.com/search?um=1&hl=pt-BR&biw=1920&bih=955&q='+Form7.ibDataSet4DESCRICAO.AsString+'&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi'));
           WebBrowser1.Navigate(pChar('http://www.google.com/search?um=1&hl=pt-BR&biw=1920&bih=955&q='+vDescricaoBusca+'&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi'));
         end;
-        
+
         while (Form10.Tag < 33) do
         begin
           Application.ProcessMessages;
           sleep(100);
         end;
-        
+
         for I := 1 to 50 do
         begin
           Application.ProcessMessages;
           if Form10.Tag < 35 then
             sleep(100);
         end;
-        
+
         WebBrowser1.Left := -20000;
-        
+
         Screen.Cursor             := crDefault;              // Cursor de Aguardo
-                
+
         documentoAtivo := WebBrowser1.Document;
         s := documentoAtivo.Body.OuterHTML;
-        
+
         // Adicionando o código HTML ao MEMO
-        
+
         try
           Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
           J := 0;
-          
+
           for iSrc := 0 to WebBrowser1.OleObject.Document.Images.Length - 1 do
           begin
             sLinkDaFoto := WebBrowser1.OleObject.Document.Images.Item(iSrc).Src;
@@ -6981,7 +6982,7 @@ begin
       Form7.ibDataSet14.SelectSQL.Add('select * FROM ICM where CFOP='+QuotedStr('5102')+' or CFOP='+QuotedStr('5101')+' ');
       Form7.ibDataSet14.Open;
     end;
-    
+
     if Alltrim(Form7.IbDataSet4ST.AsString) <> '' then
     begin
       if AllTrim(Form7.IbDataSet4ST.AsString) <> AllTrim(Form7.IbDataSet14ST.AsString) then
@@ -6993,16 +6994,16 @@ begin
         Form7.IbDataSet14.Post;
       end;
     end;
-    
+
     Form7.IbDataSet14.EnableControls;
     Form7.IbDataSet14.Edit;
-    
+
     SMALL_DBEDITY.DataField := Copy(Caption,1,2)+'_';
     SMALL_DBEDITY.Top       := Top;
     SMALL_DBEDITY.Left      := Left;
     SMALL_DBEDITY.Visible   := True;
     SMALL_DBEDITY.Refresh;
-    
+
     if Form10.SMALL_DBEDITY.CanFocus then
     begin
       Form10.SMALL_DBEDITY.SetFocus;
@@ -7205,19 +7206,19 @@ begin
     begin
       ComboBox12.ItemIndex := I;
     end;
-    
+
     if Form7.ibDataSet4MEDIDA.AsString = ComboBox13.Items[I] then
     begin
       ComboBox13.ItemIndex := I;
     end;
   end;
-  
+
   if Form7.IbDataSet4FATORC.AsFloat = 0 then
   begin
     if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then Form7.ibDataset4.Edit;
     Form7.ibDataSet4FATORC.AsFloat := 1;
   end;
-  
+
   Exemplo(True);
 end;
 
@@ -7269,7 +7270,7 @@ procedure TForm10.DBGrid5KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
-  
+
   if TestarSomenteLeitura then
     Exit;
   if Key = VK_DELETE then
@@ -7349,7 +7350,7 @@ begin
 
   if Copy(Form7.ibDataSet7DOCUMENTO.AsString,1,2) = 'RE' then
   begin
-    // Abre uma negociação já existente    
+    // Abre uma negociação já existente
     sNumeroNF := LimpaNumero(Form7.ibDataSet7HISTORICO.AsString);
 
     Form7.ibQuery1.Close;
@@ -7392,12 +7393,12 @@ begin
                                        ' Order by VENCIMENTO';
     Form7.ibDataSet7.Open;
   end;
-  
+
   Form7.sTextoDoAcordo := 'Parcela    Vencimento   Valor R$      Atualizado R$ '+chr(13)+chr(10)+
                           '---------- ------------ ------------- --------------'+chr(13)+chr(10);
   fTotal1 := 0;
   fTotal2 := 0;
-  
+
   while not Form7.ibDataSet7.Eof do
   begin
     Form7.sTextoDoAcordo := Form7.sTextoDoAcordo + Copy(Form7.ibDataSet7DOCUMENTO.AsString+Replicate(' ',10),1,10) +' '+DateTimeToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime)+' '+Format('%15.2n',[Form7.ibDataSet7VALOR_DUPL.AsFloat])+' '+Format('%15.2n',[Form7.ibDataSet7VALOR_JURO.AsFloat])+chr(13)+chr(10);
@@ -7408,7 +7409,7 @@ begin
 
   Form7.sTextoDoAcordo := Form7.sTextoDoAcordo +
                           '                        ------------- ---------------'+chr(13)+chr(10)+
-                          '                       '+Format('%15.2n',[fTotal1])+Format('%15.2n',[ftotal2])+chr(13)+chr(10);  
+                          '                       '+Format('%15.2n',[fTotal1])+Format('%15.2n',[ftotal2])+chr(13)+chr(10);
   if fTotal1 <> 0 then
   begin
     bButton := Application.MessageBox(Pchar('Considerar o valor atualizado com juros?'),'Atenção', mb_YesNo + mb_DefButton2 + MB_ICONQUESTION);
@@ -7459,12 +7460,12 @@ begin
   StringGrid2.ColWidths[1] := 150;
   StringGrid2.ColWidths[2] := 150;
   StringGrid2.ColWidths[3] := 670;
-  
+
   Memo1.Width   := 800;
   dbMemo3.Width := 1000;
-  
+
   sEx := '';
-  
+
   for I := 0 to Form10.DBMemo3.Lines.Count + 1 do
   begin
     if pos('<',dbMemo3.Lines.Strings[I]) <> 0 then
@@ -7472,9 +7473,9 @@ begin
       sEx := sEx + StringReplace(dbMemo3.Lines.Strings[I], #$D#$A, '', [rfReplaceAll])+chr(10);
     end;
   end;
-  
+
   Memo1.Lines.Clear;
-  
+
   Memo1.Lines.Add('<Tributavel>0 "Situações tributárias obtidas na prefeitura"</Tributavel>');
   Memo1.Lines.Add('<CodigoTributacaoMunicipio>000 "Código do item da lista de serviço. Obtido na prefeitura"</CodigoTributacaoMunicipio>');
   Memo1.Lines.Add('<cServico>000 "Código do serviço prestado dentro do município. Obtido na prefeitura"</cServico>');
@@ -7516,15 +7517,15 @@ begin
   Memo1.Lines.Add('<cProdANP>000000001 "Código de produto da ANP"</cProdANP>');
   Memo1.Lines.Add('<pRedBC>0,00 "Percentual da redução de BC na NFC-e"</pRedBC>');
   Memo1.Lines.Add('<VAL>007 "Validade do produto em dias"</VAL>');
-  Memo1.Lines.Add('<Obs1>Observação 1 "Esta observação será mostrada no corpo da NF"</OBS1>');
-  Memo1.Lines.Add('<Obs2>Observação 2 "Esta observação será mostrada no corpo da NF"</OBS2>');
-  Memo1.Lines.Add('<Obs3>Observação 3 "Esta observação será mostrada no corpo da NF"</OBS3>');
-  Memo1.Lines.Add('<Obs4>Observação 4 "Esta observação será mostrada no corpo da NF"</OBS4>');
-  Memo1.Lines.Add('<Obs5>Observação 5 "Esta observação será mostrada no corpo da NF"</OBS5>');
-  Memo1.Lines.Add('<Obs6>Observação 6 "Esta observação será mostrada no corpo da NF"</OBS6>');
-  Memo1.Lines.Add('<Obs7>Observação 7 "Esta observação será mostrada no corpo da NF"</OBS7>');
-  Memo1.Lines.Add('<Obs8>Observação 8 "Esta observação será mostrada no corpo da NF"</OBS8>');
-  Memo1.Lines.Add('<Obs9>Observação 9 "Esta observação será mostrada no corpo da NF"</OBS9>');
+  Memo1.Lines.Add('<Obs1>Observação 1 "Esta observação será mostrada no corpo da NF'+RetornarDescrCaracTagsObs+'"</OBS1>');
+  Memo1.Lines.Add('<Obs2>Observação 2 "Esta observação será mostrada no corpo da NF'+RetornarDescrCaracTagsObs+'"</OBS2>');
+  Memo1.Lines.Add('<Obs3>Observação 3 "Esta observação será mostrada no corpo da NF'+RetornarDescrCaracTagsObs+'"</OBS3>');
+  Memo1.Lines.Add('<Obs4>Observação 4 "Esta observação será mostrada no corpo da NF'+RetornarDescrCaracTagsObs+'"</OBS4>');
+  Memo1.Lines.Add('<Obs5>Observação 5 "Esta observação será mostrada no corpo da NF'+RetornarDescrCaracTagsObs+'"</OBS5>');
+  Memo1.Lines.Add('<Obs6>Observação 6 "Esta observação será mostrada no corpo da NF'+RetornarDescrCaracTagsObs+'"</OBS6>');
+  Memo1.Lines.Add('<Obs7>Observação 7 "Esta observação será mostrada no corpo da NF'+RetornarDescrCaracTagsObs+'"</OBS7>');
+  Memo1.Lines.Add('<Obs8>Observação 8 "Esta observação será mostrada no corpo da NF'+RetornarDescrCaracTagsObs+'"</OBS8>');
+  Memo1.Lines.Add('<Obs9>Observação 9 "Esta observação será mostrada no corpo da NF'+RetornarDescrCaracTagsObs+'"</OBS9>');
   //
   // JA. Detalhamento Específico de Veículos Novos
   //
@@ -7560,9 +7561,9 @@ begin
     StringGrid2.RowCount := Form10.Memo1.Lines.Count + 1;
   {Sandro Silva 2022-09-12 fim}
 
-  
+
   for I := 0 to Form10.Memo1.Lines.Count + 1 do
-  begin    
+  begin
     sTag       := AllTrim(Copy(Memo1.Lines.Strings[I],(pos('<',Memo1.Lines.Strings[I])+1), (pos('>',Memo1.Lines.Strings[I])-(pos('<',Memo1.Lines.Strings[I])+1))));
     sExemplo   := AllTrim(Copy(Memo1.Lines.Strings[I],Pos('<' + sTag + '>', Memo1.Lines.Strings[I]) + Length('<' + sTag + '>'),(Pos('</', Memo1.Lines.Strings[I])-(Pos('<' + sTag + '>', Memo1.Lines.Strings[I])+Length('<' + sTag + '>')))));
     //
@@ -7594,16 +7595,29 @@ begin
   end;
 end;
 
+function TForm10.RetornarDescrCaracTagsObs: String;
+begin
+  Result := ' (' + Form7.ibDataSet4DESCRICAO.Size.ToString + ' caracteres)';
+end;
+
 procedure TForm10.Orelha_TAGSExit(Sender: TObject);
+const
+  _cCamposObs = ';OBS1;OBS2;OBS3;OBS4;OBS5;OBS6;OBS7;OBS8;OBS9;';
 var
   I : Integer;
   sEx : String;
+  cValor: String;
 begin
   for I := 1 to 100 do
   begin
     if (AllTrim(StringGrid2.Cells[0,I])<>'') and (AllTrim(StringGrid2.Cells[1,I])<>'') then
     begin
-      sEx := sEx + '<'+AllTrim(StringGrid2.Cells[0,I])+'>'+AllTrim(StringGrid2.Cells[1,I])+'</'+AllTrim(StringGrid2.Cells[0,I])+'>'+chr(10);
+      cValor := AllTrim(StringGrid2.Cells[1,I]);
+
+      if Pos(';' + AnsiUpperCase(Copy(AllTrim(StringGrid2.Cells[0,I]),1,4)) + ';', _cCamposObs) > 0 then
+        cValor := Copy(cValor, 1, Form7.ibDataSet4DESCRICAO.Size);
+
+      sEx := sEx + '<'+AllTrim(StringGrid2.Cells[0,I])+'>'+cValor+'</'+AllTrim(StringGrid2.Cells[0,I])+'>'+chr(10);
     end;
   end;
 
