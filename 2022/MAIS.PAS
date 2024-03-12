@@ -277,6 +277,8 @@ type
     Parmetrosdetributao1: TMenuItem;
     EnvioautomticodeXML1: TMenuItem;
     Observaonadescriodosservios1: TMenuItem;
+    ConfiguraoTEF1: TMenuItem;
+    N7: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -446,6 +448,7 @@ type
     procedure WebBrowser1DocumentComplete(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
     procedure FormDestroy(Sender: TObject);
+    procedure ConfiguraoTEF1Click(Sender: TObject);
 
 
   private
@@ -564,7 +567,8 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmConfigEmailAutContabilidade
   , uDialogs
   , uFuncoesRetaguarda
-  , uSmallResourceString, uSistema;
+  , uSmallResourceString, uSistema
+  , uConfiguracaoTEFCommerce;
 
 {$R *.DFM}
 
@@ -9439,6 +9443,18 @@ begin
   Screen.Cursor            := crDefault;
 end;
 
+procedure TForm1.ConfiguraoTEF1Click(Sender: TObject);
+begin
+  frmConfiguracaoTEFCommerce := TfrmConfiguracaoTEFCommerce.Create(nil);
+  try
+    frmConfiguracaoTEFCommerce.ShowModal;
+
+    ConfiguraoTEF1.Checked := TestarTEFConfigurado;
+  finally
+    FreeAndNil(frmConfiguracaoTEFCommerce);
+  end;
+end;
+
 procedure TForm1.ConfiguraodaNFe2Click(Sender: TObject);
 var
   oArq: TArquivosDAT;
@@ -9514,6 +9530,8 @@ begin
       Form1.Simples1.Checked := False;
       Form1.Complexo1.Checked := True;
     end;
+
+    ConfiguraoTEF1.Checked := TestarTEFConfigurado;
   finally
     Mais1ini.Free;
     FreeAndNil(oArq);

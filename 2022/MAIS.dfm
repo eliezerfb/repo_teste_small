@@ -13809,6 +13809,13 @@ object Form1: TForm1
           Caption = 'Configurar NFE.INI ...'
           OnClick = ConfigurarNFEINI1Click
         end
+        object N7: TMenuItem
+          Caption = '-'
+        end
+        object ConfiguraoTEF1: TMenuItem
+          Caption = 'TEF'
+          OnClick = ConfiguraoTEF1Click
+        end
         object N3: TMenuItem
           Caption = '-'
         end

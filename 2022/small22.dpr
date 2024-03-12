@@ -238,7 +238,9 @@ uses
   uSistema in 'units\uSistema.pas',
   uObjetoConsultaCEP in 'units\uObjetoConsultaCEP.pas',
   uIConsultaCEP in 'interfaces\uIConsultaCEP.pas',
-  uConsultaCEP in 'units\uConsultaCEP.pas';
+  uConsultaCEP in 'units\uConsultaCEP.pas',
+  uConfiguracaoTEFCommerce in 'uConfiguracaoTEFCommerce.pas' {frmConfiguracaoTEFCommerce},
+  uframeConfiguraTEF in '..\..\unit_compartilhada\frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame};
 
 {$R *.RES}
 
