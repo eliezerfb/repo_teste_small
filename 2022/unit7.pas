@@ -18459,7 +18459,7 @@ begin
 
                 Form7.ibDataSet16.Append;
                 Form1.bFlag := False;
-                Form7.ibDataSet16DESCRICAO.AsString := Copy(Form7.ibDataSet4TAGS_.AsString,Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString)+6,(Pos('</Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString)-Pos('<Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString))-6);
+                Form7.ibDataSet16DESCRICAO.AsString := Copy(Copy(Form7.ibDataSet4TAGS_.AsString,Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString)+6,(Pos('</Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString)-Pos('<Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString))-6),1, ibDataSet4DESCRICAO.Size);
                 Form7.ibDataSet16.Post;
 
                 Form7.ibDataSet16.Locate('REGISTRO',sRegistro1,[]);
