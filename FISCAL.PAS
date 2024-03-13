@@ -3761,7 +3761,8 @@ begin
     AssinaturaDigital(Form1.sPastaDoExecutavel+'\LISTA.TXT');
     CHDir(Form1.sAtual);
     //
-    Form1.sMD5DaLista := MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+    //2024-03-13 Form1.sMD5DaLista := MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+    Form1.sMD5DaLista := LowerCase(MD5File(PChar(Form1.sPastaDoExecutavel+'\LISTA.TXT')));
     //
     Mais1ini := TIniFile.Create(Form1.sArquivo);
     //
@@ -4532,6 +4533,7 @@ begin
 //    (* Habilitar no final da homologação
     if (Form1.sModeloEcf <> '59') and (Form1.sModeloEcf <> '65') and (Form1.sModeloEcf <> '99') then
     begin
+
       if (SmallCripto(Form1.ibDataSet13.FieldByName('CGC').AsString+Form1.sMD5DaLista) <> LerParametroIni(Form1.sArquivo, 'MD5', 'HOMOLOGADO', 'XXXX'))
         and (FileExists('frente.dpr') = False) // Para poder debugar durante execução. Não usar CNPJ da Smallsoft no emitente porque não consegue testar as validações na homologação
         then
@@ -11516,7 +11518,8 @@ begin
 
           //
           //
-          Form1.sMD5DaLista := MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+          //2024-03-13 Form1.sMD5DaLista := MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+          Form1.sMD5DaLista := LowerCase(MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT')));
           //
           Form1.sMD5DaLista := StrTran(Form1.sMD5DaLista,'"NL"','');
           //
