@@ -2454,6 +2454,8 @@ type
     function RetornaTipoModulo: tModulosCommerce;
     procedure AbreHelpTermoUso;
     function MovimentaEstoqueAlteracaBloqueados: Boolean;
+    procedure CarregarContasReceberMarcadas;
+    procedure CarregarContasPagarMarcadas;
   public
     // Public declarations
 
@@ -8925,6 +8927,7 @@ begin
         SMALL_DBEdit2Change(Sender);
         Form7.ibDataSet7.Post;
 
+        CarregarContasReceberMarcadas;
         CalculaTotalRecebido(True);
       end;
 
@@ -8952,6 +8955,7 @@ begin
         SMALL_DBEdit2Change(Sender);
         Form7.ibDataSet8.Post;
 
+        CarregarContasPagarMarcadas;
         CalculaTotalRecebido(True);
       end;
       Screen.Cursor            := crDefault;
@@ -33745,10 +33749,7 @@ begin
 
     CalculaTotalRecebido(True);
 
-    Form1.IBDataSet200.Close;
-    Form1.IBDataSet200.SelectSQL.Clear;
-    Form1.IBDataSet200.SelectSQL.Add('select DOCUMENTO as "Documento", VALOR_DUPL as "Valor original   ", VALOR_RECE as "Valor recebido   ", VENCIMENTO as "Vencimento", RECEBIMENT as "Data recebimento   ", REGISTRO from RECEBER where ATIVO>=5');
-    Form1.IBDataSet200.Open;
+    CarregarContasReceberMarcadas;
     //
     dbGrid3.Datasource         := Form1.DataSource200;
     dbGrid3.Columns[5].Visible := False;
@@ -33828,10 +33829,7 @@ begin
 
     CalculaTotalRecebido(True);
     //
-    Form1.IBDataSet200.Close;
-    Form1.IBDataSet200.SelectSQL.Clear;
-    Form1.IBDataSet200.SelectSQL.Add('select DOCUMENTO as "Documento", VALOR_DUPL as "Valor original   ", VALOR_PAGO as "Valor pago   ", VENCIMENTO as "Vencimento", PAGAMENTO as "Data de pagamento     ", REGISTRO from PAGAR where ATIVO>=5');
-    Form1.IBDataSet200.Open;
+    CarregarContasPagarMarcadas;
     //
     dbGrid3.Datasource     := Form1.DataSource200;
     //
@@ -35037,6 +35035,22 @@ begin
   end;
   {$Endregion}
 
+end;
+
+procedure TForm7.CarregarContasReceberMarcadas;
+begin
+  Form1.IBDataSet200.Close;
+  Form1.IBDataSet200.SelectSQL.Clear;
+  Form1.IBDataSet200.SelectSQL.Add('select DOCUMENTO as "Documento", VALOR_DUPL as "Valor original   ", VALOR_RECE as "Valor recebido   ", VENCIMENTO as "Vencimento", RECEBIMENT as "Data recebimento   ", REGISTRO from RECEBER where ATIVO>=5');
+  Form1.IBDataSet200.Open;
+end;
+
+procedure TForm7.CarregarContasPagarMarcadas;
+begin
+  Form1.IBDataSet200.Close;
+  Form1.IBDataSet200.SelectSQL.Clear;
+  Form1.IBDataSet200.SelectSQL.Add('select DOCUMENTO as "Documento", VALOR_DUPL as "Valor original   ", VALOR_PAGO as "Valor pago   ", VENCIMENTO as "Vencimento", PAGAMENTO as "Data de pagamento     ", REGISTRO from PAGAR where ATIVO>=5');
+  Form1.IBDataSet200.Open;
 end;
 
 
