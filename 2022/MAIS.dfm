@@ -13626,31 +13626,31 @@ object Form1: TForm1
     object CAdastros1: TMenuItem
       Caption = 'Outros cadastros'
       object Cadastrodoemitente1: TMenuItem
-        Caption = 'Cadastro do emitente...'
+        Caption = 'Cadastro do emitente'
         OnClick = DadosdoEmitente1Click
       end
       object Cadastrodeconvnios1: TMenuItem
-        Caption = 'Cadastro de conv'#234'nios...'
+        Caption = 'Cadastro de conv'#234'nios'
         OnClick = Cadastrodeconvnios1Click
       end
       object Comissodevendedores1: TMenuItem
-        Caption = 'Cadastro de vendedores...'
+        Caption = 'Cadastro de vendedores'
         OnClick = Comissodevendedores1Click
       end
       object Cadastrodetcnicos1: TMenuItem
-        Caption = 'Cadastro de t'#233'cnicos...'
+        Caption = 'Cadastro de t'#233'cnicos'
         OnClick = Cadastrodetcnicos1Click
       end
       object Planodecontas1: TMenuItem
-        Caption = 'Cadastro do plano de contas...'
+        Caption = 'Cadastro do plano de contas'
         OnClick = Planodecontas1Click
       end
       object Cadastrodetransportadoras1: TMenuItem
-        Caption = 'Cadastro de transportadoras...'
+        Caption = 'Cadastro de transportadoras'
         OnClick = Cadastrodetransportadoras1Click
       end
       object Grupos1: TMenuItem
-        Caption = 'Cadastro de grupos de mercadorias...'
+        Caption = 'Cadastro de grupos de mercadorias'
         OnClick = Grupos1Click
       end
     end
@@ -13677,11 +13677,11 @@ object Form1: TForm1
         end
       end
       object Opes1: TMenuItem
-        Caption = 'Configura'#231#227'o do sistema...'
+        Caption = 'Configura'#231#227'o do sistema'
         OnClick = Opes1Click
       end
       object ConfiguraodaNFemformulrionumerado1: TMenuItem
-        Caption = 'Configura'#231#227'o da NF em formul'#225'rio numerado...'
+        Caption = 'Configura'#231#227'o da NF em formul'#225'rio numerado'
         OnClick = ConfiguraodaNFemformulrionumerado1Click
       end
       object ConfiguraodaNFe2: TMenuItem
@@ -13782,31 +13782,31 @@ object Form1: TForm1
           Caption = '-'
         end
         object SelecionarCertificadoDigital1: TMenuItem
-          Caption = 'Selecionar Certificado Digital...'
+          Caption = 'Selecionar Certificado Digital'
           OnClick = SelecionarCertificadoDigital1Click
         end
         object ConfigurarlogotipodoDANFE1: TMenuItem
-          Caption = 'Configurar logotipo do DANFE...'
+          Caption = 'Configurar logotipo do DANFE'
           OnClick = ConfigurarlogotipodoDANFE1Click
         end
         object ConfiguraodoDANFEparaNFe1: TMenuItem
-          Caption = 'Configura'#231#227'o do DANFE para NF-e...'
+          Caption = 'Configura'#231#227'o do DANFE para NF-e'
           OnClick = ConfiguraodoDANFEparaNFe1Click
         end
         object ConfigurarServidoresHomologao1: TMenuItem
-          Caption = 'Configurar Servidores Homologa'#231#227'o...'
+          Caption = 'Configurar Servidores Homologa'#231#227'o'
           OnClick = ConfigurarServidoresHomologao1Click
         end
         object ConfigurarServidoresProduo1: TMenuItem
-          Caption = 'Configurar Servidores Produ'#231#227'o...'
+          Caption = 'Configurar Servidores Produ'#231#227'o'
           OnClick = ConfigurarServidoresProduo1Click
         end
         object CNPJdacontabilidade1: TMenuItem
-          Caption = 'CNPJ do Escrit'#243'rio de Contabilidade...'
+          Caption = 'CNPJ do Escrit'#243'rio de Contabilidade'
           OnClick = CNPJdacontabilidade1Click
         end
         object ConfigurarNFEINI1: TMenuItem
-          Caption = 'Configurar NFE.INI ...'
+          Caption = 'Configurar NFE.INI'
           OnClick = ConfigurarNFEINI1Click
         end
         object N3: TMenuItem
@@ -13909,7 +13909,7 @@ object Form1: TForm1
         OnClick = Liberarosmdulosparaesteusurio1Click
       end
       object UsuriosAtivos1: TMenuItem
-        Caption = 'Verificar usu'#225'rios conectados...'
+        Caption = 'Verificar usu'#225'rios conectados'
         OnClick = UsuriosAtivos1Click
       end
       object Cadastrarlicenasdeuso1: TMenuItem
@@ -13922,7 +13922,7 @@ object Form1: TForm1
       Caption = '-'
     end
     object Instalarpackcomasltimasalteraes1: TMenuItem
-      Caption = 'Atualizar os programas pela internet...'
+      Caption = 'Atualizar os programas pela internet'
       OnClick = Instalarpackcomasltimasalteraes1Click
     end
     object N18: TMenuItem
@@ -13964,11 +13964,11 @@ object Form1: TForm1
         Caption = '-'
       end
       object Selecionarprodutosparamarketplace1: TMenuItem
-        Caption = 'Pedidos...'
+        Caption = 'Pedidos'
         Visible = False
       end
       object Hub1: TMenuItem
-        Caption = 'Hub...'
+        Caption = 'Hub'
         OnClick = Hub1Click
       end
     end
