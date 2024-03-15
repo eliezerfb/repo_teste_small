@@ -4187,7 +4187,18 @@ begin
     begin
       if Alltrim(Form7.IBDataSet100.FieldByname('NOME').AsString) <> '' then
       begin
+        {Sandro Silva 2024-03-15 inicio
         Form7.ibDataSet12.Locate('NOME',Alltrim(Form7.IBDataSet100.FieldByname('NOME').AsString),[]);
+        }
+        Form7.ibDataSet12. First;
+        while Form7.ibDataSet12.Eof = False do
+        begin
+          if Trim(Form7.ibDataSet12NOME.AsString) = Trim(Form7.IBDataSet100.FieldByname('NOME').AsString) then
+            Break;
+          Form7.ibDataSet12.Next;
+        end;
+        {Sandro Silva 2024-03-15 final}
+
         if (Alltrim(Form7.ibDataSet12NOME.AsString) <> Alltrim(Form7.IBDataSet100.FieldByname('NOME').AsString)) then
         begin
           Form7.ibDataSet12.Append;
