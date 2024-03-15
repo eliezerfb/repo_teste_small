@@ -11224,6 +11224,10 @@ begin
         Form7.fMutado3 := Form7.ibDataSet101.FieldByname('GEN_ID').AsFloat;
         CalculaSaldo(False);
         //TabelaAberta.Last; Mauricio Parizotto 2024-01-04
+        {Sandro Silva 2024-03-15 inicio}
+        // Para o Caixa precisa movimentar o ponteiro do dataset até o último registro para que seja calculado o saldo dia a dia
+        TabelaAberta.Last;
+        {Sandro Silva 2024-03-15 fim}
       end;
     end;
 
@@ -22098,7 +22102,8 @@ end;
 procedure TForm7.ibDataSet1CalcFields(DataSet: TDataSet);
 begin
   try
-    if AllTrim(ibDataSet1.FieldByName('REGISTRO').AsString) <> '' then Form7.ibDataSet1.FieldByName('SALDO').AsFloat := fSaldoVetorCaixa[ibDataSet1.FieldByName('REGISTRO').AsInteger];
+    if AllTrim(ibDataSet1.FieldByName('REGISTRO').AsString) <> '' then
+      Form7.ibDataSet1.FieldByName('SALDO').AsFloat := fSaldoVetorCaixa[ibDataSet1.FieldByName('REGISTRO').AsInteger];
   except end;
 end;
 
