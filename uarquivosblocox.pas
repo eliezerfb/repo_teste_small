@@ -11,9 +11,9 @@ uses
   , ufuncoesfrentepaf
   , ufuncoesblocox, uclassetiposblocox, upafecfmensagens  
   {$IFDEF VER150}
-  SmallFunc, IBDatabase, IBQuery, IBCustomDataSet,
+  //SmallFunc, IBDatabase, IBQuery, IBCustomDataSet,
   {$ELSE}
-  SmallFunc_xe, IBX.IBDatabase, IBX.IBQuery, IBX.IBCustomDataSet,
+  , SmallFunc_xe, IBX.IBDatabase, IBX.IBQuery, IBX.IBCustomDataSet
   {$ENDIF}
   , xmldom, XMLIntf, msxmldom, msxml, Menus
   , LbCipher,
@@ -1227,7 +1227,7 @@ begin
   while True do
   begin
     if (AnsiContainsText(DBGrid1.DataSource.DataSet.FieldByName('XMLRESPOSTA').AsString, '<SituacaoProcessamentoCodigo>2') or AnsiContainsText(DBGrid1.DataSource.DataSet.FieldByName('XMLRESPOSTA').AsString, '<SituacaoProcessamentoCodigo>3')) then // 2:Erro 3:Cancelado
-      BlocoX.ReprocessarArquivoBlocoX(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(satual), AnsiString(DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString));
+      BlocoX.ReprocessarArquivoBlocoX(PAnsiChar(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName)), PAnsiChar(AnsiString(satual)), PAnsiChar(AnsiString(DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString)));
     if bTodas then
       DBGrid1.DataSource.DataSet.Next;
 

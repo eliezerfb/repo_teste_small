@@ -33781,7 +33781,7 @@ begin
   if bOk then
   begin
     // 2024-02-16 _BlocoX.GerarAoFISCOREDUCAOZBlocox(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
-    _BlocoX.GerarAoFISCOREDUCAOZBlocox(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarAoFISCOREDUCAOZBlocox(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
 
     Commitatudo2(True); // EnvioaoFISCOESTOQUEClick 2017-03-22
     CommitaTudo(True);// EnvioaoFISCOESTOQUEClick 2017-03-22
@@ -33841,7 +33841,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueAnoAnterior(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarEstoqueAnoAnterior(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33870,7 +33870,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueMudancaDeTributacao(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarEstoqueMudancaDeTributacao(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33899,7 +33899,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33929,7 +33929,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueMudancaDeRegime(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarEstoqueMudancaDeRegime(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33959,7 +33959,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueAtual(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarEstoqueAtual(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
