@@ -16,9 +16,18 @@ unit upafecfmensagens;
 interface
 
 uses Classes, CAPICOM_TLB, MSXML2_TLB, ActiveX, ComObj, SysUtils, Dialogs,
-  SmallFunc_xe, Windows, Forms
-  , SynZip, usmallwebservice //FileCtrl
-  , ufuncaoMD5
+  Windows, Forms,
+  {$IFDEF VER150}
+  SmallFunc,
+  base64code,
+  MD5,
+  {$ELSE}
+  SmallFunc_xe,
+  md5_unicode,
+  {$ENDIF}
+
+  SynZip, usmallwebservice //FileCtrl
+
   ,ufuncoesfrente // Sandro Silva 2018-07-03 
   ;
 
@@ -561,7 +570,11 @@ begin
                                 +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
                                 +chr(10)
                                 +chr(10)+'Selecione um certificado acessando'
-                                +chr(10)+'F10 Menu Gerencial/Configurações/Selecionar certificado digital.'),
+                                +chr(10)+'F10 Menu Gerencial/Configurações/Selecionar certificado digital'
+                                +chr(10)
+                                +chr(10)
+                                +chr(10)
+                                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
                                     'Atenção', MB_ICONWARNING + MB_OK);
 end;
 
@@ -631,11 +644,11 @@ begin
 
   for iFile := 0 to Length(aArq) - 1 do
   begin
-    sMD5     := sMD5 + MD5File(aArq[iFile]);
-    sMD5Nome := sMD5Nome + MD5File(aArq[iFile]);
+    sMD5     := sMD5 + MD5Print(MD5File(aArq[iFile]));
+    sMD5Nome := sMD5Nome + MD5Print(MD5String(aArq[iFile]));
   end;
 
-  Result := MD5String(sMD5 + sMD5Nome);
+  Result := MD5Print(MD5String(sMD5 + sMD5Nome));
 
   aArq := nil;
 
@@ -977,12 +990,12 @@ begin
   //CreateDir(PChar(PASTA_RECIBOS_ESTOQUE_BLOCO_X));
   //CreateDir(PChar(PASTA_RECIBOS_REDUCOES_BLOCO_X));
 
-  CreateDir('c:\BlocoX');
-  CreateDir(PASTA_REDUCOES_BLOCO_X);
-  CreateDir(PASTA_ESTOQUE_BLOCO_X);
-  CreateDir('c:\BlocoX\Recibos - Bloco X');
-  CreateDir(PASTA_RECIBOS_ESTOQUE_BLOCO_X);
-  CreateDir(PASTA_RECIBOS_REDUCOES_BLOCO_X);
+  CreateDir(PAnsiChar('c:\BlocoX'));
+  CreateDir(PAnsiChar(PASTA_REDUCOES_BLOCO_X));
+  CreateDir(PAnsiChar(PASTA_ESTOQUE_BLOCO_X));
+  CreateDir(PAnsiChar('c:\BlocoX\Recibos - Bloco X'));
+  CreateDir(PAnsiChar(PASTA_RECIBOS_ESTOQUE_BLOCO_X));
+  CreateDir(PAnsiChar(PASTA_RECIBOS_REDUCOES_BLOCO_X));
 
 end;
 
