@@ -4,7 +4,7 @@ interface
 
 uses
 
-  Windows, Messages, SmallFunc, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SmallFunc_xe, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB, DBCtrls, SMALL_DBEdit, IniFiles,
   Unit2, ShellApi, Unit22
   {$IFDEF VER150}
@@ -17,6 +17,7 @@ uses
   , usmallprint
   , tnPDF
   , Printers
+  , SynPDF
   ;
 
 const GERENCIAL_FORMA_01_DINHEIRO                                     = '01';
@@ -217,7 +218,7 @@ begin
 
   if (Form1.ibDataSet13.FieldByName('ESTADO').AsString = '') then
   begin
-    Application.MessageBox(PAnsiChar('Acesse o Small e configure os dados do emitente ' + #13 +
+    Application.MessageBox(PChar('Acesse o Small e configure os dados do emitente ' + #13 +
                                  'e reinicie aplicação' + #13 + #13 +
                                  'Essa aplicação será fechada'),'Atenção', MB_ICONWARNING + MB_OK);
     FecharAplicacao(ExtractFileName(Application.ExeName));
@@ -266,8 +267,8 @@ begin
   Form1.GerenciadordeNFCe1.Caption              := 'Gerenciador'; // Sandro Silva 2023-06-23 'Gerenciador de Vendas';
   Form1.ImprimirDANFCE1.Caption                 := 'Imprimir o Comprovante da Movimentação'; // Sandro Silva 2023-06-23 'Imprimir o Comprovante da Venda';
   //
-  DecimalSeparator := ',';
-  DateSeparator    := '/';
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
   //
   Result := True;
   //
@@ -1077,15 +1078,15 @@ end;
 
 function _ecf99_Moeda(pP1: Boolean): String;
 begin
-  Result := Copy(CurrencyString,1,1);
+  Result := Copy(FormatSettings.CurrencyString,1,1);
 end;
 
 function _ecf99_Dataehoradaimpressora(pP1: Boolean): String;
 begin
   //Result := FormatDateTime('ddmmyyyyHHnnss', Now); // StrTran(StrTran(Copy(DateToStr(Date),1,8)+TimeToStr(Time),'/',''),':','');
-  ShortDateFormat := 'dd/mm/yy';   {Bug 2001 free}
+  FormatSettings.ShortDateFormat := 'dd/mm/yy';   {Bug 2001 free}
   Result := StrTran(StrTran(Copy(DateToStr(Date),1,8)+TimeToStr(Time),'/',''),':','');
-  ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
 end;
 
 function _ecf99_Datadaultimareduo(pP1: Boolean): String;
@@ -1417,12 +1418,12 @@ begin
     Form1.OcultaPanelMensagem; 
 
     if FileExists(sFilePDF) then
-      ShellExecute(Application.Handle, 'open', PAnsiChar(sFilePDF), '', '', SW_MAXIMIZE);
+      ShellExecute(Application.Handle, 'open', PChar(sFilePDF), '', '', SW_MAXIMIZE);
 
   except
     on E: Exception do
     begin
-      Application.MessageBox(PansiChar(E.Message+chr(10)+chr(10)+'Ao visualizar a movimentação'),'Atenção',mb_Ok + MB_ICONWARNING);
+      Application.MessageBox(PChar(E.Message + chr(10) + chr(10) + 'Ao visualizar a movimentação'), 'Atenção', mb_Ok + MB_ICONWARNING);
       Result := False;
     end;
   end;
@@ -1438,6 +1439,7 @@ const LARGURA_REFERENCIA_PAPEL_BOBINA = 640; //639
 var
   //Tipo: TTipoExtrato;
   //QRCodeBMP: TBitmap;
+  FileName: String;
   IBQTOTAL: TIBQuery;
   IBQALTERACA: TIBQuery;
   IBQCLIFOR: TIBQuery;
@@ -1486,7 +1488,8 @@ var
   sFilePDF: String;
   Pagina: Array of TImage; // Imagem que receberá os textos e outras imagem
   iAlturaPDF: Integer;
-  PDF: TPrintPDF;
+  PDF: TPdfDocumentGDI; //2024-02-15 PDF: TPrintPDF;
+  PAGE : TPdfPage;
   iPagina: Integer;
   sRazaoEmitente: String;
   iLinhasFinal: Integer;
@@ -2365,7 +2368,7 @@ begin
     begin
       try
 
-        Printer.Abort;
+        //2024-02-15 Printer.Abort;
 
         try
           if sFileExport = '' then // 2015-06-30
@@ -2375,7 +2378,7 @@ begin
 
           if DirectoryExists(ExtractFilePath(Application.ExeName) + 'VENDAS') = False then
             ForceDirectories(ExtractFilePath(Application.ExeName) + 'VENDAS');
-
+          (*
           // Cria o PDF
 
           {Create TPrintPDF VCL}
@@ -2438,11 +2441,81 @@ begin
         if PDF <> nil then
           FreeAndNil(PDF);
 
+        *)
+        // Cria o PDF
+
+          {Create TPrintPDF VCL}
+          PDF := TPdfDocumentGDI.Create();
+          PDF.DefaultPaperSize := psUserDefined;
+          PDF.DefaultPageWidth := iLarguraFisica;
+
+          {Set Doc Info}
+          PDF.Info.Title       := ExtractFileName(sFilePDF);
+          PDF.Info.Creator     := 'Zucchetti - ' + ExtractFileName(Application.ExeName);// Sandro Silva 2022-12-02 Unochapeco
+          PDF.Info.Author      := ConverteAcentos2(Form1.ibDataSet13.FieldByName('NOME').AsString);
+          PDF.Info.Keywords    := 'MOVIMENTO';
+          {Set Filename to save}
+          if sFileExport = '' then // 2015-06-30
+            PDF.Info.Subject     := ExtractFileName(sFilePDF)
+          else
+            PDF.Info.Subject     := sFileExport;
+
+          //PDF.JPEGQuality := 100; //2015-05-15 50;
+
+          {Use Compression: VCL Must compile with ZLIB comes with D3 above}
+          PDF.ForceJPEGCompression := 0; // Sandro Silva 2017-04-11  True;
+
+          {Set Page Size}
+          PAGE := pdf.AddPage;
+          PAGE.PageLandscape := False;
+
+          PAGE.PageWidth   := iLarguraPapel;
+          PAGE.PageHeight  := ALTURA_PAGINA_PDF; // Sandro Silva 2017-04-17  2374;
+
+          {Set Filename to save}
+          if sFileExport = '' then // 2015-06-30
+            FileName  := ExtractFilePath(Application.ExeName) + 'VENDAS\' + sFilePDF + '.pdf'
+          else
+            FileName  := sFileExport;
+
+          {Start Printing...}
+          //PDF.BeginDoc;
+
+          for iPagina := 0 to Length(Pagina) -1 do
+          begin
+
+            {Print Image}
+            PDF.VCLCanvas.Draw(0, 0, Pagina[iPagina].Picture.Bitmap);
+
+            if iPagina < Length(Pagina) -1 then
+              {Add New Page}
+              PAGE := Pdf.AddPage;
+            FreeAndNil(Pagina[iPagina]);
+          end;
+
+          {End Printing}
+          //sRetornoGeraPDF := PDF.EndDoc;
+
+          Sleep(500 * Length(Pagina) -1);
+        except
+          on E: Exception do
+          begin
+            sRetornoGeraPDF := FileName + ' já está aberto';
+          end;
+        end;
+
+        PDF.SaveToFile(FileName);
+
+        {FREE TPrintPDF VCL}
+        if PDF <> nil then
+          FreeAndNil(PDF);
+
         Pagina := nil;
 
       finally
 
       end;
+
     end
     else
     begin

@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs
   , IniFiles
-  , Smallfunc
+  , smallfunc_xe
   , ufuncoesfrente
   , ufuncoesfrentepaf
   , StdCtrls;
@@ -106,7 +106,7 @@ begin
   if bOk then
   begin
     //_BlocoX.IdentificaRetornosComErroTratandoTodos(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar('ESTOQUE'));
-    _BlocoX.IdentificaRetornosComErroTratandoTodos(PAnsiChar(sCaminhoBanco), PAnsiChar(Form1.sAtual), PAnsiChar('ESTOQUE'));
+    _BlocoX.IdentificaRetornosComErroTratandoTodos(sCaminhoBanco, Form1.sAtual, 'ESTOQUE');
 
     Label1.Caption := 'Aguarde... REQUISITO LIX - Consultando';
     Form1.BlocoxConsultarRecibo1;
@@ -128,7 +128,7 @@ begin
   //begin
     if BlocoXServidorConfigurado1 then
     begin
-      _BlocoX.ConsultarRecibo(PAnsiChar(sCaminhoBanco), PAnsiChar(Form1.sAtual), '');
+      _BlocoX.ConsultarRecibo(sCaminhoBanco, Form1.sAtual, '');
     end;
 
     ChDir(Form1.sAtual); // Sandro Silva 2017-03-31
@@ -240,7 +240,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.IdentificaRetornosComErroTratandoTodos(PAnsiChar(sCaminhoBanco), PAnsiChar(Form1.sAtual), PAnsiChar('REDUCAO'));
+    _BlocoX.IdentificaRetornosComErroTratandoTodos(sCaminhoBanco, Form1.sAtual, 'REDUCAO');
 
     Form1.BlocoxConsultarRecibo1;
 

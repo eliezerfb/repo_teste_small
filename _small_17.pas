@@ -11,9 +11,9 @@ unit _Small_17;
 interface
 
 uses
-  Windows, Messages, SmallFunc, Fiscal, SysUtils,Classes, Graphics, Controls,
+  Windows, Messages, SmallFunc_xe, Fiscal, SysUtils,Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB, //DBTables,
-  DBCtrls, SMALL_DBEdit, IniFiles, Unit2, FileCtrl, Unit22, Unit7, md5,
+  DBCtrls, SMALL_DBEdit, IniFiles, Unit2, FileCtrl, Unit22, Unit7,
   StrUtils
   , udarumaframeworkclass;
 
@@ -1066,8 +1066,8 @@ begin
     end
     else
     begin
-      Deletefile(PAnsiChar('.\DarumaATOCOTEPE_DARUMA.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\DarumaATOCOTEPE_DARUMA.txt'));
-      Deletefile(PAnsiChar('.\Espelho_MFD.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\Espelho_MFD.txt'));
+      DeleteFile(PChar('.\DarumaATOCOTEPE_DARUMA.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\DarumaATOCOTEPE_DARUMA.txt'));
+      DeleteFile(PChar('.\Espelho_MFD.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\Espelho_MFD.txt'));
       //
       //
       //
@@ -1094,7 +1094,7 @@ begin
         begin
 
           sArquivoAto1704 := '.\ATO_MFD_DATA.TXT';
-          DeleteFile(PAnsiChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 DeleteFile(pChar(sArquivoAto1704));
+          DeleteFile(PChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 DeleteFile(pChar(sArquivoAto1704));
 
           //
           pP2 := Copy(DateToStr(Form7.DateTimePicker1.Date),1,2)+Copy(DateToStr(Form7.DateTimePicker1.Date),4,2)+Copy(DateToStr(Form7.DateTimePicker1.Date),7,4);
@@ -1105,7 +1105,7 @@ begin
         end else
         begin
           sArquivoAto1704 := '.\ATO_MFD_COO.TXT';
-          Deletefile(PAnsiChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 Deletefile(pChar(sArquivoAto1704)); 
+          DeleteFile(PChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 Deletefile(pChar(sArquivoAto1704));
 
           {Sandro Silva 2015-08-20 inicio}
           pP2 := FormatFloat('000000', StrToIntDef(Form7.MaskEdit1.Text, 0));
@@ -1124,12 +1124,12 @@ begin
       begin
         if I = 1 then
         begin
-          CopyFile(PAnsiChar(sArquivoAto1704), PAnsiChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar(sArquivoAto1704), pChar(pP1), False); 
+          CopyFile(PChar(sArquivoAto1704), PChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar(sArquivoAto1704), pChar(pP1), False);
 
           Application.BringToFront;
           Application.ProcessMessages;
           // Sandro Silva 2017-08-01  ShowMessage('O seguinte arquivo será gravado: ' + pP1);
-          Deletefile(PAnsiChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 Deletefile(pChar(sArquivoAto1704)); 
+          Deletefile(PChar(sArquivoAto1704)); // Sandro Silva 2020-09-02 Deletefile(pChar(sArquivoAto1704));
           {Sandro Silva 2015-09-30 final}
           Result := True;
         end else
@@ -1144,11 +1144,11 @@ begin
         begin
           if FileExists('.\Espelho_MFD.txt') then
           begin
-            CopyFile(PAnsiChar('.\Espelho_MFD.txt'),PAnsiChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar('.\Espelho_MFD.txt'),pChar(pP1), False); 
+            CopyFile(PChar('.\Espelho_MFD.txt'), PChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar('.\Espelho_MFD.txt'),pChar(pP1), False);
             Application.BringToFront;
             Application.ProcessMessages;
             // Sandro Silva 2017-08-01  ShowMessage('O seguinte arquivo será gravado: '+pP1);
-            Deletefile(PAnsiChar('.\Espelho_MFD.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\Espelho_MFD.txt'));
+            DeleteFile(PChar('.\Espelho_MFD.txt')); // Sandro Silva 2020-09-02 Deletefile(pChar('.\Espelho_MFD.txt'));
             Result := True;
           end else Result := False;
         end else
@@ -1534,7 +1534,7 @@ begin
   //
   DeleteFile(pP1);
   ShowMessage('O seguinte arquivo será gravado: '+pP1);
-  CopyFile(PansiChar('C:\RETORNO.TXT'),PAnsiChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar('C:\RETORNO.TXT'),pChar(pP1),True);
+  CopyFile(PChar('C:\RETORNO.TXT'), PChar(pP1), False); // Sandro Silva 2020-09-02 CopyFile(pChar('C:\RETORNO.TXT'),pChar(pP1),True);
   Result := True;
   //
 end;

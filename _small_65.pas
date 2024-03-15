@@ -103,7 +103,7 @@ uses
   const NFCE_STATUS_AUTORIZADO_USO_EM_PRODUCAO    = 'Autorizado o uso da NFC-e';
   const NFCE_STATUS_CANCELAMENTO                  = 'Cancelamento Registrado e vinculado a NFCe';
 
-  function ConsisteInscricaoEstadual(sIE, sUF: String): Boolean; StdCall; External 'DllInscE32.Dll';
+  function ConsisteInscricaoEstadual(sIE, sUF: AnsiString): Boolean; StdCall; External 'DllInscE32.Dll';
   //
   function _ecf65_CodeErro(Pp1: Integer):Integer;
   function _ecf65_Inicializa(Pp1: String):Boolean;
@@ -276,7 +276,7 @@ implementation
 
 uses
 //  RTLConsts
-   SmallFunc
+   SmallFunc_xe
   , SMALL_DBEdit
   , Fiscal
   , Unit2
@@ -287,9 +287,9 @@ uses
   , ucadadquirentes
   , urecuperaxmlnfce
   , umfe
-  , _Small_IntegradorFiscal // Sandro Silva 2018-07-03
+//  , _Small_IntegradorFiscal // Sandro Silva 2018-07-03
   ,  ufuncoesfrente // Sandro Silva 2018-07-03
-  , uValidaRecursosDelphi7;
+  , uValidaRecursosDelphi7, uEmail;
 
 function AlertaCredenciadoraCartao(sNomeRede: String): String;
 begin
@@ -343,8 +343,8 @@ var
 begin
   Result := false;
   LibPointer := NIL;
-  if LoadLibrary(PAnsiChar(LibName)) = 0 then Exit; // Sandro Silva 2020-09-03 if LoadLibrary(PChar(LibName)) = 0 then Exit; 
-  LibHandle := GetModuleHandle(PAnsiChar(LibName));
+  if LoadLibrary(PChar(LibName)) = 0 then Exit; // Sandro Silva 2020-09-03 if LoadLibrary(PChar(LibName)) = 0 then Exit;
+  LibHandle := GetModuleHandle(PChar(LibName));
   if LibHandle <> 0 then
   begin
     LibPointer := GetProcAddress(LibHandle, PAnsiChar(FuncName)); // Sandro Silva 2020-09-03 LibPointer := GetProcAddress(LibHandle, PChar(FuncName));
@@ -359,7 +359,7 @@ var
 begin
   Lista.Clear;
   //
-  I := FindFirst( PAnsiChar(sCaminho), faAnyFile, S); // Sandro Silva 2020-09-03 I := FindFirst( pChar(sCaminho), faAnyFile, S);
+  I := FindFirst(sCaminho, faAnyFile, S); // Sandro Silva 2020-09-03 I := FindFirst( pChar(sCaminho), faAnyFile, S);
   //
   while I = 0 do
   begin
@@ -451,15 +451,15 @@ begin
   //
   try
     //
-    if FileExists(PAnsiChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml')) then
+    if FileExists(PChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml')) then
     begin
-      _file.LoadFromFile(PAnsiChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml')); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml'));
+      _file.LoadFromFile(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml'); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-caneve.xml'));
       Result := _file.Text;
     end else
     begin
-      if FileExists(PAnsiChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml')) then
+      if FileExists(PChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml')) then
       begin
-        _file.LoadFromFile(PAnsiChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml')); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml'));
+        _file.LoadFromFile(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml'); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-nfce.xml'));
         Result := _file.Text;
       end;
     end;
@@ -488,9 +488,9 @@ begin
   //
   try
     //
-    if FileExists(PAnsiChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml')) then
+    if FileExists(PChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml')) then // Sandro Silva 2020-09-03 if FileExists(pChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml')) then
     begin
-      _file.LoadFromFile(PAnsiChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml')); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml'));
+      _file.LoadFromFile(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml'); // Sandro Silva 2020-09-03 _file.LoadFromFile(pChar(Form1.sAtual + '\log\' + sID + '-recuperada-nfce.xml'));
       Result := _file.Text;
 
       Result := _ecf65_CorrigePadraoRespostaSefaz(Result);
@@ -618,7 +618,7 @@ begin
             else
             begin
               sRetorno := Form1.ibDataSet150.FieldByName('NFEXML').AsString; // XML cancelamento
-              if FileExists(PAnsiChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) = False then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) = False then
+              if FileExists(PChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) = False then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) = False then
               begin
                 // Salva o retorno para depois abaixo não ficar em loop esperando o arquivo de cancelamento em xmldestinatario
                 sXmlCancelamento := SalvaXmlCancelamentoEmXmlDestinatario(sRetorno, Form1.ibDAtaSet150.FieldByName('NFEID').AsString);
@@ -633,7 +633,7 @@ begin
             if (Pos('<cStat>135</cStat>',sRetorno) <> 0)   // Recebido pelo Sistema de Registro de Eventos, com vinculação do evento na NF-e,
               or (Pos('<cStat>136</cStat>',sRetorno) <> 0) // Recebido pelo Sistema de Registro de Eventos – vinculação do evento à respectiva NF-e prejudicada
               or (Pos('<cStat>573</cStat>',sRetorno) <> 0) // Duplicidade do evento de cancelamento
-              or FileExists(PAnsiChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) then // Sandro Silva 2020-09-03 or FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) then
+              or FileExists(PChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) then // Sandro Silva 2020-09-03 or FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) then
             begin
 
               if (Pos('<cStat>573</cStat>',sRetorno) <> 0) then // Duplicidade do evento de cancelamento
@@ -661,7 +661,7 @@ begin
               begin
                 //  Duplicidade
                 iTenta := 1;
-                while not FileExists(PAnsiChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) do // Sandro Silva 2020-09-03 while not FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) do
+                while not FileExists(PChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) do // Sandro Silva 2020-09-03 while not FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString+'-caneve.xml'))) do
                 begin
                   //
                   Sleep(100);
@@ -670,10 +670,10 @@ begin
                   //
                 end;
                 //
-                if FileExists(PAnsiChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) then
+                if FileExists(PChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) then
                 begin
                   //
-                  sXmlCancelamento := _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString)); // Sandro Silva 2020-09-03 sXmlCancelamento := _ecf65_LoadXmlDestinatario(pChar(Form1.ibDataSet150.FieldByName('NFEID').AsString));
+                  sXmlCancelamento := _ecf65_LoadXmlDestinatario(Form1.ibDataSet150.FieldByName('NFEID').AsString); // Sandro Silva 2024-02-16 sXmlCancelamento := _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString));
                   //
                 end;
               end;
@@ -681,7 +681,7 @@ begin
               if sXmlCancelamento <> '' then
               begin
 
-                if FileExists(PAnsiChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) = False then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) = False then
+                if FileExists(PChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) = False then // Sandro Silva 2020-09-03 if FileExists(pChar(Alltrim(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + Form1.ibDAtaSet150.FieldByName('NFEID').AsString + '-caneve.xml'))) = False then
                   SalvaXmlCancelamentoEmXmlDestinatario(sXmlCancelamento, Form1.ibDAtaSet150.FieldByName('NFEID').AsString);
 
                 Form1.ibDataSet150.Edit;
@@ -2611,7 +2611,7 @@ begin
           Form1.sMotivoContingencia := Form1.sMotivoContingencia + IfThen(Trim(Form1.sMotivoContingencia) = '', '', '. ') + 'Servico indisponivel';
         Form1.sMotivoContingencia := Copy(Form1.sMotivoContingencia, 1, 256);
 
-        Application.MessageBox(PAnsiChar('Entrando em modo de contingência.'+chr(10)+'Lembre-se de transmitir as notas quando voltar o serviço.'), 'Modo de Contingência Ativado', MB_ICONWARNING + MB_OK); // Sandro Silva 2020-09-03 Application.MessageBox(PChar('Entrando em modo de contingência.'+chr(10)+'Lembre-se de transmitir as notas quando voltar o serviço.'), 'Modo de Contingência Ativado', MB_ICONWARNING + MB_OK);
+        Application.MessageBox(PChar('Entrando em modo de contingência.'+chr(10)+'Lembre-se de transmitir as notas quando voltar o serviço.'), 'Modo de Contingência Ativado', MB_ICONWARNING + MB_OK); // Sandro Silva 2020-09-03 Application.MessageBox(PChar('Entrando em modo de contingência.'+chr(10)+'Lembre-se de transmitir as notas quando voltar o serviço.'), 'Modo de Contingência Ativado', MB_ICONWARNING + MB_OK);
         Form1.NFCeemContingncia1.Checked := True;
 
         //
@@ -4510,11 +4510,11 @@ begin
       end;
       //
       try
-        if _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString)) <> '' then
+        if _ecf65_LoadXmlDestinatario(Form1.ibDataSet150.FieldByName('NFEID').AsString) <> '' then // Sandro Silva 2024-02-16 if _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString)) <> '' then
         begin
           if (Form1.ibDataSet150.State in [dsEdit, dsInsert]) = False then
             Form1.ibDataSet150.Edit;
-          Form1.ibDataSet150.FieldByName('NFEXML').AsString := _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString));
+          Form1.ibDataSet150.FieldByName('NFEXML').AsString := _ecf65_LoadXmlDestinatario(Form1.ibDataSet150.FieldByName('NFEID').AsString); // Sandro Silva 2024-02-16 Form1.ibDataSet150.FieldByName('NFEXML').AsString := _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString));
         end;
       except
       end;
@@ -4633,7 +4633,7 @@ begin
           {Sandro Silva 2021-06-09 inicio}
           if AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'MG' then
           begin
-            if Pos('<?xml', fNFe) = 0 then
+            if Pos('<?xml', String(fNFe)) = 0 then
               fNFE := '<?xml version="1.0" encoding="UTF-8"?>' + fNFe;
           end;
           {Sandro Silva 2021-06-09 fim}
@@ -4775,7 +4775,7 @@ begin
             begin
               if (Pos('<cStat>206</cStat>', sRetorno) <> 0) or (Pos('<cStat>256</cStat>', sRetorno) <> 0) then // Sandro Silva 2018-03-28
               begin
-                bButton := Application.MessageBox(PAnsiChar('Esta numeração foi inutilizada .' + chr(10) + chr(10) + 'Definir um novo número para esta NFC-e?'), 'Atenção NFC-e Inutilizada ', mb_YesNo + mb_DefButton1 + MB_ICONWARNING)
+                bButton := Application.MessageBox(PChar('Esta numeração foi inutilizada .' + chr(10) + chr(10) + 'Definir um novo número para esta NFC-e?'), 'Atenção NFC-e Inutilizada ', mb_YesNo + mb_DefButton1 + MB_ICONWARNING)
               end
               else
               begin
@@ -4795,11 +4795,11 @@ begin
                   sMensagemAlertaUsoDenegado := sMensagemAlertaUsoDenegado + chr(10) + chr(10) + 'Clique Não: Para cancelar a venda e voltar os produtos para o estoque' +
                                                                              chr(10) + chr(10) + 'Clique Sim: Para definir um novo número para esta NFC-e?';
 
-                  bButton := Application.MessageBox(PAnsiChar(sMensagemAlertaUsoDenegado), 'Atenção NFC-e com Uso Denegado', mb_YesNo + mb_DefButton1 + MB_ICONWARNING)
+                  bButton := Application.MessageBox(PChar(sMensagemAlertaUsoDenegado), 'Atenção NFC-e com Uso Denegado', mb_YesNo + mb_DefButton1 + MB_ICONWARNING)
 
                 end
                 else
-                  bButton := Application.MessageBox(PAnsiChar('Esta numeração já foi utilizada.' + chr(10) + chr(10) + 'Definir um novo número para esta NFC-e?'), 'Atenção Duplicidade de NFC-e', mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
+                  bButton := Application.MessageBox(PChar('Esta numeração já foi utilizada.' + chr(10) + chr(10) + 'Definir um novo número para esta NFC-e?'), 'Atenção Duplicidade de NFC-e', mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
               end;
 
             end;// if (Form1.ClienteSmallMobile.sVendaImportando <> '') then
@@ -5299,7 +5299,7 @@ begin
         {Sandro Silva 2023-07-20 fim}
 
         Form1.IBDataSet150.FieldByName('NFEID').AsString    := sID;
-        if Pos('<nNF>'+IntToStr(Form1.iCupom)+'</nNF>',fNFe) <> 0 then
+        if Pos('<nNF>'+IntToStr(Form1.iCupom)+'</nNF>', String(fNFe)) <> 0 then
           Form1.IBDataSet150.FieldByName('NFEXML').AsString := fNFe;
         Form1.IBDataSet150.FieldByName('STATUS').AsString   := AllTrim(Copy(sStatus + Replicate(' ', 50), 1, Form1.IBDataSet150.FieldByName('STATUS').Size));
         Form1.IBDataSet150.FieldByName('NUMERONF').AsString := FormataNumeroDoCupom(Form1.iCupom); // Sandro Silva 2021-11-29 Form1.IBDataSet150.FieldByName('NUMERONF').AsString := StrZero(Form1.iCupom,6,0);
@@ -5408,7 +5408,7 @@ begin
             Form1.ExibePanelMensagem('Atenção! ' + NFCE_NAO_HOUVE_RETORNO_SERVIDOR + Chr(10) + 'Será gerada uma nova NFC-e em contingência');  // Sandro Silva 2018-08-23
           end
           else
-            SmallMsg(PAnsiChar('Small - NFC-e ' + ' - ' + FormatDateTime('dd/mm/yyyy HH:nn:ss', Now) + ' ' + Form22.sBuild + Chr(10) + Chr(10) + sLogErro)); // Sandro Silva 2020-09-03 SmallMsg(PChar('Small - NFC-e ' + ' - ' + FormatDateTime('dd/mm/yyyy HH:nn:ss', Now) + ' ' + Form22.sBuild + Chr(10) + Chr(10) + sLogErro));
+            SmallMsg('Small - NFC-e ' + ' - ' + FormatDateTime('dd/mm/yyyy HH:nn:ss', Now) + ' ' + Form22.sBuild + Chr(10) + Chr(10) + sLogErro);
         end;
       end
       else
@@ -5687,7 +5687,7 @@ begin
   except
     on E: Exception do
     begin
-      Application.MessageBox(PAnsiChar(E.Message+chr(10)+chr(10)+'Ao visualizar o DANFCE'),'Atenção',mb_Ok + MB_ICONWARNING); // Sandro Silva 2020-09-03 Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao visualizar o DANFCE'),'Atenção',mb_Ok + MB_ICONWARNING);
+      Application.MessageBox(PChar(E.Message+chr(10)+chr(10)+'Ao visualizar o DANFCE'),'Atenção',mb_Ok + MB_ICONWARNING); // Sandro Silva 2020-09-03 Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao visualizar o DANFCE'),'Atenção',mb_Ok + MB_ICONWARNING);
       Result := False;
     end;
   end;
@@ -5726,7 +5726,7 @@ begin
       {Sandro Silva 2023-10-10 inicio
       Form1.spdNFCe1.ImprimirDanfce(psLote, pfNFe, _ecf65_ArquivoRTM, Device);
       }
-      if Pos('ZPOS', pfNFe) > 0 then
+      if Pos('ZPOS', String(pfNFe)) > 0 then
       begin
         try
 
@@ -5754,7 +5754,7 @@ begin
     except
       on E: Exception do
       begin
-        Application.MessageBox(PAnsiChar(E.Message+chr(10)+chr(10)+'Ao imprimir o DANFCE'),'Atenção',mb_Ok + MB_ICONWARNING); // Sandro Silva 2020-09-03 Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao imprimir o DANFCE'),'Atenção',mb_Ok + MB_ICONWARNING); 
+        Application.MessageBox(PChar(E.Message+chr(10)+chr(10)+'Ao imprimir o DANFCE'),'Atenção',mb_Ok + MB_ICONWARNING); // Sandro Silva 2020-09-03 Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao imprimir o DANFCE'),'Atenção',mb_Ok + MB_ICONWARNING);
         Result := False;
       end;
     end;
@@ -5777,12 +5777,12 @@ var
   function Compactar(sZipFile: String): Boolean;
   begin
     if FileExists(sZipFile) then
-      DeleteFile(PAnsiChar(sZipFile)); // Sandro Silva 2020-09-03 DeleteFile(PChar(sZipFile)); 
+      DeleteFile(sZipFile); // Sandro Silva 2020-09-03 DeleteFile(PChar(sZipFile));
 
     if FileExists('szip.exe') then
     begin
       if FileExists(sPDFFile) then
-        ShellExecuteA(Application.Handle, PAnsiChar('Open'), PAnsiChar('szip.exe'), PAnsiChar('backup "'+Alltrim(sPDFFile)+'" "'+ sZipFile + '"'), PAnsiChar(''), SW_SHOWMAXIMIZED); // Sandro Silva 2020-10-27 ShellExecuteA( 0, PAnsiChar('Open'), PAnsiChar('szip.exe'), PAnsiChar('backup "'+Alltrim(sPDFFile)+'" "'+ sZipFile + '"'), PAnsiChar(''), SW_SHOWMAXIMIZED); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(sPDFFile)+'" "'+ sZipFile + '"'), '', SW_SHOWMAXIMIZED);
+        ShellExecute(Application.Handle, PChar('Open'), PChar('szip.exe'), PChar('backup "' + Alltrim(sPDFFile) + '" "' + sZipFile + '"'), PChar(''), SW_SHOWMAXIMIZED);
 
       while ConsultaProcesso('szip.exe') do
       begin
@@ -5791,7 +5791,7 @@ var
       end;
 
       if FileExists(sXMLFile) then
-        ShellExecute(Application.Handle, PAnsiChar('Open'), PAnsiChar('szip.exe'), PAnsiChar('backup "'+Alltrim(sXMLFile)+'" "'+ sZipFile + '"'), PAnsiChar(''), SW_SHOWMAXIMIZED); // Sandro Silva 2020-10-27  ShellExecute( 0, PAnsiChar('Open'), PAnsiChar('szip.exe'), PAnsiChar('backup "'+Alltrim(sXMLFile)+'" "'+ sZipFile + '"'), PAnsiChar(''), SW_SHOWMAXIMIZED); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(sXMLFile)+'" "'+ sZipFile + '"'), '', SW_SHOWMAXIMIZED);
+        ShellExecute(Application.Handle, PChar('Open'), PChar('szip.exe'), PChar('backup "'+Alltrim(sXMLFile)+'" "'+ sZipFile + '"'), PChar(''), SW_SHOWMAXIMIZED);
 
       //
       while ConsultaProcesso('szip.exe') do
@@ -5800,20 +5800,20 @@ var
         Sleep(100);
       end;
       //
-      while not FileExists(PAnsiChar(sZipFile)) do // Sandro Silva 2020-09-03 while not FileExists(pChar(sZipFile)) do
+      while not FileExists(sZipFile) do
       begin
         Sleep(100);
       end;
       //
-      while FileExists(PAnsiChar(sPDFFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sPDFFile)) do
+      while FileExists(sPDFFile) do
       begin
-        DeleteFile(PAnsiChar(sPDFFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sPDFFile));
+        DeleteFile(sPDFFile);
         Sleep(100);
       end;
 
-      while FileExists(PAnsiChar(sXMLFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sXMLFile)) do
+      while FileExists(sXMLFile) do
       begin
-        DeleteFile(PAnsiChar(sXMLFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sXMLFile));
+        DeleteFile(sXMLFile);
         Sleep(100);
       end;
 
@@ -5842,9 +5842,9 @@ begin
     {Sandro Silva 2022-09-02 fim}
 
     //
-    while FileExists(PAnsiChar(sPDFFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sPDFFile)) do
+    while FileExists(sPDFFile) do // Sandro Silva 2020-09-03 while FileExists(pChar(sPDFFile)) do
     begin
-      DeleteFile(PAnsiChar(sPDFFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sPDFFile));
+      DeleteFile(sPDFFile); // Sandro Silva 2020-09-03 DeleteFile(pChar(sPDFFile));
       Sleep(100);
     end;
     //
@@ -5861,9 +5861,9 @@ begin
 
     Sleep(250); // Sandro Silva 2022-09-02 Aguardar salvar em disco
 
-    while FileExists(PAnsiChar(sXMLFile)) do // Sandro Silva 2020-09-03 while FileExists(pChar(sXMLFile)) do
+    while FileExists(sXMLFile) do // Sandro Silva 2020-09-03 while FileExists(pChar(sXMLFile)) do
     begin
-      DeleteFile(PAnsiChar(sXMLFile)); // Sandro Silva 2020-09-03 DeleteFile(pChar(sXMLFile));
+      DeleteFile(sXMLFile); // Sandro Silva 2020-09-03 DeleteFile(pChar(sXMLFile));
       Sleep(100);
     end;
 
@@ -5880,7 +5880,7 @@ begin
     if Form1.EnviarDANFCEeXMLcompactado1.Checked = False then
     begin
       //
-      if FileExists(PAnsiChar(sXMLFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sXMLFile)) then
+      if FileExists(sXMLFile) then // Sandro Silva 2020-09-03 if FileExists(pChar(sXMLFile)) then
       begin
 
         sTextoCorpoEmail := 'Segue em anexo seu XML da NFC-e.'+chr(10);
@@ -5888,17 +5888,17 @@ begin
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
-        _ecf65_EnviarEMail('', sEmail, '', 'XML da NFC-e', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sXMLFile),False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('',sEmail,'','XML da NFC-e',pchar(sTextoCorpoEmail),pChar(sXMLFile),False);
+        _ecf65_EnviarEMail('', sEmail, '', 'XML da NFC-e', PChar(sTextoCorpoEmail), PChar(sXMLFile), False);
       end;
 
-      if FileExists(PAnsiChar(sPDFFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sPDFFile)) then
+      if FileExists(sPDFFile) then // Sandro Silva 2020-09-03 if FileExists(pChar(sPDFFile)) then
       begin
         sTextoCorpoEmail := 'Segue em anexo seu DANFCE em arquivo PDF.'+chr(10);
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
-        _ecf65_EnviarEMail('',sEmail,'','DANFCE (Documento Auxiliar da NFC-e)', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sPDFFile),False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('',sEmail,'','DANFCE (Documento Auxiliar da NFC-e)',pchar(sTextoCorpoEmail),pChar(sPDFFile),False);
+        _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e)', PChar(sTextoCorpoEmail), PChar(sPDFFile), False);
       end;
 
     end
@@ -5908,14 +5908,14 @@ begin
       //sZipFile := ExtractFilePath(Application.ExeName) + 'email\danfce_xml_' + FormatDateTime('yyyy-mm-dd-HH-nn-ss-zzzz', Now) + '.zip'; // Sandro Silva 2022-09-02 sZipFile := 'danfce_xml.zip';
       //sZipFile := ChangeFileExt(sPDFFile, 'zip');
       Compactar(sZipFile);
-      if FileExists(PAnsiChar(sZipFile)) then // Sandro Silva 2020-09-03 if FileExists(pChar(sZipFile)) then
+      if FileExists(sZipFile) then // Sandro Silva 2020-09-03 if FileExists(pChar(sZipFile)) then
       begin
         sTextoCorpoEmail := 'Segue em anexo seu XML e DANFCE da NFC-e.'+chr(10);
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
-        _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e) e XML', PAnsiChar(sTextoCorpoEmail), PAnsiChar(sZipFile), False); // Sandro Silva 2020-09-03 _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e) e XML', pchar(sTextoCorpoEmail), pChar(sZipFile), False);
+        _ecf65_EnviarEMail('', sEmail, '', 'DANFCE (Documento Auxiliar da NFC-e) e XML', PChar(sTextoCorpoEmail), PChar(sZipFile), False);
       end;
 
     end;
@@ -5994,26 +5994,22 @@ begin
     begin
       //
       if bExibirMensagem then
-        Application.MessageBox(PAnsiChar(Chr(13) + 'Aguarde, não é possível enviar esta NFC-e no momento.' + Chr(13) +
+        Application.MessageBox(PChar(Chr(13) + 'Aguarde, não é possível enviar esta NFC-e no momento.' + Chr(13) +
         Chr(13) +
-        'Serviço Paralisado sem Previsão.' + Chr(13) +
-        IfThen(xmlNodeValue(sRetorno, '//xObs') <> '', xmlNodeValue(sRetorno, '//xObs') + Chr(13), '') + // Sandro Silva 2019-08-09
-        Chr(13) +
-        'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'), Unochapeco
-        'Atenção',mb_Ok + MB_ICONWARNING);
+        'Serviço Paralisado sem Previsão.' +
+        IfThen(xmlNodeValue(sRetorno, '//xObs') <> '', Chr(13) + xmlNodeValue(sRetorno, '//xObs') + '.', '')),
+        'Atenção', mb_Ok + MB_ICONWARNING);
       //
     end
     else if sStatus = '108' then
     begin
       //
       if bExibirMensagem then
-        Application.MessageBox(PAnsiChar(chr(13) +'Aguarde, não é possível enviar esta NFC-e no momento.'+Chr(13)+
+        Application.MessageBox(PChar(chr(13) +'Aguarde, não é possível enviar esta NFC-e no momento.'+Chr(13)+
         Chr(13)+
-        'Serviço Paralisado Momentaneamente (curto prazo).'+Chr(13)+
-        IfThen(xmlNodeValue(sRetorno, '//xObs') <> '', xmlNodeValue(sRetorno, '//xObs') + Chr(13), '') + // Sandro Silva 2019-08-09
-        chr(13)+
-        'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
-        'Atenção',mb_Ok + MB_ICONWARNING);
+        'Serviço Paralisado Momentaneamente (curto prazo).'+
+        IfThen(xmlNodeValue(sRetorno, '//xObs') <> '', Chr(13)+xmlNodeValue(sRetorno, '//xObs') + '.', '')),
+        'Atenção', mb_Ok + MB_ICONWARNING);
       //
     end
     else
@@ -6030,7 +6026,7 @@ begin
             //
             if bExibirMensagem then
               Application.MessageBox(
-              PAnsiChar(
+              PChar(
               chr(10) +'Erro:'
               +Chr(10)
               +Chr(10)+sException
@@ -6048,10 +6044,7 @@ begin
               +chr(10)+'    * E-CNPJ'
               +chr(10)+'2. Certificados Certisign A1 e A3'
               +chr(10)+'3. Certificados dos Correios A1 e A3'
-              +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-              +chr(10)
-              +chr(10)
-              +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+              +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'),
               'Atenção',mb_Ok + MB_ICONWARNING);
             //
           end else
@@ -6059,7 +6052,7 @@ begin
             //
             if bExibirMensagem then
               Application.MessageBox(
-              PAnsiChar(
+              PChar(
               chr(10) +'Erro:'
               +Chr(10)
               +Chr(10)+sException
@@ -6067,10 +6060,7 @@ begin
               +chr(10) +'Não foi possível acessar o servidor da receita.'
               +Chr(10)
               +chr(10)+'1 - Verifique sua conexão de internet'
-              +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...)'
-              + chr(10)
-              + chr(10)
-              +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+              +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...).'),
               'Atenção',mb_Ok + MB_ICONWARNING);
             //
           end; // if Pos('CERTIFICADO',Uppercase(sException)) <> 0 then
@@ -6078,7 +6068,7 @@ begin
         end else
         begin
           if bExibirMensagem then
-            SmallMsg(Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9) +
+            SmallMsg(Copy(sRetorno+'   ',Pos('<xMotivo>', String(sRetorno))+9,Pos('</xMotivo>', String(sRetorno)) - Pos('<xMotivo>', String(sRetorno)) - 9) +
               IfThen(xmlNodeValue(sRetorno, '//xObs') <> '', xmlNodeValue(sRetorno, '//xObs') + Chr(13), '')  // Sandro Silva 2019-08-09
               );
         end; // if sStatus = '' then
@@ -6109,9 +6099,9 @@ begin
       if Form1.bStatusECF = False then // Só exibe caixa mensagem quando sem serviço Sandro Silva 2021-11-03
       begin
         if Result = '' then
-          Application.MessageBox(PAnsiChar(Form1.sStatusECF), 'Status do Serviço', MB_ICONINFORMATION + MB_OK)
+          Application.MessageBox(PChar(Form1.sStatusECF), 'Status do Serviço', MB_ICONINFORMATION + MB_OK)
         else
-          Application.MessageBox(PAnsiChar(Result), 'Status do Serviço', MB_ICONINFORMATION + MB_OK);
+          Application.MessageBox(PChar(Result), 'Status do Serviço', MB_ICONINFORMATION + MB_OK);
       end;
 
     end;
@@ -6169,7 +6159,7 @@ begin
               if (txtJustificativa = '') or (Length(txtJustificativa) >= 15) then
                 Break;
               if (Length(txtJustificativa) < 15) then
-                SmallMsgBox(PAnsiChar('Justificativa informada com menos de 15 caracteres' + #13 + #13 + 'A justificativa deve ter no mínimo 15 caracteres'), 'Justificativa incorreta', MB_OK);
+                SmallMsgBox(PChar('Justificativa informada com menos de 15 caracteres' + #13 + #13 + 'A justificativa deve ter no mínimo 15 caracteres'), 'Justificativa incorreta', MB_OK);
             end;
 
             if Trim(txtJustificativa) <> '' then // Sandro Silva 2019-05-10
@@ -6204,7 +6194,7 @@ begin
                   if xmlNodeValue(sRetorno, '//infInut/cStat') = '102' then
                   begin
                     sID := Copy(Form1.IBDataSet99.FieldByName('CODIGO').AsString,1,2) + aAno + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + aModelo + Right('000' + aSerie, 3) + Right('000000000' + aIni, 9) + Right('000000000' + aFim, 9);
-                    if FileExists(PAnsiChar(StringReplace(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-inut.xml', '\\', '\', [rfReplaceAll]))) then
+                    if FileExists(PChar(StringReplace(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-inut.xml', '\\', '\', [rfReplaceAll]))) then
                     begin
 
                       with TStringList.Create do
@@ -6233,7 +6223,7 @@ begin
                 on E: Exception do
                 begin
                   //
-                  Application.MessageBox(PAnsiChar(E.Message+chr(10)+
+                  Application.MessageBox(PChar(E.Message+chr(10)+
                                           chr(10)+'Leia atentamente a mensagem acima.'+char(10)+'Informe novamente os dados para inutilização da NFC-e.'
                                           ),'Atenção Erro: 2321',mb_Ok + MB_ICONWARNING);
                   Screen.Cursor            := crDefault;
@@ -6306,7 +6296,7 @@ begin
       if xmlNodeValue(sRetorno, '//infInut/cStat') = '102' then
       begin
         sID := Copy(IBQINUTILIZA.FieldByName('CODIGO').AsString,1,2) + aAno + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + aModelo + Right('000' + aSerie, 3) + Right('000000000' + aIni, 9) + Right('000000000' + aFim, 9);
-        if FileExists(PAnsiChar(StringReplace(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-inut.xml', '\\', '\', [rfReplaceAll]))) then
+        if FileExists(PChar(StringReplace(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-inut.xml', '\\', '\', [rfReplaceAll]))) then
         begin
 
           with TStringList.Create do
@@ -6336,7 +6326,7 @@ begin
     on E: Exception do
     begin
       //
-      Application.MessageBox(PAnsiChar(E.Message+chr(10)+
+      Application.MessageBox(PChar(E.Message+chr(10)+
                               chr(10)+'Leia atentamente a mensagem acima.'+char(10)+'Informe novamente os dados para inutilização da NFC-e.'
                               ),'Atenção Erro: 2321',mb_Ok + MB_ICONWARNING);
       Screen.Cursor            := crDefault;
@@ -6408,7 +6398,7 @@ begin
           if QtdAdquirentes = 0 then
           begin
 
-            Application.MessageBox(PAnsiChar('Configure os dados das adquirentes de cartões'), 'Atenção', MB_ICONWARNING + MB_OK);
+            Application.MessageBox(PChar('Configure os dados das adquirentes de cartões'), 'Atenção', MB_ICONWARNING + MB_OK);
 
             SalvarConfiguracao(FRENTE_INI, SECAO_MFE, CHAVE_VENDA_NO_CARTAO, 'Não');
 
@@ -6476,29 +6466,26 @@ begin
 
                 //
                 Application.MessageBox(
-                PAnsiChar(
-                chr(10) +'Erro:'
-                +Chr(10)
-                +Chr(10)+E.Message
-                +Chr(10)
-                +chr(10)+'1 - Verifique se o seu certificado está instalado'
-                +chr(10)+'2 - Verifique se o seu certificado está selecionado'
-                +chr(10)+'3 - Seu certificado pode estar vencido'
-                +chr(10)+'4 - Seu certificado pode ser inválido'
-                + chr(10)
-                +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
-                +chr(10)+''
-                +chr(10)+'1. Certificados SERASA'
-                +chr(10)+'    * A1'
-                +chr(10)+'    * SmartCard'
-                +chr(10)+'    * E-CNPJ'
-                +chr(10)+'2. Certificados Certisign A1 e A3'
-                +chr(10)+'3. Certificados dos Correios A1 e A3'
-                +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-                +chr(10)
-                +chr(10)
-                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
-                'Atenção',mb_Ok + MB_ICONWARNING);
+                  PChar(
+                  chr(10) +'Erro:'
+                  +Chr(10)
+                  +Chr(10)+E.Message
+                  +Chr(10)
+                  +chr(10)+'1 - Verifique se o seu certificado está instalado'
+                  +chr(10)+'2 - Verifique se o seu certificado está selecionado'
+                  +chr(10)+'3 - Seu certificado pode estar vencido'
+                  +chr(10)+'4 - Seu certificado pode ser inválido'
+                  + chr(10)
+                  +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
+                  +chr(10)+''
+                  +chr(10)+'1. Certificados SERASA'
+                  +chr(10)+'    * A1'
+                  +chr(10)+'    * SmartCard'
+                  +chr(10)+'    * E-CNPJ'
+                  +chr(10)+'2. Certificados Certisign A1 e A3'
+                  +chr(10)+'3. Certificados dos Correios A1 e A3'
+                  +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'),
+                  'Atenção',mb_Ok + MB_ICONWARNING);
                 //
                 Abort;
                 //
@@ -6509,7 +6496,7 @@ begin
 
                 //
                 Application.MessageBox(
-                PAnsiChar(
+                PChar(
                 chr(10) +'Erro:'
                 +Chr(10)
                 +Chr(10)+E.Message
@@ -6518,10 +6505,7 @@ begin
                 +Chr(10)
                 +chr(10)+'1 - Verifique sua conexão de internet'
                 +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...)'
-                +chr(10)+'3 - Verifique seu certificado digital'
-                +chr(10)
-                +chr(10)
-                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                +chr(10)+'3 - Verifique seu certificado digital.'),
                 'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end;
@@ -6555,12 +6539,10 @@ begin
                 Application.BringToFront;
 
                 //
-                Application.MessageBox(PAnsiChar(chr(13) + 'Aguarde, não é possível enviar esta NFC-e no momento.' + Chr(13) +
-                Chr(13) +
-                'Serviço Paralisado sem Previsão.' + Chr(13) +
-                chr(13) +
-                'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
-                'Atenção',mb_Ok + MB_ICONWARNING);
+                Application.MessageBox(PChar(chr(13) + 'Aguarde, não é possível enviar esta NFC-e no momento.' + Chr(13) +
+                  Chr(13) +
+                  'Serviço Paralisado sem Previsão.'),
+                  'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end
               else if sStatus = '108' then
@@ -6569,12 +6551,10 @@ begin
                 Application.BringToFront;
 
                 //
-                Application.MessageBox(PAnsiChar(chr(13) + 'Aguarde, não é possível enviar esta NFC-e no momento.' + Chr(13) +
-                Chr(13)+
-                'Serviço Paralisado Momentaneamente (curto prazo).' + Chr(13) +
-                Chr(13)+
-                'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco 'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
-                'Atenção',mb_Ok + MB_ICONWARNING);
+                Application.MessageBox(PChar(chr(13) + 'Aguarde, não é possível enviar esta NFC-e no momento.' + Chr(13) +
+                  Chr(13)+
+                  'Serviço Paralisado Momentaneamente (curto prazo).'),
+                  'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end
               else
@@ -6589,19 +6569,16 @@ begin
 
                     //
                     Application.MessageBox(
-                    PAnsiChar(
-                    chr(10) +'Erro:' + IfThen(Form1.spdNFCe1.NomeCertificado.Text = '', chr(10)+'Nenhum certificado selecionado', '')
-                    +Chr(10)
-                    +chr(10) +'Não foi possível acessar o servidor da receita.'
-                    +Chr(10)
-                    +chr(10)+'1 - Verifique sua conexão de internet'
-                    +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...)'
-                    +chr(10)+'3 - Verifique seu certificado digital'
-                    + IfThen(Form1.spdNFCe1.NomeCertificado.Text = '', chr(10)+'4 - Selecione o certificado digital', '')
-                    +chr(10)
-                    +chr(10)
-                    +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
-                    'Atenção',mb_Ok + MB_ICONWARNING);
+                      PChar(
+                      chr(10) +'Erro:' + IfThen(Form1.spdNFCe1.NomeCertificado.Text = '', chr(10)+'Nenhum certificado selecionado', '')
+                      +Chr(10)
+                      +chr(10) +'Não foi possível acessar o servidor da receita.'
+                      +Chr(10)
+                      +chr(10)+'1 - Verifique sua conexão de internet'
+                      +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...)'
+                      +chr(10)+'3 - Verifique seu certificado digital'
+                      + IfThen(Form1.spdNFCe1.NomeCertificado.Text = '', chr(10)+'4 - Selecione o certificado digital.', '.')),
+                      'Atenção',mb_Ok + MB_ICONWARNING);
                    end else
                    begin
                      Application.ProcessMessages;
@@ -6642,29 +6619,26 @@ begin
 
                 //
                 Application.MessageBox(
-                PAnsiChar(
-                chr(10) +'Erro:'
-                +Chr(10)
-                +Chr(10)+E.Message
-                +Chr(10)
-                +chr(10)+'1 - Verifique se o seu certificado está instalado'
-                +chr(10)+'2 - Verifique se o seu certificado está selecionado'
-                +chr(10)+'3 - Seu certificado pode estar vencido'
-                +chr(10)+'4 - Seu certificado pode ser inválido'
-                + chr(10)
-                +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
-                +chr(10)+''
-                +chr(10)+'1. Certificados SERASA'
-                +chr(10)+'    * A1'
-                +chr(10)+'    * SmartCard'
-                +chr(10)+'    * E-CNPJ'
-                +chr(10)+'2. Certificados Certisign A1 e A3'
-                +chr(10)+'3. Certificados dos Correios A1 e A3'
-                +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-                +chr(10)
-                +chr(10)
-                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
-                'Atenção',mb_Ok + MB_ICONWARNING);
+                  PChar(
+                  chr(10) +'Erro:'
+                  +Chr(10)
+                  +Chr(10)+E.Message
+                  +Chr(10)
+                  +chr(10)+'1 - Verifique se o seu certificado está instalado'
+                  +chr(10)+'2 - Verifique se o seu certificado está selecionado'
+                  +chr(10)+'3 - Seu certificado pode estar vencido'
+                  +chr(10)+'4 - Seu certificado pode ser inválido'
+                  + chr(10)
+                  +chr(10)+'Certificados recomendados' // Sandro Silva 2022-12-02 Unochapeco +chr(10)+'Certificados recomendados pela Smallsoft®'
+                  +chr(10)+''
+                  +chr(10)+'1. Certificados SERASA'
+                  +chr(10)+'    * A1'
+                  +chr(10)+'    * SmartCard'
+                  +chr(10)+'    * E-CNPJ'
+                  +chr(10)+'2. Certificados Certisign A1 e A3'
+                  +chr(10)+'3. Certificados dos Correios A1 e A3'
+                  +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'),
+                  'Atenção',mb_Ok + MB_ICONWARNING);
                 //
                 Abort;
                 //
@@ -6675,20 +6649,17 @@ begin
 
                 //
                 Application.MessageBox(
-                PAnsiChar(
-                chr(10) +'Erro:'
-                +Chr(10)
-                +Chr(10)+'E1: '+E.Message
-                +Chr(10)
-                +chr(10) +'Não foi possível acessar o servidor da receita.'
-                +Chr(10)
-                +chr(10)+'1 - Verifique sua conexão de internet'
-                +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...)'
-                +chr(10)+'3 - Verifique seu certificado digital'
-                +chr(10)
-                +chr(10)
-                +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
-                'Atenção',mb_Ok + MB_ICONWARNING);
+                  PChar(
+                  chr(10) +'Erro:'
+                  +Chr(10)
+                  +Chr(10)+'E1: '+E.Message
+                  +Chr(10)
+                  +chr(10) +'Não foi possível acessar o servidor da receita.'
+                  +Chr(10)
+                  +chr(10)+'1 - Verifique sua conexão de internet'
+                  +chr(10)+'2 - Verifique a disponibilidade dos serviços (F10 Menu/NFC-e/Consultar Status do Serviço...)'
+                  +chr(10)+'3 - Verifique seu certificado digital.'),
+                  'Atenção',mb_Ok + MB_ICONWARNING);
                 //
               end;
             end;
@@ -6716,12 +6687,12 @@ begin
       Application.BringToFront;
 
         Application.MessageBox(
-        PAnsiChar(
-        chr(10) +'Erro:'
-        +Chr(10)
-        +Chr(10)+E.Message
-        +Chr(10)),
-        'Atenção',mb_Ok + MB_ICONWARNING);
+          PChar(
+          chr(10) +'Erro:'
+          +Chr(10)
+          +Chr(10)+E.Message
+          +Chr(10)),
+          'Atenção',mb_Ok + MB_ICONWARNING);
         Result := False;
     end;
     // SmallMsg('Atualize a pasta NFCE');
@@ -6729,8 +6700,8 @@ begin
     //
   end;
   //
-  DecimalSeparator := ',';
-  DateSeparator    := '/';
+  FormatSettings.DecimalSeparator := ',';
+  FormatSettings.DateSeparator    := '/';
   //
   Screen.Cursor            := crDefault;
   //
@@ -7096,7 +7067,7 @@ function _ecf65_NmerodeSrie(pP1: Boolean): String;
 begin
   // Retorna "65" + nome do computador + 0 até completar 20 posições
   // Ex.: "65" + "PDV01" + "0000000000" = "NFC-ePDV010000000000"
-  Result := '65' + Copy(AnsiUpperCase(GetComputerNameFunc) + DupeString('0', 20), 1, 18);
+  Result := '65' + Copy(AnsiUpperCase(GetComputerNameFunc) + DupeString('0', 20), 1, 18); //   Result := '65' + Copy(AnsiUpperCase(GetComputerNameFunc) + DupeString('0', 20), 1, 18);
 end;
 
 // -------------------------------- //
@@ -7190,14 +7161,14 @@ end;
 
 function _ecf65_Moeda(pP1: Boolean): String;
 begin
-  Result := Copy(CurrencyString,1,1);
+  Result := Copy(FormatSettings.CurrencyString,1,1);
 end;
 
 function _ecf65_Dataehoradaimpressora(pP1: Boolean): String;
 begin
-  ShortDateFormat := 'dd/mm/yy';   {Bug 2001 free}
+  FormatSettings.ShortDateFormat := 'dd/mm/yy';   {Bug 2001 free}
   Result := StrTran(StrTran(Copy(DateToStr(Date),1,8)+TimeToStr(Time),'/',''),':','');
-  ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
 end;
 
 function _ecf65_Datadaultimareduo(pP1: Boolean): String;
@@ -7417,17 +7388,17 @@ var
           Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml'); // Gerar pelo XML em tempo carregado.
 
         // Não existindo arquivo aguarda se componente está terminando de salvar
-        if FileExists(PAnsiChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml')) = False then // Sandro Silva 2021-06-11
+        if FileExists(PChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml')) = False then // Sandro Silva 2021-06-11
           Sleep(150);
 
-        if FileExists(PAnsiChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml')) then
+        if FileExists(PChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml')) then
         begin
           sXMLRecuperado := _ecf65_LoadXmlRecuperado(schNFe);
           if (xmlNodeValue(sXMLEnviado, '//SignatureValue') = xmlNodeValue(sXMLRecuperado, '//SignatureValue')) then
           begin
-            if MoveFile(PAnsiChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml'), PAnsiChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + schNFe + '-nfce.xml')) then
+            if MoveFile(PChar(Form1.spdNFCe1.DiretorioLog + '\' + schNFe + '-recuperada-nfce.xml'), PChar(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + schNFe + '-nfce.xml')) then
             begin
-              if FileExists(PAnsiChar(Form1.spdNFCe1.DiretorioXmlDestinatario + schNFe + '-nfce.xml')) then
+              if FileExists(PChar(Form1.spdNFCe1.DiretorioXmlDestinatario + schNFe + '-nfce.xml')) then
                 Result := Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + schNFe + '-nfce.xml';
             end;
           end;
@@ -7518,7 +7489,7 @@ begin
 
     sArquivoLogContingencia := Form1.spdNFCe1.DiretorioLog + '\log_transmissao_contingencia_' + Form1.sCaixa + '_' + FormatDateTime('yyyymmddHHnnsszzz', Now) + '.html';
 
-    DeleteFile(PAnsiChar(sArquivoLogContingencia));
+    DeleteFile(PChar(sArquivoLogContingencia));
 
     _ecf65_ConsultarStatusServico(False);
 
@@ -7737,7 +7708,7 @@ begin
 
                             Form1.ExibePanelMensagem('Enviando Contingência. Aguardando tempo limite para cancelamento da NFC-e substituída'); // Sandro Silva 2021-06-16
 
-                            SmallMsgBox(PansiChar('NFC-e em duplicidade: ' + #13 + Form1.IBDataSet150.FieldByName('NFEID').AsString + #13 + Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString +
+                            SmallMsgBox(PChar('NFC-e em duplicidade: ' + #13 + Form1.IBDataSet150.FieldByName('NFEID').AsString + #13 + Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString +
                                                   #13 + #13 + 'Será cancelada a NFC-e ' + Form1.IBDataSet150.FieldByName('NFEID').AsString), 'Atenção', MB_OK + MB_ICONWARNING);
 
                             Sleep(120000); // Aguarda 2 minutos para fazer o cancelamento em sequência. Algumas UF não permitem intervalo de tempo pequenos entre autorização e cancelamento
@@ -8484,7 +8455,7 @@ begin
           begin
             if Form1.ClientDataSet1.FieldByName('AUTORIZADA').AsString <> 'S' then
             begin
-              Application.MessageBox(PAnsiChar('Data: ' + Form1.ClientDataSet1.FieldByName('DATA').AsString + #13 +
+              Application.MessageBox(PChar('Data: ' + Form1.ClientDataSet1.FieldByName('DATA').AsString + #13 +
                                                'Numero: ' + Form1.ClientDataSet1.FieldByName('NUMERONF').AsString + #13 +
                                                'Caixa: ' + Form1.ClientDataSet1.FieldByName('CAIXA').AsString + #13 +
                                                'Alerta: ' + Form1.ClientDataSet1.FieldByName('LOG').AsString), 'Atenção', MB_OK + MB_ICONWARNING);
@@ -8577,14 +8548,14 @@ begin
 
   Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible := False; // Sandro Silva 2017-08-22
 
-  if FileExists(PAnsiChar(sArquivoLogContingencia)) then
+  if FileExists(PChar(sArquivoLogContingencia)) then
   begin
     Application.ProcessMessages;
     Application.BringToFront;
 
-    Application.MessageBox(PAnsiChar('Será aberto o arquivo de log gerado pela transmissão' + #13 +
+    Application.MessageBox(PChar('Será aberto o arquivo de log gerado pela transmissão' + #13 +
                                  'Faça a transmissão a partir do caixa informado no log'), 'Atenção', MB_ICONWARNING + MB_OK);
-    ShellExecute(0, 'open', PAnsiChar('"' + sArquivoLogContingencia + '"'), '', '', SW_RESTORE);
+    ShellExecute(0, 'open', PChar('"' + sArquivoLogContingencia + '"'), '', '', SW_RESTORE);
 
   end;
   Result := True;
@@ -10078,7 +10049,7 @@ begin
 
         sArquivoEnvio := Form1.spdNFCe1.DiretorioLog + '\' + SelecionaXmlEnvio(Form1.spdNFCe1.DiretorioLog + '\*' + xmlNodeValue(sRetorno, '//infProt/chNFe') + '-env-sinc-lot.xml', xmlNodeValue(sRetorno, '//protNFe/infProt/digVal'), '//DigestValue');
 
-        if FileExists(PansiChar(sArquivoEnvio)) then
+        if FileExists(PChar(sArquivoEnvio)) then
         begin
           slArquivoEnvio.LoadFromFile(sArquivoEnvio);
           sXmlEnvio := slArquivoEnvio.Text;
@@ -10155,7 +10126,7 @@ begin
     begin
 
       Form1.OcultaPanelMensagem;
-      SmallMsgBox(PansiChar('A NFC-e ' + sNumeroNF + ' está cancelada na SEFAZ' + #13 + 'e será cancelada no SMALL'), 'Atenção', MB_OK + MB_ICONWARNING);
+      SmallMsgBox(PChar('A NFC-e ' + sNumeroNF + ' está cancelada na SEFAZ' + #13 + 'e será cancelada no SMALL'), 'Atenção', MB_OK + MB_ICONWARNING);
 
       // Sandro Silva 2021-11-17 Validar que xml pertence a nfce selecionada
       if (RightStr('000' + sNumeroNF, 9) = _ecf65_NumeroNfFromChave(xmlNodeValue(sRetorno, '//chNFe')))
@@ -10403,9 +10374,9 @@ begin
 
           if Pos('</nfeProc', AnsiLowerCase(sXml)) <> Pos('</nfeProc', AnsiLowerCase(IBQCONSULTA.FieldByName('NFEXML').AsString)) then // Usando comparação direta (sXml <> IBQCONSULTA.FieldByName('NFEXML').AsString) sempre retorna verdadeiro, mesmo variável sendo igual o FieldByName(). Estranho!?
           begin
-            sXML := Copy(sXml, 1, Pos('</nfeProc>', sXml) + 10);// Extrai somente o grupo nfeProc
-            if Pos('<?xml', sXml) > 0 then // Sandro Silva 2021-06-10
-              sXML := Copy(sXml, Pos('<?xml', sXml), Length(sXml)); // Extrai o conteúdo do xml a partir do cabeço <?xml....
+            sXML := Copy(sXml, 1, Pos('</nfeProc>', String(sXml)) + 10);// Extrai somente o grupo nfeProc
+            if Pos('<?xml', String(sXml)) > 0 then // Sandro Silva 2021-06-10
+              sXML := Copy(sXml, Pos('<?xml', String(sXml)), Length(sXml)); // Extrai o conteúdo do xml a partir do cabeço <?xml....
           end;
 
           // Sandro Silva 2021-06-10 if sXML <> IBQCONSULTA.FieldByName('NFEXML').AsString then
@@ -10494,8 +10465,8 @@ begin
             sXml := StringReplace(sXml, '<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><?xml version="1.0" encoding="UTF-8"?>', '<?xml version="1.0" encoding="UTF-8"?>', [rfIgnoreCase]);
           // Sandro Silva 2021-06-09 end;
 
-            sXML := Copy(sXml, 1, Pos('</nfeProc>', sXml) + 10);// Extrai somente o grupo nfeProc
-            sXML := Copy(sXml, Pos('<?xml', sXml), Length(sXml)); // Extrai o conteúdo do xml a partir do cabeço <?xml....
+            sXML := Copy(sXml, 1, Pos('</nfeProc>', String(sXml)) + 10);// Extrai somente o grupo nfeProc
+            sXML := Copy(sXml, Pos('<?xml', String(sXml)), Length(sXml)); // Extrai o conteúdo do xml a partir do cabeço <?xml....
 
             if sXML <> IBQCONSULTA.FieldByName('NFEXML').AsString then
             begin
@@ -10628,16 +10599,16 @@ begin
 
             slListaXml.Clear;
 
-            if FileExists(PansiChar(sArquivoEnvio)) = False then // Se não encontrar o xml autorizado
+            if FileExists(PChar(sArquivoEnvio)) = False then // Se não encontrar o xml autorizado
             begin
 
               //Seleciona todos os xml                                                                                                          //MODELO+SERIE
               // Sandro Silva 2021-11-17 _ecf65_ListaArquivos(StringReplace(Form1.spdNFCe1.DiretorioLog + '\*' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '65001' + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '\\', '\', [rfReplaceAll]));
               _ecf65_ListaArquivos(StringReplace(Form1.spdNFCe1.DiretorioLog + '\*' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '65' + RightStr('00' + _ecf65_SerieAtual(IBQCONSULTA.Transaction), 3) + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '\\', '\', [rfReplaceAll]));
 
-              if FileExists(PAnsiChar(Form1.sAtual + '\arq_.txt')) then
+              if FileExists(PChar(Form1.sAtual + '\arq_.txt')) then
               begin
-                slListaXml.LoadFromFile(PAnsiChar(Form1.sAtual + '\arq_.txt'));
+                slListaXml.LoadFromFile(Form1.sAtual + '\arq_.txt');
 
                 sRetorno := ''; // Começa vazio Sandro Silva 2020-06-05
 
@@ -10648,7 +10619,7 @@ begin
                   // Procura o xml do lote de envio
                   sArquivoEnvio := slListaXml.Strings[iArquivoEnvio];
 
-                  if FileExists(PansiChar(sArquivoEnvio)) then // se achou o lote de envio
+                  if FileExists(PChar(sArquivoEnvio)) then // se achou o lote de envio
                   begin
 
                     slArquivoEnvio.Clear;
@@ -10856,8 +10827,8 @@ begin
 
   end; // if (sUFEmitente = 'BA') or (sUFEmitente = 'MG') then
 
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.tmp'));
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.txt'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.tmp'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.txt'));
 
   FreeAndNil(IBQCONSULTA);
   FreeAndNil(IBQSALVA);
@@ -10954,16 +10925,16 @@ begin
 
           slListaXml.Clear;
 
-          if FileExists(PansiChar(sArquivoEnvio)) = False then // Se não encontrar o xml autorizado
+          if FileExists(PChar(sArquivoEnvio)) = False then // Se não encontrar o xml autorizado
           begin
 
             //Seleciona todos os xml                                                                                                          //MODELO+SERIE
             // Sandro Silva 2021-11-17 _ecf65_ListaArquivos(StringReplace(Form1.spdNFCe1.DiretorioLog + '\*' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '65001' + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '\\', '\', [rfReplaceAll]));
             _ecf65_ListaArquivos(StringReplace(Form1.spdNFCe1.DiretorioLog + '\*' + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '65' + RightStr('00' + _ecf65_SerieAtual(IBQCONSULTA.Transaction), 3) + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '\\', '\', [rfReplaceAll]));
 
-            if FileExists(PAnsiChar(Form1.sAtual + '\arq_.txt')) then
+            if FileExists(PChar(Form1.sAtual + '\arq_.txt')) then
             begin
-              slListaXml.LoadFromFile(PAnsiChar(Form1.sAtual + '\arq_.txt'));
+              slListaXml.LoadFromFile(Form1.sAtual + '\arq_.txt');
 
               for iArquivoEnvio := 0 to slListaXml.Count - 1 do
               begin
@@ -10971,7 +10942,7 @@ begin
                 //sArquivoEnvio := Form1.spdNFCe1.DiretorioLog + '\' + SelecionaXmlEnvio(Form1.spdNFCe1.DiretorioLog + '\*001' + RightStr('000000000' + IBQCONSULTA.FieldByName('NUMERONF').AsString, 9) + '*-env-sinc-lot.xml', '', '');
                 sArquivoEnvio := slListaXml.Strings[iArquivoEnvio];
 
-                if FileExists(PansiChar(sArquivoEnvio)) then // se achou o lote de envio
+                if FileExists(PChar(sArquivoEnvio)) then // se achou o lote de envio
                 begin
 
                   slArquivoEnvio.Clear;
@@ -11084,8 +11055,8 @@ begin
   if bCommitarTudoNoFinal then
     Commitatudo(True);  // TForm1.ConsultaChaveNFCe1Click()
 
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.tmp'));
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.txt'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.tmp'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.txt'));
 
   FreeAndNil(IBQCONSULTA);
   FreeAndNil(IBQSALVA);
@@ -11096,12 +11067,12 @@ end;
 
 procedure _ecf65_ListaArquivos(sArquivo: String);
 begin
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.tmp'));
-  DeleteFile(PAnsiChar(Form1.sAtual + '\arq_.txt'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.tmp'));
+  DeleteFile(PChar(Form1.sAtual + '\arq_.txt'));
 
-  ShellExecute(Application.Handle, 'runas', 'cmd.exe', PAnsiChar('/C dir "' + sArquivo + '" /s/B > "' + Form1.sAtual + '\arq_.tmp"'), nil, SW_HIDE);
+  ShellExecute(Application.Handle, 'runas', 'cmd.exe', PChar('/C dir "' + sArquivo + '" /s/B > "' + Form1.sAtual + '\arq_.tmp"'), nil, SW_HIDE);
 
-  while RenameFile(PansiChar(Form1.sAtual + '\arq_.tmp'), PAnsiChar(Form1.sAtual + '\arq_.txt')) = False do
+  while RenameFile(PChar(Form1.sAtual + '\arq_.tmp'), PChar(Form1.sAtual + '\arq_.txt')) = False do
   begin
     Sleep(250);
     Application.ProcessMessages;

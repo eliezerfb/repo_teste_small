@@ -1,19 +1,17 @@
 object FormasP: TFormasP
   Left = 235
-  Top = 79
+  Top = 34
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Formas de pagamento'
   ClientHeight = 729
-  ClientWidth = 1008
+  ClientWidth = 1062
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
-  Position = poMainFormCenter
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnShow = FormShow
@@ -181,7 +179,7 @@ object FormasP: TFormasP
   object Panel2: TPanel
     Left = 0
     Top = 417
-    Width = 1008
+    Width = 1062
     Height = 312
     Align = alBottom
     BevelOuter = bvNone
@@ -190,14 +188,18 @@ object FormasP: TFormasP
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 14
+    ExplicitWidth = 1008
     inline Frame_teclado1: TFrame_teclado
       Left = -5
       Top = 0
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = -5
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         Top = 5
+        ExplicitTop = 5
         inherited Image4: TImage
           Picture.Data = {00}
         end
@@ -209,7 +211,6 @@ object FormasP: TFormasP
     Top = 33
     Width = 202
     Height = 21
-    ItemHeight = 13
     ItemIndex = 0
     TabOrder = 15
     Text = '1'
@@ -234,7 +235,6 @@ object FormasP: TFormasP
     Top = 57
     Width = 202
     Height = 21
-    ItemHeight = 13
     ItemIndex = 1
     TabOrder = 16
     Text = '2'
@@ -259,7 +259,6 @@ object FormasP: TFormasP
     Top = 82
     Width = 202
     Height = 21
-    ItemHeight = 13
     ItemIndex = 2
     TabOrder = 17
     Text = '3'
@@ -283,7 +282,6 @@ object FormasP: TFormasP
     Top = 107
     Width = 202
     Height = 21
-    ItemHeight = 13
     ItemIndex = 3
     TabOrder = 18
     Text = '4'
@@ -307,7 +305,6 @@ object FormasP: TFormasP
     Top = 131
     Width = 202
     Height = 21
-    ItemHeight = 13
     TabOrder = 19
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
@@ -329,7 +326,6 @@ object FormasP: TFormasP
     Top = 156
     Width = 202
     Height = 21
-    ItemHeight = 13
     TabOrder = 20
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
@@ -351,7 +347,6 @@ object FormasP: TFormasP
     Top = 181
     Width = 202
     Height = 21
-    ItemHeight = 13
     TabOrder = 21
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
@@ -373,7 +368,6 @@ object FormasP: TFormasP
     Top = 206
     Width = 202
     Height = 21
-    ItemHeight = 13
     TabOrder = 22
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
@@ -395,7 +389,6 @@ object FormasP: TFormasP
     Top = 230
     Width = 202
     Height = 21
-    ItemHeight = 13
     TabOrder = 23
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
@@ -417,7 +410,6 @@ object FormasP: TFormasP
     Top = 255
     Width = 202
     Height = 21
-    ItemHeight = 13
     TabOrder = 24
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
@@ -439,7 +431,6 @@ object FormasP: TFormasP
     Top = 280
     Width = 202
     Height = 21
-    ItemHeight = 13
     TabOrder = 25
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
@@ -461,7 +452,6 @@ object FormasP: TFormasP
     Top = 305
     Width = 202
     Height = 21
-    ItemHeight = 13
     TabOrder = 26
     OnKeyDown = Edit5KeyDown
     Items.Strings = (

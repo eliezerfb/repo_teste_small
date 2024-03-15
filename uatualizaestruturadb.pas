@@ -32,7 +32,7 @@ uses
   {$ELSE}
   , IBX.IBDatabase, IBX.IBCustomDataSet, IBX.IBQuery
   {$ENDIF}
-  , smallfunc, ufuncoesfrente;
+  , SmallFunc_xe, ufuncoesfrente;
 
 type
   TAtualizaBase = class(TComponent)

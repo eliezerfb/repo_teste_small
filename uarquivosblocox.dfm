@@ -2,7 +2,7 @@ object FArquivosBlocoX: TFArquivosBlocoX
   Left = 313
   Top = 150
   BorderStyle = bsDialog
-  ClientHeight = 636
+  ClientHeight = 635
   ClientWidth = 1296
   Color = clWindow
   Ctl3D = False
@@ -11,15 +11,14 @@ object FArquivosBlocoX: TFArquivosBlocoX
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnResize = FormResize
   OnShow = FormShow
+  PixelsPerInch = 96
   DesignSize = (
     1296
-    636)
-  PixelsPerInch = 96
+    635)
   TextHeight = 13
   object Label5: TLabel
     Left = 8
@@ -30,11 +29,12 @@ object FArquivosBlocoX: TFArquivosBlocoX
   end
   object Label2: TLabel
     Left = 8
-    Top = 448
+    Top = 447
     Width = 97
     Height = 13
     Anchors = [akLeft, akBottom]
     Caption = 'Mensagem da Sefaz'
+    ExplicitTop = 448
   end
   object Label1: TLabel
     Left = 8
@@ -66,10 +66,16 @@ object FArquivosBlocoX: TFArquivosBlocoX
   end
   object reMensagem: TRichEdit
     Left = 8
-    Top = 464
-    Width = 1278
+    Top = 417
+    Width = 1262
     Height = 167
     Anchors = [akLeft, akRight, akBottom]
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
     ReadOnly = True
     TabOrder = 0
   end
@@ -79,7 +85,6 @@ object FArquivosBlocoX: TFArquivosBlocoX
     Width = 145
     Height = 21
     Style = csDropDownList
-    ItemHeight = 13
     TabOrder = 1
     OnChange = cbTipoChange
     OnKeyUp = cbTipoKeyUp
@@ -94,7 +99,6 @@ object FArquivosBlocoX: TFArquivosBlocoX
     Width = 145
     Height = 21
     Style = csDropDownList
-    ItemHeight = 13
     ItemIndex = 3
     TabOrder = 2
     Text = 'Todos'
@@ -110,7 +114,7 @@ object FArquivosBlocoX: TFArquivosBlocoX
     Left = 8
     Top = 120
     Width = 1277
-    Height = 313
+    Height = 312
     Hint = 'Clique com bot'#227'o contr'#225'rio exibe op'#231#245'es'
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DSBLOCOX
@@ -383,6 +387,8 @@ object FArquivosBlocoX: TFArquivosBlocoX
     AfterScroll = IBDSBLOCOXAfterScroll
     BufferChunks = 100
     CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
     Left = 48
     Top = 112
   end
@@ -391,6 +397,8 @@ object FArquivosBlocoX: TFArquivosBlocoX
     Transaction = IBTransaction
     BufferChunks = 100
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 128
     Top = 120
   end
@@ -400,14 +408,12 @@ object FArquivosBlocoX: TFArquivosBlocoX
     Top = 96
   end
   object IBTransaction: TIBTransaction
-    Active = False
     DefaultDatabase = IBDatabase
     DefaultAction = TARollback
     Params.Strings = (
       'read_committed'
       'rec_version'
       'nowait')
-    AutoStopAction = saNone
     Left = 48
     Top = 64
   end
@@ -428,9 +434,7 @@ object FArquivosBlocoX: TFArquivosBlocoX
   end
   object IBDatabase: TIBDatabase
     LoginPrompt = False
-    IdleTimer = 0
-    SQLDialect = 3
-    TraceFlags = []
+    ServerType = 'IBServer'
     AllowStreamedConnected = False
     Left = 16
     Top = 64

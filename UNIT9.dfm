@@ -12,7 +12,6 @@ object Form9: TForm9
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnActivate = FormActivate
   PixelsPerInch = 96

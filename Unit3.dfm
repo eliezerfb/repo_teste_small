@@ -4,15 +4,14 @@ object Form3: TForm3
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Refor'#231'o de caixa'
-  ClientHeight = 512
-  ClientWidth = 274
+  ClientHeight = 501
+  ClientWidth = 268
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -114,9 +113,12 @@ object Form3: TForm3
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         Left = -758
         Top = 5
+        ExplicitLeft = -758
+        ExplicitTop = 5
         inherited Image4: TImage
           Picture.Data = {00}
         end
@@ -127,7 +129,7 @@ object Form3: TForm3
     Left = 16
     Top = 88
     Width = 230
-    Height = 39
+    Height = 19
     BevelInner = bvNone
     BevelOuter = bvNone
     Color = clWhite

@@ -8,7 +8,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, frame_teclado_1, StdCtrls, IniFiles, ComCtrls, Buttons,
-  SmallFunc, Grids, DB, DBGrids, DBClient, MD5, uajustaresolucao;
+  SmallFunc_xe, Grids, DB, DBGrids, DBClient, ufuncaoMD5, uajustaresolucao;
 
 const
   _cColunaAtivo    = 'ATIVO';
@@ -71,14 +71,13 @@ type
     procedure dbgTEFsEnter(Sender: TObject);
   private
     FoIni: TIniFile;
-    FoMessageEvent: TMessageEvent;
     function SalvarINI: Boolean;
     procedure DeletarRecord(Sender: TObject);
     procedure CarregarINI;
     procedure AjustaLayout;
     function TestarConfiguracoes: Boolean;
     procedure DefineTemTEFINI;
-    procedure ScrollMouse(var Msg: TMsg; var Handled: Boolean);
+    function GetNumScrollLines: Integer;
   public
   end;
 
@@ -212,15 +211,17 @@ const
   _cChaveID = 'idxIDNOME';
 begin
   FoIni     := TIniFile.Create(FRENTE_INI);
-  FoMessageEvent := Application.OnMessage;
-
-  Application.OnMessage := ScrollMouse;
 
   AjustaLayout;
 
   cdsTEFs.CreateDataSet;
   cdsTEFs.IndexDefs.Add(_cChaveID, _cColunaIDNOME, [ixUnique]);
   cdsTEFs.IndexName := _cChaveID;
+end;
+
+function TFConfiguracaoTEF.GetNumScrollLines: Integer;
+begin
+  SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, @Result, 0);
 end;
 
 procedure TFConfiguracaoTEF.FormShow(Sender: TObject);
@@ -287,7 +288,6 @@ end;
 
 procedure TFConfiguracaoTEF.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  Application.OnMessage := FoMessageEvent;
   DefineTemTEFINI;
 end;
 
@@ -348,7 +348,7 @@ begin
   except
     on e:exception do
     begin
-      Application.MessageBox(PAnsiChar('Não foi possível salvar a configuração do TEF.' + SLineBreak + e.Message), 'Atenção', MB_ICONINFORMATION + MB_OK);
+      Application.MessageBox(PChar('Não foi possível salvar a configuração do TEF.' + SLineBreak + e.Message), 'Atenção', MB_ICONINFORMATION + MB_OK);
     end;
   end;
 end;
@@ -372,7 +372,7 @@ begin
   end;
   if AnsiContainsText(E.Message, 'must have a value') then
     sAlerta := 'Preencha todas as colunas';
-  Application.MessageBox(PAnsiChar(sAlerta), 'Atenção', MB_ICONWARNING + MB_OK);
+  Application.MessageBox(PChar(sAlerta), 'Atenção', MB_ICONWARNING + MB_OK);
   Action := daAbort;
 end;
 
@@ -455,7 +455,7 @@ begin
   if cdsTEFs.IsEmpty then
     Exit;
     
-  if Application.MessageBox(PAnsiChar('Excluir a configuração do TEF ' + cdsTEFsNOME.AsString + '?'), 'Atenção', MB_ICONWARNING + MB_YESNO + MB_DEFBUTTON2) = idYes then
+  if Application.MessageBox(PChar('Excluir a configuração do TEF ' + cdsTEFsNOME.AsString + '?'), 'Atenção', MB_ICONWARNING + MB_YESNO + MB_DEFBUTTON2) = idYes then
   begin
     if (cdsTEFsNOME.AsString <> EmptyStr) and (FoIni.SectionExists(cdsTEFsNOME.AsString)) then
       FoIni.EraseSection(cdsTEFsNOME.AsString);
@@ -494,6 +494,8 @@ var
 begin
   if Column.FieldName = _cColunaAtivo then
   begin
+    dbgTEFs.Canvas.Font.Color := clWindow;
+    dbgTEFs.Canvas.Brush.Color := clWindow;
     dbgTEFs.Canvas.FillRect(Rect);
     iCheck := 0;
     if cdsTEFsATIVO.AsString = _cSim then
@@ -501,7 +503,7 @@ begin
     else
       iCheck := 0;
     rRect := Rect;
-    InflateRect(rRect,-2,-2);
+    InflateRect(rRect, -2, -2);
     DrawFrameControl(dbgTEFs.Canvas.Handle,rRect,DFC_BUTTON, DFCS_BUTTONCHECK or iCheck);
   end;
 end;
@@ -576,31 +578,6 @@ procedure TFConfiguracaoTEF.cdsTEFsIDNOMESetText(Sender: TField;
   const Text: String);
 begin
   Sender.AsString := AnsiUpperCase(Trim(Text));
-end;
-
-procedure TFConfiguracaoTEF.ScrollMouse(var Msg: TMsg; var Handled: Boolean);
-var
-  i: smallint;
-begin
-  if Msg.message = WM_MOUSEWHEEL then
-  begin
-    Msg.message := WM_KEYDOWN;
-    Msg.lParam := 0;
-    i := HiWord(Msg.wParam) ;
-    if i > 0 then
-    begin
-      if cdsTEFs.RecNo = 1 then
-        Exit;
-      Msg.wParam := VK_UP
-    end
-    else
-    begin
-      if cdsTEFs.RecNo = cdsTEFs.RecordCount then
-        Exit;
-      Msg.wParam := VK_DOWN;
-    end;
-    Handled := False;
-  end;
 end;
 
 procedure TFConfiguracaoTEF.cdsTEFsAfterPost(DataSet: TDataSet);

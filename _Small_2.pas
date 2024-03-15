@@ -38,9 +38,9 @@ uses
   // Para trabalhar com a impressora fiscal YANCO é                                       //
   // necessário alterar, no arquivo BemaFI32.ini, a chave "ModeloImp" para YANCO.         //
   //////////////////////////////////////////////////////////////////////////////////////////
-  Windows, Messages, SmallFunc, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SmallFunc_xe, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB, DBCtrls, SMALL_DBEdit, IniFiles, Unit2,
-  Unit7, unit22, MD5
+  Unit7, unit22
   , ufuncoesfrentepaf
   , ubematechbemaficlass
 
@@ -54,12 +54,12 @@ uses
   // Declaração das Funções da nova DLL BEMAFI32.DLL                          //
   // 0800 -  644 2362                                                         //
   //--------------------------------------------------------------------------//
-  function Bematech_FI_ProgramaIdAplicativoMFD(IDAplicativo: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_AlteraSimboloMoeda(SimboloMoeda: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ProgramaAliquota(Aliquota: String; ICMS_ISS: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ProgramaIdAplicativoMFD(IDAplicativo: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AlteraSimboloMoeda(SimboloMoeda: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ProgramaAliquota(Aliquota: AnsiString; ICMS_ISS: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_ProgramaHorarioVerao: Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NomeiaDepartamento(Indice: Integer; Departamento: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NomeiaTotalizadorNaoSujeitoIcms(Indice: Integer; Totalizador: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NomeiaDepartamento(Indice: Integer; Departamento: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NomeiaTotalizadorNaoSujeitoIcms(Indice: Integer; Totalizador: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_ProgramaArredondamento:Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_ProgramaTruncamento:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_ProgramaTruncamento';
   function Bematech_FI_LinhasEntreCupons(Linhas: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -68,136 +68,136 @@ uses
 
   // Funções do Cupom Fiscal /////////////////////////////////////////////////////
 
-  function Bematech_FI_AbreCupom(CGC_CPF: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VendeItem(Codigo: String; Descricao: String; Aliquota: String; TipoQuantidade: String; Quantidade: String; CasasDecimais: Integer; ValorUnitario: String; TipoDesconto: String; Desconto: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VendeItemDepartamento(Codigo: String; Descricao: String; Aliquota: String; ValorUnitario: String; Quantidade: String; Acrescimo: String; Desconto: String; IndiceDepartamento: String; UnidadeMedida: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AbreCupom(CGC_CPF: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VendeItem(Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; TipoQuantidade: AnsiString; Quantidade: AnsiString; CasasDecimais: Integer; ValorUnitario: AnsiString; TipoDesconto: AnsiString; Desconto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VendeItemDepartamento(Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; ValorUnitario: AnsiString; Quantidade: AnsiString; Acrescimo: AnsiString; Desconto: AnsiString; IndiceDepartamento: AnsiString; UnidadeMedida: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_CancelaItemAnterior: Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_CancelaItemGenerico(NumeroItem: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_CancelaItemGenerico(NumeroItem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_CancelaCupom: Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_EstornoNaoFiscalVinculadoPosteriorMFD(FormaPagamento: String; Valor: String; COOCupom: String; COOCDC: String; CPF: String; Nome: String; Endereco: String): Integer; StdCall; External 'BEMAFI32.DLL'; //2015-10-22 Cancelar vinculados
-  function Bematech_FI_EstornoNaoFiscalVinculadoMFD(CPF: String; Nome: String; Endereco: String): Integer; StdCall; External 'BEMAFI32.DLL'; //2017-0725 Cancelar vinculados
+  function Bematech_FI_EstornoNaoFiscalVinculadoPosteriorMFD(FormaPagamento: AnsiString; Valor: AnsiString; COOCupom: AnsiString; COOCDC: AnsiString; CPF: AnsiString; Nome: AnsiString; Endereco: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL'; //2015-10-22 Cancelar vinculados
+  function Bematech_FI_EstornoNaoFiscalVinculadoMFD(CPF: AnsiString; Nome: AnsiString; Endereco: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL'; //2017-0725 Cancelar vinculados
 
 
-  function Bematech_FI_FechaCupomResumido(FormaPagamento: String; Mensagem: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_FechaCupom(FormaPagamento: String; AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String; ValorPago: String; Mensagem: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_FechaCupomResumido(FormaPagamento: AnsiString; Mensagem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_FechaCupom(FormaPagamento: AnsiString; AcrescimoDesconto: AnsiString; TipoAcrescimoDesconto: AnsiString; ValorAcrescimoDesconto: AnsiString; ValorPago: AnsiString; Mensagem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_ResetaImpressora:Integer; StdCall; External 'BEMAFI32.DLL';
 
-  function Bematech_FI_IniciaFechamentoCupom(AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_IniciaFechamentoCupom(AcrescimoDesconto: AnsiString; TipoAcrescimoDesconto: AnsiString; ValorAcrescimoDesconto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
-  function Bematech_FI_EfetuaFormaPagamento(FormaPagamento: String; ValorFormaPagamento: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_EfetuaFormaPagamentoDescricaoForma(FormaPagamento: string; ValorFormaPagamento: string; DescricaoFormaPagto: string ): integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_TerminaFechamentoCupom(Mensagem: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_EstornoFormasPagamento(FormaOrigem: String; FormaDestino: String; Valor: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_UsaUnidadeMedida(UnidadeMedida: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_AumentaDescricaoItem(Descricao: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_EfetuaFormaPagamento(FormaPagamento: AnsiString; ValorFormaPagamento: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_EfetuaFormaPagamentoDescricaoForma(FormaPagamento: AnsiString; ValorFormaPagamento: AnsiString; DescricaoFormaPagto: AnsiString ): integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_TerminaFechamentoCupom(Mensagem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_EstornoFormasPagamento(FormaOrigem: AnsiString; FormaDestino: AnsiString; Valor: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_UsaUnidadeMedida(UnidadeMedida: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AumentaDescricaoItem(Descricao: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
   // Funções dos Relatórios Fiscais //////////////////////////////////////////////
 
   function Bematech_FI_LeituraX:Integer; StdCall; External 'BEMAFI32.DLL' ;
-  function Bematech_FI_ReducaoZ(Data: String; Hora: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_RelatorioGerencial(Texto: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_UsaRelatorioGerencialMFD(Texto: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ReducaoZ(Data: AnsiString; Hora: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_RelatorioGerencial(Texto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_UsaRelatorioGerencialMFD(Texto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_FechaRelatorioGerencial:Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalData(DataInicial: String; DataFinal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalReducao(ReducaoInicial: String; ReducaoFinal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalSerialData(DataInicial: String; DataFinal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalSerialReducao(ReducaoInicial: String; ReducaoFinal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DownloadMFD(sArquivo:String; sTipo:String; DataInicial: String; DataFinal: String; sUsuario: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_FormatoDadosMFD( ArquivoOrigem: String; ArquivoDestino: String; TipoFormato: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ArquivoMFD( cNomeArquivoOrigem: String; cDadoInicial: String; cDadoFinal: String; cTipoDownload: String; cUsuario: String; iTipoGeracao: integer; cChavePublica: String; cChavePrivada: String; iUnicoArquivo: integer ): Integer;  StdCall; External'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalData(DataInicial: AnsiString; DataFinal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalReducao(ReducaoInicial: AnsiString; ReducaoFinal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalSerialData(DataInicial: AnsiString; DataFinal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalSerialReducao(ReducaoInicial: AnsiString; ReducaoFinal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DownloadMFD(sArquivo:AnsiString; sTipo:AnsiString; DataInicial: AnsiString; DataFinal: AnsiString; sUsuario: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_FormatoDadosMFD( ArquivoOrigem: AnsiString; ArquivoDestino: AnsiString; TipoFormato: AnsiString; TipoDownload: AnsiString; ParametroInicial: AnsiString; ParametroFinal: AnsiString; UsuarioECF: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ArquivoMFD( cNomeArquivoOrigem: AnsiString; cDadoInicial: AnsiString; cDadoFinal: AnsiString; cTipoDownload: AnsiString; cUsuario: AnsiString; iTipoGeracao: integer; cChavePublica: AnsiString; cChavePrivada: AnsiString; iUnicoArquivo: integer ): Integer;  StdCall; External'BEMAFI32.DLL';
 
 
-  function Bematech_FI_DownloadMF( Arquivo: String ): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DownloadMF( Arquivo: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 
   //
   // Novas leituras MFD
   //
-  function Bematech_FI_LeituraMemoriaFiscalDataMFD(DataInicial, DataFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalSerialDataMFD(DataInicial, DataFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_GeraRegistrosCAT52MFD(cArquivo,cData: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_GeraRegistrosCAT52MFDEx( cArquivo, cData, cArqDestino: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalDataMFD(DataInicial, DataFinal, FlagLeitura : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalSerialDataMFD(DataInicial, DataFinal, FlagLeitura : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_GeraRegistrosCAT52MFD(cArquivo,cData: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_GeraRegistrosCAT52MFDEx( cArquivo, cData, cArqDestino: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   //
-  function BemaGeraRegistrosTipoE( cArqMFD: string; cArqTXT: string; cDataInicial: string; cDataFinal: string; cRazao: string; cEndereco: string; cPAR1: string; cCMD: string; cPAR2: string; cPAR3: string; cPAR4: string; cPAR5: string; cPAR6: string; cPAR7: string; cPAR8: string; cPAR9: string; cPAR10: string; cPAR11: string; cPAR12: string; cPAR13: string; cPAR14: string ): Integer; StdCall; External 'BemaMFD2.dll';
+  function BemaGeraRegistrosTipoE( cArqMFD: AnsiString; cArqTXT: AnsiString; cDataInicial: AnsiString; cDataFinal: AnsiString; cRazao: AnsiString; cEndereco: AnsiString; cPAR1: AnsiString; cCMD: AnsiString; cPAR2: AnsiString; cPAR3: AnsiString; cPAR4: AnsiString; cPAR5: AnsiString; cPAR6: AnsiString; cPAR7: AnsiString; cPAR8: AnsiString; cPAR9: AnsiString; cPAR10: AnsiString; cPAR11: AnsiString; cPAR12: AnsiString; cPAR13: AnsiString; cPAR14: AnsiString ): Integer; StdCall; External 'BemaMFD2.dll';
 
   // Funções das Operações Não Fiscais ///////////////////////////////////////////
 
-  function Bematech_FI_RecebimentoNaoFiscal(IndiceTotalizador: String; Valor: String; FormaPagamento: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_AbreComprovanteNaoFiscalVinculado(FormaPagamento: String; Valor: String; NumeroCupom: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_UsaComprovanteNaoFiscalVinculado(Texto: String): Integer; StdCall; External 'BEMAFI32.DLL'
+  function Bematech_FI_RecebimentoNaoFiscal(IndiceTotalizador: AnsiString; Valor: AnsiString; FormaPagamento: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AbreComprovanteNaoFiscalVinculado(FormaPagamento: AnsiString; Valor: AnsiString; NumeroCupom: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_UsaComprovanteNaoFiscalVinculado(Texto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL'
   function Bematech_FI_FechaComprovanteNaoFiscalVinculado:Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_Sangria(Valor: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_Suprimento(Valor: String; FormaPagamento: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_Sangria(Valor: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_Suprimento(Valor: AnsiString; FormaPagamento: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
   // Funções de Informações da Impressora ////////////////////////////////////////
 
-  function Bematech_FI_NumeroSerie(NumeroSerie: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroSerieMFD(NumeroSerie: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_SubTotal(SubTotal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroCupom(NumeroCupom: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroSerie(NumeroSerie: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroSerieMFD(NumeroSerie: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_SubTotal(SubTotal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroCupom(NumeroCupom: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_LeituraXSerial: Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VersaoFirmware(VersaoFirmware: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_CGC_IE(CGC: String; IE: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_GrandeTotal(GrandeTotal: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_Cancelamentos(ValorCancelamentos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_Descontos(ValorDescontos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroOperacoesNaoFiscais(NumeroOperacoes: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroCuponsCancelados(NumeroCancelamentos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroIntervencoes(NumeroIntervencoes: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroReducoes(NumeroReducoes: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroSubstituicoesProprietario(NumeroSubstituicoes: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_UltimoItemVendido(NumeroItem: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ClicheProprietario(Cliche: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroCaixa(NumeroCaixa: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_NumeroLoja(NumeroLoja: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_SimboloMoeda(SimboloMoeda: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_MinutosLigada(Minutos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_MinutosImprimindo(Minutos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaModoOperacao(Modo: string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaEpromConectada(Flag: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VersaoFirmware(VersaoFirmware: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_CGC_IE(CGC: AnsiString; IE: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_GrandeTotal(GrandeTotal: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_Cancelamentos(ValorCancelamentos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_Descontos(ValorDescontos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroOperacoesNaoFiscais(NumeroOperacoes: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroCuponsCancelados(NumeroCancelamentos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroIntervencoes(NumeroIntervencoes: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroReducoes(NumeroReducoes: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroSubstituicoesProprietario(NumeroSubstituicoes: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_UltimoItemVendido(NumeroItem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ClicheProprietario(Cliche: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroCaixa(NumeroCaixa: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NumeroLoja(NumeroLoja: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_SimboloMoeda(SimboloMoeda: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_MinutosLigada(Minutos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_MinutosImprimindo(Minutos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaModoOperacao(Modo: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaEpromConectada(Flag: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_FlagsFiscais(Var Flag: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ValorPagoUltimoCupom(ValorCupom: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DataHoraImpressora(Data: String; Hora: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ValorPagoUltimoCupom(ValorCupom: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DataHoraImpressora(Data: AnsiString; Hora: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
   //Convênio 0909 Início
-  function Bematech_FI_VendaLiquida(Valor: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VendaLiquida(Valor: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   //Convênio 0909 Fim
   //
   // Contadores
   //
-  function Bematech_FI_ContadoresTotalizadoresNaoFiscais(Contadores: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ContadorCupomFiscalMFD(CuponsEmitidos : String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ContadorRelatoriosGerenciaisMFD (Relatorios : String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ContadorComprovantesCreditoMFD(Comprovantes : string): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ContadoresTotalizadoresNaoFiscais(Contadores: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ContadorCupomFiscalMFD(CuponsEmitidos : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ContadorRelatoriosGerenciaisMFD (Relatorios : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ContadorComprovantesCreditoMFD(Comprovantes : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   //
 
 
-  function Bematech_FI_VerificaTotalizadoresNaoFiscais(Totalizadores: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DataHoraReducao(Data: String; Hora: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DataMovimento(Data: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaTruncamento(Flag: string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_Acrescimos(ValorAcrescimos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ContadorBilhetePassagem(ContadorPassagem: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaAliquotasIss(Flag: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaFormasPagamento(Formas: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaRecebimentoNaoFiscal(Recebimentos: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaDepartamentos(Departamentos: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaTotalizadoresNaoFiscais(Totalizadores: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DataHoraReducao(Data: AnsiString; Hora: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DataMovimento(Data: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaTruncamento(Flag: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_Acrescimos(ValorAcrescimos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ContadorBilhetePassagem(ContadorPassagem: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaAliquotasIss(Flag: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaFormasPagamento(Formas: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaRecebimentoNaoFiscal(Recebimentos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaDepartamentos(Departamentos: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_VerificaTipoImpressora(Var TipoImpressora: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaTotalizadoresParciais(Totalizadores: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_RetornoAliquotas(Aliquotas: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaTotalizadoresParciais(Totalizadores: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_RetornoAliquotas(Aliquotas: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_VerificaEstadoImpressora(Var ACK: Integer; Var ST1: Integer; Var ST2: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DadosUltimaReducao(DadosReducao: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DadosUltimaReducao(DadosReducao: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_MonitoramentoPapel(Var Linhas: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaIndiceAliquotasIss(Flag: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ValorFormaPagamento(FormaPagamento: String; Valor: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_ValorTotalizadorNaoFiscal(Totalizador: String; Valor: String): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_MarcaModeloTipoImpressoraMFD(Marca, Modelo, Tipo : string): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaIndiceAliquotasIss(Flag: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ValorFormaPagamento(FormaPagamento: AnsiString; Valor: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ValorTotalizadorNaoFiscal(Totalizador: AnsiString; Valor: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_MarcaModeloTipoImpressoraMFD(Marca, Modelo, Tipo : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
   // Funções de Autenticação e Gaveta de Dinheiro ////////////////////////////////
 
   function Bematech_FI_Autenticacao:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_Autenticacao';
-  function Bematech_FI_ProgramaCaracterAutenticacao(Parametros: String): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ProgramaCaracterAutenticacao(Parametros: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_AcionaGaveta:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_AcionaGaveta';
   function Bematech_FI_VerificaEstadoGaveta(Var EstadoGaveta: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
 
@@ -209,23 +209,23 @@ uses
   function Bematech_FI_RetornoImpressora(Var ACK: Integer; Var ST1: Integer; Var ST2: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_FechaPortaSerial:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_FechaPortaSerial';
   function Bematech_FI_MapaResumo:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_MapaResumo';
-  function Bematech_FI_AberturaDoDia( ValorCompra: string; FormaPagamento: string ): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AberturaDoDia( ValorCompra: AnsiString; FormaPagamento: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_FechamentoDoDia:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_FechamentoDoDia';
   function Bematech_FI_ImprimeConfiguracoesImpressora:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_ImprimeConfiguracoesImpressora';
   function Bematech_FI_ImprimeDepartamentos:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_ImprimeDepartamentos';
   function Bematech_FI_RelatorioTipo60Analitico:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_RelatorioTipo60Analitico';
   function Bematech_FI_RelatorioTipo60Mestre:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_RelatorioTipo60Mestre';
   function Bematech_FI_VerificaImpressoraLigada:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_VerificaImpressoraLigada';
-  function Bematech_FI_ImprimeCheque( Banco: String; Valor: String; Favorecido: String; Cidade: String; Data: String; Mensagem: String ): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_ImprimeCheque( Banco: AnsiString; Valor: AnsiString; Favorecido: AnsiString; Cidade: AnsiString; Data: AnsiString; Mensagem: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_SegundaViaNaoFiscalVinculadoMFD(): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_DadosUltimaReducaoMFD(DadosReducao : string): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_DadosUltimaReducaoMFD(DadosReducao : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   //
-  function Bematech_FI_NomeiaRelatorioGerencialMFD (Indice, Descricao : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_AbreRelatorioGerencialMFD(Indice : string): Integer; StdCall; External 'BEMAFI32.DLL';
-  function Bematech_FI_VerificaRelatorioGerencialMFD(Relatorios : string): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_NomeiaRelatorioGerencialMFD (Indice, Descricao : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_AbreRelatorioGerencialMFD(Indice : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_VerificaRelatorioGerencialMFD(Relatorios : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 
   {Sandro Silva 2016-03-01 inicio}
-  function Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(FlagRetorno : string): Integer; StdCall; External 'BEMAFI32.DLL';
+  function Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(FlagRetorno : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
   function Bematech_FI_RetornoImpressoraMFD(Var ACK: Integer; Var ST1: Integer; Var ST2: Integer; Var ST3: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
   {Sandro Silva 2016-03-01 final}
 
@@ -337,11 +337,11 @@ var
 begin
   Result := false;
   LibPointer := NIL;
-  if LoadLibrary(PChar(LibName)) = 0 then exit;
-  LibHandle := GetModuleHandle(PChar(LibName));
+  if LoadLibrary(PChar(LibName)) = 0 then Exit; // Sandro Silva 2023-12-13 if LoadLibrary(PChar(LibName)) = 0 then exit;
+  LibHandle := GetModuleHandle(PChar(LibName)); // Sandro Silva 2023-12-13 LibHandle := GetModuleHandle(PChar(LibName));
   if LibHandle <> 0 then
   begin
-    LibPointer := GetProcAddress(LibHandle, PChar(FuncName));
+    LibPointer := GetProcAddress(LibHandle, PAnsiChar(AnsiString(FuncName))); // Sandro Silva 2023-12-13 LibPointer := GetProcAddress(LibHandle, PChar(FuncName));
     if LibPointer <> NIL then Result := true;
   end;
 end;
@@ -353,8 +353,12 @@ begin
 end;
 
 function _ecf02_ConfigAliquota(sAliquota: String): Boolean;
+var
+  asAliquota: AnsiString;
 begin
-  Result := (Bematech_FI_ProgramaAliquota(PChar(sAliquota), 0) = 1);
+  // 2024-01-25 Result := (Bematech_FI_ProgramaAliquota(AnsiString(sAliquota), 0) = 1); // Sandro Silva 2023-12-13 Result := (Bematech_FI_ProgramaAliquota(PChar(sAliquota), 0) = 1);
+  Result := (Bematech_FI_ProgramaAliquota(asAliquota, 0) = 1);
+  sAliquota := asAliquota;
 end;
 
 function _ecf02_TestaLigadaePapel(pP1:Boolean):Boolean;
@@ -390,7 +394,7 @@ var
   iACK, iST1, iST2{, iST3}: Integer;
   vErro    : array [0..99] of String;  // Cria uma matriz com  100 elementos
   I        : Integer;
-  sErro:string;
+  sErro: string;
 begin
   //
   for I := 0 to 99 do vErro[I] := 'Comando não executado.';
@@ -510,7 +514,7 @@ end;
 function _ecf02_VerificaFormaPgto(Forma:String):String;
 var
   Retorno,i,j:integer;
-  sFormasPagamento:String;
+  sFormasPagamento: AnsiString;
 begin
    Result:='XX';
    sFormasPagamento:=Replicate(' ',3016);
@@ -534,11 +538,11 @@ end;
 
 function _ecf02_VerificaDescricaoFormaPgto(Forma:String):String;
 var
-  sFormasPagamento:String;
+  sFormasPagamento: AnsiString;
 begin
    if (isNumericString(Forma)) and (Alltrim(Forma)<> '') then
     begin
-      sFormasPagamento:=Replicate(' ',3016);
+      sFormasPagamento := Replicate(' ',3016);
       if (Bematech_FI_VerificaFormasPagamento( sFormasPagamento )<>1) then
         Result:=''
       else
@@ -555,7 +559,7 @@ end;
 function _ecf02_Inicializa(Pp1: String):Boolean;
 var
   iRetorno : Integer;
-  sFlag: String;
+  sFlag: AnsiString;
 //  Mais1Ini : tIniFile;
 begin
   //
@@ -568,7 +572,7 @@ begin
   {Sandro Silva 2016-03-01 inicio}
   try
     sFlag := '1';
-    Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(pchar(sFlag));
+    Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(sFlag); // Sandro Silva 2023-12-13 Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(pchar(sFlag));
     _ecf02_RetornoStatusImpressora(True);
   except
   end;
@@ -579,15 +583,13 @@ begin
   if iRetorno = 1 then
   begin
     //
+    {Sandro Silva 2023-12-13 inicio
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('02'),pchar('IDENT DO PAF'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('03'),pchar('VENDA PRAZO'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('04'),pchar('CARTAO TEF'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('05'),pchar('MEIOS DE PAGTO'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('06'),pchar('DAV EMITIDOS'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('07'),pchar('ORCAMENT (DAV)'));
-    // 2016-02-04 Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('08'),pchar('CONF CONTA'));
-    // Sandro Silva 2016-02-11 Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('09'),pchar('TRANSF CONTA'));
-    // Sandro Silva 2016-02-11 Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('10'),pchar('CONTAS ABERTAS'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('08'),pchar('CONF CONTA CLI'));// 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('09'),pchar('TRANSF CONT CLI'));// 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('10'),pchar('CONT CLI ABERTA'));// 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
@@ -595,6 +597,21 @@ begin
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('12'),pchar('TRANSF MESA'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('13'),pchar('MESAS ABERTAS'));
     Bematech_FI_NomeiaRelatorioGerencialMFD(pchar('14'),pchar('PARAM CONFIG'));
+    }
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('02'), AnsiString('IDENT DO PAF'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('03'), AnsiString('VENDA PRAZO'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('04'), AnsiString('CARTAO TEF'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('05'), AnsiString('MEIOS DE PAGTO'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('06'), AnsiString('DAV EMITIDOS'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('07'), AnsiString('ORCAMENT (DAV)'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('08'), AnsiString('CONF CONTA CLI'));// 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('09'), AnsiString('TRANSF CONT CLI'));// 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('10'), AnsiString('CONT CLI ABERTA'));// 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('11'), AnsiString('CONF MESA'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('12'), AnsiString('TRANSF MESA'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('13'), AnsiString('MESAS ABERTAS'));
+    Bematech_FI_NomeiaRelatorioGerencialMFD(AnsiString('14'), AnsiString('PARAM CONFIG'));
+    {Sandro Silva 2023-12-13 fim}
     //
     Result := True;
     //
@@ -619,10 +636,10 @@ begin
     //
     if Form1.fTotal >= Form1.ibDataSet25RECEBER.AsFloat then
     begin
-       Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('D','$',pchar(StrZero((Form1.fTotal-Form1.ibDataSet25RECEBER.AsFloat)*100,12,0)));
+      Form1.Retorno := Bematech_FI_IniciaFechamentoCupom(AnsiString('D'), AnsiString('$'), AnsiString(StrZero((Form1.fTotal - Form1.ibDataSet25RECEBER.AsFloat) * 100, 12, 0))); // Sandro Silva 2023-12-13 Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('D','$',pchar(StrZero((Form1.fTotal-Form1.ibDataSet25RECEBER.AsFloat)*100,12,0)));
     end else
     begin
-       Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('A','$',pchar(StrZero((Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal)*100,12,0)));
+      Form1.Retorno := Bematech_FI_IniciaFechamentoCupom(AnsiString('A'), AnsiString('$'), AnsiString(StrZero((Form1.ibDataSet25RECEBER.AsFloat - Form1.fTotal) * 100, 12, 0))); // Sandro Silva 2023-12-13 Form1.Retorno := Bematech_FI_IniciaFechamentoCupom('A','$',pchar(StrZero((Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal)*100,12,0)));
     end;
     //
     if Form1.Retorno = 1 then
@@ -645,6 +662,7 @@ begin
 //    ShowMessage(
 //      'Em dinheiro.: '+StrZero(Form1.ibDataSet25ACUMULADO2.AsFloat*100,14,0)+ Chr(10) +
 //      'Prazo.......: '+StrZero(Form1.ibDataSet25DIFERENCA_.AsFloat*100,14,0));
+  {Sandro Silva 2023-12-13 inicio
   if Form1.fTEFPago                      > 0 then Bematech_FI_EfetuaFormaPagamento(pchar('Cartao') ,pchar( Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.fTEFPago*100])),15),1,12)));      // Cartão
 //  if Form1.fTEFPago                      > 0 then Bematech_FI_EfetuaFormaPagamento(pchar('Cartao '+Form1.sDebitoOuCredito)  ,pchar( Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.fTEFPago*100])),15),1,12)));      // Cartão
   if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then Bematech_FI_EfetuaFormaPagamento(pchar('Cheque')  ,pchar( Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25ACUMULADO1.AsFloat*100])),15),1,12))); // Cheque
@@ -662,6 +680,23 @@ begin
   //
   // Sandro Silva 2016-09-14  Result:=(_ecf02_CodeErro(Bematech_FI_TerminaFechamentoCupom('MD5: '+pchar(Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional))) )=1);
   Result:=(_ecf02_CodeErro(Bematech_FI_TerminaFechamentoCupom(Copy('MD5: '+pchar(Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional)), 1, 384)) )=1);
+  }
+  if Form1.fTEFPago                      > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString('Cartao'), AnsiString(Copy(Right('000000000000' + AllTrim(Format('%13f', [Form1.fTEFPago * 100])),15),1,12)));      // Cartão
+  if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString('Cheque'), AnsiString(Copy(Right('000000000000' + AllTrim(Format('%13f', [Form1.ibDataSet25ACUMULADO1.AsFloat * 100])), 15), 1, 12))); // Cheque
+  if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString('Prazo'), AnsiString(Copy(Right('000000000000' + AllTrim(Format('%13f', [Form1.ibDataSet25DIFERENCA_.AsFloat * 100])), 15), 1, 12))); // Prazo
+  if Form1.ibDataSet25ACUMULADO2.AsFloat > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString('Dinheiro'), AnsiString(Copy(Right('000000000000' + AllTrim(Format('%13f', [Form1.ibDataSet25ACUMULADO2.AsFloat * 100])), 15), 1, 12))); // Dinheiro
+
+  if Form1.ibDataSet25VALOR01.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label18.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR01.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR02.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label19.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR02.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR03.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label20.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR03.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR04.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label21.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR04.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR05.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label22.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR05.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR06.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label23.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR06.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR07.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label24.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR07.AsFloat*100])),15),1,12)));    // Dinheiro
+  if Form1.ibDataSet25VALOR08.AsFloat     > 0 then Bematech_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label25.Caption)), AnsiString(Copy(Right('000000000000'+AllTrim(Format('%13f',[Form1.ibDataSet25VALOR08.AsFloat*100])),15),1,12)));    // Dinheiro
+  //
+  Result:=(_ecf02_CodeErro(Bematech_FI_TerminaFechamentoCupom(AnsiString(Copy('MD5: '+ AnsiString(Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional)), 1, 384))) ) = 1);
+  {Sandro Silva 2023-12-13 fim}
   //
   // Result:=true;
   //
@@ -738,7 +773,7 @@ end;
 
 function _ecf02_SubTotal(Pp1: Boolean):Real;
 var
-  sSubTotal: String;
+  sSubTotal: AnsiString;
   bChave: Boolean;
 begin
   //
@@ -786,15 +821,17 @@ begin
     // Sandro Silva 2017-08-22 Bematech orientou a não tentar abrir cupom quando já estiver aberto, porque irá zerar o subtotal do cupom
     // Sandro Silva 2019-08-26  if (Form1.bECF0909 = False) then // ECF não é do convênio 09/09 e se o cupom já estiver aberto ignora a checagem de erro
     if AnsiContainsText(Form1.sModeloFabricante, '4200 TH') = False then // ECF não é do convênio 09/09 e se o cupom já estiver aberto ignora a checagem de // Sandro Silva 2019-08-26 ER 02.06 UnoChapeco
-      Bematech_FI_AbreCupom(Form1.sCPF_CNPJ_Validado);
+      Bematech_FI_AbreCupom(AnsiString(Form1.sCPF_CNPJ_Validado));
   end else
   begin
-    Result := (_ecf02_CodeErro(Bematech_FI_AbreCupom(Form1.sCPF_CNPJ_Validado))=1);
+    Result := (_ecf02_CodeErro(Bematech_FI_AbreCupom(AnsiString(Form1.sCPF_CNPJ_Validado)))=1);
     if not Result then
     begin
       Result:=(Bematech_FI_FechaComprovanteNaoFiscalVinculado()=1);
-      if not result then Result := (Bematech_FI_FechaRelatorioGerencial()=1);
-      if Result then Bematech_FI_FechaComprovanteNaoFiscalVinculado();
+      if not result then
+        Result := (Bematech_FI_FechaRelatorioGerencial()=1);
+      if Result then
+        Bematech_FI_FechaComprovanteNaoFiscalVinculado();
    end;
   end;
   //
@@ -816,45 +853,59 @@ end;
 // Retorna o número do Cupom        //
 // -------------------------------- //
 function _ecf02_NumeroDoCupom(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  _ecf02_CodeErro(Bematech_FI_NumeroCupom( Result ));
+  sRetorno := Replicate(' ',6);
+  _ecf02_CodeErro(Bematech_FI_NumeroCupom( AnsiString(sRetorno) ));
+  Result := sRetorno;
 end;
 
 // -------------------------------- //
 // Retorna o número do Cupom CCF    //
 // -------------------------------- //
 function _ecf02_ccF(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
-   Result:=Replicate(' ',6);
-  _ecf02_CodeErro(Bematech_FI_ContadorCupomFiscalMFD( Result ));
+   sRetorno:=Replicate(' ',6);
+  _ecf02_CodeErro(Bematech_FI_ContadorCupomFiscalMFD( AnsiString(sRetorno) ));
+  Result := sRetorno;
 end;
 
 // ------------------------------------------------------------------------- //
 // Retorna o número de operações não fiscais executadas na impressora. GNF   //
 // ------------------------------------------------------------------------- //
 function _ecf02_GNF(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  _ecf02_CodeErro(Bematech_FI_NumeroOperacoesNaoFiscais( Result ));
+  sRetorno:=Replicate(' ',6);
+  _ecf02_CodeErro(Bematech_FI_NumeroOperacoesNaoFiscais( AnsiString(sRetorno) ));
+  Result := sRetorno;
 end;
 
 // --------------------------------------- //
 // Contador Geral de Relatorio Gerencial   //
 // --------------------------------------- //
 function _ecf02_GRG(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  _ecf02_CodeErro(Bematech_FI_ContadorRelatoriosGerenciaisMFD( Result ));
+  sRetorno:=Replicate(' ',6);
+  _ecf02_CodeErro(Bematech_FI_ContadorRelatoriosGerenciaisMFD( AnsiString(sRetorno) ));
+  Result := sRetorno;
 end;
 
 // -------------- //
 // Contador CDC   //
 // -------------- //
 function _ecf02_CDC(Pp1: Boolean):String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  _ecf02_CodeErro(Bematech_FI_ContadorComprovantesCreditoMFD( Result ));
+  sRetorno:=Replicate(' ',6);
+  _ecf02_CodeErro(Bematech_FI_ContadorComprovantesCreditoMFD( AnsiString(sRetorno) ));
 end;
 
 // ------------------------------------------------------------------------- //
@@ -862,7 +913,7 @@ end;
 // ------------------------------------------------------------------------- //
 function _ecf02_CER(Pp1: Boolean):String;
 var
-  s : String;
+  s : AnsiString;
 begin
   //
   s :=Replicate(' ',659);
@@ -890,7 +941,7 @@ end;
 function _ecf02_CancelaItemN(pP1, pP2 : String):Boolean;
 begin
   pP1:=Right(pP1,3);
-  Result:=(_ecf02_CodeErro(Bematech_FI_CancelaItemGenerico( pchar( pP1 ) ))=1);
+  Result:=(_ecf02_CodeErro(Bematech_FI_CancelaItemGenerico(AnsiString( pP1 ) ))=1); // Sandro Silva 2023-12-13 Result:=(_ecf02_CodeErro(Bematech_FI_CancelaItemGenerico( pchar( pP1 ) ))=1);
 end;
 
 // -------------------------------- //
@@ -918,10 +969,16 @@ begin
   //
   if Form1.iStatusGaveta = 0 then
   begin
-    if I  = 0 then Result:='000' else Result:='255';
+    if I  = 0 then
+      Result:='000'
+    else
+      Result:='255';
   end else
   begin
-    if I  = 0 then Result:='255' else Result:='000';
+    if I  = 0 then
+      Result:='255'
+    else
+      Result:='000';
   end;
   //
 end;
@@ -933,9 +990,12 @@ function _ecf02_Sangria(Pp1: Real):Boolean;
 var
   iResult : Integer;
 begin
-  iResult := Bematech_FI_Sangria(pchar(StrZero(pP1*100,12,0)));
+  iResult := Bematech_FI_Sangria(AnsiString(StrZero(pP1*100,12,0))); // Sandro Silva 2023-12-13 iResult := Bematech_FI_Sangria(pchar(StrZero(pP1*100,12,0)));
   iResult := _ecf02_CodeErro(iResult);
-  if iResult = 1 then Result := True else Result := False;
+  if iResult = 1 then
+    Result := True
+  else
+    Result := False;
 end;
 
 // -------------------------------- //
@@ -945,7 +1005,7 @@ function _ecf02_Suprimento(Pp1: Real):Boolean;
 var
   iResult : Integer;
 begin
-  iResult := Bematech_FI_Suprimento(pchar(StrZero(pP1*100,12,0)),pChar(''));
+  iResult := Bematech_FI_Suprimento(AnsiString(StrZero(pP1*100,12,0)), AnsiString('')); // Sandro Silva 2023-12-13 iResult := Bematech_FI_Suprimento(pchar(StrZero(pP1*100,12,0)),pChar(''));
 //  iResult := Bematech_FI_Suprimento( pchar(Format('%13.2f',[pP1])), pchar(''));
   iResult := _ecf02_CodeErro(iResult);
   if iResult = 1 then Result := True else Result := False;
@@ -1059,7 +1119,7 @@ begin
       end;
       //
       try
-        I := Bematech_FI_DownloadMF(PChar(pP1));
+        I := Bematech_FI_DownloadMF(AnsiString(pP1)); // Sandro Silva 2023-12-13 I := Bematech_FI_DownloadMF(PChar(pP1));
         _ecf02_CodeErro(I);
       except
         ShowMessage('Erro ao gravar o arquivo MF.');
@@ -1085,7 +1145,7 @@ begin
       cCOOFinal      := AllTrim(pp3);
       cUsuario       := '1';
 
-      I := Bematech_FI_DownloadMFD(pchar(cArquivoOrigem), pchar(cTipoDownload), pchar(cCOOInicial), pchar(cCOOFinal), pchar(cUsuario));
+      I := Bematech_FI_DownloadMFD(AnsiString(cArquivoOrigem), AnsiString(cTipoDownload), AnsiString(cCOOInicial), AnsiString(cCOOFinal), AnsiString(cUsuario)); // Sandro Silva 2023-12-13 I := Bematech_FI_DownloadMFD(pchar(cArquivoOrigem), pchar(cTipoDownload), pchar(cCOOInicial), pchar(cCOOFinal), pchar(cUsuario));
 
       _ecf02_CodeErro(I);
 
@@ -1109,12 +1169,12 @@ begin
       //
       while FileExists(pP1) do
       begin
-        DeleteFile(pchar(pP1));
+        DeleteFile(pP1);
         Sleep(10);
       end;
       //
       try
-        _ecf02_CodeErro( Bematech_FI_DownloadMF( pchar( pP1 ) ));
+        _ecf02_CodeErro(Bematech_FI_DownloadMF(AnsiString( pP1 ) )); // Sandro Silva 2023-12-13 _ecf02_CodeErro( Bematech_FI_DownloadMF( pchar( pP1 ) ));
       except
         ShowMessage('Erro ao gravar o arquivo MF.');
       end;
@@ -1156,7 +1216,7 @@ begin
           cCOOInicial := '000001';
           cCOOFinal := '999999';
           //
-          _ecf02_CodeErro(Bematech_FI_DownloadMFD( pChar(cArquivoOrigem) , pchar(cTipoDownload) , pchar( cCOOInicial ), pchar( cCOOFinal ) , pchar( cUsuario ) ));
+          _ecf02_CodeErro(Bematech_FI_DownloadMFD(AnsiString(cArquivoOrigem), AnsiString(cTipoDownload), AnsiString( cCOOInicial ), AnsiString( cCOOFinal ), AnsiString( cUsuario ) )); // Sandro Silva 2023-12-13 _ecf02_CodeErro(Bematech_FI_DownloadMFD( pChar(cArquivoOrigem) , pchar(cTipoDownload) , pchar( cCOOInicial ), pchar( cCOOFinal ) , pchar( cUsuario ) ));
           //
         except
           ShowMessage('Erro ao gravar o arquivo MFD.');
@@ -1222,7 +1282,7 @@ begin
             iUnicoArquivo   := 1;
             cUsuario        := '1'; // Sandro Silva 2016-03-03
             if Form7.sMfd = '2' then
-              I := Bematech_FI_ArquivoMFD( pchar( '' ), pchar( cDadoInicial ), pchar( cDadoFinal ), pchar(cTipoDownload), pchar( cUsuario ), iTipoGeracao, pchar( sChavePublica ), pchar( sChavePrivada ), iUnicoArquivo );
+              I := Bematech_FI_ArquivoMFD( AnsiString( '' ), AnsiString( cDadoInicial ), AnsiString( cDadoFinal ), AnsiString(cTipoDownload), AnsiString( cUsuario ), iTipoGeracao, AnsiString( sChavePublica ), AnsiString( sChavePrivada ), iUnicoArquivo ); // Sandro Silva 2023-12-13 I := Bematech_FI_ArquivoMFD( pchar( '' ), pchar( cDadoInicial ), pchar( cDadoFinal ), pchar(cTipoDownload), pchar( cUsuario ), iTipoGeracao, pchar( sChavePublica ), pchar( sChavePrivada ), iUnicoArquivo );
           end
           else
           begin
@@ -1241,7 +1301,7 @@ begin
 
               iUnicoArquivo := 1;
 
-              Bematech_FI_ArquivoMFD( pchar( '' ), pchar( cDadoInicial ), pchar( cDadoFinal ), pchar( cTipoDownload ), pchar( cUsuario ), iTipoGeracao, pchar( sChavePublica ), pchar( sChavePrivada ), iUnicoArquivo );
+              Bematech_FI_ArquivoMFD( AnsiString( '' ), AnsiString( cDadoInicial ), AnsiString( cDadoFinal ), AnsiString( cTipoDownload ), AnsiString( cUsuario ), iTipoGeracao, AnsiString( sChavePublica ), AnsiString( sChavePrivada ), iUnicoArquivo ); // Sandro Silva 2023-12-13 Bematech_FI_ArquivoMFD( pchar( '' ), pchar( cDadoInicial ), pchar( cDadoFinal ), pchar( cTipoDownload ), pchar( cUsuario ), iTipoGeracao, pchar( sChavePublica ), pchar( sChavePrivada ), iUnicoArquivo );
 
             except
               ShowMessage('Erro ao gravar o arquivo MFD.');
@@ -1254,7 +1314,7 @@ begin
           //
         end else
         begin
-          I := Bematech_FI_DownloadMFD( pChar(cArquivoOrigem) , pchar(cTipoDownload) , pchar( cCOOInicial ), pchar( cCOOFinal ) , pchar( cUsuario ) );
+          I := Bematech_FI_DownloadMFD(AnsiString(cArquivoOrigem), AnsiString(cTipoDownload), AnsiString( cCOOInicial ), AnsiString( cCOOFinal ), AnsiString( cUsuario ) ); // Sandro Silva 2023-12-13 I := Bematech_FI_DownloadMFD( pChar(cArquivoOrigem) , pchar(cTipoDownload) , pchar( cCOOInicial ), pchar( cCOOFinal ) , pchar( cUsuario ) );
         end;
         //
         if I = 1 then
@@ -1299,6 +1359,7 @@ begin
               cUsuario        := '1';
               cArquivoDestino := Form1.SaveDialog1.FileName;
               //
+              {Sandro Silva 2023-12-13 inicio
               I := Bematech_FI_FormatoDadosMFD( pchar( cArquivoOrigem ),
                                                 pchar( cArquivoDestino ),
                                                 pchar( cTipoFormato ),
@@ -1306,6 +1367,15 @@ begin
                                                 pchar( cCOOInicial ),
                                                 pchar( cCOOFinal ),
                                                 pchar( cUsuario ) );
+              }
+              I := Bematech_FI_FormatoDadosMFD( AnsiString( cArquivoOrigem ),
+                                                AnsiString( cArquivoDestino ),
+                                                AnsiString( cTipoFormato ),
+                                                AnsiString( cTipoDownload ),
+                                                AnsiString( cCOOInicial ),
+                                                AnsiString( cCOOFinal ),
+                                                AnsiString( cUsuario ) );
+              {Sandro Silva 2023-12-13 fim}
               //
             end;
           end;
@@ -1359,11 +1429,11 @@ begin
 // ShowMessage(Form1.sTipo);
   if Form7.Label3.Caption = 'Data inicial:' then
   begin
-    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalDataMFD( pchar( pP1 ), pchar( pP2 ), pChar(Form1.sTipo)))=1);
+    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalDataMFD(AnsiString(pP1), AnsiString(pP2), AnsiString(Form1.sTipo)))=1); // Sandro Silva 2023-12-13 Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalDataMFD( pchar( pP1 ), pchar( pP2 ), pChar(Form1.sTipo)))=1);
 //    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalData( pchar( pP1 ), pchar( pP2 ) ))=1)
   end else
   begin
-    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalReducaoMFD( pchar( pP1 ), pchar( pP2 ), pChar(Form1.sTipo)))=1);
+    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalReducaoMFD(AnsiString( pP1 ), AnsiString( pP2 ), AnsiString(Form1.sTipo)))=1); // Sandro Silva 2023-12-13 Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalReducaoMFD( pchar( pP1 ), pchar( pP2 ), pChar(Form1.sTipo)))=1);
 //    Result:=(_ecf02_CodeErro(Bematech_FI_LeituraMemoriaFiscalReducao( pchar( pP1 ), pchar( pP2 ) ))=1);
   end;
 end;
@@ -1390,6 +1460,7 @@ begin
   sIndice  := '00';
   sAcresc  := '00';
   //
+  {Sandro Silva 2023-12-13 inicio
   I := Bematech_FI_VendeItemDepartamento(pchar( pP1 ),    // Código
                                          pchar( pP2 ),    // Descricao
                                          pchar( pP3 ),    // ST
@@ -1400,10 +1471,25 @@ begin
                                          pchar( sIndice ),// Índice do departamento
                                          pchar( pP6 )     // Unidade medida
                                          );
+  }
+  I := Bematech_FI_VendeItemDepartamento(AnsiString( pP1 ),    // Código
+                                         AnsiString( pP2 ),    // Descricao
+                                         AnsiString( pP3 ),    // ST
+                                         AnsiString( pP5 ),    // Valor Unitário
+                                         AnsiString( pP4 ),    // Quantidade
+                                         AnsiString( sAcresc), // Acréscimo
+                                         AnsiString( pP8 ),    // Desconto
+                                         AnsiString( sIndice ),// Índice do departamento
+                                         AnsiString( pP6 )     // Unidade medida
+                                         );
+  {Sandro Silva 2023-12-13 fim}
 //  if I <> 1 then
   _ecf02_CodeErro(I);
   //
-  if I=1 then Result := True else Result := False;
+  if I=1 then
+    Result := True
+  else
+    Result := False;
   //
 end;
 
@@ -1416,8 +1502,8 @@ var
 begin
   //
   // Sandro Silva 2017-06-19  Bematech_FI_ReducaoZ(pChar(''),pChar(''));
-  iRetorno := Bematech_FI_ReducaoZ(pChar(''),pChar('')); // Sandro Silva 2017-06-19
-  _ecf02_CodeErro(iRetorno); // Sandro Silva 2017-06-19 
+  iRetorno := Bematech_FI_ReducaoZ(AnsiString(''), AnsiString(''));  // Sandro Silva 2023-12-13   iRetorno := Bematech_FI_ReducaoZ(pChar(''),pChar('')); // Sandro Silva 2017-06-19
+  _ecf02_CodeErro(iRetorno); // Sandro Silva 2017-06-19
   //Bematech_FI_ReducaoZ(pChar(''),pChar('18:10:00'));
   Result := True;
   //
@@ -1438,7 +1524,10 @@ function _ecf02_RetornaVerao(pP1: Boolean):Boolean;
 var
   I : Integer;
 begin
-  if Bematech_FI_FlagsFiscais( I )=1 then Result:=(Copy(Right(Replicate('0',8)+IntToBin( I ),8),6,1)='1') else Result:=False;
+  if Bematech_FI_FlagsFiscais( I )=1 then
+    Result:=(Copy(Right(Replicate('0',8)+IntToBin( I ),8),6,1)='1')
+  else
+    Result:=False;
 end;
 
 // -------------------------------- //
@@ -1453,10 +1542,15 @@ end;
 // Retorna a versão do firmware     //
 // -------------------------------- //
 function _ecf02_VersodoFirmware(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
+  sRetorno:=Replicate(' ',4);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
-  if Bematech_FI_VersaoFirmware(Result) <> 1 then Result:='';
+  if Bematech_FI_VersaoFirmware(AnsiString(sRetorno)) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 
 end;
 
@@ -1466,13 +1560,15 @@ end;
 function _ecf02_NmerodeSrie(pP1: Boolean): String;
 var
   I: Integer;
+  sRetorno: AnsiString;
 begin
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
   //
   if Form1.sMFD_ = 'Sim' then
   begin
-    Result := Replicate(' ',20);
-    Bematech_FI_NumeroSerieMFD(Result);
+    sRetorno := Replicate(' ',20);
+    Bematech_FI_NumeroSerieMFD(sRetorno);
+    Result := sRetorno;
     //
     if Length(Alltrim(Result)) <> 20 then
     begin
@@ -1484,10 +1580,16 @@ begin
     end;
   end else
   begin
-     Result := replicate(' ',20);
-     if _ecf02_CodeErro(Bematech_FI_NumeroSerie(Result))<> 1 then Result:='';
-     for i:=1 to 20 do if ord(Result[i])=0 then break;
-     if I > 0 then Result:=AllTrim(Copy(Result,1,i-1));
+    sRetorno := replicate(' ',20);
+    if _ecf02_CodeErro(Bematech_FI_NumeroSerie(sRetorno))<> 1 then
+      Result:=''
+    else;
+      Result := sRetorno;
+    for i:=1 to 20 do
+      if ord(Result[i])=0 then
+        break;
+    if I > 0 then
+      Result:=AllTrim(Copy(Result,1,i-1));
   end;
   //
   {
@@ -1546,38 +1648,56 @@ end;
 // -------------------------------- //
 function _ecf02_CGCIE(pP1: Boolean): String;
 var
-  sCGC,sIE:string;
+  sCGC,sIE: Ansistring;
 begin
   sCGC := Replicate(' ',18);
   sIE  := Replicate(' ',15);
-  if _ecf02_CodeErro(Bematech_FI_CGC_IE( sCGC, sIE )) <> 1 then Result := '' else Result := sCGC+'-'+sIE;
+  if _ecf02_CodeErro(Bematech_FI_CGC_IE( AnsiString(sCGC), AnsiString(sIE) )) <> 1 then
+    Result := ''
+  else
+    Result := sCGC + '-' + sIE;
 end;
 
 // --------------------------------- //
 // Retorna o valor  de cancelamentos //
 // --------------------------------- //
 function _ecf02_Cancelamentos(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',14);
-  if Bematech_FI_Cancelamentos( Result ) <> 1 then Result:='';
+  sRetorno:=Replicate(' ',14);
+  if Bematech_FI_Cancelamentos( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 // -------------------------------- //
 // Retorna o valor de descontos     //
 // -------------------------------- //
 function _ecf02_Descontos(pP1: Boolean): String;
+var
+  sRetorno: String;
 begin
-  Result:=Replicate(' ',14);
-  if Bematech_FI_Descontos( Result ) <> 1 then Result:='';
+  sRetorno:=Replicate(' ',14);
+  if Bematech_FI_Descontos( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 // -------------------------------- //
 // Retorna o contador sequencial    //
 // -------------------------------- //
 function _ecf02_ContadorSeqencial(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  if Bematech_FI_NumeroCupom( Result ) <> 1 then Result:='';
+  sRetorno:=Replicate(' ',6);
+  if Bematech_FI_NumeroCupom( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 // -------------------------------- //
@@ -1585,43 +1705,72 @@ end;
 // não fiscais acumuladas           //
 // -------------------------------- //
 function _ecf02_Nmdeoperaesnofiscais(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',631);
-  if Bematech_FI_DadosUltimaReducao( Result ) <> 1 then Result:='' else Result:=Copy(Result,586,6);
+  sRetorno:=Replicate(' ',631);
+  if Bematech_FI_DadosUltimaReducao( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result:=Copy(sRetorno,586,6);
 end;
 
 function _ecf02_NmdeCuponscancelados(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
-  if (Bematech_FI_NumeroCuponsCancelados( Result ) <> 1) then Result:='';
+  sRetorno:=Replicate(' ',4);
+  if (Bematech_FI_NumeroCuponsCancelados( AnsiString(sRetorno) ) <> 1) then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 function _ecf02_NmdeRedues(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
+  sRetorno:=Replicate(' ',4);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
-  if (Bematech_FI_NumeroReducoes( Result ) <> 1) then Result:='' else Result:=StrZero(StrToInt(Result)+1,4,0);//soma um para gravar certo no arq. de reduções.
+  if (Bematech_FI_NumeroReducoes( AnsiString(sRetorno) ) <> 1) then
+    Result:=''
+  else
+    Result:=StrZero(StrToInt(sRetorno)+1,4,0);//soma um para gravar certo no arq. de reduções.
 
 end;
 
 function _ecf02_Nmdeintervenestcnicas(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
+  sRetorno:=Replicate(' ',4);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
-  if (Bematech_FI_NumeroIntervencoes( Result ) <> 1) then Result:='';
+  if (Bematech_FI_NumeroIntervencoes( AnsiString(sRetorno) ) <> 1) then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
-
 function _ecf02_Nmdesubstituiesdeproprietrio(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
-  if (Bematech_FI_NumeroSubstituicoesProprietario( Result ) <> 1) then Result:='';
+  sRetorno:=Replicate(' ',4);
+  if (Bematech_FI_NumeroSubstituicoesProprietario( AnsiString(sRetorno) ) <> 1) then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 function _ecf02_Clichdoproprietrio(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',186);
-  if (Bematech_FI_ClicheProprietario( Result ) <> 1) then Result:='';
+  sRetorno := Replicate(' ',186);
+  if (Bematech_FI_ClicheProprietario( AnsiString(sRetorno) ) <> 1) then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 // ------------------------------------ //
@@ -1631,73 +1780,104 @@ end;
 function _ecf02_NmdoCaixa(pP1: Boolean): String;
 var
   i: Integer;
+  sNumero: AnsiString;
 begin
   //
+{
   Result:=Replicate(' ',4);
-  SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco  
+  SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
   // Sandro Silva 2018-10-04  _ecf02_CodeErro(Bematech_FI_NumeroCaixa( Result ));
   i := 0;
   while Trim(Result) = '' do
   begin
     inc(i);
-    _ecf02_CodeErro(Bematech_FI_NumeroCaixa( Result ));
+    _ecf02_CodeErro(Bematech_FI_NumeroCaixa( AnsiString(Result) ));
     if (Trim(Result) <> '') or (i > 3) then
       Break;
     Sleep(1000);
   end;
-  Result:=Right(AllTrim(pChar(Result)),3);
-  //
+  Result := Right(AllTrim(pChar(Result)),3);
+}
+  sNumero:=Replicate(' ',4);
+  SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
+  // Sandro Silva 2018-10-04  _ecf02_CodeErro(Bematech_FI_NumeroCaixa( sNumero ));
+  i := 0;
+  while Trim(sNumero) = '' do
+  begin
+    inc(i);
+    _ecf02_CodeErro(Bematech_FI_NumeroCaixa( sNumero ));
+    if (Trim(sNumero) <> '') or (i > 3) then
+      Break;
+    Sleep(1000);
+  end;
+  Result := Right(AllTrim(pAnsiChar(sNumero)),3);
+
 end;
 
 function _ecf02_Nmdaloja(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',4);
-  _ecf02_CodeErro(Bematech_FI_NumeroLoja( Result ));
+  sRetorno:=Replicate(' ',4);
+  _ecf02_CodeErro(Bematech_FI_NumeroLoja( AnsiString(sRetorno) ));
+  Result := sRetorno;
 end;
 
 function _ecf02_Moeda(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',2);
-  _ecf02_CodeErro(Bematech_FI_SimboloMoeda( Result ));
-  Result:=StrTran(AllTrim(Result),'$','');
+  sRetorno:=Replicate(' ',2);
+  _ecf02_CodeErro(Bematech_FI_SimboloMoeda( AnsiString(sRetorno) ));
+  Result:=StrTran(AllTrim(sRetorno),'$','');
 end;
 
 function _ecf02_Dataehoradaimpressora(pP1: Boolean): String;
 var
-  sData,sHora:String;
+  sData,sHora: AnsiString;
   //I : Integer;
 begin
- sData := Replicate(' ',6);
- sHora := Replicate(' ',6);
- SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
- // _ecf02_CodeErro(Bematech_FI_DataHoraImpressora(sData,sHora));
- Bematech_FI_DataHoraImpressora(sData,sHora);
+  sData := Replicate(' ',6);
+  sHora := Replicate(' ',6);
+  SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
+  // _ecf02_CodeErro(Bematech_FI_DataHoraImpressora(sData,sHora));
+  Bematech_FI_DataHoraImpressora(sData, sHora);
 
- //ShowMessage('Teste 1');
- //_ecf02_CodeErro(I);
+  //ShowMessage('Teste 1');
+  //_ecf02_CodeErro(I);
 
- //
- // ShowMessage(sData+sHora);
- //
- Result:=StrTran(sData+sHora,',','');//DDMMAAHHMMSS
- //
- // ShowMessage(Result);
- //
+  //
+  // ShowMessage(sData+sHora);
+  //
+  Result:=StrTran(sData+sHora,',','');//DDMMAAHHMMSS
+  //
+  // ShowMessage(Result);
+  //
 
 end;
 
 function _ecf02_Datadaultimareduo(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
+  sRetorno:=Replicate(' ',6);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
-  if Bematech_FI_DataMovimento( Result ) <> 1 then Result:='';
+  if Bematech_FI_DataMovimento( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 
 function _ecf02_Datadomovimento(pP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result:=Replicate(' ',6);
-  if Bematech_FI_DataMovimento( Result ) <> 1 then Result:='';
+  sRetorno:=Replicate(' ',6);
+  if Bematech_FI_DataMovimento( AnsiString(sRetorno) ) <> 1 then
+    Result:=''
+  else
+    Result := sRetorno;
 end;
 
 // Deve retornar uma String com:                                          //
@@ -1708,14 +1888,14 @@ end;
 
 function _ecf02_VerificaAliquotasIss: String;
 var
-  AliquotasIss: String;
+  AliquotasIss: AnsiString;
   iRetorno: Integer;
 begin
   try
     AliquotasIss := Replicate(' ',79);
-    SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco    
+    SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
     iRetorno := Bematech_FI_VerificaAliquotasIss( AliquotasIss );
-    Result := PansiChar(AliquotasIss);
+    Result := PAnsiChar(AliquotasIss); // Precisa para eliminar caracter de final de String
     if _ecf02_CodeErro(iRetorno) <> 1 then
     begin
       Result := '';
@@ -1727,7 +1907,7 @@ end;
 
 function _ecf02_RetornaAliquotas(pP1: Boolean): String;
 var
-  sISS, sAliquotas, sIndiceAliquotas : String;
+  sISS, sAliquotas, sIndiceAliquotas : AnsiString;
   i:integer;
 begin
 //  AliquotasIss:=Replicate(' ',79);
@@ -1760,16 +1940,16 @@ begin
 
 end;
 
-
 function _ecf02_Vincula(pP1: String): Boolean;
 begin
-   Result:=False;
+  Result:=False;
 end;
 
 
 function _ecf02_FlagsDeISS(pP1: Boolean): String;
 var
-  sIndiceAliquotas:string;
+  sIndiceAliquotas: Ansistring;
+  sRetorno: AnsiString;
 begin
   sIndiceAliquotas:=Replicate('0',48);
   Bematech_FI_VerificaIndiceAliquotasIss( sIndiceAliquotas );
@@ -1792,7 +1972,7 @@ begin
       delete(sIndiceAliquotas,1,2);
     end;
   end;
-  Result:=chr(BinToInt(Copy(Result,1,8)))+chr(BinToInt(Copy(Result,9,8)));
+  Result := chr(BinToInt(Copy(Result,1,8)))+chr(BinToInt(Copy(Result,9,8)));
 end;
 
 function _ecf02_FechaPortaDeComunicacao(pP1: Boolean): Boolean;
@@ -1803,7 +1983,7 @@ end;
 
 function _ecf02_MudaMoeda(pP1: String): Boolean;
 begin
-  Result:=(_ecf02_CodeErro(Bematech_FI_AlteraSimboloMoeda( pchar( pP1 ) ))=1)
+  Result := (_ecf02_CodeErro(Bematech_FI_AlteraSimboloMoeda( AnsiString( pP1 ) )) = 1) // Sandro Silva 2023-12-13 Result := (_ecf02_CodeErro(Bematech_FI_AlteraSimboloMoeda( pchar( pP1 ) ))=1)
 end;
 
 function _ecf02_MostraDisplay(pP1: String): Boolean;
@@ -1820,10 +2000,10 @@ begin
   begin
     pP2 := DateToStr(Form7.DateTimePicker1.Date);
     pP3 := DateToStr(Form7.DateTimePicker2.Date);
-    Bematech_FI_LeituraMemoriaFiscalSerialDataMFD( pchar( pP2 ), pchar( pP3 ), pChar(Form1.sTipo) );
+    Bematech_FI_LeituraMemoriaFiscalSerialDataMFD( AnsiString( pP2 ), AnsiString( pP3 ), AnsiString(Form1.sTipo) ); // Sandro Silva 2023-12-13 Bematech_FI_LeituraMemoriaFiscalSerialDataMFD( pchar( pP2 ), pchar( pP3 ), pChar(Form1.sTipo) );
   end else
   begin
-    Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD( pchar( pP2 ), pchar( pP3 ), pChar(Form1.sTipo) );
+    Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD( AnsiString( pP2 ), AnsiString( pP3 ), AnsiString(Form1.sTipo) ); // Sandro Silva 2023-12-13 Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD( pchar( pP2 ), pchar( pP3 ), pChar(Form1.sTipo) );
   end;
   //
   CopyFile('c:\retorno.txt', pChar(pP1), True );
@@ -1833,22 +2013,27 @@ begin
   //
 end;
 
-
 function _ecf02_CupomNaoFiscalVinculado(sP1: String; iP2: Integer ): Boolean; //iP2 = Número do Cupom vinculado
 var
   J, I: Integer;
-  sLinha: String;
+  sLinha: AnsiString;
 begin
-  //
-  //
   Result := False;
   //
+  {Sandro Silva 2023-12-13 inicio
   if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Prazo'),  pchar(''), pchar(''))=1);
   //  if Form1.fTEFPago                      > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Cartao '+Form1.sDebitoOuCredito), pchar(''), pchar(''))=1);
   //  if Form1.fTEFPago                      > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Cartao'), pchar(''), pchar(''))=1);
   if Form1.fTEFPago                      > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Cartao'), pChar(StrZero(Form1.fTEFPago*100,12,0)), pChar(FormataNumeroDoCupom(Form1.icupom)) )=1); // Sandro Silva 2021-11-29 if Form1.fTEFPago                      > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Cartao'), pChar(StrZero(Form1.fTEFPago*100,12,0)), pChar(StrZero(Form1.icupom,6,0)) )=1);
   if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( pchar('Cheque'), pchar(''), pchar(''))=1);
-  //
+  }
+  if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then
+    Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( AnsiString('Prazo'),  AnsiString(''), AnsiString('')) = 1);
+  if Form1.fTEFPago                      > 0 then
+    Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( AnsiString('Cartao'), AnsiString(StrZero(Form1.fTEFPago * 100, 12, 0)), AnsiString(FormataNumeroDoCupom(Form1.icupom))) = 1);
+  if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then
+    Result := (Bematech_FI_AbreComprovanteNaoFiscalVinculado( AnsiString('Cheque'), AnsiString(''), AnsiString('')) = 1);
+  {Sandro Silva 2023-12-13 fim}
   if Result then
   begin
     //
@@ -1870,12 +2055,16 @@ begin
               sLinha := sLinha+Copy(sP1,I,1);
             end else
             begin
-              if sLinha = '' then sLinha:=' ';
-              if Form1.sCRLF = 'Sim' then sLinha := sLinha + Chr(10);
-              Result:=_ecf02_TestaLigadaePapel(true);
-              if Result then Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
-              if Result then Result:=_ecf02_TestaLigadaePapel(true);
-              sLinha:='';
+              if sLinha = '' then
+                sLinha := ' ';
+              if Form1.sCRLF = 'Sim' then
+                sLinha := sLinha + Chr(10);
+              Result := _ecf02_TestaLigadaePapel(true);
+              if Result then
+                Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( sLinha  )=1); // Sandro Silva 2023-12-13 if Result then Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
+              if Result then
+                Result := _ecf02_TestaLigadaePapel(true);
+              sLinha := '';
             end;
           end;
         end;
@@ -1883,10 +2072,12 @@ begin
       //
       if Result = True then
       begin
-        sLinha:=Chr(10)+chr(10)+Chr(10);
-        Result:=_ecf02_TestaLigadaePapel(true);
-        if Result then Result:=(Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
-        if Result then Result:=_ecf02_TestaLigadaePapel(true);
+        sLinha := Chr(10)+chr(10)+Chr(10);
+        Result := _ecf02_TestaLigadaePapel(true);
+        if Result then
+          Result := (Bematech_FI_UsaComprovanteNaoFiscalVinculado( sLinha  ) = 1); // Sandro Silva 2023-12-13 if Result then Result:=(Bematech_FI_UsaComprovanteNaoFiscalVinculado( pchar( sLinha ) )=1);
+        if Result then
+          Result := _ecf02_TestaLigadaePapel(true);
       end;
       //
     end;
@@ -1900,14 +2091,14 @@ function _ecf02_ImpressaoNaoSujeitoaoICMS(sP1: String): Boolean;
 var
   //
   I, J, iResult : Integer;
-  sGRG, sLinha: String;
+  sGRG, sLinha: AnsiString;
   tInicio : tTime;
   Hora, Min, Seg, cent : Word;
   bImprimindoConferenciaMesa: Boolean; // 2015-09-08 Indica quando está fazendo a impressão do TEF. Envia linha a linha para a impressora
   //
   function Imprimir(sTexto: String): Integer;
   var
-    sTexto2: String;
+    sTexto2: AnsiString;
     i: Integer;
     bQuebra: Boolean;
   begin
@@ -1942,7 +2133,7 @@ begin
   //
   if _ecf02_TestaLigadaePapel(true)
    or (Pos('IDENTIFICAÇÃO DO PAF-ECF',sP1)<>0)  // Sandro Silva 2017-11-07 Polimig
-   or (Pos('Parametros de Configuracao',sP1)<>0) // Sandro Silva 2017-11-07 Polimig 
+   or (Pos('Parametros de Configuracao',sP1)<>0) // Sandro Silva 2017-11-07 Polimig
    then
   begin
     //
@@ -1954,39 +2145,39 @@ begin
     //
     if Pos('IDENTIFICAÇÃO DO PAF-ECF',sP1)<>0 then
     begin
-      iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('02')); // Identificação do PAF
+      iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('02')); // Identificação do PAF // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('02')); // Identificação do PAF
       bImprimindoConferenciaMesa := True
     end else
     begin
-      if Pos('Período Solicitado: de',sP1)<>0 then
+      if Pos('Período Solicitado: de', sP1)<>0 then
       begin
-        iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('05')); // Meios de pagamento
+        iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('05')); // Meios de pagamento // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('05')); // Meios de pagamento
       end else
       begin
-        if (Pos('Documento: ',sP1)<>0) or (Pos(TITULO_PARCELAS_CARNE_RESUMIDO, sP1) > 0) then  // Sandro Silva 2018-04-29  if Pos('Documento: ',sP1)<>0 then
+        if (Pos('Documento: ', sP1) <> 0) or (Pos(TITULO_PARCELAS_CARNE_RESUMIDO, sP1) > 0) then  // Sandro Silva 2018-04-29  if Pos('Documento: ',sP1)<>0 then
         begin
-          iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('03')); // Venda a prazo
+          iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('03')); // Venda a prazo // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('03')); // Venda a prazo
         end else
         begin
           if Pos('DAV EMITIDOS',sP1)<>0 then
           begin
-            iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('06')); // DAV Emitidos
+            iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('06')); // DAV Emitidos // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('06')); // DAV Emitidos
           end else
           begin
             if Pos('AUXILIAR DE VENDA (DAV) - OR',sP1)<>0 then
             begin
-              iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('07')); // Orçamento (DAV)
+              iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('07')); // Orçamento (DAV) // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('07')); // Orçamento (DAV)
             end else
             begin
               if Pos('CONFERENCIA DE CONTA',sP1)<>0 then
               begin
-                iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('08')); // Conferencia de contas
+                iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('08')); // Conferencia de contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('08')); // Conferencia de contas
                 bImprimindoConferenciaMesa := True
               end else
               begin
                 if Pos('TRANSFERENCIAS ENTRE CONTA',sP1)<>0 then
                 begin
-                  iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('09')); // Transferencia entre contas
+                  iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('09')); // Transferencia entre contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('09')); // Transferencia entre contas
                 end else
                 begin
                   // Sandro Silva 2016-02-04 POLIMIG  if (Pos('CONTAS DE CLIENTES ABERTAS',sP1)<>0) or (Pos('CONTAS DE CLIENTES OS ABERTAS',sP1)<>0) or (Pos('NENHUMA',sP1)<>0) then
@@ -1994,33 +2185,33 @@ begin
                     or (Pos('CONTAS DE CLIENTES OS ABERTAS',sP1)<>0)
                     or ((Pos('NENHUMA',sP1)<>0) and (Pos('CONTA DE CLIENTE',sP1)<>0)) then
                   begin
-                    iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('10')); // Mesas contas
+                    iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('10')); // Mesas contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('10')); // Mesas contas
                   end else
                   begin
                     if Pos('CONFERENCIA DE MESA',sP1)<>0 then
                     begin
-                      iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('11')); // Conferencia de contas
+                      iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('11')); // Conferencia de contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('11')); // Conferencia de contas
                       bImprimindoConferenciaMesa := True
                     end else
                     begin
                       if Pos('TRANSFERENCIAS ENTRE MESA',sP1)<>0 then
                       begin
-                        iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('12')); // Transferencia entre contas
+                        iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('12')); // Transferencia entre contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('12')); // Transferencia entre contas
                       end else
                       begin
                         // Sandro Silva 2016-02-04 POLIMIG if Pos('MESAS ABERTAS',sP1)<>0 then
                         if (Pos('MESAS ABERTAS',sP1)<>0) or
                          (Pos('NENHUMA MESA',sP1)<>0) then
                         begin
-                          iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('13')); // Mesas contas
+                          iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('13')); // Mesas contas // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('13')); // Mesas contas
                         end else
                         begin
                           if Pos('Parametros de Configuracao',sP1)<>0 then
                           begin
-                            iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('14')); // Parâmetros de Configuração
+                            iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('14')); // Parâmetros de Configuração // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('14')); // Parâmetros de Configuração
                           end else
                           begin
-                            iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('04')); // Cartão TEF
+                            iResult := Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('04')); // Cartão TEF // Sandro Silva 2023-12-13 iResult := Bematech_FI_AbreRelatorioGerencialMFD(pchar('04')); // Cartão TEF
                             bImprimindoConferenciaMesa := False;
                           end;
                         end;
@@ -2086,7 +2277,7 @@ begin
                   //
                   if iResult = 1 then
                   begin
-                    iResult := Bematech_FI_UsaRelatorioGerencialMFD(pchar(sLinha));
+                    iResult := Bematech_FI_UsaRelatorioGerencialMFD(sLinha); // Sandro Silva 2023-12-13 iResult := Bematech_FI_UsaRelatorioGerencialMFD(pchar(sLinha));
                   end;
                   //
                   DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
@@ -2094,7 +2285,7 @@ begin
                   begin
                     tInicio := Time;
                     Bematech_FI_FechaRelatorioGerencial();  // Fecha cupom não sujeito ao ICMS
-                    Bematech_FI_AbreRelatorioGerencialMFD(pchar('04')); // TEP
+                    Bematech_FI_AbreRelatorioGerencialMFD(AnsiString('04')); // TEP // Sandro Silva 2023-12-13 Bematech_FI_AbreRelatorioGerencialMFD(pchar('04')); // TEP
                   end;
                   //
                   if iResult = 1 then
@@ -2168,17 +2359,32 @@ begin
 end;
 
 function _ecf02_GrandeTotal(sP1: Boolean): String;
+var
+  sGT: AnsiString;
 begin
   // Caso falhar o retorno do GT, incluir um SleepEntreMetodos e executar Bematech_FI_GrandeTotal() novamente
-  Result := Replicate(' ',18);
+  {
+  Result := AnsiString(Replicate(' ',18));
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
   if Bematech_FI_GrandeTotal( Result ) <> 1 then Result := '0';
+  }
+  Result := '0';
+  sGT := Replicate(' ',18);
+  SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
+  if Bematech_FI_GrandeTotal( sGT ) = 1 then
+    Result := sGT;
+
 end;
 
 function _ecf02_TotalizadoresDasAliquotas(sP1: Boolean): String;
+var
+  sRetorno: AnsiString;
 begin
-  Result := Replicate(' ',445);
-  if Bematech_FI_VerificaTotalizadoresParciais( Result ) <> 1 then Result := '' else Result := Copy(Result,1,224)+Copy(Result,226,14)+Copy(Result,241,14)+Copy(Result,256,14);
+  sRetorno := Replicate(' ',445);
+  if Bematech_FI_VerificaTotalizadoresParciais( AnsiString(sRetorno) ) <> 1 then
+    Result := ''
+  else
+    Result := Copy(sRetorno,1,224)+Copy(sRetorno,226,14)+Copy(sRetorno,241,14)+Copy(sRetorno,256,14);
 end;
 
 function _ecf02_CupomAberto(sP1: Boolean): boolean;
@@ -2207,17 +2413,18 @@ end;
 
 function _ecf02_DadosUltimaReducaoZ(sP1: Boolean): String;
 var
-  sDados : String;
+  sDados : AnsiString;
 begin
   sDados := Replicate(' ',1278);
   SleepEntreMetodos; // Sandro Silva 2019-08-30 ER 02.06 UnoChapeco
-  if Form1.sMFD_ = 'Sim' then Bematech_FI_DadosUltimaReducaoMFD( sDados );
+  if Form1.sMFD_ = 'Sim' then
+    Bematech_FI_DadosUltimaReducaoMFD( sDados );
   REsult := sDados;
 end;
 
 function _ecf02_Marca(sP1: Boolean): String;
 var
-  sMarca, sModelo, sTipo: String;
+  sMarca, sModelo, sTipo: AnsiString;
 begin
   if Form1.sMFD_ = 'Sim' then
   begin
@@ -2234,7 +2441,7 @@ end;
 
 function _ecf02_Modelo(sP1: Boolean): String;
 var
-  sMarca, sModelo, sTipo: String;
+  sMarca, sModelo, sTipo: AnsiString;
 begin
   if Form1.sMFD_ = 'Sim' then
   begin
@@ -2251,7 +2458,7 @@ end;
 
 function _ecf02_Tipodaimpressora(pP1: Boolean): String; //
 var
-  sMarca, sModelo, sTipo: String;
+  sMarca, sModelo, sTipo: AnsiString;
 begin
   if Form1.sMFD_ = 'Sim' then
   begin
@@ -2283,7 +2490,7 @@ end;
 
 function _ecf02_DadosDaUltimaReducao(pP1: Boolean): String; //
 var
-  sRetorno : String;
+  sRetorno : AnsiString;
 begin
   {
   DadosReducao: Variável STRING com o tamanho de 1278 posições para receber os dados da última redução.
@@ -2326,7 +2533,7 @@ begin
   Data do movimento:                                          1273,6
   }
   sRetorno := Replicate(' ',1278);
-  Bematech_FI_DadosUltimaReducaoMFD(sRetorno);
+  Bematech_FI_DadosUltimaReducaoMFD(AnsiString(sRetorno));
 
   //
   Result := Copy(sRetorno,1273,  6)+ //   1,  6 Data
@@ -2360,7 +2567,7 @@ end;
 
 function _ecf02_DataUltimaReducao: String;
 var
-  Data, Hora: String;
+  Data, Hora: AnsiString;
   iConta: Integer;
   iRetorno: Integer;
 begin
@@ -2394,7 +2601,7 @@ end;
 
 function _ecf02_HoraUltimaReducao: String;
 var
-  Data, Hora: String;
+  Data, Hora: AnsiString;
   iConta: Integer;
   iRetorno: Integer;
 begin
@@ -2436,7 +2643,7 @@ begin
   ST3 := 0;
 
   if _ecf02_CupomAberto(True) = False then // Sandro Silva 2016-09-14
-    Bematech_FI_TerminaFechamentoCupom(' ');// Sandro Silva 2016-03-03 Precisa ter comando fiscal para o ST3
+    Bematech_FI_TerminaFechamentoCupom(AnsiString(' '));// Sandro Silva 2016-03-03 Precisa ter comando fiscal para o ST3
   Bematech_FI_RetornoImpressoraMFD( ACK, ST1, ST2, ST3 );
 
   Result := '';
@@ -2450,9 +2657,3 @@ begin
 end;
 
 end.
-
-
-
-
-
-

@@ -12,7 +12,6 @@ object Form13: TForm13
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnActivate = FormActivate
   OnCreate = FormCreate
@@ -51,7 +50,7 @@ object Form13: TForm13
       Top = 15
       Width = 83
       Height = 13
-      BiDiMode = bdRightToLeft
+      BiDiMode = bdLeftToRight
       Caption = 'Grade do item:'
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
@@ -102,6 +101,7 @@ object Form13: TForm13
       Ctl3D = False
       DefaultColWidth = 91
       DefaultRowHeight = 32
+      DrawingStyle = gdsClassic
       FixedColor = clBtnShadow
       FixedCols = 0
       RowCount = 20
@@ -187,9 +187,12 @@ object Form13: TForm13
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         Left = -5
         Top = 5
+        ExplicitLeft = -5
+        ExplicitTop = 5
         inherited Image4: TImage
           Picture.Data = {00}
         end

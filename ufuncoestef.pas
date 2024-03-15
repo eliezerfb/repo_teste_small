@@ -36,12 +36,12 @@ procedure TEFDeletarCopiasArquivos(FsDiretorio: String);
 implementation
 
 uses
-   SmallFunc
+   SmallFunc_xe
   , ufuncoesfrente
   , fiscal
   , uclassetransacaocartao
   , unit10
-  , _Small_IntegradorFiscal
+//  , _Small_IntegradorFiscal
   , unit22
   , uajustaresolucao
 
@@ -73,12 +73,12 @@ type
 procedure ValidaDiretorioTEF(sDirTef: String; sDirReq: String; sDirResp: String); // Sandro Silva 2020-08-20
 begin
   // Cria as pastas de troca de mensagens com o TEF
-  if DirectoryExists(PansiChar(sDirTef)) = False then
-    ForceDirectories(PAnsiChar(sDirTef));
-  if DirectoryExists(PansiChar(sDirTef + '\' + sDirReq)) = False then
-    ForceDirectories(PAnsiChar(sDirTef + '\' + sDirReq));
-  if DirectoryExists(PAnsiChar(sDirTef + '\' + sDirResp)) = False then
-    ForceDirectories(PAnsiChar(sDirTef + '\' + sDirResp));
+  if DirectoryExists(sDirTef) = False then
+    ForceDirectories(sDirTef);
+  if DirectoryExists(sDirTef + '\' + sDirReq) = False then
+    ForceDirectories(sDirTef + '\' + sDirReq);
+  if DirectoryExists(sDirTef + '\' + sDirResp) = False then
+    ForceDirectories(sDirTef + '\' + sDirResp);
 end;
 
 function AtivaGeranciadorPadrao(p_diretorio, p_Req, p_Resp, p_Exec, NometefIni: String): Boolean;
@@ -2511,7 +2511,7 @@ begin
   Result := 0;
   try
     //
-    I := FindFirst( pChar(sTipoComCaminho), faAnyFile, S);
+    I := FindFirst( sTipoComCaminho, faAnyFile, S);
     //
     while I = 0 do
     begin

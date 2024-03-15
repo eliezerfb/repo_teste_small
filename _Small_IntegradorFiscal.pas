@@ -16,7 +16,7 @@ uses
   , IBX.IBCustomDataSet, IBX.IBQuery, IBX.IBDatabase
   {$ENDIF}
   , StrUtils,
-  smallfunc
+  SmallFunc_xe
   , ufuncoesfrente
   , Fiscal
   , umfe

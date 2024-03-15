@@ -10,11 +10,11 @@ unit ufuncoesblocox;
 interface
 
 uses Controls, SysUtils, IBDatabase, DB, IBCustomDataSet, IBQuery,
-  Smallfunc, ufuncoesfrente, StrUtils, Forms, Dialogs,
+  SmallFunc_xe, ufuncoesfrente, StrUtils, Forms, Dialogs,
   DateUtils, LbCipher, LbClass, Classes, Windows, ShellApi
   , Contnrs // Sandro Silva 2018-11-26
   , msxml // Sandro Silva 2019-05-07
-  , md5 // Sandro Silva 2019-06-12
+  , ufuncaoMD5 // Sandro Silva 2019-06-12
   , upafecfmensagens
   , ufuncoesfrentepaf
   , uclassetiposblocox
@@ -491,9 +491,9 @@ begin
     {Sandro Silva 2021-09-10 fim}
 
     try
-      AssignFile(myFile, PAnsiChar(sDiretorioAtual + '\log\blocox\log_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt'));
+      AssignFile(myFile, sDiretorioAtual + '\log\blocox\log_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt');
 
-      if FileExists(PAnsiChar(sDiretorioAtual + '\log\blocox\log_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt')) = False then
+      if FileExists(sDiretorioAtual + '\log\blocox\log_' + FormatDateTime('yyyy-mm-dd', Date) + '.txt') = False then
       begin
         {$I-}
         ReWrite(myFile);
@@ -1495,7 +1495,7 @@ begin
         try
           sEncriptaHash := '';
           LbBlowfish1.GenerateKey(CHAVE_CIFRAR);
-          sEncriptaHash := LbBlowfish1.EncryptString(MD5Print(MD5String(CHAVE_CIFRAR)));
+          sEncriptaHash := LbBlowfish1.EncryptString(MD5String(CHAVE_CIFRAR));
         except
           sEncriptaHash := '';
         end;
@@ -4963,7 +4963,7 @@ begin
         Result := False;
 
         //
-        Application.MessageBox(PAnsiChar('O certificado digital selecionado não pertence a empresa ' + {Emitente.CNPJ} sCNPJ +
+        Application.MessageBox(PWideChar('O certificado digital selecionado não pertence a empresa ' + {Emitente.CNPJ} sCNPJ +
                                #13 + #13 + BXReducaoZ.CertificadoSubjectName),
                                     'Atenção', MB_ICONWARNING + MB_OK);
       end;
@@ -4982,7 +4982,7 @@ begin
         Result := False;
 
         //
-        Application.MessageBox(PAnsiChar('O certificado digital selecionado expirou em ' + FormatDateTime('dd/mm/yyyy', BXReducaoZ.Certificado.ValidToDate) +
+        Application.MessageBox(PWideChar('O certificado digital selecionado expirou em ' + FormatDateTime('dd/mm/yyyy', BXReducaoZ.Certificado.ValidToDate) +
                              #13 + #13 + BXReducaoZ.CertificadoSubjectName),
                                     'Atenção', MB_ICONWARNING + MB_OK);
 
@@ -5650,9 +5650,9 @@ begin
 
     if AnsiContainsText(Application.ExeName, '\frente') then
     begin
-      if Application.MessageBox(PAnsiChar('Deseja visualizar a lista dos arquivos xml do Bloco X?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = ID_Yes then
+      if Application.MessageBox(PWideChar('Deseja visualizar a lista dos arquivos xml do Bloco X?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = ID_Yes then
       begin
-        BXVisualizaXmlBlocoX(Emitente, IBTransaction.DefaultDatabase.DatabaseName, sTipo, Emitente.Configuracao.DiretorioAtual); // Sandro Silva 2020-06-18 BXVisualizaXmlBlocoX(FEmitente, FIBTransaction, sTipo, PAnsiChar(DiretorioAtual));
+        BXVisualizaXmlBlocoX(Emitente, IBTransaction.DefaultDatabase.DatabaseName, sTipo, Emitente.Configuracao.DiretorioAtual);
       end;
     end;
   except
@@ -6030,7 +6030,8 @@ var
   lResponse: TStringStream;
   IdHTTP: TIdHTTP;
 begin
-  GetWindowsDirectory(cWinDir,200);
+  //GetWindowsDirectory(cWinDir,200);
+  cWinDir := SysWinDir;
   LbBlowfish := TLbBlowfish.Create(nil);
   LbBlowfish.CipherMode := cmECB;
 
@@ -6054,7 +6055,7 @@ begin
       LbBlowfish.GenerateKey(CHAVE_CIFRAR);
 
       sUF          := Copy(LbBlowfish.DecryptString(StringReplace(Trim(MaisIni.ReadString('UF','I','')), ' ', '', [rfReplaceAll])), 1, 2);
-      sMD5Lista    := MD5Print(MD5File(pChar(ExtractFileDir(Application.ExeName) + '\LISTA.TXT')));
+      sMD5Lista    := MD5File(pChar(ExtractFileDir(Application.ExeName) + '\LISTA.TXT'));
       snro_fabrica := LbBlowfish.DecryptString(StringReplace(Trim(MaisIni.ReadString('ECF','SERIE','')), ' ', '', [rfReplaceAll]));
       svalor_gt    := LbBlowfish.DecryptString(MaisIni.ReadString('ECF', 'GT', ''));
       sCNPJ        := LbBlowfish.DecryptString(MaisIni.ReadString('ECF','CGC', ''));

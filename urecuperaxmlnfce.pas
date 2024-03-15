@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, Forms, ShellApi, Windows, StrUtils, Dialogs
-  , SmallFunc
+  , SmallFunc_xe
   , ufuncoesfrente
   ;
 
@@ -58,13 +58,13 @@ begin
   sArqTmp := sData + FNumeroNFCe + '.tmp';
   sArqTxt := sData + FNumeroNFCe + '.txt';
   sArquivo := FCaminho + '\*65???' + FormatFloat('000000000', StrToInt(FNumeroNFCe)) + '*.xml';
-  DeleteFile(PAnsiChar(dirAtual + '\' + sArqTmp));
-  DeleteFile(PAnsiChar(dirAtual + '\' + sArqTxt));
+  DeleteFile(PChar(dirAtual + '\' + sArqTmp));
+  DeleteFile(PChar(dirAtual + '\' + sArqTxt));
   Sleep(250);
 
-  ShellExecute(Application.Handle, 'runas', 'cmd.exe', PAnsiChar('/C dir "' + sArquivo + '" /s/B/O-D > "' + dirAtual + '\' + sArqTmp + '"'), nil, SW_HIDE);
+  ShellExecute(Application.Handle, 'runas', 'cmd.exe', PChar('/C dir "' + sArquivo + '" /s/B/O-D > "' + dirAtual + '\' + sArqTmp + '"'), nil, SW_HIDE);
 
-  while RenameFile(PansiChar(dirAtual + '\' + sArqTmp), PAnsiChar(dirAtual + '\' + sArqTxt)) = False do
+  while RenameFile(PChar(dirAtual + '\' + sArqTmp), PChar(dirAtual + '\' + sArqTxt)) = False do
   begin
     Sleep(250);
     Application.ProcessMessages;
@@ -72,8 +72,8 @@ begin
 
   FslListaXml.LoadFromFile(dirAtual + '\' + sArqTxt);
   
-  DeleteFile(PAnsiChar(dirAtual + '\' + sArqTmp));
-  DeleteFile(PAnsiChar(dirAtual + '\' + sArqTxt));
+  DeleteFile(PChar(dirAtual + '\' + sArqTmp));
+  DeleteFile(PChar(dirAtual + '\' + sArqTxt));
 
 end;
 

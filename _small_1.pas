@@ -4,7 +4,7 @@ interface
 
 uses
 
-  Windows, Messages, SmallFunc, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SmallFunc_xe, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB, DBCtrls, SMALL_DBEdit, IniFiles,
   Unit2, ShellApi, Unit22;
 
@@ -390,14 +390,14 @@ end;
 
 function _ecf01_Moeda(pP1: Boolean): String;
 begin
-  Result := Copy(CurrencyString,1,1);
+  Result := Copy(FormatSettings.CurrencyString,1,1);
 end;
 
 function _ecf01_Dataehoradaimpressora(pP1: Boolean): String;
 begin
-  ShortDateFormat := 'dd/mm/yy';   {Bug 2001 free}
+  FormatSettings.ShortDateFormat := 'dd/mm/yy';   {Bug 2001 free}
   Result := StrTran(StrTran(Copy(DateToStr(Date),1,8)+TimeToStr(Time),'/',''),':','');
-  ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   {Bug 2001 free}
 end;
 
 function _ecf01_Datadaultimareduo(pP1: Boolean): String;

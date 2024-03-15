@@ -13,7 +13,6 @@ object FEditaMovimento: TFEditaMovimento
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -80,6 +79,8 @@ object FEditaMovimento: TFEditaMovimento
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = -5
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         inherited Image4: TImage
           Picture.Data = {00}

@@ -38,7 +38,6 @@ object Form2: TForm2
     0000000000010000000100000001000000030000000F0000203F0000307F0000
     303F0000203F0000003F0000001F0000008F0000118700000FEF000007FF0000
     03FF000001FF000020FF0000307F0000383F00003C1F00003E1F00003F3F}
-  OldCreateOrder = True
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
@@ -205,6 +204,7 @@ object Form2: TForm2
         TitleFont.Height = -16
         TitleFont.Name = 'Microsoft Sans Serif'
         TitleFont.Style = [fsBold]
+        OnDrawColumnCell = DBGrid1DrawColumnCell
         OnEnter = MaskEdit1Enter
         OnKeyPress = DBGrid1KeyPress
         OnKeyUp = DBGrid1KeyUp
@@ -28282,6 +28282,9 @@ object Form2: TForm2
       Width = 1010
       Height = 514
       TabOrder = 0
+      ExplicitLeft = -8
+      ExplicitWidth = 1010
+      ExplicitHeight = 514
       inherited PAnel1: TPanel
         inherited Image4: TImage
           Picture.Data = {00}

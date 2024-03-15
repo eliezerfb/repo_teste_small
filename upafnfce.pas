@@ -8,7 +8,6 @@ uses
   , IBDatabase
   , IBCustomDataSet // Sandro Silva 2023-02-13
   , StdVCL
-  , base64code
   , CAPICOM_TLB
   , spdNFCe
   ;
@@ -97,7 +96,7 @@ implementation
 uses fiscal
   , unit7
   , ufuncoesfrente
-  , SmallFunc
+  , SmallFunc_xe
 //  , uassinaxmlpafnfce
   ;
 

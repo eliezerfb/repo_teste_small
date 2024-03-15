@@ -8,9 +8,9 @@ unit _Small_3;
 interface
 
 uses
-  Windows, Messages, SmallFunc, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB//, DBTables
-  , DBCtrls, SMALL_DBEdit, IniFiles, Unit2, FileCtrl, Unit22, Unit7, md5;
+  Windows, Messages, SmallFunc_xe, Fiscal, SysUtils,Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB
+  , DBCtrls, SMALL_DBEdit, IniFiles, Unit2, FileCtrl, Unit22, Unit7;
 
   // Alterado p/versão 2005 07/01/2005 - RONEI                                //
 
@@ -225,54 +225,54 @@ type
   TDaruma32 = class(TComponent)
     private
       DLL: THandle;    
-      //Function Daruma_Registry_AplMensagem1(AplMsg1: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_AplMensagem1: function(AplMsg1: String): Integer; StdCall;
-      //Function Daruma_Registry_AplMensagem2(AplMsg1: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_AplMensagem2: function(AplMsg1: String): Integer; StdCall;
+      //Function Daruma_Registry_AplMensagem1(AplMsg1: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_AplMensagem1: function(AplMsg1: AnsiString): Integer; StdCall;
+      //Function Daruma_Registry_AplMensagem2(AplMsg1: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_AplMensagem2: function(AplMsg1: AnsiString): Integer; StdCall;
       //
-      //function Daruma_Registry_MFD_LeituraMFCompleta( Valor: String ): Integer; StdCall; External 'Daruma32.dll'
-      _Daruma_Registry_MFD_LeituraMFCompleta: function(Valor: String): Integer; StdCall;
+      //function Daruma_Registry_MFD_LeituraMFCompleta( Valor: AnsiString ): Integer; StdCall; External 'Daruma32.dll'
+      _Daruma_Registry_MFD_LeituraMFCompleta: function(Valor: AnsiString): Integer; StdCall;
 
-      //function Daruma_Registry_Porta(Porta: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_Porta: function(Porta: String): Integer; StdCall;
-      //function Daruma_Registry_Path(Path: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_Path: function(Path: String): Integer; StdCall;
-      //function Daruma_Registry_Status(Status: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_Status: function(Status: String): Integer; StdCall;
-      //function Daruma_Registry_StatusFuncao(StatusFuncao: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_StatusFuncao: function(StatusFuncao: String): Integer; StdCall;
-      //function Daruma_Registry_Retorno(Retorno: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_Retorno: function(Retorno: String): Integer; StdCall;
-      //function Daruma_Registry_ControlePorta(ControlePorta: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_ControlePorta: function(ControlePorta: String): Integer; StdCall;
-      //function Daruma_Registry_ModoGaveta(ModoGaveta: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_ModoGaveta: function(ModoGaveta: String): Integer; StdCall;
-      //function Daruma_Registry_Log(Log: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_Log: function(Log: String): Integer; StdCall;
-      //function Daruma_Registry_NomeLog(NomeLog: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_NomeLog: function(NomeLog: String): Integer; StdCall;
-      //function Daruma_Registry_Separador(Separador: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_Separador: function(Separador: String): Integer; StdCall;
-      //function Daruma_Registry_SeparaMsgPromo(SeparaMsgPromo: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_SeparaMsgPromo: function(SeparaMsgPromo: String ): Integer; StdCall;
-      //function Daruma_Registry_Emulador(Emulador: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_Emulador: function(Emulador: String): Integer; StdCall;
-      //function Daruma_Registry_ConfigRede(ConfigRede: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_ConfigRede: function(ConfigRede: String): Integer; StdCall;
-      //function Daruma_Registry_VendeItemUmaLinha(ConfigRede: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_Registry_VendeItemUmaLinha: function(ConfigRede: String): Integer; StdCall;
+      //function Daruma_Registry_Porta(Porta: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_Porta: function(Porta: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_Path(Path: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_Path: function(Path: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_Status(Status: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_Status: function(Status: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_StatusFuncao(StatusFuncao: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_StatusFuncao: function(StatusFuncao: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_Retorno(Retorno: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_Retorno: function(Retorno: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_ControlePorta(ControlePorta: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_ControlePorta: function(ControlePorta: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_ModoGaveta(ModoGaveta: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_ModoGaveta: function(ModoGaveta: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_Log(Log: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_Log: function(Log: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_NomeLog(NomeLog: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_NomeLog: function(NomeLog: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_Separador(Separador: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_Separador: function(Separador: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_SeparaMsgPromo(SeparaMsgPromo: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_SeparaMsgPromo: function(SeparaMsgPromo: AnsiString ): Integer; StdCall;
+      //function Daruma_Registry_Emulador(Emulador: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_Emulador: function(Emulador: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_ConfigRede(ConfigRede: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_ConfigRede: function(ConfigRede: AnsiString): Integer; StdCall;
+      //function Daruma_Registry_VendeItemUmaLinha(ConfigRede: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_Registry_VendeItemUmaLinha: function(ConfigRede: AnsiString): Integer; StdCall;
 
       // Funções de Inicialização
-      //function Daruma_FI_AlteraSimboloMoeda( SimboloMoeda: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_AlteraSimboloMoeda: function(SimboloMoeda: String): Integer; StdCall;
-      //function Daruma_FI_ProgramaAliquota( Aliquota: String; ICMS_ISS: Integer ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_ProgramaAliquota: function(Aliquota: String; ICMS_ISS: Integer): Integer; StdCall;
+      //function Daruma_FI_AlteraSimboloMoeda( SimboloMoeda: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_AlteraSimboloMoeda: function(SimboloMoeda: AnsiString): Integer; StdCall;
+      //function Daruma_FI_ProgramaAliquota( Aliquota: AnsiString; ICMS_ISS: Integer ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_ProgramaAliquota: function(Aliquota: AnsiString; ICMS_ISS: Integer): Integer; StdCall;
       //function Daruma_FI_ProgramaHorarioVerao: Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_ProgramaHorarioVerao: function(): Integer; StdCall;
-      //function Daruma_FI_NomeiaDepartamento( Indice: Integer; Departamento: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_NomeiaDepartamento: function(Indice: Integer; Departamento: String): Integer; StdCall;
-      //function Daruma_FI_NomeiaTotalizadorNaoSujeitoIcms( Indice: Integer; Totalizador: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_NomeiaTotalizadorNaoSujeitoIcms: function(Indice: Integer; Totalizador: String): Integer; StdCall;
+      //function Daruma_FI_NomeiaDepartamento( Indice: Integer; Departamento: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_NomeiaDepartamento: function(Indice: Integer; Departamento: AnsiString): Integer; StdCall;
+      //function Daruma_FI_NomeiaTotalizadorNaoSujeitoIcms( Indice: Integer; Totalizador: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_NomeiaTotalizadorNaoSujeitoIcms: function(Indice: Integer; Totalizador: AnsiString): Integer; StdCall;
       //function Daruma_FI_ProgramaArredondamento: Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_ProgramaArredondamento: function(): Integer; StdCall;
       //function Daruma_FI_ProgramaTruncamento: Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_FI_ProgramaTruncamento';
@@ -283,196 +283,196 @@ type
       _Daruma_FI_EspacoEntreLinhas: function(Dots: Integer): Integer; StdCall;
       //function Daruma_FI_ForcaImpactoAgulhas( ForcaImpacto: Integer ): Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_ForcaImpactoAgulhas: function(ForcaImpacto: Integer): Integer; StdCall;
-      //function Daruma_FI_ProgramaFormasPagamento( Formas: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_ProgramaFormasPagamento: function(Formas: String): Integer; StdCall;
+      //function Daruma_FI_ProgramaFormasPagamento( Formas: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_ProgramaFormasPagamento: function(Formas: AnsiString): Integer; StdCall;
       // Funções do Cupom Fiscal
-      //function Daruma_FI_AbreCupom( CGC_CPF: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_AbreCupom: function(CGC_CPF: String): Integer; StdCall;
-      //function Daruma_FI_VendeItem( Codigo: String; Descricao: String; Aliquota: String; TipoQuantidade: String; Quantidade: String; CasasDecimais: Integer; ValorUnitario: String; TipoDesconto: String; Desconto: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VendeItem: function(Codigo: String; Descricao: String; Aliquota: String; TipoQuantidade: String; Quantidade: String; CasasDecimais: Integer; ValorUnitario: String; TipoDesconto: String; Desconto: String): Integer; StdCall;
+      //function Daruma_FI_AbreCupom( CGC_CPF: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_AbreCupom: function(CGC_CPF: AnsiString): Integer; StdCall;
+      //function Daruma_FI_VendeItem( Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; TipoQuantidade: AnsiString; Quantidade: AnsiString; CasasDecimais: Integer; ValorUnitario: AnsiString; TipoDesconto: AnsiString; Desconto: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VendeItem: function(Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; TipoQuantidade: AnsiString; Quantidade: AnsiString; CasasDecimais: Integer; ValorUnitario: AnsiString; TipoDesconto: AnsiString; Desconto: AnsiString): Integer; StdCall;
 
-      //function Daruma_FI_VendeItemTresDecimais(Codigo: String; Descricao: String; Aliquota: String; Quantidade: String; ValorUnitario: String; TipoDesconto: String;Desconto: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VendeItemTresDecimais: function(Codigo: String; Descricao: String; Aliquota: String; Quantidade: String; ValorUnitario: String; TipoDesconto: String;Desconto: String): Integer; StdCall;
+      //function Daruma_FI_VendeItemTresDecimais(Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; Quantidade: AnsiString; ValorUnitario: AnsiString; TipoDesconto: AnsiString;Desconto: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VendeItemTresDecimais: function(Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; Quantidade: AnsiString; ValorUnitario: AnsiString; TipoDesconto: AnsiString;Desconto: AnsiString): Integer; StdCall;
 
-      //function Daruma_FI_VendeItemDepartamento( Codigo: String; Descricao: String; Aliquota: String; ValorUnitario: String; Quantidade: String; Acrescimo: String; Desconto: String; IndiceDepartamento: String; UnidadeMedida: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VendeItemDepartamento: function(Codigo: String; Descricao: String; Aliquota: String; ValorUnitario: String; Quantidade: String; Acrescimo: String; Desconto: String; IndiceDepartamento: String; UnidadeMedida: String): Integer; StdCall;
-      //function Daruma_FI_VendeItem1Lin13Dig( Codigo: String; Descricao: String; Aliquota: String; Quantidade: String;  ValorUnitario: String; Acrescimo_Desconto: String; Percentual : String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VendeItem1Lin13Dig: function(Codigo: String; Descricao: String; Aliquota: String; Quantidade: String;  ValorUnitario: String; Acrescimo_Desconto: String; Percentual : String): Integer; StdCall;
+      //function Daruma_FI_VendeItemDepartamento( Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; ValorUnitario: AnsiString; Quantidade: AnsiString; Acrescimo: AnsiString; Desconto: AnsiString; IndiceDepartamento: AnsiString; UnidadeMedida: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VendeItemDepartamento: function(Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; ValorUnitario: AnsiString; Quantidade: AnsiString; Acrescimo: AnsiString; Desconto: AnsiString; IndiceDepartamento: AnsiString; UnidadeMedida: AnsiString): Integer; StdCall;
+      //function Daruma_FI_VendeItem1Lin13Dig( Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; Quantidade: AnsiString;  ValorUnitario: AnsiString; Acrescimo_Desconto: AnsiString; Percentual : AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VendeItem1Lin13Dig: function(Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; Quantidade: AnsiString;  ValorUnitario: AnsiString; Acrescimo_Desconto: AnsiString; Percentual : AnsiString): Integer; StdCall;
       //function Daruma_FI_CancelaItemAnterior: Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_CancelaItemAnterior: function(): Integer; StdCall;
-      //function Daruma_FI_CancelaItemGenerico( NumeroItem: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_CancelaItemGenerico: function(NumeroItem: String): Integer; StdCall;
+      //function Daruma_FI_CancelaItemGenerico( NumeroItem: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_CancelaItemGenerico: function(NumeroItem: AnsiString): Integer; StdCall;
       //function Daruma_FI_CancelaCupom: Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_CancelaCupom: function(): Integer; StdCall;
-      //function Daruma_FI_FechaCupomResumido( FormaPagamento: String; Mensagem: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_FechaCupomResumido: function(FormaPagamento: String; Mensagem: String): Integer; StdCall;
-      //function Daruma_FI_FechaCupom( FormaPagamento: String; AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String; ValorPago: String; Mensagem: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_FechaCupom: function(FormaPagamento: String; AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String; ValorPago: String; Mensagem: String): Integer; StdCall;
+      //function Daruma_FI_FechaCupomResumido( FormaPagamento: AnsiString; Mensagem: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_FechaCupomResumido: function(FormaPagamento: AnsiString; Mensagem: AnsiString): Integer; StdCall;
+      //function Daruma_FI_FechaCupom( FormaPagamento: AnsiString; AcrescimoDesconto: AnsiString; TipoAcrescimoDesconto: AnsiString; ValorAcrescimoDesconto: AnsiString; ValorPago: AnsiString; Mensagem: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_FechaCupom: function(FormaPagamento: AnsiString; AcrescimoDesconto: AnsiString; TipoAcrescimoDesconto: AnsiString; ValorAcrescimoDesconto: AnsiString; ValorPago: AnsiString; Mensagem: AnsiString): Integer; StdCall;
       //function Daruma_FI_ResetaImpressora: Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_ResetaImpressora: function(): Integer; StdCall;
-      //function Daruma_FI_IniciaFechamentoCupom( AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_IniciaFechamentoCupom: function(AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String ): Integer; StdCall;
-      //function Daruma_FI_EfetuaFormaPagamento( FormaPagamento: String; ValorFormaPagamento: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_EfetuaFormaPagamento: function(FormaPagamento: String; ValorFormaPagamento: String): Integer; StdCall;
-      //function Daruma_FI_EfetuaFormaPagamentoDescricaoForma( FormaPagamento: string; ValorFormaPagamento: string; DescricaoFormaPagto: string ): integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_EfetuaFormaPagamentoDescricaoForma: function(FormaPagamento: string; ValorFormaPagamento: string; DescricaoFormaPagto: string): integer; StdCall;
-      //function Daruma_FI_TerminaFechamentoCupom( Mensagem: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_TerminaFechamentoCupom: function(Mensagem: String): Integer; StdCall;
-      //function Daruma_FI_IdentificaConsumidor( Nome: String;Endereco: String; Doc: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_IdentificaConsumidor: function(Nome: String;Endereco: String; Doc: String): Integer; StdCall;
-      //function Daruma_FI_EstornoFormasPagamento( FormaOrigem: String; FormaDestino: String; Valor: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_EstornoFormasPagamento: function(FormaOrigem: String; FormaDestino: String; Valor: String): Integer; StdCall;
-      //function Daruma_FI_UsaUnidadeMedida( UnidadeMedida: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_UsaUnidadeMedida: function(UnidadeMedida: String): Integer; StdCall;
-      //function Daruma_FI_AumentaDescricaoItem( Descricao: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_AumentaDescricaoItem: function(Descricao: String): Integer; StdCall;
+      //function Daruma_FI_IniciaFechamentoCupom( AcrescimoDesconto: AnsiString; TipoAcrescimoDesconto: AnsiString; ValorAcrescimoDesconto: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_IniciaFechamentoCupom: function(AcrescimoDesconto: AnsiString; TipoAcrescimoDesconto: AnsiString; ValorAcrescimoDesconto: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_EfetuaFormaPagamento( FormaPagamento: AnsiString; ValorFormaPagamento: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_EfetuaFormaPagamento: function(FormaPagamento: AnsiString; ValorFormaPagamento: AnsiString): Integer; StdCall;
+      //function Daruma_FI_EfetuaFormaPagamentoDescricaoForma( FormaPagamento: AnsiString; ValorFormaPagamento: AnsiString; DescricaoFormaPagto: AnsiString ): integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_EfetuaFormaPagamentoDescricaoForma: function(FormaPagamento: AnsiString; ValorFormaPagamento: AnsiString; DescricaoFormaPagto: AnsiString): integer; StdCall;
+      //function Daruma_FI_TerminaFechamentoCupom( Mensagem: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_TerminaFechamentoCupom: function(Mensagem: AnsiString): Integer; StdCall;
+      //function Daruma_FI_IdentificaConsumidor( Nome: AnsiString;Endereco: AnsiString; Doc: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_IdentificaConsumidor: function(Nome: AnsiString;Endereco: AnsiString; Doc: AnsiString): Integer; StdCall;
+      //function Daruma_FI_EstornoFormasPagamento( FormaOrigem: AnsiString; FormaDestino: AnsiString; Valor: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_EstornoFormasPagamento: function(FormaOrigem: AnsiString; FormaDestino: AnsiString; Valor: AnsiString): Integer; StdCall;
+      //function Daruma_FI_UsaUnidadeMedida( UnidadeMedida: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_UsaUnidadeMedida: function(UnidadeMedida: AnsiString): Integer; StdCall;
+      //function Daruma_FI_AumentaDescricaoItem( Descricao: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_AumentaDescricaoItem: function(Descricao: AnsiString): Integer; StdCall;
 
       // Funções dos Relatórios Fiscais
       //function Daruma_FI_LeituraX: Integer; StdCall; External 'Daruma32.dll' ;
       _Daruma_FI_LeituraX: function(): Integer; StdCall;
-      //function Daruma_FI_ReducaoZ( Data: String; Hora: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_ReducaoZ: function(Data: String; Hora: String): Integer; StdCall;
-      //function Daruma_FI_RelatorioGerencial( Texto: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_RelatorioGerencial: function(Texto: String): Integer; StdCall;
+      //function Daruma_FI_ReducaoZ( Data: AnsiString; Hora: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_ReducaoZ: function(Data: AnsiString; Hora: AnsiString): Integer; StdCall;
+      //function Daruma_FI_RelatorioGerencial( Texto: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_RelatorioGerencial: function(Texto: AnsiString): Integer; StdCall;
       //function Daruma_FI_FechaRelatorioGerencial: Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_FechaRelatorioGerencial: function(): Integer; StdCall;
-      //function Daruma_FI_LeituraMemoriaFiscalData( DataInicial: String; DataFinal: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_LeituraMemoriaFiscalData: function(DataInicial: String; DataFinal: String): Integer; StdCall;
-      //function Daruma_FI_LeituraMemoriaFiscalReducao( ReducaoInicial: String; ReducaoFinal: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_LeituraMemoriaFiscalReducao: function(ReducaoInicial: String; ReducaoFinal: String): Integer; StdCall;
-      //function Daruma_FI_LeituraMemoriaFiscalSerialData( DataInicial: String; DataFinal: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_LeituraMemoriaFiscalSerialData: function(DataInicial: String; DataFinal: String): Integer; StdCall;
-      //function Daruma_FI_LeituraMemoriaFiscalSerialReducao( ReducaoInicial: String; ReducaoFinal: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_LeituraMemoriaFiscalSerialReducao: function(ReducaoInicial: String; ReducaoFinal: String): Integer; StdCall;
-      //function Daruma_FIMFD_DownloadDaMFD(CoInicial: String; CoFinal: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FIMFD_DownloadDaMFD: function(CoInicial: String; CoFinal: String): Integer; StdCall;
+      //function Daruma_FI_LeituraMemoriaFiscalData( DataInicial: AnsiString; DataFinal: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_LeituraMemoriaFiscalData: function(DataInicial: AnsiString; DataFinal: AnsiString): Integer; StdCall;
+      //function Daruma_FI_LeituraMemoriaFiscalReducao( ReducaoInicial: AnsiString; ReducaoFinal: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_LeituraMemoriaFiscalReducao: function(ReducaoInicial: AnsiString; ReducaoFinal: AnsiString): Integer; StdCall;
+      //function Daruma_FI_LeituraMemoriaFiscalSerialData( DataInicial: AnsiString; DataFinal: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_LeituraMemoriaFiscalSerialData: function(DataInicial: AnsiString; DataFinal: AnsiString): Integer; StdCall;
+      //function Daruma_FI_LeituraMemoriaFiscalSerialReducao( ReducaoInicial: AnsiString; ReducaoFinal: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_LeituraMemoriaFiscalSerialReducao: function(ReducaoInicial: AnsiString; ReducaoFinal: AnsiString): Integer; StdCall;
+      //function Daruma_FIMFD_DownloadDaMFD(CoInicial: AnsiString; CoFinal: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FIMFD_DownloadDaMFD: function(CoInicial: AnsiString; CoFinal: AnsiString): Integer; StdCall;
 
       // Funções das Operações Não Fiscais
-      //function Daruma_FI_RecebimentoNaoFiscal( IndiceTotalizador: String; Valor: String; FormaPagamento: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_RecebimentoNaoFiscal: function(IndiceTotalizador: String; Valor: String; FormaPagamento: String): Integer; StdCall;
-      //function Daruma_FI_AbreComprovanteNaoFiscalVinculado( FormaPagamento: String; Valor: String; NumeroCupom: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_AbreComprovanteNaoFiscalVinculado: function(FormaPagamento: String; Valor: String; NumeroCupom: String ): Integer; StdCall;
-      //function Daruma_FI_UsaComprovanteNaoFiscalVinculado( Texto: String ): Integer; StdCall; External 'Daruma32.dll'
-      _Daruma_FI_UsaComprovanteNaoFiscalVinculado: function( Texto: String ): Integer; StdCall;
+      //function Daruma_FI_RecebimentoNaoFiscal( IndiceTotalizador: AnsiString; Valor: AnsiString; FormaPagamento: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_RecebimentoNaoFiscal: function(IndiceTotalizador: AnsiString; Valor: AnsiString; FormaPagamento: AnsiString): Integer; StdCall;
+      //function Daruma_FI_AbreComprovanteNaoFiscalVinculado( FormaPagamento: AnsiString; Valor: AnsiString; NumeroCupom: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_AbreComprovanteNaoFiscalVinculado: function(FormaPagamento: AnsiString; Valor: AnsiString; NumeroCupom: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_UsaComprovanteNaoFiscalVinculado( Texto: AnsiString ): Integer; StdCall; External 'Daruma32.dll'
+      _Daruma_FI_UsaComprovanteNaoFiscalVinculado: function( Texto: AnsiString ): Integer; StdCall;
       //function Daruma_FI_FechaComprovanteNaoFiscalVinculado: Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_FechaComprovanteNaoFiscalVinculado: function(): Integer; StdCall;
-      //function Daruma_FI_Sangria( Valor: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_Sangria: function(Valor: String): Integer; StdCall;
-      //function Daruma_FI_Suprimento( Valor: String; FormaPagamento: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_Suprimento: function(Valor: String; FormaPagamento: String): Integer; StdCall;
+      //function Daruma_FI_Sangria( Valor: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_Sangria: function(Valor: AnsiString): Integer; StdCall;
+      //function Daruma_FI_Suprimento( Valor: AnsiString; FormaPagamento: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_Suprimento: function(Valor: AnsiString; FormaPagamento: AnsiString): Integer; StdCall;
       // Funções de Informações da Impressora
-      //function Daruma_FI_StatusCupomFiscal( StatusRel: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_StatusCupomFiscal: function(StatusRel: String): Integer; StdCall;
-      //function Daruma_FI_StatusComprovanteNaoFiscalVinculado( StatusRel: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_StatusComprovanteNaoFiscalVinculado: function(StatusRel: String): Integer; StdCall;
-      //function Daruma_FI_StatusRelatorioGerencial( StatusRel: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_StatusRelatorioGerencial: function(StatusRel: String): Integer; StdCall;
-      //function Daruma_FI_NumeroSerie( NumeroSerie: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_NumeroSerie: function(NumeroSerie: String): Integer; StdCall;
-      //function Daruma_FI_SubTotal( SubTotal: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_SubTotal: function(SubTotal: String): Integer; StdCall;
-      //function Daruma_FI_NumeroCupom( NumeroCupom: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_NumeroCupom: function(NumeroCupom: String): Integer; StdCall;
-      //function Daruma_FI_RetornaGNF( GNF: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_RetornaGNF: function(GNF: String): Integer; StdCall;
+      //function Daruma_FI_StatusCupomFiscal( StatusRel: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_StatusCupomFiscal: function(StatusRel: AnsiString): Integer; StdCall;
+      //function Daruma_FI_StatusComprovanteNaoFiscalVinculado( StatusRel: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_StatusComprovanteNaoFiscalVinculado: function(StatusRel: AnsiString): Integer; StdCall;
+      //function Daruma_FI_StatusRelatorioGerencial( StatusRel: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_StatusRelatorioGerencial: function(StatusRel: AnsiString): Integer; StdCall;
+      //function Daruma_FI_NumeroSerie( NumeroSerie: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_NumeroSerie: function(NumeroSerie: AnsiString): Integer; StdCall;
+      //function Daruma_FI_SubTotal( SubTotal: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_SubTotal: function(SubTotal: AnsiString): Integer; StdCall;
+      //function Daruma_FI_NumeroCupom( NumeroCupom: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_NumeroCupom: function(NumeroCupom: AnsiString): Integer; StdCall;
+      //function Daruma_FI_RetornaGNF( GNF: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_RetornaGNF: function(GNF: AnsiString): Integer; StdCall;
       //function Daruma_FI_LeituraXSerial: Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_LeituraXSerial: function(): Integer; StdCall;
-      //function Daruma_FI_VersaoFirmware( VersaoFirmware: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VersaoFirmware: function(VersaoFirmware: String): Integer; StdCall;
-      //function Daruma_FI_CGC_IE( CGC: String; IE: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_CGC_IE: function(CGC: String; IE: String): Integer; StdCall;
-      //function Daruma_FI_GrandeTotal( GrandeTotal: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_GrandeTotal: function(GrandeTotal: String): Integer; StdCall;
-      //function Daruma_FI_VendaBruta( VendaBruta: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VendaBruta: function(VendaBruta: String): Integer; StdCall;
-      //function Daruma_FI_Cancelamentos( ValorCancelamentos: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_Cancelamentos: function(ValorCancelamentos: String): Integer; StdCall;
-      //function Daruma_FI_Descontos( ValorDescontos: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_Descontos: function(ValorDescontos: String): Integer; StdCall;
-      //function Daruma_FI_NumeroOperacoesNaoFiscais( NumeroOperacoes: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_NumeroOperacoesNaoFiscais: function(NumeroOperacoes: String): Integer; StdCall;
-      //function Daruma_FI_NumeroCuponsCancelados( NumeroCancelamentos: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_NumeroCuponsCancelados: function(NumeroCancelamentos: String): Integer; StdCall;
-      //function Daruma_FI_NumeroIntervencoes( NumeroIntervencoes: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_NumeroIntervencoes: function(NumeroIntervencoes: String): Integer; StdCall;
-      //function Daruma_FI_NumeroReducoes( NumeroReducoes: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_NumeroReducoes: function(NumeroReducoes: String ): Integer; StdCall;
-      //function Daruma_FI_NumeroSubstituicoesProprietario( NumeroSubstituicoes: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_NumeroSubstituicoesProprietario: function(NumeroSubstituicoes: String ): Integer; StdCall;
-      //function Daruma_FI_UltimoItemVendido( NumeroItem: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_UltimoItemVendido: function( NumeroItem: String ): Integer; StdCall;
-      //function Daruma_FI_ClicheProprietarioEx( ClicheEx: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_ClicheProprietarioEx: function( ClicheEx: String ): Integer; StdCall;
-      //function Daruma_FI_NumeroCaixa( NumeroCaixa: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_NumeroCaixa: function(NumeroCaixa: String ): Integer; StdCall;
-      //function Daruma_FI_NumeroLoja( NumeroLoja: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_NumeroLoja: function(NumeroLoja: String ): Integer; StdCall;
-      //function Daruma_FI_SimboloMoeda( SimboloMoeda: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_SimboloMoeda: function(SimboloMoeda: String ): Integer; StdCall;
-      //function Daruma_FI_MinutosLigada( Minutos: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_MinutosLigada: function( Minutos: String ): Integer; StdCall;
+      //function Daruma_FI_VersaoFirmware( VersaoFirmware: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VersaoFirmware: function(VersaoFirmware: AnsiString): Integer; StdCall;
+      //function Daruma_FI_CGC_IE( CGC: AnsiString; IE: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_CGC_IE: function(CGC: AnsiString; IE: AnsiString): Integer; StdCall;
+      //function Daruma_FI_GrandeTotal( GrandeTotal: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_GrandeTotal: function(GrandeTotal: AnsiString): Integer; StdCall;
+      //function Daruma_FI_VendaBruta( VendaBruta: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VendaBruta: function(VendaBruta: AnsiString): Integer; StdCall;
+      //function Daruma_FI_Cancelamentos( ValorCancelamentos: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_Cancelamentos: function(ValorCancelamentos: AnsiString): Integer; StdCall;
+      //function Daruma_FI_Descontos( ValorDescontos: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_Descontos: function(ValorDescontos: AnsiString): Integer; StdCall;
+      //function Daruma_FI_NumeroOperacoesNaoFiscais( NumeroOperacoes: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_NumeroOperacoesNaoFiscais: function(NumeroOperacoes: AnsiString): Integer; StdCall;
+      //function Daruma_FI_NumeroCuponsCancelados( NumeroCancelamentos: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_NumeroCuponsCancelados: function(NumeroCancelamentos: AnsiString): Integer; StdCall;
+      //function Daruma_FI_NumeroIntervencoes( NumeroIntervencoes: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_NumeroIntervencoes: function(NumeroIntervencoes: AnsiString): Integer; StdCall;
+      //function Daruma_FI_NumeroReducoes( NumeroReducoes: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_NumeroReducoes: function(NumeroReducoes: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_NumeroSubstituicoesProprietario( NumeroSubstituicoes: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_NumeroSubstituicoesProprietario: function(NumeroSubstituicoes: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_UltimoItemVendido( NumeroItem: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_UltimoItemVendido: function( NumeroItem: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_ClicheProprietarioEx( ClicheEx: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_ClicheProprietarioEx: function( ClicheEx: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_NumeroCaixa( NumeroCaixa: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_NumeroCaixa: function(NumeroCaixa: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_NumeroLoja( NumeroLoja: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_NumeroLoja: function(NumeroLoja: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_SimboloMoeda( SimboloMoeda: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_SimboloMoeda: function(SimboloMoeda: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_MinutosLigada( Minutos: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_MinutosLigada: function( Minutos: AnsiString ): Integer; StdCall;
 
-      //function Daruma_FI_MinutosImprimindo( Minutos: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_MinutosImprimindo: function(Minutos: String): Integer; StdCall;
-      //function Daruma_FI_VerificaModoOperacao( Modo: string ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VerificaModoOperacao: function(Modo: string ): Integer; StdCall;
-      //function Daruma_FI_VerificaEpromConectada( Flag: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VerificaEpromConectada: function(Flag: String ): Integer; StdCall;
+      //function Daruma_FI_MinutosImprimindo( Minutos: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_MinutosImprimindo: function(Minutos: AnsiString): Integer; StdCall;
+      //function Daruma_FI_VerificaModoOperacao( Modo: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VerificaModoOperacao: function(Modo: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_VerificaEpromConectada( Flag: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VerificaEpromConectada: function(Flag: AnsiString ): Integer; StdCall;
       //function Daruma_FI_FlagsFiscais( Var Flag: Integer ): Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_FlagsFiscais: function(Var Flag: Integer ): Integer; StdCall;
-      //function Daruma_FI_ValorPagoUltimoCupom( ValorCupom: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_ValorPagoUltimoCupom: function( ValorCupom: String ): Integer; StdCall;
-      //function Daruma_FI_DataHoraImpressora( Data: String; Hora: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_DataHoraImpressora: function(Data: String; Hora: String ): Integer; StdCall;
-      //function Daruma_FI_ContadoresTotalizadoresNaoFiscais( Contadores: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_ContadoresTotalizadoresNaoFiscais: function(Contadores: String ): Integer; StdCall;
-      //function Daruma_FI_VerificaTotalizadoresNaoFiscais( Totalizadores: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VerificaTotalizadoresNaoFiscais: function(Totalizadores: String ): Integer; StdCall;
-      //function Daruma_FI_DataHoraReducao( Data: String; Hora: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_DataHoraReducao: function(Data: String; Hora: String): Integer; StdCall;
-      //function Daruma_FI_DataMovimento( Data: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_DataMovimento: function(Data: String ): Integer; StdCall;
-      //function Daruma_FI_VerificaTruncamento( Flag: string ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VerificaTruncamento: function(Flag: string ): Integer; StdCall;
-      //function Daruma_FI_Acrescimos( ValorAcrescimos: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_Acrescimos: function(ValorAcrescimos: String ): Integer; StdCall;
-      //function Daruma_FI_ContadorBilhetePassagem( ContadorPassagem: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_ContadorBilhetePassagem: function( ContadorPassagem: String ): Integer; StdCall;
-      //function Daruma_FI_VerificaAliquotasIss( Flag: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VerificaAliquotasIss: function(Flag: String ): Integer; StdCall;
-      //function Daruma_FI_VerificaFormasPagamento( Formas: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VerificaFormasPagamento: function(Formas: String ): Integer; StdCall;
-      //function Daruma_FI_VerificaRecebimentoNaoFiscal( Recebimentos: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VerificaRecebimentoNaoFiscal: function(Recebimentos: String ): Integer; StdCall;
-      //function Daruma_FI_VerificaDepartamentos( Departamentos: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VerificaDepartamentos: function(Departamentos: String ): Integer; StdCall;
+      //function Daruma_FI_ValorPagoUltimoCupom( ValorCupom: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_ValorPagoUltimoCupom: function( ValorCupom: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_DataHoraImpressora( Data: AnsiString; Hora: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_DataHoraImpressora: function(Data: AnsiString; Hora: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_ContadoresTotalizadoresNaoFiscais( Contadores: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_ContadoresTotalizadoresNaoFiscais: function(Contadores: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_VerificaTotalizadoresNaoFiscais( Totalizadores: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VerificaTotalizadoresNaoFiscais: function(Totalizadores: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_DataHoraReducao( Data: AnsiString; Hora: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_DataHoraReducao: function(Data: AnsiString; Hora: AnsiString): Integer; StdCall;
+      //function Daruma_FI_DataMovimento( Data: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_DataMovimento: function(Data: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_VerificaTruncamento( Flag: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VerificaTruncamento: function(Flag: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_Acrescimos( ValorAcrescimos: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_Acrescimos: function(ValorAcrescimos: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_ContadorBilhetePassagem( ContadorPassagem: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_ContadorBilhetePassagem: function( ContadorPassagem: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_VerificaAliquotasIss( Flag: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VerificaAliquotasIss: function(Flag: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_VerificaFormasPagamento( Formas: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VerificaFormasPagamento: function(Formas: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_VerificaRecebimentoNaoFiscal( Recebimentos: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VerificaRecebimentoNaoFiscal: function(Recebimentos: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_VerificaDepartamentos( Departamentos: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VerificaDepartamentos: function(Departamentos: AnsiString ): Integer; StdCall;
       //function Daruma_FI_VerificaTipoImpressora( Var TipoImpressora: Integer ): Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_VerificaTipoImpressora: function(var TipoImpressora: Integer ): Integer; StdCall;
-      //function Daruma_FI_VerificaTotalizadoresParciais( Totalizadores: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VerificaTotalizadoresParciais: function(Totalizadores: String ): Integer; StdCall;
-      //function Daruma_FI_RetornoAliquotas( Aliquotas: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_RetornoAliquotas: function(Aliquotas: String ): Integer; StdCall;
+      //function Daruma_FI_VerificaTotalizadoresParciais( Totalizadores: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VerificaTotalizadoresParciais: function(Totalizadores: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_RetornoAliquotas( Aliquotas: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_RetornoAliquotas: function(Aliquotas: AnsiString ): Integer; StdCall;
       //function Daruma_FI_VerificaEstadoImpressora( Var ACK: Integer; Var ST1: Integer; Var ST2: Integer ): Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_VerificaEstadoImpressora: function(var ACK: Integer; var ST1: Integer; var ST2: Integer ): Integer; StdCall;
-      //function Daruma_FI_DadosUltimaReducao( DadosReducao: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_DadosUltimaReducao: function( DadosReducao: String ): Integer; StdCall;
+      //function Daruma_FI_DadosUltimaReducao( DadosReducao: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_DadosUltimaReducao: function( DadosReducao: AnsiString ): Integer; StdCall;
       //function Daruma_FI_MonitoramentoPapel( Var Linhas: Integer): Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_MonitoramentoPapel: function(var Linhas: Integer): Integer; StdCall;
-      //function Daruma_FI_VerificaIndiceAliquotasIss( Flag: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_VerificaIndiceAliquotasIss: function(Flag: String ): Integer; StdCall;
-      //function Daruma_FI_ValorFormaPagamento( FormaPagamento: String; Valor: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_ValorFormaPagamento: function(FormaPagamento: String; Valor: String ): Integer; StdCall;
-      //function Daruma_FI_ValorTotalizadorNaoFiscal( Totalizador: String; Valor: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_ValorTotalizadorNaoFiscal: function( Totalizador: String; Valor: String ): Integer; StdCall;
-      /////  function Daruma_FI_VerificaModeloECF( Modelo: String ): Integer; StdCall; External 'Daruma32.dll';
+      //function Daruma_FI_VerificaIndiceAliquotasIss( Flag: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_VerificaIndiceAliquotasIss: function(Flag: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_ValorFormaPagamento( FormaPagamento: AnsiString; Valor: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_ValorFormaPagamento: function(FormaPagamento: AnsiString; Valor: AnsiString ): Integer; StdCall;
+      //function Daruma_FI_ValorTotalizadorNaoFiscal( Totalizador: AnsiString; Valor: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_ValorTotalizadorNaoFiscal: function( Totalizador: AnsiString; Valor: AnsiString ): Integer; StdCall;
+      /////  function Daruma_FI_VerificaModeloECF( Modelo: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
       //function Daruma_FI_VerificaModeloECF: Integer; StdCall; External 'Daruma32.dll';
       _Daruma_FI_VerificaModeloECF: function(): Integer; StdCall;
 
       // Funções de Autenticação e Gaveta de Dinheiro
       //function Daruma_FI_Autenticacao:Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_FI_Autenticacao';
       _Daruma_FI_Autenticacao: function(): Integer; StdCall;
-      //function Daruma_FI_AutenticacaoStr(str :string):Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_FI_AutenticacaoStr';
-      _Daruma_FI_AutenticacaoStr: function(str :string):Integer; StdCall;
+      //function Daruma_FI_AutenticacaoStr(str :AnsiString):Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_FI_AutenticacaoStr';
+      _Daruma_FI_AutenticacaoStr: function(str :AnsiString):Integer; StdCall;
       //function Daruma_FI_VerificaDocAutenticacao:Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_FI_VerificaDocAutenticacao';
       _Daruma_FI_VerificaDocAutenticacao: function(): Integer; StdCall;
       //function Daruma_FI_AcionaGaveta:Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_FI_AcionaGaveta';
@@ -489,8 +489,8 @@ type
       _Daruma_FI_FechaPortaSerial: function(): Integer; StdCall;
       //function Daruma_FI_MapaResumo:Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_FI_MapaResumo';
       _Daruma_FI_MapaResumo: function(): Integer; StdCall;
-      //function Daruma_FI_AberturaDoDia( ValorCompra: string; FormaPagamento: string ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_AberturaDoDia: function(ValorCompra: string; FormaPagamento: string ): Integer; StdCall;
+      //function Daruma_FI_AberturaDoDia( ValorCompra: AnsiString; FormaPagamento: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_AberturaDoDia: function(ValorCompra: AnsiString; FormaPagamento: AnsiString ): Integer; StdCall;
       //function Daruma_FI_FechamentoDoDia: Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_FI_FechamentoDoDia';
       _Daruma_FI_FechamentoDoDia: function(): Integer; StdCall;
       //function Daruma_FI_ImprimeConfiguracoesImpressora:Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_FI_ImprimeConfiguracoesImpressora';
@@ -507,35 +507,35 @@ type
       // 2015-08-31 _Daruma_FI_ImprimeConfiguracoes: function(): Integer; StdCall;
 
       //funcoes de TEF
-      //function Daruma_TEF_ImprimirResposta( Arquivo: string; FormaPagamento: string; Travar:string ): Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_TEF_ImprimirResposta';
-      _Daruma_TEF_ImprimirResposta: function( Arquivo: string; FormaPagamento: string; Travar:string ): Integer; StdCall;
+      //function Daruma_TEF_ImprimirResposta( Arquivo: AnsiString; FormaPagamento: AnsiString; Travar:AnsiString ): Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_TEF_ImprimirResposta';
+      _Daruma_TEF_ImprimirResposta: function( Arquivo: AnsiString; FormaPagamento: AnsiString; Travar:AnsiString ): Integer; StdCall;
       //function Daruma_TEF_FechaRelatorio: Integer; StdCall; External 'Daruma32.dll' Name 'Daruma_TEF_FechaRelatorio';
       _Daruma_TEF_FechaRelatorio: function(): Integer; StdCall;
       //
-      ////  function Daruma_FI_RetornaErroExtendido(sParam1: String): Integer; StdCall; external 'Daruma32.dll' Name 'Daruma_FI_RetornaErroExtendido';
-      //function Daruma_FI_RetornaErroExtendido(sParam1: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FI_RetornaErroExtendido: function(sParam1: String): Integer; StdCall;
-      //function Daruma_FI_VerificaEstadoGavetaStr(sParam1: String): Integer; StdCall; external 'Daruma32.dll' Name 'Daruma_FI_VerificaEstadoGavetaStr';
-      _Daruma_FI_VerificaEstadoGavetaStr: function(sParam1: String): Integer; StdCall;
-      //function Daruma_FI_FlagsFiscaisStr(sParam1: String): Integer; StdCall; external 'Daruma32.dll' Name 'Daruma_FI_FlagsFiscaisStr';
-      _Daruma_FI_FlagsFiscaisStr: function(sParam1: String): Integer; StdCall;
-      //function Daruma_FIMFD_RetornaInformacao( Indice: String; Valor: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FIMFD_RetornaInformacao: function( Indice: String; Valor: String ): Integer; StdCall;
-      //function Daruma_FIMFD_CodigoModeloFiscal(Valor: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FIMFD_CodigoModeloFiscal: function(Valor: String): Integer; StdCall;
+      ////  function Daruma_FI_RetornaErroExtendido(sParam1: AnsiString): Integer; StdCall; external 'Daruma32.dll' Name 'Daruma_FI_RetornaErroExtendido';
+      //function Daruma_FI_RetornaErroExtendido(sParam1: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FI_RetornaErroExtendido: function(sParam1: AnsiString): Integer; StdCall;
+      //function Daruma_FI_VerificaEstadoGavetaStr(sParam1: AnsiString): Integer; StdCall; external 'Daruma32.dll' Name 'Daruma_FI_VerificaEstadoGavetaStr';
+      _Daruma_FI_VerificaEstadoGavetaStr: function(sParam1: AnsiString): Integer; StdCall;
+      //function Daruma_FI_FlagsFiscaisStr(sParam1: AnsiString): Integer; StdCall; external 'Daruma32.dll' Name 'Daruma_FI_FlagsFiscaisStr';
+      _Daruma_FI_FlagsFiscaisStr: function(sParam1: AnsiString): Integer; StdCall;
+      //function Daruma_FIMFD_RetornaInformacao( Indice: AnsiString; Valor: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FIMFD_RetornaInformacao: function( Indice: AnsiString; Valor: AnsiString ): Integer; StdCall;
+      //function Daruma_FIMFD_CodigoModeloFiscal(Valor: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FIMFD_CodigoModeloFiscal: function(Valor: AnsiString): Integer; StdCall;
       //
-      //function Daruma_RFD_GerarArquivo(DataInicial: String; DataFinal: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_RFD_GerarArquivo: function(DataInicial: String; DataFinal: String): Integer; StdCall;
+      //function Daruma_RFD_GerarArquivo(DataInicial: AnsiString; DataFinal: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_RFD_GerarArquivo: function(DataInicial: AnsiString; DataFinal: AnsiString): Integer; StdCall;
       //
-      //function Daruma_FIMFD_ProgramaRelatoriosGerenciais( NomeRelatorio: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FIMFD_ProgramaRelatoriosGerenciais: function( NomeRelatorio: String ): Integer; StdCall;
-      //function Daruma_FIMFD_AbreRelatorioGerencial( NomeRelatorio: String ): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FIMFD_AbreRelatorioGerencial: function( NomeRelatorio: String ): Integer; StdCall;
-      //function Daruma_FIMFD_GerarAtoCotepePafData(DataInicial: String; DataFinal: String): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FIMFD_GerarAtoCotepePafData: function(DataInicial: String; DataFinal: String): Integer; StdCall;
-      //function Daruma_FIMFD_GerarAtoCotepePafCOO(COOIni: string; COOFim: string): Integer; StdCall; External 'Daruma32.dll';
-      _Daruma_FIMFD_GerarAtoCotepePafCOO: function(COOIni: string; COOFim: string): Integer; StdCall;
-      procedure Import(var Proc: pointer; Name: Pchar);
+      //function Daruma_FIMFD_ProgramaRelatoriosGerenciais( NomeRelatorio: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FIMFD_ProgramaRelatoriosGerenciais: function( NomeRelatorio: AnsiString ): Integer; StdCall;
+      //function Daruma_FIMFD_AbreRelatorioGerencial( NomeRelatorio: AnsiString ): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FIMFD_AbreRelatorioGerencial: function( NomeRelatorio: AnsiString ): Integer; StdCall;
+      //function Daruma_FIMFD_GerarAtoCotepePafData(DataInicial: AnsiString; DataFinal: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FIMFD_GerarAtoCotepePafData: function(DataInicial: AnsiString; DataFinal: AnsiString): Integer; StdCall;
+      //function Daruma_FIMFD_GerarAtoCotepePafCOO(COOIni: AnsiString; COOFim: AnsiString): Integer; StdCall; External 'Daruma32.dll';
+      _Daruma_FIMFD_GerarAtoCotepePafCOO: function(COOIni: AnsiString; COOFim: AnsiString): Integer; StdCall;
+      procedure Import(var Proc: pointer; Name: PAnsiChar);
     public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
@@ -543,132 +543,133 @@ type
       procedure CarregaDLL;
       procedure FinalizaDLL;
 
-      function Daruma_Registry_AplMensagem1(AplMsg1: String): Integer;
-      function Daruma_Registry_AplMensagem2(AplMsg1: String): Integer;
+      function Daruma_Registry_AplMensagem1(AplMsg1: AnsiString): Integer;
+      function Daruma_Registry_AplMensagem2(AplMsg1: AnsiString): Integer;
       //
       function Daruma_Registry_MFD_LeituraMFCompleta( Valor: String ): Integer;
-      function Daruma_Registry_Porta(Porta: String ): Integer;
-      function Daruma_Registry_Path(Path: String ): Integer;
-      function Daruma_Registry_Status(Status: String ): Integer;
-      function Daruma_Registry_StatusFuncao(StatusFuncao: String ): Integer;
-      function Daruma_Registry_Retorno(Retorno: String ): Integer;
-      function Daruma_Registry_ControlePorta(ControlePorta: String ): Integer;
+
+      function Daruma_Registry_Porta(Porta: AnsiString ): Integer;
+      function Daruma_Registry_Path(Path: AnsiString ): Integer;
+      function Daruma_Registry_Status(Status: AnsiString ): Integer;
+      function Daruma_Registry_StatusFuncao(StatusFuncao: AnsiString ): Integer;
+      function Daruma_Registry_Retorno(Retorno: AnsiString ): Integer;
+      function Daruma_Registry_ControlePorta(ControlePorta: AnsiString ): Integer;
       function Daruma_Registry_ModoGaveta(ModoGaveta: String ): Integer;
-      function Daruma_Registry_Log(Log: String ): Integer;
-      function Daruma_Registry_NomeLog(NomeLog: String ): Integer;
-      function Daruma_Registry_Separador(Separador: String ): Integer;
-      function Daruma_Registry_SeparaMsgPromo(SeparaMsgPromo: String ): Integer;
-      function Daruma_Registry_Emulador(Emulador: String ): Integer;
-      function Daruma_Registry_ConfigRede(ConfigRede: String ): Integer;
-      function Daruma_Registry_VendeItemUmaLinha(ConfigRede: String ): Integer;
+      function Daruma_Registry_Log(Log: AnsiString ): Integer;
+      function Daruma_Registry_NomeLog(NomeLog: AnsiString ): Integer;
+      function Daruma_Registry_Separador(Separador: AnsiString ): Integer;
+      function Daruma_Registry_SeparaMsgPromo(SeparaMsgPromo: AnsiString ): Integer;
+      function Daruma_Registry_Emulador(Emulador: AnsiString ): Integer;
+      function Daruma_Registry_ConfigRede(ConfigRede: AnsiString ): Integer;
+      function Daruma_Registry_VendeItemUmaLinha(ConfigRede: AnsiString ): Integer;
 
       // Funções de Inicialização
       function Daruma_FI_AlteraSimboloMoeda( SimboloMoeda: String ): Integer;
-      function Daruma_FI_ProgramaAliquota( Aliquota: String; ICMS_ISS: Integer ): Integer;
+      function Daruma_FI_ProgramaAliquota( Aliquota: AnsiString; ICMS_ISS: Integer ): Integer;
       function Daruma_FI_ProgramaHorarioVerao: Integer;
-      function Daruma_FI_NomeiaDepartamento( Indice: Integer; Departamento: String ): Integer;
-      function Daruma_FI_NomeiaTotalizadorNaoSujeitoIcms( Indice: Integer; Totalizador: String ): Integer;
+      function Daruma_FI_NomeiaDepartamento( Indice: Integer; Departamento: AnsiString ): Integer;
+      function Daruma_FI_NomeiaTotalizadorNaoSujeitoIcms( Indice: Integer; Totalizador: AnsiString ): Integer;
       function Daruma_FI_ProgramaArredondamento: Integer;
       function Daruma_FI_ProgramaTruncamento: Integer;
       function Daruma_FI_LinhasEntreCupons( Linhas: Integer ): Integer;
       function Daruma_FI_EspacoEntreLinhas( Dots: Integer ): Integer;
       function Daruma_FI_ForcaImpactoAgulhas( ForcaImpacto: Integer ): Integer;
-      function Daruma_FI_ProgramaFormasPagamento( Formas: String ): Integer;
+      function Daruma_FI_ProgramaFormasPagamento( Formas: AnsiString ): Integer;
       // Funções do Cupom Fiscal
-      function Daruma_FI_AbreCupom( CGC_CPF: String ): Integer;
-      function Daruma_FI_VendeItem( Codigo: String; Descricao: String; Aliquota: String; TipoQuantidade: String; Quantidade: String; CasasDecimais: Integer; ValorUnitario: String; TipoDesconto: String; Desconto: String): Integer;
-      function Daruma_FI_VendeItemTresDecimais(Codigo: String; Descricao: String; Aliquota: String; Quantidade: String; ValorUnitario: String; TipoDesconto: String; Desconto: String): Integer;
-      function Daruma_FI_VendeItemDepartamento( Codigo: String; Descricao: String; Aliquota: String; ValorUnitario: String; Quantidade: String; Acrescimo: String; Desconto: String; IndiceDepartamento: String; UnidadeMedida: String): Integer;
-      function Daruma_FI_VendeItem1Lin13Dig( Codigo: String; Descricao: String; Aliquota: String; Quantidade: String;  ValorUnitario: String; Acrescimo_Desconto: String; Percentual : String): Integer;
+      function Daruma_FI_AbreCupom( CGC_CPF: AnsiString ): Integer;
+      function Daruma_FI_VendeItem( Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; TipoQuantidade: AnsiString; Quantidade: AnsiString; CasasDecimais: Integer; ValorUnitario: AnsiString; TipoDesconto: AnsiString; Desconto: AnsiString): Integer;
+      function Daruma_FI_VendeItemTresDecimais(Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; Quantidade: AnsiString; ValorUnitario: AnsiString; TipoDesconto: AnsiString; Desconto: AnsiString): Integer;
+      function Daruma_FI_VendeItemDepartamento( Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; ValorUnitario: AnsiString; Quantidade: AnsiString; Acrescimo: AnsiString; Desconto: AnsiString; IndiceDepartamento: AnsiString; UnidadeMedida: AnsiString): Integer;
+      function Daruma_FI_VendeItem1Lin13Dig( Codigo: AnsiString; Descricao: AnsiString; Aliquota: AnsiString; Quantidade: AnsiString;  ValorUnitario: AnsiString; Acrescimo_Desconto: AnsiString; Percentual : AnsiString): Integer;
       function Daruma_FI_CancelaItemAnterior: Integer;
-      function Daruma_FI_CancelaItemGenerico( NumeroItem: String ): Integer;
+      function Daruma_FI_CancelaItemGenerico( NumeroItem: AnsiString ): Integer;
       function Daruma_FI_CancelaCupom: Integer;
-      function Daruma_FI_FechaCupomResumido( FormaPagamento: String; Mensagem: String ): Integer;
-      function Daruma_FI_FechaCupom( FormaPagamento: String; AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String; ValorPago: String; Mensagem: String): Integer;
+      function Daruma_FI_FechaCupomResumido( FormaPagamento: AnsiString; Mensagem: AnsiString ): Integer;
+      function Daruma_FI_FechaCupom( FormaPagamento: AnsiString; AcrescimoDesconto: AnsiString; TipoAcrescimoDesconto: AnsiString; ValorAcrescimoDesconto: AnsiString; ValorPago: AnsiString; Mensagem: AnsiString): Integer;
       function Daruma_FI_ResetaImpressora: Integer;
-      function Daruma_FI_IniciaFechamentoCupom( AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String ): Integer;
-      function Daruma_FI_EfetuaFormaPagamento( FormaPagamento: String; ValorFormaPagamento: String ): Integer;
-      function Daruma_FI_EfetuaFormaPagamentoDescricaoForma( FormaPagamento: string; ValorFormaPagamento: string; DescricaoFormaPagto: string ): integer;
-      function Daruma_FI_TerminaFechamentoCupom( Mensagem: String): Integer;
-      function Daruma_FI_IdentificaConsumidor( Nome: String;Endereco: String; Doc: String): Integer;
-      function Daruma_FI_EstornoFormasPagamento( FormaOrigem: String; FormaDestino: String; Valor: String ): Integer;
-      function Daruma_FI_UsaUnidadeMedida( UnidadeMedida: String ): Integer;
+      function Daruma_FI_IniciaFechamentoCupom( AcrescimoDesconto: AnsiString; TipoAcrescimoDesconto: AnsiString; ValorAcrescimoDesconto: AnsiString ): Integer;
+      function Daruma_FI_EfetuaFormaPagamento( FormaPagamento: AnsiString; ValorFormaPagamento: AnsiString ): Integer;
+      function Daruma_FI_EfetuaFormaPagamentoDescricaoForma( FormaPagamento: Ansistring; ValorFormaPagamento: Ansistring; DescricaoFormaPagto: Ansistring ): integer;
+      function Daruma_FI_TerminaFechamentoCupom( Mensagem: AnsiString): Integer;
+      function Daruma_FI_IdentificaConsumidor( Nome: AnsiString;Endereco: AnsiString; Doc: AnsiString): Integer;
+      function Daruma_FI_EstornoFormasPagamento( FormaOrigem: AnsiString; FormaDestino: AnsiString; Valor: AnsiString ): Integer;
+      function Daruma_FI_UsaUnidadeMedida( UnidadeMedida: AnsiString ): Integer;
       function Daruma_FI_AumentaDescricaoItem( Descricao: String ): Integer;
       // Funções dos Relatórios Fiscais
       function Daruma_FI_LeituraX: Integer;
-      function Daruma_FI_ReducaoZ( Data: String; Hora: String ): Integer;
-      function Daruma_FI_RelatorioGerencial( Texto: String ): Integer;
+      function Daruma_FI_ReducaoZ( Data: AnsiString; Hora: AnsiString ): Integer;
+      function Daruma_FI_RelatorioGerencial( Texto: AnsiString ): Integer;
       function Daruma_FI_FechaRelatorioGerencial: Integer;
-      function Daruma_FI_LeituraMemoriaFiscalData( DataInicial: String; DataFinal: String ): Integer;
-      function Daruma_FI_LeituraMemoriaFiscalReducao( ReducaoInicial: String; ReducaoFinal: String ): Integer;
-      function Daruma_FI_LeituraMemoriaFiscalSerialData( DataInicial: String; DataFinal: String ): Integer;
-      function Daruma_FI_LeituraMemoriaFiscalSerialReducao( ReducaoInicial: String; ReducaoFinal: String ): Integer;
-      function Daruma_FIMFD_DownloadDaMFD(CoInicial: String; CoFinal: String ): Integer;
+      function Daruma_FI_LeituraMemoriaFiscalData( DataInicial: AnsiString; DataFinal: AnsiString ): Integer;
+      function Daruma_FI_LeituraMemoriaFiscalReducao( ReducaoInicial: AnsiString; ReducaoFinal: AnsiString ): Integer;
+      function Daruma_FI_LeituraMemoriaFiscalSerialData( DataInicial: AnsiString; DataFinal: AnsiString ): Integer;
+      function Daruma_FI_LeituraMemoriaFiscalSerialReducao( ReducaoInicial: AnsiString; ReducaoFinal: AnsiString ): Integer;
+      function Daruma_FIMFD_DownloadDaMFD(CoInicial: AnsiString; CoFinal: AnsiString ): Integer;
 
       // Funções das Operações Não Fiscais
-      function Daruma_FI_RecebimentoNaoFiscal( IndiceTotalizador: String; Valor: String; FormaPagamento: String ): Integer;
-      function Daruma_FI_AbreComprovanteNaoFiscalVinculado( FormaPagamento: String; Valor: String; NumeroCupom: String ): Integer;
-      function Daruma_FI_UsaComprovanteNaoFiscalVinculado( Texto: String ): Integer; 
+      function Daruma_FI_RecebimentoNaoFiscal( IndiceTotalizador: AnsiString; Valor: AnsiString; FormaPagamento: AnsiString ): Integer;
+      function Daruma_FI_AbreComprovanteNaoFiscalVinculado( FormaPagamento: AnsiString; Valor: AnsiString; NumeroCupom: AnsiString ): Integer;
+      function Daruma_FI_UsaComprovanteNaoFiscalVinculado( Texto: AnsiString ): Integer;
       function Daruma_FI_FechaComprovanteNaoFiscalVinculado: Integer;
-      function Daruma_FI_Sangria( Valor: String ): Integer;
-      function Daruma_FI_Suprimento( Valor: String; FormaPagamento: String ): Integer;
+      function Daruma_FI_Sangria( Valor: AnsiString ): Integer;
+      function Daruma_FI_Suprimento( Valor: AnsiString; FormaPagamento: AnsiString ): Integer;
       // Funções de Informações da Impressora
-      function Daruma_FI_StatusCupomFiscal( StatusRel: String ): Integer;
+      function Daruma_FI_StatusCupomFiscal( StatusRel: AnsiString ): Integer;
       function Daruma_FI_StatusComprovanteNaoFiscalVinculado( StatusRel: String ): Integer;
       function Daruma_FI_StatusRelatorioGerencial( StatusRel: String ): Integer;
-      function Daruma_FI_NumeroSerie( NumeroSerie: String ): Integer;
-      function Daruma_FI_SubTotal( SubTotal: String ): Integer;
-      function Daruma_FI_NumeroCupom( NumeroCupom: String ): Integer;
-      function Daruma_FI_RetornaGNF( GNF: String ): Integer;
+      function Daruma_FI_NumeroSerie( NumeroSerie: AnsiString ): Integer;
+      function Daruma_FI_SubTotal( SubTotal: AnsiString ): Integer;
+      function Daruma_FI_NumeroCupom( NumeroCupom: AnsiString ): Integer;
+      function Daruma_FI_RetornaGNF(GNF: AnsiString): Integer;
       function Daruma_FI_LeituraXSerial: Integer;
-      function Daruma_FI_VersaoFirmware( VersaoFirmware: String ): Integer;
-      function Daruma_FI_CGC_IE( CGC: String; IE: String ): Integer;
-      function Daruma_FI_GrandeTotal( GrandeTotal: String ): Integer;
-      function Daruma_FI_VendaBruta( VendaBruta: String ): Integer;
-      function Daruma_FI_Cancelamentos( ValorCancelamentos: String ): Integer;
-      function Daruma_FI_Descontos( ValorDescontos: String ): Integer;
-      function Daruma_FI_NumeroOperacoesNaoFiscais( NumeroOperacoes: String ): Integer;
-      function Daruma_FI_NumeroCuponsCancelados( NumeroCancelamentos: String ): Integer;
-      function Daruma_FI_NumeroIntervencoes( NumeroIntervencoes: String ): Integer;
-      function Daruma_FI_NumeroReducoes( NumeroReducoes: String ): Integer;
-      function Daruma_FI_NumeroSubstituicoesProprietario( NumeroSubstituicoes: String ): Integer;
-      function Daruma_FI_UltimoItemVendido( NumeroItem: String ): Integer;
-      function Daruma_FI_ClicheProprietarioEx( ClicheEx: String ): Integer;
-      function Daruma_FI_NumeroCaixa( NumeroCaixa: String ): Integer;
-      function Daruma_FI_NumeroLoja( NumeroLoja: String ): Integer;
-      function Daruma_FI_SimboloMoeda( SimboloMoeda: String ): Integer;
-      function Daruma_FI_MinutosLigada( Minutos: String ): Integer;
-      function Daruma_FI_MinutosImprimindo( Minutos: String ): Integer;
-      function Daruma_FI_VerificaModoOperacao( Modo: string ): Integer;
-      function Daruma_FI_VerificaEpromConectada( Flag: String ): Integer;
+      function Daruma_FI_VersaoFirmware( VersaoFirmware: AnsiString ): Integer;
+      function Daruma_FI_CGC_IE( CGC: AnsiString; IE: AnsiString ): Integer;
+      function Daruma_FI_GrandeTotal( GrandeTotal: AnsiString ): Integer;
+      function Daruma_FI_VendaBruta( VendaBruta: AnsiString ): Integer;
+      function Daruma_FI_Cancelamentos( ValorCancelamentos: AnsiString ): Integer;
+      function Daruma_FI_Descontos( ValorDescontos: AnsiString ): Integer;
+      function Daruma_FI_NumeroOperacoesNaoFiscais( NumeroOperacoes: AnsiString ): Integer;
+      function Daruma_FI_NumeroCuponsCancelados( NumeroCancelamentos: AnsiString ): Integer;
+      function Daruma_FI_NumeroIntervencoes( NumeroIntervencoes: AnsiString ): Integer;
+      function Daruma_FI_NumeroReducoes( NumeroReducoes: AnsiString ): Integer;
+      function Daruma_FI_NumeroSubstituicoesProprietario( NumeroSubstituicoes: AnsiString ): Integer;
+      function Daruma_FI_UltimoItemVendido( NumeroItem: AnsiString ): Integer;
+      function Daruma_FI_ClicheProprietarioEx( ClicheEx: AnsiString ): Integer;
+      function Daruma_FI_NumeroCaixa( NumeroCaixa: AnsiString ): Integer;
+      function Daruma_FI_NumeroLoja( NumeroLoja: AnsiString ): Integer;
+      function Daruma_FI_SimboloMoeda( SimboloMoeda: AnsiString ): Integer;
+      function Daruma_FI_MinutosLigada( Minutos: AnsiString ): Integer;
+      function Daruma_FI_MinutosImprimindo( Minutos: AnsiString ): Integer;
+      function Daruma_FI_VerificaModoOperacao( Modo: Ansistring ): Integer;
+      function Daruma_FI_VerificaEpromConectada( Flag: AnsiString ): Integer;
       function Daruma_FI_FlagsFiscais( Var Flag: Integer ): Integer;
-      function Daruma_FI_ValorPagoUltimoCupom( ValorCupom: String ): Integer;
-      function Daruma_FI_DataHoraImpressora( Data: String; Hora: String ): Integer;
-      function Daruma_FI_ContadoresTotalizadoresNaoFiscais( Contadores: String ): Integer;
-      function Daruma_FI_VerificaTotalizadoresNaoFiscais( Totalizadores: String ): Integer;
-      function Daruma_FI_DataHoraReducao( Data: String; Hora: String ): Integer;
-      function Daruma_FI_DataMovimento( Data: String ): Integer;
-      function Daruma_FI_VerificaTruncamento( Flag: string ): Integer;
-      function Daruma_FI_Acrescimos( ValorAcrescimos: String ): Integer;
-      function Daruma_FI_ContadorBilhetePassagem( ContadorPassagem: String ): Integer;
-      function Daruma_FI_VerificaAliquotasIss( Flag: String ): Integer;
-      function Daruma_FI_VerificaFormasPagamento( Formas: String ): Integer;
-      function Daruma_FI_VerificaRecebimentoNaoFiscal( Recebimentos: String ): Integer;
-      function Daruma_FI_VerificaDepartamentos( Departamentos: String ): Integer;
+      function Daruma_FI_ValorPagoUltimoCupom( ValorCupom: AnsiString ): Integer;
+      function Daruma_FI_DataHoraImpressora( Data: AnsiString; Hora: AnsiString ): Integer;
+      function Daruma_FI_ContadoresTotalizadoresNaoFiscais( Contadores: AnsiString ): Integer;
+      function Daruma_FI_VerificaTotalizadoresNaoFiscais( Totalizadores: AnsiString ): Integer;
+      function Daruma_FI_DataHoraReducao( Data: AnsiString; Hora: AnsiString ): Integer;
+      function Daruma_FI_DataMovimento( Data: AnsiString ): Integer;
+      function Daruma_FI_VerificaTruncamento( Flag: Ansistring ): Integer;
+      function Daruma_FI_Acrescimos( ValorAcrescimos: AnsiString ): Integer;
+      function Daruma_FI_ContadorBilhetePassagem( ContadorPassagem: AnsiString ): Integer;
+      function Daruma_FI_VerificaAliquotasIss( Flag: AnsiString ): Integer;
+      function Daruma_FI_VerificaFormasPagamento( Formas: AnsiString ): Integer;
+      function Daruma_FI_VerificaRecebimentoNaoFiscal( Recebimentos: AnsiString ): Integer;
+      function Daruma_FI_VerificaDepartamentos( Departamentos: AnsiString ): Integer;
       function Daruma_FI_VerificaTipoImpressora( Var TipoImpressora: Integer ): Integer;
-      function Daruma_FI_VerificaTotalizadoresParciais( Totalizadores: String ): Integer;
-      function Daruma_FI_RetornoAliquotas( Aliquotas: String ): Integer;
+      function Daruma_FI_VerificaTotalizadoresParciais( Totalizadores: AnsiString ): Integer;
+      function Daruma_FI_RetornoAliquotas( Aliquotas: AnsiString ): Integer;
       function Daruma_FI_VerificaEstadoImpressora( Var ACK: Integer; Var ST1: Integer; Var ST2: Integer ): Integer;
-      function Daruma_FI_DadosUltimaReducao( DadosReducao: String ): Integer;
+      function Daruma_FI_DadosUltimaReducao( DadosReducao: AnsiString ): Integer;
       function Daruma_FI_MonitoramentoPapel( Var Linhas: Integer): Integer;
-      function Daruma_FI_VerificaIndiceAliquotasIss( Flag: String ): Integer;
-      function Daruma_FI_ValorFormaPagamento( FormaPagamento: String; Valor: String ): Integer;
-      function Daruma_FI_ValorTotalizadorNaoFiscal( Totalizador: String; Valor: String ): Integer;
+      function Daruma_FI_VerificaIndiceAliquotasIss( Flag: AnsiString ): Integer;
+      function Daruma_FI_ValorFormaPagamento( FormaPagamento: AnsiString; Valor: AnsiString ): Integer;
+      function Daruma_FI_ValorTotalizadorNaoFiscal( Totalizador: AnsiString; Valor: AnsiString ): Integer;
       //  function Daruma_FI_VerificaModeloECF( Modelo: String ): Integer;
       function Daruma_FI_VerificaModeloECF: Integer;
       // Funções de Autenticação e Gaveta de Dinheiro
       function Daruma_FI_Autenticacao: Integer;
-      function Daruma_FI_AutenticacaoStr(str :string): Integer;
+      function Daruma_FI_AutenticacaoStr(str :Ansistring): Integer;
       function Daruma_FI_VerificaDocAutenticacao: Integer;
       function Daruma_FI_AcionaGaveta:Integer;
       function Daruma_FI_VerificaEstadoGaveta( Var EstadoGaveta: Integer ): Integer;
@@ -677,7 +678,7 @@ type
       function Daruma_FI_RetornoImpressora( Var ACK: Integer; Var ST1: Integer; Var ST2: Integer ): Integer;
       function Daruma_FI_FechaPortaSerial: Integer;
       function Daruma_FI_MapaResumo:Integer;
-      function Daruma_FI_AberturaDoDia( ValorCompra: string; FormaPagamento: string ): Integer;
+      function Daruma_FI_AberturaDoDia( ValorCompra: Ansistring; FormaPagamento: Ansistring ): Integer;
       function Daruma_FI_FechamentoDoDia: Integer;
       function Daruma_FI_ImprimeConfiguracoesImpressora:Integer;
       function Daruma_FI_ImprimeDepartamentos: Integer;
@@ -686,22 +687,22 @@ type
       function Daruma_FI_VerificaImpressoraLigada: Integer;
       function Daruma_FI_ImprimeConfiguracoes: Integer;
       //funcoes de TEF
-      function Daruma_TEF_ImprimirResposta( Arquivo: string; FormaPagamento: string; Travar:string ): Integer;
+      function Daruma_TEF_ImprimirResposta( Arquivo: Ansistring; FormaPagamento: Ansistring; Travar: Ansistring ): Integer;
       function Daruma_TEF_FechaRelatorio: Integer;
       //
       //  function Daruma_FI_RetornaErroExtendido(sParam1: String): Integer; StdCall; external 'Daruma32.dll' Name 'Daruma_FI_RetornaErroExtendido';
-      function Daruma_FI_RetornaErroExtendido(sParam1: String): Integer;
+      function Daruma_FI_RetornaErroExtendido(sParam1: AnsiString): Integer;
       function Daruma_FI_VerificaEstadoGavetaStr(sParam1: String): Integer;
-      function Daruma_FI_FlagsFiscaisStr(sParam1: String): Integer;
-      function Daruma_FIMFD_RetornaInformacao( Indice: String; Valor: String ): Integer;
-      function Daruma_FIMFD_CodigoModeloFiscal(Valor: String): Integer;
+      function Daruma_FI_FlagsFiscaisStr(sParam1: AnsiString): Integer;
+      function Daruma_FIMFD_RetornaInformacao( Indice: AnsiString; Valor: AnsiString ): Integer;
+      function Daruma_FIMFD_CodigoModeloFiscal(Valor: AnsiString): Integer;
       //
-      function Daruma_RFD_GerarArquivo(DataInicial: String; DataFinal: String): Integer;
+      function Daruma_RFD_GerarArquivo(DataInicial: AnsiString; DataFinal: AnsiString): Integer;
       //
-      function Daruma_FIMFD_ProgramaRelatoriosGerenciais( NomeRelatorio: String ): Integer;
-      function Daruma_FIMFD_AbreRelatorioGerencial( NomeRelatorio: String ): Integer;
-      function Daruma_FIMFD_GerarAtoCotepePafData(DataInicial: String; DataFinal: String): Integer;
-      function Daruma_FIMFD_GerarAtoCotepePafCOO(COOIni: string; COOFim: string): Integer;
+      function Daruma_FIMFD_ProgramaRelatoriosGerenciais( NomeRelatorio: AnsiString ): Integer;
+      function Daruma_FIMFD_AbreRelatorioGerencial( NomeRelatorio: AnsiString ): Integer;
+      function Daruma_FIMFD_GerarAtoCotepePafData(DataInicial: AnsiString; DataFinal: AnsiString): Integer;
+      function Daruma_FIMFD_GerarAtoCotepePafCOO(COOIni: AnsiString; COOFim: AnsiString): Integer;
 
       ////////////////////////////
   end;
@@ -726,33 +727,33 @@ type
   function _ecf03_LeituraMemoriaFiscal(pP1, pP2: String):Boolean;
   function _ecf03_CancelaUltimoCupom(Pp1: Boolean):Boolean;
   function _ecf03_AbreNovoCupom(Pp1: Boolean):Boolean;
-  function _ecf03_NumeroDoCupom(Pp1: Boolean):String;
+  function _ecf03_NumeroDoCupom(Pp1: Boolean): AnsiString;
   function _ecf03_CancelaItemN(pP1, pP2: String):Boolean;
   function _ecf03_VendaDeItem(pP1, pP2, pP3, pP4, pP5, pP6, pP7, pP8: String):Boolean;
   function _ecf03_ReducaoZ(pP1: Boolean):Boolean;
   function _ecf03_LeituraX(pP1: Boolean):Boolean;
   function _ecf03_RetornaVerao(pP1: Boolean):Boolean;
   function _ecf03_LigaDesLigaVerao(pP1: Boolean):Boolean;
-  function _ecf03_VersodoFirmware(pP1: Boolean): String;
-  function _ecf03_NmerodeSrie(pP1: Boolean): String;
+  function _ecf03_VersodoFirmware(pP1: Boolean): AnsiString;
+  function _ecf03_NmerodeSrie(pP1: Boolean): AnsiString;
   function _ecf03_CGCIE(pP1: Boolean): String;
-  function _ecf03_Cancelamentos(pP1: Boolean): String;
-  function _ecf03_Descontos(pP1: Boolean): String;
-  function _ecf03_ContadorSeqencial(pP1: Boolean): String;
-  function _ecf03_Nmdeoperaesnofiscais(pP1: Boolean): String;
-  function _ecf03_NmdeCuponscancelados(pP1: Boolean): String;
-  function _ecf03_NmdeRedues(pP1: Boolean): String;
-  function _ecf03_Nmdeintervenestcnicas(pP1: Boolean): String;
-  function _ecf03_Nmdesubstituiesdeproprietrio(pP1: Boolean): String;
-  function _ecf03_Clichdoproprietrio(pP1: Boolean): String;
-  function _ecf03_NmdoCaixa(pP1: Boolean): String;
-  function _ecf03_Nmdaloja(pP1: Boolean): String;
+  function _ecf03_Cancelamentos(pP1: Boolean): AnsiString;
+  function _ecf03_Descontos(pP1: Boolean): AnsiString;
+  function _ecf03_ContadorSeqencial(pP1: Boolean): AnsiString;
+  function _ecf03_Nmdeoperaesnofiscais(pP1: Boolean): AnsiString;
+  function _ecf03_NmdeCuponscancelados(pP1: Boolean): AnsiString;
+  function _ecf03_NmdeRedues(pP1: Boolean): AnsiString;
+  function _ecf03_Nmdeintervenestcnicas(pP1: Boolean): AnsiString;
+  function _ecf03_Nmdesubstituiesdeproprietrio(pP1: Boolean): AnsiString;
+  function _ecf03_Clichdoproprietrio(pP1: Boolean): AnsiString;
+  function _ecf03_NmdoCaixa(pP1: Boolean): AnsiString;
+  function _ecf03_Nmdaloja(pP1: Boolean): AnsiString;
   function _ecf03_Moeda(pP1: Boolean): String;
   function _ecf03_Dataehoradaimpressora(pP1: Boolean): String;
-  function _ecf03_Datadaultimareduo(pP1: Boolean): String;
-  function _ecf03_Datadomovimento(pP1: Boolean): String;
+  function _ecf03_Datadaultimareduo(pP1: Boolean): AnsiString;
+  function _ecf03_Datadomovimento(pP1: Boolean): AnsiString;
   function _ecf03_StatusGaveta(Pp1: Boolean):String;
-  function _ecf03_RetornaAliquotas(pP1: Boolean): String;
+  function _ecf03_RetornaAliquotas(pP1: Boolean): AnsiString;
   function _ecf03_Vincula(pP1: String): Boolean;
   function _ecf03_FlagsDeISS(pP1: Boolean): String;
   function _ecf03_FechaPortaDeComunicacao(pP1: Boolean): Boolean;
@@ -764,32 +765,32 @@ type
   function _ecf03_FechaCupom2(sP1: Boolean): Boolean;
   function _ecf03_ImprimeCheque(rP1: Real; sP2: String): Boolean;
   function _ecf03_MapaResumo(sP1: Boolean): Boolean;
-  function _ecf03_GrandeTotal(sP1: Boolean): String;
-  function _ecf03_TotalizadoresDasAliquotas(sP1: Boolean): String;
+  function _ecf03_GrandeTotal(sP1: Boolean): AnsiString;
+  function _ecf03_TotalizadoresDasAliquotas(sP1: Boolean): AnsiString;
   function _ecf03_CupomAberto(sP1: Boolean): boolean;
   function _ecf03_FaltaPagamento(sP1: Boolean): boolean;
   //
   // PAF
   //
-  function _ecf03_Marca(sP1: Boolean): String;
-  function _ecf03_Modelo(sP1: Boolean): String;
-  function _ecf03_Tipodaimpressora(pP1: Boolean): String;
-  function _ecf03_VersaoSB(pP1: Boolean): String; //
-  function _ecf03_HoraIntalacaoSB(pP1: Boolean): String; //
-  function _ecf03_DataIntalacaoSB(pP1: Boolean): String; //
+  function _ecf03_Marca(sP1: Boolean): AnsiString;
+  function _ecf03_Modelo(sP1: Boolean): AnsiString;
+  function _ecf03_Tipodaimpressora(pP1: Boolean): AnsiString;
+  function _ecf03_VersaoSB(pP1: Boolean): AnsiString; //
+  function _ecf03_HoraIntalacaoSB(pP1: Boolean): AnsiString; //
+  function _ecf03_DataIntalacaoSB(pP1: Boolean): AnsiString; //
   function _ecf03_ProgramaAplicativo(sP1: Boolean): boolean;
   //
   function _ecf03_DadosDaUltimaReducao(pP1: Boolean): String; //
-  function _ecf03_CodigoModeloEcf(pP1: Boolean): String; //
+  function _ecf03_CodigoModeloEcf(pP1: Boolean): AnsiString; //
   function _ecf03_DataUltimaReducao: String;
   //
   // Contadores
   //
-  function _ecf03_GNF(Pp1: Boolean):String;
-  function _ecf03_GRG(Pp1: Boolean):String;
-  function _ecf03_CDC(Pp1: Boolean):String;
-  function _ecf03_CCF(Pp1: Boolean):String;
-  function _ecf03_CER(Pp1: Boolean):String;
+  function _ecf03_GNF(Pp1: Boolean): AnsiString;
+  function _ecf03_GRG(Pp1: Boolean): AnsiString;
+  function _ecf03_CDC(Pp1: Boolean): AnsiString;
+  function _ecf03_CCF(Pp1: Boolean): AnsiString;
+  function _ecf03_CER(Pp1: Boolean): AnsiString;
 
 var
   _ecf03: TDaruma32;
@@ -808,7 +809,9 @@ end;
 function _ecf03_CodeErro(Pp1: Integer):Integer;
 var
   Daruma_iACK, Daruma_iST1, Daruma_iST2: Integer;
-  sRetorno, sMensagem: String;
+  //2024-03-13 sRetorno, sMensagem: String;
+  sRetorno: AnsiString;
+  sMensagem: String;
 begin
   //
   Result               := 0;
@@ -862,9 +865,9 @@ begin
       setlength(sRetorno,4);
       // sRetorno := Replicate(' ',4);
       // sRetorno := '    ';
-      _ecf03.Daruma_FI_RetornaErroExtendido(sRetorno);
+      _ecf03.Daruma_FI_RetornaErroExtendido(AnsiString(sRetorno)); // 2024-03-11 _ecf03.Daruma_FI_RetornaErroExtendido(sRetorno);
       //
-      if StrToInt(sRetorno) = 42 then
+      if StrToIntDef(sRetorno, -1) = 42 then//2024-03-13 if StrToInt(sRetorno) = 42 then
       begin
         sMensagem := '';
         ShowMessage('Comando não executado'+chr(10)+'A leitura X inicial do dia vai ser emitida.');
@@ -923,7 +926,7 @@ var
   I, Retorno : Integer;
 //  sFormasPagamento: string;
 //  Mais1ini : tIniFile;
-  sString : String;
+  sString : AnsiString; // 2024-03-13 sString : String;
 begin
   if _ecf03 = nil then
      _ecf03 := TDaruma32.Create(Application);
@@ -939,16 +942,16 @@ begin
   if Form22.Label6.Caption = 'Detectando porta de comunicação...' then
   begin
     //
-    _ecf03.Daruma_Registry_Porta(pchar(pP1));
-    Retorno := _ecf03.Daruma_FI_NumeroSerie(sString);
+    _ecf03.Daruma_Registry_Porta(AnsiString(pP1)); // Sandro Silva 2023-12-13 _ecf03.Daruma_Registry_Porta(pchar(pP1));
+    Retorno := _ecf03.Daruma_FI_NumeroSerie(AnsiString(sString)); // 2024-03-11 Retorno := _ecf03.Daruma_FI_NumeroSerie(sString);
     //
     for I := 1 to 7 do
     begin
       if Retorno <> 1 then
       begin
         ShowMessage('DARUMA'+Chr(10)+'Testando COM'+StrZero(I,1,0));
-        _ecf03.Daruma_Registry_Porta(pchar('COM'+StrZero(I,1,0)));
-        Retorno := _ecf03.Daruma_FI_NumeroSerie(sString);
+        _ecf03.Daruma_Registry_Porta(AnsiString('COM'+StrZero(I,1,0))); // Sandro Silva 2023-12-13 _ecf03.Daruma_Registry_Porta(pchar('COM'+StrZero(I,1,0)));
+        Retorno := _ecf03.Daruma_FI_NumeroSerie(AnsiString(sString)); //2024-03-11 Retorno := _ecf03.Daruma_FI_NumeroSerie(sString);
         if Retorno = 1 then
           Form1.sPorta := 'COM'+StrZero(I,1,0);
       end;
@@ -956,7 +959,7 @@ begin
     //
     if Retorno = 1 then Result := True else Result := False;
   end else Result := True;
-  //
+  {Sandro Silva 2023-12-13 inicio
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('IDENT DO PAF'));
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('MEIOS DE PAGTO'));
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('VENDA PRAZO'));
@@ -973,7 +976,21 @@ begin
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('TRANSF MESA'));
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('MESAS ABERTAS'));
   _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(pchar('PARAM CONFIG'));
-  //
+  }
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('IDENT DO PAF'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('MEIOS DE PAGTO'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('VENDA PRAZO'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('DAV Emitidos'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('CARTAO TEF'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('Orcamento'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('CONF CONTA CLI'));// 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('TRANSF CONT CLI')); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('CONT CLI ABERTA')); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('CONF MESA'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('TRANSF MESA'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('MESAS ABERTAS'));
+  _ecf03.Daruma_FIMFD_ProgramaRelatoriosGerenciais(AnsiString('PARAM CONFIG'));
+  {Sandro Silva 2023-12-13 fim}
 end;
 
 // ------------------------------ //
@@ -990,10 +1007,10 @@ begin
   begin
     if Form1.fTotal >= Form1.ibDataSet25RECEBER.AsFloat then
     begin
-      _ecf03_CodeErro(_ecf03.Daruma_FI_IniciaFechamentoCupom('D','$',StrZero((Form1.fTotal-Form1.ibDataSet25RECEBER.AsFloat)*100,14,0)));
+      _ecf03_CodeErro(_ecf03.Daruma_FI_IniciaFechamentoCupom(AnsiString('D'),AnsiString('$'),AnsiString(StrZero((Form1.fTotal-Form1.ibDataSet25RECEBER.AsFloat)*100,14,0))));
     end else
     begin
-      _ecf03_CodeErro(_ecf03.Daruma_FI_IniciaFechamentoCupom('A','$',StrZero((Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal)*100,14,0)));
+      _ecf03_CodeErro(_ecf03.Daruma_FI_IniciaFechamentoCupom(AnsiString('A'),AnsiString('$'),AnsiString(StrZero((Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal)*100,14,0))));
     end;
     //
     Result := True;
@@ -1046,7 +1063,7 @@ begin
   {Sandro Silva 2017-11-13 final HOMOLOGA 2017}
   //
   Sleep(200);
-  //
+  {Sandro Silva 2023-12-13 inicio
   if Form1.ibDataSet25ACUMULADO1.AsFloat <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar(AllTrim(Form2.Label9.Caption)) ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO1.AsFloat]));
   if Form1.ibDataSet25ACUMULADO2.AsFloat <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar('Dinheiro')                    ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO2.AsFloat]));
   if Form1.ibDataSet25PAGAR.AsFloat      <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar(AllTrim(Form2.Label8.Caption)),Format('%10.2n',[Form1.ibDataSet25PAGAR.AsFloat])      );
@@ -1059,6 +1076,20 @@ begin
   if Form1.ibDataSet25VALOR06.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar(AllTrim(Form2.Label23.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR06.AsFloat])   );
   if Form1.ibDataSet25VALOR07.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar(AllTrim(Form2.Label24.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR07.AsFloat])   );
   if Form1.ibDataSet25VALOR08.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(pchar(AllTrim(Form2.Label25.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR08.AsFloat])   );
+  }
+  if Form1.ibDataSet25ACUMULADO1.AsFloat <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label9.Caption)) ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO1.AsFloat]));
+  if Form1.ibDataSet25ACUMULADO2.AsFloat <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString('Dinheiro')                    ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO2.AsFloat]));
+  if Form1.ibDataSet25PAGAR.AsFloat      <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label8.Caption)),Format('%10.2n',[Form1.ibDataSet25PAGAR.AsFloat])      );
+  if Form1.ibDataSet25DIFERENCA_.AsFloat <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label17.Caption)),Format('%10.2n' ,[Form1.ibDataSet25DIFERENCA_.AsFloat]));
+  if Form1.ibDataSet25VALOR01.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label18.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR01.AsFloat])   );
+  if Form1.ibDataSet25VALOR02.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label19.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR02.AsFloat])   );
+  if Form1.ibDataSet25VALOR03.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label20.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR03.AsFloat])   );
+  if Form1.ibDataSet25VALOR04.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label21.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR04.AsFloat])   );
+  if Form1.ibDataSet25VALOR05.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label22.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR05.AsFloat])   );
+  if Form1.ibDataSet25VALOR06.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label23.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR06.AsFloat])   );
+  if Form1.ibDataSet25VALOR07.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label24.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR07.AsFloat])   );
+  if Form1.ibDataSet25VALOR08.AsFloat    <> 0 then _ecf03.Daruma_FI_EfetuaFormaPagamento(AnsiString(AllTrim(Form2.Label25.Caption)),Format('%10.2n',[Form1.ibDataSet25VALOR08.AsFloat])   );
+  {Sandro Silva 2023-12-13 fim}
 {
   if Form1.ibDataSet25ACUMULADO1.AsFloat <> 0 then Daruma_FI_EfetuaFormaPagamentoDescricaoForma(pchar(AllTrim(Form2.Label9.Caption)) ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO1.AsFloat]),'');
   if Form1.ibDataSet25ACUMULADO2.AsFloat <> 0 then Daruma_FI_EfetuaFormaPagamentoDescricaoForma(pchar('Dinheiro')                    ,Format('%10.2n',[Form1.ibDataSet25ACUMULADO2.AsFloat]),'');
@@ -1084,10 +1115,11 @@ begin
   }
   if (AllTrim(sNomeCliente)<>'') or (AllTrim(sCNPJCPF)<>'') then
   begin
-    _ecf03.Daruma_FI_IdentificaConsumidor(Copy(AllTrim(sNomeCliente), 1, 35),AllTrim(sEndereco1)+ ' ' +AllTrim(sEndereco2),AllTrim(sCNPJCPF)); // Identifica o consumidor // Sandro Silva 2019-08-09 _ecf03.Daruma_FI_IdentificaConsumidor(AllTrim(sNomeCliente),AllTrim(sEndereco1)+ ' ' +AllTrim(sEndereco2),AllTrim(sCNPJCPF)); // Identifica o consumidor
+    //2024-03-11 _ecf03.Daruma_FI_IdentificaConsumidor(Copy(AllTrim(sNomeCliente), 1, 35),AllTrim(sEndereco1)+ ' ' +AllTrim(sEndereco2),AllTrim(sCNPJCPF)); // Identifica o consumidor // Sandro Silva 2019-08-09 _ecf03.Daruma_FI_IdentificaConsumidor(AllTrim(sNomeCliente),AllTrim(sEndereco1)+ ' ' +AllTrim(sEndereco2),AllTrim(sCNPJCPF)); // Identifica o consumidor
+    _ecf03.Daruma_FI_IdentificaConsumidor(AnsiString(Copy(AllTrim(sNomeCliente), 1, 35)), AnsiString(Trim(sEndereco1)+ ' ' + Trim(sEndereco2)), AnsiString(Trim(sCNPJCPF)));
   end;
   {Sandro Silva 2017-11-13 final HOMOLOGA 2017}
-  _ecf03.Daruma_FI_TerminaFechamentoCupom('MD5: '+Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional));
+  _ecf03.Daruma_FI_TerminaFechamentoCupom(AnsiString('MD5: '+Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional)));//2024-03-11 _ecf03.Daruma_FI_TerminaFechamentoCupom('MD5: '+Form1.sMD5DaLista+chr(10)+ConverteAcentos(Form1.sMensagemPromocional));
   //
   Result := True;
   //
@@ -1099,7 +1131,11 @@ end;
 // --------------------- //
 function _ecf03_CancelaUltimoItem(Pp1: Boolean):Boolean;
 begin
-  if _ecf03_codeErro(_ecf03.Daruma_FI_CancelaItemAnterior()) = 0 then Result := True else Result := False;
+  // 2024-03-11 if _ecf03_codeErro(_ecf03.Daruma_FI_CancelaItemAnterior()) = 0 then Result := True else Result := False;
+  if _ecf03_codeErro(_ecf03.Daruma_FI_CancelaItemAnterior()) = 0 then
+    Result := True
+  else
+    Result := False;
 end;
 
 // ---------------------- //
@@ -1108,14 +1144,17 @@ end;
 function _ecf03_CancelaUltimoCupom(Pp1: Boolean):Boolean;
 begin
 //  if _ecf03_codeErro(Daruma_FI_CancelaCupom()) = 0 then Result := True else Result := False;
-  if _ecf03.Daruma_FI_CancelaCupom() = 1 then Result := True else Result := False;
+  if _ecf03.Daruma_FI_CancelaCupom() = 1 then
+    Result := True
+  else
+    Result := False;
   if Result = False then
     ShowMessage('Cancelamento não permitido'); // Sandro Silva 2018-10-18
 end;
 
 function _ecf03_SubTotal(Pp1: Boolean):Real;
 var
-  sSubTotal: string;
+  sSubTotal: AnsiString;
 begin
   // --------------------- //
   //  Retorno do Subtotal  //
@@ -1123,14 +1162,18 @@ begin
   sSubTotal := Replicate(' ',14);
   //
 
-  if _ecf03.Daruma_FI_SubTotal(sSubTotal) = 1 then
+  if _ecf03.Daruma_FI_SubTotal(AnsiString(sSubTotal)) = 1 then //2024-03-11if _ecf03.Daruma_FI_SubTotal(sSubTotal) = 1 then
   begin
     //
     Result  := StrToFloat(sSubTotal) / 100;
-    if form1.ConfPreco = '1' then Result  := StrToFloat(sSubTotal) / 10;
-    if form1.ConfPreco = '2' then Result  := StrToFloat(sSubTotal) / 100;
-    if form1.ConfPreco = '3' then Result  := StrToFloat(sSubTotal) / 1000;
-    if form1.ConfPreco = '4' then Result  := StrToFloat(sSubTotal) / 10000;
+    if form1.ConfPreco = '1' then
+      Result  := StrToFloat(sSubTotal) / 10;
+    if form1.ConfPreco = '2' then Result  :=
+      StrToFloat(sSubTotal) / 100;
+    if form1.ConfPreco = '3' then Result  :=
+      StrToFloat(sSubTotal) / 1000;
+    if form1.ConfPreco = '4' then Result  :=
+      StrToFloat(sSubTotal) / 10000;
     //
   end
   else
@@ -1142,7 +1185,7 @@ function _ecf03_AbreNovoCupom(Pp1: Boolean):Boolean;
 var
   Daruma_iACK, Daruma_iST1, Daruma_iST2: Integer;
 begin
-  if _ecf03.Daruma_FI_AbreCupom('') = 1 then
+  if _ecf03.Daruma_FI_AbreCupom(AnsiString('')) = 1 then
   begin
     _ecf03.Daruma_FI_RetornoImpressora(Daruma_iACK, Daruma_iST1, Daruma_iST2);
     if Daruma_iST2 > 1 then
@@ -1161,11 +1204,11 @@ end;
 // Retorna o número do Cupom        //
 // IF DARUMA FS 345                 //
 // -------------------------------- //
-function _ecf03_NumeroDoCupom(Pp1: Boolean):String;
+function _ecf03_NumeroDoCupom(Pp1: Boolean): AnsiString; //2024-03-13 function _ecf03_NumeroDoCupom(Pp1: Boolean): String;
 begin
   SetLEngth(Result,6);
   Result := '000000';
-  _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroCupom(Result));
+  _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroCupom(AnsiString(Result))); //2024-03-11 _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroCupom(Result));
   Result := LimpaNumero(Result);
 end;
 
@@ -1173,16 +1216,16 @@ end;
 // -------------------------- //
 // Retorna o número do CCF    //
 // -------------------------- //
-function _ecf03_ccF(Pp1: Boolean):String;
+function _ecf03_ccF(Pp1: Boolean): AnsiString;
 begin
-  Result := Replicate('0',6);
+  Result := Replicate('0', 6);
   _ecf03.Daruma_FIMFD_RetornaInformacao('30',Result);
 end;
 
 // ------------------------------------------------------------------------- //
 // Retorna o número de operações não fiscais executadas na impressora. GNF   //
 // ------------------------------------------------------------------------- //
-function _ecf03_gnf(Pp1: Boolean):String;
+function _ecf03_gnf(Pp1: Boolean): AnsiString;
 begin
   SetLEngth(Result,6);
   Result := '000000';
@@ -1193,18 +1236,18 @@ end;
 // ------------------------------------------------------------------------- //
 // Retorna o número de operações não fiscais executadas na impressora. CER   //
 // ------------------------------------------------------------------------- //
-function _ecf03_CER(Pp1: Boolean):String;
+function _ecf03_CER(Pp1: Boolean): AnsiString;
 begin
   Result := Replicate('0',80);
   // ShowMEssage(Result);
-  _ecf03.Daruma_FIMFD_RetornaInformacao('44',Result);
+  _ecf03.Daruma_FIMFD_RetornaInformacao('44', Result);
   Result := Copy(Result,29,4);
 end;
 
 // --------------------------------------- //
 // Contador Geral de Relatorio Gerencial   //
 // --------------------------------------- //
-function _ecf03_GRG(Pp1: Boolean):String;
+function _ecf03_GRG(Pp1: Boolean): AnsiString;
 begin
   Result := Replicate('0',6);
   _ecf03.Daruma_FIMFD_RetornaInformacao('33',Result);
@@ -1213,7 +1256,7 @@ end;
 // -------------- //
 // Contador CDC   //
 // -------------- //
-function _ecf03_CDC(Pp1: Boolean):String;
+function _ecf03_CDC(Pp1: Boolean): AnsiString;
 begin
   Result := Replicate('0',4);
   _ecf03.Daruma_FIMFD_RetornaInformacao('45',Result);
@@ -1229,7 +1272,10 @@ end;
 function _ecf03_CancelaItemN(pP1, pP2 : String):Boolean;
 begin
   //
-  if _ecf03_CodeErro(_ecf03.Daruma_FI_CancelaItemGenerico(StrZero( StrToInt(pP1),4,0))) = 0 then Result := True else Result := False;
+  if _ecf03_CodeErro(_ecf03.Daruma_FI_CancelaItemGenerico(AnsiString(StrZero( StrToInt(pP1),4,0)))) = 0 then
+    Result := True
+  else
+    Result := False;
   //
 end;
 
@@ -1279,7 +1325,7 @@ end;
 function _ecf03_Sangria(Pp1: Real):Boolean;
 begin
   ShowMessage('Sangria de: '+Format('%10.2n',[pP1]));
-  if _ecf03_codeErro(_ecf03.Daruma_FI_Sangria(Format('%10.2n',[pP1]))) = 0 then
+  if _ecf03_codeErro(_ecf03.Daruma_FI_Sangria(AnsiString(Format('%10.2n',[pP1])))) = 0 then
     Result := True
   else
     Result := False;
@@ -1292,7 +1338,7 @@ end;
 function _ecf03_Suprimento(Pp1: Real):Boolean;
 begin
   ShowMessage('Suprimento de: '+Format('%10.2n',[pP1]));
-  if _ecf03_codeErro(_ecf03.Daruma_FI_Suprimento(Format('%10.2n',[pP1]),'Dinheiro')) = 0 then
+  if _ecf03_codeErro(_ecf03.Daruma_FI_Suprimento(AnsiString(Format('%10.2n',[pP1])),AnsiString('Dinheiro'))) = 0 then
     Result := True
   else
     Result := False;
@@ -1304,7 +1350,7 @@ end;
 // -------------------------------- //
 function _ecf03_NovaAliquota(Pp1: String):Boolean;
 begin
-  if _ecf03_CodeErro(_ecf03.Daruma_FI_ProgramaAliquota( pchar( pP1 ),0)) = 0 then
+  if _ecf03_CodeErro(_ecf03.Daruma_FI_ProgramaAliquota(AnsiString( pP1 ),0)) = 0 then // Sandro Silva 2023-12-13   if _ecf03_CodeErro(_ecf03.Daruma_FI_ProgramaAliquota( pchar( pP1 ),0)) = 0 then
     Result := True
   else
     Result := False;
@@ -1345,18 +1391,18 @@ begin
       //
       pP2 := Copy(DateToStr(Form7.DateTimePicker1.Date),1,2)+Copy(DateToStr(Form7.DateTimePicker1.Date),4,2)+Copy(DateToStr(Form7.DateTimePicker1.Date),7,4);
       pP3 := Copy(DateToStr(Form7.DateTimePicker2.Date),1,2)+Copy(DateToStr(Form7.DateTimePicker2.Date),4,2)+Copy(DateToStr(Form7.DateTimePicker2.Date),7,4);
-      I := _ecf03.Daruma_FIMFD_GerarAtoCotepePafData(pP2,pP3); // Por Data
+      I := _ecf03.Daruma_FIMFD_GerarAtoCotepePafData(AnsiString(pP2), AnsiString(pP3)); // Por Data
       //
     end else
     begin
       pP2 := Form7.MaskEdit1.Text;
       pP3 := Form7.MaskEdit2.Text;
-      I := _ecf03.Daruma_FIMFD_GerarAtoCotepePafCoo(pP2,pP3); // Por COO
+      I := _ecf03.Daruma_FIMFD_GerarAtoCotepePafCoo(AnsiString(pP2), AnsiString(pP3)); // Por COO
     end;
     //
   end else
   begin
-    I := _ecf03.Daruma_FIMFD_DownloadDaMFD(pchar(pP2),pchar(pP3));
+    I := _ecf03.Daruma_FIMFD_DownloadDaMFD(AnsiString(pP2), AnsiString(pP3)); // Sandro Silva 2023-12-13 I := _ecf03.Daruma_FIMFD_DownloadDaMFD(pchar(pP2),pchar(pP3));
   end;
   //
   if Form7.sMfd = '2' then
@@ -1393,95 +1439,22 @@ begin
   end;
   //
 
-
-{
-  //
-  Deletefile(pChar('c:\DarumaATOCOTEPE_DARUMA.txt'));
-  Deletefile(pChar('c:\RETORNO.TXT'));
-  //
-//  Daruma_Registry_AlterarRegistry('AtoCotepe','Path','c:\DARUMA');
-//  Daruma_Registry_AlterarRegistry('AtoCotepe','Beep','1');
-  //
-  //
-  if Form7.Label3.Caption = 'Data inicial:' then
-  begin
-    //
-    pP2 := Copy(DateToStr(Form7.DateTimePicker1.Date),1,2)+'/'+Copy(DateToStr(Form7.DateTimePicker1.Date),4,2)+'/'+Copy(DateToStr(Form7.DateTimePicker1.Date),9,2);
-    pP3 := Copy(DateToStr(Form7.DateTimePicker2.Date),1,2)+'/'+Copy(DateToStr(Form7.DateTimePicker2.Date),4,2)+'/'+Copy(DateToStr(Form7.DateTimePicker2.Date),9,2);
-    //
-    // ShowMessage(pP2+chr(10)+pP3);
-    //
-  end else
-  begin
-    //
-    pP2 := StrZero(StrToInt(pP2),6,0);
-    pP3 := StrZero(StrToInt(pP3),6,0);
-    //
-  end;
-  //
-  if Form7.sMfd = '2' then
-  begin
-    //
-    if Form7.Label3.Caption = 'Data inicial:' then
-    begin
-      //
-      pP2 := Copy(DateToStr(Form7.DateTimePicker1.Date),1,2)+Copy(DateToStr(Form7.DateTimePicker1.Date),4,2)+Copy(DateToStr(Form7.DateTimePicker1.Date),7,4);
-      pP3 := Copy(DateToStr(Form7.DateTimePicker2.Date),1,2)+Copy(DateToStr(Form7.DateTimePicker2.Date),4,2)+Copy(DateToStr(Form7.DateTimePicker2.Date),7,4);
-      I := Daruma_FIMFD_GerarAtoCotepePafData(pP2,pP3); // Por Data
-      //
-    end else
-    begin
-      I := Daruma_FIMFD_GerarAtoCotepePafCoo(pP2,pP3); // Por COO
-    end;
-    //
-  end else
-  begin
-    I := Daruma_FIMFD_DownloadDaMFD(pchar(pP2),pchar(pP3));
-  end;
-  //
-  if I = 1 then
-  begin
-    //
-    if FileExists('C:\RETORNO.TXT') then
-    begin
-      CopyFile(pChar('C:\RETORNO.TXT'),pChar(pP1),True);
-      ShowMessage('O seguinte arquivo será gravado: '+pP1);
-    end;
-    //
-    if FileExists('DarumaATOCOTEPE_DARUMA.txt') then
-    begin
-      CopyFile(pChar('DarumaATOCOTEPE_DARUMA.txt'),pChar(pP1),True);
-      ShowMessage('O seguinte arquivo será gravado: '+pP1);
-    end;
-    //
-    Result := True;
-//    Deletefile(pChar('c:\DarumaATOCOTEPE_DARUMA.txt'));
-//    Deletefile(pChar('c:\RETORNO.TXT'));
-    //
-    //
-  end else
-  begin
-    _ecf03_CodeErro(I);
-    Result := False;
-  end;
-  //
-}
 end;
 
 function _ecf03_LeituraMemoriaFiscal(pP1, pP2: String):Boolean;
 begin
   //
   if Form1.sTipo = 's' then
-    _ecf03.Daruma_Registry_MFD_LeituraMFCompleta('0')
+    _ecf03.Daruma_Registry_MFD_LeituraMFCompleta(AnsiString('0'))
   else
-    _ecf03.Daruma_Registry_MFD_LeituraMFCompleta('1');
+    _ecf03.Daruma_Registry_MFD_LeituraMFCompleta(AnsiString('1'));
   //
   if Length(pP1) = 6 then
   begin
-    _ecf03_CodeErro(_ecf03.Daruma_FI_LeituraMemoriaFiscalData(pP1,pP2)); // Por data
+    _ecf03_CodeErro(_ecf03.Daruma_FI_LeituraMemoriaFiscalData(AnsiString(pP1),AnsiString(pP2))); // Por data
   end else
   begin
-    _ecf03_CodeErro(_ecf03.Daruma_FI_LeituraMemoriaFiscalReducao(pP1,pP2));
+    _ecf03_CodeErro(_ecf03.Daruma_FI_LeituraMemoriaFiscalReducao(AnsiString(pP1),AnsiString(pP2)));
   end;
   //
   Result := True;
@@ -1501,7 +1474,7 @@ begin
   //
   pP6 := Copy(pP6+'   ',1,3);
   pP5 := pP5 + '0';
-  //
+  {Sandro Silva 2023-12-13 inicio
   if _ecf03.Daruma_FI_VendeItemDepartamento( pchar(pP1),          //Codigo
                                       pchar(AllTrim(pP2)), // Descricao
                                       pChar(pP3),          // Aliquota
@@ -1512,6 +1485,19 @@ begin
                                       pChar('01'),         // IndiceDepartamento
                                       pChar(pP6),          // UnidadeMedida
                                       ) <> 1 then
+  }
+  if _ecf03.Daruma_FI_VendeItemDepartamento(AnsiString(pP1),          //Codigo
+                                      AnsiString(AllTrim(pP2)), // Descricao
+                                      AnsiString(pP3),          // Aliquota
+                                      AnsiString(pP5),          // ValorUnitario
+                                      AnsiString(pP4),          // Quantidade
+                                      AnsiString('0'),                 // Acrescimo
+                                      AnsiString(pP8),                 // Desconto
+                                      AnsiString('01'),         // IndiceDepartamento
+                                      AnsiString(pP6)          // UnidadeMedida
+                                      ) <> 1 then
+
+  {Sandro Silva 2023-12-13 fim}
   begin
     //
     if StrToInt(pP7) > 0 then pP7 := StrZero(StrToInt(pP7)*10,4,0); // Desconto %
@@ -1519,7 +1505,7 @@ begin
     //
     pP4 := '0'+Copy(pP4,1,4)+','+Copy(pP4,5,3);
     pP5 := Copy('00' + pP5,1,9);
-    //
+    {Sandro Silva 2023-12-13 inicio
     if StrToInt(pP7) > 0 then
     begin
                                           // Valor de desconto em %
@@ -1541,6 +1527,29 @@ begin
                            pchar(pP8)); // ValorDesconto: String com até 8 dígitos para desconto por valor (2 casas decimais) e 4 dígitos para desconto percentual.
 
     end;
+    }
+    if StrToInt(pP7) > 0 then
+    begin
+                                          // Valor de desconto em %
+      I := _ecf03.Daruma_FI_VendeItemTresDecimais(AnsiString(pP1),            // Codigo: STRING até 13 caracteres com o código do produto.
+                           AnsiString(Copy(AllTrim(pP2)+Replicate(' ',29),1,29)), // Descricao: STRING até 29 caracteres com a descrição do produto.
+                           AnsiString(pP3),            // Aliquota: STRING com o valor ou o índice da alíquota tributária. Se for o valor deve ser informado com o tamanho de 4 caracteres ou 5 com a vírgula. Se for o índice da alíquota deve ser 2 caracteres. Ex. (18,00 para o valor ou 05 para o índice).
+                           AnsiString(pP4),            // Quantidade: STRING com até 4 dígitos para quantidade inteira e 7 dígitos para quantidade fracionária. Na quantidade fracionária são 3 casas decimais.
+                           AnsiString(pP5),            // ValorUnitario: STRING até 9 dígitos para valor unitário
+                           AnsiString('%'),                   // TipoDesconto: 1 (um) caracter indicando a forma do desconto. '$' desconto por valor e '%' desconto percentual.
+                           AnsiString(pP7));
+    end else
+    begin                                         // Valor de desconto em $
+      I := _ecf03.Daruma_FI_VendeItemTresDecimais(AnsiString(pP1),            // Codigo: STRING até 13 caracteres com o código do produto.
+                           AnsiString(Copy(AllTrim(pP2)+Replicate(' ',29),1,29)), // Descricao: STRING até 29 caracteres com a descrição do produto.
+                           AnsiString(pP3),            // Aliquota: STRING com o valor ou o índice da alíquota tributária. Se for o valor deve ser informado com o tamanho de 4 caracteres ou 5 com a vírgula. Se for o índice da alíquota deve ser 2 caracteres. Ex. (18,00 para o valor ou 05 para o índice).
+                           AnsiString(pP4),            // Quantidade: STRING com até 4 dígitos para quantidade inteira e 7 dígitos para quantidade fracionária. Na quantidade fracionária são 3 casas decimais.
+                           AnsiString(pP5),            // ValorUnitario: STRING até 8 dígitos para valor unitário
+                           AnsiString('$'),                   // TipoDesconto: 1 (um) caracter indicando a forma do desconto. '$' desconto por valor e '%' desconto percentual.
+                           AnsiString(pP8)); // ValorDesconto: String com até 8 dígitos para desconto por valor (2 casas decimais) e 4 dígitos para desconto percentual.
+
+    end;
+    {Sandro Silva 2023-12-13 fim}
     if I = 1 then Result := True else
     begin
       _ecf03_CodeErro(I);
@@ -1557,7 +1566,7 @@ end;
 // -------------------------------- //
 function _ecf03_ReducaoZ(pP1: Boolean):Boolean;
 begin
-  if _ecf03_CodeErro(_ecf03.Daruma_FI_ReducaoZ('','')) = 0 then Result := True else Result := False;
+  if _ecf03_CodeErro(_ecf03.Daruma_FI_ReducaoZ(AnsiString(''), AnsiString(''))) = 0 then Result := True else Result := False;
 end;
 
 // -------------------------------- //
@@ -1604,7 +1613,7 @@ end;
 // Retorna a versão do firmware     //
 // IF DARUMA FS 345                 //
 // -------------------------------- //
-function _ecf03_VersodoFirmware(pP1: Boolean): String;
+function _ecf03_VersodoFirmware(pP1: Boolean): AnsiString;
 begin
   Result := '    ';
   _ecf03_codeErro(_ecf03.Daruma_FI_VersaoFirmware(Result));
@@ -1614,7 +1623,7 @@ end;
 // Retorna o número de série        //
 // IF DARUMA FS 345                 //
 // -------------------------------- //
-function _ecf03_NmerodeSrie(pP1: Boolean): String;
+function _ecf03_NmerodeSrie(pP1: Boolean): AnsiString;
 begin
   Result := Replicate(' ',20);
   _ecf03.Daruma_FIMFD_RetornaInformacao('78',Result);
@@ -1626,7 +1635,7 @@ end;
 // -------------------------------- //
 function _ecf03_CGCIE(pP1: Boolean): String;
 var
-  sCgc, sIe : String;
+  sCgc, sIe : AnsiString;
 begin
   //
   sCgc := Replicate(' ',18);
@@ -1640,7 +1649,7 @@ end;
 // Retorna o número de cancelamentos //
 // IF DARUMA FS 345                  //
 // --------------------------------- //
-function _ecf03_Cancelamentos(pP1: Boolean): String;
+function _ecf03_Cancelamentos(pP1: Boolean): AnsiString;
 begin
   Result := Replicate(' ',14);
   _ecf03_CodeErro(_ecf03.Daruma_FI_Cancelamentos(Result)); // Ok
@@ -1651,7 +1660,7 @@ end;
 // Retorna o valor de descontos     //
 // IF DARUMA FS 345                 //
 // -------------------------------- //
-function _ecf03_Descontos(pP1: Boolean): String;
+function _ecf03_Descontos(pP1: Boolean): AnsiString;
 begin
   Result := Replicate(' ',14);
   _ecf03_CodeErro(_ecf03.Daruma_FI_DesContos(Result));
@@ -1661,7 +1670,7 @@ end;
 // Retorna o contados sequencial    //
 // IF DARUMA FS 345                 //
 // -------------------------------- //
-function _ecf03_ContadorSeqencial(pP1: Boolean): String;
+function _ecf03_ContadorSeqencial(pP1: Boolean): AnsiString;
 begin
   Result := Replicate(' ',6);
   _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroCupom(Result));
@@ -1672,40 +1681,40 @@ end;
 // não fiscais acumuladas           //
 // IF DARUMA FS 345                 //
 // -------------------------------- //
-function _ecf03_Nmdeoperaesnofiscais(pP1: Boolean): String;
+function _ecf03_Nmdeoperaesnofiscais(pP1: Boolean): AnsiString;
 begin
   Result := Replicate(' ',6);
   _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroOperacoesNaoFiscais(Result));
 end;
 
-function _ecf03_NmdeCuponscancelados(pP1: Boolean): String;
+function _ecf03_NmdeCuponscancelados(pP1: Boolean): AnsiString;
 begin
   Result := Replicate(' ',4);
   _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroCuponsCancelados(Result));
 end;
 
-function _ecf03_NmdeRedues(pP1: Boolean): String;
+function _ecf03_NmdeRedues(pP1: Boolean): AnsiString;
 begin
   Result := Replicate(' ',4);
   _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroReducoes(Result));
   Result := Strzero( StrToInt( Limpanumero('0'+Result))+1,6,0);
 end;
 
-function _ecf03_Nmdeintervenestcnicas(pP1: Boolean): String;
+function _ecf03_Nmdeintervenestcnicas(pP1: Boolean): AnsiString;
 begin
   Result := Replicate(' ',4);
   _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroIntervencoes(Result));
 end;
 
-function _ecf03_Nmdesubstituiesdeproprietrio(pP1: Boolean): String;
+function _ecf03_Nmdesubstituiesdeproprietrio(pP1: Boolean): AnsiString;
 begin
   Result := Replicate(' ',4);
   _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroIntervencoes(Result));
 end;
 
-function _ecf03_Clichdoproprietrio(pP1: Boolean): String;
+function _ecf03_Clichdoproprietrio(pP1: Boolean): AnsiString;
 begin
-  SetLength (Result,400);
+  Result := Replicate(' ', 400);// 2024-03-14 SetLength(Result,400);
   _ecf03.Daruma_FI_ClicheProprietarioEx(Result);
 end;
 
@@ -1714,14 +1723,14 @@ end;
 // Ex: 001                              //
 // IF DARUMA FS 345                     //
 // ------------------------------------ //
-function _ecf03_NmdoCaixa(pP1: Boolean): String;
+function _ecf03_NmdoCaixa(pP1: Boolean): AnsiString;
 begin
   Result := Replicate(' ',4);
   _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroCaixa(Result));
   Result := LimpaNumero(Copy(Result,2,3));
 end;
 
-function _ecf03_Nmdaloja(pP1: Boolean): String;
+function _ecf03_Nmdaloja(pP1: Boolean): AnsiString;
 begin
   Result := Replicate(' ',4);
   _ecf03_CodeErro(_ecf03.Daruma_FI_NumeroLoja(Result));
@@ -1729,17 +1738,17 @@ end;
 
 function _ecf03_Moeda(pP1: Boolean): String;
 var
-  sMoeda: string;
+  sMoeda: AnsiString;
 begin
-  setlength(sMoeda,4);
+  sMoeda := Replicate(' ', 4); // setlength(sMoeda,4);
   _ecf03.Daruma_FI_SimboloMoeda(sMoeda);
   Result := AllTrim(Copy(sMoeda,2,1));
 end;
 
 function _ecf03_Dataehoradaimpressora(pP1: Boolean): String;
 var
-  sData: string;
-  sHora: string;
+  sData: AnsiString;
+  sHora: AnsiString;
 begin
   sData := Replicate(' ',6);
   sHora := Replicate(' ',6);
@@ -1747,17 +1756,17 @@ begin
   Result := sData + sHora;
 end;
 
-function _ecf03_Datadaultimareduo(pP1: Boolean): String;
+function _ecf03_Datadaultimareduo(pP1: Boolean): AnsiString;
 begin
   // Result := Replicate(' ',6);
-  setlength( Result, 6 );
+  Result := Replicate(' ',6);// 2024-03-14 setlength( Result, 6 );
   _ecf03_CodeErro(_ecf03.Daruma_FI_DataMovimento(Result));
 end;
 
-function _ecf03_Datadomovimento(pP1: Boolean): String;
+function _ecf03_Datadomovimento(pP1: Boolean): AnsiString;
 begin
   // Result := Replicate(' ',6);
-  setlength( Result, 6 );
+  Result := Replicate(' ', 6); //setlength( Result, 6 );
   _ecf03_CodeErro(_ecf03.Daruma_FI_DataMovimento(Result));
 end;
 
@@ -1765,11 +1774,11 @@ end;
 // Os 2 primeiros dígitos são o número de aliquotas gravadas: Ex 16       //
 // os póximos de 4 em 4 são as aliquotas Ex: 1800                         //
 // Ex: 161800120005000000000000000000000000000000000000000000000000000000 //
-function _ecf03_RetornaAliquotas(pP1: Boolean): String;
+function _ecf03_RetornaAliquotas(pP1: Boolean): AnsiString;
 begin
   Result := Replicate('0',80);
   _ecf03_CodeErro(_ecf03.Daruma_FI_RetornoAliquotas(Result));
-  Result := Copy('16'+LimpaNumero(Result)+Replicate('0',80),1,66);  
+  Result := Copy('16'+LimpaNumero(Result)+Replicate('0',80),1,66);
 end;
 
 function _ecf03_Vincula(pP1: String): Boolean;
@@ -1780,11 +1789,11 @@ end;
 
 function _ecf03_FlagsDeISS(pP1: Boolean): String;
 var
-  sIndiceAliquotas: string;
+  sIndiceAliquotas: AnsiString;
   I : Integer;
 begin
   //
-  setlength( sIndiceAliquotas, 79 );
+  sIndiceAliquotas := Replicate(' ', 79);   //2024-03-14 setlength( sIndiceAliquotas, 79 );
   _ecf03.Daruma_FI_VerificaAliquotasIss( sIndiceAliquotas );
   //
   Result := '';
@@ -1833,10 +1842,10 @@ begin
   //
   if Length(pP2) = 4 then
   begin
-    _ecf03_CodeErro(_ecf03.Daruma_FI_LeituraMemoriaFiscalSerialReducao(pP2,pP3));
+    _ecf03_CodeErro(_ecf03.Daruma_FI_LeituraMemoriaFiscalSerialReducao(AnsiString(pP2), AnsiString(pP3)));
   end else
   begin
-    _ecf03_CodeErro(_ecf03.Daruma_FI_LeituraMemoriaFiscalSerialData(pP2,pP3));
+    _ecf03_CodeErro(_ecf03.Daruma_FI_LeituraMemoriaFiscalSerialData(AnsiString(pP2), AnsiString(pP3)));
   end;
   //
   Screen.Cursor := crDefault; // Cursor normal
@@ -1851,16 +1860,22 @@ end;
 function _ecf03_CupomNaoFiscalVinculado(sP1: String; iP2: Integer ): Boolean;
 var
   I,  iRetorno : Integer;
-  sLinha : String;
+  sLinha : AnsiString;
 begin
   //
   begin
     //
     iRetorno := 1;
     //
+    {Sandro Silva 2023-12-13 inicio
     if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(pchar(AllTrim(Form2.Label17.Caption)),pchar(''),pchar(''));
     if Form1.ibDataSet25PAGAR.AsFloat >      0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(pchar(AllTrim(Form2.Label8.Caption)) ,pchar(''),pchar(''));
     if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(pchar(AllTrim(Form2.Label9.Caption)) ,pchar(''),pchar(''));
+    }
+    if Form1.ibDataSet25DIFERENCA_.AsFloat > 0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(AnsiString(AllTrim(Form2.Label17.Caption)), AnsiString(''), AnsiString(''));
+    if Form1.ibDataSet25PAGAR.AsFloat >      0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(AnsiString(AllTrim(Form2.Label8.Caption)) , AnsiString(''), AnsiString(''));
+    if Form1.ibDataSet25ACUMULADO1.AsFloat > 0 then iRetorno := _ecf03.Daruma_FI_AbreComprovanteNaoFiscalVinculado(AnsiString(AllTrim(Form2.Label9.Caption)) , AnsiString(''), AnsiString(''));
+    {Sandro Silva 2023-12-13 fim}
     //
     for I := 1 to Length(sP1) do
     begin
@@ -1873,36 +1888,20 @@ begin
         begin
           //
           if sLinha = '' then sLinha:=' ';
-          iRetorno := _ecf03.Daruma_FI_UsaComprovanteNaoFiscalVinculado(pChar(sLinha));
+          iRetorno := _ecf03.Daruma_FI_UsaComprovanteNaoFiscalVinculado(AnsiString(sLinha)); // Sandro Silva 2023-12-13 iRetorno := _ecf03.Daruma_FI_UsaComprovanteNaoFiscalVinculado(pChar(sLinha));
           sLinha:='';
         end;
      end;
     end;
 
-
-{
-    for JiI := 1 to 1 do
-    begin
-      //
-      for I := 1 to 3 do if iRetorno = 1 then iRetorno := Daruma_FI_UsaComprovanteNaoFiscalVinculado('');
-      J := 0;
-      for I := 1 to Length(sP1) do
-      begin
-        J := J + 1;
-        if J = 600 then
-        begin
-          Daruma_FI_UsaComprovanteNaoFiscalVinculado(Copy(sP1,I-J+1,J));
-          J := 0;
-        end;
-      end;
-      //
-      if J > 0 then Daruma_FI_UsaComprovanteNaoFiscalVinculado(Copy(sP1,Length(sP1)-J+1,J));
-      //
-    end;
-}
     //
-    if iRetorno = 1 then iRetorno := _ecf03.Daruma_FI_FechaComprovanteNaoFiscalVinculado();
-    if (iRetorno = 1) or (iRetorno = -27) then Result   := True else
+    if iRetorno = 1 then
+      iRetorno := _ecf03.Daruma_FI_FechaComprovanteNaoFiscalVinculado();
+    if (iRetorno = 1) or (iRetorno = -27) then
+    begin
+      Result   := True
+    end
+    else
     begin
       Result := False;
     end;
@@ -1914,46 +1913,42 @@ end;
 function _ecf03_ImpressaoNaoSujeitoaoICMS(sP1: String): Boolean;
 var
   iI, I, iRetorno : Integer;
-  sLinha : String;
+  sLinha : AnsiString;
 begin
   //
   if Pos('IDENTIFICAÇÃO DO PAF-ECF',sP1)<>0 then
   begin
-    _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('IDENT DO PAF'));
+    _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('IDENT DO PAF')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('IDENT DO PAF'));
   end else
   begin
     if Pos('Período Solicitado: de',sP1)<>0 then
     begin
-      _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('MEIOS DE PAGTO'));
+      _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('MEIOS DE PAGTO')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('MEIOS DE PAGTO'));
     end else
     begin
       if (Pos('Documento: ',sP1)<>0) or (Pos(TITULO_PARCELAS_CARNE_RESUMIDO, sP1) > 0) then  // Sandro Silva 2018-04-29  if Pos('Documento: ',sP1)<>0 then
       begin
-        _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('VENDA PRAZO'));
+        _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('VENDA PRAZO')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('VENDA PRAZO'));
       end else
       begin
         if Pos('DAV EMITIDOS',sP1)<>0 then
         begin
-          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('DAV Emitidos'));
+          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('DAV Emitidos')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('DAV Emitidos'));
         end else
         begin
           if Pos('AUXILIAR DE VENDA (DAV) - OR',sP1)<>0 then
           begin
-            _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('Orcamento'));
+            _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('Orcamento')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('Orcamento'));
           end else
           begin
             if Pos('CONFERENCIA DE CONTA',sP1)<>0 then
             begin
-              // 2016-02-04 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONF CONTA'));
-              // 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
-              _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONF CONTA CLI'));
+              _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('CONF CONTA CLI')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONF CONTA CLI'));
             end else
             begin
               if Pos('TRANSFERENCIAS ENTRE CONTA',sP1)<>0 then
               begin
-                //Sandro Silva 2016-02-11 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('TRANSF CONTA'));
-                // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
-               _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('TRANSF CONT CLI'));
+               _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('TRANSF CONT CLI')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('TRANSF CONT CLI'));
               end else
               begin
                 // Sandro Silva 2016-02-04 POLIMIG  if (Pos('CONTAS DE CLIENTES ABERTAS',sP1)<>0) or (Pos('CONTAS DE CLIENTES OS ABERTAS',sP1)<>0) or (Pos('NENHUMA',sP1)<>0) then
@@ -1961,34 +1956,31 @@ begin
                     or (Pos('CONTAS DE CLIENTES OS ABERTAS',sP1)<>0)
                     or ((Pos('NENHUMA',sP1)<>0) and (Pos('CONTA DE CLIENTE',sP1)<>0)) then
                 begin
-                  // Sandro Silva 2016-02-11 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONTAS ABERTAS'));
-                  // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
-                  _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONT CLI ABERTA'));
+                  _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('CONT CLI ABERTA')); // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONT CLI ABERTA'));
                 end else
                 begin
                   if Pos('CONFERENCIA DE MESA',sP1)<>0 then
                   begin
-                    _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONF MESA')); // TEF
+                    _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('CONF MESA')); // TEF // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CONF MESA')); // TEF
                   end else
                   begin
                     if Pos('TRANSFERENCIAS ENTRE MESA',sP1)<>0 then
                     begin
-                      _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('TRANSF MESA')); // TEF
+                      _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('TRANSF MESA')); // TEF // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('TRANSF MESA')); // TEF
                     end else
                     begin
-                      // Sandro Silva 2016-02-04 POLIMIG  if Pos('MESAS ABERTAS',sP1)<>0 then
                       if (Pos('MESAS ABERTAS',sP1)<>0) or
                        (Pos('NENHUMA MESA',sP1)<>0) then
                       begin
-                        _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('MESAS ABERTAS')); // TEF
+                        _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('MESAS ABERTAS')); // TEF // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('MESAS ABERTAS')); // TEF
                       end else
                       begin
                         if Pos('Parametros de Configuracao',sP1)<>0 then
                         begin
-                          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('PARAM CONFIG')); // TEF
+                          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('PARAM CONFIG')); // TEF // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('PARAM CONFIG')); // TEF
                         end else
                         begin
-                          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CARTAO TEF')); // TEF
+                          _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(AnsiString('CARTAO TEF')); // TEF // Sandro Silva 2023-12-13 _ecf03.Daruma_FIMFD_AbreRelatorioGerencial(pchar('CARTAO TEF')); // TEF
                         end;
                       end;
                     end;
@@ -2021,13 +2013,13 @@ begin
           begin
             //
             if sLinha = '' then sLinha:=' ';
-            iRetorno := _ecf03.Daruma_FI_RelatorioGerencial(pChar(sLinha));
+            iRetorno := _ecf03.Daruma_FI_RelatorioGerencial(AnsiString(sLinha)); // Sandro Silva 2023-12-13 iRetorno := _ecf03.Daruma_FI_RelatorioGerencial(pChar(sLinha));
             sLinha:='';
           end;
        end;
       end;
       //
-      for I := 1 to 5 do if iRetorno = 1 then iRetorno := _ecf03.Daruma_FI_RelatorioGerencial(' ');
+      for I := 1 to 5 do if iRetorno = 1 then iRetorno := _ecf03.Daruma_FI_RelatorioGerencial(AnsiString(' '));
       if iRetorno = 1 then sleep(4000); // Da um tempo
       //
     end;
@@ -2066,13 +2058,13 @@ begin
   Result := True;
 end;
 
-function _ecf03_GrandeTotal(sP1: Boolean): String;
+function _ecf03_GrandeTotal(sP1: Boolean): AnsiString;
 begin
   Result := Replicate('0',18);
   _ecf03_CodeErro(_ecf03.Daruma_FI_GrandeTotal(Result));
 end;
 
-function _ecf03_TotalizadoresDasAliquotas(sP1: Boolean): String;
+function _ecf03_TotalizadoresDasAliquotas(sP1: Boolean): AnsiString;
 begin
   //
   // Teste voltar 200
@@ -2084,7 +2076,6 @@ begin
   // ShowMessage(Result);
   //
 end;
-
 
 function _ecf03_CupomAberto(sP1: Boolean): boolean;
 var
@@ -2126,8 +2117,13 @@ function _ecf03_ProgramaAplicativo(sP1: Boolean): boolean;
 begin
 //  Daruma_Registry_AplMensagem1(pchar('MD5: '+Form1.sMD5DaLista ));
 //  Daruma_Registry_AplMensagem2(PChar('--------------------------------'));
+  {Sandro Silva 2023-12-13 inicio
   _ecf03.Daruma_Registry_AplMensagem1(pchar('   '));
   _ecf03.Daruma_Registry_AplMensagem2(pchar('   '));
+  }
+  _ecf03.Daruma_Registry_AplMensagem1(AnsiString('   '));
+  _ecf03.Daruma_Registry_AplMensagem2(AnsiString('   '));
+  {Sandro Silva 2023-12-13 fim}
 
   Result := True;
 end;
@@ -2136,7 +2132,7 @@ end;
 // PAF
 //
 
-function _ecf03_Marca(sP1: Boolean): String;
+function _ecf03_Marca(sP1: Boolean): AnsiString;
 begin
   Result := REplicate(' ',20);
   _ecf03.Daruma_FIMFD_RetornaInformacao('80',Result);
@@ -2145,7 +2141,7 @@ begin
   //
 end;
 
-function _ecf03_Modelo(sP1: Boolean): String;
+function _ecf03_Modelo(sP1: Boolean): AnsiString;
 begin
   Result := REplicate(' ',20);
   _ecf03.Daruma_FIMFD_RetornaInformacao('81',Result);
@@ -2154,7 +2150,7 @@ begin
   //
 end;
 
-function _ecf03_Tipodaimpressora(pP1: Boolean): String;
+function _ecf03_Tipodaimpressora(pP1: Boolean): AnsiString;
 begin
   Result := REplicate(' ',7);
   _ecf03.Daruma_FIMFD_RetornaInformacao('79',Result);
@@ -2163,7 +2159,7 @@ begin
   //
 end;
 
-function _ecf03_VersaoSB(pP1: Boolean): String; //
+function _ecf03_VersaoSB(pP1: Boolean): AnsiString; //
 begin
   Result := REplicate(' ',6);
   _ecf03.Daruma_FIMFD_RetornaInformacao('83',Result);
@@ -2172,7 +2168,7 @@ begin
   //
 end;
 
-function _ecf03_HoraIntalacaoSB(pP1: Boolean): String; //
+function _ecf03_HoraIntalacaoSB(pP1: Boolean): AnsiString; //
 begin
   Result := REplicate(' ',14);
   _ecf03.Daruma_FIMFD_RetornaInformacao('85',Result);
@@ -2182,7 +2178,7 @@ begin
   //
 end;
 
-function _ecf03_DataIntalacaoSB(pP1: Boolean): String; //
+function _ecf03_DataIntalacaoSB(pP1: Boolean): AnsiString; //
 begin
   Result := REplicate(' ',14);
   _ecf03.Daruma_FIMFD_RetornaInformacao('85',Result);
@@ -2194,8 +2190,8 @@ end;
 
 function _ecf03_DataUltimaReducao: String;
 var
-  sData: string;
-  sHora: string;
+  sData: AnsiString;
+  sHora: AnsiString;
 begin
   Result := '00/00/2000';
   sData := Replicate(' ',6);
@@ -2220,7 +2216,7 @@ end;
 
 function _ecf03_DadosDaUltimaReducao(pP1: Boolean): String; //
 var
-  sRetorno : String;
+  sRetorno : AnsiString;
 begin
   //
   sRetorno := Replicate(' ',631);
@@ -2271,7 +2267,7 @@ end;
 //
 // Retorna o Código do Modelo do ECF Conf Tabéla Nacional de Identificação do ECF
 //
-function _ecf03_CodigoModeloEcf(pP1: Boolean): String; //
+function _ecf03_CodigoModeloEcf(pP1: Boolean): AnsiString; //
 begin
   Result := Replicate(' ',6);
   _ecf03.Daruma_FIMFD_CodigoModeloFiscal(Result);
@@ -2284,7 +2280,7 @@ begin
   try
     //ShowMessage(DLLName);  // 2015-06-16
 
-    DLL     := LoadLibrary(PChar(DARUMA_DLLNAME_03)); //carregando dll
+    DLL     := LoadLibrary(PChar(AnsiString(DARUMA_DLLNAME_03))); //carregando dll // Sandro Silva 2023-12-13 DLL     := LoadLibrary(PChar(DARUMA_DLLNAME_03)); //carregando dll
     //DLL := LoadLibrary(Pchar('C:\Program Files (x86)\Sweda Informática Ltda\Ativação SAT Sweda\SATDLL.dll')); //carregando dll
     if DLL = 0 then
       raise Exception.Create('Não foi possível carregar a biblioteca ' + DARUMA_DLLNAME_03);
@@ -2469,59 +2465,59 @@ begin
 end;
 
 function TDaruma32.Daruma_FIMFD_AbreRelatorioGerencial(
-  NomeRelatorio: String): Integer;
+  NomeRelatorio: AnsiString): Integer;
 begin
   Result := _Daruma_FIMFD_AbreRelatorioGerencial(NomeRelatorio);
 end;
 
-function TDaruma32.Daruma_FIMFD_CodigoModeloFiscal(Valor: String): Integer;
+function TDaruma32.Daruma_FIMFD_CodigoModeloFiscal(Valor: AnsiString): Integer;
 begin
   Result := _Daruma_FIMFD_CodigoModeloFiscal(Valor);
 end;
 
 function TDaruma32.Daruma_FIMFD_DownloadDaMFD(CoInicial,
-  CoFinal: String): Integer;
+  CoFinal: AnsiString): Integer;
 begin
   Result := _Daruma_FIMFD_DownloadDaMFD(CoInicial, CoFinal);
 end;
 
 function TDaruma32.Daruma_FIMFD_GerarAtoCotepePafCOO(COOIni,
-  COOFim: string): Integer;
+  COOFim: Ansistring): Integer;
 begin
   Result := _Daruma_FIMFD_GerarAtoCotepePafCOO(COOIni, COOFim);
 end;
 
 function TDaruma32.Daruma_FIMFD_GerarAtoCotepePafData(DataInicial,
-  DataFinal: String): Integer;
+  DataFinal: AnsiString): Integer;
 begin
   Result := _Daruma_FIMFD_GerarAtoCotepePafData(DataInicial, DataFinal);
 end;
 
 function TDaruma32.Daruma_FIMFD_ProgramaRelatoriosGerenciais(
-  NomeRelatorio: String): Integer;
+  NomeRelatorio: AnsiString): Integer;
 begin
   Result := _Daruma_FIMFD_ProgramaRelatoriosGerenciais(NomeRelatorio);
 end;
 
 function TDaruma32.Daruma_FIMFD_RetornaInformacao(Indice,
-  Valor: String): Integer;
+  Valor: AnsiString): Integer;
 begin
   Result := _Daruma_FIMFD_RetornaInformacao(Indice, Valor);
 end;
 
 function TDaruma32.Daruma_FI_AberturaDoDia(ValorCompra,
-  FormaPagamento: string): Integer;
+  FormaPagamento: Ansistring): Integer;
 begin
   Result := _Daruma_FI_AberturaDoDia(ValorCompra, FormaPagamento);
 end;
 
 function TDaruma32.Daruma_FI_AbreComprovanteNaoFiscalVinculado(
-  FormaPagamento, Valor, NumeroCupom: String): Integer;
+  FormaPagamento, Valor, NumeroCupom: AnsiString): Integer;
 begin
   Result := _Daruma_FI_AbreComprovanteNaoFiscalVinculado(FormaPagamento, Valor, NumeroCupom);
 end;
 
-function TDaruma32.Daruma_FI_AbreCupom(CGC_CPF: String): Integer;
+function TDaruma32.Daruma_FI_AbreCupom(CGC_CPF: AnsiString): Integer;
 begin
   Result := _Daruma_FI_AbreCupom(CGC_CPF);
 end;
@@ -2536,7 +2532,7 @@ begin
   Result := _Daruma_FI_AcionaGaveta;
 end;
 
-function TDaruma32.Daruma_FI_Acrescimos(ValorAcrescimos: String): Integer;
+function TDaruma32.Daruma_FI_Acrescimos(ValorAcrescimos: AnsiString): Integer;
 begin
   Result := _Daruma_FI_Acrescimos(ValorAcrescimos);
 end;
@@ -2558,7 +2554,7 @@ begin
   Result := _Daruma_FI_Autenticacao;
 end;
 
-function TDaruma32.Daruma_FI_AutenticacaoStr(str: string): Integer;
+function TDaruma32.Daruma_FI_AutenticacaoStr(str: Ansistring): Integer;
 begin
   Result := _Daruma_FI_AutenticacaoStr(str);
 end;
@@ -2574,74 +2570,74 @@ begin
 end;
 
 function TDaruma32.Daruma_FI_CancelaItemGenerico(
-  NumeroItem: String): Integer;
+  NumeroItem: AnsiString): Integer;
 begin
   Result := _Daruma_FI_CancelaItemGenerico(NumeroItem);
 end;
 
 function TDaruma32.Daruma_FI_Cancelamentos(
-  ValorCancelamentos: String): Integer;
+  ValorCancelamentos: AnsiString): Integer;
 begin
   Result := _Daruma_FI_Cancelamentos(ValorCancelamentos);
 end;
 
-function TDaruma32.Daruma_FI_CGC_IE(CGC, IE: String): Integer;
+function TDaruma32.Daruma_FI_CGC_IE(CGC, IE: AnsiString): Integer;
 begin
   Result := _Daruma_FI_CGC_IE(CGC, IE);
 end;
 
-function TDaruma32.Daruma_FI_ClicheProprietarioEx(ClicheEx: String): Integer;
+function TDaruma32.Daruma_FI_ClicheProprietarioEx(ClicheEx: AnsiString): Integer;
 begin
   Result := _Daruma_FI_ClicheProprietarioEx(ClicheEx);
 end;
 
 function TDaruma32.Daruma_FI_ContadorBilhetePassagem(
-  ContadorPassagem: String): Integer;
+  ContadorPassagem: AnsiString): Integer;
 begin
   Result := _Daruma_FI_ContadorBilhetePassagem(ContadorPassagem);
 end;
 
 function TDaruma32.Daruma_FI_ContadoresTotalizadoresNaoFiscais(
-  Contadores: String): Integer;
+  Contadores: AnsiString): Integer;
 begin
   Result := _Daruma_FI_ContadoresTotalizadoresNaoFiscais(Contadores);
 end;
 
 function TDaruma32.Daruma_FI_DadosUltimaReducao(
-  DadosReducao: String): Integer;
+  DadosReducao: AnsiString): Integer;
 begin
   Result := _Daruma_FI_DadosUltimaReducao(DadosReducao);
 end;
 
-function TDaruma32.Daruma_FI_DataHoraImpressora(Data, Hora: String): Integer;
+function TDaruma32.Daruma_FI_DataHoraImpressora(Data, Hora: AnsiString): Integer;
 begin
   Result := _Daruma_FI_DataHoraImpressora(Data, Hora);
 end;
 
-function TDaruma32.Daruma_FI_DataHoraReducao(Data, Hora: String): Integer;
+function TDaruma32.Daruma_FI_DataHoraReducao(Data, Hora: AnsiString): Integer;
 begin
   Result := _Daruma_FI_DataHoraReducao(Data, Hora);
 end;
 
-function TDaruma32.Daruma_FI_DataMovimento(Data: String): Integer;
+function TDaruma32.Daruma_FI_DataMovimento(Data: AnsiString): Integer;
 begin
   Result := _Daruma_FI_DataMovimento(Data);
 end;
 
-function TDaruma32.Daruma_FI_Descontos(ValorDescontos: String): Integer;
+function TDaruma32.Daruma_FI_Descontos(ValorDescontos: AnsiString): Integer;
 begin
   Result := _Daruma_FI_Descontos( ValorDescontos);
 end;
 
 function TDaruma32.Daruma_FI_EfetuaFormaPagamento(FormaPagamento,
-  ValorFormaPagamento: String): Integer;
+  ValorFormaPagamento: AnsiString): Integer;
 begin
   Result := _Daruma_FI_EfetuaFormaPagamento(FormaPagamento, ValorFormaPagamento);
 end;
 
 function TDaruma32.Daruma_FI_EfetuaFormaPagamentoDescricaoForma(
   FormaPagamento, ValorFormaPagamento,
-  DescricaoFormaPagto: string): integer;
+  DescricaoFormaPagto: AnsiString): integer;
 begin
   Result := _Daruma_FI_EfetuaFormaPagamentoDescricaoForma(FormaPagamento, ValorFormaPagamento, DescricaoFormaPagto);
 end;
@@ -2652,7 +2648,7 @@ begin
 end;
 
 function TDaruma32.Daruma_FI_EstornoFormasPagamento(FormaOrigem,
-  FormaDestino, Valor: String): Integer;
+  FormaDestino, Valor: AnsiString): Integer;
 begin
   Result := _Daruma_FI_EstornoFormasPagamento(FormaOrigem, FormaDestino, Valor);
 end;
@@ -2664,13 +2660,13 @@ end;
 
 function TDaruma32.Daruma_FI_FechaCupom(FormaPagamento, AcrescimoDesconto,
   TipoAcrescimoDesconto, ValorAcrescimoDesconto, ValorPago,
-  Mensagem: String): Integer;
+  Mensagem: AnsiString): Integer;
 begin
   Result := _Daruma_FI_FechaCupom(FormaPagamento, AcrescimoDesconto, TipoAcrescimoDesconto, ValorAcrescimoDesconto, ValorPago, Mensagem);
 end;
 
 function TDaruma32.Daruma_FI_FechaCupomResumido(FormaPagamento,
-  Mensagem: String): Integer;
+  Mensagem: AnsiString): Integer;
 begin
   Result := _Daruma_FI_FechaCupomResumido(FormaPagamento, Mensagem);
 end;
@@ -2695,7 +2691,7 @@ begin
   Result := _Daruma_FI_FlagsFiscais(Flag);
 end;
 
-function TDaruma32.Daruma_FI_FlagsFiscaisStr(sParam1: String): Integer;
+function TDaruma32.Daruma_FI_FlagsFiscaisStr(sParam1: AnsiString): Integer;
 begin
   Result := _Daruma_FI_FlagsFiscaisStr(sParam1);
 end;
@@ -2706,13 +2702,13 @@ begin
   Result := _Daruma_FI_ForcaImpactoAgulhas(ForcaImpacto);
 end;
 
-function TDaruma32.Daruma_FI_GrandeTotal(GrandeTotal: String): Integer;
+function TDaruma32.Daruma_FI_GrandeTotal(GrandeTotal: AnsiString): Integer;
 begin
   Result := _Daruma_FI_GrandeTotal(GrandeTotal);
 end;
 
 function TDaruma32.Daruma_FI_IdentificaConsumidor(Nome, Endereco,
-  Doc: String): Integer;
+  Doc: AnsiString): Integer;
 begin
   Result := _Daruma_FI_IdentificaConsumidor(Nome, Endereco, Doc);
 end;
@@ -2734,31 +2730,31 @@ begin
 end;
 
 function TDaruma32.Daruma_FI_IniciaFechamentoCupom(AcrescimoDesconto,
-  TipoAcrescimoDesconto, ValorAcrescimoDesconto: String): Integer;
+  TipoAcrescimoDesconto, ValorAcrescimoDesconto: AnsiString): Integer;
 begin
   Result := _Daruma_FI_IniciaFechamentoCupom(AcrescimoDesconto, TipoAcrescimoDesconto, ValorAcrescimoDesconto);
 end;
 
 function TDaruma32.Daruma_FI_LeituraMemoriaFiscalData(DataInicial,
-  DataFinal: String): Integer;
+  DataFinal: AnsiString): Integer;
 begin
   Result := _Daruma_FI_LeituraMemoriaFiscalData(DataInicial, DataFinal);
 end;
 
 function TDaruma32.Daruma_FI_LeituraMemoriaFiscalReducao(ReducaoInicial,
-  ReducaoFinal: String): Integer;
+  ReducaoFinal: AnsiString): Integer;
 begin
   Result := _Daruma_FI_LeituraMemoriaFiscalReducao(ReducaoInicial, ReducaoFinal);
 end;
 
 function TDaruma32.Daruma_FI_LeituraMemoriaFiscalSerialData(DataInicial,
-  DataFinal: String): Integer;
+  DataFinal: AnsiString): Integer;
 begin
   Result := _Daruma_FI_LeituraMemoriaFiscalSerialData(DataInicial, DataFinal);
 end;
 
 function TDaruma32.Daruma_FI_LeituraMemoriaFiscalSerialReducao(
-  ReducaoInicial, ReducaoFinal: String): Integer;
+  ReducaoInicial, ReducaoFinal: AnsiString): Integer;
 begin
   Result := _Daruma_FI_LeituraMemoriaFiscalSerialReducao(ReducaoInicial, ReducaoFinal);
 end;
@@ -2783,12 +2779,12 @@ begin
   Result := _Daruma_FI_MapaResumo;
 end;
 
-function TDaruma32.Daruma_FI_MinutosImprimindo(Minutos: String): Integer;
+function TDaruma32.Daruma_FI_MinutosImprimindo(Minutos: AnsiString): Integer;
 begin
   Result := _Daruma_FI_MinutosImprimindo(Minutos);
 end;
 
-function TDaruma32.Daruma_FI_MinutosLigada(Minutos: String): Integer;
+function TDaruma32.Daruma_FI_MinutosLigada(Minutos: AnsiString): Integer;
 begin
   Result := _Daruma_FI_MinutosLigada(Minutos);
 end;
@@ -2800,67 +2796,67 @@ begin
 end;
 
 function TDaruma32.Daruma_FI_NomeiaDepartamento(Indice: Integer;
-  Departamento: String): Integer;
+  Departamento: AnsiString): Integer;
 begin
   Result := _Daruma_FI_NomeiaDepartamento(Indice, Departamento);
 end;
 
 function TDaruma32.Daruma_FI_NomeiaTotalizadorNaoSujeitoIcms(Indice: Integer;
-  Totalizador: String): Integer;
+  Totalizador: AnsiString): Integer;
 begin
   Result := _Daruma_FI_NomeiaTotalizadorNaoSujeitoIcms(Indice, Totalizador);
 end;
 
-function TDaruma32.Daruma_FI_NumeroCaixa(NumeroCaixa: String): Integer;
+function TDaruma32.Daruma_FI_NumeroCaixa(NumeroCaixa: AnsiString): Integer;
 begin
   Result := _Daruma_FI_NumeroCaixa(NumeroCaixa);
 end;
 
-function TDaruma32.Daruma_FI_NumeroCupom(NumeroCupom: String): Integer;
+function TDaruma32.Daruma_FI_NumeroCupom(NumeroCupom: AnsiString): Integer;
 begin
   Result := _Daruma_FI_NumeroCupom(NumeroCupom);
 end;
 
 function TDaruma32.Daruma_FI_NumeroCuponsCancelados(
-  NumeroCancelamentos: String): Integer;
+  NumeroCancelamentos: AnsiString): Integer;
 begin
   Result := _Daruma_FI_NumeroCuponsCancelados(NumeroCancelamentos);
 end;
 
 function TDaruma32.Daruma_FI_NumeroIntervencoes(
-  NumeroIntervencoes: String): Integer;
+  NumeroIntervencoes: AnsiString): Integer;
 begin
   Result := _Daruma_FI_NumeroIntervencoes(NumeroIntervencoes);
 end;
 
-function TDaruma32.Daruma_FI_NumeroLoja(NumeroLoja: String): Integer;
+function TDaruma32.Daruma_FI_NumeroLoja(NumeroLoja: AnsiString): Integer;
 begin
   Result := _Daruma_FI_NumeroLoja(NumeroLoja);
 end;
 
 function TDaruma32.Daruma_FI_NumeroOperacoesNaoFiscais(
-  NumeroOperacoes: String): Integer;
+  NumeroOperacoes: AnsiString): Integer;
 begin
   Result := _Daruma_FI_NumeroOperacoesNaoFiscais(NumeroOperacoes);
 end;
 
-function TDaruma32.Daruma_FI_NumeroReducoes(NumeroReducoes: String): Integer;
+function TDaruma32.Daruma_FI_NumeroReducoes(NumeroReducoes: AnsiString): Integer;
 begin
   Result := _Daruma_FI_NumeroReducoes(NumeroReducoes);
 end;
 
-function TDaruma32.Daruma_FI_NumeroSerie(NumeroSerie: String): Integer;
+function TDaruma32.Daruma_FI_NumeroSerie(NumeroSerie: AnsiString): Integer;
 begin
   Result := _Daruma_FI_NumeroSerie(NumeroSerie);
 end;
 
 function TDaruma32.Daruma_FI_NumeroSubstituicoesProprietario(
-  NumeroSubstituicoes: String): Integer;
+  NumeroSubstituicoes: AnsiString): Integer;
 begin
   Result := _Daruma_FI_NumeroSubstituicoesProprietario(NumeroSubstituicoes);
 end;
 
-function TDaruma32.Daruma_FI_ProgramaAliquota(Aliquota: String;
+function TDaruma32.Daruma_FI_ProgramaAliquota(Aliquota: AnsiString;
   ICMS_ISS: Integer): Integer;
 begin
   Result := _Daruma_FI_ProgramaAliquota( Aliquota, ICMS_ISS);
@@ -2872,7 +2868,7 @@ begin
 end;
 
 function TDaruma32.Daruma_FI_ProgramaFormasPagamento(
-  Formas: String): Integer;
+  Formas: AnsiString): Integer;
 begin
   Result := _Daruma_FI_ProgramaFormasPagamento(Formas);
 end;
@@ -2888,17 +2884,17 @@ begin
 end;
 
 function TDaruma32.Daruma_FI_RecebimentoNaoFiscal(IndiceTotalizador, Valor,
-  FormaPagamento: String): Integer;
+  FormaPagamento: AnsiString): Integer;
 begin
   Result := _Daruma_FI_RecebimentoNaoFiscal(IndiceTotalizador, Valor, FormaPagamento);
 end;
 
-function TDaruma32.Daruma_FI_ReducaoZ(Data, Hora: String): Integer;
+function TDaruma32.Daruma_FI_ReducaoZ(Data, Hora: AnsiString): Integer;
 begin
   Result := _Daruma_FI_ReducaoZ(Data, Hora);
 end;
 
-function TDaruma32.Daruma_FI_RelatorioGerencial(Texto: String): Integer;
+function TDaruma32.Daruma_FI_RelatorioGerencial(Texto: AnsiString): Integer;
 begin
   Result := _Daruma_FI_RelatorioGerencial(Texto);
 end;
@@ -2918,17 +2914,17 @@ begin
   Result := _Daruma_FI_ResetaImpressora;
 end;
 
-function TDaruma32.Daruma_FI_RetornaErroExtendido(sParam1: String): Integer;
+function TDaruma32.Daruma_FI_RetornaErroExtendido(sParam1: AnsiString): Integer;
 begin
   Result := _Daruma_FI_RetornaErroExtendido(sParam1);
 end;
 
-function TDaruma32.Daruma_FI_RetornaGNF(GNF: String): Integer;
+function TDaruma32.Daruma_FI_RetornaGNF(GNF: AnsiString): Integer;
 begin
   Result := _Daruma_FI_RetornaGNF(GNF);
 end;
 
-function TDaruma32.Daruma_FI_RetornoAliquotas(Aliquotas: String): Integer;
+function TDaruma32.Daruma_FI_RetornoAliquotas(Aliquotas: AnsiString): Integer;
 begin
   Result := _Daruma_FI_RetornoAliquotas(Aliquotas);
 end;
@@ -2939,12 +2935,12 @@ begin
   Result := _Daruma_FI_RetornoImpressora(ACK, ST1, ST2);
 end;
 
-function TDaruma32.Daruma_FI_Sangria(Valor: String): Integer;
+function TDaruma32.Daruma_FI_Sangria(Valor: AnsiString): Integer;
 begin
   Result := _Daruma_FI_Sangria(Valor);
 end;
 
-function TDaruma32.Daruma_FI_SimboloMoeda(SimboloMoeda: String): Integer;
+function TDaruma32.Daruma_FI_SimboloMoeda(SimboloMoeda: AnsiString): Integer;
 begin
   Result := _Daruma_FI_SimboloMoeda(SimboloMoeda);
 end;
@@ -2955,7 +2951,7 @@ begin
   Result := _Daruma_FI_StatusComprovanteNaoFiscalVinculado(StatusRel);
 end;
 
-function TDaruma32.Daruma_FI_StatusCupomFiscal(StatusRel: String): Integer;
+function TDaruma32.Daruma_FI_StatusCupomFiscal(StatusRel: AnsiString): Integer;
 begin
   Result := _Daruma_FI_StatusCupomFiscal(StatusRel);
 end;
@@ -2966,98 +2962,98 @@ begin
   Result := _Daruma_FI_StatusRelatorioGerencial(StatusRel);
 end;
 
-function TDaruma32.Daruma_FI_SubTotal(SubTotal: String): Integer;
+function TDaruma32.Daruma_FI_SubTotal(SubTotal: AnsiString): Integer;
 begin
   Result := _Daruma_FI_SubTotal(SubTotal);
 end;
 
 function TDaruma32.Daruma_FI_Suprimento(Valor,
-  FormaPagamento: String): Integer;
+  FormaPagamento: AnsiString): Integer;
 begin
   Result := _Daruma_FI_Suprimento(Valor, FormaPagamento);
 end;
 
 function TDaruma32.Daruma_FI_TerminaFechamentoCupom(
-  Mensagem: String): Integer;
+  Mensagem: AnsiString): Integer;
 begin
   Result := _Daruma_FI_TerminaFechamentoCupom(Mensagem);
 end;
 
-function TDaruma32.Daruma_FI_UltimoItemVendido(NumeroItem: String): Integer;
+function TDaruma32.Daruma_FI_UltimoItemVendido(NumeroItem: AnsiString): Integer;
 begin
   Result := _Daruma_FI_UltimoItemVendido(NumeroItem);
 end;
 
 function TDaruma32.Daruma_FI_UsaComprovanteNaoFiscalVinculado(
-  Texto: String): Integer;
+  Texto: AnsiString): Integer;
 begin
   Result := _Daruma_FI_UsaComprovanteNaoFiscalVinculado(Texto);
 end;
 
 function TDaruma32.Daruma_FI_UsaUnidadeMedida(
-  UnidadeMedida: String): Integer;
+  UnidadeMedida: AnsiString): Integer;
 begin
   Result := _Daruma_FI_UsaUnidadeMedida(UnidadeMedida);
 end;
 
 function TDaruma32.Daruma_FI_ValorFormaPagamento(FormaPagamento,
-  Valor: String): Integer;
+  Valor: AnsiString): Integer;
 begin
   Result := _Daruma_FI_ValorFormaPagamento(FormaPagamento, Valor);
 end;
 
 function TDaruma32.Daruma_FI_ValorPagoUltimoCupom(
-  ValorCupom: String): Integer;
+  ValorCupom: AnsiString): Integer;
 begin
   Result := _Daruma_FI_ValorPagoUltimoCupom(ValorCupom);
 end;
 
 function TDaruma32.Daruma_FI_ValorTotalizadorNaoFiscal(Totalizador,
-  Valor: String): Integer;
+  Valor: AnsiString): Integer;
 begin
   Result := _Daruma_FI_ValorTotalizadorNaoFiscal(Totalizador, Valor);
 end;
 
-function TDaruma32.Daruma_FI_VendaBruta(VendaBruta: String): Integer;
+function TDaruma32.Daruma_FI_VendaBruta(VendaBruta: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VendaBruta(VendaBruta);
 end;
 
 function TDaruma32.Daruma_FI_VendeItem(Codigo, Descricao, Aliquota,
-  TipoQuantidade, Quantidade: String; CasasDecimais: Integer;
-  ValorUnitario, TipoDesconto, Desconto: String): Integer;
+  TipoQuantidade, Quantidade: AnsiString; CasasDecimais: Integer;
+  ValorUnitario, TipoDesconto, Desconto: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VendeItem(Codigo, Descricao, Aliquota, TipoQuantidade, Quantidade, CasasDecimais, ValorUnitario, TipoDesconto, Desconto);
 end;
 
 function TDaruma32.Daruma_FI_VendeItem1Lin13Dig(Codigo, Descricao, Aliquota,
   Quantidade, ValorUnitario, Acrescimo_Desconto,
-  Percentual: String): Integer;
+  Percentual: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VendeItem1Lin13Dig(Codigo, Descricao, Aliquota, Quantidade, ValorUnitario, Acrescimo_Desconto, Percentual);
 end;
 
 function TDaruma32.Daruma_FI_VendeItemDepartamento(Codigo, Descricao,
   Aliquota, ValorUnitario, Quantidade, Acrescimo, Desconto,
-  IndiceDepartamento, UnidadeMedida: String): Integer;
+  IndiceDepartamento, UnidadeMedida: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VendeItemDepartamento(Codigo, Descricao, Aliquota, ValorUnitario, Quantidade, Acrescimo, Desconto, IndiceDepartamento, UnidadeMedida);
 end;
 
 function TDaruma32.Daruma_FI_VendeItemTresDecimais(Codigo, Descricao,
   Aliquota, Quantidade, ValorUnitario, TipoDesconto,
-  Desconto: String): Integer;
+  Desconto: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VendeItemTresDecimais(Codigo, Descricao, Aliquota, Quantidade, ValorUnitario, TipoDesconto, Desconto);
 end;
 
-function TDaruma32.Daruma_FI_VerificaAliquotasIss(Flag: String): Integer;
+function TDaruma32.Daruma_FI_VerificaAliquotasIss(Flag: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VerificaAliquotasIss(Flag);
 end;
 
 function TDaruma32.Daruma_FI_VerificaDepartamentos(
-  Departamentos: String): Integer;
+  Departamentos: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VerificaDepartamentos(Departamentos);
 end;
@@ -3067,7 +3063,7 @@ begin
   Result := _Daruma_FI_VerificaDocAutenticacao;
 end;
 
-function TDaruma32.Daruma_FI_VerificaEpromConectada(Flag: String): Integer;
+function TDaruma32.Daruma_FI_VerificaEpromConectada(Flag: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VerificaEpromConectada(Flag);
 end;
@@ -3075,13 +3071,13 @@ end;
 function TDaruma32.Daruma_FI_VerificaEstadoGaveta(
   var EstadoGaveta: Integer): Integer;
 begin
-  Result := _Daruma_FI_VerificaEstadoGaveta(EstadoGaveta); 
+  Result := _Daruma_FI_VerificaEstadoGaveta(EstadoGaveta);
 end;
 
 function TDaruma32.Daruma_FI_VerificaEstadoGavetaStr(
   sParam1: String): Integer;
 begin
-  Result := _Daruma_FI_VerificaEstadoGavetaStr(sParam1); 
+  Result := _Daruma_FI_VerificaEstadoGavetaStr(sParam1);
 end;
 
 function TDaruma32.Daruma_FI_VerificaEstadoImpressora(var ACK, ST1,
@@ -3091,7 +3087,7 @@ begin
 end;
 
 function TDaruma32.Daruma_FI_VerificaFormasPagamento(
-  Formas: String): Integer;
+  Formas: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VerificaFormasPagamento(Formas);
 end;
@@ -3102,7 +3098,7 @@ begin
 end;
 
 function TDaruma32.Daruma_FI_VerificaIndiceAliquotasIss(
-  Flag: String): Integer;
+  Flag: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VerificaIndiceAliquotasIss(Flag);
 end;
@@ -3112,13 +3108,13 @@ begin
   Result := _Daruma_FI_VerificaModeloECF;
 end;
 
-function TDaruma32.Daruma_FI_VerificaModoOperacao(Modo: string): Integer;
+function TDaruma32.Daruma_FI_VerificaModoOperacao(Modo: Ansistring): Integer;
 begin
   Result := _Daruma_FI_VerificaModoOperacao(Modo);
 end;
 
 function TDaruma32.Daruma_FI_VerificaRecebimentoNaoFiscal(
-  Recebimentos: String): Integer;
+  Recebimentos: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VerificaRecebimentoNaoFiscal(Recebimentos);
 end;
@@ -3130,54 +3126,54 @@ begin
 end;
 
 function TDaruma32.Daruma_FI_VerificaTotalizadoresNaoFiscais(
-  Totalizadores: String): Integer;
+  Totalizadores: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VerificaTotalizadoresNaoFiscais(Totalizadores);
 end;
 
 function TDaruma32.Daruma_FI_VerificaTotalizadoresParciais(
-  Totalizadores: String): Integer;
+  Totalizadores: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VerificaTotalizadoresParciais(Totalizadores);
 end;
 
-function TDaruma32.Daruma_FI_VerificaTruncamento(Flag: string): Integer;
+function TDaruma32.Daruma_FI_VerificaTruncamento(Flag: Ansistring): Integer;
 begin
   Result := _Daruma_FI_VerificaTruncamento(Flag);
 end;
 
-function TDaruma32.Daruma_FI_VersaoFirmware(VersaoFirmware: String): Integer;
+function TDaruma32.Daruma_FI_VersaoFirmware(VersaoFirmware: AnsiString): Integer;
 begin
   Result := _Daruma_FI_VersaoFirmware(VersaoFirmware);
 end;
 
-function TDaruma32.Daruma_Registry_AplMensagem1(AplMsg1: String): Integer;
+function TDaruma32.Daruma_Registry_AplMensagem1(AplMsg1: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_AplMensagem1(AplMsg1);
 end;
 
-function TDaruma32.Daruma_Registry_AplMensagem2(AplMsg1: String): Integer;
+function TDaruma32.Daruma_Registry_AplMensagem2(AplMsg1: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_AplMensagem2(AplMsg1);
 end;
 
-function TDaruma32.Daruma_Registry_ConfigRede(ConfigRede: String): Integer;
+function TDaruma32.Daruma_Registry_ConfigRede(ConfigRede: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_ConfigRede(ConfigRede);
 end;
 
 function TDaruma32.Daruma_Registry_ControlePorta(
-  ControlePorta: String): Integer;
+  ControlePorta: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_ControlePorta(ControlePorta);
 end;
 
-function TDaruma32.Daruma_Registry_Emulador(Emulador: String): Integer;
+function TDaruma32.Daruma_Registry_Emulador(Emulador: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_Emulador(Emulador);
 end;
 
-function TDaruma32.Daruma_Registry_Log(Log: String): Integer;
+function TDaruma32.Daruma_Registry_Log(Log: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_Log(Log);
 end;
@@ -3193,56 +3189,56 @@ begin
   Result := _Daruma_Registry_ModoGaveta(ModoGaveta);
 end;
 
-function TDaruma32.Daruma_Registry_NomeLog(NomeLog: String): Integer;
+function TDaruma32.Daruma_Registry_NomeLog(NomeLog: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_NomeLog(NomeLog);
 end;
 
-function TDaruma32.Daruma_Registry_Path(Path: String): Integer;
+function TDaruma32.Daruma_Registry_Path(Path: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_Path(Path);
 end;
 
-function TDaruma32.Daruma_Registry_Porta(Porta: String): Integer;
+function TDaruma32.Daruma_Registry_Porta(Porta: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_Porta(Porta);
 end;
 
-function TDaruma32.Daruma_Registry_Retorno(Retorno: String): Integer;
+function TDaruma32.Daruma_Registry_Retorno(Retorno: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_Retorno(Retorno);
 end;
 
-function TDaruma32.Daruma_Registry_Separador(Separador: String): Integer;
+function TDaruma32.Daruma_Registry_Separador(Separador: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_Separador(Separador);
 end;
 
 function TDaruma32.Daruma_Registry_SeparaMsgPromo(
-  SeparaMsgPromo: String): Integer;
+  SeparaMsgPromo: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_SeparaMsgPromo(SeparaMsgPromo);
 end;
 
-function TDaruma32.Daruma_Registry_Status(Status: String): Integer;
+function TDaruma32.Daruma_Registry_Status(Status: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_Status(Status);
 end;
 
 function TDaruma32.Daruma_Registry_StatusFuncao(
-  StatusFuncao: String): Integer;
+  StatusFuncao: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_StatusFuncao(StatusFuncao);
 end;
 
 function TDaruma32.Daruma_Registry_VendeItemUmaLinha(
-  ConfigRede: String): Integer;
+  ConfigRede: AnsiString): Integer;
 begin
   Result := _Daruma_Registry_VendeItemUmaLinha(ConfigRede);
 end;
 
 function TDaruma32.Daruma_RFD_GerarArquivo(DataInicial,
-  DataFinal: String): Integer;
+  DataFinal: AnsiString): Integer;
 begin
   Result := _Daruma_RFD_GerarArquivo(DataInicial, DataFinal);
 end;
@@ -3253,7 +3249,7 @@ begin
 end;
 
 function TDaruma32.Daruma_TEF_ImprimirResposta(Arquivo, FormaPagamento,
-  Travar: string): Integer;
+  Travar: Ansistring): Integer;
 begin
   Result := _Daruma_TEF_ImprimirResposta(Arquivo, FormaPagamento, Travar);
 end;
@@ -3430,11 +3426,11 @@ begin
 
 end;
 
-procedure TDaruma32.Import(var Proc: pointer; Name: Pchar);
+procedure TDaruma32.Import(var Proc: pointer; Name: PAnsiChar);
 begin
   if not Assigned(Proc) then
   begin
-    Proc := GetProcAddress(DLL, Pchar(Name));
+    Proc := GetProcAddress(DLL, PAnsiChar(AnsiString(Name))); // Sandro Silva 2023-12-13 Proc := GetProcAddress(DLL, Pchar(Name));
     if Proc = nil then
       raise Exception.Create('Não foi possível carregar a função ' + Name + ' da biblioteca ' + DARUMA_DLLNAME_03);
   end;

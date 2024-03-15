@@ -27,7 +27,7 @@ uses
   DB,
   IBQuery, IBDatabase, IBCustomDataSet,
   base64code,
-  SmallFunc
+  //SmallFunc
   {$ELSE}
   WinApi.Windows, Winapi.Messages, Winapi.ShellAPI, Winapi.RichEdit,
   Winapi.WinSpool,
@@ -44,6 +44,7 @@ uses
   , DelphiZXIngQRCode
   , tnpdf
   , umfe
+  , SynPDF
 
   ;
 
@@ -546,14 +547,13 @@ var
 implementation
 
 uses AJBarcode
-  //, DelphiZXingQRCode
   ;
 
 procedure Register;
 begin
   RegisterComponents('Smallsoft', [TSmall59]);
 end;
-
+{
 function TamanhoArquivo(Arquivo: String): Integer;
 begin
   Result := 0;
@@ -570,7 +570,8 @@ begin
   except
   end;
 end;
-
+}
+{
 procedure RenameLog(Arquivo: String);
 var
   sFile: String;
@@ -584,7 +585,7 @@ begin
 
   end;
 end;
-
+}
 function UFDescricao(sCodigo: String): String;
 begin
   //Norte
@@ -2800,7 +2801,7 @@ var
   aRetorno: TRetornoSAT;
   sFile: String;
   MS: TStringStream; // Sandro Silva 2021-06-23 MS: TMemoryStream; // Sandro Silva 2016-10-07
-  SL: TStringList; // Sandro Silva 2016-10-07
+  //SL: TStringList; // Sandro Silva 2016-10-07
   sTextoLog: String;
   iItem: Integer;
 begin
@@ -2849,7 +2850,7 @@ begin
       if Chamadacdecl then
         sRetorno := _ExtrairLogs_cdecl(idSessao, PAnsiChar(FCodigoAtivacao))
       else
-        sRetorno := _ExtrairLogs_stdcall(idSessao, PAnsiChar(FCodigoAtivacao));
+        sRetorno := String(_ExtrairLogs_stdcall(idSessao, PAnsiChar(FCodigoAtivacao))); // 2024-01-25 sRetorno := _ExtrairLogs_stdcall(idSessao, PAnsiChar(FCodigoAtivacao));
 
     end;
     {Sandro Silva 2021-08-23 fim}
@@ -2882,7 +2883,13 @@ begin
         case iItem of
           0: FRetornoExtrairLogs.numeroSessao     := aRetorno[iItem];
           1: FRetornoExtrairLogs.EEEEE            := aRetorno[iItem];
-          2: FRetornoExtrairLogs.mensagem         := aRetorno[iItem];
+          // Sandro Silva 2024-01-24 2: FRetornoExtrairLogs.mensagem         := aRetorno[iItem];
+          2:
+          begin
+            FRetornoExtrairLogs.mensagem         := aRetorno[iItem];
+            if Utf8ToAnsi(FRetornoExtrairLogs.mensagem) <> '' then
+              FRetornoExtrairLogs.mensagem         := Utf8ToAnsi(FRetornoExtrairLogs.mensagem);
+          end;
           3: FRetornoExtrairLogs.cod              := aRetorno[iItem];
           4: FRetornoExtrairLogs.mensagemSEFAZ    := aRetorno[iItem];
           5: FRetornoExtrairLogs.ArquivoLogBase64 := aRetorno[iItem];
@@ -2904,25 +2911,28 @@ begin
 
           if FRetornoExtrairLogs.EEEEE = '15000' then
           begin
-            sTextoLog := Base64Decode(FRetornoExtrairLogs.ArquivoLogBase64);
+            sTextoLog := Utf8ToAnsi(Base64Decode(String(FRetornoExtrairLogs.ArquivoLogBase64)));
 
             sFile := ExtractFilePath(Application.ExeName) + 'log\' + FNumeroSerie + '_' + FCaixa + '_log_sat.txt';
 
             if DirectoryExists(ExtractFilePath(Application.ExeName) + 'log') = False then
               ForceDirectories(ExtractFilePath(Application.ExeName) + 'log');
 
-            SL := TStringList.Create;
+            //SL := TStringList.Create;
             MS := TStringStream.Create('');
             try
 
+              { Sandro Silva 2024-01-24
               if Utf8ToAnsi(sTextoLog) <> '' then
                 sTextoLog := Utf8ToAnsi(sTextoLog);
+              }
 
               MS.Size := 0;
               MS.WriteBuffer(Pointer(sTextoLog)^, Length(sTextoLog)*SizeOf(Char));
 
               MS.Seek(0, soBeginning);
 
+              (* Sandro Silva 2024-01-24
               {$IFDEF VER150}
               SL.Clear;
               SL.LoadFromStream(MS);
@@ -2930,15 +2940,19 @@ begin
               if mmLog <> nil then
                 mmLog.Lines.AddStrings(SL);
               {$ELSE}
-              TCustomMemoryStream(MS).SaveToFile(sfile);
+              ms.SaveToFile(sFile); // Sandro Silva 2024-01-24 TCustomMemoryStream(MS).SaveToFile(sfile);
               if mmLog <> nil then
                 mmLog.Lines.Add(MS.DataString);
               {$ENDIF}
+              *)
+              ms.SaveToFile(sFile);
+              if mmLog <> nil then
+                mmLog.Lines.Add(MS.DataString);
 
               Sleep(1000); // 2021-06-23 Sleep(5000);
 
             finally
-              SL.Free;
+              //SL.Free;
               ms.Free;
             end;
 
@@ -3453,6 +3467,7 @@ const PERCENTUAL_LARGURA_LOGO_X_LARGURA_PAPEL = 0.2721518987341772;
 const LARGURA_REFERENCIA_PAPEL_BOBINA = 640; //639
 const LARGURA_IMPRESSAO_VALOR_FORMAS_PAGAMENTO = 80;
 var
+  FileName: String;
   Tipo: TTipoExtrato;
   QRCodeBMP: TBitmap;
   Logotipo: TBitmap;
@@ -3488,7 +3503,8 @@ var
   sFileCFeSAT: String;
   Pagina: Array of TImage; // Imagem que receberá os textos e outras imagem
   iAlturaPDF: Integer;
-  PDF: TPrintPDF;
+  PDF: TPdfDocumentGDI; //Sandro Silva 2024-02-15 PDF: TPrintPDF;
+  PAGE : TPdfPage;
   iPagina: Integer;
   sRazaoEmitente: String;
   iLinhasFinal: Integer;
@@ -4800,7 +4816,7 @@ begin
     begin
       try
 
-        Printer.Abort;
+        // Sandro Silva 2024-02-15 Printer.Abort;
 
         try
           if sFileExport = '' then // 2015-06-30
@@ -4813,6 +4829,7 @@ begin
               ForceDirectories(ExtractFilePath(Application.ExeName) + 'CFeSAT');
           end;
 
+          (*
           // Cria o PDF
 
           {Create TPrintPDF VCL}
@@ -4862,9 +4879,63 @@ begin
               PDF.NewPage;
             FreeAndNil(Pagina[iPagina]);
           end;
+          *)
+
+          // Cria o PDF
+
+          {Create TPrintPDF VCL}
+          PDF := TPdfDocumentGDI.Create();
+          PDF.DefaultPaperSize := psUserDefined;
+          PDF.DefaultPageWidth := iLarguraFisica;
+
+          {Set Doc Info}
+          PDF.Info.Title        := ExtractFileName(sFileCFeSAT);
+          PDF.Info.Creator      := 'Zucchetti - ' + ExtractFileName(Application.ExeName); // Sandro Silva 2022-12-02 Unochapeco
+          PDF.Info.Author       := xmlNodeValue(sCFeXML, '//emit/xNome');
+          PDF.Info.CreationDate := now;
+          if FEmitente.UF = 'CE' then
+            PDF.Info.Keywords    := 'Cupom Fiscal Eletrônico, CF-e, MFE' // Sandro Silva 2018-08-01
+          else
+            PDF.Info.Keywords    := 'Cupom Fiscal Eletrônico, CF-e-SAT, SAT';
+          {Set Filename to save}
+          if sFileExport = '' then // 2015-06-30
+            PDF.Info.Subject     := ExtractFileName(sFileCFeSAT)
+          else
+            PDF.Info.Subject     := sFileExport;
+
+          {Use Compression: VCL Must compile with ZLIB comes with D3 above}
+          PDF.ForceJPEGCompression := 0;
+
+          {Set Page Size}
+          PAGE := pdf.AddPage;
+          PAGE.PageLandscape := False;
+
+          PAGE.PageWidth   := iLarguraPapel;
+          PAGE.PageHeight  := ALTURA_PAGINA_PDF; // Sandro Silva 2017-04-17  2374;
+
+          {Set Filename to save}
+          if sFileExport = '' then // 2015-06-30
+            FileName  := ExtractFilePath(Application.ExeName) + 'CFeSAT\' + sFileCFeSAT + '.pdf'
+          else
+            FileName  := sFileExport;
+
+          {Start Printing...}
+          //PDF.BeginDoc;
+
+          for iPagina := 0 to Length(Pagina) -1 do
+          begin
+
+            {Print Image}
+            PDF.VCLCanvas.Draw(0, 0, Pagina[iPagina].Picture.Graphic);
+
+            if iPagina < Length(Pagina) -1 then
+              {Add New Page}
+              PAGE := Pdf.AddPage;
+            FreeAndNil(Pagina[iPagina]);
+          end;
 
           {End Printing}
-          sRetornoGeraPDF := PDF.EndDoc;
+          //sRetornoGeraPDF := PDF.EndDoc;
           if sRetornoGeraPDF <> '' then
             FLogRetornoMobile := sRetornoGeraPDF;// Sandro Silva 2016-11-09  SmallMsgBox(PChar(sRetornoGeraPDF), 'Atenção', MB_ICONWARNING + MB_OK);
 
@@ -4872,9 +4943,11 @@ begin
         except
           on E: Exception do
           begin
-            sRetornoGeraPDF := PDF.FileName + ' já está aberto';
+            sRetornoGeraPDF := FileName + ' já está aberto';
           end;
         end;
+
+        PDF.SaveToFile(FileName);
 
         {FREE TPrintPDF VCL}
         if PDF <> nil then
@@ -5402,7 +5475,13 @@ procedure TSmall59.Desinicializa;
 begin
   // Controla descarregamento da DLL
   try
-    FreeLibrary(FhDLL); //descarregando dll
+    try
+      // Quando executa ExtrairLogs, ao finalizar o sistema ocorre access violation quando tenta liberar a dll
+      // Pode ser algo na DLL. Testado com dll da DIMEP D-SAT 2.0
+      FreeLibrary(FhDLL); //descarregando dll
+    except
+
+    end;
 
     if Chamadacdecl then
     begin
@@ -5528,16 +5607,22 @@ end;
 
 procedure TRetorno.setFmensagem(const Value: String);
 begin
-  Fmensagem := Trim(Value);
+  Fmensagem := String(Trim(Value));
+  { Sandro Silva 2024-01-24
+  // Causa problema com caracteres especiais
   if Utf8ToAnsi(Value) <> '' then
     Fmensagem := Utf8ToAnsi(Value);
+  }
 end;
 
 procedure TRetorno.SetFmensagemSEFAZ(const Value: String);
 begin
   FmensagemSEFAZ := Trim(Value);
+  { Sandro Silva 2024-01-24
+  // Causa problema com caracteres especiais
   if Utf8ToAnsi(Value) <> '' then
     FmensagemSEFAZ := Utf8ToAnsi(Value);
+  }
 end;
 
 { TRequisicao }
@@ -5614,9 +5699,9 @@ begin
     Inc(iTimeOutSeg, 3);
 
     sl.Text := sConteudo;
-    sl.SaveToFile(PAnsiChar(sCaminhoRequisicao + '\' + sArqRequisicao));
+    sl.SaveToFile(PChar(sCaminhoRequisicao + '\' + sArqRequisicao));
     Sleep(100); // Sandro Silva 2017-02-23
-    RenameFile(PAnsiChar(sCaminhoRequisicao + '\' + sArqRequisicao), PAnsiChar(sCaminhoRequisicao + '\' + sArqResposta)); // Sandro Silva 2019-06-04 RenameFile(sCaminhoRequisicao + '\' + sArqRequisicao, sCaminhoRequisicao + '\' + sArqResposta); 
+    RenameFile(PChar(sCaminhoRequisicao + '\' + sArqRequisicao), PChar(sCaminhoRequisicao + '\' + sArqResposta)); // Sandro Silva 2019-06-04 RenameFile(sCaminhoRequisicao + '\' + sArqRequisicao, sCaminhoRequisicao + '\' + sArqResposta);
     Sleep(100); // Sandro Silva 2019-06-04  Ficha 4656
     sl.Clear;
 
@@ -5625,17 +5710,17 @@ begin
     while (SecondsBetween(Now, dtTempo) < iTimeOutSeg) do
     begin
 
-      if FileExists(PAnsiChar(sCaminhoRetorno + '\' + sArqResposta)) then // Sandro Silva 2019-06-04 Ficha 4656 if FileExists(sCaminhoRetorno + '\' + sArqResposta) then
+      if FileExists(PChar(sCaminhoRetorno + '\' + sArqResposta)) then // Sandro Silva 2019-06-04 Ficha 4656 if FileExists(sCaminhoRetorno + '\' + sArqResposta) then
       begin
         try
           Sleep(500);// Tempo para gravação em disco
           while Trim(sl.Text) = '' do
           begin
-            sl.LoadFromFile(PAnsiChar(sCaminhoRetorno + '\' + sArqResposta)); // Sandro Silva 2019-06-04  Ficha 4656 sl.LoadFromFile(sCaminhoRetorno + '\' + sArqResposta);
+            sl.LoadFromFile(sCaminhoRetorno + '\' + sArqResposta); // Sandro Silva 2019-06-04  Ficha 4656 sl.LoadFromFile(sCaminhoRetorno + '\' + sArqResposta);
             Sleep(500);// Tempo para gravação em disco
           end;
 
-          DeleteFile(PAnsiChar(sCaminhoRetorno + '\' + sArqResposta)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRetorno + '\' + sArqResposta));
+          DeleteFile(PChar(sCaminhoRetorno + '\' + sArqResposta)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRetorno + '\' + sArqResposta));
 
           if xmlNodeValue(sl.Text, '//comando') = sComandoEnviado then // Se o comando retornado é o mesmo enviado sai do loop
           begin
@@ -5663,8 +5748,8 @@ begin
   end
   else
   begin
-    DeleteFile(PAnsiChar(sCaminhoRequisicao + '\' + sArqRequisicao)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRequisicao + '\' + sArqRequisicao));  // Sandro Silva 2017-03-01
-    DeleteFile(PAnsiChar(sCaminhoRequisicao + '\' + sArqResposta)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRequisicao + '\' + sArqResposta));  // Sandro Silva 2017-03-01
+    DeleteFile(PChar(sCaminhoRequisicao + '\' + sArqRequisicao)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRequisicao + '\' + sArqRequisicao));  // Sandro Silva 2017-03-01
+    DeleteFile(PChar(sCaminhoRequisicao + '\' + sArqResposta)); // Sandro Silva 2019-06-04  Ficha 4656 DeleteFile(pChar(sCaminhoRequisicao + '\' + sArqResposta));  // Sandro Silva 2017-03-01
     Result := 'Tempo limite atingido. Servidor SAT não respondeu. Verifique se o Servidor está ativo';
   end;
 

@@ -4,6 +4,7 @@ object Frame_teclado: TFrame_teclado
   Width = 1018
   Height = 401
   TabOrder = 0
+  PixelsPerInch = 96
   object ImageFundo2: TImage
     Left = 992
     Top = 338

@@ -70,7 +70,7 @@ implementation
 uses
   tnpdf
   , fiscal
-  , SmallFunc
+  , SmallFunc_xe
   , ufuncoesfrente
   ;
 
@@ -295,6 +295,7 @@ function TSmallMobileCliente.LogClienteMobile(sLog: String): Boolean;
 var
   LogFile: TextFile;
   sFile: String;
+  {
   procedure RenameLog(Arquivo: String);
   var
     sFile: String;
@@ -308,6 +309,8 @@ var
 
     end;
   end;
+  }
+  {
   function TamanhoArquivo(Arquivo: string): Integer;
   begin
     Result := 0;
@@ -324,6 +327,7 @@ var
     except
     end;
   end;
+  }
 begin
   Result := False;
   try
