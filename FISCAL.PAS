@@ -1395,6 +1395,10 @@ type
     procedure Iniciarnovavenda1Click(Sender: TObject);
     procedure ibDataSet27UNITARIOSetText(Sender: TField;
       const Text: String);
+    procedure Vendabrutadodia1Click(Sender: TObject);
+    procedure CDC1Click(Sender: TObject);
+    procedure CCF1Click(Sender: TObject);
+    procedure COO1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -15616,7 +15620,7 @@ var
   iItem: Integer;
 begin    
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
-  RetornodeVariveisdaImpressora1.Visible := False;//True; /// Sandro Silva 2024-02-21
+  RetornodeVariveisdaImpressora1.Visible := True; /// Sandro Silva 2024-02-21
   //
   x1024x768.Visible := False;
   //
@@ -21755,6 +21759,7 @@ begin
 //  if Form1.sModeloECF = '12' then SmallMsg(_ecf12_NmdeRedues(True));
 //  if Form1.sModeloECF = '65' then SmallMsg(_ecf65_NmdeRedues(True));
   if Form1.sModeloECF = '14' then SmallMsg(_ecf14_DadosUltimaReducaoZ(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_DadosDaUltimaReducao(True));
 //  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_NmdeRedues(True));
 
 end;
@@ -22317,6 +22322,16 @@ end;
 procedure TForm1.Convnio57951Click(Sender: TObject);
 begin
   PafEcfConvenio57951; // Sandro Silva 2022-03-29
+end;
+
+procedure TForm1.COO1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_NumeroDoCupom(True));
+  if Form1.sModeloECF = '03' then SmallMsg(_ecf03_NumeroDoCupom(True));
+  if Form1.sModeloECF = '12' then SmallMsg(_ecf12_NumeroDoCupom(True));
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_NumeroDoCupom(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_NumeroDoCupom(True));
+  if Form1.sModeloECF = '17' then SmallMsg(_ecf17_NumeroDoCupom(True));
 end;
 
 procedure TForm1.abndiceTcnicoProduo1Click(Sender: TObject);
@@ -23167,8 +23182,8 @@ begin
   if Form1.sModeloECF = '12' then;
   if Form1.sModeloECF = '65' then;
   if Form1.sModeloECF = '59' then;
-  if Form1.sModeloECF = '14' then;
-  if Form1.sModeloECF = '15' then;
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CER(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CER(' '));
   if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CER(True));
   //
 end;
@@ -23298,7 +23313,11 @@ end;
 
 procedure TForm1.CdigomodelodoECF1Click(Sender: TObject);
 begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_CodigoModeloEcf(True));
   if Form1.sModeloECF = '03' then SmallMsg(_ecf03_CodigoModeloEcf(True));
+  if Form1.sModeloECF = '12' then SmallMsg(_ecf12_CodigoModeloEcf(True));
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CodigoModeloEcf(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CodigoModeloEcf(True));// Ok 2015-08-24
   if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CodigoModeloEcf(True));// Ok 2015-08-24  
 end;
 
@@ -26607,6 +26626,26 @@ begin
     Timer2.Enabled := True;
 end;
 
+procedure TForm1.CCF1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_CCF(True));
+  if Form1.sModeloECF = '03' then SmallMsg(_ecf03_CCF(True));
+  if Form1.sModeloECF = '12' then ;
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CCF(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CCF(True));
+  if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CCF(True));
+end;
+
+procedure TForm1.CDC1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_CDC(True));
+  if Form1.sModeloECF = '03' then SmallMsg(_ecf03_CDC(True));
+  if Form1.sModeloECF = '12' then ;
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CDC(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CDC(True));
+  if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CDC(True));
+end;
+
 procedure TForm1.Button5Click(Sender: TObject);
 begin
   // testar estoque do dia
@@ -27246,6 +27285,11 @@ begin
   Application.HintColor     := clInfoBk;
   Application.HintPause     := 500;
   Application.HintHidePause := Application.HintPause * 5;
+end;
+
+procedure TForm1.Vendabrutadodia1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '15' then SmallMsg(FloatToStr(StrToFloatDef(Copy(Form1.PDV_DadosDaUltimaReducaoZ(True), 13, 18), 0) / 100));
 end;
 
 procedure TForm1.VendasIdentificadaspeloCPFCNPJ1Click(Sender: TObject);
