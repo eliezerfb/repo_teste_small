@@ -15620,7 +15620,7 @@ var
   iItem: Integer;
 begin    
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
-  RetornodeVariveisdaImpressora1.Visible := True; /// Sandro Silva 2024-02-21
+  //RetornodeVariveisdaImpressora1.Visible := True; /// Sandro Silva 2024-02-21
   //
   x1024x768.Visible := False;
   //
