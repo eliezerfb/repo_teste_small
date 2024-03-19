@@ -1402,11 +1402,13 @@ begin
                           Form7.ibDataSet4ULT_COMPRA.AsDateTime := Form7.ibDataSet24EMISSAO.AsDateTime;
                           Form7.ibDataSet4ALTERADO.AsString     := '0';
 
+                          {Mauricio Parizotto 2024-03-19
                           if Form7.ibDataSet23LISTA.AsFloat <> 0 then
                           begin
                             Form7.ibDataSet4PRECO.AsFloat      := Form7.ibDataSet23LISTA.AsFloat;
                             Form7.ibDataSet4ALTERADO.AsString  := '1';
                           end;
+                          }
                         end;
 
 
@@ -1436,6 +1438,18 @@ begin
                         {Sandro Silva 2023-10-17 fim}
 
                         Form7.ibDataSet4.Post;
+                      end;
+
+                      //Mauricio Parizotto 2024-03-19
+                      if (Form7.ibDataSet4ULT_COMPRA.AsDateTime <= Form7.ibDataSet24EMISSAO.AsDateTime) then
+                      begin
+                        if Form7.ibDataSet23LISTA.AsFloat <> 0 then
+                        begin
+                          Form7.ibDataSet4.Edit;
+                          Form7.ibDataSet4PRECO.AsFloat      := Form7.ibDataSet23LISTA.AsFloat;
+                          Form7.ibDataSet4ALTERADO.AsString  := '1';
+                          Form7.ibDataSet4.Post;
+                        end;
                       end;
 
                     end;
