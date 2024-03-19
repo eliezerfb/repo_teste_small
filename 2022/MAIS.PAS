@@ -12210,7 +12210,8 @@ var
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\SMALLCOM.INF');
   try
-    Result := Mais1Ini.ReadString('OUTROS','Propaganda','Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br');
+    //Result := Mais1Ini.ReadString('OUTROS','Propaganda','Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br'); Mauricio Parizotto 2024-03-19
+    Result := Mais1Ini.ReadString('OUTROS','Propaganda','');
   finally
     Mais1Ini.Free;
   end;
