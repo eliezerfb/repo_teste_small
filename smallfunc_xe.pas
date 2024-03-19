@@ -157,6 +157,7 @@ function IsNumericString(S:String):Boolean;
 {$ENDIF}
 function Extenso(pP1:double):String;
 function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True): Integer;
+function ProdutoDeUsoConsumo(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
 function BuscaSerialSmall: String;
 // Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
 function DescricaoComQuebraLinha(Descricao:string;EspacamentoEsquerdo:string;Tamanho:integer):string;
@@ -1671,6 +1672,30 @@ begin
   FreeAndNil(qyAux);
   FreeAndNil(Blowfish);
 end;
+
+{Sandro Silva 2024-03-18 inicio}
+function ProdutoDeUsoConsumo(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
+// Retorna True se o produto for de uso e consumo
+var
+  IBQTEMP: TIBQuery;
+begin
+  IBQTEMP := CriaIBQuery(IBTransaction);
+  IBQTEMP.Close;
+  IBQTEMP.SQL.Text :=
+    'SELECT NOME, TIPO_ITEM ' +
+    'from ESTOQUE ' +
+    'where CODIGO = :CODIGO';
+  IBQTEMP.ParamByName('CODIGO').AsString := sCodigo;
+  IBQTEMP.Open;
+  Result := False;
+  // TIPO_ITEM = 07: Material de Uso e Consumo;
+  // NOME (NOME DO GRUPO) é grupo de uso e consumo
+  if (IBQTEMP.FieldByName('TIPO_ITEM').AsString = '07')
+    or ((Pos('CONSUMO',AnsiUpperCase(IBQTEMP.FieldByName('NOME').AsString)) > 0)) then
+    Result := True;
+  FreeAndNil(IBQTEMP);
+end;
+{Sandro Silva 2024-03-18 final}
 
 function BuscaSerialSmall: String;
 // Retorna o serial instalado
