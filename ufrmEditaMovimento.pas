@@ -44,6 +44,7 @@ type
     procedure DBGridItensCellClick(Column: TColumn);
   private
     { Private declarations }
+    FbMesa: Boolean;
     FCaixa: String;
     FPedido: String;
     FSelectOld: String;
@@ -51,7 +52,8 @@ type
     FEditFormatUnitario: String;
     FEditFormatQuantidade: String;
     aItemEdicaoBloqueada: array of String;
-    bBloquearTodaColunaQuantidades: Boolean;// Sandro Silva 2023-12-03
+    bBloquearTodaColunaQuantidades: Boolean;
+    FTipoDeConta: String;// Sandro Silva 2023-12-03
     function TotalizaMovimento(DataSet: TDataSet): Double;
     function ItemCancelado(Field: TField): Boolean;
     function NaoEditavel(Field: TField): Boolean;
@@ -64,6 +66,7 @@ type
     { Public declarations }
     property Pedido: String read FPedido write FPedido;
     property Caixa: String read FCaixa write setCaixa;
+    property TipoDeConta: String read FTipoDeConta write FTipoDeConta;
     function SelectSqlAlteracaEdicao: String;
     function SelecionaItens: Boolean;
   end;
@@ -198,11 +201,14 @@ begin
           (Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
       end;
 
+      {2024-03-19
+      // Sempre permitir editar o valor unitário
       if (Column.Field.FieldName = 'UNITARIO') then
       begin
         if ItemComEdicaoTabelaAlteracaBloqueada(Column.Field.DataSet.FieldByName('ITEM').AsString) then
           (Sender As TDBGrid).Canvas.Brush.Color := clBtnFace;
       end;
+      }
       {Sandro Silva 2023-12-05 fim}
 
     end;
@@ -237,19 +243,6 @@ begin
     DBGridItens.Columns[iCol].Title.Font.Size := DBGridItens.Font.Size;
   end;
 
-  {Sandro Silva 2023-11-28 inicio
-  FSelectOld := Form1.ibDataSet27.SelectSQL.Text;
-
-  FEditFormatUnitario   := TFloatField(Form1.ibDataSet27.FieldByName('UNITARIO')).EditFormat; // Sandro Silva 2023-11-23
-  FEditFormatQuantidade := TFloatField(Form1.ibDataSet27.FieldByName('QUANTIDADE')).EditFormat; // Sandro Silva 2023-11-23
-  TFloatField(Form1.ibDataSet27.FieldByName('UNITARIO')).EditFormat   := '#,##0.' + DupeString('0', StrToIntDef(Form1.ConfPreco, 2)); // Sandro Silva 2023-11-23
-  TFloatField(Form1.ibDataSet27.FieldByName('QUANTIDADE')).EditFormat := '#,##0.' + DupeString('0', StrToIntDef(Form1.ConfCasas, 2)); // Sandro Silva 2023-11-23
-
-  Form1.ibDataSet27.Close;
-  Form1.ibDataSet27.SelectSQL.Text := SelectSqlAlteracaEdicao;
-  Form1.ibDataSet27.Open;
-  }
-
   TFloatField(Form1.ibDataSet27.FieldByName('UNITARIO')).EditFormat   := '#,##0.' + DupeString('0', StrToIntDef(Form1.ConfPreco, 2)); // Sandro Silva 2023-11-23
   TFloatField(Form1.ibDataSet27.FieldByName('QUANTIDADE')).EditFormat := '#,##0.' + DupeString('0', StrToIntDef(Form1.ConfCasas, 2)); // Sandro Silva 2023-11-23
 
@@ -257,19 +250,12 @@ begin
 
   TotalizaMovimento(Form1.ibDataSet27);
 
-  {Sandro Silva 2023-12-04 inicio}
   FIBDATASETALTERACA := Form1.ibDataSet27;
   FIBDATASETALTERACA.AfterScroll := FIBDATASETALTERACAAfterScroll;
-  {Sandro Silva 2023-12-04 fim}
 
   Form1.ibDataSet27.Last;
   DBGridItens.SelectedIndex := ColumnIndex(DBGridItens.Columns, 'UNITARIO');
   DBGridItensColEnter(DBGridItens);
-
-  {Sandro Silva 2023-12-04 inicio
-  FIBDATASETALTERACA := Form1.ibDataSet27;
-  FIBDATASETALTERACA.AfterScroll := FIBDATASETALTERACAAfterScroll;
-  }
 
 end;
 
@@ -307,8 +293,6 @@ begin
   DBGridItens.ReadOnly := False;
   if (DBGridItens.SelectedField.FieldName <> 'QUANTIDADE') and (DBGridItens.SelectedField.FieldName <> 'UNITARIO') then
     DBGridItens.ReadOnly := True;
-//  if NaoEditavel(DBGridItens.SelectedField) then
-//    DBGridItens.ReadOnly := True;
 end;
 
 procedure TFEditaMovimento.DBGridItensKeyPress(Sender: TObject;
@@ -445,20 +429,17 @@ begin
       bNaoEditaQtd := True;
   end;
 
+  {2024-03-19
+  // Sempre permitir editar o valor unitário
   if ((Field.FieldName = 'UNITARIO') and ItemComEdicaoTabelaAlteracaBloqueada(Field.DataSet.FieldByName('ITEM').AsString)) then
     bNaoEditaQtd := True;
+  }
 
   if ((Field.FieldName <> 'QUANTIDADE')
     and (Field.FieldName <> 'UNITARIO'))
     or ItemCancelado(Field)
     or (Field.DataSet.FieldByName('DESCRICAO').AsString = 'Desconto')
     or (Field.DataSet.FieldByName('DESCRICAO').AsString = 'Acréscimo')
-    {Sandro Silva 2023-12-04 inicio
-    or (ProdutoComControleDeGrade(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
-    or (ProdutoComControleDeSerie(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
-    or (ProdutoComposto(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
-    or (ProdutoComEstoqueNegativo(Form1.ibDataSet27.Transaction, Field.DataSet.FieldByName('CODIGO').AsString))
-    {Sandro Silva 2023-12-04 fim}
     or bNaoEditaQtd
     then
       Result := True;
@@ -484,9 +465,7 @@ begin
   if NaoEditavel(DBGridItens.SelectedField) then
     DBGridItens.ReadOnly := True;
 
-  {Sandro Silva 2023-12-04 inicio}
   AlertaDeProdutoNaoEditavel;
-  {Sandro Silva 2023-12-04 fim}
 end;
 
 procedure TFEditaMovimento.DBGridItensCellClick(Column: TColumn);
@@ -507,13 +486,17 @@ begin
     ' order by REGISTRO';
 
   }
+  FbMesa := False;
   if FCaixa = '' then  // Quando é mesa/conta
+  begin
+    FbMesa := True;
     Result :=
       'select * ' +
       'from ALTERACA ' +
       'where PEDIDO = ' + QuotedStr(FPedido) +
       ' and (TIPO = ''MESA'' or TIPO = ''DEKOL'') ' +
-      ' order by REGISTRO'
+      ' order by REGISTRO';
+  end
   else
     Result :=
       'select * ' +
@@ -558,42 +541,6 @@ begin
         sCodigo    := Form1.ibDataSet27.FieldByName('CODIGO').AsString;
         sDescricao := Form1.ibDataSet27.FieldByName('DESCRICAO').AsString;
 
-        {Sandro Silva 2023-12-06 inicio
-        if (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'LOKED') then
-        begin
-          Result := False;
-          Break;
-        end;
-
-        try
-          // Artifício para forçar a edição e bloquear nas tabelas alteraca e estoque
-          Form1.ibDataSet27.Edit;
-          Form1.ibDataSet27.FieldByName('CODIGO').AsString := Form1.ibDataSet27.FieldByName('CODIGO').AsString;
-          Form1.ibDataSet27.Post;
-
-          Form1.ibDataSet4.Close;
-          Form1.ibDataSet4.SelectSQL.Text :=
-            'select * from ESTOQUE where CODIGO = ' + QuotedStr(Form1.ibDataSet27.FieldByName('CODIGO').AsString);
-          Form1.ibDataSet4.Open;
-
-          if (Form1.ibDataSet4.FieldByName('CODIGO').AsString <> '') and (Form1.ibDataSet4.FieldByName('DESCRICAO').AsString <> '') then
-          begin
-            Form1.ibDataSet4.Edit;
-            Form1.ibDataSet4.FieldByName('CODIGO').AsString := Form1.ibDataSet4.FieldByName('CODIGO').AsString;
-            Form1.ibDataSet4.Post;
-          end;
-
-        except
-          on E: Exception do
-          begin
-
-            Form1.ibDataSet27.SelectSQL.Text := FSelectOld;
-            Result := False;
-          end;
-        end;
-
-        }
-
         if (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'LOKED') then
         begin
           SetLength(aItemEdicaoBloqueada, Length(aItemEdicaoBloqueada) + 1);
@@ -611,6 +558,15 @@ begin
             Form1.ibDataSet27.Cancel;
             SetLength(aItemEdicaoBloqueada, Length(aItemEdicaoBloqueada) + 1);
             aItemEdicaoBloqueada[High(aItemEdicaoBloqueada)] := Form1.ibDataSet27.FieldByName('ITEM').AsString;
+
+            {Sandro Silva 2024-03-19 inicio}
+            // Sempre for MESA (TIPO = MESA ou DEKOL)
+            if FbMesa and ((Form1.ibDataSet27.FieldByName('TIPO').AsString = 'MESA') or (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'DEKOL')) then
+            begin
+              Result := False;
+              Break;
+            end;
+            {Sandro Silva 2024-03-19 fim}
           end;
         end;
 
@@ -631,7 +587,8 @@ begin
           on E: Exception do
           begin
             bBloquearTodaColunaQuantidades := True;
-            Break;
+            // Precisa passar em todos os itens
+            //2024-03-19 Break;
           end;
         end;
       end;
@@ -643,9 +600,12 @@ begin
     if Result = False then
     begin
       Application.BringToFront;
-      SmallMessageBox(
-        'Item: ' + RightStr(sItem, 3) + ' - ' + sDescricao + #13 + #13 +
-        'Está sendo movimentado por outro usuário', 'Atenção', MB_OK + MB_ICONWARNING);
+      if FbMesa then
+        SmallMessageBox('Está ' + FTipoDeConta + ' já sendo editada por outro usuário.', 'Atenção', MB_OK + MB_ICONWARNING)
+      else
+        SmallMessageBox(
+          'Item: ' + RightStr(sItem, 3) + ' - ' + sDescricao + #13 + #13 +
+          'Está sendo movimentado por outro usuário', 'Atenção', MB_OK + MB_ICONWARNING);
     end;
     Form1.ibDataSet4.SelectSQL.Text := SelectEstoqueOld;
   end;
@@ -653,7 +613,6 @@ end;
 
 procedure TFEditaMovimento.AlertaDeProdutoNaoEditavel;
 begin
-  {Sandro Silva 2023-12-04 inicio}
   lbAlerta.Caption := '';
   lbAlerta.Visible := False;
   if (ProdutoComControleDeGrade(Form1.ibDataSet27.Transaction, Form1.ibDataSet27.FieldByName('CODIGO').AsString))
@@ -688,8 +647,6 @@ begin
 
   if lbAlerta.Caption <> '' then
     lbAlerta.Visible := True;
-  {Sandro Silva 2023-12-04 fim}
-
 end;
 
 function TFEditaMovimento.ItemComEdicaoTabelaAlteracaBloqueada(sItem: String): Boolean;
