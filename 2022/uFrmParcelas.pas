@@ -6,7 +6,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Grids, DBGrids, StdCtrls, Mask, DBCtrls, SMALL_DBEdit, Unit7, smallfunc_xe,
-  ExtCtrls, DB, ShellApi, IniFiles, Buttons, IBCustomDataSet, IBQuery;
+  ExtCtrls, DB, ShellApi, IniFiles, Buttons, IBCustomDataSet, IBQuery, uFuncoesTEF;
 
 type
     TFrmParcelas = class(TForm)
@@ -64,6 +64,10 @@ type
       dTotalParcelar: Double);
     //procedure RateiaDiferencaParcelaEntreAsDemais(ModuloAtual: String);
     function TotalParcelasLancadas: Double;
+    function ChamarTEF: Boolean;
+    function TestarPermiteTEF: Boolean;
+    function RetornaTotalReceberCartao: Currency;
+    procedure GerarParcelasCartao(AoDadosTransacao: TDadosTransacao);
 
   public
     { Public declarations }
@@ -83,7 +87,7 @@ implementation
 
 uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados,
   uFuncoesRetaguarda, StrUtils, uDialogs, uRaterioDiferencaEntreParcelasReceber,
-  uSmallConsts;
+  uSmallConsts, uRetornaBuildEXE;
 
 {$R *.DFM}
 
@@ -1115,6 +1119,152 @@ begin
   end;
 end;
 
+function TFrmParcelas.TestarPermiteTEF: Boolean;
+begin
+  // Somente presencial
+  // Não tem NUMERO AUTORIZACAO
+  // FORMA DE PAGAMENTO FOR CARTÃO
+  Result := (Form7.ibDataSet15INDPRES.AsString = '1')
+            and (Trim(dBgrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) = EmptyStr)
+            and (FormaDePagamentoEnvolveCartao(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString));
+end;
+
+function TFrmParcelas.ChamarTEF: Boolean;
+var
+  I: Integer;
+  oTEF: TFuncoesTEF;
+  nTotalCartao: Currency;
+begin
+  Result := False;
+
+  if not TestarPermiteTEF then
+  begin
+    // Seta True para deixar passar quando não permite TEF.
+    Result := True;
+    Exit;
+  end;
+
+  try
+    // Somar todos os registros com tipo cartão.
+    nTotalCartao := RetornaTotalReceberCartao;
+    // Se total menor ou igual a zero não faz nada
+    if nTotalCartao <= 0 then
+      Exit;
+
+    oTEF := TFuncoesTEF.Create;
+    try
+      oTEF.CNPJ     := Form7.ibDataSet13CGC.AsString;
+      oTEF.BuildEXE := TRetornarBuildEXE.New
+                                        .Retornar(True);
+      // Fixo 1 no Commerce
+      oTEF.QtdeCartoes := 1;
+      oTEF.ValorCobrar := nTotalCartao;
+
+      if not oTEF.InciarTransacaoTEF(True) then
+        Abort;
+
+      GerarParcelasCartao(oTEF.DadosTransacao);
+
+      oTEF.ConfirmaTransacao;
+
+      Result := True;
+    finally
+      FreeAndNil(oTEF);
+    end;
+  except
+    Abort;
+  end;
+end;
+
+procedure TFrmParcelas.GerarParcelasCartao(AoDadosTransacao: TDadosTransacao);
+var
+  i,x: Integer;
+  nValorParc: Currency;
+  nRestoParc: Currency;
+  oDataSet: TIBDataSet;
+  oDataSetTemp: TIBDataSet;
+begin
+  oDataSet := (dBgrid1.DataSource.DataSet as TIBDataSet);
+
+  oDataSetTemp := CriaIDataSet(Form7.IBTransaction1);
+  oDataSet.DisableControls;
+  try
+    oDataSetTemp.Close;
+    oDataSetTemp.Database := oDataSet.Database;
+    oDataSetTemp.Selectsql.Clear;
+    oDataSetTemp.Selectsql.Text := oDataSet.SelectSQL.Text;
+    oDataSetTemp.Open;
+
+    oDataSet.First;
+
+    while not oDataSet.Eof do
+    begin
+      if FormaDePagamentoEnvolveCartao(oDataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+      begin
+        if oDataSetTemp.IsEmpty then
+        begin
+          // Deve inserir apenas um registro temporario de cartão, para assim
+          // ser duplicado conforme as parcelas do TEF
+          oDataSetTemp.Append;
+          for I := 0 to Pred(oDataSet.Fields.Count) do
+            oDataSetTemp.FieldByName(oDataSet.Fields[i].FieldName).Value := oDataSet.Fields[i].Value;
+          oDataSetTemp.Post;
+        end;
+
+        oDataSet.Delete;
+        oDataSet.First;
+      end else
+        oDataSet.Next;
+    end;
+
+    oDataSetTemp.First;
+    while not oDataSetTemp.Eof do
+    begin
+      for x := 1 to AoDadosTransacao.QtdeParcela do
+      begin
+        nValorParc := StrToFloat(FormatFloat('0.00', (Int(((AoDadosTransacao.TotalPago/100)/AoDadosTransacao.QtdeParcela) * 100) / 100)));
+
+        oDataSet.Append;
+        for I := 0 to Pred(oDataSetTemp.Fields.Count) do
+          oDataSet.FieldByName(oDataSet.Fields[i].FieldName).Value := oDataSetTemp.Fields[i].Value;
+
+        oDataSet.FieldByName('VALOR_DUPL').AsCurrency         := nValorParc;
+        oDataSet.FieldByName('BANDEIRA').AsString             := AoDadosTransacao.NomeRede;
+        oDataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString := AoDadosTransacao.Autoriza;
+        oDataSet.Post;
+      end;
+    end;
+  finally
+    oDataSet.First;
+    oDataSet.EnableControls;
+    FreeAndNil(oDataSetTemp);
+  end;
+end;
+
+function TFrmParcelas.RetornaTotalReceberCartao: Currency;
+var
+  nRecNo: Integer;
+begin
+  Result := 0;
+
+  nRecNo := DBGrid1.DataSource.DataSet.RecNo;
+  DBGrid1.DataSource.DataSet.DisableControls;
+  try
+    DBGrid1.DataSource.DataSet.First;
+
+    while not DBGrid1.DataSource.DataSet.Eof do
+    begin
+      if FormaDePagamentoEnvolveCartao(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+        Result := Result + dBgrid1.DataSource.DataSet.FieldByName('VALOR_DUPL').AsCurrency;
+
+      DBGrid1.DataSource.DataSet.Next;
+    end;
+  finally
+    DBGrid1.DataSource.DataSet.RecNo := nRecNo;
+    DBGrid1.DataSource.DataSet.EnableControls;
+  end;
+end;
+
 procedure TFrmParcelas.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Mais1Ini : tIniFile;
@@ -1128,6 +1278,9 @@ var
 begin
   if Form7.sModulo = 'VENDA' then
   begin
+    if not ChamarTEF then
+      Exit;
+
     Total := 0;
     Form7.ibDataSet7.First;
     while not Form7.ibDataSet7.Eof do
@@ -1164,7 +1317,6 @@ begin
     Form7.ibDataSet7.Tag := ID_FILTRAR_FORMAS_GERAM_BOLETO;
     Form7.ibDataSet7.DisableControls;
     {Sandro Silva 2023-06-16 fim}
-
   end;
 
   try
@@ -1938,7 +2090,8 @@ begin
             sColunaPosicionar := 'BANDEIRA';
           end;
 
-          if Trim(DBGrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) = '' then
+          if (Trim(DBGrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) = '')
+             and (not TestarPermiteTEF) then
           begin
             sMensagem := 'Informe o número da autorização do cartão de crédito/débito';
             iRecnoFormaErrada := DBGrid1.DataSource.DataSet.Recno;

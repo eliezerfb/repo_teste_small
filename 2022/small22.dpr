@@ -240,7 +240,10 @@ uses
   uIConsultaCEP in 'interfaces\uIConsultaCEP.pas',
   uConsultaCEP in 'units\uConsultaCEP.pas',
   uConfiguracaoTEFCommerce in 'uConfiguracaoTEFCommerce.pas' {frmConfiguracaoTEFCommerce},
-  uframeConfiguraTEF in '..\..\unit_compartilhada\frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame};
+  uframeConfiguraTEF in '..\..\unit_compartilhada\frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame},
+  uFuncoesTEF in 'units\uFuncoesTEF.pas',
+  uclassetransacaocartao in '..\..\unit_compartilhada\uclassetransacaocartao.pas',
+  uSelecionaTEF in 'uSelecionaTEF.pas' {frmSelecionaTEF};
 
 {$R *.RES}
 
