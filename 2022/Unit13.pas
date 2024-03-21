@@ -324,7 +324,7 @@ begin
     begin
       if BaixaQtd = 0  then
       begin
-        Label2.Caption    := 'Ok';
+        Label2.Caption    := 'OK';
       end else
       begin
         if BaixaQtd > 0

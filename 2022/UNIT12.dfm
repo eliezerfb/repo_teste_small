@@ -56,8 +56,6 @@ object Form12: TForm12
     ParentColor = False
     ParentFont = False
     TabOrder = 0
-    ExplicitWidth = 1020
-    ExplicitHeight = 898
     object Panel1: TPanel
       Left = 10
       Top = 10
@@ -2083,7 +2081,7 @@ object Form12: TForm12
         Top = 5
         Width = 100
         Height = 30
-        Caption = 'Ok'
+        Caption = 'OK'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13

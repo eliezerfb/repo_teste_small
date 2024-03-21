@@ -3301,7 +3301,7 @@ object Form24: TForm24
       Top = 760
       Width = 100
       Height = 30
-      Caption = 'Ok'
+      Caption = 'OK'
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -11

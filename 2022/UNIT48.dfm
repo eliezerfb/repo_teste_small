@@ -907,7 +907,7 @@ object Form48: TForm48
         Top = 4
         Width = 100
         Height = 30
-        Caption = 'Ok'
+        Caption = 'OK'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13

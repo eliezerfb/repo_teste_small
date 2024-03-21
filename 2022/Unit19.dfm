@@ -1479,7 +1479,7 @@ object Form19: TForm19
       Top = 5
       Width = 120
       Height = 25
-      Caption = 'Ok'
+      Caption = 'OK'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -11
