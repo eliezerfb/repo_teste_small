@@ -13,7 +13,7 @@ resourcestring
                     'A chave da sua NFe é <CHAVEACESSO> e você pode consultar a autenticidade deste documento juntamente no site www.nfe.fazenda.gov.br' + SLineBreak +
                     SLineBreak +
                     'Este e-mail foi enviado pelo sistema Small' + SLineBreak +
-                    SLineBreak +
+                    //SLineBreak + Mauricio Parizotto 2024-03-21
                     'www.smallsoft.com.br';
 
   _cMsgTextoEmailOrcamento = 'Você está recebendo neste e-mail o Orçamento <NUMERODOC>, emitido em <DATAEMISSAO>.' + SLineBreak +
