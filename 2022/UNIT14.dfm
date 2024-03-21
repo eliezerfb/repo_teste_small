@@ -4,8 +4,8 @@ object Form14: TForm14
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Assistente de relat'#243'rios'
-  ClientHeight = 212
-  ClientWidth = 392
+  ClientHeight = 220
+  ClientWidth = 450
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -21,8 +21,8 @@ object Form14: TForm14
   object Panel2: TPanel
     Left = 0
     Top = 0
-    Width = 392
-    Height = 212
+    Width = 450
+    Height = 220
     Align = alClient
     BevelOuter = bvNone
     BorderStyle = bsSingle
@@ -31,6 +31,8 @@ object Form14: TForm14
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
+    ExplicitWidth = 392
+    ExplicitHeight = 212
     object Image2: TImage
       Left = 47
       Top = 39
@@ -42,7 +44,7 @@ object Form14: TForm14
     end
     object Label1: TLabel
       Left = 200
-      Top = 10
+      Top = 33
       Width = 156
       Height = 13
       Caption = 'Selecione as colunas do relat'#243'rio'
@@ -55,7 +57,7 @@ object Form14: TForm14
     end
     object Label2: TLabel
       Left = 200
-      Top = 26
+      Top = 49
       Width = 84
       Height = 13
       Caption = 'na janela ao lado.'
@@ -68,7 +70,7 @@ object Form14: TForm14
     end
     object Label3: TLabel
       Left = 200
-      Top = 50
+      Top = 73
       Width = 161
       Height = 13
       Caption = 'Clique <Avan'#231'ar>  para continuar.'
@@ -81,16 +83,16 @@ object Form14: TForm14
     end
     object Image1: TImage
       Left = 205
-      Top = 72
+      Top = 95
       Width = 180
       Height = 45
       Visible = False
     end
     object Button2: TButton
-      Left = 23
-      Top = 170
+      Left = 121
+      Top = 176
       Width = 100
-      Height = 25
+      Height = 23
       Caption = 'Configura'#231#245'es'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -102,11 +104,11 @@ object Form14: TForm14
       OnClick = Button2Click
     end
     object Button1: TButton
-      Left = 146
-      Top = 170
+      Left = 225
+      Top = 176
       Width = 100
       Height = 23
-      Caption = 'Avan'#231'ar>'
+      Caption = 'Imprimir'
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -118,8 +120,8 @@ object Form14: TForm14
       OnClick = Button1Click
     end
     object Button3: TButton
-      Left = 270
-      Top = 170
+      Left = 329
+      Top = 176
       Width = 100
       Height = 23
       Caption = 'Cancelar'

@@ -3,21 +3,21 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
   Top = 312
   BorderIcons = []
   Caption = 'Pesquisa'
-  ClientHeight = 421
+  ClientHeight = 420
   ClientWidth = 975
   OnCreate = FormCreate
   OnShow = FormShow
   ExplicitWidth = 991
-  ExplicitHeight = 460
+  ExplicitHeight = 459
   PixelsPerInch = 96
   DesignSize = (
     975
-    421)
+    420)
   TextHeight = 16
   object lblTitulo2: TLabel
     Left = 20
-    Top = 82
-    Width = 933
+    Top = 78
+    Width = 937
     Height = 14
     AutoSize = False
     Caption = 'Titulo 2'
@@ -31,8 +31,8 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
   end
   object lblTitulo1: TLabel
     Left = 20
-    Top = 20
-    Width = 933
+    Top = 15
+    Width = 935
     Height = 19
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
@@ -46,8 +46,8 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
   end
   object edPesquisa: TEdit
     Left = 20
-    Top = 102
-    Width = 933
+    Top = 98
+    Width = 935
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     Color = clWhite
@@ -64,8 +64,8 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
   end
   object dtpFiltro: TDateTimePicker
     Left = 20
-    Top = 49
-    Width = 933
+    Top = 45
+    Width = 935
     Height = 24
     Anchors = [akLeft, akTop, akRight]
     BevelEdges = []
@@ -89,9 +89,9 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
   end
   object dbGridPrincipal: TDBGrid
     Left = 20
-    Top = 136
-    Width = 933
-    Height = 237
+    Top = 132
+    Width = 935
+    Height = 225
     Anchors = [akLeft, akTop, akRight]
     DataSource = DSPesquisa
     DrawingStyle = gdsClassic
@@ -113,12 +113,12 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     OnKeyDown = dbGridPrincipalKeyDown
   end
   object btnOK: TBitBtn
-    Left = 698
-    Top = 384
-    Width = 122
+    Left = 712
+    Top = 376
+    Width = 120
     Height = 25
     Anchors = [akLeft, akTop, akRight]
-    Caption = '&Ok'
+    Caption = '&OK'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -129,9 +129,9 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     OnClick = btnOKClick
   end
   object btnCancelar: TBitBtn
-    Left = 831
-    Top = 384
-    Width = 122
+    Left = 836
+    Top = 376
+    Width = 120
     Height = 25
     Anchors = [akLeft, akTop, akRight]
     Caption = '&Cancelar'
@@ -152,11 +152,11 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     ParamCheck = True
     PrecommittedReads = False
     Left = 144
-    Top = 160
+    Top = 156
   end
   object DSPesquisa: TDataSource
     DataSet = IBQPESQUISA
     Left = 184
-    Top = 160
+    Top = 156
   end
 end

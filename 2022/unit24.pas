@@ -1188,6 +1188,7 @@ begin
   Form7.ibDataSet4.DisableControls;
   Form7.ibDataSet23.DisableControls;
 
+
   Form24.Panel5.Visible := False;
   Form24.Panel9.Visible := False;
   try

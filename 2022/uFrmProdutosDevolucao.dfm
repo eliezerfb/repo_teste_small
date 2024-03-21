@@ -3,18 +3,18 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
   Top = 279
   BorderIcons = []
   Caption = 'Produtos Devolu'#231#227'o'
-  ClientHeight = 483
-  ClientWidth = 994
+  ClientHeight = 420
+  ClientWidth = 975
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitWidth = 1010
-  ExplicitHeight = 522
+  ExplicitWidth = 991
+  ExplicitHeight = 459
   PixelsPerInch = 96
   TextHeight = 16
   object lblTitulo: TLabel
-    Left = 16
-    Top = 11
+    Left = 20
+    Top = 15
     Width = 549
     Height = 19
     AutoSize = False
@@ -136,10 +136,10 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     Visible = False
   end
   object dbgPrincipal: TDBGrid
-    Left = 16
-    Top = 39
-    Width = 961
-    Height = 402
+    Left = 20
+    Top = 40
+    Width = 935
+    Height = 317
     Anchors = [akLeft, akTop, akRight]
     BiDiMode = bdLeftToRight
     Color = clWhite
@@ -182,12 +182,13 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Expanded = False
         FieldName = 'DESCRICAO'
         ReadOnly = True
-        Width = 302
+        Width = 287
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'QUANTIDADE'
+        Width = 66
         Visible = True
       end
       item
@@ -226,7 +227,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
         Expanded = False
         FieldName = 'VBCST'
         ReadOnly = True
-        Width = 68
+        Width = 67
         Visible = True
       end
       item
@@ -247,12 +248,12 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       end>
   end
   object btnOK: TBitBtn
-    Left = 718
-    Top = 448
-    Width = 126
+    Left = 712
+    Top = 376
+    Width = 120
     Height = 25
     Anchors = [akTop, akRight]
-    Caption = '&Ok'
+    Caption = '&OK'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -263,9 +264,9 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     OnClick = btnOKClick
   end
   object btnCancelar: TBitBtn
-    Left = 852
-    Top = 448
-    Width = 126
+    Left = 836
+    Top = 376
+    Width = 120
     Height = 25
     Anchors = [akTop, akRight]
     Caption = '&Cancelar'
@@ -279,9 +280,9 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     OnClick = btnCancelarClick
   end
   object BitBtn1: TBitBtn
-    Left = 16
-    Top = 448
-    Width = 126
+    Left = 19
+    Top = 376
+    Width = 130
     Height = 25
     Caption = 'Desmarcar todos'
     Font.Charset = ANSI_CHARSET

@@ -22,12 +22,12 @@ uses
   unit99 in 'unit99.pas' {Form99},
   uFrmParcelas in 'uFrmParcelas.pas' {FrmParcelas},
   Unit19 in 'Unit19.pas' {Form19},
-  Unit20 in 'Unit20.pas' {Form20},
+  uFrmAssistenteProcura in 'uFrmAssistenteProcura.pas' {FrmAssistenteProcura},
   Unit21 in 'Unit21.pas' {Form21},
   Unit22 in 'Unit22.pas' {Form22},
   Unit25 in 'Unit25.pas' {Form25},
   Unit26 in 'Unit26.pas' {Form26},
-  Unit27 in 'Unit27.pas' {Form27},
+  uFrmRelatorioFluxoCaixa in 'uFrmRelatorioFluxoCaixa.pas' {FrmRelatorioFluxoCaixa},
   Unit31 in 'Unit31.pas' {Form31},
   Unit32 in 'Unit32.pas' {Form32},
   Unit33 in 'Unit33.pas' {Form33},
@@ -312,11 +312,11 @@ begin
   Application.CreateForm(TForm16, Form16);
   Application.CreateForm(TForm99, Form99);
   //Application.CreateForm(TForm18, Form18);
-  Application.CreateForm(TForm20, Form20);
+  Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
   Application.CreateForm(TForm21, Form21);
   Application.CreateForm(TForm25, Form25);
   Application.CreateForm(TForm26, Form26);
-  Application.CreateForm(TForm27, Form27);
+  Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
   Application.CreateForm(TForm31, Form31);
   Application.CreateForm(TForm32, Form32);
   Application.CreateForm(TForm38, Form38);

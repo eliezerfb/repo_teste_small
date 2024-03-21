@@ -3,8 +3,8 @@ object frmExportaXML: TfrmExportaXML
   Top = 780
   BorderStyle = bsDialog
   Caption = 'Enviar XML'
-  ClientHeight = 293
-  ClientWidth = 445
+  ClientHeight = 280
+  ClientWidth = 518
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,82 +19,82 @@ object frmExportaXML: TfrmExportaXML
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
-    Left = 15
+    Left = 0
     Top = 15
-    Width = 121
-    Height = 97
-    AutoSize = True
+    Width = 174
+    Height = 127
+    Align = alCustom
     Center = True
     Transparent = True
   end
   object Label3: TLabel
-    Left = 200
+    Left = 180
     Top = 60
-    Width = 19
+    Width = 16
     Height = 13
-    Caption = 'At'#233':'
+    Caption = 'At'#233
   end
   object Label2: TLabel
-    Left = 200
+    Left = 180
     Top = 15
-    Width = 56
+    Width = 53
     Height = 13
-    Caption = 'Per'#237'odo de:'
+    Caption = 'Per'#237'odo de'
   end
   object Label4: TLabel
-    Left = 200
+    Left = 180
     Top = 177
     Width = 111
     Height = 13
     Caption = 'e-mail da contabilidade:'
   end
   object dtInicial: TDateTimePicker
-    Left = 200
+    Left = 180
     Top = 30
-    Width = 225
-    Height = 21
-    Date = 35796.000000000000000000
-    Time = 0.376154398101789400
+    Width = 212
+    Height = 20
+    Date = 401386.000000000000000000
+    Time = 0.376154398079961500
     DateFormat = dfLong
     TabOrder = 0
   end
   object dtFinal: TDateTimePicker
-    Left = 200
+    Left = 180
     Top = 75
-    Width = 225
-    Height = 21
+    Width = 212
+    Height = 20
     Date = 35796.000000000000000000
     Time = 0.376154398101789400
     DateFormat = dfLong
     TabOrder = 1
   end
   object edtEmailContab: TEdit
-    Left = 200
-    Top = 192
-    Width = 225
-    Height = 21
+    Left = 180
+    Top = 194
+    Width = 319
+    Height = 20
     TabOrder = 5
   end
   object btnAvancar: TButton
-    Left = 210
-    Top = 242
+    Left = 295
+    Top = 237
     Width = 100
-    Height = 25
-    Caption = '&Avan'#231'ar >'
+    Height = 24
+    Caption = '&Enviar'
     TabOrder = 6
     OnClick = btnAvancarClick
   end
   object btnCancelar: TButton
-    Left = 320
-    Top = 242
+    Left = 399
+    Top = 237
     Width = 100
-    Height = 25
+    Height = 24
     Caption = '&Cancelar'
     TabOrder = 7
     OnClick = btnCancelarClick
   end
   object cbNFeSaida: TCheckBox
-    Left = 200
+    Left = 180
     Top = 108
     Width = 112
     Height = 17
@@ -102,7 +102,7 @@ object frmExportaXML: TfrmExportaXML
     TabOrder = 2
   end
   object cbNFeEntrada: TCheckBox
-    Left = 200
+    Left = 180
     Top = 128
     Width = 112
     Height = 17
@@ -110,7 +110,7 @@ object frmExportaXML: TfrmExportaXML
     TabOrder = 3
   end
   object cbNFCeSAT: TCheckBox
-    Left = 200
+    Left = 180
     Top = 148
     Width = 112
     Height = 17

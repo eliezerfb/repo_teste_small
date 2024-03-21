@@ -85,7 +85,7 @@ begin
   //
   if (Copy(Form37.Caption,1,21) = 'Relatório de convênio') or (Form37.Caption = 'Receber convênio') then
   begin
-    Label2.Caption := 'Emitidas no período de:';
+    Label2.Caption := 'Emitidas no período de';
     if Copy(Form37.Caption,1,27) = 'Relatório de convênio TODOS'
       then Form37.Label1.Caption := 'Convênio: TODOS'
         else Form37.Label1.Caption := 'Convênio: ' + Copy(Form7.ibDataSet29NOME.AsString,1,20);
@@ -93,7 +93,7 @@ begin
     if Panel3.Visible then Edit1.SetFocus;
   end else
   begin
-    Label2.Caption := 'Período de:';
+    Label2.Caption := 'Período de';
     Label1.Caption := 'Vendedor: ' + Copy(Form7.ibDataSet9NOME.AsString,1,35);
     CheckBox2.Visible := True;
   end;
@@ -1411,13 +1411,11 @@ end;
 
 procedure TForm37.DBGrid3CellClick(Column: TColumn);
 begin
-  //
   Form37.Label1.Caption := 'Convênio: ' + Copy(Form7.ibDataSet29NOME.AsString,1,20);
   Edit1.Text := Form7.ibDataSet29NOME.AsString;
   Edit1.SetFocus;
   Form37.Panel3.Visible := False;
   Form37.Button1.SetFocus;
-  //
 end;
 
 procedure TForm37.DBGrid3KeyDown(Sender: TObject; var Key: Word;

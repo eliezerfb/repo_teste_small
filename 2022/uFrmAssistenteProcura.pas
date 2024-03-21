@@ -1,4 +1,4 @@
-unit Unit20;
+unit uFrmAssistenteProcura;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   StdCtrls, ComCtrls, ExtCtrls, smallfunc_xe,  DBGrids, DB, jpeg;
 
 type
-  TForm20 = class(TForm)
+  TFrmAssistenteProcura = class(TForm)
     Panel2: TPanel;
     Image1: TImage;
     Label3: TLabel;
@@ -47,7 +47,7 @@ type
   end;
 
 var
-  Form20: TForm20;
+  FrmAssistenteProcura: TFrmAssistenteProcura;
 
 implementation
 
@@ -55,9 +55,9 @@ uses Unit7, Mais, uDialogs;
 
 {$R *.DFM}
 
-procedure TForm20.FormActivate(Sender: TObject);
+procedure TFrmAssistenteProcura.FormActivate(Sender: TObject);
 begin
-  Form20.Image1.Picture := Form7.imgProcurar.Picture;
+  FrmAssistenteProcura.Image1.Picture := Form7.imgProcurar.Picture;
   
   Button3.Tag          :=0; //Botão voltar
   Button1.Tag          := 0;
@@ -92,11 +92,10 @@ begin
     Label5.Caption := Form7.ArquivoAberto.FieldByname(Form7.dBgrid1.SelectedField.FieldName).DisplayLabel+' com:';
     Edit1.SelectAll;
   end;
-  //
 end;
 
 
-procedure TForm20.Button1Click(Sender: TObject);
+procedure TFrmAssistenteProcura.Button1Click(Sender: TObject);
 var
   iReg      : Integer;
   bSair     : Boolean;
@@ -104,7 +103,7 @@ var
   CampoPK   : string;
 begin
   try
-    Form20.Button2.Tag := 0;
+    FrmAssistenteProcura.Button2.Tag := 0;
     Button3.Enabled    := False;
     Button1.Enabled    := False;
 
@@ -142,7 +141,7 @@ begin
             // Se clicar no botão cancelar para o processamento
             Application.ProcessMessages;
             //
-            if Form20.Button2.Tag = 1 then Abort;
+            if FrmAssistenteProcura.Button2.Tag = 1 then Abort;
             if ArquivoAberto.Eof then ArquivoAberto.First else ArquivoAberto.Next;
             if Copy(AllTrim(Format('%12.4n', [(StrToFloat(sProcura) - ArquivoAberto.FieldByName(dBgrid1.SelectedField.FieldName).AsFloat)])),1,4) = '0,00' then bSair := True;
             if iReg = ArquivoAberto.RecNo then bSair := True;
@@ -156,21 +155,19 @@ begin
         if Copy(AllTrim(Format('%12.4n', [(StrToFloat(sProcura) - ArquivoAberto.FieldByName(dBgrid1.SelectedField.FieldName).AsFloat)])),1,4) = '0,00' then
         begin
           MemoPesquisa.Text      := dBgrid1.SelectedField.AsString;
-          Form20.Button4.Enabled := True;
-          if Form20.Button4.Canfocus then Form20.Button4.SetFocus;
+          FrmAssistenteProcura.Button4.Enabled := True;
+          if FrmAssistenteProcura.Button4.Canfocus then FrmAssistenteProcura.Button4.SetFocus;
         end else
         begin
-          if Form20.Button2.CanFocus then Form20.Button2.SetFocus;
-          form20.Button1.Enabled := False;
+          if FrmAssistenteProcura.Button2.CanFocus then FrmAssistenteProcura.Button2.SetFocus;
+          FrmAssistenteProcura.Button1.Enabled := False;
           MemoPesquisa.Text := 'não cadastrado!';
           MemoPesquisa.Visible := True;
         end;
       end;
     end else
     begin
-      //
       // Não é um campo numérico
-      //
       if Pos('CGC',Form7.dBgrid1.SelectedField.FieldName) <> 0 then
       begin
         // CNPJ ou CPF
@@ -198,7 +195,7 @@ begin
         //sRegistro  := Form7.ArquivoAberto.FieldByName('REGISTRO').AsString; // Mauricio Parizotto 2023-12-04
         sRegistro  := Form7.ArquivoAberto.FieldByName(CampoPK).AsString;
 
-        if (not Form20.Button4.Enabled) then
+        if (not FrmAssistenteProcura.Button4.Enabled) then
         begin
           try
             Form7.TabelaAberta.Locate(Form7.dBgrid1.SelectedField.FieldName,form7.sProcura,[loCaseInsensitive, loPartialKey]);
@@ -207,7 +204,7 @@ begin
         end;
 
         if (pos(AnsiUpperCase(Form7.sProcura),AnsiUpperCase(Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString)) = 0)
-        or (Form20.Button4.Enabled) then
+        or (FrmAssistenteProcura.Button4.Enabled) then
         begin
           try
             //Form7.TabelaAberta.Locate('REGISTRO',sRegistro,[loCaseInsensitive, loPartialKey]); // Mauricio Parizotto 2023-12-04
@@ -216,78 +213,62 @@ begin
           end;
 
           iReg    := Form7.ArquivoAberto.RecNo;
-          //
+
           // faz um controle do botão voltar
-          //
-          if Form20.Button3.Tag=0 then
+          if FrmAssistenteProcura.Button3.Tag=0 then
           begin
              Form7.ArquivoAberto.Next;
              if Form7.ArquivoAberto.Eof then Form7.ArquivoAberto.First;
-          end else Form20.Button3.Tag:=0;
-          //
+          end else FrmAssistenteProcura.Button3.Tag:=0;
+
           // Ainda não encontrou
-          //
           if (pos(AnsiUpperCase(Form7.sProcura),AnsiUpperCase(Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString)) = 0) then
           begin
             bSair     := False;
             Form7.ArquivoAberto.DisableControls;
-            //
             // Procura De acordo com o campo selecionado
-            //
             if Form7.sProcura <> '' then
             begin
-              //
               // Inicia a procura
-              //
               Screen.Cursor  := crAppStart;  // Cursor de Aguardo
               //
               // Ainda não encontrou continua a procura
               //
               while (pos(AnsiUpperCase(Form7.sProcura),AnsiUpperCase(Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString)) = 0 ) and ( bSair = False ) do
               begin
-                //
                 // Se clicar no botão cancelar para o processamento
-                //
                 Application.ProcessMessages;
                 //
-                if Form20.Button2.Tag = 1 then Abort;
+                if FrmAssistenteProcura.Button2.Tag = 1 then Abort;
                 if Form7.ArquivoAberto.Eof then Form7.ArquivoAberto.First else Form7.ArquivoAberto.Next;
                 if iReg = Form7.ArquivoAberto.RecNo then bSair := True;
-                //
               end;
-              //
+
               Screen.Cursor  := crDefault;  // Cursor normal
-              //
             end;
-            //
+
             Form7.ArquivoAberto.EnableControls;
-            //
           end;
         end;
       end;
-      //
+
       // Encontrou
-      //
       if pos(AnsiUpperCase(Form7.sProcura),AnsiUpperCase(Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString)) <> 0 then
       begin
         MemoPesquisa.Lines.Clear;
         MemoPesquisa.Lines.Add(Form7.dBgrid1.SelectedField.AsString);
         MemoPesquisa.Visible:=True;
-        Form20.Button4.Enabled := True;
-        if form20.Button4.CanFocus then Form20.Button4.SetFocus;
-        //
+        FrmAssistenteProcura.Button4.Enabled := True;
+        if FrmAssistenteProcura.Button4.CanFocus then FrmAssistenteProcura.Button4.SetFocus;
       end else
       begin
-        //
         // Não encontrou
-        //
-        if form20.Button2.CanFocus then Form20.Button2.SetFocus;
-        Form20.Button1.Enabled := False;
+        if FrmAssistenteProcura.Button2.CanFocus then FrmAssistenteProcura.Button2.SetFocus;
         MemoPesquisa.Text := 'não cadastrado!';
         MemoPesquisa.Visible := True;
       end;
     end;  // Ve se é numerico
-    //
+
     if pos('não cadastrado',MemoPesquisa.Text)>0 then
     begin
       if Edit1.CanFocus then
@@ -298,22 +279,25 @@ begin
     end;
     Button3.Enabled := True; //cancelar
     Button1.Enabled := True; //avançar
-    //
-    if Form7.ArquivoAberto.MoveBy(+1) = 1 then Form7.ArquivoAberto.MoveBy(-1) else if Form7.ArquivoAberto.MoveBy(-1) = -1 then Form7.ArquivoAberto.MoveBy(+1);
-    //
-  except end;
-  //
+
+    if Form7.ArquivoAberto.MoveBy(+1) = 1 then
+      Form7.ArquivoAberto.MoveBy(-1)
+    else
+      if Form7.ArquivoAberto.MoveBy(-1) = -1 then
+        Form7.ArquivoAberto.MoveBy(+1);
+  except
+  end;
 end;
 
-procedure TForm20.Button2Click(Sender: TObject);
+procedure TFrmAssistenteProcura.Button2Click(Sender: TObject);
 begin
   Screen.Cursor  := crDefault;  // Cursor normal
   Form7.ArquivoAberto.EnableControls;
   Button2.Tag := 1;
-  Form20.close;
+  FrmAssistenteProcura.close;
 end;
 
-procedure TForm20.Button4Click(Sender: TObject);
+procedure TFrmAssistenteProcura.Button4Click(Sender: TObject);
 var
   I : Integer;
 begin
@@ -345,14 +329,13 @@ begin
         //
         if I = IDYES then
         begin
-          //
-          Form20.Button2.Tag := 0;
+          FrmAssistenteProcura.Button2.Tag := 0;
           Screen.Cursor  := crAppStart;  // Cursor de Aguardo
           Form7.ArquivoAberto.DisableControls;
           Form7.ArquivoAberto.First;
           while not Form7.ArquivoAberto.eof do
           begin
-            if Form20.Button2.Tag = 1 then Form7.ArquivoAberto.Last;
+            if FrmAssistenteProcura.Button2.Tag = 1 then Form7.ArquivoAberto.Last;
             if (pos(Edit2.Text,Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString) <> 0) or ((AllTrim(Edit2.Text) = '') and (Form7.ArquivoAberto.FieldByName(Form7.dBgrid1.SelectedField.FieldName).AsString='')) then
             begin
               Form7.ArquivoAberto.Edit;
@@ -374,58 +357,56 @@ begin
         end;
       end else
       begin
-        //ShowMessage('Não é possível substituir "'+Edit2.TExt+'" por "'+Edit3.TExt +'". Referencia circular.'); Mauricio Parizotto 2023-10-25
         MensagemSistema('Não é possível substituir "'+Edit2.TExt+'" por "'+Edit3.TExt +'". Referencia circular.',msgAtencao);
       end;
     end;
   except
     on E: Exception do
-      //ShowMessage('Erro 3 na procura: '+E.Message); Mauricio Parizotto 2023-10-25
       MensagemSistema('Erro 3 na procura: '+E.Message,msgErro);
   end;
   
-  Form20.close;
+  FrmAssistenteProcura.close;
 end;
 
 
-procedure TForm20.Edit1KeyPress(Sender: TObject; var Key: Char);
+procedure TFrmAssistenteProcura.Edit1KeyPress(Sender: TObject; var Key: Char);
 begin
   if Form7.DbGrid1.SelectedField.DataType = ftFloat then
      if Key = chr(46) then key := chr(44);
 end;
 
-procedure TForm20.Button3Click(Sender: TObject);
+procedure TFrmAssistenteProcura.Button3Click(Sender: TObject);
 begin
   Button3.Tag:=1;//
   Form7.ArquivoAberto.First;
-  Form20.Button1Click(Sender);
+  FrmAssistenteProcura.Button1Click(Sender);
 end;
 
 
-procedure TForm20.Edit1KeyDown(Sender: TObject; var Key: Word;
+procedure TFrmAssistenteProcura.Edit1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
   begin
     Perform(Wm_NextDlgCtl,0,0);
-    Form20.Button1.Click;
+    FrmAssistenteProcura.Button1.Click;
   end;
 end;
 
-procedure TForm20.Edit1Enter(Sender: TObject);
+procedure TFrmAssistenteProcura.Edit1Enter(Sender: TObject);
 begin
   Edit1.SelectAll;
 end;
 
-procedure TForm20.MemoPesquisaKeyDown(Sender: TObject; var Key: Word;  Shift: TShiftState);
+procedure TFrmAssistenteProcura.MemoPesquisaKeyDown(Sender: TObject; var Key: Word;  Shift: TShiftState);
 begin
   if Key = VK_RETURN then
   begin
-    Form20.Button4.Click;
+    FrmAssistenteProcura.Button4.Click;
   end;
 end;
 
-procedure TForm20.Edit2KeyDown(Sender: TObject; var Key: Word;
+procedure TFrmAssistenteProcura.Edit2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
@@ -434,7 +415,7 @@ begin
   end;
 end;
 
-procedure TForm20.Edit3KeyDown(Sender: TObject; var Key: Word;
+procedure TFrmAssistenteProcura.Edit3KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
@@ -443,7 +424,7 @@ begin
   end;
 end;
 
-procedure TForm20.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TFrmAssistenteProcura.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Panel1.Visible := False;
 end;

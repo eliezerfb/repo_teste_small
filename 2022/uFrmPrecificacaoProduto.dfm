@@ -3,18 +3,18 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
   Top = 274
   BorderIcons = []
   Caption = 'Precifica'#231#227'o dos Produtos'
-  ClientHeight = 483
-  ClientWidth = 896
+  ClientHeight = 420
+  ClientWidth = 975
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitWidth = 912
-  ExplicitHeight = 522
+  ExplicitWidth = 991
+  ExplicitHeight = 459
   PixelsPerInch = 96
   TextHeight = 16
   object lblTitulo: TLabel
-    Left = 16
-    Top = 11
+    Left = 20
+    Top = 15
     Width = 280
     Height = 19
     AutoSize = False
@@ -27,9 +27,9 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     ParentFont = False
   end
   object btnCancelar: TBitBtn
-    Left = 754
-    Top = 448
-    Width = 126
+    Left = 836
+    Top = 376
+    Width = 120
     Height = 25
     Anchors = [akTop, akRight]
     Caption = '&Cancelar'
@@ -43,12 +43,12 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     OnClick = btnCancelarClick
   end
   object btnOK: TBitBtn
-    Left = 620
-    Top = 448
-    Width = 126
+    Left = 712
+    Top = 376
+    Width = 120
     Height = 25
     Anchors = [akTop, akRight]
-    Caption = '&Ok'
+    Caption = '&OK'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -59,10 +59,10 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     OnClick = btnOKClick
   end
   object dbgPrincipal: TDBGrid
-    Left = 16
-    Top = 39
-    Width = 863
-    Height = 402
+    Left = 20
+    Top = 40
+    Width = 935
+    Height = 317
     Anchors = [akLeft, akTop, akRight]
     BiDiMode = bdLeftToRight
     Color = clWhite
@@ -95,7 +95,7 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
         Expanded = False
         FieldName = 'PRODUTO'
         ReadOnly = True
-        Width = 435
+        Width = 511
         Visible = True
       end
       item
@@ -128,8 +128,8 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       end>
   end
   object edtPercGeral: TEdit
-    Left = 300
-    Top = 9
+    Left = 304
+    Top = 13
     Width = 49
     Height = 21
     BevelInner = bvNone

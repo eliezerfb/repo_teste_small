@@ -1,11 +1,11 @@
-object Form20: TForm20
+object FrmAssistenteProcura: TFrmAssistenteProcura
   Left = 313
   Top = 696
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Assistente de procura'
-  ClientHeight = 202
-  ClientWidth = 447
+  ClientHeight = 220
+  ClientWidth = 450
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,8 +20,8 @@ object Form20: TForm20
   object Panel2: TPanel
     Left = 0
     Top = 0
-    Width = 447
-    Height = 202
+    Width = 450
+    Height = 220
     Align = alClient
     BevelOuter = bvNone
     Caption = ' '
@@ -30,9 +30,11 @@ object Form20: TForm20
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
+    ExplicitWidth = 447
+    ExplicitHeight = 202
     object Image1: TImage
-      Left = 18
-      Top = 23
+      Left = 42
+      Top = 30
       Width = 70
       Height = 70
       AutoSize = True
@@ -113,11 +115,11 @@ object Form20: TForm20
       OnKeyDown = MemoPesquisaKeyDown
     end
     object Button3: TButton
-      Left = 15
-      Top = 160
+      Left = 19
+      Top = 177
       Width = 100
-      Height = 23
-      Caption = '< &Voltar'
+      Height = 24
+      Caption = '< &Anterior'
       Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -129,11 +131,11 @@ object Form20: TForm20
       OnClick = Button3Click
     end
     object Button1: TButton
-      Left = 120
-      Top = 160
+      Left = 123
+      Top = 177
       Width = 100
-      Height = 23
-      Caption = '&Avan'#231'ar >'
+      Height = 24
+      Caption = '&Pr'#243'ximo >'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -11
@@ -144,11 +146,11 @@ object Form20: TForm20
       OnClick = Button1Click
     end
     object Button4: TButton
-      Left = 225
-      Top = 160
+      Left = 227
+      Top = 177
       Width = 100
-      Height = 23
-      Caption = '&Ok'
+      Height = 24
+      Caption = '&OK'
       Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -160,10 +162,10 @@ object Form20: TForm20
       OnClick = Button4Click
     end
     object Button2: TButton
-      Left = 330
-      Top = 160
+      Left = 331
+      Top = 177
       Width = 100
-      Height = 23
+      Height = 24
       Cursor = crArrow
       Caption = '&Cancelar'
       Font.Charset = DEFAULT_CHARSET
