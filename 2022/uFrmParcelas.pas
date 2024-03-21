@@ -1189,6 +1189,7 @@ begin
   oDataSetTemp := CriaIDataSet(Form7.IBTransaction1);
   oDataSet.DisableControls;
   try
+    oDataSetTemp.InsertSQL := oDataSet.InsertSQL;
     oDataSetTemp.Close;
     oDataSetTemp.Database := oDataSet.Database;
     oDataSetTemp.Selectsql.Clear;
@@ -1207,7 +1208,12 @@ begin
           // ser duplicado conforme as parcelas do TEF
           oDataSetTemp.Append;
           for I := 0 to Pred(oDataSet.Fields.Count) do
-            oDataSetTemp.FieldByName(oDataSet.Fields[i].FieldName).Value := oDataSet.Fields[i].Value;
+          begin
+            if oDataSet.Fields[i].FieldName <> 'REGISTRO' then
+              oDataSetTemp.FieldByName(oDataSet.Fields[i].FieldName).Value := oDataSet.Fields[i].Value
+            else
+              oDataSetTemp.FieldByName(oDataSet.Fields[i].FieldName).AsString := IntToStr(9999999000 + i); // Gera numero Temporario
+          end;
           oDataSetTemp.Post;
         end;
 
@@ -1217,22 +1223,40 @@ begin
         oDataSet.Next;
     end;
 
+
     oDataSetTemp.First;
+
+    // Vai gerar as parcelas
+    SMALL_DBEdit1.Text := AoDadosTransacao.QtdeParcela.ToString;
+    SMALL_DBEdit1Exit(Self);
+
     while not oDataSetTemp.Eof do
     begin
+      nValorParc := StrToFloat(FormatFloat('0.00', Int(((AoDadosTransacao.TotalPago/100)/AoDadosTransacao.QtdeParcela) * 100)));
+
+      nRestoParc := 0;
+
+      if (nValorParc * AoDadosTransacao.QtdeParcela) <> AoDadosTransacao.TotalPago then
+        nRestoParc := AoDadosTransacao.TotalPago - (nValorParc * AoDadosTransacao.QtdeParcela);
+
       for x := 1 to AoDadosTransacao.QtdeParcela do
       begin
-        nValorParc := StrToFloat(FormatFloat('0.00', (Int(((AoDadosTransacao.TotalPago/100)/AoDadosTransacao.QtdeParcela) * 100) / 100)));
-
         oDataSet.Append;
         for I := 0 to Pred(oDataSetTemp.Fields.Count) do
-          oDataSet.FieldByName(oDataSet.Fields[i].FieldName).Value := oDataSetTemp.Fields[i].Value;
+        begin
+          if oDataSetTemp.Fields[i].FieldName <> 'REGISTRO' then
+            oDataSet.FieldByName(oDataSetTemp.Fields[i].FieldName).Value := oDataSetTemp.Fields[i].Value;
+        end;
 
-        oDataSet.FieldByName('VALOR_DUPL').AsCurrency         := nValorParc;
+        if x = 1 then
+          oDataSet.FieldByName('VALOR_DUPL').AsCurrency         := nValorParc
+        else
+          oDataSet.FieldByName('VALOR_DUPL').AsCurrency         := nValorParc + nRestoParc;
         oDataSet.FieldByName('BANDEIRA').AsString             := AoDadosTransacao.NomeRede;
         oDataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString := AoDadosTransacao.Autoriza;
         oDataSet.Post;
       end;
+      oDataSetTemp.Next;
     end;
   finally
     oDataSet.First;
