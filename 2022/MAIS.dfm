@@ -13882,7 +13882,7 @@ object Form1: TForm1
         OnClick = SQLMododecomando1Click
       end
       object Limparmovimento1: TMenuItem
-        Caption = 'Limpar movimento... '
+        Caption = 'Limpar movimento'
         Visible = False
       end
       object este1: TMenuItem
@@ -13899,7 +13899,7 @@ object Form1: TForm1
       end
       object Plugin1: TMenuItem
         AutoHotkeys = maManual
-        Caption = 'Plug-in...'
+        Caption = 'Plug-in'
       end
     end
     object Usurios1: TMenuItem

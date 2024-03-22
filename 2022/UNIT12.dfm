@@ -56,8 +56,6 @@ object Form12: TForm12
     ParentColor = False
     ParentFont = False
     TabOrder = 0
-    ExplicitWidth = 1020
-    ExplicitHeight = 898
     object Panel1: TPanel
       Left = 10
       Top = 10
@@ -2321,15 +2319,15 @@ object Form12: TForm12
     Left = 680
     Top = 6
     object ImportarOS2: TMenuItem
-      Caption = 'Importar Ordem de Servi'#231'o...'
+      Caption = 'Importar Ordem de Servi'#231'o'
       OnClick = ImportarOS2Click
     end
     object Emitirnotafiscaldevendasnobalco1: TMenuItem
-      Caption = 'Importar Cupom....'
+      Caption = 'Importar Cupom'
       OnClick = Emitirnotafiscaldevendasnobalco1Click
     end
     object Importaroramentos1: TMenuItem
-      Caption = 'Importar Or'#231'amento...'
+      Caption = 'Importar Or'#231'amento'
       OnClick = Importaroramentos1Click
     end
     object N1: TMenuItem
@@ -2337,12 +2335,12 @@ object Form12: TForm12
       Visible = False
     end
     object Incluirnovoitemnoestoque1: TMenuItem
-      Caption = 'Incluir novo item no estoque...'
+      Caption = 'Incluir novo item no estoque'
       Visible = False
       OnClick = Incluirnovoitemnoestoque1Click
     end
     object Incluirnovocliente1: TMenuItem
-      Caption = 'Incluir novo cliente...'
+      Caption = 'Incluir novo cliente'
       Visible = False
       OnClick = Incluirnovocliente1Click
     end
