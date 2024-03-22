@@ -18034,11 +18034,11 @@ object Form7: TForm7
     Left = 656
     Top = 144
     object Colunas1: TMenuItem
-      Caption = '&Colunas...'
+      Caption = '&Colunas'
       OnClick = Colunas1Click
     end
     object Agrupar1: TMenuItem
-      Caption = 'Agrupar...'
+      Caption = 'Agrupar'
       Visible = False
       OnClick = Agrupar1Click
     end
@@ -18046,11 +18046,11 @@ object Form7: TForm7
       Caption = '-'
     end
     object Editar1: TMenuItem
-      Caption = '&Alterar...'
+      Caption = '&Alterar'
       OnClick = Image106Click
     end
     object Apagar2: TMenuItem
-      Caption = 'E&xcluir...'
+      Caption = 'E&xcluir'
       OnClick = Image102Click
     end
     object N2: TMenuItem
@@ -18065,7 +18065,7 @@ object Form7: TForm7
       OnClick = Imprimirrecibo3Click
     end
     object Receberestaconta1: TMenuItem
-      Caption = 'Receber esta conta...'
+      Caption = 'Receber esta conta'
       OnClick = DBGrid1DblClick
     end
     object Baixaestacontanobanco1: TMenuItem
@@ -18073,7 +18073,7 @@ object Form7: TForm7
       OnClick = Baixaestacontanobanco1Click
     end
     object Pagarestaconta1: TMenuItem
-      Caption = 'Pagar esta conta...'
+      Caption = 'Pagar esta conta'
       OnClick = DBGrid1DblClick
     end
     object N53: TMenuItem
