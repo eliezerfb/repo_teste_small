@@ -9,8 +9,8 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitWidth = 864
-  ExplicitHeight = 674
+  ExplicitWidth = 858
+  ExplicitHeight = 657
   PixelsPerInch = 96
   TextHeight = 16
   object Panel_branco: TPanel

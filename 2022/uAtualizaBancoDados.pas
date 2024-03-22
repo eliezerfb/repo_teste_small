@@ -2434,6 +2434,29 @@ begin
   {Mauricio Parizotto 2024-02-28 Fim}
 
 
+  {Mauricio Parizotto 2024-03-22 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO', 'CONSIDERACSTCSOSN') = False then
+  begin
+    if ExecutaComando('Alter table CFOPCONVERSAO add CONSIDERACSTCSOSN VARCHAR(1);') then
+      ExecutaComando('Commit');
+
+    if ExecutaComando('Update CFOPCONVERSAO set CONSIDERACSTCSOSN = ''N'';') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO', 'CST') = False then
+  begin
+    if ExecutaComando('Alter table CFOPCONVERSAO add CST VARCHAR(2);') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO', 'CST') = False then
+  begin
+    if ExecutaComando('Alter table CFOPCONVERSAO add CSOSN VARCHAR(3);') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-03-22 Fim}
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 

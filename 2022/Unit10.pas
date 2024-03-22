@@ -550,7 +550,6 @@ type
       Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure DBGrid3CellClick(Column: TColumn);
     procedure ComboBoxEnter(Sender: TObject);
-    procedure SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
     procedure DBGrid4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure WebBrowser1NavigateComplete2(ASender: TObject;
@@ -6404,25 +6403,6 @@ begin
   if Form7.sModulo = 'RECEBER' then
     AlteracaoInstituicaoFinanceira;
 
-  //Valida Campos - se um tiver preenchido valida o outro
-  if Form7.sModulo = 'CONVERSAOCFOP' then
-  begin
-    if (Trim(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) <> '') or (Trim(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) <> '') then
-    begin
-      if Length(Form7.ibdConversaoCFOPCFOP_ORIGEM.AsString) <> 4 then
-      begin
-        Form7.ibdConversaoCFOPCFOP_ORIGEM.FocusControl;
-        Exit;
-      end;
-
-      if Length(Form7.ibdConversaoCFOPCFOP_CONVERSAO.AsString) <> 4 then
-      begin
-        Form7.ibdConversaoCFOPCFOP_CONVERSAO.FocusControl;
-        Exit;
-      end;
-    end;
-  end;
-
   Orelha_cadastro.Visible := True;
   Orelhas.ActivePage := Orelha_cadastro;
   Close;
@@ -7979,12 +7959,6 @@ begin
   except
   end;
         
-end;
-
-procedure TForm10.SMALL_DBEdit1KeyPress(Sender: TObject; var Key: Char);
-begin
-  if Form7.sModulo = 'CONVERSAOCFOP' then
-    ValidaValor(Sender,Key,'I');
 end;
 
 procedure TForm10.CarregaCit;

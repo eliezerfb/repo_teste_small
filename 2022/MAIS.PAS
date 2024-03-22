@@ -10695,6 +10695,10 @@ begin
   if Form7.sModulo = 'ICM' then
     Exit;
 
+  //Mauricio Parizotto 2024-03-21
+  if Form7.sModulo = 'CONVERSAOCFOP' then
+    Exit;
+
   if AllTrim(Form7.sModulo) <> '' then
   begin
     if ((Form7.sModulo = 'VENDA') or (Form7.sModulo = 'DESCONTO') or (Form7.sModulo = 'DESCONTO1')) or ((Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'FRETE')) then
@@ -11313,6 +11317,10 @@ begin
 
   //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'ICM' then
+    Exit;
+
+  //Mauricio Parizotto 2024-03-21
+  if Form7.sModulo = 'CONVERSAOCFOP' then
     Exit;
 
   if Form5.Visible then

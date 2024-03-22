@@ -21575,7 +21575,7 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21611,7 +21611,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21933,7 +21933,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21964,7 +21964,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -22354,6 +22354,7 @@ object Form7: TForm7
     BeforeDelete = ibdConversaoCFOPBeforeDelete
     BeforeEdit = ibdConversaoCFOPBeforeEdit
     BeforeInsert = ibdConversaoCFOPBeforeInsert
+    BeforePost = ibdConversaoCFOPBeforePost
     OnDeleteError = IBDataSet2DeleteError
     OnEditError = IBDataSet2EditError
     OnNewRecord = ibdConversaoCFOPNewRecord
@@ -22366,14 +22367,21 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     InsertSQL.Strings = (
       'insert into CFOPCONVERSAO'
-      '  (CFOP_ORIGEM, CFOP_CONVERSAO, REGISTRO)'
+      
+        '  (CFOP_ORIGEM, CFOP_CONVERSAO, REGISTRO,CONSIDERACSTCSOSN,CST,C' +
+        'SOSN)'
       'values'
-      '  (:CFOP_ORIGEM, :CFOP_CONVERSAO,:REGISTRO)')
+      
+        '  (:CFOP_ORIGEM, :CFOP_CONVERSAO,:REGISTRO,:CONSIDERACSTCSOSN,:C' +
+        'ST,:CSOSN)')
     RefreshSQL.Strings = (
       'Select '
       '  C.CFOP_ORIGEM, '
       '  C.CFOP_CONVERSAO,'
-      '  C.REGISTRO'
+      '  C.REGISTRO,'
+      '  C.CONSIDERACSTCSOSN,'
+      '  C.CST,'
+      '  C.CSOSN'
       'from CFOPCONVERSAO C'
       'where'
       '  C.REGISTRO = :REGISTRO')
@@ -22385,7 +22393,10 @@ object Form7: TForm7
       'update CFOPCONVERSAO'
       'set'
       '  CFOP_ORIGEM= :CFOP_ORIGEM,'
-      '  CFOP_CONVERSAO= :CFOP_CONVERSAO'
+      '  CFOP_CONVERSAO= :CFOP_CONVERSAO,'
+      '  CONSIDERACSTCSOSN=:CONSIDERACSTCSOSN,'
+      '  CST=:CST,'
+      '  CSOSN=:CSOSN'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -22400,6 +22411,17 @@ object Form7: TForm7
       OnSetText = ibdConversaoCFOPCFOP_ORIGEMSetText
       Size = 4
     end
+    object ibdConversaoCFOPCST: TIBStringField
+      DisplayWidth = 2
+      FieldName = 'CST'
+      Origin = 'CFOPCONVERSAO.CST'
+      Size = 2
+    end
+    object ibdConversaoCFOPCSOSN: TIBStringField
+      FieldName = 'CSOSN'
+      Origin = 'CFOPCONVERSAO.CSOSN'
+      Size = 3
+    end
     object ibdConversaoCFOPCFOP_CONVERSAO: TIBStringField
       DisplayLabel = 'CFOP Convers'#227'o'
       DisplayWidth = 6
@@ -22413,6 +22435,12 @@ object Form7: TForm7
       Required = True
       Visible = False
       Size = 10
+    end
+    object ibdConversaoCFOPCONSIDERACSTCSOSN: TIBStringField
+      FieldName = 'CONSIDERACSTCSOSN'
+      Origin = 'CFOPCONVERSAO.CONSIDERACSTCSOSN'
+      Visible = False
+      Size = 1
     end
   end
   object mmPerfilTributa: TMainMenu

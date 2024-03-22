@@ -238,7 +238,8 @@ uses
   uSistema in 'units\uSistema.pas',
   uObjetoConsultaCEP in 'units\uObjetoConsultaCEP.pas',
   uIConsultaCEP in 'interfaces\uIConsultaCEP.pas',
-  uConsultaCEP in 'units\uConsultaCEP.pas';
+  uConsultaCEP in 'units\uConsultaCEP.pas',
+  uFrmConversaoCFOP in 'uFrmConversaoCFOP.pas' {FrmConversaoCFOP};
 
 {$R *.RES}
 
