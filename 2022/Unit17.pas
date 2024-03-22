@@ -389,7 +389,7 @@ begin
                      );
     except
       on e:exception do
-        MensagemSistema(e.Message, msgInformacao);
+        MensagemSistema(e.Message, msgAtencao);
     end;
   end;
 end;
