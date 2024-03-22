@@ -2450,7 +2450,7 @@ begin
       ExecutaComando('Commit');
   end;
 
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO', 'CST') = False then
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO', 'CSOSN') = False then
   begin
     if ExecutaComando('Alter table CFOPCONVERSAO add CSOSN VARCHAR(3);') then
       ExecutaComando('Commit');
