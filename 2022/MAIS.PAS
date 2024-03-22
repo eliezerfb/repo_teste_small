@@ -4437,6 +4437,11 @@ begin
 
   //Mauricio Parizotto 2023-09-22
   CarregaIconesSistema;
+
+  //Mauricio Parizotto 2024-03-19
+  VersodolayoutdaNFE1.Visible  := False;
+  HorarioDeVerao.Visible       := False;
+  Enviardanfeporemail1.Visible := False;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
