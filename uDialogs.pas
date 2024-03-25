@@ -42,7 +42,7 @@ end;
 
 procedure MensagemSistema(Mensagem:string; Tipo : TmensagemSis = msgInformacao);
 begin
-  Application.MessageBox(pChar(Mensagem), Pchar(RetornarIconTipoMensagem(Tipo)), mb_Ok + RetornarIconTipoMensagem(Tipo));
+  Application.MessageBox(pChar(Mensagem), Pchar(RetornarTituloMsg(Tipo)), mb_Ok + RetornarIconTipoMensagem(Tipo));
 end;
 
 function MensagemSistemaPergunta(AcMensagem: String; AaFlags: array of Longint): Integer;
