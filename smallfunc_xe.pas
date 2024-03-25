@@ -989,10 +989,14 @@ begin
       If Length(sFon) > 10 then
       begin
 //        Fone :='';
+        {2024-03-20
+        // Não faz sentido validar se na variável sFon tem um caracter vírguala porque sFon recebe somente os números do texto do fone, está usando LimpaNumero()
         if Pos(',',sFon)>0 then
           sFon := LimpaNumero(Copy(sFon,1,11))
         else
           sFon := LimpaNumero(Copy(sFon,1,10));
+        }
+        sFon := LimpaNumero(Copy(sFon, 1, 11));
         ////
         sFon := trim('(0xx'+Copy(sFon,1,2)+')'+Copy(sFon,3,15));
         Fone := sFon;
