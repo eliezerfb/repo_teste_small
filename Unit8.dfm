@@ -7,6 +7,7 @@ object Form8: TForm8
   ClientHeight = 342
   ClientWidth = 514
   Color = clWhite
+  Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -110,6 +111,7 @@ object Form8: TForm8
     Anchors = [akLeft, akTop, akRight, akBottom]
     ColCount = 6
     DefaultRowHeight = 18
+    DrawingStyle = gdsClassic
     FixedCols = 0
     RowCount = 18
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine]
