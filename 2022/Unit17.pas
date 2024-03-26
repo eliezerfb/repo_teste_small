@@ -389,12 +389,7 @@ begin
                      );
     except
       on e:exception do
-      begin
-        MensagemSistema(e.Message, msgErro);
-
-        if FcCEPAtual <> SMALL_DBEdit5.Text then
-          SMALL_DBEdit5.DataSource.DataSet.FieldByName(SMALL_DBEdit5.DataField).AsString := FcCEPAtual;
-      end;
+        MensagemSistema(e.Message, msgAtencao);
     end;
   end;
 end;
