@@ -85,6 +85,7 @@ const
   _cIdentiPadraoCidade = 'Padrao'; // Sandro Silva 2023-10-02
   _cIdentNFSEAmbiente = 'Ambiente';
   _cObsNaDescricaoNFSE  = 'Observação na descrição';
+  _cCalculoDoDescontoPeloProvedor = 'Cálculo desconto no provedor';
 
   //OS
   _cSectionOS = 'OS';

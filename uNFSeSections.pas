@@ -32,9 +32,12 @@ type
     function getObsNaDescricao: Boolean;
     function getConfObsNaDescricao: string;
     procedure setObsNaDescricao(const Value: Boolean);
+    function getCalculoDoDescontoPeloProvedor: string;
+    procedure setCalculoDoDescontoPeloProvedor(const Value: string);
   public
     property ObsNaDescricao: Boolean read getObsNaDescricao write setObsNaDescricao;
     property ConfObsNaDescricao: string read getConfObsNaDescricao;
+    property CalculoDoDescontoPeloProvedor: string read getCalculoDoDescontoPeloProvedor write setCalculoDoDescontoPeloProvedor;
   protected
   end;
 
@@ -80,6 +83,11 @@ end;
 
 { TSectionNFSE_BD }
 
+function TSectionNFSE_BD.getCalculoDoDescontoPeloProvedor: string;
+begin
+  Result := getValorBD(_cCalculoDoDescontoPeloProvedor);
+end;
+
 function TSectionNFSE_BD.getConfObsNaDescricao: string;
 begin
   Result := getValorBD(_cObsNaDescricaoNFSE);
@@ -88,6 +96,13 @@ end;
 function TSectionNFSE_BD.getObsNaDescricao: Boolean;
 begin
   Result := getValorBD(_cObsNaDescricaoNFSE) = '1';
+end;
+
+procedure TSectionNFSE_BD.setCalculoDoDescontoPeloProvedor(const Value: string);
+begin
+  setValorBD(_cCalculoDoDescontoPeloProvedor,
+             'Algumas prefeitura aplicam calculam o desconto ao autorizarem a NFSe',
+             Value);
 end;
 
 procedure TSectionNFSE_BD.setObsNaDescricao(const Value: Boolean);
