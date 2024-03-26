@@ -26802,11 +26802,11 @@ begin
 
             if bEnviar then
             begin
-              _ecf65_EnviarEMail('',sEmail,'',sAssuntoEmail,
+              _ecf65_EnviarEMail('', sEmail, '', sAssuntoEmail,
                 (sBodyEmail+AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+'.'
                 +' Período de '+DateToStr(Form7.DateTimePicker1.Date)+' até '+DateToStr(Form7.DateTimePicker2.Date)+'.')
                 , (sFileZIP)
-                ,False);
+                , False);
             end;
           end;
           if (Form7.CheckBox2.Checked) then
