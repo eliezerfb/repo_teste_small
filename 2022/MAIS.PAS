@@ -277,6 +277,7 @@ type
     Parmetrosdetributao1: TMenuItem;
     EnvioautomticodeXML1: TMenuItem;
     Observaonadescriodosservios1: TMenuItem;
+    Clculododescontopeloprovedor1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -446,6 +447,7 @@ type
     procedure WebBrowser1DocumentComplete(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
     procedure FormDestroy(Sender: TObject);
+    procedure Clculododescontopeloprovedor1Click(Sender: TObject);
 
 
   private
@@ -8857,6 +8859,30 @@ begin
   end;
 end;
 
+procedure TForm1.Clculododescontopeloprovedor1Click(Sender: TObject);
+var
+  ConfSistema: TArquivosDAT;
+  IBTransaction: TIBTransaction;
+begin
+  try
+    IBTransaction := CriaIBTransaction(Form7.ibDataSet13.Transaction.DefaultDatabase);
+    ConfSistema := TArquivosDAT.Create(Usuario, IBTransaction);
+    try
+      ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor := IfThen(Clculododescontopeloprovedor1.Checked, 'Não', 'Sim');
+      IBTransaction.Commit;
+    except
+      on E: Exception do
+      begin
+        IBTransaction.Rollback;
+        MensagemSistema('Não foi possível configurar', msgAtencao);
+      end;
+    end;
+  finally
+    FreeAndNil(ConfSistema);
+    FreeAndNil(IBTransaction);
+  end;
+end;
+
 procedure TForm1.ClickOKInformacoesInutilizacao(Sender: TObject);
 begin
   if StrToIntDef(Form29.Edit_01.Text,0) = 0 then
@@ -12484,12 +12510,24 @@ end;
 procedure TForm1.Observaonadescriodosservios1Click(Sender: TObject);
 var
   ConfSistema : TArquivosDAT;
+  IBTransaction: TIBTransaction;
 begin
   try
-    ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
-    ConfSistema.BD.NFSE.ObsNaDescricao := not(ConfSistema.BD.NFSE.ObsNaDescricao);
+    IBTransaction := CriaIBTransaction(Form7.ibDataSet13.Transaction.DefaultDatabase);
+    ConfSistema := TArquivosDAT.Create(Usuario, IBTransaction); // Transação isolada para alteração ficar visível aos outros usuários Sandro Silva 2024-03-26 ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
+    try
+      ConfSistema.BD.NFSE.ObsNaDescricao := not(ConfSistema.BD.NFSE.ObsNaDescricao);
+      IBTransaction.Commit;
+    except
+      on E: Exception do
+      begin
+        IBTransaction.Rollback;
+        MensagemSistema('Não foi possível configurar', msgAtencao);
+      end;
+    end;
   finally
     FreeAndNil(ConfSistema);
+    FreeAndNil(IBTransaction);
   end;
 end;
 
@@ -12515,6 +12553,7 @@ begin
   try
     ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
     Observaonadescriodosservios1.Checked := ConfSistema.BD.NFSE.ObsNaDescricao;
+    Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim';
   finally
     FreeAndNil(ConfSistema);
   end;
