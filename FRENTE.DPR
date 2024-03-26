@@ -78,8 +78,8 @@ uses
   usmallsat in 'usmallsat.pas',
   uEmail in '..\unit_compartilhada\uEmail.pas',
   uITestaEmail in '..\unit_compartilhada\interfaces\uITestaEmail.pas',
-  uTestaEmail in '..\unit_compartilhada\uTestaEmail.pas'
-  ;
+  uTestaEmail in '..\unit_compartilhada\uTestaEmail.pas',
+  CAPICOM_TLB_xe in '..\unit_compartilhada\CAPICOM_TLB_xe.pas';
 
 {$R *.RES}
 

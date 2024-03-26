@@ -2851,7 +2851,7 @@ begin
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + Chr(10) + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
-        EnviarEMail('',sEmail,'','XML do Cupom Fiscal Eletrônico - SAT',PansiChar(sTextoCorpoEmail),PansiChar(sFileXML),False);
+        EnviarEMail('', sEmail, '', PChar('XML do Cupom Fiscal Eletrônico - SAT'), PChar(sTextoCorpoEmail), PChar(sFileXML), False); // Sandro Silva 2024-03-26 EnviarEMail('',sEmail,'','XML do Cupom Fiscal Eletrônico - SAT',PansiChar(sTextoCorpoEmail),PansiChar(sFileXML),False);
       end;
 
       if FileExists(sFileCFeSAT) then
@@ -2860,7 +2860,8 @@ begin
         if Form1.sPropaganda <> '' then
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + Chr(10) + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
-        EnviarEMail('',sEmail,'','Extrato Cupom Fiscal Eletrônico',PansiChar(sTextoCorpoEmail),PansiChar(sFileCFeSAT),False); // Sandro Silva 2018-07-03 EnviarEMail('',sEmail,'','Extrato Cupom Fiscal Eletrônico - SAT',pchar(sTextoCorpoEmail),pChar(sFileCFeSAT),False);
+        EnviarEMail('', sEmail, '', PChar('Extrato Cupom Fiscal Eletrônico'), PChar(sTextoCorpoEmail), PChar(sFileCFeSAT), False); // Sandro Silva 2024-03-26 EnviarEMail('',sEmail,'','Extrato Cupom Fiscal Eletrônico',PansiChar(sTextoCorpoEmail),PansiChar(sFileCFeSAT),False);
+
       end;
 
     end
@@ -2876,14 +2877,14 @@ begin
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + Chr(10) + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
 
-        EnviarEMail('', sEmail, '', 'Extrato Cupom Fiscal Eletrônico e XML', PansiChar(sTextoCorpoEmail),PansiChar(sZipFile), False); // Sandro Silva 2018-07-03 EnviarEMail('', sEmail, '', 'Extrato Cupom Fiscal Eletrônico - SAT e XML', pchar(sTextoCorpoEmail),pChar(sZipFile), False);
+        EnviarEMail('', sEmail, '', PChar('Extrato Cupom Fiscal Eletrônico e XML'), PChar(sTextoCorpoEmail), PChar(sZipFile), False); //Sandro Silva 2024-03-26 EnviarEMail('', sEmail, '', 'Extrato Cupom Fiscal Eletrônico e XML', PansiChar(sTextoCorpoEmail),PansiChar(sZipFile), False);
       end;
     end;
 
     {Sandro Silva 2022-09-02 inicio
     if Form1.Panel3.Visible then
       Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible := False;
-    }   
+    }
   end;
   {Sandro Silva 2022-09-02 inicio}
   if Form1.Panel3.Visible then

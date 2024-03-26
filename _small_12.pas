@@ -2,6 +2,10 @@
 Alterações
 Sandro Silva 2016-02-04
 - Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+
+Sandro Silva 2024-03-15
+- Compatibilizado para compilar com Delphi 11, mas falta testar com ECF
+
 }
 unit _Small_12;
 
@@ -36,17 +40,17 @@ uses
 
   function  DLLG2_DefineTimeout(MHandle: integer; TempoMaximo: integer): integer; stdcall; external 'DLLG2.DLL';
   function  DLLG2_LeTimeout(Porta: Integer): Integer; stdcall; external 'dllg2.dll';
-  function  DLLG2_IniciaDriver(porta: AnsiString): integer; stdcall; external 'DLLG2.DLL';
+  function  DLLG2_IniciaDriver(porta: PAnsiChar): integer; stdcall; external 'DLLG2.DLL';
   function  DLLG2_EncerraDriver(MHandle: integer): integer; stdcall; external 'DLLG2.DLL';
   function  DLLG2_Versao(Versao: PAnsiChar; TamVersao: integer): PAnsiChar; stdcall; external 'DLLG2.DLL';
   function  DLLG2_SetaArquivoLog(NomeArquivoLog: PAnsiChar):integer; stdcall;external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_SetaArquivoLog(NomeArquivoLog: Pchar):integer; stdcall;external 'DLLG2.DLL';
   function  DLLG2_LimpaParams(MHandle:integer):integer; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_AdicionaParam(MHandle:integer; NomePar: PAnsiChar;VlrPar:Pchar;TipoPar:integer):integer; stdcall;external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_AdicionaParam(MHandle:integer;NomePar:Pchar;VlrPar:Pchar;TipoPar:integer):integer; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_ExecutaComando(MHandle:integer;Comando: PAnsiChar):integer; stdcall;external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_ExecutaComando(MHandle:integer;Comando:pchar):integer; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_ObtemCodErro(MHandle:integer):integer;stdcall;external 'DLLG2.DLL';
-  function  DLLG2_Retorno(MHandle,Indice:integer;NomeRetorno: PAnsiChar;TamNomeRetorno:integer; VlrRetorno: PAnsiChar; TamVlrRetorno: integer): integer; stdcall; external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_Retorno(MHandle,Indice:integer;NomeRetorno:pchar;TamNomeRetorno:integer;VlrRetorno:pchar;TamVlrRetorno:integer):integer; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_ObtemNomeErro(MHandle:integer;NomeErro: PAnsiChar; TamNomeErro: integer): PAnsiChar; stdcall;external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_ObtemNomeErro(MHandle:integer;NomeErro:pchar;TamNomeErro:integer):pchar; stdcall;external 'DLLG2.DLL';
-  function  DLLG2_ObtemCircunstancia(MHandle:integer; Circunstancia: PAnsiChar; TamNomeCircus: integer): PAnsiChar; stdcall;external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_ObtemCircunstancia(MHandle:integer;Circunstancia:pchar;TamNomeCircus:integer):pchar; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_AdicionaParam(MHandle:integer; NomePar: PAnsiChar; VlrPar: PAnsiChar; TipoPar: integer): integer; stdcall; external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_AdicionaParam(MHandle:integer;NomePar:Pchar;VlrPar:Pchar;TipoPar:integer):integer; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_ExecutaComando(MHandle:integer; Comando: PAnsiChar): integer; stdcall; external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_ExecutaComando(MHandle:integer;Comando:pchar):integer; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_ObtemCodErro(MHandle: integer):integer;stdcall;external 'DLLG2.DLL';
+  function  DLLG2_Retorno(MHandle,Indice: integer; NomeRetorno: PAnsiChar;TamNomeRetorno: integer; VlrRetorno: PAnsiChar; TamVlrRetorno: integer): integer; stdcall; external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_Retorno(MHandle,Indice:integer;NomeRetorno:pchar;TamNomeRetorno:integer;VlrRetorno:pchar;TamVlrRetorno:integer):integer; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_ObtemNomeErro(MHandle: integer; NomeErro: PAnsiChar; TamNomeErro: integer): PAnsiChar; stdcall; external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_ObtemNomeErro(MHandle:integer;NomeErro:pchar;TamNomeErro:integer):pchar; stdcall;external 'DLLG2.DLL';
+  function  DLLG2_ObtemCircunstancia(MHandle: integer; Circunstancia: PAnsiChar; TamNomeCircus: integer): PAnsiChar; stdcall; external 'DLLG2.DLL'; // Sandro Silva 2023-12-13 function  DLLG2_ObtemCircunstancia(MHandle:integer;Circunstancia:pchar;TamNomeCircus:integer):pchar; stdcall;external 'DLLG2.DLL';
   //
   function _ecf12_CodeErro(pP1: Integer; pP2: String):Integer;
   function _ecf12_Inicializa(Pp1: String): Boolean;
@@ -159,24 +163,32 @@ var
   circunstancia: array [0..255] of char;
   Retorno: array [0..255] of char;
   }
+  {
   nomeerro: array [0..255] of AnsiChar;
   circunstancia: array [0..255] of AnsiChar;
   Retorno: array [0..255] of AnsiChar;
-  {Sandro Silva 2023-12-13 fim}
+  }
+  nomeerro: AnsiString;
+  circunstancia: AnsiString;
+  Retorno: AnsiString;
 begin
   //
+  nomeerro := Replicate(' ', 255);
+  circunstancia := Replicate(' ', 255);
+  Retorno := Replicate(' ', 255);
+
   if (DLLG2_ObtemCodErro(iHd) <> 0) then
   begin
-    DLLG2_ObtemNomeErro(iHd, nomeerro, sizeof(nomeerro));
-    DLLG2_ObtemCircunstancia(iHd, circunstancia, sizeof(circunstancia));
+    DLLG2_ObtemNomeErro(iHd, PAnsiChar(AnsiString(nomeerro)), sizeof(nomeerro));
+    DLLG2_ObtemCircunstancia(iHd, PAnsiChar(AnsiString(circunstancia)), sizeof(circunstancia));
     application.MessageBox(pchar(nomeerro + ' - ' + circunstancia), 'Logger - Erro', MB_ICONERROR);
     Result := 255;
   end else
   begin
     DLLG2_LimpaParams(iHd);                                                    // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd, 'NomeIndicador', 'SensorPoucoPapel', 7);          // Seta os parâmetros
-    DLLG2_ExecutaComando(iHd, 'LeIndicador');                                  // Executa a função
-    DLLG2_Retorno(iHd, 0, 'ValorTextoIndicador', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeIndicador')), PAnsiChar(AnsiString('SensorPoucoPapel')), 7);          // Seta os parâmetros
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeIndicador')));                                  // Executa a função
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTextoIndicador')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     //
     if AllTrim(Retorno) = '1' then
     begin
@@ -205,28 +217,30 @@ end;
 function _ecf12_Inicializa(Pp1: String): Boolean;
 var
   I : Integer;
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
   Result := False;
   Form1.sPorta := pP1;
 
   FAvancoPapel := Form1.sAvancoPapel; // Sandro Silva 2016-08-26  Padrão 200
+  Retorno := Replicate(' ', 255);
 
   //
   for I := 1 to 3 do
   begin
     if Length(AllTrim(Retorno)) <> 10 then
     begin
-      iHd := DLLG2_IniciaDriver(AnsiString(pP1)); // Sandro Silva 2023-12-13 iHd := DLLG2_IniciaDriver(pChar(pP1));
+      iHd := DLLG2_IniciaDriver(PAnsiChar(AnsiString(pP1))); // Sandro Silva 2023-12-13 iHd := DLLG2_IniciaDriver(pChar(pP1));
       {Sandro Silva 2016-02-18 inicio}
       if Form1.iTimeOutDLLG2 > 5 then
         DLLG2_DefineTimeout(iHd, Form1.iTimeOutDLLG2);
       {Sandro Silva 2016-02-18 final}
       DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-      DLLG2_AdicionaParam(iHd, 'NomeData', 'Data', 7);            // Seta os parâmetros
-      DLLG2_ExecutaComando(iHd, 'LeData');                        // Executa a função
-      DLLG2_Retorno(iHd, 0, 'ValorData', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeData')), PAnsiChar(AnsiString('Data')), 7);            // Seta os parâmetros
+      DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeData')));                        // Executa a função
+      DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorData')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     end;
   end;
   //
@@ -240,15 +254,15 @@ begin
         begin
           Result := False;
           ShowMessage('FIT LOGGER'+Chr(10)+'Testando COM'+StrZero(I,1,0)+chr(10)+chr(10)+'Data: '+Retorno);
-          iHd := DLLG2_IniciaDriver(AnsiString('COM'+StrZero(I,1,0))); // Sandro Silva 2023-12-13 iHd := DLLG2_IniciaDriver(pChar('COM'+StrZero(I,1,0)));
+          iHd := DLLG2_IniciaDriver(PAnsiChar(AnsiString('COM'+StrZero(I,1,0)))); // Sandro Silva 2023-12-13 iHd := DLLG2_IniciaDriver(pChar('COM'+StrZero(I,1,0)));
           {Sandro Silva 2016-02-18 inicio}
           if Form1.iTimeOutDLLG2 > 5 then
             DLLG2_DefineTimeout(iHd, Form1.iTimeOutDLLG2);
           {Sandro Silva 2016-02-18 final}
           DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-          DLLG2_AdicionaParam(iHd, 'NomeData', 'Data', 7);                 // Seta os parâmetros
+          DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeData')), PAnsiChar(AnsiString('Data')), 7);                 // Seta os parâmetros
           DLLG2_ExecutaComando(iHd, 'LeData');                             // Executa a função
-          DLLG2_Retorno(iHd, 0, 'ValorData', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+          DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorData')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
           Form1.sPorta  := 'COM'+StrZero(I,1,0);
         end else Result := True;
       end;
@@ -259,17 +273,17 @@ begin
   //
   try
     DLLG2_LimpaParams(iHd);                                                              // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'CodGerencial','1',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','IDENT DO PAF',7);
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','IDENT DO PAF',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('1')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('IDENT DO PAF')), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('IDENT DO PAF')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   try
     DLLG2_LimpaParams(iHd);                                                              // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'CodGerencial','2',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','VENDA PRAZO',7);
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','VENDA PRAZO',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('2')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('VENDA PRAZO')), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('VENDA PRAZO')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   {Sandro Silva 2016-02-04 inicio
   try
@@ -282,31 +296,31 @@ begin
   }
   try
     DLLG2_LimpaParams(iHd);                                                              // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'CodGerencial','3',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','CARTAO TEF',7);
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','CARTAO TEF',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('3')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('CARTAO TEF')), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('CARTAO TEF')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   {Sandro Silva 2016-02-04 final}
   try
     DLLG2_LimpaParams(iHd);                                                              // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'CodGerencial','4',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','MEIOS DE PAGTO',7);
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','MEIOS DE PAGTO',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('4')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('MEIOS DE PAGTO')), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('MEIOS DE PAGTO')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
     DLLG2_LimpaParams(iHd);                                                              // Limpa os parâmetros.
   except end;
   try
-    DLLG2_AdicionaParam(iHd,'CodGerencial','5',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','DAV Emitidos',7);
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','DAV Emitidos',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('5')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('DAV Emitidos')), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('DAV Emitidos')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   try
-    DLLG2_AdicionaParam(iHd,'CodGerencial','6',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','Orçamento (DAV)',7);
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','Orçamento (DAV)',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('6')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('Orçamento (DAV)')), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('Orçamento (DAV)')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   {Sandro Silva 2016-02-04 inicio
   try
@@ -317,10 +331,10 @@ begin
   except end;
   }
   try
-    DLLG2_AdicionaParam(iHd,'CodGerencial','7',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','CONF CONTA CLI',7); // 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','CONF CONTA CLI',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('7')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('CONF CONTA CLI')), 7); // 2016-02-04 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('CONF CONTA CLI')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   {Sandro Silva 2016-02-04 final}
   {Sandro Silva 2016-02-11 inicio
@@ -338,41 +352,41 @@ begin
   except end;
   }
   try
-    DLLG2_AdicionaParam(iHd,'CodGerencial','8',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','TRANSF CONT CLI',7); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','TRANSF CONT CLI',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('8')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('TRANSF CONT CLI')), 7); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('TRANSF CONT CLI')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   try
-    DLLG2_AdicionaParam(iHd,'CodGerencial','9',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','CONT CLI ABERTA',7); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','CONT CLI ABERTA',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('9')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('CONT CLI ABERTA')), 7); // 2016-02-11 Fiscal de AL exigiu que o nome do relatório seja conforme er, podendo abreviar mas não suprimir por completo ou incluir texto
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('CONT CLI ABERTA')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   {Sandro Silva 2016-02-11 final}
   try
-    DLLG2_AdicionaParam(iHd,'CodGerencial','10',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','CONF MESA',7);
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','CONF MESA',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('10')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('CONF MESA')), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('CONF MESA')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   try
-    DLLG2_AdicionaParam(iHd,'CodGerencial','11',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','TRANSF MESA',7);
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','TRANSF MESA',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('11')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('TRANSF MESA')), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('TRANSF MESA')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   try
-    DLLG2_AdicionaParam(iHd,'CodGerencial','12',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','MESAS ABERTAS',7);
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','MESAS ABERTAS',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('12')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('MESAS ABERTAS')), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('MESAS ABERTAS')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   try
-    DLLG2_AdicionaParam(iHd,'CodGerencial','13',4);
-    DLLG2_AdicionaParam(iHd,'DescricaoGerencial','PARAM CONFIG',7);
-    DLLG2_AdicionaParam(iHd,'NomeGerencial','PARAM CONFIG',7);
-    DLLG2_ExecutaComando(iHd,'DefineGerencial');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('13')), 4);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DescricaoGerencial')), PAnsiChar(AnsiString('PARAM CONFIG')), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeGerencial')), PAnsiChar(AnsiString('PARAM CONFIG')), 7);
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineGerencial')));
   except end;
   //
 end;
@@ -392,9 +406,9 @@ begin
     if Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal <> 0 then
     begin
       DLLG2_LimpaParams(iHd);                                                                                    // Limpa os parâmetros
-      DLLG2_AdicionaParam(iHd,'Cancelar','False',0);  // 	Indicador de cancelamento da operação.Se este parâmetro for informado (='true'), cancela
-      DLLG2_AdicionaParam(iHd,'ValorAcrescimo',pChar(Format('%12.2f',[Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal])),6);  // Valor do desconto (quando negativo) ou acréscimo (quando positivo).
-      DLLG2_ExecutaComando(iHd,'AcresceSubtotal');
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Cancelar')), PAnsiChar(AnsiString('False')), 0);  // 	Indicador de cancelamento da operação.Se este parâmetro for informado (='true'), cancela
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('ValorAcrescimo')), PAnsiChar(AnsiString(Format('%12.2f',[Form1.ibDataSet25RECEBER.AsFloat-Form1.fTotal]))), 6);  // Valor do desconto (quando negativo) ou acréscimo (quando positivo).
+      DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AcresceSubtotal')));
     end;
     //
   end else _ecf12_CancelaUltimoCupom(True);// cupom em branco cancela;
@@ -423,102 +437,102 @@ begin
   if Form1.ibDataSet25ACUMULADO1.AsFloat <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                              // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label9.Caption)),7); // cheque
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25ACUMULADO1.AsString),6);          // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');                     // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label9.Caption))), 7); // cheque
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25ACUMULADO1.AsString)), 6);          // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                     // Executa a função
   end;
   //
   if Form1.ibDataSet25ACUMULADO2.AsFloat <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                              // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pChar(Copy('Dinheiro'+Replicate(' ',16),1,16)),7);
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25ACUMULADO2.AsString),6);          // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(Copy('Dinheiro'+Replicate(' ',16),1,16))), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25ACUMULADO2.AsString)), 6);          // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));
   end;
   //
   if Form1.ibDataSet25PAGAR.AsFloat <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                              // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label8.Caption)),7); // Cartão
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25Pagar.AsString),6);               // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');                     // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label8.Caption))), 7); // Cartão
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25Pagar.AsString)), 6);               // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                     // Executa a função
   end;
   //
   if Form1.ibDataSet25DIFERENCA_.aSFloat <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                               // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label17.Caption)),7); // Prazo
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25DIFERENCA_.AsString),6);           // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');                     // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label17.Caption))), 7); // Prazo
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25DIFERENCA_.AsString)), 6);           // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                     // Executa a função
   end;
   //
   if Form1.ibDataSet25VALOR01.AsFloat    <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                       // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label18.Caption)),7);
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25VALOR01.AsString),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');                     // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label18.Caption))), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25VALOR01.AsString)), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                     // Executa a função
   end;
   //
   if Form1.ibDataSet25VALOR02.AsFloat    <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                       // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label19.Caption)),7);
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25VALOR02.AsString),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');                     // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label19.Caption))), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25VALOR02.AsString)), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                     // Executa a função
   end;
   //
   if Form1.ibDataSet25VALOR03.AsFloat    <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                       // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label20.Caption)),7);
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25VALOR03.AsString),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');                     // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label20.Caption))), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25VALOR03.AsString)), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                     // Executa a função
   end;
   //
   if Form1.ibDataSet25VALOR04.AsFloat    <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                       // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label21.Caption)),7);
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25VALOR04.AsString),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');                     // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label21.Caption))), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25VALOR04.AsString)), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                     // Executa a função
   end;
   //
   if Form1.ibDataSet25VALOR05.AsFloat    <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                       // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label22.Caption)),7);
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25VALOR05.AsString),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');                     // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label22.Caption))), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25VALOR05.AsString)), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                     // Executa a função
   end;
   //
   if Form1.ibDataSet25VALOR06.AsFloat    <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                       // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label23.Caption)),7);
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25VALOR06.AsString),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');                     // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label23.Caption))), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25VALOR06.AsString)), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                     // Executa a função
   end;
   //
   if Form1.ibDataSet25VALOR07.AsFloat    <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                       // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label24.Caption)),7);
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25VALOR07.AsString),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');                     // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label24.Caption))), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25VALOR07.AsString)), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                     // Executa a função
   end;
   //
   if Form1.ibDataSet25VALOR08.AsFloat    <> 0 then
   begin
     DLLG2_LimpaParams(iHd);                                                       // Limpa os parâmetros.
-    DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label25.Caption)),7);
-    DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25VALOR08.AsString),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-    DLLG2_ExecutaComando(iHd,'PagaCupom');                     // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label25.Caption))), 7);
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25VALOR08.AsString)), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                     // Executa a função
   end;
   //
   DLLG2_LimpaParams(iHd);                                                        // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'TextoLivre',pchar(Alltrim(copy('MD5: '+Form1.sMD5DaLista+Chr(10)+ConverteAcentos2(Form1.sMensagemPromocional)+Replicate(' ',492),1,492))),7);
-  DLLG2_ExecutaComando(iHd,'ImprimeTexto');                                      // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TextoLivre')), PAnsiChar(AnsiString(Alltrim(copy('MD5: '+Form1.sMD5DaLista+Chr(10)+ConverteAcentos2(Form1.sMensagemPromocional)+Replicate(' ',492),1,492)))), 7);
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('ImprimeTexto')));                                      // Executa a função
   //
 {
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
@@ -527,19 +541,19 @@ begin
 }
   //
   DLLG2_LimpaParams(iHd);                                               // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Operador','',7);         // Identificação do operador
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Operador')), PAnsiChar(AnsiString('')), 7);         // Identificação do operador
 //  DLLG2_AdicionaParam(iHd,'TextoPromocional',pchar(Alltrim(copy('MD5: '+Form1.sMD5DaLista+Chr(10)+ConverteAcentos(Form1.sMensagemPromocional)+Replicate(' ',492),1,492))),7);
-  DLLG2_ExecutaComando(iHd,'EncerraDocumento');                         // Executa a função
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EncerraDocumento')));                         // Executa a função
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Avanco',pChar(FAvancoPapel),12);
-  DLLG2_ExecutaComando(iHd,'AvancaPapel'); // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Avanco')), PAnsiChar(AnsiString(FAvancoPapel)), 12);
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AvancaPapel'))); // Executa a função
   //
   if Form1.sCortaPapel = 'Sim' then
   begin
     DLLG2_LimpaParams(iHd);
-    DLLG2_AdicionaParam(iHd,'TipoCorte','1',12);               //
-    DLLG2_ExecutaComando(iHd,'CortaPapel'); // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TipoCorte')), PAnsiChar(AnsiString('1')), 12);               //
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('CortaPapel'))); // Executa a função
     Form1.Edit1.SetFocus;
   end;
   //
@@ -555,7 +569,7 @@ function _ecf12_CancelaUltimoItem(Pp1: Boolean):Boolean;
 begin
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_ExecutaComando(iHd,'CancelaItemFiscal');                    // Executa a função
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('CancelaItemFiscal')));                    // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then Result := True              // Verifica se teve erro no retorno
     else Result := False;
   _ecf12_CodeErro(iHd,'');
@@ -570,8 +584,8 @@ function _ecf12_CancelaUltimoCupom(Pp1: Boolean):Boolean;
 begin
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Operador','1',7);     // Identificação do operador
-  DLLG2_ExecutaComando(iHd,'CancelaCupom');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Operador')), PAnsiChar(AnsiString('1')), 7);     // Identificação do operador
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('CancelaCupom')));                     // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then Result := True              // Verifica se teve erro no retorno
     else Result := False;
 
@@ -580,14 +594,14 @@ begin
 
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Avanco',pChar(FAvancoPapel),12);     // Identificação do operador
-  DLLG2_ExecutaComando(iHd,'AvancaPapel'); // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Avanco')), PAnsiChar(AnsiString(FAvancoPapel)), 12);     // Identificação do operador
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AvancaPapel'))); // Executa a função
   //
   if Form1.sCortaPapel = 'Sim' then
   begin
     DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd,'TipoCorte','1',12);               //
-    DLLG2_ExecutaComando(iHd,'CortaPapel'); // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TipoCorte')), PAnsiChar(AnsiString('1')), 12);               //
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('CortaPapel'))); // Executa a função
     Form1.Edit1.SetFocus;
   end;
   //
@@ -601,16 +615,18 @@ end;
 // -------------------------------//
 function _ecf12_SubTotal(Pp1: Boolean):Real;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                                // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeDadoMonetario', 'TotalDocLiquido', 7);   // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeMoeda');                                  // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeDadoMonetario')), PAnsiChar(AnsiString('TotalDocLiquido')), 7);   // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeMoeda')));                                  // Executa a função
 
   if (DLLG2_ObtemCodErro(iHd) = 0) then                                  // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorMoeda', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorMoeda')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
 // ShowMessage(retorno);
     Result := StrToFloat(StrTran(Retorno,'.',''));
   end else Result := 0;
@@ -628,8 +644,8 @@ begin
   if not _ecf12_CupomAberto(True) then
   begin
     DLLG2_LimpaParams(iHd);                                                    // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd,'IdConsumidor',pChar(Form1.sCPF_CNPJ_Validado),7); //
-    DLLG2_ExecutaComando(iHd,'AbreCupomFiscal');                               // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('IdConsumidor')), PAnsiChar(AnsiString(Form1.sCPF_CNPJ_Validado)), 7); //
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AbreCupomFiscal')));                               // Executa a função
     if (DLLG2_ObtemCodErro(iHd) = 0) then Result := True else Result := False;
     _ecf12_CodeErro(iHd,'');
   end else Result := True;
@@ -642,15 +658,17 @@ end;
 // -------------------------------- //
 function _ecf12_NumeroDoCupom(Pp1: Boolean):String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'COO', 7);          // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('COO')), 7);          // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                     // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),6,0);
   end else Result := '000000';
   _ecf12_CodeErro(iHd,'');
@@ -665,8 +683,8 @@ function _ecf12_CancelaItemN(pP1, pP2 : String):Boolean;
 begin
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'NumItem',pChar(pP1),4);     // Identificação do operador
-  DLLG2_ExecutaComando(iHd,'CancelaItemFiscal');                    // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NumItem')), PAnsiChar(AnsiString(pP1)), 4);     // Identificação do operador
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('CancelaItemFiscal')));                    // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then Result := True              // Verifica se teve erro no retorno
     else Result := False;
   _ecf12_CodeErro(iHd,'');
@@ -701,16 +719,18 @@ end;
 // -------------------------------- //
 function _ecf12_StatusGaveta(Pp1: Boolean):String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeIndicador', 'SensorGaveta', 7);   // Seta os parâmetros
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeIndicador')), PAnsiChar(AnsiString('SensorGaveta')), 7);   // Seta os parâmetros
   //
-  DLLG2_ExecutaComando(iHd, 'LeIndicador');                       // Executa a função
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeIndicador')));                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTextoIndicador', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTextoIndicador')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
   end;
   //
   if Form1.iStatusGaveta = 0 then
@@ -731,38 +751,41 @@ function _ecf12_Sangria(Pp1: Real):Boolean;
 begin
   //
   DLLG2_LimpaParams(iHd);                                      // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'NomeNaoFiscal','Sangria',7);        //
-  DLLG2_AdicionaParam(iHd,'TipoNaoFiscal','False',0);          //
-  DLLG2_ExecutaComando(iHd,'DefineNaoFiscal');                 // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeNaoFiscal')), PAnsiChar(AnsiString('Sangria')), 7);        //
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TipoNaoFiscal')), PAnsiChar(AnsiString('False')), 0);          //
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineNaoFiscal')));                 // Executa a função
   //
   DLLG2_LimpaParams(iHd);                                      // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'NomeNaoFiscal','Sangria',7);        //
-  DLLG2_AdicionaParam(iHd,'Valor',pChar(FloatToStr(pP1)),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-  DLLG2_ExecutaComando(iHd,'EmiteItemNaoFiscal');              // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeNaoFiscal')), PAnsiChar(AnsiString('Sangria')), 7);        //
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(FloatToStr(pP1))), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EmiteItemNaoFiscal')));              // Executa a função
   //
   DLLG2_LimpaParams(iHd);                                      // Limpa os parâmetros.
-  DLLG2_AdicionaParam(iHd,'CodMeioPagamento','-2',0);          // Índice do Meio de Pagamento.
-  DLLG2_AdicionaParam(iHd,'Valor',pChar(FloattoStr(pP1)),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodMeioPagamento')), PAnsiChar(AnsiString('-2')), 0);          // Índice do Meio de Pagamento.
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(FloattoStr(pP1))), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
   //
-  DLLG2_ExecutaComando(iHd,'PagaCupom');                       // Executa a função
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                       // Executa a função
 //  if (DLLG2_ObtemCodErro(iHd) <> 0) then _ecf12_CodeErro(iHd,'');
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Operador','1',7);     // Identificação do operador
-  DLLG2_ExecutaComando(iHd,'EncerraDocumento');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Operador')), PAnsiChar(AnsiString('1')), 7);     // Identificação do operador
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EncerraDocumento')));                     // Executa a função
   //
-  if (DLLG2_ObtemCodErro(iHd) <> 0) then Result := False else Result := True;
+  if (DLLG2_ObtemCodErro(iHd) <> 0) then
+    Result := False
+  else
+    Result := True;
 //  _ecf12_CodeErro(iHd,'');
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Avanco',pChar(FAvancoPapel),12);     // Identificação do operador
-  DLLG2_ExecutaComando(iHd,'AvancaPapel'); // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Avanco')), PAnsiChar(AnsiString(FAvancoPapel)), 12);     // Identificação do operador
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AvancaPapel'))); // Executa a função
   //
   if Form1.sCortaPapel = 'Sim' then
   begin
     DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd,'TipoCorte','1',12);               //
-    DLLG2_ExecutaComando(iHd,'CortaPapel'); // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TipoCorte')), PAnsiChar(AnsiString('1')), 12);               //
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('CortaPapel'))); // Executa a função
     Form1.Edit1.SetFocus;
   end;
   //
@@ -776,38 +799,41 @@ function _ecf12_Suprimento(Pp1: Real):Boolean;
 begin
   //
   DLLG2_LimpaParams(iHd);                                      // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'NomeNaoFiscal','Suprimento',7);     //
-  DLLG2_AdicionaParam(iHd,'TipoNaoFiscal','True',0);           //
-  DLLG2_ExecutaComando(iHd,'DefineNaoFiscal');                 // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeNaoFiscal')), PAnsiChar(AnsiString('Suprimento')), 7);     //
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TipoNaoFiscal')), PAnsiChar(AnsiString('True')), 0);           //
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('DefineNaoFiscal')));                 // Executa a função
   //
   DLLG2_LimpaParams(iHd);                                      // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'NomeNaoFiscal','Suprimento',7);     //
-  DLLG2_AdicionaParam(iHd,'Valor',pChar(FloatToStr(pP1)),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
-  DLLG2_ExecutaComando(iHd,'EmiteItemNaoFiscal');              // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeNaoFiscal')), PAnsiChar(AnsiString('Suprimento')), 7);     //
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(FloatToStr(pP1))), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EmiteItemNaoFiscal')));              // Executa a função
   //
   DLLG2_LimpaParams(iHd);                                      // Limpa os parâmetros.
-  DLLG2_AdicionaParam(iHd,'CodMeioPagamento','-2',0);          // Índice do Meio de Pagamento.
-  DLLG2_AdicionaParam(iHd,'Valor',pChar(FloattoStr(pP1)),6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodMeioPagamento')), PAnsiChar(AnsiString('-2')), 0);          // Índice do Meio de Pagamento.
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(FloattoStr(pP1))), 6);   // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
   //
-  DLLG2_ExecutaComando(iHd,'PagaCupom');                       // Executa a função
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('PagaCupom')));                       // Executa a função
 //  if (DLLG2_ObtemCodErro(iHd) <> 0) then _ecf12_CodeErro(iHd,'');
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Operador','1',7);     // Identificação do operador
-  DLLG2_ExecutaComando(iHd,'EncerraDocumento');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Operador')), PAnsiChar(AnsiString('1')), 7);     // Identificação do operador
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EncerraDocumento')));                     // Executa a função
   //
-  if (DLLG2_ObtemCodErro(iHd) <> 0) then Result := False else Result := True;
+  if (DLLG2_ObtemCodErro(iHd) <> 0) then
+    Result := False
+  else
+    Result := True;
 //  _ecf12_CodeErro(iHd,'');
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Avanco',pChar(FAvancoPapel),12);     // Identificação do operador
-  DLLG2_ExecutaComando(iHd,'AvancaPapel'); // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Avanco')), PAnsiChar(AnsiString(FAvancoPapel)), 12);     // Identificação do operador
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AvancaPapel'))); // Executa a função
   //
   if Form1.sCortaPapel = 'Sim' then
   begin
     DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd,'TipoCorte','1',12);               //
-    DLLG2_ExecutaComando(iHd,'CortaPapel'); // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TipoCorte')), PAnsiChar(AnsiString('1')), 12);               //
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('CortaPapel'))); // Executa a função
     Form1.Edit1.SetFocus;
   end;
   //
@@ -831,7 +857,8 @@ end;
 
 function _ecf12_LeituraDaMFD(pP1, pP2, pP3: String):Boolean;
 var
-  Retorno: array [0..400] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..400] of char;
+  //Retorno: array [0..400] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..400] of char;
+  Retorno: String;
   sTexto : String;
 begin
 
@@ -842,7 +869,7 @@ begin
       DeleteFile(pP1);
 
     Result := True;
-    
+
     {Sandro Silva 2017-08-25 final}
   end
   else
@@ -850,20 +877,21 @@ begin
     //
     // URANO  (01451)34628707 Filipe   //
     //
+    Retorno := Replicate(' ', 400);
     DLLG2_LimpaParams(iHd);                                    // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd,'Destino','S',7);                  // Seta os parâmetros
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Destino')), PAnsiChar(AnsiString('S')), 7);                  // Seta os parâmetros
     //
     if Form7.Label3.Caption = 'Data inicial:' then
     begin
-      DLLG2_AdicionaParam(iHd,'DataInicial',pChar(Copy(pP2,1,2)+'/'+Copy(pP2,3,2)+'/'+'20'+Copy(pP2,5,2)),2);         // Seta os parâmetros
-      DLLG2_AdicionaParam(iHd,'DataFinal',pChar(Copy(pP3,1,2)+'/'+Copy(pP3,3,2)+'/'+'20'+Copy(pP3,5,2)),2);           // Seta os parâmetros
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DataInicial')), PAnsiChar(AnsiString(Copy(pP2,1,2)+'/'+Copy(pP2,3,2)+'/'+'20'+Copy(pP2,5,2))), 2);         // Seta os parâmetros
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DataFinal')), PAnsiChar(AnsiString(Copy(pP3,1,2)+'/'+Copy(pP3,3,2)+'/'+'20'+Copy(pP3,5,2))), 2);           // Seta os parâmetros
     end else
     begin
-      DLLG2_AdicionaParam(iHd,'COOInicial',pChar(StrZero(StrToInt(pP2),6,0)),4);         // Seta os parâmetros
-      DLLG2_AdicionaParam(iHd,'COOFinal',pChar(StrZero(StrToInt(pP3),6,0)),4);           // Seta os parâmetros
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('COOInicial')), PAnsiChar(AnsiString(StrZero(StrToInt(pP2),6,0))), 4);         // Seta os parâmetros
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('COOFinal')), PAnsiChar(AnsiString(StrZero(StrToInt(pP3),6,0))), 4);           // Seta os parâmetros
     end;
     //
-    DLLG2_ExecutaComando(iHd,'EmiteLeituraFitaDetalhe');               // Executa a função
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EmiteLeituraFitaDetalhe')));               // Executa a função
     //
   {
     DLLG2_LimpaParams(iHd);                                    // Limpa os parâmetros
@@ -889,9 +917,9 @@ begin
       //
       sLeep(100);
       DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-      DLLG2_ExecutaComando(iHd,'LeImpressao');
+      DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeImpressao')));
   //    if iHd <> 0 then _ecf12_CodeErro(iHd,'');
-      DLLG2_Retorno(iHd, 0, 'TextoImpressao', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+      DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('TextoImpressao')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
       sTexto := sTexto + Retorno;
     end;
     //
@@ -907,22 +935,25 @@ function _ecf12_LeituraMemoriaFiscal(pP1, pP2: String):Boolean;
 begin
   //
   DLLG2_LimpaParams(iHd);                                    // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Destino','I',7);                  // Seta os parâmetros
-  DLLG2_AdicionaParam(iHd,'Operador','',7);             // Seta os parâmetros
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Destino')), PAnsiChar(AnsiString('I')), 7);                  // Seta os parâmetros
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Operador')), PAnsiChar(AnsiString('')), 7);             // Seta os parâmetros
   //
-  if Form1.sTipo = 's' then DLLG2_AdicionaParam(iHd,'LeituraSimplificada','True',0) else DLLG2_AdicionaParam(iHd,'LeituraSimplificada','False',0);
+  if Form1.sTipo = 's' then
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('LeituraSimplificada')), PAnsiChar(AnsiString('True')), 0)
+  else
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('LeituraSimplificada')), PAnsiChar(AnsiString('False')), 0);
   //
   if Length(pP1) = 6 then
   begin
-    DLLG2_AdicionaParam(iHd,'DataInicial',pChar(Copy(pP1,1,2)+'/'+Copy(pP1,3,2)+'/'+'20'+Copy(pP1,5,2)),2);         // Seta os parâmetros
-    DLLG2_AdicionaParam(iHd,'DataFinal',pChar(Copy(pP2,1,2)+'/'+Copy(pP2,3,2)+'/'+'20'+Copy(pP2,5,2)),2);           // Seta os parâmetros
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DataInicial')), PAnsiChar(AnsiString(Copy(pP1,1,2)+'/'+Copy(pP1,3,2)+'/'+'20'+Copy(pP1,5,2))), 2);         // Seta os parâmetros
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DataFinal')), PAnsiChar(AnsiString(Copy(pP2,1,2)+'/'+Copy(pP2,3,2)+'/'+'20'+Copy(pP2,5,2))), 2);           // Seta os parâmetros
   end else
   begin
-    DLLG2_AdicionaParam(iHd,'ReducaoInicial',pChar(pP1),4);         // Seta os parâmetros
-    DLLG2_AdicionaParam(iHd,'ReducaoFinal',pChar(pP2),4);           // Seta os parâmetros
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('ReducaoInicial')), PAnsiChar(AnsiString(pP1)), 4);         // Seta os parâmetros
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('ReducaoFinal')), PAnsiChar(AnsiString(pP2)), 4);           // Seta os parâmetros
   end;
   //
-  DLLG2_ExecutaComando(iHd,'EmiteLeituraMF');                 // Executa a função
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EmiteLeituraMF')));                 // Executa a função
   Result := True;
   //
 end;
@@ -950,14 +981,14 @@ begin
   //
   DLLG2_LimpaParams(iHd);                                    // Limpa os parâmetros
 //  DLLG2_AdicionaParam(iHd,'AliquotaICMS','True',0);          // Identifica a aliquota como ICMS ('true') ou ISSQN ('false')
-  DLLG2_AdicionaParam(iHd,'CodAliquota',pchar(pp3),0);       //	Índice da alíquota
-  DLLG2_AdicionaParam(iHd,'CodProduto',pChar(pP1),7);        //	Código do produto
-  DLLG2_AdicionaParam(iHd,'NomeProduto',pChar(pP2),7);       // Nome descritivo do produto
-  DLLG2_AdicionaParam(iHd,'PrecoUnitario',pChar(FloatToStr(StrToFloat(pP5)/ StrtoInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)) ))),6);     // Preço Unitário.O comando de venda de item trata preços unitários que possuam até 3 casas decimais.
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodAliquota')), PAnsiChar(AnsiString(pp3)), 0);       //	Índice da alíquota
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodProduto')), PAnsiChar(AnsiString(pP1)), 7);        //	Código do produto
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeProduto')), PAnsiChar(AnsiString(pP2)), 7);       // Nome descritivo do produto
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('PrecoUnitario')), PAnsiChar(AnsiString(FloatToStr(StrToFloat(pP5)/ StrtoInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)) )))), 6);     // Preço Unitário.O comando de venda de item trata preços unitários que possuam até 3 casas decimais.
   //
-  DLLG2_AdicionaParam(iHd,'Quantidade',pChar(FloatToStr(StrToFloat(pP4)/1000)),6);        // Quantidade envolvida na transação.O comando de venda de item trata quantidades com até 3 casas decimais.
-  DLLG2_AdicionaParam(iHd,'Unidade',pChar(pP6),7);           // Unidade do produto. Se não informado será assumido o texto "un" (sem as aspas).
-  DLLG2_ExecutaComando(iHd,'VendeItem');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Quantidade')), PAnsiChar(AnsiString(FloatToStr(StrToFloat(pP4)/1000))), 6);        // Quantidade envolvida na transação.O comando de venda de item trata quantidades com até 3 casas decimais.
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Unidade')), PAnsiChar(AnsiString(pP6)), 7);           // Unidade do produto. Se não informado será assumido o texto "un" (sem as aspas).
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('VendeItem')));                     // Executa a função
   //
   Result := False;
   //
@@ -983,10 +1014,12 @@ begin
   begin
     //
     DLLG2_LimpaParams(iHd);
-    DLLG2_AdicionaParam(iHd,'Cancelar','False',0);     //
-    if (StrToInt(pP8) <> 0) then DLLG2_AdicionaParam(iHd,'ValorAcrescimo',pChar( FloatToStr( ( StrToFloat(pP8)/100*-1 ))),6);     // Preço Unitário.O comando de venda de item trata preços unitários que possuam até 3 casas decimais.
-    if (StrToInt(pP7) <> 0) then DLLG2_AdicionaParam(iHd,'ValorPercentual',pChar( FloatToStr( ( StrToFloat(pP7)/100*-1 ))),6);     // Preço Unitário.O comando de venda de item trata preços unitários que possuam até 3 casas decimais.
-    DLLG2_ExecutaComando(iHd,'AcresceItemFiscal');                                               // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Cancelar')), PAnsiChar(AnsiString('False')), 0);     //
+    if (StrToInt(pP8) <> 0) then
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('ValorAcrescimo')), PAnsiChar(AnsiString( FloatToStr( ( StrToFloat(pP8)/100*-1 )))), 6);     // Preço Unitário.O comando de venda de item trata preços unitários que possuam até 3 casas decimais.
+    if (StrToInt(pP7) <> 0) then
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('ValorPercentual')), PAnsiChar(AnsiString(FloatToStr( ( StrToFloat(pP7)/100*-1 )))), 6);     // Preço Unitário.O comando de venda de item trata preços unitários que possuam até 3 casas decimais.
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AcresceItemFiscal')));                                               // Executa a função
     //
     if (DLLG2_ObtemCodErro(iHd) = 0) then Result := True       // Verifica se teve erro no retorno
        else Result := False;
@@ -1010,19 +1043,19 @@ function _ecf12_ReducaoZ(pP1: Boolean):Boolean;
 begin
   //
   DLLG2_LimpaParams(iHd);                                               // Limpa os parâmetros
-  DLLG2_ExecutaComando(iHd,'EmiteReducaoZ');                 // Executa a função
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EmiteReducaoZ')));                 // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then Result := True       // Verifica se teve erro no retorno
     else Result := False;
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Avanco',pChar(FAvancoPapel),12);     // Identificação do operador
-  DLLG2_ExecutaComando(iHd,'AvancaPapel'); // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Avanco')), PAnsiChar(AnsiString(FAvancoPapel)), 12);     // Identificação do operador
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AvancaPapel'))); // Executa a função
   //
   if Form1.sCortaPapel = 'Sim' then
   begin
     DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd,'TipoCorte','1',12);               //
-    DLLG2_ExecutaComando(iHd,'CortaPapel'); // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TipoCorte')), PAnsiChar(AnsiString('1')), 12);               //
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('CortaPapel'))); // Executa a função
     Form1.Edit1.SetFocus;
   end;
   //
@@ -1036,22 +1069,22 @@ function _ecf12_LeituraX(pP1: Boolean):Boolean;
 begin
   //
   DLLG2_LimpaParams(iHd);                                    // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Destino','I',7);                  // Seta os parâmetros
-  DLLG2_AdicionaParam(iHd,'Operador','',7);                  // Seta os parâmetros
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Destino')), PAnsiChar(AnsiString('I')), 7);                  // Seta os parâmetros
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Operador')), PAnsiChar(AnsiString('')), 7);                  // Seta os parâmetros
   //
-  DLLG2_ExecutaComando(iHd,'EmiteLeituraX');                 // Executa a função
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EmiteLeituraX')));                 // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then Result := True       // Verifica se teve erro no retorno
     else Result := False;
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Avanco',pChar(FAvancoPapel),12);     // Identificação do operador
-  DLLG2_ExecutaComando(iHd,'AvancaPapel'); // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Avanco')), PAnsiChar(AnsiString(FAvancoPapel)), 12);     // Identificação do operador
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AvancaPapel'))); // Executa a função
   //
   if Form1.sCortaPapel = 'Sim' then
   begin
     DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd,'TipoCorte','1',12);               //
-    DLLG2_ExecutaComando(iHd,'CortaPapel'); // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TipoCorte')), PAnsiChar(AnsiString('1')), 12);               //
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('CortaPapel'))); // Executa a função
     Form1.Edit1.SetFocus;
   end;
   //
@@ -1065,16 +1098,18 @@ end;
 // ---------------------------------------------- //
 function _ecf12_RetornaVerao(pP1: Boolean):Boolean;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                         // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeIndicador', 'HorarioVerao', 7);   // Seta os parâmetros
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeIndicador')), PAnsiChar(AnsiString('HorarioVerao')), 7);   // Seta os parâmetros
   //
-  DLLG2_ExecutaComando(iHd, 'LeIndicador');                       // Executa a função
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeIndicador')));                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                           // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTextoIndicador', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTextoIndicador')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
   end else _ecf12_CodeErro(iHd,'');
   //
   if Copy(Ret1,3,1) = '1' then Result := True else Result := False;
@@ -1091,16 +1126,16 @@ begin
   if (_ecf12_RetornaVerao(True) = True) then
   begin
     DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd,'EntradaHV','0',4);                       // Seta os parâmetros
-    DLLG2_ExecutaComando(iHd,'AcertaHorarioVerao');                   // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('EntradaHV')), PAnsiChar(AnsiString('0')), 4);                       // Seta os parâmetros
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AcertaHorarioVerao')));                   // Executa a função
   end else
   begin
     DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd,'EntradaHV','1',4);                       // Seta os parâmetros
-    DLLG2_ExecutaComando(iHd,'AcertaHorarioVerao');                   // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('EntradaHV')), PAnsiChar(AnsiString('1')),4);                       // Seta os parâmetros
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AcertaHorarioVerao')));                   // Executa a função
   end;
   //
-  _ecf12_CodeErro(iHd,'');
+  _ecf12_CodeErro(iHd, '');
   //
   Result := True;
   //
@@ -1112,15 +1147,17 @@ end;
 // -------------------------------- //
 function _ecf12_VersodoFirmware(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                               // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeTexto', 'VersaoSW', 7); // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeTexto');                 // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeTexto')), PAnsiChar(AnsiString('VersaoSW')), 7); // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeTexto')));                 // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                 // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTexto')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Retorno;
   end else _ecf12_CodeErro(iHd,'');
   //
@@ -1132,15 +1169,17 @@ end;
 // -------------------------------- //
 function _ecf12_NmerodeSrie(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeTexto', 'NumeroSerieECF', 7); // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeTexto');                       // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeTexto')), PAnsiChar(AnsiString('NumeroSerieECF')), 7); // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeTexto')));                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTexto')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Retorno;
   end else _ecf12_CodeErro(iHd,'');
 end;
@@ -1151,24 +1190,26 @@ end;
 // -------------------------------- //
 function _ecf12_CGCIE(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeTexto', 'CNPJ', 7);           // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeTexto');                       // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeTexto')), PAnsiChar(AnsiString('CNPJ')), 7);           // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeTexto')));                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTexto')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Retorno;
   end else _ecf12_CodeErro(iHd,'');
   //
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeTexto', 'IE', 7);           // Seta os parâmetros
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeTexto')), PAnsiChar(AnsiString('IE')), 7);           // Seta os parâmetros
   DLLG2_ExecutaComando(iHd, 'LeTexto');                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Result +Chr(10)+ Retorno;
   end else _ecf12_CodeErro(iHd,'');
   //
@@ -1180,15 +1221,17 @@ end;
 // --------------------------------- //
 function _ecf12_Cancelamentos(pP1: Boolean): String;
 var
-  Retorno: array [0..606] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..606] of char;
+  //Retorno: array [0..606] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..606] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 606);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeDadoMonetario', 'TotalDiaCancelamentosICMS', 7); // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeMoeda');                                          // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeDadoMonetario')), PAnsiChar(AnsiString('TotalDiaCancelamentosICMS')), 7); // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeMoeda')));                                          // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                                          // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorMoeda', 0, Retorno, sizeof(retorno));            // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorMoeda')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno));            // Obtem o retorno
     Result := StrZero(StrToFloat(Retorno)*100,14,0);
   end else
   begin
@@ -1207,15 +1250,17 @@ end;
 // -------------------------------- //
 function _ecf12_Descontos(pP1: Boolean): String;
 var
-  Retorno: array [0..606] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..606] of char;
+  //Retorno: array [0..606] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..606] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 606);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeDadoMonetario', 'TotalDiaDescontos', 7);        // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeMoeda');                                         // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeDadoMonetario')), PAnsiChar(AnsiString('TotalDiaDescontos')), 7);        // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeMoeda')));                                         // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                                         // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorMoeda', 0, Retorno, sizeof(retorno));           // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorMoeda')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno));           // Obtem o retorno
     Result := StrZero(StrToFloat(Retorno)*100,14,0);
   end else
   begin
@@ -1231,15 +1276,17 @@ end;
 // -------------------------------- //
 function _ecf12_ContadorSeqencial(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'COO', 7);          // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('COO')), 7);          // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                     // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),6,0);
   end else
   begin
@@ -1256,15 +1303,17 @@ end;
 // -------------------------------- //
 function _ecf12_Nmdeoperaesnofiscais(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'GNF', 7);          // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('GNF')), 7);          // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                     // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),6,0);
   end else
   begin
@@ -1276,15 +1325,17 @@ end;
 
 function _ecf12_NmdeCuponscancelados(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'CFC', 7);          // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('CFC')), 7);          // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                     // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),6,0);
   end else
   begin
@@ -1296,16 +1347,18 @@ end;
 
 function _ecf12_NmdeRedues(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'CRZ', 7);          // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('CRZ')), 7);          // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                     // Executa a função
   //
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),6,0);
   end else
   begin
@@ -1319,16 +1372,18 @@ end;
 
 function _ecf12_Nmdeintervenestcnicas(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'CRO', 7);          // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('CRO')), 7);          // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                     // Executa a função
   //
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),6,0);
   end else
   begin
@@ -1343,16 +1398,18 @@ end;
 // Sandro Silva 2017-10-09  Contador Geral de Relatório Gerencial
 function _ecf12_NmContadorGeraldeRelatrioGerencial(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'GRG', 7);          // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('GRG')), 7);          // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                     // Executa a função
   //
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),6,0);
   end else
   begin
@@ -1366,16 +1423,18 @@ end;
 
 function _ecf12_NmContadordeCuponsFiscal(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'CCF', 7);          // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('CCF')), 7);          // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                     // Executa a função
   //
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),6,0);
   end else
   begin
@@ -1390,16 +1449,18 @@ end;
 // Sandro Silva 2017-10-09 Contador de Cupons Crédito/Débito
 function _ecf12_NmContadordeCuponsCrditoDbito(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  // Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'CDC', 7);          // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('CDC')), 7);          // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                     // Executa a função
   //
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),6,0);
   end else
   begin
@@ -1413,16 +1474,18 @@ end;
 
 function _ecf12_Nmdesubstituiesdeproprietrio(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                                       // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'ContadorProprietarios', 7);          // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                                       // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('ContadorProprietarios')), 7);          // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                                       // Executa a função
   //
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),6,0);
   end else
   begin
@@ -1434,15 +1497,17 @@ end;
 
 function _ecf12_Clichdoproprietrio(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13   Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13   Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                               // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeTexto', 'Cliche', 7); // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeTexto');                 // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeTexto')), PAnsiChar(AnsiString('Cliche')), 7); // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeTexto')));                 // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                 // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTexto')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Retorno;
   end else _ecf12_CodeErro(iHd,'');
   //
@@ -1455,15 +1520,17 @@ end;
 // ------------------------------------ //
 function _ecf12_NmdoCaixa(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'ECF', 7);            // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                        // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('ECF')), 7);            // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                        // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),3,0);
   end else
   begin
@@ -1475,15 +1542,17 @@ end;
 
 function _ecf12_Nmdaloja(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'Loja', 7);            // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                        // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('Loja')), 7);            // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                        // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrZero(StrToInt(Retorno),3,0);
   end else
   begin
@@ -1495,15 +1564,17 @@ end;
 
 function _ecf12_Moeda(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeTexto', 'SimboloMoeda', 7);          // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeTexto');                       // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeTexto')), PAnsiChar(AnsiString('SimboloMoeda')), 7);          // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeTexto')));                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTexto')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := StrTran(AllTrim(Retorno),'$','');
   end else _ecf12_CodeErro(iHd,'');
   //
@@ -1515,24 +1586,26 @@ end;
 // ----------------------------------------- //
 function _ecf12_Dataehoradaimpressora(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeData', 'Data', 7);            // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeData');                        // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeData')), PAnsiChar(AnsiString('Data')), 7);            // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeData')));                        // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorData', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorData')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Copy(StrTran(Retorno,'/',''),1,4)+Copy(StrTran(Retorno,'/',''),7,2);
   end else _ecf12_CodeErro(iHd,'');
   //
   DLLG2_LimpaParams(iHd);                                    // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeHora', 'Hora', 7);           // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeHora');                       // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeHora')), PAnsiChar(AnsiString('Hora')), 7);           // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeHora')));                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                      // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorHora', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorHora')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Result + StrTran(Retorno,':','');
   end else _ecf12_CodeErro(iHd,'');
   //
@@ -1540,15 +1613,17 @@ end;
 
 function _ecf12_Datadaultimareduo(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeData', 'DataAbertura', 7); // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeData');                            // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeData')), PAnsiChar(AnsiString('DataAbertura')), 7); // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeData')));                            // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                            // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorData', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorData')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Retorno;
   end else _ecf12_CodeErro(iHd,'');
   //
@@ -1561,15 +1636,17 @@ end;
 
 function _ecf12_Datadomovimento(pP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeData', 'DataAbertura', 7); // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeData');                            // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeData')), PAnsiChar(AnsiString('DataAbertura')), 7); // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeData')));                            // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                            // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorData', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorData')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Retorno;
   end else _ecf12_CodeErro(iHd,'');
   //
@@ -1581,21 +1658,23 @@ end;
 // Ex: 161800120005000000000000000000000000000000000000000000000000000000 //
 function _ecf12_RetornaAliquotas(pP1: Boolean): String;
 var
-  Retorno: array [0..616] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..616] of char;
+  //Retorno: array [0..616] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..616] of char;
+  Retorno: AnsiString;
   I : Integer;
 begin
   //
   Result := '16';
+  Retorno := Replicate(' ', 616);
   //
   for I := 1 to 16 do
   begin
     //
     DLLG2_LimpaParams(iHd);                                                               // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd, 'CodAliquotaProgramavel',pChar(IntToStr(I)),4);              // Seta os parâmetros
-    DLLG2_ExecutaComando(iHd, 'LeAliquota');                                              // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodAliquotaProgramavel')), PAnsiChar(AnsiString(IntToStr(I))),4);              // Seta os parâmetros
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeAliquota')));                                              // Executa a função
     //
     if (DLLG2_ObtemCodErro(iHd) = 0)
-      then DLLG2_Retorno(iHd, 0, 'PercentualAliquota', 0, Retorno, sizeof(retorno))
+      then DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('PercentualAliquota')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno))
         else Retorno := '0000';
     //
     Result := Result + StrZero(StrToFloat(Retorno)*100,4,0);
@@ -1643,28 +1722,30 @@ end;
 
 function _ecf12_leituraMemoriaFiscalEmDisco(pP1, pP2, pP3: String): Boolean;
 var
-  Retorno: array [0..400] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..400] of char;
+  //Retorno: array [0..400] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..400] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 400);
   DLLG2_LimpaParams(iHd);                                    // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Destino','S',7);                  // Seta os parâmetros
-  DLLG2_AdicionaParam(iHd,'Operador','1',7);             // Seta os parâmetros
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Destino')), PAnsiChar(AnsiString('S')), 7);                  // Seta os parâmetros
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Operador')), PAnsiChar(AnsiString('1')), 7);             // Seta os parâmetros
 //  DLLG2_AdicionaParam(iHd,'LeituraSimplificada','False',0);  // Seta os parâmetros
 //  DLLG2_SetaArquivoLog('RETORNO.TXT');
   //
   if Length(pP2) = 6 then
   begin
-    DLLG2_AdicionaParam(iHd,'DataInicial',pChar(Copy(pP2,1,2)+'/'+Copy(pP2,3,2)+'/'+'20'+Copy(pP2,5,2)),2);         // Seta os parâmetros
-    DLLG2_AdicionaParam(iHd,'DataFinal',pChar(Copy(pP3,1,2)+'/'+Copy(pP3,3,2)+'/'+'20'+Copy(pP3,5,2)),2);           // Seta os parâmetros
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DataInicial')), PAnsiChar(AnsiString(Copy(pP2,1,2)+'/'+Copy(pP2,3,2)+'/'+'20'+Copy(pP2,5,2))), 2);         // Seta os parâmetros
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('DataFinal')), PAnsiChar(AnsiString(Copy(pP3,1,2)+'/'+Copy(pP3,3,2)+'/'+'20'+Copy(pP3,5,2))), 2);           // Seta os parâmetros
   end else
   begin
-    DLLG2_AdicionaParam(iHd,'ReducaoInicial',pChar(pP2),4);         // Seta os parâmetros
-    DLLG2_AdicionaParam(iHd,'ReducaoFinal',pChar(pP3),4);           // Seta os parâmetros
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('ReducaoInicial')), PAnsiChar(AnsiString(pP2)), 4);         // Seta os parâmetros
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('ReducaoFinal')), PAnsiChar(AnsiString(pP3)), 4);           // Seta os parâmetros
   end;
   //
   // URANO  (01451)34628707 Filipe   //
   //
-  DLLG2_ExecutaComando(iHd,'EmiteLeituraMF');                 // Executa a função
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EmiteLeituraMF')));                 // Executa a função
   //
   //
   DeleteFile(pP1);   // Apaga o arquivo anterior
@@ -1676,10 +1757,10 @@ begin
   begin
     Retorno := '';
     DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-    DLLG2_ExecutaComando(iHd,'LeImpressao');
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeImpressao')));
     if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
     begin
-      DLLG2_Retorno(iHd, 0, 'TextoImpressao', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+      DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('TextoImpressao')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
       Writeln(Form1.F,StrTran(Retorno,chr(13),Chr(10)));
     end;
   end;
@@ -1708,24 +1789,24 @@ begin
     //
     if Form1.ibDataSet25ACUMULADO1.AsFloat <> 0 then
     begin
-      DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label9.Caption)),7);  // Cheque
-      DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25ACUMULADO1.AsString),6);           // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label9.Caption))), 7);  // Cheque
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25ACUMULADO1.AsString)), 6);           // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
       Form1.Label13.Hint := AllTrim(Form2.Label9.Caption);
     end;
     if Form1.ibDataSet25PAGAR.AsFloat <> 0 then
     begin
-      DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label8.Caption)),7);  // Cartão
-      DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25Pagar.AsString),6);                // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label8.Caption))), 7);  // Cartão
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25Pagar.AsString)), 6);                // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
       Form1.Label13.Hint := AllTrim(Form2.Label8.Caption);
     end;
     if Form1.ibDataSet25DIFERENCA_.AsFloat <> 0 then
     begin
-      DLLG2_AdicionaParam(iHd,'NomeMeioPagamento',pchar(AllTrim(Form2.Label17.Caption)),7); // Prazo
-      DLLG2_AdicionaParam(iHd,'Valor',pChar(Form1.ibDataSet25DIFERENCA_.AsString),6);           // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeMeioPagamento')), PAnsiChar(AnsiString(AllTrim(Form2.Label17.Caption))), 7); // Prazo
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Valor')), PAnsiChar(AnsiString(Form1.ibDataSet25DIFERENCA_.AsString)), 6);           // Valor da operação.Indica o montante pago com o Meio de Pagamento informado.
       Form1.Label13.Hint := AllTrim(Form2.Label17.Caption);
     end;
     //
-    DLLG2_ExecutaComando(iHd,'AbreCreditoDebito');                   // Executa a função
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AbreCreditoDebito')));                   // Executa a função
     iRetorno := DLLG2_ObtemCodErro(iHd);
     //
     Form1.Label13.Hint := Form1.Label13.Hint + ' ' + intToStr(iRetorno);
@@ -1738,8 +1819,8 @@ begin
         if (Copy(sP1,I,1) = Chr(10)) or (I-J>=47) then // Linha pode ter no maximo 40 caracteres;
         begin
           DLLG2_LimpaParams(iHd);                                            // Limpa os parâmetros
-          DLLG2_AdicionaParam(iHd,'TextoLivre',pChar(Copy(sP1,J,I-J)+' '),7);//
-          DLLG2_ExecutaComando(iHd,'ImprimeTexto');                          // Executa a função
+          DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TextoLivre')), PAnsiChar(AnsiString(Copy(sP1,J,I-J)+' ')), 7);//
+          DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('ImprimeTexto')));                          // Executa a função
           iRetorno := DLLG2_ObtemCodErro(iHd);
           J := I + 1;
         end;
@@ -1749,21 +1830,21 @@ begin
     if iRetorno = 0 then
     begin
       DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-      DLLG2_ExecutaComando(iHd,'EncerraDocumento');                     // Executa a função
+      DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EncerraDocumento')));                     // Executa a função
       iRetorno := DLLG2_ObtemCodErro(iHd);
     end;
     //
     if iRetorno = 0 then Result := True else Result := False;
     //
     DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd,'Avanco',pChar(FAvancoPapel),12);     // Identificação do operador
-    DLLG2_ExecutaComando(iHd,'AvancaPapel'); // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Avanco')), PAnsiChar(AnsiString(FAvancoPapel)), 12);     // Identificação do operador
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AvancaPapel'))); // Executa a função
     //
     if Form1.sCortaPapel = 'Sim' then
     begin
       DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-      DLLG2_AdicionaParam(iHd,'TipoCorte','1',12);               //
-      DLLG2_ExecutaComando(iHd,'CortaPapel'); // Executa a função
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TipoCorte')), PAnsiChar(AnsiString('1')), 12);               //
+      DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('CortaPapel'))); // Executa a função
       Form1.Edit1.SetFocus;
     end;
     //
@@ -1775,7 +1856,7 @@ end;
 function _ecf12_ImpressaoNaoSujeitoaoICMS(sP1: String): Boolean;
 var
   iRetorno, I, iI : Integer;
-  sLinha : String;
+  sLinha : AnsiString;
 begin
   //
   begin
@@ -1786,37 +1867,37 @@ begin
     //
     if Pos('IDENTIFICAÇÃO DO PAF-ECF',sP1)<>0 then
     begin
-      DLLG2_AdicionaParam(iHd,'CodGerencial','1',4);  // Identificação do PAF
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('1')), 4);  // Identificação do PAF
     end else
     begin
       if Pos('Período Solicitado: de',sP1)<>0 then
       begin
-        DLLG2_AdicionaParam(iHd,'CodGerencial','4',4);  // Meios de pagamento
+        DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('4')), 4);  // Meios de pagamento
       end else
       begin
         if (Pos('Documento: ',sP1)<>0) or (Pos(TITULO_PARCELAS_CARNE_RESUMIDO, sP1) > 0) then  // Sandro Silva 2018-04-29  if Pos('Documento: ',sP1)<>0 then
         begin
-          DLLG2_AdicionaParam(iHd,'CodGerencial','2',4); // Venda a prazo
+          DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('2')), 4); // Venda a prazo
         end else
         begin
           if Pos('DAV EMITIDOS',sP1)<>0 then
           begin
-            DLLG2_AdicionaParam(iHd,'CodGerencial','5',4); // DAV Emitidos
+            DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('5')), 4); // DAV Emitidos
           end else
           begin
             if Pos('AUXILIAR DE VENDA (DAV) - OR',sP1)<>0 then
             begin
-              DLLG2_AdicionaParam(iHd,'CodGerencial','6',4); // Orçamento (DAV)
+              DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('6')), 4); // Orçamento (DAV)
             end else
             begin
               if Pos('CONFERENCIA DE CONTA',sP1)<>0 then
               begin
-                DLLG2_AdicionaParam(iHd,'CodGerencial','7',4); // Conferencia de conta
+                DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('7')), 4); // Conferencia de conta
               end else
               begin
                 if Pos('TRANSFERENCIAS ENTRE CONTA',sP1)<>0 then
                 begin
-                  DLLG2_AdicionaParam(iHd,'CodGerencial','8',4); // Transferencia entre CONTAS
+                  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('8')), 4); // Transferencia entre CONTAS
                 end else
                 begin
                   // Sandro Silva 2016-02-04 POLIMIG  if (Pos('CONTAS DE CLIENTES ABERTAS',sP1)<>0) or (Pos('CONTAS DE CLIENTES OS ABERTAS',sP1)<>0) or (Pos('NENHUMA',sP1)<>0) then
@@ -1824,32 +1905,32 @@ begin
                     or (Pos('CONTAS DE CLIENTES OS ABERTAS',sP1)<>0)
                     or ((Pos('NENHUMA',sP1)<>0) and (Pos('CONTA DE CLIENTE',sP1)<>0)) then
                   begin
-                    DLLG2_AdicionaParam(iHd,'CodGerencial','9',4); // CONTAS ABERTAS
+                    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('9')), 4); // CONTAS ABERTAS
                   end else
                   begin
                     if Pos('CONFERENCIA DE MESA',sP1)<>0 then
                     begin
-                      DLLG2_AdicionaParam(iHd,'CodGerencial','10',4); // CONF MESA
+                      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('10')), 4); // CONF MESA
                     end else
                     begin
                       if Pos('TRANSFERENCIAS ENTRE MESA',sP1)<>0 then
                       begin
-                        DLLG2_AdicionaParam(iHd,'CodGerencial','11',4); // TRANSF MESA
+                        DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('11')), 4); // TRANSF MESA
                       end else
                       begin
                         // Sandro Silva 2016-02-04 POLIMIG  if Pos('MESAS ABERTAS',sP1)<>0 then
                         if (Pos('MESAS ABERTAS',sP1)<>0) or
                          (Pos('NENHUMA MESA',sP1)<>0) then
                         begin
-                          DLLG2_AdicionaParam(iHd,'CodGerencial','12',4); // Mesas Abertas
+                          DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('12')), 4); // Mesas Abertas
                         end else
                         begin
                           if Pos('Parametros de Configuracao',sP1)<>0 then
                           begin
-                            DLLG2_AdicionaParam(iHd,'CodGerencial','13',4); // Parâmetros de Configuração
+                            DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('13')), 4); // Parâmetros de Configuração
                           end else
                           begin
-                            DLLG2_AdicionaParam(iHd,'CodGerencial','3',4); // CARTAO TEP
+                            DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('CodGerencial')), PAnsiChar(AnsiString('3')), 4); // CARTAO TEP
                           end;
                         end;
                       end;
@@ -1863,7 +1944,7 @@ begin
       end;
     end;
     //
-    DLLG2_ExecutaComando(iHd,'AbreGerencial');                   // Executa a função
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AbreGerencial')));                   // Executa a função
     //
     iRetorno := DLLG2_ObtemCodErro(iHd);
     //
@@ -1884,8 +1965,8 @@ begin
             if sLinha = '' then sLinha:=' ';
             //
             DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-            DLLG2_AdicionaParam(iHd,'TextoLivre',pChar(ConverteAcentos(sLinha)),7);
-            DLLG2_ExecutaComando(iHd,'ImprimeTexto');                   // Executa a função
+            DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TextoLivre')), PAnsiChar(AnsiString(ConverteAcentos(sLinha))), 7);
+            DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('ImprimeTexto')));                   // Executa a função
             iRetorno := DLLG2_ObtemCodErro(iHd);
             sLinha:='';
             //
@@ -1902,8 +1983,8 @@ begin
         if iRetorno = 0 then
         begin
           DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-          DLLG2_AdicionaParam(iHd,'TextoLivre',' ',7);
-          DLLG2_ExecutaComando(iHd,'ImprimeTexto');                   // Executa a função
+          DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TextoLivre')), PAnsiChar(AnsiString(' ')), 7);
+          DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('ImprimeTexto')));                   // Executa a função
           iRetorno := DLLG2_ObtemCodErro(iHd);
         end;
       end;
@@ -1915,7 +1996,7 @@ begin
     if iRetorno = 0 then
     begin
       DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-      DLLG2_ExecutaComando(iHd,'EncerraDocumento');                     // Executa a função
+      DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EncerraDocumento')));                     // Executa a função
       iRetorno := DLLG2_ObtemCodErro(iHd);
     end;
     //
@@ -1923,14 +2004,14 @@ begin
     //
     //
     DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-    DLLG2_AdicionaParam(iHd,'Avanco',pChar(FAvancoPapel),12);     // Identificação do operador
-    DLLG2_ExecutaComando(iHd,'AvancaPapel'); // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Avanco')), PAnsiChar(AnsiString(FAvancoPapel)), 12);     // Identificação do operador
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('AvancaPapel'))); // Executa a função
     //
     if Form1.sCortaPapel = 'Sim' then
     begin
       DLLG2_LimpaParams(iHd);                                          // Limpa os parâmetros
-      DLLG2_AdicionaParam(iHd,'TipoCorte','1',12);               //
-      DLLG2_ExecutaComando(iHd,'CortaPapel'); // Executa a função
+      DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('TipoCorte')), PAnsiChar(AnsiString('1')), 12);               //
+      DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('CortaPapel'))); // Executa a função
       Form1.Edit1.SetFocus;
     end;
     //
@@ -1942,8 +2023,8 @@ function _ecf12_FechaCupom2(sP1: Boolean): Boolean;
 begin
   //
   DLLG2_LimpaParams(iHd);                                           // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd,'Operador','1',7);     // Identificação do operador
-  DLLG2_ExecutaComando(iHd,'EncerraDocumento');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('Operador')), PAnsiChar(AnsiString('1')), 7);     // Identificação do operador
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('EncerraDocumento')));                     // Executa a função
   Result := True;
   //
 end;
@@ -1955,15 +2036,17 @@ end;
 
 function _ecf12_GrandeTotal(sP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeDadoMonetario', 'GT', 7);     // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeMoeda');                       // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeDadoMonetario')), PAnsiChar(AnsiString('GT')), 7);     // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeMoeda')));                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorMoeda', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorMoeda')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     try
 //       Result := StrZero( StrToFloat(Retorno)*100 ,18,0);
        Result := StrZero( StrToFloat(LimpaNumeroDeixandoAVirgula(Retorno))*100,18,0);
@@ -1981,19 +2064,21 @@ end;
 
 function _ecf12_TotalizadoresDasAliquotas(sP1: Boolean): String;
 var
-  Retorno: array [0..616] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..616] of char;
+  //Retorno: array [0..616] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..616] of char;
+  Retorno: AnsiString;
   I : Integer;
 begin
   //
   Result := '';
+  Retorno := Replicate(' ', 616);
   //
   for I := 1 to 15 do
   begin
-    DLLG2_AdicionaParam(iHd, 'NomeDadoMonetario', pChar('TotalDiaValorAliquota['+StrZero(I,2,0)+']'),7); // Seta os parâmetros
-    DLLG2_ExecutaComando(iHd, 'LeMoeda');                                                      // Executa a função
+    DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeDadoMonetario')), PAnsiChar(AnsiString('TotalDiaValorAliquota['+StrZero(I,2,0)+']')), 7); // Seta os parâmetros
+    DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeMoeda')));                                                      // Executa a função
     if (DLLG2_ObtemCodErro(iHd) = 0) then                                                     // Verifica se teve erro no retorno
     begin                                                                                    //
-      DLLG2_Retorno(iHd, 0, 'ValorMoeda', 0, Retorno, sizeof(retorno));                     // Obtem o retorno
+      DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorMoeda')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno));                     // Obtem o retorno
       Result := Result + StrZero(StrToFloat(Retorno)*100,14,0);
     end else
     begin
@@ -2008,41 +2093,43 @@ begin
    //
    Retorno := '0';
    DLLG2_LimpaParams(iHd);                                                       // Limpa os parâmetros
-   DLLG2_AdicionaParam(iHd, 'NomeDadoMonetario', 'TotalDiaIsencaoICMS', 7);      // Seta os parâmetros
-   DLLG2_ExecutaComando(iHd, 'LeMoeda');                                         // Executa a função
-   if (DLLG2_ObtemCodErro(iHd) = 0) then DLLG2_Retorno(iHd, 0, 'ValorMoeda', 0, Retorno, sizeof(retorno));
+   DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeDadoMonetario')), PAnsiChar(AnsiString('TotalDiaIsencaoICMS')), 7);      // Seta os parâmetros
+   DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeMoeda')));                                         // Executa a função
+   if (DLLG2_ObtemCodErro(iHd) = 0) then DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorMoeda')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno));
    Result := Result + StrZero(StrToFloat(Retorno)*100,14,0);
    //
    // Não tributados
    //
    Retorno := '0';
    DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-   DLLG2_AdicionaParam(iHd, 'NomeDadoMonetario', 'TotalDiaNaoTributadoICMS', 7);        // Seta os parâmetros
-   DLLG2_ExecutaComando(iHd, 'LeMoeda');                                         // Executa a função
-   if (DLLG2_ObtemCodErro(iHd) = 0) then DLLG2_Retorno(iHd, 0, 'ValorMoeda', 0, Retorno, sizeof(retorno));
+   DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeDadoMonetario')), PAnsiChar(AnsiString('TotalDiaNaoTributadoICMS')), 7);        // Seta os parâmetros
+   DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeMoeda')));                                         // Executa a função
+   if (DLLG2_ObtemCodErro(iHd) = 0) then DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorMoeda')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno));
    Result := Result + StrZero(StrToFloat(Retorno)*100,14,0);
    //
    // Substituição
    //
    Retorno := '0';
    DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-   DLLG2_AdicionaParam(iHd, 'NomeDadoMonetario', 'TotalDiaSubstituicaoTributariaICMS', 7);        // Seta os parâmetros
-   DLLG2_ExecutaComando(iHd, 'LeMoeda');                                         // Executa a função
-   if (DLLG2_ObtemCodErro(iHd) = 0) then DLLG2_Retorno(iHd, 0, 'ValorMoeda', 0, Retorno, sizeof(retorno));
+   DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeDadoMonetario')), PAnsiChar(AnsiString('TotalDiaSubstituicaoTributariaICMS')), 7);        // Seta os parâmetros
+   DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeMoeda')));                                         // Executa a função
+   if (DLLG2_ObtemCodErro(iHd) = 0) then DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorMoeda')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno));
    Result := Result + StrZero(StrToFloat(Retorno)*100,14,0);
    //
 end;
 
 function _ecf12_CupomAberto(sP1: Boolean): boolean;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'EstadoFiscal', 7);            // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('EstadoFiscal')), 7);            // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                     // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
   //
   if (AllTrim(Retorno) >= '2') then Result := True else Result := False;
   //
@@ -2050,14 +2137,16 @@ end;
 
 function _ecf12_FaltaPagamento(sP1: Boolean): boolean;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                                // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeInteiro', 'EstadoFiscal', 7);            // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeInteiro');                     // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeInteiro')), PAnsiChar(AnsiString('EstadoFiscal')),  7);            // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeInteiro')));                     // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
-    DLLG2_Retorno(iHd, 0, 'ValorInteiro', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorInteiro')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
   //
   if (AllTrim(Retorno) >= '4') then Result := True else Result := False;
   //
@@ -2070,15 +2159,17 @@ end;
 
 function _ecf12_Marca(sP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeTexto', 'Marca', 7);         // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeTexto');                       // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeTexto')), PAnsiChar(AnsiString('Marca')), 7);         // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeTexto')));                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTexto')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Retorno;
   end else _ecf12_CodeErro(iHd,'');
   //
@@ -2086,15 +2177,17 @@ end;
 
 function _ecf12_Modelo(sP1: Boolean): String;
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeTexto', 'Modelo', 7);         // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeTexto');                       // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeTexto')), PAnsiChar(AnsiString('Modelo')), 7);         // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeTexto')));                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTexto')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Retorno;
   end else _ecf12_CodeErro(iHd,'');
   //
@@ -2102,15 +2195,17 @@ end;
 
 function _ecf12_Tipodaimpressora(pP1: Boolean): String; //
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeTexto', 'TipoECF', 7);         // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeTexto');                       // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeTexto')), PAnsiChar(AnsiString('TipoECF')), 7);         // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeTexto')));                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTexto')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Retorno;
   end else _ecf12_CodeErro(iHd,'');
   //
@@ -2118,15 +2213,17 @@ end;
 
 function _ecf12_VersaoSB(pP1: Boolean): String; //
 var
-  Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  //Retorno: array [0..255] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..255] of char;
+  Retorno: AnsiString;
 begin
   //
+  Retorno := Replicate(' ', 255);
   DLLG2_LimpaParams(iHd);                                     // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeTexto', 'VersaoSW', 7);         // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeTexto');                       // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeTexto')), PAnsiChar(AnsiString('VersaoSW')), 7);         // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeTexto')));                       // Executa a função
   if (DLLG2_ObtemCodErro(iHd) = 0) then                       // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTexto')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     Result := Retorno;
   end else _ecf12_CodeErro(iHd,'');
   //
@@ -2151,17 +2248,19 @@ end;
 
 function _ecf12_DadosDaUltimaReducao(pP1: Boolean): String; //
 var
-  Retorno: array [0..4000] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..4000] of char;
-  sRetorno : String;
+  //Retorno: array [0..4000] of AnsiChar; // Sandro Silva 2023-12-13 Retorno: array [0..4000] of char;
+  Retorno: AnsiString;
+  sRetorno: String;
 begin
   //
+  Retorno := Replicate(' ', 4000);
   DLLG2_LimpaParams(iHd);                               // Limpa os parâmetros
-  DLLG2_AdicionaParam(iHd, 'NomeTexto', 'DadosUltimaReducaoZ', 7); // Seta os parâmetros
-  DLLG2_ExecutaComando(iHd, 'LeTexto');                 // Executa a função
+  DLLG2_AdicionaParam(iHd, PAnsiChar(AnsiString('NomeTexto')), PAnsiChar(AnsiString('DadosUltimaReducaoZ')), 7); // Seta os parâmetros
+  DLLG2_ExecutaComando(iHd, PAnsiChar(AnsiString('LeTexto')));                 // Executa a função
   //
   if (DLLG2_ObtemCodErro(iHd) = 0) then                 // Verifica se teve erro no retorno
   begin
-    DLLG2_Retorno(iHd, 0, 'ValorTexto', 0, Retorno, sizeof(retorno)); // Obtem o retorno
+    DLLG2_Retorno(iHd, 0, PAnsiChar(AnsiString('ValorTexto')), 0, PAnsiChar(AnsiString(Retorno)), sizeof(retorno)); // Obtem o retorno
     sRetorno := Retorno;
   end else
   begin
@@ -2221,6 +2320,3 @@ end;
 
 
 end.
-
-
-

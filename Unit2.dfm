@@ -72,6 +72,210 @@ object Form2: TForm2
       ParentFont = False
       Visible = False
     end
+    object Panel3: TPanel
+      Left = 0
+      Top = 3
+      Width = 1024
+      Height = 370
+      BevelOuter = bvNone
+      Color = clWhite
+      Ctl3D = False
+      ParentBackground = False
+      ParentCtl3D = False
+      TabOrder = 0
+      Visible = False
+      OnEnter = Panel3Enter
+      object Label3: TLabel
+        Left = 18
+        Top = 123
+        Width = 64
+        Height = 13
+        Caption = 'Documento'
+        Color = clWhite
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label4: TLabel
+        Left = 260
+        Top = 123
+        Width = 29
+        Height = 13
+        Caption = 'Valor'
+        Color = clWhite
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label5: TLabel
+        Left = 140
+        Top = 123
+        Width = 66
+        Height = 13
+        Caption = 'Vencimento'
+        Color = clWhite
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label7: TLabel
+        Left = 392
+        Top = 123
+        Width = 48
+        Height = 13
+        Caption = 'Portador'
+        Color = clWhite
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label6: TLabel
+        Left = 18
+        Top = 71
+        Width = 53
+        Height = 13
+        Caption = 'Parcelas:'
+        Color = clWhite
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object Label27: TLabel
+        Left = 18
+        Top = 21
+        Width = 96
+        Height = 13
+        Caption = 'Nome do cliente:'
+        Color = clWhite
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
+      object DBGrid1: TDBGrid
+        Left = 18
+        Top = 140
+        Width = 594
+        Height = 220
+        Color = clWhite
+        Ctl3D = False
+        DataSource = Form1.DataSource7
+        FixedColor = clWindow
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -15
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        Options = [dgEditing, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -16
+        TitleFont.Name = 'Microsoft Sans Serif'
+        TitleFont.Style = [fsBold]
+        OnDrawColumnCell = DBGrid1DrawColumnCell
+        OnEnter = MaskEdit1Enter
+        OnKeyPress = DBGrid1KeyPress
+        OnKeyUp = DBGrid1KeyUp
+        Columns = <
+          item
+            Color = clBtnFace
+            Expanded = False
+            FieldName = 'DOCUMENTO'
+            ReadOnly = True
+            Width = 125
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'VENCIMENTO'
+            Width = 118
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'VALOR_DUPL'
+            Width = 130
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'PORTADOR'
+            Width = 195
+            Visible = True
+          end>
+      end
+      object MaskEdit1: TMaskEdit
+        Left = 18
+        Top = 85
+        Width = 55
+        Height = 24
+        Color = clWhite
+        Ctl3D = False
+        EditMask = '!######;1; '
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -15
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        MaxLength = 6
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 1
+        Text = '      '
+        OnEnter = MaskEdit1Enter
+        OnExit = MaskEdit1Exit
+        OnKeyPress = MaskEdit1KeyPress
+      end
+      object Edit6: TEdit
+        Left = 18
+        Top = 35
+        Width = 594
+        Height = 24
+        Color = clWhite
+        Ctl3D = False
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -15
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentCtl3D = False
+        ParentFont = False
+        ReadOnly = True
+        TabOrder = 2
+      end
+    end
     object Panel5: TPanel
       Left = 0
       Top = 0
@@ -27965,210 +28169,6 @@ object Form2: TForm2
         Caption = 'Teste'
         TabOrder = 13
         Visible = False
-      end
-    end
-    object Panel3: TPanel
-      Left = 0
-      Top = 3
-      Width = 1024
-      Height = 370
-      BevelOuter = bvNone
-      Color = clWhite
-      Ctl3D = False
-      ParentBackground = False
-      ParentCtl3D = False
-      TabOrder = 0
-      Visible = False
-      OnEnter = Panel3Enter
-      object Label3: TLabel
-        Left = 18
-        Top = 123
-        Width = 64
-        Height = 13
-        Caption = 'Documento'
-        Color = clWhite
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-      end
-      object Label4: TLabel
-        Left = 260
-        Top = 123
-        Width = 29
-        Height = 13
-        Caption = 'Valor'
-        Color = clWhite
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-      end
-      object Label5: TLabel
-        Left = 140
-        Top = 123
-        Width = 66
-        Height = 13
-        Caption = 'Vencimento'
-        Color = clWhite
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-      end
-      object Label7: TLabel
-        Left = 392
-        Top = 123
-        Width = 48
-        Height = 13
-        Caption = 'Portador'
-        Color = clWhite
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-      end
-      object Label6: TLabel
-        Left = 18
-        Top = 71
-        Width = 53
-        Height = 13
-        Caption = 'Parcelas:'
-        Color = clWhite
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-      end
-      object Label27: TLabel
-        Left = 18
-        Top = 21
-        Width = 96
-        Height = 13
-        Caption = 'Nome do cliente:'
-        Color = clWhite
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
-      end
-      object DBGrid1: TDBGrid
-        Left = 18
-        Top = 140
-        Width = 594
-        Height = 220
-        Color = clWhite
-        Ctl3D = False
-        DataSource = Form1.DataSource7
-        FixedColor = clWindow
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -15
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        Options = [dgEditing, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
-        ParentCtl3D = False
-        ParentFont = False
-        TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -16
-        TitleFont.Name = 'Microsoft Sans Serif'
-        TitleFont.Style = [fsBold]
-        OnDrawColumnCell = DBGrid1DrawColumnCell
-        OnEnter = MaskEdit1Enter
-        OnKeyPress = DBGrid1KeyPress
-        OnKeyUp = DBGrid1KeyUp
-        Columns = <
-          item
-            Color = clBtnFace
-            Expanded = False
-            FieldName = 'DOCUMENTO'
-            ReadOnly = True
-            Width = 125
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'VENCIMENTO'
-            Width = 118
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'VALOR_DUPL'
-            Width = 130
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'PORTADOR'
-            Width = 195
-            Visible = True
-          end>
-      end
-      object MaskEdit1: TMaskEdit
-        Left = 18
-        Top = 85
-        Width = 55
-        Height = 24
-        Color = clWhite
-        Ctl3D = False
-        EditMask = '!######;1; '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -15
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        MaxLength = 6
-        ParentCtl3D = False
-        ParentFont = False
-        TabOrder = 1
-        Text = '      '
-        OnEnter = MaskEdit1Enter
-        OnExit = MaskEdit1Exit
-        OnKeyPress = MaskEdit1KeyPress
-      end
-      object Edit6: TEdit
-        Left = 18
-        Top = 35
-        Width = 594
-        Height = 24
-        Color = clWhite
-        Ctl3D = False
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -15
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentCtl3D = False
-        ParentFont = False
-        ReadOnly = True
-        TabOrder = 2
       end
     end
     object Edit4: TEdit

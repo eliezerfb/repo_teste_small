@@ -4,13 +4,17 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons
-  , IBDatabase, DB, IBCustomDataSet, IBQuery, ComCtrls, Grids, DBGrids
+  Dialogs, StdCtrls, Buttons,
+  DB, ComCtrls, Grids, DBGrids
   , StrUtils, Clipbrd, ShellApi
   , ufuncoesfrente
   , ufuncoesfrentepaf
-  , ufuncoesblocox, uclassetiposblocox, upafecfmensagens
-  , smallfunc_xe
+  , ufuncoesblocox, uclassetiposblocox, upafecfmensagens  
+  {$IFDEF VER150}
+  //SmallFunc, IBDatabase, IBQuery, IBCustomDataSet,
+  {$ELSE}
+  , SmallFunc_xe, IBX.IBDatabase, IBX.IBQuery, IBX.IBCustomDataSet
+  {$ENDIF}
   , xmldom, XMLIntf, msxmldom, msxml, Menus
   , LbCipher,
   LbClass;
@@ -424,7 +428,7 @@ procedure TFArquivosBlocoX.ConsultaRecibo1Click(Sender: TObject);
 var
   bTodas: Boolean;
 begin
-  bTodas := (Application.MessageBox(PWideChar('Consultar este XML e os demais listados com status AGUARDANDO?' + #13 + #13 + 'Tecle Não para consultar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
+  bTodas := (Application.MessageBox(PChar('Consultar este XML e os demais listados com status AGUARDANDO?' + #13 + #13 + 'Tecle Não para consultar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
   DBGrid1.DataSource.DataSet.DisableControls; // Sandro Silva 2019-06-19
   while True do
   begin
@@ -1218,12 +1222,12 @@ procedure TFArquivosBlocoX.Reprocessararquivos1Click(Sender: TObject);
 var
   bTodas: Boolean;
 begin
-  bTodas := (Application.MessageBox(PWideChar('Reprocessar este XML e os próximos listados?' + #13 + #13 + 'Tecle Não para reprocessar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
+  bTodas := (Application.MessageBox(PChar('Reprocessar este XML e os próximos listados?' + #13 + #13 + 'Tecle Não para reprocessar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
   DBGrid1.DataSource.DataSet.DisableControls; // Sandro Silva 2019-06-19
   while True do
   begin
     if (AnsiContainsText(DBGrid1.DataSource.DataSet.FieldByName('XMLRESPOSTA').AsString, '<SituacaoProcessamentoCodigo>2') or AnsiContainsText(DBGrid1.DataSource.DataSet.FieldByName('XMLRESPOSTA').AsString, '<SituacaoProcessamentoCodigo>3')) then // 2:Erro 3:Cancelado
-      BlocoX.ReprocessarArquivoBlocoX(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(satual), AnsiString(DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString));
+      BlocoX.ReprocessarArquivoBlocoX(PAnsiChar(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName)), PAnsiChar(AnsiString(satual)), PAnsiChar(AnsiString(DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString)));
     if bTodas then
       DBGrid1.DataSource.DataSet.Next;
 

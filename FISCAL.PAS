@@ -1395,6 +1395,10 @@ type
     procedure Iniciarnovavenda1Click(Sender: TObject);
     procedure ibDataSet27UNITARIOSetText(Sender: TField;
       const Text: String);
+    procedure Vendabrutadodia1Click(Sender: TObject);
+    procedure CDC1Click(Sender: TObject);
+    procedure CCF1Click(Sender: TObject);
+    procedure COO1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -3761,7 +3765,8 @@ begin
     AssinaturaDigital(Form1.sPastaDoExecutavel+'\LISTA.TXT');
     CHDir(Form1.sAtual);
     //
-    Form1.sMD5DaLista := MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+    //2024-03-13 Form1.sMD5DaLista := MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+    Form1.sMD5DaLista := LowerCase(MD5File(PChar(Form1.sPastaDoExecutavel+'\LISTA.TXT')));
     //
     Mais1ini := TIniFile.Create(Form1.sArquivo);
     //
@@ -4532,6 +4537,7 @@ begin
 //    (* Habilitar no final da homologação
     if (Form1.sModeloEcf <> '59') and (Form1.sModeloEcf <> '65') and (Form1.sModeloEcf <> '99') then
     begin
+
       if (SmallCripto(Form1.ibDataSet13.FieldByName('CGC').AsString+Form1.sMD5DaLista) <> LerParametroIni(Form1.sArquivo, 'MD5', 'HOMOLOGADO', 'XXXX'))
         and (FileExists('frente.dpr') = False) // Para poder debugar durante execução. Não usar CNPJ da Smallsoft no emitente porque não consegue testar as validações na homologação
         then
@@ -11513,7 +11519,8 @@ begin
 
           //
           //
-          Form1.sMD5DaLista := MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+          //2024-03-13 Form1.sMD5DaLista := MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+          Form1.sMD5DaLista := LowerCase(MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT')));
           //
           Form1.sMD5DaLista := StrTran(Form1.sMD5DaLista,'"NL"','');
           //
@@ -15588,7 +15595,7 @@ var
   iItem: Integer;
 begin    
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
-  RetornodeVariveisdaImpressora1.Visible := False;//True; /// Sandro Silva 2024-02-21
+  //RetornodeVariveisdaImpressora1.Visible := True; /// Sandro Silva 2024-02-21
   //
   x1024x768.Visible := False;
   //
@@ -21738,6 +21745,7 @@ begin
 //  if Form1.sModeloECF = '12' then SmallMsg(_ecf12_NmdeRedues(True));
 //  if Form1.sModeloECF = '65' then SmallMsg(_ecf65_NmdeRedues(True));
   if Form1.sModeloECF = '14' then SmallMsg(_ecf14_DadosUltimaReducaoZ(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_DadosDaUltimaReducao(True));
 //  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_NmdeRedues(True));
 
 end;
@@ -22300,6 +22308,16 @@ end;
 procedure TForm1.Convnio57951Click(Sender: TObject);
 begin
   PafEcfConvenio57951; // Sandro Silva 2022-03-29
+end;
+
+procedure TForm1.COO1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_NumeroDoCupom(True));
+  if Form1.sModeloECF = '03' then SmallMsg(_ecf03_NumeroDoCupom(True));
+  if Form1.sModeloECF = '12' then SmallMsg(_ecf12_NumeroDoCupom(True));
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_NumeroDoCupom(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_NumeroDoCupom(True));
+  if Form1.sModeloECF = '17' then SmallMsg(_ecf17_NumeroDoCupom(True));
 end;
 
 procedure TForm1.abndiceTcnicoProduo1Click(Sender: TObject);
@@ -23150,8 +23168,8 @@ begin
   if Form1.sModeloECF = '12' then;
   if Form1.sModeloECF = '65' then;
   if Form1.sModeloECF = '59' then;
-  if Form1.sModeloECF = '14' then;
-  if Form1.sModeloECF = '15' then;
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CER(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CER(' '));
   if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CER(True));
   //
 end;
@@ -23281,7 +23299,11 @@ end;
 
 procedure TForm1.CdigomodelodoECF1Click(Sender: TObject);
 begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_CodigoModeloEcf(True));
   if Form1.sModeloECF = '03' then SmallMsg(_ecf03_CodigoModeloEcf(True));
+  if Form1.sModeloECF = '12' then SmallMsg(_ecf12_CodigoModeloEcf(True));
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CodigoModeloEcf(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CodigoModeloEcf(True));// Ok 2015-08-24
   if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CodigoModeloEcf(True));// Ok 2015-08-24  
 end;
 
@@ -26590,6 +26612,26 @@ begin
     Timer2.Enabled := True;
 end;
 
+procedure TForm1.CCF1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_CCF(True));
+  if Form1.sModeloECF = '03' then SmallMsg(_ecf03_CCF(True));
+  if Form1.sModeloECF = '12' then ;
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CCF(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CCF(True));
+  if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CCF(True));
+end;
+
+procedure TForm1.CDC1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_CDC(True));
+  if Form1.sModeloECF = '03' then SmallMsg(_ecf03_CDC(True));
+  if Form1.sModeloECF = '12' then ;
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CDC(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CDC(True));
+  if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CDC(True));
+end;
+
 procedure TForm1.Button5Click(Sender: TObject);
 begin
   // testar estoque do dia
@@ -26746,11 +26788,11 @@ begin
 
             if bEnviar then
             begin
-              _ecf65_EnviarEMail('',sEmail,'',sAssuntoEmail,
+              _ecf65_EnviarEMail('', sEmail, '', sAssuntoEmail,
                 (sBodyEmail+AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+'.'
                 +' Período de '+DateToStr(Form7.DateTimePicker1.Date)+' até '+DateToStr(Form7.DateTimePicker2.Date)+'.')
                 , (sFileZIP)
-                ,False);
+                , False);
             end;
           end;
           if (Form7.CheckBox2.Checked) then
@@ -27229,6 +27271,11 @@ begin
   Application.HintColor     := clInfoBk;
   Application.HintPause     := 500;
   Application.HintHidePause := Application.HintPause * 5;
+end;
+
+procedure TForm1.Vendabrutadodia1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '15' then SmallMsg(FloatToStr(StrToFloatDef(Copy(Form1.PDV_DadosDaUltimaReducaoZ(True), 13, 18), 0) / 100));
 end;
 
 procedure TForm1.VendasIdentificadaspeloCPFCNPJ1Click(Sender: TObject);
@@ -33720,7 +33767,7 @@ begin
   if bOk then
   begin
     // 2024-02-16 _BlocoX.GerarAoFISCOREDUCAOZBlocox(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
-    _BlocoX.GerarAoFISCOREDUCAOZBlocox(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarAoFISCOREDUCAOZBlocox(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
 
     Commitatudo2(True); // EnvioaoFISCOESTOQUEClick 2017-03-22
     CommitaTudo(True);// EnvioaoFISCOESTOQUEClick 2017-03-22
@@ -33780,7 +33827,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueAnoAnterior(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarEstoqueAnoAnterior(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33809,7 +33856,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueMudancaDeTributacao(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarEstoqueMudancaDeTributacao(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33838,7 +33885,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33868,7 +33915,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueMudancaDeRegime(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarEstoqueMudancaDeRegime(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -33898,7 +33945,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueAtual(AnsiString(IBDatabase1.DatabaseName), AnsiString(Form1.sAtual));
+    _BlocoX.GerarEstoqueAtual(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);

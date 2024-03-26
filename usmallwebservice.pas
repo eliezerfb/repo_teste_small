@@ -3,7 +3,13 @@ unit usmallwebservice;
 interface
 
 uses
-  Windows, SysUtils, Classes, CAPICOM_TLB, wininet, synautil;
+  Windows, SysUtils, Classes,
+  {$IFDEF VER150}
+  CAPICOM_TLB,
+  {$ELSE}
+  CAPICOM_TLB_xe,
+  {$ENDIF }
+  wininet, synautil;
 
 function SmallStr(AString: String ): String;
 
@@ -192,7 +198,9 @@ begin
             end;
           end;
         finally
-          //FreeAndNil(Store);
+          {$IFDEF VER150}
+          FreeAndNil(Store);
+          {$ENDIF}
         end;
       end;
     end;
