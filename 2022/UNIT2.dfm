@@ -1119,7 +1119,7 @@ object Form2: TForm2
       Top = 10
       Width = 100
       Height = 24
-      Caption = 'Op'#231#245'es...'
+      Caption = 'Op'#231#245'es'
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -11

@@ -7935,8 +7935,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1171
-    ExplicitWidth = 1554
     object Button2: TButton
       Left = 260
       Top = 10
@@ -8010,7 +8008,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1554
   end
   object Panel_0: TPanel
     Left = 0
@@ -13546,7 +13543,7 @@ object Form7: TForm7
         OnClick = Resumodainadimplncia1Click
       end
       object Rankingdedevedores2: TMenuItem
-        Caption = 'Ranking de devedores...'
+        Caption = 'Ranking de devedores'
         OnClick = Rankingdedevedores2Click
       end
     end
@@ -18023,11 +18020,11 @@ object Form7: TForm7
     Left = 656
     Top = 144
     object Colunas1: TMenuItem
-      Caption = '&Colunas...'
+      Caption = '&Colunas'
       OnClick = Colunas1Click
     end
     object Agrupar1: TMenuItem
-      Caption = 'Agrupar...'
+      Caption = 'Agrupar'
       Visible = False
       OnClick = Agrupar1Click
     end
@@ -18035,11 +18032,11 @@ object Form7: TForm7
       Caption = '-'
     end
     object Editar1: TMenuItem
-      Caption = '&Alterar...'
+      Caption = '&Alterar'
       OnClick = Image106Click
     end
     object Apagar2: TMenuItem
-      Caption = 'E&xcluir...'
+      Caption = 'E&xcluir'
       OnClick = Image102Click
     end
     object N2: TMenuItem
@@ -18054,7 +18051,7 @@ object Form7: TForm7
       OnClick = Imprimirrecibo3Click
     end
     object Receberestaconta1: TMenuItem
-      Caption = 'Receber esta conta...'
+      Caption = 'Receber esta conta'
       OnClick = DBGrid1DblClick
     end
     object Baixaestacontanobanco1: TMenuItem
@@ -18062,7 +18059,7 @@ object Form7: TForm7
       OnClick = Baixaestacontanobanco1Click
     end
     object Pagarestaconta1: TMenuItem
-      Caption = 'Pagar esta conta...'
+      Caption = 'Pagar esta conta'
       OnClick = DBGrid1DblClick
     end
     object N53: TMenuItem
@@ -21261,7 +21258,7 @@ object Form7: TForm7
         Caption = '-'
       end
       object MenuItem16: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object MenuItem17: TMenuItem
@@ -21578,7 +21575,7 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21614,7 +21611,7 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21936,7 +21933,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21967,7 +21964,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
+      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -23132,7 +23129,7 @@ object Form7: TForm7
     object MenuItem11: TMenuItem
       Caption = '&Arquivo'
       object MenuItem99: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object MenuItem116: TMenuItem
@@ -23190,7 +23187,7 @@ object Form7: TForm7
     object MenuItem33: TMenuItem
       Caption = '&Arquivo'
       object MenuItem44: TMenuItem
-        Caption = '&Imprimir...'
+        Caption = '&Imprimir'
         OnClick = imgImprimirClick
       end
       object MenuItem55: TMenuItem

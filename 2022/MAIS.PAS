@@ -4189,7 +4189,18 @@ begin
     begin
       if Alltrim(Form7.IBDataSet100.FieldByname('NOME').AsString) <> '' then
       begin
+        {Sandro Silva 2024-03-15 inicio
         Form7.ibDataSet12.Locate('NOME',Alltrim(Form7.IBDataSet100.FieldByname('NOME').AsString),[]);
+        }
+        Form7.ibDataSet12. First;
+        while Form7.ibDataSet12.Eof = False do
+        begin
+          if Trim(Form7.ibDataSet12NOME.AsString) = Trim(Form7.IBDataSet100.FieldByname('NOME').AsString) then
+            Break;
+          Form7.ibDataSet12.Next;
+        end;
+        {Sandro Silva 2024-03-15 final}
+
         if (Alltrim(Form7.ibDataSet12NOME.AsString) <> Alltrim(Form7.IBDataSet100.FieldByname('NOME').AsString)) then
         begin
           Form7.ibDataSet12.Append;
@@ -4428,6 +4439,11 @@ begin
 
   //Mauricio Parizotto 2023-09-22
   CarregaIconesSistema;
+
+  //Mauricio Parizotto 2024-03-19
+  VersodolayoutdaNFE1.Visible  := False;
+  HorarioDeVerao.Visible       := False;
+  Enviardanfeporemail1.Visible := False;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
@@ -12215,7 +12231,8 @@ var
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\SMALLCOM.INF');
   try
-    Result := Mais1Ini.ReadString('OUTROS','Propaganda','Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br');
+    //Result := Mais1Ini.ReadString('OUTROS','Propaganda','Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br'); Mauricio Parizotto 2024-03-19
+    Result := Mais1Ini.ReadString('OUTROS','Propaganda','');
   finally
     Mais1Ini.Free;
   end;
