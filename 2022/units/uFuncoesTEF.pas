@@ -44,7 +44,6 @@ type
     FnPagar: Double;
     FnReceber: Double;
     FnAcumulado1: Double;
-    FcDebitoOuCredito: String;
     FcCupomTEFReduzido: String;
     FnAcumulado3: Double;
     FcCupomTEF: String;
@@ -64,7 +63,6 @@ type
     property Receber: Double read FnReceber write FnReceber;
     property Acumulado1: Double read FnAcumulado1 write FnAcumulado1;
     property Acumulado3: Double read FnAcumulado3 write FnAcumulado3;
-    property DebitoOuCredito: String read FcDebitoOuCredito write FcDebitoOuCredito;
     property CupomTEFReduzido: String read FcCupomTEFReduzido write FcCupomTEFReduzido;
     property CupomTEF: String read FcCupomTEF write FcCupomTEF;
     property DiasCartaoCredito: Integer read FnDiasCartaoCredito write FnDiasCartaoCredito;
@@ -85,7 +83,9 @@ type
     FcFinaliza: String;
     FcOkSim: String;
     FcTipoParc: String;
-
+    FcMensagem: String;
+    FcBandeira: String;
+    FcDebitoOuCredito: String;
   public
     constructor Create;
     property TotalPago: Currency read FnTotalPago write FnTotalPago;
@@ -98,6 +98,9 @@ type
     property Finaliza: String read FcFinaliza write FcFinaliza;
     property OkSim: String read FcOkSim write FcOkSim;
     property TipoParc: String read FcTipoParc write FcTipoParc;
+    property Mensagem: String read FcMensagem write FcMensagem;
+    property Bandeira: String read FcBandeira write FcBandeira;
+    property DebitoOuCredito: String read FcDebitoOuCredito write FcDebitoOuCredito;
   end;
 
 type
@@ -487,13 +490,13 @@ begin
 
                 FoTEFSelecionado := frmSelecionaTEF.ConfigTEFSelecionado;
 
-                if (FoTEFSelecionado.Nome = EmptyStr)
+                if (not Assigned(FoTEFSelecionado))
+                   or (FoTEFSelecionado.Nome = EmptyStr)
                    or (FoTEFSelecionado.Caminho = EmptyStr) then
                 begin
                   if uDialogs.MensagemSistemaPergunta('Nenhum TEF selecionado ou caminho não configurado, deseja selecionar outro TEF?', [mb_YesNo]) = mrNo then
                     raise Exception.Create('Nenhum TEF válido foi selecionado.');
                 end;
-
                 cCaminhoTEF := FoTEFSelecionado.Caminho;
               end;
             finally
@@ -693,6 +696,8 @@ begin
                         sCupom029         := sCupom029 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // Sandro Silva 2023-10-24 if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10);
                       if Copy(cLinha,1,4) = '030-'    then
                         sMensagem         := sMensagem + StrTran(Copy(cLinha,11,Length(cLinha)-10),'"','');
+                      if Copy(cLinha,1,7) = '040-000' then
+                        FoDadosTransacao.Bandeira := StrTran(Copy(cLinha,11,Length(cLinha)-10),'"','');
                       if Copy(cLinha,1,7) = '709-000' then
                       begin
                         //
@@ -733,22 +738,22 @@ begin
                     //
                     if Pos('PIX', AnsiUpperCase(sRespostaTef)) > 0 then
                     begin
-                      FoValoresTransacao.DebitoOuCredito := 'CREDITO';
+                      FoDadosTransacao.DebitoOuCredito := 'CREDITO';
                       ModalidadeTransacao := tModalidadePix;
                     end
                     else if Pos('CD_', AnsiUpperCase(sRespostaTef)) > 0 then
                     begin
-                      FoValoresTransacao.DebitoOuCredito := 'CREDITO';
+                      FoDadosTransacao.DebitoOuCredito := 'CREDITO';
                       ModalidadeTransacao := tModalidadeCarteiraDigital;
                     end
                     else if (Pos('DEBIT', AnsiUpperCase(ConverteAcentos(sRespostaTef))) > 0) then
                     begin
-                      FoValoresTransacao.DebitoOuCredito := 'DEBITO';
+                      FoDadosTransacao.DebitoOuCredito := 'DEBITO';
                       ModalidadeTransacao := tModalidadeCartao;
                     end
                     else
                     begin
-                      FoValoresTransacao.DebitoOuCredito := 'CREDITO';
+                      FoDadosTransacao.DebitoOuCredito := 'CREDITO';
                       ModalidadeTransacao := tModalidadeCartao;
                     end;
 
@@ -805,17 +810,15 @@ begin
                         //
                         if sBotaoOk = '0' then
                         begin
-                          uDialogs.MensagemSistema(sMensagem, msgInformacao);
+                          FoDadosTransacao.Mensagem := sMensagem;
                         end else
                         begin
-                          uDialogs.MensagemSistema(sMensagem, msgInformacao);
-  //                        Form1.ExibePanelMensagem(sMensagem);
-                          //
-                          // Simula 40 milissegundos
+                          FoDadosTransacao.Mensagem := sMensagem;
+
                           for I := 1 to 4 do //for I := 1 to 40 do
                           begin
                             Application.ProcessMessages;
-                            Sleep(10); //Sleep(1);
+                            Sleep(10);
                           end;
                           //
                         end;
@@ -828,11 +831,10 @@ begin
                           Application.ProcessMessages;
                           sleep(1);
                         end;
-                        if sMensagem = 'OPERACAO CANCELADA' then
-                          Break;
                         if allTrim(sMensagem) <> 'CHEQUE SEM RESTRICAO' then
-                          uDialogs.MensagemSistema(sMensagem, msgInformacao);
-                        //
+                          FoDadosTransacao.Mensagem := sMensagem;
+                        if Pos('OPERACAO CANCELADA', FoDadosTransacao.Mensagem) > 0 then
+                          Break;
                       end;
                       //
                     end;
@@ -852,7 +854,7 @@ begin
                   //
                   if (dValorPagarCartao <> 0)  then // Cartão sim - cheque não
                   begin
-                    FoTransacoesCartao.Transacoes.Adicionar(FoTEFSelecionado.Nome, FoValoresTransacao.DebitoOuCredito, dValorPagarCartao, FoDadosTransacao.NomeRede, FoDadosTransacao.Transaca, FoDadosTransacao.Autoriza, EmptyStr, ModalidadeTransacao);
+                    FoTransacoesCartao.Transacoes.Adicionar(FoTEFSelecionado.Nome, FoDadosTransacao.DebitoOuCredito, dValorPagarCartao, FoDadosTransacao.NomeRede, FoDadosTransacao.Transaca, FoDadosTransacao.Autoriza, EmptyStr, ModalidadeTransacao);
 
                     nParcelas := 1;
                     //if (StrToInt('0'+AllTrim(Form1.sTipoParc)) = 0) and (StrToInt('0'+AllTrim(Form1.sParcelas)) > 1) then
@@ -917,11 +919,14 @@ begin
       end; // while dTotalTransacionado < dTotalEmCartao do
     end; // if dTotalEmCartao = dTotalTransacionado then
   finally
-    DeleteFile(PWideChar('c:\'+cCaminhoTEF+'\'+FoTEFSelecionado.Resp+'\INTPOS.001'));
-    DeleteFile(PWideChar('c:\'+cCaminhoTEF+'\'+FoTEFSelecionado.Resp+'\INTPOS.STS'));
-    DeleteFile(PWideChar('c:\'+cCaminhoTEF+'\'+FoTEFSelecionado.Req+'\IntPos.tmp'));
-    DeleteFile(PWideChar('c:\'+cCaminhoTEF+'\'+FoTEFSelecionado.Req+'\INTPOS.001'));
-    DeleteFile(PWideChar('c:\'+cCaminhoTEF+'.res'));
+    if cCaminhoTEF <> EmptyStr then
+    begin
+      DeleteFile(PWideChar('c:\'+cCaminhoTEF+'\'+FoTEFSelecionado.Resp+'\INTPOS.001'));
+      DeleteFile(PWideChar('c:\'+cCaminhoTEF+'\'+FoTEFSelecionado.Resp+'\INTPOS.STS'));
+      DeleteFile(PWideChar('c:\'+cCaminhoTEF+'\'+FoTEFSelecionado.Req+'\IntPos.tmp'));
+      DeleteFile(PWideChar('c:\'+cCaminhoTEF+'\'+FoTEFSelecionado.Req+'\INTPOS.001'));
+      DeleteFile(PWideChar('c:\'+cCaminhoTEF+'.res'));
+    end;
     FreeAndNil(FormasExtras); // Sandro Silva 2023-08-21
   end;
 
@@ -1022,7 +1027,7 @@ begin
             begin
               Result := Result + TEFValorTransacao(sArquivoTEF);
               FoTransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao,
-                                                      FoValoresTransacao.DebitoOuCredito,
+                                                      FoDadosTransacao.DebitoOuCredito,
                                                       TEFValorTransacao(sArquivoTEF),
                                                       CampoTEF(sArquivoTEF, '010-000'),
                                                       CampoTEF(sArquivoTEF, '012-000'),

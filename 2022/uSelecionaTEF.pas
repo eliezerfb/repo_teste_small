@@ -33,6 +33,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure lbxTEFsKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FoIni: TIniFile;
     FoConfigTEFSelecionado: TConfigTEF;
@@ -66,6 +69,21 @@ procedure TfrmSelecionaTEF.FormDestroy(Sender: TObject);
 begin
   FoIni.Free;
   inherited;
+end;
+
+procedure TfrmSelecionaTEF.FormShow(Sender: TObject);
+begin
+  inherited;
+  if lbxTEFs.Items.Count > 1 then
+    lbxTEFs.SetFocus;
+end;
+
+procedure TfrmSelecionaTEF.lbxTEFsKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  case Key of
+    VK_RETURN: btnOKClick(Self);
+  end;
 end;
 
 procedure TfrmSelecionaTEF.DefineValoresTEFSelecionado;

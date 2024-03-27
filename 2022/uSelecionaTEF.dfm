@@ -7,6 +7,7 @@ inherited frmSelecionaTEF: TfrmSelecionaTEF
   Position = poOwnerFormCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   ExplicitWidth = 490
   ExplicitHeight = 353
   PixelsPerInch = 96
@@ -30,6 +31,7 @@ inherited frmSelecionaTEF: TfrmSelecionaTEF
     ParentCtl3D = False
     ParentFont = False
     TabOrder = 0
+    OnKeyDown = lbxTEFsKeyDown
   end
   object pnlRodape: TPanel
     Left = 0
