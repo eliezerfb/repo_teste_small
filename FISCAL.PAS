@@ -10817,7 +10817,8 @@ var
   iTransacaoCartao: Integer; // Sandro Silva 2017-08-25
   bNFCeUsoDenegado: Boolean; // Sandro Silva 2020-05-18
   //iFormaExtra: Integer; // Sandro Silva 2022-08-04
-  //iniFormas: TIniFile; 
+  //iniFormas: TIniFile;
+  IBQDOCAUTORIZADO: TIBQuery;
 begin
   //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
@@ -13205,7 +13206,7 @@ begin
           Form1.ibDataSet27.Post;// Post assina o registro
           Form1.ibDataSet27.Next;
         end;
-        Commitatudo2(True);
+        Commitatudo2(True); // Form1.Button18Click()
         Commitatudo(True); // Button18Click() NF modelo 02 impressas ecf
       end;
 
@@ -13231,8 +13232,37 @@ begin
 
         LogFrente('13311 "Commit" ALTERACA assinado ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
-        Commitatudo2(True);
+        Commitatudo2(True); // Form1.Button18Click()
         Commitatudo(True); // Button18Click() cupom
+
+        {Sandro Silva 2024-03-27 inicio}
+        if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') then
+        begin
+          IBQDOCAUTORIZADO := CriaIBQuery(FORM1.ibDataSet7.Transaction);
+          try
+            IBQDOCAUTORIZADO.Close;
+            IBQDOCAUTORIZADO.SQL.Text :=
+             'select NUMERONF, NFEXML, STATUS ' +
+             'from NFCE ' +
+             'where  NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) +
+             ' and CAIXA = ' + QuotedStr(Form1.sCaixa);
+            IBQDOCAUTORIZADO.Open;
+            if AnsiContainsText(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, 'Autorizado o uso') or AnsiContainsText(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, NFCE_EMITIDA_EM_CONTINGENCIA) then
+            begin
+              if True then
+
+              if (Form1.sModeloECF = '65') then
+                _ecf65_DisponibilizarDANFCe(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, IBQDOCAUTORIZADO.FieldByName('NUMERONF').AsString, IBQDOCAUTORIZADO.FieldByName('NFEXML').AsString);
+            end;
+          except
+
+          end;
+          FreeAndNil(IBQDOCAUTORIZADO);
+
+        end;
+        {Sandro Silva 2024-03-27 fim}
+
+
       end;
 
       //
@@ -25795,7 +25825,7 @@ begin
 
               ExibePanelMensagem('Aguarde... Importação Clientes Mobile'); // Sandro Silva 2016-05-06
 
-              Commitatudo(True);
+              Commitatudo(True); // Form1.Timer2Timer()
 
               //
               Application.ProcessMessages;
@@ -30854,7 +30884,7 @@ begin
 
       Form1.ibDataSet27.Next;
     end;
-    Commitatudo2(True);
+    Commitatudo2(True);  // Form1.AjustaAlteracaDesconto;
   except
 
   end;
@@ -33049,7 +33079,7 @@ begin
 
   //LogFrente('Inicia validação se mesa tem outros itens'); // Sandro Silva 2019-01-29
 
-  Commitatudo2(True);
+  Commitatudo2(True); // Form1.ValidaSeMesaJaTemItens()
   // Seleciona os itens lançados na mesa
   Form1.ibDataSet27.Close;
   Form1.ibDataSet27.SelectSQL.Text :=
@@ -33242,7 +33272,7 @@ begin
     begin
 
       try
-        Commitatudo2(True);
+        Commitatudo2(True); // Form1.AcertaPendenciaCancelAlteraca
 
         Form1.ibDataSet27.Close;
         Form1.ibDataSet27.SelectSQL.Text :=
@@ -33280,7 +33310,7 @@ begin
             end;
             {Sandro Silva 2022-11-04 fim}
 
-            Commitatudo2(True);
+            Commitatudo2(True); // Form1.AcertaPendenciaCancelAlteraca
 
           except
 
@@ -33311,7 +33341,7 @@ begin
               end;
               {Sandro Silva 2022-11-04 fim}
 
-              Commitatudo2(True);
+              Commitatudo2(True); // Form1.AcertaPendenciaCancelAlteraca
 
             except
 
@@ -33337,7 +33367,7 @@ begin
     Form1.ibDataSet27.Selectsql.Text := sSql27Old;
     Form1.ibDataSet4.Selectsql.Text  := sSql4Old;
 
-    Commitatudo2(True);
+    Commitatudo2(True); // Form1.AcertaPendenciaCancelAlteraca
 
   end; // if Form1.bOffLine then
 
@@ -33923,7 +33953,7 @@ begin
   Form1.Display('Aguarde... REQUISITO LIX - "ESTOQUE ANO ANTERIOR"','Aguarde... REQUISITO LIX -  "ESTOQUE ANO ANTERIOR"');
   Screen.Cursor := crHourGlass;
 
-  Commitatudo(True);
+  Commitatudo(True); // Form1.ESTOQUEANOANTERIOR1Click()
 
   bOk := True;
   if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(Form1.IBDatabase1.DatabaseName, Form1.sAtual) = False then
@@ -33952,7 +33982,7 @@ begin
   Form1.Display('Aguarde... REQUISITO LIX - "ESTOQUE MUDANÇA DE TRIBUTAÇÃO"','Aguarde... REQUISITO LIX -  "ESTOQUE MUDANÇA DE TRIBUTAÇÃO"');
   Screen.Cursor := crHourGlass;
 
-  Commitatudo(True);
+  Commitatudo(True); // Form1.ESTOQUEMUDANADETRIBUTAO1Click()
 
   bOk := True;
   if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(Form1.IBDatabase1.DatabaseName, Form1.sAtual) = False then
@@ -33981,7 +34011,7 @@ begin
   Form1.Display('Aguarde... REQUISITO LIX - "ESTOQUE SUSPENSÃO OU BAIXA DE I.E."','Aguarde... REQUISITO LIX -  "ESTOQUE SUSPENSÃO OU BAIXA DE I.E."');
   Screen.Cursor := crHourGlass;
 
-  Commitatudo(True);
+  Commitatudo(True); // Form1.ESTOQUESUSPENSOOUBAIXADEIE1Click()
 
   bOk := True;
   if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(Form1.IBDatabase1.DatabaseName, Form1.sAtual) = False then
@@ -34011,7 +34041,7 @@ begin
   Form1.Display('Aguarde... REQUISITO LIX - "ESTOQUE MUDANÇA DE REGIME"','Aguarde... REQUISITO LIX -  "ESTOQUE MUDANÇA DE REGIME"');
   Screen.Cursor := crHourGlass;
 
-  Commitatudo(True);
+  Commitatudo(True); // Form1.ESTOQUEMUDANADEREGIME1Click()
 
   bOk := True;
   if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(Form1.IBDatabase1.DatabaseName, Form1.sAtual) = False then
@@ -34041,7 +34071,7 @@ begin
   Form1.Display('Aguarde... REQUISITO LIX - "ESTOQUE ATUAL"','Aguarde... REQUISITO LIX -  "ESTOQUE ATUAL"');
   Screen.Cursor := crHourGlass;
 
-  Commitatudo(True);
+  Commitatudo(True); // Form1.ESTOQUEATUAL1Click()
 
   bOk := True;
   if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(Form1.IBDatabase1.DatabaseName, Form1.sAtual) = False then
@@ -34274,7 +34304,7 @@ begin
     //ConverteGerencial.ValorTotalTEFPago := Form1.fTEFPago;
     ConverteGerencial.NumeroGerencial   := sNumeroGerencial;
 
-    Commitatudo(True);
+    Commitatudo(True); // Form1.PDV_ImportaGerencial()
     if TestaTudo(True) then // Form1.PDV_ImportaGerencial(
     begin
 
@@ -34432,7 +34462,7 @@ begin
         except
 
         end;
-        Commitatudo(True);
+        Commitatudo(True); // Form1.PDV_ImportaGerencial()
       end
       else
       begin
@@ -34445,7 +34475,7 @@ begin
 
         DeletaDataSet25;
 
-        Commitatudo(True);
+        Commitatudo(True); // Form1.PDV_ImportaGerencial()
 
         Application.MessageBox('Gerencial não importado', 'Atenção', MB_ICONWARNING + MB_OK);
       end;
@@ -35585,7 +35615,7 @@ begin
 
   try
 
-    Commitatudo(True);
+    Commitatudo(True); // Form1.AbreEdicaoMovimento
 
     { Sandro Silva 2024-03-08
     IBQTEMP.Close;
@@ -35636,7 +35666,7 @@ begin
       FreeAndNil(FEditaMovimento);
   end;
 
-  Commitatudo(True);
+  Commitatudo(True); //Form1.AbreEdicaoMovimento
 
   Memo1.Clear;
   AberturaDoCupom;

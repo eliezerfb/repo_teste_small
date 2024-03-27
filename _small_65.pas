@@ -5116,7 +5116,7 @@ begin
               sLogErro := sLogErro + chr(10) + 'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.'
             else
               sLogErro := sLogErro + chr(10) + 'Informe o texto da mensagem acima ao operador do PDV antes de realizar nova venda.';
-            sLogErro := sLogErroCredenciadoraCartao + sLogErro; // Sandro Silva 2020-10-21 
+            sLogErro := sLogErroCredenciadoraCartao + sLogErro; // Sandro Silva 2020-10-21
           end;
 
           //
@@ -5137,9 +5137,9 @@ begin
         sStatus := NFCE_EMITIDA_EM_CONTINGENCIA; // Sandro Silva 2019-07-22  'NFC-e emitida em modo de contingência';
         //
       end;
-      //
+
       Result := True;
-      //
+
       if (Form1.ClienteSmallMobile.sVendaImportando = '') then
       begin
         // Não retornar False se não imprimir ou enviar o email
@@ -5390,6 +5390,7 @@ begin
     if sLogErro = '' then
       bOk := True;
   finally
+    (* 2024-03-27
     {Sandro Silva 2023-12-06 inicio}
     if bDisponibilizarDANFCe then
     begin
@@ -5400,6 +5401,7 @@ begin
 
     end;
     {Sandro Silva 2023-12-06 fim}
+    *)
 
     if bOk = False then
     begin
