@@ -240,7 +240,8 @@ begin
           if (FormaDePagamentoGeraBoleto(Form7.ibDataSet7FORMADEPAGAMENTO.AsString)) and (ValidaMesmoBanco) then // Mauricio Parizotto 2024-02-28
           begin
             //ImprimirBoleto;
-            //ValidaEmailPagador;
+            //Valida email e carrega o cliente correto
+            ValidaEmailPagador; //Mauricio Parizotto 2024-03-26
             GeraImagemDoBoletoComOCodigoDeBarras(True);
             GravaPortadorNossoNumCodeBar;
           end;
@@ -563,7 +564,7 @@ var
 begin
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
+  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString));
   Form7.ibDataSet2.Open;
 
   sEmail := Form7.ibDataSet2EMAIL.AsString; // XML POR EMAIL
@@ -640,6 +641,10 @@ begin
             IniciaImpresao(Impressao);
 
           CarregaDadosParcela;
+
+          //Mauricio Parizotto 2024-03-26
+          //Valida email e carrega o cliente correto
+          ValidaEmailPagador;
 
           DesenhaBoletoLayoutCarne(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text,posicao);
 
