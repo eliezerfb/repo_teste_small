@@ -83,6 +83,7 @@ var
 
   ConfSistema : TArquivosDAT;
   sObsNaDescricao : Boolean;
+  sCalculoDoDescontoPeloProvedor: String; // Sandro Silva 2024-03-25
 
   procedure InformaCodVerificadorAutenticidadeParaIPM;
   begin
@@ -97,6 +98,18 @@ var
         Writeln(F,'<NumeroDaNFSe>'+AllTrim(StrTran(Form7.ibDAtaSet15NFEPROTOCOLO.AsString,'/001',''))+'</NumeroDaNFSe>');
     end;
   end;
+
+  //Identifica se existe configuração de como o desconto será aplicado no total da NFSe ao ser transitido
+  procedure CriaConfiguracaoDeComoDescontoSeraAplicado;
+  begin
+    if ((sPadraoSistema = 'SAATRI') and (GetCidadeUF = 'BOAVISTARR'))
+              or ((sPadraoSistema = 'EL20') and (GetCidadeUF = 'PETROLINAPE')) then
+    begin
+      if ConfSistema.BD.NFSe.CalculoDoDescontoPeloProvedor = '' then
+        ConfSistema.BD.NFSe.CalculoDoDescontoPeloProvedor := 'Sim';
+    end;
+  end;
+
 begin
   Result := False;
 
@@ -208,6 +221,9 @@ begin
       if ConfSistema.BD.NFSE.ConfObsNaDescricao = '' then
         ConfSistema.BD.NFSE.ObsNaDescricao := True;
     end;
+
+    CriaConfiguracaoDeComoDescontoSeraAplicado;
+    sCalculoDoDescontoPeloProvedor := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor; // Sandro Silva 2024-03-25
 
     sObsNaDescricao := ConfSistema.BD.NFSE.ObsNaDescricao;
   finally
@@ -422,7 +438,7 @@ begin
             Writeln(F,'CPFCNPJRemetente='+LimpaNumero(Form7.ibDAtaSet13CGC.AsString));             // CNPJ do Emitente
             Writeln(F,'InscricaoMunicipalRemetente='+LimpaNumero(Form7.ibDAtaSet13IM.AsString));   // IM do Emitente
 
-            if (sPadraoSistema = 'SAATRI') and (GetCidadeUF = 'BOAVISTARR') then
+            if (sCalculoDoDescontoPeloProvedor = 'Sim') then //Sandro Silva 2024-03-25 if (sPadraoSistema = 'SAATRI') and (GetCidadeUF = 'BOAVISTARR') then
               Writeln(F,'ValorTotalServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat)),',','.')) // Valor Total de serviços
             else
               Writeln(F,'ValorTotalServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.')); // Valor Total de serviços
@@ -605,12 +621,12 @@ begin
             begin
               Writeln(F,'CodigoTributacaoMunicipio='+AllTrim(RetornaValorDaTagNoCampo('CodigoTributacaoMunicipio',form7.ibDataSet4.FieldByname('TAGS_').AsString))); // Código do item da lista de serviço.	T	 Obtido na prefeitura
             end;
-            
+
             Writeln(F,'MunicipioIncidencia='+Copy(Form7.ibDAtaSet99.FieldByname('CODIGO').AsString,1,7)); // Código IBGE do município onde ocorrerá a aplicação do imposto.	T	Usado quando o serviço for retido.
             Writeln(F,'DescricaoCidadePrestacao='+ConverteAcentos2(Form7.ibDAtaSet13MUNICIPIO.AsString)); // Município onde o serviço foi prestado
             Writeln(F,'');
 
-            {Sandro Silva 2023-09-26 inicio 
+            {Sandro Silva 2023-09-26 inicio
             Writeln(F,'CpfCnpjTomador='+LimpaNumero(Form7.ibDAtaSet2CGC.AsString));           // CPF / CNPJ do tomador do serviço
             Writeln(F,'RazaoSocialTomador='+ConverteAcentos2(Form7.ibDAtaSet2NOME.AsString)); // Razão Social do tomador do serviço
             Writeln(F,'InscricaoEstadualTomador='+LimpaNumero(Form7.ibDAtaSet2IE.AsString)); //
@@ -871,7 +887,7 @@ begin
               Writeln(F,'DiscriminacaoServico='+sDescricaoDosServicos);
               Writeln(F,'QuantidadeServicos=1'); //
               Writeln(F,'UnidadeServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)));
-              if (sPadraoSistema = 'SAATRI') and (GetCidadeUF = 'BOAVISTARR') then
+              if sCalculoDoDescontoPeloProvedor = 'Sim' then //Sandro Silva 2024-03-25 if (sPadraoSistema = 'SAATRI') and (GetCidadeUF = 'BOAVISTARR') then
               begin
                 Writeln(F,'ValorUnitarioServico='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat)),',','.'));
                 Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat)),',','.'));

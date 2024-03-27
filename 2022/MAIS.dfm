@@ -13847,6 +13847,10 @@ object Form1: TForm1
       object ConfiguraesdaNFSe1: TMenuItem
         Caption = 'Configura'#231#245'es da NFS-e'
         OnClick = ConfiguraesdaNFSe1Click
+        object Clculododescontopeloprovedor1: TMenuItem
+          Caption = 'C'#225'lculo do desconto pelo provedor'
+          OnClick = Clculododescontopeloprovedor1Click
+        end
         object ConfiguraesdaNFSe2: TMenuItem
           Caption = 'Configura'#231#245'es da NFS-e'
           OnClick = ConfiguraesdaNFSe2Click
