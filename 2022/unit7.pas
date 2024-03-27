@@ -5640,7 +5640,7 @@ begin
   P1 := StrTran(P1,' IE', ' Inscrição');
   P1 := StrTran(P1,'(IE)', ' Inscrição');
 
-  if Copy(AoDataSet.SelectSQL.Text,1,12)='select first' then
+  if (Assigned(AoDataSet)) and (Copy(AoDataSet.SelectSQL.Text,1,12) = 'select first') then
     P1 := StrTran(P1, 'Listando' ,'Mostrando os últimos '+Form7.sMaxReg+' registros' );
 
   P1 := StrTran(P1,' and EMITIDA='+QuotedStr('X'), ', canceladas ');
@@ -5673,14 +5673,17 @@ begin
   P1 := StrTran(P1, '  ' ,' ');
   P1 := StrTran(P1, 'só quando só' ,'só');
 
-  for I := 1 to AoDataSet.FieldCount do
+  if Assigned(AoDataSet) then
   begin
-    if AoDataSet.Fields[I-1].FieldName <> AoDataSet.Fields[I-1].DisplayLabel then
+    for I := 1 to AoDataSet.FieldCount do
     begin
-      if (AoDataSet.Fields[I-1].FieldName <> 'IPI')
-        and (copy(AoDataSet.Fields[I-1].FieldName,1,3) <> 'CST') then
+      if AoDataSet.Fields[I-1].FieldName <> AoDataSet.Fields[I-1].DisplayLabel then
       begin
-        P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel);
+        if (AoDataSet.Fields[I-1].FieldName <> 'IPI')
+          and (copy(AoDataSet.Fields[I-1].FieldName,1,3) <> 'CST') then
+        begin
+          P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel);
+        end;
       end;
     end;
   end;
@@ -14632,17 +14635,21 @@ end;
 
 procedure TForm7.Ranquingdeclientes1Click(Sender: TObject);
 begin
-  //
-  Form7.Close;
-  //
   sModuloAnterior := sModulo;
-  Form38.Label2.Visible := True;
-  Form38.Label3.Visible := True;
-  Form38.DateTimePicker1.Visible := True;
-  Form38.DateTimePicker2.Visible := True;
-  Form7.sModulo := 'Ranking de clientes';
-  Form38.ShowModal; // Ok
-  //
+  Form7.TabelaAberta.DisableControls;
+  LockWindowUpdate(form7.Handle);
+  try
+    Form38.Label2.Visible := True;
+    Form38.Label3.Visible := True;
+    Form38.DateTimePicker1.Visible := True;
+    Form38.DateTimePicker2.Visible := True;
+    Form7.sModulo := 'Ranking de clientes';
+    Form38.ShowModal;
+  finally
+    sModulo := sModuloAnterior;
+    Form7.TabelaAberta.EnableControls;
+    LockWindowUpdate(0);
+  end;
 end;
 
 procedure TForm7.MenuItem60Click(Sender: TObject);
