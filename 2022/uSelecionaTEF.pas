@@ -36,6 +36,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure lbxTEFsKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure lbxTEFsDblClick(Sender: TObject);
   private
     FoIni: TIniFile;
     FoConfigTEFSelecionado: TConfigTEF;
@@ -76,6 +77,11 @@ begin
   inherited;
   if lbxTEFs.Items.Count > 1 then
     lbxTEFs.SetFocus;
+end;
+
+procedure TfrmSelecionaTEF.lbxTEFsDblClick(Sender: TObject);
+begin
+  btnOKClick(Self);
 end;
 
 procedure TfrmSelecionaTEF.lbxTEFsKeyDown(Sender: TObject; var Key: Word;

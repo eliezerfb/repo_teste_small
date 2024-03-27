@@ -493,10 +493,7 @@ begin
                 if (not Assigned(FoTEFSelecionado))
                    or (FoTEFSelecionado.Nome = EmptyStr)
                    or (FoTEFSelecionado.Caminho = EmptyStr) then
-                begin
-                  if uDialogs.MensagemSistemaPergunta('Nenhum TEF selecionado ou caminho não configurado, deseja selecionar outro TEF?', [mb_YesNo]) = mrNo then
-                    raise Exception.Create('Nenhum TEF válido foi selecionado.');
-                end;
+                  raise Exception.Create('Nenhum TEF válido foi selecionado.');
                 cCaminhoTEF := FoTEFSelecionado.Caminho;
               end;
             finally
@@ -526,7 +523,7 @@ begin
                 DeleteFile(PWideChar('c:\'+cCaminhoTEF+'\'+FoTEFSelecionado.Resp+'\INTPOS.STS'));
 
                 Result := False;
-
+                Abort;
               end else
               begin
 

@@ -31,6 +31,7 @@ inherited frmSelecionaTEF: TfrmSelecionaTEF
     ParentCtl3D = False
     ParentFont = False
     TabOrder = 0
+    OnDblClick = lbxTEFsDblClick
     OnKeyDown = lbxTEFsKeyDown
   end
   object pnlRodape: TPanel

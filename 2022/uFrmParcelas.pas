@@ -54,6 +54,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
+    FRegistroBloqueado: Boolean;
     FnQtdeParc: Integer;
     FpnlTEF: TPanel;
     { Private declarations }
@@ -756,7 +757,6 @@ begin
           cValores := cValores + ':X' + Form7.ibDataSet7.Fields[i].FieldName;
           if i <> Pred(Form7.ibDataSet7.Fields.Count) then
             cValores := cValores + ',';
-
         end;
         qryCartao.SQL.Add('INSERT INTO RECEBER (');
         qryCartao.SQL.Add(cCampos);
@@ -766,7 +766,12 @@ begin
         for i := 0 to Pred(Form7.ibDataSet7.Fields.Count) do
         begin
           if AnsiUpperCase(Form7.ibDataSet7.Fields[i].FieldName) <> 'ATIVO' then
-            qryCartao.ParamByName('X'+Form7.ibDataSet7.Fields[i].FieldName).Value := Form7.ibDataSet7.Fields[i].Value
+          begin
+            if AnsiUpperCase(Form7.ibDataSet7.Fields[i].FieldName) <> 'DOCUMENTO' then
+              qryCartao.ParamByName('X'+Form7.ibDataSet7.Fields[i].FieldName).Value := Form7.ibDataSet7.Fields[i].Value
+            else
+              qryCartao.ParamByName('X'+Form7.ibDataSet7.Fields[i].FieldName).Value := EmptyStr;
+          end
           else
             qryCartao.ParamByName('X'+Form7.ibDataSet7.Fields[i].FieldName).Value := 1;
         end;
@@ -1170,7 +1175,6 @@ end;
 procedure TFrmParcelas.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
-  iColumnIndex : Integer; // Sandro Silva 2023-11-13 I : Integer;
   slFormas: TStringList;
   sForma: String;
 begin
@@ -1201,13 +1205,19 @@ begin
     if (Key = VK_RETURN) then
     begin
 
-      iColumnIndex := DbGrid1.SelectedIndex;
       if Key in [VK_RETURN, VK_TAB] then
       begin
 
         DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
 
-        if iColumnIndex = DbGrid1.SelectedIndex  then
+        while (dBgrid1.SelectedField.ReadOnly) do
+        begin
+          DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
+          if (DbGrid1.SelectedIndex = Pred(DBGrid1.Columns.Count)) then
+            Break;
+        end;
+
+        if Pred(DBGrid1.Columns.Count) = DbGrid1.SelectedIndex  then
         begin
           DbGrid1.SelectedIndex := 0;
 
@@ -1263,8 +1273,15 @@ begin
 
     if (Form7.sModulo = 'VENDA') then
     begin
+      Form7.ibDataSet7BANDEIRA.ReadOnly             := (Form7.sModulo = 'VENDA') and (Form7.ibDataSet15INDPRES.AsString = '1') and (TestarTEFConfigurado);
+      Form7.ibDataSet7AUTORIZACAOTRANSACAO.ReadOnly := Form7.ibDataSet7BANDEIRA.ReadOnly;
+
+      FRegistroBloqueado := False;
       if TestarRegistroComTEF then
-        TDBGrid(Sender).Options := TDBGrid(Sender).Options - [dgEditing]
+      begin
+        FRegistroBloqueado := True;
+        TDBGrid(Sender).Options := TDBGrid(Sender).Options - [dgEditing];
+      end
       else
         TDBGrid(Sender).Options := TDBGrid(Sender).Options + [dgEditing];
     end;
@@ -1468,6 +1485,7 @@ begin
 
       oDataSet.Edit;
 
+      oDataSet.FieldByName('VENCIMENTO').AsDateTime       := IncMonth(Date, i);
       oDataSet.FieldByName('VALOR_DUPL').AsCurrency       := nValorParc + nRestoParc;
       oDataSet.FieldByName('BANDEIRA').AsString             := AoDadosTransacao.Bandeira;
       oDataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString := AoDadosTransacao.Autoriza;
@@ -1833,8 +1851,8 @@ begin
     Form1.sBancoBoleto     := ''; // Sandro Silva 2023-07-18
     {Sandro Silva 2023-07-12 fim}
 
-    Form7.ibDataSet7BANDEIRA.ReadOnly             := False;
-    Form7.ibDataSet7AUTORIZACAOTRANSACAO.ReadOnly := False;
+    Form7.ibDataSet7BANDEIRA.ReadOnly             := (Form7.sModulo = 'VENDA') and (Form7.ibDataSet15INDPRES.AsString = '1') and (TestarTEFConfigurado);
+    Form7.ibDataSet7AUTORIZACAOTRANSACAO.ReadOnly := Form7.ibDataSet7BANDEIRA.ReadOnly;
   except
   end;
   //
@@ -1842,6 +1860,9 @@ end;
 
 procedure TFrmParcelas.ExibeOpcoesPreencherColunas;
 begin
+  if (FRegistroBloqueado) or (DBGrid1.DataSource.DataSet.FieldByName(DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName).ReadOnly) then
+    Exit;
+
   if (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO')
      or
      (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA')
@@ -2355,7 +2376,6 @@ begin
           end;
 
         end;
-
 
         DBGrid1.DataSource.DataSet.Next;
       end;
