@@ -532,6 +532,7 @@ type
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
     procedure DefineAmbienteNFe(AcAmbiente, AcRotina: String);
     procedure Aplicar120CaracteresProduto;
+    procedure Comandos120CaracteresProd;
 
     property sPropaganda: String read getPropaganda;
     function MontaTela(sP1: Boolean): Boolean;
@@ -12381,11 +12382,8 @@ begin
   Aplicar120CaracteresProduto;
 end;
 
-procedure TForm1.Aplicar120CaracteresProduto;
+procedure TForm1.Comandos120CaracteresProd;
 begin
-  if (Form7.ibDataSet4DESCRICAO.Size = 120) then
-    Exit;
-
   if ExecutaComando('ALTER TABLE ALTERACA ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
     ExecutaComando('Commit');
   if ExecutaComando('ALTER TABLE COMPOSTO ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
@@ -12402,6 +12400,14 @@ begin
     ExecutaComando('Commit');
   if ExecutaComando('ALTER TABLE ORCAMENT ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
     ExecutaComando('Commit');
+end;
+
+procedure TForm1.Aplicar120CaracteresProduto;
+begin
+  if (Form7.ibDataSet4DESCRICAO.Size = 120) then
+    Exit;
+
+  Comandos120CaracteresProd;
 
   try
     AgendaCommit(True);
@@ -12458,7 +12464,7 @@ begin
   {Sandro Silva 2023-06-01 fim}
 
   {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
-  miProd120Carac.Visible := (Form7.ibDataSet13ESTADO.AsString = 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr)) and (Form7.ibDataSet4DESCRICAO.Size <> 120);
+  miProd120Carac.Visible := (Form7.ibDataSet13ESTADO.AsString = 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) and (Form7.ibDataSet4DESCRICAO.Size <> 120);
   {Dailon Parisotto (f-17787) 2024-03-27 Fim}
 end;
 

@@ -2433,6 +2433,21 @@ begin
   end;
   {Mauricio Parizotto 2024-02-28 Fim}
 
+  {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
+  try
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Clear;
+    Form1.ibDataSet200.SelectSQL.Text :=
+      'SELECT COALESCE(ESTADO,''SC'') AS ESTADDO FROM EMITENTE';
+    Form1.ibDataSet200.Open;
+
+    if (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then
+      Form1.Comandos120CaracteresProd;
+  finally
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Clear;
+  end;
+  {Dailon Parisotto (f-17787) 2024-03-27 Fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
