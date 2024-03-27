@@ -7,6 +7,7 @@ object FEditaMovimento: TFEditaMovimento
   ClientHeight = 741
   ClientWidth = 1008
   Color = clWhite
+  Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -102,6 +103,7 @@ object FEditaMovimento: TFEditaMovimento
     Width = 981
     Height = 289
     DataSource = DataSource1
+    DrawingStyle = gdsClassic
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -13

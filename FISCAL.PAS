@@ -2280,7 +2280,7 @@ function TipoDeConta(P1:Boolean): Boolean;
 var
   Mais2Ini: TIniFile;
 begin
-  Mais2ini := TIniFile.Create(Form1.sArquivo);  
+  Mais2ini := TIniFile.Create(Form1.sArquivo);
   try
     Form1.LbBlowfish1.GenerateKey(Form1.sPasta);
     Form1.sConcomitante := Mais2Ini.ReadString('CONCOMITANTE','I','');
@@ -15408,7 +15408,6 @@ var
   sRegistro: String;
   iTenta: Integer;
   bGravou: Boolean;
-  //DBGridItensEnabled: Boolean;
   sMensagemAlerta: String;
   dSaldoParaMovimetar: Double; // Sandro Silva 2023-12-05
 begin
@@ -15417,15 +15416,6 @@ begin
   { Usado pela tela de edição de momevimento}
   {                                         }
 
-  {Sandro Silva 2023-11-08 inicio
-  if ibDataSet4.FieldByName('DESCRICAO').AsString <> Edit1.Text then
-  begin
-    ibDAtaSet4.Close;
-    ibDataSet4.SelectSQL.Clear;
-    ibDataSet4.SelectSQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Alltrim(Edit1.Text))+' and coalesce(ATIVO,0)=0 ');
-    ibDAtaSet4.Open;
-  end;
-  }
   bArtificioParaAfetarApenasEdicaoMovimento := True;
   if Form1.bEditandoMovimento = False then
   begin
@@ -15452,8 +15442,6 @@ begin
   then
     bArtificioParaAfetarApenasEdicaoMovimento := True;
 
-  {Sandro Silva 2023-11-08 fim}
-
   if FEditaMovimento <> nil then
   begin
     FEditaMovimento.Enabled := False;
@@ -15461,7 +15449,6 @@ begin
   end;
 
   try
-    // Sandro Silva 2023-11-08 if (Alltrim(ibDataSet4.FieldByName('DESCRICAO').AsString) = AllTrim(Edit1.Text)) and (AllTrim(ibDataSet4.FieldByName('DESCRICAO').AsString)<>'') then
     if (Trim(ibDataSet4.FieldByName('DESCRICAO').AsString) = Trim(Form1.ibDataSet27.FieldByname('DESCRICAO').AsString)) and (Trim(ibDataSet4.FieldByName('DESCRICAO').AsString) <> '')
       or bArtificioParaAfetarApenasEdicaoMovimento
     then
@@ -15472,18 +15459,16 @@ begin
         dValorUnitario := Form1.ibDataSet27.FieldByname('UNITARIO').AsFloat;
         dQuantidadeOld := Form1.ibDataSet27.FieldByname('QUANTIDADE').OldValue; // Sandro Silva 2023-11-17
 
-        {Sandro Silva 2023-11-23 inicio}
         if StrToFloatDef(Text, 0.00) <= 0.00 then
         begin
           Form1.ibDataSet27.Edit;
           Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := dQuantidadeOld;
           Exit;
         end;
-        {Sandro Silva 2023-11-23 fim}
 
         if Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat < 0 then
         begin
-          dQuantidade := 1.00; // Sandro Silva 2023-11-16 Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := 0
+          dQuantidade := 1.00;
         end
         else
         begin
@@ -15491,7 +15476,6 @@ begin
           begin
             if (ibDataSet4.FieldByName('TIPO_ITEM').AsString <> '09') then // serviços não atera a quantidade
             begin
-              // Sandro Silva 2023-12-06 if (StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString))) and (Form1.ConfNegat = 'Não') then // Sandro Silva 2018-10-24 if StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString)) then
               if (StrToFloat(Text) > (dQuantidadeOld + ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString))) and (Form1.ConfNegat = 'Não') then // Sandro Silva 2018-10-24 if StrToFloat(Text) > (ibDataSet4.FieldByName('QTD_ATUAL').AsFloat + QtdCanceladaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString) - QtdVendaSemCommit(ibDataSet4.FieldByName('CODIGO').AsString)) then
               begin
                 //
@@ -15506,9 +15490,6 @@ begin
                 begin
                   AlertaSonoro;
 
-                  {Sandro Silva 2023-06-23 inicio
-                  SmallMsg('Não é possível efetuar a venda, só tem ' + ibDataSet4.FieldByName('QTD_ATUAL').AsString + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque. Erro 5427');
-                  }
                   dSaldoParaMovimetar := dQuantidadeOld + ibDataSet4.FieldByName('QTD_ATUAL').AsFloat;
                   sMensagemAlerta := #13 + #13 + 'Só tem ' + FormatFloat('0.' + DupeString('0', StrToIntDef(Form1.ConfCasas, 2)), dSaldoParaMovimetar) + ' ' + ibDataSet4.FieldByName('MEDIDA').AsString +  ' no estoque' + #13 + #13 + 'Erro 5427';
                   if (Form1.sModeloECF_Reserva = '99') then
@@ -15519,34 +15500,29 @@ begin
 
                    SmallMessageBox(sMensagemAlerta, 'Atenção', MB_OK + MB_ICONWARNING);
 
-                  {Sandro Silva 2023-06-23 fim}
-                  {Sandro Silva 2023-11-16 inicio}
                   if not (Form1.ibDataSet27.State in [dsInsert, dsEdit]) then
                     Form1.ibDataSet27.Edit;
-                  {Sandro Silva 2023-11-16 fim}
-                  // Sandro Silva 2023-11-16 Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := ibDataSet4.FieldByName('QTD_ATUAL').AsFloat;
                   dQuantidade := Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat;
                   if (Form1.ClienteSmallMobile.sVendaImportando = '') then
                     Edit1.SetFocus;
                     
                 end
                 else
-                  dQuantidade := StrToFloat(Text); // Sandro Silva 2023-11-16 Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := StrToFloat(Text);
+                  dQuantidade := StrToFloat(Text);
 
               end
               else
-                dQuantidade := StrToFloat(Text); // Sandro Silva 2023-11-16 Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := StrToFloat(Text);
+                dQuantidade := StrToFloat(Text);
             end
             else
-              dQuantidade := StrToFloat(Text); // Sandro Silva 2023-11-16
+              dQuantidade := StrToFloat(Text);
           end
           else
           begin
-            dQuantidade := StrToFloat(Text); // Sandro Silva 2023-11-16 Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := StrToFloat(Text);
+            dQuantidade := StrToFloat(Text);
           end;
         end;
 
-        // Sandro Silva 2023-11-23 dQuantidadeOld := Form1.ibDataSet27.FieldByname('QUANTIDADE').OldValue; // Sandro Silva 2023-11-17
         Form1.ibDataSet27.FieldByname('QUANTIDADE').AsFloat := dQuantidade; // Sandro Silva 2023-11-16
         if dQuantidade = 0 then
         begin
@@ -15621,7 +15597,6 @@ begin
         }
       end;
     end;
-//      if bArtificioParaAfetarApenasEdicaoMovimento = False then
 
   finally
     if FEditaMovimento <> nil then
@@ -20254,6 +20229,17 @@ begin
       end;
     end;
     //
+
+    {Sandro Silva 20234-03-08 inicio}
+    if Form1.Memo1.Visible then // Quando tem cupom aberto não
+    begin
+      if (Shift = [ssCtrl]) and ((Key = 69) or (Key = 101)) then // Ctrl + E/e
+        AbreEdicaoMovimento;
+    end;
+    {Sandro Silva 2024-03-08 fim}
+    //
+
+
   end else
   begin
     //
@@ -35585,8 +35571,11 @@ end;
 procedure TForm1.AbreEdicaoMovimento;
 var
   IBQTEMP: TIBQuery;
+  sSelectItens: String;
 begin
-  if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
+  //2024-03-08 if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
+  // Permite editar a venda quando é NFC-e/SAT/Gerencial ou mesa/conta com NFC-e/SAT/Gerencial
+  if (Form1.sModeloECF_Reserva <> '59') and (Form1.sModeloECF_Reserva <> '65')  and (Form1.sModeloECF_Reserva <> '99')  then
     Exit;
 
   if SenhaAdministradorOk = False then
@@ -35598,6 +35587,7 @@ begin
 
     Commitatudo(True);
 
+    { Sandro Silva 2024-03-08
     IBQTEMP.Close;
     IBQTEMP.SQL.Text :=
       'select first 1 distinct PEDIDO ' +
@@ -35605,15 +35595,40 @@ begin
       'where PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) +
       ' and CAIXA = ' + QuotedStr(Form1.sCaixa);
     IBQTEMP.Open;
+    }
+
+    if Form1.sModeloECF = '01' then // Quando é mesa/conta
+      sSelectItens :=
+        'select first 1 distinct PEDIDO ' +
+        'from ALTERACA ' +
+        'where PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) +
+        ' and (TIPO = ''MESA'' or TIPO = ''DEKOL'')'
+    else
+      sSelectItens :=
+        'select first 1 distinct PEDIDO ' +
+        'from ALTERACA ' +
+        'where PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) +
+        ' and CAIXA = ' + QuotedStr(Form1.sCaixa);
+
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text := sSelectItens;
+    IBQTEMP.Open;
 
     if IBQTEMP.FieldByName('PEDIDO').AsString = '' then
-      Exit;  
+      Exit;
 
     Timer2.Enabled := False;
 
     Application.CreateForm(TFEditaMovimento, FEditaMovimento);
     FEditaMovimento.Pedido := FormataNumeroDoCupom(Form1.icupom);
-    FEditaMovimento.Caixa  := Form1.sCaixa;
+    //2024-03-08 FEditaMovimento.Caixa  := Form1.sCaixa;
+    if Form1.sModeloECF = '01' then
+    begin
+      FEditaMovimento.TipoDeConta := Form1.sMesaOuConta;// 2024-03-19
+      FEditaMovimento.Caixa  := '';
+    end
+    else
+      FEditaMovimento.Caixa  := Form1.sCaixa;
     if FEditaMovimento.SelecionaItens then
       FEditaMovimento.ShowModal;
   finally
