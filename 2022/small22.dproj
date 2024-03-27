@@ -524,7 +524,12 @@
             <Form>frmConfiguracaoTEFCommerce</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\unit_compartilhada\frames\uframeConfiguraTEF.pas">
+        <DCCReference Include="units\uFuncoesTEF.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uclassetransacaocartao.pas"/>
+        <DCCReference Include="uSelecionaTEF.pas">
+            <Form>frmSelecionaTEF</Form>
+        </DCCReference>
+        <DCCReference Include="frames\uframeConfiguraTEF.pas">
             <Form>frameConfiguraTEF</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
@@ -1373,9 +1378,9 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
@@ -2197,9 +2202,9 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

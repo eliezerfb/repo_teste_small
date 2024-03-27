@@ -114,6 +114,8 @@ var
 
   vFreteSobreIPI,vIPISobreICMS : Boolean;
   cBenef, cBenefItem : string;
+
+  bPagouComTEF: Boolean;
 begin
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
@@ -2913,7 +2915,7 @@ begin
     IBQCREDENCIADORA := Form7.CriaIBQuery(Form7.ibDataSet7.Transaction);
     while not Form7.ibDataSet7.Eof do
     begin
-
+      bPagouComTEF := (TestarTEFConfigurado) and (Form7.ibDataSet15INDPRES.AsString = '1') and (Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString <> EmptyStr);
       Form7.spdNFeDataSets.IncluirPart('YA');
       //
       // 01=Dinheiro
@@ -2955,10 +2957,22 @@ begin
           'where NOME = ' + QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString);
         IBQCREDENCIADORA.Open;
         // Se for Cartão
-        Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
+        if (bPagouComTEF) then
+          Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '1'
+        else
+          Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
         Form7.spdNFeDataSets.campo('CNPJ_YA05').Value       := LimpaNumero(IBQCREDENCIADORA.FieldByName('CGC').AsString);  // CNPJ da Credenciadora de cartão de crédito e/ou débito
         Form7.spdNFeDataSets.campo('tBand_YA06').Value      := CodigotBandNF(Form7.ibDataSet7BANDEIRA.AsString);  // Bandeira da operadora de cartão de crédito e/ou débito
         Form7.spdNFeDataSets.campo('cAut_YA07').Value       := Copy(Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString, 1, 20);  // Número de autorização da operação cartão de crédito e/ou débito
+
+{       Dailon Parisotto (f-225) 2023/03/26 Inicio
+        A obrigatóriedade foi postergado, sendo assim não está no schema.
+
+        Form7.spdNFeDataSets.campo('CNPJReceb_YA07a').Value := LimpaNumero(Form7.ibDataSet13CGC.AsString);
+        Form7.spdNFeDataSets.campo('idTermPag_YA07b').Value := '001';
+
+        Dailon Parisotto (f-225) 2023/03/26 Fim
+}
       end;
 
       Form7.spdNFeDataSets.SalvarPart('YA');
