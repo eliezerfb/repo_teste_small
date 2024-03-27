@@ -13,7 +13,7 @@ interface
 uses
   Windows, Messages
   {$IFDEF VER150}// – Delphi 7
-  , SmallFunc
+  //, SmallFunc
   {$ELSE}
   , smallfunc_xe
   {$ENDIF}
@@ -29,7 +29,7 @@ type
   TDarumaFramework = class(TComponent)
     private
       FDLLHandle: THandle;
-      _regAlterarValor_Daruma: function(pszPathChave:AnsiString; pszValor:AnsiString): Integer; StdCall;
+      _regAlterarValor_Daruma: function(pszPathChave: AnsiString; pszValor: AnsiString): Integer; StdCall;
       _regRetornaValorChave_DarumaFramework: function(pszProduto: AnsiString; pszChave: AnsiString; pszValor: AnsiString): Integer; StdCall;
 
       // Funções de Inicialização
@@ -40,7 +40,7 @@ type
       _iCFAbrir_ECF_Daruma: function(pszCPF: AnsiString; pszNome: AnsiString; pszEndereco: AnsiString):Integer; StdCall;
       _iCFVender_ECF_Daruma: function(pszCargaTributaria: AnsiString; pszQuantidade: AnsiString; pszPrecoUnitario: AnsiString; pszTipoDescAcresc: AnsiString; pszValorDescAcresc: AnsiString; pszCodigoItem:AnsiString; pszUnidadeMedida:AnsiString; pszDescricaoItem: AnsiString): Integer; StdCall;
       _iCFCancelarUltimoItem_ECF_Daruma:function(): Integer; StdCall;
-      _iCFCancelarItem_ECF_Daruma: function(pszNumItemc:AnsiString): Integer; StdCall;
+      _iCFCancelarItem_ECF_Daruma: function(pszNumItemc: AnsiString): Integer; StdCall;
       _iCFCancelar_ECF_Daruma: function(): Integer; StdCall;
       _iCFEncerrarResumido_ECF_Daruma: function(): Integer; StdCall;
       _iCFEncerrar_ECF_Daruma: function(pszCupomAdicional: AnsiString; pszMensagem: AnsiString):Integer; StdCall;
@@ -85,21 +85,21 @@ type
       _rStatusGaveta_ECF_Daruma: function(var piStatusGaveta: Integer): Integer; StdCall;
 
       // Outras Funções
-      _rStatusUltimoCmdInt_ECF_Daruma: function(var piErro:integer;var piAviso:integer): Integer; StdCall;
+      _rStatusUltimoCmdInt_ECF_Daruma: function(var piErro: integer; var piAviso: integer): Integer; StdCall;
       _eRetornarAvisoErroUltimoCMD_ECF_Daruma: function(pszAviso: AnsiString; pszErro: AnsiString): Integer; StdCall;
       _rGerarMapaResumo_ECF_Daruma: function(): Integer; StdCall;
       _iRelatorioConfiguracao_ECF_Daruma: function(): Integer; StdCall;
       _rVerificarImpressoraLigada_ECF_Daruma: function(): Integer; StdCall;
 
       //funcoes de TEF
-      _iTEF_ImprimirResposta_ECF_Daruma: function(szArquivo:AnsiString; bTravarTeclado:Boolean):Integer; StdCall;
+      _iTEF_ImprimirResposta_ECF_Daruma: function(szArquivo: AnsiString; bTravarTeclado: Boolean):Integer; StdCall;
       _iTEF_Fechar_ECF_Daruma: function(): Integer; StdCall;
       //
-      _rCodigoModeloFiscal_ECF_Daruma: function(pszValor:AnsiString): Integer; StdCall;
+      _rCodigoModeloFiscal_ECF_Daruma: function(pszValor: AnsiString): Integer; StdCall;
       //
       //
-      _iRGAbrir_ECF_Daruma: function(pszNomeRG:AnsiString): Integer; StdCall;
-      _rGerarRelatorio_ECF_Daruma: function(szRelatorio:AnsiString; szTipo:AnsiString; szInicial:AnsiString; szFinal:AnsiString): Integer; StdCall;
+      _iRGAbrir_ECF_Daruma: function(pszNomeRG: AnsiString): Integer; StdCall;
+      _rGerarRelatorio_ECF_Daruma: function(szRelatorio: AnsiString; szTipo: AnsiString; szInicial: AnsiString; szFinal: AnsiString): Integer; StdCall;
   		_rEfetuarDownloadMF_ECF_Daruma: function(pszNomeArquivo: AnsiString): Integer; StdCall;
       _rEfetuarDownloadMFD_ECF_Daruma: function(pszTipo: AnsiString; pszInicial: AnsiString; pszFinal: AnsiString; pszNomeArquivo: AnsiString): Integer; StdCall;
       _rVerificarReducaoZ_ECF_Daruma: function(zPendente: AnsiString): Integer; StdCall;

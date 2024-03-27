@@ -13,7 +13,6 @@ object Form15: TForm15
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   Position = poScreenCenter
   OnActivate = FormActivate
   OnClose = FormClose
@@ -98,7 +97,6 @@ object Form15: TForm15
       Font.Height = -16
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
-      ItemHeight = 20
       ParentCtl3D = False
       ParentFont = False
       TabOrder = 1
@@ -110,7 +108,7 @@ object Form15: TForm15
       Left = 95
       Top = 85
       Width = 310
-      Height = 28
+      Height = 21
       HelpContext = 3
       Ctl3D = True
       Font.Charset = ANSI_CHARSET

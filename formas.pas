@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, IniFiles, StrUtils, SmallFunc, ufuncoesfrente,
+  Dialogs, StdCtrls, ExtCtrls, IniFiles, StrUtils, SmallFunc_xe, ufuncoesfrente,
   frame_teclado_1, Buttons
   , uajustaresolucao
   ;
@@ -493,7 +493,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin
@@ -626,8 +626,8 @@ begin
   chkUsandoTefCarteirasDigitais.Font  := Label1.Font;
   {Sandro Silva 2021-08-30 fim}   
 
-  FormasP.Top    := Screen.Height - FormasP.Height div 2;
-  FormasP.Left   := Screen.Width - FormasP.Width div 2;
+  //Sandro Silva 2024.01.22 FormasP.Top    := Screen.Height - FormasP.Height div 2;
+  //Sandro Silva 2024.01.22 FormasP.Left   := Screen.Width - FormasP.Width div 2;
 end;
 
 procedure TFormasP.Button1Click(Sender: TObject);

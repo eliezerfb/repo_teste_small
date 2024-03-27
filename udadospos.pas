@@ -10,7 +10,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, frame_teclado_1, StdCtrls, IniFiles, ComCtrls, Buttons,
-  SmallFunc, _Small_59
+  SmallFunc_xe, _Small_59
   , uajustaresolucao;
 
 type
@@ -48,7 +48,9 @@ var
 
 implementation
 
-uses Unit2, fiscal, Unit15, _Small_IntegradorFiscal, umfe;
+uses Unit2, fiscal, Unit15
+//, _Small_IntegradorFiscal
+, umfe;
 
 {$R *.dfm}
 
@@ -98,7 +100,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin

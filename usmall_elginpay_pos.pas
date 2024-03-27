@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, Windows, Dialogs, SysUtils, IniFiles, StrUtils
-  , Smallfunc;
+  , smallfunc_xe;
 
 const OPERACAO_ADMINISTRATIVA = 0;
 const NOME_POS_ONLINE_ELGIN   = 'POS ElginPay';
@@ -97,7 +97,6 @@ type
     _IniciaVendaCredito: function(idTransacao: Integer; pdv, valorTotal: AnsiString;tipoFinanciamento, numParcelas: Integer): PAnsiChar; stdcall;
     _IniciaCancelamentoVenda: function(idTransacao: Integer; pdv, valorTotal, dataHora, nsu: AnsiString): PAnsiChar; stdcall;
     _IniciaOperacaoAdministrativa: function(idTransacao: Integer; pdv: AnsiString; operacao:Integer): PAnsiChar; stdcall;
-
     _SetSenha: function(senha: AnsiString; habilitada: Boolean): PAnsiChar; stdcall;
     _SetSenhaServer: function(senha: AnsiString; habilitada: Boolean): PAnsiChar; stdcall;
 
@@ -189,11 +188,11 @@ begin
       Import(@_IniciaVendaCredito, 'IniciaVendaCredito');
       Import(@_IniciaCancelamentoVenda, 'IniciaCancelamentoVenda');
       Import(@_IniciaOperacaoAdministrativa, 'IniciaOperacaoAdministrativa');
-
       Import(@_SetSenha, 'SetSenha');
       Import(@_SetSenhaServer, 'SetSenhaServer');
 
-    except
+
+    except
       on E: Exception do
       begin
         ShowMessage('Erro ao carregar comandos POS ElginPay' + #13 +
@@ -232,7 +231,6 @@ begin
     _IniciaVendaCredito           := nil;
     _IniciaCancelamentoVenda      := nil;
     _IniciaOperacaoAdministrativa := nil;
-
     _SetSenha                     := nil;
     _SetSenhaServer               := nil;
 

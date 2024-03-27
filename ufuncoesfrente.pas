@@ -20,20 +20,12 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   , TlHelp32
   , Menus
   , MAPI
-  {$IFDEF VER150}
-  , IBDatabase, IBQuery, IBCustomDataSet
-  , MD5
-  , SmallFunc
-  {$ELSE}
   , IBX.IBDatabase, IBX.IBQuery, IBX.IBCustomDataSet
-  , MD5_unicode
+  , ufuncaoMD5
   , smallfunc_xe
-  {$ENDIF}
   , ExtCtrls
   , DBClient
-//  , StdCtrls
   , uconstantes_chaves_privadas
-  //, uClasseValidaRecursos
   , uSmallConsts // Sandro Silva 2023-10-24
   , uValidaRecursosDelphi7
   , uclassetransacaocartao // Sandro Silva 2023-08-25
@@ -47,6 +39,7 @@ const TEXTO_CAIXA_LIVRE            = 'CAIXA LIVRE';
 const TEXTO_CAIXA_EM_VENDA         = 'EM VENDA';
 
 const COR_AZUL = $00EAB231; // Sandro Silva 2021-08-17
+const COR_AZUL_CELULA_SELECIONADA = $00D77800;
 
 const FORMA_PAGAMENTO_A_VISTA         = 'A VISTA';
 const FORMA_PAGAMENTO_BOLETO          = 'BOLETO';
@@ -324,7 +317,7 @@ function MFE: Boolean;
 function Build: String;
 function SmallMessageBox(const Text, Caption: String; Flags: Longint): Integer;
 function ValidaEmail(sP1: String):Boolean;
-function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: String; bConfirma: Boolean): Integer;
+//2024-02-26 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: String; bConfirma: Boolean): Integer;
 function CriaCDSALIQ: TClientDataSet;
 function CriaCDSCFOP: TClientDataSet;
 function ConverteAcentosXML(pP1: String): String;
@@ -361,7 +354,8 @@ procedure SleepWithoutFreeze(msec: int64);
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
 
 var
-  cWinDir: array[0..200] of Char;
+  //cWinDir: array[0..200] of WideChar;
+  cWinDir: String;
   TipoEntrega: TTipoEntrega; // Sandro Silva 2020-06-01
   Aplicacao: TMyApplication;
   bImportarServicoDeOsOrcamento: Boolean = True; // Controlar se importa ou não serviço listados em Orçamento/OS para NFC-e/SAT. Sempre inicia como True Sandro Silva 2021-08-17
@@ -1382,7 +1376,7 @@ begin
     begin
       Result := -1; // 0 dias ainda pode usar
       {Sandro Silva 2021-06-22 inicio
-      Application.MessageBox(PansiChar('Cadastro do emitente desatualizado' + Chr(10) + Chr(10) +
+      Application.MessageBox(PChar('Cadastro do emitente desatualizado' + Chr(10) + Chr(10) +
         'Entre antes no programa "Small" e confirme os dados no Cadastro do emitente.'), 'Atenção', MB_OK + MB_ICONWARNING);
       }
       SmallMessageBox('Cadastro do emitente desatualizado' + Chr(10) + Chr(10) +
@@ -1397,7 +1391,7 @@ begin
       if AnsiContainsText(E.Message, 'Column unknown') and AnsiContainsText(E.Message, 'LICENCA') then
       begin
         {Sandro Silva 2021-06-22 inicio
-        Application.MessageBox(PansiChar('Seu banco de dados está desatualizado' + Chr(10) + Chr(10) +
+        Application.MessageBox(PChar('Seu banco de dados está desatualizado' + Chr(10) + Chr(10) +
           'Entre antes no programa "Small" para ajustar os arquivos.'), 'Atenção', MB_OK + MB_ICONWARNING);
         }
         SmallMessageBox('Seu banco de dados está desatualizado' + Chr(10) + Chr(10) +
@@ -1515,15 +1509,17 @@ var
   F : TExtfile;
   fNFe : String;
   sFileExporta: String;
+  {
   function TamanhoArquivo(Arquivo: string): Integer;
   begin
     with TFileStream.Create(Arquivo, fmOpenRead or fmShareExclusive) do
     try
       Result := Size;
     finally
-     Free;
+      Free;
     end;
   end;
+  }
 begin
   IBQDFE := CriaIBQuery(IBTRANSACTION);
   Result := True;
@@ -1587,15 +1583,19 @@ begin
 
           if (Copy(xmlNodeValue(IBQDFE.FieldByName('NFEXML').AsString, '//chNFe'), 21, 2) = '65') then  // Assim para identificar xml de cancelamento de NFC-e
           begin
-            sFileExporta := PansiChar(Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-nfce.xml');  // Direciona o arquivo F para EXPORTA.TXT
+            //sFileExporta := PansiChar(Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-nfce.xml');  // Direciona o arquivo F para EXPORTA.TXT Mauricio Parizotto 2024-02-06
+            sFileExporta := Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-nfce.xml';  // Direciona o arquivo F para EXPORTA.TXT
             if (Pos('CANCEL', AnsiUpperCase(IBQDFE.FieldByName('STATUS').AsString)) <> 0) then
-              sFileExporta := PansiChar(Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-caneve.xml');  // Direciona o arquivo F para EXPORTA.TXT
+              //sFileExporta := PansiChar(Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-caneve.xml');  // Direciona o arquivo F para EXPORTA.TXT Mauricio Parizotto 2024-02-06
+              sFileExporta := Diretorio+'\'+IBQDFE.FieldByName('NFEID').AsString+'-caneve.xml';  // Direciona o arquivo F para EXPORTA.TXT
           end;
           if (xmlNodeValue(IBQDFE.FieldByName('NFEXML').AsString, '//ide/mod') = '59') then
           begin
-            sFileExporta := PansiChar(Diretorio+'\AD'+IBQDFE.FieldByName('NFEID').AsString+'.xml');  // Direciona o arquivo F para EXPORTA.TXT
+            //sFileExporta := PansiChar(Diretorio+'\AD'+IBQDFE.FieldByName('NFEID').AsString+'.xml');  // Direciona o arquivo F para EXPORTA.TXT Mauricio Parizotto 2024-02-06
+            sFileExporta := Diretorio+'\AD'+IBQDFE.FieldByName('NFEID').AsString+'.xml';  // Direciona o arquivo F para EXPORTA.TXT
             if (Pos('CANCEL', AnsiUpperCase(IBQDFE.FieldByName('STATUS').AsString)) <> 0) then
-              sFileExporta := PansiChar(Diretorio+'\ADC'+IBQDFE.FieldByName('NFEID').AsString+'.xml');  // Direciona o arquivo F para EXPORTA.TXT
+              //sFileExporta := PansiChar(Diretorio+'\ADC'+IBQDFE.FieldByName('NFEID').AsString+'.xml');  // Direciona o arquivo F para EXPORTA.TXT Mauricio Parizotto 2024-02-06
+              sFileExporta := Diretorio+'\ADC'+IBQDFE.FieldByName('NFEID').AsString+'.xml';  // Direciona o arquivo F para EXPORTA.TXT
           end;
 
           //
@@ -1607,7 +1607,7 @@ begin
 
       if Trim(sFileExporta) <> '' then
       begin
-        AssignFile(F,PansiChar(Trim(sFileExporta)));  // Direciona o arquivo F para EXPORTA.TXT
+        AssignFile(F, Trim(sFileExporta));  // Direciona o arquivo F para EXPORTA.TXT
         Rewrite(F);                  // Abre para gravação
         WriteLn(F,fNFe);
         CloseFile(F); // Fecha o arquivo
@@ -1647,6 +1647,7 @@ begin
           // Componente NFCe está gerando os xml com 'ï»¿' no início do arquivo e causa erro ao exportar para contabilidade
           fNFe := StringReplace(fNFe, 'ï»¿','', [rfReplaceAll]); // Sandro Silva 2016-03-21
 
+          {Mauricio Parizotto 2024-02-06
           sFileExporta := PansiChar(Diretorio+'\'+
             xmlNodeValue(fNFe, '//cUF') +
             xmlNodeValue(fNFe, '//ano') +
@@ -1656,6 +1657,17 @@ begin
             RightStr('000000000' + xmlNodeValue(fNFe, '//nNFIni'), 9) +
             RightStr('000000000' + xmlNodeValue(fNFe, '//nNFFin'), 9) +
             '-inut.xml');  // Direciona o arquivo F para EXPORTA.TXT
+          }
+
+          sFileExporta := Diretorio+'\'+
+            xmlNodeValue(fNFe, '//cUF') +
+            xmlNodeValue(fNFe, '//ano') +
+            xmlNodeValue(fNFe, '//CNPJ') +
+            xmlNodeValue(fNFe, '//mod') +
+            RightStr('000' + xmlNodeValue(fNFe, '//serie'), 3) +
+            RightStr('000000000' + xmlNodeValue(fNFe, '//nNFIni'), 9) +
+            RightStr('000000000' + xmlNodeValue(fNFe, '//nNFFin'), 9) +
+            '-inut.xml';  // Direciona o arquivo F para EXPORTA.TXT
 
           //
         except
@@ -1666,7 +1678,7 @@ begin
 
       if Trim(sFileExporta) <> '' then
       begin
-        AssignFile(F,PansiChar(Trim(sFileExporta)));  // Direciona o arquivo F para EXPORTA.TXT
+        AssignFile(F, Trim(sFileExporta));  // Direciona o arquivo F para EXPORTA.TXT
         Rewrite(F);                  // Abre para gravação
         WriteLn(F,fNFe);
         CloseFile(F); // Fecha o arquivo
@@ -1692,7 +1704,7 @@ begin
   dwSize := 255;
   SetLength(sIpBuffer, dwSize);
   if GetComputerName(PChar(sIpBuffer),dwSize) then
-    Result := PAnsiChar(sIpBuffer);// PChar(sIpBuffer);
+    Result := PChar(sIpBuffer);// PChar(sIpBuffer);
 end;
 
 function SelecionaXmlEnvio(Path: String; sDigestValue: String;
@@ -1729,7 +1741,7 @@ var
 begin
   Lista.Clear;
   //
-  I := FindFirst( PansiChar(sAtual + '\' + AllTrim(sExtensao)), faAnyFile, S);
+  I := FindFirst( sAtual + '\' + Trim(sExtensao), faAnyFile, S); // Sandro Silva 2024-01-22 I := FindFirst( PansiChar(sAtual + '\' + Trim(sExtensao)), faAnyFile, S);
   //
   while I = 0 do
   begin
@@ -1911,6 +1923,7 @@ end;
 *)
 
 function Build: String;
+{
 var
   Size, Size2: DWord;
   Pt, Pt2: Pointer;
@@ -1923,6 +1936,41 @@ begin
   Result := PChar(pt2);
   FreeMem (Pt);
   //
+end;
+}
+var
+  Size, Size2: DWord;
+  Pt, Pt2: Pointer;
+
+  {$IFDEF VER150}
+  {$ELSE}
+  FI: PVSFixedFileInfo;
+  VerSize: DWORD;
+  {$ENDIF}
+begin
+  Size := GetFileVersionInfoSize(PChar (ParamStr (0)), Size2);
+  GetMem (Pt, Size);
+  try
+    {$IFDEF VER150}
+    GetFileVersionInfo (PChar (ParamStr (0)), 0, Size, Pt);
+    VerQueryValue(Pt,'\StringFileInfo\041604E4\FileVersion',Pt2, Size2);
+    Result := PChar (pt2);
+    {$ELSE}
+    GetFileVersionInfo (PChar (ParamStr (0)), 0, Size, Pt);
+
+    VerQueryValue(Pt, '\', Pointer(FI), VerSize);
+
+    Result:= Concat(IntToStr(FI.dwFileVersionMS shr 16), '.',
+                    IntToStr(FI.dwFileVersionMS and $FFFF), '.',
+                    IntToStr(FI.dwFileVersionLS shr 16), '.',
+                    IntToStr(FI.dwFileVersionLS and $FFFF));
+    {$ENDIF}
+
+    //if AbSomenteNumeros then
+    //  Result := LimpaNumero(Result);
+  finally
+    FreeMem(Pt);
+  end;
 end;
 
 function PAFNFCe: Boolean;
@@ -2024,9 +2072,9 @@ end;
 function SmallMessageBox(const Text, Caption: String; Flags: Longint): Integer;
 begin
   {$IFDEF VER150}
-  Result := Application.MessageBox(PansiChar(Text), PansiChar(Caption), Flags);
+  Result := Application.MessageBox(PChar(Text), PChar(Caption), Flags);
   {$ELSE}
-  Result := Application.MessageBox(PwideChar(Text), PwideChar(Caption), Flags);
+  Result := Application.MessageBox(PChar(Text), PChar(Caption), Flags);
   {$ENDIF}
 end;
 
@@ -2053,6 +2101,7 @@ begin
   //
 end;
 
+(*2024-02-26
 function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, sAnexo: String; bConfirma: Boolean): Integer;
 var
   Mais1Ini : tIniFile;
@@ -2063,64 +2112,55 @@ var
   SM: TFNMapiSendMail;
   MAPIModule: HModule;
   Flags: Cardinal;
-  //
 begin
-  //
   GetDir(0,sAtual);
-  //
+
   Mais1ini := TIniFile.Create('frente.ini');
-  //
-  if FileExists(PAnsiChar('mail.exe')) and (Mais1Ini.ReadString('mail','Host','') <> '') then // Sandro Silva 2020-09-03 if FileExists(pChar('mail.exe')) and (Mais1Ini.ReadString('mail','Host','') <> '') then 
+
+  if FileExists(PChar('mail.exe')) and (Mais1Ini.ReadString('mail','Host','') <> '') then // Sandro Silva 2020-09-03 if FileExists(pChar('mail.exe')) and (Mais1Ini.ReadString('mail','Host','') <> '') then
   begin
-    //
-    while FileExists(PAnsiChar('email.exe')) do // Sandro Silva 2020-09-03 while FileExists(pChar('email.exe')) do 
+    while FileExists(PChar('email.exe')) do // Sandro Silva 2020-09-03 while FileExists(pChar('email.exe')) do
     begin
       DeleteFile('email.exe');
       sleep(10);
     end;
-    //
-    while not FileExists(PansiChar('email.exe')) do // Sandro Silva 2020-09-03 while not FileExists(pChar('email.exe')) do
+
+    while not FileExists(PChar('email.exe')) do // Sandro Silva 2020-09-03 while not FileExists(pChar('email.exe')) do
     begin
       CopyFile('mail.exe', 'email.exe', False);
       sleep(10);
     end;
-    //
-    ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), PAnsiChar(''), SW_SHOW); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open', 'email.exe',pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), '', SW_SHOW);
-    //
+
+    //ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), PAnsiChar(''), SW_SHOW); // Sandro Silva 2020-09-03 ShellExecute( 0, 'Open', 'email.exe',pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), '', SW_SHOW); // Mauricio Parizotto 2024-02-08
+    //ShellExecuteA(0, 'Open', PAnsiChar('email.exe'), PAnsiChar(AnsiString(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"')), PAnsiChar(''), SW_SHOW);
+    ShellExecute(0, 'Open', PChar('email.exe'), PChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+sAnexo+'"'), PChar(''), SW_SHOW);
+
     Result := 1;
-    //
   end else
   begin
-    //
-    //
-    //
     // cria propriedades da mensagem
-    //
     FillChar(Msg, SizeOf(Msg), 0);
     //
     with Msg do
     begin
-      if (sAssunto <> '') then lpszSubject  := PAnsiChar(sAssunto); // Sandro Silva 2020-09-03 if (sAssunto <> '') then lpszSubject := PChar(sAssunto);
-      if (sTexto <> '')   then lpszNoteText := PAnsiChar(sTexto); //Corpo da Mensagem // Sandro Silva 2020-09-03 if (sTexto <> '')   then lpszNoteText := PChar(sTexto); //Corpo da Mensagem
-      //
+      if (sAssunto <> '') then lpszSubject  := PAnsiChar(AnsiString(sAssunto)); // Sandro Silva 2020-09-03 if (sAssunto <> '') then lpszSubject := PChar(sAssunto);
+      if (sTexto <> '')   then lpszNoteText := PAnsiChar(AnsiString(sTexto)); //Corpo da Mensagem // Sandro Silva 2020-09-03 if (sTexto <> '')   then lpszNoteText := PChar(sTexto); //Corpo da Mensagem
+
       // remetente
-      //
       if (sDe <> '') then
       begin
         lpSender.ulRecipClass := MAPI_ORIG;
-        lpSender.lpszName     := PAnsiChar(sDe); // Sandro Silva 2020-09-03 lpSender.lpszName := PChar(sDe);
-        lpSender.lpszAddress  := PAnsiChar(sDe); // Sandro Silva 2020-09-03 lpSender.lpszAddress  := PChar(sDe); 
+        lpSender.lpszName     := PAnsiChar(AnsiString(sDe)); // Sandro Silva 2020-09-03 lpSender.lpszName := PChar(sDe);
+        lpSender.lpszAddress  := PAnsiChar(AnsiString(sDe)); // Sandro Silva 2020-09-03 lpSender.lpszAddress  := PChar(sDe);
         lpSender.ulReserved := 0;
         lpSender.ulEIDSize := 0;
         lpSender.lpEntryID := nil;
         lpOriginator := @lpSender;
       end;
-      //
+
       // destinatário
-      //
       if (sPara <> '') then
       begin
-        //
         if not bConfirma then
         begin
           sPara := StrTran(StrTran(sPara,';','><'),' ','');
@@ -2128,22 +2168,20 @@ begin
         end;
         //
         lpRecepient.ulRecipClass := MAPI_TO;
-        lpRecepient.lpszName     := PAnsiChar(''); // Sandro Silva 2020-09-03 lpRecepient.lpszName := PChar('');
-        lpRecepient.lpszAddress  := PAnsiChar(sPara); // Sandro Silva 2020-09-03 lpRecepient.lpszAddress  := PChar(sPara); 
+        lpRecepient.lpszName     := PAnsiChar(AnsiString('')); // Sandro Silva 2020-09-03 lpRecepient.lpszName := PChar('');
+        lpRecepient.lpszAddress  := PAnsiChar(AnsiString(sPara)); // Sandro Silva 2020-09-03 lpRecepient.lpszAddress  := PChar(sPara);
         lpRecepient.ulReserved   := 0;
         lpRecepient.ulEIDSize    := 0;
         lpRecepient.lpEntryID    := nil;
         nRecipCount := 1;
         lpRecips := @lpRecepient;
-        //
       end else
       begin
-        //
         if (sCC <> '') then
         begin
           lpComCopia.ulRecipClass := MAPI_CC;
-          lpComCopia.lpszName     := PAnsiChar(sCC); // Sandro Silva 2020-09-03 lpComCopia.lpszName     := PChar(sCC);
-          lpComCopia.lpszAddress  := PAnsiChar(sCC); // Sandro Silva 2020-09-03 lpComCopia.lpszAddress  := PChar(sCC);
+          lpComCopia.lpszName     := PAnsiChar(AnsiString(sCC)); // Sandro Silva 2020-09-03 lpComCopia.lpszName     := PChar(sCC);
+          lpComCopia.lpszAddress  := PAnsiChar(AnsiString(sCC)); // Sandro Silva 2020-09-03 lpComCopia.lpszAddress  := PChar(sCC);
           lpComCopia.ulReserved   := 0;
           lpComCopia.ulEIDSize    := 0;
           lpComCopia.lpEntryID    := nil;
@@ -2166,7 +2204,7 @@ begin
         //
         FileAttach.nPosition    := Cardinal($FFFFFFFF);
         FileAttach.lpFileType   := nil;
-        FileAttach.lpszPathName := PAnsiChar(sAnexo); // Sandro Silva 2020-09-03 FileAttach.lpszPathName := PChar(sAnexo);
+        FileAttach.lpszPathName := PAnsiChar(AnsiString(sAnexo)); // Sandro Silva 2020-09-03 FileAttach.lpszPathName := PChar(sAnexo);
         nFileCount              := 1;
         lpFiles                 := @FileAttach;
         //
@@ -2174,12 +2212,7 @@ begin
       //
       // carrega dll e o método sPara envio do email
       //
-      {$IFDEF VER150}
-      MAPIModule := LoadLibrary(PAnsiChar(MAPIDLL));
-      {$ELSE}
-      MAPIModule := LoadLibrary(PWideChar(MAPIDLL));
-      {$ENDIF}
-  //    MAPIModule.
+      MAPIModule := LoadLibrary(PChar(MAPIDLL));
       if MAPIModule = 0 then
       begin
         Result := -1
@@ -2221,6 +2254,7 @@ begin
   CHDir(sAtual);
   //
 end;
+*)
 
 function CriaCDSALIQ: TClientDataSet;
 begin
@@ -2704,7 +2738,7 @@ end;
 procedure TArquivo.SalvarArquivo(FileName: TFileName);
 begin
   try
-    AssignFile(FArquivo, pChar(FileName));
+    AssignFile(FArquivo, FileName);
     Rewrite(FArquivo);
     Writeln(FArquivo, FTexto);
     CloseFile(FArquivo);                                    // Fecha o arquivo

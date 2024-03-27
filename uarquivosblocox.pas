@@ -4,13 +4,17 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons
-  , IBDatabase, DB, IBCustomDataSet, IBQuery, ComCtrls, Grids, DBGrids
+  Dialogs, StdCtrls, Buttons,
+  DB, ComCtrls, Grids, DBGrids
   , StrUtils, Clipbrd, ShellApi
   , ufuncoesfrente
   , ufuncoesfrentepaf
-  , ufuncoesblocox, uclassetiposblocox, upafecfmensagens
-  , Smallfunc
+  , ufuncoesblocox, uclassetiposblocox, upafecfmensagens  
+  {$IFDEF VER150}
+  //SmallFunc, IBDatabase, IBQuery, IBCustomDataSet,
+  {$ELSE}
+  , SmallFunc_xe, IBX.IBDatabase, IBX.IBQuery, IBX.IBCustomDataSet
+  {$ENDIF}
   , xmldom, XMLIntf, msxmldom, msxml, Menus
   , LbCipher,
   LbClass;
@@ -385,7 +389,7 @@ begin
 
         if IBDSBLOCOX.FieldByName('TIPO').AsString = 'REDUCAO' then
         begin
-          Blocox.XmlReducaoZ(PAnsiChar(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), PAnsiChar(FsAtual), PAnsiChar(IBDSBLOCOX.FieldByName('SERIE').AsString), PAnsiChar(IBDSBLOCOX.FieldByName('DATAREFERENCIA').AsString), True, True, True)
+          Blocox.XmlReducaoZ(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(FsAtual), AnsiString(IBDSBLOCOX.FieldByName('SERIE').AsString), AnsiString(IBDSBLOCOX.FieldByName('DATAREFERENCIA').AsString), True, True, True)
         end;
 
         if IBDSBLOCOX.FieldByName('TIPO').AsString = 'ESTOQUE' then
@@ -394,7 +398,7 @@ begin
             dtFinal   := IBDSBLOCOX.FieldByName('DATAREFERENCIA').AsDateTime;
             dtInicial := StrToDate('01/' + FormatDateTime('mm/yyyy', dtFinal));
 
-            Blocox.XmlEstoqueOmisso(PAnsiChar(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), PAnsiChar(FsAtual), PAnsiChar(FormatDateTime('dd/mm/yyyy', dtInicial)), PAnsiChar(FormatDateTime('dd/mm/yyyy', dtFinal)), True, True, True, True);
+            Blocox.XmlEstoqueOmisso(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(FsAtual), AnsiString(FormatDateTime('dd/mm/yyyy', dtInicial)), AnsiString(FormatDateTime('dd/mm/yyyy', dtFinal)), True, True, True, True);
 
           except
             on E: Exception do
@@ -424,14 +428,14 @@ procedure TFArquivosBlocoX.ConsultaRecibo1Click(Sender: TObject);
 var
   bTodas: Boolean;
 begin
-  bTodas := (Application.MessageBox(PAnsiChar('Consultar este XML e os demais listados com status AGUARDANDO?' + #13 + #13 + 'Tecle Não para consultar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
+  bTodas := (Application.MessageBox(PChar('Consultar este XML e os demais listados com status AGUARDANDO?' + #13 + #13 + 'Tecle Não para consultar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
   DBGrid1.DataSource.DataSet.DisableControls; // Sandro Silva 2019-06-19
   while True do
   begin
     if AnsiContainsText(DBGrid1.DataSource.DataSet.FieldByName('XMLRESPOSTA').AsString, '<SituacaoProcessamentoCodigo>0') then // 0: Aguardando
     begin
       if DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString <> '' then
-        Blocox.ConsultarRecibo(PAnsiChar(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), PAnsiChar(sAtual), PAnsiChar(DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString));
+        Blocox.ConsultarRecibo(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(sAtual), AnsiString(DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString));
     end;
     if bTodas then
       DBGrid1.DataSource.DataSet.Next;
@@ -1047,7 +1051,7 @@ begin
 
     if IBQBLOCOX.FieldByName('DATAREFERENCIA').AsString = '' then
     begin
-      Blocox.XmlEstoqueOmisso(PAnsiChar(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), PAnsiChar(FsAtual), PAnsiChar('01/' + Copy(sDtReferencia, 4, 7)), PAnsiChar(sDtReferencia), True, True, True, True);
+      Blocox.XmlEstoqueOmisso(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(FsAtual), AnsiString('01/' + Copy(sDtReferencia, 4, 7)), AnsiString(sDtReferencia), True, True, True, True);
     end
     else
     begin
@@ -1099,7 +1103,7 @@ begin
       if IBQBLOCOX.FieldByName('SERIE').AsString <> '' then
         ShowMessage('XML já existe')
       else
-        Blocox.XmlReducaoZ(PAnsiChar(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), PAnsiChar(FsAtual), PAnsiChar(sSerie), PAnsiChar(sDtReferencia), True, True, True);
+        Blocox.XmlReducaoZ(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(FsAtual), AnsiString(sSerie), AnsiString(sDtReferencia), True, True, True);
     end;
 
   except
@@ -1116,7 +1120,7 @@ end;
 procedure TFArquivosBlocoX.ConsultaPendnciaUsuriosPAF1Click(
   Sender: TObject);
 begin
-  BlocoX.ConsultarPendenciasDesenvolvedorPafEcf(PAnsiChar(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), PAnsiChar(FsAtual));
+  BlocoX.ConsultarPendenciasDesenvolvedorPafEcf(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), AnsiString(FsAtual));
 end;
 
 procedure TFArquivosBlocoX.PopupMenu1Popup(Sender: TObject);
@@ -1218,12 +1222,12 @@ procedure TFArquivosBlocoX.Reprocessararquivos1Click(Sender: TObject);
 var
   bTodas: Boolean;
 begin
-  bTodas := (Application.MessageBox(PAnsiChar('Reprocessar este XML e os próximos listados?' + #13 + #13 + 'Tecle Não para reprocessar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
+  bTodas := (Application.MessageBox(PChar('Reprocessar este XML e os próximos listados?' + #13 + #13 + 'Tecle Não para reprocessar apenas do selecionado'), 'Atenção', MB_YESNO + MB_DEFBUTTON2 + MB_ICONWARNING) = ID_YES);
   DBGrid1.DataSource.DataSet.DisableControls; // Sandro Silva 2019-06-19
   while True do
   begin
     if (AnsiContainsText(DBGrid1.DataSource.DataSet.FieldByName('XMLRESPOSTA').AsString, '<SituacaoProcessamentoCodigo>2') or AnsiContainsText(DBGrid1.DataSource.DataSet.FieldByName('XMLRESPOSTA').AsString, '<SituacaoProcessamentoCodigo>3')) then // 2:Erro 3:Cancelado
-      BlocoX.ReprocessarArquivoBlocoX(PAnsiChar(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), PAnsiChar(satual), PAnsiChar(DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString));
+      BlocoX.ReprocessarArquivoBlocoX(PAnsiChar(AnsiString(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName)), PAnsiChar(AnsiString(satual)), PAnsiChar(AnsiString(DBGrid1.DataSource.DataSet.FieldByName('RECIBO').AsString)));
     if bTodas then
       DBGrid1.DataSource.DataSet.Next;
 

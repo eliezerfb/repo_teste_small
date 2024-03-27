@@ -12,7 +12,6 @@ object FDadosPOS: TFDadosPOS
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnShow = FormShow
@@ -106,7 +105,7 @@ object FDadosPOS: TFDadosPOS
     Left = 20
     Top = 56
     Width = 981
-    Height = 39
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
@@ -151,6 +150,8 @@ object FDadosPOS: TFDadosPOS
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = -5
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         inherited Image4: TImage
           Picture.Data = {00}
@@ -162,7 +163,7 @@ object FDadosPOS: TFDadosPOS
     Left = 20
     Top = 127
     Width = 981
-    Height = 39
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
@@ -179,7 +180,7 @@ object FDadosPOS: TFDadosPOS
     Left = 20
     Top = 198
     Width = 981
-    Height = 39
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
@@ -196,7 +197,7 @@ object FDadosPOS: TFDadosPOS
     Left = 20
     Top = 269
     Width = 981
-    Height = 39
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
@@ -213,7 +214,7 @@ object FDadosPOS: TFDadosPOS
     Left = 20
     Top = 341
     Width = 981
-    Height = 39
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET

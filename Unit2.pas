@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Mask, Grids, DBGrids, SmallFunc, DB, DBCtrls,
+  StdCtrls, ExtCtrls, Mask, Grids, DBGrids, SmallFunc_xe, DB, DBCtrls,
   SMALL_DBEdit, IniFiles, ShellApi, FileCtrl, jpeg, frame_teclado_1,
   Buttons, htmlhelp
   , StrUtils
@@ -172,6 +172,8 @@ type
     procedure EdMarketplaceKeyPress(Sender: TObject; var Key: Char);
     procedure EdMarketplaceChange(Sender: TObject);
     procedure EdMarketplaceExit(Sender: TObject);
+    procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
   private
     { Private declarations }
     procedure AjustaBotoes;
@@ -335,7 +337,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin
@@ -400,7 +402,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin
@@ -477,7 +479,7 @@ begin
   if Key = VK_RETURN then Button1.SetFocus;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin
@@ -531,7 +533,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin
@@ -633,7 +635,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin
@@ -1158,7 +1160,7 @@ begin
   //
   // Bug 2000 free
   //
-  ShortDateFormat := 'dd/mm/yyyy';
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
   //
   if AllTrim(MaskEdit1.Text) <> '' then
   begin
@@ -1744,6 +1746,19 @@ begin
   {Sandro Silva 2022-04-05 fim}
 end;
 
+procedure TForm2.DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  if gdSelected in State then
+  begin
+    TDBGrid(Sender).Canvas.Font.Color  := clWhite;
+    TDBGrid(Sender).Canvas.Brush.Color := COR_AZUL_CELULA_SELECIONADA;
+  end;
+
+  TDBGrid(Sender).DefaultDrawColumnCell(Rect, DataCol, Column, State);
+
+end;
+
 procedure TForm2.DBGrid1KeyPress(Sender: TObject; var Key: Char);
 var
   dDiferenca : Double;
@@ -2236,7 +2251,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin
@@ -2302,7 +2317,8 @@ begin
 
     if gdSelected in State then
     begin
-      DBGrid2.Canvas.Font.Color := clWhite;
+      DBGrid2.Canvas.Font.Color  := clWhite;
+      DBGrid2.Canvas.Brush.Color := COR_AZUL_CELULA_SELECIONADA;
     end;
 
     DBGrid2.DefaultDrawColumnCell(Rect, DataCol, Column, State);
@@ -2322,6 +2338,7 @@ begin
 
     if gdSelected in State then
     begin
+      DBGrid2.Canvas.Brush.Color := COR_AZUL_CELULA_SELECIONADA;
       if DBGrid2.DataSource.DataSet.FieldByName('MOSTRAR').AsString = '1' then // Inadimplente
         DBGrid2.Canvas.Font.Color := clRed
       else

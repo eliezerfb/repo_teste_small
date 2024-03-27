@@ -4,8 +4,8 @@ object Form4: TForm4
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Tabela de al'#237'quotas'
-  ClientHeight = 353
-  ClientWidth = 412
+  ClientHeight = 342
+  ClientWidth = 406
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -37,7 +37,6 @@ object Form4: TForm4
     0000000000010000000100000001000000030000000F0000203F0000307F0000
     303F0000203F0000003F0000001F0000008F0000118700000FEF000007FF0000
     03FF000001FF000020FF0000307F0000383F00003C1F00003E1F00003F3F}
-  OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = FormActivate
   OnCreate = FormCreate

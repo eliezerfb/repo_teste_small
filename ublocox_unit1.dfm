@@ -12,13 +12,12 @@ object Form1: TForm1
   Font.Height = -13
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnCreate = FormCreate
   OnShow = FormShow
+  PixelsPerInch = 96
   DesignSize = (
     1289
     636)
-  PixelsPerInch = 96
   TextHeight = 16
   object Label1: TLabel
     Left = 8

@@ -8,7 +8,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, frame_teclado_1, StdCtrls, IniFiles, ComCtrls, Buttons,
-  SmallFunc, Grids, DB, DBGrids, DBClient, MD5
+  SmallFunc_xe, Grids, DB, DBGrids, DBClient, ufuncaoMD5
   , uajustaresolucao;
 
 const COLUNAGERENCIADORTEF   = 4;
@@ -91,7 +91,9 @@ var
 
 implementation
 
-uses fiscal, _Small_59, StrUtils, _Small_IntegradorFiscal, ufuncoesfrente;
+uses fiscal, _Small_59, StrUtils
+, _Small_IntegradorFiscal
+, ufuncoesfrente;
 
 {$R *.dfm}
 
@@ -369,7 +371,7 @@ begin
     sAlerta := 'Nome da Adquirente já existe';
   if AnsiContainsText(E.Message, 'must have a value') then
     sAlerta := 'Preencha todas as colunas';
-  Application.MessageBox(PAnsiChar(sAlerta), 'Atenção', MB_ICONWARNING + MB_OK);
+  Application.MessageBox(PChar(sAlerta), 'Atenção', MB_ICONWARNING + MB_OK);
   Action := daAbort;
 end;
 
@@ -529,12 +531,11 @@ var
   sChaveRequisicao: String;
 begin
   // Gera guid da chave de requisição (cnpjemitente+nome adquirente+número serial pos)
-  sChaveRequisicao := MD5Print(MD5String(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + Trim(sAdquirente) + Trim(sNumeroPOS)));
+  sChaveRequisicao := MD5String(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + Trim(sAdquirente) + Trim(sNumeroPOS));
   sChaveRequisicao := AnsiUpperCase(sChaveRequisicao);
   sChaveRequisicao := Copy(sChaveRequisicao, 1, 8) + '-' + Copy(sChaveRequisicao, 9, 4) + '-' + Copy(sChaveRequisicao, 13, 4) + '-' + Copy(sChaveRequisicao, 17, 4) + '-' + Copy(sChaveRequisicao, 21, 12);
   Result := sChaveRequisicao;
 end;
-
 
 procedure TFCadAdquirentes.CDSADQUIRENTESSERIALPOSSetText(Sender: TField;
   const Text: String);

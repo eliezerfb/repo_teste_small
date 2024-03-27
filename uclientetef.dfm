@@ -12,13 +12,12 @@ object FClienteTef: TFClienteTef
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnCreate = FormCreate
+  PixelsPerInch = 96
   DesignSize = (
     1008
     741)
-  PixelsPerInch = 96
   TextHeight = 13
   object Button1: TBitBtn
     Left = 454
@@ -52,6 +51,8 @@ object FClienteTef: TFClienteTef
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = -5
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         inherited Image4: TImage
           Picture.Data = {00}

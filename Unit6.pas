@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Mask, SmallFunc, DBCtrls, SMALL_DBEdit, ExtCtrls,
+  Dialogs, StdCtrls, Mask, SmallFunc_xe, DBCtrls, SMALL_DBEdit, ExtCtrls,
   frame_teclado_1, Buttons
   , DB // Sandro Silva 2019-03-14 
   , uajustaresolucao
@@ -71,7 +71,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin
@@ -469,7 +469,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin

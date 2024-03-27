@@ -38,7 +38,7 @@ function RetornarAvisoCaixasComContigenciaNFCe(AdtInicio: TDate; AdtFinal: TDate
 implementation
 
 uses
-  SmallFunc
+  SmallFunc_xe
   , ufuncoesfrente
   , fiscal
   , unit7

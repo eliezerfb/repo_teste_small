@@ -112,10 +112,10 @@ RootDir=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=2023
+MajorVer=2024
 MinorVer=0
 Release=0
-Build=68
+Build=2
 Debug=0
 PreRelease=0
 Special=1
@@ -126,13 +126,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Zucchetti Software e Sistemas Ltda
 FileDescription=Frente de Caixa
-FileVersion=2023.0.0.68
+FileVersion=2024.0.0.2
 InternalName=Frente
 LegalCopyright=Zucchetti Software e Sistemas Ltda
 LegalTrademarks=Zucchetti Software e Sistemas Ltda
 OriginalFilename=Frente
 ProductName=Frente de Caixa
-ProductVersion=2023
+ProductVersion=2024
 Comments=Final
 SpecialBuild=NFCE
 [HistoryLists\hlUnitAliases]

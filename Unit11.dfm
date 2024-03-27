@@ -11,7 +11,6 @@ object Form11: TForm11
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poDesktopCenter
   OnActivate = FormActivate
   OnCreate = FormCreate
@@ -120,7 +119,7 @@ object Form11: TForm11
     Left = 20
     Top = 62
     Width = 470
-    Height = 39
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
@@ -166,8 +165,11 @@ object Form11: TForm11
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = -5
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         Top = 5
+        ExplicitTop = 5
         inherited Image4: TImage
           Picture.Data = {00}
         end
@@ -178,7 +180,7 @@ object Form11: TForm11
     Left = 20
     Top = 143
     Width = 470
-    Height = 39
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
@@ -195,7 +197,7 @@ object Form11: TForm11
     Left = 20
     Top = 223
     Width = 470
-    Height = 39
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
@@ -212,7 +214,7 @@ object Form11: TForm11
     Left = 510
     Top = 143
     Width = 470
-    Height = 39
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
@@ -229,7 +231,7 @@ object Form11: TForm11
     Left = 510
     Top = 63
     Width = 470
-    Height = 39
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET

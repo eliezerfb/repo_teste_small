@@ -12,7 +12,6 @@ object Form10: TForm10
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poMainFormCenter
   OnActivate = FormActivate
   OnClose = FormClose

@@ -21,10 +21,18 @@ uses
   DateUtils,
   ufuncoesfrente in 'ufuncoesfrente.pas',
   ufuncoesblocox in 'ufuncoesblocox.pas',
-  SmallFunc in '..\SmallFunc.pas',
-  uconstantes_chaves_privadas in '..\..\uconstantes_chaves_privadas.pas',  
+  uconstantes_chaves_privadas in '..\..\uconstantes_chaves_privadas.pas',
   uclassetiposblocox in 'uclassetiposblocox.pas',
-  uarquivosblocox in 'uarquivosblocox.pas' {FArquivosBlocoX};
+  uarquivosblocox in 'uarquivosblocox.pas' {FArquivosBlocoX},
+  smallfunc_xe in '..\unit_compartilhada\smallfunc_xe.pas',
+  uConectaBancoSmall in '..\unit_compartilhada\uConectaBancoSmall.pas',
+  uValidaRecursosDelphi7 in '..\unit_compartilhada\uValidaRecursosDelphi7.pas',
+  uRecursosSistema in '..\unit_compartilhada\uRecursosSistema.pas',
+  uTypesRecursos in '..\unit_compartilhada\uTypesRecursos.pas',
+  uCriptografia in '..\unit_compartilhada\uCriptografia.pas',
+  uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
+  uDialogs in '..\unit_compartilhada\uDialogs.pas',
+  uFuncaoMD5 in '..\unit_compartilhada\uFuncaoMD5.pas';
 
 {$R *.res}
 
@@ -34,8 +42,8 @@ var
   IBDATABASE1: TIBDatabase;
   IBTransaction1: TIBTransaction;
 
-function XmlReducaoZBlocoX(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar;
-  SerieECF: PAnsiChar; dtReferencia: PAnsiChar; bLimparRecibo: Boolean;
+function XmlReducaoZBlocoX(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString;
+  SerieECF: AnsiString; dtReferencia: AnsiString; bLimparRecibo: Boolean;
   bLimparXMLResposta: Boolean; bAssinarXML: Boolean): Boolean; cdecl;
 begin
 
@@ -77,8 +85,8 @@ begin
   Screen.Cursor := crCursor;
 end;
 
-function XmlEstoqueBlocoX(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar;
-  dtInicial: PAnsiChar; dtFinal: PAnsiChar; bLimparRecibo: Boolean;
+function XmlEstoqueBlocoX(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString;
+  dtInicial: AnsiString; dtFinal: AnsiString; bLimparRecibo: Boolean;
   bLimparXMLResposta: Boolean; bAssinarXML: Boolean;
   bForcarGeracao: Boolean): Boolean; cdecl;
 begin
@@ -121,8 +129,8 @@ begin
   Screen.Cursor := crCursor;
 end;
 
-function XmlEstoqueOmissoBlocoX(CaminhoBanco: PAnsiChar; DiretorioAtual: PAnsiChar;
-  dtInicial: PAnsiChar; dtFinal: PAnsiChar; bLimparRecibo: Boolean;
+function XmlEstoqueOmissoBlocoX(CaminhoBanco: AnsiString; DiretorioAtual: AnsiString;
+  dtInicial: AnsiString; dtFinal: AnsiString; bLimparRecibo: Boolean;
   bLimparXMLResposta: Boolean; bAssinarXML: Boolean;
   bForcarGeracao: Boolean): Boolean; cdecl;
 begin
@@ -165,9 +173,9 @@ begin
   Screen.Cursor := crCursor;
 end;
 
-function RecuperarRecibodeXmlRespostaBlocoX(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar; XmlResposta: PAnsiChar;
-  sDtReferencia: PAnsiChar; sTipo: PAnsiChar; sSerie: PAnsiChar): Boolean; cdecl;
+function RecuperarRecibodeXmlRespostaBlocoX(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString; XmlResposta: AnsiString;
+  sDtReferencia: AnsiString; sTipo: AnsiString; sSerie: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 
@@ -201,8 +209,8 @@ begin
   Screen.Cursor := crCursor;
 end;
 
-function AlertaXmlPendenteBlocox(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar; sTipo: PAnsiChar; sSerieECF: PAnsiChar;
+function AlertaXmlPendenteBlocox(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString; sTipo: AnsiString; sSerieECF: AnsiString;
   bExibirAlerta: Boolean; bRetaguarda: Boolean): Boolean; cdecl;
 begin
   Result := False;
@@ -254,8 +262,8 @@ begin
   Result := BXPermiteGerarXmlEstoque;
 end;
 
-function AssinaXmlPendenteBlocoX(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar; sTipo: PAnsiChar): Boolean; cdecl;
+function AssinaXmlPendenteBlocoX(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString; sTipo: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 //ShowMessage('153'); // Sandro Silva 2018-09-19
@@ -298,9 +306,9 @@ begin
 
 end;
 
-function TrataErroRetornoTransmissaoBlocoX(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar; sXmlResposta: PAnsiChar; sTipo: PAnsiChar;
-  sSerie: PAnsiChar; sDataReferencia: PAnsiChar): Boolean; cdecl;
+function TrataErroRetornoTransmissaoBlocoX(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString; sXmlResposta: AnsiString; sTipo: AnsiString;
+  sSerie: AnsiString; sDataReferencia: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 //ShowMessage('153'); // Sandro Silva 2018-09-19
@@ -341,13 +349,13 @@ begin
 
 end;
 
-function ServidorBlocoXSefazConfigurado(UF: PAnsiChar): Boolean; cdecl;
+function ServidorBlocoXSefazConfigurado(UF: AnsiString): Boolean; cdecl;
 begin
   Result := BXServidorSefazConfigurado(UF);
 end;
 
-function ConsultarReciboBlocoX(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean; cdecl;
+function ConsultarReciboBlocoX(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString; Recibo: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 //ShowMessage('153'); // Sandro Silva 2018-09-19
@@ -388,9 +396,9 @@ begin
   Screen.Cursor := crCursor;
 end;
 
-function RestaurarArquivosBlocoX(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar; sTipo: PAnsiChar;
-  sSerieECF: PAnsiChar; bApenasUltimo: Boolean): Boolean; cdecl;
+function RestaurarArquivosBlocoX(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString; sTipo: AnsiString;
+  sSerieECF: AnsiString; bApenasUltimo: Boolean): Boolean; cdecl;
 begin
 //ShowMessage('153'); // Sandro Silva 2018-09-19
   Result := False;
@@ -431,8 +439,8 @@ begin
 
 end;
 
-function TransmitirXmlPendenteBlocoX(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar; sTipo: PAnsiChar; sSerieECF: PAnsiChar;
+function TransmitirXmlPendenteBlocoX(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString; sTipo: AnsiString; sSerieECF: AnsiString;
   bAlerta: Boolean): Integer; cdecl;
 begin
   Result := 0;
@@ -474,7 +482,7 @@ begin
 
 end;
 
-function ValidaCertificadoDigitalBlocoX(sCNPJ: PAnsiChar): Boolean; cdecl;
+function ValidaCertificadoDigitalBlocoX(sCNPJ: AnsiString): Boolean; cdecl;
 begin
   Result := True;
 //ShowMessage('153'); // Sandro Silva 2018-09-19
@@ -497,8 +505,8 @@ begin
   Result := BXSelecionarCertificadoDigital <> '';
 end;
 
-function ConsultarPendenciasDesenvolvedorPafEcfBlocoX(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+function ConsultarPendenciasDesenvolvedorPafEcfBlocoX(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 //ShowMessage('153'); // Sandro Silva 2018-09-19
@@ -539,8 +547,8 @@ begin
 
 end;
 
-function IdentificaRetornosComErroTratando(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar; Tipo: PAnsiChar): Boolean; cdecl;
+function IdentificaRetornosComErroTratando(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString; Tipo: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 
@@ -588,8 +596,8 @@ begin
 
 end;
 
-function VisualizaXmlBlocoX(CaminhoBanco: PAnsiChar; Tipo: PAnsiChar;
-  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+function VisualizaXmlBlocoX(CaminhoBanco: AnsiString; Tipo: AnsiString;
+  DiretorioAtual: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 
@@ -628,8 +636,8 @@ begin
 
 end;
 
-function ReprocessarArquivoBlocoX(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean; cdecl;
+function ReprocessarArquivoBlocoX(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString; Recibo: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 //ShowMessage('153'); // Sandro Silva 2018-09-19
@@ -670,8 +678,8 @@ begin
   Screen.Cursor := crCursor;
 end;
 
-function CancelarArquivoBlocoX(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar; Recibo: PAnsiChar): Boolean; cdecl;
+function CancelarArquivoBlocoX(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString; Recibo: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 //ShowMessage('153'); // Sandro Silva 2018-09-19
@@ -712,8 +720,8 @@ begin
   Screen.Cursor := crCursor;
 end;
 
-function GerarAoFISCOREDUCAOZBlocoX(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+function GerarAoFISCOREDUCAOZBlocoX(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 
@@ -750,8 +758,8 @@ begin
 
 end;
 
-function GerarEstoqueAnoAnteriorBlocoX(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+function GerarEstoqueAnoAnteriorBlocoX(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 
@@ -788,8 +796,8 @@ begin
 
 end;
 
-function GerarEstoqueMudancaDeTributacao(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+function GerarEstoqueMudancaDeTributacao(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 
@@ -826,8 +834,8 @@ begin
 
 end;
 
-function GerarEstoqueSuspensaoOuBaixaDeIE(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+function GerarEstoqueSuspensaoOuBaixaDeIE(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 
@@ -864,8 +872,8 @@ begin
 
 end;
 
-function GerarEstoqueMudancaDeRegime(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+function GerarEstoqueMudancaDeRegime(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 
@@ -902,8 +910,8 @@ begin
 
 end;
 
-function GerarEstoqueAtual(CaminhoBanco: PAnsiChar;
-  DiretorioAtual: PAnsiChar): Boolean; cdecl;
+function GerarEstoqueAtual(CaminhoBanco: AnsiString;
+  DiretorioAtual: AnsiString): Boolean; cdecl;
 begin
   Result := False;
 

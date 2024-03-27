@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls, Mask, SmallFunc, ShellApi, HtmlHelp,
+  StdCtrls, ExtCtrls, ComCtrls, Mask, SmallFunc_xe, ShellApi, HtmlHelp,
   frame_teclado_1, Buttons, DB, IBCustomDataSet, IBQuery
   , uajustaresolucao, CheckLst, uframeCampoCaixasRelatorio;
 
@@ -268,7 +268,7 @@ begin
     Form7.Frame_teclado1.Led_REDE.Picture   := Form1.Frame_teclado1.Led_REDE.Picture;
     Form7.Frame_teclado1.Led_REDE.Hint      := Form1.Frame_teclado1.Led_REDE.Hint;
     //
-    ShortDateFormat := 'dd/mm/yyyy';
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
     DateTimePicker1.Date := Date;
     DateTimePicker2.Date := Date;
     if Form7.Label3.Caption = 'Data inicial:' then
@@ -441,7 +441,7 @@ procedure TForm7.FormCreate(Sender: TObject);
 var
   iObj: Integer;
 begin
-  Form7.Width  := 300; // Sandro Silva 2021-07-12
+  Form7.Width  := 302; // Sandro Silva 2021-07-12
   Form7.Height := 615; // Sandro Silva 2017-10-23
   AjustaResolucao(Form7);// Sandro Silva 2016-08-19
   AjustaResolucao(Form7.Frame_teclado1);// Sandro Silva 2016-08-19

@@ -24,7 +24,7 @@ uses
   , ufuncoesfrente
   , unit10
   , usmall_elginpay_pos
-  , SmallFunc
+  , SmallFunc_xe
   ;
 
 function TransacaoComPoS(TipoConexaoPOS: TTipoConexaoPOS): Boolean;

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, SmallFunc, IniFiles, ExtCtrls, frame_teclado_1,
+  Dialogs, StdCtrls, SmallFunc_xe, IniFiles, ExtCtrls, frame_teclado_1,
   Buttons
   , uajustaresolucao
   ;
@@ -141,7 +141,7 @@ begin
   end;
   if Key = VK_UP then
   begin
-    Perform(Wm_NextDlgCtl,-1,0);
+    Perform(Wm_NextDlgCtl,1,0);
   end;
   if Key = VK_DOWN then
   begin

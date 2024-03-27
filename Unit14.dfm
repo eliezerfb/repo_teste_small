@@ -1,23 +1,22 @@
 object Form14: TForm14
   Left = 90
   Top = 5
-  Width = 1024
-  Height = 728
   Caption = 'Registro manual de NF de venda a consumidor (modelo 02)'
+  ClientHeight = 672
+  ClientWidth = 1002
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poDesktopCenter
   OnActivate = FormActivate
-  OnCloseQuery = FormCloseQuery
-  DesignSize = (
-    1008
-    689)
+  OnCloseQuery = FormCloseQuery 
   PixelsPerInch = 96
+  DesignSize = (
+    1002
+    672)
   TextHeight = 13
   object Label3: TLabel
     Left = 759
@@ -354,6 +353,8 @@ object Form14: TForm14
       '  CSOSN = :CSOSN'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 384
     Top = 80
     object ibDataSet027DATA: TDateField
@@ -664,6 +665,8 @@ object Form14: TForm14
       '  CFOP = :CFOP'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
     Left = 536
     Top = 80
   end
@@ -677,6 +680,8 @@ object Form14: TForm14
     Transaction = Form1.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 632
     Top = 80
   end

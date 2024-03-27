@@ -81,29 +81,24 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Printers, OleCtrls, ShellAPI, Mask, Variants, Winsock
-  , Db, DBCtrls, DBTables, DBClient, DBGrids, Registry, Types, SysConst
+  , Db, DBCtrls
+  , DBClient, DBGrids, Registry, Types, SysConst
   , Buttons, IniFiles, Clipbrd, Menus, Grids, FileCtrl, jpeg, ComCtrls
   , MidasLib, StrUtils, DateUtils, ShlObj, ActiveX, ComObj, SHDocVw//, Math
-  {$IFDEF VER150}
-  , IBDatabase, IBCustomDataSet, IBDatabaseInfo, IBQuery, IBExtract
-  {$ELSE}
   , IBX.IBDatabase, IBX.IBCustomDataSet, IBX.IBDatabaseInfo, IBX.IBQuery, IBX.IBExtract
-  {$ENDIF}
-  , MD5, LbRSA, LbAsym, LbDSA, LbClass, LbCipher, LbUtils
+  , ufuncaoMD5, LbRSA, LbAsym, LbDSA, LbClass, LbCipher, LbUtils
   , htmlhelp
   , TLHelp32
   , UrlMon
-  , spdNFCeDataSets, spdNFCeType, spdNFCe, TypInfo // Informações de componentes Sandro Silva 2016-08-01
-
+  , TypInfo // Informações de componentes Sandro Silva 2016-08-01
   , IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdSSLOpenSSL, IdMultipartFormData, IdHTTP
-
   , frame_teclado_1
   , ufuncoesfrente // Sandro Silva 2018-07-03
   , uclassetransacaocartao // Sandro Silva 2017-06-14
   , umfe
   , usmall_elginpay_pos
   , usincronizamobile
-  , uSmallEnumerados
+  , uSmallEnumerados, System.Contnrs, spdNFCeDataSets, spdNFCeType, spdNFCe
   ;
 
   const MARGEM_ESQUERDA_OBJ = 14; // Sandro Silva 2021-07-29 // 15
@@ -181,7 +176,7 @@ uses
   function MD5_Da_Lista(P1: Boolean): boolean;
   function genkkey( cChavePublica: String; cChavePrivada: String ): integer; stdcall; external 'sign_bema.dll';
   function setLibType( iTipo: integer ): integer; stdcall; external 'sign_bema.dll';
-  function generateEAD( cNomeArquivo: String; cChavePublica: String; cChavePrivada: String; cEAD:String; iSign: Integer): integer; stdcall; external 'sign_bema.dll';
+  function generateEAD( cNomeArquivo: AnsiString; cChavePublica: AnsiString; cChavePrivada: AnsiString; cEAD: AnsiString; iSign: Integer): integer; stdcall; external 'sign_bema.dll';
   function validateFile( cNomeArquivo: String; cChavePublica: String; cChavePrivada: String ): integer; stdcall; external 'sign_bema.dll';
 
 type
@@ -198,39 +193,39 @@ type
     Button6: TButton;
     ibDataSet27: TibDataSet;
     DataSource27: TDataSource;
-    ibDataSet27CODIGO: TStringField;
-    ibDataSet27DESCRICAO: TStringField;
+    ibDataSet27CODIGO: TIBStringField;
+    ibDataSet27DESCRICAO: TIBStringField;
     ibDataSet27QUANTIDADE: TFloatField;
     ibDataSet27UNITARIO: TFloatField;
     ibDataSet27DATA: TDateField;
-    ibDataSet27TIPO: TStringField;
-    ibDataSet27PEDIDO: TStringField;
-    ibDataSet27CLIFOR: TStringField;
-    ibDataSet27VENDEDOR: TStringField;
+    ibDataSet27TIPO: TIBStringField;
+    ibDataSet27PEDIDO: TIBStringField;
+    ibDataSet27CLIFOR: TIBStringField;
+    ibDataSet27VENDEDOR: TIBStringField;
     ibDataSet27TOTAL: TFloatField;
     ibDataSet1: TibDataSet;
     ibDataSet1DATA: TDateField;
-    ibDataSet1NOME: TStringField;
-    ibDataSet1HISTORICO: TStringField;
+    ibDataSet1NOME: TIBStringField;
+    ibDataSet1HISTORICO: TIBStringField;
     ibDataSet1ENTRADA: TFloatField;
     ibDataSet1SAIDA: TFloatField;
     ibDataSet1SALDO: TFloatField;
-    ibDataSet1CONTA: TStringField;
+    ibDataSet1CONTA: TIBStringField;
     DataSource1: TDataSource;
     Button7: TButton;
     ibDataSet2: TibDataSet;
     DataSource2: TDataSource;
     ibDataSet7: TibDataSet;
-    ibDataSet7HISTORICO: TStringField;
-    ibDataSet7DOCUMENTO: TStringField;
-    ibDataSet7NOME: TStringField;
+    ibDataSet7HISTORICO: TIBStringField;
+    ibDataSet7DOCUMENTO: TIBStringField;
+    ibDataSet7NOME: TIBStringField;
     ibDataSet7EMISSAO: TDateField;
     ibDataSet7VENCIMENTO: TDateField;
     ibDataSet7VALOR_DUPL: TFloatField;
     ibDataSet7RECEBIMENT: TDateField;
     ibDataSet7VALOR_RECE: TFloatField;
     ibDataSet7VALOR_JURO: TFloatField;
-    ibDataSet7PORTADOR: TStringField;
+    ibDataSet7PORTADOR: TIBStringField;
     DataSource7: TDataSource;
     ibDataSet25: TibDataSet;
     ibDataSet25ACUMULADO1: TFloatField;
@@ -272,23 +267,23 @@ type
     ibDataSet14: TibDataSet;
     DataSource14: TDataSource;
     ibDataSet13: TibDataSet;
-    ibDataSet13NOME: TStringField;
-    ibDataSet13CONTATO: TStringField;
-    ibDataSet13ENDERECO: TStringField;
-    ibDataSet13COMPLE: TStringField;
-    ibDataSet13MUNICIPIO: TStringField;
-    ibDataSet13CEP: TStringField;
-    ibDataSet13ESTADO: TStringField;
-    ibDataSet13CGC: TStringField;
-    ibDataSet13IE: TStringField;
+    ibDataSet13NOME: TIBStringField;
+    ibDataSet13CONTATO: TIBStringField;
+    ibDataSet13ENDERECO: TIBStringField;
+    ibDataSet13COMPLE: TIBStringField;
+    ibDataSet13MUNICIPIO: TIBStringField;
+    ibDataSet13CEP: TIBStringField;
+    ibDataSet13ESTADO: TIBStringField;
+    ibDataSet13CGC: TIBStringField;
+    ibDataSet13IE: TIBStringField;
     DataSource13: TDataSource;
     ibDataSet25RECEBER: TFloatField;
     ibDataSet9: TibDataSet;
-    ibDataSet9NOME: TStringField;
+    ibDataSet9NOME: TIBStringField;
     ibDataSet9COMISSA1: TFloatField;
     ibDataSet9COMISSA2: TFloatField;
     DataSource9: TDataSource;
-    ibDataSet27CAIXA: TStringField;
+    ibDataSet27CAIXA: TIBStringField;
     ibDataSet25PAGAR: TFloatField;
     N2: TMenuItem;
     FunesadministrativasTEF1: TMenuItem;
@@ -300,11 +295,11 @@ type
     ibDataSet25DATA: TDateField;
     ibDataSet25DIFERENCA_: TFloatField;
     ibDataSet10: TibDataSet;
-    ibDataSet10CODIGO: TStringField;
-    ibDataSet10COR: TStringField;
-    ibDataSet10TAMANHO: TStringField;
-    ibDataSet10QTD: TStringField;
-    ibDataSet10ENTRADAS: TStringField;
+    ibDataSet10CODIGO: TIBStringField;
+    ibDataSet10COR: TIBStringField;
+    ibDataSet10TAMANHO: TIBStringField;
+    ibDataSet10QTD: TIBStringField;
+    ibDataSet10ENTRADAS: TIBStringField;
     DataSource10: TDataSource;
     Relatriodetributao1: TMenuItem;
     ibDataSet27VALORICM: TFloatField;
@@ -327,14 +322,14 @@ type
     ibDataSet25VALOR_3: TFloatField;
     ibDataSet25VALOR_4: TFloatField;
     Bloqueioporsenha1: TMenuItem;
-    ibDataSet27ALIQUICM: TStringField;
+    ibDataSet27ALIQUICM: TIBStringField;
     ibDataSet29: TibDataSet;
-    ibDataSet29NOME: TStringField;
+    ibDataSet29NOME: TIBStringField;
     ibDataSet29DESCONTO: TFloatField;
     DataSource29: TDataSource;
     DataSource30: TDataSource;
     Balana1: TMenuItem;
-    ibDataSet27MEDIDA: TStringField;
+    ibDataSet27MEDIDA: TIBStringField;
     GrandetotalGT1: TMenuItem;
     Vendabrutadodia1: TMenuItem;
     EF1: TMenuItem;
@@ -449,17 +444,17 @@ type
     ibDataSet27ITEM: TIBStringField;
     IBDatabaseInfo1: TIBDatabaseInfo;
     ibDataSet37: TIBDataSet;
-    ibDataSet37CODIGO: TStringField;
-    ibDataSet37DESCRICAO: TStringField;
+    ibDataSet37CODIGO: TIBStringField;
+    ibDataSet37DESCRICAO: TIBStringField;
     ibDataSet37QUANTIDADE: TFloatField;
     ibDataSet37UNITARIO: TFloatField;
     ibDataSet37TOTAL: TFloatField;
     ibDataSet37DATA: TDateField;
-    ibDataSet37TIPO: TStringField;
-    ibDataSet37PEDIDO: TStringField;
-    ibDataSet37CLIFOR: TStringField;
-    ibDataSet37VENDEDOR: TStringField;
-    ibDataSet37CAIXA: TStringField;
+    ibDataSet37TIPO: TIBStringField;
+    ibDataSet37PEDIDO: TIBStringField;
+    ibDataSet37CLIFOR: TIBStringField;
+    ibDataSet37VENDEDOR: TIBStringField;
+    ibDataSet37CAIXA: TIBStringField;
     ibDataSet37MEDIDA: TIBStringField;
     ibDataSet37ITEM: TIBStringField;
     ibDataSet37VALORICM: TFloatField;
@@ -467,12 +462,12 @@ type
     ibDataSet37REGISTRO: TIBStringField;
     Button1: TButton;
     ibDataSet16: TIBDataSet;
-    ibDataSet16NUMERONF: TStringField;
-    ibDataSet16CODIGO: TStringField;
-    ibDataSet16DESCRICAO: TStringField;
+    ibDataSet16NUMERONF: TIBStringField;
+    ibDataSet16CODIGO: TIBStringField;
+    ibDataSet16DESCRICAO: TIBStringField;
     ibDataSet16IPI: TFloatField;
     ibDataSet16ICM: TFloatField;
-    ibDataSet16MEDIDA: TStringField;
+    ibDataSet16MEDIDA: TIBStringField;
     ibDataSet16QUANTIDADE: TFloatField;
     ibDataSet16UNITARIO: TFloatField;
     ibDataSet16LISTA: TFloatField;
@@ -483,24 +478,24 @@ type
     ibDataSet16BASE: TFloatField;
     ibDataSet16BASEISS: TFloatField;
     ibDataSet16ALIQUOTA: TFloatField;
-    ibDataSet16ST: TStringField;
-    ibDataSet16CFOP: TStringField;
-    ibDataSet16NUMEROOS: TStringField;
+    ibDataSet16ST: TIBStringField;
+    ibDataSet16CFOP: TIBStringField;
+    ibDataSet16NUMEROOS: TIBStringField;
     ibDataSet16SINCRONIA: TFloatField;
     ibDataSet16REGISTRO: TIBStringField;
     ibDataSet35: TIBDataSet;
-    ibDataSet35NUMERONF: TStringField;
-    ibDataSet35CODIGO: TStringField;
-    ibDataSet35DESCRICAO: TStringField;
-    ibDataSet35TECNICO: TStringField;
-    ibDataSet35MEDIDA: TStringField;
+    ibDataSet35NUMERONF: TIBStringField;
+    ibDataSet35CODIGO: TIBStringField;
+    ibDataSet35DESCRICAO: TIBStringField;
+    ibDataSet35TECNICO: TIBStringField;
+    ibDataSet35MEDIDA: TIBStringField;
     ibDataSet35QUANTIDADE: TFloatField;
     ibDataSet35UNITARIO: TFloatField;
     ibDataSet35TOTAL: TFloatField;
-    ibDataSet35CFOP: TStringField;
+    ibDataSet35CFOP: TIBStringField;
     ibDataSet35ISS: TFloatField;
     ibDataSet35BASEISS: TFloatField;
-    ibDataSet35NUMEROOS: TStringField;
+    ibDataSet35NUMEROOS: TIBStringField;
     ibDataSet35REGISTRO: TIBStringField;
     SuprimentoReforodecaixa1: TMenuItem;
     IBTransaction2: TIBTransaction;
@@ -834,11 +829,11 @@ type
     ibDataSet4IIA_MUNI: TFloatField;
     Fusohorario1: TMenuItem;
     Label2: TLabel;
-    ibDataSet27CFOP: TStringField;
+    ibDataSet27CFOP: TIBStringField;
     ConsultarStatusdoServio1: TMenuItem;
     ConsultaStatusOperacionaldoSAT1: TMenuItem;
-    IBDataSet150CAIXA: TStringField;
-    IBDataSet150MODELO: TStringField;
+    IBDataSet150CAIXA: TIBStringField;
+    IBDataSet150MODELO: TIBStringField;
     PopupMenu4: TPopupMenu;
     Restaurar1: TMenuItem;
     N10: TMenuItem;
@@ -860,12 +855,12 @@ type
     ArquivocomInformaesdaReduoZdoPAFECF1: TMenuItem;
     EnvioaoFISCOESTOQUE: TMenuItem;
     IBQDadosRequisitoXXIV____: TIBQuery;
-    ibDataSet27SERIE: TStringField;
-    ibDataSet27SUBSERIE: TStringField;
+    ibDataSet27SERIE: TIBStringField;
+    ibDataSet27SUBSERIE: TIBStringField;
     EnviarDANFCEeXMLcompactado1: TMenuItem;
     VersodoManualdaNFCe1: TMenuItem;
-    ibDataSet4CSOSN_NFCE: TStringField;
-    ibDataSet4CST_NFCE: TStringField;
+    ibDataSet4CSOSN_NFCE: TIBStringField;
+    ibDataSet4CST_NFCE: TIBStringField;
     ibDataSet4ALIQUOTA_NFCE: TIBBCDField;
     RealatriosGerenciais1: TMenuItem;
     N24: TMenuItem;
@@ -884,7 +879,7 @@ type
     VersodoSchemadaNFCe2: TMenuItem;
     AvanodePapelnoFinaldeImpressoSAT1: TMenuItem;
     MovimentoDia1: TMenuItem;
-    ibDataSet27CSOSN: TStringField;
+    ibDataSet27CSOSN: TIBStringField;
     ransmitirContingncia1: TMenuItem;
     N26: TMenuItem;
     ransmitircontingncia2: TMenuItem;
@@ -932,7 +927,7 @@ type
     Impressorapadro1: TMenuItem;
     NFCeVersaoManualvm601: TMenuItem;
     N4001: TMenuItem;
-    ibDataSet13ibDataset88ENCRYPTHASH: TStringField;
+    ibDataSet13ibDataset88ENCRYPTHASH: TIBStringField;
     CDSR01: TClientDataSet;
     CDSR01SERIE: TStringField;
     CDSR01MODELOECF: TStringField;
@@ -950,7 +945,7 @@ type
     Panel8: TPanel;
     touch_OpcoesNFCe: TImage;
     LabelOpcoesNFCe: TLabel;
-    ibDataSet27SEQUENCIALCONTACLIENTEOS: TStringField;
+    ibDataSet27SEQUENCIALCONTACLIENTEOS: TIBStringField;
     Image11: TImage;
     Image12: TImage;
     Image88: TImage;
@@ -969,7 +964,7 @@ type
     FormatarIEdoemitentecom12dgitos1: TMenuItem;
     ibDataSet4TAGS_: TMemoField;
     EnviarchaveconsultapeloWhatsApp1: TMenuItem;
-    ibDataSet2WHATSAPP: TStringField;
+    ibDataSet2WHATSAPP: TIBStringField;
     CNAEdispensadoatransmissodosarquivosdoEstoque1: TMenuItem;
     NFCeVersaoSchemapl0091: TMenuItem;
     PopupMenu7: TPopupMenu;
@@ -986,11 +981,11 @@ type
     HorriodeVero1: TMenuItem;
     InformaesdoresponsveltcnicoNFCe1: TMenuItem;
     VersoLeiauteSat0081: TMenuItem;
-    IBDataSet150NFEIDSUBSTITUTO: TStringField;
-    ibDataSet7NN: TStringField;
+    IBDataSet150NFEIDSUBSTITUTO: TIBStringField;
+    ibDataSet7NN: TIBStringField;
     ConsultaChaveNFCe1: TMenuItem;
     EnviaremailcomXMLePDFacadavenda1: TMenuItem;
-    ibDataSet13LICENCA: TStringField;
+    ibDataSet13LICENCA: TIBStringField;
     Diaspararecebimentodaoperadoradecarto1: TMenuItem;
     Crdito1: TMenuItem;
     Dbito1: TMenuItem;
@@ -1004,7 +999,7 @@ type
     MesasAbertasPAFNFCe: TMenuItem;
     lbMenuFiscalPAFNFCeInacessivel1: TLabel;
     pnlMenuFiscalPAFNFCeInacessivel: TPanel;
-    IBDataSet150ENCRYPTHASH: TStringField;
+    IBDataSet150ENCRYPTHASH: TIBStringField;
     InformarindIntermedNFCe1: TMenuItem;
     ValorLimiteTotalNFCeEstabelecidoSefaz1: TMenuItem;
     GerarxPagparaMeioPagamento99Outros1: TMenuItem;
@@ -1014,7 +1009,7 @@ type
     PesquisaNFCeemcontingncia: TMenuItem;
     SmartPOSElginPay1: TMenuItem;
     FunesAdministrativasPosElginPay1: TMenuItem;
-    ibDataSet27MARKETPLACE: TStringField;
+    ibDataSet27MARKETPLACE: TIBStringField;
     IBQMARKETPLACE: TIBQuery;
     DSMARKETPLACE: TDataSource;
     Etiquetadabalanainforma1: TMenuItem;
@@ -1029,7 +1024,7 @@ type
     ESTOQUEATUAL1: TMenuItem;
     SadasIdentificadaspeloCPFCNPJ1: TMenuItem;
     itemMenugerencial: TMenuItem;
-    IBDataSet150GERENCIAL: TStringField;
+    IBDataSet150GERENCIAL: TIBStringField;
     EmitirNFCedogerencial1: TMenuItem;
     FechamentodeCaixa1: TMenuItem;
     Iniciarnovavenda1: TMenuItem;
@@ -1400,6 +1395,10 @@ type
     procedure Iniciarnovavenda1Click(Sender: TObject);
     procedure ibDataSet27UNITARIOSetText(Sender: TField;
       const Text: String);
+    procedure Vendabrutadodia1Click(Sender: TObject);
+    procedure CDC1Click(Sender: TObject);
+    procedure CCF1Click(Sender: TObject);
+    procedure COO1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1474,6 +1473,7 @@ type
     procedure ChamarTelaConfiguracaoTEF;
     procedure IniciarNovaVendaComDocAberto;
     procedure AbreEdicaoMovimento;
+    procedure AjustaDataSetTamanhoCampoDescricao(Sender: TObject);
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -1718,7 +1718,7 @@ var
 implementation
 
 uses
-   SmallFunc
+   SmallFunc_xe
   , SMALL_DBEdit
   , upafecfmensagens
   , Unit27 // Sandro Silva 2017-10-19
@@ -1751,7 +1751,7 @@ uses
   , udadospos
   , uclientetef
   , ucadadquirentes
-  , _Small_IntegradorFiscal
+//  , _Small_IntegradorFiscal
   , upesquisaparaimportar
   , uatualizaestruturadb
 // Sandro Silva 2022-09-23  , urequisitospafnfce
@@ -1927,7 +1927,7 @@ end;
 procedure DesabilitaHabilitaImpressoes(bHabilita: Boolean);
 begin
   Form1.Confernciademesa1.Enabled              := bHabilita;
-  Form1.RetornodeVariveisdaImpressora1.Enabled := bHabilita;
+  Form1.RetornodeVariveisdaImpressora1.Enabled := False;//True; //bHabilita;
   Form1.SuprimentoReforodecaixa1.Enabled       := bHabilita;
   Form1.Sangria1.Enabled                       := bHabilita;
   Form1.Fechamentodocaixa1.Enabled             := bHabilita;
@@ -1977,17 +1977,16 @@ begin
   Mais1Ini.WriteString('R01','19',Form1.LbBlowfish1.EncryptString('0112'));
   //
   Mais1Ini.WriteString('R01','99',
-  Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(
-  Form1.ibDataSet13.FieldByName('CGC').AsString+
-  LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)+
-  LimpaNumero(IE_SOFTWARE_HOUSE_PAF)+
-  IM_SOFTWARE_HOUSE_PAF+
-  RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF+
-  //RAZAO_SOCIAL_SMALLSOFT +
-  'Small Commerce'+
-  '0112'+
-  ''
-  ))) // Encrypta e grava o hash das informações
+  Form1.LbBlowfish1.EncryptString(MD5String(Form1.ibDataSet13.FieldByName('CGC').AsString+
+    LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)+
+    LimpaNumero(IE_SOFTWARE_HOUSE_PAF)+
+    IM_SOFTWARE_HOUSE_PAF+
+    RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF+
+    //RAZAO_SOCIAL_SMALLSOFT +
+    'Small Commerce'+
+    '0112'+
+    ''
+    )) // Encrypta e grava o hash das informações
   );
   //
   Mais1Ini.WriteString('DAV','I',Form1.LbBlowfish1.EncryptString('X'+LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)));
@@ -3079,7 +3078,7 @@ begin
 
     except end;
     //
-    AssignFile(F,Pchar(p1));
+    AssignFile(F, p1);
     Reset(F);
     //
     try
@@ -3652,8 +3651,7 @@ begin
   // CONSUMO
   //
   try
-    //
-    //
+
     Form1.Memo1.Visible  := False;
     Form1.Panel5.Visible := False;
     Form1.Memo2.Visible  := False;
@@ -3665,7 +3663,6 @@ begin
       Form1.Panel2.BringToFront; // Sandro Silva 2016-08-03
     end;
 
-    //
     if (Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '99') then
     begin
       Form1.Panel5.Visible := True;
@@ -3673,37 +3670,35 @@ begin
     begin
       Form1.Panel5.Visible := False;
     end;
-    //
+
     Form1.Memo1.Lines.Delete(Form1.Memo1.Lines.Count-1);
-    //
+
     if P1 <> TRACO_CUPOM_TELA then
     begin
       if Length(P1) < 45 then
       begin
-        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',45),1,45));
+        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ', 45), 1, 45));
       end else
       begin
-        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',90),1,45));
-        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',90),46,44));
+        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ', 90), 1, 45));
+        Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ', 90), 46, 44));
       end;
     end
     else
     begin
-      Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ',45),1,45));
+      Form1.Memo1.Lines.Add(Copy(P1+Replicate(' ', 45), 1, 45));
     end;
 
-    //
     Form1.Memo1.Lines.Add(TRACO_CUPOM_TELA);
     //
     //    if Form1.Image3.Visible then iCorte := 0 else iCorte := Form1.Memo3.Height;
     //
     Form1.AjustarObjetosCupomNaTela;
   except end;
-  //
+
   Form1.Teclas_touch(True);
-  //
+
   Result := True;
-  //
 end;
 
 function MD5_Da_Lista(P1: Boolean): boolean;
@@ -3715,7 +3710,7 @@ begin
 
   try
     //
-    AssignFile(F,pChar(Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+    AssignFile(F,Form1.sPastaDoExecutavel+'\LISTA.TXT');
     Rewrite(F);
     //
     // Erro: Ao invés de usar os dados do Desenvolvedor usamos os dados do usuário Emitente.
@@ -3741,24 +3736,24 @@ begin
                Copy('SMALL COMMERCE'+Replicate(' ',50),1,50)+ // Nome do aplicativo
                Copy(StrTran(Form22.sBuild,'Versão e Build: ','')+Replicate(' ',10),1,10)); // Versão e build
 
-    Writeln(F, 'N3'+Copy('APF_DLL2.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'APF_DLL2.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('BEMAFI32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'BEMAFI32.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('CONSULTA.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'CONSULTA.EXE')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('CONVECF.DLL'+Replicate(' ',50),1,50)       +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'CONVECF.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('NFE.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'NFE.EXE')))+Replicate(' ',32),1,32))); // MD5
-    // Sandro Silva 2022-12-02 Unochapeco Writeln(F, 'N3'+Copy('BLOCOX.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'BLOCOX.EXE')))+Replicate(' ',32),1,32))); // MD5 // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
-    Writeln(F, 'N3'+Copy('PESADO.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'PESADO.EXE')))+Replicate(' ',32),1,32))); // MD5 // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
-    Writeln(F, 'N3'+Copy('DARUMA32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DARUMA32.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('DARUMAFRAMEWORK.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DARUMAFRAMEWORK.DLL')))+Replicate(' ',32),1,32))); // MD5 2015-11-13
-    Writeln(F, 'N3'+Copy('DLL1EFC3.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DLL1EFC3.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('DLL32PHI.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DLL32PHI.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('DLLG2.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'DLLG2.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('FRENTE.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'FRENTE.EXE')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('GENERAL32.DLL'+Replicate(' ',50),1,50)     +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'GENERAL32.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('ICASH.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'ICASH.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('INTERFACEEPSON.DLL'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'INTERFACEEPSON.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('SWECF.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'SWECF.DLL')))+Replicate(' ',32),1,32))); // MD5
-    Writeln(F, 'N3'+Copy('TRDECF32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\'+'TRDECF32.DLL')))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('APF_DLL2.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'APF_DLL2.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('BEMAFI32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'BEMAFI32.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('CONSULTA.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'CONSULTA.EXE'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('CONVECF.DLL'+Replicate(' ',50),1,50)       +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'CONVECF.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('NFE.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'NFE.EXE'))+Replicate(' ',32),1,32))); // MD5
+    // Sandro Silva 2022-12-02 Unochapeco Writeln(F, 'N3'+Copy('BLOCOX.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5Print(MD5File((Form1.sPastaDoExecutavel+'\'+'BLOCOX.EXE')))+Replicate(' ',32),1,32))); // MD5 // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
+    Writeln(F, 'N3'+Copy('PESADO.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'PESADO.EXE'))+Replicate(' ',32),1,32))); // MD5 // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
+    Writeln(F, 'N3'+Copy('DARUMA32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'DARUMA32.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('DARUMAFRAMEWORK.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'DARUMAFRAMEWORK.DLL'))+Replicate(' ',32),1,32))); // MD5 2015-11-13
+    Writeln(F, 'N3'+Copy('DLL1EFC3.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'DLL1EFC3.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('DLL32PHI.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'DLL32PHI.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('DLLG2.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'DLLG2.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('FRENTE.EXE'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'FRENTE.EXE'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('GENERAL32.DLL'+Replicate(' ',50),1,50)     +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'GENERAL32.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('ICASH.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'ICASH.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('INTERFACEEPSON.DLL'+Replicate(' ',50),1,50)+Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'INTERFACEEPSON.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('SWECF.DLL'+Replicate(' ',50),1,50)         +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'SWECF.DLL'))+Replicate(' ',32),1,32))); // MD5
+    Writeln(F, 'N3'+Copy('TRDECF32.DLL'+Replicate(' ',50),1,50)      +Uppercase(Copy(MD5File((Form1.sPastaDoExecutavel+'\'+'TRDECF32.DLL'))+Replicate(' ',32),1,32))); // MD5
     //
     Writeln(F, 'N9' +
                Right('00000000000000' + LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF), 14) +
@@ -3767,10 +3762,11 @@ begin
     //
     CloseFile(F);                                    // Fecha o arquivo
     //
-    AssinaturaDigital(pChar(Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+    AssinaturaDigital(Form1.sPastaDoExecutavel+'\LISTA.TXT');
     CHDir(Form1.sAtual);
     //
-    Form1.sMD5DaLista := MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\LISTA.TXT')));
+    //2024-03-13 Form1.sMD5DaLista := MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+    Form1.sMD5DaLista := LowerCase(MD5File(PChar(Form1.sPastaDoExecutavel+'\LISTA.TXT')));
     //
     Mais1ini := TIniFile.Create(Form1.sArquivo);
     //
@@ -4034,10 +4030,10 @@ begin
           //
           if P1 then
           begin
-            SmallMsg(PAnsiChar(Form1.sStatusECF + chr(10)+
+            SmallMsg(Form1.sStatusECF + chr(10)+
                       'O funcionamento deste PDV está impedido exceto para: '+chr(10)+Chr(10)+
                       '  Consulta de preços'+Chr(10)+
-                      '  Funções gerenciais'));
+                      '  Funções gerenciais');
           end;
           //
           Form1.bStatusFiscal := False;
@@ -4400,7 +4396,7 @@ begin
                   //
                   if P1 then
                   begin
-                    SmallMsg(pChar(sMotivo));
+                    SmallMsg(sMotivo);
                   end;
                   Form1.sStatusECF := 'ECF - Não autorizado.';
                   //
@@ -4428,7 +4424,7 @@ begin
           sMotivo    := 'Requisito XXIV - PAF-ECF'+chr(10)+chr(13)+'O valor acumulado no Totalizador Geral (GT) do ECF conectado neste momento não'+Chr(10)+'corresponde ao armazenado em arquivo auxiliar criptografado.'+chr(10)+'';
           if P1 then
           begin
-            SmallMsg(pChar(sMotivo));
+            SmallMsg(sMotivo);
           end;
           Form1.sStatusECF := 'ECF - Não autorizado.';
           //
@@ -4501,10 +4497,10 @@ begin
         //
         if P1 then
         begin
-          SmallMsg(pChar(sMotivo+chr(10)+
+          SmallMsg(sMotivo+chr(10)+
                     'O funcionamento deste ECF está impedido exceto para: '+chr(10)+Chr(10)+
                     '  Consulta de preços'+Chr(10)+
-                    '  Emissão de documentos fiscais PED (Entre no Small Commerce - Retaguarda)'));
+                    '  Emissão de documentos fiscais PED (Entre no Small Commerce - Retaguarda)');
         end;
         //
         Form1.bStatusFiscal := False;
@@ -4541,6 +4537,7 @@ begin
 //    (* Habilitar no final da homologação
     if (Form1.sModeloEcf <> '59') and (Form1.sModeloEcf <> '65') and (Form1.sModeloEcf <> '99') then
     begin
+
       if (SmallCripto(Form1.ibDataSet13.FieldByName('CGC').AsString+Form1.sMD5DaLista) <> LerParametroIni(Form1.sArquivo, 'MD5', 'HOMOLOGADO', 'XXXX'))
         and (FileExists('frente.dpr') = False) // Para poder debugar durante execução. Não usar CNPJ da Smallsoft no emitente porque não consegue testar as validações na homologação
         then
@@ -4574,7 +4571,7 @@ begin
 
         end;
 
-        SmallMsg(PChar(sAlertaMD5));
+        SmallMsg(sAlertaMD5);
 
         Form1.bStatusFiscal := False;
 
@@ -5089,7 +5086,7 @@ begin
       begin
         if AnsiContainsText(E.Message, 'Unable to complete network request to host') then
         begin
-          SmallMsgBox(PAnsiChar('Comunicação com banco de dados perdida' + #13 + 'A aplicação será fechada' + #13 + 'Tente abrir novamente'), 'Atenção', MB_OK + MB_ICONWARNING);
+          SmallMsgBox(PChar('Comunicação com banco de dados perdida' + #13 + 'A aplicação será fechada' + #13 + 'Tente abrir novamente'), 'Atenção', MB_OK + MB_ICONWARNING);
           FecharAplicacao(ExtractFileName(Application.ExeName));
         end;
       end;
@@ -5434,23 +5431,6 @@ begin
     Result := 'www.smallsoft.com.br software para micros e pequenas empresas'; // Sandro Silva 2023-06-23 Result := 'www.smallsoft.com.br software para MEI';
 end;
 
-{Sandro Silva 2022-09-08 inicio
-function Build: String;
-var
-  Size, Size2: DWord;
-  Pt, Pt2: Pointer;
-begin
-  //
-  Size := GetFileVersionInfoSize(PChar (ParamStr (0)), Size2);
-  GetMem (Pt, Size);
-  GetFileVersionInfo (PChar (ParamStr (0)), 0, Size, Pt);
-  VerQueryValue(Pt,'\StringFileInfo\041604E4\FileVersion',Pt2, Size2);
-  Result := PChar(pt2);
-  FreeMem (Pt);
-  //
-end;
-}
-
 function Copyright: String;
 begin
   Result := 'Copyright© Zucchetti® 2005 - ' + Copy(Build, 1, 4); // Sandro Silva 2022-12-02 Unochapeco Result := 'Copyright© Smallsoft® 2005 - ' + Copy(Build, 1, 4);
@@ -5553,7 +5533,7 @@ begin
 
     IBQHASH.Close;
     IBQHASH.SQL.Clear;
-    IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.ibQuery1.FieldByname('TOTALREG').AsString))))+' where TABELA='+QuotedStr(sP1)+' ');
+    IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form1.LbBlowfish1.EncryptString(MD5String(Form1.ibQuery1.FieldByname('TOTALREG').AsString)))+' where TABELA='+QuotedStr(sP1)+' ');
     IBQHASH.ExecSQL;
 
     if IBQHASH.RowsAffected = 0 then
@@ -5561,7 +5541,7 @@ begin
       // Não existe ainda controle de hash da tabela
       IBQHASH.Close;
       IBQHASH.SQL.Clear;
-      IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.ibQuery1.FieldByname('TOTALREG').AsString)))) + ')');
+      IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form1.LbBlowfish1.EncryptString(MD5String(Form1.ibQuery1.FieldByname('TOTALREG').AsString))) + ')');
       IBQHASH.ExecSQL;
     end;
   except
@@ -5598,7 +5578,7 @@ begin
       IBQHASH.Close;
       IBQHASH.SQL.Clear;
       // Sandro Silva 2021-02-18 IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.ibQuery1.FieldByName('TOTALREG').AsString))))+' where TABELA='+QuotedStr(sP1)+' ');
-      IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(IBQTEMP.FieldByName('TOTALREG').AsString))))+' where TABELA='+QuotedStr(sP1)+' ');
+      IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form1.LbBlowfish1.EncryptString(MD5String(IBQTEMP.FieldByName('TOTALREG').AsString)))+' where TABELA='+QuotedStr(sP1)+' ');
       IBQHASH.ExecSQL;
 
       if IBQHASH.RowsAffected = 0 then
@@ -5606,7 +5586,7 @@ begin
         //2015-11-26 Não existe ainda controle de hash da tabela
         IBQHASH.Close;
         IBQHASH.SQL.Clear;
-        IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(IBQTEMP.FieldByName('TOTALREG').AsString)))) + ')');
+        IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form1.LbBlowfish1.EncryptString(MD5String(IBQTEMP.FieldByName('TOTALREG').AsString))) + ')');
         IBQHASH.ExecSQL;
       end;
 
@@ -5645,7 +5625,7 @@ begin
     IBQTEMP.SQL.Add('select ENCRYPTHASH from HASHS where TABELA='+QuotedStr(sP1)+' ');
     IBQTEMP.Open;
 
-    if IBQTEMP.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.ibQuery2.FieldByName('COUNT').AsString))) then
+    if IBQTEMP.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.ibQuery2.FieldByName('COUNT').AsString)) then
     begin
       Result := True;
     end else
@@ -5820,9 +5800,9 @@ begin
       Form1.ibDataset25.Edit;
       //
 
-      if FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) then
+      if FileExists((Form1.sPastadoExecutavel+'\offline.fdb')) then
       begin
-        DeleteFile(pchar(Form1.sPastadoExecutavel+'\offline.fdb'));
+        DeleteFile((Form1.sPastadoExecutavel+'\offline.fdb'));
       end;
       //
     except
@@ -6008,7 +5988,7 @@ end;
 function AssinaRegistroE2(sTexto: String): String; // Sandro Silva 2019-09-13 ER 02.06 UnoChapeco
 begin
   Form1.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-  Result := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sTexto)));
+  Result := Form1.LbBlowfish1.EncryptString(MD5String(sTexto));
 end;
 
 /////////////////////////////////
@@ -6566,8 +6546,8 @@ begin
     //
     if (pNome = 'ALTERACA') or (pNome = 'ESTOQUE') then 
     begin
-      sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)));
-      sAntigoSemCestENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)));
+      sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(MD5String(sAntigo));
+      sAntigoSemCestENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5String(sAntigoSemCest));
       //ShowMessage('Teste 01 9450 ' + #13 +
       //            'hash antigo ' + sAntigoENCRYPTHASH + #13 +
       //            'hash antigo sem cest ' + sAntigoSemCestENCRYPTHASH + #13 +
@@ -6577,8 +6557,8 @@ begin
     {Sandro Silva 2023-10-09 inicio}
     if (pNome = 'ORCAMENT') then
     begin
-      sAntigoOrcamentENCRYPTHASH          := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)));
-      sAntigoOrcamentSemCodigoENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoOrcamentSemCodigo)));
+      sAntigoOrcamentENCRYPTHASH          := Form1.LbBlowfish1.EncryptString(MD5String(sAntigo));
+      sAntigoOrcamentSemCodigoENCRYPTHASH := Form1.LbBlowfish1.EncryptString(MD5String(sAntigoOrcamentSemCodigo));
     end;
     {Sandro Silva 2023-10-09 fim}
 
@@ -6590,34 +6570,34 @@ begin
       begin
 //        SmallMsg(DataSet.FieldByName('ENCRYPTHASH').AsString +chr(10)+ Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo))));
         // compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior, para assinar novamente após alteração feita pelo PAF
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigoSemCest))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigo))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
-          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5String(s)); // Encrypta e grava o hash do registro
         end;
       end else
       {Sandro Silva 2023-10-09 inicio}
       if pNome = 'ORCAMENT' then
       begin
         // compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior, para assinar novamente após alteração feita pelo PAF
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoOrcamentSemCodigo))))
-          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo))))
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigoOrcamentSemCodigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigo)))
           or (DataSet.FieldByName('ENCRYPTHASH').isNull)
-          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) then // Se o registro já foi violado não assina mais fica asssim pra sempre
         begin
-          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5String(s)); // Encrypta e grava o hash do registro
         end;
       end else
       {Sandro Silva 2023-10-09 fim}
       begin
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigo))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) or (DataSet.FieldByName('ENCRYPTHASH').isNull) then // Se o registro já foi violado não assina mais fica asssim pra sempre // Sandro Silva 2018-05-25
         begin
-          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s))); // Encrypta e grava o hash do registro
+          DataSet.FieldByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5String(s)); // Encrypta e grava o hash do registro
         end;
       end;
       //
     end else
     begin
-      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(s)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then  // Encrypta e compara o hash do registro
+      if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(s))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) then  // Encrypta e compara o hash do registro
       begin
         Result := True;
       end else
@@ -6629,7 +6609,7 @@ begin
       if (pNome = 'ESTOQUE') and (Result = False) then
       begin
         // Se resultou False deve validar hash com a assinatura da Versão anterior. Pode ser que o registro ainda não foi alterado após atualizar para nova versão homologada sem campo CEST
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sSemCest)))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sSemCest))) or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) then
         begin
           Result := True;
         end else
@@ -6642,8 +6622,8 @@ begin
       // Essa mesma validação deve estar na rotina de "assinaregistro" do COMMERCE e do FRENTE
       if (pNome = 'ORCAMENT') and (Result = False) then
       begin
-        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigoOrcamentSemCodigo))))
-          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)))) then
+        if (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(sAntigoOrcamentSemCodigo)))
+          or (DataSet.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta))) then
         begin
           Result := True;
         end else
@@ -6653,7 +6633,12 @@ begin
       end;
       {Sandro Silva 2023-10-09 fim}
     end;
-  except SmallMsg('Erro ao criptografar head do registro do arquivo '+pNome) end;
+  except
+    on E: Exception do
+    begin
+      SmallMsg('Erro ao criptografar head do registro do arquivo ' + pNome + E.Message)
+    end;
+  end;
   //
 end;
 ///////////////////////////////////
@@ -6661,12 +6646,13 @@ end;
 function LeArquivoPorFileStream(sArquivo: String): String;
 // Sandro Silva 2020-09-03
 // Lê o conteúdo do arquivo através de Stream
+{
 var
   FileStream: TFileStream;
   MyString: String;
 begin
   Result := '';
-  FileStream := TFileStream.Create(PAnsiChar(sArquivo), fmOpenRead or fmShareDenyNone); // Abre o arquivo para leitura
+  FileStream := TFileStream.Create(sArquivo, fmOpenRead or fmShareDenyNone); // Abre o arquivo para leitura
   try
     if FileStream.Size = 0 then
       Exit;
@@ -6677,27 +6663,55 @@ begin
 
   end;
   FreeAndNil(FileStream);
+}
+var
+  FileStream: TStreamReader;
+  MyString: String;
+begin
+  Result := '';
+  FileStream := TStreamReader.Create(sArquivo, TEncoding.ANSI); // Abre o arquivo para leitura
+  try
+    Result := FileStream.ReadToEnd();
+  except
+
+  end;
+  FreeAndNil(FileStream);
 end;
 
 procedure GravaArquivoPorFileStream(sArquivo: String; sAssinatura: String);
 // Sandro Silva 2020-09-03
 // Grava o conteúdo do arquivo através de Stream
+{
 var
   MyString: String;
   FileStream: TFileStream;
 begin
   MyString   := LeArquivoPorFileStream(sArquivo) + sAssinatura;
-  FileStream := TFileStream.Create(PAnsiChar(sArquivo), fmCreate or fmOpenWrite or fmShareDenyNone); // Abre o arquivo para leitura e gravação
+  FileStream := TFileStream.Create(sArquivo, fmCreate or fmOpenWrite or fmShareDenyNone); // Abre o arquivo para leitura e gravação
   try
     FileStream.WriteBuffer(MyString[1], Length(MyString));
   except
   end;
   FreeAndNil(FileStream);
+}
+var
+  MyString: String;
+  FileStream: TStreamWriter;
+begin
+  MyString   := LeArquivoPorFileStream(sArquivo) + sAssinatura;
+  FileStream := TStreamWriter.Create(sArquivo, false, TEncoding.ANSI);
+  try
+    FileStream.WriteLine;
+    FileStream.WriteLine(MyString);
+  except
+  end;
+  FreeAndNil(FileStream);
 end;
 
-function AssinaturaDigital(sP1:String): String;
+function AssinaturaDigital(sP1: String): String;
 var
-  sEAD, sChavePublica, sChavePrivada, sAtualX, sArquivo1 : String;
+  sEAD: AnsiString;
+  sChavePublica, sChavePrivada, sAtualX, sArquivo1 : String;
   FileSign: TextFile;
 begin
   //
@@ -6729,7 +6743,7 @@ begin
         //
         if pos('.TXT',UpperCAse(sP1)) <> 0 then
         begin
-          generateEAD(sP1, sChavePublica, sChavePrivada, sEAD, 1);
+          generateEAD(AnsiString(sP1), AnsiString(sChavePublica), AnsiString(sChavePrivada), AnsiString(sEAD), 1);
         end else
         begin
           //
@@ -6746,11 +6760,11 @@ begin
             sArquivo1 := Form1.sPastaDoexecutavel+'\DOWNLOADMF.TXT';
 
           //
-          generateEAD(sP1, sChavePublica, sChavePrivada, sEAD, 0);
-          Sleep(1000);// Aguardar append Sandro Silva 2020-09-02          
+          generateEAD(AnsiString(sP1), AnsiString(sChavePublica), AnsiString(sChavePrivada), AnsiString(sEAD), 0);
+          Sleep(1000);// Aguardar append Sandro Silva 2020-09-02
 
           // Faz uma cópia do arquivo gerado e adiciona a assinatura EAD
-          CopyFile(PAnsiChar(sP1), PAnsiChar(sArquivo1), False);
+          CopyFile(PChar(sP1), PChar(sArquivo1), False);
           Sleep(1000); // Sandro Silva 2017-07-31 Tempo para salvar em disco;
 
           sEAD := 'EAD' + sEAD; // 2015-09-30
@@ -6786,7 +6800,7 @@ begin
           end
           else
           begin
-            AssignFile(FileSign, PAnsiChar(sArquivo1));
+            AssignFile(FileSign, sArquivo1); // 2024-02-16 AssignFile(FileSign, PAnsiChar(sArquivo1));
             Append(FileSign);
             Writeln(FileSign, sEAD);
             CloseFile(FileSign);                            // Fecha o arquivo
@@ -6828,8 +6842,8 @@ begin
   begin
     Add('Chave pública para validação da assinatura digital');
     Add('de que trata o Anexo VII do Ato Cotepe 06/08');
-    ForceDirectories(PChar(Form1.sAtual + '\chave publica'));
-    SaveToFile(PChar(Form1.sAtual + '\chave publica\Leia-me.txt'));
+    ForceDirectories((Form1.sAtual + '\chave publica'));
+    SaveToFile((Form1.sAtual + '\chave publica\Leia-me.txt'));
     Free;
   end;
 
@@ -6843,8 +6857,8 @@ begin
     Add('    <expoente_publico>03</expoente_publico>');  // Arquivos assinados com generateEAD() tem como expoente público 03
     Add('  </chave>');
     Add('</empresa_desenvolvedora>');
-    ForceDirectories(PChar(Form1.sAtual + '\chave publica'));
-    SaveToFile(PChar(Form1.sAtual + '\chave publica\' + ConverteAcentos(Form1.sRazaoSocialSmallsoft) + '.xml'));
+    ForceDirectories((Form1.sAtual + '\chave publica'));
+    SaveToFile((Form1.sAtual + '\chave publica\' + ConverteAcentos(Form1.sRazaoSocialSmallsoft) + '.xml'));
     Free;
   end;
   //
@@ -7035,7 +7049,7 @@ begin
               if (pP1 = 'ALTERACA') or (pP1 = 'PAGAMENT') or (pP1 = 'REDUCOES') or (pP1 = 'DEMAIS') then
               begin
                 Form1.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-                sAssinaturaRegistro := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.sPasta)));
+                sAssinaturaRegistro := Form1.LbBlowfish1.EncryptString(MD5String(Form1.sPasta));
               end;
 
               IBQASSINADESCARGA.Close;
@@ -7312,7 +7326,7 @@ begin
             Form22.Label6.Caption     := 'Aguarde... Copiando base off13.fdb';
             Form22.Label6.Repaint;
             // Atualiza o off13.fdb na estação
-            CopyFile(pchar(Form1.sAtualOnLine+'\off13.fdb'),pchar(Form1.sPastadoExecutavel+'\off13.fdb'),True);
+            CopyFile(PChar(Form1.sAtualOnLine+'\off13.fdb'), PChar(Form1.sPastadoExecutavel+'\off13.fdb'),True);
             //Sleep(7000); // Sandro Silva 2019-08-22 Aguardar até copiar o off13.fdb para a estação
           end;
           //
@@ -7405,9 +7419,9 @@ begin
           Form22.Label6.Caption := 'Aguarde exportando ESTOQUE.OFF para base off line';
           Form22.Label6.Repaint;
           //
-          while FileExists(pchar(Form1.sPastadoExecutavel+'\estoque.off')) do
+          while FileExists((Form1.sPastadoExecutavel+'\estoque.off')) do
           begin
-            DeleteFile(pchar(Form1.sPastadoExecutavel+'\estoque.off'));
+            DeleteFile((Form1.sPastadoExecutavel+'\estoque.off'));
             Sleep(10);
           end;
           //
@@ -7417,7 +7431,7 @@ begin
           Form1.IBQuery1.Open;
 
           //
-          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\estoque.off'));
+          AssignFile(F,(Form1.sPastadoExecutavel+'\estoque.off'));
           Rewrite(F);
           Form1.ibQuery1.First;
           I := 0;
@@ -7456,15 +7470,15 @@ begin
           Form22.Label6.Caption := 'Aguarde exportando ICM.off para base off line';
           Form22.Label6.Repaint;
           //
-          while FileExists(pchar(Form1.sPastadoExecutavel+'\icm.off')) do
+          while FileExists((Form1.sPastadoExecutavel+'\icm.off')) do
           begin
-            DeleteFile(pchar(Form1.sPastadoExecutavel+'\icm.off'));
+            DeleteFile((Form1.sPastadoExecutavel+'\icm.off'));
             Sleep(10);
           end;
           //
           Form1.IBExtract1.Items.Clear;
           Form1.IBExtract1.ExtractObject(eoData, 'ICM', [etIndex]);
-          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\icm.off'));
+          AssignFile(F,(Form1.sPastadoExecutavel+'\icm.off'));
           Rewrite(F);
           WriteLN(F,Form1.IBExtract1.Items.Text);
           CloseFile(F);
@@ -7479,7 +7493,7 @@ begin
           Form1.IBQuery1.SQL.Add('select * from EMITENTE');
           Form1.IBQuery1.Open;
           //
-          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\emitente.off'));
+          AssignFile(F,(Form1.sPastadoExecutavel+'\emitente.off'));
           Rewrite(F);
           WriteLN(F,'insert into EMITENTE (ESTADO, CGC, IE, REGISTRO, NOME, ENDERECO, COMPLE, MUNICIPIO, CEP, CRT, CNAE, IM, ENCRYPTHASH, LICENCA) '
                                  +'values ('+QuotedStr(Form1.ibQuery1.FieldByName('ESTADO').AsString)+','+QuotedStr(Form1.ibQuery1.FieldByName('CGC').AsString)+','
@@ -7496,30 +7510,30 @@ begin
           //
           // vendedor.off
           //
-          while FileExists(pchar(Form1.sPastadoExecutavel+'\vendedor.off')) do
+          while FileExists((Form1.sPastadoExecutavel+'\vendedor.off')) do
           begin
-            DeleteFile(pchar(Form1.sPastadoExecutavel+'\vendedor.off'));
+            DeleteFile((Form1.sPastadoExecutavel+'\vendedor.off'));
             Sleep(10);
           end;
           //
           Form1.IBExtract1.Items.Clear;
           Form1.IBExtract1.ExtractObject(eoData, 'VENDEDOR', [etIndex]);
-          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\vendedor.off'));
+          AssignFile(F,(Form1.sPastadoExecutavel+'\vendedor.off'));
           Rewrite(F);
           WriteLN(F,Form1.IBExtract1.Items.Text);
           CloseFile(F);
           //
           // convenio.off
           //
-          while FileExists(pchar(Form1.sPastadoExecutavel+'\convenio.off')) do
+          while FileExists((Form1.sPastadoExecutavel+'\convenio.off')) do
           begin
-            DeleteFile(pchar(Form1.sPastadoExecutavel+'\convenio.off'));
+            DeleteFile((Form1.sPastadoExecutavel+'\convenio.off'));
             Sleep(10);
           end;
           //
           Form1.IBExtract1.Items.Clear;
           Form1.IBExtract1.ExtractObject(eoData, 'CONVENIO', [etIndex]);
-          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\convenio.off'));
+          AssignFile(F, (Form1.sPastadoExecutavel+'\convenio.off'));
           Rewrite(F);
           WriteLN(F,Form1.IBExtract1.Items.Text);
           CloseFile(F);
@@ -7535,7 +7549,7 @@ begin
           Form1.IBQuery1.Open;
           //
 
-          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\clifor.off'));
+          AssignFile(F, (Form1.sPastadoExecutavel+'\clifor.off'));
           Rewrite(F);
           Form1.ibQuery1.First;
           I := 0;
@@ -7563,9 +7577,9 @@ begin
           Form22.Label6.Caption := 'Aguarde exportando ECFS.off para base off line';
           Form22.Label6.Repaint;
           //
-          while FileExists(pchar(Form1.sPastadoExecutavel+'\ecfs.off')) do
+          while FileExists((Form1.sPastadoExecutavel+'\ecfs.off')) do
           begin
-            DeleteFile(pchar(Form1.sPastadoExecutavel+'\ecfs.off'));
+            DeleteFile((Form1.sPastadoExecutavel+'\ecfs.off'));
             Sleep(10);
           end;
           //
@@ -7575,7 +7589,7 @@ begin
           Form1.IBQuery1.Open;
 
           //
-          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\ecfs.off'));
+          AssignFile(F,(Form1.sPastadoExecutavel+'\ecfs.off'));
           Rewrite(F);
           Form1.ibQuery1.First;
           while not Form1.ibQuery1.Eof do
@@ -7603,7 +7617,7 @@ begin
           Form1.IBQuery1.SQL.Add('select * from IBPT_');
           Form1.IBQuery1.Open;
           //
-          AssignFile(F,pchar(Form1.sPastadoExecutavel+'\IBPT_.off'));
+          AssignFile(F, (Form1.sPastadoExecutavel+'\IBPT_.off'));
           Rewrite(F);
           Form1.ibQuery1.First;
           I := 0;
@@ -7659,13 +7673,13 @@ begin
       if (Form1.sModeloECF_Reserva <> '59') and (Form1.sModeloECF_Reserva <> '65') and (Form1.sModeloECF_Reserva <> '99') then
       begin
 
-        if FileExists(pchar(Form1.sPastadoExecutavel+'\estoque.off')) or FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) then
+        if FileExists((Form1.sPastadoExecutavel+'\estoque.off')) or FileExists((Form1.sPastadoExecutavel+'\offline.fdb')) then
         begin
 
           //
           ChDir(Form1.sPastadoExecutavel);
           //
-          if not FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) then
+          if not FileExists((Form1.sPastadoExecutavel+'\offline.fdb')) then
           begin
             //
             if FileExists(Form1.sPastadoExecutavel+'\off13.fdb') then
@@ -7675,7 +7689,7 @@ begin
               Form22.Label6.Repaint;
               GetDir(0,Form1.sAtual);
               // Cria o banco offline se ainda não existir. Deve informar no Copy() o parâmetro bFailExist = True para ñão sobrepor em casos de não realizar a descarga
-              CopyFile(pchar(Form1.sPastadoExecutavel+'\off13.fdb'),pchar(Form1.sPastadoExecutavel+'\offline.fdb'),True);
+              CopyFile(PChar(Form1.sPastadoExecutavel+'\off13.fdb'), PChar(Form1.sPastadoExecutavel+'\offline.fdb'),True);
               bCargaNova := True;
 
             end else
@@ -7782,15 +7796,15 @@ begin
               end;
 
               //
-              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\estoque.off'));  except end;
-              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\icm.off'));      except end;
-              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\emitente.off')); except end;
-              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\vendedor.off')); except end;
-              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\convenio.off')); except end;
-              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\clifor.off'));   except end;
-              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\ibpt_.off'));    except end; // Sandro Silva 2016-08-16
-              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\alteraca.off')); except end;
-              try ImportaSQL(pchar(Form1.sPastadoExecutavel+'\ecfs.off'));     except end;// 2015-10-01
+              try ImportaSQL((Form1.sPastadoExecutavel+'\estoque.off'));  except end;
+              try ImportaSQL((Form1.sPastadoExecutavel+'\icm.off'));      except end;
+              try ImportaSQL((Form1.sPastadoExecutavel+'\emitente.off')); except end;
+              try ImportaSQL((Form1.sPastadoExecutavel+'\vendedor.off')); except end;
+              try ImportaSQL((Form1.sPastadoExecutavel+'\convenio.off')); except end;
+              try ImportaSQL((Form1.sPastadoExecutavel+'\clifor.off'));   except end;
+              try ImportaSQL((Form1.sPastadoExecutavel+'\ibpt_.off'));    except end; // Sandro Silva 2016-08-16
+              try ImportaSQL((Form1.sPastadoExecutavel+'\alteraca.off')); except end;
+              try ImportaSQL((Form1.sPastadoExecutavel+'\ecfs.off'));     except end;// 2015-10-01
               //Após importar deve atualizar assina registros das tabelas
 
               try
@@ -7872,15 +7886,15 @@ begin
               end;
 
               //
-              DeleteFile(pchar(Form1.sPastadoExecutavel+'\alteraca.off'));
-              DeleteFile(pchar(Form1.sPastadoExecutavel+'\estoque.off'));
-              DeleteFile(pchar(Form1.sPastadoExecutavel+'\icm.off'));
-              DeleteFile(pchar(Form1.sPastadoExecutavel+'\emitente.off'));
-              DeleteFile(pchar(Form1.sPastadoExecutavel+'\vendedor.off'));
-              DeleteFile(pchar(Form1.sPastadoExecutavel+'\convenio.off'));
-              DeleteFile(pchar(Form1.sPastadoExecutavel+'\clifor.off'));
-              DeleteFile(pchar(Form1.sPastadoExecutavel+'\ecfs.off'));// 2015-10-01
-              DeleteFile(pchar(Form1.sPastadoExecutavel+'\ibpt_.off'));// Sandro Silva 2016-08-16
+              DeleteFile((Form1.sPastadoExecutavel+'\alteraca.off'));
+              DeleteFile((Form1.sPastadoExecutavel+'\estoque.off'));
+              DeleteFile((Form1.sPastadoExecutavel+'\icm.off'));
+              DeleteFile((Form1.sPastadoExecutavel+'\emitente.off'));
+              DeleteFile((Form1.sPastadoExecutavel+'\vendedor.off'));
+              DeleteFile((Form1.sPastadoExecutavel+'\convenio.off'));
+              DeleteFile((Form1.sPastadoExecutavel+'\clifor.off'));
+              DeleteFile((Form1.sPastadoExecutavel+'\ecfs.off'));// 2015-10-01
+              DeleteFile((Form1.sPastadoExecutavel+'\ibpt_.off'));// Sandro Silva 2016-08-16
               //
               Form22.Label6.Caption := 'Tempo de carga: '+' '+StrZero(Hora,2,0)+':'+StrZero(Min,2,0)+':'+StrZero(Seg,2,0)+':'+StrZero(cent,3,0)+' ';
               //
@@ -8087,27 +8101,11 @@ begin
       //
       //ShowMessage('Teste 01 9719'); // Sandro Silva 2021-04-27
 
-      {Sandro Silva 2021-12-29 inicio
       SmallMsg('Este sistema não foi totalmente instalado nesta pasta ou'+Chr(10)+
                 'não está liberado para uso neste computador, instale'+Chr(10)+
                 'novamente o sistema informando o número serial da'+Chr(10)+
                 'sua licença de uso.'+Chr(10)+Chr(13)+
                 'Código: 001 '+sLicenca);
-      }
-      {Sandro Silva 2023-08-08 inicio
-      if Gerencial then
-        SmallMsg('Sistema bloqueado'+Chr(10)+
-                              'Este sistema só pode ser usado por empresa'+Chr(10)+
-                              'enquadrada como Microempreendedor Individual (MEI)'+Chr(10)+Chr(13)+
-                              'Código: 991 '+ sLicenca)
-      else
-      }
-        SmallMsg('Este sistema não foi totalmente instalado nesta pasta ou'+Chr(10)+
-                  'não está liberado para uso neste computador, instale'+Chr(10)+
-                  'novamente o sistema informando o número serial da'+Chr(10)+
-                  'sua licença de uso.'+Chr(10)+Chr(13)+
-                  'Código: 001 '+sLicenca);
-      {Sandro Silva 2021-12-29 fim}
 
       Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
         Form1.ClienteSmallMobile.sLogRetornoMobile);
@@ -8120,102 +8118,15 @@ begin
   end else
   begin
     //
-    {Sandro Silva 2023-05-25 inicio
-    iLimiteUsuariosSimultaneos := 2;
-    //
-    if Copy(sSerial,4,1) = 'F' then iLimiteUsuariosSimultaneos := 2;
-    if Copy(sSerial,4,1) = 'E' then iLimiteUsuariosSimultaneos := 7;
-    if Copy(sSerial,4,1) = 'D' then iLimiteUsuariosSimultaneos := 12;
-    if Copy(sSerial,4,1) = 'C' then iLimiteUsuariosSimultaneos := 2;
-    if Copy(sSerial,4,1) = 'B' then iLimiteUsuariosSimultaneos := 7;
-    if Copy(sSerial,4,1) = 'A' then iLimiteUsuariosSimultaneos := 12;
-    if Copy(sSerial,4,1) = 'W' then iLimiteUsuariosSimultaneos := 24;
-    if Copy(sSerial,4,1) = 'S' then iLimiteUsuariosSimultaneos := 2;
-
-    if Copy(sSerial,4,1) = 'N' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'O' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'P' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei + OS
-    if Copy(sSerial,4,1) = 'Q' then iLimiteUsuariosSimultaneos := 12; // 12 Usuários Small Mei
-    if Copy(sSerial,4,1) = 'R' then iLimiteUsuariosSimultaneos := 07; // 07 Usuários Small Mei
-    if Copy(sSerial,4,1) = 'M' then iLimiteUsuariosSimultaneos := 02; // 02 Usuários Small Mei
-    }
     iLimiteUsuariosSimultaneos := ValidaRecursos.SistemaLimiteUsuarios;
-    {Sandro Silva 2023-05-25 fim}
 
-
-    {Sandro Silva 2021-12-29 inicio
-    //
-    if    (Copy(sSerial,4,1) = 'C') or // 02 Usuários + OS
-          (Copy(sSerial,4,1) = 'B') or // 07 Usuários + OS
-          (Copy(sSerial,4,1) = 'A')    // 12 Usuários + OS
-      then
-      Form22.sTitulo := 'Small Commerce + Ordem de Serviço'
-    else if (Copy(sSerial,4,1) = 'S') then
-      Form22.sTitulo := 'Small Start'
-    else if (Copy(sSerial,4,1) = 'N') or // 12 Usuários Small Mei + OS
-            (Copy(sSerial,4,1) = 'O') or // 07 Usuários Small Mei + OS
-            (Copy(sSerial,4,1) = 'P')    // 02 Usuários Small Mei + OS
-     then
-      Form22.sTitulo := 'Small MEI + Ordem de Serviço'
-    else if (Copy(sSerial,4,1) = 'Q')   // 12 Usuários Small Mei
-         or (Copy(sSerial,4,1) = 'R')   // 07 Usuários Small Mei
-         or (Copy(sSerial,4,1) = 'M')   // 02 Usuários Small Mei
-     then
-      Form22.sTitulo := 'Small MEI'
-    else
-      Form22.sTitulo := 'Small Commerce';
-    }
-    {Sandro Silva 2022-04-11 inicio
-    Form22.sTitulo := 'Small Commerce';
-    if MEI then
-      Form22.sTitulo := 'Small Commerce (MEI)';
-    }
     Form22.sTitulo := 'Small';
     if Gerencial then
       Form22.sTitulo := 'Small (Gerencial)'; // Sandro Silva 2023-07-13 Form22.sTitulo := 'Small (MEI)';
-    {Sandro Silva 2022-04-11 fim}
 
-    {Sandro Silva 2021-12-29 fim}
-    //
     Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iLimiteUsuariosSimultaneos))+' usuários';
-    //
-    I := StrToInt('0'+LimpaNumero(Copy(sSerial,6,6)));
 
-    //
-    // é aqui a chave pra resolver os controles de seriais                                 X
-    //
-    {
-    //2018
-    if (sSerial = StrTran(StrTran(UpperCase('S13F'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S13S'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Start
-    or (sSerial = StrTran(StrTran(UpperCase('S13E'+Modulo_11(IntToStr(I+72))+StrZero(I,6,0)+'1'+ Chr(66+StrtoInt(Modulo_11(IntToStr(I+75))))),'I','X'),'L','Z')) // 05 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S13D'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S13W'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S13C'+Modulo_11(IntToStr(I+74))+StrZero(I,6,0)+'3'+ Chr(68+StrtoInt(Modulo_11(IntToStr(I+73))))),'I','X'),'L','Z')) // 02 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S13B'+Modulo_11(IntToStr(I+75))+StrZero(I,6,0)+'4'+ Chr(69+StrtoInt(Modulo_11(IntToStr(I+72))))),'I','X'),'L','Z')) // 05 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S13A'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S13W'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    //2019 // Sandro Silva 2018-10-09
-    or (sSerial = StrTran(StrTran(UpperCase('S14F'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S14S'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Start
-    or (sSerial = StrTran(StrTran(UpperCase('S14E'+Modulo_11(IntToStr(I+72))+StrZero(I,6,0)+'1'+ Chr(66+StrtoInt(Modulo_11(IntToStr(I+75))))),'I','X'),'L','Z')) // 05 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S14D'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S14W'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S14C'+Modulo_11(IntToStr(I+74))+StrZero(I,6,0)+'3'+ Chr(68+StrtoInt(Modulo_11(IntToStr(I+73))))),'I','X'),'L','Z')) // 02 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S14B'+Modulo_11(IntToStr(I+75))+StrZero(I,6,0)+'4'+ Chr(69+StrtoInt(Modulo_11(IntToStr(I+72))))),'I','X'),'L','Z')) // 05 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S14A'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S14W'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    //2020 // ER 02.06 Sandro Silva 2019-06-19
-    or (sSerial = StrTran(StrTran(UpperCase('S15F'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S15S'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Start
-    or (sSerial = StrTran(StrTran(UpperCase('S15E'+Modulo_11(IntToStr(I+72))+StrZero(I,6,0)+'1'+ Chr(66+StrtoInt(Modulo_11(IntToStr(I+75))))),'I','X'),'L','Z')) // 05 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S15D'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S15W'+Modulo_11(IntToStr(I+73))+StrZero(I,6,0)+'2'+ Chr(67+StrtoInt(Modulo_11(IntToStr(I+74))))),'I','X'),'L','Z')) // 10 Usuários
-    or (sSerial = StrTran(StrTran(UpperCase('S15C'+Modulo_11(IntToStr(I+74))+StrZero(I,6,0)+'3'+ Chr(68+StrtoInt(Modulo_11(IntToStr(I+73))))),'I','X'),'L','Z')) // 02 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S15B'+Modulo_11(IntToStr(I+75))+StrZero(I,6,0)+'4'+ Chr(69+StrtoInt(Modulo_11(IntToStr(I+72))))),'I','X'),'L','Z')) // 05 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S15A'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    or (sSerial = StrTran(StrTran(UpperCase('S15W'+Modulo_11(IntToStr(I+76))+StrZero(I,6,0)+'5'+ Chr(70+StrtoInt(Modulo_11(IntToStr(I+71))))),'I','X'),'L','Z')) // 10 Usuários + Ordem
-    }
+    I := StrToInt('0'+LimpaNumero(Copy(sSerial,6,6)));
 
     // A partir da versão 2020 o controle não é mais feito pelo número de série do Small, mas pela data de registro
     // Aqui basta validar o serial desconsiderando a versão
@@ -8238,7 +8149,6 @@ begin
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('M'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 02 Usuários Small Mei
      or (Copy(sSerial, 4, 10) = StrTran(StrTran(UpperCase('T'+Modulo_11(IntToStr(I+71))+StrZero(I,6,0)+'0'+ Chr(65+StrtoInt(Modulo_11(IntToStr(I+76))))),'I','X'),'L','Z')) // 01 Usuário Small Go
        )
-    // Sandro Silva 2022-11-30 and (StrToIntDef(Copy(sSerial, 2, 2), 0) >= 13) // Maior ou igual a S13. Segurança para evitar uso de serial muito antigo
         and (StrToIntDef(Copy(sSerial, 2, 2), 0) >= 14) // Maior ou igual a S14. Segurança para evitar uso de serial muito antigo
     then
     begin
@@ -9049,7 +8959,7 @@ begin
   if (Form1.sAtual <> Form1.sPastaDoExecutavel) then
   begin
     Mais1ini  := TIniFile.Create('FRENTE.INI');
-    Mais1Ini.WriteString('On line','Pasta',pchar(Form1.sAtualOnLine));  // AbreArquivos()
+    Mais1Ini.WriteString('On line','Pasta', (Form1.sAtualOnLine));  // AbreArquivos()
     Mais1ini.Free;
   end;
 
@@ -9530,9 +9440,9 @@ begin
       if Form1.sModeloECF = '65' then
       begin
         //
-        if FileExists(PAnsiChar(Form1.sAtual + '\nfce\nfceServidoresHom.ini')) = False then
+        if FileExists(Form1.sAtual + '\nfce\nfceServidoresHom.ini') = False then //if FileExists(PAnsiChar(Form1.sAtual + '\nfce\nfceServidoresHom.ini')) = False then
           SmallMsg('Arquivo com configuração dos Servidor de Homologação não encontrado');
-        if FileExists(PAnsiChar(Form1.sAtual + '\nfce\nfceServidoresProd.ini')) = False then
+        if FileExists(Form1.sAtual + '\nfce\nfceServidoresProd.ini') = False then
           SmallMsg('Arquivo com configuração dos Servidor de Produção não encontrado');
         Form1.spdNFCe1.CNPJ                  := LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString);
         Form1.spdNFCe1.ArquivoServidoresHom  := Form1.sAtual + '\nfce\nfceServidoresHom.ini';
@@ -9654,10 +9564,7 @@ begin
                           +chr(10)+'    * E-CNPJ'
                           +chr(10)+'2. Certificados Certisign A1 e A3'
                           +chr(10)+'3. Certificados dos Correios A1 e A3'
-                          +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-                          +chr(10)
-                          +chr(10)
-                          +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'),  // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                          +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'),
                           'Atenção',mb_Ok + MB_ICONWARNING);
             end;
             //
@@ -9747,7 +9654,7 @@ begin
       else
         SmallMsgBox(PAnsiChar('Versão desatualizada' + #13 + 'Abra o Small Commerce e faça a atualização em' + #13 + #13 + 'Config\Atualizar programa pela Internet' + #13 + #13 + 'Essa aplicação será fechada'), 'Atenção', MB_OK + MB_ICONWARNING);
       }
-      SmallMsgBox(PAnsiChar('Versão desatualizada' + #13 + 'Abra o Small e faça a atualização em' + #13 + #13 + 'Config\Atualizar programa pela Internet' + #13 + #13 + 'Essa aplicação será fechada'), 'Atenção', MB_OK + MB_ICONWARNING);
+      SmallMsgBox('Versão desatualizada' + #13 + 'Abra o Small e faça a atualização em' + #13 + #13 + 'Config\Atualizar programa pela Internet' + #13 + #13 + 'Essa aplicação será fechada', 'Atenção', MB_OK + MB_ICONWARNING);
       {Sandro Silva 2022-04-11 fim}
       FecharAplicacao(ExtractFileName(Application.ExeName));
     end;
@@ -10149,7 +10056,7 @@ begin
   Mais1Ini.Free;
   // Ano 200 bug free
   bNaoSaiComESC := False;
-  ShortDateFormat := 'dd/mm/yyyy';
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
   sPrazo  := '';
   sPorta  := '';
   fQuantidadeVendida := 1; // Produto pesado
@@ -10293,7 +10200,7 @@ begin
 
     if Mais1Ini.ReadString('Frente de caixa', 'TEM TEF','XXX') = 'XXX' then
     begin
-      if Application.MessageBox(PAnsiChar('Usa TEF para pagamentos com cartão?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
+      if Application.MessageBox(PWideChar('Usa TEF para pagamentos com cartão?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
         ChamarTelaConfiguracaoTEF
       else
         Mais1Ini.WriteString('Frente de caixa', 'TEM TEF','Não');
@@ -10430,7 +10337,7 @@ begin
 
     if LerParametroIni(Form1.sArquivo, INI_SECAO_ECF, INI_CHAVE_NUMERO_CREDENCIAMENTO_PAF, '') = '' then
     begin
-      SmallMsgBox(PAnsiChar('Configure o Número de Credenciamento do PAF' + #13 + #13 + 'Essa informação é necessária para a geração dos arquivos relacionados ao Bloco X do PAF'), 'Atenção', MB_ICONWARNING + MB_OK);
+      SmallMsgBox(PChar('Configure o Número de Credenciamento do PAF' + #13 + #13 + 'Essa informação é necessária para a geração dos arquivos relacionados ao Bloco X do PAF'), 'Atenção', MB_ICONWARNING + MB_OK);
     end;
   end
   else
@@ -10472,6 +10379,12 @@ begin
     // --------------- //
     // Número do caixa //
     // --------------- //
+
+    if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
+    begin
+      Form22.Label6.Caption := 'Detectando porta de comunicação...';
+      Form22.Label6.Repaint;
+    end;
 
     bInicializa := Form1.PDV_Inicializa(sPorta); // Sandro Silva 2022-11-08
 
@@ -10571,7 +10484,10 @@ begin
   try
     //
     if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
-      bInicializa := Form1.PDV_Inicializa(sPorta);
+    begin
+      if bInicializa = False then
+        bInicializa := Form1.PDV_Inicializa(sPorta);
+    end;
 
     {Sandro Silva 2022-07-13 inicio}
     if (Form1.sModeloECF = '65') then
@@ -10843,16 +10759,16 @@ begin
 
     Mais1Ini.Free;
     DeleteFile(aWinDir + '\peso.txt');
-    if FileExists(PChar(Form1.sAtual + '\balanca\input\pesar.xml')) then
+    if FileExists(Form1.sAtual + '\balanca\input\pesar.xml') then
     begin
-      DeleteFile(PChar(Form1.sAtual + '\balanca\input\pesar.xml'));
-      DeleteFile(PChar(Form1.sAtual + '\balanca\input\pesar.tmp'));
+      DeleteFile(Form1.sAtual + '\balanca\input\pesar.xml');
+      DeleteFile(Form1.sAtual + '\balanca\input\pesar.tmp');
       Sleep(250);
     end;
-    if FileExists(PChar(Form1.sAtual + '\balanca\output\peso.xml')) then
+    if FileExists(Form1.sAtual + '\balanca\output\peso.xml') then
     begin
-      DeleteFile(PChar(Form1.sAtual + '\balanca\output\peso.xml'));
-      DeleteFile(PChar(Form1.sAtual + '\balanca\output\peso.res'));
+      DeleteFile(Form1.sAtual + '\balanca\output\peso.xml');
+      DeleteFile(Form1.sAtual + '\balanca\output\peso.res');
       Sleep(250);
     end;
 
@@ -11116,7 +11032,7 @@ begin
           DeleteFile('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.001');
           DeleteFile('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.STS');
           DeleteFile('c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
-          DeleteFile(pChar('c:\'+sDiretorio+'.res'));
+          DeleteFile(('c:\'+sDiretorio+'.res'));
           //
           Display('OPERACAO NAO CONFIRMADA','Use outra forma de pagamento');
           //
@@ -11590,7 +11506,8 @@ begin
 
           //
           //
-          Form1.sMD5DaLista := MD5Print(MD5File(pChar(Form1.sPastaDoExecutavel+'\LISTA.TXT')));
+          //2024-03-13 Form1.sMD5DaLista := MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT'));
+          Form1.sMD5DaLista := LowerCase(MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT')));
           //
           Form1.sMD5DaLista := StrTran(Form1.sMD5DaLista,'"NL"','');
           //
@@ -11714,7 +11631,7 @@ begin
                     bNaoAbriu   := False;
 
                     //
-                    AssignFile(F,Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'));
+                    AssignFile(F, ('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'));
                     Rewrite(F);
                     //NCN Não confirmação da venda e/ou da impressão.
                     WriteLn(F,'000-000 = NCN');                               // Header: Cartão 3c
@@ -11727,7 +11644,7 @@ begin
                     WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
                     CloseFile(F);
                     Sleep(100); // Sandro Silva 2017-06-14
-                    RenameFile(Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'),'c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
+                    RenameFile('c:\' + sDiretorio + '\' + sREQ + '\IntPos.tmp', 'c:\' + sDiretorio + '\' + sREQ + '\INTPOS.001');
                     Sleep(6000);
 
                     // 2015-09-08 if FunctionDetect('USER32.DLL','BlockInput',@xBlockInput) then xBlockInput(False);  // Enable  Keyboard & mouse
@@ -12690,7 +12607,7 @@ begin
           if AllTrim(Form1.OkSim) = '0' then
           begin
 
-            AssignFile(F,Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'));
+            AssignFile(F, ('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'));
             Rewrite(F);
             sIdentificaTransacaoTEF := StrTran(TimeToStr(Time),':','');
             //NCN Não confirmação da venda e/ou da impressão.
@@ -12706,7 +12623,7 @@ begin
             WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
             CloseFile(F);
             Sleep(100); // Sandro Silva 2017-06-14
-            RenameFile(Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'),'c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
+            RenameFile('c:\' + sDiretorio + '\' + sREQ + '\IntPos.tmp', 'c:\' + sDiretorio + '\' + sREQ + '\INTPOS.001');
             Sleep(1000); // Sandro Silva 2017-06-23
             TEFAguardarRetornoStatus('c:\'+sDiretorio+'\'+sRESP, sIdentificaTransacaoTEF); // Sandro Silva 2017-06-22 Form1.TEFAguardarRetornoStatus('c:\'+sDiretorio+'\'+sRESP, sIdentificaTransacaoTEF); // Sandro Silva 2017-06-22
 
@@ -12719,7 +12636,7 @@ begin
         DeleteFile('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.001');
         DeleteFile('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.STS');
         DeleteFile('c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
-        DeleteFile(pChar('c:\'+sDiretorio+'.res'));
+        DeleteFile( ('c:\'+sDiretorio+'.res'));
         // Sandro Silva 2017-06-22 Deve excluir apenas se conseguir cancelar  TEFDeletarCopiasArquivos(sDiretorio); // Sandro Silva 2017-06-13
         //
         Display('OPERACAO NAO CONFIRMADA','Use outra forma de pagamento');
@@ -13014,7 +12931,7 @@ begin
             }
 
             // Confirmando a transação TEF
-            AssignFile(F,Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'));
+            AssignFile(F, ('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'));
             Rewrite(F);
             WriteLn(F,'000-000 = CNF');                               // Header: Cartão 3c
             WriteLn(F,'001-000 = '+StrTran(TimeToStr(Time),':',''));  // Identificação: Eu uso a hora
@@ -13026,7 +12943,7 @@ begin
             WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
             CloseFile(F);
             Sleep(1000);
-            RenameFile(Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'),'c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
+            RenameFile('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp', 'c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
             Sleep(6000);
             //
             // 2015-10-08 Sleep deixa muito tempo de intervalo entre a hora impressa e a DEMAIS.HORA Demais('CC');
@@ -13046,7 +12963,7 @@ begin
             begin                                  //
               Form1.ExibePanelMensagem('Desfazendo a transação do último cartão'); // Sandro Silva 2017-09-15
 
-              AssignFile(F,Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'));
+              AssignFile(F, ('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'));
               Rewrite(F);
               WriteLn(F,'000-000 = NCN');                                      // Header: Cartão 3c
               WriteLn(F,'001-000 = '+StrTran(TimeToStr(Time),':',''));  // Identificação: Eu uso a hora
@@ -13058,7 +12975,7 @@ begin
               WriteLn(F,'999-999 = 0');                                                       // Trailer - REgistro Final, constante '0' .
               CloseFile(F);
               Sleep(1000); // Sandro Silva 2017-06-13
-              RenameFile(Pchar('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'),'c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
+              RenameFile('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp','c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
               Sleep(6000);
 
               Form1.OcultaPanelMensagem;
@@ -13145,7 +13062,7 @@ begin
           DeleteFile('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.STS');
           DeleteFile('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp');
           DeleteFile('c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
-          DeleteFile(pChar('c:\'+sDiretorio+'.res'));
+          DeleteFile(('c:\'+sDiretorio+'.res'));
           //
         end else
         begin
@@ -14955,6 +14872,7 @@ begin
     SelStart := Length(Text)-1;
     SelAttributes.Style  := [];
     SelAttributes.Height := AjustaAltura(16); // Sandro Silva 2017-09-26  16;
+    SelAttributes.Color := clWhite; // 2024-01-05
     //
     {Sandro Silva 2022-12-08 Início Unochapeco
     SelText := chr(10) + chr(10) +
@@ -15795,6 +15713,7 @@ var
   iItem: Integer;
 begin    
   Screen.Cursor := crHourGlass; // Sandro Silva 2019-09-12 ER 02.06 UnoChapeco
+  //RetornodeVariveisdaImpressora1.Visible := True; /// Sandro Silva 2024-02-21
   //
   x1024x768.Visible := False;
   //
@@ -17123,7 +17042,7 @@ begin
   if (Form1.ClienteSmallMobile.sVendaImportando = '') then
     Edit1.SetFocus;
   //
-  if (DecimalSeparator <> ',') or (DateSeparator <> '/') then
+  if (FormatSettings.DecimalSeparator <> ',') or (FormatSettings.DateSeparator <> '/') then
   begin
     SmallMsgBox(Pchar('As propriedades das configurações regionais do seu sistema não estão'     + Chr(10) +
                        'de acordo com o padrão utilizado no Brasil.'                              + Chr(10) +
@@ -21075,87 +20994,6 @@ begin
                         StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
                         StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
 
-          {Sandro Silva 2021-07-22 inicio 
-          if Form1.sModeloECF = '04' then
-            bVenda := _ecf04_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '05' then
-            bVenda := _ecf05_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '06' then
-            bVenda := _ecf06_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '07' then
-            bVenda := _ecf07_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '08' then
-            bVenda := _ecf08_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '09' then
-            bVenda := _ecf09_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '10' then
-            bVenda := _ecf10_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-
-          if Form1.sModeloECF = '11' then
-            bVenda := _ecf11_VendaDeItem(sCodigo, // Código
-                                   sDescricao, // Descricão
-                                    ST                  , // ST
-             StrZero(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat*1000,7,0), // Quantidade
-                StrZero(Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat*100,7,0), // Unitário
-                        sUnidadeDeMedida,                                 // Medida
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat*100,7,0),          // Desconto %
-                        StrZero(Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat*100,7,0));         // Destonco R$
-          }
           if Form1.sModeloECF = '12' then
           begin
             bVenda := _ecf12_VendaDeItem(sCodigo, // Código
@@ -21908,7 +21746,7 @@ begin
       Form1.IBDataSet99.First;
       while not Form1.IBDataSet99.Eof do
       begin
-        if (Form1.IBDataSet99.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(Form1.IBDataSet99.FieldByName('SERIE').AsString)))) then // Se o registro já foi violado não lista
+        if (Form1.IBDataSet99.FieldByName('ENCRYPTHASH').AsString = Form1.LbBlowfish1.EncryptString(MD5String(Form1.IBDataSet99.FieldByName('SERIE').AsString))) then // Se o registro já foi violado não lista
           sNumerosDESerie := sNumerosDESerie + Form1.IBDataSet99.FieldByName('SERIE').AsString + chr(10);
         Form1.iBDataSet99.Next;
       end;
@@ -21931,26 +21769,26 @@ begin
                                'c2)Versão: '+StrTran(Form22.sBuild,'Versão e Build: ','')+chr(10)+
                                'c3)Nome do principal executável:'+chr(10)+
                                'FRENTE.EXE '+chr(10)+
-                               MD5Print(MD5File(pChar('FRENTE.EXE')))+chr(10)+
+                               MD5File(('FRENTE.EXE'))+chr(10)+
                                'c4)Nome dos demais arquivos que executam funções a que se refere a alínea a do item 1 do Requisito XI e os respectivos códigos MD-5:'+chr(10)+
-                               'APF_DLL2.DLL '+chr(10)+MD5Print(MD5File(pChar('APF_DLL2.DLL')))+chr(10)+
-                               'BEMAFI32.DLL '+chr(10)+MD5Print(MD5File(pChar('BEMAFI32.DLL')))+chr(10)+
-                               'CONSULTA.EXE '+chr(10)+MD5Print(MD5File(pChar('CONSULTA.EXE')))+chr(10)+
-                               'CONVECF.DLL '+chr(10)+MD5Print(MD5File(pChar('CONVECF.DLL')))+chr(10)+
-                               'NFE.EXE '+chr(10)+MD5Print(MD5File(pChar('NFE.EXE')))+chr(10)+
-                               // Sandro Silva 2022-12-02 Unochapeco 'BLOCOX.EXE '+chr(10)+MD5Print(MD5File(pChar('BLOCOX.EXE')))+chr(10)+
-                               'PESADO.EXE '+chr(10)+MD5Print(MD5File(pChar('PESADO.EXE')))+chr(10)+
-                               'DARUMA32.DLL '+chr(10)+MD5Print(MD5File(pChar('DARUMA32.DLL')))+chr(10)+
-                               'DARUMAFRAMEWORK.DLL '+chr(10)+MD5Print(MD5File(pChar('DARUMAFRAMEWORK.DLL')))+chr(10)+
-                               'DLL1EFC3.DLL '+chr(10)+MD5Print(MD5File(pChar('DLL1EFC3.DLL')))+chr(10)+
-                               'DLL32PHI.DLL '+chr(10)+MD5Print(MD5File(pChar('DLL32PHI.DLL')))+chr(10)+
-                               'DLLG2.DLL '+chr(10)+MD5Print(MD5File(pChar('DLLG2.DLL')))+chr(10)+
-                               'FRENTE.EXE '+chr(10)+MD5Print(MD5File(pChar('FRENTE.EXE')))+chr(10)+
-                               'GENERAL32.DLL '+chr(10)+MD5Print(MD5File(pChar('GENERAL32.DLL')))+chr(10)+
-                               'ICASH.DLL '+chr(10)+MD5Print(MD5File(pChar('ICASH.DLL')))+chr(10)+
-                               'INTERFACEEPSON.DLL '+chr(10)+MD5Print(MD5File(pChar('INTERFACEEPSON.DLL')))+chr(10)+
-                               'SWECF.DLL '+chr(10)+MD5Print(MD5File(pChar('SWECF.DLL')))+chr(10)+
-                               'TRDECF32.DLL '+chr(10)+MD5Print(MD5File(pChar('TRDECF32.DLL')))+chr(10)+
+                               'APF_DLL2.DLL '+chr(10)+MD5File(('APF_DLL2.DLL'))+chr(10)+
+                               'BEMAFI32.DLL '+chr(10)+MD5File(('BEMAFI32.DLL'))+chr(10)+
+                               'CONSULTA.EXE '+chr(10)+MD5File(('CONSULTA.EXE'))+chr(10)+
+                               'CONVECF.DLL '+chr(10)+MD5File(('CONVECF.DLL'))+chr(10)+
+                               'NFE.EXE '+chr(10)+MD5File(('NFE.EXE'))+chr(10)+
+                               // Sandro Silva 2022-12-02 Unochapeco 'BLOCOX.EXE '+chr(10)+MD5Print(MD5File(('BLOCOX.EXE')))+chr(10)+
+                               'PESADO.EXE '+chr(10)+MD5File(('PESADO.EXE'))+chr(10)+
+                               'DARUMA32.DLL '+chr(10)+MD5File(('DARUMA32.DLL'))+chr(10)+
+                               'DARUMAFRAMEWORK.DLL '+chr(10)+MD5File(('DARUMAFRAMEWORK.DLL'))+chr(10)+
+                               'DLL1EFC3.DLL '+chr(10)+MD5File(('DLL1EFC3.DLL'))+chr(10)+
+                               'DLL32PHI.DLL '+chr(10)+MD5File(('DLL32PHI.DLL'))+chr(10)+
+                               'DLLG2.DLL '+chr(10)+MD5File(('DLLG2.DLL'))+chr(10)+
+                               'FRENTE.EXE '+chr(10)+MD5File(('FRENTE.EXE'))+chr(10)+
+                               'GENERAL32.DLL '+chr(10)+MD5File(MD5File(('GENERAL32.DLL')))+chr(10)+
+                               'ICASH.DLL '+chr(10)+MD5File(('ICASH.DLL'))+chr(10)+
+                               'INTERFACEEPSON.DLL '+chr(10)+MD5File(('INTERFACEEPSON.DLL'))+chr(10)+
+                               'SWECF.DLL '+chr(10)+MD5File(('SWECF.DLL'))+chr(10)+
+                               'TRDECF32.DLL '+chr(10)+MD5File(('TRDECF32.DLL'))+chr(10)+
 
                                Chr(10)+
                                'c5)' +
@@ -22014,6 +21852,7 @@ begin
 //  if Form1.sModeloECF = '12' then SmallMsg(_ecf12_NmdeRedues(True));
 //  if Form1.sModeloECF = '65' then SmallMsg(_ecf65_NmdeRedues(True));
   if Form1.sModeloECF = '14' then SmallMsg(_ecf14_DadosUltimaReducaoZ(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_DadosDaUltimaReducao(True));
 //  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_NmdeRedues(True));
 
 end;
@@ -22365,7 +22204,7 @@ begin
           end;
           //
 
-          while FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) do
+          while FileExists((Form1.sPastadoExecutavel+'\offline.fdb')) do
           begin
             DeleteFile(sAtual+'\offline.fdb');
           end;
@@ -22489,7 +22328,7 @@ begin
       if (Form1.sAtual <> Form1.sPastaDoExecutavel) then
       begin
         Mais1ini  := TIniFile.Create('FRENTE.INI');
-        Mais1Ini.WriteString('On line','Pasta',pchar(Form1.sAtualOnLine)); // Timer1Timer()
+        Mais1Ini.WriteString('On line','Pasta', (Form1.sAtualOnLine)); // Timer1Timer()
         Mais1ini.Free;
       end;
       //
@@ -22576,6 +22415,16 @@ end;
 procedure TForm1.Convnio57951Click(Sender: TObject);
 begin
   PafEcfConvenio57951; // Sandro Silva 2022-03-29
+end;
+
+procedure TForm1.COO1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_NumeroDoCupom(True));
+  if Form1.sModeloECF = '03' then SmallMsg(_ecf03_NumeroDoCupom(True));
+  if Form1.sModeloECF = '12' then SmallMsg(_ecf12_NumeroDoCupom(True));
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_NumeroDoCupom(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_NumeroDoCupom(True));
+  if Form1.sModeloECF = '17' then SmallMsg(_ecf17_NumeroDoCupom(True));
 end;
 
 procedure TForm1.abndiceTcnicoProduo1Click(Sender: TObject);
@@ -22832,7 +22681,7 @@ begin
 
   bSoEmTela := False;
   if PAFNFCe then
-    bSoEmTela := (Application.MessageBox(PAnsiChar('Listar na tela?' + #13 + #13 + 'Sim: Lista na tela' + #13 + 'Não: Somente impressão'), 'Atenção', MB_YESNO + MB_ICONQUESTION) = id_yes);
+    bSoEmTela := (Application.MessageBox(PWideChar('Listar na tela?' + #13 + #13 + 'Sim: Lista na tela' + #13 + 'Não: Somente impressão'), 'Atenção', MB_YESNO + MB_ICONQUESTION) = id_yes);
 
   //Evitando problema de não exibir itens lançados nas mesas por 2 terminais diferentes. Um não exibe os dados do outro na primeira abertura da mesa. Ver com Gian/Fernanda}
   CommitaTudo(True); // MesasAbertas1Click
@@ -23441,8 +23290,8 @@ begin
   if Form1.sModeloECF = '12' then;
   if Form1.sModeloECF = '65' then;
   if Form1.sModeloECF = '59' then;
-  if Form1.sModeloECF = '14' then;
-  if Form1.sModeloECF = '15' then;
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CER(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CER(' '));
   if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CER(True));
   //
 end;
@@ -23572,7 +23421,11 @@ end;
 
 procedure TForm1.CdigomodelodoECF1Click(Sender: TObject);
 begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_CodigoModeloEcf(True));
   if Form1.sModeloECF = '03' then SmallMsg(_ecf03_CodigoModeloEcf(True));
+  if Form1.sModeloECF = '12' then SmallMsg(_ecf12_CodigoModeloEcf(True));
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CodigoModeloEcf(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CodigoModeloEcf(True));// Ok 2015-08-24
   if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CodigoModeloEcf(True));// Ok 2015-08-24  
 end;
 
@@ -24153,7 +24006,7 @@ begin
   ChDir(Form1.sAtual); // Sandro Silva 2017-03-31
 
   if TamanhoLogoFrente > TAMANHO_REFERENCIA_ARQUIVO_LOGOTIPO then // Acima de 300 KB
-    Application.MessageBox(PAnsiChar('Reduza o tamanho do logotipo' + #13 + #13 + 'O tamanho do logotipo selecionado poderá deixar o sistema lento'), 'Alerta', MB_OK + MB_ICONWARNING);
+    Application.MessageBox(PWideChar('Reduza o tamanho do logotipo' + #13 + #13 + 'O tamanho do logotipo selecionado poderá deixar o sistema lento'), 'Alerta', MB_OK + MB_ICONWARNING);
 
 end;
 
@@ -24203,10 +24056,7 @@ begin
                     +chr(10)+'    * E-CNPJ'
                     +chr(10)+'2. Certificados Certisign A1 e A3'
                     +chr(10)+'3. Certificados dos Correios A1 e A3'
-                    +chr(10)+'4. Certificados A3 PRONOVA ACOS5'
-                    +chr(10)
-                    +chr(10)
-                    +'OBS: Não ligue para o suporte técnico da Zucchetti® por este motivo.'), // Sandro Silva 2022-12-02 Unochapeco +'OBS: Não ligue para o suporte técnico da Smallsoft® por este motivo.'),
+                    +chr(10)+'4. Certificados A3 PRONOVA ACOS5.'),
                     'Atenção',mb_Ok + MB_ICONWARNING);
         Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
           Form1.ClienteSmallMobile.sLogRetornoMobile);
@@ -24224,7 +24074,7 @@ begin
 
     BlocoXSelecionaCertificadoDigital;
 
-    if _BlocoX.ValidaCertificadoDigital(PAnsiChar(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString))) = False then // Sandro Silva 2018-10-13 if _BlocoX.ValidaCertificadoDigital(PAnsiChar(Form1.IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual)) = False then
+    if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then  // Sandro Silva 2024-02-16 if _BlocoX.ValidaCertificadoDigital(PAnsiChar(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString))) = False then
     begin
       MensagemAlertaCertificado;
     end;
@@ -24720,6 +24570,7 @@ begin
   then
   begin
     Form1.DBGrid1.Canvas.Font.Color := clWhite;
+    Form1.DBGrid1.Canvas.Brush.Color := COR_AZUL_CELULA_SELECIONADA;
   end
   else
   begin
@@ -24902,9 +24753,11 @@ end;
 
 procedure TForm1.ImprimeoDANFCE1Click(Sender: TObject);
 var
-  IBQPAGAMENT: TIBQuery;
+//  IBQPAGAMENT: TIBQuery;
+  IBQALTERACA: TIBQuery;
 begin
-  IBQPAGAMENT := CriaIBQuery(Form1.IBDataSet150.Transaction);
+  //IBQPAGAMENT := CriaIBQuery(Form1.IBDataSet150.Transaction);
+  IBQALTERACA := CriaIBQuery(Form1.IBDataSet150.Transaction);
 
   Form1.ExibePanelMensagem('Aguarde, imprimindo ' + Form1.sTipoDocumento2 + '...'); // Sandro Silva 2023-08-09 Form1.ExibePanelMensagem('Aguarde, imprimindo DANFCE...'); // Sandro Silva 2021-11-05
 
@@ -24912,6 +24765,7 @@ begin
   begin
     if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '65') then
     begin
+      {
       IBQPAGAMENT.Close;
       IBQPAGAMENT.SQL.Text :=
         'select * ' +
@@ -24920,6 +24774,7 @@ begin
         ' and CAIXA = ' + QuotedStr(Form1.IBDataSet150.FieldByName('CAIXA').AsString) +
         ' and FORMA = ''13 Troco'' ';
       IBQPAGAMENT.Open;
+      }
       _ecf65_Imprime_DANFECE(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('NFEXML').AsString);
     end
     else
@@ -24937,14 +24792,29 @@ begin
   begin
     Form1.sMensagemPromocional := LerParametroIni(FRENTE_INI, 'Frente de caixa', 'Mensagem', MensagemPromocionalDefault); // Sandro Silva 2023-08-24
 
+    {Sandro Silva 2023-12-27 inicio
     _ecf99_ImprimeVenda(nil, Form1.ibDataSet150.Transaction, Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString, '', '', '', '');
+    }
+    IBQALTERACA.Close;
+    IBQALTERACA.SQL.Text :=
+      'select DISTINCT A.CNPJ, A.CLIFOR, ' +
+      'C.EMAIL, C.ENDERE, C.COMPLE, C.CIDADE, C.ESTADO, C.CEP ' +
+      'from ALTERACA A ' +
+      'left join CLIFOR C on C.CGC = A.CNPJ ' +
+      'where coalesce(A.CNPJ, '''') <> '''' ' +
+      ' and A.PEDIDO = ' + QuotedStr(Form1.ibDataSet150.FieldByName('NUMERONF').AsString) +
+      ' and CAIXA = ' + QuotedStr(Form1.ibDataSet150.FieldByName('CAIXA').AsString);
+    IBQALTERACA.Open;
+    _ecf99_ImprimeVenda(nil, Form1.ibDataSet150.Transaction, Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString, IBQALTERACA.FieldByName('CNPJ').AsString, IBQALTERACA.FieldByName('CLIFOR').AsString, IBQALTERACA.FieldByName('EMAIL').AsString, IBQALTERACA.FieldByName('ENDERE').AsString);
+    {Sandro Silva 2023-12-27 fim}
   end;
 
   Form1.OcultaPanelMensagem; // Sandro Silva 2021-11-05
-    
+
   Display(Form1.sStatusECF,Form1.sF); // Sandro Silva 2021-11-05
 
-  FreeAndNil(IBQPAGAMENT);
+  //FreeAndNil(IBQPAGAMENT);
+  FreeAndNil(IBQALTERACA);
 end;
 
 procedure TForm1.VisualizaroXMLdaNFCe1Click(Sender: TObject);
@@ -24958,8 +24828,10 @@ begin
     sXML := Form1.ibDataSet150.FieldByName('NFEXML').AsString;
     Clipboard.SetTextBuf(pchar(sXML));
     //
-    while FileExists(pChar(sAtual+'\tempo.tmp')) do DeleteFile(pChar(sAtual+'\tempo.tmp'));
-    while FileExists(pChar(sAtual+'\tempo.xml')) do DeleteFile(pChar(sAtual+'\tempo.xml'));
+    while FileExists((sAtual+'\tempo.tmp')) do
+      DeleteFile((sAtual+'\tempo.tmp'));
+    while FileExists((sAtual+'\tempo.xml')) do
+      DeleteFile((sAtual+'\tempo.xml'));
     //
     AssignFile(F,sAtual+'\tempo.tmp');
     Rewrite(F);
@@ -24968,7 +24840,8 @@ begin
     //
     RenameFile(sAtual+'\tempo.tmp',sAtual+'\tempo.xml');
     //
-    if FileExists(pchar(sAtual+'\tempo.xml')) then ShellExecute( 0, 'Open',pchar(sAtual+'\tempo.xml'),'','', SW_SHOWMAXIMIZED);
+    if FileExists((sAtual+'\tempo.xml')) then
+      ShellExecute( 0, 'Open',pchar(sAtual+'\tempo.xml'),'','', SW_SHOWMAXIMIZED);
     //
   except end;
   //
@@ -25836,18 +25709,19 @@ var
   begin
     Result := StrToDateDef(Copy(sDescricao, 12, 2) + '/' + Copy(sDescricao, 9, 2) + '/' + Copy(sDescricao, 4, 4), Date);
   end;
+
   procedure DeletaArquivos(sAtual: String; sExtensao: String);
   var
     S: TSearchREc;
     I: Integer;
   begin
     //
-    I := FindFirst( pChar(sAtual + '\' + Trim(sExtensao)), faAnyFile, S);
+    I := FindFirst( sAtual + '\' + Trim(sExtensao), faAnyFile, S);
     //
     while I = 0 do
     begin
       try
-        DeleteFile(pChar(sAtual + '\' + S.Name));
+        DeleteFile(sAtual + '\' + S.Name);
       except
 
       end;
@@ -26074,7 +25948,7 @@ begin
               //
               // terminado apaga o arquivo local e do download
               //
-              DeleteFile(pChar(sTLista[I])); // Apaga local
+              DeleteFile((sTLista[I])); // Apaga local
               //
             end;
 
@@ -26118,8 +25992,8 @@ begin
                 Form1.ClienteSmallMobile.LogClienteMobile(
                   'Processando-' + sTLista[I]);
 
-                RenameFile(PChar(sTLista[I]), pChar(sArquivoLendo));
-                if FileExists(pChar(sArquivoLendo)) then
+                RenameFile((sTLista[I]), pChar(sArquivoLendo));
+                if FileExists((sArquivoLendo)) then
                 begin
 
                   ArqIniMobile := TIniFile.Create(sArquivoLendo); //Sandro Silva 2014-08-15 abre
@@ -26132,7 +26006,7 @@ begin
                   if (MinutesBetween(Now, FileDateToDateTime(FileAge(sArquivoLendo))) > 10)
                     or (HoursBetween(Now, dtDataHoraMobile) > 3) then
                   begin // Não processar arquivos baixados a mais de 10 minutos
-                    DeleteFile(pChar(sArquivoLendo));
+                    DeleteFile((sArquivoLendo));
                   end
                   else
                   begin
@@ -26424,8 +26298,8 @@ begin
                     //
                     // Terminado apaga o arquivo local baixado
                     //
-                    if FileExists(pChar(sArquivoLendo)) then // Sandro Silva 2016-05-25
-                      DeleteFile(pChar(sArquivoLendo));
+                    if FileExists((sArquivoLendo)) then // Sandro Silva 2016-05-25
+                      DeleteFile((sArquivoLendo));
                     //
                     bF12 := True;
                     //
@@ -26545,7 +26419,7 @@ begin
 
               FreeAndNil(ArqIniMobile);// Sandro Silva 2016-06-15  ArqIniMobile.Free; // Sandro Silva 2016-05-25
 
-              DeleteFile(pChar(sArquivoLendo));
+              DeleteFile((sArquivoLendo));
 
             end; // for I := 0 to sTLista.Count -1 do
 
@@ -26571,7 +26445,7 @@ begin
 
               ExibePanelMensagem('Aguarde... Sincronizando Cadastros Mobile', True); // Sandro Silva 2022-08-19 ExibePanelMensagem('Aguarde... Sincronizando Cadastros Mobile'); // Sandro Silva 2016-05-06
 
-              DeleteFile(pChar(sTLista[I])); // Sandro Silva 2016-06-08 Deleta o arquivo para não ser lido por outro executável
+              DeleteFile((sTLista[I])); // Sandro Silva 2016-06-08 Deleta o arquivo para não ser lido por outro executável
 
               //
               Application.ProcessMessages;
@@ -26860,6 +26734,26 @@ begin
     Timer2.Enabled := True;
 end;
 
+procedure TForm1.CCF1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_CCF(True));
+  if Form1.sModeloECF = '03' then SmallMsg(_ecf03_CCF(True));
+  if Form1.sModeloECF = '12' then ;
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CCF(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CCF(True));
+  if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CCF(True));
+end;
+
+procedure TForm1.CDC1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '02' then SmallMsg(_ecf02_CDC(True));
+  if Form1.sModeloECF = '03' then SmallMsg(_ecf03_CDC(True));
+  if Form1.sModeloECF = '12' then ;
+  if Form1.sModeloECF = '14' then SmallMsg(_ecf14_CDC(True));
+  if Form1.sModeloECF = '15' then SmallMsg(_ecf15_CDC(True));
+  if Form1.sModeloECF = '17' then SmallMsg(_ecf17_CDC(True));
+end;
+
 procedure TForm1.Button5Click(Sender: TObject);
 begin
   // testar estoque do dia
@@ -26892,7 +26786,7 @@ end;
 
 procedure TForm1.Verificaresquemaschema1Click(Sender: TObject);
 begin
-  Clipboard.SetTextBuf(pchar(Form1.ibDataSet150.FieldByName('NFEXML').AsString));
+  Clipboard.SetTextBuf(PChar(Form1.ibDataSet150.FieldByName('NFEXML').AsString));
   ShellExecute( 0, 'Open',pChar('http://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx'),'','', SW_SHOWMAXIMIZED);
 end;
 
@@ -26907,19 +26801,19 @@ var
   sBodyEmail: String;
   sFileZIP: String;
   bEnviar: Boolean;
+  {
   function TamanhoArquivo(Arquivo: string): Integer;
   begin
     with TFileStream.Create(Arquivo, fmOpenRead or fmShareExclusive) do
     try
       Result := Size;
     finally
-     Free;
+      Free;
     end;
   end;
+  }
 begin
-  //
   // Form só para pedir o período e o e-mail do contador.
-  //
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfce.ini');
   sEmail   := Alltrim(Mais1Ini.ReadString('XML','e-mail contabilidade',''));
   Form7.DateTimePicker1.Date    := StrToDate(Mais1Ini.ReadString('XML','Periodo Inicial',DateToStr(DATE-30)));
@@ -26948,7 +26842,7 @@ begin
       sEmail := ''
     else
       sEmail := Small_InputBox('e-mail da contabilidade','Informe um e-mail válido para enviar o XML para contabilidade:',sEmail);
-    //
+
     Mais1Ini.WriteString('XML','e-mail contabilidade',AllTrim(sEmail));
     Mais1Ini.WriteString('XML','Periodo Inicial',DateToStr(Form7.DateTimePicker1.Date));
     Mais1Ini.WriteString('XML','Periodo Final',DateToStr(Form7.DateTimePicker2.Date));
@@ -26956,8 +26850,6 @@ begin
     //
     if Form7.DateTimePicker1.Date <> StrToDate('01/01/1998') then
     begin
-      //
-
       Form1.ExibePanelMensagem('Aguarde... Exportando XML');
 
       DistribuicaoDFe(Form7.DateTimePicker1.Date, Form7.DateTimePicker2.Date, Form1.sAtual + '\CONTABIL', Form1.IBDataSet150.Transaction);
@@ -26965,16 +26857,16 @@ begin
       ChDir(Form1.sAtual); // Windows voltar para a pasta do executável Sandro Silva 2018-03-12
 
       // Sem validar se existem xml no diretório causa erro no szip.exe}
-      if FileExists(Form1.sAtual + '\CONTABIL\*.xml') then
+      //if FileExists(Form1.sAtual + '\CONTABIL\*.xml') then  // Mauricio Parizotto 2024-02-06
+      if HasFile(Form1.sAtual + '\CONTABIL\*.xml') then
       begin
-
         if FileExists('szip.exe') then
         begin
           // Se existir o arquivo .zip ele deve ser deletado antes. Está compactando os novos arquivos com os que já estão no .zip
           sFileZIP := Alltrim(Form1.sAtual + '\CONTABIL\'+ LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + '_'+StrTRan(DateToStr(date),'/','_')+'_nfce.zip');
 
           if FileExists(sFileZIP) then
-            DeleteFile(PChar(sFileZIP));
+            DeleteFile(sFileZIP);
 
           ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Alltrim(Form1.sAtual + '\CONTABIL\*.xml')+'" "'+ sFileZIP + '"'), '', SW_SHOWMAXIMIZED);
 
@@ -26985,15 +26877,13 @@ begin
             sleep(100);
           end;
           //
-          while not FileExists(pChar(sFileZIP)) do
+          while not FileExists(sFileZIP) do
           begin
             sleep(100);
           end;
 
           if ValidaEmail(sEmail) then
           begin
-            //
-
             if (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'CE') or (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'SP') then // Sandro Silva 2021-04-28 if bTemCFeSAT then
             begin
               sAssuntoEmail := 'NFC-e´s (Notas Fiscais Consumidor Eletrônicas) e CF-e (Cupom Fiscal Eletrônico)'; // Sandro Silva 2018-08-01
@@ -27017,20 +26907,21 @@ begin
                 bEnviar := False;
               end;
             end;
+
             if bEnviar then
             begin
-              _ecf65_EnviarEMail('',sEmail,'',sAssuntoEmail,
-                PChar(sBodyEmail+AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+'.'
+              _ecf65_EnviarEMail('', sEmail, '', sAssuntoEmail,
+                (sBodyEmail+AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+'.'
                 +' Período de '+DateToStr(Form7.DateTimePicker1.Date)+' até '+DateToStr(Form7.DateTimePicker2.Date)+'.')
-                ,PChar(sFileZIP)
-                ,False);
+                , (sFileZIP)
+                , False);
             end;
           end;
           if (Form7.CheckBox2.Checked) then
           begin
-            if FileExists(PChar(sFileZIP)) then
+            if FileExists(sFileZIP) then
             begin
-              Application.MessageBox(Pchar('Arquivos exportados para:' + #13 + #13 + sFileZIP), PAnsiChar(Form7.Caption), MB_OK + MB_ICONINFORMATION);
+              Application.MessageBox(Pchar('Arquivos exportados para:' + #13 + #13 + sFileZIP), PChar(Form7.Caption), MB_OK + MB_ICONINFORMATION);
               //WinExec(PAnsiChar('%windir%\explorer.exe "' + ExtractFilePath(sFileZIP) + '"'), SW_NORMAL);
               ShellExecute(Application.Handle, PChar('open'), PChar('explorer.exe'), PChar(ExtractFilePath(sFileZIP)), nil, SW_NORMAL);
             end;
@@ -27131,13 +27022,58 @@ begin
 
 end;
 
-procedure TForm1.IBDatabase2AfterConnect(Sender: TObject);
+
+{Sandro Silva 2023-12-27 inicio}
+procedure TForm1.AjustaDataSetTamanhoCampoDescricao(Sender: TObject);
+var
+  SizeDescricaoProd: Integer;
 begin
+
+  SizeDescricaoProd := TamanhoCampo(TIBDatabase(Sender).DefaultTransaction, 'ESTOQUE', 'DESCRICAO');
+  Form1.ibDataSet4DESCRICAO.Size  := SizeDescricaoProd;
+  Form1.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet27DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
+
+end;
+{Sandro Silva 2023-12-27 fim}
+
+
+procedure TForm1.IBDatabase2AfterConnect(Sender: TObject);
+var
+  SizeDescricaoProd: Integer;
+begin
+  {Sandro Silva 2023-12-28 inicio
+  SizeDescricaoProd := TamanhoCampo(TIBDatabase(Sender).DefaultTransaction, 'ESTOQUE', 'DESCRICAO');
+  Form1.ibDataSet4DESCRICAO.Size  := SizeDescricaoProd;
+  Form1.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet27DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
+  }
+  AjustaDataSetTamanhoCampoDescricao(Sender);
+
+  {Sandro Silva 2023-12-28 fim}
+
   AtualizaBase(IBDatabase2);
 end;
 
 procedure TForm1.IBDatabase1AfterConnect(Sender: TObject);
+var
+  SizeDescricaoProd: Integer;
 begin
+  {Sandro Silva 2023-12-28 inicio
+  SizeDescricaoProd := TamanhoCampo(TIBDatabase(Sender).DefaultTransaction, 'ESTOQUE', 'DESCRICAO');
+  Form1.ibDataSet4DESCRICAO.Size  := SizeDescricaoProd;
+  Form1.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet27DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
+  Form1.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
+  }
+  AjustaDataSetTamanhoCampoDescricao(Sender);  
+  {Sandro Silva 2023-12-28 fim}
+
   AtualizaBase(IBDatabase1);
 end;
 
@@ -27459,6 +27395,11 @@ begin
   Application.HintHidePause := Application.HintPause * 5;
 end;
 
+procedure TForm1.Vendabrutadodia1Click(Sender: TObject);
+begin
+  if Form1.sModeloECF = '15' then SmallMsg(FloatToStr(StrToFloatDef(Copy(Form1.PDV_DadosDaUltimaReducaoZ(True), 13, 18), 0) / 100));
+end;
+
 procedure TForm1.VendasIdentificadaspeloCPFCNPJ1Click(Sender: TObject);
 var
   F : TextFile;
@@ -27569,7 +27510,7 @@ begin
                  );
 
       CloseFile(F);                                    // Fecha o arquivo
-      AssinaturaDigital(pChar(SaveDialog1.FileName));
+      AssinaturaDigital((SaveDialog1.FileName));
       CHDir(Form1.sAtual);
 
       bGerando := False;
@@ -27685,7 +27626,7 @@ begin
           'insert into ECFS (SERIE, ENCRYPTHASH) values (:SERIE, :ENCRYPTHASH)';
         IBQECFS.ParamByName('SERIE').AsString       := sNumeroSerie;
         Form1.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-        IBQECFS.ParamByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sNumeroSerie)));
+        IBQECFS.ParamByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5String(sNumeroSerie));
         try
           IBQECFS.ExecSQL;
           IBQECFS.Transaction.Commit;
@@ -27936,7 +27877,7 @@ begin
                     IBQECFS.SQL.Text :=
                       'insert into ECFS (SERIE, ENCRYPTHASH) values (:SERIE, :ENCRYPTHASH)';
                     IBQECFS.ParamByName('SERIE').AsString := sECF;
-                    IBQECFS.ParamByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sECF)));
+                    IBQECFS.ParamByName('ENCRYPTHASH').AsString := Form1.LbBlowfish1.EncryptString(MD5String(sECF));
                     try
                       IBQECFS.ExecSQL;
                       IBQECFS.Transaction.Commit;
@@ -28676,7 +28617,8 @@ begin
 
           end;
 
-          _BlocoX.XmlReducaoZ(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar(SerieECF), PAnsiChar(IBQREDUCAO.FieldByName('DATA').AsString), True, True, True);
+          //2024-02-16 _BlocoX.XmlReducaoZ(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar(SerieECF), PAnsiChar(IBQREDUCAO.FieldByName('DATA').AsString), True, True, True);
+          _BlocoX.XmlReducaoZ(IBDatabase1.DatabaseName, Form1.sAtual, SerieECF, IBQREDUCAO.FieldByName('DATA').AsString, True, True, True);
 
         end;
       end;
@@ -28852,7 +28794,8 @@ begin
 
   if bOk then
   begin
-    _BlocoX.IdentificaRetornosComErroTratandoTodos(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar('ESTOQUE'));
+    //2024-02-16 _BlocoX.IdentificaRetornosComErroTratandoTodos(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar('ESTOQUE'));
+    _BlocoX.IdentificaRetornosComErroTratandoTodos(IBDatabase1.DatabaseName, Form1.sAtual, 'ESTOQUE');
 
     Form1.Display('Aguarde... REQUISITO LIX - Consultando','Aguarde... REQUISITO LIX - Consultando'); // Sandro Silva 2018-11-27
     Form1.BlocoxConsultarRecibo1;
@@ -28909,7 +28852,8 @@ begin
 
 //Form1.Label_CopyRight.Hint := Form1.Label_CopyRight.Hint + TimeToStr(Time) + #13; // Sandro Silva 2018-10-19
 
-      _BlocoX.ConsultarRecibo(PAnsiChar(Form1.IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), '');
+      // 2024-02-16 _BlocoX.ConsultarRecibo(PAnsiChar(Form1.IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), '');
+      _BlocoX.ConsultarRecibo(Form1.IBDatabase1.DatabaseName, Form1.sAtual, '');
     end;
 
     ChDir(Form1.sAtual); // Sandro Silva 2017-03-31
@@ -28937,7 +28881,8 @@ begin
 
   if bOk then
   begin
-    _BlocoX.IdentificaRetornosComErroTratandoTodos(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar('REDUCAO'));
+    //2024-02-16 _BlocoX.IdentificaRetornosComErroTratandoTodos(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar('REDUCAO'));
+    _BlocoX.IdentificaRetornosComErroTratandoTodos(IBDatabase1.DatabaseName, Form1.sAtual, 'REDUCAO');
 
     Form1.BlocoxConsultarRecibo1;
 
@@ -29064,7 +29009,7 @@ begin
         begin
           if (IBQDOC.FieldByName('DATA').AsString <> '') or (sDataEstoque <> '') then // Sandro Silva 2019-09-16 ER 02.06 UnoChapeco if IBQDOC.FieldByName('DATA').AsString <> '' then
           begin // Houve impressão de documento no ECF na data atual
-            if FileExists(PChar(Form1.sAtualOnLine + '\estoquedia\' + FormatDateTime('yyyymmdd', dtAtual) + '.dia')) = False then // Sandro Silva 2019-09-16 ER 02.06 UnoChapeco if FileExists(PChar(Form1.sAtualOnLine + '\estoquedia\' + FormatDateTime('yyyymmdd', IBQDOC.FieldByName('DATA').AsDateTime) + '.dia')) = False then
+            if FileExists((Form1.sAtualOnLine + '\estoquedia\' + FormatDateTime('yyyymmdd', dtAtual) + '.dia')) = False then // Sandro Silva 2019-09-16 ER 02.06 UnoChapeco if FileExists(PChar(Form1.sAtualOnLine + '\estoquedia\' + FormatDateTime('yyyymmdd', IBQDOC.FieldByName('DATA').AsDateTime) + '.dia')) = False then
             begin // O estoque dia é de uma data diferente da data que foi impresso o documento na data atual, atualiza o estoque atual
 
               ///
@@ -29254,6 +29199,7 @@ begin
 
     Form1.Panel3.Caption  := '';
     // Usando Label para quebra de linha automática
+    Form1.lblMensagemAlerta.BiDiMode  := bdLeftToRight; // Sandro Silva 2024-01-24
     Form1.lblMensagemAlerta.Font.Size  := LabelF1.Font.Size + 1; // Sandro Silva 2017-05-12 13;
     Form1.lblMensagemAlerta.Font.Style := [];
     Form1.lblMensagemAlerta.Caption    := sMensagem;
@@ -29267,29 +29213,28 @@ end;
 procedure SmallMsg(sMsg: String);
 // Substituir ShowMessage por SmallMsg para tratar a exibição de mensagem quando importando Mobile
 begin
-  if Form1.ClienteSmallMobile.ImportandoMobile // Sandro Silva 2022-08-08 if (ImportandoMobile)
+  if Form1.ClienteSmallMobile.ImportandoMobile
     and ((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99')) then
-    Form1.ClienteSmallMobile.LogRetornoMobile( // Sandro Silva 2022-08-08 LogRetornoMobile(
-      sMsg)
+    Form1.ClienteSmallMobile.LogRetornoMobile(sMsg)
   else
   begin
-    Application.ProcessMessages; // Sandro Silva 2017-08-01
-    ShowMessage(sMsg);
+    Application.ProcessMessages;
+    //ShowMessage(sMsg);
+    SmallMsgBox(PChar(sMsg), PChar(Application.Title), MB_OK);
   end;
 end;
 
 function SmallMsgBox(const Text, Caption: PChar; Flags: Longint): Integer;
 begin
-  if Form1.ClienteSmallMobile.ImportandoMobile then // Sandro Silva 2022-08-08 if ImportandoMobile then
+  if Form1.ClienteSmallMobile.ImportandoMobile then
   begin
-    Form1.ClienteSmallMobile.LogRetornoMobile( // Sandro Silva 2022-08-08 LogRetornoMobile(
-      Text);
+    Form1.ClienteSmallMobile.LogRetornoMobile(Text);
     Result := IDYES;
   end
   else
   begin
     Application.ProcessMessages; // Sandro Silva 2017-08-01
-    Result := Application.MessageBox(Pchar(Text), Caption, Flags);
+    Result := Application.MessageBox(Pchar(Text), Pchar(Caption), Flags);
   end;
 end;
 
@@ -29422,7 +29367,15 @@ begin
       //
       // Draws the result pixel
       //
-      imgd.Canvas.Pixels[x, y] := rgb((r div tpix),(g div tpix),(b div tpix));
+      try
+        if (r > 0) and (g > 0) and (b > 0 ) then
+          imgd.Canvas.Pixels[x, y] := rgb((r div tpix),(g div tpix),(b div tpix));
+      except
+        on E: Exception do
+        begin
+          ShowMessage(E.Message);
+        end;
+      end;
       //
     end;
   end;
@@ -30200,7 +30153,8 @@ begin
       or (AnsiContainsText(sTipo, 'ESTOQUE')) then
     begin
       try
-        _BlocoX.RestaurarArquivosXML(PAnsiChar(Form1.IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar(sTipo), PAnsiChar(sSerieECF), bApenasUltimo);
+        // 2024-02-16 _BlocoX.RestaurarArquivosXML(PAnsiChar(Form1.IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual), PAnsiChar(sTipo), PAnsiChar(sSerieECF), bApenasUltimo);
+        _BlocoX.RestaurarArquivosXML(Form1.IBDatabase1.DatabaseName, Form1.sAtual, sTipo, sSerieECF, bApenasUltimo);
       except
       end;
     end;
@@ -31026,8 +30980,8 @@ begin
   if Form1.sModeloECF = '59' then Result := _ecf59_RetornaAliquotas(pP1);
   if Form1.sModeloECF = '65' then Result := _ecf65_RetornaAliquotas(pP1);
   if Form1.sModeloECF = '99' then Result := _ecf99_RetornaAliquotas(pP1);
-  if Form1.sModeloECF = '02' then
-    sAliquotasISS := _ecf02_VerificaAliquotasIss;
+  if Form1.sModeloECF = '02' then Result := _ecf02_VerificaAliquotasIss;
+    //2024-01-25 sAliquotasISS := _ecf02_VerificaAliquotasIss;
 
 end;
 
@@ -31441,7 +31395,7 @@ var
         //
         sEAD := Replicate(' ',256);
         //
-        generateEAD(sArquivo1, sChavePublica, sChavePrivada, sEAD, 1);
+        generateEAD(AnsiString(sArquivo1), AnsiString(sChavePublica), AnsiString(sChavePrivada), AnsiString(sEAD), 1);
         //
 
         SmallMsg('Arquivo: '+#13+sArquivo1+#13+#13+
@@ -31630,7 +31584,7 @@ begin
   //
   if FileExists(Form1.SaveDialog1.FileName) then
   begin
-    AssinaturaDigital(pChar(Form1.SaveDialog1.FileName));
+    AssinaturaDigital((Form1.SaveDialog1.FileName));
   end;
   //
   CHDir(Form1.sAtual);
@@ -31699,7 +31653,7 @@ begin
     if FileExists(Form1.SaveDialog1.FileName) then
     begin
       Sleep(5000); // Temp para concluir o processo de salvar em disco Sandro Silva 2020-09-02 
-      AssinaturaDigital(pChar(Form1.SaveDialog1.FileName));
+      AssinaturaDigital((Form1.SaveDialog1.FileName));
     end;
     //
   finally
@@ -32231,7 +32185,7 @@ var
       end;
     end;
     PrinterNew.PrinterIndex := PrinterNew.PrinterIndex;
-    PrinterNew.SetPrinter(Device, Driver, PAnsiChar(sArquivoPDF), hDMode);
+    PrinterNew.SetPrinter(Device, Driver, PChar(sArquivoPDF), hDMode);
   end;
   {Sandro Silva 2018-03-23 fim}
 begin
@@ -32520,7 +32474,7 @@ begin
   // Equipamentos SAT/MFE da Tanca não aceitam no xml a IE do emitente com menos de 12 dígitos  
   sIE12Posicoes := LimpaNumero(Form1.ibDataSet13.FieldByName('IE').AsString);
   sIE12Posicoes := Right(DupeString('0', 12) + sIE12Posicoes, 12);
-  if SmallMsgBox(PAnsiChar('Ao efetuar vendas usar Inscrição Estadual com 12 dígitos' + #13 +
+  if SmallMsgBox(PChar('Ao efetuar vendas usar Inscrição Estadual com 12 dígitos' + #13 +
                            'Ex.: ' + LimpaNumero(Form1.ibDataSet13.FieldByName('IE').AsString) + ' -> ' + sIE12Posicoes + #13 +
                            #13 +
                            'Confirma?'), 'Atenção', MB_YESNO + MB_DEFBUTTON1 + MB_ICONQUESTION) = idYes then
@@ -32665,7 +32619,7 @@ end;
 procedure TForm1.CNAEdispensadoatransmissodosarquivosdoEstoque1Click(
   Sender: TObject);
 begin
-  if Application.MessageBox(PAnsiChar('A transmissão mensal do arquivo eletrônico do Estoque fica dispensada para os restaurantes, bares e similares,' + #10 +'conforme regra disposta no Ato COTEPE ICMS 09/2013 e ATO DIAT 17/2017.' +
+  if Application.MessageBox(PWideChar('A transmissão mensal do arquivo eletrônico do Estoque fica dispensada para os restaurantes, bares e similares,' + #10 +'conforme regra disposta no Ato COTEPE ICMS 09/2013 e ATO DIAT 17/2017.' +
                            #10 +#10 + 'A não transmissão é passível de penalidades fiscais.' +
                            #10 +#10 + 'Consulte seu Contador!' +
                            #10 +#10 + 'O CNAE da sua empresa está dispensado da transmissão?'), 'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = idNo then
@@ -33934,7 +33888,8 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarAoFISCOREDUCAOZBlocox(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+    // 2024-02-16 _BlocoX.GerarAoFISCOREDUCAOZBlocox(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+    _BlocoX.GerarAoFISCOREDUCAOZBlocox(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
 
     Commitatudo2(True); // EnvioaoFISCOESTOQUEClick 2017-03-22
     CommitaTudo(True);// EnvioaoFISCOESTOQUEClick 2017-03-22
@@ -33994,7 +33949,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueAnoAnterior(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+    _BlocoX.GerarEstoqueAnoAnterior(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -34023,7 +33978,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueMudancaDeTributacao(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+    _BlocoX.GerarEstoqueMudancaDeTributacao(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -34052,7 +34007,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+    _BlocoX.GerarEstoqueSuspensaoOuBaixaDeIE(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -34082,7 +34037,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueMudancaDeRegime(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+    _BlocoX.GerarEstoqueMudancaDeRegime(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -34112,7 +34067,7 @@ begin
 
   if bOk then
   begin
-    _BlocoX.GerarEstoqueAtual(PAnsiChar(IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual));
+    _BlocoX.GerarEstoqueAtual(PAnsiChar(AnsiString(IBDatabase1.DatabaseName)), PAnsiChar(AnsiString(Form1.sAtual)));
   end;
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
@@ -34178,7 +34133,7 @@ begin
   if _59.AssinaturaAssociada <> '' then
     _ecf59_AssociarAssinatura(_59.CodigoAtivacao, _59.Emitente.CNPJ, _59.AssinaturaAssociada)
   else
-    SmallMsgBox(PAnsiChar('Nenhuma Assinatura encontrada' + #13 + #13 +
+    SmallMsgBox(PChar('Nenhuma Assinatura encontrada' + #13 + #13 +
                           'Verifique sua conexão com a Internet' + #13 + 'e tente vincular novamente' + #13 +
                           'Persistindo o erro acesse www.smallsoft.com.br, Suporte e escolha Autorização de uso SAT ou MF-e' + #13 +
                           'Você receberá por e-mail um arquivo com a assinatura. Salve esse arquivo na pasta Windows'), 'Atenção', MB_OK + MB_ICONWARNING);
@@ -34800,7 +34755,7 @@ begin
           if Form1.bStatusECF then // Sandro Silva 2020-06-25
           begin
 
-            if Application.MessageBox(PansiChar('NFC-e em contingência com transmissão pendente' + #13 + #13 + 'Deseja transmitir a contingência agora?'), PAnsiChar('Atenção - NFC-e em Contingência'), MB_YESNO + MB_DEFBUTTON1 + MB_ICONQUESTION) = id_Yes then
+            if Application.MessageBox(PChar('NFC-e em contingência com transmissão pendente' + #13 + #13 + 'Deseja transmitir a contingência agora?'), PChar('Atenção - NFC-e em Contingência'), MB_YESNO + MB_DEFBUTTON1 + MB_ICONQUESTION) = id_Yes then
             begin
 
               _ecf65_EnviarNFCeContingencia(Form1.IBDataSet150.FieldByName('DATA').AsDateTime, '', ''); //  , Form1.ibDataSet150.FieldByName('CAIXA').AsString); // Sandro Silva 2018-03-06  Form1.sCaixa);
@@ -34818,7 +34773,7 @@ begin
         begin
           if Form1.sCaixa <> Form1.ibDataSet150.FieldByName('CAIXA').AsString then
           begin
-            Application.MessageBox(PAnsiChar('NFC-e ' + Form1.ibDataSet150.FieldByName('NUMERONF').AsString + ' pertence ao caixa ' + Form1.ibDataSet150.FieldByName('CAIXA').AsString +
+            Application.MessageBox(PWideChar('NFC-e ' + Form1.ibDataSet150.FieldByName('NUMERONF').AsString + ' pertence ao caixa ' + Form1.ibDataSet150.FieldByName('CAIXA').AsString +
                                              #13 + #13 + 'Faça o envio pelo caixa ' + Form1.ibDataSet150.FieldByName('CAIXA').AsString), 'Atenção', MB_OK + MB_ICONWARNING);
           end
           else

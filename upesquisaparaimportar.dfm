@@ -13,7 +13,6 @@ object FPesquisaParaImportar: TFPesquisaParaImportar
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -53,7 +52,7 @@ object FPesquisaParaImportar: TFPesquisaParaImportar
     Left = 20
     Top = 102
     Width = 981
-    Height = 22
+    Height = 19
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
@@ -98,6 +97,8 @@ object FPesquisaParaImportar: TFPesquisaParaImportar
       Width = 1018
       Height = 301
       TabOrder = 0
+      ExplicitLeft = -5
+      ExplicitHeight = 301
       inherited PAnel1: TPanel
         inherited Image4: TImage
           Picture.Data = {00}
@@ -137,8 +138,8 @@ object FPesquisaParaImportar: TFPesquisaParaImportar
     BevelInner = bvNone
     BevelOuter = bvNone
     BiDiMode = bdLeftToRight
-    Date = 35796.376154398150000000
-    Time = 35796.376154398150000000
+    Date = 35796.000000000000000000
+    Time = 0.376154398152721100
     DateFormat = dfLong
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlack
@@ -182,6 +183,8 @@ object FPesquisaParaImportar: TFPesquisaParaImportar
     AfterOpen = IBQPESQUISAAfterOpen
     BufferChunks = 1000
     CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
     Left = 144
     Top = 160
   end

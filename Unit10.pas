@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, SmallFunc, IniFiles, Menus, Buttons, StrUtils,
+  StdCtrls, ExtCtrls, SmallFunc_xe, IniFiles, Menus, Buttons, StrUtils,
   umfe, _Small_59;
 
 type
@@ -54,7 +54,9 @@ var
 
 implementation
 
-uses fiscal, _Small_IntegradorFiscal, ufuncoesfrente, uajustaresolucao;
+uses fiscal
+//, _Small_IntegradorFiscal
+, ufuncoesfrente, uajustaresolucao;
 
 {$R *.DFM}
 
@@ -533,7 +535,7 @@ begin
 
               if StrToIntDef(Form1.sParcelas, 0) > 62 then
               begin
-                if Application.MessageBox(PAnsiChar('Número de PARCELAS acima do padrão' + #13 +  #13 +
+                if Application.MessageBox(PChar('Número de PARCELAS acima do padrão' + #13 +  #13 +
                                                     'Confirma ' + FormatFloat(',0', StrToIntDef(Form1.sParcelas, 0)) + ' parcelas?' + #13 + #13),
                                           'Alerta',
                                           MB_YESNO + MB_ICONWARNING + MB_DEFBUTTON2) = IDNO then // MB_DEFBUTTON2 para evitar que o usuário avance com Enter sem querer quando não deveria. Caso que informou o número da autorização para o número de parcelas e gerou mais de 100 mil registros no RECEBER
@@ -546,7 +548,7 @@ begin
               except
                 on E: Exception do
                 begin
-                  Application.MessageBox(PAnsiChar('Número de parcelas informado é inválido: ' + Form1.sparcelas), 'Atenção', MB_OK + MB_ICONWARNING);
+                  Application.MessageBox(PChar('Número de parcelas informado é inválido: ' + Form1.sparcelas), 'Atenção', MB_OK + MB_ICONWARNING);
                   Form1.sParcelas := '';
                 end;
               end;
