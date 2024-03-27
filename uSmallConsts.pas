@@ -3,6 +3,11 @@ unit uSmallConsts;
 interface
 
 const
+  RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF  = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2023-01-18 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
+  RAZAO_SOCIAL_SOFTWARE_HOUSE      = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
+
+  DIRETORIO_BKP_TEF                = 'c:\TEFBKP';
+
   _cSenhaSair = '#####';
   _cUsuarioAdmin = 'Administrador';
   _cRecebPagto = 'Caixa';

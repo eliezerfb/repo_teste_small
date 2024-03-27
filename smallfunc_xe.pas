@@ -51,6 +51,7 @@ uses
 //  , uITestaEmail
 //  , uTestaEmail
   {$ENDIF}
+  , uSmallConsts
   ;
 
 
@@ -206,6 +207,7 @@ function DiasDesteMes: Integer;
 function TamanhoArquivo(Arquivo: string): Integer;
 procedure RenameLog(Arquivo: String);
 function HasFile(Directory: String): boolean;
+function TestarTEFConfigurado: Boolean;
 
 var
   IMG: TImage;
@@ -2579,6 +2581,18 @@ var
 begin
   I := FindFirst(Directory, 0, SearchRec);
   Result := I = 0;
+end;
+
+function TestarTEFConfigurado: Boolean;
+var
+  oArq : TiniFile;
+begin
+  oArq := TIniFile.Create('FRENTE.INI');
+  try
+    Result := AnsiUpperCase(oArq.ReadString('Frente de caixa', 'TEM TEF', _cNao)) = AnsiUpperCase(_cSim);
+  finally
+    oArq.Free;
+  end;
 end;
 
 end.
