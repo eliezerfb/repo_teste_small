@@ -3168,6 +3168,7 @@ var
   fPercentualFCP, fPercentualFCPST: Real; // Sandro Silva 2023-05-15
   dvICMSMonoRet_N45: Real; // Sandro Silva 2023-06-07
   dvFCPSTRet_N27d: Real; // Sandro Silva 2024-03-25
+  dvBCFCPSTRet_N27a: Real;// Sandro Silva 2024-03-27
 begin
   //Mauricio Parizotto 2023-04-03
   fTotalMercadoria := RetornaValorSQL(' Select coalesce(sum(TOTAL),0) '+
@@ -3997,11 +3998,12 @@ begin
         begin
           SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
           //vBCFCPSTRet - buscar a informação da tabela ITENS002, campo VBCFCPST (dividir pela quantidade dos itens)
-          Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := FormatFloatXML(Form7.ibQuery1.FieldByName('VBCFCPST').AsFloat / Form7.ibQuery1.FieldByName('QUANTIDADE').AsFloat); // Valor da Base de Cálculo do FCP retido anteriormente por ST
+          dvBCFCPSTRet_N27a := (Form7.ibQuery1.FieldByname('VBCST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat) * Form7.ibDataSet16QUANTIDADE.AsFloat;
+          Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := FormatFloatXML(dvBCFCPSTRet_N27a); // Valor da Base de Cálculo do FCP retido anteriormente por ST
           //pFCPSTRet - buscar a informação da tabela ITENS002, campo PFCPST (dividir pela quantidade dos itens)
           Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := FormatFloatXML(Form7.ibQuery1.FieldByName('PFCPST').AsFloat); // Percentual do FCP retido anteriormente por Substituição Tributária
           //vFCPSTRet - buscar a informação da tabela ITENS002, campo VFCPST(dividir pela quantidade dos itens)OBS: Seguir a mesma lógica do grupo vBCSTRet
-          dvFCPSTRet_N27d := StrToFloat(FormatFloat('0.00', Form7.ibQuery1.FieldByName('VFCPST').AsFloat / Form7.ibQuery1.FieldByName('QUANTIDADE').AsFloat));
+          dvFCPSTRet_N27d := StrToFloat(FormatFloat('0.00', dvBCFCPSTRet_N27a * Form7.ibQuery1.FieldByName('PFCPST').AsFloat / 100));
           Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := FormatFloatXML(dvFCPSTRet_N27d); // Valor do FCP retido por Substituição Tributária
           dvFCPSTRet_W06b := dvFCPSTRet_W06b + dvFCPSTRet_N27d;
         end;
@@ -4905,11 +4907,12 @@ begin
           begin
             SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
             //vBCFCPSTRet - buscar a informação da tabela ITENS002, campo VBCFCPST (dividir pela quantidade dos itens)
-            Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := FormatFloatXML(Form7.ibQuery1.FieldByName('VBCFCPST').AsFloat / Form7.ibQuery1.FieldByName('QUANTIDADE').AsFloat); // Valor da Base de Cálculo do FCP retido anteriormente por ST
+            dvBCFCPSTRet_N27a := (Form7.ibQuery1.FieldByname('VBCST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat) * Form7.ibDataSet16QUANTIDADE.AsFloat;
+            Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := FormatFloatXML(dvBCFCPSTRet_N27a); // Valor da Base de Cálculo do FCP retido anteriormente por ST
             //pFCPSTRet - buscar a informação da tabela ITENS002, campo PFCPST (dividir pela quantidade dos itens)
             Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := FormatFloatXML(Form7.ibQuery1.FieldByName('PFCPST').AsFloat); // Percentual do FCP retido anteriormente por Substituição Tributária
             //vFCPSTRet - buscar a informação da tabela ITENS002, campo VFCPST(dividir pela quantidade dos itens)OBS: Seguir a mesma lógica do grupo vBCSTRet
-            dvFCPSTRet_N27d := StrToFloat(FormatFloat('0.00', Form7.ibQuery1.FieldByName('VFCPST').AsFloat / Form7.ibQuery1.FieldByName('QUANTIDADE').AsFloat));
+            dvFCPSTRet_N27d := StrToFloat(FormatFloat('0.00', dvBCFCPSTRet_N27a * Form7.ibQuery1.FieldByName('PFCPST').AsFloat / 100));
             Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := FormatFloatXML(dvFCPSTRet_N27d); // Valor do FCP retido por Substituição Tributária
             dvFCPSTRet_W06b := dvFCPSTRet_W06b + dvFCPSTRet_N27d;
           end;
