@@ -1356,14 +1356,29 @@ var
   oTEF: TFuncoesTEF;
   nTotalCartao: Currency;
   bAprovado: Boolean;
+  bPodeTEF: Boolean;
 begin
   Result := False;
   DBGrid1.DataSource.DataSet.First;
-  if not TestarRegistroPodeChamarTEF then
-  begin
-    // Seta True para deixar passar quando não permite TEF.
-    Result := True;
-    Exit;
+
+  DBGrid1.DataSource.DataSet.DisableControls;
+  try
+    bPodeTEF := False;
+    while not DBGrid1.DataSource.DataSet.Eof do
+    begin
+      bPodeTEF := TestarRegistroPodeChamarTEF;
+      if bPodeTEF then
+        Break;
+        // Seta True para deixar passar quando não permite TEF.
+      DBGrid1.DataSource.DataSet.Next;
+    end;
+    if not bPodeTEF then
+    begin
+      Result := True;
+      Exit;
+    end;
+  finally
+    DBGrid1.DataSource.DataSet.EnableControls;
   end;
 
   try
