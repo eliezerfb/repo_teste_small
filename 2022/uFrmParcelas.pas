@@ -1441,7 +1441,7 @@ begin
 
     while not oDataSet.Eof do
     begin
-      if FormaDePagamentoEnvolveCartao(oDataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+      if (FormaDePagamentoEnvolveCartao(oDataSet.FieldByName('FORMADEPAGAMENTO').AsString)) and (Trim(DBGrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) = EmptyStr) then
       begin
         if oDataSetTemp.IsEmpty then
         begin
@@ -1524,7 +1524,7 @@ begin
 
     while not DBGrid1.DataSource.DataSet.Eof do
     begin
-      if FormaDePagamentoEnvolveCartao(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) then
+      if (FormaDePagamentoEnvolveCartao(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString)) and (Trim(DBGrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) = EmptyStr) then
         Result := Result + dBgrid1.DataSource.DataSet.FieldByName('VALOR_DUPL').AsCurrency;
 
       DBGrid1.DataSource.DataSet.Next;
