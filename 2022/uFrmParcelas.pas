@@ -1177,6 +1177,7 @@ procedure TFrmParcelas.DBGrid1KeyDown(Sender: TObject; var Key: Word;
 var
   slFormas: TStringList;
   sForma: String;
+  nIndiceAnt: Integer;
 begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 
@@ -1207,6 +1208,7 @@ begin
 
       if Key in [VK_RETURN, VK_TAB] then
       begin
+        nIndiceAnt := DbGrid1.SelectedIndex;
 
         DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
 
@@ -1217,7 +1219,7 @@ begin
             Break;
         end;
 
-        if Pred(DBGrid1.Columns.Count) = DbGrid1.SelectedIndex  then
+        if (Pred(DBGrid1.Columns.Count) = DbGrid1.SelectedIndex) and ((nIndiceAnt = Pred(DBGrid1.Columns.Count)) or (dBgrid1.SelectedField.ReadOnly)) then
         begin
           DbGrid1.SelectedIndex := 0;
 
@@ -1356,7 +1358,7 @@ var
   bAprovado: Boolean;
 begin
   Result := False;
-
+  DBGrid1.DataSource.DataSet.First;
   if not TestarRegistroPodeChamarTEF then
   begin
     // Seta True para deixar passar quando não permite TEF.
