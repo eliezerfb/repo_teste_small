@@ -2438,6 +2438,18 @@ begin
   end;
   {Mauricio Parizotto 2024-02-28 Fim}
 
+
+  {Mauricio Parizotto 2024-03-28 Inicio}
+  if not CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'PISCOFINSLUCRO') then
+  begin
+    if ExecutaComando('Alter table ICM add PISCOFINSLUCRO varchar(1);') then
+      ExecutaComando('Commit');
+
+    if ExecutaComando('Update ICM set PISCOFINSLUCRO = ''N'' ;') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-03-28 Fim}
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 

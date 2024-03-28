@@ -1686,6 +1686,7 @@ type
     MenuItem137: TMenuItem;
     MenuItem140: TMenuItem;
     MenuItem141: TMenuItem;
+    ibDataSet14PISCOFINSLUCRO: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -21882,6 +21883,7 @@ end;
 procedure TForm7.ibDataSet14NewRecord(DataSet: TDataSet);
 begin
   ibDataSet14REGISTRO.AsString  := sProximo;
+  ibDataSet14PISCOFINSLUCRO.AsString  := 'N';
 end;
 
 procedure TForm7.ibDataSet18NewRecord(DataSet: TDataSet);
