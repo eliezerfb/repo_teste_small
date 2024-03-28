@@ -1476,7 +1476,7 @@ type
     CDSItensNotaAuxCODIGO: TStringField;
     RelatriodevendasporclienteNFeCupom1: TMenuItem;
     ibDataSet23ICMS_DESONERADO: TIBBCDField;
-    ibDataSet23PST: TIBBCDField;
+    ibDataSet23PICMSST: TIBBCDField;
     ibDataSet24ICMS_DESONERADO: TIBBCDField;
     pnlFiltro: TPanel;
     lblHomologacao: TLabel;
@@ -10805,6 +10805,7 @@ begin
         Form7.ibDataSet23VBC.Visible            := False;
         Form7.ibDataSet23VBCST.Visible          := False;
         Form7.ibDataSet23VICMSST.Visible        := False;
+        Form7.ibDataSet23PICMSST.Visible      := True; //Sandro Silva 2024-03-28
         Form7.ibDataSet23VIPI.Visible           := False;
         Form7.ibDataSet23EAN_ORIGINAL.Visible   := False;
 

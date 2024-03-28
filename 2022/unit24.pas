@@ -351,6 +351,7 @@ begin
   Form7.ibDataSet23VBC.Visible          := True;
   Form7.ibDataSet23VBCST.Visible        := True;
   Form7.ibDataSet23VICMSST.Visible      := True;
+  Form7.ibDataSet23PICMSST.Visible      := True; //Sandro Silva 2024-03-28
   Form7.ibDataSet23VIPI.Visible         := True;
   Form7.ibDataSet23QUANTIDADE.Visible   := False;
   Form7.ibDataSet23UNITARIO.Visible     := False;
@@ -1583,6 +1584,7 @@ begin
     Form7.ibDataSet23VBC.Visible          := False;
     Form7.ibDataSet23VBCST.Visible        := False;
     Form7.ibDataSet23VICMSST.Visible      := False;
+    Form7.ibDataSet23PICMSST.Visible      := True; //Sandro Silva 2024-03-28
     Form7.ibDataSet23VIPI.Visible         := False;
     // Sandro Silva 2023-03-29 Form7.ibDataSet23DESCRICAO.DisplayWidth := 35;
 
