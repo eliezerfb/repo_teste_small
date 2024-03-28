@@ -12412,7 +12412,6 @@ begin
   try
     AgendaCommit(True);
     Commitatudo(True);
-
     // Necessario fehar e abrir novamente para não abrir a tela de empresa
     Form7.ibDataSet13.Close;
     Form7.ibDataSet13.Open;

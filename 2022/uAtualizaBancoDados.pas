@@ -2438,7 +2438,7 @@ begin
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSQL.Clear;
     Form1.ibDataSet200.SelectSQL.Text :=
-      'SELECT COALESCE(ESTADO,''SC'') AS ESTADDO FROM EMITENTE';
+      'SELECT COALESCE(ESTADO,''SC'') AS ESTADO FROM EMITENTE';
     Form1.ibDataSet200.Open;
 
     if (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then
