@@ -830,10 +830,10 @@ begin
                         end;
                         if allTrim(sMensagem) <> 'CHEQUE SEM RESTRICAO' then
                           FoDadosTransacao.Mensagem := sMensagem;
-//                        if Pos('O CANCELADA', FoDadosTransacao.Mensagem) > 0 then
-//                          Break;
                       end;
                       if sBotaoOk = '0' then
+                        Break;
+                      if Pos('O CANCELADA', FoDadosTransacao.Mensagem) > 0 then
                         Break;
                       //
                     end;
