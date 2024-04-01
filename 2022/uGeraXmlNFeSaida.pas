@@ -2951,11 +2951,14 @@ begin
       if FormaDePagamentoEnvolveCartao(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
       begin
         IBQCREDENCIADORA.Close;
-        IBQCREDENCIADORA.SQL.Text :=
-          'select * ' +
-          'from CLIFOR ' +
-          'where NOME = ' + QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString);
+        IBQCREDENCIADORA.SQL.Clear;
+        IBQCREDENCIADORA.SQL.Add('select * from CLIFOR');
+        IBQCREDENCIADORA.SQL.Add('WHERE (CLIFOR in (''Credenciadora de cartão'', ''Instituição financeira''))');
+        // Se não tem pega o primeiro
+        if Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString <> EmptyStr then
+          IBQCREDENCIADORA.SQL.Add('and (NOME = ' + QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString) + ')');
         IBQCREDENCIADORA.Open;
+        IBQCREDENCIADORA.First;
         // Se for Cartão
         if (bPagouComTEF) then
           Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '1'
