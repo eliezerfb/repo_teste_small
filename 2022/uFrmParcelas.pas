@@ -78,6 +78,7 @@ type
     procedure AjustaPanelTEF;
     function TestarRegistroPodeChamarTEF: Boolean;
     procedure GerarParcelasTEFInativadas(AbExibeMensagem: Boolean = False);
+    procedure RefazerNumeroParcela;
 
   public
     { Public declarations }
@@ -1514,6 +1515,8 @@ begin
         oDataSet.FieldByName('FORMADEPAGAMENTO').AsString := 'Pagamento Instantâneo (PIX)';
       oDataSet.Post;
     end;
+
+    RefazerNumeroParcela;
   finally
     oDataSet.First;
     oDataSet.EnableControls;
@@ -1525,6 +1528,40 @@ begin
       oDataSetTemp.First;
     end;
     FreeAndNil(oDataSetTemp);
+  end;
+end;
+
+procedure TFrmParcelas.RefazerNumeroParcela;
+var
+  nParcelaAtual: Integer;
+begin
+  dBgrid1.DataSource.DataSet.First;
+  try
+    nParcelaAtual := 0;
+    while not dBgrid1.DataSource.DataSet.Eof do
+    begin
+      nParcelaAtual := nParcelaAtual + 1;
+
+      Form7.ibDataSet7.Edit;
+      if Form7.sRPS <> 'S' then
+      begin
+        if Copy(Form7.ibDataSet15NUMERONF.AsString,10,3) = '002' then
+        begin
+          Form7.ibDataSet7DOCUMENTO.Value := 'S'+Copy(Form7.ibDataSet15NUMERONF.AsString,2,8) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),nParcelaAtual,1);
+        end else
+        begin
+          Form7.ibDataSet7DOCUMENTO.Value := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),nParcelaAtual,1);
+        end;
+      end else
+      begin
+        Form7.ibDataSet7DOCUMENTO.Value := Copy(Form7.ibDataSet15NUMERONF.AsString,1,1)+'S'+Copy(Form7.ibDataSet15NUMERONF.AsString,3,7) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),nParcelaAtual,1);
+      end;
+      Form7.ibDataSet7.Post;
+
+      dBgrid1.DataSource.DataSet.Next;
+    end;
+  finally
+    dBgrid1.DataSource.DataSet.First;
   end;
 end;
 
