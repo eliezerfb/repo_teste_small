@@ -1301,6 +1301,9 @@ end;
 
 procedure TFrmParcelas.Button4Click(Sender: TObject);
 begin
+
+  if (Form7.sModulo = 'VENDA') and (not ChamarTEF) then
+    Exit;
   if ValidarDesdobramentoParcela then
     Close;
 end;
@@ -1503,6 +1506,7 @@ begin
 
       oDataSet.Edit;
 
+      oDataSet.FieldByName('PORTADOR').AsString         := oDataSetTemp.FieldByName('PORTADOR').AsString;
       oDataSet.FieldByName('VENCIMENTO').AsDateTime       := IncMonth(Date, i);
       oDataSet.FieldByName('VALOR_DUPL').AsCurrency       := nValorParc + nRestoParc;
       oDataSet.FieldByName('BANDEIRA').AsString             := AoDadosTransacao.Bandeira;
@@ -1602,9 +1606,6 @@ var
 begin
   if Form7.sModulo = 'VENDA' then
   begin
-    if not ChamarTEF then
-      Abort;
-
     Total := 0;
     Form7.ibDataSet7.First;
     while not Form7.ibDataSet7.Eof do
