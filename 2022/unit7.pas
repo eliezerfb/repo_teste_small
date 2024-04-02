@@ -17543,7 +17543,7 @@ end;
 
 procedure TForm7.ibDataSet2CEPSetText(Sender: TField; const Text: String);
 begin
-  Valida_Campo('CLIFOR',Text,'CEP','Auxilio na digitação do CEP.');
+//  Valida_Campo('CLIFOR',Text,'CEP','Auxilio na digitação do CEP.'); // Dailon Parisotto 2024-04-02
   ibDataSet2CEP.AsString := Text;
 end;
 
