@@ -722,7 +722,7 @@ begin
     Form7.ibDataset99.SelectSql.Add('select gen_id(G_NN,1) from rdb$database');
     Form7.ibDataset99.Open;
     Form7.ibDataSet7.Edit;
-    Form7.ibDataSet7NN.AsString := strZero(StrToInt(Form7.ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
+    Form7.ibDataSet7NN.AsString := StrZero(StrToInt64(Form7.ibDataSet99.FieldByname('GEN_ID').AsString), 10, 0); // 2024-04-02 Form7.ibDataSet7NN.AsString := strZero(StrToInt(Form7.ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
 
     Form7.ibDataSet7.Post;
     Form7.ibDataset99.Close;
