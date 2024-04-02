@@ -6006,7 +6006,10 @@ begin
               // Valores
               //
               vCampo[020] := Form7.ibDataSet15SERVICOS.Value;   //  20 Base de Cálculo do ISS
-              if Form7.ibDataSet15SERVICOS.AsFloat <> 0 then vCampo[021] := Form7.ibDataSet15ISS.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat * 100 else vCampo[021] := 0;
+              if Form7.ibDataSet15SERVICOS.AsFloat <> 0 then
+                vCampo[021] := Form7.ibDataSet15ISS.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat * 100
+              else
+                vCampo[021] := 0;
               vCampo[022] := Form7.ibDataSet15ISS.Value;          //  22 Valor total do ISS
               vCampo[023] := Form7.ibDataSet15BASEICM.Value;      //  23 Base de Cálculo do ICMS
               vCampo[025] := Form7.ibDataSet15ICMS.Value;         //  25 Valor do ICM
@@ -6697,7 +6700,10 @@ begin
               // Valores
               //
               vCampo[020] := Form7.ibDataSet15SERVICOS.Value;   //  20 Base de Cálculo do ISS
-              if Form7.ibDataSet15SERVICOS.AsFloat <> 0 then vCampo[021] := Form7.ibDataSet15ISS.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat * 100 else vCampo[021] := 0;
+              if Form7.ibDataSet15SERVICOS.AsFloat <> 0 then
+                vCampo[021] := Form7.ibDataSet15ISS.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat * 100
+              else
+                vCampo[021] := 0;
               vCampo[022] := Form7.ibDataSet15ISS.Value;          //  22 Valor total do ISS
               vCampo[023] := Form7.ibDataSet15BASEICM.Value;      //  23 Base de Cálculo do ICMS
               vCampo[025] := Form7.ibDataSet15ICMS.Value;         //  25 Valor do ICM
@@ -7632,6 +7638,8 @@ begin
 end;
 
 function Totalizaservicos(sP1: Boolean):Boolean;
+var
+  dDescontoIssProporcional: Double;
 begin
   // Servicos
   if Form7.sModulo = 'VENDA' then
@@ -7677,12 +7685,20 @@ begin
         //
         Form7.ibDataSet35ISS.AsFloat      := Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('ISS').AsFloat / 100 * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100;
         }
-        Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet15DESCONTO.AsFloat, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat); // Sandro Silva 2023-10-02 Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - (Form7.ibDataSet15DESCONTO.AsFloat * Form7.ibDataSet14ISS.AsFloat / 100);
+        Form7.ibDataSet15ISS.AsFloat      := CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet15SERVICOS.AsFloat - Form7.ibDataSet15DESCONTO.AsFloat, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat); // Sandro Silva 2024-04-02 Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet15DESCONTO.AsFloat, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat); // Sandro Silva 2023-10-02 Form7.ibDataSet15ISS.AsFloat      := Form7.IBQuery3.FieldByname('TOTALISS').AsFloat - (Form7.ibDataSet15DESCONTO.AsFloat * Form7.ibDataSet14ISS.AsFloat / 100);
         Form7.ibDataSet35.Edit;
-        //
+
         // Sandro Silva 2023-10-02 Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('ISS').AsFloat / 100 * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
+
+        {Sandro Silva 2024-04-02 inicio
         Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat));
         Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
+        }
+        dDescontoIssProporcional := StrToFloat(FormatFloat('0.00', (Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat) * Form7.ibDataSet15DESCONTO.AsFloat));
+        Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat - dDescontoIssProporcional, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat));
+        Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais((Form7.ibDataSet35TOTAL.AsFloat - dDescontoIssProporcional)* Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
+        {Sandro Silva 2024-04-02 fim}
+
         {Sandro Silva 2022-09-21 fim}
         //
         Form7.sModulo := 'VENDA';
@@ -9795,7 +9811,7 @@ begin
                         Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
                         Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
                         Form7.ibDataSet4.Open;
-                        
+
                         ibDataSet16.Edit;
                         if (((ibDataSet16TOTAL.Asfloat * fDesconto) / ibDataSet16QUANTIDADE.AsFloat) < ibDataSet4CUSTOCOMPR.AsFloat) and (Form1.ConfCusto = 'Não') then
                         begin
