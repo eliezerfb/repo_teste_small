@@ -34,7 +34,7 @@ uses
   function ExecutaComando(comando:string):Boolean;  overload;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024004'; // Sandro Silva 2024-02-23 const BUILD_DO_BANCO = '2024002'; // Sandro Silva 2024-02-19 const BUILD_DO_BANCO = '2023048';// Sandro Silva 2023-12-29 const BUILD_DO_BANCO = '2023046'; //Mauricio Parizotto 2023-12-15 const BUILD_DO_BANCO = '2023044';
+const BUILD_DO_BANCO = '2024006'; // Sandro Silva 2024-03-28 const BUILD_DO_BANCO = '2024004'; // Sandro Silva 2024-02-23 const BUILD_DO_BANCO = '2024002'; // Sandro Silva 2024-02-19 const BUILD_DO_BANCO = '2023048';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -277,6 +277,7 @@ type
     Observaonadescriodosservios1: TMenuItem;
     ConfiguraoTEF1: TMenuItem;
     N7: TMenuItem;
+    Clculododescontopeloprovedor1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -447,6 +448,7 @@ type
       const pDisp: IDispatch; const URL: OleVariant);
     procedure FormDestroy(Sender: TObject);
     procedure ConfiguraoTEF1Click(Sender: TObject);
+    procedure Clculododescontopeloprovedor1Click(Sender: TObject);
 
 
   private
@@ -8859,6 +8861,30 @@ begin
   end;
 end;
 
+procedure TForm1.Clculododescontopeloprovedor1Click(Sender: TObject);
+var
+  ConfSistema: TArquivosDAT;
+  IBTransaction: TIBTransaction;
+begin
+  try
+    IBTransaction := CriaIBTransaction(Form7.ibDataSet13.Transaction.DefaultDatabase);
+    ConfSistema := TArquivosDAT.Create(Usuario, IBTransaction);
+    try
+      ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor := IfThen(Clculododescontopeloprovedor1.Checked, 'Não', 'Sim');
+      IBTransaction.Commit;
+    except
+      on E: Exception do
+      begin
+        IBTransaction.Rollback;
+        MensagemSistema('Não foi possível configurar', msgAtencao);
+      end;
+    end;
+  finally
+    FreeAndNil(ConfSistema);
+    FreeAndNil(IBTransaction);
+  end;
+end;
+
 procedure TForm1.ClickOKInformacoesInutilizacao(Sender: TObject);
 begin
   if StrToIntDef(Form29.Edit_01.Text,0) = 0 then
@@ -12500,12 +12526,24 @@ end;
 procedure TForm1.Observaonadescriodosservios1Click(Sender: TObject);
 var
   ConfSistema : TArquivosDAT;
+  IBTransaction: TIBTransaction;
 begin
   try
-    ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
-    ConfSistema.BD.NFSE.ObsNaDescricao := not(ConfSistema.BD.NFSE.ObsNaDescricao);
+    IBTransaction := CriaIBTransaction(Form7.ibDataSet13.Transaction.DefaultDatabase);
+    ConfSistema := TArquivosDAT.Create(Usuario, IBTransaction); // Transação isolada para alteração ficar visível aos outros usuários Sandro Silva 2024-03-26 ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
+    try
+      ConfSistema.BD.NFSE.ObsNaDescricao := not(ConfSistema.BD.NFSE.ObsNaDescricao);
+      IBTransaction.Commit;
+    except
+      on E: Exception do
+      begin
+        IBTransaction.Rollback;
+        MensagemSistema('Não foi possível configurar', msgAtencao);
+      end;
+    end;
   finally
     FreeAndNil(ConfSistema);
+    FreeAndNil(IBTransaction);
   end;
 end;
 
@@ -12531,6 +12569,7 @@ begin
   try
     ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
     Observaonadescriodosservios1.Checked := ConfSistema.BD.NFSE.ObsNaDescricao;
+    Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim';
   finally
     FreeAndNil(ConfSistema);
   end;

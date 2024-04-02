@@ -481,6 +481,11 @@ begin
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'ALIQ_COFINS') = False then
     ExecutaComando('alter table ITENS002 add ALIQ_COFINS NUMERIC(18,4)');
 
+  {Sandro Silva 2024-03-21 inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'PICMSST') = False then
+    ExecutaComando('alter table ITENS002 add PICMSST NUMERIC(18, 4)');
+  {Sandro Silva 2024-03-21 fim}
+
   // GRAVAR? O HISTORICO DO CSOSN
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CSOSN') = False then
     ExecutaComando('ALTER TABLE ALTERACA ADD CSOSN VARCHAR(3)');
@@ -2432,7 +2437,6 @@ begin
       ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2024-02-28 Fim}
-
 
   Form22.Repaint;
   Mensagem22('Aguarde...');

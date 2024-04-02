@@ -1476,6 +1476,7 @@ type
     CDSItensNotaAuxCODIGO: TStringField;
     RelatriodevendasporclienteNFeCupom1: TMenuItem;
     ibDataSet23ICMS_DESONERADO: TIBBCDField;
+    ibDataSet23PST: TIBBCDField;
     ibDataSet24ICMS_DESONERADO: TIBBCDField;
     pnlFiltro: TPanel;
     lblHomologacao: TLabel;
