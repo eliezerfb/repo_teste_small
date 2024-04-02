@@ -20,6 +20,7 @@ inherited frmConfiguracaoTEFCommerce: TfrmConfiguracaoTEFCommerce
     Height = 411
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 998
     ExplicitHeight = 411
     inherited Label5: TLabel
       Width = 97
@@ -66,7 +67,6 @@ inherited frmConfiguracaoTEFCommerce: TfrmConfiguracaoTEFCommerce
       ExplicitTop = 363
     end
     inherited dbgTEFs: TDBGrid
-      Left = 13
       Top = 21
       Height = 334
       Font.Charset = ANSI_CHARSET
@@ -76,6 +76,13 @@ inherited frmConfiguracaoTEFCommerce: TfrmConfiguracaoTEFCommerce
       TitleFont.Charset = ANSI_CHARSET
       TitleFont.Height = -11
       TitleFont.Name = 'Microsoft Sans Serif'
+      OnCellClick = frameConfiguracaodbgTEFsCellClick
+      OnColEnter = frameConfiguracaodbgTEFsColEnter
+      OnDrawColumnCell = frameConfiguracaodbgTEFsDrawColumnCell
+      OnEnter = frameConfiguracaodbgTEFsEnter
+      OnExit = frameConfiguracaodbgTEFsExit
+      OnKeyDown = frameConfiguracaodbgTEFsKeyDown
+      OnKeyUp = frameConfiguracaodbgTEFsKeyUp
       Columns = <
         item
           Expanded = False
@@ -128,27 +135,30 @@ inherited frmConfiguracaoTEFCommerce: TfrmConfiguracaoTEFCommerce
       ExplicitTop = 363
     end
     inherited cdsTEFs: TClientDataSet
+      AfterInsert = frameConfiguracaocdsTEFsAfterInsert
+      AfterPost = frameConfiguracaocdsTEFsAfterPost
+      OnPostError = frameConfiguracaocdsTEFsPostError
       inherited cdsTEFsNOME: TStringField
-        OnChange = nil
-        OnSetText = nil
+        OnChange = frameConfiguracaocdsTEFsNOMEChange
+        OnSetText = frameConfiguracaocdsTEFsNOMESetText
       end
       inherited cdsTEFsPASTA: TStringField
-        OnSetText = nil
+        OnSetText = frameConfiguracaocdsTEFsPASTASetText
       end
       inherited cdsTEFsDIRETORIOREQ: TStringField
-        OnSetText = nil
+        OnSetText = frameConfiguracaocdsTEFsDIRETORIOREQSetText
       end
       inherited cdsTEFsDIRETORIORESP: TStringField
-        OnSetText = nil
+        OnSetText = frameConfiguracaocdsTEFsDIRETORIORESPSetText
       end
       inherited cdsTEFsCAMINHOEXE: TStringField
-        OnSetText = nil
+        OnSetText = frameConfiguracaocdsTEFsCAMINHOEXESetText
       end
       inherited cdsTEFsATIVO: TStringField
-        OnSetText = nil
+        OnSetText = frameConfiguracaocdsTEFsATIVOSetText
       end
       inherited cdsTEFsIDNOME: TStringField
-        OnSetText = nil
+        OnSetText = frameConfiguracaocdsTEFsIDNOMESetText
       end
     end
   end
