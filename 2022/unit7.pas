@@ -34012,7 +34012,7 @@ begin
     //
     Form7.ibDataSet7.Close;                                                            //
     Form7.ibDataSet7.Selectsql.Clear;                                                  // receber Relacionado
-    Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where NUMERONF=:NUMERONF order by REGISTRO');  //
+    Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where (NUMERONF=:NUMERONF) AND (COALESCE(ATIVO,-10) <> 1) order by REGISTRO');  //
     Form7.ibDataSet7.DataSource := DataSource15;
     Form7.ibDataSet7.Open;
     //

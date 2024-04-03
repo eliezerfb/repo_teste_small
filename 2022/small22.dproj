@@ -520,6 +520,18 @@
         <DCCReference Include="units\uObjetoConsultaCEP.pas"/>
         <DCCReference Include="interfaces\uIConsultaCEP.pas"/>
         <DCCReference Include="units\uConsultaCEP.pas"/>
+        <DCCReference Include="uConfiguracaoTEFCommerce.pas">
+            <Form>frmConfiguracaoTEFCommerce</Form>
+        </DCCReference>
+        <DCCReference Include="units\uFuncoesTEF.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uclassetransacaocartao.pas"/>
+        <DCCReference Include="uSelecionaTEF.pas">
+            <Form>frmSelecionaTEF</Form>
+        </DCCReference>
+        <DCCReference Include="frames\uframeConfiguraTEF.pas">
+            <Form>frameConfiguraTEF</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

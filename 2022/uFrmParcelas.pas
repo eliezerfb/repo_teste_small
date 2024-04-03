@@ -6,7 +6,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Grids, DBGrids, StdCtrls, Mask, DBCtrls, SMALL_DBEdit, Unit7, smallfunc_xe,
-  ExtCtrls, DB, ShellApi, IniFiles, Buttons, IBCustomDataSet, IBQuery;
+  ExtCtrls, DB, ShellApi, IniFiles, Buttons, IBCustomDataSet, IBQuery, uFuncoesTEF;
 
 type
     TFrmParcelas = class(TForm)
@@ -51,7 +51,12 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure cboDocCobrancaEnter(Sender: TObject);
     procedure DBGrid1Exit(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
+    FRegistroBloqueado: Boolean;
+    FnQtdeParc: Integer;
+    FpnlTEF: TPanel;
     { Private declarations }
     FIdentificadorPlanoContas: String; // Sandro Silva 2022-12-29
     procedure ExibeOpcoesPreencherColunas;
@@ -64,6 +69,16 @@ type
       dTotalParcelar: Double);
     //procedure RateiaDiferencaParcelaEntreAsDemais(ModuloAtual: String);
     function TotalParcelasLancadas: Double;
+    function ChamarTEF: Boolean;
+    function TestarRegistroComTEF: Boolean;
+    function RetornaTotalReceberCartao: Currency;
+    procedure GerarParcelasCartao(AoDadosTransacao: TDadosTransacao);
+    procedure AdicionarParcela;
+    procedure ExibirMensagemTEF(AcTexto: String);
+    procedure AjustaPanelTEF;
+    function TestarRegistroPodeChamarTEF: Boolean;
+    procedure GerarParcelasTEFInativadas(AbExibeMensagem: Boolean = False);
+    procedure RefazerNumeroParcela;
 
   public
     { Public declarations }
@@ -83,7 +98,7 @@ implementation
 
 uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados,
   uFuncoesRetaguarda, StrUtils, uDialogs, uRaterioDiferencaEntreParcelasReceber,
-  uSmallConsts;
+  uSmallConsts, uRetornaBuildEXE;
 
 {$R *.DFM}
 
@@ -160,13 +175,13 @@ begin
           dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
           Form7.ibDataSet7.Next;
         end;
-        
+
         Form7.ibDataSet7.First;
         Form7.ibDataSet7.Edit;
         if dDiferenca <> 0 then
           Form7.ibDataSet7VALOR_DUPL.AsFloat := Form7.ibDataSet7VALOR_DUPL.AsFloat + ddiferenca;
       end;
-    end; 
+    end;
     Form7.ibDataSet7.First;
     Mauricio Parizotto 2023-06-30}
   except
@@ -199,6 +214,8 @@ begin
 
         if I <> Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat) then
         begin
+          GerarParcelasTEFInativadas(True);
+
           Form7.ibDataSet7.First;
           while not Form7.ibDataSet7.Eof do
           begin
@@ -280,7 +297,7 @@ begin
 
         Form7.ibDataSet7.First;
       finally
-        //Form7.ibDataSet7.EnableControls; // Sandro Silva 2023-11-20      
+        //Form7.ibDataSet7.EnableControls; // Sandro Silva 2023-11-20
       end;
     end;
   except
@@ -314,7 +331,7 @@ begin
           Form7.ibDataSet8.Delete;
           Form7.ibDataSet8.First;
         end;
-        
+
         for I := 1 to Trunc(Form7.ibDataSet24DUPLICATAS.AsFloat) do
         begin
           Form7.ibDataSet8.Append;
@@ -358,6 +375,55 @@ begin
     end;
   except
   end;
+end;
+
+procedure TFrmParcelas.AdicionarParcela;
+var
+  nParcelaAtual: Integer;
+begin
+  nParcelaAtual := Form7.ibDataSet7.RecordCount + 1;
+
+  Form7.ibDataSet7.Append;
+  Form7.ibDataSet7NUMERONF.AsString := Form7.ibDataSet15NUMERONF.AsString;
+
+  if Form7.sRPS <> 'S' then
+  begin
+    if Copy(Form7.ibDataSet15NUMERONF.AsString,10,3) = '002' then
+    begin
+      Form7.ibDataSet7DOCUMENTO.Value := 'S'+Copy(Form7.ibDataSet15NUMERONF.AsString,2,8) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),nParcelaAtual,1);
+    end else
+    begin
+      Form7.ibDataSet7DOCUMENTO.Value := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),nParcelaAtual,1);
+    end;
+  end else
+  begin
+    Form7.ibDataSet7DOCUMENTO.Value := Copy(Form7.ibDataSet15NUMERONF.AsString,1,1)+'S'+Copy(Form7.ibDataSet15NUMERONF.AsString,3,7) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),nParcelaAtual,1);
+  end;
+
+  Form7.ibDataSet7VALOR_DUPL.AsFloat          := 0;
+
+  if Form7.sRPS <> 'S' then
+  begin
+    Form7.ibDataSet7HISTORICO.Value := 'NFE NAO AUTORIZADA';
+  end else
+  begin
+    Form7.ibDataSet7HISTORICO.AsString := 'RPS número: '+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9);
+  end;
+
+  Form7.ibDataSet7EMISSAO.asDateTime    := Form7.ibDataSet15EMISSAO.AsDateTime;
+  Form7.ibDataSet7NOME.Value            := Form7.ibDataSet15CLIENTE.Value;
+  Form7.ibDataSet7CONTA.AsString        := sConta;
+  Form7.ibDataSet7VENCIMENTO.AsDateTime := Date;
+  if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1 then
+    Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime + 1;
+  if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7 then
+    Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime - 1;
+
+  Form7.ibDataSet7.Post;
+
+  Form7.ibDataSet15.Edit;
+  Form7.ibDataSet15DUPLICATAS.AsCurrency := nParcelaAtual;
+  Form7.ibDataSet15.Post;
 end;
 
 procedure TFrmParcelas.DBGrid1KeyPress(Sender: TObject; var Key: Char);
@@ -527,6 +593,8 @@ end;
 procedure TFrmParcelas.SMALL_DBEdit1Enter(Sender: TObject);
 var
   Total : Real;
+  bTemTEF: Boolean;
+  cMensagem: String;
 begin
   try
     {
@@ -554,6 +622,8 @@ begin
       end;
     end;
     Mauricio Parizotto 2023-06-30}
+    bTemTEF := False;
+    FnQtdeParc := Form7.ibDataSet15DUPLICATAS.AsInteger;
 
     if Form7.sModulo = 'VENDA' then // Ok
     begin
@@ -561,44 +631,62 @@ begin
       try
         Form7.ibDataSet7.DisableControls; // Sandro Silva 2023-11-20
         Form7.ibDataSet7.First;
+
         while not Form7.ibDataSet7.Eof do
         begin
           Total := Total + Form7.ibDataSet7VALOR_DUPL.AsFloat;
+
+          if (TestarTEFConfigurado) then
+          begin
+            if (not bTemTEF) then
+              bTemTEF := (Trim(Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString) <> EmptyStr);
+          end;
+
           Form7.ibDataSet7.Next;
         end;
-      finally
-        Form7.ibDataSet7.EnableControls; // Sandro Silva 2023-11-20
-      end;
 
-      if (Abs(Total - (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)) > 0.01) and (Total<>0) then
-      begin
-        //ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.'); Mauricio Parizotto 2023-10-25
-        MensagemSistema('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.',msgAtencao);
+        if (Abs(Total - (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR)) > 0.01) and (Total<>0) then
+        begin
+          //ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.'); Mauricio Parizotto 2023-10-25
+          cMensagem := 'O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.';
+          if bTemTEF then
+            cMensagem := cMensagem + sLineBreak + sLineBreak + 'As parcelas com transação TEF serão inativadas, verifique com a sua operadora para efetuar o cancelamento.';
 
-        {Sandro Silva 2023-11-09 inicio
-        while not Form7.ibDataSet7.Eof do
-        begin
-          Form7.ibDataSet7.Delete;
-          Form7.ibDataSet7.First;
-        end;
-        }
-        if Form7.ibDataSet7.RecordCount > 0 then
-        begin
+          MensagemSistema(cMensagem, msgAtencao);
+
+          if bTemTEF then
+          begin
+            GerarParcelasTEFInativadas;
+          end;
+
+          {Sandro Silva 2023-11-09 inicio
+          while not Form7.ibDataSet7.Eof do
+          begin
+            Form7.ibDataSet7.Delete;
+            Form7.ibDataSet7.First;
+          end;
+          }
+
+          if Form7.ibDataSet7.RecordCount > 0 then
+          begin
+            try
+              Form7.ibDataSet7.DisableControls;
+              ReparcelaValor(Form7.ibDataSet7, StrToInt(SMALL_DBEdit1.Text), Form7.ibDataSet15TOTAL.AsFloat);
+            finally
+              Form7.ibDataSet7.EnableControls;
+            end;
+          end;
+          {Sandro Silva 2023-11-09 fim}
+
           try
             Form7.ibDataSet7.DisableControls;
-            ReparcelaValor(Form7.ibDataSet7, StrToInt(SMALL_DBEdit1.Text), Form7.ibDataSet15TOTAL.AsFloat);
+            SMALL_DBEdit1Exit(Sender);
           finally
             Form7.ibDataSet7.EnableControls;
           end;
         end;
-        {Sandro Silva 2023-11-09 fim}
-
-        try
-          Form7.ibDataSet7.DisableControls;
-          SMALL_DBEdit1Exit(Sender);
-        finally
-          Form7.ibDataSet7.EnableControls;
-        end;
+      finally
+        Form7.ibDataSet7.EnableControls; // Sandro Silva 2023-11-20
       end;
     end;
 
@@ -627,19 +715,93 @@ begin
   end;
 end;
 
+procedure TFrmParcelas.GerarParcelasTEFInativadas(AbExibeMensagem: Boolean = False);
+var
+  nRecNo: Integer;
+  qryCartao: TIBQuery;
+  i: Integer;
+  cCampos, cValores: String;
+begin
+  qryCartao := CriaIBQuery(Form7.IBTransaction1);
+  try
+    Form7.ibDataSet7.First;
+    while not Form7.ibDataSet7.Eof do
+    begin
+      if TestarRegistroComTEF then
+      begin
+        if AbExibeMensagem then
+        begin
+          if uDialogs.MensagemSistemaPergunta('As parcelas com transação TEF serão inativadas, verifique com a sua operadora para efetuar o cancelamento.' + sLineBreak + sLineBreak +
+                                              'Deseja continuar e alterar a quantidade de parcelas?', [mb_YesNo, mb_DefButton1]) = mrYes then
+            AbExibeMensagem := False
+          else
+          begin
+            SMALL_DBEdit1.Text := FnQtdeParc.ToString;
+            Form7.ibDataSet15.Edit;
+            Form7.ibDataSet15DUPLICATAS.AsInteger := FnQtdeParc;
+            Form7.ibDataSet15.Post;
+            Form7.ibDataSet15.Edit;
+            Abort;
+          end;
+        end;
+
+        cCampos := EmptyStr;
+        cValores := EmptyStr;
+        qryCartao.Close;
+        qryCartao.SQL.Clear;
+        for i := 0 to Pred(Form7.ibDataSet7.Fields.Count) do
+        begin
+          cCampos := cCampos + Form7.ibDataSet7.Fields[i].FieldName;
+          if i <> Pred(Form7.ibDataSet7.Fields.Count) then
+            cCampos := cCampos + ',';
+
+          cValores := cValores + ':X' + Form7.ibDataSet7.Fields[i].FieldName;
+          if i <> Pred(Form7.ibDataSet7.Fields.Count) then
+            cValores := cValores + ',';
+        end;
+        qryCartao.SQL.Add('INSERT INTO RECEBER (');
+        qryCartao.SQL.Add(cCampos);
+        qryCartao.SQL.Add(') VALUES (');
+        qryCartao.SQL.Add(cValores);
+        qryCartao.SQL.Add(')');
+        for i := 0 to Pred(Form7.ibDataSet7.Fields.Count) do
+        begin
+          if AnsiUpperCase(Form7.ibDataSet7.Fields[i].FieldName) <> 'ATIVO' then
+          begin
+            if AnsiUpperCase(Form7.ibDataSet7.Fields[i].FieldName) <> 'DOCUMENTO' then
+              qryCartao.ParamByName('X'+Form7.ibDataSet7.Fields[i].FieldName).Value := Form7.ibDataSet7.Fields[i].Value
+            else
+              qryCartao.ParamByName('X'+Form7.ibDataSet7.Fields[i].FieldName).Value := EmptyStr;
+          end
+          else
+            qryCartao.ParamByName('X'+Form7.ibDataSet7.Fields[i].FieldName).Value := 1;
+        end;
+        Form7.ibDataSet7.Delete;
+        qryCartao.ExecSQL;
+
+        Form7.ibDataSet7.First;
+      end
+      else
+        Form7.ibDataSet7.Next;
+    end;
+  finally
+    FreeAndNil(qryCartao);
+  end;
+end;
+
 procedure TFrmParcelas.SMALL_DBEdit16KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   try
-    if Key = VK_RETURN then 
+    if Key = VK_RETURN then
       Perform(Wm_NextDlgCtl,0,0);
-    if Key = VK_UP then 
+    if Key = VK_UP then
       Perform(Wm_NextDlgCtl,1,0);
-    if Key = VK_DOWN then 
+    if Key = VK_DOWN then
       Perform(Wm_NextDlgCtl,0,0);
-  except 
+  except
   end;
-  
+
 end;
 
 procedure TFrmParcelas.Label10MouseLeave(Sender: TObject);
@@ -653,6 +815,23 @@ procedure TFrmParcelas.Label10MouseMove(Sender: TObject; Shift: TShiftState; X,
 begin
   with Sender as tLabel do
     Font.Style := [fsBold];
+end;
+
+procedure TFrmParcelas.AjustaPanelTEF;
+begin
+  FpnlTEF.Visible := False;
+  FpnlTEF.Caption := EmptyStr;
+  FpnlTEF.Color := Self.Color;
+  FpnlTEF.Font.Size := 16;
+  FpnlTEF.Font.Style := [fsBold];
+
+  FpnlTEF.Top    := 0;
+  FpnlTEF.Left   := 0;
+  FpnlTEF.Width  := Self.Width;
+  FpnlTEF.Height := Self.Height;
+
+  FpnlTEF.Parent := Self;
+  FpnlTEF.BringToFront;
 end;
 
 procedure TFrmParcelas.FormShow(Sender: TObject);
@@ -685,7 +864,7 @@ begin
   end else
   begin
     DBGrid1.Enabled       := True;
-    
+
     if Form7.sModulo <> 'CLIENTES' then
     begin
       SMALL_DBEdit1.Enabled := True;
@@ -756,7 +935,7 @@ begin
       Form7.IBQuery1.Open;
 
       chkConsultaImprimeDanfe.Visible := False;
-      
+
       Form7.ibDataSet7.EnableControls;
       for I := 1 to Form7.ibDataSet7.FieldCount do
         Form7.ibDataSet7.Fields[I-1].Visible := False;
@@ -946,6 +1125,10 @@ begin
     end;
   except
   end;
+  AjustaPanelTEF;
+
+  Form7.ibDataSet7BANDEIRA.ReadOnly             := (Form7.sModulo = 'VENDA') and (Form7.ibDataSet15INDPRES.AsString = '1') and (TestarTEFConfigurado);
+  Form7.ibDataSet7AUTORIZACAOTRANSACAO.ReadOnly := Form7.ibDataSet7BANDEIRA.ReadOnly;
 end;
 
 procedure TFrmParcelas.DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
@@ -961,9 +1144,9 @@ begin
     begin
       dbGrid1.Canvas.Brush.Color := clWhite;
       dbGrid1.Canvas.Font := dbGrid1.Font;
-      if (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7) then 
-        DBGrid1.Canvas.Font.Color   := clRed 
-      else 
+      if (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 1) or (DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7) then
+        DBGrid1.Canvas.Font.Color   := clRed
+      else
         DBGrid1.Canvas.Font.Color   := clBlack;
       dbGrid1.Canvas.TextOut(Rect.Left+dbGrid1.Canvas.TextWidth('99/99/9999_'),Rect.Top+2,Copy(DiaDaSemana(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,3) );
     end;
@@ -975,7 +1158,7 @@ begin
     xRect.Top    := -1;
     xRect.Right  := Rect.Right;
     xRect.Bottom := Rect.Bottom - Rect.Top + 0;
- 
+
     dbGrid1.Canvas.FillRect(xRect);
 
     //with dbgrid1.Canvas do
@@ -993,13 +1176,16 @@ end;
 procedure TFrmParcelas.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
-  iColumnIndex : Integer; // Sandro Silva 2023-11-13 I : Integer;
   slFormas: TStringList;
   sForma: String;
+  nIndiceAnt: Integer;
 begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 
   try
+    if (Shift = [ssCtrl]) and (Key = VK_DELETE) then
+      Key := 0;
+
     {Sandro Silva 2023-06-21 inicio}
     if TDBGrid(Sender).SelectedField.FieldName = 'FORMADEPAGAMENTO' then
     begin
@@ -1021,13 +1207,20 @@ begin
     if (Key = VK_RETURN) then
     begin
 
-      iColumnIndex := DbGrid1.SelectedIndex;
       if Key in [VK_RETURN, VK_TAB] then
       begin
+        nIndiceAnt := DbGrid1.SelectedIndex;
 
         DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
 
-        if iColumnIndex = DbGrid1.SelectedIndex  then
+        while (dBgrid1.SelectedField.ReadOnly) do
+        begin
+          DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
+          if (DbGrid1.SelectedIndex = Pred(DBGrid1.Columns.Count)) then
+            Break;
+        end;
+
+        if (Pred(DBGrid1.Columns.Count) = DbGrid1.SelectedIndex) and ((nIndiceAnt = Pred(DBGrid1.Columns.Count)) or (dBgrid1.SelectedField.ReadOnly)) then
         begin
           DbGrid1.SelectedIndex := 0;
 
@@ -1080,6 +1273,21 @@ begin
     SetPickListParaColuna;
 
     ExibeOpcoesPreencherColunas; // Sandro Silva 2023-06-19
+
+    if (Form7.sModulo = 'VENDA') then
+    begin
+      Form7.ibDataSet7BANDEIRA.ReadOnly             := (Form7.sModulo = 'VENDA') and (Form7.ibDataSet15INDPRES.AsString = '1') and (TestarTEFConfigurado);
+      Form7.ibDataSet7AUTORIZACAOTRANSACAO.ReadOnly := Form7.ibDataSet7BANDEIRA.ReadOnly;
+
+      FRegistroBloqueado := False;
+      if TestarRegistroComTEF then
+      begin
+        FRegistroBloqueado := True;
+        TDBGrid(Sender).Options := TDBGrid(Sender).Options - [dgEditing];
+      end
+      else
+        TDBGrid(Sender).Options := TDBGrid(Sender).Options + [dgEditing];
+    end;
   except
   end;
 
@@ -1093,6 +1301,9 @@ end;
 
 procedure TFrmParcelas.Button4Click(Sender: TObject);
 begin
+
+  if (Form7.sModulo = 'VENDA') and (not ChamarTEF) then
+    Exit;
   if ValidarDesdobramentoParcela then
     Close;
 end;
@@ -1112,6 +1323,273 @@ begin
     end;
     Mais1Ini.Free;
   except
+  end;
+end;
+
+function TFrmParcelas.TestarRegistroComTEF: Boolean;
+begin
+  // Somente VENDA
+  // Tem algum TEF configurado
+  // Somente presencial
+  // Não tem NUMERO AUTORIZACAO
+  // FORMA DE PAGAMENTO FOR CARTÃO
+  Result := (Form7.sModulo = 'VENDA')
+            and (TestarTEFConfigurado)
+            and (Form7.ibDataSet15INDPRES.AsString = '1')
+            and (Trim(dBgrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) <> EmptyStr)
+            and (FormaDePagamentoEnvolveCartao(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString));
+end;
+
+function TFrmParcelas.TestarRegistroPodeChamarTEF: Boolean;
+begin
+  // Somente VENDA
+  // Tem algum TEF configurado
+  // Somente presencial
+  // Não tem NUMERO AUTORIZACAO
+  // FORMA DE PAGAMENTO FOR CARTÃO
+  Result := (Form7.sModulo = 'VENDA')
+            and (TestarTEFConfigurado)
+            and (Form7.ibDataSet15INDPRES.AsString = '1')
+            and (Trim(dBgrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) = EmptyStr)
+            and (FormaDePagamentoEnvolveCartao(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString));
+end;
+
+function TFrmParcelas.ChamarTEF: Boolean;
+var
+  I: Integer;
+  oTEF: TFuncoesTEF;
+  nTotalCartao: Currency;
+  bAprovado: Boolean;
+  bPodeTEF: Boolean;
+begin
+  Result := False;
+  DBGrid1.DataSource.DataSet.First;
+
+  DBGrid1.DataSource.DataSet.DisableControls;
+  try
+    bPodeTEF := False;
+    while not DBGrid1.DataSource.DataSet.Eof do
+    begin
+      bPodeTEF := TestarRegistroPodeChamarTEF;
+      if bPodeTEF then
+        Break;
+        // Seta True para deixar passar quando não permite TEF.
+      DBGrid1.DataSource.DataSet.Next;
+    end;
+    if not bPodeTEF then
+    begin
+      Result := True;
+      Exit;
+    end;
+  finally
+    DBGrid1.DataSource.DataSet.EnableControls;
+  end;
+
+  try
+    // Somar todos os registros com tipo cartão.
+    nTotalCartao := RetornaTotalReceberCartao;
+    // Se total menor ou igual a zero não faz nada
+    if nTotalCartao <= 0 then
+      Exit;
+
+    oTEF := TFuncoesTEF.Create;
+    try
+      oTEF.CNPJ     := Form7.ibDataSet13CGC.AsString;
+      oTEF.BuildEXE := TRetornarBuildEXE.New
+                                        .Retornar(True);
+      // Fixo 1 no Commerce
+      oTEF.QtdeCartoes := 1;
+      oTEF.ValorCobrar := nTotalCartao;
+
+
+      try
+        ExibirMensagemTEF('Comunicando com o TEF...');
+        bAprovado := oTEF.InciarTransacaoTEF(True);
+        if not bAprovado then
+        begin
+          ExibirMensagemTEF(oTEF.DadosTransacao.Mensagem);
+          Abort;
+        end;
+        ExibirMensagemTEF(oTEF.DadosTransacao.Mensagem);
+        ExibirMensagemTEF('Atualizando contas, aguarde...');
+        GerarParcelasCartao(oTEF.DadosTransacao);
+        ExibirMensagemTEF('Confirmando transação TEF, aguarde...');
+        oTEF.ConfirmaTransacao;
+      finally
+        FpnlTEF.Visible := False;
+      end;
+
+      Result := True;
+    finally
+      FreeAndNil(oTEF);
+    end;
+  except
+    Abort;
+  end;
+end;
+
+procedure TFrmParcelas.ExibirMensagemTEF(AcTexto: String);
+begin
+  Application.ProcessMessages;
+  FpnlTEF.Caption := AcTexto;
+  FpnlTEF.Visible := True;
+  Application.ProcessMessages;
+  Sleep(2000);
+end;
+
+procedure TFrmParcelas.GerarParcelasCartao(AoDadosTransacao: TDadosTransacao);
+var
+  i,x: Integer;
+  nValorParc: Currency;
+  nRestoParc: Currency;
+  oDataSet: TIBDataSet;
+  oDataSetTemp: TIBDataSet;
+begin
+  oDataSet := (dBgrid1.DataSource.DataSet as TIBDataSet);
+
+  oDataSetTemp := CriaIDataSet(Form7.IBTransaction1);
+  oDataSet.DisableControls;
+  try
+    oDataSetTemp.InsertSQL := oDataSet.InsertSQL;
+    oDataSetTemp.DeleteSQL := oDataSet.DeleteSQL;
+    oDataSetTemp.Close;
+    oDataSetTemp.Database := oDataSet.Database;
+    oDataSetTemp.Selectsql.Clear;
+    oDataSetTemp.Selectsql.Text := oDataSet.SelectSQL.Text;
+    oDataSetTemp.Open;
+
+    oDataSet.First;
+
+    while not oDataSet.Eof do
+    begin
+      if (FormaDePagamentoEnvolveCartao(oDataSet.FieldByName('FORMADEPAGAMENTO').AsString)) and (Trim(DBGrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) = EmptyStr) then
+      begin
+        if oDataSetTemp.IsEmpty then
+        begin
+          // Deve inserir apenas um registro temporario de cartão, para assim
+          // ser duplicado conforme as parcelas do TEF
+          oDataSetTemp.Append;
+          for I := 0 to Pred(oDataSet.Fields.Count) do
+          begin
+            if oDataSet.Fields[i].FieldName <> 'REGISTRO' then
+              oDataSetTemp.FieldByName(oDataSet.Fields[i].FieldName).Value := oDataSet.Fields[i].Value
+            else
+              oDataSetTemp.FieldByName(oDataSet.Fields[i].FieldName).AsString := IntToStr(9999999000 + i); // Gera numero Temporario
+          end;
+          oDataSetTemp.Post;
+        end;
+
+        oDataSet.Delete;
+        oDataSet.First;
+      end else
+        oDataSet.Next;
+    end;
+
+    oDataSetTemp.First;
+
+    // DEBITO retorna como 0 parcelas
+    if AoDadosTransacao.QtdeParcela <= 0 then
+      AoDadosTransacao.QtdeParcela := 1;
+
+    SMALL_DBEdit1.Text := AoDadosTransacao.QtdeParcela.ToString;
+    // Vai gerar as parcelas
+    for i := 1 to AoDadosTransacao.QtdeParcela do
+    begin
+      AdicionarParcela;
+
+      nValorParc := StrToFloat(FormatFloat('0.00', AoDadosTransacao.TotalPago / AoDadosTransacao.QtdeParcela));
+
+      nRestoParc := 0;
+
+      if (i = 1) and ((nValorParc * AoDadosTransacao.QtdeParcela) <> AoDadosTransacao.TotalPago) then
+        nRestoParc := AoDadosTransacao.TotalPago - (nValorParc * AoDadosTransacao.QtdeParcela);
+
+      oDataSet.Edit;
+
+      oDataSet.FieldByName('PORTADOR').AsString         := oDataSetTemp.FieldByName('PORTADOR').AsString;
+      oDataSet.FieldByName('VENCIMENTO').AsDateTime       := IncMonth(Date, i);
+      oDataSet.FieldByName('VALOR_DUPL').AsCurrency       := nValorParc + nRestoParc;
+      oDataSet.FieldByName('BANDEIRA').AsString             := AoDadosTransacao.Bandeira;
+      oDataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString := AoDadosTransacao.Autoriza;
+      if (AoDadosTransacao.DebitoOuCredito = 'CREDITO') then
+        oDataSet.FieldByName('FORMADEPAGAMENTO').AsString := 'Cartão de Crédito';
+      if (AoDadosTransacao.DebitoOuCredito = 'DEBITO') then
+        oDataSet.FieldByName('FORMADEPAGAMENTO').AsString := 'Cartão de Débito';
+      if (AoDadosTransacao.DebitoOuCredito = 'PIX') then
+        oDataSet.FieldByName('FORMADEPAGAMENTO').AsString := 'Pagamento Instantâneo (PIX)';
+      oDataSet.Post;
+    end;
+
+    RefazerNumeroParcela;
+  finally
+    oDataSet.First;
+    oDataSet.EnableControls;
+
+    oDataSetTemp.First;
+    while not oDataSetTemp.Eof do
+    begin
+      oDataSetTemp.Delete;
+      oDataSetTemp.First;
+    end;
+    FreeAndNil(oDataSetTemp);
+  end;
+end;
+
+procedure TFrmParcelas.RefazerNumeroParcela;
+var
+  nParcelaAtual: Integer;
+begin
+  dBgrid1.DataSource.DataSet.First;
+  try
+    nParcelaAtual := 0;
+    while not dBgrid1.DataSource.DataSet.Eof do
+    begin
+      nParcelaAtual := nParcelaAtual + 1;
+
+      Form7.ibDataSet7.Edit;
+      if Form7.sRPS <> 'S' then
+      begin
+        if Copy(Form7.ibDataSet15NUMERONF.AsString,10,3) = '002' then
+        begin
+          Form7.ibDataSet7DOCUMENTO.Value := 'S'+Copy(Form7.ibDataSet15NUMERONF.AsString,2,8) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),nParcelaAtual,1);
+        end else
+        begin
+          Form7.ibDataSet7DOCUMENTO.Value := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),nParcelaAtual,1);
+        end;
+      end else
+      begin
+        Form7.ibDataSet7DOCUMENTO.Value := Copy(Form7.ibDataSet15NUMERONF.AsString,1,1)+'S'+Copy(Form7.ibDataSet15NUMERONF.AsString,3,7) + Copy('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'+replicate('_',1000),nParcelaAtual,1);
+      end;
+      Form7.ibDataSet7.Post;
+
+      dBgrid1.DataSource.DataSet.Next;
+    end;
+  finally
+    dBgrid1.DataSource.DataSet.First;
+  end;
+end;
+
+function TFrmParcelas.RetornaTotalReceberCartao: Currency;
+var
+  nRecNo: Integer;
+begin
+  Result := 0;
+
+  nRecNo := DBGrid1.DataSource.DataSet.RecNo;
+  DBGrid1.DataSource.DataSet.DisableControls;
+  try
+    DBGrid1.DataSource.DataSet.First;
+
+    while not DBGrid1.DataSource.DataSet.Eof do
+    begin
+      if (FormaDePagamentoEnvolveCartao(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString)) and (Trim(DBGrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) = EmptyStr) then
+        Result := Result + dBgrid1.DataSource.DataSet.FieldByName('VALOR_DUPL').AsCurrency;
+
+      DBGrid1.DataSource.DataSet.Next;
+    end;
+  finally
+    DBGrid1.DataSource.DataSet.RecNo := nRecNo;
+    DBGrid1.DataSource.DataSet.EnableControls;
   end;
 end;
 
@@ -1140,7 +1618,7 @@ begin
     begin
       //ShowMessage('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.'); Mauricio Parizotto 2023-10-25
       MensagemSistema('O total das parcelas diverge do valor total'+Chr(10)+'da nota. As parcelas serão recalculadas.',msgAtencao);
-      
+
       SMALL_DBEdit1.SetFocus;
       Abort;
     end;
@@ -1164,7 +1642,6 @@ begin
     Form7.ibDataSet7.Tag := ID_FILTRAR_FORMAS_GERAM_BOLETO;
     Form7.ibDataSet7.DisableControls;
     {Sandro Silva 2023-06-16 fim}
-
   end;
 
   try
@@ -1428,13 +1905,19 @@ begin
     Form7.ibDataSet7.Tag := 0; // Sandro Silva 2023-07-18
     Form1.sBancoBoleto     := ''; // Sandro Silva 2023-07-18
     {Sandro Silva 2023-07-12 fim}
+
+    Form7.ibDataSet7BANDEIRA.ReadOnly             := (Form7.sModulo = 'VENDA') and (Form7.ibDataSet15INDPRES.AsString = '1') and (TestarTEFConfigurado);
+    Form7.ibDataSet7AUTORIZACAOTRANSACAO.ReadOnly := Form7.ibDataSet7BANDEIRA.ReadOnly;
   except
   end;
-  //    
+  //
 end;
 
 procedure TFrmParcelas.ExibeOpcoesPreencherColunas;
 begin
+  if (FRegistroBloqueado) or (DBGrid1.DataSource.DataSet.FieldByName(DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName).ReadOnly) then
+    Exit;
+
   if (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'FORMADEPAGAMENTO')
      or
      (DbGrid1.Columns[DbGrid1.SelectedIndex].FieldName = 'BANDEIRA')
@@ -1562,7 +2045,7 @@ begin
             Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime + 1;
           if DayOfWeek(Form7.ibDataSet7VENCIMENTO.AsDateTime) = 7 then
             Form7.ibDataSet7VENCIMENTO.AsDateTime := Form7.ibDataSet7VENCIMENTO.AsDateTime - 1;
-          
+
           Form7.ibDataSet7.Post;
         end;
 
@@ -1570,13 +2053,13 @@ begin
         //dDiferenca := (Form7.ibDataSet15TOTAL.AsFloat - Form1.fRetencaoIR);
         dDiferenca := (vlrRenegociacao - Form1.fRetencaoIR);
         Form7.ibDataSet7.First;
-        
+
         while not Form7.ibDataSet7.Eof do
         begin
           dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form7.ibDataSet7VALOR_DUPL.AsFloat]));
           Form7.ibDataSet7.Next;
         end;
-        
+
         Form7.ibDataSet7.First;
         Form7.ibDataSet7.Edit;
         if dDiferenca <> 0 then
@@ -1716,7 +2199,7 @@ begin
   begin
     if Column.FieldName = 'VALOR_DUPL' then
     begin
-      {Sandro Silva 2023-11-21 inicio} 
+      {Sandro Silva 2023-11-21 inicio}
       if Column.Field.DataSet.State in [dsEdit, dsInsert] then
         Column.Field.DataSet.Post;
       {Sandro Silva 2023-11-21 fim}
@@ -1744,7 +2227,7 @@ begin
   cboDocCobranca.Items.Clear;
   cboDocCobranca.Items.Add('<Não imprimir documento>');
 
-  sSecoes := TStringList.Create;  
+  sSecoes := TStringList.Create;
   try
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     Mais1Ini.ReadSections(sSecoes);
@@ -1871,7 +2354,7 @@ var
   iRecnoFormaErrada: Integer;
   sColunaPosicionar: String;
 begin
-  Result := True; 
+  Result := True;
   if Form7.sModulo = 'VENDA' then
   begin
     slFormas := TStringList.Create;
@@ -1931,14 +2414,16 @@ begin
 
           end;
 
-          if Trim(DBGrid1.DataSource.DataSet.FieldByName('BANDEIRA').AsString) = '' then
+          if (Trim(DBGrid1.DataSource.DataSet.FieldByName('BANDEIRA').AsString) = '')
+            and (not TestarRegistroPodeChamarTEF)then
           begin
             sMensagem := 'Informe a bandeira do cartão de crédito/débito';
             iRecnoFormaErrada := DBGrid1.DataSource.DataSet.Recno;
             sColunaPosicionar := 'BANDEIRA';
           end;
 
-          if Trim(DBGrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) = '' then
+          if (Trim(DBGrid1.DataSource.DataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString) = '')
+            and (not TestarRegistroPodeChamarTEF) then
           begin
             sMensagem := 'Informe o número da autorização do cartão de crédito/débito';
             iRecnoFormaErrada := DBGrid1.DataSource.DataSet.Recno;
@@ -1946,7 +2431,6 @@ begin
           end;
 
         end;
-
 
         DBGrid1.DataSource.DataSet.Next;
       end;
@@ -1980,6 +2464,16 @@ procedure TFrmParcelas.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   if ValidarDesdobramentoParcela = False then
     Abort;
+end;
+
+procedure TFrmParcelas.FormCreate(Sender: TObject);
+begin
+  FpnlTEF := TPanel.Create(nil);
+end;
+
+procedure TFrmParcelas.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FpnlTEF);
 end;
 
 procedure TFrmParcelas.cboDocCobrancaEnter(Sender: TObject);

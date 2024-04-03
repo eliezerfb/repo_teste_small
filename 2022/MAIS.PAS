@@ -36,8 +36,6 @@ uses
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
 const BUILD_DO_BANCO = '2024006'; // Sandro Silva 2024-03-28 const BUILD_DO_BANCO = '2024004'; // Sandro Silva 2024-02-23 const BUILD_DO_BANCO = '2024002'; // Sandro Silva 2024-02-19 const BUILD_DO_BANCO = '2023048';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
-const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF  = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2023-01-18 const RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF = 'Smallsoft Tecnologia em Informática EIRELI';
-const RAZAO_SOCIAL_SOFTWARE_HOUSE      = 'ZUCCHETTI SOFTWARE E SISTEMAS LTDA'; // Sandro Silva 2022-12-02 Unochapeco 'Smallsoft Tecnologia em Informática EIRELI';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
 
@@ -277,6 +275,8 @@ type
     Parmetrosdetributao1: TMenuItem;
     EnvioautomticodeXML1: TMenuItem;
     Observaonadescriodosservios1: TMenuItem;
+    ConfiguraoTEF1: TMenuItem;
+    N7: TMenuItem;
     Clculododescontopeloprovedor1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
@@ -447,6 +447,7 @@ type
     procedure WebBrowser1DocumentComplete(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
     procedure FormDestroy(Sender: TObject);
+    procedure ConfiguraoTEF1Click(Sender: TObject);
     procedure Clculododescontopeloprovedor1Click(Sender: TObject);
 
 
@@ -566,7 +567,8 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmConfigEmailAutContabilidade
   , uDialogs
   , uFuncoesRetaguarda
-  , uSmallResourceString, uSistema;
+  , uSmallResourceString, uSistema
+  , uConfiguracaoTEFCommerce;
 
 {$R *.DFM}
 
@@ -9481,6 +9483,18 @@ begin
   Screen.Cursor            := crDefault;
 end;
 
+procedure TForm1.ConfiguraoTEF1Click(Sender: TObject);
+begin
+  frmConfiguracaoTEFCommerce := TfrmConfiguracaoTEFCommerce.Create(nil);
+  try
+    frmConfiguracaoTEFCommerce.ShowModal;
+
+    ConfiguraoTEF1.Checked := TestarTEFConfigurado;
+  finally
+    FreeAndNil(frmConfiguracaoTEFCommerce);
+  end;
+end;
+
 procedure TForm1.ConfiguraodaNFe2Click(Sender: TObject);
 var
   oArq: TArquivosDAT;
@@ -9556,6 +9570,8 @@ begin
       Form1.Simples1.Checked := False;
       Form1.Complexo1.Checked := True;
     end;
+
+    ConfiguraoTEF1.Checked := TestarTEFConfigurado;
   finally
     Mais1ini.Free;
     FreeAndNil(oArq);
