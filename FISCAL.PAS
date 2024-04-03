@@ -1668,6 +1668,7 @@ type
     function PDV_ECF0909: Boolean;
     function PDV_DataMovimento(pP1: Boolean): String;
     procedure PDV_PausaVenda(AbIniciarNova: Boolean);
+    procedure PDV_DisponibilizarComprovante;
     function ImpressaoNaoSujeitoaoICMS(sP1: String; bPDF: Boolean = False; LarguraPapel: Integer = 640): Boolean; // Sandro Silva 2018-11-20 function ImpressaoNaoSujeitoaoICMS(sP1: String; bPDF: Boolean = False): Boolean;
     function UsaIntegradorFiscal(UF: String = ''): Boolean;
     procedure AcertaPendenciaCancelAlteraca;
@@ -1682,7 +1683,7 @@ type
     procedure AtualizaDetalhe(IBTransaction: TIBTransaction; sTipo: String; sNumero: String; sCaixaOld: String; sCaixaNew: String; sNumeroDocumento: String; sSituacao: String);
     function PDV_ImportaGerencial(sNumeroGerencial: String;
       FModeloECF: String; // Sandro Silva 2023-08-30
-      FModeloDocOld: String // Sandro Silva 2023-08-30      
+      FModeloDocOld: String // Sandro Silva 2023-08-30
     ): Boolean;
     function RetornarTipoDocumentoConfigurado: tTipoDocFrente; // Dailon Parisotto 2023-11-13
   end;
@@ -10818,7 +10819,7 @@ var
   bNFCeUsoDenegado: Boolean; // Sandro Silva 2020-05-18
   //iFormaExtra: Integer; // Sandro Silva 2022-08-04
   //iniFormas: TIniFile;
-  IBQDOCAUTORIZADO: TIBQuery;
+  //IBQDOCAUTORIZADO: TIBQuery;
 begin
   //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
@@ -13235,7 +13236,7 @@ begin
         Commitatudo2(True); // Form1.Button18Click()
         Commitatudo(True); // Button18Click() cupom
 
-        {Sandro Silva 2024-03-27 inicio}
+        {Sandro Silva 2024-03-27 inicio
         if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') then
         begin
           IBQDOCAUTORIZADO := CriaIBQuery(FORM1.ibDataSet7.Transaction);
@@ -13249,8 +13250,6 @@ begin
             IBQDOCAUTORIZADO.Open;
             if AnsiContainsText(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, 'Autorizado o uso') or AnsiContainsText(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, NFCE_EMITIDA_EM_CONTINGENCIA) then
             begin
-              if True then
-
               if (Form1.sModeloECF = '65') then
                 _ecf65_DisponibilizarDANFCe(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, IBQDOCAUTORIZADO.FieldByName('NUMERONF').AsString, IBQDOCAUTORIZADO.FieldByName('NFEXML').AsString);
             end;
@@ -13261,7 +13260,6 @@ begin
 
         end;
         {Sandro Silva 2024-03-27 fim}
-
 
       end;
 
@@ -22629,6 +22627,9 @@ begin
   Form1.iMesaAberta := 0;
   CortaPapelNoVideo(True); // fecha a venda TForm1.Button8Click()
 
+  PDV_DisponibilizarComprovante; //2024-04-03
+
+
   {Sandro Silva 2023-07-27 inicio
   if Trim(Form2.Edit8.Text) <> '' then
   begin
@@ -31526,6 +31527,35 @@ begin
       Result := '00/00/0000';
   except
   end;
+end;
+
+procedure TForm1.PDV_DisponibilizarComprovante;
+var
+  IBQDOCAUTORIZADO: TIBQuery;
+begin
+  if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') then
+  begin
+    IBQDOCAUTORIZADO := CriaIBQuery(FORM1.ibDataSet7.Transaction);
+    try
+      IBQDOCAUTORIZADO.Close;
+      IBQDOCAUTORIZADO.SQL.Text :=
+       'select NUMERONF, NFEXML, STATUS ' +
+       'from NFCE ' +
+       'where  NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) +
+       ' and CAIXA = ' + QuotedStr(Form1.sCaixa);
+      IBQDOCAUTORIZADO.Open;
+      if AnsiContainsText(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, 'Autorizado o uso') or AnsiContainsText(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, NFCE_EMITIDA_EM_CONTINGENCIA) then
+      begin
+        if (Form1.sModeloECF = '65') then
+          _ecf65_DisponibilizarDANFCe(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, IBQDOCAUTORIZADO.FieldByName('NUMERONF').AsString, IBQDOCAUTORIZADO.FieldByName('NFEXML').AsString);
+      end;
+    except
+
+    end;
+    FreeAndNil(IBQDOCAUTORIZADO);
+
+  end;
+
 end;
 
 procedure TForm1.AlertaSonoro;
