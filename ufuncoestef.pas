@@ -32,6 +32,7 @@ function TEFContaArquivos(sTipoComCaminho: String): Integer;
 function TEFValorTotalAutorizado(): Currency;
 function TEFValorTransacao(sArquivoTEF: String): Currency;
 procedure TEFDeletarCopiasArquivos(FsDiretorio: String);
+function TestarZPOSLiberado: Boolean;
 
 implementation
 
@@ -44,7 +45,8 @@ uses
 //  , _Small_IntegradorFiscal
   , unit22
   , uajustaresolucao
-
+  , uValidaRecursos
+  , uTypesRecursos
   ;
 {Sandro Silva 2023-09-05 inicio
 type
@@ -279,6 +281,8 @@ var
   ModalidadeTransacao: TTipoModalidadeTransacao; // Sandro Silva 2021-07-05
   sRespostaTef: String; // Para capturar linhas da resposta do tef
   FormasExtras: TPagamentoPDV; // Sandro Silva 2023-09-05 FormasExtras: TFormasExtras;
+
+  bTEFZPOS: Boolean;
   procedure RecuperaValoresFormasExtras;
   begin
     // Quando transaciona mais que um cartão na mesma venda e informa valores nas formas extras,
@@ -308,12 +312,31 @@ var
       Result := StrTran(Result, '"', '') + Chr(10);
   end;
   {Sandro Silva 2023-10-24 fim}
+  {Dailon Parisotto (f-17976) 2024-04-04 Inicio}
+  function RetornoDoZPOS(AcCaminhoArq: String): Boolean;
+  var
+    slArq: TStringList;
+  begin
+    Result := False;
+
+    slArq := TStringList.Create;
+    try
+      slArq.LoadFromFile(AcCaminhoArq);
+
+      Result := (Pos('ZPOS', AnsiUpperCase(slArq.Text)) > 0);
+    finally
+      FreeAndNil(slArq)
+    end;
+  end;
+  {Dailon Parisotto (f-17976) 2024-04-04 Fim}
+
 begin
   //
   // Escolhe o TEF
   //
   Result := False; // Sandro Silva 2017-05-20
   bIniciarTEF := True;
+  bTEFZPOS := False;
 
   {Sandro Silva 2023-08-21 inicio}
   FormasExtras := TPagamentoPDV.Create; // Sandro Silva 2023-09-05 FormasExtras := TFormasExtras.Create;// Sandro Silva 2023-08-21
@@ -710,120 +733,127 @@ begin
                   sRespostaTef := ''; // Inicia vazia para capturar linhas da resposta do tef
                   {Sandro Silva 2021-09-02 fim}
                   //
-                  while not Eof(f) Do
+                  bTEFZPOS := (RetornoDoZPOS('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.001'));
+
+                  if (not bTEFZPOS) or (TestarZPOSLiberado) then
                   begin
-                    //
-                    ReadLn(F,Form1.sLinha);
-
-                    sRespostaTef := sRespostaTef + #13 + Form1.sLinha; // Sandro Silva 2021-09-03
-
-                    {Sandro Silva 2023-06-14 inicio
-                    if Form1.UsaIntegradorFiscal() then
-                    begin
-                      Form1.IntegradorCE.TransacaoFinanceira.Resposta := Form1.IntegradorCE.TransacaoFinanceira.Resposta + Form1.sLinha + #10;
-                    end;
-                    }
-                    
-                    //
-                    Form1.sLinha := StrTran(Form1.sLinha,chr(0),' ');
-                    if Copy(Form1.sLinha,1,7) = '003-000' then Form1.sValorTot   := StrTran(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)),',','');
-                    if Copy(Form1.sLinha,1,7) = '200-000' then Form1.sValorSaque := StrTran(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)),',','');
-                    if Copy(Form1.sLinha,1,7) = '010-000' then Form1.sNomeRede   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
-                    if Copy(Form1.sLinha,1,7) = '009-000' then Form1.OkSim       := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
-                    if Copy(Form1.sLinha,1,7) = '012-000' then Form1.sTransaca   := RightStr(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)), 11); // Sandro Silva 2021-07-02 if Copy(Form1.sLinha,1,7) = '012-000' then Form1.sTransaca   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
-                    if Copy(Form1.sLinha,1,7) = '013-000' then Form1.sAutoriza   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)); // Sandro Silva 2018-07-03
-                    if Copy(Form1.sLinha,1,7) = '027-000' then Form1.sFinaliza   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
-                    if Copy(Form1.sLinha,1,7) = '017-000' then Form1.sTipoParc   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)); // 0: parcelado pelo Estabelecimento; 1: parcelado pela ADM.
-                    if Copy(Form1.sLinha,1,7) = '018-000' then Form1.sParcelas   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
-                    if Copy(Form1.sLinha,1,7) = '028-000' then sBotaoOk          := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
-                    if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // Sandro Silva 2023-10-24 if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10);
-                    if Copy(Form1.sLinha,1,4) = '030-'    then sMensagem         := sMensagem + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','');
-                    //
-                    if Copy(Form1.sLinha,1,7) = '709-000' then
+                    while not Eof(f) Do
                     begin
                       //
-                      fDescontoNoPremio := StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9))) / 100;
-                      Form1.ibDataSet25.FieldByName('RECEBER').AsFloat    := Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - fDescontoNoPremio;
-                      Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := dValorPagarCartao - Form1.fDescontoNoTotal - fDescontoNoPremio;// Sandro Silva 2017-06-12  Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := Form1.ibDataSet25.FieldByName('PAGAR').AsFloat - Form1.fDescontoNoTotal - fDescontoNoPremio;
-                      RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
-                      //
-                      Form1.ibDataSet27.Append; // Desconto
-                      Form1.ibDataSet27.FieldByName('TIPO').AsString      := 'BALCAO';
-                      Form1.ibDataSet27.FieldByName('PEDIDO').AsString    := FormataNumeroDoCupom(Form1.icupom); // Sandro Silva 2021-11-29 StrZero(Form1.icupom,6,0);
-                      Form1.ibDataSet27.FieldByName('DESCRICAO').AsString := 'Desconto'; // Desconto no cartão
-                      Form1.ibDataSet27.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
-                      Form1.ibDataSet27.FieldByName('HORA').AsString      := Copy(Form1.sHoraDoCupom,7,2)+':'+Copy(Form1.sHoraDoCupom,9,2)+':'+Copy(Form1.sHoraDoCupom,11,2);
-                      {Sandro Silva 2022-09-09 inicio}
-                      if Form1.sModeloECF = '65' then
-                        Form1.ibDataSet27.FieldByName('HORA').AsString      := FormatDateTime('HH:nn:ss', Time);
-                      {Sandro Silva 2022-09-09 fim}
-                      Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat := 1;
-                      Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat   := (Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - Form1.fTotal);
-                      Form1.ibDataSet27.FieldByName('TOTAL').AsFloat      := TruncaDecimal(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat * Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat, Form1.iTrunca);
-                      Form1.ibDataSet27.FieldByName('CAIXA').AsString     := Form1.sCaixa;
-                      Form1.ibDataSet27.Post;
+                      ReadLn(F,Form1.sLinha);
+
+                      sRespostaTef := sRespostaTef + #13 + Form1.sLinha; // Sandro Silva 2021-09-03
+
+                      {Sandro Silva 2023-06-14 inicio
+                      if Form1.UsaIntegradorFiscal() then
+                      begin
+                        Form1.IntegradorCE.TransacaoFinanceira.Resposta := Form1.IntegradorCE.TransacaoFinanceira.Resposta + Form1.sLinha + #10;
+                      end;
+                      }
 
                       //
-                      Form1.Memo1.Lines.Add('DESCONTO R$  '+Format('%10.2n',[Form1.fTotal - Form1.ibDataSet25.FieldByName('RECEBER').AsFloat]));
+                      Form1.sLinha := StrTran(Form1.sLinha,chr(0),' ');
+                      if Copy(Form1.sLinha,1,7) = '003-000' then Form1.sValorTot   := StrTran(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)),',','');
+                      if Copy(Form1.sLinha,1,7) = '200-000' then Form1.sValorSaque := StrTran(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)),',','');
+                      if Copy(Form1.sLinha,1,7) = '010-000' then Form1.sNomeRede   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
+                      if Copy(Form1.sLinha,1,7) = '009-000' then Form1.OkSim       := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
+                      if Copy(Form1.sLinha,1,7) = '012-000' then Form1.sTransaca   := RightStr(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)), 11); // Sandro Silva 2021-07-02 if Copy(Form1.sLinha,1,7) = '012-000' then Form1.sTransaca   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
+                      if Copy(Form1.sLinha,1,7) = '013-000' then Form1.sAutoriza   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)); // Sandro Silva 2018-07-03
+                      if Copy(Form1.sLinha,1,7) = '027-000' then Form1.sFinaliza   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
+                      if Copy(Form1.sLinha,1,7) = '017-000' then Form1.sTipoParc   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)); // 0: parcelado pelo Estabelecimento; 1: parcelado pela ADM.
+                      if Copy(Form1.sLinha,1,7) = '018-000' then Form1.sParcelas   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
+                      if Copy(Form1.sLinha,1,7) = '028-000' then sBotaoOk          := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
+                      if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // Sandro Silva 2023-10-24 if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10);
+                      if Copy(Form1.sLinha,1,4) = '030-'    then sMensagem         := sMensagem + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','');
                       //
-                    end;
-                    //
-                    if Copy(Form1.sLinha,1,7) = '210-081' then
-                    begin
+                      if Copy(Form1.sLinha,1,7) = '709-000' then
+                      begin
+                        //
+                        fDescontoNoPremio := StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9))) / 100;
+                        Form1.ibDataSet25.FieldByName('RECEBER').AsFloat    := Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - fDescontoNoPremio;
+                        Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := dValorPagarCartao - Form1.fDescontoNoTotal - fDescontoNoPremio;// Sandro Silva 2017-06-12  Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := Form1.ibDataSet25.FieldByName('PAGAR').AsFloat - Form1.fDescontoNoTotal - fDescontoNoPremio;
+                        RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
+                        //
+                        Form1.ibDataSet27.Append; // Desconto
+                        Form1.ibDataSet27.FieldByName('TIPO').AsString      := 'BALCAO';
+                        Form1.ibDataSet27.FieldByName('PEDIDO').AsString    := FormataNumeroDoCupom(Form1.icupom); // Sandro Silva 2021-11-29 StrZero(Form1.icupom,6,0);
+                        Form1.ibDataSet27.FieldByName('DESCRICAO').AsString := 'Desconto'; // Desconto no cartão
+                        Form1.ibDataSet27.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
+                        Form1.ibDataSet27.FieldByName('HORA').AsString      := Copy(Form1.sHoraDoCupom,7,2)+':'+Copy(Form1.sHoraDoCupom,9,2)+':'+Copy(Form1.sHoraDoCupom,11,2);
+                        {Sandro Silva 2022-09-09 inicio}
+                        if Form1.sModeloECF = '65' then
+                          Form1.ibDataSet27.FieldByName('HORA').AsString      := FormatDateTime('HH:nn:ss', Time);
+                        {Sandro Silva 2022-09-09 fim}
+                        Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat := 1;
+                        Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat   := (Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - Form1.fTotal);
+                        Form1.ibDataSet27.FieldByName('TOTAL').AsFloat      := TruncaDecimal(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat * Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat, Form1.iTrunca);
+                        Form1.ibDataSet27.FieldByName('CAIXA').AsString     := Form1.sCaixa;
+                        Form1.ibDataSet27.Post;
+
+                        //
+                        Form1.Memo1.Lines.Add('DESCONTO R$  '+Format('%10.2n',[Form1.fTotal - Form1.ibDataSet25.FieldByName('RECEBER').AsFloat]));
+                        //
+                      end;
                       //
-                      //            SmallMsg('Teste Desconto 2: '+AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)));
+                      if Copy(Form1.sLinha,1,7) = '210-081' then
+                      begin
+                        //
+                        //            SmallMsg('Teste Desconto 2: '+AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)));
+                        //
+                        fDescontoNoPremio := Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)));
+                        Form1.ibDataSet25.FieldByName('RECEBER').AsFloat    := Form1.fTotal - fDescontoNoPremio;
+                        Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := dTotalTransacionado; // Sandro Silva 2017-06-12  StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9))); // acertar aqui quando puder lançar cartões diferentes
+                        RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
+                        //
+                        Form1.ibDataSet27.Append; // Desconto
+                        Form1.ibDataSet27.FieldByName('TIPO').AsString      := 'BALCAO';
+                        Form1.ibDataSet27.FieldByName('PEDIDO').AsString    := FormataNumeroDoCupom(Form1.icupom); // Sandro Silva 2021-11-29 StrZero(Form1.icupom,6,0);
+                        Form1.ibDataSet27.FieldByName('DESCRICAO').AsString := 'Desconto'; // Desconto no cartão
+                        Form1.ibDataSet27.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
+                        Form1.ibDataSet27.FieldByName('HORA').AsString      := Copy(Form1.sHoraDoCupom,7,2)+':'+Copy(Form1.sHoraDoCupom,9,2)+':'+Copy(Form1.sHoraDoCupom,11,2);
+                        {Sandro Silva 2022-09-09 inicio}
+                        if Form1.sModeloECF = '65' then
+                          Form1.ibDataSet27.FieldByName('HORA').AsString      := FormatDateTime('HH:nn:ss', Time);
+                        {Sandro Silva 2022-09-09 fim}
+                        Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat := 1;
+                        Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat   := (Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - Form1.fTotal);
+                        Form1.ibDataSet27.FieldByName('TOTAL').AsFloat      := TruncaDecimal(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat * Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat, Form1.iTrunca);
+                        Form1.ibDataSet27.FieldByName('CAIXA').AsString     := Form1.sCaixa;
+                        Form1.ibDataSet27.Post;
+                        //
+                        Form1.Memo1.Lines.Add('DESCONTO R$  '+Format('%10.2n',[Form1.fTotal - Form1.ibDataSet25.FieldByName('RECEBER').AsFloat]));
+                        //
+                      end;
                       //
-                      fDescontoNoPremio := Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)));
-                      Form1.ibDataSet25.FieldByName('RECEBER').AsFloat    := Form1.fTotal - fDescontoNoPremio;
-                      Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := dTotalTransacionado; // Sandro Silva 2017-06-12  StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9))); // acertar aqui quando puder lançar cartões diferentes
-                      RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
                       //
-                      Form1.ibDataSet27.Append; // Desconto
-                      Form1.ibDataSet27.FieldByName('TIPO').AsString      := 'BALCAO';
-                      Form1.ibDataSet27.FieldByName('PEDIDO').AsString    := FormataNumeroDoCupom(Form1.icupom); // Sandro Silva 2021-11-29 StrZero(Form1.icupom,6,0);
-                      Form1.ibDataSet27.FieldByName('DESCRICAO').AsString := 'Desconto'; // Desconto no cartão
-                      Form1.ibDataSet27.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
-                      Form1.ibDataSet27.FieldByName('HORA').AsString      := Copy(Form1.sHoraDoCupom,7,2)+':'+Copy(Form1.sHoraDoCupom,9,2)+':'+Copy(Form1.sHoraDoCupom,11,2);
-                      {Sandro Silva 2022-09-09 inicio}
-                      if Form1.sModeloECF = '65' then
-                        Form1.ibDataSet27.FieldByName('HORA').AsString      := FormatDateTime('HH:nn:ss', Time);
-                      {Sandro Silva 2022-09-09 fim}
-                      Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat := 1;
-                      Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat   := (Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - Form1.fTotal);
-                      Form1.ibDataSet27.FieldByName('TOTAL').AsFloat      := TruncaDecimal(Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat * Form1.ibDataSet27.FieldByName('UNITARIO').AsFloat, Form1.iTrunca);
-                      Form1.ibDataSet27.FieldByName('CAIXA').AsString     := Form1.sCaixa;
-                      Form1.ibDataSet27.Post;
-                      //
-                      Form1.Memo1.Lines.Add('DESCONTO R$  '+Format('%10.2n',[Form1.fTotal - Form1.ibDataSet25.FieldByName('RECEBER').AsFloat]));
-                      //
-                    end;
-                    //
-                    //
-                    {Sandro Silva 2023-10-24 inicio
-                    if Copy(Form1.sLinha,1,4) = '710-' then sCupom710 := sCupom710 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas cupom reduzido
-                    if Copy(Form1.sLinha,1,4) = '711-' then sCupom711 := sCupom711 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas cupom reduzido
-                    if Copy(Form1.sLinha,1,4) = '712-' then sCupom712 := sCupom712 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas comprovante destinada ao Cliente
-                    if Copy(Form1.sLinha,1,4) = '713-' then sCupom713 := sCupom713 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas da via do Cliente,
-                    if Copy(Form1.sLinha,1,4) = '714-' then sCupom714 := sCupom714 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas comprovante destinada ao Estabelecimento
-                    if Copy(Form1.sLinha,1,4) = '715-' then sCupom715 := sCupom715 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas da via do Estabelecimento
-                    }
-                    if Copy(Form1.sLinha,1,4) = '710-' then
-                      sCupom710 := sCupom710 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas cupom reduzido
-                    if Copy(Form1.sLinha,1,4) = '711-' then
-                      sCupom711 := sCupom711 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas cupom reduzido
-                    if Copy(Form1.sLinha,1,4) = '712-' then
-                      sCupom712 := sCupom712 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas comprovante destinada ao Cliente
-                    if Copy(Form1.sLinha,1,4) = '713-' then
-                      sCupom713 := sCupom713 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas da via do Cliente,
-                    if Copy(Form1.sLinha,1,4) = '714-' then
-                      sCupom714 := sCupom714 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas comprovante destinada ao Estabelecimento
-                    if Copy(Form1.sLinha,1,4) = '715-' then
-                      sCupom715 := sCupom715 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas da via do Estabelecimento
-                    {Sandro Silva 2023-10-24 fim}
-                    //                               //
-                    // Venda com pagamento no CARTAO //
-                    //                               //
-                  end; // while not Eof(f) Do
+                      {Sandro Silva 2023-10-24 inicio
+                      if Copy(Form1.sLinha,1,4) = '710-' then sCupom710 := sCupom710 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas cupom reduzido
+                      if Copy(Form1.sLinha,1,4) = '711-' then sCupom711 := sCupom711 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas cupom reduzido
+                      if Copy(Form1.sLinha,1,4) = '712-' then sCupom712 := sCupom712 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas comprovante destinada ao Cliente
+                      if Copy(Form1.sLinha,1,4) = '713-' then sCupom713 := sCupom713 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas da via do Cliente,
+                      if Copy(Form1.sLinha,1,4) = '714-' then sCupom714 := sCupom714 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // qtd linhas comprovante destinada ao Estabelecimento
+                      if Copy(Form1.sLinha,1,4) = '715-' then sCupom715 := sCupom715 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10); // linhas da via do Estabelecimento
+                      }
+                      if Copy(Form1.sLinha,1,4) = '710-' then
+                        sCupom710 := sCupom710 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas cupom reduzido
+                      if Copy(Form1.sLinha,1,4) = '711-' then
+                        sCupom711 := sCupom711 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas cupom reduzido
+                      if Copy(Form1.sLinha,1,4) = '712-' then
+                        sCupom712 := sCupom712 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas comprovante destinada ao Cliente
+                      if Copy(Form1.sLinha,1,4) = '713-' then
+                        sCupom713 := sCupom713 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas da via do Cliente,
+                      if Copy(Form1.sLinha,1,4) = '714-' then
+                        sCupom714 := sCupom714 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // qtd linhas comprovante destinada ao Estabelecimento
+                      if Copy(Form1.sLinha,1,4) = '715-' then
+                        sCupom715 := sCupom715 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // linhas da via do Estabelecimento
+                      {Sandro Silva 2023-10-24 fim}
+                      //                               //
+                      // Venda com pagamento no CARTAO //
+                      //                               //
+                    end; // while not Eof(f) Do
+                  end
+                  else
+                    sMensagem := 'Serial sem acesso ao recurso ZPOS.';
                   //
                   CloseFile(F);
                   //
@@ -2659,6 +2689,13 @@ begin
   end;
 
   ChDir(sDirAtual);
+end;
+
+function TestarZPOSLiberado: Boolean;
+var
+  dLimiteRecurso : Tdate;
+begin
+  Result := (RecursoLiberado(Form1.IBDatabase1,rcZPOS,dLimiteRecurso));
 end;
 
 end.
