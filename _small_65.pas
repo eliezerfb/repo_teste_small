@@ -6360,7 +6360,7 @@ begin
       }
     end; // if Form1.sModeloECF = '65' then
 
-    if Form1.sStatusECF <> 'CAIXA LIVRE' then
+    if Form1.sStatusECF <> TEXTO_CAIXA_LIVRE then  // Sandro Silva 2024-04-04 if Form1.sStatusECF <> 'CAIXA LIVRE' then
     begin
       //
       if (Form1.bBalancaAutonoma = False) then // Sandro Silva 2019-01-23

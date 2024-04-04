@@ -2124,9 +2124,9 @@ begin
   if Form1.bBalancaAutonoma then
   begin
     sP2 := 'F10 Menu Configurações';
-  end;  
+  end;
 
-  Form1.lbDisplayPDV.Caption := sP1; // Define se em venda, CAIXA LIVRE
+  Form1.lbDisplayPDV.Caption := sP1; // Define se em venda, CAIXA LIVRE,...
   Form1.lbDisplayPDV.Repaint; // 2015-09-08
 
   if Form1.sGertec <> _cNao then
@@ -4720,7 +4720,7 @@ begin
     begin
       //
       //
-      Form1.sStatusECF := 'CAIXA LIVRE';
+      Form1.sStatusECF := TEXTO_CAIXA_LIVRE; //Sandro Silva 2024-04-04 Form1.sStatusECF := 'CAIXA LIVRE';
 
       Form1.sStatusECF_RES := Form1.sStatusECF;
 
@@ -12308,20 +12308,20 @@ begin
                     Form1.ibDataSet28.Post;
                     //
                   except
-                        on E: Exception do
-                        begin
-                          LogFrente('12390 ' + FormataNumeroDoCupom(Form1.icupom) + ' ' + E.Message); // Sandro Silva 2023-12-07
-                        end;
+                    on E: Exception do
+                    begin
+                      LogFrente('12390 ' + FormataNumeroDoCupom(Form1.icupom) + ' ' + E.Message); // Sandro Silva 2023-12-07
+                    end;
                   end;
 
                   {Sandro Silva 2021-07-27 inicio}
                   try
                     FormaExtraLancaReceber('8', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('8', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
                   except
-                        on E: Exception do
-                        begin
-                          LogFrente('12400 ' + FormataNumeroDoCupom(Form1.icupom) + ' ' + E.Message); // Sandro Silva 2023-12-07
-                        end;
+                    on E: Exception do
+                    begin
+                      LogFrente('12400 ' + FormataNumeroDoCupom(Form1.icupom) + ' ' + E.Message); // Sandro Silva 2023-12-07
+                    end;
                   end;
                   {Sandro Silva 2021-07-27 fim}
 
@@ -12407,7 +12407,7 @@ begin
                   end;
                   Form1.ibDataSet7.Next;
                 end;
-                                 
+
               end;// if bNFCeUsoDenegado = False then
 
               LogFrente('12427 Salvou PAGAMENT ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
@@ -12583,7 +12583,9 @@ begin
         //                                                     //
         //---------------------------------------------------  //
 
-        AjustaAlteracaDesconto;
+        AjustaAlteracaDesconto; // Aqui faz commit
+
+        PDV_DisponibilizarComprovante; //2024-04-03
 
         // Sandro Silva 2021-08-06 Button4.Enabled := True;
         //
@@ -12595,7 +12597,15 @@ begin
         Button4.Enabled  := True;
         Button9.Enabled  := True;
         //
+        { Sandro Silva 2024-04-04 inicio
         Display(Form1.sStatusECF,Form1.sF);
+        }
+        if (AllTrim(sCupomTef) <> '') then
+          Display('Finalizando a transação com TEF', 'Finalizando a transação com TEF')
+        else
+          Display(Form1.sStatusECF, Form1.sF);
+        {Sandro Silva 2024-04-04 fim}
+
         Form1.Memo2.Lines.Text := 'Total R$ 0,00';
         Label_13.Caption := Right(Replicate(' ',8)+'0,00',8);
         //        Form1.Image2.Visible := False;
@@ -12848,7 +12858,11 @@ begin
                   end;
                   //
                 end;
-                //
+
+                if (AllTrim(sCupomTef) <> '') then
+                  Display('Finalizando a transação com TEF', 'Finalizando a transação com TEF')
+                else
+                  Display(Form1.sStatusECF, Form1.sF);
               end; // if (bButton <> IDNO) then
               //
             end;
@@ -12926,11 +12940,6 @@ begin
           //
           if (bChave = True)   then
           begin
-
-            {Sandro Silva 2023-06-14 inicio
-            if Form1.UsaIntegradorFiscal() then
-              Form1.ExibePanelMensagem('Finalizando TEF'); // Sandro Silva 2018-07-03
-            }
 
             // Confirmando a transação TEF
             AssignFile(F, ('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'));
@@ -13075,6 +13084,11 @@ begin
       //-------------------------------------------------
       //
     end;
+
+    {Sandro Silva 2024-04-04 inicio}
+    if bFechado then
+      Display(Form1.sStatusECF, Form1.sF);
+    {Sandro Silva 2024-04-04 fim}
     //
     //
     // if not bVolta then
@@ -13088,7 +13102,7 @@ begin
         Abort;
       end;
 
-        LogFrente('13169 validando sConveniadoCNPJ ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
+      LogFrente('13169 validando sConveniadoCNPJ ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
       //
       Panel3.Visible  := False;
@@ -13152,20 +13166,19 @@ begin
       //
       Button4.Enabled := True;
 
-        LogFrente('13233 iniciando ValorTotalDoDia(False) ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
+      LogFrente('13233 iniciando ValorTotalDoDia(False) ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
       Label_7.Caption := 'Aguarde, atualizando valor do dia...';
       Label_7.Repaint;
       ValorTotalDoDia(False);
 
-             LogFrente('13239 depois ValorTotalDoDia(False) ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
+      LogFrente('13239 depois ValorTotalDoDia(False) ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
-
-        LogFrente('13242 Form1.Button8Click() ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
+      LogFrente('13242 Form1.Button8Click() ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
       Form1.Button8Click(Sender); // Corta o papel, commita, etc e tal, fecha a tela da mesa do cupom status das mesas, zeresima
 
-        LogFrente('13246 Form1.Button8Click() ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
+      LogFrente('13246 Form1.Button8Click() ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
       // Sandro Silva 2020-05-14 uso denegado cancela venda
 
@@ -20063,7 +20076,8 @@ begin
     begin
       Form1.bFechaRapidoCartao := False; // Sandro Silva 2021-09-08
       //
-      if sStatusECF_RES = 'CAIXA LIVRE' then // Abre cupom
+      // Sandro Silva 2024-04-04 if sStatusECF_RES = 'CAIXA LIVRE' then // Abre cupom
+      if sStatusECF_RES = TEXTO_CAIXA_LIVRE then // Abre cupom
       begin
         //
         Form1.Button8Click(Sender); // Corta o papel, commita, etc e tal, fecha a tela da mesa do cupom status das mesas, zeresima
@@ -20279,7 +20293,8 @@ begin
       if (Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '99') then
       begin
         // Atualizar as mesas quando mudar de página, mostrando o que foi lançado em outros terminais
-        if (sStatusECF_RES = 'CAIXA LIVRE') and (DBGrid1.CanFocus = False) then
+        // Sandro Silva 2024-04-04 if (sStatusECF_RES = 'CAIXA LIVRE') and (DBGrid1.CanFocus = False) then
+        if (sStatusECF_RES = TEXTO_CAIXA_LIVRE) and (DBGrid1.CanFocus = False) then
         begin
           if (Key = VK_DOWN) or (Key = VK_UP) then
           begin
@@ -22627,7 +22642,7 @@ begin
   Form1.iMesaAberta := 0;
   CortaPapelNoVideo(True); // fecha a venda TForm1.Button8Click()
 
-  PDV_DisponibilizarComprovante; //2024-04-03
+  //PDV_DisponibilizarComprovante; //2024-04-03
 
 
   {Sandro Silva 2023-07-27 inicio
@@ -25788,7 +25803,8 @@ begin
 
       //
       //Sandro Silva 2015-06-03 if sStatusECF_RES = 'CAIXA LIVRE' then
-      if (sStatusECF_RES = 'CAIXA LIVRE') and (DBGrid1.CanFocus = False) then
+      // Sandro Silva 2024-04-04 if (sStatusECF_RES = 'CAIXA LIVRE') and (DBGrid1.CanFocus = False) then
+      if (sStatusECF_RES = TEXTO_CAIXA_LIVRE) and (DBGrid1.CanFocus = False) then
       begin
         //
         if not Memo1.Visible then
@@ -31535,7 +31551,7 @@ var
 begin
   if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') then
   begin
-    IBQDOCAUTORIZADO := CriaIBQuery(FORM1.ibDataSet7.Transaction);
+    IBQDOCAUTORIZADO := CriaIBQuery(FORM1.ibDataSet27.Transaction);
     try
       IBQDOCAUTORIZADO.Close;
       IBQDOCAUTORIZADO.SQL.Text :=
@@ -31546,6 +31562,7 @@ begin
       IBQDOCAUTORIZADO.Open;
       if AnsiContainsText(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, 'Autorizado o uso') or AnsiContainsText(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, NFCE_EMITIDA_EM_CONTINGENCIA) then
       begin
+        Display('Disponibilizando comprovante', 'Disponibilizando comprovante');
         if (Form1.sModeloECF = '65') then
           _ecf65_DisponibilizarDANFCe(IBQDOCAUTORIZADO.FieldByName('STATUS').AsString, IBQDOCAUTORIZADO.FieldByName('NUMERONF').AsString, IBQDOCAUTORIZADO.FieldByName('NFEXML').AsString);
       end;
@@ -32191,6 +32208,8 @@ var
   FontSizeOld: Integer; // Sandro Silva 2018-03-23
   ImpressaoPDF: TImpressaoPDF; // Sandro Silva 2018-11-20
   PrinterNew: TPrinter; // Sandro Silva 2019-07-15
+  sTextoDisplayTopoOld: String;
+  sTextoDisplayRodapeOld: String;
   procedure DefinePapel(sArquivoPDF: String);
   var
     Device: array[0..255] of char;
@@ -32240,6 +32259,10 @@ begin
   //  SmallMsg(sP1);
   //
   //
+
+  sTextoDisplayTopoOld   := Form1.lbDisplayPDV.Caption;
+  sTextoDisplayRodapeOld := Form1.Label_7.Caption;
+
   if Right(sP1, 1) <> Chr(10) then
     sP1 := sP1 + Chr(10);
   if (Form1.sModeloECF <> '99') and (Form1.sModeloECF_Reserva <> '99') then
@@ -32408,6 +32431,14 @@ begin
   end; // if (Form1.ClienteSmallMobile.sVendaImportando = '') then // Não imprimir carnê quando for venda mobile
   //
   Result := True;
+
+  {Sandro Silva 2024-04-04 inicio}
+  Form1.lbDisplayPDV.Caption := sTextoDisplayTopoOld;
+  Form1.lbDisplayPDV.Repaint;
+  Form1.Label_7.Caption := sTextoDisplayRodapeOld;
+  Form1.Label_7.Repaint;
+  {Sandro Silva 2024-04-04 fim}
+
   //
 end;
 
