@@ -8,7 +8,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, frame_teclado_1, StdCtrls, IniFiles, ComCtrls, Buttons,
-  SmallFunc_xe, Grids, DB, DBGrids, DBClient, ufuncaoMD5, uajustaresolucao;
+  SmallFunc_xe, Grids, DB, DBGrids, DBClient, ufuncaoMD5, uajustaresolucao,
+  uDialogs;
 
 const
   _cColunaAtivo    = 'ATIVO';
@@ -540,6 +541,8 @@ begin
     cdsTEFsATIVO.AsString := _cNao;
     cdsTEFs.Post;
     cdsTEFs.Edit;
+
+    uDialogs.MensagemSistema('O recurso ZPOS não está liberado para o serial.', msgInformacao);
     Exit;
   end;
 
