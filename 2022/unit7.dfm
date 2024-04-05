@@ -16810,6 +16810,16 @@ object Form7: TForm7
       Precision = 18
       Size = 2
     end
+    object ibDataSet23PICMSST: TIBBCDField
+      DisplayLabel = '% ICMS ST'
+      DisplayWidth = 9
+      FieldName = 'PICMSST'
+      Origin = 'ITENS002.PICMSST'
+      Visible = False
+      DisplayFormat = '##0.00'
+      Precision = 18
+      Size = 4
+    end
     object ibDataSet23LISTA: TFloatField
       DisplayLabel = 'Novo pre'#231'o'
       FieldName = 'LISTA'
@@ -16932,16 +16942,6 @@ object Form7: TForm7
       EditFormat = '##0.00'
       Precision = 18
       Size = 2
-    end
-    object ibDataSet23PST: TIBBCDField
-      DisplayLabel = '% ICMS ST'
-      DisplayWidth = 9
-      FieldName = 'PICMSST'
-      Origin = 'ITENS002.PST'
-      Visible = False
-      DisplayFormat = '##0.00'
-      Precision = 18
-      Size = 4
     end
   end
   object DataSource23: TDataSource
@@ -19918,7 +19918,6 @@ object Form7: TForm7
       end
       object Importarretornodevendaambulante1: TMenuItem
         Caption = 'Importar retorno de venda ambulante'
-        Visible = False
         OnClick = Importarretornodevendaambulante1Click
       end
       object ClculodoCustodaltimaNota1: TMenuItem

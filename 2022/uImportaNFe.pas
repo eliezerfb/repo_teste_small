@@ -705,7 +705,7 @@ begin
 
                       {Sandro Silva 2024-03-21 inicio}
                       try
-                        Form7.ibDataSet23PST.AsString   := StrTran(spICMSST,'.',',');
+                        Form7.ibDataSet23PICMSST.AsString   := StrTran(spICMSST,'.',',');
                       except
                       end;
                       {Sandro Silva 2024-03-21 fim}

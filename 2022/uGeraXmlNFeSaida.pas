@@ -136,6 +136,8 @@ var
 
   vFreteSobreIPI,vIPISobreICMS : Boolean;
   cBenef, cBenefItem : string;
+
+  bPagouComTEF: Boolean;
 begin
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
@@ -2939,7 +2941,7 @@ begin
     IBQCREDENCIADORA := Form7.CriaIBQuery(Form7.ibDataSet7.Transaction);
     while not Form7.ibDataSet7.Eof do
     begin
-
+      bPagouComTEF := (TestarTEFConfigurado) and (Form7.ibDataSet15INDPRES.AsString = '1') and (Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString <> EmptyStr);
       Form7.spdNFeDataSets.IncluirPart('YA');
       //
       // 01=Dinheiro
@@ -2975,16 +2977,31 @@ begin
       if FormaDePagamentoEnvolveCartao(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
       begin
         IBQCREDENCIADORA.Close;
-        IBQCREDENCIADORA.SQL.Text :=
-          'select * ' +
-          'from CLIFOR ' +
-          'where NOME = ' + QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString);
+        IBQCREDENCIADORA.SQL.Clear;
+        IBQCREDENCIADORA.SQL.Add('select * from CLIFOR');
+        IBQCREDENCIADORA.SQL.Add('WHERE (CLIFOR in (''Credenciadora de cartão'', ''Instituição financeira''))');
+        // Se não tem pega o primeiro
+        if Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString <> EmptyStr then
+          IBQCREDENCIADORA.SQL.Add('and (NOME = ' + QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString) + ')');
         IBQCREDENCIADORA.Open;
+        IBQCREDENCIADORA.First;
         // Se for Cartão
-        Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
+        if (bPagouComTEF) then
+          Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '1'
+        else
+          Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
         Form7.spdNFeDataSets.campo('CNPJ_YA05').Value       := LimpaNumero(IBQCREDENCIADORA.FieldByName('CGC').AsString);  // CNPJ da Credenciadora de cartão de crédito e/ou débito
         Form7.spdNFeDataSets.campo('tBand_YA06').Value      := CodigotBandNF(Form7.ibDataSet7BANDEIRA.AsString);  // Bandeira da operadora de cartão de crédito e/ou débito
         Form7.spdNFeDataSets.campo('cAut_YA07').Value       := Copy(Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString, 1, 20);  // Número de autorização da operação cartão de crédito e/ou débito
+
+{       Dailon Parisotto (f-225) 2023/03/26 Inicio
+        A obrigatóriedade foi postergado, sendo assim não está no schema.
+
+        Form7.spdNFeDataSets.campo('CNPJReceb_YA07a').Value := LimpaNumero(Form7.ibDataSet13CGC.AsString);
+        Form7.spdNFeDataSets.campo('idTermPag_YA07b').Value := '001';
+
+        Dailon Parisotto (f-225) 2023/03/26 Fim
+}
       end;
 
       Form7.spdNFeDataSets.SalvarPart('YA');
@@ -3997,15 +4014,21 @@ begin
           and not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then
         begin
           SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
-          //vBCFCPSTRet - buscar a informação da tabela ITENS002, campo VBCFCPST (dividir pela quantidade dos itens)
-          dvBCFCPSTRet_N27a := (Form7.ibQuery1.FieldByname('VBCST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat) * Form7.ibDataSet16QUANTIDADE.AsFloat;
-          Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := FormatFloatXML(dvBCFCPSTRet_N27a); // Valor da Base de Cálculo do FCP retido anteriormente por ST
-          //pFCPSTRet - buscar a informação da tabela ITENS002, campo PFCPST (dividir pela quantidade dos itens)
-          Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := FormatFloatXML(Form7.ibQuery1.FieldByName('PFCPST').AsFloat); // Percentual do FCP retido anteriormente por Substituição Tributária
-          //vFCPSTRet - buscar a informação da tabela ITENS002, campo VFCPST(dividir pela quantidade dos itens)OBS: Seguir a mesma lógica do grupo vBCSTRet
-          dvFCPSTRet_N27d := StrToFloat(FormatFloat('0.00', dvBCFCPSTRet_N27a * Form7.ibQuery1.FieldByName('PFCPST').AsFloat / 100));
-          Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := FormatFloatXML(dvFCPSTRet_N27d); // Valor do FCP retido por Substituição Tributária
-          dvFCPSTRet_W06b := dvFCPSTRet_W06b + dvFCPSTRet_N27d;
+
+          // Sandro Silva 2024-03-27
+          // Ajustar para que valide o campo PFCPST na tabela ITENS002. Se ele estiver em branco ou zerado, não gerar nenhuma das tags abaixo:
+          if Form7.ibQuery1.FieldByName('PFCPST').AsFloat > 0 then
+          begin
+            //vBCFCPSTRet - buscar a informação da tabela ITENS002, campo VBCFCPST (dividir pela quantidade dos itens)
+            dvBCFCPSTRet_N27a := (Form7.ibQuery1.FieldByname('VBCST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat) * Form7.ibDataSet16QUANTIDADE.AsFloat;
+            Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := FormatFloatXML(dvBCFCPSTRet_N27a); // Valor da Base de Cálculo do FCP retido anteriormente por ST
+            //pFCPSTRet - buscar a informação da tabela ITENS002, campo PFCPST (dividir pela quantidade dos itens)
+            Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := FormatFloatXML(Form7.ibQuery1.FieldByName('PFCPST').AsFloat); // Percentual do FCP retido anteriormente por Substituição Tributária
+            //vFCPSTRet - buscar a informação da tabela ITENS002, campo VFCPST(dividir pela quantidade dos itens)OBS: Seguir a mesma lógica do grupo vBCSTRet
+            dvFCPSTRet_N27d := StrToFloat(FormatFloat('0.00', dvBCFCPSTRet_N27a * Form7.ibQuery1.FieldByName('PFCPST').AsFloat / 100));
+            Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := FormatFloatXML(dvFCPSTRet_N27d); // Valor do FCP retido por Substituição Tributária
+            dvFCPSTRet_W06b := dvFCPSTRet_W06b + dvFCPSTRet_N27d;
+          end;
         end;
       end;
 
@@ -4906,15 +4929,20 @@ begin
             and not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then
           begin
             SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
-            //vBCFCPSTRet - buscar a informação da tabela ITENS002, campo VBCFCPST (dividir pela quantidade dos itens)
-            dvBCFCPSTRet_N27a := (Form7.ibQuery1.FieldByname('VBCST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat) * Form7.ibDataSet16QUANTIDADE.AsFloat;
-            Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := FormatFloatXML(dvBCFCPSTRet_N27a); // Valor da Base de Cálculo do FCP retido anteriormente por ST
-            //pFCPSTRet - buscar a informação da tabela ITENS002, campo PFCPST (dividir pela quantidade dos itens)
-            Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := FormatFloatXML(Form7.ibQuery1.FieldByName('PFCPST').AsFloat); // Percentual do FCP retido anteriormente por Substituição Tributária
-            //vFCPSTRet - buscar a informação da tabela ITENS002, campo VFCPST(dividir pela quantidade dos itens)OBS: Seguir a mesma lógica do grupo vBCSTRet
-            dvFCPSTRet_N27d := StrToFloat(FormatFloat('0.00', dvBCFCPSTRet_N27a * Form7.ibQuery1.FieldByName('PFCPST').AsFloat / 100));
-            Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := FormatFloatXML(dvFCPSTRet_N27d); // Valor do FCP retido por Substituição Tributária
-            dvFCPSTRet_W06b := dvFCPSTRet_W06b + dvFCPSTRet_N27d;
+            // Sandro Silva 2024-03-27
+            // Ajustar para que valide o campo PFCPST na tabela ITENS002. Se ele estiver em branco ou zerado, não gerar nenhuma das tags abaixo:
+            if Form7.ibQuery1.FieldByName('PFCPST').AsFloat > 0 then
+            begin
+              //vBCFCPSTRet - buscar a informação da tabela ITENS002, campo VBCFCPST (dividir pela quantidade dos itens)
+              dvBCFCPSTRet_N27a := (Form7.ibQuery1.FieldByname('VBCST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat) * Form7.ibDataSet16QUANTIDADE.AsFloat;
+              Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := FormatFloatXML(dvBCFCPSTRet_N27a); // Valor da Base de Cálculo do FCP retido anteriormente por ST
+              //pFCPSTRet - buscar a informação da tabela ITENS002, campo PFCPST (dividir pela quantidade dos itens)
+              Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := FormatFloatXML(Form7.ibQuery1.FieldByName('PFCPST').AsFloat); // Percentual do FCP retido anteriormente por Substituição Tributária
+              //vFCPSTRet - buscar a informação da tabela ITENS002, campo VFCPST(dividir pela quantidade dos itens)OBS: Seguir a mesma lógica do grupo vBCSTRet
+              dvFCPSTRet_N27d := StrToFloat(FormatFloat('0.00', dvBCFCPSTRet_N27a * Form7.ibQuery1.FieldByName('PFCPST').AsFloat / 100));
+              Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := FormatFloatXML(dvFCPSTRet_N27d); // Valor do FCP retido por Substituição Tributária
+              dvFCPSTRet_W06b := dvFCPSTRet_W06b + dvFCPSTRet_N27d;
+            end;
           end;
         end;
 
