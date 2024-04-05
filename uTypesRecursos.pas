@@ -23,7 +23,8 @@ type
                rcIndicadores,
                rcInventarioP7,
                rcQtdNFCE,
-               rcQtdNFE
+               rcQtdNFE,
+               rcZPOS
                );
 
 

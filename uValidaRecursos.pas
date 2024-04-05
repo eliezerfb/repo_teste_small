@@ -208,6 +208,7 @@ begin
       rcIndicadores   : Result := vRecursosSistema.Recursos.Indicadores;
       rcInventarioP7  : Result := vRecursosSistema.Recursos.InventarioP7;
       rcMKP           : Result := vRecursosSistema.Recursos.MKP;
+      rcZPOS          : Result := vRecursosSistema.Recursos.ZPOS;
     end;
   except
   end;
