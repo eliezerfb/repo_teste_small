@@ -9796,7 +9796,7 @@ var
 //  sExeName: String;
   bInicializa: Boolean;// Sandro Silva 2017-07-05
 begin
-  bEditandoMovimento := False; // Sandro Silva 2023-11-08
+  Form1.bEditandoMovimento := False; // Sandro Silva 2023-11-08
   AjustarBufferChuncks(Form1);
   ClienteSmallMobile := TSmallMobileCliente.Create;
 
@@ -10198,7 +10198,7 @@ begin
   sPromissoria           := Mais1Ini.ReadString('Frente de caixa', 'Promissória','Não');
   sCreditosDF            := Mais1Ini.ReadString('Frente de caixa', 'Créditos DF','Não');
   LeConfiguracaoTipoEtiquetaBalanca; // Sandro Silva 2022-07-13 sTipoEtiqueta          := Mais1Ini.ReadString('Frente de caixa', 'Tipo etiqueta','KG');
-  sIdentificaConsumidor  := Mais1Ini.ReadString('Frente de caixa', 'Identifica consumidor','Não');
+  Form1.sIdentificaConsumidor  := Mais1Ini.ReadString('Frente de caixa', 'Identifica consumidor','Não');
   sSenhaDeUsuario        := Mais1Ini.ReadString('Frente de caixa', 'SDU','Não');
   sPlanoDeContas         := Mais1Ini.ReadString('Frente de caixa', 'Plano de contas','Receita de vendas ECF');
   sBAlanca               := Mais1ini.ReadString('Frente de caixa', 'Balança','Não');
@@ -11376,7 +11376,6 @@ begin
             //
             Mais1Ini.Free;
             //
-            //          if ((Form1.sModeloECF = '02') or (Form1.sModeloECF = '15') or (Form1.sModeloECF = '12') or (Form1.sModeloECF = '14')) and (sIdentificaConsumidor = 'Sim') then // Daruma e URANO identifica o cunsumidor no FechaCupom
             if (Form1.sModeloECF <> '03') and (Form1.sModeloECF <> '17') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '99') then
             begin
               //
@@ -25627,7 +25626,7 @@ begin
   Timer2.OnTimer := nil;
 
   sVendedorOld := Form1.sVendedor; // Vendedor que está logado ou o último a fazer venda não mobile
-  sIdentificaConsumidorOld := sIdentificaConsumidor;
+  sIdentificaConsumidorOld := Form1.sIdentificaConsumidor;
 
   Form1.sIdentificaConsumidor := 'Não';
 
@@ -26367,7 +26366,7 @@ begin
 
     Form1.ClienteSmallMobile.sVendaImportando := '';
 
-    sIdentificaConsumidor := sIdentificaConsumidorOld;
+    Form1.sIdentificaConsumidor := sIdentificaConsumidorOld;
 
     Timer2.OnTimer := Timer2Timer;
     Timer2.Enabled := True;
@@ -34853,9 +34852,9 @@ begin
       // --------------------------------- //
       bAbre := False;
       sCPF_CNPJ_Validado := '';
-      //
+
       if ((Form1.sModeloECF = '02') or (Form1.sModeloECF = '03') or (Form1.sModeloECF = '12') or (Form1.sModeloECF = '14') or (Form1.sModeloECF = '17') or (Form1.sModeloECF = '15') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') ) // Sandro Silva 2018-10-23 if ((Form1.sModeloECF = '02') or (Form1.sModeloECF = '15') or (Form1.sModeloECF = '12') or (Form1.sModeloECF = '14') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') )
-        and (sIdentificaConsumidor = 'Sim')
+        and (Form1.sIdentificaConsumidor = 'Sim')
          then
       begin
         if (Form1.ClienteSmallMobile.sVendaImportando = '') and (bCupomAberto = False) and (bImportandoDAVorOS = False) then
@@ -35464,6 +35463,7 @@ procedure TForm1.AbreEdicaoMovimento;
 var
   IBQTEMP: TIBQuery;
   sSelectItens: String;
+  sIdentificaConsumidorOld: String; // Artifício para não solicitar CPF/CNPJ consumidor quando sair da tela de edição da venda
 begin
   //2024-03-08 if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
   // Permite editar a venda quando é NFC-e/SAT/Gerencial ou mesa/conta com NFC-e/SAT/Gerencial
@@ -35472,6 +35472,8 @@ begin
 
   if SenhaAdministradorOk = False then
     Exit;
+
+  sIdentificaConsumidorOld := Form1.sIdentificaConsumidor;
 
   IBQTEMP := CriaIBQuery(Form1.ibDataSet27.Transaction);
 
@@ -35531,7 +35533,13 @@ begin
   Commitatudo(True);
 
   Memo1.Clear;
-  AberturaDoCupom;
+  try
+    Form1.sIdentificaConsumidor := 'Não';
+    AberturaDoCupom;
+  finally
+    Form1.sIdentificaConsumidor := sIdentificaConsumidorOld;
+  end;
+
 end;
 
 procedure TForm1.Iniciarnovavenda1Click(Sender: TObject);
