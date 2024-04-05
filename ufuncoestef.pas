@@ -853,7 +853,7 @@ begin
                     end; // while not Eof(f) Do
                   end
                   else
-                    sMensagem := 'Serial sem acesso ao recurso ZPOS.';
+                    sMensagem := 'Serial sem acesso à esse recurso. Entre em contato com sua revenda.';
                   //
                   CloseFile(F);
                   //

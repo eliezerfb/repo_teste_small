@@ -542,7 +542,7 @@ begin
     cdsTEFs.Post;
     cdsTEFs.Edit;
 
-    uDialogs.MensagemSistema('O recurso ZPOS não está liberado para o serial.', msgInformacao);
+    uDialogs.MensagemSistema('Serial sem acesso à esse recurso. Entre em contato com sua revenda.', msgInformacao);
     Exit;
   end;
 
