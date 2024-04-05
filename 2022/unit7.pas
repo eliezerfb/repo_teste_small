@@ -31671,6 +31671,7 @@ var
   sDesVetor : array[0..999] of String;
   fValVetor : array[0..999] of real;
   fQtdVetor : array[0..999] of real;
+  aCFOP  : array[0..999] of String;
 
   vCli, vOpe : String;
   I, J : Integer;
@@ -31686,6 +31687,7 @@ begin
     sDesVetor[I] := Form7.ibDataSet16DESCRICAO.AsString;
     fValVetor[I] := Form7.ibDataSet16UNITARIO.Asfloat;
     fQtdVetor[I] := Form7.ibDataSet16QUANTIDADE.AsFloat;
+    aCFOP[I]     := Form7.ibDataSet16CFOP.AsString;
     I := I + 1;
     Form7.ibDataSet16.Next;
   end;
@@ -31703,6 +31705,7 @@ begin
     Form7.ibDataSet16DESCRICAO.AsString := sDesVetor[I];
     Form7.ibDataSet16UNITARIO.AsFloat   := fValVetor[I];
     Form7.ibDataSet16QUANTIDADE.AsFloat := fQtdVetor[I];
+    Form7.ibDataSet16CFOP.AsString      := aCFOP[I];
     Form7.ibDataSet16.Post;
     Form7.sModulo := 'VENDA';
   end;
