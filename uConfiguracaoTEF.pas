@@ -79,6 +79,7 @@ type
     function GetNumScrollLines: Integer;
     function TestarZPOSLiberado: Boolean;
   public
+    procedure AtualizaTEMTEF;
   end;
 
 var
@@ -317,6 +318,11 @@ begin
     cdsTEFs.First;
     cdsTEFs.EnableControls;
   end;
+end;
+
+procedure TFConfiguracaoTEF.AtualizaTEMTEF;
+begin
+  CarregarINI;
 end;
 
 function TFConfiguracaoTEF.SalvarINI: Boolean;

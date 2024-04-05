@@ -17443,6 +17443,12 @@ begin
 
   //LogFrente('Teste 01: Saindo FormShow');
   //SmallMsg('Teste 01 Show fim');
+  FConfiguracaoTEF := TFConfiguracaoTEF.Create(nil);
+  try
+    FConfiguracaoTEF.AtualizaTEMTEF;
+  finally
+    FreeAndNil(FConfiguracaoTEF);
+  end;
 
   Form22.Hide; // Sandro Silva 2016-07-27 Estava no onActivate, mas ficava errado
 
