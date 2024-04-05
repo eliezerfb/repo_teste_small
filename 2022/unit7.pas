@@ -4920,6 +4920,10 @@ begin
   if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A3') then
     TipoCertificado := 'A3';
 
+  //Mauricio Parizotto 2024-04-05
+  if (TipoCertificado = '') and (Form7.spdNFe.NomeCertificado.Text <> '') then
+    TipoCertificado := 'NI';
+
   try
     if TipoCertificado <> '' then
     begin
