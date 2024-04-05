@@ -25547,7 +25547,7 @@ end;
 
 procedure TForm7.Importarretornodevendaambulante1Click(Sender: TObject);
 begin
-  // ImportaNF(False,'');
+  ImportaNF(False,'');
 end;
 
 procedure TForm7.ibDataSet24BeforeEdit(DataSet: TDataSet);
