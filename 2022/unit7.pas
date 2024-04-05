@@ -2670,7 +2670,8 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , ufrmRelatorioProdMonofasicoCupom
   , ufrmRelatorioProdMonofasicoNota
   , uSistema
-  ;
+  , uFrmContaBancaria, uFrmCaixa, uFrmGrupoMercadoria, uFrmTransportadora,
+  uFrmBanco, uFrmPlanoContas, uFrmConvenio;
 
 {$R *.DFM}
 
@@ -8559,6 +8560,86 @@ begin
     FrmSituacaoOS.Show;
     Exit;
   end;
+
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if sModulo = 'CONVENIO' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmConvenio = nil then
+      FrmConvenio := TFrmConvenio.Create(Self);
+
+    FrmConvenio.lblNovoClick(Sender);
+    FrmConvenio.Show;
+    Exit;
+  end;
+
+  if sModulo = 'CAIXA' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmCaixa = nil then
+      FrmCaixa := TFrmCaixa.Create(Self);
+
+    FrmCaixa.lblNovoClick(Sender);
+    FrmCaixa.Show;
+    Exit;
+  end;
+
+  if sModulo = 'GRUPOS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmGrupoMercadoria = nil then
+      FrmGrupoMercadoria := TFrmGrupoMercadoria.Create(Self);
+
+    FrmGrupoMercadoria.lblNovoClick(Sender);
+    FrmGrupoMercadoria.Show;
+    Exit;
+  end;
+
+  if sModulo = 'TRANSPORT' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmTransportadora = nil then
+      FrmTransportadora := TFrmTransportadora.Create(Self);
+
+    FrmTransportadora.lblNovoClick(Sender);
+    FrmTransportadora.Show;
+    Exit;
+  end;
+
+  if sModulo = 'CONTAS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmPlanoContas = nil then
+      FrmPlanoContas := TFrmPlanoContas.Create(Self);
+
+    FrmPlanoContas.lblNovoClick(Sender);
+    FrmPlanoContas.Show;
+    Exit;
+  end;
+
+  if sModulo = 'BANCOS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmBanco = nil then
+      FrmBanco := TFrmBanco.Create(Self);
+
+    FrmBanco.lblNovoClick(Sender);
+    FrmBanco.Show;
+    Exit;
+  end;
+
+  if sModulo = '2CONTAS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaBancaria = nil then
+      FrmContaBancaria := TFrmContaBancaria.Create(Self);
+
+    FrmContaBancaria.lblNovoClick(Sender);
+    FrmContaBancaria.Show;
+    Exit;
+  end;
+  {Mauricio Parizotto 2024-04-05 Fim}
+
 
   {Sandro Silva 2024-01-17 inicio
 
@@ -33664,6 +33745,29 @@ begin
 
     if FrmFichaCadastros <> nil then
       FreeAndNil(FrmFichaCadastros);
+
+    {Mauricio Parizotto 2024-04-05 Inicio}
+    if FrmConvenio <> nil then
+      FreeAndNil(FrmConvenio);
+
+    if FrmCaixa <> nil then
+      FreeAndNil(FrmCaixa);
+
+    if FrmGrupoMercadoria <> nil then
+      FreeAndNil(FrmGrupoMercadoria);
+
+    if FrmTransportadora <> nil then
+      FreeAndNil(FrmTransportadora);
+
+    if FrmPlanoContas <> nil then
+      FreeAndNil(FrmPlanoContas);
+
+    if FrmBanco <> nil then
+      FreeAndNil(FrmBanco);
+
+    if FrmContaBancaria <> nil then
+      FreeAndNil(FrmContaBancaria);
+    {Mauricio Parizotto 2024-04-05 Fim}
   except
   end;
 end;  

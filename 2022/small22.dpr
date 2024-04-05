@@ -243,7 +243,14 @@ uses
   uFuncoesTEF in 'units\uFuncoesTEF.pas',
   uclassetransacaocartao in '..\..\unit_compartilhada\uclassetransacaocartao.pas',
   uSelecionaTEF in 'uSelecionaTEF.pas' {frmSelecionaTEF},
-  uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame};
+  uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame},
+  uFrmConvenio in 'uFrmConvenio.pas' {FrmConvenio},
+  uFrmCaixa in 'uFrmCaixa.pas' {FrmCaixa},
+  uFrmGrupoMercadoria in 'uFrmGrupoMercadoria.pas' {FrmGrupoMercadoria},
+  uFrmTransportadora in 'uFrmTransportadora.pas' {FrmTransportadora},
+  uFrmPlanoContas in 'uFrmPlanoContas.pas' {FrmPlanoContas},
+  uFrmBanco in 'uFrmBanco.pas' {FrmBanco},
+  uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria};
 
 {$R *.RES}
 
@@ -316,6 +323,13 @@ begin
   Application.CreateForm(TForm10, Form10);
   Application.CreateForm(TForm16, Form16);
   Application.CreateForm(TForm99, Form99);
+  Application.CreateForm(TFrmConvenio, FrmConvenio);
+  Application.CreateForm(TFrmCaixa, FrmCaixa);
+  Application.CreateForm(TFrmGrupoMercadoria, FrmGrupoMercadoria);
+  Application.CreateForm(TFrmTransportadora, FrmTransportadora);
+  Application.CreateForm(TFrmPlanoContas, FrmPlanoContas);
+  Application.CreateForm(TFrmBanco, FrmBanco);
+  Application.CreateForm(TFrmContaBancaria, FrmContaBancaria);
   //Application.CreateForm(TForm18, Form18);
   Application.CreateForm(TForm20, Form20);
   Application.CreateForm(TForm21, Form21);
