@@ -513,10 +513,20 @@ begin
       begin
         if Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) <> '<CANCELADO>' then
         begin
+          {Dailon Parisotto (f-17688) 2024-04-05 Inicio
+
           if Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) = 'Desconto' then
+            Form7.ibDataSet15DESCONTO.AsFloat := Form7.ibDataSet15DESCONTO.AsFloat + (IBQCupom.FieldByName('TOTAL').AsFloat * -1);
+          }
+          if (Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) = 'Desconto')
+             or (Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) = 'Acréscimo') then
           begin
             Form7.ibDataSet15.Edit;
-            Form7.ibDataSet15DESCONTO.AsFloat := Form7.ibDataSet15DESCONTO.AsFloat + (IBQCupom.FieldByName('TOTAL').AsFloat * -1);
+            if (Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) = 'Desconto') then
+              Form7.ibDataSet15DESCONTO.AsFloat := Form7.ibDataSet15DESCONTO.AsFloat + (IBQCupom.FieldByName('TOTAL').AsFloat * -1);
+            if (Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) = 'Acréscimo') then
+              Form7.ibDataSet15DESPESAS.AsFloat := Form7.ibDataSet15DESPESAS.AsFloat + IBQCupom.FieldByName('TOTAL').AsFloat;
+          {Dailon Parisotto (f-17688) 2024-04-05 fim}
           end else
           begin
             try
