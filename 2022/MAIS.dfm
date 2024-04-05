@@ -13874,6 +13874,11 @@ object Form1: TForm1
       object N14: TMenuItem
         Caption = '-'
       end
+      object miProd120Carac: TMenuItem
+        Caption = 'Descri'#231#227'o dos produtos com 120 caracteres'
+        Visible = False
+        OnClick = miProd120CaracClick
+      end
       object Modoinventrio1: TMenuItem
         Caption = 'Modo invent'#225'rio'
         OnClick = Modoinventrio1Click
