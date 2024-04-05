@@ -19489,6 +19489,10 @@ object Form7: TForm7
         Caption = 'Imprimir todas as OS filtradas'
         OnClick = ImprimirtodasasOSfiltradas1Click
       end
+      object Imprimiretiqueta1: TMenuItem
+        Caption = 'Imprimir etiqueta'
+        OnClick = Imprimiretiqueta1Click
+      end
       object N5: TMenuItem
         Caption = '-'
       end
@@ -19514,6 +19518,10 @@ object Form7: TForm7
       object ConfigurarobservaoparaRecibo1: TMenuItem
         Caption = 'Configurar observa'#231#227'o para Recibo'
         OnClick = ConfigurarobservaoparaRecibo1Click
+      end
+      object ConfigurarEtiqueta1: TMenuItem
+        Caption = 'Configurar etiqueta'
+        OnClick = ConfigurarEtiqueta1Click
       end
       object N30: TMenuItem
         Caption = '-'
