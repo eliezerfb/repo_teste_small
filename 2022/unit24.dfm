@@ -90,9 +90,9 @@ object Form24: TForm24
       object Label12: TLabel
         Left = 580
         Top = 95
-        Width = 79
+        Width = 77
         Height = 13
-        Caption = 'Data de emiss'#227'o'
+        Caption = 'Data de entrada'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
@@ -132,9 +132,9 @@ object Form24: TForm24
       object Label13: TLabel
         Left = 580
         Top = 135
-        Width = 68
+        Width = 79
         Height = 13
-        Caption = 'Data da sa'#237'da'
+        Caption = 'Data de emiss'#227'o'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
@@ -188,9 +188,9 @@ object Form24: TForm24
       object Label14: TLabel
         Left = 580
         Top = 175
-        Width = 68
+        Width = 79
         Height = 13
-        Caption = 'Hora da sa'#237'da'
+        Caption = 'Hora de emiss'#227'o'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
