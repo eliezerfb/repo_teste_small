@@ -990,7 +990,8 @@ begin
       begin
         if CodBanco = '237' then // BRADESCO
         begin
-          Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + '0'+ sNossoNumero + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+'0'+LimpaNumero(sNossoNumero));
+          //Sandro Silva 2024-04-05 Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + '0'+ sNossoNumero + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+'0'+LimpaNumero(sNossoNumero));
+          Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + Right('0'+ sNossoNumero, 11) + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+'0'+LimpaNumero(sNossoNumero));
           Result := Form25.sNossoNum;
         end else
         begin
