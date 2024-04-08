@@ -8559,6 +8559,8 @@ var
   Mais1ini: TIniFile;
   sCertificado: String;
 begin
+  Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
+
   Form1.ConfiguraCredencialTecnospeed;
 
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');

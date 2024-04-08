@@ -21536,7 +21536,7 @@ object Form7: TForm7
     Left = 1008
     Top = 747
   end
-  object spdNFeDataSets: TspdNFeDataSets
+  object spdNFeDataSets111: TspdNFeDataSets
     VersaoEsquema = pl_009
     ValidaRegrasNegocio = False
     ValidaRegrasNegocioTecno = False
@@ -21544,7 +21544,7 @@ object Form7: TForm7
     Left = 800
     Top = 536
   end
-  object spdNFe: TspdNFe
+  object spdNFe111: TspdNFe
     VersaoManual = vm50a
     AnexarDanfePDF = True
     DanfeSettings.FraseContingencia = 
@@ -21597,7 +21597,7 @@ object Form7: TForm7
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
       '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50a\'
+      '50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21634,7 +21634,7 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0a\'
+      '0a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
@@ -21909,7 +21909,7 @@ object Form7: TForm7
     Left = 902
     Top = 339
   end
-  object spdNFeDPEC1: TspdNFeDPEC
+  object spdNFeDPEC1_111: TspdNFeDPEC
     VersaoManual = vm50
     AnexarDanfePDF = False
     DanfeSettings.FraseContingencia = 
@@ -21957,7 +21957,7 @@ object Form7: TForm7
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
       'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      '\DPEC'
+      '\vm50\DPEC'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21989,7 +21989,7 @@ object Form7: TForm7
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
       'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\' +
-      'DPEC'
+      'vm50\DPEC'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
