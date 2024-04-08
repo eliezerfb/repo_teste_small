@@ -461,9 +461,10 @@ type
     procedure EnviarXMLContabilidadeAut;
     procedure ClickOKInformacoesInutilizacao(Sender: TObject);
     procedure CarregaConfiguracoes;
-    procedure AjustarDataSetCamposProduto;
+    //Sandro Silva 2024-04-08 procedure AjustarDataSetCamposProduto;
 
   public
+    { Public declarations }
     fDias : Real;
     sSerial, sMei, sModeloPAF , sNomePAF : String;
     dtStatusMonitorAberto: TDateTime;
@@ -505,7 +506,7 @@ type
     bMKP : Boolean;
 
     ValidaRecursos: TValidaRecurso; // Sandro Silva 2023-05-31
-    { Public declarations }
+    procedure AjustarDataSetCamposProduto;// Sandro Silva 2024-04-08
     procedure RegistrodoPrograma(TermoAceito: boolean);
     procedure WMUser (var msg: TMessage); message wm_User;
     function AvisoNFECompra(bP1 : Boolean):Boolean;
@@ -12412,16 +12413,31 @@ begin
 
     Exit;
   end;
+  {Sandro Silva 2024-04-08 inicio
   if uDialogs.MensagemSistemaPergunta('Sua empresa ainda usa impressora fiscal? Faz Redução Z?', [mb_YesNo]) = mrYes then
   begin
     uDialogs.MensagemSistema('O recurso de 120 caracteres na descrição do produto não poderá ser usado com impressora fiscal. Considere migrar para NFC-e.', msgAtencao);
     Exit;
   end;
+
   if uDialogs.MensagemSistemaPergunta('O uso de 120 caracteres na descrição do produto só poderá ser usada por emissores de NF-e ou NFC-e.' + sLineBreak + sLineBreak +
                                       'Deseja prosseguir?', [mb_YesNo]) = mrNo then
     Exit;
+  }
+  if uDialogs.MensagemSistemaPergunta('Sua empresa ainda usa impressora fiscal?' + sLineBreak +
+                                      'Faz Redução Z?', [mb_YesNo]) = mrYes then
+  begin
+    uDialogs.MensagemSistema('O recurso de 120 caracteres na descrição do produto não poderá ser usado com impressora fiscal. Considere migrar para NFC-e.', msgAtencao);
+    Exit;
+  end;
+
+  if uDialogs.MensagemSistemaPergunta('O uso de 120 caracteres na descrição do produto só poderá ser usada por emissores de NF-e, NFC-e ou SAT.' + sLineBreak + sLineBreak +
+                                      'Deseja prosseguir?', [mb_YesNo]) = mrNo then
+    Exit;
+  {Sandro Silva 2024-04-08 fim}
 
   Aplicar120CaracteresProduto;
+
 end;
 
 procedure TForm1.Comandos120CaracteresProd;
@@ -12469,6 +12485,16 @@ begin
       Form24.ibDataSet44.Close;
 
       AjustarDataSetCamposProduto;
+
+      {Sandro Silva 2024-04-08 inicio}
+      Fechatudo(True);
+      try
+        Form7.ibDataSet4.Transaction.DefaultDatabase.Close;
+        Form7.ibDataSet4.Transaction.DefaultDatabase.Open;
+      except
+
+      end;
+      {Sandro Silva 2024-04-08 fim}
     finally
       Form7.ibDataSet4.Open;
       Form7.ibDataSet16.Open;
