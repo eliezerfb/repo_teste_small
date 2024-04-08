@@ -1248,7 +1248,6 @@ type
     ibDataSet24ANVISA: TIntegerField;
     EtiquetasZebraArgoxElgin1: TMenuItem;
     Panel1: TPanel;
-    spdNFeDataSets111: TspdNFeDataSets;
     N57: TMenuItem;
     ImprimiraNFemformulrionumerado1: TMenuItem;
     ImprimirtodasasNFfiltradas1: TMenuItem;
@@ -1261,7 +1260,6 @@ type
     ibDataSet4VALOR_PARCELA_IMPORTADA_EXTERIO: TIBBCDField;
     ibDataSet4CODIGO_FCI: TIBStringField;
     ibDataSet23CST_ICMS: TIBStringField;
-    spdNFe111: TspdNFe;
     ibDataSet18ANTT: TIBStringField;
     N58: TMenuItem;
     Produtividadedecontatos1: TMenuItem;
@@ -1371,7 +1369,6 @@ type
     Anlisediaria1: TMenuItem;
     gerCNAB240: TMenuItem;
     btnRetornoCNAB240: TButton;
-    spdNFeDPEC1_111: TspdNFeDPEC;
     ConsultarNFesemitidasparameuCNPJ1: TMenuItem;
     PositivoDownloadXML: TImage;
     VisualizarXMLdamanifestaododestinatrio1: TMenuItem;
