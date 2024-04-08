@@ -536,7 +536,7 @@ type
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
     procedure DefineAmbienteNFe(AcAmbiente, AcRotina: String);
     procedure Aplicar120CaracteresProduto;
-    procedure Comandos120CaracteresProd;
+    function Comandos120CaracteresProd: Boolean; // Sandro Silva 2024-04-08 procedure Comandos120CaracteresProd;
 
     property sPropaganda: String read getPropaganda;
     function MontaTela(sP1: Boolean): Boolean;
@@ -12440,8 +12440,9 @@ begin
 
 end;
 
-procedure TForm1.Comandos120CaracteresProd;
+function TForm1.Comandos120CaracteresProd: Boolean;// Sandro Silva 2024-04-08 procedure TForm1.Comandos120CaracteresProd;
 begin
+  {Sandro Silva 2024-04-08 inicio
   if ExecutaComando('ALTER TABLE ALTERACA ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
     ExecutaComando('Commit');
   if ExecutaComando('ALTER TABLE COMPOSTO ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
@@ -12458,6 +12459,23 @@ begin
     ExecutaComando('Commit');
   if ExecutaComando('ALTER TABLE ORCAMENT ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
     ExecutaComando('Commit');
+  }
+  Result := False;
+  if ExecutaComando('ALTER TABLE ESTOQUE ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+    if ExecutaComando('ALTER TABLE ALTERACA ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+      if ExecutaComando('ALTER TABLE COMPOSTO ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+        if ExecutaComando('ALTER TABLE ITENS001 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+          if ExecutaComando('ALTER TABLE ITENS002 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+            if ExecutaComando('ALTER TABLE ITENS003 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+              if ExecutaComando('ALTER TABLE ITENSETI ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+                if ExecutaComando('ALTER TABLE ORCAMENT ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+                begin
+                  ExecutaComando('Commit');
+                  Result := True;
+                end;
+  if Result = False then
+    ExecutaComando('Rollback');
+  {Sandro Silva 2024-04-08 fim}
 end;
 
 procedure TForm1.Aplicar120CaracteresProduto;
@@ -12465,7 +12483,13 @@ begin
   if (Form7.ibDataSet4DESCRICAO.Size = 120) then
     Exit;
 
-  Comandos120CaracteresProd;
+  //Sandro Silva 2024-04-08 Comandos120CaracteresProd;
+  if Comandos120CaracteresProd = False then
+    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                    'Feche o sistema em todos os computadores e tente novamente.'
+                    , msgAtencao)
+  else
+    MensagemSistema('Ativado o recurso de 120 caracteres.', msgInformacao);
 
   try
     AgendaCommit(True);
