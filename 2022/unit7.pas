@@ -35270,7 +35270,7 @@ begin
   {$Region'//// Módulo Transportadora ////'}
   if sModulo = 'TRANSPORT' then
   begin
-    sAjuda := 'config_transportadoras.htm'; // Falta tranport
+    sAjuda := 'config_transportadora.htm'; // Falta tranport
 
     // Menu
     Form7.Menu      := mmTransport;

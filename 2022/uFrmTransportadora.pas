@@ -88,7 +88,7 @@ end;
 
 function TFrmTransportadora.GetPaginaAjuda: string;
 begin
-  Result := 'config_transportadoras.htm';
+  Result := 'config_transportadora.htm';
 end;
 
 procedure TFrmTransportadora.lblNovoClick(Sender: TObject);
