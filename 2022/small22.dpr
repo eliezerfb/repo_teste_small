@@ -243,7 +243,8 @@ uses
   uFuncoesTEF in 'units\uFuncoesTEF.pas',
   uclassetransacaocartao in '..\..\unit_compartilhada\uclassetransacaocartao.pas',
   uSelecionaTEF in 'uSelecionaTEF.pas' {frmSelecionaTEF},
-  uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame};
+  uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame},
+  uValidaRecursos in '..\..\unit_compartilhada\uValidaRecursos.pas';
 
 {$R *.RES}
 
