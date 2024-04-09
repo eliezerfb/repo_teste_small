@@ -126,6 +126,7 @@ try
     try
       if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '756' then
       begin
+        {$Region '// HEADER SICOOB //'}
         // SICOOB HEADER
         WriteLn(F,
           Copy('0',1,001)                                                                           + // 001 ok Identificação do Registro Header: “0” (zero)
@@ -147,10 +148,12 @@ try
           Copy('000001',1,006)                                                                      + // 017 ok Seqüencial do Registro:”000001”
           ''
           );
+          {$EndRegion}
       end else
       begin
         if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '104' then // CAIXA
         begin
+          {$Region '// HEADER CAIXA //'}
           // CAIXA HEADER
           WriteLn(F,
             Copy('0',1,001)                                                                           + // 01- 001 a 001 9(001) Identificação do Registro Header: “0” (zero)
@@ -170,10 +173,12 @@ try
             Copy('000001',1,006)                                                                      + // 15- 395 a 400 9(006) Seqüencial do Registro:”000001”
             ''
             );
+          {$EndRegion}
         end else
         begin
           if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '237' then // BRADESCO
           begin
+            {$Region '// HEADER BRADESCO //'}
             // BRADESCO
             WriteLn(F,
               Copy('0',1,001)                                                                           + // 01 - 001 a 001 - 9(001) Identificação do Registro (0)
@@ -193,11 +198,13 @@ try
               Copy('000001',1,006)                                                                      + // 15 - 395 a 400 - 9(006) Nº Seqüencial do Registro de Um em Um (000001)
               ''
               );
+              {$EndRegion}
           end else
           begin
             // ITAÚ HEADER ITAU
             if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '341' then // Itaú ITAU
             begin
+              {$Region '// HEADER ITAU//'}
               WriteLn(F,
                 Copy('0',1,001)                                                                           + // 001 a 001 - 9(001) TIPO DE REGISTRO    - IDENTIFICAÇÃO DO REGISTRO HEADER             - 0
                 Copy('1',1,001)                                                                           + // 002 a 002 - 9(001) OPERAÇÃO            - TIPO DE OPERAÇÃO - REMESSA                   - 1
@@ -217,11 +224,13 @@ try
                 Copy('000001',1,006)                                                                      + // 395 a 400 - 9(006) NÚMERO SEQÜENCIAL   - NÚMERO SEQÜENCIAL DO REGISTRO NO ARQUIVO     - 000001
                 ''
                 );
+              {$EndRegion}
             end else
             begin
               // SANTANDER HEADER
               if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '033') or (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '353') then // SANTANDER
               begin
+                {$Region '// HEADER SANTANDER //'}
                 //
                 WriteLn(F,
                   Copy('0',1,001)                                                                           + // 01 001 a 001 - 9(001) Código do registro = 0
@@ -245,11 +254,13 @@ try
                   Copy('000001',1,006)                                                                      + // 19 395 a 400 - 9(006) Número sequencial do registro no arquivo = 000001
                   ''
                   );
+                {$EndRegion}
               end else
               begin
                 if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '041' then // Banrisul
                 begin
                   // BANRISUL HEADER
+                  {$Region '// HEADER BANRISUL//'}
                   WriteLn(F,
                     Copy('01REMESSA',1,009)                                                                   + // 01 001 a 009 -   9 (x) 01REMESSA (constante) - Campo obrigatório
                     Copy(Replicate(' ',17),1,017)                                                             + // 02 010 a 026 -  17 (x) BRANCOS
@@ -272,9 +283,11 @@ try
                     Copy('000001',1,006)                                                                      + // 16 395 a 400 -   6 (x) 000001 (constante)
                     ''
                     );
+                  {$EndRegion}
                 end else
                 begin
                   // Banco do Brasil  HEADER
+                  {$Region '// HEADER BANCO DO BRASIL //'}
                   WriteLn(F,
                     Copy('0',1,001)                                                                           + // 01.0 001 a 001 9(001) Identificação do Registro Header: “0” (zero)
                     Copy('1',1,001)                                                                           + // 02.0 002 a 002 9(001) Tipo de Operação: “1” (um)
@@ -297,6 +310,7 @@ try
                     Copy('000001',1,006)                                                                      + // 19.0 395 a 400 9(006) Seqüencial do Registro:”000001”
                     ''
                     );
+                  {$EndRegion}
                 end;
               end;
             end;
@@ -389,6 +403,7 @@ try
               try
                 if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '756' then
                 begin
+                  {$Region '// SICOOB REMESSA//'}
                   // SICOOB REMESSA
                   WriteLn(F,
                     Copy('1',1,001)                                                          + // Ok 1 Identificação do Registro Detalhe: 1 (um)
@@ -448,10 +463,12 @@ try
                     Copy(StrZero(iReg,6,0),1,006)                                            + // 54 Ok Seqüencial do Registro: Incrementado em 1 a cada registro
                     ''
                     );
+                  {$EndRegion}
                 end else
                 begin
                   if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '104' then // CAIXA
                   begin
+                    {$Region '// CAIXA REMESSA//'}
                     // CAIXA REMESSA
                     if Length(LimpaNumero(Form7.IBDataSet13CGC.AsString)) = 14 then sCPFOuCNPJ_EMITENTE := '02' else sCPFOuCNPJ_EMITENTE := '01';
 
@@ -506,10 +523,12 @@ try
                       Copy(StrZero(iReg,6,0),1,006)                                                            + // 45.1 - 395 a 400 - 9(006) Número Sequencial do Registro no Arquivo
                       ''
                       );
+                    {$EndRegion}
                   end else
                   begin
                     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '237' then // BRADESCO
                     begin
+                      {$Region '// BRADESCO REMESSA//'}
                       // BRADESCO
                       WriteLn(F,
                         Copy('1',1,001)                                                                              + // 01.1 - 001 a 001  - 9(001) Identificação do Registro
@@ -567,11 +586,13 @@ try
                         Copy(StrZero(iReg,6,0),1,006)                                                                + // 44.1 - 395 a 400  - 9(006) Nº Seqüencial do Registro
                         ''
                         );
+                      {$EndRegion}
                     end else
                     begin
                       // SANTANDER
                       if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '033') or (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '353') then
                       begin
+                        {$Region '// SANTANDER REMESSA//'}
                         if LimpaNumero(Form7.ibDataSet11CONTA.AsString) <> '' then
                         begin
                           if LimpaNumero(Form7.ibDataSet11CONTA.AsString) <> '' then
@@ -653,11 +674,13 @@ try
                           Copy(StrZero(iReg,6,0),1,006)                                                            + // 050.1 - 395 a 400 - 9(006) Número sequencial do registro no arquivo
                           ''
                           );
+                        {$EndRegion}
                       end else
                       begin
                         // ITAÚ REMESSA ITAU
                         if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '341' then // Itaú ITAU
                         begin
+                          {$Region '// ITAU REMESSA //'}
                           sCodigoDaCarteira := 'I';
 
                           if Form26.MaskEdit43.Text = '108' then sCodigoDaCarteira := 'I';
@@ -727,10 +750,12 @@ try
                             Copy(StrZero(iReg,6,0),1,006)                                                            + // 395 a 400 - 9(06) Nº SEQÜENCIAL DO REGISTRO NO ARQUIVO
                             ''
                             );
+                          {$Endregion}
                         end else
                         begin
                           if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '041' then // Banrisul
                           begin
+                            {$Region'/// BANRISUL REMESSA ////'}
                             // BANRISUL REMESSA
                             WriteLn(F,
                               Copy('1',1,001)                                                                          + // 001 a 001 - x(01) TIPO DE REGISTRO: 1 (constante)
@@ -785,8 +810,10 @@ try
                               Copy(StrZero(iReg,6,0),1,006)                                                            + // 395 a 400 - x(06) NÚMERO SEQUENCIAL DO REGISTRO
                               ''
                               );
+                            {$Endregion}
                           end else
                           begin
+                            {$Region '// Banco do Brasil REMESSA //'}
                             // Banco do Brasil REMESSA
                             WriteLn(F,
                               Copy('7',1,001)                                                                          + // 01.7 001 a 001 9(001) Identificação do Registro Detalhe: 7 (sete)
@@ -845,6 +872,7 @@ try
                               Copy(StrZero(iReg,6,0),1,006)                                                            + // 50.7 395 a 400 9(006) Seqüencial de Registro 35
                               ''
                               );
+                            {$Endregion}
                           end;
                         end;
                       end;
