@@ -535,7 +535,7 @@ type
     procedure MensagemRecursoIndisponivel(sMensagem: String);
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
     procedure DefineAmbienteNFe(AcAmbiente, AcRotina: String);
-    procedure Aplicar120CaracteresProduto;
+    procedure Aplicar120CaracteresProduto(bExibirMensagemSucesso: Boolean);
     function Comandos120CaracteresProd: Boolean; // Sandro Silva 2024-04-08 procedure Comandos120CaracteresProd;
 
     property sPropaganda: String read getPropaganda;
@@ -12436,7 +12436,7 @@ begin
     Exit;
   {Sandro Silva 2024-04-08 fim}
 
-  Aplicar120CaracteresProduto;
+  Aplicar120CaracteresProduto(True);
 
 end;
 
@@ -12478,18 +12478,24 @@ begin
   {Sandro Silva 2024-04-08 fim}
 end;
 
-procedure TForm1.Aplicar120CaracteresProduto;
+procedure TForm1.Aplicar120CaracteresProduto(bExibirMensagemSucesso: Boolean);
+var
+  bRetorno: Boolean;
 begin
   if (Form7.ibDataSet4DESCRICAO.Size = 120) then
     Exit;
 
   //Sandro Silva 2024-04-08 Comandos120CaracteresProd;
-  if Comandos120CaracteresProd = False then
-    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
-                    'Feche o sistema em todos os computadores e tente novamente.'
-                    , msgAtencao)
-  else
-    MensagemSistema('Ativado o recurso de 120 caracteres.', msgInformacao);
+  bRetorno := Comandos120CaracteresProd;
+  if bExibirMensagemSucesso then
+  begin
+    if bRetorno = False then
+      MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                      'Feche o sistema em todos os computadores e tente novamente.'
+                      , msgAtencao)
+    else
+      MensagemSistema('Ativado o recurso de 120 caracteres.', msgInformacao);
+  end;
 
   try
     AgendaCommit(True);
