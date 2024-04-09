@@ -19,8 +19,8 @@ uses
   , unit7
   ;
 
-  procedure DropViewProcedure;
-  procedure AtualizaBancoDeDados(sBuild : string);
+procedure DropViewProcedure;
+procedure AtualizaBancoDeDados(sBuild : string);
 // Sandro Silva 2023-09-22  function ExecutaComando(comando:string):Boolean;
 
 implementation

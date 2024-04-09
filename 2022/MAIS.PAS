@@ -4905,6 +4905,21 @@ begin
       Mensagem22('Aguarde.');
       CommitaTudo(True);
       Mensagem22('Aguarde..');
+
+      {Sandro Silva 2024-04-09 inicio}
+      if TamanhoCampo(Form7.ibDataSet4.Transaction, 'ESTOQUE', 'DESCRICAO') = 120 then
+      begin
+        Fechatudo(True);
+        try
+          Form7.ibDataSet4.Transaction.DefaultDatabase.Close;
+          Form7.ibDataSet4.Transaction.DefaultDatabase.Open;
+        except
+
+        end;
+        AjustarDataSetCamposProduto;
+      end;
+      {Sandro Silva 2024-04-09 fim}
+
       AbreArquivos(True);
       Mensagem22('Aguarde...');
     except
@@ -12422,7 +12437,7 @@ begin
     Exit;
   end;
 
-  if uDialogs.MensagemSistemaPergunta('O uso de 120 caracteres na descrição do produto só poderá ser usada por emissores de NF-e, NFC-e ou SAT.' + sLineBreak + sLineBreak +
+  if uDialogs.MensagemSistemaPergunta('O uso de 120 caracteres na descrição do produto só poderá ser usada por emissores de NF-e ou NFC-e.' + sLineBreak + sLineBreak +
                                       'Deseja prosseguir?', [mb_YesNo]) = mrNo then
     Exit;
 
