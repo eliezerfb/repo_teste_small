@@ -2446,7 +2446,7 @@ begin
       'SELECT COALESCE(ESTADO,''SC'') AS ESTADO FROM EMITENTE';
     Form1.ibDataSet200.Open;
 
-    if (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then
+    if (AnsiUpperCase(Form1.ibDataSet200.FieldByName('ESTADO').AsString) <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then // Sandro Silva 2024-04-09 if (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then
       Form1.Comandos120CaracteresProd;
   finally
     Form1.ibDataSet200.Close;
@@ -2454,9 +2454,9 @@ begin
   end;
   {Dailon Parisotto (f-17787) 2024-03-27 Fim}
 
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
-
 
   
   try
@@ -2500,6 +2500,7 @@ begin
   try
     AgendaCommit(True);
     Commitatudo(True);
+
   except
   end;
 

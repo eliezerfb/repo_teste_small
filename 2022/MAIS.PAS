@@ -34,7 +34,7 @@ uses
   function ExecutaComando(comando:string):Boolean;  overload;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024006'; // Sandro Silva 2024-03-28 const BUILD_DO_BANCO = '2024004'; // Sandro Silva 2024-02-23 const BUILD_DO_BANCO = '2024002'; // Sandro Silva 2024-02-19 const BUILD_DO_BANCO = '2023048';
+const BUILD_DO_BANCO = '2024008'; // Sandro Silva 2024-03-28 const BUILD_DO_BANCO = '2024006'; // Sandro Silva 2024-03-28 const BUILD_DO_BANCO = '2024004'; // Sandro Silva 2024-02-23 const BUILD_DO_BANCO = '2024002';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -12404,15 +12404,6 @@ begin
   if (not Form1.ibDataSet200.Transaction.DefaultDatabase.Connected) then
     ConectaBancoCommerce;
 
-  if ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase, 'Select Count(*) From MON$ATTACHMENTS') > 1 then
-  begin
-    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
-                    'Existem outros usuários com o sistema aberto.'+#13#10+
-                    'Feche o sistema em todos os computadores e tente novamente.'
-                    ,msgAtencao);
-
-    Exit;
-  end;
   {Sandro Silva 2024-04-08 inicio
   if uDialogs.MensagemSistemaPergunta('Sua empresa ainda usa impressora fiscal? Faz Redução Z?', [mb_YesNo]) = mrYes then
   begin
@@ -12434,6 +12425,17 @@ begin
   if uDialogs.MensagemSistemaPergunta('O uso de 120 caracteres na descrição do produto só poderá ser usada por emissores de NF-e, NFC-e ou SAT.' + sLineBreak + sLineBreak +
                                       'Deseja prosseguir?', [mb_YesNo]) = mrNo then
     Exit;
+
+  // Por último valida se tem mais usuários logados
+  if ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase, 'Select Count(*) From MON$ATTACHMENTS') > 1 then
+  begin
+    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                    'Existem outros usuários com o sistema aberto.'+#13#10+
+                    'Feche o sistema em todos os computadores e tente novamente.'
+                    ,msgAtencao);
+
+    Exit;
+  end;
   {Sandro Silva 2024-04-08 fim}
 
   Aplicar120CaracteresProduto(True);
