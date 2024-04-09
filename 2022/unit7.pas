@@ -1686,6 +1686,7 @@ type
     MenuItem141: TMenuItem;
     ConfigurarEtiqueta1: TMenuItem;
     Imprimiretiqueta1: TMenuItem;
+    ibDataSet11PLANOCONTA: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2530,7 +2531,7 @@ type
     DataSourceAtual : TDataSource;
     ItensdaNota : Integer;
     iCampos: Integer;
-    iFoco  : Integer;
+//    iFoco  : Integer;
     iRegistros : Integer;
     bChave : Boolean;
     bChaveGrade : boolean;
@@ -5468,7 +5469,12 @@ begin
         Form7.ibDataSet35.Selectsql.Add('select * from ITENS003 where CODIGO='+QuotedStr('99999')+' ');
         Form7.ibDataSet13.Selectsql.Add('select * from EMITENTE');
         Form7.ibDataSet14.Selectsql.Add('select * from ICM order by CFOP');
-        Form7.ibDataSet11.Selectsql.Add('select * from BANCOS');
+        //Form7.ibDataSet11.Selectsql.Add('select * from BANCOS'); Mauricio Parizotto 2024-04-08
+        Form7.ibDataSet11.Selectsql.Add(' Select '+
+                                        ' 	B.*,'+
+                                        ' 	C.NOME PLANOCONTA'+
+                                        ' From BANCOS B'+
+                                        ' 	Left Join CONTAS C on C.CONTA = B.PLANO');
         Form7.ibDataSet26.Selectsql.Add('select * from RESUMO order by DATA, REGISTRO');
         Form7.ibDataSet9.Selectsql.Add('select * from VENDEDOR');
         Form7.ibDataSet29.Selectsql.Add('select * from CONVENIO');
@@ -8321,6 +8327,78 @@ begin
     Exit;
   end;
 
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if sModulo = 'CONVENIO' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmConvenio = nil then
+      FrmConvenio := TFrmConvenio.Create(Self);
+
+    FrmConvenio.Show;
+    Exit;
+  end;
+
+  if sModulo = 'CAIXA' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmCaixa = nil then
+      FrmCaixa := TFrmCaixa.Create(Self);
+
+    FrmCaixa.Show;
+    Exit;
+  end;
+
+  if sModulo = 'GRUPOS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmGrupoMercadoria = nil then
+      FrmGrupoMercadoria := TFrmGrupoMercadoria.Create(Self);
+
+    FrmGrupoMercadoria.Show;
+    Exit;
+  end;
+
+  if sModulo = 'TRANSPORT' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmTransportadora = nil then
+      FrmTransportadora := TFrmTransportadora.Create(Self);
+
+    FrmTransportadora.Show;
+    Exit;
+  end;
+
+  if sModulo = 'CONTAS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmPlanoContas = nil then
+      FrmPlanoContas := TFrmPlanoContas.Create(Self);
+
+    FrmPlanoContas.Show;
+    Exit;
+  end;
+
+  if sModulo = 'BANCOS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmBanco = nil then
+      FrmBanco := TFrmBanco.Create(Self);
+
+    FrmBanco.Show;
+    Exit;
+  end;
+
+  if sModulo = '2CONTAS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaBancaria = nil then
+      FrmContaBancaria := TFrmContaBancaria.Create(Self);
+
+    FrmContaBancaria.Show;
+    Exit;
+  end;
+  {Mauricio Parizotto 2024-04-05 Fim}
+
   {Sandro Silva 2024-01-17 inicio
 
   Reativar quando estiver concluída a migração do cadastro de clientes usando a tela padrão de cadastro
@@ -8584,7 +8662,7 @@ begin
     Exit;
   end;
 
-  if sModulo = 'GRUPOS' then
+  if sModulo = 'GRUPOS_' then
   begin
     Form7.IBTransaction1.CommitRetaining;
     if FrmGrupoMercadoria = nil then
@@ -9213,9 +9291,13 @@ begin
       // --------------------- //
       if sModulo = 'BANCOS' then
       begin
+        {Mauricio Parizotto 2024-04-09
         iFoco := 7;
         Form10.Show;
+        }
+        Form7.Image106Click(Sender);
       end;
+
       if sModulo = '2CONTAS' then
       begin
         Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
@@ -10127,11 +10209,12 @@ begin
 
   //Mauricio Parizotto 2023-05-29
   //Campos Somente Leitura ao editar pelo Grid
-  ibDataSet7INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
-  ibDataSet7NOME.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
-  ibDataSet11INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
-  ibDataSet7FORMADEPAGAMENTO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
-  ibdParametroTributaDESCRICAO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID; // Mauricio Parizotto 2023-09-21
+  ibDataSet7INSTITUICAOFINANCEIRA.Tag   := CAMPO_SOMENTE_LEITURA_NO_GRID;
+  ibDataSet7NOME.Tag                    := CAMPO_SOMENTE_LEITURA_NO_GRID;
+  ibDataSet11INSTITUICAOFINANCEIRA.Tag  := CAMPO_SOMENTE_LEITURA_NO_GRID;
+  ibDataSet7FORMADEPAGAMENTO.Tag        := CAMPO_SOMENTE_LEITURA_NO_GRID;
+  ibdParametroTributaDESCRICAO.Tag      := CAMPO_SOMENTE_LEITURA_NO_GRID; // Mauricio Parizotto 2023-09-21
+  ibDataSet11PLANOCONTA.Tag             := CAMPO_SOMENTE_LEITURA_NO_GRID; // Mauricio Parizotto 2024-04-09
   //Mauricio Parizotto 2023-06-01
   imgNovo.Transparent := False;
   imgExcluir.Transparent := False;
@@ -10143,12 +10226,9 @@ begin
   Image308.Transparent := False;
   imgFiltrar.Transparent := False;
 
-  {$IFDEF VER150}
-  {$ELSE}
   DBGrid1.DrawingStyle       := gdsGradient;
   DBGrid1.GradientEndColor   := $00F0F0F0;
   DBGrid1.GradientStartColor := $00F0F0F0;
-  {$ENDIF}
 
   //Mauricio Parizotto 2023-12-05
   //Marca campo chave da tabela
@@ -35245,9 +35325,15 @@ begin
     TabelaAberta    := ibDataSet11;
     DataSourceAtual := DataSource11;
 
-    sSelect   := 'select * FROM BANCOS';
+    //sSelect   := 'select * FROM BANCOS'; Mauricio Parizotto 2024-04-08
+    sSelect   :=  ' Select '+
+                  ' 	B.*,'+
+                  ' 	C.NOME PLANOCONTA'+
+                  ' From BANCOS B'+
+                  ' 	Left Join CONTAS C on C.CONTA = B.PLANO';
     sWhere    := '';
-    sOrderBy  := 'order by upper(NOME)';
+    //sOrderBy  := 'order by upper(NOME)'; Mauricio Parizotto 2024-04-08
+    sOrderBy  := 'order by upper(B.NOME)';
     sREgistro := '0000000001';
     //sMostra   := 'TTTTT'; Mauricio Parizotto 2023-06-16
     sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTT');

@@ -965,7 +965,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_foto
+      ActivePage = orelha_cadastro
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -10447,7 +10447,7 @@ object Form10: TForm10
             Left = 24
             Top = 160
             Width = 50
-            Height = 24
+            Height = 21
             Ctl3D = True
             DataField = 'RR_'
             DataSource = Form7.DataSource14
@@ -10848,7 +10848,7 @@ object Form10: TForm10
           Left = 110
           Top = 25
           Width = 390
-          Height = 22
+          Height = 20
           Color = clWhite
           Ctl3D = False
           ParentBackground = False
@@ -10861,7 +10861,7 @@ object Form10: TForm10
           ExplicitWidth = 390
           DesignSize = (
             390
-            22)
+            20)
           inherited txtCampo: TEdit
             Width = 390
             OnKeyDown = fraPerfilTribtxtCampoKeyDown
@@ -11463,7 +11463,7 @@ object Form10: TForm10
           Left = 10
           Top = 25
           Width = 152
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11482,7 +11482,7 @@ object Form10: TForm10
           Left = 161
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11501,7 +11501,7 @@ object Form10: TForm10
           Left = 313
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11520,7 +11520,7 @@ object Form10: TForm10
           Left = 237
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11539,7 +11539,7 @@ object Form10: TForm10
           Left = 389
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11558,7 +11558,7 @@ object Form10: TForm10
           Left = 465
           Top = 25
           Width = 77
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11577,7 +11577,7 @@ object Form10: TForm10
           Left = 541
           Top = 25
           Width = 94
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11734,7 +11734,7 @@ object Form10: TForm10
           Left = 20
           Top = 25
           Width = 658
-          Height = 22
+          Height = 19
           BevelInner = bvNone
           Color = clSilver
           Ctl3D = False
@@ -11755,7 +11755,7 @@ object Form10: TForm10
           Left = 676
           Top = 25
           Width = 125
-          Height = 22
+          Height = 19
           Color = clSilver
           Ctl3D = False
           Enabled = False

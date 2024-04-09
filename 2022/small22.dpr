@@ -323,13 +323,6 @@ begin
   Application.CreateForm(TForm10, Form10);
   Application.CreateForm(TForm16, Form16);
   Application.CreateForm(TForm99, Form99);
-  Application.CreateForm(TFrmConvenio, FrmConvenio);
-  Application.CreateForm(TFrmCaixa, FrmCaixa);
-  Application.CreateForm(TFrmGrupoMercadoria, FrmGrupoMercadoria);
-  Application.CreateForm(TFrmTransportadora, FrmTransportadora);
-  Application.CreateForm(TFrmPlanoContas, FrmPlanoContas);
-  Application.CreateForm(TFrmBanco, FrmBanco);
-  Application.CreateForm(TFrmContaBancaria, FrmContaBancaria);
   //Application.CreateForm(TForm18, Form18);
   Application.CreateForm(TForm20, Form20);
   Application.CreateForm(TForm21, Form21);

@@ -10748,6 +10748,29 @@ begin
   if Form7.sModulo = 'ICM' then
     Exit;
 
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if Form7.sModulo = 'CONVENIO' then
+    Exit;
+
+  if Form7.sModulo = 'CAIXA' then
+    Exit;
+
+  if Form7.sModulo = 'GRUPOS' then
+    Exit;
+
+  if Form7.sModulo = 'TRANSPORT' then
+    Exit;
+
+  if Form7.sModulo = 'CONTAS' then
+    Exit;
+
+  if Form7.sModulo = 'BANCOS' then
+    Exit;
+
+  if Form7.sModulo = '2CONTAS' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Fim}
+
   if AllTrim(Form7.sModulo) <> '' then
   begin
     if ((Form7.sModulo = 'VENDA') or (Form7.sModulo = 'DESCONTO') or (Form7.sModulo = 'DESCONTO1')) or ((Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'FRETE')) then
@@ -11367,6 +11390,29 @@ begin
   //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'ICM' then
     Exit;
+
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if Form7.sModulo = 'CONVENIO' then
+    Exit;
+
+  if Form7.sModulo = 'CAIXA' then
+    Exit;
+
+  if Form7.sModulo = 'GRUPOS' then
+    Exit;
+
+  if Form7.sModulo = 'TRANSPORT' then
+    Exit;
+
+  if Form7.sModulo = 'CONTAS' then
+    Exit;
+
+  if Form7.sModulo = 'BANCOS' then
+    Exit;
+
+  if Form7.sModulo = '2CONTAS' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Fim}
 
   if Form5.Visible then
   begin

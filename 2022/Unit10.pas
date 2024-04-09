@@ -793,6 +793,7 @@ begin
   {$Endregion}
 
   try
+    (*Mauricio Parizotto 2024-04-05
     if Form7.sModulo = 'CAIXA' then
     begin
       {$Region'/// Atualiza Layout Caixa ////'}
@@ -804,6 +805,7 @@ begin
       Form7.IBDataSet99.Close;
       {$Endregion}
     end else
+    *)
     begin
       {$Region'/// Atualiza Layout demais tela ////'}
       Form7.IBDataSet99.Close;
@@ -973,6 +975,7 @@ begin
     {$EndRegion}
 
     {$Region '//  Atualiza Layout Grupos//'}
+    (* Mauricio Parizotto 2024-04-09
     if Form7.sModulo = 'GRUPOS' then
     begin
       Form10.Image5.Picture := nil;
@@ -1014,6 +1017,7 @@ begin
       else
         Form10.Image5.Picture := Form10.Image3.Picture;
     end;
+    *)
     {$EndRegion}
 
     {$Region '/// Ajusta proporção imagem da foto ///'}
@@ -1414,12 +1418,14 @@ end;
 procedure GravaEscolha;
 begin
   try
+    {Mauricio Parizotto 2024-04-05
     // Caixa
     if Form7.sModulo = 'CAIXA' then
     begin
       Form7.ibDataSet1.Edit;
       Form7.ibDataSet1NOME.AsString := Form7.ibDataSet12NOME.AsString;     // contas bancárias
     end;
+    }
 
     // Contas a receber
     if Form7.sModulo = 'RECEBER' then
@@ -1511,6 +1517,7 @@ begin
     end;
 
     //Mauricio Parizotto 2023-05-16
+    (*Mauricio Parizotto 2024-04-08
     if Form7.sModulo = 'TRANSPORT' then
     begin
       Form7.ibDataSet18.Edit;
@@ -1521,7 +1528,9 @@ begin
 
       Form7.dBGrid3.Visible := False;
     end;
+    *)
 
+    (*Mauricio Parizotto 2024-04-09
     //Mauricio Parizotto 2023-06-16
     if Form7.sModulo = '2CONTAS' then
     begin
@@ -1534,6 +1543,7 @@ begin
         Form10.dBGrid3.Visible := False;
       end;
     end;
+    *)
   except
   end;
 end;
@@ -1624,11 +1634,13 @@ begin
   dBGrid3.Parent := TSMALL_DBEdit(Sender).Parent; // Sandro Silva 2023-06-28
 
   try
+    {Mauricio Parizotto 2024-04-05
     if (Form7.sModulo = 'CAIXA') then
     begin
       SMALL_DBEdit1.SelStart  := 0;
       SMALL_DBEdit1.SelLength := 2;
     end;
+    }
  
     with Sender as TSMALL_DBEdit do
     begin
@@ -1640,7 +1652,7 @@ begin
       dBGrid1.Visible := False;
       if (vDataField = 'NOME') and
                        (
-                        (Form7.sModulo = 'CAIXA') or
+                        //(Form7.sModulo = 'CAIXA') or Mauricio Parizotto 2024-04-05
                         (Form7.sModulo = 'RECEBER') or
                         (Form7.sModulo = 'PAGAR') or
                         (Form7.sModulo = 'VENDA') or
@@ -1747,6 +1759,7 @@ begin
         pnRelacaoComercial.Visible := False;
 
       //Mauricio Parizotto 2023-05-03
+      (*Mauricio Parizotto 2024-04-08
       if (vDataField = 'MUNICIPIO') and (Form7.sModulo = 'TRANSPORT') then
       begin
         if Length(AllTrim(Form7.ibDataSet18UF.AsString)) <> 2 then
@@ -1774,6 +1787,7 @@ begin
         dBGrid3.Font       := Font;
         dBGrid3.DataSource := Form7.DataSource39; // Municipios
       end;
+      *)
 
       {Sandro Silva 2023-06-22 inicio}
       if (vDataField = 'FORMADEPAGAMENTO') and (Form7.sModulo = 'RECEBER') then
@@ -1821,6 +1835,7 @@ begin
         dBGrid3.Columns[0].Width := 310;
       end;
 
+      (*Mauricio Parizotto 2024-04-09
       //Mauricio Parizotto 2023-06-16
       if (vDataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = '2CONTAS') then
       begin
@@ -1843,6 +1858,7 @@ begin
         dBGrid3.DataSource := Form7.DSConsulta;
         dBGrid3.Columns[0].Width := 310;
       end;
+      *)
 
       {Sandro Silva 2023-06-21 inicio}
       if (vDataField = 'FORMADEPAGAMENTO') and (Form7.sModulo = 'RECEBER') then
@@ -1900,7 +1916,8 @@ begin
         DefinirLimiteDisponivel;
 
       if ((DataField = 'NOME') or (DataField = 'CONTA') or (DataField = 'CIDADE') or (DataField = 'CONVENIO')) and
-       ((Form7.sModulo = 'CAIXA' ) or
+       (
+        //(Form7.sModulo = 'CAIXA' ) or Mauricio Parizotto 2024-04-05
         (Form7.sModulo = 'RECEBER') or
          (Form7.sModulo = 'PAGAR') or
           (Form7.sModulo = 'VENDA') or
@@ -1911,8 +1928,11 @@ begin
       begin
 
         // Caixa
+        {
         if ((DataField = 'NOME')  and (Form7.sModulo = 'CAIXA'  ))
         or ((DataField = 'CONTA') and (Form7.sModulo = 'RECEBER'))
+        Mauricio Parizotto 2024-04-05}
+        if ((DataField = 'CONTA') and (Form7.sModulo = 'RECEBER'))
         or ((DataField = 'CONTA') and (Form7.sModulo = 'PAGAR')) then
         begin
           // Procura pela conta //
@@ -1923,12 +1943,13 @@ begin
               begin
                 if Form7.ibDataSet12CONTA.AsString = AllTrim(Text) then
 
+                {Mauricio Parizotto 2024-04-05
                 if Form7.sModulo = 'CAIXA' then
                   Form7.ibDataSet1NOME.AsString := form7.ibDataSet12NOME.AsString
                 else
                   Form7.ibDataSet7CONTA.AsString := form7.ibDataSet12NOME.AsString;
-
-
+                }
+                Form7.ibDataSet7CONTA.AsString := form7.ibDataSet12NOME.AsString;
               end;
             end;
          except end;
@@ -1939,8 +1960,10 @@ begin
         if sText <> '' then
         begin
           tProcura := Form7.ibDataSet12;
+          {Mauricio Parizotto 2024-04-05
           if Form7.sModulo = 'CAIXA' then
             tProcura := Form7.ibDataSet12;
+          }
 
           if (Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR') then
           begin
@@ -2002,6 +2025,7 @@ begin
       end;
       {Mauricio Parizotto 2023-05-29 Inicio}
 
+      (* Mauricio Parizotto 2024-04-09
       {Mauricio Parizotto 2023-06-16 Inicio}
       if (DataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = '2CONTAS') and (bGravaEscolha) then
       begin
@@ -2018,6 +2042,7 @@ begin
         end;
       end;
       {Mauricio Parizotto 2023-06-16 Inicio}
+      *)
 
       {Dailon (f-7224) 2024-04-01 inicio}
       if (Form7.sModulo = 'CLIENTES')
@@ -2089,11 +2114,13 @@ end;
 procedure TForm10.DBGrid1DblClick(Sender: TObject);
 begin
   GravaEscolha(); // Ok
+  {Mauricio Parizotto 2024-04-05
   if Form7.sModulo = 'CAIXA'   then
   begin
   	if SMALL_DBEdit3.CanFocus then
   		SMALL_DBEdit3.SetFocus;
   end;
+  }
 
   if Form7.sModulo = 'RECEBER' then
   begin
@@ -2171,19 +2198,23 @@ begin
         end;
 
         //Mauricio Parizotto
+        (*Mauricio Parizotto 2024-04-08
         if (vDataField = 'MUNICIPIO')
           and (Form7.sModulo = 'TRANSPORT')
           and (Form7.ibDataSet39.Active) then
         begin
           Form7.ibDataSet39.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
         end;
+        *)
 
+        {Mauricio Parizotto 2024-04-05
         if (Form7.sModulo = 'CAIXA')
           and (vDataField = 'NOME')
           and (Form7.ibDataSet12.Active) then
         begin
           Form7.ibDataSet12.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
         end;
+        }
 
         if (Form7.sModulo = 'PAGAR')
           and (vDataField = 'NOME')
@@ -2226,6 +2257,7 @@ begin
           Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
         end;
 
+        (*Mauricio Parizotto 2024-04-09
         //Mauricio Parizotto 2023-06-16
         if (vDataField = 'INSTITUICAOFINANCEIRA')
           and (Form7.sModulo = '2CONTAS')
@@ -2233,6 +2265,7 @@ begin
         begin
           Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
         end;
+        *)
 
         if (Form7.sModulo = 'ESTOQUE')
           and (vDataField = 'NOME')
@@ -2949,11 +2982,13 @@ begin
   GravaEscolha();
 
   {Mauricio Parizotto 2023-05-16 Inicio}
+  (*Mauricio Parizotto 2024-04-08
   if Form7.sModulo = 'TRANSPORT' then
   begin
     Form7.ibDataSet18UF.FocusControl;
     Exit;
   end;
+  *)
 
   if Form7.sModulo = 'CLIENTES' then
   begin
@@ -3028,6 +3063,7 @@ begin
   {Sandro Silva 2023-07-24 fim}
   {Mauricio Parizotto 2023-05-29 Fim}
 
+  (*Mauricio Parizotto 2024-04-09
   {Mauricio Parizotto 2023-06-20 Inicio}
   if (Form7.sModulo = '2CONTAS') and (DBGrid3.DataSource.Name = 'DSConsulta') then
   begin
@@ -3035,6 +3071,7 @@ begin
       btnOK.SetFocus;
   end;
   {Mauricio Parizotto 2023-06-20 Fim}
+  *)
 end;
 
 procedure TForm10.DBGrid3KeyPress(Sender: TObject; var Key: Char);
@@ -3634,7 +3671,7 @@ procedure TForm10.Image202Click(Sender: TObject);
 begin
   Form20.ShowModal;
 
-  Form7.iFoco := 0;
+  //Form7.iFoco := 0;
   Form10.Paint;
 
   Orelhas.ActivePage := orelha_cadastro;
@@ -4225,6 +4262,7 @@ begin
     {$Endregion}
 
     {$Region '/// Modulo Groupos ///'}
+    (*Maricio Parizotto 2024-04-09
     if Form7.sModulo = 'GRUPOS' then
     begin
       if not Form7.bSoLeitura then
@@ -4237,6 +4275,7 @@ begin
         AtualizaTela(True);// Form10.Panel_1Enter(Sender);
       end;
     end;
+    *)
     {$Endregion}
   except
   end;
@@ -4666,7 +4705,7 @@ begin
     end;
     {Sandro Silva 2024-01-10 fim}
 
-    if Form7.sModulo <> 'ICM' then // Não entrar no "For to do" se estiver editando o módulo ICM, o mesmo tem uma aba somente para ele, com os campos fixos, diferente dos demais módulos que monta a tela dinamicamente
+    //if Form7.sModulo <> 'ICM' then // Não entrar no "For to do" se estiver editando o módulo ICM, o mesmo tem uma aba somente para ele, com os campos fixos, diferente dos demais módulos que monta a tela dinamicamente Mauricio Parizotto 2024-04-09
     begin
       for I := 1 to Form7.iCampos do
       begin
@@ -4839,11 +4878,14 @@ begin
                     if dBGrid1.Height > 145 then
                       dBGrid1.Height := 145;
                     dBGrid1.Width   := (Form7.TabelaAberta.Fields[I - 1].Displaywidth * 8) + 25; // teria que saber a largura do Scroll bar
+
+                    {Mauricio Parizotto 2024-04-05
                     // caixa
                     if Form7.sModulo = 'CAIXA' then
                     begin
                       dBGrid1.DataSource := Form7.DataSource12; // contas bancárias
                     end;
+                    }
 
                     // contas a receber
                     if Form7.sModulo = 'RECEBER' then
@@ -5097,7 +5139,7 @@ var
   //sNumeroNF: String; // Sandro Silva 2023-01-06
   sParcelaReplicada: String; // Sandro Silva 2023-01-06
 begin
-  Form7.iFoco := 0;
+  //Form7.iFoco := 0;
 
   with Form7 do
   begin
@@ -5580,10 +5622,12 @@ begin
     Form10.sNomeDoJPG := Form1.sAtual+'\tempo1'+Form7.IBDataSet4REGISTRO.AsString+'.jpg';
   end else
   begin
+    (*Mauricio Parizotto 2024-04-09
     if Form7.sModulo = 'GRUPOS' then
     begin
       Form10.sNomeDoJPG := Form1.sAtual+'\tempo1'+Form7.IBDataSet21REGISTRO.AsString+'.jpg';
     end else
+    *)
     begin
       Form10.sNomeDoJPG := Form1.sAtual+'\tempo1'+Form7.IBDataSet2REGISTRO.AsString+'.jpg';
     end;
