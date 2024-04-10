@@ -12545,8 +12545,9 @@ begin
     AgendaCommit(True);
     Commitatudo(True);
     // Necessario fechar e abrir novamente para não abrir a tela de empresa
-    Form7.ibDataSet13.Close;
-    Form7.ibDataSet13.Open;
+    // Dailon 2024-04-10
+    {    Form7.ibDataSet13.Close;
+    Form7.ibDataSet13.Open;  }
     try
       {2024-04-10
       Form7.ibDataSet4.Close;
@@ -12590,7 +12591,9 @@ begin
       Form7.ibDataSet37.Open;
       Form24.ibDataSet44.Open;
       }
-      //AbreArquivos(False); //2024-04-10
+
+      AbreArquivos(False); //2024-04-10
+      Screen.Cursor := crDefault;
     end;
   except
   end;
