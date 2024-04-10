@@ -248,9 +248,9 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
       end>
   end
   object btnOK: TBitBtn
-    Left = 712
+    Left = 752
     Top = 376
-    Width = 120
+    Width = 100
     Height = 25
     Anchors = [akTop, akRight]
     Caption = '&OK'
@@ -264,9 +264,9 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
     OnClick = btnOKClick
   end
   object btnCancelar: TBitBtn
-    Left = 836
+    Left = 856
     Top = 376
-    Width = 120
+    Width = 100
     Height = 25
     Anchors = [akTop, akRight]
     Caption = '&Cancelar'
@@ -282,7 +282,7 @@ inherited FrmProdutosDevolucao: TFrmProdutosDevolucao
   object BitBtn1: TBitBtn
     Left = 19
     Top = 376
-    Width = 130
+    Width = 120
     Height = 25
     Caption = 'Desmarcar todos'
     Font.Charset = ANSI_CHARSET

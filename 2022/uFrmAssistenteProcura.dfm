@@ -30,8 +30,6 @@ object FrmAssistenteProcura: TFrmAssistenteProcura
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
-    ExplicitWidth = 447
-    ExplicitHeight = 202
     object Image1: TImage
       Left = 42
       Top = 30
@@ -84,7 +82,8 @@ object FrmAssistenteProcura: TFrmAssistenteProcura
       Left = 150
       Top = 80
       Width = 229
-      Height = 19
+      Height = 20
+      AutoSize = False
       Ctl3D = False
       ParentCtl3D = False
       TabOrder = 0
@@ -219,7 +218,8 @@ object FrmAssistenteProcura: TFrmAssistenteProcura
         Left = 0
         Top = 40
         Width = 229
-        Height = 19
+        Height = 20
+        AutoSize = False
         Ctl3D = False
         ParentCtl3D = False
         TabOrder = 0
@@ -230,7 +230,8 @@ object FrmAssistenteProcura: TFrmAssistenteProcura
         Left = 0
         Top = 88
         Width = 229
-        Height = 19
+        Height = 20
+        AutoSize = False
         Ctl3D = False
         ParentCtl3D = False
         TabOrder = 1

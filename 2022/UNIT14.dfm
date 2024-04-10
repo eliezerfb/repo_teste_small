@@ -31,8 +31,6 @@ object Form14: TForm14
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
-    ExplicitWidth = 392
-    ExplicitHeight = 212
     object Image2: TImage
       Left = 47
       Top = 39
@@ -43,7 +41,7 @@ object Form14: TForm14
       Transparent = True
     end
     object Label1: TLabel
-      Left = 200
+      Left = 180
       Top = 33
       Width = 156
       Height = 13
@@ -56,7 +54,7 @@ object Form14: TForm14
       ParentFont = False
     end
     object Label2: TLabel
-      Left = 200
+      Left = 180
       Top = 49
       Width = 84
       Height = 13
@@ -69,7 +67,7 @@ object Form14: TForm14
       ParentFont = False
     end
     object Label3: TLabel
-      Left = 200
+      Left = 180
       Top = 73
       Width = 161
       Height = 13
@@ -82,7 +80,7 @@ object Form14: TForm14
       ParentFont = False
     end
     object Image1: TImage
-      Left = 205
+      Left = 180
       Top = 95
       Width = 180
       Height = 45
@@ -90,9 +88,9 @@ object Form14: TForm14
     end
     object Button2: TButton
       Left = 121
-      Top = 176
+      Top = 175
       Width = 100
-      Height = 23
+      Height = 24
       Caption = 'Configura'#231#245'es'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -105,9 +103,9 @@ object Form14: TForm14
     end
     object Button1: TButton
       Left = 225
-      Top = 176
+      Top = 175
       Width = 100
-      Height = 23
+      Height = 24
       Caption = 'Imprimir'
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
@@ -121,9 +119,9 @@ object Form14: TForm14
     end
     object Button3: TButton
       Left = 329
-      Top = 176
+      Top = 175
       Width = 100
-      Height = 23
+      Height = 24
       Caption = 'Cancelar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack

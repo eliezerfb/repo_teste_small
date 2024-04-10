@@ -43,7 +43,7 @@ object frmExportaXML: TfrmExportaXML
   end
   object Label4: TLabel
     Left = 180
-    Top = 177
+    Top = 179
     Width = 111
     Height = 13
     Caption = 'e-mail da contabilidade:'
@@ -71,8 +71,9 @@ object frmExportaXML: TfrmExportaXML
   object edtEmailContab: TEdit
     Left = 180
     Top = 194
-    Width = 319
+    Width = 318
     Height = 20
+    AutoSize = False
     TabOrder = 5
   end
   object btnAvancar: TButton
@@ -103,7 +104,7 @@ object frmExportaXML: TfrmExportaXML
   end
   object cbNFeEntrada: TCheckBox
     Left = 180
-    Top = 128
+    Top = 127
     Width = 112
     Height = 17
     Caption = 'NF-e'#39's de Entrada'
@@ -111,7 +112,7 @@ object frmExportaXML: TfrmExportaXML
   end
   object cbNFCeSAT: TCheckBox
     Left = 180
-    Top = 148
+    Top = 146
     Width = 112
     Height = 17
     Caption = 'NFC-e/SAT'

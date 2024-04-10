@@ -27,9 +27,9 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     ParentFont = False
   end
   object btnCancelar: TBitBtn
-    Left = 836
+    Left = 856
     Top = 376
-    Width = 120
+    Width = 100
     Height = 25
     Anchors = [akTop, akRight]
     Caption = '&Cancelar'
@@ -43,9 +43,9 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     OnClick = btnCancelarClick
   end
   object btnOK: TBitBtn
-    Left = 712
+    Left = 752
     Top = 376
-    Width = 120
+    Width = 100
     Height = 25
     Anchors = [akTop, akRight]
     Caption = '&OK'
@@ -131,7 +131,8 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     Left = 304
     Top = 13
     Width = 49
-    Height = 21
+    Height = 20
+    AutoSize = False
     BevelInner = bvNone
     BevelOuter = bvNone
     BiDiMode = bdLeftToRight

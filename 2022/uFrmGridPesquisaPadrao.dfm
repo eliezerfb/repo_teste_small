@@ -5,6 +5,7 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
   Caption = 'Pesquisa'
   ClientHeight = 420
   ClientWidth = 975
+  Font.Name = 'Microsoft Sans Serif'
   OnCreate = FormCreate
   OnShow = FormShow
   ExplicitWidth = 991
@@ -16,7 +17,7 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
   TextHeight = 16
   object lblTitulo2: TLabel
     Left = 20
-    Top = 78
+    Top = 80
     Width = 937
     Height = 14
     AutoSize = False
@@ -25,7 +26,7 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
-    Font.Style = [fsBold]
+    Font.Style = []
     ParentFont = False
     WordWrap = True
   end
@@ -39,7 +40,7 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     Caption = 'Titulo 1'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -16
+    Font.Height = -15
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False
@@ -48,13 +49,14 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     Left = 20
     Top = 98
     Width = 935
-    Height = 22
+    Height = 20
     Anchors = [akLeft, akTop, akRight]
+    AutoSize = False
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlack
-    Font.Height = -13
+    Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentCtl3D = False
@@ -66,7 +68,7 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     Left = 20
     Top = 45
     Width = 935
-    Height = 24
+    Height = 21
     Anchors = [akLeft, akTop, akRight]
     BevelEdges = []
     BevelInner = bvNone
@@ -77,9 +79,9 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     DateFormat = dfLong
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlack
-    Font.Height = -13
+    Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
-    Font.Style = [fsBold]
+    Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
     TabOrder = 0
@@ -113,9 +115,9 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     OnKeyDown = dbGridPrincipalKeyDown
   end
   object btnOK: TBitBtn
-    Left = 712
+    Left = 752
     Top = 376
-    Width = 120
+    Width = 100
     Height = 25
     Anchors = [akLeft, akTop, akRight]
     Caption = '&OK'
@@ -129,9 +131,9 @@ inherited FrmGridPesquisaPadrao: TFrmGridPesquisaPadrao
     OnClick = btnOKClick
   end
   object btnCancelar: TBitBtn
-    Left = 836
+    Left = 856
     Top = 376
-    Width = 120
+    Width = 100
     Height = 25
     Anchors = [akLeft, akTop, akRight]
     Caption = '&Cancelar'

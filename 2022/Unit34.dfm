@@ -29,8 +29,6 @@ object Form34: TForm34
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
-    ExplicitWidth = 457
-    ExplicitHeight = 262
     object Image1: TImage
       Left = 20
       Top = 20
@@ -112,7 +110,8 @@ object Form34: TForm34
       Left = 286
       Top = 140
       Width = 65
-      Height = 19
+      Height = 20
+      AutoSize = False
       DataField = 'ACUMULADO1'
       DataSource = Form7.DataSource25
       TabOrder = 3
