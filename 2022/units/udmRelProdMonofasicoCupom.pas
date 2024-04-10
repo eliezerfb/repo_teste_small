@@ -88,7 +88,8 @@ begin
   qryDados.SQL.Add('(ALTERACA.DATA<='+QuotedStr(DateToStrInvertida(AbDataFim))+') AND (ALTERACA.DATA>='+QuotedStr(DateToStrInvertida(AbDataIni))+')');
   qryDados.SQL.Add('AND ((ALTERACA.TIPO='+QuotedStr('BALCAO')+') OR (ALTERACA.TIPO='+QuotedStr('VENDA')+'))');
   qryDados.SQL.Add('AND (ALTERACA.CST_PIS_COFINS=''04'')');
-  qryDados.SQL.Add('AND ((SELECT COALESCE(NFCE.MODELO,'''') FROM NFCE WHERE (NFCE.CAIXA=ALTERACA.CAIXA) AND (NFCE.NUMERONF=ALTERACA.PEDIDO)) <> ''99'')');
+  //Sandro Silva 2024-04-10 qryDados.SQL.Add('AND ((SELECT COALESCE(NFCE.MODELO,'''') FROM NFCE WHERE (NFCE.CAIXA=ALTERACA.CAIXA) AND (NFCE.NUMERONF=ALTERACA.PEDIDO)) <> ''99'')');
+  qryDados.SQL.Add('AND ((SELECT distinct COALESCE(NFCE.MODELO,'''') FROM NFCE WHERE (NFCE.CAIXA=ALTERACA.CAIXA) AND (NFCE.NUMERONF=ALTERACA.PEDIDO)) <> ''99'')');
   qryDados.SQL.Add('ORDER BY ALTERACA.DATA, ALTERACA.PEDIDO');
   qryDados.Open;
   qryDados.First;
@@ -123,10 +124,18 @@ begin
       cdsDadosPISVLR.AsFloat     := Arredonda(qryDados.FieldByName('ALIQ_PIS').AsFloat / 100 * (nTotalItem),2);
       cdsDadosCOFINSPERC.AsFloat := Arredonda(qryDados.FieldByName('ALIQ_COFINS').AsFloat, 4);
       cdsDadosCOFINSVLR.AsFloat  := Arredonda(qryDados.FieldByName('ALIQ_COFINS').AsFloat / 100 * (nTotalItem), 2);
+      {Sandro Silva 2024-04-10 inicio
       cdsDadosCFOP.AsString      := qryDados.FieldByName('CFOP').Value;
       cdsDadosNCM.AsString       := qryDados.FieldByName('CF').Value;
       cdsDadosCSTICMS.AsString   := qryDados.FieldByName('CST_ICMS').Value;
       cdsDadosCSOSN.AsString     := qryDados.FieldByName('CSOSN').Value;
+      }
+      // Passar Value = null para AsString causa exception
+      cdsDadosCFOP.AsString      := qryDados.FieldByName('CFOP').AsString;
+      cdsDadosNCM.AsString       := qryDados.FieldByName('CF').AsString;
+      cdsDadosCSTICMS.AsString   := qryDados.FieldByName('CST_ICMS').AsString;
+      cdsDadosCSOSN.AsString     := qryDados.FieldByName('CSOSN').AsString;
+      {Sandro Silva 2024-04-10 fim}
 
       cdsDadosCSTICMS.Visible        := (tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) = tcrteRegimeNormal);
       cdsDadosCSOSN.Visible          := (tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) <> tcrteRegimeNormal);
