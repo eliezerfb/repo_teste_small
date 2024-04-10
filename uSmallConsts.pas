@@ -115,6 +115,8 @@ const
 
   const _COR_AZUL = $00EAB231;
 
+  _RelComInstituicao = 'Instituição financeira';
+
 implementation
 
 end.
