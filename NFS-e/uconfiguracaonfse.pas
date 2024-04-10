@@ -67,6 +67,10 @@ end;
 
 procedure TFConfiguracaoNFSe.FormCreate(Sender: TObject);
 begin
+  {$IFDEF VER150}
+  {$ELSE}
+  DBGCONFIG.DrawingStyle := gdsClassic;
+  {$ENDIF}
   CDSConfig.CreateDataSet;
   CDSConfig.Open;
   CarregaConfiguracao;

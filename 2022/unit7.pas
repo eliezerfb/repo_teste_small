@@ -71,8 +71,6 @@ function AssinaRegistro(pNome: String; DataSet: TDataSet; bAssina: Boolean): Boo
 
 
 type
-
-//    TValidaIE  = function (const IE, UF: String): Integer; stdcall;
     TProdutoOld = Record
       sDescricao: String;
       sQuantidade: String;
@@ -1476,6 +1474,7 @@ type
     CDSItensNotaAuxCODIGO: TStringField;
     RelatriodevendasporclienteNFeCupom1: TMenuItem;
     ibDataSet23ICMS_DESONERADO: TIBBCDField;
+    ibDataSet23PICMSST: TIBBCDField;
     ibDataSet24ICMS_DESONERADO: TIBBCDField;
     pnlFiltro: TPanel;
     lblHomologacao: TLabel;
@@ -1685,6 +1684,8 @@ type
     MenuItem137: TMenuItem;
     MenuItem140: TMenuItem;
     MenuItem141: TMenuItem;
+    ConfigurarEtiqueta1: TMenuItem;
+    Imprimiretiqueta1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2398,12 +2399,17 @@ type
     procedure miRelatoriosCliforClick(Sender: TObject);
     procedure miRelatoriosCaixaClick(Sender: TObject);
     procedure MenuItem140Click(Sender: TObject);
+    procedure ConfigurarEtiqueta1Click(Sender: TObject);
+    procedure Imprimiretiqueta1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
   private
     FbDuplicandoProd: Boolean;
     FbImportandoXML: Boolean;
+    iOSQtdEtiqueta : integer;
+    sOSEtiqueta : string;
+
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
@@ -4914,6 +4920,10 @@ begin
   if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A3') then
     TipoCertificado := 'A3';
 
+  //Mauricio Parizotto 2024-04-05
+  if (TipoCertificado = '') and (Form7.spdNFe.NomeCertificado.Text <> '') then
+    TipoCertificado := 'NI';
+
   try
     if TipoCertificado <> '' then
     begin
@@ -5516,6 +5526,7 @@ end;
 
 function AbreArquivos(P1:Boolean): Boolean;
 begin
+
   try
     if not Form7.ibDataSet13.active then Form7.ibDataSet13.active := True;
     if not Form7.ibDataSet25.active then Form7.ibDataSet25.active := True;
@@ -5606,7 +5617,7 @@ begin
     if Form7.ibdParametroTributa.Active then  Form7.ibdParametroTributa.EnableControls; // Mauricio Parizotto 2023-09-21
     if Form7.ibdSituacaoOS.Active then  Form7.ibdSituacaoOS.EnableControls; // Mauricio Parizotto 2023-12-04
   end;
-  
+
   Result := True;
 end;
 
@@ -5640,7 +5651,7 @@ begin
   P1 := StrTran(P1,' IE', ' Inscrição');
   P1 := StrTran(P1,'(IE)', ' Inscrição');
 
-  if Copy(AoDataSet.SelectSQL.Text,1,12)='select first' then
+  if (Assigned(AoDataSet)) and (Copy(AoDataSet.SelectSQL.Text,1,12) = 'select first') then
     P1 := StrTran(P1, 'Listando' ,'Mostrando os últimos '+Form7.sMaxReg+' registros' );
 
   P1 := StrTran(P1,' and EMITIDA='+QuotedStr('X'), ', canceladas ');
@@ -5673,14 +5684,17 @@ begin
   P1 := StrTran(P1, '  ' ,' ');
   P1 := StrTran(P1, 'só quando só' ,'só');
 
-  for I := 1 to AoDataSet.FieldCount do
+  if Assigned(AoDataSet) then
   begin
-    if AoDataSet.Fields[I-1].FieldName <> AoDataSet.Fields[I-1].DisplayLabel then
+    for I := 1 to AoDataSet.FieldCount do
     begin
-      if (AoDataSet.Fields[I-1].FieldName <> 'IPI')
-        and (copy(AoDataSet.Fields[I-1].FieldName,1,3) <> 'CST') then
+      if AoDataSet.Fields[I-1].FieldName <> AoDataSet.Fields[I-1].DisplayLabel then
       begin
-        P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel);
+        if (AoDataSet.Fields[I-1].FieldName <> 'IPI')
+          and (copy(AoDataSet.Fields[I-1].FieldName,1,3) <> 'CST') then
+        begin
+          P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel);
+        end;
       end;
     end;
   end;
@@ -10804,6 +10818,7 @@ begin
         Form7.ibDataSet23VBC.Visible            := False;
         Form7.ibDataSet23VBCST.Visible          := False;
         Form7.ibDataSet23VICMSST.Visible        := False;
+        Form7.ibDataSet23PICMSST.Visible      := True; //Sandro Silva 2024-03-28
         Form7.ibDataSet23VIPI.Visible           := False;
         Form7.ibDataSet23EAN_ORIGINAL.Visible   := False;
 
@@ -14630,17 +14645,21 @@ end;
 
 procedure TForm7.Ranquingdeclientes1Click(Sender: TObject);
 begin
-  //
-  Form7.Close;
-  //
   sModuloAnterior := sModulo;
-  Form38.Label2.Visible := True;
-  Form38.Label3.Visible := True;
-  Form38.DateTimePicker1.Visible := True;
-  Form38.DateTimePicker2.Visible := True;
-  Form7.sModulo := 'Ranking de clientes';
-  Form38.ShowModal; // Ok
-  //
+  Form7.TabelaAberta.DisableControls;
+  LockWindowUpdate(form7.Handle);
+  try
+    Form38.Label2.Visible := True;
+    Form38.Label3.Visible := True;
+    Form38.DateTimePicker1.Visible := True;
+    Form38.DateTimePicker2.Visible := True;
+    Form7.sModulo := 'Ranking de clientes';
+    Form38.ShowModal;
+  finally
+    sModulo := sModuloAnterior;
+    Form7.TabelaAberta.EnableControls;
+    LockWindowUpdate(0);
+  end;
 end;
 
 procedure TForm7.MenuItem60Click(Sender: TObject);
@@ -14868,6 +14887,8 @@ begin
 end;
 
 procedure TForm7.ibDataSet4PRECOChange(Sender: TField);
+var
+  nMargem: Currency;
 begin
   {Dailon Parisotto 2023-10-09 Inicio}
   if FbDuplicandoProd then
@@ -14887,7 +14908,17 @@ begin
     Abort;
   end
   else
+  begin
+    if (ibDataSet4MARGEMLB.Value <> 0) and (ibDataSet4CUSTOCOMPR.AsFloat <> 0) then
+    begin
+      nMargem := Arredonda(((ibDataSet4PRECO.AsFloat - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100, 2);
+
+      if ibDataSet4MARGEMLB.AsCurrency <> nMargem then
+        ibDataSet4MARGEMLB.AsCurrency := nMargem;
+    end;
+
     ibDataSet4ALTERADO.AsString := '1';
+  end;
 
   Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
 end;
@@ -17329,6 +17360,12 @@ begin
 end;
 
 procedure TForm7.MenuItem12Click(Sender: TObject);
+var
+  IniFile : TIniFile;
+  Etiquetas : TStringList;
+  i : integer;
+  sTipoIni : string;
+  NewItem : tMenuItem;
 begin
   Imprimirrecibo1.Caption        := 'Imprimir recibo de entrega da Ordem de Serviço '+Form7.ibDataSet3NUMERO.AsString;
   ImprimirOrdemdeServio1.Caption := 'Imprimir Ordem de Serviço '+Form7.ibDataSet3NUMERO.AsString;
@@ -17356,6 +17393,60 @@ begin
   end;
 
   {Mauricio Parizotto 2023-12-28 fim}
+
+  {Mauricio Parizotto 2024-03-27 Inicio}
+  try
+    iOSQtdEtiqueta := 0;
+
+    Etiquetas := TStringList.Create;
+    IniFile := TIniFile.create(Form1.sAtual+'\etiquetase.ini');
+    IniFile.ReadSections(Etiquetas);
+
+    i := 0;
+    while i <= Etiquetas.Count -1 do
+    begin
+      sTipoIni := IniFile.ReadString(Etiquetas.Strings[i] ,'TIPO','SEM TIPO');
+
+      if sTipoIni <> 'OS' then
+      begin
+        Etiquetas.Delete(i);
+        i := i -1;
+      end;
+
+      Inc(i);
+    end;
+
+    iOSQtdEtiqueta := Etiquetas.Count;
+
+    //Remove sub menus
+    Imprimiretiqueta1.Clear;
+    sOSEtiqueta := '';
+    
+    if iOSQtdEtiqueta = 1 then
+    begin
+      sOSEtiqueta := Etiquetas.Strings[0];
+    end;
+
+    //Cria sub menus
+    if iOSQtdEtiqueta > 1 then
+    begin
+      i := 0;
+
+      for I := 0 to Etiquetas.Count -1 do
+      begin
+        NewItem         := TMenuItem.Create(Imprimiretiqueta1);
+        NewItem.Caption := Etiquetas.Strings[i];
+        NewItem.OnClick := Imprimiretiqueta1Click;
+        Imprimiretiqueta1.Add(NewItem);
+      end;
+    end;
+  finally
+    FreeAndNil(IniFile);
+    FreeAndNil(Etiquetas);
+  end;
+
+  Imprimiretiqueta1.Enabled := iOSQtdEtiqueta > 0;
+  {Mauricio Parizotto 2024-03-27 fim}
 end;
 
 procedure TForm7.Agenda1Click(Sender: TObject);
@@ -17384,9 +17475,7 @@ var
   I, J: Integer;
   vGrade    : array [0..19,0..19] of String; // Cria uma matriz com 100 elementos
 begin
-  //
   // Processa o movimento antes de imprimir a ficha pois pode alterar a qtd inicial//
-  //
   CriaJpg('logotip.jpg');
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
   Rewrite(F);
@@ -17401,25 +17490,22 @@ begin
   WriteLn(F,'<table  border=0 bgcolor=#FFFFFFFF cellspacing=1 cellpadding=4>');
   WriteLn(F,' <tr>');
   WriteLn(F,'  <td  >');
-//  WriteLn(F,'   <table  border=0 bgcolor=#000000 cellspacing=1 cellpadding=4>');
-  //
+
   Form7.ibDataSet4.First;
-  //
+
   while not Form7.ibDataSet4.Eof do
   begin
-    //
     Form7.ibDataSet10.DisableControls;
     Form7.ibDataSet10.Close;
     Form7.ibDataSet10.SelectSQL.Clear;
     Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
     Form7.ibDataSet10.Open;
     Form7.ibDataSet10.First;
-    //
+
     if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
     begin
-      //
       for I := 0 to 19 do for J := 0 to 19 do vGrade[I,J] := '';
-      //
+
       while (Form7.ibDataSet10CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and not (Form7.ibDataSet10.EOF) do
       begin
         if AllTrim(Form7.ibDataSet10QTD.AsString) <> '' then
@@ -17431,9 +17517,9 @@ begin
         end;
         Form7.ibDataSet10.Next;
       end;
-      //
+
       Writeln(F,'    <p align=center><font face="Microsoft Sans Serif" size=2><b>'+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+'</b>');
-      //
+
       WriteLn(F,'    <table  border=0 bgcolor=#000000 cellspacing=1 cellpadding=4>');
       for J := 0 to 19 do
       begin
@@ -17449,26 +17535,22 @@ begin
           end;
         end;
       end;
-      //
+
       WriteLn(F,'     </tr>');
       WriteLn(F,'    </table>');
       Writeln(F,'    <font face="Microsoft Sans Serif" size=2><b>'+ Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_ATUAL.AsFloat]) +'</b><br>');
-
     end;
-    //
+
     Form7.ibDataSet4.Next;
-    //
   end;
-  //
+
   WriteLn(F,'    </tr>');
   WriteLn(F,'   </table></td>');
-  //
+
   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
-  + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
-  + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br>');
-  //
-  // WWW
-  //
+          + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
+          + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br>');
+
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
     WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -17476,16 +17558,16 @@ begin
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
   end;
-  //
-  if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
+
+  if not Form1.bPDF then
+    WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
   WriteLn(F,'</html>');
-  //
+
   CloseFile(F);
-  //
+
   AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
-  //
+
   Screen.Cursor             := crDefault;              // Cursor de Aguardo
-  //
 end;
 
 procedure TForm7.Cartadecobrana1Click(Sender: TObject);
@@ -17493,12 +17575,27 @@ begin
   ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\cobrança.doc'),'','', SW_SHOWMAXIMIZED);
 end;
 
+procedure TForm7.Imprimiretiqueta1Click(Sender: TObject);
+begin
+  if iOSQtdEtiqueta = 1 then
+  begin
+    ShellExecute( 0, 'Open', 'etiquetas.exe', pchar('OS "'+sOSEtiqueta+'" '+ibDataSet3NUMERO.AsString), '', SW_SHOW);
+  end;
+
+  //Chamada pelos submenus criados
+  if (iOSQtdEtiqueta > 1) and (TMenuItem(Sender).Caption <> 'Imprimir etiqueta') then
+  begin
+    sOSEtiqueta := TMenuItem(Sender).Caption;
+    ShellExecute( 0, 'Open', 'etiquetas.exe', pchar('OS "'+sOSEtiqueta+'" '+ibDataSet3NUMERO.AsString), '', SW_SHOW);
+  end;
+end;
+
 procedure TForm7.Imprimiretiquetaparacobrana1Click(Sender: TObject);
 begin
   Screen.Cursor  := crHourGlass;    // Cursor de Aguardo
   Form7.IBDataSet100.DisableControls;
   Form7.IBDataSet2.DisableControls;
-  
+
   Form7.IBDataSet100.Close;
   Form7.IBDataSet100.SelectSQL.Clear;
   Form7.IBDataSet100.SelectSQL.Add('update CLIFOR set COMPRA=(select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and RECEBER.VENCIMENTO < CURRENT_DATE)');
@@ -17538,7 +17635,7 @@ end;
 
 procedure TForm7.ibDataSet2CEPSetText(Sender: TField; const Text: String);
 begin
-  Valida_Campo('CLIFOR',Text,'CEP','Auxilio na digitação do CEP.');
+//  Valida_Campo('CLIFOR',Text,'CEP','Auxilio na digitação do CEP.'); // Dailon Parisotto 2024-04-02
   ibDataSet2CEP.AsString := Text;
 end;
 
@@ -25534,7 +25631,7 @@ end;
 
 procedure TForm7.Importarretornodevendaambulante1Click(Sender: TObject);
 begin
-  // ImportaNF(False,'');
+  ImportaNF(False,'');
 end;
 
 procedure TForm7.ibDataSet24BeforeEdit(DataSet: TDataSet);
@@ -26893,9 +26990,9 @@ end;
 procedure TForm7.EtiquetasZebraArgoxElgin1Click(Sender: TObject);
 begin
   if FileExists(Form1.sAtual+'\etiquetas.exe') then
-  ShellExecute( 0, 'Open', 'etiquetas.exe', '', '', SW_SHOW) else
-  //ShowMessage('O executável etiquetas.exe não foi encontrado na pasta de instalação do programa.'); Mauricio Parizotto 2023-10-25
-  MensagemSistema('O executável etiquetas.exe não foi encontrado na pasta de instalação do programa.',msgAtencao);
+    ShellExecute( 0, 'Open', 'etiquetas.exe', '', '', SW_SHOW)
+  else
+    MensagemSistema('O executável etiquetas.exe não foi encontrado na pasta de instalação do programa.',msgAtencao);
 end;
 
 procedure TForm7.Panel1Click(Sender: TObject);
@@ -33348,6 +33445,11 @@ begin
   Form7.Show;
 end;
 
+procedure TForm7.ConfigurarEtiqueta1Click(Sender: TObject);
+begin
+  ShellExecute( 0, 'Open', 'etiquetas.exe', 'OS ""', '', SW_SHOW);
+end;
+
 procedure TForm7.Configurarobservaofixa1Click(Sender: TObject);
 var
   oArqIni: TArquivosDAT;
@@ -34008,7 +34110,7 @@ begin
     //
     Form7.ibDataSet7.Close;                                                            //
     Form7.ibDataSet7.Selectsql.Clear;                                                  // receber Relacionado
-    Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where NUMERONF=:NUMERONF order by REGISTRO');  //
+    Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where (NUMERONF=:NUMERONF) AND (COALESCE(ATIVO,-10) <> 1) order by REGISTRO');  //
     Form7.ibDataSet7.DataSource := DataSource15;
     Form7.ibDataSet7.Open;
     //

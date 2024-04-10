@@ -975,11 +975,11 @@ object Form48: TForm48
     Left = 680
     Top = 6
     object ImportarOS2: TMenuItem
-      Caption = 'Importar Ordem de Servi'#231'o...'
+      Caption = 'Importar Ordem de Servi'#231'o'
       OnClick = ImportarOS2Click
     end
     object Importaroramentos1: TMenuItem
-      Caption = 'Importar Or'#231'amento...'
+      Caption = 'Importar Or'#231'amento'
       OnClick = Importaroramentos1Click
     end
   end

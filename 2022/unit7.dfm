@@ -16497,7 +16497,9 @@ object Form7: TForm7
       
         '   CST_IPI, VPRECO, CST_ICMS, QTD_ORIGINAL, UNITARIO_O, ANVISA, ' +
         'EAN_ORIGINAL, '
-      '   VBCFCP, PFCP, VFCP, VBCFCPST, PFCPST, VFCPST,ICMS_DESONERADO)'
+      
+        '   VBCFCP, PFCP, VFCP, VBCFCPST, PFCPST, VFCPST, ICMS_DESONERADO' +
+        ', PICMSST)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :BASE, :MEDI' +
@@ -16513,7 +16515,7 @@ object Form7: TForm7
         ' :UNITARIO_O, '
       
         '   :ANVISA, :EAN_ORIGINAL, :VBCFCP, :PFCP, :VFCP, :VBCFCPST, :PF' +
-        'CPST, :VFCPST,:ICMS_DESONERADO)')
+        'CPST, :VFCPST, :ICMS_DESONERADO, :PICMSST)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -16555,7 +16557,8 @@ object Form7: TForm7
       '  VBCFCPST,'
       '  PFCPST,'
       '  VFCPST,'
-      '  ICMS_DESONERADO'
+      '  ICMS_DESONERADO,'
+      '  PICMSST'
       'from ITENS002 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -16603,7 +16606,8 @@ object Form7: TForm7
       '  VBCFCPST = :VBCFCPST,'
       '  PFCPST = :PFCPST,'
       '  VFCPST = :VFCPST,'
-      '  ICMS_DESONERADO = :ICMS_DESONERADO'
+      '  ICMS_DESONERADO = :ICMS_DESONERADO,'
+      '  PICMSST = :PICMSST'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -16804,6 +16808,16 @@ object Form7: TForm7
       EditFormat = '##0.00'
       Precision = 18
       Size = 2
+    end
+    object ibDataSet23PICMSST: TIBBCDField
+      DisplayLabel = '% ICMS ST'
+      DisplayWidth = 9
+      FieldName = 'PICMSST'
+      Origin = 'ITENS002.PICMSST'
+      Visible = False
+      DisplayFormat = '##0.00'
+      Precision = 18
+      Size = 4
     end
     object ibDataSet23LISTA: TFloatField
       DisplayLabel = 'Novo pre'#231'o'
@@ -18020,11 +18034,11 @@ object Form7: TForm7
     Left = 656
     Top = 144
     object Colunas1: TMenuItem
-      Caption = '&Colunas...'
+      Caption = '&Colunas'
       OnClick = Colunas1Click
     end
     object Agrupar1: TMenuItem
-      Caption = 'Agrupar...'
+      Caption = 'Agrupar'
       Visible = False
       OnClick = Agrupar1Click
     end
@@ -18032,11 +18046,11 @@ object Form7: TForm7
       Caption = '-'
     end
     object Editar1: TMenuItem
-      Caption = '&Alterar...'
+      Caption = '&Alterar'
       OnClick = Image106Click
     end
     object Apagar2: TMenuItem
-      Caption = 'E&xcluir...'
+      Caption = 'E&xcluir'
       OnClick = Image102Click
     end
     object N2: TMenuItem
@@ -18051,7 +18065,7 @@ object Form7: TForm7
       OnClick = Imprimirrecibo3Click
     end
     object Receberestaconta1: TMenuItem
-      Caption = 'Receber esta conta...'
+      Caption = 'Receber esta conta'
       OnClick = DBGrid1DblClick
     end
     object Baixaestacontanobanco1: TMenuItem
@@ -18059,7 +18073,7 @@ object Form7: TForm7
       OnClick = Baixaestacontanobanco1Click
     end
     object Pagarestaconta1: TMenuItem
-      Caption = 'Pagar esta conta...'
+      Caption = 'Pagar esta conta'
       OnClick = DBGrid1DblClick
     end
     object N53: TMenuItem
@@ -19475,6 +19489,10 @@ object Form7: TForm7
         Caption = 'Imprimir todas as OS filtradas'
         OnClick = ImprimirtodasasOSfiltradas1Click
       end
+      object Imprimiretiqueta1: TMenuItem
+        Caption = 'Imprimir etiqueta'
+        OnClick = Imprimiretiqueta1Click
+      end
       object N5: TMenuItem
         Caption = '-'
       end
@@ -19500,6 +19518,10 @@ object Form7: TForm7
       object ConfigurarobservaoparaRecibo1: TMenuItem
         Caption = 'Configurar observa'#231#227'o para Recibo'
         OnClick = ConfigurarobservaoparaRecibo1Click
+      end
+      object ConfigurarEtiqueta1: TMenuItem
+        Caption = 'Configurar etiqueta'
+        OnClick = ConfigurarEtiqueta1Click
       end
       object N30: TMenuItem
         Caption = '-'
@@ -19903,7 +19925,6 @@ object Form7: TForm7
       end
       object Importarretornodevendaambulante1: TMenuItem
         Caption = 'Importar retorno de venda ambulante'
-        Visible = False
         OnClick = Importarretornodevendaambulante1Click
       end
       object ClculodoCustodaltimaNota1: TMenuItem
@@ -21575,7 +21596,8 @@ object Form7: TForm7
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
       'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
+      '50avm50a\vm50a\'
     IgnoreInvalidCertificates = False
     DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
     Ambiente = akHomologacao
@@ -21611,7 +21633,8 @@ object Form7: TForm7
       '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
       'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
       'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a\vm50a\'
+      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
+      '0a\vm50a\'
     ConexaoSegura = False
     TimeOut = 0
     DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'

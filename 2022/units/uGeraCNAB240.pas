@@ -167,7 +167,8 @@ begin
       sFormaDeCadastrar      := '1';
       sTipoDocumento         := '1';
       sEspecieDoTitulo       := '02';
-      sNumeroDeDiasParaBaixa := '   ';
+      //sNumeroDeDiasParaBaixa := '   '; Mauricio Parizotto 2024-03-21
+      sNumeroDeDiasParaBaixa := '000';
       sCodigoParaBaixa       := '0';
       sDigitoAgencia         := '0';
       sAvisoDebitoAuto       := '2';

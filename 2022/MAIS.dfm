@@ -13809,6 +13809,13 @@ object Form1: TForm1
           Caption = 'Configurar NFE.INI'
           OnClick = ConfigurarNFEINI1Click
         end
+        object N7: TMenuItem
+          Caption = '-'
+        end
+        object ConfiguraoTEF1: TMenuItem
+          Caption = 'TEF'
+          OnClick = ConfiguraoTEF1Click
+        end
         object N3: TMenuItem
           Caption = '-'
         end
@@ -13847,6 +13854,10 @@ object Form1: TForm1
       object ConfiguraesdaNFSe1: TMenuItem
         Caption = 'Configura'#231#245'es da NFS-e'
         OnClick = ConfiguraesdaNFSe1Click
+        object Clculododescontopeloprovedor1: TMenuItem
+          Caption = 'C'#225'lculo do desconto pelo provedor'
+          OnClick = Clculododescontopeloprovedor1Click
+        end
         object ConfiguraesdaNFSe2: TMenuItem
           Caption = 'Configura'#231#245'es da NFS-e'
           OnClick = ConfiguraesdaNFSe2Click
@@ -13862,6 +13873,11 @@ object Form1: TForm1
       end
       object N14: TMenuItem
         Caption = '-'
+      end
+      object miProd120Carac: TMenuItem
+        Caption = 'Descri'#231#227'o dos produtos com 120 caracteres'
+        Visible = False
+        OnClick = miProd120CaracClick
       end
       object Modoinventrio1: TMenuItem
         Caption = 'Modo invent'#225'rio'
@@ -13882,7 +13898,7 @@ object Form1: TForm1
         OnClick = SQLMododecomando1Click
       end
       object Limparmovimento1: TMenuItem
-        Caption = 'Limpar movimento... '
+        Caption = 'Limpar movimento'
         Visible = False
       end
       object este1: TMenuItem
@@ -13899,7 +13915,7 @@ object Form1: TForm1
       end
       object Plugin1: TMenuItem
         AutoHotkeys = maManual
-        Caption = 'Plug-in...'
+        Caption = 'Plug-in'
       end
     end
     object Usurios1: TMenuItem

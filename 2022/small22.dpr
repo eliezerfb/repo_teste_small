@@ -238,7 +238,12 @@ uses
   uSistema in 'units\uSistema.pas',
   uObjetoConsultaCEP in 'units\uObjetoConsultaCEP.pas',
   uIConsultaCEP in 'interfaces\uIConsultaCEP.pas',
-  uConsultaCEP in 'units\uConsultaCEP.pas';
+  uConsultaCEP in 'units\uConsultaCEP.pas',
+  uConfiguracaoTEFCommerce in 'uConfiguracaoTEFCommerce.pas' {frmConfiguracaoTEFCommerce},
+  uFuncoesTEF in 'units\uFuncoesTEF.pas',
+  uclassetransacaocartao in '..\..\unit_compartilhada\uclassetransacaocartao.pas',
+  uSelecionaTEF in 'uSelecionaTEF.pas' {frmSelecionaTEF},
+  uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame};
 
 {$R *.RES}
 
@@ -269,6 +274,10 @@ var
     end;
   end;
 begin
+  {$IFDEF DEBUG}
+  //ReportMemoryLeaksOnShutdown := True;
+  {$ENDIF}
+
   oHwnd := FindWindowCaptionParcial('Small Commerce - [ ');
 
   if oHwnd = 0 then
@@ -339,7 +348,7 @@ begin
   Application.CreateForm(TForm37, Form37);
   Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
   Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
-  Application.Run;
+  Application.Run; 
     end else
     begin
       if not IsWindowVisible(oHwnd) then PostMessage(oHwnd, wm_User,0,0);

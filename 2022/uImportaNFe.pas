@@ -48,6 +48,7 @@ var
   spICMS   ,
   sBC      ,
   sICMSST  ,
+  spICMSST, // 2024-03-21
   spREDBC  ,
   spIPI    ,
   sCSTIPI  ,
@@ -623,7 +624,10 @@ begin
                           spREDBC  := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['pRedBC'].Text;
                         if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).XML, '//CST'))     <> '' then
                           sCSTICMS := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['orig'].Text + NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['CST'].Text;
-
+                        {Sandro Silva 2024-03-21 inicio}
+                        if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).XML, '//pICMSST')) <> '' then
+                          spICMSST  := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['pICMSST'].Text;
+                        {Sandro Silva 2024-03-21 fim}
 
                         {Sandro Silva 2023-04-10 inicio}
                         if Trim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).XML, '//vBCFCP')) <> '' then
@@ -698,6 +702,13 @@ begin
                         Form7.ibDataSet23VBCST.AsString     := StrTran(sBCST,'.',',');
                       except
                       end;
+
+                      {Sandro Silva 2024-03-21 inicio}
+                      try
+                        Form7.ibDataSet23PICMSST.AsString   := StrTran(spICMSST,'.',',');
+                      except
+                      end;
+                      {Sandro Silva 2024-03-21 fim}
 
                       try
                         Form7.ibDataSet23vICMSST.AsString   := StrTran(sICMSST,'.',',');

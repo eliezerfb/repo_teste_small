@@ -351,6 +351,7 @@ begin
   Form7.ibDataSet23VBC.Visible          := True;
   Form7.ibDataSet23VBCST.Visible        := True;
   Form7.ibDataSet23VICMSST.Visible      := True;
+  Form7.ibDataSet23PICMSST.Visible      := True; //Sandro Silva 2024-03-28
   Form7.ibDataSet23VIPI.Visible         := True;
   Form7.ibDataSet23QUANTIDADE.Visible   := False;
   Form7.ibDataSet23UNITARIO.Visible     := False;
@@ -1403,11 +1404,13 @@ begin
                           Form7.ibDataSet4ULT_COMPRA.AsDateTime := Form7.ibDataSet24EMISSAO.AsDateTime;
                           Form7.ibDataSet4ALTERADO.AsString     := '0';
 
+                          {Mauricio Parizotto 2024-03-19
                           if Form7.ibDataSet23LISTA.AsFloat <> 0 then
                           begin
                             Form7.ibDataSet4PRECO.AsFloat      := Form7.ibDataSet23LISTA.AsFloat;
                             Form7.ibDataSet4ALTERADO.AsString  := '1';
                           end;
+                          }
                         end;
 
 
@@ -1437,6 +1440,18 @@ begin
                         {Sandro Silva 2023-10-17 fim}
 
                         Form7.ibDataSet4.Post;
+                      end;
+
+                      //Mauricio Parizotto 2024-03-19
+                      if (Form7.ibDataSet4ULT_COMPRA.AsDateTime <= Form7.ibDataSet24EMISSAO.AsDateTime) then
+                      begin
+                        if Form7.ibDataSet23LISTA.AsFloat <> 0 then
+                        begin
+                          Form7.ibDataSet4.Edit;
+                          Form7.ibDataSet4PRECO.AsFloat      := Form7.ibDataSet23LISTA.AsFloat;
+                          Form7.ibDataSet4ALTERADO.AsString  := '1';
+                          Form7.ibDataSet4.Post;
+                        end;
                       end;
 
                     end;
@@ -1570,6 +1585,7 @@ begin
     Form7.ibDataSet23VBC.Visible          := False;
     Form7.ibDataSet23VBCST.Visible        := False;
     Form7.ibDataSet23VICMSST.Visible      := False;
+    Form7.ibDataSet23PICMSST.Visible      := True; //Sandro Silva 2024-03-28
     Form7.ibDataSet23VIPI.Visible         := False;
     // Sandro Silva 2023-03-29 Form7.ibDataSet23DESCRICAO.DisplayWidth := 35;
 

@@ -17,7 +17,7 @@ uses
   DBGrids, Printers, JPEG, Videocap, Clipbrd, OleCtrls, SHDocVw,
   xmldom, XMLIntf, DBClient, msxmldom, XMLDoc, ExtDlgs,
   uframePesquisaPadrao, uframePesquisaProduto, IBCustomDataSet, IBQuery,
-  uframeCampo;
+  uframeCampo, uObjetoConsultaCEP, uConsultaCEP;
 
 const ID_CONSULTANDO_INSTITUICAO_FINANCEIRA = 1;
 const ID_CONSULTANDO_FORMA_DE_PAGAMENTO     = 2;
@@ -561,6 +561,7 @@ type
       Shift: TShiftState);
     procedure fraPerfilTribExit(Sender: TObject);
   private
+    FcCEPAnterior: String;
     cCadJaValidado: String;
     FotoOld : String;
     procedure ibDataSet28DESCRICAOChange(Sender: TField);
@@ -585,6 +586,7 @@ type
     procedure BloqueiaCamposAbaMarketPlace(AbBloquear: Boolean);
     procedure BloqueiaCamposAbaGrade(AbBloquear: Boolean);
     function RetornarDescrCaracTagsObs: String;
+    procedure DefineCamposCEP(AoObjeto: TObjetoConsultaCEP);
   public
     { Public declarations }
 
@@ -1683,6 +1685,9 @@ begin
         dBGrid3.DataSource := Form7.DataSource29; // Convênios
       end;
 
+      if (vDataField = 'CEP') and (Form7.sModulo = 'CLIENTES') then
+        FcCEPAnterior := TSMALL_DBEdit(Sender).Text;
+
       if vDataField = 'CIDADE' then
       begin
         if Length(AllTrim(Form7.IBDataSet2ESTADO.AsString)) <> 2 then
@@ -2014,6 +2019,24 @@ begin
       end;
       {Mauricio Parizotto 2023-06-16 Inicio}
 
+      {Dailon (f-7224) 2024-04-01 inicio}
+      if (Form7.sModulo = 'CLIENTES')
+        and (DataField = 'CEP')
+        and (FcCEPAnterior <> TSMALL_DBEdit(Sender).Text) then
+      begin
+        try
+          DefineCamposCEP(TConsultaCEP.New
+                                      .setCEP(TSMALL_DBEdit(Sender).Text)
+                                      .SolicitarDados
+                                      .getObjeto
+                         );
+        except
+          on e:exception do
+            MensagemSistema(e.Message, msgAtencao);
+        end;
+      end;
+      {Dailon (f-7224) 2024-04-01 Fim}
+
       {Dailon (f-7224) 2023-08-22 inicio}
       if Form7.sModulo = 'CLIENTES' then
       begin
@@ -2038,6 +2061,25 @@ begin
   except
   end;
 end;
+
+{Dailon (f-7224) 2024-04-01 inicio}
+procedure TForm10.DefineCamposCEP(AoObjeto: TObjetoConsultaCEP);
+begin
+  if not Assigned(AoObjeto) then
+    Exit;
+
+  // Endereço
+  SMALL_DBEdit5.DataSource.DataSet.FieldByName(SMALL_DBEdit5.DataField).AsString := Copy(AoObjeto.logradouro,1, SMALL_DBEdit5.DataSource.DataSet.FieldByName(SMALL_DBEdit5.DataField).Size);
+  // Bairro
+  SMALL_DBEdit6.DataSource.DataSet.FieldByName(SMALL_DBEdit6.DataField).AsString := Copy(AoObjeto.bairro,1, SMALL_DBEdit6.DataSource.DataSet.FieldByName(SMALL_DBEdit6.DataField).Size);
+  // Municipio
+  if SMALL_DBEdit7.DataSource.DataSet.FieldByName(SMALL_DBEdit7.DataField).Asstring <> AoObjeto.localidade then
+    SMALL_DBEdit7.DataSource.DataSet.FieldByName(SMALL_DBEdit7.DataField).AsString := Copy(AoObjeto.localidade,1, SMALL_DBEdit7.DataSource.DataSet.FieldByName(SMALL_DBEdit7.DataField).Size);
+  // Estado
+  if SMALL_DBEdit8.DataSource.DataSet.FieldByName(SMALL_DBEdit8.DataField).AsString <> AoObjeto.uf then
+    SMALL_DBEdit8.DataSource.DataSet.FieldByName(SMALL_DBEdit8.DataField).AsString := Copy(AoObjeto.uf,1, SMALL_DBEdit8.DataSource.DataSet.FieldByName(SMALL_DBEdit8.DataField).Size);
+end;
+{Dailon (f-7224) 2024-04-01 fim}
 
 procedure TForm10.DBGrid1CellClick(Column: TColumn);
 begin

@@ -45,6 +45,7 @@ var
 
   dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-06-07
   dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
+  dvFCPSTRet_W06b: Double; // Sandro Silva 2024-03-25
   sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-06-16
 
   procedure GeraXmlNFeSaida;
@@ -55,6 +56,27 @@ implementation
 
 uses uFrmInformacoesRastreamento, uFuncoesFiscais, uFuncoesRetaguarda,
   uDialogs, ufrmOrigemCombustivel, uFuncoesBancoDados;
+
+{
+function SqlSelectDadosItensNotaEntrada(sCodigo: String): String;
+begin
+  Result := 'select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST, ITENS002.PICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(sCodigo)+' order by COMPRAS.EMISSAO desc';
+end;
+}
+
+function SelectDadosItensNotaEntrada(IBQuery: TIBQuery; sCodigo: String): String;
+// Seleciona os dados da última entrada do código que é passado no parâmetro sCodigo
+begin
+  IBQuery.Close;
+  IBQuery.SQL.Text :=
+    'select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST, ITENS002.PICMSST, ITENS002.VBCFCPST, ITENS002.PFCPST, ITENS002.VFCPST ' +
+    'from ITENS002, COMPRAS ' +
+    'where ITENS002.NUMERONF = COMPRAS.NUMERONF ' +
+    'and Coalesce(ITENS002.VICMSST,0) <> 0 ' +
+    'and ITENS002.CODIGO = ' + QuotedStr(sCodigo) +
+    ' order by COMPRAS.EMISSAO desc';
+  IBQuery.Open;
+end;
 
 procedure GeraXmlNFeSaida;
 var
@@ -114,6 +136,8 @@ var
 
   vFreteSobreIPI,vIPISobreICMS : Boolean;
   cBenef, cBenefItem : string;
+
+  bPagouComTEF: Boolean;
 begin
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
@@ -915,6 +939,8 @@ begin
   fFCP           := 0;
   fIPIDevolvido  := 0;
   vICMSDeson     := 0;
+
+  dvFCPSTRet_W06b := 0.00; // Sandro Silva 2024-03-25
 
   sComplemento := '';
   sCupomReferenciado := '';
@@ -1788,6 +1814,7 @@ begin
 
             if (Form7.ibDataSet16VICMSST.AsFloat > 0) and (Form7.ibDataSet16VBCST.AsFloat > 0) then
             begin
+              //Sandro Silva 2024-03-25 Conversado com Gian sobre a situação do comportamento da rotina de saída, com finalidade Devolução e CST 60, não foi alterada. Não busca o pICMSST da entrada
               Form7.spdNFeDataSets.Campo('pST_N26a').Value        := FormatFloatXML((Form7.ibDataSet16VICMSST.AsFloat / Form7.ibDataSet16VBCST.AsFloat)*100);  // Aliquota suportada pelo consumidor
             end else
             begin
@@ -2438,7 +2465,8 @@ begin
 
   Form7.spdNFeDataSets.campo('vFCP_W04h').Value       := FormatFloatXML(fFCP); // Valor Total do FCP (Fundo de Combate à Pobreza)
   Form7.spdNFeDataSets.campo('vFCPST_W06a').Value     := FormatFloatXML(fFCPST); // Valor Total do FCP (Fundo de Combate à Pobreza) retido por substituição tributária
-  Form7.spdNFeDataSets.campo('vFCPSTRet_W06b').Value  := '0.00'; // Valor Total do FCP retido anteriormente por Substituição Tributária
+  // Sandro Silva 2024-03-25 Form7.spdNFeDataSets.campo('vFCPSTRet_W06b').Value  := '0.00'; // Valor Total do FCP retido anteriormente por Substituição Tributária
+  Form7.spdNFeDataSets.campo('vFCPSTRet_W06b').Value  := FormatFloatXML(dvFCPSTRet_W06b); // Valor Total do FCP retido anteriormente por Substituição Tributária
 
   Form7.spdNFeDataSets.Campo('vBCST_W05').Value   := FormatFloatXML(vBCST - vIVA60_B_ICMST); // Valor Total do ICMS Sibst. Tributária
   Form7.spdNFeDataSets.Campo('vST_W06').Value     := FormatFloatXML(vST); // Valor Total do ICMS Sibst. Tributária
@@ -2913,7 +2941,7 @@ begin
     IBQCREDENCIADORA := Form7.CriaIBQuery(Form7.ibDataSet7.Transaction);
     while not Form7.ibDataSet7.Eof do
     begin
-
+      bPagouComTEF := (TestarTEFConfigurado) and (Form7.ibDataSet15INDPRES.AsString = '1') and (Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString <> EmptyStr);
       Form7.spdNFeDataSets.IncluirPart('YA');
       //
       // 01=Dinheiro
@@ -2949,16 +2977,31 @@ begin
       if FormaDePagamentoEnvolveCartao(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
       begin
         IBQCREDENCIADORA.Close;
-        IBQCREDENCIADORA.SQL.Text :=
-          'select * ' +
-          'from CLIFOR ' +
-          'where NOME = ' + QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString);
+        IBQCREDENCIADORA.SQL.Clear;
+        IBQCREDENCIADORA.SQL.Add('select * from CLIFOR');
+        IBQCREDENCIADORA.SQL.Add('WHERE (CLIFOR in (''Credenciadora de cartão'', ''Instituição financeira''))');
+        // Se não tem pega o primeiro
+        if Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString <> EmptyStr then
+          IBQCREDENCIADORA.SQL.Add('and (NOME = ' + QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString) + ')');
         IBQCREDENCIADORA.Open;
+        IBQCREDENCIADORA.First;
         // Se for Cartão
-        Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
+        if (bPagouComTEF) then
+          Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '1'
+        else
+          Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
         Form7.spdNFeDataSets.campo('CNPJ_YA05').Value       := LimpaNumero(IBQCREDENCIADORA.FieldByName('CGC').AsString);  // CNPJ da Credenciadora de cartão de crédito e/ou débito
         Form7.spdNFeDataSets.campo('tBand_YA06').Value      := CodigotBandNF(Form7.ibDataSet7BANDEIRA.AsString);  // Bandeira da operadora de cartão de crédito e/ou débito
         Form7.spdNFeDataSets.campo('cAut_YA07').Value       := Copy(Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString, 1, 20);  // Número de autorização da operação cartão de crédito e/ou débito
+
+{       Dailon Parisotto (f-225) 2023/03/26 Inicio
+        A obrigatóriedade foi postergado, sendo assim não está no schema.
+
+        Form7.spdNFeDataSets.campo('CNPJReceb_YA07a').Value := LimpaNumero(Form7.ibDataSet13CGC.AsString);
+        Form7.spdNFeDataSets.campo('idTermPag_YA07b').Value := '001';
+
+        Dailon Parisotto (f-225) 2023/03/26 Fim
+}
       end;
 
       Form7.spdNFeDataSets.SalvarPart('YA');
@@ -3141,6 +3184,8 @@ var
   fTotalMercadoria : Real;
   fPercentualFCP, fPercentualFCPST: Real; // Sandro Silva 2023-05-15
   dvICMSMonoRet_N45: Real; // Sandro Silva 2023-06-07
+  dvFCPSTRet_N27d: Real; // Sandro Silva 2024-03-25
+  dvBCFCPSTRet_N27a: Real;// Sandro Silva 2024-03-27
 begin
   //Mauricio Parizotto 2023-04-03
   fTotalMercadoria := RetornaValorSQL(' Select coalesce(sum(TOTAL),0) '+
@@ -3575,14 +3620,23 @@ begin
             end else
             begin
               // Procura pela última compra deste item
+              {
               Form7.ibQuery1.Close;
               Form7.ibQuery1.Sql.Clear;
-              Form7.ibQuery1.Sql.Add('select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by COMPRAS.EMISSAO desc');
+              // Sandro Silva 2024-03-25 Form7.ibQuery1.Sql.Add('select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by COMPRAS.EMISSAO desc');
+              Form7.ibQuery1.Sql.Text := SqlSelectDadosItensNotaEntrada(Form7.ibDataSet4CODIGO.AsString);
               Form7.ibQuery1.Open;
+              }
+              SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
 
               if Form7.ibQuery1.FieldByname('VICMSST').AsFloat <> 0 then
               begin
-                Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
+                //Sandro Silva 2024-03-25 Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
+                // Preencher a tag pST com o que encontrar no campo novo da tabela ITENS002, caso não tenha essa informação, fazer o calculo (como ocorre hoje)
+                if Form7.ibQuery1.FieldByname('PICMSST').AsString <> '' then
+                  Form7.spdNFeDataSets.Campo('pST_N26a').Value            := FormatFloatXML(Form7.ibQuery1.FieldByname('PICMSST').AsFloat)  // Aliquota suportada pelo consumidor
+                else
+                  Form7.spdNFeDataSets.Campo('pST_N26a').Value            := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
                 Form7.spdNFeDataSets.Campo('vICMSSubstituto_N26b').Value  := '0.00'; // Valor do icms próprio do substituto cobrado em operação anterior
                 Form7.spdNFeDataSets.Campo('vbCSTRet_N26').Value          := FormatFloatXML(Form7.ibQuery1.FieldByname('VBCST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat * Form7.ibDataSet16QUANTIDADE.AsFloat);  // Valor do BC do ICMS ST retido na UF Emitente ok
                 Form7.spdNFeDataSets.Campo('vICMSSTRet_N27').Value        := FormatFloatXML(Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat * Form7.ibDataSet16QUANTIDADE.AsFloat);  //  Valor do ICMS ST retido na UF Emitente
@@ -3617,14 +3671,24 @@ begin
             end else
             begin
               // Procura pela última compra deste item
+              {
               Form7.ibQuery1.Close;
               Form7.ibQuery1.Sql.Clear;
-              Form7.ibQuery1.Sql.Add('select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by COMPRAS.EMISSAO desc');
+              // Sandro Silva 2024-03-21 Form7.ibQuery1.Sql.Add('select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by COMPRAS.EMISSAO desc');
+              Form7.ibQuery1.Sql.Text := SqlSelectDadosItensNotaEntrada(Form7.ibDataSet4CODIGO.AsString);
               Form7.ibQuery1.Open;
+              }
+              SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
 
               if Form7.ibQuery1.FieldByname('VICMSST').AsFloat <> 0 then
               begin
-                Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
+                //Sandro Silva 2024-03-21 Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
+                // Preencher a tag pST com o que encontrar no campo novo da tabela ITENS002, caso não tenha essa informação, fazer o calculo (como ocorre hoje)
+                if Form7.ibQuery1.FieldByname('PICMSST').AsString <> '' then
+                  Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML(Form7.ibQuery1.FieldByname('PICMSST').AsFloat)  // Aliquota suportada pelo consumidor
+                else
+                  Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
+
                 Form7.spdNFeDataSets.Campo('vICMSSubstituto_N26b').Value  := '0.00'; // Valor do icms próprio do substituto cobrado em operação anterior
                 Form7.spdNFeDataSets.Campo('vbCSTRet_N26').Value          := FormatFloatXML(Form7.ibQuery1.FieldByname('VBCST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat * Form7.ibDataSet16QUANTIDADE.AsFloat);  // Valor do BC do ICMS ST retido na UF Emitente ok
                 Form7.spdNFeDataSets.Campo('vICMSSTRet_N27').Value        := FormatFloatXML(Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat * Form7.ibDataSet16QUANTIDADE.AsFloat);  //  Valor do ICMS ST retido na UF Emitente
@@ -3945,6 +4009,27 @@ begin
         //                          Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := '0.00'; // Percentual do FCP retido anteriormente por Substituição Tributária
         //                          Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := '0.00'; // Valor do FCP retido por Substituição Tributária
         //
+        if not NFeIndicadorFinalidadeConsumidorFinal(Form7.spdNFeDataSets.Campo('indFinal_B25a').Value)
+          and not NFeFinalidadeComplemento(Form7.spdNFeDataSets.Campo('finNFe_B25').Value)
+          and not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then
+        begin
+          SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
+
+          // Sandro Silva 2024-03-27
+          // Ajustar para que valide o campo PFCPST na tabela ITENS002. Se ele estiver em branco ou zerado, não gerar nenhuma das tags abaixo:
+          if Form7.ibQuery1.FieldByName('PFCPST').AsFloat > 0 then
+          begin
+            //vBCFCPSTRet - buscar a informação da tabela ITENS002, campo VBCFCPST (dividir pela quantidade dos itens)
+            dvBCFCPSTRet_N27a := (Form7.ibQuery1.FieldByname('VBCST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat) * Form7.ibDataSet16QUANTIDADE.AsFloat;
+            Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := FormatFloatXML(dvBCFCPSTRet_N27a); // Valor da Base de Cálculo do FCP retido anteriormente por ST
+            //pFCPSTRet - buscar a informação da tabela ITENS002, campo PFCPST (dividir pela quantidade dos itens)
+            Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := FormatFloatXML(Form7.ibQuery1.FieldByName('PFCPST').AsFloat); // Percentual do FCP retido anteriormente por Substituição Tributária
+            //vFCPSTRet - buscar a informação da tabela ITENS002, campo VFCPST(dividir pela quantidade dos itens)OBS: Seguir a mesma lógica do grupo vBCSTRet
+            dvFCPSTRet_N27d := StrToFloat(FormatFloat('0.00', dvBCFCPSTRet_N27a * Form7.ibQuery1.FieldByName('PFCPST').AsFloat / 100));
+            Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := FormatFloatXML(dvFCPSTRet_N27d); // Valor do FCP retido por Substituição Tributária
+            dvFCPSTRet_W06b := dvFCPSTRet_W06b + dvFCPSTRet_N27d;
+          end;
+        end;
       end;
 
       if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '70') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '90') then
@@ -4460,14 +4545,24 @@ begin
       end else
       begin
         // Procura pela última compra deste item
+        {
         Form7.ibQuery1.Close;
         Form7.ibQuery1.Sql.Clear;
-        Form7.ibQuery1.Sql.Add('select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by COMPRAS.EMISSAO desc');
+        //Sandro Silva 2024-03-21 Form7.ibQuery1.Sql.Add('select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by COMPRAS.EMISSAO desc');
+        Form7.ibQuery1.Sql.Text := SqlSelectDadosItensNotaEntrada(Form7.ibDataSet4CODIGO.AsString);
         Form7.ibQuery1.Open;
+        }
+        SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
 
         if Form7.ibQuery1.FieldByname('VICMSST').AsFloat <> 0 then
         begin
-          Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
+          //Sandro Silva 2024-03-21 Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
+          // Preencher a tag pST com o que encontrar no campo novo da tabela ITENS002, caso não tenha essa informação, fazer o calculo (como ocorre hoje)
+          if Form7.ibQuery1.FieldByname('PICMSST').AsString <> '' then
+            Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML(Form7.ibQuery1.FieldByname('PICMSST').AsFloat)  // Aliquota suportada pelo consumidor
+          else
+            Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
+
           Form7.spdNFeDataSets.Campo('vICMSSubstituto_N26b').Value  := '0.00'; // Valor do icms próprio do substituto cobrado em operação anterior
           Form7.spdNFeDataSets.Campo('vbCSTRet_N26').Value          := FormatFloatXML(Form7.ibQuery1.FieldByname('VBCST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat * Form7.ibDataSet16QUANTIDADE.AsFloat);  // Valor do BC do ICMS ST retido na UF Emitente ok
           Form7.spdNFeDataSets.Campo('vICMSSTRet_N27').Value        := FormatFloatXML(Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat * Form7.ibDataSet16QUANTIDADE.AsFloat);  //  Valor do ICMS ST retido na UF Emitente
@@ -4829,6 +4924,26 @@ begin
           //                            Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := '0.00'; // Valor da Base de Cálculo do FCP retido anteriormente por ST
           //                            Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := '0.00'; // Percentual do FCP retido anteriormente por Substituição Tributária
           //                            Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := '0.00'; // Valor do FCP retido por Substituição Tributária
+          if not NFeIndicadorFinalidadeConsumidorFinal(Form7.spdNFeDataSets.Campo('indFinal_B25a').Value)
+            and not NFeFinalidadeComplemento(Form7.spdNFeDataSets.Campo('finNFe_B25').Value)
+            and not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then
+          begin
+            SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
+            // Sandro Silva 2024-03-27
+            // Ajustar para que valide o campo PFCPST na tabela ITENS002. Se ele estiver em branco ou zerado, não gerar nenhuma das tags abaixo:
+            if Form7.ibQuery1.FieldByName('PFCPST').AsFloat > 0 then
+            begin
+              //vBCFCPSTRet - buscar a informação da tabela ITENS002, campo VBCFCPST (dividir pela quantidade dos itens)
+              dvBCFCPSTRet_N27a := (Form7.ibQuery1.FieldByname('VBCST').AsFloat / Form7.ibQuery1.FieldByname('QUANTIDADE').AsFloat) * Form7.ibDataSet16QUANTIDADE.AsFloat;
+              Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := FormatFloatXML(dvBCFCPSTRet_N27a); // Valor da Base de Cálculo do FCP retido anteriormente por ST
+              //pFCPSTRet - buscar a informação da tabela ITENS002, campo PFCPST (dividir pela quantidade dos itens)
+              Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := FormatFloatXML(Form7.ibQuery1.FieldByName('PFCPST').AsFloat); // Percentual do FCP retido anteriormente por Substituição Tributária
+              //vFCPSTRet - buscar a informação da tabela ITENS002, campo VFCPST(dividir pela quantidade dos itens)OBS: Seguir a mesma lógica do grupo vBCSTRet
+              dvFCPSTRet_N27d := StrToFloat(FormatFloat('0.00', dvBCFCPSTRet_N27a * Form7.ibQuery1.FieldByName('PFCPST').AsFloat / 100));
+              Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := FormatFloatXML(dvFCPSTRet_N27d); // Valor do FCP retido por Substituição Tributária
+              dvFCPSTRet_W06b := dvFCPSTRet_W06b + dvFCPSTRet_N27d;
+            end;
+          end;
         end;
 
         // NOTA DEVOLUCAO D E V

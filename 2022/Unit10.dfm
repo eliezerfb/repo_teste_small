@@ -965,7 +965,7 @@ object Form10: TForm10
       Top = 105
       Width = 820
       Height = 470
-      ActivePage = orelha_foto
+      ActivePage = orelha_cadastro
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -2586,40 +2586,6 @@ object Form10: TForm10
           TabOrder = 34
           OnKeyUp = SMALL_DBEdit1KeyUp
         end
-        object DBGrid1: TDBGrid
-          Left = 100
-          Top = 94
-          Width = 300
-          Height = 10
-          Ctl3D = True
-          DataSource = Form7.DataSource2
-          DrawingStyle = gdsClassic
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'System'
-          Font.Style = [fsBold]
-          Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
-          ParentCtl3D = False
-          ParentFont = False
-          TabOrder = 14
-          TitleFont.Charset = DEFAULT_CHARSET
-          TitleFont.Color = clBlack
-          TitleFont.Height = -12
-          TitleFont.Name = 'Fixedsys'
-          TitleFont.Style = []
-          Visible = False
-          OnCellClick = DBGrid1CellClick
-          OnDblClick = DBGrid1DblClick
-          OnKeyDown = DBGrid1KeyDown
-          OnKeyPress = DBGrid1KeyPress
-          Columns = <
-            item
-              Expanded = False
-              FieldName = 'NOME'
-              Visible = True
-            end>
-        end
         object DBGrid3: TDBGrid
           Left = 100
           Top = 545
@@ -2702,6 +2668,40 @@ object Form10: TForm10
           ReadOnly = True
           TabOrder = 36
           Visible = False
+        end
+        object DBGrid1: TDBGrid
+          Left = 100
+          Top = 94
+          Width = 300
+          Height = 10
+          Ctl3D = True
+          DataSource = Form7.DataSource2
+          DrawingStyle = gdsClassic
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'System'
+          Font.Style = [fsBold]
+          Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 14
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clBlack
+          TitleFont.Height = -12
+          TitleFont.Name = 'Fixedsys'
+          TitleFont.Style = []
+          Visible = False
+          OnCellClick = DBGrid1CellClick
+          OnDblClick = DBGrid1DblClick
+          OnKeyDown = DBGrid1KeyDown
+          OnKeyPress = DBGrid1KeyPress
+          Columns = <
+            item
+              Expanded = False
+              FieldName = 'NOME'
+              Visible = True
+            end>
         end
       end
       object orelha_ICMS: TTabSheet

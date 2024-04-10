@@ -19,8 +19,8 @@ uses
   , unit7
   ;
 
-  procedure DropViewProcedure;
-  procedure AtualizaBancoDeDados(sBuild : string);
+procedure DropViewProcedure;
+procedure AtualizaBancoDeDados(sBuild : string);
 // Sandro Silva 2023-09-22  function ExecutaComando(comando:string):Boolean;
 
 implementation
@@ -480,6 +480,11 @@ begin
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'ALIQ_COFINS') = False then
     ExecutaComando('alter table ITENS002 add ALIQ_COFINS NUMERIC(18,4)');
+
+  {Sandro Silva 2024-03-21 inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'PICMSST') = False then
+    ExecutaComando('alter table ITENS002 add PICMSST NUMERIC(18, 4)');
+  {Sandro Silva 2024-03-21 fim}
 
   // GRAVAR? O HISTORICO DO CSOSN
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CSOSN') = False then
@@ -2433,10 +2438,25 @@ begin
   end;
   {Mauricio Parizotto 2024-02-28 Fim}
 
+{Dailon Parisotto (f-17787) 2024-03-27 Inicio}
+  try
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Clear;
+    Form1.ibDataSet200.SelectSQL.Text :=
+      'SELECT COALESCE(ESTADO,''SC'') AS ESTADO FROM EMITENTE';
+    Form1.ibDataSet200.Open;
+
+    if (AnsiUpperCase(Form1.ibDataSet200.FieldByName('ESTADO').AsString) <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then // Sandro Silva 2024-04-09 if (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then
+      Form1.Comandos120CaracteresProd;
+  finally
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Clear;
+  end;
+  {Dailon Parisotto (f-17787) 2024-03-27 Fim}
+
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
-
 
   
   try
@@ -2480,6 +2500,7 @@ begin
   try
     AgendaCommit(True);
     Commitatudo(True);
+
   except
   end;
 

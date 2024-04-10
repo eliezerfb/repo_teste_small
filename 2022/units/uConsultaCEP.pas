@@ -81,6 +81,9 @@ begin
   Result := Self;
 
   try
+    if (Trim(FcCEP) = EmptyStr) then
+      Exit;
+
     if (Length(FcCEP) <> 8) then
       raise Exception.Create(Format(_cMgsCEPInvalido, [FcCEP]));
 

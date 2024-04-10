@@ -15,6 +15,8 @@ object FrmParcelas: TFrmParcelas
   Position = poScreenCenter
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
@@ -89,7 +91,7 @@ object FrmParcelas: TFrmParcelas
       Font.Height = -13
       Font.Name = 'System'
       Font.Style = [fsBold]
-      Options = [dgEditing, dgTitles, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+      Options = [dgEditing, dgTitles, dgColLines, dgRowLines, dgTabs, dgCancelOnExit]
       ParentCtl3D = False
       ParentFont = False
       TabOrder = 1
