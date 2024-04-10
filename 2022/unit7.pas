@@ -5526,6 +5526,7 @@ end;
 
 function AbreArquivos(P1:Boolean): Boolean;
 begin
+
   try
     if not Form7.ibDataSet13.active then Form7.ibDataSet13.active := True;
     if not Form7.ibDataSet25.active then Form7.ibDataSet25.active := True;
@@ -5616,7 +5617,7 @@ begin
     if Form7.ibdParametroTributa.Active then  Form7.ibdParametroTributa.EnableControls; // Mauricio Parizotto 2023-09-21
     if Form7.ibdSituacaoOS.Active then  Form7.ibdSituacaoOS.EnableControls; // Mauricio Parizotto 2023-12-04
   end;
-  
+
   Result := True;
 end;
 

@@ -12396,16 +12396,20 @@ procedure TForm1.AjustarDataSetCamposProduto;
 var
   nSizeDescricaoProd: Integer;
 begin
-  nSizeDescricaoProd               := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
-  Form7.ibDataSet4DESCRICAO.Size   := nSizeDescricaoProd;
-  Form7.ibDataSet16DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataSet23DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataSet27DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataSet28DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataSet35DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataset40DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataSet37DESCRICAO.Size  := nSizeDescricaoProd;
-  Form24.ibDataSet44DESCRICAO.Size := nSizeDescricaoProd;
+  try
+    nSizeDescricaoProd               := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
+    Form7.ibDataSet4DESCRICAO.Size   := nSizeDescricaoProd;
+    Form7.ibDataSet16DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet23DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet27DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet28DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet35DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataset40DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet37DESCRICAO.Size  := nSizeDescricaoProd;
+    Form24.ibDataSet44DESCRICAO.Size := nSizeDescricaoProd;
+  except
+
+  end;
 end;
 
 procedure TForm1.miProd120CaracClick(Sender: TObject);
@@ -12420,6 +12424,16 @@ begin
     ConectaBancoCommerce;
 
   {Sandro Silva 2024-04-08 inicio
+  if ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase, 'Select Count(*) From MON$ATTACHMENTS') > 1 then
+  begin
+    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                    'Existem outros usuários com o sistema aberto.'+#13#10+
+                    'Feche o sistema em todos os computadores e tente novamente.'
+                    ,msgAtencao);
+
+    Exit;
+  end;
+
   if uDialogs.MensagemSistemaPergunta('Sua empresa ainda usa impressora fiscal? Faz Redução Z?', [mb_YesNo]) = mrYes then
   begin
     uDialogs.MensagemSistema('O recurso de 120 caracteres na descrição do produto não poderá ser usado com impressora fiscal. Considere migrar para NFC-e.', msgAtencao);
@@ -12498,11 +12512,24 @@ end;
 procedure TForm1.Aplicar120CaracteresProduto(bExibirMensagemSucesso: Boolean);
 var
   bRetorno: Boolean;
+  IBQTEMP: TIBQuery;
 begin
   if (Form7.ibDataSet4DESCRICAO.Size = 120) then
     Exit;
 
+  IBQTEMP := CriaIBQuery(Form7.ibDataSet4.Transaction);
+  try
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text := 'Select Count(*) as ATIVOS From MON$ATTACHMENTS';
+    IBQTEMP.Open;
+    if IBQTEMP.FieldByName('ATIVOS').AsInteger > 1 then
+      Exit;
+  except
+    Exit;
+  end;
+  FreeAndNil(IBQTEMP);
   //Sandro Silva 2024-04-08 Comandos120CaracteresProd;
+
   bRetorno := Comandos120CaracteresProd;
   if bExibirMensagemSucesso then
   begin
@@ -12517,10 +12544,11 @@ begin
   try
     AgendaCommit(True);
     Commitatudo(True);
-    // Necessario fehar e abrir novamente para não abrir a tela de empresa
+    // Necessario fechar e abrir novamente para não abrir a tela de empresa
     Form7.ibDataSet13.Close;
     Form7.ibDataSet13.Open;
     try
+      {2024-04-10
       Form7.ibDataSet4.Close;
       Form7.ibDataSet16.Close;
       Form7.ibDataSet23.Close;
@@ -12530,19 +12558,22 @@ begin
       Form7.ibDataset40.Close;
       Form7.ibDataSet37.Close;
       Form24.ibDataSet44.Close;
-
-      AjustarDataSetCamposProduto;
+      }
 
       {Sandro Silva 2024-04-08 inicio}
-      Fechatudo(True);
       try
-        Form7.ibDataSet4.Transaction.DefaultDatabase.Close;
-        Form7.ibDataSet4.Transaction.DefaultDatabase.Open;
+        ConectaBancoCommerce;
       except
 
       end;
       {Sandro Silva 2024-04-08 fim}
+
+      AjustarDataSetCamposProduto;
+
+      //Commitatudo(True); //2024-04-09
+
     finally
+      {2024-04-10
       Form7.ibDataSet4.Open;
       Form7.ibDataSet16.Open;
       Form7.ibDataSet23.Open;
@@ -12552,6 +12583,8 @@ begin
       Form7.ibDataset40.Open;
       Form7.ibDataSet37.Open;
       Form24.ibDataSet44.Open;
+      }
+      AbreArquivos(False); //2024-04-10
     end;
   except
   end;

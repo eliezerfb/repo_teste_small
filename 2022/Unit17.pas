@@ -155,14 +155,8 @@ begin
     AbreArquivos(True);
 
     {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
-    {Sandro Silva 2024-04-09 inicio
-    if (Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) then
-      Form1.Aplicar120CaracteresProduto(False);
-    }
     if (AnsiUpperCase(Form7.ibDataSet13ESTADO.AsString) <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) then // Sandro Silva 2024-04-08 if (Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) then
-      if ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase, 'Select Count(*) From MON$ATTACHMENTS') = 1 then
-        Form1.Aplicar120CaracteresProduto(False);
-    {Sandro Silva 2024-04-09 fim}
+      Form1.Aplicar120CaracteresProduto(False); //Sandro Silva 2024-04-10 Form1.Aplicar120CaracteresProduto
     {Dailon Parisotto (f-17787) 2024-03-27 Fim}
 
     Screen.Cursor := crDefault; // Cursor de Aguardo
