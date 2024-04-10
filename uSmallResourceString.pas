@@ -50,6 +50,8 @@ resourcestring
 
   _cDesejaDarEntradaNFManifesto = 'Deseja dar entrada dessa nota fiscal?';
 
+  _cSerialSemAcessoRecurso = 'Serial sem acesso à esse recurso. Entre em contato com sua revenda.';
+
 implementation
 
 end.
