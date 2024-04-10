@@ -12570,6 +12570,12 @@ begin
 
       AjustarDataSetCamposProduto;
 
+      {Sandro Silva 2024-04-10 inicio}
+      // Para conseguir validar os dados do emitente com o LEGAL
+      Form7.ibDataSet13.Close;
+      Form7.ibDataSet13.Open;
+      {Sandro Silva 2024-04-10 fim}
+
       //Commitatudo(True); //2024-04-09
 
     finally
@@ -12584,7 +12590,7 @@ begin
       Form7.ibDataSet37.Open;
       Form24.ibDataSet44.Open;
       }
-      AbreArquivos(False); //2024-04-10
+      //AbreArquivos(False); //2024-04-10
     end;
   except
   end;
