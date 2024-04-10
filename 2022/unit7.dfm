@@ -13140,11 +13140,11 @@ object Form7: TForm7
         OnClick = ArquivotextoNotaFiscalPaulista1Click
       end
       object SPEDFiscal1: TMenuItem
-        Caption = 'SPED Fiscal'
+        Caption = 'SPED Fiscal (EFD ICMS IPI)'
         OnClick = SPEDFiscal1Click
       end
       object SPEDPISCOFINS1: TMenuItem
-        Caption = 'SPED PIS/COFINS'
+        Caption = 'SPED PIS/COFINS (EFD Contribui'#231#245'es)'
         OnClick = SPEDPISCOFINS1Click
       end
       object RegistroFiscal1: TMenuItem
