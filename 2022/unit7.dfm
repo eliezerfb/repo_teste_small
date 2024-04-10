@@ -17133,7 +17133,7 @@ object Form7: TForm7
       Size = 2
     end
     object ibDataSet24EMISSAO: TDateField
-      DisplayLabel = 'Emiss'#227'o'
+      DisplayLabel = 'Data de entrada'
       DisplayWidth = 10
       FieldName = 'EMISSAO'
       Origin = 'COMPRAS.EMISSAO'
@@ -17292,13 +17292,13 @@ object Form7: TForm7
       Size = 60
     end
     object ibDataSet24SAIDAH: TIBStringField
-      DisplayLabel = 'Hora sa'#237'da'
+      DisplayLabel = 'Hora de emiss'#227'o'
       FieldName = 'SAIDAH'
       Visible = False
       Size = 8
     end
     object ibDataSet24SAIDAD: TDateField
-      DisplayLabel = 'Data sa'#237'da'
+      DisplayLabel = 'Data de emiss'#227'o'
       FieldName = 'SAIDAD'
       Visible = False
       OnSetText = ibDataSet5COMPENSSetText
