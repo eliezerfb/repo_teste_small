@@ -839,9 +839,9 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
         842
         40)
       object btnOK: TBitBtn
-        Left = 710
+        Left = 712
         Top = 8
-        Width = 122
+        Width = 120
         Height = 25
         Anchors = [akLeft, akTop, akRight]
         Caption = '&Ok'
@@ -910,8 +910,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 4
-      ExplicitTop = 86
     end
   end
   object DSCadastro: TDataSource

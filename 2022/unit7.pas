@@ -2630,8 +2630,8 @@ var
   
 implementation
 
-uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
-  Unit27, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
+uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais,
+  uFrmRelatorioFluxoCaixa, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
   Unit37, Unit38, Unit39, Unit40, Unit41, Unit43, Unit2,
   unit24, uExportaXML, Unit15, SelecionaCertificado, Unit6, Unit36, Unit26,
   Unit29, Unit48
@@ -8414,7 +8414,7 @@ end;
 
 procedure TForm7.Image103Click(Sender: TObject);
 begin
-  Form20.ShowModal;
+  FrmAssistenteProcura.ShowModal;
 end;
 
 procedure TForm7.Image106Click(Sender: TObject);
@@ -9573,8 +9573,8 @@ begin
 
  if Key = Chr(18) then
  begin
-   Form20.Panel1.Visible := True;
-   Form20.ShowModal;
+   FrmAssistenteProcura.Panel1.Visible := True;
+   FrmAssistenteProcura.ShowModal;
  end;
  //
  if Key = Chr(6) then
@@ -11790,7 +11790,7 @@ begin
   if Key = VK_F11  then
     Form7.Agrupar1Click(Sender);
   if Key = VK_F3   then
-    Form20.Button1Click(Sender);
+    FrmAssistenteProcura.Button1Click(Sender);
   if Key = VK_F5   then
   begin
     {
@@ -11979,7 +11979,7 @@ end;
 
 procedure TForm7.Fluxodecaixa2Click(Sender: TObject);
 begin
-  Form27.ShowModal;
+  FrmRelatorioFluxoCaixa.ShowModal;
 end;
 
 procedure TForm7.ibDataSet7NewRecord(DataSet: TDataSet);
@@ -12122,8 +12122,8 @@ begin
       Form14.Close;
     if Form21.Visible then
       Form21.Close;
-    if Form20.Visible then
-      Form20.Close;
+    if FrmAssistenteProcura.Visible then
+      FrmAssistenteProcura.Close;
     if Form16.Visible then
       Form16.Close;
     if Form4.Visible  then
@@ -13308,16 +13308,14 @@ end;
 
 procedure TForm7.Relatriodeservios1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
-  //
+
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
   sModulo := 'Relatório de serviços';
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.Relatriodeoramentospendentes1Click(Sender: TObject);
@@ -16155,12 +16153,10 @@ end;
 
 procedure TForm7.Relatriodetodososconvnios1Click(Sender: TObject);
 begin
-  //
   Form37.Caption := 'Relatório de convênio TODOS';
   ibDataSet29.First;
   Form37.ShowModal;
   Form37.Caption := 'Relatório de comissões';
-  //
 end;
 
 procedure TForm7.ibDataSet29NOMESetText(Sender: TField;
@@ -22610,7 +22606,7 @@ end;
 
 procedure TForm7.MenuItem75Click(Sender: TObject);
 begin
-  Form20.ShowModal;
+  FrmAssistenteProcura.ShowModal;
 end;
 
 procedure TForm7.este1Click(Sender: TObject);
@@ -27362,7 +27358,7 @@ end;
 
 procedure TForm7.Button3Click(Sender: TObject);
 begin
-  Form20.ShowModal;
+  FrmAssistenteProcura.ShowModal;
   dbGrid1.SetFocus;
 end;
 
@@ -29556,6 +29552,8 @@ begin
       CloseFile(F);                                    // Fecha o arquivo
 
       Screen.Cursor := crDefault; // Cursor de Aguardo
+
+      AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM')); //Mauricio Parizotto 2024-03-21
     end;
 
     Screen.Cursor := crDefault; // Cursor de Aguardo
@@ -29564,7 +29562,7 @@ begin
     Form7.Close;
     Form7.Show;
 
-    AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
+    //AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM')); //Mauricio Parizotto 2024-03-21
   except
   end;
 

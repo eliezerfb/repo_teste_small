@@ -82,7 +82,7 @@ object Form40: TForm40
     Top = 350
     Width = 100
     Height = 25
-    Caption = 'Ok'
+    Caption = 'OK'
     TabOrder = 2
     OnClick = Button1Click
   end

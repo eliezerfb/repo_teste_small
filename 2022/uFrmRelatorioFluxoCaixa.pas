@@ -1,4 +1,4 @@
-unit Unit27;
+unit uFrmRelatorioFluxoCaixa;
 
 interface
 
@@ -8,7 +8,7 @@ uses
   DBCtrls, SMALL_DBEdit;
 
 type
-  TForm27 = class(TForm)
+  TFrmRelatorioFluxoCaixa = class(TForm)
     Panel2: TPanel;
     Image1: TImage;
     Label2: TLabel;
@@ -29,7 +29,7 @@ type
   end;
 
 var
-  Form27: TForm27;
+  FrmRelatorioFluxoCaixa: TFrmRelatorioFluxoCaixa;
 
 implementation
 
@@ -38,12 +38,12 @@ uses Unit7, Mais, Unit40, Unit34, Unit14, Mais3;
 {$R *.DFM}
 
 
-procedure TForm27.Button2Click(Sender: TObject);
+procedure TFrmRelatorioFluxoCaixa.Button2Click(Sender: TObject);
 begin
-  Form27.Close;
+  FrmRelatorioFluxoCaixa.Close;
 end;
 
-procedure TForm27.Button4Click(Sender: TObject);
+procedure TFrmRelatorioFluxoCaixa.Button4Click(Sender: TObject);
 var
   tInicio : tTime;
   Mais1Ini : TiniFile;
@@ -54,7 +54,7 @@ var
 begin
   tInicio := Time;
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  Form27.Repaint;
+  FrmRelatorioFluxoCaixa.Repaint;
   //
   try
     AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
@@ -490,7 +490,7 @@ begin
   except end;
   //
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  Form27.Close;
+  FrmRelatorioFluxoCaixa.Close;
   //
   if Form7.Visible then
   begin
@@ -509,7 +509,7 @@ begin
   //
 end;
 
-procedure TForm27.FormActivate(Sender: TObject);
+procedure TFrmRelatorioFluxoCaixa.FormActivate(Sender: TObject);
 begin
   Image1.Picture := Form7.imgImprimir.Picture;
 
@@ -523,7 +523,7 @@ begin
   DateTimePicker2.Date    := Date + 60; // SomaDias(Date, 30);
 end;
 
-procedure TForm27.DateTimePicker2Exit(Sender: TObject);
+procedure TFrmRelatorioFluxoCaixa.DateTimePicker2Exit(Sender: TObject);
 begin
   Button4.Setfocus;
 end;

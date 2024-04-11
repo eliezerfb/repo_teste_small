@@ -616,7 +616,7 @@ var
 implementation
 
 uses Unit7, Mais, Unit38, Unit16, Unit12, unit24, Unit22,
-  preco1, Unit20, Unit19, Mais3, uFrmParcelas, StrUtils, uTestaProdutoExiste,
+  preco1, uFrmAssistenteProcura, Unit19, Mais3, uFrmParcelas, StrUtils, uTestaProdutoExiste,
   uITestaProdutoExiste
   {Sandro Silva 2022-09-26 inicio}
   , WinInet
@@ -3668,7 +3668,7 @@ end;
 
 procedure TForm10.Image202Click(Sender: TObject);
 begin
-  Form20.ShowModal;
+  FrmAssistenteProcura.ShowModal;
 
   //Form7.iFoco := 0;
   Form10.Paint;

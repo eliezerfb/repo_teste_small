@@ -4,8 +4,8 @@ object Form21: TForm21
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Excluir registros '
-  ClientHeight = 252
-  ClientWidth = 542
+  ClientHeight = 384
+  ClientWidth = 604
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,8 +19,8 @@ object Form21: TForm21
   object Panel3: TPanel
     Left = 0
     Top = 0
-    Width = 542
-    Height = 252
+    Width = 604
+    Height = 384
     Align = alClient
     BevelOuter = bvNone
     Caption = ' '
@@ -29,8 +29,10 @@ object Form21: TForm21
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
+    ExplicitWidth = 542
+    ExplicitHeight = 252
     object Image1: TImage
-      Left = 25
+      Left = 41
       Top = 25
       Width = 70
       Height = 70
@@ -39,11 +41,10 @@ object Form21: TForm21
       Transparent = True
     end
     object Label11: TLabel
-      Left = 160
+      Left = 180
       Top = 15
       Width = 105
       Height = 16
-      Alignment = taRightJustify
       AutoSize = False
       Caption = 'Teste 123'
       Color = clWhite
@@ -57,11 +58,10 @@ object Form21: TForm21
       Transparent = True
     end
     object Label12: TLabel
-      Left = 160
-      Top = 40
+      Left = 180
+      Top = 56
       Width = 105
       Height = 16
-      Alignment = taRightJustify
       AutoSize = False
       Caption = 'Teste 123'
       Color = clWhite
@@ -75,11 +75,10 @@ object Form21: TForm21
       Transparent = True
     end
     object Label13: TLabel
-      Left = 160
-      Top = 65
+      Left = 180
+      Top = 97
       Width = 105
       Height = 16
-      Alignment = taRightJustify
       AutoSize = False
       Caption = 'Teste 123'
       Color = clWhite
@@ -93,11 +92,10 @@ object Form21: TForm21
       Transparent = True
     end
     object Label14: TLabel
-      Left = 160
-      Top = 90
+      Left = 180
+      Top = 138
       Width = 105
       Height = 16
-      Alignment = taRightJustify
       AutoSize = False
       Caption = 'Teste 123'
       Color = clWhite
@@ -111,11 +109,10 @@ object Form21: TForm21
       Transparent = True
     end
     object Label15: TLabel
-      Left = 160
-      Top = 115
+      Left = 180
+      Top = 179
       Width = 105
       Height = 16
-      Alignment = taRightJustify
       AutoSize = False
       Caption = 'Teste 123'
       Color = clWhite
@@ -129,11 +126,10 @@ object Form21: TForm21
       Transparent = True
     end
     object Label16: TLabel
-      Left = 160
-      Top = 140
+      Left = 180
+      Top = 220
       Width = 105
       Height = 16
-      Alignment = taRightJustify
       AutoSize = False
       Caption = 'Teste 123'
       Color = clWhite
@@ -147,11 +143,10 @@ object Form21: TForm21
       Transparent = True
     end
     object Label17: TLabel
-      Left = 160
-      Top = 165
+      Left = 180
+      Top = 261
       Width = 105
       Height = 16
-      Alignment = taRightJustify
       AutoSize = False
       Caption = 'Teste 123'
       Color = clWhite
@@ -165,11 +160,11 @@ object Form21: TForm21
       Transparent = True
     end
     object Button3: TButton
-      Left = 20
-      Top = 210
+      Left = 19
+      Top = 341
       Width = 100
-      Height = 25
-      Caption = '< Voltar'
+      Height = 24
+      Caption = '< &Anterior'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -11
@@ -180,11 +175,11 @@ object Form21: TForm21
       OnClick = Button3Click
     end
     object Button1: TButton
-      Left = 125
-      Top = 210
+      Left = 123
+      Top = 341
       Width = 100
-      Height = 25
-      Caption = 'Avan'#231'ar >'
+      Height = 24
+      Caption = '&Pr'#243'ximo >'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -11
@@ -195,10 +190,10 @@ object Form21: TForm21
       OnClick = Button1Click
     end
     object Button4: TButton
-      Left = 315
-      Top = 210
+      Left = 381
+      Top = 341
       Width = 100
-      Height = 25
+      Height = 24
       Caption = 'E&xcluir'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -210,10 +205,10 @@ object Form21: TForm21
       OnClick = Button4Click
     end
     object Button2: TButton
-      Left = 420
-      Top = 210
+      Left = 485
+      Top = 341
       Width = 100
-      Height = 25
+      Height = 24
       Caption = '&Cancelar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -225,9 +220,9 @@ object Form21: TForm21
       OnClick = Button2Click
     end
     object Edit1: TEdit
-      Left = 270
-      Top = 15
-      Width = 250
+      Left = 180
+      Top = 30
+      Width = 340
       Height = 20
       AutoSize = False
       Font.Charset = ANSI_CHARSET
@@ -239,9 +234,9 @@ object Form21: TForm21
       TabOrder = 4
     end
     object Edit2: TEdit
-      Left = 270
-      Top = 40
-      Width = 250
+      Left = 180
+      Top = 71
+      Width = 340
       Height = 20
       AutoSize = False
       Font.Charset = ANSI_CHARSET
@@ -253,9 +248,9 @@ object Form21: TForm21
       TabOrder = 5
     end
     object Edit3: TEdit
-      Left = 270
-      Top = 65
-      Width = 250
+      Left = 180
+      Top = 112
+      Width = 340
       Height = 20
       AutoSize = False
       Font.Charset = ANSI_CHARSET
@@ -267,9 +262,9 @@ object Form21: TForm21
       TabOrder = 6
     end
     object Edit4: TEdit
-      Left = 270
-      Top = 90
-      Width = 250
+      Left = 180
+      Top = 153
+      Width = 340
       Height = 20
       AutoSize = False
       Font.Charset = ANSI_CHARSET
@@ -281,9 +276,9 @@ object Form21: TForm21
       TabOrder = 7
     end
     object Edit5: TEdit
-      Left = 270
-      Top = 115
-      Width = 250
+      Left = 180
+      Top = 194
+      Width = 340
       Height = 20
       AutoSize = False
       Font.Charset = ANSI_CHARSET
@@ -295,9 +290,9 @@ object Form21: TForm21
       TabOrder = 8
     end
     object Edit6: TEdit
-      Left = 270
-      Top = 140
-      Width = 250
+      Left = 180
+      Top = 235
+      Width = 340
       Height = 20
       AutoSize = False
       Font.Charset = ANSI_CHARSET
@@ -309,9 +304,9 @@ object Form21: TForm21
       TabOrder = 9
     end
     object Edit7: TEdit
-      Left = 270
-      Top = 165
-      Width = 250
+      Left = 180
+      Top = 276
+      Width = 340
       Height = 20
       AutoSize = False
       Font.Charset = ANSI_CHARSET
