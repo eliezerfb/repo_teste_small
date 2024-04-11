@@ -50,6 +50,7 @@ var
 
   procedure GeraXmlNFeSaida;
   procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
+  function CalculavTotTrib_M02(sCodigo: String): Boolean;
 
 
 implementation
@@ -76,6 +77,31 @@ begin
     'and ITENS002.CODIGO = ' + QuotedStr(sCodigo) +
     ' order by COMPRAS.EMISSAO desc';
   IBQuery.Open;
+end;
+
+function CalculavTotTrib_M02(sCodigo: String): Boolean;
+var
+  IBQTEMP: TIBQuery;
+begin
+  Result := False;
+  IBQTEMP := CriaIBQuery(Form7.ibDataSet4.Transaction);
+  try
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text :=
+      'select ICM.BASE ' +
+      'from ESTOQUE E ' +
+      'join ICM on ICM.ST = E.ST ' +
+      'where E.CODIGO = :CODIGO';
+    IBQTEMP.Open;
+
+    Result := (IBQTEMP.FieldByName('BASE').AsFloat > 0);
+
+  except
+
+  end;
+
+  FreeAndNil(IBQTEMP);
+
 end;
 
 procedure GeraXmlNFeSaida;
@@ -1123,7 +1149,8 @@ begin
       end;
 
       // Tributos
-      if bTributa then
+      //Sandro Silva 2024-04-11 if bTributa then
+      if CalculavTotTrib_M02(Form7.ibDataSet4.FieldByName('CODIGO').AsString) then
       begin
         if Copy(Form7.ibDataSet14CFOP.AsString,1,1) <> '7' then // Exportação
         begin
