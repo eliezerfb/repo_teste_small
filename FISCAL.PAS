@@ -1474,6 +1474,7 @@ type
     procedure IniciarNovaVendaComDocAberto;
     procedure AbreEdicaoMovimento;
     procedure AjustaDataSetTamanhoCampoDescricao(Sender: TObject);
+    procedure AtualizarTEMTEF;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -10812,6 +10813,7 @@ begin
   sPedidoModelo02 := '';
   bNFCeUsoDenegado := False; // Sandro Silva 2020-05-21
 
+  AtualizarTEMTEF;
   //
   if (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) = 0) then // Sandro Silva 2016-04-25
   begin
@@ -10988,6 +10990,8 @@ begin
           //
           Form2.bCancela := False;
           //
+
+          AtualizarTEMTEF;
           if (Form1.sTef = 'Sim') and (Form1.ClienteSmallMobile.sVendaImportando = '') then
           begin
             //
@@ -17443,6 +17447,15 @@ begin
 
   //LogFrente('Teste 01: Saindo FormShow');
   //SmallMsg('Teste 01 Show fim');
+
+  AtualizarTEMTEF;
+
+  Form22.Hide; // Sandro Silva 2016-07-27 Estava no onActivate, mas ficava errado
+
+end;
+
+procedure TForm1.AtualizarTEMTEF;
+begin
   FConfiguracaoTEF := TFConfiguracaoTEF.Create(nil);
   try
     FConfiguracaoTEF.AtualizaTEMTEF;
