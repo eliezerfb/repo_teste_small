@@ -153,11 +153,12 @@ begin
     Commitatudo(True); // SQL - Commando
     //Sandro Silva 2024-04-08 precisa abrir após aplicar alteração 120 caracteres
     AbreArquivos(True);
-
+    (*2024-04-11
     {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
     if (AnsiUpperCase(Form7.ibDataSet13ESTADO.AsString) <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) then // Sandro Silva 2024-04-08 if (Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) then
       Form1.Aplicar120CaracteresProduto(False); //Sandro Silva 2024-04-10 Form1.Aplicar120CaracteresProduto
     {Dailon Parisotto (f-17787) 2024-03-27 Fim}
+    *)
 
     Screen.Cursor := crDefault; // Cursor de Aguardo
 

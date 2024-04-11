@@ -535,7 +535,7 @@ type
     procedure MensagemRecursoIndisponivel(sMensagem: String);
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
     procedure DefineAmbienteNFe(AcAmbiente, AcRotina: String);
-    procedure Aplicar120CaracteresProduto(bExibirMensagemSucesso: Boolean);
+    function Aplicar120CaracteresProduto(bExibirMensagemSucesso: Boolean): Boolean;
     function Comandos120CaracteresProd: Boolean; // Sandro Silva 2024-04-08 procedure Comandos120CaracteresProd;
 
     property sPropaganda: String read getPropaganda;
@@ -4346,6 +4346,10 @@ begin
   Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
 
   ValidaRecursos.Free; // Sandro Silva 2023-05-31
+
+  Form7.IBDatabase1.Close;
+  IBDatabase1.Close;
+
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -4886,8 +4890,13 @@ begin
   except
   end;
 
+
+
   //Mauricio Parizotto 2023-03-27
+  // Atualiza a estrutura do banco de dados
   AtualizaBancoDeDados(sBuild);
+
+
 
   SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
 
@@ -4906,20 +4915,30 @@ begin
       CommitaTudo(True);
       Mensagem22('Aguarde..');
 
+      (*
       {Sandro Silva 2024-04-09 inicio}
       if TamanhoCampo(Form7.ibDataSet4.Transaction, 'ESTOQUE', 'DESCRICAO') = 120 then
       begin
-        Fechatudo(True);
+        //Fechatudo(True);
+        {
         try
           Form7.ibDataSet4.Transaction.DefaultDatabase.Close;
           Form7.ibDataSet4.Transaction.DefaultDatabase.Open;
         except
 
         end;
+        }
+        {Sandro Silva 2024-04-08 inicio}
+        try
+          ConectaBancoCommerce;
+        except
+
+        end;
+        {Sandro Silva 2024-04-08 fim}
         AjustarDataSetCamposProduto;
       end;
       {Sandro Silva 2024-04-09 fim}
-
+      *)
       AbreArquivos(True);
       Mensagem22('Aguarde...');
     except
@@ -12416,7 +12435,8 @@ procedure TForm1.miProd120CaracClick(Sender: TObject);
 begin
   // Se já for 120 não faz nada
   // Se for estado diferente de SC não faz nada
-  if (Form7.ibDataSet4DESCRICAO.Size = 120) or ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr)) then
+  //Sandro Silva 2024-04-11 if (Form7.ibDataSet4DESCRICAO.Size = 120) or ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr)) then
+  if (Form7.ibDataSet4DESCRICAO.Size = 120) or (Trim(Form7.ibDataSet13ESTADO.AsString) = EmptyStr) then
     Exit;
 
   // Verifica se só tem 1 pessoa conectada
@@ -12444,16 +12464,21 @@ begin
                                       'Deseja prosseguir?', [mb_YesNo]) = mrNo then
     Exit;
   }
-  if uDialogs.MensagemSistemaPergunta('Sua empresa ainda usa impressora fiscal?' + sLineBreak +
-                                      'Faz Redução Z?', [mb_YesNo]) = mrYes then
+  // Se for UF = SC o usuário deve confirmar que deseja alterar
+  if (Form7.ibDataSet13ESTADO.AsString = 'SC') then
   begin
-    uDialogs.MensagemSistema('O recurso de 120 caracteres na descrição do produto não poderá ser usado com impressora fiscal. Considere migrar para NFC-e.', msgAtencao);
-    Exit;
-  end;
 
-  if uDialogs.MensagemSistemaPergunta('O uso de 120 caracteres na descrição do produto só poderá ser usada por emissores de NF-e ou NFC-e.' + sLineBreak + sLineBreak +
-                                      'Deseja prosseguir?', [mb_YesNo]) = mrNo then
-    Exit;
+    if uDialogs.MensagemSistemaPergunta('Sua empresa ainda usa impressora fiscal?' + sLineBreak +
+                                        'Faz Redução Z?', [mb_YesNo]) = mrYes then
+    begin
+      uDialogs.MensagemSistema('O recurso de 120 caracteres na descrição do produto não poderá ser usado com impressora fiscal. Considere migrar para NFC-e.', msgAtencao);
+      Exit;
+    end;
+
+    if uDialogs.MensagemSistemaPergunta('O uso de 120 caracteres na descrição do produto só poderá ser usada por emissores de NF-e ou NFC-e.' + sLineBreak + sLineBreak +
+                                        'Deseja prosseguir?', [mb_YesNo]) = mrNo then
+      Exit;
+  end;
 
   // Por último valida se tem mais usuários logados
   if ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase, 'Select Count(*) From MON$ATTACHMENTS') > 1 then
@@ -12467,7 +12492,22 @@ begin
   end;
   {Sandro Silva 2024-04-08 fim}
 
-  Aplicar120CaracteresProduto(True);
+  if Aplicar120CaracteresProduto(False) then // 2024-04-11 Aplicar120CaracteresProduto(True);
+  begin
+    MensagemSistema('Alteração concluída com sucesso' + #13#10 + #13#10 +
+                    'Abra novamente o aplicativo com o recurso de 120 caracteres ativado' + #13#10 + #13#10 +
+                    'Esse aplicativo será fechado'
+                    , msgInformacao);
+
+    FecharAplicacao(ExtractFileName(Application.ExeName));
+    Halt(1);
+  end
+  else
+  begin
+    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                    'Feche o sistema em todos os computadores e tente novamente.'
+                    , msgAtencao);
+  end;
 
 end;
 
@@ -12509,7 +12549,7 @@ begin
   {Sandro Silva 2024-04-08 fim}
 end;
 
-procedure TForm1.Aplicar120CaracteresProduto(bExibirMensagemSucesso: Boolean);
+function TForm1.Aplicar120CaracteresProduto(bExibirMensagemSucesso: Boolean): Boolean;
 var
   bRetorno: Boolean;
   IBQTEMP: TIBQuery;
@@ -12529,6 +12569,8 @@ begin
   end;
   FreeAndNil(IBQTEMP);
   //Sandro Silva 2024-04-08 Comandos120CaracteresProd;
+
+  Commitatudo(True); // Grava alterações pendentes
 
   bRetorno := Comandos120CaracteresProd;
   if bExibirMensagemSucesso then
@@ -12591,12 +12633,12 @@ begin
       Form7.ibDataSet37.Open;
       Form24.ibDataSet44.Open;
       }
-
       AbreArquivos(False); //2024-04-10
       Screen.Cursor := crDefault;
     end;
   except
   end;
+  Result := bRetorno;
 end;
 
 function TForm1.ValidaRecursoExibeMensagemIndisponivel: Boolean;
@@ -12620,7 +12662,8 @@ begin
   {Sandro Silva 2023-06-01 fim}
 
   {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
-  miProd120Carac.Visible := (Form7.ibDataSet13ESTADO.AsString = 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) and (Form7.ibDataSet4DESCRICAO.Size <> 120);
+  // 2024-04-11 miProd120Carac.Visible := (Form7.ibDataSet13ESTADO.AsString = 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) and (Form7.ibDataSet4DESCRICAO.Size <> 120);
+  miProd120Carac.Visible := (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) and (Form7.ibDataSet4DESCRICAO.Size <> 120);
   {Dailon Parisotto (f-17787) 2024-03-27 Fim}
 end;
 

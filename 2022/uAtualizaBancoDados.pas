@@ -2438,7 +2438,8 @@ begin
   end;
   {Mauricio Parizotto 2024-02-28 Fim}
 
-{Dailon Parisotto (f-17787) 2024-03-27 Inicio}
+  (* Sandro Silva 2024-04-11 Estava causando access violation quando atualiza e em seguida cadastra um produto com 120 caracteres
+  {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
   try
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSQL.Clear;
@@ -2453,7 +2454,7 @@ begin
     Form1.ibDataSet200.SelectSQL.Clear;
   end;
   {Dailon Parisotto (f-17787) 2024-03-27 Fim}
-
+  *)
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
