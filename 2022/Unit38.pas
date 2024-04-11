@@ -4571,7 +4571,7 @@ begin
   Form7.ibDataSet27.SelectSQL.Add('and ((TIPO='+QuotedStr('BALCAO')+') or (TIPO='+QuotedStr('VENDA')+')) and (CST_PIS_COFINS=''04'')');
   {Dailon Parisotto (f-142) 2024-02-19 Inicio}
   // Validação para desconsiderar gerencial
-  Form7.ibDataSet27.SelectSQL.Add('AND ((SELECT COALESCE(MODELO,'''') FROM NFCE WHERE (NFCE.CAIXA=ALTERACA.CAIXA) AND (NFCE.NUMERONF=ALTERACA.PEDIDO)) <> ''99'')');
+  Form7.ibDataSet27.SelectSQL.Add('AND (COALESCE((SELECT COALESCE(MODELO,'''') FROM NFCE WHERE (NFCE.CAIXA=ALTERACA.CAIXA) AND (NFCE.NUMERONF=ALTERACA.PEDIDO)),'''') <> ''99'')');
   {Dailon Parisotto (f-142) 2024-02-19 Fim}
   Form7.ibDataSet27.SelectSQL.Add('order by DATA, PEDIDO');
   Form7.ibDataSet27.Open;
