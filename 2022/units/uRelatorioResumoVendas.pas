@@ -662,6 +662,7 @@ begin
     qryCons99.Close;
     qryCons99.Database := DataBase;
     qryCons99.SQL.Add('select');
+    qryCons99.SQL.Add('ITENS001.CODIGO,'); // Sandro Silva 2024-04-08
     qryCons99.SQL.Add('ITENS001.DESCRICAO,');
     qryCons99.SQL.Add('sum(ITENS001.QUANTIDADE) as vQTD1,');
     qryCons99.SQL.Add('sum(ITENS001.TOTAL) as vTOT1,');
@@ -670,14 +671,14 @@ begin
     qryCons99.SQL.Add('where');
     qryCons99.SQL.Add('(VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(dtFinal.Date))+') and (VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(dtInicial.Date))+')');
     qryCons99.SQL.Add('and (VENDAS.NUMERONF=ITENS001.NUMERONF) '+RetornarWhereOperacoes+' and (VENDAS.EMITIDA=''S'')');
-    qryCons99.SQL.Add('group by DESCRICAO');
+    qryCons99.SQL.Add('group by DESCRICAO, CODIGO'); // Sandro Silva 2024-04-08 qryCons99.SQL.Add('group by DESCRICAO');
     qryCons99.Open;
 
     while not qryCons99.Eof do
     begin
       if (AllTrim(qryCons99.FieldByname('DESCRICAO').AsString) <> 'Desconto') and (AllTrim(qryCons99.FieldByname('DESCRICAO').AsString) <> 'Acréscimo') then
       begin
-        if not DataSetEstoque.Locate('DESCRICAO',AllTrim(qryCons99.FieldByname('DESCRICAO').AsString),[]) then
+        if not DataSetEstoque.Locate('CODIGO',AllTrim(qryCons99.FieldByname('CODIGO').AsString),[]) then // Sandro Silva  2024-04-08 if not DataSetEstoque.Locate('DESCRICAO',AllTrim(qryCons99.FieldByname('DESCRICAO').AsString),[]) then
         begin
           if qryCons99.FieldByname('VTOT1').AsFloat > 0 then
           begin
@@ -712,20 +713,21 @@ begin
     qryCons100.Close;
     qryCons100.Database := DataBase;
     qryCons100.SQL.Add('select');
+    qryCons100.SQL.Add('ALTERACA.CODIGO,'); // Sandro Silva 2024-04-08
     qryCons100.SQL.Add('ALTERACA.DESCRICAO,');
     qryCons100.SQL.Add('sum(ALTERACA.QUANTIDADE) as vQTD2,');
     qryCons100.SQL.Add('sum(ALTERACA.TOTAL) as vTOT2');
     qryCons100.SQL.Add('from ALTERACA');
     qryCons100.SQL.Add('where (ALTERACA.DATA between ' + QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' and ' + QuotedStr(DateToStrInvertida(dtFinal.Date)) + ')');
     qryCons100.SQL.Add('and ((TIPO='+QuotedStr('BALCAO')+') or (TIPO='+QuotedStr('VENDA')+'))');
-    qryCons100.SQL.Add('group by DESCRICAO');
+    qryCons100.SQL.Add('group by DESCRICAO, CODIGO'); //2024-04-08 qryCons100.SQL.Add('group by DESCRICAO');
     qryCons100.Open;
-    
+
     while not qryCons100.Eof do
     begin
       if (AllTrim(qryCons100.FieldByname('DESCRICAO').AsString) <> 'Desconto') and (AllTrim(qryCons100.FieldByname('DESCRICAO').AsString) <> 'Acréscimo') then
       begin
-        if not DataSetEstoque.Locate('DESCRICAO',AllTrim(qryCons100.FieldByname('DESCRICAO').AsString),[]) then
+        if not DataSetEstoque.Locate('CODIGO',AllTrim(qryCons100.FieldByname('CODIGO').AsString),[]) then // 2024-04-08 if not DataSetEstoque.Locate('DESCRICAO',AllTrim(qryCons100.FieldByname('DESCRICAO').AsString),[]) then
         begin
           if qryCons100.FieldByname('VTOT2').AsFloat > 0 then
           begin
@@ -769,14 +771,14 @@ begin
         DataSetEstoque.FieldByName('VAL_VEND').AsFloat := 0;
         DataSetEstoque.FieldByName('LUC_VEND').AsFloat := 0;
 
-        if qryCons99.Locate('DESCRICAO',AllTrim(DataSetEstoque.FieldByName('DESCRICAO').AsString),[]) then
+        if qryCons99.Locate('CODIGO',AllTrim(DataSetEstoque.FieldByName('CODIGO').AsString),[]) then // Sandro Silva 2024-04-08 if qryCons99.Locate('DESCRICAO',AllTrim(DataSetEstoque.FieldByName('DESCRICAO').AsString),[]) then
         begin
           DataSetEstoque.FieldByName('QTD_VEND').AsFloat := DataSetEstoque.FieldByName('QTD_VEND').AsFloat + qryCons99.FieldByname('VQTD1').AsFloat;
           DataSetEstoque.FieldByName('VAL_VEND').AsFloat := DataSetEstoque.FieldByName('VAL_VEND').AsFloat + qryCons99.FieldByname('VTOT1').AsFloat;
           DataSetEstoque.FieldByName('CUS_VEND').AsFloat := DataSetEstoque.FieldByName('CUS_VEND').AsFloat + qryCons99.FieldByname('VCUS1').AsFloat;
         end;
 
-        if qryCons100.Locate('DESCRICAO',AllTrim(DataSetEstoque.FieldByName('DESCRICAO').AsString),[]) then
+        if qryCons100.Locate('CODIGO',AllTrim(DataSetEstoque.FieldByName('CODIGO').AsString),[]) then // Sandro Silva 2024-04-08 if qryCons100.Locate('DESCRICAO',AllTrim(DataSetEstoque.FieldByName('DESCRICAO').AsString),[]) then
         begin
           DataSetEstoque.FieldByName('QTD_VEND').AsFloat := DataSetEstoque.FieldByName('QTD_VEND').AsFloat + qryCons100.FieldByname('VQTD2').AsFloat;
           DataSetEstoque.FieldByName('VAL_VEND').AsFloat := DataSetEstoque.FieldByName('VAL_VEND').AsFloat + qryCons100.FieldByname('VTOT2').AsFloat;
