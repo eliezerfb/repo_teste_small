@@ -12494,8 +12494,7 @@ begin
 
   if Aplicar120CaracteresProduto(False) then // 2024-04-11 Aplicar120CaracteresProduto(True);
   begin
-    MensagemSistema('Alteração concluída com sucesso' + #13#10 + #13#10 +
-                    'Abra novamente o aplicativo com o recurso de 120 caracteres ativado' + #13#10 + #13#10 +
+    MensagemSistema('Ativado o recurso de 120 caracteres' + #13#10 + #13#10 +
                     'Esse aplicativo será fechado'
                     , msgInformacao);
 
