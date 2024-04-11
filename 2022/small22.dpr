@@ -243,7 +243,9 @@ uses
   uFuncoesTEF in 'units\uFuncoesTEF.pas',
   uclassetransacaocartao in '..\..\unit_compartilhada\uclassetransacaocartao.pas',
   uSelecionaTEF in 'uSelecionaTEF.pas' {frmSelecionaTEF},
-  uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame};
+  uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame},
+  uIDuplicaNFSe in 'interfaces\uIDuplicaNFSe.pas',
+  uDuplicaNFSe in 'units\uDuplicaNFSe.pas';
 
 {$R *.RES}
 
@@ -305,22 +307,22 @@ begin
       Application.Title := 'Small Commerce';
 
       Application.CreateForm(TForm1, Form1);
-      Application.CreateForm(TForm2, Form2);
-      Application.CreateForm(TSenhas, Senhas);
-      Application.CreateForm(TSenhas2, Senhas2);
-      Application.CreateForm(TForm24, Form24);
-      Application.CreateForm(TForm30, Form30);
-      Application.CreateForm(TSenhas2, Senhas2);
-      Application.CreateForm(TForm7, Form7);
-      Application.CreateForm(TForm9, Form9);
-      Application.CreateForm(TForm14, Form14);
-      Application.CreateForm(TForm19, Form19);
-      Application.CreateForm(TForm12, Form12);
-      Application.CreateForm(TForm48, Form48);
-      Application.CreateForm(TForm10, Form10);
-      Application.CreateForm(TForm16, Form16);
-      Application.CreateForm(TForm99, Form99);
-      //Application.CreateForm(TForm18, Form18);
+  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TSenhas, Senhas);
+  Application.CreateForm(TSenhas2, Senhas2);
+  Application.CreateForm(TForm24, Form24);
+  Application.CreateForm(TForm30, Form30);
+  Application.CreateForm(TSenhas2, Senhas2);
+  Application.CreateForm(TForm7, Form7);
+  Application.CreateForm(TForm9, Form9);
+  Application.CreateForm(TForm14, Form14);
+  Application.CreateForm(TForm19, Form19);
+  Application.CreateForm(TForm12, Form12);
+  Application.CreateForm(TForm48, Form48);
+  Application.CreateForm(TForm10, Form10);
+  Application.CreateForm(TForm16, Form16);
+  Application.CreateForm(TForm99, Form99);
+  //Application.CreateForm(TForm18, Form18);
       Application.CreateForm(TForm20, Form20);
       Application.CreateForm(TForm21, Form21);
       Application.CreateForm(TForm25, Form25);

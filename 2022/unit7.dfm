@@ -18231,8 +18231,13 @@ object Form7: TForm7
       Caption = '-'
     end
     object DuplicatestaNFe1: TMenuItem
-      Caption = 'Duplicar esta NF-e'
+      Caption = 'Duplicar NF-e'
       OnClick = DuplicatestaNFe1Click
+    end
+    object miDuplicarNFSe: TMenuItem
+      Caption = 'Duplicar NFS-e'
+      Visible = False
+      OnClick = miDuplicarNFSeClick
     end
     object DuplicarProduto: TMenuItem
       Caption = 'Duplicar produto'
@@ -18240,7 +18245,7 @@ object Form7: TForm7
       OnClick = DuplicarProdutoClick
     end
     object DuplicaOrcamento: TMenuItem
-      Caption = 'Duplicar este or'#231'amento'
+      Caption = 'Duplicar or'#231'amento'
       Visible = False
       OnClick = DuplicaOrcamentoClick
     end
