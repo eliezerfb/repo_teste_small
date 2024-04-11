@@ -1248,7 +1248,6 @@ type
     ibDataSet24ANVISA: TIntegerField;
     EtiquetasZebraArgoxElgin1: TMenuItem;
     Panel1: TPanel;
-    spdNFeDataSets: TspdNFeDataSets;
     N57: TMenuItem;
     ImprimiraNFemformulrionumerado1: TMenuItem;
     ImprimirtodasasNFfiltradas1: TMenuItem;
@@ -1261,7 +1260,6 @@ type
     ibDataSet4VALOR_PARCELA_IMPORTADA_EXTERIO: TIBBCDField;
     ibDataSet4CODIGO_FCI: TIBStringField;
     ibDataSet23CST_ICMS: TIBStringField;
-    spdNFe: TspdNFe;
     ibDataSet18ANTT: TIBStringField;
     N58: TMenuItem;
     Produtividadedecontatos1: TMenuItem;
@@ -1371,7 +1369,6 @@ type
     Anlisediaria1: TMenuItem;
     gerCNAB240: TMenuItem;
     btnRetornoCNAB240: TButton;
-    spdNFeDPEC1: TspdNFeDPEC;
     ConsultarNFesemitidasparameuCNPJ1: TMenuItem;
     PositivoDownloadXML: TImage;
     VisualizarXMLdamanifestaododestinatrio1: TMenuItem;
@@ -2563,6 +2560,12 @@ type
     bDescontaICMSDeso: Boolean;
     {Dailon 2023-08-22 fim}
 
+    {Sandro Silva 2024-04-08 inicio}
+    spdNFe: TspdNFe;
+    spdNFeDataSets: TspdNFeDataSets;
+    spdNFeDPEC1: TspdNFeDPEC;
+    {Sandro Silva 2024-04-08 fim}
+
     procedure RefreshDados;
     procedure TotalizaItensCompra;
     procedure CalculaTotalNota;
@@ -2592,6 +2595,7 @@ type
     property UsuarioLogado: String read getUsuarioLogado;
     procedure SetDataSetCadastros(CaminhoIni: String);
     function IniFileUsuarioLogado: String;
+    function CriarComponenteNFeRunTime: Boolean;
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -3087,6 +3091,116 @@ begin
   end;
 end;
 
+
+function TForm7.CriarComponenteNFeRunTime: Boolean;
+{Sandro Silva 2024-04-08 Criar dinamicamente os componentes da NFe}
+begin
+  if Form7.spdNFeDataSets = nil then
+  begin
+
+    Form7.spdNFeDataSets := TspdNFeDataSets.Create(Application);
+    Form7.spdNFeDataSets.VersaoEsquema := pl_009;
+    Form7.spdNFeDataSets.ValidaRegrasNegocio := False;
+    Form7.spdNFeDataSets.ValidaRegrasNegocioTecno := False;
+    Form7.spdNFeDataSets.UsarDatasetExportacao := False;
+  end;
+
+  if Form7.spdNFe = nil then
+  begin
+
+    Form7.spdNFe := TspdNFe.Create(Application);
+
+    Form7.spdNFe.VersaoManual := vm50a;
+    Form7.spdNFe.AnexarDanfePDF := True;
+    Form7.spdNFe.DanfeSettings.FraseContingencia := 'Danfe em contingÍncia - Impresso em decorrÍncia de problemas tÈcnicos';
+    Form7.spdNFe.DanfeSettings.FraseHomologacao := 'SEM VALOR FISCAL';
+    Form7.spdNFe.DanfeSettings.QtdeCopias := 1;
+    Form7.spdNFe.DanfeSettings.LineDelimiter := '|';
+    Form7.spdNFe.DanfeSettings.InfCplMaxCol := 68;
+    Form7.spdNFe.DanfeSettings.InfCplMaxRow := 7;
+    Form7.spdNFe.DanfeSettings.ImprimirVolume := False;
+    Form7.spdNFe.DanfeSettings.ImprimirDuplicata := True;
+    Form7.spdNFe.DanfeSettings.MensagemPartilhaAutomatica := False;
+    Form7.spdNFe.DanfeSettings.MensagemFCP := False;
+    Form7.spdNFe.DanfeSettings.ImprimirUnidadeTributada := False;
+    Form7.spdNFe.DanfeSettings.ImprimirObsCont := False;
+    Form7.spdNFe.DanfeSettings.ImprimirFrenteVerso := fvDesabilitado;
+    Form7.spdNFe.DanfeSettings.ImprimirLocalRetiradaEntrega := True;
+    Form7.spdNFe.DanfeSettings.InfCplQuebrarLinhaAut := False;
+    Form7.spdNFe.DanfeSettings.MensagemIcmsDesonerado := False;
+    Form7.spdNFe.DanfeSettings.ImprimirVlrTotalDanfeSimplificado := False;
+    Form7.spdNFe.DanfeSettings.MensagemIcmsMonofasico := False;
+    Form7.spdNFe.CaracteresRemoverAcentos := '·ÈÌÛ˙‡ËÏÚ˘‚ÍÓÙ˚‰ÎÔˆ¸„ıÒÁ¡…Õ”⁄¿»Ã“Ÿ¬ Œ‘€ƒÀœ÷‹√’—«∫™';
+    Form7.spdNFe.TipoCertificado := ckMemory;
+    Form7.spdNFe.DiretorioTemplates := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Templates\vm50\DPEC';
+    Form7.spdNFe.IgnoreInvalidCertificates := False;
+    Form7.spdNFe.DiretorioLog := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\';
+    Form7.spdNFe.Ambiente := akHomologacao;
+    Form7.spdNFe.EmailSettings.Autenticacao := False;
+    Form7.spdNFe.EmailSettings.TimeOut := 0;
+    Form7.spdNFe.EmailSettings.ConteudoHtml := False;
+    Form7.spdNFe.EmailSettings.UseSecureBlackBox := False;
+    Form7.spdNFe.EmailSettings.QtdeTentativas := 0;
+    Form7.spdNFe.EmailSettings.UseTLS := utNoTLSSupport;
+    Form7.spdNFe.DiretorioEsquemas := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemas\vm50a\';
+    Form7.spdNFe.ConexaoSegura := False;
+    Form7.spdNFe.TimeOut := 0;
+    Form7.spdNFe.DiretorioLogErro := 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\';
+    Form7.spdNFe.DiretorioTemporario := 'C:\ProgramData\';
+    Form7.spdNFe.ModoOperacao := moNormal;
+    Form7.spdNFe.EntregaXML := exEmail;
+    Form7.spdNFe.AtualizarArquivoServidores := True;
+    Form7.spdNFe.DiagnosticMode := True;
+    Form7.spdNFe.DiretorioXmlDestinatario := 'C:\Program Files (x86)\Borland\Delphi7\Bin\XmlDestinatario\';
+    Form7.spdNFe.DiretorioDownloads := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Downloads\';
+    Form7.spdNFe.MaxSizeLoteEnvio := 500;
+    Form7.spdNFe.DanfeSimplificado := False;
+
+    spdNFeDPEC1 := TspdNFeDPEC.Create(Application);
+    spdNFeDPEC1.VersaoManual := vm50;
+    spdNFeDPEC1.AnexarDanfePDF := False;
+    spdNFeDPEC1.DanfeSettings.FraseContingencia := 'Danfe em contingÍncia - Impresso em decorrÍncia de problemas tÈcnicos';
+    spdNFeDPEC1.DanfeSettings.FraseHomologacao := 'SEM VALOR FISCAL';
+    spdNFeDPEC1.DanfeSettings.QtdeCopias := 2;
+    spdNFeDPEC1.DanfeSettings.LineDelimiter := '|';
+    spdNFeDPEC1.DanfeSettings.InfCplMaxCol := 68;
+    spdNFeDPEC1.DanfeSettings.InfCplMaxRow := 7;
+    spdNFeDPEC1.DanfeSettings.ImprimirVolume := False;
+    spdNFeDPEC1.DanfeSettings.ImprimirDuplicata := True;
+    spdNFeDPEC1.DanfeSettings.MensagemPartilhaAutomatica := False;
+    spdNFeDPEC1.DanfeSettings.MensagemFCP := False;
+    spdNFeDPEC1.DanfeSettings.ImprimirUnidadeTributada := False;
+    spdNFeDPEC1.DanfeSettings.ImprimirObsCont := False;
+    spdNFeDPEC1.DanfeSettings.ImprimirFrenteVerso := fvDesabilitado;
+    spdNFeDPEC1.DanfeSettings.ImprimirLocalRetiradaEntrega := True;
+    spdNFeDPEC1.DanfeSettings.InfCplQuebrarLinhaAut := False;
+    spdNFeDPEC1.DanfeSettings.MensagemIcmsDesonerado := False;
+    spdNFeDPEC1.DanfeSettings.ImprimirVlrTotalDanfeSimplificado := False;
+    spdNFeDPEC1.DanfeSettings.MensagemIcmsMonofasico := False;
+    spdNFeDPEC1.CaracteresRemoverAcentos := '·ÈÌÛ˙‡ËÏÚ˘‚ÍÓÙ˚‰ÎÔˆ¸„ıÒÁ¡…Õ”⁄¿»Ã“Ÿ¬ Œ‘€ƒÀœ÷‹√’—«∫™';
+    spdNFeDPEC1.TipoCertificado := ckMemory;
+    spdNFeDPEC1.DiretorioTemplates := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Templates\vm50\DPEC';
+    spdNFeDPEC1.IgnoreInvalidCertificates := False;
+    spdNFeDPEC1.DiretorioLog := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\';
+    spdNFeDPEC1.Ambiente := akHomologacao;
+    spdNFeDPEC1.EmailSettings.Autenticacao := False;
+    spdNFeDPEC1.EmailSettings.TimeOut := 0;
+    spdNFeDPEC1.EmailSettings.ConteudoHtml := False;
+    spdNFeDPEC1.EmailSettings.UseSecureBlackBox := False;
+    spdNFeDPEC1.EmailSettings.QtdeTentativas := 0;
+    spdNFeDPEC1.EmailSettings.UseTLS := utNoTLSSupport;
+    spdNFeDPEC1.DiretorioEsquemas := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemas\vm50\DPEC';
+    spdNFeDPEC1.ConexaoSegura := False;
+    spdNFeDPEC1.TimeOut := 0;
+    spdNFeDPEC1.DiretorioLogErro := 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\';
+    spdNFeDPEC1.DiretorioTemporario := 'C:\ProgramData\';
+    spdNFeDPEC1.ModoOperacao := moNormal;
+    spdNFeDPEC1.EntregaXML := exEmail;
+    spdNFeDPEC1.AtualizarArquivoServidores := False;
+    spdNFeDPEC1.DiagnosticMode := False;
+
+  end;
+end;
 
 function DownloadNFeEmitida(sP1: String): Boolean;
 var
@@ -4747,6 +4861,9 @@ var
   Mais1Ini: TIniFile;
   TipoCertificado : string;
 begin
+
+  Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
+
   Form1.ConfiguraCredencialTecnospeed; // Sandro Silva 2022-12-15
 
 //  Aguardando tecnospeed confirmar se propriedade est· funcionando como proposta, suporte da tecnospeed informou que pode ter inconsistÍncia no funcionamento
@@ -4894,6 +5011,9 @@ begin
 
   if Form7.spdNFe.NomeCertificado.Text = '' then
   begin
+
+    Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
+
     Form1.ConfiguraCredencialTecnospeed;
 
     Form7.spdNFe.ListarCertificados(frmSelectCertificate.lbList.Items);
@@ -14703,7 +14823,9 @@ var
   end;
 begin
   //
-  {Sandro Silva 2022-12-15 inicio 
+  Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
+
+  {Sandro Silva 2022-12-15 inicio
   Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124','9830b685216a9c4613bc76c84098272d');
   }
   Form1.ConfiguraCredencialTecnospeed;
