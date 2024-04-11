@@ -92,6 +92,7 @@ begin
       'from ESTOQUE E ' +
       'join ICM on ICM.ST = E.ST ' +
       'where E.CODIGO = :CODIGO';
+    IBQTEMP.ParamByName('CODIGO').AsString := sCodigo;
     IBQTEMP.Open;
 
     Result := (IBQTEMP.FieldByName('BASE').AsFloat > 0);
