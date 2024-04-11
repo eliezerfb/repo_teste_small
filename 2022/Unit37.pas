@@ -546,7 +546,34 @@ begin
           end;
           //
           WriteLn(F,'    <tr>');
-          //
+
+          if Form7.ibDataSet15DESCONTO.AsFloat <> 0 then
+          begin
+            //
+            if (Form7.ibDataSet15DUPLICATAS.AsFloat = 0)  then fPercentu := Form7.ibDataSet9COMISSA1.AsFloat else fPercentu := Form7.ibDataSet9COMISSA2.AsFloat;
+            //
+            fComissao := Form7.ibDataSet15DESCONTO.AsFloat * fPercentu / 100;
+
+            // Totalizador
+{            fTotal    := fTotal  - (Form7.ibDataSet15DESCONTO.AsFloat);
+            fTotal3   := fTotal3 - fComissao;   }
+
+
+            fTotal1   := fTotal1 - fComissao;
+            fTotal2   := fTotal2 - (Form7.ibDataSet15DESCONTO.AsFloat);
+            //
+            if CheckBox1.Checked then // Item por item
+            begin
+              WriteLn(F,'     <td  width=250 align=right><font face="Microsoft Sans Serif" size=1><b>Desconto</font></td>');
+              WriteLn(F,'     <td  width=60 align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+              WriteLn(F,'     <td  width=30 align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+              WriteLn(F,'     <td width=60 align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[Form7.ibDataSet15DESCONTO.AsFloat*-1])+'<br></font></td>');
+              WriteLn(F,'     <td width=60 align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.2n',[fComissao*-1])+'<br></font></td>');
+            end;
+            //
+          end;
+          WriteLn(F,'    <tr>');
+
           if CheckBox1.Checked then // Item por item
           begin
             WriteLn(F,'     <td  width=250 align=right><font face="Microsoft Sans Serif" size=1><b>Total</font></td>');
