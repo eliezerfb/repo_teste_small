@@ -114,7 +114,7 @@
         <Manifest_File>xp.manifest</Manifest_File>
         <VerInfo_MajorVer>2024</VerInfo_MajorVer>
         <VerInfo_Build>6</VerInfo_Build>
-        <DCC_ExeOutput>C:\Program Files (x86)\SmallSoft\small2024-04-10</DCC_ExeOutput>
+        <DCC_ExeOutput>\desenvolvimento\executaveis\Small Commerce</DCC_ExeOutput>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
