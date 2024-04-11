@@ -949,6 +949,10 @@ var
   vMulta : Double;
   TipoMulta : string;
 begin
+  //Mauricio Parizotto 2024-04-03
+  if Form1.fTaxa = 0 then
+    sCodigodoJurosdeMora := '5'; //Isento
+
   WriteLn(F,
           Copy(AllTrim(Form26.MaskEdit42.Text),1,3)                                                 + // 001 a 003 (003) Código do Banco na Compensação
           Copy('0001',1,4)                                                                          + // 004 a 007 (004) Lote de Serviço
