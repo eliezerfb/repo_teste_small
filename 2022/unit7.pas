@@ -5693,7 +5693,10 @@ begin
         if (AoDataSet.Fields[I-1].FieldName <> 'IPI')
           and (copy(AoDataSet.Fields[I-1].FieldName,1,3) <> 'CST') then
         begin
-          P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel);
+          if Pos(' '+AoDataSet.Fields[I-1].FieldName, P1) > 0 then
+            P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel)
+          else
+            P1 := StrTran(P1,AoDataSet.Fields[I-1].FieldName, AoDataSet.Fields[I-1].DisplayLabel);
         end;
       end;
     end;
