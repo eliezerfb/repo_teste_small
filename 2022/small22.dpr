@@ -244,7 +244,14 @@ uses
   uFuncoesTEF in 'units\uFuncoesTEF.pas',
   uclassetransacaocartao in '..\..\unit_compartilhada\uclassetransacaocartao.pas',
   uSelecionaTEF in 'uSelecionaTEF.pas' {frmSelecionaTEF},
-  uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame};
+  uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame},
+  uFrmConvenio in 'uFrmConvenio.pas' {FrmConvenio},
+  uFrmCaixa in 'uFrmCaixa.pas' {FrmCaixa},
+  uFrmGrupoMercadoria in 'uFrmGrupoMercadoria.pas' {FrmGrupoMercadoria},
+  uFrmTransportadora in 'uFrmTransportadora.pas' {FrmTransportadora},
+  uFrmPlanoContas in 'uFrmPlanoContas.pas' {FrmPlanoContas},
+  uFrmBanco in 'uFrmBanco.pas' {FrmBanco},
+  uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria};
 
 {$R *.RES}
 

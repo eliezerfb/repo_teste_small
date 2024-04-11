@@ -13896,7 +13896,11 @@ object Form7: TForm7
       'where'
       '  REGISTRO = :REGISTRO')
     SelectSQL.Strings = (
-      'select * from BANCOS')
+      'Select '
+      #9'B.*,'
+      #9'C.NOME PLANOCONTA'
+      'From BANCOS B'
+      #9'Left Join CONTAS C on C.CONTA = B.PLANO')
     ModifySQL.Strings = (
       'update BANCOS'
       'set'
@@ -13932,13 +13936,11 @@ object Form7: TForm7
       FieldName = 'CONTA'
       Size = 16
     end
-    object ibDataSet11PLANO: TIBStringField
+    object ibDataSet11PLANOCONTA: TIBStringField
       DisplayLabel = 'Plano de Contas'
-      DisplayWidth = 16
-      FieldName = 'PLANO'
-      OnSetText = ibDataSet11PLANOSetText
-      EditMask = '99999;1;_'
-      Size = 5
+      FieldName = 'PLANOCONTA'
+      Origin = 'CONTAS.NOME'
+      Size = 25
     end
     object ibDataSet11SALDO3: TFloatField
       DisplayLabel = 'Saldo do Banco'
@@ -13976,6 +13978,15 @@ object Form7: TForm7
       FieldName = 'SALDO2'
       Origin = 'BANCOS.SALDO2'
       Visible = False
+    end
+    object ibDataSet11PLANO: TIBStringField
+      DisplayLabel = 'Plano de Contas'
+      DisplayWidth = 16
+      FieldName = 'PLANO'
+      Visible = False
+      OnSetText = ibDataSet11PLANOSetText
+      EditMask = '99999;1;_'
+      Size = 5
     end
   end
   object DataSource11: TDataSource

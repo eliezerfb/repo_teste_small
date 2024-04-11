@@ -1,10 +1,11 @@
-inherited FrmSituacaoOS: TFrmSituacaoOS
-  Caption = 'Cadastro de situa'#231#245'es'
+inherited FrmGrupoMercadoria: TFrmGrupoMercadoria
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
+      ExplicitLeft = 10
+      ExplicitTop = 105
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label129: TLabel
@@ -14,7 +15,7 @@ inherited FrmSituacaoOS: TFrmSituacaoOS
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Situa'#231#227'o:'
+          Caption = 'Nome do grupo:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -22,16 +23,16 @@ inherited FrmSituacaoOS: TFrmSituacaoOS
           Font.Style = []
           ParentFont = False
         end
-        object edtSituacao: TSMALL_DBEdit
+        object edtGrupo: TSMALL_DBEdit
           Left = 110
           Top = 25
-          Width = 235
+          Width = 300
           Height = 20
           AutoSize = False
           BevelInner = bvNone
           BevelOuter = bvNone
           Ctl3D = True
-          DataField = 'SITUACAO'
+          DataField = 'NOME'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -47,7 +48,7 @@ inherited FrmSituacaoOS: TFrmSituacaoOS
     end
   end
   inherited DSCadastro: TDataSource
-    DataSet = Form7.ibdSituacaoOS
+    DataSet = Form7.ibDataSet21
     OnDataChange = DSCadastroDataChange
   end
 end

@@ -10788,6 +10788,29 @@ begin
   //Mauricio Parizotto 2024-03-21
   if Form7.sModulo = 'CONVERSAOCFOP' then
     Exit;
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if Form7.sModulo = 'CONVENIO' then
+    Exit;
+
+  if Form7.sModulo = 'CAIXA' then
+    Exit;
+
+  if Form7.sModulo = 'GRUPOS' then
+    Exit;
+
+  if Form7.sModulo = 'TRANSPORT' then
+    Exit;
+
+  if Form7.sModulo = 'CONTAS' then
+    Exit;
+
+  if Form7.sModulo = 'BANCOS' then
+    Exit;
+
+  if Form7.sModulo = '2CONTAS' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Fim}
+    
 
   if AllTrim(Form7.sModulo) <> '' then
   begin
@@ -11408,7 +11431,29 @@ begin
   //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'ICM' then
     Exit;
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if Form7.sModulo = 'CONVENIO' then
+    Exit;
 
+  if Form7.sModulo = 'CAIXA' then
+    Exit;
+
+  if Form7.sModulo = 'GRUPOS' then
+    Exit;
+
+  if Form7.sModulo = 'TRANSPORT' then
+    Exit;
+
+  if Form7.sModulo = 'CONTAS' then
+    Exit;
+
+  if Form7.sModulo = 'BANCOS' then
+    Exit;
+
+  if Form7.sModulo = '2CONTAS' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Fim}
+  
   //Mauricio Parizotto 2024-03-21
   if Form7.sModulo = 'CONVERSAOCFOP' then
     Exit;
