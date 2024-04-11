@@ -521,6 +521,10 @@
         <DCCReference Include="units\uObjetoConsultaCEP.pas"/>
         <DCCReference Include="interfaces\uIConsultaCEP.pas"/>
         <DCCReference Include="units\uConsultaCEP.pas"/>
+        <DCCReference Include="uFrmConversaoCFOP.pas">
+            <Form>FrmConversaoCFOP</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="uConfiguracaoTEFCommerce.pas">
             <Form>frmConfiguracaoTEFCommerce</Form>
         </DCCReference>

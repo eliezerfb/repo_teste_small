@@ -1683,6 +1683,9 @@ type
     MenuItem141: TMenuItem;
     ConfigurarEtiqueta1: TMenuItem;
     Imprimiretiqueta1: TMenuItem;
+    ibdConversaoCFOPCST: TIBStringField;
+    ibdConversaoCFOPCSOSN: TIBStringField;
+    ibdConversaoCFOPCONSIDERACSTCSOSN: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2398,6 +2401,7 @@ type
     procedure MenuItem140Click(Sender: TObject);
     procedure ConfigurarEtiqueta1Click(Sender: TObject);
     procedure Imprimiretiqueta1Click(Sender: TObject);
+    procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2674,7 +2678,7 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , ufrmRelatorioProdMonofasicoCupom
   , ufrmRelatorioProdMonofasicoNota
   , uSistema
-  ;
+  , uFrmConversaoCFOP;
 
 {$R *.DFM}
 
@@ -8448,6 +8452,17 @@ begin
     Exit;
   end;
 
+  //Mauricio Parizotto 2024-03-21
+  if sModulo = 'CONVERSAOCFOP' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmConversaoCFOP = nil then
+      FrmConversaoCFOP := TFrmConversaoCFOP.Create(Self);
+
+    FrmConversaoCFOP.Show;
+    Exit;
+  end;
+
   {Sandro Silva 2024-01-17 inicio
 
   Reativar quando estiver concluída a migração do cadastro de clientes usando a tela padrão de cadastro
@@ -8685,6 +8700,18 @@ begin
 
     FrmSituacaoOS.lblNovoClick(Sender);
     FrmSituacaoOS.Show;
+    Exit;
+  end;
+
+  //Mauricio Parizotto 2024-03-21
+  if sModulo = 'CONVERSAOCFOP' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmConversaoCFOP = nil then
+      FrmConversaoCFOP := TFrmConversaoCFOP.Create(Self);
+
+    FrmConversaoCFOP.lblNovoClick(Sender);
+    FrmConversaoCFOP.Show;
     Exit;
   end;
 
@@ -10179,6 +10206,10 @@ begin
   ibDataSet11INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
   ibDataSet7FORMADEPAGAMENTO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
   ibdParametroTributaDESCRICAO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID; // Mauricio Parizotto 2023-09-21
+  ibdConversaoCFOPCST.Tag   := CAMPO_SOMENTE_LEITURA_NO_GRID; // Mauricio Parizotto 2024-03-22
+  ibdConversaoCFOPCSOSN.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID; // Mauricio Parizotto 2023-03-22
+
+
   //Mauricio Parizotto 2023-06-01
   imgNovo.Transparent := False;
   imgExcluir.Transparent := False;
@@ -33190,10 +33221,37 @@ begin
   end;
 end;
 
+procedure TForm7.ibdConversaoCFOPBeforePost(DataSet: TDataSet);
+var
+  QtdReg : integer;
+begin
+  begin
+    QtdReg := ExecutaComandoEscalar(IBDatabase1,
+                                   ' Select Count(*) QTD'+
+                                   ' From CFOPCONVERSAO '+
+                                   ' Where REGISTRO <> '+QuotedStr(DataSet.FieldByName('REGISTRO').AsString)+
+                                   '   and Coalesce(CFOP_ORIGEM,'''') = '+QuotedStr(DataSet.FieldByName('CFOP_ORIGEM').AsString) +
+                                   '   and Coalesce(CONSIDERACSTCSOSN,'''') = '+QuotedStr(DataSet.FieldByName('CONSIDERACSTCSOSN').AsString) +
+                                   '   and Coalesce(CST,'''') = '+QuotedStr(DataSet.FieldByName('CST').AsString) +
+                                   '   and Coalesce(CSOSN,'''') = '+QuotedStr(DataSet.FieldByName('CSOSN').AsString) );
+  end;
+
+
+  if (QtdReg > 0) then
+  begin
+    MensagemSistema('Já existe um registro com as mesmas informações preenchidas!'
+                    ,msgAtencao);
+
+    DataSet.Cancel;
+    Abort;
+  end;
+end;
+
 procedure TForm7.ibdConversaoCFOPNewRecord(DataSet: TDataSet);
 begin
   ibdConversaoCFOP.Edit;
   ibdConversaoCFOPREGISTRO.AsString := sProximo;
+  ibdConversaoCFOPCONSIDERACSTCSOSN.AsString := 'N'; //Mauricio Parizotto 2024-03-22
 end;
 
 procedure TForm7.ibdConversaoCFOPCFOP_ORIGEMSetText(Sender: TField;
@@ -33214,8 +33272,11 @@ begin
                     ,msgAtencao);
   end else
   begin
+    {Mauricio Parizotto 2024-03-22
     if Valida_Campo('CFOPCONVERSAO',AllTrim(cTexto),'CFOP_ORIGEM','O CFOP de origem ('+cTexto+') já foi vinculado.') then
       ibdConversaoCFOPCFOP_ORIGEM.AsString := AllTrim(cTexto);
+    }
+    ibdConversaoCFOPCFOP_ORIGEM.AsString := AllTrim(cTexto);
   end;
 end;
 
@@ -33797,6 +33858,9 @@ begin
 
     if FrmFichaCadastros <> nil then
       FreeAndNil(FrmFichaCadastros);
+
+    if FrmConversaoCFOP <> nil then
+      FreeAndNil(FrmConversaoCFOP);
   except
   end;
 end;  
@@ -34667,8 +34731,8 @@ begin
     sAjuda := 'config_icms_iss.htm';
 
     // Campos
-    sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TT');
-    iCampos                := 2;
+    sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTT');
+    iCampos                := 4;
 
     // Menu
     Form7.Menu             := mmConvercaoCFOP;
