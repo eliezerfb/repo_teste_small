@@ -17459,6 +17459,8 @@ begin
   FConfiguracaoTEF := TFConfiguracaoTEF.Create(nil);
   try
     FConfiguracaoTEF.AtualizaTEMTEF;
+
+    DefineTemTEF;
   finally
     FreeAndNil(FConfiguracaoTEF);
   end;
