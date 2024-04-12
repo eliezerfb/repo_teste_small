@@ -1496,6 +1496,7 @@ var
   iPrinterPhysicalWidth: Integer; // Sandro Silva 2017-09-12
 
   sRetornoGeraPDF: String;
+  sCasasDecimaisQuantidade: String;
   function GetPrinterPhysicalWidth: Integer;
   begin
     Result := GetDeviceCaps(Printer.Canvas.Handle, HORZRES);// Sandro Silva 2018-06-15  Result := GetDeviceCaps(Printer.Canvas.Handle, PHYSICALWIDTH);
@@ -1780,7 +1781,7 @@ var
 
     PrinterTextoMemo(iLinha, iMargemRazaoSocial, iLarguraPapel - iMargemRazaoSocial - 5, Form1.ibDataSet13.FieldByName('ENDERECO').AsString, poLeft);
     CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
-    
+
     if Trim(Form1.ibDataSet13.FieldByName('COMPLE').AsString) <> '' then
     begin
       PrinterTextoMemo(iLinha, iMargemRazaoSocial, iLarguraPapel - iMargemRazaoSocial - 5, Form1.ibDataSet13.FieldByName('COMPLE').AsString, poLeft);
@@ -1817,6 +1818,8 @@ begin
   if Trim(FTamanhoPapel) = '' then
     FTamanhoPapel := '80';
   {Sandro Silva 2020-10-13 fim}
+
+  sCasasDecimaisQuantidade := LerParametroIni(ExtractFilePath(Application.ExeName) + 'smallcom.inf', 'Outros', 'Casas decimais na quantidade', '2');
 
   iLarguraFisica := LARGURA_REFERENCIA_PAPEL_BOBINA; // Inicia com valor padrão
 
@@ -2228,9 +2231,9 @@ begin
 
             sItem := sItem + ' ' +
               Copy(ConverteAcentos2(IBQESTOQUE.FieldByname('MEDIDA').AsString) + Replicate(' ', 11), 1, 11) +
-              Format('%10.2n',[IBQALTERACA.FieldByName('QUANTIDADE').AsFloat]) + 'X' +
-              Format('%10.2n',[IBQALTERACA.FieldByName('UNITARIO').AsFloat]) + ' ' +
-              Format('%10.2n',[IBQALTERACA.FieldByName('TOTAL').AsFloat]);
+              Format('%10.' + sCasasDecimaisQuantidade + 'n', [IBQALTERACA.FieldByName('QUANTIDADE').AsFloat]) + 'X' + // Sandro Silva 2024-04-03 Format('%10.2n',[IBQALTERACA.FieldByName('QUANTIDADE').AsFloat]) + 'X' +
+              Format('%10.2n', [IBQALTERACA.FieldByName('UNITARIO').AsFloat]) + ' ' +
+              Format('%10.2n', [IBQALTERACA.FieldByName('TOTAL').AsFloat]);
 
             PrinterTexto(iLinha, iMargemEsq, sItem, poRight);
 
