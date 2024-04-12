@@ -12585,7 +12585,7 @@ begin
 
         AjustaAlteracaDesconto; // Aqui faz commit
 
-        PDV_DisponibilizarComprovante; //2024-04-03
+        //Sandro Silva 2024-04-12 PDV_DisponibilizarComprovante; //Sandro Silva 2024-04-03
 
         // Sandro Silva 2021-08-06 Button4.Enabled := True;
         //
@@ -13085,7 +13085,7 @@ begin
       //
     end;
 
-    {Sandro Silva 2024-04-04 inicio}
+    {Sandro Silva 2024-04-04 inicio
     if bFechado then
       Display(Form1.sStatusECF, Form1.sF);
     {Sandro Silva 2024-04-04 fim}
@@ -13180,10 +13180,12 @@ begin
 
       LogFrente('13246 Form1.Button8Click() ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
-      // Sandro Silva 2020-05-14 uso denegado cancela venda
+      PDV_DisponibilizarComprovante; //Sandro Silva 2024-04-12
 
       if Form1.sModeloECF = '65' then
       begin
+        // Sandro Silva 2020-05-14 uso denegado cancela venda
+
         Screen.Cursor := crHourGlass; // Cursor de Aguardo
         Form1.ibDataset150.Close;
         Form1.ibDataset150.SelectSql.Clear;
