@@ -2413,6 +2413,7 @@ type
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
+    function nProtFromXml(sXML: String): String;
     function PermiteValidarSchema(DataSet: TDataSet): Boolean;
     procedure ValidarSchemaSefaz(NFeXml: String);
     procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
@@ -12750,6 +12751,23 @@ begin
         N3ConsultarNFe1.Enabled          := False;
         RRecuperaroXMLdestaNFe1.Enabled  := False;
       end;
+
+      //2024-04-12 Aqui buscar o protocolo no xml da NF-e 55?
+      {Sandro Silva 2024-04-12 inicio}
+      if Trim(Form7.ibDataSet15MODELO.AsString) = '55' then
+      begin
+        if Trim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '' then
+        begin
+          if AnsiContainsText(Form7.ibDataSet15STATUS.AsString, 'Autoriza') then
+          begin
+            Form7.ibDataSet15.Edit;
+            Form7.ibDataSet15NFEPROTOCOLO.AsString := nProtFromXml(Form7.ibDataSet15NFEXML.AsString);
+            Form7.ibDataSet15.Post;
+          end;
+        end;
+      end;
+      {Sandro Silva 2024-04-12 fim}
+
 
       if Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '' then
       begin
@@ -23653,9 +23671,17 @@ begin
 
       Form7.ibDataSet15.Edit;
       Form7.ibDataSet15STATUS.AsString       := sStatus;
+      {Sandro Silva 2024-04-12 inicio}
+      if AnsiContainsText(sStatus, 'Autoriza') then
+      begin
+        if nProtFromXml(Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+          Form7.ibDataSet15NFEPROTOCOLO.AsString := nProtFromXml(Form7.ibDAtaSet15RECIBOXML.AsString);
+      end;
+      {Sandro Silva 2024-04-12 fim}
+
       Form7.ibDataSet15.Post;
       Form7.ibDataSet15.Edit;
-      
+
       if (Pos('<cStat>100</cStat>',Form7.ibDataSet15RECIBOXML.AsString) = 0) and (Pos('<cStat>105</cStat>',Form7.ibDataSet15RECIBOXML.AsString) = 0) then
       begin
         ExibeOrientacaoParaCorrigirErroAPartirDaRejeicaodeMedicamentos(Form7.ibDataSet15NFEXML.AsString, Form7.ibDataSet15RECIBOXML.AsString);
@@ -23694,6 +23720,7 @@ procedure TForm7.N3ConsultarNFe1Click(Sender: TObject);
 var
   sRetorno : String;
   sqlAntes : string;
+  sProtocoloNFe: String;
 begin
   try
     if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
@@ -23721,7 +23748,14 @@ begin
             
             Form7.ibDataSet15.Edit;
             Form7.ibDataset15STATUS.AsString       := Copy(Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9), 1, Form7.ibDataset15STATUS.Size);
+            {Sandro Silva 2024-04-12 inicio
             Form7.ibDataSet15NFEPROTOCOLO.AsString := Copy(sRetorno+'   ',Pos('<nProt>',sRetorno)+7,Pos('</nProt>',sRetorno)-Pos('<nProt>',sRetorno)-7);
+            }
+            sProtocoloNFe := nProtFromXml(sRetorno);
+            if (sProtocoloNFe <> '') and (sProtocoloNFe <> Form7.ibDataSet15NFEPROTOCOLO.AsString) then
+              Form7.ibDataSet15NFEPROTOCOLO.AsString := sProtocoloNFe;
+            {Sandro Silva 2024-04-12 fim}
+
             Form7.ibDataSet15.Post;
             Form7.ibDataSet15.Edit;
 
@@ -24223,7 +24257,8 @@ begin
             begin
               Form7.N1EnviarNFe1Click(nil);
               Screen.Cursor            := crHourGlass;
-              Form7.N2ConsultarrecibodaNFe1Click(nil); Screen.Cursor            := crHourGlass;
+              Form7.N2ConsultarrecibodaNFe1Click(nil);
+              Screen.Cursor            := crHourGlass;
 
               if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '') and
                  (Copy(Form7.ibDataSet15STATUS.AsString,1,8) <> 'Rejeicao') and
@@ -29580,6 +29615,11 @@ begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   Mais1Ini.WriteString('NOTAS','default','SERIE XXX');
   Mais1Ini.Free;
+end;
+
+function TForm7.nProtFromXml(sXML: String): String;
+begin
+  Result := Copy(sXML + '   ', Pos('<nProt>', sXML) + 7, Pos('</nProt>', sXML) - Pos('<nProt>', sXML) - 7);
 end;
 
 procedure TForm7.miRelProdMonofasicosCupomClick(Sender: TObject);
