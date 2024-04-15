@@ -2479,6 +2479,18 @@ begin
   end;
   {Mauricio Parizotto 2024-03-22 Fim}
 
+  {Mauricio Parizotto 2024-04-12 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CLIFOR', 'CONTRIBUINTE') = False then
+  begin
+    if ExecutaComando('Alter table CLIFOR add CONTRIBUINTE integer;') then
+    begin
+      ExecutaComando('comment on column CLIFOR.CONTRIBUINTE is ''1 = Contribuinte, 2 = Isento, 9 = Não Contribuinte'';');
+      ExecutaComando('Commit');
+    end;
+  end;
+  {Mauricio Parizotto 2024-04-12 Fim}
+
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 

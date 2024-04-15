@@ -350,6 +350,10 @@ type
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
     Label118: TLabel;
     fraPerfilTrib: TfFrameCampo;
+    pnl_IE: TPanel;
+    rgIEContribuinte: TRadioButton;
+    rgIENaoContribuinte: TRadioButton;
+    rgIEIsento: TRadioButton;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -559,6 +563,9 @@ type
     procedure fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure fraPerfilTribExit(Sender: TObject);
+    procedure rgIEContribuinteClick(Sender: TObject);
+    procedure rgIENaoContribuinteClick(Sender: TObject);
+    procedure rgIEIsentoClick(Sender: TObject);
   private
     FcCEPAnterior: String;
     cCadJaValidado: String;
@@ -868,6 +875,8 @@ begin
       end;
 
       Form10.Caption := form7.ibDataSet2NOME.AsString;
+
+      ////////////aqui
     end;
     {$EndRegion}
 
@@ -4559,6 +4568,7 @@ begin
 
   eLimiteCredDisponivel.Visible   := False;
   lblLimiteCredDisponivel.Visible := False;
+  pnl_IE.Visible                  := False; //Mauricio Parizotto 2024-04-12
 
   try
     Form7.ibDataSet13.Edit;
@@ -4824,6 +4834,11 @@ begin
                   lblLimiteCredDisponivel.Visible := True;
                   eLimiteCredDisponivel.Top       := iTop;
                   lblLimiteCredDisponivel.Top     := iTop + 1;
+                end;
+
+                if (Form7.sModulo = 'CLIENTES') then
+                begin
+                  pnl_IE.Visible                  := True; //Mauricio Parizotto 2024-04-12
                 end;
 
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top        :=  iTop;
@@ -7664,6 +7679,30 @@ end;
 function TForm10.RetornarDescrCaracTagsObs: String;
 begin
   Result := ' (' + Form7.ibDataSet4DESCRICAO.Size.ToString + ' caracteres)';
+end;
+
+procedure TForm10.rgIEContribuinteClick(Sender: TObject);
+begin
+  try
+    Form7.IBDataSet2CONTRIBUINTE.AsInteger := 1;
+  except
+  end;
+end;
+
+procedure TForm10.rgIEIsentoClick(Sender: TObject);
+begin
+  try
+    Form7.IBDataSet2CONTRIBUINTE.AsInteger := 2;
+  except
+  end;
+end;
+
+procedure TForm10.rgIENaoContribuinteClick(Sender: TObject);
+begin
+  try
+    Form7.IBDataSet2CONTRIBUINTE.AsInteger := 9;
+  except
+  end;
 end;
 
 procedure TForm10.Orelha_TAGSExit(Sender: TObject);

@@ -1687,6 +1687,7 @@ type
     ibdConversaoCFOPCST: TIBStringField;
     ibdConversaoCFOPCSOSN: TIBStringField;
     ibdConversaoCFOPCONSIDERACSTCSOSN: TIBStringField;
+    IBDataSet2CONTRIBUINTE: TIntegerField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
