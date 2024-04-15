@@ -23559,6 +23559,7 @@ begin
 
                 Form7.ibDataSet15NFEXML.AsString    := fNFe;
                 Form7.ibDataSet15MODELO.AsString    := '55';
+                Form7.ibDataSet15.Post; // Sandro Silva 2024-04-15
 
                 if Alltrim(sRecibo) <> '' then
                 begin
