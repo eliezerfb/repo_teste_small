@@ -10477,6 +10477,7 @@ var
   Hora, Min, Seg, cent : Word;
   bA : Boolean;
   sSerieNFSelecionada: String;
+  nPosicao: Integer;
 begin
   tInicio               := Time;
 
@@ -11301,6 +11302,15 @@ begin
   end;
 
   DefineCaptionReceberPagar;
+
+  if (TabelaAberta.RecNo < TabelaAberta.RecordCount) and ((TabelaAberta.RecordCount - TabelaAberta.RecNo) <= 8) then
+  begin
+    nPosicao := TabelaAberta.RecNo;
+    TabelaAberta.Last;
+
+    while TabelaAberta.RecNo <> nPosicao do
+      TabelaAberta.MoveBy(-1);
+  end;
 
   Form7.AlphaBlendValue := 255;
   TabelaAberta.EnableControls;
