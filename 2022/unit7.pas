@@ -5526,6 +5526,7 @@ end;
 
 function AbreArquivos(P1:Boolean): Boolean;
 begin
+
   try
     if not Form7.ibDataSet13.active then Form7.ibDataSet13.active := True;
     if not Form7.ibDataSet25.active then Form7.ibDataSet25.active := True;
@@ -5616,7 +5617,7 @@ begin
     if Form7.ibdParametroTributa.Active then  Form7.ibdParametroTributa.EnableControls; // Mauricio Parizotto 2023-09-21
     if Form7.ibdSituacaoOS.Active then  Form7.ibdSituacaoOS.EnableControls; // Mauricio Parizotto 2023-12-04
   end;
-  
+
   Result := True;
 end;
 
@@ -31758,6 +31759,7 @@ var
   sDesVetor : array[0..999] of String;
   fValVetor : array[0..999] of real;
   fQtdVetor : array[0..999] of real;
+  aCFOP  : array[0..999] of String;
 
   vCli, vOpe : String;
   I, J : Integer;
@@ -31773,6 +31775,7 @@ begin
     sDesVetor[I] := Form7.ibDataSet16DESCRICAO.AsString;
     fValVetor[I] := Form7.ibDataSet16UNITARIO.Asfloat;
     fQtdVetor[I] := Form7.ibDataSet16QUANTIDADE.AsFloat;
+    aCFOP[I]     := Form7.ibDataSet16CFOP.AsString;
     I := I + 1;
     Form7.ibDataSet16.Next;
   end;
@@ -31790,6 +31793,7 @@ begin
     Form7.ibDataSet16DESCRICAO.AsString := sDesVetor[I];
     Form7.ibDataSet16UNITARIO.AsFloat   := fValVetor[I];
     Form7.ibDataSet16QUANTIDADE.AsFloat := fQtdVetor[I];
+    Form7.ibDataSet16CFOP.AsString      := aCFOP[I];
     Form7.ibDataSet16.Post;
     Form7.sModulo := 'VENDA';
   end;

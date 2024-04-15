@@ -19,8 +19,8 @@ uses
   , unit7
   ;
 
-  procedure DropViewProcedure;
-  procedure AtualizaBancoDeDados(sBuild : string);
+procedure DropViewProcedure;
+procedure AtualizaBancoDeDados(sBuild : string);
 // Sandro Silva 2023-09-22  function ExecutaComando(comando:string):Boolean;
 
 implementation
@@ -2438,7 +2438,8 @@ begin
   end;
   {Mauricio Parizotto 2024-02-28 Fim}
 
-{Dailon Parisotto (f-17787) 2024-03-27 Inicio}
+  (* Sandro Silva 2024-04-11 Estava causando access violation quando atualiza e em seguida cadastra um produto com 120 caracteres
+  {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
   try
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSQL.Clear;
@@ -2446,17 +2447,17 @@ begin
       'SELECT COALESCE(ESTADO,''SC'') AS ESTADO FROM EMITENTE';
     Form1.ibDataSet200.Open;
 
-    if (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then
+    if (AnsiUpperCase(Form1.ibDataSet200.FieldByName('ESTADO').AsString) <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then // Sandro Silva 2024-04-09 if (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then
       Form1.Comandos120CaracteresProd;
   finally
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSQL.Clear;
   end;
   {Dailon Parisotto (f-17787) 2024-03-27 Fim}
+  *)
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
-
 
   
   try
@@ -2500,6 +2501,7 @@ begin
   try
     AgendaCommit(True);
     Commitatudo(True);
+
   except
   end;
 
