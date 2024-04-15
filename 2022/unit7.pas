@@ -11303,15 +11303,6 @@ begin
 
   DefineCaptionReceberPagar;
 
-  if (TabelaAberta.RecNo < TabelaAberta.RecordCount) and ((TabelaAberta.RecordCount - TabelaAberta.RecNo) <= 8) then
-  begin
-    nPosicao := TabelaAberta.RecNo;
-    TabelaAberta.Last;
-
-    while TabelaAberta.RecNo <> nPosicao do
-      TabelaAberta.MoveBy(-1);
-  end;
-
   Form7.AlphaBlendValue := 255;
   TabelaAberta.EnableControls;
 
@@ -11322,6 +11313,20 @@ begin
   Screen.Cursor := crDefault;
 
   MarcaColunaOrderBy;
+
+  TabelaAberta.DisableControls;
+  try
+    if (TabelaAberta.RecNo < TabelaAberta.RecordCount) then
+    begin
+      nPosicao := TabelaAberta.RecNo;
+
+      TabelaAberta.MoveBy((TabelaAberta.RecordCount-nPosicao)*1);
+      while TabelaAberta.RecNo <> nPosicao do
+        TabelaAberta.MoveBy(-1);
+    end;
+  finally
+    TabelaAberta.EnableControls;
+  end;
 end;
 
 procedure TForm7.DefineLayoutFiltro;
