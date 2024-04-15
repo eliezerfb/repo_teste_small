@@ -29,8 +29,6 @@ object Form21: TForm21
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
-    ExplicitWidth = 542
-    ExplicitHeight = 252
     object Image1: TImage
       Left = 41
       Top = 25
@@ -94,7 +92,7 @@ object Form21: TForm21
     object Label14: TLabel
       Left = 180
       Top = 138
-      Width = 105
+      Width = 340
       Height = 16
       AutoSize = False
       Caption = 'Teste 123'
