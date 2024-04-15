@@ -593,6 +593,8 @@ type
     procedure BloqueiaCamposAbaGrade(AbBloquear: Boolean);
     function RetornarDescrCaracTagsObs: String;
     procedure DefineCamposCEP(AoObjeto: TObjetoConsultaCEP);
+    procedure SetTipoContribuinte(iTipo : integer);
+    procedure CarregaTipoContibuinte;
   public
     { Public declarations }
 
@@ -876,7 +878,8 @@ begin
 
       Form10.Caption := form7.ibDataSet2NOME.AsString;
 
-      ////////////aqui
+      //Mauricio Parizotto 2024-04-15
+      Form10.CarregaTipoContibuinte;
     end;
     {$EndRegion}
 
@@ -4838,7 +4841,7 @@ begin
 
                 if (Form7.sModulo = 'CLIENTES') then
                 begin
-                  pnl_IE.Visible                  := True; //Mauricio Parizotto 2024-04-12
+                  pnl_IE.Visible                  := (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 18); //Mauricio Parizotto 2024-04-15
                 end;
 
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top        :=  iTop;
@@ -7683,26 +7686,17 @@ end;
 
 procedure TForm10.rgIEContribuinteClick(Sender: TObject);
 begin
-  try
-    Form7.IBDataSet2CONTRIBUINTE.AsInteger := 1;
-  except
-  end;
+  SetTipoContribuinte(1);
 end;
 
 procedure TForm10.rgIEIsentoClick(Sender: TObject);
 begin
-  try
-    Form7.IBDataSet2CONTRIBUINTE.AsInteger := 2;
-  except
-  end;
+  SetTipoContribuinte(2);
 end;
 
 procedure TForm10.rgIENaoContribuinteClick(Sender: TObject);
 begin
-  try
-    Form7.IBDataSet2CONTRIBUINTE.AsInteger := 9;
-  except
-  end;
+  SetTipoContribuinte(9);
 end;
 
 procedure TForm10.Orelha_TAGSExit(Sender: TObject);
@@ -8517,5 +8511,59 @@ begin
 end;
 
 
+procedure TForm10.SetTipoContribuinte(iTipo : integer); //Mauricio Parizotto 2024-05-15
+begin
+  try
+    if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset2.Edit;
+
+    Form7.IBDataSet2CONTRIBUINTE.AsInteger := iTipo;
+
+    CarregaTipoContibuinte;
+  except
+  end;
+end;
+
+procedure TForm10.CarregaTipoContibuinte;  //Mauricio Parizotto 2024-05-15
+begin
+  try
+    SMALL_DBEdit9.Enabled       := True;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 0 then
+    begin
+      rgIEContribuinte.Checked    := False;
+      rgIEIsento.Checked          := False;
+      rgIENaoContribuinte.Checked := False;
+    end;
+
+    if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset2.Edit;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 1 then
+    begin
+      rgIEContribuinte.Checked := True;
+
+      if Form7.IBDataSet2IE.AsString = 'ISENTO' then
+        Form7.IBDataSet2IE.AsString := '';
+    end;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 2 then
+    begin
+      rgIEIsento.Checked          := True;
+
+      Form7.IBDataSet2IE.AsString := 'ISENTO';
+      SMALL_DBEdit9.Enabled       := False;
+    end;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 9 then
+    begin
+      rgIENaoContribuinte.Checked := True;
+
+      if Form7.IBDataSet2IE.AsString = 'ISENTO' then
+        Form7.IBDataSet2IE.AsString := '';
+    end;
+  except
+  end;
+end;
 
 end.

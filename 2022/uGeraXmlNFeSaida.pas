@@ -652,7 +652,8 @@ begin
       begin
         if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 18) then
         begin
-          if allTrim(Form7.ibDAtaset2.FieldByname('IE').AsString) = '' then
+          //if allTrim(Form7.ibDAtaset2.FieldByname('IE').AsString) = '' then Mauricio Parizotto 2024-04-15
+          if (allTrim(Form7.ibDAtaset2.FieldByname('IE').AsString) = '') or (Form7.ibDAtaset2.FieldByname('CONTRIBUINTE').AsString='9') then
           begin
             Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
             Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '9';   // 1-Contribuinte; 2-Isento; 9-Não contribuinte
