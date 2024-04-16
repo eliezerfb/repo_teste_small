@@ -1583,7 +1583,7 @@ type
     Parmetrosdetributao1: TMenuItem;
     ibDataSet7VALOR_MULTA: TIBBCDField;
     ibDataSet7PERCENTUAL_MULTA: TIBBCDField;
-	Configurarobservaofixa1: TMenuItem;
+  	Configurarobservaofixa1: TMenuItem;
     N69: TMenuItem;
     DuplicarProduto: TMenuItem;
     DuplicaOrcamento: TMenuItem;
