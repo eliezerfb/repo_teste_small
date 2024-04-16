@@ -145,7 +145,10 @@ begin
   Form7.ibDataSet7.First;
   while not Form7.ibDataSet7.Eof do
   begin
-    if Form7.ibDataSet7NUMERONF.AsString = Form7.ibDataSet15NUMERONF.AsString then Form7.ibDataSet7.Delete else Form7.ibDataSet7.Next;
+    if Form7.ibDataSet7NUMERONF.AsString = Form7.ibDataSet15NUMERONF.AsString then
+      Form7.ibDataSet7.Delete
+    else
+      Form7.ibDataSet7.Next;
   end;
 
   Result := True;

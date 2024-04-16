@@ -8749,6 +8749,8 @@ begin
       begin
         if not DenegadoOuCancelado(True) then
         begin
+
+          // Faz todas as etapas de transmissão, impressão, envio de email...
           EnviarConsultaImprimirDANFE;
 
           if Form7.sRPS = 'S' then
