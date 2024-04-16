@@ -2686,7 +2686,9 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmTransportadora
   , uFrmBanco
   , uFrmPlanoContas
-  , uFrmConvenio;
+  , uFrmConvenio
+  , uFrmContaPagar
+  , uFrmContaReceber;
 
 {$R *.DFM}
 
@@ -8536,6 +8538,7 @@ begin
     Exit;
   end;
   {Mauricio Parizotto 2024-04-05 Fim}
+
   //Mauricio Parizotto 2024-03-21
   if sModulo = 'CONVERSAOCFOP' then
   begin
@@ -8546,6 +8549,28 @@ begin
     FrmConversaoCFOP.Show;
     Exit;
   end;
+
+  {Mauricio Parizotto 2024-04-15 Inicio}
+  if sModulo = 'PAGAR' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaPagar = nil then
+      FrmContaPagar := TFrmContaPagar.Create(Self);
+
+    FrmContaPagar.Show;
+    Exit;
+  end;
+
+  if sModulo = 'RECEBER' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaReceber = nil then
+      FrmContaReceber := TFrmContaReceber.Create(Self);
+
+    FrmContaReceber.Show;
+    Exit;
+  end;
+  {Mauricio Parizotto 2024-04-15 Fim}
 
   {Sandro Silva 2024-01-17 inicio
 
@@ -8876,6 +8901,31 @@ begin
     FrmConversaoCFOP.Show;
     Exit;
   end;
+
+  {Mauricio Parizotto 2024-04-15 Inicio}
+  if sModulo = 'PAGAR' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaPagar = nil then
+      FrmContaPagar := TFrmContaPagar.Create(Self);
+
+    FrmContaPagar.lblNovoClick(Sender);
+    FrmContaPagar.Show;
+    Exit;
+  end;
+
+  if sModulo = 'RECEBER' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaReceber = nil then
+      FrmContaReceber := TFrmContaReceber.Create(Self);
+
+    FrmContaReceber.lblNovoClick(Sender);
+    FrmContaReceber.Show;
+    Exit;
+  end;
+
+  {Mauricio Parizotto 2024-04-15 Fim}
 
   {Sandro Silva 2024-01-17 inicio
 
@@ -34045,6 +34095,14 @@ begin
     if FrmContaBancaria <> nil then
       FreeAndNil(FrmContaBancaria);
     {Mauricio Parizotto 2024-04-05 Fim}
+
+    {Mauricio Parizotto 2024-04-16 Inicio}
+    if FrmContaPagar <> nil then
+      FreeAndNil(FrmCaixa);
+
+    if FrmContaReceber <> nil then
+      FreeAndNil(FrmCaixa);
+    {Mauricio Parizotto 2024-04-16 Fim}
   except
   end;
 end;  

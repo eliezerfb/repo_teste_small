@@ -106,6 +106,7 @@ end;
 procedure TFrmContaBancaria.AtualizaObjComValorDoBanco;
 begin
   try
+    //Plano de contas
     fraPlanoContas.TipoDePesquisa               := tpSelect;
     fraPlanoContas.GravarSomenteTextoEncontrato := True;
     fraPlanoContas.CampoCodigo                  := Form7.ibDataSet11PLANO;
@@ -114,6 +115,7 @@ begin
     fraPlanoContas.sTabela                      := 'CONTAS';
     fraPlanoContas.CarregaDescricaoCodigo;
 
+    //Instituição Financeira
     fraInstituicao.TipoDePesquisa               := tpSelect;
     fraInstituicao.GravarSomenteTextoEncontrato := True;
     fraInstituicao.CampoCodigo                  := Form7.ibDataSet11INSTITUICAOFINANCEIRA;
