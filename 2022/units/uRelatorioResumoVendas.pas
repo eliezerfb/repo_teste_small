@@ -104,8 +104,8 @@ end;
 
 procedure TfrmRelResumoVendas.AjustaLayout;
 begin
-  pnlPrincipal.Top := 16;
-  pnlSelOperacoes.Left := 184;
+  pnlPrincipal.Top := 15;
+  pnlSelOperacoes.Left := 180;
   pnlSelOperacoes.Top  := pnlPrincipal.Top;
   pnlSelOperacoes.Left := pnlPrincipal.Left;
 
@@ -595,6 +595,7 @@ begin
         Exit;
       pnlPrincipal.Visible := False;
       pnlSelOperacoes.Visible := True;
+      btnAvancar.Caption      := 'Gerar'; // Mauricio Parizotto 2024-03-20
 
       TRetornaOperacoesRelatorio.New
                                 .setDataBase(DataBase)
@@ -627,6 +628,7 @@ begin
   begin
     pnlSelOperacoes.Visible := False;
     pnlPrincipal.Visible    := True;
+    btnAvancar.Caption      := 'Avançar >'; // Mauricio Parizotto 2024-03-20
   end;
 
   btnVoltar.Enabled := (not pnlPrincipal.Visible);

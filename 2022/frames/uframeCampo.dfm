@@ -2,7 +2,7 @@ object fFrameCampo: TfFrameCampo
   Left = 0
   Top = 0
   Width = 323
-  Height = 22
+  Height = 20
   Color = clWhite
   Ctl3D = False
   ParentBackground = False
@@ -13,13 +13,14 @@ object fFrameCampo: TfFrameCampo
   PixelsPerInch = 96
   DesignSize = (
     323
-    22)
+    20)
   object txtCampo: TEdit
     Left = 0
     Top = 0
     Width = 323
-    Height = 22
+    Height = 20
     Anchors = [akLeft, akTop, akRight]
+    AutoSize = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13

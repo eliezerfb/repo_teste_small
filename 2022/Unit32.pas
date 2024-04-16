@@ -54,7 +54,7 @@ var
 
 implementation
 
-uses Unit7, Mais, Unit20, Unit34, StrUtils, uDialogs, uRetornaSQLGerencialInventario;
+uses Unit7, Mais, uFrmAssistenteProcura, Unit34, StrUtils, uDialogs, uRetornaSQLGerencialInventario;
 
 {$R *.DFM}
 

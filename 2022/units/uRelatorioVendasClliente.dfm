@@ -29,21 +29,21 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
     TabOrder = 1
     Visible = False
     object Label8: TLabel
-      Left = 8
+      Left = 0
       Top = 0
       Width = 169
       Height = 13
       Caption = 'Selecione abaixo as opera'#231#245'es que'
     end
     object Label9: TLabel
-      Left = 8
+      Left = 0
       Top = 16
       Width = 182
       Height = 13
       Caption = 'devem ser listadas (relat'#243'rio de Notas).'
     end
     object chkOperacoes: TCheckListBox
-      Left = 11
+      Left = 0
       Top = 49
       Width = 230
       Height = 106
@@ -63,9 +63,9 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
       TabOrder = 0
     end
     object btnMarcarTodosOper: TBitBtn
-      Left = 11
+      Left = 0
       Top = 158
-      Width = 94
+      Width = 100
       Height = 23
       Caption = 'Marcar todas'
       Font.Charset = DEFAULT_CHARSET
@@ -78,9 +78,9 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
       OnClick = btnMarcarTodosOperClick
     end
     object btnDesmarcarTodosOper: TBitBtn
-      Left = 110
+      Left = 130
       Top = 158
-      Width = 94
+      Width = 100
       Height = 23
       Caption = 'Desmarcar todas'
       Font.Charset = DEFAULT_CHARSET
@@ -94,7 +94,7 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
     end
   end
   object pnlPrincipal: TPanel
-    Left = 184
+    Left = 180
     Top = 16
     Width = 241
     Height = 187
@@ -102,50 +102,78 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
     Color = clWhite
     TabOrder = 0
     object Label2: TLabel
-      Left = 8
+      Left = 0
       Top = 0
-      Width = 56
+      Width = 53
       Height = 13
-      Caption = 'Per'#237'odo de:'
-      Visible = False
+      Caption = 'Per'#237'odo de'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
     end
     object Label3: TLabel
-      Left = 8
-      Top = 40
-      Width = 19
+      Left = 0
+      Top = 45
+      Width = 16
       Height = 13
-      Caption = 'At'#233':'
-      Visible = False
+      Caption = 'At'#233
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
     end
     object dtInicial: TDateTimePicker
-      Left = 8
-      Top = 14
-      Width = 225
-      Height = 21
+      Left = 0
+      Top = 15
+      Width = 212
+      Height = 20
       Date = 35796.000000000000000000
       Time = 0.376154398101789400
       DateFormat = dfLong
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 0
     end
     object dtFinal: TDateTimePicker
-      Left = 8
-      Top = 54
-      Width = 225
-      Height = 21
+      Left = 0
+      Top = 60
+      Width = 212
+      Height = 20
       Date = 35796.000000000000000000
       Time = 0.376154398101789400
       DateFormat = dfLong
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 1
     end
     object gbTipoRelatorio: TGroupBox
-      Left = 8
-      Top = 80
-      Width = 225
+      Left = 0
+      Top = 92
+      Width = 237
       Height = 49
       Caption = 'Relat'#243'rio'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 2
       object cbNota: TCheckBox
-        Left = 8
+        Left = 14
         Top = 21
         Width = 97
         Height = 17
@@ -155,7 +183,7 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
         TabOrder = 0
       end
       object cbCupom: TCheckBox
-        Left = 120
+        Left = 127
         Top = 21
         Width = 97
         Height = 17
@@ -164,11 +192,17 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
       end
     end
     object cbItemAItem: TCheckBox
-      Left = 8
-      Top = 132
+      Left = 0
+      Top = 147
       Width = 97
       Height = 17
       Caption = 'Item por item'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 3
     end
   end

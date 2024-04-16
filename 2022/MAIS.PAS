@@ -34,7 +34,7 @@ uses
   function ExecutaComando(comando:string):Boolean;  overload;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024008'; // Sandro Silva 2024-03-28 const BUILD_DO_BANCO = '2024006'; // Sandro Silva 2024-03-28 const BUILD_DO_BANCO = '2024004'; // Sandro Silva 2024-02-23 const BUILD_DO_BANCO = '2024002';
+const BUILD_DO_BANCO = '2024010'; // Sandro Silva 2024-04-16 const BUILD_DO_BANCO = '2024008'; // Sandro Silva 2024-03-28 const BUILD_DO_BANCO = '2024006'; // Sandro Silva 2024-03-28 const BUILD_DO_BANCO = '2024004';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -8594,6 +8594,8 @@ var
   Mais1ini: TIniFile;
   sCertificado: String;
 begin
+  Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
+
   Form1.ConfiguraCredencialTecnospeed;
 
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
@@ -10783,6 +10785,33 @@ begin
   if Form7.sModulo = 'ICM' then
     Exit;
 
+  //Mauricio Parizotto 2024-03-21
+  if Form7.sModulo = 'CONVERSAOCFOP' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if Form7.sModulo = 'CONVENIO' then
+    Exit;
+
+  if Form7.sModulo = 'CAIXA' then
+    Exit;
+
+  if Form7.sModulo = 'GRUPOS' then
+    Exit;
+
+  if Form7.sModulo = 'TRANSPORT' then
+    Exit;
+
+  if Form7.sModulo = 'CONTAS' then
+    Exit;
+
+  if Form7.sModulo = 'BANCOS' then
+    Exit;
+
+  if Form7.sModulo = '2CONTAS' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Fim}
+    
+
   if AllTrim(Form7.sModulo) <> '' then
   begin
     if ((Form7.sModulo = 'VENDA') or (Form7.sModulo = 'DESCONTO') or (Form7.sModulo = 'DESCONTO1')) or ((Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'FRETE')) then
@@ -11401,6 +11430,32 @@ begin
 
   //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'ICM' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if Form7.sModulo = 'CONVENIO' then
+    Exit;
+
+  if Form7.sModulo = 'CAIXA' then
+    Exit;
+
+  if Form7.sModulo = 'GRUPOS' then
+    Exit;
+
+  if Form7.sModulo = 'TRANSPORT' then
+    Exit;
+
+  if Form7.sModulo = 'CONTAS' then
+    Exit;
+
+  if Form7.sModulo = 'BANCOS' then
+    Exit;
+
+  if Form7.sModulo = '2CONTAS' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Fim}
+  
+  //Mauricio Parizotto 2024-03-21
+  if Form7.sModulo = 'CONVERSAOCFOP' then
     Exit;
 
   if Form5.Visible then
