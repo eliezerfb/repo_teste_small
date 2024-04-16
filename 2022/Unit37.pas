@@ -997,7 +997,10 @@ end;
             Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet27DESCRICAO.AsString)+' ');
             Form7.ibDataSet4.Open;
             //
-            if (Form7.ibDataSet27DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) and (Form7.ibDataSet4COMISSAO.AsFloat <> 0 ) then fPercentu := Form7.ibDataSet4COMISSAO.AsFloat else fPercentu := Form7.ibDataSet9COMISSA1.AsFloat;
+            if (Form7.ibDataSet27DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) and (Form7.ibDataSet4COMISSAO.AsFloat <> 0 ) then
+              fPercentu := Form7.ibDataSet4COMISSAO.AsFloat
+            else
+              fPercentu := Form7.ibDataSet9COMISSA1.AsFloat;
             fComissao := Form7.ibDataSet27QUANTIDADE.AsFloat * Form7.ibDataSet27UNITARIO.AsFloat * fPercentu / 100;
             //
             if CheckBox1.Checked then // Item por item
@@ -1261,7 +1264,14 @@ end;
         //
         Form7.ibDataSet27.Close;
         Form7.ibDataSet27.SelectSQL.Clear;
-        Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') and VENDEDOR='+QuotedStr(sVendedor)+' order by PEDIDO'); // A vista voltar e acertar
+        Form7.ibDataSet27.SelectSQL.Add('select');
+        Form7.ibDataSet27.SelectSQL.Add('    ALTERACA.*');
+        Form7.ibDataSet27.SelectSQL.Add('from ALTERACA');
+        Form7.ibDataSet27.SelectSQL.Add('where');
+        Form7.ibDataSet27.SelectSQL.Add('(DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio)) + ')');
+        Form7.ibDataSet27.SelectSQL.Add('and ((TIPO='+QuotedStr('BALCAO')+') or (TIPO='+QuotedStr('VENDA')+'))');
+        Form7.ibDataSet27.SelectSQL.Add('and (VENDEDOR='+QuotedStr(sVendedor)+')');
+        Form7.ibDataSet27.SelectSQL.Add('order by PEDIDO');
         Form7.ibDataSet27.Open;
         Form7.ibDataSet27.First;
         //
@@ -1270,7 +1280,12 @@ end;
         //
         while (not Form7.ibDataSet27.EOF) do
         begin
-          //
+          Form7.IBDataSet99.Close;
+          Form7.IBDataSet99.SelectSQL.Clear;
+          Form7.IBDataSet99.SelectSQL.Add('SELECT COUNT(RECEBER.REGISTRO) AS DUPLICATAS FROM RECEBER WHERE (NUMERONF=' + QuotedStr(Form7.ibDataSet27PEDIDO.AsString + Form7.ibDataSet27CAIXA.AsString) + ')');
+          Form7.IBDataSet99.Open;
+          Form7.IBDataSet99.First;
+
           if Form7.ibDataSet27PEDIDO.AsString <> sPedido then
           begin
             //
@@ -1317,7 +1332,15 @@ end;
           Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(Form7.ibDataSet27DESCRICAO.AsString)+' ');
           Form7.ibDataSet4.Open;
           //
-          if (Form7.ibDataSet27DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) and (Form7.ibDataSet4COMISSAO.AsFloat <> 0 ) then fPercentu := Form7.ibDataSet4COMISSAO.AsFloat else fPercentu := Form7.ibDataSet9COMISSA1.AsFloat;
+          if (Form7.ibDataSet27DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) and (Form7.ibDataSet4COMISSAO.AsFloat <> 0 ) then
+            fPercentu := Form7.ibDataSet4COMISSAO.AsFloat
+          else
+          begin
+            if (Form7.IBDataSet99.FieldByName('DUPLICATAS').AsInteger = 0) then
+              fPercentu := Form7.ibDataSet9COMISSA1.AsFloat
+            else
+              fPercentu := Form7.ibDataSet9COMISSA2.AsFloat;
+          end;
           fComissao := Form7.ibDataSet27QUANTIDADE.AsFloat * Form7.ibDataSet27UNITARIO.AsFloat * fPercentu / 100;
           //
           if CheckBox1.Checked then // Item por item
