@@ -48,6 +48,8 @@ const ID_FILTRAR_FORMAS_GERAM_BOLETO = 15;
 const ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA = 05;
 const ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS = 1;
 
+const VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE = 'Consulte o recibo desta NF-e'; // Sandro Silva 2024-04-16
+
 //function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
 
 function Commitatudo(RefazSelect:Boolean): Boolean;
@@ -7807,6 +7809,8 @@ end;
 { Joga p/obs a obs na tabela de icm }
 {                                   }
 function ObservacaoProduto(pP1:Boolean):Boolean;
+var
+  sSQLQuery14Old: String;
 begin
   // Relacionado ao produto
   //
@@ -7815,12 +7819,22 @@ begin
     try
       if Form7.IBQuery14.Active then
       begin
+        sSQLQuery14Old := Form7.IBQuery14.SQL.Text;
         if Pos(Alltrim(LimpaLetras(Form7.ibQuery14.FieldByname('OBS').AsString)),LimpaLetras(Form7.ibDataSet15COMPLEMENTO.AsString)) = 0 then
         begin
           {Sandro Silva 2023-11-28 inicio}
           if not (Form7.ibDataSet15.State in [dsEdit, dsInsert]) then
-            Form7.ibDataSet15.Edit; 
+            Form7.ibDataSet15.Edit;
           {Sandro Silva 2023-11-28 fim}
+          {Sandro Silva 2024-04-17 inicio}
+          // Sandro Silva 2024-04-17Precisa porque o Edit acima pode fechar a query
+          if Form7.IBQuery14.Active = False then
+          begin
+            Form7.IBQuery14.Close;
+            Form7.IBQuery14.SQL.Text := sSQLQuery14Old;
+            Form7.IBQuery14.Open;
+          end;
+          {Sandro Silva 2024-04-17 fim}
           Form7.ibDataSet15COMPLEMENTO.AsString := AllTrim(Form7.ibDataSet15COMPLEMENTO.AsString) + ' ' + Form7.ibQuery14.FieldByname('OBS').AsString; // Nunca limpa só vai acrescentando OK
         end;
       end
@@ -12872,6 +12886,11 @@ begin
   PrvisualizarDANFE1.Visible := CancelarNFe1.Visible;
   PrvisualizarDANFE1.Enabled := ((Trim(Form7.ibDataSet15.FieldByName('NFEPROTOCOLO').AsString) = '') and (Form7.ibDataSet15.FieldByName('MODELO').AsString = '55'));
   {Sandro Silva 2022-09-12 fim}
+
+  {Sandro Silva 2024-04-17 inicio}
+  if Trim(Form7.ibDataSet15.FieldByName('STATUS').AsString) = VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE then
+    N1EnviarNFe1.Enabled := False;
+  {Sandro Silva 2024-04-17 inicio}
 
   DefinirCaptionHomologacaoPopUpMenuDocs;
 end;
@@ -23580,7 +23599,8 @@ begin
 
                 if Alltrim(sRecibo) <> '' then
                 begin
-                  if Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro' then Form7.ibDataSet15STATUS.AsString := 'Consulte o recibo desta NF-e'
+                  if Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro' then
+                    Form7.ibDataSet15STATUS.AsString := VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE; //Sandro Silva 2024-04-16 Form7.ibDataSet15STATUS.AsString := 'Consulte o recibo desta NF-e'
                 end else
                 begin
                   Form7.ibDataSet15STATUS.AsString := 'Não foi possível acessar o servidor da receita.';
@@ -23783,14 +23803,14 @@ begin
               begin
                 PegaImpostosDoXML(Form7.ibDataSet15.FieldByName('NUMERONF').AsString);
               end;
-              
+
               try
                 // Relaciona a natureza da operação com o arquivo de vendas
                 if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
                   Form7.ibDataSet14.Append
                 else
                   Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-                
+
                 if Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'CAIXA' then
                 begin
                   //Mauricio Parizotto 2023-11-28
