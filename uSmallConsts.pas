@@ -115,7 +115,8 @@ const
 
   const _COR_AZUL = $00EAB231;
 
-  _RelComInstituicao = 'Instituição financeira';
+  _RelComInstituicao   = 'Instituição financeira';
+  _RelComCredenciadora = 'Credenciadora de cartão';
 
 implementation
 
