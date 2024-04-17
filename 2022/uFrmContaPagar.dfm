@@ -423,11 +423,7 @@ inherited FrmContaPagar: TFrmContaPagar
           ExplicitTop = 103
           ExplicitWidth = 313
           inherited txtCampo: TEdit
-            Left = 1
-            Top = 1
             Width = 313
-            ExplicitLeft = 1
-            ExplicitTop = 1
             ExplicitWidth = 313
           end
           inherited gdRegistros: TDBGrid

@@ -599,7 +599,7 @@ inherited FrmContaReceber: TFrmContaReceber
           OnKeyDown = PadraoKeyDown
         end
         object edtPortador: TSMALL_DBEdit
-          Left = 110
+          Left = 111
           Top = 311
           Width = 313
           Height = 20
@@ -617,6 +617,7 @@ inherited FrmContaReceber: TFrmContaReceber
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 11
+          OnKeyDown = PadraoKeyDown
         end
         object edtNotaFiscal: TSMALL_DBEdit
           Left = 110
@@ -835,7 +836,7 @@ inherited FrmContaReceber: TFrmContaReceber
         object edtBandeira: TSMALL_DBEdit
           Left = 574
           Top = 103
-          Width = 94
+          Width = 313
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -952,7 +953,9 @@ inherited FrmContaReceber: TFrmContaReceber
           MaxLength = 32768
           ParentFont = False
           TabOrder = 23
-          OnKeyDown = PadraoKeyDown
+          OnEnter = memContatosEnter
+          OnExit = memContatosExit
+          OnKeyDown = memContatosKeyDown
         end
       end
     end
@@ -963,7 +966,7 @@ inherited FrmContaReceber: TFrmContaReceber
   end
   object DSCliente: TDataSource
     DataSet = Form7.IBDataSet2
-    Left = 454
-    Top = 281
+    Left = 673
+    Top = 65
   end
 end

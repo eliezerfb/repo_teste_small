@@ -38,6 +38,7 @@ type
     procedure lblNovoClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure btnReplicarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -56,7 +57,9 @@ implementation
 
 uses
   unit7
-  , smallfunc_xe;
+  , smallfunc_xe
+  , uPermissaoUsuario
+  , MAIS;
 
 procedure TFrmContaPagar.btnReplicarClick(Sender: TObject);
 var
@@ -75,6 +78,7 @@ begin
   begin
     vCampo[1] := 'A';
   end;
+
   vCampo[2] := Form7.ibDataSet8HISTORICO.AsString;                 // Histórico
   vCampo[3] := Form7.ibDataSet8VALOR_DUPL.AsFloat;                 // Valor
   vCampo[4] := Form7.ibDataSet8EMISSAO.AsDateTime;                 // Emissão
@@ -89,7 +93,6 @@ begin
           if Pos(' dez ',vCampo[2]) <> 0 then vCampo[2] := strtran(vCampo[2],' dez '  ,' jan ') else
             if Pos(' dez.',vCampo[2]) <> 0 then vCampo[2] := strtran(vCampo[2],' dez.'  ,' jan.') else
             begin
-              //
               vCampo[2] := strtran(vCampo[2],'novembro'  ,'dezembro');
               vCampo[2] := strtran(vCampo[2],'outubro'   ,'novembro');
               vCampo[2] := strtran(vCampo[2],'setembro'  ,'outubro');
@@ -101,7 +104,7 @@ begin
               vCampo[2] := strtran(vCampo[2],'março'     ,'abril');
               vCampo[2] := strtran(vCampo[2],'fevereiro' ,'março');
               vCampo[2] := strtran(vCampo[2],'janeiro'   ,'fevereiro');
-              //
+
               vCampo[2] := strtran(vCampo[2],'NOVEMBRO'  ,'DEZEMBRO');
               vCampo[2] := strtran(vCampo[2],'OUTUBRO'   ,'NOVEMBRO');
               vCampo[2] := strtran(vCampo[2],'SETEMBRO'  ,'OUTUBRO');
@@ -113,7 +116,7 @@ begin
               vCampo[2] := strtran(vCampo[2],'MARÇO'     ,'ABRIL');
               vCampo[2] := strtran(vCampo[2],'FEVEREIRO' ,'MARÇO');
               vCampo[2] := strtran(vCampo[2],'JANEIRO'   ,'FEVEREIRO');
-              //
+
               vCampo[2] := strtran(vCampo[2],' NOV '  ,' DEZ ');
               vCampo[2] := strtran(vCampo[2],' OUT '  ,' NOV ');
               vCampo[2] := strtran(vCampo[2],' SET '  ,' OUT ');
@@ -125,7 +128,7 @@ begin
               vCampo[2] := strtran(vCampo[2],' MAR '  ,' ABR ');
               vCampo[2] := strtran(vCampo[2],' FEV '  ,' MAR ');
               vCampo[2] := strtran(vCampo[2],' JAN '  ,' FEV ');
-              //
+
               vCampo[2] := strtran(vCampo[2],' NOV.'  ,' DEZ.');
               vCampo[2] := strtran(vCampo[2],' OUT.'  ,' NOV.');
               vCampo[2] := strtran(vCampo[2],' SET.'  ,' OUT.');
@@ -137,7 +140,7 @@ begin
               vCampo[2] := strtran(vCampo[2],' MAR.'  ,' ABR.');
               vCampo[2] := strtran(vCampo[2],' FEV.'  ,' MAR.');
               vCampo[2] := strtran(vCampo[2],' JAN.'  ,' FEV.');
-              //
+
               vCampo[2] := strtran(vCampo[2],' nov.'  ,' dez.');
               vCampo[2] := strtran(vCampo[2],' out.'  ,' nov.');
               vCampo[2] := strtran(vCampo[2],' set.'  ,' out.');
@@ -160,6 +163,9 @@ begin
   Form7.ibDataSet8NOME.AsString         := vCampo[6]; // Nome do Fornecedor
   Form7.ibDataSet8CONTA.AsString        := vCampo[7]; // Portador
   Form7.ibDataSet8.Post;
+
+  if edtDocumento.CanFocus then
+    edtDocumento.SetFocus;
 end;
 
 procedure TFrmContaPagar.DSCadastroDataChange(Sender: TObject; Field: TField);
@@ -181,6 +187,14 @@ begin
   AtualizaObjComValorDoBanco;
 end;
 
+procedure TFrmContaPagar.FormShow(Sender: TObject);
+begin
+  inherited;
+
+  if edtDocumento.CanFocus then
+    edtDocumento.SetFocus;
+end;
+
 function TFrmContaPagar.GetPaginaAjuda: string;
 begin
   Result := 'cp.htm';
@@ -194,23 +208,32 @@ begin
 
   //Contador
   tbsCadastro.Caption := GetDescritivoNavegacao;
+
+  try
+    if edtDocumento.CanFocus then
+      edtDocumento.SetFocus;
+  except
+  end;
 end;
 
 procedure TFrmContaPagar.SetaStatusUso;
 begin
   inherited;
 
-  edtDocumento.Enabled   := not(bEstaSendoUsado);
-  fraPlanoContas.Enabled := not(bEstaSendoUsado);
-  edtHistorico.Enabled   := not(bEstaSendoUsado);
-  fraFornecedor.Enabled  := not(bEstaSendoUsado);
-  edtEmissao.Enabled     := not(bEstaSendoUsado);
-  edtVencimento.Enabled  := not(bEstaSendoUsado);
-  edtValor.Enabled       := not(bEstaSendoUsado);
-  edtPago.Enabled        := not(bEstaSendoUsado);
-  edtValorPago.Enabled   := not(bEstaSendoUsado);
-  edtPortador.Enabled    := not(bEstaSendoUsado);
-  edtNotaFiscal.Enabled  := not(bEstaSendoUsado);
+  bSomenteLeitura := SomenteLeitura(Form7.sModulo,MAIS.Usuario);
+
+  edtDocumento.Enabled   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraPlanoContas.Enabled := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtHistorico.Enabled   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraFornecedor.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtEmissao.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtVencimento.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtValor.Enabled       := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPago.Enabled        := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtValorPago.Enabled   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPortador.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtNotaFiscal.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnReplicar.Enabled    := not (bSomenteLeitura);
 end;
 
 procedure TFrmContaPagar.AtualizaObjComValorDoBanco;

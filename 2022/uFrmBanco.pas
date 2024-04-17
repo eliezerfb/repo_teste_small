@@ -46,7 +46,10 @@ implementation
 
 {$R *.dfm}
 
-uses unit7;
+uses
+  unit7
+  , uPermissaoUsuario
+  , MAIS;
 
 { TFrmBanco }
 
@@ -86,15 +89,17 @@ procedure TFrmBanco.SetaStatusUso;
 begin
   inherited;
 
-  edtEmissao.Enabled      := not(bEstaSendoUsado);
-  edtDocumento.Enabled    := not(bEstaSendoUsado);
-  edtHistorico.Enabled    := not(bEstaSendoUsado);
-  edtEntrada.Enabled      := not(bEstaSendoUsado);
-  edtSaida.Enabled        := not(bEstaSendoUsado);
-  edtPreDatado.Enabled    := not(bEstaSendoUsado);
-  edtCompensado.Enabled   := not(bEstaSendoUsado);
-  edtSaldo.Enabled        := not(bEstaSendoUsado);
-  edtNominal.Enabled      := not(bEstaSendoUsado);
+  bSomenteLeitura := SomenteLeitura(Form7.sModulo,MAIS.Usuario);
+
+  edtEmissao.Enabled      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtDocumento.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtHistorico.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtEntrada.Enabled      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtSaida.Enabled        := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPreDatado.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCompensado.Enabled   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtSaldo.Enabled        := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtNominal.Enabled      := not(bEstaSendoUsado) and not (bSomenteLeitura);
 end;
 
 end.

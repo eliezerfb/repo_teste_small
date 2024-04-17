@@ -4,8 +4,6 @@ inherited FrmBanco: TFrmBanco
   inherited Panel_branco: TPanel
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
-      ExplicitLeft = 10
-      ExplicitTop = 105
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label129: TLabel

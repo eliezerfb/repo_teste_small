@@ -4374,6 +4374,7 @@ procedure TForm10.DBMemo2Enter(Sender: TObject);
 begin
   sContatos := Form7.IBDataSet2CONTATOS.AsString;
 
+  (*Mauricio Parizotto 2024-04-16
   if Form7.sModulo = 'RECEBER' then
   begin
     try
@@ -4385,6 +4386,7 @@ begin
       DBMemo2.Visible := False;
     end;
   end else
+  *)
   begin
     if Form7.ArquivoAberto.Modified then Form7.ArquivoAberto.Post;
     Form7.ArquivoAberto.Edit;
@@ -4410,6 +4412,7 @@ begin
     /////////////////////////////////////////////// 2022-07-21
   end;
 
+  {Mauricio Parizotto 2024-04-16
   if Form7.sModulo = 'RECEBER' then
   begin
     try
@@ -4420,6 +4423,7 @@ begin
       Form7.IBDataSet2.Cancel;
     end;
   end else
+  }
   begin
     try
       if Form7.ArquivoAberto.Modified then Form7.ArquivoAberto.Post;

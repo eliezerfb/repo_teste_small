@@ -70,6 +70,11 @@ type
     procedure btnOKClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure fraClienteExit(Sender: TObject);
+    procedure memContatosExit(Sender: TObject);
+    procedure memContatosEnter(Sender: TObject);
+    procedure memContatosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -77,6 +82,10 @@ type
     procedure AtualizaObjComValorDoBanco;
     procedure AlteracaoInstituicaoFinanceira;
     procedure CarregaCliente;
+
+    var
+    sContatos : String;
+    bProximo : Boolean;
   public
     { Public declarations }
   end;
@@ -91,7 +100,12 @@ implementation
 uses
   unit7
   , smallfunc_xe
-  , uSmallConsts, uFuncoesBancoDados;
+  , uSmallConsts
+  , uFuncoesBancoDados
+  , uDialogs
+  , MAIS3
+  , uPermissaoUsuario
+  , MAIS;
 
 procedure TFrmContaReceber.btnOKClick(Sender: TObject);
 begin
@@ -144,6 +158,7 @@ begin
   begin
     vCampo[1] := 'A';
   end;
+
   vCampo[2] := Form7.ibDataSet7HISTORICO.AsString;                 // Histórico
   vCampo[3] := Form7.ibDataSet7VALOR_DUPL.AsFloat;                 // Valor
   vCampo[4] := Form7.ibDataSet7EMISSAO.AsDateTime;                 // Emissão
@@ -229,6 +244,9 @@ begin
   Form7.ibDataSet7CONTA.AsString        := vCampo[7]; // Plano de contas
 
   Form7.ibDataSet7.Post;                              // Grava
+
+  if edtDocumento.CanFocus then
+    edtDocumento.SetFocus;
 end;
 
 procedure TFrmContaReceber.DSCadastroDataChange(Sender: TObject; Field: TField);
@@ -273,6 +291,14 @@ begin
   end;
 end;
 
+procedure TFrmContaReceber.FormShow(Sender: TObject);
+begin
+  inherited;
+
+  if edtDocumento.CanFocus then
+    edtDocumento.SetFocus;
+end;
+
 procedure TFrmContaReceber.fraClienteExit(Sender: TObject);
 begin
   inherited;
@@ -294,12 +320,106 @@ begin
 
   //Contador
   tbsCadastro.Caption := GetDescritivoNavegacao;
+
+  try
+    if edtDocumento.CanFocus then
+      edtDocumento.SetFocus;
+  except
+  end;
+end;
+
+procedure TFrmContaReceber.memContatosEnter(Sender: TObject);
+begin
+  inherited;
+
+  sContatos := Form7.IBDataSet2CONTATOS.AsString;
+
+  try
+    if Form7.IBDataSet2.Modified then Form7.IBDataSet2.Post;
+    Form7.IBDataSet2.Edit;
+  except
+    MensagemSistema('Este registro esá sendo usado por outro usuário.',msgAtencao);
+    memContatos.Visible := False;
+  end;
+
+  SendMessage(memContatos.Handle, WM_VSCROLL, SB_BOTTOM, 0); //vai pra ultima linha
+  SendMessage(memContatos.Handle, WM_HSCROLL, SB_RIGHT, 0); //vai pra ultima coluna
+  memContatos.SelStart := Length(memContatos.Text); //move o cursor pra o final da ultima linha
+  memContatos.SetFocus;
+end;
+
+procedure TFrmContaReceber.memContatosExit(Sender: TObject);
+begin
+  inherited;
+
+  if StrTran(StrTran(StrTran(Form7.IBDataSet2CONTATOS.AsString,chr(10),''),chr(13),''),' ','') <> StrTran(StrTran(StrTran(sContatos,chr(10),''),chr(13),''),' ','') then
+  begin
+    if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset2.Edit;
+
+    Form7.IBDataSet2CONTATOS.AsString := Form7.IBDataSet2CONTATOS.AsString +chr(10) +'('+Senhas.UsuarioPub+') '+StrZero(Year(Date),4,0)+'-'+StrZero(Month(Date),2,0)+'-'+StrZero(day(Date),2,0)+' '+TimeToStr(Time);
+  end;
+
+  try
+    if Form7.IBDataSet2.Modified then
+      Form7.IBDataSet2.Post;
+  except
+    MensagemSistema('Não foi possível gravar o assunto do contato - Este registro está sendo usado por outro usuário.',msgAtencao);
+    Form7.IBDataSet2.Cancel;
+  end;
+
+  Form7.ArquivoAberto.Edit;
+end;
+
+procedure TFrmContaReceber.memContatosKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+
+  if Key = VK_RETURN then
+  begin
+    if bProximo then
+    begin
+      Perform(Wm_NextDlgCtl,0,0);
+    end
+    else
+      bProximo := True;
+  end
+  else
+  	bProximo := False;
 end;
 
 procedure TFrmContaReceber.SetaStatusUso;
 begin
   inherited;
 
+  bSomenteLeitura := SomenteLeitura(Form7.sModulo,MAIS.Usuario);
+
+  edtDocumento.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraPlanoContas.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtHistorico.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraCliente.Enabled      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtEmissao.Enabled      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtVencimento.Enabled   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtMovimento.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtDtQuitacao.Enabled   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtValor.Enabled        := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtValorQuitado.Enabled := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtValorAtual.Enabled   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPortador.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCodBarra.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtNossoNum.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtNotaFiscal.Enabled   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraInstituicao.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraFormaPag.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtAutorizacao.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtBandeira.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtContato.Enabled      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtTelefone.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCelular.Enabled      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtEmail.Enabled        := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  memContatos.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnReplicar.Enabled     := not (bSomenteLeitura);
 end;
 
 

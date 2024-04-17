@@ -275,7 +275,7 @@ begin
 
     DSCadastro.DataSet.EnableControls;
   end;
-  
+
   VerificandoUso := False;
 
   SetaStatusUso;

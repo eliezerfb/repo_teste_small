@@ -2455,7 +2455,7 @@ type
     procedure FechaModulos;
     procedure EscolheOclifor(Sender: TObject);
     procedure FormShowModulos(Mais1Ini : tIniFile; var sSerieNFSelecionada : string);
-    function SomenteLeitura: Boolean;
+    //function SomenteLeitura: Boolean;
     procedure MarcaColunaOrderBy;
     procedure RegistraExclusaoRegistro(AoDataSet: TDataSet; AcModulo: String = ''; AcHistoricoExtra: String = '');
     function RetornarHistoricoPorModulo: String;
@@ -2688,7 +2688,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmPlanoContas
   , uFrmConvenio
   , uFrmContaPagar
-  , uFrmContaReceber;
+  , uFrmContaReceber, uPermissaoUsuario;
 
 {$R *.DFM}
 
@@ -11077,7 +11077,7 @@ begin
     dbGrid1.DataSource := Form7.DataSource13;
     Form4.Close;
 
-    bSoLeitura := SomenteLeitura;
+    bSoLeitura := SomenteLeitura(sModulo,Usuario);
 
     {$Region '//// Permisões Usuários'}
 
@@ -35619,6 +35619,7 @@ begin
 end;
 
 
+(*Mauricio Parizotto 2024-04-17
 function TForm7.SomenteLeitura : Boolean;
 var
   Mais1Ini : TiniFile;
@@ -35672,6 +35673,7 @@ begin
   except
   end;
 end;
+*)
 
 
 procedure TForm7.MarcaColunaOrderBy;

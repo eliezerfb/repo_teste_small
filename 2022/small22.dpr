@@ -253,7 +253,8 @@ uses
   uFrmBanco in 'uFrmBanco.pas' {FrmBanco},
   uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria},
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
-  uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar};
+  uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
+  uPermissaoUsuario in 'uPermissaoUsuario.pas';
 
 {$R *.RES}
 
