@@ -28862,7 +28862,7 @@ begin
 
                                     PAGE := pdf.AddPage;
                                     PAGE.PageLandscape := False;
-                                    DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.MaskEdit47.Text, Form26.MaskEdit45.Text);
+                                    DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text);
                                   end;
                                 end;
                               end;
@@ -28876,11 +28876,7 @@ begin
 
                         Form7.ibDataSet7.GotoBookmark(MyBookMark1);
 
-                          //Mauricio Parizotto 2024-02-19
-                          if Form25.sFormatoBoleto = 'Padrão' then
-                            DesenhaBoletoLayoutPadrao(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text)
-                          else
-                            DesenhaBoletoLayoutCarne(PDF.VCLCanvas, grPDF, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text,1);
+                        PDF.SaveToFile(sArquivoPDF);
 
                         // Fecha o pdf
                         if FileExists(sArquivoPDF) then
@@ -29010,9 +29006,9 @@ begin
                   //
                   sMsg := StrTran(sMsg,'<TOTAL_ATUALIZADO>'    ,AllTrim(Format('%12.2n',[Form7.IBQuery1.FieldByName('SUM').AsFloat])));
                 end;
-                
+
                 EnviarEMail('', sEmail, '', PChar(sAssunto), PChar(sMSG), PChar(sArquivo), False);
-                
+
                 I := I + 1;
 
                 Mais1ini := TIniFile.Create('frente.ini');
@@ -29026,7 +29022,7 @@ begin
                 Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mail´s enviados.';
                 Form7.Panel1.Repaint;
               end;
-              
+
               sMandados := sMandados + Form7.ibDataSet7NOME.AsString;
             except end;
          end;
