@@ -177,68 +177,6 @@ procedure TForm25.FormShow(Sender: TObject);
 begin
   EventoShow;
 
-      Form26.MaskEdit51.Text  := Mais1Ini.ReadString(Form1.sEscolhido,'Repetir a 2 coluna em','00');  //     Repetir a 2 coluna em
-
-      Edit1.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Local','');      //     local de pagamento ---> 1    4
-      Edit2.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Espécie','DM');  //      espécie documento ---> 5   32
-      Edit3.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Aceite','');     //                 aceite ---> 5   36
-
-      Edit4.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções1','');  // linha 1 das instruções ---> 10   4
-      Edit5.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções2','');  // linha 2 das instruções ---> 10   4
-      Edit6.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções3','');  // linha 3 das instruções ---> 10   4
-      Edit7.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Instruções4','');  // linha 4 das instruções ---> 10   4
-
-      Form26.MaskEdit42.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Código do banco','');
-      Form26.MaskEdit43.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Carteria','');
-      Form26.MaskEdit50.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Código do convênio','');
-      Form26.MaskEdit44.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Agência','');
-      Form26.MaskEdit46.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Conta','');
-      Form26.MaskEdit45.Text := Mais1Ini.ReadString(Form1.sEscolhido,'Livre','0000000000000000000000000');
-
-      if Form26.MaskEdit45.Text = 'XXXXXXccccccccNNNNNNNNNKK' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('AILOS');
-      if Form26.MaskEdit45.Text = '11YY2NNNNNVAAAAAACCCCC10D' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('SICREDI');
-      if Form26.MaskEdit45.Text = '1aaaa01cccccccnnnnnnnS0PP' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('SICOOB');
-      if Form26.MaskEdit45.Text = 'CCCCCCC00010004NNNNNNNNND' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Caixa Econômica');
-      if Form26.MaskEdit45.Text = '000000xxxxxxxnnnnnnnnnnkk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banco do Brasil 7 posições');
-      if Form26.MaskEdit45.Text = 'XXXXXXnnnnnaaaa000ccccckk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banco do Brasil 6 posições');
-      if Form26.MaskEdit45.Text = 'AAAAKKNNNNNNNNNNNCCCCCCC0' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Bradesco');
-      if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Santander');
-      if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Banrisul');
-      if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Itaú');
-      if Form26.MaskEdit45.Text = 'AAAAKKKXXXXXXXNNNNNNNNNNN' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Inter');
-      if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unibanco');
-      if Form26.MaskEdit45.Text = 'AAAACCCCCCCCCCNNNNNNNNNNN' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unicred'); //Mauricio Parizotto 202-12-07
-
-      if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB400','') = 'Sim' then
-        Form26.chkCNAB400.State := cbChecked
-      else
-        Form26.chkCNAB400.State := cbUnchecked;
-
-      if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB240','') = 'Sim' then
-        Form26.chkCNAB240.State := cbChecked
-      else
-        Form26.chkCNAB240.State := cbUnchecked;
-
-      // Data atualizada com juros de mora
-      if Mais1Ini.ReadString(Form1.sEscolhido,'Mora','Não') = 'Sim' then
-      begin
-        Form25.chkDataAtualizadaJurosMora.Checked := True; // Sandro Silva 2022-12-28 Form25.CheckBox1.Checked := True;
-      end else
-      begin
-        Form25.chkDataAtualizadaJurosMora.Checked := False; // Sandro Silva 2022-12-28 Form25.CheckBox1.Checked := False;
-      end;
-
-
-      //Mauricio Parizotto 2023-10-02
-      sTipoMulta := Mais1Ini.ReadString('Outros','Tipo multa','Percentual');
-      vMulta := Mais1Ini.ReadFloat('Outros','Multa',0);
-
-      Mais1Ini.Free;
-    end;
-  except
-
-  end;
-
   if btnImprimirTodos.CanFocus then // Sandro Silva 2022-12-23 if Button4.CanFocus then
     btnImprimirTodos.SetFocus; // Sandro Silva 2022-12-23 Button4.SetFocus;
 end;
@@ -999,6 +937,7 @@ begin
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Itaú');
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unibanco');
       if Form26.MaskEdit45.Text = 'AAAACCCCCCCCCCNNNNNNNNNNN' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unicred'); //Mauricio Parizotto 202-12-07
+      if Form26.MaskEdit45.Text = 'AAAAKKKXXXXXXXNNNNNNNNNNN' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Inter');
 
       if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB400','') = 'Sim' then
         Form26.chkCNAB400.State := cbChecked
