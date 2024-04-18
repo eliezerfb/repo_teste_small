@@ -90,9 +90,9 @@ object Form24: TForm24
       object Label12: TLabel
         Left = 580
         Top = 95
-        Width = 79
+        Width = 77
         Height = 13
-        Caption = 'Data de emiss'#227'o'
+        Caption = 'Data de entrada'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
@@ -132,9 +132,9 @@ object Form24: TForm24
       object Label13: TLabel
         Left = 580
         Top = 135
-        Width = 68
+        Width = 79
         Height = 13
-        Caption = 'Data da sa'#237'da'
+        Caption = 'Data de emiss'#227'o'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
@@ -188,9 +188,9 @@ object Form24: TForm24
       object Label14: TLabel
         Left = 580
         Top = 175
-        Width = 68
+        Width = 79
         Height = 13
-        Caption = 'Hora da sa'#237'da'
+        Caption = 'Hora de emiss'#227'o'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
@@ -2984,6 +2984,23 @@ object Form24: TForm24
         ParentFont = False
         Transparent = True
       end
+      object edtFatorC: TEdit
+        Left = 15
+        Top = 167
+        Width = 120
+        Height = 22
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 3
+        Text = '1'
+        OnExit = edtFatorCExit
+        OnKeyPress = edtFatorCKeyPress
+        OnKeyUp = cboUnidadeEntradaKeyUp
+      end
       object cbDescontaICMSDesonerado: TCheckBox
         Left = 115
         Top = 343
@@ -3020,7 +3037,7 @@ object Form24: TForm24
         ParentFont = False
         TabOrder = 14
         OnExit = SMALL_DBEdit16Exit
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit44: TSMALL_DBEdit
         Left = 15
@@ -3032,7 +3049,7 @@ object Form24: TForm24
         Enabled = False
         ReadOnly = True
         TabOrder = 1
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit45: TSMALL_DBEdit
         Left = 15
@@ -3045,7 +3062,7 @@ object Form24: TForm24
         ReadOnly = True
         TabOrder = 0
         OnChange = SMALL_DBEdit45Change
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object Button2: TBitBtn
         Left = 275
@@ -3059,7 +3076,7 @@ object Form24: TForm24
         TabOrder = 7
         OnClick = Button2Click
       end
-      object ComboBox12: TComboBox
+      object cboUnidadeEntrada: TComboBox
         Left = 15
         Top = 128
         Width = 120
@@ -3072,33 +3089,11 @@ object Form24: TForm24
         Font.Style = []
         ParentFont = False
         TabOrder = 2
-        OnChange = ComboBox12Change
-        OnExit = ComboBox12Exit
-        OnKeyUp = ComboBox12KeyUp
+        OnChange = cboUnidadeEntradaChange
+        OnExit = cboUnidadeEntradaExit
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
-      object SMALL_DBEdit64: TSMALL_DBEdit
-        Left = 15
-        Top = 168
-        Width = 120
-        Height = 22
-        AutoSize = False
-        BevelInner = bvLowered
-        BevelOuter = bvNone
-        Ctl3D = True
-        DataField = 'FATORC'
-        DataSource = Form7.DataSource4
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentCtl3D = False
-        ParentFont = False
-        TabOrder = 3
-        OnExit = SMALL_DBEdit64Exit
-        OnKeyUp = ComboBox12KeyUp
-      end
-      object ComboBox13: TComboBox
+      object cboUnidadeSaida: TComboBox
         Left = 15
         Top = 208
         Width = 120
@@ -3111,9 +3106,9 @@ object Form24: TForm24
         Font.Style = []
         ParentFont = False
         TabOrder = 4
-        OnChange = ComboBox13Change
-        OnExit = ComboBox13Exit
-        OnKeyUp = ComboBox12KeyUp
+        OnChange = cboUnidadeSaidaChange
+        OnExit = cboUnidadeSaidaExit
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit51: TSMALL_DBEdit
         Left = 15
@@ -3134,7 +3129,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 8
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit55: TSMALL_DBEdit
         Left = 115
@@ -3155,7 +3150,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 12
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit54: TSMALL_DBEdit
         Left = 15
@@ -3176,7 +3171,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 11
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit52: TSMALL_DBEdit
         Left = 115
@@ -3197,7 +3192,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 9
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit53: TSMALL_DBEdit
         Left = 216
@@ -3218,7 +3213,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 10
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object SMALL_DBEdit56: TSMALL_DBEdit
         Left = 216
@@ -3239,7 +3234,7 @@ object Form24: TForm24
         ParentCtl3D = False
         ParentFont = False
         TabOrder = 13
-        OnKeyUp = ComboBox12KeyUp
+        OnKeyUp = cboUnidadeEntradaKeyUp
       end
       object btnPrecificar: TBitBtn
         Left = 150
@@ -3306,7 +3301,7 @@ object Form24: TForm24
       Top = 760
       Width = 100
       Height = 30
-      Caption = 'Ok'
+      Caption = 'OK'
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -3322,12 +3317,12 @@ object Form24: TForm24
     Left = 704
     Top = 6
     object Incluirnovoitemnoestoque1: TMenuItem
-      Caption = 'Incluir novo item no estoque...'
+      Caption = 'Incluir novo item no estoque'
       Visible = False
       OnClick = Incluirnovoitemnoestoque1Click
     end
     object Incluirnovocliente1: TMenuItem
-      Caption = 'Incluir novo fornecedor...'
+      Caption = 'Incluir novo fornecedor'
       Visible = False
       OnClick = Incluirnovocliente1Click
     end

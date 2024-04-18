@@ -186,7 +186,8 @@ begin
       sFormaDeCadastrar      := '1';
       sTipoDocumento         := '1';
       sEspecieDoTitulo       := '02';
-      sNumeroDeDiasParaBaixa := '   ';
+      //sNumeroDeDiasParaBaixa := '   '; Mauricio Parizotto 2024-03-21
+      sNumeroDeDiasParaBaixa := '000';
       sCodigoParaBaixa       := '0';
       sDigitoAgencia         := '0';
       sAvisoDebitoAuto       := '2';
@@ -1056,6 +1057,10 @@ var
   vMulta : Double;
   TipoMulta : string;
 begin
+  //Mauricio Parizotto 2024-04-03
+  if Form1.fTaxa = 0 then
+    sCodigodoJurosdeMora := '5'; //Isento
+
   WriteLn(F,
           Copy(AllTrim(Form26.MaskEdit42.Text),1,3)                                                 + // 001 a 003 (003) Código do Banco na Compensação
           '0001'                                                                                    + // 004 a 007 (004) Lote de Serviço

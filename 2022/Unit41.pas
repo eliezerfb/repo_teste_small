@@ -332,29 +332,32 @@ begin
     if IBQCupom.FieldByName('Modelo').AsString <> '99' then
     begin
       Form7.ibDataSet14.DisableControls;
-      Form7.ibDataSet14.Close;
-      Form7.ibDataSet14.SelectSQL.Text := ' Select * '+
-                                          ' From ICM '+
-                                          ' Where SubString(CFOP from 1 for 1) = ''5'' '+
-                                          '   or  SubString(CFOP from 1 for 1) = ''6'' '+
-                                          '   or SubString(CFOP from 1 for 1) = ''7'' '+
-                                          ' Order by upper(NOME)';
-      Form7.ibDataSet14.Open;
-      Form7.ibDataSet14.EnableControls;
+      try
+        Form7.ibDataSet14.Close;
+        Form7.ibDataSet14.SelectSQL.Text := ' Select * '+
+                                            ' From ICM '+
+                                            ' Where ((SubString(TRIM(CFOP) from 1 for 1) = ''5'') '+
+                                            '   or  (SubString(TRIM(CFOP) from 1 for 1) = ''6'') '+
+                                            '   or (SubString(TRIM(CFOP) from 1 for 1) = ''7'')) '+
+                                            ' Order by upper(NOME)';
+        Form7.ibDataSet14.Open;
 
-      if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
-        Form7.ibDataSet14.Locate('CFOP','5929',[]);
-      if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
-        Form7.ibDataSet14.Locate('CFOP','6929',[]);
+        if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
+          Form7.ibDataSet14.Locate('CFOP','5929', [loPartialKey]);
+        if Copy(Form7.ibDataSet14CFOP.AsString,2,3) <> '929' then
+          Form7.ibDataSet14.Locate('CFOP','6929', [loPartialKey]);
 
-      if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
-      begin
-        Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
-      end else
-      begin
-        //ShowMEssage('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929'); Mauricio Parizotto 2023-10-25
-        MensagemSistema('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929',msgAtencao);
-        Exit;
+        if Copy(Form7.ibDataSet14CFOP.AsString,2,3) = '929' then
+        begin
+          Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
+        end else
+        begin
+          //ShowMEssage('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929'); Mauricio Parizotto 2023-10-25
+          MensagemSistema('A importação do Cupom Fiscal só poderá ser concluída com o CFOP 5929 ou 6929',msgAtencao);
+          Exit;
+        end;
+      finally
+        Form7.ibDataSet14.EnableControls;
       end;
     end else
     begin
@@ -510,10 +513,20 @@ begin
       begin
         if Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) <> '<CANCELADO>' then
         begin
+          {Dailon Parisotto (f-17688) 2024-04-05 Inicio
+
           if Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) = 'Desconto' then
+            Form7.ibDataSet15DESCONTO.AsFloat := Form7.ibDataSet15DESCONTO.AsFloat + (IBQCupom.FieldByName('TOTAL').AsFloat * -1);
+          }
+          if (Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) = 'Desconto')
+             or (Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) = 'Acréscimo') then
           begin
             Form7.ibDataSet15.Edit;
-            Form7.ibDataSet15DESCONTO.AsFloat := Form7.ibDataSet15DESCONTO.AsFloat + (IBQCupom.FieldByName('TOTAL').AsFloat * -1);
+            if (Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) = 'Desconto') then
+              Form7.ibDataSet15DESCONTO.AsFloat := Form7.ibDataSet15DESCONTO.AsFloat + (IBQCupom.FieldByName('TOTAL').AsFloat * -1);
+            if (Alltrim(IBQCupom.FieldByName('DESCRICAO').AsString) = 'Acréscimo') then
+              Form7.ibDataSet15DESPESAS.AsFloat := Form7.ibDataSet15DESPESAS.AsFloat + IBQCupom.FieldByName('TOTAL').AsFloat;
+          {Dailon Parisotto (f-17688) 2024-04-05 fim}
           end else
           begin
             try

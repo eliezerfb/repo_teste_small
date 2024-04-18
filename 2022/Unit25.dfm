@@ -4,8 +4,8 @@ object Form25: TForm25
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Boleto de cobran'#231'a banc'#225'ria'
-  ClientHeight = 536
-  ClientWidth = 714
+  ClientHeight = 528
+  ClientWidth = 712
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,8 +19,8 @@ object Form25: TForm25
   PixelsPerInch = 96
   TextHeight = 13
   object imgBoletoVisual: TImage
-    Left = 20
-    Top = 15
+    Left = 21
+    Top = 8
     Width = 685
     Height = 460
   end
@@ -684,7 +684,7 @@ object Form25: TForm25
     Text = 'N'
     OnKeyDown = Edit1KeyDown
   end
-  object Edit4: TEdit
+  object edtInstrucaoL1: TEdit
     Left = 28
     Top = 215
     Width = 450
@@ -702,7 +702,7 @@ object Form25: TForm25
     TabOrder = 0
     OnKeyDown = Edit1KeyDown
   end
-  object Edit5: TEdit
+  object edtInstrucaoL2: TEdit
     Left = 28
     Top = 230
     Width = 450
@@ -720,7 +720,7 @@ object Form25: TForm25
     TabOrder = 1
     OnKeyDown = Edit1KeyDown
   end
-  object Edit6: TEdit
+  object edtInstrucaoL3: TEdit
     Left = 28
     Top = 245
     Width = 450
@@ -738,7 +738,7 @@ object Form25: TForm25
     TabOrder = 2
     OnKeyDown = Edit1KeyDown
   end
-  object Edit7: TEdit
+  object edtInstrucaoL4: TEdit
     Left = 28
     Top = 260
     Width = 450

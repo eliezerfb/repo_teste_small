@@ -3,7 +3,7 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
   Top = 427
   BorderStyle = bsDialog
   Caption = 'Envio autom'#225'tico de XML'
-  ClientHeight = 248
+  ClientHeight = 264
   ClientWidth = 510
   Font.Charset = ANSI_CHARSET
   Font.Height = -11
@@ -13,12 +13,12 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   ExplicitWidth = 526
-  ExplicitHeight = 287
+  ExplicitHeight = 303
   PixelsPerInch = 96
   TextHeight = 13
   object Label4: TLabel
     Left = 200
-    Top = 150
+    Top = 168
     Width = 111
     Height = 13
     Caption = 'e-mail da contabilidade:'
@@ -40,7 +40,7 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
   end
   object edtEmailContab: TEdit
     Left = 200
-    Top = 165
+    Top = 183
     Width = 290
     Height = 19
     Font.Charset = ANSI_CHARSET
@@ -49,7 +49,7 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 4
   end
   object cbAtivarEnvio: TCheckBox
     Left = 200
@@ -68,20 +68,20 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
   end
   object btnOk: TBitBtn
     Left = 370
-    Top = 203
+    Top = 221
     Width = 120
     Height = 25
-    Caption = 'Ok'
-    TabOrder = 4
+    Caption = 'OK'
+    TabOrder = 5
     OnClick = btnOKClick
   end
   object btnCancelar: TBitBtn
     Left = 200
-    Top = 203
+    Top = 221
     Width = 120
     Height = 25
     Caption = 'Cancelar'
-    TabOrder = 5
+    TabOrder = 6
     OnClick = btnCancelarClick
   end
   object gbDocumentos: TGroupBox
@@ -147,5 +147,19 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
     Font.Style = []
     ParentFont = False
     TabOrder = 2
+  end
+  object cbIncluirRelMonofasicos: TCheckBox
+    Left = 200
+    Top = 146
+    Width = 209
+    Height = 17
+    Caption = 'Incluir relat'#243'rio de produtos monof'#225'sicos'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 3
   end
 end

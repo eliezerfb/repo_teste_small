@@ -1282,7 +1282,7 @@ object Form26: TForm26
     Top = 447
     Width = 120
     Height = 25
-    Caption = 'Ok'
+    Caption = 'OK'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -11

@@ -12,9 +12,9 @@ type
   TForm38 = class(TForm)
     Panel2: TPanel;
     Image1: TImage;
-    Button3: TBitBtn;
+    btnVoltar: TBitBtn;
     btnAvancar: TBitBtn;
-    Button2: TBitBtn;
+    btnCancelar: TBitBtn;
     Panel5: TPanel;
     Label10: TLabel;
     Label11: TLabel;
@@ -57,9 +57,9 @@ type
     btnMarcarTodos: TBitBtn;
     btnDesmarcarTodos: TBitBtn;
     procedure btnAvancarClick(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
+    procedure btnVoltarClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure Edit1Exit(Sender: TObject);
@@ -219,9 +219,12 @@ begin
           ) then
       begin
         // Cria um item para cada operação de venda
-        Button3.Enabled          := True;
+        btnVoltar.Enabled        := True;
         chkOperacoes.Visible     := True;
         pnlSelOperacoes.Visible  := True;
+        pnlSelOperacoes.BringToFront;
+
+        btnAvancar.Caption := 'Gerar';
 
         Form7.ibDataSet14.Close;
         Form7.ibDataSet14.SelectSql.Clear;
@@ -260,15 +263,17 @@ begin
           begin
             if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '1') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '2') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '3') then
             begin
-              if AllTrim(Form7.ibDataSet14NOME.AsString) <> '' then
+              if AllTrim(Form7.ibDataSet14NOME.AsString) <> EmptyStr then
+              begin
                 chkOperacoes.Items.add(Form7.ibDataSet14NOME.AsString);
 
-              if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,5) = 'CAIXA') or (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,5) = 'PAGAR') then
-              begin
-                chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := True;
-              end else
-              begin
-                chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := False;
+                if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,5) = 'CAIXA') or (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.Value),1,5) = 'PAGAR') then
+                begin
+                  chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := True;
+                end else
+                begin
+                  chkOperacoes.Checked[(chkOperacoes.Items.Count -1)] := False;
+                end;
               end;
             end;
           end;
@@ -342,7 +347,7 @@ begin
           RelatorioPisCofinsCupom(F,dInicio,dFinal);
         end;
 
-        if Form7.sModulo = 'Complemento/Restituição por ICMS ST...' then
+        if Form7.sModulo = 'Complemento/Restituição por ICMS ST' then
         begin
           RelatorioCompleRestICMS_ST(F,dInicio,dFinal);
         end;
@@ -526,16 +531,22 @@ begin
   end;
 end;
 
-procedure TForm38.Button2Click(Sender: TObject);
+procedure TForm38.btnCancelarClick(Sender: TObject);
 begin
   Form38.Caption := 'Cancelar';
-  FechaForm38(True);
+  {Mauricio Parizotto 2024-03-01 Inicio}
+  //FechaForm38(True);
+  Form7.sModulo := Form7.sModuloAnterior;
+  Form38.Tag    := 0;
+  Close;
+  {Mauricio Parizotto 2024-03-01 Fim}
 end;
 
 procedure TForm38.FormActivate(Sender: TObject);
 var
   Mais1Ini : TIniFile;
 begin
+  {Mauricio Parizotto 2024-03-20
   Image1.Picture := Form7.imgImprimir.Picture;
 
   if Form7.sModulo = 'Auditoria' then
@@ -589,15 +600,18 @@ begin
     DefinirEnabledListarCodigo;
   end;
   
-  Button3Click(Button3);
+  btnVoltarClick(btnVoltar);
+  }
 end;
 
 
-procedure TForm38.Button3Click(Sender: TObject);
+procedure TForm38.btnVoltarClick(Sender: TObject);
 begin
-  button3.Enabled         := False;
+  btnVoltar.Enabled       := False;
   pnlSelOperacoes.Visible := False;
   chkOperacoes.visible    := False;
+
+  btnAvancar.Caption := 'Avançar >'; //Mauricio Parizotto 2024-03-20
 
   Form38.Caption          := Form7.sModulo;
   if Form7.sModulo =  'Relatório de compras' then RadioButton1.Caption := 'Relatório de crédito de ICMS'
@@ -668,8 +682,80 @@ begin
 end;
 
 procedure TForm38.FormShow(Sender: TObject);
+var
+  Mais1Ini : TIniFile;
 begin
+  {Mauricio Parizotto 2024-03-20 Inicio}
   Form38.Tag := 1;
+
+  Image1.Picture := Form7.imgImprimir.Picture;
+
+  if Form7.sModulo = 'Auditoria' then
+  begin
+    Form38.ComboBox1.Items.Clear;
+    try
+      Form7.IBDataSet100.Close;
+      Form7.IBDataSet100.SelectSQL.Clear;
+      Form7.IBDataSet100.SelectSQL.Add('select USUARIO from AUDIT0RIA group by USUARIO');
+      Form7.IBDataSet100.Open;
+      while not Form7.IBDataSet100.Eof do
+      begin
+        Form38.ComboBox1.Items.Add(Form7.IBDataSet100.FieldByname('USUARIO').AsString);
+        Form7.IBDataSet100.Next;
+      end;
+    except
+    end;
+  end;
+
+  Form7.IBDataSet100.Close;
+
+  Form38.ComboBox1.Text := Form2.Usuario.Text;
+  if not Form7.ibDataSet4.Active then
+    Form7.ibDataSet4.Open;
+
+  Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
+  DateTimePicker1.Date := StrtoDate(Mais1Ini.ReadString('Outros','Período Inicial',DateToStr(Date-360)));
+  DateTimePicker2.Date := StrtoDate(Mais1Ini.ReadString('Outros','Período Final',DateToStr(Date)));
+  Mais1Ini.Free;
+  if Form7.sModulo = 'Ranking de devedores' then
+  begin
+    Form38.ComboBox1.Items.Clear;
+    Form38.ComboBox1.Items.Add('Últimos três meses');
+    Form38.ComboBox1.Items.Add('Últimos doze meses');
+    Form38.ComboBox1.Items.Add('Todos');
+    Form38.ComboBox1.ItemIndex := 0;
+  end;
+
+  cbListarCodigos.Enabled := False;
+  cbListarCodigos.TabStop := False;
+  if Form7.sModulo = _cRelVendaCupom then
+  begin
+    cbListarCodigos.Top := DateTimePicker2.Top + DateTimePicker2.Height + 5;
+    cbListarCodigos.Left := DateTimePicker2.Left;
+    cbListarCodigos.Enabled := True;
+    cbListarCodigos.TabStop := True;
+  end else
+  begin
+    cbListarCodigos.Top  := rbItemPorITem.Top + rbItemPorITem.Height + 5;
+    cbListarCodigos.Left := rbItemPorITem.Left + 16;
+    DefinirEnabledListarCodigo;
+  end;
+
+  btnVoltarClick(btnVoltar);
+
+  btnAvancar.Caption := 'Gerar';
+
+  if (chkOperacoes.Visible = False)
+        and ((Form7.sModulo = 'Relatório de vendas')
+          or (Form7.sModulo = 'Relatório de compras')
+          or (Form7.sModulo = 'Resumo das vendas')
+          or (Form7.sModulo = 'Curva ABC de clientes') // Mauricio Parizotto 2023-05-24
+          ) then
+  begin
+    btnAvancar.Caption := 'Avançar >';
+  end;
+
+  {Mauricio Parizotto 2024-03-20 Fim}
 end;
 
 function TForm38.StrToFloatFormat(sFormato: String; Valor: Real): Real;
@@ -4557,7 +4643,16 @@ begin
 
   Form7.ibDataSet27.Close;
   Form7.ibDataSet27.SelectSQL.Clear;
-  Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') and (CST_PIS_COFINS=''04'') order by DATA, PEDIDO');
+  Form7.ibDataSet27.SelectSQL.Add('select');
+  Form7.ibDataSet27.SelectSQL.Add('*');
+  Form7.ibDataSet27.SelectSQL.Add('from ALTERACA');
+  Form7.ibDataSet27.SelectSQL.Add('where (DATA<='+QuotedStr(DateToStrInvertida(dFinal))+') and (DATA>='+QuotedStr(DateToStrInvertida(dInicio))+')');
+  Form7.ibDataSet27.SelectSQL.Add('and ((TIPO='+QuotedStr('BALCAO')+') or (TIPO='+QuotedStr('VENDA')+')) and (CST_PIS_COFINS=''04'')');
+  {Dailon Parisotto (f-142) 2024-02-19 Inicio}
+  // Validação para desconsiderar gerencial
+  Form7.ibDataSet27.SelectSQL.Add('AND (COALESCE((SELECT COALESCE(MODELO,'''') FROM NFCE WHERE (NFCE.CAIXA=ALTERACA.CAIXA) AND (NFCE.NUMERONF=ALTERACA.PEDIDO)),'''') <> ''99'')');
+  {Dailon Parisotto (f-142) 2024-02-19 Fim}
+  Form7.ibDataSet27.SelectSQL.Add('order by DATA, PEDIDO');
   Form7.ibDataSet27.Open;
   Form7.ibDataSet27.First;
 

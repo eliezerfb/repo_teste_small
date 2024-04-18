@@ -224,6 +224,7 @@ begin
 
     if Form1.sModoDbug = 'S0S' then
     begin
+      DeleteFile(PChar(Form1.sAtual+'\dbug.txt'));
       AssignFile(F,pChar(Form1.sAtual+'\dbug.txt'));  // Direciona o arquivo F para EXPORTA.TXT
       Rewrite(F);
       Writeln(F,fNFe);

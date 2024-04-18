@@ -76,7 +76,7 @@ var
 implementation
 
 uses uIconesSistema
-    , Unit20
+    , uFrmAssistenteProcura
     , uVisualizaCadastro
     , uFuncoesBancoDados
     , smallfunc_xe;
@@ -214,7 +214,7 @@ end;
 procedure TFrmFichaPadrao.lblProcurarClick(Sender: TObject);
 begin
   inherited;
-  Form20.ShowModal;
+  FrmAssistenteProcura.ShowModal;
 end;
 
 procedure TFrmFichaPadrao.lblVisualizarClick(Sender: TObject);

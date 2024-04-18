@@ -7,7 +7,10 @@ uses
   uemissornfse in 'uemissornfse.pas' {FEmissorNFSe},
   uconstantes_chaves_privadas in '..\..\..\uconstantes_chaves_privadas.pas',
   ucredencialtecnospeed in '..\..\..\componentes\Smallsoft\ucredencialtecnospeed.pas',
-  uconfiguracaonfse in 'uconfiguracaonfse.pas' {FConfiguracaoNFSe};
+  uconfiguracaonfse in 'uconfiguracaonfse.pas' {FConfiguracaoNFSe},
+  SmallFunc in '..\2022\SmallFunc.pas',
+  uTestaEmail in '..\..\unit_compartilhada\uTestaEmail.pas',
+  uITestaEmail in '..\..\unit_compartilhada\interfaces\uITestaEmail.pas';
 
 {$R *.res}
 

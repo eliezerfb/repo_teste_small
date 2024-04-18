@@ -9,8 +9,8 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitWidth = 864
-  ExplicitHeight = 674
+  ExplicitWidth = 858
+  ExplicitHeight = 657
   PixelsPerInch = 96
   TextHeight = 16
   object Panel_branco: TPanel
@@ -839,9 +839,9 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
         842
         40)
       object btnOK: TBitBtn
-        Left = 710
+        Left = 712
         Top = 8
-        Width = 122
+        Width = 120
         Height = 25
         Anchors = [akLeft, akTop, akRight]
         Caption = '&Ok'
@@ -910,8 +910,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 4
-      ExplicitTop = 86
     end
   end
   object DSCadastro: TDataSource

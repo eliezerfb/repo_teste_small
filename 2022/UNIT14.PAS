@@ -28,9 +28,10 @@ type
     procedure FormCreate(Sender: TObject);
     procedure Button2Click(Sender: TObject);
   private
-    { Private declarations }
+    FbQuebraLinha: Boolean;
+    function RetornarQuebraLinhaHTML: String;
   public
-    { Public declarations }
+    property QuebraLinha: Boolean read FbQuebraLinha write FbQuebraLinha;
   end;
 
 var
@@ -767,12 +768,12 @@ begin
               begin
                 WriteLn(F,'    </tr>');
                 WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-                WriteLn(F,'        <td colspan='+StrZero(iColunas,3,0)+'>'+'<img src="'+LimpaNome(Form7.ibDataSet4NOME.AsString)+'.BMP'+'" alt="'+AllTrim(Form7.ibDataSet4NOME.AsString)+'">'+'<br></td>');
+                WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' colspan='+StrZero(iColunas,3,0)+'>'+'<img src="'+LimpaNome(Form7.ibDataSet4NOME.AsString)+'.BMP'+'" alt="'+AllTrim(Form7.ibDataSet4NOME.AsString)+'">'+'<br></td>');
               end;
 
               WriteLn(F,'    </tr>');
               WriteLn(F,'    <tr bgcolor='+ Form1.sHtmlCor +'>');
-              WriteLn(F,'        <td colspan='+StrZero(iColunas,3,0)+'><font face="verdana" size=2 ><b>'+AllTrim(Form7.ibDataSet4NOME.AsString)+'<br></td>');
+              WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' colspan='+StrZero(iColunas,3,0)+'><font face="verdana" size=2 ><b>'+AllTrim(Form7.ibDataSet4NOME.AsString)+'<br></td>');
               sGRUPO := Form7.ibDataSet4NOME.AsString;
             end;
           end;
@@ -797,10 +798,10 @@ begin
                     begin
                       // Imprime o total
                       if (Pos('SALD',Form7.ArquivoAberto.Fields[I-1].Name) = 0) and (fTotal[I] - rTotal[I] <> 0) then
-                          WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
+                          WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
                               + Format('%13.'+sI+'n',[fTotal[I]-rTotal[I]]) + '<br></font></td>')
                       else
-                          WriteLn(F,'        <td align=right><br><font face="verdana" size=2></font></td>');
+                          WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><br><font face="verdana" size=2></font></td>');
 
                       rTotal[I] := fTotal[I]
                     end;
@@ -819,7 +820,7 @@ begin
               end;
               WriteLn(F,'    </tr>');
               WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-              WriteLn(F,'        <td colspan='+StrZero(iColunas,3,0)+'><font face="verdana" size=2 ><b>'+AllTrim(Form7.ibDataSet7NOME.AsString)+'<br></td>');
+              WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' colspan='+StrZero(iColunas,3,0)+'><font face="verdana" size=2 ><b>'+AllTrim(Form7.ibDataSet7NOME.AsString)+'<br></td>');
               sGRUPO := Form7.ibDataSet7NOME.AsString;
             end;
           end;
@@ -870,7 +871,7 @@ begin
           if (Form7.Caption = 'Catálogo de produtos') or (Form7.Caption = 'Álbum de fotografias') or (Form7.Caption = 'Cardápio')  or (Form7.Caption = 'Receitas') then
           begin
             WriteLn(F,'<tr bgcolor=#FFFFFF>');
-            WriteLn(F,' <td vAlign=Center Height=200 Width=200>');
+            WriteLn(F,' <td '+RetornarQuebraLinhaHTML+' vAlign=Center Height=200 Width=200>');
             begin
               if (Form7.Caption = 'Catálogo de produtos') or (Form7.Caption = 'Cardápio')  or (Form7.Caption = 'Receitas') then
               begin
@@ -927,7 +928,7 @@ begin
             end;
 
             WriteLn(F,' </td>');
-            WriteLn(F,' <td vAlign=Center>');
+            WriteLn(F,' <td '+RetornarQuebraLinhaHTML+' vAlign=Center>');
 
             for I := 1 to Form7.iCampos + jCampos do
             begin
@@ -959,10 +960,10 @@ begin
             // Ingredientes
             if (Form7.Caption = 'Receitas') then
             begin
-              WriteLn(F,'  <td width=100></td>');
+              WriteLn(F,'  <td '+RetornarQuebraLinhaHTML+' width=100></td>');
               WriteLn(F,'  <td>');
 
-              if Form7.Livrodereceitas1.Caption = 'Relatório de composição...' then
+              if Form7.Livrodereceitas1.Caption = 'Relatório de composição' then
               begin
                 WriteLn(F,'   <br><b>Composição</b><br>');
               end else
@@ -1004,7 +1005,7 @@ begin
                       if StrToInt(sI) < 0 then sI := '0';
                     except sI := '0' end;
                     //
-                    WriteLn(F,'        <td align=right valign=top><font face="verdana" size=2>'+ Format('%'+IntToStr(Form7.ArquivoAberto.Fields[I-1].DisplayWidth)+'.'+sI+'n',[Form7.ArquivoAberto.FieldByName(Form7.ArquivoAberto.Fields[I-1].FieldName).AsFloat])+'<br></font></td>');
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right valign=top><font face="verdana" size=2>'+ Format('%'+IntToStr(Form7.ArquivoAberto.Fields[I-1].DisplayWidth)+'.'+sI+'n',[Form7.ArquivoAberto.FieldByName(Form7.ArquivoAberto.Fields[I-1].FieldName).AsFloat])+'<br></font></td>');
                     if Form7.ArquivoAberto.Fields[I-1].FieldName <> 'PRECO' then
                       fTotal[I] := fTotal[I] + Form7.ArquivoAberto.Fields[I-1].AsFloat;
                   end else
@@ -1022,18 +1023,18 @@ begin
                           'from CLIFOR ' +
                           'where NOME = ' + QuotedStr(Form7.ArquivoAberto.Fields[I-1].AsString);
                         IBQCLIENTE.Open;
-                        WriteLn(F,'        <td align=left valign=top '+sCor+'><font face="verdana" size=2>'+ IBQCLIENTE.FieldByName('CGC').AsString +'<br></font></td>');
-                        WriteLn(F,'        <td align=left valign=top '+sCor+'><font face="verdana" size=2>' + StrTran(Form7.ArquivoAberto.Fields[I - 1].AsString, Chr(10), '<br>') + '<br></font></td>');
+                        WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=left valign=top '+sCor+'><font face="verdana" size=2>'+ IBQCLIENTE.FieldByName('CGC').AsString +'<br></font></td>');
+                        WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=left valign=top '+sCor+'><font face="verdana" size=2>' + StrTran(Form7.ArquivoAberto.Fields[I - 1].AsString, Chr(10), '<br>') + '<br></font></td>');
                       end
                       else
-                        WriteLn(F,'        <td align=left valign=top '+sCor+'><font face="verdana" size=2>'+StrTran(Form7.ArquivoAberto.Fields[I-1].AsString,Chr(10),'<br>')+'<br></font></td>');
+                        WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=left valign=top '+sCor+'><font face="verdana" size=2>'+StrTran(Form7.ArquivoAberto.Fields[I-1].AsString,Chr(10),'<br>')+'<br></font></td>');
                     end
                     else
                     begin
                       if Form7.ArquivoAberto.Fields[I-1].DisplayName = 'e-mail' then
-                        WriteLn(F,'        <td align=left valign=top width=250><font face="verdana" size=2><a href="mailto:'+StrTran(AllTrim(Form7.ArquivoAberto.Fields[I-1].AsString),';',', ')+'">'+StrTran(AllTrim(Form7.ArquivoAberto.Fields[I-1].AsString),';',', ')+'<br></font></td>')
+                        WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=left valign=top width=250><font face="verdana" size=2><a href="mailto:'+StrTran(AllTrim(Form7.ArquivoAberto.Fields[I-1].AsString),';',', ')+'">'+StrTran(AllTrim(Form7.ArquivoAberto.Fields[I-1].AsString),';',', ')+'<br></font></td>')
                       else
-                        WriteLn(F,'        <td align=left valign=top '+sCor+'><font face="verdana" size=2>'+StrTran(Form7.ArquivoAberto.Fields[I-1].AsString,Chr(10),'<br>')+'<br></font></td>');
+                        WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=left valign=top '+sCor+'><font face="verdana" size=2>'+StrTran(Form7.ArquivoAberto.Fields[I-1].AsString,Chr(10),'<br>')+'<br></font></td>');
                     end;
                     {Sandro Silva 2022-12-19 fim}
                   end;
@@ -1049,34 +1050,34 @@ begin
                   except sI := '0' end;
                   // 1 Parcela
                   if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then
-                    WriteLn(F,'        <td align=right><font face="verdana" size=2>'
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><font face="verdana" size=2>'
                     + Format('%13.'+sI+'n',[Form7.ibDataSet4PRECO.AsFloat * ((StrToFloat(Form39.Label1.Caption) / 100)+1)]) + '<br></font></td>');
                   // 2 Parcela
                   if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then
-                    WriteLn(F,'        <td align=right><font face="verdana" size=2>'
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><font face="verdana" size=2>'
                     + Format('%13.'+sI+'n',[Form7.ibDataSet4PRECO.AsFloat * ((StrToFloat(Form39.Label2.Caption) / 100)+1)]) + '<br></font></td>');
                   // 3 Parcela
                   if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
-                    WriteLn(F,'        <td align=right><font face="verdana" size=2>'
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><font face="verdana" size=2>'
                     + Format('%13.'+sI+'n',[Form7.ibDataSet4PRECO.AsFloat * ((StrToFloat(Form39.Label3.Caption) / 100)+1)]) + '<br></font></td>');
                   // QTD X PRECO
                   if (I = Form7.iCampos + 4) and (Form39.CheckBox1.Checked) then
                   begin
-                    WriteLn(F,'        <td align=right><font face="verdana" size=2>'
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><font face="verdana" size=2>'
                     + Format('%13.'+sI+'n',[Form7.ibDataSet4PRECO.AsFloat * Form7.ibDataSet4QTD_ATUAL.AsFloat]) + '<br></font></td>');
                     fTotal[I] := fTotal[I] + Form7.ibDataSet4PRECO.AsFloat * Form7.ibDataSet4QTD_ATUAL.AsFloat;
                   end;
                   // QTD X CUSTO COMPRA
                   if (I = Form7.iCampos + 5) and (Form39.CheckBox2.Checked) then
                   begin
-                    WriteLn(F,'        <td align=right><font face="verdana" size=2>'
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><font face="verdana" size=2>'
                     + Format('%13.'+sI+'n',[Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco)) * Form7.ibDataSet4QTD_ATUAL.AsFloat]) + '<br></font></td>');
                     fTotal[I] := fTotal[I] +  Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat,StrToInt(Form1.ConfPreco)) * Form7.ibDataSet4QTD_ATUAL.AsFloat;
                   end;
                   // QTD X CUSTO MEDIO
                   if (I = Form7.iCampos + 6) and (Form39.CheckBox3.Checked) then
                   begin
-                    WriteLn(F,'        <td align=right><font face="verdana" size=2>'
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><font face="verdana" size=2>'
                     + Format('%13.'+sI+'n',[Arredonda(Form7.ibDataSet4CUSTOMEDIO.AsFloat,StrToInt(Form1.ConfPreco)) * Form7.ibDataSet4QTD_ATUAL.AsFloat]) + '<br></font></td>');
                     fTotal[I] :=  fTotal[I] + Arredonda(Form7.ibDataSet4CUSTOMEDIO.AsFloat,StrToInt(Form1.ConfPreco)) * Form7.ibDataSet4QTD_ATUAL.AsFloat;
                   end;
@@ -1087,21 +1088,21 @@ begin
                   // Recebido
                   if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then
                   begin
-                    WriteLn(F,'        <td align=right><font face="verdana" size=2>'
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><font face="verdana" size=2>'
                     + Format('%13.2n',[fRecebido]) + '<br></font></td>');
                     fTotal[I] :=  fTotal[I] + fRecebido;
                   end;
                   // Receber
                   if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then
                   begin
-                    WriteLn(F,'        <td align=right><font face="verdana" size=2>'
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><font face="verdana" size=2>'
                     + Format('%13.2n',[fReceber]) + '<br></font></td>');
                     fTotal[I] :=  fTotal[I] + fReceber;
                   end;
                   // Atrasado
                   if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
                   begin
-                    WriteLn(F,'        <td align=right><font face="verdana" size=2>'
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><font face="verdana" size=2>'
                     + Format('%13.2n',[fAtrasado]) + '<br></font></td>');
                     fTotal[I] :=  fTotal[I] +  fAtrasado;
                   end;
@@ -1137,35 +1138,35 @@ begin
                     // Endereço
                     if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then
                     begin
-                      WriteLn(F,'        <td align=Left><font face="verdana" size=2>'
+                      WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=Left><font face="verdana" size=2>'
                       + Copy(Form7.ibDataSet2ENDERE.AsString + Replicate(' ',30),1,30) + '<br></font></td>');
                     end;
 
                     // Cidade
                     if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then
                     begin
-                      WriteLn(F,'        <td align=Left><font face="verdana" size=2>'
+                      WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=Left><font face="verdana" size=2>'
                       + Copy(Form7.ibDataSet2CIDADE.AsString+Replicate(' ',30),1,20) + '<br></font></td>');
                     end;
 
                     // Telefone
                     if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
                     begin
-                      WriteLn(F,'        <td align=Left><font face="verdana" size=2>'
+                      WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=Left><font face="verdana" size=2>'
                       + Copy(Form7.ibDataSet2FONE.AsString+Replicate(' ',17),1,17) + '<br></font></td>');
                     end;
 
                     // Contato
                     if (I = Form7.iCampos + 3) and (Form39.CheckBox7.Checked) then
                     begin
-                      WriteLn(F,'        <td align=Left><font face="verdana" size=2>'
+                      WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=Left><font face="verdana" size=2>'
                       + Copy(Form7.IBDataSet2CONTATO.AsString+Replicate(' ',17),1,17) + '<br></font></td>');
                     end;
 
                     // WhatsApp
                     if (I = Form7.iCampos + 3) and (Form39.CheckBox8.Checked) then
                     begin
-                      WriteLn(F,'        <td align=Left><font face="verdana" size=2>'
+                      WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=Left><font face="verdana" size=2>'
                       + Copy(Form7.IBDataSet2WHATSAPP.AsString+Replicate(' ',17),1,17) + '<br></font></td>');
                     end;
                   end else
@@ -1173,31 +1174,31 @@ begin
                     // Endereço
                     if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then
                     begin
-                      WriteLn(F,'        <td align=Left><font face="verdana" size=2><br></font></td>');
+                      WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=Left><font face="verdana" size=2><br></font></td>');
                     end;
 
                     // Cidade
                     if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then
                     begin
-                      WriteLn(F,'        <td align=Left><font face="verdana" size=2><br></font></td>');
+                      WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=Left><font face="verdana" size=2><br></font></td>');
                     end;
 
                     // Telefone
                     if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
                     begin
-                      WriteLn(F,'        <td align=Left><font face="verdana" size=2><br></font></td>');
+                      WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=Left><font face="verdana" size=2><br></font></td>');
                     end;
 
                     // Contato
                     if (I = Form7.iCampos + 4) and (Form39.CheckBox7.Checked) then
                     begin
-                      WriteLn(F,'        <td align=Left><font face="verdana" size=2><br></font></td>');
+                      WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=Left><font face="verdana" size=2><br></font></td>');
                     end;
 
                     // WhatsApp
                     if (I = Form7.iCampos + 5) and (Form39.CheckBox8.Checked) then
                     begin
-                      WriteLn(F,'        <td align=Left><font face="verdana" size=2><br></font></td>');
+                      WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=Left><font face="verdana" size=2><br></font></td>');
                     end;
                   end;
                 end;
@@ -1233,7 +1234,7 @@ begin
               begin
                 // Imprime o total
                 if (Pos('SALD',Form7.ArquivoAberto.Fields[I-1].Name) = 0) and (fTotal[I] - rTotal[I] <> 0) then
-                    WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
                         + Format('%13.'+sI+'n',[fTotal[I]-rTotal[I]]) + '<br></font></td>')
                 else
                     WriteLn(F,'        <td align=right><br><font face="verdana" size=2></font></td>');
@@ -1267,22 +1268,22 @@ begin
               if Form7.sModulo = 'ICM' then
               begin
                  // para o módulo ICM não totaliza as colunas
-                 WriteLn(F,'        <td align=right><br><font face="verdana" size=2></font></td>');
+                 WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><br><font face="verdana" size=2></font></td>');
               end
               else
               begin
                 // Imprime o total
                 if (Pos('SALD',Form7.ArquivoAberto.Fields[I-1].Name) = 0) and (fTotal[I] <> 0) then
-                    WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
                         + Format('%13.'+sI+'n',[fTotal[I]]) + '<br></font></td>')
                 else
-                    WriteLn(F,'        <td align=right><br><font face="verdana" size=2></font></td>');
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><br><font face="verdana" size=2></font></td>');
                 {Sandro Silva 2022-12-19 inicio}
                 if Form7.sModulo = 'RECEBER' then
                 begin
                   if (Form7.ArquivoAberto.Fields[I-1].FieldName = 'NOME') and (Form1.DisponivelSomenteParaNos) then
                   begin
-                    WriteLn(F,'        <td align=right><br><font face="verdana" size=2></font></td>');
+                    WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right><br><font face="verdana" size=2></font></td>');
                   end;
                 end;
                 {Sandro Silva 2022-12-19 fim}
@@ -1293,25 +1294,25 @@ begin
             if Form7.sModulo = 'ESTOQUE' then
             begin
               // 1 Parcela
-              if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>');
+              if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>');
               // 2 Parcela
-              if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>');
+              if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>');
               // 2 Parcela
-              if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>');
+              if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>');
               // QTD X PRECO
               if (I = Form7.iCampos + 4) and (Form39.CheckBox1.Checked) then
-                if fTotal[I] = 0 then  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
-                  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
+                if fTotal[I] = 0 then  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
+                  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
                   + Format('%13.'+sI+'n',[fTotal[i]]) + '<br></font></td>');
               // QTD X CUSTO COMPRA
               if (I = Form7.iCampos + 5) and (Form39.CheckBox2.Checked) then
-                if fTotal[I] = 0 then  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
-                  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
+                if fTotal[I] = 0 then  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
+                  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
                   + Format('%13.'+sI+'n',[fTotal[i]]) + '<br></font></td>');
               // QTD X CUSTO MEDIO
               if (I = Form7.iCampos + 6) and (Form39.CheckBox3.Checked) then
-                if fTotal[I] = 0 then  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
-                  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
+                if fTotal[I] = 0 then  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
+                  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
                   + Format('%13.'+sI+'n',[fTotal[i]]) + '<br></font></td>');
             end;
 
@@ -1319,33 +1320,33 @@ begin
             begin
               // Recebido
               if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then
-                if fTotal[I] = 0 then  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
-                  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
+                if fTotal[I] = 0 then  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
+                  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
                   + Format('%13.'+sI+'n',[fTotal[i]]) + '<br></font></td>');
               // Receber
               if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then
-                if fTotal[I] = 0 then  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
-                  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
+                if fTotal[I] = 0 then  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
+                  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
                   + Format('%13.'+sI+'n',[fTotal[i]]) + '<br></font></td>');
               // Atrasado
               if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
-                if fTotal[I] = 0 then  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
-                  WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
+                if fTotal[I] = 0 then  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>') else
+                  WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2>'
                   + Format('%13.'+sI+'n',[fTotal[i]]) + '<br></font></td>');
             end;
 
             if (Form7.sModulo = 'RECEBER') then
             begin
               if (I = Form7.iCampos + 1) and (Form39.CheckBox4.Checked) then
-                WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Endereço
+                WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Endereço
               if (I = Form7.iCampos + 2) and (Form39.CheckBox5.Checked) then
-                WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Cidade
+                WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Cidade
               if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
-                WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Telefone
+                WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Telefone
               if (I = Form7.iCampos + 4) and (Form39.CheckBox7.Checked) then
-                WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Contato
+                WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // Contato
               if (I = Form7.iCampos + 5) and (Form39.CheckBox8.Checked) then
-                WriteLn(F,'        <td align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // WhatsApp
+                WriteLn(F,'        <td '+RetornarQuebraLinhaHTML+' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="verdana" size=2><br></font></td>'); // WhatsApp
             end;
           end;
         end;
@@ -1412,6 +1413,16 @@ begin
     Image1.Picture.LoadFromFile(Form1.sAtual+'\LOGOTIP.BMP')
   else
     Image1.Picture := Form1.Image1.Picture;
+
+  FbQuebraLinha := (Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR');
+end;
+
+function TForm14.RetornarQuebraLinhaHTML: String;
+begin
+  Result := EmptyStr;
+
+  if FbQuebraLinha then
+    Result := 'nowrap'
 end;
 
 procedure TForm14.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1422,6 +1433,8 @@ begin
   if Form7.Caption = 'Receitas' then Form7.Caption := 'Controle de estoque';
   if Form7.Caption = 'Álbum de fotografias' then Form7.Caption := 'Cadastro de clientes e fornecedores';
 
+  FbQuebraLinha := False;
+
   Form9.Close;
   Form39.Close;
 end;
@@ -1431,6 +1444,7 @@ procedure TForm14.FormCreate(Sender: TObject);
 begin
   Image1.Picture.Bitmap.Height :=  90;
   Image1.Picture.Bitmap.Width  := 340;
+  FbQuebraLinha := False;
 end;
 
 procedure TForm14.Button2Click(Sender: TObject);

@@ -78,7 +78,7 @@ object frmOrigemCombustivel: TfrmOrigemCombustivel
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
-    Caption = 'Ok'
+    Caption = 'OK'
     TabOrder = 1
   end
   object CDSORIGEM: TClientDataSet

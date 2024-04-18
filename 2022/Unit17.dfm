@@ -62,7 +62,7 @@ object Form17: TForm17
     end
     object Label3: TLabel
       Left = 51
-      Top = 90
+      Top = 114
       Width = 49
       Height = 13
       Alignment = taRightJustify
@@ -90,7 +90,7 @@ object Form17: TForm17
     end
     object Label5: TLabel
       Left = 76
-      Top = 140
+      Top = 90
       Width = 24
       Height = 13
       Alignment = taRightJustify
@@ -160,7 +160,7 @@ object Form17: TForm17
     end
     object Label10: TLabel
       Left = 70
-      Top = 115
+      Top = 139
       Width = 30
       Height = 13
       Alignment = taRightJustify
@@ -295,7 +295,7 @@ object Form17: TForm17
     end
     object SMALL_DBEdit3: TSMALL_DBEdit
       Left = 110
-      Top = 90
+      Top = 114
       Width = 500
       Height = 20
       AutoSize = False
@@ -311,7 +311,7 @@ object Form17: TForm17
       Font.Style = []
       ParentCtl3D = False
       ParentFont = False
-      TabOrder = 3
+      TabOrder = 4
       OnEnter = SMALL_DBEdit6Enter
       OnKeyDown = SMALL_DBEdit7KeyDown
     end
@@ -340,7 +340,7 @@ object Form17: TForm17
     end
     object SMALL_DBEdit5: TSMALL_DBEdit
       Left = 110
-      Top = 140
+      Top = 89
       Width = 82
       Height = 20
       AutoSize = False
@@ -356,8 +356,9 @@ object Form17: TForm17
       Font.Style = []
       ParentCtl3D = False
       ParentFont = False
-      TabOrder = 5
+      TabOrder = 3
       OnEnter = SMALL_DBEdit6Enter
+      OnExit = SMALL_DBEdit5Exit
       OnKeyDown = SMALL_DBEdit7KeyDown
     end
     object SMALL_DBEdit6: TSMALL_DBEdit
@@ -451,7 +452,7 @@ object Form17: TForm17
     end
     object SMALL_DBEdit10: TSMALL_DBEdit
       Left = 110
-      Top = 115
+      Top = 139
       Width = 170
       Height = 20
       AutoSize = False
@@ -467,7 +468,7 @@ object Form17: TForm17
       Font.Style = []
       ParentCtl3D = False
       ParentFont = False
-      TabOrder = 4
+      TabOrder = 5
       OnEnter = SMALL_DBEdit6Enter
       OnKeyDown = SMALL_DBEdit7KeyDown
     end
@@ -669,7 +670,7 @@ object Form17: TForm17
       Top = 5
       Width = 129
       Height = 25
-      Caption = 'Ok'
+      Caption = 'OK'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -13

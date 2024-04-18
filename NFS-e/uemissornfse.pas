@@ -297,7 +297,6 @@ end;
   {Exemplo de configuraÃ§Ã£o do componente NFSe}
 procedure TFEmissorNFSe.btnLoadConfigClick(Sender: TObject);
 begin
-  //
   {Sandro Silva 2022-12-15 inicio
   NFSe.ConfigurarSoftwareHouse(edtCNPJSoftwareHouse.Text,edtTokenSoftwareHouse.Text);
   }
@@ -313,12 +312,6 @@ begin
   //
   edtLogoEmitente.Text       := sAtual + '\logonfse.jpg';
   NFSE.LogoTipoEmitente      := sAtual + '\logonfse.jpg';
-  //
-//  lblAmbiente.Visible := (NFSe.Ambiente = akProducao);
-  //
-//  NFSe.Ambiente := akHomologacao;
-//  NFSe.Ambiente := akProducao;
-  //
 end;
 
 procedure TFEmissorNFSe.btnEnviarRPSClick(Sender: TObject);
@@ -341,17 +334,14 @@ end;
 
 procedure TFEmissorNFSe.btnImprimirClick(Sender: TObject);
 begin
-  //
   CheckConfig;
-  //
+  
   Nfse.Imprimir(mmXML.Text, mmXMLEnvio.Text,pChar(sAtual+'\NFSE\LOG\'+sNumeroDaNFSe+'.pdf'));
-  //
 end;
 
 procedure TFEmissorNFSe.btnExportarClick(Sender: TObject);
 begin
   try
-    //
     CheckConfig;
     if FileExists(pChar(sAtual+'\NFSE\smallnfse.tx2')) then
     begin
@@ -360,17 +350,14 @@ begin
     begin
       Nfse.Imprimir(mmXML.Text, mmXMLEnvio.Text,pChar(sAtual+'\NFSE\LOG\'+sNumeroDaNFSe+'.pdf'));
     end;
-    //
   except
   end;
 end;
 
 procedure TFEmissorNFSe.btnVisualizarClick(Sender: TObject);
 begin
-  //
   CheckConfig;
   Nfse.VisualizarImpressao(mmXML.Text, mmXMLEnvio.Text, OpnDlgTx2.FileName);
-  //
 end;
 
 procedure TFEmissorNFSe.cbListaCertificadosDropDown(Sender: TObject);
@@ -402,7 +389,6 @@ var
     end;
   end;
 begin
-  //
   FModoOperacao := tmoNenhum; // Sandro Silva 2023-01-25
   sTX2 := '';
   GetDir(0,sAtual);
@@ -435,7 +421,6 @@ begin
   sCidade := AnsiUpperCase(Mais1Ini.ReadString('NFSE', 'CIDADE', '')); // Sandro Silva 2023-09-06
   {Sandro Silva 2023-09-06 fim}
 
-  //
   if Mais1Ini.ReadString('NFSE','Ambiente','2') = '1' then
   begin
     RadioButton1.Checked := False;
@@ -445,67 +430,61 @@ begin
     RadioButton1.Checked := True;
     RadioButton2.Checked := False;
   end;
-  //
+
   Mais1ini.Free;
-  //
+
   FEmissorNFSe.btnLoadConfigClick(Sender);
-  //
+
   if FileExists(Pchar(sAtual+'\NFSE\smallnfse.tx2')) then
   begin
-    //
     _file := TStringList.Create;
     _file.LoadFromFile(pChar(sAtual+'\NFSE\smallnfse.tx2'));
-    //
+
     if Pos('Config=Sim',_File.Text) <> 0 then
     begin
       FModoOperacao := tmoConfiguracao; // Sandro Silva 2023-01-25
-      //
+
       btnAtualizaArquivosClick(Sender);
       Button2.Visible := True;
-      //
+
       if FileExists(Pchar(sAtual+'\NFSE\Templates\Impressao\Brasoes\'+Alltrim(edtCidade.Text)+'.JPG')) then
       begin
         Image1.Picture.LoadFromFile(Pchar(sAtual+'\NFSE\Templates\Impressao\Brasoes\'+Alltrim(edtCidade.Text)+'.JPG'));
       end;
-      //
+
       btnListarCidadesClick(Sender);
-      //
     end else
     begin
-      //
       if Pos('GerarPDF=Sim',_File.Text) <> 0 then
       begin
         FModoOperacao := tmoGeraPDF; // Sandro Silva 2023-01-25
-        //
+
         try
-          //
           AssignFile(F,Pchar(sAtual+'\NFSE\smallnfse.tx2'));  // Direciona o arquivo F para EXPORTA.TXT
           Rewrite(F);
-          //
+
           Write(F,RetornaValorDaTagNoCampo('tx2',_File.Text));
           CloseFile(F);
           Sleep(100); // Sandro Silva 2023-01-25
-          //
+
           mmXML.Text      := RetornaValorDaTagNoCampo('XMLImpressao',_File.Text);
           mmXMLEnvio.Text := RetornaValorDaTagNoCampo('XMLdeEvio',_File.Text); // Última alteração 08/08/2022 para resolver o caso de Joinvile
           sNumeroDaNFSe   := RetornaValorDaTagNoCampo('sNumeroDaNFSE',_File.Text);
-          //
+
           FEmissorNFSe.btnExportarClick(Sender);
-          //
         except
 //          on E: Exception do
 //          begin
 //            ShowMessage(E.Message);
 //          end
         end;
-        //
+
         Close;
         Winexec('TASKKILL /F /IM NFSE.EXE' , SW_HIDE );
-        //
       end else
       begin
         FModoOperacao := tmoEnvioConsulta; // Sandro Silva 2023-01-25
-        //
+
         if FileExists(Pchar(sAtual+'\NFSE\Templates\Impressao\Brasoes\'+Alltrim(edtCidade.Text)+'.JPG')) then
         begin
           Image1.Picture.LoadFromFile(Pchar(sAtual+'\NFSE\Templates\Impressao\Brasoes\'+Alltrim(edtCidade.Text)+'.JPG'));
@@ -513,42 +492,37 @@ begin
         begin
           btnAtualizaArquivosClick(Sender);
         end;
-        //
+
         try
-          //
           if RetornaValorDaTagNoCampo('Status',_File.Text) = 'EM PROCESSAMENTO' then
           begin
-            //
             edtNumeroNFSe.Text   := RetornaValorDaTagNoCampo('NumeroDaNFSe',_File.Text);
             edtNumeroRPS.Text    := RetornaValorDaTagNoCampo('NumeroDoRPS' ,_File.Text);
             edtSerieRPS.Text     := RetornaValorDaTagNoCampo('SerieDoRPS'  ,_File.Text);
             edtTipoRPS.Text      := RetornaValorDaTagNoCampo('Tipo'        ,_File.Text);
             edtNumProtocolo.Text := RetornaValorDaTagNoCampo('Protocolo'   ,_File.Text);
-            //
+            
             // Grava o NOVO TXT2
-            //
             while FileExists(Pchar(sAtual+'\NFSE\smallnfse.tx2')) do
             begin
               DeleteFile(Pchar(sAtual+'\NFSE\smallnfse.tx2'));
               Sleep(100);
             end;
-            //
+
             AssignFile(F,Pchar(sAtual+'\NFSE\smallnfse.tx2'));  // Direciona o arquivo F para EXPORTA.TXT
             Rewrite(F);
-            //
+
             Write(F,RetornaValorDaTagNoCampo('tx2',_File.Text));
             CloseFile(F);
-            //
+
             mmXMLEnvio.Text := RetornaValorDaTagNoCampo('XMLdeEvio',_File.Text);
-            //
-            //
 
             {Sandro Silva 2023-09-06 inicio}
             AddRazaoSocialParametroExtra;
             {Sandro Silva 2023-09-06 fim}
 
             btnConsultarNotaClick(Sender);
-            //
+            
             if (NFSe.Ambiente = akHomologacao) then
             begin
               FEmissorNFSe.btnVisualizarClick(Sender);
@@ -559,42 +533,36 @@ begin
                 FEmissorNFSe.btnExportarClick(Sender);
               end;
             end;
-            //
           end else
           begin
-            //
             sTX2 := _File.Text;
-            //
+            
             if Pos('ChaveDeCancelamento=',_File.Text) <> 0 then
             begin
               edtChaveCancelamento.Text := StrTran(_File.Text,'ChaveDeCancelamento=','');
               btnCancelarClick(Sender);
             end else
             begin
-              //
               FEmissorNFSe.btnEnviarRPSClick(Sender);
               Sleep(100);
-              //
+
               I := 0;
-              //
               while (RetornaValorDaTagNoCampo('Status',smmXML) = 'EM PROCESSAMENTO') or (Pos('NFS-E NAO AUTORIZADA',RetornaValorDaTagNoCampo('Status',smmXML))<>0) and (I < 10) do
               begin
-                //
                 edtNumeroNFSe.Text   := '';
                 edtNumeroRPS.Text    := RetornaValorDaTagNoCampo('NumeroDoRPS' ,smmXML);
                 edtSerieRPS.Text     := RetornaValorDaTagNoCampo('SerieDoRPS'  ,smmXML);
                 edtTipoRPS.Text      := RetornaValorDaTagNoCampo('Tipo'        ,smmXML);
                 edtNumProtocolo.Text := '';
-                //
 
                 {Sandro Silva 2023-09-06 inicio}
                 AddRazaoSocialParametroExtra;
                 {Sandro Silva 2023-09-06 fim}
 
                 btnConsultarNotaClick(Sender);
-                //
+
                 Sleep(1000);
-                //
+
                 if (RetornaValorDaTagNoCampo('Status',smmXML) = 'EM PROCESSAMENTO')  or (Pos('NFS-E NAO AUTORIZADA',RetornaValorDaTagNoCampo('Status',smmXML))<>0) then
                 begin
                   edtNumeroNFSe.Text   := RetornaValorDaTagNoCampo('NumeroDaNFSe',smmXML);
@@ -605,12 +573,10 @@ begin
                   btnConsultarNotaClick(Sender);
                   Sleep(1000);
                 end;
-                //
-                //
+
                 I := I + 1;
-                //
               end;
-              //
+
               if (NFSe.Ambiente = akHomologacao) then
               begin
                 FEmissorNFSe.btnVisualizarClick(Sender);
@@ -621,20 +587,16 @@ begin
                   FEmissorNFSe.btnExportarClick(Sender);
                 end;
               end;
-              //
             end;
           end;
         except
         end;
-        //
+        
         Close;
         Winexec('TASKKILL /F /IM NFSE.EXE' , SW_HIDE );
-        //
       end;
     end;
-    //
   end;
-  //
 end;
 
 procedure TFEmissorNFSe.btnLogoTipoEmitenteClick(Sender: TObject);
@@ -647,26 +609,23 @@ end;
 
 procedure TFEmissorNFSe.OnLog(const aNome, aID, aFileName: string);
 begin
-  //
   fLogEnvio := '';
-  //
+  
   if (AnsiContainsText(aNome, 'resposta')) then
     fLogEnvio := aFileName;
   if ((AnsiContainsText(aNome, 'enviar_lote_rps_envio')) or (AnsiContainsText(aNome, 'enviar_lote_sincrono_envio'))) then
     mmXMLEnvio.Text := aFileName;
-  //
 end;
 
 procedure TFEmissorNFSe.getRetornoV2Tipado;
 var
   i: Integer;
 begin
-  //
+  try
   mmTipado.Clear;
-  //
+
   for i := 0 to NFSe.RetornoWS.Count - 1 do
   begin
-    //
     // Sandro Silva 2023-01-11 if (NFSe.RetornoWS.Items[i].Status = 'EMPROCESSAMENTO') or (Pos('não foi processado',NFSe.RetornoJson)<>0) then
     if (NFSe.RetornoWS.Items[i].Status = 'EMPROCESSAMENTO') or (Pos('não foi processado',NFSe.RetornoJson)<>0)
       or ((Trim(edtCidade.Text) = 'BRASILIADF') and (Pos('Lote aguardando processamento', NFSe.RetornoJson) <> 0))
@@ -725,7 +684,6 @@ begin
                     '</XMLRet>');
       end else
       begin
-        //
         sRetornoDaPrefeitura :=
           '<Status>' + NFSe.RetornoWS.Items[i].Status +                              '</Status>'+
           '<Protocolo>' + NFSe.RetornoWS.Items[i].Protocolo +                        '</Protocolo>'+
@@ -744,52 +702,44 @@ begin
           '<ArquivoGeradorNfse>'+ StrTran(AnsiLowerCase(mmXMLEnvio.Text), AnsiLowerCase(sAtual+'\\nfse\log\'),'') +'</ArquivoGeradorNfse>'+
           '<DataDeAutorizacao>' + NFSe.RetornoWS.Items[i].DataAutorizacao+           '</DataDeAutorizacao>'+
           '<Json>' + NFSe.RetornoJson + '</Json>';
-        //
+
         mmTipado.Lines.Add(sRetornoDaPrefeitura);
-        //
+
         sNumeroDaNFSe := Right('000000000'+AllTrim(NFSe.RetornoWS.Items[i].NumeroNFSe),9);
-        //
+
         // Tratamentos somente para Demo
-        //
         if NFSe.RetornoWS.Items[i].Protocolo <> '' then
           edtNumProtocolo.text := NFSe.RetornoWS.Items[i].Protocolo;
-        //
+
         edtNumeroRPS.text         := NFSe.RetornoWS.Items[i].NumeroRps;
         edtSerieRPS.text          := NFSe.RetornoWS.Items[i].SerieRps;
         edtTipoRPS.text           := NFSe.RetornoWS.Items[i].Tipo;
         edtNumeroNFSe.Text        := NFSe.RetornoWS.Items[i].NumeroNFSe;
         edtChaveCancelamento.Text := NFSe.RetornoWS.Items[i].ChaveCancelamento;
         mmXML.Text                := NFSe.RetornoWS.Items[i].XmlImpressao;
-        //
+
         smmXml := StrTran(pChar(NFSe.RetornoWS.Items[i].XmlImpressao),'</retorno>','')+'<sRetornoDaPrefeitura>'+ ConverteAcentos(sREtornoDaPrefeitura) +'</sRetornoDaPrefeitura>';
-        //
-        //
+
         // ShowMEssage(smmXml);
-        //
       end;
     end;
-    //
   end;
-  //
-  //
+  except
+    on e:exception do
+      ShowMessage('Erro: '+e.Message);
+  end;
 end;
 
 procedure TFEmissorNFSe.getRetornoV2Json;
 begin
-  //
   mmJson.Clear;
   mmJson.Lines.Add(NFSe.RetornoJson);
-  //
 end;
 
 procedure TFEmissorNFSe.btnConsultarNotaClick(Sender: TObject);
 begin
   try
-    //
     CheckConfig;
-    //
-    //  NFSe.Consultar('', edtNumeroRPS.Text, edtSerieRPS.Text, '1', '');
-    //
   {
     ShowMessage(
   '.Número NFSe : '+'|'+edtNumeroNFSe.Text+'|'+chr(10)+
@@ -798,7 +748,7 @@ begin
   '.Tipo RPS    : '+edtTipoRPS.Text      +chr(10)+
   '.Protocolo   : '+edtNumProtocolo.Text);
   }
-    //
+
     if Length(AllTrim(edtNumeroNFSe.Text)) > 12 then
     begin
       NFSe.Consultar(AllTrim(edtNumeroNFSe.Text), '', '', '', '');
@@ -806,12 +756,11 @@ begin
     begin
       NFSe.Consultar(edtNumeroNFSe.Text, edtNumeroRPS.Text, edtSerieRPS.Text, edtTipoRPS.Text, edtNumProtocolo.Text);
     end;
-    //
+
     Sleep(1000);
-    //
+
     getRetornoV2Tipado;
     getRetornoV2Json;
-    //
   except
   end;
 end;
@@ -900,12 +849,16 @@ end;
 
 procedure TFEmissorNFSe.btnAtualizaArquivosClick(Sender: TObject);
 begin
-  NFSe.AtualizarArquivos;
-  if FileExists(Pchar(sAtual+'\NFSE\Templates\Impressao\Brasoes\'+Alltrim(edtCidade.Text)+'.JPG')) then
-  begin
-    Image1.Picture.LoadFromFile(Pchar(sAtual+'\NFSE\Templates\Impressao\Brasoes\'+Alltrim(edtCidade.Text)+'.JPG'));
+  try
+    NFSe.AtualizarArquivos;
+    if FileExists(Pchar(sAtual+'\NFSE\Templates\Impressao\Brasoes\'+Alltrim(edtCidade.Text)+'.JPG')) then
+    begin
+      Image1.Picture.LoadFromFile(Pchar(sAtual+'\NFSE\Templates\Impressao\Brasoes\'+Alltrim(edtCidade.Text)+'.JPG'));
+    end;
+  except
+    on e:exception do
+      ShowMessage('Erro ao Atualiza Arquivos: '+e.Message);
   end;
-//  Showmessage('Arquivos Atualizados com sucesso para a cidade: ' + NFSe.Cidade)
 end;
 
 procedure TFEmissorNFSe.btnListarCidadesClick(Sender: TObject);
@@ -917,33 +870,28 @@ procedure TFEmissorNFSe.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   F: TextFile;
 begin
-  //
   while FileExists(Pchar(sAtual+'\NFSE\ret.txt')) do
   begin
     DeleteFile(Pchar(sAtual+'\NFSE\ret.txt'));
     Sleep(100);
   end;
-  //
+  
   AssignFile(F,pChar(sAtual+'\NFSE\ret.txt'));  // Direciona o arquivo F para EXPORTA.TXT
   Rewrite(F);
-  //
+
   Write(F,smmXML);
   CloseFile(F);
-  //
-  // ShowMessage('Teste gravei no on close');
-  //
 end;
 
 procedure TFEmissorNFSe.Button1Click(Sender: TObject);
 var
   Mais1Ini : tIniFile;
 begin
-  //
   Mais1ini := TIniFile.Create(sAtual+'\nfseConfig.ini');
-  //
+
   Mais1Ini.WriteString('NFSE','ParametrosExtras',pChar('Login='+LabeledEdit1.Text+';Senha='+LabeledEdit2.Text));
   Mais1Ini.WriteString('NFSE','NomeCertificado',pChar(cbListaCertificados.Text));
-  //
+
   if RadioButton1.Checked then
   begin
     Mais1Ini.WriteString('NFSE','Ambiente','2');
@@ -951,11 +899,10 @@ begin
   begin
     Mais1Ini.WriteString('NFSE','Ambiente','1');
   end;
-  //
+
   Mais1ini.Free;
-  //
+
   Close;
-  //
 end;
 
 procedure TFEmissorNFSe.RadioButton1Click(Sender: TObject);
@@ -972,7 +919,6 @@ procedure TFEmissorNFSe.Button2Click(Sender: TObject);
 var
   Mais1Ini : tIniFile;
 begin
-  //
   Mais1ini := TIniFile.Create(sAtual+'\nfseConfig.ini');
   //
   if Mais1Ini.ReadString('Informacoes obtidas na prefeitura','IncentivadorCultural'     ,'') = '' then Mais1Ini.WriteString('Informacoes obtidas na prefeitura','IncentivadorCultural'     ,'2');
@@ -996,14 +942,12 @@ begin
   FreeAndNil(FConfiguracaoNFSe);
   //
   Close;
-  //
 end;
 
 procedure TFEmissorNFSe.ConfiguraCredencialTecnospeed;
 var
   CredencialTecnospeed: TCredenciaisTecnospeed;
 begin
-
   NFSe.ConfigurarSoftwareHouse(edtCNPJSoftwareHouse.Text,edtTokenSoftwareHouse.Text);
 
   try
@@ -1017,8 +961,6 @@ begin
     FreeAndNil(CredencialTecnospeed);
   except
   end;
-  //
-
 end;
 
 procedure TFEmissorNFSe.FormActivate(Sender: TObject);

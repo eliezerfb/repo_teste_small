@@ -1,6 +1,6 @@
 object FEmissorNFSe: TFEmissorNFSe
-  Left = 433
-  Top = 195
+  Left = 673
+  Top = 414
   Width = 800
   Height = 400
   HorzScrollBar.Visible = False
@@ -14019,7 +14019,7 @@ object FEmissorNFSe: TFEmissorNFSe
     Top = 310
     Width = 179
     Height = 25
-    Caption = 'Ok'
+    Caption = 'OK'
     TabOrder = 8
     OnClick = Button1Click
   end

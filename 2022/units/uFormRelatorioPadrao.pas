@@ -7,10 +7,11 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ExtCtrls, IBDatabase, uSmallEnumerados,
-  uIEstruturaRelatorioPadrao, uIEstruturaTipoRelatorioPadrao, uArquivosDAT;
+  uIEstruturaRelatorioPadrao, uIEstruturaTipoRelatorioPadrao, uArquivosDAT,
+  uFrmPadrao;
 
 type
-  TfrmRelatorioPadrao = class(TForm)
+  TfrmRelatorioPadrao = class(TFrmPadrao)
     btnCancelar: TBitBtn;
     ImgRel: TImage;
     btnAvancar: TBitBtn;
@@ -115,8 +116,12 @@ end;
 procedure TfrmRelatorioPadrao.FormShow(Sender: TObject);
 begin
   // Deve ser igual ao da unit38.
+  {
   Self.ClientHeight := 262;
   Self.ClientWidth  := 454;
+  }
+  Self.ClientHeight := 280;
+  Self.ClientWidth  := 518;
 end;
 
 procedure TfrmRelatorioPadrao.FormDestroy(Sender: TObject);

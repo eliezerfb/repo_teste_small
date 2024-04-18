@@ -65,6 +65,7 @@ uses
   , uDialogs
   , uFuncoesRetaguarda
   , uGeraRelatorioTotalizadorGeralVenda
+  , uGeraRelatorioProdMonofasicoCupomNota
   , uEmail;
 
 {$R *.dfm}
@@ -117,7 +118,7 @@ end;      }
 function TfrmExportaXML.EnviarXml: Boolean;
 var
   cTipoGeracao, cDocs, cAnexo, cTitulo, cCorpo: String;
-  cZipNFeSaida, cZipNFeEntrada, cZipNFCeSAT, cRelTotalizador: String;
+  cZipNFeSaida, cZipNFeEntrada, cZipNFCeSAT, cRelTotalizador, cRelMonofasicos: String;
   bTamanhoZip: Boolean;
 begin
   Result := False;
@@ -135,6 +136,7 @@ begin
 
     try
       cRelTotalizador := ExtractFilePath(Application.ExeName) + 'CONTABIL\' + 'Totalizador de vendas.pdf';
+      cRelMonofasicos := ExtractFilePath(Application.ExeName) + 'CONTABIL\' + 'Produtos monofásicos.pdf';
       if cbNFeSaida.Checked then
       begin
         Form7.ibDataSet15.DisableControls;
@@ -216,7 +218,7 @@ begin
                                         'Seu servidor de e-mail poderá bloquear o envio.' + SLineBreak +
                                         'Selecione períodos menores para evitar bloqueio do envio.' + SLineBreak + SLineBreak +
                                         'Deseja enviar o(s) arquivo(s) mesmo assim?'), PChar(_cTituloMsg), MB_ICONQUESTION + MB_YESNO) = mrNo then
-          Exit;
+            Exit;
         end;
           
         cTitulo := _cTituloEmailXMLContab;
@@ -228,20 +230,39 @@ begin
         cCorpo := StringReplace(cCorpo, '<CNPJEMPRESA>', Form7.ibDataSet13CGC.AsString, []);
         cCorpo := StringReplace(cCorpo, '<PERIODO>', DateToStr(dtInicial.Date) + ' à ' + DateToStr(dtFinal.Date), []);
 
-        if (FbBackGround) and (FoArquivoDAT.NFe.XML.IncluirRelatorioTotalizador) then
+        if FileExists(cRelMonofasicos) then
+          cAnexo := cAnexo + ';' + cRelMonofasicos;
+        if (FbBackGround) then
         begin
-          TGeraRelatorioTotalizadorGeralVenda.New
-                                             .setTransaction(Form7.IBTransaction1)
-                                             .setUsuario(Form7.UsuarioLogado)
-                                             .setPeriodo(dtInicial.Date, dtFinal.Date)
-                                             .GeraRelatorio
-                                             .Salvar(cRelTotalizador, ttiPDF);
+          if (FoArquivoDAT.NFe.XML.IncluirRelatorioTotalizador) then
+          begin
+            TGeraRelatorioTotalizadorGeralVenda.New
+                                               .setTransaction(Form7.IBTransaction1)
+                                               .setUsuario(Form7.UsuarioLogado)
+                                               .setPeriodo(dtInicial.Date, dtFinal.Date)
+                                               .GeraRelatorio
+                                               .Salvar(cRelTotalizador, ttiPDF);
 
-          if FileExists(cRelTotalizador) then
-            cAnexo := cAnexo + ';' + cRelTotalizador;
+            if FileExists(cRelTotalizador) then
+              cAnexo := cAnexo + ';' + cRelTotalizador;
+          end;
+
+          if (FoArquivoDAT.NFe.XML.IncluirRelatorioMonofasicos) then
+          begin
+            TGeraRelatorioProdMonofasicoCupomNota.New
+                                                 .setTransaction(Form7.IBTransaction1)
+                                                 .setUsuario(Form7.UsuarioLogado)
+                                                 .setPeriodo(dtInicial.Date, dtFinal.Date)
+                                                 .GeraRelatorio
+                                                 .Salvar(cRelMonofasicos, ttiPDF);
+
+            if FileExists(cRelMonofasicos) then
+              cAnexo := cAnexo + ';' + cRelMonofasicos;
+          end;
         end;
 
-        Unit7.EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
+        // 2024-02-26 Unit7.EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, cTitulo, cCorpo, cAnexo, False);
+        EnviarEMail(EmptyStr, AllTrim(edtEmailContab.Text), EmptyStr, PChar(cTitulo), PChar(cCorpo), PChar(cAnexo), False); 
 
         Result := True;
 
@@ -286,6 +307,8 @@ begin
     finally
       if FileExists(cRelTotalizador) then
         DeleteFile(cRelTotalizador);
+      if FileExists(cRelMonofasicos) then
+        DeleteFile(cRelMonofasicos);
       {Dailon Parisotto 2023-10-17 (f-7487) Inicio}
       // Solicitado para manter os arquivos ZIP para envio manual posterior.
       //  LimparPastaContabil;

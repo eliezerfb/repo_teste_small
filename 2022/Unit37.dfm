@@ -4,8 +4,8 @@ object Form37: TForm37
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio de comiss'#245'es'
-  ClientHeight = 242
-  ClientWidth = 452
+  ClientHeight = 280
+  ClientWidth = 518
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,8 +21,8 @@ object Form37: TForm37
   object Panel2: TPanel
     Left = 0
     Top = 0
-    Width = 452
-    Height = 242
+    Width = 518
+    Height = 280
     Align = alClient
     BevelOuter = bvNone
     Caption = ' '
@@ -31,6 +31,8 @@ object Form37: TForm37
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
+    ExplicitWidth = 452
+    ExplicitHeight = 242
     object Image1: TImage
       Left = 25
       Top = 25
@@ -41,32 +43,32 @@ object Form37: TForm37
       Transparent = True
     end
     object Label1: TLabel
-      Left = 200
-      Top = 10
+      Left = 180
+      Top = 15
       Width = 49
       Height = 13
       Caption = 'Vendedor:'
     end
     object Label2: TLabel
-      Left = 200
+      Left = 180
       Top = 35
-      Width = 56
+      Width = 53
       Height = 13
-      Caption = 'Per'#237'odo de:'
+      Caption = 'Per'#237'odo de'
     end
     object Label3: TLabel
-      Left = 200
+      Left = 180
       Top = 75
-      Width = 19
+      Width = 16
       Height = 13
-      Caption = 'At'#233':'
+      Caption = 'At'#233
     end
     object Button1: TButton
-      Left = 200
-      Top = 200
+      Left = 295
+      Top = 237
       Width = 100
-      Height = 23
-      Caption = 'Avan'#231'ar >'
+      Height = 24
+      Caption = 'Gerar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -11
@@ -77,10 +79,10 @@ object Form37: TForm37
       OnClick = Button1Click
     end
     object Button2: TButton
-      Left = 330
-      Top = 200
+      Left = 399
+      Top = 237
       Width = 100
-      Height = 23
+      Height = 24
       Caption = 'Cancelar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -92,27 +94,27 @@ object Form37: TForm37
       OnClick = Button2Click
     end
     object DateTimePicker1: TDateTimePicker
-      Left = 200
+      Left = 180
       Top = 50
-      Width = 225
-      Height = 21
+      Width = 212
+      Height = 20
       Date = 35796.000000000000000000
       Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 2
     end
     object DateTimePicker2: TDateTimePicker
-      Left = 200
+      Left = 180
       Top = 90
-      Width = 225
-      Height = 21
+      Width = 212
+      Height = 20
       Date = 35796.000000000000000000
       Time = 0.376154398101789400
       DateFormat = dfLong
       TabOrder = 3
     end
     object CheckBox1: TCheckBox
-      Left = 200
+      Left = 180
       Top = 120
       Width = 177
       Height = 17
@@ -122,7 +124,7 @@ object Form37: TForm37
       TabOrder = 4
     end
     object CheckBox2: TCheckBox
-      Left = 200
+      Left = 180
       Top = 145
       Width = 177
       Height = 17
@@ -130,8 +132,8 @@ object Form37: TForm37
       TabOrder = 5
     end
     object Panel3: TPanel
-      Left = 200
-      Top = 10
+      Left = 180
+      Top = 15
       Width = 241
       Height = 167
       BevelOuter = bvNone

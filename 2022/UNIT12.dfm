@@ -13,8 +13,8 @@ object Form12: TForm12
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'NOTA FISCAL VENDA (SA'#205'DA)'
-  ClientHeight = 898
-  ClientWidth = 1020
+  ClientHeight = 906
+  ClientWidth = 1022
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -43,8 +43,8 @@ object Form12: TForm12
   object ScrollBox1: TScrollBox
     Left = 0
     Top = 0
-    Width = 1020
-    Height = 898
+    Width = 1022
+    Height = 906
     Align = alClient
     BorderStyle = bsNone
     Color = clWhite
@@ -2081,7 +2081,7 @@ object Form12: TForm12
         Top = 5
         Width = 100
         Height = 30
-        Caption = 'Ok'
+        Caption = 'OK'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -2319,15 +2319,15 @@ object Form12: TForm12
     Left = 680
     Top = 6
     object ImportarOS2: TMenuItem
-      Caption = 'Importar Ordem de Servi'#231'o...'
+      Caption = 'Importar Ordem de Servi'#231'o'
       OnClick = ImportarOS2Click
     end
     object Emitirnotafiscaldevendasnobalco1: TMenuItem
-      Caption = 'Importar Cupom....'
+      Caption = 'Importar Cupom'
       OnClick = Emitirnotafiscaldevendasnobalco1Click
     end
     object Importaroramentos1: TMenuItem
-      Caption = 'Importar Or'#231'amento...'
+      Caption = 'Importar Or'#231'amento'
       OnClick = Importaroramentos1Click
     end
     object N1: TMenuItem
@@ -2335,12 +2335,12 @@ object Form12: TForm12
       Visible = False
     end
     object Incluirnovoitemnoestoque1: TMenuItem
-      Caption = 'Incluir novo item no estoque...'
+      Caption = 'Incluir novo item no estoque'
       Visible = False
       OnClick = Incluirnovoitemnoestoque1Click
     end
     object Incluirnovocliente1: TMenuItem
-      Caption = 'Incluir novo cliente...'
+      Caption = 'Incluir novo cliente'
       Visible = False
       OnClick = Incluirnovocliente1Click
     end

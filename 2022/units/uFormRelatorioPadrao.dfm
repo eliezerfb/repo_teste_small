@@ -1,22 +1,19 @@
-object frmRelatorioPadrao: TfrmRelatorioPadrao
+inherited frmRelatorioPadrao: TfrmRelatorioPadrao
   Left = 1058
   Top = 599
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio padr'#227'o'
-  ClientHeight = 262
-  ClientWidth = 454
-  Color = clWhite
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
+  ClientHeight = 280
+  ClientWidth = 518
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
+  ExplicitWidth = 534
+  ExplicitHeight = 319
   PixelsPerInch = 96
   TextHeight = 13
   object ImgRel: TImage
@@ -29,10 +26,10 @@ object frmRelatorioPadrao: TfrmRelatorioPadrao
     Transparent = True
   end
   object btnCancelar: TBitBtn
-    Left = 330
-    Top = 220
+    Left = 399
+    Top = 237
     Width = 100
-    Height = 23
+    Height = 24
     Caption = 'Cancelar'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
@@ -44,10 +41,10 @@ object frmRelatorioPadrao: TfrmRelatorioPadrao
     OnClick = btnCancelarClick
   end
   object btnAvancar: TBitBtn
-    Left = 215
-    Top = 220
+    Left = 295
+    Top = 237
     Width = 100
-    Height = 23
+    Height = 24
     Caption = 'Avan'#231'ar >'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
@@ -59,10 +56,10 @@ object frmRelatorioPadrao: TfrmRelatorioPadrao
     OnClick = btnAvancarClick
   end
   object btnVoltar: TBitBtn
-    Left = 100
-    Top = 220
+    Left = 191
+    Top = 237
     Width = 100
-    Height = 23
+    Height = 24
     Caption = '< Voltar'
     Enabled = False
     Font.Charset = DEFAULT_CHARSET

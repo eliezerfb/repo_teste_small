@@ -19,8 +19,8 @@ uses
   , unit7
   ;
 
-  procedure DropViewProcedure;
-  procedure AtualizaBancoDeDados(sBuild : string);
+procedure DropViewProcedure;
+procedure AtualizaBancoDeDados(sBuild : string);
 // Sandro Silva 2023-09-22  function ExecutaComando(comando:string):Boolean;
 
 implementation
@@ -480,6 +480,11 @@ begin
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'ALIQ_COFINS') = False then
     ExecutaComando('alter table ITENS002 add ALIQ_COFINS NUMERIC(18,4)');
+
+  {Sandro Silva 2024-03-21 inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'PICMSST') = False then
+    ExecutaComando('alter table ITENS002 add PICMSST NUMERIC(18, 4)');
+  {Sandro Silva 2024-03-21 fim}
 
   // GRAVAR? O HISTORICO DO CSOSN
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CSOSN') = False then
@@ -2402,7 +2407,6 @@ begin
   end;
   {Mauricio Parizotto 2023-12-26 Fim}
 
-
   {Mauricio Parizotto 2024-02-05 Inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'FORMATOBOLETO') = False then
   begin
@@ -2410,10 +2414,73 @@ begin
       ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2024-02-05 Fim}
+  
+  {Mauricio Parizotto 2024-02-19 Inicio}
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'AUDIT0RIA', 'HISTORICO') < 1000 then
+  begin
+    if ExecutaComando('ALTER TABLE AUDIT0RIA ALTER COLUMN HISTORICO TYPE VARCHAR(1000);') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-02-19 Fim}
+
+
+  {Mauricio Parizotto 2024-02-28 Inicio}
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'CODEBAR', 'EAN') < 60 then
+  begin
+    if ExecutaComando('ALTER TABLE CODEBAR ALTER COLUMN EAN TYPE VARCHAR(60);') then
+      ExecutaComando('Commit');
+  end;
+
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'ITENS002', 'EAN_ORIGINAL') < 60 then
+  begin
+    if ExecutaComando('ALTER TABLE ITENS002 ALTER COLUMN EAN_ORIGINAL TYPE VARCHAR(60);') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-02-28 Fim}
+
+  (* Sandro Silva 2024-04-11 Estava causando access violation quando atualiza e em seguida cadastra um produto com 120 caracteres
+  {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
+  try
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Clear;
+    Form1.ibDataSet200.SelectSQL.Text :=
+      'SELECT COALESCE(ESTADO,''SC'') AS ESTADO FROM EMITENTE';
+    Form1.ibDataSet200.Open;
+
+    if (AnsiUpperCase(Form1.ibDataSet200.FieldByName('ESTADO').AsString) <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then // Sandro Silva 2024-04-09 if (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> 'SC') and (Form1.ibDataSet200.FieldByName('ESTADO').AsString <> EmptyStr) then
+      Form1.Comandos120CaracteresProd;
+  finally
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Clear;
+  end;
+  {Dailon Parisotto (f-17787) 2024-03-27 Fim}
+  *)
+
+  {Mauricio Parizotto 2024-03-22 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO', 'CONSIDERACSTCSOSN') = False then
+  begin
+    if ExecutaComando('Alter table CFOPCONVERSAO add CONSIDERACSTCSOSN VARCHAR(1);') then
+      ExecutaComando('Commit');
+
+    if ExecutaComando('Update CFOPCONVERSAO set CONSIDERACSTCSOSN = ''N'';') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO', 'CST') = False then
+  begin
+    if ExecutaComando('Alter table CFOPCONVERSAO add CST VARCHAR(2);') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO', 'CSOSN') = False then
+  begin
+    if ExecutaComando('Alter table CFOPCONVERSAO add CSOSN VARCHAR(3);') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-03-22 Fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
-
 
   
   try
@@ -2457,6 +2524,7 @@ begin
   try
     AgendaCommit(True);
     Commitatudo(True);
+
   except
   end;
 
