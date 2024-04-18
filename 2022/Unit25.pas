@@ -937,7 +937,7 @@ begin
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Itaú');
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unibanco');
       if Form26.MaskEdit45.Text = 'AAAACCCCCCCCCCNNNNNNNNNNN' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Unicred'); //Mauricio Parizotto 202-12-07
-      if Form26.MaskEdit45.Text = 'AAAAKKKXXXXXXXNNNNNNNNNNN' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Inter');
+      if Form26.MaskEdit45.Text = 'AAAAKKKXXXXXXXNNNNNNNNNNI' then Form26.cboBancos.ItemIndex := Form26.cboBancos.Items.IndexOf('Inter');
 
       if Mais1Ini.ReadString(Form1.sEscolhido,'CNAB400','') = 'Sim' then
         Form26.chkCNAB400.State := cbChecked

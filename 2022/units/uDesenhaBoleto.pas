@@ -1179,7 +1179,13 @@ begin
   if CodBanco = '077' then // Inter
   begin
     Form25.sNossoNum := Right(Replicate('0',10)+sNossoNumero,10);
-    Form25.sNossoNum := Form25.sNossoNum + '-'+ Modulo_10(Form25.sNossoNum);
+    Form25.sNossoNum := Form25.sNossoNum + '-'+ Modulo_10(Copy(sAgencia,1,4)+  // Agencia (sem dv)
+                                                         AllTrim(sCarteira)+   // Carteira
+                                                         Form25.sNossoNum);    // Nosso Número
+
+
+
+
 
     Result := Trim(sAgencia)+'/'+Trim(sCarteira)+'/'+Trim(Form25.sNossoNum);
   end;
