@@ -2401,6 +2401,7 @@ type
     procedure MenuItem140Click(Sender: TObject);
     procedure ConfigurarEtiqueta1Click(Sender: TObject);
     procedure Imprimiretiqueta1Click(Sender: TObject);
+    procedure ibDataSet15AfterOpen(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -11314,18 +11315,21 @@ begin
 
   MarcaColunaOrderBy;
 
-  TabelaAberta.DisableControls;
-  try
-    if (TabelaAberta.RecNo < TabelaAberta.RecordCount) then
-    begin
-      nPosicao := TabelaAberta.RecNo;
+  if Form7.sModulo = 'VENDA' then
+  begin
+    TabelaAberta.DisableControls;
+    try
+      if (TabelaAberta.RecNo < TabelaAberta.RecordCount) then
+      begin
+        nPosicao := TabelaAberta.RecNo;
 
-      TabelaAberta.MoveBy((TabelaAberta.RecordCount-nPosicao)*1);
-      while TabelaAberta.RecNo <> nPosicao do
-        TabelaAberta.MoveBy(-1);
+        TabelaAberta.MoveBy((TabelaAberta.RecordCount-nPosicao)*1);
+        while TabelaAberta.RecNo <> nPosicao do
+          TabelaAberta.MoveBy(-1);
+      end;
+    finally
+      TabelaAberta.EnableControls;
     end;
-  finally
-    TabelaAberta.EnableControls;
   end;
 end;
 
