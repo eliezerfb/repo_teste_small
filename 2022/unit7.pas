@@ -24242,6 +24242,11 @@ procedure TForm7.EnviarConsultaImprimirDANFE;
 var
   Hora, Min, Seg, cent : Word;
   tInicio : tTime;
+  function NaoEnviouAinda: Boolean;
+  begin
+    Result := (Form7.ibDataSet15STATUS.AsString <> VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE)
+              and (AnsiContainsText(Form7.ibDataSet15STATUS.AsString, 'Autorizado o uso') = False);
+  end;
 begin
   if Form7.sRPS = 'S' then
   begin
@@ -24264,7 +24269,9 @@ begin
             Form7.N3ConsultarNFe1Click(nil);
           end else
           begin
+            {Sandro Silva 2024-04-17 inicio
             Form7.N1EnviarNFe1Click(nil);
+
             Screen.Cursor            := crHourGlass;
             Form7.N2ConsultarrecibodaNFe1Click(nil); Screen.Cursor            := crHourGlass;
 
@@ -24287,6 +24294,48 @@ begin
                 Form7.N3ConsultarNFe1Click(nil);
               end;
             end;
+            }
+            Screen.Cursor            := crHourGlass;
+            if NaoEnviouAinda then
+              Form7.N1EnviarNFe1Click(nil);
+
+            Screen.Cursor            := crHourGlass;
+            Form7.N2ConsultarrecibodaNFe1Click(nil); Screen.Cursor            := crHourGlass;
+
+            if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '') and
+               (Copy(Form7.ibDataSet15STATUS.AsString,1,8) <> 'Rejeicao') and
+               (Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro') then
+            begin
+              Form7.N3ConsultarNFe1Click(nil);
+            end else
+            begin
+              if (AnsiContainsText(Form7.ibDataSet15STATUS.AsString, 'Autorizado o uso') = False) then
+              begin
+                Form7.N1EnviarNFe1Click(nil);
+                Screen.Cursor            := crHourGlass;
+                Form7.N2ConsultarrecibodaNFe1Click(nil);
+              end;
+
+              Screen.Cursor            := crHourGlass;
+
+              if ((Trim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '')
+                and AnsiContainsText(Form7.ibDataSet15STATUS.AsString, 'Autorizado o uso')) then
+                Form7.N3ConsultarNFe1Click(nil);
+
+              if ((Trim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '') and
+                 (Copy(Form7.ibDataSet15STATUS.AsString,1,8) <> 'Rejeicao') and
+                 (Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro')) then
+              begin
+                Form7.N3ConsultarNFe1Click(nil);
+              end;
+            end;
+
+            commitatudo(True);
+
+            Form7.Close;
+            Form7.Show;
+
+            {Sandro Silva 2024-04-17 fim}
           end;
 
           DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
