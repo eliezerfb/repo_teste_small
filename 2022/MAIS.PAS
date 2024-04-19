@@ -1366,10 +1366,13 @@ begin
         Form1.ibQuery2.SQL.Add('update EMITENTE set LICENCA='+QuotedStr(Form7.LbBlowfish1.EncryptString(  Copy(sInicio,7,4)+Copy(sInicio,4,2)+Copy(sInicio,1,2))));
         Form1.ibQuery2.ExecSQL;
 
+        {Mauricio Parizotto 2024-04-19
         Form1.ibQuery2.Close;
         Form1.ibQuery2.SQL.Clear;
         Form1.ibQuery2.SQL.Add('commit');
         Form1.ibQuery2.ExecSQL;
+        }
+        AgendaCommit(true);
       except
       end;
     end;
@@ -1388,10 +1391,13 @@ begin
           Form1.ibQuery2.SQL.Add('update EMITENTE set LICENCA='+QuotedStr(Form7.LbBlowfish1.EncryptString(  Copy(sInicio,7,4)+Copy(sInicio,4,2)+Copy(sInicio,1,2))));
           Form1.ibQuery2.ExecSQL;
 
+          {Mauricio Parizotto 2024-04-19
           Form1.ibQuery2.Close;
           Form1.ibQuery2.SQL.Clear;
           Form1.ibQuery2.SQL.Add('commit');
           Form1.ibQuery2.ExecSQL;
+          }
+          AgendaCommit(true);
         except
         end;
       end;
@@ -3564,7 +3570,8 @@ begin
     begin
       vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
       ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
-      ExecutaComando('Commit;');
+      //ExecutaComando('Commit;'); Mauricio Parizotto 2024-04-19
+      AgendaCommit(true);
 	  end;
   except
   end;
@@ -4881,11 +4888,14 @@ begin
       Form1.ibDataset200.SelectSql.Clear;
       Form1.ibDataset200.SelectSql.Add('update VENDAS set NFEPROTOCOLO=SubString(NFEPROTOCOLO from 1 for 9)||'+QuotedStr('/001')+', MODELO=''SV'' where SubString(NUMERONF from 10 for 3)=''RPS''');
       Form1.ibDataset200.Open;
-      //
+
+      {Mauricio Parizotto 2024-04-19
       Form1.ibDataset200.Close;
       Form1.ibDataset200.SelectSql.Clear;
       Form1.ibDataset200.SelectSql.Add('commit');
       Form1.ibDataset200.Open;
+      }
+      AgendaCommit(true);
     end;
   except
   end;
@@ -12595,7 +12605,8 @@ begin
               if ExecutaComando('ALTER TABLE ITENSETI ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
                 if ExecutaComando('ALTER TABLE ORCAMENT ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
                 begin
-                  ExecutaComando('Commit');
+                  //ExecutaComando('Commit'); Mauricio Parizotto 2024-04-19
+                  AgendaCommit(true);
                   Result := True;
                 end;
   if Result = False then
