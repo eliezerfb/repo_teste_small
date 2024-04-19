@@ -1681,6 +1681,7 @@ type
     MenuItem137: TMenuItem;
     MenuItem140: TMenuItem;
     MenuItem141: TMenuItem;
+    ibDataSet14PISCOFINSLUCRO: TIBStringField;
     ConfigurarEtiqueta1: TMenuItem;
     Imprimiretiqueta1: TMenuItem;
     miDuplicarNFSe: TMenuItem;
@@ -22393,6 +22394,7 @@ end;
 procedure TForm7.ibDataSet14NewRecord(DataSet: TDataSet);
 begin
   ibDataSet14REGISTRO.AsString  := sProximo;
+  ibDataSet14PISCOFINSLUCRO.AsString  := 'N';
 end;
 
 procedure TForm7.ibDataSet18NewRecord(DataSet: TDataSet);
