@@ -641,12 +641,13 @@ begin
             IniciaImpresao(Impressao);
 
           CarregaDadosParcela;
-		  //Mauricio Parizotto 2024-03-26
+    		  //Mauricio Parizotto 2024-03-26
           //Valida email e carrega o cliente correto
           ValidaEmailPagador;
-          GravaPortadorNossoNumCodeBar;
 
           DesenhaBoletoLayoutCarne(Impressao, grPrint, Copy(Form26.MaskEdit42.Text,1,3), Form26.MaskEdit44.Text, Form26.MaskEdit46.Text, Form26.MaskEdit50.Text, Form26.MaskEdit43.Text, Form26.medtNossoNu.Text, Form26.MaskEdit45.Text,posicao);
+
+          GravaPortadorNossoNumCodeBar;
 
           //Imprime pagina
           if posicao = 3 then
