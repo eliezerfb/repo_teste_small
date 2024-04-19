@@ -9812,15 +9812,28 @@ end;
 procedure TForm7.miDuplicarNFSeClick(Sender: TObject);
 var
   cNroNF: string;
+  bSucesso: Boolean;
 begin
   FbDuplicandoNFSe := True;
   try
     Screen.Cursor := crHourGlass;
+
+    {Dailon Parisotto (f-18328) 2024-04-19 Inicio
+
     if TDuplicaNFSe.New
                    .SetTransaction(IBTransaction1)
                    .SetNumeroNF(ibDataSet15.FieldByName('NUMERONF').AsString)
                    .SetDataSetsNFSe(ibDataSet15, ibDataSet35)
                    .Duplicar then
+
+    }
+    bSucesso := TDuplicaNFSe.New
+                   .SetTransaction(IBTransaction1)
+                   .SetNumeroNF(ibDataSet15.FieldByName('NUMERONF').AsString)
+                   .SetDataSetsNFSe(ibDataSet15, ibDataSet35)
+                   .Duplicar;
+    if bSucesso then
+    {Dailon Parisotto (f-18328) 2024-04-19 Fim}
     begin
       Sleep(200);
       ibDataSet15.DisableControls;
@@ -9856,6 +9869,12 @@ begin
     DBGrid1.SelectedIndex := 0;
     FbDuplicandoNFSe := False;
     Screen.Cursor := crDefault;
+
+    // Vai abrir a tela com a NFS-e carregada
+    {Dailon Parisotto (f-18328) 2024-04-19 Inicio}
+    if bSucesso then
+      Image106Click(Self);
+    {Dailon Parisotto (f-18328) 2024-04-19 Fim}
   end;
 end;
 
