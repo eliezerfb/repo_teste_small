@@ -51,7 +51,7 @@ type
     property AutoSizeColunaNoGridDePesquisa: Boolean read FAutoSizeColunaNoGridDePesquisa write FAutoSizeColunaNoGridDePesquisa;
     constructor Create(AOwner: TComponent); override;
     procedure CarregaDescricao;
-
+    procedure CarregaDescricaoCodigo;
   end;
 
 implementation
@@ -186,6 +186,33 @@ begin
   end;
 end;
 
+procedure TfFrameCampo.CarregaDescricaoCodigo; // Mauricio Parizotto 2024-04-08
+var
+  CampoChange: TNotifyEvent;
+  sNomeCampoChave: String;
+begin
+  sNomeCampoChave := CampoCodigoPesquisa;
+  if sNomeCampoChave = '' then
+    sNomeCampoChave := CampoCodigo.FieldName;
+
+  Query.Close;
+  Query.SQL.Text := ' Select ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
+                    ' From ' + FTabela +
+                    ' Where '+sNomeCampoChave+ ' = ' +QuotedStr(CampoCodigo.AsString);
+  Query.Open;
+
+  if not Query.IsEmpty then
+  begin
+    CampoChange := txtCampo.onChange;
+    txtCampo.onChange := nil;
+    txtCampo.Text := Query.FieldByName(ALIAS_CAMPO_PESQUISADO).AsString;
+    txtCampo.onChange := CampoChange;
+  end else
+  begin
+    txtCampo.Text := '';
+  end;
+end;
+
 procedure TfFrameCampo.txtCampoChange(Sender: TObject);
 begin
   // Sandro Silva 2023-09-29 if (txtCampo.Text <> '') and (txtCampo.Focused) then
@@ -293,13 +320,12 @@ begin
   if sNomeCampoChave = '' then
     sNomeCampoChave := CampoCodigo.FieldName;
 
-  Result :=
-    //' Select distinct  ' + CampoCodigo.FieldName + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO + Mauricio Parizotto 2023-11-20
-    ' Select distinct  ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
-    CampoAuxExiber+// Mauricio Parizotto 2023-11-21
-    ' From ' + FTabela +
-    ' Where (upper(' + sCampoDescricao + ') like upper(' + QuotedStr('%' + txtCampo.Text + '%') + ')) ' +
-    ' Order by upper(' + sCampoDescricao + ') ';
+  Result := ' Select distinct  ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
+            CampoAuxExiber+// Mauricio Parizotto 2023-11-21
+            ' From ' + FTabela +
+            ' Where (upper(' + sCampoDescricao + ') like upper(' + QuotedStr('%' + txtCampo.Text + '%') + ')) ' +
+            FFiltro + // Mauricio Parizotto 2024-04-08
+            ' Order by upper(' + sCampoDescricao + ') ';
 end;
 
 

@@ -2081,7 +2081,7 @@ object Form12: TForm12
         Top = 5
         Width = 100
         Height = 30
-        Caption = 'Ok'
+        Caption = 'OK'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13

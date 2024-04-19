@@ -73,6 +73,8 @@ var
   SizeDescricaoProd : integer;
 
   CaminhoArquivo : string;
+
+  CST_Conv, CSOSN_Conv, Filtro_Conv : string;
 begin
   Result := True;
 
@@ -208,10 +210,12 @@ begin
         {Mauricio Parizotto 2023-08-29 Inicio}
         IBQConversaoCFOP := Form7.CriaIBQuery(Form7.ibDataSet24.Transaction);
 
+        {
         IBQConversaoCFOP.Close;
         IBQConversaoCFOP.DisableControls;
         IBQConversaoCFOP.SQL.Text := 'Select * From CFOPCONVERSAO';
         IBQConversaoCFOP.Open;
+        Mauricio Parizotto 2024-03-22}
         {Mauricio Parizotto 2023-08-29 Fim}
 
         sNomeDaEmpresa := PrimeiraMaiuscula(AllTrim(Copy(CaracteresHTML((AllTrim(XmlNodeValue(NodeSec.ChildNodes['xNome'].XML,'//xNome'))))+replicate(' ',60),1,60)));
@@ -735,6 +739,7 @@ begin
                       except
                       end;
 
+                      {$Region'//// Conversão de CFOP ////'}
                       try
                         //Mauricio Parizotto 2023-05-02
                         {
@@ -743,6 +748,7 @@ begin
 
                         //Mauricio Parizotto 2023-08-29
                         //Faz a conversão de CFOP
+                        {Mauricio Parizotto 2024-03-22 Inicio
                         if IBQConversaoCFOP.Locate('CFOP_ORIGEM',NodeTmp.ChildNodes['CFOP'].Text,[]) then
                         begin
                           Form7.ibDataSet23CFOP.AsString   := IBQConversaoCFOP.FieldByName('CFOP_CONVERSAO').AsString;
@@ -750,8 +756,47 @@ begin
                         begin
                           Form7.ibDataSet23CFOP.AsString   := sIniCFOP+Copy(NodeTmp.ChildNodes['CFOP'].Text,2,3);
                         end;
+                        }
+
+                        CST_Conv    := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['CST'].Text;
+                        CSOSN_Conv  := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').ChildNodes.FindNode(sICMSTag).ChildNodes['CSOSN'].Text;
+
+                        Filtro_Conv := ' 1=2 ';
+
+                        if CST_Conv <> '' then
+                        begin
+                          Filtro_Conv := 'CST = '+QuotedStr(CST_Conv);
+                        end;
+
+                        if CSOSN_Conv <> '' then
+                        begin
+                          Filtro_Conv := 'CSOSN = '+QuotedStr(CSOSN_Conv);
+                        end;
+
+                        IBQConversaoCFOP.Close;
+                        IBQConversaoCFOP.SQL.Text := ' Select First 1 CFOP_CONVERSAO '+
+                                                     ' From CFOPCONVERSAO '+
+                                                     ' Where CFOP_ORIGEM = '+QuotedStr(NodeTmp.ChildNodes['CFOP'].Text) +
+                                                     '   and ( '+
+                                                     '         Coalesce(CONSIDERACSTCSOSN,''N'') = ''N''  '+
+                                                     '         or (Coalesce(CONSIDERACSTCSOSN,''N'') = ''S''  and  '+Filtro_Conv+' ) '+
+                                                     '       )'+
+                                                     ' Order By CONSIDERACSTCSOSN Desc ';
+                        IBQConversaoCFOP.Open;
+
+                        if not(IBQConversaoCFOP.IsEmpty) then
+                        begin
+                          Form7.ibDataSet23CFOP.AsString   := IBQConversaoCFOP.FieldByName('CFOP_CONVERSAO').AsString;
+                        end else
+                        begin
+                          Form7.ibDataSet23CFOP.AsString   := sIniCFOP+Copy(NodeTmp.ChildNodes['CFOP'].Text,2,3);
+                        end;
+
+                        {Mauricio Parizotto 2024-03-22 Fim}
+
                       except
                       end;
+                      {$Endregion}
 
                       {Sandro Silva 2023-04-11 inicio}
                       try

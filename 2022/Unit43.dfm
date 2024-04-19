@@ -115,7 +115,7 @@ object Form43: TForm43
       Width = 100
       Height = 23
       Anchors = [akTop, akRight]
-      Caption = 'Ok'
+      Caption = 'OK'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -11

@@ -14,7 +14,7 @@ inherited FrmSituacaoOS: TFrmSituacaoOS
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Situa'#231#227'o'
+          Caption = 'Situa'#231#227'o:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
