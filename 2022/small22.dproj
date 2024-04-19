@@ -536,7 +536,9 @@
         <DCCReference Include="frames\uframeConfiguraTEF.pas">
             <Form>frameConfiguraTEF</Form>
             <DesignClass>TFrame</DesignClass>
-        </DCCReference>
+        </DCCReference>        
+        <DCCReference Include="interfaces\uIDuplicaNFSe.pas"/>
+        <DCCReference Include="units\uDuplicaNFSe.pas"/>
         <DCCReference Include="uFrmConvenio.pas">
             <Form>FrmConvenio</Form>
             <FormType>dfm</FormType>

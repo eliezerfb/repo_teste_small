@@ -1683,6 +1683,7 @@ type
     MenuItem141: TMenuItem;
     ConfigurarEtiqueta1: TMenuItem;
     Imprimiretiqueta1: TMenuItem;
+    miDuplicarNFSe: TMenuItem;
     ibDataSet11PLANOCONTA: TIBStringField;
     ibdConversaoCFOPCST: TIBStringField;
     ibdConversaoCFOPCSOSN: TIBStringField;
@@ -2403,11 +2404,13 @@ type
     procedure ConfigurarEtiqueta1Click(Sender: TObject);
     procedure Imprimiretiqueta1Click(Sender: TObject);
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
+    procedure miDuplicarNFSeClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
   private
     FbDuplicandoProd: Boolean;
+    FbDuplicandoNFSe: Boolean;
     FbImportandoXML: Boolean;
     iOSQtdEtiqueta : integer;
     sOSEtiqueta : string;
@@ -2680,6 +2683,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , ufrmRelatorioProdMonofasicoCupom
   , ufrmRelatorioProdMonofasicoNota
   , uSistema
+  , uDuplicaNFSe
   , uFrmConversaoCFOP
   , uFrmContaBancaria
   , uFrmCaixa
@@ -2687,7 +2691,8 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmTransportadora
   , uFrmBanco
   , uFrmPlanoContas
-  , uFrmConvenio;
+  , uFrmConvenio
+  ;
 
 {$R *.DFM}
 
@@ -9803,6 +9808,56 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
+procedure TForm7.miDuplicarNFSeClick(Sender: TObject);
+var
+  cNroNF: string;
+begin
+  FbDuplicandoNFSe := True;
+  try
+    Screen.Cursor := crHourGlass;
+    if TDuplicaNFSe.New
+                   .SetTransaction(IBTransaction1)
+                   .SetNumeroNF(ibDataSet15.FieldByName('NUMERONF').AsString)
+                   .SetDataSetsNFSe(ibDataSet15, ibDataSet35)
+                   .Duplicar then
+    begin
+      Sleep(200);
+      ibDataSet15.DisableControls;
+      try
+        ibDataSet15.Last;
+
+        cNroNF := ibDataSet15NUMERONF.AsString;
+
+        ibDataSet15.First;
+        while not ibDataSet15.Eof do
+        begin
+          if ibDataSet15NUMERONF.AsString = cNroNF then
+          begin
+            ibDataSet15.Edit;
+            AssinaRegistro('VENDAS',ibDataSet15, True);
+            HasHs('VENDAS',True);
+            ibDataSet15.Post;
+          end;
+
+          ibDataSet15.Next;
+        end;
+      finally
+        ibDataSet35.Last;
+        ibDataSet15.EnableControls;
+      end;
+
+      AgendaCommit(True);
+    end;
+  finally
+    Self.Close;
+    Self.Show;
+    ibDataSet15.Last;
+    DBGrid1.SelectedIndex := 0;
+    FbDuplicandoNFSe := False;
+    Screen.Cursor := crDefault;
+  end;
+end;
+
 procedure TForm7.miExcluirOSClick(Sender: TObject);
 begin
   ExcluirOS;
@@ -9868,7 +9923,7 @@ var
   dvCredICMSSN: Double; // Sandro Silva 2023-12-12
 begin
   // Não faz nada quando entra a 1 vez
-  if Form7.sModulo <> 'CANCELA' then // Sandro Silva 2022-11-07 if Form7.sModulo <> 'CALCELA' then
+  if (Form7.sModulo <> 'CANCELA') and (not FbDuplicandoNFSe) then // Sandro Silva 2022-11-07 if Form7.sModulo <> 'CALCELA' then
   begin
     //if (Alltrim(Form7.ibDataSet15OPERACAO.AsString) <> '') and (Form7.ibDataSet15FINNFE.AsString <> '2-Complementar') then
     if (Alltrim(Form7.ibDataSet15OPERACAO.AsString) <> '') then //Mauricio Parizotto 2023-06-05 se necessário ajustar o código para  (Form7.ibDataSet15FINNFE.AsString <> '2')
@@ -10347,6 +10402,7 @@ procedure TForm7.FormCreate(Sender: TObject);
 begin
   IBDatabase1.Connected := False; // Garantia, caso esquecer a propriedade Connected := True no objeto Sandro Silva 2023-12-26
   {Sandro Silva 2023-07-05 inicio}
+  FbDuplicandoNFSe      := False;
   slPickListBandeira         := TStringList.Create;
   slPickListFormaDePagamento := TStringList.Create;
   slPickListBanco            := TStringList.Create;
@@ -12862,6 +12918,7 @@ begin
   EnviarOrcamentoPorEmail1.Visible                 := False;
   Visu1.Visible                                    := False;
   ransmitirNotaFiscaldeServioNFSe1.Visible         := False;
+  miDuplicarNFSe.Visible                           := False;
   LimparRetornosda1.Visible                        := False;
   ConsultarNFSe1.Visible                           := False;
   N0TestarservidorNFe1.Visible                     := False;
@@ -13051,6 +13108,7 @@ begin
         EnviarNFSeporemail1.Visible                      := True;
         Visu1.Visible                                    := True;
         ransmitirNotaFiscaldeServioNFSe1.Visible         := True;
+        miDuplicarNFSe.Visible                           := True;
         ConsultarNFSe1.Visible                           := True;
         LimparRetornosda1.Visible                        := True;
         LimparRetornosda1.Enabled                        := (Pos(' NAO AUTORIZADA',Form7.ibDataSet15STATUS.AsString) <> 0);
