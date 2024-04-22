@@ -8,8 +8,8 @@ object Form1: TForm1
   AlphaBlendValue = 250
   BorderStyle = bsSingle
   Caption = 'form'
-  ClientHeight = 879
-  ClientWidth = 1295
+  ClientHeight = 887
+  ClientWidth = 1297
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET

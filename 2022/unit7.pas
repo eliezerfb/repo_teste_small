@@ -8434,7 +8434,7 @@ begin
     Form7.IBTransaction1.CommitRetaining;
     if FrmParametroTributacao = nil then
       FrmParametroTributacao := TFrmParametroTributacao.Create(Self);
-      
+
     FrmParametroTributacao.Show;
     Exit;
   end;
@@ -15585,6 +15585,12 @@ begin
     Form7.ibDataSet23.Open;
 
     Form7.ibDataSet4.EnableControls;
+  end;
+
+  // Aqui Atualiza promoção no grid
+  if AtualizaPromocao(True) then // Sandro Silva 2024-04-22
+  begin
+    DataSet.Refresh; //exibe o preço atualizado pela promoção ou não
   end;
 
   AgendaCommit(True);
@@ -26930,6 +26936,16 @@ begin
   if Text = '  /  /    ' then
   begin
     Sender.AsString := '';
+    {Sandro Silva 2024-04-22 inicio}
+    if Sender.DataSet.FieldByName('ONPROMO').AsString <> '' then
+    begin
+      Sender.DataSet.FieldByName('PRECO').AsFloat := Sender.DataSet.FieldByName('OFFPROMO').AsFloat;
+      //Sender.DataSet.FieldByName('OFFPROMO').Clear;
+      Sender.DataSet.FieldByName('ONPROMO').Clear;
+      Sender.DataSet.FieldByName('PROMOINI').Clear;
+      Sender.DataSet.FieldByName('PROMOFIM').Clear;
+    end;
+    {Sandro Silva 2024-04-22 fim}
   end else
   begin
     try
@@ -32216,7 +32232,7 @@ begin
     Form7.ibDataSet16.Post;
     Form7.sModulo := 'VENDA';
   end;
-  
+
   Form7.sModulo := 'VENDA';
   Image106Click(Sender);
 end;

@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1224
-  ClientWidth = 1556
+  ClientHeight = 1237
+  ClientWidth = 1558
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7925,8 +7925,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1184
-    Width = 1556
+    Top = 1197
+    Width = 1558
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7935,6 +7935,8 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
+    ExplicitTop = 1184
+    ExplicitWidth = 1556
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7998,7 +8000,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1556
+    Width = 1558
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -8008,6 +8010,7 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
+    ExplicitWidth = 1556
   end
   object Panel_0: TPanel
     Left = 0
