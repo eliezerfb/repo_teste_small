@@ -24687,10 +24687,14 @@ begin
               end;
             end;
 
-            commitatudo(True);
+            {
+            //AgendaCommit(True);
+            Commitatudo(True); // SQL - Commando
 
             Form7.Close;
             Form7.Show;
+            }
+            RefreshDados; // Commit, fecha e abre form7
 
             {Sandro Silva 2024-04-17 fim}
           end;
