@@ -2490,6 +2490,15 @@ begin
   end;
   {Mauricio Parizotto 2024-03-22 Fim}
 
+
+  {Mauricio Parizotto 2024-04-22 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'IPISOBREOUTRA') = False then
+  begin
+    if ExecutaComando('Alter table ICM add IPISOBREOUTRA varchar(1);') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-04-22 Fim}
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
