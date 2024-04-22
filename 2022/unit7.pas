@@ -9863,9 +9863,6 @@ begin
       AgendaCommit(True);
     end;
   finally
-    Self.Close;
-    Self.Show;
-    ibDataSet15.Last;
     DBGrid1.SelectedIndex := 0;
     FbDuplicandoNFSe := False;
     Screen.Cursor := crDefault;
@@ -9873,7 +9870,10 @@ begin
     // Vai abrir a tela com a NFS-e carregada
     {Dailon Parisotto (f-18328) 2024-04-19 Inicio}
     if bSucesso then
+    begin
+      Form7.sModulo := 'VENDA';
       Image106Click(Self);
+    end;
     {Dailon Parisotto (f-18328) 2024-04-19 Fim}
   end;
 end;
