@@ -2406,6 +2406,8 @@ type
     procedure Imprimiretiqueta1Click(Sender: TObject);
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     procedure miDuplicarNFSeClick(Sender: TObject);
+    procedure ibDataSet4PROMOINIChange(Sender: TField);
+    procedure ibDataSet4ONPROMOChange(Sender: TField);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -15587,11 +15589,13 @@ begin
     Form7.ibDataSet4.EnableControls;
   end;
 
+  {Sandro Silva 2024-04-22 inicio}
   // Aqui Atualiza promoção no grid
-  if AtualizaPromocao(True) then // Sandro Silva 2024-04-22
+  if AtualizaPromocao(True) then
   begin
     DataSet.Refresh; //exibe o preço atualizado pela promoção ou não
   end;
+  {Sandro Silva 2024-04-22 fim}
 
   AgendaCommit(True);
 end;
@@ -26927,7 +26931,20 @@ begin
   Form7.Show;
 end;
 
- procedure TForm7.ibDataSet4PROMOINISetText(Sender: TField;
+ procedure TForm7.ibDataSet4PROMOINIChange(Sender: TField);
+begin
+  // Acerta o preço de venda para o valor normal
+  {Sandro Silva 2024-04-23 inicio}
+  if (Sender.DataSet.FieldByName('PROMOINI').AsString <> '') and
+    (Sender.DataSet.FieldByName('PROMOFIM').AsString <> '') then
+  begin
+    if not((Date >= Sender.DataSet.FieldByName('PROMOINI').AsDateTime) and (Date <= Sender.DataSet.FieldByName('PROMOFIM').AsDateTime)) then
+      Sender.DataSet.FieldByName('PRECO').AsFloat := Sender.DataSet.FieldByName('OFFPROMO').AsFloat;
+  end;
+  {Sandro Silva 2024-04-23 final}
+end;
+
+procedure TForm7.ibDataSet4PROMOINISetText(Sender: TField;
   const Text: String);
 begin
   { ------------------------------------------------------------------ }
@@ -26936,11 +26953,11 @@ begin
   if Text = '  /  /    ' then
   begin
     Sender.AsString := '';
+    // Acerta o preço de venda para o valor normal. Tira o produto da promoção
     {Sandro Silva 2024-04-22 inicio}
     if Sender.DataSet.FieldByName('ONPROMO').AsString <> '' then
     begin
       Sender.DataSet.FieldByName('PRECO').AsFloat := Sender.DataSet.FieldByName('OFFPROMO').AsFloat;
-      //Sender.DataSet.FieldByName('OFFPROMO').Clear;
       Sender.DataSet.FieldByName('ONPROMO').Clear;
       Sender.DataSet.FieldByName('PROMOINI').Clear;
       Sender.DataSet.FieldByName('PROMOFIM').Clear;
@@ -31280,6 +31297,19 @@ begin
       MensagemSistema('Parece que você está tentando incluir uma TAG. Verifique se existe um campo específico na aba Tags para incluir esta informação.');
     end;
   end;
+end;
+
+procedure TForm7.ibDataSet4ONPROMOChange(Sender: TField);
+begin
+  // Acerta o preço de venda para o valor normal. Tira o produto da promoção
+  {Sandro Silva 2024-04-23 inicio}
+  if  Sender.AsFloat <= 0 then
+  begin
+    Sender.DataSet.FieldByName('PRECO').AsFloat := Sender.DataSet.FieldByName('OFFPROMO').AsFloat;
+    Sender.DataSet.FieldByName('PROMOINI').Clear;
+    Sender.DataSet.FieldByName('PROMOFIM').Clear;
+  end;
+  {Sandro Silva 2024-04-23 fim}
 end;
 
 procedure TForm7.Notasfiscaisdesadavendassrie9201Click(Sender: TObject);

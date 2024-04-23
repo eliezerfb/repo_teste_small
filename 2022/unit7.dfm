@@ -11903,6 +11903,7 @@ object Form7: TForm7
       DisplayLabel = 'In'#237'cio da promo'#231#227'o'
       FieldName = 'PROMOINI'
       Origin = 'ESTOQUE.PROMOINI'
+      OnChange = ibDataSet4PROMOINIChange
       OnSetText = ibDataSet4PROMOINISetText
       EditMask = '!99/99/9999;1; '
     end
@@ -11910,6 +11911,7 @@ object Form7: TForm7
       DisplayLabel = 'Pre'#231'o promocional'
       FieldName = 'ONPROMO'
       Origin = 'ESTOQUE.ONPROMO'
+      OnChange = ibDataSet4ONPROMOChange
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
       Precision = 18
