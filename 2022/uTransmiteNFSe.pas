@@ -28,6 +28,13 @@ begin
   Result := AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString),' ','', [rfReplaceAll]) + Form7.ibDAtaset13ESTADO.AsString);
 end;
 
+function ValorServicos(sCalculoDoDescontoPeloProvedor: String; ValorBruto: Double; Desconto: Double): Real;
+begin
+  Result := ValorBruto - Desconto;
+  if sCalculoDoDescontoPeloProvedor = 'Sim' then
+    Result := ValorBruto;
+end;
+
 {Sandro Silva 2023-10-02 inicio}
 function CalculaValorISS(sPadrao: String; dTotal: Double; dAliquota: Double; dBase: Double): Real;
 begin
@@ -986,7 +993,11 @@ begin
                     Writeln(F,'QuantidadeServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('QUANTIDADE').AsFloat)),',','.')); //
                   Writeln(F,'ValorUnitarioServico='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('UNITARIO').AsFloat)),',','.')); //
                   Writeln(F,'UnidadeServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)));
+                  {Sandro Silva 2024-04-23 inicio
                   Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.'));
+                  }
+                  Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00', ValorServicos(sCalculoDoDescontoPeloProvedor, Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat, Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.'));
+                  {Sandro Silva 2024-04-23 fim}
 
                   // Situações tributárias obtidas na prefeitura
                   if AllTrim(RetornaValorDaTagNoCampo('Tributavel',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
