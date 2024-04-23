@@ -32115,6 +32115,7 @@ end;
 
 procedure TForm7.DuplicatestaNFe1Click(Sender: TObject);
 var
+  aCodVetor : array[0..999] of String;
   sDesVetor : array[0..999] of String;
   fValVetor : array[0..999] of real;
   fQtdVetor : array[0..999] of real;
@@ -32131,6 +32132,9 @@ begin
   Form7.ibDataSet16.First;
   while not Form7.ibDataSet16.Eof do // disable
   begin
+    {Dailon Parisotto (f-18201) 2024-04-22 Inicio}
+    aCodVetor[I] := Form7.ibDataSet16CODIGO.AsString;
+    {Dailon Parisotto (f-18201) 2024-04-22 Fim}
     sDesVetor[I] := Form7.ibDataSet16DESCRICAO.AsString;
     fValVetor[I] := Form7.ibDataSet16UNITARIO.Asfloat;
     fQtdVetor[I] := Form7.ibDataSet16QUANTIDADE.AsFloat;
@@ -32140,7 +32144,8 @@ begin
   end;
 
   Form7.ibDataSet15.Append;
-  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
+  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataset15.Edit;
   Form7.ibDataSet15CLIENTE.AsString  :=  vCli;
   Form7.ibDataSet15OPERACAO.AsString :=  vOpe;
   Form7.ibDataSet15.Post;
@@ -32149,10 +32154,25 @@ begin
   for I := 0 to J do
   begin
     Form7.ibDataSet16.Append;
+    {Dailon Parisotto (f-18201) 2024-04-22 Inicio}
+    Form7.ibDataSet16CODIGO.AsString    := aCodVetor[I];
+    {Dailon Parisotto (f-18201) 2024-04-22 Fim}
     Form7.ibDataSet16DESCRICAO.AsString := sDesVetor[I];
     Form7.ibDataSet16UNITARIO.AsFloat   := fValVetor[I];
     Form7.ibDataSet16QUANTIDADE.AsFloat := fQtdVetor[I];
     Form7.ibDataSet16CFOP.AsString      := aCFOP[I];
+
+    {Dailon Parisotto (f-18201) 2024-04-22 Inicio}
+    // Se for comentario de item
+    if (Form7.ibDataSet16CODIGO.AsString = EmptyStr)
+      and (Form7.ibDataSet16QUANTIDADE.AsFloat = 0)
+      and (Form7.ibDataSet16UNITARIO.AsFloat = 0) then
+    begin
+      Form7.ibDataSet16QUANTIDADE.Clear;
+      Form7.ibDataSet16UNITARIO.Clear;
+      Form7.ibDataSet16TOTAL.Clear;
+    end;
+    {Dailon Parisotto (f-18201) 2024-04-22 Fim}
     Form7.ibDataSet16.Post;
     Form7.sModulo := 'VENDA';
   end;
