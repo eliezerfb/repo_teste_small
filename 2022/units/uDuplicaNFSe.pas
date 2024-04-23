@@ -91,6 +91,7 @@ begin
           FoDataSetNFSe.FindField(qryDados.Fields[i].FieldName).Value := qryDados.Fields[i].Value;
         end;
       end;
+      FoDataSetNFSe.FieldByName('NSUD').AsDateTime := FoDataSetNFSe.FieldByName('EMISSAO').AsDateTime;
 
       FoDataSetNFSe.Post;
 
@@ -231,7 +232,7 @@ end;
 
 function TDuplicaNFSe.TestarCampoNaoDuplicar(AcCampo: String): Boolean;
 const
-  _cCampos = ';REGISTRO;NUMERONF;EMISSAO;SAIDAH;SAIDAD;NFEPROTOCOLO;STATUS;NFEXML;RECIBOXML;NSU;NSUH;EMITIDA;';
+  _cCampos = ';REGISTRO;NUMERONF;EMISSAO;SAIDAH;SAIDAD;NFEPROTOCOLO;STATUS;NFEXML;RECIBOXML;NSU;NSUH;EMITIDA;NSUD;DUPLICATAS;';
 begin
   Result := Pos(';'+AcCampo+';', _cCampos) > 0;
 end;
