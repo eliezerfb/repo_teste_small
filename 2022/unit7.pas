@@ -71,8 +71,6 @@ function AssinaRegistro(pNome: String; DataSet: TDataSet; bAssina: Boolean): Boo
 
 
 type
-
-//    TValidaIE  = function (const IE, UF: String): Integer; stdcall;
     TProdutoOld = Record
       sDescricao: String;
       sQuantidade: String;
@@ -1250,7 +1248,6 @@ type
     ibDataSet24ANVISA: TIntegerField;
     EtiquetasZebraArgoxElgin1: TMenuItem;
     Panel1: TPanel;
-    spdNFeDataSets: TspdNFeDataSets;
     N57: TMenuItem;
     ImprimiraNFemformulrionumerado1: TMenuItem;
     ImprimirtodasasNFfiltradas1: TMenuItem;
@@ -1263,7 +1260,6 @@ type
     ibDataSet4VALOR_PARCELA_IMPORTADA_EXTERIO: TIBBCDField;
     ibDataSet4CODIGO_FCI: TIBStringField;
     ibDataSet23CST_ICMS: TIBStringField;
-    spdNFe: TspdNFe;
     ibDataSet18ANTT: TIBStringField;
     N58: TMenuItem;
     Produtividadedecontatos1: TMenuItem;
@@ -1373,7 +1369,6 @@ type
     Anlisediaria1: TMenuItem;
     gerCNAB240: TMenuItem;
     btnRetornoCNAB240: TButton;
-    spdNFeDPEC1: TspdNFeDPEC;
     ConsultarNFesemitidasparameuCNPJ1: TMenuItem;
     PositivoDownloadXML: TImage;
     VisualizarXMLdamanifestaododestinatrio1: TMenuItem;
@@ -1476,7 +1471,7 @@ type
     CDSItensNotaAuxCODIGO: TStringField;
     RelatriodevendasporclienteNFeCupom1: TMenuItem;
     ibDataSet23ICMS_DESONERADO: TIBBCDField;
-    ibDataSet23PST: TIBBCDField;
+    ibDataSet23PICMSST: TIBBCDField;
     ibDataSet24ICMS_DESONERADO: TIBBCDField;
     pnlFiltro: TPanel;
     lblHomologacao: TLabel;
@@ -1686,6 +1681,14 @@ type
     MenuItem137: TMenuItem;
     MenuItem140: TMenuItem;
     MenuItem141: TMenuItem;
+    ibDataSet14PISCOFINSLUCRO: TIBStringField;
+    ConfigurarEtiqueta1: TMenuItem;
+    Imprimiretiqueta1: TMenuItem;
+    miDuplicarNFSe: TMenuItem;
+    ibDataSet11PLANOCONTA: TIBStringField;
+    ibdConversaoCFOPCST: TIBStringField;
+    ibdConversaoCFOPCSOSN: TIBStringField;
+    ibdConversaoCFOPCONSIDERACSTCSOSN: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2399,12 +2402,20 @@ type
     procedure miRelatoriosCliforClick(Sender: TObject);
     procedure miRelatoriosCaixaClick(Sender: TObject);
     procedure MenuItem140Click(Sender: TObject);
+    procedure ConfigurarEtiqueta1Click(Sender: TObject);
+    procedure Imprimiretiqueta1Click(Sender: TObject);
+    procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
+    procedure miDuplicarNFSeClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
   private
     FbDuplicandoProd: Boolean;
+    FbDuplicandoNFSe: Boolean;
     FbImportandoXML: Boolean;
+    iOSQtdEtiqueta : integer;
+    sOSEtiqueta : string;
+
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
@@ -2458,6 +2469,7 @@ type
     procedure ExportarXMLNF;
     procedure CarregarContasReceberMarcadas;
     procedure CarregarContasPagarMarcadas;
+    function TestarPodeCadastrarClifor(AcNome: String; AbMensagem: Boolean = True): Boolean;
   public
     // Public declarations
 
@@ -2525,7 +2537,7 @@ type
     DataSourceAtual : TDataSource;
     ItensdaNota : Integer;
     iCampos: Integer;
-    iFoco  : Integer;
+//    iFoco  : Integer;
     iRegistros : Integer;
     bChave : Boolean;
     bChaveGrade : boolean;
@@ -2558,6 +2570,12 @@ type
     bDescontaICMSDeso: Boolean;
     {Dailon 2023-08-22 fim}
 
+    {Sandro Silva 2024-04-08 inicio}
+    spdNFe: TspdNFe;
+    spdNFeDataSets: TspdNFeDataSets;
+    spdNFeDPEC1: TspdNFeDPEC;
+    {Sandro Silva 2024-04-08 fim}
+
     procedure RefreshDados;
     procedure TotalizaItensCompra;
     procedure CalculaTotalNota;
@@ -2587,6 +2605,7 @@ type
     property UsuarioLogado: String read getUsuarioLogado;
     procedure SetDataSetCadastros(CaminhoIni: String);
     function IniFileUsuarioLogado: String;
+    function CriarComponenteNFeRunTime: Boolean;
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -2616,8 +2635,8 @@ var
   
 implementation
 
-uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
-  Unit27, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
+uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais,
+  uFrmRelatorioFluxoCaixa, Mais3, Unit19, Unit4, Unit30, Unit13, Unit32, Unit33, Unit34,
   Unit37, Unit38, Unit39, Unit40, Unit41, Unit43, Unit2,
   unit24, uExportaXML, Unit15, SelecionaCertificado, Unit6, Unit36, Unit26,
   Unit29, Unit48
@@ -2665,6 +2684,15 @@ uses Unit17, Unit12, Unit20, Unit21, Unit22, Unit23, Unit25, Mais,
   , ufrmRelatorioProdMonofasicoCupom
   , ufrmRelatorioProdMonofasicoNota
   , uSistema
+  , uDuplicaNFSe
+  , uFrmConversaoCFOP
+  , uFrmContaBancaria
+  , uFrmCaixa
+  , uFrmGrupoMercadoria
+  , uFrmTransportadora
+  , uFrmBanco
+  , uFrmPlanoContas
+  , uFrmConvenio
   ;
 
 {$R *.DFM}
@@ -3082,6 +3110,116 @@ begin
   end;
 end;
 
+
+function TForm7.CriarComponenteNFeRunTime: Boolean;
+{Sandro Silva 2024-04-08 Criar dinamicamente os componentes da NFe}
+begin
+  if Form7.spdNFeDataSets = nil then
+  begin
+
+    Form7.spdNFeDataSets := TspdNFeDataSets.Create(Application);
+    Form7.spdNFeDataSets.VersaoEsquema := pl_009;
+    Form7.spdNFeDataSets.ValidaRegrasNegocio := False;
+    Form7.spdNFeDataSets.ValidaRegrasNegocioTecno := False;
+    Form7.spdNFeDataSets.UsarDatasetExportacao := False;
+  end;
+
+  if Form7.spdNFe = nil then
+  begin
+
+    Form7.spdNFe := TspdNFe.Create(Application);
+
+    Form7.spdNFe.VersaoManual := vm50a;
+    Form7.spdNFe.AnexarDanfePDF := True;
+    Form7.spdNFe.DanfeSettings.FraseContingencia := 'Danfe em contingÍncia - Impresso em decorrÍncia de problemas tÈcnicos';
+    Form7.spdNFe.DanfeSettings.FraseHomologacao := 'SEM VALOR FISCAL';
+    Form7.spdNFe.DanfeSettings.QtdeCopias := 1;
+    Form7.spdNFe.DanfeSettings.LineDelimiter := '|';
+    Form7.spdNFe.DanfeSettings.InfCplMaxCol := 68;
+    Form7.spdNFe.DanfeSettings.InfCplMaxRow := 7;
+    Form7.spdNFe.DanfeSettings.ImprimirVolume := False;
+    Form7.spdNFe.DanfeSettings.ImprimirDuplicata := True;
+    Form7.spdNFe.DanfeSettings.MensagemPartilhaAutomatica := False;
+    Form7.spdNFe.DanfeSettings.MensagemFCP := False;
+    Form7.spdNFe.DanfeSettings.ImprimirUnidadeTributada := False;
+    Form7.spdNFe.DanfeSettings.ImprimirObsCont := False;
+    Form7.spdNFe.DanfeSettings.ImprimirFrenteVerso := fvDesabilitado;
+    Form7.spdNFe.DanfeSettings.ImprimirLocalRetiradaEntrega := True;
+    Form7.spdNFe.DanfeSettings.InfCplQuebrarLinhaAut := False;
+    Form7.spdNFe.DanfeSettings.MensagemIcmsDesonerado := False;
+    Form7.spdNFe.DanfeSettings.ImprimirVlrTotalDanfeSimplificado := False;
+    Form7.spdNFe.DanfeSettings.MensagemIcmsMonofasico := False;
+    Form7.spdNFe.CaracteresRemoverAcentos := '·ÈÌÛ˙‡ËÏÚ˘‚ÍÓÙ˚‰ÎÔˆ¸„ıÒÁ¡…Õ”⁄¿»Ã“Ÿ¬ Œ‘€ƒÀœ÷‹√’—«∫™';
+    Form7.spdNFe.TipoCertificado := ckMemory;
+    Form7.spdNFe.DiretorioTemplates := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Templates\vm50\DPEC';
+    Form7.spdNFe.IgnoreInvalidCertificates := False;
+    Form7.spdNFe.DiretorioLog := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\';
+    Form7.spdNFe.Ambiente := akHomologacao;
+    Form7.spdNFe.EmailSettings.Autenticacao := False;
+    Form7.spdNFe.EmailSettings.TimeOut := 0;
+    Form7.spdNFe.EmailSettings.ConteudoHtml := False;
+    Form7.spdNFe.EmailSettings.UseSecureBlackBox := False;
+    Form7.spdNFe.EmailSettings.QtdeTentativas := 0;
+    Form7.spdNFe.EmailSettings.UseTLS := utNoTLSSupport;
+    Form7.spdNFe.DiretorioEsquemas := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemas\vm50a\';
+    Form7.spdNFe.ConexaoSegura := False;
+    Form7.spdNFe.TimeOut := 0;
+    Form7.spdNFe.DiretorioLogErro := 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\';
+    Form7.spdNFe.DiretorioTemporario := 'C:\ProgramData\';
+    Form7.spdNFe.ModoOperacao := moNormal;
+    Form7.spdNFe.EntregaXML := exEmail;
+    Form7.spdNFe.AtualizarArquivoServidores := True;
+    Form7.spdNFe.DiagnosticMode := True;
+    Form7.spdNFe.DiretorioXmlDestinatario := 'C:\Program Files (x86)\Borland\Delphi7\Bin\XmlDestinatario\';
+    Form7.spdNFe.DiretorioDownloads := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Downloads\';
+    Form7.spdNFe.MaxSizeLoteEnvio := 500;
+    Form7.spdNFe.DanfeSimplificado := False;
+
+    spdNFeDPEC1 := TspdNFeDPEC.Create(Application);
+    spdNFeDPEC1.VersaoManual := vm50;
+    spdNFeDPEC1.AnexarDanfePDF := False;
+    spdNFeDPEC1.DanfeSettings.FraseContingencia := 'Danfe em contingÍncia - Impresso em decorrÍncia de problemas tÈcnicos';
+    spdNFeDPEC1.DanfeSettings.FraseHomologacao := 'SEM VALOR FISCAL';
+    spdNFeDPEC1.DanfeSettings.QtdeCopias := 2;
+    spdNFeDPEC1.DanfeSettings.LineDelimiter := '|';
+    spdNFeDPEC1.DanfeSettings.InfCplMaxCol := 68;
+    spdNFeDPEC1.DanfeSettings.InfCplMaxRow := 7;
+    spdNFeDPEC1.DanfeSettings.ImprimirVolume := False;
+    spdNFeDPEC1.DanfeSettings.ImprimirDuplicata := True;
+    spdNFeDPEC1.DanfeSettings.MensagemPartilhaAutomatica := False;
+    spdNFeDPEC1.DanfeSettings.MensagemFCP := False;
+    spdNFeDPEC1.DanfeSettings.ImprimirUnidadeTributada := False;
+    spdNFeDPEC1.DanfeSettings.ImprimirObsCont := False;
+    spdNFeDPEC1.DanfeSettings.ImprimirFrenteVerso := fvDesabilitado;
+    spdNFeDPEC1.DanfeSettings.ImprimirLocalRetiradaEntrega := True;
+    spdNFeDPEC1.DanfeSettings.InfCplQuebrarLinhaAut := False;
+    spdNFeDPEC1.DanfeSettings.MensagemIcmsDesonerado := False;
+    spdNFeDPEC1.DanfeSettings.ImprimirVlrTotalDanfeSimplificado := False;
+    spdNFeDPEC1.DanfeSettings.MensagemIcmsMonofasico := False;
+    spdNFeDPEC1.CaracteresRemoverAcentos := '·ÈÌÛ˙‡ËÏÚ˘‚ÍÓÙ˚‰ÎÔˆ¸„ıÒÁ¡…Õ”⁄¿»Ã“Ÿ¬ Œ‘€ƒÀœ÷‹√’—«∫™';
+    spdNFeDPEC1.TipoCertificado := ckMemory;
+    spdNFeDPEC1.DiretorioTemplates := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Templates\vm50\DPEC';
+    spdNFeDPEC1.IgnoreInvalidCertificates := False;
+    spdNFeDPEC1.DiretorioLog := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\';
+    spdNFeDPEC1.Ambiente := akHomologacao;
+    spdNFeDPEC1.EmailSettings.Autenticacao := False;
+    spdNFeDPEC1.EmailSettings.TimeOut := 0;
+    spdNFeDPEC1.EmailSettings.ConteudoHtml := False;
+    spdNFeDPEC1.EmailSettings.UseSecureBlackBox := False;
+    spdNFeDPEC1.EmailSettings.QtdeTentativas := 0;
+    spdNFeDPEC1.EmailSettings.UseTLS := utNoTLSSupport;
+    spdNFeDPEC1.DiretorioEsquemas := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemas\vm50\DPEC';
+    spdNFeDPEC1.ConexaoSegura := False;
+    spdNFeDPEC1.TimeOut := 0;
+    spdNFeDPEC1.DiretorioLogErro := 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\';
+    spdNFeDPEC1.DiretorioTemporario := 'C:\ProgramData\';
+    spdNFeDPEC1.ModoOperacao := moNormal;
+    spdNFeDPEC1.EntregaXML := exEmail;
+    spdNFeDPEC1.AtualizarArquivoServidores := False;
+    spdNFeDPEC1.DiagnosticMode := False;
+
+  end;
+end;
 
 function DownloadNFeEmitida(sP1: String): Boolean;
 var
@@ -4742,6 +4880,9 @@ var
   Mais1Ini: TIniFile;
   TipoCertificado : string;
 begin
+
+  Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
+
   Form1.ConfiguraCredencialTecnospeed; // Sandro Silva 2022-12-15
 
 //  Aguardando tecnospeed confirmar se propriedade est· funcionando como proposta, suporte da tecnospeed informou que pode ter inconsistÍncia no funcionamento
@@ -4889,6 +5030,9 @@ begin
 
   if Form7.spdNFe.NomeCertificado.Text = '' then
   begin
+
+    Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
+
     Form1.ConfiguraCredencialTecnospeed;
 
     Form7.spdNFe.ListarCertificados(frmSelectCertificate.lbList.Items);
@@ -4914,6 +5058,10 @@ begin
 
   if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A3') then
     TipoCertificado := 'A3';
+
+  //Mauricio Parizotto 2024-04-05
+  if (TipoCertificado = '') and (Form7.spdNFe.NomeCertificado.Text <> '') then
+    TipoCertificado := 'NI';
 
   try
     if TipoCertificado <> '' then
@@ -5462,7 +5610,12 @@ begin
         Form7.ibDataSet35.Selectsql.Add('select * from ITENS003 where CODIGO='+QuotedStr('99999')+' ');
         Form7.ibDataSet13.Selectsql.Add('select * from EMITENTE');
         Form7.ibDataSet14.Selectsql.Add('select * from ICM order by CFOP');
-        Form7.ibDataSet11.Selectsql.Add('select * from BANCOS');
+        //Form7.ibDataSet11.Selectsql.Add('select * from BANCOS'); Mauricio Parizotto 2024-04-08
+        Form7.ibDataSet11.Selectsql.Add(' Select '+
+                                        ' 	B.*,'+
+                                        ' 	C.NOME PLANOCONTA'+
+                                        ' From BANCOS B'+
+                                        ' 	Left Join CONTAS C on C.CONTA = B.PLANO');
         Form7.ibDataSet26.Selectsql.Add('select * from RESUMO order by DATA, REGISTRO');
         Form7.ibDataSet9.Selectsql.Add('select * from VENDEDOR');
         Form7.ibDataSet29.Selectsql.Add('select * from CONVENIO');
@@ -5517,6 +5670,7 @@ end;
 
 function AbreArquivos(P1:Boolean): Boolean;
 begin
+
   try
     if not Form7.ibDataSet13.active then Form7.ibDataSet13.active := True;
     if not Form7.ibDataSet25.active then Form7.ibDataSet25.active := True;
@@ -5607,7 +5761,7 @@ begin
     if Form7.ibdParametroTributa.Active then  Form7.ibdParametroTributa.EnableControls; // Mauricio Parizotto 2023-09-21
     if Form7.ibdSituacaoOS.Active then  Form7.ibdSituacaoOS.EnableControls; // Mauricio Parizotto 2023-12-04
   end;
-  
+
   Result := True;
 end;
 
@@ -5641,7 +5795,7 @@ begin
   P1 := StrTran(P1,' IE', ' InscriÁ„o');
   P1 := StrTran(P1,'(IE)', ' InscriÁ„o');
 
-  if Copy(AoDataSet.SelectSQL.Text,1,12)='select first' then
+  if (Assigned(AoDataSet)) and (Copy(AoDataSet.SelectSQL.Text,1,12) = 'select first') then
     P1 := StrTran(P1, 'Listando' ,'Mostrando os ˙ltimos '+Form7.sMaxReg+' registros' );
 
   P1 := StrTran(P1,' and EMITIDA='+QuotedStr('X'), ', canceladas ');
@@ -5674,14 +5828,20 @@ begin
   P1 := StrTran(P1, '  ' ,' ');
   P1 := StrTran(P1, 'sÛ quando sÛ' ,'sÛ');
 
-  for I := 1 to AoDataSet.FieldCount do
+  if Assigned(AoDataSet) then
   begin
-    if AoDataSet.Fields[I-1].FieldName <> AoDataSet.Fields[I-1].DisplayLabel then
+    for I := 1 to AoDataSet.FieldCount do
     begin
-      if (AoDataSet.Fields[I-1].FieldName <> 'IPI')
-        and (copy(AoDataSet.Fields[I-1].FieldName,1,3) <> 'CST') then
+      if AoDataSet.Fields[I-1].FieldName <> AoDataSet.Fields[I-1].DisplayLabel then
       begin
-        P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel);
+        if (AoDataSet.Fields[I-1].FieldName <> 'IPI')
+          and (copy(AoDataSet.Fields[I-1].FieldName,1,3) <> 'CST') then
+        begin
+          if Pos(' '+AoDataSet.Fields[I-1].FieldName, P1) > 0 then
+            P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel)
+          else
+            P1 := StrTran(P1,AoDataSet.Fields[I-1].FieldName, AoDataSet.Fields[I-1].DisplayLabel);
+        end;
       end;
     end;
   end;
@@ -8277,7 +8437,7 @@ end;
 
 procedure TForm7.Image103Click(Sender: TObject);
 begin
-  Form20.ShowModal;
+  FrmAssistenteProcura.ShowModal;
 end;
 
 procedure TForm7.Image106Click(Sender: TObject);
@@ -8325,6 +8485,88 @@ begin
       FrmSituacaoOS := TFrmSituacaoOS.Create(Self);
 
     FrmSituacaoOS.Show;
+    Exit;
+  end;
+
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if sModulo = 'CONVENIO' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmConvenio = nil then
+      FrmConvenio := TFrmConvenio.Create(Self);
+
+    FrmConvenio.Show;
+    Exit;
+  end;
+
+  if sModulo = 'CAIXA' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmCaixa = nil then
+      FrmCaixa := TFrmCaixa.Create(Self);
+
+    FrmCaixa.Show;
+    Exit;
+  end;
+
+  if sModulo = 'GRUPOS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmGrupoMercadoria = nil then
+      FrmGrupoMercadoria := TFrmGrupoMercadoria.Create(Self);
+
+    FrmGrupoMercadoria.Show;
+    Exit;
+  end;
+
+  if sModulo = 'TRANSPORT' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmTransportadora = nil then
+      FrmTransportadora := TFrmTransportadora.Create(Self);
+
+    FrmTransportadora.Show;
+    Exit;
+  end;
+
+  if sModulo = 'CONTAS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmPlanoContas = nil then
+      FrmPlanoContas := TFrmPlanoContas.Create(Self);
+
+    FrmPlanoContas.Show;
+    Exit;
+  end;
+
+  if sModulo = 'BANCOS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmBanco = nil then
+      FrmBanco := TFrmBanco.Create(Self);
+
+    FrmBanco.Show;
+    Exit;
+  end;
+
+  if sModulo = '2CONTAS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaBancaria = nil then
+      FrmContaBancaria := TFrmContaBancaria.Create(Self);
+
+    FrmContaBancaria.Show;
+    Exit;
+  end;
+  {Mauricio Parizotto 2024-04-05 Fim}
+  //Mauricio Parizotto 2024-03-21
+  if sModulo = 'CONVERSAOCFOP' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmConversaoCFOP = nil then
+      FrmConversaoCFOP := TFrmConversaoCFOP.Create(Self);
+
+    FrmConversaoCFOP.Show;
     Exit;
   end;
 
@@ -8565,6 +8807,96 @@ begin
 
     FrmSituacaoOS.lblNovoClick(Sender);
     FrmSituacaoOS.Show;
+    Exit;
+  end;
+
+{Mauricio Parizotto 2024-04-05 Inicio}
+  if sModulo = 'CONVENIO' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmConvenio = nil then
+      FrmConvenio := TFrmConvenio.Create(Self);
+
+    FrmConvenio.lblNovoClick(Sender);
+    FrmConvenio.Show;
+    Exit;
+  end;
+
+  if sModulo = 'CAIXA' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmCaixa = nil then
+      FrmCaixa := TFrmCaixa.Create(Self);
+
+    FrmCaixa.lblNovoClick(Sender);
+    FrmCaixa.Show;
+    Exit;
+  end;
+
+  if sModulo = 'GRUPOS_' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmGrupoMercadoria = nil then
+      FrmGrupoMercadoria := TFrmGrupoMercadoria.Create(Self);
+
+    FrmGrupoMercadoria.lblNovoClick(Sender);
+    FrmGrupoMercadoria.Show;
+    Exit;
+  end;
+
+  if sModulo = 'TRANSPORT' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmTransportadora = nil then
+      FrmTransportadora := TFrmTransportadora.Create(Self);
+
+    FrmTransportadora.lblNovoClick(Sender);
+    FrmTransportadora.Show;
+    Exit;
+  end;
+
+  if sModulo = 'CONTAS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmPlanoContas = nil then
+      FrmPlanoContas := TFrmPlanoContas.Create(Self);
+
+    FrmPlanoContas.lblNovoClick(Sender);
+    FrmPlanoContas.Show;
+    Exit;
+  end;
+
+  if sModulo = 'BANCOS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmBanco = nil then
+      FrmBanco := TFrmBanco.Create(Self);
+
+    FrmBanco.lblNovoClick(Sender);
+    FrmBanco.Show;
+    Exit;
+  end;
+
+  if sModulo = '2CONTAS' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaBancaria = nil then
+      FrmContaBancaria := TFrmContaBancaria.Create(Self);
+
+    FrmContaBancaria.lblNovoClick(Sender);
+    FrmContaBancaria.Show;
+    Exit;
+  end;
+  {Mauricio Parizotto 2024-04-05 Fim}
+  //Mauricio Parizotto 2024-03-21
+  if sModulo = 'CONVERSAOCFOP' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmConversaoCFOP = nil then
+      FrmConversaoCFOP := TFrmConversaoCFOP.Create(Self);
+
+    FrmConversaoCFOP.lblNovoClick(Sender);
+    FrmConversaoCFOP.Show;
     Exit;
   end;
 
@@ -9140,9 +9472,13 @@ begin
       // --------------------- //
       if sModulo = 'BANCOS' then
       begin
+        {Mauricio Parizotto 2024-04-09
         iFoco := 7;
         Form10.Show;
+        }
+        Form7.Image106Click(Sender);
       end;
+
       if sModulo = '2CONTAS' then
       begin
         Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
@@ -9260,8 +9596,8 @@ begin
 
  if Key = Chr(18) then
  begin
-   Form20.Panel1.Visible := True;
-   Form20.ShowModal;
+   FrmAssistenteProcura.Panel1.Visible := True;
+   FrmAssistenteProcura.ShowModal;
  end;
  //
  if Key = Chr(6) then
@@ -9489,6 +9825,75 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
+procedure TForm7.miDuplicarNFSeClick(Sender: TObject);
+var
+  cNroNF: string;
+  bSucesso: Boolean;
+begin
+  FbDuplicandoNFSe := True;
+  try
+    Screen.Cursor := crHourGlass;
+
+    {Dailon Parisotto (f-18328) 2024-04-19 Inicio
+
+    if TDuplicaNFSe.New
+                   .SetTransaction(IBTransaction1)
+                   .SetNumeroNF(ibDataSet15.FieldByName('NUMERONF').AsString)
+                   .SetDataSetsNFSe(ibDataSet15, ibDataSet35)
+                   .Duplicar then
+
+    }
+    bSucesso := TDuplicaNFSe.New
+                   .SetTransaction(IBTransaction1)
+                   .SetNumeroNF(ibDataSet15.FieldByName('NUMERONF').AsString)
+                   .SetDataSetsNFSe(ibDataSet15, ibDataSet35)
+                   .Duplicar;
+    if bSucesso then
+    {Dailon Parisotto (f-18328) 2024-04-19 Fim}
+    begin
+      Sleep(200);
+      ibDataSet15.DisableControls;
+      try
+        ibDataSet15.Last;
+
+        cNroNF := ibDataSet15NUMERONF.AsString;
+
+        ibDataSet15.First;
+        while not ibDataSet15.Eof do
+        begin
+          if ibDataSet15NUMERONF.AsString = cNroNF then
+          begin
+            ibDataSet15.Edit;
+            AssinaRegistro('VENDAS',ibDataSet15, True);
+            HasHs('VENDAS',True);
+            ibDataSet15.Post;
+          end;
+
+          ibDataSet15.Next;
+        end;
+      finally
+        ibDataSet35.Last;
+        ibDataSet15.EnableControls;
+      end;
+
+      AgendaCommit(True);
+    end;
+  finally
+    DBGrid1.SelectedIndex := 0;
+    FbDuplicandoNFSe := False;
+    Screen.Cursor := crDefault;
+
+    // Vai abrir a tela com a NFS-e carregada
+    {Dailon Parisotto (f-18328) 2024-04-19 Inicio}
+    if bSucesso then
+    begin
+      Form7.sModulo := 'VENDA';
+      Image106Click(Self);
+    end;
+    {Dailon Parisotto (f-18328) 2024-04-19 Fim}
+  end;
+end;
+
 procedure TForm7.miExcluirOSClick(Sender: TObject);
 begin
   ExcluirOS;
@@ -9554,7 +9959,7 @@ var
   dvCredICMSSN: Double; // Sandro Silva 2023-12-12
 begin
   // N„o faz nada quando entra a 1 vez
-  if Form7.sModulo <> 'CANCELA' then // Sandro Silva 2022-11-07 if Form7.sModulo <> 'CALCELA' then
+  if (Form7.sModulo <> 'CANCELA') and (not FbDuplicandoNFSe) then // Sandro Silva 2022-11-07 if Form7.sModulo <> 'CALCELA' then
   begin
     //if (Alltrim(Form7.ibDataSet15OPERACAO.AsString) <> '') and (Form7.ibDataSet15FINNFE.AsString <> '2-Complementar') then
     if (Alltrim(Form7.ibDataSet15OPERACAO.AsString) <> '') then //Mauricio Parizotto 2023-06-05 se necess·rio ajustar o cÛdigo para  (Form7.ibDataSet15FINNFE.AsString <> '2')
@@ -10033,6 +10438,7 @@ procedure TForm7.FormCreate(Sender: TObject);
 begin
   IBDatabase1.Connected := False; // Garantia, caso esquecer a propriedade Connected := True no objeto Sandro Silva 2023-12-26
   {Sandro Silva 2023-07-05 inicio}
+  FbDuplicandoNFSe      := False;
   slPickListBandeira         := TStringList.Create;
   slPickListFormaDePagamento := TStringList.Create;
   slPickListBanco            := TStringList.Create;
@@ -10059,6 +10465,10 @@ begin
   ibDataSet11INSTITUICAOFINANCEIRA.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
   ibDataSet7FORMADEPAGAMENTO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID;
   ibdParametroTributaDESCRICAO.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID; // Mauricio Parizotto 2023-09-21
+  ibdConversaoCFOPCST.Tag   := CAMPO_SOMENTE_LEITURA_NO_GRID; // Mauricio Parizotto 2024-03-22
+  ibdConversaoCFOPCSOSN.Tag := CAMPO_SOMENTE_LEITURA_NO_GRID; // Mauricio Parizotto 2023-03-22
+
+
   //Mauricio Parizotto 2023-06-01
   imgNovo.Transparent := False;
   imgExcluir.Transparent := False;
@@ -10070,12 +10480,9 @@ begin
   Image308.Transparent := False;
   imgFiltrar.Transparent := False;
 
-  {$IFDEF VER150}
-  {$ELSE}
   DBGrid1.DrawingStyle       := gdsGradient;
   DBGrid1.GradientEndColor   := $00F0F0F0;
   DBGrid1.GradientStartColor := $00F0F0F0;
-  {$ENDIF}
 
   //Mauricio Parizotto 2023-12-05
   //Marca campo chave da tabela
@@ -10821,6 +11228,7 @@ begin
         Form7.ibDataSet23VBC.Visible            := False;
         Form7.ibDataSet23VBCST.Visible          := False;
         Form7.ibDataSet23VICMSST.Visible        := False;
+        Form7.ibDataSet23PICMSST.Visible      := True; //Sandro Silva 2024-03-28
         Form7.ibDataSet23VIPI.Visible           := False;
         Form7.ibDataSet23EAN_ORIGINAL.Visible   := False;
 
@@ -11475,7 +11883,7 @@ begin
   if Key = VK_F11  then
     Form7.Agrupar1Click(Sender);
   if Key = VK_F3   then
-    Form20.Button1Click(Sender);
+    FrmAssistenteProcura.Button1Click(Sender);
   if Key = VK_F5   then
   begin
     {
@@ -11573,9 +11981,20 @@ begin
     MensagemSistema('Nome inv·lido (n„o pode ficar em branco).',msgAtencao);
   end else
   begin
-    if Valida_Campo('CLIFOR',AllTrim(cTexto),'NOME','Este cliente j· foi cadastrado') then
+    if TestarPodeCadastrarClifor(cTexto) then
       ibDataSet2NOME.AsString := AllTrim(cTexto);
   end;
+end;
+
+function TForm7.TestarPodeCadastrarClifor(AcNome: String; AbMensagem: Boolean = True): Boolean;
+var
+  cMsg: String;
+begin
+  cMsg := 'Este cliente j· foi cadastrado';
+  if not AbMensagem then
+    cMsg := EmptyStr;
+
+  Result := Valida_Campo('CLIFOR',AllTrim(AcNome),'NOME', cMsg);
 end;
 
 procedure TForm7.ibDataSet4BeforeEdit(DataSet: TDataSet);
@@ -11664,7 +12083,7 @@ end;
 
 procedure TForm7.Fluxodecaixa2Click(Sender: TObject);
 begin
-  Form27.ShowModal;
+  FrmRelatorioFluxoCaixa.ShowModal;
 end;
 
 procedure TForm7.ibDataSet7NewRecord(DataSet: TDataSet);
@@ -11807,8 +12226,8 @@ begin
       Form14.Close;
     if Form21.Visible then
       Form21.Close;
-    if Form20.Visible then
-      Form20.Close;
+    if FrmAssistenteProcura.Visible then
+      FrmAssistenteProcura.Close;
     if Form16.Visible then
       Form16.Close;
     if Form4.Visible  then
@@ -12535,6 +12954,7 @@ begin
   EnviarOrcamentoPorEmail1.Visible                 := False;
   Visu1.Visible                                    := False;
   ransmitirNotaFiscaldeServioNFSe1.Visible         := False;
+  miDuplicarNFSe.Visible                           := False;
   LimparRetornosda1.Visible                        := False;
   ConsultarNFSe1.Visible                           := False;
   N0TestarservidorNFe1.Visible                     := False;
@@ -12724,6 +13144,7 @@ begin
         EnviarNFSeporemail1.Visible                      := True;
         Visu1.Visible                                    := True;
         ransmitirNotaFiscaldeServioNFSe1.Visible         := True;
+        miDuplicarNFSe.Visible                           := True;
         ConsultarNFSe1.Visible                           := True;
         LimparRetornosda1.Visible                        := True;
         LimparRetornosda1.Enabled                        := (Pos(' NAO AUTORIZADA',Form7.ibDataSet15STATUS.AsString) <> 0);
@@ -12993,16 +13414,14 @@ end;
 
 procedure TForm7.Relatriodeservios1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
-  //
+
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
   sModulo := 'RelatÛrio de serviÁos';
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.Relatriodeoramentospendentes1Click(Sender: TObject);
@@ -14649,17 +15068,21 @@ end;
 
 procedure TForm7.Ranquingdeclientes1Click(Sender: TObject);
 begin
-  //
-  Form7.Close;
-  //
   sModuloAnterior := sModulo;
-  Form38.Label2.Visible := True;
-  Form38.Label3.Visible := True;
-  Form38.DateTimePicker1.Visible := True;
-  Form38.DateTimePicker2.Visible := True;
-  Form7.sModulo := 'Ranking de clientes';
-  Form38.ShowModal; // Ok
-  //
+  Form7.TabelaAberta.DisableControls;
+  LockWindowUpdate(form7.Handle);
+  try
+    Form38.Label2.Visible := True;
+    Form38.Label3.Visible := True;
+    Form38.DateTimePicker1.Visible := True;
+    Form38.DateTimePicker2.Visible := True;
+    Form7.sModulo := 'Ranking de clientes';
+    Form38.ShowModal;
+  finally
+    sModulo := sModuloAnterior;
+    Form7.TabelaAberta.EnableControls;
+    LockWindowUpdate(0);
+  end;
 end;
 
 procedure TForm7.MenuItem60Click(Sender: TObject);
@@ -14692,13 +15115,16 @@ var
   sRetorno : String;
   I : Integer;
   slCNAE: TStringList;
+  cNome: String;
   function TamanhoNumeroComplmento(sNumero: String): Integer;
   begin
     Result := Length(sNumero);
   end;
 begin
   //
-  {Sandro Silva 2022-12-15 inicio 
+  Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
+
+  {Sandro Silva 2022-12-15 inicio
   Form7.spdNFe.ConfigurarSoftwareHouse('07426598000124','9830b685216a9c4613bc76c84098272d');
   }
   Form1.ConfiguraCredencialTecnospeed;
@@ -14734,52 +15160,81 @@ begin
   if (AllTrim(Form7.IBDataSet2NOME.AsString) = '') and (AllTrim(LimpaNumero(Form7.IBDataSet2CGC.AsString))<>'') then
   begin
     Screen.Cursor            := crHourGlass;
-
     try
-      if (Length(LimpaNumero(Form7.ibDataSet2CGC.AsString)) = 14) then
-      begin
-        sRetorno := ConsultaCadastro(Form7.ibDataSet2CGC.AsString);
-
-        if AllTrim(xmlNodeValue(sRetorno,'//xNome')) <> '' then
+      try
+        if (Length(LimpaNumero(Form7.ibDataSet2CGC.AsString)) = 14) then
         begin
-          Form7.IBDataSet2IE.AsString     := xmlNodeValue(sRetorno,'//IE');
-          Form7.IBDataSet2ESTADO.AsString := xmlNodeValue(sRetorno,'//UF');
-          Form7.IBDataSet2NOME.AsString   := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome'))), 1, Form7.IBDataSet2NOME.Size); // Sandro Silva 2024-01-15 PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome')));
-          Form7.IBDataSet2ENDERE.AsString := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr'))), 1, Form7.IBDataSet2ENDERE.Size - TamanhoNumeroComplmento(', ' + xmlNodeValue(sRetorno,'//nro'))) + ', ' + PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//nro'))); // Sandro Silva 2024-01-15 PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')));
-          Form7.IBDataSet2COMPLE.AsString := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xBairro'))), 1, Form7.IBDataSet2COMPLE.Size);  // Sandro Silva 2024-01-15 PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xBairro')));
-          Form7.IBDataSet2CEP.AsString    := Copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
-          Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + xmlNodeValue(sRetorno,'//CNAE') + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
+          sRetorno := ConsultaCadastro(Form7.ibDataSet2CGC.AsString);
 
-          Form7.ibDataset99.Close;
-          Form7.ibDataset99.SelectSql.Clear;
-          Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where CODIGO='+QuotedStr(xmlNodeValue(sRetorno,'//cMun'))+' ');
-          Form7.ibDataset99.Open;
+          if AllTrim(xmlNodeValue(sRetorno,'//xNome')) <> '' then
+          begin
+            {Dailon Parisotto (f-17692) 2024-04-12 Inicio
 
-          Form7.IBDataSet2CIDADE.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
+            Form7.IBDataSet2NOME.AsString   := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome'))), 1, Form7.IBDataSet2NOME.Size); // Sandro Silva 2024-01-15 PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome')));
+            }
 
-          { Dailon 2023-08-01 Inicio}
-          slCNAE := TStringList.Create;
-          try
-            slCNAE.Text := getListaCnae;
+            cNome := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome'))), 1, Form7.IBDataSet2NOME.Size);
 
-            for I := 0 to slCNAE.Count -1 do
+            if not TestarPodeCadastrarClifor(cNome, False) then
             begin
-              if Copy(slCNAE[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
+              // Verifica se pode concatenar direto o cÛdigo da filial
+              if Length(cNome) + 5 > Form7.IBDataSet2NOME.Size then
               begin
-                Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(slCNAE[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
+                cNome := cNome + Replicate(' ', Form7.IBDataSet2NOME.Size - Length(cNome));
+                cNome := Copy(cNome, 1, Length(cNome) - 5);
               end;
+              cNome := cNome + ' ' + Copy(LimpaNumero(Form7.ibDataSet2CGC.AsString), 9, 4);
             end;
-          finally
-            FreeAndNil(slCNAE);
+
+            if not TestarPodeCadastrarClifor(cNome, False) then
+            begin
+              MensagemSistema('Cliente j· cadastrado com o nome:' + sLineBreak +
+                              cNome + '.', msgInformacao);
+              Exit;
+            end;
+            Form7.IBDataSet2IE.AsString     := xmlNodeValue(sRetorno,'//IE');
+            Form7.IBDataSet2ESTADO.AsString := xmlNodeValue(sRetorno,'//UF');
+
+            Form7.IBDataSet2NOME.AsString := cNome;
+
+            {Dailon Parisotto (f-17692) 2024-04-12 Fim}
+            Form7.IBDataSet2ENDERE.AsString := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr'))), 1, Form7.IBDataSet2ENDERE.Size - TamanhoNumeroComplmento(', ' + xmlNodeValue(sRetorno,'//nro'))) + ', ' + PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//nro'))); // Sandro Silva 2024-01-15 PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')));
+            Form7.IBDataSet2COMPLE.AsString := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xBairro'))), 1, Form7.IBDataSet2COMPLE.Size);  // Sandro Silva 2024-01-15 PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xBairro')));
+            Form7.IBDataSet2CEP.AsString    := Copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
+            Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + xmlNodeValue(sRetorno,'//CNAE') + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
+
+            Form7.ibDataset99.Close;
+            Form7.ibDataset99.SelectSql.Clear;
+            Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where CODIGO='+QuotedStr(xmlNodeValue(sRetorno,'//cMun'))+' ');
+            Form7.ibDataset99.Open;
+
+            Form7.IBDataSet2CIDADE.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
+
+            { Dailon 2023-08-01 Inicio}
+            slCNAE := TStringList.Create;
+            try
+              slCNAE.Text := getListaCnae;
+
+              for I := 0 to slCNAE.Count -1 do
+              begin
+                if Copy(slCNAE[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
+                begin
+                  Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(slCNAE[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
+                end;
+              end;
+            finally
+              FreeAndNil(slCNAE);
+            end;
+            { Dailon 2023-08-01 Fim}
           end;
-          { Dailon 2023-08-01 Fim}
         end;
+      except
       end;
-    except
+    finally
+      Screen.Cursor := crDefault;
     end;
   end;
-
-  Screen.Cursor            := crDefault;
+  Screen.Cursor := crDefault;
 end;
 
 procedure TForm7.ibDataSet7DOCUMENTOSetText(Sender: TField;
@@ -14887,6 +15342,8 @@ begin
 end;
 
 procedure TForm7.ibDataSet4PRECOChange(Sender: TField);
+var
+  nMargem: Currency;
 begin
   {Dailon Parisotto 2023-10-09 Inicio}
   if FbDuplicandoProd then
@@ -14906,7 +15363,17 @@ begin
     Abort;
   end
   else
+  begin
+    if (ibDataSet4MARGEMLB.Value <> 0) and (ibDataSet4CUSTOCOMPR.AsFloat <> 0) then
+    begin
+      nMargem := Arredonda(((ibDataSet4PRECO.AsFloat - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100, 2);
+
+      if ibDataSet4MARGEMLB.AsCurrency <> nMargem then
+        ibDataSet4MARGEMLB.AsCurrency := nMargem;
+    end;
+
     ibDataSet4ALTERADO.AsString := '1';
+  end;
 
   Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
 end;
@@ -15822,12 +16289,10 @@ end;
 
 procedure TForm7.Relatriodetodososconvnios1Click(Sender: TObject);
 begin
-  //
   Form37.Caption := 'RelatÛrio de convÍnio TODOS';
   ibDataSet29.First;
   Form37.ShowModal;
   Form37.Caption := 'RelatÛrio de comissıes';
-  //
 end;
 
 procedure TForm7.ibDataSet29NOMESetText(Sender: TField;
@@ -17350,6 +17815,12 @@ begin
 end;
 
 procedure TForm7.MenuItem12Click(Sender: TObject);
+var
+  IniFile : TIniFile;
+  Etiquetas : TStringList;
+  i : integer;
+  sTipoIni : string;
+  NewItem : tMenuItem;
 begin
   Imprimirrecibo1.Caption        := 'Imprimir recibo de entrega da Ordem de ServiÁo '+Form7.ibDataSet3NUMERO.AsString;
   ImprimirOrdemdeServio1.Caption := 'Imprimir Ordem de ServiÁo '+Form7.ibDataSet3NUMERO.AsString;
@@ -17377,6 +17848,60 @@ begin
   end;
 
   {Mauricio Parizotto 2023-12-28 fim}
+
+  {Mauricio Parizotto 2024-03-27 Inicio}
+  try
+    iOSQtdEtiqueta := 0;
+
+    Etiquetas := TStringList.Create;
+    IniFile := TIniFile.create(Form1.sAtual+'\etiquetase.ini');
+    IniFile.ReadSections(Etiquetas);
+
+    i := 0;
+    while i <= Etiquetas.Count -1 do
+    begin
+      sTipoIni := IniFile.ReadString(Etiquetas.Strings[i] ,'TIPO','SEM TIPO');
+
+      if sTipoIni <> 'OS' then
+      begin
+        Etiquetas.Delete(i);
+        i := i -1;
+      end;
+
+      Inc(i);
+    end;
+
+    iOSQtdEtiqueta := Etiquetas.Count;
+
+    //Remove sub menus
+    Imprimiretiqueta1.Clear;
+    sOSEtiqueta := '';
+    
+    if iOSQtdEtiqueta = 1 then
+    begin
+      sOSEtiqueta := Etiquetas.Strings[0];
+    end;
+
+    //Cria sub menus
+    if iOSQtdEtiqueta > 1 then
+    begin
+      i := 0;
+
+      for I := 0 to Etiquetas.Count -1 do
+      begin
+        NewItem         := TMenuItem.Create(Imprimiretiqueta1);
+        NewItem.Caption := Etiquetas.Strings[i];
+        NewItem.OnClick := Imprimiretiqueta1Click;
+        Imprimiretiqueta1.Add(NewItem);
+      end;
+    end;
+  finally
+    FreeAndNil(IniFile);
+    FreeAndNil(Etiquetas);
+  end;
+
+  Imprimiretiqueta1.Enabled := iOSQtdEtiqueta > 0;
+  {Mauricio Parizotto 2024-03-27 fim}
 end;
 
 procedure TForm7.Agenda1Click(Sender: TObject);
@@ -17405,9 +17930,7 @@ var
   I, J: Integer;
   vGrade    : array [0..19,0..19] of String; // Cria uma matriz com 100 elementos
 begin
-  //
   // Processa o movimento antes de imprimir a ficha pois pode alterar a qtd inicial//
-  //
   CriaJpg('logotip.jpg');
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
   Rewrite(F);
@@ -17422,25 +17945,22 @@ begin
   WriteLn(F,'<table  border=0 bgcolor=#FFFFFFFF cellspacing=1 cellpadding=4>');
   WriteLn(F,' <tr>');
   WriteLn(F,'  <td  >');
-//  WriteLn(F,'   <table  border=0 bgcolor=#000000 cellspacing=1 cellpadding=4>');
-  //
+
   Form7.ibDataSet4.First;
-  //
+
   while not Form7.ibDataSet4.Eof do
   begin
-    //
     Form7.ibDataSet10.DisableControls;
     Form7.ibDataSet10.Close;
     Form7.ibDataSet10.SelectSQL.Clear;
     Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
     Form7.ibDataSet10.Open;
     Form7.ibDataSet10.First;
-    //
+
     if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
     begin
-      //
       for I := 0 to 19 do for J := 0 to 19 do vGrade[I,J] := '';
-      //
+
       while (Form7.ibDataSet10CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString) and not (Form7.ibDataSet10.EOF) do
       begin
         if AllTrim(Form7.ibDataSet10QTD.AsString) <> '' then
@@ -17452,9 +17972,9 @@ begin
         end;
         Form7.ibDataSet10.Next;
       end;
-      //
+
       Writeln(F,'    <p align=center><font face="Microsoft Sans Serif" size=2><b>'+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+'</b>');
-      //
+
       WriteLn(F,'    <table  border=0 bgcolor=#000000 cellspacing=1 cellpadding=4>');
       for J := 0 to 19 do
       begin
@@ -17470,26 +17990,22 @@ begin
           end;
         end;
       end;
-      //
+
       WriteLn(F,'     </tr>');
       WriteLn(F,'    </table>');
       Writeln(F,'    <font face="Microsoft Sans Serif" size=2><b>'+ Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_ATUAL.AsFloat]) +'</b><br>');
-
     end;
-    //
+
     Form7.ibDataSet4.Next;
-    //
   end;
-  //
+
   WriteLn(F,'    </tr>');
   WriteLn(F,'   </table></td>');
-  //
+
   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
-  + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
-  + Copy(DateTimeToStr(Date),7,4) + ' ‡s ' + TimeToStr(Time)+'</font><br>');
-  //
-  // WWW
-  //
+          + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
+          + Copy(DateTimeToStr(Date),7,4) + ' ‡s ' + TimeToStr(Time)+'</font><br>');
+
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
     WriteLn(F,'<font face="verdana" size=1><center>RelatÛrio gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -17497,16 +18013,16 @@ begin
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
   end;
-  //
-  if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
+
+  if not Form1.bPDF then
+    WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
   WriteLn(F,'</html>');
-  //
+
   CloseFile(F);
-  //
+
   AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
-  //
+
   Screen.Cursor             := crDefault;              // Cursor de Aguardo
-  //
 end;
 
 procedure TForm7.Cartadecobrana1Click(Sender: TObject);
@@ -17514,12 +18030,27 @@ begin
   ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\cobranÁa.doc'),'','', SW_SHOWMAXIMIZED);
 end;
 
+procedure TForm7.Imprimiretiqueta1Click(Sender: TObject);
+begin
+  if iOSQtdEtiqueta = 1 then
+  begin
+    ShellExecute( 0, 'Open', 'etiquetas.exe', pchar('OS "'+sOSEtiqueta+'" '+ibDataSet3NUMERO.AsString), '', SW_SHOW);
+  end;
+
+  //Chamada pelos submenus criados
+  if (iOSQtdEtiqueta > 1) and (TMenuItem(Sender).Caption <> 'Imprimir etiqueta') then
+  begin
+    sOSEtiqueta := TMenuItem(Sender).Caption;
+    ShellExecute( 0, 'Open', 'etiquetas.exe', pchar('OS "'+sOSEtiqueta+'" '+ibDataSet3NUMERO.AsString), '', SW_SHOW);
+  end;
+end;
+
 procedure TForm7.Imprimiretiquetaparacobrana1Click(Sender: TObject);
 begin
   Screen.Cursor  := crHourGlass;    // Cursor de Aguardo
   Form7.IBDataSet100.DisableControls;
   Form7.IBDataSet2.DisableControls;
-  
+
   Form7.IBDataSet100.Close;
   Form7.IBDataSet100.SelectSQL.Clear;
   Form7.IBDataSet100.SelectSQL.Add('update CLIFOR set COMPRA=(select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and RECEBER.VENCIMENTO < CURRENT_DATE)');
@@ -17559,7 +18090,7 @@ end;
 
 procedure TForm7.ibDataSet2CEPSetText(Sender: TField; const Text: String);
 begin
-  Valida_Campo('CLIFOR',Text,'CEP','Auxilio na digitaÁ„o do CEP.');
+//  Valida_Campo('CLIFOR',Text,'CEP','Auxilio na digitaÁ„o do CEP.'); // Dailon Parisotto 2024-04-02
   ibDataSet2CEP.AsString := Text;
 end;
 
@@ -21898,6 +22429,7 @@ end;
 procedure TForm7.ibDataSet14NewRecord(DataSet: TDataSet);
 begin
   ibDataSet14REGISTRO.AsString  := sProximo;
+  ibDataSet14PISCOFINSLUCRO.AsString  := 'N';
 end;
 
 procedure TForm7.ibDataSet18NewRecord(DataSet: TDataSet);
@@ -22211,7 +22743,7 @@ end;
 
 procedure TForm7.MenuItem75Click(Sender: TObject);
 begin
-  Form20.ShowModal;
+  FrmAssistenteProcura.ShowModal;
 end;
 
 procedure TForm7.este1Click(Sender: TObject);
@@ -25555,7 +26087,7 @@ end;
 
 procedure TForm7.Importarretornodevendaambulante1Click(Sender: TObject);
 begin
-  // ImportaNF(False,'');
+  ImportaNF(False,'');
 end;
 
 procedure TForm7.ibDataSet24BeforeEdit(DataSet: TDataSet);
@@ -26914,9 +27446,9 @@ end;
 procedure TForm7.EtiquetasZebraArgoxElgin1Click(Sender: TObject);
 begin
   if FileExists(Form1.sAtual+'\etiquetas.exe') then
-  ShellExecute( 0, 'Open', 'etiquetas.exe', '', '', SW_SHOW) else
-  //ShowMessage('O execut·vel etiquetas.exe n„o foi encontrado na pasta de instalaÁ„o do programa.'); Mauricio Parizotto 2023-10-25
-  MensagemSistema('O execut·vel etiquetas.exe n„o foi encontrado na pasta de instalaÁ„o do programa.',msgAtencao);
+    ShellExecute( 0, 'Open', 'etiquetas.exe', '', '', SW_SHOW)
+  else
+    MensagemSistema('O execut·vel etiquetas.exe n„o foi encontrado na pasta de instalaÁ„o do programa.',msgAtencao);
 end;
 
 procedure TForm7.Panel1Click(Sender: TObject);
@@ -26963,7 +27495,7 @@ end;
 
 procedure TForm7.Button3Click(Sender: TObject);
 begin
-  Form20.ShowModal;
+  FrmAssistenteProcura.ShowModal;
   dbGrid1.SetFocus;
 end;
 
@@ -29157,6 +29689,8 @@ begin
       CloseFile(F);                                    // Fecha o arquivo
 
       Screen.Cursor := crDefault; // Cursor de Aguardo
+
+      AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM')); //Mauricio Parizotto 2024-03-21
     end;
 
     Screen.Cursor := crDefault; // Cursor de Aguardo
@@ -29165,7 +29699,7 @@ begin
     Form7.Close;
     Form7.Show;
 
-    AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
+    //AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM')); //Mauricio Parizotto 2024-03-21
   except
   end;
 
@@ -31679,6 +32213,7 @@ var
   sDesVetor : array[0..999] of String;
   fValVetor : array[0..999] of real;
   fQtdVetor : array[0..999] of real;
+  aCFOP  : array[0..999] of String;
 
   vCli, vOpe : String;
   I, J : Integer;
@@ -31694,6 +32229,7 @@ begin
     sDesVetor[I] := Form7.ibDataSet16DESCRICAO.AsString;
     fValVetor[I] := Form7.ibDataSet16UNITARIO.Asfloat;
     fQtdVetor[I] := Form7.ibDataSet16QUANTIDADE.AsFloat;
+    aCFOP[I]     := Form7.ibDataSet16CFOP.AsString;
     I := I + 1;
     Form7.ibDataSet16.Next;
   end;
@@ -31711,6 +32247,7 @@ begin
     Form7.ibDataSet16DESCRICAO.AsString := sDesVetor[I];
     Form7.ibDataSet16UNITARIO.AsFloat   := fValVetor[I];
     Form7.ibDataSet16QUANTIDADE.AsFloat := fQtdVetor[I];
+    Form7.ibDataSet16CFOP.AsString      := aCFOP[I];
     Form7.ibDataSet16.Post;
     Form7.sModulo := 'VENDA';
   end;
@@ -32982,10 +33519,37 @@ begin
   end;
 end;
 
+procedure TForm7.ibdConversaoCFOPBeforePost(DataSet: TDataSet);
+var
+  QtdReg : integer;
+begin
+  begin
+    QtdReg := ExecutaComandoEscalar(IBDatabase1,
+                                   ' Select Count(*) QTD'+
+                                   ' From CFOPCONVERSAO '+
+                                   ' Where REGISTRO <> '+QuotedStr(DataSet.FieldByName('REGISTRO').AsString)+
+                                   '   and Coalesce(CFOP_ORIGEM,'''') = '+QuotedStr(DataSet.FieldByName('CFOP_ORIGEM').AsString) +
+                                   '   and Coalesce(CONSIDERACSTCSOSN,'''') = '+QuotedStr(DataSet.FieldByName('CONSIDERACSTCSOSN').AsString) +
+                                   '   and Coalesce(CST,'''') = '+QuotedStr(DataSet.FieldByName('CST').AsString) +
+                                   '   and Coalesce(CSOSN,'''') = '+QuotedStr(DataSet.FieldByName('CSOSN').AsString) );
+  end;
+
+
+  if (QtdReg > 0) then
+  begin
+    MensagemSistema('J· existe um registro com as mesmas informaÁıes preenchidas!'
+                    ,msgAtencao);
+
+    DataSet.Cancel;
+    Abort;
+  end;
+end;
+
 procedure TForm7.ibdConversaoCFOPNewRecord(DataSet: TDataSet);
 begin
   ibdConversaoCFOP.Edit;
   ibdConversaoCFOPREGISTRO.AsString := sProximo;
+  ibdConversaoCFOPCONSIDERACSTCSOSN.AsString := 'N'; //Mauricio Parizotto 2024-03-22
 end;
 
 procedure TForm7.ibdConversaoCFOPCFOP_ORIGEMSetText(Sender: TField;
@@ -33006,8 +33570,11 @@ begin
                     ,msgAtencao);
   end else
   begin
+    {Mauricio Parizotto 2024-03-22
     if Valida_Campo('CFOPCONVERSAO',AllTrim(cTexto),'CFOP_ORIGEM','O CFOP de origem ('+cTexto+') j· foi vinculado.') then
       ibdConversaoCFOPCFOP_ORIGEM.AsString := AllTrim(cTexto);
+    }
+    ibdConversaoCFOPCFOP_ORIGEM.AsString := AllTrim(cTexto);
   end;
 end;
 
@@ -33367,6 +33934,11 @@ begin
   Form7.Show;
 end;
 
+procedure TForm7.ConfigurarEtiqueta1Click(Sender: TObject);
+begin
+  ShellExecute( 0, 'Open', 'etiquetas.exe', 'OS ""', '', SW_SHOW);
+end;
+
 procedure TForm7.Configurarobservaofixa1Click(Sender: TObject);
 var
   oArqIni: TArquivosDAT;
@@ -33584,6 +34156,32 @@ begin
 
     if FrmFichaCadastros <> nil then
       FreeAndNil(FrmFichaCadastros);
+
+    if FrmConversaoCFOP <> nil then
+      FreeAndNil(FrmConversaoCFOP);
+      
+      {Mauricio Parizotto 2024-04-05 Inicio}
+    if FrmConvenio <> nil then
+      FreeAndNil(FrmConvenio);
+
+    if FrmCaixa <> nil then
+      FreeAndNil(FrmCaixa);
+
+    if FrmGrupoMercadoria <> nil then
+      FreeAndNil(FrmGrupoMercadoria);
+
+    if FrmTransportadora <> nil then
+      FreeAndNil(FrmTransportadora);
+
+    if FrmPlanoContas <> nil then
+      FreeAndNil(FrmPlanoContas);
+
+    if FrmBanco <> nil then
+      FreeAndNil(FrmBanco);
+
+    if FrmContaBancaria <> nil then
+      FreeAndNil(FrmContaBancaria);
+    {Mauricio Parizotto 2024-04-05 Fim}
   except
   end;
 end;  
@@ -34027,7 +34625,7 @@ begin
     //
     Form7.ibDataSet7.Close;                                                            //
     Form7.ibDataSet7.Selectsql.Clear;                                                  // receber Relacionado
-    Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where NUMERONF=:NUMERONF order by REGISTRO');  //
+    Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where (NUMERONF=:NUMERONF) AND (COALESCE(ATIVO,-10) <> 1) order by REGISTRO');  //
     Form7.ibDataSet7.DataSource := DataSource15;
     Form7.ibDataSet7.Open;
     //
@@ -34454,8 +35052,8 @@ begin
     sAjuda := 'config_icms_iss.htm';
 
     // Campos
-    sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TT');
-    iCampos                := 2;
+    sMostra                := Mais1Ini.ReadString(sModulo,'Mostrar','TTTT');
+    iCampos                := 4;
 
     // Menu
     Form7.Menu             := mmConvercaoCFOP;
@@ -35006,7 +35604,7 @@ begin
   {$Region'//// MÛdulo Transportadora ////'}
   if sModulo = 'TRANSPORT' then
   begin
-    sAjuda := 'config_transportadoras.htm'; // Falta tranport
+    sAjuda := 'config_transportadora.htm'; // Falta tranport
 
     // Menu
     Form7.Menu      := mmTransport;
@@ -35061,9 +35659,15 @@ begin
     TabelaAberta    := ibDataSet11;
     DataSourceAtual := DataSource11;
 
-    sSelect   := 'select * FROM BANCOS';
+    //sSelect   := 'select * FROM BANCOS'; Mauricio Parizotto 2024-04-08
+    sSelect   :=  ' Select '+
+                  ' 	B.*,'+
+                  ' 	C.NOME PLANOCONTA'+
+                  ' From BANCOS B'+
+                  ' 	Left Join CONTAS C on C.CONTA = B.PLANO';
     sWhere    := '';
-    sOrderBy  := 'order by upper(NOME)';
+    //sOrderBy  := 'order by upper(NOME)'; Mauricio Parizotto 2024-04-08
+    sOrderBy  := 'order by upper(B.NOME)';
     sREgistro := '0000000001';
     //sMostra   := 'TTTTT'; Mauricio Parizotto 2023-06-16
     sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTT');

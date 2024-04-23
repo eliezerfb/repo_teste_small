@@ -43,7 +43,7 @@ var
 
 implementation
 
-uses Unit7, Unit20, Mais, uSmallResourceString;
+uses Unit7, uFrmAssistenteProcura, Mais, uSmallResourceString;
 
 {$R *.DFM}
 
@@ -123,10 +123,14 @@ begin
       if Form7.ArquivoAberto.Fields[I-1].DataType = fTFloat then
         TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Text  := Copy(Format('%12.2n',[Form7.ArquivoAberto.fields[I-1].AsFloat])  + replicate(' ',30),1,30);
 
-      TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width := (Form7.ArquivoAberto.Fields[I-1].Displaywidth * 8)+10;
+      //TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width := (Form7.ArquivoAberto.Fields[I-1].Displaywidth * 8)+10; Mauricio Parizotto 2024-03-20
+      TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width := (Form7.ArquivoAberto.Fields[I-1].Displaywidth * 8)+40;
 
-      if TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width > 250 then
-        TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width := 250;
+  //Mauricio Parizotto 2024-03-20
+  //      if TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width > 250 then
+  //        TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width := 250;
+      if TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width > 404 then
+        TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width := 404;
     end;
   end;
 end;

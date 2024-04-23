@@ -741,7 +741,7 @@ begin
 
   if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '136' then // Unicred
   begin
-    Form26.MaskEdit47.Text := Right('00000000000'+LimpaNumero( Form7.ibDataSet7NN.AsString),10) +'-'+Modulo_11_Febraban(LimpaNumero( Form7.ibDataSet7NN.AsString));
+    Form26.MaskEdit47.Text := Right('00000000000'+LimpaNumero( Form7.ibDataSet7NN.AsString),10) +'-'+Modulo_11(LimpaNumero( Form7.ibDataSet7NN.AsString));
   end;
 
   Form26.MaskEdit43.Text := Form26.MaskEdit43.Text + Modulo_11_febraban(LimpaNumero(Form26.MaskEdit43.Text));  // Modulo 11

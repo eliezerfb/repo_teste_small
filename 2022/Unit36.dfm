@@ -1,16 +1,15 @@
 object Form36: TForm36
   Left = 338
   Top = 269
-  Width = 1024
-  Height = 675
   Caption = 'Carta de Corre'#231#227'o Eletronica (CC-e)'
+  ClientHeight = 636
+  ClientWidth = 1008
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
   PixelsPerInch = 96
@@ -48,7 +47,7 @@ object Form36: TForm36
     Top = 470
     Width = 100
     Height = 25
-    Caption = 'Ok'
+    Caption = 'OK'
     TabOrder = 1
     OnClick = Button1Click
   end

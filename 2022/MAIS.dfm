@@ -13809,6 +13809,13 @@ object Form1: TForm1
           Caption = 'Configurar NFE.INI'
           OnClick = ConfigurarNFEINI1Click
         end
+        object N7: TMenuItem
+          Caption = '-'
+        end
+        object ConfiguraoTEF1: TMenuItem
+          Caption = 'TEF'
+          OnClick = ConfiguraoTEF1Click
+        end
         object N3: TMenuItem
           Caption = '-'
         end
@@ -13866,6 +13873,11 @@ object Form1: TForm1
       end
       object N14: TMenuItem
         Caption = '-'
+      end
+      object miProd120Carac: TMenuItem
+        Caption = 'Descri'#231#227'o dos produtos com 120 caracteres'
+        Visible = False
+        OnClick = miProd120CaracClick
       end
       object Modoinventrio1: TMenuItem
         Caption = 'Modo invent'#225'rio'

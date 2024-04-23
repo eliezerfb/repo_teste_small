@@ -93,11 +93,11 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_MajorVer>2024</VerInfo_MajorVer>
-        <VerInfo_Build>30</VerInfo_Build>
+        <VerInfo_Build>38</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.8.0.30;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.8.0.30;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.11.0.38;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.11.0.38;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
         <Manifest_File>xp.manifest</Manifest_File>
-        <VerInfo_MinorVer>8</VerInfo_MinorVer>
+        <VerInfo_MinorVer>11</VerInfo_MinorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -114,6 +114,7 @@
         <Manifest_File>xp.manifest</Manifest_File>
         <VerInfo_MajorVer>2024</VerInfo_MajorVer>
         <VerInfo_Build>6</VerInfo_Build>
+        <DCC_ExeOutput>\desenvolvimento\executaveis\Small Commerce</DCC_ExeOutput>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -164,8 +165,8 @@
         <DCCReference Include="Unit19.pas">
             <Form>Form19</Form>
         </DCCReference>
-        <DCCReference Include="Unit20.pas">
-            <Form>Form20</Form>
+        <DCCReference Include="uFrmAssistenteProcura.pas">
+            <Form>FrmAssistenteProcura</Form>
         </DCCReference>
         <DCCReference Include="Unit21.pas">
             <Form>Form21</Form>
@@ -179,8 +180,8 @@
         <DCCReference Include="Unit26.pas">
             <Form>Form26</Form>
         </DCCReference>
-        <DCCReference Include="Unit27.pas">
-            <Form>Form27</Form>
+        <DCCReference Include="uFrmRelatorioFluxoCaixa.pas">
+            <Form>FrmRelatorioFluxoCaixa</Form>
         </DCCReference>
         <DCCReference Include="Unit31.pas">
             <Form>Form31</Form>
@@ -520,6 +521,52 @@
         <DCCReference Include="units\uObjetoConsultaCEP.pas"/>
         <DCCReference Include="interfaces\uIConsultaCEP.pas"/>
         <DCCReference Include="units\uConsultaCEP.pas"/>
+        <DCCReference Include="uFrmConversaoCFOP.pas">
+            <Form>FrmConversaoCFOP</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uConfiguracaoTEFCommerce.pas">
+            <Form>frmConfiguracaoTEFCommerce</Form>
+        </DCCReference>
+        <DCCReference Include="units\uFuncoesTEF.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uclassetransacaocartao.pas"/>
+        <DCCReference Include="uSelecionaTEF.pas">
+            <Form>frmSelecionaTEF</Form>
+        </DCCReference>
+        <DCCReference Include="frames\uframeConfiguraTEF.pas">
+            <Form>frameConfiguraTEF</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="interfaces\uIDuplicaNFSe.pas"/>
+        <DCCReference Include="units\uDuplicaNFSe.pas"/>
+        <DCCReference Include="uFrmConvenio.pas">
+            <Form>FrmConvenio</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uFrmCaixa.pas">
+            <Form>FrmCaixa</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uFrmGrupoMercadoria.pas">
+            <Form>FrmGrupoMercadoria</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uFrmTransportadora.pas">
+            <Form>FrmTransportadora</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uFrmPlanoContas.pas">
+            <Form>FrmPlanoContas</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uFrmBanco.pas">
+            <Form>FrmBanco</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uFrmContaBancaria.pas">
+            <Form>FrmContaBancaria</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1363,7 +1410,7 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
@@ -2187,7 +2234,7 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
