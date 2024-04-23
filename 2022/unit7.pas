@@ -7854,7 +7854,9 @@ begin
         Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat));
         Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
         }
-        dDescontoIssProporcional := StrToFloat(FormatFloat('0.00', (Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat) * Form7.ibDataSet15DESCONTO.AsFloat));
+        dDescontoIssProporcional := 0.00;
+        if Form7.ibDataSet15SERVICOS.AsFloat <> 0 then //Sandro Silva 2024-04-23
+          dDescontoIssProporcional := StrToFloat(FormatFloat('0.00', (Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat) * Form7.ibDataSet15DESCONTO.AsFloat));
         Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat - dDescontoIssProporcional, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat));
         Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais((Form7.ibDataSet35TOTAL.AsFloat - dDescontoIssProporcional)* Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
         {Sandro Silva 2024-04-02 fim}
