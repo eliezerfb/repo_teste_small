@@ -101,6 +101,8 @@ const
   _cSectionOutras = 'Outras';
   _cOutrasLog     = 'Log Sistema';
   _cFabricaProdSemQtd = 'Fabricação Prod Sem Qtd';
+  _cTipoPrazo         = 'Tipo do Prazo';
+  _cDiaVencimento     = 'Dia Vencimento';
 
   _cPrivateKeyExponent = '75C2624A448186B59016FE623' +
                          'EF23ED97137C8D5F273C15EE813D2AEFD322C2AFBF868ADBB5096A78CD' +
