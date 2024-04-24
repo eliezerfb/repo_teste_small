@@ -116,6 +116,7 @@ type
     procedure CheckBox2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure SMALL_DBEdit3Enter(Sender: TObject);
+    procedure DBGrid4KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 
   private
     { Private declarations }
@@ -812,6 +813,8 @@ end;
 
 procedure TForm48.DBGrid4KeyPress(Sender: TObject; var Key: Char);
 begin
+  {Dailon Parisotto (f-18202) 2024-04-23 Inicio
+
   if DbGrid4.SelectedIndex = 0 then
   begin
     if not dbGrid3.Visible then
@@ -820,10 +823,38 @@ begin
   else
     dbGrid3.Visible  := False;
 
+  }
+  {Dailon Parisotto (f-18202) 2024-04-23 Fim}
   if dbGrid4.SelectedField.DataType = ftFloat then
   begin
     if Key = chr(46) then
       Key := chr(44);
+  end;
+end;
+
+procedure TForm48.DBGrid4KeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_TAB    then
+    Key := VK_RETURN;
+  if Key = VK_ESCAPE then
+    Key := VK_RETURN;
+
+  if DbGrid1.SelectedIndex = 0 then
+  begin
+    if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) then
+    begin
+      if not dBGrid3.Visible then
+      begin
+        dBgrid3.Visible := True;
+      end else
+      //
+      Form1.bFlag := False;
+      Form7.ibDataSet16.Edit;
+      Form7.ibDataSet16.UpdateRecord;
+      Form7.ibDataSet16.Edit;
+      Form1.bFlag := True;
+    end;
   end;
 end;
 
@@ -1013,29 +1044,33 @@ begin
           dbGrid3.Visible := False;
         end else
         begin
-          Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet35DESCRICAO.AsString,[loCaseInsensitive,loPartialKey]);
-
-          if (Form7.ibDataSet35DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString) and (Alltrim(Form7.ibDataSet35DESCRICAO.AsString)<>'')then
+          if Alltrim(Form7.ibDataSet16DESCRICAO.AsString) = AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
           begin
-            if (length(Alltrim(Limpanumero(Form7.ibDataSet35DESCRICAO.AsString))) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet35DESCRICAO.AsString))<>'') then
-            begin
-              // Procura por código
-              if StrToInt(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)) <> 0 then
-              begin
-                Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0),[loCaseInsensitive,loPartialKey]);
+            Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet35DESCRICAO.AsString,[loCaseInsensitive,loPartialKey]);
 
-                if Form7.ibDataSet4CODIGO.AsString = StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0) then
-                begin
-                  Form7.ibDataSet35DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
-                  Form48.DBGrid3DblClick(Sender);
-                end else
-                begin
-                  Form7.ibDataSet35DESCRICAO.AsString := '';
-                end;
-              end;
-            end else
+
+            if (Form7.ibDataSet35DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString) and (Alltrim(Form7.ibDataSet35DESCRICAO.AsString)<>'')then
             begin
-              Form48.DBGrid3DblClick(Sender);
+              if (length(Alltrim(Limpanumero(Form7.ibDataSet35DESCRICAO.AsString))) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet35DESCRICAO.AsString))<>'') then
+              begin
+                // Procura por código
+                if StrToInt(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)) <> 0 then
+                begin
+                  Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0),[loCaseInsensitive,loPartialKey]);
+
+                  if Form7.ibDataSet4CODIGO.AsString = StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0) then
+                  begin
+                    Form7.ibDataSet35DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
+                    Form48.DBGrid3DblClick(Sender);
+                  end else
+                  begin
+                    Form7.ibDataSet35DESCRICAO.AsString := '';
+                  end;
+                end;
+              end else
+              begin
+                Form48.DBGrid3DblClick(Sender);
+              end;
             end;
           end;
         end;
@@ -1047,7 +1082,11 @@ begin
       begin
         DbGrid4.SelectedIndex := 0;
         Form7.ibDataSet35.Next;
-        if Form7.ibDataSet35.EOF then Form7.ibDataSet35.Append;
+        if Form7.ibDataSet35.EOF then
+        begin
+          Form7.ibDataSet35.Append;
+          DBGrid3.Visible := False;
+        end;
       end;
     end;
   except
