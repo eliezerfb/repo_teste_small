@@ -28,13 +28,6 @@ begin
   Result := AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString),' ','', [rfReplaceAll]) + Form7.ibDAtaset13ESTADO.AsString);
 end;
 
-function ValorServicos(sCalculoDoDescontoPeloProvedor: String; ValorBruto: Double; Desconto: Double): Real;
-begin
-  Result := ValorBruto - Desconto;
-  if sCalculoDoDescontoPeloProvedor = 'Sim' then
-    Result := ValorBruto;
-end;
-
 {Sandro Silva 2023-10-02 inicio}
 function CalculaValorISS(sPadrao: String; dTotal: Double; dAliquota: Double; dBase: Double): Real;
 begin
@@ -45,6 +38,18 @@ begin
     Result := StrToFloat(FormatFloat('0.00', Result)); // Arredonda duas casas decimais
 end;
 {Sandro Silva 2023-10-02 fim}
+
+{Sandro Silva 2024-04-24 inicio}
+function CalculaValorISSRetido(sPadrao: String; dTotal: Double; dAliquota: Double; dBase: Double): Real;
+begin
+  Result := (dTotal * dAliquota) / 100 * dBase / 100;
+
+  if (sPadrao = 'ISSNETONLINE20') and (GetCidadeUF = 'ITAUNAMG') then
+    Result := (Int(Result * 100)) / 100 // Trunca duas casas decimais
+  else
+    Result := StrToFloat(FormatFloat('0.00', Result)); // Arredonda duas casas decimais
+end;
+{Sandro Silva 2024-04-24 fim}
 
 function TransmiteNFSE : boolean;
 var
@@ -91,6 +96,8 @@ var
   ConfSistema : TArquivosDAT;
   sObsNaDescricao : Boolean;
   sCalculoDoDescontoPeloProvedor: String; // Sandro Silva 2024-03-25
+  bNaoDescontarIssQuandoRetido: Boolean; // Sandro Silva 2024-04-24
+  dValorLiquidoNfse: Double; // Sandro Silva 2024-04-24
 
   procedure InformaCodVerificadorAutenticidadeParaIPM;
   begin
@@ -231,6 +238,7 @@ begin
 
     CriaConfiguracaoDeComoDescontoSeraAplicado;
     sCalculoDoDescontoPeloProvedor := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor; // Sandro Silva 2024-03-25
+    bNaoDescontarIssQuandoRetido   := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-24
 
     sObsNaDescricao := ConfSistema.BD.NFSE.ObsNaDescricao;
   finally
@@ -790,12 +798,14 @@ begin
             if Pos('(I)',Form7.ibDataset15MARCA.AsString) <> 0 then
             begin
               Writeln(F,'IssRetido=1');
+              {Sandro Silva 2024-04-24 inicio
               fValorISSRetido := (Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)*Form7.ibDataSet14ISS.AsFloat/100;
-              {Sandro Silva 2023-10-02 inicio}
               //ajusta para o valor do ISS Retido ficar formatado com duas casas decimais. Arredonda
               if (sPadraoSistema = 'ISSNETONLINE20') and (GetCidadeUF = 'ITAUNAMG') then
                 fValorISSRetido := StrToFloat(FormatFloat('0.00', fValorISSRetido));
-              {Sandro Silva 2023-10-02 fim}
+              }
+              fValorISSRetido := CalculaValorISSRetido(sPadraoSistema, Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat - Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat, Form7.ibDataSet14ISS.AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat);
+              {Sandro Silva 2024-04-24 fim}
 
               {Sandro Silva 2023-01-19 inicio}
               // Sandro Silva 2023-09-05 if (sPadraoSistema = 'ISSNETONLINE20') and (AnsiUpperCase(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString) + Form7.ibDataSet13ESTADO.AsString) = 'BRASILIADF') then
@@ -813,7 +823,16 @@ begin
               fValorISSRetido := 0;
             end;
             
+            {Sandro Silva 2024-04-24 inicio
             Writeln(F,'ValorLiquidoNfse='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat-fValorISSRetido-fValorImpostosFederaisRetidos)),',','.'));   //
+            }
+            dValorLiquidoNfse := Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat - Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat - fValorISSRetido - fValorImpostosFederaisRetidos;
+            if bNaoDescontarIssQuandoRetido then
+              dValorLiquidoNfse := Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat - Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat - fValorImpostosFederaisRetidos;
+            Writeln(F,'ValorLiquidoNfse=' + StrTran(Alltrim(FormatFloat('##0.00', dValorLiquidoNfse)), ',', '.'));   //
+            {Sandro Silva 2023-10-02 inicio}
+
+
             Writeln(F,'OutrasInformacoes='+ConverteAcentos2(Form7.ibDAtaSet15COMPLEMENTO.AsString));
             Writeln(F,'CodigoCidadePrestacao='+sCodigoLocalPrestacao); // Código IBGE do município onde o serviço foi prestado
             
@@ -996,9 +1015,15 @@ begin
                   {Sandro Silva 2024-04-23 inicio
                   Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.'));
                   }
-                  Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00', ValorServicos(sCalculoDoDescontoPeloProvedor, Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat, Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.'));
+                  if sCalculoDoDescontoPeloProvedor = 'Sim' then
+                  begin
+                    Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat)),',','.'));
+                  end
+                  else
+                  begin
+                    Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat-Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat)),',','.'));
+                  end;
                   {Sandro Silva 2024-04-23 fim}
-
                   // Situações tributárias obtidas na prefeitura
                   if AllTrim(RetornaValorDaTagNoCampo('Tributavel',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
                   begin

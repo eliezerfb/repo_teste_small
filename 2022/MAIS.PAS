@@ -279,6 +279,8 @@ type
     N7: TMenuItem;
     Clculododescontopeloprovedor1: TMenuItem;
     miProd120Carac: TMenuItem;
+    NaoDescontarIssQuandoRetido1: TMenuItem;
+    N13: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -451,6 +453,7 @@ type
     procedure ConfiguraoTEF1Click(Sender: TObject);
     procedure Clculododescontopeloprovedor1Click(Sender: TObject);
     procedure miProd120CaracClick(Sender: TObject);
+    procedure NaoDescontarIssQuandoRetido1Click(Sender: TObject);
 
 
   private
@@ -498,6 +501,7 @@ type
     ConfAceitaCGCDuplo: String;
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, Confduplo,ConfNegat, ConfFoto, ConfMArca, ConfEspecie: String;
     ConfPermitFabricarSemQtd : Boolean;
+    bNaoDescontarIssQuandoRetido: Boolean; // Sandro Silva 2024-04-24
     ConfSvc, ConfItens   : Integer;
     ConfLimite  : Real;
     ConfIR      : Real;
@@ -3538,6 +3542,36 @@ begin
   end;
 
   Result := True;
+end;
+
+procedure TForm1.NaoDescontarIssQuandoRetido1Click(Sender: TObject);  // Sandro Silva 2024-04-24
+var
+  ConfSistema: TArquivosDAT;
+  IBTransaction: TIBTransaction;
+begin
+  try
+    IBTransaction := CriaIBTransaction(Form7.ibDataSet13.Transaction.DefaultDatabase);
+    ConfSistema := TArquivosDAT.Create(Usuario, IBTransaction);
+    try
+      ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido := IfThen(NaoDescontarIssQuandoRetido1.Checked, 'Não', 'Sim');
+      IBTransaction.Commit;
+      bNaoDescontarIssQuandoRetido := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim';// NaoDescontarIssQuandoRetido1.Checked;
+    except
+      on E: Exception do
+      begin
+        IBTransaction.Rollback;
+        MensagemSistema('Não foi possível configurar', msgAtencao);
+      end;
+    end;
+  finally
+    FreeAndNil(ConfSistema);
+    FreeAndNil(IBTransaction);
+  end;
+  {Sandro Silva 2024-04-23 inicio}
+  // Precisa para atualizar a conexão
+  Commitatudo(True);
+  AbreArquivos(False);
+  {Sandro Silva 2024-04-23 fim}
 end;
 
 procedure Tform1.NovoFormExit(Sender:TObject);
@@ -8904,7 +8938,7 @@ begin
   end;
 end;
 
-procedure TForm1.Clculododescontopeloprovedor1Click(Sender: TObject);
+procedure TForm1.Clculododescontopeloprovedor1Click(Sender: TObject); // Sandro Silva 2024-04-23
 var
   ConfSistema: TArquivosDAT;
   IBTransaction: TIBTransaction;
@@ -8926,6 +8960,11 @@ begin
     FreeAndNil(ConfSistema);
     FreeAndNil(IBTransaction);
   end;
+  {Sandro Silva 2024-04-23 inicio}
+  // Precisa para atualizar a conexão
+  Commitatudo(True);
+  AbreArquivos(False);
+  {Sandro Silva 2024-04-23 fim}
 end;
 
 procedure TForm1.ClickOKInformacoesInutilizacao(Sender: TObject);
@@ -12875,6 +12914,11 @@ begin
     FreeAndNil(ConfSistema);
     FreeAndNil(IBTransaction);
   end;
+  {Sandro Silva 2024-04-23 inicio}
+  // Precisa para atualizar a conexão
+  Commitatudo(True);
+  AbreArquivos(False);
+  {Sandro Silva 2024-04-23 fim}
 end;
 
 procedure TForm1.CarregaConfiguracoes;
@@ -12885,8 +12929,9 @@ begin
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
 
-    GeraLogSistema            := ConfSistema.BD.Outras.LogSistema;
-    ConfPermitFabricarSemQtd  := ConfSistema.BD.Outras.FabricaProdutoSemQtd; //Mauricio Parizotto 2024-02-02
+    GeraLogSistema               := ConfSistema.BD.Outras.LogSistema;
+    ConfPermitFabricarSemQtd     := ConfSistema.BD.Outras.FabricaProdutoSemQtd; //Mauricio Parizotto 2024-02-02
+    bNaoDescontarIssQuandoRetido := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-24
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -12898,8 +12943,9 @@ var
 begin
   try
     ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
-    Observaonadescriodosservios1.Checked := ConfSistema.BD.NFSE.ObsNaDescricao;
+    Observaonadescriodosservios1.Checked  := ConfSistema.BD.NFSE.ObsNaDescricao;
     Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim';
+    NaoDescontarIssQuandoRetido1.Checked  := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-23
   finally
     FreeAndNil(ConfSistema);
   end;

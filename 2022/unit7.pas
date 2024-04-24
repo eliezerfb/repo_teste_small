@@ -10283,6 +10283,10 @@ begin
         begin
           // ISS
           Form1.fRetencoes := Form7.ibDataSet15ISS.AsFloat;
+          {Sandro Silva 2024-04-24 inicio}
+          if Form1.bNaoDescontarIssQuandoRetido then
+            Form1.fRetencoes := 0.00; // Tem configurado para não descontar a retenção de ISS do total da nota
+          {Sandro Silva 2024-04-24 inicio}
           Form48.SMALL_DBEdit16.Hint := Form48.SMALL_DBEdit16.Hint + ' ' + 'Retenção de R$ '+ AllTrim(Format('%14.2n',[( Form7.ibDataSet15ISS.AsFloat )]))  +' de ISS'+chr(10);
         end;
         //
@@ -10359,6 +10363,7 @@ begin
       begin
         Form1.fRetencaoIR := 0;
       end;
+
 
       if Format('%12.2n',[Form7.ibDataSet15TOTAL.AsFloat]) <> Format('%12.2n',[( Form7.ibDataSet15MERCADORIA.Value  +
                                                                                  Form7.ibDataSet15SERVICOS.Value    +
