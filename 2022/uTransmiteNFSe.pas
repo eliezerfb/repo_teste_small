@@ -804,7 +804,10 @@ begin
               if (sPadraoSistema = 'ISSNETONLINE20') and (GetCidadeUF = 'ITAUNAMG') then
                 fValorISSRetido := StrToFloat(FormatFloat('0.00', fValorISSRetido));
               }
-              fValorISSRetido := CalculaValorISSRetido(sPadraoSistema, Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat - Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat, Form7.ibDataSet14ISS.AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat);
+              if (sCalculoDoDescontoPeloProvedor = 'Sim') then
+                fValorISSRetido := CalculaValorISSRetido(sPadraoSistema, Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat, Form7.ibDataSet14ISS.AsFloat)
+              else
+                fValorISSRetido := CalculaValorISSRetido(sPadraoSistema, Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat - Form7.ibDataSet15.FieldByname('DESCONTO').AsFloat, Form7.ibDataSet14ISS.AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat);
               {Sandro Silva 2024-04-24 fim}
 
               {Sandro Silva 2023-01-19 inicio}
