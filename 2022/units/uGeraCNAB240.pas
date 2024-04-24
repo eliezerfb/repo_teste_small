@@ -38,6 +38,7 @@ type TBanco = (bOutro
   procedure GeraCNAB240SegmentoJ52_Inter(var F: TextFile; iReg : integer; sComandoMovimento, sCPFOuCNPJ : string);
   procedure GeraCNAB240TrailerLote_Inter(var F: TextFile; iReg : integer);
   procedure GeraCNAB240SegmentoR_Unicred(var F: TextFile; iReg : integer; sComandoMovimento : string);
+  function GetCodBarraFromBD(CodBarraDigitavel:string):string; //Mauricio Parizotto 2024-04-24
 
 var
     sAvisoDebitoAuto : string;  
@@ -109,6 +110,7 @@ begin
     {$Endregion}
 
 
+    {Mauricio Parizotto 2024-04-24
     if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '748' then
     begin
       // SICREDI
@@ -125,9 +127,7 @@ begin
     begin
       Form1.sArquivoRemessa := Copy(StrTran(DateToStr(Date),'/','_')+DiaDaSemana(Date)+replicate('_',10),1,14)+StrTran(TimeToStr(Time),':','_')+'.txt';
     end;
-
-    AssignFile(F,Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa);
-    Rewrite(F);   // Abre para gravação
+    }
 
     {$Region'//// Criar um generator para cada banco ////'}
     try
@@ -158,6 +158,31 @@ begin
       iRemessa := 1
     end;
     {$Endregion}
+
+
+    Form1.sArquivoRemessa := Copy(StrTran(DateToStr(Date),'/','_')+DiaDaSemana(Date)+replicate('_',10),1,14)+StrTran(TimeToStr(Time),':','_')+'.txt';
+
+    if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '748' then
+    begin
+      // SICREDI
+      Form1.sArquivoRemessa := AllTrim(Form26.MaskEdit46.Text)+Copy('123456789OND',Month(Date),1)+StrZero(Day(date),2,0)+'.CRM';
+
+      I := 0;
+
+      while FileExists(Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa) do
+      begin
+        I := I + 1;
+        Form1.sArquivoRemessa := AllTrim(Form26.MaskEdit46.Text)+Copy('123456789OND',Month(Date),1)+StrZero(Day(date),2,0)+'.'+StrZero(I,3,0);
+      end;
+    end;
+
+    if Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '077' then
+    begin
+      Form1.sArquivoRemessa := 'CI240_001'+Copy(StrZero(iRemessa,6,0),1,6)+'.REM';
+    end;
+
+    AssignFile(F,Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa);
+    Rewrite(F);   // Abre para gravação
 
     // Zerezima
     iReg    := 2;
@@ -407,10 +432,10 @@ begin
       sLayoutArquivo         := '107';
       sDensidade             := '01600';
       sLayoutdoLote          := '046';
-      sAgencia               := '00001';
+      sAgencia               := '0001';
       sDVDaAgencia           := '9';
-      sNumeroContaCorrente   := Right('000000000000'+Copy(Form26.MaskEdit46.Text,1,Pos('-',Form26.MaskEdit46.Text)-1),12);
-      sDigitocontacorrente   := Copy(Right(Replicate(' ',13)+Form26.MaskEdit46.Text,1),1,1);
+      sNumeroContaCorrente   := Right('000000000000'+Copy(Form7.ibDataSet11CONTA.AsString,1,Pos('-',Form7.ibDataSet11CONTA.AsString)-1),12);
+      sDigitocontacorrente   := Copy(Copy(Form7.ibDataSet11CONTA.AsString,Pos('-',Form7.ibDataSet11CONTA.AsString)+1,1)+' ',1,1);
       sCodigoDaCarteira      := '7';
       sFormaDeCadastrar      := '1';
       sTipoDocumento         := '1';
@@ -888,7 +913,15 @@ begin
         Copy(Replicate(' ',9),1,9)                +   // 009 a 017 (009) Uso Exclusivo FEBRABAN/CNAB
         Copy(StrZero(iLote,6,0),1,6)              +   // 018 a 023 (006) Quantidade de Lotes do Arquivo
         Copy(StrZero(iReg+2,6,0),1,6)             +   // 024 a 029 (006) Quantidade de Registros do Arquivo
-        Copy(StrZero(0,6,0),1,6)                  +   // 030 a 035 (006) Qtde de Contas p/ Conc. (Lotes)
+        //Copy(StrZero(0,6,0),1,6)                  +   // 030 a 035 (006) Qtde de Contas p/ Conc. (Lotes) Mauricio Parizotto 2024-04-24
+        IfThen(Banco <> bInter,
+              StrZero(0,6,0)                          // 030 a 035 (006) Qtde de Contas p/ Conc. (Lotes)
+              ,''
+              )+
+        IfThen(Banco = bInter,
+              Replicate(' ',6)                        // 030 a 035 (006) Qtde de Contas p/ Conc. (Lotes)
+              ,''
+              )+
         Copy(Replicate(' ',205),1,205)                // 036 a 240 (205) Uso Exclusivo FEBRABAN/CNAB
         );
       {$Endregion}
@@ -897,7 +930,6 @@ begin
     except
       on E: Exception do
       begin
-        //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
         MensagemSistema(E.Message,msgErro);
       end;
     end;
@@ -1173,20 +1205,20 @@ begin
           Copy('2',1,1)                                                                             + // 018 a 018 (001) Tipo de Inscrição da Empresa
           Copy(Right(Replicate('0',14)+LimpaNumero(Form7.IBDataSet13CGC.AsString),14),1,014)        + // 019 a 032 (014) Número de Inscrição da Empresa
           sCodigoDoconvenio                                                                         + // 033 a 052 (020) Código do Convênio no Banco
-          sAgencia                                                                                  + // 053 a 057 (005) Agência Mantenedora da Conta
+          '0'+sAgencia                                                                              + // 053 a 057 (005) Agência Mantenedora da Conta
           Copy(sDVdaAgencia,1,1)                                                                    + // 058 a 058 (001) Dígito Verificador da Agência
-          sNumeroContaCorrente                                                                      + // 059 a 070 (014) Número da Conta Corrente
+          sNumeroContaCorrente                                                                      + // 059 a 070 (012) Número da Conta Corrente
           Copy(sDigitocontacorrente,1,1)                                                            + // 071 a 071 (001) Dígito da Conta Corrente
-          Replicate(' ',1)                                                                          + // 072 a 072 (040) Branco
+          Replicate(' ',1)                                                                          + // 072 a 072 (001) Branco
           Copy(UpperCase(Form7.IbDataSet13NOME.AsString)+Replicate(' ',30),1,030)                   + // 073 a 102 (030) Nome da Empresa
           Replicate(' ',40)                                                                         + // 103 a 142 (040) Mensagem 1
-          Replicate(' ',30)                                                                         + // 143 a 172 (030) Mensagem 2
+          Copy(UpperCase(Form7.ibDataSet13ENDERECO.AsString)+Replicate(' ',30),1,030)               + // 143 a 172 (030) Endereço
           Replicate('0',5)                                                                          + // 173 a 177 (005) Numero Empresa
           Replicate(' ',15)                                                                         + // 178 a 192 (015) Complemento
-          Replicate(' ',20)                                                                         + // 193 a 212 (020) Cidade
-          Replicate('0',5)                                                                          + // 213 a 217 (005) CEP
-          Replicate('0',3)                                                                          + // 218 a 220 (003) CEP Comp
-          Replicate(' ',2)                                                                          + // 221 a 222 (002) UF
+          Copy(UpperCase(Form7.ibDataSet13MUNICIPIO.AsString)+Replicate(' ',20),1,020)              + // 193 a 212 (020) Cidade
+          Copy(UpperCase(Form7.ibDataSet13CEP.AsString)+Replicate(' ',5),1,005)                     + // 213 a 217 (005) CEP
+          Copy(UpperCase(Form7.ibDataSet13CEP.AsString)+Replicate(' ',3),7,003)                     + // 218 a 220 (003) CEP Comp
+          Copy(UpperCase(Form7.ibDataSet13ESTADO.AsString)+Replicate(' ',2),1,2)                    + // 221 a 222 (002) UF
           Replicate(' ',8)                                                                          + // 223 a 230 (008) Branco
           Replicate(' ',10)                                                                           // 231 a 240 (010) Uso Exclusivo
           );
@@ -1203,14 +1235,14 @@ begin
           'J'                                                                                       + // 014 a 014 (001) Cód. Segmento do Registro Detalhe
           '0'                                                                                       + // 015 a 015 (001) Tipo Movimento
           sComandoMovimento                                                                         + // 016 a 017 (002) Código de Movimento Remessa
-          Copy(Form7.ibDataSet7CODEBAR.AsString,1,44)                                               + // 018 a 061 (044) Código de Barras
+          Copy(GetCodBarraFromBD(Form7.ibDataSet7CODEBAR.AsString),1,44)                            + // 018 a 061 (044) Código de Barras
           Copy(UpperCase(Form7.IbDataSet13NOME.AsString)+Replicate(' ',30),1,030)                   + // 062 a 091 (030) Nome Beneficiario
           Copy(Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,2)                           +
           Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),4,2)                                +
           Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),7,4),1,008)                         + // 092 a 099 (008) Data de Vencimento do Título
           Copy(StrZero((Form7.ibDataSet7VALOR_DUPL.AsFloat * 100),15,0),1,015)                      + // 100 a 114 (015) Valor Nominal do Título
           Copy('000000000000000',1,15)                                                              + // 115 a 129 (015) Valor do Desconto/Abatimento
-          Copy(StrZero((Form1.fTaxa * 30 * 100),15,0),1,015)                                        + // 130 a 144 (015) Juros de Mora por Dia/Taxa
+          Copy(StrZero(0,15,0),1,15)                                                                + // 130 a 144 (015) Multa
           Replicate(' ',8)                                                                          + // 145 a 152 (008) Data Pagamento
           Copy('000000000000000',1,15)                                                              + // 153 a 167 (015) Valor Pago
           Copy('000000000000000',1,15)                                                              + // 168 a 182 (015) Quantidade Moeda
@@ -1260,6 +1292,19 @@ begin
           Replicate(' ',165)                            + // 066 a 230 (165) Brancos
           Replicate(' ',10)                               // 231 a 240 (010) Brancos Retorno
           );
+end;
+
+function GetCodBarraFromBD(CodBarraDigitavel:string):string;
+var
+  CodBarra :string;
+begin
+  CodBarra := Copy(CodBarraDigitavel,1,4) +
+              Copy(CodBarraDigitavel,33,15) +
+              Copy(CodBarraDigitavel,5,5) +
+              Copy(CodBarraDigitavel,11,10) +
+              Copy(CodBarraDigitavel,22,10);
+
+  Result := CodBarra;
 end;
 
 end.
