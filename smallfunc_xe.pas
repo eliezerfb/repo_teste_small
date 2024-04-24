@@ -1751,11 +1751,27 @@ end;
 //Mauricio Parizotto 2023-12-18
 function DescricaoComQuebraLinha(Descricao:string;EspacamentoEsquerdo:string;Tamanho:integer):string;
 begin
+{ Dailon Parisotto (f-18367) 2024-04-24 Inicio
+
   while Descricao <> '' do
   begin
-    Result := Result + EspacamentoEsquerdo + Copy(Descricao+Replicate(' ',Tamanho),1,Tamanho)+chr(10);
+    Result := Result + EspacamentoEsquerdo + Copy(Descricao+Replicate(' ',Tamanho),1,Tamanho) + chr(10);
     delete(Descricao,1,Tamanho);
   end;
+
+}
+  // Precisa deixar em branco para não ficar em memória valor anterior
+  Result := EmptyStr;
+  while Descricao <> '' do
+  begin
+    // Só adiciona quebra linha se quebrou o texto
+    if Result <> EmptyStr then
+      Result := Result + chr(10);
+
+    Result := Result + EspacamentoEsquerdo + Copy(Descricao+Replicate(' ',Tamanho),1,Tamanho);
+    delete(Descricao,1,Tamanho);
+  end;
+  { Dailon Parisotto (f-18367) 2024-04-24 Fim}
 end;
 
 procedure DBGridCopiarCampo(DBGrid: TDBGrid); overload;
