@@ -3498,18 +3498,17 @@ begin
     tSp2.Width       := tSp1.Width;
     //
     // Não mostrar as legendas
-    //
+    {Mauricio Parizotto 2024-04-23
     if not Form19.CheckBox8.Checked then
     begin
       tSp2.Caption := Replicate(' ',100)+AllTrim(tSp2.Caption);
-    end else
+    end else}
     begin
       tSp2.Caption := AllTrim(tSp2.Caption);
     end;
-    //
+
     tSp2.visible     := True;
     tsP2.Repaint;
-    //
   end;
 
   if tSp2.Caption = 'Backup' then

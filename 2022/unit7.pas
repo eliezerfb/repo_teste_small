@@ -7697,23 +7697,18 @@ end;
 
 function MostraLabels(tSp1: tImage; tSp2: TLabel): Boolean;
 begin
-  if Form19.CheckBox8.Checked then
+  //if Form19.CheckBox8.Checked then Mauricio Parizotto 2024-04-23
+  if true then
   begin
     with Form1 do
     begin
       tSp2.OnClick     := tSp1.OnClick;
       tSp2.Width       := tSp1.Width;
-      tSp2.Top         := -5; // tSp1.Top; // + tSp1.Height -20;
+      tSp2.Top         := -5;
       tSp2.Left        := tSp1.Left;
 
-      // if Form1.sContrasteCor = 'BRANCO' then tSp2.Font.Color := clWhite;
-      // if Form1.sContrasteCor = 'PRETO' then tSp2.Font.Color := clBlack;
-      // if Form1.sContrasteCor = 'ROSA' then tSp2.Font.Color := clFuchsia;
-      // if Form1.sContrasteCor = 'AZUL' then tSp2.Font.Color := clBlack;
-      //
-      // tSp2.Font.Color := $00F5CB58;
       tSp2.Font.Color := clBlack;
-      //
+
       tSp2.visible     := True;
       tsP2.Repaint;
     end;
@@ -7724,7 +7719,7 @@ begin
       tSp2.visible     := False;
     end;
   end;
-  //
+
   Result := True;
 end;
 
@@ -12053,37 +12048,21 @@ end;
 
 procedure TForm7.ibDataSet7NewRecord(DataSet: TDataSet);
 begin
-  //
   ibDataSet7REGISTRO.AsString     := sProximo;
-{
-  //
-  // Nosso Numero
-  //
-  try
-    ibDataSet99.Close;
-    ibDataSet99.SelectSql.Clear;
-    ibDataset99.SelectSql.Add('select gen_id(G_NN,1) from rdb$database');
-    ibDataset99.Open;
-    ibDataSet7NN.AsString := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
-    ibDataset99.Close;
-  except Abort end;
-}
-  //
+
   if Form7.sModulo = 'VENDA' then
     ibDataSet7NUMERONF.AsString  := Form7.ibDataSet15NUMERONF.AsString;
-  //
+
   ibDataSet7VALOR_RECE.AsFloat    := 0;
   ibDataSet7VALOR_DUPL.AsFloat    := 0;
   ibDataSet7VALOR_JURO.ReadOnly   := False;
   ibDataSet7VALOR_JURO.AsFloat    := 0;
   ibDataSet7VALOR_JURO.ReadOnly   := True;
   ibDataSet7EMISSAO.AsDateTime    := Date;
-  //
+
   // Sugere sempre a data de vencimento de acordo com a configuração
-  //
-  ibDataSet7VENCIMENTO.AsDateTime := Date + StrtoInt('0'+Limpanumero(Form19.MaskEdit4.Text));
+  ibDataSet7VENCIMENTO.AsDateTime := Date + StrtoInt('0'+Limpanumero(Form19.edtDiasPrazoA.Text));
   ibDataSet7PORTADOR.AsString     := 'EM CARTEIRA';
-  //
 end;
 
 procedure TForm7.ibDataSet4QTD_ATUALChange(Sender: TField);
@@ -16876,7 +16855,7 @@ begin
   ibDataSet8VALOR_DUPL.AsFloat    := 0;
   ibDataSet8EMISSAO.AsDateTime    := Date;
   { Sugere sempre a data de vencimento de acordo com a configuração }
-  ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.MaskEdit4.Text)));
+  ibDataSet8VENCIMENTO.AsDateTime := SomaDias(Date,StrToInt(AllTrim(Form19.edtDiasPrazoA.Text)));
   ibDataSet8PORTADOR.AsString     := '';
 end;
 
