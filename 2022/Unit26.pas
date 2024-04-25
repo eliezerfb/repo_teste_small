@@ -546,8 +546,8 @@ begin
   if cboBancos.Text = 'Inter' then
   begin
     MaskEdit45.Text := 'AAAAKKKXXXXXXXNNNNNNNNNNI';
-    chkCNAB400.Checked := False;
-    chkCNAB240.Checked := True;
+    chkCNAB400.Checked := True;
+    chkCNAB240.Checked := False;
   end;
 
   if cboBancos.Text = 'Unibanco' then
