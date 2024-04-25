@@ -249,6 +249,7 @@
         <DCCReference Include="..\unit_compartilhada\interfaces\uITestaEmail.pas"/>
         <DCCReference Include="..\unit_compartilhada\uTestaEmail.pas"/>
         <DCCReference Include="..\unit_compartilhada\CAPICOM_TLB_xe.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uValidaRecursos.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
