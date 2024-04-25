@@ -27,6 +27,7 @@
     <File Path="..\unit_compartilhada\uEmail.pas"/>
     <File Path="..\unit_compartilhada\uTestaEmail.pas"/>
     <File Path="..\unit_compartilhada\CAPICOM_TLB_xe.pas"/>
+    <File Path="..\unit_compartilhada\uValidaRecursos.pas"/>
     <File Path="..\..\..\delphi"/>
     <File Path="..\..\componentes"/>
     <File Path="..\..\componentes\Smallsoft"/>
