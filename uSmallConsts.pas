@@ -91,6 +91,7 @@ const
   _cIdentNFSEAmbiente = 'Ambiente';
   _cObsNaDescricaoNFSE  = 'Observação na descrição';
   _cCalculoDoDescontoPeloProvedor = 'Cálculo desconto no provedor';
+  _cNaoDescontarIssQuandoRetido = 'Não descontar o ISS retido';
 
   //OS
   _cSectionOS = 'OS';

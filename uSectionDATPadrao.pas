@@ -69,6 +69,17 @@ function TSectionBD.getValorBD(nome: string): string;
 begin
   Result := '';
 
+  {Sandro Silva 2024-04-24 inicio}
+  // Valida se a query estÃ¡ fechada por ter realizado algum commit durante o uso do objeto
+  // Se estiver fechada tentarÃ¡ abrir
+  try
+    if FoQConfiguracoes.Active = False then
+      FoQConfiguracoes.Open;
+  except
+    Exit;
+  end;  
+
+  {Sandro Silva 2024-04-24 fim}
   if FoQConfiguracoes.Locate('NOME;MODULO', VarArrayOf([nome,SecName]),[]) then
     Result := FoQConfiguracoes.FieldByName('VALOR').AsString;
 end;
@@ -97,7 +108,7 @@ begin
     end;
   except
     on e:exception do
-      MensagemSistema('Não foi possível salvas configrações. Tente novamente!',msgAtencao);
+      MensagemSistema('N o foi poss vel salvas configra  es. Tente novamente!',msgAtencao);
   end;
 
   FoQConfiguracoes.Close;

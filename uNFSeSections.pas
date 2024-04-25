@@ -34,10 +34,13 @@ type
     procedure setObsNaDescricao(const Value: Boolean);
     function getCalculoDoDescontoPeloProvedor: string;
     procedure setCalculoDoDescontoPeloProvedor(const Value: string);
+    function getNaoDescontarIssQuandoRetido: String;
+    procedure SetNaoDescontarIssQuandoRetido(const Value: String);
   public
     property ObsNaDescricao: Boolean read getObsNaDescricao write setObsNaDescricao;
     property ConfObsNaDescricao: string read getConfObsNaDescricao;
     property CalculoDoDescontoPeloProvedor: string read getCalculoDoDescontoPeloProvedor write setCalculoDoDescontoPeloProvedor;
+    property NaoDescontarIssQuandoRetido: String read getNaoDescontarIssQuandoRetido write SetNaoDescontarIssQuandoRetido;
   protected
   end;
 
@@ -93,6 +96,11 @@ begin
   Result := getValorBD(_cObsNaDescricaoNFSE);
 end;
 
+function TSectionNFSE_BD.getNaoDescontarIssQuandoRetido: String;
+begin
+  Result := getValorBD(_cNaoDescontarIssQuandoRetido);
+end;
+
 function TSectionNFSE_BD.getObsNaDescricao: Boolean;
 begin
   Result := getValorBD(_cObsNaDescricaoNFSE) = '1';
@@ -101,7 +109,14 @@ end;
 procedure TSectionNFSE_BD.setCalculoDoDescontoPeloProvedor(const Value: string);
 begin
   setValorBD(_cCalculoDoDescontoPeloProvedor,
-             'Algumas prefeitura aplicam calculam o desconto ao autorizarem a NFSe',
+             'Algumas prefeitura calculam o desconto ao autorizarem a NFSe',
+             Value);
+end;
+
+procedure TSectionNFSE_BD.SetNaoDescontarIssQuandoRetido(const Value: String);
+begin
+  setValorBD(_cNaoDescontarIssQuandoRetido,
+             'Algumas prefeituras nÃ£o descontam o valor do ISS quando Ã© retido',
              Value);
 end;
 
@@ -115,7 +130,7 @@ begin
     valorBD := '0';
 
   setValorBD(_cObsNaDescricaoNFSE,
-             'Gera observação junto com a descrição dos serviços',
+             'Gera observa  o junto com a descri  o dos servi os',
              valorBD);
 
 end;
