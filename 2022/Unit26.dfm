@@ -1364,7 +1364,7 @@ object Form26: TForm26
       Alignment = taRightJustify
       Caption = 'vencimento formato juniano (J)'
     end
-    object Label40: TLabel
+    object lblCodConvenio: TLabel
       Left = 61
       Top = 146
       Width = 110
@@ -1530,7 +1530,7 @@ object Form26: TForm26
       OnExit = MaskEdit46Exit
       OnKeyDown = MaskEdit1KeyDown
     end
-    object MaskEdit47: TMaskEdit
+    object medtNossoNu: TMaskEdit
       Left = 174
       Top = 221
       Width = 207
@@ -1646,6 +1646,7 @@ object Form26: TForm26
         'Bradesco'
         'Caixa Econ'#244'mica'
         'Ita'#250
+        'Inter'
         'Santander'
         'SICOOB'
         'SICREDI'
