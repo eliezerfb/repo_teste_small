@@ -1357,7 +1357,16 @@ begin
 
   if Form48.CheckBox1.Checked then
   begin
+    {Sandro Silva 2024-04-02 inicio
     Form7.ibDataset15MARCA.AsString := Form7.ibDataset15MARCA.AsString + '(I)';
+    }
+    if Right(Form7.ibDataset15MARCA.AsString, 3) <> '(I)' then
+    begin
+      if Length(Form7.ibDataset15MARCA.AsString + '(I)') > Form7.ibDataset15MARCA.Size then
+        Form7.ibDataset15MARCA.AsString := Copy(Form7.ibDataset15MARCA.AsString, 1, Form7.ibDataset15MARCA.Size - 3);
+      Form7.ibDataset15MARCA.AsString := Form7.ibDataset15MARCA.AsString + '(I)';
+    end;
+    {Sandro Silva 2024-04-02}
   end else
   begin
     Form7.ibDataset15MARCA.AsString := StrTran(Form7.ibDataset15MARCA.AsString,'(I)','');
@@ -1412,6 +1421,7 @@ end;
 procedure TForm48.RecalcularIssDosItens;
 var
   cTotal: Currency;
+  dDescontoIssProporcional: Double;
 begin
   {Sandro Silva 2022-09-22 inicio}
   // Quando mudar a operação deve recalcular os valores de ISS dos itens lançados na nota conforme a alíquota de ISS da operação
@@ -1430,8 +1440,16 @@ begin
         Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('ISS').AsFloat / 100 * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
         Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
         }
+        {Sandro Silva 2024-04-02 inicio
         Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat, Form7.IBDataSet14.FieldByname('ISS').AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat));
         Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
+        }
+        dDescontoIssProporcional := 0.00;
+        if Form7.ibDataSet15SERVICOS.AsFloat <> 0 then // Sandro Silva 2024-04-23
+          dDescontoIssProporcional := StrToFloat(FormatFloat('0.00', (Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat) * Form7.ibDataSet15DESCONTO.AsFloat));
+        Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, (Form7.ibDataSet35TOTAL.AsFloat - dDescontoIssProporcional), Form7.IBDataSet14.FieldByname('ISS').AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat));
+        Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais((Form7.ibDataSet35TOTAL.AsFloat - dDescontoIssProporcional) * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
+        {Sandro Silva 2024-04-02}
         {Sandro Silva 2023-10-02 fim}
 
         cTotal := cTotal + Form7.ibDataSet35ISS.AsFloat; // Acumula para atualizar o total de ISS na tabela VENDAS
