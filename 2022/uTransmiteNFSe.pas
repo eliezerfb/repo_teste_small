@@ -222,7 +222,8 @@ begin
 
   {Mauricio Parizotto 2023-12-05 Inicio}
   try
-    ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
+    // Sandro Silva 2024-04-24 ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
+    ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet13.Transaction);
 
     //Seta configuração para Padrões
     if (sPadraoSistema = 'ABACO20') and (AnsiUpperCase(StringReplace(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString), ' ', '', [rfReplaceAll]) + Form7.ibDataSet13ESTADO.AsString) = 'RIOBRANCOAC')

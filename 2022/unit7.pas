@@ -12636,7 +12636,8 @@ begin
   }
 
   try
-    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    //Sandro Silva 2024-04-24 ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet13.Transaction);
     ibDataSet3OBSERVACAO.AsString := ConfSistema.BD.OS.ObservacaoOS;
   finally
     FreeAndNil(ConfSistema);
@@ -17693,7 +17694,8 @@ begin
 
   {Mauricio Parizotto 2023-11-21 Inicio}
   try
-    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    // Sandro Silva 2024-04-24 ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet13.Transaction);
     ObservacaoRecibo := ConfSistema.BD.OS.ObservacaoReciboOS;
   finally
     FreeAndNil(ConfSistema);
@@ -34124,7 +34126,8 @@ var
   Observacao : string;
 begin
   try
-    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    // Sandro Silva 2024-04-24 ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet13.Transaction);
     Observacao := Form1.Small_InputFormMemo('Configuração de observação para OS',ConfSistema.BD.OS.ObservacaoOS,1000);
     ConfSistema.BD.OS.ObservacaoOS := Observacao;
   finally
@@ -34138,7 +34141,8 @@ var
   ObservacaoRec : string;
 begin
   try
-    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    // Sandro Silva 2024-04-24 ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet13.Transaction);
     ObservacaoRec := Form1.Small_InputFormMemo('Configuração de observação para Recibo',ConfSistema.BD.OS.ObservacaoReciboOS,1000);
     ConfSistema.BD.OS.ObservacaoReciboOS := ObservacaoRec;
   finally
