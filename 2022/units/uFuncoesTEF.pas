@@ -5,7 +5,7 @@ interface
 uses
   Vcl.Forms, WinApi.Windows, uDialogs, WinApi.ShellAPI, System.IniFiles,
   uclassetransacaocartao, System.StrUtils, Vcl.Controls, System.Classes,
-  System.SysUtils, uSelecionaTEF;
+  System.SysUtils, uSelecionaTEF, IBX.IBDatabase;
 
 type
   TPagamentoPDV = class
@@ -114,7 +114,7 @@ type
     FnQtdeCartoes: Integer;
     FcBuildEXE: String;
     FnValorCobrar: Currency;
-
+    FoIBDataBase: TIBDataBase;
 
     procedure AdicionaCNPJRequisicaoTEF(var tfFile: TextFile; AcCNPJ: String);
     function LerParametroIni(sArquivo, sSecao, sParametro,
@@ -129,6 +129,7 @@ type
     function CampoTEF(sArquivoTEF, sCampo: String): String;
     function TEFValorTransacao(sArquivoTEF: String): Currency;
     procedure TEFDeletarCopiasArquivos;
+    function TestarZPOSLiberado: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -142,12 +143,13 @@ type
     property DadosTransacao: TDadosTransacao read FoDadosTransacao;
     property QtdeCartoes: Integer read FnQtdeCartoes write FnQtdeCartoes;
     property ValorCobrar: Currency read FnValorCobrar write FnValorCobrar;
+    property IBDataBase: TIBDataBase read FoIBDataBase write FoIBDataBase;
   end;
 
 implementation
 
 uses
-  SmallFunc_xe, uSmallConsts;
+  SmallFunc_xe, uSmallConsts, uValidaRecursos, uTypesRecursos, uSmallResourceString;
 
 procedure TFuncoesTEF.ValidaDiretorioTEF(sDirTef: String; sDirReq: String; sDirResp: String);
 begin
@@ -363,7 +365,7 @@ var
   cCaminhoTEF: String;
   cLinha: String;
   nParcelas: Integer;
-
+  bTEFZPOS: Boolean;
 
   procedure RecuperaValoresFormasExtras;
   begin
@@ -393,9 +395,28 @@ var
     else
       Result := StrTran(Result, '"', '') + Chr(10);
   end;
+  {Dailon Parisotto (f-18045) 2024-04-09 Inicio}
+  function RetornoDoZPOS(AcCaminhoArq: String): Boolean;
+  var
+    slArq: TStringList;
+  begin
+    Result := False;
+
+    slArq := TStringList.Create;
+    try
+      slArq.LoadFromFile(AcCaminhoArq);
+
+      Result := (Pos('ZPOS', AnsiUpperCase(slArq.Text)) > 0);
+    finally
+      FreeAndNil(slArq)
+    end;
+  end;
+  {Dailon Parisotto (f-18045) 2024-04-09 Fim}
+
 begin
   Result := False;
   bIniciarTEF := True;
+  bTEFZPOS := False;
 
   FormasExtras := TPagamentoPDV.Create;
 
@@ -486,6 +507,7 @@ begin
                     or (FoTEFSelecionado.Nome = EmptyStr)
                     or (FoTEFSelecionado.Caminho = EmptyStr) do
               begin
+                frmSelecionaTEF.IBDataBase := FoIBDataBase;
                 frmSelecionaTEF.ChamarTela;
 
                 FoTEFSelecionado := frmSelecionaTEF.ConfigTEFSelecionado;
@@ -662,75 +684,82 @@ begin
 
                     sRespostaTef := EmptyStr; // Inicia vazia para capturar linhas da resposta do tef
 
-                    while not Eof(f) Do
+                    bTEFZPOS := (RetornoDoZPOS('c:\'+cCaminhoTEF+'\'+FoTEFSelecionado.Resp+'\INTPOS.001'));
+
+                    if (not bTEFZPOS) or (TestarZPOSLiberado) then
                     begin
-                      ReadLn(F,cLinha);
-
-                      sRespostaTef := sRespostaTef + #13 + cLinha; // Sandro Silva 2021-09-03
-
-                      cLinha := StrTran(cLinha, chr(0),' ');
-                      if Copy(cLinha,1,7) = '003-000' then
-                        FoDadosTransacao.ValorTot  := StrTran(AllTrim(Copy(cLinha,10,Length(cLinha)-9)),',','');
-                      if Copy(cLinha,1,7) = '200-000' then
-                        FoDadosTransacao.ValorSaque := StrTran(AllTrim(Copy(cLinha,10,Length(cLinha)-9)),',','');
-                      if Copy(cLinha,1,7) = '010-000' then
-                        FoDadosTransacao.NomeRede   := AllTrim(Copy(cLinha,10,Length(cLinha)-9));
-                      if Copy(cLinha,1,7) = '009-000' then
-                        FoDadosTransacao.OkSim       := AllTrim(Copy(cLinha,10,Length(cLinha)-9));
-                      if Copy(cLinha,1,7) = '012-000' then
-                        FoDadosTransacao.Transaca   := RightStr(AllTrim(Copy(cLinha,10,Length(cLinha)-9)), 11); // Sandro Silva 2021-07-02 if Copy(Form1.sLinha,1,7) = '012-000' then Form1.sTransaca   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
-                      if Copy(cLinha,1,7) = '013-000' then
-                        FoDadosTransacao.Autoriza   := AllTrim(Copy(cLinha,10,Length(cLinha)-9)); // Sandro Silva 2018-07-03
-                      if Copy(cLinha,1,7) = '027-000' then
-                        FoDadosTransacao.Finaliza   := AllTrim(Copy(cLinha,10,Length(cLinha)-9));
-                      if Copy(cLinha,1,7) = '017-000' then
-                        FoDadosTransacao.TipoParc   := AllTrim(Copy(cLinha,10,Length(cLinha)-9)); // 0: parcelado pelo Estabelecimento; 1: parcelado pela ADM.
-                      if Copy(cLinha,1,7) = '018-000' then
-                        FoDadosTransacao.QtdeParcela   := StrToInt(AllTrim(Copy(cLinha,10,Length(cLinha)-9)));
-                      if Copy(cLinha,1,7) = '028-000' then
-                        sBotaoOk          := AllTrim(Copy(cLinha,10,Length(cLinha)-9));
-                      if Copy(cLinha,1,4) = '029-'    then
-                        sCupom029         := sCupom029 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // Sandro Silva 2023-10-24 if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10);
-                      if Copy(cLinha,1,4) = '030-'    then
-                        sMensagem         := sMensagem + StrTran(Copy(cLinha,11,Length(cLinha)-10),'"','');
-                      if Copy(cLinha,1,7) = '040-000' then
-                        FoDadosTransacao.Bandeira := StrTran(Copy(cLinha,11,Length(cLinha)-10),'"','');
-                      if Copy(cLinha,1,7) = '709-000' then
+                      while not Eof(f) Do
                       begin
-                        //
-                        fDescontoNoPremio := StrToFloat(AllTrim(Copy(cLinha,10,Length(cLinha)-9))) / 100;
+                        ReadLn(F,cLinha);
 
-                        FoValoresTransacao.Receber := FoValoresTransacao.Receber - fDescontoNoPremio;
-                        FoValoresTransacao.Pagar   := dValorPagarCartao - fDescontoNoPremio;
-                        RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
-                      end;
+                        sRespostaTef := sRespostaTef + #13 + cLinha; // Sandro Silva 2021-09-03
 
-                      if Copy(cLinha,1,7) = '210-081' then
-                      begin
-                        fDescontoNoPremio := FoValoresTransacao.Receber - StrToFloat(AllTrim(Copy(cLinha,10,Length(cLinha)-9)));
-                        FoValoresTransacao.Receber    := FnValorCobrar - fDescontoNoPremio;
-                        FoValoresTransacao.Pagar      := dTotalTransacionado; // Sandro Silva 2017-06-12  StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9))); // acertar aqui quando puder lançar cartões diferentes
-                        RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
-                      end;
+                        cLinha := StrTran(cLinha, chr(0),' ');
+                        if Copy(cLinha,1,7) = '003-000' then
+                          FoDadosTransacao.ValorTot  := StrTran(AllTrim(Copy(cLinha,10,Length(cLinha)-9)),',','');
+                        if Copy(cLinha,1,7) = '200-000' then
+                          FoDadosTransacao.ValorSaque := StrTran(AllTrim(Copy(cLinha,10,Length(cLinha)-9)),',','');
+                        if Copy(cLinha,1,7) = '010-000' then
+                          FoDadosTransacao.NomeRede   := AllTrim(Copy(cLinha,10,Length(cLinha)-9));
+                        if Copy(cLinha,1,7) = '009-000' then
+                          FoDadosTransacao.OkSim       := AllTrim(Copy(cLinha,10,Length(cLinha)-9));
+                        if Copy(cLinha,1,7) = '012-000' then
+                          FoDadosTransacao.Transaca   := RightStr(AllTrim(Copy(cLinha,10,Length(cLinha)-9)), 11); // Sandro Silva 2021-07-02 if Copy(Form1.sLinha,1,7) = '012-000' then Form1.sTransaca   := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
+                        if Copy(cLinha,1,7) = '013-000' then
+                          FoDadosTransacao.Autoriza   := AllTrim(Copy(cLinha,10,Length(cLinha)-9)); // Sandro Silva 2018-07-03
+                        if Copy(cLinha,1,7) = '027-000' then
+                          FoDadosTransacao.Finaliza   := AllTrim(Copy(cLinha,10,Length(cLinha)-9));
+                        if Copy(cLinha,1,7) = '017-000' then
+                          FoDadosTransacao.TipoParc   := AllTrim(Copy(cLinha,10,Length(cLinha)-9)); // 0: parcelado pelo Estabelecimento; 1: parcelado pela ADM.
+                        if Copy(cLinha,1,7) = '018-000' then
+                          FoDadosTransacao.QtdeParcela   := StrToInt(AllTrim(Copy(cLinha,10,Length(cLinha)-9)));
+                        if Copy(cLinha,1,7) = '028-000' then
+                          sBotaoOk          := AllTrim(Copy(cLinha,10,Length(cLinha)-9));
+                        if Copy(cLinha,1,4) = '029-'    then
+                          sCupom029         := sCupom029 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // Sandro Silva 2023-10-24 if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10);
+                        if Copy(cLinha,1,4) = '030-'    then
+                          sMensagem         := sMensagem + StrTran(Copy(cLinha,11,Length(cLinha)-10),'"','');
+                        if Copy(cLinha,1,7) = '040-000' then
+                          FoDadosTransacao.Bandeira := StrTran(Copy(cLinha,11,Length(cLinha)-10),'"','');
+                        if Copy(cLinha,1,7) = '709-000' then
+                        begin
+                          //
+                          fDescontoNoPremio := StrToFloat(AllTrim(Copy(cLinha,10,Length(cLinha)-9))) / 100;
 
-                      if Copy(cLinha,1,4) = '710-' then
-                        sCupom710 := sCupom710 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // qtd linhas cupom reduzido
-                      if Copy(cLinha,1,4) = '711-' then
-                        sCupom711 := sCupom711 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // linhas cupom reduzido
-                      if Copy(cLinha,1,4) = '712-' then
-                        sCupom712 := sCupom712 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // qtd linhas comprovante destinada ao Cliente
-                      if Copy(cLinha,1,4) = '713-' then
-                        sCupom713 := sCupom713 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // linhas da via do Cliente,
-                      if Copy(cLinha,1,4) = '714-' then
-                        sCupom714 := sCupom714 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // qtd linhas comprovante destinada ao Estabelecimento
-                      if Copy(cLinha,1,4) = '715-' then
-                        sCupom715 := sCupom715 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // linhas da via do Estabelecimento
-                      {Sandro Silva 2023-10-24 fim}
-                      //                               //
-                      // Venda com pagamento no CARTAO //
-                      //                               //
-                    end; // while not Eof(f) Do
-                    //
+                          FoValoresTransacao.Receber := FoValoresTransacao.Receber - fDescontoNoPremio;
+                          FoValoresTransacao.Pagar   := dValorPagarCartao - fDescontoNoPremio;
+                          RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
+                        end;
+
+                        if Copy(cLinha,1,7) = '210-081' then
+                        begin
+                          fDescontoNoPremio := FoValoresTransacao.Receber - StrToFloat(AllTrim(Copy(cLinha,10,Length(cLinha)-9)));
+                          FoValoresTransacao.Receber    := FnValorCobrar - fDescontoNoPremio;
+                          FoValoresTransacao.Pagar      := dTotalTransacionado; // Sandro Silva 2017-06-12  StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9))); // acertar aqui quando puder lançar cartões diferentes
+                          RecuperaValoresFormasExtras; // Sandro Silva 2023-08-21
+                        end;
+
+                        if Copy(cLinha,1,4) = '710-' then
+                          sCupom710 := sCupom710 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // qtd linhas cupom reduzido
+                        if Copy(cLinha,1,4) = '711-' then
+                          sCupom711 := sCupom711 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // linhas cupom reduzido
+                        if Copy(cLinha,1,4) = '712-' then
+                          sCupom712 := sCupom712 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // qtd linhas comprovante destinada ao Cliente
+                        if Copy(cLinha,1,4) = '713-' then
+                          sCupom713 := sCupom713 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // linhas da via do Cliente,
+                        if Copy(cLinha,1,4) = '714-' then
+                          sCupom714 := sCupom714 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // qtd linhas comprovante destinada ao Estabelecimento
+                        if Copy(cLinha,1,4) = '715-' then
+                          sCupom715 := sCupom715 + DesconsideraLinhasEmBranco(Copy(cLinha,11,Length(cLinha)-10)); // linhas da via do Estabelecimento
+                        {Sandro Silva 2023-10-24 fim}
+                        //                               //
+                        // Venda com pagamento no CARTAO //
+                        //                               //
+                      end; // while not Eof(f) Do
+                    end
+                    else
+                      sMensagem := _cSerialSemAcessoRecurso;
+
                     CloseFile(F);
                     //
                     if Pos('PIX', AnsiUpperCase(sRespostaTef)) > 0 then
@@ -831,7 +860,7 @@ begin
                         if allTrim(sMensagem) <> 'CHEQUE SEM RESTRICAO' then
                           FoDadosTransacao.Mensagem := sMensagem;
                       end;
-                      if sBotaoOk = '0' then
+                      if (sBotaoOk = '0') or (Trim(sBotaoOk) = EmptyStr) then
                         Break;
                       if Pos('O CANCELADA', FoDadosTransacao.Mensagem) > 0 then
                         Break;
@@ -940,6 +969,13 @@ begin
   // com Kiochi Matsuda                             //
   // (0xx11)253-1722                                //
   // ---------------------------------------------- //
+end;
+
+function TFuncoesTEF.TestarZPOSLiberado: Boolean;
+var
+  dLimiteRecurso : Tdate;
+begin
+  Result := (RecursoLiberado(FoIBDataBase,rcZPOS,dLimiteRecurso));
 end;
 
 { TValoresTransacao }

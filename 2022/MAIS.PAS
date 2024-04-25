@@ -8597,6 +8597,15 @@ begin
     Form7.EnvioaoFISCOREDUOZ1Click(Sender);
     Form1.Tag := 0;
   end;
+
+  frmConfiguracaoTEFCommerce := TfrmConfiguracaoTEFCommerce.Create(nil);
+  try
+    frmConfiguracaoTEFCommerce.IBDataBase := Form7.IBDatabase1;
+    // No Create vai atualizar TEM TEF
+    frmConfiguracaoTEFCommerce.AtualizaTEMTEF;
+  finally
+    FreeAndNil(frmConfiguracaoTEFCommerce);
+  end;
 end;
 
 procedure TForm1.DBGrid200KeyDown(Sender: TObject; var Key: Word;
@@ -9581,6 +9590,7 @@ procedure TForm1.ConfiguraoTEF1Click(Sender: TObject);
 begin
   frmConfiguracaoTEFCommerce := TfrmConfiguracaoTEFCommerce.Create(nil);
   try
+    frmConfiguracaoTEFCommerce.IBDataBase := Form7.IBDatabase1;
     frmConfiguracaoTEFCommerce.ShowModal;
 
     ConfiguraoTEF1.Checked := TestarTEFConfigurado;
