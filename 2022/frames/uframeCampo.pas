@@ -173,6 +173,8 @@ begin
   end;
   Query.Open;
 
+  txtCampo.MaxLength := Query.FieldByName(sCampoDescricao).Size; // Dailon 2024-04-24
+
   //if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then Mauricio Parizotto 2024-01-16
   if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive]) then
   begin
@@ -270,7 +272,8 @@ begin
             txtCampo.Clear;
         end
       else
-        CampoCodigo.Value := txtCampo.Text;
+//        CampoCodigo.Value := txtCampo.Text; Dailon 2024-04-24
+        CampoCodigo.Value := Copy(txtCampo.Text, 1, CampoCodigo.Size);
       end;
     end;
     {Sandro Silva 2023-09-28 fim}
@@ -282,7 +285,8 @@ begin
       CampoCodigo.Value := null;
     end else
     begin
-      CampoCodigo.Value := Trim(txtCampo.Text);
+//      CampoCodigo.Value := Trim(txtCampo.Text); Dailon 2024-04-24
+      CampoCodigo.Value := Copy(Trim(txtCampo.Text), 1, CampoCodigo.Size);
     end;
   end;
   {Sandro Silva 2023-09-27 fim}
