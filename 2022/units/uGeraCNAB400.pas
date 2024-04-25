@@ -917,7 +917,7 @@ begin
                   WriteLn(F,
                     Copy('1',1,1)                                                                            + // 001 a 001 - (01) IDENTIFICAÇÃO DO REGISTRO
                     Replicate(' ',19)                                                                        + // 002 a 020 - (19) Branco
-                    '112'                                                                                    + // 021 a 023 - (03) Carteira
+                    Copy(Form26.MaskEdit43.Text,1,3)                                                         + // 021 a 023 - (03) Carteira
                     Copy(LimpaNumero(Form26.MaskEdit44.Text)+'0000',1,4)                                     + // 024 a 027 - (04) AGÊNCIA MANTENEDORA DA CONTA
                     sConta                                                                                   + // 028 a 036 - (09) Número da conta corrente
                     sDVConta                                                                                 + // 037 a 037 - (01) Dígito da conta corrente
@@ -929,7 +929,7 @@ begin
                     Replicate('0',6)                                                                         + // 084 a 089 - (06) Data Multa
                     Replicate('0',11)                                                                        + // 090 a 100 - (11) Dígito Verificador dentro da faixa reservada
                     Replicate(' ',8)                                                                         + // 101 a 108 - (08) Branco
-                    '01'                                                                                     + // 109 a 110 - (02) “01” = Remessa
+                    Copy(sComandoMovimento,1,2)                                                              + // 109 a 110 - (02) “01” = Remessa
                     Copy(AllTrim(Form7.ibDataset7DOCUMENTO.AsString)+Replicate(' ',10),1,10)                 + // 111 a 120 - (10) Nº DO DOCUMENTO DE COBRANÇA (DUPL.,NP ETC.)
                     Copy(Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,2)                          +
                     Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),4,2)                               +
