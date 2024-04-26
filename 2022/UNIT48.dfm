@@ -678,6 +678,7 @@ object Form48: TForm48
         OnEnter = DBGrid4Enter
         OnKeyDown = DBGrid4KeyDown
         OnKeyPress = DBGrid4KeyPress
+        OnKeyUp = DBGrid4KeyUp
       end
       object DBMemo1: TDBMemo
         Left = 10

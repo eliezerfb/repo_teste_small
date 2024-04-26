@@ -245,6 +245,8 @@ uses
   uclassetransacaocartao in '..\..\unit_compartilhada\uclassetransacaocartao.pas',
   uSelecionaTEF in 'uSelecionaTEF.pas' {frmSelecionaTEF},
   uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame},
+  uIDuplicaNFSe in 'interfaces\uIDuplicaNFSe.pas',
+  uDuplicaNFSe in 'units\uDuplicaNFSe.pas',
   uFrmConvenio in 'uFrmConvenio.pas' {FrmConvenio},
   uFrmCaixa in 'uFrmCaixa.pas' {FrmCaixa},
   uFrmGrupoMercadoria in 'uFrmGrupoMercadoria.pas' {FrmGrupoMercadoria},
