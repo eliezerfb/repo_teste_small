@@ -42,13 +42,13 @@ type
     MaskEdit46: TMaskEdit;
     Label32: TLabel;
     Label33: TLabel;
-    MaskEdit47: TMaskEdit;
+    medtNossoNu: TMaskEdit;
     MaskEdit48: TMaskEdit;
     Label34: TLabel;
     MaskEdit49: TMaskEdit;
     Label39: TLabel;
     MaskEdit50: TMaskEdit;
-    Label40: TLabel;
+    lblCodConvenio: TLabel;
     Label41: TLabel;
     Label42: TLabel;
     cboBancos: TComboBox;
@@ -207,10 +207,14 @@ begin
   try
     if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '033') or (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '353') then // SANTANDER
     begin
-      Label40.Caption := 'código de transmissão';
+      lblCodConvenio.Caption := 'código de transmissão';
+    end else
+    if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '077') then
+    begin
+      lblCodConvenio.Caption := 'número da operação (X)'; //Mauricio Parizotto 2024-02-22
     end else
     begin
-      Label40.Caption := 'código do convênio (X)';
+      lblCodConvenio.Caption := 'código do convênio (X)';
     end;
   except
   end;
@@ -268,17 +272,15 @@ begin
       MaskEdit48.Text := StrTran(MaskEdit48.Text,'PP',sParcela);
     end;
 
-    if Pos('N',MaskEdit48.Text) <> 0 then
-      MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('N',Length(LimpaDeixando(MaskEdit48.Text,'N'))),
-             Right(StrZero(StrtoInt('0'+LimpaNumero(MaskEdit47.Text)),Length(LimpaDeixando(MaskEdit48.Text,'N')),0),Length(LimpaDeixando(MaskEdit48.Text,'N'))));
+    if Pos('N',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('N',Length(LimpaDeixando(MaskEdit48.Text,'N'))),
+             Right(StrZero(StrtoInt('0'+LimpaNumero(medtNossoNu.Text)),Length(LimpaDeixando(MaskEdit48.Text,'N')),0),Length(LimpaDeixando(MaskEdit48.Text,'N'))));
     if Pos('J',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('J',Length(LimpaDeixando(MaskEdit48.Text,'J'))),
        Copy(StrZero(StrtoInt('0'+LimpaNumero(MaskEdit49.Text)),Length(LimpaDeixando(MaskEdit48.Text,'J')),0),1,Length(LimpaDeixando(MaskEdit48.Text,'J'))));
     if Pos('YY',MaskEdit48.Text) <> 0 then
       MaskEdit48.Text := StrTran(MaskEdit48.Text, 'YY',Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2));
 
-    if Pos('W',MaskEdit48.Text) <> 0 then
-      MaskEdit48.Text := StrTran(MaskEdit48.Text, Replicate('W', Length(LimpaDeixando(MaskEdit48.Text, 'W'))),
-                         Right(StrZero(StrToInt64Def(LimpaNumero(MaskEdit47.Text), 0), 15, 0), Length(LimpaDeixando(MaskEdit48.Text,'W')))); // Sandro Silva 2024-04-02 Right(StrZero(StrtoInt('0'+LimpaNumero(MaskEdit47.Text)),15,0),Length(LimpaDeixando(MaskEdit48.Text,'W'))));
+    if Pos('W',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('W',Length(LimpaDeixando(MaskEdit48.Text,'W'))),
+       Right(StrZero(StrtoInt('0'+LimpaNumero(medtNossoNu.Text)),15,0),Length(LimpaDeixando(MaskEdit48.Text,'W'))));
 
     if Pos('d',MaskEdit45.Text) <> 0 then
     begin
@@ -296,7 +298,7 @@ begin
     if Pos('m',MaskEdit45.Text) <> 0 then
     begin
        // Modulo M somente para ítaú
-       MaskEdit48.Text := StrTran(MaskEdit48.Text,'M',Modulo_10(Copy(Form26.MaskEdit44.Text+'0000',1,4)+Copy(Form26.MaskEdit46.Text+'00000',1,5)+Copy(Form26.MaskEdit43.Text+'000',1,3)+Right('00000000'+Form26.MaskEdit47.Text,8)));
+       MaskEdit48.Text := StrTran(MaskEdit48.Text,'M',Modulo_10(Copy(Form26.MaskEdit44.Text+'0000',1,4)+Copy(Form26.MaskEdit46.Text+'00000',1,5)+Copy(Form26.MaskEdit43.Text+'000',1,3)+Right('00000000'+Form26.medtNossoNu.Text,8)));
     end;
 
     if Pos('m',MaskEdit45.Text) <> 0 then
@@ -312,25 +314,33 @@ begin
            )));
     end;
 
-    if Pos('V',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'V',Modulo_11(LimpaNumero(MaskEdit44.Text)+LimpaNumero(MaskEdit46.Text)+Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)),3,2)+'2'+Right(StrZero(StrtoInt('0'+LimpaNumero(MaskEdit47.Text)),15,0),5)));
+    if Pos('V',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'V',Modulo_11(LimpaNumero(MaskEdit44.Text)+LimpaNumero(MaskEdit46.Text)+Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)),3,2)+'2'+Right(StrZero(StrtoInt('0'+LimpaNumero(medtNossoNu.Text)),15,0),5)));
 
     if Pos('S',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'S',
      Modulo_sicoob(
                             Copy(Form26.MaskEdit44.Text,1,4)+
                             StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit46.Text)),10,0)+
-                            StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit47.Text)),7,0)));
+                            StrZero(StrtoInt('0'+LimpaNumero(Form26.medtNossoNu.Text)),7,0)));
     
     if Pos('M',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'M',Modulo_10(Copy(MaskEdit48.Text,1,Pos('M',MaskEdit48.Text)-1)));
     try
-      if Pos('I',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'I',Modulo_10(
-                                                                                                      AllTrim(MaskEdit44.Text)           // 4 Agencia
-                                                                                                      +AllTrim(MaskEdit46.Text)          // 5 conta
-                                                                                                      +AllTrim(MaskEdit43.Text)          // 3 Carteira
-                                                                                                      +Right(AllTrim(MaskEdit47.Text),8) // 8 Nosso Número
-                                                                                                     ));
+      if Pos('I',MaskEdit48.Text) <> 0 then
+        {Mauricio Parizotto 2024-04-18
+        MaskEdit48.Text := StrTran(MaskEdit48.Text,'I',Modulo_10(
+                                                                  AllTrim(MaskEdit44.Text)           // 4 Agencia
+                                                                  +AllTrim(MaskEdit46.Text)          // 5 conta
+                                                                  +AllTrim(MaskEdit43.Text)          // 3 Carteira
+                                                                  +Right(AllTrim(medtNossoNu.Text),8) // 8 Nosso Número
+                                                                 ));
+        }
+        MaskEdit48.Text := StrTran(MaskEdit48.Text,'I',Modulo_10(
+                                                                  Copy(AllTrim(MaskEdit44.Text),1,4)  // Agencia (sem dv)
+                                                                  +AllTrim(MaskEdit43.Text)           // Carteira
+                                                                  +AllTrim(medtNossoNu.Text)          // Nosso Número
+                                                                 ));
     except end;
     try
-      if Pos('U',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'U',Modulo_11('1'+Right(AllTrim(MaskEdit47.Text),11))); // Nosso Número acrescido de 1 a esquerda 1/NNNNNNNNNNN
+      if Pos('U',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'U',Modulo_11('1'+Right(AllTrim(medtNossoNu.Text),11))); // Nosso Número acrescido de 1 a esquerda 1/NNNNNNNNNNN
     except
     end;
 
@@ -405,6 +415,7 @@ begin
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '353' then MaskEdit45.Text := '9ccccccc0000nnnnnnnnd0kkk';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '041' then MaskEdit45.Text := '21aaaacccccccnnnnnnnn40bb';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '341' then MaskEdit45.Text := 'KKKNNNNNNNNmAAAACCCCCC000';
+      if Copy(AllTrim(MaskEdit42.Text),1,3) = '077' then MaskEdit45.Text := 'AAAAKKKXXXXXXXNNNNNNNNNNI'; // Mauricio Parizotto 2024-02-19
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '409' then MaskEdit45.Text := '5???????00NNNNNNNNNNNNNNd';
       if Copy(AllTrim(MaskEdit42.Text),1,3) = '136' then MaskEdit45.Text := 'AAAACCCCCCCCCCNNNNNNNNNNN'; // Mauricio Parizotto 2023-12-07
 
@@ -421,6 +432,7 @@ begin
       if Form26.MaskEdit45.Text = '9ccccccc0000nnnnnnnnd0kkk' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Santander');
       if Form26.MaskEdit45.Text = '21aaaacccccccnnnnnnnn40bb' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Banrisul');
       if Form26.MaskEdit45.Text = 'KKKNNNNNNNNmAAAACCCCCC000' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Itaú');
+      if Form26.MaskEdit45.Text = 'AAAAKKKXXXXXXXNNNNNNNNNNI' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Inter'); //Mauricio Parizotto 2024-02-19
       if Form26.MaskEdit45.Text = '5???????00NNNNNNNNNNNNNNd' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Unibanco');
       if Form26.MaskEdit45.Text = 'AAAACCCCCCCCCCNNNNNNNNNNN' then cboBancos.ItemIndex := cboBancos.Items.IndexOf('Unicred'); // Mauricio Parizotto 2023-12-07
     end;
@@ -529,6 +541,14 @@ begin
     //chkCNAB240.Checked := False;
     chkCNAB400.Enabled := True;
     chkCNAB240.Enabled := True;
+  end;
+
+  //Mauricio Parizotto 2024-02-19
+  if cboBancos.Text = 'Inter' then
+  begin
+    MaskEdit45.Text := 'AAAAKKKXXXXXXXNNNNNNNNNNI';
+    chkCNAB400.Checked := True;
+    chkCNAB240.Checked := False;
   end;
 
   if cboBancos.Text = 'Unibanco' then

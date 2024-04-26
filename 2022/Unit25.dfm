@@ -759,7 +759,7 @@ object Form25: TForm25
   object Edit1: TEdit
     Left = 24
     Top = 69
-    Width = 500
+    Width = 456
     Height = 20
     AutoSize = False
     BorderStyle = bsNone

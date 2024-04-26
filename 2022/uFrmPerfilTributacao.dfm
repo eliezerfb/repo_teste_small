@@ -6,6 +6,8 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
   inherited Panel_branco: TPanel
     inherited pgcFicha: TPageControl
       ActivePage = tbsPerfilTributacao
+      ExplicitLeft = 10
+      ExplicitTop = 105
       object tbsPerfilTributacao: TTabSheet
         Caption = 'Perfil Tributa'#231#227'o'
         OnEnter = tbsIPIEnter

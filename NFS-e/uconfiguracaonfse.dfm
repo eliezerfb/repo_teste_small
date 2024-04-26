@@ -67,7 +67,7 @@ object FConfiguracaoNFSe: TFConfiguracaoNFSe
     Top = 472
     Width = 89
     Height = 25
-    Caption = 'Ok'
+    Caption = 'OK'
     TabOrder = 1
     OnClick = btnOkClick
   end

@@ -34,7 +34,7 @@ uses
   function ExecutaComando(comando:string):Boolean;  overload;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024006'; // Sandro Silva 2024-03-28 const BUILD_DO_BANCO = '2024004'; // Sandro Silva 2024-02-23 const BUILD_DO_BANCO = '2024002'; // Sandro Silva 2024-02-19 const BUILD_DO_BANCO = '2023048';
+const BUILD_DO_BANCO = '2024014'; // Sandro Silva 2024-04-23 const BUILD_DO_BANCO = '2024012'; // Sandro Silva 2024-04-16 const BUILD_DO_BANCO = '2024010'; // Sandro Silva 2024-04-16 const BUILD_DO_BANCO = '2024008';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -279,6 +279,8 @@ type
     N7: TMenuItem;
     Clculododescontopeloprovedor1: TMenuItem;
     miProd120Carac: TMenuItem;
+    NaoDescontarIssQuandoRetido1: TMenuItem;
+    N13: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -451,6 +453,7 @@ type
     procedure ConfiguraoTEF1Click(Sender: TObject);
     procedure Clculododescontopeloprovedor1Click(Sender: TObject);
     procedure miProd120CaracClick(Sender: TObject);
+    procedure NaoDescontarIssQuandoRetido1Click(Sender: TObject);
 
 
   private
@@ -461,9 +464,10 @@ type
     procedure EnviarXMLContabilidadeAut;
     procedure ClickOKInformacoesInutilizacao(Sender: TObject);
     procedure CarregaConfiguracoes;
-    procedure AjustarDataSetCamposProduto;
+    //Sandro Silva 2024-04-08 procedure AjustarDataSetCamposProduto;
 
   public
+    { Public declarations }
     fDias : Real;
     sSerial, sMei, sModeloPAF , sNomePAF : String;
     dtStatusMonitorAberto: TDateTime;
@@ -497,6 +501,7 @@ type
     ConfAceitaCGCDuplo: String;
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, Confduplo,ConfNegat, ConfFoto, ConfMArca, ConfEspecie: String;
     ConfPermitFabricarSemQtd : Boolean;
+    bNaoDescontarIssQuandoRetido: Boolean; // Sandro Silva 2024-04-24
     ConfSvc, ConfItens   : Integer;
     ConfLimite  : Real;
     ConfIR      : Real;
@@ -505,7 +510,7 @@ type
     bMKP : Boolean;
 
     ValidaRecursos: TValidaRecurso; // Sandro Silva 2023-05-31
-    { Public declarations }
+    procedure AjustarDataSetCamposProduto;// Sandro Silva 2024-04-08
     procedure RegistrodoPrograma(TermoAceito: boolean);
     procedure WMUser (var msg: TMessage); message wm_User;
     function AvisoNFECompra(bP1 : Boolean):Boolean;
@@ -534,8 +539,8 @@ type
     procedure MensagemRecursoIndisponivel(sMensagem: String);
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
     procedure DefineAmbienteNFe(AcAmbiente, AcRotina: String);
-    procedure Aplicar120CaracteresProduto;
-    procedure Comandos120CaracteresProd;
+    function Aplicar120CaracteresProduto(bExibirMensagemSucesso: Boolean): Boolean;
+    function Comandos120CaracteresProd: Boolean; // Sandro Silva 2024-04-08 procedure Comandos120CaracteresProd;
 
     property sPropaganda: String read getPropaganda;
     function MontaTela(sP1: Boolean): Boolean;
@@ -1365,10 +1370,13 @@ begin
         Form1.ibQuery2.SQL.Add('update EMITENTE set LICENCA='+QuotedStr(Form7.LbBlowfish1.EncryptString(  Copy(sInicio,7,4)+Copy(sInicio,4,2)+Copy(sInicio,1,2))));
         Form1.ibQuery2.ExecSQL;
 
+        {Mauricio Parizotto 2024-04-19
         Form1.ibQuery2.Close;
         Form1.ibQuery2.SQL.Clear;
         Form1.ibQuery2.SQL.Add('commit');
         Form1.ibQuery2.ExecSQL;
+        }
+        AgendaCommit(true);
       except
       end;
     end;
@@ -1387,10 +1395,13 @@ begin
           Form1.ibQuery2.SQL.Add('update EMITENTE set LICENCA='+QuotedStr(Form7.LbBlowfish1.EncryptString(  Copy(sInicio,7,4)+Copy(sInicio,4,2)+Copy(sInicio,1,2))));
           Form1.ibQuery2.ExecSQL;
 
+          {Mauricio Parizotto 2024-04-19
           Form1.ibQuery2.Close;
           Form1.ibQuery2.SQL.Clear;
           Form1.ibQuery2.SQL.Add('commit');
           Form1.ibQuery2.ExecSQL;
+          }
+          AgendaCommit(true);
         except
         end;
       end;
@@ -3539,6 +3550,37 @@ begin
   Result := True;
 end;
 
+procedure TForm1.NaoDescontarIssQuandoRetido1Click(Sender: TObject);  // Sandro Silva 2024-04-24
+var
+  ConfSistema: TArquivosDAT;
+  IBTransaction: TIBTransaction;
+begin
+  try
+    IBTransaction := CriaIBTransaction(Form7.ibDataSet13.Transaction.DefaultDatabase);
+    ConfSistema := TArquivosDAT.Create(Usuario, IBTransaction);
+    try
+      ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido := IfThen(NaoDescontarIssQuandoRetido1.Checked, 'Não', 'Sim');
+      IBTransaction.Commit;
+      bNaoDescontarIssQuandoRetido := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim';// NaoDescontarIssQuandoRetido1.Checked;
+      NaoDescontarIssQuandoRetido1.Checked := bNaoDescontarIssQuandoRetido;
+    except
+      on E: Exception do
+      begin
+        IBTransaction.Rollback;
+        MensagemSistema('Não foi possível configurar', msgAtencao);
+      end;
+    end;
+  finally
+    FreeAndNil(ConfSistema);
+    FreeAndNil(IBTransaction);
+  end;
+  {Sandro Silva 2024-04-23 inicio}
+  // Precisa para atualizar a conexão
+  Commitatudo(True);
+  AbreArquivos(False);
+  {Sandro Silva 2024-04-23 fim}
+end;
+
 procedure Tform1.NovoFormExit(Sender:TObject);
 begin
   Screen.ActiveForm.Visible := False;
@@ -3563,7 +3605,8 @@ begin
     begin
       vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
       ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
-      ExecutaComando('Commit;');
+      //ExecutaComando('Commit;'); Mauricio Parizotto 2024-04-19
+      AgendaCommit(true);
 	  end;
   except
   end;
@@ -4345,6 +4388,10 @@ begin
   Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
 
   ValidaRecursos.Free; // Sandro Silva 2023-05-31
+
+  Form7.IBDatabase1.Close;
+  IBDatabase1.Close;
+
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -4876,17 +4923,25 @@ begin
       Form1.ibDataset200.SelectSql.Clear;
       Form1.ibDataset200.SelectSql.Add('update VENDAS set NFEPROTOCOLO=SubString(NFEPROTOCOLO from 1 for 9)||'+QuotedStr('/001')+', MODELO=''SV'' where SubString(NUMERONF from 10 for 3)=''RPS''');
       Form1.ibDataset200.Open;
-      //
+
+      {Mauricio Parizotto 2024-04-19
       Form1.ibDataset200.Close;
       Form1.ibDataset200.SelectSql.Clear;
       Form1.ibDataset200.SelectSql.Add('commit');
       Form1.ibDataset200.Open;
+      }
+      AgendaCommit(true);
     end;
   except
   end;
 
+
+
   //Mauricio Parizotto 2023-03-27
+  // Atualiza a estrutura do banco de dados
   AtualizaBancoDeDados(sBuild);
+
+
 
   SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
 
@@ -4904,6 +4959,31 @@ begin
       Mensagem22('Aguarde.');
       CommitaTudo(True);
       Mensagem22('Aguarde..');
+
+      (*
+      {Sandro Silva 2024-04-09 inicio}
+      if TamanhoCampo(Form7.ibDataSet4.Transaction, 'ESTOQUE', 'DESCRICAO') = 120 then
+      begin
+        //Fechatudo(True);
+        {
+        try
+          Form7.ibDataSet4.Transaction.DefaultDatabase.Close;
+          Form7.ibDataSet4.Transaction.DefaultDatabase.Open;
+        except
+
+        end;
+        }
+        {Sandro Silva 2024-04-08 inicio}
+        try
+          ConectaBancoCommerce;
+        except
+
+        end;
+        {Sandro Silva 2024-04-08 fim}
+        AjustarDataSetCamposProduto;
+      end;
+      {Sandro Silva 2024-04-09 fim}
+      *)
       AbreArquivos(True);
       Mensagem22('Aguarde...');
     except
@@ -8517,6 +8597,15 @@ begin
     Form7.EnvioaoFISCOREDUOZ1Click(Sender);
     Form1.Tag := 0;
   end;
+
+  frmConfiguracaoTEFCommerce := TfrmConfiguracaoTEFCommerce.Create(nil);
+  try
+    frmConfiguracaoTEFCommerce.IBDataBase := Form7.IBDatabase1;
+    // No Create vai atualizar TEM TEF
+    frmConfiguracaoTEFCommerce.AtualizaTEMTEF;
+  finally
+    FreeAndNil(frmConfiguracaoTEFCommerce);
+  end;
 end;
 
 procedure TForm1.DBGrid200KeyDown(Sender: TObject; var Key: Word;
@@ -8559,6 +8648,8 @@ var
   Mais1ini: TIniFile;
   sCertificado: String;
 begin
+  Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
+
   Form1.ConfiguraCredencialTecnospeed;
 
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
@@ -8867,7 +8958,7 @@ begin
   end;
 end;
 
-procedure TForm1.Clculododescontopeloprovedor1Click(Sender: TObject);
+procedure TForm1.Clculododescontopeloprovedor1Click(Sender: TObject); // Sandro Silva 2024-04-23
 var
   ConfSistema: TArquivosDAT;
   IBTransaction: TIBTransaction;
@@ -8878,6 +8969,7 @@ begin
     try
       ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor := IfThen(Clculododescontopeloprovedor1.Checked, 'Não', 'Sim');
       IBTransaction.Commit;
+      Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim'; // Sandro Silva 2024-04-24
     except
       on E: Exception do
       begin
@@ -8889,6 +8981,11 @@ begin
     FreeAndNil(ConfSistema);
     FreeAndNil(IBTransaction);
   end;
+  {Sandro Silva 2024-04-23 inicio}
+  // Precisa para atualizar a conexão
+  Commitatudo(True);
+  AbreArquivos(False);
+  {Sandro Silva 2024-04-23 fim}
 end;
 
 procedure TForm1.ClickOKInformacoesInutilizacao(Sender: TObject);
@@ -9493,6 +9590,7 @@ procedure TForm1.ConfiguraoTEF1Click(Sender: TObject);
 begin
   frmConfiguracaoTEFCommerce := TfrmConfiguracaoTEFCommerce.Create(nil);
   try
+    frmConfiguracaoTEFCommerce.IBDataBase := Form7.IBDatabase1;
     frmConfiguracaoTEFCommerce.ShowModal;
 
     ConfiguraoTEF1.Checked := TestarTEFConfigurado;
@@ -10748,6 +10846,33 @@ begin
   if Form7.sModulo = 'ICM' then
     Exit;
 
+  //Mauricio Parizotto 2024-03-21
+  if Form7.sModulo = 'CONVERSAOCFOP' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if Form7.sModulo = 'CONVENIO' then
+    Exit;
+
+  if Form7.sModulo = 'CAIXA' then
+    Exit;
+
+  if Form7.sModulo = 'GRUPOS' then
+    Exit;
+
+  if Form7.sModulo = 'TRANSPORT' then
+    Exit;
+
+  if Form7.sModulo = 'CONTAS' then
+    Exit;
+
+  if Form7.sModulo = 'BANCOS' then
+    Exit;
+
+  if Form7.sModulo = '2CONTAS' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Fim}
+    
+
   if AllTrim(Form7.sModulo) <> '' then
   begin
     if ((Form7.sModulo = 'VENDA') or (Form7.sModulo = 'DESCONTO') or (Form7.sModulo = 'DESCONTO1')) or ((Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'FRETE')) then
@@ -11366,6 +11491,32 @@ begin
 
   //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'ICM' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if Form7.sModulo = 'CONVENIO' then
+    Exit;
+
+  if Form7.sModulo = 'CAIXA' then
+    Exit;
+
+  if Form7.sModulo = 'GRUPOS' then
+    Exit;
+
+  if Form7.sModulo = 'TRANSPORT' then
+    Exit;
+
+  if Form7.sModulo = 'CONTAS' then
+    Exit;
+
+  if Form7.sModulo = 'BANCOS' then
+    Exit;
+
+  if Form7.sModulo = '2CONTAS' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Fim}
+  
+  //Mauricio Parizotto 2024-03-21
+  if Form7.sModulo = 'CONVERSAOCFOP' then
     Exit;
 
   if Form5.Visible then
@@ -12380,29 +12531,35 @@ procedure TForm1.AjustarDataSetCamposProduto;
 var
   nSizeDescricaoProd: Integer;
 begin
-  nSizeDescricaoProd               := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
-  Form7.ibDataSet4DESCRICAO.Size   := nSizeDescricaoProd;
-  Form7.ibDataSet16DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataSet23DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataSet27DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataSet28DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataSet35DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataset40DESCRICAO.Size  := nSizeDescricaoProd;
-  Form7.ibDataSet37DESCRICAO.Size  := nSizeDescricaoProd;
-  Form24.ibDataSet44DESCRICAO.Size := nSizeDescricaoProd;
+  try
+    nSizeDescricaoProd               := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
+    Form7.ibDataSet4DESCRICAO.Size   := nSizeDescricaoProd;
+    Form7.ibDataSet16DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet23DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet27DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet28DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet35DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataset40DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet37DESCRICAO.Size  := nSizeDescricaoProd;
+    Form24.ibDataSet44DESCRICAO.Size := nSizeDescricaoProd;
+  except
+
+  end;
 end;
 
 procedure TForm1.miProd120CaracClick(Sender: TObject);
 begin
   // Se já for 120 não faz nada
   // Se for estado diferente de SC não faz nada
-  if (Form7.ibDataSet4DESCRICAO.Size = 120) or ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr)) then
+  //Sandro Silva 2024-04-11 if (Form7.ibDataSet4DESCRICAO.Size = 120) or ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr)) then
+  if (Form7.ibDataSet4DESCRICAO.Size = 120) or (Trim(Form7.ibDataSet13ESTADO.AsString) = EmptyStr) then
     Exit;
 
   // Verifica se só tem 1 pessoa conectada
   if (not Form1.ibDataSet200.Transaction.DefaultDatabase.Connected) then
     ConectaBancoCommerce;
 
+  {Sandro Silva 2024-04-08 inicio
   if ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase, 'Select Count(*) From MON$ATTACHMENTS') > 1 then
   begin
     MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
@@ -12412,20 +12569,66 @@ begin
 
     Exit;
   end;
+
   if uDialogs.MensagemSistemaPergunta('Sua empresa ainda usa impressora fiscal? Faz Redução Z?', [mb_YesNo]) = mrYes then
   begin
     uDialogs.MensagemSistema('O recurso de 120 caracteres na descrição do produto não poderá ser usado com impressora fiscal. Considere migrar para NFC-e.', msgAtencao);
     Exit;
   end;
+
   if uDialogs.MensagemSistemaPergunta('O uso de 120 caracteres na descrição do produto só poderá ser usada por emissores de NF-e ou NFC-e.' + sLineBreak + sLineBreak +
                                       'Deseja prosseguir?', [mb_YesNo]) = mrNo then
     Exit;
+  }
+  // Se for UF = SC o usuário deve confirmar que deseja alterar
+  if (Form7.ibDataSet13ESTADO.AsString = 'SC') then
+  begin
 
-  Aplicar120CaracteresProduto;
+    if uDialogs.MensagemSistemaPergunta('Sua empresa ainda usa impressora fiscal?' + sLineBreak +
+                                        'Faz Redução Z?', [mb_YesNo]) = mrYes then
+    begin
+      uDialogs.MensagemSistema('O recurso de 120 caracteres na descrição do produto não poderá ser usado com impressora fiscal. Considere migrar para NFC-e.', msgAtencao);
+      Exit;
+    end;
+
+    if uDialogs.MensagemSistemaPergunta('O uso de 120 caracteres na descrição do produto só poderá ser usada por emissores de NF-e ou NFC-e.' + sLineBreak + sLineBreak +
+                                        'Deseja prosseguir?', [mb_YesNo]) = mrNo then
+      Exit;
+  end;
+
+  // Por último valida se tem mais usuários logados
+  if ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase, 'Select Count(*) From MON$ATTACHMENTS') > 1 then
+  begin
+    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                    'Existem outros usuários com o sistema aberto.'+#13#10+
+                    'Feche o sistema em todos os computadores e tente novamente.'
+                    ,msgAtencao);
+
+    Exit;
+  end;
+  {Sandro Silva 2024-04-08 fim}
+
+  if Aplicar120CaracteresProduto(False) then // 2024-04-11 Aplicar120CaracteresProduto(True);
+  begin
+    MensagemSistema('Ativado o recurso de 120 caracteres' + #13#10 + #13#10 +
+                    'Esse aplicativo será fechado'
+                    , msgInformacao);
+
+    FecharAplicacao(ExtractFileName(Application.ExeName));
+    Halt(1);
+  end
+  else
+  begin
+    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                    'Feche o sistema em todos os computadores e tente novamente.'
+                    , msgAtencao);
+  end;
+
 end;
 
-procedure TForm1.Comandos120CaracteresProd;
+function TForm1.Comandos120CaracteresProd: Boolean;// Sandro Silva 2024-04-08 procedure TForm1.Comandos120CaracteresProd;
 begin
+  {Sandro Silva 2024-04-08 inicio
   if ExecutaComando('ALTER TABLE ALTERACA ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
     ExecutaComando('Commit');
   if ExecutaComando('ALTER TABLE COMPOSTO ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
@@ -12442,22 +12645,69 @@ begin
     ExecutaComando('Commit');
   if ExecutaComando('ALTER TABLE ORCAMENT ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
     ExecutaComando('Commit');
+  }
+  Result := False;
+  if ExecutaComando('ALTER TABLE ESTOQUE ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+    if ExecutaComando('ALTER TABLE ALTERACA ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+      if ExecutaComando('ALTER TABLE COMPOSTO ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+        if ExecutaComando('ALTER TABLE ITENS001 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+          if ExecutaComando('ALTER TABLE ITENS002 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+            if ExecutaComando('ALTER TABLE ITENS003 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+              if ExecutaComando('ALTER TABLE ITENSETI ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+                if ExecutaComando('ALTER TABLE ORCAMENT ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+                begin
+                  //ExecutaComando('Commit'); Mauricio Parizotto 2024-04-19
+                  AgendaCommit(true);
+                  Result := True;
+                end;
+  if Result = False then
+    ExecutaComando('Rollback');
+  {Sandro Silva 2024-04-08 fim}
 end;
 
-procedure TForm1.Aplicar120CaracteresProduto;
+function TForm1.Aplicar120CaracteresProduto(bExibirMensagemSucesso: Boolean): Boolean;
+var
+  bRetorno: Boolean;
+  IBQTEMP: TIBQuery;
 begin
   if (Form7.ibDataSet4DESCRICAO.Size = 120) then
     Exit;
 
-  Comandos120CaracteresProd;
+  IBQTEMP := CriaIBQuery(Form7.ibDataSet4.Transaction);
+  try
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text := 'Select Count(*) as ATIVOS From MON$ATTACHMENTS';
+    IBQTEMP.Open;
+    if IBQTEMP.FieldByName('ATIVOS').AsInteger > 1 then
+      Exit;
+  except
+    Exit;
+  end;
+  FreeAndNil(IBQTEMP);
+  //Sandro Silva 2024-04-08 Comandos120CaracteresProd;
+
+  Commitatudo(True); // Grava alterações pendentes
+
+  bRetorno := Comandos120CaracteresProd;
+  if bExibirMensagemSucesso then
+  begin
+    if bRetorno = False then
+      MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                      'Feche o sistema em todos os computadores e tente novamente.'
+                      , msgAtencao)
+    else
+      MensagemSistema('Ativado o recurso de 120 caracteres.', msgInformacao);
+  end;
 
   try
     AgendaCommit(True);
     Commitatudo(True);
-    // Necessario fehar e abrir novamente para não abrir a tela de empresa
-    Form7.ibDataSet13.Close;
-    Form7.ibDataSet13.Open;
+    // Necessario fechar e abrir novamente para não abrir a tela de empresa
+    // Dailon 2024-04-10
+    {    Form7.ibDataSet13.Close;
+    Form7.ibDataSet13.Open;  }
     try
+      {2024-04-10
       Form7.ibDataSet4.Close;
       Form7.ibDataSet16.Close;
       Form7.ibDataSet23.Close;
@@ -12467,9 +12717,28 @@ begin
       Form7.ibDataset40.Close;
       Form7.ibDataSet37.Close;
       Form24.ibDataSet44.Close;
+      }
+
+      {Sandro Silva 2024-04-08 inicio}
+      try
+        ConectaBancoCommerce;
+      except
+
+      end;
+      {Sandro Silva 2024-04-08 fim}
 
       AjustarDataSetCamposProduto;
+
+      {Sandro Silva 2024-04-10 inicio}
+      // Para conseguir validar os dados do emitente com o LEGAL
+      Form7.ibDataSet13.Close;
+      Form7.ibDataSet13.Open;
+      {Sandro Silva 2024-04-10 fim}
+
+      //Commitatudo(True); //2024-04-09
+
     finally
+      {2024-04-10
       Form7.ibDataSet4.Open;
       Form7.ibDataSet16.Open;
       Form7.ibDataSet23.Open;
@@ -12479,9 +12748,13 @@ begin
       Form7.ibDataset40.Open;
       Form7.ibDataSet37.Open;
       Form24.ibDataSet44.Open;
+      }
+      AbreArquivos(False); //2024-04-10
+      Screen.Cursor := crDefault;
     end;
   except
   end;
+  Result := bRetorno;
 end;
 
 function TForm1.ValidaRecursoExibeMensagemIndisponivel: Boolean;
@@ -12505,7 +12778,8 @@ begin
   {Sandro Silva 2023-06-01 fim}
 
   {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
-  miProd120Carac.Visible := (Form7.ibDataSet13ESTADO.AsString = 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) and (Form7.ibDataSet4DESCRICAO.Size <> 120);
+  // 2024-04-11 miProd120Carac.Visible := (Form7.ibDataSet13ESTADO.AsString = 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) and (Form7.ibDataSet4DESCRICAO.Size <> 120);
+  miProd120Carac.Visible := (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) and (Form7.ibDataSet4DESCRICAO.Size <> 120);
   {Dailon Parisotto (f-17787) 2024-03-27 Fim}
 end;
 
@@ -12652,6 +12926,8 @@ begin
     try
       ConfSistema.BD.NFSE.ObsNaDescricao := not(ConfSistema.BD.NFSE.ObsNaDescricao);
       IBTransaction.Commit;
+
+      Observaonadescriodosservios1.Checked := ConfSistema.BD.NFSE.ObsNaDescricao; /// Sandro Silva 2024-04-24
     except
       on E: Exception do
       begin
@@ -12663,6 +12939,11 @@ begin
     FreeAndNil(ConfSistema);
     FreeAndNil(IBTransaction);
   end;
+  {Sandro Silva 2024-04-23 inicio}
+  // Precisa para atualizar a conexão
+  Commitatudo(True);
+  AbreArquivos(False);
+  {Sandro Silva 2024-04-23 fim}
 end;
 
 procedure TForm1.CarregaConfiguracoes;
@@ -12673,8 +12954,14 @@ begin
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
 
-    GeraLogSistema            := ConfSistema.BD.Outras.LogSistema;
-    ConfPermitFabricarSemQtd  := ConfSistema.BD.Outras.FabricaProdutoSemQtd; //Mauricio Parizotto 2024-02-02
+    GeraLogSistema               := ConfSistema.BD.Outras.LogSistema;
+    ConfPermitFabricarSemQtd     := ConfSistema.BD.Outras.FabricaProdutoSemQtd; //Mauricio Parizotto 2024-02-02
+    bNaoDescontarIssQuandoRetido := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-24
+    {Sandro Silva 2024-04-24 inicio}
+    Observaonadescriodosservios1.Checked  := ConfSistema.BD.NFSE.ObsNaDescricao;
+    Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim';
+    NaoDescontarIssQuandoRetido1.Checked  := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-23
+    {Sandro Silva 2024-04-24 fim}
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -12684,13 +12971,17 @@ procedure TForm1.ConfiguraesdaNFSe1Click(Sender: TObject);
 var
   ConfSistema : TArquivosDAT;
 begin
+  {Sandro Silva 2024-04-24 inicio
   try
-    ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
-    Observaonadescriodosservios1.Checked := ConfSistema.BD.NFSE.ObsNaDescricao;
+    //Sandro Silva 2024-04-24 ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
+    ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet13.Transaction);
+    Observaonadescriodosservios1.Checked  := ConfSistema.BD.NFSE.ObsNaDescricao;
     Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim';
+    NaoDescontarIssQuandoRetido1.Checked  := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-23
   finally
     FreeAndNil(ConfSistema);
   end;
+  }
 end;
 
 function ExecutaComando(comando:string):Boolean;  overload;

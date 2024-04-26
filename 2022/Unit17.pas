@@ -138,7 +138,7 @@ implementation
 
 uses
   Unit7, Unit10, Unit19, Mais, uListaCnaes, Mais3, uDialogs,
-  uConsultaCEP;
+  uConsultaCEP, uFuncoesBancoDados;
 
 {$R *.DFM}
 
@@ -151,12 +151,14 @@ begin
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     AgendaCommit(True);
     Commitatudo(True); // SQL - Commando
+    //Sandro Silva 2024-04-08 precisa abrir após aplicar alteração 120 caracteres
     AbreArquivos(True);
-
+    (*2024-04-11
     {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
-    if (Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) then
-      Form1.Aplicar120CaracteresProduto;
+    if (AnsiUpperCase(Form7.ibDataSet13ESTADO.AsString) <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) then // Sandro Silva 2024-04-08 if (Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) then
+      Form1.Aplicar120CaracteresProduto(False); //Sandro Silva 2024-04-10 Form1.Aplicar120CaracteresProduto
     {Dailon Parisotto (f-17787) 2024-03-27 Fim}
+    *)
 
     Screen.Cursor := crDefault; // Cursor de Aguardo
 

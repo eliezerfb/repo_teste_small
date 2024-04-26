@@ -69,7 +69,7 @@ object Form11: TForm11
     Top = 240
     Width = 75
     Height = 25
-    Caption = 'Ok'
+    Caption = 'OK'
     TabOrder = 0
     OnClick = Button1Click
   end

@@ -147,7 +147,7 @@ object Form99: TForm99
       Top = 180
       Width = 200
       Height = 30
-      Caption = 'Ok'
+      Caption = 'OK'
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
