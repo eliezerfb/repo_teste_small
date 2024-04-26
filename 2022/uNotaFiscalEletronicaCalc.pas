@@ -50,7 +50,7 @@ var
   bSobreLucro : boolean;
 begin
 
-  LogSistema('Início TNotaFiscalEletronicaCalc.CalculaCstPisCofins(', lgInformacao); // Sandro Silva 2024-04-16
+  LogSistema('Início TNotaFiscalEletronicaCalc.CalculaCstPisCofins( 53', lgInformacao); // Sandro Silva 2024-04-16
 
   IBQProduto := Form7.CriaIBQuery(DataSetNF.Transaction);
 
@@ -173,7 +173,7 @@ begin
 
   FreeAndNil(IBQProduto);
 
-  LogSistema('Fim TNotaFiscalEletronicaCalc.CalculaCstPisCofins(', lgInformacao); // Sandro Silva 2024-04-16
+  LogSistema('Fim TNotaFiscalEletronicaCalc.CalculaCstPisCofins( 176', lgInformacao); // Sandro Silva 2024-04-16
 
 end;
 
@@ -197,7 +197,7 @@ var
   i : integer;
 begin
 
-  LogSistema('Início TNotaFiscalEletronicaCalc.CalculaImpostos(', lgInformacao); // Sandro Silva 2024-04-16
+  LogSistema('Início TNotaFiscalEletronicaCalc.CalculaImpostos( 200', lgInformacao); // Sandro Silva 2024-04-16
 
   //Se não for complemento zera totais 
   if not NFeFinalidadeComplemento(NotaFiscal.Finnfe) then
@@ -787,7 +787,7 @@ begin
 
   FreeAndNil(IBQProduto);
 
-  LogSistema('Fim TNotaFiscalEletronicaCalc.CalculaImpostos(', lgInformacao); // Sandro Silva 2024-04-16
+  LogSistema('Fim TNotaFiscalEletronicaCalc.CalculaImpostos( 790', lgInformacao); // Sandro Silva 2024-04-16
 
 end;
 
@@ -1278,7 +1278,7 @@ var
   bTemItemComPeso: Boolean;
 begin
 
-  LogSistema('Início TNotaFiscalEletronicaCalc.CalculaPesoLiquido', lgInformacao); // Sandro Silva 2024-04-16
+  LogSistema('Início TNotaFiscalEletronicaCalc.CalculaPesoLiquido 1281', lgInformacao); // Sandro Silva 2024-04-16
 
   bTemItemComPeso := False;
 
@@ -1304,7 +1304,7 @@ begin
     end;
   end;
 
-  LogSistema('Fim TNotaFiscalEletronicaCalc.CalculaPesoLiquido', lgInformacao); // Sandro Silva 2024-04-16
+  LogSistema('Fim TNotaFiscalEletronicaCalc.CalculaPesoLiquido 1307', lgInformacao); // Sandro Silva 2024-04-16
 
 end;
 
@@ -1314,7 +1314,7 @@ var
   oItem : TITENS001;
   fTotalMercadoria : Real;
 begin
-  LogSistema('Início SetRateioDescAcre', lgInformacao); // Sandro Silva 2024-04-16
+  LogSistema('Início SetRateioDescAcre 1317', lgInformacao); // Sandro Silva 2024-04-16
 
   fTotalMercadoria := GetTotalMercadoria;
 
@@ -1328,7 +1328,7 @@ begin
     oItem.DespesaRateado  := Arredonda((NotaFiscal.Despesas / fTotalMercadoria * oItem.TOTAL),2);
   end;
 
-  LogSistema('Fim SetRateioDescAcre', lgInformacao); // Sandro Silva 2024-04-16
+  LogSistema('Fim SetRateioDescAcre 1331', lgInformacao); // Sandro Silva 2024-04-16
 
 end;
 
