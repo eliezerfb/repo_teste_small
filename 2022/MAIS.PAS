@@ -8008,13 +8008,6 @@ begin
       Form7.ibDataSet35UNITARIO.EditFormat := Form7.ibDataSet4PRECO.EditFormat;
       Form7.ibDataSet35TOTAL.DisplayFormat := Form7.ibDataSet4PRECO.EditFormat;
     except
-      {
-      ShowMessage('Para solucionar o problema siga os seguintes passos:'+chr(10)
-      +chr(10)+'1 - Desative controle de conta do usuario (Windows Vista)'
-      +chr(10)+'2 - Execute este programa como administrador. Altere o atalho na aba compatibilidade (Windows 8)'
-      +chr(10)+'3 - Arquivo "smallcom.inf" pode estar danificado (O arquivo deve ser excluido)'
-      +chr(10)+'4 - Reinstale o programa');
-      Mauricio Parizotto 2023-10-25}
       MensagemSistema('Para solucionar o problema siga os seguintes passos:'+chr(10)
                       +chr(10)+'1 - Desative controle de conta do usuario (Windows Vista)'
                       +chr(10)+'2 - Execute este programa como administrador. Altere o atalho na aba compatibilidade (Windows 8)'
@@ -8028,11 +8021,7 @@ begin
       FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
 
-    {$IFDEF VER150}
-    ShortDateFormat := 'dd/mm/yyyy';
-    {$ELSE}
     FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
-    {$ENDIF}
 
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
@@ -8605,7 +8594,7 @@ var
   I : Integer;
 begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config_sql.htm')));
-  //
+
   if KEY = VK_RETURN then
   begin
    I := DbGrid200.SelectedIndex;
@@ -8616,21 +8605,19 @@ begin
      ibDAtaSet200.Next;
    end;
   end;
-  //
+
   if Key = VK_ESCAPE then
   begin
-    //
     ibDataSet200.Close;
     dbGrid200.Visible := False;
     Edit200.Visible   := False;
-    //
+
     Commitatudo(True); // SQL - Commando
     AbreArquivos(False);
-    //
+
     MontaTela(True);
-    //
   end;
-  //
+
   Screen.Cursor := crDefault;
 end;
 
