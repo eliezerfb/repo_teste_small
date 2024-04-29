@@ -5822,11 +5822,15 @@ begin
   P1 := StrTran(P1, 'upper' ,'');
   P1 := StrTran(P1, ' and ' ,' e '      );
   P1 := StrTran(P1, ' not ' ,' não '    );
-  P1 := StrTran(P1, '(' ,'');
+  //P1 := StrTran(P1, '(' ,'');Mauricio Parizotto 2024-04-09
+  P1 := StrTran(P1, '(' ,' ');
+
   P1 := StrTran(P1, ')' ,'');
   P1 := StrTran(P1, '%' ,'');
   P1 := StrTran(P1, '  ' ,' ');
   P1 := StrTran(P1, 'só quando só' ,'só');
+
+  try
 
   if Assigned(AoDataSet) then
   begin
@@ -5838,12 +5842,20 @@ begin
           and (copy(AoDataSet.Fields[I-1].FieldName,1,3) <> 'CST') then
         begin
           if Pos(' '+AoDataSet.Fields[I-1].FieldName, P1) > 0 then
-            P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel)
-          else
-            P1 := StrTran(P1,AoDataSet.Fields[I-1].FieldName, AoDataSet.Fields[I-1].DisplayLabel);
+            P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel);
+          //Mauricio Parizotto 2024-04-09 Add espaço antes, se não sistema fazia replace de informações do texto pesquisado
+          //else
+            //P1 := StrTran(P1,AoDataSet.Fields[I-1].FieldName, AoDataSet.Fields[I-1].DisplayLabel);
         end;
       end;
     end;
+  end;
+
+  except
+     on e:exception do begin
+       ShowMessage(e.Message+' '+i.ToString);
+       ShowMessage( AoDataSet.Fields[I-1].FieldName);
+     end;
   end;
 
   //Mauricio Parizotto 2023-08-22 Orçamento não usa campos do dataset
