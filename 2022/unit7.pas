@@ -9627,7 +9627,7 @@ begin
        DbGrid1.SelectedIndex := DbGrid1.SelectedIndex  + 1;
    end;
 
-   if dbGrid1.SelectedField.DataType = ftFloat then
+   if TipoCampoFloat(dbGrid1.SelectedField) then // Sandro Silva 2024-04-29 if dbGrid1.SelectedField.DataType = ftFloat then
    begin
      if Key = chr(46) then
        key := chr(44);
@@ -20261,7 +20261,7 @@ var
   xRect : tREct;
 begin
   //
-  if  Field.DataType <> ftFloat  then
+  if TipoCampoFloat(Field) = False then // Sandro Silva 2024-04-29 if  Field.DataType <> ftFloat  then
   begin
     if Form7.sModulo = 'VENDA' then
     begin

@@ -7564,7 +7564,7 @@ begin
         WriteLn(F,' <tr>');
         for I := 0 to dbGrid200.FieldCount -1 do
         begin
-          if dbGrid200.Fields[I].DataType = ftFloat then
+          if TipoCampoFloat(dbGrid200.Fields[I]) then // Sandro Silva 2024-04-29 if dbGrid200.Fields[I].DataType = ftFloat then
           begin
             WriteLn(F,'  <td '+{nowrap}' align=right><font face="Microsoft Sans Serif" size=1>'+dbGrid200.Fields[I].asString+'</font></td>');
             vTotal[I] := vTotal[I] + dbGrid200.Fields[I].AsFloat;
@@ -7584,7 +7584,7 @@ begin
       begin
         for I := 0 to dbGrid200.FieldCount -1 do
         begin
-          if dbGrid200.Fields[I].DataType = ftFloat then
+          if TipoCampoFloat(dbGrid200.Fields[I]) then //2024-04-29 if dbGrid200.Fields[I].DataType = ftFloat then
           begin
             Write(F,Format('%'+IntToStr(dbGrid200.Fields[I].DisplayWidth)+'.'+Form1.ConfCasas+'n',[dbGrid200.Fields[I].asFloat])+' ');
             vTotal[I] := vTotal[I] + dbGrid200.Fields[I].AsFloat;
@@ -7613,7 +7613,7 @@ begin
     begin
       for I := 0 to dbGrid200.FieldCount -1 do
       begin
-        if dbGrid200.Fields[I].DataType = ftFloat then
+        if TipoCampoFloat(dbGrid200.Fields[I]) then // Sandro Silva 2024-04-29 if dbGrid200.Fields[I].DataType = ftFloat then
         begin
           WriteLn(F,'  <td '+{nowrap}' align=right bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>'+Format('%12.2n',[vTotal[I]])+'</font></td>');
         end else
@@ -7651,7 +7651,7 @@ begin
       //
       for I := 0 to dbGrid200.FieldCount -1 do
       begin
-        if dbGrid200.Fields[I].DataType = ftFloat then
+        if TipoCampoFloat(dbGrid200.Fields[I]) then // Sandro Silva 2024-04-29 if dbGrid200.Fields[I].DataType = ftFloat then
         begin
           Write(F,Replicate('-',dbGrid200.Fields[I].DisplayWidth)+' ');
         end else
@@ -9776,7 +9776,7 @@ begin
         WriteLn(F,' <tr>');
         for I := 0 to dbGrid1.FieldCount -1 do
         begin
-          if dbGrid1.Fields[I].DataType = ftFloat then
+          if TipoCampoFloat(dbGrid1.Fields[I]) then // Sandro Silva 2024-04-29 if dbGrid1.Fields[I].DataType = ftFloat then
           begin
             WriteLn(F,'  <td '+{nowrap}' align=right><font face="Microsoft Sans Serif" size=1>'+dbGrid1.Fields[I].asString+'</font></td>');
             vTotal[I] := vTotal[I] + dbGrid1.Fields[I].AsFloat;
@@ -9796,7 +9796,7 @@ begin
       begin
         for I := 0 to dbGrid1.FieldCount -1 do
         begin
-          if dbGrid1.Fields[I].DataType = ftFloat then
+          if TipoCampoFloat(dbGrid1.Fields[I]) then // Sandro Silva 2024-04-29 if dbGrid1.Fields[I].DataType = ftFloat then
           begin
             Write(F,Format('%'+IntToStr(dbGrid1.Fields[I].DisplayWidth)+'.'+Form1.ConfCasas+'n',[dbGrid1.Fields[I].asFloat])+' ');
             vTotal[I] := vTotal[I] + dbGrid1.Fields[I].AsFloat;
@@ -9863,7 +9863,7 @@ begin
       //
       for I := 0 to dbGrid1.FieldCount -1 do
       begin
-        if dbGrid1.Fields[I].DataType = ftFloat then
+        if TipoCampoFloat(dbGrid1.Fields[I]) then // Sandro Silva 2024-04-29 if dbGrid1.Fields[I].DataType = ftFloat then
         begin
           Write(F,Replicate('-',dbGrid1.Fields[I].DisplayWidth)+' ');
         end else
@@ -9875,7 +9875,7 @@ begin
       //
       for I := 0 to dbGrid1.FieldCount -1 do
       begin
-        if dbGrid1.Fields[I].DataType = ftFloat then
+        if TipoCampoFloat(dbGrid1.Fields[I]) then // Sandro Silva 2024-04-29 if dbGrid1.Fields[I].DataType = ftFloat then
         begin
           Write(F,Format('%'+IntToStr(dbGrid1.Fields[I].DisplayWidth)+'.'+Form1.ConfCasas+'n',[vTotal[I]])+' ');
         end else

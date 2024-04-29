@@ -974,8 +974,6 @@ object Form10: TForm10
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 16
-      ExplicitTop = 107
       object orelha_cadastro: TTabSheet
         Caption = 'Cadastro'
         OnExit = orelha_cadastroExit

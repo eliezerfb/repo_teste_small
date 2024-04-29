@@ -2905,8 +2905,9 @@ procedure TForm10.dbgComposicaoKeyPress(Sender: TObject; var Key: Char);
 var
   I : Integer;
 begin
-  if dbgComposicao.SelectedField.DataType = ftFloat then
-     if Key = chr(46) then key := chr(44);
+  if TipoCampoFloat(dbgComposicao.SelectedField) then //Sandro Silva Silva 024-04-29 if dbgComposicao.SelectedField.DataType = ftFloat then
+    if Key = chr(46) then
+      key := chr(44);
 
   if AllTrim(Form7.ibDataSet28.FieldByName('DESCRICAO').AsString) = '' then
   begin
@@ -4859,7 +4860,7 @@ begin
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Width := 580;
 
 
-                if (Form7.ArquivoAberto.Fields[I-1].DataType <> ftFloat) then
+                if TipoCampoFloat(Form7.ArquivoAberto.Fields[I-1]) = False then // Sandro Silva 2024-04-29 if (Form7.ArquivoAberto.Fields[I-1].DataType <> ftFloat) then
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).MaxLength := Form7.ArquivoAberto.Fields[I - 1].Size
                 else
                   TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).MaxLength := 22;

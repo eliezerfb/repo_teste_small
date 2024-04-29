@@ -825,7 +825,7 @@ begin
 
   }
   {Dailon Parisotto (f-18202) 2024-04-23 Fim}
-  if dbGrid4.SelectedField.DataType = ftFloat then
+  if TipoCampoFloat(dbGrid4.SelectedField) then // Sandro Silva 2024-04-29 if dbGrid4.SelectedField.DataType = ftFloat then
   begin
     if Key = chr(46) then
       Key := chr(44);
