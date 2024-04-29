@@ -10807,10 +10807,10 @@ begin
   Form1.bNFazMaisNada := False;
   bInicializa         := False;
   bChave              := False; // Sandro Silva 2020-04-14
-  sCOOModelo02    := '';
-  sCCFModelo02    := '';
-  sPedidoModelo02 := '';
-  bNFCeUsoDenegado := False; // Sandro Silva 2020-05-21
+  sCOOModelo02        := '';
+  sCCFModelo02        := '';
+  sPedidoModelo02     := '';
+  bNFCeUsoDenegado    := False; // Sandro Silva 2020-05-21
 
   //
   if (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) = 0) then // Sandro Silva 2016-04-25
@@ -10856,7 +10856,7 @@ begin
       Form1.sCupomTEF         := '';
       Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
 
-      Form1.sCupomTEF        := Form1.sCupomTEF + Form1.sCupomTEFCancelado;// Sandro Silva 2017-06-28
+      Form1.sCupomTEF         := Form1.sCupomTEF + Form1.sCupomTEFCancelado;// Sandro Silva 2017-06-28
 
       /////////////////////////////////////////////////////////////////////
       while (Form1.fTotal - fTotalPago) > 0.001 do
@@ -18006,7 +18006,7 @@ begin
     if (Button2.Enabled) and (Key = VK_F12) then
     begin
       //
-      // Abre o cupom para importar o Orçamento
+      // Abre o cupom para importar OS
       //
       if ((Copy(Form1.sConcomitante,1,3) = 'DAV') or (sModeloECF = '65') or (sModeloECF = '59') or (sModeloECF = '99')) then // Sandro Silva 2020-12-11 if ((Copy(Form1.sConcomitante,1,3) = 'DAV') or ((sModeloECF = '65') and (PAFNFCe = False)) or (sModeloECF = '59') or (sModeloECF = '99')) then // Sandro Silva 2020-07-01 if ((Copy(Form1.sConcomitante,1,3) = 'DAV') or ((sModeloECF = '65') and (AnsiUpperCase(ExtractFileName(Application.ExeName)) <> 'PAFNFCE.EXE')) or (sModeloECF = '59')) then
       begin
