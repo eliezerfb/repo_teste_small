@@ -1689,6 +1689,11 @@ type
     ibdConversaoCFOPCST: TIBStringField;
     ibdConversaoCFOPCSOSN: TIBStringField;
     ibdConversaoCFOPCONSIDERACSTCSOSN: TIBStringField;
+    ibDataSet11FORMATOBOLETO: TIBStringField;
+    ibDataSet11PIXESTATICO: TIBStringField;
+    ibDataSet11PIXTIPOCHAVE: TIBStringField;
+    ibDataSet11PIXTITULAR: TIBStringField;
+    ibDataSet11PIXCHAVE: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -22692,7 +22697,6 @@ end;
 
 procedure TForm7.ibDataSet11BeforeInsert(DataSet: TDataSet);
 begin
-  //
   try if AllTrim(Form7.ibDataSet11NOME.AsString)='' then Form7.ibDataSet11.Delete; except end;
   ibDataSet99.Close;
   ibDataSet99.SelectSql.Clear;
@@ -22700,14 +22704,12 @@ begin
   ibDataset99.Open;
   sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
   ibDataset99.Close;
-  //
 end;
 
 procedure TForm7.ibDataSet11NewRecord(DataSet: TDataSet);
 begin
-  //
-  ibDataSet11REGISTRO.AsString := sProximo;
-  //
+  ibDataSet11REGISTRO.AsString    := sProximo;
+  ibDataSet11PIXESTATICO.AsString := 'N'; //Mauricio Parizotto 2024-04-29
 end;
 
 procedure TForm7.ibDataSet1DATAChange(Sender: TField);

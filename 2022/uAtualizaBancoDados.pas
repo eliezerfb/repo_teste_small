@@ -2517,6 +2517,36 @@ begin
   end;
   {Mauricio Parizotto 2024-03-22 Fim}
 
+
+  {Mauricio Parizotto 2024-04-29 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'PIXESTATICO') = False then
+  begin
+    if ExecutaComando('Alter table BANCOS add PIXESTATICO VARCHAR(1);') then
+    begin
+      ExecutaComando('Update BANCOS SET PIXESTATICO = ''N'';');
+      ExecutaComando('Commit');
+    end;
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'PIXTIPOCHAVE') = False then
+  begin
+    if ExecutaComando('Alter table BANCOS add PIXTIPOCHAVE VARCHAR(20);') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'PIXTITULAR') = False then
+  begin
+    if ExecutaComando('Alter table BANCOS add PIXTITULAR VARCHAR(60);') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'PIXCHAVE') = False then
+  begin
+    if ExecutaComando('Alter table BANCOS add PIXCHAVE VARCHAR(40);') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-04-29 Fim}
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 

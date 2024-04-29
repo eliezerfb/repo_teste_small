@@ -7888,14 +7888,14 @@ object Form7: TForm7
   object WebBrowser1: TWebBrowser
     Left = 10000
     Top = 0
-    Width = 451
-    Height = 364
+    Width = 361
+    Height = 291
     TabOrder = 8
     OnDownloadComplete = WebBrowser1DownloadComplete
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C0000004A250000191E00000000000000000000000000000000000000000000
+      4C0000004F250000131E00000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E126208000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -7935,8 +7935,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1184
-    ExplicitWidth = 1556
     object Button2: TButton
       Left = 260
       Top = 10
@@ -8010,7 +8008,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1556
   end
   object Panel_0: TPanel
     Left = 0
@@ -13877,12 +13874,15 @@ object Form7: TForm7
       'insert into BANCOS'
       
         '  (NOME, AGENCIA, CONTA, PLANO, SALDO1, SALDO2, SALDO3, ARQUIVO,' +
-        ' REGISTRO,INSTITUICAOFINANCEIRA)'
+        ' REGISTRO,INSTITUICAOFINANCEIRA,PIXESTATICO,PIXTIPOCHAVE,PIXTITU' +
+        'LAR,PIXCHAVE)'
       'values'
       
         '  (:NOME, :AGENCIA, :CONTA, :PLANO, :SALDO1, :SALDO2, :SALDO3, :' +
         'ARQUIVO, '
-      '   :REGISTRO,:INSTITUICAOFINANCEIRA)')
+      
+        '   :REGISTRO,:INSTITUICAOFINANCEIRA,:PIXESTATICO,:PIXTIPOCHAVE,:' +
+        'PIXTITULAR,:PIXCHAVE)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -13894,7 +13894,11 @@ object Form7: TForm7
       '  SALDO3,'
       '  ARQUIVO,'
       '  REGISTRO,'
-      '  INSTITUICAOFINANCEIRA'
+      '  INSTITUICAOFINANCEIRA,'
+      '  PIXESTATICO,'
+      '  PIXTIPOCHAVE,'
+      '  PIXTITULAR,'
+      '  PIXCHAVE'
       'from BANCOS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -13916,7 +13920,11 @@ object Form7: TForm7
       '  SALDO3 = :SALDO3,'
       '  ARQUIVO = :ARQUIVO,'
       '  REGISTRO = :REGISTRO,'
-      '  INSTITUICAOFINANCEIRA = :INSTITUICAOFINANCEIRA'
+      '  INSTITUICAOFINANCEIRA = :INSTITUICAOFINANCEIRA,'
+      '  PIXESTATICO = :PIXESTATICO,'
+      '  PIXTIPOCHAVE = :PIXTIPOCHAVE,'
+      '  PIXTITULAR = :PIXTITULAR,'
+      '  PIXCHAVE = :PIXCHAVE'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -13990,6 +13998,35 @@ object Form7: TForm7
       OnSetText = ibDataSet11PLANOSetText
       EditMask = '99999;1;_'
       Size = 5
+    end
+    object ibDataSet11FORMATOBOLETO: TIBStringField
+      FieldName = 'FORMATOBOLETO'
+      Origin = 'BANCOS.FORMATOBOLETO'
+      Visible = False
+      Size = 10
+    end
+    object ibDataSet11PIXESTATICO: TIBStringField
+      FieldName = 'PIXESTATICO'
+      Origin = 'BANCOS.PIXESTATICO'
+      Visible = False
+      Size = 1
+    end
+    object ibDataSet11PIXTIPOCHAVE: TIBStringField
+      FieldName = 'PIXTIPOCHAVE'
+      Origin = 'BANCOS.PIXTIPOCHAVE'
+      Visible = False
+    end
+    object ibDataSet11PIXTITULAR: TIBStringField
+      FieldName = 'PIXTITULAR'
+      Origin = 'BANCOS.PIXTITULAR'
+      Visible = False
+      Size = 60
+    end
+    object ibDataSet11PIXCHAVE: TIBStringField
+      FieldName = 'PIXCHAVE'
+      Origin = 'BANCOS.PIXCHAVE'
+      Visible = False
+      Size = 40
     end
   end
   object DataSource11: TDataSource

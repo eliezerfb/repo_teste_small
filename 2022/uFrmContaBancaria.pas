@@ -23,10 +23,19 @@ type
     Label5: TLabel;
     fraPlanoContas: TfFrameCampo;
     fraInstituicao: TfFrameCampo;
+    tbsPIX: TTabSheet;
+    Label6: TLabel;
+    chkPisCofinsSobLucro: TDBCheckBox;
+    Label7: TLabel;
+    SMALL_DBEdit2: TSMALL_DBEdit;
+    Label8: TLabel;
+    SMALL_DBEdit3: TSMALL_DBEdit;
+    cbMovimentacaoEstoque: TComboBox;
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
     procedure lblNovoClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -65,6 +74,13 @@ procedure TFrmContaBancaria.FormActivate(Sender: TObject);
 begin
   inherited;
   AtualizaObjComValorDoBanco;
+end;
+
+procedure TFrmContaBancaria.FormCreate(Sender: TObject);
+begin
+  inherited;
+
+  pgcFicha.ActivePage := tbsCadastro;
 end;
 
 procedure TFrmContaBancaria.FormShow(Sender: TObject);
