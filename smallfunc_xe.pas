@@ -559,12 +559,15 @@ end;
 function StrTran(sP1,sP2,sP3 : string):String;
 //pP1 String, pP2 trecho a ser substituido, pP3 trecho novo
 begin
+  {Mauricio Parizotto 2024-04-26 Rotina estava ficando em loop
    while(Pos(sP2,sP1)<>0) do
    begin
      Insert(sP3,sP1,pos(sP2,sP1));
      Delete(sP1,pos(sP2,sP1),length(sP2));
    end;
    Result := sP1;
+   }
+   Result := StringReplace(sP1,sP2,sP3,[rfReplaceAll]);
 end;
 
 function ConverteAcentos(pP1:String):String;
