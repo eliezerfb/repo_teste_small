@@ -96,6 +96,7 @@ function Endereco_Sem_Numero(sP1:String): String;
 function ExtraiEnderecoSemONumero(Texto: String): String;
 function ExtraiNumeroSemOEndereco(Texto: String): String;
 function PrimeiraMaiuscula(pP1:String):String;
+function TipoCampoFloat(Field: TField): Boolean;
 function Arredonda(fP1 : Real; iP2 : Integer): Real;
 function Arredonda2(fP1 : Double; iP2 : Integer): Double;
 function ValidaEAN13(sP1:String):Boolean;
@@ -747,6 +748,12 @@ begin
   fp1 := StrToFloat(FloatToStr(fP1));
   Result := StrToFloat(StrTran(Format('%14.'+IntToStr(iP2)+'n',[fP1]),'.',''));
   //
+end;
+
+function TipoCampoFloat(Field: TField): Boolean;
+begin
+  // Sandro Silva 2024-04-29 Card 18364, para identificar se o campo é do tipo Float. No Delphi 11 campos Numeric tem tipo diferente dos campos Double Precision
+  Result := Field.DataType in [ftFloat, ftBCD];
 end;
 
 function ValidaEAN13(sP1:String):Boolean;
