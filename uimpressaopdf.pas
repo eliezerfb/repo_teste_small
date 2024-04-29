@@ -3,7 +3,9 @@ unit uimpressaopdf;
 interface
 
 uses Graphics, ExtCtrls, Printers, tnpdf, Windows, SysUtils, Forms,
-  StdCtrls, Classes, Controls, ShellAPI;
+  StdCtrls, Classes, Controls, ShellAPI
+  , SynPDF
+  ;
 
 const FONT_NAME_DEFAULT = 'Courier New';//'FontB88'; //2016-01-14 'Calibri';//'Arial Narrow';//'Sans Serif';//'Cambria';//'MS Sans Serif';// 'Calibri';
 const FONT_SIZE_DEFAULT = 7; // 2015-06-29 8;//7;
@@ -65,7 +67,8 @@ var
   sFilePDF: String;
   Pagina: Array of TImage; // Imagem que receberá os textos e outras imagem
   iAlturaPDF: Integer;
-  PDF: TPrintPDF;
+  PDF: TPdfDocumentGDI; //Sandro Silva 2024-04-26 PDF: TPrintPDF;
+  PAGE : TPdfPage;
   iPagina: Integer;
   //iLinhasFinal: Integer;
   //iPrinterPhysicalWidth: Integer; // Sandro Silva 2017-09-12
@@ -349,17 +352,19 @@ begin
 
         Printer.Abort;
 
+        {Sandro Silva 2024-04-26
+
         try
           sFilePDF := sArquivoPDF;
           if DirectoryExists(ExtractFilePath(Application.ExeName) + 'Relatorios') = False then
             ForceDirectories(ExtractFilePath(Application.ExeName) + 'Relatorios');
 
           // Cria o PDF
-          
+
           //Create TPrintPDF VCL
           PDF := TPrintPDF.Create(Self);
 
-          {Set Doc Info}
+          //Set Doc Info
           PDF.TITLE       := ExtractFileName(sFilePDF);
           PDF.Creator     := 'Small - ' + ExtractFileName(Application.ExeName);
           PDF.Author      := '';
@@ -402,14 +407,12 @@ begin
         except
           on E: Exception do
           begin
-            {Sandro Silva 2021-08-10 inicio}
             with TStringList.Create do
             begin
               Text := E.Message;
               SaveToFile(ChangeFileExt(PDF.FileName, '.txt'));
               Free;
             end;
-            {Sandro Silva 2021-08-10 fim}
           end;
         end;
 
@@ -420,6 +423,78 @@ begin
             ShellExecute(0, 'Open', pChar(PDF.FileName), '', '', SW_SHOW);
           FreeAndNil(PDF);//.Free;
         end;
+        }
+
+        try
+          sFilePDF := ExtractFilePath(Application.ExeName) + 'Relatorios\' + ExtractFileName(sArquivoPDF);
+          if DirectoryExists(ExtractFilePath(Application.ExeName) + 'Relatorios') = False then
+            ForceDirectories(ExtractFilePath(Application.ExeName) + 'Relatorios');
+
+          // Cria o PDF
+
+          {Create TPrintPDF VCL}
+          PDF := TPdfDocumentGDI.Create();
+          PDF.DefaultPaperSize := psUserDefined;
+          PDF.DefaultPageWidth := iLarguraFisica;
+
+          {Set Doc Info}
+          PDF.Info.Title        := ExtractFileName(sFilePDF);
+          PDF.Info.Creator      := 'Small - ' + ExtractFileName(Application.ExeName);
+          PDF.Info.Author       := '';
+          PDF.Info.CreationDate := now;
+
+          PDF.Info.Keywords    := '';
+          {Set Filename to save}
+          PDF.Info.Subject     := sFilePDF;
+
+          {Use Compression: VCL Must compile with ZLIB comes with D3 above}
+          PDF.ForceJPEGCompression := 0;
+
+          {Set Page Size}
+          PAGE := pdf.AddPage;
+          PAGE.PageLandscape := False;
+
+          PAGE.PageWidth   := iLarguraPapel;
+          PAGE.PageHeight  := ALTURA_PAGINA_PDF; // Sandro Silva 2017-04-17  2374;
+
+          {Start Printing...}
+          for iPagina := 0 to Length(Pagina) -1 do
+          begin
+
+            {Print Image}
+            PDF.VCLCanvas.Draw(0, 0, Pagina[iPagina].Picture.Graphic);
+
+            if iPagina < Length(Pagina) -1 then
+              {Add New Page}
+              PAGE := Pdf.AddPage;
+            FreeAndNil(Pagina[iPagina]);
+          end;
+
+          {End Printing}
+
+          Sleep(500 * Length(Pagina) -1);
+        except
+          on E: Exception do
+          begin
+            with TStringList.Create do
+            begin
+              Text := E.Message;
+              SaveToFile(ChangeFileExt(sFilePDF, '.txt'));
+              Free;
+            end;
+          end;
+        end;
+
+        PDF.SaveToFile(sFilePDF);
+
+        {FREE TPrintPDF VCL}
+        if PDF <> nil then
+        begin
+          FreeAndNil(PDF);//.Free;
+          if FileExists(sFilePDF) then
+            ShellExecute(0, 'Open', pChar(sFilePDF), '', '', SW_SHOW);
+        end;
+
 
         Pagina := nil;
 
@@ -429,7 +504,7 @@ begin
     end;
 
     if Printer.Printing then
-      Printer.Abort;  
+      Printer.Abort;
 
     Screen.Cursor := FCursor;
   end;
