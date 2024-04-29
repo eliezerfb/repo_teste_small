@@ -678,6 +678,7 @@ object Form48: TForm48
         OnEnter = DBGrid4Enter
         OnKeyDown = DBGrid4KeyDown
         OnKeyPress = DBGrid4KeyPress
+        OnKeyUp = DBGrid4KeyUp
       end
       object DBMemo1: TDBMemo
         Left = 10
@@ -907,7 +908,7 @@ object Form48: TForm48
         Top = 4
         Width = 100
         Height = 30
-        Caption = 'Ok'
+        Caption = 'OK'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13

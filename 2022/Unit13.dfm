@@ -147,7 +147,7 @@ object Form13: TForm13
       Top = 320
       Width = 100
       Height = 25
-      Caption = 'Ok'
+      Caption = 'OK'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -11

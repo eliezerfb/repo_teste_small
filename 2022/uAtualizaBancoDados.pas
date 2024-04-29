@@ -2438,6 +2438,17 @@ begin
   end;
   {Mauricio Parizotto 2024-02-28 Fim}
 
+  {Mauricio Parizotto 2024-03-28 Inicio}
+  if not CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'PISCOFINSLUCRO') then
+  begin
+    if ExecutaComando('Alter table ICM add PISCOFINSLUCRO varchar(1);') then
+      ExecutaComando('Commit');
+
+    if ExecutaComando('Update ICM set PISCOFINSLUCRO = ''N'' ;') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-03-28 Fim}
+
   (* Sandro Silva 2024-04-11 Estava causando access violation quando atualiza e em seguida cadastra um produto com 120 caracteres
   {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
   try
@@ -2455,6 +2466,56 @@ begin
   end;
   {Dailon Parisotto (f-17787) 2024-03-27 Fim}
   *)
+
+  {Sandro Silva 2024-04-23 inicio}
+  // Nas NFS-e, o campo MARCA é usado para controlar se a nota tem retenção de ISS (I) ou IRRF (F)
+  // Existem notas de serviços lançadas com o campo MARCA preenchido com texto incorreto, gerado pela rotina de vendas de NFS-e
+  // Comandos abaixo corrigem as situações detectadas
+  //-- Troca "(F)(F)" para "(F)"
+  if ExecutaComando('update VENDAS set ' +
+    'MARCA = replace(replace(MARCA, ''(F)(F)'', ''(F)''), ''(('', ''('') ' +
+    'where MODELO = ''SV'' ' +
+    ' and MARCA is not null') then
+    ExecutaComando('Commit');
+
+  //-- Troca "(I)(I)" para "(I)", elimina "(("
+  if ExecutaComando('update VENDAS set ' +
+    'MARCA = replace(replace(MARCA, ''(I)(I)'', ''(I)''), ''(('', ''('') ' +
+    'where MODELO = ''SV'' ' +
+    'and MARCA is not null') then
+    ExecutaComando('Commit');
+
+  //-- Elimina "(" quando ficar no final do texto salvo no campo Ex.: VARIAS(I)(
+  if ExecutaComando('update VENDAS set ' +
+    'MARCA = substring(trim(MARCA) from 1 for (char_length(trim(MARCA)) -1)) ' +
+    'where MODELO = ''SV'' ' +
+    'and substring(trim(MARCA) from char_length(trim(MARCA)) for 1) = ''('' ') then
+    ExecutaComando('Commit');
+  {Sandro Silva 2024-04-23 fim}
+
+
+  {Mauricio Parizotto 2024-03-22 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO', 'CONSIDERACSTCSOSN') = False then
+  begin
+    if ExecutaComando('Alter table CFOPCONVERSAO add CONSIDERACSTCSOSN VARCHAR(1);') then
+      ExecutaComando('Commit');
+
+    if ExecutaComando('Update CFOPCONVERSAO set CONSIDERACSTCSOSN = ''N'';') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO', 'CST') = False then
+  begin
+    if ExecutaComando('Alter table CFOPCONVERSAO add CST VARCHAR(2);') then
+      ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CFOPCONVERSAO', 'CSOSN') = False then
+  begin
+    if ExecutaComando('Alter table CFOPCONVERSAO add CSOSN VARCHAR(3);') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-03-22 Fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
