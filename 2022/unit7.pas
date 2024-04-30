@@ -11586,12 +11586,13 @@ begin
         begin
           TabelaAberta.Locate('REGISTRO',sRegistro,[]);
 
-          niflinha := TStringGrid(DBGrid1).Row - StrToInt('0'+LimpaNumero(sLinha));
+          niflinha := TStringGrid(DBGrid1).RowCount - StrToInt('0'+LimpaNumero(sLinha));
         end else
         begin
           TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1) *-1);
           TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1 ) * 1);
         end;
+        DBGrid1.Refresh;
        {Dailon Parisotto (f-18116) 2024-04-30 Fim}
       end;
     except
@@ -11751,8 +11752,8 @@ begin
   {Dailon Parisotto (f-18116) 2024-04-30 Inicio}
   if niflinha > 0 then
   begin
-    TabelaAberta.MoveBy((niflinha -1) * 1);
-    TabelaAberta.MoveBy((niflinha -1 ) *-1);
+    TabelaAberta.MoveBy((niflinha-1) * 1);
+    TabelaAberta.MoveBy((niflinha-1) *-1);
   end;
   {Dailon Parisotto (f-18116) 2024-04-30 Fim}
 end;
