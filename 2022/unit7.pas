@@ -7856,7 +7856,7 @@ begin
         }
         dDescontoIssProporcional := 0.00;
         if Form7.ibDataSet15SERVICOS.AsFloat <> 0 then //Sandro Silva 2024-04-23
-          dDescontoIssProporcional := StrToFloat(FormatFloat('0.00', (Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat) * Form7.ibDataSet15DESCONTO.AsFloat));
+          dDescontoIssProporcional := Form7.Formata2CasasDecimais((Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat) * Form7.ibDataSet15DESCONTO.AsFloat); // 2024-04-26 dDescontoIssProporcional := StrToFloat(FormatFloat('0.00', (Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat) * Form7.ibDataSet15DESCONTO.AsFloat));
         Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat - dDescontoIssProporcional, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat));
         Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais((Form7.ibDataSet35TOTAL.AsFloat - dDescontoIssProporcional)* Form7.ibQuery1.FieldByname('BASEISS').AsFloat / 100);
         {Sandro Silva 2024-04-02 fim}
@@ -10279,10 +10279,17 @@ begin
 
       if Form7.sRPS = 'S' then
       begin
+
+        //2024-04-29 Totalizaservicos(True); //Sandro Silva 2024-04-26
+
         if Pos('(I)',Form7.ibDataset15MARCA.AsString) <> 0 then
         begin
           // ISS
-          Form1.fRetencoes := Form7.ibDataSet15ISS.AsFloat;
+          {Sandro Silva
+          Form1.fRetencoes := Formata2CasasDecimais(Form7.ibDataSet15ISS.AsFloat); // 2024-04-26 Form1.fRetencoes := Form7.ibDataSet15ISS.AsFloat;
+          }
+          Form1.fRetencoes := Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet15SERVICOS.AsFloat - Form7.ibDataSet15DESCONTO.AsFloat, Form7.ibQuery1.FieldByname('ISS').AsFloat, Form7.ibQuery1.FieldByname('BASEISS').AsFloat));
+          {Sandro Silva 2024-04-29 fim}
           {Sandro Silva 2024-04-24 inicio}
           if Form1.bNaoDescontarIssQuandoRetido then
             Form1.fRetencoes := 0.00; // Tem configurado para não descontar a retenção de ISS do total da nota
@@ -10364,7 +10371,6 @@ begin
         Form1.fRetencaoIR := 0;
       end;
 
-
       if Format('%12.2n',[Form7.ibDataSet15TOTAL.AsFloat]) <> Format('%12.2n',[( Form7.ibDataSet15MERCADORIA.Value  +
                                                                                  Form7.ibDataSet15SERVICOS.Value    +
                                                                                  Form7.ibDataSet15FRETE.Value       +
@@ -10392,7 +10398,7 @@ begin
                                                      Form7.ibDataSet15DESCONTO.Value   - // Desconto
                                                      Form1.fRetencoes -                // ISS retido
                                                      fRetencao
-                                                     ,2);                       
+                                                     ,2);
 
       end;
 

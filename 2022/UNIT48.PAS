@@ -117,9 +117,10 @@ type
     procedure Button3Click(Sender: TObject);
     procedure SMALL_DBEdit3Enter(Sender: TObject);
     procedure DBGrid4KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure DBGrid4ColExit(Sender: TObject);
 
   private
-    { Private declarations }
+    FbEscondeGrid: Boolean;
     procedure RecalcularIssDosItens;
     procedure DefineVisibleHomologacao;
   public
@@ -842,9 +843,10 @@ begin
 
   if DbGrid1.SelectedIndex = 0 then
   begin
-    if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) then
+    if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP)
+       and (Key <> VK_LEFT) and (Key <> VK_RIGHT) and (Key <> VK_DELETE) then
     begin
-      if not dBGrid3.Visible then
+      if (not dBGrid3.Visible) and (not FbEscondeGrid) then
       begin
         dBgrid3.Visible := True;
       end else
@@ -1044,20 +1046,18 @@ begin
           dbGrid3.Visible := False;
         end else
         begin
-          if Alltrim(Form7.ibDataSet16DESCRICAO.AsString) = AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
+          // Procura por descrição
+          Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet35DESCRICAO.AsString, [loCaseInsensitive,loPartialKey]);
+
+          if (Form7.ibDataSet35DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString) and (Alltrim(Form7.ibDataSet35DESCRICAO.AsString) <> '')then
           begin
-            Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet35DESCRICAO.AsString,[loCaseInsensitive,loPartialKey]);
-
-
-            if (Form7.ibDataSet35DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString) and (Alltrim(Form7.ibDataSet35DESCRICAO.AsString)<>'')then
+            if (length(Alltrim(Form7.ibDataSet35DESCRICAO.AsString)) <= 5) and (length(Limpanumero(Form7.ibDataSet35DESCRICAO.AsString)) = length(Alltrim(Form7.ibDataSet35DESCRICAO.AsString))) then
             begin
-              if (length(Alltrim(Limpanumero(Form7.ibDataSet35DESCRICAO.AsString))) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet35DESCRICAO.AsString))<>'') then
+              // Procura por código
+              if StrToInt(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)) <> 0 then
               begin
-                // Procura por código
-                if StrToInt(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)) <> 0 then
+                if Form7.ibDataSet4.Locate('CODIGO', StrZero(StrToInt(AllTrim(LimpaNumero(Form7.ibDataSet35DESCRICAO.AsString))),5,0), []) then
                 begin
-                  Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0),[loCaseInsensitive,loPartialKey]);
-
                   if Form7.ibDataSet4CODIGO.AsString = StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0) then
                   begin
                     Form7.ibDataSet35DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
@@ -1067,11 +1067,16 @@ begin
                     Form7.ibDataSet35DESCRICAO.AsString := '';
                   end;
                 end;
-              end else
-              begin
-                Form48.DBGrid3DblClick(Sender);
               end;
+            end else
+            begin
+              if (Form7.ibDataSet35DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) then
+                Form48.DBGrid3DblClick(Sender);
             end;
+          end else
+          begin
+            if (Form7.ibDataSet35DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) then
+              Form48.DBGrid3DblClick(Sender);
           end;
         end;
       end;
@@ -1099,6 +1104,13 @@ end;
 procedure TForm48.DBGrid4ColEnter(Sender: TObject);
 begin
   dBGrid3.Visible := False;
+  FbEscondeGrid := False;
+end;
+
+procedure TForm48.DBGrid4ColExit(Sender: TObject);
+begin
+  if DbGrid1.SelectedIndex <> 0 then
+    DBGrid3.Visible := False;
 end;
 
 procedure TForm48.Button2Enter(Sender: TObject);
@@ -1339,11 +1351,15 @@ begin
 
     Form7.ibDataSet35.Post;
     Form7.ibDataSet35.Edit;
+
+    FbEscondeGrid := True;
   except
   end;
 
   if dbGrid3.Focused then
     dbGrid4.SetFocus;
+
+  dbGrid3.Visible := False;
 end;
 
 procedure TForm48.CheckBox1Click(Sender: TObject);
