@@ -30,7 +30,7 @@ type
     SMALL_DBEdit2: TSMALL_DBEdit;
     Label8: TLabel;
     SMALL_DBEdit3: TSMALL_DBEdit;
-    cbMovimentacaoEstoque: TComboBox;
+    cbMovimentacaoEstoque: TDBComboBox;
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
     procedure lblNovoClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);

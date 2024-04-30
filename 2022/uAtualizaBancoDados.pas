@@ -2523,6 +2523,7 @@ begin
   begin
     if ExecutaComando('Alter table BANCOS add PIXESTATICO VARCHAR(1);') then
     begin
+      ExecutaComando('Commit');
       ExecutaComando('Update BANCOS SET PIXESTATICO = ''N'';');
       ExecutaComando('Commit');
     end;

@@ -4,7 +4,7 @@ inherited FrmContaBancaria: TFrmContaBancaria
   TextHeight = 16
   inherited Panel_branco: TPanel
     inherited pgcFicha: TPageControl
-      ActivePage = tbsCadastro
+      ActivePage = tbsPIX
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label129: TLabel
@@ -351,19 +351,21 @@ inherited FrmContaBancaria: TFrmContaBancaria
           TabOrder = 3
           OnKeyDown = PadraoKeyDown
         end
-        object cbMovimentacaoEstoque: TComboBox
+        object cbMovimentacaoEstoque: TDBComboBox
           Left = 110
           Top = 46
           Width = 200
           Height = 21
           Style = csDropDownList
-          TabOrder = 1
-          OnKeyDown = PadraoKeyDown
+          DataField = 'PIXTIPOCHAVE'
+          DataSource = DSCadastro
           Items.Strings = (
             'CNPJ/CPF'
             'Celular'
             'E-mail'
             'Chave aleat'#243'ria')
+          TabOrder = 1
+          OnKeyDown = PadraoKeyDown
         end
       end
     end
