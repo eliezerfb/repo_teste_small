@@ -561,7 +561,13 @@ begin
   begin
     IBQUERY99.Close;
     IBQUERY99.SQL.Clear;
+    {Dailon Parisotto (f-18465) 2024-04-30 Inicio
+
     IBQUERY99.SQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
+
+    }
+    IBQUERY99.SQL.Add('select * from MUNICIPIOS where UPPER(NOME)='+QuotedStr(AnsiUpperCase(Form7.ibDAtaset2CIDADE.AsString))+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
+    {Dailon Parisotto (f-18465) 2024-04-30 Fim}
     IBQUERY99.Open;
 
     if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
@@ -4121,7 +4127,14 @@ begin
         then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+      {Dailon Parisotto (f-18465) 2024-04-30 Inicio
+
+      Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+
+      }
+      Form7.ibDataSet15STATUS.AsString    := Copy('Erro: Informe o CSOSN do produto '+ Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' +
+                                                  ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString),1,Form7.ibDataSet15STATUS.Size);
+      {Dailon Parisotto (f-18465) 2024-04-30 Fim}
       Abort;
 
     end;
