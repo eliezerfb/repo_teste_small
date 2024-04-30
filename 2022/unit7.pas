@@ -2404,7 +2404,6 @@ type
     procedure MenuItem140Click(Sender: TObject);
     procedure ConfigurarEtiqueta1Click(Sender: TObject);
     procedure Imprimiretiqueta1Click(Sender: TObject);
-    procedure ibDataSet15AfterOpen(DataSet: TDataSet);
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     procedure miDuplicarNFSeClick(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
@@ -10895,7 +10894,7 @@ var
   Hora, Min, Seg, cent : Word;
   bA : Boolean;
   sSerieNFSelecionada: String;
-  nPosicao: Integer;
+  niflinha: Integer;
 begin
   tInicio               := Time;
 
@@ -11568,17 +11567,32 @@ begin
 
     dbGrid1.DataSource := DataSourceAtual;
 
+    {Dailon Parisotto (f-18116) 2024-04-30 Inicio}
+    DefineLayoutFiltro;
+    niflinha := 0;
+    {Dailon Parisotto (f-18116) 2024-04-30 Fim}
+
     //{Mauricio Parizotto 2024-01-04
     try
       if StrToInt('0'+LimpaNumero(sLinha)) > 0 then
       begin
+        {Dailon Parisotto (f-18116) 2024-04-30 Inicio
+
         TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1) *-1);
         TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1) * 1);
 
-        {
-        I := TabelaAberta.MoveBy(StrToInt('0'+LimpaNumero(sLinha))*-1);
-        TabelaAberta.MoveBy(I*-1);
         }
+        if (TStringGrid(DBGrid1).Row > 1) and (sModulo <> 'CAIXA') then
+        begin
+          TabelaAberta.Locate('REGISTRO',sRegistro,[]);
+
+          niflinha := TStringGrid(DBGrid1).Row - StrToInt('0'+LimpaNumero(sLinha));
+        end else
+        begin
+          TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1) *-1);
+          TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1 ) * 1);
+        end;
+       {Dailon Parisotto (f-18116) 2024-04-30 Fim}
       end;
     except
     end;
@@ -11590,7 +11604,9 @@ begin
     end;
 
     // Este bloco tem toda a demora
-    DefineLayoutFiltro;
+    {Dailon Parisotto (f-18116) 2024-04-30 Inicio
+    DefineLayoutFiltro;}
+    {Dailon Parisotto (f-18116) 2024-04-30 Fim}
 
     Form7.Panel7.Caption   := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
     Form7.Panel7.Repaint;
@@ -11732,22 +11748,13 @@ begin
 
   MarcaColunaOrderBy;
 
-  if Form7.sModulo = 'VENDA' then
+  {Dailon Parisotto (f-18116) 2024-04-30 Inicio}
+  if niflinha > 0 then
   begin
-    TabelaAberta.DisableControls;
-    try
-      if (TabelaAberta.RecNo < TabelaAberta.RecordCount) then
-      begin
-        nPosicao := TabelaAberta.RecNo;
-
-        TabelaAberta.MoveBy((TabelaAberta.RecordCount-nPosicao)*1);
-        while TabelaAberta.RecNo <> nPosicao do
-          TabelaAberta.MoveBy(-1);
-      end;
-    finally
-      TabelaAberta.EnableControls;
-    end;
+    TabelaAberta.MoveBy((niflinha -1) * 1);
+    TabelaAberta.MoveBy((niflinha -1 ) *-1);
   end;
+  {Dailon Parisotto (f-18116) 2024-04-30 Fim}
 end;
 
 procedure TForm7.DefineLayoutFiltro;
