@@ -7,6 +7,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
   inherited Panel_branco: TPanel
     inherited pgcFicha: TPageControl
       ActivePage = tbsNatureza
+      ExplicitLeft = 10
+      ExplicitTop = 105
       object tbsNatureza: TTabSheet
         Caption = 'Natureza da opera'#231#227'o '
         OnEnter = tbsNaturezaEnter
@@ -7847,11 +7849,11 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Left = 10
           Top = 10
           Width = 790
-          Height = 126
+          Height = 136
           TabOrder = 0
           object Label42: TLabel
             Left = 0
-            Top = 25
+            Top = 20
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -7869,7 +7871,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           end
           object Label43: TLabel
             Left = 0
-            Top = 50
+            Top = 46
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -7887,7 +7889,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           end
           object Label49: TLabel
             Left = 0
-            Top = 75
+            Top = 70
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -7905,7 +7907,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           end
           object lbBCPISCOFINS: TLabel
             Left = 0
-            Top = 99
+            Top = 94
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -7923,7 +7925,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           end
           object ComboBox7: TComboBox
             Left = 100
-            Top = 25
+            Top = 20
             Width = 670
             Height = 22
             Style = csOwnerDrawVariable
@@ -7954,7 +7956,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           end
           object dbepPisSaida: TSMALL_DBEdit
             Left = 100
-            Top = 50
+            Top = 46
             Width = 60
             Height = 20
             AutoSize = False
@@ -7975,7 +7977,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           end
           object dbepCofinsSaida: TSMALL_DBEdit
             Left = 100
-            Top = 75
+            Top = 70
             Width = 60
             Height = 20
             AutoSize = False
@@ -7996,7 +7998,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           end
           object dbeIcmBCPISCOFINS: TSMALL_DBEdit
             Left = 100
-            Top = 99
+            Top = 94
             Width = 60
             Height = 20
             AutoSize = False
@@ -8013,6 +8015,27 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
             ParentCtl3D = False
             ParentFont = False
             TabOrder = 3
+            OnKeyDown = PadraoKeyDown
+          end
+        end
+        object GroupBox1: TGroupBox
+          Left = 10
+          Top = 160
+          Width = 790
+          Height = 53
+          Caption = ' Venda de ve'#237'culos '
+          TabOrder = 1
+          object chkPisCofinsSobLucro: TDBCheckBox
+            Left = 19
+            Top = 20
+            Width = 141
+            Height = 17
+            Caption = 'PIS/COFINS sobre o lucro'
+            DataField = 'PISCOFINSLUCRO'
+            DataSource = DSCadastro
+            TabOrder = 0
+            ValueChecked = 'S'
+            ValueUnchecked = 'N'
             OnKeyDown = PadraoKeyDown
           end
         end

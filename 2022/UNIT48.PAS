@@ -116,9 +116,11 @@ type
     procedure CheckBox2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure SMALL_DBEdit3Enter(Sender: TObject);
+    procedure DBGrid4KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure DBGrid4ColExit(Sender: TObject);
 
   private
-    { Private declarations }
+    FbEscondeGrid: Boolean;
     procedure RecalcularIssDosItens;
     procedure DefineVisibleHomologacao;
   public
@@ -812,6 +814,8 @@ end;
 
 procedure TForm48.DBGrid4KeyPress(Sender: TObject; var Key: Char);
 begin
+  {Dailon Parisotto (f-18202) 2024-04-23 Inicio
+
   if DbGrid4.SelectedIndex = 0 then
   begin
     if not dbGrid3.Visible then
@@ -820,10 +824,39 @@ begin
   else
     dbGrid3.Visible  := False;
 
+  }
+  {Dailon Parisotto (f-18202) 2024-04-23 Fim}
   if dbGrid4.SelectedField.DataType = ftFloat then
   begin
     if Key = chr(46) then
       Key := chr(44);
+  end;
+end;
+
+procedure TForm48.DBGrid4KeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_TAB    then
+    Key := VK_RETURN;
+  if Key = VK_ESCAPE then
+    Key := VK_RETURN;
+
+  if DbGrid1.SelectedIndex = 0 then
+  begin
+    if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP)
+       and (Key <> VK_LEFT) and (Key <> VK_RIGHT) and (Key <> VK_DELETE) then
+    begin
+      if (not dBGrid3.Visible) and (not FbEscondeGrid) then
+      begin
+        dBgrid3.Visible := True;
+      end else
+      //
+      Form1.bFlag := False;
+      Form7.ibDataSet16.Edit;
+      Form7.ibDataSet16.UpdateRecord;
+      Form7.ibDataSet16.Edit;
+      Form1.bFlag := True;
+    end;
   end;
 end;
 
@@ -1013,30 +1046,37 @@ begin
           dbGrid3.Visible := False;
         end else
         begin
-          Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet35DESCRICAO.AsString,[loCaseInsensitive,loPartialKey]);
+          // Procura por descrição
+          Form7.ibDataSet4.Locate('DESCRICAO',Form7.ibDataSet35DESCRICAO.AsString, [loCaseInsensitive,loPartialKey]);
 
-          if (Form7.ibDataSet35DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString) and (Alltrim(Form7.ibDataSet35DESCRICAO.AsString)<>'')then
+          if (Form7.ibDataSet35DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString) and (Alltrim(Form7.ibDataSet35DESCRICAO.AsString) <> '')then
           begin
-            if (length(Alltrim(Limpanumero(Form7.ibDataSet35DESCRICAO.AsString))) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet35DESCRICAO.AsString))<>'') then
+            if (length(Alltrim(Form7.ibDataSet35DESCRICAO.AsString)) <= 5) and (length(Limpanumero(Form7.ibDataSet35DESCRICAO.AsString)) = length(Alltrim(Form7.ibDataSet35DESCRICAO.AsString))) then
             begin
               // Procura por código
               if StrToInt(AllTrim(Form7.ibDataSet35DESCRICAO.AsString)) <> 0 then
               begin
-                Form7.ibDataSet4.Locate('CODIGO',StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0),[loCaseInsensitive,loPartialKey]);
-
-                if Form7.ibDataSet4CODIGO.AsString = StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0) then
+                if Form7.ibDataSet4.Locate('CODIGO', StrZero(StrToInt(AllTrim(LimpaNumero(Form7.ibDataSet35DESCRICAO.AsString))),5,0), []) then
                 begin
-                  Form7.ibDataSet35DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
-                  Form48.DBGrid3DblClick(Sender);
-                end else
-                begin
-                  Form7.ibDataSet35DESCRICAO.AsString := '';
+                  if Form7.ibDataSet4CODIGO.AsString = StrZero(StrToInt(AllTrim(LimpaNumero('0'+Form7.ibDataSet35DESCRICAO.AsString))),5,0) then
+                  begin
+                    Form7.ibDataSet35DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
+                    Form48.DBGrid3DblClick(Sender);
+                  end else
+                  begin
+                    Form7.ibDataSet35DESCRICAO.AsString := '';
+                  end;
                 end;
               end;
             end else
             begin
-              Form48.DBGrid3DblClick(Sender);
+              if (Form7.ibDataSet35DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) then
+                Form48.DBGrid3DblClick(Sender);
             end;
+          end else
+          begin
+            if (Form7.ibDataSet35DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString) then
+              Form48.DBGrid3DblClick(Sender);
           end;
         end;
       end;
@@ -1047,7 +1087,11 @@ begin
       begin
         DbGrid4.SelectedIndex := 0;
         Form7.ibDataSet35.Next;
-        if Form7.ibDataSet35.EOF then Form7.ibDataSet35.Append;
+        if Form7.ibDataSet35.EOF then
+        begin
+          Form7.ibDataSet35.Append;
+          DBGrid3.Visible := False;
+        end;
       end;
     end;
   except
@@ -1060,6 +1104,13 @@ end;
 procedure TForm48.DBGrid4ColEnter(Sender: TObject);
 begin
   dBGrid3.Visible := False;
+  FbEscondeGrid := False;
+end;
+
+procedure TForm48.DBGrid4ColExit(Sender: TObject);
+begin
+  if DbGrid1.SelectedIndex <> 0 then
+    DBGrid3.Visible := False;
 end;
 
 procedure TForm48.Button2Enter(Sender: TObject);
@@ -1300,11 +1351,15 @@ begin
 
     Form7.ibDataSet35.Post;
     Form7.ibDataSet35.Edit;
+
+    FbEscondeGrid := True;
   except
   end;
 
   if dbGrid3.Focused then
     dbGrid4.SetFocus;
+
+  dbGrid3.Visible := False;
 end;
 
 procedure TForm48.CheckBox1Click(Sender: TObject);
@@ -1318,7 +1373,16 @@ begin
 
   if Form48.CheckBox1.Checked then
   begin
+    {Sandro Silva 2024-04-02 inicio
     Form7.ibDataset15MARCA.AsString := Form7.ibDataset15MARCA.AsString + '(I)';
+    }
+    if Right(Form7.ibDataset15MARCA.AsString, 3) <> '(I)' then
+    begin
+      if Length(Form7.ibDataset15MARCA.AsString + '(I)') > Form7.ibDataset15MARCA.Size then
+        Form7.ibDataset15MARCA.AsString := Copy(Form7.ibDataset15MARCA.AsString, 1, Form7.ibDataset15MARCA.Size - 3);
+      Form7.ibDataset15MARCA.AsString := Form7.ibDataset15MARCA.AsString + '(I)';
+    end;
+    {Sandro Silva 2024-04-02}
   end else
   begin
     Form7.ibDataset15MARCA.AsString := StrTran(Form7.ibDataset15MARCA.AsString,'(I)','');
@@ -1373,6 +1437,7 @@ end;
 procedure TForm48.RecalcularIssDosItens;
 var
   cTotal: Currency;
+  dDescontoIssProporcional: Double;
 begin
   {Sandro Silva 2022-09-22 inicio}
   // Quando mudar a operação deve recalcular os valores de ISS dos itens lançados na nota conforme a alíquota de ISS da operação
@@ -1391,8 +1456,16 @@ begin
         Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('ISS').AsFloat / 100 * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
         Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
         }
+        {Sandro Silva 2024-04-02 inicio
         Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, Form7.ibDataSet35TOTAL.AsFloat, Form7.IBDataSet14.FieldByname('ISS').AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat));
         Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais(Form7.ibDataSet35TOTAL.AsFloat * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
+        }
+        dDescontoIssProporcional := 0.00;
+        if Form7.ibDataSet15SERVICOS.AsFloat <> 0 then // Sandro Silva 2024-04-23
+          dDescontoIssProporcional := StrToFloat(FormatFloat('0.00', (Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat) * Form7.ibDataSet15DESCONTO.AsFloat));
+        Form7.ibDataSet35ISS.AsFloat      := Form7.Formata2CasasDecimais(CalculaValorISS(Form7.oArqConfiguracao.NFSe.InformacoesObtidasNaPrefeitura.PadraoProvedor, (Form7.ibDataSet35TOTAL.AsFloat - dDescontoIssProporcional), Form7.IBDataSet14.FieldByname('ISS').AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat));
+        Form7.ibDataSet35BASEISS.AsFloat  := Form7.Formata2CasasDecimais((Form7.ibDataSet35TOTAL.AsFloat - dDescontoIssProporcional) * Form7.IBDataSet14.FieldByname('BASEISS').AsFloat / 100);
+        {Sandro Silva 2024-04-02}
         {Sandro Silva 2023-10-02 fim}
 
         cTotal := cTotal + Form7.ibDataSet35ISS.AsFloat; // Acumula para atualizar o total de ISS na tabela VENDAS
