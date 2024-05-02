@@ -14649,6 +14649,7 @@ object Form7: TForm7
     object ibDataSet14ST: TIBStringField
       DisplayLabel = 'CIT'
       FieldName = 'ST'
+      OnChange = ibDataSet14STChange
       Size = 3
     end
     object ibDataSet14BASEISS: TFloatField

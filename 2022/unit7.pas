@@ -2406,6 +2406,7 @@ type
     procedure Imprimiretiqueta1Click(Sender: TObject);
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     procedure miDuplicarNFSeClick(Sender: TObject);
+    procedure ibDataSet14STChange(Sender: TField);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2470,6 +2471,7 @@ type
     procedure CarregarContasReceberMarcadas;
     procedure CarregarContasPagarMarcadas;
     function TestarPodeCadastrarClifor(AcNome: String; AbMensagem: Boolean = True): Boolean;
+    function TestarPodeUtilizarCIT: Boolean;
   public
     // Public declarations
 
@@ -16732,6 +16734,38 @@ procedure TForm7.ibDataSet14NOMESetText(Sender: TField; const Text: String);
 begin
   if Valida_Campo('ICM',Text,'NOME','Esta operação já foi cadastrada') then
   ibDataSet14NOME.AsString := Text;
+end;
+
+procedure TForm7.ibDataSet14STChange(Sender: TField);
+var
+  nIndex: Integer;
+begin
+  ibDataSet14ST.OnChange := nil;
+  try
+    if AllTrim(Form7.ibDataSet14.FieldByName('ST').AsString) = EmptyStr then
+      Exit;
+    if not TestarPodeUtilizarCIT then
+    begin
+      if (Assigned(FrmNaturezaOperacao)) and (FrmNaturezaOperacao.Showing) then
+      begin
+        // Quando a tela de cadastro estiver aberta
+        FrmNaturezaOperacao.SMALL_DBEdit57.Text := EmptyStr;
+        Form7.ibDataSet14.Post;
+        Form7.ibDataSet14.Edit;
+        FrmNaturezaOperacao.SMALL_DBEdit57.SetFocus;
+      end
+      else
+      begin
+        // Quando for alteração diretamente no grid
+        nIndex := DBGrid1.SelectedIndex;
+        DBGrid1.SelectedIndex := nIndex;
+        // Abort para não trocar de coluna no GRID.
+        Abort;
+      end;
+    end;
+  finally
+    ibDataSet14ST.OnChange := ibDataSet14STChange;
+  end;
 end;
 
 procedure TForm7.ibDataSet1AfterDelete(DataSet: TDataSet);
@@ -35933,6 +35967,21 @@ begin
     tmcICM                : Result := 'NOME: ' + ibDataSet14NOME.AsString + ', CFOP: ' + ibDataSet14CFOP.AsString;
     tmc2Contas            : Result := 'NOME: ' + ibDataSet11NOME.AsString + ', AGÊNCIA: ' + ibDataSet11AGENCIA.AsString + ', CONTA: ' + ibDataSet11CONTA.AsString;
     else Result := 'MÓDULO ' + AnsiUpperCase(sModulo) + ' NÃO MAPEADO.';
+  end;
+end;
+
+function TForm7.TestarPodeUtilizarCIT: Boolean;
+begin
+  Result := True;
+  if not smallfunc_xe.TestarPodeUtilizarCIT(Form7.IBTransaction1,
+                                            Form7.ibDataSet14.FieldByName('REGISTRO').AsString,
+                                            Form7.ibDataSet14.FieldByName('ST').AsString) then
+  begin
+    Result := False;
+    if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataSet14.Edit;
+    Form7.ibDataSet14ST.AsString := EmptyStr;
+    Form7.ibDataSet14.Post;
   end;
 end;
 
