@@ -2406,7 +2406,7 @@ type
     procedure Imprimiretiqueta1Click(Sender: TObject);
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     procedure miDuplicarNFSeClick(Sender: TObject);
-    procedure ibDataSet14STChange(Sender: TField);
+    procedure ibDataSet14STSetText(Sender: TField; const Text: string);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2471,7 +2471,7 @@ type
     procedure CarregarContasReceberMarcadas;
     procedure CarregarContasPagarMarcadas;
     function TestarPodeCadastrarClifor(AcNome: String; AbMensagem: Boolean = True): Boolean;
-    function TestarPodeUtilizarCIT: Boolean;
+    function TestarPodeUtilizarCIT(AcTexto: String): Boolean;
   public
     // Public declarations
 
@@ -16736,16 +16736,34 @@ begin
   ibDataSet14NOME.AsString := Text;
 end;
 
-procedure TForm7.ibDataSet14STChange(Sender: TField);
+procedure TForm7.ibDataSet14STSetText(Sender: TField; const Text: string);
 var
   nIndex: Integer;
+  cText: String;
+
+procedure SetaValorST;
 begin
-  ibDataSet14ST.OnChange := nil;
+  if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataSet14.Edit;
+  Sender.Value := cText;
+  Form7.ibDataSet14.Post;
+  Form7.ibDataSet14.Edit;
+end;
+
+begin
+  cText := Text;
+  ibDataSet14ST.OnSetText := nil;
   try
-    if AllTrim(Form7.ibDataSet14.FieldByName('ST').AsString) = EmptyStr then
-      Exit;
-    if not TestarPodeUtilizarCIT then
+    if AllTrim(cText) = EmptyStr then
     begin
+      SetaValorST;
+      Exit;
+    end;
+
+    if not TestarPodeUtilizarCIT(cText) then
+    begin
+      cText := EmptyStr;
+
       if (Assigned(FrmNaturezaOperacao)) and (FrmNaturezaOperacao.Showing) then
       begin
         // Quando a tela de cadastro estiver aberta
@@ -16757,14 +16775,17 @@ begin
       else
       begin
         // Quando for alteração diretamente no grid
+        SetaValorST;
         nIndex := DBGrid1.SelectedIndex;
         DBGrid1.SelectedIndex := nIndex;
         // Abort para não trocar de coluna no GRID.
         Abort;
       end;
-    end;
+    end
+    else
+      SetaValorST;
   finally
-    ibDataSet14ST.OnChange := ibDataSet14STChange;
+    ibDataSet14ST.OnSetText := ibDataSet14STSetText;
   end;
 end;
 
@@ -35970,12 +35991,13 @@ begin
   end;
 end;
 
-function TForm7.TestarPodeUtilizarCIT: Boolean;
+function TForm7.TestarPodeUtilizarCIT(AcTexto: String): Boolean;
 begin
   Result := True;
   if not smallfunc_xe.TestarPodeUtilizarCIT(Form7.IBTransaction1,
                                             Form7.ibDataSet14.FieldByName('REGISTRO').AsString,
-                                            Form7.ibDataSet14.FieldByName('ST').AsString) then
+                                            AcTexto) then
+//                                            Form7.ibDataSet14.FieldByName('ST').AsString) then
   begin
     Result := False;
     if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
