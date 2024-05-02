@@ -1028,6 +1028,7 @@ type
     EmitirNFCedogerencial1: TMenuItem;
     FechamentodeCaixa1: TMenuItem;
     Iniciarnovavenda1: TMenuItem;
+    PIXEsttico1: TMenuItem;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1399,6 +1400,7 @@ type
     procedure CDC1Click(Sender: TObject);
     procedure CCF1Click(Sender: TObject);
     procedure COO1Click(Sender: TObject);
+    procedure PIXEsttico1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1470,6 +1472,7 @@ type
     procedure EnviarANFCe;
     procedure ConfigurarINITEFsPadrao(AoIniFile: TIniFile);
     procedure DefineTemTEF;
+    procedure DefineUsoPIXEstatico;
     procedure ChamarTelaConfiguracaoTEF;
     procedure IniciarNovaVendaComDocAberto;
     procedure AbreEdicaoMovimento;
@@ -1525,6 +1528,7 @@ type
     sSenhaDeUsuario, sMotivoContingencia, sTipoDocumento, sTipoDocumento2, sMenuFiscal, sCreditosDF, sPromissoria, sConcomitante, sUF, sPERFIL, sMesaOuConta, sMesasOuContas, sSuperCodigo, sF4Conferencia, sMensagemMesaConferida,
     sHoraMovimento, sDataMovimento, sF, sMesas, sMesasOffLine, sStatusECF, sStatusECF_RES, sMD5DaLista, sTipo, sCPF_CNPJ_Validado,
     sPastaVoltaOffLine, sPasta, sAjuda, sAbreComOLeitor, sAviso, sPlanoDeContas, sOs, sOrcame, sProximo, sProximo27, sProximo150, sProximo027, sProximo28, sProximo38, sGertec, sTipoEtiqueta, sIdentificaConsumidor, sTef, sPastaDoExecutavel, sNumeroDeSerieDaImpressora : String;
+    bUsaPixEstatico : Boolean;//Mauricio Parizotto 2024-04-30
     sDataDoCupom, sHoraDoCupom, sSangria, sModeloECF, sModeloECF_Reserva, sMFD_, sBalanca, sCRLF, sCortaPapel, sTipoImpressora, sCripto, sConveniado, sCaixa, sArquivo, sAtual, sAtualOnLine, OKSim, sVendedor, sGaveta,
     sRGTurbo, sUltimoItem, sPorta, sSeriais, sMensagemPromocional ,sVendedorFixo ,sAliquotas, ConfCusto,
     ConfNegat, sPrazo, ConfCasas, ConfPreco, ModoMercado, sDiretorio, sCupomTEF, sCupomTEFReduzido, sCupomTEFCancelado,
@@ -1771,7 +1775,7 @@ uses
   , uConverteDocumentoParaDocFiscal
   , uConfiguracaoTEF
   , uSmallConsts
-  , ufrmEditaMovimento;
+  , ufrmEditaMovimento, uPagamentoPix;
 
 {$R *.DFM}
 
@@ -10195,6 +10199,7 @@ begin
   Form1.sSAngria         := Mais1Ini.ReadString('Frente de caixa', 'Sangria'                 ,'999.999,99');
   iPeso                  := Mais1Ini.ReadInteger('Frente de caixa', 'Peso'       ,1);
   DefineTemTEF;
+  DefineUsoPIXEstatico;//Mauricio Parizotto 2024-04-30
   sGertec                := Mais1Ini.ReadString('Frente de caixa', 'Teclado gertec','Não');
   sPromissoria           := Mais1Ini.ReadString('Frente de caixa', 'Promissória','Não');
   sCreditosDF            := Mais1Ini.ReadString('Frente de caixa', 'Créditos DF','Não');
@@ -10763,8 +10768,6 @@ begin
   end;
 
   Timer3.Enabled := Form1.bBalancaAutonoma;
-  //
-  //
 end;
 
 procedure TForm1.Button18Click(Sender: TObject); // Fechamento Cupom
@@ -10800,7 +10803,11 @@ var
   iTransacaoCartao: Integer; // Sandro Silva 2017-08-25
   bNFCeUsoDenegado: Boolean; // Sandro Silva 2020-05-18
   //iFormaExtra: Integer; // Sandro Silva 2022-08-04
-  //iniFormas: TIniFile; 
+  //iniFormas: TIniFile;
+
+  CodFormaPix : integer;
+  InstituicaoFinPix : string;
+  PagoNoPIX : boolean;
 begin
   //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
@@ -10824,9 +10831,8 @@ begin
     Form1.ibDataSet25.FieldByName('VALOR03').AsFloat := 0;
     Form1.ibDataSet25.FieldByName('VALOR04').AsFloat := 0;
   end;
-  //
+
   // Desabilita os timers para não dar um commit
-  //
   Form1.Timer1.Enabled := False;
 
   {Sandro Silva 2023-06-14 inicio
@@ -10837,17 +10843,15 @@ begin
   }
   //
   try
-    //
     if Form1.fTotal > 999999.98 then
       Form1.fTotal := 0;
-    //
+
     dBgrid2.Visible      := False;
-    //
+
     Form1.fTotal := PDV_SubTotal(True);
-    //
+
     if Form1.fTotal <> 0 then
     begin
-      //
       Display('TOTAL '+Right(Replicate(' ',14)+Format('%m',[Form1.fTotal]),14),'');
       /////////////////////////////////////////////////////////////////////
       // TEF - ZEREZIMA - MULTIPLOS CARTOES                              //
@@ -10860,17 +10864,13 @@ begin
 
       Form1.sCupomTEF        := Form1.sCupomTEF + Form1.sCupomTEFCancelado;// Sandro Silva 2017-06-28
 
-      /////////////////////////////////////////////////////////////////////
+
       while (Form1.fTotal - fTotalPago) > 0.001 do
       begin
-        //
-        // SmallMsg(FloatToStr(fTotalPAgo));
-        //
         if Form1.bf12 then
         begin
           try
-            //
-            Form2.Show;     
+            Form2.Show;
 
             if (Form1.ClienteSmallMobile.sVendaImportando <> '')
               and ((Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99')) then
@@ -10921,7 +10921,7 @@ begin
             if (Form1.ClienteSmallMobile.ImportandoMobile = False) // Sandro Silva 2022-08-08  if (ImportandoMobile = False)
               and (Form1.ClienteSmallMobile.sVendaImportando = '') then // 2015-06-29
             begin
-            // Se não é venda do mobile sendo processada e for cartão
+              // Se não é venda do mobile sendo processada e for cartão
               if Form1.bFechaRapidoCartao then
               begin
                 Form1.bFechaRapidoCartao := False;
@@ -10930,19 +10930,16 @@ begin
                 Form1.ibDataSet25.FieldByName('PAGAR').AsFloat   := Form1.fTotal;
                 Form1.ibDataSet25.Post;
               end;
-              
             end;
-            {Sandro Silva 2021-09-08 fim}   
-            //
+            {Sandro Silva 2021-09-08 fim}
+
             bVolta := False;
             Form1.bf12 := False;
             Form2.Close;
-            //
           except
             Form2.WindowState     := WsNormal;
             Form2.Close;
           end;
-          //
         end else
         begin
           if (Form1.ClienteSmallMobile.sVendaImportando = '') then
@@ -10955,19 +10952,19 @@ begin
             Form2.SendToBack;
           end;
         end;
-        //
-        //
+
         if Form1.bNFazMaisNada then
         begin
           Abort;
         end;
-        //
+
         Form1.Repaint;
-        Screen.Cursor := crHourGlass;  // Cursor de Aguardo
+        Screen.Cursor := crHourGlass;
+
+        {$Region'//// C A R T A O ////'}
+
         // ---------------------------------------------------------------------------------------------------------------- //
-        //                                                                                                                  //
         // C A R T A O                                                                                                      //
-        //                                                                                                                  //
         // ---------------------------------------------------------------------------------------------------------------- //
         //
         // 25PAGAR CArtão
@@ -10987,17 +10984,14 @@ begin
           Mais1ini := TIniFile.Create('FRENTE.INI');
           Mais1Ini.WriteString('Frente de caixa','Queda','Sim');
           Mais1ini.Free;
-          //
+
           Form2.bCancela := False;
-          //
 
           AtualizarTEMTEF;
           if (Form1.sTef = 'Sim') and (Form1.ClienteSmallMobile.sVendaImportando = '') then
           begin
-            //
             if not TEFMultiplosCartoes(True) then
               Form2.bCancela := True;
-            //
           end else
           begin
             // Usando POS
@@ -11007,38 +11001,57 @@ begin
           if Form1.TransacoesCartao.Transacoes.Count > 0 then // Mostrar mensagem apenas se pagou com cartão  Sandro Silva 2018-09-05
           begin
             Form1.ExibePanelMensagem('Transação com cartão realizada', True); // Sandro Silva 2017-09-15
-            Sleep(1000); 
+            Sleep(1000);
           end;
           Form1.OcultaPanelMensagem;
         end;
-        //
+
+
         if Form2.bCancela then
         begin
-          //
           DeleteFile('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.001');
           DeleteFile('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.STS');
           DeleteFile('c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
           DeleteFile(('c:\'+sDiretorio+'.res'));
-          //
+
           Display('OPERACAO NAO CONFIRMADA','Use outra forma de pagamento');
-          //
+
           Form1.Repaint;
           Sleep(1000);
           Panel3.Visible  := False;
 
-          //
           Form1.Repaint;
           Screen.Cursor := crDefault; // Cursor normal
 
           if (Form1.ClienteSmallMobile.sVendaImportando = '') then
             Edit1.SetFocus;
-          //
         end;
+
         // ---------------------------------------------------------------------------------------------------------------- //
-        //                                                                                                                  //
         // C A R T A O    T H E    E N D                                                                                    //
-        //                                                                                                                  //
         // ---------------------------------------------------------------------------------------------------------------- //
+
+        {$Endregion}
+
+        {$Region'//// PIX ////'}
+        //Mauricio Parizotto 2024-04-30
+        if bUsaPixEstatico then
+        begin
+          try
+            //Usou forma PIX - 17
+            CodFormaPix := FormaPagamentoPix(ibDataSet25);
+
+            if CodFormaPix > 0 then
+            begin
+              //Se cofirmou pagamento com PIX
+              PagoNoPIX := PagamentoPixEstatico(ibDataSet25.FieldByName('VALOR0'+CodFormaPix.ToString).AsFloat,
+                                                InstituicaoFinPix,
+                                                ibDataSet25.Transaction);
+            end;
+          except
+          end;
+        end;
+        {$Endregion}
 
         // Outras formas diferente de cartão
         dTotalOutrasFormas := Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat // Dinheiro
@@ -11057,28 +11070,22 @@ begin
                       + Form1.fDescontoNoTotal
                       + dTotalOutrasFormas;
       end;
-      //
-      // SmallMsg(Format('%20.10n',[Abs(fTotal - fTotalPago)]));
-      //
     end;
-    //
-    //  Form1.Repaint;
-    //
+
+
+
     if bVolta = False then
     begin
-      //
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
       Button18.Enabled := False;
       //
       bFechado := False;
-      //
+
       if fTotal = 0 then // Cupom com valor zerado
       begin
-        //
         bFechado := False;
-        //
         bFechado := Form1.PDV_CancelaUltimoCupom(False); // Button18Click()
-        //
+
         if not bFechado then
         begin
           SmallMsg('Não é possível fechar o cupom com valor zerado.');
@@ -11107,7 +11114,6 @@ begin
           end;
           Demais('NC');
         end;
-        //
       end else
       begin
         if ((Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99')) or (Form1.ClienteSmallMobile.sLogRetornoMobile = '') then
@@ -11173,21 +11179,17 @@ begin
             except
               on E: Exception do SmallMsg('Erro 567: '+chr(10)+chr(10)+ E.Message +chr(10)+chr(10)+ Form1.IBQuery1.SQL.Text);
             end;
-
-            //
           end;
 
-          //
           Form1.sMensagemNFMod02 := ''; // Sandro Silva 2017-11-07 Polimig
           if AllTrim(sReferenteNFModelo2) <> '' then
           begin
-            //
             IBQMODELO02 := CriaIBQuery(Form1.ibDataSet27.Transaction);// Tem que estar na mesma transação de IBDATASET27 que lança os dados do cupom
             IBQMODELO02.Close;
             IBQMODELO02.SQL.Clear;
             IBQMODELO02.SQL.Add('select * from ALTERACA where PEDIDO= '+QuotedStr(FormataNumeroDoCupom(Form1.iCupom))+' and CAIXA='+QuotedStr(sCAIXA)+' '); // Sandro Silva 2020-10-16 IBQMODELO02.SQL.Add('select * from ALTERACA where PEDIDO= '+QuotedStr(StrZero(iCupom,6,0))+' and CAIXA='+QuotedStr(sCAIXA)+' ');
             IBQMODELO02.Open;
-            //
+
             // 2015-10-08 COO e CCF para DESCONTOS. IBDATASET27 não grava COO e CCF para os descontos do cupom
             sCOOModelo02    := '';
             sCCFModelo02    := '';
@@ -11201,10 +11203,8 @@ begin
                 sCCFModelo02 := IBQMODELO02.FieldByName('CCF').AsString;
               end;
 
-              //
               try
                 // Precisa usar IBDATASET27 para que os registros inseridos fiquem assinados corretamente
-                //
                 ibQuery6.Close;
                 ibQuery6.SQL.Clear;
                 ibQuery6.SQL.Add('insert into ALTERACA ('+
@@ -11361,10 +11361,8 @@ begin
             FreeAndNil(IBQMODELO02); // 2015-10-08
           end; // if AllTrim(sReferenteNFModelo2) <> '' then
 
-          //
           if AllTrim(Form2.Edit8.Text) <> '' then // Nome do cliente preenchido
           begin
-            //
             Mais1ini :=  TIniFile.Create(Form1.sAtual+'\LABELS.INI');
             //
             if (AllTrim(Form2.Edit8.Text) = AllTrim(Form1.ibDataSet2.FieldByName('NOME').AsString)) then
@@ -11375,7 +11373,6 @@ begin
               if bImp4 then sLabels := sLabels + Mais1ini.ReadString('CLIENTES','Label22','Conjuge')   + ': ' + ibDataSet2.FieldByName('IDENTIFICADOR3').AsString + Chr(10);
               if bImp5 then sLabels := sLabels + Mais1ini.ReadString('CLIENTES','Label23','Natural')   + ': ' + ibDataSet2.FieldByName('IDENTIFICADOR4').AsString + Chr(10);
               if bImp1 then sLabels := sLabels + Mais1ini.ReadString('CLIENTES','Label19','Profissão') + ': ' + ibDataSet2.FieldByName('IDENTIFICADOR5').AsString + Chr(10);
-              //
             end;
             //
             Mais1Ini.Free;
@@ -11466,9 +11463,8 @@ begin
                 end;
               end;
             end;
-            //
           end;
-          //
+
           if AllTrim(Form1.sSeriais) <> '' then
             Form1.sMensagemPromocional := Form1.sSeriais + chr(10) +  Form1.sMensagemPromocional; 
 
@@ -11486,7 +11482,6 @@ begin
 
           if PAFNFCE = False then
           begin
-
             //
             if (Copy(Form1.sConcomitante,1,3) = 'DAV') then
             begin
@@ -11495,7 +11490,6 @@ begin
               if AllTrim(Form1.sOS)     <> '' then
                 Form1.sMensagemPromocional := 'DAV-OS ' + sOS     + ' CONF OS '    + chr(10) + Form1.sMensagemPromocional;
             end;
-
           end
           else
           begin
@@ -11520,8 +11514,6 @@ begin
 
           end;
 
-          //
-          //
           //2024-03-13 Form1.sMD5DaLista := MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT'));
           Form1.sMD5DaLista := LowerCase(MD5File((Form1.sPastaDoExecutavel+'\LISTA.TXT')));
           //
@@ -11642,11 +11634,9 @@ begin
                     Sleep(5000);
                   end else
                   begin
-                    //
                     bChaveTeste := False;
                     bNaoAbriu   := False;
 
-                    //
                     AssignFile(F, ('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp'));
                     Rewrite(F);
                     //NCN Não confirmação da venda e/ou da impressão.
@@ -11710,9 +11700,7 @@ begin
               if bFechado then
                 GeraEstoqueDia(DateToStr(Date));//
             end;
-            //
           end;
-          //
 
           if (Form1.ClienteSmallMobile.sVendaImportando <> '') and (bFechado = False) then
           begin
@@ -11753,9 +11741,7 @@ begin
 
           if bFechado then
           begin
-            //
             try
-              //
               iCOO := 0;
               iCCF := 0;
               //
@@ -11837,7 +11823,6 @@ begin
 
                   Form1.ibDataSet27.First;
                 end;
-
               end;
 
               if Trim(Form1.sDataDoCupom) = '' then
@@ -11845,12 +11830,12 @@ begin
 
               if bNFCeUsoDenegado = False then // Sandro Silva 2020-05-18
               begin
-
+                {$Region'//// Total do documento ////'}
                 if (Form1.ibDataSet25.FieldByName('RECEBER').AsFloat <> 0) then   // Total do documento
                 begin
                   try
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-01 Form1.ibDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-01 Form1.ibDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
@@ -11861,21 +11846,19 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '00 Total';
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('RECEBER').AsFloat * -1));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('RECEBER').AsFloat * -1;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
-
                 end;
-                //
-                if (Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat <> 0) then  // Cheque
-                begin
+                {$Endregion}
 
+                {$Region'//// Cheque ////'}
+                if (Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat <> 0) then
+                begin
                   try
-                    //
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-01 Form1.ibDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-01 Form1.ibDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
@@ -11887,14 +11870,14 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '01 Em cheque';
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
-
                 end;
-                //
+                {$Endregion}
+
+                {$Region'//// Dinheiro ////'}
                 if (Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat <> 0) then // Dinheiro
                 begin
                   sFormaDinheiro := '02 Dinheiro';
@@ -11903,7 +11886,7 @@ begin
 
                   try
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString       := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString       := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString       := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString       := StrZero(iCCF, 6, 0); //
@@ -11914,17 +11897,16 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString     := sFormaDinheiro;
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
-
                 end;
-                //
+                {$Endregion}
+
+                {$Region'//// Cartão ////'}
                 if (Form1.ibDataSet25.FieldByName('PAGAR').AsFloat <> 0) then // Cartao
                 begin
-                  //
                   try
                     for iTransacaoCartao := 0 to Form1.TransacoesCartao.Transacoes.Count -1 do  // Um registro para cada transação com cartão
                     begin
@@ -11939,7 +11921,7 @@ begin
                         {Sandro Silva 2023-07-25 fim}
 
                         Form1.ibDataSet28.Append;
-                        //
+
                         Form1.ibDataSet28.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
                         Form1.ibDataSet28.FieldByName('COO').AsString       := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString       := StrZero(iCOO, 6, 0); //
                         Form1.ibDataSet28.FieldByName('CCF').AsString       := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString       := StrZero(iCCF, 6, 0); //
@@ -11998,7 +11980,6 @@ begin
 
                         //
                         Form1.ibDataSet28.Post;
-                        //
                       except
                       end;
                     end; // for iTransacaoCartao := 0 to Form1.TransacoesCartao.Transacoes.Count -1 do
@@ -12010,23 +11991,22 @@ begin
                       Form1.IntegradorCE.UltimoidPagamento := '';
                     end;
                     }
-
-
                   except
 
                   end;
-                end; // Fim Cartão
-                //
+                end;
+                {$Endregion}
+
+                {$Region'//// Prazo ////'}
                 if (Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat <> 0) then // Prazo
                 begin
-                  //
                   try
                     sFormaPrazo := '04 A prazo';
                     if Form1.sModeloECF = '65' then
                       sFormaPrazo := '04 A prazo NFC-e';
 
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString       := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString       := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString       := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString       := StrZero(iCCF, 6, 0); //
@@ -12038,19 +12018,19 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString     := sFormaPrazo;
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('DIFERENCA_').Asfloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
                 end;
-                //
-                if (Form1.ibDataSet25.FieldByName('VALOR01').AsFloat <> 0) then // Extra 1
+                {$Endregion}
+
+                {$Region'//// Extra 1 ////'}
+                if (Form1.ibDataSet25.FieldByName('VALOR01').AsFloat <> 0) then
                 begin
-                  //
                   try
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime    := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString       := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString       := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString       := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString       := StrZero(iCCF, 6, 0); //
@@ -12061,9 +12041,8 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString     := '05 ' + AllTrim(Form2.Label18.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR01').AsFloat)); // Sandro Silva 2016-09-05 Form1.ibDataSet25.FieldByName('VALOR01').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
 
@@ -12075,13 +12054,14 @@ begin
                   {Sandro Silva 2021-07-27 fim}
 
                 end;
-                //
-                if (Form1.ibDataSet25.FieldByName('VALOR02').AsFloat <> 0) then // Extra 2
+                {$Endregion}
+
+                {$Region'//// Extra 2 ////'}
+                if (Form1.ibDataSet25.FieldByName('VALOR02').AsFloat <> 0) then
                 begin
-                  //
                   try
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
@@ -12092,9 +12072,8 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '06 ' + AllTrim(Form2.Label19.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR02').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('VALOR02').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
 
@@ -12104,15 +12083,15 @@ begin
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
-
                 end;
-                //
-                if (Form1.ibDataSet25.FieldByName('VALOR03').AsFloat <> 0) then // Extra 3
+                {$Endregion}
+
+                {$Region'//// Extra 3 ////'}
+                if (Form1.ibDataSet25.FieldByName('VALOR03').AsFloat <> 0) then
                 begin
-                  //
                   try
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
@@ -12123,9 +12102,8 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '07 ' + AllTrim(Form2.Label20.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR03').AsFloat)); // Sandro Silva 2016-09-05 Form1.ibDataSet25.FieldByName('VALOR03').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
 
@@ -12135,15 +12113,15 @@ begin
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
-
                 end;
-                //
-                if (Form1.ibDataSet25.FieldByName('VALOR04').AsFloat <> 0) then // Extra 4
+                {$Endregion}
+
+                {$Region'//// Extra 4 ////'}
+                if (Form1.ibDataSet25.FieldByName('VALOR04').AsFloat <> 0) then
                 begin
-                  //
                   try
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
@@ -12154,9 +12132,8 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '08 ' + AllTrim(Form2.Label21.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR04').AsFloat)); // Sandro Silva 2016-09-05 Form1.ibDataSet25.FieldByName('VALOR04').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
 
@@ -12166,15 +12143,15 @@ begin
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
-
                 end;
-                //
-                if (Form1.ibDataSet25.FieldByName('VALOR05').AsFloat <> 0) then // Extra 5
+                {$Endregion}
+
+                {$Region'//// Extra 5 ////'}
+                if (Form1.ibDataSet25.FieldByName('VALOR05').AsFloat <> 0) then
                 begin
-                  //
                   try
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
@@ -12185,9 +12162,8 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '09 ' + AllTrim(Form2.Label22.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR05').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('VALOR05').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
 
@@ -12197,15 +12173,15 @@ begin
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
-
                 end;
-                //
-                if (Form1.ibDataSet25.FieldByName('VALOR06').AsFloat <> 0) then // Extra 6
+                {$Endregion}
+
+                {$Region'//// Extra 6 ////'}
+                if (Form1.ibDataSet25.FieldByName('VALOR06').AsFloat <> 0) then
                 begin
-                  //
                   try
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
@@ -12216,9 +12192,8 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '10 ' + AllTrim(Form2.Label23.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR06').AsFloat)); // Sandro Silva 2016-09-05 Form1.ibDataSet25.FieldByName('VALOR06').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
 
@@ -12228,15 +12203,15 @@ begin
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
-
                 end;
-                //
-                if (Form1.ibDataSet25.FieldByName('VALOR07').AsFloat <> 0) then // Extra 7
+                {$Endregion}
+
+                {$Region'//// Extra 7 ////'}
+                if (Form1.ibDataSet25.FieldByName('VALOR07').AsFloat <> 0) then
                 begin
-                  //
                   try
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
@@ -12247,9 +12222,8 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '11 ' + AllTrim(Form2.Label24.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR07').AsFloat));// Sandro Silva 2016-09-05 Form1.ibDataSet25.FieldByName('VALOR07').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
 
@@ -12259,15 +12233,15 @@ begin
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
-
                 end;
-                //
-                if (Form1.ibDataSet25.FieldByName('VALOR08').AsFloat <> 0) then // Extra 8
+                {$Endregion}
+
+                {$Region'//// Extra 8 ////'}
+                if (Form1.ibDataSet25.FieldByName('VALOR08').AsFloat <> 0) then
                 begin
-                  //
                   try
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
@@ -12278,9 +12252,8 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '12 ' + AllTrim(Form2.Label25.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR08').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('VALOR08').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
 
@@ -12290,14 +12263,15 @@ begin
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
-
                 end;
+                {$Endregion}
+
+                {$Region'//// Troco ////'}
                 // Sempre cria Troco
                 begin
-                  //
                   try
                     Form1.ibDataSet28.Append;
-                    //
+
                     Form1.ibDataSet28.FieldByName('DATA').AsDateTime   := StrToDate(Form1.sDataDoCupom);
                     Form1.ibDataSet28.FieldByName('COO').AsString      := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('COO').AsString      := StrZero(iCOO, 6, 0); //
                     Form1.ibDataSet28.FieldByName('CCF').AsString      := FormataNumeroDoCupom(iCCF); // // Sandro Silva 2021-12-02 Form1.ibDataSet28.FieldByName('CCF').AsString      := StrZero(iCCF, 6, 0); //
@@ -12309,17 +12283,16 @@ begin
                     if Form1.ibDataSet25.FieldByName('ACUMULADO3').AsFloat <> 0 then
                       Form1.ibDataSet28.FieldByName('VALOR').AsFloat    := StrToFloat(FormatFloat('0.00', Abs(Form1.ibDataSet25.FieldByName('ACUMULADO3').AsFloat)));// Sandro Silva 2017-05-20  StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('ACUMULADO3').AsFloat * -1));// Sandro Silva 2016-09-05 Form1.ibDataSet25.FieldByName('ACUMULADO3').AsFloat * -1;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
-                    //
+
                     Form1.ibDataSet28.Post;
-                    //
                   except
                   end;
                 end;
+                {$Endregion}
 
                 //Aqui confere as formas de pagamento para NFC-e se não existir forma corretamente importa do xml?
                 if (Form1.sModeloECF = '65') then
                 begin
-
                   Form1.ibDataSet28.First;
                   Form1.ibDataSet28.Last;
 
@@ -12370,10 +12343,9 @@ begin
               end;// if bNFCeUsoDenegado = False then
             except  end;
           end;// if bFechado then
-
         end; // Sem log mobile ou ECF
       end;
-      //
+
       Form1.Top    := 0;
       Form1.Left   := 0;
       Form1.Width  := Screen.Width;
@@ -12414,25 +12386,24 @@ begin
           //
           Form1.Display('Aguarde...','Aguarde...');
           Form1.Repaint;
-          //
         end;
+
+
         //----------------------------------------- //
-        //                                          //
         //                 C A R N Ê                //
-        //                                          //
         //----------------------------------------- //
         if (Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat <> 0) and (Form1.icupom <> 0) then
         begin
-          //
+
+          {$Region'//// Carnê ////'}
           sCupomFiscalVinculado := Replicate('-',39);
           for I := 1 to (Length(Form1.sPrazo) div 20) do
           begin
-            //
             if AllTrim(Form1.ibDataSet2.FieldByName('CONVENIO').AsString) <> '' then
               sConvenio := Copy('Convênio: '+Form1.ibDataSet2.FieldByName('CONVENIO').AsString + Replicate(' ',40),1,39)+ chr(10)
             else
               sConvenio := '';
-             //
+
             if Form1.bCarneResumido then
             begin
               if i = 1 then
@@ -12467,27 +12438,18 @@ begin
                 Copy('Vencimento: '+Copy(Form1.sPrazo,01+(I*21)-21,10)             + Replicate(' ',40),1,39)+ chr(10) +
                 Copy('Valor R$: '+Copy(Form1.sPrazo,11+(I*21)-21,10)               + Replicate(' ',40),1,39)+ chr(10)+
                 Copy(Replicate('-',40),1,39)+ chr(10);
-             //
+
             end;
           end;
+          {$Endregion}
 
           if Form1.bCarneResumido then
             sCupomfiscalVinculado := sCupomfiscalVinculado + Copy(Replicate('-',40),1,39)+ chr(10);
 
-          ////////////////
-          //            //
-          // C A R N Ê  //
-          //            //
-          ////////////////
+          {$Region'//// Promissória //// '}
           if Form1.sPromissoria = 'Sim' then
           begin
-            //----------------------------------------- //
-            //                                          //
-            //                 PROMISSOÓIA              //
-            //                                          //
-            //----------------------------------------- //
             try
-              //
               sCupomfiscalVinculado := sCupomfiscalVinculado +
               Copy('           NOTA PROMISSORIA'+ Replicate(' ',40),1,39)+ chr(10) +
               Copy(Replicate('-',40),1,39)+ chr(10)+
@@ -12504,16 +12466,12 @@ begin
               Copy(Form1.ibDataSet2.FieldByName('NOME').AsString                     + Replicate(' ',40),1,39)+ chr(10) +
               Copy(Form1.ibDataSet2.FieldByName('CGC').AsString                     + Replicate(' ',40),1,39)+ chr(10)+
               Copy(Replicate('-',40),1,39)+ chr(10);
-              //
-            except end;
-            //----------------------------------------- //
-            //                                          //
-            //                 PROMISSOÓIA              //
-            //                                          //
-            //----------------------------------------- //
+            except
+            end;
           end;
-          //
-          if bNFCeUsoDenegado = False then // Sandro Silva 2020-05-18 
+          {$Endregion}
+
+          if bNFCeUsoDenegado = False then // Sandro Silva 2020-05-18
           begin
             for I:= 1 to iVias do
             begin
@@ -12523,12 +12481,9 @@ begin
               if bRetornoComando then
                 Demais('RG'); //2015-10-06 Inserir em DEMAIS 1 RG para cada via do vinculado impressa
             end;
-          end; // if bNFCeUsoDenegado = False then
-          //
-          // 2015-10-06 Demais('RG');
-          //
-        end; // if (Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat <> 0) and (Form1.icupom <> 0) then
-        //
+          end;
+        end;
+
         //---------------------------------------------------  //
         //                                                     //
         // Grava no arquivo alteraca os descontos e acréscimos //
@@ -12555,7 +12510,6 @@ begin
         //
       end else
       begin
-
         if Form1.sTef = 'Sim' then
         begin
           if AllTrim(Form1.OkSim) = '0' then
@@ -12586,7 +12540,6 @@ begin
           //quando excluir se deu tudo certo?
         end;
 
-        //
         DeleteFile('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.001');
         DeleteFile('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.STS');
         DeleteFile('c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
@@ -12626,12 +12579,11 @@ begin
         Screen.Cursor := crDefault; // Cursor normal
         if (Form1.ClienteSmallMobile.sVendaImportando = '') then
           Edit1.SetFocus;
-        //
-        Abort;
-        //
-      end; // if bFechado then
 
-      //-------------------------------------------------
+        Abort;
+      end;
+
+      {$Region'//// TEF ////'}
       if (AllTrim(sCupomTef) <> '') then
       begin
         //
@@ -12648,6 +12600,7 @@ begin
         Form1.Width  := Screen.Width;
         Form1.Height := Screen.Height;
         Form1.Repaint;
+
         ////////////////
         //            //
         // T  E   F   //
@@ -12853,7 +12806,7 @@ begin
           //
           // 2015-09-08 if FunctionDetect('USER32.DLL','BlockInput',@xBlockInput) then xBlockInput(False);  // Enable Keyboard & mouse
         end;
-        //
+
         AtivaGeranciadorPadrao(Form1.sDiretorio, Form1.sReq, Form1.sResp, Form1.sExec, '');
         //
         if FileExists('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.STS') then
@@ -12892,12 +12845,8 @@ begin
               TEFDeletarCopiasArquivos(DIRETORIO_BKP_TEF); // Sandro Silva 2017-06-30
 
             Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31  Form1.Panel3.Visible := False; // Sandro Silva 2018-07-03
-
           end else
           begin
-            //
-            // Não
-            //
             if AllTrim(Form1.OkSim) <> 'FF' then // Ronei Mudei aqui
             begin                                  //
               Form1.ExibePanelMensagem('Desfazendo a transação do último cartão'); // Sandro Silva 2017-09-15
@@ -12923,6 +12872,8 @@ begin
                 TEFCancelarTransacoesDemaisCartoes(sDiretorio, sREQ, sRESP); // Sandro Silva 2017-06-14
 
               Sleep(1000);
+
+              {$Region'//// Impressão dos cancelamentos ////'}
               if Form1.sCupomTEFCancelado <> '' then
               begin
                 /////////////////////////////////////////
@@ -12988,44 +12939,39 @@ begin
                 /////////////////////////////////////////
 
               end;
+              {$Endregion}
 
               SmallMsgBox(pChar('Última transação TEF não foi efetuada. Favor reter o cupom.'+
                                  Chr(10)+
                                  // Chr(10)+'Rede: '+Form1.sNomeRede+
                                  Chr(10)+'NSU: '+Form1.sTransaca),'Atenção!',mb_Ok + MB_ICONERROR);
-              //
             end;
           end;
-          //
+
           DeleteFile('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.001');
           DeleteFile('c:\'+sDiretorio+'\'+sRESP+'\INTPOS.STS');
           DeleteFile('c:\'+sDiretorio+'\'+sREQ+'\IntPos.tmp');
           DeleteFile('c:\'+sDiretorio+'\'+sREQ+'\INTPOS.001');
           DeleteFile(('c:\'+sDiretorio+'.res'));
-          //
         end else
         begin
           SmallMsgBox('O gerenciador padrão não está ativo. Cod: 999','Operador',mb_Ok + MB_ICONEXCLAMATION);
         end;
       end;
-      //
-      //-------------------------------------------------
-      //
+      {$Endregion}
     end;
-    //
-    //
+
     // if not bVolta then
     begin
-      //
       if Form1.bNFazMaisNada then
         Abort;
-      //
+
       Panel3.Visible  := False;
-      //
+
       Label_11.Caption := Right(Replicate(' ',8)+'0,00',8);
       Label_12.Caption := Right(Replicate(' ',8)+'0,00',8);
       Label_13.Caption := Right(Replicate(' ',8)+'0,00',8);
-      //
+
       Form1.Top    := 0;
       Form1.Left   := 0;
       Form1.Width  := Screen.Width;
@@ -13078,7 +13024,7 @@ begin
           Form1.ibDataSet27.Next;
         end;
       end;
-      //
+
       Button4.Enabled := True;
 
       Label_7.Caption := 'Aguarde, atualizando valor do dia...';
@@ -17621,6 +17567,20 @@ begin
   end;
 end;
 
+//Mauricio Parizotto 2024-04-30
+procedure TForm1.DefineUsoPIXEstatico;
+var
+  oArq : TiniFile;
+begin
+  oArq := TIniFile.Create('FRENTE.INI');
+  try
+    bUsaPixEstatico     := AnsiUpperCase(oArq.ReadString('Frente de caixa', 'USA PIX ESTATICO', _cNao)) = AnsiUpperCase(_cSim);
+    PIXEsttico1.Checked := bUsaPixEstatico;
+  finally
+    oArq.Free;
+  end;
+end;
+
 {Dailon (f-7256) 2023-08-29 inicio}
 procedure TForm1.ChamarTelaConfiguracaoTEF;
 var
@@ -17640,7 +17600,7 @@ end;
 procedure TForm1.EF1Click(Sender: TObject);
 begin
   ChamarTelaConfiguracaoTEF;
-  //                
+  //
   {Sandro Silva 2022-02-14 inicio}
   
   if Form1.sTef = _cSim then
@@ -27464,6 +27424,27 @@ begin
   GravarParametroIni('Frente.ini', 'Frente de caixa', CHAVE_PESQUISA_CONTENDO, 'Não');
   Form1.Pesquisaremqualquerpartedotexto1.Checked := False;
   Form1.Pesquisarpeloinciodotexto1.Checked       := True;
+end;
+
+//Mauricio Parizotto 2024-04-30
+procedure TForm1.PIXEsttico1Click(Sender: TObject);
+var
+  oArq : TiniFile;
+  Valor : string;
+begin
+  if PIXEsttico1.Checked then
+    Valor := _cNao
+  else
+    Valor := _cSim;
+
+  oArq := TIniFile.Create('FRENTE.INI');
+  try
+    oArq.WriteString('Frente de caixa', 'USA PIX ESTATICO', Valor);
+  finally
+    oArq.Free;
+  end;
+
+  DefineUsoPIXEstatico;
 end;
 
 procedure TForm1.Pesquisaremqualquerpartedotexto1Click(Sender: TObject);
