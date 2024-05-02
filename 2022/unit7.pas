@@ -18633,6 +18633,10 @@ var
   I: Integer;
   ItemNFe: TItemNFe; 
 begin
+
+  LogSistema('Início TForm7.ibDataSet16DESCRICAOChange( 18637 ' + QuotedStr(ibDataSet16DESCRICAO.AsString), lgInformacao); // Sandro Silva 2024-04-16
+
+
   try
     //Form7.ibDataSet4.DisableControls; // Sandro Silva 2023-05-08 Teste de otimização
     try
@@ -18653,6 +18657,8 @@ begin
         //
         // Procura por: código
         //
+        { Sandro Silva 2024-04-30
+        f-17706 Testando lentidão quando navega nos itens da nota, teclando Enter
         if (Length(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet16DESCRICAO.AsString))<>'') then
         begin
           if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
@@ -18663,6 +18669,23 @@ begin
             Form7.ibDataSet4.Open;
           end;
         end;
+        }
+        if (Length(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet16DESCRICAO.AsString))<>'') then
+        begin
+          if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
+          begin
+            Form7.ibDataSet4.Close;
+            Form7.ibDataSet4.Selectsql.Clear;
+            Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString));
+            Form7.ibDataSet4.Open;
+          end;
+        end
+        else
+        begin
+          if Trim(Form7.ibDataSet16CODIGO.AsString) <> '' then
+            bFind := Form7.ibDataSet4.Locate('CODIGO', Form7.ibDataSet16CODIGO.AsString, []);
+        end;
+        {Sandro Silva 2024-04-30 fim}
 
         if Form7.ibDataSet16DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString then
         begin
@@ -19313,12 +19336,18 @@ begin
   finally
     // Form7.ibDataSet4.EnableControls; // Sandro Silva 2023-05-08 Teste de otimização
   end;
+
+  LogSistema('Fim TForm7.ibDataSet16DESCRICAOChange( 19321 ' + QuotedStr(ibDataSet16DESCRICAO.AsString), lgInformacao); // Sandro Silva 2024-04-16
+
 end;
 
 
 procedure TForm7.ibDataSet16DESCRICAOSetText(Sender: TField;
   const Text: String);
 begin
+
+//  LogSistema('Início TForm7.ibDataSet16DESCRICAOSetText( 19323 ' + Text, lgInformacao); // Sandro Silva 2024-04-16
+
   // Localiza pela descricao
   if Limpanumero(Text) <> Text then
   begin
@@ -19357,6 +19386,9 @@ begin
   end;
   //
   ibDataSet16DESCRICAO.AsString := Text;
+
+//  LogSistema('Fim TForm7.ibDataSet16DESCRICAOSetText( 19323 ', lgInformacao); // Sandro Silva 2024-04-16
+
 end;
 
 function TestarNatOperacaoMovEstoque: Boolean;

@@ -1970,7 +1970,7 @@ begin
           if DbGrid1.SelectedIndex = 0 then
           begin
             Form1.bFlag := True;
-            //
+
             if Alltrim(Form7.ibDataSet16DESCRICAO.AsString) = AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
             begin
               Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
@@ -1978,6 +1978,7 @@ begin
             begin
               Form7.ibDataSet16DESCRICAO.AsString := AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
             end;
+
           end;
 
           I := DbGrid1.SelectedIndex;
@@ -1988,6 +1989,7 @@ begin
             Form7.ibDataSet16.Next;
             if Form7.ibDataSet16.EOF then Form7.ibDataSet16.Append;
           end;
+
         end else
         begin
           //Sai do Grid

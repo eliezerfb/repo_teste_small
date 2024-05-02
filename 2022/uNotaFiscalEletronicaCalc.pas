@@ -802,6 +802,8 @@ begin
       Calculando := True;
       sReg16 := DataSetItens.fieldByName('REGISTRO').AsString;
 
+      LogSistema('Início DataSetItens.Locate( 861 ', lgInformacao); // Sandro Silva 2024-04-16
+
       AtualizaValoresNota(DataSetNF, DataSetItens);
 
       //Faz Rateios dos Desconos e Acrecimos dos itens
