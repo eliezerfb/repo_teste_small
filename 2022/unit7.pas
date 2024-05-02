@@ -9101,6 +9101,8 @@ begin
       begin
         if not DenegadoOuCancelado(True) then
         begin
+
+          // Faz todas as etapas de transmissão, impressão, envio de email...
           EnviarConsultaImprimirDANFE;
 
           if Form7.sRPS = 'S' then
@@ -21388,7 +21390,7 @@ begin
         end;
       end else
       begin
-        //
+        // Executa .Edit porque em alguns eventos onChange dos campos executa .Post, ficando o DataSet em State dsBrowse
         Form7.ibDataSet15.Edit; Form7.ibDataSet15MERCADORIA.AsFloat    := 0;
         Form7.ibDataSet15.Edit; Form7.ibDataSet15DESCONTO.AsFloat      := 0;
         Form7.ibDataSet15.Edit; Form7.ibDataSet15SERVICOS.AsFloat      := 0; // Reaproveita a nota
@@ -23998,6 +24000,10 @@ begin
     if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
       Form7.ibDataset15.Edit;
     Form7.ibDataSet15NFEXML.AsString  := LoadXmlDestinatarioSaida(pChar(Form7.ibDataSet15NFEID.AsString));
+    {Sandro Silva 2024-04-15 inicio}
+    Form7.ibDataset15.Post;
+    Form7.ibDataset15.Edit;
+    {Sandro Silva 2024-04-15 fim}
   end else
   begin
     if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
@@ -24036,7 +24042,7 @@ begin
                   Form7.Panel7.Repaint;
                   sRetorno := spdNFe.EnviarNF(sLote, fNFe);
                   Screen.Cursor            := crHourGlass;
-                  
+
                   if Pos('<nRec>',sRetorno) <> 0 then
                   begin
                     sRecibo := Copy(sRetorno+'   ',Pos('<nRec>',sRetorno)+6,Pos('</nRec>',sRetorno)-Pos('<nRec>',sRetorno)-6);
@@ -24066,7 +24072,10 @@ begin
 
                 Form7.ibDataSet15NFEXML.AsString    := fNFe;
                 Form7.ibDataSet15MODELO.AsString    := '55';
-
+                {Sandro Silva 2024-04-15 inicio}
+                Form7.ibDataSet15.Post;
+                Form7.ibDataSet15.Edit;
+                {Sandro Silva 2024-04-15 fim}
                 if Alltrim(sRecibo) <> '' then
                 begin
                   if Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro' then
