@@ -15227,22 +15227,59 @@ begin
             Form7.IBDataSet2NOME.AsString   := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome'))), 1, Form7.IBDataSet2NOME.Size); // Sandro Silva 2024-01-15 PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome')));
             }
 
-          Form7.IBDataSet2CIDADE.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
+            cNome := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome'))), 1, Form7.IBDataSet2NOME.Size);
 
-          { Dailon 2023-08-01 Inicio}
-          slCNAE := TStringList.Create;
-          try
-            slCNAE.Text := getListaCnae;
-
-            for I := 0 to slCNAE.Count -1 do
+            if not TestarPodeCadastrarClifor(cNome, False) then
             begin
-              if Copy(slCNAE[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
+              // Verifica se pode concatenar direto o código da filial
+              if Length(cNome) + 5 > Form7.IBDataSet2NOME.Size then
               begin
-                Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(slCNAE[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
+                cNome := cNome + Replicate(' ', Form7.IBDataSet2NOME.Size - Length(cNome));
+                cNome := Copy(cNome, 1, Length(cNome) - 5);
               end;
+              cNome := cNome + ' ' + Copy(LimpaNumero(Form7.ibDataSet2CGC.AsString), 9, 4);
             end;
-          finally
-            FreeAndNil(slCNAE);
+
+            if not TestarPodeCadastrarClifor(cNome, False) then
+            begin
+              MensagemSistema('Cliente já cadastrado com o nome:' + sLineBreak +
+                              cNome + '.', msgInformacao);
+              Exit;
+            end;
+            Form7.IBDataSet2IE.AsString     := xmlNodeValue(sRetorno,'//IE');
+            Form7.IBDataSet2ESTADO.AsString := xmlNodeValue(sRetorno,'//UF');
+
+            Form7.IBDataSet2NOME.AsString := cNome;
+
+            {Dailon Parisotto (f-17692) 2024-04-12 Fim}
+            Form7.IBDataSet2ENDERE.AsString := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr'))), 1, Form7.IBDataSet2ENDERE.Size - TamanhoNumeroComplmento(', ' + xmlNodeValue(sRetorno,'//nro'))) + ', ' + PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//nro'))); // Sandro Silva 2024-01-15 PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')));
+            Form7.IBDataSet2COMPLE.AsString := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xBairro'))), 1, Form7.IBDataSet2COMPLE.Size);  // Sandro Silva 2024-01-15 PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xBairro')));
+            Form7.IBDataSet2CEP.AsString    := Copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
+            Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + xmlNodeValue(sRetorno,'//CNAE') + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
+
+            Form7.ibDataset99.Close;
+            Form7.ibDataset99.SelectSql.Clear;
+            Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where CODIGO='+QuotedStr(xmlNodeValue(sRetorno,'//cMun'))+' ');
+            Form7.ibDataset99.Open;
+
+            Form7.IBDataSet2CIDADE.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
+
+            { Dailon 2023-08-01 Inicio}
+            slCNAE := TStringList.Create;
+            try
+              slCNAE.Text := getListaCnae;
+
+              for I := 0 to slCNAE.Count -1 do
+              begin
+                if Copy(slCNAE[I],1,7) = xmlNodeValue(sRetorno,'//CNAE') then
+                begin
+                  Form7.IBDataSet2OBS.AsString    := 'CNAE: ' + AllTrim(slCNAE[I]) + ' ' + xmlNodeValue(sRetorno,'//xMotivo');
+                end;
+              end;
+            finally
+              FreeAndNil(slCNAE);
+            end;
+            { Dailon 2023-08-01 Fim}
           end;
         end;
       except
