@@ -35994,7 +35994,7 @@ end;
 function TForm7.TestarPodeUtilizarCIT(AcTexto: String): Boolean;
 begin
   Result := True;
-  if not smallfunc_xe.TestarPodeUtilizarCIT(Form7.IBTransaction1,
+  if not smallfunc_xe.TestarPodeUtilizarCIT(Form7.IBDatabase1,
                                             Form7.ibDataSet14.FieldByName('REGISTRO').AsString,
                                             AcTexto) then
 //                                            Form7.ibDataSet14.FieldByName('ST').AsString) then
