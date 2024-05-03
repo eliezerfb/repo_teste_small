@@ -655,8 +655,18 @@ begin
           //if allTrim(Form7.ibDAtaset2.FieldByname('IE').AsString) = '' then Mauricio Parizotto 2024-04-15
           if (allTrim(Form7.ibDAtaset2.FieldByname('IE').AsString) = '') or (Form7.ibDAtaset2.FieldByname('CONTRIBUINTE').AsString='9') then
           begin
+            {Mauricio Parizotto 2024-05-03 Inicio
             Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
+            }
             Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '9';   // 1-Contribuinte; 2-Isento; 9-Não contribuinte
+
+            //Mauricio Parizotto 2024-05-03
+            if Form7.ibDAtaset2.FieldByname('CONTRIBUINTE').AsString = '9' then
+              Form7.spdNFeDataSets.Campo('IE_E17').Value := trim(Form7.ibDAtaset2.FieldByname('IE').AsString)
+            else
+              Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
+
+            {Mauricio Parizotto 2024-05-03 Fim}
           end else
           begin
             if (not ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDAtaset2IE.AsString),Form7.ibDAtaset2ESTADO.AsString)) then
@@ -718,6 +728,7 @@ begin
       Form7.spdNFeDataSets.Campo('CEP_E13').Value         := '00000000'; // Cep do Destinatário
       Form7.spdNFeDataSets.Campo('fone_E16').Value        := '';        // Fone do Destinatário
       Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '9';      // Não Contribuinte
+      Form7.spdNFeDataSets.Campo('IE_E17').Value          := ''; //Mauricio Parizotto 2024-05-03
 
       if Form7.spdNFe.Ambiente = spdNFeType.akHomologacao then
       begin
@@ -795,6 +806,7 @@ begin
           Form7.spdNFeDataSets.Campo('xLocExporta_ZA03').Value   := sLocaldeEmbarque;                  // Local do embarque
           Form7.spdNFeDataSets.Campo('xLocDespacho_ZA04').Value  := sLocalDespacho;                  // Local do Despacho
           Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '9';  // 1-Contribuinte; 2-Isento; 9-Não contribuinte
+          Form7.spdNFeDataSets.Campo('IE_E17').Value          := ''; // Mauricio Parizotto 2024-05-03
 
           if AllTrim(sEx15) = '' then
           begin
@@ -963,7 +975,7 @@ begin
       I := I + 1;
 
       try
-        if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
+        //if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := ''; Mauricio Parizotto 2024-05-03
         if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
         Form7.spdNFeDataSets.SalvarItem;
       except
@@ -2406,8 +2418,10 @@ begin
     if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
     if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
     }
+    {Mauricio Parizotto 2024-05-03
     if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then
       Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
+    }
     if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then
       Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
     {Sandro Silva 2023-05-15 fim}
@@ -2674,8 +2688,10 @@ begin
           Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value := '0.00'; // Valor do COFINS em Reais
         end;
 
+        {Mauricio Parizotto 2024-05-03
         if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then
           Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
+        }
         if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then
           Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
 
