@@ -38,6 +38,7 @@ type
     procedure SelecionarAdministradora;
     procedure SelecionarAdquirente;
     procedure AcionaTEF;
+    function TestarZPOSLiberado: Boolean;
   public
     { Public declarations }
     sNomedoTef : String;
@@ -56,7 +57,8 @@ implementation
 
 uses fiscal
 //, _Small_IntegradorFiscal
-, ufuncoesfrente, uajustaresolucao;
+, ufuncoesfrente, uajustaresolucao, uValidaRecursos,
+  uTypesRecursos;
 
 {$R *.DFM}
 
@@ -657,6 +659,13 @@ begin
   end;
 end;
 
+function TForm10.TestarZPOSLiberado: Boolean;
+var
+  dLimiteRecurso : Tdate;
+begin
+  Result := (RecursoLiberado(Form1.IBDatabase1,rcZPOS,dLimiteRecurso));
+end;
+
 function TForm10.ListarTEFAtivos(
   SelecionarUnicoCadastrado: Boolean): Boolean;
 var
@@ -683,12 +692,15 @@ begin
       ListBox1.Clear;
       for I := 0 to (sSecoes.Count - 1) do
       begin
-        if Mais1Ini.ReadString(sSecoes[I],'bAtivo','Não') = 'Sim' then
+        if (Pos('ZPOS', AnsiUpperCase(sSecoes[I])) <= 0) or (TestarZPOSLiberado) then
         begin
-          ListBox1.Items.Add(sSecoes[I]);
-          if Form10.sNomeDoTEF = sSecoes[I] then
-            ListBox1.ItemIndex := J;
-          J := J + 1;
+          if Mais1Ini.ReadString(sSecoes[I],'bAtivo','Não') = 'Sim' then
+          begin
+            ListBox1.Items.Add(sSecoes[I]);
+            if Form10.sNomeDoTEF = sSecoes[I] then
+              ListBox1.ItemIndex := J;
+            J := J + 1;
+          end;
         end;
       end;
 

@@ -14,7 +14,6 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   OnActivate = FormActivate
-  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
