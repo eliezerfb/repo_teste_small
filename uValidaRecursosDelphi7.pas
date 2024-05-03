@@ -10,8 +10,8 @@ uses
   , Variants
   , Windows
   , IniFiles
-  , IBDatabase
-  , IBQuery
+  , IBX.IBDatabase
+  , IBX.IBQuery
   , LbCipher
   , LbClass
   , uconstantes_chaves_privadas
