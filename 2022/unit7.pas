@@ -48,6 +48,8 @@ const ID_FILTRAR_FORMAS_GERAM_BOLETO = 15;
 const ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA = 05;
 const ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS = 1;
 
+const VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE = 'Consulte o recibo desta NF-e'; // Sandro Silva 2024-04-16
+
 //function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
 
 function Commitatudo(RefazSelect:Boolean): Boolean;
@@ -2420,6 +2422,7 @@ type
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
+    function nProtFromXml(sXML: String): String;
     function PermiteValidarSchema(DataSet: TDataSet): Boolean;
     procedure ValidarSchemaSefaz(NFeXml: String);
     procedure VerificarShemaXsd(NFeXml: String; bValidarNaSefaz: Boolean);
@@ -3177,48 +3180,48 @@ begin
     Form7.spdNFe.MaxSizeLoteEnvio := 500;
     Form7.spdNFe.DanfeSimplificado := False;
 
-    spdNFeDPEC1 := TspdNFeDPEC.Create(Application);
-    spdNFeDPEC1.VersaoManual := vm50;
-    spdNFeDPEC1.AnexarDanfePDF := False;
-    spdNFeDPEC1.DanfeSettings.FraseContingencia := 'Danfe em contingÍncia - Impresso em decorrÍncia de problemas tÈcnicos';
-    spdNFeDPEC1.DanfeSettings.FraseHomologacao := 'SEM VALOR FISCAL';
-    spdNFeDPEC1.DanfeSettings.QtdeCopias := 2;
-    spdNFeDPEC1.DanfeSettings.LineDelimiter := '|';
-    spdNFeDPEC1.DanfeSettings.InfCplMaxCol := 68;
-    spdNFeDPEC1.DanfeSettings.InfCplMaxRow := 7;
-    spdNFeDPEC1.DanfeSettings.ImprimirVolume := False;
-    spdNFeDPEC1.DanfeSettings.ImprimirDuplicata := True;
-    spdNFeDPEC1.DanfeSettings.MensagemPartilhaAutomatica := False;
-    spdNFeDPEC1.DanfeSettings.MensagemFCP := False;
-    spdNFeDPEC1.DanfeSettings.ImprimirUnidadeTributada := False;
-    spdNFeDPEC1.DanfeSettings.ImprimirObsCont := False;
-    spdNFeDPEC1.DanfeSettings.ImprimirFrenteVerso := fvDesabilitado;
-    spdNFeDPEC1.DanfeSettings.ImprimirLocalRetiradaEntrega := True;
-    spdNFeDPEC1.DanfeSettings.InfCplQuebrarLinhaAut := False;
-    spdNFeDPEC1.DanfeSettings.MensagemIcmsDesonerado := False;
-    spdNFeDPEC1.DanfeSettings.ImprimirVlrTotalDanfeSimplificado := False;
-    spdNFeDPEC1.DanfeSettings.MensagemIcmsMonofasico := False;
-    spdNFeDPEC1.CaracteresRemoverAcentos := '·ÈÌÛ˙‡ËÏÚ˘‚ÍÓÙ˚‰ÎÔˆ¸„ıÒÁ¡…Õ”⁄¿»Ã“Ÿ¬ Œ‘€ƒÀœ÷‹√’—«∫™';
-    spdNFeDPEC1.TipoCertificado := ckMemory;
-    spdNFeDPEC1.DiretorioTemplates := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Templates\vm50\DPEC';
-    spdNFeDPEC1.IgnoreInvalidCertificates := False;
-    spdNFeDPEC1.DiretorioLog := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\';
-    spdNFeDPEC1.Ambiente := akHomologacao;
-    spdNFeDPEC1.EmailSettings.Autenticacao := False;
-    spdNFeDPEC1.EmailSettings.TimeOut := 0;
-    spdNFeDPEC1.EmailSettings.ConteudoHtml := False;
-    spdNFeDPEC1.EmailSettings.UseSecureBlackBox := False;
-    spdNFeDPEC1.EmailSettings.QtdeTentativas := 0;
-    spdNFeDPEC1.EmailSettings.UseTLS := utNoTLSSupport;
-    spdNFeDPEC1.DiretorioEsquemas := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemas\vm50\DPEC';
-    spdNFeDPEC1.ConexaoSegura := False;
-    spdNFeDPEC1.TimeOut := 0;
-    spdNFeDPEC1.DiretorioLogErro := 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\';
-    spdNFeDPEC1.DiretorioTemporario := 'C:\ProgramData\';
-    spdNFeDPEC1.ModoOperacao := moNormal;
-    spdNFeDPEC1.EntregaXML := exEmail;
-    spdNFeDPEC1.AtualizarArquivoServidores := False;
-    spdNFeDPEC1.DiagnosticMode := False;
+    Form7.spdNFeDPEC1 := TspdNFeDPEC.Create(Application);
+    Form7.spdNFeDPEC1.VersaoManual := vm50;
+    Form7.spdNFeDPEC1.AnexarDanfePDF := False;
+    Form7.spdNFeDPEC1.DanfeSettings.FraseContingencia := 'Danfe em contingÍncia - Impresso em decorrÍncia de problemas tÈcnicos';
+    Form7.spdNFeDPEC1.DanfeSettings.FraseHomologacao := 'SEM VALOR FISCAL';
+    Form7.spdNFeDPEC1.DanfeSettings.QtdeCopias := 2;
+    Form7.spdNFeDPEC1.DanfeSettings.LineDelimiter := '|';
+    Form7.spdNFeDPEC1.DanfeSettings.InfCplMaxCol := 68;
+    Form7.spdNFeDPEC1.DanfeSettings.InfCplMaxRow := 7;
+    Form7.spdNFeDPEC1.DanfeSettings.ImprimirVolume := False;
+    Form7.spdNFeDPEC1.DanfeSettings.ImprimirDuplicata := True;
+    Form7.spdNFeDPEC1.DanfeSettings.MensagemPartilhaAutomatica := False;
+    Form7.spdNFeDPEC1.DanfeSettings.MensagemFCP := False;
+    Form7.spdNFeDPEC1.DanfeSettings.ImprimirUnidadeTributada := False;
+    Form7.spdNFeDPEC1.DanfeSettings.ImprimirObsCont := False;
+    Form7.spdNFeDPEC1.DanfeSettings.ImprimirFrenteVerso := fvDesabilitado;
+    Form7.spdNFeDPEC1.DanfeSettings.ImprimirLocalRetiradaEntrega := True;
+    Form7.spdNFeDPEC1.DanfeSettings.InfCplQuebrarLinhaAut := False;
+    Form7.spdNFeDPEC1.DanfeSettings.MensagemIcmsDesonerado := False;
+    Form7.spdNFeDPEC1.DanfeSettings.ImprimirVlrTotalDanfeSimplificado := False;
+    Form7.spdNFeDPEC1.DanfeSettings.MensagemIcmsMonofasico := False;
+    Form7.spdNFeDPEC1.CaracteresRemoverAcentos := '·ÈÌÛ˙‡ËÏÚ˘‚ÍÓÙ˚‰ÎÔˆ¸„ıÒÁ¡…Õ”⁄¿»Ã“Ÿ¬ Œ‘€ƒÀœ÷‹√’—«∫™';
+    Form7.spdNFeDPEC1.TipoCertificado := ckMemory;
+    Form7.spdNFeDPEC1.DiretorioTemplates := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Templates\vm50\DPEC';
+    Form7.spdNFeDPEC1.IgnoreInvalidCertificates := False;
+    Form7.spdNFeDPEC1.DiretorioLog := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\';
+    Form7.spdNFeDPEC1.Ambiente := akHomologacao;
+    Form7.spdNFeDPEC1.EmailSettings.Autenticacao := False;
+    Form7.spdNFeDPEC1.EmailSettings.TimeOut := 0;
+    Form7.spdNFeDPEC1.EmailSettings.ConteudoHtml := False;
+    Form7.spdNFeDPEC1.EmailSettings.UseSecureBlackBox := False;
+    Form7.spdNFeDPEC1.EmailSettings.QtdeTentativas := 0;
+    Form7.spdNFeDPEC1.EmailSettings.UseTLS := utNoTLSSupport;
+    Form7.spdNFeDPEC1.DiretorioEsquemas := 'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemas\vm50\DPEC';
+    Form7.spdNFeDPEC1.ConexaoSegura := False;
+    Form7.spdNFeDPEC1.TimeOut := 0;
+    Form7.spdNFeDPEC1.DiretorioLogErro := 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\';
+    Form7.spdNFeDPEC1.DiretorioTemporario := 'C:\ProgramData\';
+    Form7.spdNFeDPEC1.ModoOperacao := moNormal;
+    Form7.spdNFeDPEC1.EntregaXML := exEmail;
+    Form7.spdNFeDPEC1.AtualizarArquivoServidores := False;
+    Form7.spdNFeDPEC1.DiagnosticMode := False;
 
   end;
 end;
@@ -7973,6 +7976,8 @@ end;
 { Joga p/obs a obs na tabela de icm }
 {                                   }
 function ObservacaoProduto(pP1:Boolean):Boolean;
+var
+  sSQLQuery14Old: String;
 begin
   // Relacionado ao produto
   //
@@ -7981,12 +7986,22 @@ begin
     try
       if Form7.IBQuery14.Active then
       begin
+        sSQLQuery14Old := Form7.IBQuery14.SQL.Text;
         if Pos(Alltrim(LimpaLetras(Form7.ibQuery14.FieldByname('OBS').AsString)),LimpaLetras(Form7.ibDataSet15COMPLEMENTO.AsString)) = 0 then
         begin
           {Sandro Silva 2023-11-28 inicio}
           if not (Form7.ibDataSet15.State in [dsEdit, dsInsert]) then
-            Form7.ibDataSet15.Edit; 
+            Form7.ibDataSet15.Edit;
           {Sandro Silva 2023-11-28 fim}
+          {Sandro Silva 2024-04-17 inicio}
+          // Sandro Silva 2024-04-17Precisa porque o Edit acima pode fechar a query
+          if Form7.IBQuery14.Active = False then
+          begin
+            Form7.IBQuery14.Close;
+            Form7.IBQuery14.SQL.Text := sSQLQuery14Old;
+            Form7.IBQuery14.Open;
+          end;
+          {Sandro Silva 2024-04-17 fim}
           Form7.ibDataSet15COMPLEMENTO.AsString := AllTrim(Form7.ibDataSet15COMPLEMENTO.AsString) + ' ' + Form7.ibQuery14.FieldByname('OBS').AsString; // Nunca limpa sÛ vai acrescentando OK
         end;
       end
@@ -9088,6 +9103,8 @@ begin
       begin
         if not DenegadoOuCancelado(True) then
         begin
+
+          // Faz todas as etapas de transmiss„o, impress„o, envio de email...
           EnviarConsultaImprimirDANFE;
 
           if Form7.sRPS = 'S' then
@@ -13190,6 +13207,23 @@ begin
         RRecuperaroXMLdestaNFe1.Enabled  := False;
       end;
 
+      //2024-04-12 Aqui buscar o protocolo no xml da NF-e 55?
+      {Sandro Silva 2024-04-12 inicio}
+      if Trim(Form7.ibDataSet15MODELO.AsString) = '55' then
+      begin
+        if Trim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '' then
+        begin
+          if AnsiContainsText(Form7.ibDataSet15STATUS.AsString, 'Autoriza') then
+          begin
+            Form7.ibDataSet15.Edit;
+            Form7.ibDataSet15NFEPROTOCOLO.AsString := nProtFromXml(Form7.ibDataSet15NFEXML.AsString);
+            Form7.ibDataSet15.Post;
+          end;
+        end;
+      end;
+      {Sandro Silva 2024-04-12 fim}
+
+
       if Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '' then
       begin
         N4ImprimirDANFE1.Enabled    := True;
@@ -13293,6 +13327,11 @@ begin
   PrvisualizarDANFE1.Visible := CancelarNFe1.Visible;
   PrvisualizarDANFE1.Enabled := ((Trim(Form7.ibDataSet15.FieldByName('NFEPROTOCOLO').AsString) = '') and (Form7.ibDataSet15.FieldByName('MODELO').AsString = '55'));
   {Sandro Silva 2022-09-12 fim}
+
+  {Sandro Silva 2024-04-17 inicio}
+  if Trim(Form7.ibDataSet15.FieldByName('STATUS').AsString) = VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE then
+    N1EnviarNFe1.Enabled := False;
+  {Sandro Silva 2024-04-17 inicio}
 
   DefinirCaptionHomologacaoPopUpMenuDocs;
 end;
@@ -21406,7 +21445,7 @@ begin
         end;
       end else
       begin
-        //
+        // Executa .Edit porque em alguns eventos onChange dos campos executa .Post, ficando o DataSet em State dsBrowse
         Form7.ibDataSet15.Edit; Form7.ibDataSet15MERCADORIA.AsFloat    := 0;
         Form7.ibDataSet15.Edit; Form7.ibDataSet15DESCONTO.AsFloat      := 0;
         Form7.ibDataSet15.Edit; Form7.ibDataSet15SERVICOS.AsFloat      := 0; // Reaproveita a nota
@@ -24016,6 +24055,10 @@ begin
     if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
       Form7.ibDataset15.Edit;
     Form7.ibDataSet15NFEXML.AsString  := LoadXmlDestinatarioSaida(pChar(Form7.ibDataSet15NFEID.AsString));
+    {Sandro Silva 2024-04-15 inicio}
+    Form7.ibDataset15.Post;
+    Form7.ibDataset15.Edit;
+    {Sandro Silva 2024-04-15 fim}
   end else
   begin
     if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
@@ -24054,7 +24097,7 @@ begin
                   Form7.Panel7.Repaint;
                   sRetorno := spdNFe.EnviarNF(sLote, fNFe);
                   Screen.Cursor            := crHourGlass;
-                  
+
                   if Pos('<nRec>',sRetorno) <> 0 then
                   begin
                     sRecibo := Copy(sRetorno+'   ',Pos('<nRec>',sRetorno)+6,Pos('</nRec>',sRetorno)-Pos('<nRec>',sRetorno)-6);
@@ -24084,10 +24127,14 @@ begin
 
                 Form7.ibDataSet15NFEXML.AsString    := fNFe;
                 Form7.ibDataSet15MODELO.AsString    := '55';
-
+                {Sandro Silva 2024-04-15 inicio}
+                Form7.ibDataSet15.Post;
+                Form7.ibDataSet15.Edit;
+                {Sandro Silva 2024-04-15 fim}
                 if Alltrim(sRecibo) <> '' then
                 begin
-                  if Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro' then Form7.ibDataSet15STATUS.AsString := 'Consulte o recibo desta NF-e'
+                  if Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro' then
+                    Form7.ibDataSet15STATUS.AsString := VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE; //Sandro Silva 2024-04-16 Form7.ibDataSet15STATUS.AsString := 'Consulte o recibo desta NF-e'
                 end else
                 begin
                   Form7.ibDataSet15STATUS.AsString := 'N„o foi possÌvel acessar o servidor da receita.';
@@ -24178,9 +24225,17 @@ begin
 
       Form7.ibDataSet15.Edit;
       Form7.ibDataSet15STATUS.AsString       := sStatus;
+      {Sandro Silva 2024-04-12 inicio}
+      if AnsiContainsText(sStatus, 'Autoriza') then
+      begin
+        if nProtFromXml(Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+          Form7.ibDataSet15NFEPROTOCOLO.AsString := nProtFromXml(Form7.ibDAtaSet15RECIBOXML.AsString);
+      end;
+      {Sandro Silva 2024-04-12 fim}
+
       Form7.ibDataSet15.Post;
       Form7.ibDataSet15.Edit;
-      
+
       if (Pos('<cStat>100</cStat>',Form7.ibDataSet15RECIBOXML.AsString) = 0) and (Pos('<cStat>105</cStat>',Form7.ibDataSet15RECIBOXML.AsString) = 0) then
       begin
         ExibeOrientacaoParaCorrigirErroAPartirDaRejeicaodeMedicamentos(Form7.ibDataSet15NFEXML.AsString, Form7.ibDataSet15RECIBOXML.AsString);
@@ -24219,6 +24274,7 @@ procedure TForm7.N3ConsultarNFe1Click(Sender: TObject);
 var
   sRetorno : String;
   sqlAntes : string;
+  sProtocoloNFe: String;
 begin
   try
     if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
@@ -24246,7 +24302,14 @@ begin
             
             Form7.ibDataSet15.Edit;
             Form7.ibDataset15STATUS.AsString       := Copy(Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9), 1, Form7.ibDataset15STATUS.Size);
+            {Sandro Silva 2024-04-12 inicio
             Form7.ibDataSet15NFEPROTOCOLO.AsString := Copy(sRetorno+'   ',Pos('<nProt>',sRetorno)+7,Pos('</nProt>',sRetorno)-Pos('<nProt>',sRetorno)-7);
+            }
+            sProtocoloNFe := nProtFromXml(sRetorno);
+            if (sProtocoloNFe <> '') and (sProtocoloNFe <> Form7.ibDataSet15NFEPROTOCOLO.AsString) then
+              Form7.ibDataSet15NFEPROTOCOLO.AsString := sProtocoloNFe;
+            {Sandro Silva 2024-04-12 fim}
+
             Form7.ibDataSet15.Post;
             Form7.ibDataSet15.Edit;
 
@@ -24274,14 +24337,14 @@ begin
               begin
                 PegaImpostosDoXML(Form7.ibDataSet15.FieldByName('NUMERONF').AsString);
               end;
-              
+
               try
                 // Relaciona a natureza da operaÁ„o com o arquivo de vendas
                 if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
                   Form7.ibDataSet14.Append
                 else
                   Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-                
+
                 if Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,5) = 'CAIXA' then
                 begin
                   //Mauricio Parizotto 2023-11-28
@@ -24713,6 +24776,11 @@ procedure TForm7.EnviarConsultaImprimirDANFE;
 var
   Hora, Min, Seg, cent : Word;
   tInicio : tTime;
+  function NaoEnviouAinda: Boolean;
+  begin
+    Result := (Form7.ibDataSet15STATUS.AsString <> VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE)
+              and (AnsiContainsText(Form7.ibDataSet15STATUS.AsString, 'Autorizado o uso') = False);
+  end;
 begin
   if Form7.sRPS = 'S' then
   begin
@@ -24735,7 +24803,9 @@ begin
             Form7.N3ConsultarNFe1Click(nil);
           end else
           begin
+            {Sandro Silva 2024-04-17 inicio
             Form7.N1EnviarNFe1Click(nil);
+
             Screen.Cursor            := crHourGlass;
             Form7.N2ConsultarrecibodaNFe1Click(nil); Screen.Cursor            := crHourGlass;
 
@@ -24748,7 +24818,8 @@ begin
             begin
               Form7.N1EnviarNFe1Click(nil);
               Screen.Cursor            := crHourGlass;
-              Form7.N2ConsultarrecibodaNFe1Click(nil); Screen.Cursor            := crHourGlass;
+              Form7.N2ConsultarrecibodaNFe1Click(nil);
+              Screen.Cursor            := crHourGlass;
 
               if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '') and
                  (Copy(Form7.ibDataSet15STATUS.AsString,1,8) <> 'Rejeicao') and
@@ -24757,6 +24828,52 @@ begin
                 Form7.N3ConsultarNFe1Click(nil);
               end;
             end;
+            }
+            Screen.Cursor            := crHourGlass;
+            if NaoEnviouAinda then
+              Form7.N1EnviarNFe1Click(nil);
+
+            Screen.Cursor            := crHourGlass;
+            Form7.N2ConsultarrecibodaNFe1Click(nil); Screen.Cursor            := crHourGlass;
+
+            if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '') and
+               (Copy(Form7.ibDataSet15STATUS.AsString,1,8) <> 'Rejeicao') and
+               (Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro') then
+            begin
+              Form7.N3ConsultarNFe1Click(nil);
+            end else
+            begin
+              if (AnsiContainsText(Form7.ibDataSet15STATUS.AsString, 'Autorizado o uso') = False) then
+              begin
+                Form7.N1EnviarNFe1Click(nil);
+                Screen.Cursor            := crHourGlass;
+                Form7.N2ConsultarrecibodaNFe1Click(nil);
+              end;
+
+              Screen.Cursor            := crHourGlass;
+
+              if ((Trim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '')
+                and AnsiContainsText(Form7.ibDataSet15STATUS.AsString, 'Autorizado o uso')) then
+                Form7.N3ConsultarNFe1Click(nil);
+
+              if ((Trim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '') and
+                 (Copy(Form7.ibDataSet15STATUS.AsString,1,8) <> 'Rejeicao') and
+                 (Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro')) then
+              begin
+                Form7.N3ConsultarNFe1Click(nil);
+              end;
+            end;
+
+            {
+            //AgendaCommit(True);
+            Commitatudo(True); // SQL - Commando
+
+            Form7.Close;
+            Form7.Show;
+            }
+            RefreshDados; // Commit, fecha e abre form7
+
+            {Sandro Silva 2024-04-17 fim}
           end;
 
           DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
@@ -30107,6 +30224,11 @@ begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   Mais1Ini.WriteString('NOTAS','default','SERIE XXX');
   Mais1Ini.Free;
+end;
+
+function TForm7.nProtFromXml(sXML: String): String;
+begin
+  Result := Copy(sXML + '   ', Pos('<nProt>', sXML) + 7, Pos('</nProt>', sXML) - Pos('<nProt>', sXML) - 7);
 end;
 
 procedure TForm7.miRelProdMonofasicosCupomClick(Sender: TObject);
