@@ -5,8 +5,6 @@ inherited FrmConversaoCFOP: TFrmConversaoCFOP
   inherited Panel_branco: TPanel
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
-      ExplicitLeft = 10
-      ExplicitTop = 105
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label129: TLabel
@@ -151,13 +149,18 @@ inherited FrmConversaoCFOP: TFrmConversaoCFOP
           Items.Strings = (
             ''
             '00 - Tributada integralmente'
+            '10 - Tributada e com cobran'#231'a de ICMS por ST'
             '20 - Com redu'#231#227'o de base de c'#225'lculo'
+            '30 - Isenta ou n'#227'o tributada e com cobran'#231'a do ICMS por ST'
             '40 - Isenta'
             '41 - N'#227'o tributada'
+            '50 - Suspens'#227'o'
+            '51 - Diferimento'
             '60 - ICMS Cobrado anteriormente por ST'
             
               '61 - Tributa'#231#227'o monof'#225'sica sobre combust'#237'veis cobrado anteriorme' +
               'nte'
+            '70 - Com red. de base de c'#225'lculo e cob. do ICMS por ST'
             '90 - Outras')
         end
         object cboCSOSN: TComboBox
@@ -178,10 +181,20 @@ inherited FrmConversaoCFOP: TFrmConversaoCFOP
           OnKeyDown = PadraoKeyDown
           Items.Strings = (
             ''
+            '101 - Tributada pelo Simples Nacional com permiss'#227'o de cr'#233'dito'
             '102 - Tributada pelo Simples Nacional sem permiss'#227'o de cr'#233'dito'
             
               '103 - Isen'#231#227'o do ICMS no Simples Nacional para faixa de receita ' +
               'bruta'
+            
+              '201 - Trib. pelo Simples Nacional com permiss'#227'o de cr'#233'dito e com' +
+              ' cobr. do ICMS por ST'
+            
+              '202 - Trib. pelo Simples Nacional sem permiss'#227'o de cr'#233'dito e com' +
+              ' cobr. do ICMS por ST '
+            
+              '203 - Isen'#231#227'o do ICMS no Simples Nacional para faixa de receita ' +
+              'bruta e com cobran'#231'a do ICMS por ST'
             '300 - Imune '
             '400 - N'#227'o tributada pelo Simples Nacional'
             

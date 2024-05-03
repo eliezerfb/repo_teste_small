@@ -85,6 +85,8 @@ type
     fraPlanoContas: TfFrameCampo;
     Label1: TLabel;
     SMALL_DBEdit1: TSMALL_DBEdit;
+    GroupBox1: TGroupBox;
+    chkPisCofinsSobLucro: TDBCheckBox;
     procedure DBMemo4Enter(Sender: TObject);
     procedure DBMemo4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
