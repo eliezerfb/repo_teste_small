@@ -2,10 +2,11 @@ object FrmSelecionarPIX: TFrmSelecionarPIX
   Left = 0
   Top = 0
   BorderIcons = []
+  BorderStyle = bsSingle
   Caption = 'Selecione a chave PIX'
   ClientHeight = 260
-  ClientWidth = 659
-  Color = clBtnFace
+  ClientWidth = 598
+  Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -13,14 +14,19 @@ object FrmSelecionarPIX: TFrmSelecionarPIX
   Font.Style = []
   Position = poScreenCenter
   PixelsPerInch = 96
+  DesignSize = (
+    598
+    260)
   TextHeight = 15
-  object DBGrid1: TDBGrid
-    Left = 0
-    Top = 0
-    Width = 659
-    Height = 219
-    Align = alClient
+  object dbgChavesPix: TDBGrid
+    Left = 20
+    Top = 15
+    Width = 558
+    Height = 182
+    Align = alCustom
+    Anchors = [akLeft, akTop, akRight]
     DataSource = DSBancosPIX
+    DrawingStyle = gdsClassic
     Options = [dgTitles, dgColumnResize, dgTabs, dgRowSelect, dgCancelOnExit]
     ReadOnly = True
     TabOrder = 0
@@ -29,7 +35,8 @@ object FrmSelecionarPIX: TFrmSelecionarPIX
     TitleFont.Height = -12
     TitleFont.Name = 'Segoe UI'
     TitleFont.Style = []
-    OnDblClick = DBGrid1DblClick
+    OnDblClick = dbgChavesPixDblClick
+    OnKeyDown = dbgChavesPixKeyDown
     Columns = <
       item
         Expanded = False
@@ -49,55 +56,39 @@ object FrmSelecionarPIX: TFrmSelecionarPIX
         Expanded = False
         FieldName = 'PIXCHAVE'
         Title.Caption = 'Chave'
-        Width = 315
+        Width = 219
         Visible = True
       end>
   end
-  object pnlMenu: TPanel
-    Left = 0
-    Top = 219
-    Width = 659
-    Height = 41
-    Align = alBottom
-    BevelOuter = bvNone
+  object btnSelect: TBitBtn
+    Left = 374
+    Top = 216
+    Width = 100
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Caption = 'Selecionar'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ModalResult = 1
+    ParentFont = False
     TabOrder = 1
-    ExplicitLeft = -257
-    ExplicitTop = 318
-    ExplicitWidth = 784
-    DesignSize = (
-      659
-      41)
-    object btnSelect: TBitBtn
-      Left = 500
-      Top = 8
-      Width = 75
-      Height = 25
-      Anchors = [akRight, akBottom]
-      Caption = 'Selecionar'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ModalResult = 1
-      ParentFont = False
-      TabOrder = 0
-      OnClick = btnSelectClick
-      ExplicitLeft = 625
-    end
-    object btnCancel: TBitBtn
-      Left = 580
-      Top = 8
-      Width = 75
-      Height = 25
-      Anchors = [akRight, akBottom]
-      Cancel = True
-      Caption = 'Cancelar'
-      ModalResult = 2
-      TabOrder = 1
-      OnClick = btnCancelClick
-      ExplicitLeft = 705
-    end
+    OnClick = btnSelectClick
+  end
+  object btnCancel: TBitBtn
+    Left = 479
+    Top = 216
+    Width = 100
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Cancelar'
+    ModalResult = 2
+    TabOrder = 2
+    OnClick = btnCancelClick
+    ExplicitLeft = 540
   end
   object DSBancosPIX: TDataSource
     Left = 392

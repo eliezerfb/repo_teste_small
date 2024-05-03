@@ -7,13 +7,43 @@ uses
   IBX.IBDatabase;
 
   function FormaPagamentoPix(DataSet : TibDataSet) : integer;
-  function PagamentoPixEstatico(Valor : double; out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
-  function GeraChavePixEstatica(pixtipochave,pixtitular,municipio,pixchave : string; Valor : Double ):string;
+  function PagamentoPixEstatico(Valor : double; IDTransacao : string; out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
+  function GeraChavePixEstatica(pixtipochave,pixtitular,municipio,pixchave,IDTransacao : string; Valor : Double ):string;
 
 implementation
 
-uses uConectaBancoSmall, ufrmSelecionarPIX, ufrmQRCodePixEst;
+{$R-} //Desativa Range check error
 
+uses
+  uConectaBancoSmall
+  , ufrmSelecionarPIX
+  , ufrmQRCodePixEst;
+
+
+function CRC16CCITT(texto: string): WORD;
+const
+  polynomial = $1021;
+var
+  crc: WORD;
+  i, j: Integer;
+  b: Byte;
+  bit, c15: Boolean;
+begin
+  crc := $FFFF;
+  for i := 1 to length(texto) do
+  begin
+    b := Byte(texto[i]);
+    for j := 0 to 7 do
+    begin
+      bit := (((b shr (7 - j)) and 1) = 1);
+      c15 := (((crc shr 15) and 1) = 1);
+      crc := crc shl 1;
+      if (c15 xor bit) then
+        crc := crc xor polynomial;
+    end;
+  end;
+  Result := crc and $FFFF;
+end;
 
 function FormaPagamentoPix(DataSet : TibDataSet) : integer;
 var
@@ -43,7 +73,7 @@ begin
   end;
 end;
 
-function PagamentoPixEstatico(Valor : double; out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
+function PagamentoPixEstatico(Valor : double; IDTransacao : string; out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
 var
   ibqBancos: TIBQuery;
   ChaveQRCode : string;
@@ -82,6 +112,7 @@ begin
                                         ibqBancos.FieldByName('PIXTITULAR').AsString,
                                         ibqBancos.FieldByName('MUNICIPIO').AsString,
                                         ibqBancos.FieldByName('PIXCHAVE').AsString,
+                                        IDTransacao,
                                         Valor
                                        );
 
@@ -95,9 +126,81 @@ begin
   end;
 end;
 
-function GeraChavePixEstatica(pixtipochave,pixtitular,municipio,pixchave : string; Valor : Double ):string;
+function GeraChavePixEstatica(pixtipochave,pixtitular,municipio,pixchave,IDTransacao : string; Valor : Double ):string;
+var
+  Payload : string;
+  PayloadFormat, MerchantAccount, MerchantCategoryCode, MerchantName,
+  MerchantCity, CountryCode, Additional, TransactionCurrency,
+  TransactionAmount, CRC16  : string;
+
+  function TamanhoTexto(texto : string) : string;
+  begin
+    Result := Format('%2.2d',[ Length(texto)]);
+  end;
+
+  function CRC16CCITT(texto: string): WORD;
+  const
+    polynomial = $1021;
+  var
+    crc: WORD;
+    i, j: Integer;
+    b: Byte;
+    bit, c15: Boolean;
+  begin
+    crc := $FFFF;
+    for i := 1 to length(texto) do
+    begin
+      b := Byte(texto[i]);
+      for j := 0 to 7 do
+      begin
+        bit := (((b shr (7 - j)) and 1) = 1);
+        c15 := (((crc shr 15) and 1) = 1);
+        crc := crc shl 1;
+        if (c15 xor bit) then
+          crc := crc xor polynomial;
+      end;
+    end;
+    Result := crc and $FFFF;
+  end;
 begin
-  Result := pixtipochave+pixtitular+municipio+pixchave;
+  try
+    PayloadFormat         := '000201';
+    MerchantAccount       := '0014BR.GOV.BCB.PIX'+'01'+TamanhoTexto(pixchave)+pixchave;
+    MerchantAccount       := '26'+TamanhoTexto(MerchantAccount)+MerchantAccount;
+    MerchantCategoryCode  := '52040000';
+    TransactionCurrency   := '5303986'; //Real Brasileiro
+    TransactionAmount     :=  StringReplace(FormatFloat( '#,##0.00', Valor) , ',','.',[rfReplaceAll]);
+    TransactionAmount     := '54'+TamanhoTexto(TransactionAmount)+TransactionAmount;
+    CountryCode           := '5802BR';
+    MerchantName          := '59'+TamanhoTexto(pixtitular)+pixtitular;
+    MerchantCity          := '60'+TamanhoTexto(municipio)+municipio;
+
+    if IDTransacao = '' then
+    begin
+      Additional            := '62070503***'
+    end else
+    begin
+      Additional            := TamanhoTexto(IDTransacao)+IDTransacao;
+      Additional            := '62'+TamanhoTexto('05'+Additional)+'05'+Additional;
+    end;
+
+    CRC16                 := '6304';
+
+    Payload  := PayloadFormat+
+                MerchantAccount+
+                MerchantCategoryCode+
+                TransactionCurrency+
+                TransactionAmount+
+                CountryCode+
+                MerchantName+
+                MerchantCity+
+                Additional+
+                CRC16;
+
+    Result := Payload+IntToHex(CRC16CCITT(Payload));
+  except
+    Result := '';
+  end;
 end;
 
 end.

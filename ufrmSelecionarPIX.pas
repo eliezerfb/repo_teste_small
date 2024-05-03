@@ -9,14 +9,15 @@ uses
 
 type
   TFrmSelecionarPIX = class(TForm)
-    DBGrid1: TDBGrid;
+    dbgChavesPix: TDBGrid;
     DSBancosPIX: TDataSource;
-    pnlMenu: TPanel;
     btnSelect: TBitBtn;
     btnCancel: TBitBtn;
     procedure btnSelectClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
-    procedure DBGrid1DblClick(Sender: TObject);
+    procedure dbgChavesPixDblClick(Sender: TObject);
+    procedure dbgChavesPixKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
     BancoSelecionado : Boolean;
@@ -45,9 +46,16 @@ begin
   Close;
 end;
 
-procedure TFrmSelecionarPIX.DBGrid1DblClick(Sender: TObject);
+procedure TFrmSelecionarPIX.dbgChavesPixDblClick(Sender: TObject);
 begin
   btnSelectClick(Sender);
+end;
+
+procedure TFrmSelecionarPIX.dbgChavesPixKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    btnSelectClick(Sender);
 end;
 
 function SelecionaChavePIX(ibqBancos: TIBQuery):Boolean;

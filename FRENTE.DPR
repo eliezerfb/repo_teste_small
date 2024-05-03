@@ -83,7 +83,8 @@ uses
   uValidaRecursos in '..\unit_compartilhada\uValidaRecursos.pas',
   ufrmQRCodePixEst in 'ufrmQRCodePixEst.pas' {FrmQRCodePixEst},
   ufrmSelecionarPIX in 'ufrmSelecionarPIX.pas' {FrmSelecionarPIX},
-  uPagamentoPix in 'uPagamentoPix.pas';
+  uPagamentoPix in 'uPagamentoPix.pas',
+  uQrCode in '..\unit_compartilhada\uQrCode.pas';
 
 {$R *.RES}
 

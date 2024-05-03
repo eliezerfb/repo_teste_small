@@ -2,9 +2,10 @@ object FrmQRCodePixEst: TFrmQRCodePixEst
   Left = 0
   Top = 0
   BorderIcons = []
+  BorderStyle = bsSingle
   Caption = 'QrCode para PIX'
-  ClientHeight = 441
-  ClientWidth = 486
+  ClientHeight = 390
+  ClientWidth = 394
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,18 +13,21 @@ object FrmQRCodePixEst: TFrmQRCodePixEst
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   Position = poScreenCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   DesignSize = (
-    486
-    441)
+    394
+    390)
   TextHeight = 15
   object lblValor: TLabel
     Left = 0
-    Top = 0
-    Width = 486
+    Top = 8
+    Width = 393
     Height = 33
-    Align = alTop
+    Align = alCustom
     Alignment = taCenter
+    Anchors = [akLeft, akTop, akRight]
+    AutoSize = False
     Caption = 'R$ 0,00'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -31,27 +35,102 @@ object FrmQRCodePixEst: TFrmQRCodePixEst
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False
-    ExplicitWidth = 108
+    ExplicitWidth = 447
+  end
+  object lblInfo: TLabel
+    Left = 0
+    Top = 48
+    Width = 393
+    Height = 18
+    Align = alCustom
+    Alignment = taCenter
+    Anchors = [akLeft, akTop, akRight]
+    AutoSize = False
+    Caption = 'Fa'#231'a a leitura do QrCode'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    ExplicitWidth = 447
+  end
+  object Label1: TLabel
+    Left = 20
+    Top = 313
+    Width = 228
+    Height = 13
+    Align = alCustom
+    Caption = 'Confirma o recebimento em sua conta banc'#225'ria?'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object imgQrCode: TImage
+    Left = 77
+    Top = 69
+    Width = 242
+    Height = 242
+    Stretch = True
   end
   object btnCancel: TBitBtn
-    Left = 350
-    Top = 376
-    Width = 75
+    Left = 275
+    Top = 346
+    Width = 100
     Height = 25
     Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancelar'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
     ModalResult = 2
+    ParentFont = False
+    TabOrder = 2
+    OnClick = btnCancelClick
+    ExplicitTop = 336
+  end
+  object btnConfirmar: TBitBtn
+    Left = 171
+    Top = 346
+    Width = 100
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Confirmar'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ModalResult = 2
+    ParentFont = False
+    TabOrder = 1
+    OnClick = btnConfirmarClick
+    ExplicitTop = 336
+  end
+  object btnImprimir: TBitBtn
+    Left = 67
+    Top = 346
+    Width = 100
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Imprimir'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ModalResult = 2
+    ParentFont = False
     TabOrder = 0
     OnClick = btnCancelClick
-  end
-  object Memo1: TMemo
-    Left = 40
-    Top = 104
-    Width = 385
-    Height = 233
-    Lines.Strings = (
-      'Memo1')
-    TabOrder = 1
+    ExplicitTop = 336
   end
 end
