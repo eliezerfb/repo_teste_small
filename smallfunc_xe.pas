@@ -52,6 +52,7 @@ uses
 //  , uTestaEmail
   {$ENDIF}
   , uSmallConsts
+  , uDialogs
   ;
 
 
@@ -209,6 +210,7 @@ function TamanhoArquivo(Arquivo: string): Integer;
 procedure RenameLog(Arquivo: String);
 function HasFile(Directory: String): boolean;
 function TestarTEFConfigurado: Boolean;
+function TestarPodeUtilizarCIT(AoDataBase: TIBDataBase; AcRegistro, AcCITInformado: String): Boolean;
 
 var
   IMG: TImage;
@@ -2618,6 +2620,43 @@ begin
     Result := AnsiUpperCase(oArq.ReadString('Frente de caixa', 'TEM TEF', _cNao)) = AnsiUpperCase(_cSim);
   finally
     oArq.Free;
+  end;
+end;
+
+function TestarPodeUtilizarCIT(AoDataBase: TIBDataBase; AcRegistro, AcCITInformado: String): Boolean;
+var
+  oTransaction: TIBTransaction;
+  qryDados: TIBQuery;
+begin
+  Result := True;
+  if AcCITInformado = EmptyStr then
+    Exit;
+  // Necessário criar uma nova transação
+  oTransaction := CriaIBTransaction(AoDataBase);
+  qryDados := CriaIBQuery(oTransaction);
+  try
+    qryDados.Close;
+    qryDados.SQL.Clear;
+    qryDados.SQL.Add('SELECT');
+    qryDados.SQL.Add('    COUNT(ST) AS QTDE');
+    qryDados.SQL.Add('FROM ICM');
+    qryDados.SQL.Add('WHERE');
+    qryDados.SQL.Add('    (REGISTRO<>:XREGISTRO)');
+    qryDados.SQL.Add('    AND (ST=:XST)');
+    qryDados.ParamByName('XREGISTRO').AsString := AcRegistro;
+    qryDados.ParamByName('XST').AsString       := AcCITInformado;
+    qryDados.Open;
+
+    if qryDados.FieldByName('QTDE').AsInteger > 0 then
+    begin
+      Result := False;
+
+      MensagemSistema('Não é possível utilizar o CIT '+ Trim(AcCITInformado) + '.' + sLineBreak +
+                      'Já existe outro registro configurado com este CIT.', msgInformacao);
+    end;
+  finally
+    FreeAndNil(qryDados);
+    FreeAndNil(oTransaction);
   end;
 end;
 
