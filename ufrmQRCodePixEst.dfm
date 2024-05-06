@@ -89,11 +89,9 @@ object FrmQRCodePixEst: TFrmQRCodePixEst
     Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    ModalResult = 2
     ParentFont = False
     TabOrder = 2
     OnClick = btnCancelClick
-    ExplicitTop = 336
   end
   object btnConfirmar: TBitBtn
     Left = 171
@@ -108,11 +106,9 @@ object FrmQRCodePixEst: TFrmQRCodePixEst
     Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    ModalResult = 2
     ParentFont = False
     TabOrder = 1
     OnClick = btnConfirmarClick
-    ExplicitTop = 336
   end
   object btnImprimir: TBitBtn
     Left = 67
@@ -127,10 +123,8 @@ object FrmQRCodePixEst: TFrmQRCodePixEst
     Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
-    ModalResult = 2
     ParentFont = False
     TabOrder = 0
-    OnClick = btnCancelClick
-    ExplicitTop = 336
+    OnClick = btnImprimirClick
   end
 end

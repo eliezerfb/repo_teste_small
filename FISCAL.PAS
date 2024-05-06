@@ -11037,7 +11037,7 @@ begin
 
         {$Region'//// PIX ////'}
         //Mauricio Parizotto 2024-04-30
-        if bUsaPixEstatico then
+        if (bUsaPixEstatico) and (Form1.ClienteSmallMobile.sVendaImportando = '') then
         begin
           try
             //Usou forma PIX - 17
@@ -11047,7 +11047,7 @@ begin
             begin
               ValorPIX := ibDataSet25.FieldByName('VALOR0'+CodFormaPix.ToString).AsFloat;
 
-              IDTransacaoPIX := CupomComCaixaFormatado;
+              IDTransacaoPIX := sCaixa + FormataNumeroDoCupom(Form1.icupom) + CodFormaPix.ToString;
 
               if Form1.sModeloECF = '59' then
                 IDTransacaoPIX := '';
@@ -11778,13 +11778,10 @@ begin
                 if Form1.sModeloECF = '17' then iGNF := StrToInt('0'+LimpaNumero(_ecf17_GNF(True)))+1; //
                 //
                 //AtualizaCROCripta; // 2015-09-24
-
               except
-                //
                 // SmallMsg('ECF desligado');
-                //
               end;
-              //
+
               // Primeiro exclui as formas lançadas anteriormente e inclui novamente
               try
                 Form1.ibDataSet28.First;
@@ -11803,7 +11800,6 @@ begin
 
                 // Seleciona a data do documento na tabela NFCE
                 // Se a data contida em sDataDoCupom for diferente daquela contida no campo NFCE.DATA então será usada a data da tabela NFCE para ser aplicada em ALTERACA e PAGAMENT
-                //
                 Form1.IBDataSet150.Close;
                 Form1.IBDataSet150.SelectSQL.Text :=
                   'select * ' +

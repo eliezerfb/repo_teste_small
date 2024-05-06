@@ -8,7 +8,7 @@ uses
 
   function FormaPagamentoPix(DataSet : TibDataSet) : integer;
   function PagamentoPixEstatico(Valor : double; IDTransacao : string; out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
-  function GeraChavePixEstatica(pixtipochave,pixtitular,municipio,pixchave,IDTransacao : string; Valor : Double ):string;
+  function GeraChavePixEstatica(pixtitular,municipio,pixchave,IDTransacao : string; Valor : Double ):string;
 
 implementation
 
@@ -17,7 +17,7 @@ implementation
 uses
   uConectaBancoSmall
   , ufrmSelecionarPIX
-  , ufrmQRCodePixEst;
+  , ufrmQRCodePixEst, uDialogs;
 
 
 function CRC16CCITT(texto: string): WORD;
@@ -91,13 +91,17 @@ begin
                           ' 	B.PIXCHAVE,'+
                           ' 	E.MUNICIPIO'+
                           ' From BANCOS B'+
-                          ' 	Left Join EMITENTE E on 1=1';
+                          ' 	Left Join EMITENTE E on 1=1'+
+                          ' Where PIXESTATICO = ''S'' ';
     ibqBancos.Open;
     ibqBancos.Last; //Para funcionar RecordCount
 
     //Nenhum banco configurado com pix estático
     if ibqBancos.IsEmpty then
+    begin
+      MensagemSistema('Nenhum banco com PIX habilitado!',msgAtencao);
       Exit;
+    end;
 
     //Se tiver mais que um configurado abre tela para selecionar
     if ibqBancos.RecordCount > 1 then
@@ -108,8 +112,7 @@ begin
         Exit;
     end;
 
-    ChaveQRCode := GeraChavePixEstatica(ibqBancos.FieldByName('PIXTIPOCHAVE').AsString,
-                                        ibqBancos.FieldByName('PIXTITULAR').AsString,
+    ChaveQRCode := GeraChavePixEstatica(ibqBancos.FieldByName('PIXTITULAR').AsString,
                                         ibqBancos.FieldByName('MUNICIPIO').AsString,
                                         ibqBancos.FieldByName('PIXCHAVE').AsString,
                                         IDTransacao,
@@ -126,7 +129,7 @@ begin
   end;
 end;
 
-function GeraChavePixEstatica(pixtipochave,pixtitular,municipio,pixchave,IDTransacao : string; Valor : Double ):string;
+function GeraChavePixEstatica(pixtitular,municipio,pixchave,IDTransacao : string; Valor : Double ):string;
 var
   Payload : string;
   PayloadFormat, MerchantAccount, MerchantCategoryCode, MerchantName,
