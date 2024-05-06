@@ -14017,10 +14017,11 @@ object Form7: TForm7
       Visible = False
     end
     object ibDataSet11PIXTITULAR: TIBStringField
+      DisplayWidth = 25
       FieldName = 'PIXTITULAR'
       Origin = 'BANCOS.PIXTITULAR'
       Visible = False
-      Size = 60
+      Size = 25
     end
     object ibDataSet11PIXCHAVE: TIBStringField
       FieldName = 'PIXCHAVE'

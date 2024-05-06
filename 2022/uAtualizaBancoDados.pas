@@ -2537,7 +2537,7 @@ begin
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'PIXTITULAR') = False then
   begin
-    if ExecutaComando('Alter table BANCOS add PIXTITULAR VARCHAR(60);') then
+    if ExecutaComando('Alter table BANCOS add PIXTITULAR VARCHAR(25);') then
       ExecutaComando('Commit');
   end;
 

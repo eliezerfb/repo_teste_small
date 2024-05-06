@@ -25,17 +25,19 @@ type
     fraInstituicao: TfFrameCampo;
     tbsPIX: TTabSheet;
     Label6: TLabel;
-    chkPisCofinsSobLucro: TDBCheckBox;
+    chkPixEstatico: TDBCheckBox;
     Label7: TLabel;
-    SMALL_DBEdit2: TSMALL_DBEdit;
+    edtChavePix: TSMALL_DBEdit;
     Label8: TLabel;
     SMALL_DBEdit3: TSMALL_DBEdit;
-    cbMovimentacaoEstoque: TDBComboBox;
+    cboTipoChave: TDBComboBox;
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
     procedure lblNovoClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
+    procedure cboTipoChaveChange(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -52,9 +54,49 @@ implementation
 
 {$R *.dfm}
 
-uses unit7, uSmallConsts;
+uses unit7, uSmallConsts, uDialogs;
 
 { TFrmContaBancaria }
+
+procedure TFrmContaBancaria.btnOKClick(Sender: TObject);
+begin
+  //Mauricio Parizotto 2024-05-06
+  if chkPixEstatico.Checked then
+  begin
+    if Trim(Form7.ibDataSet11PIXTIPOCHAVE.AsString) = '' then
+    begin
+      MensagemSistema('O campo Tipo chave deve ser preenchido!',msgAtencao);
+      cboTipoChave.SetFocus;
+      Exit;
+    end;
+
+    if Trim(Form7.ibDataSet11PIXCHAVE.AsString) = '' then
+    begin
+      MensagemSistema('O campo Chave PIX deve ser preenchido!',msgAtencao);
+      edtChavePix.SetFocus;
+      Exit;
+    end;
+
+    if (cboTipoChave.ItemIndex = 1) and (copy(DSCadastro.DataSet.FieldByName('PIXCHAVE').AsString,1,3) <> '+55') then
+    begin
+      if not (DSCadastro.DataSet.State in ([dsEdit, dsInsert])) then
+        DSCadastro.DataSet.Edit;
+
+      DSCadastro.DataSet.FieldByName('PIXCHAVE').AsString := '+55'+DSCadastro.DataSet.FieldByName('PIXCHAVE').AsString;
+    end;
+  end;
+
+  inherited;
+end;
+
+procedure TFrmContaBancaria.cboTipoChaveChange(Sender: TObject);
+begin
+  if cboTipoChave.ItemIndex = 1 then
+  begin
+    if trim(DSCadastro.DataSet.FieldByName('PIXCHAVE').AsString ) = '' then
+      DSCadastro.DataSet.FieldByName('PIXCHAVE').AsString := '+55';
+  end;
+end;
 
 procedure TFrmContaBancaria.DSCadastroDataChange(Sender: TObject;
   Field: TField);

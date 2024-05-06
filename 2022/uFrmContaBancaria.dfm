@@ -140,7 +140,7 @@ inherited FrmContaBancaria: TFrmContaBancaria
           OnKeyDown = PadraoKeyDown
         end
         object edtContaCorrente: TSMALL_DBEdit
-          Left = 111
+          Left = 110
           Top = 77
           Width = 130
           Height = 20
@@ -296,7 +296,7 @@ inherited FrmContaBancaria: TFrmContaBancaria
           Font.Style = []
           ParentFont = False
         end
-        object chkPisCofinsSobLucro: TDBCheckBox
+        object chkPixEstatico: TDBCheckBox
           Left = 110
           Top = 25
           Width = 141
@@ -309,7 +309,7 @@ inherited FrmContaBancaria: TFrmContaBancaria
           ValueUnchecked = 'N'
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit2: TSMALL_DBEdit
+        object edtChavePix: TSMALL_DBEdit
           Left = 110
           Top = 73
           Width = 300
@@ -351,7 +351,7 @@ inherited FrmContaBancaria: TFrmContaBancaria
           TabOrder = 3
           OnKeyDown = PadraoKeyDown
         end
-        object cbMovimentacaoEstoque: TDBComboBox
+        object cboTipoChave: TDBComboBox
           Left = 110
           Top = 46
           Width = 200
@@ -365,6 +365,7 @@ inherited FrmContaBancaria: TFrmContaBancaria
             'E-mail'
             'Chave aleat'#243'ria')
           TabOrder = 1
+          OnChange = cboTipoChaveChange
           OnKeyDown = PadraoKeyDown
         end
       end
