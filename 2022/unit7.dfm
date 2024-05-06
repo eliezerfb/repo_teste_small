@@ -13905,9 +13905,10 @@ object Form7: TForm7
     SelectSQL.Strings = (
       'Select '
       #9'B.*,'
-      #9'C.NOME PLANOCONTA'
-      'From BANCOS B'
-      #9'Left Join CONTAS C on C.CONTA = B.PLANO')
+      
+        #9'(Select first 1 C.NOME From  CONTAS C Where C.CONTA = B.PLANO) ' +
+        'PLANOCONTA'
+      'From BANCOS B')
     ModifySQL.Strings = (
       'update BANCOS'
       'set'

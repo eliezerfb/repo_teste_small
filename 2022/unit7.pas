@@ -5618,9 +5618,8 @@ begin
         //Form7.ibDataSet11.Selectsql.Add('select * from BANCOS'); Mauricio Parizotto 2024-04-08
         Form7.ibDataSet11.Selectsql.Add(' Select '+
                                         ' 	B.*,'+
-                                        ' 	C.NOME PLANOCONTA'+
-                                        ' From BANCOS B'+
-                                        ' 	Left Join CONTAS C on C.CONTA = B.PLANO');
+                                        ' 	(Select first 1 C.NOME From  CONTAS C Where C.CONTA = B.PLANO) PLANOCONTA'+ //Mauricio Parizotto 2024-05-06
+                                        ' From BANCOS B');
         Form7.ibDataSet26.Selectsql.Add('select * from RESUMO order by DATA, REGISTRO');
         Form7.ibDataSet9.Selectsql.Add('select * from VENDEDOR');
         Form7.ibDataSet29.Selectsql.Add('select * from CONVENIO');
@@ -35687,9 +35686,8 @@ begin
     //sSelect   := 'select * FROM BANCOS'; Mauricio Parizotto 2024-04-08
     sSelect   :=  ' Select '+
                   ' 	B.*,'+
-                  ' 	C.NOME PLANOCONTA'+
-                  ' From BANCOS B'+
-                  ' 	Left Join CONTAS C on C.CONTA = B.PLANO';
+                  ' 	(Select first 1 C.NOME From  CONTAS C Where C.CONTA = B.PLANO) PLANOCONTA'+ //Mauricio Parizotto 2024-05-06
+                  ' From BANCOS B';
     sWhere    := '';
     //sOrderBy  := 'order by upper(NOME)'; Mauricio Parizotto 2024-04-08
     sOrderBy  := 'order by upper(B.NOME)';
