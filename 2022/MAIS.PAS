@@ -43,6 +43,10 @@ const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
 const ValidacaoNova = True; //False;
 const PRAZO_MANIFESTAR = '180';
 const SQL_CONDICAO_RECEBER_HOJE = ' coalesce(VALOR_RECE, 0)=0 and VENCIMENTO=CURRENT_DATE';
+const NOME_NFE_SETUP = 'nfe_setup.exe';
+
+const SECAO_INI_NFE = 'NFE';
+const CHAVE_INI_BUILD_NFE_SETUP_EXE = 'BUILD NF-e Setup';
 
 type 
     TForm1 = class(TForm)
@@ -544,6 +548,7 @@ type
 
     property sPropaganda: String read getPropaganda;
     function MontaTela(sP1: Boolean): Boolean;
+    procedure ValidaBuildNFe_Setup;
   end;
   //
   function UploadMobile(sFile: TFileName): boolean;
@@ -4395,6 +4400,8 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  bTemAtuaNFeSetup: Boolean;
 begin
   Form1.bMKP    := False;
   Form1.sPasta  := CHAVE_CIFRAR; // Sandro Silva 2022-09-19
@@ -4438,6 +4445,13 @@ begin
   GetDir(0,sAtual);
 
   // Atualização de arquivos
+  {Sandro Silva 2024-05-06 inicio}
+  bTemAtuaNFeSetup := False;
+  if FileExists(Form1.sAtual+'\nfe_setup.~~1') then
+  begin
+    bTemAtuaNFeSetup := True; // Controlar que não execute 2x o nfe_setup.exe devido a build salva no frente.ini diferente do build do NFE_SETUP.EXE
+  end;
+  {Sandro Silva 2024-05-06 fim}
   InstalaAtualizacao('nfe_setup','1');
   InstalaAtualizacao('nfse_setup','2');
   InstalaAtualizacao('nfce_setup','3');
@@ -4459,6 +4473,20 @@ begin
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
+
+  {Sandro Silva 2024-06 inicio}
+  if bTemAtuaNFeSetup then
+  begin
+    Sleep(250);
+    GravarParametroIni('FRENTE.INI', SECAO_INI_NFE, CHAVE_INI_BUILD_NFE_SETUP_EXE, VersaoBuild(ExtractFilePath(Application.ExeName) + NOME_NFE_SETUP));
+  end
+  else
+  begin
+    if LerParametroIni('FRENTE.INI', SECAO_INI_NFE, CHAVE_INI_BUILD_NFE_SETUP_EXE, '') = '' then
+      GravarParametroIni('FRENTE.INI', SECAO_INI_NFE, CHAVE_INI_BUILD_NFE_SETUP_EXE, '12.1.76.6495');// 12.1.76.6495 É última versão instalada antes desta validação
+  end;
+  ValidaBuildNFe_Setup;
+  {Sandro Silva 2024-05-06 fim}
 
   {Mauricio Parizotto 2023-05-31 Inicio}
   //Alterado para não gerar piscação dos icones ao passar o moues
@@ -12303,6 +12331,32 @@ begin
   except
   end;
   FreeAndNil(IBQMUNICIPIO);
+end;
+
+procedure TForm1.ValidaBuildNFe_Setup;
+var
+  sBuildNFe_Setup: String;
+begin
+  if FileExists('nfe_setup.exe') then
+  begin
+
+    sBuildNFe_Setup := VersaoBuild(ExtractFilePath(Application.ExeName) + NOME_NFE_SETUP);
+
+    if LerParametroIni('FRENTE.INI', SECAO_INI_NFE, CHAVE_INI_BUILD_NFE_SETUP_EXE, '') <> sBuildNFe_Setup then
+    begin
+      mensagem22('Instalando dependências para NF-e');
+
+      ShellExecute( 0, 'Open', pchar(NOME_NFE_SETUP), ' /verysilent', '', SW_HIDE);
+      while ConsultaProcesso('nfe_setup.exe') do
+      begin
+        Sleep(2000);
+      end;
+
+      GravarParametroIni('FRENTE.INI', SECAO_INI_NFE, CHAVE_INI_BUILD_NFE_SETUP_EXE, sBuildNFe_Setup);
+      mensagem22('');
+    end;
+
+  end;
 end;
 
 procedure TForm1.ConfiguraCredencialTecnospeed;
