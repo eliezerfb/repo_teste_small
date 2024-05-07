@@ -10821,6 +10821,7 @@ var
   //iFormaExtra: Integer; // Sandro Silva 2022-08-04
   //iniFormas: TIniFile;
   //IBQDOCAUTORIZADO: TIBQuery;
+  sEmailCliente: String; //Sandro Silva 2024-05-07
 begin
   //
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
@@ -13179,11 +13180,17 @@ begin
 
       LogFrente('13242 Form1.Button8Click() ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
+      sEmailCliente := Form2.Edit10.Text; //Sandro Silva 2024-05-07 reserva email do cliente para disponibilizar o comprovante (xml) Form1.Button8Click() limpa campo do email
+
       Form1.Button8Click(Sender); // Corta o papel, commita, etc e tal, fecha a tela da mesa do cupom status das mesas, zeresima
 
       LogFrente('13246 Form1.Button8Click() ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
+      {Sandro Silva 2024-05-07 inicio}
+      Form2.Edit10.Text := sEmailCliente; //Sandro Silva 2024-05-07 reserva email do cliente para disponibilizar o comprovante (xml) Form1.Button8Click() limpa campo do email
       PDV_DisponibilizarComprovante; //Sandro Silva 2024-04-12
+      Form2.Edit10.Text := '';
+      {Sandro Silva 2024-05-07 fim}
 
       if Form1.sModeloECF = '65' then
       begin
