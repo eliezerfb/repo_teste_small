@@ -208,6 +208,7 @@ procedure SleepWithoutFreeze(msec: int64);
 function DiasDesteMes: Integer;
 function TamanhoArquivo(Arquivo: string): Integer;
 procedure RenameLog(Arquivo: String);
+function VersaoBuild(NomeAplicativo: String): String;
 function HasFile(Directory: String): boolean;
 function TestarTEFConfigurado: Boolean;
 function TestarPodeUtilizarCIT(AoDataBase: TIBDataBase; AcRegistro, AcCITInformado: String): Boolean;
@@ -2599,6 +2600,29 @@ begin
     RenameFile(Arquivo, ExtractFilePath(Arquivo) + StringReplace(sFile, sExtensao, '_' + FormatDateTime('yyyymmddHHnnss', Now) + sExtensao , [rfReplaceAll]));
   except
 
+  end;
+end;
+
+function VersaoBuild(NomeAplicativo: String): String;
+var
+  Size, Size2: DWord;
+  Pt, Pt2: Pointer;
+  FI: PVSFixedFileInfo;
+  VerSize: DWORD;
+begin
+  Size := GetFileVersionInfoSize(PChar(NomeAplicativo), Size2);
+  GetMem (Pt, Size);
+  try
+    GetFileVersionInfo (PChar (NomeAplicativo), 0, Size, Pt);
+
+    VerQueryValue(Pt, '\', Pointer(FI), VerSize);
+
+    Result := Concat(IntToStr(FI.dwFileVersionMS shr 16), '.',
+                    IntToStr(FI.dwFileVersionMS and $FFFF), '.',
+                    IntToStr(FI.dwFileVersionLS shr 16), '.',
+                    IntToStr(FI.dwFileVersionLS and $FFFF));
+  finally
+    FreeMem(Pt);
   end;
 end;
 
