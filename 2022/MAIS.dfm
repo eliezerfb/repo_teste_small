@@ -8,8 +8,8 @@ object Form1: TForm1
   AlphaBlendValue = 250
   BorderStyle = bsSingle
   Caption = 'form'
-  ClientHeight = 879
-  ClientWidth = 1295
+  ClientHeight = 887
+  ClientWidth = 1297
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -6157,12 +6157,12 @@ object Form1: TForm1
   object WebBrowser1: TWebBrowser
     Left = 864
     Top = 488
-    Width = 33
-    Height = 25
+    Width = 41
+    Height = 31
     TabOrder = 4
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C00000069030000950200000000000000000000000000000000000000000000
+      4C00000064030000900200000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E12620A000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -6219,11 +6219,11 @@ object Form1: TForm1
   object WebBrowser2: TWebBrowser
     Left = 864
     Top = 536
-    Width = 33
-    Height = 25
+    Width = 41
+    Height = 31
     TabOrder = 12
     ControlData = {
-      4C00000069030000950200000000000000000000000000000000000000000000
+      4C00000064030000900200000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E12620A000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -13858,6 +13858,17 @@ object Form1: TForm1
           Caption = 'C'#225'lculo do desconto pelo provedor'
           OnClick = Clculododescontopeloprovedor1Click
         end
+        object NaoDescontarIssQuandoRetido1: TMenuItem
+          Caption = 'N'#227'o descontar o ISS quando retido'
+          OnClick = NaoDescontarIssQuandoRetido1Click
+        end
+        object Observaonadescriodosservios1: TMenuItem
+          Caption = 'Observa'#231#227'o na descri'#231#227'o dos servi'#231'os'
+          OnClick = Observaonadescriodosservios1Click
+        end
+        object N13: TMenuItem
+          Caption = '-'
+        end
         object ConfiguraesdaNFSe2: TMenuItem
           Caption = 'Configura'#231#245'es da NFS-e'
           OnClick = ConfiguraesdaNFSe2Click
@@ -13865,10 +13876,6 @@ object Form1: TForm1
         object Debug1: TMenuItem
           Caption = 'Debug'
           OnClick = Debug1Click
-        end
-        object Observaonadescriodosservios1: TMenuItem
-          Caption = 'Observa'#231#227'o na descri'#231#227'o dos servi'#231'os'
-          OnClick = Observaonadescriodosservios1Click
         end
       end
       object N14: TMenuItem

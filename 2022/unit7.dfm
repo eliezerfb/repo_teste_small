@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1224
-  ClientWidth = 1556
+  ClientHeight = 1237
+  ClientWidth = 1558
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7925,8 +7925,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1184
-    Width = 1556
+    Top = 1197
+    Width = 1558
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7998,7 +7998,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1556
+    Width = 1558
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -14482,7 +14482,9 @@ object Form7: TForm7
         ' REGISTRO, '
       '   SOBREIPI, SOBREFRETE, SOBRESEGURO, SOBREOUTRAS, CST,  '
       '   BCPISCOFINS, '
-      '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF)'
+      
+        '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
+        'FINSLUCRO)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14498,7 +14500,7 @@ object Form7: TForm7
         'SEGURO, '
       
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
-        'STPISCOFINS,:FRETESOBREIPI,:CBENEF)')
+        'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14550,7 +14552,8 @@ object Form7: TForm7
       '  CSOSN,'
       '  CSTPISCOFINS,'
       '  FRETESOBREIPI,'
-      '  CBENEF'
+      '  CBENEF,'
+      '  PISCOFINSLUCRO'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14608,7 +14611,8 @@ object Form7: TForm7
       '  CSOSN = :CSOSN,'
       '  CSTPISCOFINS = :CSTPISCOFINS,'
       '  FRETESOBREIPI = :FRETESOBREIPI,'
-      '  CBENEF = :CBENEF'
+      '  CBENEF = :CBENEF,'
+      '  PISCOFINSLUCRO = :PISCOFINSLUCRO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14978,6 +14982,12 @@ object Form7: TForm7
       DisplayWidth = 20
       FieldName = 'SOBREFRETE'
       Origin = '"ICM"."SOBREFRETE"'
+      Visible = False
+      Size = 1
+    end
+    object ibDataSet14PISCOFINSLUCRO: TIBStringField
+      FieldName = 'PISCOFINSLUCRO'
+      Origin = 'ICM.PISCOFINSLUCRO'
       Visible = False
       Size = 1
     end
@@ -18242,8 +18252,13 @@ object Form7: TForm7
       Caption = '-'
     end
     object DuplicatestaNFe1: TMenuItem
-      Caption = 'Duplicar esta NF-e'
+      Caption = 'Duplicar NF-e'
       OnClick = DuplicatestaNFe1Click
+    end
+    object miDuplicarNFSe: TMenuItem
+      Caption = 'Duplicar NFS-e'
+      Visible = False
+      OnClick = miDuplicarNFSeClick
     end
     object DuplicarProduto: TMenuItem
       Caption = 'Duplicar produto'
@@ -18251,7 +18266,7 @@ object Form7: TForm7
       OnClick = DuplicarProdutoClick
     end
     object DuplicaOrcamento: TMenuItem
-      Caption = 'Duplicar este or'#231'amento'
+      Caption = 'Duplicar or'#231'amento'
       Visible = False
       OnClick = DuplicaOrcamentoClick
     end
