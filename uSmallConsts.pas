@@ -121,6 +121,10 @@ const
   _RelComInstituicao   = 'Instituição financeira';
   _RelComCredenciadora = 'Credenciadora de cartão';
 
+  const FONT_NAME_DEFAULT = 'FontB88'; //2016-01-14 'Calibri';//'Arial Narrow';//'Sans Serif';//'Cambria';//'MS Sans Serif';// 'Calibri'; Mauricio Parizotto 2024-04-05
+  const FONT_SIZE_DEFAULT = 7; // 2015-06-29 8;//7;
+  const ALTURA_PAGINA_PDF = 2448;// 3508; // Sandro Silva 2017-04-17  2374;
+
 implementation
 
 end.
