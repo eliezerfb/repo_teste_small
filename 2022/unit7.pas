@@ -2693,6 +2693,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmBanco
   , uFrmPlanoContas
   , uFrmConvenio
+  , uNotaFiscalEletronicaCalc
   ;
 
 {$R *.DFM}
@@ -32228,7 +32229,6 @@ end;
 
 procedure TForm7.DuplicatestaNFe1Click(Sender: TObject);
 var
-  aCodVetor : array[0..999] of String;
   sDesVetor : array[0..999] of String;
   fValVetor : array[0..999] of real;
   fQtdVetor : array[0..999] of real;
@@ -32236,6 +32236,8 @@ var
 
   vCli, vOpe : String;
   I, J : Integer;
+
+  oNotaFiscal : TNotaFiscalEletronicaCalc;
 begin
   vCli := Form7.ibDataSet15CLIENTE.AsString;
   vOpe := Form7.ibDataSet15OPERACAO.AsString;
@@ -32245,9 +32247,6 @@ begin
   Form7.ibDataSet16.First;
   while not Form7.ibDataSet16.Eof do // disable
   begin
-    {Dailon Parisotto (f-18201) 2024-04-22 Inicio}
-    aCodVetor[I] := Form7.ibDataSet16CODIGO.AsString;
-    {Dailon Parisotto (f-18201) 2024-04-22 Fim}
     sDesVetor[I] := Form7.ibDataSet16DESCRICAO.AsString;
     fValVetor[I] := Form7.ibDataSet16UNITARIO.Asfloat;
     fQtdVetor[I] := Form7.ibDataSet16QUANTIDADE.AsFloat;
@@ -32268,7 +32267,11 @@ begin
   begin
     Form7.ibDataSet16.Append;
     {Dailon Parisotto (f-18201) 2024-04-22 Inicio}
-    Form7.ibDataSet16CODIGO.AsString    := aCodVetor[I];
+
+    // NÃO deve ser informado o código do produto, se não os EVENTOS CHAVE dos ITENS
+    // logo abaixo não irão funcionar
+
+  //    Form7.ibDataSet16CODIGO.AsString    := aCodVetor[I];
     {Dailon Parisotto (f-18201) 2024-04-22 Fim}
     Form7.ibDataSet16DESCRICAO.AsString := sDesVetor[I];
     Form7.ibDataSet16UNITARIO.AsFloat   := fValVetor[I];
@@ -32289,7 +32292,45 @@ begin
     Form7.ibDataSet16.Post;
     Form7.sModulo := 'VENDA';
   end;
-  
+
+  {Dailon Parisotto (f-18201) 2024-05-07 Inicio}
+  // EVENTOS CHAVE
+  oNotaFiscal := TNotaFiscalEletronicaCalc.create;
+  Form7.ibDataSet16.DisableControls;
+  try
+    Form7.ibDataSet16.First;
+
+    Form7.ibDataSet15.Edit;
+    while not Form7.ibDataSet16.eof do
+    begin
+      Form1.bFlag := True;
+      try
+        Form7.ibDataSet16.Edit;
+        Form7.ibDataSet16DESCRICAOSetText(Form7.ibDataSet16DESCRICAO, Form7.ibDataSet16DESCRICAO.AsString);
+        Form7.ibDataSet16DESCRICAOChange(Form7.ibDataSet16DESCRICAO);
+        Form7.ibDataSet16QUANTIDADESetText(Form7.ibDataSet16QUANTIDADE, Form7.ibDataSet16QUANTIDADE.AsString);
+        Form7.ibDataSet16QUANTIDADEChange(Form7.ibDataSet16QUANTIDADE);
+        Form7.ibDataSet16UNITARIOChange(Form7.ibDataSet16UNITARIO);
+        Form7.ibDataSet16TOTALChange(Form7.ibDataSet16TOTAL);
+      finally
+        Form1.bFlag := False;
+      end;
+
+      if (Form7.ibDataset16.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataset16.Post;
+      Form7.ibDataSet16.Next;
+    end;
+    Form7.ibDataSet16.First;
+
+    oNotaFiscal.CalculaValores(Form7.ibDataSet15, Form7.ibDataSet16, False);
+    if (Form7.ibDataSet15.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataSet15.Post;
+  finally
+    FreeAndNil(oNotaFiscal);
+    Form7.ibDataSet16.EnableControls;
+  end;
+  {Dailon Parisotto (f-18201) 2024-05-07 Fim}
+
   Form7.sModulo := 'VENDA';
   Image106Click(Sender);
 end;
