@@ -212,6 +212,7 @@ function VersaoBuild(NomeAplicativo: String): String;
 function HasFile(Directory: String): boolean;
 function TestarTEFConfigurado: Boolean;
 function TestarPodeUtilizarCIT(AoDataBase: TIBDataBase; AcRegistro, AcCITInformado: String): Boolean;
+function TestarUFMovimentaEstoqueFinanceiroSemFaturar(AcUF: String): Boolean;
 
 var
   IMG: TImage;
@@ -2682,6 +2683,13 @@ begin
     FreeAndNil(qryDados);
     FreeAndNil(oTransaction);
   end;
+end;
+
+function TestarUFMovimentaEstoqueFinanceiroSemFaturar(AcUF: String): Boolean;
+begin
+  // Método para deixar claro aos DEVs as UFs que só movimenta estoque/financeiro
+  // quando é faturado nota. SENDO ELES SC e MG.
+  Result := (AcUF <> 'SC') and (AcUF <> 'MG');
 end;
 
 end.
