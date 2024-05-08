@@ -34,7 +34,6 @@ object Form32: TForm32
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
-    ExplicitLeft = -8
     object Image1: TImage
       Left = 15
       Top = 15
@@ -187,7 +186,7 @@ object Form32: TForm32
     end
     object DateTimePicker1: TDateTimePicker
       Left = 180
-      Top = 200
+      Top = 198
       Width = 212
       Height = 21
       Date = 39448.000000000000000000

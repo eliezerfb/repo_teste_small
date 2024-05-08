@@ -17512,7 +17512,7 @@ end;
 procedure TForm7.Balanas1Click(Sender: TObject);
 begin
   sModuloAnterior := sModulo;
-  Form7.sModulo   := 'BALANCA';
+  Form7.sModulo   := 'Balanças';
   Form38.Caption  := 'Exportação de arquivo TXT para balança';
 
   Form38.Panel1.Visible := True;
