@@ -370,11 +370,13 @@ begin
     cbMovGerencial.Visible := qryDados.FieldByName('QTDE').AsInteger > 0;
     cbMovGerencial.Checked := False;
 
+    {Mauricio Parizotto 2024-05-07
     CheckBox1.Top := 216;
     cbMovGerencial.Top := 240;
 
     if not cbMovGerencial.Visible then
       CheckBox1.Top := CheckBox1.Top + 17;
+    }
   finally
     FreeAndNil(qryDados);
   end;

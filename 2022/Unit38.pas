@@ -219,7 +219,8 @@ begin
           ) then
       begin
         // Cria um item para cada operação de venda
-        btnVoltar.Enabled        := True;
+        //btnVoltar.Enabled        := True; Mauricio Parizotto
+        btnVoltar.Visible        := True;
         chkOperacoes.Visible     := True;
         pnlSelOperacoes.Visible  := True;
         pnlSelOperacoes.BringToFront;
@@ -607,7 +608,8 @@ end;
 
 procedure TForm38.btnVoltarClick(Sender: TObject);
 begin
-  btnVoltar.Enabled       := False;
+  //btnVoltar.Enabled       := False; Mauricio Parizotto
+  btnVoltar.Visible       := False;
   pnlSelOperacoes.Visible := False;
   chkOperacoes.visible    := False;
 

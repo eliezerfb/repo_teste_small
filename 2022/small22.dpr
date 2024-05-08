@@ -338,7 +338,7 @@ begin
   Application.CreateForm(TForm26, Form26);
   Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
   Application.CreateForm(TForm31, Form31);
-  Application.CreateForm(TForm32, Form32);
+  //Application.CreateForm(TForm32, Form32); Mauricio Parizotto 2024-05-07
   Application.CreateForm(TForm38, Form38);
   Application.CreateForm(TForm39, Form39);
   Application.CreateForm(TForm41, Form41);

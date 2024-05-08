@@ -4,9 +4,13 @@ object Form32: TForm32
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Invent'#225'rio'
-  ClientHeight = 362
-  ClientWidth = 472
+  ClientHeight = 384
+  ClientWidth = 604
   Color = clWhite
+  Constraints.MaxHeight = 423
+  Constraints.MaxWidth = 620
+  Constraints.MinHeight = 423
+  Constraints.MinWidth = 620
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -20,8 +24,8 @@ object Form32: TForm32
   object Panel2: TPanel
     Left = 0
     Top = 0
-    Width = 472
-    Height = 362
+    Width = 604
+    Height = 384
     Align = alClient
     BevelOuter = bvNone
     Caption = ' '
@@ -30,66 +34,67 @@ object Form32: TForm32
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
+    ExplicitLeft = -8
     object Image1: TImage
       Left = 15
       Top = 15
-      Width = 176
+      Width = 148
       Height = 250
       Center = True
       Transparent = True
     end
     object Label4: TLabel
-      Left = 230
-      Top = 280
+      Left = 180
+      Top = 302
       Width = 215
       Height = 13
       Caption = 'Ou clique no bot'#227'o "Imprimir"  para continuar.'
     end
     object Label5: TLabel
-      Left = 230
+      Left = 180
       Top = 15
       Width = 202
       Height = 13
       Caption = 'O invent'#225'rio pode ser calculado pelo custo'
     end
     object Label7: TLabel
-      Left = 230
+      Left = 180
       Top = 30
       Width = 181
       Height = 13
       Caption = 'da '#250'ltima compra ou pelo custo m'#233'dio.'
     end
     object Label8: TLabel
-      Left = 230
-      Top = 100
+      Left = 180
+      Top = 107
       Width = 205
       Height = 13
       Caption = 'O livro de registro de invent'#225'rio '#233' numerado'
     end
     object Label9: TLabel
-      Left = 230
-      Top = 115
+      Left = 180
+      Top = 123
       Width = 209
       Height = 13
-      Caption = 'seq'#252'encialmente, informe o pr'#243'ximo n'#250'mero:'
+      Caption = 'sequencialmente, informe o pr'#243'ximo n'#250'mero:'
     end
     object Label10: TLabel
-      Left = 230
-      Top = 265
+      Left = 180
+      Top = 287
       Width = 221
       Height = 13
       Caption = 'Fale com o seu contador em caso de d'#250'vidas, '
     end
     object Label11: TLabel
-      Left = 230
-      Top = 170
-      Width = 82
+      Left = 180
+      Top = 181
+      Width = 79
       Height = 13
-      Caption = 'Referente ao dia:'
+      Caption = 'Referente ao dia'
     end
     object RadioButton1: TRadioButton
-      Left = 230
-      Top = 60
+      Left = 180
+      Top = 53
       Width = 150
       Height = 17
       Caption = 'Custo da '#250'ltima compra'
@@ -104,8 +109,8 @@ object Form32: TForm32
       TabStop = True
     end
     object RadioButton2: TRadioButton
-      Left = 230
-      Top = 75
+      Left = 180
+      Top = 71
       Width = 150
       Height = 17
       Caption = 'Custo m'#233'dio'
@@ -118,15 +123,16 @@ object Form32: TForm32
       TabOrder = 1
     end
     object MaskEdit1: TMaskEdit
-      Left = 230
-      Top = 135
-      Width = 33
-      Height = 22
+      Left = 180
+      Top = 142
+      Width = 40
+      Height = 20
+      AutoSize = False
       EditMask = '#####;1; '
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Arial'
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
       Font.Style = [fsBold]
       MaxLength = 5
       ParentFont = False
@@ -135,10 +141,10 @@ object Form32: TForm32
       OnExit = MaskEdit1Exit
     end
     object Button5: TButton
-      Left = 180
-      Top = 320
+      Left = 381
+      Top = 341
       Width = 100
-      Height = 25
+      Height = 24
       Caption = '&Imprimir'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -150,10 +156,10 @@ object Form32: TForm32
       OnClick = Button5Click
     end
     object Button2: TButton
-      Left = 300
-      Top = 320
+      Left = 485
+      Top = 341
       Width = 100
-      Height = 25
+      Height = 24
       Caption = '&Cancelar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -165,10 +171,10 @@ object Form32: TForm32
       OnClick = Button2Click
     end
     object Button1: TButton
-      Left = 60
-      Top = 320
+      Left = 277
+      Top = 341
       Width = 100
-      Height = 25
+      Height = 24
       Caption = '&Gerar arquivo'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -180,9 +186,9 @@ object Form32: TForm32
       OnClick = Button1Click
     end
     object DateTimePicker1: TDateTimePicker
-      Left = 230
-      Top = 190
-      Width = 225
+      Left = 180
+      Top = 200
+      Width = 212
       Height = 21
       Date = 39448.000000000000000000
       Time = 0.376154398101789400
@@ -190,16 +196,16 @@ object Form32: TForm32
       TabOrder = 6
     end
     object CheckBox1: TCheckBox
-      Left = 230
-      Top = 216
+      Left = 180
+      Top = 235
       Width = 450
       Height = 17
       Caption = 'Listar quantidade negativa ou zerada'
       TabOrder = 7
     end
     object cbMovGerencial: TCheckBox
-      Left = 230
-      Top = 240
+      Left = 180
+      Top = 254
       Width = 227
       Height = 17
       Caption = 'Considerar movimento gerencial'

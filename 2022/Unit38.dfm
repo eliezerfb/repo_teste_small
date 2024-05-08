@@ -33,7 +33,7 @@ object Form38: TForm38
     ParentCtl3D = False
     TabOrder = 0
     object Image1: TImage
-      Left = 20
+      Left = 54
       Top = 20
       Width = 89
       Height = 89
@@ -218,9 +218,9 @@ object Form38: TForm38
       object Label18: TLabel
         Left = 0
         Top = 0
-        Width = 210
+        Width = 199
         Height = 13
-        Caption = 'Este assistente vai gerar os arquivos  neces-'
+        Caption = 'Este assistente vai gerar os arquivos  para'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -231,9 +231,9 @@ object Form38: TForm38
       object Label19: TLabel
         Left = 0
         Top = 55
-        Width = 206
+        Width = 201
         Height = 13
-        Caption = 'Selecione abaixo o modelo da sua balan'#231'a:'
+        Caption = 'Selecione abaixo a marca da sua balan'#231'a:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -244,9 +244,9 @@ object Form38: TForm38
       object Label20: TLabel
         Left = 0
         Top = 15
-        Width = 197
+        Width = 140
         Height = 13
-        Caption = 's'#225'rios para integra'#231#227'o com uma  balan'#231'a.'
+        Caption = 'integra'#231#227'o com sua  balan'#231'a.'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -255,8 +255,8 @@ object Form38: TForm38
         ParentFont = False
       end
       object RadioButton3: TRadioButton
-        Left = 24
-        Top = 95
+        Left = 0
+        Top = 75
         Width = 113
         Height = 17
         Caption = 'Urano'
@@ -271,8 +271,8 @@ object Form38: TForm38
         TabStop = True
       end
       object RadioButton4: TRadioButton
-        Left = 24
-        Top = 114
+        Left = 0
+        Top = 94
         Width = 113
         Height = 17
         Caption = 'Toledo'
@@ -285,8 +285,8 @@ object Form38: TForm38
         TabOrder = 1
       end
       object RadioButton5: TRadioButton
-        Left = 24
-        Top = 133
+        Left = 0
+        Top = 113
         Width = 113
         Height = 17
         Caption = 'Filizola'
@@ -432,7 +432,6 @@ object Form38: TForm38
       Width = 100
       Height = 24
       Caption = '< Voltar'
-      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -11
@@ -440,6 +439,7 @@ object Form38: TForm38
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      Visible = False
       OnClick = btnVoltarClick
     end
     object btnAvancar: TBitBtn
