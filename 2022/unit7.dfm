@@ -15274,7 +15274,6 @@ object Form7: TForm7
       DisplayWidth = 35
       FieldName = 'STATUS'
       Origin = '"VENDAS"."STATUS"'
-      OnSetText = ibDataSet15STATUSSetText
       Size = 128
     end
     object ibDataSet15EMISSAO: TDateField

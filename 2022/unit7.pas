@@ -2408,7 +2408,6 @@ type
     procedure Imprimiretiqueta1Click(Sender: TObject);
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     procedure miDuplicarNFSeClick(Sender: TObject);
-    procedure ibDataSet15STATUSSetText(Sender: TField; const Text: string);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -33473,11 +33472,6 @@ begin
   finally
     ibDataSet15SAIDAD.OnChange := ibDataSet15SAIDADChange;
   end;
-end;
-
-procedure TForm7.ibDataSet15STATUSSetText(Sender: TField; const Text: string);
-begin
-  SetTextoCampoSTATUSNFe(Text);
 end;
 
 procedure TForm7.RelatriodevendasporclienteNFeCupom1Click(Sender: TObject);
