@@ -4360,7 +4360,13 @@ end;
 
 function TestarEstadosAlteraEmitadaNota: Boolean;
 begin
+  {Dailon Parisotto (f-18201) 2024-05-08 Inicio
+
   Result := ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2) or (Form7.sRPS = 'S');
+
+  }
+  Result := (TestarUFMovimentaEstoqueFinanceiroSemFaturar(Form7.ibDataSet13ESTADO.AsString)) or (Form1.iReduzida = 2) or (Form7.sRPS = 'S');
+  {Dailon Parisotto (f-18201) 2024-05-08 Fim}
 end;
 
 function BaixaEstoqueDaNFeAutorizada(sPp1: String): boolean;

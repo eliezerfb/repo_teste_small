@@ -3843,7 +3843,13 @@ begin
   Form1.Image4.Width    := 1024;
   Form1.Image4.Height   := 768;
   //
+  {Dailon Parisotto (f-18201) 2024-05-08 Inicio
+
   if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) then
+
+  }
+  if TestarUFMovimentaEstoqueFinanceiroSemFaturar(Form7.ibDataSet13ESTADO.AsString) then
+  {Dailon Parisotto (f-18201) 2024-05-08 Fim}
   begin
     ConfiguraodaNFemformulrionumerado1.Visible := True;
   end else
