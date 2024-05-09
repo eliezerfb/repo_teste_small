@@ -1691,6 +1691,7 @@ type
     ibdConversaoCFOPCST: TIBStringField;
     ibdConversaoCFOPCSOSN: TIBStringField;
     ibdConversaoCFOPCONSIDERACSTCSOSN: TIBStringField;
+    IBDataSet2CONTRIBUINTE: TIntegerField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -15287,6 +15288,9 @@ begin
       Screen.Cursor := crDefault;
     end;
   end;
+
+  Form10.pnl_IE.Visible    := (Length(AllTrim(ibDAtaset2CGC.AsString)) = 18); //Mauricio Parizotto 2024-04-15
+
   Screen.Cursor := crDefault;
 end;
 
