@@ -701,11 +701,8 @@ begin
                 //Soma Outras no ICMS
                 if NotaFiscal.Despesas <> 0 then
                 begin
-                  if (NotaFiscal.Despesas / NotaFiscal.Mercadoria * oItem.TOTAL) > 0.01 then
-                    fSomaNaBase  := fSomanaBase + (NotaFiscal.Despesas / NotaFiscal.Mercadoria * oItem.TOTAL); // REGRA DE TRÊS ratiando o valor Total do Despesas
-
                   //Outas Sobre IPI e IPI sobre ICMS
-                  if (bIPISobreFrete) and (bIPISobreICMS) then
+                  if (bIPISobreOutras) and (bIPISobreICMS) then
                   begin
                     fSomaNaBase := fSomaNaBase + Arredonda2((oItem.DespesaRateado * ( oItem.IPI / 100 )),2);
                   end;
