@@ -15397,6 +15397,7 @@ end;
 procedure TForm7.ibDataSet4PRECOChange(Sender: TField);
 var
   nMargem: Currency;
+  nVendaRecalc: Double;
 begin
   {Dailon Parisotto 2023-10-09 Inicio}
   if FbDuplicandoProd then
@@ -15422,7 +15423,17 @@ begin
       nMargem := Arredonda(((ibDataSet4PRECO.AsFloat - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100, 2);
 
       if ibDataSet4MARGEMLB.AsCurrency <> nMargem then
-        ibDataSet4MARGEMLB.AsCurrency := nMargem;
+      begin
+        nVendaRecalc := StrToFloat(Format('%8.2f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((nMargem / 100)+1))]));
+        if (nVendaRecalc <> ibDataSet4PRECO.AsFloat) then
+          ibDataSet4MARGEMLB.AsCurrency := nMargem
+        else
+        begin
+          nVendaRecalc := StrToFloat(Format('%8.2f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsCurrency / 100)+1))]));
+          if (nVendaRecalc <> ibDataSet4PRECO.AsFloat) then
+            ibDataSet4MARGEMLB.AsCurrency := nMargem
+        end;
+      end;
     end;
 
     ibDataSet4ALTERADO.AsString := '1';
