@@ -2474,7 +2474,8 @@ type
     procedure CarregarContasReceberMarcadas;
     procedure CarregarContasPagarMarcadas;
     function TestarPodeCadastrarClifor(AcNome: String; AbMensagem: Boolean = True): Boolean;
-    function TestarPodeUtilizarCIT(AcTexto: String): Boolean;
+    function PodeUtilizarCIT(AcTexto: String): Boolean;
+    function TestarPodeUtilizarCIT(AcRegistro, AcCITInformado: String): Boolean;
   public
     // Public declarations
 
@@ -16799,7 +16800,7 @@ begin
       Exit;
     end;
 
-    if not TestarPodeUtilizarCIT(cText) then
+    if not PodeUtilizarCIT(cText) then
     begin
       cText := EmptyStr;
 
@@ -33492,6 +33493,95 @@ begin
   {Sandro Silva 2023-10-02 fim}
 end;
 
+function TForm7.TestarPodeUtilizarCIT(AcRegistro, AcCITInformado: String): Boolean;
+const
+  _cSQL = 'SELECT REGISTRO, ST FROM ICM';
+var
+  oTransaction: TIBTransaction;
+  qryDadosAtual: TIBQuery;
+  qryDados: TIBQuery;
+begin
+  Result := True;
+  if AcCITInformado = EmptyStr then
+    Exit;
+
+  // Testa na transação atual
+  qryDadosAtual := CriaIBQuery(IBTransaction1);
+  try
+    qryDadosAtual.Close;
+    qryDadosAtual.SQL.Clear;
+    qryDadosAtual.SQL.Add(_cSQL);
+    qryDadosAtual.Open;
+    qryDadosAtual.First;
+
+    while not qryDadosAtual.Eof do
+    begin
+      Result := not ((qryDadosAtual.FieldByName('REGISTRO').AsString <> AcRegistro)
+                    and (qryDadosAtual.FieldByName('ST').AsString = AcCITInformado));
+
+      if not Result then
+        Break;
+
+      qryDadosAtual.Next;
+    end;
+
+    if Result then
+    begin
+      // Necessário criar uma nova transação
+      oTransaction := CriaIBTransaction(IBDatabase1);
+      qryDados := CriaIBQuery(oTransaction);
+      try
+        qryDados.Close;
+        qryDados.SQL.Clear;
+        qryDados.SQL.Add(_cSQL);
+        qryDados.SQL.Add('WHERE (ST=:XST)');
+        qryDados.ParamByName('XST').AsString := AcCITInformado;
+        qryDados.Open;
+        qryDados.Last;
+        qryDados.First;
+
+        Result := qryDados.IsEmpty;
+
+        if not Result then
+        begin
+          // Se encontrou 1 vai validar com os dados da transação atual
+          // Se encontrou mais que 1 quer dizer q tem algum CIT duplicado mesmo
+          if qryDados.RecordCount = 1 then
+          begin
+            qryDadosAtual.First;
+
+            while not qryDadosAtual.Eof do
+            begin
+              // Quer dizer que foi alterado
+              if (qryDados.FieldByName('REGISTRO').AsString = qryDadosAtual.FieldByName('REGISTRO').AsString)
+                and (qryDados.FieldByName('ST').AsString <> AcCITInformado) then
+                Result := True;
+              // Quer dizer que tem duplicado
+              if (qryDados.FieldByName('REGISTRO').AsString <> qryDadosAtual.FieldByName('REGISTRO').AsString)
+                and (qryDados.FieldByName('ST').AsString = qryDadosAtual.FieldByName('ST').AsString) then
+              begin
+                Result := False;
+                Break;
+              end;
+
+              qryDadosAtual.Next;
+            end;
+          end;
+        end;
+      finally
+        FreeAndNil(qryDados);
+        FreeAndNil(oTransaction);
+      end;
+    end;
+
+    if not Result then
+      MensagemSistema('Não é possível utilizar o CIT '+ Trim(AcCITInformado) + '.' + sLineBreak +
+                      'Já existe outro registro configurado com este CIT.', msgInformacao);
+  finally
+    FreeAndNil(qryDadosAtual);
+  end;
+end;
+
 procedure TForm7.ibDataSet7AfterScroll(DataSet: TDataSet);
 begin
   if FrmParcelas <> nil then
@@ -36113,13 +36203,11 @@ begin
   end;
 end;
 
-function TForm7.TestarPodeUtilizarCIT(AcTexto: String): Boolean;
+function TForm7.PodeUtilizarCIT(AcTexto: String): Boolean;
 begin
   Result := True;
-  if not smallfunc_xe.TestarPodeUtilizarCIT(Form7.IBDatabase1,
-                                            Form7.ibDataSet14.FieldByName('REGISTRO').AsString,
-                                            AcTexto) then
-//                                            Form7.ibDataSet14.FieldByName('ST').AsString) then
+
+  if not TestarPodeUtilizarCIT(Form7.ibDataSet14.FieldByName('REGISTRO').AsString, AcTexto) then
   begin
     Result := False;
     if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
