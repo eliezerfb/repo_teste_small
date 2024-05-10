@@ -208,9 +208,10 @@ procedure SleepWithoutFreeze(msec: int64);
 function DiasDesteMes: Integer;
 function TamanhoArquivo(Arquivo: string): Integer;
 procedure RenameLog(Arquivo: String);
+function VersaoBuild(NomeAplicativo: String): String;
 function HasFile(Directory: String): boolean;
 function TestarTEFConfigurado: Boolean;
-function TestarPodeUtilizarCIT(AoDataBase: TIBDataBase; AcRegistro, AcCITInformado: String): Boolean;
+function TestarUFMovimentaEstoqueFinanceiroSemFaturar(AcUF: String): Boolean;
 
 var
   IMG: TImage;
@@ -2602,6 +2603,29 @@ begin
   end;
 end;
 
+function VersaoBuild(NomeAplicativo: String): String;
+var
+  Size, Size2: DWord;
+  Pt, Pt2: Pointer;
+  FI: PVSFixedFileInfo;
+  VerSize: DWORD;
+begin
+  Size := GetFileVersionInfoSize(PChar(NomeAplicativo), Size2);
+  GetMem (Pt, Size);
+  try
+    GetFileVersionInfo (PChar (NomeAplicativo), 0, Size, Pt);
+
+    VerQueryValue(Pt, '\', Pointer(FI), VerSize);
+
+    Result := Concat(IntToStr(FI.dwFileVersionMS shr 16), '.',
+                    IntToStr(FI.dwFileVersionMS and $FFFF), '.',
+                    IntToStr(FI.dwFileVersionLS shr 16), '.',
+                    IntToStr(FI.dwFileVersionLS and $FFFF));
+  finally
+    FreeMem(Pt);
+  end;
+end;
+
 function HasFile(Directory: String): boolean;
 var
   I: Integer;
@@ -2623,41 +2647,11 @@ begin
   end;
 end;
 
-function TestarPodeUtilizarCIT(AoDataBase: TIBDataBase; AcRegistro, AcCITInformado: String): Boolean;
-var
-  oTransaction: TIBTransaction;
-  qryDados: TIBQuery;
+function TestarUFMovimentaEstoqueFinanceiroSemFaturar(AcUF: String): Boolean;
 begin
-  Result := True;
-  if AcCITInformado = EmptyStr then
-    Exit;
-  // Necessário criar uma nova transação
-  oTransaction := CriaIBTransaction(AoDataBase);
-  qryDados := CriaIBQuery(oTransaction);
-  try
-    qryDados.Close;
-    qryDados.SQL.Clear;
-    qryDados.SQL.Add('SELECT');
-    qryDados.SQL.Add('    COUNT(ST) AS QTDE');
-    qryDados.SQL.Add('FROM ICM');
-    qryDados.SQL.Add('WHERE');
-    qryDados.SQL.Add('    (REGISTRO<>:XREGISTRO)');
-    qryDados.SQL.Add('    AND (ST=:XST)');
-    qryDados.ParamByName('XREGISTRO').AsString := AcRegistro;
-    qryDados.ParamByName('XST').AsString       := AcCITInformado;
-    qryDados.Open;
-
-    if qryDados.FieldByName('QTDE').AsInteger > 0 then
-    begin
-      Result := False;
-
-      MensagemSistema('Não é possível utilizar o CIT '+ Trim(AcCITInformado) + '.' + sLineBreak +
-                      'Já existe outro registro configurado com este CIT.', msgInformacao);
-    end;
-  finally
-    FreeAndNil(qryDados);
-    FreeAndNil(oTransaction);
-  end;
+  // Método para deixar claro aos DEVs as UFs que só movimenta estoque/financeiro
+  // quando é faturado nota. SENDO ELES SC e MG.
+  Result := (AcUF <> 'SC') and (AcUF <> 'MG');
 end;
 
 end.
