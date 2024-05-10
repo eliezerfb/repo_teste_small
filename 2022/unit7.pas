@@ -21904,8 +21904,10 @@ end;
 
 procedure TForm7.ibDataSet3BeforeInsert(DataSet: TDataSet);
 begin
-  if (not Form7.ibDataSet3.Bof) then try if Alltrim(Form7.ibDataSet3CLIENTE.AsString) = '' then Form7.ibDataSet3.Delete; except end;
-  
+
+  {Dailon Parisotto (f-17697) 2024-04-19 Inicio}
+//  if (not Form7.ibDataSet3.Bof) then try if Alltrim(Form7.ibDataSet3CLIENTE.AsString) = '' then Form7.ibDataSet3.Delete; except end;
+  {Dailon Parisotto (f-17697) 2024-04-19 Fim}
   try
     ibDataSet99.Close;
     ibDataSet99.SelectSql.Clear;
