@@ -808,6 +808,8 @@ begin
 end;
 
 procedure TForm12.SMALL_DBEdit40Enter(Sender: TObject);
+var
+  nRecNo: Integer;
 begin
   mkp(True);
 
@@ -863,7 +865,29 @@ begin
   end;
 
   if Form7.sModulo <> 'RETRIBUTA' then
+  begin
+    {Dailon Parisotto (f-18604) 2024-05-10 Inicio
+
     Form7.ibDataSet16.EnableControls;
+
+    Por algum motivo ocorre o erro, se setar para o primeiro não ocorre problema
+    }
+
+    if Form7.ibDataSet16.ControlsDisabled then
+    begin
+      nRecNo := Form7.ibDataSet16.RecNo;
+      DBGrid1.DataSource := nil;
+      try
+          Form7.ibDataSet16.First;
+          Form7.ibDataSet16.EnableControls;
+
+      finally
+        Form7.ibDataSet16.RecNo := nRecNo;
+        DBGrid1.DataSource := Form7.DataSource16;
+      end;
+    end;
+    {Dailon Parisotto (f-18604) 2024-05-10 Fim}
+  end;
   Form7.ibDataSet15.Enablecontrols;
 
   AtivaPesquisaNaturezaOP;
