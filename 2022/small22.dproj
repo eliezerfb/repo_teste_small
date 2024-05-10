@@ -93,11 +93,11 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_MajorVer>2024</VerInfo_MajorVer>
-        <VerInfo_Build>42</VerInfo_Build>
+        <VerInfo_Build>44</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.13.0.42;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.13.0.42;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.14.0.44;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.14.0.44;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
         <Manifest_File>xp.manifest</Manifest_File>
-        <VerInfo_MinorVer>13</VerInfo_MinorVer>
+        <VerInfo_MinorVer>14</VerInfo_MinorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -1411,10 +1411,10 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
@@ -2235,10 +2235,10 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
