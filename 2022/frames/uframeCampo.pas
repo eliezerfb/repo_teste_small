@@ -173,7 +173,11 @@ begin
   end;
   Query.Open;
 
+  {Sandro Silva 2024-05-10 inicio
   txtCampo.MaxLength := Query.FieldByName(sCampoDescricao).Size; // Dailon 2024-04-24
+  }
+  txtCampo.MaxLength := Query.FieldByName(ALIAS_CAMPO_PESQUISADO).Size; // Dailon 2024-04-24
+  {Sandro Silva 2024-05-10 fim}
 
   //if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then Mauricio Parizotto 2024-01-16
   if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive]) then
