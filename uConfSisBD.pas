@@ -9,6 +9,7 @@ uses
   , uSmallConsts
   , uNFSeSections
   , SysUtils
+  , uImpressoraSections
   ;
 
 type
@@ -17,14 +18,17 @@ type
     FoOS: TSectionOS;
     FoOutras: TSectionOutras;
     FoNFSE: TSectionNFSE_BD;
+    FoImpressora: TSectionImpressora;
     function getOS: TSectionOS;
     function getOutras: TSectionOutras;
     function getNFSE: TSectionNFSE_BD;
+    function getImpressora: TSectionImpressora;
   public
     destructor Destroy; override;
     property OS: TSectionOS read getOS;
     property Outras: TSectionOutras read getOutras;
     property NFSE: TSectionNFSE_BD read getNFSE;
+    property Impressora: TSectionImpressora read getImpressora;
   protected
   end;
 
@@ -33,10 +37,19 @@ implementation
 
 { TOSBD }
 
+
 destructor TConfBD.Destroy;
 begin
   FreeAndNil(FoOS);
   inherited;
+end;
+
+function TConfBD.getImpressora: TSectionImpressora;
+begin
+  if not Assigned(FoImpressora) then
+    FoImpressora := TSectionImpressora.Create(Transaction,_cSectionImpressora);
+
+  Result := FoImpressora;
 end;
 
 function TConfBD.getNFSE: TSectionNFSE_BD;

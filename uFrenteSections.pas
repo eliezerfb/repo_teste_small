@@ -80,7 +80,7 @@ begin
     ttioPDF: cPorta := 'PDF';
     ttioHTML: cPorta := 'HTML';
     ttioTXT: cPorta := 'TXT';
-    else cPorta := '_cImpressoraPadrao';
+    else cPorta := _cImpressoraPadrao;
   end;
 
   FoIni.WriteString(Section, _cIdentPorta, cPorta);
