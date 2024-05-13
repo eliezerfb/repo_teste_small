@@ -2414,6 +2414,7 @@ type
 
   private
     FbDuplicandoProd: Boolean;
+    FbDuplicandoNFe: Boolean;
     FbDuplicandoNFSe: Boolean;
     FbImportandoXML: Boolean;
     iOSQtdEtiqueta : integer;
@@ -10490,6 +10491,7 @@ begin
   IBDatabase1.Connected := False; // Garantia, caso esquecer a propriedade Connected := True no objeto Sandro Silva 2023-12-26
   {Sandro Silva 2023-07-05 inicio}
   FbDuplicandoNFSe      := False;
+  FbDuplicandoNFe       := False;
   slPickListBandeira         := TStringList.Create;
   slPickListFormaDePagamento := TStringList.Create;
   slPickListBanco            := TStringList.Create;
@@ -18702,12 +18704,15 @@ begin
                   //
                   // Venda pelo custo
                   //
-                  if Pos('0',Form7.ibDataSet14INTEGRACAO.AsString) = 0 then // Se não tiver configuração de integração para usar o preço de compra na venda, usará o preço de venda cadastrado no estoque
+                  if (not FbDuplicandoNFe) or ((FbDuplicandoNFe) and (Form7.ibDataSet16UNITARIO.AsFloat = 0)) then // Dailon Parisotto (f-18201) 2024-05-13 // Quando duplica não deve alterar o UNITARIO
                   begin
-                    Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
-                  end else
-                  begin
-                    Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
+                    if Pos('0',Form7.ibDataSet14INTEGRACAO.AsString) = 0 then // Se não tiver configuração de integração para usar o preço de compra na venda, usará o preço de venda cadastrado no estoque
+                    begin
+                      Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
+                    end else
+                    begin
+                      Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
+                    end;
                   end;
                   //
                 end;
@@ -32084,97 +32089,102 @@ var
 
   oNotaFiscal : TNotaFiscalEletronicaCalc;
 begin
-  vCli := Form7.ibDataSet15CLIENTE.AsString;
-  vOpe := Form7.ibDataSet15OPERACAO.AsString;
-
-  I := 0;
-
-  Form7.ibDataSet16.First;
-  while not Form7.ibDataSet16.Eof do // disable
-  begin
-    sDesVetor[I] := Form7.ibDataSet16DESCRICAO.AsString;
-    fValVetor[I] := Form7.ibDataSet16UNITARIO.Asfloat;
-    fQtdVetor[I] := Form7.ibDataSet16QUANTIDADE.AsFloat;
-    aCFOP[I]     := Form7.ibDataSet16CFOP.AsString;
-    I := I + 1;
-    Form7.ibDataSet16.Next;
-  end;
-
-  Form7.ibDataSet15.Append;
-  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
-    Form7.ibDataset15.Edit;
-  Form7.ibDataSet15CLIENTE.AsString  :=  vCli;
-  Form7.ibDataSet15OPERACAO.AsString :=  vOpe;
-  Form7.ibDataSet15.Post;
-
-  J := I-1;
-  for I := 0 to J do
-  begin
-    Form7.ibDataSet16.Append;
-    {Dailon Parisotto (f-18201) 2024-04-22 Inicio}
-
-    // NÃO deve ser informado o código do produto, se não os EVENTOS CHAVE dos ITENS
-    // logo abaixo não irão funcionar
-
-  //    Form7.ibDataSet16CODIGO.AsString    := aCodVetor[I];
-    {Dailon Parisotto (f-18201) 2024-04-22 Fim}
-    Form7.ibDataSet16DESCRICAO.AsString := sDesVetor[I];
-    Form7.ibDataSet16UNITARIO.AsFloat   := fValVetor[I];
-    Form7.ibDataSet16QUANTIDADE.AsFloat := fQtdVetor[I];
-    Form7.ibDataSet16CFOP.AsString      := aCFOP[I];
-
-    {Dailon Parisotto (f-18201) 2024-04-22 Inicio}
-    // Se for comentario de item
-    if (Form7.ibDataSet16CODIGO.AsString = EmptyStr)
-      and (Form7.ibDataSet16QUANTIDADE.AsFloat = 0)
-      and (Form7.ibDataSet16UNITARIO.AsFloat = 0) then
-    begin
-      Form7.ibDataSet16QUANTIDADE.Clear;
-      Form7.ibDataSet16UNITARIO.Clear;
-      Form7.ibDataSet16TOTAL.Clear;
-    end;
-    {Dailon Parisotto (f-18201) 2024-04-22 Fim}
-    Form7.ibDataSet16.Post;
-    Form7.sModulo := 'VENDA';
-  end;
-
-  {Dailon Parisotto (f-18201) 2024-05-07 Inicio}
-  // EVENTOS CHAVE
-  oNotaFiscal := TNotaFiscalEletronicaCalc.create;
-  Form7.ibDataSet16.DisableControls;
+  FbDuplicandoNFe := True;
   try
+    vCli := Form7.ibDataSet15CLIENTE.AsString;
+    vOpe := Form7.ibDataSet15OPERACAO.AsString;
+
+    I := 0;
+
     Form7.ibDataSet16.First;
-
-    Form7.ibDataSet15.Edit;
-    while not Form7.ibDataSet16.eof do
+    while not Form7.ibDataSet16.Eof do // disable
     begin
-      Form1.bFlag := True;
-      try
-        Form7.ibDataSet16.Edit;
-        Form7.ibDataSet16DESCRICAOSetText(Form7.ibDataSet16DESCRICAO, Form7.ibDataSet16DESCRICAO.AsString);
-        Form7.ibDataSet16DESCRICAOChange(Form7.ibDataSet16DESCRICAO);
-        Form7.ibDataSet16QUANTIDADESetText(Form7.ibDataSet16QUANTIDADE, Form7.ibDataSet16QUANTIDADE.AsString);
-        Form7.ibDataSet16QUANTIDADEChange(Form7.ibDataSet16QUANTIDADE);
-        Form7.ibDataSet16UNITARIOChange(Form7.ibDataSet16UNITARIO);
-        Form7.ibDataSet16TOTALChange(Form7.ibDataSet16TOTAL);
-      finally
-        Form1.bFlag := False;
-      end;
-
-      if (Form7.ibDataset16.State in ([dsEdit, dsInsert])) then
-        Form7.ibDataset16.Post;
+      sDesVetor[I] := Form7.ibDataSet16DESCRICAO.AsString;
+      fValVetor[I] := Form7.ibDataSet16UNITARIO.Asfloat;
+      fQtdVetor[I] := Form7.ibDataSet16QUANTIDADE.AsFloat;
+      aCFOP[I]     := Form7.ibDataSet16CFOP.AsString;
+      I := I + 1;
       Form7.ibDataSet16.Next;
     end;
-    Form7.ibDataSet16.First;
 
-    oNotaFiscal.CalculaValores(Form7.ibDataSet15, Form7.ibDataSet16, False);
-    if (Form7.ibDataSet15.State in ([dsEdit, dsInsert])) then
-      Form7.ibDataSet15.Post;
+    Form7.ibDataSet15.Append;
+    if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset15.Edit;
+    Form7.ibDataSet15CLIENTE.AsString  :=  vCli;
+    Form7.ibDataSet15OPERACAO.AsString :=  vOpe;
+    Form7.ibDataSet15.Post;
+
+    J := I-1;
+    for I := 0 to J do
+    begin
+      Form7.ibDataSet16.Append;
+      {Dailon Parisotto (f-18201) 2024-04-22 Inicio}
+
+      // NÃO deve ser informado o código do produto, se não os EVENTOS CHAVE dos ITENS
+      // logo abaixo não irão funcionar
+
+    //    Form7.ibDataSet16CODIGO.AsString    := aCodVetor[I];
+      {Dailon Parisotto (f-18201) 2024-04-22 Fim}
+      Form7.ibDataSet16DESCRICAO.AsString := sDesVetor[I];
+      Form7.ibDataSet16UNITARIO.AsFloat   := fValVetor[I];
+      Form7.ibDataSet16QUANTIDADE.AsFloat := fQtdVetor[I];
+      Form7.ibDataSet16CFOP.AsString      := aCFOP[I];
+
+      {Dailon Parisotto (f-18201) 2024-04-22 Inicio}
+      // Se for comentario de item
+      if (Form7.ibDataSet16CODIGO.AsString = EmptyStr)
+        and (Form7.ibDataSet16QUANTIDADE.AsFloat = 0)
+        and (Form7.ibDataSet16UNITARIO.AsFloat = 0) then
+      begin
+        Form7.ibDataSet16QUANTIDADE.Clear;
+        Form7.ibDataSet16UNITARIO.Clear;
+        Form7.ibDataSet16TOTAL.Clear;
+      end;
+      {Dailon Parisotto (f-18201) 2024-04-22 Fim}
+      Form7.ibDataSet16.Post;
+      Form7.sModulo := 'VENDA';
+    end;
+
+    {Dailon Parisotto (f-18201) 2024-05-07 Inicio}
+    // EVENTOS CHAVE
+    oNotaFiscal := TNotaFiscalEletronicaCalc.create;
+    Form7.ibDataSet16.DisableControls;
+    try
+      Form7.ibDataSet16.First;
+
+      Form7.ibDataSet15.Edit;
+      while not Form7.ibDataSet16.eof do
+      begin
+        Form1.bFlag := True;
+        try
+          Form7.ibDataSet16.Edit;
+          Form7.ibDataSet16DESCRICAOSetText(Form7.ibDataSet16DESCRICAO, Form7.ibDataSet16DESCRICAO.AsString);
+          Form7.ibDataSet16DESCRICAOChange(Form7.ibDataSet16DESCRICAO);
+          Form7.ibDataSet16QUANTIDADESetText(Form7.ibDataSet16QUANTIDADE, Form7.ibDataSet16QUANTIDADE.AsString);
+          Form7.ibDataSet16QUANTIDADEChange(Form7.ibDataSet16QUANTIDADE);
+          Form7.ibDataSet16UNITARIOChange(Form7.ibDataSet16UNITARIO);
+          Form7.ibDataSet16TOTALChange(Form7.ibDataSet16TOTAL);
+        finally
+          Form1.bFlag := False;
+        end;
+
+        if (Form7.ibDataset16.State in ([dsEdit, dsInsert])) then
+          Form7.ibDataset16.Post;
+        Form7.ibDataSet16.Next;
+      end;
+      Form7.ibDataSet16.First;
+
+      oNotaFiscal.CalculaValores(Form7.ibDataSet15, Form7.ibDataSet16, False);
+      if (Form7.ibDataSet15.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataSet15.Post;
+    finally
+      FreeAndNil(oNotaFiscal);
+      Form7.ibDataSet16.EnableControls;
+    end;
+    {Dailon Parisotto (f-18201) 2024-05-07 Fim}
   finally
-    FreeAndNil(oNotaFiscal);
-    Form7.ibDataSet16.EnableControls;
+    FbDuplicandoNFe := False;
   end;
-  {Dailon Parisotto (f-18201) 2024-05-07 Fim}
 
   Form7.sModulo := 'VENDA';
   Image106Click(Sender);
