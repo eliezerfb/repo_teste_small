@@ -675,9 +675,11 @@ object Form48: TForm48
         TitleFont.Name = 'Microsoft Sans Serif'
         TitleFont.Style = []
         OnColEnter = DBGrid4ColEnter
+        OnColExit = DBGrid4ColExit
         OnEnter = DBGrid4Enter
         OnKeyDown = DBGrid4KeyDown
         OnKeyPress = DBGrid4KeyPress
+        OnKeyUp = DBGrid4KeyUp
       end
       object DBMemo1: TDBMemo
         Left = 10

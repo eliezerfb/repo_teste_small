@@ -156,6 +156,7 @@ begin
      (Column.Field.Name = 'ibDataSet14SOBREFRETE') or
      (Column.Field.Name = 'ibDataSet14SOBRESEGURO') or
      (Column.Field.Name = 'ibDataSet14SOBREOUTRAS') or
+     (Column.Field.Name = 'ibDataSet14IPISOBREOUTRA') or //Mauricio Parizotto 2024-04-22
      (Column.Field.Name = 'ibDataSet14FRETESOBREIPI')  then
   begin
     Form7.dbGrid1.Canvas.FillRect(Rect);
@@ -199,6 +200,15 @@ begin
       if Column.Field.Name = 'ibDataSet14FRETESOBREIPI' then
       begin
         if (Alltrim(Form7.ibDataSet14FRETESOBREIPI.AsString) = 'S') then
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
+        else
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
+      end;
+
+      //Mauricio Parizotto 2024-04-22
+      if Column.Field.Name = 'ibDataSet14IPISOBREOUTRA' then
+      begin
+        if (Alltrim(Form7.ibDataSet14IPISOBREOUTRA.AsString) = 'S') then
           Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
         else
           Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);

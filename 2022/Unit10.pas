@@ -350,6 +350,10 @@ type
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
     Label118: TLabel;
     fraPerfilTrib: TfFrameCampo;
+    pnl_IE: TPanel;
+    rgIEContribuinte: TRadioButton;
+    rgIENaoContribuinte: TRadioButton;
+    rgIEIsento: TRadioButton;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -559,6 +563,9 @@ type
     procedure fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure fraPerfilTribExit(Sender: TObject);
+    procedure rgIEContribuinteClick(Sender: TObject);
+    procedure rgIENaoContribuinteClick(Sender: TObject);
+    procedure rgIEIsentoClick(Sender: TObject);
   private
     FcCEPAnterior: String;
     cCadJaValidado: String;
@@ -586,6 +593,8 @@ type
     procedure BloqueiaCamposAbaGrade(AbBloquear: Boolean);
     function RetornarDescrCaracTagsObs: String;
     procedure DefineCamposCEP(AoObjeto: TObjetoConsultaCEP);
+    procedure SetTipoContribuinte(iTipo : integer);
+    procedure CarregaTipoContibuinte;
   public
     { Public declarations }
 
@@ -870,6 +879,9 @@ begin
       end;
 
       Form10.Caption := form7.ibDataSet2NOME.AsString;
+
+      //Mauricio Parizotto 2024-04-15
+      Form10.CarregaTipoContibuinte;
     end;
     {$EndRegion}
 
@@ -4611,6 +4623,7 @@ begin
 
   eLimiteCredDisponivel.Visible   := False;
   lblLimiteCredDisponivel.Visible := False;
+  pnl_IE.Visible                  := False; //Mauricio Parizotto 2024-04-12
 
   try
     Form7.ibDataSet13.Edit;
@@ -4887,6 +4900,11 @@ begin
                   lblLimiteCredDisponivel.Visible := True;
                   eLimiteCredDisponivel.Top       := iTop;
                   lblLimiteCredDisponivel.Top     := iTop + 1;
+                end;
+
+                if (Form7.sModulo = 'CLIENTES') then
+                begin
+                  pnl_IE.Visible                  := (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 18); //Mauricio Parizotto 2024-04-15
                 end;
 
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top        :=  iTop;
@@ -7740,6 +7758,21 @@ begin
   Result := ' (' + Form7.ibDataSet4DESCRICAO.Size.ToString + ' caracteres)';
 end;
 
+procedure TForm10.rgIEContribuinteClick(Sender: TObject);
+begin
+  SetTipoContribuinte(1);
+end;
+
+procedure TForm10.rgIEIsentoClick(Sender: TObject);
+begin
+  SetTipoContribuinte(2);
+end;
+
+procedure TForm10.rgIENaoContribuinteClick(Sender: TObject);
+begin
+  SetTipoContribuinte(9);
+end;
+
 procedure TForm10.Orelha_TAGSExit(Sender: TObject);
 const
   _cCamposObs = ';OBS1;OBS2;OBS3;OBS4;OBS5;OBS6;OBS7;OBS8;OBS9;';
@@ -8510,5 +8543,59 @@ begin
 end;
 
 
+procedure TForm10.SetTipoContribuinte(iTipo : integer); //Mauricio Parizotto 2024-05-15
+begin
+  try
+    if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset2.Edit;
+
+    Form7.IBDataSet2CONTRIBUINTE.AsInteger := iTipo;
+
+    CarregaTipoContibuinte;
+  except
+  end;
+end;
+
+procedure TForm10.CarregaTipoContibuinte;  //Mauricio Parizotto 2024-05-15
+begin
+  try
+    SMALL_DBEdit9.Enabled       := True;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 0 then
+    begin
+      rgIEContribuinte.Checked    := False;
+      rgIEIsento.Checked          := False;
+      rgIENaoContribuinte.Checked := False;
+    end;
+
+    if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset2.Edit;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 1 then
+    begin
+      rgIEContribuinte.Checked := True;
+
+      if Form7.IBDataSet2IE.AsString = 'ISENTO' then
+        Form7.IBDataSet2IE.AsString := '';
+    end;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 2 then
+    begin
+      rgIEIsento.Checked          := True;
+
+      Form7.IBDataSet2IE.AsString := 'ISENTO';
+      SMALL_DBEdit9.Enabled       := False;
+    end;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 9 then
+    begin
+      rgIENaoContribuinte.Checked := True;
+
+      if Form7.IBDataSet2IE.AsString = 'ISENTO' then
+        Form7.IBDataSet2IE.AsString := '';
+    end;
+  except
+  end;
+end;
 
 end.
