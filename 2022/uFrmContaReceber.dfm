@@ -432,7 +432,7 @@ inherited FrmContaReceber: TFrmContaReceber
           ParentBackground = False
           ParentColor = False
           ParentCtl3D = False
-          TabOrder = 0
+          TabOrder = 1
           ExplicitLeft = 110
           ExplicitTop = 51
           ExplicitWidth = 313
@@ -469,7 +469,7 @@ inherited FrmContaReceber: TFrmContaReceber
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 1
+          TabOrder = 0
           OnKeyDown = PadraoKeyDown
         end
         object edtHistorico: TSMALL_DBEdit

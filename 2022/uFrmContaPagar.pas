@@ -240,8 +240,9 @@ procedure TFrmContaPagar.AtualizaObjComValorDoBanco;
 begin
   //Plano de Contas
   try
-    fraPlanoContas.TipoDePesquisa               := tpSelect;
+    fraPlanoContas.TipoDePesquisa               := tpLocate;
     fraPlanoContas.GravarSomenteTextoEncontrato := True;
+    fraPlanoContas.CampoVazioAbrirGridPesquisa  := True;
     fraPlanoContas.CampoCodigo                  := Form7.ibDataSet8CONTA;
     fraPlanoContas.CampoCodigoPesquisa          := 'NOME';
     fraPlanoContas.sCampoDescricao              := 'NOME';
@@ -255,6 +256,7 @@ begin
   try
     fraFornecedor.TipoDePesquisa                := tpSelect;
     fraFornecedor.GravarSomenteTextoEncontrato  := True;
+    fraFornecedor.CampoVazioAbrirGridPesquisa   := True;
     fraFornecedor.CampoCodigo                   := Form7.ibDataSet8NOME;
     fraFornecedor.CampoCodigoPesquisa           := 'NOME';
     fraFornecedor.sCampoDescricao               := 'NOME';

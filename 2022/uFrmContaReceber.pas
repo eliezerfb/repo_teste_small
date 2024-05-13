@@ -428,8 +428,9 @@ procedure TFrmContaReceber.AtualizaObjComValorDoBanco;
 begin
   //Plano de Contas
   try
-    fraPlanoContas.TipoDePesquisa               := tpSelect;
+    fraPlanoContas.TipoDePesquisa               := tpLocate;
     fraPlanoContas.GravarSomenteTextoEncontrato := True;
+    fraPlanoContas.CampoVazioAbrirGridPesquisa  := True;
     fraPlanoContas.CampoCodigo                  := Form7.ibDataSet7CONTA;
     fraPlanoContas.CampoCodigoPesquisa          := 'NOME';
     fraPlanoContas.sCampoDescricao              := 'NOME';
@@ -443,6 +444,7 @@ begin
   try
     fraCliente.TipoDePesquisa                := tpSelect;
     fraCliente.GravarSomenteTextoEncontrato  := True;
+    fraCliente.CampoVazioAbrirGridPesquisa   := True;
     fraCliente.CampoCodigo                   := Form7.ibDataSet7NOME;
     fraCliente.CampoCodigoPesquisa           := 'NOME';
     fraCliente.sCampoDescricao               := 'NOME';
@@ -454,8 +456,9 @@ begin
 
   //Instituição Financeira
   try
-    fraInstituicao.TipoDePesquisa               := tpSelect;
+    fraInstituicao.TipoDePesquisa               := tpLocate;
     fraInstituicao.GravarSomenteTextoEncontrato := True;
+    fraInstituicao.CampoVazioAbrirGridPesquisa  := True;
     fraInstituicao.CampoCodigo                  := Form7.ibDataSet7INSTITUICAOFINANCEIRA;
     fraInstituicao.CampoCodigoPesquisa          := 'NOME';
     fraInstituicao.sCampoDescricao              := 'NOME';
@@ -467,8 +470,9 @@ begin
 
   //Forma de pagamento
   try
-    fraFormaPag.TipoDePesquisa               := tpSelect;
+    fraFormaPag.TipoDePesquisa               := tpLocate;
     fraFormaPag.GravarSomenteTextoEncontrato := True;
+    fraFormaPag.CampoVazioAbrirGridPesquisa  := True;
     fraFormaPag.CampoCodigo                  := Form7.ibDataSet7FORMADEPAGAMENTO;
     fraFormaPag.CampoCodigoPesquisa          := 'NOME';
     fraFormaPag.sCampoDescricao              := 'NOME';
