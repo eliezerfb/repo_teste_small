@@ -8388,10 +8388,13 @@ begin
       FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
 
+    try
+      //Mauricio Parizotto 2024-02-22
+      CarregaConfiguracoes;
+      ConfiguraNFE;
+    except
 
-    //Mauricio Parizotto 2024-02-22
-    CarregaConfiguracoes;
-    ConfiguraNFE;
+    end;
 
     MontaTela(True);
 
