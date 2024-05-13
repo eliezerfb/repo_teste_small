@@ -567,7 +567,10 @@ begin
   Form7.ibDataSet7.First;
   while not Form7.ibDataSet7.Eof do
   begin
-    if Form7.ibDataSet7NUMERONF.AsString = Form7.ibDataSet15NUMERONF.AsString then Form7.ibDataSet7.Delete else Form7.ibDataSet7.Next;
+    if Form7.ibDataSet7NUMERONF.AsString = Form7.ibDataSet15NUMERONF.AsString then
+      Form7.ibDataSet7.Delete
+    else
+      Form7.ibDataSet7.Next;
   end;
   //
   Result := True;
@@ -1855,7 +1858,7 @@ begin
       Form7.sModulo := 'VENDA';
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
 
-      ApagaIntegracaoComOCaixa(True);
+      ApagaIntegracaoComOCaixa(True); // Apaga no caixa os registros relativos a nota em questão
 
       if (Copy(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.asString),1,7) = 'RECEBER') and (Form7.ibDataSet15TOTAL.AsFloat > 0) then
       begin
