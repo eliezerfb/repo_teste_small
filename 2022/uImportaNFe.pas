@@ -672,7 +672,10 @@ begin
                             except
                             end;
                             try
-                              sCSTIPI := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['CST'].Text;
+                              {Dailon Parisotto (f-18123) 2024-04-16 Inicio}
+                              if StrToFloatDef(StrTran(sIPI,'.',','), 0) > 0 then
+                              {Dailon Parisotto (f-18123) 2024-04-16 Fim}
+                                sCSTIPI := NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['CST'].Text;
                             except
                             end;
                           end;
