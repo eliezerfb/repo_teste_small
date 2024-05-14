@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1224
-  ClientWidth = 1556
+  ClientHeight = 1237
+  ClientWidth = 1558
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7925,8 +7925,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1184
-    Width = 1556
+    Top = 1197
+    Width = 1558
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7998,7 +7998,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1556
+    Width = 1558
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -13140,11 +13140,11 @@ object Form7: TForm7
         OnClick = ArquivotextoNotaFiscalPaulista1Click
       end
       object SPEDFiscal1: TMenuItem
-        Caption = 'SPED Fiscal'
+        Caption = 'SPED Fiscal (EFD ICMS IPI)'
         OnClick = SPEDFiscal1Click
       end
       object SPEDPISCOFINS1: TMenuItem
-        Caption = 'SPED PIS/COFINS'
+        Caption = 'SPED PIS/COFINS (EFD Contribui'#231#245'es)'
         OnClick = SPEDPISCOFINS1Click
       end
       object RegistroFiscal1: TMenuItem
@@ -13896,7 +13896,11 @@ object Form7: TForm7
       'where'
       '  REGISTRO = :REGISTRO')
     SelectSQL.Strings = (
-      'select * from BANCOS')
+      'Select '
+      #9'B.*,'
+      #9'C.NOME PLANOCONTA'
+      'From BANCOS B'
+      #9'Left Join CONTAS C on C.CONTA = B.PLANO')
     ModifySQL.Strings = (
       'update BANCOS'
       'set'
@@ -13932,13 +13936,11 @@ object Form7: TForm7
       FieldName = 'CONTA'
       Size = 16
     end
-    object ibDataSet11PLANO: TIBStringField
+    object ibDataSet11PLANOCONTA: TIBStringField
       DisplayLabel = 'Plano de Contas'
-      DisplayWidth = 16
-      FieldName = 'PLANO'
-      OnSetText = ibDataSet11PLANOSetText
-      EditMask = '99999;1;_'
-      Size = 5
+      FieldName = 'PLANOCONTA'
+      Origin = 'CONTAS.NOME'
+      Size = 25
     end
     object ibDataSet11SALDO3: TFloatField
       DisplayLabel = 'Saldo do Banco'
@@ -13976,6 +13978,15 @@ object Form7: TForm7
       FieldName = 'SALDO2'
       Origin = 'BANCOS.SALDO2'
       Visible = False
+    end
+    object ibDataSet11PLANO: TIBStringField
+      DisplayLabel = 'Plano de Contas'
+      DisplayWidth = 16
+      FieldName = 'PLANO'
+      Visible = False
+      OnSetText = ibDataSet11PLANOSetText
+      EditMask = '99999;1;_'
+      Size = 5
     end
   end
   object DataSource11: TDataSource
@@ -14471,7 +14482,9 @@ object Form7: TForm7
         ' REGISTRO, '
       '   SOBREIPI, SOBREFRETE, SOBRESEGURO, SOBREOUTRAS, CST,  '
       '   BCPISCOFINS, '
-      '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF)'
+      
+        '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
+        'FINSLUCRO,IPISOBREOUTRA)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14487,7 +14500,8 @@ object Form7: TForm7
         'SEGURO, '
       
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
-        'STPISCOFINS,:FRETESOBREIPI,:CBENEF)')
+        'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
+        'A)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14539,7 +14553,9 @@ object Form7: TForm7
       '  CSOSN,'
       '  CSTPISCOFINS,'
       '  FRETESOBREIPI,'
-      '  CBENEF'
+      '  CBENEF,'
+      '  PISCOFINSLUCRO,'
+      '  IPISOBREOUTRA'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14597,7 +14613,9 @@ object Form7: TForm7
       '  CSOSN = :CSOSN,'
       '  CSTPISCOFINS = :CSTPISCOFINS,'
       '  FRETESOBREIPI = :FRETESOBREIPI,'
-      '  CBENEF = :CBENEF'
+      '  CBENEF = :CBENEF,'
+      '  PISCOFINSLUCRO = :PISCOFINSLUCRO,'
+      '  IPISOBREOUTRA = :IPISOBREOUTRA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14891,7 +14909,7 @@ object Form7: TForm7
       Size = 1
     end
     object ibDataSet14SOBREOUTRAS: TIBStringField
-      DisplayLabel = 'ICMS sobre OUTRAS'
+      DisplayLabel = 'ICMS sobre Outras'
       DisplayWidth = 20
       FieldName = 'SOBREOUTRAS'
       Origin = '"ICM"."SOBREOUTRAS"'
@@ -14902,6 +14920,13 @@ object Form7: TForm7
       DisplayWidth = 20
       FieldName = 'FRETESOBREIPI'
       Origin = 'ICM.FRETESOBREIPI'
+      Size = 1
+    end
+    object ibDataSet14IPISOBREOUTRA: TIBStringField
+      DisplayLabel = 'IPI sobre Outras'
+      DisplayWidth = 20
+      FieldName = 'IPISOBREOUTRA'
+      Origin = 'ICM.IPISOBREOUTRA'
       Size = 1
     end
     object ibDataSet14CSTPISCOFINS: TIBStringField
@@ -14967,6 +14992,12 @@ object Form7: TForm7
       DisplayWidth = 20
       FieldName = 'SOBREFRETE'
       Origin = '"ICM"."SOBREFRETE"'
+      Visible = False
+      Size = 1
+    end
+    object ibDataSet14PISCOFINSLUCRO: TIBStringField
+      FieldName = 'PISCOFINSLUCRO'
+      Origin = 'ICM.PISCOFINSLUCRO'
       Visible = False
       Size = 1
     end
@@ -17133,7 +17164,7 @@ object Form7: TForm7
       Size = 2
     end
     object ibDataSet24EMISSAO: TDateField
-      DisplayLabel = 'Emiss'#227'o'
+      DisplayLabel = 'Data de entrada'
       DisplayWidth = 10
       FieldName = 'EMISSAO'
       Origin = 'COMPRAS.EMISSAO'
@@ -17292,13 +17323,13 @@ object Form7: TForm7
       Size = 60
     end
     object ibDataSet24SAIDAH: TIBStringField
-      DisplayLabel = 'Hora sa'#237'da'
+      DisplayLabel = 'Hora de emiss'#227'o'
       FieldName = 'SAIDAH'
       Visible = False
       Size = 8
     end
     object ibDataSet24SAIDAD: TDateField
-      DisplayLabel = 'Data sa'#237'da'
+      DisplayLabel = 'Data de emiss'#227'o'
       FieldName = 'SAIDAD'
       Visible = False
       OnSetText = ibDataSet5COMPENSSetText
@@ -18231,8 +18262,13 @@ object Form7: TForm7
       Caption = '-'
     end
     object DuplicatestaNFe1: TMenuItem
-      Caption = 'Duplicar esta NF-e'
+      Caption = 'Duplicar NF-e'
       OnClick = DuplicatestaNFe1Click
+    end
+    object miDuplicarNFSe: TMenuItem
+      Caption = 'Duplicar NFS-e'
+      Visible = False
+      OnClick = miDuplicarNFSeClick
     end
     object DuplicarProduto: TMenuItem
       Caption = 'Duplicar produto'
@@ -18240,7 +18276,7 @@ object Form7: TForm7
       OnClick = DuplicarProdutoClick
     end
     object DuplicaOrcamento: TMenuItem
-      Caption = 'Duplicar este or'#231'amento'
+      Caption = 'Duplicar or'#231'amento'
       Visible = False
       OnClick = DuplicaOrcamentoClick
     end
@@ -20247,7 +20283,7 @@ object Form7: TForm7
       
         '   PROXDATA, CUSTO, COMPRA, ATIVO, MOSTRAR, CLIFOR, CONTATOS, RE' +
         'GISTRO, '
-      '   FOTO, WHATSAPP)'
+      '   FOTO, WHATSAPP, CONTRIBUINTE)'
       'values'
       
         '  (:NOME, :CONTATO, :IE, :CGC, :ENDERE, :COMPLE, :CIDADE, :ESTAD' +
@@ -20261,7 +20297,9 @@ object Form7: TForm7
       
         '   :DATANAS, :CADASTRO, :ULTIMACO, :PROXDATA, :CUSTO, :COMPRA, :' +
         'ATIVO, '
-      '   :MOSTRAR, :CLIFOR, :CONTATOS, :REGISTRO, :FOTO, :WHATSAPP)')
+      
+        '   :MOSTRAR, :CLIFOR, :CONTATOS, :REGISTRO, :FOTO, :WHATSAPP, :C' +
+        'ONTRIBUINTE)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -20297,7 +20335,8 @@ object Form7: TForm7
       '  CONTATOS,'
       '  REGISTRO,'
       '  FOTO,'
-      '  WHATSAPP'
+      '  WHATSAPP,'
+      '  CONTRIBUINTE'
       'from CLIFOR '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -20339,7 +20378,8 @@ object Form7: TForm7
       '  CONTATOS = :CONTATOS,'
       '  REGISTRO = :REGISTRO,'
       '  FOTO = :FOTO,'
-      '  WHATSAPP = :WHATSAPP'
+      '  WHATSAPP = :WHATSAPP,'
+      '  CONTRIBUINTE = :CONTRIBUINTE'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -20408,7 +20448,7 @@ object Form7: TForm7
     end
     object IBDataSet2IE: TIBStringField
       DisplayLabel = 'RG/IE'
-      DisplayWidth = 21
+      DisplayWidth = 14
       FieldName = 'IE'
       Origin = 'CLIFOR.IE'
       Size = 16
@@ -20586,6 +20626,11 @@ object Form7: TForm7
       ProviderFlags = [pfInUpdate]
       Visible = False
       Size = 8
+    end
+    object IBDataSet2CONTRIBUINTE: TIntegerField
+      FieldName = 'CONTRIBUINTE'
+      Origin = 'CLIFOR.CONTRIBUINTE'
+      Visible = False
     end
   end
   object IBDataSet99: TIBDataSet
@@ -21536,120 +21581,6 @@ object Form7: TForm7
     Left = 1008
     Top = 747
   end
-  object spdNFeDataSets: TspdNFeDataSets
-    VersaoEsquema = pl_009
-    ValidaRegrasNegocio = False
-    ValidaRegrasNegocioTecno = False
-    UsarDatasetExportacao = False
-    Left = 800
-    Top = 536
-  end
-  object spdNFe: TspdNFe
-    VersaoManual = vm50a
-    AnexarDanfePDF = True
-    DanfeSettings.FraseContingencia = 
-      'Danfe em conting'#234'ncia - Impresso em decorr'#234'ncia de problemas t'#233'c' +
-      'nicos'
-    DanfeSettings.FraseHomologacao = 'SEM VALOR FISCAL'
-    DanfeSettings.QtdeCopias = 1
-    DanfeSettings.LineDelimiter = '|'
-    DanfeSettings.InfCplMaxCol = 68
-    DanfeSettings.InfCplMaxRow = 7
-    DanfeSettings.ImprimirVolume = False
-    DanfeSettings.ImprimirDuplicata = True
-    DanfeSettings.MensagemPartilhaAutomatica = False
-    DanfeSettings.MensagemFCP = False
-    DanfeSettings.ImprimirUnidadeTributada = False
-    DanfeSettings.ImprimirObsCont = False
-    DanfeSettings.ImprimirFrenteVerso = fvDesabilitado
-    DanfeSettings.ImprimirLocalRetiradaEntrega = True
-    DanfeSettings.InfCplQuebrarLinhaAut = False
-    DanfeSettings.MensagemIcmsDesonerado = False
-    DanfeSettings.ImprimirVlrTotalDanfeSimplificado = False
-    DanfeSettings.MensagemIcmsMonofasico = False
-    Versao = '12.1.76.6495'
-    CaracteresRemoverAcentos = #225#233#237#243#250#224#232#236#242#249#226#234#238#244#251#228#235#239#246#252#227#245#241#231#193#201#205#211#218#192#200#204#210#217#194#202#206#212#219#196#203#207#214#220#195#213#209#199#186#170
-    TipoCertificado = ckMemory
-    DiretorioTemplates = 
-      'C:\Program Files (x86)\Borland\Delphi7\Bin\Templatesvm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50a\'
-    IgnoreInvalidCertificates = False
-    DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
-    Ambiente = akHomologacao
-    EmailSettings.Autenticacao = False
-    EmailSettings.TimeOut = 0
-    EmailSettings.ConteudoHtml = False
-    EmailSettings.UseSecureBlackBox = False
-    EmailSettings.QtdeTentativas = 0
-    EmailSettings.UseTLS = utNoTLSSupport
-    DiretorioEsquemas = 
-      'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemasvm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm' +
-      '50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50av' +
-      'm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50a' +
-      'vm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50' +
-      'avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm50avm5' +
-      '0avm50a\'
-    ConexaoSegura = False
-    TimeOut = 0
-    DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
-    DiretorioTemporario = 'C:\ProgramData\'
-    ModoOperacao = moNormal
-    EntregaXML = exEmail
-    AtualizarArquivoServidores = True
-    DiagnosticMode = True
-    DiretorioXmlDestinatario = 'C:\Program Files (x86)\Borland\Delphi7\Bin\XmlDestinatario\'
-    DiretorioDownloads = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Downloads\'
-    MaxSizeLoteEnvio = 500
-    DanfeSimplificado = False
-    Left = 733
-    Top = 536
-  end
   object PopupMenu2: TPopupMenu
     Left = 736
     Top = 144
@@ -21908,98 +21839,6 @@ object Form7: TForm7
   object OpenDialog4: TOpenDialog
     Left = 902
     Top = 339
-  end
-  object spdNFeDPEC1: TspdNFeDPEC
-    VersaoManual = vm50
-    AnexarDanfePDF = False
-    DanfeSettings.FraseContingencia = 
-      'DANFE impresso em conting'#234'ncia - DPEC regularmente recebida pela' +
-      ' Receita Federal do Brasil'
-    DanfeSettings.FraseHomologacao = 'SEM VALOR FISCAL'
-    DanfeSettings.QtdeCopias = 2
-    DanfeSettings.LineDelimiter = '|'
-    DanfeSettings.InfCplMaxCol = 68
-    DanfeSettings.InfCplMaxRow = 7
-    DanfeSettings.ImprimirVolume = False
-    DanfeSettings.ImprimirDuplicata = True
-    DanfeSettings.MensagemPartilhaAutomatica = False
-    DanfeSettings.MensagemFCP = False
-    DanfeSettings.ImprimirUnidadeTributada = False
-    DanfeSettings.ImprimirObsCont = False
-    DanfeSettings.ImprimirFrenteVerso = fvDesabilitado
-    DanfeSettings.ImprimirLocalRetiradaEntrega = True
-    DanfeSettings.InfCplQuebrarLinhaAut = False
-    DanfeSettings.MensagemIcmsDesonerado = False
-    DanfeSettings.ImprimirVlrTotalDanfeSimplificado = False
-    DanfeSettings.MensagemIcmsMonofasico = False
-    Versao = '12.1.76.6495'
-    CaracteresRemoverAcentos = #225#233#237#243#250#224#232#236#242#249#226#234#238#244#251#228#235#239#246#252#227#245#241#231#193#201#205#211#218#192#200#204#210#217#194#202#206#212#219#196#203#207#214#220#195#213#209#199#186#170
-    TipoCertificado = ckMemory
-    DiretorioTemplates = 
-      'C:\Program Files (x86)\Borland\Delphi7\Bin\Templatesvm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50\DPEC'
-    IgnoreInvalidCertificates = False
-    DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
-    Ambiente = akHomologacao
-    EmailSettings.Autenticacao = False
-    EmailSettings.TimeOut = 0
-    EmailSettings.ConteudoHtml = False
-    EmailSettings.UseSecureBlackBox = False
-    EmailSettings.QtdeTentativas = 0
-    EmailSettings.UseTLS = utNoTLSSupport
-    DiretorioEsquemas = 
-      'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemasvm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50\DPEC'
-    ConexaoSegura = False
-    TimeOut = 0
-    DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
-    DiretorioTemporario = 'C:\ProgramData\'
-    ModoOperacao = moNormal
-    EntregaXML = exEmail
-    AtualizarArquivoServidores = False
-    DiagnosticMode = False
-    Left = 664
-    Top = 536
   end
   object IdHTTP1: TIdHTTP
     ProxyParams.BasicAuthentication = False
@@ -22379,6 +22218,7 @@ object Form7: TForm7
     BeforeDelete = ibdConversaoCFOPBeforeDelete
     BeforeEdit = ibdConversaoCFOPBeforeEdit
     BeforeInsert = ibdConversaoCFOPBeforeInsert
+    BeforePost = ibdConversaoCFOPBeforePost
     OnDeleteError = IBDataSet2DeleteError
     OnEditError = IBDataSet2EditError
     OnNewRecord = ibdConversaoCFOPNewRecord
@@ -22391,14 +22231,21 @@ object Form7: TForm7
       '  REGISTRO = :OLD_REGISTRO')
     InsertSQL.Strings = (
       'insert into CFOPCONVERSAO'
-      '  (CFOP_ORIGEM, CFOP_CONVERSAO, REGISTRO)'
+      
+        '  (CFOP_ORIGEM, CFOP_CONVERSAO, REGISTRO,CONSIDERACSTCSOSN,CST,C' +
+        'SOSN)'
       'values'
-      '  (:CFOP_ORIGEM, :CFOP_CONVERSAO,:REGISTRO)')
+      
+        '  (:CFOP_ORIGEM, :CFOP_CONVERSAO,:REGISTRO,:CONSIDERACSTCSOSN,:C' +
+        'ST,:CSOSN)')
     RefreshSQL.Strings = (
       'Select '
       '  C.CFOP_ORIGEM, '
       '  C.CFOP_CONVERSAO,'
-      '  C.REGISTRO'
+      '  C.REGISTRO,'
+      '  C.CONSIDERACSTCSOSN,'
+      '  C.CST,'
+      '  C.CSOSN'
       'from CFOPCONVERSAO C'
       'where'
       '  C.REGISTRO = :REGISTRO')
@@ -22410,7 +22257,10 @@ object Form7: TForm7
       'update CFOPCONVERSAO'
       'set'
       '  CFOP_ORIGEM= :CFOP_ORIGEM,'
-      '  CFOP_CONVERSAO= :CFOP_CONVERSAO'
+      '  CFOP_CONVERSAO= :CFOP_CONVERSAO,'
+      '  CONSIDERACSTCSOSN=:CONSIDERACSTCSOSN,'
+      '  CST=:CST,'
+      '  CSOSN=:CSOSN'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -22425,6 +22275,17 @@ object Form7: TForm7
       OnSetText = ibdConversaoCFOPCFOP_ORIGEMSetText
       Size = 4
     end
+    object ibdConversaoCFOPCST: TIBStringField
+      DisplayWidth = 2
+      FieldName = 'CST'
+      Origin = 'CFOPCONVERSAO.CST'
+      Size = 2
+    end
+    object ibdConversaoCFOPCSOSN: TIBStringField
+      FieldName = 'CSOSN'
+      Origin = 'CFOPCONVERSAO.CSOSN'
+      Size = 3
+    end
     object ibdConversaoCFOPCFOP_CONVERSAO: TIBStringField
       DisplayLabel = 'CFOP Convers'#227'o'
       DisplayWidth = 6
@@ -22438,6 +22299,12 @@ object Form7: TForm7
       Required = True
       Visible = False
       Size = 10
+    end
+    object ibdConversaoCFOPCONSIDERACSTCSOSN: TIBStringField
+      FieldName = 'CONSIDERACSTCSOSN'
+      Origin = 'CFOPCONVERSAO.CONSIDERACSTCSOSN'
+      Visible = False
+      Size = 1
     end
   end
   object mmPerfilTributa: TMainMenu

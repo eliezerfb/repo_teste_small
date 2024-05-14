@@ -51,7 +51,7 @@ type
     property AutoSizeColunaNoGridDePesquisa: Boolean read FAutoSizeColunaNoGridDePesquisa write FAutoSizeColunaNoGridDePesquisa;
     constructor Create(AOwner: TComponent); override;
     procedure CarregaDescricao;
-
+    procedure CarregaDescricaoCodigo;
   end;
 
 implementation
@@ -173,8 +173,41 @@ begin
   end;
   Query.Open;
 
+  {Sandro Silva 2024-05-10 inicio
+  txtCampo.MaxLength := Query.FieldByName(sCampoDescricao).Size; // Dailon 2024-04-24
+  }
+  txtCampo.MaxLength := Query.FieldByName(ALIAS_CAMPO_PESQUISADO).Size; // Dailon 2024-04-24
+  {Sandro Silva 2024-05-10 fim}
+
   //if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then Mauricio Parizotto 2024-01-16
   if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive]) then
+  begin
+    CampoChange := txtCampo.onChange;
+    txtCampo.onChange := nil;
+    txtCampo.Text := Query.FieldByName(ALIAS_CAMPO_PESQUISADO).AsString;
+    txtCampo.onChange := CampoChange;
+  end else
+  begin
+    txtCampo.Text := '';
+  end;
+end;
+
+procedure TfFrameCampo.CarregaDescricaoCodigo; // Mauricio Parizotto 2024-04-08
+var
+  CampoChange: TNotifyEvent;
+  sNomeCampoChave: String;
+begin
+  sNomeCampoChave := CampoCodigoPesquisa;
+  if sNomeCampoChave = '' then
+    sNomeCampoChave := CampoCodigo.FieldName;
+
+  Query.Close;
+  Query.SQL.Text := ' Select ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
+                    ' From ' + FTabela +
+                    ' Where '+sNomeCampoChave+ ' = ' +QuotedStr(CampoCodigo.AsString);
+  Query.Open;
+
+  if not Query.IsEmpty then
   begin
     CampoChange := txtCampo.onChange;
     txtCampo.onChange := nil;
@@ -243,7 +276,8 @@ begin
             txtCampo.Clear;
         end
       else
-        CampoCodigo.Value := txtCampo.Text;
+//        CampoCodigo.Value := txtCampo.Text; Dailon 2024-04-24
+        CampoCodigo.Value := Copy(txtCampo.Text, 1, CampoCodigo.Size);
       end;
     end;
     {Sandro Silva 2023-09-28 fim}
@@ -255,7 +289,8 @@ begin
       CampoCodigo.Value := null;
     end else
     begin
-      CampoCodigo.Value := Trim(txtCampo.Text);
+//      CampoCodigo.Value := Trim(txtCampo.Text); Dailon 2024-04-24
+      CampoCodigo.Value := Copy(Trim(txtCampo.Text), 1, CampoCodigo.Size);
     end;
   end;
   {Sandro Silva 2023-09-27 fim}
@@ -293,13 +328,12 @@ begin
   if sNomeCampoChave = '' then
     sNomeCampoChave := CampoCodigo.FieldName;
 
-  Result :=
-    //' Select distinct  ' + CampoCodigo.FieldName + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO + Mauricio Parizotto 2023-11-20
-    ' Select distinct  ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
-    CampoAuxExiber+// Mauricio Parizotto 2023-11-21
-    ' From ' + FTabela +
-    ' Where (upper(' + sCampoDescricao + ') like upper(' + QuotedStr('%' + txtCampo.Text + '%') + ')) ' +
-    ' Order by upper(' + sCampoDescricao + ') ';
+  Result := ' Select distinct  ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
+            CampoAuxExiber+// Mauricio Parizotto 2023-11-21
+            ' From ' + FTabela +
+            ' Where (upper(' + sCampoDescricao + ') like upper(' + QuotedStr('%' + txtCampo.Text + '%') + ')) ' +
+            FFiltro + // Mauricio Parizotto 2024-04-08
+            ' Order by upper(' + sCampoDescricao + ') ';
 end;
 
 

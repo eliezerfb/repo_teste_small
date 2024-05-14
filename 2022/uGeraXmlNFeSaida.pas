@@ -133,8 +133,11 @@ var
   IBQCREDENCIADORA: TIBQuery;
 
   vlBalseIPI, vlFreteRateadoItem : Double;
+  vlOutrasDespRateadoItem : Double; //Mauricio Parizotto 2024-04-22
 
-  vFreteSobreIPI,vIPISobreICMS : Boolean;
+  bFreteSobreIPI,bIPISobreICMS : Boolean;
+  bIPISobreOutras : Boolean; //Mauricio Parizotto 2024-04-22
+
   cBenef, cBenefItem : string;
 
   bPagouComTEF: Boolean;
@@ -156,9 +159,10 @@ begin
   bcPISCOFINS_op  := Form7.ibDataSet14.FieldByname('BCPISCOFINS').AsFloat;
 
   //Mauricio Parizotto 2023-03-28
-  vFreteSobreIPI := CampoICMporNatureza('FRETESOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
-  vIPISobreICMS  := CampoICMporNatureza('SOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
-  cBenef         := trim(CampoICMporNatureza('CBENEF',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction)); //Mauricio Parizotto 2023-12-12
+  bFreteSobreIPI  := CampoICMporNatureza('FRETESOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
+  bIPISobreICMS   := CampoICMporNatureza('SOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
+  cBenef          := trim(CampoICMporNatureza('CBENEF',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction)); //Mauricio Parizotto 2023-12-12
+  bIPISobreOutras := CampoICMporNatureza('IPISOBREOUTRA',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S'; //Mauricio Parizotto 2024-04-22
 
   // Relaciona os clientes com o arquivo de vendas
   Form7.ibDAtaset2.Close;
@@ -652,10 +656,21 @@ begin
       begin
         if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 18) then
         begin
-          if allTrim(Form7.ibDAtaset2.FieldByname('IE').AsString) = '' then
+          //if allTrim(Form7.ibDAtaset2.FieldByname('IE').AsString) = '' then Mauricio Parizotto 2024-04-15
+          if (allTrim(Form7.ibDAtaset2.FieldByname('IE').AsString) = '') or (Form7.ibDAtaset2.FieldByname('CONTRIBUINTE').AsString='9') then
           begin
+            {Mauricio Parizotto 2024-05-03 Inicio
             Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
+            }
             Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '9';   // 1-Contribuinte; 2-Isento; 9-Não contribuinte
+
+            //Mauricio Parizotto 2024-05-03
+            if Form7.ibDAtaset2.FieldByname('CONTRIBUINTE').AsString = '9' then
+              Form7.spdNFeDataSets.Campo('IE_E17').Value := trim(Form7.ibDAtaset2.FieldByname('IE').AsString)
+            else
+              Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
+
+            {Mauricio Parizotto 2024-05-03 Fim}
           end else
           begin
             if (not ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDAtaset2IE.AsString),Form7.ibDAtaset2ESTADO.AsString)) then
@@ -717,6 +732,7 @@ begin
       Form7.spdNFeDataSets.Campo('CEP_E13').Value         := '00000000'; // Cep do Destinatário
       Form7.spdNFeDataSets.Campo('fone_E16').Value        := '';        // Fone do Destinatário
       Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '9';      // Não Contribuinte
+      Form7.spdNFeDataSets.Campo('IE_E17').Value          := ''; //Mauricio Parizotto 2024-05-03
 
       if Form7.spdNFe.Ambiente = spdNFeType.akHomologacao then
       begin
@@ -794,6 +810,7 @@ begin
           Form7.spdNFeDataSets.Campo('xLocExporta_ZA03').Value   := sLocaldeEmbarque;                  // Local do embarque
           Form7.spdNFeDataSets.Campo('xLocDespacho_ZA04').Value  := sLocalDespacho;                  // Local do Despacho
           Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '9';  // 1-Contribuinte; 2-Isento; 9-Não contribuinte
+          Form7.spdNFeDataSets.Campo('IE_E17').Value          := ''; // Mauricio Parizotto 2024-05-03
 
           if AllTrim(sEx15) = '' then
           begin
@@ -962,7 +979,7 @@ begin
       I := I + 1;
 
       try
-        if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
+        //if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := ''; Mauricio Parizotto 2024-05-03
         if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
         Form7.spdNFeDataSets.SalvarItem;
       except
@@ -1039,7 +1056,6 @@ begin
           //if (RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString)<>'') and (RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString)<>'0000000000') then Mauricio Parizotto 2023-12-12
           if (cBenefItem<>'') and (cBenefItem<>'0000000000') then
           begin
-            //Form7.spdNFeDataSets.Campo('cBenef_I05f').Value     := RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString);      // Código de Benefício Fiscal na UF aplicado ao item Mauricio Parizotto 2023-12-12
             Form7.spdNFeDataSets.Campo('cBenef_I05f').Value     := cBenefItem;
 
             if AllTrim(RetornaValorDaTagNoCampo('motDesICMS',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
@@ -1196,7 +1212,7 @@ begin
         fSomaNaBase := 0;
       end;
 
-      if vIPISobreICMS then
+      if bIPISobreICMS then
       begin
         // ICM Sobre o IPI
         fSomaNaBase := fSomaNaBase + Form7.ibDataSet16.FieldByname('IPI').AsFloat * Form7.ibDataSet16.FieldByname('TOTAL').AsFloat / 100;  // Soma o valor do IPI na base
@@ -1411,15 +1427,6 @@ begin
                    (RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') or
                    (RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') then
                 begin
-                  {
-                  ShowMessage('Incluir no controle de estoque na aba Tags:'+
-                              Chr(10)+
-                              Chr(10)+'pGLP: 0,0000'+
-                              Chr(10)+'pGNn: 0,0000'+
-                              Chr(10)+'pGNi: 0,0000'+
-                              Chr(10)+'vPart: 0,00'
-                              );
-                  Mauricio Parizotto 2023-10-25}
                   MensagemSistema('Incluir no controle de estoque na aba Tags:'+
                                   Chr(10)+
                                   Chr(10)+'pGLP: 0,0000'+
@@ -1435,14 +1442,6 @@ begin
                   + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                   + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) <> 100 then
                   begin
-                    {
-                    ShowMessage('Erro: LA01 grupo LA Combustível (pGLP + pGNn + pGNi) = '
-                    + FormatFloat('#,##0.0000', StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
-                    + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
-                    + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) + '%' + Chr(10)
-                    + 'Rejeição: Somatório percentuais de GLP derivado do petróleo, pGLP(id:LA03a) e pGNn(id:LA03b) e pGNi(id:LA03c) diferente de 100. Verifique no cadastro do produto '
-                                              + Chr(10) + Form7.spdNFeDataSets.Campo('cProd_I02').Value + ' ' + Form7.spdNFeDataSets.Campo('xProd_I04').Value);
-                    Mauricio Parizotto 2023-10-25}
                     MensagemSistema('Erro: LA01 grupo LA Combustível (pGLP + pGNn + pGNi) = '
                                     + FormatFloat('#,##0.0000', StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                                     + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
@@ -1548,7 +1547,7 @@ begin
       end;
 
       //Gera Tas
-      GeraXmlNFeSaidaTags(vIPISobreICMS, fSomaNaBase);
+      GeraXmlNFeSaidaTags(bIPISobreICMS, fSomaNaBase);
 
       // FCP
       if Form1.sVersaoLayout = '4.00' then
@@ -1623,12 +1622,18 @@ begin
           Form7.spdNFeDataSets.Campo('vIPI_O14').Value  := FormatFloatXML(Arredonda2((Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString)))),2)); // Valor do IPI
         end else
         begin
-          vlFreteRateadoItem := 0;
+          vlFreteRateadoItem      := 0;
+          vlOutrasDespRateadoItem := 0;
 
-          if vFreteSobreIPI then
+          if bFreteSobreIPI then
             vlFreteRateadoItem := fFrete[I];
 
-          vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem; //Mauricio Parizotto 2023-03-27
+          //Mauricio Parizotto 2024-04-22
+          if bIPISobreOutras then
+            vlOutrasDespRateadoItem := fOutras[I];
+
+          //vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem; //Mauricio Parizotto 2023-03-27 // Mauricio Parizotto 2024-04-22
+          vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem + vlOutrasDespRateadoItem;
 
           Form7.spdNFeDataSets.Campo('vBC_O10').Value       := FormatFloatXML(vlBalseIPI); // Valor da BC do IPI
           Form7.spdNFeDataSets.Campo('pIPI_O13').Value      := FormatFloatXML(Form7.ibDataSet16.FieldByname('IPI').AsFloat); // Percentual do IPI
@@ -1875,12 +1880,18 @@ begin
 
         if AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) <> '' then
         begin
-          vlFreteRateadoItem := 0;
+          vlFreteRateadoItem      := 0;
+          vlOutrasDespRateadoItem := 0;
 
-          if vFreteSobreIPI then
+          if bFreteSobreIPI then
             vlFreteRateadoItem := fFrete[I];
 
-          vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem; //Mauricio Parizotto 2023-03-27
+          //Mauricio Parizotto 2024-04-22
+          if bIPISobreOutras then
+            vlOutrasDespRateadoItem := fOutras[I];
+
+          //vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem; //Mauricio Parizotto 2023-03-27 Mauricio Parizotto 2024-04-22
+          vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem + vlOutrasDespRateadoItem;
 
           Form7.spdNFeDataSets.Campo('vBC_O10').Value       := FormatFloatXML(vlBalseIPI); // Valor da BC do IPI
           Form7.spdNFeDataSets.Campo('pIPI_O13').Value      := FormatFloatXML(Form7.ibDataSet16.FieldByname('IPI').AsFloat); // Percentual do IPI
@@ -2405,8 +2416,10 @@ begin
     if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
     if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
     }
+    {Mauricio Parizotto 2024-05-03
     if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then
       Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
+    }
     if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then
       Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
     {Sandro Silva 2023-05-15 fim}
@@ -2673,8 +2686,10 @@ begin
           Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value := '0.00'; // Valor do COFINS em Reais
         end;
 
+        {Mauricio Parizotto 2024-05-03
         if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then
           Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
+        }
         if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then
           Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
 
@@ -3192,76 +3207,11 @@ begin
                                       ' From ITENS001 '+
                                       ' Where NUMERONF='+QuotedStr(Form7.ibDAtaSet15NUMERONF.AsString),Form7.ibDAtaSet15.Transaction);
 
-  // TAGS - Saída
-  //////////////////// Aqui começam os Impostos Incidentes sobre o Item////////////////////////
-  /// Verificar Manual pois existe uma variação nos campos de acordo com Tipo de Tribucação ////
-  // ICMS
-  // fPercentualFCP
-  {Sandro Silva 2023-04-02 inicio
-  if (Form7.ibDataSet16PFCPUFDEST.AsFloat <> 0) or (Form7.ibDataSet16PICMSUFDEST.AsFloat <> 0) then
-  begin
-    // Quando preenche na nota não vai nada nessas tags
-    fPercentualFCP := 0; // Form7.ibDataSet16PFCPUFDEST.AsFloat;
-    fPercentualFCPST := 0; // fPercentualFCP; // tributos da NF-e
-  end else
-  begin
-    // Quando nao esta preenchido da nota pega valores nas tags
-    if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
-    begin
-      fPercentualFCP := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCP',Form7.ibDataSet4.FieldByname('TAGS_').AsString))); // tributos da NF-e
-    end else
-    begin
-      fPercentualFCP := 0;
-    end;
-
-    // fPercentualFCPST
-    if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
-    begin
-      fPercentualFCPST := StrTofloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('FCPST',Form7.ibDataSet4.FieldByname('TAGS_').AsString))); // tributos da NF-e
-    end else
-    begin
-      fPercentualFCPST := 0; // fPercentualFCP; // tributos da NF-e
-    end;
-  end;
-  }
-  //fPercentualFCP   := Form7.ibDataSet16PFCP.AsFloat;
-  //fPercentualFCPST := Form7.ibDataSet16PFCPST.AsFloat;
-  {Sandro Silva 2023-05-15 inicio
-  if (Form7.ibDataSet16PFCPUFDEST.AsFloat <> 0) or (Form7.ibDataSet16PICMSUFDEST.AsFloat <> 0) then
-  begin
-    // Quando preenche na nota não vai nada nessas tags
-    fPercentualFCP   := 0; // Form7.ibDataSet16PFCPUFDEST.AsFloat;
-    fPercentualFCPST := 0; // fPercentualFCP; // tributos da NF-e
-  end else
-  begin
-    fPercentualFCP   := Form7.ibDataSet16PFCP.AsFloat; // tributos da NF-e
-    fPercentualFCPST := Form7.ibDataSet16PFCPST.AsFloat; // tributos da NF-e
-  end;
-  }
   fPercentualFCP   := Form7.ibDataSet16PFCP.AsFloat; // tributos da NF-e
   fPercentualFCPST := Form7.ibDataSet16PFCPST.AsFloat; // tributos da NF-e
-  {Sandro Silva 2023-05-15 fim}
 
   if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
   begin
-    // Início TAGS saída por CST - CRT 2 ou 3 - Regime normal
-    // N11 e N12 todos Tem
-    {Sandro Silva 2023-05-15 inicio
-    try
-      if AllTrim(Form7.ibDataSet14.FieldByName('CST').AsString) <> '' then
-      begin
-        Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet14.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
-        Form7.spdNFeDataSets.Campo('CST_N12').Value    := Copy(LimpaNumero(Form7.ibDataSet14.FieldByname('CST').AsString)+'000',2,2); // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
-      end else
-      begin
-        Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
-        Form7.spdNFeDataSets.Campo('CST_N12').Value    := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2); // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
-      end;
-    except
-      Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
-      Form7.spdNFeDataSets.Campo('CST_N12').Value    := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2); // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
-    end;
-    }
     try
       // Sandro Silva 2023-06-13 if Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4' then // 4=NFe Devolução
       if NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then // Devolução
@@ -3271,7 +3221,6 @@ begin
       end
       else
       begin
-
         if AllTrim(Form7.ibDataSet14.FieldByName('CST').AsString) <> '' then
         begin
           Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet14.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)

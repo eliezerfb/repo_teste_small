@@ -116,8 +116,12 @@ end;
 procedure TfrmRelatorioPadrao.FormShow(Sender: TObject);
 begin
   // Deve ser igual ao da unit38.
+  {
   Self.ClientHeight := 262;
   Self.ClientWidth  := 454;
+  }
+  Self.ClientHeight := 280;
+  Self.ClientWidth  := 518;
 end;
 
 procedure TfrmRelatorioPadrao.FormDestroy(Sender: TObject);

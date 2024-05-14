@@ -73,7 +73,7 @@ begin
       Form7.ArquivoAberto.Edit;
     end;
     
-    Form7.iFoco := 0;
+    //Form7.iFoco := 0;
 
     Form7.ArquivoAberto.DisableControls;
     Form7.ibDataSet27.DisableControls;

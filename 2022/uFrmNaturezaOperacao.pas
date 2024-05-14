@@ -85,6 +85,9 @@ type
     fraPlanoContas: TfFrameCampo;
     Label1: TLabel;
     SMALL_DBEdit1: TSMALL_DBEdit;
+    GroupBox1: TGroupBox;
+    chkPisCofinsSobLucro: TDBCheckBox;
+    DBCheckBox1: TDBCheckBox;
     procedure DBMemo4Enter(Sender: TObject);
     procedure DBMemo4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -218,6 +221,8 @@ begin
       Form7.ibDataSet14SOBREOUTRAS.AsString := 'N';
     if Form7.ibDataSet14FRETESOBREIPI.AsString <> 'S' then
       Form7.ibDataSet14FRETESOBREIPI.AsString := 'N';
+    if Form7.ibDataSet14IPISOBREOUTRA.AsString <> 'S' then
+      Form7.ibDataSet14IPISOBREOUTRA.AsString := 'N';
 
     cbIntegracaoFinanceira.ItemIndex := 0;
     cbMovimentacaoEstoque.ItemIndex  := 0;

@@ -6446,7 +6446,7 @@ object Form22: TForm22
       Top = 600
       Width = 200
       Height = 40
-      Caption = 'Ok'
+      Caption = 'OK'
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
       Font.Height = -13

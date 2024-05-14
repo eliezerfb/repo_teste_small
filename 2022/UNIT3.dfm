@@ -125,7 +125,7 @@ object Senhas2: TSenhas2
       Top = 200
       Width = 180
       Height = 40
-      Caption = 'Ok'
+      Caption = 'OK'
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
       Font.Height = -16

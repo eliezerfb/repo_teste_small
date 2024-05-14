@@ -78,8 +78,8 @@ begin
         {Campos do tipo String}
         if Form7.dBgrid1.SelectedField.FieldName = 'CODIGO' then
         begin
-          Form16.Label1.Caption := 'Filtrar do Código:';
-          Form16.Label3.Caption := 'até:';
+          Form16.Label1.Caption := 'Filtrar do Código';
+          Form16.Label3.Caption := 'até';
           //
           Form16.Label3.Visible     := True;
           Form16.MaskEdit1.Visible  := True;
@@ -95,8 +95,8 @@ begin
         begin
           if Form7.dBgrid1.SelectedField.FieldName = 'CEP' then
           begin
-            Form16.Label1.Caption := 'Filtrar do CEP:';
-            Form16.Label3.Caption := 'até:';
+            Form16.Label1.Caption := 'Filtrar do CEP';
+            Form16.Label3.Caption := 'até';
             //
             Form16.Label3.Visible     := True;
             Form16.MaskEdit1.Visible  := True;
@@ -112,8 +112,8 @@ begin
           begin
             if Form7.dBgrid1.SelectedField.FieldName = 'Orçamento' then
             begin
-              Form16.Label1.Caption := 'Filtrar do Orçamento:';
-              Form16.Label3.Caption := 'até:';
+              Form16.Label1.Caption := 'Filtrar do Orçamento';
+              Form16.Label3.Caption := 'até';
               //
               Form16.Label3.Visible     := True;
               Form16.MaskEdit1.Visible  := True;
@@ -130,19 +130,25 @@ begin
               if (Form7.dBgrid1.Selectedfield.DataType = ftString) or (Form7.dBgrid1.Selectedfield.DataType = ftMemo) or (Form7.dBgrid1.Selectedfield.DataType = ftWideString) then
               begin
                 MaskEdit1.Visible := True;
-                Form16.Label1.Caption := 'Filtrar '+LowerCase(Form7.dBgrid1.SelectedField.DisplayLabel) + ' com:';
+                Form16.Label1.Caption := 'Filtrar '+LowerCase(Form7.dBgrid1.SelectedField.DisplayLabel) + ' com';
                 Form16.MaskEdit1.EditMask := '';
                 Form16.MaskEdit1.Width    := (Form7.dBGrid1.SelectedField.DisplayWidth * 8 )+ 10;
                 Form16.MaskEdit1.Text     := FieldByname(Form7.dBgrid1.SelectedField.FieldName).AsString;
                 MaskEdit1.SetFocus;
-                if (MaskEdit1.Width + MaskEdit1.Left) > (Form16.Width -20) then MaskEdit1.Width := (Form16.Width - MaskEdit1.Left - 20);
+
+                {Mauricio Parizotto 2024-03-20
+                if (MaskEdit1.Width + MaskEdit1.Left) > (Form16.Width -20) then
+                  MaskEdit1.Width := (Form16.Width - MaskEdit1.Left - 20);
+                }
+                if MaskEdit1.Width > 318 then
+                  MaskEdit1.Width := 318;
               end;
             end;
             {Campos do tipo Date}
             if Form7.dBgrid1.Selectedfield.DataType = ftDate then
             begin
-              Form16.Label1.Caption  := 'Filtrar '+LowerCase(Form7.dBgrid1.SelectedField.DisplayLabel) + ' de:';
-              Form16.Label3.Caption  := 'até:';
+              Form16.Label1.Caption  := 'Filtrar '+LowerCase(Form7.dBgrid1.SelectedField.DisplayLabel) + ' de';
+              Form16.Label3.Caption  := 'até';
               //
               Form16.Label3.Visible  := True;
               Form16.DateTimePicker1.Visible  := True;
@@ -161,7 +167,7 @@ begin
               //
               if AllTrim(Form7.dBgrid1.SelectedField.DisplayLAbel) = 'Nascido em' then
               begin
-                Form16.Label1.Caption  := 'Filtrar aniversariantes de:';
+                Form16.Label1.Caption  := 'Filtrar aniversariantes de';
                 Form16.DateTimePicker1.Date:= Date;
                 Form16.DateTimePicker2.Date:= Date + 30;
               end;
@@ -169,8 +175,8 @@ begin
             if Form7.dBgrid1.Selectedfield.DataType = ftFloat then
             begin
               try
-                Form16.Label1.Caption := StrTran(StrTran('Filtrar '+LowerCase(Form7.dBgrid1.SelectedField.DisplayLabel) + ' de:','r$','R$'),'us$','US$');
-                Form16.Label3.Caption := 'até:';
+                Form16.Label1.Caption := StrTran(StrTran('Filtrar '+LowerCase(Form7.dBgrid1.SelectedField.DisplayLabel) + ' de','r$','R$'),'us$','US$');
+                Form16.Label3.Caption := 'até';
                 //
                 Form16.Label3.Visible     := True;
                 Form16.MaskEdit1.Visible  := True;
