@@ -56,6 +56,10 @@ type
     cbListarCodigos: TCheckBox;
     btnMarcarTodos: TBitBtn;
     btnDesmarcarTodos: TBitBtn;
+    pnlOSTipoFiltro: TPanel;
+    rbDataCriacao: TRadioButton;
+    rbDataAgendada: TRadioButton;
+    rbDataFechada: TRadioButton;
     procedure btnAvancarClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -650,8 +654,8 @@ begin
   Mais1Ini.WriteString('Outros','Período Final',DateToStr(DateTimePicker2.Date));
   Mais1Ini.Free;
 
-  Form38.Label25.Visible   := False;
-  Form38.ComboBox1.Visible := False;
+  Label25.Visible          := False;
+  ComboBox1.Visible        := False;
   Panel6.Visible           := False;
   Panel3.Visible           := False;
   Panel3.Visible           := False;
@@ -663,7 +667,8 @@ begin
   cbListarCodigos.Checked  := False;
   DateTimePicker1.Visible  := False;
   DateTimePicker2.Visible  := False;
-  Form38.Panel1.Visible    := False;
+  Panel1.Visible           := False;
+  pnlOSTipoFiltro.Visible  := False; //Mauricio Parizotto 2024-05-14
 end;
 
 procedure TForm38.FormCreate(Sender: TObject);
@@ -2552,6 +2557,7 @@ end;
 procedure TForm38.RelatorioServicosTecnico(var F: TextFile; dInicio, dFinal : TdateTime);
 var
   fTotal : Real;
+  sCampoData : string;
 begin
   fTotal  := 0;
 
@@ -2572,11 +2578,34 @@ begin
     WriteLn(F,'----------------------------------- ------------');
   end;
 
+  {Mauricio Parizotto 2024-05-14 Inicio}
+
+  if rbDataAgendada.Checked then
+    sCampoData := 'OS.DATA_PRO';
+
+  if rbDataCriacao.Checked then
+    sCampoData := 'OS.DATA';
+
+  if rbDataFechada.Checked then
+    sCampoData := 'OS.DATA_ENT';
+
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
-  Form7.IBDataSet99.SelectSQL.Add('select ITENS003.TECNICO, sum(ITENS003.TOTAL) from ITENS003, OS where ITENS003.NUMEROOS=OS.NUMERO and OS.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and OS.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by TECNICO');
+  Form7.IBDataSet99.SelectSQL.Add(' Select ITENS003.TECNICO,'+
+                                  '   sum(ITENS003.TOTAL) '+
+                                  ' From ITENS003, OS '+
+                                  ' Where ITENS003.NUMEROOS=OS.NUMERO '+
+                                  {Mauricio Parizotto 2024-05-14
+                                  '   and OS.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+
+                                  '   and OS.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+
+                                  }
+                                  '   and '+sCampoData+' <='+QuotedStr(DateToStrInvertida(dFinal))+
+                                  '   and '+sCampoData+' >='+QuotedStr(DateToStrInvertida(dInicio))+
+                                  ' Group by TECNICO');
   Form7.IBDataSet99.Open;
   Form7.IBDataSet99.First;
+
+  {Mauricio Parizotto 2024-05-14 Fim}
 
   while not Form7.ibDataSet99.EOF do
   begin
