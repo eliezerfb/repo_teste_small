@@ -34,12 +34,12 @@ inherited FrmSmallImput: TFrmSmallImput
     Left = 241
     Top = 60
     Width = 106
-    Height = 25
+    Height = 24
     Anchors = [akTop, akRight]
-    Caption = '&Ok'
+    Caption = '&OK'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -12
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False

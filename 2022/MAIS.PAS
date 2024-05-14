@@ -34,7 +34,7 @@ uses
   function ExecutaComando(comando:string):Boolean;  overload;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024006'; // Sandro Silva 2024-03-28 const BUILD_DO_BANCO = '2024004'; // Sandro Silva 2024-02-23 const BUILD_DO_BANCO = '2024002'; // Sandro Silva 2024-02-19 const BUILD_DO_BANCO = '2023048';
+const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014'; // Sandro Silva 2024-04-23 const BUILD_DO_BANCO = '2024012'; // Sandro Silva 2024-04-16 const BUILD_DO_BANCO = '2024010'; // Sandro Silva 2024-04-16 const BUILD_DO_BANCO = '2024008';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -278,6 +278,9 @@ type
     ConfiguraoTEF1: TMenuItem;
     N7: TMenuItem;
     Clculododescontopeloprovedor1: TMenuItem;
+    miProd120Carac: TMenuItem;
+    NaoDescontarIssQuandoRetido1: TMenuItem;
+    N13: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -449,6 +452,8 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure ConfiguraoTEF1Click(Sender: TObject);
     procedure Clculododescontopeloprovedor1Click(Sender: TObject);
+    procedure miProd120CaracClick(Sender: TObject);
+    procedure NaoDescontarIssQuandoRetido1Click(Sender: TObject);
 
 
   private
@@ -459,8 +464,10 @@ type
     procedure EnviarXMLContabilidadeAut;
     procedure ClickOKInformacoesInutilizacao(Sender: TObject);
     procedure CarregaConfiguracoes;
+    //Sandro Silva 2024-04-08 procedure AjustarDataSetCamposProduto;
 
   public
+    { Public declarations }
     fDias : Real;
     sSerial, sMei, sModeloPAF , sNomePAF : String;
     dtStatusMonitorAberto: TDateTime;
@@ -494,6 +501,7 @@ type
     ConfAceitaCGCDuplo: String;
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, Confduplo,ConfNegat, ConfFoto, ConfMArca, ConfEspecie: String;
     ConfPermitFabricarSemQtd : Boolean;
+    bNaoDescontarIssQuandoRetido: Boolean; // Sandro Silva 2024-04-24
     ConfSvc, ConfItens   : Integer;
     ConfLimite  : Real;
     ConfIR      : Real;
@@ -502,7 +510,7 @@ type
     bMKP : Boolean;
 
     ValidaRecursos: TValidaRecurso; // Sandro Silva 2023-05-31
-    { Public declarations }
+    procedure AjustarDataSetCamposProduto;// Sandro Silva 2024-04-08
     procedure RegistrodoPrograma(TermoAceito: boolean);
     procedure WMUser (var msg: TMessage); message wm_User;
     function AvisoNFECompra(bP1 : Boolean):Boolean;
@@ -519,7 +527,7 @@ type
     function Small_InputForm(sP1, sP2, sP3: String) : String;
     function Small_InputFormMemo(sP1, sP3: String; MaxLength : integer) : String;
     function Small_InputForm_Dados(sP1: String) : Boolean;
-    function Small_InputForm_ApenasNumeros(sP1, sP2, sP3: String; AnMaxLength: Integer = 0): String;    
+    function Small_InputForm_ApenasNumeros(sP1, sP2, sP3: String; AnMaxLength: Integer = 0): String;
     function NcmDeMedicamentos(sNcm: String): Boolean;
     function BloqueiaCtrlXTField(Sender: TObject; var Key: Word;
       Shift: TShiftState): Word; // Sandro Silva 2022-10-18
@@ -530,7 +538,9 @@ type
     function ExisteNfseExe(sDiretorio: String): Boolean;
     procedure MensagemRecursoIndisponivel(sMensagem: String);
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
-    procedure DefineAmbienteNFe(AcAmbiente, AcRotina: String);    
+    procedure DefineAmbienteNFe(AcAmbiente, AcRotina: String);
+    function Aplicar120CaracteresProduto(bExibirMensagemSucesso: Boolean): Boolean;
+    function Comandos120CaracteresProd: Boolean; // Sandro Silva 2024-04-08 procedure Comandos120CaracteresProd;
 
     property sPropaganda: String read getPropaganda;
     function MontaTela(sP1: Boolean): Boolean;
@@ -872,7 +882,7 @@ begin
   DeleteFile(ExtractFilePath(Application.ExeName)+'sP1');
   DeleteFile(pChar('c:\Users\Public\Desktop\'+Sp1));
   DeleteFile(pChar('c:\Documents and Settings\All Users\Desktop\'+sP1));
-  
+
   Result := True;
 end;
 
@@ -951,7 +961,7 @@ begin
         IBQuery.ExecSQL;
         Result := True
       end;
-    end; 
+    end;
   except
   end;
 end;
@@ -973,7 +983,7 @@ begin
   Form29.EscondeComponentesPadrao;
   Form29.lblTitulo2.Caption := sP1;
   Form29.ShowModal;
-  
+
   Result := True;
 end;
 
@@ -997,14 +1007,14 @@ begin
   if Form29.btnCancelar.Visible then
     Result := Form29.ClicouOK
   else
-    Result := True;  
+    Result := True;
 end;
 
 function tForm1.Small_InputForm(sP1, sP2, sP3: String) : String;
 begin
   Form29.EscondeComponentesPadrao;
   Form29.btnCancelar.Visible      := True;
-  
+
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
@@ -1031,7 +1041,7 @@ function tForm1.Small_InputFormMemo(sP1, sP3: String; MaxLength : integer) : Str
 begin
   Form29.EscondeComponentesPadrao;
   Form29.btnCancelar.Visible  := True;
-  
+
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
@@ -1191,7 +1201,7 @@ function tForm1.AvisoIndicadores(bP1 : Boolean):Boolean;
 begin
   try
     iAvisosIndicadores := 0;
-    
+
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
     Form1.ibQuery2.SQL.Add('select gen_id(G_GRAFICO_RECEBER,0) from rdb$database');
@@ -1253,7 +1263,7 @@ begin
   Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from MOVIMENT where coalesce(COMPENS,'+QuotedStr('26/09/1967')+')='+QuotedStr('26/09/1967')+' ');
   Form1.ibQuery2.Open;
   Form1.iAvisosBanco := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
-  
+
   Result := True;
 end;
 
@@ -1360,10 +1370,13 @@ begin
         Form1.ibQuery2.SQL.Add('update EMITENTE set LICENCA='+QuotedStr(Form7.LbBlowfish1.EncryptString(  Copy(sInicio,7,4)+Copy(sInicio,4,2)+Copy(sInicio,1,2))));
         Form1.ibQuery2.ExecSQL;
 
+        {Mauricio Parizotto 2024-04-19
         Form1.ibQuery2.Close;
         Form1.ibQuery2.SQL.Clear;
         Form1.ibQuery2.SQL.Add('commit');
         Form1.ibQuery2.ExecSQL;
+        }
+        AgendaCommit(true);
       except
       end;
     end;
@@ -1382,10 +1395,13 @@ begin
           Form1.ibQuery2.SQL.Add('update EMITENTE set LICENCA='+QuotedStr(Form7.LbBlowfish1.EncryptString(  Copy(sInicio,7,4)+Copy(sInicio,4,2)+Copy(sInicio,1,2))));
           Form1.ibQuery2.ExecSQL;
 
+          {Mauricio Parizotto 2024-04-19
           Form1.ibQuery2.Close;
           Form1.ibQuery2.SQL.Clear;
           Form1.ibQuery2.SQL.Add('commit');
           Form1.ibQuery2.ExecSQL;
+          }
+          AgendaCommit(true);
         except
         end;
       end;
@@ -1629,10 +1645,10 @@ begin
     end;
     ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
   end;
-  CloseHandle(FSnapshotHandle);     
+  CloseHandle(FSnapshotHandle);
 end;
 
-{Sandro Silva 2023-04-12 inicio 
+{Sandro Silva 2023-04-12 inicio
 procedure DropViewProcedure;
 begin
   try
@@ -1717,7 +1733,7 @@ begin
     Mais2Ini.Free;
   except
   end;
-end;   
+end;
 
 function mensagem22(sP1 : String) : Boolean;
 begin
@@ -1731,7 +1747,7 @@ end;
 function InstalaAtualizacao(pP1, pP2: String) : Boolean;
 begin
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  
+
   try
     if FileExists(Form1.sAtual+'\'+pP1+'.~~1') then
     begin
@@ -1795,7 +1811,7 @@ begin
   Screen.Cursor := crDefault;
 
   Result := True;
-end;                                
+end;
 
 function DownloadDoArquivo(pP1: String; pP2: String) : Boolean;
 begin
@@ -1963,7 +1979,7 @@ begin
     Form1.ibQuery1.SQL.Clear;
     Form1.ibQuery1.SQL.Add('select i.rdb$index_name,i.rdb$unique_flag,i.rdb$relation_name,s.rdb$field_name from rdb$indices i join rdb$index_segments s on (i.rdb$index_name = s.rdb$index_name) where i.rdb$index_name not like '+QuotedStr('RDB$%')+' ');
     Form1.ibQuery1.Open;
-    
+
     while not Form1.ibQuery1.Eof do
     begin
       try
@@ -2069,9 +2085,9 @@ begin
               sDesc := NodeTmp.ChildNodes['xProd'].Text;
             except
             end;
-            
+
             sIPI    := '0';
-            
+
             if Assigned(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI')) then
             begin
                try sIPI  := LimpaNumeroDeixandoOPonto('0'+NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('IPI').ChildNodes.FindNode('IPITrib').ChildNodes['vIPI'].Text);  except end;
@@ -2085,7 +2101,7 @@ begin
             except
             end;
           end;
-          
+
           NodeSec := NodeSec.NextSibling; // Next
         until NodeSec = nil;
       except
@@ -2134,7 +2150,7 @@ begin
         Form1.ibQuery1.Sql.Add('update ITENS001 set vICMS=''0'' where NUMERONF='+QuotedStr(Form1.ibQuery2.FieldByname('NUMERONF').AsString));
         Form1.ibQuery1.Open;
       except end;
-      
+
       try
         Form1.ibQuery1.Close;
         Form1.ibQuery1.Sql.Clear;
@@ -2272,7 +2288,7 @@ begin
     Label_Bola_NFe.Width   := Image_Bola_NFe.Width;
     Label_Bola_NFe.Left    := Image_Bola_NFe.Left;
     Label_Bola_NFe.Top     := Image_Bola_NFe.Top +1-1;
-    
+
     if iAvisosNFeCompra <> 0 then
     begin
       Image_Bola_NFe.visible  := True;
@@ -2351,7 +2367,7 @@ begin
     imgEstoque.Left    := iLeft;
     iLeft            := iLeft + iFixL;
     MostraLabels(imgEstoque,Label202);
-    
+
     // Avisos no Estoque
     if Form1.iAvisosEstoque >= 100 then
     begin
@@ -2546,7 +2562,7 @@ begin
         Image_Bola_Caixa.Picture := ImageBola.Picture;
       end;
     end;
-    
+
     Image_Bola_caixa.Top     := imgCaixa.Top -6+1-1;
     Image_Bola_Caixa.Left    := imgCaixa.Left + imgCaixa.Width - 20;
     Label_Bola_Caixa.Caption := AllTrim(IntToStr(Form1.iAvisosCaixa));
@@ -2554,7 +2570,7 @@ begin
     Label_Bola_Caixa.Width   := Image_Bola_Caixa.Width;
     Label_Bola_Caixa.Left    := Image_Bola_Caixa.Left;
     Label_Bola_Caixa.Top     := Image_Bola_Caixa.Top +1-1;
-    
+
     if iAvisosCaixa <> 0 then
     begin
       Image_Bola_Caixa.visible  := True;
@@ -2636,7 +2652,7 @@ begin
         Image_Bola_Indicadores.Picture := ImageBola.Picture;
       end;
     end;
-    
+
     Image_Bola_Indicadores.Top     := imgIndicadores.Top -6+1-1;
     Image_Bola_Indicadores.Left    := imgIndicadores.Left + imgIndicadores.Width - 20;
     Label_Bola_Indicadores.Caption := AllTrim(IntToStr(iAvisosIndicadores));
@@ -2687,7 +2703,7 @@ begin
     Label_Bola_Config.Width   := Image_Bola_Config.Width;
     Label_Bola_Config.Left    := Image_Bola_Config.Left;
     Label_Bola_Config.Top     := Image_Bola_Config.Top +1-1;
-    
+
     if iAvisosConfig <> 0 then
     begin
       Image_Bola_Config.visible  := True;
@@ -2711,7 +2727,7 @@ begin
   begin
 //    Label_Perigo.Visible       := False;
   end;
-  
+
   Result := True;
 end;
 
@@ -2744,7 +2760,7 @@ begin
         Form1.SQLCommandoexterno1Click(SQLCommandoexterno1);
         Abort;
       end;
-      
+
       if copy(UpperCase(Edit200.Text),1,11)= 'IMPORT FROM' then
       begin
         Edit200.Text := Alltrim(StrTran(UpperCase(Edit200.Text),'IMPORT FROM',''));
@@ -2818,7 +2834,7 @@ begin
 
           if FileExists(sCaminho+'.SQL') then
             DeleteFile(pChar(sCaminho+'.SQL'));
-          
+
           try
             Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
@@ -2830,7 +2846,7 @@ begin
             AssignFile(f,sCAminho+'.SQL');
             Rewrite(f);
             Writeln(f,'delete from '+sArquivo);
-            
+
             while not ibDataSet200.Eof do
             begin
               sCampos  := '';
@@ -2880,7 +2896,7 @@ begin
                   end;
                 end;
               end;
-              
+
               Writeln(f,'insert into '+sArquivo+' ('+sCampos+') '+'values ('+StrTran(StrTran(sValores,Chr(10),''),Chr(13),'')+')');
 
               ibDataSet200.Next;
@@ -2999,7 +3015,7 @@ begin
     if copy(UpperCase(Form1.Edit1.Text),1,10)= 'CONNECT TO' then
     begin
       Edit1.Text := Alltrim(StrTran(UpperCase(Edit1.Text),'CONNECT TO',''));
-      
+
       try
         Form1.IBDatabase1.Close;
         Form1.IBDatabase1.Params.Clear;
@@ -3023,7 +3039,7 @@ begin
 
     try
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
-      
+
       if Pos('SELECT',UpperCase(ibDataSet1.SelectSQL.Text))<>0 then sSelectSql := ibDataSet1.SelectSQL.Text;
 
       ibDataSet1.Close;
@@ -3062,7 +3078,7 @@ var
 begin
   // LEGAL
   Result := True;
-  
+
   try
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSql.Clear;
@@ -3149,7 +3165,7 @@ begin
     Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set PRECO=OFFPROMO where (CURRENT_DATE not between PROMOINI and PROMOFIM) and (PRECO=ONPROMO) ');
     Form7.ibDataSet99.Open;
   except end;
-  
+
   try
     // Guarda o preço anterior (normal) fora da promoção
     Form7.ibDataSet99.Close;
@@ -3200,7 +3216,7 @@ begin
     Form1.ibDataset200.Open;
   except
   end;
-  
+
   try
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
@@ -3242,7 +3258,7 @@ begin
         Form1.ibDataset200.Open;
       except
       end;
-      
+
       try
         Form1.ibDataset200.Close;
         Form1.ibDataset200.SelectSql.Clear;
@@ -3290,7 +3306,7 @@ end;
 function FechaTudo(bP1 : Boolean):Boolean;
 begin
   Result := False;
-  
+
   if Form5.Visible then Form5.Close;
   if Form5.Visible then Form10.Close;
 
@@ -3534,6 +3550,37 @@ begin
   Result := True;
 end;
 
+procedure TForm1.NaoDescontarIssQuandoRetido1Click(Sender: TObject);  // Sandro Silva 2024-04-24
+var
+  ConfSistema: TArquivosDAT;
+  IBTransaction: TIBTransaction;
+begin
+  try
+    IBTransaction := CriaIBTransaction(Form7.ibDataSet13.Transaction.DefaultDatabase);
+    ConfSistema := TArquivosDAT.Create(Usuario, IBTransaction);
+    try
+      ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido := IfThen(NaoDescontarIssQuandoRetido1.Checked, 'Não', 'Sim');
+      IBTransaction.Commit;
+      bNaoDescontarIssQuandoRetido := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim';// NaoDescontarIssQuandoRetido1.Checked;
+      NaoDescontarIssQuandoRetido1.Checked := bNaoDescontarIssQuandoRetido;
+    except
+      on E: Exception do
+      begin
+        IBTransaction.Rollback;
+        MensagemSistema('Não foi possível configurar', msgAtencao);
+      end;
+    end;
+  finally
+    FreeAndNil(ConfSistema);
+    FreeAndNil(IBTransaction);
+  end;
+  {Sandro Silva 2024-04-23 inicio}
+  // Precisa para atualizar a conexão
+  Commitatudo(True);
+  AbreArquivos(False);
+  {Sandro Silva 2024-04-23 fim}
+end;
+
 procedure Tform1.NovoFormExit(Sender:TObject);
 begin
   Screen.ActiveForm.Visible := False;
@@ -3558,7 +3605,8 @@ begin
     begin
       vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
       ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
-      ExecutaComando('Commit;');
+      //ExecutaComando('Commit;'); Mauricio Parizotto 2024-04-19
+      AgendaCommit(true);
 	  end;
   except
   end;
@@ -3698,7 +3746,7 @@ begin
   Mais1Ini.Free;
   Form7.sTitulo := sEscolhido;
   Form7.sRPS := 'N';
-  
+
   Form7.Close;
   Form7.Show;
 end;
@@ -3757,7 +3805,7 @@ begin
   //sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
   sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.Show;
-  
+
   //Form25.btnCNAB240.Click; Mauricio Parizotto 2023-10-03 // Sandro Silva 2022-12-23 Form25.Button10.Click;
   GeraCNAB240;
   Form25.Close;
@@ -3802,7 +3850,7 @@ begin
   begin
     ConfiguraodaNFemformulrionumerado1.Visible := False;
   end;
-  
+
   try
     if Form7.ibDataSet39.Active then
     begin
@@ -3921,7 +3969,7 @@ begin
   end;
   //
   Mais.LeLabels(True);
-  
+
   // Ativa o verificador de rede
   bChaveDoTempo := True;
 
@@ -3954,7 +4002,7 @@ begin
     DeleteFile(pChar(Form1.sAtual+'\saas_.exe'));
   {Dailon Parisotto (f-164) 2024-02-26 Fim}
 
-  //Mauricio Parizotto 2023-12-27 
+  //Mauricio Parizotto 2023-12-27
   if (FileExists(Form1.sAtual+'\backup_.exe')) and (FileExists(Form1.sAtual+'\backup.exe')) then
   begin
     RenameFile(pChar(Form1.sAtual+'\backup.exe'),pChar(Form1.sAtual+'\backup_o.exe'));
@@ -4045,7 +4093,7 @@ begin
 
   Mais1ini.Free;
   Form1.SetFocus;
-  
+
   try
     // Sandro Silva 2022-10-31 if Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0 then
     if (Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0)
@@ -4087,7 +4135,7 @@ begin
       FreeAndNil(Form17);
     end;
   end;
-  
+
   if (imgServicos.Visible) then
   begin
     // Libera NFSE.EXE
@@ -4271,7 +4319,7 @@ begin
   end;
 
   Form7.ibDataSet12.EnableControls;
-  
+
   Screen.Cursor := crDefault;
   Form7.Close;
   Form7.sModulo := 'CONTAS';
@@ -4340,6 +4388,10 @@ begin
   Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
 
   ValidaRecursos.Free; // Sandro Silva 2023-05-31
+
+  Form7.IBDatabase1.Close;
+  IBDatabase1.Close;
+
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -4394,7 +4446,7 @@ begin
   InstalaAtualizacao('pastanfse','6');
   InstalaAtualizacao('pastanfce','7');
   InstalaAtualizacao('pastadllsat','8');
-  InstalaAtualizacao('pastaopenssl','2');  
+  InstalaAtualizacao('pastaopenssl','2');
   // Sandro Silva 2022-12-28 InstalaAtualizacao('cdf_to','9');
   InstalaAtualizacao('paf2022_','10');
   InstalaAtualizacao('paf2023_','10');// Sandro Silva 2022-12-28
@@ -4465,7 +4517,7 @@ begin
     FreeAndNil(Form17);
   end;
 
-  ExibeRazaoSocialNoCaptionDoForm; // Sandro Silva 2022-12-15 
+  ExibeRazaoSocialNoCaptionDoForm; // Sandro Silva 2022-12-15
 end;
 
 procedure TForm1.DefinirBuildEXEDAT;
@@ -4556,7 +4608,7 @@ begin
   ConectaBancoCommerce; // Sandro Silva 2023-05-31
 
   {Mauricio Parizotto 2023-12-19 Inicio}
-  SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
+{  SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
   Form7.ibDataSet4DESCRICAO.Size := SizeDescricaoProd;
   Form7.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
   Form7.ibDataSet23DESCRICAO.Size := SizeDescricaoProd;
@@ -4565,7 +4617,8 @@ begin
   Form7.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
   Form7.ibDataset40DESCRICAO.Size := SizeDescricaoProd;
   Form7.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
-  Form24.ibDataSet44DESCRICAO.Size := SizeDescricaoProd;
+  Form24.ibDataSet44DESCRICAO.Size := SizeDescricaoProd;}
+  AjustarDataSetCamposProduto;
   {Mauricio Parizotto 2023-12-19 Fim}
 
   if Form1.sSerial = '' then
@@ -4776,7 +4829,7 @@ begin
     }
     Form1.MensagemRecursoIndisponivel('Este sistema está licenciado somente para '+IntToStr(iLimiteUsuariosSimultaneos)+' usuário(s)'+Chr(10)+
                 'neste momento '+IntToStr(iUsuariosConectados)+' estão tentando usar o sistema.');
-    
+
     Application.Terminate;
     // Sandro Silva 2023-05-31 Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     FecharAplicacao(ExtractFileName(Application.ExeName));
@@ -4837,7 +4890,7 @@ begin
     Form1.ibQuery2.SQL.Add('create generator G_GRAFICO_VENDAS');
     Form1.ibQuery2.ExecSQL;
   end;
-  
+
   // Genarator G_GRAFICO_CAIXA
   //
   Form1.ibQuery2.Close;
@@ -4870,17 +4923,25 @@ begin
       Form1.ibDataset200.SelectSql.Clear;
       Form1.ibDataset200.SelectSql.Add('update VENDAS set NFEPROTOCOLO=SubString(NFEPROTOCOLO from 1 for 9)||'+QuotedStr('/001')+', MODELO=''SV'' where SubString(NUMERONF from 10 for 3)=''RPS''');
       Form1.ibDataset200.Open;
-      //
+
+      {Mauricio Parizotto 2024-04-19
       Form1.ibDataset200.Close;
       Form1.ibDataset200.SelectSql.Clear;
       Form1.ibDataset200.SelectSql.Add('commit');
       Form1.ibDataset200.Open;
+      }
+      AgendaCommit(true);
     end;
   except
   end;
 
+
+
   //Mauricio Parizotto 2023-03-27
+  // Atualiza a estrutura do banco de dados
   AtualizaBancoDeDados(sBuild);
+
+
 
   SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
 
@@ -4888,7 +4949,7 @@ begin
   begin
     SmallIni.WriteString('ESTOQUE','Label28','Livre 4');
   end;
-  
+
   SmallIni.Free;
 
   Mensagem22('Aguarde...');
@@ -4898,6 +4959,31 @@ begin
       Mensagem22('Aguarde.');
       CommitaTudo(True);
       Mensagem22('Aguarde..');
+
+      (*
+      {Sandro Silva 2024-04-09 inicio}
+      if TamanhoCampo(Form7.ibDataSet4.Transaction, 'ESTOQUE', 'DESCRICAO') = 120 then
+      begin
+        //Fechatudo(True);
+        {
+        try
+          Form7.ibDataSet4.Transaction.DefaultDatabase.Close;
+          Form7.ibDataSet4.Transaction.DefaultDatabase.Open;
+        except
+
+        end;
+        }
+        {Sandro Silva 2024-04-08 inicio}
+        try
+          ConectaBancoCommerce;
+        except
+
+        end;
+        {Sandro Silva 2024-04-08 fim}
+        AjustarDataSetCamposProduto;
+      end;
+      {Sandro Silva 2024-04-09 fim}
+      *)
       AbreArquivos(True);
       Mensagem22('Aguarde...');
     except
@@ -5064,7 +5150,7 @@ begin
     Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
     Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04    
+    FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
 
   EnviarXMLContabilidadeAut;
@@ -5188,7 +5274,7 @@ begin
           for I := 1 to 5 do
           begin
             Mensagem22('Número de série: ' + Form1.sSerial +  chr(10) + ' licenciado para mais ' + FloatToStr(fDias) + ' dias');
-            
+
             Sleep(1000);
           end;
         end;
@@ -5215,7 +5301,7 @@ begin
     if (MonthOf(bDataAnt) = MonthOf(Date))
        and (YearOf(bDataAnt) = YearOf(Date)) then
       Exit;
-      
+
     frmExportaXML := TfrmExportaXML.Create(nil);
     try
       Mensagem22('Enviando arquivos XML para a contabilidade...');
@@ -5315,11 +5401,11 @@ begin
         MensagemSistema('Licença de uso cadastrada com sucesso. Este programa vai ser fechado.');
 
         Application.Terminate;
-        
+
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
         Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
         Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04        
+        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
       end else
       begin
         //ShowMessage('Este número de licença não foi liberado para este serial.'); Mauricio Parizotto 2023-10-25}
@@ -5343,7 +5429,7 @@ begin
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
         Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
         Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04        
+        FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
       end else
       begin
         if alltrim(sSerial) <> '' then
@@ -6234,7 +6320,7 @@ begin
       Edit200.Visible   := False;
       //
       Commitatudo(True); // SQL - Commando
-      AbreArquivos(False); 
+      AbreArquivos(False);
       //
       MontaTela(True);
       //
@@ -6430,7 +6516,7 @@ begin
         //ShowMessage(Result); Mauricio Parizotto 2023-10-25
         MensagemSistema(Result);
     End;
-    
+
     Form7.IBRestoreService1.Active := False;
   except
   end;
@@ -6498,7 +6584,7 @@ begin
   {Sandro Silva 2022-12-28 fim}
 
   Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
-  
+
   try
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
@@ -6522,7 +6608,7 @@ begin
 
   // NSU
   Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
-  
+
   try
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
@@ -6658,7 +6744,7 @@ begin
 
   // OS
   Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
-  
+
   try
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
@@ -7144,7 +7230,7 @@ begin
   try
     AtivaTodosOsIndices(True);
   except end;
-  
+
   Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
   Commitatudo(True);
 
@@ -7233,7 +7319,7 @@ begin
       begin
         Mais1Ini.WriteString('T','Tempo','00:05:'+StrZero(Random(50),2,0)); // Cadastro Licença de uso
       end;
-      
+
       Mais1Ini.Free;
     end;
   end;
@@ -7625,7 +7711,7 @@ begin
     Form1.imgBancosClick(Sender); // Bancos
     Form7.Close;
   end;
-  
+
   DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
   Screen.Cursor            := crDefault;
 
@@ -7676,7 +7762,7 @@ begin
   try
     I := FindFirst(sAtual + '\Plug-in\' + '*.exe' ,faAnyFile, S);
     Plugin1.Visible := False;
-    
+
     while I = 0 do
     begin
       JaTem := False;
@@ -7809,7 +7895,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04      
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
 
     try
@@ -7939,7 +8025,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04      
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
 
     {$IFDEF VER150}
@@ -7966,7 +8052,7 @@ begin
 
         if not Form2.bFlag then
           Form1.Ajustararquivos1Click(Sender);
-        
+
         Audita('ACESSOU','SMALL', Senhas.UsuarioPub,
                'ACESSOU O SISTEMA - BUILD: ' + TRetornarBuildEXE.New
                                                                 .Retornar(True),
@@ -8214,7 +8300,7 @@ begin
         begin
           // Form1.DestroyWindowHandle;
           Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-          FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04          
+          FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
         end else
         begin
           { Quando a senha não é válida }
@@ -8245,7 +8331,7 @@ begin
           Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
           Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
           Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-          FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04          
+          FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
         end;
       end;
 
@@ -8271,7 +8357,7 @@ begin
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04      
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
 
 
@@ -8280,7 +8366,7 @@ begin
     ConfiguraNFE;
 
     MontaTela(True);
-    
+
     Form8.Width          := 310;
     Form8.Top            := Form1.Top + Form1.Height + 1 + (iVista*2);
     Form8.Left           := Screen.Width - 310 - (iVista);
@@ -8295,7 +8381,7 @@ begin
         Form7.Image101Click(Form7.imgNovo);
       end;
     end;
-    
+
     if (Copy(Form7.ibDataSet13CNAE.AsString,1,2) = '56') or // Restaurantes e similares
        (Form7.ibDataSet13CNAE.AsString = '4721101') or      // Padarias
        (Form7.ibDataSet13CNAE.AsString = '4721102') then
@@ -8440,7 +8526,7 @@ begin
       Form7.ibDataset4.Open;
 
       Form7.ibDataSet4.DisableControls;
-      
+
       while not Form7.ibDataset4.Eof do
       begin
         for I := 1 to 30 do
@@ -8511,6 +8597,15 @@ begin
     Form7.EnvioaoFISCOREDUOZ1Click(Sender);
     Form1.Tag := 0;
   end;
+
+  frmConfiguracaoTEFCommerce := TfrmConfiguracaoTEFCommerce.Create(nil);
+  try
+    frmConfiguracaoTEFCommerce.IBDataBase := Form7.IBDatabase1;
+    // No Create vai atualizar TEM TEF
+    frmConfiguracaoTEFCommerce.AtualizaTEMTEF;
+  finally
+    FreeAndNil(frmConfiguracaoTEFCommerce);
+  end;
 end;
 
 procedure TForm1.DBGrid200KeyDown(Sender: TObject; var Key: Word;
@@ -8553,6 +8648,8 @@ var
   Mais1ini: TIniFile;
   sCertificado: String;
 begin
+  Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
+
   Form1.ConfiguraCredencialTecnospeed;
 
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
@@ -8662,7 +8759,7 @@ var
   sID, sRetorno, aAno, aModelo, aSerie, aIni, aFim, txtJustificativa: string;
 begin
   ConfiguraNFE;
-  
+
   aAno := Small_InputForm('NFe', 'Insira o ano da NF-e a ser inutilizada', '');
 
   if aAno <> '' then
@@ -8802,7 +8899,7 @@ begin
         Exit;
 
       ConfiguraNFE;
-      
+
       try
         Form7.ibDataset15.Locate('NFEID','55',[loPartialKey]);
 
@@ -8825,7 +8922,7 @@ begin
         cRetorno := Copy(cRetorno+'   ',Pos('<xMotivo>',cRetorno)+9,Pos('</xMotivo>',cRetorno)-Pos('<xMotivo>',cRetorno)-9);
         MensagemSistema('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+cRetorno,msgAtencao);
       end;
-                                  
+
       {$IFDEF VER150}
       DecimalSeparator := ',';
       DateSeparator    := '/';
@@ -8861,7 +8958,7 @@ begin
   end;
 end;
 
-procedure TForm1.Clculododescontopeloprovedor1Click(Sender: TObject);
+procedure TForm1.Clculododescontopeloprovedor1Click(Sender: TObject); // Sandro Silva 2024-04-23
 var
   ConfSistema: TArquivosDAT;
   IBTransaction: TIBTransaction;
@@ -8872,6 +8969,7 @@ begin
     try
       ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor := IfThen(Clculododescontopeloprovedor1.Checked, 'Não', 'Sim');
       IBTransaction.Commit;
+      Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim'; // Sandro Silva 2024-04-24
     except
       on E: Exception do
       begin
@@ -8883,6 +8981,11 @@ begin
     FreeAndNil(ConfSistema);
     FreeAndNil(IBTransaction);
   end;
+  {Sandro Silva 2024-04-23 inicio}
+  // Precisa para atualizar a conexão
+  Commitatudo(True);
+  AbreArquivos(False);
+  {Sandro Silva 2024-04-23 fim}
 end;
 
 procedure TForm1.ClickOKInformacoesInutilizacao(Sender: TObject);
@@ -8993,7 +9096,7 @@ begin
           Mais1Ini.Free;
         except end;
       end;
-      
+
       bButton := Application.MessageBox(Pchar(
       'É necessário atualizar as fotos dos produtos?')
       ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
@@ -9009,12 +9112,12 @@ begin
       begin
         Form10.AtualizaMobile(False);
       end;
-      
+
       Form1.Label200.Tag    := 0;
       Screen.Cursor := crDefault; // Cursor de Aguardo
     end;
   end;
-  
+
   Timer2.Enabled := True;
 end;
 
@@ -9135,7 +9238,7 @@ begin
           Form7.ibQuery2.Sql.Clear;
           Form7.ibQuery2.Sql.Add('select NOME from CLIFOR where CGC='+QuotedStr(FormataCpfCgc(ArqIni.ReadString(sTSessions[J],'CNPJ',''))));
           Form7.ibQuery2.Open;
-          
+
           IBQuery1.Prepare;
           IBQuery1.ParamByName('CODIGO').AsString     := ArqIni.ReadString(sTSessions[J],'CODIGO','');
 
@@ -9337,7 +9440,7 @@ var
   Mais1Ini : tIniFile;
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-  
+
   if Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','XXXXX')) <> 'Retrato' then
   begin
     Mais1Ini.WriteString('DANFE','Formato do DANFE','Retrato');
@@ -9412,7 +9515,7 @@ begin
   end else
     //ShowMessage('Senha do administrador inválida.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Senha do administrador inválida.',msgAtencao);
-  
+
   Mais1ini.Free;
 end;
 
@@ -9487,6 +9590,7 @@ procedure TForm1.ConfiguraoTEF1Click(Sender: TObject);
 begin
   frmConfiguracaoTEFCommerce := TfrmConfiguracaoTEFCommerce.Create(nil);
   try
+    frmConfiguracaoTEFCommerce.IBDataBase := Form7.IBDatabase1;
     frmConfiguracaoTEFCommerce.ShowModal;
 
     ConfiguraoTEF1.Checked := TestarTEFConfigurado;
@@ -9830,7 +9934,7 @@ begin
 
     Edit1.Align   := AlTop;
     dbGrid1.Align := AlClient;
-    
+
     Edit1.Top       := 0;
     Edit1.Left      := 0;
     Edit1.Width     := Screen.Width-16;
@@ -9862,7 +9966,7 @@ begin
         Form1.Label208.Font.Color := clBlack;
         Form1.Image_Perigo_2.Tag  := 0;
       end;
-      
+
       Form1.imgBackup.Repaint;
     end;
   end;
@@ -10059,7 +10163,7 @@ begin
       except
       end;
     end;
-    
+
     Form29.Close;
 
     Screen.Cursor        := crDefault;
@@ -10352,7 +10456,7 @@ begin
                   try
                     dInicio := StrToDate('01/'+StrZero(Month(Date),2,0)+'/'+StrZero(Year(Date),4,0));
                     dFinal  := StrToDate(StrZero(DiasDesteMes,2,0)+'/'+StrZero(Month(Date),2,0)+'/'+StrZero(Year(Date),4,0));
-                    
+
                     Form1.ibQuery1.Close;
                     Form1.ibQuery1.Sql.Clear;
                     Form1.ibQuery1.Sql.Add('select EMISSAO, CLIENTE, TOTAL, NUMERONF from VENDAS where (VENDEDOR= '+QuotedStr( sUsuario )+') and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' order by EMISSAO');
@@ -10379,14 +10483,14 @@ begin
                       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form1.ibQuery1.FieldByname('TOTAL').AsFloat])+'<br></font></td>');
                       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('NUMERONF').AsString+'<br></font></td>');
                       WriteLn(F,'   </tr>');
-                      
+
                       fTotal  := fTotal + Form1.ibQuery1.FieldByname('TOTAL').AsFloat;
 
                       Form1.ibQuery1.Next;
                     end;
 
                     WriteLn(F,'   <tr>');
-                    
+
                     if fTotal = 0 then
                     begin
                       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
@@ -10443,7 +10547,7 @@ begin
                     Form1.ibQuery1.Sql.Clear;
                     Form1.ibQuery1.Sql.Add('select DATA, CLIFOR, sum(TOTAL) as VTOT, NUMERONF from ORCAMENT where (VENDEDOR= '+QuotedStr( sUsuario )+') and DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by DATA, CLIFOR, NUMERONF order by DATA');
                     Form1.ibQuery1.Open;
-                    
+
                     WriteLn(F,'<center><a href="'+Form1.sAtual+'\orcamentos.png"><img src="orcamentos.png" border="0" width=800 height=400></a>');
                     WriteLn(F,'<br>');
                     WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
@@ -10454,7 +10558,7 @@ begin
                     WriteLn(F,'   <th   bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif, Helvetica" size="1" color="#000000">NF<br></th>');
 
                     WriteLn(F,'  </tr>');
-                    
+
                     III     := 0;
                     fTotal  := 0;
                     fTotal1 := 0;
@@ -10480,7 +10584,7 @@ begin
                       begin
                         fTotal2  := fTotal2 + Form1.ibQuery1.FieldByname('VTOT').AsFloat;
                       end;
-                      
+
                       Form1.ibQuery1.Next;
                     end;
 
@@ -10491,7 +10595,7 @@ begin
                     WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
                     WriteLn(F,'   </tr>');
                     WriteLn(F,'  </table>');
-                    
+
                     Mais1Ini.WriteString('DADOS','XY'+StrZero(1,2,0),'S1<'+
                       StrTran(Format('%15.2n',[ftotal1]),'.','')
                         +'>S2<'+'0,00'+'>VX<'+StrZero(III,2,0)+'>LX<Faturados>');
@@ -10553,7 +10657,7 @@ begin
                     while not Form1.ibQuery1.EOF do
                     begin
                       Application.ProcessMessages;
-                      
+
                       III := III + 1;
                       Mais1Ini.WriteString('DADOS','XY'+StrZero(III,2,0),'S1<'+
                       StrTran(Format('%15.2n',[Form1.ibQuery1.FieldByname('TOTAL').AsFloat]),'.','')
@@ -10610,12 +10714,12 @@ begin
                     Mais1Ini.WriteString('DADOS','AlturaBmp','1000');
                     Mais1Ini.WriteString('DADOS','LarguraBmp','2000');
                     Mais1Ini.WriteString('DADOS','CorS1','$008FC26C'); // Verde
-                    
+
                     Form1.ibQuery1.Close;
                     Form1.ibQuery1.Sql.Clear;
                     Form1.ibQuery1.Sql.Add('select sum(VALOR_DUPL) as TOTAL, VENCIMENTO from RECEBER where VENCIMENTO<='+QuotedStr(DateToStrInvertida(dFinal))+' and VENCIMENTO>='+QuotedStr(DateToStrInvertida(dInicio))+'group by VENCIMENTO order by VENCIMENTO');
                     Form1.ibQuery1.Open;
-                    
+
                     III := 0;
 
                     Form1.ibQuery1.First;
@@ -10648,12 +10752,12 @@ begin
                     end;
                   end;
                 end;
-                
+
                 // The end
                 WriteLn(F,'<br><font face="Microsoft Sans Serif" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
                 + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
                 + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font>');
-                
+
                 WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
                 WriteLn(F,'</html>');
 
@@ -10741,6 +10845,33 @@ begin
   //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'ICM' then
     Exit;
+
+  //Mauricio Parizotto 2024-03-21
+  if Form7.sModulo = 'CONVERSAOCFOP' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if Form7.sModulo = 'CONVENIO' then
+    Exit;
+
+  if Form7.sModulo = 'CAIXA' then
+    Exit;
+
+  if Form7.sModulo = 'GRUPOS' then
+    Exit;
+
+  if Form7.sModulo = 'TRANSPORT' then
+    Exit;
+
+  if Form7.sModulo = 'CONTAS' then
+    Exit;
+
+  if Form7.sModulo = 'BANCOS' then
+    Exit;
+
+  if Form7.sModulo = '2CONTAS' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Fim}
+    
 
   if AllTrim(Form7.sModulo) <> '' then
   begin
@@ -10837,7 +10968,7 @@ begin
             'o atendimento ao cliente'+chr(10)+
             'e organiza e mantém todo'+chr(10)+
             'o trabalho documentado'
-            , 'SERVIÇO'            
+            , 'SERVIÇO'
             );
     end;
   end;
@@ -10854,7 +10985,7 @@ begin
     if AllTrim(Form7.sModulo) = '' then
     begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_1.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_1.bmp') ; 
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_1.bmp') ;
 
       Titulo('MANTENHA O CADASTRO'+chr(10)+'ATUALIZADO',
              'O cadastro com as informações'+chr(10)+
@@ -11014,7 +11145,7 @@ begin
     if AllTrim(Form7.sModulo) = '' then
     begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_3.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_3.bmp') ; 
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_3.bmp') ;
 
       Titulo(
             'ORGANIZE AS CONTAS'+chr(10)+
@@ -11047,7 +11178,7 @@ var
   sMensagem : STring;
 begin
   sMensagem := 'Fuso normal em '+Form7.ibDataSet13ESTADO.AsString+': -03:00';
-  
+
   if Form7.ibDataSet13ESTADO.AsString = 'SC' then
   begin
    sMensagem := 'Fuso normal em SC: -03:00'+chr(10)+'Fuso horário de verão: -02:00';
@@ -11242,7 +11373,7 @@ begin
         end;
       except
       end;
-      
+
       Screen.Cursor := crDefault; // Cursor de Aguardo
       Form5.Enabled := True;
       Form1.Enabled := True;
@@ -11288,7 +11419,7 @@ var
 begin
   Timer2.Enabled            := False;
   Timer1.Enabled            := False;
-  
+
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
   Form7.ibDataSet2.Disablecontrols;
@@ -11334,7 +11465,7 @@ begin
   Mais1Ini.WriteString('NFE','Layout','4.00');
   Form1.sVersaoLayout := '4.00';
   Mais1ini.Free;
-  
+
   ConfiguraNFE;
 end;
 
@@ -11360,6 +11491,32 @@ begin
 
   //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'ICM' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Inicio}
+  if Form7.sModulo = 'CONVENIO' then
+    Exit;
+
+  if Form7.sModulo = 'CAIXA' then
+    Exit;
+
+  if Form7.sModulo = 'GRUPOS' then
+    Exit;
+
+  if Form7.sModulo = 'TRANSPORT' then
+    Exit;
+
+  if Form7.sModulo = 'CONTAS' then
+    Exit;
+
+  if Form7.sModulo = 'BANCOS' then
+    Exit;
+
+  if Form7.sModulo = '2CONTAS' then
+    Exit;
+  {Mauricio Parizotto 2024-04-05 Fim}
+  
+  //Mauricio Parizotto 2024-03-21
+  if Form7.sModulo = 'CONVERSAOCFOP' then
     Exit;
 
   if Form5.Visible then
@@ -11400,7 +11557,7 @@ begin
     Exit;
   end;
   {Sandro Silva 2023-08-07 fim}
-  
+
   if Form7.Visible then
   begin
     Form7.BringToFront;
@@ -11415,17 +11572,17 @@ begin
             'OR ((Coalesce(MDESTINXML,'''')='''') AND (COALESCE(REPLACE(NFEID, ''0'', ''''),'''')<>''''))';
   }
   Result :=
-    'EMISSAO >= (current_date - ' + PRAZO_MANIFESTAR + ') and ' + // emitida dentro de limite de tempo para fazer o manifesto 
+    'EMISSAO >= (current_date - ' + PRAZO_MANIFESTAR + ') and ' + // emitida dentro de limite de tempo para fazer o manifesto
     'substring(NFEID from 21 for 2) = ''55'' and ' +  // listar apenas 55=NF-e
-    '(' + 
-    '  (' + 
-    '    (coalesce(MDESTINXML, ''~'') like ''%<tpEvento>210210%'') and (MERCADORIA = 0)' + 
-    '  )' + 
-    '  or' + 
-    '  (' + 
-    '    (coalesce(MDESTINXML, '''') = '''') and (coalesce(replace(NFEID, ''0'', ''''), '''') <> '''')' + 
-    '  )' + 
-    ')';   
+    '(' +
+    '  (' +
+    '    (coalesce(MDESTINXML, ''~'') like ''%<tpEvento>210210%'') and (MERCADORIA = 0)' +
+    '  )' +
+    '  or' +
+    '  (' +
+    '    (coalesce(MDESTINXML, '''') = '''') and (coalesce(replace(NFEID, ''0'', ''''), '''') <> '''')' +
+    '  )' +
+    ')';
 end;
 
 procedure TForm1.Label_bola_NFEClick(Sender: TObject);
@@ -11436,7 +11593,7 @@ begin
   begin
     Form1.imgVendasClick(Sender);
     Form7.Compras_1Click(Sender);
-    
+
     Form7.ibDataSet24.DisableControls;
 
     //LogRetaguarda('Form7.ibDataSet24.DisableControls 11712'); // Sandro Silva 2023-11-27
@@ -11571,7 +11728,7 @@ var
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
-  
+
   if Form7.Visible then Form7.Close;
   if Form10.Visible then Form10.Close;
 
@@ -11672,7 +11829,7 @@ var
   Mais1Ini : TiniFile;
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-  
+
   if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then
     Mais1Ini.WriteString('NFE','Consultar Nfes Emitidas','Não')
   else
@@ -11819,7 +11976,7 @@ begin
     if AllTrim(Form7.sModulo) = '' then
     begin
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_11.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_11.bmp') ; 
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_11.bmp') ;
 
       Titulo(
             'CONTROLE AS NOTAS'+Chr(10)+'DE COMPRAS',
@@ -11908,7 +12065,7 @@ begin
   //ShowMessage('Layoute de preenchimento definido como simples. Este programa vai ser fechado.'); Mauricio Parizotto 2023-10-25
   MensagemSistema('Layoute de preenchimento definido como simples. Este programa vai ser fechado.');
   Mais1ini.Free;
-  
+
   Application.Terminate;
   Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
   Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
@@ -12370,6 +12527,236 @@ begin
                   ,msgAtencao);
 end;
 
+procedure TForm1.AjustarDataSetCamposProduto;
+var
+  nSizeDescricaoProd: Integer;
+begin
+  try
+    nSizeDescricaoProd               := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
+    Form7.ibDataSet4DESCRICAO.Size   := nSizeDescricaoProd;
+    Form7.ibDataSet16DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet23DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet27DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet28DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet35DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataset40DESCRICAO.Size  := nSizeDescricaoProd;
+    Form7.ibDataSet37DESCRICAO.Size  := nSizeDescricaoProd;
+    Form24.ibDataSet44DESCRICAO.Size := nSizeDescricaoProd;
+  except
+
+  end;
+end;
+
+procedure TForm1.miProd120CaracClick(Sender: TObject);
+begin
+  // Se já for 120 não faz nada
+  // Se for estado diferente de SC não faz nada
+  //Sandro Silva 2024-04-11 if (Form7.ibDataSet4DESCRICAO.Size = 120) or ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr)) then
+  if (Form7.ibDataSet4DESCRICAO.Size = 120) or (Trim(Form7.ibDataSet13ESTADO.AsString) = EmptyStr) then
+    Exit;
+
+  // Verifica se só tem 1 pessoa conectada
+  if (not Form1.ibDataSet200.Transaction.DefaultDatabase.Connected) then
+    ConectaBancoCommerce;
+
+  {Sandro Silva 2024-04-08 inicio
+  if ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase, 'Select Count(*) From MON$ATTACHMENTS') > 1 then
+  begin
+    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                    'Existem outros usuários com o sistema aberto.'+#13#10+
+                    'Feche o sistema em todos os computadores e tente novamente.'
+                    ,msgAtencao);
+
+    Exit;
+  end;
+
+  if uDialogs.MensagemSistemaPergunta('Sua empresa ainda usa impressora fiscal? Faz Redução Z?', [mb_YesNo]) = mrYes then
+  begin
+    uDialogs.MensagemSistema('O recurso de 120 caracteres na descrição do produto não poderá ser usado com impressora fiscal. Considere migrar para NFC-e.', msgAtencao);
+    Exit;
+  end;
+
+  if uDialogs.MensagemSistemaPergunta('O uso de 120 caracteres na descrição do produto só poderá ser usada por emissores de NF-e ou NFC-e.' + sLineBreak + sLineBreak +
+                                      'Deseja prosseguir?', [mb_YesNo]) = mrNo then
+    Exit;
+  }
+  // Se for UF = SC o usuário deve confirmar que deseja alterar
+  if (Form7.ibDataSet13ESTADO.AsString = 'SC') then
+  begin
+
+    if uDialogs.MensagemSistemaPergunta('Sua empresa ainda usa impressora fiscal?' + sLineBreak +
+                                        'Faz Redução Z?', [mb_YesNo]) = mrYes then
+    begin
+      uDialogs.MensagemSistema('O recurso de 120 caracteres na descrição do produto não poderá ser usado com impressora fiscal. Considere migrar para NFC-e.', msgAtencao);
+      Exit;
+    end;
+
+    if uDialogs.MensagemSistemaPergunta('O uso de 120 caracteres na descrição do produto só poderá ser usada por emissores de NF-e ou NFC-e.' + sLineBreak + sLineBreak +
+                                        'Deseja prosseguir?', [mb_YesNo]) = mrNo then
+      Exit;
+  end;
+
+  // Por último valida se tem mais usuários logados
+  if ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase, 'Select Count(*) From MON$ATTACHMENTS') > 1 then
+  begin
+    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                    'Existem outros usuários com o sistema aberto.'+#13#10+
+                    'Feche o sistema em todos os computadores e tente novamente.'
+                    ,msgAtencao);
+
+    Exit;
+  end;
+  {Sandro Silva 2024-04-08 fim}
+
+  if Aplicar120CaracteresProduto(False) then // 2024-04-11 Aplicar120CaracteresProduto(True);
+  begin
+    MensagemSistema('Ativado o recurso de 120 caracteres' + #13#10 + #13#10 +
+                    'Esse aplicativo será fechado'
+                    , msgInformacao);
+
+    FecharAplicacao(ExtractFileName(Application.ExeName));
+    Halt(1);
+  end
+  else
+  begin
+    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                    'Feche o sistema em todos os computadores e tente novamente.'
+                    , msgAtencao);
+  end;
+
+end;
+
+function TForm1.Comandos120CaracteresProd: Boolean;// Sandro Silva 2024-04-08 procedure TForm1.Comandos120CaracteresProd;
+begin
+  {Sandro Silva 2024-04-08 inicio
+  if ExecutaComando('ALTER TABLE ALTERACA ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+    ExecutaComando('Commit');
+  if ExecutaComando('ALTER TABLE COMPOSTO ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+    ExecutaComando('Commit');
+  if ExecutaComando('ALTER TABLE ESTOQUE ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+    ExecutaComando('Commit');
+  if ExecutaComando('ALTER TABLE ITENS001 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+    ExecutaComando('Commit');
+  if ExecutaComando('ALTER TABLE ITENS002 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+    ExecutaComando('Commit');
+  if ExecutaComando('ALTER TABLE ITENS003 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+    ExecutaComando('Commit');
+  if ExecutaComando('ALTER TABLE ITENSETI ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+    ExecutaComando('Commit');
+  if ExecutaComando('ALTER TABLE ORCAMENT ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+    ExecutaComando('Commit');
+  }
+  Result := False;
+  if ExecutaComando('ALTER TABLE ESTOQUE ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+    if ExecutaComando('ALTER TABLE ALTERACA ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+      if ExecutaComando('ALTER TABLE COMPOSTO ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+        if ExecutaComando('ALTER TABLE ITENS001 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+          if ExecutaComando('ALTER TABLE ITENS002 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+            if ExecutaComando('ALTER TABLE ITENS003 ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+              if ExecutaComando('ALTER TABLE ITENSETI ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+                if ExecutaComando('ALTER TABLE ORCAMENT ALTER COLUMN DESCRICAO TYPE VARCHAR(120)') then
+                begin
+                  //ExecutaComando('Commit'); Mauricio Parizotto 2024-04-19
+                  AgendaCommit(true);
+                  Result := True;
+                end;
+  if Result = False then
+    ExecutaComando('Rollback');
+  {Sandro Silva 2024-04-08 fim}
+end;
+
+function TForm1.Aplicar120CaracteresProduto(bExibirMensagemSucesso: Boolean): Boolean;
+var
+  bRetorno: Boolean;
+  IBQTEMP: TIBQuery;
+begin
+  if (Form7.ibDataSet4DESCRICAO.Size = 120) then
+    Exit;
+
+  IBQTEMP := CriaIBQuery(Form7.ibDataSet4.Transaction);
+  try
+    IBQTEMP.Close;
+    IBQTEMP.SQL.Text := 'Select Count(*) as ATIVOS From MON$ATTACHMENTS';
+    IBQTEMP.Open;
+    if IBQTEMP.FieldByName('ATIVOS').AsInteger > 1 then
+      Exit;
+  except
+    Exit;
+  end;
+  FreeAndNil(IBQTEMP);
+  //Sandro Silva 2024-04-08 Comandos120CaracteresProd;
+
+  Commitatudo(True); // Grava alterações pendentes
+
+  bRetorno := Comandos120CaracteresProd;
+  if bExibirMensagemSucesso then
+  begin
+    if bRetorno = False then
+      MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
+                      'Feche o sistema em todos os computadores e tente novamente.'
+                      , msgAtencao)
+    else
+      MensagemSistema('Ativado o recurso de 120 caracteres.', msgInformacao);
+  end;
+
+  try
+    AgendaCommit(True);
+    Commitatudo(True);
+    // Necessario fechar e abrir novamente para não abrir a tela de empresa
+    // Dailon 2024-04-10
+    {    Form7.ibDataSet13.Close;
+    Form7.ibDataSet13.Open;  }
+    try
+      {2024-04-10
+      Form7.ibDataSet4.Close;
+      Form7.ibDataSet16.Close;
+      Form7.ibDataSet23.Close;
+      Form7.ibDataSet27.Close;
+      Form7.ibDataSet28.Close;
+      Form7.ibDataSet35.Close;
+      Form7.ibDataset40.Close;
+      Form7.ibDataSet37.Close;
+      Form24.ibDataSet44.Close;
+      }
+
+      {Sandro Silva 2024-04-08 inicio}
+      try
+        ConectaBancoCommerce;
+      except
+
+      end;
+      {Sandro Silva 2024-04-08 fim}
+
+      AjustarDataSetCamposProduto;
+
+      {Sandro Silva 2024-04-10 inicio}
+      // Para conseguir validar os dados do emitente com o LEGAL
+      Form7.ibDataSet13.Close;
+      Form7.ibDataSet13.Open;
+      {Sandro Silva 2024-04-10 fim}
+
+      //Commitatudo(True); //2024-04-09
+
+    finally
+      {2024-04-10
+      Form7.ibDataSet4.Open;
+      Form7.ibDataSet16.Open;
+      Form7.ibDataSet23.Open;
+      Form7.ibDataSet27.Open;
+      Form7.ibDataSet28.Open;
+      Form7.ibDataSet35.Open;
+      Form7.ibDataset40.Open;
+      Form7.ibDataSet37.Open;
+      Form24.ibDataSet44.Open;
+      }
+      AbreArquivos(False); //2024-04-10
+      Screen.Cursor := crDefault;
+    end;
+  except
+  end;
+  Result := bRetorno;
+end;
+
 function TForm1.ValidaRecursoExibeMensagemIndisponivel: Boolean;
 begin
   Result := False;
@@ -12389,6 +12776,11 @@ begin
     ConfiguraesdaNFSe1.Enabled := False;
   end;
   {Sandro Silva 2023-06-01 fim}
+
+  {Dailon Parisotto (f-17787) 2024-03-27 Inicio}
+  // 2024-04-11 miProd120Carac.Visible := (Form7.ibDataSet13ESTADO.AsString = 'SC') and (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) and (Form7.ibDataSet4DESCRICAO.Size <> 120);
+  miProd120Carac.Visible := (Trim(Form7.ibDataSet13ESTADO.AsString) <> EmptyStr) and (Form7.ibDataSet4DESCRICAO.Size <> 120);
+  {Dailon Parisotto (f-17787) 2024-03-27 Fim}
 end;
 
 procedure TForm1.Label_Bola_vendasClick(Sender: TObject);
@@ -12534,6 +12926,8 @@ begin
     try
       ConfSistema.BD.NFSE.ObsNaDescricao := not(ConfSistema.BD.NFSE.ObsNaDescricao);
       IBTransaction.Commit;
+
+      Observaonadescriodosservios1.Checked := ConfSistema.BD.NFSE.ObsNaDescricao; /// Sandro Silva 2024-04-24
     except
       on E: Exception do
       begin
@@ -12545,6 +12939,11 @@ begin
     FreeAndNil(ConfSistema);
     FreeAndNil(IBTransaction);
   end;
+  {Sandro Silva 2024-04-23 inicio}
+  // Precisa para atualizar a conexão
+  Commitatudo(True);
+  AbreArquivos(False);
+  {Sandro Silva 2024-04-23 fim}
 end;
 
 procedure TForm1.CarregaConfiguracoes;
@@ -12555,8 +12954,14 @@ begin
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
 
-    GeraLogSistema            := ConfSistema.BD.Outras.LogSistema;
-    ConfPermitFabricarSemQtd  := ConfSistema.BD.Outras.FabricaProdutoSemQtd; //Mauricio Parizotto 2024-02-02
+    GeraLogSistema               := ConfSistema.BD.Outras.LogSistema;
+    ConfPermitFabricarSemQtd     := ConfSistema.BD.Outras.FabricaProdutoSemQtd; //Mauricio Parizotto 2024-02-02
+    bNaoDescontarIssQuandoRetido := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-24
+    {Sandro Silva 2024-04-24 inicio}
+    Observaonadescriodosservios1.Checked  := ConfSistema.BD.NFSE.ObsNaDescricao;
+    Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim';
+    NaoDescontarIssQuandoRetido1.Checked  := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-23
+    {Sandro Silva 2024-04-24 fim}
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -12566,13 +12971,17 @@ procedure TForm1.ConfiguraesdaNFSe1Click(Sender: TObject);
 var
   ConfSistema : TArquivosDAT;
 begin
+  {Sandro Silva 2024-04-24 inicio
   try
-    ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
-    Observaonadescriodosservios1.Checked := ConfSistema.BD.NFSE.ObsNaDescricao;
+    //Sandro Silva 2024-04-24 ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
+    ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet13.Transaction);
+    Observaonadescriodosservios1.Checked  := ConfSistema.BD.NFSE.ObsNaDescricao;
     Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim';
+    NaoDescontarIssQuandoRetido1.Checked  := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-23
   finally
     FreeAndNil(ConfSistema);
   end;
+  }
 end;
 
 function ExecutaComando(comando:string):Boolean;  overload;

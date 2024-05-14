@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFrmPadrao, Vcl.StdCtrls, Vcl.Buttons,
-  Vcl.ExtCtrls, System.IniFiles;
+  Vcl.ExtCtrls, System.IniFiles, IBX.IBDatabase;
 
 type
   TConfigTEF = class
@@ -40,10 +40,13 @@ type
   private
     FoIni: TIniFile;
     FoConfigTEFSelecionado: TConfigTEF;
+    FoIBDataBase: TIBDataBase;
 
     procedure CarregaTEFsAtivos;
     procedure DefineValoresTEFSelecionado;
+    function TestarZPOSLiberado: Boolean;
   public
+    property IBDataBase: TIBDataBase read FoIBDataBase write FoIBDataBase;
     property ConfigTEFSelecionado: TConfigTEF read FoConfigTEFSelecionado;
     procedure ChamarTela;
   end;
@@ -56,14 +59,12 @@ implementation
 {$R *.dfm}
 
 uses
-  uSmallConsts, uDialogs;
+  uSmallConsts, uDialogs, uValidaRecursos, uTypesRecursos;
 
 procedure TfrmSelecionaTEF.FormCreate(Sender: TObject);
 begin
   inherited;
   FoIni := TIniFile.Create('FRENTE.INI');
-
-  CarregaTEFsAtivos;
 end;
 
 procedure TfrmSelecionaTEF.FormDestroy(Sender: TObject);
@@ -75,6 +76,7 @@ end;
 procedure TfrmSelecionaTEF.FormShow(Sender: TObject);
 begin
   inherited;
+
   if lbxTEFs.Items.Count > 1 then
     lbxTEFs.SetFocus;
 end;
@@ -126,15 +128,27 @@ begin
     for i := 0 to Pred(slSecoes.Count) do
     begin
       if AnsiUpperCase(FoIni.ReadString(slSecoes[i], 'bAtivo', _cNao)) = AnsiUpperCase(_cSim) then
-        lbxTEFs.Items.Add(slSecoes[i]);
+      begin
+        if (Pos('ZPOS', AnsiUpperCase(slSecoes[I])) <= 0) or (TestarZPOSLiberado) then
+          lbxTEFs.Items.Add(slSecoes[i]);
+      end;
     end;
   finally
     FreeAndNil(slSecoes);
   end;
 end;
 
+function TfrmSelecionaTEF.TestarZPOSLiberado: Boolean;
+var
+  dLimiteRecurso : Tdate;
+begin
+  Result := (RecursoLiberado(FoIBDataBase, rcZPOS, dLimiteRecurso));
+end;
+
 procedure TfrmSelecionaTEF.ChamarTela;
 begin
+  CarregaTEFsAtivos;
+
   if lbxTEFs.Count <= 0 then
   begin
     uDialogs.MensagemSistema('Não foi encontrado nenhum TEF ativo configurado.' + sLineBreak +

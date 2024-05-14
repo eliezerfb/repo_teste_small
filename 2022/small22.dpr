@@ -22,12 +22,12 @@ uses
   unit99 in 'unit99.pas' {Form99},
   uFrmParcelas in 'uFrmParcelas.pas' {FrmParcelas},
   Unit19 in 'Unit19.pas' {Form19},
-  Unit20 in 'Unit20.pas' {Form20},
+  uFrmAssistenteProcura in 'uFrmAssistenteProcura.pas' {FrmAssistenteProcura},
   Unit21 in 'Unit21.pas' {Form21},
   Unit22 in 'Unit22.pas' {Form22},
   Unit25 in 'Unit25.pas' {Form25},
   Unit26 in 'Unit26.pas' {Form26},
-  Unit27 in 'Unit27.pas' {Form27},
+  uFrmRelatorioFluxoCaixa in 'uFrmRelatorioFluxoCaixa.pas' {FrmRelatorioFluxoCaixa},
   Unit31 in 'Unit31.pas' {Form31},
   Unit32 in 'Unit32.pas' {Form32},
   Unit33 in 'Unit33.pas' {Form33},
@@ -239,11 +239,22 @@ uses
   uObjetoConsultaCEP in 'units\uObjetoConsultaCEP.pas',
   uIConsultaCEP in 'interfaces\uIConsultaCEP.pas',
   uConsultaCEP in 'units\uConsultaCEP.pas',
+  uFrmConversaoCFOP in 'uFrmConversaoCFOP.pas' {FrmConversaoCFOP},
   uConfiguracaoTEFCommerce in 'uConfiguracaoTEFCommerce.pas' {frmConfiguracaoTEFCommerce},
   uFuncoesTEF in 'units\uFuncoesTEF.pas',
   uclassetransacaocartao in '..\..\unit_compartilhada\uclassetransacaocartao.pas',
   uSelecionaTEF in 'uSelecionaTEF.pas' {frmSelecionaTEF},
-  uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame};
+  uframeConfiguraTEF in 'frames\uframeConfiguraTEF.pas' {frameConfiguraTEF: TFrame},
+  uValidaRecursos in '..\..\unit_compartilhada\uValidaRecursos.pas',
+  uIDuplicaNFSe in 'interfaces\uIDuplicaNFSe.pas',
+  uDuplicaNFSe in 'units\uDuplicaNFSe.pas',
+  uFrmConvenio in 'uFrmConvenio.pas' {FrmConvenio},
+  uFrmCaixa in 'uFrmCaixa.pas' {FrmCaixa},
+  uFrmGrupoMercadoria in 'uFrmGrupoMercadoria.pas' {FrmGrupoMercadoria},
+  uFrmTransportadora in 'uFrmTransportadora.pas' {FrmTransportadora},
+  uFrmPlanoContas in 'uFrmPlanoContas.pas' {FrmPlanoContas},
+  uFrmBanco in 'uFrmBanco.pas' {FrmBanco},
+  uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria};
 
 {$R *.RES}
 
@@ -274,6 +285,10 @@ var
     end;
   end;
 begin
+  {$IFDEF DEBUG}
+  //ReportMemoryLeaksOnShutdown := True;
+  {$ENDIF}
+
   oHwnd := FindWindowCaptionParcial('Small Commerce - [ ');
 
   if oHwnd = 0 then
@@ -317,11 +332,11 @@ begin
   Application.CreateForm(TForm16, Form16);
   Application.CreateForm(TForm99, Form99);
   //Application.CreateForm(TForm18, Form18);
-  Application.CreateForm(TForm20, Form20);
+  Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
   Application.CreateForm(TForm21, Form21);
   Application.CreateForm(TForm25, Form25);
   Application.CreateForm(TForm26, Form26);
-  Application.CreateForm(TForm27, Form27);
+  Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
   Application.CreateForm(TForm31, Form31);
   Application.CreateForm(TForm32, Form32);
   Application.CreateForm(TForm38, Form38);
@@ -344,7 +359,7 @@ begin
   Application.CreateForm(TForm37, Form37);
   Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
   Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
-  Application.Run;
+  Application.Run; 
     end else
     begin
       if not IsWindowVisible(oHwnd) then PostMessage(oHwnd, wm_User,0,0);

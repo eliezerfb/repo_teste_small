@@ -8,8 +8,8 @@ object Form1: TForm1
   AlphaBlendValue = 250
   BorderStyle = bsSingle
   Caption = 'form'
-  ClientHeight = 879
-  ClientWidth = 1295
+  ClientHeight = 887
+  ClientWidth = 1297
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -13858,6 +13858,17 @@ object Form1: TForm1
           Caption = 'C'#225'lculo do desconto pelo provedor'
           OnClick = Clculododescontopeloprovedor1Click
         end
+        object NaoDescontarIssQuandoRetido1: TMenuItem
+          Caption = 'N'#227'o descontar o ISS quando retido'
+          OnClick = NaoDescontarIssQuandoRetido1Click
+        end
+        object Observaonadescriodosservios1: TMenuItem
+          Caption = 'Observa'#231#227'o na descri'#231#227'o dos servi'#231'os'
+          OnClick = Observaonadescriodosservios1Click
+        end
+        object N13: TMenuItem
+          Caption = '-'
+        end
         object ConfiguraesdaNFSe2: TMenuItem
           Caption = 'Configura'#231#245'es da NFS-e'
           OnClick = ConfiguraesdaNFSe2Click
@@ -13866,13 +13877,14 @@ object Form1: TForm1
           Caption = 'Debug'
           OnClick = Debug1Click
         end
-        object Observaonadescriodosservios1: TMenuItem
-          Caption = 'Observa'#231#227'o na descri'#231#227'o dos servi'#231'os'
-          OnClick = Observaonadescriodosservios1Click
-        end
       end
       object N14: TMenuItem
         Caption = '-'
+      end
+      object miProd120Carac: TMenuItem
+        Caption = 'Descri'#231#227'o dos produtos com 120 caracteres'
+        Visible = False
+        OnClick = miProd120CaracClick
       end
       object Modoinventrio1: TMenuItem
         Caption = 'Modo invent'#225'rio'

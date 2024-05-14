@@ -4,8 +4,8 @@ object Form16: TForm16
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Assistente de filtro'
-  ClientHeight = 262
-  ClientWidth = 492
+  ClientHeight = 280
+  ClientWidth = 518
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,8 +21,8 @@ object Form16: TForm16
   object Panel2: TPanel
     Left = 0
     Top = 0
-    Width = 492
-    Height = 262
+    Width = 518
+    Height = 280
     Align = alClient
     BevelOuter = bvNone
     Color = clWhite
@@ -31,7 +31,7 @@ object Form16: TForm16
     ParentCtl3D = False
     TabOrder = 0
     object Image2: TImage
-      Left = 15
+      Left = 39
       Top = 15
       Width = 70
       Height = 70
@@ -40,32 +40,32 @@ object Form16: TForm16
       Transparent = True
     end
     object Label1: TLabel
-      Left = 200
+      Left = 180
       Top = 15
-      Width = 17
+      Width = 14
       Height = 13
-      Caption = 'De:'
+      Caption = 'De'
     end
     object Label3: TLabel
-      Left = 200
-      Top = 55
-      Width = 19
+      Left = 180
+      Top = 60
+      Width = 16
       Height = 13
-      Caption = 'At'#233':'
+      Caption = 'At'#233
       Visible = False
     end
     object Label2: TLabel
-      Left = 200
+      Left = 180
       Top = 105
-      Width = 61
+      Width = 58
       Height = 13
-      Caption = 'Filtros ativos:'
+      Caption = 'Filtros ativos'
     end
     object DateTimePicker1: TDateTimePicker
-      Left = 200
+      Left = 181
       Top = 30
-      Width = 281
-      Height = 21
+      Width = 212
+      Height = 20
       BevelInner = bvNone
       BevelOuter = bvNone
       Date = 35803.000000000000000000
@@ -75,10 +75,10 @@ object Form16: TForm16
       Visible = False
     end
     object DateTimePicker2: TDateTimePicker
-      Left = 200
-      Top = 70
-      Width = 280
-      Height = 21
+      Left = 180
+      Top = 75
+      Width = 212
+      Height = 20
       BevelInner = bvNone
       BevelOuter = bvNone
       Date = 35803.000000000000000000
@@ -88,10 +88,11 @@ object Form16: TForm16
       Visible = False
     end
     object MaskEdit1: TMaskEdit
-      Left = 200
+      Left = 180
       Top = 30
       Width = 90
-      Height = 19
+      Height = 20
+      AutoSize = False
       Ctl3D = False
       ParentCtl3D = False
       TabOrder = 0
@@ -101,10 +102,11 @@ object Form16: TForm16
       OnKeyUp = MaskEdit1KeyUp
     end
     object MaskEdit2: TMaskEdit
-      Left = 200
-      Top = 70
+      Left = 180
+      Top = 75
       Width = 90
-      Height = 19
+      Height = 20
+      AutoSize = False
       Ctl3D = False
       ParentCtl3D = False
       TabOrder = 1
@@ -113,11 +115,11 @@ object Form16: TForm16
       OnKeyUp = MaskEdit2KeyUp
     end
     object Button3: TButton
-      Left = 10
-      Top = 220
+      Left = 19
+      Top = 237
       Width = 100
-      Height = 23
-      Caption = '< Limpar filtros'
+      Height = 24
+      Caption = '< &Limpar filtros'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -11
@@ -128,10 +130,10 @@ object Form16: TForm16
       OnClick = Button3Click
     end
     object Button4: TButton
-      Left = 145
-      Top = 220
+      Left = 191
+      Top = 237
       Width = 100
-      Height = 23
+      Height = 24
       Caption = 'Ocultar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -143,10 +145,10 @@ object Form16: TForm16
       OnClick = Button2Click
     end
     object Button2: TButton
-      Left = 245
-      Top = 220
+      Left = 295
+      Top = 237
       Width = 100
-      Height = 23
+      Height = 24
       Caption = 'Listar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -158,11 +160,11 @@ object Form16: TForm16
       OnClick = Button2Click
     end
     object Button1: TButton
-      Left = 380
-      Top = 220
+      Left = 399
+      Top = 237
       Width = 100
-      Height = 23
-      Caption = 'Cancelar'
+      Height = 24
+      Caption = '&Cancelar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -11
@@ -173,9 +175,9 @@ object Form16: TForm16
       OnClick = Button1Click
     end
     object ListBox1: TListBox
-      Left = 200
-      Top = 120
-      Width = 281
+      Left = 180
+      Top = 123
+      Width = 318
       Height = 90
       Style = lbOwnerDrawVariable
       ItemHeight = 13

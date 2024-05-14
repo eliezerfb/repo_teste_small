@@ -71,7 +71,7 @@ inherited frmConfigEmailAutContab: TfrmConfigEmailAutContab
     Top = 221
     Width = 120
     Height = 25
-    Caption = 'Ok'
+    Caption = 'OK'
     TabOrder = 5
     OnClick = btnOKClick
   end

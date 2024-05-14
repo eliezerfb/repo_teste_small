@@ -14019,7 +14019,7 @@ object FEmissorNFSe: TFEmissorNFSe
     Top = 310
     Width = 179
     Height = 25
-    Caption = 'Ok'
+    Caption = 'OK'
     TabOrder = 8
     OnClick = Button1Click
   end

@@ -44,7 +44,7 @@ object FrmOrigemCombustivel: TFrmOrigemCombustivel
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
-    Caption = 'Ok'
+    Caption = 'OK'
     TabOrder = 0
     OnClick = btnOkClick
   end
