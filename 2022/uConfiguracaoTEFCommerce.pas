@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   uFrmPadrao, uframeConfiguraTEF, Vcl.StdCtrls, Vcl.DBGrids, Vcl.Grids,
-  Data.DB;
+  Data.DB, IBX.IBDataBase;
 
 type
   TfrmConfiguracaoTEFCommerce = class(TFrmPadrao)
@@ -17,36 +17,28 @@ type
     procedure frameConfiguracaobtnOKClick(Sender: TObject);
     procedure frameConfiguracaodbgTEFsCellClick(Column: TColumn);
     procedure frameConfiguracaodbgTEFsColEnter(Sender: TObject);
-    procedure frameConfiguracaodbgTEFsDrawColumnCell(Sender: TObject;
-      const Rect: TRect; DataCol: Integer; Column: TColumn;
-      State: TGridDrawState);
+    procedure frameConfiguracaodbgTEFsDrawColumnCell(Sender: TObject; const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure frameConfiguracaodbgTEFsEnter(Sender: TObject);
     procedure frameConfiguracaodbgTEFsExit(Sender: TObject);
-    procedure frameConfiguracaodbgTEFsKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure frameConfiguracaodbgTEFsKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure frameConfiguracaodbgTEFsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure frameConfiguracaodbgTEFsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure frameConfiguracaocdsTEFsAfterPost(DataSet: TDataSet);
     procedure frameConfiguracaocdsTEFsAfterInsert(DataSet: TDataSet);
-    procedure frameConfiguracaocdsTEFsPostError(DataSet: TDataSet;
-      E: EDatabaseError; var Action: TDataAction);
+    procedure frameConfiguracaocdsTEFsPostError(DataSet: TDataSet; E: EDatabaseError; var Action: TDataAction);
     procedure frameConfiguracaocdsTEFsNOMEChange(Sender: TField);
-    procedure frameConfiguracaocdsTEFsNOMESetText(Sender: TField;
-      const Text: string);
-    procedure frameConfiguracaocdsTEFsPASTASetText(Sender: TField;
-      const Text: string);
-    procedure frameConfiguracaocdsTEFsDIRETORIOREQSetText(Sender: TField;
-      const Text: string);
-    procedure frameConfiguracaocdsTEFsDIRETORIORESPSetText(Sender: TField;
-      const Text: string);
-    procedure frameConfiguracaocdsTEFsCAMINHOEXESetText(Sender: TField;
-      const Text: string);
-    procedure frameConfiguracaocdsTEFsATIVOSetText(Sender: TField;
-      const Text: string);
-    procedure frameConfiguracaocdsTEFsIDNOMESetText(Sender: TField;
-      const Text: string);
+    procedure frameConfiguracaocdsTEFsNOMESetText(Sender: TField; const Text: string);
+    procedure frameConfiguracaocdsTEFsPASTASetText(Sender: TField; const Text: string);
+    procedure frameConfiguracaocdsTEFsDIRETORIOREQSetText(Sender: TField; const Text: string);
+    procedure frameConfiguracaocdsTEFsDIRETORIORESPSetText(Sender: TField; const Text: string);
+    procedure frameConfiguracaocdsTEFsCAMINHOEXESetText(Sender: TField; const Text: string);
+    procedure frameConfiguracaocdsTEFsATIVOSetText(Sender: TField; const Text: string);
+    procedure frameConfiguracaocdsTEFsIDNOMESetText(Sender: TField; const Text: string);
   private
+    FoIBDataBase: TIBDataBase;
+    procedure setIBDataBase(const Value: TIBDataBase);
   public
+    property IBDataBase: TIBDataBase read FoIBDataBase write setIBDataBase;
+    procedure AtualizaTEMTEF;
   end;
 
 var
@@ -83,7 +75,6 @@ procedure TfrmConfiguracaoTEFCommerce.frameConfiguracaocdsTEFsAfterInsert(
 begin
   inherited;
   frameConfiguracao.cdsTEFsAfterInsert(DataSet);
-
 end;
 
 procedure TfrmConfiguracaoTEFCommerce.frameConfiguracaocdsTEFsAfterPost(
@@ -228,6 +219,18 @@ procedure TfrmConfiguracaoTEFCommerce.frameConfiguraTEF1btnCancelarClick(
 begin
   inherited;
   Self.Close;
+end;
+
+procedure TfrmConfiguracaoTEFCommerce.setIBDataBase(const Value: TIBDataBase);
+begin
+  FoIBDataBase := Value;
+  frameConfiguracao.IBDataBase := FoIBDataBase;
+end;
+
+procedure TfrmConfiguracaoTEFCommerce.AtualizaTEMTEF;
+begin
+  // Os dados do INI são carregados no CREATE
+  frameConfiguracao.DefineTemTEFINI;
 end;
 
 end.
