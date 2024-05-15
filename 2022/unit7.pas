@@ -13503,12 +13503,27 @@ begin
 end;
 
 procedure TForm7.ibDataSet4MARGEMLBChange(Sender: TField);
+var
+  oIni: TIniFile;
 begin
   if ibDataSet4CUSTOCOMPR.Asfloat < 0 then
     ibDataSet4CUSTOCOMPR.Asfloat := 0;
 
   if (ibDataSet4MARGEMLB.AsFloat <> 0) and (ibDataSet4CUSTOCOMPR.AsFloat <> 0) then
-    ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.2f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+  begin
+    {Dailon Parisotto (f-18540) 2024-05-15 Inicio
+
+    ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.3f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+
+    }
+    oIni := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
+    try
+      ibDataSet4PRECO.AsFloat := Arredonda((ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1)), oIni.ReadInteger('Outros','Casas decimais no preço',2));
+    finally
+      oIni.Free;
+    end;
+    {Dailon Parisotto (f-18540) 2024-05-Fim}
+  end;
 end;
 
 
