@@ -23699,6 +23699,12 @@ end;
 procedure TForm7.SetTextoCampoSTATUSNFe(AcTexto: String);
 begin
   Form7.ibDataSet15STATUS.AsString := Copy(AcTexto, 1, ibDataSet15STATUS.Size);
+  {Dailon Parisotto (f-18465) 2024-05-15 Inicio
+  Necessário para salvar o STATUS no dataset, pois existia situações que não eram salvas
+  }
+  Form7.ibDataSet15.Post;
+  Form7.ibDataSet15.Edit;
+  {Dailon Parisotto (f-18465) 2024-05-15 Fim}
 end;
 
 procedure TForm7.N1EnviarNFe1Click(Sender: TObject);
