@@ -898,23 +898,6 @@ object Form10: TForm10
         Visible = False
         OnClick = Button12Click
       end
-      object btnRenogiarDivida: TBitBtn
-        Left = 392
-        Top = 8
-        Width = 252
-        Height = 25
-        Anchors = [akLeft, akTop, akRight]
-        Caption = 'Renegociar d'#237'vida'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 3
-        Visible = False
-        OnClick = btnRenogiarDividaClick
-      end
     end
     object Panel1: TPanel
       Left = 0
@@ -1448,8 +1431,6 @@ object Form10: TForm10
           Transparent = True
           Visible = False
           OnClick = Label19Click
-          OnMouseMove = Label23MouseMove
-          OnMouseLeave = Label23MouseLeave
         end
         object Label24: TLabel
           Left = 8
@@ -1596,87 +1577,6 @@ object Form10: TForm10
           Transparent = True
           Visible = False
           OnClick = Label19Click
-          OnMouseMove = Label23MouseMove
-          OnMouseLeave = Label23MouseLeave
-        end
-        object Image1: TImage
-          Left = 397
-          Top = 73
-          Width = 22
-          Height = 30
-          Hint = 'Procurar endere'#231'o no mapa'
-          ParentShowHint = False
-          Picture.Data = {
-            07544269746D61702E080000424D2E0800000000000036000000280000001600
-            00001E0000000100180000000000F8070000232E0000232E0000000000000000
-            0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            F8DE96F9E4AAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFF9E3A5F2C138F2C035FAE6AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFBEFCCF2C034F3C74CF3C74CF2C033FBEEC9FFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFEFAF1F2C036F3C74CF4C84DF4C84DF3C74CF2C035FDF9ECFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFF3C546F3C649F4C84DF4C84DF4C84DF4C84DF3C74AF3C442FF
-            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFF5D16AF3C544F4C84DF4C84DF4C84DF4C84DF4C84DF4C84D
-            F3C545F5D066FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFF9E3A6F2C23BF4C84DF4C84DF4C84DF4C84DF4C84DF4C8
-            4DF4C84DF4C84DF2C23BF9E4A9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000FFFF
-            FFFFFFFFFFFFFFFFFFFFFDF8EAF2C034F3C74CF4C84DF4C84DF4C84DF4C84DF4
-            C84DF4C84DF4C84DF4C84DF3C74CF2C034FEFAF0FFFFFFFFFFFFFFFFFFFFFFFF
-            0000FFFFFFFFFFFFFFFFFFFFFFFFF3C74BF3C649F4C84DF4C84DF4C84DF4C84D
-            F4C84DF4C84DF4C84DF4C84DF4C84DF4C84DF3C648F4C952FFFFFFFFFFFFFFFF
-            FFFFFFFF0000FFFFFFFFFFFFFFFFFFF8DE96F3C440F4C84DF4C84DF4C84DF4C8
-            4DF4C84DF4C84DF4C84DF4C84DF4C84DF4C84DF4C84DF4C84DF3C33EF9E3A7FF
-            FFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFEFBF4F2C034F3C74CF4C84DF4C84DF4
-            C84DF4C84DF4C84DF4C84DF4C84DF4C84DF4C84DF4C84DF4C84DF4C84DF3C74C
-            F2C137FFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFF5D16AF3C646F4C84DF4C84D
-            F4C84DF3C74CF3C543F2C23CF2C138F2C138F2C23CF3C544F3C74CF4C84DF4C8
-            4DF4C84DF3C544F6D67BFFFFFFFFFFFF0000FFFFFFFDF5E0F2C136F4C84CF4C8
-            4DF4C84DF3C649F2C138F8DE96FDF6E4FFFFFFFFFFFFFCF4DCF7DB8BF2C137F3
-            C649F4C84DF4C84DF3C74CF2C034FEFAEEFFFFFF0000FFFFFFF6D270F3C646F4
-            C84DF4C84DF3C647F3C74CFEFEFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FEFCF5F3C74AF3C647F4C84DF4C84DF3C545F6D67BFFFFFF0000FFFEFEF2C034
-            F3C74CF4C84DF3C74BF3C441FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFFFF3C544F3C74AF4C84DF3C74CF2C035FFFFFF0000FAE8
-            B5F3C441F4C84DF4C84DF2C23CFBEEC9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFCF2D5F2C23AF4C84DF4C84DF3C440FAE9B9
-            0000F7D881F3C646F4C84DF3C74AF3C74AFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4CA54F3C749F4C84DF3C6
-            46F7D9840000F5CD5FF3C74AF4C84DF3C544F7DB8AFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8DD93F3C544F4
-            C84DF3C74AF5CE610000F3C84EF3C74CF4C84DF3C442F9E3A4FFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E3A7
-            F3C442F4C84DF3C74CF4C9500000F4C950F3C74CF4C84DF3C443F8E09DFFFFFF
-            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFF8DF99F3C543F4C84DF3C74CF4C9510000F5CE63F3C74AF4C84DF3C647F6D3
-            71FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFF5CF65F3C648F4C84DF3C74AF5CF640000F7DA89F3C546F4C84DF3
-            C74CF2C137FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFEFDF9F2C136F3C74CF4C84DF3C545F7DA8A0000FBECC4F3C33E
-            F4C84DF4C84DF3C545F6D578FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFFFF6D370F3C546F4C84DF4C84DF3C33EFBEDC50000FFFF
-            FFF2C23BF3C74BF4C84DF4C84DF2C23BF8E09BFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFFFFFF9E19EF2C23CF4C84DF4C84DF3C74BF2C23CFFFFFF
-            0000FFFFFFF9E5AAF2C23CF4C84DF4C84DF4C84DF2C23CF5D16DFEFBF2FFFFFF
-            FFFFFFFFFFFFFFFFFFFEFEFDF6D577F2C23BF4C84DF4C84DF4C84DF2C23CF9E5
-            ACFFFFFF0000FFFFFFFFFFFFF4CC5AF3C545F4C84DF4C84DF4C84DF3C646F2C1
-            37F4CB57F7D77FF7D883F5CE60F2C137F3C545F4C84DF4C84DF4C84DF3C545F4
-            CC5BFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFF3C647F3C545F4C84DF4C84DF4
-            C84DF3C74CF3C649F3C546F3C545F3C648F3C74CF4C84DF4C84DF4C84DF3C545
-            F3C648FFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFF4CB59F3C33D
-            F3C74BF4C84DF4C84DF4C84DF4C84DF4C84DF4C84DF4C84DF4C84DF3C74BF2C2
-            3CF4CC5BFFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
-            FFF9E4A9F2C23BF3C33EF3C546F3C74AF3C74CF3C74CF3C74AF3C546F3C33EF2
-            C23BF9E5ABFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFF
-            FFFFFFFFFFFFFFFFFFFFFFFBECC2F7DA87F5CE61F4C84FF4C84FF5CE62F7DA88
-            FBECC3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-          ShowHint = True
-          Transparent = True
-          Visible = False
-          OnClick = Image1Click
         end
         object Label107: TLabel
           Left = 520
@@ -1696,116 +1596,6 @@ object Form10: TForm10
           ParentFont = False
           Transparent = True
           Visible = False
-        end
-        object lblLimiteCredDisponivel: TLabel
-          Left = 208
-          Top = 325
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Limite dispon'#237'vel:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-          Visible = False
-        end
-        object pnl_IE: TPanel
-          Left = 238
-          Top = 212
-          Width = 256
-          Height = 23
-          BevelOuter = bvNone
-          TabOrder = 37
-          object rgIEContribuinte: TRadioButton
-            Left = 8
-            Top = 0
-            Width = 78
-            Height = 17
-            Caption = 'Contribuinte'
-            TabOrder = 0
-            OnClick = rgIEContribuinteClick
-          end
-          object rgIENaoContribuinte: TRadioButton
-            Left = 91
-            Top = 0
-            Width = 100
-            Height = 17
-            Caption = 'N'#227'o Contribuinte'
-            TabOrder = 1
-            OnClick = rgIENaoContribuinteClick
-          end
-          object rgIEIsento: TRadioButton
-            Left = 195
-            Top = 0
-            Width = 113
-            Height = 17
-            Caption = 'Isento'
-            TabOrder = 2
-            OnClick = rgIEIsentoClick
-          end
-        end
-        object pnRelacaoComercial: TPanel
-          Left = 208
-          Top = 300
-          Width = 375
-          Height = 22
-          BevelOuter = bvNone
-          BorderStyle = bsSingle
-          Color = clWhite
-          Ctl3D = False
-          ParentCtl3D = False
-          TabOrder = 12
-          Visible = False
-          object Label56: TLabel
-            Left = 1
-            Top = 0
-            Width = 94
-            Height = 13
-            Alignment = taRightJustify
-            Caption = 'Rela'#231#227'o  comercial:'
-            Font.Charset = ANSI_CHARSET
-            Font.Color = clBlack
-            Font.Height = -11
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = []
-            ParentFont = False
-          end
-          object ComboBox8: TComboBox
-            Left = 100
-            Top = 0
-            Width = 263
-            Height = 22
-            Style = csOwnerDrawVariable
-            Font.Charset = ANSI_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -13
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 0
-            OnChange = ComboBox8Change
-            OnKeyDown = ComboBox9KeyDown
-            Items.Strings = (
-              ''
-              'Cliente'
-              'Fornecedor'
-              'Cliente/Fornecedor'
-              'Funcion'#225'rio'
-              'Revenda'
-              'Representante'
-              'Distribuidor'
-              'Vendedor'
-              'Credenciadora de cart'#227'o'
-              'Institui'#231#227'o financeira'
-              'Marketplace')
-          end
         end
         object SMALL_DBEdit1: TSMALL_DBEdit
           Left = 100
@@ -2138,7 +1928,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 15
+          TabOrder = 14
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2164,7 +1954,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 16
+          TabOrder = 15
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2190,7 +1980,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 17
+          TabOrder = 16
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2216,7 +2006,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 18
+          TabOrder = 17
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2242,7 +2032,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 19
+          TabOrder = 18
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2268,7 +2058,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 20
+          TabOrder = 19
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2297,7 +2087,7 @@ object Form10: TForm10
           ParentFont = False
           ParentShowHint = False
           ShowHint = False
-          TabOrder = 21
+          TabOrder = 20
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2321,7 +2111,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 22
+          TabOrder = 21
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2345,7 +2135,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 23
+          TabOrder = 22
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2369,7 +2159,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 24
+          TabOrder = 23
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2393,7 +2183,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 25
+          TabOrder = 24
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2417,7 +2207,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 26
+          TabOrder = 25
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2441,7 +2231,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 27
+          TabOrder = 26
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2465,7 +2255,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 28
+          TabOrder = 27
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2489,7 +2279,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 29
+          TabOrder = 28
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2513,7 +2303,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 30
+          TabOrder = 29
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2537,7 +2327,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 31
+          TabOrder = 30
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2561,7 +2351,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 32
+          TabOrder = 31
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2569,24 +2359,6 @@ object Form10: TForm10
           OnKeyDown = SMALL_DBEdit1KeyDown
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
-        end
-        object DBMemo2: TDBMemo
-          Left = 327
-          Top = 136
-          Width = 97
-          Height = 49
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          MaxLength = 32768
-          ParentFont = False
-          TabOrder = 33
-          OnEnter = DBMemo2Enter
-          OnExit = DBMemo2Exit
-          OnKeyDown = DBMemo2KeyDown
-          OnKeyUp = SMALL_DBEdit1KeyUp
         end
         object DBMemo1: TDBMemo
           Left = 224
@@ -2600,7 +2372,7 @@ object Form10: TForm10
           Font.Style = []
           MaxLength = 254
           ParentFont = False
-          TabOrder = 34
+          TabOrder = 32
           OnKeyUp = SMALL_DBEdit1KeyUp
         end
         object DBGrid3: TDBGrid
@@ -2619,7 +2391,7 @@ object Form10: TForm10
           Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 13
+          TabOrder = 12
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clBlack
           TitleFont.Height = -12
@@ -2658,7 +2430,7 @@ object Form10: TForm10
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 35
+          TabOrder = 33
           Visible = False
           OnChange = SMALL_DBEdit1Change
           OnEnter = SMALL_DBEdit1Enter
@@ -2666,25 +2438,6 @@ object Form10: TForm10
           OnKeyDown = SMALL_DBEdit1KeyDown
           OnKeyUp = SMALL_DBEdit1KeyUp
           OnMouseMove = SMALL_DBEdit1MouseMove
-        end
-        object eLimiteCredDisponivel: TEdit
-          Left = 308
-          Top = 320
-          Width = 121
-          Height = 20
-          TabStop = False
-          AutoSize = False
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentFont = False
-          ReadOnly = True
-          TabOrder = 36
-          Visible = False
         end
         object DBGrid1: TDBGrid
           Left = 100
@@ -2702,7 +2455,7 @@ object Form10: TForm10
           Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 14
+          TabOrder = 13
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clBlack
           TitleFont.Height = -12
@@ -13325,100 +13078,6 @@ object Form10: TForm10
             TabOrder = 3
             OnKeyDown = ComboBox9KeyDown
           end
-        end
-      end
-      object ORELHA_COMISSAO: TTabSheet
-        Caption = 'Comiss'#227'o'
-        ImageIndex = 11
-        OnEnter = ORELHA_COMISSAOEnter
-        object Label81: TLabel
-          Left = 16
-          Top = 15
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = '% '#224' vista'
-          Color = clBtnHighlight
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label82: TLabel
-          Left = 16
-          Top = 45
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = '% a prazo'
-          Color = clBtnHighlight
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object SMALL_DBEdit61: TSMALL_DBEdit
-          Left = 116
-          Top = 15
-          Width = 100
-          Height = 20
-          AutoSize = False
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          Ctl3D = True
-          DataField = 'COMISSA1'
-          DataSource = Form7.DataSource9
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentCtl3D = False
-          ParentFont = False
-          TabOrder = 0
-          OnChange = SMALL_DBEdit1Change
-          OnEnter = SMALL_DBEdit1Enter
-          OnExit = SMALL_DBEdit1Exi
-          OnKeyDown = SMALL_DBEdit1KeyDown
-          OnKeyUp = SMALL_DBEdit1KeyUp
-          OnMouseMove = SMALL_DBEdit1MouseMove
-        end
-        object SMALL_DBEdit62: TSMALL_DBEdit
-          Left = 116
-          Top = 45
-          Width = 100
-          Height = 20
-          AutoSize = False
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          Color = clWhite
-          Ctl3D = True
-          DataField = 'COMISSA2'
-          DataSource = Form7.DataSource9
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentCtl3D = False
-          ParentFont = False
-          TabOrder = 1
-          OnChange = SMALL_DBEdit1Change
-          OnEnter = SMALL_DBEdit1Enter
-          OnExit = SMALL_DBEdit1Exi
-          OnKeyDown = SMALL_DBEdit1KeyDown
-          OnKeyUp = SMALL_DBEdit1KeyUp
-          OnMouseMove = SMALL_DBEdit1MouseMove
         end
       end
       object Orelha_CONVERSAO: TTabSheet

@@ -257,7 +257,9 @@ uses
   uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria},
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
-  uPermissaoUsuario in 'uPermissaoUsuario.pas';
+  uPermissaoUsuario in 'uPermissaoUsuario.pas',
+  uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro},
+  uFrmVendedor in 'uFrmVendedor.pas' {FrmVendedor};
 
 {$R *.RES}
 
@@ -334,7 +336,6 @@ begin
   Application.CreateForm(TForm10, Form10);
   Application.CreateForm(TForm16, Form16);
   Application.CreateForm(TForm99, Form99);
-  //Application.CreateForm(TForm18, Form18);
   Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
   Application.CreateForm(TForm21, Form21);
   Application.CreateForm(TForm25, Form25);
@@ -362,7 +363,7 @@ begin
   Application.CreateForm(TForm37, Form37);
   Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
   Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
-  Application.Run; 
+  Application.Run;
     end else
     begin
       if not IsWindowVisible(oHwnd) then PostMessage(oHwnd, wm_User,0,0);

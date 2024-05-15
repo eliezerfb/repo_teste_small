@@ -5,13 +5,8 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
-    inherited pnlBotoesPosterior: TPanel
-      ExplicitTop = 580
-    end
     inherited pgcFicha: TPageControl
       ActivePage = tsCadastro
-      ExplicitLeft = 10
-      ExplicitTop = 105
       object tsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label2: TLabel
@@ -1209,9 +1204,10 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           ExplicitLeft = 311
           ExplicitTop = 161
           ExplicitWidth = 195
+          ExplicitHeight = 22
           inherited txtCampo: TEdit
             Width = 195
-            ExplicitWidth = 390
+            ExplicitWidth = 195
           end
           inherited gdRegistros: TDBGrid
             Width = 195

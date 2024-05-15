@@ -1692,6 +1692,19 @@ type
     ibdConversaoCFOPCONSIDERACSTCSOSN: TIBStringField;
     IBDataSet2CONTRIBUINTE: TIntegerField;
     ibDataSet14IPISOBREOUTRA: TIBStringField;
+    S1: TMenuItem;
+    SFornecedor1: TMenuItem;
+    SClienteFornecedor1: TMenuItem;
+    SFuncionrio1: TMenuItem;
+    SRevenda1: TMenuItem;
+    SRepresentante1: TMenuItem;
+    SDistribuidor1: TMenuItem;
+    SVendedor1: TMenuItem;
+    SCredenciadoradecarto1: TMenuItem;
+    SInstituiofinanceira1: TMenuItem;
+    SMarketplace1: TMenuItem;
+    SRevendaInativa1: TMenuItem;
+    SClienteInativo1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2409,6 +2422,7 @@ type
     procedure Imprimiretiqueta1Click(Sender: TObject);
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     procedure miDuplicarNFSeClick(Sender: TObject);
+    procedure FiltroRelacaoCom(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2700,7 +2714,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmContaPagar
   , uFrmContaReceber
   , uPermissaoUsuario
-  ;
+  , uFrmCadastro;
 
 {$R *.DFM}
 
@@ -8137,6 +8151,11 @@ begin
   Result := True;
 end;
 
+procedure TForm7.FiltroRelacaoCom(Sender: TObject);
+begin
+  EscolheOclifor(Sender);
+end;
+
 procedure TForm7.Sair1Click(Sender: TObject);
 begin
   Close;
@@ -8614,21 +8633,18 @@ begin
   end;
   {Mauricio Parizotto 2024-04-15 Fim}
 
-  {Sandro Silva 2024-01-17 inicio
 
-  Reativar quando estiver concluída a migração do cadastro de clientes usando a tela padrão de cadastro
-
+  {Mauricio Parizotto 2024-05-15 Inicio}
   if sModulo = 'CLIENTES' then
   begin
     if Form7.IBTransaction1.Active then
       Form7.IBTransaction1.CommitRetaining;
-    if FrmFichaCadastros = nil then
-      FrmFichaCadastros := TFrmFichaCadastros.Create(Self);
+    if FrmCadastro = nil then
+      FrmCadastro := TFrmCadastro.Create(Self);
 
-    FrmFichaCadastros.Show;
+    FrmCadastro.Show;
     Exit;
   end;
-  {Sandro Silva 2024-01-17 fim}
 
 
   if sModulo = 'OS' then
@@ -8969,21 +8985,19 @@ begin
 
   {Mauricio Parizotto 2024-04-15 Fim}
 
-  {Sandro Silva 2024-01-17 inicio
 
-  Reativar quando estiver concluída a migração do cadastro de clientes usando a tela padrão de cadastro
-
+  {Mauricio Parizotto 2024-05-15 Inicio}
   if sModulo = 'CLIENTES' then
   begin
-    Form7.IBTransaction1.CommitRetaining;
-    if FrmFichaCadastros = nil then
-      FrmFichaCadastros := TFrmFichaCadastros.Create(Self);
+    if Form7.IBTransaction1.Active then
+      Form7.IBTransaction1.CommitRetaining;
+    if FrmCadastro = nil then
+      FrmCadastro := TFrmCadastro.Create(Self);
 
-    FrmFichaCadastros.lblNovoClick(Sender);
-    FrmFichaCadastros.Show;
+    FrmCadastro.lblNovoClick(Sender);
+    FrmCadastro.Show;
     Exit;
   end;
-  {Sandro Silva 2024-01-17 fim}
 
 
   if sModulo = 'OS' then
@@ -15051,8 +15065,6 @@ begin
     end;
   end;
 
-  Form10.pnl_IE.Visible    := (Length(AllTrim(ibDAtaset2CGC.AsString)) = 18); //Mauricio Parizotto 2024-04-15
-
   Screen.Cursor := crDefault;
 end;
 
@@ -17096,7 +17108,6 @@ end;
 
 procedure TForm7.odas3Click(Sender: TObject);
 begin
-  //
   sWhere := '';
   Form7.Close;
   Form7.Show;
@@ -17106,7 +17117,6 @@ begin
   Odas3.Checked                  := True;
   Lanamentoscompensados1.Checked  := False;
   Lanamentosnocompensados1.Checked := False;
-  //
 end;
 
 procedure TForm7.Lanamentoscompensados1Click(Sender: TObject);
@@ -17128,19 +17138,17 @@ procedure TForm7.Lanamentosnocompensados1Click(Sender: TObject);
 var
   I : Integer;
 begin
-  //
   Screen.Cursor  := crHourGlass;    // Cursor de Aguardo
   sWhere := 'where NOME=' + QuotedStr(Form1.sEscolhido)+' and (COMPENS='+QuotedStr('1899/12/30')+' or coalesce(COMPENS,'+QuotedStr('1899/12/30')+')='+QuotedStr('1899/12/30')+') ';
   Form7.Close;
   Form7.Show;
-  //
+
   sMostra := 'TTTTTFTFFFF';
   with ArquivoAberto do
   begin
     for I := 1 to iCampos do  if copy(sMostra,I,1) = 'T' then Fields[I-1].Visible := True
     else  Fields[I-1].Visible := False;
   end;
-  //
 end;
 
 procedure TForm7.Label3MouseLeave(Sender: TObject);
@@ -26797,7 +26805,7 @@ begin
     Ativo2.Checked := True;
 
   Mostrartodososclientesefornecedores1.OnClick := EscolheOclifor;
-  //
+  {Mauricio Parizotto 2024-05-15
   for I := 0 to Form10.ComboBox8.Items.Count -1 do
   begin
     if Form10.ComboBox8.Items[I] = Form7.ArquivoAberto.FieldByName('CLIFOR').AsString then
@@ -26805,7 +26813,7 @@ begin
       Form10.ComboBox8.ItemIndex := I;
     end;
   end;
-  //
+
   for J := 0 to Form10.ComboBox8.Items.Count -1 do
   begin
     bI := True;
@@ -26813,7 +26821,7 @@ begin
     for I := 0 to Exibir1.Count -1 do
       if Exibir1.Items[I].Caption = 'Só '+Form10.ComboBox8.Items[J] then
         bI := False;
-    
+
     if bI then
     begin
       if AllTrim(Form10.ComboBox8.Items[J]) <> '' then
@@ -26825,6 +26833,7 @@ begin
       end;
     end;
   end;
+  }
 end;
 
 procedure TForm7.EscolheOclifor(Sender:TObject);

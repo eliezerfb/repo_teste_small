@@ -534,7 +534,7 @@ type
     function ValidaEmitenteMunicipio: Boolean;
     procedure ConfiguraCredencialTecnospeed;
     function DisponivelSomenteParaNos: Boolean;
-    function CampoDisponivelParaUsuario(sModulo, sCampo: String): Boolean;
+//    function CampoDisponivelParaUsuario(sModulo, sCampo: String): Boolean; Mauricio Parizotto 2024-05-15
     function ExisteNfseExe(sDiretorio: String): Boolean;
     procedure MensagemRecursoIndisponivel(sMensagem: String);
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
@@ -12377,19 +12377,6 @@ begin
   end;
 end;
 
-function TForm1.CampoDisponivelParaUsuario(sModulo: String; sCampo: String): Boolean;
-begin
-  Result := True;
-
-  if (sModulo = 'RECEBER') then
-  begin
-    if (AnsiUpperCase(sCampo) = 'MOVIMENTO') then
-    begin
-      //Result := DisponivelSomenteParaNos;
-    end;
-  end;
-
-end;
 
 function TForm1.ExisteNfseExe(sDiretorio: String): Boolean;
 // Sandro Silva 2023-01-11
