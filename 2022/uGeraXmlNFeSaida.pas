@@ -570,7 +570,7 @@ begin
     IBQUERY99.SQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
 
     }
-    IBQUERY99.SQL.Add('select * from MUNICIPIOS where UPPER(NOME)='+QuotedStr(AnsiUpperCase(Form7.ibDAtaset2CIDADE.AsString))+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
+    IBQUERY99.SQL.Add('select * from MUNICIPIOS where UPPER(NOME)=UPPER('+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+') and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
     {Dailon Parisotto (f-18465) 2024-04-30 Fim}
     IBQUERY99.Open;
 
