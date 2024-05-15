@@ -8,7 +8,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, frame_teclado_1, StdCtrls, IniFiles, ComCtrls, Buttons,
-  SmallFunc_xe, Grids, DB, DBGrids, DBClient, ufuncaoMD5, uajustaresolucao;
+  SmallFunc_xe, Grids, DB, DBGrids, DBClient, ufuncaoMD5, uajustaresolucao,
+  uDialogs;
 
 const
   _cColunaAtivo    = 'ATIVO';
@@ -48,7 +49,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cdsTEFsAfterInsert(DataSet: TDataSet);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure dbgTEFsExit(Sender: TObject);
     procedure cdsTEFsPostError(DataSet: TDataSet; E: EDatabaseError; var Action: TDataAction);
     procedure btnCancelarClick(Sender: TObject);
@@ -78,7 +78,9 @@ type
     function TestarConfiguracoes: Boolean;
     procedure DefineTemTEFINI;
     function GetNumScrollLines: Integer;
+    function TestarZPOSLiberado: Boolean;
   public
+    procedure AtualizaTEMTEF;
   end;
 
 var
@@ -86,7 +88,8 @@ var
 
 implementation
 
-uses fiscal, StrUtils, ufuncoesfrente, uSmallConsts;
+uses fiscal, StrUtils, ufuncoesfrente, uSmallConsts, uValidaRecursos,
+  uTypesRecursos;
 
 {$R *.dfm}
 
@@ -96,7 +99,10 @@ begin
     Exit;
 
   if SalvarINI then
+  begin
+    DefineTemTEFINI;
     Close;
+  end;
 end;
 
 function TFConfiguracaoTEF.TestarConfiguracoes: Boolean;
@@ -152,7 +158,7 @@ begin
 
   AjustaResolucao(Self);
   AjustaResolucao(Frame_teclado1);
-  Form1.Image7Click(Self); 
+  Form1.Image7Click(Self);
 
   btnOK.Left := (Self.Width - (btnOK.Width + AjustaLargura(12) + btnCancelar.Width)) div 2;
   btnCancelar.Left := btnOK.BoundsRect.Right + AjustaLargura(12);
@@ -252,11 +258,17 @@ var
   iSecao: Integer;
   cNomeSecao: String;
   slSessions : TStringList;
+  {Dailon Parisotto (f-18546) 2024-05-06 Inicio}
+  bTemTEF: Boolean;
+  {Dailon Parisotto (f-18546) 2024-05-06 Fim}
 begin
   cdsTEFs.EmptyDataSet;
 
   slSessions := TStringList.Create;
   try
+    {Dailon Parisotto (f-18546) 2024-05-06 Inicio}
+    bTemTEF := (FoIni.ReadString('Frente de caixa', 'TEM TEF', _cNao) = _cSim);
+    {Dailon Parisotto (f-18546) 2024-05-06 Fim}
     FoIni.ReadSections(slSessions);
 
     for iSecao := 0 to Pred(slSessions.Count) do
@@ -271,7 +283,16 @@ begin
         cdsTEFsDIRETORIOREQ.AsString  := FoIni.ReadString(cNomeSecao, _cCampoINIReq, EmptyStr);
         cdsTEFsDIRETORIORESP.AsString := FoIni.ReadString(cNomeSecao, _cCampoINIResp, EmptyStr);
         cdsTEFsCAMINHOEXE.AsString    := FoIni.ReadString(cNomeSecao, _cCampoINIExec, EmptyStr);
+        {Dailon Parisotto (f-18546) 2024-05-06 Inicio
+
         cdsTEFsATIVO.AsString         := FoIni.ReadString(cNomeSecao, _cCampoINIbAtivo, _cNao);
+
+        }
+        if not bTemTEF then
+          cdsTEFsATIVO.AsString         := _cNao
+        else
+          cdsTEFsATIVO.AsString         := FoIni.ReadString(cNomeSecao, _cCampoINIbAtivo, _cNao);
+        {Dailon Parisotto (f-18546) 2024-05-06 Fim}
         cdsTEFs.Post;
       end;
     end;
@@ -280,34 +301,48 @@ begin
     chkSuprimirLinhasEmBrancoDoComprovante.Checked := (FoIni.ReadString(SECAO_FRENTE_CAIXA, CHAVE_INI_SUPRIMIR_LINHAS_EM_BRANCO_DO_COMPROVANTE_TEF, _cNao) = _cSim);
     {Sandro Silva 2023-10-24 fim}
 
+    cdsTEFs.First;
+    {Dailon Parisotto (f-18546) 2024-05-06 Inicio}
+    if not bTemTEF then
+      SalvarINI;
+    {Dailon Parisotto (f-18546) 2024-05-06 Fim}
+    DefineTemTEFINI;
   finally
     FreeAndNil(slSessions);
+    cdsTEFs.First;
   end;
-  cdsTEFs.First;
-end;
-
-procedure TFConfiguracaoTEF.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  DefineTemTEFINI;
 end;
 
 procedure TFConfiguracaoTEF.DefineTemTEFINI;
 begin
   cdsTEFs.DisableControls;
-  cdsTEFs.First;
-  FoIni.WriteString('Frente de caixa', 'TEM TEF', _cNao);
-  if cdsTEFs.IsEmpty then
-    Exit;
-    
-  while not cdsTEFs.Eof do
-  begin
-    if cdsTEFsATIVO.AsString = _cSim then
+  try
+    cdsTEFs.First;
+    FoIni.WriteString('Frente de caixa', 'TEM TEF', _cNao);
+    if cdsTEFs.IsEmpty then
+      Exit;
+
+    while not cdsTEFs.Eof do
     begin
-      FoIni.WriteString('Frente de caixa', 'TEM TEF', _cSim);
-      Break;
+      if cdsTEFsATIVO.AsString = _cSim then
+      begin
+        if TestarZPOSLiberado then
+        begin
+          FoIni.WriteString('Frente de caixa', 'TEM TEF', _cSim);
+          Break;
+        end;
+      end;
+      cdsTEFs.Next;
     end;
-    cdsTEFs.Next;
+  finally
+    cdsTEFs.First;
+    cdsTEFs.EnableControls;
   end;
+end;
+
+procedure TFConfiguracaoTEF.AtualizaTEMTEF;
+begin
+  CarregarINI;
 end;
 
 function TFConfiguracaoTEF.SalvarINI: Boolean;
@@ -444,17 +479,26 @@ end;
 
 procedure TFConfiguracaoTEF.dbgTEFsColEnter(Sender: TObject);
 begin
-  if UpperCase(TDBGrid(Sender).SelectedField.FieldName) = _cColunaAtivo then
+  if (UpperCase(TDBGrid(Sender).SelectedField.FieldName) = _cColunaAtivo) then
     TDBGrid(Sender).Options := TDBGrid(Sender).Options - [dgEditing]
   else
-    TDBGrid(Sender).Options := TDBGrid(Sender).Options + [dgEditing];   
+    TDBGrid(Sender).Options := TDBGrid(Sender).Options + [dgEditing];
+end;
+
+function TFConfiguracaoTEF.TestarZPOSLiberado: Boolean;
+var
+  dLimiteRecurso : Tdate;
+begin
+  Result := True;
+  if (Pos('ZPOS', AnsiUpperCase(cdsTEFsNOME.AsString)) > 0) then
+    Result := (RecursoLiberado(Form1.IBDatabase1,rcZPOS,dLimiteRecurso));
 end;
 
 procedure TFConfiguracaoTEF.DeletarRecord(Sender: TObject);
 begin
   if cdsTEFs.IsEmpty then
     Exit;
-    
+
   if Application.MessageBox(PChar('Excluir a configuração do TEF ' + cdsTEFsNOME.AsString + '?'), 'Atenção', MB_ICONWARNING + MB_YESNO + MB_DEFBUTTON2) = idYes then
   begin
     if (cdsTEFsNOME.AsString <> EmptyStr) and (FoIni.SectionExists(cdsTEFsNOME.AsString)) then
@@ -510,6 +554,17 @@ end;
 
 procedure TFConfiguracaoTEF.dbgTEFsCellClick(Column: TColumn);
 begin
+  if not TestarZPOSLiberado then
+  begin
+    cdsTEFs.Edit;
+    cdsTEFsATIVO.AsString := _cNao;
+    cdsTEFs.Post;
+    cdsTEFs.Edit;
+
+    uDialogs.MensagemSistema('Serial sem acesso à esse recurso. Entre em contato com sua revenda.', msgInformacao);
+    Exit;
+  end;
+
   if Column.FieldName = _cColunaAtivo then
   begin
     cdsTEFs.Edit;
@@ -525,11 +580,10 @@ begin
          or (cdsTEFsCAMINHOEXE.AsString = EmptyStr) then
         Application.MessageBox('Para ativar este TEF todos os campos devem ser preenchidos.', 'Atenção', MB_ICONINFORMATION + MB_OK)
       else
-        cdsTEFsATIVO.AsString := _cSim;      
-
+        cdsTEFsATIVO.AsString := _cSim;
     end;
     cdsTEFs.Post;
-    cdsTEFs.Edit;    
+    cdsTEFs.Edit;
   end;
 end;
 
@@ -602,10 +656,10 @@ end;
 
 procedure TFConfiguracaoTEF.dbgTEFsEnter(Sender: TObject);
 begin
-  if UpperCase(TDBGrid(Sender).SelectedField.FieldName) = _cColunaAtivo then
+  if (UpperCase(TDBGrid(Sender).SelectedField.FieldName) = _cColunaAtivo) then
     TDBGrid(Sender).Options := TDBGrid(Sender).Options - [dgEditing]
   else
-    TDBGrid(Sender).Options := TDBGrid(Sender).Options + [dgEditing]; 
+    TDBGrid(Sender).Options := TDBGrid(Sender).Options + [dgEditing];
 end;
 
 end.

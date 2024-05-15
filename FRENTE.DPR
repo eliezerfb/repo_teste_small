@@ -79,7 +79,8 @@ uses
   uEmail in '..\unit_compartilhada\uEmail.pas',
   uITestaEmail in '..\unit_compartilhada\interfaces\uITestaEmail.pas',
   uTestaEmail in '..\unit_compartilhada\uTestaEmail.pas',
-  CAPICOM_TLB_xe in '..\unit_compartilhada\CAPICOM_TLB_xe.pas';
+  CAPICOM_TLB_xe in '..\unit_compartilhada\CAPICOM_TLB_xe.pas',
+  uValidaRecursos in '..\unit_compartilhada\uValidaRecursos.pas';
 
 {$R *.RES}
 
