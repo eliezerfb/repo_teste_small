@@ -18680,32 +18680,32 @@ begin
                 // Não faz nada está importando a NF para Devolução
               end else
               begin
-                // Desconto pelo convênio
-                if AllTrim(Form7.ibDataSet2CONVENIO.AsString) <> '' then
+                if (not FbDuplicandoNFe) or ((FbDuplicandoNFe) and (Form7.ibDataSet16UNITARIO.AsFloat = 0)) then // Dailon Parisotto (f-18201) 2024-05-15 // Quando duplica não deve alterar o UNITARIO
                 begin
-                  Form7.ibDataSet29.Locate('NOME', Form7.ibDataSet2CONVENIO.AsString,[]);
-                  if Form7.ibDataSet29DESCONTO.AsFloat <> 0 then
+                  // Desconto pelo convênio
+                  if (AllTrim(Form7.ibDataSet2CONVENIO.AsString) <> '') then
                   begin
-                    bButton := Application.MessageBox(Pchar('Confirma um desconto de: % ' + AllTrim(Format('%12.2n',[Form7.ibDataSet29DESCONTO.AsFloat])) +
-                      Chr(10) + 'Conforme convênio: ' + Form7.ibDataSet29NOME.AsString+
-                      Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
-                      //
-                    if bButton = IDYES then
-                      Form7.ibDataSet16UNITARIO.AsFloat    := Int(Form7.ibDataSet4PRECO.AsFloat * ( 1 - (Form7.ibDataSet29DESCONTO.AsFloat/100)) * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)))
+                    Form7.ibDataSet29.Locate('NOME', Form7.ibDataSet2CONVENIO.AsString,[]);
+                    if Form7.ibDataSet29DESCONTO.AsFloat <> 0 then
+                    begin
+                      bButton := Application.MessageBox(Pchar('Confirma um desconto de: % ' + AllTrim(Format('%12.2n',[Form7.ibDataSet29DESCONTO.AsFloat])) +
+                        Chr(10) + 'Conforme convênio: ' + Form7.ibDataSet29NOME.AsString+
+                        Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
+                        //
+                      if bButton = IDYES then
+                        Form7.ibDataSet16UNITARIO.AsFloat    := Int(Form7.ibDataSet4PRECO.AsFloat * ( 1 - (Form7.ibDataSet29DESCONTO.AsFloat/100)) * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)))
+                      else
+                        Form7.ibDataSet16UNITARIO.AsFloat := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
+                    end
                     else
-                      Form7.ibDataSet16UNITARIO.AsFloat := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
-                  end
-                  else
-                    Form7.ibDataSet16UNITARIO.AsFloat   := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
-                end else
-                begin
-                  // Sandro Silva 2023-04-26 Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat, StrToInt(Form1.ConfPreco));
-                  // Sandro Silva 2023-05-29 Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
-                  //
-                  // Venda pelo custo
-                  //
-                  if (not FbDuplicandoNFe) or ((FbDuplicandoNFe) and (Form7.ibDataSet16UNITARIO.AsFloat = 0)) then // Dailon Parisotto (f-18201) 2024-05-13 // Quando duplica não deve alterar o UNITARIO
+                      Form7.ibDataSet16UNITARIO.AsFloat   := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
+                  end else
                   begin
+                    // Sandro Silva 2023-04-26 Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat, StrToInt(Form1.ConfPreco));
+                    // Sandro Silva 2023-05-29 Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
+                    //
+                    // Venda pelo custo
+                    //
                     if Pos('0',Form7.ibDataSet14INTEGRACAO.AsString) = 0 then // Se não tiver configuração de integração para usar o preço de compra na venda, usará o preço de venda cadastrado no estoque
                     begin
                       Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
@@ -18713,8 +18713,8 @@ begin
                     begin
                       Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
                     end;
+                    //
                   end;
-                  //
                 end;
                 //
               end;
