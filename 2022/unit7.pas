@@ -5834,8 +5834,6 @@ begin
   P1 := StrTran(P1, '  ' ,' ');
   P1 := StrTran(P1, 'só quando só' ,'só');
 
-  try
-
   if Assigned(AoDataSet) then
   begin
     for I := 1 to AoDataSet.FieldCount do
@@ -5853,13 +5851,6 @@ begin
         end;
       end;
     end;
-  end;
-
-  except
-     on e:exception do begin
-       ShowMessage(e.Message+' '+i.ToString);
-       ShowMessage( AoDataSet.Fields[I-1].FieldName);
-     end;
   end;
 
   //Mauricio Parizotto 2023-08-22 Orçamento não usa campos do dataset
