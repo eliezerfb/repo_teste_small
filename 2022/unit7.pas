@@ -18235,9 +18235,24 @@ end;
 procedure TForm7.AtualizarListaItensAuxiliar;
 var
   nRecNo: Integer;
+  ProdComposto : Boolean;
 begin
+  {Mauricio Parizotto 2024-05-16 Inicio}
+  ProdComposto := ProdutoComposto(Form7.ibDataSet16.Transaction,
+                                  Form7.ibDataSet16CODIGO.AsString);
+
+  {
   if (Form1.ConfNegat <> 'Não') then
     Exit;
+  }
+
+  if (Form1.ConfNegat <> 'Não') and (not ProdComposto) then
+    Exit;
+
+  if (Form1.ConfPermitFabricarSemQtd) and (ProdComposto) then
+    Exit;
+
+  {Mauricio Parizotto 2024-05-16 Fim}
 
   if CDSItensNotaAux.Active then
     CDSItensNotaAux.Close;
@@ -19281,7 +19296,6 @@ begin
   if TestarNatOperacaoMovEstoque then
   begin
     nSaldoDisp := RetornarSaldoDisponivelItemNota(ibDataSet16CODIGO.AsString);
-
 
     if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < AnQtdeInformada) then
     begin
