@@ -8639,7 +8639,7 @@ begin
     if Form7.IBTransaction1.Active then
       Form7.IBTransaction1.CommitRetaining;
     if FrmCadastro = nil then
-      FrmCadastro := TFrmCadastro.Create(Self);
+      FrmCadastro := TFrmCadastro.Create(self);
 
     FrmCadastro.Show;
     Exit;

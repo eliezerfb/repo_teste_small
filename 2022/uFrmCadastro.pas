@@ -111,6 +111,11 @@ type
     procedure tbsFotoShow(Sender: TObject);
     procedure btnSelecionarArquivoClick(Sender: TObject);
     procedure btnWebCamClick(Sender: TObject);
+    procedure edtEnderecoKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edtEmailKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edtBairroKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
     FcCEPAnterior: String;
@@ -232,11 +237,14 @@ end;
 
 procedure TFrmCadastro.Label19MouseLeave(Sender: TObject);
 begin
-  with Sender as TLabel do
-  begin
-    Font.Style := [];
-    Font.Color := clBlack;
-    Repaint;
+  try
+    with Sender as TLabel do
+    begin
+      Font.Style := [];
+      Font.Color := clBlack;
+      Repaint;
+    end;
+  except
   end;
 end;
 
@@ -301,6 +309,13 @@ begin
   LimpaEspaco(TSMALL_DBEdit(Sender));
 end;
 
+procedure TFrmCadastro.edtEmailKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  LimpaEspaco(TSMALL_DBEdit(Sender));
+end;
+
 procedure TFrmCadastro.edtLimiteCreditoExit(Sender: TObject);
 begin
   DefinirLimiteDisponivel;
@@ -335,7 +350,19 @@ begin
   LimpaEspaco(TSMALL_DBEdit(Sender));
 end;
 
+procedure TFrmCadastro.edtEnderecoKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  LimpaEspaco(TSMALL_DBEdit(Sender));
+end;
+
 procedure TFrmCadastro.edtBairroExit(Sender: TObject);
+begin
+  LimpaEspaco(TSMALL_DBEdit(Sender));
+end;
+
+procedure TFrmCadastro.edtBairroKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
   LimpaEspaco(TSMALL_DBEdit(Sender));
 end;
@@ -530,6 +557,9 @@ end;
 
 procedure TFrmCadastro.AtualizaObjComValorDoBanco;
 begin
+  if not self.Visible then
+    Exit;
+
   cboRelacaoCom.ItemIndex := cboRelacaoCom.Items.IndexOf(Form7.ibDataSet2CLIFOR.AsString);
 
   pnl_IE.Visible                  := (Length(trim(Form7.ibDAtaset2CGC.AsString)) = 18);
@@ -889,11 +919,14 @@ end;
 procedure TFrmCadastro.Label19MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  with Sender as TLabel do
-  begin
-    Font.Style := [fsBold,fsUnderline];
-    Font.Color := clBlue;
-    Repaint;
+  try
+    with Sender as TLabel do
+    begin
+      Font.Style := [fsBold,fsUnderline];
+      Font.Color := clBlue;
+      Repaint;
+    end;
+  except
   end;
 end;
 
@@ -939,3 +972,7 @@ begin
 end;
 
 end.
+
+
+
+

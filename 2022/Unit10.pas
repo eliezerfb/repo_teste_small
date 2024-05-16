@@ -4392,6 +4392,7 @@ begin
     end;
     {Dailon (f-7225) 2023-08-17 fim}
     {Dailon (f-7224) 2023-08-17 inicio}
+    {
     if Form7.sModulo = 'CLIENTES' then
     begin
       if ((TSMALL_DBEdit(Sender).DataField = 'ENDERE')
@@ -4410,6 +4411,7 @@ begin
         end;
       end;
     end;
+    }
     {Dailon (f-7224) 2023-08-17 fim}
   end;
 end;

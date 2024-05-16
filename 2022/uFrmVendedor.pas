@@ -5,18 +5,50 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFrmFichaPadrao, Data.DB, Vcl.ComCtrls,
-  Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask, Vcl.DBCtrls, SMALL_DBEdit;
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask, Vcl.DBCtrls, SMALL_DBEdit,
+  uframeCampo;
 
 type
   TFrmVendedor = class(TFrmFichaPadrao)
-    tbsFicha: TTabSheet;
+    tbsCadastro: TTabSheet;
     tbsFoto: TTabSheet;
     tbsComissao: TTabSheet;
     Label81: TLabel;
     Label82: TLabel;
     SMALL_DBEdit61: TSMALL_DBEdit;
     SMALL_DBEdit62: TSMALL_DBEdit;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    imgEndereco: TImage;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label16: TLabel;
+    Label18: TLabel;
+    edtCPFCNPJ: TSMALL_DBEdit;
+    edtRazaoSocial: TSMALL_DBEdit;
+    edtCEP: TSMALL_DBEdit;
+    edtEndereco: TSMALL_DBEdit;
+    edtBairro: TSMALL_DBEdit;
+    edtEstado: TSMALL_DBEdit;
+    edtRG_IE: TSMALL_DBEdit;
+    edtTelefone: TSMALL_DBEdit;
+    edtCelular: TSMALL_DBEdit;
+    edtWhatsApp: TSMALL_DBEdit;
+    edtEmail: TSMALL_DBEdit;
+    edtCadastro: TSMALL_DBEdit;
+    edtNascido: TSMALL_DBEdit;
+    fraMunicipio: TfFrameCampo;
+    DSCadastroVen: TDataSource;
     procedure tbsComissaoEnter(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -35,6 +67,16 @@ implementation
 uses unit7;
 
 { TFrmVendedor }
+
+procedure TFrmVendedor.FormShow(Sender: TObject);
+begin
+  inherited;
+
+  pgcFicha.ActivePage := tbsCadastro;
+
+  if edtCPFCNPJ.Canfocus then
+    edtCPFCNPJ.SetFocus;
+end;
 
 function TFrmVendedor.GetPaginaAjuda: string;
 begin

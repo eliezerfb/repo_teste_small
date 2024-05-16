@@ -27,6 +27,7 @@ inherited FrmCadastro: TFrmCadastro
     end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
+      ExplicitTop = 104
       object tbsCadastro: TTabSheet
         Caption = 'Ficha'
         object Label2: TLabel
@@ -379,7 +380,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label16: TLabel
           Left = 0
-          Top = 351
+          Top = 350
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -397,7 +398,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label17: TLabel
           Left = 0
-          Top = 377
+          Top = 376
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -415,7 +416,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label18: TLabel
           Left = 0
-          Top = 401
+          Top = 400
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -610,7 +611,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label56: TLabel
           Left = 431
-          Top = 407
+          Top = 404
           Width = 94
           Height = 13
           Alignment = taRightJustify
@@ -731,6 +732,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 4
           OnExit = edtEnderecoExit
           OnKeyDown = PadraoKeyDown
+          OnKeyUp = edtEnderecoKeyUp
         end
         object edtBairro: TSMALL_DBEdit
           Left = 100
@@ -753,6 +755,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 5
           OnExit = edtBairroExit
           OnKeyDown = PadraoKeyDown
+          OnKeyUp = edtBairroKeyUp
         end
         object edtEstado: TSMALL_DBEdit
           Left = 101
@@ -881,6 +884,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 13
           OnExit = edtEmailExit
           OnKeyDown = PadraoKeyDown
+          OnKeyUp = edtEmailKeyUp
         end
         object edtLimiteCredito: TSMALL_DBEdit
           Left = 100
@@ -925,7 +929,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtCadastro: TSMALL_DBEdit
           Left = 100
-          Top = 351
+          Top = 350
           Width = 91
           Height = 20
           AutoSize = False
@@ -946,7 +950,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtUltVenda: TSMALL_DBEdit
           Left = 100
-          Top = 377
+          Top = 376
           Width = 91
           Height = 20
           AutoSize = False
@@ -967,7 +971,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtNascido: TSMALL_DBEdit
           Left = 100
-          Top = 401
+          Top = 400
           Width = 91
           Height = 20
           AutoSize = False
@@ -1208,7 +1212,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object cboRelacaoCom: TComboBox
           Left = 530
-          Top = 407
+          Top = 404
           Width = 266
           Height = 22
           Style = csOwnerDrawVariable

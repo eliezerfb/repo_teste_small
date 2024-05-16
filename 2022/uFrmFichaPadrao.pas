@@ -181,7 +181,7 @@ end;
 procedure TFrmFichaPadrao.FormCreate(Sender: TObject);
 begin
   inherited;
-  
+
   imgNovo.Picture       := IconesSistema.GetIconNovo(False).Picture;
   imgProcurar.Picture   := IconesSistema.GetIconProcurar(False).Picture;
   imgVisualizar.Picture := IconesSistema.GetIconVisualizar(False).Picture;
