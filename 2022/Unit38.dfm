@@ -7,6 +7,10 @@ object Form38: TForm38
   ClientHeight = 280
   ClientWidth = 518
   Color = clWhite
+  Constraints.MaxHeight = 319
+  Constraints.MaxWidth = 534
+  Constraints.MinHeight = 319
+  Constraints.MinWidth = 534
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -206,7 +210,7 @@ object Form38: TForm38
     object Panel1: TPanel
       Left = 180
       Top = 15
-      Width = 240
+      Width = 319
       Height = 202
       BevelOuter = bvNone
       Color = clWhite
@@ -215,19 +219,6 @@ object Form38: TForm38
       ParentCtl3D = False
       TabOrder = 12
       Visible = False
-      object Label18: TLabel
-        Left = 0
-        Top = 0
-        Width = 199
-        Height = 13
-        Caption = 'Este assistente vai gerar os arquivos  para'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-      end
       object Label19: TLabel
         Left = 0
         Top = 55
@@ -244,9 +235,23 @@ object Form38: TForm38
       object Label20: TLabel
         Left = 0
         Top = 15
-        Width = 140
+        Width = 64
         Height = 13
-        Caption = 'integra'#231#227'o com sua  balan'#231'a.'
+        Caption = 'sua  balan'#231'a.'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label18: TLabel
+        Left = 0
+        Top = 0
+        Width = 300
+        Height = 13
+        AutoSize = False
+        Caption = 'Este assistente vai gerar os arquivos  para integra'#231#227'o com'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11

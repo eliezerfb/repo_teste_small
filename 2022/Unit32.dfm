@@ -4,13 +4,13 @@ object Form32: TForm32
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Invent'#225'rio'
-  ClientHeight = 384
-  ClientWidth = 604
+  ClientHeight = 280
+  ClientWidth = 518
   Color = clWhite
-  Constraints.MaxHeight = 423
-  Constraints.MaxWidth = 620
-  Constraints.MinHeight = 423
-  Constraints.MinWidth = 620
+  Constraints.MaxHeight = 319
+  Constraints.MaxWidth = 534
+  Constraints.MinHeight = 319
+  Constraints.MinWidth = 534
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -24,8 +24,8 @@ object Form32: TForm32
   object Panel2: TPanel
     Left = 0
     Top = 0
-    Width = 604
-    Height = 384
+    Width = 518
+    Height = 280
     Align = alClient
     BevelOuter = bvNone
     Caption = ' '
@@ -34,6 +34,11 @@ object Form32: TForm32
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
+    ExplicitWidth = 604
+    ExplicitHeight = 384
+    DesignSize = (
+      518
+      280)
     object Image1: TImage
       Left = 15
       Top = 15
@@ -42,58 +47,37 @@ object Form32: TForm32
       Center = True
       Transparent = True
     end
-    object Label4: TLabel
-      Left = 180
-      Top = 302
-      Width = 215
-      Height = 13
-      Caption = 'Ou clique no bot'#227'o "Imprimir"  para continuar.'
-    end
     object Label5: TLabel
       Left = 180
       Top = 15
-      Width = 202
+      Width = 285
       Height = 13
-      Caption = 'O invent'#225'rio pode ser calculado pelo custo'
+      Caption = 'O invent'#225'rio pode ser calculado pelo custo da '#250'ltima compra'
     end
     object Label7: TLabel
       Left = 180
       Top = 30
-      Width = 181
+      Width = 98
       Height = 13
-      Caption = 'da '#250'ltima compra ou pelo custo m'#233'dio.'
-    end
-    object Label8: TLabel
-      Left = 180
-      Top = 107
-      Width = 205
-      Height = 13
-      Caption = 'O livro de registro de invent'#225'rio '#233' numerado'
+      Caption = 'ou pelo custo m'#233'dio.'
     end
     object Label9: TLabel
       Left = 180
-      Top = 123
-      Width = 209
+      Top = 93
+      Width = 244
       Height = 13
-      Caption = 'sequencialmente, informe o pr'#243'ximo n'#250'mero:'
-    end
-    object Label10: TLabel
-      Left = 180
-      Top = 287
-      Width = 221
-      Height = 13
-      Caption = 'Fale com o seu contador em caso de d'#250'vidas, '
+      Caption = 'N'#250'mero sequencial do livro de registro de invent'#225'rio'
     end
     object Label11: TLabel
       Left = 180
-      Top = 181
-      Width = 79
+      Top = 139
+      Width = 23
       Height = 13
-      Caption = 'Referente ao dia'
+      Caption = 'Data'
     end
     object RadioButton1: TRadioButton
       Left = 180
-      Top = 53
+      Top = 49
       Width = 150
       Height = 17
       Caption = 'Custo da '#250'ltima compra'
@@ -109,7 +93,7 @@ object Form32: TForm32
     end
     object RadioButton2: TRadioButton
       Left = 180
-      Top = 71
+      Top = 68
       Width = 150
       Height = 17
       Caption = 'Custo m'#233'dio'
@@ -123,7 +107,7 @@ object Form32: TForm32
     end
     object MaskEdit1: TMaskEdit
       Left = 180
-      Top = 142
+      Top = 110
       Width = 40
       Height = 20
       AutoSize = False
@@ -140,10 +124,11 @@ object Form32: TForm32
       OnExit = MaskEdit1Exit
     end
     object Button5: TButton
-      Left = 381
-      Top = 341
+      Left = 295
+      Top = 237
       Width = 100
       Height = 24
+      Anchors = [akRight, akBottom]
       Caption = '&Imprimir'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -151,14 +136,17 @@ object Form32: TForm32
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
-      TabOrder = 3
+      TabOrder = 7
       OnClick = Button5Click
+      ExplicitLeft = 381
+      ExplicitTop = 341
     end
     object Button2: TButton
-      Left = 485
-      Top = 341
+      Left = 399
+      Top = 237
       Width = 100
       Height = 24
+      Anchors = [akRight, akBottom]
       Caption = '&Cancelar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -166,14 +154,17 @@ object Form32: TForm32
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
-      TabOrder = 4
+      TabOrder = 8
       OnClick = Button2Click
+      ExplicitLeft = 485
+      ExplicitTop = 341
     end
     object Button1: TButton
-      Left = 277
-      Top = 341
+      Left = 191
+      Top = 237
       Width = 100
       Height = 24
+      Anchors = [akRight, akBottom]
       Caption = '&Gerar arquivo'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -181,34 +172,36 @@ object Form32: TForm32
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
-      TabOrder = 5
+      TabOrder = 6
       OnClick = Button1Click
+      ExplicitLeft = 277
+      ExplicitTop = 341
     end
     object DateTimePicker1: TDateTimePicker
       Left = 180
-      Top = 198
+      Top = 156
       Width = 212
       Height = 21
       Date = 39448.000000000000000000
       Time = 0.376154398101789400
       DateFormat = dfLong
-      TabOrder = 6
+      TabOrder = 3
     end
     object CheckBox1: TCheckBox
       Left = 180
-      Top = 235
+      Top = 185
       Width = 450
       Height = 17
       Caption = 'Listar quantidade negativa ou zerada'
-      TabOrder = 7
+      TabOrder = 4
     end
     object cbMovGerencial: TCheckBox
       Left = 180
-      Top = 254
+      Top = 204
       Width = 227
       Height = 17
       Caption = 'Considerar movimento gerencial'
-      TabOrder = 8
+      TabOrder = 5
     end
   end
   object IBQuery1: TIBQuery
@@ -218,8 +211,8 @@ object Form32: TForm32
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 56
-    Top = 192
+    Left = 32
+    Top = 24
   end
   object IBQuery2: TIBQuery
     Database = Form7.IBDatabase1
@@ -228,8 +221,8 @@ object Form32: TForm32
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 56
-    Top = 232
+    Left = 32
+    Top = 64
   end
   object IBQuery3: TIBQuery
     Database = Form7.IBDatabase1
@@ -238,8 +231,8 @@ object Form32: TForm32
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 96
-    Top = 192
+    Left = 72
+    Top = 24
   end
   object IBQuery4: TIBQuery
     Database = Form7.IBDatabase1
@@ -248,8 +241,8 @@ object Form32: TForm32
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 96
-    Top = 232
+    Left = 72
+    Top = 64
   end
   object IBQuery5: TIBQuery
     Database = Form7.IBDatabase1
@@ -258,8 +251,8 @@ object Form32: TForm32
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 56
-    Top = 272
+    Left = 32
+    Top = 104
   end
   object IBQuery6: TIBQuery
     Database = Form7.IBDatabase1
@@ -268,8 +261,8 @@ object Form32: TForm32
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 96
-    Top = 272
+    Left = 72
+    Top = 104
   end
   object qryGerencial: TIBQuery
     Database = Form7.IBDatabase1
@@ -278,7 +271,7 @@ object Form32: TForm32
     CachedUpdates = False
     ParamCheck = True
     PrecommittedReads = False
-    Left = 136
-    Top = 272
+    Left = 112
+    Top = 104
   end
 end

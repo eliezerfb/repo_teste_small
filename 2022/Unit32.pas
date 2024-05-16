@@ -11,12 +11,9 @@ type
   TForm32 = class(TForm)
     Panel2: TPanel;
     Image1: TImage;
-    Label4: TLabel;
     Label5: TLabel;
     Label7: TLabel;
-    Label8: TLabel;
     Label9: TLabel;
-    Label10: TLabel;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;
     MaskEdit1: TMaskEdit;
