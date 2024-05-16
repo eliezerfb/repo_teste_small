@@ -16,56 +16,56 @@ type
     Label2: TLabel;
     edtCPFCNPJ: TSMALL_DBEdit;
     Label3: TLabel;
-    SMALL_DBEdit2: TSMALL_DBEdit;
+    edtRazaoSocial: TSMALL_DBEdit;
     Label4: TLabel;
-    SMALL_DBEdit3: TSMALL_DBEdit;
+    edtContato: TSMALL_DBEdit;
     Label5: TLabel;
-    SMALL_DBEdit4: TSMALL_DBEdit;
+    edtCEP: TSMALL_DBEdit;
     Label6: TLabel;
-    SMALL_DBEdit5: TSMALL_DBEdit;
+    edtEndereco: TSMALL_DBEdit;
     imgEndereco: TImage;
     Label7: TLabel;
-    SMALL_DBEdit6: TSMALL_DBEdit;
+    edtBairro: TSMALL_DBEdit;
     Label8: TLabel;
     Label9: TLabel;
-    SMALL_DBEdit8: TSMALL_DBEdit;
+    edtEstado: TSMALL_DBEdit;
     Label10: TLabel;
     edtRG_IE: TSMALL_DBEdit;
     Label11: TLabel;
-    SMALL_DBEdit10: TSMALL_DBEdit;
+    edtTelefone: TSMALL_DBEdit;
     Label12: TLabel;
-    SMALL_DBEdit11: TSMALL_DBEdit;
+    edtCelular: TSMALL_DBEdit;
     Label13: TLabel;
-    SMALL_DBEdit12: TSMALL_DBEdit;
+    edtWhatsApp: TSMALL_DBEdit;
     Label14: TLabel;
-    SMALL_DBEdit13: TSMALL_DBEdit;
+    edtEmail: TSMALL_DBEdit;
     Label15: TLabel;
-    SMALL_DBEdit14: TSMALL_DBEdit;
+    edtLimiteCredito: TSMALL_DBEdit;
     lblLimiteCredDisponivel: TLabel;
     eLimiteCredDisponivel: TEdit;
     Label16: TLabel;
-    SMALL_DBEdit15: TSMALL_DBEdit;
+    edtCadastro: TSMALL_DBEdit;
     Label17: TLabel;
-    SMALL_DBEdit16: TSMALL_DBEdit;
+    edtUltVenda: TSMALL_DBEdit;
     Label18: TLabel;
-    SMALL_DBEdit17: TSMALL_DBEdit;
+    edtNascido: TSMALL_DBEdit;
     lblConvenio: TLabel;
     Label19: TLabel;
-    SMALL_DBEdit19: TSMALL_DBEdit;
+    edtIdentificador1: TSMALL_DBEdit;
     Label20: TLabel;
-    SMALL_DBEdit20: TSMALL_DBEdit;
+    edtIdentificador2: TSMALL_DBEdit;
     Label21: TLabel;
-    SMALL_DBEdit21: TSMALL_DBEdit;
+    edtIdentificador3: TSMALL_DBEdit;
     Label22: TLabel;
-    SMALL_DBEdit22: TSMALL_DBEdit;
+    edtIdentificador4: TSMALL_DBEdit;
     Label23: TLabel;
-    SMALL_DBEdit23: TSMALL_DBEdit;
+    edtIdentificador5: TSMALL_DBEdit;
     Label25: TLabel;
-    DBMemo1: TDBMemo;
+    memObs: TDBMemo;
     Label26: TLabel;
-    SMALL_DBEdit24: TSMALL_DBEdit;
+    edtProxContato: TSMALL_DBEdit;
     Label27: TLabel;
-    DBMemo2: TDBMemo;
+    memContato: TDBMemo;
     fraConvenio: TfFrameCampo;
     fraMunicipio: TfFrameCampo;
     cboRelacaoCom: TComboBox;
@@ -78,15 +78,15 @@ type
     Image3: TImage;
     Image5: TImage;
     VideoCap1: TVideoCap;
-    Button13: TBitBtn;
-    Button22: TBitBtn;
+    btnWebCam: TBitBtn;
+    btnSelecionarArquivo: TBitBtn;
     OpenPictureDialog1: TOpenPictureDialog;
     procedure FormShow(Sender: TObject);
-    procedure SMALL_DBEdit4Exit(Sender: TObject);
-    procedure SMALL_DBEdit4Enter(Sender: TObject);
-    procedure SMALL_DBEdit5Exit(Sender: TObject);
-    procedure SMALL_DBEdit6Exit(Sender: TObject);
-    procedure SMALL_DBEdit13Exit(Sender: TObject);
+    procedure edtCEPExit(Sender: TObject);
+    procedure edtCEPEnter(Sender: TObject);
+    procedure edtEnderecoExit(Sender: TObject);
+    procedure edtBairroExit(Sender: TObject);
+    procedure edtEmailExit(Sender: TObject);
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
     procedure lblNovoClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -96,21 +96,21 @@ type
     procedure rgIENaoContribuinteClick(Sender: TObject);
     procedure rgIEIsentoClick(Sender: TObject);
     procedure edtCPFCNPJChange(Sender: TObject);
-    procedure SMALL_DBEdit14Exit(Sender: TObject);
+    procedure edtLimiteCreditoExit(Sender: TObject);
     procedure imgEnderecoClick(Sender: TObject);
     procedure btnRenogiarDividaClick(Sender: TObject);
     procedure Label19Click(Sender: TObject);
     procedure Label19MouseLeave(Sender: TObject);
     procedure Label19MouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure DBMemo2Enter(Sender: TObject);
-    procedure DBMemo2Exit(Sender: TObject);
-    procedure DBMemo2KeyDown(Sender: TObject; var Key: Word;
+    procedure memContatoEnter(Sender: TObject);
+    procedure memContatoExit(Sender: TObject);
+    procedure memContatoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure SMALL_DBEdit8Exit(Sender: TObject);
+    procedure edtEstadoExit(Sender: TObject);
     procedure tbsFotoShow(Sender: TObject);
-    procedure Button22Click(Sender: TObject);
-    procedure Button13Click(Sender: TObject);
+    procedure btnSelecionarArquivoClick(Sender: TObject);
+    procedure btnWebCamClick(Sender: TObject);
   private
     { Private declarations }
     FcCEPAnterior: String;
@@ -144,7 +144,7 @@ uses unit7
   , uFuncoesBancoDados
   , MAIS
   , uFrmParcelas
-  , MAIS3;
+  , MAIS3, uPermissaoUsuario;
 
 { TFrmCadastro }
 
@@ -259,25 +259,59 @@ end;
 procedure TFrmCadastro.SetaStatusUso;
 begin
   inherited;
-  //
+
+  bSomenteLeitura := SomenteLeitura(Form7.sModulo,MAIS.Usuario);
+
+  edtCPFCNPJ.Enabled            := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtRazaoSocial.Enabled        := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtContato.Enabled            := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCEP.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtEndereco.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtBairro.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraMunicipio.Enabled          := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtEstado.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtRG_IE.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  pnl_IE.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtTelefone.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCelular.Enabled            := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtWhatsApp.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtEmail.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtLimiteCredito.Enabled      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  eLimiteCredDisponivel.Enabled := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCadastro.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtUltVenda.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtNascido.Enabled            := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraConvenio.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtIdentificador1.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtIdentificador2.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtIdentificador3.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtIdentificador4.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtIdentificador5.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  memObs.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtProxContato.Enabled        := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  memContato.Enabled            := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboRelacaoCom.Enabled         := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnWebCam.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnSelecionarArquivo.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+
 end;
 
-procedure TFrmCadastro.SMALL_DBEdit13Exit(Sender: TObject);
+procedure TFrmCadastro.edtEmailExit(Sender: TObject);
 begin
   LimpaEspaco(TSMALL_DBEdit(Sender));
 end;
 
-procedure TFrmCadastro.SMALL_DBEdit14Exit(Sender: TObject);
+procedure TFrmCadastro.edtLimiteCreditoExit(Sender: TObject);
 begin
   DefinirLimiteDisponivel;
 end;
 
-procedure TFrmCadastro.SMALL_DBEdit4Enter(Sender: TObject);
+procedure TFrmCadastro.edtCEPEnter(Sender: TObject);
 begin
   FcCEPAnterior := TSMALL_DBEdit(Sender).Text;
 end;
 
-procedure TFrmCadastro.SMALL_DBEdit4Exit(Sender: TObject);
+procedure TFrmCadastro.edtCEPExit(Sender: TObject);
 begin
   {Dailon (f-7224) 2024-04-01 inicio}
   if (FcCEPAnterior <> TSMALL_DBEdit(Sender).Text) then
@@ -296,17 +330,17 @@ begin
   {Dailon (f-7224) 2024-04-01 Fim}
 end;
 
-procedure TFrmCadastro.SMALL_DBEdit5Exit(Sender: TObject);
+procedure TFrmCadastro.edtEnderecoExit(Sender: TObject);
 begin
   LimpaEspaco(TSMALL_DBEdit(Sender));
 end;
 
-procedure TFrmCadastro.SMALL_DBEdit6Exit(Sender: TObject);
+procedure TFrmCadastro.edtBairroExit(Sender: TObject);
 begin
   LimpaEspaco(TSMALL_DBEdit(Sender));
 end;
 
-procedure TFrmCadastro.SMALL_DBEdit8Exit(Sender: TObject);
+procedure TFrmCadastro.edtEstadoExit(Sender: TObject);
 begin
   if Length(Trim(Form7.IBDataSet2ESTADO.AsString)) = 2 then
   begin
@@ -321,7 +355,7 @@ procedure TFrmCadastro.tbsFotoShow(Sender: TObject);
 begin
   sNomeDoJPG := Form1.sAtual+'\tempo1'+Form7.IBDataSet2REGISTRO.AsString+'.jpg';
 
-  Button13.Caption       := '&Webcam';
+  btnWebCam.Caption      := '&Webcam';
   VideoCap1.visible      := False;
   Image5.Visible         := True;
   AtualizaTela;
@@ -358,7 +392,7 @@ begin
 
 end;
 
-procedure TFrmCadastro.DBMemo2Enter(Sender: TObject);
+procedure TFrmCadastro.memContatoEnter(Sender: TObject);
 begin
   sContatos := Form7.IBDataSet2CONTATOS.AsString;
 
@@ -367,13 +401,13 @@ begin
 
   Form7.ArquivoAberto.Edit;
 
-  SendMessage(dbMemo2.Handle, WM_VSCROLL, SB_BOTTOM, 0); //vai pra ultima linha
-  SendMessage(dbMemo2.Handle, WM_HSCROLL, SB_RIGHT, 0); //vai pra ultima coluna
-  dbMemo2.SelStart := Length(dbMemo2.Text); //move o cursor pra o final da ultima linha
-  dbMemo2.SetFocus;
+  SendMessage(memContato.Handle, WM_VSCROLL, SB_BOTTOM, 0); //vai pra ultima linha
+  SendMessage(memContato.Handle, WM_HSCROLL, SB_RIGHT, 0); //vai pra ultima coluna
+  memContato.SelStart := Length(memContato.Text); //move o cursor pra o final da ultima linha
+  memContato.SetFocus;
 end;
 
-procedure TFrmCadastro.DBMemo2Exit(Sender: TObject);
+procedure TFrmCadastro.memContatoExit(Sender: TObject);
 begin
   if StrTran(StrTran(StrTran(Form7.IBDataSet2CONTATOS.AsString,chr(10),''),chr(13),''),' ','') <> StrTran(StrTran(StrTran(sContatos,chr(10),''),chr(13),''),' ','') then
   begin
@@ -406,7 +440,7 @@ begin
   end;
 end;
 
-procedure TFrmCadastro.DBMemo2KeyDown(Sender: TObject; var Key: Word;
+procedure TFrmCadastro.memContatoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
@@ -693,11 +727,11 @@ begin
   end;
 end;
 
-procedure TFrmCadastro.Button13Click(Sender: TObject);
+procedure TFrmCadastro.btnWebCamClick(Sender: TObject);
 var
   jp : TJPEGImage;
 begin
-  if Button13.Caption <> '&Captura' then
+  if btnWebCam.Caption <> '&Captura' then
   begin
     try
       VideoCap1.visible    := True;
@@ -720,7 +754,7 @@ begin
         VideoCap1.CapAudio     := False;
       except end;
 
-      Button13.Caption := '&Captura';
+      btnWebCam.Caption := '&Captura';
     except
     end;
   end else
@@ -737,7 +771,7 @@ begin
 
       jp.SaveToFile(sNomeDoJPG);
 
-      Button13.Caption     := '&Webcam';
+      btnWebCam.Caption    := '&Webcam';
       Image5.Visible       := True;
 
       while not FileExists(pChar(sNomeDoJPG)) do
@@ -755,7 +789,7 @@ begin
 
 end;
 
-procedure TFrmCadastro.Button22Click(Sender: TObject);
+procedure TFrmCadastro.btnSelecionarArquivoClick(Sender: TObject);
 begin
   OpenPictureDialog1.Execute;
   CHDir(Form1.sAtual);

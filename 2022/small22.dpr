@@ -222,7 +222,6 @@ uses
   uLogSistema in '..\..\unit_compartilhada\uLogSistema.pas',
   uDrawCellGridModulos in 'units\uDrawCellGridModulos.pas',
   uEmail in '..\..\unit_compartilhada\uEmail.pas',
-  ufrmFichaCadastros in 'ufrmFichaCadastros.pas' {FrmFichaCadastros},
   uDesenhaBoleto in 'units\uDesenhaBoleto.pas',
   ufrmRelatorioProdMonofasicoCupom in 'ufrmRelatorioProdMonofasicoCupom.pas' {frmRelProdMonofasicoCupom},
   uIGeraRelatorioProdMonofasico in 'interfaces\uIGeraRelatorioProdMonofasico.pas',

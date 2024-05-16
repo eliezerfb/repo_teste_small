@@ -304,7 +304,7 @@ implementation
 uses Unit7, Unit10, Mais, uFrmParcelas, Unit41, Unit43, Unit19,
   Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
   uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
-  ufrmPesquisaOrdemServico, uDialogs, ufrmFichaCadastros;
+  ufrmPesquisaOrdemServico, uDialogs;
 
 function mkp(P1:Boolean): Boolean;
 begin

@@ -2696,7 +2696,6 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uRelatorioVendasNotaFiscal
   , uDrawCellGridModulos
   , uEmail
-  , ufrmFichaCadastros
   , uFuncaoMD5
   , uDesenhaBoleto
   , ufrmRelatorioProdMonofasicoCupom
@@ -34076,12 +34075,9 @@ begin
     if FrmSituacaoOS <> nil then
       FreeAndNil(FrmSituacaoOS);
 
-    if FrmFichaCadastros <> nil then
-      FreeAndNil(FrmFichaCadastros);
-
     if FrmConversaoCFOP <> nil then
       FreeAndNil(FrmConversaoCFOP);
-      
+
       {Mauricio Parizotto 2024-04-05 Inicio}
     if FrmConvenio <> nil then
       FreeAndNil(FrmConvenio);

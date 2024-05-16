@@ -644,7 +644,7 @@ inherited FrmCadastro: TFrmCadastro
           OnChange = edtCPFCNPJChange
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit2: TSMALL_DBEdit
+        object edtRazaoSocial: TSMALL_DBEdit
           Left = 101
           Top = 39
           Width = 325
@@ -666,7 +666,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 1
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit3: TSMALL_DBEdit
+        object edtContato: TSMALL_DBEdit
           Left = 100
           Top = 63
           Width = 199
@@ -687,7 +687,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 2
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit4: TSMALL_DBEdit
+        object edtCEP: TSMALL_DBEdit
           Left = 100
           Top = 87
           Width = 91
@@ -706,11 +706,11 @@ inherited FrmCadastro: TFrmCadastro
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 3
-          OnEnter = SMALL_DBEdit4Enter
-          OnExit = SMALL_DBEdit4Exit
+          OnEnter = edtCEPEnter
+          OnExit = edtCEPExit
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit5: TSMALL_DBEdit
+        object edtEndereco: TSMALL_DBEdit
           Left = 100
           Top = 110
           Width = 325
@@ -729,10 +729,10 @@ inherited FrmCadastro: TFrmCadastro
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 4
-          OnExit = SMALL_DBEdit5Exit
+          OnExit = edtEnderecoExit
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit6: TSMALL_DBEdit
+        object edtBairro: TSMALL_DBEdit
           Left = 100
           Top = 134
           Width = 325
@@ -751,10 +751,10 @@ inherited FrmCadastro: TFrmCadastro
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 5
-          OnExit = SMALL_DBEdit6Exit
+          OnExit = edtBairroExit
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit8: TSMALL_DBEdit
+        object edtEstado: TSMALL_DBEdit
           Left = 101
           Top = 180
           Width = 91
@@ -773,7 +773,7 @@ inherited FrmCadastro: TFrmCadastro
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 7
-          OnExit = SMALL_DBEdit8Exit
+          OnExit = edtEstadoExit
           OnKeyDown = PadraoKeyDown
         end
         object edtRG_IE: TSMALL_DBEdit
@@ -797,7 +797,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 8
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit10: TSMALL_DBEdit
+        object edtTelefone: TSMALL_DBEdit
           Left = 100
           Top = 228
           Width = 162
@@ -818,7 +818,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 10
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit11: TSMALL_DBEdit
+        object edtCelular: TSMALL_DBEdit
           Left = 100
           Top = 252
           Width = 162
@@ -839,7 +839,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 11
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit12: TSMALL_DBEdit
+        object edtWhatsApp: TSMALL_DBEdit
           Left = 100
           Top = 276
           Width = 162
@@ -860,7 +860,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 12
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit13: TSMALL_DBEdit
+        object edtEmail: TSMALL_DBEdit
           Left = 100
           Top = 300
           Width = 325
@@ -879,10 +879,10 @@ inherited FrmCadastro: TFrmCadastro
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 13
-          OnExit = SMALL_DBEdit13Exit
+          OnExit = edtEmailExit
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit14: TSMALL_DBEdit
+        object edtLimiteCredito: TSMALL_DBEdit
           Left = 100
           Top = 325
           Width = 91
@@ -901,12 +901,12 @@ inherited FrmCadastro: TFrmCadastro
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 14
-          OnExit = SMALL_DBEdit14Exit
+          OnExit = edtLimiteCreditoExit
           OnKeyDown = PadraoKeyDown
         end
         object eLimiteCredDisponivel: TEdit
           Left = 334
-          Top = 324
+          Top = 325
           Width = 91
           Height = 20
           TabStop = False
@@ -923,7 +923,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 15
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit15: TSMALL_DBEdit
+        object edtCadastro: TSMALL_DBEdit
           Left = 100
           Top = 351
           Width = 91
@@ -944,7 +944,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 16
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit16: TSMALL_DBEdit
+        object edtUltVenda: TSMALL_DBEdit
           Left = 100
           Top = 377
           Width = 91
@@ -965,7 +965,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 17
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit17: TSMALL_DBEdit
+        object edtNascido: TSMALL_DBEdit
           Left = 100
           Top = 401
           Width = 91
@@ -986,7 +986,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 18
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit19: TSMALL_DBEdit
+        object edtIdentificador1: TSMALL_DBEdit
           Left = 530
           Top = 39
           Width = 266
@@ -1007,7 +1007,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 20
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit20: TSMALL_DBEdit
+        object edtIdentificador2: TSMALL_DBEdit
           Left = 530
           Top = 63
           Width = 266
@@ -1028,7 +1028,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 21
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit21: TSMALL_DBEdit
+        object edtIdentificador3: TSMALL_DBEdit
           Left = 530
           Top = 87
           Width = 266
@@ -1049,7 +1049,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 22
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit22: TSMALL_DBEdit
+        object edtIdentificador4: TSMALL_DBEdit
           Left = 530
           Top = 110
           Width = 266
@@ -1070,7 +1070,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 23
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit23: TSMALL_DBEdit
+        object edtIdentificador5: TSMALL_DBEdit
           Left = 530
           Top = 134
           Width = 266
@@ -1091,7 +1091,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 24
           OnKeyDown = PadraoKeyDown
         end
-        object DBMemo1: TDBMemo
+        object memObs: TDBMemo
           Left = 530
           Top = 157
           Width = 266
@@ -1108,7 +1108,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 25
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit24: TSMALL_DBEdit
+        object edtProxContato: TSMALL_DBEdit
           Left = 530
           Top = 267
           Width = 91
@@ -1129,7 +1129,7 @@ inherited FrmCadastro: TFrmCadastro
           TabOrder = 26
           OnKeyDown = PadraoKeyDown
         end
-        object DBMemo2: TDBMemo
+        object memContato: TDBMemo
           Left = 530
           Top = 293
           Width = 266
@@ -1144,9 +1144,9 @@ inherited FrmCadastro: TFrmCadastro
           MaxLength = 254
           ParentFont = False
           TabOrder = 27
-          OnEnter = DBMemo2Enter
-          OnExit = DBMemo2Exit
-          OnKeyDown = DBMemo2KeyDown
+          OnEnter = memContatoEnter
+          OnExit = memContatoExit
+          OnKeyDown = memContatoKeyDown
         end
         inline fraConvenio: TfFrameCampo
           Left = 530
@@ -1625,7 +1625,7 @@ inherited FrmCadastro: TFrmCadastro
           CapToFile = True
           BufferFileSize = 0
         end
-        object Button13: TBitBtn
+        object btnWebCam: TBitBtn
           Left = 20
           Top = 380
           Width = 130
@@ -1638,9 +1638,9 @@ inherited FrmCadastro: TFrmCadastro
           Font.Style = []
           ParentFont = False
           TabOrder = 1
-          OnClick = Button13Click
+          OnClick = btnWebCamClick
         end
-        object Button22: TBitBtn
+        object btnSelecionarArquivo: TBitBtn
           Left = 304
           Top = 380
           Width = 130
@@ -1653,7 +1653,7 @@ inherited FrmCadastro: TFrmCadastro
           Font.Style = []
           ParentFont = False
           TabOrder = 2
-          OnClick = Button22Click
+          OnClick = btnSelecionarArquivoClick
         end
       end
     end
