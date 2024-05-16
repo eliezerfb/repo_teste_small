@@ -235,9 +235,9 @@ object Form38: TForm38
       object Label20: TLabel
         Left = 0
         Top = 15
-        Width = 64
+        Width = 61
         Height = 13
-        Caption = 'sua  balan'#231'a.'
+        Caption = 'sua balan'#231'a.'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -251,7 +251,7 @@ object Form38: TForm38
         Width = 300
         Height = 13
         AutoSize = False
-        Caption = 'Este assistente vai gerar os arquivos  para integra'#231#227'o com'
+        Caption = 'Este assistente vai gerar os arquivos para integra'#231#227'o com'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11

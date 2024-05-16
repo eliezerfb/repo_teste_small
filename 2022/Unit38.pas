@@ -200,7 +200,8 @@ begin
   if FileExists(Senhas.UsuarioPub+'.txt') then
     DeleteFile(Senhas.UsuarioPub+'.txt');
 
-  if Form7.sModulo = 'BALANCA' then
+  //if Form7.sModulo = 'BALANCA' then Mauricio Parizotto 2024-05-16
+  if Form7.sModulo = 'Balanças' then
   begin
     RelatorioBalanca(F);
   end else
@@ -285,11 +286,7 @@ begin
       begin
         Screen.Cursor  := crAppStart;
 
-        {$IFDEF VER150}
-        ShortDateFormat := 'dd/mm/yyyy';
-        {$ELSE}
         FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
-        {$ENDIF}
 
         dInicio :=  DateTimePicker1.Date;
         dFinal  :=  DateTimePicker2.Date;
