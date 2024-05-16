@@ -562,7 +562,9 @@ implementation
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, Unit8, Unit38, uExportaXML, Unit43, Unit30, SelecionaCertificado,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
-  uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados,
+  uconstantes_chaves_privadas
+  , ucredencialtecnospeed
+  , uAtualizaBancoDados,
   uFazerBackup,
   uRetornaBuildEXE
   , uCriptografia
@@ -578,7 +580,10 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uDialogs
   , uFuncoesRetaguarda
   , uSmallResourceString, uSistema
-  , uConfiguracaoTEFCommerce, uFrmContaPagar, uFrmContaReceber;
+  , uConfiguracaoTEFCommerce
+  , uFrmContaPagar
+  , uFrmContaReceber
+  , uFrmCadastro;
 
 {$R *.DFM}
 
@@ -10868,7 +10873,10 @@ begin
   if Form7.sModulo = 'RECEBER' then
     Exit;
   {Mauricio Parizotto 2024-04-16 Fim}
-    
+
+  if Form7.sModulo = 'CLIENTES' then
+   Exit;
+
 
   if AllTrim(Form7.sModulo) <> '' then
   begin
@@ -11532,6 +11540,20 @@ begin
     end;
   end;
   {Mauricio Parizotto 2024-04-16 Fim}
+
+
+  {Mauricio Parizotto 2024-05-15 Inicio}
+  if Form7.sModulo = 'CLIENTES' then
+  begin
+    if FrmCadastro <> nil then
+    begin
+      if FrmCadastro.Visible then
+      begin
+        FrmCadastro.BringToFront;
+        Exit;
+      end;
+    end;
+  end;
 
   if Form5.Visible then
   begin

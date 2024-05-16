@@ -859,7 +859,7 @@ begin
     end;
     }
 
-    {$Region '//  Eliminar quando tiver criado form de cadastro clientes e vendedores//'}
+    {Mauricio Parizotto 2024-05-15
     if (Form7.sModulo = 'CLIENTES') then
     begin
       Form10.Image5.Picture := nil;
@@ -897,7 +897,7 @@ begin
         Form10.Image5.Picture := Form10.Image3.Picture;
     end
     else
-    {$EndRegion}
+    }
       Form10.Image5.Picture := Form10.Image3.Picture;
 
     {$Region '//  Atualiza Layout Estoque//'}
@@ -1693,6 +1693,7 @@ begin
         FcCEPAnterior := TSMALL_DBEdit(Sender).Text;
       }
 
+      {Mauricio Parizotto 2024-05-15
       if vDataField = 'CIDADE' then
       begin
         if Length(AllTrim(Form7.IBDataSet2ESTADO.AsString)) <> 2 then
@@ -1717,6 +1718,7 @@ begin
         dBGrid3.Font       := Font;
         dBGrid3.DataSource := Form7.DataSource39; // Municipios
       end;
+      }
 
       if (vDataField = 'MEDIDA') then
       begin

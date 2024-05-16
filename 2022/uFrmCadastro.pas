@@ -6,7 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFrmFichaPadrao, Data.DB, Vcl.ComCtrls, uObjetoConsultaCEP, uConsultaCEP,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask, Vcl.DBCtrls, SMALL_DBEdit,
-  uframeCampo, Winapi.ShellAPI, System.IniFiles, System.StrUtils;
+  uframeCampo, Winapi.ShellAPI, System.IniFiles, System.StrUtils, Videocap,
+  Vcl.Imaging.jpeg, Vcl.ExtDlgs, Vcl.Clipbrd;
 
 type
   TFrmCadastro = class(TFrmFichaPadrao)
@@ -74,6 +75,12 @@ type
     rgIENaoContribuinte: TRadioButton;
     rgIEIsento: TRadioButton;
     btnRenogiarDivida: TBitBtn;
+    Image3: TImage;
+    Image5: TImage;
+    VideoCap1: TVideoCap;
+    Button13: TBitBtn;
+    Button22: TBitBtn;
+    OpenPictureDialog1: TOpenPictureDialog;
     procedure FormShow(Sender: TObject);
     procedure SMALL_DBEdit4Exit(Sender: TObject);
     procedure SMALL_DBEdit4Enter(Sender: TObject);
@@ -101,10 +108,14 @@ type
     procedure DBMemo2KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure SMALL_DBEdit8Exit(Sender: TObject);
+    procedure tbsFotoShow(Sender: TObject);
+    procedure Button22Click(Sender: TObject);
+    procedure Button13Click(Sender: TObject);
   private
     { Private declarations }
     FcCEPAnterior: String;
     sContatos : String;
+    sNomeDoJPG : string;
     bProximo  : boolean;
     procedure SetaStatusUso; override;
     function GetPaginaAjuda:string; override;
@@ -114,6 +125,7 @@ type
     procedure CarregaTipoContibuinte;
     procedure SetTipoContribuinte(iTipo: integer);
     procedure DefinirLimiteDisponivel;
+    procedure AtualizaTela;
   public
     { Public declarations }
   end;
@@ -127,8 +139,12 @@ implementation
 
 uses unit7
   , uDialogs
-  , uRetornaLimiteDisponivel, smallfunc_xe, uFuncoesBancoDados, MAIS,
-  uFrmParcelas, MAIS3;
+  , uRetornaLimiteDisponivel
+  , smallfunc_xe
+  , uFuncoesBancoDados
+  , MAIS
+  , uFrmParcelas
+  , MAIS3;
 
 { TFrmCadastro }
 
@@ -170,8 +186,10 @@ begin
     Label21.Caption := DSCadastro.DataSet.FieldByName('IDENTIFICADOR3').DisplayLabel + ':';
     Label22.Caption := DSCadastro.DataSet.FieldByName('IDENTIFICADOR4').DisplayLabel + ':';
     Label23.Caption := DSCadastro.DataSet.FieldByName('IDENTIFICADOR5').DisplayLabel + ':';
-  Except
+  except
   end;
+
+  pgcFicha.ActivePage := tbsCadastro;
 
   if edtCPFCNPJ.Canfocus then
     edtCPFCNPJ.SetFocus;
@@ -297,6 +315,16 @@ begin
   begin
     fraMunicipio.sFiltro := ' ';
   end;
+end;
+
+procedure TFrmCadastro.tbsFotoShow(Sender: TObject);
+begin
+  sNomeDoJPG := Form1.sAtual+'\tempo1'+Form7.IBDataSet2REGISTRO.AsString+'.jpg';
+
+  Button13.Caption       := '&Webcam';
+  VideoCap1.visible      := False;
+  Image5.Visible         := True;
+  AtualizaTela;
 end;
 
 procedure TFrmCadastro.cboRelacaoComChange(Sender: TObject);
@@ -530,6 +558,8 @@ begin
       btnRenogiarDivida.Visible := True;
     end;
   end;
+
+  AtualizaTela;
 end;
 
 
@@ -663,6 +693,98 @@ begin
   end;
 end;
 
+procedure TFrmCadastro.Button13Click(Sender: TObject);
+var
+  jp : TJPEGImage;
+begin
+  if Button13.Caption <> '&Captura' then
+  begin
+    try
+      VideoCap1.visible    := True;
+      Image5.Visible       := False;
+      VideoCAp1.Left       := 5;
+      VideoCAp1.Top        := 5;
+
+      VideoCAp1.Width      := 640;
+      VideoCAp1.Height     := 480;
+
+      VideoCap1.visible    := True;
+
+      try
+        Videocap1.DriverIndex := 0;
+      except
+      end;
+
+      try
+        VideoCap1.VideoPreview := True;
+        VideoCap1.CapAudio     := False;
+      except end;
+
+      Button13.Caption := '&Captura';
+    except
+    end;
+  end else
+  begin
+    try
+      VideoCap1.SaveToClipboard;
+      Image5.Picture.Bitmap.LoadFromClipboardFormat(cf_BitMap,ClipBoard.GetAsHandle(cf_Bitmap),0);
+      VideoCap1.VideoPreview := False;
+      VideoCap1.visible      := False;
+
+      jp := TJPEGImage.Create;
+      jp.Assign(Image5.Picture.Bitmap);
+      jp.CompressionQuality := 100;
+
+      jp.SaveToFile(sNomeDoJPG);
+
+      Button13.Caption     := '&Webcam';
+      Image5.Visible       := True;
+
+      while not FileExists(pChar(sNomeDoJPG)) do
+      begin
+        Sleep(100);
+      end;
+
+      Image3.Picture.LoadFromFile(pChar(sNomeDoJPG));
+      Image5.Picture.LoadFromFile(pChar(sNomeDoJPG));
+
+      AtualizaTela;
+    except
+    end;
+  end;
+
+end;
+
+procedure TFrmCadastro.Button22Click(Sender: TObject);
+begin
+  OpenPictureDialog1.Execute;
+  CHDir(Form1.sAtual);
+
+  if FileExists(OpenPictureDialog1.FileName) then
+  begin
+    Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
+
+    while FileExists(pChar(sNomeDoJPG)) do
+    begin
+      DeleteFile(pChar(sNomeDoJPG));
+    end;
+
+    CopyFile(pChar(OpenPictureDialog1.FileName),pChar(sNomeDoJPG),True);
+
+    while not FileExists(pChar(sNomeDoJPG)) do
+    begin
+      Sleep(100);
+    end;
+
+    Screen.Cursor             := crDefault;              // Cursor de Aguardo
+
+    Image3.Picture.LoadFromFile(pChar(sNomeDoJPG));
+    Image5.Picture.LoadFromFile(pChar(sNomeDoJPG));
+
+    AtualizaTela;
+  end;
+end;
+
 procedure TFrmCadastro.CarregaTipoContibuinte;
 begin
   try
@@ -739,6 +861,47 @@ begin
     Font.Color := clBlue;
     Repaint;
   end;
+end;
+
+procedure TFrmCadastro.AtualizaTela;
+var
+  BlobStream: TStream;
+  FileStream : TFileStream;
+  JP2         : TJPEGImage;
+begin
+  Image5.Picture := nil;
+  Image3.Picture := nil;
+
+  if FileExists(sNomeDoJPG) then
+  begin
+    if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset2.Edit;
+    FileStream := TFileStream.Create(sNomeDoJPG,fmOpenRead or fmShareDenyWrite);
+    BlobStream := Form7.ibDataset2.CreateBlobStream(Form7.ibDataset2FOTO,bmWrite);
+    try
+      BlobStream.CopyFrom(FileStream,FileStream.Size);
+    finally
+      FileStream.Free;
+      BlobStream.Free;
+    end;
+
+    Deletefile(pChar(sNomeDoJPG));
+  end;
+
+  if Form7.ibDataset2FOTO.BlobSize <> 0 then
+  begin
+    BlobStream:= Form7.ibDataset2.CreateBlobStream(Form7.ibDataset2FOTO,bmRead);
+    jp2 := TJPEGImage.Create;
+    try
+      jp2.LoadFromStream(BlobStream);
+      Image5.Picture.Assign(jp2);
+    finally
+      BlobStream.Free;
+      jp2.Free;
+    end;
+  end
+  else
+    Image5.Picture := Image3.Picture;
 end;
 
 end.

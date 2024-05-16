@@ -34112,6 +34112,9 @@ begin
     if FrmContaReceber <> nil then
       FreeAndNil(FrmCaixa);
     {Mauricio Parizotto 2024-04-16 Fim}
+
+    if FrmCadastro <> nil then
+      FreeAndNil(FrmCadastro);
   except
   end;
 end;  
