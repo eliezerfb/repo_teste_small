@@ -275,7 +275,7 @@ begin
 
     DSCadastro.DataSet.EnableControls;
   end;
-  
+
   VerificandoUso := False;
 
   SetaStatusUso;
@@ -306,6 +306,9 @@ begin
     else
       Result := 'Ficha '+IntToStr(DSCadastro.DataSet.Recno)+' de '+IntToStr(sTotal);
 
+    //Mauricio Parizotto 2024-04-16
+    if DSCadastro.DataSet.Recno > sTotal then
+      Result := 'Ficha '+IntToStr(DSCadastro.DataSet.Recno)+' de '+IntToStr(DSCadastro.DataSet.Recno);
   except
 
   end;

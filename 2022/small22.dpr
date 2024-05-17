@@ -255,7 +255,10 @@ uses
   uFrmPlanoContas in 'uFrmPlanoContas.pas' {FrmPlanoContas},
   uFrmBanco in 'uFrmBanco.pas' {FrmBanco},
   uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria},
-  uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas';
+  uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas',
+  uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
+  uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
+  uPermissaoUsuario in 'uPermissaoUsuario.pas';
 
 {$R *.RES}
 

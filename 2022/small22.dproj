@@ -568,6 +568,15 @@
             <Form>FrmContaBancaria</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="uFrmContaReceber.pas">
+            <Form>FrmContaReceber</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uFrmContaPagar.pas">
+            <Form>FrmContaPagar</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uPermissaoUsuario.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uImpressoraSections.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
@@ -590,6 +599,7 @@
                     <Source Name="MainSource">small22.dpr</Source>
                 </Source>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>

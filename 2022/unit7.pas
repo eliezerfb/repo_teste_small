@@ -2463,7 +2463,7 @@ type
     procedure FechaModulos;
     procedure EscolheOclifor(Sender: TObject);
     procedure FormShowModulos(Mais1Ini : tIniFile; var sSerieNFSelecionada : string);
-    function SomenteLeitura: Boolean;
+    //function SomenteLeitura: Boolean;
     procedure MarcaColunaOrderBy;
     procedure RegistraExclusaoRegistro(AoDataSet: TDataSet; AcModulo: String = ''; AcHistoricoExtra: String = '');
     function RetornarHistoricoPorModulo: String;
@@ -2699,6 +2699,9 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmBanco
   , uFrmPlanoContas
   , uFrmConvenio
+  , uFrmContaPagar
+  , uFrmContaReceber
+  , uPermissaoUsuario
   ;
 
 {$R *.DFM}
@@ -8582,6 +8585,7 @@ begin
     Exit;
   end;
   {Mauricio Parizotto 2024-04-05 Fim}
+
   //Mauricio Parizotto 2024-03-21
   if sModulo = 'CONVERSAOCFOP' then
   begin
@@ -8592,6 +8596,28 @@ begin
     FrmConversaoCFOP.Show;
     Exit;
   end;
+
+  {Mauricio Parizotto 2024-04-15 Inicio}
+  if sModulo = 'PAGAR' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaPagar = nil then
+      FrmContaPagar := TFrmContaPagar.Create(Self);
+
+    FrmContaPagar.Show;
+    Exit;
+  end;
+
+  if sModulo = 'RECEBER' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaReceber = nil then
+      FrmContaReceber := TFrmContaReceber.Create(Self);
+
+    FrmContaReceber.Show;
+    Exit;
+  end;
+  {Mauricio Parizotto 2024-04-15 Fim}
 
   {Sandro Silva 2024-01-17 inicio
 
@@ -8922,6 +8948,31 @@ begin
     FrmConversaoCFOP.Show;
     Exit;
   end;
+
+  {Mauricio Parizotto 2024-04-15 Inicio}
+  if sModulo = 'PAGAR' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaPagar = nil then
+      FrmContaPagar := TFrmContaPagar.Create(Self);
+
+    FrmContaPagar.lblNovoClick(Sender);
+    FrmContaPagar.Show;
+    Exit;
+  end;
+
+  if sModulo = 'RECEBER' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaReceber = nil then
+      FrmContaReceber := TFrmContaReceber.Create(Self);
+
+    FrmContaReceber.lblNovoClick(Sender);
+    FrmContaReceber.Show;
+    Exit;
+  end;
+
+  {Mauricio Parizotto 2024-04-15 Fim}
 
   {Sandro Silva 2024-01-17 inicio
 
@@ -11173,7 +11224,7 @@ begin
     dbGrid1.DataSource := Form7.DataSource13;
     Form4.Close;
 
-    bSoLeitura := SomenteLeitura;
+    bSoLeitura := SomenteLeitura(sModulo,Usuario);
 
     {$Region '//// Permisões Usuários'}
 
@@ -34200,6 +34251,14 @@ begin
     if FrmContaBancaria <> nil then
       FreeAndNil(FrmContaBancaria);
     {Mauricio Parizotto 2024-04-05 Fim}
+
+    {Mauricio Parizotto 2024-04-16 Inicio}
+    if FrmContaPagar <> nil then
+      FreeAndNil(FrmCaixa);
+
+    if FrmContaReceber <> nil then
+      FreeAndNil(FrmCaixa);
+    {Mauricio Parizotto 2024-04-16 Fim}
   except
   end;
 end;  
@@ -35718,6 +35777,7 @@ begin
 end;
 
 
+(*Mauricio Parizotto 2024-04-17
 function TForm7.SomenteLeitura : Boolean;
 var
   Mais1Ini : TiniFile;
@@ -35771,6 +35831,7 @@ begin
   except
   end;
 end;
+*)
 
 
 procedure TForm7.MarcaColunaOrderBy;

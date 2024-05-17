@@ -583,7 +583,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uDialogs
   , uFuncoesRetaguarda
   , uSmallResourceString, uSistema
-  , uConfiguracaoTEFCommerce;
+  , uConfiguracaoTEFCommerce, uFrmContaPagar, uFrmContaReceber;
 
 {$R *.DFM}
 
@@ -1444,7 +1444,6 @@ begin
             Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to 19670926');
             Form1.ibDataset200.Open;
 
-            //ShowMessage('Este sistema foi bloqueado'); Mauricio Parizotto 2023-10-25
             MensagemSistema('Este sistema foi bloqueado');
           except
           end;
@@ -1538,7 +1537,6 @@ begin
 
             end
             else
-              //ShowMessage('Arquivo smallcon.exe não encontrado.'); Mauricio Parizotto 2023-10-25
               MensagemSistema('Arquivo smallcon.exe não encontrado.');
 
             Winexec('TASKKILL /F /IM "smallcdf.exe"', SW_HIDE );
@@ -1579,15 +1577,6 @@ begin
 
       if (pos('[BLOQUEADO1]',UpperCase(S)) <> 0) or (pos('[BLOQUEADO2]',UpperCase(S)) <> 0) then
       begin
-        {
-        Application.MessageBox(Pchar(
-          'Este sistema não está liberado.'+
-          Chr(10) +
-          Chr(10) +
-          'Continuar?' +
-          Chr(10))
-          ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-24}
         MensagemSistema('Este sistema não está liberado.'
                         ,msgAtencao);
       end;
@@ -3610,7 +3599,7 @@ begin
     begin
       vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
       ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
-      //ExecutaComando('Commit;'); Mauricio Parizotto 2024-04-19
+      //ExecutaComando('Commit;'); Mauricio Parizotto 2024-04-16 tentativa resolver invalid transaction handle
       AgendaCommit(true);
 	  end;
   except
@@ -10889,6 +10878,14 @@ begin
   if Form7.sModulo = '2CONTAS' then
     Exit;
   {Mauricio Parizotto 2024-04-05 Fim}
+
+  {Mauricio Parizotto 2024-04-16 Inicio}
+  if Form7.sModulo = 'PAGAR' then
+    Exit;
+
+  if Form7.sModulo = 'RECEBER' then
+    Exit;
+  {Mauricio Parizotto 2024-04-16 Fim}
     
 
   if AllTrim(Form7.sModulo) <> '' then
@@ -11490,15 +11487,6 @@ end;
 procedure TForm1.Panel4MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  {
-  if Form5.Visible then Form5.BringToFront;
-  if Form7.Visible then Form7.BringToFront;
-  if Form7.Visible and Form10.Visible then Form10.BringToFront;
-  if Form12.Visible then Form12.BringToFront;
-  if Form24.Visible then Form24.BringToFront;
-  if Form48.Visible then Form48.BringToFront;
-  Mauricio Parizotto  }
-
   //Mauricio Parizotto 2023-09-26
   if Form7.sModulo = 'PARAMETROTRIBUTACAO' then
     Exit;
@@ -11536,6 +11524,32 @@ begin
   //Mauricio Parizotto 2024-03-21
   if Form7.sModulo = 'CONVERSAOCFOP' then
     Exit;
+
+  {Mauricio Parizotto 2024-04-16 Inicio}
+  if Form7.sModulo = 'PAGAR' then
+  begin
+    if FrmContaPagar <> nil then
+    begin
+      if FrmContaPagar.Visible then
+      begin
+        FrmContaPagar.BringToFront;
+        Exit;
+      end;
+    end;
+  end;
+
+  if Form7.sModulo = 'RECEBER' then
+  begin
+    if FrmContaReceber <> nil then
+    begin
+      if FrmContaReceber.Visible then
+      begin
+        FrmContaReceber.BringToFront;
+        Exit;
+      end;
+    end;
+  end;
+  {Mauricio Parizotto 2024-04-16 Fim}
 
   if Form5.Visible then
   begin
