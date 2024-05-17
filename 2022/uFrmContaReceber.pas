@@ -426,6 +426,10 @@ end;
 
 procedure TFrmContaReceber.AtualizaObjComValorDoBanco;
 begin
+  //Se não estiver ativo não carrega informações
+  if not FormularioAtivo(Self) then
+    Exit;
+
   //Plano de Contas
   try
     fraPlanoContas.TipoDePesquisa               := tpLocate;

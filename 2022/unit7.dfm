@@ -14705,6 +14705,7 @@ object Form7: TForm7
     object ibDataSet14ST: TIBStringField
       DisplayLabel = 'CIT'
       FieldName = 'ST'
+      OnSetText = ibDataSet14STSetText
       Size = 3
     end
     object ibDataSet14BASEISS: TFloatField
