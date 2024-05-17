@@ -54,7 +54,11 @@ implementation
 
 {$R *.dfm}
 
-uses unit7, uSmallConsts, uDialogs;
+uses unit7
+	, uSmallConsts
+	, uDialogs
+	, uPermissaoUsuario
+	, MAIS;
 
 { TFrmContaBancaria }
 
@@ -152,18 +156,21 @@ procedure TFrmContaBancaria.SetaStatusUso;
 begin
   inherited;
 
-  edtNome.Enabled           := not(bEstaSendoUsado);
-  edtAgencia.Enabled        := not(bEstaSendoUsado);
-  edtContaCorrente.Enabled  := not(bEstaSendoUsado);
-  fraPlanoContas.Enabled    := not(bEstaSendoUsado);
-  edtSaldo.Enabled          := not(bEstaSendoUsado);
-  fraInstituicao.Enabled    := not(bEstaSendoUsado);
+  bSomenteLeitura := SomenteLeitura(Form7.sModulo,MAIS.Usuario);
+
+  edtNome.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtAgencia.Enabled        := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtContaCorrente.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraPlanoContas.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtSaldo.Enabled          := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraInstituicao.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
 end;
 
 
 procedure TFrmContaBancaria.AtualizaObjComValorDoBanco;
 begin
   try
+    //Plano de contas
     fraPlanoContas.TipoDePesquisa               := tpSelect;
     fraPlanoContas.GravarSomenteTextoEncontrato := True;
     fraPlanoContas.CampoCodigo                  := Form7.ibDataSet11PLANO;
@@ -172,6 +179,7 @@ begin
     fraPlanoContas.sTabela                      := 'CONTAS';
     fraPlanoContas.CarregaDescricaoCodigo;
 
+    //Instituição Financeira
     fraInstituicao.TipoDePesquisa               := tpSelect;
     fraInstituicao.GravarSomenteTextoEncontrato := True;
     fraInstituicao.CampoCodigo                  := Form7.ibDataSet11INSTITUICAOFINANCEIRA;

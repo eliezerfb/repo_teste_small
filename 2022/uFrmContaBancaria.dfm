@@ -221,7 +221,7 @@ inherited FrmContaBancaria: TFrmContaBancaria
           Left = 110
           Top = 155
           Width = 313
-          Height = 22
+          Height = 20
           Color = clWhite
           Ctl3D = False
           ParentBackground = False
@@ -231,7 +231,6 @@ inherited FrmContaBancaria: TFrmContaBancaria
           ExplicitLeft = 110
           ExplicitTop = 155
           ExplicitWidth = 313
-          ExplicitHeight = 22
           inherited txtCampo: TEdit
             Width = 313
             ExplicitWidth = 313

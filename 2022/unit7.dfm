@@ -12490,7 +12490,9 @@ object Form7: TForm7
       
         '   RECEBIMENT, VALOR_RECE, VALOR_JURO, ATIVO, CONTA, NOSSONUM, C' +
         'ODEBAR, '
-      '   NUMERONF, REGISTRO, NN, MOVIMENTO, FORMADEPAGAMENTO,'
+      
+        '   NUMERONF, REGISTRO, NN, MOVIMENTO, FORMADEPAGAMENTO, INSTITUI' +
+        'CAOFINANCEIRA,'
       '   AUTORIZACAOTRANSACAO, BANDEIRA,VALOR_MULTA,PERCENTUAL_MULTA)'
       'values'
       
@@ -12499,7 +12501,9 @@ object Form7: TForm7
       
         '   :RECEBIMENT, :VALOR_RECE, :VALOR_JURO, :ATIVO, :CONTA, :NOSSO' +
         'NUM, :CODEBAR, '
-      '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO, :FORMADEPAGAMENTO,'
+      
+        '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO, :FORMADEPAGAMENTO, :IN' +
+        'STITUICAOFINANCEIRA,'
       
         '   :AUTORIZACAOTRANSACAO, :BANDEIRA,:VALOR_MULTA,:PERCENTUAL_MUL' +
         'TA)')
@@ -14526,7 +14530,7 @@ object Form7: TForm7
       '   BCPISCOFINS, '
       
         '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
-        'FINSLUCRO)'
+        'FINSLUCRO,IPISOBREOUTRA)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14542,7 +14546,8 @@ object Form7: TForm7
         'SEGURO, '
       
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
-        'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO)')
+        'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
+        'A)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14595,7 +14600,8 @@ object Form7: TForm7
       '  CSTPISCOFINS,'
       '  FRETESOBREIPI,'
       '  CBENEF,'
-      '  PISCOFINSLUCRO'
+      '  PISCOFINSLUCRO,'
+      '  IPISOBREOUTRA'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14654,7 +14660,8 @@ object Form7: TForm7
       '  CSTPISCOFINS = :CSTPISCOFINS,'
       '  FRETESOBREIPI = :FRETESOBREIPI,'
       '  CBENEF = :CBENEF,'
-      '  PISCOFINSLUCRO = :PISCOFINSLUCRO'
+      '  PISCOFINSLUCRO = :PISCOFINSLUCRO,'
+      '  IPISOBREOUTRA = :IPISOBREOUTRA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14688,6 +14695,7 @@ object Form7: TForm7
     object ibDataSet14ST: TIBStringField
       DisplayLabel = 'CIT'
       FieldName = 'ST'
+      OnSetText = ibDataSet14STSetText
       Size = 3
     end
     object ibDataSet14BASEISS: TFloatField
@@ -14948,7 +14956,7 @@ object Form7: TForm7
       Size = 1
     end
     object ibDataSet14SOBREOUTRAS: TIBStringField
-      DisplayLabel = 'ICMS sobre OUTRAS'
+      DisplayLabel = 'ICMS sobre Outras'
       DisplayWidth = 20
       FieldName = 'SOBREOUTRAS'
       Origin = '"ICM"."SOBREOUTRAS"'
@@ -14959,6 +14967,13 @@ object Form7: TForm7
       DisplayWidth = 20
       FieldName = 'FRETESOBREIPI'
       Origin = 'ICM.FRETESOBREIPI'
+      Size = 1
+    end
+    object ibDataSet14IPISOBREOUTRA: TIBStringField
+      DisplayLabel = 'IPI sobre Outras'
+      DisplayWidth = 20
+      FieldName = 'IPISOBREOUTRA'
+      Origin = 'ICM.IPISOBREOUTRA'
       Size = 1
     end
     object ibDataSet14CSTPISCOFINS: TIBStringField
@@ -20315,7 +20330,7 @@ object Form7: TForm7
       
         '   PROXDATA, CUSTO, COMPRA, ATIVO, MOSTRAR, CLIFOR, CONTATOS, RE' +
         'GISTRO, '
-      '   FOTO, WHATSAPP)'
+      '   FOTO, WHATSAPP, CONTRIBUINTE)'
       'values'
       
         '  (:NOME, :CONTATO, :IE, :CGC, :ENDERE, :COMPLE, :CIDADE, :ESTAD' +
@@ -20329,7 +20344,9 @@ object Form7: TForm7
       
         '   :DATANAS, :CADASTRO, :ULTIMACO, :PROXDATA, :CUSTO, :COMPRA, :' +
         'ATIVO, '
-      '   :MOSTRAR, :CLIFOR, :CONTATOS, :REGISTRO, :FOTO, :WHATSAPP)')
+      
+        '   :MOSTRAR, :CLIFOR, :CONTATOS, :REGISTRO, :FOTO, :WHATSAPP, :C' +
+        'ONTRIBUINTE)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -20365,7 +20382,8 @@ object Form7: TForm7
       '  CONTATOS,'
       '  REGISTRO,'
       '  FOTO,'
-      '  WHATSAPP'
+      '  WHATSAPP,'
+      '  CONTRIBUINTE'
       'from CLIFOR '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -20407,7 +20425,8 @@ object Form7: TForm7
       '  CONTATOS = :CONTATOS,'
       '  REGISTRO = :REGISTRO,'
       '  FOTO = :FOTO,'
-      '  WHATSAPP = :WHATSAPP'
+      '  WHATSAPP = :WHATSAPP,'
+      '  CONTRIBUINTE = :CONTRIBUINTE'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -20476,7 +20495,7 @@ object Form7: TForm7
     end
     object IBDataSet2IE: TIBStringField
       DisplayLabel = 'RG/IE'
-      DisplayWidth = 21
+      DisplayWidth = 14
       FieldName = 'IE'
       Origin = 'CLIFOR.IE'
       Size = 16
@@ -20654,6 +20673,11 @@ object Form7: TForm7
       ProviderFlags = [pfInUpdate]
       Visible = False
       Size = 8
+    end
+    object IBDataSet2CONTRIBUINTE: TIntegerField
+      FieldName = 'CONTRIBUINTE'
+      Origin = 'CLIFOR.CONTRIBUINTE'
+      Visible = False
     end
   end
   object IBDataSet99: TIBDataSet
