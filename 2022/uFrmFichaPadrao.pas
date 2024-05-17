@@ -63,6 +63,7 @@ type
     bSomenteLeitura: Boolean;
     procedure VerificaSeEstaSendoUsado;
     function GetDescritivoNavegacao:string;
+    function FormularioAtivo(Form : TForm): boolean;
     procedure KeyPressPadrao(Sender: TObject; var Key: Word; Shift: TShiftState);
     { Public declarations }
   protected
@@ -313,6 +314,11 @@ begin
 
   end;
 
+end;
+
+function TFrmFichaPadrao.FormularioAtivo(Form : TForm): boolean;
+begin
+  Result := Form.Active;
 end;
 
 procedure TFrmFichaPadrao.KeyPressPadrao(Sender: TObject; var Key: Word;
