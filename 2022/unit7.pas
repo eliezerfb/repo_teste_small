@@ -8633,8 +8633,8 @@ begin
   {Mauricio Parizotto 2024-04-15 Fim}
 
 
-  {Mauricio Parizotto 2024-05-15 Inicio}
-  if sModulo = 'CLIENTES' then
+  //Mauricio Parizotto 2024-05-15
+  if (sModulo = 'CLIENTES') or (sModulo = 'VENDEDOR') then
   begin
     if Form7.IBTransaction1.Active then
       Form7.IBTransaction1.CommitRetaining;
@@ -8985,8 +8985,8 @@ begin
   {Mauricio Parizotto 2024-04-15 Fim}
 
 
-  {Mauricio Parizotto 2024-05-15 Inicio}
-  if sModulo = 'CLIENTES' then
+  //Mauricio Parizotto 2024-05-15
+  if (sModulo = 'CLIENTES') or (sModulo = 'VENDEDOR') then
   begin
     if Form7.IBTransaction1.Active then
       Form7.IBTransaction1.CommitRetaining;
@@ -17398,7 +17398,7 @@ procedure TForm7.ibDataSet9NewRecord(DataSet: TDataSet);
 begin
   ibDataSet9.Edit;
   ibDataSet9REGISTRO.AsString := sProximo;
-  //
+
   if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
   begin
     ibDataSet9FUNCAO.AsString   := 'VENDEDOR';
@@ -17406,7 +17406,6 @@ begin
   begin
     ibDataSet9FUNCAO.AsString   := 'TECNICO';
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet34AfterPost(DataSet: TDataSet);
@@ -28180,21 +28179,19 @@ end;
 
 procedure TForm7.IBDataSet2BeforePost(DataSet: TDataSet);
 begin
-  //
   if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
   begin
     if AllTrim(Form7.IBDataSet2CLIFOR.AsString) = '' then Form7.IBDataSet2CLIFOR.AsString := 'Vendedor';
   end;
-  //
+
   if Form7.IBDataSet2CLIFOR.AsString = 'Vendedor' then
   begin
-    //
     Form7.ibDataSet9.Close;                                                    //
     Form7.ibDataSet9.Selectsql.Clear;                                          // Vendedores e CLIENTES relacionados
     Form7.ibDataSet9.Selectsql.Add('select * from VENDEDOR where NOME=:NOME'); //
     Form7.ibDataSet9.DataSource := DataSource2;
     Form7.ibDataSet9.Open;
-    //
+
     if AllTrim(Form7.ibDataSet9NOME.AsString) <> AllTrim(Form7.IBDataSet2NOME.AsString) then
     begin
       try
@@ -28212,7 +28209,6 @@ begin
       except end;
     end;
   end;
-  //
 end;
 
 procedure TForm7.Button10Click(Sender: TObject);

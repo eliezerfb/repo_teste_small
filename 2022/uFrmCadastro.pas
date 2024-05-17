@@ -81,6 +81,11 @@ type
     btnWebCam: TBitBtn;
     btnSelecionarArquivo: TBitBtn;
     OpenPictureDialog1: TOpenPictureDialog;
+    tbsComissao: TTabSheet;
+    Label81: TLabel;
+    Label82: TLabel;
+    SMALL_DBEdit61: TSMALL_DBEdit;
+    SMALL_DBEdit62: TSMALL_DBEdit;
     procedure FormShow(Sender: TObject);
     procedure edtCEPExit(Sender: TObject);
     procedure edtCEPEnter(Sender: TObject);
@@ -116,6 +121,7 @@ type
     procedure edtEmailKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edtBairroKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure tbsComissaoEnter(Sender: TObject);
   private
     { Private declarations }
     FcCEPAnterior: String;
@@ -198,11 +204,17 @@ begin
 
   if edtCPFCNPJ.Canfocus then
     edtCPFCNPJ.SetFocus;
+
+  tbsComissao.TabVisible := Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor');
+
 end;
 
 function TFrmCadastro.GetPaginaAjuda: string;
 begin
-  Result := 'clifor.htm';
+  if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
+    Result := 'config_vendedores.htm'
+  else
+    Result := 'clifor.htm';
 end;
 
 procedure TFrmCadastro.imgEnderecoClick(Sender: TObject);
@@ -278,7 +290,7 @@ begin
   edtBairro.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
   fraMunicipio.Enabled          := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtEstado.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
-  edtRG_IE.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtRG_IE.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura) and (Form7.IBDataSet2CONTRIBUINTE.AsString <> '2');
   pnl_IE.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtTelefone.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtCelular.Enabled            := not(bEstaSendoUsado) and not (bSomenteLeitura);
@@ -302,6 +314,11 @@ begin
   btnWebCam.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
   btnSelecionarArquivo.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
 
+
+  if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
+  begin
+    cboRelacaoCom.Enabled := False;
+  end;
 end;
 
 procedure TFrmCadastro.edtEmailExit(Sender: TObject);
@@ -375,6 +392,18 @@ begin
   end else
   begin
     fraMunicipio.sFiltro := ' ';
+  end;
+end;
+
+procedure TFrmCadastro.tbsComissaoEnter(Sender: TObject);
+begin
+  try
+    if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then 
+      Form7.ibDataset2.Edit;
+      
+    Form7.IBDataSet2.Post;
+    Form7.IBDataSet2.Edit;
+  except
   end;
 end;
 
@@ -557,7 +586,7 @@ end;
 
 procedure TFrmCadastro.AtualizaObjComValorDoBanco;
 begin
-  if not self.Visible then
+  if not Self.Active then
     Exit;
 
   cboRelacaoCom.ItemIndex := cboRelacaoCom.Items.IndexOf(Form7.ibDataSet2CLIFOR.AsString);
@@ -607,19 +636,24 @@ begin
   end;
 
   //Botão renegociar divida
-  Form7.ibQuery1.Close;
-  Form7.IBQuery1.SQL.Text := ' Select sum(VALOR_DUPL) as TOTAL '+
-                             ' From RECEBER '+
-                             ' Where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
-                             '   and coalesce(ATIVO,9)<>1 '+
-                             '   and Coalesce(VALOR_RECE,999999999)=0';
-  Form7.IBQuery1.Open;
-
-  if Form7.IBQuery1.FieldByname('TOTAL').AsFloat <> 0 then
+  btnRenogiarDivida.Visible := False;
+  
+  if Trim(Form7.IBDataSet2NOME.AsString) <> '' then
   begin
-    if Form1.imgVendas.Visible then
+    Form7.ibQuery1.Close;
+    Form7.IBQuery1.SQL.Text := ' Select sum(VALOR_DUPL) as TOTAL '+
+                               ' From RECEBER '+
+                               ' Where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
+                               '   and coalesce(ATIVO,9)<>1 '+
+                               '   and Coalesce(VALOR_RECE,999999999)=0';
+    Form7.IBQuery1.Open;
+
+    if Form7.IBQuery1.FieldByname('TOTAL').AsFloat <> 0 then
     begin
-      btnRenogiarDivida.Visible := True;
+      if Form1.imgVendas.Visible then
+      begin
+        btnRenogiarDivida.Visible := True;
+      end;
     end;
   end;
 
@@ -852,8 +886,6 @@ end;
 procedure TFrmCadastro.CarregaTipoContibuinte;
 begin
   try
-    edtRG_IE.Enabled       := True;
-
     if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 0 then
     begin
       rgIEContribuinte.Checked    := False;
@@ -877,7 +909,6 @@ begin
       rgIEIsento.Checked          := True;
 
       Form7.IBDataSet2IE.AsString := 'ISENTO';
-      edtRG_IE.Enabled            := False;
     end;
 
     if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 9 then
@@ -887,6 +918,8 @@ begin
       if Form7.IBDataSet2IE.AsString = 'ISENTO' then
         Form7.IBDataSet2IE.AsString := '';
     end;
+
+    edtRG_IE.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura) and (Form7.IBDataSet2CONTRIBUINTE.AsString <> '2');
   except
   end;
 end;
