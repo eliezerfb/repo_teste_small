@@ -7935,8 +7935,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1184
-    ExplicitWidth = 1556
     object Button2: TButton
       Left = 260
       Top = 10
@@ -8010,7 +8008,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1556
   end
   object Panel_0: TPanel
     Left = 0
@@ -21848,98 +21845,6 @@ object Form7: TForm7
   object OpenDialog4: TOpenDialog
     Left = 902
     Top = 339
-  end
-  object spdNFeDPEC1: TspdNFeDPEC
-    VersaoManual = vm50
-    AnexarDanfePDF = False
-    DanfeSettings.FraseContingencia = 
-      'DANFE impresso em conting'#234'ncia - DPEC regularmente recebida pela' +
-      ' Receita Federal do Brasil'
-    DanfeSettings.FraseHomologacao = 'SEM VALOR FISCAL'
-    DanfeSettings.QtdeCopias = 2
-    DanfeSettings.LineDelimiter = '|'
-    DanfeSettings.InfCplMaxCol = 68
-    DanfeSettings.InfCplMaxRow = 7
-    DanfeSettings.ImprimirVolume = False
-    DanfeSettings.ImprimirDuplicata = True
-    DanfeSettings.MensagemPartilhaAutomatica = False
-    DanfeSettings.MensagemFCP = False
-    DanfeSettings.ImprimirUnidadeTributada = False
-    DanfeSettings.ImprimirObsCont = False
-    DanfeSettings.ImprimirFrenteVerso = fvDesabilitado
-    DanfeSettings.ImprimirLocalRetiradaEntrega = True
-    DanfeSettings.InfCplQuebrarLinhaAut = False
-    DanfeSettings.MensagemIcmsDesonerado = False
-    DanfeSettings.ImprimirVlrTotalDanfeSimplificado = False
-    DanfeSettings.MensagemIcmsMonofasico = False
-    Versao = '12.1.76.6495'
-    CaracteresRemoverAcentos = #225#233#237#243#250#224#232#236#242#249#226#234#238#244#251#228#235#239#246#252#227#245#241#231#193#201#205#211#218#192#200#204#210#217#194#202#206#212#219#196#203#207#214#220#195#213#209#199#186#170
-    TipoCertificado = ckMemory
-    DiretorioTemplates = 
-      'C:\Program Files (x86)\Borland\Delphi7\Bin\Templatesvm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50' +
-      'vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm5' +
-      '0\DPEC'
-    IgnoreInvalidCertificates = False
-    DiretorioLog = 'C:\Program Files (x86)\Borland\Delphi7\Bin\Log\'
-    Ambiente = akHomologacao
-    EmailSettings.Autenticacao = False
-    EmailSettings.TimeOut = 0
-    EmailSettings.ConteudoHtml = False
-    EmailSettings.UseSecureBlackBox = False
-    EmailSettings.QtdeTentativas = 0
-    EmailSettings.UseTLS = utNoTLSSupport
-    DiretorioEsquemas = 
-      'C:\Program Files (x86)\Borland\Delphi7\Bin\Esquemasvm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50v' +
-      'm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50vm50\vm50' +
-      '\DPEC'
-    ConexaoSegura = False
-    TimeOut = 0
-    DiretorioLogErro = 'C:\Program Files (x86)\Borland\Delphi7\Bin\LogErro\'
-    DiretorioTemporario = 'C:\ProgramData\'
-    ModoOperacao = moNormal
-    EntregaXML = exEmail
-    AtualizarArquivoServidores = False
-    DiagnosticMode = False
-    Left = 664
-    Top = 536
   end
   object IdHTTP1: TIdHTTP
     ProxyParams.BasicAuthentication = False
