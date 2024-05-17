@@ -4,7 +4,7 @@ inherited FrmContaBancaria: TFrmContaBancaria
   TextHeight = 16
   inherited Panel_branco: TPanel
     inherited pgcFicha: TPageControl
-      ActivePage = tbsPIX
+      ActivePage = tbsCadastro
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label129: TLabel

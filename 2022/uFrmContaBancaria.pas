@@ -164,6 +164,11 @@ begin
   fraPlanoContas.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtSaldo.Enabled          := not(bEstaSendoUsado) and not (bSomenteLeitura);
   fraInstituicao.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+
+  chkPixEstatico.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboTipoChave.Enabled      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtChavePix.Enabled       := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  SMALL_DBEdit3.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
 end;
 
 
