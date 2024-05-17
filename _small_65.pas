@@ -250,6 +250,7 @@ uses
   procedure _ecf65_GravaIdCSC(sIdToken: String);
   procedure _ecf65_GravaCSC(sCSC: String);
   function _ecf65_GerarcProdANVISA(sTAGS_: String; sNCM: String): Boolean;
+  procedure _ecf65_DisponibilizarDANFCe(sStatus: String; sLote: String; fNFE: String);
 
   type
     TMobile = class(TComponent)
@@ -2532,6 +2533,7 @@ var
   sMensagemAlertaUsoDenegado: String; // Sandro Silva 2020-05-21
   sDadosTransacaoEletronicaNoComplemento: String; // Sandro Silva 2023-03-28
   sNumeroGerencialConvertido: String; // Sandro Silva 2023-07-20
+  bDisponibilizarDANFCe: Boolean; // Sandro Silva 2023-12-05
   function EncontraItemDataSet(sItemRejeicao: String): String;
   begin
 
@@ -2575,7 +2577,6 @@ var
     sDadosTransacaoEletronicaNoComplemento := sDadosTransacaoEletronicaNoComplemento + Trim(Bandeira) + ' - ' + Trim(CodigoAutorizacao) + ' - R$' + FormatFloat('0.00', Valor);
   end;
 begin
-
 //configuração quando marcada e informado destinatário cadastrado, troca indPres para 04
 
   //
@@ -2587,6 +2588,7 @@ begin
   Result := False;
   sCNPJ_YA05 := '';
   sLogErroCredenciadoraCartao := ''; // Sandro Silva 2020-10-21
+  bDisponibilizarDANFCe := False; // Sandro Silva 2023-12-05
   //
   // 1 - Enviar NFC-e
   {Sandro Silva 2019-08-09 inicio}
@@ -4541,8 +4543,6 @@ begin
         //
 
         try
-          //
-          //
           _ecf65_NumeroSessaoIntegradorFiscal; // Sandro Silva 2018-04-23
 
           try // Sandro Silva 2021-09-13
@@ -4626,7 +4626,7 @@ begin
         begin
           //
           Sleep(100);// Aguarda tempo do sistema operacional gravar o arquivo na pasta xmldestinatario
-          sID  := Copy(Form1.spdNFCeDataSets1.Campo('Id_A03').AsString,4,44); 
+          sID  := Copy(Form1.spdNFCeDataSets1.Campo('Id_A03').AsString,4,44);
 
           fNFE := _ecf65_LoadXmlDestinatario(sID);
 
@@ -5099,6 +5099,8 @@ begin
           begin
             // sRetorno está vazio
 
+            LogFrente('5102 Sem retorno sefaz ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
+
             if Trim(sLogErro) = '' then
             begin
               sLogErro := 'Erro: 20.1' + Chr(10) + NFCE_NAO_HOUVE_RETORNO_SERVIDOR + '/' + UpperCase(Form1.ibDataSet13.FieldByname('ESTADO').AsString) + #10; // Sandro Silva 2019-07-22 sLogErro := 'Erro: 20.1' + Chr(10) + 'Não houve retorno do Servidor da SEFAZ/' + UpperCase(Form1.ibDataSet13.FieldByname('ESTADO').AsString) + #10
@@ -5114,7 +5116,7 @@ begin
               sLogErro := sLogErro + chr(10) + 'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.'
             else
               sLogErro := sLogErro + chr(10) + 'Informe o texto da mensagem acima ao operador do PDV antes de realizar nova venda.';
-            sLogErro := sLogErroCredenciadoraCartao + sLogErro; // Sandro Silva 2020-10-21 
+            sLogErro := sLogErroCredenciadoraCartao + sLogErro; // Sandro Silva 2020-10-21
           end;
 
           //
@@ -5135,9 +5137,9 @@ begin
         sStatus := NFCE_EMITIDA_EM_CONTINGENCIA; // Sandro Silva 2019-07-22  'NFC-e emitida em modo de contingência';
         //
       end;
-      //
+
       Result := True;
-      //
+
       if (Form1.ClienteSmallMobile.sVendaImportando = '') then
       begin
         // Não retornar False se não imprimir ou enviar o email
@@ -5146,15 +5148,9 @@ begin
         if AnsiContainsText(sStatus, 'Autoriza') or AnsiContainsText(sStatus, NFCE_EMITIDA_EM_CONTINGENCIA) then // Sandro Silva 2019-07-22
         begin
 
-          {Sandro Silva 2023-06-14 inicio
-          if (Form1.UsaIntegradorFiscal()) then
-          begin
-            //Repassar idRespostaFiscal para todos as formasde pagto usadas
-            EnviarRespostaFiscalValidadorFiscal(LimpaNumero(sID));
+          LogFrente('5151 autorizada ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
 
-          end;
-          }
-
+          {Sandro Silva 2023-12-06 inicio
           if AnsiContainsText(sStatus, 'conting') then
           begin
             Form1.spdNFCe1.DanfceSettings.ExibirDetalhamento := True;
@@ -5167,10 +5163,8 @@ begin
           if Form1.ImprimirDANFCE1.Checked then
             _ecf65_Imprime_DANFECE(sLote, fNFE);
 
-          {Sandro Silva 2022-02-10 inicio}
           if Form1.PosElginPay.Transacao.ImprimirComprovanteVenda then
             Form1.PosElginPay.ImpressaoComprovanteVenda(fNFE);
-          {Sandro Silva 2022-02-10 fim}
 
           if AnsiContainsText(sStatus, 'conting') then
           begin
@@ -5185,6 +5179,9 @@ begin
 
           if Form1.EnviaremailcomXMLePDFacadavenda1.Checked then // Ficha 4736 Sandro Silva 2019-08-02
             _ecf65_Email_DANFECE(sLote, fNFE);
+          }
+          bDisponibilizarDANFCe := True; // Sandro Silva 2023-12-05
+          {Sandro Silva 2023-12-06 fim}
         end; // if Result then
       end
       else
@@ -5247,13 +5244,15 @@ begin
       on E: Exception do
       begin
 
-        sLogErro := sLogErroCredenciadoraCartao + sLogErro; // Sandro Silva 2020-10-21 
+        sLogErro := sLogErroCredenciadoraCartao + sLogErro; // Sandro Silva 2020-10-21
 
         if sLogErro <> '' then
           sLogErro := sLogErro + Chr(10);
         if E.Message <> 'Operation aborted' then // 2015-07-06
           sLogErro := sLogErro + 'Erro! '+E.Message;
         Result := False;
+
+        LogFrente('5255 ' + FormataNumeroDoCupom(Form1.icupom) + ' ' + sLogErro); // Sandro Silva 2023-12-07
 
         Exit;
       end;
@@ -5311,6 +5310,8 @@ begin
 
         Form1.IBDataSet150.Post;
 
+        LogFrente('5313 ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
+
         // Sandro Silva 2015-03-30 Mantem ALTERACA.DATA = NFCE.DATA
         Form1.ibDataSet27.First;
         try
@@ -5359,7 +5360,7 @@ begin
             Form1.ibDataSet27.First;
             while Form1.ibDataSet27.Eof = False do
             begin
-            
+
               try
                 Form1.ibDataSet27.Edit;
                 Form1.ibDataSet27.FieldByName('COO').AsString := Form1.IBDataSet150.FieldByName('NUMERONF').AsString;
@@ -5389,8 +5390,24 @@ begin
     if sLogErro = '' then
       bOk := True;
   finally
+    (* 2024-03-27
+    {Sandro Silva 2023-12-06 inicio}
+    if bDisponibilizarDANFCe then
+    begin
+      LogFrente('5396 vai imprimir' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
+      _ecf65_DisponibilizarDANFCe(sStatus, sLote, fNFe);
+
+      LogFrente('5399 imprimiu ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
+
+    end;
+    {Sandro Silva 2023-12-06 fim}
+    *)
+
     if bOk = False then
     begin
+
+      LogFrente('5408 algo falhou ' + FormataNumeroDoCupom(Form1.icupom) + ' ' + sLogErro); // Sandro Silva 2023-12-07
+
       // Gera resposta para Small Mobile em .pdf com erro;
       if Form1.Panel3.Visible then
         Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible  := False;
@@ -5507,21 +5524,9 @@ begin
             if _ecf65_JaTemContingenciaPorSubstituicao(Form1.ibDataSet27.Transaction, LimpaNumero(xmlNodeValue(sXmlNFCeSubstituida, '//infNFe/@Id'))) = False then
             begin
 
-              //slLog.Add(FormatDateTime('dd-mm-yyyy HH:nn:ss', Now) + ' IniciouContingência por substituição');
-
-              // Esse if precisa ser revisto se não há algum problema em ocorrer cancelamento por substituição nestas 2 UFs 
+              // Esse if precisa ser revisto se não há algum problema em ocorrer cancelamento por substituição nestas 2 UFs
               if (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'CE') and (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'SC') then
               begin
-
-                {Sandro Silva 2021-11-03 inicio
-                try
-                  Audita('EMISSAO','FRENTE', '', 'Iniciou Contingência-' + ExtractFileName(Application.ExeName) + ' ' + LimpaNumero(Form22.sBuild) + ' ' + StrZero(Form1.iCupom,6,0) + ' ' + Form1.sCaixa,0,0); // Ato, Modulo, Usuário, Histórico, Valor // Sandro Silva 2019-03-06
-                except
-
-                end;
-                }
-
-                // Sandro Silva 2021-09-30 sXmlNFCeSubstituida := IfThen(Trim(fNFe) <> '', fNFE, Form1.spdNFCeDataSets1.LoteNFCe.GetText); // Extrai o xml
 
                 if sXmlNFCeSubstituida <> '' then
                 begin
@@ -5540,6 +5545,8 @@ begin
                         Form1.NFCeemContingncia1.Checked := True;
                         Form1.sMotivoContingencia        := NFCE_XJUST_CONTINGENCIA_AUTOMATICA;
                       end;
+
+                      LogFrente('5547 gerou contigencia para cancelamento por substituição ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
                       Result := _ecf65_EnviarNFCe(True); // Usa princípio da recursividade, o método chama a sí mesmo
 
@@ -5666,6 +5673,8 @@ begin
   end; // try
   FreeAndNil(IBQALTERACA); // Sandro Silva 2019-08-05
   ChDir(Form1.sAtual); // Sandro Silva 2017-03-31
+
+  LogFrente('5673 concluiu metodo enviarnfce ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 end;
 
 function _ecf65_Visualiza_DANFECE(pSLote: String; pFNFe : WideString): Boolean;
@@ -6165,77 +6174,9 @@ begin
             if Trim(txtJustificativa) <> '' then // Sandro Silva 2019-05-10
             begin
               //
-              (*// Sandro Silva 2021-10-04 Inicio
-              try
-                Screen.Cursor := crHourGlass; // Cursor de Aguardo
-
-                Form1.ExibePanelMensagem('Requisitando inutilização...'); // Sandro Silva 2019-05-28
-
-                Form1.ibDataset99.Close;
-                Form1.ibDataset99.SelectSql.Clear;
-                Form1.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form1.ibDataSet13.FieldByName('MUNICIPIO').AsString)+' '+' and UF='+QuotedStr(UpperCase(Form1.ibDataSet13ESTADO.AsString))+' ');
-                Form1.ibDataset99.Open;
-                //
-                sID := Copy(Form1.IBDataSet99.FieldByName('CODIGO').AsString,1,2) + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + aModelo + StrZero(StrToInt(aSerie),3,0) + StrZero(StrToInt(aIni),9,0) + StrZero(StrToInt(aFim),9,0);
-
-                //
-                _ecf65_NumeroSessaoIntegradorFiscal; // Sandro Silva 2018-04-23
-
-                sRetorno := Form1.spdNFce1.InutilizarNF(sId, aAno, LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString), aModelo, aSerie, aIni, aFim, txtJustificativa);
-
-                {Sandro Silva 2019-09-30 inicio}
-                sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
-                {Sandro Silva 2019-09-30 fim}
-
-                {Sandro Silva 2019-05-28 inicio}
-                if CampoExisteFB(Form1.IBDatabase1, 'INUTILIZACAO', 'REGISTRO') then
-                begin
-
-                  if xmlNodeValue(sRetorno, '//infInut/cStat') = '102' then
-                  begin
-                    sID := Copy(Form1.IBDataSet99.FieldByName('CODIGO').AsString,1,2) + aAno + LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString) + aModelo + Right('000' + aSerie, 3) + Right('000000000' + aIni, 9) + Right('000000000' + aFim, 9);
-                    if FileExists(PChar(StringReplace(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-inut.xml', '\\', '\', [rfReplaceAll]))) then
-                    begin
-
-                      with TStringList.Create do
-                      begin
-                        LoadFromFile(StringReplace(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + sID + '-inut.xml', '\\', '\', [rfReplaceAll])); // Carrega xml para stringlist
-
-                        _ecf65_GravarInutilizacao(Text, Form1.IBQuery65); //Passa stringlist.text para ser importado
-
-                        Free;// Tira TStringList da memória
-                      end;
-                    end;
-
-                  end;
-
-                end;
-                {Sandro Silva 2019-05-28 fim}
-
-                Form1.OcultaPanelMensagem; // Sandro Silva 2019-05-28
-                Commitatudo(True); // Inutilização NFC-e Sandro Silva 2019-05-28
-                //
-                Screen.Cursor := crDefault;
-                sRetorno := Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9);
-                SmallMsg(sRetorno);
-                //
-              except
-                on E: Exception do
-                begin
-                  //
-                  Application.MessageBox(PChar(E.Message+chr(10)+
-                                          chr(10)+'Leia atentamente a mensagem acima.'+char(10)+'Informe novamente os dados para inutilização da NFC-e.'
-                                          ),'Atenção Erro: 2321',mb_Ok + MB_ICONWARNING);
-                  Screen.Cursor            := crDefault;
-                  Abort;
-                  //
-                end;
-              end;
-              *)
               sRetorno := _ecf65_InutilizacaoNFCe(sID, aAno, aModelo, aSerie, aIni, aFim, txtJustificativa);
               Commitatudo(True); // Inutilização NFC-e Sandro Silva 2019-05-28
               SmallMsg(sRetorno);
-              {Sandro Silva 2021-10-04 fim}
             end; // if Trim(txtJustificativa) <> '' then
 
           end; // if aFim <> '' then
@@ -6419,7 +6360,7 @@ begin
       }
     end; // if Form1.sModeloECF = '65' then
 
-    if Form1.sStatusECF <> 'CAIXA LIVRE' then
+    if Form1.sStatusECF <> TEXTO_CAIXA_LIVRE then  // Sandro Silva 2024-04-04 if Form1.sStatusECF <> 'CAIXA LIVRE' then
     begin
       //
       if (Form1.bBalancaAutonoma = False) then // Sandro Silva 2019-01-23
@@ -11657,6 +11598,39 @@ begin
     end;
 
   end;
+
+end;
+
+procedure _ecf65_DisponibilizarDANFCe(sStatus: String; sLote: String; fNFE: String);
+begin
+  if AnsiContainsText(sStatus, 'conting') then
+  begin
+    Form1.spdNFCe1.DanfceSettings.ExibirDetalhamento := True;
+    Form1.spdNFCe1.DanfceSettings.ParamsAvancados    := 'IdentificacaoVia=Via Estabelecimento';
+  end;
+
+  if Form1.VisualizarDANFCE1.Checked then
+    _ecf65_Visualiza_DANFECE(sLote, fNFE);
+
+  if Form1.ImprimirDANFCE1.Checked then
+    _ecf65_Imprime_DANFECE(sLote, fNFE);
+
+  if Form1.PosElginPay.Transacao.ImprimirComprovanteVenda then
+    Form1.PosElginPay.ImpressaoComprovanteVenda(fNFE);
+
+  if AnsiContainsText(sStatus, 'conting') then
+  begin
+    // Contingência 2 vias
+    if Form1.ImprimirDANFCE1.Checked = False then
+      _ecf65_Imprime_DANFECE(sLote, fNFE);
+
+    Form1.spdNFCe1.DanfceSettings.ParamsAvancados := 'IdentificacaoVia=Via Consumidor';
+    _ecf65_Imprime_DANFECE(sLote, fNFE);
+  end;
+  Form1.spdNFCe1.DanfceSettings.ParamsAvancados := '';
+
+  if Form1.EnviaremailcomXMLePDFacadavenda1.Checked then // Ficha 4736 Sandro Silva 2019-08-02
+    _ecf65_Email_DANFECE(sLote, fNFE);
 
 end;
 

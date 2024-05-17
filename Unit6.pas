@@ -445,7 +445,7 @@ begin
     cTotalAPagar := Form1.fTotal;
   edTotalPagar.Text := FormatFloat('0.00', cTotalAPagar);
 
-  if Form1.fTotal <> cTotalAPagar then
+  if StrToFloat(FormatFloat('0.00', Form1.fTotal)) <> StrToFloat(FormatFloat('0.00', cTotalAPagar)) then //Sandro Silva 2024-04-29 if Form1.fTotal <> cTotalAPagar then
   begin
     if Form1.fTotal > cTotalAPagar then
     begin
