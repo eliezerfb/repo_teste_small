@@ -258,8 +258,7 @@ uses
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
   uPermissaoUsuario in 'uPermissaoUsuario.pas',
-  uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro},
-  uFrmVendedor in 'uFrmVendedor.pas' {FrmVendedor};
+  uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro};
 
 {$R *.RES}
 

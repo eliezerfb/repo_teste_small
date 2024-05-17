@@ -642,7 +642,7 @@ inherited FrmCadastro: TFrmCadastro
           OnKeyDown = PadraoKeyDown
         end
         object edtRazaoSocial: TSMALL_DBEdit
-          Left = 101
+          Left = 100
           Top = 39
           Width = 325
           Height = 20
@@ -754,7 +754,7 @@ inherited FrmCadastro: TFrmCadastro
           OnKeyUp = edtBairroKeyUp
         end
         object edtEstado: TSMALL_DBEdit
-          Left = 101
+          Left = 100
           Top = 180
           Width = 91
           Height = 20

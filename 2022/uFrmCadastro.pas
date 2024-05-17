@@ -586,7 +586,8 @@ end;
 
 procedure TFrmCadastro.AtualizaObjComValorDoBanco;
 begin
-  if not Self.Active then
+  //Se não estiver ativo não carrega informações
+  if not FormularioAtivo(Self) then
     Exit;
 
   cboRelacaoCom.ItemIndex := cboRelacaoCom.Items.IndexOf(Form7.ibDataSet2CLIFOR.AsString);
@@ -631,7 +632,6 @@ begin
     end;
 
     fraMunicipio.CarregaDescricao;
-
   except
   end;
 
