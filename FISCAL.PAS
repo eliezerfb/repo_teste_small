@@ -13072,6 +13072,8 @@ begin
       end;
       {$Endregion}
 
+    end;
+
     {Sandro Silva 2024-04-04 inicio
     if bFechado then
       Display(Form1.sStatusECF, Form1.sF);
@@ -13086,6 +13088,7 @@ begin
         LogFrente('13164 abortando ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
         Abort;
+      end;
 
       Panel3.Visible  := False;
 
