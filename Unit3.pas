@@ -60,6 +60,8 @@ var
   iGnf, iCOO : Integer;
   bSangria, bSuprimento : boolean;
   IBQTEMP: TIBQuery;
+
+  ValorOperacao : double;
 begin
   if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
   begin
@@ -125,9 +127,15 @@ begin
     if Form1.sModeloECF = '14' then bSangria := _ecf14_Sangria(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
     if Form1.sModeloECF = '15' then bSangria := _ecf15_Sangria(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
     if Form1.sModeloECF = '17' then bSangria := _ecf17_Sangria(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
+    {Mauricio Parizotto 2024-05-17 Inicio
     if Form1.sModeloECF = '59' then bSangria := _ecf59_Sangria(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
     if form1.sModeloECF = '65' then bSangria := _ecf65_Sangria(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
     if Form1.sModeloECF = '99' then bSangria := _ecf99_Sangria(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
+    }
+
+    if Form1.sModeloECF = '59' then bSangria := True;
+    if form1.sModeloECF = '65' then bSangria := True;
+    if Form1.sModeloECF = '99' then bSangria := True;
 
     {Sandro Silva 2021-07-22 inicio
     if Form1.sModeloECF = '04' then bSangria := _ecf04_Sangria(Form1.ibDataSet25.FieldByName('ACUMULADO1.AsFloat);
@@ -140,7 +148,7 @@ begin
     if Form1.sModeloECF = '11' then bSangria := _ecf11_Sangria(Form1.ibDataSet25.FieldByName('ACUMULADO1.AsFloat);
     }
 
-    {$Region'//// Sangria ////'}
+    {$Region'//// Grava Sangria ////'}
     if bSAngria then
     begin
       // Livro caixa
@@ -206,6 +214,19 @@ begin
       Form1.Demais('CN');
     end;
     {$Endregion}
+
+    if (Form1.sModeloECF = '59')
+      or (Form1.sModeloECF = '65')
+      or (Form1.sModeloECF = '99')  then
+    begin
+      ValorOperacao := Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat;
+      Commitatudo(True);
+    end;
+
+    if Form1.sModeloECF = '59' then _ecf59_Sangria(ValorOperacao);
+    if form1.sModeloECF = '65' then _ecf65_Sangria(ValorOperacao);
+    if Form1.sModeloECF = '99' then _ecf99_Sangria(ValorOperacao);
+    {Mauricio Parizotto 2024-05-17 Fim}
   end else
   begin
     if Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat > 0 then
@@ -219,9 +240,14 @@ begin
       if Form1.sModeloECF = '14' then bSuprimento := _ecf14_Suprimento(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
       if Form1.sModeloECF = '15' then bSuprimento := _ecf15_Suprimento(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
       if Form1.sModeloECF = '17' then bSuprimento := _ecf17_Suprimento(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
+      {Mauricio Parizotto 2024-05-17 Inicio
       if Form1.sModeloECF = '59' then bSuprimento := _ecf59_Suprimento(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
       if form1.sModeloECF = '65' then bSuprimento := _ecf65_Suprimento(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
       if Form1.sModeloECF = '99' then bSuprimento := _ecf99_Suprimento(Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat);
+      }
+      if Form1.sModeloECF = '59' then bSuprimento := True;
+      if form1.sModeloECF = '65' then bSuprimento := True;
+      if Form1.sModeloECF = '99' then bSuprimento := True;
 
       {Sandro Silva 2021-07-22 inicio
       if Form1.sModeloECF = '04' then bSuprimento := _ecf04_Suprimento(Form1.ibDataSet25.FieldByName('ACUMULADO1.AsFloat);
@@ -234,7 +260,7 @@ begin
       if Form1.sModeloECF = '11' then bSuprimento := _ecf11_Suprimento(Form1.ibDataSet25.FieldByName('ACUMULADO1.AsFloat);
       }
 
-      {$Region'//// Suprimento ////'}
+      {$Region'//// Grava Suprimento ////'}
       if bSuprimento then
       begin
         // Livro caixa
@@ -299,8 +325,23 @@ begin
         Form1.Demais('CN');
       end;
       {$Endregion}
+
+      if (Form1.sModeloECF = '59')
+        or (Form1.sModeloECF = '65')
+        or (Form1.sModeloECF = '99')  then
+      begin
+        ValorOperacao := Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat;
+        Commitatudo(True);
+      end;
+
+      if Form1.sModeloECF = '59' then _ecf59_Suprimento(ValorOperacao);
+      if form1.sModeloECF = '65' then _ecf65_Suprimento(ValorOperacao);
+      if Form1.sModeloECF = '99' then _ecf99_Suprimento(ValorOperacao);
+      {Mauricio Parizotto 2024-05-17 Fim}
     end;
   end;
+
+
   Close;
 end;
 

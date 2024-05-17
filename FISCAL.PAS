@@ -14678,9 +14678,7 @@ begin
 
     Form1.bFlag2 := False; // Form1.Sangria1Click(
     Button4.Enabled := False;
-
-    Commitatudo(True); //Mauricio Parizotto 2024-05-06
-  end;;
+  end;
 end;
 
 procedure TForm1.Sobreoprograma1Click(Sender: TObject);
