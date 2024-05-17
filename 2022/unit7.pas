@@ -1885,7 +1885,6 @@ type
     procedure Fechadas1Click(Sender: TObject);
     procedure Abertas1Click(Sender: TObject);
     procedure MenuItem147Click(Sender: TObject);
-    procedure Image210Click(Sender: TObject);
     procedure ibDataSet3TOTAL_FRETChange(Sender: TField);
     procedure imgVisualizarClick(Sender: TObject);
     procedure ibDataSet9NewRecord(DataSet: TDataSet);
@@ -9725,14 +9724,19 @@ end;
 
 procedure TForm7.Inventrio1Click(Sender: TObject);
 begin
-  Form32.ShowModal;
+  //Form32.ShowModal; Mauricio Parizotto 2024-05-07
+  try
+    Form32 := TForm32.Create(self);
+    Form32.ShowModal;
+  finally
+    FreeAndNil(Form32);
+  end;
 end;
 
 procedure TForm7.Relatriodeconpras1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
-  //
+
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
   Form38.RadioButton1.Visible := True;
@@ -9740,8 +9744,7 @@ begin
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
   sModulo := 'Relatório de compras';
-  Form38.ShowModal; // Ok
-  //
+  Form38.ShowModal;
 end;
 
 procedure TForm7.Relatriodevendas1Click(Sender: TObject);
@@ -17263,61 +17266,54 @@ end;
 
 procedure TForm7.Image_FechaClick(Sender: TObject);
 begin
-  //
   try
     if Form12.Visible then Form12.Close;
-  except end;
-  //
+  except
+  end;
+
   try
     if Form24.Visible then Form24.Close;
   except end;
-  //
+
   Form7.Close;
   Label1.Caption := 'Small Commerce';
   Label2.Caption := 'Small Commerce';
-  //
 end;
 
 procedure TForm7.Balanas1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
-  Form7.sModulo   := 'BALANCA';
+  Form7.sModulo   := 'Balanças';
   Form38.Caption  := 'Exportação de arquivo TXT para balança';
-  //
+
   Form38.Panel1.Visible := True;
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.Fechadas1Click(Sender: TObject);
 begin
-  //
   sWhere := 'where upper(SITUACAO)='+QuotedStr('FECHADA');
   Form7.Close;
   Form7.Show;
-  //
+
   MenuItem147.Checked       := False;
   Abertas1.Checked          := False;
   Fechadas1.Checked         := True;
-  //
 end;
 
 procedure TForm7.Abertas1Click(Sender: TObject);
 begin
-  //
   sWhere := 'where upper(SITUACAO)='+QuotedStr('ABERTA');
   Form7.Close;
   Form7.Show;
-  //
+
   MenuItem147.Checked       := False;
   Abertas1.Checked          := False;
   Fechadas1.Checked         := True;
-  //
+
   MenuItem147.Checked       := False;
   Abertas1.Checked          := True ;
   Fechadas1.Checked         := False;
-  //
 end;
 
 procedure TForm7.MenuItem140Click(Sender: TObject);
@@ -17327,25 +17323,18 @@ end;
 
 procedure TForm7.MenuItem147Click(Sender: TObject);
 begin
-  //
   sWhere := '';
   Form7.Close;
   Form7.Show;
-  //
+
   MenuItem147.Checked       := True;
   Abertas1.Checked          := False;
   Fechadas1.Checked         := False;
-  //
 end;
 
 procedure TForm7.miTermoUsoServicoClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
-end;
-
-procedure TForm7.Image210Click(Sender: TObject);
-begin
-//  Form6.Show;
 end;
 
 procedure TForm7.ibDataSet3TOTAL_FRETChange(Sender: TField);
