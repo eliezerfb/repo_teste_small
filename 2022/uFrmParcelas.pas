@@ -1256,8 +1256,9 @@ begin
 
     oTEF := TFuncoesTEF.Create;
     try
-      oTEF.CNPJ     := Form7.ibDataSet13CGC.AsString;
-      oTEF.BuildEXE := TRetornarBuildEXE.New
+      oTEF.IBDataBase := Form7.IBDatabase1;
+      oTEF.CNPJ       := Form7.ibDataSet13CGC.AsString;
+      oTEF.BuildEXE   := TRetornarBuildEXE.New
                                         .Retornar(True);
       // Fixo 1 no Commerce
       oTEF.QtdeCartoes := 1;
