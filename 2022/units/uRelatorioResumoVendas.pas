@@ -31,6 +31,7 @@ type
     cdsTotalGrupoCustocompra: TFMTBCDField;
     cdsTotalGrupoVendidopor: TFMTBCDField;
     cdsTotalGrupoLucrobruto: TFMTBCDField;
+    cdsTotalGrupoQuantidade: TFMTBCDField;
     procedure FormShow(Sender: TObject);
     procedure btnAvancarClick(Sender: TObject);
     procedure btnVoltarClick(Sender: TObject);
@@ -135,6 +136,11 @@ begin
   cdsTotalGrupoVendidopor.Size := FnCasasDecimais;
   cdsTotalGrupo.FieldDefs.Items[cdsTotalGrupo.FieldDefs.IndexOf(cdsTotalGrupoLucrobruto.FieldName)].Size := FnCasasDecimais;
   cdsTotalGrupoLucrobruto.Size := FnCasasDecimais;
+  //Mauricio Parizotto 2024-05-20
+  cdsTotalGrupo.FieldDefs.Items[cdsTotalGrupo.FieldDefs.IndexOf(cdsTotalGrupoQuantidade.FieldName)].Size := FnCasasDecimaisQtde;
+  cdsTotalGrupoQuantidade.Size := FnCasasDecimaisQtde;
+
+
 
   // cdsExcluidos
   cdsExcluidos.FieldDefs.Items[cdsExcluidos.FieldDefs.IndexOf(cdsExcluidosVALOR.FieldName)].Size := FnCasasDecimais;
@@ -505,6 +511,7 @@ begin
     QryDados.SQL.Add('SELECT');
     QryDados.SQL.Add('    0 as "Ord"');
     QryDados.SQL.Add('    , CASE WHEN COALESCE(GRUPO.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE GRUPO.NOME END AS "Grupo"');
+    QryDados.SQL.Add('    , SUM(CAST(ESTOQUE.QTD_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+'))) AS "Quantidade"'); //Mauricio Parizotto 2024-05-20
     QryDados.SQL.Add('    , SUM(CAST(ESTOQUE.CUS_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Custo compra"');
     QryDados.SQL.Add('    , SUM(CAST(ESTOQUE.VAL_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Vendido por"');
     QryDados.SQL.Add('    , SUM(CAST(ESTOQUE.LUC_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Lucro bruto"');
@@ -525,6 +532,7 @@ begin
       QryDados.SQL.Add('SELECT FIRST 1');
       QryDados.SQL.Add('    1 as "Ord"');
       QryDados.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Grupo"');
+      QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"'); //Mauricio Parizotto 2024-05-20
       QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
       QryDados.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
       QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
@@ -538,11 +546,13 @@ begin
         QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Grupo"')
       else
         QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Grupo"');
+      QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Quantidade"'); //Mauricio Parizotto 2024-05-20
       QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Custo compra"');
       QryDados.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
       QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');
       QryDados.SQL.Add('FROM EMITENTE');
     end;
+
     QryDados.SQL.Add('ORDER BY 1, 5 DESC');
     QryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
     QryDados.Open;
