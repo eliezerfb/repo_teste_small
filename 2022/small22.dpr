@@ -254,7 +254,8 @@ uses
   uFrmTransportadora in 'uFrmTransportadora.pas' {FrmTransportadora},
   uFrmPlanoContas in 'uFrmPlanoContas.pas' {FrmPlanoContas},
   uFrmBanco in 'uFrmBanco.pas' {FrmBanco},
-  uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria};
+  uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria},
+  uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas';
 
 {$R *.RES}
 

@@ -2409,6 +2409,7 @@ type
     procedure Imprimiretiqueta1Click(Sender: TObject);
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     procedure miDuplicarNFSeClick(Sender: TObject);
+    procedure ibDataSet14STSetText(Sender: TField; const Text: string);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -2474,6 +2475,8 @@ type
     procedure CarregarContasReceberMarcadas;
     procedure CarregarContasPagarMarcadas;
     function TestarPodeCadastrarClifor(AcNome: String; AbMensagem: Boolean = True): Boolean;
+    function PodeUtilizarCIT(AcTexto: String): Boolean;
+    function TestarPodeUtilizarCIT(AcRegistro, AcCITInformado: String): Boolean;
   public
     // Public declarations
 
@@ -16514,6 +16517,59 @@ begin
   ibDataSet14NOME.AsString := Text;
 end;
 
+procedure TForm7.ibDataSet14STSetText(Sender: TField; const Text: string);
+var
+  nIndex: Integer;
+  cText: String;
+
+procedure SetaValorST;
+begin
+  if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataSet14.Edit;
+  Sender.Value := cText;
+  Form7.ibDataSet14.Post;
+  Form7.ibDataSet14.Edit;
+end;
+
+begin
+  cText := Text;
+  ibDataSet14ST.OnSetText := nil;
+  try
+    if AllTrim(cText) = EmptyStr then
+    begin
+      SetaValorST;
+      Exit;
+    end;
+
+    if not PodeUtilizarCIT(cText) then
+    begin
+      cText := EmptyStr;
+
+      if (Assigned(FrmNaturezaOperacao)) and (FrmNaturezaOperacao.Showing) then
+      begin
+        // Quando a tela de cadastro estiver aberta
+        FrmNaturezaOperacao.SMALL_DBEdit57.Text := EmptyStr;
+        Form7.ibDataSet14.Post;
+        Form7.ibDataSet14.Edit;
+        FrmNaturezaOperacao.SMALL_DBEdit57.SetFocus;
+      end
+      else
+      begin
+        // Quando for alteração diretamente no grid
+        SetaValorST;
+        nIndex := DBGrid1.SelectedIndex;
+        DBGrid1.SelectedIndex := nIndex;
+        // Abort para não trocar de coluna no GRID.
+        Abort;
+      end;
+    end
+    else
+      SetaValorST;
+  finally
+    ibDataSet14ST.OnSetText := ibDataSet14STSetText;
+  end;
+end;
+
 procedure TForm7.ibDataSet1AfterDelete(DataSet: TDataSet);
 begin
   //
@@ -18261,9 +18317,24 @@ end;
 procedure TForm7.AtualizarListaItensAuxiliar;
 var
   nRecNo: Integer;
+  ProdComposto : Boolean;
 begin
+  {Mauricio Parizotto 2024-05-16 Inicio}
+  ProdComposto := ProdutoComposto(Form7.ibDataSet16.Transaction,
+                                  Form7.ibDataSet16CODIGO.AsString);
+
+  {
   if (Form1.ConfNegat <> 'Não') then
     Exit;
+  }
+
+  if (Form1.ConfNegat <> 'Não') and (not ProdComposto) then
+    Exit;
+
+  if (Form1.ConfPermitFabricarSemQtd) and (ProdComposto) then
+    Exit;
+
+  {Mauricio Parizotto 2024-05-16 Fim}
 
   if CDSItensNotaAux.Active then
     CDSItensNotaAux.Close;
@@ -19256,12 +19327,17 @@ begin
       begin
         Form7.ibDataSet16TOTAL.AsFloat := Arredonda(Form7.ibDataSet16QUANTIDADE.Asfloat * Form7.ibDataSet16UNITARIO.AsFloat,4);
       end;
+      (* Mauricio Parizotto 2024-04-26 F-18422
+      Ajuste feito no card 7549 de 2023-11-28 não é mais necessário com a implementação do card 7738 de 2024-02-05
+
       {Sandro Silva 2023-11-28 inicio
       VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
       }
       if (ProdutoComposto(Form7.ibDataSet4.Transaction, Form7.ibDataSet4CODIGO.AsString) = False) then
         VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
       {Sandro Silva 2023-11-28 fim}
+      *)
+      VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
     end else
     begin
       //if Form7.ibDataSet16TOTAL.AsFloat <> 0 then Mauricio Parizotto 2023-06-05
@@ -19302,7 +19378,6 @@ begin
   if TestarNatOperacaoMovEstoque then
   begin
     nSaldoDisp := RetornarSaldoDisponivelItemNota(ibDataSet16CODIGO.AsString);
-
 
     if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < AnQtdeInformada) then
     begin
@@ -33180,6 +33255,95 @@ begin
   {Sandro Silva 2023-10-02 fim}
 end;
 
+function TForm7.TestarPodeUtilizarCIT(AcRegistro, AcCITInformado: String): Boolean;
+const
+  _cSQL = 'SELECT REGISTRO, ST FROM ICM';
+var
+  oTransaction: TIBTransaction;
+  qryDadosAtual: TIBQuery;
+  qryDados: TIBQuery;
+begin
+  Result := True;
+  if AcCITInformado = EmptyStr then
+    Exit;
+
+  // Testa na transação atual
+  qryDadosAtual := CriaIBQuery(IBTransaction1);
+  try
+    qryDadosAtual.Close;
+    qryDadosAtual.SQL.Clear;
+    qryDadosAtual.SQL.Add(_cSQL);
+    qryDadosAtual.Open;
+    qryDadosAtual.First;
+
+    while not qryDadosAtual.Eof do
+    begin
+      Result := not ((qryDadosAtual.FieldByName('REGISTRO').AsString <> AcRegistro)
+                    and (qryDadosAtual.FieldByName('ST').AsString = AcCITInformado));
+
+      if not Result then
+        Break;
+
+      qryDadosAtual.Next;
+    end;
+
+    if Result then
+    begin
+      // Necessário criar uma nova transação
+      oTransaction := CriaIBTransaction(IBDatabase1);
+      qryDados := CriaIBQuery(oTransaction);
+      try
+        qryDados.Close;
+        qryDados.SQL.Clear;
+        qryDados.SQL.Add(_cSQL);
+        qryDados.SQL.Add('WHERE (ST=:XST)');
+        qryDados.ParamByName('XST').AsString := AcCITInformado;
+        qryDados.Open;
+        qryDados.Last;
+        qryDados.First;
+
+        Result := qryDados.IsEmpty;
+
+        if not Result then
+        begin
+          // Se encontrou 1 vai validar com os dados da transação atual
+          // Se encontrou mais que 1 quer dizer q tem algum CIT duplicado mesmo
+          if qryDados.RecordCount = 1 then
+          begin
+            qryDadosAtual.First;
+
+            while not qryDadosAtual.Eof do
+            begin
+              // Quer dizer que foi alterado
+              if (qryDados.FieldByName('REGISTRO').AsString = qryDadosAtual.FieldByName('REGISTRO').AsString)
+                and (qryDados.FieldByName('ST').AsString <> AcCITInformado) then
+                Result := True;
+              // Quer dizer que tem duplicado
+              if (qryDados.FieldByName('REGISTRO').AsString <> qryDadosAtual.FieldByName('REGISTRO').AsString)
+                and (qryDados.FieldByName('ST').AsString = qryDadosAtual.FieldByName('ST').AsString) then
+              begin
+                Result := False;
+                Break;
+              end;
+
+              qryDadosAtual.Next;
+            end;
+          end;
+        end;
+      finally
+        FreeAndNil(qryDados);
+        FreeAndNil(oTransaction);
+      end;
+    end;
+
+    if not Result then
+      MensagemSistema('Não é possível utilizar o CIT '+ Trim(AcCITInformado) + '.' + sLineBreak +
+                      'Já existe outro registro configurado com este CIT.', msgInformacao);
+  finally
+    FreeAndNil(qryDadosAtual);
+  end;
+end;
+
 procedure TForm7.ibDataSet7AfterScroll(DataSet: TDataSet);
 begin
   if FrmParcelas <> nil then
@@ -35800,6 +35964,20 @@ begin
     tmcICM                : Result := 'NOME: ' + ibDataSet14NOME.AsString + ', CFOP: ' + ibDataSet14CFOP.AsString;
     tmc2Contas            : Result := 'NOME: ' + ibDataSet11NOME.AsString + ', AGÊNCIA: ' + ibDataSet11AGENCIA.AsString + ', CONTA: ' + ibDataSet11CONTA.AsString;
     else Result := 'MÓDULO ' + AnsiUpperCase(sModulo) + ' NÃO MAPEADO.';
+  end;
+end;
+
+function TForm7.PodeUtilizarCIT(AcTexto: String): Boolean;
+begin
+  Result := True;
+
+  if not TestarPodeUtilizarCIT(Form7.ibDataSet14.FieldByName('REGISTRO').AsString, AcTexto) then
+  begin
+    Result := False;
+    if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataSet14.Edit;
+    Form7.ibDataSet14ST.AsString := EmptyStr;
+    Form7.ibDataSet14.Post;
   end;
 end;
 
