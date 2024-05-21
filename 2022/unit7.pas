@@ -2477,6 +2477,7 @@ type
     function TestarPodeCadastrarClifor(AcNome: String; AbMensagem: Boolean = True): Boolean;
     function PodeUtilizarCIT(AcTexto: String): Boolean;
     function TestarPodeUtilizarCIT(AcRegistro, AcCITInformado: String): Boolean;
+    function RetornarCasasDecimaisPreco: Integer;
   public
     // Public declarations
 
@@ -13506,8 +13507,6 @@ begin
 end;
 
 procedure TForm7.ibDataSet4MARGEMLBChange(Sender: TField);
-var
-  oIni: TIniFile;
 begin
   if ibDataSet4CUSTOCOMPR.Asfloat < 0 then
     ibDataSet4CUSTOCOMPR.Asfloat := 0;
@@ -13519,12 +13518,7 @@ begin
     ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.3f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
 
     }
-    oIni := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-    try
-      ibDataSet4PRECO.AsFloat := Arredonda((ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1)), oIni.ReadInteger('Outros','Casas decimais no preço',2));
-    finally
-      oIni.Free;
-    end;
+    ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.'+RetornarCasasDecimaisPreco.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
     {Dailon Parisotto (f-18540) 2024-05-Fim}
   end;
 end;
@@ -15131,6 +15125,7 @@ procedure TForm7.ibDataSet4PRECOChange(Sender: TField);
 var
   nMargem: Currency;
   nVendaRecalc: Double;
+  nDecimal: Integer;
 begin
   {Dailon Parisotto 2023-10-09 Inicio}
   if FbDuplicandoProd then
@@ -15153,16 +15148,17 @@ begin
   begin
     if (ibDataSet4MARGEMLB.Value <> 0) and (ibDataSet4CUSTOCOMPR.AsFloat <> 0) then
     begin
-      nMargem := Arredonda(((ibDataSet4PRECO.AsFloat - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100, 2);
+      nDecimal := RetornarCasasDecimaisPreco;
 
+      nMargem := StrToFloat(Format('%8.2f',[(((ibDataSet4PRECO.AsFloat - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100)]));
       if ibDataSet4MARGEMLB.AsCurrency <> nMargem then
       begin
-        nVendaRecalc := StrToFloat(Format('%8.2f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((nMargem / 100)+1))]));
+        nVendaRecalc := StrToFloat(Format('%8.'+nDecimal.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((nMargem / 100)+1))]));
         if (nVendaRecalc <> ibDataSet4PRECO.AsFloat) then
           ibDataSet4MARGEMLB.AsCurrency := nMargem
         else
         begin
-          nVendaRecalc := StrToFloat(Format('%8.2f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsCurrency / 100)+1))]));
+          nVendaRecalc := StrToFloat(Format('%8.'+nDecimal.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
           if (nVendaRecalc <> ibDataSet4PRECO.AsFloat) then
             ibDataSet4MARGEMLB.AsCurrency := nMargem
         end;
@@ -15173,6 +15169,18 @@ begin
   end;
 
   Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
+end;
+
+function TForm7.RetornarCasasDecimaisPreco: Integer;
+var
+  oIni: TIniFile;
+begin
+  oIni := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
+  try
+    Result := oIni.ReadInteger('Outros','Casas decimais no preço', 2);
+  finally
+    oIni.Free;
+  end;
 end;
 
 procedure TForm7.Balancetegerancialmensal1Click(Sender: TObject);
