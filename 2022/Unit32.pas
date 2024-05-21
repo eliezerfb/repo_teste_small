@@ -112,27 +112,27 @@ begin
   //
   ibQuery1.Close;
   ibQuery1.Sql.Clear;
-  ibQuery1.SQL.Add('select ITENS001.DESCRICAO, sum(ITENS001.QUANTIDADE)as vQTD_VENDA from ITENS001, VENDAS where VENDAS.EMITIDA=''S'' and VENDAS.EMISSAO > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and VENDAS.NUMERONF=ITENS001.NUMERONF and VENDAS.OPERACAO not in (select ICM.NOME from ICM where ICM.INTEGRACAO like(''%=%'')) group by DESCRICAO');
+  ibQuery1.SQL.Add('select ITENS001.CODIGO, ITENS001.DESCRICAO, sum(ITENS001.QUANTIDADE)as vQTD_VENDA from ITENS001, VENDAS where VENDAS.EMITIDA=''S'' and VENDAS.EMISSAO > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and VENDAS.NUMERONF=ITENS001.NUMERONF and VENDAS.OPERACAO not in (select ICM.NOME from ICM where ICM.INTEGRACAO like(''%=%'')) group by CODIGO, DESCRICAO');
   ibQuery1.Open;
   //
   ibQuery2.Close;
   ibQuery2.Sql.Clear;
-  ibQuery2.SQL.Add('select ITENS002.DESCRICAO, sum(ITENS002.QUANTIDADE)as vQTD_COMPRA from ITENS002, COMPRAS where COMPRAS.EMISSAO > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+ ' and COMPRAS.NUMERONF=ITENS002.NUMERONF and ITENS002.FORNECEDOR=COMPRAS.FORNECEDOR and COMPRAS.OPERACAO not in (select ICM.NOME from ICM where ICM.INTEGRACAO like(''%=%'')) group by DESCRICAO');
+  ibQuery2.SQL.Add('select ITENS002.CODIGO, ITENS002.DESCRICAO, sum(ITENS002.QUANTIDADE)as vQTD_COMPRA from ITENS002, COMPRAS where COMPRAS.EMISSAO > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+ ' and COMPRAS.NUMERONF=ITENS002.NUMERONF and ITENS002.FORNECEDOR=COMPRAS.FORNECEDOR and COMPRAS.OPERACAO not in (select ICM.NOME from ICM where ICM.INTEGRACAO like(''%=%'')) group by CODIGO, DESCRICAO');
   ibQuery2.Open;
   //
   ibQuery3.Close;
   ibQuery3.Sql.Clear;
-  ibQuery3.SQL.Add('select ALTERACA.DESCRICAO, sum(ALTERACA.QUANTIDADE)as vQTD_ALTERA from ALTERACA where ALTERACA.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and TIPO<>'+QuotedStr('BALCAO')+' and TIPO<>'+QuotedStr('VENDA')+' and TIPO<>'+QuotedStr('CANCEL')+' group by DESCRICAO');
+  ibQuery3.SQL.Add('select ALTERACA.CODIGO, ALTERACA.DESCRICAO, sum(ALTERACA.QUANTIDADE)as vQTD_ALTERA from ALTERACA where ALTERACA.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and TIPO<>'+QuotedStr('BALCAO')+' and TIPO<>'+QuotedStr('VENDA')+' and TIPO<>'+QuotedStr('CANCEL')+' group by CODIGO, DESCRICAO');
   ibQuery3.Open;
   //
   ibQuery5.Close;
   ibQuery5.Sql.Clear;
-  ibQuery5.SQL.Add('select ALTERACA.DESCRICAO, sum(ALTERACA.QUANTIDADE)as vQTD_BALCAO from ALTERACA where ALTERACA.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') and coalesce(VALORICM, 0) = 0 group by DESCRICAO');
+  ibQuery5.SQL.Add('select ALTERACA.CODIGO, ALTERACA.DESCRICAO, sum(ALTERACA.QUANTIDADE)as vQTD_BALCAO from ALTERACA where ALTERACA.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') and coalesce(VALORICM, 0) = 0 group by CODIGO, DESCRICAO');
   ibQuery5.Open;
   //
   ibQuery6.Close;
   ibQuery6.Sql.Clear;
-  ibQuery6.SQL.Add('select ITENS001.DESCRICAO, sum(ITENS001.QUANTIDADE)as vQTD_RESE from ITENS001, OS where OS.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and  coalesce(ITENS001.NUMERONF,'+QuotedStr('')+')='+QuotedStr('')+'and OS.NUMERO=ITENS001.NUMEROOS group by DESCRICAO');
+  ibQuery6.SQL.Add('select ITENS001.CODIGO, ITENS001.DESCRICAO, sum(ITENS001.QUANTIDADE)as vQTD_RESE from ITENS001, OS where OS.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and  coalesce(ITENS001.NUMERONF,'+QuotedStr('')+')='+QuotedStr('')+'and OS.NUMERO=ITENS001.NUMEROOS group by CODIGO, DESCRICAO');
   ibQuery6.Open;
   //
   CarregaDadosGerencial;
@@ -203,6 +203,8 @@ begin
       fRese   := 0;
       nGerencial := 0;
       //
+      {Dailon Parisotto (f-18875) 2024-05-21 Inicio
+
       if ibQuery1.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fVenda         := ibQuery1.FieldByName('vQTD_VENDA').AsFloat;
       if ibQuery2.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fCompra        := ibQuery2.FieldByName('vQTD_COMPRA').AsFloat;
       if ibQuery3.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fAltera        := ibQuery3.FieldByName('vQTD_ALTERA').AsFloat;
@@ -213,7 +215,25 @@ begin
         if qryGerencial.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then
           nGerencial := qryGerencial.FieldByName('vQTD_GERENCIAL').AsFloat;
       end;
-      
+      }
+
+      if (ibQuery1.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[])) or (ibQuery1.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[])) then
+        fVenda  := ibQuery1.FieldByName('vQTD_VENDA').AsFloat;
+      if ibQuery2.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) or (ibQuery2.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[])) then
+        fCompra := ibQuery2.FieldByName('vQTD_COMPRA').AsFloat;
+      if ibQuery3.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) or (ibQuery3.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[])) then
+        fAltera := ibQuery3.FieldByName('vQTD_ALTERA').AsFloat;
+      if ibQuery5.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) or (ibQuery5.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[])) then
+        fBalcao := ibQuery5.FieldByName('vQTD_BALCAO').AsFloat;
+      if ibQuery6.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) or (ibQuery6.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[])) then
+        fRese   := ibQuery6.FieldByName('vQTD_RESE').AsFloat;
+      if not cbMovGerencial.Checked then
+      begin
+        if qryGerencial.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) or (qryGerencial.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[])) then
+          nGerencial := qryGerencial.FieldByName('vQTD_GERENCIAL').AsFloat;
+      end;
+      {Dailon Parisotto (f-18875) 2024-05-21 Fim}
+
       if  ((
                   ibQuery4.FieldByName('QTD_ATUAL').AsFloat
                      - fCompra
@@ -401,27 +421,27 @@ begin
   //
   ibQuery1.Close;
   ibQuery1.Sql.Clear;
-  ibQuery1.SQL.Add('select ITENS001.DESCRICAO, sum(ITENS001.QUANTIDADE)as vQTD_VENDA from ITENS001, VENDAS where VENDAS.EMITIDA=''S'' and VENDAS.EMISSAO > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and VENDAS.NUMERONF=ITENS001.NUMERONF and VENDAS.OPERACAO not in (select ICM.NOME from ICM where ICM.INTEGRACAO like(''%=%'')) group by DESCRICAO');
+  ibQuery1.SQL.Add('select ITENS001.CODIGO, ITENS001.DESCRICAO, sum(ITENS001.QUANTIDADE)as vQTD_VENDA from ITENS001, VENDAS where VENDAS.EMITIDA=''S'' and VENDAS.EMISSAO > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and VENDAS.NUMERONF=ITENS001.NUMERONF and VENDAS.OPERACAO not in (select ICM.NOME from ICM where ICM.INTEGRACAO like(''%=%'')) group by CODIGO, DESCRICAO');
   ibQuery1.Open;
   //
   ibQuery2.Close;
   ibQuery2.Sql.Clear;
-  ibQuery2.SQL.Add('select ITENS002.DESCRICAO, sum(ITENS002.QUANTIDADE)as vQTD_COMPRA from ITENS002, COMPRAS where COMPRAS.EMISSAO > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+ ' and COMPRAS.NUMERONF=ITENS002.NUMERONF and ITENS002.FORNECEDOR=COMPRAS.FORNECEDOR and COMPRAS.OPERACAO not in (select ICM.NOME from ICM where ICM.INTEGRACAO like(''%=%'')) group by DESCRICAO');
+  ibQuery2.SQL.Add('select ITENS002.CODIGO, ITENS002.DESCRICAO, sum(ITENS002.QUANTIDADE)as vQTD_COMPRA from ITENS002, COMPRAS where COMPRAS.EMISSAO > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+ ' and COMPRAS.NUMERONF=ITENS002.NUMERONF and ITENS002.FORNECEDOR=COMPRAS.FORNECEDOR and COMPRAS.OPERACAO not in (select ICM.NOME from ICM where ICM.INTEGRACAO like(''%=%'')) group by CODIGO, DESCRICAO');
   ibQuery2.Open;
   //
   ibQuery3.Close;
   ibQuery3.Sql.Clear;
-  ibQuery3.SQL.Add('select ALTERACA.DESCRICAO, sum(ALTERACA.QUANTIDADE)as vQTD_ALTERA from ALTERACA where ALTERACA.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and TIPO<>'+QuotedStr('BALCAO')+' and TIPO<>'+QuotedStr('VENDA')+' and TIPO<>'+QuotedStr('CANCEL')+' group by DESCRICAO');
+  ibQuery3.SQL.Add('select ALTERACA.CODIGO, ALTERACA.DESCRICAO, sum(ALTERACA.QUANTIDADE)as vQTD_ALTERA from ALTERACA where ALTERACA.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and TIPO<>'+QuotedStr('BALCAO')+' and TIPO<>'+QuotedStr('VENDA')+' and TIPO<>'+QuotedStr('CANCEL')+' group by CODIGO, DESCRICAO');
   ibQuery3.Open;
   //
   ibQuery5.Close;
   ibQuery5.Sql.Clear;
-  ibQuery5.SQL.Add('select ALTERACA.DESCRICAO, sum(ALTERACA.QUANTIDADE)as vQTD_BALCAO from ALTERACA where ALTERACA.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') and coalesce(VALORICM, 0) = 0 group by DESCRICAO');
+  ibQuery5.SQL.Add('select ALTERACA.CODIGO, ALTERACA.DESCRICAO, sum(ALTERACA.QUANTIDADE)as vQTD_BALCAO from ALTERACA where ALTERACA.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') and coalesce(VALORICM, 0) = 0 group by CODIGO, DESCRICAO');
   ibQuery5.Open;
   //
   ibQuery6.Close;
   ibQuery6.Sql.Clear;
-  ibQuery6.SQL.Add('select ITENS001.DESCRICAO, sum(ITENS001.QUANTIDADE)as vQTD_RESE from ITENS001, OS where OS.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and  coalesce(ITENS001.NUMERONF,'+QuotedStr('')+')='+QuotedStr('')+'and OS.NUMERO=ITENS001.NUMEROOS group by DESCRICAO');
+  ibQuery6.SQL.Add('select ITENS001.CODIGO, ITENS001.DESCRICAO, sum(ITENS001.QUANTIDADE)as vQTD_RESE from ITENS001, OS where OS.DATA > '+QuotedStr(DateToStrInvertida(DateTimePicker1.Date))+' and  coalesce(ITENS001.NUMERONF,'+QuotedStr('')+')='+QuotedStr('')+'and OS.NUMERO=ITENS001.NUMEROOS group by CODIGO, DESCRICAO');
   ibQuery6.Open;
   //
   CarregaDadosGerencial;
@@ -492,7 +512,9 @@ begin
       fBalcao := 0;
       fRese   := 0;
       nGerencial := 0;
-      //
+
+      {Dailon Parisotto (f-18875) 2024-05-21 Inicio
+
       if ibQuery1.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fVenda  := ibQuery1.FieldByName('vQTD_VENDA').AsFloat;
       if ibQuery2.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fCompra := ibQuery2.FieldByName('vQTD_COMPRA').AsFloat;
       if ibQuery3.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then fAltera := ibQuery3.FieldByName('vQTD_ALTERA').AsFloat;
@@ -503,6 +525,26 @@ begin
         if qryGerencial.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) then
           nGerencial := qryGerencial.FieldByName('vQTD_GERENCIAL').AsFloat;
       end;
+
+      }
+
+      if ibQuery1.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) or ibQuery1.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[]) then
+        fVenda  := ibQuery1.FieldByName('vQTD_VENDA').AsFloat;
+      if ibQuery2.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) or ibQuery2.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[]) then
+        fCompra := ibQuery2.FieldByName('vQTD_COMPRA').AsFloat;
+      if ibQuery3.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) or ibQuery3.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[]) then
+        fAltera := ibQuery3.FieldByName('vQTD_ALTERA').AsFloat;
+      if ibQuery5.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) or ibQuery5.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[]) then
+        fBalcao := ibQuery5.FieldByName('vQTD_BALCAO').AsFloat;
+      if ibQuery6.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) or ibQuery6.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[]) then
+        fRese   := ibQuery6.FieldByName('vQTD_RESE').AsFloat;
+      if not cbMovGerencial.Checked then
+      begin
+        if qryGerencial.Locate('DESCRICAO',ibQuery4.FieldByName('DESCRICAO').AsString,[]) or qryGerencial.Locate('CODIGO',ibQuery4.FieldByName('CODIGO').AsString,[]) then
+          nGerencial := qryGerencial.FieldByName('vQTD_GERENCIAL').AsFloat;
+      end;
+      {Dailon Parisotto (f-18875) 2024-05-21 Fim}
+
       // Formula para calcular a quantidade do dia é a mesma do sintegra
       if  ((
                   ibQuery4.FieldByName('QTD_ATUAL').AsFloat
