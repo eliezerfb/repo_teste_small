@@ -140,6 +140,8 @@ type
     edtJurosAno: TEdit;
     lblMulta: TLabel;
     chkFabricaProdSemQtd: TCheckBox;
+    Label38: TLabel;
+    ComboBoxOS: TComboBox;
     procedure FormActivate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
@@ -268,11 +270,11 @@ begin
 
   bMostra := ((cEstado <> 'SC') and (cEstado <> 'MG'));
   //Campos
-  ComboBoxBloqueto.Visible := bMostra;
+  //ComboBoxBloqueto.Visible := bMostra; Mauricio Parizotto 2024-05-10
   ComboBoxNF.Visible       := bMostra;
   ComboBoxNF2.Visible      := bMostra;
   //Labels
-  Label27.Visible := bMostra;
+  //Label27.Visible := bMostra; Mauricio Parizotto 2024-05-10
   Label26.Visible := bMostra;
   Label29.Visible := bMostra;
 end;
@@ -379,6 +381,7 @@ begin
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
     chkFabricaProdSemQtd.Checked  := ConfSistema.BD.Outras.FabricaProdutoSemQtd;
+    ComboBoxOS.ItemIndex := ComboBoxOS.Items.IndexOf(ConfSistema.BD.Impressora.ImpressoraOS); // Mauricio Parizotto 2024-05-10
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -498,6 +501,7 @@ begin
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
     ConfSistema.BD.Outras.FabricaProdutoSemQtd := chkFabricaProdSemQtd.Checked;
+    ConfSistema.BD.Impressora.ImpressoraOS     := ComboBoxOS.Text; // Mauricio Parizotto 2024-05-10
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -1327,10 +1331,15 @@ begin
   comboBoxORCA.Items.clear;
   comboBoxBloqueto.Items.clear;
 
-  Form19.ComboBoxORCA.Items.Add('Impressora padrão do windows');
-  Form19.ComboBoxORCA.Items.Add('PDF');
-  Form19.ComboBoxORCA.Items.Add('HTML');
-  Form19.ComboBoxORCA.Items.Add('TXT');
+  ComboBoxORCA.Items.Add('Impressora padrão do windows');
+  ComboBoxORCA.Items.Add('PDF');
+  ComboBoxORCA.Items.Add('HTML');
+  ComboBoxORCA.Items.Add('TXT');
+
+  //Mauricio Parizotto 2024-05-10
+  ComboBoxOS.Items.Clear;
+  ComboBoxOS.Items.Add('HTML');
+  ComboBoxOS.Items.Add('PDF');
   
   GetTheListOfPrinters;
 end;
@@ -1348,7 +1357,7 @@ begin
     Mais1Ini.WriteString('Perfil','Labels','Não');
   end;
 
-  Form19.Button1Click(Sender);
+  Button1Click(Sender);
 
   if (Form19.Visible) and (Form19.CanFocus) then
     Form19.SetFocus;

@@ -2,7 +2,11 @@ unit uOrdemServico;
 
 interface
 
+uses
+  Winapi.ShellAPI, Winapi.Windows, uArquivosDAT;
+
   procedure ImprimeOrdemServico;
+  procedure ImprimeReciboOrdemServico; //Mauricio Parizotto 2024-05-10
 
 implementation
 
@@ -12,7 +16,7 @@ uses
   , Unit7
   , Unit30
   , Mais
-  ;
+  , uTypesImpressao, MAIS3;
 
 
 procedure ImprimeOrdemServico;
@@ -20,13 +24,17 @@ var
   F: TextFile;
   fTotal1, fTotal2: Real;
   sArquivo : String;
+
+  TipoImpressao : TImpressao;
+  ConfSistema : TArquivosDAT;
 begin
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet3CLIENTE.AsString)); 
   Form7.ibDataSet2.Open;
-  
+
   begin
+    {$Region'//// Cria Arquivo HTML ////'}
     CriaJpg('logotip.jpg');
 
     sArquivo := 'OS_'+Form7.ibDataSet3NUMERO.AsString;
@@ -229,7 +237,7 @@ begin
     end;
 
     Form7.ibDataSet35.EnableControls;
-    
+
     WriteLn(F,' <tr>');
     Writeln(F,'  <td  ></td>');
     Writeln(F,'  <td  ></td>');
@@ -238,7 +246,7 @@ begin
     Writeln(F,'  <td   align=Right bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1 >'+Format('%12.'+Form1.ConfPreco+'n',[fTotal2])+'</td>'); // Valor
     WriteLn(F,' </tr>');
     WriteLn(F,'</table><br>');
-    
+
     // Fim de serviços
     WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=0 style="border-collapse: collapse"  >');
     WriteLn(F,' <tr>');
@@ -313,12 +321,192 @@ begin
     begin
       WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
     end;
-    
-    CloseFile(F);
 
-    AbreArquivoNoFormatoCerto(pChar(sArquivo));
+    CloseFile(F);
+    {$Endregion}
+
+    {$Region'//// Abre Arquivo ///'}
+
+    {Mauricio Parizotto 2024-05-10 Inicio}
+    //AbreArquivoNoFormatoCerto(pChar(sArquivo));
+
+    try
+      ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
+      TipoImpressao := StrToTimp(ConfSistema.BD.Impressora.ImpressoraOS);
+    finally
+      FreeAndNil(ConfSistema);
+    end;
+
+    if TipoImpressao = impHTML then
+    begin
+      ShellExecute( 0, 'Open',pChar(pChar(sArquivo)+'.HTM'),'', '', SW_SHOWMAXIMIZED);
+    end;
+
+    if TipoImpressao = impPDF then
+    begin
+      HtmlParaPdf(pChar(sArquivo));
+      ShellExecute( 0, 'Open',pChar(pChar(sArquivo)+'.pdf'),'', '', SW_SHOWMAXIMIZED);
+    end;
+
+    {Mauricio Parizotto 2024-05-10 Fim}
+    {$Endregion}
   end;
 end;
 
+
+procedure ImprimeReciboOrdemServico;
+var
+  F: TextFile;
+  ObservacaoRecibo : string;
+  ConfSistema : TArquivosDAT;
+  TipoImpressao : TImpressao;
+begin
+  Form7.ibDataSet2.Close;
+  Form7.ibDataSet2.Selectsql.Clear;
+  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet3CLIENTE.AsString));
+  Form7.ibDataSet2.Open;
+
+  {Mauricio Parizotto 2023-11-21 Inicio}
+  try
+    // Sandro Silva 2024-04-24 ConfSistema := TArquivosDAT.Create(Usuario,ibDataSet3.Transaction);
+    ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet13.Transaction);
+    ObservacaoRecibo := ConfSistema.BD.OS.ObservacaoReciboOS;
+    TipoImpressao    := StrToTimp(ConfSistema.BD.Impressora.ImpressoraOS); // Mauricio Parizotto 2024-05-10
+  finally
+    FreeAndNil(ConfSistema);
+  end;
+
+  begin
+    {$Region'//// Cria Arquivo HTML ////'}
+    CriaJpg('logotip.jpg');
+    AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
+    Rewrite(F);
+    Writeln(F,'<html><head><title>'+AllTrim(Form7.ibDataSet13NOME.AsString) + ' - RECIBO DE ENTREGA</title></head>');
+    WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center>');
+    WriteLn(F,'<table  border=1  cellspacing=1 cellpadding=5 Width=600 style="border-collapse: collapse"  >');
+    WriteLn(F,' <tr>');
+    WriteLn(F,'  <td  >');
+    WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5 Width=600>');
+    WriteLn(F,' <tr>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
+    WriteLn(F,'   <img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
+    WriteLn(F,'  </td>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
+    WriteLn(F,'   <P><font face="Microsoft Sans Serif" size=1> '+Form7.ibDataSet13NOME.AsString);
+    WriteLn(F,'   <BR>CNPJ: '+Form7.ibDataSet13CGC.AsString+' IE: '+Form7.ibDataSet13IE.AsString);
+    WriteLn(F,'   <BR>' + AllTrim(Form7.ibDataSet13ENDERECO.AsString) + ' - ' + AllTrim(Form7.ibDataSet13COMPLE.AsString));
+    WriteLn(F,'   <BR>' + AllTrim(Form7.ibDataSet13CEP.AsString) + ' ' + AllTrim(Form7.ibDataSet13MUNICIPIO.AsString) + ' - ' + AllTrim(UpperCase(Form7.ibDataSet13ESTADO.AsString)) );
+    WriteLn(F,'   <BR>Telefone: ' + AllTrim(Form7.ibDataSet13TELEFO.AsString));
+    WriteLn(F,'  </td>');
+    WriteLn(F,' </tr>');
+    WriteLn(F,'<table>');
+    WriteLn(F,'<table  border=0 cellspacing=0 cellpadding=0 Width=100%>');
+    WriteLn(F,' <tr>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
+    WriteLn(F,'   <center><font face="Microsoft Sans Serif" size=4><b>RECIBO DE ENTREGA - OS '+Form7.ibDataSet3NUMERO.AsString+'</b></center>');
+    WriteLn(F,'  </td>');
+    WriteLn(F,' </tr>');
+    WriteLn(F,'</table>');
+    WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5 Width=100%>');
+    WriteLn(F,' <tr>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>Cliente: <b>'+Form7.ibDataSet2NOME.AsString+'</b>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>Contato: <b>'+AllTrim(Form7.ibDataSet2CONTATO.AsString)+'</b> Telefone: <b>'+AllTrim(Form7.ibDataSet2FONE.AsString)+'</b>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>Endereço: <b>'+AllTrim(Form7.ibDataSet2ENDERE.AsString)+' - '+ AllTrim(Form7.ibDataSet2COMPLE.AsString)+'</b>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>Cidade: <b>'+Form7.ibDataSet2CEP.AsString + ' ' + AllTrim(Form7.ibDataSet2CIDADE.AsString) + ' ' + AllTrim(Form7.ibDataSet2ESTADO.AsString)+'</b>');
+    WriteLn(F,'  </td>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>Atendente: <b>'+Form7.ibDataSet3TECNICO.AsString+'</b>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>Data da entrada: <b>'+Form7.ibDataSet3DATA.AsString+' '+Form7.ibDataSet3HORA.AsString+'</b>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>Agendado para: <b>'+Form7.ibDataSet3DATA_PRO.AsString+' '+Form7.ibDataSet3HORA_PRO.AsString+'</b>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>Tempo estimado: <b>'+Form7.ibDataSet3TEMPO.AsString+'</b>');
+    WriteLn(F,'  </td>');
+    WriteLn(F,' </tr>');
+    WriteLn(F,'</table>');
+
+    WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5 Width=100%>');
+    WriteLn(F,' <tr>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
+
+    WriteLn(F,'       <font face="Microsoft Sans Serif" size=2>'+Form30.Label14.Caption+': <b>'+Form7.ibDataSet3DESCRICAO.AsString+'</b>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>'+Form30.Label15.Caption+': <b>'+Form7.ibDataSet3IDENTIFI1.AsString+'</b>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>'+Form30.Label16.Caption+': <b>'+Form7.ibDataSet3IDENTIFI2.AsString+'</b>');
+    WriteLn(F,'  </td>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
+    WriteLn(F,'       <font face="Microsoft Sans Serif" size=2>'+Form30.Label17.Caption+': <b>'+Form7.ibDataSet3IDENTIFI3.AsString+'</b>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>'+Form30.Label18.Caption+': <b>'+Form7.ibDataSet3IDENTIFI4.AsString+'</b>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=2>'+Form30.Label30.Caption+': <b>'+Form7.ibDataSet3GARANTIA.AsString+'</b>');
+    WriteLn(F,'  </td>');
+    WriteLn(F,' </tr>');
+    WriteLn(F,'</table>');
+    WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5 Width=100%>');
+    WriteLn(F,' <tr>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
+    //WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>'+Form30.Label19.Caption+': <b>'+Form7.ibDataSet3PROBLEMA.AsString+'</b>'); Mauricio Parizotto 2023-11-23
+    WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>'+Form30.Label19.Caption+': <b>'+QuebraLinhaHtml(Form7.ibDataSet3PROBLEMA.AsString)+'</b>');
+    WriteLn(F,'  </td>');
+    WriteLn(F,' </tr>');
+    WriteLn(F,'</table>');
+    WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5 Width=100%>');
+    WriteLn(F,' <tr>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
+    //WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>Observação: <b>'+Form7.ibDataSet3OBSERVACAO.AsString+'</b>');  Mauricio Parizotto 2023-11-23
+    WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>Observação: <b>'+QuebraLinhaHtml(Form7.ibDataSet3OBSERVACAO.AsString)+'</b>');
+    WriteLn(F,'  </td>');
+    WriteLn(F,' </tr>');
+    {Mauricio Parizotto 2023-11-21 Inicio}
+    WriteLn(F,' <tr>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF>');
+    WriteLn(F,'    <font face="Microsoft Sans Serif" size=2>'+QuebraLinhaHtml(ObservacaoRecibo));
+    WriteLn(F,'  </td>');
+    WriteLn(F,' </tr>');
+    {Mauricio Parizotto 2023-11-21 Inicio}
+    WriteLn(F,'</table>');
+
+    WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5 Width=100%>');
+    WriteLn(F,' <tr>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF width=50%>');
+
+    WriteLn(F,'  </td>');
+    WriteLn(F,'  <td   bgcolor=#FFFFFF width=50%>');
+    WriteLn(F,'   <br><br><br><center><font face="Microsoft Sans Serif" size=2>______________________________________</b>');
+    WriteLn(F,'   <br><center><font face="Microsoft Sans Serif" size=2>Assinatura do atendente</b>');
+
+    WriteLn(F,'  </td>');
+    WriteLn(F,' </tr>');
+    WriteLn(F,'</table>');
+
+    WriteLn(F,'  </td>');
+    WriteLn(F,' </tr>');
+    WriteLn(F,'</table>');
+
+    WriteLn(F,'<center><font face="Microsoft Sans Serif" size=1></b>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
+    + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
+    + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br></center>');
+    WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>pelo sistema Small Commerce, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a></font></center>');
+    WriteLn(F,'</html>');
+    CloseFile(F);
+    {$Endregion}
+
+    {$Region'//// Abre Arquivo ///'}
+    {Mauricio Parizotto 2024-05-10 Inicio}
+    //AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
+
+    if TipoImpressao = impHTML then
+    begin
+      ShellExecute( 0, 'Open',pChar(pChar(Senhas.UsuarioPub)+'.HTM'),'', '', SW_SHOWMAXIMIZED);
+    end;
+
+    if TipoImpressao = impPDF then
+    begin
+      HtmlParaPdf(pChar(Senhas.UsuarioPub));
+      ShellExecute( 0, 'Open',pChar(pChar(Senhas.UsuarioPub)+'.pdf'),'', '', SW_SHOWMAXIMIZED);
+    end;
+
+    {Mauricio Parizotto 2024-05-10 Fim}
+    {$Endregion}
+  end;
+
+end;
 
 end.
