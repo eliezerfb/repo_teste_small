@@ -25,7 +25,7 @@ type
     procedure MontarImpressao;
     function RetornarExtensaoArq: String;
     function RetornarCaminhoArquivo: String;
-    procedure ImprimeNaImpressoraDoWindows;
+    //procedure ImprimeNaImpressoraDoWindows;
     function RetornarNomeArquivo: String;
   public
     destructor Destroy; override;
@@ -39,7 +39,8 @@ type
 
 implementation
 
-uses SysUtils, uRetornaImpressaoOrcamento, uSmallConsts, uDialogs;
+uses SysUtils, uRetornaImpressaoOrcamento, uSmallConsts, uDialogs,
+  uImprimeNaImpressoraDoWindows;
 
 { TImpressaoOrcamento }
 
@@ -84,11 +85,13 @@ begin
     else
     begin
       if Length(FslImpressao.Text) > 80 then
-        ImprimeNaImpressoraDoWindows;
+        //ImprimeNaImpressoraDoWindows;
+        ImprimeNaImpressoraDoWindows(FslImpressao.Text); // Mauricio Parizotto 2024-05-22
     end;
   end;
 end;
 
+(*Mauricio Parizotto 2024-05-22
 procedure TImpressaoOrcamento.ImprimeNaImpressoraDoWindows;
 var
   I, iLinha, iTamanho: Integer;
@@ -114,9 +117,9 @@ begin
         iTamanho := Trunc(Printer.Canvas.TextWidth('W') * 2.5);   // Tamanho que cada caractere ocupa na impressão em pontos // Sandro Silva 2018-03-23  iTamanho := Printer.Canvas.TextWidth('W') * 4;   // Tamanho que cada caractere ocupa na impressão em pontos
       Printer.Title := 'Relatório Gerencial';          // Este título é visto no spoool da impressora
       Printer.BeginDoc;                                // Inicia o documento de impressão
-      //
+
       iLinha := 1;
-      //
+
       for I := 1 to Length(FslImpressao.Text) do
       begin
         if Copy(FslImpressao.Text,I,1) <> chr(10) then
@@ -124,7 +127,6 @@ begin
           sLinha := sLinha+Copy(FslImpressao.Text,I,1);
         end else
         begin
-          //
           Printer.Canvas.TextOut(iMargemLeft, iLinha * iTamanho,sLinha);  // Impressão da linha
           iLinha := iLinha + 1;
           sLinha:='';
@@ -138,24 +140,23 @@ begin
           {Sandro Silva 2014-08-27 final}
         end;
       end;
-      //
+
       Printer.Canvas.TextOut(iMargemLeft, (iLinha+1) * iTamanho,' ');
-      Printer.Canvas.TextOut(iMargemLeft, (iLinha+2) * iTamanho,' ');  
-      //
+      Printer.Canvas.TextOut(iMargemLeft, (iLinha+2) * iTamanho,' ');
+
       Printer.EndDoc;
     end else
     begin
-      //ShowMessage('Não há impressora instalada no windows!'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Não há impressora instalada no windows!',msgAtencao);
     end;
   except
     on E: Exception do
     begin
-      //ShowMessage('Erro ao imprimir! '+E.Message); Mauricio Parizotto 2023-10-25
       MensagemSistema('Erro ao imprimir! '+E.Message,msgErro);
     end;
   end;
 end;
+*)
 
 procedure TImpressaoOrcamento.MontarImpressao;
 begin
@@ -243,5 +244,6 @@ begin
 
   AcCaminho := RetornarCaminhoArquivo + cExtensao;
 end;
+
 
 end.

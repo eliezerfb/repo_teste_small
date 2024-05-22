@@ -6,13 +6,16 @@ type
   TImpressao = (
                impHTML,
                impPDF,
-               impTXT
+               impTXT,
+               impWindows
                );
 
 
   function StrToTImp(value:string): Timpressao;
 
 implementation
+
+uses uSmallConsts;
 
 function StrToTImp(value:string): Timpressao;
 begin
@@ -24,6 +27,9 @@ begin
 
   if value = 'TXT' then
     Result := impTXT;
+
+  if value = _cImpressoraPadrao then
+    Result := impWindows;
 end;
 
 end.
