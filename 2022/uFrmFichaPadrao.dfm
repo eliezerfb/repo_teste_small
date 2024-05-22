@@ -843,7 +843,7 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
         Top = 8
         Width = 120
         Height = 25
-        Anchors = [akLeft, akTop, akRight]
+        Anchors = [akRight, akBottom]
         Caption = '&Ok'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
