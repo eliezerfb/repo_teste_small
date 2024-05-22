@@ -3,20 +3,23 @@ unit uOrdemServico;
 interface
 
 uses
-  Winapi.ShellAPI, Winapi.Windows, uArquivosDAT;
+  Winapi.ShellAPI, Winapi.Windows, uArquivosDAT, System.Classes, SysUtils;
 
   procedure ImprimeOrdemServico;
   procedure ImprimeReciboOrdemServico; //Mauricio Parizotto 2024-05-10
+  function MontarArquivoTXT_OS : string;
+  function MontarArquivoReciboTXT_OS(ObsRecibo:string): string;
 
 implementation
 
 uses
-  SysUtils
-  , smallfunc_xe
+   smallfunc_xe
   , Unit7
   , Unit30
   , Mais
-  , uTypesImpressao, MAIS3;
+  , uTypesImpressao
+  , MAIS3
+  , uImprimeNaImpressoraDoWindows;
 
 
 procedure ImprimeOrdemServico;
@@ -33,6 +36,14 @@ begin
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet3CLIENTE.AsString)); 
   Form7.ibDataSet2.Open;
 
+  try
+    ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
+    TipoImpressao := StrToTimp(ConfSistema.BD.Impressora.ImpressoraOS);
+  finally
+    FreeAndNil(ConfSistema);
+  end;
+
+  if (TipoImpressao = impHTML) or (TipoImpressao = impPDF) then
   begin
     {$Region'//// Cria Arquivo HTML ////'}
     CriaJpg('logotip.jpg');
@@ -277,7 +288,7 @@ begin
 
     WriteLn(F,' <tr>');
     Writeln(F,'  <td   width=590 align=Right><font face="Microsoft Sans Serif" size=1 >Desconto R$:</td>');
-    Writeln(F,'  <td   width=80  align=Right><font face="Microsoft Sans Serif" size=1 ><b>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet3DESCONTO.AsFloat])+'</td>'); // Frete
+    Writeln(F,'  <td   width=80  align=Right><font face="Microsoft Sans Serif" size=1 ><b>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet3DESCONTO.AsFloat])+'</td>'); // Desconto
     WriteLn(F,' </tr>');
 
     WriteLn(F,' <tr>');
@@ -324,33 +335,47 @@ begin
 
     CloseFile(F);
     {$Endregion}
-
-    {$Region'//// Abre Arquivo ///'}
-
-    {Mauricio Parizotto 2024-05-10 Inicio}
-    //AbreArquivoNoFormatoCerto(pChar(sArquivo));
-
-    try
-      ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
-      TipoImpressao := StrToTimp(ConfSistema.BD.Impressora.ImpressoraOS);
-    finally
-      FreeAndNil(ConfSistema);
-    end;
-
-    if TipoImpressao = impHTML then
-    begin
-      ShellExecute( 0, 'Open',pChar(pChar(sArquivo)+'.HTM'),'', '', SW_SHOWMAXIMIZED);
-    end;
-
-    if TipoImpressao = impPDF then
-    begin
-      HtmlParaPdf(pChar(sArquivo));
-      ShellExecute( 0, 'Open',pChar(pChar(sArquivo)+'.pdf'),'', '', SW_SHOWMAXIMIZED);
-    end;
-
-    {Mauricio Parizotto 2024-05-10 Fim}
-    {$Endregion}
   end;
+
+  if TipoImpressao = impTXT then
+  begin
+    sArquivo := 'OS_'+Form7.ibDataSet3NUMERO.AsString;
+
+    AssignFile(F,pChar(sArquivo+'.txt'));
+    Rewrite(F);
+
+    Writeln(F,MontarArquivoTXT_OS);
+
+    CloseFile(F);
+  end;
+
+  if TipoImpressao = impWindows then
+  begin
+    ImprimeNaImpressoraDoWindows(MontarArquivoTXT_OS);
+  end;
+
+  {$Region'//// Abre Arquivo ///'}
+  {Mauricio Parizotto 2024-05-10 Inicio}
+
+  if TipoImpressao = impHTML then
+  begin
+    ShellExecute( 0, 'Open',pChar(pChar(sArquivo)+'.HTM'),'', '', SW_SHOWMAXIMIZED);
+  end;
+
+  if TipoImpressao = impPDF then
+  begin
+    HtmlParaPdf(pChar(sArquivo));
+    ShellExecute( 0, 'Open',pChar(pChar(sArquivo)+'.pdf'),'', '', SW_SHOWMAXIMIZED);
+  end;
+
+  //Mauricio Parizotto 2024-05-21
+  if TipoImpressao = impTXT then
+  begin
+    ShellExecute( 0, 'Open',pChar(pChar(sArquivo)+'.txt'),'', '', SW_SHOWMAXIMIZED);
+  end;
+
+  {Mauricio Parizotto 2024-05-10 Fim}
+  {$Endregion}
 end;
 
 
@@ -376,6 +401,7 @@ begin
     FreeAndNil(ConfSistema);
   end;
 
+  if (TipoImpressao = impHTML) or (TipoImpressao = impPDF) then
   begin
     {$Region'//// Cria Arquivo HTML ////'}
     CriaJpg('logotip.jpg');
@@ -487,26 +513,260 @@ begin
     WriteLn(F,'</html>');
     CloseFile(F);
     {$Endregion}
-
-    {$Region'//// Abre Arquivo ///'}
-    {Mauricio Parizotto 2024-05-10 Inicio}
-    //AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
-
-    if TipoImpressao = impHTML then
-    begin
-      ShellExecute( 0, 'Open',pChar(pChar(Senhas.UsuarioPub)+'.HTM'),'', '', SW_SHOWMAXIMIZED);
-    end;
-
-    if TipoImpressao = impPDF then
-    begin
-      HtmlParaPdf(pChar(Senhas.UsuarioPub));
-      ShellExecute( 0, 'Open',pChar(pChar(Senhas.UsuarioPub)+'.pdf'),'', '', SW_SHOWMAXIMIZED);
-    end;
-
-    {Mauricio Parizotto 2024-05-10 Fim}
-    {$Endregion}
   end;
 
+  if TipoImpressao = impTXT then
+  begin
+    AssignFile(F,pChar(Senhas.UsuarioPub+'.txt'));
+    Rewrite(F);
+
+    Writeln(F,MontarArquivoReciboTXT_OS(ObservacaoRecibo));
+
+    CloseFile(F);
+  end;
+
+  if TipoImpressao = impWindows then
+  begin
+    ImprimeNaImpressoraDoWindows(MontarArquivoReciboTXT_OS(ObservacaoRecibo));
+  end;
+
+  {$Region'//// Abre Arquivo ///'}
+  {Mauricio Parizotto 2024-05-10 Inicio}
+
+  if TipoImpressao = impHTML then
+  begin
+    ShellExecute( 0, 'Open',pChar(pChar(Senhas.UsuarioPub)+'.HTM'),'', '', SW_SHOWMAXIMIZED);
+  end;
+
+  if TipoImpressao = impPDF then
+  begin
+    HtmlParaPdf(pChar(Senhas.UsuarioPub));
+    ShellExecute( 0, 'Open',pChar(pChar(Senhas.UsuarioPub)+'.pdf'),'', '', SW_SHOWMAXIMIZED);
+  end;
+
+  //Mauricio Parizotto 2024-05-21
+  if TipoImpressao = impTXT then
+  begin
+    ShellExecute( 0, 'Open',pChar(pChar(Senhas.UsuarioPub)+'.txt'),'', '', SW_SHOWMAXIMIZED);
+  end;
+
+  {Mauricio Parizotto 2024-05-10 Fim}
+  {$Endregion}
+
 end;
+
+
+function MontarArquivoTXT_OS: string;
+var
+  FlsImpressao: TStringList;
+  sCodigo : string;
+
+  fTotalPecas, fTotalServico, fFrete, fDesconto, fTotal : Real;
+begin
+  Result := '';
+
+  fTotalPecas     := 0;
+  fTotalServico   := 0;
+  fFrete          := 0;
+  fDesconto       := 0;
+  fTotal          := 0;
+
+  try
+    FlsImpressao := TStringList.Create;
+
+    FlsImpressao.Add('DOCUMENTO AUXILIAR DE VENDA (DAV) - OS');
+    FlsImpressao.Add('NÃO É DOCUMENTO FISCAL');
+    FlsImpressao.Add('NÃO É VÁLIDO COMO RECIBO E COMO GARANTIA DE');
+    FlsImpressao.Add('MERCADORIA - NÃO COMPROVA PAGAMENTO');
+
+    FlsImpressao.Add('------------------------------------------------');
+    FlsImpressao.Add(Copy('Emitente: '+ AllTrim(Copy(Form7.ibDataSet13NOME.AsString+Replicate(' ',35),1,35)) + Replicate(' ',45),1,45));
+    FlsImpressao.Add('CNPJ: '+ Form7.ibDataSet13CGC.AsString);
+    FlsImpressao.Add(Copy(Form7.ibDataSet13ENDERECO.AsString  + Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy(Form7.ibDataSet13CEP.AsString+' - '+Form7.ibDataSet13MUNICIPIO.AsString+', '+Form7.ibDataSet13ESTADO.AsString  + Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy(Form7.ibDataSet13COMPLE.AsString  + Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy('Telefone: '+ Form7.ibDataSet13TELEFO.AsString + Replicate(' ',45),1,45));
+
+    FlsImpressao.Add('-----------------------------------------------');
+    FlsImpressao.Add(Copy('Destinatário: ' + AllTrim(Copy(Form7.ibDataSet2NOME.AsString+Replicate(' ',35),1,35)) + Replicate(' ',45),1,45));
+    FlsImpressao.Add('CNPJ: '+ Form7.ibDataSet2CGC.AsString);
+    FlsImpressao.Add(Copy(Form7.ibDataSet2ENDERE.AsString  + Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy(Form7.ibDataSet2CEP.AsString+' - '+Form7.ibDataSet2CIDADE.AsString+', '+Form7.ibDataSet2ESTADO.AsString + Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy(Form7.ibDataSet2COMPLE.AsString +  Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy('Telefone: '+Form7.ibDataSet2FONE.AsString + Replicate(' ',45),1,45));
+
+    FlsImpressao.Add('-----------------------------------------------');
+    FlsImpressao.Add('Número da OS: '+ Form7.ibDataSet3NUMERO.AsString);
+    FlsImpressao.Add('Número do Documento Fiscal: '+Form7.ibDataSet3NF.AsString);
+    FlsImpressao.Add('Data: '+DateToStr(Date)+' '+TimeToStr(Time));
+    FlsImpressao.Add('Situação: '+Form7.ibDataSet3SITUACAO.AsString);
+    FlsImpressao.Add('Atendente: '+Form7.ibDataSet3TECNICO.AsString);
+
+    FlsImpressao.Add('-----------------------------------------------');
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label14.Caption+': '+Form7.ibDataSet3DESCRICAO.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label15.Caption+': '+Form7.ibDataSet3NF.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label16.Caption+': '+Form7.ibDataSet3IDENTIFI2.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label17.Caption+': '+Form7.ibDataSet3IDENTIFI3.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label18.Caption+': '+Form7.ibDataSet3IDENTIFI4.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label30.Caption+': '+Form7.ibDataSet3GARANTIA.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label19.Caption+': '+Form7.ibDataSet3PROBLEMA.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha('Observação: '+Form7.ibDataSet3OBSERVACAO.AsString,'',47));
+
+    FlsImpressao.Add('--------------------Peças----------------------');
+    FlsImpressao.Add('CODIGO   DESCRICAO   QTD    UNITARIO      TOTAL');
+    FlsImpressao.Add('-----------------------------------------------');
+
+    {$Region'//// Peças ////'}
+    Form7.ibDataSet16.First;
+    while not Form7.ibDataSet16.Eof do
+    begin
+      Form7.ibDataSet4.Close;
+      Form7.ibDataSet4.Selectsql.Clear;
+      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString));
+      Form7.ibDataSet4.Open;
+
+      if Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString then
+      begin
+        if (Length(AllTrim(Form7.ibDataSet4.FieldByName('REFERENCIA').AsString)) = 13)
+          or (Length(AllTrim(Form7.ibDataSet4.FieldByName('REFERENCIA').AsString)) = 14)
+          or (Length(AllTrim(Form7.ibDataSet4.FieldByName('REFERENCIA').AsString)) = 12)
+          or (Length(AllTrim(Form7.ibDataSet4.FieldByName('REFERENCIA').AsString)) = 8)
+        then
+          sCodigo := Copy( Form7.ibDataSet4.FieldByName('REFERENCIA').AsString+Replicate(' ',14),1,14)
+        else
+          sCodigo := StrZero(StrToInt(Form7.ibDataSet4.FieldByName('CODIGO').AsString),14,0);
+
+
+        FlsImpressao.Add(sCodigo + ' ' + Copy(Form7.ibDataSet16.FieldByName('DESCRICAO').AsString+Replicate(' ',32),1,32)+chr(10)+
+                         '               '+Format('%10.2n',[Form7.ibDataSet16.FieldByName('QUANTIDADE').AsFloat])+'X'+
+                         Format('%10.2n',[Form7.ibDataSet16.FieldByName('UNITARIO').AsFloat])+' '+
+                         Format('%10.2n',[Form7.ibDataSet16.FieldByName('TOTAL').AsFloat])
+                         );
+      end else
+      begin
+        FlsImpressao.Add(DescricaoComQuebraLinha(Form7.ibDataSet16DESCRICAO.AsString,'',47));
+      end;
+
+      fTotalPecas := fTotalPecas + Form7.ibDataSet16TOTAL.AsFloat;
+      Form7.ibDataSet16.Next;
+    end;
+    {$Endregion}
+
+    FlsImpressao.Add('-------------------Serviços--------------------');
+    FlsImpressao.Add('TECNICO  DESCRICAO   QTD    UNITARIO      TOTAL');
+    FlsImpressao.Add('-----------------------------------------------');
+
+    {$Region'//// Serviços ////'}
+    Form7.ibDataSet35.First;
+    while not Form7.ibDataSet35.Eof do
+    begin
+      if Form7.ibDataSet35QUANTIDADE.AsFloat <> 0 then
+      begin
+        sCodigo := Copy(Form7.ibDataSet35TECNICO.AsString+Replicate(' ',8),1,8);
+
+        FlsImpressao.Add(sCodigo + ' ' + Copy(Form7.ibDataSet35.FieldByName('DESCRICAO').AsString+Replicate(' ',38),1,38)+chr(10)+
+                         '               '+Format('%10.2n',[Form7.ibDataSet35.FieldByName('QUANTIDADE').AsFloat])+'X'+
+                         Format('%10.2n',[Form7.ibDataSet35.FieldByName('UNITARIO').AsFloat])+' '+
+                         Format('%10.2n',[Form7.ibDataSet35.FieldByName('TOTAL').AsFloat])
+                         );
+      end else
+      begin
+        FlsImpressao.Add(DescricaoComQuebraLinha(Form7.ibDataSet16DESCRICAO.AsString,'',48));
+      end;
+
+      fTotalServico := fTotalServico + Form7.ibDataSet35TOTAL.AsFloat;
+      Form7.ibDataSet35.Next;
+    end;
+    {$Endregion}
+
+    fFrete    := Form7.ibDataSet3TOTAL_FRET.AsFloat;
+    fDesconto := Form7.ibDataSet3DESCONTO.AsFloat;
+    fTotal    := fTotalPecas+fTotalServico+fFrete-fDesconto;
+
+    FlsImpressao.Add('-----------------------------------------------');
+    FlsImpressao.Add('Total de Peças                       '+Format('%10.2n',[fTotalPecas]));
+    FlsImpressao.Add('Total de Serviços                    '+Format('%10.2n',[fTotalServico]));
+    FlsImpressao.Add('FRETE                                '+Format('%10.2n',[fFrete]));
+    FlsImpressao.Add('DESCONTO                             '+Format('%10.2n',[fDesconto]));
+    FlsImpressao.Add('TOTAL                                '+Format('%10.2n',[fTotal]));
+    FlsImpressao.Add('');
+    FlsImpressao.Add('');
+    FlsImpressao.Add('_______________________________________________');
+    FlsImpressao.Add('             Assinatura do cliente             ');
+    FlsImpressao.Add('Autorizo a execução desta ordem de serviço   ');
+    FlsImpressao.Add('');
+    FlsImpressao.Add('E vedada a autenticacao deste documento');
+
+    Result := FlsImpressao.Text;
+
+  finally
+    FreeAndNil(FlsImpressao);
+  end;
+end;
+
+
+function MontarArquivoReciboTXT_OS(ObsRecibo:string): string;
+var
+  FlsImpressao: TStringList;
+  sCodigo : string;
+begin
+  Result := '';
+
+  try
+    FlsImpressao := TStringList.Create;
+
+    FlsImpressao.Add('RECIBO DE ENTREGA');
+    FlsImpressao.Add('NÃO É DOCUMENTO FISCAL');
+    FlsImpressao.Add('NÃO É VÁLIDO COMO RECIBO E COMO GARANTIA DE');
+    FlsImpressao.Add('MERCADORIA - NÃO COMPROVA PAGAMENTO');
+
+    FlsImpressao.Add('------------------------------------------------');
+    FlsImpressao.Add(Copy('Emitente: '+ AllTrim(Copy(Form7.ibDataSet13NOME.AsString+Replicate(' ',35),1,35)) + Replicate(' ',45),1,45));
+    FlsImpressao.Add('CNPJ: '+ Form7.ibDataSet13CGC.AsString);
+    FlsImpressao.Add(Copy(Form7.ibDataSet13ENDERECO.AsString  + Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy(Form7.ibDataSet13CEP.AsString+' - '+Form7.ibDataSet13MUNICIPIO.AsString+', '+Form7.ibDataSet13ESTADO.AsString  + Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy(Form7.ibDataSet13COMPLE.AsString  + Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy('Telefone: '+ Form7.ibDataSet13TELEFO.AsString + Replicate(' ',45),1,45));
+
+    FlsImpressao.Add('-----------------------------------------------');
+    FlsImpressao.Add(Copy('Destinatário: ' + AllTrim(Copy(Form7.ibDataSet2NOME.AsString+Replicate(' ',35),1,35)) + Replicate(' ',45),1,45));
+    FlsImpressao.Add('CNPJ: '+ Form7.ibDataSet2CGC.AsString);
+    FlsImpressao.Add(Copy(Form7.ibDataSet2ENDERE.AsString  + Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy(Form7.ibDataSet2CEP.AsString+' - '+Form7.ibDataSet2CIDADE.AsString+', '+Form7.ibDataSet2ESTADO.AsString + Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy(Form7.ibDataSet2COMPLE.AsString +  Replicate(' ',45),1,45));
+    FlsImpressao.Add(Copy('Telefone: '+Form7.ibDataSet2FONE.AsString + Replicate(' ',45),1,45));
+
+    FlsImpressao.Add('-----------------------------------------------');
+    FlsImpressao.Add('Número da OS: '+ Form7.ibDataSet3NUMERO.AsString);
+    FlsImpressao.Add('Data da entrada: '+Form7.ibDataSet3DATA.AsString+' '+Form7.ibDataSet3HORA.AsString);
+    FlsImpressao.Add('Situação: '+Form7.ibDataSet3SITUACAO.AsString);
+    FlsImpressao.Add('Atendente: '+Form7.ibDataSet3TECNICO.AsString);
+
+    FlsImpressao.Add('-----------------------------------------------');
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label14.Caption+': '+Form7.ibDataSet3DESCRICAO.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label15.Caption+': '+Form7.ibDataSet3NF.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label16.Caption+': '+Form7.ibDataSet3IDENTIFI2.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label17.Caption+': '+Form7.ibDataSet3IDENTIFI3.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label18.Caption+': '+Form7.ibDataSet3IDENTIFI4.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label30.Caption+': '+Form7.ibDataSet3GARANTIA.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label19.Caption+': '+Form7.ibDataSet3PROBLEMA.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha('Observação: '+Form7.ibDataSet3OBSERVACAO.AsString,'',47));
+    if Trim(ObsRecibo) <> '' then
+      FlsImpressao.Add(DescricaoComQuebraLinha(ObsRecibo,'',47));
+    FlsImpressao.Add('');
+    FlsImpressao.Add('');
+    FlsImpressao.Add('');
+    FlsImpressao.Add('_______________________________________________');
+    FlsImpressao.Add('            Assinatura do atendente            ');
+    FlsImpressao.Add('');
+    FlsImpressao.Add('');
+
+    Result := FlsImpressao.Text;
+
+  finally
+    FreeAndNil(FlsImpressao);
+  end;
+end;
+
 
 end.

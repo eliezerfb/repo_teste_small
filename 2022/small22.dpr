@@ -258,7 +258,9 @@ uses
   uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas',
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
-  uPermissaoUsuario in 'uPermissaoUsuario.pas';
+  uPermissaoUsuario in 'uPermissaoUsuario.pas',
+  uImprimeNaImpressoraDoWindows in 'uImprimeNaImpressoraDoWindows.pas',
+  uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas';
 
 {$R *.RES}
 

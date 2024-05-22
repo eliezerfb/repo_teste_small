@@ -19557,7 +19557,7 @@ object Form7: TForm7
         OnClick = ConfigurarobservaoparaOS1Click
       end
       object ConfigurarobservaoparaRecibo1: TMenuItem
-        Caption = 'Configurar observa'#231#227'o para Recibo'
+        Caption = 'Configurar observa'#231#227'o para Recibo de entrega'
         OnClick = ConfigurarobservaoparaRecibo1Click
       end
       object ConfigurarEtiqueta1: TMenuItem

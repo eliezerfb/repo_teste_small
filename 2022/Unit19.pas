@@ -204,7 +204,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit14, Unit22, Unit12, Unit10, Unit2, Unit4,
-  Unit24, Unit8, uDialogs, uArquivosDAT;
+  Unit24, Unit8, uDialogs, uArquivosDAT, uSmallConsts;
 
 {$R *.DFM}
 
@@ -1328,18 +1328,20 @@ begin
   ComboBoxImpressora.Items.Clear;
   comboBoxNF.Items.clear;
   comboBoxNF2.Items.clear;
-  comboBoxORCA.Items.clear;
   comboBoxBloqueto.Items.clear;
 
-  ComboBoxORCA.Items.Add('Impressora padrão do windows');
+  comboBoxORCA.Items.clear;
+  ComboBoxORCA.Items.Add(_cImpressoraPadrao);
   ComboBoxORCA.Items.Add('PDF');
   ComboBoxORCA.Items.Add('HTML');
   ComboBoxORCA.Items.Add('TXT');
 
   //Mauricio Parizotto 2024-05-10
   ComboBoxOS.Items.Clear;
-  ComboBoxOS.Items.Add('HTML');
+  ComboBoxOS.Items.Add(_cImpressoraPadrao);
   ComboBoxOS.Items.Add('PDF');
+  ComboBoxOS.Items.Add('HTML');
+  ComboBoxOS.Items.Add('TXT');
   
   GetTheListOfPrinters;
 end;
