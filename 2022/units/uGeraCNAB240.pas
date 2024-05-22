@@ -27,7 +27,7 @@ type TBanco = (bOutro
         sNumeroContratoOP : string;
         iRemessa : integer);
   procedure GeraCNAB240SegmentoP_Unicred(var F: TextFile; iReg : integer; sComandoMovimento : string;
-        sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento, sEspecieDoTitulo,
+        sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento,
         sCodigodoJurosdeMora, sNumeroContratoOP : string);
   procedure GeraCNAB240SegmentoR_Unicred(var F: TextFile; iReg : integer; sComandoMovimento : string);
 
@@ -398,7 +398,7 @@ begin
       sCodigoDaCarteira      := '1';
       sFormaDeCadastrar      := '1';
       sTipoDocumento         := '1';
-      sEspecieDoTitulo       := 'N ';
+      //sEspecieDoTitulo       := 'N '; Mauricio Parizotto 2024-05-22
       sNumeroDeDiasParaBaixa := '000';
       sCodigoParaBaixa       := '0';
       sDigitoAgencia         := ' ';
@@ -715,7 +715,7 @@ begin
 
               if Banco = bUnicred then
               begin
-                GeraCNAB240SegmentoP_Unicred(F, iReg, sComandoMovimento, sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento, sEspecieDoTitulo,
+                GeraCNAB240SegmentoP_Unicred(F, iReg, sComandoMovimento, sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento,
                                              sCodigodoJurosdeMora, sNumeroContratoOP);
               end;
 
@@ -780,14 +780,12 @@ begin
             except
               on E: Exception do
               begin
-                //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
                 MensagemSistema(E.Message,msgErro);
               end;
             end;
           except
             on E: Exception do
             begin
-              //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
               MensagemSistema(E.Message,msgErro);
             end;
           end;
@@ -797,7 +795,6 @@ begin
           except
             on E: Exception do
             begin
-              //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
               MensagemSistema(E.Message,msgErro);
             end;
           end;
@@ -988,7 +985,7 @@ begin
 end;
 
 procedure GeraCNAB240SegmentoP_Unicred(var F: TextFile; iReg : integer; sComandoMovimento : string;
-  sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento, sEspecieDoTitulo,
+  sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento,
   sCodigodoJurosdeMora, sNumeroContratoOP : string);
 var
   vMulta : Double;
@@ -1022,7 +1019,9 @@ begin
           Copy(StrZero((Form7.ibDataSet7VALOR_DUPL.AsFloat * 100),15,0),1,015)                      + // 086 a 100 (013)+(2) Valor Nominal do Título
           Copy('00000',1,5)                                                                         + // 101 a 105 (005) Agência Encarregada da Cobrança
           Copy(' ',1,001)                                                                           + // 106 a 106 (001) Dígito Verificador da Agência
-          Copy(sEspecieDoTitulo,1,2)                                                                + // 107 a 108 (002) Espécie do Título
+          //Copy(sEspecieDoTitulo,1,2)                                                                + // 107 a 108 (002) Espécie do Título //Mauricio Parizotto 2024-05-22
+          'N'                                                                                       + // 107 a 107 (001) Título Participa de operação de desconto
+          'N'                                                                                       + // 108 a 108 (001) Título Participa de cobrança caucionada
           'N'                                                                                       + // 109 a 109 (001) Identific. de Título Aceito/Não Aceito
           Copy(Copy(DateToStr(Form7.ibDataSet7EMISSAO.AsDateTime),1,2)                              +
           Copy(DateToStr(Form7.ibDataSet7EMISSAO.AsDateTime),4,2)                                   +
