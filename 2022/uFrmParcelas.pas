@@ -1169,11 +1169,14 @@ procedure TFrmParcelas.chkFixarVencimentoClick(Sender: TObject);
 begin
   if Form7.sModulo = 'VENDA' then
   begin
-    try
-      Form7.ibDataSet7.DisableControls;
-      GeraParcelarReceber(Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat),Form7.ibDataSet15NUMERONF.AsString);
-    finally
-      Form7.ibDataSet7.EnableControls;
+    if FrmParcelas.Active then
+    begin
+      try
+        Form7.ibDataSet7.DisableControls;
+        GeraParcelarReceber(Trunc(Form7.ibDataSet15DUPLICATAS.AsFloat),Form7.ibDataSet15NUMERONF.AsString);
+      finally
+        Form7.ibDataSet7.EnableControls;
+      end;
     end;
   end;
 
@@ -1908,7 +1911,7 @@ var
   sBandeira: String;
 
   ano, mes, dia : string;
-  DataVencimento : TdateTime;
+  DataVencimento, DataVencimentoAnt : TdateTime;
 begin
   if (Form7.ibDataSet7FORMADEPAGAMENTO.Visible) and (Form7.sModulo = 'VENDA') then
   begin
@@ -2003,9 +2006,13 @@ begin
   //Mauricio Parizotto 2024-04-23
   if (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'CLIENTES') then
   begin
-    if (chkFixarVencimento.Checked) and (DBGrid1.Columns[DBGrid1.SelectedIndex].FieldName = 'VENCIMENTO') then
+    DataVencimento    := Form7.ibDataSet7VENCIMENTO.AsDateTime;
+    DataVencimentoAnt := Form7.ibDataSet7VENCIMENTO.OldValue;
+
+    if (chkFixarVencimento.Checked)
+      and (DBGrid1.Columns[DBGrid1.SelectedIndex].FieldName = 'VENCIMENTO')
+      and (DataVencimentoAnt <> DataVencimento) then
     begin
-      DataVencimento := Form7.ibDataSet7VENCIMENTO.AsDateTime;
       dia            := FormatDateTime('dd',Form7.ibDataSet7VENCIMENTO.AsDateTime);
       iRecno         := DBGrid1.DataSource.DataSet.RecNo;
 
