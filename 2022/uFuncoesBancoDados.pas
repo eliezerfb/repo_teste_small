@@ -12,8 +12,10 @@ uses
 ;
 
 const SELECT_TABELA_VIRTUAL_FORMAS_DE_PAGAMENTO =
-  'select NOME ' +
-  'from (' +
+  //Mauricio Parizotto 2024-04-16
+  //'select NOME ' +
+  //'from (' +
+  ' (' +
   'select cast(''01'' as varchar(2)) as ID, cast(''Dinheiro'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
   'select cast(''02'' as varchar(2)) as ID, cast(''Cheque'' as varchar(60)) as NOME from rdb$database ' +
@@ -45,8 +47,8 @@ const SELECT_TABELA_VIRTUAL_FORMAS_DE_PAGAMENTO =
   'select cast(''19'' as varchar(2)) as ID, cast(''Programa de fidelidade, Cashback, Crédito Virtual'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
   'select cast(''99'' as varchar(2)) as ID, cast(''Outros'' as varchar(60)) as NOME from rdb$database ' +
-  ') q ' +
-  'order by NOME';
+  ') q ';
+  //'order by NOME';
 
 
 function TabelaExisteFB(Banco: TIBDatabase; sTabela: String): Boolean;

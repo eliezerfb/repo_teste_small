@@ -883,7 +883,7 @@ object Form10: TForm10
         OnClick = Button9Click
       end
       object Button12: TBitBtn
-        Left = 140
+        Left = 136
         Top = 8
         Width = 120
         Height = 25

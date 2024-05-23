@@ -12495,7 +12495,9 @@ object Form7: TForm7
       
         '   RECEBIMENT, VALOR_RECE, VALOR_JURO, ATIVO, CONTA, NOSSONUM, C' +
         'ODEBAR, '
-      '   NUMERONF, REGISTRO, NN, MOVIMENTO, FORMADEPAGAMENTO,'
+      
+        '   NUMERONF, REGISTRO, NN, MOVIMENTO, FORMADEPAGAMENTO, INSTITUI' +
+        'CAOFINANCEIRA,'
       '   AUTORIZACAOTRANSACAO, BANDEIRA,VALOR_MULTA,PERCENTUAL_MULTA)'
       'values'
       
@@ -12504,7 +12506,9 @@ object Form7: TForm7
       
         '   :RECEBIMENT, :VALOR_RECE, :VALOR_JURO, :ATIVO, :CONTA, :NOSSO' +
         'NUM, :CODEBAR, '
-      '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO, :FORMADEPAGAMENTO,'
+      
+        '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO, :FORMADEPAGAMENTO, :IN' +
+        'STITUICAOFINANCEIRA,'
       
         '   :AUTORIZACAOTRANSACAO, :BANDEIRA,:VALOR_MULTA,:PERCENTUAL_MUL' +
         'TA)')
@@ -14654,6 +14658,7 @@ object Form7: TForm7
     object ibDataSet14ST: TIBStringField
       DisplayLabel = 'CIT'
       FieldName = 'ST'
+      OnSetText = ibDataSet14STSetText
       Size = 3
     end
     object ibDataSet14BASEISS: TFloatField

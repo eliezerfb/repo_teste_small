@@ -1885,7 +1885,6 @@ type
     procedure Fechadas1Click(Sender: TObject);
     procedure Abertas1Click(Sender: TObject);
     procedure MenuItem147Click(Sender: TObject);
-    procedure Image210Click(Sender: TObject);
     procedure ibDataSet3TOTAL_FRETChange(Sender: TField);
     procedure imgVisualizarClick(Sender: TObject);
     procedure ibDataSet9NewRecord(DataSet: TDataSet);
@@ -2409,10 +2408,10 @@ type
     procedure Imprimiretiqueta1Click(Sender: TObject);
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     procedure miDuplicarNFSeClick(Sender: TObject);
+    procedure ibDataSet14STSetText(Sender: TField; const Text: string);
     procedure ibDataSet4PROMOINIChange(Sender: TField);
     procedure ibDataSet4ONPROMOChange(Sender: TField);
     {    procedure EscondeBarra(Visivel: Boolean);}
-
 
   private
     FbDuplicandoProd: Boolean;
@@ -2465,7 +2464,7 @@ type
     procedure FechaModulos;
     procedure EscolheOclifor(Sender: TObject);
     procedure FormShowModulos(Mais1Ini : tIniFile; var sSerieNFSelecionada : string);
-    function SomenteLeitura: Boolean;
+    //function SomenteLeitura: Boolean;
     procedure MarcaColunaOrderBy;
     procedure RegistraExclusaoRegistro(AoDataSet: TDataSet; AcModulo: String = ''; AcHistoricoExtra: String = '');
     function RetornarHistoricoPorModulo: String;
@@ -2476,6 +2475,8 @@ type
     procedure CarregarContasReceberMarcadas;
     procedure CarregarContasPagarMarcadas;
     function TestarPodeCadastrarClifor(AcNome: String; AbMensagem: Boolean = True): Boolean;
+    function PodeUtilizarCIT(AcTexto: String): Boolean;
+    function TestarPodeUtilizarCIT(AcRegistro, AcCITInformado: String): Boolean;
   public
     // Public declarations
 
@@ -2699,6 +2700,9 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmBanco
   , uFrmPlanoContas
   , uFrmConvenio
+  , uFrmContaPagar
+  , uFrmContaReceber
+  , uPermissaoUsuario
   ;
 
 {$R *.DFM}
@@ -4886,198 +4890,201 @@ var
   Mais1Ini: TIniFile;
   TipoCertificado : string;
 begin
-
-  Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
-
-  Form1.ConfiguraCredencialTecnospeed; // Sandro Silva 2022-12-15
-
-//  Aguardando tecnospeed confirmar se propriedade está funcionando como proposta, suporte da tecnospeed informou que pode ter inconsistência no funcionamento
-  Form7.spdNFe.DanfeSettings.MensagemIcmsMonofasico := False; // Sandro Silva 2023-06-13
-
-  if LimpaNumero(Form7.ibDataSet13CGC.AsString) <> '' then
-    Form7.spdNFe.CNPJ := LimpaNumero(Form7.ibDataSet13CGC.AsString);
-
-  {Dailon Parisotto (f-7811) 2024-02-14 Inicio
-
-  if Form1.bModoScan then
-  begin
-    Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHomScan.ini';
-    Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProdScan.ini';
-  end else
-  begin
-    if Form1.bModoSVC then
-    begin
-      Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHomSVC.ini';
-      Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProdSVC.ini';
-    end else
-    begin
-      Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHom.ini';
-      Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProd.ini';
-    end;
-  end;
-
-  }
-
-  Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHom.ini';
-  Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProd.ini';
-
-  Form7.spdNFe.ModoOperacao := RetornaModoOperacaoNFe;
-
-  {Dailon Parisotto (f-7811) 2024-02-14 Fim}
-
-  Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-
-  {Sandro Silva 2024-01-03- inicio}
-  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='FILE'            Then Form7.spdNFe.TipoCertificado := spdNFeType.ckFile;
-  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='SMARTCARD'       Then Form7.spdNFe.TipoCertificado := spdNFeType.ckSmartCard;
-  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='ACTIVEDIRECTORY' Then Form7.spdNFe.TipoCertificado := spdNFeType.ckActiveDiretory;
-  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='MEMORY'          Then Form7.spdNFe.TipoCertificado := spdNFeType.ckMemory;
-  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='LOCALMACHINE'    Then Form7.spdNFe.TipoCertificado := spdNFeType.ckLocalMachine;
-  {
-  // F5800 Sugestão da Tecnospeed para quando não existir o tipo de certificado configurado no NFE.ini seja considera '' e não 'File'
-  // Executável com essa alteração será testado no cliente
-  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='FILE'            Then Form7.spdNFe.TipoCertificado := spdNFeType.ckFile;
-  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='SMARTCARD'       Then Form7.spdNFe.TipoCertificado := spdNFeType.ckSmartCard;
-  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='ACTIVEDIRECTORY' Then Form7.spdNFe.TipoCertificado := spdNFeType.ckActiveDiretory;
-  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='MEMORY'          Then Form7.spdNFe.TipoCertificado := spdNFeType.ckMemory;
-  if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='LOCALMACHINE'    Then Form7.spdNFe.TipoCertificado := spdNFeType.ckLocalMachine;
-  {Sandro Silva 2024-01-03 fim}
-
-  Form7.sFuso                := Mais1ini.ReadString('NFE' , 'FUSO','');
-  if Form7.sFuso = '' then
-    Form7.sFuso := DefineFusoHorario(Form1.sAtual+'\nfe.ini', 'NFE', 'FUSO', Form7.ibDataSet13ESTADO.AsString, '', False);
-  if Form7.sFuso = FusoHorarioPadrao(Form7.ibDataSet13ESTADO.AsString) then
-    Form1.HorarioDeVerao.Checked := False
-  else
-    Form1.HorarioDeVerao.Checked := True;
-  
-  Form7.sFormatoDoDanfe      := Mais1Ini.ReadString('DANFE','Formato do DANFE','Retrato');
-  Form7.sCNPJContabilidade   := Mais1Ini.ReadString('XML','CNPJ da contabilidade','');
-
-  Form1.sVersaoLayout        := Mais1Ini.ReadString('NFE','Layout','4.00');
-  {Sandro Silva 2023-03-14 inicio}
-  if Form1.sVersaoLayout <> '4.00' then
-  begin
-    Mais1Ini.WriteString('NFE','Layout','4.00');
-    Form1.sVersaoLayout := '4.00';
-  end;
-  {Sandro Silva 2023-03-14 fim}
-  Form1.sModoDbug            := Mais1Ini.ReadString('NFE','dbug','');
-  //
-  if Form1.sVersaoLayout = '4.00' then
-  begin
-    // Altera a Versão do Manual no Componente NFe
-    // essa mudança afeta o comportamento do componente quanto á
-    // Geração da Chave de Acesso, Assinatura, Comunicação com SEFAZ, Validação de Esquema
-    Form7.spdNFe.TimeOut                      := 60000*3;
-    Form7.spdNFe.VersaoManual                 := vm60;
-    Form7.spdNFeDataSets.VersaoEsquema        := pl_009k; // Sandro Silva 2023-06-07 pl_009;
-    Form7.spdNFe.DiretorioEsquemas            := Form1.sAtual + '\nfe\Esquemas\vm60';
-    Form7.spdNFe.DiretorioTemplates           := Form1.sAtual + '\nfe\Templates\vm60';
-    Form7.spdNFeDataSets.XMLDicionario        := Form1.sAtual + '\nfe\Templates\vm60\Conversor\NFeDataSets.xml';
-  {Sandro Silva 2023-06-07 inicio
-    //
-  end else
-  begin
-    //
-    // Altera a Versão do Manual no Componente NFe
-    // essa mudança afeta o comportamento do componente quanto á
-    // Geração da Chave de Acesso, Assinatura, Comunicação com SEFAZ, Validação de Esquema
-    //
-    Form7.spdNFe.TimeOut                      := 60000;
-    Form7.spdNFe.VersaoManual                 := vm50a;
-    Form7.spdNFeDataSets.VersaoEsquema        := pl_008h;
-    Form7.spdNFe.DiretorioEsquemas            := Form1.sAtual + '\nfe\Esquemas\vm50a';
-    Form7.spdNFe.DiretorioTemplates           := Form1.sAtual + '\nfe\Templates\vm50a';
-    Form7.spdNFeDataSets.XMLDicionario        := Form1.sAtual + '\nfe\Templates\vm50a\Conversor\NFeDataSets.xml';
-    //
-  }
-  end;
-
   try
-    Form7.spdNFe.NomeCertificado.Text     := Mais1Ini.ReadString('NFE','Certificado','');
-  except
-    on E: Exception do
-    begin
-    end;
-  end;
-
-  if AllTrim(UpperCase(Form7.ibDataSet13ESTADO.AsString)) <> '' then
-  begin
-    Form7.spdNFe.UF := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-  end else
-  begin
-    Form7.spdNFe.UF := 'SC';
-  end;
-
-  if (Mais1Ini.ReadString('NFE','Ambiente', _cAmbienteHomologacao) <> _cAmbienteHomologacao) and (Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) <> _cAmbienteProducao) then
-    Form1.DefineAmbienteNFe(_cAmbienteHomologacao, 'Unit7.ConfiguraNFE');
-    
-  if Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) = _cAmbienteHomologacao then
-    Form1.bHomologacao := True
-  else
-    Form1.bHomologacao := False;
-  if Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) = _cAmbienteHomologacao then
-    Form7.spdNFe.Ambiente := spdNFeType.akHomologacao
-  else
-    Form7.spdNFe.Ambiente := spdNFeType.akProducao;
-
-  if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then
-    Form1.bConsultarNFesEmitidas := True
-  else
-    Form1.bConsultarNFesEmitidas := False;
-
-  if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then
-    Form1.ConsultarNFesemitidas1.Checked := True
-  else
-    Form1.ConsultarNFesemitidas1.Checked := False;
-
-  Mais1ini.Free;
-
-  if Form7.spdNFe.NomeCertificado.Text = '' then
-  begin
-
     Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
 
-    Form1.ConfiguraCredencialTecnospeed;
+    Form1.ConfiguraCredencialTecnospeed; // Sandro Silva 2022-12-15
 
-    Form7.spdNFe.ListarCertificados(frmSelectCertificate.lbList.Items);
-  end;
+  //  Aguardando tecnospeed confirmar se propriedade está funcionando como proposta, suporte da tecnospeed informou que pode ter inconsistência no funcionamento
+    Form7.spdNFe.DanfeSettings.MensagemIcmsMonofasico := False; // Sandro Silva 2023-06-13
 
-  Form7.spdNFe.DiretorioLog                    := 'log';
-  Form7.spdNFe.DiretorioXmlDestinatario        := 'xmldestinatario';
-  Form7.spdNFe.DiretorioLogErro                := 'LogErro';
-  Form7.spdNFe.DanfeSettings.LogotipoEmitente  := 'LOGONFE.BMP';
-  Form7.spdNFe.DanfeSettings.ImprimirDuplicata := False;
-  Form7.spdNFe.DiretorioTemporario             := Form1.sAtual;
+    if LimpaNumero(Form7.ibDataSet13CGC.AsString) <> '' then
+      Form7.spdNFe.CNPJ := LimpaNumero(Form7.ibDataSet13CGC.AsString);
 
-  Form7.spdNFe.DanfeSettings.ModeloRetrato             := Form1.sAtual + '\nfe\Templates\vm60\danfe\Retrato.rtm';
-  Form7.spdNFe.DanfeSettings.ModeloPaisagem            := Form1.sAtual + '\nfe\Templates\vm60\danfe\paisagem.rtm';
-  Form7.spdNFe.DanfeSettings.ModeloRetratoCancelamento := Form1.sAtual + '\nfe\Templates\vm60\danfe\RetratoCanc.rtm';
-  Form7.spdNFe.DanfeSettings.ModeloDanfeSimplificado   := Form1.sAtual + '\nfe\Templates\vm60\danfe\RetratoSimplificado.rtm';
-  Form7.spdNFe.DanfeSettings.ModeloDanfeXmlResumo      := Form1.sAtual + '\nfe\Templates\vm60\danfe\Resumo.rtm';
-  Form7.spdNFe.DanfeSettings.ModeloRTMCCe              := Form1.sAtual + '\nfe\Templates\cce\Impressao\modeloCCe.rtm';
+    {Dailon Parisotto (f-7811) 2024-02-14 Inicio
 
-  {Mauricio Parizotto 2024-02-22 Inicio}
-  if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A1') then
-    TipoCertificado := 'A1';
-
-  if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A3') then
-    TipoCertificado := 'A3';
-
-  //Mauricio Parizotto 2024-04-05
-  if (TipoCertificado = '') and (Form7.spdNFe.NomeCertificado.Text <> '') then
-    TipoCertificado := 'NI';
-
-  try
-    if TipoCertificado <> '' then
+    if Form1.bModoScan then
     begin
-      TSistema.GetInstance.CertificadoDtVal := Form7.spdNFe.GetVencimentoCertificado;
-      TSistema.GetInstance.CertificadoTipo  := TipoCertificado;
+      Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHomScan.ini';
+      Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProdScan.ini';
+    end else
+    begin
+      if Form1.bModoSVC then
+      begin
+        Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHomSVC.ini';
+        Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProdSVC.ini';
+      end else
+      begin
+        Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHom.ini';
+        Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProd.ini';
+      end;
     end;
+
+    }
+
+    Form7.spdNFe.ArquivoServidoresHom    := Form1.sAtual + '\nfe\nfeServidoresHom.ini';
+    Form7.spdNFe.ArquivoServidoresProd   := Form1.sAtual + '\nfe\nfeServidoresProd.ini';
+
+    Form7.spdNFe.ModoOperacao := RetornaModoOperacaoNFe;
+
+    {Dailon Parisotto (f-7811) 2024-02-14 Fim}
+
+    Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
+
+    {Sandro Silva 2024-01-03- inicio}
+    if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='FILE'            Then Form7.spdNFe.TipoCertificado := spdNFeType.ckFile;
+    if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='SMARTCARD'       Then Form7.spdNFe.TipoCertificado := spdNFeType.ckSmartCard;
+    if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='ACTIVEDIRECTORY' Then Form7.spdNFe.TipoCertificado := spdNFeType.ckActiveDiretory;
+    if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='MEMORY'          Then Form7.spdNFe.TipoCertificado := spdNFeType.ckMemory;
+    if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado','File'))='LOCALMACHINE'    Then Form7.spdNFe.TipoCertificado := spdNFeType.ckLocalMachine;
+    {
+    // F5800 Sugestão da Tecnospeed para quando não existir o tipo de certificado configurado no NFE.ini seja considera '' e não 'File'
+    // Executável com essa alteração será testado no cliente
+    if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='FILE'            Then Form7.spdNFe.TipoCertificado := spdNFeType.ckFile;
+    if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='SMARTCARD'       Then Form7.spdNFe.TipoCertificado := spdNFeType.ckSmartCard;
+    if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='ACTIVEDIRECTORY' Then Form7.spdNFe.TipoCertificado := spdNFeType.ckActiveDiretory;
+    if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='MEMORY'          Then Form7.spdNFe.TipoCertificado := spdNFeType.ckMemory;
+    if UpperCase(Mais1Ini.ReadString('NFE','Tipo certificado', ''))='LOCALMACHINE'    Then Form7.spdNFe.TipoCertificado := spdNFeType.ckLocalMachine;
+    {Sandro Silva 2024-01-03 fim}
+
+    Form7.sFuso                := Mais1ini.ReadString('NFE' , 'FUSO','');
+    if Form7.sFuso = '' then
+      Form7.sFuso := DefineFusoHorario(Form1.sAtual+'\nfe.ini', 'NFE', 'FUSO', Form7.ibDataSet13ESTADO.AsString, '', False);
+    if Form7.sFuso = FusoHorarioPadrao(Form7.ibDataSet13ESTADO.AsString) then
+      Form1.HorarioDeVerao.Checked := False
+    else
+      Form1.HorarioDeVerao.Checked := True;
+
+    Form7.sFormatoDoDanfe      := Mais1Ini.ReadString('DANFE','Formato do DANFE','Retrato');
+    Form7.sCNPJContabilidade   := Mais1Ini.ReadString('XML','CNPJ da contabilidade','');
+
+    Form1.sVersaoLayout        := Mais1Ini.ReadString('NFE','Layout','4.00');
+    {Sandro Silva 2023-03-14 inicio}
+    if Form1.sVersaoLayout <> '4.00' then
+    begin
+      Mais1Ini.WriteString('NFE','Layout','4.00');
+      Form1.sVersaoLayout := '4.00';
+    end;
+    {Sandro Silva 2023-03-14 fim}
+    Form1.sModoDbug            := Mais1Ini.ReadString('NFE','dbug','');
+    //
+    if Form1.sVersaoLayout = '4.00' then
+    begin
+      // Altera a Versão do Manual no Componente NFe
+      // essa mudança afeta o comportamento do componente quanto á
+      // Geração da Chave de Acesso, Assinatura, Comunicação com SEFAZ, Validação de Esquema
+      Form7.spdNFe.TimeOut                      := 60000*3;
+      Form7.spdNFe.VersaoManual                 := vm60;
+      Form7.spdNFeDataSets.VersaoEsquema        := pl_009k; // Sandro Silva 2023-06-07 pl_009;
+      Form7.spdNFe.DiretorioEsquemas            := Form1.sAtual + '\nfe\Esquemas\vm60';
+      Form7.spdNFe.DiretorioTemplates           := Form1.sAtual + '\nfe\Templates\vm60';
+      Form7.spdNFeDataSets.XMLDicionario        := Form1.sAtual + '\nfe\Templates\vm60\Conversor\NFeDataSets.xml';
+    {Sandro Silva 2023-06-07 inicio
+      //
+    end else
+    begin
+      //
+      // Altera a Versão do Manual no Componente NFe
+      // essa mudança afeta o comportamento do componente quanto á
+      // Geração da Chave de Acesso, Assinatura, Comunicação com SEFAZ, Validação de Esquema
+      //
+      Form7.spdNFe.TimeOut                      := 60000;
+      Form7.spdNFe.VersaoManual                 := vm50a;
+      Form7.spdNFeDataSets.VersaoEsquema        := pl_008h;
+      Form7.spdNFe.DiretorioEsquemas            := Form1.sAtual + '\nfe\Esquemas\vm50a';
+      Form7.spdNFe.DiretorioTemplates           := Form1.sAtual + '\nfe\Templates\vm50a';
+      Form7.spdNFeDataSets.XMLDicionario        := Form1.sAtual + '\nfe\Templates\vm50a\Conversor\NFeDataSets.xml';
+      //
+    }
+    end;
+
+    try
+      Form7.spdNFe.NomeCertificado.Text     := Mais1Ini.ReadString('NFE','Certificado','');
+    except
+      on E: Exception do
+      begin
+      end;
+    end;
+
+    if AllTrim(UpperCase(Form7.ibDataSet13ESTADO.AsString)) <> '' then
+    begin
+      Form7.spdNFe.UF := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+    end else
+    begin
+      Form7.spdNFe.UF := 'SC';
+    end;
+
+    if (Mais1Ini.ReadString('NFE','Ambiente', _cAmbienteHomologacao) <> _cAmbienteHomologacao) and (Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) <> _cAmbienteProducao) then
+      Form1.DefineAmbienteNFe(_cAmbienteHomologacao, 'Unit7.ConfiguraNFE');
+
+    if Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) = _cAmbienteHomologacao then
+      Form1.bHomologacao := True
+    else
+      Form1.bHomologacao := False;
+    if Mais1Ini.ReadString('NFE','Ambiente',_cAmbienteHomologacao) = _cAmbienteHomologacao then
+      Form7.spdNFe.Ambiente := spdNFeType.akHomologacao
+    else
+      Form7.spdNFe.Ambiente := spdNFeType.akProducao;
+
+    if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then
+      Form1.bConsultarNFesEmitidas := True
+    else
+      Form1.bConsultarNFesEmitidas := False;
+
+    if Mais1Ini.ReadString('NFE','Consultar Nfes Emitidas','Sim') = 'Sim' then
+      Form1.ConsultarNFesemitidas1.Checked := True
+    else
+      Form1.ConsultarNFesemitidas1.Checked := False;
+
+    Mais1ini.Free;
+
+    if Form7.spdNFe.NomeCertificado.Text = '' then
+    begin
+
+      Form7.CriarComponenteNFeRunTime; //Sandro Silva 2024-04-08
+
+      Form1.ConfiguraCredencialTecnospeed;
+
+      Form7.spdNFe.ListarCertificados(frmSelectCertificate.lbList.Items);
+    end;
+
+    Form7.spdNFe.DiretorioLog                    := 'log';
+    Form7.spdNFe.DiretorioXmlDestinatario        := 'xmldestinatario';
+    Form7.spdNFe.DiretorioLogErro                := 'LogErro';
+    Form7.spdNFe.DanfeSettings.LogotipoEmitente  := 'LOGONFE.BMP';
+    Form7.spdNFe.DanfeSettings.ImprimirDuplicata := False;
+    Form7.spdNFe.DiretorioTemporario             := Form1.sAtual;
+
+    Form7.spdNFe.DanfeSettings.ModeloRetrato             := Form1.sAtual + '\nfe\Templates\vm60\danfe\Retrato.rtm';
+    Form7.spdNFe.DanfeSettings.ModeloPaisagem            := Form1.sAtual + '\nfe\Templates\vm60\danfe\paisagem.rtm';
+    Form7.spdNFe.DanfeSettings.ModeloRetratoCancelamento := Form1.sAtual + '\nfe\Templates\vm60\danfe\RetratoCanc.rtm';
+    Form7.spdNFe.DanfeSettings.ModeloDanfeSimplificado   := Form1.sAtual + '\nfe\Templates\vm60\danfe\RetratoSimplificado.rtm';
+    Form7.spdNFe.DanfeSettings.ModeloDanfeXmlResumo      := Form1.sAtual + '\nfe\Templates\vm60\danfe\Resumo.rtm';
+    Form7.spdNFe.DanfeSettings.ModeloRTMCCe              := Form1.sAtual + '\nfe\Templates\cce\Impressao\modeloCCe.rtm';
+
+    {Mauricio Parizotto 2024-02-22 Inicio}
+    if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A1') then
+      TipoCertificado := 'A1';
+
+    if AnsiContainsText(Copy(Form7.spdNFe.NomeCertificado.Text,pos('OU=',Form7.spdNFe.NomeCertificado.Text),18),'A3') then
+      TipoCertificado := 'A3';
+
+    //Mauricio Parizotto 2024-04-05
+    if (TipoCertificado = '') and (Form7.spdNFe.NomeCertificado.Text <> '') then
+      TipoCertificado := 'NI';
+
+    try
+      if TipoCertificado <> '' then
+      begin
+        TSistema.GetInstance.CertificadoDtVal := Form7.spdNFe.GetVencimentoCertificado;
+        TSistema.GetInstance.CertificadoTipo  := TipoCertificado;
+      end;
+    except
+    end;
+    {Mauricio Parizotto 2024-02-22 Fim}
   except
+
   end;
-  {Mauricio Parizotto 2024-02-22 Fim}
 
   Result := True;
 end;
@@ -8579,6 +8586,7 @@ begin
     Exit;
   end;
   {Mauricio Parizotto 2024-04-05 Fim}
+
   //Mauricio Parizotto 2024-03-21
   if sModulo = 'CONVERSAOCFOP' then
   begin
@@ -8589,6 +8597,28 @@ begin
     FrmConversaoCFOP.Show;
     Exit;
   end;
+
+  {Mauricio Parizotto 2024-04-15 Inicio}
+  if sModulo = 'PAGAR' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaPagar = nil then
+      FrmContaPagar := TFrmContaPagar.Create(Self);
+
+    FrmContaPagar.Show;
+    Exit;
+  end;
+
+  if sModulo = 'RECEBER' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaReceber = nil then
+      FrmContaReceber := TFrmContaReceber.Create(Self);
+
+    FrmContaReceber.Show;
+    Exit;
+  end;
+  {Mauricio Parizotto 2024-04-15 Fim}
 
   {Sandro Silva 2024-01-17 inicio
 
@@ -8919,6 +8949,31 @@ begin
     FrmConversaoCFOP.Show;
     Exit;
   end;
+
+  {Mauricio Parizotto 2024-04-15 Inicio}
+  if sModulo = 'PAGAR' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaPagar = nil then
+      FrmContaPagar := TFrmContaPagar.Create(Self);
+
+    FrmContaPagar.lblNovoClick(Sender);
+    FrmContaPagar.Show;
+    Exit;
+  end;
+
+  if sModulo = 'RECEBER' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmContaReceber = nil then
+      FrmContaReceber := TFrmContaReceber.Create(Self);
+
+    FrmContaReceber.lblNovoClick(Sender);
+    FrmContaReceber.Show;
+    Exit;
+  end;
+
+  {Mauricio Parizotto 2024-04-15 Fim}
 
   {Sandro Silva 2024-01-17 inicio
 
@@ -9724,14 +9779,19 @@ end;
 
 procedure TForm7.Inventrio1Click(Sender: TObject);
 begin
-  Form32.ShowModal;
+  //Form32.ShowModal; Mauricio Parizotto 2024-05-07
+  try
+    Form32 := TForm32.Create(self);
+    Form32.ShowModal;
+  finally
+    FreeAndNil(Form32);
+  end;
 end;
 
 procedure TForm7.Relatriodeconpras1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
-  //
+
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
   Form38.RadioButton1.Visible := True;
@@ -9739,8 +9799,7 @@ begin
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
   sModulo := 'Relatório de compras';
-  Form38.ShowModal; // Ok
-  //
+  Form38.ShowModal;
 end;
 
 procedure TForm7.Relatriodevendas1Click(Sender: TObject);
@@ -11166,7 +11225,7 @@ begin
     dbGrid1.DataSource := Form7.DataSource13;
     Form4.Close;
 
-    bSoLeitura := SomenteLeitura;
+    bSoLeitura := SomenteLeitura(sModulo,Usuario);
 
     {$Region '//// Permisões Usuários'}
 
@@ -16498,6 +16557,59 @@ begin
   ibDataSet14NOME.AsString := Text;
 end;
 
+procedure TForm7.ibDataSet14STSetText(Sender: TField; const Text: string);
+var
+  nIndex: Integer;
+  cText: String;
+
+  procedure SetaValorST;
+  begin
+    if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataSet14.Edit;
+    Sender.Value := cText;
+    Form7.ibDataSet14.Post;
+    Form7.ibDataSet14.Edit;
+  end;
+
+begin
+  cText := Text;
+  ibDataSet14ST.OnSetText := nil;
+  try
+    if AllTrim(cText) = EmptyStr then
+    begin
+      SetaValorST;
+      Exit;
+    end;
+
+    if not PodeUtilizarCIT(cText) then
+    begin
+      cText := EmptyStr;
+
+      if (Assigned(FrmNaturezaOperacao)) and (FrmNaturezaOperacao.Showing) then
+      begin
+        // Quando a tela de cadastro estiver aberta
+        FrmNaturezaOperacao.SMALL_DBEdit57.Text := EmptyStr;
+        Form7.ibDataSet14.Post;
+        Form7.ibDataSet14.Edit;
+        FrmNaturezaOperacao.SMALL_DBEdit57.SetFocus;
+      end
+      else
+      begin
+        // Quando for alteração diretamente no grid
+        SetaValorST;
+        nIndex := DBGrid1.SelectedIndex;
+        DBGrid1.SelectedIndex := nIndex;
+        // Abort para não trocar de coluna no GRID.
+        Abort;
+      end;
+    end
+    else
+      SetaValorST;
+  finally
+    ibDataSet14ST.OnSetText := ibDataSet14STSetText;
+  end;
+end;
+
 procedure TForm7.ibDataSet1AfterDelete(DataSet: TDataSet);
 begin
   //
@@ -17217,61 +17329,54 @@ end;
 
 procedure TForm7.Image_FechaClick(Sender: TObject);
 begin
-  //
   try
     if Form12.Visible then Form12.Close;
-  except end;
-  //
+  except
+  end;
+
   try
     if Form24.Visible then Form24.Close;
   except end;
-  //
+
   Form7.Close;
   Label1.Caption := 'Small Commerce';
   Label2.Caption := 'Small Commerce';
-  //
 end;
 
 procedure TForm7.Balanas1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
-  Form7.sModulo   := 'BALANCA';
+  Form7.sModulo   := 'Balanças';
   Form38.Caption  := 'Exportação de arquivo TXT para balança';
-  //
+
   Form38.Panel1.Visible := True;
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.Fechadas1Click(Sender: TObject);
 begin
-  //
   sWhere := 'where upper(SITUACAO)='+QuotedStr('FECHADA');
   Form7.Close;
   Form7.Show;
-  //
+
   MenuItem147.Checked       := False;
   Abertas1.Checked          := False;
   Fechadas1.Checked         := True;
-  //
 end;
 
 procedure TForm7.Abertas1Click(Sender: TObject);
 begin
-  //
   sWhere := 'where upper(SITUACAO)='+QuotedStr('ABERTA');
   Form7.Close;
   Form7.Show;
-  //
+
   MenuItem147.Checked       := False;
   Abertas1.Checked          := False;
   Fechadas1.Checked         := True;
-  //
+
   MenuItem147.Checked       := False;
   Abertas1.Checked          := True ;
   Fechadas1.Checked         := False;
-  //
 end;
 
 procedure TForm7.MenuItem140Click(Sender: TObject);
@@ -17281,25 +17386,18 @@ end;
 
 procedure TForm7.MenuItem147Click(Sender: TObject);
 begin
-  //
   sWhere := '';
   Form7.Close;
   Form7.Show;
-  //
+
   MenuItem147.Checked       := True;
   Abertas1.Checked          := False;
   Fechadas1.Checked         := False;
-  //
 end;
 
 procedure TForm7.miTermoUsoServicoClick(Sender: TObject);
 begin
   AbreHelpTermoUso;
-end;
-
-procedure TForm7.Image210Click(Sender: TObject);
-begin
-//  Form6.Show;
 end;
 
 procedure TForm7.ibDataSet3TOTAL_FRETChange(Sender: TField);
@@ -18245,9 +18343,24 @@ end;
 procedure TForm7.AtualizarListaItensAuxiliar;
 var
   nRecNo: Integer;
+  ProdComposto : Boolean;
 begin
+  {Mauricio Parizotto 2024-05-16 Inicio}
+  ProdComposto := ProdutoComposto(Form7.ibDataSet16.Transaction,
+                                  Form7.ibDataSet16CODIGO.AsString);
+
+  {
   if (Form1.ConfNegat <> 'Não') then
     Exit;
+  }
+
+  if (Form1.ConfNegat <> 'Não') and (not ProdComposto) then
+    Exit;
+
+  if (Form1.ConfPermitFabricarSemQtd) and (ProdComposto) then
+    Exit;
+
+  {Mauricio Parizotto 2024-05-16 Fim}
 
   if CDSItensNotaAux.Active then
     CDSItensNotaAux.Close;
@@ -19240,12 +19353,17 @@ begin
       begin
         Form7.ibDataSet16TOTAL.AsFloat := Arredonda(Form7.ibDataSet16QUANTIDADE.Asfloat * Form7.ibDataSet16UNITARIO.AsFloat,4);
       end;
+      (* Mauricio Parizotto 2024-04-26 F-18422
+      Ajuste feito no card 7549 de 2023-11-28 não é mais necessário com a implementação do card 7738 de 2024-02-05
+
       {Sandro Silva 2023-11-28 inicio
       VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
       }
       if (ProdutoComposto(Form7.ibDataSet4.Transaction, Form7.ibDataSet4CODIGO.AsString) = False) then
         VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
       {Sandro Silva 2023-11-28 fim}
+      *)
+      VerificaSaldoEstoqueDispItemNota(Form7.ibDataSet16QUANTIDADE.AsFloat);
     end else
     begin
       //if Form7.ibDataSet16TOTAL.AsFloat <> 0 then Mauricio Parizotto 2023-06-05
@@ -19286,7 +19404,6 @@ begin
   if TestarNatOperacaoMovEstoque then
   begin
     nSaldoDisp := RetornarSaldoDisponivelItemNota(ibDataSet16CODIGO.AsString);
-
 
     if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < AnQtdeInformada) then
     begin
@@ -33200,6 +33317,95 @@ begin
   {Sandro Silva 2023-10-02 fim}
 end;
 
+function TForm7.TestarPodeUtilizarCIT(AcRegistro, AcCITInformado: String): Boolean;
+const
+  _cSQL = 'SELECT REGISTRO, ST FROM ICM';
+var
+  oTransaction: TIBTransaction;
+  qryDadosAtual: TIBQuery;
+  qryDados: TIBQuery;
+begin
+  Result := True;
+  if AcCITInformado = EmptyStr then
+    Exit;
+
+  // Testa na transação atual
+  qryDadosAtual := CriaIBQuery(IBTransaction1);
+  try
+    qryDadosAtual.Close;
+    qryDadosAtual.SQL.Clear;
+    qryDadosAtual.SQL.Add(_cSQL);
+    qryDadosAtual.Open;
+    qryDadosAtual.First;
+
+    while not qryDadosAtual.Eof do
+    begin
+      Result := not ((qryDadosAtual.FieldByName('REGISTRO').AsString <> AcRegistro)
+                    and (qryDadosAtual.FieldByName('ST').AsString = AcCITInformado));
+
+      if not Result then
+        Break;
+
+      qryDadosAtual.Next;
+    end;
+
+    if Result then
+    begin
+      // Necessário criar uma nova transação
+      oTransaction := CriaIBTransaction(IBDatabase1);
+      qryDados := CriaIBQuery(oTransaction);
+      try
+        qryDados.Close;
+        qryDados.SQL.Clear;
+        qryDados.SQL.Add(_cSQL);
+        qryDados.SQL.Add('WHERE (ST=:XST)');
+        qryDados.ParamByName('XST').AsString := AcCITInformado;
+        qryDados.Open;
+        qryDados.Last;
+        qryDados.First;
+
+        Result := qryDados.IsEmpty;
+
+        if not Result then
+        begin
+          // Se encontrou 1 vai validar com os dados da transação atual
+          // Se encontrou mais que 1 quer dizer q tem algum CIT duplicado mesmo
+          if qryDados.RecordCount = 1 then
+          begin
+            qryDadosAtual.First;
+
+            while not qryDadosAtual.Eof do
+            begin
+              // Quer dizer que foi alterado
+              if (qryDados.FieldByName('REGISTRO').AsString = qryDadosAtual.FieldByName('REGISTRO').AsString)
+                and (qryDados.FieldByName('ST').AsString <> AcCITInformado) then
+                Result := True;
+              // Quer dizer que tem duplicado
+              if (qryDados.FieldByName('REGISTRO').AsString <> qryDadosAtual.FieldByName('REGISTRO').AsString)
+                and (qryDados.FieldByName('ST').AsString = qryDadosAtual.FieldByName('ST').AsString) then
+              begin
+                Result := False;
+                Break;
+              end;
+
+              qryDadosAtual.Next;
+            end;
+          end;
+        end;
+      finally
+        FreeAndNil(qryDados);
+        FreeAndNil(oTransaction);
+      end;
+    end;
+
+    if not Result then
+      MensagemSistema('Não é possível utilizar o CIT '+ Trim(AcCITInformado) + '.' + sLineBreak +
+                      'Já existe outro registro configurado com este CIT.', msgInformacao);
+  finally
+    FreeAndNil(qryDadosAtual);
+  end;
+end;
+
 procedure TForm7.ibDataSet7AfterScroll(DataSet: TDataSet);
 begin
   if FrmParcelas <> nil then
@@ -34090,6 +34296,14 @@ begin
     if FrmContaBancaria <> nil then
       FreeAndNil(FrmContaBancaria);
     {Mauricio Parizotto 2024-04-05 Fim}
+
+    {Mauricio Parizotto 2024-04-16 Inicio}
+    if FrmContaPagar <> nil then
+      FreeAndNil(FrmCaixa);
+
+    if FrmContaReceber <> nil then
+      FreeAndNil(FrmCaixa);
+    {Mauricio Parizotto 2024-04-16 Fim}
   except
   end;
 end;  
@@ -35608,6 +35822,7 @@ begin
 end;
 
 
+(*Mauricio Parizotto 2024-04-17
 function TForm7.SomenteLeitura : Boolean;
 var
   Mais1Ini : TiniFile;
@@ -35661,6 +35876,7 @@ begin
   except
   end;
 end;
+*)
 
 
 procedure TForm7.MarcaColunaOrderBy;
@@ -35820,6 +36036,20 @@ begin
     tmcICM                : Result := 'NOME: ' + ibDataSet14NOME.AsString + ', CFOP: ' + ibDataSet14CFOP.AsString;
     tmc2Contas            : Result := 'NOME: ' + ibDataSet11NOME.AsString + ', AGÊNCIA: ' + ibDataSet11AGENCIA.AsString + ', CONTA: ' + ibDataSet11CONTA.AsString;
     else Result := 'MÓDULO ' + AnsiUpperCase(sModulo) + ' NÃO MAPEADO.';
+  end;
+end;
+
+function TForm7.PodeUtilizarCIT(AcTexto: String): Boolean;
+begin
+  Result := True;
+
+  if not TestarPodeUtilizarCIT(Form7.ibDataSet14.FieldByName('REGISTRO').AsString, AcTexto) then
+  begin
+    Result := False;
+    if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataSet14.Edit;
+    Form7.ibDataSet14ST.AsString := EmptyStr;
+    Form7.ibDataSet14.Post;
   end;
 end;
 
