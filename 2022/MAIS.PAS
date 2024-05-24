@@ -4003,6 +4003,16 @@ begin
     RenameFile(pChar(Form1.sAtual+'\backup_.exe'),pChar(Form1.sAtual+'\backup.exe'));
   end;
 
+  {Sandro Silva 2024-05-02 inicio}
+  // Artifício para possíbilitar atualizar o servidorsat.exe via arquivos de atualização
+  // Dentro do arquivo de atualização deve existir o servidorsat_exe
+  if (FileExists(Form1.sAtual+'\servidorsat_.exe')) and (FileExists(Form1.sAtual+'\servidorsat.exe')) then
+  begin
+    RenameFile(pChar(Form1.sAtual+'\servidorsat.exe'),pChar(Form1.sAtual+'\servidorsat_o.exe'));// Renomeia o servidorsat.exe antigo para servidorsat_o.exe
+    RenameFile(pChar(Form1.sAtual+'\servidorsat_.exe'),pChar(Form1.sAtual+'\servidorsat.exe')); // Renomeia o novo servidorsat_.exe para servidorsat.exe
+  end;
+  {Sandro Silva 2024-05-02 fim}
+
   if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99') then
   begin
     //
@@ -10577,7 +10587,7 @@ begin
 
                       WriteLn(F,'   <tr>');
                       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('DATA').AsString+'<br></font></td>');
-                      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('CLIENTE').AsString+'<br></font></td>');
+                      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('CLIFOR').AsString+'<br></font></td>'); // Sandro Silva 2024-05-13 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('CLIENTE').AsString+'<br></font></td>');
                       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form1.ibQuery1.FieldByname('VTOT').AsFloat])+'<br></font></td>');
                       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('NUMERONF').AsString+'<br></font></td>');
                       WriteLn(F,'   </tr>');

@@ -2476,6 +2476,7 @@ type
     function TestarPodeCadastrarClifor(AcNome: String; AbMensagem: Boolean = True): Boolean;
     function PodeUtilizarCIT(AcTexto: String): Boolean;
     function TestarPodeUtilizarCIT(AcRegistro, AcCITInformado: String): Boolean;
+    function RetornarCasasDecimaisPreco: Integer;
   public
     // Public declarations
 
@@ -5834,7 +5835,9 @@ begin
   P1 := StrTran(P1, 'upper' ,'');
   P1 := StrTran(P1, ' and ' ,' e '      );
   P1 := StrTran(P1, ' not ' ,' não '    );
-  P1 := StrTran(P1, '(' ,'');
+  //P1 := StrTran(P1, '(' ,'');Mauricio Parizotto 2024-04-09
+  P1 := StrTran(P1, '(' ,' ');
+
   P1 := StrTran(P1, ')' ,'');
   P1 := StrTran(P1, '%' ,'');
   P1 := StrTran(P1, '  ' ,' ');
@@ -5850,9 +5853,10 @@ begin
           and (copy(AoDataSet.Fields[I-1].FieldName,1,3) <> 'CST') then
         begin
           if Pos(' '+AoDataSet.Fields[I-1].FieldName, P1) > 0 then
-            P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel)
-          else
-            P1 := StrTran(P1,AoDataSet.Fields[I-1].FieldName, AoDataSet.Fields[I-1].DisplayLabel);
+            P1 := StrTran(P1,' '+AoDataSet.Fields[I-1].FieldName,' '+AoDataSet.Fields[I-1].DisplayLabel);
+          //Mauricio Parizotto 2024-04-09 Add espaço antes, se não sistema fazia replace de informações do texto pesquisado
+          //else
+            //P1 := StrTran(P1,AoDataSet.Fields[I-1].FieldName, AoDataSet.Fields[I-1].DisplayLabel);
         end;
       end;
     end;
@@ -10991,6 +10995,7 @@ var
   Hora, Min, Seg, cent : Word;
   bA : Boolean;
   sSerieNFSelecionada: String;
+  niflinha: Integer;
 begin
   tInicio               := Time;
 
@@ -11663,17 +11668,34 @@ begin
 
     dbGrid1.DataSource := DataSourceAtual;
 
+    {Dailon Parisotto (f-18116) 2024-04-30 Inicio}
+    DefineLayoutFiltro;
+    niflinha := 0;
+    {Dailon Parisotto (f-18116) 2024-04-30 Fim}
+
     //{Mauricio Parizotto 2024-01-04
     try
       if StrToInt('0'+LimpaNumero(sLinha)) > 0 then
       begin
+        {Dailon Parisotto (f-18116) 2024-05-21 Inicio
+                               -
         TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1) *-1);
         TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1) * 1);
 
-        {
-        I := TabelaAberta.MoveBy(StrToInt('0'+LimpaNumero(sLinha))*-1);
-        TabelaAberta.MoveBy(I*-1);
+
+        if (TStringGrid(DBGrid1).Row > 1) and (sModulo <> 'CAIXA') then
+        begin
+          TabelaAberta.Locate('REGISTRO',sRegistro,[]);
+
+          niflinha := TStringGrid(DBGrid1).RowCount - StrToInt('0'+LimpaNumero(sLinha));
+        end else
+        begin
+          TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1) *-1);
+          TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1 ) * 1);
+        end;
+        DBGrid1.Refresh;
         }
+       {Dailon Parisotto (f-18116) 2024-05-21 Fim}
       end;
     except
     end;
@@ -11685,7 +11707,9 @@ begin
     end;
 
     // Este bloco tem toda a demora
-    DefineLayoutFiltro;
+    {Dailon Parisotto (f-18116) 2024-04-30 Inicio
+    DefineLayoutFiltro;}
+    {Dailon Parisotto (f-18116) 2024-04-30 Fim}
 
     Form7.Panel7.Caption   := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
     Form7.Panel7.Repaint;
@@ -11826,6 +11850,35 @@ begin
   Screen.Cursor := crDefault;
 
   MarcaColunaOrderBy;
+
+  // O Fonte a baixo tem que ficar depois do metodo MarcaColunaOrderBy
+  {Dailon Parisotto (f-18116) 2024-05-21 Inicio}
+  try
+    if StrToInt('0'+LimpaNumero(sLinha)) > 0 then
+    begin
+      if (TStringGrid(DBGrid1).Row > 1) and (sModulo <> 'CAIXA') then
+      begin
+        TabelaAberta.Locate('REGISTRO',sRegistro,[]);
+
+        niflinha := TStringGrid(DBGrid1).RowCount - StrToInt('0'+LimpaNumero(sLinha));
+      end else
+      begin
+        TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1) *-1);
+        TabelaAberta.MoveBy((StrToIntDef(LimpaNumero(sLinha) ,0) -1 ) * 1);
+      end;
+      DBGrid1.Refresh;
+    end;
+  except
+  end;
+  {Dailon Parisotto (f-18116) 2024-05-21 Fim}
+
+  {Dailon Parisotto (f-18116) 2024-04-30 Inicio}
+  if niflinha > 0 then
+  begin
+    TabelaAberta.MoveBy((niflinha-1) * 1);
+    TabelaAberta.MoveBy((niflinha-1) *-1);
+  end;
+  {Dailon Parisotto (f-18116) 2024-04-30 Fim}
 end;
 
 procedure TForm7.DefineLayoutFiltro;
@@ -13568,7 +13621,15 @@ begin
     ibDataSet4CUSTOCOMPR.Asfloat := 0;
 
   if (ibDataSet4MARGEMLB.AsFloat <> 0) and (ibDataSet4CUSTOCOMPR.AsFloat <> 0) then
-    ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.2f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+  begin
+    {Dailon Parisotto (f-18540) 2024-05-15 Inicio
+
+    ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.3f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+
+    }
+    ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.'+RetornarCasasDecimaisPreco.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+    {Dailon Parisotto (f-18540) 2024-05-Fim}
+  end;
 end;
 
 
@@ -15172,6 +15233,8 @@ end;
 procedure TForm7.ibDataSet4PRECOChange(Sender: TField);
 var
   nMargem: Currency;
+  nVendaRecalc: Double;
+  nDecimal: Integer;
 begin
   {Dailon Parisotto 2023-10-09 Inicio}
   if FbDuplicandoProd then
@@ -15194,16 +15257,39 @@ begin
   begin
     if (ibDataSet4MARGEMLB.Value <> 0) and (ibDataSet4CUSTOCOMPR.AsFloat <> 0) then
     begin
-      nMargem := Arredonda(((ibDataSet4PRECO.AsFloat - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100, 2);
+      nDecimal := RetornarCasasDecimaisPreco;
 
+      nMargem := StrToFloat(Format('%8.2f',[(((ibDataSet4PRECO.AsFloat - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100)]));
       if ibDataSet4MARGEMLB.AsCurrency <> nMargem then
-        ibDataSet4MARGEMLB.AsCurrency := nMargem;
+      begin
+        nVendaRecalc := StrToFloat(Format('%8.'+nDecimal.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((nMargem / 100)+1))]));
+        if (nVendaRecalc <> ibDataSet4PRECO.AsFloat) then
+          ibDataSet4MARGEMLB.AsCurrency := nMargem
+        else
+        begin
+          nVendaRecalc := StrToFloat(Format('%8.'+nDecimal.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+          if (nVendaRecalc <> ibDataSet4PRECO.AsFloat) then
+            ibDataSet4MARGEMLB.AsCurrency := nMargem
+        end;
+      end;
     end;
 
     ibDataSet4ALTERADO.AsString := '1';
   end;
 
   Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
+end;
+
+function TForm7.RetornarCasasDecimaisPreco: Integer;
+var
+  oIni: TIniFile;
+begin
+  oIni := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
+  try
+    Result := oIni.ReadInteger('Outros','Casas decimais no preço', 2);
+  finally
+    oIni.Free;
+  end;
 end;
 
 procedure TForm7.Balancetegerancialmensal1Click(Sender: TObject);
