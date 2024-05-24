@@ -1336,15 +1336,14 @@ begin
 end;
 
 
-function Regularize(sP1: boolean): boolean;
+function Regularize: boolean;
 var
   Mais1ini: tIniFile;
   documentoAtivo: variant;
   sSerie, sInicio, s: String;
-  bButton: Integer;
   CredencialTecnospeed: TCredenciaisTecnospeed;
 
-  vQtdConexoes : integer;
+  GeraAviso: boolean;
 begin
   Result := False;
 
@@ -1432,8 +1431,12 @@ begin
       end;
     end;
 
-    if (pos('REGULARIZE',UpperCase(S)) <> 0) or (pos('[BLOQUEADO1]',UpperCase(S)) <> 0) or (pos('[BLOQUEADO2]',UpperCase(S)) <> 0) or (pos('[PARATUDO]',UpperCase(S)) <> 0) then
+    if (pos('REGULARIZE',UpperCase(S)) <> 0)
+      or (pos('[BLOQUEADO1]',UpperCase(S)) <> 0)
+      or (pos('[BLOQUEADO2]',UpperCase(S)) <> 0)
+      or (pos('[PARATUDO]',UpperCase(S)) <> 0) then
     begin
+      {
       if (pos('[PARATUDO]',UpperCase(S)) <> 0) then
       begin
         if Legal_ok(True) then
@@ -1461,6 +1464,20 @@ begin
           end;
         end;
       end;
+      }
+      try
+        //Estava liberado e vai ser bloqueado
+        GeraAviso := Legal_ok(True);
+
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to 19670926');
+        Form1.ibDataset200.Open;
+
+        if GeraAviso then
+          MensagemSistema('Este sistema foi bloqueado');
+      except
+      end;
     end else
     begin
       if pos('LEGAL',UpperCase(S)) <> 0 then
@@ -1476,6 +1493,7 @@ begin
         Result := True;
       end else
       begin
+        //Sem retorno nenhum
         if Legal_ok(True) then
         begin
           try
@@ -1488,11 +1506,12 @@ begin
         end;
       end;
 
+      (* Mauricio Parizotto 2024-05-20
       if (pos('[BUILD]',UpperCase(S)) <> 0) or (pos('[VERSAO]',UpperCase(S)) <> 0) then
       begin
         //Verifica se só tem um usuário conectado
         vQtdConexoes := ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase,
-                                              'Select Count(*) From MON$ATTACHMENTS');
+                                              'Select Count( * ) From MON$ATTACHMENTS');
         if vQtdConexoes = 1 then
         begin
           bButton := Application.MessageBox(Pchar(
@@ -1550,6 +1569,7 @@ begin
         end;
       end;
 
+      *)
 
       if pos('[LOJA]',UpperCase(S)) <> 0 then
       begin
@@ -1582,6 +1602,67 @@ begin
       end;
     end;
   except
+  end;
+end;
+
+procedure VerificaNovaBuild;
+var
+  s: String;
+  vQtdConexoes : integer;
+  documentoAtivo: variant;
+  bButton: Integer;
+begin
+  try
+    documentoAtivo := Form1.WebBrowser1.Document;
+    s := documentoAtivo.Body.OuterHTML;
+
+    if (pos('[BUILD]',UpperCase(S)) <> 0) or (pos('[VERSAO]',UpperCase(S)) <> 0) then
+    begin
+      //Verifica se só tem um usuário conectado
+      vQtdConexoes := ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase,
+                                            'Select Count(*) From MON$ATTACHMENTS');
+      if vQtdConexoes = 1 then
+      begin
+        bButton := Application.MessageBox(Pchar(
+                                          'Uma nova versão do Small Commerce está disponível para download (este procedimento demora apenas alguns minutos).'+
+                                          Chr(10) +
+                                          Chr(10) +
+                                          'Continuar?' +
+                                          Chr(10))
+                                          ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
+
+        if bButton = IDYES then
+        begin
+          if FileExists(Form1.sAtual+'\smallcon.exe') then
+          begin
+            ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20241001.sma '+
+                                                           '20241002.sma '+
+                                                           '20241003.sma '+
+                                                           '20241004.sma '+
+                                                           '20241005.sma '+
+                                                           '20241006.sma '+
+                                                           '20241007.sma '+
+                                                           '20241008.sma '+
+                                                           '20241009.sma '+
+                                                           'nfce2024.sma '+
+                                                           '2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
+                                                           , '', SW_SHOW);
+          end
+          else
+            MensagemSistema('Arquivo smallcon.exe não encontrado.');
+
+          Winexec('TASKKILL /F /IM "smallcdf.exe"', SW_HIDE );
+          Winexec('TASKKILL /F /IM "mobile.exe"', SW_HIDE );
+          Winexec('TASKKILL /F /IM "mkp.exe"', SW_HIDE );
+          Winexec('TASKKILL /F /IM "Small Commerce.exe"', SW_HIDE );
+          Winexec('TASKKILL /F /IM small22.exe', SW_HIDE );
+          Winexec('TASKKILL /F /IM nfe.exe', SW_HIDE );
+          FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
+        end;
+      end;
+    end;
+  except
+
   end;
 end;
 
@@ -3104,31 +3185,30 @@ begin
               FreeAndNil(Form17);
             end;
 
-
             if Form1.CanFocus then
               Form1.SetFocus;
           end;
-        except end;
-
-        //Form1.RegistrodoProgramaonline1Click(Form1); Mauricio Parizotto 2023-05-15
-        Form1.RegistrodoPrograma(False);
-
-        for I := 1 to 10 do
-        begin
-          if not Regularize(True) then Sleep(200);
+        except
         end;
 
-        if not Regularize(True) then
-        begin
-          Application.MessageBox(pChar('Não foi possível liberar o sistema para uso neste computador'+chr(10)+
-                                    'com o número de série '+ Form1.sSerial +' para: '+chr(10)+chr(10)+
-                                     AllTrim(Form7.ibDataSet13NOME.AsString)+chr(10)+chr(10)+
-                                     AllTrim(Form7.ibDataSet13CGC.AsString)+chr(10)+chr(10)+
-                                     'Código: 2022 '+chr(10)+chr(10)+
-                                     'Adquirir uma licença de uso atualizada?'),
-                                     'Atenção', MB_ICONQUESTION + MB_YESNO);
+        Form1.RegistrodoPrograma(False);
 
-          ShellExecute(Application.Handle, nil, PChar('http://www.smallsoft.com.br/loja/atualiza-via-small?serial=' + Form1.sSerial + '&cnpj=' + LimpaNumero(form7.ibDataSet13.FieldByName('CGC').AsString)), nil, nil, SW_SHOWMAXIMIZED);
+        for I := 1 to 5 do
+        begin
+          if not Regularize then
+            Sleep(400);
+        end;
+
+        if not Regularize then
+        begin
+          if Application.MessageBox(pChar('Não foi possível liberar o sistema para uso neste computador'+chr(10)+
+                                      'com o número de série '+ Form1.sSerial +' para: '+chr(10)+chr(10)+
+                                       AllTrim(Form7.ibDataSet13NOME.AsString)+chr(10)+chr(10)+
+                                       AllTrim(Form7.ibDataSet13CGC.AsString)+chr(10)+chr(10)+
+                                       'Código: 2022 '+chr(10)+chr(10)+
+                                       'Adquirir uma licença de uso atualizada?'),
+                                       'Atenção', MB_ICONQUESTION + MB_YESNO) = IDYES then
+            ShellExecute(Application.Handle, nil, PChar('http://www.smallsoft.com.br/loja/atualiza-via-small?serial=' + Form1.sSerial + '&cnpj=' + LimpaNumero(form7.ibDataSet13.FieldByName('CGC').AsString)), nil, nil, SW_SHOWMAXIMIZED);
 
           Result := False;
         end;
@@ -3502,18 +3582,17 @@ begin
     tSp2.Width       := tSp1.Width;
     //
     // Não mostrar as legendas
-    //
+    {Mauricio Parizotto 2024-04-23
     if not Form19.CheckBox8.Checked then
     begin
       tSp2.Caption := Replicate(' ',100)+AllTrim(tSp2.Caption);
-    end else
+    end else}
     begin
       tSp2.Caption := AllTrim(tSp2.Caption);
     end;
-    //
+
     tSp2.visible     := True;
     tsP2.Repaint;
-    //
   end;
 
   if tSp2.Caption = 'Backup' then
@@ -4340,7 +4419,10 @@ begin
     DeleteFile(pChar(Form1.sAtual+'\leia-me.txt'));
   end;
 
-  Regularize(True);
+  //Mauricio Parizotto 2024-05-20
+  if Regularize then
+    VerificaNovaBuild;
+
   if not FechaTudo(bFechaTudo) then
     Exit;
 
@@ -8422,7 +8504,6 @@ begin
       begin
         if FileExists(Form1.sAtual+'\leia-me.txt') then
         begin
-          //Form1.RegistrodoProgramaonline1Click(Sender); Mauricio Parizotto 2023-05-15
           RegistrodoPrograma(InfTermo);
           ValidaRazaoSmall; // Corrige o nome da small no arquio arquivoauxiliarcriptografadopafecfsmallsoft.ini de LTDA para EIRELI
         end;
@@ -8435,7 +8516,6 @@ begin
       begin
         // Verificar se é mei aqui
         begin
-          //Form1.RegistrodoProgramaonline1Click(Sender); Mauricio Parizotto 2023-05-15
           RegistrodoPrograma(InfTermo);
         end;
       end;
