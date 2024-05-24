@@ -350,6 +350,10 @@ type
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
     Label118: TLabel;
     fraPerfilTrib: TfFrameCampo;
+    pnl_IE: TPanel;
+    rgIEContribuinte: TRadioButton;
+    rgIENaoContribuinte: TRadioButton;
+    rgIEIsento: TRadioButton;
     procedure Image204Click(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -559,6 +563,9 @@ type
     procedure fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure fraPerfilTribExit(Sender: TObject);
+    procedure rgIEContribuinteClick(Sender: TObject);
+    procedure rgIENaoContribuinteClick(Sender: TObject);
+    procedure rgIEIsentoClick(Sender: TObject);
   private
     FcCEPAnterior: String;
     cCadJaValidado: String;
@@ -567,7 +574,7 @@ type
     procedure DefinirVisibleConsultaProdComposicao;
     procedure AtribuirItemPesquisaComposicao;
     procedure DefinirLimiteDisponivel;
-    procedure AlteracaoInstituicaoFinanceira;
+//    procedure AlteracaoInstituicaoFinanceira;
     { Private declarations }
     function MostraImagemEstoque: Boolean;
     procedure CarregaCit;
@@ -586,6 +593,8 @@ type
     procedure BloqueiaCamposAbaGrade(AbBloquear: Boolean);
     function RetornarDescrCaracTagsObs: String;
     procedure DefineCamposCEP(AoObjeto: TObjetoConsultaCEP);
+    procedure SetTipoContribuinte(iTipo : integer);
+    procedure CarregaTipoContibuinte;
   public
     { Public declarations }
 
@@ -712,6 +721,7 @@ begin
     end;
   end;
 
+  {Mauricio Parizotto 2024-04-16
   if Form7.sModulo = 'RECEBER' then
   begin
     try
@@ -722,6 +732,7 @@ begin
     except
     end;
   end;
+  }
 
   try
     if Form7.ibDataSet13.Modified then
@@ -868,9 +879,13 @@ begin
       end;
 
       Form10.Caption := form7.ibDataSet2NOME.AsString;
+
+      //Mauricio Parizotto 2024-04-15
+      Form10.CarregaTipoContibuinte;
     end;
     {$EndRegion}
 
+    {Mauricio Parizotto 2024-04-16
     if Form7.sModulo = 'RECEBER' then
     begin
       Form7.ibDataSet2.Close;
@@ -878,6 +893,7 @@ begin
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet7NOME.AsString)+' ');  //
       Form7.ibDataSet2.Open;
     end;
+    }
 
     {$Region '//  Eliminar quando tiver criado form de cadastro clientes e vendedores//'}
     if (Form7.sModulo = 'CLIENTES') then
@@ -1426,6 +1442,7 @@ begin
     end;
     }
 
+    (*Mauricio Parizotto 2024-04-16
     // Contas a receber
     if Form7.sModulo = 'RECEBER' then
     begin
@@ -1470,6 +1487,9 @@ begin
       end;
     end;
 
+    *)
+
+    {Mauricio Parizotto 2024-04-15
     // Contas a Pagar
     if Form7.sModulo = 'PAGAR' then
     begin
@@ -1480,6 +1500,7 @@ begin
       else
         Form7.ibDataSet8NOME.AsString  := Form7.ibDataSet2NOME.AsString;
     end;
+    }
 
     // Estoque, Nota Fiscal de venda ou compra quando cadastra um produto novo pelo formulário
     if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
@@ -1652,15 +1673,16 @@ begin
       if (vDataField = 'NOME') and
                        (
                         //(Form7.sModulo = 'CAIXA') or Mauricio Parizotto 2024-04-05
-                        (Form7.sModulo = 'RECEBER') or
-                        (Form7.sModulo = 'PAGAR') or
+                        //(Form7.sModulo = 'RECEBER') or Mauricio Parizotto 2024-04-16
+                        //(Form7.sModulo = 'PAGAR') or Mauricio Parizotto 2024-04-15
                         (Form7.sModulo = 'VENDA') or
                         (Form7.sModulo = 'COMPRA') or
                         (Form7.sModulo = 'ESTOQUE')
                        ) then
         dBGrid1.Visible := True;
 
-      if ((vDataField = 'CONTA') and (Form7.sModulo = 'RECEBER')) or ((vDataField = 'CONTA') and (Form7.sModulo = 'PAGAR')) then
+      {Mauricio Parizotto 2024-04-16
+      if ((vDataField = 'CONTA') and (Form7.sModulo = 'RECEBER'))  or ((vDataField = 'CONTA') and (Form7.sModulo = 'PAGAR') ) thenMauricio Parizotto 2024-04-15
       begin
         dBGrid1.Visible    := True;
         dBGrid1.Top        := Top + 19;
@@ -1670,9 +1692,10 @@ begin
         dBGrid1.Font       := Font;
         dBGrid1.DataSource := Form7.DataSource12; // Convênios
       end;
+      }
 
-      if ((vDataField = 'NOME') and (Form7.sModulo = 'RECEBER'))
-        or ((vDataField = 'NOME') and (Form7.sModulo = 'PAGAR'  )) then
+      {Mauricio Parizotto 2024-04-16
+      if ((vDataField = 'NOME') and (Form7.sModulo = 'RECEBER')) or ((vDataField = 'NOME') and (Form7.sModulo = 'PAGAR'  )) then
       begin
         dBGrid1.Visible    := True;
         dBGrid1.Top        := Top + 19;
@@ -1682,6 +1705,7 @@ begin
         dBGrid1.Font       := Font;
         dBGrid1.DataSource := Form7.DataSource2; // Clifor
       end;
+      }
 
       dBgrid3.Columns.Items[1].Visible   := False;
 
@@ -1788,6 +1812,7 @@ begin
       end;
       *)
 
+      (* Mauricio Parizotto 2024-04-16
       {Sandro Silva 2023-06-22 inicio}
       if (vDataField = 'FORMADEPAGAMENTO') and (Form7.sModulo = 'RECEBER') then
       begin
@@ -1809,7 +1834,9 @@ begin
         dBGrid3.Columns[0].Width := 310;
       end;
       {Sandro Silva 2023-06-22 fim}
+      *)
 
+      (* Mauricio Parizotto 2024-04-16
       //Mauricio Parizotto 2023-05-29
       if (vDataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = 'RECEBER') then
       begin
@@ -1833,6 +1860,7 @@ begin
         dBGrid3.DataSource := Form7.DSConsulta;
         dBGrid3.Columns[0].Width := 310;
       end;
+      *)
 
       (*Mauricio Parizotto 2024-04-09
       //Mauricio Parizotto 2023-06-16
@@ -1859,6 +1887,7 @@ begin
       end;
       *)
 
+      (*Mauricio Parizotto 2024-04-16
       {Sandro Silva 2023-06-21 inicio}
       if (vDataField = 'FORMADEPAGAMENTO') and (Form7.sModulo = 'RECEBER') then
       begin
@@ -1880,6 +1909,7 @@ begin
         dBGrid3.Columns[0].Width := 310;
       end;
       {Sandro Silva 2023-06-21 fim}
+      *)
     end;
   except
     //ShowMessage('Erro 10/77 comunique o suporte técnico.')Mauricio Parizotto 2023-10-25
@@ -1892,7 +1922,7 @@ end;
 procedure TForm10.SMALL_DBEdit1Exi(Sender: TObject);
 begin
 
-  if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'RECEBER') then
+  if (Form7.sModulo = 'CLIENTES') then //or (Form7.sModulo = 'RECEBER') then
     sNomeDoArquivoParaSalvar := 'contatos\'+AllTrim(LimpaLetrasPor_(Form7.ibDataSet2NOME.AsString))+'.txt'; // Lendo o arquivo para mostrar na tela
 
   try
@@ -1917,8 +1947,8 @@ begin
       if ((DataField = 'NOME') or (DataField = 'CONTA') or (DataField = 'CIDADE') or (DataField = 'CONVENIO')) and
        (
         //(Form7.sModulo = 'CAIXA' ) or Mauricio Parizotto 2024-04-05
-        (Form7.sModulo = 'RECEBER') or
-         (Form7.sModulo = 'PAGAR') or
+        //(Form7.sModulo = 'RECEBER') or
+         //(Form7.sModulo = 'PAGAR') or Mauricio Parizotto 2024-04-15
           (Form7.sModulo = 'VENDA') or
            (Form7.sModulo = 'COMPRA') or
             (Form7.sModulo = 'CLIENTES') or
@@ -1931,8 +1961,10 @@ begin
         if ((DataField = 'NOME')  and (Form7.sModulo = 'CAIXA'  ))
         or ((DataField = 'CONTA') and (Form7.sModulo = 'RECEBER'))
         Mauricio Parizotto 2024-04-05}
+        (* Mauricio Parizotto 2024-04-16
         if ((DataField = 'CONTA') and (Form7.sModulo = 'RECEBER'))
-        or ((DataField = 'CONTA') and (Form7.sModulo = 'PAGAR')) then
+        //or ((DataField = 'CONTA') and (Form7.sModulo = 'PAGAR'))Mauricio Parizotto 2024-04-15
+        then
         begin
           // Procura pela conta //
           try
@@ -1953,6 +1985,7 @@ begin
             end;
          except end;
         end;
+        *)
 
         sText := AllTrim(Text);
 
@@ -1964,13 +1997,15 @@ begin
             tProcura := Form7.ibDataSet12;
           }
 
-          if (Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR') then
+          {Mauricio Parizotto 2024-04-16
+          if (Form7.sModulo = 'RECEBER') (Form7.sModulo = 'PAGAR') then
           begin
             if DataField = 'NOME' then
               tProcura := Form7.ibDataSet2
             else
               tProcura := Form7.ibDataSet12;
           end;
+          }
 
           if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
             tProcura := Form7.ibDataSet21;
@@ -1991,6 +2026,7 @@ begin
         end;
       end;
 
+      (*Mauricio Parizotto 2024-04-16
       {Sandro Silva 2023-06-22 inicio}
       if (DataField = 'FORMADEPAGAMENTO') and (Form7.sModulo = 'RECEBER') and (bGravaEscolha) then
       begin
@@ -2006,8 +2042,9 @@ begin
         end;
       end;
       {Sandro Silva 2023-06-22 fim}
+      *)
 
-
+      (*Mauricio Parizotto 2024-04-16
       {Mauricio Parizotto 2023-05-29 Inicio}
       if (DataField = 'INSTITUICAOFINANCEIRA') and (Form7.sModulo = 'RECEBER') and (bGravaEscolha) then
       begin
@@ -2023,6 +2060,7 @@ begin
         end;
       end;
       {Mauricio Parizotto 2023-05-29 Inicio}
+      *)
 
       (* Mauricio Parizotto 2024-04-09
       {Mauricio Parizotto 2023-06-16 Inicio}
@@ -2121,6 +2159,7 @@ begin
   end;
   }
 
+  (*Mauricio Parizotto 2024-04-16
   if Form7.sModulo = 'RECEBER' then
   begin
     if (dBGrid1.DataSource.Name = 'DataSource12')  then
@@ -2134,9 +2173,10 @@ begin
       if SMALL_DBEdit5.CanFocus then
         SMALL_DBEdit5.SetFocus;
     end;
-
   end;
+  *)
 
+  {Mauricio Parizotto 2024-04-15
   if Form7.sModulo = 'PAGAR'   then
   begin
     if (dBGrid1.DataSource.Name = 'DataSource12')  then
@@ -2146,6 +2186,7 @@ begin
       if SMALL_DBEdit5.CanFocus  then
         SMALL_DBEdit5.SetFocus;
   end;
+  }
 
   if Form7.sModulo = 'ESTOQUE' then
   begin
@@ -2175,12 +2216,15 @@ begin
       begin
         vDataField := DataField;
 
+        {Mauricio Parizotto 2024-04-16
         if (vDataField = 'CONTA')
-          and ((Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR'))
+          and ((Form7.sModulo = 'RECEBER') //or (Form7.sModulo = 'PAGAR') Mauricio Parizotto 2024-04-15
+          )
           and (Form7.ibDataSet12.Active) then
         begin
           Form7.ibDataSet12.Locate('NOME', Trim(Text),[loCaseInsensitive, loPartialKey]);
         end;
+        }
 
         if (vDataField = 'CONVENIO')
           and (Form7.sModulo = 'CLIENTES')
@@ -2215,6 +2259,7 @@ begin
         end;
         }
 
+        {Mauricio Parizotto 2024-04-15
         if (Form7.sModulo = 'PAGAR')
           and (vDataField = 'NOME')
           and (Form7.ibDataSet2.Active ) then
@@ -2226,7 +2271,9 @@ begin
           Form7.ibDataSet2.Open;
           Form7.ibDataSet2.EnableControls;
         end;
+        }
 
+        {Mauricio Parizotto 2024-04-16
         if (Form7.sModulo = 'RECEBER')
           and (vDataField = 'NOME')
           and (Form7.ibDataSet2.Active ) then
@@ -2238,7 +2285,9 @@ begin
           Form7.ibDataSet2.Open;
           Form7.ibDataSet2.EnableControls;
         end;
+        }
 
+        (*Mauricio Parizotto 2024-04-16
         {Sandro Silva 2023-06-22 inicio}
         if (vDataField = 'FORMADEPAGAMENTO')
           and (Form7.sModulo = 'RECEBER')
@@ -2247,7 +2296,9 @@ begin
           Form7.ibqConsulta.Locate('NOME', Trim(Text), [loCaseInsensitive, loPartialKey]);
         end;
         {Sandro Silva 2023-06-22 fim}
+        *)
 
+        {Mauricio Parizotto 2024-04-16
         //Mauricio Parizotto 2023-05-29
         if (vDataField = 'INSTITUICAOFINANCEIRA')
           and (Form7.sModulo = 'RECEBER')
@@ -2255,6 +2306,7 @@ begin
         begin
           Form7.ibqConsulta.Locate('NOME',AllTrim(Text),[loCaseInsensitive, loPartialKey]);
         end;
+        }
 
         (*Mauricio Parizotto 2024-04-09
         //Mauricio Parizotto 2023-06-16
@@ -2379,6 +2431,7 @@ begin
 
   {Mauricio Parizotto 2024-01-22 Fim}
 
+  {Mauricio Parizotto 2024-04-16
   //Mauricio Parizotto 2023-05-31
   if Form7.sModulo = 'RECEBER' then
   begin
@@ -2397,6 +2450,9 @@ begin
 
     Form7.ibDataSet7.EnableControls;
   end;
+  }
+
+
   Image5.Picture  := Image3.Picture;
 end;
 
@@ -3015,6 +3071,7 @@ begin
     if Form10.SMALL_DBEdit19.CanFocus then
       Form10.SMALL_DBEdit19.SetFocus;
     }
+    {Mauricio Parizotto 2024-04-16
     if (Form7.sModulo = 'RECEBER') then
     begin
 
@@ -3032,7 +3089,7 @@ begin
         if Form10.SMALL_DBEdit19.CanFocus then
           Form10.SMALL_DBEdit19.SetFocus;
     end
-    else
+    else}
     begin
       if Form10.SMALL_DBEdit19.CanFocus then
         Form10.SMALL_DBEdit19.SetFocus;
@@ -3049,6 +3106,7 @@ begin
     Exit;
   end;
   }
+  {Mauricio Parizotto 2024-04-16
   if (Form7.sModulo = 'RECEBER') then
   begin
 
@@ -3059,7 +3117,7 @@ begin
 
     Exit;
 
-  end;
+  end;}
   {Sandro Silva 2023-07-24 fim}
   {Mauricio Parizotto 2023-05-29 Fim}
 
@@ -3883,6 +3941,7 @@ begin
 
   bNovo := False;
 
+  (*
   if Form7.sModulo = 'RECEBER' then
   begin
     {Sandro Silva 2023-06-22 inicio
@@ -4067,6 +4126,7 @@ begin
     end;
 
   end;
+  *)
 end;
 
 procedure TForm10.Label52MouseLeave(Sender: TObject);
@@ -4327,6 +4387,7 @@ procedure TForm10.DBMemo2Enter(Sender: TObject);
 begin
   sContatos := Form7.IBDataSet2CONTATOS.AsString;
 
+  (*Mauricio Parizotto 2024-04-16
   if Form7.sModulo = 'RECEBER' then
   begin
     try
@@ -4338,6 +4399,7 @@ begin
       DBMemo2.Visible := False;
     end;
   end else
+  *)
   begin
     if Form7.ArquivoAberto.Modified then Form7.ArquivoAberto.Post;
     Form7.ArquivoAberto.Edit;
@@ -4363,6 +4425,7 @@ begin
     /////////////////////////////////////////////// 2022-07-21
   end;
 
+  {Mauricio Parizotto 2024-04-16
   if Form7.sModulo = 'RECEBER' then
   begin
     try
@@ -4373,6 +4436,7 @@ begin
       Form7.IBDataSet2.Cancel;
     end;
   end else
+  }
   begin
     try
       if Form7.ArquivoAberto.Modified then Form7.ArquivoAberto.Post;
@@ -4468,8 +4532,8 @@ begin
      if ((((TSMALL_DBEdit(Sender).DataField = 'NOME') and (Form7.sModulo <> 'ESTOQUE'))
           or (TSMALL_DBEdit(Sender).DataField = 'CGC')
           or (TSMALL_DBEdit(Sender).DataField = 'DESCRICAO'))
-        and ((Form7.sModulo = 'RECEBER') or
-             (Form7.sModulo = 'PAGAR') or
+        and (//(Form7.sModulo = 'RECEBER') or Mauricio Parizotto 2024-04-15
+             //(Form7.sModulo = 'PAGAR') or Mauricio Parizotto 2024-04-15
              (Form7.sModulo = 'CLIENTES') or
              (Form7.sModulo = 'ESTOQUE'))) then
     begin
@@ -4560,6 +4624,7 @@ begin
 
   eLimiteCredDisponivel.Visible   := False;
   lblLimiteCredDisponivel.Visible := False;
+  pnl_IE.Visible                  := False; //Mauricio Parizotto 2024-04-12
 
   try
     Form7.ibDataSet13.Edit;
@@ -4693,8 +4758,10 @@ begin
     end;
     {Sandro Silva 2022-12-20 fim}
     {Sandro Silva 2023-06-22 inicio}
+    {Mauricio Parizotto 2024-04-16
     if Form7.sModulo = 'RECEBER' then
       iTopSegundaColuna := 18;
+    }
     {Sandro Silva 2023-06-22 fim}
 
 
@@ -4726,7 +4793,8 @@ begin
                 if iTopPrimeiraColuna < 0 then
                   iTopPrimeiraColuna := iTop;
 
-                if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') or (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22 if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
+                if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') //or (Form7.sModulo = 'RECEBER') Mauricio Parizotto 2024-04-16
+                  then // Sandro Silva 2023-06-22 if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
                 begin
                   {Sandro Silva 2023-06-22 inicio
                   if I = iTopSegundaColuna then
@@ -4734,9 +4802,11 @@ begin
                   }
                   if I = iTopSegundaColuna then
                   begin
+                    {Mauricio Parizotto 2024-04-16
                     if (Form7.sModulo = 'RECEBER') then
                       iTop := iTopPrimeiraColuna // Sandro Silva 2023-07-25 iTop := iTop - 400
                     else
+                    }
                       iTop := 170 - 25;
                   end;
                   {Sandro Silva 2023-06-22 fim}
@@ -4755,13 +4825,15 @@ begin
                     TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 200 + 100
                   else
                     TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
-                end else if (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22
+                end else
+                {Mauricio Parizotto 2024-04-16
+                if (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22
                 begin
                   if I > 17 then
                     TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 360 + 100
                   else
                     TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 0;
-                end else
+                end else}
                 begin
                   if I > 17 then
                     TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Left := 360 + 70
@@ -4774,8 +4846,10 @@ begin
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := AllTrim(Form7.TabelaAberta.Fields[I - 1].DisplayLabel) + ':';
                 TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Repaint;
 
+                {Mauricio Parizotto 2024-04-16
                 if (Form7.sModulo = 'RECEBER') and (Form7.TabelaAberta.Fields[I-1].FieldName = 'FORMADEPAGAMENTO') then
                   TLabel(Form10.Components[I - 1 + Label1.ComponentIndex]).Caption := 'Forma de Pag.:';
+                }
 
                 if (Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'COMPRA') then
                 begin
@@ -4785,13 +4859,15 @@ begin
                     TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 300 + 100
                   else
                     TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
-                end else if (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22
+                end else
+                {Mauricio Parizotto 2024-04-16
+                if (Form7.sModulo = 'RECEBER') then // Sandro Silva 2023-06-22
                 begin
                   if I > 17 then
                     TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 460 + 100
                   else
                     TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 100;
-                end else
+                end else}
                 begin
                   if I > 17 then
                     TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Left := 460 + 70
@@ -4825,6 +4901,11 @@ begin
                   lblLimiteCredDisponivel.Visible := True;
                   eLimiteCredDisponivel.Top       := iTop;
                   lblLimiteCredDisponivel.Top     := iTop + 1;
+                end;
+
+                if (Form7.sModulo = 'CLIENTES') then
+                begin
+                  pnl_IE.Visible                  := (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 18); //Mauricio Parizotto 2024-04-15
                 end;
 
                 TSMALL_DBEdit(Form10.Components[I - 1 + SMALL_DBEdit1.ComponentIndex]).Top        :=  iTop;
@@ -4887,17 +4968,21 @@ begin
                     end;
                     }
 
+                    {Mauricio Parizotto 2024-04-16
                     // contas a receber
                     if Form7.sModulo = 'RECEBER' then
                     begin
                       dBGrid1.DataSource := Form7.DataSource2; // Clientes
                     end;
+                    }
 
+                    {Mauricio Parizotto 2024-04-15
                     // Contas a pagar
                     if Form7.sModulo = 'PAGAR' then
                     begin
                       dBGrid1.DataSource := Form7.DataSource2; // Fornecedores
                     end;
+                    }
 
                     // Estoque
                     if (Form7.sModulo = 'VENDA') or
@@ -5038,6 +5123,7 @@ begin
     end;
   end;
 
+  (*Mauricio Parizotto 2024-04-16
   if (Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR') then
   begin
     if Form7.sModulo = 'RECEBER' then
@@ -5060,7 +5146,7 @@ begin
     begin
       Button12.Enabled := True;
     end;
-  end else
+  end else*)
   begin
     Button9.Visible := False;
     Button12.Visible := False;
@@ -5122,6 +5208,7 @@ end;
 
 procedure TForm10.Button9Click(Sender: TObject);
 begin
+  {Mauricio Parizotto 2024-04-16
   if Form7.ibDataSet7.FieldByName('VALOR_RECE').AsFloat <> 0 then
     Form7.fTotalDoRecibo := Form7.ibDataSet7.FieldByName('VALOR_RECE').AsFloat
   else
@@ -5129,6 +5216,7 @@ begin
   Form7.sReciboProvenienteDe := 'Proveniente: dp. ' + Form7.ibDataSet7.FieldByName('DOCUMENTO').AsString + ', Referente ' + AllTrim(Form7.ibDataSet7.FieldByName('HISTORICO').AsString);
   Form7.sReciboRecebemosDe   := Form7.ibDataSet7.FieldByName('NOME').AsString;
   Form7.RECIBOClick(Sender);
+  }
 end;
 
 procedure TForm10.Button12Click(Sender: TObject);
@@ -5143,6 +5231,7 @@ begin
 
   with Form7 do
   begin
+    (*
     if Form7.sModulo = 'RECEBER' then
     begin
       if AllTrim(ibDataSet7DOCUMENTO.AsString) <> '' then
@@ -5282,7 +5371,9 @@ begin
 
       ibDataSet7.Post;                              // Grava
     end;
+    *)
 
+    (* Mauricio Parizotto 2024-04-15
     if sModulo = 'PAGAR' then
     begin
       if AllTrim(ibDataSet8DOCUMENTO.AsString) <> '' then
@@ -5384,6 +5475,7 @@ begin
       ibDataSet8CONTA.AsString        := vCampo[7]; // Portador
       ibDataSet8.Post;                              // Grava
     end;
+    *)
   end;
 
   if SMALL_DBEdit1.Visible = True then
@@ -6486,9 +6578,9 @@ end;
 
 procedure TForm10.Button4Click(Sender: TObject);
 begin
-  //Mauricio Parizotto 2023-05-31
-  if Form7.sModulo = 'RECEBER' then
-    AlteracaoInstituicaoFinanceira;
+  //Mauricio Parizotto 2024-04-16
+  //if Form7.sModulo = 'RECEBER' then
+  //  AlteracaoInstituicaoFinanceira;
 
   Orelha_cadastro.Visible := True;
   Orelhas.ActivePage := Orelha_cadastro;
@@ -7667,6 +7759,21 @@ begin
   Result := ' (' + Form7.ibDataSet4DESCRICAO.Size.ToString + ' caracteres)';
 end;
 
+procedure TForm10.rgIEContribuinteClick(Sender: TObject);
+begin
+  SetTipoContribuinte(1);
+end;
+
+procedure TForm10.rgIEIsentoClick(Sender: TObject);
+begin
+  SetTipoContribuinte(2);
+end;
+
+procedure TForm10.rgIENaoContribuinteClick(Sender: TObject);
+begin
+  SetTipoContribuinte(9);
+end;
+
 procedure TForm10.Orelha_TAGSExit(Sender: TObject);
 const
   _cCamposObs = ';OBS1;OBS2;OBS3;OBS4;OBS5;OBS6;OBS7;OBS8;OBS9;';
@@ -7920,48 +8027,6 @@ procedure TForm10.DBGrid3CellClick(Column: TColumn);
 begin
   DBGrid3DblClick(nil);
 end;
-
-procedure TForm10.AlteracaoInstituicaoFinanceira;
-var
-  vDescricaoAntes : string;
-  vQtdParcelas : integer;
-begin
-  //Mauricio Parizotto 2023-05-29
-  try
-    //Verifica se mudou
-    // Sandro Silva 2023-09-12 Necessário converter retorno do tipo Variant para String, estava causando exception quando cadastrava nova conta
-    vDescricaoAntes := VarToStr(ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
-                                             ' Select Coalesce(INSTITUICAOFINANCEIRA,'''')  '+
-                                             ' From RECEBER'+
-                                             ' Where REGISTRO ='+QuotedStr(Form7.ibDataSet7REGISTRO.AsString))
-                                             );
-
-    if Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString <> vDescricaoAntes then
-    begin
-      if Trim(Form7.ibDataSet7NUMERONF.AsString) = '' then
-        Exit;
-
-      vQtdParcelas := ExecutaComandoEscalar(Form7.ibDataSet7.Transaction.DefaultDatabase,
-                                           ' Select count(*)  '+
-                                           ' From RECEBER'+
-                                           ' Where NUMERONF ='+QuotedStr(Form7.ibDataSet7NUMERONF.AsString));
-
-      if vQtdParcelas > 1 then
-      begin
-        if Application.MessageBox(PChar('Deseja atribuir essa mesma Instituição financeira para os demais registros dessa venda?'),
-                                  'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
-        begin
-          ExecutaComando(' Update RECEBER'+
-                         '   set INSTITUICAOFINANCEIRA ='+QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString)+
-                         ' Where NUMERONF ='+QuotedStr(Form7.ibDataSet7NUMERONF.AsString),
-                         Form7.ibDataSet7.Transaction );
-        end;
-      end;
-    end;
-  except
-  end;
-end;
-
 
 
 procedure TForm10.ComboBoxEnter(Sender: TObject);
@@ -8479,5 +8544,59 @@ begin
 end;
 
 
+procedure TForm10.SetTipoContribuinte(iTipo : integer); //Mauricio Parizotto 2024-05-15
+begin
+  try
+    if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset2.Edit;
+
+    Form7.IBDataSet2CONTRIBUINTE.AsInteger := iTipo;
+
+    CarregaTipoContibuinte;
+  except
+  end;
+end;
+
+procedure TForm10.CarregaTipoContibuinte;  //Mauricio Parizotto 2024-05-15
+begin
+  try
+    SMALL_DBEdit9.Enabled       := True;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 0 then
+    begin
+      rgIEContribuinte.Checked    := False;
+      rgIEIsento.Checked          := False;
+      rgIENaoContribuinte.Checked := False;
+    end;
+
+    if not (Form7.ibDataset2.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset2.Edit;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 1 then
+    begin
+      rgIEContribuinte.Checked := True;
+
+      if Form7.IBDataSet2IE.AsString = 'ISENTO' then
+        Form7.IBDataSet2IE.AsString := '';
+    end;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 2 then
+    begin
+      rgIEIsento.Checked          := True;
+
+      Form7.IBDataSet2IE.AsString := 'ISENTO';
+      SMALL_DBEdit9.Enabled       := False;
+    end;
+
+    if Form7.IBDataSet2CONTRIBUINTE.AsInteger = 9 then
+    begin
+      rgIENaoContribuinte.Checked := True;
+
+      if Form7.IBDataSet2IE.AsString = 'ISENTO' then
+        Form7.IBDataSet2IE.AsString := '';
+    end;
+  except
+  end;
+end;
 
 end.

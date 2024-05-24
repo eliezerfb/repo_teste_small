@@ -883,7 +883,7 @@ object Form10: TForm10
         OnClick = Button9Click
       end
       object Button12: TBitBtn
-        Left = 140
+        Left = 136
         Top = 8
         Width = 120
         Height = 25
@@ -1716,6 +1716,41 @@ object Form10: TForm10
           Transparent = True
           Visible = False
         end
+        object pnl_IE: TPanel
+          Left = 238
+          Top = 212
+          Width = 256
+          Height = 23
+          BevelOuter = bvNone
+          TabOrder = 37
+          object rgIEContribuinte: TRadioButton
+            Left = 8
+            Top = 0
+            Width = 78
+            Height = 17
+            Caption = 'Contribuinte'
+            TabOrder = 0
+            OnClick = rgIEContribuinteClick
+          end
+          object rgIENaoContribuinte: TRadioButton
+            Left = 91
+            Top = 0
+            Width = 100
+            Height = 17
+            Caption = 'N'#227'o Contribuinte'
+            TabOrder = 1
+            OnClick = rgIENaoContribuinteClick
+          end
+          object rgIEIsento: TRadioButton
+            Left = 195
+            Top = 0
+            Width = 113
+            Height = 17
+            Caption = 'Isento'
+            TabOrder = 2
+            OnClick = rgIEIsentoClick
+          end
+        end
         object pnRelacaoComercial: TPanel
           Left = 208
           Top = 300
@@ -2536,8 +2571,8 @@ object Form10: TForm10
           OnMouseMove = SMALL_DBEdit1MouseMove
         end
         object DBMemo2: TDBMemo
-          Left = 224
-          Top = 192
+          Left = 327
+          Top = 136
           Width = 97
           Height = 49
           Font.Charset = ANSI_CHARSET
@@ -10429,7 +10464,7 @@ object Form10: TForm10
             Left = 24
             Top = 160
             Width = 50
-            Height = 21
+            Height = 24
             Ctl3D = True
             DataField = 'RR_'
             DataSource = Form7.DataSource14
@@ -11445,7 +11480,7 @@ object Form10: TForm10
           Left = 10
           Top = 25
           Width = 152
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11464,7 +11499,7 @@ object Form10: TForm10
           Left = 161
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11483,7 +11518,7 @@ object Form10: TForm10
           Left = 313
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11502,7 +11537,7 @@ object Form10: TForm10
           Left = 237
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11521,7 +11556,7 @@ object Form10: TForm10
           Left = 389
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11540,7 +11575,7 @@ object Form10: TForm10
           Left = 465
           Top = 25
           Width = 77
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11559,7 +11594,7 @@ object Form10: TForm10
           Left = 541
           Top = 25
           Width = 94
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -11716,7 +11751,7 @@ object Form10: TForm10
           Left = 20
           Top = 25
           Width = 658
-          Height = 19
+          Height = 22
           BevelInner = bvNone
           Color = clSilver
           Ctl3D = False
@@ -11737,7 +11772,7 @@ object Form10: TForm10
           Left = 676
           Top = 25
           Width = 125
-          Height = 19
+          Height = 22
           Color = clSilver
           Ctl3D = False
           Enabled = False

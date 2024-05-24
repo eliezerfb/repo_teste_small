@@ -34,7 +34,7 @@ uses
   function ExecutaComando(comando:string):Boolean;  overload;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024014'; // Sandro Silva 2024-04-23 const BUILD_DO_BANCO = '2024012'; // Sandro Silva 2024-04-16 const BUILD_DO_BANCO = '2024010'; // Sandro Silva 2024-04-16 const BUILD_DO_BANCO = '2024008';
+const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014'; // Sandro Silva 2024-04-23 const BUILD_DO_BANCO = '2024012'; // Sandro Silva 2024-04-16 const BUILD_DO_BANCO = '2024010'; // Sandro Silva 2024-04-16 const BUILD_DO_BANCO = '2024008';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -43,6 +43,10 @@ const IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO = 999;  // Sandro Silva 2022-09-12
 const ValidacaoNova = True; //False;
 const PRAZO_MANIFESTAR = '180';
 const SQL_CONDICAO_RECEBER_HOJE = ' coalesce(VALOR_RECE, 0)=0 and VENCIMENTO=CURRENT_DATE';
+const NOME_NFE_SETUP = 'nfe_setup.exe';
+
+const SECAO_INI_NFE = 'NFE';
+const CHAVE_INI_BUILD_NFE_SETUP_EXE = 'BUILD NF-e Setup';
 
 type 
     TForm1 = class(TForm)
@@ -544,6 +548,7 @@ type
 
     property sPropaganda: String read getPropaganda;
     function MontaTela(sP1: Boolean): Boolean;
+    procedure ValidaBuildNFe_Setup;
   end;
   //
   function UploadMobile(sFile: TFileName): boolean;
@@ -578,7 +583,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uDialogs
   , uFuncoesRetaguarda
   , uSmallResourceString, uSistema
-  , uConfiguracaoTEFCommerce;
+  , uConfiguracaoTEFCommerce, uFrmContaPagar, uFrmContaReceber;
 
 {$R *.DFM}
 
@@ -1439,7 +1444,6 @@ begin
             Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to 19670926');
             Form1.ibDataset200.Open;
 
-            //ShowMessage('Este sistema foi bloqueado'); Mauricio Parizotto 2023-10-25
             MensagemSistema('Este sistema foi bloqueado');
           except
           end;
@@ -1533,7 +1537,6 @@ begin
 
             end
             else
-              //ShowMessage('Arquivo smallcon.exe não encontrado.'); Mauricio Parizotto 2023-10-25
               MensagemSistema('Arquivo smallcon.exe não encontrado.');
 
             Winexec('TASKKILL /F /IM "smallcdf.exe"', SW_HIDE );
@@ -1574,15 +1577,6 @@ begin
 
       if (pos('[BLOQUEADO1]',UpperCase(S)) <> 0) or (pos('[BLOQUEADO2]',UpperCase(S)) <> 0) then
       begin
-        {
-        Application.MessageBox(Pchar(
-          'Este sistema não está liberado.'+
-          Chr(10) +
-          Chr(10) +
-          'Continuar?' +
-          Chr(10))
-          ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-24}
         MensagemSistema('Este sistema não está liberado.'
                         ,msgAtencao);
       end;
@@ -3605,7 +3599,7 @@ begin
     begin
       vRecurso := SmallEncrypt(CHAVE_CIFRAR_NOVA,vBody);
       ExecutaComando('Update emitente set RECURSO ='+QuotedStr(vRecurso));
-      //ExecutaComando('Commit;'); Mauricio Parizotto 2024-04-19
+      //ExecutaComando('Commit;'); Mauricio Parizotto 2024-04-16 tentativa resolver invalid transaction handle
       AgendaCommit(true);
 	  end;
   except
@@ -4009,6 +4003,16 @@ begin
     RenameFile(pChar(Form1.sAtual+'\backup_.exe'),pChar(Form1.sAtual+'\backup.exe'));
   end;
 
+  {Sandro Silva 2024-05-02 inicio}
+  // Artifício para possíbilitar atualizar o servidorsat.exe via arquivos de atualização
+  // Dentro do arquivo de atualização deve existir o servidorsat_exe
+  if (FileExists(Form1.sAtual+'\servidorsat_.exe')) and (FileExists(Form1.sAtual+'\servidorsat.exe')) then
+  begin
+    RenameFile(pChar(Form1.sAtual+'\servidorsat.exe'),pChar(Form1.sAtual+'\servidorsat_o.exe'));// Renomeia o servidorsat.exe antigo para servidorsat_o.exe
+    RenameFile(pChar(Form1.sAtual+'\servidorsat_.exe'),pChar(Form1.sAtual+'\servidorsat.exe')); // Renomeia o novo servidorsat_.exe para servidorsat.exe
+  end;
+  {Sandro Silva 2024-05-02 fim}
+
   if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99') then
   begin
     //
@@ -4395,6 +4399,8 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  bTemAtuaNFeSetup: Boolean;
 begin
   Form1.bMKP    := False;
   Form1.sPasta  := CHAVE_CIFRAR; // Sandro Silva 2022-09-19
@@ -4438,6 +4444,13 @@ begin
   GetDir(0,sAtual);
 
   // Atualização de arquivos
+  {Sandro Silva 2024-05-06 inicio}
+  bTemAtuaNFeSetup := False;
+  if FileExists(Form1.sAtual+'\nfe_setup.~~1') then
+  begin
+    bTemAtuaNFeSetup := True; // Controlar que não execute 2x o nfe_setup.exe devido a build salva no frente.ini diferente do build do NFE_SETUP.EXE
+  end;
+  {Sandro Silva 2024-05-06 fim}
   InstalaAtualizacao('nfe_setup','1');
   InstalaAtualizacao('nfse_setup','2');
   InstalaAtualizacao('nfce_setup','3');
@@ -4459,6 +4472,20 @@ begin
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
+
+  {Sandro Silva 2024-06 inicio}
+  if bTemAtuaNFeSetup then
+  begin
+    Sleep(250);
+    GravarParametroIni('FRENTE.INI', SECAO_INI_NFE, CHAVE_INI_BUILD_NFE_SETUP_EXE, VersaoBuild(ExtractFilePath(Application.ExeName) + NOME_NFE_SETUP));
+  end
+  else
+  begin
+    if LerParametroIni('FRENTE.INI', SECAO_INI_NFE, CHAVE_INI_BUILD_NFE_SETUP_EXE, '') = '' then
+      GravarParametroIni('FRENTE.INI', SECAO_INI_NFE, CHAVE_INI_BUILD_NFE_SETUP_EXE, '12.1.76.6495');// 12.1.76.6495 É última versão instalada antes desta validação
+  end;
+  ValidaBuildNFe_Setup;
+  {Sandro Silva 2024-05-06 fim}
 
   {Mauricio Parizotto 2023-05-31 Inicio}
   //Alterado para não gerar piscação dos icones ao passar o moues
@@ -8008,13 +8035,6 @@ begin
       Form7.ibDataSet35UNITARIO.EditFormat := Form7.ibDataSet4PRECO.EditFormat;
       Form7.ibDataSet35TOTAL.DisplayFormat := Form7.ibDataSet4PRECO.EditFormat;
     except
-      {
-      ShowMessage('Para solucionar o problema siga os seguintes passos:'+chr(10)
-      +chr(10)+'1 - Desative controle de conta do usuario (Windows Vista)'
-      +chr(10)+'2 - Execute este programa como administrador. Altere o atalho na aba compatibilidade (Windows 8)'
-      +chr(10)+'3 - Arquivo "smallcom.inf" pode estar danificado (O arquivo deve ser excluido)'
-      +chr(10)+'4 - Reinstale o programa');
-      Mauricio Parizotto 2023-10-25}
       MensagemSistema('Para solucionar o problema siga os seguintes passos:'+chr(10)
                       +chr(10)+'1 - Desative controle de conta do usuario (Windows Vista)'
                       +chr(10)+'2 - Execute este programa como administrador. Altere o atalho na aba compatibilidade (Windows 8)'
@@ -8028,11 +8048,7 @@ begin
       FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
 
-    {$IFDEF VER150}
-    ShortDateFormat := 'dd/mm/yyyy';
-    {$ELSE}
     FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
-    {$ENDIF}
 
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
 
@@ -8360,10 +8376,13 @@ begin
       FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
 
+    try
+      //Mauricio Parizotto 2024-02-22
+      CarregaConfiguracoes;
+      ConfiguraNFE;
+    except
 
-    //Mauricio Parizotto 2024-02-22
-    CarregaConfiguracoes;
-    ConfiguraNFE;
+    end;
 
     MontaTela(True);
 
@@ -8597,6 +8616,15 @@ begin
     Form7.EnvioaoFISCOREDUOZ1Click(Sender);
     Form1.Tag := 0;
   end;
+
+  frmConfiguracaoTEFCommerce := TfrmConfiguracaoTEFCommerce.Create(nil);
+  try
+    frmConfiguracaoTEFCommerce.IBDataBase := Form7.IBDatabase1;
+    // No Create vai atualizar TEM TEF
+    frmConfiguracaoTEFCommerce.AtualizaTEMTEF;
+  finally
+    FreeAndNil(frmConfiguracaoTEFCommerce);
+  end;
 end;
 
 procedure TForm1.DBGrid200KeyDown(Sender: TObject; var Key: Word;
@@ -8605,7 +8633,7 @@ var
   I : Integer;
 begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config_sql.htm')));
-  //
+
   if KEY = VK_RETURN then
   begin
    I := DbGrid200.SelectedIndex;
@@ -8616,21 +8644,19 @@ begin
      ibDAtaSet200.Next;
    end;
   end;
-  //
+
   if Key = VK_ESCAPE then
   begin
-    //
     ibDataSet200.Close;
     dbGrid200.Visible := False;
     Edit200.Visible   := False;
-    //
+
     Commitatudo(True); // SQL - Commando
     AbreArquivos(False);
-    //
+
     MontaTela(True);
-    //
   end;
-  //
+
   Screen.Cursor := crDefault;
 end;
 
@@ -9581,6 +9607,7 @@ procedure TForm1.ConfiguraoTEF1Click(Sender: TObject);
 begin
   frmConfiguracaoTEFCommerce := TfrmConfiguracaoTEFCommerce.Create(nil);
   try
+    frmConfiguracaoTEFCommerce.IBDataBase := Form7.IBDatabase1;
     frmConfiguracaoTEFCommerce.ShowModal;
 
     ConfiguraoTEF1.Checked := TestarTEFConfigurado;
@@ -10560,7 +10587,7 @@ begin
 
                       WriteLn(F,'   <tr>');
                       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('DATA').AsString+'<br></font></td>');
-                      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('CLIENTE').AsString+'<br></font></td>');
+                      WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('CLIFOR').AsString+'<br></font></td>'); // Sandro Silva 2024-05-13 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('CLIENTE').AsString+'<br></font></td>');
                       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.'+Form1.ConfCasas+'n',[Form1.ibQuery1.FieldByname('VTOT').AsFloat])+'<br></font></td>');
                       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form1.ibQuery1.FieldByname('NUMERONF').AsString+'<br></font></td>');
                       WriteLn(F,'   </tr>');
@@ -10861,6 +10888,14 @@ begin
   if Form7.sModulo = '2CONTAS' then
     Exit;
   {Mauricio Parizotto 2024-04-05 Fim}
+
+  {Mauricio Parizotto 2024-04-16 Inicio}
+  if Form7.sModulo = 'PAGAR' then
+    Exit;
+
+  if Form7.sModulo = 'RECEBER' then
+    Exit;
+  {Mauricio Parizotto 2024-04-16 Fim}
     
 
   if AllTrim(Form7.sModulo) <> '' then
@@ -11462,15 +11497,6 @@ end;
 procedure TForm1.Panel4MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  {
-  if Form5.Visible then Form5.BringToFront;
-  if Form7.Visible then Form7.BringToFront;
-  if Form7.Visible and Form10.Visible then Form10.BringToFront;
-  if Form12.Visible then Form12.BringToFront;
-  if Form24.Visible then Form24.BringToFront;
-  if Form48.Visible then Form48.BringToFront;
-  Mauricio Parizotto  }
-
   //Mauricio Parizotto 2023-09-26
   if Form7.sModulo = 'PARAMETROTRIBUTACAO' then
     Exit;
@@ -11508,6 +11534,32 @@ begin
   //Mauricio Parizotto 2024-03-21
   if Form7.sModulo = 'CONVERSAOCFOP' then
     Exit;
+
+  {Mauricio Parizotto 2024-04-16 Inicio}
+  if Form7.sModulo = 'PAGAR' then
+  begin
+    if FrmContaPagar <> nil then
+    begin
+      if FrmContaPagar.Visible then
+      begin
+        FrmContaPagar.BringToFront;
+        Exit;
+      end;
+    end;
+  end;
+
+  if Form7.sModulo = 'RECEBER' then
+  begin
+    if FrmContaReceber <> nil then
+    begin
+      if FrmContaReceber.Visible then
+      begin
+        FrmContaReceber.BringToFront;
+        Exit;
+      end;
+    end;
+  end;
+  {Mauricio Parizotto 2024-04-16 Fim}
 
   if Form5.Visible then
   begin
@@ -12293,6 +12345,32 @@ begin
   except
   end;
   FreeAndNil(IBQMUNICIPIO);
+end;
+
+procedure TForm1.ValidaBuildNFe_Setup;
+var
+  sBuildNFe_Setup: String;
+begin
+  if FileExists('nfe_setup.exe') then
+  begin
+
+    sBuildNFe_Setup := VersaoBuild(ExtractFilePath(Application.ExeName) + NOME_NFE_SETUP);
+
+    if LerParametroIni('FRENTE.INI', SECAO_INI_NFE, CHAVE_INI_BUILD_NFE_SETUP_EXE, '') <> sBuildNFe_Setup then
+    begin
+      mensagem22('Instalando dependências para NF-e');
+
+      ShellExecute( 0, 'Open', pchar(NOME_NFE_SETUP), ' /verysilent', '', SW_HIDE);
+      while ConsultaProcesso('nfe_setup.exe') do
+      begin
+        Sleep(2000);
+      end;
+
+      GravarParametroIni('FRENTE.INI', SECAO_INI_NFE, CHAVE_INI_BUILD_NFE_SETUP_EXE, sBuildNFe_Setup);
+      mensagem22('');
+    end;
+
+  end;
 end;
 
 procedure TForm1.ConfiguraCredencialTecnospeed;

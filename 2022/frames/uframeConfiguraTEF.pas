@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls,
-  Vcl.Grids, Vcl.DBGrids, Vcl.Buttons, Datasnap.DBClient, IniFiles, System.StrUtils;
+  Vcl.Grids, Vcl.DBGrids, Vcl.Buttons, Datasnap.DBClient, IniFiles, System.StrUtils,
+  IBX.IBDatabase;
 
 const
   _cColunaAtivo    = 'ATIVO';
@@ -59,15 +60,18 @@ type
   private
     FoIni: TIniFile;
     FbSalvou: Boolean;
+    FoIBDataBase: TIbDataBase;
     procedure DeletarRecord(Sender: TObject);
     function TestarConfiguracoes: Boolean;
     function SalvarINI: Boolean;
     procedure CarregarINI;
-    procedure DefineTemTEFINI;
   public
+    property IBDataBase: TIbDataBase read FoIBDataBase write FoIBDataBase;
     property Salvou: Boolean read FbSalvou;
     procedure CriarObjetos;
     procedure LimparObjetos;
+    function TestarZPOSLiberado: Boolean;
+    procedure DefineTemTEFINI;
   end;
 
 implementation
@@ -75,7 +79,8 @@ implementation
 {$R *.dfm}
 
 uses
-  uSmallConsts;
+  uSmallConsts, uDialogs, uValidaRecursos,
+  uTypesRecursos, uSmallResourceString;
 
 procedure TframeConfiguraTEF.btnOKClick(Sender: TObject);
 begin
@@ -141,8 +146,11 @@ begin
   begin
     if cdsTEFsATIVO.AsString = _cSim then
     begin
-      FoIni.WriteString('Frente de caixa', 'TEM TEF', _cSim);
-      Break;
+      if TestarZPOSLiberado then
+      begin
+        FoIni.WriteString('Frente de caixa', 'TEM TEF', _cSim);
+        Break;
+      end;
     end;
     cdsTEFs.Next;
   end;
@@ -336,8 +344,28 @@ begin
   cdsTEFs.First;
 end;
 
+function TframeConfiguraTEF.TestarZPOSLiberado: Boolean;
+var
+  dLimiteRecurso : Tdate;
+begin
+  Result := True;
+  if (Pos('ZPOS', AnsiUpperCase(cdsTEFsNOME.AsString)) > 0) then
+    Result := (RecursoLiberado(FoIBDataBase, rcZPOS, dLimiteRecurso));
+end;
+
 procedure TframeConfiguraTEF.dbgTEFsCellClick(Column: TColumn);
 begin
+  if not TestarZPOSLiberado then
+  begin
+    cdsTEFs.Edit;
+    cdsTEFsATIVO.AsString := _cNao;
+    cdsTEFs.Post;
+    cdsTEFs.Edit;
+
+    uDialogs.MensagemSistema(_cSerialSemAcessoRecurso, msgInformacao);
+    Exit;
+  end;
+
   if Column.FieldName = _cColunaAtivo then
   begin
     cdsTEFs.Edit;
@@ -351,7 +379,7 @@ begin
          or (cdsTEFsDIRETORIOREQ.AsString = EmptyStr)
          or (cdsTEFsDIRETORIORESP.AsString = EmptyStr)
          or (cdsTEFsCAMINHOEXE.AsString = EmptyStr) then
-        Application.MessageBox('Para ativar este TEF todos os campos devem ser preenchidos.', 'Atenção', MB_ICONINFORMATION + MB_OK)
+        uDialogs.MensagemSistema('Para ativar este TEF todos os campos devem ser preenchidos.', msgInformacao)
       else
         cdsTEFsATIVO.AsString := _cSim;
 
