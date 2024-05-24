@@ -64,7 +64,7 @@ begin
       try
         FrenteIni  := TIniFile.Create('FRENTE.INI');
 
-        if Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra 1', '99'), 1, 2) = '17' then
+        if Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra '+I.ToString, '99'), 1, 2) = '17' then
           Result := i;
       finally
         FreeAndNil(FrenteIni);
