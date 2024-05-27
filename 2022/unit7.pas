@@ -37,7 +37,7 @@ uses
   , System.Contnrs
   , TypInfo
   , uSmallEnumerados
-  , synPDF
+  , synPDF, System.MaskUtils
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -1065,7 +1065,7 @@ type
     ibDataSet14SOBRESEGURO: TIBStringField;
     ibDataSet14SOBREOUTRAS: TIBStringField;
     ibDataSet14FRETESOBREIPI: TIBStringField;
-    Image10: TImage;
+    imgCheck: TImage;
     Image11: TImage;
     ibDataSet15LOKED: TIBStringField;
     IBQuery2: TIBQuery;
@@ -1088,8 +1088,8 @@ type
     ibDataSet24NFEXML: TMemoField;
     lbumdefotografias1: TMenuItem;
     SPEDFiscal1: TMenuItem;
-    Image13: TImage;
-    Image14: TImage;
+    imgChk: TImage;
+    imgUnChk: TImage;
     OpenDialog2: TOpenDialog;
     OpenDialog3: TOpenDialog;
     Panel2: TPanel;
@@ -2414,6 +2414,7 @@ type
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     procedure miDuplicarNFSeClick(Sender: TObject);
     procedure ibDataSet14STSetText(Sender: TField; const Text: string);
+    procedure ibDataSet11PIXCHAVESetText(Sender: TField; const Text: string);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -9444,6 +9445,19 @@ begin
       Abort;
     end;
 
+    //Mauricio Parizotto 2024-05-27
+    if DBGrid1.SelectedField.Name = 'ibDataSet11PIXESTATICO' then
+    begin
+      Form7.ibDataSet11.Edit;
+      if (Form7.ibDataSet11PIXESTATICO.AsString = 'S') then
+        Form7.ibDataSet11PIXESTATICO.AsString := 'N'
+      else
+        Form7.ibDataSet11PIXESTATICO.AsString := 'S';
+
+      Screen.Cursor            := crDefault;
+      Abort;
+    end;
+
     if DBGrid1.SelectedField.Name = 'ibDataSet14SOBRESEGURO' then
     begin
       Form7.ibDataSet14.Edit;
@@ -9681,6 +9695,7 @@ begin
     (DBGrid1.SelectedField.Name = 'ibDataSet14SOBRESEGURO') or
     (DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS') or
     (DBGrid1.SelectedField.Name = 'ibDataSet14IPISOBREOUTRA') or //Mauricio Parizotto 2024-04-22
+    (DBGrid1.SelectedField.Name = 'ibDataSet11PIXESTATICO') or //Mauricio Parizotto 2024-05-27
     (DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI')  then
  begin
    if Key <> chr(13) then
@@ -16070,7 +16085,17 @@ begin
   Form7.ibDataSet4.Edit;
   Form7.ibDataSet4CUSTOCOMPR.AsFloat := 0; // Só atualiza o custo de produtos compostos
   AgendaCommit(True);
-  //
+end;
+
+procedure TForm7.ibDataSet11PIXCHAVESetText(Sender: TField; const Text: string);
+begin
+  ibDataSet11PIXCHAVE.AsString := Text;
+
+  if ibDataSet11PIXTIPOCHAVE.AsString = 'CNPJ/CPF' then
+    ibDataSet11PIXCHAVE.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)));
+
+  if (ibDataSet11PIXTIPOCHAVE.AsString = 'Celular') and (Trim(Text) <> '') then
+    ibDataSet11PIXCHAVE.AsString := FormatMaskText('(99)99999-9999;0;_', LimpaNumero(Text));
 end;
 
 procedure TForm7.ibDataSet11PLANOSetText(Sender: TField; const Text: String);
@@ -35749,8 +35774,9 @@ begin
     sOrderBy  := 'order by upper(B.NOME)';
     sREgistro := '0000000001';
     //sMostra   := 'TTTTT'; Mauricio Parizotto 2023-06-16
-    sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTT');
-    iCampos   := 6;
+    //sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTT'); Mauricio Parizotto 2024-05-27
+    sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTFFFF');
+    iCampos   := 10;//6;
   end else
   begin
     imgFiltrar.Visible := True; // Filtros

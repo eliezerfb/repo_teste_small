@@ -863,7 +863,7 @@ object Form7: TForm7
       C84D}
     Visible = False
   end
-  object Image10: TImage
+  object imgCheck: TImage
     Left = 1168
     Top = 347
     Width = 124
@@ -1558,7 +1558,7 @@ object Form7: TForm7
       FDFFFDFDFCFCFCF9FEFDFDFDFDFDFDFD0000}
     Visible = False
   end
-  object Image13: TImage
+  object imgChk: TImage
     Left = 1208
     Top = 315
     Width = 39
@@ -1645,7 +1645,7 @@ object Form7: TForm7
       0000}
     Visible = False
   end
-  object Image14: TImage
+  object imgUnChk: TImage
     Left = 1248
     Top = 315
     Width = 39
@@ -13972,6 +13972,37 @@ object Form7: TForm7
       Origin = 'BANCOS.INSTITUICAOFINANCEIRA'
       Size = 60
     end
+    object ibDataSet11PIXESTATICO: TIBStringField
+      DisplayLabel = 'PIX est'#225'tico'
+      FieldName = 'PIXESTATICO'
+      Origin = 'BANCOS.PIXESTATICO'
+      Size = 1
+    end
+    object ibDataSet11PIXTIPOCHAVE: TIBStringField
+      DisplayLabel = 'Tipo chave'
+      FieldName = 'PIXTIPOCHAVE'
+      Origin = 'BANCOS.PIXTIPOCHAVE'
+    end
+    object ibDataSet11PIXTITULAR: TIBStringField
+      DisplayLabel = 'Titular da conta'
+      DisplayWidth = 25
+      FieldName = 'PIXTITULAR'
+      Origin = 'BANCOS.PIXTITULAR'
+      Size = 25
+    end
+    object ibDataSet11PIXCHAVE: TIBStringField
+      DisplayLabel = 'Chave PIX'
+      FieldName = 'PIXCHAVE'
+      Origin = 'BANCOS.PIXCHAVE'
+      OnSetText = ibDataSet11PIXCHAVESetText
+      Size = 40
+    end
+    object ibDataSet11FORMATOBOLETO: TIBStringField
+      FieldName = 'FORMATOBOLETO'
+      Origin = 'BANCOS.FORMATOBOLETO'
+      Visible = False
+      Size = 10
+    end
     object ibDataSet11ARQUIVO: TIBStringField
       DisplayLabel = 'Arquivo'
       FieldName = 'ARQUIVO'
@@ -14003,36 +14034,6 @@ object Form7: TForm7
       OnSetText = ibDataSet11PLANOSetText
       EditMask = '99999;1;_'
       Size = 5
-    end
-    object ibDataSet11FORMATOBOLETO: TIBStringField
-      FieldName = 'FORMATOBOLETO'
-      Origin = 'BANCOS.FORMATOBOLETO'
-      Visible = False
-      Size = 10
-    end
-    object ibDataSet11PIXESTATICO: TIBStringField
-      FieldName = 'PIXESTATICO'
-      Origin = 'BANCOS.PIXESTATICO'
-      Visible = False
-      Size = 1
-    end
-    object ibDataSet11PIXTIPOCHAVE: TIBStringField
-      FieldName = 'PIXTIPOCHAVE'
-      Origin = 'BANCOS.PIXTIPOCHAVE'
-      Visible = False
-    end
-    object ibDataSet11PIXTITULAR: TIBStringField
-      DisplayWidth = 25
-      FieldName = 'PIXTITULAR'
-      Origin = 'BANCOS.PIXTITULAR'
-      Visible = False
-      Size = 25
-    end
-    object ibDataSet11PIXCHAVE: TIBStringField
-      FieldName = 'PIXCHAVE'
-      Origin = 'BANCOS.PIXCHAVE'
-      Visible = False
-      Size = 40
     end
   end
   object DataSource11: TDataSource
