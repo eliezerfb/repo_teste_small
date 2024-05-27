@@ -259,7 +259,7 @@ uses
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
   uPermissaoUsuario in 'uPermissaoUsuario.pas',
-  uImprimeNaImpressoraDoWindows in 'uImprimeNaImpressoraDoWindows.pas',
+  uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
   uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas';
 
 {$R *.RES}
