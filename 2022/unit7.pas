@@ -16091,7 +16091,7 @@ procedure TForm7.ibDataSet11PIXCHAVESetText(Sender: TField; const Text: string);
 begin
   ibDataSet11PIXCHAVE.AsString := Text;
 
-  if ibDataSet11PIXTIPOCHAVE.AsString = 'CNPJ/CPF' then
+  if (ibDataSet11PIXTIPOCHAVE.AsString = 'CNPJ/CPF') and (Trim(Text) <> '') then
     ibDataSet11PIXCHAVE.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)));
 
   if (ibDataSet11PIXTIPOCHAVE.AsString = 'Celular') and (Trim(Text) <> '') then

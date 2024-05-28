@@ -329,7 +329,7 @@ inherited FrmContaBancaria: TFrmContaBancaria
           TabOrder = 2
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit3: TSMALL_DBEdit
+        object edtTitular: TSMALL_DBEdit
           Left = 110
           Top = 99
           Width = 300

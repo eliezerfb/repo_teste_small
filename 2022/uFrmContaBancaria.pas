@@ -29,7 +29,7 @@ type
     Label7: TLabel;
     edtChavePix: TSMALL_DBEdit;
     Label8: TLabel;
-    SMALL_DBEdit3: TSMALL_DBEdit;
+    edtTitular: TSMALL_DBEdit;
     cboTipoChave: TDBComboBox;
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
     procedure lblNovoClick(Sender: TObject);
@@ -77,6 +77,13 @@ begin
     begin
       MensagemSistema('O campo Chave PIX deve ser preenchido!',msgAtencao);
       edtChavePix.SetFocus;
+      Exit;
+    end;
+
+    if Trim(Form7.ibDataSet11PIXTITULAR.AsString) = '' then
+    begin
+      MensagemSistema('O campo Titular da conta deve ser preenchido!',msgAtencao);
+      edtTitular.SetFocus;
       Exit;
     end;
   end;
@@ -150,7 +157,7 @@ begin
   chkPixEstatico.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
   cboTipoChave.Enabled      := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtChavePix.Enabled       := not(bEstaSendoUsado) and not (bSomenteLeitura);
-  SMALL_DBEdit3.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtTitular.Enabled        := not(bEstaSendoUsado) and not (bSomenteLeitura);
 end;
 
 
