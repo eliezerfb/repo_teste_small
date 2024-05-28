@@ -8,15 +8,15 @@
     <Transaction>2024/02/26 16:33:56.000.592,=D:\desenvolvimento\fontes\delphi\Small Commerce\unit_compartilhada\uTestaEmail.pas</Transaction>
     <Transaction>2024/03/15 10:42:23.000.169,=D:\desenvolvimento\fontes\delphi\Small Commerce\unit_compartilhada\CAPICOM_TLB_xe.pas</Transaction>
     <Transaction>2024/04/30 16:47:12.000.585,=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit5.pas</Transaction>
-    <Transaction>2024/04/30 16:50:06.000.934,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\ufrmQRCodePixEst.pas=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit5.pas</Transaction>
-    <Transaction>2024/04/30 16:50:06.000.934,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\ufrmQRCodePixEst.dfm=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit5.dfm</Transaction>
+    <Transaction>2024/04/30 16:50:06.000.934,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit5.dfm=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\ufrmQRCodePixEst.dfm</Transaction>
+    <Transaction>2024/04/30 16:50:06.000.934,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit5.pas=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\ufrmQRCodePixEst.pas</Transaction>
     <Transaction>2024/04/30 17:07:50.000.615,=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit5.pas</Transaction>
-    <Transaction>2024/04/30 17:08:32.000.043,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\ufrmSelecionarPIX.pas=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit5.pas</Transaction>
-    <Transaction>2024/04/30 17:08:32.000.043,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\ufrmSelecionarPIX.dfm=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit5.dfm</Transaction>
+    <Transaction>2024/04/30 17:08:32.000.043,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit5.dfm=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\ufrmSelecionarPIX.dfm</Transaction>
+    <Transaction>2024/04/30 17:08:32.000.043,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit5.pas=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\ufrmSelecionarPIX.pas</Transaction>
     <Transaction>2024/05/02 09:14:56.000.656,=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit1.pas</Transaction>
-    <Transaction>2024/05/02 09:15:11.000.748,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\uPagamentoPix.pas=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit1.pas</Transaction>
-    <Transaction>2024/05/03 11:09:49.845,=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit1.pas</Transaction>
-    <Transaction>2024/05/03 11:10:25.738,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\uQrCode.pas=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit1.pas</Transaction>
+    <Transaction>2024/05/02 09:15:11.000.748,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit1.pas=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\uPagamentoPix.pas</Transaction>
+    <Transaction>2024/05/03 11:09:49.000.845,=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit1.pas</Transaction>
+    <Transaction>2024/05/03 11:10:25.000.738,D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\Unit1.pas=D:\Desenvolvimento\Fontes\Delphi\Small Commerce\Projeto-Frente-de-Caixa\uQrCode.pas</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="..\..\Small Commerce"/>
@@ -38,6 +38,7 @@
     <File Path="..\unit_compartilhada\uTypesRecursos.pas"/>
     <File Path="..\unit_compartilhada\uValidaRecursos.pas"/>
     <File Path="..\unit_compartilhada\uValidaRecursosDelphi7.pas"/>
+    <File Path="..\unit_compartilhada\uQrCode.pas"/>
     <File Path="..\..\..\Delphi"/>
     <File Path="..\..\componentes"/>
     <File Path="..\..\componentes\Smallsoft"/>
@@ -129,6 +130,5 @@
     <File Path="ufrmSelecionarPIX.pas"/>
     <File Path="ufrmSelecionarPIX.dfm"/>
     <File Path="uPagamentoPix.pas"/>
-    <File Path="uQrCode.pas"/>
   </ProjectSortOrder>
 </BorlandProject>

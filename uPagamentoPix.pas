@@ -8,7 +8,7 @@ uses
 
   function FormaPagamentoPix(DataSet : TibDataSet) : integer;
   function PagamentoPixEstatico(Valor : double; IDTransacao : string; out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
-  function GeraChavePixEstatica(pixtitular,municipio,pixchave,IDTransacao : string; Valor : Double ):string;
+  function GeraChavePixEstatica(pixtitular,municipio,pixchave,pixTipochave,IDTransacao : string; Valor : Double ):string;
 
 implementation
 
@@ -17,7 +17,7 @@ implementation
 uses
   uConectaBancoSmall
   , ufrmSelecionarPIX
-  , ufrmQRCodePixEst, uDialogs;
+  , ufrmQRCodePixEst, uDialogs, smallfunc_xe;
 
 
 function CRC16CCITT(texto: string): WORD;
@@ -115,6 +115,7 @@ begin
     ChaveQRCode := GeraChavePixEstatica(ibqBancos.FieldByName('PIXTITULAR').AsString,
                                         ibqBancos.FieldByName('MUNICIPIO').AsString,
                                         ibqBancos.FieldByName('PIXCHAVE').AsString,
+                                        ibqBancos.FieldByName('PIXTIPOCHAVE').AsString,
                                         IDTransacao,
                                         Valor
                                        );
@@ -129,7 +130,7 @@ begin
   end;
 end;
 
-function GeraChavePixEstatica(pixtitular,municipio,pixchave,IDTransacao : string; Valor : Double ):string;
+function GeraChavePixEstatica(pixtitular,municipio,pixchave,pixTipochave,IDTransacao : string; Valor : Double ):string;
 var
   Payload : string;
   PayloadFormat, MerchantAccount, MerchantCategoryCode, MerchantName,
@@ -167,6 +168,15 @@ var
   end;
 begin
   try
+    if pixTipochave = 'CNPJ/CPF' then
+      pixchave := LimpaNumero(pixchave);
+
+    if pixTipochave = 'Celular' then
+      pixchave := '+55'+LimpaNumero(pixchave);
+
+    pixtitular := ConverteAcentos(pixtitular);
+    municipio  := ConverteAcentos(municipio);
+
     PayloadFormat         := '000201';
     MerchantAccount       := '0014BR.GOV.BCB.PIX'+'01'+TamanhoTexto(pixchave)+pixchave;
     MerchantAccount       := '26'+TamanhoTexto(MerchantAccount)+MerchantAccount;
