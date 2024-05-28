@@ -9440,7 +9440,7 @@ begin
         Form7.ibDataSet14SOBREFRETE.AsString := 'N'
       else
         Form7.ibDataSet14SOBREFRETE.AsString := 'S';
-
+      Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
     end;
@@ -9454,6 +9454,7 @@ begin
       else
         Form7.ibDataSet11PIXESTATICO.AsString := 'S';
 
+      Form7.ibDataSet11.Post;
       Screen.Cursor            := crDefault;
       Abort;
     end;
@@ -9465,7 +9466,7 @@ begin
         Form7.ibDataSet14SOBRESEGURO.AsString := 'N'
       else
         Form7.ibDataSet14SOBRESEGURO.AsString := 'S';
-
+      Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
     end;
