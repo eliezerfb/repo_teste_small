@@ -3,7 +3,7 @@ object FrmQRCodePixEst: TFrmQRCodePixEst
   Top = 0
   BorderIcons = []
   BorderStyle = bsSingle
-  Caption = 'QrCode para PIX'
+  Caption = 'QR Code para PIX'
   ClientHeight = 390
   ClientWidth = 394
   Color = clWhite
@@ -46,7 +46,7 @@ object FrmQRCodePixEst: TFrmQRCodePixEst
     Alignment = taCenter
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
-    Caption = 'Fa'#231'a a leitura do QrCode'
+    Caption = 'Fa'#231'a a leitura do QR Code'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13

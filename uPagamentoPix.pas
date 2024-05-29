@@ -182,7 +182,7 @@ begin
     MerchantAccount       := '26'+TamanhoTexto(MerchantAccount)+MerchantAccount;
     MerchantCategoryCode  := '52040000';
     TransactionCurrency   := '5303986'; //Real Brasileiro
-    TransactionAmount     :=  StringReplace(FormatFloat( '#,##0.00', Valor) , ',','.',[rfReplaceAll]);
+    TransactionAmount     :=  StringReplace( StringReplace(  FormatFloat( '#,##0.00', Valor)  ,'.','',[rfReplaceAll])    , ',','.',[rfReplaceAll]);
     TransactionAmount     := '54'+TamanhoTexto(TransactionAmount)+TransactionAmount;
     CountryCode           := '5802BR';
     MerchantName          := '59'+TamanhoTexto(pixtitular)+pixtitular;

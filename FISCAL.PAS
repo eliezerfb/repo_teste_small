@@ -11057,6 +11057,7 @@ begin
 
         {$Region'//// PIX ////'}
         //Mauricio Parizotto 2024-04-30
+        ValorPIX := 0;
         if (bUsaPixEstatico) and (Form1.ClienteSmallMobile.sVendaImportando = '') then
         begin
           try
