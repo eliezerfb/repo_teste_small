@@ -34316,11 +34316,16 @@ function TForm1.PDV_ImportaGerencial(sNumeroGerencial: String;
 var
   ConverteGerencial: TConverteVendaParaNovoDocFiscal;
   IBQTOTAL: TIBQuery;
+  IBQNFCE: TIBQuery; // Sandro Silva 2024-05-29
 begin
   Result := False;
 
   if sNumeroGerencial = '' then
     Exit;
+
+  {Sandro Silva 2024-05-29 inicio}
+  IBQNFCE := CriaIBQuery(Form1.ibDataSet150.Transaction);
+  {Sandro Silva 2024-05-29 final}
 
   {Sandro Silva 2023-08-30 inicio
   if PDV_CupomAberto then
@@ -34482,6 +34487,13 @@ begin
           if FModeloECF = '65' then // Sandro Silva 2023-08-30 if Form1.sModeloECF = '65' then
             _ecf65_EnviarNFCe(True);
 
+          {Sandro Silva 2024-05-29 inicio}
+          // Valida se a nota foi autorizada
+          if AnsiContainsText(Form1.IBDataSet150.FieldByName('STATUS').AsString, 'Autorizad') or AnsiContainsText(Form1.IBDataSet150.FieldByName('STATUS').AsString, 'Sucesso') then
+            Result := True;
+          {Sandro Silva 2024-05-29 fim}
+
+
           Form10.sNomeDoTEF      := '';
           Form1.sDebitoOuCredito := '';
           Form1.sConveniado      := '';
@@ -34533,6 +34545,8 @@ begin
       end;
     end
   finally
+    if IBQTOTAL <> nil then
+      FreeAndNil(IBQTOTAL);
     FreeAndNil(ConverteGerencial);
     Form1.TransacoesCartao.Transacoes.Clear;
     Form10.sNomeDoTEF      := '';
@@ -34541,8 +34555,23 @@ begin
     Form1.sVendedor        := '';
     Form1.fDescontoNoTotal := 0.00;
     Form1.fTEFPago         := 0.00;
-    //No final deixa zerado o número do cupom no frente.ini 
+
+    {
+    //No final deixa zerado o número do cupom no frente.ini
     GravaNumeroCupomFrenteINI('000000', Form1.sModeloECF); // Sandro Silva 2023-08-31
+    }
+    IBQNFCE.Close;
+    IBQNFCE.SQL.Text :=
+      'select max(NUMERONF) as NUMERONF ' +
+      'from NFCE ' +
+      'where MODELO = ' + QuotedStr(Form1.sModeloECF) +
+      'and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+      ' and (STATUS containing ''Autoriza'' or STATUS containing ''Cancela'' or STATUS containing ''sucesso'' or STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' ) ';
+    IBQNFCE.Open;
+
+    //No final grava o número da última nota autorizada no frente.ini
+    GravaNumeroCupomFrenteINI(IBQNFCE.FieldByName('NUMERONF').AsString, Form1.sModeloECF); // Sandro Silva 2023-08-31
+    FreeAndNil(IBQNFCE);
   end;
 
   {
@@ -34744,7 +34773,7 @@ begin
 
   sNumeroGerencial := ImportarDaPesquisa(tpPesquisaGerencial);
   if sNumeroGerencial <> '' then
-    PDV_ImportaGerencial(sNumeroGerencial, Form1.sModeloECF, '99'); // Sandro Silva 2023-08-30 PDV_ImportaGerencial(sNumeroGerencial);
+    PDV_ImportaGerencial(sNumeroGerencial, Form1.sModeloECF, '99');
 end;
 
 procedure TForm1.EmitirNFCedogerencial1Click(Sender: TObject);
@@ -34758,7 +34787,7 @@ begin
   end;
   {Sandro Silva 2023-08-30 fim}
   
-  PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString, Form1.sModeloECF, '99'); // Sandro Silva 2023-08-30 PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString);
+  PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString, Form1.sModeloECF, '99');
   GerenciadordeNFCe1Click(Sender);
 end;
 
