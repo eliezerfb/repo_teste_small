@@ -37,7 +37,7 @@ uses
   , System.Contnrs
   , TypInfo
   , uSmallEnumerados
-  , synPDF
+  , synPDF, System.MaskUtils
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -1065,7 +1065,7 @@ type
     ibDataSet14SOBRESEGURO: TIBStringField;
     ibDataSet14SOBREOUTRAS: TIBStringField;
     ibDataSet14FRETESOBREIPI: TIBStringField;
-    Image10: TImage;
+    imgCheck: TImage;
     Image11: TImage;
     ibDataSet15LOKED: TIBStringField;
     IBQuery2: TIBQuery;
@@ -1088,8 +1088,8 @@ type
     ibDataSet24NFEXML: TMemoField;
     lbumdefotografias1: TMenuItem;
     SPEDFiscal1: TMenuItem;
-    Image13: TImage;
-    Image14: TImage;
+    imgChk: TImage;
+    imgUnChk: TImage;
     OpenDialog2: TOpenDialog;
     OpenDialog3: TOpenDialog;
     Panel2: TPanel;
@@ -1692,6 +1692,11 @@ type
     ibdConversaoCFOPCONSIDERACSTCSOSN: TIBStringField;
     IBDataSet2CONTRIBUINTE: TIntegerField;
     ibDataSet14IPISOBREOUTRA: TIBStringField;
+    ibDataSet11FORMATOBOLETO: TIBStringField;
+    ibDataSet11PIXESTATICO: TIBStringField;
+    ibDataSet11PIXTIPOCHAVE: TIBStringField;
+    ibDataSet11PIXTITULAR: TIBStringField;
+    ibDataSet11PIXCHAVE: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2409,6 +2414,7 @@ type
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     procedure miDuplicarNFSeClick(Sender: TObject);
     procedure ibDataSet14STSetText(Sender: TField; const Text: string);
+    procedure ibDataSet11PIXCHAVESetText(Sender: TField; const Text: string);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -5626,9 +5632,8 @@ begin
         //Form7.ibDataSet11.Selectsql.Add('select * from BANCOS'); Mauricio Parizotto 2024-04-08
         Form7.ibDataSet11.Selectsql.Add(' Select '+
                                         ' 	B.*,'+
-                                        ' 	C.NOME PLANOCONTA'+
-                                        ' From BANCOS B'+
-                                        ' 	Left Join CONTAS C on C.CONTA = B.PLANO');
+                                        ' 	(Select first 1 C.NOME From  CONTAS C Where C.CONTA = B.PLANO) PLANOCONTA'+ //Mauricio Parizotto 2024-05-06
+                                        ' From BANCOS B');
         Form7.ibDataSet26.Selectsql.Add('select * from RESUMO order by DATA, REGISTRO');
         Form7.ibDataSet9.Selectsql.Add('select * from VENDEDOR');
         Form7.ibDataSet29.Selectsql.Add('select * from CONVENIO');
@@ -9434,7 +9439,21 @@ begin
         Form7.ibDataSet14SOBREFRETE.AsString := 'N'
       else
         Form7.ibDataSet14SOBREFRETE.AsString := 'S';
+      Form7.ibDataSet14.Post;
+      Screen.Cursor            := crDefault;
+      Abort;
+    end;
 
+    //Mauricio Parizotto 2024-05-27
+    if DBGrid1.SelectedField.Name = 'ibDataSet11PIXESTATICO' then
+    begin
+      Form7.ibDataSet11.Edit;
+      if (Form7.ibDataSet11PIXESTATICO.AsString = 'S') then
+        Form7.ibDataSet11PIXESTATICO.AsString := 'N'
+      else
+        Form7.ibDataSet11PIXESTATICO.AsString := 'S';
+
+      Form7.ibDataSet11.Post;
       Screen.Cursor            := crDefault;
       Abort;
     end;
@@ -9446,7 +9465,7 @@ begin
         Form7.ibDataSet14SOBRESEGURO.AsString := 'N'
       else
         Form7.ibDataSet14SOBRESEGURO.AsString := 'S';
-
+      Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
     end;
@@ -9676,6 +9695,7 @@ begin
     (DBGrid1.SelectedField.Name = 'ibDataSet14SOBRESEGURO') or
     (DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS') or
     (DBGrid1.SelectedField.Name = 'ibDataSet14IPISOBREOUTRA') or //Mauricio Parizotto 2024-04-22
+    (DBGrid1.SelectedField.Name = 'ibDataSet11PIXESTATICO') or //Mauricio Parizotto 2024-05-27
     (DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI')  then
  begin
    if Key <> chr(13) then
@@ -16131,7 +16151,17 @@ begin
   Form7.ibDataSet4.Edit;
   Form7.ibDataSet4CUSTOCOMPR.AsFloat := 0; // Só atualiza o custo de produtos compostos
   AgendaCommit(True);
-  //
+end;
+
+procedure TForm7.ibDataSet11PIXCHAVESetText(Sender: TField; const Text: string);
+begin
+  ibDataSet11PIXCHAVE.AsString := Text;
+
+  if (ibDataSet11PIXTIPOCHAVE.AsString = 'CNPJ/CPF') and (Trim(Text) <> '') then
+    ibDataSet11PIXCHAVE.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)));
+
+  if (ibDataSet11PIXTIPOCHAVE.AsString = 'Celular') and (Trim(Text) <> '') then
+    ibDataSet11PIXCHAVE.AsString := FormatMaskText('(99)99999-9999;0;_', LimpaNumero(Text));
 end;
 
 procedure TForm7.ibDataSet11PLANOSetText(Sender: TField; const Text: String);
@@ -22631,7 +22661,6 @@ end;
 
 procedure TForm7.ibDataSet11BeforeInsert(DataSet: TDataSet);
 begin
-  //
   try if AllTrim(Form7.ibDataSet11NOME.AsString)='' then Form7.ibDataSet11.Delete; except end;
   ibDataSet99.Close;
   ibDataSet99.SelectSql.Clear;
@@ -22639,14 +22668,12 @@ begin
   ibDataset99.Open;
   sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
   ibDataset99.Close;
-  //
 end;
 
 procedure TForm7.ibDataSet11NewRecord(DataSet: TDataSet);
 begin
-  //
-  ibDataSet11REGISTRO.AsString := sProximo;
-  //
+  ibDataSet11REGISTRO.AsString    := sProximo;
+  ibDataSet11PIXESTATICO.AsString := 'N'; //Mauricio Parizotto 2024-04-29
 end;
 
 procedure TForm7.ibDataSet1DATAChange(Sender: TField);
@@ -35806,16 +35833,16 @@ begin
     //sSelect   := 'select * FROM BANCOS'; Mauricio Parizotto 2024-04-08
     sSelect   :=  ' Select '+
                   ' 	B.*,'+
-                  ' 	C.NOME PLANOCONTA'+
-                  ' From BANCOS B'+
-                  ' 	Left Join CONTAS C on C.CONTA = B.PLANO';
+                  ' 	(Select first 1 C.NOME From  CONTAS C Where C.CONTA = B.PLANO) PLANOCONTA'+ //Mauricio Parizotto 2024-05-06
+                  ' From BANCOS B';
     sWhere    := '';
     //sOrderBy  := 'order by upper(NOME)'; Mauricio Parizotto 2024-04-08
     sOrderBy  := 'order by upper(B.NOME)';
     sREgistro := '0000000001';
     //sMostra   := 'TTTTT'; Mauricio Parizotto 2023-06-16
-    sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTT');
-    iCampos   := 6;
+    //sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTT'); Mauricio Parizotto 2024-05-27
+    sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TTTTTFFFF');
+    iCampos   := 10;//6;
   end else
   begin
     imgFiltrar.Visible := True; // Filtros
