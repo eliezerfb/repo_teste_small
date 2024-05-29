@@ -10,6 +10,7 @@ uses
   , uNFSeSections
   , SysUtils
   , uImpressoraSections
+  , uCarneSections
   ;
 
 type
@@ -19,16 +20,19 @@ type
     FoOutras: TSectionOutras;
     FoNFSE: TSectionNFSE_BD;
     FoImpressora: TSectionImpressora;
+    FoCarne: TSectionCarne;
     function getOS: TSectionOS;
     function getOutras: TSectionOutras;
     function getNFSE: TSectionNFSE_BD;
     function getImpressora: TSectionImpressora;
+    function getCarne: TSectionCarne;
   public
     destructor Destroy; override;
     property OS: TSectionOS read getOS;
     property Outras: TSectionOutras read getOutras;
     property NFSE: TSectionNFSE_BD read getNFSE;
     property Impressora: TSectionImpressora read getImpressora;
+    property Carne: TSectionCarne read getCarne;
   protected
   end;
 
@@ -50,6 +54,14 @@ begin
     FoImpressora := TSectionImpressora.Create(Transaction,_cSectionImpressora);
 
   Result := FoImpressora;
+end;
+
+function TConfBD.getCarne: TSectionCarne;
+begin
+  if not Assigned(FoCarne) then
+    FoCarne := TSectionCarne.Create(Transaction,_cSectionCarne);
+
+  Result := FoCarne;
 end;
 
 function TConfBD.getNFSE: TSectionNFSE_BD;
