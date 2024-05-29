@@ -207,7 +207,7 @@ end;
 
 procedure TFrmOrigemCombustivel.GridOrigemKeyPress(Sender: TObject; var Key: Char);
 begin
-  if (Sender As TDBGrid).SelectedField.DataType = ftFloat then
+  if TipoCampoFloat((Sender As TDBGrid).SelectedField) then // Sandro Silva 2024-04-29 if (Sender As TDBGrid).SelectedField.DataType = ftFloat then
   begin
     if Key = Chr(46) then
       Key := Chr(44);
@@ -541,7 +541,7 @@ end;
 procedure TFrmOrigemCombustivel.DBGridRastroKeyPress(Sender: TObject;
   var Key: Char);
 begin
-  if (Sender As TDBGrid).SelectedField.DataType = ftFloat then
+  if TipoCampoFloat((Sender As TDBGrid).SelectedField) then // Sandro Silva 2024-04-29 if (Sender As TDBGrid).SelectedField.DataType = ftFloat then
   begin
     if Key = Chr(46) then
       Key := Chr(44);
