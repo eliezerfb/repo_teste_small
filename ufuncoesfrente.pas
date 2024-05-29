@@ -6,7 +6,7 @@ unit ufuncoesfrente;
 
 interface
 
-uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
+uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs, Vcl.Graphics,
   Classes, LbCipher, LbClass,
   ShellApi // Sandro Silva 2019-02-20
   , DateUtils
@@ -28,7 +28,7 @@ uses Windows, IniFiles, SysUtils, MSXML2_TLB, Forms, Dialogs,
   , uconstantes_chaves_privadas
   , uSmallConsts // Sandro Silva 2023-10-24
   , uValidaRecursosDelphi7
-  , uclassetransacaocartao // Sandro Silva 2023-08-25
+  , uclassetransacaocartao, System.UITypes // Sandro Silva 2023-08-25
   ;
 
 const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'Menu Fiscal Indisponível nesta tela'; // Sandro Silva 2021-07-28 const MSG_ALERTA_MENU_FISCAL_INACESSIVEL = 'MENU FISCAL INACESSÍVEL NESTA TELA';
@@ -352,6 +352,7 @@ function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
   out fTributos_municipais: Real): String;
 procedure SleepWithoutFreeze(msec: int64);
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
+procedure ResizeBitmap(var Bitmap: TBitmap; Width, Height: Integer; Background: TColor); // Mauricio Parizotto 2024-05-03
 
 var
   //cWinDir: array[0..200] of WideChar;
@@ -2766,6 +2767,50 @@ begin
   FExtra8       := 0.00;
   FPrazo        := 0.00;
   FTroco        := 0.00;
+end;
+
+
+procedure ResizeBitmap(var Bitmap: TBitmap; Width, Height: Integer; Background: TColor);
+var
+  R: TRect;
+  B: TBitmap;
+  X, Y: Integer;
+begin
+  if assigned(Bitmap) then
+  begin
+    B:= TBitmap.Create;
+    try
+      if Bitmap.Width > Bitmap.Height then
+      begin
+        R.Right:= Width;
+        R.Bottom:= ((Width * Bitmap.Height) div Bitmap.Width);
+        X:= 0;
+        Y:= (Height div 2) - (R.Bottom div 2);
+      end
+      else
+      begin
+        R.Right:= ((Height * Bitmap.Width) div Bitmap.Height);
+        R.Bottom:= Height;
+        X:= (Width div 2) - (R.Right div 2);
+        Y:= 0;
+      end;
+      R.Left:= 0;
+      R.Top:= 0;
+      B.PixelFormat:= Bitmap.PixelFormat;
+      B.Width:= Width;
+      B.Height:= Height;
+      B.Canvas.Brush.Color:= Background;
+      B.Canvas.FillRect(B.Canvas.ClipRect);
+      B.Canvas.StretchDraw(R, Bitmap);
+      Bitmap.Width:= Width;
+      Bitmap.Height:= Height;
+      Bitmap.Canvas.Brush.Color:= Background;
+      Bitmap.Canvas.FillRect(Bitmap.Canvas.ClipRect);
+      Bitmap.Canvas.Draw(X, Y, B);
+    finally
+      B.Free;
+    end;
+  end;
 end;
 
 end.

@@ -80,7 +80,11 @@ uses
   uITestaEmail in '..\unit_compartilhada\interfaces\uITestaEmail.pas',
   uTestaEmail in '..\unit_compartilhada\uTestaEmail.pas',
   CAPICOM_TLB_xe in '..\unit_compartilhada\CAPICOM_TLB_xe.pas',
-  uValidaRecursos in '..\unit_compartilhada\uValidaRecursos.pas';
+  uValidaRecursos in '..\unit_compartilhada\uValidaRecursos.pas',
+  ufrmQRCodePixEst in 'ufrmQRCodePixEst.pas' {FrmQRCodePixEst},
+  ufrmSelecionarPIX in 'ufrmSelecionarPIX.pas' {FrmSelecionarPIX},
+  uPagamentoPix in 'uPagamentoPix.pas',
+  uQrCode in '..\unit_compartilhada\uQrCode.pas';
 
 {$R *.RES}
 

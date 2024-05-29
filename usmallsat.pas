@@ -110,9 +110,9 @@ const _59_ASSINATURA_ASSOCIADA_SAT         = 'SGR-SAT SISTEMA DE GESTAO E RETAGU
 const _59_ASSINATURA_ASSOCIADA_EMULADOR_SP = '111111111111112222222222222211111111111111222222222222221111111111111122222222222222111111111111112222222222222211111111111111222222222222221111' +
                                              '11111111112222222222222211111111111111222222222222221111111111111122222222222222111111111111112222222222222211111111111111222222222222221111111111111122222222222222111111111111112222222222222211111111';
 
-const FONT_NAME_DEFAULT = 'FontB88'; //2016-01-14 'Calibri';//'Arial Narrow';//'Sans Serif';//'Cambria';//'MS Sans Serif';// 'Calibri';
-const FONT_SIZE_DEFAULT = 7; // 2015-06-29 8;//7;
-const ALTURA_PAGINA_PDF = 2448;// 3508; // Sandro Silva 2017-04-17  2374;
+//const FONT_NAME_DEFAULT = 'FontB88'; //2016-01-14 'Calibri';//'Arial Narrow';//'Sans Serif';//'Cambria';//'MS Sans Serif';// 'Calibri'; Mauricio Parizotto 2024-04-05
+//const FONT_SIZE_DEFAULT = 7; // 2015-06-29 8;//7;
+//const ALTURA_PAGINA_PDF = 2448;// 3508; // Sandro Silva 2017-04-17  2374;
 
 // Comando padrões do Sat
 const CMD_CONFIGURACAO               = 'Configuracao';
@@ -547,7 +547,7 @@ var
 implementation
 
 uses AJBarcode
-  ;
+  , uSmallConsts, ufuncoesfrente;
 
 procedure Register;
 begin
@@ -725,6 +725,7 @@ begin
     Result := Copy(Result, 1, 2) + ':' + Copy(Result, 3, 2) + ':' + Copy(Result, 5, 2);
 end;
 
+{
 procedure ResizeBitmap(var Bitmap: TBitmap; Width, Height: Integer; Background: TColor);
 var
   R: TRect;
@@ -767,6 +768,7 @@ begin
     end;
   end;
 end;
+}
 
 procedure QrCode(ATexto:String; bitmap: TBitmap);
 var

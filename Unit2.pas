@@ -2200,12 +2200,11 @@ end;
 
 procedure TForm2.Button2Click(Sender: TObject);
 begin
-  //
   if (Form1.ibDataSet25.FieldByname('ACUMULADO1').Asfloat > 0.01) or (Form1.ibDataSet25.FieldByname('ACUMULADO2').Asfloat > 0.01) then
     AbreGaveta(True);// Só abre com dinheiro e cheque
-  //
+
   bCancela := False;
-  //
+
   if (Form1.ibDataSet27.FieldByname('CLIFOR').AsString = Form1.ibDataset2.FieldByname('NOME').AsString) and (AllTrim(Form1.ibDataSet27.FieldByname('CLIFOR').AsString)<>'') then
   begin
     try
@@ -2214,12 +2213,11 @@ begin
       Form1.ibDataset2.Post;
     except end;
   end;
-  //
+
   Form1.bVolta := False;
   Form2.Close;
   Panel3.Visible := False;
   Form1.lbDisplayPDV.Caption := Form1.sStatusECF;
-  //
 end;
 
 procedure TForm2.Button3Click(Sender: TObject);
