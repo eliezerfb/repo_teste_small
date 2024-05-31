@@ -7888,14 +7888,14 @@ object Form7: TForm7
   object WebBrowser1: TWebBrowser
     Left = 10000
     Top = 0
-    Width = 361
-    Height = 291
+    Width = 451
+    Height = 364
     TabOrder = 8
     OnDownloadComplete = WebBrowser1DownloadComplete
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C0000004F250000131E00000000000000000000000000000000000000000000
+      4C0000004A250000191E00000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E126208000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -12490,7 +12490,9 @@ object Form7: TForm7
       
         '   RECEBIMENT, VALOR_RECE, VALOR_JURO, ATIVO, CONTA, NOSSONUM, C' +
         'ODEBAR, '
-      '   NUMERONF, REGISTRO, NN, MOVIMENTO, FORMADEPAGAMENTO,'
+      
+        '   NUMERONF, REGISTRO, NN, MOVIMENTO, FORMADEPAGAMENTO, INSTITUI' +
+        'CAOFINANCEIRA,'
       '   AUTORIZACAOTRANSACAO, BANDEIRA,VALOR_MULTA,PERCENTUAL_MULTA)'
       'values'
       
@@ -12499,7 +12501,9 @@ object Form7: TForm7
       
         '   :RECEBIMENT, :VALOR_RECE, :VALOR_JURO, :ATIVO, :CONTA, :NOSSO' +
         'NUM, :CODEBAR, '
-      '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO, :FORMADEPAGAMENTO,'
+      
+        '   :NUMERONF, :REGISTRO, :NN, :MOVIMENTO, :FORMADEPAGAMENTO, :IN' +
+        'STITUICAOFINANCEIRA,'
       
         '   :AUTORIZACAOTRANSACAO, :BANDEIRA,:VALOR_MULTA,:PERCENTUAL_MUL' +
         'TA)')
@@ -14649,6 +14653,7 @@ object Form7: TForm7
     object ibDataSet14ST: TIBStringField
       DisplayLabel = 'CIT'
       FieldName = 'ST'
+      OnSetText = ibDataSet14STSetText
       Size = 3
     end
     object ibDataSet14BASEISS: TFloatField

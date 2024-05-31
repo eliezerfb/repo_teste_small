@@ -50,19 +50,19 @@ type
     Label17: TLabel;
     Label19: TLabel;
     Label4: TLabel;
-    MaskEdit4: TMaskEdit;
+    edtDiasPrazoA: TMaskEdit;
     Label7: TLabel;
-    MaskEdit2: TMaskEdit;
+    edtPercListaA: TMaskEdit;
     Label20: TLabel;
     Label5: TLabel;
-    MaskEdit5: TMaskEdit;
+    edtDiasPrazoB: TMaskEdit;
     Label8: TLabel;
-    MaskEdit3: TMaskEdit;
+    edtPercListaB: TMaskEdit;
     Label21: TLabel;
     Label6: TLabel;
-    MaskEdit6: TMaskEdit;
+    edtDiasPrazoC: TMaskEdit;
     Label9: TLabel;
-    MaskEdit7: TMaskEdit;
+    edtPercListaC: TMaskEdit;
     Label22: TLabel;
     ComboBox4: TComboBox;
     Label23: TLabel;
@@ -90,9 +90,6 @@ type
     MaskEdit8: TMaskEdit;
     Image7: TImage;
     Image9: TImage;
-    CheckBox11: TCheckBox;
-    CheckBox10: TCheckBox;
-    CheckBox8: TCheckBox;
     Panel2: TPanel;
     Button2: TButton;
     Panel4: TPanel;
@@ -140,22 +137,26 @@ type
     edtJurosAno: TEdit;
     lblMulta: TLabel;
     chkFabricaProdSemQtd: TCheckBox;
+    rbPrazoDias: TRadioButton;
+    rbPrazoFixo: TRadioButton;
+    cboDiaVencimento: TComboBox;
+    Label38: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure MaskEdit2Exit(Sender: TObject);
-    procedure MaskEdit3Exit(Sender: TObject);
-    procedure MaskEdit7Exit(Sender: TObject);
-    procedure MaskEdit2KeyPress(Sender: TObject; var Key: Char);
-    procedure MaskEdit2KeyDown(Sender: TObject; var Key: Word;
+    procedure edtPercListaAExit(Sender: TObject);
+    procedure edtPercListaBExit(Sender: TObject);
+    procedure edtPercListaCExit(Sender: TObject);
+    procedure edtPercListaAKeyPress(Sender: TObject; var Key: Char);
+    procedure edtPercListaAKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure MaskEdit4Exit(Sender: TObject);
-    procedure MaskEdit5Exit(Sender: TObject);
-    procedure MaskEdit6Exit(Sender: TObject);
+    procedure edtDiasPrazoAExit(Sender: TObject);
+    procedure edtDiasPrazoBExit(Sender: TObject);
+    procedure edtDiasPrazoCExit(Sender: TObject);
     procedure Edit7Click(Sender: TObject);
     procedure Image1Click(Sender: TObject);
     procedure ComboBox5Exit(Sender: TObject);
@@ -190,7 +191,7 @@ type
   private
     { Private declarations }
     procedure SetTipoMulta;
-    procedure DefineLayoutAbaImpressao;    
+    procedure DefineLayoutAbaImpressao;
   public
     { Public declarations }
     bChave : Boolean;
@@ -356,13 +357,18 @@ begin
   ComboBox10.Text  := Mais1Ini.ReadString('OS','Itens','16');
   ComboBox8.Text  := Mais1Ini.ReadString('Nota Fiscal','Svc','5');
   ComboBox9.Text  := Mais1Ini.ReadString('OS','Svc','5');
-  MaskEdit4.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','7');
-  MaskEdit5.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','14');
-  MaskEdit6.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo3','21');
+  {Mauricio Parizotto 2024-04-23
+  edtDiasPrazoA.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','7');
+  edtDiasPrazoB.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','14');
+  edtDiasPrazoC.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo3','21');
+  }
+  edtDiasPrazoA.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','30');
+  edtDiasPrazoB.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','60');
+  edtDiasPrazoC.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo3','90');
 
-  MaskEdit2.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo1','0,00');
-  MaskEdit3.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo2','0,00');
-  MaskEdit7.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo3','0,00');
+  edtPercListaA.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo1','0,00');
+  edtPercListaB.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo2','0,00');
+  edtPercListaC.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo3','0,00');
 
   MaskEdit1.Text  := Mais1Ini.ReadString('Atendimento','Inicial','08:00:00');
   MaskEdit8.Text  := Mais1Ini.ReadString('Atendimento','Final','18:00:00');
@@ -379,6 +385,15 @@ begin
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
     chkFabricaProdSemQtd.Checked  := ConfSistema.BD.Outras.FabricaProdutoSemQtd;
+
+    {Mauricio Parizotto 2024-04-23 Inicio}
+    if ConfSistema.BD.Outras.TipoPrazo = 'dias' then
+      rbPrazoDias.Checked := True
+    else
+      rbPrazoFixo.Checked := True;
+
+    cboDiaVencimento.ItemIndex := cboDiaVencimento.Items.IndexOf(ConfSistema.BD.Outras.DiaVencimento.ToString);
+    {Mauricio Parizotto 2024-04-23 Fim}
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -475,16 +490,16 @@ begin
   Mais1Ini.WriteString('OS','Itens',AllTrim(ComboBox10.Text));
   Mais1Ini.WriteString('Nota Fiscal','Svc',AllTrim(ComboBox8.Text));
   Mais1Ini.WriteString('OS','Svc',AllTrim(ComboBox9.Text));
-  Mais1Ini.WriteString('Nota Fiscal','Intervalo1',AllTrim(MaskEdit4.Text));
-  Mais1Ini.WriteString('Nota Fiscal','Intervalo2',AllTrim(MaskEdit5.Text));
-  Mais1Ini.WriteString('Nota Fiscal','Intervalo3',AllTrim(MaskEdit6.Text));
+  Mais1Ini.WriteString('Nota Fiscal','Intervalo1',AllTrim(edtDiasPrazoA.Text));
+  Mais1Ini.WriteString('Nota Fiscal','Intervalo2',AllTrim(edtDiasPrazoB.Text));
+  Mais1Ini.WriteString('Nota Fiscal','Intervalo3',AllTrim(edtDiasPrazoC.Text));
 
   Mais1Ini.WriteString('Atendimento','Inicial',AllTrim(MaskEdit1.Text));
   Mais1Ini.WriteString('Atendimento','Final',AllTrim(MaskEdit8.Text));
 
-  Mais1Ini.WriteString('Lista de preços','Intervalo1',AllTrim(MaskEdit2.Text));
-  Mais1Ini.WriteString('Lista de preços','Intervalo2',AllTrim(MaskEdit3.Text));
-  Mais1Ini.WriteString('Lista de preços','Intervalo3',AllTrim(MaskEdit7.Text));
+  Mais1Ini.WriteString('Lista de preços','Intervalo1',AllTrim(edtPercListaA.Text));
+  Mais1Ini.WriteString('Lista de preços','Intervalo2',AllTrim(edtPercListaB.Text));
+  Mais1Ini.WriteString('Lista de preços','Intervalo3',AllTrim(edtPercListaC.Text));
 
   Mais3Ini.WriteString('Nota Fiscal','Porta',AllTrim(ComboBoxNF.Text));
   Mais3Ini.WriteString('Nota Fiscal 2','Porta',AllTrim(ComboBoxNF2.Text));
@@ -498,6 +513,15 @@ begin
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
     ConfSistema.BD.Outras.FabricaProdutoSemQtd := chkFabricaProdSemQtd.Checked;
+
+    {Mauricio Parizotto 2024-04-23 Inicio}
+    if rbPrazoFixo.Checked then
+      ConfSistema.BD.Outras.TipoPrazo := 'fixo'
+    else
+      ConfSistema.BD.Outras.TipoPrazo := 'dias';
+
+    ConfSistema.BD.Outras.DiaVencimento := StrToIntDef(cboDiaVencimento.Text,1);
+    {Mauricio Parizotto 2024-04-23 Fim}
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -642,13 +666,18 @@ begin
   ComboBox8.Text   := Mais1Ini.ReadString('Nota Fiscal','Svc','5');
   ComboBox9.Text   := Mais1Ini.ReadString('OS','Svc','5');
 
-  MaskEdit4.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','7');
-  MaskEdit5.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','14');
-  MaskEdit6.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo3','21');
+  {Mauricio Parizotto 2024-04-23
+  edtDiasPrazoA.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','7');
+  edtDiasPrazoB.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','14');
+  edtDiasPrazoC.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo3','21');
+  }
+  edtDiasPrazoA.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','30');
+  edtDiasPrazoB.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','60');
+  edtDiasPrazoC.Text  := Mais1Ini.ReadString('Nota Fiscal','Intervalo3','90');
 
-  MaskEdit2.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo1','0,00');
-  MaskEdit3.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo2','0,00');
-  MaskEdit7.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo3','0,00');
+  edtPercListaA.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo1','0,00');
+  edtPercListaB.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo2','0,00');
+  edtPercListaC.Text  := Mais1Ini.ReadString('Lista de preços','Intervalo3','0,00');
 
   MaskEdit1.Text  := Mais1Ini.ReadString('Atendimento','Inicial','08:00:00');
   MaskEdit8.Text  := Mais1Ini.ReadString('Atendimento','Final','18:00:00');
@@ -709,33 +738,39 @@ begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config.htm')));
 end;
 
-procedure TForm19.MaskEdit2Exit(Sender: TObject);
+procedure TForm19.edtPercListaAExit(Sender: TObject);
 begin
   try
-    MaskEdit2.Text := Format('%5.2n',[StrToFloat(StrTran(StrTran(StrTran(StrTran(MaskEdit2.Text,' ',''),' ',''),' ',''),' ',''))])
-  except MaskEdit2.Text := '0,00' end;
+    edtPercListaA.Text := Format('%5.2n',[StrToFloat(StrTran(StrTran(StrTran(StrTran(edtPercListaA.Text,' ',''),' ',''),' ',''),' ',''))])
+  except
+    edtPercListaA.Text := '0,00';
+  end;
 end;
 
-procedure TForm19.MaskEdit3Exit(Sender: TObject);
+procedure TForm19.edtPercListaBExit(Sender: TObject);
 begin
   try
-    MaskEdit3.Text := Format('%5.2n',[StrToFloat(StrTran(StrTran(StrTran(StrTran(MaskEdit3.Text,' ',''),' ',''),' ',''),' ',''))])
-  except MaskEdit3.Text := '0,00' end;
+    edtPercListaB.Text := Format('%5.2n',[StrToFloat(StrTran(StrTran(StrTran(StrTran(edtPercListaB.Text,' ',''),' ',''),' ',''),' ',''))])
+  except
+    edtPercListaB.Text := '0,00';
+  end;
 end;
 
-procedure TForm19.MaskEdit7Exit(Sender: TObject);
+procedure TForm19.edtPercListaCExit(Sender: TObject);
 begin
   try
-    MaskEdit7.Text := Format('%5.2n',[StrToFloat(StrTran(StrTran(StrTran(StrTran(MaskEdit7.Text,' ',''),' ',''),' ',''),' ',''))])
-  except MaskEdit7.Text := '0,00' end;
+    edtPercListaC.Text := Format('%5.2n',[StrToFloat(StrTran(StrTran(StrTran(StrTran(edtPercListaC.Text,' ',''),' ',''),' ',''),' ',''))])
+  except
+    edtPercListaC.Text := '0,00';
+  end;
 end;
 
-procedure TForm19.MaskEdit2KeyPress(Sender: TObject; var Key: Char);
+procedure TForm19.edtPercListaAKeyPress(Sender: TObject; var Key: Char);
 begin
   if Key = chr(46) then key := chr(44);
 end;
 
-procedure TForm19.MaskEdit2KeyDown(Sender: TObject; var Key: Word;
+procedure TForm19.edtPercListaAKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
@@ -765,20 +800,25 @@ begin
   Form1.FormShow(Sender);
 end;
 
-procedure TForm19.MaskEdit4Exit(Sender: TObject);
+procedure TForm19.edtDiasPrazoAExit(Sender: TObject);
 begin
-  if AllTrim(LimpaNumero(MaskEdit4.Text)) = '' then MaskEdit4.Text := '7';
+  if AllTrim(LimpaNumero(edtDiasPrazoA.Text)) = '' then
+    //edtDiasPrazoA.Text := '7';
+    edtDiasPrazoA.Text := '30';
 end;
 
-procedure TForm19.MaskEdit5Exit(Sender: TObject);
+procedure TForm19.edtDiasPrazoBExit(Sender: TObject);
 begin
-  if AllTrim(LimpaNumero(MaskEdit5.Text)) = '' then
-    MaskEdit5.Text := '14';
+  if AllTrim(LimpaNumero(edtDiasPrazoB.Text)) = '' then
+    //edtDiasPrazoB.Text := '14';
+    edtDiasPrazoB.Text := '60';
 end;
 
-procedure TForm19.MaskEdit6Exit(Sender: TObject);
+procedure TForm19.edtDiasPrazoCExit(Sender: TObject);
 begin
-  if AllTrim(LimpaNumero(MaskEdit6.Text)) = '' then MaskEdit6.Text := '21';
+  if AllTrim(LimpaNumero(edtDiasPrazoC.Text)) = '' then
+    //edtDiasPrazoC.Text := '21';
+    edtDiasPrazoC.Text := '90';
 end;
 
 procedure TForm19.Edit7Click(Sender: TObject);
@@ -1333,12 +1373,16 @@ begin
   Form19.ComboBoxORCA.Items.Add('TXT');
   
   GetTheListOfPrinters;
+
+  //Mauricio Parizotto 2024-04-23
+  Orelhas.ActivePage := Orelha_relatorios;
 end;
 
 procedure TForm19.CheckBox8Click(Sender: TObject);
-var
-  Mais1Ini : TIniFile;
+//var
+//  Mais1Ini : TIniFile;
 begin
+  {Mauricio Parizotto 2024-04-23
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   if CheckBox8.Checked then
   begin
@@ -1347,11 +1391,9 @@ begin
   begin
     Mais1Ini.WriteString('Perfil','Labels','Não');
   end;
+  }
 
   Form19.Button1Click(Sender);
-
-  if (Form19.Visible) and (Form19.CanFocus) then
-    Form19.SetFocus;
 end;
 
 procedure TForm19.JurosEnter(Sender: TObject);
