@@ -28,7 +28,7 @@ object Form19: TForm19
     Top = 20
     Width = 791
     Height = 561
-    ActivePage = Orelha_prazo
+    ActivePage = Orelha_relatorios
     Align = alClient
     TabOrder = 0
     object Orelha_relatorios: TTabSheet
@@ -315,7 +315,7 @@ object Form19: TForm19
         Top = 45
         Width = 306
         Height = 17
-        Caption = 'Estoque negativo na emiss'#227'o da Nota Fiscal'
+        Caption = 'Vendas com estoque negativo ou zerado'
         TabOrder = 1
       end
       object chkVendasAbaixoCusto: TCheckBox
