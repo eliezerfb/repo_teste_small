@@ -1697,6 +1697,7 @@ type
     ibDataSet11PIXTIPOCHAVE: TIBStringField;
     ibDataSet11PIXTITULAR: TIBStringField;
     ibDataSet11PIXCHAVE: TIBStringField;
+    VendasporestadoNotaFiscal1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2415,6 +2416,7 @@ type
     procedure miDuplicarNFSeClick(Sender: TObject);
     procedure ibDataSet14STSetText(Sender: TField; const Text: string);
     procedure ibDataSet11PIXCHAVESetText(Sender: TField; const Text: string);
+    procedure VendasporestadoNotaFiscal1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
 
 
@@ -18277,6 +18279,17 @@ begin
     {Sandro Silva 2022-09-23 fim}
     //
   end;
+end;
+
+procedure TForm7.VendasporestadoNotaFiscal1Click(Sender: TObject);
+begin
+  sModuloAnterior := sModulo;
+  Form38.Label2.Visible := True;
+  Form38.Label3.Visible := True;
+  Form38.DateTimePicker1.Visible := True;
+  Form38.DateTimePicker2.Visible := True;
+  sModulo := _RelatorioVendaEstado;
+  Form38.ShowModal;
 end;
 
 procedure TForm7.Vendas_1Click(Sender: TObject);

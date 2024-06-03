@@ -6,7 +6,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls, IniFiles, smallfunc_xe, ShellApi, checklst,
-  Mask, DBCtrls, SMALL_DBEdit, Unit7, Buttons, StrUtils, FileCtrl;
+  Mask, DBCtrls, SMALL_DBEdit, Unit7, Buttons, StrUtils, FileCtrl, IBX.IBQuery;
+
+const _RelatorioVendaEstado = 'Relatório de vendas por estado (Nota Fiscal)';
 
 type
   TForm38 = class(TForm)
@@ -102,6 +104,13 @@ type
     procedure RelatorioVendaItem(var F: TextFile; dInicio, dFinal: TdateTime; var fTotal, fTotal1, fTotal2, fTotal3, fTotal4, fTotal5, fTotal6  : Real);
     procedure RelatorioComprasVenda(var F: TextFile; dInicio, dFinal: TdateTime);
     function TestarNomeArquivoValido(AcCaminho: String): Boolean;
+    procedure RelatorioVendaEstado(var F: TextFile; dInicio, dFinal: TdateTime);
+    procedure ListaOperacoesMarcadas(var F: TextFile);
+    procedure ListaPeiodoSelecionado(var F: TextFile; dInicio, dFinal : TdateTime);
+    procedure GeraNomeRelatorio(var F: TextFile; sNome:string);
+    procedure RodapePadrao(var F: TextFile; tInicio : tTime);
+    procedure GeraRelatorioVendaEstado(var F: TextFile; dInicio, dFinal: TdateTime);
+    function GetFiltroOperacao(sAliasTabela: string): string;
   public
   end;
 
@@ -115,7 +124,7 @@ implementation
 
 uses Mais, Unit34, Unit30, Unit16, Mais3, Unit2, uFuncoesRetaguarda,
   uRateioVendasBalcao, IBCustomDataSet, uAtualizaNovoCampoItens001CSOSN,
-  uArquivosDAT, uDialogs, uSmallResourceString;
+  uArquivosDAT, uDialogs, uSmallResourceString, uConectaBancoSmall;
 
 {$R *.DFM}
 
@@ -217,6 +226,7 @@ begin
           or (Form7.sModulo = 'Relatório de compras')
           or (Form7.sModulo = 'Resumo das vendas')
           or (Form7.sModulo = 'Curva ABC de clientes') // Mauricio Parizotto 2023-05-24
+          or (Form7.sModulo = _RelatorioVendaEstado) //Mauricio Parizotto 2024-05-31
           ) then
       begin
         // Cria um item para cada operação de venda
@@ -243,6 +253,7 @@ begin
           //if ((Form7.sModulo = 'Relatório de vendas') or (Form7.sModulo = 'Resumo das vendas')) then
           if (Form7.sModulo = 'Relatório de vendas')
               or (Form7.sModulo = 'Resumo das vendas')
+              or (Form7.sModulo = _RelatorioVendaEstado) //Mauricio Parizotto 2024-05-31
               or (Form7.sModulo = 'Curva ABC de clientes') then
           begin
             if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '5') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '6') or (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7') then
@@ -297,7 +308,7 @@ begin
         if Form1.bHtml1 then
         begin
           DeleteFile(pChar(Senhas.UsuarioPub+'.HTM'));
-          AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
+          AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));
           try
             Rewrite(F);                           // Abre para gravação
           except
@@ -450,6 +461,13 @@ begin
           RelatorioComprasVenda(F,dInicio,dFinal);
         end;
 
+        //Mauricio Parizotto 2024-05-31
+        if (Form7.sModulo = _RelatorioVendaEstado) then
+        begin
+          RelatorioVendaEstado(F,dInicio,dFinal);
+        end;
+
+        (*
         if Form1.bHtml1 then
         begin
           WriteLn(F,'<center><br><font face="Microsoft Sans Serif" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
@@ -480,7 +498,10 @@ begin
             WriteLn(F,'Assinatura Digital:');
           end;
         end;
-  
+        Mauricio Parizotto 2024-05-31*)
+
+        RodapePadrao(F,tInicio);
+
         CloseFile(F);
 
         Screen.Cursor  := crDefault; // Cursor de Aguardo
@@ -749,6 +770,7 @@ begin
           or (Form7.sModulo = 'Relatório de compras')
           or (Form7.sModulo = 'Resumo das vendas')
           or (Form7.sModulo = 'Curva ABC de clientes') // Mauricio Parizotto 2023-05-24
+          or (Form7.sModulo = _RelatorioVendaEstado) // Mauricio Parizotto 2024-05-31
           ) then
   begin
     btnAvancar.Caption := 'Avançar >';
@@ -3353,6 +3375,7 @@ begin
 
   sOperacoes := '';
 
+  //Testar usando sOperacoes := GetFiltroOperacao('VENDAS')
   for I := 0 to (chkOperacoes.Items.Count -1) do
   begin
     if not chkOperacoes.Checked[I] then
@@ -3789,6 +3812,13 @@ begin
     Form7.ibDataSet99.Next;
   end;
 
+  {Mauricio Parizotto 2024-05-31}
+  if Form1.bHtml1 then
+  begin
+    WriteLn(F,'   </td>');
+  end;
+
+  {
   if Form1.bHtml1 then
   begin
     WriteLn(F,'   </table>');
@@ -3799,6 +3829,8 @@ begin
     WriteLn(F,'');
     Writeln(F,'Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'');
   end;
+  }
+  ListaPeiodoSelecionado(F,dInicio, dFinal);
 end;
 
 procedure TForm38.RelatorioCurvaABC_Clientes(var F: TextFile; dInicio, dFinal : TdateTime);
@@ -3815,6 +3847,7 @@ begin
   {Mauricio Parizotto 2023-05-24 Inicio}
   sOperacoes := '';
 
+  {
   for I := 0 to (chkOperacoes.Items.Count -1) do
   begin
     if not chkOperacoes.Checked[I] then
@@ -3822,6 +3855,9 @@ begin
       sOperacoes := sOperacoes + ' and VENDAS.OPERACAO<>'+QuotedStr(chkOperacoes.Items[I])+' ';
     end;
   end;
+  Mauricio Parizotto 2024-05-31}
+
+  sOperacoes := GetFiltroOperacao('VENDAS');
 
   // Vendas com NF
   Form7.IBDataSet99.Close;
@@ -5433,6 +5469,93 @@ begin
   end;
 end;
 
+
+procedure TForm38.GeraRelatorioVendaEstado(var F: TextFile; dInicio, dFinal : TdateTime);
+var
+  bCil : Boolean;
+  I : integer;
+  fTotal, fTotalV : Real;
+  qryRel : TIBQuery;
+begin
+  if Form1.bHtml1 then
+  begin
+    WriteLn(F,'  <center><table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+    WriteLn(F,'    <tr bgcolor='+form1.sHtmlCor+' align=left>');
+    WriteLn(F,'     <th><font face="Microsoft Sans Serif" size=1>Estado</font></th>');
+    WriteLn(F,'     <th><font face="Microsoft Sans Serif" size=1>Vendas</font></th>');
+    WriteLn(F,'     <th><font face="Microsoft Sans Serif" size=1>Total R$</font></th>');
+    WriteLn(F,'    </tr>');
+  end else
+  begin
+    WriteLn(F,'Estado  Vendas        Total R$     ');
+    WriteLn(F,'------- ------------- -------------');
+  end;
+
+  fTotal := 0;
+
+  try
+    qryRel := CriaIBQuery(Form7.IBTransaction1);
+    qryRel.SQL.Text := 'Select '+
+                       '  C.ESTADO,'+
+                       '  count(1) as VENDAS,'+
+                       '  sum(V.TOTAL) as TOTAL'+
+                       ' From VENDAS V '+
+                       '   left join CLIFOR C on c.nome = v.cliente'+
+                       ' Where V.EMISSAO between '+QuotedStr(DateToStrInvertida(dInicio))+' and '+QuotedStr(DateToStrInvertida(dFinal))+
+                       GetFiltroOperacao('V')+
+                       '  and V.EMITIDA=''S'''+
+                       ' Group by C.ESTADO'+
+                       ' Order by 3 desc';
+    qryRel.Open;
+
+    while (not qryRel.EOF) and (Form38.Caption <> 'Cancelar') do
+    begin
+      Application.ProcessMessages;
+
+      if Form1.bHtml1 then
+      begin
+        WriteLn(F,'   <tr>');
+        WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+qryRel.FieldByName('ESTADO').AsString +'<br></font></td>');
+        WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+qryRel.FieldByName('VENDAS').AsString+'<br></font></td>');
+        WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.'+Form1.ConfPreco+'n',[qryRel.FieldByName('TOTAL').AsFloat])+'<br></font></td>');
+        WriteLn(F,'   </tr>');
+      end else
+      begin
+        Write(F,Copy(qryRel.FieldByName('ESTADO').AsString+Replicate(' ',7),1,7)+' ');
+        Write(F,Format('%13.'+Form1.ConfPreco+'n',[qryRel.FieldByName('VENDAS').AsFloat])+' ');
+        WriteLn(F,Format('%13.'+Form1.ConfPreco+'n',[qryRel.FieldByName('TOTAL').AsFloat])+' ');
+      end;
+
+      fTotal  := fTotal + qryRel.FieldByName('TOTAL').AsFloat;
+      fTotalV := fTotalV + qryRel.FieldByName('VENDAS').AsFloat;
+
+      qryRel.Next;
+    end;
+
+  finally
+    FreeAndNil(qryRel);
+  end;
+
+  //Totais
+  if Form1.bHtml1 then
+  begin
+    WriteLn(F,'    <tr bgcolor='+form1.sHtmlCor+' align=left>');
+    WriteLn(F,'     <td valign=top align=left><font face="Microsoft Sans Serif" size=1><br></font></td>');
+    WriteLn(F,'     <td valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+FloatToStr(fTotalV)+'<br></font></td>');
+    WriteLn(F,'     <td valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
+    WriteLn(F,'    </tr>');
+
+    WriteLn(F,'   </table></center>');
+  end else
+  begin
+    WriteLn(F,'------- ------------- -------------');
+    Write(F,  '        ');
+    Write(F,Format('%13.'+Form1.ConfPreco+'n',[fTotalV])+' ');
+    WriteLn(F,Format('%13.'+Form1.ConfPreco+'n',[fTotal])+' ');
+  end;
+end;
+
+
 procedure TForm38.RelatorioCompras(var F: TextFile; dInicio, dFinal : TdateTime;  var fTotal, fTotal1, fTotal2, fTotal3, fTotal4, fTotal5, fTotal6  : Real);
 var
   bCil : Boolean;
@@ -5608,6 +5731,18 @@ var
    fTotal, fTotal1, fTotal2, fTotal3, fTotal4, fTotal5, fTotal6  : Real;
    I : integer;
 begin
+  {Mauricio Parizotto 2024-05-31 Inicio}
+  GeraNomeRelatorio(F, Form7.sModulo);
+
+  if Form1.bHtml1 then
+  begin
+    WriteLn(F,'<center>');
+    WriteLn(F,'<table border=0>');
+    WriteLn(F,' <tr>');
+    WriteLn(F,'  <td>');
+  end;
+
+  {
   if Form1.bHtml1 then
   begin
     WriteLn(F,'<br><font size=4 color=#000000><b>'+Form7.sModulo+'</b></font><br></center><br>');
@@ -5620,6 +5755,10 @@ begin
     WriteLn(F,Form7.sModulo);
     WriteLn(F,'');
   end;
+  }
+
+
+  {Mauricio Parizotto 2024-05-31 Fim}
 
   if rbItemPorITem.Checked then
   begin
@@ -5699,6 +5838,7 @@ begin
 
   if (Form7.sModulo = 'Relatório de vendas') or (Form7.sModulo = 'Relatório de compras') then
   begin
+    {
     if Form1.bHtml1 then
     begin
       WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
@@ -5719,8 +5859,18 @@ begin
             Writeln(F,AllTrim(chkOperacoes.Items[I]));
       WriteLn(F,'');
     end;
+    Mauricio Parizotto 2024-05-31}
+    ListaOperacoesMarcadas(F);
   end;
-            
+
+  {Mauricio Parizotto 2024-05-31}
+  if Form1.bHtml1 then
+  begin
+    WriteLn(F,'   </td>');
+    WriteLn(F,'  </table>');
+  end;
+
+  {
   if Form1.bHtml1 then
   begin
     WriteLn(F,'   </td>');
@@ -5730,8 +5880,17 @@ begin
   begin
     Writeln(F,'Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'');
   end;
+  Mauriico Parizotto 2024-05-31}
+  ListaPeiodoSelecionado(F,dInicio, dFinal);
 end;
 
+procedure TForm38.RelatorioVendaEstado(var F: TextFile; dInicio, dFinal : TdateTime);
+begin
+  GeraNomeRelatorio(F,Form7.sModulo);
+  GeraRelatorioVendaEstado(F,dInicio,dFinal);
+  ListaOperacoesMarcadas(F);
+  ListaPeiodoSelecionado(F,dInicio, dFinal);
+end;
 
 procedure TForm38.btnMarcarTodosClick(Sender: TObject);
 var
@@ -5752,6 +5911,111 @@ begin
     chkOperacoes.Checked[i] := False;
   end;
 end;
+
+procedure TForm38.ListaOperacoesMarcadas(var F: TextFile); // Mauricio Parizotto 2024-05-31
+var
+  i : integer;
+begin
+  if Form1.bHtml1 then
+  begin
+    WriteLn(F,'<center><table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+    WriteLn(F,'    <tr bgcolor=#FFFFFF align=left>');
+    WriteLn(F,'     <td><P><font face="Microsoft Sans Serif" size=1><b>Operações listadas:</b><br>');
+    for I := 0 to (chkOperacoes.Items.Count -1) do
+      if chkOperacoes.Checked[I] then
+          Writeln(F,'     <br><font face="Microsoft Sans Serif" size=1>'+AllTrim(chkOperacoes.Items[I]));
+    Writeln(F,'      </td><br>');
+    WriteLn(F,'     </td>');
+    WriteLn(F,'    </table> </center>');
+  end else
+  begin
+    WriteLn(F,'');
+    WriteLn(F,'Operações listadas:');
+    for I := 0 to (chkOperacoes.Items.Count -1) do
+      if chkOperacoes.Checked[I] then
+          Writeln(F,AllTrim(chkOperacoes.Items[I]));
+    WriteLn(F,'');
+  end;
+end;
+
+procedure TForm38.ListaPeiodoSelecionado(var F: TextFile; dInicio, dFinal : TdateTime); //Mauricio Parizotto 2024-05-31
+begin
+  if Form1.bHtml1 then
+  begin
+    Writeln(F,'<center>  <font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br></center>');
+  end else
+  begin
+    WriteLn(F,'');
+    WriteLn(F,'');
+    Writeln(F,'Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'');
+  end;
+end;
+
+
+procedure Tform38.GeraNomeRelatorio(var F: TextFile; sNome:string);
+begin
+  if Form1.bHtml1 then
+  begin
+    WriteLn(F,'<br><center><font size=4 color=#000000><b>'+sNome+'</b></font><br></center><br>');
+  end else
+  begin
+    WriteLn(F,sNome);
+    WriteLn(F,'');
+  end;
+end;
+
+procedure Tform38.RodapePadrao(var F: TextFile; tInicio : tTime);
+begin
+  if Form1.bHtml1 then
+  begin
+    WriteLn(F,'<center><br><font face="Microsoft Sans Serif" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
+    + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
+    + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br>');
+
+    if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
+    begin
+      WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
+    end else
+    begin
+      WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
+    end;
+
+    WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>Tempo para gerar este relatório: '+TimeToStr(Time - tInicio)+'</center>');
+    if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
+    WriteLn(F,'</html>');
+  end else
+  begin
+    WriteLn(F,'Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
+    + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
+    + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'');
+
+    WriteLn(F,'Tempo para gerar este relatório: '+TimeToStr(Time - tInicio)+'');
+
+    if Form7.sModulo =  'Auditoria' then
+    begin
+      WriteLn(F,'Assinatura Digital:');
+    end;
+  end;
+end;
+
+function TForm38.GetFiltroOperacao(sAliasTabela:string):string;
+var
+  I : Integer;
+  sOperacoes : string;
+begin
+  Result := '';
+
+  for I := 0 to (chkOperacoes.Items.Count -1) do
+  begin
+    if not chkOperacoes.Checked[I] then
+    begin
+      sOperacoes := sOperacoes + ' and '+sAliasTabela+'.OPERACAO<>'+QuotedStr(chkOperacoes.Items[I])+' ';
+    end;
+  end;
+
+  Result := sOperacoes;
+end;
+
 
 end.
 
