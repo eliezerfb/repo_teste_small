@@ -259,8 +259,8 @@ uses
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
   uPermissaoUsuario in 'uPermissaoUsuario.pas',
-  uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
-  uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas';
+  uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas',
+  uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas';
 
 {$R *.RES}
 

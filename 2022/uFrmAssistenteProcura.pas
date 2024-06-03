@@ -78,7 +78,7 @@ begin
   with Form7 do
   begin
     Edit1.Text := ArquivoAberto.FieldByname(dBgrid1.SelectedField.FieldName).asString;
-    if Form7.DbGrid1.SelectedField.DataType = ftFloat then
+    if TipoCampoFloat(Form7.DbGrid1.SelectedField) then // Sandro Silva 2024-04-29 if Form7.DbGrid1.SelectedField.DataType = ftFloat then
       if AllTrim(Edit1.Text) = '' then Edit1.Text := '0,00';
   end;
   //
@@ -118,7 +118,7 @@ begin
 
     Form7.sProcura := AllTrim(Edit1.Text);
 
-    if Form7.DbGrid1.SelectedField.DataType = ftFloat then
+    if TipoCampoFloat(Form7.DbGrid1.SelectedField) then // Sandro Silva 2024-04-29 if Form7.DbGrid1.SelectedField.DataType = ftFloat then
     begin
       iReg := Form7.ArquivoAberto.RecNo;
       Form7.ArquivoAberto.Next;
@@ -371,8 +371,9 @@ end;
 
 procedure TFrmAssistenteProcura.Edit1KeyPress(Sender: TObject; var Key: Char);
 begin
-  if Form7.DbGrid1.SelectedField.DataType = ftFloat then
-     if Key = chr(46) then key := chr(44);
+  if TipoCampoFloat(Form7.DbGrid1.SelectedField) then // Sandro Silva 2024-04-29 if Form7.DbGrid1.SelectedField.DataType = ftFloat then
+    if Key = chr(46) then
+      key := chr(44);
 end;
 
 procedure TFrmAssistenteProcura.Button3Click(Sender: TObject);

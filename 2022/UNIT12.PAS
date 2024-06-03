@@ -626,9 +626,9 @@ end;
 
 procedure TForm12.DBGrid1KeyPress(Sender: TObject; var Key: Char);
 begin
-  if dbGrid1.SelectedField.DataType = ftFloat then
-     if Key = chr(46) then
-       Key := chr(44);
+  if TipoCampoFloat(dbGrid1.SelectedField) then // Sandro Silva 2024-04-29 if dbGrid1.SelectedField.DataType = ftFloat then
+    if Key = chr(46) then
+      Key := chr(44);
 end;
 
 
@@ -764,10 +764,23 @@ end;
 procedure TForm12.DBGrid2DblClick(Sender: TObject);
 begin
   Form7.ibDataSet15.Edit;
+  {Dailon Parisotto (f-18425) 2024-05-02 Inicio
+
   Form7.ibDataSet15OPERACAO.AsString   := form7.ibDataSet14NOME.AsString;
   Form7.ibDataSet15CLIENTE.AsString    := form7.ibDataSet2NOME.AsString;
   Form7.ibDataSet15TRANSPORTA.AsString := form7.ibDataSet18NOME.AsString;
   Form7.ibDataSet15VENDEDOR.AsString   := Form7.ibDataSet9NOME.AsString;
+
+  }
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet14 then
+    Form7.ibDataSet15OPERACAO.AsString   := form7.ibDataSet14NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet2 then
+    Form7.ibDataSet15CLIENTE.AsString    := form7.ibDataSet2NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet18 then
+    Form7.ibDataSet15TRANSPORTA.AsString := form7.ibDataSet18NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet9 then
+    Form7.ibDataSet15VENDEDOR.AsString   := Form7.ibDataSet9NOME.AsString;
+  {Dailon Parisotto (f-18425) 2024-05-02 Fim}
 
   if dbGrid2.Top = (SMALL_DBEdit39.Top + SMALL_DBEdit39.Height -1) then
     SMALL_DBEdit39.SetFocus;
@@ -793,10 +806,23 @@ end;
 procedure TForm12.DBGrid2CellClick(Column: TColumn);
 begin
   Form7.ibDataSet15.Edit;
+  {Dailon Parisotto (f-18425) 2024-05-02 Inicio
+
   Form7.ibDataSet15OPERACAO.AsString   := Form7.ibDataSet14NOME.AsString;
   Form7.ibDataSet15CLIENTE.AsString    := Form7.ibDataSet2NOME.AsString;
   Form7.ibDataSet15TRANSPORTA.AsString := Form7.ibDataSet18NOME.AsString;
   Form7.ibDataSet15VENDEDOR.AsString   := Form7.ibDataSet9NOME.AsString;
+
+  }
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet14 then
+    Form7.ibDataSet15OPERACAO.AsString   := Form7.ibDataSet14NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet2 then
+    Form7.ibDataSet15CLIENTE.AsString    := Form7.ibDataSet2NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet18 then
+    Form7.ibDataSet15TRANSPORTA.AsString := Form7.ibDataSet18NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet9 then
+    Form7.ibDataSet15VENDEDOR.AsString   := Form7.ibDataSet9NOME.AsString;
+  {Dailon Parisotto (f-18425) 2024-05-02 Fim}
 end;
 
 procedure TForm12.DBGrid2KeyPress(Sender: TObject; var Key: Char);
@@ -2045,8 +2071,8 @@ begin
   end else
     ListBox2.Visible  := False;
 
-  if dbGrid1.SelectedField.DataType = ftFloat then
-     if Key = chr(46) then key := chr(44);
+  if TipoCampoFloat(dbGrid1.SelectedField) then // Sandro Silva 2024-04-29 if dbGrid1.SelectedField.DataType = ftFloat then
+    if Key = chr(46) then key := chr(44);
 end;
 
 procedure TForm12.DBGrid4KeyUp(Sender: TObject; var Key: Word;
