@@ -175,7 +175,9 @@ begin
       pixchave := '+55'+LimpaNumero(pixchave);
 
     pixtitular := ConverteAcentos(pixtitular);
+    pixtitular := Copy(pixtitular,1,25);
     municipio  := ConverteAcentos(municipio);
+    municipio  := Copy(municipio,1,15);
 
     PayloadFormat         := '000201';
     MerchantAccount       := '0014BR.GOV.BCB.PIX'+'01'+TamanhoTexto(pixchave)+pixchave;
