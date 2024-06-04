@@ -398,7 +398,7 @@ begin
       sCodigoDaCarteira      := '1';
       sFormaDeCadastrar      := '1';
       sTipoDocumento         := '1';
-      sEspecieDoTitulo       := 'N ';
+      sEspecieDoTitulo       := 'NN';// Sandro Silva 2024-05-29 f-18961 sEspecieDoTitulo       := 'N ';
       sNumeroDeDiasParaBaixa := '000';
       sCodigoParaBaixa       := '0';
       sDigitoAgencia         := ' ';

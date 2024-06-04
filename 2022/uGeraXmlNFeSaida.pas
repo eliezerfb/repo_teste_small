@@ -50,7 +50,7 @@ var
 
   procedure GeraXmlNFeSaida;
   procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
-  function CalculavTotTrib_M02(sCodigo: String): Boolean;
+  function CalculavTotTrib_M02(sCodigo: String; sOperacaoDoTopo: String): Boolean;
 
 
 implementation
@@ -79,23 +79,45 @@ begin
   IBQuery.Open;
 end;
 
-function CalculavTotTrib_M02(sCodigo: String): Boolean;
+function CalculavTotTrib_M02(sCodigo: String; sOperacaoDoTopo: String): Boolean;
 var
   IBQTEMP: TIBQuery;
+  dBaseCalculo: Double;
 begin
   Result := False;
   IBQTEMP := CriaIBQuery(Form7.ibDataSet4.Transaction);
   try
     IBQTEMP.Close;
     IBQTEMP.SQL.Text :=
-      'select ICM.BASE ' +
+      'select ICM.ST, ICM.BASE ' + // Sandro Silva 2024-05-17 'select ICM.BASE ' +
       'from ESTOQUE E ' +
       'join ICM on ICM.ST = E.ST ' +
       'where E.CODIGO = :CODIGO';
     IBQTEMP.ParamByName('CODIGO').AsString := sCodigo;
     IBQTEMP.Open;
 
-    Result := (IBQTEMP.FieldByName('BASE').AsFloat > 0);
+    if IBQTEMP.FieldByName('ST').AsString = '' then
+    begin
+      // Não tem CIT configurado no produto usa a natureza do topo da nota para identificar a base
+
+      IBQTEMP.Close;
+      IBQTEMP.SQL.Text :=
+        'select ICM.ST, ICM.BASE ' + // Sandro Silva 2024-05-17 'select ICM.BASE ' +
+        'from ICM ' +
+        'where ICM.NOME = :NOME';
+      IBQTEMP.ParamByName('NOME').AsString := sOperacaoDoTopo;
+      IBQTEMP.Open;
+
+      dBaseCalculo := IBQTEMP.FieldByName('BASE').AsFloat;
+
+    end
+    else
+    begin
+      dBaseCalculo := IBQTEMP.FieldByName('BASE').AsFloat;
+    end;
+
+    //2024-05-17 Result := (IBQTEMP.FieldByName('BASE').AsFloat > 0);
+    Result := (dBaseCalculo > 0);
 
   except
 
@@ -1167,7 +1189,7 @@ begin
 
       // Tributos
       //Sandro Silva 2024-04-11 if bTributa then
-      if CalculavTotTrib_M02(Form7.ibDataSet4.FieldByName('CODIGO').AsString) then
+      if CalculavTotTrib_M02(Form7.ibDataSet4.FieldByName('CODIGO').AsString, Form7.ibDataSet15OPERACAO.AsString) then
       begin
         if Copy(Form7.ibDataSet14CFOP.AsString,1,1) <> '7' then // Exportação
         begin

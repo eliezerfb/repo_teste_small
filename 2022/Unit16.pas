@@ -172,7 +172,7 @@ begin
                 Form16.DateTimePicker2.Date:= Date + 30;
               end;
             end;
-            if Form7.dBgrid1.Selectedfield.DataType = ftFloat then
+            if TipoCampoFloat(Form7.dBgrid1.Selectedfield) then // Sandro Silva 2024-04-29 if Form7.dBgrid1.Selectedfield.DataType = ftFloat then
             begin
               try
                 Form16.Label1.Caption := StrTran(StrTran('Filtrar '+LowerCase(Form7.dBgrid1.SelectedField.DisplayLabel) + ' de','r$','R$'),'us$','US$');
@@ -299,7 +299,7 @@ begin
                   ListBox1.Items.Add(sLogica+' '+cTabela+dBgrid1.Selectedfield.FieldName+' >= '+QuotedStr(DateToStrInvertida(Form16.DateTimePicker1.Date))+' and '+cTabela+dBgrid1.Selectedfield.FieldName+' <= '+QuotedStr(DateToStrInvertida(Form16.DateTimePicker2.Date))+' ')
                 end;
                 //
-                if dBgrid1.Selectedfield.DataType = ftFloat then
+                if TipoCampoFloat(dBgrid1.Selectedfield) then // Sandro Silva 2024-04-29 if dBgrid1.Selectedfield.DataType = ftFloat then
                 begin
                   ListBox1.Items.Add(sLogica+' ('+cTabela+dBgrid1.Selectedfield.FieldName+' >= '+QuotedStr(
                   StrTran(LimpanumeroDeixandoAVirgula(MaskEdit1.Text),',','.')
@@ -337,7 +337,9 @@ end;
 
 procedure TForm16.MaskEdit1KeyPress(Sender: TObject; var Key: Char);
 begin
-  if Form7.dBgrid1.Selectedfield.DataType = ftFloat then if Key = chr(46) then key := chr(44);
+  if TipoCampoFloat(Form7.dBgrid1.Selectedfield) then // Sandro Silva 2024-04-29 if Form7.dBgrid1.Selectedfield.DataType = ftFloat then
+    if Key = chr(46) then
+      key := chr(44);
 end;
 
 
