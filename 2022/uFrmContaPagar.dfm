@@ -1,7 +1,26 @@
-inherited FrmBanco: TFrmBanco
+inherited FrmContaPagar: TFrmContaPagar
+  OnActivate = FormActivate
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
+    inherited pnlBotoesPosterior: TPanel
+      object btnReplicar: TBitBtn
+        Left = 10
+        Top = 8
+        Width = 120
+        Height = 25
+        Anchors = [akLeft, akTop, akRight]
+        Caption = '&Replicar'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+        OnClick = btnReplicarClick
+      end
+    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
       object tbsCadastro: TTabSheet
@@ -13,7 +32,7 @@ inherited FrmBanco: TFrmBanco
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Emiss'#227'o:'
+          Caption = 'Documento:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -28,7 +47,7 @@ inherited FrmBanco: TFrmBanco
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Documento:'
+          Caption = 'Plano de Contas:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -58,7 +77,7 @@ inherited FrmBanco: TFrmBanco
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Entrada:'
+          Caption = 'Fornecedor:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -73,7 +92,7 @@ inherited FrmBanco: TFrmBanco
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Sa'#237'da:'
+          Caption = 'Emiss'#227'o:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -88,7 +107,7 @@ inherited FrmBanco: TFrmBanco
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Pr'#233'-datado:'
+          Caption = 'Vencimento:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -103,7 +122,7 @@ inherited FrmBanco: TFrmBanco
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Compensado:'
+          Caption = 'Valor:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -118,7 +137,7 @@ inherited FrmBanco: TFrmBanco
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Saldo:'
+          Caption = 'Pago:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -133,7 +152,7 @@ inherited FrmBanco: TFrmBanco
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Nominal a:'
+          Caption = 'Valor Pago:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -141,31 +160,40 @@ inherited FrmBanco: TFrmBanco
           Font.Style = []
           ParentFont = False
         end
-        object edtEmissao: TSMALL_DBEdit
-          Left = 110
-          Top = 25
-          Width = 130
-          Height = 20
+        object Label9: TLabel
+          Left = 10
+          Top = 260
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
           AutoSize = False
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          Ctl3D = True
-          DataField = 'EMISSAO'
-          DataSource = DSCadastro
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
+          Caption = 'Portador:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          ParentCtl3D = False
           ParentFont = False
-          TabOrder = 0
-          OnKeyDown = PadraoKeyDown
+        end
+        object Label10: TLabel
+          Left = 10
+          Top = 286
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'NF/S'#233'rie:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
         end
         object edtDocumento: TSMALL_DBEdit
           Left = 110
-          Top = 51
-          Width = 130
+          Top = 25
+          Width = 94
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -180,7 +208,7 @@ inherited FrmBanco: TFrmBanco
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 1
+          TabOrder = 0
           OnKeyDown = PadraoKeyDown
         end
         object edtHistorico: TSMALL_DBEdit
@@ -204,37 +232,16 @@ inherited FrmBanco: TFrmBanco
           TabOrder = 2
           OnKeyDown = PadraoKeyDown
         end
-        object edtEntrada: TSMALL_DBEdit
-          Left = 110
-          Top = 103
-          Width = 130
-          Height = 20
-          AutoSize = False
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          Ctl3D = True
-          DataField = 'ENTRADA_'
-          DataSource = DSCadastro
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentCtl3D = False
-          ParentFont = False
-          TabOrder = 3
-          OnKeyDown = PadraoKeyDown
-        end
-        object edtSaida: TSMALL_DBEdit
+        object edtEmissao: TSMALL_DBEdit
           Left = 110
           Top = 129
-          Width = 130
+          Width = 94
           Height = 20
           AutoSize = False
           BevelInner = bvNone
           BevelOuter = bvNone
           Ctl3D = True
-          DataField = 'SAIDA_'
+          DataField = 'EMISSAO'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -246,16 +253,16 @@ inherited FrmBanco: TFrmBanco
           TabOrder = 4
           OnKeyDown = PadraoKeyDown
         end
-        object edtPreDatado: TSMALL_DBEdit
+        object edtVencimento: TSMALL_DBEdit
           Left = 110
           Top = 155
-          Width = 130
+          Width = 94
           Height = 20
           AutoSize = False
           BevelInner = bvNone
           BevelOuter = bvNone
           Ctl3D = True
-          DataField = 'PREDATA'
+          DataField = 'VENCIMENTO'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -267,16 +274,16 @@ inherited FrmBanco: TFrmBanco
           TabOrder = 5
           OnKeyDown = PadraoKeyDown
         end
-        object edtCompensado: TSMALL_DBEdit
+        object edtValor: TSMALL_DBEdit
           Left = 110
           Top = 181
-          Width = 130
+          Width = 94
           Height = 20
           AutoSize = False
           BevelInner = bvNone
           BevelOuter = bvNone
           Ctl3D = True
-          DataField = 'COMPENS'
+          DataField = 'VALOR_DUPL'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -288,16 +295,16 @@ inherited FrmBanco: TFrmBanco
           TabOrder = 6
           OnKeyDown = PadraoKeyDown
         end
-        object edtSaldo: TSMALL_DBEdit
+        object edtPago: TSMALL_DBEdit
           Left = 110
           Top = 207
-          Width = 130
+          Width = 94
           Height = 20
           AutoSize = False
           BevelInner = bvNone
           BevelOuter = bvNone
           Ctl3D = True
-          DataField = 'SALDO_BANC'
+          DataField = 'PAGAMENTO'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -309,16 +316,16 @@ inherited FrmBanco: TFrmBanco
           TabOrder = 7
           OnKeyDown = PadraoKeyDown
         end
-        object edtNominal: TSMALL_DBEdit
+        object edtValorPago: TSMALL_DBEdit
           Left = 110
           Top = 233
-          Width = 313
+          Width = 94
           Height = 20
           AutoSize = False
           BevelInner = bvNone
           BevelOuter = bvNone
           Ctl3D = True
-          DataField = 'NOMINAL'
+          DataField = 'VALOR_PAGO'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -330,11 +337,111 @@ inherited FrmBanco: TFrmBanco
           TabOrder = 8
           OnKeyDown = PadraoKeyDown
         end
+        object edtPortador: TSMALL_DBEdit
+          Left = 110
+          Top = 259
+          Width = 313
+          Height = 20
+          AutoSize = False
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          Ctl3D = True
+          DataField = 'PORTADOR'
+          DataSource = DSCadastro
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 9
+          OnKeyDown = PadraoKeyDown
+        end
+        object edtNotaFiscal: TSMALL_DBEdit
+          Left = 110
+          Top = 285
+          Width = 94
+          Height = 20
+          AutoSize = False
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          Ctl3D = True
+          DataField = 'NUMERONF'
+          DataSource = DSCadastro
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 10
+          OnKeyDown = PadraoKeyDown
+        end
+        inline fraPlanoContas: TfFrameCampo
+          Left = 110
+          Top = 51
+          Width = 313
+          Height = 20
+          Color = clWhite
+          Ctl3D = False
+          ParentBackground = False
+          ParentColor = False
+          ParentCtl3D = False
+          TabOrder = 1
+          ExplicitLeft = 110
+          ExplicitTop = 51
+          ExplicitWidth = 313
+          inherited txtCampo: TEdit
+            Width = 313
+            ExplicitWidth = 313
+          end
+          inherited gdRegistros: TDBGrid
+            Width = 313
+            Columns = <
+              item
+                Expanded = False
+                FieldName = 'NOME'
+                Width = 290
+                Visible = True
+              end>
+          end
+        end
+        inline fraFornecedor: TfFrameCampo
+          Left = 110
+          Top = 103
+          Width = 313
+          Height = 20
+          Color = clWhite
+          Ctl3D = False
+          ParentBackground = False
+          ParentColor = False
+          ParentCtl3D = False
+          TabOrder = 3
+          ExplicitLeft = 110
+          ExplicitTop = 103
+          ExplicitWidth = 313
+          inherited txtCampo: TEdit
+            Width = 313
+            ExplicitWidth = 313
+          end
+          inherited gdRegistros: TDBGrid
+            Width = 313
+            Columns = <
+              item
+                Expanded = False
+                FieldName = 'NOME'
+                Width = 290
+                Visible = True
+              end>
+          end
+        end
       end
     end
   end
   inherited DSCadastro: TDataSource
-    DataSet = Form7.ibDataSet5
+    DataSet = Form7.ibDataSet8
     OnDataChange = DSCadastroDataChange
   end
 end
