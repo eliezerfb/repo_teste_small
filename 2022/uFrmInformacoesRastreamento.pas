@@ -484,7 +484,7 @@ begin
         else
           Sender.AsString := Text;
       end;
-    ftFMTBcd, ftFloat:
+    ftFMTBcd, ftFloat, ftBCD: // Sandro Silva 2024-04-29 ftFMTBcd, ftFloat:
       begin
         // Elimina excesso de separador decimal (vírgula)
         sCurrectedText := '';
@@ -521,7 +521,7 @@ end;
 procedure TFrmInformacoesRastreamento.DBGridRastroKeyPress(Sender: TObject;
   var Key: Char);
 begin
-  if (Sender As TDBGrid).SelectedField.DataType = ftFloat then
+  if TipoCampoFloat((Sender As TDBGrid).SelectedField) then //Sandro Silva 2024-04-29 if (Sender As TDBGrid).SelectedField.DataType = ftFloat then
   begin
     if Key = Chr(46) then
       Key := Chr(44);

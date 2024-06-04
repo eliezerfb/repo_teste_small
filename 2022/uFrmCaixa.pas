@@ -43,7 +43,10 @@ implementation
 
 {$R *.dfm}
 
-uses unit7;
+uses
+  unit7
+  , uPermissaoUsuario
+  , MAIS;
 
 { TFrmCaixa }
 
@@ -93,12 +96,14 @@ procedure TFrmCaixa.SetaStatusUso;
 begin
   inherited;
 
-  edtData.Enabled          := not(bEstaSendoUsado);
-  fraPlanoContas.Enabled   := not(bEstaSendoUsado);
-  edtHistorico.Enabled     := not(bEstaSendoUsado);
-  edtEntrada.Enabled       := not(bEstaSendoUsado);
-  edtSaida.Enabled         := not(bEstaSendoUsado);
-  edtSaldo.Enabled         := not(bEstaSendoUsado);
+  bSomenteLeitura := SomenteLeitura(Form7.sModulo,MAIS.Usuario);
+
+  edtData.Enabled          := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraPlanoContas.Enabled   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtHistorico.Enabled     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtEntrada.Enabled       := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtSaida.Enabled         := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtSaldo.Enabled         := not(bEstaSendoUsado) and not (bSomenteLeitura);
 end;
 
 
