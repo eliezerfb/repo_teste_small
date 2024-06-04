@@ -262,7 +262,7 @@ begin
 
     for i := 0 to Pred(FqryDados.Fields.Count) do
     begin
-      if FqryDados.Fields[i].DataType <> ftFloat then
+      if TipoCampoFloat(FqryDados.Fields[i]) = False then // Sandro Silva 2024-04-29 if FqryDados.Fields[i].DataType <> ftFloat then
         cdsItemPorItem.FieldByName(FqryDados.Fields[i].FieldName).Value := FqryDados.Fields[i].Value
       else
       begin
@@ -341,7 +341,7 @@ begin
 
     for i := 0 to Pred(FqryDados.Fields.Count) do
     begin
-      if FqryDados.Fields[i].DataType <> ftFloat then
+      if TipoCampoFloat(FqryDados.Fields[i]) = False then //Sandro Silva 2024-04-29 if FqryDados.Fields[i].DataType <> ftFloat then
         cdsRelICMS.FieldByName(FqryDados.Fields[i].FieldName).Value := FqryDados.Fields[i].Value
       else
         cdsRelICMS.FieldByName(FqryDados.Fields[i].FieldName).AsFloat := Arredonda(FqryDados.Fields[i].AsFloat, FnDecimaisValor);

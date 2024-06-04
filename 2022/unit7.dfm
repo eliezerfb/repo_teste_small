@@ -863,7 +863,7 @@ object Form7: TForm7
       C84D}
     Visible = False
   end
-  object Image10: TImage
+  object imgCheck: TImage
     Left = 1168
     Top = 347
     Width = 124
@@ -1558,7 +1558,7 @@ object Form7: TForm7
       FDFFFDFDFCFCFCF9FEFDFDFDFDFDFDFD0000}
     Visible = False
   end
-  object Image13: TImage
+  object imgChk: TImage
     Left = 1208
     Top = 315
     Width = 39
@@ -1645,7 +1645,7 @@ object Form7: TForm7
       0000}
     Visible = False
   end
-  object Image14: TImage
+  object imgUnChk: TImage
     Left = 1248
     Top = 315
     Width = 39
@@ -7888,14 +7888,14 @@ object Form7: TForm7
   object WebBrowser1: TWebBrowser
     Left = 10000
     Top = 0
-    Width = 361
-    Height = 291
+    Width = 451
+    Height = 364
     TabOrder = 8
     OnDownloadComplete = WebBrowser1DownloadComplete
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C0000004F250000131E00000000000000000000000000000000000000000000
+      4C0000004A250000191E00000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E126208000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -13878,12 +13878,15 @@ object Form7: TForm7
       'insert into BANCOS'
       
         '  (NOME, AGENCIA, CONTA, PLANO, SALDO1, SALDO2, SALDO3, ARQUIVO,' +
-        ' REGISTRO,INSTITUICAOFINANCEIRA)'
+        ' REGISTRO,INSTITUICAOFINANCEIRA,PIXESTATICO,PIXTIPOCHAVE,PIXTITU' +
+        'LAR,PIXCHAVE)'
       'values'
       
         '  (:NOME, :AGENCIA, :CONTA, :PLANO, :SALDO1, :SALDO2, :SALDO3, :' +
         'ARQUIVO, '
-      '   :REGISTRO,:INSTITUICAOFINANCEIRA)')
+      
+        '   :REGISTRO,:INSTITUICAOFINANCEIRA,:PIXESTATICO,:PIXTIPOCHAVE,:' +
+        'PIXTITULAR,:PIXCHAVE)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -13895,16 +13898,21 @@ object Form7: TForm7
       '  SALDO3,'
       '  ARQUIVO,'
       '  REGISTRO,'
-      '  INSTITUICAOFINANCEIRA'
+      '  INSTITUICAOFINANCEIRA,'
+      '  PIXESTATICO,'
+      '  PIXTIPOCHAVE,'
+      '  PIXTITULAR,'
+      '  PIXCHAVE'
       'from BANCOS '
       'where'
       '  REGISTRO = :REGISTRO')
     SelectSQL.Strings = (
       'Select '
       #9'B.*,'
-      #9'C.NOME PLANOCONTA'
-      'From BANCOS B'
-      #9'Left Join CONTAS C on C.CONTA = B.PLANO')
+      
+        #9'(Select first 1 C.NOME From  CONTAS C Where C.CONTA = B.PLANO) ' +
+        'PLANOCONTA'
+      'From BANCOS B')
     ModifySQL.Strings = (
       'update BANCOS'
       'set'
@@ -13917,7 +13925,11 @@ object Form7: TForm7
       '  SALDO3 = :SALDO3,'
       '  ARQUIVO = :ARQUIVO,'
       '  REGISTRO = :REGISTRO,'
-      '  INSTITUICAOFINANCEIRA = :INSTITUICAOFINANCEIRA'
+      '  INSTITUICAOFINANCEIRA = :INSTITUICAOFINANCEIRA,'
+      '  PIXESTATICO = :PIXESTATICO,'
+      '  PIXTIPOCHAVE = :PIXTIPOCHAVE,'
+      '  PIXTITULAR = :PIXTITULAR,'
+      '  PIXCHAVE = :PIXCHAVE'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -13959,6 +13971,37 @@ object Form7: TForm7
       FieldName = 'INSTITUICAOFINANCEIRA'
       Origin = 'BANCOS.INSTITUICAOFINANCEIRA'
       Size = 60
+    end
+    object ibDataSet11PIXESTATICO: TIBStringField
+      DisplayLabel = 'PIX est'#225'tico'
+      FieldName = 'PIXESTATICO'
+      Origin = 'BANCOS.PIXESTATICO'
+      Size = 1
+    end
+    object ibDataSet11PIXTIPOCHAVE: TIBStringField
+      DisplayLabel = 'Tipo chave'
+      FieldName = 'PIXTIPOCHAVE'
+      Origin = 'BANCOS.PIXTIPOCHAVE'
+    end
+    object ibDataSet11PIXTITULAR: TIBStringField
+      DisplayLabel = 'Titular da conta'
+      DisplayWidth = 25
+      FieldName = 'PIXTITULAR'
+      Origin = 'BANCOS.PIXTITULAR'
+      Size = 25
+    end
+    object ibDataSet11PIXCHAVE: TIBStringField
+      DisplayLabel = 'Chave PIX'
+      FieldName = 'PIXCHAVE'
+      Origin = 'BANCOS.PIXCHAVE'
+      OnSetText = ibDataSet11PIXCHAVESetText
+      Size = 40
+    end
+    object ibDataSet11FORMATOBOLETO: TIBStringField
+      FieldName = 'FORMATOBOLETO'
+      Origin = 'BANCOS.FORMATOBOLETO'
+      Visible = False
+      Size = 10
     end
     object ibDataSet11ARQUIVO: TIBStringField
       DisplayLabel = 'Arquivo'
