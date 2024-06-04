@@ -7,6 +7,10 @@ object Form21: TForm21
   ClientHeight = 384
   ClientWidth = 604
   Color = clWhite
+  Constraints.MaxHeight = 423
+  Constraints.MaxWidth = 620
+  Constraints.MinHeight = 423
+  Constraints.MinWidth = 620
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -46,6 +50,7 @@ object Form21: TForm21
       AutoSize = False
       Caption = 'Teste 123'
       Color = clWhite
+      Constraints.MaxHeight = 423
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
       Font.Height = -11
