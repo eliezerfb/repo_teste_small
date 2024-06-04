@@ -7,8 +7,6 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
   inherited Panel_branco: TPanel
     inherited pgcFicha: TPageControl
       ActivePage = tbsNatureza
-      ExplicitLeft = 10
-      ExplicitTop = 105
       object tbsNatureza: TTabSheet
         Caption = 'Natureza da opera'#231#227'o '
         OnEnter = tbsNaturezaEnter
@@ -7641,7 +7639,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = [fsBold]
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 17
+          TabOrder = 18
           Visible = False
           OnExit = SMALL_DBEditXExit
           OnKeyDown = PadraoKeyDown
@@ -7690,7 +7688,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object DBCheckSobreIPI: TDBCheckBox
           Left = 108
-          Top = 319
+          Top = 318
           Width = 92
           Height = 17
           Alignment = taLeftJustify
@@ -7704,7 +7702,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckSobreOutras: TDBCheckBox
-          Left = 255
+          Left = 239
           Top = 318
           Width = 109
           Height = 17
@@ -7719,7 +7717,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckFRETESOBREIPI: TDBCheckBox
-          Left = 402
+          Left = 387
           Top = 318
           Width = 89
           Height = 17
@@ -7747,7 +7745,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           MaxLength = 32768
           ParentFont = False
-          TabOrder = 16
+          TabOrder = 17
           OnEnter = DBMemo4Enter
           OnKeyDown = DBMemo4KeyDown
           OnKeyPress = DBMemo4KeyPress
@@ -7798,6 +7796,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           ExplicitLeft = 150
           ExplicitTop = 123
           ExplicitWidth = 313
+          ExplicitHeight = 22
           inherited txtCampo: TEdit
             Width = 313
             ExplicitWidth = 313
@@ -7838,6 +7837,21 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 12
+          OnKeyDown = PadraoKeyDown
+        end
+        object DBCheckBox1: TDBCheckBox
+          Left = 515
+          Top = 318
+          Width = 93
+          Height = 17
+          Alignment = taLeftJustify
+          Caption = 'IPI sobre Outras'
+          DataField = 'IPISOBREOUTRA'
+          DataSource = DSCadastro
+          TabOrder = 16
+          ValueChecked = 'S'
+          ValueUnchecked = 'N'
+          OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
       end

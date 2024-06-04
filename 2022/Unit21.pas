@@ -120,7 +120,7 @@ begin
       if Form7.ArquivoAberto.Fields[I-1].DataType = fTDate then
         TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Text  := Copy(Form7.ArquivoAberto.fields[I-1].AsString + replicate(' ',30),1,30);
 
-      if Form7.ArquivoAberto.Fields[I-1].DataType = fTFloat then
+      if TipoCampoFloat(Form7.ArquivoAberto.Fields[I-1]) then // Sandro Silva 2024-04-29 if Form7.ArquivoAberto.Fields[I-1].DataType = fTFloat then
         TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Text  := Copy(Format('%12.2n',[Form7.ArquivoAberto.fields[I-1].AsFloat])  + replicate(' ',30),1,30);
 
       //TEdit(Form21.Components[I-1+Edit1.ComponentIndex]).Width := (Form7.ArquivoAberto.Fields[I-1].Displaywidth * 8)+10; Mauricio Parizotto 2024-03-20
