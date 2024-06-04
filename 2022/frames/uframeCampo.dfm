@@ -35,7 +35,7 @@ object fFrameCampo: TfFrameCampo
   end
   object gdRegistros: TDBGrid
     Left = 0
-    Top = 22
+    Top = 20
     Width = 323
     Height = 102
     Anchors = [akLeft, akTop, akRight]
