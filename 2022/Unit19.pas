@@ -837,7 +837,6 @@ begin
     Form14.Image1.Picture.SaveToFile('LOGOTIP.BMP');
 
   ShellExecute( 0, 'Open','pbrush.exe','LOGOTIP.BMP', '', SW_SHOW);
-  //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
   MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
 
   if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
