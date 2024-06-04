@@ -355,7 +355,7 @@ begin
             begin
               if Form7.ArquivoAberto.Fields[I-1].Visible = True then
               begin
-                if Form7.ArquivoAberto.Fields[I-1].DataType =  ftFloat then
+                if TipoCampoFloat(Form7.ArquivoAberto.Fields[I-1]) then // Sandro Silva 2024-04-29 if Form7.ArquivoAberto.Fields[I-1].DataType =  ftFloat then
                 begin
                   // formata o preço e a quantidade
                   sI := '2';
@@ -936,7 +936,7 @@ begin
               begin
                 if Form7.ArquivoAberto.Fields[I-1].Visible = True then
                 begin
-                  if Form7.ArquivoAberto.Fields[I-1].DataType =  ftFloat then
+                  if TipoCampoFloat(Form7.ArquivoAberto.Fields[I-1]) then // Sandro Silva 2024-04-29 if Form7.ArquivoAberto.Fields[I-1].DataType =  ftFloat then
                   begin
                     sI := '2';
                     if Form7.ArquivoAberto.Fields[I-1].FieldName = 'INDEXADOR'  then sI := '4';
@@ -991,7 +991,7 @@ begin
               begin
                 if Form7.ArquivoAberto.Fields[I-1].Visible = True then
                 begin
-                  if Form7.ArquivoAberto.Fields[I-1].DataType =  ftFloat then
+                  if TipoCampoFloat(Form7.ArquivoAberto.Fields[I-1]) then // Sandro Silva 2024-04-29 if Form7.ArquivoAberto.Fields[I-1].DataType =  ftFloat then
                   begin
                     // formata o preço e a quantidade
                     sI := '2';
