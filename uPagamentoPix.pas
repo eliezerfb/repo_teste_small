@@ -8,7 +8,7 @@ uses
 
   function FormaPagamentoPix(DataSet : TibDataSet) : integer;
   function PagamentoPixEstatico(Valor : double; IDTransacao : string; out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
-  function GeraChavePixEstatica(pixtitular,municipio,pixchave,pixTipochave,IDTransacao : string; Valor : Double ):string;
+  //function GeraChavePixEstatica(pixtitular,municipio,pixchave,pixTipochave,IDTransacao : string; Valor : Double ):string;
 
 implementation
 
@@ -17,7 +17,10 @@ implementation
 uses
   uConectaBancoSmall
   , ufrmSelecionarPIX
-  , ufrmQRCodePixEst, uDialogs, smallfunc_xe;
+  , ufrmQRCodePixEst
+  , uDialogs
+  , smallfunc_xe
+  , uGeraChavePix;
 
 
 function CRC16CCITT(texto: string): WORD;
@@ -130,6 +133,7 @@ begin
   end;
 end;
 
+{
 function GeraChavePixEstatica(pixtitular,municipio,pixchave,pixTipochave,IDTransacao : string; Valor : Double ):string;
 var
   Payload : string;
@@ -217,5 +221,6 @@ begin
     Result := '';
   end;
 end;
+}
 
 end.

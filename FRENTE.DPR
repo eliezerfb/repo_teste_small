@@ -84,7 +84,8 @@ uses
   ufrmQRCodePixEst in 'ufrmQRCodePixEst.pas' {FrmQRCodePixEst},
   ufrmSelecionarPIX in 'ufrmSelecionarPIX.pas' {FrmSelecionarPIX},
   uPagamentoPix in 'uPagamentoPix.pas',
-  uQrCode in '..\unit_compartilhada\uQrCode.pas';
+  uQrCode in '..\unit_compartilhada\uQrCode.pas',
+  uGeraChavePix in '..\unit_compartilhada\uGeraChavePix.pas';
 
 {$R *.RES}
 
