@@ -28,7 +28,7 @@ object Form19: TForm19
     Top = 20
     Width = 791
     Height = 561
-    ActivePage = Orelha_matricial
+    ActivePage = Orelha_relatorios
     Align = alClient
     TabOrder = 0
     object Orelha_relatorios: TTabSheet
@@ -1268,7 +1268,8 @@ object Form19: TForm19
         Left = 253
         Top = 30
         Width = 200
-        Height = 21
+        Height = 22
+        Style = csOwnerDrawFixed
         TabOrder = 0
       end
       object ComboBoxOS: TComboBox

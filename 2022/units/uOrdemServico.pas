@@ -604,7 +604,7 @@ begin
 
     FlsImpressao.Add('-----------------------------------------------');
     FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label14.Caption+': '+Form7.ibDataSet3DESCRICAO.AsString,'',47));
-    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label15.Caption+': '+Form7.ibDataSet3NF.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label15.Caption+': '+Form7.ibDataSet3IDENTIFI1.AsString,'',47));
     FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label16.Caption+': '+Form7.ibDataSet3IDENTIFI2.AsString,'',47));
     FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label17.Caption+': '+Form7.ibDataSet3IDENTIFI3.AsString,'',47));
     FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label18.Caption+': '+Form7.ibDataSet3IDENTIFI4.AsString,'',47));
@@ -625,7 +625,8 @@ begin
       Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString));
       Form7.ibDataSet4.Open;
 
-      if Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString then
+      if (Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString)
+        and (Trim(Form7.ibDataSet16CODIGO.AsString) <> '') then
       begin
         if (Length(AllTrim(Form7.ibDataSet4.FieldByName('REFERENCIA').AsString)) = 13)
           or (Length(AllTrim(Form7.ibDataSet4.FieldByName('REFERENCIA').AsString)) = 14)
@@ -634,7 +635,7 @@ begin
         then
           sCodigo := Copy( Form7.ibDataSet4.FieldByName('REFERENCIA').AsString+Replicate(' ',14),1,14)
         else
-          sCodigo := StrZero(StrToInt(Form7.ibDataSet4.FieldByName('CODIGO').AsString),14,0);
+          sCodigo := StrZero(StrToIntDef(Form7.ibDataSet4.FieldByName('CODIGO').AsString,0),14,0);
 
 
         FlsImpressao.Add(sCodigo + ' ' + Copy(Form7.ibDataSet16.FieldByName('DESCRICAO').AsString+Replicate(' ',32),1,32)+chr(10)+
@@ -744,7 +745,7 @@ begin
 
     FlsImpressao.Add('-----------------------------------------------');
     FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label14.Caption+': '+Form7.ibDataSet3DESCRICAO.AsString,'',47));
-    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label15.Caption+': '+Form7.ibDataSet3NF.AsString,'',47));
+    FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label15.Caption+': '+Form7.ibDataSet3IDENTIFI1.AsString,'',47));
     FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label16.Caption+': '+Form7.ibDataSet3IDENTIFI2.AsString,'',47));
     FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label17.Caption+': '+Form7.ibDataSet3IDENTIFI3.AsString,'',47));
     FlsImpressao.Add(DescricaoComQuebraLinha(Form30.Label18.Caption+': '+Form7.ibDataSet3IDENTIFI4.AsString,'',47));
