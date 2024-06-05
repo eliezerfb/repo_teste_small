@@ -2436,7 +2436,7 @@ type
     procedure CalculaFCPSTAoIncluirProdutoDevolucao;
     procedure EnviarConsultaImprimirDANFE;
     function RetornarWhereAtivoEstoqueCompra: String;
-    procedure LimparColunasItemCompra;
+    procedure LimparColunasItemCompra(AbLimparDescr: Boolean = True);
     procedure VerificaItensInativos;
     procedure SelecionaMunicipio(vEstado, vText: string; vCampoCidade: TIBStringField; Valida : Boolean = True);
     //function RetornarSQLEstoqueOrcamentos: String; Mauricio Parizotto 2023-10-16 movido para funcoes retaguarda
@@ -20552,7 +20552,7 @@ begin
           begin
             //Mauricio Parizotto 2023-04-04
             Form7.ibDataSet23.Edit;
-            LimparColunasItemCompra;
+            LimparColunasItemCompra(False);
             ibDataSet4.EnableControls;
             ibDataSet23.EnableControls;
             //LogRetaguarda('unit7 ibDataSet23.EnableControls 21136'); // Sandro Silva 2023-12-04
@@ -20787,10 +20787,11 @@ begin
   end;
 end;
 
-procedure TForm7.LimparColunasItemCompra;
+procedure TForm7.LimparColunasItemCompra(AbLimparDescr: Boolean = True);
 begin
   Form7.ibDataSet23QUANTIDADE.AsString := EmptyStr;
-  Form7.ibDataSet23DESCRICAO.AsString := EmptyStr;
+  if AbLimparDescr then
+    Form7.ibDataSet23DESCRICAO.AsString := EmptyStr;
   Form7.ibDataSet23QTD_ORIGINAL.AsString := EmptyStr;
   Form7.ibDataSet23UNITARIO_O.AsString := EmptyStr;
 
@@ -25300,9 +25301,12 @@ begin
     begin
       Form7.sTitulo := 'Notas fiscais de saída (vendas) série '+sSerie;
       Form7.ibDataSet15.Append;
-      Form7.ibDataSet15.Edit; Form7.ibDataSet15NUMERONF.AsString := Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) + sSerie;
-      Form7.ibDataSet15.Edit; Form7.ibDataSet15CLIENTE.AsString  := Form7.ibDataSet24FORNECEDOR.AsString;
-      Form7.ibDataSet15.Edit; Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet24OPERACAO.AsString;
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15NUMERONF.AsString := Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) + sSerie;
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15CLIENTE.AsString  := Form7.ibDataSet24FORNECEDOR.AsString;
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet24OPERACAO.AsString;
       //
       if AllTrim(Form7.ibDataSet24FRETE12.AsString) <> '' then
       begin
