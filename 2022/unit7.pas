@@ -32370,7 +32370,8 @@ begin
           Form7.ibDataSet16.Edit;
           Form7.ibDataSet16DESCRICAOSetText(Form7.ibDataSet16DESCRICAO, Form7.ibDataSet16DESCRICAO.AsString);
           Form7.ibDataSet16DESCRICAOChange(Form7.ibDataSet16DESCRICAO);
-          Form7.ibDataSet16QUANTIDADESetText(Form7.ibDataSet16QUANTIDADE, Form7.ibDataSet16QUANTIDADE.AsString);
+          if (Form7.ibDataSet16QUANTIDADE.AsFloat > 0) then
+            Form7.ibDataSet16QUANTIDADESetText(Form7.ibDataSet16QUANTIDADE, Form7.ibDataSet16QUANTIDADE.AsString);
           Form7.ibDataSet16QUANTIDADEChange(Form7.ibDataSet16QUANTIDADE);
           Form7.ibDataSet16UNITARIOChange(Form7.ibDataSet16UNITARIO);
           Form7.ibDataSet16TOTALChange(Form7.ibDataSet16TOTAL);
