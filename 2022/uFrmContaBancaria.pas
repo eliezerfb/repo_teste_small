@@ -23,10 +23,20 @@ type
     Label5: TLabel;
     fraPlanoContas: TfFrameCampo;
     fraInstituicao: TfFrameCampo;
+    tbsPIX: TTabSheet;
+    Label6: TLabel;
+    chkPixEstatico: TDBCheckBox;
+    Label7: TLabel;
+    edtChavePix: TSMALL_DBEdit;
+    Label8: TLabel;
+    edtTitular: TSMALL_DBEdit;
+    cboTipoChave: TDBComboBox;
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
     procedure lblNovoClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -43,9 +53,43 @@ implementation
 
 {$R *.dfm}
 
-uses unit7, uSmallConsts, uPermissaoUsuario, MAIS;
+uses unit7
+	, uSmallConsts
+	, uDialogs
+	, uPermissaoUsuario
+	, MAIS;
 
 { TFrmContaBancaria }
+
+procedure TFrmContaBancaria.btnOKClick(Sender: TObject);
+begin
+  //Mauricio Parizotto 2024-05-06
+  if chkPixEstatico.Checked then
+  begin
+    if Trim(Form7.ibDataSet11PIXTIPOCHAVE.AsString) = '' then
+    begin
+      MensagemSistema('O campo Tipo chave deve ser preenchido!',msgAtencao);
+      cboTipoChave.SetFocus;
+      Exit;
+    end;
+
+    if Trim(Form7.ibDataSet11PIXCHAVE.AsString) = '' then
+    begin
+      MensagemSistema('O campo Chave PIX deve ser preenchido!',msgAtencao);
+      edtChavePix.SetFocus;
+      Exit;
+    end;
+
+    if Trim(Form7.ibDataSet11PIXTITULAR.AsString) = '' then
+    begin
+      MensagemSistema('O campo Titular da conta deve ser preenchido!',msgAtencao);
+      edtTitular.SetFocus;
+      Exit;
+    end;
+  end;
+
+  inherited;
+end;
 
 procedure TFrmContaBancaria.DSCadastroDataChange(Sender: TObject;
   Field: TField);
@@ -65,6 +109,13 @@ procedure TFrmContaBancaria.FormActivate(Sender: TObject);
 begin
   inherited;
   AtualizaObjComValorDoBanco;
+end;
+
+procedure TFrmContaBancaria.FormCreate(Sender: TObject);
+begin
+  inherited;
+
+  pgcFicha.ActivePage := tbsCadastro;
 end;
 
 procedure TFrmContaBancaria.FormShow(Sender: TObject);
@@ -102,6 +153,11 @@ begin
   fraPlanoContas.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtSaldo.Enabled          := not(bEstaSendoUsado) and not (bSomenteLeitura);
   fraInstituicao.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+
+  chkPixEstatico.Enabled    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboTipoChave.Enabled      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtChavePix.Enabled       := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtTitular.Enabled        := not(bEstaSendoUsado) and not (bSomenteLeitura);
 end;
 
 

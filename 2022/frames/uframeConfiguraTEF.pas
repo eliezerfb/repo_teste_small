@@ -98,7 +98,6 @@ begin
   Result := False;
   try
     cdsTEFs.First;
-
     while not cdsTEFs.Eof do
     begin
       if (cdsTEFsNOME.AsString <> EmptyStr) then
@@ -137,22 +136,26 @@ end;
 procedure TframeConfiguraTEF.DefineTemTEFINI;
 begin
   cdsTEFs.DisableControls;
-  cdsTEFs.First;
-  FoIni.WriteString('Frente de caixa', 'TEM TEF', _cNao);
-  if cdsTEFs.IsEmpty then
-    Exit;
+  try
+    cdsTEFs.First;
+    FoIni.WriteString('Frente de caixa', 'TEM TEF', _cNao);
+    if cdsTEFs.IsEmpty then
+      Exit;
 
-  while not cdsTEFs.Eof do
-  begin
-    if cdsTEFsATIVO.AsString = _cSim then
+    while not cdsTEFs.Eof do
     begin
-      if TestarZPOSLiberado then
+      if cdsTEFsATIVO.AsString = _cSim then
       begin
-        FoIni.WriteString('Frente de caixa', 'TEM TEF', _cSim);
-        Break;
+        if TestarZPOSLiberado then
+        begin
+          FoIni.WriteString('Frente de caixa', 'TEM TEF', _cSim);
+          Break;
+        end;
       end;
+      cdsTEFs.Next;
     end;
-    cdsTEFs.Next;
+  finally
+    cdsTEFs.EnableControls;
   end;
 end;
 
@@ -310,11 +313,18 @@ var
   iSecao: Integer;
   cNomeSecao: String;
   slSessions : TStringList;
+  {Dailon Parisotto (f-18547) 2024-05-06 Inicio}
+  bTemTEF: Boolean;
+  {Dailon Parisotto (f-18547) 2024-05-06 Fim}
 begin
   cdsTEFs.EmptyDataSet;
 
   slSessions := TStringList.Create;
   try
+    {Dailon Parisotto (f-18547) 2024-05-06 Inicio}
+    bTemTEF := (FoIni.ReadString('Frente de caixa', 'TEM TEF', _cNao) = _cSim);
+    {Dailon Parisotto (f-18547) 2024-05-06 Fim}
+
     FoIni.ReadSections(slSessions);
 
     for iSecao := 0 to Pred(slSessions.Count) do
@@ -329,7 +339,18 @@ begin
         cdsTEFsDIRETORIOREQ.AsString  := FoIni.ReadString(cNomeSecao, _cCampoINIReq, EmptyStr);
         cdsTEFsDIRETORIORESP.AsString := FoIni.ReadString(cNomeSecao, _cCampoINIResp, EmptyStr);
         cdsTEFsCAMINHOEXE.AsString    := FoIni.ReadString(cNomeSecao, _cCampoINIExec, EmptyStr);
+
+        {Dailon Parisotto (f-18547) 2024-05-06 Inicio
+
         cdsTEFsATIVO.AsString         := FoIni.ReadString(cNomeSecao, _cCampoINIbAtivo, _cNao);
+
+        }
+        if not bTemTEF then
+          cdsTEFsATIVO.AsString         := _cNao
+        else
+          cdsTEFsATIVO.AsString         := FoIni.ReadString(cNomeSecao, _cCampoINIbAtivo, _cNao);
+        {Dailon Parisotto (f-18547) 2024-05-06 Fim}
+
         cdsTEFs.Post;
       end;
     end;
@@ -337,6 +358,11 @@ begin
     {Sandro Silva 2023-10-24 inicio}
 //    chkSuprimirLinhasEmBrancoDoComprovante.Checked := (FoIni.ReadString(SECAO_FRENTE_CAIXA, CHAVE_INI_SUPRIMIR_LINHAS_EM_BRANCO_DO_COMPROVANTE_TEF, _cNao) = _cSim);
     {Sandro Silva 2023-10-24 fim}
+
+    {Dailon Parisotto (f-18547) 2024-05-06 Inicio}
+    if not bTemTEF then
+      SalvarINI;
+    {Dailon Parisotto (f-18547) 2024-05-06 Fim}
 
   finally
     FreeAndNil(slSessions);
