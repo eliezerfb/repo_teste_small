@@ -138,6 +138,7 @@ type
     lblMulta: TLabel;
     chkFabricaProdSemQtd: TCheckBox;
     Label38: TLabel;
+    Label39: TLabel;
     ComboBoxOS: TComboBox;
     rbPrazoDias: TRadioButton;
     rbPrazoFixo: TRadioButton;

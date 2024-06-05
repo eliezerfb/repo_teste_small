@@ -28,7 +28,7 @@ object Form19: TForm19
     Top = 20
     Width = 791
     Height = 561
-    ActivePage = Orelha_prazo
+    ActivePage = Orelha_matricial
     Align = alClient
     TabOrder = 0
     object Orelha_relatorios: TTabSheet
@@ -1225,7 +1225,7 @@ object Form19: TForm19
         Alignment = taRightJustify
         Caption = 'Impress'#227'o do or'#231'amento:'
       end
-      object Label38: TLabel
+      object Label39: TLabel
         Left = 98
         Top = 59
         Width = 150
