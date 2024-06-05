@@ -250,6 +250,7 @@
         <DCCReference Include="..\unit_compartilhada\uTestaEmail.pas"/>
         <DCCReference Include="..\unit_compartilhada\CAPICOM_TLB_xe.pas"/>
         <DCCReference Include="..\unit_compartilhada\uValidaRecursos.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DelphiZXIngQRCode.pas"/>
         <DCCReference Include="ufrmQRCodePixEst.pas">
             <Form>FrmQRCodePixEst</Form>
         </DCCReference>
@@ -258,6 +259,7 @@
         </DCCReference>
         <DCCReference Include="uPagamentoPix.pas"/>
         <DCCReference Include="..\unit_compartilhada\uQrCode.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uGeraChavePix.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -289,6 +291,12 @@
             </Platforms>
             <Deployment Version="3">
                 <DeployFile LocalName="..\..\..\..\Executaveis\Small Commerce\FRENTE.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>FRENTE.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\..\..\Executaveis\Small Commerce\FRENTE.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>FRENTE.exe</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -1097,6 +1105,7 @@
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>

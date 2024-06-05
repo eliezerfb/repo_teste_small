@@ -81,10 +81,12 @@ uses
   uTestaEmail in '..\unit_compartilhada\uTestaEmail.pas',
   CAPICOM_TLB_xe in '..\unit_compartilhada\CAPICOM_TLB_xe.pas',
   uValidaRecursos in '..\unit_compartilhada\uValidaRecursos.pas',
+  DelphiZXIngQRCode in '..\unit_compartilhada\DelphiZXIngQRCode.pas',
   ufrmQRCodePixEst in 'ufrmQRCodePixEst.pas' {FrmQRCodePixEst},
   ufrmSelecionarPIX in 'ufrmSelecionarPIX.pas' {FrmSelecionarPIX},
   uPagamentoPix in 'uPagamentoPix.pas',
-  uQrCode in '..\unit_compartilhada\uQrCode.pas';
+  uQrCode in '..\unit_compartilhada\uQrCode.pas',
+  uGeraChavePix in '..\unit_compartilhada\uGeraChavePix.pas';
 
 {$R *.RES}
 
