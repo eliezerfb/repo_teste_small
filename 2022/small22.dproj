@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -578,8 +578,8 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uPermissaoUsuario.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uCarneSections.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uTypesImpressao.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

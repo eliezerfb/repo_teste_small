@@ -2707,6 +2707,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmBanco
   , uFrmPlanoContas
   , uFrmConvenio
+  , uTypesImpressao
   , uFrmContaPagar
   , uFrmContaReceber
   , uPermissaoUsuario
@@ -17637,11 +17638,16 @@ begin
 end;
 
 procedure TForm7.Imprimirrecibo1Click(Sender: TObject);
+{
 var
   F: TextFile;
   ObservacaoRecibo : string;
   ConfSistema : TArquivosDAT;
+}
 begin
+  ImprimeReciboOrdemServico;
+
+  (*Mauricio Parizotto 2024-05-10
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet3CLIENTE.AsString));
@@ -17742,8 +17748,6 @@ begin
     {Mauricio Parizotto 2023-11-21 Inicio}
     WriteLn(F,'</table>');
 
-
-
     WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5 Width=100%>');
     WriteLn(F,' <tr>');
     WriteLn(F,'  <td   bgcolor=#FFFFFF width=50%>');
@@ -17767,9 +17771,10 @@ begin
     WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>pelo sistema Small Commerce, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a></font></center>');
     WriteLn(F,'</html>');
     CloseFile(F);
-    
+
     AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
   end;
+  *)
 end;
 
 procedure TForm7.ImprimirOrdemdeServio1Click(Sender: TObject);

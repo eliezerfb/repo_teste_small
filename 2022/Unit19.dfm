@@ -28,7 +28,7 @@ object Form19: TForm19
     Top = 20
     Width = 791
     Height = 561
-    ActivePage = Orelha_prazo
+    ActivePage = Orelha_relatorios
     Align = alClient
     TabOrder = 0
     object Orelha_relatorios: TTabSheet
@@ -1210,11 +1210,12 @@ object Form19: TForm19
       end
       object Label27: TLabel
         Left = 80
-        Top = 60
+        Top = 220
         Width = 168
         Height = 13
         Alignment = taRightJustify
         Caption = 'Impressora matricial para bloquetos:'
+        Visible = False
       end
       object Label37: TLabel
         Left = 129
@@ -1224,15 +1225,23 @@ object Form19: TForm19
         Alignment = taRightJustify
         Caption = 'Impress'#227'o do or'#231'amento:'
       end
+      object Label39: TLabel
+        Left = 98
+        Top = 59
+        Width = 150
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Impress'#227'o da ordem de servi'#231'o:'
+      end
       object ComboBoxNF: TComboBox
-        Left = 250
+        Left = 253
         Top = 90
         Width = 200
         Height = 21
         TabOrder = 2
       end
       object ComboBoxNF2: TComboBox
-        Left = 250
+        Left = 253
         Top = 120
         Width = 200
         Height = 21
@@ -1243,23 +1252,33 @@ object Form19: TForm19
         Top = 280
         Width = 300
         Height = 21
-        TabOrder = 4
+        TabOrder = 5
         Text = 'ComboBoxImpressora'
         Visible = False
       end
       object ComboBoxBloqueto: TComboBox
-        Left = 250
-        Top = 60
+        Left = 253
+        Top = 217
         Width = 200
         Height = 21
-        TabOrder = 1
+        TabOrder = 4
+        Visible = False
       end
       object ComboBoxORCA: TComboBox
-        Left = 250
+        Left = 253
         Top = 30
         Width = 200
-        Height = 21
+        Height = 22
+        Style = csOwnerDrawFixed
         TabOrder = 0
+      end
+      object ComboBoxOS: TComboBox
+        Left = 253
+        Top = 59
+        Width = 200
+        Height = 22
+        Style = csOwnerDrawFixed
+        TabOrder = 1
       end
     end
     object Orelha_atendimento: TTabSheet
