@@ -65,7 +65,7 @@ begin
     WriteLn(F,'   <img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
     WriteLn(F,'  </td>');
     WriteLn(F,'  <td   bgcolor=#FFFFFF>');
-    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=1>Data: <b>'+Form7.ibDataSet3.FieldByname('DATA').AsString+' '+TimeToStr(Time)+'</b>');
+    WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=1>Data: <b>'+Form7.ibDataSet3DATA.AsString+' '+Form7.ibDataSet3HORA.AsString+'</b>');
     WriteLn(F,'   <br><font face="Microsoft Sans Serif" size=1>Atendente: <b>'+Form7.ibDataSet3TECNICO.AsString+'</b>');
     WriteLn(F,'   <br>Telefone: <b>' + AllTrim(Form7.ibDataSet13TELEFO.AsString));
     WriteLn(F,'  </td>');
@@ -598,7 +598,7 @@ begin
     FlsImpressao.Add('-----------------------------------------------');
     FlsImpressao.Add('Número da OS: '+ Form7.ibDataSet3NUMERO.AsString);
     FlsImpressao.Add('Número do Documento Fiscal: '+Form7.ibDataSet3NF.AsString);
-    FlsImpressao.Add('Data: '+DateToStr(Date)+' '+TimeToStr(Time));
+    FlsImpressao.Add('Data: '+Form7.ibDataSet3DATA.AsString+' '+Form7.ibDataSet3HORA.AsString);
     FlsImpressao.Add('Situação: '+Form7.ibDataSet3SITUACAO.AsString);
     FlsImpressao.Add('Atendente: '+Form7.ibDataSet3TECNICO.AsString);
 
