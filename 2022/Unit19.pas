@@ -460,7 +460,7 @@ begin
   Edit5.Text         := Mais4Ini.ReadString('mail','Name','');
   Edit6.Text         := Mais4Ini.ReadString('mail','Password','');
   //ComboBoxORCA.Text  := Mais4Ini.ReadString('Orçamento','Porta','Impressora padrão do windows');
-  ComboBoxORCA.ItemIndex := ComboBoxORCA.Items.IndexOf( Mais4Ini.ReadString('Orçamento','Porta',_cImpressoraPadrao) );
+  ComboBoxORCA.ItemIndex := ComboBoxORCA.Items.IndexOf( Mais4Ini.ReadString('Orçamento','Porta','HTML') );
 
   if Mais4Ini.ReadString('mail','UseSSL','0') = '1' then
   begin
