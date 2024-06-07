@@ -562,6 +562,7 @@ var
   sCodigo : string;
 
   fTotalPecas, fTotalServico, fFrete, fDesconto, fTotal : Real;
+  sTECNICO : string;
 begin
   Result := '';
 
@@ -613,7 +614,7 @@ begin
     FlsImpressao.Add(DescricaoComQuebraLinha('Observação: '+Form7.ibDataSet3OBSERVACAO.AsString,'',47));
 
     FlsImpressao.Add('--------------------Peças----------------------');
-    FlsImpressao.Add('CODIGO   DESCRICAO   QTD    UNITARIO      TOTAL');
+    FlsImpressao.Add('CÓDIGO   DESCRIÇÃO   QTD    UNITÁRIO      TOTAL');
     FlsImpressao.Add('-----------------------------------------------');
 
     {$Region'//// Peças ////'}
@@ -653,8 +654,10 @@ begin
     end;
     {$Endregion}
 
+    sTECNICO := AnsiUpperCase(Copy(Form30.Label34.Caption+Replicate(' ',8),1,8));
+
     FlsImpressao.Add('-------------------Serviços--------------------');
-    FlsImpressao.Add('TECNICO  DESCRICAO   QTD    UNITARIO      TOTAL');
+    FlsImpressao.Add(sTECNICO+' DESCRIÇÃO   QTD    UNITÁRIO      TOTAL');
     FlsImpressao.Add('-----------------------------------------------');
 
     {$Region'//// Serviços ////'}
@@ -687,7 +690,7 @@ begin
     FlsImpressao.Add('-----------------------------------------------');
     FlsImpressao.Add('Total de Peças                       '+Format('%10.2n',[fTotalPecas]));
     FlsImpressao.Add('Total de Serviços                    '+Format('%10.2n',[fTotalServico]));
-    FlsImpressao.Add('FRETE                                '+Format('%10.2n',[fFrete]));
+    FlsImpressao.Add(Copy(Form30.Label10.Caption+Replicate(' ',37),1,37)+Format('%10.2n',[fFrete]));
     FlsImpressao.Add('DESCONTO                             '+Format('%10.2n',[fDesconto]));
     FlsImpressao.Add('TOTAL                                '+Format('%10.2n',[fTotal]));
     FlsImpressao.Add('');

@@ -3465,7 +3465,8 @@ begin
   Form30.Label30.Caption := SmallIni.ReadString('OS','Label30','Garantia');
   Form30.Label19.Caption := SmallIni.ReadString('OS','Label19','Problema reclamado');
   Form30.Label10.Caption := SmallIni.ReadString('OS','Label10','Frete');
-  //
+  Form30.Label34.Caption := SmallIni.ReadString('OS','Label34','Técnico');
+
   Form12.Label28.Caption := SmallIni.ReadString('VENDAS','Label28','Identificador 1');
   //
   Form7.ibDataSet3TOTAL_FRET.DisplayLabel := Form30.Label10.Caption;
