@@ -359,14 +359,6 @@ begin
     CheckConfig;
     if FileExists(pChar(sAtual+'\NFSE\smallnfse.tx2')) then
     begin
-      {
-      if (sPadrao = 'PRESCON') and (sCidade = 'CAMPOSDOJORDAOSP') then
-      begin
-        Application.MessageBox(PChar(mmtx2.Text), 'Atencão', MB_OK);
-        Nfse.ExportarImpressaoParaPDF(mmXML.Text, mmXMLEnvio.Text, mmTx2.Text, pChar(sAtual+'\NFSE\LOG\'+sNumeroDaNFSe+'.pdf'))
-      end
-      else
-      }
       Nfse.ExportarImpressaoParaPDF(mmXML.Text, mmXMLEnvio.Text, pChar(sAtual+'\NFSE\smallnfse.tx2'), pChar(sAtual+'\NFSE\LOG\'+sNumeroDaNFSe+'.pdf'));
     end else
     begin
