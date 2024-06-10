@@ -438,8 +438,9 @@ begin
                     // coluna 2
                     if sInformacao[1] <> '' then
                     begin
-                      if j = 1 then sDescMatricial := sDescMatricial + Copy(Copy('A: ' ,0,iMala) + sNomeCampo1 + ibDataset1.FieldByName(sInformacao[j]).asString, iColMat, 1);
-                      if ibDataset1.FieldByName(sInformacao[1]).DataType = ftFloat then
+                      if j = 1 then
+                        sDescMatricial := sDescMatricial + Copy(Copy('A: ' ,0,iMala) + sNomeCampo1 + ibDataset1.FieldByName(sInformacao[j]).asString, iColMat, 1);
+                      if TipoCampoFloat(ibDataset1.FieldByName(sInformacao[1])) then // Sandro Silva 2024-04-29 if ibDataset1.FieldByName(sInformacao[1]).DataType = ftFloat then
                          sMatricial2 := sMatricial2 + Copy(Copy('A: ' ,0,iMala) + sNomeCampo1 + Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[1]).AsFloat]), iColMat, 1)
                       else
                          sMatricial2 := sMatricial2 + Copy(Copy('A: ' ,0,iMala) + sNomeCampo1 + ibDataset1.FieldByName(sInformacao[1]).asString, iColMat, 1);
@@ -447,8 +448,9 @@ begin
                     // coluna 3
                     if sInformacao[2] <> '' then
                     begin
-                      if j = 2 then sDescMatricial := sDescMatricial + Copy(Copy('A: ' ,0,iMala) + sNomeCampo2 + ibDataset1.FieldByName(sInformacao[j]).asString, iColMat, 1);
-                      if ibDataset1.FieldByName(sInformacao[2]).DataType = ftFloat then
+                      if j = 2 then
+                        sDescMatricial := sDescMatricial + Copy(Copy('A: ' ,0,iMala) + sNomeCampo2 + ibDataset1.FieldByName(sInformacao[j]).asString, iColMat, 1);
+                      if TipoCampoFloat(ibDataset1.FieldByName(sInformacao[2])) then //Sandro Silva 2024-04-29 if ibDataset1.FieldByName(sInformacao[2]).DataType = ftFloat then
                          sMatricial3 := sMatricial3 + Copy(Copy('A/c ',0,iContato) + sNomeCampo2 + Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[2]).AsFloat]), iColMat, 1)
                       else
                          sMatricial3 := sMatricial3 + Copy(Copy('A/c ',0,iContato) + sNomeCampo2 + ibDataset1.FieldByName(sInformacao[2]).asString, iColMat, 1);
@@ -456,8 +458,9 @@ begin
                     // coluna 4
                     if sInformacao[3] <> '' then
                     begin
-                      if j = 3 then sDescMatricial := sDescMatricial + Copy(Copy('A: ' ,0,iMala) + sNomeCampo3 + ibDataset1.FieldByName(sInformacao[j]).asString, iColMat, 1);
-                      if ibDataset1.FieldByName(sInformacao[3]).DataType = ftFloat then
+                      if j = 3 then
+                        sDescMatricial := sDescMatricial + Copy(Copy('A: ' ,0,iMala) + sNomeCampo3 + ibDataset1.FieldByName(sInformacao[j]).asString, iColMat, 1);
+                      if TipoCampoFloat(ibDataset1.FieldByName(sInformacao[3])) then //2024-04-29 if ibDataset1.FieldByName(sInformacao[3]).DataType = ftFloat then
                          sMatricial4 := sMatricial4 + Copy(sNomeCampo3 + Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[3]).AsFloat]), iColMat, 1)
                       else
                          sMatricial4 := sMatricial4 + Copy(sNomeCampo3 + ibDataset1.FieldByName(sInformacao[3]).asString, iColMat, 1);
@@ -466,8 +469,9 @@ begin
                     // coluna 5
                     if sInformacao[4] <> ''  then
                     begin
-                      if j = 4 then sDescMatricial := sDescMatricial + Copy(Copy('A: ' ,0,iMala) + sNomeCampo4 + ibDataset1.FieldByName(sInformacao[j]).asString, iColMat, 1);
-                      if ibDataset1.FieldByName(sInformacao[4]).DataType = ftFloat then
+                      if j = 4 then
+                        sDescMatricial := sDescMatricial + Copy(Copy('A: ' ,0,iMala) + sNomeCampo4 + ibDataset1.FieldByName(sInformacao[j]).asString, iColMat, 1);
+                      if TipoCampoFloat(ibDataset1.FieldByName(sInformacao[4])) then //Sandro Silva 2024-04-29 if ibDataset1.FieldByName(sInformacao[4]).DataType = ftFloat then
                          sMatricial5 := sMatricial5 + Copy(sNomeCampo4 + Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[4]).AsFloat]), iColMat, 1)
                       else
                          sMatricial5 := sMatricial5 + Copy(sNomeCampo4 + ibDataset1.FieldByName(sInformacao[4]).asString, iColMat, 1);
@@ -476,8 +480,9 @@ begin
                     //coluna 6
                     if sInformacao[5] <> '' then
                     begin
-                      if j = 5 then sDescMatricial := sDescMatricial + Copy(Copy('A: ' ,0,iMala) + sNomeCampo5 + ibDataset1.FieldByName(sInformacao[j]).asString, iColMat, 1);
-                      if ibDataset1.FieldByName(sInformacao[5]).DataType = ftFloat then
+                      if j = 5 then
+                        sDescMatricial := sDescMatricial + Copy(Copy('A: ' ,0,iMala) + sNomeCampo5 + ibDataset1.FieldByName(sInformacao[j]).asString, iColMat, 1);
+                      if TipoCampoFloat(ibDataset1.FieldByName(sInformacao[5])) then // Sandro Silva 2024-04-29 if ibDataset1.FieldByName(sInformacao[5]).DataType = ftFloat then
                          sMatricial6 := sMatricial6 + Copy(sNomeCampo5 + Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[5]).AsFloat]), iColMat, 1)
                       else
                          sMatricial6 := sMatricial6 + Copy(sNomeCampo5 + ibDataset1.FieldByName(sInformacao[5]).asString, iColMat, 1);
@@ -755,7 +760,7 @@ begin
                      iMoeda := 3; // Apresentar o R$ na impressão do preço
                    end;
                    //
-                   if ibDataset1.FieldByName(sInformacao[1]).DataType = ftFloat then
+                   if TipoCampoFloat(ibDataset1.FieldByName(sInformacao[1])) then // Sandro Silva 2024-04-29 if ibDataset1.FieldByName(sInformacao[1]).DataType = ftFloat then
                       printer.canvas.TextOut(Round(fTempColuna), Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo1 + Copy('R$ ', 0, iMoeda) + Alltrim(Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[1]).AsFloat])))
                    else
                       printer.canvas.TextOut(Round(fTempColuna), Round(fLinha) + Round(fLiNaEtiqueta), Copy('À ',0,iMala) + sNomeCampo1 + ibDataset1.FieldByName(sInformacao[1]).asString );
@@ -775,7 +780,7 @@ begin
                      iMoeda := 3; // Apresentar o R$ na impressão do preço
                    end;
                    //
-                   if ibDataset1.FieldByName(sInformacao[2]).DataType = ftFloat then
+                   if TipoCampoFloat(ibDataset1.FieldByName(sInformacao[2])) then // Sandro Silva 2024-04-29 if ibDataset1.FieldByName(sInformacao[2]).DataType = ftFloat then
                    begin
                       printer.canvas.TextOut( Round(fTempColuna), Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo2 + Copy('R$ ', 0, iMoeda) + Alltrim(Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[2]).AsFloat])));
                       fLiNaEtiqueta := fLiNaEtiqueta + printer.Canvas.TextHeight(Copy('A/c ',0,iContato)+ ibDataset1.FieldByName(sInformacao[2]).asString) + (printer.Canvas.TextHeight(ibDataset1.FieldByName(sInformacao[2]).asString) * 0.10 );
@@ -802,7 +807,7 @@ begin
                      iMoeda := 3; // Apresentar o R$ na impressão do preço
                    end;
 
-                   if ibDataset1.FieldByName(sInformacao[3]).DataType = ftFloat then
+                   if TipoCampoFloat(ibDataset1.FieldByName(sInformacao[3])) then // Sandro Silva 2024-04-29 if ibDataset1.FieldByName(sInformacao[3]).DataType = ftFloat then
                       printer.canvas.TextOut(Round(fTempColuna),Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo3 + Copy('R$ ', 0, iMoeda) + Alltrim(Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[3]).AsFloat])))
                    else
                       printer.canvas.TextOut(Round(fTempColuna),Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo3 + ibDataset1.FieldByName(sInformacao[3]).asString);
@@ -822,10 +827,10 @@ begin
                      iMoeda := 3; // Apresentar o R$ na impressão do preço
                    end;
                    
-                   if ibDataset1.FieldByName(sInformacao[4]).DataType = ftFloat then
-                      printer.canvas.TextOut(Round(fTempColuna), Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo4 + Copy('R$ ', 0, iMoeda) + Alltrim(Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[4]).AsFloat])))
+                   if TipoCampoFloat(ibDataset1.FieldByName(sInformacao[4])) then // Sandro Silva 2024-04-29 if ibDataset1.FieldByName(sInformacao[4]).DataType = ftFloat then
+                     printer.canvas.TextOut(Round(fTempColuna), Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo4 + Copy('R$ ', 0, iMoeda) + Alltrim(Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[4]).AsFloat])))
                    else
-                      printer.canvas.TextOut(Round(fTempColuna), Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo4 + ibDataset1.FieldByName(sInformacao[4]).asString);
+                     printer.canvas.TextOut(Round(fTempColuna), Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo4 + ibDataset1.FieldByName(sInformacao[4]).asString);
                    fLiNaEtiqueta := fLiNaEtiqueta + printer.Canvas.TextHeight(ibDataset1.FieldByName(sInformacao[4]).asString) + (printer.Canvas.TextHeight(ibDataset1.FieldByName(sInformacao[4]).asString) * 0.10); //
                    //
                    Printer.Canvas.Font.Style := [];
@@ -848,7 +853,7 @@ begin
                        iMoeda := 3; // Apresentar o R$ na impressão do preço
                      end;
                      //
-                     if ibDataset1.FieldByName(sInformacao[5]).DataType = ftFloat then
+                     if TipoCampoFloat(ibDataset1.FieldByName(sInformacao[5])) then // Sandro Silva 2024-04-29 if ibDataset1.FieldByName(sInformacao[5]).DataType = ftFloat then
                         printer.canvas.TextOut(Round(fTempColuna), Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo5 + Copy('R$ ', 0, iMoeda) + Alltrim(Format('%8.' + ArqIni.ReadString('outros', 'Casas decimais no preço', '2') + 'f', [ibDataset1.FieldByName(sInformacao[5]).AsFloat])))
                      else
                         printer.canvas.TextOut(Round(fTempColuna), Round(fLinha) + Round(fLiNaEtiqueta), sNomeCampo5 + ibDataset1.FieldByName(sInformacao[5]).asString);

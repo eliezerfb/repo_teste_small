@@ -63,6 +63,7 @@ type
     bSomenteLeitura: Boolean;
     procedure VerificaSeEstaSendoUsado;
     function GetDescritivoNavegacao:string;
+    function FormularioAtivo(Form : TForm): boolean;
     procedure KeyPressPadrao(Sender: TObject; var Key: Word; Shift: TShiftState);
     { Public declarations }
   protected
@@ -275,7 +276,7 @@ begin
 
     DSCadastro.DataSet.EnableControls;
   end;
-  
+
   VerificandoUso := False;
 
   SetaStatusUso;
@@ -306,10 +307,18 @@ begin
     else
       Result := 'Ficha '+IntToStr(DSCadastro.DataSet.Recno)+' de '+IntToStr(sTotal);
 
+    //Mauricio Parizotto 2024-04-16
+    if DSCadastro.DataSet.Recno > sTotal then
+      Result := 'Ficha '+IntToStr(DSCadastro.DataSet.Recno)+' de '+IntToStr(DSCadastro.DataSet.Recno);
   except
 
   end;
 
+end;
+
+function TFrmFichaPadrao.FormularioAtivo(Form : TForm): boolean;
+begin
+  Result := Form.Active;
 end;
 
 procedure TFrmFichaPadrao.KeyPressPadrao(Sender: TObject; var Key: Word;

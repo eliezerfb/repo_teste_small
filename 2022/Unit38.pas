@@ -204,7 +204,8 @@ begin
   if FileExists(Senhas.UsuarioPub+'.txt') then
     DeleteFile(Senhas.UsuarioPub+'.txt');
 
-  if Form7.sModulo = 'BALANCA' then
+  //if Form7.sModulo = 'BALANCA' then Mauricio Parizotto 2024-05-16
+  if Form7.sModulo = 'Balanças' then
   begin
     RelatorioBalanca(F);
   end else
@@ -223,7 +224,8 @@ begin
           ) then
       begin
         // Cria um item para cada operação de venda
-        btnVoltar.Enabled        := True;
+        //btnVoltar.Enabled        := True; Mauricio Parizotto
+        btnVoltar.Visible        := True;
         chkOperacoes.Visible     := True;
         pnlSelOperacoes.Visible  := True;
         pnlSelOperacoes.BringToFront;
@@ -288,11 +290,7 @@ begin
       begin
         Screen.Cursor  := crAppStart;
 
-        {$IFDEF VER150}
-        ShortDateFormat := 'dd/mm/yyyy';
-        {$ELSE}
         FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
-        {$ENDIF}
 
         dInicio :=  DateTimePicker1.Date;
         dFinal  :=  DateTimePicker2.Date;
@@ -611,7 +609,8 @@ end;
 
 procedure TForm38.btnVoltarClick(Sender: TObject);
 begin
-  btnVoltar.Enabled       := False;
+  //btnVoltar.Enabled       := False; Mauricio Parizotto
+  btnVoltar.Visible       := False;
   pnlSelOperacoes.Visible := False;
   chkOperacoes.visible    := False;
 
