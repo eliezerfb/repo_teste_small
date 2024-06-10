@@ -31672,6 +31672,7 @@ procedure TForm7.Visu1Click(Sender: TObject);
 var
   F : TextFile;
   sPDF : String;
+  cXML: String;
 begin
   //
   BuscaNumeroNFSe(True);
@@ -31712,7 +31713,23 @@ begin
         if (RetornaValorDaTagNoCampo('Nfse', Form7.ibDAtaSet15RECIBOXML.AsString) <> '') and (AnsiUpperCase(Form7.ibDataSet13MUNICIPIO.AsString) = 'BRASÍLIA') then
           Writeln(F,'<XMLImpressao>' + RetornaValorDaTagNoCampo('Nfse', Form7.ibDAtaSet15RECIBOXML.AsString) + '</XMLImpressao>')
         else
-          Writeln(F,'<XMLImpressao>'+Form7.ibDAtaSet15RECIBOXML.AsString+'</XMLImpressao>');
+        begin
+//          cXML := Form7.ibDAtaSet15RECIBOXML.AsString;
+          cXML := Form7.ibDataSet15NFEXML.AsString;
+          if (AnsiUpperCase(Form7.ibDataSet13MUNICIPIO.AsString) = 'CAMPOS DO JORDÃO') then
+          begin
+{            cXML := Copy(cXML, Pos('<Status>SUCESSO', cXML), Length(cXML));
+            cXML := Copy(cXML, 1, Pos('<Json>', cXML)-1);       }
+
+            Writeln(F,'<XMLImpressao>'+cXML+'</XMLImpressao>');
+
+            cXML := RetornaValorDaTagNoCampo('tx2', Form7.ibDataSet15RECIBOXML.AsString);
+
+            Writeln(F,'<tx2>'+cXML+'</tx2>');
+          end
+          else
+            Writeln(F,'<XMLImpressao>'+Form7.ibDAtaSet15RECIBOXML.AsString+'</XMLImpressao>');
+        end;
         {Sandro Silva 2023-01-26 fim}
       end;
       //
