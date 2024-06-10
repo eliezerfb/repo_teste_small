@@ -2557,6 +2557,7 @@ procedure TForm38.RelatorioServicosTecnico(var F: TextFile; dInicio, dFinal : Td
 var
   fTotal : Real;
   sCampoData : string;
+  sDescCampoData : string;
 begin
   fTotal  := 0;
 
@@ -2580,13 +2581,22 @@ begin
   {Mauricio Parizotto 2024-05-14 Inicio}
 
   if rbDataAgendada.Checked then
-    sCampoData := 'OS.DATA_PRO';
+  begin
+    sCampoData     := 'OS.DATA_PRO';
+    sDescCampoData := 'Data agendada';
+  end;
 
   if rbDataCriacao.Checked then
-    sCampoData := 'OS.DATA';
+  begin
+    sCampoData     := 'OS.DATA';
+    sDescCampoData := 'Data criação';
+  end;
 
   if rbDataFechada.Checked then
-    sCampoData := 'OS.DATA_ENT';
+  begin
+    sCampoData     := 'OS.DATA_ENT';
+    sDescCampoData := 'Data fechada';
+  end;
 
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
@@ -2630,14 +2640,14 @@ begin
     WriteLn(F,'   <td '+{nowrap}' valign=top align=right><font face="Microsoft Sans Serif" size=1><b>'+ Format('%11.'+Form1.ConfPreco+'n',[fTotal])+'<br></font></td>');
     WriteLn(F,'  </tr>');
     WriteLn(F,' </table>');
-    Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
+    Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>'+sDescCampoData+' de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
     WriteLn(F,'</center>');
   end else
   begin
     WriteLn(F,'                                    ------------');
     WriteLn(F,Replicate(' ',36)+ Format('%12.'+Form1.ConfPreco+'n',[fTotal])+' ');
     WriteLn(F,'');
-    Writeln(F,'Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'');
+    Writeln(F,sDescCampoData+' de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'');
   end;
 end;
 
