@@ -832,7 +832,8 @@ begin
   end else
     Form30.dBGrid3.Visible := False;
 
-  if TipoCampoFloat(dbGrid1.SelectedField) then //Sandro Silva 2024-04-29 if dbGrid1.SelectedField.DataType = ftFloat then
+
+  if TipoCampoFloat(dbGrid2.SelectedField) then // Dailon Parisotto 2024-06-10 if TipoCampoFloat(dbGrid1.SelectedField) then //Sandro Silva 2024-04-29 if dbGrid1.SelectedField.DataType = ftFloat then
     if Key = chr(46) then
       key := chr(44);
 end;
