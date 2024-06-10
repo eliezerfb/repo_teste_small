@@ -31721,6 +31721,8 @@ begin
 {            cXML := Copy(cXML, Pos('<Status>SUCESSO', cXML), Length(cXML));
             cXML := Copy(cXML, 1, Pos('<Json>', cXML)-1);       }
 
+            cXML := RetornaValorDaTagNoCampo('xmlretorno', Form7.ibDataSet15RECIBOXML.AsString);
+
             Writeln(F,'<XMLImpressao>'+cXML+'</XMLImpressao>');
 
             cXML := RetornaValorDaTagNoCampo('tx2', Form7.ibDataSet15RECIBOXML.AsString);
@@ -31744,7 +31746,7 @@ begin
       //
       ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
       //
-      while ConsultaProcesso('NFSE.EXE') or ConsultaProcesso('NFSE.exe') or ConsultaProcesso('nfe.exe') do
+      while ConsultaProcesso('NFSE.EXE') or ConsultaProcesso('nfse.exe') or ConsultaProcesso('NFSE.exe') or ConsultaProcesso('nfe.exe') do
       begin
         Application.ProcessMessages;
         sleep(100);
