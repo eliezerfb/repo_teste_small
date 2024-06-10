@@ -77,14 +77,14 @@ begin
     if LimpaNumero(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString)) = '' then
     begin
       Form7.ibDataset15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o telefone do emitente não foi informado.';
+      Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o telefone do emitente não foi informado.');
       Abort;
     end;
 
     if AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString) = '' then
     begin
       Form7.ibDataset15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: CEP do emitente inválido.';
+      Form7.SetTextoCampoSTATUSNFe('Erro: CEP do emitente inválido.');
       Abort;
     end;
 
@@ -202,7 +202,7 @@ begin
                         ,msgAtencao);
         
         Form7.ibDataSet15.Edit;
-        Form7.ibDataSet15STATUS.AsString    := 'Erro: Ao salvar XML.';
+        Form7.SetTextoCampoSTATUSNFe('Erro: Ao salvar XML.');
         Abort;
       end;
     end;
@@ -213,7 +213,7 @@ begin
       fNFe := Form7.spdNFeDataSets.LoteNFe.GetText;  //Copia XML que está Componente p/ Field fNFe
     except
       Form7.ibDataset15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: No XML';
+      Form7.SetTextoCampoSTATUSNFe('Erro: No XML');
       Form7.ibDataset15.Post;
       Form7.ibDataset15.Edit;
       Abort;

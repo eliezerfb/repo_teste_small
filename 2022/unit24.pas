@@ -2140,8 +2140,9 @@ end;
 
 procedure TForm24.DBGrid1KeyPress(Sender: TObject; var Key: Char);
 begin
-  if dbGrid1.SelectedField.DataType = ftFloat then
-     if Key = chr(46) then key := chr(44);
+  if TipoCampoFloat(dbGrid1.SelectedField) then // Sandro Silva 2024-04-29 if dbGrid1.SelectedField.DataType = ftFloat then
+    if Key = chr(46) then
+      key := chr(44);
 end;
 
 procedure TForm24.DBGrid1KeyUp(Sender: TObject; var Key: Word;

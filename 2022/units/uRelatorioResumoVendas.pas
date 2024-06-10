@@ -464,7 +464,7 @@ begin
         case AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).DataType of
           ftString, ftWideString: AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).AsString := AqryOrigem.FieldByName(AqryOrigem.Fields[i].FieldName).AsString;
           ftInteger, ftSmallint, ftLargeint: AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).AsInteger := AqryOrigem.FieldByName(AqryOrigem.Fields[i].FieldName).AsInteger;
-          ftFMTBcd, ftFloat, ftCurrency, ftBCD:AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).AsFloat := AqryOrigem.FieldByName(AqryOrigem.Fields[i].FieldName).AsFloat;
+          ftFMTBcd, ftFloat, ftCurrency, ftBCD: AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).AsFloat := AqryOrigem.FieldByName(AqryOrigem.Fields[i].FieldName).AsFloat;
         end;
       end;
     end;
