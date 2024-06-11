@@ -2360,7 +2360,7 @@ begin
     if ExecutaComando('ALTER TABLE OS ADD IDOS INTEGER') then
     begin
       ExecutaComando('Commit');
-      ExecutaComando('UPDATE OS SET IDOS = cast(REGISTRO as integer)');
+      //ExecutaComando('UPDATE OS SET IDOS = cast(REGISTRO as integer)'); Mauricio Parizotto 2024-06-10
     end;
   end;
 
@@ -2566,6 +2566,26 @@ begin
       ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2024-04-29 Fim}
+
+  {Mauricio Parizotto 2024-06-10 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'IDBANCO') = False then
+  begin
+    if ExecutaComando('ALTER TABLE BANCOS ADD IDBANCO INTEGER') then
+    begin
+      ExecutaComando('Commit');
+
+      ExecutaComando('CREATE SEQUENCE G_BANCOSIDBANCO');
+
+      ExecutaComando('UPDATE BANCOS SET IDBANCO = (select gen_id(G_BANCOSIDBANCO,1) from rdb$database)');
+
+      ExecutaComando('Commit');
+
+      ExecutaComando('CREATE UNIQUE INDEX BANCOS_IDBANCO_IDX ON BANCOS (IDBANCO)');
+
+      ExecutaComando('Commit');
+    end;
+  end;
+  {Mauricio Parizotto 2024-06-10 Fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
