@@ -1290,10 +1290,10 @@ begin
                   Form7.ibDataSet15.Edit;
 
                   if RetornaValorDaTagNoCampo('Status',Form7.ibDAtaSet15RECIBOXML.AsString)       <> '' then
-                    Form7.ibDAtaSet15STATUS.AsString        := AllTrim(RetornaValorDaTagNoCampo('Status',Form7.ibDAtaSet15RECIBOXML.AsString));
+                    Form7.SetTextoCampoSTATUSNFe(AllTrim(RetornaValorDaTagNoCampo('Status',Form7.ibDAtaSet15RECIBOXML.AsString)));
 
                   if RetornaValorDaTagNoCampo('Situacao',Form7.ibDAtaSet15RECIBOXML.AsString)     <> '' then
-                    Form7.ibDAtaSet15STATUS.AsString        := AllTrim(RetornaValorDaTagNoCampo('Situacao',Form7.ibDAtaSet15RECIBOXML.AsString));
+                    Form7.SetTextoCampoSTATUSNFe(AllTrim(RetornaValorDaTagNoCampo('Situacao',Form7.ibDAtaSet15RECIBOXML.AsString)));
 
                   if RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString)  <> '' then
                     Form7.ibDAtaSet15NFEPROTOCOLO.AsString  := AllTrim(RetornaValorDaTagNoCampo('numero_nfse',Form7.ibDAtaSet15RECIBOXML.AsString))+'/'+AllTrim(RetornaValorDaTagNoCampo('serie_nfse',Form7.ibDAtaSet15RECIBOXML.AsString));
@@ -1422,7 +1422,7 @@ end;
 procedure LimpaNFSE;
 begin
   Form7.ibDataSet15.Edit;
-  Form7.ibDAtaSet15STATUS.AsString := '';
+  Form7.SetTextoCampoSTATUSNFe(EmptyStr);
   Form7.ibDataSet15NFEPROTOCOLO.AsString := '';
   Form7.ibDataSet15.Post;
 end;

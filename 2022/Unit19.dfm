@@ -28,13 +28,13 @@ object Form19: TForm19
     Top = 20
     Width = 791
     Height = 561
-    ActivePage = Orelha_permitir
+    ActivePage = Orelha_relatorios
     Align = alClient
     TabOrder = 0
     object Orelha_relatorios: TTabSheet
       Caption = 'Relat'#243'rios'
       object GroupBox3: TGroupBox
-        Left = 12
+        Left = 15
         Top = 15
         Width = 213
         Height = 100
@@ -82,7 +82,7 @@ object Form19: TForm19
         end
       end
       object GroupBox5: TGroupBox
-        Left = 236
+        Left = 240
         Top = 15
         Width = 230
         Height = 225
@@ -111,6 +111,7 @@ object Form19: TForm19
             Top = 79
             Width = 43
             Height = 20
+            Cursor = crHandPoint
             AutoSize = False
             Color = clSilver
             Font.Charset = DEFAULT_CHARSET
@@ -130,6 +131,7 @@ object Form19: TForm19
             Top = 79
             Width = 150
             Height = 20
+            Cursor = crHandPoint
             AutoSize = False
             Color = clSilver
             Font.Charset = DEFAULT_CHARSET
@@ -506,142 +508,207 @@ object Form19: TForm19
       Caption = 'Prazo'
       ImageIndex = 3
       object Label4: TLabel
-        Left = 19
-        Top = 25
+        Left = 43
+        Top = 57
         Width = 58
         Height = 13
         Caption = 'Duplicata A:'
       end
       object Label7: TLabel
-        Left = 115
-        Top = 25
+        Left = 139
+        Top = 57
         Width = 19
         Height = 13
         Caption = 'dias'
       end
       object Label20: TLabel
-        Left = 195
-        Top = 25
+        Left = 219
+        Top = 57
         Width = 124
         Height = 13
         Caption = '% sobre o pre'#231'o de venda'
       end
       object Label5: TLabel
-        Left = 19
-        Top = 65
+        Left = 43
+        Top = 89
         Width = 58
         Height = 13
         Caption = 'Duplicata B:'
       end
       object Label8: TLabel
-        Left = 115
-        Top = 65
+        Left = 139
+        Top = 89
         Width = 19
         Height = 13
         Caption = 'dias'
       end
       object Label21: TLabel
-        Left = 195
-        Top = 65
+        Left = 219
+        Top = 89
         Width = 124
         Height = 13
         Caption = '% sobre o pre'#231'o de venda'
       end
       object Label6: TLabel
-        Left = 19
-        Top = 105
+        Left = 43
+        Top = 121
         Width = 58
         Height = 13
         Caption = 'Duplicata C:'
       end
       object Label9: TLabel
-        Left = 115
-        Top = 105
+        Left = 139
+        Top = 121
         Width = 19
         Height = 13
         Caption = 'dias'
       end
       object Label22: TLabel
-        Left = 195
-        Top = 105
+        Left = 219
+        Top = 121
         Width = 124
         Height = 13
         Caption = '% sobre o pre'#231'o de venda'
       end
-      object MaskEdit4: TMaskEdit
-        Left = 85
-        Top = 25
-        Width = 20
-        Height = 19
-        EditMask = '!999;1; '
-        MaxLength = 3
-        TabOrder = 0
-        Text = '   '
-        OnExit = MaskEdit4Exit
-        OnKeyDown = MaskEdit2KeyDown
+      object Label38: TLabel
+        Left = 43
+        Top = 192
+        Width = 193
+        Height = 13
+        Caption = 'Fixar vencimento das parcelas para o dia'
       end
-      object MaskEdit2: TMaskEdit
-        Left = 140
-        Top = 25
-        Width = 42
-        Height = 19
-        EditMask = '!###,##;1; '
-        MaxLength = 6
-        TabOrder = 1
-        Text = '   ,  '
-        OnExit = MaskEdit2Exit
-        OnKeyDown = MaskEdit2KeyDown
-        OnKeyPress = MaskEdit2KeyPress
-      end
-      object MaskEdit5: TMaskEdit
-        Left = 85
-        Top = 65
+      object edtDiasPrazoA: TMaskEdit
+        Left = 109
+        Top = 57
         Width = 24
         Height = 19
         EditMask = '!999;1; '
         MaxLength = 3
-        TabOrder = 2
+        TabOrder = 1
         Text = '   '
-        OnExit = MaskEdit5Exit
-        OnKeyDown = MaskEdit2KeyDown
+        OnExit = edtDiasPrazoAExit
+        OnKeyDown = edtPercListaAKeyDown
       end
-      object MaskEdit3: TMaskEdit
-        Left = 140
-        Top = 65
+      object edtPercListaA: TMaskEdit
+        Left = 164
+        Top = 57
         Width = 46
         Height = 19
         EditMask = '!###,##;1; '
         MaxLength = 6
-        TabOrder = 3
+        TabOrder = 2
         Text = '   ,  '
-        OnExit = MaskEdit3Exit
-        OnKeyDown = MaskEdit2KeyDown
-        OnKeyPress = MaskEdit2KeyPress
+        OnExit = edtPercListaAExit
+        OnKeyDown = edtPercListaAKeyDown
+        OnKeyPress = edtPercListaAKeyPress
       end
-      object MaskEdit6: TMaskEdit
-        Left = 85
-        Top = 105
-        Width = 28
+      object edtDiasPrazoB: TMaskEdit
+        Left = 109
+        Top = 89
+        Width = 24
         Height = 19
         EditMask = '!999;1; '
         MaxLength = 3
-        TabOrder = 4
+        TabOrder = 3
         Text = '   '
-        OnExit = MaskEdit6Exit
-        OnKeyDown = MaskEdit2KeyDown
+        OnExit = edtDiasPrazoBExit
+        OnKeyDown = edtPercListaAKeyDown
       end
-      object MaskEdit7: TMaskEdit
-        Left = 140
-        Top = 105
-        Width = 50
+      object edtPercListaB: TMaskEdit
+        Left = 164
+        Top = 89
+        Width = 46
         Height = 19
         EditMask = '!###,##;1; '
         MaxLength = 6
-        TabOrder = 5
+        TabOrder = 4
         Text = '   ,  '
-        OnExit = MaskEdit7Exit
-        OnKeyDown = MaskEdit2KeyDown
-        OnKeyPress = MaskEdit2KeyPress
+        OnExit = edtPercListaBExit
+        OnKeyDown = edtPercListaAKeyDown
+        OnKeyPress = edtPercListaAKeyPress
+      end
+      object edtDiasPrazoC: TMaskEdit
+        Left = 109
+        Top = 121
+        Width = 24
+        Height = 19
+        EditMask = '!999;1; '
+        MaxLength = 3
+        TabOrder = 5
+        Text = '   '
+        OnExit = edtDiasPrazoCExit
+        OnKeyDown = edtPercListaAKeyDown
+      end
+      object edtPercListaC: TMaskEdit
+        Left = 164
+        Top = 121
+        Width = 46
+        Height = 19
+        EditMask = '!###,##;1; '
+        MaxLength = 6
+        TabOrder = 6
+        Text = '   ,  '
+        OnExit = edtPercListaCExit
+        OnKeyDown = edtPercListaAKeyDown
+        OnKeyPress = edtPercListaAKeyPress
+      end
+      object rbPrazoDias: TRadioButton
+        Left = 15
+        Top = 24
+        Width = 185
+        Height = 17
+        Caption = 'Prazo por quantidade de dias'
+        TabOrder = 0
+      end
+      object rbPrazoFixo: TRadioButton
+        Left = 15
+        Top = 160
+        Width = 113
+        Height = 17
+        Caption = 'Prazo com dia fixo'
+        TabOrder = 7
+      end
+      object cboDiaVencimento: TComboBox
+        Left = 242
+        Top = 189
+        Width = 58
+        Height = 21
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 8
+        Text = '1'
+        Items.Strings = (
+          '1'
+          '2'
+          '3'
+          '4'
+          '5'
+          '6'
+          '7'
+          '8'
+          '9'
+          '10'
+          '11'
+          '12'
+          '13'
+          '14'
+          '15'
+          '16'
+          '17'
+          '18'
+          '19'
+          '20'
+          '21'
+          '22'
+          '23'
+          '24'
+          '25'
+          '26'
+          '27'
+          '28'
+          '29'
+          '30'
+          '31')
       end
     end
     object Orelha_ajustes: TTabSheet
@@ -725,7 +792,7 @@ object Form19: TForm19
       end
       object ComboBox4: TComboBox
         Left = 15
-        Top = 15
+        Top = 18
         Width = 60
         Height = 21
         TabOrder = 0
@@ -1143,11 +1210,12 @@ object Form19: TForm19
       end
       object Label27: TLabel
         Left = 80
-        Top = 60
+        Top = 220
         Width = 168
         Height = 13
         Alignment = taRightJustify
         Caption = 'Impressora matricial para bloquetos:'
+        Visible = False
       end
       object Label37: TLabel
         Left = 129
@@ -1157,15 +1225,23 @@ object Form19: TForm19
         Alignment = taRightJustify
         Caption = 'Impress'#227'o do or'#231'amento:'
       end
+      object Label39: TLabel
+        Left = 98
+        Top = 59
+        Width = 150
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Impress'#227'o da ordem de servi'#231'o:'
+      end
       object ComboBoxNF: TComboBox
-        Left = 250
+        Left = 253
         Top = 90
         Width = 200
         Height = 21
         TabOrder = 2
       end
       object ComboBoxNF2: TComboBox
-        Left = 250
+        Left = 253
         Top = 120
         Width = 200
         Height = 21
@@ -1176,37 +1252,47 @@ object Form19: TForm19
         Top = 280
         Width = 300
         Height = 21
-        TabOrder = 4
+        TabOrder = 5
         Text = 'ComboBoxImpressora'
         Visible = False
       end
       object ComboBoxBloqueto: TComboBox
-        Left = 250
-        Top = 60
+        Left = 253
+        Top = 217
         Width = 200
         Height = 21
-        TabOrder = 1
+        TabOrder = 4
+        Visible = False
       end
       object ComboBoxORCA: TComboBox
-        Left = 250
+        Left = 253
         Top = 30
         Width = 200
-        Height = 21
+        Height = 22
+        Style = csOwnerDrawFixed
         TabOrder = 0
+      end
+      object ComboBoxOS: TComboBox
+        Left = 253
+        Top = 59
+        Width = 200
+        Height = 22
+        Style = csOwnerDrawFixed
+        TabOrder = 1
       end
     end
     object Orelha_atendimento: TTabSheet
       Caption = 'Atendimento'
       ImageIndex = 7
       object Label11: TLabel
-        Left = 19
+        Left = 15
         Top = 25
         Width = 142
         Height = 13
         Caption = 'Hor'#225'rio inicial de atendimento:'
       end
       object Label16: TLabel
-        Left = 19
+        Left = 15
         Top = 60
         Width = 135
         Height = 13
@@ -1221,8 +1307,8 @@ object Form19: TForm19
         MaxLength = 8
         TabOrder = 0
         Text = '08:00:00'
-        OnExit = MaskEdit4Exit
-        OnKeyDown = MaskEdit2KeyDown
+        OnExit = edtDiasPrazoAExit
+        OnKeyDown = edtPercListaAKeyDown
       end
       object MaskEdit8: TMaskEdit
         Left = 165
@@ -1233,8 +1319,8 @@ object Form19: TForm19
         MaxLength = 8
         TabOrder = 1
         Text = '18:00:00'
-        OnExit = MaskEdit4Exit
-        OnKeyDown = MaskEdit2KeyDown
+        OnExit = edtDiasPrazoAExit
+        OnKeyDown = edtPercListaAKeyDown
       end
     end
     object Orelha_perfil: TTabSheet
@@ -1250,36 +1336,11 @@ object Form19: TForm19
         OnClick = Image7Click
       end
       object Image9: TImage
-        Left = 452
-        Top = 10
+        Left = 230
+        Top = 12
         Width = 100
         Height = 75
         Visible = False
-      end
-      object CheckBox11: TCheckBox
-        Left = 300
-        Top = 340
-        Width = 80
-        Height = 15
-        Caption = 'Rel'#243'gio'
-        TabOrder = 0
-      end
-      object CheckBox10: TCheckBox
-        Left = 150
-        Top = 340
-        Width = 110
-        Height = 15
-        Caption = 'Alinhar '#224' esquerda'
-        TabOrder = 1
-      end
-      object CheckBox8: TCheckBox
-        Left = 10
-        Top = 340
-        Width = 119
-        Height = 15
-        Caption = 'Mostrar legenda'
-        TabOrder = 2
-        OnClick = CheckBox8Click
       end
     end
     object Orelha_email: TTabSheet
@@ -1459,8 +1520,8 @@ object Form19: TForm19
     ParentCtl3D = False
     TabOrder = 3
     object btnCancelar: TButton
-      Left = 380
-      Top = 5
+      Left = 556
+      Top = 10
       Width = 120
       Height = 25
       Caption = 'Cancelar'
@@ -1475,8 +1536,8 @@ object Form19: TForm19
       OnKeyDown = btnOKKeyDown
     end
     object btnOK: TButton
-      Left = 530
-      Top = 5
+      Left = 681
+      Top = 10
       Width = 120
       Height = 25
       Caption = 'OK'

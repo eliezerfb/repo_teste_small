@@ -1084,6 +1084,7 @@ object Form30: TForm30
         ExplicitLeft = 440
         ExplicitTop = 179
         ExplicitWidth = 175
+        ExplicitHeight = 22
         inherited txtCampo: TEdit
           Width = 175
           Font.Charset = ANSI_CHARSET
@@ -1197,6 +1198,7 @@ object Form30: TForm30
         ExplicitLeft = 365
         ExplicitTop = 219
         ExplicitWidth = 165
+        ExplicitHeight = 22
         inherited txtCampo: TEdit
           Width = 165
           OnEnter = fFrameIdentifi4txtCampoEnter
