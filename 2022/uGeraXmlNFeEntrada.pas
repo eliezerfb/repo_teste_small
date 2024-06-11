@@ -161,7 +161,7 @@ begin
   if AllTrim(Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7)) = '' then
   begin
     Form7.ibDataset15.Edit;
-    Form7.ibDataSet15STATUS.AsString    := 'Erro: Nome do município do emitente inválido.';
+    Form7.SetTextoCampoSTATUSNFe('Erro: Nome do município do emitente inválido.');
     Abort;
   end;
 
@@ -513,7 +513,7 @@ begin
   if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
   begin
     Form7.ibDataSet15.Edit;
-    Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o CEP do emitente';
+    Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o CEP do emitente');
     Abort;
   end;
 
@@ -549,7 +549,7 @@ begin
     if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o município do destinatário';
+      Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o município do destinatário');
       Abort;
     end;
 
@@ -602,14 +602,14 @@ begin
     if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 0) then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: CNPJ ou CPF do destinatário inválido';
+      Form7.SetTextoCampoSTATUSNFe('Erro: CNPJ ou CPF do destinatário inválido');
       Abort;
     end;
 
     if (Length(AllTrim(Form7.ibDAtaset2CEP.AsString)) <> 9) then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: CEP do destinatário inválido';
+      Form7.SetTextoCampoSTATUSNFe('Erro: CEP do destinatário inválido');
       Abort;
     end;
 
@@ -618,7 +618,7 @@ begin
       if Length(Limpanumero(Form7.ibDAtaset2FONE.AsString)) < 8 then
       begin
         Form7.ibDataSet15.Edit;
-        Form7.ibDataSet15STATUS.AsString    := 'Erro: Telefone do destinatário inválido.';
+        Form7.SetTextoCampoSTATUSNFe('Erro: Telefone do destinatário inválido.');
         Abort;
       end;
     end;
@@ -670,7 +670,7 @@ begin
               end else
               begin
                 Form7.ibDataSet15.Edit;
-                Form7.ibDataSet15STATUS.AsString    := 'Erro: Inscrição Estadual Inválida';
+                Form7.SetTextoCampoSTATUSNFe('Erro: Inscrição Estadual Inválida');
                 Abort;
               end;
             end;
@@ -1051,7 +1051,7 @@ begin
       if Alltrim(Form7.spdNFeDataSets.Campo('NCM_I05').Value) = '' then
       begin
         Form7.ibDataSet15.Edit;
-        Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o NCM do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+        Form7.SetTextoCampoSTATUSNFe('Erro: Informe o NCM do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString));
         Abort;
       end;
 
@@ -1732,7 +1732,7 @@ begin
         if ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet18IE.AsString),Form7.ibDataSet18UF.AsString) then
         begin
           Form7.ibDataSet15.Edit;
-          Form7.ibDataSet15STATUS.AsString    := 'Erro: Inscrição Estadual da transportadora Inválida.';
+          Form7.SetTextoCampoSTATUSNFe('Erro: Inscrição Estadual da transportadora Inválida.');
           
           Abort;
         end;
@@ -2313,7 +2313,7 @@ begin
         then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+      Form7.SetTextoCampoSTATUSNFe('Erro: Informe o CSOSN do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString));
       Abort;
     end;
     // CSOSN 101

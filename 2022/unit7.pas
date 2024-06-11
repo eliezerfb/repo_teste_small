@@ -2619,6 +2619,7 @@ type
     procedure SetDataSetCadastros(CaminhoIni: String);
     function IniFileUsuarioLogado: String;
     function CriarComponenteNFeRunTime: Boolean;
+    procedure SetTextoCampoSTATUSNFe(AcTexto: String);
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -2706,6 +2707,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmBanco
   , uFrmPlanoContas
   , uFrmConvenio
+  , uTypesImpressao
   , uFrmContaPagar
   , uFrmContaReceber
   , uPermissaoUsuario
@@ -2775,7 +2777,7 @@ begin
     //
     Form7.ibDAtaSet15.Edit;
     Form7.ibDAtaSet15RECIBOXML.AsString := sP1; // Calcelamento da NFSE
-    Form7.ibDataSet15STATUS.AsString    := 'NFS-e cancelada';
+    Form7.SetTextoCampoSTATUSNFe('NFS-e cancelada');
     Form7.ibDataSet15EMITIDA.AsString   := 'X';
     //
     Form7.ibDAtaSet15.Post;
@@ -2996,7 +2998,7 @@ begin
  
   if (Pos('xMotivo',Form7.ibDataSet15NFEXML.AsString) <> 0) or (Pos('nProt',Form7.ibDataSet15NFEXML.AsString) <> 0) then
   begin
-    Form7.ibDataSet15STATUS.AsString       := RetornaValorDaTagNoCampo('xMotivo',Form7.ibDataSet15NFEXML.AsString);
+    Form7.SetTextoCampoSTATUSNFe(RetornaValorDaTagNoCampo('xMotivo',Form7.ibDataSet15NFEXML.AsString));
     Form7.ibDataSet15NFEPROTOCOLO.AsString := RetornaValorDaTagNoCampo('nProt',Form7.ibDataSet15NFEXML.AsString);
   end;
 
@@ -4246,7 +4248,7 @@ begin
     if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
     begin
       if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
-      Form7.ibDataset15STATUS.AsString  := 'NF-e cancelada';
+      Form7.SetTextoCampoSTATUSNFe('NF-e cancelada');
       Form7.ibDataSet15.Delete;
       if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
 
@@ -4277,7 +4279,7 @@ begin
     if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
     begin
       if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
-      Form7.ibDataset15STATUS.AsString  := 'Uso Denegado';
+      Form7.SetTextoCampoSTATUSNFe('Uso Denegado');
       Form7.ibDataSet15.Delete;
       if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then Form7.ibDataset15.Edit;
       Form7.ibDataSet15EMITIDA.AsString := 'X';
@@ -17636,11 +17638,16 @@ begin
 end;
 
 procedure TForm7.Imprimirrecibo1Click(Sender: TObject);
+{
 var
   F: TextFile;
   ObservacaoRecibo : string;
   ConfSistema : TArquivosDAT;
+}
 begin
+  ImprimeReciboOrdemServico;
+
+  (*Mauricio Parizotto 2024-05-10
   Form7.ibDataSet2.Close;
   Form7.ibDataSet2.Selectsql.Clear;
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet3CLIENTE.AsString));
@@ -17741,8 +17748,6 @@ begin
     {Mauricio Parizotto 2023-11-21 Inicio}
     WriteLn(F,'</table>');
 
-
-
     WriteLn(F,'<table  border=0 cellspacing=1 cellpadding=5 Width=100%>');
     WriteLn(F,' <tr>');
     WriteLn(F,'  <td   bgcolor=#FFFFFF width=50%>');
@@ -17766,9 +17771,10 @@ begin
     WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>pelo sistema Small Commerce, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a></font></center>');
     WriteLn(F,'</html>');
     CloseFile(F);
-    
+
     AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
   end;
+  *)
 end;
 
 procedure TForm7.ImprimirOrdemdeServio1Click(Sender: TObject);
@@ -23897,7 +23903,7 @@ begin
     if bContingencia then
     begin
       Form7.ibDataset15.Edit;
-      Form7.ibDataSet15STATUS.AsString   := 'DANFE impresso em formulário de segurança.';
+      Form7.SetTextoCampoSTATUSNFe('DANFE impresso em formulário de segurança.');
       Form7.ibDataset15.Post;
     end;
     //
@@ -23905,6 +23911,16 @@ begin
   //
 end;
 
+procedure TForm7.SetTextoCampoSTATUSNFe(AcTexto: String);
+begin
+  Form7.ibDataSet15STATUS.AsString := Copy(AcTexto, 1, ibDataSet15STATUS.Size);
+  {Dailon Parisotto (f-18465) 2024-05-15 Inicio
+  Necessário para salvar o STATUS no dataset, pois existia situações que não eram salvas
+  }
+  Form7.ibDataSet15.Post;
+  Form7.ibDataSet15.Edit;
+  {Dailon Parisotto (f-18465) 2024-05-15 Fim}
+end;
 
 procedure TForm7.N1EnviarNFe1Click(Sender: TObject);
 var
@@ -23937,7 +23953,7 @@ begin
     begin
       begin
         Form7.ibDataset15.Edit;
-        Form7.ibDataSet15STATUS.AsString    := '';
+        SetTextoCampoSTATUSNFe(EmptyStr);
 
         if alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '' then
         begin
@@ -23952,7 +23968,7 @@ begin
                 Screen.Cursor            := crHourGlass;
               except
                 Form7.ibDataset15.Edit;
-                Form7.ibDataSet15STATUS.AsString    := 'Erro ao assinar NFE';
+                Form7.SetTextoCampoSTATUSNFe('Erro ao assinar NFE');
                 Form7.ibDataset15.Post;
                 Form7.ibDataset15.Edit;
               end;
@@ -24006,10 +24022,10 @@ begin
                 if Alltrim(sRecibo) <> '' then
                 begin
                   if Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro' then
-                    Form7.ibDataSet15STATUS.AsString := VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE; //Sandro Silva 2024-04-16 Form7.ibDataSet15STATUS.AsString := 'Consulte o recibo desta NF-e'
+                    Form7.SetTextoCampoSTATUSNFe(VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE); //Sandro Silva 2024-04-16 Form7.ibDataSet15STATUS.AsString := 'Consulte o recibo desta NF-e'
                 end else
                 begin
-                  Form7.ibDataSet15STATUS.AsString := 'Não foi possível acessar o servidor da receita.';
+                  Form7.SetTextoCampoSTATUSNFe('Não foi possível acessar o servidor da receita.');
                   Form7.N0TestarservidorNFe1Click(Sender);
                 end;
               end else
@@ -24062,7 +24078,7 @@ begin
     Form7.Panel7.Repaint;
     //
     Form7.ibDataSet15.Edit;
-    Form7.ibDataset15STATUS.AsString := 'Consultando recibo da NF-e';
+    Form7.SetTextoCampoSTATUSNFe('Consultando recibo da NF-e');
 
     ConfiguraNFE;
     Form7.spdNFe.TimeOut                      := 60000*30;
@@ -24096,7 +24112,7 @@ begin
       end;
 
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString       := sStatus;
+      Form7.SetTextoCampoSTATUSNFe(sStatus);
       {Sandro Silva 2024-04-12 inicio}
       if AnsiContainsText(sStatus, 'Autoriza') then
       begin
@@ -24173,7 +24189,7 @@ begin
             Panel7.Repaint;
             
             Form7.ibDataSet15.Edit;
-            Form7.ibDataset15STATUS.AsString       := Copy(Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9), 1, Form7.ibDataset15STATUS.Size);
+            Form7.SetTextoCampoSTATUSNFe(Copy(Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9), 1, Form7.ibDataset15STATUS.Size));
             {Sandro Silva 2024-04-12 inicio
             Form7.ibDataSet15NFEPROTOCOLO.AsString := Copy(sRetorno+'   ',Pos('<nProt>',sRetorno)+7,Pos('</nProt>',sRetorno)-Pos('<nProt>',sRetorno)-7);
             }
@@ -24413,7 +24429,7 @@ begin
             {Mauricio Parizotto 2023-08-29 Fim}
 
             Form7.ibDataSet15.Edit;
-            Form7.ibDataSet15STATUS.AsString       := 'NF-e cancelada';
+            Form7.SetTextoCampoSTATUSNFe('NF-e cancelada');
 
             // Exemplo da função xmlnodevalue xml node value feita pelo Sandro
             //
@@ -24577,6 +24593,9 @@ begin
             end;
 
             commitatudo(True);
+            {Dailon Parisotto (f-17686) 2024-05-10 Inicio}
+            AbreArquivos(False);
+            {Dailon Parisotto (f-17686) 2024-05-10 Fim}
 
             Form7.Close;
             Form7.Show;
