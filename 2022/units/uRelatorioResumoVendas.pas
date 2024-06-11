@@ -553,7 +553,8 @@ begin
       QryDados.SQL.Add('FROM EMITENTE');
     end;
 
-    QryDados.SQL.Add('ORDER BY 1, 5 DESC');
+    //QryDados.SQL.Add('ORDER BY 1, 5 DESC');
+    QryDados.SQL.Add('ORDER BY 1, 6 DESC');
     QryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
     QryDados.Open;
     QryDados.First;
