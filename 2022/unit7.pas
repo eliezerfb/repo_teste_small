@@ -22985,7 +22985,13 @@ begin
     
     ibDataSet12.Append;
     ibDataSet12CONTA.AsString := ibDataSet11PLANO.AsString;
+    {Dailon Parisotto (f-19297) 2024-06-12 Inicio
+
     ibDataSet12NOME.AsString := ibDataSet11NOME.AsString;
+
+    }
+    ibDataSet12NOME.AsString := Copy(ibDataSet11NOME.AsString,1,ibDataSet12NOME.Size);
+    {Dailon Parisotto (f-19297) 2024-06-12 Fim}
     ibDataSet12.Post;
   end;
 end;
