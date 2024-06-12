@@ -258,10 +258,15 @@ uses
   uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas',
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
+  uFrmIntegracaoItau in 'uFrmIntegracaoItau.pas' {FrmIntegracaoItau},
   uPermissaoUsuario in 'uPermissaoUsuario.pas',
   uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
   uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas',
-  uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas';
+  uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas',
+  uIntegracaoItau in '..\..\unit_compartilhada\Itau\uIntegracaoItau.pas',
+  uClassesItau in '..\..\unit_compartilhada\Itau\uClassesItau.pas',
+  uAPIItau in '..\..\unit_compartilhada\Itau\uAPIItau.pas',
+  uWebServiceItau in '..\..\unit_compartilhada\Itau\uWebServiceItau.pas';
 
 {$R *.RES}
 

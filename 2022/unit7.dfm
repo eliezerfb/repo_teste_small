@@ -7888,14 +7888,14 @@ object Form7: TForm7
   object WebBrowser1: TWebBrowser
     Left = 10000
     Top = 0
-    Width = 451
-    Height = 364
+    Width = 361
+    Height = 291
     TabOrder = 8
     OnDownloadComplete = WebBrowser1DownloadComplete
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C0000004A250000191E00000000000000000000000000000000000000000000
+      4C0000004F250000131E00000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E126208000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -10644,7 +10644,7 @@ object Form7: TForm7
       OnMouseLeave = lblNovoMouseLeave
     end
     object lblExcluir: TLabel
-      Left = 70
+      Left = 64
       Top = 25
       Width = 70
       Height = 80
@@ -13879,14 +13879,14 @@ object Form7: TForm7
       
         '  (NOME, AGENCIA, CONTA, PLANO, SALDO1, SALDO2, SALDO3, ARQUIVO,' +
         ' REGISTRO,INSTITUICAOFINANCEIRA,PIXESTATICO,PIXTIPOCHAVE,PIXTITU' +
-        'LAR,PIXCHAVE)'
+        'LAR,PIXCHAVE,IDBANCO)'
       'values'
       
         '  (:NOME, :AGENCIA, :CONTA, :PLANO, :SALDO1, :SALDO2, :SALDO3, :' +
         'ARQUIVO, '
       
         '   :REGISTRO,:INSTITUICAOFINANCEIRA,:PIXESTATICO,:PIXTIPOCHAVE,:' +
-        'PIXTITULAR,:PIXCHAVE)')
+        'PIXTITULAR,:PIXCHAVE,:IDBANCO)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -13902,7 +13902,8 @@ object Form7: TForm7
       '  PIXESTATICO,'
       '  PIXTIPOCHAVE,'
       '  PIXTITULAR,'
-      '  PIXCHAVE'
+      '  PIXCHAVE,'
+      '  IDBANCO'
       'from BANCOS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14034,6 +14035,10 @@ object Form7: TForm7
       OnSetText = ibDataSet11PLANOSetText
       EditMask = '99999;1;_'
       Size = 5
+    end
+    object ibDataSet11IDBANCO: TIntegerField
+      FieldName = 'IDBANCO'
+      Origin = 'BANCOS.IDBANCO'
     end
   end
   object DataSource11: TDataSource
@@ -20287,7 +20292,8 @@ object Form7: TForm7
     Top = 286
   end
   object IBDatabase1: TIBDatabase
-    DatabaseName = 'D:\desenvolvimento1\executaveis\Small Commerce\small.fdb'
+    Connected = True
+    DatabaseName = 'C:\Dados\SMALL.FDB'
     Params.Strings = (
       'user_name=SYSDBA'
       'password=masterkey')
