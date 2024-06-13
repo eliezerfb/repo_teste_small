@@ -1269,7 +1269,6 @@ type
     Clientescontactadospordiaeporvendedor1: TMenuItem;
     Relatriodevendasporvendedor1: TMenuItem;
     ibDataSet4CFOP: TIBStringField;
-    PopupMenu2: TPopupMenu;
     MainMenu00: TMainMenu;
     Panel4: TPanel;
     Panel_0: TPanel;
