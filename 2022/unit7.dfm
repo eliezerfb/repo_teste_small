@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1237
-  ClientWidth = 1558
+  ClientHeight = 1250
+  ClientWidth = 1560
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7888,14 +7888,14 @@ object Form7: TForm7
   object WebBrowser1: TWebBrowser
     Left = 10000
     Top = 0
-    Width = 451
-    Height = 364
+    Width = 361
+    Height = 291
     TabOrder = 8
     OnDownloadComplete = WebBrowser1DownloadComplete
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C0000004A250000191E00000000000000000000000000000000000000000000
+      4C0000004F250000131E00000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E126208000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -7925,8 +7925,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1197
-    Width = 1558
+    Top = 1210
+    Width = 1560
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7935,8 +7935,8 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1184
-    ExplicitWidth = 1556
+    ExplicitTop = 1197
+    ExplicitWidth = 1558
     object Button2: TButton
       Left = 260
       Top = 10
@@ -8000,7 +8000,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1558
+    Width = 1560
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -8010,7 +8010,7 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1556
+    ExplicitWidth = 1558
   end
   object Panel_0: TPanel
     Left = 0
