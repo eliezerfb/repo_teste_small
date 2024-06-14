@@ -136,7 +136,7 @@ end;
 
 procedure TFrmIntegracaoItau.btnEnviarClick(Sender: TObject);
 var
-  client_id,access_key, secret_key, user_role_id, msRet : string;
+  client_id,access_key, secret_key, user_role_id, retail_chain_id, msRet : string;
 begin
 
   {$Region'//// Validaçoes Campos ////'}
@@ -168,7 +168,14 @@ begin
 
   // só quando for prod deve ser enviado
   if uIntegracaoItau.AmbienteItauProd then
-    user_role_id := '9f2b6c07-da54-4eee-a625-8dbde593e4f7';
+  begin
+    user_role_id     := '9f2b6c07-da54-4eee-a625-8dbde593e4f7';
+    retail_chain_id  := '1d57912e-8f09-4bad-94ff-e932037b5289'
+  end else
+  begin
+    retail_chain_id  := '2ef0b250-f103-49c5-941e-feb51bc875eb';
+  end;
+
 
   MostraTelaProcessamento();
 
@@ -197,6 +204,7 @@ begin
                             'Caixa 1',
                             user_role_id,
                             ibqEmitenteTELEFO.AsString,
+                            retail_chain_id,
                             client_id,
                             access_key,
                             secret_key,
