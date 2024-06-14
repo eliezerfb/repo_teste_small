@@ -266,7 +266,8 @@ uses
   uIntegracaoItau in '..\..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\..\unit_compartilhada\Itau\uClassesItau.pas',
   uAPIItau in '..\..\unit_compartilhada\Itau\uAPIItau.pas',
-  uWebServiceItau in '..\..\unit_compartilhada\Itau\uWebServiceItau.pas';
+  uWebServiceItau in '..\..\unit_compartilhada\Itau\uWebServiceItau.pas',
+  uFrmTelaProcessamento in '..\..\unit_compartilhada\uFrmTelaProcessamento.pas' {FrmTelaProcessamento};
 
 {$R *.RES}
 

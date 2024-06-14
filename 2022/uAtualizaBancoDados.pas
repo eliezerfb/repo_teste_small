@@ -2585,6 +2585,25 @@ begin
       ExecutaComando('Commit');
     end;
   end;
+
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONFIGURACAOITAU')) then
+  begin
+    ExecutaComando(' Create table CONFIGURACAOITAU('+
+                   ' 	 IDCONFIGURACAOITAU integer,'+
+                   ' 	 IDBANCO integer,'+
+                   ' 	 HABILITADO VARCHAR(1),'+
+                   ' 	 USUARIO VARCHAR(100),'+
+                   ' 	 SENHA VARCHAR(100),'+
+                   ' 	 CLIENTID VARCHAR(300),'+
+                   ' 	 CONSTRAINT PK_CONFIGURACAOITAU PRIMARY KEY(IDCONFIGURACAOITAU)'+
+                   ' )');
+
+    ExecutaComando('CREATE SEQUENCE G_CONFIGURACAOITAU');
+
+    ExecutaComando('Commit');
+  end;
+
+
   {Mauricio Parizotto 2024-06-10 Fim}
 
   Form22.Repaint;

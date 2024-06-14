@@ -11,6 +11,7 @@ inherited FrmIntegracaoItau: TFrmIntegracaoItau
   Font.Name = 'Microsoft Sans Serif'
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   ExplicitWidth = 534
   ExplicitHeight = 441
@@ -50,258 +51,25 @@ inherited FrmIntegracaoItau: TFrmIntegracaoItau
       80B49BF8FA1E7898957908CE755DF7EBBFACE77F0C7CFBE0DBEAB63F40E8F76A
       2ED649C70000000049454E44AE426082}
   end
-  object pnlInicial: TPanel
-    Left = 0
-    Top = 42
-    Width = 518
-    Height = 360
-    Align = alCustom
-    BevelOuter = bvNone
+  object lblHomolog: TLabel
+    Left = 4
+    Top = 2
+    Width = 73
+    Height = 16
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Homologa'#231#227'o'
     Color = clWhite
-    ParentBackground = False
-    TabOrder = 0
-    DesignSize = (
-      518
-      360)
-    object lblContaBancaria: TLabel
-      Left = 20
-      Top = 12
-      Width = 105
-      Height = 16
-      AutoSize = False
-      Caption = 'Conta Banc'#225'ria'
-      Color = clWhite
-      Constraints.MaxHeight = 423
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clBlack
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentColor = False
-      ParentFont = False
-      Transparent = True
-    end
-    object lblUsuario: TLabel
-      Left = 20
-      Top = 53
-      Width = 105
-      Height = 16
-      AutoSize = False
-      Caption = 'Usu'#225'rio (Acces_key)'
-      Color = clWhite
-      Constraints.MaxHeight = 423
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clBlack
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentColor = False
-      ParentFont = False
-      Transparent = True
-    end
-    object lblSenha: TLabel
-      Left = 20
-      Top = 95
-      Width = 105
-      Height = 16
-      AutoSize = False
-      Caption = 'Senha (Secret_key)'
-      Color = clWhite
-      Constraints.MaxHeight = 423
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clBlack
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentColor = False
-      ParentFont = False
-      Transparent = True
-    end
-    object lblClientID: TLabel
-      Left = 20
-      Top = 137
-      Width = 105
-      Height = 16
-      AutoSize = False
-      Caption = 'Client ID Token'
-      Color = clWhite
-      Constraints.MaxHeight = 423
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clBlack
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentColor = False
-      ParentFont = False
-      Transparent = True
-    end
-    object lblCadastro: TLabel
-      Left = 20
-      Top = 265
-      Width = 105
-      Height = 16
-      AutoSize = False
-      Caption = 'N'#227'o possui cadastro?'
-      Color = clWhite
-      Constraints.MaxHeight = 423
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clBlack
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentColor = False
-      ParentFont = False
-      Transparent = True
-    end
-    object lblQueroCadastrar: TLabel
-      Left = 130
-      Top = 265
-      Width = 105
-      Height = 16
-      Cursor = crHandPoint
-      AutoSize = False
-      Caption = 'Quero me cadastrar!'
-      Color = clWhite
-      Constraints.MaxHeight = 423
-      Font.Charset = ANSI_CHARSET
-      Font.Color = 16750592
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentColor = False
-      ParentFont = False
-      Transparent = True
-      OnClick = lblQueroCadastrarClick
-    end
-    object lblAcessarPortal: TLabel
-      Left = 20
-      Top = 291
-      Width = 173
-      Height = 16
-      Cursor = crHandPoint
-      AutoSize = False
-      Caption = 'Acessar Portal - Integra'#231#227'o Ita'#250
-      Color = clWhite
-      Constraints.MaxHeight = 423
-      Font.Charset = ANSI_CHARSET
-      Font.Color = 25343
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentColor = False
-      ParentFont = False
-      Transparent = True
-      OnClick = lblAcessarPortalClick
-    end
-    object btnOK: TBitBtn
-      Left = 295
-      Top = 316
-      Width = 100
-      Height = 25
-      Anchors = [akRight, akBottom]
-      Caption = '&OK'
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 5
-      OnClick = btnOKClick
-    end
-    object btnCancelar: TBitBtn
-      Left = 399
-      Top = 316
-      Width = 100
-      Height = 25
-      Anchors = [akRight, akBottom]
-      Caption = '&Cancelar'
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 6
-      OnClick = btnCancelarClick
-    end
-    inline fraContaBancaria: TfFrameCampo
-      Left = 20
-      Top = 28
-      Width = 211
-      Height = 20
-      Color = clWhite
-      Ctl3D = False
-      ParentBackground = False
-      ParentColor = False
-      ParentCtl3D = False
-      TabOrder = 0
-      ExplicitLeft = 20
-      ExplicitTop = 28
-      ExplicitWidth = 211
-      inherited txtCampo: TEdit
-        Width = 211
-        ExplicitWidth = 211
-      end
-      inherited gdRegistros: TDBGrid
-        Width = 211
-        Columns = <
-          item
-            Expanded = False
-            FieldName = 'NOME'
-            Width = 190
-            Visible = True
-          end>
-      end
-    end
-    object chkAtivo: TDBCheckBox
-      Left = 459
-      Top = 264
-      Width = 40
-      Height = 17
-      Caption = 'Ativo'
-      DataField = 'HABILITADO'
-      DataSource = DSCadastro
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 4
-      ValueChecked = 'S'
-      ValueUnchecked = 'N'
-      OnKeyDown = edtUsuarioKeyDown
-    end
-    object edtUsuario: TDBEdit
-      Left = 20
-      Top = 68
-      Width = 478
-      Height = 22
-      DataField = 'USUARIO'
-      DataSource = DSCadastro
-      TabOrder = 1
-      OnKeyDown = edtUsuarioKeyDown
-    end
-    object edtSenha: TDBEdit
-      Left = 20
-      Top = 110
-      Width = 478
-      Height = 22
-      DataField = 'SENHA'
-      DataSource = DSCadastro
-      TabOrder = 2
-      OnKeyDown = edtUsuarioKeyDown
-    end
-    object memClientID: TDBMemo
-      Left = 20
-      Top = 152
-      Width = 478
-      Height = 104
-      DataField = 'CLIENTID'
-      DataSource = DSCadastro
-      TabOrder = 3
-    end
+    Constraints.MaxHeight = 423
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clRed
+    Font.Height = -11
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
+    Transparent = True
+    Visible = False
   end
   object pnlCadastro: TPanel
     Left = 0
@@ -718,6 +486,7 @@ inherited FrmIntegracaoItau: TFrmIntegracaoItau
       Width = 333
       Height = 22
       TabOrder = 0
+      OnKeyDown = edtEmailKeyDown
     end
     object pnlSeparador: TPanel
       Left = 105
@@ -744,6 +513,260 @@ inherited FrmIntegracaoItau: TFrmIntegracaoItau
       ParentFont = False
       TabOrder = 2
       OnClick = btnEmitenteClick
+    end
+  end
+  object pnlInicial: TPanel
+    Left = 0
+    Top = 42
+    Width = 518
+    Height = 360
+    Align = alCustom
+    BevelOuter = bvNone
+    Color = clWhite
+    ParentBackground = False
+    TabOrder = 0
+    DesignSize = (
+      518
+      360)
+    object lblContaBancaria: TLabel
+      Left = 20
+      Top = 12
+      Width = 105
+      Height = 16
+      AutoSize = False
+      Caption = 'Conta Banc'#225'ria'
+      Color = clWhite
+      Constraints.MaxHeight = 423
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      Transparent = True
+    end
+    object lblUsuario: TLabel
+      Left = 20
+      Top = 53
+      Width = 105
+      Height = 16
+      AutoSize = False
+      Caption = 'Usu'#225'rio (Acces_key)'
+      Color = clWhite
+      Constraints.MaxHeight = 423
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      Transparent = True
+    end
+    object lblSenha: TLabel
+      Left = 20
+      Top = 95
+      Width = 105
+      Height = 16
+      AutoSize = False
+      Caption = 'Senha (Secret_key)'
+      Color = clWhite
+      Constraints.MaxHeight = 423
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      Transparent = True
+    end
+    object lblClientID: TLabel
+      Left = 20
+      Top = 137
+      Width = 105
+      Height = 16
+      AutoSize = False
+      Caption = 'Client ID Token'
+      Color = clWhite
+      Constraints.MaxHeight = 423
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      Transparent = True
+    end
+    object lblCadastro: TLabel
+      Left = 20
+      Top = 265
+      Width = 105
+      Height = 16
+      AutoSize = False
+      Caption = 'N'#227'o possui cadastro?'
+      Color = clWhite
+      Constraints.MaxHeight = 423
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      Transparent = True
+    end
+    object lblQueroCadastrar: TLabel
+      Left = 130
+      Top = 265
+      Width = 105
+      Height = 16
+      Cursor = crHandPoint
+      AutoSize = False
+      Caption = 'Quero me cadastrar!'
+      Color = clWhite
+      Constraints.MaxHeight = 423
+      Font.Charset = ANSI_CHARSET
+      Font.Color = 16750592
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      Transparent = True
+      OnClick = lblQueroCadastrarClick
+    end
+    object lblAcessarPortal: TLabel
+      Left = 20
+      Top = 291
+      Width = 173
+      Height = 16
+      Cursor = crHandPoint
+      AutoSize = False
+      Caption = 'Acessar Portal - Integra'#231#227'o Ita'#250
+      Color = clWhite
+      Constraints.MaxHeight = 423
+      Font.Charset = ANSI_CHARSET
+      Font.Color = 25343
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      Transparent = True
+      OnClick = lblAcessarPortalClick
+    end
+    object btnOK: TBitBtn
+      Left = 295
+      Top = 316
+      Width = 100
+      Height = 25
+      Anchors = [akRight, akBottom]
+      Caption = '&OK'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 5
+      OnClick = btnOKClick
+    end
+    object btnCancelar: TBitBtn
+      Left = 399
+      Top = 316
+      Width = 100
+      Height = 25
+      Anchors = [akRight, akBottom]
+      Caption = '&Cancelar'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 6
+      OnClick = btnCancelarClick
+    end
+    inline fraContaBancaria: TfFrameCampo
+      Left = 20
+      Top = 28
+      Width = 211
+      Height = 20
+      Color = clWhite
+      Ctl3D = False
+      ParentBackground = False
+      ParentColor = False
+      ParentCtl3D = False
+      TabOrder = 0
+      ExplicitLeft = 20
+      ExplicitTop = 28
+      ExplicitWidth = 211
+      inherited txtCampo: TEdit
+        Width = 211
+        OnKeyDown = fraContaBancariatxtCampoKeyDown
+        ExplicitWidth = 211
+      end
+      inherited gdRegistros: TDBGrid
+        Width = 211
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'NOME'
+            Width = 190
+            Visible = True
+          end>
+      end
+    end
+    object chkAtivo: TDBCheckBox
+      Left = 459
+      Top = 264
+      Width = 40
+      Height = 17
+      Caption = 'Ativo'
+      DataField = 'HABILITADO'
+      DataSource = DSCadastro
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+      ValueChecked = 'S'
+      ValueUnchecked = 'N'
+      OnKeyDown = edtUsuarioKeyDown
+    end
+    object edtUsuario: TDBEdit
+      Left = 20
+      Top = 68
+      Width = 478
+      Height = 22
+      DataField = 'USUARIO'
+      DataSource = DSCadastro
+      TabOrder = 1
+      OnKeyDown = edtUsuarioKeyDown
+    end
+    object edtSenha: TDBEdit
+      Left = 20
+      Top = 110
+      Width = 478
+      Height = 22
+      DataField = 'SENHA'
+      DataSource = DSCadastro
+      TabOrder = 2
+      OnKeyDown = edtUsuarioKeyDown
+    end
+    object memClientID: TDBMemo
+      Left = 20
+      Top = 152
+      Width = 478
+      Height = 104
+      DataField = 'CLIENTID'
+      DataSource = DSCadastro
+      TabOrder = 3
     end
   end
   object DSCadastro: TDataSource

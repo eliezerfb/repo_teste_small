@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFrmPadrao, Vcl.StdCtrls, Vcl.Buttons, Shellapi,
-  Vcl.ExtCtrls, Vcl.Imaging.pngimage, uframeCampo, Vcl.DBCtrls, Data.DB,
+  Vcl.ExtCtrls, Vcl.Imaging.pngimage, uframeCampo, Vcl.DBCtrls, Data.DB, System.Threading,
   Vcl.Mask, IBX.IBCustomDataSet, IBX.IBQuery;
 
 type
@@ -75,6 +75,7 @@ type
     ibqEmitenteEMAIL: TIBStringField;
     ibqEmitenteCONTATO: TIBStringField;
     btnEmitente: TBitBtn;
+    lblHomolog: TLabel;
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
     procedure lblQueroCadastrarClick(Sender: TObject);
@@ -86,8 +87,14 @@ type
     procedure lblAcessarPortalClick(Sender: TObject);
     procedure btnEnviarClick(Sender: TObject);
     procedure btnEmitenteClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edtEmailKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fraContaBancariatxtCampoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     procedure AtualizaObjComValorDoBanco;
+    procedure GetPaginaAjuda;
     { Private declarations }
   public
     { Public declarations }
@@ -100,8 +107,13 @@ implementation
 
 {$R *.dfm}
 
-uses unit7, uFuncoesBancoDados, uDialogs, uIntegracaoItau, smallfunc_xe,
-  uconstantes_chaves_privadas, Unit17;
+uses
+  unit7
+  , uFuncoesBancoDados
+  , uDialogs
+  , uIntegracaoItau
+  , smallfunc_xe
+  , Unit17, uFrmTelaProcessamento;
 
 procedure TFrmIntegracaoItau.btnCancelarClick(Sender: TObject);
 begin
@@ -124,8 +136,10 @@ end;
 
 procedure TFrmIntegracaoItau.btnEnviarClick(Sender: TObject);
 var
-  client_id,access_key,secret_key : string;
+  client_id,access_key, secret_key, user_role_id, msRet : string;
 begin
+
+  {$Region'//// Validaçoes Campos ////'}
   if Trim(edtEmail.Text) = '' then
   begin
     MensagemSistema('O campo E-mail deve ser preenchido!',msgAtencao);
@@ -150,41 +164,84 @@ begin
     MensagemSistema('O campo Responsável deve ser preenchido no cadastro do emitente!',msgAtencao);
     Exit;
   end;
+  {$Endregion}
 
-  //Autentica
-  if not AutenticaoITAU then
-  begin
-    Exit;
-  end;
+  // só quando for prod deve ser enviado
+  if uIntegracaoItau.AmbienteItauProd then
+    user_role_id := '9f2b6c07-da54-4eee-a625-8dbde593e4f7';
 
-  //Envia Cadastro
-  if RegistraContaItau(ibqEmitenteCONTATO.AsString,
-                      edtEmail.Text,
-                      ibqEmitenteNOME.AsString,
-                      edtEmail.Text,
-                      Copy(ibqEmitenteNOME.AsString,1,49),
-                      ibqEmitenteCGC.AsString,
-                      ibqEmitenteCEP.AsString,
-                      ExtraiEnderecoSemONumero(ibqEmitenteENDERECO.AsString),
-                      LimpaNumero(ExtraiNumeroSemOEndereco(ibqEmitenteENDERECO.AsString)),
-                      ibqEmitenteMUNICIPIO.AsString,
-                      ibqEmitenteESTADO.AsString,
-                      ibqEmitenteCOMPLE.AsString,
-                      '',
-                      'Caixa 1',
-                      '',//'9f2b6c07-da54-4eee-a625-8dbde593e4f7', // só quando for prod
-                      ibqEmitenteTELEFO.AsString,
-                      client_id,
-                      access_key,
-                      secret_key) then
-  begin
-     ibdIntegracaoItauCLIENTID.AsString := client_id;
-     ibdIntegracaoItauUSUARIO.AsString  := access_key;
-     ibdIntegracaoItauSENHA.AsString    := secret_key;
+  MostraTelaProcessamento();
 
-     //Volta
-     pnlInicial.Visible  := True;
-     pnlCadastro.Visible := False;
+  try
+    //Executa em Thread
+    TTask.Run(
+    procedure()
+    begin
+      //Autentica
+      if AutenticaoITAU(msRet) then
+      begin
+        //Envia Cadastro
+        if RegistraContaItau(ibqEmitenteCONTATO.AsString,
+                            edtEmail.Text,
+                            ibqEmitenteNOME.AsString,
+                            edtEmail.Text,
+                            Copy(ibqEmitenteNOME.AsString,1,49),
+                            ibqEmitenteCGC.AsString,
+                            ibqEmitenteCEP.AsString,
+                            ExtraiEnderecoSemONumero(ibqEmitenteENDERECO.AsString),
+                            LimpaNumero(ExtraiNumeroSemOEndereco(ibqEmitenteENDERECO.AsString)),
+                            ibqEmitenteMUNICIPIO.AsString,
+                            ibqEmitenteESTADO.AsString,
+                            ibqEmitenteCOMPLE.AsString,
+                            '',
+                            'Caixa 1',
+                            user_role_id,
+                            ibqEmitenteTELEFO.AsString,
+                            client_id,
+                            access_key,
+                            secret_key,
+                            msRet) then
+        begin
+           ibdIntegracaoItauCLIENTID.AsString := client_id;
+           ibdIntegracaoItauUSUARIO.AsString  := access_key;
+           ibdIntegracaoItauSENHA.AsString    := secret_key;
+
+           ibdIntegracaoItau.Post;
+           ibdIntegracaoItau.Edit;
+        end;
+      end;
+
+      TThread.Synchronize(TThread.CurrentThread,
+      procedure()
+      begin
+         FechaTelaProcessamento();
+
+        if msRet <> '' then
+        begin
+          MensagemSistema(msRet,msgAtencao);
+        end else
+        begin
+          pnlInicial.Visible  := True;
+          pnlCadastro.Visible := False;
+
+          if MensagemSistemaPerguntaCustom('Cadastro efetuado com sucesso.'+#13#10+
+                                           'Verifique seu e-mail para prosseguir com a ativação da sua conta no portal Itaú.',
+                                           mtInformation,[mbOK,mbYes],['OK','Ajuda']) = 1 then
+          begin
+            GetPaginaAjuda;
+          end;
+        end;
+      end);
+    end);
+  except
+    TThread.Synchronize(TThread.CurrentThread,
+    procedure()
+    begin
+       FechaTelaProcessamento();
+
+       if msRet <> '' then
+         MensagemSistema(msRet,msgAtencao);
+    end);
   end;
 end;
 
@@ -216,6 +273,7 @@ begin
   end;
 
   ibdIntegracaoItau.Post;
+  AgendaCommit(True);
   Close;
 end;
 
@@ -225,11 +283,21 @@ begin
   pnlCadastro.Visible := False;
 end;
 
+procedure TFrmIntegracaoItau.edtEmailKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_F1 then
+    GetPaginaAjuda;
+end;
+
 procedure TFrmIntegracaoItau.edtUsuarioKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
     Perform(Wm_NextDlgCtl,0,0);
+
+  if Key = VK_F1 then
+    GetPaginaAjuda;
 end;
 
 procedure TFrmIntegracaoItau.FormCreate(Sender: TObject);
@@ -248,6 +316,16 @@ begin
     chkAtivo.Visible := True;
   end;
 
+  CarregaTipoAmbiente;
+
+  lblHomolog.Visible := not (AmbienteItauProd);
+end;
+
+procedure TFrmIntegracaoItau.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_F1 then
+    GetPaginaAjuda;
 end;
 
 procedure TFrmIntegracaoItau.FormShow(Sender: TObject);
@@ -256,6 +334,16 @@ begin
 
   if fraContaBancaria.txtCampo.CanFocus then
     fraContaBancaria.txtCampo.SetFocus;
+end;
+
+procedure TFrmIntegracaoItau.fraContaBancariatxtCampoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+  fraContaBancaria.txtCampoKeyDown(Sender, Key, Shift);
+
+  if Key = VK_F1 then
+    GetPaginaAjuda;
 end;
 
 procedure TFrmIntegracaoItau.lblAcessarPortalClick(Sender: TObject);
@@ -285,6 +373,11 @@ begin
     fraContaBancaria.CarregaDescricaoCodigo;
   except
   end;
+end;
+
+procedure TFrmIntegracaoItau.GetPaginaAjuda;
+begin
+  HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('integracao_itau.htm')));
 end;
 
 end.
