@@ -191,24 +191,25 @@ begin
 
   try
     case sRecurso of
-      rcOS            : Result := vRecursosSistema.Recursos.OS;
-      rcSped          : Result := vRecursosSistema.Recursos.Sped;
-      rcSpedPisCofins : Result := vRecursosSistema.Recursos.SpedPisCofins;
-      rcAnvisa        : Result := vRecursosSistema.Recursos.Anvisa;
-      rcSintegra      : Result := vRecursosSistema.Recursos.Sintegra;
-      rcComandas      : Result := vRecursosSistema.Recursos.Comandas;
-      rcMDFE          : Result := vRecursosSistema.Recursos.MDFE;
-      rcMobile        : Result := vRecursosSistema.Recursos.Mobile;
-      rcEtiquetas     : Result := vRecursosSistema.Recursos.Etiquetas;
-      rcOrcamento     : Result := vRecursosSistema.Recursos.Orcamento;
-      rcContasPagar   : Result := vRecursosSistema.Recursos.ContasPagar;
-      rcContasReceber : Result := vRecursosSistema.Recursos.ContasReceber;
-      rcCaixa         : Result := vRecursosSistema.Recursos.Caixa;
-      rcBancos        : Result := vRecursosSistema.Recursos.Bancos;
-      rcIndicadores   : Result := vRecursosSistema.Recursos.Indicadores;
-      rcInventarioP7  : Result := vRecursosSistema.Recursos.InventarioP7;
-      rcMKP           : Result := vRecursosSistema.Recursos.MKP;
-      rcZPOS          : Result := vRecursosSistema.Recursos.ZPOS;
+      rcOS             : Result := vRecursosSistema.Recursos.OS;
+      rcSped           : Result := vRecursosSistema.Recursos.Sped;
+      rcSpedPisCofins  : Result := vRecursosSistema.Recursos.SpedPisCofins;
+      rcAnvisa         : Result := vRecursosSistema.Recursos.Anvisa;
+      rcSintegra       : Result := vRecursosSistema.Recursos.Sintegra;
+      rcComandas       : Result := vRecursosSistema.Recursos.Comandas;
+      rcMDFE           : Result := vRecursosSistema.Recursos.MDFE;
+      rcMobile         : Result := vRecursosSistema.Recursos.Mobile;
+      rcEtiquetas      : Result := vRecursosSistema.Recursos.Etiquetas;
+      rcOrcamento      : Result := vRecursosSistema.Recursos.Orcamento;
+      rcContasPagar    : Result := vRecursosSistema.Recursos.ContasPagar;
+      rcContasReceber  : Result := vRecursosSistema.Recursos.ContasReceber;
+      rcCaixa          : Result := vRecursosSistema.Recursos.Caixa;
+      rcBancos         : Result := vRecursosSistema.Recursos.Bancos;
+      rcIndicadores    : Result := vRecursosSistema.Recursos.Indicadores;
+      rcInventarioP7   : Result := vRecursosSistema.Recursos.InventarioP7;
+      rcMKP            : Result := vRecursosSistema.Recursos.MKP;
+      rcZPOS           : Result := vRecursosSistema.Recursos.ZPOS;
+      rcIntegracaoItau : Result := vRecursosSistema.Recursos.IntegracaoItau;
     end;
   except
   end;

@@ -35,6 +35,7 @@ type
     FSpedPisCofins: TDateTime;
     FInventarioP7: TDateTime;
     FZPOS: TDateTime;
+    FIntegracaoItau: TDateTime;
   published
     property Anvisa: TDateTime read FAnvisa write FAnvisa;
     property Bancos: TDateTime read FBancos write FBancos;
@@ -57,6 +58,7 @@ type
     property SpedPisCofins: TDateTime read FSpedPisCofins write FSpedPisCofins;
     property InventarioP7: TDateTime read FInventarioP7 write FInventarioP7;
     property ZPOS: TDateTime read FZPOS write FZPOS;
+    property IntegracaoItau: TDateTime read FIntegracaoItau write FIntegracaoItau;
   end;
   
   TRecursosSistema = class

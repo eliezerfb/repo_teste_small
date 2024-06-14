@@ -6,7 +6,7 @@ uses
   SysUtils
   , Windows
   , Forms
-  , Controls
+  , Controls, Vcl.Dialogs, Vcl.StdCtrls
 //  , StdCtrls
 //  , Dialogs
   ;
@@ -16,6 +16,7 @@ type
 
   procedure MensagemSistema(Mensagem:string; Tipo : TmensagemSis = msgInformacao); //Mauricio Parizotto 2023-10-24
   function MensagemSistemaPergunta(AcMensagem:string; AaFlags: array of Longint): Integer; overload; // Dailon Parisotto 2023-02-01
+  function MensagemSistemaPerguntaCustom(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; Captions: array of string): Integer; //Mauricio Parizotto 2024-06-13
 //  function MensagemSistemaPergunta(AcMensagem: String; AaOpcoes: array of String): Integer; overload; // Dailon Parisotto 2023-02-01
 
 implementation
@@ -63,10 +64,10 @@ begin
   Result := Application.MessageBox(PChar(AcMensagem), PChar(RetornarTituloMsg(msgPergunta)), nSomaFlags);
 end;
 
+
 // IMPLEMENTAR NO FUTURO - Mensagem com opções personalizadas
 {
 function MensagemSistemaPergunta(AcMensagem: String; AaOpcoes: array of String): Integer; overload;
-begin
 var
   ofrmMsg: TForm;
   nBotoes: TMsgDlgButtons;
@@ -106,6 +107,35 @@ begin
     FreeAndNil(ofrmMsg);
   end;
 end;
+
 }
+
+function MensagemSistemaPerguntaCustom(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; Captions: array of string): Integer;
+var
+  aMsgDlg: TForm;
+  i: Integer;
+  dlgButton: TButton;
+  CaptionIndex: Integer;
+begin
+  { Criar o dialogo }
+  aMsgDlg := CreateMessageDialog(Msg, DlgType, Buttons);
+  aMsgDlg.Caption := 'Informação';
+
+  CaptionIndex := 0;
+  { Faz um loop varrendo os objetos do dialogo }
+  for i := 0 to pred(aMsgDlg.ComponentCount) do
+  begin
+    if (aMsgDlg.Components[i] is TButton) then
+    begin
+      { Apenas entra na condição se o objeto for um button }
+      dlgButton := TButton(aMsgDlg.Components[i]);
+      if CaptionIndex > High(Captions) then //Captura o Index dos captions dos buttons criado no array
+         Break;
+      dlgButton.Caption := Captions[CaptionIndex];
+      Inc(CaptionIndex);
+    end;
+  end;
+  Result := aMsgDlg.ShowModal;
+end;
 
 end.

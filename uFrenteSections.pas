@@ -55,9 +55,11 @@ function TSectionOrcamento.getPorta: tTipoImpressaoOrcamento;
 var
   cPorta: string;
 begin
-  Result := ttioPadraoWindows;
+  //Result := ttioPadraoWindows; Mauricio Parizotto 2024-06-06
+  Result := ttioHTML;
 
-  cPorta := FoIni.ReadString(Section, _cIdentPorta, _cImpressoraPadrao);
+  //cPorta := FoIni.ReadString(Section, _cIdentPorta, _cImpressoraPadrao); Mauricio Parizotto 2024-06-06
+  cPorta := FoIni.ReadString(Section, _cIdentPorta, 'HTML');
 
   if cPorta = 'HTML' then
     Result := ttioHTML;

@@ -4,7 +4,7 @@ interface
 
 type
   // Recursos disponíveis para usuário acessar
-  TRecursos = ( //Recurso = (
+  TRecursos = (
                rcOS,
                rcSped,
                rcSpedPisCofins,
@@ -24,7 +24,8 @@ type
                rcInventarioP7,
                rcQtdNFCE,
                rcQtdNFE,
-               rcZPOS
+               rcZPOS,
+               rcIntegracaoItau
                );
 
 
