@@ -17,7 +17,7 @@ var
   function RegistraContaItau(user_full_name,user_email,customer_name,customer_email,store_name,
                              store_cnpj_cpf,store_postal_code,store_street,store_street_number,
                              store_city,store_state,store_neighborhood,store_reference,
-                             store_pos_names,user_role_id,user_phone : string;
+                             store_pos_names,user_role_id,user_phone, retail_chain_id : string;
                              out client_id,access_key,secret_key : string;
                              out Mensagem:string):boolean;
 
@@ -101,7 +101,7 @@ end;
 function RegistraContaItau(user_full_name,user_email,customer_name,customer_email,store_name,
                            store_cnpj_cpf,store_postal_code,store_street,store_street_number,
                            store_city,store_state,store_neighborhood,store_reference,
-                           store_pos_names,user_role_id,user_phone : string;
+                           store_pos_names,user_role_id,user_phone, retail_chain_id : string;
                            out client_id,access_key,secret_key : string;
                            out Mensagem:string):boolean;
 var
@@ -147,9 +147,7 @@ begin
     registration_pub.UserEmail           := user_email;
     registration_pub.UserFullName        := user_full_name;
     registration_pub.UserPhone           := user_phone;
-
-    if not AmbienteItauProd then
-      registration_pub.RetailChainId     := '2ef0b250-f103-49c5-941e-feb51bc875eb';
+    registration_pub.RetailChainId       := retail_chain_id;
 
     sJson := TJson.ObjectToJsonString(registration_pub,[TJsonOption.joIgnoreEmptyStrings]);
 
@@ -174,6 +172,9 @@ begin
 
       if (pos('Customer already in the database' ,sJsonRet) > 0) then
         sMensagem := 'Suas credenciais já foram enviadas, verifique seu e-mail.';
+
+      if (pos('CPF already in the database' ,sJsonRet) > 0) then
+        sMensagem := 'CNPJ/CPF já cadastrado na base de dados da Conexão Itaú.';
 
       if (pos('User already in the database' ,sJsonRet) > 0) then
         sMensagem := 'E-mail já cadastrado na base de dados da Conexão Itaú.';
