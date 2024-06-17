@@ -21634,10 +21634,6 @@ object Form7: TForm7
     Left = 1008
     Top = 747
   end
-  object PopupMenu2: TPopupMenu
-    Left = 736
-    Top = 144
-  end
   object MainMenu00: TMainMenu
     Left = 816
     Top = 144
