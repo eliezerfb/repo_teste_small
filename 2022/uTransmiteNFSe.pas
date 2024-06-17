@@ -949,7 +949,6 @@ begin
                 Writeln(F,'CodigoItemListaServico='+AllTrim(RetornaValorDaTagNoCampo('cServico',form7.ibDataSet4.FieldByname('TAGS_').AsString))); // Código do item da lista de serviço.	T	 Obtido na prefeitura
               end else
               begin
-                //ShowMessage('Entre no cadastro de produtos e serviços na aba tags e informe o código (cServico)(Obtido na prefeitura)'); Mauricio Parizotto 2023-10-25
                 MensagemSistema('Entre no cadastro de produtos e serviços na aba tags e informe o código (cServico)(Obtido na prefeitura)',msgAtencao);
                 Abort;
               end;
@@ -1042,14 +1041,13 @@ begin
                       Writeln(F,'Tributavel=SIM');
                     end;
                   end;
-                  
+
                   // Dados do 1 Serviço Vendido
                   if AllTrim(RetornaValorDaTagNoCampo('cServico',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
                   begin
                     Writeln(F,'CodigoItemListaServico='+AllTrim(RetornaValorDaTagNoCampo('cServico',form7.ibDataSet4.FieldByname('TAGS_').AsString))); // Código do item da lista de serviço.	T	 Obtido na prefeitura
                   end else
                   begin
-                    //ShowMessage('Entre no cadastro de produtos e serviços na aba tags e informe o código (cServico)(Obtido na prefeitura)'); Mauricio Parizotto 2023-10-25
                     MensagemSistema('Entre no cadastro de produtos e serviços na aba tags e informe o código (cServico)(Obtido na prefeitura)',msgAtencao);
                     Abort;
                   end;
@@ -1068,7 +1066,7 @@ begin
                     Writeln(F,'ValorIss='+StrTran(Alltrim(FormatFloat('##0.00', CalculaValorISS(sPadraoSistema, Form7.ibDataSet35.FieldByname('TOTAL').AsFloat, Form7.ibDataSet14ISS.AsFloat, Form7.IBDataSet14.FieldByname('BASEISS').AsFloat))),',','.'));
                     {Sandro Silva 2023-10-02 fim}
                   end;
-                  
+
                   Writeln(F,'ValorISSRetido='+StrTran(Alltrim(FormatFloat('##0.00',fValorISSRetido)),',','.')); // ISS Retido
                   Writeln(F,'BaseCalculo='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('TOTAL').AsFloat)),',','.'));   //
                   Writeln(F,'CodigoCidadePrestacao='+sCodigoLocalPrestacao); // Código IBGE do município onde o serviço foi prestado
@@ -1091,7 +1089,7 @@ begin
                   Writeln(F,'UnidadeServico='+Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)));
                   Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('TOTAL').AsFloat)),',','.')); //
                   Writeln(F,'ValorLiquidoServico='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('TOTAL').AsFloat)),',','.')); //
-                  
+
                   // Situações tributárias obtidas na prefeitura
                   if AllTrim(RetornaValorDaTagNoCampo('Tributavel',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
                   begin
@@ -1106,7 +1104,7 @@ begin
                       Writeln(F,'Tributavel=SIM');
                     end;
                   end;
-                  
+
                   // Dados do 1 Serviço Vendido
                   if AllTrim(RetornaValorDaTagNoCampo('cServico',form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
                   begin
@@ -1124,7 +1122,7 @@ begin
                   Writeln(F,'CodigoCidadePrestacao='+sCodigoLocalPrestacao); // Código IBGE do município onde o serviço foi prestado
                   Writeln(F,'ValorServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet35.FieldByname('TOTAL').AsFloat)),',','.')); //
                   Writeln(F,'AliquotaServico='+StrTran(StrZero(Form7.ibDataSet14ISS.AsFloat,1,2),',','.'));
-                  
+
                   Writeln(F,'');
                   Writeln(F,'SALVARSERVICO');
                   Writeln(F,'');
@@ -1184,7 +1182,7 @@ begin
             end;
           end;
 
-          Form7.ibDataSet15.DisableControls;
+          //Form7.ibDataSet15.DisableControls; //Mauricio Parizotto 2024-05-07
 
           while FileExists(Pchar(Form1.sAtual+'\NFSE\ret.txt')) do
           begin
@@ -1195,7 +1193,6 @@ begin
           if Form1.Debug1.Checked then
           begin
             ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\NFSE\smallnfse.tx2'),'','', SW_SHOWMAXIMIZED);
-            //ShowMessage('Tecle Ok para continuar'); Mauricio Parizotto 2023-10-25
             MensagemSistema('Tecle Ok para continuar');
           end;
 
@@ -1216,7 +1213,6 @@ begin
           if Form1.Debug1.Checked then
           begin
             ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\NFSE\ret.txt'),'','', SW_SHOWMAXIMIZED);
-            //ShowMessage('Tecle Ok para continuar'); Mauricio Parizotto 2023-10-25
             MensagemSistema('Tecle Ok para continuar');
           end;
 
@@ -1236,7 +1232,6 @@ begin
               if RetornaValorDaTagNoCampo('Status',sRetornoNFse) <> '' then
               begin
                 ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\NFSE\ret.txt'),'','', SW_SHOWMAXIMIZED);
-                //ShowMessage('Tecle Ok para continuar'); Mauricio Parizotto 2023-10-25
                 MensagemSistema('Tecle Ok para continuar');
               end;
 
@@ -1256,9 +1251,6 @@ begin
             begin
               _file := TStringList.Create;
               _file.LoadFromFile(pChar(Form1.sAtual+'\NFSE\ret.txt'));
-
-//              _File.Text := StrTran(_File.Text,'Elt;brEgt;','|');
-//              _File.Text := StrTran(_File.Text,#9,'');
 
               sRetornoNFse := _File.Text;
 
@@ -1381,18 +1373,16 @@ begin
             end;
           end;
 
-          Form7.ibDataSet15.EnableControls; // Form7.ibDataSet15.DisableControls; acima, na linha 900
+          //Form7.ibDataSet15.EnableControls; // Form7.ibDataSet15.DisableControls; acima, na linha 900 Mauricio Parizotto 2024-05-07
         end else
         begin
           Screen.Cursor            := crDefault;
-          //ShowMessage('Não é possível emitir a nota de serviço com valor 0 (Zero).'); // Serviços Zerado //Mauricio Parizotto 2023-10-25
           MensagemSistema('Não é possível emitir a nota de serviço com valor 0 (Zero).',msgAtencao);
           Result := False;
         end;
       end else
       begin
         Screen.Cursor            := crDefault;
-        //ShowMessage('NFS-e já emitida e autorizada.'); // Já foi autorizada  //Mauricio Parizotto 2023-10-25
         MensagemSistema('NFS-e já emitida e autorizada.',msgAtencao);
         Result := False;
       end;
