@@ -207,7 +207,6 @@ type
     IBDataSetGrafico2: TIBDataSet;
     IBDataSetGrafico3: TIBDataSet;
     Registrodoprogramaonline1: TMenuItem;
-    WebBrowser2: TWebBrowser;
     Label_bola_NFE: TLabel;
     Image_bola_caixa: TImage;
     Label_bola_caixa: TLabel;
@@ -284,6 +283,7 @@ type
     miProd120Carac: TMenuItem;
     NaoDescontarIssQuandoRetido1: TMenuItem;
     N13: TMenuItem;
+    timerLegal: TTimer;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -457,6 +457,7 @@ type
     procedure Clculododescontopeloprovedor1Click(Sender: TObject);
     procedure miProd120CaracClick(Sender: TObject);
     procedure NaoDescontarIssQuandoRetido1Click(Sender: TObject);
+    procedure timerLegalTimer(Sender: TObject);
 
 
   private
@@ -3465,7 +3466,8 @@ begin
   Form30.Label30.Caption := SmallIni.ReadString('OS','Label30','Garantia');
   Form30.Label19.Caption := SmallIni.ReadString('OS','Label19','Problema reclamado');
   Form30.Label10.Caption := SmallIni.ReadString('OS','Label10','Frete');
-  //
+  Form30.Label34.Caption := SmallIni.ReadString('OS','Label34','Técnico');
+
   Form12.Label28.Caption := SmallIni.ReadString('VENDAS','Label28','Identificador 1');
   //
   Form7.ibDataSet3TOTAL_FRET.DisplayLabel := Form30.Label10.Caption;
@@ -3907,7 +3909,13 @@ begin
   Form1.Image4.Width    := 1024;
   Form1.Image4.Height   := 768;
   //
+  {Dailon Parisotto (f-18201) 2024-05-08 Inicio
+
   if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) then
+
+  }
+  if TestarUFMovimentaEstoqueFinanceiroSemFaturar(Form7.ibDataSet13ESTADO.AsString) then
+  {Dailon Parisotto (f-18201) 2024-05-08 Fim}
   begin
     ConfiguraodaNFemformulrionumerado1.Visible := True;
   end else
@@ -4473,6 +4481,10 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   bTemAtuaNFeSetup: Boolean;
 begin
+  //Mauricio Parizotto 2024-06-03
+  timerLegal.Interval := 3600000; // 1h
+  timerLegal.Enabled  := True;
+
   Form1.bMKP    := False;
   Form1.sPasta  := CHAVE_CIFRAR; // Sandro Silva 2022-09-19
 
@@ -4493,7 +4505,6 @@ begin
   Form22.Label6.Left    := 0;
 
   Form1.WebBrowser1.Left := -2000;
-  Form1.WebBrowser2.Left := -2000;
 
   GetDir(0,sAtual);
   Form1.BorderIcons := [biSystemMenu,biMinimize,biMaximize];
@@ -10759,6 +10770,19 @@ begin
   end;
 end;
 
+
+procedure TForm1.timerLegalTimer(Sender: TObject);
+begin
+  try
+    //Só consulta se sistema estiver liberado
+    if ExecutaComandoEscalar(Form7.IBTransaction1,
+                            'Select gen_id(G_LEGAL,0) From rdb$database') = 0 then
+    begin
+      RegistrodoPrograma(False);
+    end;
+  except
+  end;
+end;
 
 procedure TForm1.ConfiguraodaNFemformulrionumerado1Click(Sender: TObject);
 begin
