@@ -774,6 +774,7 @@ var
   BlobStream : TStream;
   sTotal     : string;
   JP2         : TJPEGImage;
+  sRegistroOld: String;
 begin
   // Posiciona o foco quando ativa
   Result := True;
@@ -789,15 +790,25 @@ begin
       end else
       begin
         try
-          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-            Form7.ibDataset4.Edit;
-          if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-          begin
-            Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
-          end;
-          Form7.ibDataSet4PRECO.ReadOnly := False;
-          Form10.SMALL_DBEdit6.Font.Color := clblack;
-          Form10.Label6.Caption := 'Preço'; // Sandro Silva 2024-06-12
+          //if Form7.ibDataset4.Active then // Sandro Silva 2024-06-17
+          //begin
+            if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+              Form7.ibDataset4.Edit;
+            if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+            begin
+              {Sandro Silva 2024-06-18 inicio
+              Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
+              }
+              sRegistroOld := Form7.sRegistro;
+              Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
+              if sRegistroOld <> Form7.sRegistro then
+                Form7.sRegistro := sRegistroOld;
+              {Sandro Silva 2024-06-18 fim}
+            end;
+            Form7.ibDataSet4PRECO.ReadOnly := False;
+            Form10.SMALL_DBEdit6.Font.Color := clblack;
+            Form10.Label6.Caption := 'Preço'; // Sandro Silva 2024-06-12
+          //end;
         except
         end;
       end;
@@ -8029,33 +8040,48 @@ end;
 procedure TForm10.AjustaCampoPrecoQuandoEmPromocao;
 var
   iObj: Integer;
+  sRegistroOld: String;
 begin
   if (Form7.sModulo = 'ESTOQUE') then
   begin
-    //if not EmPeriodoPromocional then
+
+    for iObj := 0 to Form10.ComponentCount - 1 do
     begin
-      for iObj := 0 to Form10.ComponentCount - 1 do
+      if Form10.Components[iObj].ClassType = TSMALL_DBEdit then
       begin
-        if Form10.Components[iObj].ClassType = TSMALL_DBEdit then
+        if AnsiUpperCase(TSMALL_DBEdit(Form10.Components[iObj]).DataField) = 'PRECO' then
         begin
-          if AnsiUpperCase(TSMALL_DBEdit(Form10.Components[iObj]).DataField) = 'PRECO' then
+          TSMALL_DBEdit(Form10.Components[iObj]).Enabled    := not EmPeriodoPromocional;
+          TSMALL_DBEdit(Form10.Components[iObj]).ReadOnly   := EmPeriodoPromocional;
+          if not EmPeriodoPromocional then
+            TSMALL_DBEdit(Form10.Components[iObj]).Font.Color := clWindowText;
+
+          if Form7.sSelect <> '' then
           begin
-            TSMALL_DBEdit(Form10.Components[iObj]).Enabled    := not EmPeriodoPromocional;
-            TSMALL_DBEdit(Form10.Components[iObj]).ReadOnly   := EmPeriodoPromocional;
-            if not EmPeriodoPromocional then
-              TSMALL_DBEdit(Form10.Components[iObj]).Font.Color := clWindowText;
-
-            AtualizaTela(False);
-            if EmPeriodoPromocional then
+            if Form7.ibDataSet4.Active then
             begin
-              if Form7.ibDataSet4.FieldByName('PRECO').AsFloat <> Form7.ibDataSet4.FieldByName('ONPROMO').AsFloat then
+              sRegistroOld := Form7.sRegistro;  // Sandro Silva 2024-06-18
+              if EmPeriodoPromocional then
               begin
-                Form7.ibDataSet4.Refresh;
-                Form7.ibDataSet4.Edit;
-              end;
-            end;
+                if Form7.ibDataSet4.FieldByName('PRECO').AsFloat <> Form7.ibDataSet4.FieldByName('ONPROMO').AsFloat then
+                begin
+                  try
+                    Form7.ibDataSet4.Refresh;
 
-          end;
+                    if sRegistroOld <> Form7.sRegistro then
+                    begin
+                      Form7.sRegistro := sRegistroOld;
+                      Form7.ibDataSet4.Locate('REGSITRO', Form7.SREGISTRO, []);
+                    end;
+
+                    Form7.ibDataSet4.Edit;
+                  except
+
+                  end;
+                end;
+              end;
+            end; // if Form7.ibDataSet4.Active then
+          end; // if Form7.sSelect <> '' then
         end;
       end;
     end;
