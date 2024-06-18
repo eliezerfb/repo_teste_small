@@ -224,6 +224,12 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
         DataType = ftFMTBcd
         Precision = 18
         Size = 6
+      end
+      item
+        Name = 'Quantidade'
+        DataType = ftFMTBcd
+        Precision = 32
+        Size = 4
       end>
     IndexDefs = <>
     Params = <>
@@ -236,6 +242,11 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
     object cdsTotalGrupoGrupo: TStringField
       FieldName = 'Grupo'
       Size = 80
+    end
+    object cdsTotalGrupoQuantidade: TFMTBCDField
+      FieldName = 'Quantidade'
+      Precision = 18
+      Size = 2
     end
     object cdsTotalGrupoCustocompra: TFMTBCDField
       FieldName = 'Custo compra'

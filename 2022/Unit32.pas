@@ -11,12 +11,9 @@ type
   TForm32 = class(TForm)
     Panel2: TPanel;
     Image1: TImage;
-    Label4: TLabel;
     Label5: TLabel;
     Label7: TLabel;
-    Label8: TLabel;
     Label9: TLabel;
-    Label10: TLabel;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;
     MaskEdit1: TMaskEdit;
@@ -79,7 +76,11 @@ end;
 
 function TForm32.RetornarSQLEstoque: String;
 begin
-  Result := 'select * from ESTOQUE WHERE ((DAT_INICIO <= :XDATA) OR (COALESCE(DAT_INICIO,'''') = '''')) order by DESCRICAO';
+  Result := 'SELECT * FROM ESTOQUE ' + sLineBreak +
+            'WHERE ((DAT_INICIO <= :XDATA) ' + sLineBreak +
+                    'OR ((SELECT COUNT(ITENS002.CODIGO) FROM COMPRAS INNER JOIN ITENS002 ON (ITENS002.NUMERONF=COMPRAS.NUMERONF) WHERE (ITENS002.CODIGO=ESTOQUE.CODIGO) AND (EMISSAO <= :XDATA)) > 0) ' + sLineBreak +
+                    'OR (COALESCE(DAT_INICIO,'''') = '''')) ' + sLineBreak +
+            'ORDER BY DESCRICAO';
 end;
 
 procedure TForm32.Button5Click(Sender: TObject);
@@ -370,11 +371,13 @@ begin
     cbMovGerencial.Visible := qryDados.FieldByName('QTDE').AsInteger > 0;
     cbMovGerencial.Checked := False;
 
+    {Mauricio Parizotto 2024-05-07
     CheckBox1.Top := 216;
     cbMovGerencial.Top := 240;
 
     if not cbMovGerencial.Visible then
       CheckBox1.Top := CheckBox1.Top + 17;
+    }
   finally
     FreeAndNil(qryDados);
   end;

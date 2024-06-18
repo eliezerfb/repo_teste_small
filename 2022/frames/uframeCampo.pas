@@ -149,6 +149,9 @@ begin
     Exit;
   end;
 
+  //Para controle de somente leitura
+  txtCampo.Enabled := Self.Enabled; //Mauricio Parizotto 2024-04-17
+
   //Mauricio Parizotto 2023-11-20
   //sNomeCampoChave := CampoCodigo.FieldName;
   sNomeCampoChave := CampoCodigoPesquisa;
@@ -197,6 +200,9 @@ var
   CampoChange: TNotifyEvent;
   sNomeCampoChave: String;
 begin
+  //Para controle de somente leitura
+  txtCampo.Enabled := Self.Enabled; //Mauricio Parizotto 2024-04-17
+
   sNomeCampoChave := CampoCodigoPesquisa;
   if sNomeCampoChave = '' then
     sNomeCampoChave := CampoCodigo.FieldName;

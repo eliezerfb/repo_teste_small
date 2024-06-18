@@ -11,7 +11,7 @@ object FrmParcelas: TFrmParcelas
   Font.Color = clWindowText
   Font.Height = -13
   Font.Name = 'System'
-  Font.Style = [fsBold]
+  Font.Style = []
   Position = poScreenCenter
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
@@ -174,7 +174,7 @@ object FrmParcelas: TFrmParcelas
     end
     object chkConsultaImprimeDanfe: TCheckBox
       Left = 10
-      Top = 345
+      Top = 349
       Width = 343
       Height = 17
       Anchors = [akLeft, akBottom]
@@ -193,7 +193,7 @@ object FrmParcelas: TFrmParcelas
     end
     object edtQtdParc: TEdit
       Left = 128
-      Top = 24
+      Top = 25
       Width = 89
       Height = 22
       TabOrder = 6
@@ -203,6 +203,22 @@ object FrmParcelas: TFrmParcelas
       OnExit = edtQtdParcExit
       OnKeyDown = SMALL_DBEdit1KeyDown
       OnKeyPress = edtQtdParcKeyPress
+    end
+    object chkFixarVencimento: TCheckBox
+      Left = 229
+      Top = 28
+      Width = 298
+      Height = 17
+      Caption = 'Fixar vencimento das parcelas para o mesmo dia'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 7
+      Visible = False
+      OnClick = chkFixarVencimentoClick
     end
   end
   object IBQINSTITUICAOFINANCEIRA: TIBQuery

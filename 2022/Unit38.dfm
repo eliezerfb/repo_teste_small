@@ -7,6 +7,10 @@ object Form38: TForm38
   ClientHeight = 280
   ClientWidth = 518
   Color = clWhite
+  Constraints.MaxHeight = 319
+  Constraints.MaxWidth = 534
+  Constraints.MinHeight = 319
+  Constraints.MinWidth = 534
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -33,7 +37,7 @@ object Form38: TForm38
     ParentCtl3D = False
     TabOrder = 0
     object Image1: TImage
-      Left = 20
+      Left = 54
       Top = 20
       Width = 89
       Height = 89
@@ -206,7 +210,7 @@ object Form38: TForm38
     object Panel1: TPanel
       Left = 180
       Top = 15
-      Width = 240
+      Width = 319
       Height = 202
       BevelOuter = bvNone
       Color = clWhite
@@ -215,25 +219,12 @@ object Form38: TForm38
       ParentCtl3D = False
       TabOrder = 12
       Visible = False
-      object Label18: TLabel
-        Left = 0
-        Top = 0
-        Width = 210
-        Height = 13
-        Caption = 'Este assistente vai gerar os arquivos  neces-'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-      end
       object Label19: TLabel
         Left = 0
         Top = 55
-        Width = 206
+        Width = 201
         Height = 13
-        Caption = 'Selecione abaixo o modelo da sua balan'#231'a:'
+        Caption = 'Selecione abaixo a marca da sua balan'#231'a:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -244,9 +235,23 @@ object Form38: TForm38
       object Label20: TLabel
         Left = 0
         Top = 15
-        Width = 197
+        Width = 61
         Height = 13
-        Caption = 's'#225'rios para integra'#231#227'o com uma  balan'#231'a.'
+        Caption = 'sua balan'#231'a.'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label18: TLabel
+        Left = 0
+        Top = 0
+        Width = 300
+        Height = 13
+        AutoSize = False
+        Caption = 'Este assistente vai gerar os arquivos para integra'#231#227'o com'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -255,8 +260,8 @@ object Form38: TForm38
         ParentFont = False
       end
       object RadioButton3: TRadioButton
-        Left = 24
-        Top = 95
+        Left = 0
+        Top = 75
         Width = 113
         Height = 17
         Caption = 'Urano'
@@ -271,8 +276,8 @@ object Form38: TForm38
         TabStop = True
       end
       object RadioButton4: TRadioButton
-        Left = 24
-        Top = 114
+        Left = 0
+        Top = 94
         Width = 113
         Height = 17
         Caption = 'Toledo'
@@ -285,8 +290,8 @@ object Form38: TForm38
         TabOrder = 1
       end
       object RadioButton5: TRadioButton
-        Left = 24
-        Top = 133
+        Left = 0
+        Top = 113
         Width = 113
         Height = 17
         Caption = 'Filizola'
@@ -432,7 +437,6 @@ object Form38: TForm38
       Width = 100
       Height = 24
       Caption = '< Voltar'
-      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -11
@@ -440,6 +444,7 @@ object Form38: TForm38
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      Visible = False
       OnClick = btnVoltarClick
     end
     object btnAvancar: TBitBtn
@@ -524,6 +529,46 @@ object Form38: TForm38
       TabOrder = 14
       Text = 'ComboBox1'
       Visible = False
+    end
+    object pnlOSTipoFiltro: TPanel
+      Left = 180
+      Top = 105
+      Width = 160
+      Height = 68
+      BevelOuter = bvNone
+      Color = clWhite
+      ParentBackground = False
+      TabOrder = 15
+      Visible = False
+      object rbDataCriacao: TRadioButton
+        Left = 0
+        Top = 9
+        Width = 185
+        Height = 17
+        Caption = 'Data de cria'#231#227'o'
+        Checked = True
+        TabOrder = 0
+        TabStop = True
+        OnClick = RadioButton1Click
+      end
+      object rbDataAgendada: TRadioButton
+        Left = 0
+        Top = 28
+        Width = 185
+        Height = 17
+        Caption = 'Data agendada'
+        TabOrder = 1
+        OnClick = RadioButton1Click
+      end
+      object rbDataFechada: TRadioButton
+        Left = 0
+        Top = 47
+        Width = 185
+        Height = 17
+        Caption = 'Data fechada'
+        TabOrder = 2
+        OnClick = RadioButton1Click
+      end
     end
   end
 end
