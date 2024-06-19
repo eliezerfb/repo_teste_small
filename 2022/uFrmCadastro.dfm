@@ -639,6 +639,7 @@ inherited FrmCadastro: TFrmCadastro
           ParentFont = False
           TabOrder = 0
           OnChange = edtCPFCNPJChange
+          OnExit = edtCPFCNPJExit
           OnKeyDown = PadraoKeyDown
         end
         object edtRazaoSocial: TSMALL_DBEdit

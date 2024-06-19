@@ -122,6 +122,7 @@ type
     procedure edtBairroKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure tbsComissaoEnter(Sender: TObject);
+    procedure edtCPFCNPJExit(Sender: TObject);
   private
     { Private declarations }
     FcCEPAnterior: String;
@@ -553,6 +554,14 @@ end;
 procedure TFrmCadastro.edtCPFCNPJChange(Sender: TObject);
 begin
   pnl_IE.Visible    := (Length(Trim(form7.ibDAtaset2CGC.AsString)) = 18); //Mauricio Parizotto 2024-04-15
+end;
+
+procedure TFrmCadastro.edtCPFCNPJExit(Sender: TObject);
+begin
+  try
+    fraMunicipio.CarregaDescricao;
+  except
+  end;
 end;
 
 procedure TFrmCadastro.LimpaEspaco(Campo : TSMALL_DBEdit);
