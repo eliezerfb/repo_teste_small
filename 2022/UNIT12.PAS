@@ -1639,7 +1639,13 @@ begin
     Label64.Caption := 'Mod: '+StrZero(StrToInt(Form7.ibDataSet15MODELO.AsString),2,0);
   except end;
   //
+  {Dailon Parisotto (f-18201) 2024-05-08 Inicio
+
   if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
+
+  }
+  if (TestarUFMovimentaEstoqueFinanceiroSemFaturar(Form7.ibDataSet13ESTADO.AsString)) or (Form1.iReduzida = 2)  then
+  {Dailon Parisotto (f-18201) 2024-05-08 Fim}
   begin
     // Atenção a rotina abaixo altera a quantidade no estoque
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
@@ -1814,7 +1820,13 @@ begin
 
     if (AllTrim(Form7.ibDataSet15CLIENTE.AsString)) <> '' then
     begin
+      {Dailon Parisotto (f-18201) 2024-05-08 Inicio
+
       if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
+
+      }
+      if (TestarUFMovimentaEstoqueFinanceiroSemFaturar(Form7.ibDataSet13ESTADO.AsString)) or (Form1.iReduzida = 2)  then
+      {Dailon Parisotto (f-18201) 2024-05-08 Fim}
       begin
         // Atenção a rotina abaixo altera a quantidade no estoque
         Form7.ibDataSet16.DisableControls;

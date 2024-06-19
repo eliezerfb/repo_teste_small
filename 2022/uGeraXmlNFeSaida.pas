@@ -249,7 +249,7 @@ begin
   if AllTrim(Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7)) = '' then
   begin
     Form7.ibDataSet15.Edit;
-    Form7.ibDataSet15STATUS.AsString    := 'Erro: Nome do município do emitente inválido.';
+    Form7.SetTextoCampoSTATUSNFe('Erro: Nome do município do emitente inválido.');
     Abort;
   end;
 
@@ -579,7 +579,7 @@ begin
   if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
   begin
     Form7.ibDataSet15.Edit;
-    Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o CEP do emitente';
+    Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o CEP do emitente');
     Abort;
   end;
 
@@ -614,13 +614,19 @@ begin
   begin
     IBQUERY99.Close;
     IBQUERY99.SQL.Clear;
+    {Dailon Parisotto (f-18465) 2024-04-30 Inicio
+
     IBQUERY99.SQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
+
+    }
+    IBQUERY99.SQL.Add('select * from MUNICIPIOS where UPPER(NOME)=UPPER('+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+') and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
+    {Dailon Parisotto (f-18465) 2024-04-30 Fim}
     IBQUERY99.Open;
 
     if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o município do destinatário';
+      Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o município do destinatário');
       Abort;
     end;
 
@@ -673,14 +679,14 @@ begin
     if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 0) then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: CNPJ ou CPF do destinatário inválido';
+      Form7.SetTextoCampoSTATUSNFe('Erro: CNPJ ou CPF do destinatário inválido');
       Abort;
     end;
 
     if (Length(AllTrim(Form7.ibDAtaset2CEP.AsString)) <> 9) then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: CEP do destinatário inválido';
+      Form7.SetTextoCampoSTATUSNFe('Erro: CEP do destinatário inválido');
       Abort;
     end;
 
@@ -689,7 +695,7 @@ begin
       if Length(Limpanumero(Form7.ibDAtaset2FONE.AsString)) < 8 then
       begin
         Form7.ibDataSet15.Edit;
-        Form7.ibDataSet15STATUS.AsString    := 'Erro: Telefone do destinatário inválido.';
+        Form7.SetTextoCampoSTATUSNFe('Erro: Telefone do destinatário inválido.');
         Abort;
       end;
     end;
@@ -742,7 +748,7 @@ begin
               end else
               begin
                 Form7.ibDataSet15.Edit;
-                Form7.ibDataSet15STATUS.AsString    := 'Erro: Inscrição Estadual do Destinatário Inválida';
+                Form7.SetTextoCampoSTATUSNFe('Erro: Inscrição Estadual do Destinatário Inválida');
                 Abort;
               end;
             end;
@@ -2813,7 +2819,7 @@ begin
                         ,msgErro);
 
         Form7.ibDataSet15.Edit;
-        Form7.ibDataSet15STATUS.AsString    := 'Erro: Ao salvar XML.';
+        Form7.SetTextoCampoSTATUSNFe('Erro: Ao salvar XML.');
         Abort;
       end;
     end;
@@ -2870,7 +2876,7 @@ begin
         if ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet18IE.AsString),Form7.ibDataSet18UF.AsString) then
         begin
           Form7.ibDataSet15.Edit;
-          Form7.ibDataSet15STATUS.AsString    := 'Erro: Inscrição Estadual da transportadora Inválida.';
+          Form7.SetTextoCampoSTATUSNFe('Erro: Inscrição Estadual da transportadora Inválida.');
 
           Abort;
         end;
@@ -4138,7 +4144,14 @@ begin
         then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+      {Dailon Parisotto (f-18465) 2024-04-30 Inicio
+
+      Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+
+      }
+      Form7.SetTextoCampoSTATUSNFe(Copy('Erro: Informe o CSOSN do produto '+ Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' +
+                                                  ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString),1,Form7.ibDataSet15STATUS.Size));
+      {Dailon Parisotto (f-18465) 2024-04-30 Fim}
       Abort;
 
     end;
@@ -4320,7 +4333,7 @@ begin
             end;
           except
             Form7.ibDataSet15.Edit;
-            Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o IVA do produto código: '+Form7.ibDataSet4CODIGO.AsString;
+            Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o IVA do produto código: '+Form7.ibDataSet4CODIGO.AsString);
             Abort;
           end;
         end else
@@ -4502,7 +4515,7 @@ begin
             end;
           except
             Form7.ibDataSet15.Edit;
-            Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o IVA do produto código: '+Form7.ibDataSet4CODIGO.AsString;
+            Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o IVA do produto código: '+Form7.ibDataSet4CODIGO.AsString);
             Abort;
           end;
         end else
