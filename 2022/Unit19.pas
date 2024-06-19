@@ -137,10 +137,12 @@ type
     edtJurosAno: TEdit;
     lblMulta: TLabel;
     chkFabricaProdSemQtd: TCheckBox;
+    Label38: TLabel;
+    Label39: TLabel;
+    ComboBoxOS: TComboBox;
     rbPrazoDias: TRadioButton;
     rbPrazoFixo: TRadioButton;
     cboDiaVencimento: TComboBox;
-    Label38: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
@@ -203,7 +205,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit14, Unit22, Unit12, Unit10, Unit2, Unit4,
-  Unit24, Unit8, uDialogs, uArquivosDAT;
+  Unit24, Unit8, uDialogs, uArquivosDAT, uSmallConsts;
 
 {$R *.DFM}
 
@@ -269,11 +271,11 @@ begin
 
   bMostra := ((cEstado <> 'SC') and (cEstado <> 'MG'));
   //Campos
-  ComboBoxBloqueto.Visible := bMostra;
+  //ComboBoxBloqueto.Visible := bMostra; Mauricio Parizotto 2024-05-10
   ComboBoxNF.Visible       := bMostra;
   ComboBoxNF2.Visible      := bMostra;
   //Labels
-  Label27.Visible := bMostra;
+  //Label27.Visible := bMostra; Mauricio Parizotto 2024-05-10
   Label26.Visible := bMostra;
   Label29.Visible := bMostra;
 end;
@@ -385,8 +387,8 @@ begin
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
     chkFabricaProdSemQtd.Checked  := ConfSistema.BD.Outras.FabricaProdutoSemQtd;
-
-    {Mauricio Parizotto 2024-04-23 Inicio}
+    ComboBoxOS.ItemIndex := ComboBoxOS.Items.IndexOf(ConfSistema.BD.Impressora.ImpressoraOS); // Mauricio Parizotto 2024-05-10
+	{Mauricio Parizotto 2024-04-23 Inicio}
     if ConfSistema.BD.Outras.TipoPrazo = 'dias' then
       rbPrazoDias.Checked := True
     else
@@ -457,7 +459,8 @@ begin
   Edit4.Text         := Mais4Ini.ReadString('mail','From','');
   Edit5.Text         := Mais4Ini.ReadString('mail','Name','');
   Edit6.Text         := Mais4Ini.ReadString('mail','Password','');
-  ComboBoxORCA.Text  := Mais4Ini.ReadString('Orçamento','Porta','Impressora padrão do windows');
+  //ComboBoxORCA.Text  := Mais4Ini.ReadString('Orçamento','Porta','Impressora padrão do windows');
+  ComboBoxORCA.ItemIndex := ComboBoxORCA.Items.IndexOf( Mais4Ini.ReadString('Orçamento','Porta','HTML') );
 
   if Mais4Ini.ReadString('mail','UseSSL','0') = '1' then
   begin
@@ -513,7 +516,7 @@ begin
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
     ConfSistema.BD.Outras.FabricaProdutoSemQtd := chkFabricaProdSemQtd.Checked;
-
+    ConfSistema.BD.Impressora.ImpressoraOS     := ComboBoxOS.Text; // Mauricio Parizotto 2024-05-10
     {Mauricio Parizotto 2024-04-23 Inicio}
     if rbPrazoFixo.Checked then
       ConfSistema.BD.Outras.TipoPrazo := 'fixo'
@@ -1363,13 +1366,20 @@ begin
   ComboBoxImpressora.Items.Clear;
   comboBoxNF.Items.clear;
   comboBoxNF2.Items.clear;
-  comboBoxORCA.Items.clear;
   comboBoxBloqueto.Items.clear;
 
-  Form19.ComboBoxORCA.Items.Add('Impressora padrão do windows');
-  Form19.ComboBoxORCA.Items.Add('PDF');
-  Form19.ComboBoxORCA.Items.Add('HTML');
-  Form19.ComboBoxORCA.Items.Add('TXT');
+  comboBoxORCA.Items.clear;
+  ComboBoxORCA.Items.Add(_cImpressoraPadrao);
+  ComboBoxORCA.Items.Add('PDF');
+  ComboBoxORCA.Items.Add('HTML');
+  ComboBoxORCA.Items.Add('TXT');
+
+  //Mauricio Parizotto 2024-05-10
+  ComboBoxOS.Items.Clear;
+  ComboBoxOS.Items.Add(_cImpressoraPadrao);
+  ComboBoxOS.Items.Add('PDF');
+  ComboBoxOS.Items.Add('HTML');
+  ComboBoxOS.Items.Add('TXT');
   
   GetTheListOfPrinters;
 
@@ -1392,7 +1402,10 @@ begin
   end;
   }
 
-  Form19.Button1Click(Sender);
+  Button1Click(Sender);
+
+  if (Form19.Visible) and (Form19.CanFocus) then
+    Form19.SetFocus;
 end;
 
 procedure TForm19.JurosEnter(Sender: TObject);

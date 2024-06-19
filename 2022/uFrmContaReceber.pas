@@ -453,8 +453,10 @@ begin
     fraCliente.CampoCodigoPesquisa           := 'NOME';
     fraCliente.sCampoDescricao               := 'NOME';
     fraCliente.sTabela                       := 'CLIFOR';
-    fraCliente.sFiltro                       := ' and coalesce(ATIVO,0)=0 ';
+    //fraCliente.sFiltro                       := ' and coalesce(ATIVO,0)=0 ';
+    fraCliente.sFiltro                       := '';
     fraCliente.CarregaDescricao;
+    fraCliente.sFiltro                       := ' and coalesce(ATIVO,0)=0 ';
   except
   end;
 

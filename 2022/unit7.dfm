@@ -19604,7 +19604,7 @@ object Form7: TForm7
         OnClick = ConfigurarobservaoparaOS1Click
       end
       object ConfigurarobservaoparaRecibo1: TMenuItem
-        Caption = 'Configurar observa'#231#227'o para Recibo'
+        Caption = 'Configurar observa'#231#227'o para Recibo de entrega'
         OnClick = ConfigurarobservaoparaRecibo1Click
       end
       object ConfigurarEtiqueta1: TMenuItem
@@ -21632,10 +21632,6 @@ object Form7: TForm7
     UniDirectional = False
     Left = 1008
     Top = 747
-  end
-  object PopupMenu2: TPopupMenu
-    Left = 736
-    Top = 144
   end
   object MainMenu00: TMainMenu
     Left = 816
