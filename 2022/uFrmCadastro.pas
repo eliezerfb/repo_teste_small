@@ -601,6 +601,9 @@ begin
 
   cboRelacaoCom.ItemIndex := cboRelacaoCom.Items.IndexOf(Form7.ibDataSet2CLIFOR.AsString);
 
+  if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
+    cboRelacaoCom.ItemIndex := cboRelacaoCom.Items.IndexOf('Vendedor');
+
   pnl_IE.Visible                  := (Length(trim(Form7.ibDAtaset2CGC.AsString)) = 18);
 
   Self.Caption := form7.ibDataSet2NOME.AsString;
