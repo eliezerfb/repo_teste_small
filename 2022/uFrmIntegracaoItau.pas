@@ -177,7 +177,7 @@ begin
   end;
 
 
-  MostraTelaProcessamento();
+  MostraTelaProcessamento('Processando informações...');
 
   try
     //Executa em Thread
