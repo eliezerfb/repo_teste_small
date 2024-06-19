@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, REST.JSON, System.Generics.Collections, REST.Json.Types,
-  System.IniFiles, Vcl.Forms;
+  System.IniFiles, Vcl.Forms, REST.Types;
 
 var
   AmbienteItauProd : boolean;
@@ -21,6 +21,13 @@ var
                              out client_id,access_key,secret_key : string;
                              out Mensagem:string):boolean;
 
+  function AutenticaoPDV(client_id,access_key,secret_key : string; out Mensagem : string) : boolean;
+  function GeraChavePixItau(client_id,access_key,secret_key,order_ref : string;
+                            Valor : double; out ChaveQRCode, order_id, Mensagem : string):boolean;
+  function GetStatusOrder(order_id:string):string;
+  function CancelOrder(order_id:string):boolean;
+  function RefreshTokenItau:boolean;
+
 
 
 
@@ -32,6 +39,17 @@ uses
   , uconstantes_chaves_privadas
   , uLogSistema;
 
+function GetURL : string;
+begin
+  if AmbienteItauProd then
+  begin
+    Result  := URL_ITAU;
+  end else
+  begin
+    Result  := URL_ITAU_H;
+  end;
+end;
+  
 procedure CarregaTipoAmbiente;
 var
   ArqINI: TIniFile;
@@ -50,7 +68,6 @@ var
   Authorization : TAuthorization;
   AuthorizationResp : TAuthorizationResp;
   StatusCode : integer;
-  Url : string;
 begin
   Result := False;
 
@@ -61,19 +78,18 @@ begin
     begin
       Authorization.AccessKey    := ITAU_access_key;
       Authorization.PosProductId := ITAU_pos_product_id;
-      Url                        := URL_ITAU;
     end else
     begin
       Authorization.AccessKey    := ITAU_access_key_H;
       Authorization.PosProductId := ITAU_pos_product_id_H;
-      Url                        := URL_ITAU_H;
     end;
 
+    
     sJson := TJson.ObjectToJsonString(Authorization);
 
     StatusCode := 0;
 
-    if RequisicaoItau(Url+'/pdvsysauth',sJson,sJsonRet,StatusCode,False) then
+    if RequisicaoItau(rmPOST,GetURL+'/pdvsysauth',sJson,sJsonRet,StatusCode,False) then
     begin
       try
         AuthorizationResp  := TJson.JsonToObject<TAuthorizationResp>(sJsonRet);
@@ -112,19 +128,10 @@ var
   store_pos_names_ar : TArray<string>;
   StatusCode : integer;
   sMensagem : string;
-  Url : string;
 begin
   Result := False;
 
   try
-    if AmbienteItauProd then
-    begin
-      Url    := URL_ITAU;
-    end else
-    begin
-      Url    := URL_ITAU_H;
-    end;
-
     registration_pub   := Tregistration_pub.Create;
 
     SetLength(store_pos_names_ar,1);
@@ -151,7 +158,7 @@ begin
 
     sJson := TJson.ObjectToJsonString(registration_pub,[TJsonOption.joIgnoreEmptyStrings]);
 
-    if RequisicaoItau(Url+'/registration/pub',sJson,sJsonRet,StatusCode) then
+    if RequisicaoItau(rmPOST,GetURL+'/registration/pub',sJson,sJsonRet,StatusCode) then
     begin
       try
         registration_pub_ret  := TJson.JsonToObject<Tregistration_pub_ret>(sJsonRet);
@@ -186,6 +193,212 @@ begin
     FreeandNil(registration_pub);
   end;
 end;
+
+function AutenticaoPDV(client_id,access_key,secret_key : string; out Mensagem : string) : boolean;
+var
+  sJson, sJsonRet : string;
+  pdvauth : Tpdvauth;
+  pdvauthRet : TpdvauthRet;
+  StatusCode : integer;
+begin
+  Result := False;
+
+  ITAU_ClientId  := client_id;
+  ITAU_AccessKey := access_key;
+  ITAU_SecretKey := secret_key;
+
+  pdvauth := Tpdvauth.Create;
+
+  try
+    pdvauth.AccessKey := access_key;
+    pdvauth.ClientId  := client_id;
+    pdvauth.SecretKey := secret_key;
+
+    sJson := TJson.ObjectToJsonString(pdvauth);
+
+    StatusCode := 0;
+
+    if RequisicaoItau(rmPOST,GetURL+'/pdvauth',sJson,sJsonRet,StatusCode,False) then
+    begin
+      try
+        pdvauthRet  := TJson.JsonToObject<TpdvauthRet>(sJsonRet);
+
+        ITAU_access_token  := pdvauthRet.AccessToken;
+        ITAU_refresh_token := pdvauthRet.RefreshToken;
+      finally
+        FreeAndNil(pdvauthRet);
+      end;
+
+      Result := True;
+    end else
+    begin
+      LogSistema('Falha na autenticação PDV. '+'Código: '+StatusCode.ToString+' '+sJsonRet);
+
+      Mensagem :='Falha na autenticação PDV.'+#13#10+
+                 'Verifique com o suporte técnico!'+#13#10+
+                 'Código: '+StatusCode.ToString;
+    end;
+  finally
+    FreeAndNil(pdvauth);
+  end;
+end;
+
+
+function GeraChavePixItau(client_id,access_key,secret_key,order_ref : string;
+                          Valor : double; out ChaveQRCode, order_id, Mensagem : string):boolean;
+var
+  sJson, sJsonRet : string;
+  OrderItemsAr : TArray<TOrderItems>;
+  Order : TOrder;
+  OrderRet : TOrderRet;
+  StatusCode : integer;  
+  sWallet  : string;
+begin
+  Result := False;
+
+  if ITAU_access_token = '' then
+  begin
+    if not AutenticaoPDV(client_id,access_key,secret_key,Mensagem) then
+      Exit;
+  end;
+
+  if AmbienteItauProd then
+  begin
+    sWallet  := 'pix';
+  end else
+  begin
+    sWallet  := 'shipay-pagador';
+  end;
+
+  try
+    SetLength(OrderItemsAr,1);
+    OrderItemsAr[0] := TOrderItems.Create;
+    OrderItemsAr[0].ItemTitle := order_ref;
+    OrderItemsAr[0].Quantity  := 1;
+    OrderItemsAr[0].UnitPrice := Valor;
+
+    Order := TOrder.Create;
+    Order.Items    := OrderItemsAr;
+    Order.OrderRef := order_ref;
+    Order.Wallet   := sWallet;
+    Order.Total    := Valor;
+
+    sJson := TJson.ObjectToJsonString(Order);
+
+    if RequisicaoItau(rmPOST,GetURL+'/order',sJson,sJsonRet,StatusCode) then
+    begin
+      try
+        OrderRet  := TJson.JsonToObject<TOrderRet>(sJsonRet);
+
+        ChaveQRCode := OrderRet.QrCodeText;
+        order_id    := OrderRet.OrderId;
+      finally
+        FreeAndNil(OrderRet);
+      end;
+
+      Result := True;
+    end else
+    begin
+      LogSistema('Falha ao gerar chave PIX. '+'Código: '+StatusCode.ToString+' '+sJsonRet);
+      
+      Mensagem :='Falha ao gerar chave PIX.'+#13#10+
+                 'Verifique com o suporte técnico!'+#13#10+
+                 'Código: '+StatusCode.ToString;
+    end;
+    
+    
+  finally
+    FreeAndNil(Order);
+    OrderItemsAr[0].Free;
+  end;
+end;
+
+function GetStatusOrder(order_id:string):string;
+var
+  sJsonRet : string;
+  StatusCode : integer;
+  RetornoPagPIX : TRetornoPagPIX;
+begin
+  Result := '';
+
+  try
+    if RequisicaoItau(rmGET,GetURL+'/order/'+order_id,'',sJsonRet,StatusCode) then
+    begin
+      try
+        RetornoPagPIX  := TJson.JsonToObject<TRetornoPagPIX>(sJsonRet);
+
+        if order_id = RetornoPagPIX.OrderId then
+          Result := RetornoPagPIX.Status;
+      finally
+        FreeAndNil(RetornoPagPIX);
+      end;
+    end;
+  except
+  end;
+end;
+
+
+function CancelOrder(order_id:string):boolean;
+var
+  sJsonRet : string;
+  StatusCode : integer;
+  OrderCancelRet : TOrderCancelRet;
+begin
+  Result := False;
+
+  try
+    if RequisicaoItau(rmDELETE,GetURL+'/order/'+order_id,'',sJsonRet,StatusCode) then
+    begin
+      try
+        OrderCancelRet  := TJson.JsonToObject<TOrderCancelRet>(sJsonRet);
+
+        if order_id = OrderCancelRet.OrderId then
+          Result := True;
+      finally
+        FreeAndNil(OrderCancelRet);
+      end;
+    end;
+  except
+  end;
+
+end;
+
+function RefreshTokenItau:boolean;
+var
+  sJsonRet : string;
+  StatusCode : integer;
+  pdvauthRet : TpdvauthRet;
+  Mensagem : string;
+begin
+  Result := False;
+
+  try
+    ITAU_access_token := ITAU_refresh_token;
+  
+    if RequisicaoItau(rmPOST,GetURL+'/refresh-token','',sJsonRet,StatusCode) then
+    begin
+      try
+        pdvauthRet  := TJson.JsonToObject<TpdvauthRet>(sJsonRet);
+
+        ITAU_access_token  := pdvauthRet.AccessToken;
+        ITAU_refresh_token := pdvauthRet.RefreshToken;
+
+        Result := True;
+      finally
+        FreeAndNil(pdvauthRet);
+      end;
+    end else
+    begin
+      ITAU_access_token  := '';
+      ITAU_refresh_token := '';
+
+      //Tenta autenticar novamente se refresh não funcionou
+      Result := AutenticaoPDV(ITAU_ClientId, ITAU_AccessKey, ITAU_SecretKey, Mensagem);
+    end;
+  except
+  end;
+end;
+
 
 end.
 

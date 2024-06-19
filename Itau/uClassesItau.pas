@@ -91,8 +91,6 @@ type
     property UserFullName: string read FUserFullName write FUserFullName;
     property UserPhone: string read FUserPhone write FUserPhone;
     property RetailChainId: string read FRetailChainId write FRetailChainId;
-  public
-    destructor Destroy; override;
   end;
 
 type
@@ -132,24 +130,149 @@ type
     property CustomerSecretKey: string read FCustomerSecretKey write FCustomerSecretKey;
     property RegistrationId: string read FRegistrationId write FRegistrationId;
     property StoreId: string read FStoreId write FStoreId;
-  public
-    destructor Destroy; override;
+  end;
+
+
+type
+  Tpdvauth = class
+  private
+    [JSONName('access_key')]
+    FAccessKey: string;
+    [JSONName('client_id')]
+    FClientId: string;
+    [JSONName('secret_key')]
+    FSecretKey: string;
+  published
+    property AccessKey: string read FAccessKey write FAccessKey;
+    property ClientId: string read FClientId write FClientId;
+    property SecretKey: string read FSecretKey write FSecretKey;
+  end;
+
+type
+  TpdvauthRet = class
+  private
+    [JSONName('access_token')]
+    FAccessToken: string;
+    [JSONName('refresh_token')]
+    FRefreshToken: string;
+  published
+    property AccessToken: string read FAccessToken write FAccessToken;
+    property RefreshToken: string read FRefreshToken write FRefreshToken;
+  end;
+
+
+type
+  TOrderItems = class
+  private
+    [JSONName('item_title')]
+    FItemTitle: string;
+    FQuantity: Double;
+    [JSONName('unit_price')]
+    FUnitPrice: Double;
+  published
+    property ItemTitle: string read FItemTitle write FItemTitle;
+    property Quantity: Double read FQuantity write FQuantity;
+    property UnitPrice: Double read FUnitPrice write FUnitPrice;
+  end;
+
+type
+  TOrder = class
+  private
+    [JSONName('items')]
+    FItems: TArray<TOrderItems>;
+    [JSONName('order_ref')]
+    FOrderRef: string;
+    FTotal: Double;
+    FWallet: string;
+  published
+    property Items: TArray<TOrderItems> read FItems write FItems;
+    property OrderRef: string read FOrderRef write FOrderRef;
+    property Total: Double read FTotal write FTotal;
+    property Wallet: string read FWallet write FWallet;
+  end;
+
+
+
+type
+  TOrderRet = class
+  private
+    [JSONName('deep_link')]
+    FDeepLink: string;
+    [JSONName('order_id')]
+    FOrderId: string;
+    [JSONName('pix_dict_key')]
+    FPixDictKey: string;
+    [JSONName('pix_psp')]
+    FPixPsp: string;
+    [JSONName('qr_code')]
+    FQrCode: string;
+    [JSONName('qr_code_text')]
+    FQrCodeText: string;
+    FStatus: string;
+    FWallet: string;
+  published
+    property DeepLink: string read FDeepLink write FDeepLink;
+    property OrderId: string read FOrderId write FOrderId;
+    property PixDictKey: string read FPixDictKey write FPixDictKey;
+    property PixPsp: string read FPixPsp write FPixPsp;
+    property QrCode: string read FQrCode write FQrCode;
+    property QrCodeText: string read FQrCodeText write FQrCodeText;
+    property Status: string read FStatus write FStatus;
+    property Wallet: string read FWallet write FWallet;
+  end;
+
+type
+  TRetornoPagPIX = class
+  private
+    [JSONName('created_at')]
+    FCreatedAt: string;
+    [JSONName('external_id')]
+    FExternalId: string;
+    [JSONName('order_id')]
+    FOrderId: string;
+    [JSONName('paid_amount')]
+    FPaidAmount: Double;
+    [JSONName('payment_date')]
+    FPaymentDate: string;
+    [JSONName('pix_psp')]
+    FPixPsp: string;
+    FStatus: string;
+    [JSONName('total_order')]
+    FTotalOrder: Double;
+    [JSONName('updated_at')]
+    FUpdatedAt: string;
+    FWallet: string;
+    [JSONName('wallet_payment_id')]
+    FWalletPaymentId: string;
+  published
+    property CreatedAt: string read FCreatedAt write FCreatedAt;
+    property ExternalId: string read FExternalId write FExternalId;
+    property OrderId: string read FOrderId write FOrderId;
+    property PaidAmount: Double read FPaidAmount write FPaidAmount;
+    property PaymentDate: string read FPaymentDate write FPaymentDate;
+    property PixPsp: string read FPixPsp write FPixPsp;
+    property Status: string read FStatus write FStatus;
+    property TotalOrder: Double read FTotalOrder write FTotalOrder;
+    property UpdatedAt: string read FUpdatedAt write FUpdatedAt;
+    property Wallet: string read FWallet write FWallet;
+    property WalletPaymentId: string read FWalletPaymentId write FWalletPaymentId;
+  end;
+
+
+type
+  TOrderCancelRet = class
+  private
+    FMessage: string;
+    [JSONName('order_id')]
+    FOrderId: string;
+    FStatus: string;
+  published
+    property Message: string read FMessage write FMessage;
+    property OrderId: string read FOrderId write FOrderId;
+    property Status: string read FStatus write FStatus;
   end;
 
 implementation
 
-{ Tregistration_pub }
-
-destructor Tregistration_pub.Destroy;
-begin
-  inherited;
-end;
-
-{ Tregistration_pub_ret }
-
-destructor Tregistration_pub_ret.Destroy;
-begin
-  inherited;
-end;
 
 end.

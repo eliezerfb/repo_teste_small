@@ -12,12 +12,15 @@ uses
 
 var
   ITAU_access_token, ITAU_refresh_token : string;
+  ITAU_ClientId, ITAU_AccessKey, ITAU_SecretKey : string;
 
-  function RequisicaoItau(EndPoint:string; vBody : string; out Resposta : string; out StatusCode : integer; Authorization : Boolean = True) : Boolean;
+  function RequisicaoItau(vMethod : TRESTRequestMethod; EndPoint:string; vBody : string; out Resposta : string; out StatusCode : integer; Authorization : Boolean = True) : Boolean;
 
 implementation
 
-function RequisicaoItau(EndPoint:string; vBody : string; out Resposta : string; out StatusCode : integer; Authorization : Boolean = True) : Boolean;
+uses uClassesItau, uIntegracaoItau;
+
+function RequisicaoItau(vMethod : TRESTRequestMethod; EndPoint:string; vBody : string; out Resposta : string; out StatusCode : integer; Authorization : Boolean = True) : Boolean;
 var
   FRESTClient: TRESTClient;
   FRESTRequest: TRESTRequest;
@@ -38,17 +41,20 @@ begin
     FRESTClient.BaseURL     :=  EndPoint;
     FRESTClient.ContentType := 'application/json';
     //Método
-    FRESTRequest.Method := rmPOST;
+    FRESTRequest.Method := vMethod;
     {$Endregion}
 
     //Body
-    with FRESTRequest.Params.AddItem do
+    if vBody <> '' then
     begin
-      ContentTypeStr := 'application/json';
-      Options := [];
-      Kind    := pkREQUESTBODY;
-      Name    := 'body';
-      Value   := vBody;
+      with FRESTRequest.Params.AddItem do
+      begin
+        ContentTypeStr := 'application/json';
+        Options := [];
+        Kind    := pkREQUESTBODY;
+        Name    := 'body';
+        Value   := vBody;
+      end;
     end;
 
     //Authorization
@@ -58,14 +64,27 @@ begin
       FRESTRequest.Params.ParameterByName('Authorization').Options := [poDoNotEncode];
     end;
 
-    FRESTRequest.Execute;
-    if FRESTResponse.StatusCode <> 200 then
+    try
+      FRESTRequest.Execute;
+    except
+    end;
+
+    if FRESTResponse.StatusCode = 200 then
     begin
-      Resposta := FRESTRequest.Response.JSONValue.ToString;
+      Resposta     := FRESTRequest.Response.JSONValue.ToString;
+      Result       := True;
     end else
     begin
-      Resposta := FRESTRequest.Response.JSONValue.ToString;
-      Result := True;
+      try
+        Resposta := FRESTRequest.Response.JSONValue.ToString;
+
+        if (FRESTResponse.StatusCode = 401) and not(Authorization) then
+        begin
+          if RefreshTokenItau then
+            Result := RequisicaoItau(vMethod, EndPoint, vBody, Resposta, StatusCode, Authorization);
+        end;
+      except
+      end;
     end;
 
     StatusCode := FRESTResponse.StatusCode;
@@ -75,5 +94,6 @@ begin
     FreeAndNil(FRESTClient);
   end;
 end;
+
 
 end.

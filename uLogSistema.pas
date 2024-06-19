@@ -6,7 +6,6 @@ uses
   SysUtils
   , Windows
   , Forms
-  , uArquivosDAT
   {$IFDEF VER150}
   , SmallFunc
   {$ELSE}
