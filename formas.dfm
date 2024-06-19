@@ -188,7 +188,6 @@ object FormasP: TFormasP
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 14
-    ExplicitWidth = 1008
     inline Frame_teclado1: TFrame_teclado
       Left = -5
       Top = 0
@@ -306,6 +305,7 @@ object FormasP: TFormasP
     Width = 202
     Height = 21
     TabOrder = 19
+    OnChange = ComboBox5Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -327,6 +327,7 @@ object FormasP: TFormasP
     Width = 202
     Height = 21
     TabOrder = 20
+    OnChange = ComboBox6Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -348,6 +349,7 @@ object FormasP: TFormasP
     Width = 202
     Height = 21
     TabOrder = 21
+    OnChange = ComboBox7Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -369,6 +371,7 @@ object FormasP: TFormasP
     Width = 202
     Height = 21
     TabOrder = 22
+    OnChange = ComboBox8Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -390,6 +393,7 @@ object FormasP: TFormasP
     Width = 202
     Height = 21
     TabOrder = 23
+    OnChange = ComboBox9Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -411,6 +415,7 @@ object FormasP: TFormasP
     Width = 202
     Height = 21
     TabOrder = 24
+    OnChange = ComboBox10Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -432,6 +437,7 @@ object FormasP: TFormasP
     Width = 202
     Height = 21
     TabOrder = 25
+    OnChange = ComboBox11Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -453,6 +459,7 @@ object FormasP: TFormasP
     Width = 202
     Height = 21
     TabOrder = 26
+    OnChange = ComboBox12Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -486,7 +493,7 @@ object FormasP: TFormasP
   object chkReceberExtra1: TCheckBox
     Left = 691
     Top = 133
-    Width = 137
+    Width = 127
     Height = 17
     Caption = 'Lan'#231'a Contas Receber'
     TabOrder = 28
@@ -494,8 +501,8 @@ object FormasP: TFormasP
   end
   object chkReceberExtra2: TCheckBox
     Left = 691
-    Top = 157
-    Width = 137
+    Top = 158
+    Width = 127
     Height = 17
     Caption = 'Lan'#231'a Contas Receber'
     TabOrder = 29
@@ -503,8 +510,8 @@ object FormasP: TFormasP
   end
   object chkReceberExtra3: TCheckBox
     Left = 691
-    Top = 182
-    Width = 137
+    Top = 183
+    Width = 127
     Height = 17
     Caption = 'Lan'#231'a Contas Receber'
     TabOrder = 30
@@ -512,8 +519,8 @@ object FormasP: TFormasP
   end
   object chkReceberExtra4: TCheckBox
     Left = 691
-    Top = 207
-    Width = 137
+    Top = 208
+    Width = 127
     Height = 17
     Caption = 'Lan'#231'a Contas Receber'
     TabOrder = 31
@@ -521,8 +528,8 @@ object FormasP: TFormasP
   end
   object chkReceberExtra5: TCheckBox
     Left = 691
-    Top = 229
-    Width = 137
+    Top = 232
+    Width = 127
     Height = 17
     Caption = 'Lan'#231'a Contas Receber'
     TabOrder = 32
@@ -530,8 +537,8 @@ object FormasP: TFormasP
   end
   object chkReceberExtra6: TCheckBox
     Left = 691
-    Top = 256
-    Width = 137
+    Top = 257
+    Width = 127
     Height = 17
     Caption = 'Lan'#231'a Contas Receber'
     TabOrder = 33
@@ -540,7 +547,7 @@ object FormasP: TFormasP
   object chkReceberExtra7: TCheckBox
     Left = 691
     Top = 282
-    Width = 137
+    Width = 127
     Height = 17
     Caption = 'Lan'#231'a Contas Receber'
     TabOrder = 34
@@ -548,8 +555,8 @@ object FormasP: TFormasP
   end
   object chkReceberExtra8: TCheckBox
     Left = 691
-    Top = 306
-    Width = 137
+    Top = 307
+    Width = 127
     Height = 17
     Caption = 'Lan'#231'a Contas Receber'
     TabOrder = 35
@@ -563,5 +570,101 @@ object FormasP: TFormasP
     Caption = 'Usando TEF para carteiras digitais (TEF  SITEF e PAY&&GO)'
     TabOrder = 36
     Visible = False
+  end
+  object cboPixExtra1: TComboBox
+    Left = 821
+    Top = 131
+    Width = 91
+    Height = 21
+    TabOrder = 37
+    Visible = False
+    Items.Strings = (
+      'PIX Manual'
+      'PIX Est'#225'tico'
+      'PIX Din'#226'mico')
+  end
+  object cboPixExtra2: TComboBox
+    Left = 821
+    Top = 156
+    Width = 91
+    Height = 21
+    TabOrder = 38
+    Visible = False
+    Items.Strings = (
+      'PIX Manual'
+      'PIX Est'#225'tico'
+      'PIX Din'#226'mico')
+  end
+  object cboPixExtra3: TComboBox
+    Left = 821
+    Top = 181
+    Width = 91
+    Height = 21
+    TabOrder = 39
+    Visible = False
+    Items.Strings = (
+      'PIX Manual'
+      'PIX Est'#225'tico'
+      'PIX Din'#226'mico')
+  end
+  object cboPixExtra4: TComboBox
+    Left = 821
+    Top = 206
+    Width = 91
+    Height = 21
+    TabOrder = 40
+    Visible = False
+    Items.Strings = (
+      'PIX Manual'
+      'PIX Est'#225'tico'
+      'PIX Din'#226'mico')
+  end
+  object cboPixExtra5: TComboBox
+    Left = 821
+    Top = 230
+    Width = 91
+    Height = 21
+    TabOrder = 41
+    Visible = False
+    Items.Strings = (
+      'PIX Manual'
+      'PIX Est'#225'tico'
+      'PIX Din'#226'mico')
+  end
+  object cboPixExtra6: TComboBox
+    Left = 821
+    Top = 255
+    Width = 91
+    Height = 21
+    TabOrder = 42
+    Visible = False
+    Items.Strings = (
+      'PIX Manual'
+      'PIX Est'#225'tico'
+      'PIX Din'#226'mico')
+  end
+  object cboPixExtra7: TComboBox
+    Left = 821
+    Top = 280
+    Width = 91
+    Height = 21
+    TabOrder = 43
+    Visible = False
+    Items.Strings = (
+      'PIX Manual'
+      'PIX Est'#225'tico'
+      'PIX Din'#226'mico')
+  end
+  object cboPixExtra8: TComboBox
+    Left = 821
+    Top = 305
+    Width = 91
+    Height = 21
+    TabOrder = 44
+    Visible = False
+    Items.Strings = (
+      'PIX Manual'
+      'PIX Est'#225'tico'
+      'PIX Din'#226'mico')
   end
 end

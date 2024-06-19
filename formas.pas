@@ -68,6 +68,14 @@ type
     chkReceberExtra7: TCheckBox;
     chkReceberExtra8: TCheckBox;
     chkUsandoTefCarteirasDigitais: TCheckBox;
+    cboPixExtra1: TComboBox;
+    cboPixExtra2: TComboBox;
+    cboPixExtra3: TComboBox;
+    cboPixExtra4: TComboBox;
+    cboPixExtra5: TComboBox;
+    cboPixExtra6: TComboBox;
+    cboPixExtra7: TComboBox;
+    cboPixExtra8: TComboBox;
     procedure OkClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure Edit5KeyDown(Sender: TObject; var Key: Word;
@@ -76,9 +84,18 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure ComboBox5Change(Sender: TObject);
+    procedure ComboBox6Change(Sender: TObject);
+    procedure ComboBox7Change(Sender: TObject);
+    procedure ComboBox8Change(Sender: TObject);
+    procedure ComboBox9Change(Sender: TObject);
+    procedure ComboBox10Change(Sender: TObject);
+    procedure ComboBox11Change(Sender: TObject);
+    procedure ComboBox12Change(Sender: TObject);
   private
     { Private declarations }
-    sSecaoFrente: String; // Sandro Silva 2021-07-27
+    sSecaoFrente: String;
+    procedure CarregaInformacoes; // Sandro Silva 2021-07-27
   public
     { Public declarations }
   end;
@@ -291,6 +308,16 @@ begin
     else
       Mais1Ini.WriteString(SECAO_65, CHAVE_FORMAS_CONFIGURADAS, 'Não');
 
+    {Mauricio Parizotto 2024-06-14 Inicio}
+    Mais1Ini.WriteString(SECAO_65, 'Tipo Pix 1', cboPixExtra1.Text);
+    Mais1Ini.WriteString(SECAO_65, 'Tipo Pix 2', cboPixExtra2.Text);
+    Mais1Ini.WriteString(SECAO_65, 'Tipo Pix 3', cboPixExtra3.Text);
+    Mais1Ini.WriteString(SECAO_65, 'Tipo Pix 4', cboPixExtra4.Text);
+    Mais1Ini.WriteString(SECAO_65, 'Tipo Pix 5', cboPixExtra5.Text);
+    Mais1Ini.WriteString(SECAO_65, 'Tipo Pix 6', cboPixExtra6.Text);
+    Mais1Ini.WriteString(SECAO_65, 'Tipo Pix 7', cboPixExtra7.Text);
+    Mais1Ini.WriteString(SECAO_65, 'Tipo Pix 8', cboPixExtra8.Text);
+    {Mauricio Parizotto 2024-06-14 Fim}
   end;
 
   {Sandro Silva 2021-08-30 inicio}
@@ -311,6 +338,8 @@ begin
 end;
 
 procedure TFormasP.FormActivate(Sender: TObject);
+begin
+(* Mauricio Parizotto 2024-06-14
 var
   Mais1Ini: TIniFile;
   // Sandro Silva 2021-07-27 sSecaoFrente: String;
@@ -370,7 +399,6 @@ begin
     if AllTrim(Edit10.Text) <> '' then ComboBox10.Text := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Ordem forma extra 6','10')) else ComboBox10.Text := '';
     if AllTrim(Edit11.Text) <> '' then ComboBox11.Text := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Ordem forma extra 7','11')) else ComboBox11.Text := '';
     if AllTrim(Edit12.Text) <> '' then ComboBox12.Text := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Ordem forma extra 8','12')) else ComboBox12.Text := '';
-    //
   end
   else
   begin // Configuração para NFC-e/CF-e-SAT
@@ -481,7 +509,7 @@ begin
   end;
 
   Mais1ini.Free;
-  //
+  *)
 end;
 
 procedure TFormasP.Edit5KeyDown(Sender: TObject; var Key: Word;
@@ -499,6 +527,62 @@ begin
   begin
     Perform(Wm_NextDlgCtl,0,0);
   end;
+end;
+
+procedure TFormasP.ComboBox10Change(Sender: TObject);
+begin
+  cboPixExtra6.Visible := Copy(ComboBox10.Text,1,2) = '17';
+  if (cboPixExtra6.Visible) and (cboPixExtra6.ItemIndex = -1) then
+    cboPixExtra6.ItemIndex := 0;
+end;
+
+procedure TFormasP.ComboBox11Change(Sender: TObject);
+begin
+  cboPixExtra7.Visible := Copy(ComboBox11.Text,1,2) = '17';
+  if (cboPixExtra7.Visible) and (cboPixExtra7.ItemIndex = -1) then
+    cboPixExtra7.ItemIndex := 0;
+end;
+
+procedure TFormasP.ComboBox12Change(Sender: TObject);
+begin
+  cboPixExtra8.Visible := Copy(ComboBox12.Text,1,2) = '17';
+  if (cboPixExtra8.Visible) and (cboPixExtra8.ItemIndex = -1) then
+    cboPixExtra8.ItemIndex := 0;
+end;
+
+procedure TFormasP.ComboBox5Change(Sender: TObject);
+begin
+  cboPixExtra1.Visible := Copy(ComboBox5.Text,1,2) = '17';
+  if (cboPixExtra1.Visible) and (cboPixExtra1.ItemIndex = -1) then
+    cboPixExtra1.ItemIndex := 0;
+end;
+
+procedure TFormasP.ComboBox6Change(Sender: TObject);
+begin
+  cboPixExtra2.Visible := Copy(ComboBox6.Text,1,2) = '17';
+  if (cboPixExtra2.Visible) and (cboPixExtra2.ItemIndex = -1) then
+    cboPixExtra2.ItemIndex := 0;
+end;
+
+procedure TFormasP.ComboBox7Change(Sender: TObject);
+begin
+  cboPixExtra3.Visible := Copy(ComboBox7.Text,1,2) = '17';
+  if (cboPixExtra3.Visible) and (cboPixExtra3.ItemIndex = -1) then
+    cboPixExtra3.ItemIndex := 0;
+end;
+
+procedure TFormasP.ComboBox8Change(Sender: TObject);
+begin
+  cboPixExtra4.Visible := Copy(ComboBox8.Text,1,2) = '17';
+  if (cboPixExtra4.Visible) and (cboPixExtra4.ItemIndex = -1) then
+    cboPixExtra4.ItemIndex := 0;
+end;
+
+procedure TFormasP.ComboBox9Change(Sender: TObject);
+begin
+  cboPixExtra5.Visible := Copy(ComboBox9.Text,1,2) = '17';
+  if (cboPixExtra5.Visible) and (cboPixExtra5.ItemIndex = -1) then
+    cboPixExtra5.ItemIndex := 0;
 end;
 
 procedure TFormasP.Edit5Exit(Sender: TObject);
@@ -606,6 +690,9 @@ begin
     {Sandro Silva 2021-07-27 fim}
 
   end;
+
+  CarregaInformacoes;
+
 end;
 
 procedure TFormasP.FormCreate(Sender: TObject);
@@ -628,11 +715,214 @@ begin
 
   //Sandro Silva 2024.01.22 FormasP.Top    := Screen.Height - FormasP.Height div 2;
   //Sandro Silva 2024.01.22 FormasP.Left   := Screen.Width - FormasP.Width div 2;
+
+  //Mauricio Parizotto 2024-06-14
+  cboPixExtra1.Left := chkReceberExtra1.Left + 180;
+  cboPixExtra2.Left := chkReceberExtra2.Left + 180;
+  cboPixExtra3.Left := chkReceberExtra3.Left + 180;
+  cboPixExtra4.Left := chkReceberExtra4.Left + 180;
+  cboPixExtra5.Left := chkReceberExtra5.Left + 180;
+  cboPixExtra6.Left := chkReceberExtra6.Left + 180;
+  cboPixExtra7.Left := chkReceberExtra7.Left + 180;
+  cboPixExtra8.Left := chkReceberExtra8.Left + 180;
 end;
 
 procedure TFormasP.Button1Click(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TFormasP.CarregaInformacoes;
+var
+  Mais1Ini: TIniFile;
+  // Sandro Silva 2021-07-27 sSecaoFrente: String;
+  function ComboIndex(ComboBox: TComboBox; sTexto: String): Integer;
+  var
+    iItem: Integer;
+  begin
+    Result := -1;
+    for iItem := 0 to ComboBox.Items.Count - 1 do
+    begin
+      if Copy(ComboBox.Items.Strings[iItem], 1, 2) = Right('0' + sTexto, 2) then
+      begin
+        Result := iItem;
+        Break;
+      end;
+    end;
+  end;
+begin
+  //
+  //
+  Mais1ini    := TIniFile.Create('FRENTE.INI');
+  //
+  Edit1.Text  := Mais1Ini.ReadString('Frente de caixa','Forma Cartao'   ,'Cartao');
+  Edit2.Text  := Mais1Ini.ReadString('Frente de caixa','Forma A prazo'  ,'Prazo');
+  Edit3.Text  := Mais1Ini.ReadString('Frente de caixa','Forma Cheque'   ,'Cheque');
+  Edit4.Text  := Mais1Ini.ReadString('Frente de caixa','Forma Dinheiro' ,'Dinheiro');
+  //
+  {Sandro Silva 2021-07-27 inicio
+  if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') then
+    sSecaoFrente := SECAO_65
+  else
+    sSecaoFrente := 'Frente de caixa';
+  }
+  sSecaoFrente := Form1.SecaoFrente();
+
+  Edit5.Text  := Mais1Ini.ReadString(sSecaoFrente,'Forma extra 1','');
+  Edit6.Text  := Mais1Ini.ReadString(sSecaoFrente,'Forma extra 2','');
+  Edit7.Text  := Mais1Ini.ReadString(sSecaoFrente,'Forma extra 3','');
+  Edit8.Text  := Mais1Ini.ReadString(sSecaoFrente,'Forma extra 4','');
+  Edit9.Text  := Mais1Ini.ReadString(sSecaoFrente,'Forma extra 5','');
+  Edit10.Text := Mais1Ini.ReadString(sSecaoFrente,'Forma extra 6','');
+  Edit11.Text := Mais1Ini.ReadString(sSecaoFrente,'Forma extra 7','');
+  Edit12.Text := Mais1Ini.ReadString(sSecaoFrente,'Forma extra 8','');
+
+  if (Form1.sModeloECF_Reserva <> '59') and (Form1.sModeloECF_Reserva <> '65') and (Form1.sModeloECF_Reserva <> '99') then
+  begin
+    ComboBox2.Text  := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Prazo'    ,'4'));
+    ComboBox1.Text  := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Cartao'   ,'3'));
+    ComboBox3.Text  := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Cheque'   ,'2'));
+    ComboBox4.Text  := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','dinheiro' ,'1'));
+
+    if AllTrim(Edit5.Text)  <> '' then ComboBox5.Text  := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Ordem forma extra 1','5' )) else ComboBox5.Text  := '';
+    if AllTrim(Edit6.Text)  <> '' then ComboBox6.Text  := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Ordem forma extra 2','6' )) else ComboBox6.Text  := '';
+    if AllTrim(Edit7.Text)  <> '' then ComboBox7.Text  := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Ordem forma extra 3','7' )) else ComboBox7.Text  := '';
+    if AllTrim(Edit8.Text)  <> '' then ComboBox8.Text  := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Ordem forma extra 4','8' )) else ComboBox8.Text  := '';
+    if AllTrim(Edit9.Text)  <> '' then ComboBox9.Text  := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Ordem forma extra 5','9' )) else ComboBox9.Text  := '';
+    if AllTrim(Edit10.Text) <> '' then ComboBox10.Text := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Ordem forma extra 6','10')) else ComboBox10.Text := '';
+    if AllTrim(Edit11.Text) <> '' then ComboBox11.Text := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Ordem forma extra 7','11')) else ComboBox11.Text := '';
+    if AllTrim(Edit12.Text) <> '' then ComboBox12.Text := LimpaNumero(Mais1Ini.ReadString('Frente de caixa','Ordem forma extra 8','12')) else ComboBox12.Text := '';
+  end
+  else
+  begin // Configuração para NFC-e/CF-e-SAT
+    ComboBox2.ItemIndex  := ComboIndex(ComboBox2, '05'); // Prazo
+    if ComboBox2.ItemIndex = -1 then
+      ComboBox2.Text  := DESC_FORMA_05_PRAZO;
+
+    ComboBox1.ItemIndex  := ComboIndex(ComboBox1, '03'); // Cartão Débito/Crédito
+    if ComboBox1.ItemIndex = -1 then
+      ComboBox1.Text  := DESC_FORMA_03_CARTAO;
+
+    ComboBox3.ItemIndex  := ComboIndex(ComboBox3, '02'); // Cheque
+    if ComboBox3.ItemIndex = -1 then
+      ComboBox3.Text  := DESC_FORMA_02_CHEQUE;
+
+    ComboBox4.ItemIndex  := ComboIndex(ComboBox4, '01'); // Dinheiro
+    if ComboBox4.ItemIndex = -1 then
+      ComboBox4.Text  := DESC_FORMA_01_DINHEIRO;
+
+    if AllTrim(Edit5.Text)  <> '' then ComboBox5.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 1','5' )) else ComboBox5.Text  := '';
+    if AllTrim(Edit6.Text)  <> '' then ComboBox6.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 2','6' )) else ComboBox6.Text  := '';
+    if AllTrim(Edit7.Text)  <> '' then ComboBox7.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 3','7' )) else ComboBox7.Text  := '';
+    if AllTrim(Edit8.Text)  <> '' then ComboBox8.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 4','8' )) else ComboBox8.Text  := '';
+    if AllTrim(Edit9.Text)  <> '' then ComboBox9.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 5','9' )) else ComboBox9.Text  := '';
+    if AllTrim(Edit10.Text) <> '' then ComboBox10.Text := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 6','10')) else ComboBox10.Text := '';
+    if AllTrim(Edit11.Text) <> '' then ComboBox11.Text := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 7','11')) else ComboBox11.Text := '';
+    if AllTrim(Edit12.Text) <> '' then ComboBox12.Text := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 8','12')) else ComboBox12.Text := '';
+
+    if AllTrim(Edit5.Text)  <> '' then
+    begin
+      if LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 1', '')) <> '' then
+        ComboBox5.ItemIndex  := ComboIndex(ComboBox5, Right('0' + LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 1', '')), 2));
+      if ComboBox5.ItemIndex = -1 then
+        ComboBox5.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 1','' )) ;
+    end
+    else
+      ComboBox5.Text  := '';
+
+    if AllTrim(Edit6.Text)  <> '' then
+    begin
+      if LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 2', '')) <> '' then
+        ComboBox6.ItemIndex  := ComboIndex(ComboBox6, Right('0' + LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 2', '')), 2));
+      if ComboBox6.ItemIndex = -1 then
+        ComboBox6.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 2','' )) ;
+    end
+    else
+      ComboBox6.Text  := '';
+
+    if AllTrim(Edit7.Text)  <> '' then
+    begin
+      if LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 3', '')) <> '' then
+        ComboBox7.ItemIndex  := ComboIndex(ComboBox7, Right('0' + LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 3', '')), 2));
+      if ComboBox7.ItemIndex = -1 then
+        ComboBox7.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 3','' )) ;
+    end
+    else
+      ComboBox7.Text  := '';
+
+    if AllTrim(Edit8.Text)  <> '' then
+    begin
+      if LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 4', '')) <> '' then
+        ComboBox8.ItemIndex  := ComboIndex(ComboBox8, Right('0' + LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 4', '')), 2));
+      if ComboBox8.ItemIndex = -1 then
+        ComboBox8.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 4','' )) ;
+    end
+    else
+      ComboBox8.Text  := '';
+
+    if AllTrim(Edit9.Text)  <> '' then
+    begin
+      if LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 5', '')) <> '' then
+        ComboBox9.ItemIndex  := ComboIndex(ComboBox9, Right('0' + LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 5', '')), 2));
+      if ComboBox9.ItemIndex = -1 then
+        ComboBox9.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 5','' )) ;
+    end
+    else
+      ComboBox9.Text  := '';
+
+    if AllTrim(Edit10.Text) <> '' then
+    begin
+      if LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 6', '')) <> '' then
+        ComboBox10.ItemIndex  := ComboIndex(ComboBox10, Right('0' + LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 6', '')), 2));
+      if ComboBox10.ItemIndex = -1 then
+        ComboBox10.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 6','' )) ;
+    end
+    else
+      ComboBox10.Text := '';
+
+    if AllTrim(Edit11.Text) <> '' then
+    begin
+      if LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 7', '')) <> '' then
+        ComboBox11.ItemIndex  := ComboIndex(ComboBox11, Right('0' + LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 7', '')), 2));
+      if ComboBox11.ItemIndex = -1 then
+        ComboBox11.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 7','' )) ;
+    end
+    else
+      ComboBox11.Text := '';
+
+    if AllTrim(Edit12.Text) <> '' then
+    begin
+      if LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 8', '')) <> '' then
+        ComboBox12.ItemIndex  := ComboIndex(ComboBox12, Right('0' + LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 8', '')), 2));
+      if ComboBox12.ItemIndex = -1 then
+        ComboBox12.Text  := LimpaNumero(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra 8','' )) ;
+    end
+    else
+      ComboBox12.Text := '';
+
+    {Mauricio Parizotto 2024-06-14 Inicio}
+    cboPixExtra1.ItemIndex := cboPixExtra1.Items.IndexOf(Mais1Ini.ReadString(SECAO_65,'Tipo Pix 1', ''));
+    cboPixExtra2.ItemIndex := cboPixExtra2.Items.IndexOf(Mais1Ini.ReadString(SECAO_65,'Tipo Pix 2', ''));
+    cboPixExtra3.ItemIndex := cboPixExtra3.Items.IndexOf(Mais1Ini.ReadString(SECAO_65,'Tipo Pix 3', ''));
+    cboPixExtra4.ItemIndex := cboPixExtra4.Items.IndexOf(Mais1Ini.ReadString(SECAO_65,'Tipo Pix 4', ''));
+    cboPixExtra5.ItemIndex := cboPixExtra5.Items.IndexOf(Mais1Ini.ReadString(SECAO_65,'Tipo Pix 5', ''));
+    cboPixExtra6.ItemIndex := cboPixExtra6.Items.IndexOf(Mais1Ini.ReadString(SECAO_65,'Tipo Pix 6', ''));
+    cboPixExtra7.ItemIndex := cboPixExtra7.Items.IndexOf(Mais1Ini.ReadString(SECAO_65,'Tipo Pix 7', ''));
+    cboPixExtra8.ItemIndex := cboPixExtra8.Items.IndexOf(Mais1Ini.ReadString(SECAO_65,'Tipo Pix 8', ''));
+    {Mauricio Parizotto 2024-06-14 Fim}
+  end;
+
+  Mais1ini.Free;
+
+  //Mauricio Parizotto 2024-06-14
+  ComboBox5Change(nil);
+  ComboBox6Change(nil);
+  ComboBox7Change(nil);
+  ComboBox8Change(nil);
+  ComboBox9Change(nil);
+  ComboBox10Change(nil);
+  ComboBox11Change(nil);
+  ComboBox12Change(nil);
 end;
 
 end.

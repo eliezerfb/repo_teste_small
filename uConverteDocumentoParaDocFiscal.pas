@@ -403,6 +403,7 @@ begin
         end; // while
 
         Form1.AtualizaDetalhe(FIBDataSet27.Transaction, sTIPODAV, sDAV, sCaixaOld, FCaixa, sNovoNumero, 'Fechada');
+        Form1.AtualizaDocumentoTransItau(FIBDataSet27.Transaction, sCaixaOld, FNumeroGerencial, FCaixa, sNovoNumero); // Mauricio Parizotto 2024-06-18
 
         // Seleciona novamente os dados para usar na sequência da venda
         FIBDataSet27.Close;
