@@ -258,7 +258,10 @@ uses
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
   uPermissaoUsuario in 'uPermissaoUsuario.pas',
-  uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro};
+  uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro},
+  uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
+  uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas',
+  uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas';
 
 {$R *.RES}
 

@@ -213,7 +213,7 @@ begin
             //Mauricio Parizotto 2023-07-26 Migração Alexandria
             else if Form7.ibDataSet2.Fields[I-1].DataType = ftWideString then
               sA := Form7.ibDataSet2.Fields[I-1].AsSTring
-            else if Form7.ibDataSet2.Fields[I-1].DataType = ftFloat then
+            else if TipoCampoFloat(Form7.ibDataSet2.Fields[I-1]) then // Sandro Silva 2024-04-29 else if Form7.ibDataSet2.Fields[I-1].DataType = ftFloat then
               sA := Format('%10.2n',[Form7.ibDataSet2.Fields[I-1].AsFloat])
             else if Form7.ibDataSet2.Fields[I-1].DataType = ftDatetime then
               sA := Form7.ibDataSet2.Fields[I-1].AsSTring

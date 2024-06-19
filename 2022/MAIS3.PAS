@@ -248,9 +248,6 @@ begin
   try
     Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario.Text+'.inf');
     Form19.Image7Click(Sender);
-    Form19.CheckBox8.Checked  := True;
-    Form19.CheckBox10.Checked := False;
-    Form19.CheckBox11.Checked := False;
     Mais1Ini.Free;
   except
   end;
