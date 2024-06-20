@@ -78,7 +78,7 @@ begin
       try
         Resposta := FRESTRequest.Response.JSONValue.ToString;
 
-        if (FRESTResponse.StatusCode = 401) and not(Authorization) then
+        if (FRESTResponse.StatusCode = 401) and not (AnsiContainsStr(EndPoint,'refresh-token')) then
         begin
           if RefreshTokenItau then
             Result := RequisicaoItau(vMethod, EndPoint, vBody, Resposta, StatusCode, Authorization);

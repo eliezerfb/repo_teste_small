@@ -7,16 +7,17 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, vcl.Imaging.GIFImg,
   frxGIFGraphic, Vcl.ComCtrls;
 
-  procedure MostraTelaProcessamento();
+  procedure MostraTelaProcessamento(sTexto:string);
   procedure FechaTelaProcessamento();
 
 
 type
   TFrmTelaProcessamento = class(TForm)
     Panel1: TPanel;
-    Image1: TImage;
-    Label1: TLabel;
+    imgGif: TImage;
+    lblAguarde: TLabel;
     Panel2: TPanel;
+    lblInformacao: TLabel;
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -36,20 +37,21 @@ procedure TFrmTelaProcessamento.FormCreate(Sender: TObject);
     aGIF:TGIFImage;
 begin
   try
-    image1.Picture.SaveToFile(ExtractFilePath(Application.ExeName)+'loading.gif');
+    imgGif.Picture.SaveToFile(ExtractFilePath(Application.ExeName)+'loading.gif');
     aGIF := TGIFImage.Create;
     aGIF.LoadFromFile(ExtractFilePath(Application.ExeName)+'loading.gif');
     aGIF.Animate := true;
-    image1.Picture.Graphic := aGIF;
+    imgGif.Picture.Graphic := aGIF;
     FreeAndNil(aGIF);
   except
   end;
 end;
 
 
-procedure MostraTelaProcessamento();
+procedure MostraTelaProcessamento(sTexto:string);
 begin
   FrmTelaProcessamento := TFrmTelaProcessamento.Create(nil);
+  FrmTelaProcessamento.lblInformacao.Caption := sTexto;
   FrmTelaProcessamento.Show;
 end;
 

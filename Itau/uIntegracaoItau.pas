@@ -1,3 +1,7 @@
+{Recebe as chamdas da API e envia para uWebServiceItau usando a classe uClassesItau}
+
+
+
 unit uIntegracaoItau;
 
 interface
@@ -37,7 +41,7 @@ uses
   uClassesItau
   , uWebServiceItau
   , uconstantes_chaves_privadas
-  , uLogSistema;
+  , uLogSistema, uSmallConsts;
 
 function GetURL : string;
 begin
@@ -56,7 +60,7 @@ var
 begin
   try
     ArqINI := TIniFile.Create(ExtractFilePath(Application.ExeName)+'smallcom.inf');
-    AmbienteItauProd := not(ArqINI.ReadString('Outros', 'AmbienteItau', 'Producao') = 'Homologacao');
+    AmbienteItauProd := not(ArqINI.ReadString(_cSectionSmallComOutros, 'AmbienteItau', _cAmbienteProducao) = _cAmbienteHomologacao);
   finally
     FreeAndNil(ArqINI);
   end;
