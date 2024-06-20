@@ -2253,6 +2253,7 @@ begin
           end; // while
 
           Form1.AtualizaDetalhe(Form1.ibDataSet27.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sCFe, 'Fechada');
+          Form1.AtualizaDocumentoTransItau(Form1.ibDataSet27.Transaction, Form1.sCaixa, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, FormataNumeroDoCupom(StrToInt(sCFe))); // Mauricio Parizotto 2024-06-18
 
           // Seleciona novamente os dados para usar na sequência da venda
           Form1.ibDataSet27.Close;

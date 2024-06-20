@@ -7,8 +7,12 @@ uses
   IBX.IBDatabase;
 
   function FormaPagamentoPix(DataSet : TibDataSet; TipoPix:string) : integer;
+
+  //Pix Estático
   function PagamentoPixEstatico(Valor : double; IDTransacao : string; out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
   function GeraChavePixEstatica(pixtitular,municipio,pixchave,pixTipochave,IDTransacao : string; Valor : Double ):string;
+
+  //Pix Dinamico Itaú
   function PagamentoPixDinamico(Valor : double; IDTransacao, NumeroNF, Caixa : string;
             out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
   procedure GravaTransacaoItau(NumeroNF, Caixa, OrderID, Status : string; Valor : Double; IBDatabase: TIBDatabase);
@@ -61,27 +65,27 @@ var
 begin
   Result := 0;
 
-  for I := 1 to 8 do
-  begin
-    CampoV := 'VALOR0'+IntToStr(i);
+  try
+    FrenteIni  := TIniFile.Create('FRENTE.INI');
 
-    //Verifica se a forma foi usada
-    if DataSet.FieldByName(CampoV).AsFloat > 0 then
+    for I := 1 to 8 do
     begin
-      //Verifica se a forma está configurada como PIX
-      try
-        FrenteIni  := TIniFile.Create('FRENTE.INI');
+      CampoV := 'VALOR0'+IntToStr(i);
 
+      //Verifica se a forma foi usada
+      if DataSet.FieldByName(CampoV).AsFloat > 0 then
+      begin
+        //Verifica se a forma está configurada como PIX
         if Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra '+I.ToString, '99'), 1, 2) = '17' then
         begin
           //Verifica o Tipo Mauricio Parizotto 2024-06-14
           if FrenteIni.ReadString('NFCE', 'Tipo Pix '+I.ToString, '') = TipoPix then
             Result := i;
         end;
-      finally
-        FreeAndNil(FrenteIni);
       end;
     end;
+  finally
+    FreeAndNil(FrenteIni);
   end;
 end;
 
