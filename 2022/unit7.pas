@@ -18906,7 +18906,7 @@ begin
                         Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
                         //
                       if bButton = IDYES then
-                        Form7.ibDataSet16UNITARIO.AsFloat    := Int(Form7.ibDataSet4PRECO.AsFloat * ( 1 - (Form7.ibDataSet29DESCONTO.AsFloat/100)) * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)))
+                        Form7.ibDataSet16UNITARIO.AsFloat    := Arredonda(Int(Form7.ibDataSet4PRECO.AsFloat * ( 1 - (Form7.ibDataSet29DESCONTO.AsFloat/100)) * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))),2)
                       else
                         Form7.ibDataSet16UNITARIO.AsFloat := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
                     end
