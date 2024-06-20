@@ -719,6 +719,17 @@ begin
         mmXML.Text                := NFSe.RetornoWS.Items[i].XmlImpressao;
 
         smmXml := StrTran(pChar(NFSe.RetornoWS.Items[i].XmlImpressao),'</retorno>','')+'<sRetornoDaPrefeitura>'+ ConverteAcentos(sREtornoDaPrefeitura) +'</sRetornoDaPrefeitura>';
+<<<<<<< Updated upstream
+=======
+        }
+         if ((sPadrao = 'PRESCON') and (sCidade = 'CAMPOSDOJORDAOSP'))
+           or ((sPadrao = 'SIL') and (sCidade = 'SERRAES')) //if (sPadrao = 'PRESCON') and (sCidade = 'CAMPOSDOJORDAOSP') then
+          then
+          smmXml := StrTran(pChar(NFSe.RetornoWS.Items[i].XmlImpressao),'</retorno>','')+'<sRetornoDaPrefeitura>'+ ConverteAcentos(sREtornoDaPrefeitura) + '<xmlretorno>' + NFSe.RetornoWS.Items[i].XmlImpressao + '</xmlretorno>' +'</sRetornoDaPrefeitura>'
+        else
+          smmXml := StrTran(pChar(NFSe.RetornoWS.Items[i].XmlImpressao),'</retorno>','')+'<sRetornoDaPrefeitura>'+ ConverteAcentos(sREtornoDaPrefeitura) +'</sRetornoDaPrefeitura>';
+        {Sandro Silva 2024-06-10 fim}
+>>>>>>> Stashed changes
 
         // ShowMEssage(smmXml);
       end;

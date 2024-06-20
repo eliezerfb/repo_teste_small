@@ -14111,6 +14111,7 @@ object FEmissorNFSe: TFEmissorNFSe
     DiretorioXmlImpressao = 'XmlImpressao\'
     DelimitadorDoCampoCSV = ';'
     DelimitadorDaLinhaCSV = #13#10
+    ModoAtualizarArquivos = mkParcial
     Left = 741
     Top = 13
   end
