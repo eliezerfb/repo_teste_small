@@ -2604,6 +2604,27 @@ begin
   end;
 
 
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITAUTRANSACAO')) then
+  begin
+    ExecutaComando(' Create table ITAUTRANSACAO('+
+                   '   IDTRANSACAO integer,'+
+                   '   NUMERONF varchar(6),'+
+                   '   CAIXA varchar(3),'+
+                   '   ORDERID varchar(40),'+
+                   '   DATAHORA timestamp,'+
+                   '   STATUS varchar(12),'+
+                   '   VALOR numeric(18,2),'+
+                   '   CONSTRAINT PK_ITAUTRANSACAO PRIMARY KEY (IDTRANSACAO)'+
+                   ' )');
+
+    ExecutaComando('CREATE SEQUENCE G_ITAUTRANSACAO');
+
+    ExecutaComando('CREATE INDEX ITAUTRANSACAOORDERID ON ITAUTRANSACAO (ORDERID);');
+
+    ExecutaComando('Commit');
+  end;
+
+
   {Mauricio Parizotto 2024-06-10 Fim}
 
   Form22.Repaint;

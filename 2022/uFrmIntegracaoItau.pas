@@ -113,7 +113,7 @@ uses
   , uDialogs
   , uIntegracaoItau
   , smallfunc_xe
-  , Unit17, uFrmTelaProcessamento;
+  , Unit17, uFrmTelaProcessamento, uEmail;
 
 procedure TFrmIntegracaoItau.btnCancelarClick(Sender: TObject);
 begin
@@ -143,6 +143,13 @@ begin
   if Trim(edtEmail.Text) = '' then
   begin
     MensagemSistema('O campo E-mail deve ser preenchido!',msgAtencao);
+    edtEmail.SetFocus;
+    Exit;
+  end;
+
+  if not ValidaEmail(edtEmail.Text) then
+  begin
+    MensagemSistema('O E-mail está inválido!',msgAtencao);
     edtEmail.SetFocus;
     Exit;
   end;
