@@ -39,6 +39,7 @@ type
     procedure FormActivate(Sender: TObject);
     procedure btnReplicarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -185,6 +186,29 @@ procedure TFrmContaPagar.FormActivate(Sender: TObject);
 begin
   inherited;
   AtualizaObjComValorDoBanco;
+end;
+
+procedure TFrmContaPagar.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  t: TTime;
+  iRecno: Integer;
+begin
+  inherited;
+
+  //Fas refresh do grid e volta para o registro atual
+  iRecno := Form7.ibDataSet8.RecNo;
+  Form7.ibDataSet8.DisableControls;
+  try
+    try
+      t := Time;
+      Form7.ibDataSet8.Close;
+      Form7.ibDataSet8.Open;
+      Form7.ibDataSet8.RecNo := iRecno;
+    except
+    end;
+  finally
+    Form7.ibDataSet8.EnableControls;
+  end;
 end;
 
 procedure TFrmContaPagar.FormShow(Sender: TObject);

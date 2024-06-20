@@ -18250,9 +18250,12 @@ procedure TForm7.DBGrid3DrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 begin
   //Mauricio Parizotto 2023-01-03
-  if Column.Field.DataType = ftMemo then
+  if Assigned(Column.Field) then
   begin
-    DBGridExibeMemo(DBGrid3, Column, Rect, State, Column.FieldName);
+    if Column.Field.DataType = ftMemo then
+    begin
+      DBGridExibeMemo(DBGrid3, Column, Rect, State, Column.FieldName);
+    end;
   end;
 end;
 
