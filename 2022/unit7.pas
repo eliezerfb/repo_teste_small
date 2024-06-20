@@ -19446,7 +19446,7 @@ begin
         begin
           if Application.MessageBox(Pchar('Confirma um desconto de: ' + AllTrim(Format('%12.2n',[fDesconto])) + ' % no produto: ' + Form7.ibDataSet4PRECO.AsString),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION) = IDYES then
           begin
-            Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat - ( Form7.ibDataSet4PRECO.AsFloat * fDesconto / 100);
+            Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4PRECO.AsFloat - ( Form7.ibDataSet4PRECO.AsFloat * fDesconto / 100),2);
           end;
         end;
       end;
