@@ -345,48 +345,71 @@ begin
       begin
         Form12.vNotaFiscal.Calculando := True;
 
+        {Dailon Parisotto (f-19230) 2024-06-05 Inicio
+
         if (AllTrim(cdsProdutosNotaCODIGO.AsString) <> '')
           and (cdsProdutosNotaMARCADO.AsString = 'S') then
+
+        }
+        if (AllTrim(cdsProdutosNotaDESCRICAO.AsString) <> EmptyStr)
+          and (cdsProdutosNotaMARCADO.AsString = 'S') then
+        {Dailon Parisotto (f-19230) 2024-06-05 Fim}
         begin
-          Form7.ibDataSet4.Close;
-          Form7.ibDataSet4.Selectsql.Text := ' Select * '+
-                                             ' From ESTOQUE '+
-                                             ' Where CODIGO='+QuotedStr(cdsProdutosNotaCODIGO.AsString);
-          Form7.ibDataSet4.Open;
-
-          if cdsProdutosNotaCODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
+          if AllTrim(cdsProdutosNotaCODIGO.AsString) <> EmptyStr then
           begin
+            Form7.ibDataSet4.Close;
+            Form7.ibDataSet4.Selectsql.Text := ' Select * '+
+                                               ' From ESTOQUE '+
+                                               ' Where CODIGO='+QuotedStr(cdsProdutosNotaCODIGO.AsString);
+            Form7.ibDataSet4.Open;
+
+            if cdsProdutosNotaCODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
+            begin
+              Form7.ibDataSet16.Append;
+              Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
+              Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
+              Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
+              Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
+              Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
+              Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
+
+              // Acerta os tributos e o CFOP
+              Form1.bFlag := True;
+              Form7.sModulo                       := 'VENDA';
+              Form7.ibDataSet16DESCRICAO.AsString := cdsProdutosNotaDESCRICAO.AsString;
+              Form1.bFlag := False;
+
+              Form7.ibDataSet16.Edit;
+              Form7.ibDataSet16QUANTIDADE.AsFloat := cdsProdutosNotaQUANTIDADE.AsFloat;
+              Form7.ibDataSet16.Edit;
+              Form7.ibDataSet16UNITARIO.AsFloat   := cdsProdutosNotaUNITARIO.AsFloat;
+              Form7.ibDataSet16IPI.AsFloat        := cdsProdutosNotaIPI.AsFloat;
+
+              Form7.ibDataSet16VIPI.AsFloat       := Arredonda2(cdsProdutosNotaVIPI.AsFloat,2);
+              Form7.ibDataSet16ICM.Asfloat        := cdsProdutosNotaICM.Asfloat;
+              Form7.ibDataSet16CST_ICMS.AsString  := cdsProdutosNotaCST_ICMS.AsString;
+              Form7.ibDataSet16CFOP.AsString      := Form7.ibDataSet14CFOP.AsString;
+              Form7.ibDataSet16VICMS.AsFloat      := cdsProdutosNotaVICMS.AsFloat;
+              Form7.ibDataSet16VBC.AsFloat        := cdsProdutosNotaVBC.AsFloat;
+              Form7.ibDataSet16VBCST.AsFloat      := cdsProdutosNotaVBCST.AsFloat;
+              Form7.ibDataSet16VICMSST.AsFloat    := cdsProdutosNotaVICMSST.AsFloat;
+              Form7.ibDataSet16VBCFCPST.AsFloat   := cdsProdutosNotaVBCFCPST.AsFloat;
+              Form7.ibDataSet16PFCPST.AsFloat     := cdsProdutosNotaPFCPST.AsFloat;
+              Form7.ibDataSet16VFCPST.AsFloat     := cdsProdutosNotaVFCPST.AsFloat;
+            end;
+          end
+          else
+          begin
+            // Se for observação de item
             Form7.ibDataSet16.Append;
-            Form7.ibDataSet16CODIGO.AsString    := Form7.ibDataSet4CODIGO.AsString;
-            Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
-            Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
-            Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
-            Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
-            Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
 
-            // Acerta os tributos e o CFOP
             Form1.bFlag := True;
-            Form7.sModulo                       := 'VENDA';
-            Form7.ibDataSet16DESCRICAO.AsString := cdsProdutosNotaDESCRICAO.AsString;
-            Form1.bFlag := False;
-
-            Form7.ibDataSet16.Edit;
-            Form7.ibDataSet16QUANTIDADE.AsFloat := cdsProdutosNotaQUANTIDADE.AsFloat;
-            Form7.ibDataSet16.Edit;
-            Form7.ibDataSet16UNITARIO.AsFloat   := cdsProdutosNotaUNITARIO.AsFloat;
-            Form7.ibDataSet16IPI.AsFloat        := cdsProdutosNotaIPI.AsFloat;
-
-            Form7.ibDataSet16VIPI.AsFloat       := Arredonda2(cdsProdutosNotaVIPI.AsFloat,2);
-            Form7.ibDataSet16ICM.Asfloat        := cdsProdutosNotaICM.Asfloat;
-            Form7.ibDataSet16CST_ICMS.AsString  := cdsProdutosNotaCST_ICMS.AsString;
-            Form7.ibDataSet16CFOP.AsString      := Form7.ibDataSet14CFOP.AsString;
-            Form7.ibDataSet16VICMS.AsFloat      := cdsProdutosNotaVICMS.AsFloat;
-            Form7.ibDataSet16VBC.AsFloat        := cdsProdutosNotaVBC.AsFloat;
-            Form7.ibDataSet16VBCST.AsFloat      := cdsProdutosNotaVBCST.AsFloat;
-            Form7.ibDataSet16VICMSST.AsFloat    := cdsProdutosNotaVICMSST.AsFloat;
-            Form7.ibDataSet16VBCFCPST.AsFloat   := cdsProdutosNotaVBCFCPST.AsFloat;
-            Form7.ibDataSet16PFCPST.AsFloat     := cdsProdutosNotaPFCPST.AsFloat;
-            Form7.ibDataSet16VFCPST.AsFloat     := cdsProdutosNotaVFCPST.AsFloat;
+            try
+              Form7.sModulo                       := 'VENDA';
+              Form7.ibDataSet16DESCRICAO.AsString := cdsProdutosNotaDESCRICAO.AsString;
+            finally
+              Form1.bFlag := False;
+            end;
           end;
         end;
 
