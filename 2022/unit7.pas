@@ -31693,6 +31693,7 @@ procedure TForm7.Visu1Click(Sender: TObject);
 var
   F : TextFile;
   sPDF : String;
+  cXML: String;
 begin
   //
   BuscaNumeroNFSe(True);
@@ -31733,16 +31734,10 @@ begin
         if (RetornaValorDaTagNoCampo('Nfse', Form7.ibDAtaSet15RECIBOXML.AsString) <> '') and (AnsiUpperCase(Form7.ibDataSet13MUNICIPIO.AsString) = 'BRASÍLIA') then
           Writeln(F,'<XMLImpressao>' + RetornaValorDaTagNoCampo('Nfse', Form7.ibDAtaSet15RECIBOXML.AsString) + '</XMLImpressao>')
         else
-<<<<<<< Updated upstream
-          Writeln(F,'<XMLImpressao>'+Form7.ibDAtaSet15RECIBOXML.AsString+'</XMLImpressao>');
-=======
         begin
 //          cXML := Form7.ibDAtaSet15RECIBOXML.AsString;
           cXML := Form7.ibDataSet15NFEXML.AsString;
-          //if (AnsiUpperCase(Form7.ibDataSet13MUNICIPIO.AsString) = 'CAMPOS DO JORDÃO') then
-          if ((AnsiUpperCase(Form7.ibDataSet13MUNICIPIO.AsString) = 'CAMPOS DO JORDÃO') and (AnsiUpperCase(Form7.ibDataSet13ESTADO.AsString) = 'RS'))
-            or  ((AnsiUpperCase(Form7.ibDataSet13MUNICIPIO.AsString) = 'SERRA') and (AnsiUpperCase(Form7.ibDataSet13ESTADO.AsString) = 'ES'))
-          then
+          if (AnsiUpperCase(Form7.ibDataSet13MUNICIPIO.AsString) = 'CAMPOS DO JORDÃO') then
           begin
 {            cXML := Copy(cXML, Pos('<Status>SUCESSO', cXML), Length(cXML));
             cXML := Copy(cXML, 1, Pos('<Json>', cXML)-1);       }
@@ -31751,14 +31746,13 @@ begin
 
             Writeln(F,'<XMLImpressao>'+cXML+'</XMLImpressao>');
 
-            cXML := RetornaValorDaTagNoCampo('tx2', Form7.ibDataSet15RECIBOXML.AsString, False); // Sandro Silva 2024-06-20 cXML := RetornaValorDaTagNoCampo('tx2', Form7.ibDataSet15RECIBOXML.AsString);
+            cXML := RetornaValorDaTagNoCampo('tx2', Form7.ibDataSet15RECIBOXML.AsString);
 
             Writeln(F,'<tx2>'+cXML+'</tx2>');
           end
           else
             Writeln(F,'<XMLImpressao>'+Form7.ibDAtaSet15RECIBOXML.AsString+'</XMLImpressao>');
         end;
->>>>>>> Stashed changes
         {Sandro Silva 2023-01-26 fim}
       end;
       //
@@ -31773,7 +31767,7 @@ begin
       //
       ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
       //
-      while ConsultaProcesso('NFSE.EXE') or ConsultaProcesso('NFSE.exe') or ConsultaProcesso('nfe.exe') do
+      while ConsultaProcesso('NFSE.EXE') or ConsultaProcesso('nfse.exe') or ConsultaProcesso('NFSE.exe') or ConsultaProcesso('nfe.exe') do
       begin
         Application.ProcessMessages;
         sleep(100);

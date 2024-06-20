@@ -120,6 +120,7 @@ type
     sPadrao: String; // Sandro Silva 2023-09-06
     sCidade: String; // Sandro Silva 2023-09-06
     fLogEnvio: string;
+    mmTx2: TMemo;// Sandro Silva 2024-06-10
     {Valida a presenÃ§a do arquivo .ini}
     procedure CheckConfig;
     {Anexa o PDF e realiza o envio de email}
@@ -341,6 +342,19 @@ end;
 
 procedure TFEmissorNFSe.btnExportarClick(Sender: TObject);
 begin
+{
+  try
+    CheckConfig;
+    if FileExists(pChar(sAtual+'\NFSE\smallnfse.tx2')) then
+    begin
+      Nfse.ExportarImpressaoParaPDF(mmXML.Text, mmXMLEnvio.Text, pChar(sAtual+'\NFSE\smallnfse.tx2'), pChar(sAtual+'\NFSE\LOG\'+sNumeroDaNFSe+'.pdf'));
+    end else
+    begin
+      Nfse.Imprimir(mmXML.Text, mmXMLEnvio.Text,pChar(sAtual+'\NFSE\LOG\'+sNumeroDaNFSe+'.pdf'));
+    end;
+  except
+  end;
+}
   try
     CheckConfig;
     if FileExists(pChar(sAtual+'\NFSE\smallnfse.tx2')) then
@@ -389,6 +403,11 @@ var
     end;
   end;
 begin
+  {}
+  mmTx2 := TMemo.Create(Application);
+  mmTx2.Visible := False;
+  mmTx2.Parent := FEmissorNFSe;
+  {}
   FModoOperacao := tmoNenhum; // Sandro Silva 2023-01-25
   sTX2 := '';
   GetDir(0,sAtual);
@@ -470,6 +489,7 @@ begin
           mmXML.Text      := RetornaValorDaTagNoCampo('XMLImpressao',_File.Text);
           mmXMLEnvio.Text := RetornaValorDaTagNoCampo('XMLdeEvio',_File.Text); // Última alteração 08/08/2022 para resolver o caso de Joinvile
           sNumeroDaNFSe   := RetornaValorDaTagNoCampo('sNumeroDaNFSE',_File.Text);
+          mmTx2.Text      := RetornaValorDaTagNoCampo('tx2',_File.Text);
 
           FEmissorNFSe.btnExportarClick(Sender);
         except
@@ -718,18 +738,14 @@ begin
         edtChaveCancelamento.Text := NFSe.RetornoWS.Items[i].ChaveCancelamento;
         mmXML.Text                := NFSe.RetornoWS.Items[i].XmlImpressao;
 
+        {Sandro Silva 2024-06-10 inicio
         smmXml := StrTran(pChar(NFSe.RetornoWS.Items[i].XmlImpressao),'</retorno>','')+'<sRetornoDaPrefeitura>'+ ConverteAcentos(sREtornoDaPrefeitura) +'</sRetornoDaPrefeitura>';
-<<<<<<< Updated upstream
-=======
         }
-         if ((sPadrao = 'PRESCON') and (sCidade = 'CAMPOSDOJORDAOSP'))
-           or ((sPadrao = 'SIL') and (sCidade = 'SERRAES')) //if (sPadrao = 'PRESCON') and (sCidade = 'CAMPOSDOJORDAOSP') then
-          then
+        if (sPadrao = 'PRESCON') and (sCidade = 'CAMPOSDOJORDAOSP') then
           smmXml := StrTran(pChar(NFSe.RetornoWS.Items[i].XmlImpressao),'</retorno>','')+'<sRetornoDaPrefeitura>'+ ConverteAcentos(sREtornoDaPrefeitura) + '<xmlretorno>' + NFSe.RetornoWS.Items[i].XmlImpressao + '</xmlretorno>' +'</sRetornoDaPrefeitura>'
         else
           smmXml := StrTran(pChar(NFSe.RetornoWS.Items[i].XmlImpressao),'</retorno>','')+'<sRetornoDaPrefeitura>'+ ConverteAcentos(sREtornoDaPrefeitura) +'</sRetornoDaPrefeitura>';
         {Sandro Silva 2024-06-10 fim}
->>>>>>> Stashed changes
 
         // ShowMEssage(smmXml);
       end;
