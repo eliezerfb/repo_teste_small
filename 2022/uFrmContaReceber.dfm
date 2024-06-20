@@ -279,7 +279,7 @@ inherited FrmContaReceber: TFrmContaReceber
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Nosso n'#250'meror:'
+          Caption = 'Nosso n'#250'mero:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -742,7 +742,7 @@ inherited FrmContaReceber: TFrmContaReceber
           BevelInner = bvNone
           BevelOuter = bvNone
           Ctl3D = True
-          DataField = 'NN'
+          DataField = 'NOSSONUM'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
