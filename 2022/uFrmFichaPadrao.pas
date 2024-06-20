@@ -61,6 +61,7 @@ type
   public
     bEstaSendoUsado : Boolean;
     bSomenteLeitura: Boolean;
+    bGravandoRegistro : Boolean;
     procedure VerificaSeEstaSendoUsado;
     function GetDescritivoNavegacao:string;
     function FormularioAtivo(Form : TForm): boolean;
@@ -188,6 +189,8 @@ begin
   imgVisualizar.Picture := IconesSistema.GetIconVisualizar(False).Picture;
   imgProximo.Picture    := IconesSistema.GetIconProximo(False).Picture;
   imgAnterior.Picture   := IconesSistema.GetIconAnterior(False).Picture;
+
+  bGravandoRegistro     := False;
 end;
 
 procedure TFrmFichaPadrao.btnOKClick(Sender: TObject);
@@ -237,6 +240,8 @@ end;
 
 function TFrmFichaPadrao.GravaRegistro:Boolean;
 begin
+  bGravandoRegistro  := True;
+
   if bEstaSendoUsado then
   begin
     DSCadastro.DataSet.Cancel;
@@ -253,6 +258,8 @@ begin
 
   TibDataSet(DSCadastro.DataSet).Transaction.CommitRetaining;
   Result := True;
+
+  bGravandoRegistro  := False;
 end;
 
 procedure TFrmFichaPadrao.VerificaSeEstaSendoUsado;

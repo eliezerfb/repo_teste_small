@@ -232,7 +232,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label9: TLabel
           Left = 0
-          Top = 180
+          Top = 181
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -250,7 +250,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label10: TLabel
           Left = 0
-          Top = 204
+          Top = 205
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -268,7 +268,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label11: TLabel
           Left = 0
-          Top = 228
+          Top = 229
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -286,7 +286,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label12: TLabel
           Left = 2
-          Top = 254
+          Top = 255
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -304,7 +304,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label13: TLabel
           Left = 0
-          Top = 276
+          Top = 277
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -322,7 +322,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label14: TLabel
           Left = 0
-          Top = 300
+          Top = 301
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -340,7 +340,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label15: TLabel
           Left = 0
-          Top = 324
+          Top = 325
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -357,8 +357,8 @@ inherited FrmCadastro: TFrmCadastro
           Transparent = True
         end
         object lblLimiteCredDisponivel: TLabel
-          Left = 228
-          Top = 324
+          Left = 234
+          Top = 325
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -376,7 +376,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label16: TLabel
           Left = 0
-          Top = 350
+          Top = 351
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -394,7 +394,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label17: TLabel
           Left = 0
-          Top = 376
+          Top = 377
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -412,7 +412,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label18: TLabel
           Left = 0
-          Top = 400
+          Top = 401
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -589,7 +589,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object Label27: TLabel
           Left = 430
-          Top = 289
+          Top = 291
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -606,12 +606,12 @@ inherited FrmCadastro: TFrmCadastro
           Transparent = True
         end
         object Label56: TLabel
-          Left = 431
+          Left = 434
           Top = 404
-          Width = 94
+          Width = 91
           Height = 13
           Alignment = taRightJustify
-          Caption = 'Rela'#231#227'o  comercial:'
+          Caption = 'Rela'#231#227'o comercial:'
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -756,8 +756,8 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtEstado: TSMALL_DBEdit
           Left = 100
-          Top = 180
-          Width = 91
+          Top = 181
+          Width = 30
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -778,7 +778,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtRG_IE: TSMALL_DBEdit
           Left = 100
-          Top = 204
+          Top = 205
           Width = 127
           Height = 20
           AutoSize = False
@@ -799,7 +799,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtTelefone: TSMALL_DBEdit
           Left = 100
-          Top = 228
+          Top = 229
           Width = 162
           Height = 20
           AutoSize = False
@@ -820,7 +820,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtCelular: TSMALL_DBEdit
           Left = 100
-          Top = 252
+          Top = 253
           Width = 162
           Height = 20
           AutoSize = False
@@ -841,7 +841,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtWhatsApp: TSMALL_DBEdit
           Left = 100
-          Top = 276
+          Top = 277
           Width = 162
           Height = 20
           AutoSize = False
@@ -862,7 +862,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtEmail: TSMALL_DBEdit
           Left = 100
-          Top = 300
+          Top = 301
           Width = 325
           Height = 20
           AutoSize = False
@@ -885,7 +885,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtLimiteCredito: TSMALL_DBEdit
           Left = 100
-          Top = 325
+          Top = 326
           Width = 91
           Height = 20
           AutoSize = False
@@ -907,7 +907,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object eLimiteCredDisponivel: TEdit
           Left = 334
-          Top = 325
+          Top = 326
           Width = 91
           Height = 20
           TabStop = False
@@ -926,7 +926,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtCadastro: TSMALL_DBEdit
           Left = 100
-          Top = 350
+          Top = 351
           Width = 91
           Height = 20
           AutoSize = False
@@ -947,7 +947,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtUltVenda: TSMALL_DBEdit
           Left = 100
-          Top = 376
+          Top = 377
           Width = 91
           Height = 20
           AutoSize = False
@@ -968,7 +968,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object edtNascido: TSMALL_DBEdit
           Left = 100
-          Top = 400
+          Top = 401
           Width = 91
           Height = 20
           AutoSize = False
@@ -1131,10 +1131,10 @@ inherited FrmCadastro: TFrmCadastro
           OnKeyDown = PadraoKeyDown
         end
         object memContato: TDBMemo
-          Left = 530
-          Top = 293
+          Left = 531
+          Top = 291
           Width = 266
-          Height = 105
+          Height = 108
           DataField = 'CONTATOS'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
@@ -1238,13 +1238,13 @@ inherited FrmCadastro: TFrmCadastro
         end
         object pnl_IE: TPanel
           Left = 230
-          Top = 204
+          Top = 205
           Width = 256
           Height = 23
           BevelOuter = bvNone
           TabOrder = 9
           object rgIEContribuinte: TRadioButton
-            Left = 8
+            Left = 6
             Top = 0
             Width = 78
             Height = 17
@@ -1254,7 +1254,7 @@ inherited FrmCadastro: TFrmCadastro
             OnKeyDown = PadraoKeyDown
           end
           object rgIENaoContribuinte: TRadioButton
-            Left = 91
+            Left = 87
             Top = 0
             Width = 100
             Height = 17
@@ -1264,7 +1264,7 @@ inherited FrmCadastro: TFrmCadastro
             OnKeyDown = PadraoKeyDown
           end
           object rgIEIsento: TRadioButton
-            Left = 195
+            Left = 189
             Top = 0
             Width = 113
             Height = 17

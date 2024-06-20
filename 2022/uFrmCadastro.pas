@@ -545,6 +545,9 @@ begin
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
 
+  if bGravandoRegistro then
+    Exit;
+
   AtualizaObjComValorDoBanco;
 
   //Contador

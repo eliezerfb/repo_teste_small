@@ -257,6 +257,7 @@ uses
   uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas',
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
+  uMobile in 'units\uMobile.pas',
   uPermissaoUsuario in 'uPermissaoUsuario.pas',
   uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro},
   uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',

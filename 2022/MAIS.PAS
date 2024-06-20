@@ -580,6 +580,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uGeraCNAB240
   , uGeraCNAB400
   , uArquivosDAT
+  , uMobile
   , uIconesSistema
   , uFrmConfigEmailAutContabilidade
   , uDialogs
@@ -9100,10 +9101,10 @@ begin
 
       if bButton = IDYES then
       begin
-        Form10.AtualizaMobile(True);
+        AtualizaMobile(True);
       end else
       begin
-        Form10.AtualizaMobile(False);
+        AtualizaMobile(False);
       end;
 
       Form1.Label200.Tag    := 0;
@@ -10281,8 +10282,9 @@ begin
               Application.ProcessMessages;
 
               try
-                Form10.AtualizaMobile(False);
-              except end;
+                AtualizaMobile(False);
+              except
+              end;
 
               DeleteFile(pChar(sTLista[I]));    // Apaga local
 
