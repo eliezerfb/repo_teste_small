@@ -7888,14 +7888,14 @@ object Form7: TForm7
   object WebBrowser1: TWebBrowser
     Left = 10000
     Top = 0
-    Width = 451
-    Height = 364
+    Width = 361
+    Height = 291
     TabOrder = 8
     OnDownloadComplete = WebBrowser1DownloadComplete
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C0000004A250000191E00000000000000000000000000000000000000000000
+      4C0000004F250000131E00000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E126208000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -13206,6 +13206,10 @@ object Form7: TForm7
       object RelatriodevendasporclienteNFeCupom1: TMenuItem
         Caption = 'Vendas por cliente (Nota Fiscal/Cupom)'
         OnClick = RelatriodevendasporclienteNFeCupom1Click
+      end
+      object VendasporestadoNotaFiscal1: TMenuItem
+        Caption = 'Vendas por estado (Nota Fiscal)'
+        OnClick = VendasporestadoNotaFiscal1Click
       end
       object Relatriodeprodutosmonofsicos1: TMenuItem
         Caption = 'Produtos monof'#225'sicos (Cupom Fiscal)'
