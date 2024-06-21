@@ -538,7 +538,7 @@ type
     function ValidaEmitenteMunicipio: Boolean;
     procedure ConfiguraCredencialTecnospeed;
     function DisponivelSomenteParaNos: Boolean;
-    function CampoDisponivelParaUsuario(sModulo, sCampo: String): Boolean;
+//    function CampoDisponivelParaUsuario(sModulo, sCampo: String): Boolean; Mauricio Parizotto 2024-05-15
     function ExisteNfseExe(sDiretorio: String): Boolean;
     procedure MensagemRecursoIndisponivel(sMensagem: String);
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
@@ -567,7 +567,9 @@ implementation
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, Unit8, Unit38, uExportaXML, Unit43, Unit30, SelecionaCertificado,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
-  uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados,
+  uconstantes_chaves_privadas
+  , ucredencialtecnospeed
+  , uAtualizaBancoDados,
   uFazerBackup,
   uRetornaBuildEXE
   , uCriptografia
@@ -578,12 +580,16 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uGeraCNAB240
   , uGeraCNAB400
   , uArquivosDAT
+  , uMobile
   , uIconesSistema
   , uFrmConfigEmailAutContabilidade
   , uDialogs
   , uFuncoesRetaguarda
   , uSmallResourceString, uSistema
-  , uConfiguracaoTEFCommerce, uFrmContaPagar, uFrmContaReceber;
+  , uConfiguracaoTEFCommerce
+  , uFrmContaPagar
+  , uFrmContaReceber
+  , uFrmCadastro;
 
 {$R *.DFM}
 
@@ -9095,10 +9101,10 @@ begin
 
       if bButton = IDYES then
       begin
-        Form10.AtualizaMobile(True);
+        AtualizaMobile(True);
       end else
       begin
-        Form10.AtualizaMobile(False);
+        AtualizaMobile(False);
       end;
 
       Form1.Label200.Tag    := 0;
@@ -10276,8 +10282,9 @@ begin
               Application.ProcessMessages;
 
               try
-                Form10.AtualizaMobile(False);
-              except end;
+                AtualizaMobile(False);
+              except
+              end;
 
               DeleteFile(pChar(sTLista[I]));    // Apaga local
 
@@ -10869,7 +10876,10 @@ begin
   if Form7.sModulo = 'RECEBER' then
     Exit;
   {Mauricio Parizotto 2024-04-16 Fim}
-    
+
+  if Form7.sModulo = 'CLIENTES' then
+   Exit;
+
 
   if AllTrim(Form7.sModulo) <> '' then
   begin
@@ -11533,6 +11543,20 @@ begin
     end;
   end;
   {Mauricio Parizotto 2024-04-16 Fim}
+
+
+  {Mauricio Parizotto 2024-05-15 Inicio}
+  if Form7.sModulo = 'CLIENTES' then
+  begin
+    if FrmCadastro <> nil then
+    begin
+      if FrmCadastro.Visible then
+      begin
+        FrmCadastro.BringToFront;
+        Exit;
+      end;
+    end;
+  end;
 
   if Form5.Visible then
   begin
@@ -12404,19 +12428,6 @@ begin
   end;
 end;
 
-function TForm1.CampoDisponivelParaUsuario(sModulo: String; sCampo: String): Boolean;
-begin
-  Result := True;
-
-  if (sModulo = 'RECEBER') then
-  begin
-    if (AnsiUpperCase(sCampo) = 'MOVIMENTO') then
-    begin
-      //Result := DisponivelSomenteParaNos;
-    end;
-  end;
-
-end;
 
 function TForm1.ExisteNfseExe(sDiretorio: String): Boolean;
 // Sandro Silva 2023-01-11

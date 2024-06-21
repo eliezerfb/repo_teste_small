@@ -1696,6 +1696,19 @@ type
     ibDataSet11PIXTIPOCHAVE: TIBStringField;
     ibDataSet11PIXTITULAR: TIBStringField;
     ibDataSet11PIXCHAVE: TIBStringField;
+    S1: TMenuItem;
+    SFornecedor1: TMenuItem;
+    SClienteFornecedor1: TMenuItem;
+    SFuncionrio1: TMenuItem;
+    SRevenda1: TMenuItem;
+    SRepresentante1: TMenuItem;
+    SDistribuidor1: TMenuItem;
+    SVendedor1: TMenuItem;
+    SCredenciadoradecarto1: TMenuItem;
+    SInstituiofinanceira1: TMenuItem;
+    SMarketplace1: TMenuItem;
+    SRevendaInativa1: TMenuItem;
+    SClienteInativo1: TMenuItem;
     VendasporestadoNotaFiscal1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
@@ -2413,12 +2426,11 @@ type
     procedure Imprimiretiqueta1Click(Sender: TObject);
     procedure ibdConversaoCFOPBeforePost(DataSet: TDataSet);
     procedure miDuplicarNFSeClick(Sender: TObject);
-    procedure ibDataSet14STSetText(Sender: TField; const Text: string);
     procedure ibDataSet11PIXCHAVESetText(Sender: TField; const Text: string);
+    procedure ibDataSet14STSetText(Sender: TField; const Text: string);
+    procedure FiltroRelacaoCom(Sender: TObject);
     procedure VendasporestadoNotaFiscal1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
-
-
   private
     FbDuplicandoProd: Boolean;
     FbDuplicandoNFe: Boolean;
@@ -2426,7 +2438,6 @@ type
     FbImportandoXML: Boolean;
     iOSQtdEtiqueta : integer;
     sOSEtiqueta : string;
-
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
@@ -2694,7 +2705,6 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uRelatorioVendasNotaFiscal
   , uDrawCellGridModulos
   , uEmail
-  , ufrmFichaCadastros
   , uFuncaoMD5
   , uDesenhaBoleto
   , ufrmRelatorioProdMonofasicoCupom
@@ -2714,7 +2724,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmContaPagar
   , uFrmContaReceber
   , uPermissaoUsuario
-  ;
+  , uFrmCadastro;
 
 {$R *.DFM}
 
@@ -8157,6 +8167,11 @@ begin
   Result := True;
 end;
 
+procedure TForm7.FiltroRelacaoCom(Sender: TObject);
+begin
+  EscolheOclifor(Sender);
+end;
+
 procedure TForm7.Sair1Click(Sender: TObject);
 begin
   Close;
@@ -8633,23 +8648,18 @@ begin
     Exit;
   end;
   {Mauricio Parizotto 2024-04-15 Fim}
-
-  {Sandro Silva 2024-01-17 inicio
-
-  Reativar quando estiver concluída a migração do cadastro de clientes usando a tela padrão de cadastro
-
-  if sModulo = 'CLIENTES' then
+  
+  //Mauricio Parizotto 2024-05-15
+  if (sModulo = 'CLIENTES') or (sModulo = 'VENDEDOR') then
   begin
     if Form7.IBTransaction1.Active then
       Form7.IBTransaction1.CommitRetaining;
-    if FrmFichaCadastros = nil then
-      FrmFichaCadastros := TFrmFichaCadastros.Create(Self);
+    if FrmCadastro = nil then
+      FrmCadastro := TFrmCadastro.Create(self);
 
-    FrmFichaCadastros.Show;
+    FrmCadastro.Show;
     Exit;
   end;
-  {Sandro Silva 2024-01-17 fim}
-
 
   if sModulo = 'OS' then
   begin
@@ -8989,21 +8999,18 @@ begin
 
   {Mauricio Parizotto 2024-04-15 Fim}
 
-  {Sandro Silva 2024-01-17 inicio
-
-  Reativar quando estiver concluída a migração do cadastro de clientes usando a tela padrão de cadastro
-
-  if sModulo = 'CLIENTES' then
+  //Mauricio Parizotto 2024-05-15
+  if (sModulo = 'CLIENTES') or (sModulo = 'VENDEDOR') then
   begin
-    Form7.IBTransaction1.CommitRetaining;
-    if FrmFichaCadastros = nil then
-      FrmFichaCadastros := TFrmFichaCadastros.Create(Self);
+    if Form7.IBTransaction1.Active then
+      Form7.IBTransaction1.CommitRetaining;
+    if FrmCadastro = nil then
+      FrmCadastro := TFrmCadastro.Create(Self);
 
-    FrmFichaCadastros.lblNovoClick(Sender);
-    FrmFichaCadastros.Show;
+    FrmCadastro.lblNovoClick(Sender);
+    FrmCadastro.Show;
     Exit;
   end;
-  {Sandro Silva 2024-01-17 fim}
 
 
   if sModulo = 'OS' then
@@ -15132,8 +15139,6 @@ begin
     end;
   end;
 
-  Form10.pnl_IE.Visible    := (Length(AllTrim(ibDAtaset2CGC.AsString)) = 18); //Mauricio Parizotto 2024-04-15
-
   Screen.Cursor := crDefault;
 end;
 
@@ -17265,7 +17270,6 @@ end;
 
 procedure TForm7.odas3Click(Sender: TObject);
 begin
-  //
   sWhere := '';
   Form7.Close;
   Form7.Show;
@@ -17275,7 +17279,6 @@ begin
   Odas3.Checked                  := True;
   Lanamentoscompensados1.Checked  := False;
   Lanamentosnocompensados1.Checked := False;
-  //
 end;
 
 procedure TForm7.Lanamentoscompensados1Click(Sender: TObject);
@@ -17297,19 +17300,17 @@ procedure TForm7.Lanamentosnocompensados1Click(Sender: TObject);
 var
   I : Integer;
 begin
-  //
   Screen.Cursor  := crHourGlass;    // Cursor de Aguardo
   sWhere := 'where NOME=' + QuotedStr(Form1.sEscolhido)+' and (COMPENS='+QuotedStr('1899/12/30')+' or coalesce(COMPENS,'+QuotedStr('1899/12/30')+')='+QuotedStr('1899/12/30')+') ';
   Form7.Close;
   Form7.Show;
-  //
+
   sMostra := 'TTTTTFTFFFF';
   with ArquivoAberto do
   begin
     for I := 1 to iCampos do  if copy(sMostra,I,1) = 'T' then Fields[I-1].Visible := True
     else  Fields[I-1].Visible := False;
   end;
-  //
 end;
 
 procedure TForm7.Label3MouseLeave(Sender: TObject);
@@ -17546,7 +17547,7 @@ procedure TForm7.ibDataSet9NewRecord(DataSet: TDataSet);
 begin
   ibDataSet9.Edit;
   ibDataSet9REGISTRO.AsString := sProximo;
-  //
+
   if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
   begin
     ibDataSet9FUNCAO.AsString   := 'VENDEDOR';
@@ -17554,7 +17555,6 @@ begin
   begin
     ibDataSet9FUNCAO.AsString   := 'TECNICO';
   end;
-  //
 end;
 
 procedure TForm7.ibDataSet34AfterPost(DataSet: TDataSet);
@@ -26996,7 +26996,7 @@ begin
     Ativo2.Checked := True;
 
   Mostrartodososclientesefornecedores1.OnClick := EscolheOclifor;
-  //
+  {Mauricio Parizotto 2024-05-15
   for I := 0 to Form10.ComboBox8.Items.Count -1 do
   begin
     if Form10.ComboBox8.Items[I] = Form7.ArquivoAberto.FieldByName('CLIFOR').AsString then
@@ -27004,7 +27004,7 @@ begin
       Form10.ComboBox8.ItemIndex := I;
     end;
   end;
-  //
+
   for J := 0 to Form10.ComboBox8.Items.Count -1 do
   begin
     bI := True;
@@ -27012,7 +27012,7 @@ begin
     for I := 0 to Exibir1.Count -1 do
       if Exibir1.Items[I].Caption = 'Só '+Form10.ComboBox8.Items[J] then
         bI := False;
-    
+
     if bI then
     begin
       if AllTrim(Form10.ComboBox8.Items[J]) <> '' then
@@ -27024,6 +27024,7 @@ begin
       end;
     end;
   end;
+  }
 end;
 
 procedure TForm7.EscolheOclifor(Sender:TObject);
@@ -28371,21 +28372,19 @@ end;
 
 procedure TForm7.IBDataSet2BeforePost(DataSet: TDataSet);
 begin
-  //
   if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
   begin
     if AllTrim(Form7.IBDataSet2CLIFOR.AsString) = '' then Form7.IBDataSet2CLIFOR.AsString := 'Vendedor';
   end;
-  //
+
   if Form7.IBDataSet2CLIFOR.AsString = 'Vendedor' then
   begin
-    //
     Form7.ibDataSet9.Close;                                                    //
     Form7.ibDataSet9.Selectsql.Clear;                                          // Vendedores e CLIENTES relacionados
     Form7.ibDataSet9.Selectsql.Add('select * from VENDEDOR where NOME=:NOME'); //
     Form7.ibDataSet9.DataSource := DataSource2;
     Form7.ibDataSet9.Open;
-    //
+
     if AllTrim(Form7.ibDataSet9NOME.AsString) <> AllTrim(Form7.IBDataSet2NOME.AsString) then
     begin
       try
@@ -28403,7 +28402,6 @@ begin
       except end;
     end;
   end;
-  //
 end;
 
 procedure TForm7.Button10Click(Sender: TObject);
@@ -34421,12 +34419,9 @@ begin
     if FrmSituacaoOS <> nil then
       FreeAndNil(FrmSituacaoOS);
 
-    if FrmFichaCadastros <> nil then
-      FreeAndNil(FrmFichaCadastros);
-
     if FrmConversaoCFOP <> nil then
       FreeAndNil(FrmConversaoCFOP);
-      
+
       {Mauricio Parizotto 2024-04-05 Inicio}
     if FrmConvenio <> nil then
       FreeAndNil(FrmConvenio);
@@ -34457,6 +34452,9 @@ begin
     if FrmContaReceber <> nil then
       FreeAndNil(FrmCaixa);
     {Mauricio Parizotto 2024-04-16 Fim}
+
+    if FrmCadastro <> nil then
+      FreeAndNil(FrmCadastro);
   except
   end;
 end;  
