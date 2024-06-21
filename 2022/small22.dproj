@@ -492,9 +492,6 @@
         <DCCReference Include="..\..\unit_compartilhada\uLogSistema.pas"/>
         <DCCReference Include="units\uDrawCellGridModulos.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uEmail.pas"/>
-        <DCCReference Include="ufrmFichaCadastros.pas">
-            <Form>FrmFichaCadastros</Form>
-        </DCCReference>
         <DCCReference Include="units\uDesenhaBoleto.pas"/>
         <DCCReference Include="ufrmRelatorioProdMonofasicoCupom.pas">
             <Form>frmRelProdMonofasicoCupom</Form>
@@ -577,7 +574,11 @@
             <Form>FrmContaPagar</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="units\uMobile.pas"/>
         <DCCReference Include="uPermissaoUsuario.pas"/>
+        <DCCReference Include="uFrmCadastro.pas">
+            <Form>FrmCadastro</Form>
+        </DCCReference>
         <DCCReference Include="..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uCarneSections.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uTypesImpressao.pas"/>
@@ -1426,8 +1427,8 @@
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
@@ -2250,8 +2251,8 @@
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
