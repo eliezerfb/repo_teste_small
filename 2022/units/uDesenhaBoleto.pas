@@ -1079,10 +1079,15 @@ begin
     end;
   end;   *)
 
-
+  {Sandro Silva 2024-05-13 inicio
   Form25.sNossoNum := (AllTrim(LimpaNumero(sCarteira)) + '/'
                       + (StrZero(StrtoInt('0'+LimpaNumero(sConvenio)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0)) +'-'+
                       Modulo_11((StrZero(StrtoInt('0'+LimpaNumero(sConvenio)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0))));
+  }
+  Form25.sNossoNum := (AllTrim(LimpaNumero(sCarteira)) + '/'
+                      + (StrZero(StrtoIntDef(LimpaNumero(sConvenio), 0),3,0) + StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0)) +'-'+
+                      Modulo_11((StrZero(StrtoIntDef(LimpaNumero(sConvenio), 0),3,0)+StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0))));
+  {Sandro Silva 2024-05-13 fim}
 
   Result := Right(Replicate(' ',30)+Form25.sNossoNum,16);
 

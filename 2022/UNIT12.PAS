@@ -834,6 +834,8 @@ begin
 end;
 
 procedure TForm12.SMALL_DBEdit40Enter(Sender: TObject);
+var
+  nRecNo: Integer;
 begin
   mkp(True);
 
@@ -889,7 +891,29 @@ begin
   end;
 
   if Form7.sModulo <> 'RETRIBUTA' then
+  begin
+    {Dailon Parisotto (f-18604) 2024-05-10 Inicio
+
     Form7.ibDataSet16.EnableControls;
+
+    Por algum motivo ocorre o erro, se setar para o primeiro não ocorre problema
+    }
+
+    if Form7.ibDataSet16.ControlsDisabled then
+    begin
+      nRecNo := Form7.ibDataSet16.RecNo;
+      DBGrid1.DataSource := nil;
+      try
+          Form7.ibDataSet16.First;
+          Form7.ibDataSet16.EnableControls;
+
+      finally
+        Form7.ibDataSet16.RecNo := nRecNo;
+        DBGrid1.DataSource := Form7.DataSource16;
+      end;
+    end;
+    {Dailon Parisotto (f-18604) 2024-05-10 Fim}
+  end;
   Form7.ibDataSet15.Enablecontrols;
 
   AtivaPesquisaNaturezaOP;
@@ -1639,7 +1663,13 @@ begin
     Label64.Caption := 'Mod: '+StrZero(StrToInt(Form7.ibDataSet15MODELO.AsString),2,0);
   except end;
   //
+  {Dailon Parisotto (f-18201) 2024-05-08 Inicio
+
   if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
+
+  }
+  if (TestarUFMovimentaEstoqueFinanceiroSemFaturar(Form7.ibDataSet13ESTADO.AsString)) or (Form1.iReduzida = 2)  then
+  {Dailon Parisotto (f-18201) 2024-05-08 Fim}
   begin
     // Atenção a rotina abaixo altera a quantidade no estoque
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
@@ -1814,7 +1844,13 @@ begin
 
     if (AllTrim(Form7.ibDataSet15CLIENTE.AsString)) <> '' then
     begin
+      {Dailon Parisotto (f-18201) 2024-05-08 Inicio
+
       if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) or (Form1.iReduzida = 2)  then
+
+      }
+      if (TestarUFMovimentaEstoqueFinanceiroSemFaturar(Form7.ibDataSet13ESTADO.AsString)) or (Form1.iReduzida = 2)  then
+      {Dailon Parisotto (f-18201) 2024-05-08 Fim}
       begin
         // Atenção a rotina abaixo altera a quantidade no estoque
         Form7.ibDataSet16.DisableControls;
