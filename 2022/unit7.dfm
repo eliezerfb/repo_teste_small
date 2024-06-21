@@ -7888,14 +7888,14 @@ object Form7: TForm7
   object WebBrowser1: TWebBrowser
     Left = 10000
     Top = 0
-    Width = 451
-    Height = 364
+    Width = 361
+    Height = 291
     TabOrder = 8
     OnDownloadComplete = WebBrowser1DownloadComplete
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C0000004A250000191E00000000000000000000000000000000000000000000
+      4C0000004F250000131E00000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E126208000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -14531,7 +14531,7 @@ object Form7: TForm7
       '   BCPISCOFINS, '
       
         '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
-        'FINSLUCRO,IPISOBREOUTRA)'
+        'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14548,7 +14548,7 @@ object Form7: TForm7
       
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
         'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
-        'A)')
+        'A,:REFERENCIANOTA)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14602,7 +14602,8 @@ object Form7: TForm7
       '  FRETESOBREIPI,'
       '  CBENEF,'
       '  PISCOFINSLUCRO,'
-      '  IPISOBREOUTRA'
+      '  IPISOBREOUTRA,'
+      '  REFERENCIANOTA'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14662,7 +14663,8 @@ object Form7: TForm7
       '  FRETESOBREIPI = :FRETESOBREIPI,'
       '  CBENEF = :CBENEF,'
       '  PISCOFINSLUCRO = :PISCOFINSLUCRO,'
-      '  IPISOBREOUTRA = :IPISOBREOUTRA'
+      '  IPISOBREOUTRA = :IPISOBREOUTRA,'
+      '  REFERENCIANOTA = :REFERENCIANOTA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14975,6 +14977,13 @@ object Form7: TForm7
       DisplayWidth = 20
       FieldName = 'IPISOBREOUTRA'
       Origin = 'ICM.IPISOBREOUTRA'
+      Size = 1
+    end
+    object ibDataSet14REFERENCIANOTA: TIBStringField
+      DisplayLabel = 'Referenciar Nota'
+      DisplayWidth = 20
+      FieldName = 'REFERENCIANOTA'
+      Origin = 'ICM.REFERENCIANOTA'
       Size = 1
     end
     object ibDataSet14CSTPISCOFINS: TIBStringField

@@ -7639,7 +7639,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = [fsBold]
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 18
+          TabOrder = 19
           Visible = False
           OnExit = SMALL_DBEditXExit
           OnKeyDown = PadraoKeyDown
@@ -7745,7 +7745,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           MaxLength = 32768
           ParentFont = False
-          TabOrder = 17
+          TabOrder = 18
           OnEnter = DBMemo4Enter
           OnKeyDown = DBMemo4KeyDown
           OnKeyPress = DBMemo4KeyPress
@@ -7840,7 +7840,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckBox1: TDBCheckBox
-          Left = 515
+          Left = 514
           Top = 318
           Width = 93
           Height = 17
@@ -7849,6 +7849,21 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'IPISOBREOUTRA'
           DataSource = DSCadastro
           TabOrder = 16
+          ValueChecked = 'S'
+          ValueUnchecked = 'N'
+          OnClick = DBCheckSobreClick
+          OnKeyDown = PadraoKeyDown
+        end
+        object chkRefenciarNota: TDBCheckBox
+          Left = 647
+          Top = 318
+          Width = 99
+          Height = 17
+          Alignment = taLeftJustify
+          Caption = 'Referenciar Nota'
+          DataField = 'REFERENCIANOTA'
+          DataSource = DSCadastro
+          TabOrder = 17
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
