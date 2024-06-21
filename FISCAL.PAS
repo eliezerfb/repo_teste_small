@@ -9428,6 +9428,27 @@ begin
       if Form1.sModeloECF = '65' then
       begin
         //
+        {Sandro Silva 2024-06-21 inicio
+        // Caso que o arquivo dos servidores está sumindo
+        }
+        if (FileExists(Form1.sAtual + '\nfce\nfceServidoresHom.ini') = False)
+          or (FileExists(Form1.sAtual + '\nfce\nfceServidoresProd.ini') = False)
+        then
+        begin
+          if FileExists('pastanfce.exe') then
+          begin
+
+            ShellExecute( 0, 'Open','pastanfce.exe','', '', SW_HIDE);
+
+            while ConsultaProcesso('pastanfce.exe') do
+            begin
+              Sleep(50);
+            end;
+            Sleep(500);
+          end;
+        end;
+        {Sandro Silva 2024-06-21 fim}
+
         if FileExists(Form1.sAtual + '\nfce\nfceServidoresHom.ini') = False then //if FileExists(PAnsiChar(Form1.sAtual + '\nfce\nfceServidoresHom.ini')) = False then
           SmallMsg('Arquivo com configuração dos Servidor de Homologação não encontrado');
         if FileExists(Form1.sAtual + '\nfce\nfceServidoresProd.ini') = False then
