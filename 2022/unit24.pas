@@ -3029,6 +3029,17 @@ begin
   //Verifica se o produto é novo
   if Field.Name = 'ibDataSet23DESCRICAO' then
   begin
+    {Dailon Parisotto (f-19230) 2024-06-05 Inicio}
+    if (Form7.ibDataSet23DESCRICAO.AsString <> EmptyStr)
+      and (Form7.ibDataSet23CODIGO.AsString = EmptyStr)
+      and (Form7.ibDataSet23QUANTIDADE.AsFloat = 0) then
+      DBGrid1.Canvas.Font.Color := clSilver
+    else
+      DBGrid1.Canvas.Font.Color := clBlack;
+
+    dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Field.AsString);
+    {Dailon Parisotto (f-19230) 2024-06-05 Fim}
+
     Qtd := ExecutaComandoEscalar(Form7.ibDataSet4.Transaction,
                             ' Select count(1) '+
                             ' From ESTOQUE'+
@@ -3040,17 +3051,6 @@ begin
       dbGrid1.Canvas.StretchDraw(Rect,Form24.ImageNovo.Picture.Graphic);
       dbGrid1.Canvas.TextOut(Rect.Left+22,Rect.Top+2,Field.AsString);
     end;
-
-    {Dailon Parisotto (f-19230) 2024-06-05 Inicio}
-    if (Form7.ibDataSet23DESCRICAO.AsString <> EmptyStr)
-      and (Form7.ibDataSet23CODIGO.AsString = EmptyStr)
-      and (Form7.ibDataSet23QUANTIDADE.AsFloat = 0) then
-      DBGrid1.Canvas.Font.Color := clSilver
-    else
-      DBGrid1.Canvas.Font.Color := clBlack;
-
-    dbGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2,Field.AsString);
-    {Dailon Parisotto (f-19230) 2024-06-05 Fim}
   end;
   {Mauricio Parizotto 2023-10-18 Fim}
 end;
