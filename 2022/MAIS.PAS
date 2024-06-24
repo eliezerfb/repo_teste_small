@@ -1624,6 +1624,7 @@ begin
         begin
           if FileExists(Form1.sAtual+'\smallcon.exe') then
           begin
+            {Mauricio Parizotto 2024-06-24
             ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20241001.sma '+
                                                            '20241002.sma '+
                                                            '20241003.sma '+
@@ -1635,6 +1636,9 @@ begin
                                                            '20241009.sma '+
                                                            'nfce2024.sma '+
                                                            '2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
+                                                           , '', SW_SHOW);
+            }
+            ShellExecute( 0, 'Open', 'smallcon.exe', pChar('2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
                                                            , '', SW_SHOW);
           end
           else
@@ -5568,6 +5572,7 @@ begin
                                               '',
                                               SW_SHOW);
     }
+    {Mauricio Parizotto 2024-06-24
     ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20241001.sma '+
                                                    '20241002.sma '+
                                                    '20241003.sma '+
@@ -5579,6 +5584,10 @@ begin
                                                    '20241009.sma '+
                                                    'nfce2024.sma '+
                                                    '2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma '),
+                                              '',
+                                              SW_SHOW);
+    }
+    ShellExecute( 0, 'Open', 'smallcon.exe', pChar('2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma '),
                                               '',
                                               SW_SHOW);
     {Sandro Silva 2024-01-12 fim}
