@@ -528,14 +528,23 @@ begin
   if DSCadastro.DataSet.FieldByName('CIDADE').Asstring <> AoObjeto.localidade then
     DSCadastro.DataSet.FieldByName('CIDADE').AsString := Copy(AoObjeto.localidade,1, DSCadastro.DataSet.FieldByName('CIDADE').Size);
 
-  try
-    fraMunicipio.CarregaDescricao;
-  except
-  end;
-
   // Estado
   if DSCadastro.DataSet.FieldByName('ESTADO').AsString <> AoObjeto.uf then
     DSCadastro.DataSet.FieldByName('ESTADO').AsString := Copy(AoObjeto.uf,1, DSCadastro.DataSet.FieldByName('ESTADO').Size);
+
+  //Carrega componente
+  try
+    if Length(Trim(Form7.IBDataSet2ESTADO.AsString)) = 2 then
+    begin
+      fraMunicipio.sFiltro := ' and UF='+QuotedStr(Form7.IBDataSet2ESTADO.AsString);
+    end else
+    begin
+      fraMunicipio.sFiltro := ' ';
+    end;
+
+    fraMunicipio.CarregaDescricao;
+  except
+  end;
 end;
 
 procedure TFrmCadastro.DSCadastroDataChange(Sender: TObject; Field: TField);
