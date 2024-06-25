@@ -1029,6 +1029,7 @@ type
     FechamentodeCaixa1: TMenuItem;
     Iniciarnovavenda1: TMenuItem;
     ibDataSet7INSTITUICAOFINANCEIRA: TIBStringField;
+    FunesAdministrativasIntegraoIta1: TMenuItem;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1400,6 +1401,7 @@ type
     procedure CDC1Click(Sender: TObject);
     procedure CCF1Click(Sender: TObject);
     procedure COO1Click(Sender: TObject);
+    procedure FunesAdministrativasIntegraoIta1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1771,11 +1773,18 @@ uses
   , ucredencialtecnospeed
   //, uClasseValidaRecursos
   , uValidaRecursosDelphi7
+  , uTypesRecursos
+  , uValidaRecursos
   , uFuncoesPOS
   , uConverteDocumentoParaDocFiscal
   , uConfiguracaoTEF
   , uSmallConsts
-  , ufrmEditaMovimento, uPagamentoPix, uIntegracaoItau, uConectaBancoSmall;
+  , ufrmEditaMovimento
+  , uPagamentoPix
+  , uIntegracaoItau
+  , uConectaBancoSmall
+  , uFrmTransacoesItau
+  , uDialogs;
 
 {$R *.DFM}
 
@@ -8928,8 +8937,9 @@ begin
     }
     SmallMsgBox(PChar('Este sistema está licenciado somente para ' + IntToStr(iLimiteUsuariosSimultaneos) + ' usuário(s)' + Chr(10) +
              'neste momento ' + IntToStr(iUsuariosConectados) + ' estão tentando usar o sistema.' + Chr(10) + Chr(10) +
-             'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
-             'entre em contato com a Zucchetti pelo telefone 0800 645 2008')
+             //'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
+             //'entre em contato com a Zucchetti pelo telefone 0800 645 2008')
+             _RecursoIndisponivel) // Mauricio Parizotto 2024-06-25
              , 'Atenção', MB_ICONWARNING
              ); // Sandro Silva 2022-12-02 Unochapeco 'em contato com a Smallsoft.');
     {Sandro Silva 2023-05-31 fim}
@@ -33841,6 +33851,24 @@ begin
 
 end;
 
+procedure TForm1.FunesAdministrativasIntegraoIta1Click(Sender: TObject);
+var
+  bLiberado : Boolean;
+  dLimiteRecurso : Tdate;
+begin
+  bLiberado := (RecursoLiberado(IBDatabase1,rcIntegracaoItau,dLimiteRecurso));
+
+  if not bLiberado then
+  begin
+    MensagemSistema('Integração Itaú não está disponível para esta licença' + Chr(10) + Chr(10) +
+                    _RecursoIndisponivel
+                    ,msgAtencao);
+    Exit;
+  end;
+
+  ListaTransacoesItau(sCaixa,Form1);
+end;
+
 procedure TForm1.FunesAdministrativasPosElginPay1Click(Sender: TObject);
 begin
   Form1.Display('Funções Administrativas do POS','Funções Administrativas do POS');
@@ -34234,8 +34262,9 @@ begin
                    AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+chr(10)+chr(10)+
                    AllTrim(Form1.ibDataSet13.FieldByName('CGC').AsString)+chr(10)+chr(10)+
                    'Código: 100 '+chr(10)+chr(10) +
-                   'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
-                   'entre em contato com a Zucchetti pelo telefone 0800 645 2008'
+                   //'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
+                   //'entre em contato com a Zucchetti pelo telefone 0800 645 2008'
+                   _RecursoIndisponivel // Mauricio Parizotto 2024-06-25
                    ),
                    'Atenção', MB_ICONWARNING + MB_OK);
 
@@ -35697,5 +35726,6 @@ begin
   except
   end;
 end;
+
 
 end.

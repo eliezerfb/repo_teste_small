@@ -29,7 +29,9 @@ uses
   , ufrmQRCodePixDin
   , uDialogs
   , smallfunc_xe
-  , uIntegracaoItau;
+  , uIntegracaoItau
+  , uTypesRecursos
+  , uValidaRecursos, uSmallConsts;
 
 
 function CRC16CCITT(texto: string): WORD;
@@ -240,7 +242,21 @@ function PagamentoPixDinamico(Valor : double; IDTransacao, NumeroNF, Caixa : str
 var
   ibqItau: TIBQuery;
   ChaveQRCode, order_id, Mensagem : string;
+
+  bLiberado : Boolean;
+  dLimiteRecurso : Tdate;
 begin
+  bLiberado := (RecursoLiberado(IBTRANSACTION.DefaultDatabase,rcIntegracaoItau,dLimiteRecurso));
+
+  if not bLiberado then
+  begin
+    MensagemSistema('Integração Itaú não está disponível para esta licença' + Chr(10) + Chr(10) +
+                    _RecursoIndisponivel
+                    ,msgAtencao);
+    Exit;
+  end;
+
+
   Result := False;
 
   try

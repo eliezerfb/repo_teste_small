@@ -794,3 +794,5 @@ ufrmSelecionarPIX.dcu
 uPagamentoPix.dcu
 FRENTE.dproj.local
 FRENTE.identcache
+*.dcu
+*.dcu

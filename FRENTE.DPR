@@ -1,7 +1,6 @@
 program frente;
 
 {$R 'smallmanifest.res' 'smallmanifest.rc'}
-{$R 'ufrmQRCodePixDin.dfm' :TForm(ufrmQRCodePixDin)}
 
 uses
   Forms,
@@ -88,7 +87,8 @@ uses
   uajustaresolucao in 'uajustaresolucao.pas',
   uIntegracaoItau in '..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\unit_compartilhada\Itau\uClassesItau.pas',
-  uWebServiceItau in '..\unit_compartilhada\Itau\uWebServiceItau.pas';
+  uWebServiceItau in '..\unit_compartilhada\Itau\uWebServiceItau.pas',
+  uFrmTransacoesItau in 'uFrmTransacoesItau.pas' {FrmTransacoesItau};
 
 {$R *.RES}
 
