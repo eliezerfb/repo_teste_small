@@ -8,7 +8,7 @@ interface
 
 uses
   System.SysUtils, REST.JSON, System.Generics.Collections, REST.Json.Types,
-  System.IniFiles, Vcl.Forms, REST.Types;
+  System.IniFiles, Vcl.Forms, REST.Types, IBX.IBDatabase, IBX.IBQuery;
 
 var
   AmbienteItauProd : boolean;
@@ -30,9 +30,9 @@ var
                             Valor : double; out ChaveQRCode, order_id, Mensagem : string):boolean;
   function GetStatusOrder(order_id:string):string;
   function CancelOrder(order_id:string):boolean;
+  function EstornaOrder(order_id:string):boolean;
   function RefreshTokenItau:boolean;
-
-
+  function CarregaInformacoesItau(IBTRANSACTION: TIBTransaction):Boolean;
 
 
 implementation
@@ -41,7 +41,8 @@ uses
   uClassesItau
   , uWebServiceItau
   , uconstantes_chaves_privadas
-  , uLogSistema, uSmallConsts;
+  , uLogSistema
+  , uSmallConsts, uDialogs, uConectaBancoSmall;
 
 function GetURL : string;
 begin
@@ -364,7 +365,30 @@ begin
     end;
   except
   end;
+end;
 
+function EstornaOrder(order_id:string):boolean;
+var
+  sJsonRet : string;
+  StatusCode : integer;
+  OrderCancelRet : TOrderCancelRet;
+begin
+  Result := False;
+
+  try
+    if RequisicaoItau(rmDELETE,GetURL+'/order/'+order_id+'/refund','',sJsonRet,StatusCode) then
+    begin
+      try
+        OrderCancelRet  := TJson.JsonToObject<TOrderCancelRet>(sJsonRet);
+
+        if order_id = OrderCancelRet.OrderId then
+          Result := True;
+      finally
+        FreeAndNil(OrderCancelRet);
+      end;
+    end;
+  except
+  end;
 end;
 
 function RefreshTokenItau:boolean;
@@ -400,6 +424,55 @@ begin
       Result := AutenticaoPDV(ITAU_ClientId, ITAU_AccessKey, ITAU_SecretKey, Mensagem);
     end;
   except
+  end;
+end;
+
+
+function CarregaInformacoesItau(IBTRANSACTION: TIBTransaction):Boolean;
+var
+  ibqItau: TIBQuery;
+  client_id,access_key,secret_key,Mensagem : string;
+begin
+  Result := False;
+
+  if ITAU_access_token <> '' then
+  begin
+    Result := True;
+    Exit;
+  end;
+
+  try
+    ibqItau := CriaIBQuery(IBTRANSACTION);
+    ibqItau.SQL.Text := ' Select '+
+                        ' 	I.USUARIO,'+
+                        ' 	I.SENHA,'+
+                        ' 	I.CLIENTID,'+
+                        ' 	B.INSTITUICAOFINANCEIRA'+
+                        ' From CONFIGURACAOITAU I'+
+                        ' 	Left Join BANCOS B on B.IDBANCO = I.IDBANCO'+
+                        ' Where I.HABILITADO = ''S'' ';
+    ibqItau.Open;
+
+    //Nenhum banco configurado com pix estático
+    if ibqItau.IsEmpty then
+    begin
+      MensagemSistema('Nenhuma integração habilitada!',msgAtencao);
+      Exit;
+    end;
+
+    client_id  := ibqItau.FieldByName('CLIENTID').AsString;
+    access_key := ibqItau.FieldByName('USUARIO').AsString;
+    secret_key := ibqItau.FieldByName('SENHA').AsString;
+
+    if not AutenticaoPDV(client_id,access_key,secret_key,Mensagem) then
+    begin
+      MensagemSistema(Mensagem,msgAtencao);
+      Exit;
+    end;
+
+    Result := True;
+  finally
+    FreeAndNil(ibqItau);
   end;
 end;
 

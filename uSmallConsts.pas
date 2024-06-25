@@ -134,6 +134,9 @@ const
   const FONT_SIZE_DEFAULT = 7; // 2015-06-29 8;//7;
   const ALTURA_PAGINA_PDF = 2448;// 3508; // Sandro Silva 2017-04-17  2374;
 
+
+  const _RecursoIndisponivel = 'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
+                               'entre em contato com a Zucchetti pelo telefone 0800 645 2008';
 implementation
 
 end.
