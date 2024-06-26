@@ -448,7 +448,7 @@ object Form38: TForm38
       OnClick = btnVoltarClick
     end
     object btnAvancar: TBitBtn
-      Left = 295
+      Left = 296
       Top = 237
       Width = 100
       Height = 24

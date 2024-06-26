@@ -721,6 +721,10 @@ begin
                   if (NotaFiscal.Desconto / NotaFiscal.Mercadoria * oItem.TOTAL) > 0.01 then
                     fSomaNaBase  := fSomanaBase - (NotaFiscal.Desconto / NotaFiscal.Mercadoria * oItem.TOTAL); // REGRA DE TRÊS ratiando o valor do frete descontando
 
+                {Dailon Parisotto (f-19058) 2024-05-28 Inicio}
+                fSomaNaBase := Arredonda(fSomaNaBase,2);
+                {Dailon Parisotto (f-19058) 2024-05-28 Fim}
+
                 NotaFiscal.Baseicm := NotaFiscal.Baseicm + Arredonda((oItem.BASE*fSomaNaBase/100),2);
                 NotaFiscal.Icms    := NotaFiscal.Icms    + Arredonda(((oItem.BASE*fSomaNaBase/100) * oItem.ICM / 100 ),2); // Acumula
 
@@ -1188,3 +1192,4 @@ begin
 end;
 
 end.
+
