@@ -146,7 +146,7 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       Left = 0
       Top = 49
       Width = 230
-      Height = 98
+      Height = 93
       Hint = 'Opera'#231#245'es que devem ser listadas'
       Ctl3D = False
       Font.Charset = DEFAULT_CHARSET
@@ -155,6 +155,7 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       IntegralHeight = True
+      ItemHeight = 13
       ParentCtl3D = False
       ParentFont = False
       ParentShowHint = False

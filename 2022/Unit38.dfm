@@ -448,7 +448,7 @@ object Form38: TForm38
       OnClick = btnVoltarClick
     end
     object btnAvancar: TBitBtn
-      Left = 295
+      Left = 296
       Top = 237
       Width = 100
       Height = 24
@@ -529,6 +529,46 @@ object Form38: TForm38
       TabOrder = 14
       Text = 'ComboBox1'
       Visible = False
+    end
+    object pnlOSTipoFiltro: TPanel
+      Left = 180
+      Top = 105
+      Width = 160
+      Height = 68
+      BevelOuter = bvNone
+      Color = clWhite
+      ParentBackground = False
+      TabOrder = 15
+      Visible = False
+      object rbDataCriacao: TRadioButton
+        Left = 0
+        Top = 9
+        Width = 185
+        Height = 17
+        Caption = 'Data de cria'#231#227'o'
+        Checked = True
+        TabOrder = 0
+        TabStop = True
+        OnClick = RadioButton1Click
+      end
+      object rbDataAgendada: TRadioButton
+        Left = 0
+        Top = 28
+        Width = 185
+        Height = 17
+        Caption = 'Data agendada'
+        TabOrder = 1
+        OnClick = RadioButton1Click
+      end
+      object rbDataFechada: TRadioButton
+        Left = 0
+        Top = 47
+        Width = 185
+        Height = 17
+        Caption = 'Data fechada'
+        TabOrder = 2
+        OnClick = RadioButton1Click
+      end
     end
   end
 end

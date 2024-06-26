@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1237
-  ClientWidth = 1558
+  ClientHeight = 1224
+  ClientWidth = 1556
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7888,14 +7888,14 @@ object Form7: TForm7
   object WebBrowser1: TWebBrowser
     Left = 10000
     Top = 0
-    Width = 451
-    Height = 364
+    Width = 361
+    Height = 291
     TabOrder = 8
     OnDownloadComplete = WebBrowser1DownloadComplete
     OnNavigateComplete2 = WebBrowser1NavigateComplete2
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C0000004A250000191E00000000000000000000000000000000000000000000
+      4C0000004F250000131E00000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E126208000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -7925,8 +7925,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1197
-    Width = 1558
+    Top = 1184
+    Width = 1556
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7935,6 +7935,8 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
+    ExplicitTop = 1197
+    ExplicitWidth = 1558
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7998,7 +8000,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1558
+    Width = 1556
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -8008,6 +8010,7 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
+    ExplicitWidth = 1558
   end
   object Panel_0: TPanel
     Left = 0
@@ -13087,6 +13090,58 @@ object Form7: TForm7
       object Mostrartodososclientesefornecedores1: TMenuItem
         Caption = 'Todos'
       end
+      object S1: TMenuItem
+        Caption = 'S'#243' Cliente'
+        OnClick = FiltroRelacaoCom
+      end
+      object SFornecedor1: TMenuItem
+        Caption = 'S'#243' Fornecedor'
+        OnClick = FiltroRelacaoCom
+      end
+      object SClienteFornecedor1: TMenuItem
+        Caption = 'S'#243' Cliente/Fornecedor'
+        OnClick = FiltroRelacaoCom
+      end
+      object SFuncionrio1: TMenuItem
+        Caption = 'S'#243' Funcion'#225'rio'
+        OnClick = FiltroRelacaoCom
+      end
+      object SRevenda1: TMenuItem
+        Caption = 'S'#243' Revenda'
+        OnClick = FiltroRelacaoCom
+      end
+      object SRepresentante1: TMenuItem
+        Caption = 'S'#243' Representante'
+        OnClick = FiltroRelacaoCom
+      end
+      object SDistribuidor1: TMenuItem
+        Caption = 'S'#243' Distribuidor'
+        OnClick = FiltroRelacaoCom
+      end
+      object SVendedor1: TMenuItem
+        Caption = 'S'#243' Vendedor'
+        OnClick = FiltroRelacaoCom
+      end
+      object SCredenciadoradecarto1: TMenuItem
+        Caption = 'S'#243' Credenciadora de cart'#227'o'
+        OnClick = FiltroRelacaoCom
+      end
+      object SInstituiofinanceira1: TMenuItem
+        Caption = 'S'#243' Institui'#231#227'o financeira'
+        OnClick = FiltroRelacaoCom
+      end
+      object SMarketplace1: TMenuItem
+        Caption = 'S'#243' Marketplace'
+        OnClick = FiltroRelacaoCom
+      end
+      object SRevendaInativa1: TMenuItem
+        Caption = 'S'#243' Revenda Inativa'
+        OnClick = FiltroRelacaoCom
+      end
+      object SClienteInativo1: TMenuItem
+        Caption = 'S'#243' Cliente Inativo'
+        OnClick = FiltroRelacaoCom
+      end
     end
     object MenuItem9: TMenuItem
       Caption = '&Procurar'
@@ -13206,6 +13261,10 @@ object Form7: TForm7
       object RelatriodevendasporclienteNFeCupom1: TMenuItem
         Caption = 'Vendas por cliente (Nota Fiscal/Cupom)'
         OnClick = RelatriodevendasporclienteNFeCupom1Click
+      end
+      object VendasporestadoNotaFiscal1: TMenuItem
+        Caption = 'Vendas por estado (Nota Fiscal)'
+        OnClick = VendasporestadoNotaFiscal1Click
       end
       object Relatriodeprodutosmonofsicos1: TMenuItem
         Caption = 'Produtos monof'#225'sicos (Cupom Fiscal)'
@@ -19600,7 +19659,7 @@ object Form7: TForm7
         OnClick = ConfigurarobservaoparaOS1Click
       end
       object ConfigurarobservaoparaRecibo1: TMenuItem
-        Caption = 'Configurar observa'#231#227'o para Recibo'
+        Caption = 'Configurar observa'#231#227'o para Recibo de entrega'
         OnClick = ConfigurarobservaoparaRecibo1Click
       end
       object ConfigurarEtiqueta1: TMenuItem
@@ -21628,10 +21687,6 @@ object Form7: TForm7
     UniDirectional = False
     Left = 1008
     Top = 747
-  end
-  object PopupMenu2: TPopupMenu
-    Left = 736
-    Top = 144
   end
   object MainMenu00: TMainMenu
     Left = 816
