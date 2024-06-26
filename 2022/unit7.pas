@@ -18623,7 +18623,8 @@ var
   sRegistro1:  String;
   bFind: Boolean;
   I: Integer;
-  ItemNFe: TItemNFe; 
+  ItemNFe: TItemNFe;
+  nUnitario: Real;
 begin
   try
     //Form7.ibDataSet4.DisableControls; // Sandro Silva 2023-05-08 Teste de otimização
@@ -18924,7 +18925,19 @@ begin
                       if bButton = IDYES then
                         Form7.ibDataSet16UNITARIO.AsFloat    := Arredonda(Int(Form7.ibDataSet4PRECO.AsFloat * ( 1 - (Form7.ibDataSet29DESCONTO.AsFloat/100)) * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))),2)
                       else
+                      begin
+                        {Dailon Parisotto (f-19382) 2024-06-26 Inicio
+
+                        // Por algum motivo dessa forma estava calculando indevidamente
+                        // Exemplo PRECO = 42.40 e convenio em 10% e com 3 casas decimais no ConfPreco
                         Form7.ibDataSet16UNITARIO.AsFloat := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
+
+                        }
+                        nUnitario := Int(StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
+                        nUnitario := ibDataSet4PRECO.AsFloat * nUnitario;
+                        Form7.ibDataSet16UNITARIO.AsFloat := nUnitario;
+                        {Dailon Parisotto (f-19382) 2024-06-26 Fim}
+                      end;
                     end
                     else
                       Form7.ibDataSet16UNITARIO.AsFloat   := Int(ibDataSet4PRECO.AsFloat * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
