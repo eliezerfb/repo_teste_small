@@ -88,6 +88,7 @@ type
     GroupBox1: TGroupBox;
     chkPisCofinsSobLucro: TDBCheckBox;
     DBCheckBox1: TDBCheckBox;
+    chkRefenciarNota: TDBCheckBox;
     procedure DBMemo4Enter(Sender: TObject);
     procedure DBMemo4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);

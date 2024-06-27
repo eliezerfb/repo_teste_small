@@ -14536,7 +14536,7 @@ object Form7: TForm7
       '   BCPISCOFINS, '
       
         '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
-        'FINSLUCRO,IPISOBREOUTRA)'
+        'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14553,7 +14553,7 @@ object Form7: TForm7
       
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
         'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
-        'A)')
+        'A,:REFERENCIANOTA)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14607,7 +14607,8 @@ object Form7: TForm7
       '  FRETESOBREIPI,'
       '  CBENEF,'
       '  PISCOFINSLUCRO,'
-      '  IPISOBREOUTRA'
+      '  IPISOBREOUTRA,'
+      '  REFERENCIANOTA'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14667,7 +14668,8 @@ object Form7: TForm7
       '  FRETESOBREIPI = :FRETESOBREIPI,'
       '  CBENEF = :CBENEF,'
       '  PISCOFINSLUCRO = :PISCOFINSLUCRO,'
-      '  IPISOBREOUTRA = :IPISOBREOUTRA'
+      '  IPISOBREOUTRA = :IPISOBREOUTRA,'
+      '  REFERENCIANOTA = :REFERENCIANOTA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14980,6 +14982,13 @@ object Form7: TForm7
       DisplayWidth = 20
       FieldName = 'IPISOBREOUTRA'
       Origin = 'ICM.IPISOBREOUTRA'
+      Size = 1
+    end
+    object ibDataSet14REFERENCIANOTA: TIBStringField
+      DisplayLabel = 'Referenciar Nota'
+      DisplayWidth = 20
+      FieldName = 'REFERENCIANOTA'
+      Origin = 'ICM.REFERENCIANOTA'
       Size = 1
     end
     object ibDataSet14CSTPISCOFINS: TIBStringField
