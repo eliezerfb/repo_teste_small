@@ -1479,6 +1479,8 @@ type
     procedure AbreEdicaoMovimento;
     procedure AjustaDataSetTamanhoCampoDescricao(Sender: TObject);
     procedure AtualizarTEMTEF;
+    procedure ValidaPastaNfce;
+
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -9289,6 +9291,11 @@ begin
 
     if Form1.spdNFCe1 = nil then
     begin
+
+      {Sandro Silva 2024-06-27 inicio}
+      Form1.ValidaPastaNfce;
+      {Sandro Silva 2024-06-27 fim}
+
       Form1.spdNFCe1 := TspdNFCe.Create(Application);
       {Sandro Silva 2022-12-15 inicio
       Form1.spdNFCe1.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');// Sandro Silva 2018-05-30
@@ -9297,7 +9304,7 @@ begin
       {Sandro Silva 2022-12-15 fim}
 
 
-      Form1.spdNFCe1.AtualizarArquivoServidores := True; // Sempre atualizar os link dos arquivos servidores .ini Sandro Silva 2021-02-01 
+      Form1.spdNFCe1.AtualizarArquivoServidores := True; // Sempre atualizar os link dos arquivos servidores .ini Sandro Silva 2021-02-01
 
       Form1.spdNFCe1.VersaoManual                      := vm60; // Sandro Silva 2020-02-14
       Form1.spdNFCe1.DanfceSettings.FraseContingencia  := 'Danfce em contingência - Impresso em decorrência de problemas técnicos';
@@ -9428,6 +9435,30 @@ begin
       if Form1.sModeloECF = '65' then
       begin
         //
+        {Sandro Silva 2024-06-21 inicio
+        // Caso que o arquivo dos servidores está sumindo
+        }
+        {
+        if (FileExists(Form1.sAtual + '\nfce\nfceServidoresHom.ini') = False)
+          or (FileExists(Form1.sAtual + '\nfce\nfceServidoresProd.ini') = False)
+        then
+        begin
+          if FileExists('pastanfce.exe') then
+          begin
+
+            ShellExecute( 0, 'Open','pastanfce.exe','', '', SW_HIDE);
+
+            while ConsultaProcesso('pastanfce.exe') do
+            begin
+              Sleep(50);
+            end;
+            Sleep(500);
+          end;
+        end;
+        }
+        Form1.ValidaPastaNfce;
+        {Sandro Silva 2024-06-21 fim}
+
         if FileExists(Form1.sAtual + '\nfce\nfceServidoresHom.ini') = False then //if FileExists(PAnsiChar(Form1.sAtual + '\nfce\nfceServidoresHom.ini')) = False then
           SmallMsg('Arquivo com configuração dos Servidor de Homologação não encontrado');
         if FileExists(Form1.sAtual + '\nfce\nfceServidoresProd.ini') = False then
@@ -10259,6 +10290,11 @@ begin
 
   CNAEdispensadoatransmissodosarquivosdoEstoque1.Checked := (Mais1Ini.ReadString('Frente de caixa', 'Dispensado do Envio do Estoque', 'Não') = 'Sim'); // Sandro Silva 2018-11-14
   InformarindIntermedNFCe1.Checked := (LerParametroIni(FRENTE_INI, SECAO_65, 'indIntermed', 'Não') = 'Sim');
+
+  {Sandro Silva 2024-06-27 inicio}
+  if Form1.sModeloECF = '65' then
+    ValidaPastaNfce;
+  {Sandro Silva 2024-06-27 fim}
 
   if Form1.sModeloECF = '65' then
     Form1.sValorLimiteIdentificaConsumidor := LerParametroIni(FRENTE_INI, SECAO_65, 'LIMITE IDENTIFICA', Form1.sValorLimiteIdentificaConsumidor);
@@ -33137,6 +33173,26 @@ begin
   SendMessage(Form1.Edit1.Handle, WM_KEYDOWN, VK_ESCAPE, 0);
   SendMessage(Form1.Edit1.Handle, WM_KEYUP, VK_ESCAPE, 0);
 
+end;
+
+procedure TForm1.ValidaPastaNfce;
+begin
+  if (FileExists(Form1.sAtual + '\nfce\nfceServidoresHom.ini') = False)
+        or (FileExists(Form1.sAtual + '\nfce\nfceServidoresProd.ini') = False)
+    then
+  begin
+    if FileExists('pastanfce.exe') then
+    begin
+
+      ShellExecute( 0, 'Open','pastanfce.exe','', '', SW_HIDE);
+
+      while ConsultaProcesso('pastanfce.exe') do
+      begin
+        Sleep(50);
+      end;
+      Sleep(500);
+    end;
+  end;
 end;
 
 procedure TForm1.ValidaSeMesaJaTemItens(sAlteracaregistro: String;
