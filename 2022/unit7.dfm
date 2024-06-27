@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1224
-  ClientWidth = 1556
+  ClientHeight = 1250
+  ClientWidth = 1560
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7925,8 +7925,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1184
-    Width = 1556
+    Top = 1210
+    Width = 1560
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -8000,7 +8000,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1556
+    Width = 1560
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -11903,6 +11903,7 @@ object Form7: TForm7
       DisplayLabel = 'In'#237'cio da promo'#231#227'o'
       FieldName = 'PROMOINI'
       Origin = 'ESTOQUE.PROMOINI'
+      OnChange = ibDataSet4PROMOINIChange
       OnSetText = ibDataSet4PROMOINISetText
       EditMask = '!99/99/9999;1; '
     end
@@ -11910,6 +11911,7 @@ object Form7: TForm7
       DisplayLabel = 'Pre'#231'o promocional'
       FieldName = 'ONPROMO'
       Origin = 'ESTOQUE.ONPROMO'
+      OnChange = ibDataSet4ONPROMOChange
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
       Precision = 18
@@ -13090,58 +13092,6 @@ object Form7: TForm7
       object Mostrartodososclientesefornecedores1: TMenuItem
         Caption = 'Todos'
       end
-      object S1: TMenuItem
-        Caption = 'S'#243' Cliente'
-        OnClick = FiltroRelacaoCom
-      end
-      object SFornecedor1: TMenuItem
-        Caption = 'S'#243' Fornecedor'
-        OnClick = FiltroRelacaoCom
-      end
-      object SClienteFornecedor1: TMenuItem
-        Caption = 'S'#243' Cliente/Fornecedor'
-        OnClick = FiltroRelacaoCom
-      end
-      object SFuncionrio1: TMenuItem
-        Caption = 'S'#243' Funcion'#225'rio'
-        OnClick = FiltroRelacaoCom
-      end
-      object SRevenda1: TMenuItem
-        Caption = 'S'#243' Revenda'
-        OnClick = FiltroRelacaoCom
-      end
-      object SRepresentante1: TMenuItem
-        Caption = 'S'#243' Representante'
-        OnClick = FiltroRelacaoCom
-      end
-      object SDistribuidor1: TMenuItem
-        Caption = 'S'#243' Distribuidor'
-        OnClick = FiltroRelacaoCom
-      end
-      object SVendedor1: TMenuItem
-        Caption = 'S'#243' Vendedor'
-        OnClick = FiltroRelacaoCom
-      end
-      object SCredenciadoradecarto1: TMenuItem
-        Caption = 'S'#243' Credenciadora de cart'#227'o'
-        OnClick = FiltroRelacaoCom
-      end
-      object SInstituiofinanceira1: TMenuItem
-        Caption = 'S'#243' Institui'#231#227'o financeira'
-        OnClick = FiltroRelacaoCom
-      end
-      object SMarketplace1: TMenuItem
-        Caption = 'S'#243' Marketplace'
-        OnClick = FiltroRelacaoCom
-      end
-      object SRevendaInativa1: TMenuItem
-        Caption = 'S'#243' Revenda Inativa'
-        OnClick = FiltroRelacaoCom
-      end
-      object SClienteInativo1: TMenuItem
-        Caption = 'S'#243' Cliente Inativo'
-        OnClick = FiltroRelacaoCom
-      end
     end
     object MenuItem9: TMenuItem
       Caption = '&Procurar'
@@ -13261,10 +13211,6 @@ object Form7: TForm7
       object RelatriodevendasporclienteNFeCupom1: TMenuItem
         Caption = 'Vendas por cliente (Nota Fiscal/Cupom)'
         OnClick = RelatriodevendasporclienteNFeCupom1Click
-      end
-      object VendasporestadoNotaFiscal1: TMenuItem
-        Caption = 'Vendas por estado (Nota Fiscal)'
-        OnClick = VendasporestadoNotaFiscal1Click
       end
       object Relatriodeprodutosmonofsicos1: TMenuItem
         Caption = 'Produtos monof'#225'sicos (Cupom Fiscal)'

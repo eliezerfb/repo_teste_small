@@ -572,6 +572,8 @@ type
     bGravaEscolha : boolean;
     rCusto : Real;
 
+    function EmPeriodoPromocional: Boolean;
+    procedure AjustaCampoPrecoQuandoEmPromocao;
     function JpgResize(sP1: String; iP2: Integer): boolean;
   end;
 
@@ -731,6 +733,7 @@ var
   BlobStream : TStream;
   sTotal     : string;
   JP2         : TJPEGImage;
+  sRegistroOld: String;
 begin
   // Posiciona o foco quando ativa
   Result := True;
@@ -738,7 +741,7 @@ begin
   try
     if Form7.sModulo = 'ESTOQUE' then
     begin
-      if (Date >= Form7.ibDataSet4PROMOINI.AsDateTime) and (Date <= Form7.ibDataSet4PROMOFIM.AsDateTime) then
+      if Form10.EmPeriodoPromocional then //Sandro Silva 2024-06-12 if (Date >= Form7.ibDataSet4PROMOINI.AsDateTime) and (Date <= Form7.ibDataSet4PROMOFIM.AsDateTime) then
       begin
         Form7.ibDataSet4PRECO.ReadOnly := True;
         Form10.SMALL_DBEdit6.Font.Color := clGrayText;
@@ -746,19 +749,31 @@ begin
       end else
       begin
         try
-          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-            Form7.ibDataset4.Edit;
-          if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-          begin
-            Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
-          end;
-          Form7.ibDataSet4PRECO.ReadOnly := False;
-          Form10.SMALL_DBEdit6.Font.Color := clblack;
+          //if Form7.ibDataset4.Active then // Sandro Silva 2024-06-17
+          //begin
+            if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+              Form7.ibDataset4.Edit;
+            if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+            begin
+              {Sandro Silva 2024-06-18 inicio
+              Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
+              }
+              sRegistroOld := Form7.sRegistro;
+              Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
+              if sRegistroOld <> Form7.sRegistro then
+                Form7.sRegistro := sRegistroOld;
+              {Sandro Silva 2024-06-18 fim}
+            end;
+            Form7.ibDataSet4PRECO.ReadOnly := False;
+            Form10.SMALL_DBEdit6.Font.Color := clblack;
+            Form10.Label6.Caption := 'Preço'; // Sandro Silva 2024-06-12
+          //end;
         except
         end;
       end;
     end;
   except end;
+
   {$Endregion}
 
   try
@@ -1953,6 +1968,9 @@ begin
 
   if (Form7.sModulo = 'ESTOQUE') and (Form10.orelhas.ActivePage = Orelha_promo) then
     AtualizaTela(False);
+
+  AjustaCampoPrecoQuandoEmPromocao; // Sandro Silva 2024-06-12
+
 end;
 
 
@@ -3402,6 +3420,11 @@ begin
   if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
 end;
 
+function TForm10.EmPeriodoPromocional: Boolean;
+begin
+  Result := (Date >= Form7.ibDataSet4PROMOINI.AsDateTime) and (Date <= Form7.ibDataSet4PROMOFIM.AsDateTime);
+end;
+
 procedure TForm10.FormActivate(Sender: TObject);
 var
   iWidthCampos: Integer;
@@ -3934,6 +3957,7 @@ begin
     begin
       if AllTrim(form7.ibDataSet4DESCRICAO.AsString) = '' then
         Form7.ibDataSet4.Delete;
+
     end;
   except
   end;
@@ -4675,6 +4699,8 @@ begin
   {Dailon Parisotto (f-5075) 2023-12-27 Inicio}
   BloquearAcessoUsuarioAbas;
   {Dailon Parisotto (f-5075) 2023-12-27 Fim}
+
+  orelha_cadastroShow(orelha_cadastro); // Sandro Silva 2024-06-12
 end;
 
 procedure TForm10.Button9Click(Sender: TObject);
@@ -6045,6 +6071,9 @@ begin
     SMALL_DBEdit3.SetFocus
   else if SMALL_DBEdit4.CanFocus then
     SMALL_DBEdit4.SetFocus;
+  {Sandro Silva 2024-06-12 inicio}
+  AjustaCampoPrecoQuandoEmPromocao;
+  {Sandro Silva 2024-06-12 fim}
 end;
 
 procedure TForm10.Button4Click(Sender: TObject);
@@ -7286,6 +7315,57 @@ begin
   //   Form7.StatusTrocaPerfil := 'PR';
   fraPerfilTrib.txtCampoKeyDown(Sender, Key, Shift);
   {Sandro Silva 2024-01-11 fim}
+end;
+
+procedure TForm10.AjustaCampoPrecoQuandoEmPromocao;
+var
+  iObj: Integer;
+  sRegistroOld: String;
+begin
+  if (Form7.sModulo = 'ESTOQUE') then
+  begin
+
+    for iObj := 0 to Form10.ComponentCount - 1 do
+    begin
+      if Form10.Components[iObj].ClassType = TSMALL_DBEdit then
+      begin
+        if AnsiUpperCase(TSMALL_DBEdit(Form10.Components[iObj]).DataField) = 'PRECO' then
+        begin
+          TSMALL_DBEdit(Form10.Components[iObj]).Enabled    := not EmPeriodoPromocional;
+          TSMALL_DBEdit(Form10.Components[iObj]).ReadOnly   := EmPeriodoPromocional;
+          if not EmPeriodoPromocional then
+            TSMALL_DBEdit(Form10.Components[iObj]).Font.Color := clWindowText;
+
+          if Form7.sSelect <> '' then
+          begin
+            if Form7.ibDataSet4.Active then
+            begin
+              sRegistroOld := Form7.sRegistro;  // Sandro Silva 2024-06-18
+              if EmPeriodoPromocional then
+              begin
+                if Form7.ibDataSet4.FieldByName('PRECO').AsFloat <> Form7.ibDataSet4.FieldByName('ONPROMO').AsFloat then
+                begin
+                  try
+                    Form7.ibDataSet4.Refresh;
+
+                    if sRegistroOld <> Form7.sRegistro then
+                    begin
+                      Form7.sRegistro := sRegistroOld;
+                      Form7.ibDataSet4.Locate('REGSITRO', Form7.SREGISTRO, []);
+                    end;
+
+                    Form7.ibDataSet4.Edit;
+                  except
+
+                  end;
+                end;
+              end;
+            end; // if Form7.ibDataSet4.Active then
+          end; // if Form7.sSelect <> '' then
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TForm10.AtribuirItemPesquisaComposicao;

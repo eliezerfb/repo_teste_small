@@ -3233,6 +3233,10 @@ begin
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set PRECO=OFFPROMO where (CURRENT_DATE not between PROMOINI and PROMOFIM) and (PRECO=ONPROMO) ');
     Form7.ibDataSet99.Open;
+    {Sandro Silva 2024-04-22 inicio}
+    if Form7.ibDataSet99.RowsAffected > 0 then
+      Result := True;
+    {Sandro Silva 2024-04-22 fim}
   except end;
 
   try
@@ -3241,6 +3245,10 @@ begin
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set OFFPROMO=PRECO where (CURRENT_DATE not between PROMOINI and PROMOFIM) and (OFFPROMO<>PRECO)');
     Form7.ibDataSet99.Open;
+    {Sandro Silva 2024-04-22 inicio}
+    if Form7.ibDataSet99.RowsAffected > 0 then
+      Result := True;
+    {Sandro Silva 2024-04-22 fim}
   except end;
 
   try
@@ -3249,11 +3257,15 @@ begin
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set PRECO=ONPROMO where (CURRENT_DATE between PROMOINI and PROMOFIM) and (PRECO<>ONPROMO) ');
     Form7.ibDataSet99.Open;
+    {Sandro Silva 2024-04-22 inicio}
+    if Form7.ibDataSet99.RowsAffected > 0 then
+      Result := True;
+    {Sandro Silva 2024-04-22 fim}
   except end;
 
   Mensagem22('Aguarde...');
 
-  Result := True;
+  // Sandro Silva 2024-04-22 Result := True;
 end;
 
 function AjustaRegistro(sP0, sP1: String):Boolean;
