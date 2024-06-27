@@ -5093,6 +5093,12 @@ begin
     ExibeRazaoSocialNoCaptionDoForm;
     {Sandro Silva 2022-12-15 fim}
 
+    //Mauricio Parizotto 2024-06-27
+    //Ajusta se é produto rural
+    ExecutaComando(' Update CLIFOR set PRODUTORRURAL = ''S'' '+
+                   ' Where Substring( Upper(Coalesce(IE,'''')) from 1 for 2) = ''PR'' '+
+                   '   and CHAR_LENGTH(CGC) = 14 ');
+
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     //
     if not (Form1.iReduzida = 1) then
@@ -5103,8 +5109,9 @@ begin
           try
             Mais1Ini.WriteString('Outros','Data',DateToStr(Date));
             Mais1Ini.Free;
-          except end;
-          //
+          except
+          end;
+
           Form22.Repaint;
           Mensagem22('Atualizando valores no contas a receber...');
 

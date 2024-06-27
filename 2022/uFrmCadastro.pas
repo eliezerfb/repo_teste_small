@@ -86,6 +86,8 @@ type
     Label82: TLabel;
     SMALL_DBEdit61: TSMALL_DBEdit;
     SMALL_DBEdit62: TSMALL_DBEdit;
+    pnl_IE_PR: TPanel;
+    chkProdRural: TDBCheckBox;
     procedure FormShow(Sender: TObject);
     procedure edtCEPExit(Sender: TObject);
     procedure edtCEPEnter(Sender: TObject);
@@ -123,6 +125,7 @@ type
       Shift: TShiftState);
     procedure tbsComissaoEnter(Sender: TObject);
     procedure edtCPFCNPJExit(Sender: TObject);
+    procedure chkProdRuralClick(Sender: TObject);
   private
     { Private declarations }
     FcCEPAnterior: String;
@@ -184,6 +187,9 @@ begin
   cboRelacaoCom.Items.Add('Revenda Inativa'); // adicionadas para uso na Smallsoft
   cboRelacaoCom.Items.Add('Cliente Inativo'); // adicionadas para uso na Smallsoft
   cboRelacaoCom.Sorted := True;
+
+  pnl_IE_PR.Top  := pnl_IE.Top;
+  pnl_IE_PR.Left := pnl_IE.Left;
 
   inherited;
 end;
@@ -293,6 +299,7 @@ begin
   edtEstado.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtRG_IE.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura) and (Form7.IBDataSet2CONTRIBUINTE.AsString <> '2');
   pnl_IE.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  chkProdRural.Enabled          := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtTelefone.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtCelular.Enabled            := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtWhatsApp.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
@@ -449,6 +456,19 @@ begin
 
 end;
 
+procedure TFrmCadastro.chkProdRuralClick(Sender: TObject);
+begin
+  if chkProdRural.Checked then
+  begin
+    if Copy(DSCadastro.DataSet.FieldByName('IE').AsString,1,2) <> 'PR' then
+      DSCadastro.DataSet.FieldByName('IE').AsString := 'PR'+Trim(Copy(DSCadastro.DataSet.FieldByName('IE').AsString,1,14));
+  end else
+  begin
+    if Copy(Trim(DSCadastro.DataSet.FieldByName('IE').AsString),1,2) = 'PR' then
+      DSCadastro.DataSet.FieldByName('IE').AsString := Trim(Copy(DSCadastro.DataSet.FieldByName('IE').AsString, 3,16) );
+  end;
+end;
+
 procedure TFrmCadastro.memContatoEnter(Sender: TObject);
 begin
   sContatos := Form7.IBDataSet2CONTATOS.AsString;
@@ -566,6 +586,7 @@ end;
 procedure TFrmCadastro.edtCPFCNPJChange(Sender: TObject);
 begin
   pnl_IE.Visible    := (Length(Trim(form7.ibDAtaset2CGC.AsString)) = 18); //Mauricio Parizotto 2024-04-15
+  pnl_IE_PR.Visible := (Length(Trim(form7.ibDAtaset2CGC.AsString)) = 14); //Mauricio Parizotto 2024-06-27
 end;
 
 procedure TFrmCadastro.edtCPFCNPJExit(Sender: TObject);
@@ -617,6 +638,7 @@ begin
     cboRelacaoCom.ItemIndex := cboRelacaoCom.Items.IndexOf('Vendedor');
 
   pnl_IE.Visible                  := (Length(trim(Form7.ibDAtaset2CGC.AsString)) = 18);
+  pnl_IE_PR.Visible               := (Length(Trim(form7.ibDAtaset2CGC.AsString)) = 14); //Mauricio Parizotto 2024-06-27
 
   Self.Caption := form7.ibDataSet2NOME.AsString;
 

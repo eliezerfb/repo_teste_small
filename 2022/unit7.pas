@@ -11,11 +11,6 @@ uses
   IBDatabase, IBCustomDataSet, IBTable, IBQuery, IBDatabaseInfo, IBServices,
   DBClient, LbAsym, LbRSA, LbCipher, LbClass, xmldom, XMLIntf,
   msxmldom, XMLDoc,
-  {$IFDEF VER150}
-  SmallFunc,
-  oxmldom, spdXMLUtils, spdType, CAPICOM_TLB,
-  {$ELSE}
-  {$ENDIF}
   //xercesxmldom,
   Windows, OleCtrls,
   SHDocVw, FileCtrl,
@@ -1710,6 +1705,7 @@ type
     SRevendaInativa1: TMenuItem;
     SClienteInativo1: TMenuItem;
     VendasporestadoNotaFiscal1: TMenuItem;
+    IBDataSet2PRODUTORRURAL: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -22068,8 +22064,9 @@ end;
 
 procedure TForm7.IBDataSet2NewRecord(DataSet: TDataSet);
 begin
-  ibDataSet2REGISTRO.AsString   := sProximo;
-  ibDataSet2CADASTRO.AsDateTime := Date;
+  ibDataSet2REGISTRO.AsString      := sProximo;
+  ibDataSet2CADASTRO.AsDateTime    := Date;
+  IBDataSet2PRODUTORRURAL.AsString := 'N'; //Mauricio Parizotto 2024-06-27
 end;
 
 procedure TForm7.DBGrid1ColEnter(Sender: TObject);

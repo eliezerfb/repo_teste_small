@@ -1131,7 +1131,7 @@ inherited FrmCadastro: TFrmCadastro
           OnKeyDown = PadraoKeyDown
         end
         object memContato: TDBMemo
-          Left = 531
+          Left = 530
           Top = 291
           Width = 266
           Height = 108
@@ -1238,7 +1238,7 @@ inherited FrmCadastro: TFrmCadastro
         end
         object pnl_IE: TPanel
           Left = 230
-          Top = 205
+          Top = 206
           Width = 256
           Height = 23
           BevelOuter = bvNone
@@ -1272,6 +1272,27 @@ inherited FrmCadastro: TFrmCadastro
             TabOrder = 2
             OnClick = rgIEIsentoClick
             OnKeyDown = PadraoKeyDown
+          end
+        end
+        object pnl_IE_PR: TPanel
+          Left = 332
+          Top = 228
+          Width = 125
+          Height = 23
+          BevelOuter = bvNone
+          TabOrder = 29
+          object chkProdRural: TDBCheckBox
+            Left = 6
+            Top = 0
+            Width = 97
+            Height = 17
+            Caption = 'Produtor Rural'
+            DataField = 'PRODUTORRURAL'
+            DataSource = DSCadastro
+            TabOrder = 0
+            ValueChecked = 'S'
+            ValueUnchecked = 'N'
+            OnClick = chkProdRuralClick
           end
         end
       end

@@ -7935,8 +7935,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1197
-    ExplicitWidth = 1558
     object Button2: TButton
       Left = 260
       Top = 10
@@ -8010,7 +8008,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1558
   end
   object Panel_0: TPanel
     Left = 0
@@ -20390,7 +20387,7 @@ object Form7: TForm7
       
         '   PROXDATA, CUSTO, COMPRA, ATIVO, MOSTRAR, CLIFOR, CONTATOS, RE' +
         'GISTRO, '
-      '   FOTO, WHATSAPP, CONTRIBUINTE)'
+      '   FOTO, WHATSAPP, CONTRIBUINTE, PRODUTORRURAL)'
       'values'
       
         '  (:NOME, :CONTATO, :IE, :CGC, :ENDERE, :COMPLE, :CIDADE, :ESTAD' +
@@ -20406,7 +20403,7 @@ object Form7: TForm7
         'ATIVO, '
       
         '   :MOSTRAR, :CLIFOR, :CONTATOS, :REGISTRO, :FOTO, :WHATSAPP, :C' +
-        'ONTRIBUINTE)')
+        'ONTRIBUINTE, :PRODUTORRURAL)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -20443,7 +20440,8 @@ object Form7: TForm7
       '  REGISTRO,'
       '  FOTO,'
       '  WHATSAPP,'
-      '  CONTRIBUINTE'
+      '  CONTRIBUINTE,'
+      '  PRODUTORRURAL'
       'from CLIFOR '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -20486,7 +20484,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO,'
       '  FOTO = :FOTO,'
       '  WHATSAPP = :WHATSAPP,'
-      '  CONTRIBUINTE = :CONTRIBUINTE'
+      '  CONTRIBUINTE = :CONTRIBUINTE,'
+      '  PRODUTORRURAL = :PRODUTORRURAL'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -20738,6 +20737,11 @@ object Form7: TForm7
       FieldName = 'CONTRIBUINTE'
       Origin = 'CLIFOR.CONTRIBUINTE'
       Visible = False
+    end
+    object IBDataSet2PRODUTORRURAL: TIBStringField
+      FieldName = 'PRODUTORRURAL'
+      Origin = 'CLIFOR.PRODUTORRURAL'
+      Size = 1
     end
   end
   object IBDataSet99: TIBDataSet
