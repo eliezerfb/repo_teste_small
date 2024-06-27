@@ -2185,7 +2185,37 @@ begin
     end;
 
     // Entrada empresa no Regime normal por CST
-    //
+    // FCP
+    // FCP ST
+
+    {Dailon Parisotto (f-19455) 2024-06-26 Inicio}
+    if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '10' then
+    begin
+
+      if (Form7.ibDataSet23.FieldByname('PFCP').AsFloat) <> 0 then
+      begin
+        Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet23.FieldByname('VBCFCP').AsFloat);// Valor da Base de Cálculo do FCP
+        Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(Form7.ibDataSet23.FieldByname('PFCP').AsFloat); // Percentual do Fundo de Combate à Pobreza (FCP)
+        Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(Form7.ibDataSet23.FieldByname('VFCP').AsFloat); // Valor do Fundo de Combate à Pobreza (FCP)
+      end;
+
+      if Form7.ibDataSet23.FieldByname('PFCPST').AsFloat <> 0 then
+      begin
+        Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(Form7.ibDataSet23.FieldByname('VBCFCPST').AsFloat); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
+        Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := FormatFloatXML(Form7.ibDataSet23.FieldByname('PFCPST').AsFloat); // Percentual do FCP retido por Substituição Tributária
+
+        if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
+        begin
+          Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML(Form7.ibDataSet23.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+        end else
+        begin
+          Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML(Form7.ibDataSet23.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+        end;
+      end;
+
+    end;
+    {Dailon Parisotto (f-19455) 2024-06-26 Fim}
+
     {
     if Form1.sVersaoLayout = '4.00' then
     begin
