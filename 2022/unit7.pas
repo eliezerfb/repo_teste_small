@@ -18923,8 +18923,16 @@ begin
                         Chr(10) ),'Atenção', mb_YesNo + mb_DefButton1 + MB_ICONQUESTION);
                         //
                       if bButton = IDYES then
-                        Form7.ibDataSet16UNITARIO.AsFloat    := Arredonda(Int(Form7.ibDataSet4PRECO.AsFloat * ( 1 - (Form7.ibDataSet29DESCONTO.AsFloat/100)) * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))),2)
-                      else
+                      begin
+                        {Dailon Parisotto (f-19382) 2024-06-27 Inicio
+
+                        Form7.ibDataSet16UNITARIO.AsFloat := Int(Form7.ibDataSet4PRECO.AsFloat * ( 1 - (Form7.ibDataSet29DESCONTO.AsFloat/100)) * StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco))))/StrToInt('1'+Replicate('0',StrToInt(Form1.ConfPreco)));
+
+                        }
+                        nUnitario := Form7.ibDataSet4PRECO.AsFloat - (Form7.ibDataSet4PRECO.AsFloat * (Form7.ibDataSet29DESCONTO.AsFloat/100));
+                        Form7.ibDataSet16UNITARIO.AsFloat    := Arredonda(nUnitario,2)
+                        {Dailon Parisotto (f-19382) 2024-06-27 Fim}
+                      end else
                       begin
                         {Dailon Parisotto (f-19382) 2024-06-26 Inicio
 
