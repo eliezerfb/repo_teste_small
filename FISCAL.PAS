@@ -1478,6 +1478,7 @@ type
     procedure AbreEdicaoMovimento;
     procedure AjustaDataSetTamanhoCampoDescricao(Sender: TObject);
     procedure AtualizarTEMTEF;
+    procedure ConverteConfPix;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -9789,7 +9790,6 @@ var
   I : Integer;
   sSecoes :  TStrings;
   Mais1Ini: TIniFile;
-//  sExeName: String;
   bInicializa: Boolean;// Sandro Silva 2017-07-05
 begin
   //Integração Itaú
@@ -10708,6 +10708,8 @@ begin
   end;
 
   Timer3.Enabled := Form1.bBalancaAutonoma;
+
+  ConverteConfPix;
 end;
 
 procedure TForm1.Button18Click(Sender: TObject); // Fechamento Cupom
@@ -35724,6 +35726,33 @@ begin
                                  ' Where NUMERONF = '+QuotedStr(sDocOld)+
                                  '   and CAIXA = '+QuotedStr(sCaixaOld));
   except
+  end;
+end;
+
+
+
+procedure TForm1.ConverteConfPix; //Remover no futuro - Mauricio Parizotto 2024-06-28
+var
+  oArq : TiniFile;
+  bUsaPixEstatico : boolean;
+  i : integer;
+begin
+  oArq := TIniFile.Create('FRENTE.INI');
+  try
+    bUsaPixEstatico     := AnsiUpperCase(oArq.ReadString('Frente de caixa', 'USA PIX ESTATICO', _cNao)) = AnsiUpperCase(_cSim);
+
+    if bUsaPixEstatico then
+    begin
+      for I := 1 to 8 do
+      begin
+        if Copy(oArq.ReadString('NFCE', 'Ordem forma extra '+i.ToString, '') ,1,2) = '17' then
+          oArq.WriteString('NFCE','Tipo Pix '+i.ToString,'PIX Estático');
+      end;
+
+      oArq.WriteString('Frente de caixa','USA PIX ESTATICO',_cNao);
+    end;
+  finally
+    oArq.Free;
   end;
 end;
 
