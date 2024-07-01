@@ -1479,6 +1479,7 @@ type
     procedure AjustaDataSetTamanhoCampoDescricao(Sender: TObject);
     procedure AtualizarTEMTEF;
     procedure ConverteConfPix;
+    procedure ValidaPastaNfce;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -9298,6 +9299,11 @@ begin
 
     if Form1.spdNFCe1 = nil then
     begin
+
+      {Sandro Silva 2024-06-27 inicio}
+      Form1.ValidaPastaNfce;
+      {Sandro Silva 2024-06-27 fim}
+
       Form1.spdNFCe1 := TspdNFCe.Create(Application);
       {Sandro Silva 2022-12-15 inicio
       Form1.spdNFCe1.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');// Sandro Silva 2018-05-30
@@ -9306,7 +9312,7 @@ begin
       {Sandro Silva 2022-12-15 fim}
 
 
-      Form1.spdNFCe1.AtualizarArquivoServidores := True; // Sempre atualizar os link dos arquivos servidores .ini Sandro Silva 2021-02-01 
+      Form1.spdNFCe1.AtualizarArquivoServidores := True; // Sempre atualizar os link dos arquivos servidores .ini Sandro Silva 2021-02-01
 
       Form1.spdNFCe1.VersaoManual                      := vm60; // Sandro Silva 2020-02-14
       Form1.spdNFCe1.DanfceSettings.FraseContingencia  := 'Danfce em contingência - Impresso em decorrência de problemas técnicos';
@@ -9437,6 +9443,30 @@ begin
       if Form1.sModeloECF = '65' then
       begin
         //
+        {Sandro Silva 2024-06-21 inicio
+        // Caso que o arquivo dos servidores está sumindo
+        }
+        {
+        if (FileExists(Form1.sAtual + '\nfce\nfceServidoresHom.ini') = False)
+          or (FileExists(Form1.sAtual + '\nfce\nfceServidoresProd.ini') = False)
+        then
+        begin
+          if FileExists('pastanfce.exe') then
+          begin
+
+            ShellExecute( 0, 'Open','pastanfce.exe','', '', SW_HIDE);
+
+            while ConsultaProcesso('pastanfce.exe') do
+            begin
+              Sleep(50);
+            end;
+            Sleep(500);
+          end;
+        end;
+        }
+        Form1.ValidaPastaNfce;
+        {Sandro Silva 2024-06-21 fim}
+
         if FileExists(Form1.sAtual + '\nfce\nfceServidoresHom.ini') = False then //if FileExists(PAnsiChar(Form1.sAtual + '\nfce\nfceServidoresHom.ini')) = False then
           SmallMsg('Arquivo com configuração dos Servidor de Homologação não encontrado');
         if FileExists(Form1.sAtual + '\nfce\nfceServidoresProd.ini') = False then
@@ -10207,6 +10237,11 @@ begin
 
   CNAEdispensadoatransmissodosarquivosdoEstoque1.Checked := (Mais1Ini.ReadString('Frente de caixa', 'Dispensado do Envio do Estoque', 'Não') = 'Sim'); // Sandro Silva 2018-11-14
   InformarindIntermedNFCe1.Checked := (LerParametroIni(FRENTE_INI, SECAO_65, 'indIntermed', 'Não') = 'Sim');
+
+  {Sandro Silva 2024-06-27 inicio}
+  if Form1.sModeloECF = '65' then
+    ValidaPastaNfce;
+  {Sandro Silva 2024-06-27 fim}
 
   if Form1.sModeloECF = '65' then
     Form1.sValorLimiteIdentificaConsumidor := LerParametroIni(FRENTE_INI, SECAO_65, 'LIMITE IDENTIFICA', Form1.sValorLimiteIdentificaConsumidor);
@@ -33075,6 +33110,26 @@ begin
 
 end;
 
+procedure TForm1.ValidaPastaNfce;
+begin
+  if (FileExists(Form1.sAtual + '\nfce\nfceServidoresHom.ini') = False)
+        or (FileExists(Form1.sAtual + '\nfce\nfceServidoresProd.ini') = False)
+    then
+  begin
+    if FileExists('pastanfce.exe') then
+    begin
+
+      ShellExecute( 0, 'Open','pastanfce.exe','', '', SW_HIDE);
+
+      while ConsultaProcesso('pastanfce.exe') do
+      begin
+        Sleep(50);
+      end;
+      Sleep(500);
+    end;
+  end;
+end;
+
 procedure TForm1.ValidaSeMesaJaTemItens(sAlteracaregistro: String;
   sMesaPesagem: String);
 // Certifica para selecionar uma mesa que não contenha outros itens lançados
@@ -34287,11 +34342,16 @@ function TForm1.PDV_ImportaGerencial(sNumeroGerencial: String;
 var
   ConverteGerencial: TConverteVendaParaNovoDocFiscal;
   IBQTOTAL: TIBQuery;
+  IBQNFCE: TIBQuery; // Sandro Silva 2024-05-29
 begin
   Result := False;
 
   if sNumeroGerencial = '' then
     Exit;
+
+  {Sandro Silva 2024-05-29 inicio}
+  IBQNFCE := CriaIBQuery(Form1.ibDataSet150.Transaction);
+  {Sandro Silva 2024-05-29 final}
 
   {Sandro Silva 2023-08-30 inicio
   if PDV_CupomAberto then
@@ -34453,6 +34513,13 @@ begin
           if FModeloECF = '65' then // Sandro Silva 2023-08-30 if Form1.sModeloECF = '65' then
             _ecf65_EnviarNFCe(True);
 
+          {Sandro Silva 2024-05-29 inicio}
+          // Valida se a nota foi autorizada
+          if AnsiContainsText(Form1.IBDataSet150.FieldByName('STATUS').AsString, 'Autorizad') or AnsiContainsText(Form1.IBDataSet150.FieldByName('STATUS').AsString, 'Sucesso') then
+            Result := True;
+          {Sandro Silva 2024-05-29 fim}
+
+
           Form10.sNomeDoTEF      := '';
           Form1.sDebitoOuCredito := '';
           Form1.sConveniado      := '';
@@ -34504,6 +34571,8 @@ begin
       end;
     end
   finally
+    if IBQTOTAL <> nil then
+      FreeAndNil(IBQTOTAL);
     FreeAndNil(ConverteGerencial);
     Form1.TransacoesCartao.Transacoes.Clear;
     Form10.sNomeDoTEF      := '';
@@ -34512,8 +34581,23 @@ begin
     Form1.sVendedor        := '';
     Form1.fDescontoNoTotal := 0.00;
     Form1.fTEFPago         := 0.00;
-    //No final deixa zerado o número do cupom no frente.ini 
+
+    {
+    //No final deixa zerado o número do cupom no frente.ini
     GravaNumeroCupomFrenteINI('000000', Form1.sModeloECF); // Sandro Silva 2023-08-31
+    }
+    IBQNFCE.Close;
+    IBQNFCE.SQL.Text :=
+      'select max(NUMERONF) as NUMERONF ' +
+      'from NFCE ' +
+      'where MODELO = ' + QuotedStr(Form1.sModeloECF) +
+      'and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+      ' and (STATUS containing ''Autoriza'' or STATUS containing ''Cancela'' or STATUS containing ''sucesso'' or STATUS containing ' + QuotedStr(NFCE_EMITIDA_EM_CONTINGENCIA) + ' ) ';
+    IBQNFCE.Open;
+
+    //No final grava o número da última nota autorizada no frente.ini
+    GravaNumeroCupomFrenteINI(IBQNFCE.FieldByName('NUMERONF').AsString, Form1.sModeloECF); // Sandro Silva 2023-08-31
+    FreeAndNil(IBQNFCE);
   end;
 
   {
@@ -34715,7 +34799,7 @@ begin
 
   sNumeroGerencial := ImportarDaPesquisa(tpPesquisaGerencial);
   if sNumeroGerencial <> '' then
-    PDV_ImportaGerencial(sNumeroGerencial, Form1.sModeloECF, '99'); // Sandro Silva 2023-08-30 PDV_ImportaGerencial(sNumeroGerencial);
+    PDV_ImportaGerencial(sNumeroGerencial, Form1.sModeloECF, '99');
 end;
 
 procedure TForm1.EmitirNFCedogerencial1Click(Sender: TObject);
@@ -34729,7 +34813,7 @@ begin
   end;
   {Sandro Silva 2023-08-30 fim}
   
-  PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString, Form1.sModeloECF, '99'); // Sandro Silva 2023-08-30 PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString);
+  PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString, Form1.sModeloECF, '99');
   GerenciadordeNFCe1Click(Sender);
 end;
 

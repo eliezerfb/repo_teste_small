@@ -10,7 +10,7 @@ uses
 
   //Pix Estático
   function PagamentoPixEstatico(Valor : double; IDTransacao : string; out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
-  function GeraChavePixEstatica(pixtitular,municipio,pixchave,pixTipochave,IDTransacao : string; Valor : Double ):string;
+  //function GeraChavePixEstatica(pixtitular,municipio,pixchave,pixTipochave,IDTransacao : string; Valor : Double ):string;
 
   //Pix Dinamico Itaú
   function PagamentoPixDinamico(Valor : double; IDTransacao, NumeroNF, Caixa : string;
@@ -30,8 +30,10 @@ uses
   , uDialogs
   , smallfunc_xe
   , uIntegracaoItau
+  , uGeraChavePix
   , uTypesRecursos
-  , uValidaRecursos, uSmallConsts;
+  , uValidaRecursos
+  , uSmallConsts;
 
 
 function CRC16CCITT(texto: string): WORD;
@@ -148,6 +150,7 @@ begin
   end;
 end;
 
+{
 function GeraChavePixEstatica(pixtitular,municipio,pixchave,pixTipochave,IDTransacao : string; Valor : Double ):string;
 var
   Payload : string;
@@ -235,7 +238,7 @@ begin
     Result := '';
   end;
 end;
-
+}
 
 function PagamentoPixDinamico(Valor : double; IDTransacao, NumeroNF, Caixa : string;
   out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;

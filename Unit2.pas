@@ -174,11 +174,14 @@ type
     procedure EdMarketplaceExit(Sender: TObject);
     procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure DBGrid1ColExit(Sender: TObject);
+    procedure DBGrid1Exit(Sender: TObject);
   private
     { Private declarations }
     procedure AjustaBotoes;
     procedure SelecionaMarketplace(sNome: String);
     procedure AplicaMarketplaceSelecionadaoNaVenda;
+    procedure ValidaValorParceladoAprazo;
   public
     { Public declarations }
     bCancela : Boolean;
@@ -1746,6 +1749,11 @@ begin
   {Sandro Silva 2022-04-05 fim}
 end;
 
+procedure TForm2.DBGrid1ColExit(Sender: TObject);
+begin
+  ValidaValorParceladoAprazo; // Sandro Silva 2024-06-05
+end;
+
 procedure TForm2.DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 begin
@@ -1759,6 +1767,11 @@ begin
 
 end;
 
+procedure TForm2.DBGrid1Exit(Sender: TObject);
+begin
+  ValidaValorParceladoAprazo; // Sandro Silva 2024-06-05
+end;
+
 procedure TForm2.DBGrid1KeyPress(Sender: TObject; var Key: Char);
 var
   dDiferenca : Double;
@@ -1767,9 +1780,11 @@ var
   sPortador: String;// Sandro Silva 2016-12-15 Ficha 3404
 begin
   //
-  if Key = chr(46) then key := chr(44);
+  if Key = chr(46) then
+    key := chr(44);
   if (Key = chr(13)) or (Key = Chr(9) ) then
   begin
+    {Sandro Silva 2024-06-05 inicio
     //
     MyBookmark  := Form1.ibDataSet7.GetBookmark;
     if AllTrim(Form1.ibDataSet7.FieldByname('DOCUMENTO').AsString) = '' then
@@ -1825,6 +1840,9 @@ begin
       Form1.ibDataSet7.EnableControls;
       //
     end;
+    }
+    ValidaValorParceladoAprazo;
+    {Sandro Silva 2024-06-05 fim}
   end;
 end;
 
@@ -2135,6 +2153,71 @@ procedure TForm2.touch_F8Click(Sender: TObject);
 begin
   keybd_event(VK_F8, 0, 0, 0);
   keybd_event(VK_F8, 0, KEYEVENTF_KEYUP, 0);
+end;
+
+procedure TForm2.ValidaValorParceladoAprazo;
+var
+  dDiferenca : Double;
+  MyBookmark: TBookmark;
+  iRegistro, iDuplicatas: Integer;
+  sPortador: String;// Sandro Silva 2016-12-15 Ficha 3404
+begin
+  //
+  //
+  MyBookmark  := Form1.ibDataSet7.GetBookmark;
+  if AllTrim(Form1.ibDataSet7.FieldByname('DOCUMENTO').AsString) = '' then
+  begin
+    if Button4.CanFocus then
+      Button4.SetFocus
+  end
+  else
+  begin
+    //
+    iRegistro   := Form1.ibDataSet7.Recno;
+    ddiferenca  := Form1.ibDataSet25.FieldByname('DIFERENCA_').AsFloat;;
+    iDuplicatas := StrToInt(AllTrim(MaskEdit1.Text));
+    //
+    Form1.ibDataSet7.DisableControls;
+    Form1.ibDataSet7.First;
+    sPortador := Form1.ibDataSet7.FieldByName('PORTADOR').AsString; // Sandro Silva 2016-12-15 Ficha 3404
+    while not Form1.ibDataSet7.Eof do
+    begin
+      if Form1.ibDataSet7.Recno <= iRegistro then
+      begin
+        iDuplicatas := iDuplicatas - 1;
+        dDiferenca := dDiferenca - Form1.ibDataSet7.FieldByname('VALOR_DUPL').Value;
+      end else
+      begin
+       Form1.ibDataSet7.Edit;
+       Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := dDiferenca / iDuplicatas;
+       Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := StrToFloat(Format('%8.2f',[Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat]));
+      end;
+
+      if sPortador <> Form1.ibDataSet7.FieldByName('PORTADOR').AsString then
+      begin
+        Form1.ibDataSet7.Edit;
+        Form1.ibDataSet7.FieldByName('PORTADOR').AsString := sPortador;
+      end;
+      Form1.ibDataSet7.Next;
+    end;
+    //
+    ddiferenca  := Form1.ibDataSet25.FieldByname('DIFERENCA_').AsFloat;;
+    Form1.ibDataSet7.First;
+    while not Form1.ibDataSet7.Eof do
+    begin
+      dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat]));
+      Form1.ibDataSet7.Next;
+    end;
+    //
+    Form1.ibDataSet7.First;
+    Form1.ibDataSet7.Edit;
+    if dDiferenca <> 0 then Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat + ddiferenca;
+    //
+    Form1.ibDataSet7.GotoBookmark(MyBookmark);
+    Form1.ibDataSet7.FreeBookmark(MyBookmark);
+    Form1.ibDataSet7.EnableControls;
+    //
+  end;
 end;
 
 procedure TForm2.Edit9KeyUp(Sender: TObject; var Key: Word;

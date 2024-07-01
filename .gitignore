@@ -773,7 +773,6 @@ ufrmEditaMovimento.dcu
 /__recovery
 /__history
 FRENTE.identcache
-FRENTE.dproj.local
 BemaMFD3_26012024.log
 MFDBE111710101110026387_20240126_162241.TXT
 /_small_9.pas
@@ -782,17 +781,13 @@ MFDBE111710101110026387_20240126_162241.TXT
 /_Small_8.pas
 /_Small_5.pas
 /_small_4.pas
-FRENTE.dproj.local
 msgws.dproj.local
-FRENTE.identcache
 FRENTE.res
-FRENTE.res
-FRENTE.identcache
 FRENTE.identcache
 ufrmQRCodePixEst.dcu
 ufrmSelecionarPIX.dcu
 uPagamentoPix.dcu
 FRENTE.dproj.local
 FRENTE.identcache
-*.dcu
+FRENTE.dproj.local
 *.dcu
