@@ -20,7 +20,7 @@ uses
   , ufrmQRCodePixEst
   , uDialogs
   , smallfunc_xe
-  , uGeraChavePix;
+  , uGeraChavePix, _small_65;
 
 
 function CRC16CCITT(texto: string): WORD;
@@ -67,7 +67,9 @@ begin
       try
         FrenteIni  := TIniFile.Create('FRENTE.INI');
 
-        if Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra '+I.ToString, '99'), 1, 2) = '17' then
+        if (Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra '+I.ToString, ''), 1, 2) = NFCE_FORMA_17_PAGAMENTO_INSTANTANEO_PIX_DINAMICO)
+         or (Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra '+I.ToString, ''), 1, 2) = NFCE_FORMA_20_PAGAMENTO_INSTANTANEO_PIX_ESTATICO)
+        then
           Result := i;
       finally
         FreeAndNil(FrenteIni);

@@ -86,9 +86,10 @@ uses
   const NFCE_FORMA_12_VALE_PRESENTE                                = '12';
   const NFCE_FORMA_13_VALE_COMBUSTIVEL                             = '13';
   const NFCE_FORMA_16_DEPOSITO_BANCARIO                            = '16';
-  const NFCE_FORMA_17_PAGAMENTO_INSTANTANEO                        = '17';
-  const NFCE_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL      = '18'; //Transferência bancária, Carteira Digital
-  const NFCE_FORMA_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL = '19'; //Programa de fidelidade, Cashback, Crédito Virtual
+  const NFCE_FORMA_17_PAGAMENTO_INSTANTANEO_PIX_DINAMICO           = '17'; // PIX Dinâmico
+  const NFCE_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL      = '18'; // Transferência bancária, Carteira Digital
+  const NFCE_FORMA_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL = '19'; // Programa de fidelidade, Cashback, Crédito Virtual
+  const NFCE_FORMA_20_PAGAMENTO_INSTANTANEO_PIX_ESTATICO           = '20'; // PIX estático
   const NFCE_FORMA_99_OUTROS                                       = '99';
 
   const _65_AMBIENTE_HOMOLOGACAO  = 'HOMOLOGACAO';
@@ -195,6 +196,7 @@ uses
     var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
     var dvPag_YA03_16: Double; var dvPag_YA03_17: Double;
     var dvPag_YA03_18: Double; var dvPag_YA03_19: Double;
+    var dvPag_YA03_20: Double;
     var dvPag_YA03_99: Double);                                           // Sandro Silva 2018-08-01
   procedure _ecf65_DadosCredenciadoraCartoes(spdNFCeDataSets: TspdNFCeDataSets;
     sCNPJ_YA05: String; NomeRede: String; NumeroAutorizacao: String);     // Sandro Silva 2018-08-01
@@ -912,6 +914,7 @@ var
   dvPag_YA03_17: Double; // Sandro Silva 2021-03-05
   dvPag_YA03_18: Double; // Sandro Silva 2021-03-05
   dvPag_YA03_19: Double; // Sandro Silva 2021-03-05
+  dvPag_YA03_20: Double; // Sandro Silva 2024-07-01
 
   dvPag_YA03_99: Double; // Sandro Silva 2016-08-12
   iTentaConsulta: Integer; // Sandro Silva 2017-02-02
@@ -2521,6 +2524,7 @@ var
   dvPag_YA03_17: Double; // Sandro Silva 2021-03-05
   dvPag_YA03_18: Double; // Sandro Silva 2021-03-05
   dvPag_YA03_19: Double; // Sandro Silva 2021-03-05
+  dvPag_YA03_20: Double; // Sandro Silva 2024-07-01
   dvPag_YA03_99: Double; // Sandro Silva 2016-08-12
   iTransacaoCartao: Integer; // Sandro Silva 2017-06-15
   iTentaConsulta: Integer; // Sandro Silva 2017-02-02
@@ -4200,7 +4204,7 @@ begin
                 Form1.spdNFCeDataSets1.Campo('tPag_YA02').Value := NFCE_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL
               else
                 if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade = tModalidadePIX then
-                  Form1.spdNFCeDataSets1.Campo('tPag_YA02').Value := NFCE_FORMA_17_PAGAMENTO_INSTANTANEO
+                  Form1.spdNFCeDataSets1.Campo('tPag_YA02').Value := NFCE_FORMA_17_PAGAMENTO_INSTANTANEO_PIX_DINAMICO
                 else
                 begin
                   Form1.spdNFCeDataSets1.Campo('tPag_YA02').Value  := NFCE_FORMA_99_OUTROS;// Mudar quando entrar em vigor as novas formas NFCE_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL;
@@ -4268,7 +4272,7 @@ begin
                 Form1.spdNFCeDataSets1.Campo('tPag_YA02').Value := NFCE_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL
               else
                 if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade = tModalidadePIX then
-                  Form1.spdNFCeDataSets1.Campo('tPag_YA02').Value := NFCE_FORMA_17_PAGAMENTO_INSTANTANEO
+                  Form1.spdNFCeDataSets1.Campo('tPag_YA02').Value := NFCE_FORMA_17_PAGAMENTO_INSTANTANEO_PIX_DINAMICO
                 else
                 begin
                   Form1.spdNFCeDataSets1.Campo('tPag_YA02').Value  := NFCE_FORMA_99_OUTROS;// Mudar quando entrar em vigor as novas formas NFCE_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL;
@@ -4304,42 +4308,42 @@ begin
 
         if Form1.ibDataSet25.FieldByName('VALOR01').AsFloat    <> 0 then
         begin
-          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe1, Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe1, Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
         end;
 
         if Form1.ibDataSet25.FieldByName('VALOR02').AsFloat    <> 0 then
         begin
-          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe2, Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe2, Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
         end;
 
         if Form1.ibDataSet25.FieldByName('VALOR03').AsFloat    <> 0 then
         begin
-          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe3, Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe3, Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
         end;
 
         if Form1.ibDataSet25.FieldByName('VALOR04').AsFloat    <> 0 then
         begin
-          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe4, Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe4, Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
         end;
 
         if Form1.ibDataSet25.FieldByName('VALOR05').AsFloat    <> 0 then
         begin
-          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe5, Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe5, Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
         end;
 
         if Form1.ibDataSet25.FieldByName('VALOR06').AsFloat    <> 0 then
         begin
-          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe6, Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe6, Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
         end;
 
         if Form1.ibDataSet25.FieldByName('VALOR07').AsFloat    <> 0 then
         begin
-          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe7, Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe7, Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
         end;
 
         if Form1.ibDataSet25.FieldByName('VALOR08').AsFloat    <> 0 then
         begin
-          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe8, Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+          _ecf65_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe8, Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
         end;
 
         if dvPag_YA03_10 > 0 then
@@ -4359,7 +4363,7 @@ begin
           _ecf65_AdicionaPagamento(NFCE_FORMA_16_DEPOSITO_BANCARIO, FormatFloatXML(dvPag_YA03_16)); // 16=Depósito Bancário
 
         if dvPag_YA03_17 > 0 then
-          _ecf65_AdicionaPagamento(NFCE_FORMA_17_PAGAMENTO_INSTANTANEO, FormatFloatXML(dvPag_YA03_17)); // 17=Pagamento Instantâneo (PIX)
+          _ecf65_AdicionaPagamento(NFCE_FORMA_17_PAGAMENTO_INSTANTANEO_PIX_DINAMICO, FormatFloatXML(dvPag_YA03_17)); // 17=Pagamento Instantâneo (PIX)
 
         if dvPag_YA03_18 > 0 then
           _ecf65_AdicionaPagamento(NFCE_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL, FormatFloatXML(dvPag_YA03_18)); // 18=Transferência bancária, Carteira Digital
@@ -4367,6 +4371,9 @@ begin
         if dvPag_YA03_19 > 0 then
           _ecf65_AdicionaPagamento(NFCE_FORMA_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL, FormatFloatXML(dvPag_YA03_19)); // 19=Programa de fidelidade, Cashback, Crédito Virtual
         {Sandro Silva 2021-03-05 fim}
+
+        if dvPag_YA03_20 > 0 then
+          _ecf65_AdicionaPagamento(NFCE_FORMA_20_PAGAMENTO_INSTANTANEO_PIX_ESTATICO, FormatFloatXML(dvPag_YA03_20)); // 17=Pagamento Instantâneo (PIX)
 
         if dvPag_YA03_99 > 0 then
           _ecf65_AdicionaPagamento(NFCE_FORMA_99_OUTROS, FormatFloatXML(dvPag_YA03_99)); // 99=Outros
@@ -8686,6 +8693,7 @@ procedure _ecf65_AcumulaFormaExtraNFCe(sOrdemExtra: String; dValor: Double;
   var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
   var dvPag_YA03_16: Double; var dvPag_YA03_17: Double;
   var dvPag_YA03_18: Double; var dvPag_YA03_19: Double;
+  var dvPag_YA03_20: Double;
   var dvPag_YA03_99: Double);
 begin
   if sOrdemExtra = NFCE_FORMA_10_VALE_ALIMENTACAO then
@@ -8703,7 +8711,7 @@ begin
   if sOrdemExtra = NFCE_FORMA_16_DEPOSITO_BANCARIO then
     dvPag_YA03_16 := dvPag_YA03_16 + dValor;
 
-  if sOrdemExtra = NFCE_FORMA_17_PAGAMENTO_INSTANTANEO then
+  if sOrdemExtra = NFCE_FORMA_17_PAGAMENTO_INSTANTANEO_PIX_DINAMICO then
     dvPag_YA03_17 := dvPag_YA03_17 + dValor;
 
   if sOrdemExtra = NFCE_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL then
@@ -8711,6 +8719,9 @@ begin
 
   if sOrdemExtra = NFCE_FORMA_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL then
     dvPag_YA03_19 := dvPag_YA03_19 + dValor;
+
+  if sOrdemExtra = NFCE_FORMA_20_PAGAMENTO_INSTANTANEO_PIX_ESTATICO then
+    dvPag_YA03_20 := dvPag_YA03_20 + dValor;
 
   if sOrdemExtra = NFCE_FORMA_99_OUTROS then
     dvPag_YA03_99 := dvPag_YA03_99 + dValor;
@@ -8906,7 +8917,7 @@ var
       Form1.ibDataSet28.FieldByName('CAIXA').AsString    := sCaixa;
       Form1.ibDataSet28.FieldByName('CLIFOR').AsString   := sClifor;
       Form1.ibDataSet28.FieldByName('VENDEDOR').AsString := sVendedor;
-      Form1.ibDataSet28.FieldByName('FORMA').AsString    := sForma;
+      Form1.ibDataSet28.FieldByName('FORMA').AsString    := Copy(sForma, 1, Form1.ibDataSet28.FieldByName('FORMA').Size);
       Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := dValor;
       Form1.ibDataSet28.FieldByName('HORA').AsString     := sHora; // Sandro Silva 2018-11-30
       if Copy(Form1.ibDataSet28.FieldByName('FORMA').AsString, 1, 2) = '13' then // Troco
@@ -9098,10 +9109,10 @@ begin
           PostPagament(dtData, sCOO, sCCF, sPedido, sCaixa, sClifor, sVendedor, TPagDescToFormaExtra('16') , ValortPag(sXML, '16'), sHoraEmitida)
       end;
 
-      if ValortPag(sXML, '17') > 0.00 then // Forma extra equivalente a tpag 17=Pagamento Instantâneo (PIX)
+      if ValortPag(sXML, '17') > 0.00 then // Forma extra equivalente a tpag 17=Pagamento Instantâneo (PIX) Dinâmico
       begin
         if TPagDescToFormaExtra('17') = '' then
-          PostPagament(dtData, sCOO, sCCF, sPedido, sCaixa, sClifor, sVendedor, '17-Pagto Instantaneo (PIX)' , ValortPag(sXML, '17'), sHoraEmitida)
+          PostPagament(dtData, sCOO, sCCF, sPedido, sCaixa, sClifor, sVendedor, '17 - Pagamento Instantâneo (PIX) Dinâmico' , ValortPag(sXML, '17'), sHoraEmitida)
         else
           PostPagament(dtData, sCOO, sCCF, sPedido, sCaixa, sClifor, sVendedor, TPagDescToFormaExtra('17') , ValortPag(sXML, '17'), sHoraEmitida)
       end;
@@ -9123,6 +9134,13 @@ begin
       end;
       {Sandro Silva 2021-03-05 fim}
 
+      if ValortPag(sXML, '20') > 0.00 then // Forma extra equivalente a tpag 17=Pagamento Instantâneo (PIX) Dinâmico
+      begin
+        if TPagDescToFormaExtra('20') = '' then
+          PostPagament(dtData, sCOO, sCCF, sPedido, sCaixa, sClifor, sVendedor, '20 - Pagamento Instantâneo (PIX) – Estático' , ValortPag(sXML, '20'), sHoraEmitida)
+        else
+          PostPagament(dtData, sCOO, sCCF, sPedido, sCaixa, sClifor, sVendedor, TPagDescToFormaExtra('20') , ValortPag(sXML, '20'), sHoraEmitida)
+      end;
 
       {Sandro Silva 2021-12-17 inicio}
       if ValortPag(sXML, '99') > 0.00 then // Outras formas
