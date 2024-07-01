@@ -85,7 +85,7 @@ uses
   ufrmSelecionarPIX in 'ufrmSelecionarPIX.pas' {FrmSelecionarPIX},
   uPagamentoPix in 'uPagamentoPix.pas',
   uQrCode in '..\unit_compartilhada\uQrCode.pas',
-  uGeraChavePix in '..\unit_compartilhada\uGeraChavePix.pas';
+  uGeraChavePix in '..\unit_compartilhada\uGeraChavePix.pas',
   uajustaresolucao in 'uajustaresolucao.pas',
   uIntegracaoItau in '..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\unit_compartilhada\Itau\uClassesItau.pas',
