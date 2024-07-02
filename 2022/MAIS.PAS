@@ -34,7 +34,7 @@ uses
   function ExecutaComando(comando:string):Boolean;  overload;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014'; // Sandro Silva 2024-04-23 const BUILD_DO_BANCO = '2024012'; // Sandro Silva 2024-04-16 const BUILD_DO_BANCO = '2024010';
+const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
