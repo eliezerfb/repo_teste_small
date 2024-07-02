@@ -594,7 +594,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmIntegracaoItau
   , uConfiguracaoTEFCommerce
   , uFrmContaPagar
-  , uFrmContaReceber;
+  , uFrmContaReceber, uFrmCadastro;
 
 {$R *.DFM}
 
