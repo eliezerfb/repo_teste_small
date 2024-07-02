@@ -64,6 +64,7 @@ type
       AcdsDestino: TClientDataSet);
     procedure AjustaCasasDecimais;
     function RetornarApenasData(AdDataHora: TDateTime): TDate;
+    function RetornaWhereNota: String;
   public
     property DataSetEstoque: TIBDataSet read FoDataSetEstoque write FoDataSetEstoque;
     property CasasDecimaisPreco: Integer read FnCasasDecimais write FnCasasDecimais;
@@ -286,10 +287,10 @@ begin
     }
     qryDados.Close;
     qryDados.SQL.Text :=
-      'select sum(DESCONTO) as DESCONTOS ' +
+      'select sum(VENDAS.DESCONTO) as DESCONTOS ' +
       'from VENDAS ' +
-      'where (EMITIDA = ''S'') ' +
-      'and (EMISSAO between ' + QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' and ' + QuotedStr(DateToStrInvertida(dtFinal.Date)) + ')';
+      'inner join ITENS001 on (ITENS001.NUMERONF=VENDAS.NUMERONF) ' +
+      'where ' + RetornaWhereNota; // Dailon Parisotto (f-19509) 2024-07-02
     qryDados.Open;
 
     Result := Result + (qryDados.FieldByname('DESCONTOS').AsFloat*-1);
@@ -646,6 +647,15 @@ begin
   inherited;
 end;
 
+{Dailon Parisotto (f-19509) 2024-07-02 Inicio}
+function TfrmRelResumoVendas.RetornaWhereNota: String;
+begin
+    Result := '(VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(dtFinal.Date))+') and (VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(dtInicial.Date))+')' + sLineBreak +
+              'and (VENDAS.NUMERONF=ITENS001.NUMERONF) '+RetornarWhereOperacoes+' and (VENDAS.EMITIDA=''S'')' + sLineBreak +
+              'group by DESCRICAO, CODIGO' // Sandro Silva 2024-04-08 qryCons99.SQL.Add('group by DESCRICAO');
+end;
+{Dailon Parisotto (f-19509) 2024-07-02 Fim}
+
 procedure TfrmRelResumoVendas.FazUpdateValores;
 var
   nRecNo: Integer;
@@ -682,9 +692,7 @@ begin
     qryCons99.SQL.Add('sum(ITENS001.CUSTO*ITENS001.QUANTIDADE) as vCUS1');
     qryCons99.SQL.Add('from ITENS001, VENDAS');
     qryCons99.SQL.Add('where');
-    qryCons99.SQL.Add('(VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(dtFinal.Date))+') and (VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(dtInicial.Date))+')');
-    qryCons99.SQL.Add('and (VENDAS.NUMERONF=ITENS001.NUMERONF) '+RetornarWhereOperacoes+' and (VENDAS.EMITIDA=''S'')');
-    qryCons99.SQL.Add('group by DESCRICAO, CODIGO'); // Sandro Silva 2024-04-08 qryCons99.SQL.Add('group by DESCRICAO');
+    qryCons99.SQL.Add(RetornaWhereNota); // Dailon Parisotto (f-19509) 2024-07-02
     qryCons99.Open;
 
     while not qryCons99.Eof do
