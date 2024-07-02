@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1237
-  ClientWidth = 1558
+  ClientHeight = 1250
+  ClientWidth = 1560
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7925,8 +7925,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1197
-    Width = 1558
+    Top = 1210
+    Width = 1560
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7935,6 +7935,8 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
+    ExplicitTop = 1197
+    ExplicitWidth = 1558
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7998,7 +8000,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1558
+    Width = 1560
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -8008,6 +8010,7 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
+    ExplicitWidth = 1558
   end
   object Panel_0: TPanel
     Left = 0
@@ -11900,6 +11903,7 @@ object Form7: TForm7
       DisplayLabel = 'In'#237'cio da promo'#231#227'o'
       FieldName = 'PROMOINI'
       Origin = 'ESTOQUE.PROMOINI'
+      OnChange = ibDataSet4PROMOINIChange
       OnSetText = ibDataSet4PROMOINISetText
       EditMask = '!99/99/9999;1; '
     end
@@ -11907,6 +11911,7 @@ object Form7: TForm7
       DisplayLabel = 'Pre'#231'o promocional'
       FieldName = 'ONPROMO'
       Origin = 'ESTOQUE.ONPROMO'
+      OnChange = ibDataSet4ONPROMOChange
       DisplayFormat = '#,##0.00'
       EditFormat = '##0.00'
       Precision = 18
@@ -14536,7 +14541,7 @@ object Form7: TForm7
       '   BCPISCOFINS, '
       
         '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
-        'FINSLUCRO,IPISOBREOUTRA)'
+        'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14553,7 +14558,7 @@ object Form7: TForm7
       
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
         'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
-        'A)')
+        'A,:REFERENCIANOTA)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14607,7 +14612,8 @@ object Form7: TForm7
       '  FRETESOBREIPI,'
       '  CBENEF,'
       '  PISCOFINSLUCRO,'
-      '  IPISOBREOUTRA'
+      '  IPISOBREOUTRA,'
+      '  REFERENCIANOTA'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14667,7 +14673,8 @@ object Form7: TForm7
       '  FRETESOBREIPI = :FRETESOBREIPI,'
       '  CBENEF = :CBENEF,'
       '  PISCOFINSLUCRO = :PISCOFINSLUCRO,'
-      '  IPISOBREOUTRA = :IPISOBREOUTRA'
+      '  IPISOBREOUTRA = :IPISOBREOUTRA,'
+      '  REFERENCIANOTA = :REFERENCIANOTA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14980,6 +14987,13 @@ object Form7: TForm7
       DisplayWidth = 20
       FieldName = 'IPISOBREOUTRA'
       Origin = 'ICM.IPISOBREOUTRA'
+      Size = 1
+    end
+    object ibDataSet14REFERENCIANOTA: TIBStringField
+      DisplayLabel = 'Referenciar Nota'
+      DisplayWidth = 20
+      FieldName = 'REFERENCIANOTA'
+      Origin = 'ICM.REFERENCIANOTA'
       Size = 1
     end
     object ibDataSet14CSTPISCOFINS: TIBStringField
@@ -21633,10 +21647,6 @@ object Form7: TForm7
     UniDirectional = False
     Left = 1008
     Top = 747
-  end
-  object PopupMenu2: TPopupMenu
-    Left = 736
-    Top = 144
   end
   object MainMenu00: TMainMenu
     Left = 816

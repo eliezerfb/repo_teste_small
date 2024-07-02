@@ -2536,6 +2536,17 @@ begin
   end;
   {Mauricio Parizotto 2024-04-22 Fim}
 
+  {Mauricio Parizotto 2024-06-21 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'REFERENCIANOTA') = False then
+  begin
+    if ExecutaComando('Alter table ICM add REFERENCIANOTA VARCHAR(1);') then
+      ExecutaComando('Commit');
+
+    if ExecutaComando('Update ICM set REFERENCIANOTA = ''N'' ') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-06-21 Fim}
+
 
   {Mauricio Parizotto 2024-04-29 Inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'PIXESTATICO') = False then

@@ -222,7 +222,6 @@ uses
   uLogSistema in '..\..\unit_compartilhada\uLogSistema.pas',
   uDrawCellGridModulos in 'units\uDrawCellGridModulos.pas',
   uEmail in '..\..\unit_compartilhada\uEmail.pas',
-  ufrmFichaCadastros in 'ufrmFichaCadastros.pas' {FrmFichaCadastros},
   uDesenhaBoleto in 'units\uDesenhaBoleto.pas',
   ufrmRelatorioProdMonofasicoCupom in 'ufrmRelatorioProdMonofasicoCupom.pas' {frmRelProdMonofasicoCupom},
   uIGeraRelatorioProdMonofasico in 'interfaces\uIGeraRelatorioProdMonofasico.pas',
@@ -259,7 +258,9 @@ uses
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
   uFrmIntegracaoItau in 'uFrmIntegracaoItau.pas' {FrmIntegracaoItau},
+  uMobile in 'units\uMobile.pas',
   uPermissaoUsuario in 'uPermissaoUsuario.pas',
+  uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro},
   uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
   uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas',
   uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas',
@@ -343,7 +344,6 @@ begin
   Application.CreateForm(TForm10, Form10);
   Application.CreateForm(TForm16, Form16);
   Application.CreateForm(TForm99, Form99);
-  //Application.CreateForm(TForm18, Form18);
   Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
   Application.CreateForm(TForm21, Form21);
   Application.CreateForm(TForm25, Form25);
@@ -371,7 +371,7 @@ begin
   Application.CreateForm(TForm37, Form37);
   Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
   Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
-  Application.Run; 
+  Application.Run;
     end else
     begin
       if not IsWindowVisible(oHwnd) then PostMessage(oHwnd, wm_User,0,0);
