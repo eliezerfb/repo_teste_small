@@ -15116,7 +15116,7 @@ begin
             Form7.IBDataSet2IE.AsString     := xmlNodeValue(sRetorno,'//IE');
             Form7.IBDataSet2ESTADO.AsString := xmlNodeValue(sRetorno,'//UF');
 
-            Form7.IBDataSet2NOME.AsString := cNome;
+            Form7.IBDataSet2NOME.AsString := Trim(cNome);
 
             {Dailon Parisotto (f-17692) 2024-04-12 Fim}
             Form7.IBDataSet2ENDERE.AsString := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr'))), 1, Form7.IBDataSet2ENDERE.Size - TamanhoNumeroComplmento(', ' + xmlNodeValue(sRetorno,'//nro'))) + ', ' + PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//nro'))); // Sandro Silva 2024-01-15 PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')));
