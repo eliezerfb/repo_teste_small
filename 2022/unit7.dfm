@@ -13089,6 +13089,58 @@ object Form7: TForm7
       object Mostrartodososclientesefornecedores1: TMenuItem
         Caption = 'Todos'
       end
+object S1: TMenuItem
+        Caption = 'S'#243' Cliente'
+        OnClick = FiltroRelacaoCom
+      end
+      object SFornecedor1: TMenuItem
+        Caption = 'S'#243' Fornecedor'
+        OnClick = FiltroRelacaoCom
+      end
+      object SClienteFornecedor1: TMenuItem
+        Caption = 'S'#243' Cliente/Fornecedor'
+        OnClick = FiltroRelacaoCom
+      end
+      object SFuncionrio1: TMenuItem
+        Caption = 'S'#243' Funcion'#225'rio'
+        OnClick = FiltroRelacaoCom
+      end
+      object SRevenda1: TMenuItem
+        Caption = 'S'#243' Revenda'
+        OnClick = FiltroRelacaoCom
+      end
+      object SRepresentante1: TMenuItem
+        Caption = 'S'#243' Representante'
+        OnClick = FiltroRelacaoCom
+      end
+      object SDistribuidor1: TMenuItem
+        Caption = 'S'#243' Distribuidor'
+        OnClick = FiltroRelacaoCom
+      end
+      object SVendedor1: TMenuItem
+        Caption = 'S'#243' Vendedor'
+        OnClick = FiltroRelacaoCom
+      end
+      object SCredenciadoradecarto1: TMenuItem
+        Caption = 'S'#243' Credenciadora de cart'#227'o'
+        OnClick = FiltroRelacaoCom
+      end
+      object SInstituiofinanceira1: TMenuItem
+        Caption = 'S'#243' Institui'#231#227'o financeira'
+        OnClick = FiltroRelacaoCom
+      end
+      object SMarketplace1: TMenuItem
+        Caption = 'S'#243' Marketplace'
+        OnClick = FiltroRelacaoCom
+      end
+      object SRevendaInativa1: TMenuItem
+        Caption = 'S'#243' Revenda Inativa'
+        OnClick = FiltroRelacaoCom
+      end
+      object SClienteInativo1: TMenuItem
+        Caption = 'S'#243' Cliente Inativo'
+        OnClick = FiltroRelacaoCom
+      end
     end
     object MenuItem9: TMenuItem
       Caption = '&Procurar'
