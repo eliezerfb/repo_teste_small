@@ -217,12 +217,14 @@ begin
                             secret_key,
                             msRet) then
         begin
+          {
            ibdIntegracaoItauCLIENTID.AsString := client_id;
            ibdIntegracaoItauUSUARIO.AsString  := access_key;
            ibdIntegracaoItauSENHA.AsString    := secret_key;
 
            ibdIntegracaoItau.Post;
            ibdIntegracaoItau.Edit;
+          }
         end;
       end;
 
@@ -236,6 +238,14 @@ begin
           MensagemSistema(msRet,msgAtencao);
         end else
         begin
+          ibdIntegracaoItauCLIENTID.AsString := client_id;
+          ibdIntegracaoItauUSUARIO.AsString  := access_key;
+          ibdIntegracaoItauSENHA.AsString    := secret_key;
+
+          ibdIntegracaoItau.Post;
+          ibdIntegracaoItau.Edit;
+
+
           pnlInicial.Visible  := True;
           pnlCadastro.Visible := False;
 
@@ -265,6 +275,13 @@ begin
   if chkAtivo.Checked then
   begin
     //Valida campos
+    if ibdIntegracaoItauIDBANCO.AsInteger = 0 then
+    begin
+      MensagemSistema('O campo Conta Bancária deve ser preenchido!',msgAtencao);
+      fraContaBancaria.txtCampo.SetFocus;
+      Exit;
+    end;
+
     if Trim(edtUsuario.Text) = '' then
     begin
       MensagemSistema('O campo Usuáio deve ser preenchido!',msgAtencao);
@@ -368,6 +385,13 @@ end;
 
 procedure TFrmIntegracaoItau.lblQueroCadastrarClick(Sender: TObject);
 begin
+  if ibdIntegracaoItauIDBANCO.AsInteger = 0 then
+  begin
+    MensagemSistema('O campo Conta Bancária deve ser preenchido!',msgAtencao);
+    fraContaBancaria.txtCampo.SetFocus;
+    Exit;
+  end;
+
   ibqEmitente.Close;
   ibqEmitente.Open;
 
