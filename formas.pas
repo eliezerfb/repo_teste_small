@@ -19,10 +19,11 @@ const DESC_FORMA_12_VALE_PRESENTE                                = '12 - Vale Pr
 const DESC_FORMA_13_VALE_COMBUSTIVEL                             = '13 - Vale Combustível';
 {Sandro Silva 2021-03-05 inicio}
 const DESC_FORMA_16_DEPOSITO_BANCARIO                            = '16 - Depósito Bancário';
-const DESC_FORMA_17_PAGAMENTO_INSTANTANEO                        = '17 - Pagamento Instantâneo (PIX)';
+const DESC_FORMA_17_PAGAMENTO_INSTANTANEO                        = '17 - Pagamento Instantâneo (PIX) Dinâmico';
 const DESC_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL      = '18 - Transferência bancária, Carteira Digital';
 const DESC_FORMA_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL = '19 - Programa de fidelidade, Cashback, Crédito Virtual';
 {Sandro Silva 2021-03-05 fim}
+const DESC_FORMA_20_PAGAMENTO_INSTANTANEO_PIX_ESTATICO           = '20 - Pagamento Instantâneo (PIX) Estático'; // Sandro Silva 2024-07-01
 const DESC_FORMA_99_OUTROS = '99 - Outros';
 
 type
@@ -168,6 +169,7 @@ var
       and (iIndice <> 17)
       and (iIndice <> 18)
       and (iIndice <> 19)
+      and (iIndice <> 20)
       and (iIndice <> 99)
       ) then
       Result := False;
@@ -619,6 +621,7 @@ procedure TFormasP.FormShow(Sender: TObject);
       Combo.Items.Add(DESC_FORMA_17_PAGAMENTO_INSTANTANEO);
       Combo.Items.Add(DESC_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL);
       Combo.Items.Add(DESC_FORMA_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL);
+      Combo.Items.Add(DESC_FORMA_20_PAGAMENTO_INSTANTANEO_PIX_ESTATICO);
     end;
     {Sandro Silva 2021-03-08 fim}     
     Combo.Items.Add(DESC_FORMA_99_OUTROS);

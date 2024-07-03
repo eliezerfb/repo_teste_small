@@ -33,6 +33,7 @@ uses
   , uGeraChavePix
   , uTypesRecursos
   , uValidaRecursos
+  , _small_65
   , uSmallConsts;
 
 
@@ -80,7 +81,8 @@ begin
       if DataSet.FieldByName(CampoV).AsFloat > 0 then
       begin
         //Verifica se a forma está configurada como PIX
-        if Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra '+I.ToString, '99'), 1, 2) = '17' then
+        if (Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra '+I.ToString, ''), 1, 2) = NFCE_FORMA_17_PAGAMENTO_INSTANTANEO_PIX_DINAMICO)
+         or (Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra '+I.ToString, ''), 1, 2) = NFCE_FORMA_20_PAGAMENTO_INSTANTANEO_PIX_ESTATICO)
         begin
           //Verifica o Tipo Mauricio Parizotto 2024-06-14
           if FrenteIni.ReadString('NFCE', 'Tipo Pix '+I.ToString, '') = TipoPix then
