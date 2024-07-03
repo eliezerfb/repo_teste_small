@@ -67,6 +67,8 @@ begin
     Result := ttioPDF;
   if cPorta = 'TXT' then
     Result := ttioTXT;
+  if cPorta = _cImpressoraPadrao then
+    Result := ttioPadraoWindows;
 end;
 
 function TSectionOrcamento.Section: String;

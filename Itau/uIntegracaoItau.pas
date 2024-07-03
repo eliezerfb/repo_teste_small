@@ -1,7 +1,6 @@
 {Recebe as chamdas da API e envia para uWebServiceItau usando a classe uClassesItau}
 
 
-
 unit uIntegracaoItau;
 
 interface
@@ -28,7 +27,7 @@ var
   function AutenticaoPDV(client_id,access_key,secret_key : string; out Mensagem : string) : boolean;
   function GeraChavePixItau(client_id,access_key,secret_key,order_ref : string;
                             Valor : double; out ChaveQRCode, order_id, Mensagem : string):boolean;
-  function GetStatusOrder(order_id:string):string;
+  function GetStatusOrder(order_id:string; out CodigoAutorizacao : string):string;
   function CancelOrder(order_id:string):boolean;
   function EstornaOrder(order_id:string):boolean;
   function RefreshTokenItau:boolean;
@@ -318,7 +317,7 @@ begin
   end;
 end;
 
-function GetStatusOrder(order_id:string):string;
+function GetStatusOrder(order_id:string; out CodigoAutorizacao:string):string;
 var
   sJsonRet : string;
   StatusCode : integer;
@@ -333,7 +332,10 @@ begin
         RetornoPagPIX  := TJson.JsonToObject<TRetornoPagPIX>(sJsonRet);
 
         if order_id = RetornoPagPIX.OrderId then
-          Result := RetornoPagPIX.Status;
+        begin
+          Result            := RetornoPagPIX.Status;
+          CodigoAutorizacao := RetornoPagPIX.WalletPaymentId;
+        end;
       finally
         FreeAndNil(RetornoPagPIX);
       end;

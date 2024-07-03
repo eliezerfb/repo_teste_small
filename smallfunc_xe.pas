@@ -1576,7 +1576,7 @@ begin
                            'vinte    '+
                            'trinta   '+
                            'quarenta '+
-                           'cinqüenta'+
+                           'cinquenta'+
                            'sessenta '+
                            'setenta  '+
                            'oitenta  '+

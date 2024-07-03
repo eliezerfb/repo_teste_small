@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, vcl.Imaging.GIFImg,
-  frxGIFGraphic, Vcl.ComCtrls;
+  Vcl.ComCtrls, frxGIFGraphic;
 
   procedure MostraTelaProcessamento(sTexto:string);
   procedure FechaTelaProcessamento();
@@ -14,10 +14,10 @@ uses
 type
   TFrmTelaProcessamento = class(TForm)
     Panel1: TPanel;
-    imgGif: TImage;
     lblAguarde: TLabel;
     Panel2: TPanel;
     lblInformacao: TLabel;
+    imgGif: TImage;
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -33,18 +33,8 @@ implementation
 {$R *.dfm}
 
 procedure TFrmTelaProcessamento.FormCreate(Sender: TObject);
-  var
-    aGIF:TGIFImage;
 begin
-  try
-    imgGif.Picture.SaveToFile(ExtractFilePath(Application.ExeName)+'loading.gif');
-    aGIF := TGIFImage.Create;
-    aGIF.LoadFromFile(ExtractFilePath(Application.ExeName)+'loading.gif');
-    aGIF.Animate := true;
-    imgGif.Picture.Graphic := aGIF;
-    FreeAndNil(aGIF);
-  except
-  end;
+  (imgGif.Picture.Graphic as TGIFImage).Animate := True;
 end;
 
 

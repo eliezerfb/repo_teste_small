@@ -141,6 +141,11 @@ const
 
   const _RecursoIndisponivel = 'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
                                'entre em contato com a Zucchetti pelo telefone 0800 645 2008';
+
+
+  const _PixManual   = 'PIX Manual';
+  const _PixEstatico = 'PIX Estático';
+  const _PixDinamico = 'PIX Dinâmico';
 implementation
 
 end.
