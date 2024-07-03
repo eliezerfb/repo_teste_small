@@ -284,7 +284,7 @@ begin
 
     if Trim(edtUsuario.Text) = '' then
     begin
-      MensagemSistema('O campo Usuáio deve ser preenchido!',msgAtencao);
+      MensagemSistema('O campo Usuário deve ser preenchido!',msgAtencao);
       edtUsuario.SetFocus;
       Exit;
     end;

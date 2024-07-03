@@ -2625,6 +2625,7 @@ begin
                    '   DATAHORA timestamp,'+
                    '   STATUS varchar(12),'+
                    '   VALOR numeric(18,2),'+
+                   '   CODIGOAUTORIZACAO varchar(40), '+
                    '   CONSTRAINT PK_ITAUTRANSACAO PRIMARY KEY (IDTRANSACAO)'+
                    ' )');
 
