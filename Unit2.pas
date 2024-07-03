@@ -2186,6 +2186,11 @@ begin
       begin
         iDuplicatas := iDuplicatas - 1;
         dDiferenca := dDiferenca - Form1.ibDataSet7.FieldByname('VALOR_DUPL').Value;
+        {Dailon Parisotto (f-19507) 2024-07-03 Inicio}
+        // Se a diferença for negativo então zera.
+        if dDiferenca < 0 then
+          dDiferenca := 0;
+        {Dailon Parisotto (f-19507) 2024-07-03 Fim}
       end else
       begin
        Form1.ibDataSet7.Edit;
