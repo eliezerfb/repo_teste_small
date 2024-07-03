@@ -7935,8 +7935,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1197
-    ExplicitWidth = 1558
     object Button2: TButton
       Left = 260
       Top = 10
@@ -8010,7 +8008,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1558
   end
   object Panel_0: TPanel
     Left = 0
@@ -11127,7 +11124,7 @@ object Form7: TForm7
   end
   object SMALL_DBEdit3: TSMALL_DBEdit
     Left = 644
-    Top = 608
+    Top = 596
     Width = 100
     Height = 20
     AutoSize = False
@@ -13092,7 +13089,7 @@ object Form7: TForm7
       object Mostrartodososclientesefornecedores1: TMenuItem
         Caption = 'Todos'
       end
-object S1: TMenuItem
+      object S1: TMenuItem
         Caption = 'S'#243' Cliente'
         OnClick = FiltroRelacaoCom
       end
@@ -13263,6 +13260,10 @@ object S1: TMenuItem
       object RelatriodevendasporclienteNFeCupom1: TMenuItem
         Caption = 'Vendas por cliente (Nota Fiscal/Cupom)'
         OnClick = RelatriodevendasporclienteNFeCupom1Click
+      end
+      object VendasporestadoNotaFiscal1: TMenuItem
+        Caption = 'Vendas por estado (Nota Fiscal)'
+        OnClick = VendasporestadoNotaFiscal1Click
       end
       object Relatriodeprodutosmonofsicos1: TMenuItem
         Caption = 'Produtos monof'#225'sicos (Cupom Fiscal)'
