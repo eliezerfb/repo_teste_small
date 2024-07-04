@@ -289,7 +289,6 @@ begin
     qryDados.SQL.Text :=
       'select sum(VENDAS.DESCONTO) as DESCONTOS ' +
       'from VENDAS ' +
-      'inner join ITENS001 on (ITENS001.NUMERONF=VENDAS.NUMERONF) ' +
       'where ' + RetornaWhereNota; // Dailon Parisotto (f-19509) 2024-07-02
     qryDados.Open;
 
@@ -651,8 +650,7 @@ end;
 function TfrmRelResumoVendas.RetornaWhereNota: String;
 begin
     Result := '(VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(dtFinal.Date))+') and (VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(dtInicial.Date))+')' + sLineBreak +
-              'and (VENDAS.NUMERONF=ITENS001.NUMERONF) '+RetornarWhereOperacoes+' and (VENDAS.EMITIDA=''S'')' + sLineBreak +
-              'group by DESCRICAO, CODIGO' // Sandro Silva 2024-04-08 qryCons99.SQL.Add('group by DESCRICAO');
+              RetornarWhereOperacoes+' and (VENDAS.EMITIDA=''S'')';
 end;
 {Dailon Parisotto (f-19509) 2024-07-02 Fim}
 
@@ -692,7 +690,9 @@ begin
     qryCons99.SQL.Add('sum(ITENS001.CUSTO*ITENS001.QUANTIDADE) as vCUS1');
     qryCons99.SQL.Add('from ITENS001, VENDAS');
     qryCons99.SQL.Add('where');
-    qryCons99.SQL.Add(RetornaWhereNota); // Dailon Parisotto (f-19509) 2024-07-02
+    qryCons99.SQL.Add('(VENDAS.NUMERONF=ITENS001.NUMERONF)');
+    qryCons99.SQL.Add('AND ' + RetornaWhereNota); // Dailon Parisotto (f-19509) 2024-07-02
+    qryCons99.SQL.Add('group by DESCRICAO, CODIGO'); // Sandro Silva 2024-04-08 qryCons99.SQL.Add('group by DESCRICAO');
     qryCons99.Open;
 
     while not qryCons99.Eof do
