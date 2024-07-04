@@ -20557,6 +20557,7 @@ object Form7: TForm7
       DisplayWidth = 14
       FieldName = 'IE'
       Origin = 'CLIFOR.IE'
+      OnSetText = IBDataSet2IESetText
       Size = 16
     end
     object IBDataSet2FONE: TIBStringField
@@ -20741,6 +20742,7 @@ object Form7: TForm7
     object IBDataSet2PRODUTORRURAL: TIBStringField
       FieldName = 'PRODUTORRURAL'
       Origin = 'CLIFOR.PRODUTORRURAL'
+      Visible = False
       Size = 1
     end
   end

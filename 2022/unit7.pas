@@ -2426,6 +2426,7 @@ type
     procedure ibDataSet14STSetText(Sender: TField; const Text: string);
     procedure FiltroRelacaoCom(Sender: TObject);
     procedure VendasporestadoNotaFiscal1Click(Sender: TObject);
+    procedure IBDataSet2IESetText(Sender: TField; const Text: string);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -12491,7 +12492,6 @@ begin
   if FileExists(Form1.sAtual+'\sintegra.exe') then
     ShellExecute( 0, 'Open', 'sintegra.exe', '', '', SW_SHOW)
   else
-    //ShowMessage('O executável sintegra.exe não foi encontrado na pasta de instalação do programa.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('O executável sintegra.exe não foi encontrado na pasta de instalação do programa.',msgAtencao);
 end;
 
@@ -12510,7 +12510,6 @@ begin
   if (Pos('1'+UpperCase(Text)+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX21  21mg2')
      = 0) and (AllTrim(Text)<>'') then
   begin
-    //ShowMessage('Estado inválido'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Estado inválido',msgAtencao);
     ibDataSet2ESTADO.AsString := UpperCase(Form7.ibDataSet13ESTADO.AsString);
   end
@@ -12519,12 +12518,31 @@ begin
 end;
 
 
+procedure TForm7.IBDataSet2IESetText(Sender: TField; const Text: string);
+var
+  cTexto: String;
+begin
+  {Mauricio Parizotto 2024-07-04 Inicio}
+  cTexto := Trim(Text);
+  IBDataSet2IE.AsString := cTexto;
+
+  //Produtor Rural
+  if (Length(Trim(ibDAtaset2CGC.AsString)) = 14) then
+  begin
+    if (Copy(cTexto,1,2) = 'PR') and (IBDataSet2PRODUTORRURAL.AsString = 'N') then
+      IBDataSet2PRODUTORRURAL.AsString := 'S';
+
+    if (Copy(cTexto,1,2) <> 'PR') and (IBDataSet2PRODUTORRURAL.AsString = 'S') then
+      IBDataSet2PRODUTORRURAL.AsString := 'N';
+  end;
+  {Mauricio Parizotto 2024-07-04 Fim}
+end;
+
 procedure TForm7.ibDataSet13ESTADOSetText(Sender: TField; const Text: String);
 begin
   if (Pos('1'+UpperCase(Text)+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX21  21mg2')
      = 0) and (AllTrim(Text)<>'') then
   begin
-    //ShowMessage('Estado inválido'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Estado inválido',msgAtencao);
     Form7.ibDataSet13ESTADO.AsString := UpperCase(Form7.ibDataSet13ESTADO.AsString);
   end
