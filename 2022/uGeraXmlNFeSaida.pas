@@ -185,7 +185,7 @@ var
   vlOutrasDespRateadoItem : Double; //Mauricio Parizotto 2024-04-22
 
   bFreteSobreIPI,bIPISobreICMS : Boolean;
-  bIPISobreOutras : Boolean; //Mauricio Parizotto 2024-04-22
+  bIPISobreOutras, bReferenciaNota : Boolean;
 
   cBenef, cBenefItem : string;
 
@@ -212,6 +212,7 @@ begin
   bIPISobreICMS   := CampoICMporNatureza('SOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
   cBenef          := trim(CampoICMporNatureza('CBENEF',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction)); //Mauricio Parizotto 2023-12-12
   bIPISobreOutras := CampoICMporNatureza('IPISOBREOUTRA',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S'; //Mauricio Parizotto 2024-04-22
+  bReferenciaNota := CampoICMporNatureza('REFERENCIANOTA',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S'; //Mauricio Parizotto 2024-06-21
 
   // Relaciona os clientes com o arquivo de vendas
   Form7.ibDAtaset2.Close;
@@ -450,20 +451,18 @@ begin
       except
         on E: Exception do
         begin
-          {
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar MKP'
-          ),'Atenção',mb_Ok + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-25}
           MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar MKP',msgAtencao);
         end;
       end;
     end;
   end;
 
-  // Complemento de ICMS
-  if NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString) then
+  {Mauricio Parizotto 2024-06-21 Inicio}
+  //SMAL-504
+  if (NFeIndicadorFinalidadeConsumidorFinal(Form7.ibDataSet15FINNFE.AsString))
+    and (bReferenciaNota) then
   begin
-    sChave                                      := Form1.Small_InputForm_ApenasNumeros('NFe', 'Chave de acesso da NF-e referenciada (ID da NF-e)', '', 44);
+    sChave := Form1.Small_InputForm_ApenasNumeros('NFe', 'Chave de acesso da NF-e referenciada (ID da NF-e)', '', 44);
 
     try
       if sChave <> '' then
@@ -475,10 +474,27 @@ begin
     except
       on E: Exception do
       begin
-        {
-        Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 2'
-        ),'Atenção',mb_Ok + MB_ICONWARNING);
-        Mauricio Parizotto 2023-10-25}
+        MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 1',msgAtencao);
+      end;
+    end;
+  end;
+  {Mauricio Parizotto 2024-06-21 Fim}
+
+  // Complemento de ICMS
+  if NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString) then
+  begin
+    sChave := Form1.Small_InputForm_ApenasNumeros('NFe', 'Chave de acesso da NF-e referenciada (ID da NF-e)', '', 44);
+
+    try
+      if sChave <> '' then
+      begin
+        Form7.spdNFeDataSets.IncluirPart('NREF');
+        Form7.spdNFeDataSets.Campo('refNFe_BA02').Value := sChave;
+        Form7.spdNFeDataSets.SalvarPart('NREF');
+      end;
+    except
+      on E: Exception do
+      begin
         MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 2',msgAtencao);
       end;
     end;
@@ -519,12 +535,6 @@ begin
             Form7.spdNFeDataSets.SalvarPart('NREF');
           end else
           begin
-            {
-            ShowMessage('Informação inválida informe a'+chr(10)+
-                        'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
-                        '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
-                        'cupom fiscal referenciado');
-            Mauricio Parizotto 2023-10-25}
             MensagemSistema('Informação inválida informe a'+chr(10)+
                             'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
                             '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
@@ -537,10 +547,6 @@ begin
       except
         on E: Exception do
         begin
-          {
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 3'
-          ),'Atenção',mb_Ok + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-25}
           MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 3',msgAtencao);
 
           Abort;
@@ -1975,7 +1981,6 @@ begin
               Form7.spdNFeDataSets.campo('pDevol_UA02').Value        := '100.00';    // Percentual da mercadoria devolvida
               Form7.spdNFeDataSets.campo('vIPIDevol_UA04').Value     := FormatFloatXML(Form7.ibDataSet16VIPI.AsFloat); // Valor do IPI devolvido
               fIPIDevolvido     := fIPIDevolvido + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vIPIDevol_UA04').AsString,',',''),'.',','));
-              //ShowMessage('Nota fiscal referenciada não encontrada'); Mauricio Parizotto 2023-10-25
               MensagemSistema('Nota fiscal referenciada não encontrada',msgAtencao);
             end;
           end;
