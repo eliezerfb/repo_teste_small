@@ -2600,7 +2600,7 @@ begin
   if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONFIGURACAOITAU')) then
   begin
     ExecutaComando(' Create table CONFIGURACAOITAU('+
-                   ' 	 IDCONFIGURACAOITAU integer,'+
+                   ' 	 IDCONFIGURACAOITAU integer NOT NULL,'+
                    ' 	 IDBANCO integer,'+
                    ' 	 HABILITADO VARCHAR(1),'+
                    ' 	 USUARIO VARCHAR(100),'+
@@ -2618,7 +2618,7 @@ begin
   if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITAUTRANSACAO')) then
   begin
     ExecutaComando(' Create table ITAUTRANSACAO('+
-                   '   IDTRANSACAO integer,'+
+                   '   IDTRANSACAO integer NOT NULL,'+
                    '   NUMERONF varchar(6),'+
                    '   CAIXA varchar(3),'+
                    '   ORDERID varchar(40),'+
@@ -2626,6 +2626,7 @@ begin
                    '   STATUS varchar(12),'+
                    '   VALOR numeric(18,2),'+
                    '   CODIGOAUTORIZACAO varchar(40), '+
+                   '   CNPJINSTITUICAO varchar(19), '+
                    '   CONSTRAINT PK_ITAUTRANSACAO PRIMARY KEY (IDTRANSACAO)'+
                    ' )');
 
@@ -2660,7 +2661,7 @@ begin
     begin
       Form7.ibDataSet2.Close;
       Form7.ibDataSet2.Selectsql.Clear;
-      Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form1.ibDataset200.FieldByname('NOME').AsString)+' ');  //
+      Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form1.ibDataset200.FieldByname('NOME').AsString));
       Form7.ibDataSet2.Open;
 
       if AllTrim(Form7.ibDataSet2NOME.AsString) = AllTrim(Form1.ibDataset200.FieldByname('NOME').AsString) then

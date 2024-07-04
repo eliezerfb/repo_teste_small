@@ -123,6 +123,8 @@ end;
 
 procedure TFrmIntegracaoItau.btnEmitenteClick(Sender: TObject);
 begin
+  ibdIntegracaoItau.Post;
+
   try
     Form17 := TForm17.Create(nil);
     Form17.ShowModal;
@@ -132,6 +134,9 @@ begin
     ibqEmitente.Close;
     ibqEmitente.Open;
   end;
+
+  ibdIntegracaoItau.Open;
+  ibdIntegracaoItau.Edit;
 end;
 
 procedure TFrmIntegracaoItau.btnEnviarClick(Sender: TObject);
@@ -210,7 +215,7 @@ begin
                             '',
                             'Caixa 1',
                             user_role_id,
-                            ibqEmitenteTELEFO.AsString,
+                            Copy(LimpaNumero(ibqEmitenteTELEFO.AsString),2,11),  //11 Digitos máx
                             retail_chain_id,
                             client_id,
                             access_key,
