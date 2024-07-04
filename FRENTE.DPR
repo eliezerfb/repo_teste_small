@@ -82,6 +82,7 @@ uses
   uValidaRecursos in '..\unit_compartilhada\uValidaRecursos.pas',
   DelphiZXIngQRCode in '..\unit_compartilhada\DelphiZXIngQRCode.pas',
   ufrmQRCodePixEst in 'ufrmQRCodePixEst.pas' {FrmQRCodePixEst},
+  ufrmQRCodePixDin in 'ufrmQRCodePixDin.pas' {FrmQRCodePixDin},
   ufrmSelecionarPIX in 'ufrmSelecionarPIX.pas' {FrmSelecionarPIX},
   uPagamentoPix in 'uPagamentoPix.pas',
   uQrCode in '..\unit_compartilhada\uQrCode.pas',
@@ -272,6 +273,7 @@ begin
   Application.CreateForm(TFDadosPOS, FDadosPOS);
   Application.CreateForm(TFCadAdquirentes, FCadAdquirentes);
   Application.CreateForm(TForm27, Form27);
+  Application.CreateForm(TFrmQRCodePixDin, FrmQRCodePixDin);
   Application.Run;
     //
   end else

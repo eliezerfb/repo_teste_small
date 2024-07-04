@@ -1518,6 +1518,7 @@ type
     bFlag2: Boolean; // False define calcular o troco a partir dos valores das formas de pagamento
     bCupomAberto, bSairDoPrograma, bVolta, bNFazMaisNada, bChave, bNaoSaiComESC, bFechaTudo, bFecha : Boolean;
     iMesasAbertas, iMesaAberta, iStatusGaveta, iGaveta, iPeso, iTrunca, iItem, iVias, iAjuste, icupom, iCCF, iGNF, iParcelas, bButton, Retorno : Integer;
+    sCNPJInstituicaoPIX, sTipoPIX, sCodigoAutorizacaoPIX : string;
     sTamanhoPapel: String;
     bFechaRapidoCartao: Boolean; // Sandro Silva 2021-09-08
     //
@@ -10789,15 +10790,17 @@ var
   IDTransacaoPIX : string;
   sEmailCliente: String; //Sandro Silva 2024-05-07
 begin
-  Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  bFechado            := False; // Sandro Silva 2016-04-12
-  Form1.bNFazMaisNada := False;
-  bInicializa         := False;
-  bChave              := False; // Sandro Silva 2020-04-14
-  sCOOModelo02        := '';
-  sCCFModelo02        := '';
-  sPedidoModelo02     := '';
-  bNFCeUsoDenegado    := False; // Sandro Silva 2020-05-21
+  Screen.Cursor             := crHourGlass; // Cursor de Aguardo
+  bFechado                  := False; // Sandro Silva 2016-04-12
+  Form1.bNFazMaisNada       := False;
+  bInicializa               := False;
+  bChave                    := False; // Sandro Silva 2020-04-14
+  sCOOModelo02              := '';
+  sCCFModelo02              := '';
+  sPedidoModelo02           := '';
+  bNFCeUsoDenegado          := False; // Sandro Silva 2020-05-21
+  sCNPJInstituicaoPIX       := '';    //Mauricio Parizotto 2024-07-03
+  sTipoPix                  := '';    //Mauricio Parizotto 2024-07-03
 
   AtualizarTEMTEF;
   //
@@ -11020,7 +11023,7 @@ begin
         begin
           try
             //Usou forma PIX - 17 Estático
-            CodFormaPixEst := FormaPagamentoPix(ibDataSet25,'PIX Estático');
+            CodFormaPixEst := FormaPagamentoPix(ibDataSet25,_PixEstatico);
 
             if CodFormaPixEst > 0 then
             begin
@@ -11037,6 +11040,10 @@ begin
                                                  InstituicaoFinanceira,
                                                  ibDataSet25.Transaction);
 
+              if PagouNoPIX then
+              begin
+                sTipoPix                  := _PixEstatico;
+              end;
             end;
           except
           end;
@@ -11044,7 +11051,7 @@ begin
           //Mauricio Parizotto 2024-06-14
           try
             //Usou forma PIX - 17 Dinâmico
-            CodFormaPixDin := FormaPagamentoPix(ibDataSet25,'PIX Dinâmico');
+            CodFormaPixDin := FormaPagamentoPix(ibDataSet25,_PixDinamico);
 
             if CodFormaPixDin > 0 then
             begin
@@ -11061,8 +11068,14 @@ begin
                                                  FormataNumeroDoCupom(Form1.icupom),
                                                  sCaixa,
                                                  InstituicaoFinanceira,
+                                                 sCodigoAutorizacaoPIX,
                                                  ibDataSet25.Transaction);
 
+              if PagouNoPIX then
+              begin
+                sCNPJInstituicaoPIX :=    GetCNPJInstituicaoFinanceira(InstituicaoFinanceira,ibDataSet25.Transaction);
+                sTipoPix                  := _PixDinamico;
+              end;
             end;
           except
             on e:exception do

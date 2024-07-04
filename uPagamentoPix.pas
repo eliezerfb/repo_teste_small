@@ -10,13 +10,12 @@ uses
 
   //Pix Estático
   function PagamentoPixEstatico(Valor : double; IDTransacao : string; out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
-  //function GeraChavePixEstatica(pixtitular,municipio,pixchave,pixTipochave,IDTransacao : string; Valor : Double ):string;
 
   //Pix Dinamico Itaú
   function PagamentoPixDinamico(Valor : double; IDTransacao, NumeroNF, Caixa : string;
-            out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
+            out InstituicaoFinanceira, CodigoAutorizacao : string; IBTRANSACTION: TIBTransaction):boolean;
   procedure GravaTransacaoItau(NumeroNF, Caixa, OrderID, Status : string; Valor : Double; IBDatabase: TIBDatabase);
-  procedure AtualizaStatusTransacaoItau(OrderID, Status : string; IBDatabase: TIBDatabase);
+  procedure AtualizaStatusTransacaoItau(OrderID, Status : string; IBDatabase: TIBDatabase; CodAutorizacao : string = '');
 
 implementation
 
@@ -82,7 +81,7 @@ begin
       begin
         //Verifica se a forma está configurada como PIX
         if (Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra '+I.ToString, ''), 1, 2) = NFCE_FORMA_17_PAGAMENTO_INSTANTANEO_PIX_DINAMICO)
-         or (Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra '+I.ToString, ''), 1, 2) = NFCE_FORMA_20_PAGAMENTO_INSTANTANEO_PIX_ESTATICO)
+         or (Copy(FrenteIni.ReadString('NFCE', 'Ordem forma extra '+I.ToString, ''), 1, 2) = NFCE_FORMA_20_PAGAMENTO_INSTANTANEO_PIX_ESTATICO) then
         begin
           //Verifica o Tipo Mauricio Parizotto 2024-06-14
           if FrenteIni.ReadString('NFCE', 'Tipo Pix '+I.ToString, '') = TipoPix then
@@ -152,98 +151,9 @@ begin
   end;
 end;
 
-{
-function GeraChavePixEstatica(pixtitular,municipio,pixchave,pixTipochave,IDTransacao : string; Valor : Double ):string;
-var
-  Payload : string;
-  PayloadFormat, MerchantAccount, MerchantCategoryCode, MerchantName,
-  MerchantCity, CountryCode, Additional, TransactionCurrency,
-  TransactionAmount, CRC16  : string;
-
-  function TamanhoTexto(texto : string) : string;
-  begin
-    Result := Format('%2.2d',[ Length(texto)]);
-  end;
-
-  function CRC16CCITT(texto: string): WORD;
-  const
-    polynomial = $1021;
-  var
-    crc: WORD;
-    i, j: Integer;
-    b: Byte;
-    bit, c15: Boolean;
-  begin
-    crc := $FFFF;
-    for i := 1 to length(texto) do
-    begin
-      b := Byte(texto[i]);
-      for j := 0 to 7 do
-      begin
-        bit := (((b shr (7 - j)) and 1) = 1);
-        c15 := (((crc shr 15) and 1) = 1);
-        crc := crc shl 1;
-        if (c15 xor bit) then
-          crc := crc xor polynomial;
-      end;
-    end;
-    Result := crc and $FFFF;
-  end;
-begin
-  try
-    if pixTipochave = 'CNPJ/CPF' then
-      pixchave := LimpaNumero(pixchave);
-
-    if pixTipochave = 'Celular' then
-      pixchave := '+55'+LimpaNumero(pixchave);
-
-    pixtitular := ConverteAcentos(pixtitular);
-    pixtitular := Copy(pixtitular,1,25);
-    municipio  := ConverteAcentos(municipio);
-    municipio  := Copy(municipio,1,15);
-
-    PayloadFormat         := '000201';
-    MerchantAccount       := '0014BR.GOV.BCB.PIX'+'01'+TamanhoTexto(pixchave)+pixchave;
-    MerchantAccount       := '26'+TamanhoTexto(MerchantAccount)+MerchantAccount;
-    MerchantCategoryCode  := '52040000';
-    TransactionCurrency   := '5303986'; //Real Brasileiro
-    TransactionAmount     :=  StringReplace( StringReplace(  FormatFloat( '#,##0.00', Valor)  ,'.','',[rfReplaceAll])    , ',','.',[rfReplaceAll]);
-    TransactionAmount     := '54'+TamanhoTexto(TransactionAmount)+TransactionAmount;
-    CountryCode           := '5802BR';
-    MerchantName          := '59'+TamanhoTexto(pixtitular)+pixtitular;
-    MerchantCity          := '60'+TamanhoTexto(municipio)+municipio;
-
-    if IDTransacao = '' then
-    begin
-      Additional            := '62070503***'
-    end else
-    begin
-      Additional            := TamanhoTexto(IDTransacao)+IDTransacao;
-      Additional            := '62'+TamanhoTexto('05'+Additional)+'05'+Additional;
-    end;
-
-    CRC16                 := '6304';
-
-    Payload  := PayloadFormat+
-                MerchantAccount+
-                MerchantCategoryCode+
-                TransactionCurrency+
-                TransactionAmount+
-                CountryCode+
-                MerchantName+
-                MerchantCity+
-                Additional+
-                CRC16;
-
-    Result := Payload+IntToHex(CRC16CCITT(Payload));
-  except
-    Result := '';
-  end;
-end;
-}
 
 function PagamentoPixDinamico(Valor : double; IDTransacao, NumeroNF, Caixa : string;
-  out InstituicaoFinanceira : string; IBTRANSACTION: TIBTransaction):boolean;
+  out InstituicaoFinanceira, CodigoAutorizacao : string; IBTRANSACTION: TIBTransaction):boolean;
 var
   ibqItau: TIBQuery;
   ChaveQRCode, order_id, Mensagem : string;
@@ -251,6 +161,9 @@ var
   bLiberado : Boolean;
   dLimiteRecurso : Tdate;
 begin
+  CodigoAutorizacao := '';
+  Result            := False;
+
   bLiberado := (RecursoLiberado(IBTRANSACTION.DefaultDatabase,rcIntegracaoItau,dLimiteRecurso));
 
   if not bLiberado then
@@ -261,15 +174,13 @@ begin
     Exit;
   end;
 
-
-  Result := False;
-
   try
     ibqItau := CriaIBQuery(IBTRANSACTION);
     ibqItau.SQL.Text := ' Select '+
                         ' 	I.USUARIO,'+
                         ' 	I.SENHA,'+
                         ' 	I.CLIENTID,'+
+                        '   B.NOME,'+
                         ' 	B.INSTITUICAOFINANCEIRA'+
                         ' From CONFIGURACAOITAU I'+
                         ' 	Left Join BANCOS B on B.IDBANCO = I.IDBANCO'+
@@ -280,6 +191,12 @@ begin
     if ibqItau.IsEmpty then
     begin
       MensagemSistema('Nenhuma integração habilitada!',msgAtencao);
+      Exit;
+    end;
+
+    if Trim(ibqItau.FieldByName('INSTITUICAOFINANCEIRA').AsString) = '' then
+    begin
+      MensagemSistema('A conta bancaria "'+ibqItau.FieldByName('NOME').AsString+'" não possui Instituição Financeira vinculada!',msgAtencao);
       Exit;
     end;
 
@@ -308,6 +225,7 @@ begin
     if PagamentoQRCodePIXDin(ChaveQRCode,
                              order_id,
                              Valor,
+                             CodigoAutorizacao,
                              IBTRANSACTION.DefaultDatabase) then
     begin
       InstituicaoFinanceira := ibqItau.FieldByName('INSTITUICAOFINANCEIRA').AsString;
@@ -349,17 +267,22 @@ begin
   end;
 end;
 
-procedure AtualizaStatusTransacaoItau(OrderID, Status : string; IBDatabase: TIBDatabase);
+procedure AtualizaStatusTransacaoItau(OrderID, Status : string; IBDatabase: TIBDatabase; CodAutorizacao : string = '');
 var
   IBTSALVA: TIBTransaction;
   IBQSALVA: TIBQuery;
+  sAtualizaAutorizacao : string;
 begin
   IBTSALVA    := CriaIBTransaction(IBDatabase);
   IBQSALVA    := CriaIBQuery(IBTSALVA);
 
+  if CodAutorizacao <> '' then
+    sAtualizaAutorizacao := ' , CODIGOAUTORIZACAO = '+QuotedStr(CodAutorizacao);
+
   try
     IBQSALVA.SQL.Text := ' Update ITAUTRANSACAO '+
                          '   set STATUS = '+ QuotedStr(Status)+
+                         sAtualizaAutorizacao+
                          ' Where ORDERID = '+ QuotedStr(OrderID) ;
     IBQSALVA.ExecSQL;
     IBTSALVA.Commit;

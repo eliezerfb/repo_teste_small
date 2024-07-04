@@ -70,8 +70,9 @@ end;
 procedure TFrmTransacoesItau.btnAtualizarClick(Sender: TObject);
 var
   sStatus, sNovoStatus : string;
+  CodigoAutorizacao : string;
 begin
-  sStatus := GetStatusOrder(ibqTransacoesORDERID.AsString);
+  sStatus := GetStatusOrder(ibqTransacoesORDERID.AsString,CodigoAutorizacao);
 
   if sStatus = 'expired' then
     sNovoStatus := 'Expirado';

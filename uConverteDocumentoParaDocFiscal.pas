@@ -85,7 +85,7 @@ type
 implementation
 
 uses
-  fiscal, DB;
+  fiscal, DB, uSmallConsts;
 
 { TConverteVendaParaNovoDocFiscal }
 
@@ -403,7 +403,14 @@ begin
         end; // while
 
         Form1.AtualizaDetalhe(FIBDataSet27.Transaction, sTIPODAV, sDAV, sCaixaOld, FCaixa, sNovoNumero, 'Fechada');
-        Form1.AtualizaDocumentoTransItau(FIBDataSet27.Transaction, sCaixaOld, FNumeroGerencial, FCaixa, sNovoNumero); // Mauricio Parizotto 2024-06-18
+        {Mauricio Parizotto 2024-06-18 Inicio}
+        //PIX
+        Form1.sTipoPix := '';
+        Form1.AtualizaDocumentoTransItau(FIBDataSet27.Transaction, sCaixaOld, FNumeroGerencial, FCaixa, sNovoNumero);
+        if GetAutorizacaoItau(sNovoNumero, FCaixa, FIBDataSet27.Transaction, Form1.sCodigoAutorizacaoPIX, Form1.sCNPJInstituicaoPIX ) then
+          Form1.sTipoPix := _PixDinamico;
+        {Mauricio Parizotto 2024-06-18 Fim}
+
 
         // Seleciona novamente os dados para usar na sequência da venda
         FIBDataSet27.Close;

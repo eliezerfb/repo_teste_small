@@ -299,13 +299,13 @@ object FormasP: TFormasP
       '11'
       '12')
   end
-  object ComboBox5: TComboBox
+  object cboForma01: TComboBox
     Left = 483
     Top = 131
     Width = 202
     Height = 21
     TabOrder = 19
-    OnChange = ComboBox5Change
+    OnChange = cboForma01Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -321,13 +321,13 @@ object FormasP: TFormasP
       '11'
       '12')
   end
-  object ComboBox6: TComboBox
+  object cboForma02: TComboBox
     Left = 483
     Top = 156
     Width = 202
     Height = 21
     TabOrder = 20
-    OnChange = ComboBox6Change
+    OnChange = cboForma02Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -343,13 +343,13 @@ object FormasP: TFormasP
       '11'
       '12')
   end
-  object ComboBox7: TComboBox
+  object cboForma03: TComboBox
     Left = 483
     Top = 181
     Width = 202
     Height = 21
     TabOrder = 21
-    OnChange = ComboBox7Change
+    OnChange = cboForma03Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -365,13 +365,13 @@ object FormasP: TFormasP
       '11'
       '12')
   end
-  object ComboBox8: TComboBox
+  object cboForma04: TComboBox
     Left = 483
     Top = 206
     Width = 202
     Height = 21
     TabOrder = 22
-    OnChange = ComboBox8Change
+    OnChange = cboForma04Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -387,13 +387,13 @@ object FormasP: TFormasP
       '11'
       '12')
   end
-  object ComboBox9: TComboBox
+  object cboForma05: TComboBox
     Left = 483
     Top = 230
     Width = 202
     Height = 21
     TabOrder = 23
-    OnChange = ComboBox9Change
+    OnChange = cboForma05Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -409,13 +409,13 @@ object FormasP: TFormasP
       '11'
       '12')
   end
-  object ComboBox10: TComboBox
+  object cboForma06: TComboBox
     Left = 483
     Top = 255
     Width = 202
     Height = 21
     TabOrder = 24
-    OnChange = ComboBox10Change
+    OnChange = cboForma06Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -431,13 +431,13 @@ object FormasP: TFormasP
       '11'
       '12')
   end
-  object ComboBox11: TComboBox
+  object cboForma07: TComboBox
     Left = 483
     Top = 280
     Width = 202
     Height = 21
     TabOrder = 25
-    OnChange = ComboBox11Change
+    OnChange = cboForma07Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
@@ -453,13 +453,13 @@ object FormasP: TFormasP
       '11'
       '12')
   end
-  object ComboBox12: TComboBox
+  object cboForma08: TComboBox
     Left = 483
     Top = 305
     Width = 202
     Height = 21
     TabOrder = 26
-    OnChange = ComboBox12Change
+    OnChange = cboForma08Change
     OnKeyDown = Edit5KeyDown
     Items.Strings = (
       '1'
