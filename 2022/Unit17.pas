@@ -576,7 +576,7 @@ begin
         begin
           ibdEmitenteIE.AsString       := xmlNodeValue(sRetorno,'//IE');
           ibdEmitenteESTADO.AsString   := xmlNodeValue(sRetorno,'//UF');
-          ibdEmitenteNOME.AsString     := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome'))), 1, ibdEmitenteNOME.Size);
+          ibdEmitenteNOME.AsString     := Trim(Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome'))), 1, ibdEmitenteNOME.Size));
           ibdEmitenteENDERECO.AsString := Copy(Trim(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')))),1,ibdEmitenteENDERECO.Size);
           ibdEmitenteCOMPLE.AsString   := Copy(Trim(PrimeiraMaiuscula((xmlNodeValue(sRetorno,'//xBairro')))),1,ibdEmitenteCOMPLE.Size);
           ibdEmitenteCEP.AsString      := Copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
