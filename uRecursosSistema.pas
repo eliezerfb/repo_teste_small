@@ -67,12 +67,16 @@ type
     FProduto: string;
     FRecursos: TRecursos;
     FSerial: string;
+    FTipoCliente: string;
+    FPlano: string;
     FUsuarios: Integer;
   published
     property CNPJ: string read FCNPJ write FCNPJ;
     property Produto: string read FProduto write FProduto;
     property Recursos: TRecursos read FRecursos;
     property Serial: string read FSerial write FSerial;
+    property TipoCliente: string read FTipoCliente write FTipoCliente;
+    property Plano: string read FPlano write FPlano;
     property Usuarios: Integer read FUsuarios write FUsuarios;
   public
     constructor Create;
