@@ -34,7 +34,7 @@ uses
   function ExecutaComando(comando:string):Boolean;  overload;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014'; // Sandro Silva 2024-04-23 const BUILD_DO_BANCO = '2024012'; // Sandro Silva 2024-04-16 const BUILD_DO_BANCO = '2024010';
+const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -207,7 +207,6 @@ type
     IBDataSetGrafico2: TIBDataSet;
     IBDataSetGrafico3: TIBDataSet;
     Registrodoprogramaonline1: TMenuItem;
-    WebBrowser2: TWebBrowser;
     Label_bola_NFE: TLabel;
     Image_bola_caixa: TImage;
     Label_bola_caixa: TLabel;
@@ -284,6 +283,7 @@ type
     miProd120Carac: TMenuItem;
     NaoDescontarIssQuandoRetido1: TMenuItem;
     N13: TMenuItem;
+    timerLegal: TTimer;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -457,6 +457,7 @@ type
     procedure Clculododescontopeloprovedor1Click(Sender: TObject);
     procedure miProd120CaracClick(Sender: TObject);
     procedure NaoDescontarIssQuandoRetido1Click(Sender: TObject);
+    procedure timerLegalTimer(Sender: TObject);
 
 
   private
@@ -537,7 +538,7 @@ type
     function ValidaEmitenteMunicipio: Boolean;
     procedure ConfiguraCredencialTecnospeed;
     function DisponivelSomenteParaNos: Boolean;
-    function CampoDisponivelParaUsuario(sModulo, sCampo: String): Boolean;
+//    function CampoDisponivelParaUsuario(sModulo, sCampo: String): Boolean; Mauricio Parizotto 2024-05-15
     function ExisteNfseExe(sDiretorio: String): Boolean;
     procedure MensagemRecursoIndisponivel(sMensagem: String);
     function ValidaRecursoExibeMensagemIndisponivel: Boolean;
@@ -566,7 +567,9 @@ implementation
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, Unit8, Unit38, uExportaXML, Unit43, Unit30, SelecionaCertificado,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
-  uconstantes_chaves_privadas, ucredencialtecnospeed, uAtualizaBancoDados,
+  uconstantes_chaves_privadas
+  , ucredencialtecnospeed
+  , uAtualizaBancoDados,
   uFazerBackup,
   uRetornaBuildEXE
   , uCriptografia
@@ -577,12 +580,16 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uGeraCNAB240
   , uGeraCNAB400
   , uArquivosDAT
+  , uMobile
   , uIconesSistema
   , uFrmConfigEmailAutContabilidade
   , uDialogs
   , uFuncoesRetaguarda
   , uSmallResourceString, uSistema
-  , uConfiguracaoTEFCommerce, uFrmContaPagar, uFrmContaReceber;
+  , uConfiguracaoTEFCommerce
+  , uFrmContaPagar
+  , uFrmContaReceber
+  , uFrmCadastro;
 
 {$R *.DFM}
 
@@ -3226,6 +3233,10 @@ begin
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set PRECO=OFFPROMO where (CURRENT_DATE not between PROMOINI and PROMOFIM) and (PRECO=ONPROMO) ');
     Form7.ibDataSet99.Open;
+    {Sandro Silva 2024-04-22 inicio}
+    if Form7.ibDataSet99.RowsAffected > 0 then
+      Result := True;
+    {Sandro Silva 2024-04-22 fim}
   except end;
 
   try
@@ -3234,6 +3245,10 @@ begin
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set OFFPROMO=PRECO where (CURRENT_DATE not between PROMOINI and PROMOFIM) and (OFFPROMO<>PRECO)');
     Form7.ibDataSet99.Open;
+    {Sandro Silva 2024-04-22 inicio}
+    if Form7.ibDataSet99.RowsAffected > 0 then
+      Result := True;
+    {Sandro Silva 2024-04-22 fim}
   except end;
 
   try
@@ -3242,11 +3257,15 @@ begin
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set PRECO=ONPROMO where (CURRENT_DATE between PROMOINI and PROMOFIM) and (PRECO<>ONPROMO) ');
     Form7.ibDataSet99.Open;
+    {Sandro Silva 2024-04-22 inicio}
+    if Form7.ibDataSet99.RowsAffected > 0 then
+      Result := True;
+    {Sandro Silva 2024-04-22 fim}
   except end;
 
   Mensagem22('Aguarde...');
 
-  Result := True;
+  // Sandro Silva 2024-04-22 Result := True;
 end;
 
 function AjustaRegistro(sP0, sP1: String):Boolean;
@@ -3908,7 +3927,13 @@ begin
   Form1.Image4.Width    := 1024;
   Form1.Image4.Height   := 768;
   //
+  {Dailon Parisotto (f-18201) 2024-05-08 Inicio
+
   if ((Form7.ibDataSet13ESTADO.AsString <> 'SC') and (Form7.ibDataSet13ESTADO.AsString <> 'MG')) then
+
+  }
+  if TestarUFMovimentaEstoqueFinanceiroSemFaturar(Form7.ibDataSet13ESTADO.AsString) then
+  {Dailon Parisotto (f-18201) 2024-05-08 Fim}
   begin
     ConfiguraodaNFemformulrionumerado1.Visible := True;
   end else
@@ -4474,6 +4499,10 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   bTemAtuaNFeSetup: Boolean;
 begin
+  //Mauricio Parizotto 2024-06-03
+  timerLegal.Interval := 3600000; // 1h
+  timerLegal.Enabled  := True;
+
   Form1.bMKP    := False;
   Form1.sPasta  := CHAVE_CIFRAR; // Sandro Silva 2022-09-19
 
@@ -4494,7 +4523,6 @@ begin
   Form22.Label6.Left    := 0;
 
   Form1.WebBrowser1.Left := -2000;
-  Form1.WebBrowser2.Left := -2000;
 
   GetDir(0,sAtual);
   Form1.BorderIcons := [biSystemMenu,biMinimize,biMaximize];
@@ -9085,10 +9113,10 @@ begin
 
       if bButton = IDYES then
       begin
-        Form10.AtualizaMobile(True);
+        AtualizaMobile(True);
       end else
       begin
-        Form10.AtualizaMobile(False);
+        AtualizaMobile(False);
       end;
 
       Form1.Label200.Tag    := 0;
@@ -10266,8 +10294,9 @@ begin
               Application.ProcessMessages;
 
               try
-                Form10.AtualizaMobile(False);
-              except end;
+                AtualizaMobile(False);
+              except
+              end;
 
               DeleteFile(pChar(sTLista[I]));    // Apaga local
 
@@ -10761,6 +10790,19 @@ begin
 end;
 
 
+procedure TForm1.timerLegalTimer(Sender: TObject);
+begin
+  try
+    //Só consulta se sistema estiver liberado
+    if ExecutaComandoEscalar(Form7.IBTransaction1,
+                            'Select gen_id(G_LEGAL,0) From rdb$database') = 0 then
+    begin
+      RegistrodoPrograma(False);
+    end;
+  except
+  end;
+end;
+
 procedure TForm1.ConfiguraodaNFemformulrionumerado1Click(Sender: TObject);
 begin
   Form7.sTitulo         := 'Configuração da NF';
@@ -10846,7 +10888,10 @@ begin
   if Form7.sModulo = 'RECEBER' then
     Exit;
   {Mauricio Parizotto 2024-04-16 Fim}
-    
+
+  if Form7.sModulo = 'CLIENTES' then
+   Exit;
+
 
   if AllTrim(Form7.sModulo) <> '' then
   begin
@@ -11510,6 +11555,20 @@ begin
     end;
   end;
   {Mauricio Parizotto 2024-04-16 Fim}
+
+
+  {Mauricio Parizotto 2024-05-15 Inicio}
+  if Form7.sModulo = 'CLIENTES' then
+  begin
+    if FrmCadastro <> nil then
+    begin
+      if FrmCadastro.Visible then
+      begin
+        FrmCadastro.BringToFront;
+        Exit;
+      end;
+    end;
+  end;
 
   if Form5.Visible then
   begin
@@ -12381,19 +12440,6 @@ begin
   end;
 end;
 
-function TForm1.CampoDisponivelParaUsuario(sModulo: String; sCampo: String): Boolean;
-begin
-  Result := True;
-
-  if (sModulo = 'RECEBER') then
-  begin
-    if (AnsiUpperCase(sCampo) = 'MOVIMENTO') then
-    begin
-      //Result := DisponivelSomenteParaNos;
-    end;
-  end;
-
-end;
 
 function TForm1.ExisteNfseExe(sDiretorio: String): Boolean;
 // Sandro Silva 2023-01-11

@@ -39,6 +39,7 @@ var
   sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-06-16
   dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
   dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-09-04
+  vTotalFCP, vTotalFCPST : Real; // Dailon Parisotto 2024-07-01
 
   procedure GeraXmlNFeEntrada;
   procedure GeraXmlNFeEntradaTags;
@@ -61,7 +62,7 @@ var
   sRecibo : String;
   sCupomReferenciado : String;
   sDentroOuForadoEStado, sUFEmbarq, sLocaldeEmbarque, sLocalDespacho, sPais, sCodPais : String;
-  vST, vBC, vBCST, vPIS, vPIS_S, vCOFINS, vCOFINS_S, vICMS : Real;
+  vST, vBC, vBCST, vPIS, vPIS_S, vCOFINS, vCOFINS_S, vICMS: Real;
   fTotaldeTriubutos, fTotaldeTriubutos_uf, fTotaldeTriubutos_muni : Real;
   Mais1Ini : tIniFile;
 
@@ -103,6 +104,9 @@ var
 begin
   bAjusteICMS := False;
   
+  vTotalFCP := 0;
+  vTotalFCPST := 0;
+
   Form7.ibDataSet24.Close;
   Form7.ibDataSet24.SelectSQL.Clear;
   Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where NUMERONF='+QuotedStr(Copy(Form7.ibDataSet15NUMERONF.AsString,1,12))+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString) );
@@ -1685,6 +1689,16 @@ begin
     Form7.spdNFeDataSets.campo('vFCP_W04h').Value       := '0.00'; // Valor Total do FCP (Fundo de Combate à Pobreza)
     Form7.spdNFeDataSets.campo('vFCPST_W06a').Value     := '0.00'; // Valor Total do FCP (Fundo de Combate à Pobreza) retido por substituição tributária
     Form7.spdNFeDataSets.campo('vFCPSTRet_W06b').Value  := '0.00'; // Valor Total do FCP retido anteriormente por Substituição Tributária
+
+
+    {Dailon Parisotto (f-19455) 2024-07-01 Inicio}
+    // Soma os valores de FCP/FCPST para informar no totalizador do XML
+    if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '3' then
+    begin
+      Form7.spdNFeDataSets.campo('vFCP_W04h').Value       := StrTran(Alltrim(FormatFloat('##0.00',vTotalFCP)),',','.');
+      Form7.spdNFeDataSets.campo('vFCPST_W06a').Value     := StrTran(Alltrim(FormatFloat('##0.00',vTotalFCPST)),',','.');
+    end;
+    {Dailon Parisotto (f-19455) 2024-07-01 Fim}
   end;
 
   Form7.spdNFeDataSets.Campo('vST_W06').Value     := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset24.FieldByname('ICMSSUBSTI').AsFloat)),',','.');; // Valor Total do ICMS Sibst. Tributária
@@ -1914,6 +1928,7 @@ procedure GeraXmlNFeEntradaTags;
 var
   fAliquota: Real;
   dvICMSMonoRet_N45: Real; // Sandro Silva 2023-06-13
+  nTotalFCP: Real;
 begin
   //////////////////// Aqui começam os Impostos Incidentes sobre o Item////////////////////////
   /// Verificar Manual pois existe uma variação nos campos de acordo com Tipo de Tribucação ////
@@ -2185,7 +2200,39 @@ begin
     end;
 
     // Entrada empresa no Regime normal por CST
-    //
+    // FCP
+    // FCP ST
+
+    {Dailon Parisotto (f-19455) 2024-06-26 Inicio}
+    if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '10' then
+    begin
+
+      if (Form7.ibDataSet23.FieldByname('PFCP').AsFloat) <> 0 then
+      begin
+        Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet23.FieldByname('VBCFCP').AsFloat);// Valor da Base de Cálculo do FCP
+        Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(Form7.ibDataSet23.FieldByname('PFCP').AsFloat); // Percentual do Fundo de Combate à Pobreza (FCP)
+        Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(Form7.ibDataSet23.FieldByname('VFCP').AsFloat); // Valor do Fundo de Combate à Pobreza (FCP)
+        vTotalFCP := vTotalFCP + Form7.ibDataSet23.FieldByname('VFCP').AsFloat;
+      end;
+
+      if Form7.ibDataSet23.FieldByname('PFCPST').AsFloat <> 0 then
+      begin
+        Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(Form7.ibDataSet23.FieldByname('VBCFCPST').AsFloat); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
+        Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := FormatFloatXML(Form7.ibDataSet23.FieldByname('PFCPST').AsFloat); // Percentual do FCP retido por Substituição Tributária
+
+        if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
+        begin
+          Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML(Form7.ibDataSet23.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+        end else
+        begin
+          Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML(Form7.ibDataSet23.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+        end;
+        vTotalFCPST := vTotalFCPST + Form7.ibDataSet23.FieldByname('VFCPST').AsFloat;
+      end;
+
+    end;
+    {Dailon Parisotto (f-19455) 2024-06-26 Fim}
+
     {
     if Form1.sVersaoLayout = '4.00' then
     begin

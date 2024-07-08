@@ -933,7 +933,25 @@ end;
         //
         Form7.ibDataSet27.Close;
         Form7.ibDataSet27.SelectSQL.Clear;
+
+        {Dailon Parisotto (f-19029) 2024-05-22 Inicio
+
         Form7.ibDataSet27.SelectSQL.Add('select * from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') and VENDEDOR='+QuotedStr(sVendedor)+' order by PEDIDO'); // A vista voltar e acertar
+
+        }
+        Form7.ibDataSet27.SelectSQL.Add('SELECT ALTERACA.*');
+        Form7.ibDataSet27.SelectSQL.Add('FROM ALTERACA');
+        Form7.ibDataSet27.SelectSQL.Add('INNER JOIN PAGAMENT');
+        Form7.ibDataSet27.SelectSQL.Add('    ON (PAGAMENT.CAIXA=ALTERACA.CAIXA)');
+        Form7.ibDataSet27.SelectSQL.Add('    AND (PAGAMENT.PEDIDO=ALTERACA.PEDIDO)');
+        Form7.ibDataSet27.SelectSQL.Add('    AND (SUBSTRING(PAGAMENT.FORMA FROM 1 FOR 2) = ''02'')');
+        Form7.ibDataSet27.SelectSQL.Add('WHERE');
+        Form7.ibDataSet27.SelectSQL.Add('    (ALTERACA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+') AND (ALTERACA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+')');
+        Form7.ibDataSet27.SelectSQL.Add('    AND ((ALTERACA.TIPO='+QuotedStr('BALCAO')+') OR (ALTERACA.TIPO='+QuotedStr('VENDA')+'))');
+        Form7.ibDataSet27.SelectSQL.Add('    AND (ALTERACA.VENDEDOR='+QuotedStr(sVendedor)+')');
+        Form7.ibDataSet27.SelectSQL.Add('ORDER BY ALTERACA.PEDIDO'); // A vista voltar e acertar
+        {Dailon Parisotto (f-19029) 2024-05-22 Fim}
+
         Form7.ibDataSet27.Open;
         Form7.ibDataSet27.First;
         //
