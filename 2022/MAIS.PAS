@@ -17,6 +17,7 @@ uses
   XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, DB, DateUtils,
   WinTypes, WinProcs, uFuncoesBancoDados,
   LbCipher, LbClass, Tlhelp32, Psapi, strutils, ShlObj, ComObj, ActiveX
+  , REST.Json
   , DBCtrls
   , SMALL_DBEdit
   , uValidaRecursosDelphi7
@@ -32,6 +33,7 @@ uses
 //  procedure DropViewProcedure;
 
   function ExecutaComando(comando:string):Boolean;  overload;
+  procedure VencimentoCertificadoDigital;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
@@ -512,7 +514,7 @@ type
     bChaveSelecionaCliente : Boolean;
     bMediaPonderadaFixa    : Boolean;
     bMKP : Boolean;
-
+    bPrimeiraAberturaDia : boolean;
     ValidaRecursos: TValidaRecurso; // Sandro Silva 2023-05-31
     procedure AjustarDataSetCamposProduto;// Sandro Silva 2024-04-08
     procedure RegistrodoPrograma(TermoAceito: boolean);
@@ -585,6 +587,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmConfigEmailAutContabilidade
   , uDialogs
   , uFuncoesRetaguarda
+  , uRecursosSistema
   , uSmallResourceString, uSistema
   , uConfiguracaoTEFCommerce
   , uFrmContaPagar
@@ -4503,6 +4506,8 @@ begin
   timerLegal.Interval := 3600000; // 1h
   timerLegal.Enabled  := True;
 
+  bPrimeiraAberturaDia := False; // Mauricio Parizotto 2024-07-05
+
   Form1.bMKP    := False;
   Form1.sPasta  := CHAVE_CIFRAR; // Sandro Silva 2022-09-19
 
@@ -5105,12 +5110,6 @@ begin
     ExibeRazaoSocialNoCaptionDoForm;
     {Sandro Silva 2022-12-15 fim}
 
-    //Mauricio Parizotto 2024-06-27
-    //Ajusta se é produto rural
-    ExecutaComando(' Update CLIFOR set PRODUTORRURAL = ''S'' '+
-                   ' Where Substring( Upper(Coalesce(IE,'''')) from 1 for 2) = ''PR'' '+
-                   '   and CHAR_LENGTH(CGC) = 14 ');
-
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     //
     if not (Form1.iReduzida = 1) then
@@ -5118,11 +5117,20 @@ begin
       try
         if StrtoDate(Mais1Ini.ReadString('Outros','Data','26/09/1967')) <> Date then
         begin
+          bPrimeiraAberturaDia := True; // Mauricio Parizotto 2024-07-05
+
           try
             Mais1Ini.WriteString('Outros','Data',DateToStr(Date));
             Mais1Ini.Free;
           except
           end;
+
+          //Mauricio Parizotto 2024-06-27
+          //Ajusta se é produto rural
+          ExecutaComando(' Update CLIFOR set PRODUTORRURAL = ''S'' '+
+                         ' Where Substring( Upper(Coalesce(IE,'''')) from 1 for 2) = ''PR'' '+
+                         '   and CHAR_LENGTH(CGC) = 14 ');
+
 
           Form22.Repaint;
           Mensagem22('Atualizando valores no contas a receber...');
@@ -5143,7 +5151,8 @@ begin
                                               '   and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9) <> 1 ');
               {Mauricio Parizotto 2023-10-04 Fim}
               Form7.ibDataSet99.Open;
-            except end;
+            except
+            end;
           end else
           begin
             try
@@ -8390,8 +8399,11 @@ begin
       CarregaConfiguracoes;
       ConfiguraNFE;
     except
-
     end;
+
+    //Verifica Certificado Digital Mauricio Parizotto 2024-07-05
+    if bPrimeiraAberturaDia then
+      VencimentoCertificadoDigital;
 
     MontaTela(True);
 
@@ -13066,6 +13078,67 @@ begin
     Form1.ibDataset200.Close;
 
     Result := True;
+  except
+  end;
+end;
+
+
+procedure VencimentoCertificadoDigital;
+var
+  Recuros : TRecursosSistema;
+  sJsonRecurso :string;
+  sMensagem, sMensagem2, sURL, sTipoCertificado : string;
+begin
+  try
+    if TSistema.GetInstance.CertificadoTipo = '' then
+      Exit;
+
+    if TSistema.GetInstance.CertificadoDtVal < Now + 30 then
+    begin
+      try
+        sJsonRecurso := ExecutaComandoEscalar(Form7.IBTransaction1,
+                                              'Select RECURSO From EMITENTE');
+
+        sJsonRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA,sJsonRecurso);
+
+        Recuros := TJson.JsonToObject<TRecursosSistema>(sJsonRecurso);
+
+        if Recuros.TipoCliente = 'USUARIO' then
+        begin
+          sMensagem  := 'irá vencer';
+          sMensagem2 := 'Após essa data não será possível';
+
+          if TSistema.GetInstance.CertificadoDtVal < Now  then
+          begin
+            sMensagem := 'venceu';
+            sMensagem2 := 'Não é possível';
+          end;
+
+          if MensagemSistemaPerguntaCustom('O sistema identificou que seu certificado digital '+sMensagem+' no dia '+DateToStr(TSistema.GetInstance.CertificadoDtVal)+'.'+#13#10+
+                                           sMensagem2+' assinar documentos fiscais (NF-e NFC-e) com este certificado.'+#13#10+
+                                           #13#10+
+                                           'Clique em Comprar e você será direcionado para o Parceiro Certificador.',
+                                           mtInformation, [mbOK, mbCancel],
+                                           ['Comprar','Cancelar']) = 1 then
+          begin
+            sTipoCertificado := TSistema.GetInstance.CertificadoTipo;
+
+            if sTipoCertificado = 'NI' then
+              sTipoCertificado := 'A1';
+
+            sURL := 'https://inovacoes.compufour.com.br/certificado/contador?word=wNm743'+
+                    '&cnpj_cpf='+Form7.ibDataSet13CGC.AsString+
+                    '&produto=small-commerce'+
+                    '&expira_em='+FormatDateTime('YYYY-MM-DD',TSistema.GetInstance.CertificadoDtVal)+
+                    '&modelo_atual='+sTipoCertificado;
+
+            ShellExecute(0, 'Open', pChar(sURL),'', '', SW_SHOW);
+          end;
+        end;
+      finally
+        FreeAndNil(Recuros);
+      end;
+    end;
   except
   end;
 end;
