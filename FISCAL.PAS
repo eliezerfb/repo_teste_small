@@ -11590,7 +11590,8 @@ begin
           begin
             if AnsiContainsText(Form10.sNomeDoTEF, 'ZPOS') then
             begin
-              if (Form1.sModeloECF = '65') then
+              //if (Form1.sModeloECF = '65') then Mauricio Parizotto 2024-07-09
+              if (Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') then
                 Form1.sMensagemPromocional := Form1.sMensagemPromocional + chr(10) + '|' +  'ZPOS';
             end;
           end;

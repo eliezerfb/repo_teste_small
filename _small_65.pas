@@ -5717,17 +5717,16 @@ var
   hDMode  : THandle;
   sTamanhoPapelOld: String; // Sandro Silva 2023-10-10
   sCaminhoZPOS: String; // Sandro Silva 2023-10-11
+  sChaveNFCE : string;
+  sXML : TStringList;
 begin
-  //
   Result := True;
-  //
+
   Form1.Display('Aguarde, imprimindo DANFCE...', 'Aguarde, imprimindo DANFCE...');
   // Sandro Silva 2021-11-05 Form1.ExibePanelMensagem('Aguarde, imprimindo DANFCE...');
-  //
   if Printer.Printers.Count > 0 then // Sandro Silva 2018-06-13
   begin
     try
-      //
       Printer.PrinterIndex := Printer.Printers.IndexOf(Form1.sImpressoraPadraoWindows);
       if Trim(Form1.sImpressoraDestino) <> '' then
         Printer.PrinterIndex := Printer.Printers.IndexOf(Form1.sImpressoraDestino);
@@ -5742,10 +5741,11 @@ begin
       {Sandro Silva 2023-10-10 inicio
       Form1.spdNFCe1.ImprimirDanfce(psLote, pfNFe, _ecf65_ArquivoRTM, Device);
       }
+
       if Pos('ZPOS', String(pfNFe)) > 0 then
       begin
+        {Mauricio Parizotto 2024-07-09 Inicio
         try
-
           sCaminhoZPOS := 'c:\' + LerParametroIni(FRENTE_INI, 'ZPOS', 'PASTA', '') + '\' + LerParametroIni(FRENTE_INI, 'ZPOS', 'REQ', '');
 
           DeleteFile(sCaminhoZPOS + '\danfce.pdf');
@@ -5761,6 +5761,25 @@ begin
         finally
           Form1.sTamanhoPapel := sTamanhoPapelOld;
         end;
+        }
+        try
+          sChaveNFCE := xmlNodeValue(pFNFe, '//infNFe/@Id');
+
+          sCaminhoZPOS := 'c:\' + LerParametroIni(FRENTE_INI, 'ZPOS', 'PASTA', '') + '\' + LerParametroIni(FRENTE_INI, 'ZPOS', 'REQ', '');
+
+          DeleteFile(sCaminhoZPOS + '\'+sChaveNFCE+'.xml');
+
+          sXML := TStringList.Create;
+          sXML.Text := pfNFe;
+          sXML.SaveToFile(sCaminhoZPOS + '\'+sChaveNFCE+'.tmp');
+
+          Sleep(200);
+
+          RenameFile(sCaminhoZPOS + '\'+sChaveNFCE+'.tmp', sCaminhoZPOS + '\'+sChaveNFCE+'.xml');
+        finally
+          FreeAndNil(sXML);
+        end;
+        {Mauricio Parizotto 2024-07-09 Fim}
       end
       else
         Form1.spdNFCe1.ImprimirDanfce(psLote, pfNFe, _ecf65_ArquivoRTM, Device);
@@ -5779,7 +5798,6 @@ begin
     ShowMessage('Instale uma impressora no Windows');
 
   Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible  := False;
-  //
 end;
 
 function _ecf65_Email_DANFECE(pSLote: String; pFNFe : WideString): Boolean;
