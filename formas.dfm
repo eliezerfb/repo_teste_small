@@ -188,7 +188,6 @@ object FormasP: TFormasP
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 14
-    ExplicitWidth = 1008
     inline Frame_teclado1: TFrame_teclado
       Left = -5
       Top = 0

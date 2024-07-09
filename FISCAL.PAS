@@ -25448,6 +25448,7 @@ begin
   //
   if Pos('<nfeProc',Form1.ibDataSet150.FieldByName('NFEXML').AsString) <> 0 then
   begin
+    ConfiguraNFCE(True);
     Form1.spdNFCe1.EditarModeloDanfce(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('NFEXML').AsString, _ecf65_ArquivoRTM);
   end;
   //
