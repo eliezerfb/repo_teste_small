@@ -15,7 +15,7 @@ uses
   function PagamentoPixDinamico(Valor : double; IDTransacao, NumeroNF, Caixa : string;
             out InstituicaoFinanceira, CodigoAutorizacao : string; IBTRANSACTION: TIBTransaction):boolean;
   procedure GravaTransacaoItau(NumeroNF, Caixa, OrderID, Status : string; Valor : Double; IBDatabase: TIBDatabase);
-  procedure AtualizaStatusTransacaoItau(OrderID, Status : string; IBDatabase: TIBDatabase; CodAutorizacao : string = '');
+  procedure AtualizaStatusTransacaoItau(OrderID, Status : string; IBDatabase: TIBDatabase; CodAutorizacao : string = ''; CNPJINSTITUICAO : string = '');
 
 implementation
 
@@ -181,9 +181,11 @@ begin
                         ' 	I.SENHA,'+
                         ' 	I.CLIENTID,'+
                         '   B.NOME,'+
-                        ' 	B.INSTITUICAOFINANCEIRA'+
+                        ' 	B.INSTITUICAOFINANCEIRA,'+
+                        '   C.CGC'+
                         ' From CONFIGURACAOITAU I'+
                         ' 	Left Join BANCOS B on B.IDBANCO = I.IDBANCO'+
+                        '   Left Join CLIFOR C on C.NOME = B.INSTITUICAOFINANCEIRA '+
                         ' Where I.HABILITADO = ''S'' ';
     ibqItau.Open;
 
@@ -225,6 +227,7 @@ begin
     if PagamentoQRCodePIXDin(ChaveQRCode,
                              order_id,
                              Valor,
+                             LimpaNumero(ibqItau.FieldByName('CGC').AsString),
                              CodigoAutorizacao,
                              IBTRANSACTION.DefaultDatabase) then
     begin
@@ -267,11 +270,11 @@ begin
   end;
 end;
 
-procedure AtualizaStatusTransacaoItau(OrderID, Status : string; IBDatabase: TIBDatabase; CodAutorizacao : string = '');
+procedure AtualizaStatusTransacaoItau(OrderID, Status : string; IBDatabase: TIBDatabase; CodAutorizacao : string = ''; CNPJINSTITUICAO : string = '');
 var
   IBTSALVA: TIBTransaction;
   IBQSALVA: TIBQuery;
-  sAtualizaAutorizacao : string;
+  sAtualizaAutorizacao, sAtualizaCNPJ : string;
 begin
   IBTSALVA    := CriaIBTransaction(IBDatabase);
   IBQSALVA    := CriaIBQuery(IBTSALVA);
@@ -279,10 +282,14 @@ begin
   if CodAutorizacao <> '' then
     sAtualizaAutorizacao := ' , CODIGOAUTORIZACAO = '+QuotedStr(CodAutorizacao);
 
+  if CNPJINSTITUICAO <> '' then
+    sAtualizaCNPJ := ' , CNPJINSTITUICAO = '+QuotedStr(CNPJINSTITUICAO);
+
   try
     IBQSALVA.SQL.Text := ' Update ITAUTRANSACAO '+
                          '   set STATUS = '+ QuotedStr(Status)+
                          sAtualizaAutorizacao+
+                         sAtualizaCNPJ+
                          ' Where ORDERID = '+ QuotedStr(OrderID) ;
     IBQSALVA.ExecSQL;
     IBTSALVA.Commit;

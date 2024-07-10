@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Buttons,
   Vcl.ExtCtrls, Vcl.Printers, IBX.IBDatabase, Vcl.Imaging.pngimage;
 
-  function PagamentoQRCodePIXDin(ChaveQrPIX,order_id:string; Valor : double; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
+  function PagamentoQRCodePIXDin(ChaveQrPIX,order_id:string; Valor : double; CNPJInstituicao : string; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
 
 type
   TFrmQRCodePixDin = class(TForm)
@@ -42,7 +42,7 @@ implementation
 uses uQrCode, FISCAL, uSmallConsts, ufuncoesfrente, uIntegracaoItau,
   uPagamentoPix;
 
-function PagamentoQRCodePIXDin(ChaveQrPIX,order_id:string; Valor : double; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
+function PagamentoQRCodePIXDin(ChaveQrPIX,order_id:string; Valor : double; CNPJInstituicao : string;  out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
 begin
   Result             := False;
   CodigoAutorizacao  := '';
@@ -58,7 +58,11 @@ begin
     if FrmQRCodePixDin.PixConfirmado then
     begin
       CodigoAutorizacao := FrmQRCodePixDin.CodigoAutorizacao;
-      AtualizaStatusTransacaoItau(order_id, 'Aprovado', IBDatabase, FrmQRCodePixDin.CodigoAutorizacao);
+      AtualizaStatusTransacaoItau(order_id,
+                                  'Aprovado',
+                                  IBDatabase,
+                                  FrmQRCodePixDin.CodigoAutorizacao,
+                                  CNPJInstituicao);
     end else
     begin
       if CancelOrder(order_id) then
