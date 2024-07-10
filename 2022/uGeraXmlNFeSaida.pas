@@ -16,9 +16,6 @@ uses
   , IBQuery
   , ShellApi
   , SpdNFeDataSets
-  {$IFDEF VER150}
-  , spdXMLUtils
-  {$ENDIF}
   , spdNFeType
   , spdNFe
   , smallfunc_xe
@@ -3078,7 +3075,14 @@ begin
 
         Dailon Parisotto (f-225) 2023/03/26 Fim
 }
+      end else
+      begin
+        //Mauricio Parizotto 2024-07-10
+        //Se não for no cartão e For PIX Dinâmico marca como sem integração
+        if IdFormasDePagamentoNFe(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) = '17' then
+          Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
       end;
+
 
       Form7.spdNFeDataSets.SalvarPart('YA');
 

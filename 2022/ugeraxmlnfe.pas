@@ -122,7 +122,6 @@ begin
       begin
         if AllTrim(sJustificativa) <> '' then
         begin
-          //ShowMessage('A justificativa tem que ter no minimo 15 caracteres.'); Mauricio Parizotto 2023-10-25
           MensagemSistema('A justificativa tem que ter no minimo 15 caracteres.',msgAtencao);
           Abort;
         end;
@@ -141,7 +140,6 @@ begin
       begin
         if AllTrim(sJustificativa) <> '' then
         begin
-          //ShowMessage('A justificativa tem que ter no minimo 15 caracteres.'); Mauricio Parizotto 2023-10-25
           MensagemSistema('A justificativa tem que ter no minimo 15 caracteres.',msgAtencao);
           Abort;
         end;
@@ -164,7 +162,6 @@ begin
       begin
         if AllTrim(sJustificativa) <> '' then
         begin
-          //ShowMessage('A justificativa tem que ter no minimo 15 caracteres.'); Mauricio Parizotto 2023-10-25
           MensagemSistema('A justificativa tem que ter no minimo 15 caracteres.',msgAtencao);
           Abort;
         end;
@@ -192,11 +189,6 @@ begin
     except
       on E: Exception do
       begin
-        {
-        Application.MessageBox(pChar(E.Message+chr(10)+
-        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
-        ),'Atenção',mb_Ok + MB_ICONWARNING);
-        Mauricio Parizotto 2023-10-25}
         MensagemSistema(E.Message+chr(10)+
                         chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                         ,msgAtencao);
@@ -231,7 +223,6 @@ begin
       CloseFile(F);
 
       ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\dbug.txt'),'','', SW_SHOWMAXIMIZED);
-      //ShowMessage('Tecle Ok para continuar'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Tecle Ok para continuar');
 
       if FileExists(pChar(Form1.sAtual+'\dbug.txt')) then
