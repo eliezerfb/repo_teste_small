@@ -20398,7 +20398,7 @@ object Form7: TForm7
       
         '   PROXDATA, CUSTO, COMPRA, ATIVO, MOSTRAR, CLIFOR, CONTATOS, RE' +
         'GISTRO, '
-      '   FOTO, WHATSAPP, CONTRIBUINTE)'
+      '   FOTO, WHATSAPP, CONTRIBUINTE, PRODUTORRURAL)'
       'values'
       
         '  (:NOME, :CONTATO, :IE, :CGC, :ENDERE, :COMPLE, :CIDADE, :ESTAD' +
@@ -20414,7 +20414,7 @@ object Form7: TForm7
         'ATIVO, '
       
         '   :MOSTRAR, :CLIFOR, :CONTATOS, :REGISTRO, :FOTO, :WHATSAPP, :C' +
-        'ONTRIBUINTE)')
+        'ONTRIBUINTE, :PRODUTORRURAL)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -20451,7 +20451,8 @@ object Form7: TForm7
       '  REGISTRO,'
       '  FOTO,'
       '  WHATSAPP,'
-      '  CONTRIBUINTE'
+      '  CONTRIBUINTE,'
+      '  PRODUTORRURAL'
       'from CLIFOR '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -20494,7 +20495,8 @@ object Form7: TForm7
       '  REGISTRO = :REGISTRO,'
       '  FOTO = :FOTO,'
       '  WHATSAPP = :WHATSAPP,'
-      '  CONTRIBUINTE = :CONTRIBUINTE'
+      '  CONTRIBUINTE = :CONTRIBUINTE,'
+      '  PRODUTORRURAL = :PRODUTORRURAL'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -20566,6 +20568,7 @@ object Form7: TForm7
       DisplayWidth = 14
       FieldName = 'IE'
       Origin = 'CLIFOR.IE'
+      OnSetText = IBDataSet2IESetText
       Size = 16
     end
     object IBDataSet2FONE: TIBStringField
@@ -20746,6 +20749,12 @@ object Form7: TForm7
       FieldName = 'CONTRIBUINTE'
       Origin = 'CLIFOR.CONTRIBUINTE'
       Visible = False
+    end
+    object IBDataSet2PRODUTORRURAL: TIBStringField
+      FieldName = 'PRODUTORRURAL'
+      Origin = 'CLIFOR.PRODUTORRURAL'
+      Visible = False
+      Size = 1
     end
   end
   object IBDataSet99: TIBDataSet
