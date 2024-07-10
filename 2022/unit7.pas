@@ -8907,7 +8907,7 @@ begin
     Exit;
   end;
 
-  if sModulo = 'GRUPOS_' then
+  if sModulo = 'GRUPOS' then
   begin
     Form7.IBTransaction1.CommitRetaining;
     if FrmGrupoMercadoria = nil then
