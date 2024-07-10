@@ -129,7 +129,7 @@ uses
   const TRACO_CUPOM_TELA                = '---------------------------------------------';
   const DIRETORIO_BKP_TEF               = 'c:\TEFBKP';
   const PARCELAS_EM_CARTAO              = 'PARCELAS';
-  const EXE_PESADO                      = 'pesado.exe';
+  const EXE_PESADO                      = 'balanca.exe';//'pesado.exe';
   const IMPRESSORA_PADRAO_WINDOWS       = 'Padrão Windows';
   const TAMANHO_REFERENCIA_ARQUIVO_LOGOTIPO = 307200;
   const TITULO_PARCELAS_CARNE_RESUMIDO  = 'Documento   Vencimento    Valor R$ '; // Interfere no título relat. gerencial para venda a prazo Sandro Silva 2018-04-29
@@ -1781,7 +1781,7 @@ uses
   , uConverteDocumentoParaDocFiscal
   , uConfiguracaoTEF
   , uSmallConsts
-  , ufrmEditaMovimento, uPagamentoPix;
+  , ufrmEditaMovimento, uPagamentoPix, urequisitapesobalancaautonoma;
 
 {$R *.DFM}
 
@@ -18324,7 +18324,7 @@ begin
             if dPesoAutonomo > 0 then
             begin
               //sPesoAutonomo := '0,000';
-              dPesoAutonomo := 0.000;
+              // 2024-07-10 dPesoAutonomo := 0.000;
               bPesouAutomatico := True;
             end;
           end;
@@ -32852,6 +32852,9 @@ var
   slPeso: TStringList;
   sPastaRequisicaoPeso: String;
   sPastaRespostaPeso: String;
+  Req: TRequisitaPesoAutonomo;
+  bRecebeu: Boolean;
+  {
   procedure RequisitaPeso(bPesar: Boolean; sId: String = '');
   begin
 
@@ -32865,6 +32868,7 @@ var
     Sleep(50);
 
   end;
+  }
 begin
   slPeso := TStringList.Create;
 
@@ -33052,6 +33056,8 @@ begin
 
       end; // while SecondsBetween(Now, hrHora) <= 30 do
       *)
+
+      (* 2024-07-10
       Form1.lbOrientacaoPesagem.Caption := 'Coloque o prato na balança...';
       Form1.lbOrientacaoPesagem.Repaint;
 
@@ -33073,7 +33079,9 @@ begin
         else
         begin
 
-          if FileExists(PChar(sPastaRespostaPeso + 'peso.xml')) then // Sandro Silva 2019-02-28 if FileExists('\balanca\output\peso.xml') then
+          // 2024-07-09 if FileExists(PChar(sPastaRespostaPeso + 'peso.xml')) then // Sandro Silva 2019-02-28 if FileExists('\balanca\output\peso.xml') then
+          if FileExists(PChar(sPastaRespostaPeso + 'peso.xml'))
+            and (not (FileExists(PChar(sPastaRequisicaoPeso + 'pesar.xml'))))then
           begin
 
             LogFrente('Recebeu retorno etapa: ' + IntToStr(Form1.iEtapaPesagem));
@@ -33091,10 +33099,7 @@ begin
               PesagemAutonoma;  // Realiza o processamento do peso recebido
 
               DestroiMesas(True);
-              {
-              Form1.lbOrientacaoPesagem.Caption := 'Coloque o prato na balança...';
-              Form1.lbOrientacaoPesagem.Repaint;
-              }
+
               DeleteFile(PChar(sPastaRespostaPeso + 'peso.xml')); // Sandro Silva 2019-02-28 DeleteFile('\balanca\output\peso.res');
               DeleteFile(PChar(sPastaRequisicaoPeso + 'pesar.xml'));
 
@@ -33112,6 +33117,60 @@ begin
         end;
 
       end; // while SecondsBetween(Now, hrHora) <= 30 do
+
+      TimerBalancaAutonoma.Enabled := True;
+      *)
+
+      Form1.lbOrientacaoPesagem.Caption := 'Coloque o prato na balança...';
+      Form1.lbOrientacaoPesagem.Repaint;
+
+      req := TRequisitaPesoAutonomo.Create;
+      req.PastaRequisicao := sPastaRequisicaoPeso;
+      req.PastaResposta   := sPastaRespostaPeso;
+      req.EscreverArquivoRequisicao(Form1.iEtapaPesagem);
+
+      Label1.Caption := 'Aguardando';
+      Label1.repaint;
+
+      while True do
+      begin
+        req.AguardarResposta;
+        if req.RecebeuResposta then
+        begin
+          bRecebeu := True;
+        end;
+
+        if bRecebeu then
+        begin
+
+          sMsgRecebida  := req.Resposta;
+
+          if (dPesoAutonomo = 0) or (StrToFloatDef(xmlNodeValue(req.Resposta, '//peso'), 0) = 0) then
+          begin
+
+            dPesoAutonomo := StrToFloatDef(xmlNodeValue(req.Resposta, '//peso'), 0);
+
+            LogFrente('Peso recebido: ' + FloatToStr(dPesoAutonomo) + ' etapa: ' + IntToStr(Form1.iEtapaPesagem));
+
+            if dPesoAutonomo > 0 then // Se recebeu o peso zerado, ou negativo quando tem tara, é porque a balança está livre para pesar
+            begin
+
+              PesagemAutonoma;  // Realiza o processamento do peso recebido
+
+              DestroiMesas(True);
+
+              Sleep(50);
+
+            end; // if xmlNodeValue(sMsgRecebida, '//id') = Form1.sIdPesagem then
+
+          end;
+
+          Break;
+        end;
+
+      end;
+
+      req.Free;
 
       TimerBalancaAutonoma.Enabled := True;
 
