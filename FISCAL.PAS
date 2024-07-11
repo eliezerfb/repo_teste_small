@@ -129,7 +129,7 @@ uses
   const TRACO_CUPOM_TELA                = '---------------------------------------------';
   const DIRETORIO_BKP_TEF               = 'c:\TEFBKP';
   const PARCELAS_EM_CARTAO              = 'PARCELAS';
-  const EXE_PESADO                      = 'balanca.exe';//'pesado.exe';
+  const EXECUTAVEL_PESADO                      = 'pesado.exe';//'pesado.exe';
   const IMPRESSORA_PADRAO_WINDOWS       = 'Padrão Windows';
   const TAMANHO_REFERENCIA_ARQUIVO_LOGOTIPO = 307200;
   const TITULO_PARCELAS_CARNE_RESUMIDO  = 'Documento   Vencimento    Valor R$ '; // Interfere no título relat. gerencial para venda a prazo Sandro Silva 2018-04-29
@@ -14721,7 +14721,7 @@ begin
     begin
       Form1.bBalancaAutonoma := False;
       TimerBalancaAutonoma.Enabled := False;
-      FecharAplicacao(EXE_PESADO);
+      FecharAplicacao(EXECUTAVEL_PESADO);
     end;
     // -------------------------------- //
     // Sair do sistema                  //
@@ -16191,7 +16191,7 @@ begin
   //SmallMsg('Teste 01 Fim Close');
 
   if Form1.bBalancaAutonoma then
-    FecharAplicacao(EXE_PESADO);
+    FecharAplicacao(EXECUTAVEL_PESADO);
 
   ClienteSmallMobile.Free; // Sandro Silva 2022-08-04
 
@@ -17717,7 +17717,7 @@ begin
   if Mais1Ini.ReadString('Frente de caixa','Balança','Não') = 'Não' then
   begin
     Mais1Ini.WriteString('Frente de caixa','Balança','Sim');
-    ShellExecute(0, 'open', EXE_PESADO, 'C', '', sw_normal);
+    ShellExecute(0, 'open', EXECUTAVEL_PESADO, 'C', '', sw_normal);
   end
   else
     Mais1Ini.WriteString('Frente de caixa','Balança','Não');
@@ -18710,7 +18710,7 @@ begin
               end;
             end;
             //
-            if (Copy(Form1.ibDataSet4.FieldByName('REFERENCIA').AsString, 1, 2) = '20') and (fQuantidadeVendida = 1) and (FileExists(sAtual + '\' + EXE_PESADO)) then
+            if (Copy(Form1.ibDataSet4.FieldByName('REFERENCIA').AsString, 1, 2) = '20') and (fQuantidadeVendida = 1) and (FileExists(sAtual + '\' + EXECUTAVEL_PESADO)) then
             begin
               //
               if (Copy(Edit1.Text, 1, 1) = '2') and (Length(Edit1.Text) > 11) then
@@ -18728,7 +18728,7 @@ begin
                   if Form1.bBalancaAutonoma = False then
                   begin
                     DeleteFile(aWinDir+'\peso.txt');
-                    ShellExecute(0, 'open', EXE_PESADO, '', '', SW_NORMAL);
+                    ShellExecute(0, 'open', EXECUTAVEL_PESADO, '', '', SW_NORMAL);
                     Sleep(1000);
 
                     //
@@ -32862,19 +32862,19 @@ begin
       TimerBalancaAutonoma.Enabled := False;
       Sleep(1000);
       // Não há configuração para balança. Abre pesado e aguarda a configuração
-      ShellExecuteAndWait('open', EXE_PESADO, 'C', '', SW_SHOWNORMAL, True);
+      ShellExecuteAndWait('open', EXECUTAVEL_PESADO, 'C', '', SW_SHOWNORMAL, True);
 
       Application.MessageBox(PChar('Configuração salva' + #13 + #13 + 'Essa aplicação será fechada' + #13 + #13 + 'Inicie novamente a aplicação com a configuração alterada'), 'Configurando Aplicação', MB_OK + MB_ICONINFORMATION);
-      FecharAplicacao(EXE_PESADO);
+      FecharAplicacao(EXECUTAVEL_PESADO);
       FecharAplicacao(ExtractFileName(Application.ExeName));
     end
     else
     begin
       // Executa o pesado.exe
-      if ConsultaProcesso(EXE_PESADO) = False then
+      if ConsultaProcesso(EXECUTAVEL_PESADO) = False then
       begin
 
-        ShellExecute(0, 'open', EXE_PESADO, 'A', '', SW_HIDE);
+        ShellExecute(0, 'open', EXECUTAVEL_PESADO, 'A', '', SW_HIDE);
 
         Sleep(1000);
 
@@ -32882,10 +32882,10 @@ begin
       end;
 
       // Por segurança verifica se não estiver em execução inicia nova execução do pesado.exe
-      if ConsultaProcesso(EXE_PESADO) = False then
+      if ConsultaProcesso(EXECUTAVEL_PESADO) = False then
       begin
 
-        ShellExecute(0, 'open', EXE_PESADO, 'A', '', SW_HIDE);
+        ShellExecute(0, 'open', EXECUTAVEL_PESADO, 'A', '', SW_HIDE);
         Sleep(3000);
         Form1.iEtapaPesagem := PESO_REQUISITA_PESO;// Sandro Silva 2019-01-30
       end;
@@ -32896,7 +32896,7 @@ begin
     if LerParametroIni('BALANCA.INI', 'Balanca', 'Marca', '') = '' then // Balança não está configurada
       Exit;
 
-    if ConsultaProcesso(EXE_PESADO) then
+    if ConsultaProcesso(EXECUTAVEL_PESADO) then
     begin
       // Se o pesado.exe estiver em execução inicia o ciclo de captura do peso
 
@@ -32948,7 +32948,7 @@ begin
 
       TimerBalancaAutonoma.Enabled := True;
 
-    end; // if ConsultaProcesso(EXE_PESADO) then
+    end; // if ConsultaProcesso(EXECUTAVEL_PESADO) then
 
   end;
 
@@ -33206,7 +33206,7 @@ begin
   if (LerParametroIni('Frente.ini', 'Frente de Caixa', 'Balanca Autonoma', '') = '') then
   begin
     if LerParametroIni('BALANCA.INI', 'BALANCA','Marca', '') = '' then // Sandro Silva 2019-02-26  Só abre o pesado se não existir configuração da balança
-      ShellExecuteAndWait('open', EXE_PESADO, 'C', '', SW_SHOWNORMAL, True);           // Executa pesado e aguarda a configuração da balança
+      ShellExecuteAndWait('open', EXECUTAVEL_PESADO, 'C', '', SW_SHOWNORMAL, True);           // Executa pesado e aguarda a configuração da balança
   end;
 
   if (LerParametroIni('Frente.ini', 'Frente de Caixa', 'Balanca Autonoma', 'Não') = 'Não') then
@@ -33233,7 +33233,7 @@ begin
     SalvarConfiguracao('Frente.ini', 'Frente de Caixa', 'Balanca Autonoma', 'Não');
   //
   Application.MessageBox(PChar('Configuração salva' + #13 + #13 + 'Essa aplicação será fechada' + #13 + #13 + 'Inicie novamente a aplicação com a configuração alterada'), 'Configurando Aplicação', MB_OK + MB_ICONINFORMATION);
-  FecharAplicacao(EXE_PESADO);
+  FecharAplicacao(EXECUTAVEL_PESADO);
   FecharAplicacao(ExtractFileName(Application.ExeName));
   //
 end;
@@ -33242,7 +33242,7 @@ procedure TForm1.Mesainicialparapesagensautonoma1Click(Sender: TObject);
 begin
   SalvaConfiguracaoMesaInicialPesagemAutonoma; // Sandro Silva 2019-01-25
   Application.MessageBox(PChar('Configuração salva' + #13 + #13 + 'Essa aplicação será fechada' + #13 + #13 + 'Inicie novamente a aplicação com a configuração alterada'), 'Configurando Aplicação', MB_OK + MB_ICONINFORMATION);
-  FecharAplicacao(EXE_PESADO);
+  FecharAplicacao(EXECUTAVEL_PESADO);
   FecharAplicacao(ExtractFileName(Application.ExeName));
 end;
 
@@ -33250,7 +33250,7 @@ procedure TForm1.Produtolanadonapesagemautonoma1Click(Sender: TObject);
 begin
   SalvaConfiguracaoProdutoPesagemAutonoma;
   Application.MessageBox(PChar('Configuração salva' + #13 + #13 + 'Essa aplicação será fechada' + #13 + #13 + 'Inicie novamente a aplicação com a configuração alterada'), 'Configurando Aplicação', MB_OK + MB_ICONINFORMATION);
-  FecharAplicacao(EXE_PESADO);
+  FecharAplicacao(EXECUTAVEL_PESADO);
   FecharAplicacao(ExtractFileName(Application.ExeName));
 end;
 
