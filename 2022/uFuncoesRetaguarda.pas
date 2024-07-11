@@ -674,7 +674,8 @@ end;
 
 function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
 begin
-  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '|03|04|') > 0); // envolvem instituição financeiras/credenciadoras
+  // envolvem instituição financeiras/credenciadoras
+  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '|03|04|') > 0);
 end;
 
 function FormaDePagamentoGeraBoleto(sForma: String): Boolean;

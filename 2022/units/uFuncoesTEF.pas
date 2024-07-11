@@ -764,7 +764,8 @@ begin
                     //
                     if Pos('PIX', AnsiUpperCase(sRespostaTef)) > 0 then
                     begin
-                      FoDadosTransacao.DebitoOuCredito := 'CREDITO';
+                      //FoDadosTransacao.DebitoOuCredito := 'CREDITO'; //Mauricio Parizotto 2024-07-10
+                      FoDadosTransacao.DebitoOuCredito := 'PIX';
                       ModalidadeTransacao := tModalidadePix;
                     end
                     else if Pos('CD_', AnsiUpperCase(sRespostaTef)) > 0 then

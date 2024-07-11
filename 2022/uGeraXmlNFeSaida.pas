@@ -3075,12 +3075,32 @@ begin
 
         Dailon Parisotto (f-225) 2023/03/26 Fim
 }
-      end else
+      end;
+
+      //Mauricio Parizotto 2024-07-10
+      if IdFormasDePagamentoNFe(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) = '17' then
       begin
-        //Mauricio Parizotto 2024-07-10
-        //Se não for no cartão e For PIX Dinâmico marca como sem integração
-        if IdFormasDePagamentoNFe(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) = '17' then
+        if bPagouComTEF then
+        begin
+          IBQCREDENCIADORA.Close;
+          IBQCREDENCIADORA.SQL.Clear;
+          IBQCREDENCIADORA.SQL.Add('select * from CLIFOR');
+          IBQCREDENCIADORA.SQL.Add('WHERE (CLIFOR in (''Credenciadora de cartão'', ''Instituição financeira''))');
+          // Se não tem pega o primeiro
+          if Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString <> EmptyStr then
+            IBQCREDENCIADORA.SQL.Add('and (NOME = ' + QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString) + ')');
+          IBQCREDENCIADORA.Open;
+
+          Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '1';
+          Form7.spdNFeDataSets.campo('cAut_YA07').Value       := Copy(Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString, 1, 20);
+          Form7.spdNFeDataSets.campo('CNPJ_YA05').Value       := LimpaNumero(IBQCREDENCIADORA.FieldByName('CGC').AsString);  // CNPJ da Credenciadora de cartão de crédito e/ou débito
+
+          IBQCREDENCIADORA.Close;
+        end else
+        begin
+          //Se não for no cartão e For PIX Dinâmico marca como sem integração
           Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
+        end;
       end;
 
 
