@@ -1592,7 +1592,7 @@ begin
           + 'Movimento do dia: ' + FormatDateTime('dd/mm/yyyy', Form7.dtpMovimentoDia.Date) + ' a ' + FormatDateTime('dd/mm/yyyy', Form7.dtpMovimentoDiaF.Date) + chr(10);
 
         if bNaHora then
-          sCupomFiscalVinculado := sCupomFiscalVinculado + 'Horário: ' + FormatDateTime('HH:nn', Form7.dtpMovimentoHoraI.Date) + ' a ' + FormatDateTime('HH:nn', Form7.dtpMovimentoHoraF.Date) + Chr(10);
+          sCupomFiscalVinculado := sCupomFiscalVinculado + 'Horário: ' + FormatDateTime('HH:nn', Form7.dtpMovimentoHoraI.Time) + ' a ' + FormatDateTime('HH:nn', Form7.dtpMovimentoHoraF.Time) + Chr(10);
 
         if Form7.edMovimentoDia.Text <> '' then // Sandro Silva 2018-04-13
           sCupomFiscalVinculado := sCupomFiscalVinculado + 'Caixa: ' + Form7.edMovimentoDia.Text + Chr(10)
