@@ -12556,6 +12556,11 @@ begin
         sCertificado := '&certificado_tp='+TSistema.GetInstance.CertificadoTipo+
                         '&certificado_vl='+sCertificadoValidade;
       end;
+      {Dailon Parisotto (f-19325) 2024-06-12 Inicio}
+      // Busca do INI as informações faltantes
+      sOrigem := LerParametroIni(Form1.sAtual+'\small.ini', 'T','Origem', EmptyStr);
+      sConve  := LerParametroIni(Form1.sAtual+'\small.ini', 'T','Tempo', '00:05:' + SecondOf(Now).ToString);
+      {Dailon Parisotto (f-19325) 2024-06-12 Fim}
 
       sURL := 'http://www.smallsoft.com.br/legal.php?'+
               'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
