@@ -1410,6 +1410,7 @@ type
     NotifyIconData: TNotifyIconData;
     bFechandoCupom: Boolean; // Sandro Silva 2016-02-10 Controlar que pressione F7 durante o fechamento do cupom e cancela a venda na impressora
     bGerarXmlReducaoRecuperada: Boolean; // Sandro Silva 2019-09-09 ER 02.06 UnoChapeco
+    sUltimoPesoAutonomo: String;//Sandro Silva 2024-07-11
     procedure AberturaDoCupom;
     procedure AtualizaBase(IBDATABASE: TIBDatabase);
     procedure HabilitaBotaoF11(bHabilitar: Boolean);
@@ -9275,8 +9276,8 @@ end;
 function ConfiguraNFCE(sP1:Boolean) : Boolean;
 var
   Mais1Ini: TIniFile;
-  sCaminhoIntegrador: String;
-  sChaveAcessoValidador: String;
+  //sCaminhoIntegrador: String;
+  //sChaveAcessoValidador: String;
 begin
   try
 
@@ -10260,6 +10261,7 @@ begin
   Form1.bBalancaAutonoma := (LerParametroIni('Frente.ini', 'Frente de Caixa', 'Balanca Autonoma', 'Não') = 'Sim'); // Sandro Silva 2018-12-18
 
   Form1.BalanaAutonoma1.Checked := Form1.bBalancaAutonoma;
+  sUltimoPesoAutonomo := '';// Sandro Silva 2024-07-11
 
   Form1.sOrdemAliquotaISS := OrdemAliquotaISSECF(False); // Sandro Silva 2018-05-14
 
@@ -18320,11 +18322,9 @@ begin
 
           if Form1.bBalancaAutonoma then
           begin
-            //if StrToFloatDef(sPesoAutonomo, 0) > 0 then
             if dPesoAutonomo > 0 then
             begin
-              //sPesoAutonomo := '0,000';
-              // 2024-07-10 dPesoAutonomo := 0.000;
+              dPesoAutonomo := 0.000;
               bPesouAutomatico := True;
             end;
           end;
@@ -27099,8 +27099,8 @@ end;
 
 
 procedure TForm1.IBDatabase2AfterConnect(Sender: TObject);
-var
-  SizeDescricaoProd: Integer;
+//var
+//  SizeDescricaoProd: Integer;
 begin
   {Sandro Silva 2023-12-28 inicio
   SizeDescricaoProd := TamanhoCampo(TIBDatabase(Sender).DefaultTransaction, 'ESTOQUE', 'DESCRICAO');
@@ -31789,8 +31789,8 @@ begin
 end;
 
 procedure TForm1.ransmitirRespostaFiscalPendente1Click(Sender: TObject);
-var
-  iPendentes: Integer;
+//var
+//  iPendentes: Integer;
 begin
   {Sandro Silva 2023-06-14 inicio
   try
@@ -32833,7 +32833,6 @@ begin
     //LogFrente('Abriu mesa'); // Sandro Silva 2019-01-29
 
     // Lança o produto configurado
-    //Form1.Edit1.Text := sPesoAutonomo + '*' + Form1.sCodigoProdutoPesado;// Sandro Silva 2019-01-29  Form1.Edit1.Text := Form1.sCodigoProdutoPesado; // StrZero(StrToIntDef(LerParametroIni('Frente.ini', 'Frente de Caixa', 'Produto Balanca', '0'), 0), 5, 0);
     Form1.Edit1.Text := FloatToStr(dPesoAutonomo) + '*' + Form1.sCodigoProdutoPesado;
     //Simula o pressionamento do Enter
     SendMessage(Form1.Edit1.Handle, WM_KEYDOWN, VK_RETURN, 0);
@@ -32848,29 +32847,10 @@ procedure TForm1.TimerBalancaAutonomaTimer(Sender: TObject);
 // Controla quando existe o arquivo \windows\peso.txt
 var
   sMsgRecebida: String;
-  hrHora: TDate;
-  slPeso: TStringList;
   sPastaRequisicaoPeso: String;
   sPastaRespostaPeso: String;
   Req: TRequisitaPesoAutonomo;
-  bRecebeu: Boolean;
-  {
-  procedure RequisitaPeso(bPesar: Boolean; sId: String = '');
-  begin
-
-    slPeso.Clear;
-    slPeso.Text := '<Smallsoft><etapa>' + IntToStr(Form1.iEtapaPesagem) + '</etapa></Smallsoft>';
-    slPeso.SaveToFile(sPastaRequisicaoPeso + 'pesar.temp'); // Sandro Silva 2019-02-28       SaveToFile('\balanca\input\pesar.temp');
-
-    ChDir(Form1.sAtual); // Volta para a pasta raiz do .exe Sandro Silva 2019-03-06
-    Sleep(50);
-    RenameFile(PChar(sPastaRequisicaoPeso + 'pesar.temp'), PChar(sPastaRequisicaoPeso + 'pesar.xml')); // Sandro Silva 2019-02-28 RenameFile('\balanca\input\pesar.temp', '\balanca\input\pesar.xml');
-    Sleep(50);
-
-  end;
-  }
 begin
-  slPeso := TStringList.Create;
 
   sPastaRequisicaoPeso := Form1.sAtual + '\balanca\input\';
   sPastaRespostaPeso   := Form1.sAtual + '\balanca\output\';
@@ -32920,206 +32900,7 @@ begin
     begin
       // Se o pesado.exe estiver em execução inicia o ciclo de captura do peso
 
-      hrHora := Now;
-
       TimerBalancaAutonoma.Enabled := False; // Para poder acessar F10 Menu ou fechar a aplicação
-
-      (*
-      while SecondsBetween(Now, hrHora) <= 1 do // Aguarda até que o arquivo com o peso exista ou 30 segundos // Sandro Silva 2019-01-30 while SecondsBetween(Now, hrHora) <= 5 do // Aguarda até que o arquivo com o peso exista ou 5 segundos
-      begin
-
-        case Form1.iEtapaPesagem of
-          PESO_REQUISITA_PESO: // Requisita peso
-          begin
-
-            //RequisitaPeso(True);//, Form1.sIdPesagem); // Requisita o peso para a balança
-
-            LogFrente('Requisitou peso  etapa: ' + IntToStr(Form1.iEtapaPesagem)); // + Form1.sIdPesagem); // Sandro Silva 2019-01-29
-
-            if FileExists(PChar(sPastaRespostaPeso + 'peso.xml')) then // Sandro Silva 2019-02-28 if FileExists('\balanca\output\peso.xml') then
-            begin
-
-              RenameFile(PChar(sPastaRespostaPeso + 'peso.xml'), PChar(sPastaRespostaPeso + 'peso.res')); // Renomeia o arquivo com o peso para processar // Sandro Silva 2019-02-28 RenameFile('\balanca\output\peso.xml', '\balanca\output\peso.res');
-
-              LogFrente('Recebeu retorno etapa: ' + IntToStr(Form1.iEtapaPesagem)); // Sandro Silva 2019-01-29
-
-              Sleep(50);
-
-              if FileExists(PChar(sPastaRespostaPeso + 'peso.res')) then // Sandro Silva 2019-02-28 if FileExists('\balanca\output\peso.res') then
-              begin
-
-                //with TStringList.Create do // Lê o arquivo do peso
-                slPeso.Clear;
-                slPeso.LoadFromFile(sPastaRespostaPeso + 'peso.res'); // Sandro Silva 2019-02-28 LoadFromFile('\balanca\output\peso.res');
-                sMsgRecebida  := slPeso.Text;
-                //sPesoAutonomo := xmlNodeValue(slPeso.Text, '//peso');
-                dPesoAutonomo := StrToFloatDef(xmlNodeValue(slPeso.Text, '//peso'), 0);
-
-                LogFrente('Peso recebido: ' + FloatToStr(dPesoAutonomo) + ' etapa: ' + IntToStr(Form1.iEtapaPesagem)); // Sandro Silva 2019-01-29
-
-                DeleteFile(PChar(sPastaRespostaPeso + 'peso.res')); // Sandro Silva 2019-02-28 DeleteFile('\balanca\output\peso.res');
-
-                //if StrToFloatDef(sPesoAutonomo, 0) <= 0 then // Se recebeu o peso zerado, ou negativo quando tem tara, é porque a balança está livre para pesar
-                if dPesoAutonomo <= 0 then // Se recebeu o peso zerado, ou negativo quando tem tara, é porque a balança está livre para pesar
-                begin
-
-                  //ShowMessage('Teste 01 49255'); // Sandro Silva 2019-01-24
-                  LogFrente('Orientando para pesar etapa: ' + IntToStr(Form1.iEtapaPesagem)); // Sandro Silva 2019-01-29
-
-                  DestroiMesas(True);
-                  Form1.lbOrientacaoPesagem.Caption := 'Coloque o prato na balança...';
-                  Form1.lbOrientacaoPesagem.Repaint;
-
-                  RequisitaPeso(True);//, Form1.sIdPesagem); // Requisita o peso para a balança
-
-                  Application.ProcessMessages; // Sandro Silva 2019-01-29
-
-                  LogFrente('Coloque o prato na balança etapa: ' + IntToStr(Form1.iEtapaPesagem)); // Sandro Silva 2019-01-29
-
-                  Form1.iEtapaPesagem := PESO_RECEBIDO_PROCESSA; // Sandro Silva 2019-01-30
-                end
-                else
-                begin
-                  Form1.iEtapaPesagem := PESO_REQUISITA_PESO;
-
-                end; // if xmlNodeValue(sMsgRecebida, '//id') = Form1.sIdPesagem then
-
-              end; // if FileExists('\balanca\output\peso.res') then
-
-              LogFrente('Break no while etapa: ' + IntToStr(Form1.iEtapaPesagem)); // Sandro Silva 2019-01-29
-              Break;
-            end
-            else
-            begin
-              Sleep(10);
-            end;
-          end;
-
-          PESO_RECEBIDO_PROCESSA: // Processa peso ru8y7ecebido
-          begin
-            if FileExists(PChar(sPastaRespostaPeso + 'peso.xml')) then // Sandro Silva 2019-02-28 if FileExists('\balanca\output\peso.xml') then
-            begin
-
-              RenameFile(PChar(sPastaRespostaPeso + 'peso.xml'), PChar(sPastaRespostaPeso + 'peso.res')); // Renomeia o arquivo com o peso para processar // Sandro Silva 2019-02-28  RenameFile('\balanca\output\peso.xml', '\balanca\output\peso.res');
-
-              LogFrente('Recebeu retorno etapa: ' + IntToStr(Form1.iEtapaPesagem)); // Sandro Silva 2019-01-29
-
-              Sleep(50);
-
-              if FileExists(PChar(sPastaRespostaPeso + 'peso.res')) then // Sandro Silva 2019-02-28 if FileExists('\balanca\output\peso.res') then
-              begin
-
-                // Lê o arquivo do peso
-                slPeso.LoadFromFile(sPastaRespostaPeso + 'peso.res'); // Sandro Silva 2019-02-28 LoadFromFile('\balanca\output\peso.res');
-                sMsgRecebida  := slPeso.Text;
-                //sPesoAutonomo := xmlNodeValue(slPeso.Text, '//peso');
-                dPesoAutonomo := StrToFloatDef(xmlNodeValue(slPeso.Text, '//peso'), 0);
-
-                LogFrente('Peso recebido: ' + FloatToStr(dPesoAutonomo)); // Sandro Silva 2019-01-29
-
-                DeleteFile(PChar(sPastaRespostaPeso + 'peso.res')); // Sandro Silva 2019-02-28 DeleteFile('\balanca\output\peso.res');
-
-                //if StrToFloatDef(sPesoAutonomo, 0) > 0 then // Se recebeu o peso maior que zero faz lançamento na mesa e imprime a comanda
-                if dPesoAutonomo > 0 then // Se recebeu o peso maior que zero faz lançamento na mesa e imprime a comanda
-                begin
-
-                  RequisitaPeso(True);//, Form1.sIdPesagem); // Requisita o peso para a balança // Sandro Silva 2019-01-30
-
-                  LogFrente('Iniciando lançamento peso etapa: ' + IntToStr(Form1.iEtapaPesagem)); // Sandro Silva 2019-01-29
-
-                  PesagemAutonoma;  // Realiza o processamento do peso recebido
-
-                  LogFrente('Peso lançado etapa: ' + IntToStr(Form1.iEtapaPesagem)); // Sandro Silva 2019-01-29
-
-                end;
-
-              end; // if FileExists('\balanca\output\peso.res') then
-
-              LogFrente('Break no while etapa: ' + IntToStr(Form1.iEtapaPesagem)); // Sandro Silva 2019-01-29
-              Break;
-
-            end
-            else
-              Sleep(10);
-          end;
-
-          PESO_PROCESSAMENTO_FIM: //
-          begin
-
-            Form1.iEtapaPesagem := PESO_REQUISITA_PESO;
-            RequisitaPeso(True); //, Form1.sIdPesagem); // Requisita o peso para a balança // Sandro Silva 2019-01-30
-            LogFrente('FIM pesagem etapa: ' + IntToStr(Form1.iEtapaPesagem)); // Sandro Silva 2019-01-29
-
-          end;
-
-        end; // case Form1.iEtapaPesagem of
-
-      end; // while SecondsBetween(Now, hrHora) <= 30 do
-      *)
-
-      (* 2024-07-10
-      Form1.lbOrientacaoPesagem.Caption := 'Coloque o prato na balança...';
-      Form1.lbOrientacaoPesagem.Repaint;
-
-      while SecondsBetween(Now, hrHora) <= 1 do // Aguarda até que o arquivo com o peso exista ou 30 segundos // Sandro Silva 2019-01-30 while SecondsBetween(Now, hrHora) <= 5 do // Aguarda até que o arquivo com o peso exista ou 5 segundos
-      begin
-
-        if not FileExists(PChar(sPastaRequisicaoPeso + 'pesar.xml')) then
-        begin
-
-          LogFrente('Orientando para pesar etapa: ' + IntToStr(Form1.iEtapaPesagem));
-
-          RequisitaPeso(True);
-
-          Application.ProcessMessages;
-
-          LogFrente('Coloque o prato na balança etapa: ' + IntToStr(Form1.iEtapaPesagem));
-
-        end
-        else
-        begin
-
-          // 2024-07-09 if FileExists(PChar(sPastaRespostaPeso + 'peso.xml')) then // Sandro Silva 2019-02-28 if FileExists('\balanca\output\peso.xml') then
-          if FileExists(PChar(sPastaRespostaPeso + 'peso.xml'))
-            and (not (FileExists(PChar(sPastaRequisicaoPeso + 'pesar.xml'))))then
-          begin
-
-            LogFrente('Recebeu retorno etapa: ' + IntToStr(Form1.iEtapaPesagem));
-
-            slPeso.Clear;
-            slPeso.LoadFromFile(sPastaRespostaPeso + 'peso.xml');
-            sMsgRecebida  := slPeso.Text;
-            dPesoAutonomo := StrToFloatDef(xmlNodeValue(slPeso.Text, '//peso'), 0);
-
-            LogFrente('Peso recebido: ' + FloatToStr(dPesoAutonomo) + ' etapa: ' + IntToStr(Form1.iEtapaPesagem));
-
-            if dPesoAutonomo > 0 then // Se recebeu o peso zerado, ou negativo quando tem tara, é porque a balança está livre para pesar
-            begin
-
-              PesagemAutonoma;  // Realiza o processamento do peso recebido
-
-              DestroiMesas(True);
-
-              DeleteFile(PChar(sPastaRespostaPeso + 'peso.xml')); // Sandro Silva 2019-02-28 DeleteFile('\balanca\output\peso.res');
-              DeleteFile(PChar(sPastaRequisicaoPeso + 'pesar.xml'));
-
-              Sleep(50);
-
-            end; // if xmlNodeValue(sMsgRecebida, '//id') = Form1.sIdPesagem then
-
-            LogFrente('Break no while etapa: ' + IntToStr(Form1.iEtapaPesagem)); // Sandro Silva 2019-01-29
-            Break;
-          end
-          else
-          begin
-            Sleep(10);
-          end;
-        end;
-
-      end; // while SecondsBetween(Now, hrHora) <= 30 do
-
-      TimerBalancaAutonoma.Enabled := True;
-      *)
 
       Form1.lbOrientacaoPesagem.Caption := 'Coloque o prato na balança...';
       Form1.lbOrientacaoPesagem.Repaint;
@@ -33132,42 +32913,35 @@ begin
       Label1.Caption := 'Aguardando';
       Label1.repaint;
 
-      while True do
+      req.AguardarResposta;
+      
+      if req.RecebeuResposta then
       begin
-        req.AguardarResposta;
-        if req.RecebeuResposta then
-        begin
-          bRecebeu := True;
-        end;
 
-        if bRecebeu then
+        sMsgRecebida  := req.Resposta;
+
+        if sUltimoPesoAutonomo <> xmlNodeValue(req.Resposta, '//peso') then
         begin
 
-          sMsgRecebida  := req.Resposta;
+          sUltimoPesoAutonomo := xmlNodeValue(req.Resposta, '//peso');
+          dPesoAutonomo := StrToFloatDef(xmlNodeValue(req.Resposta, '//peso'), 0);
 
-          if (dPesoAutonomo = 0) or (StrToFloatDef(xmlNodeValue(req.Resposta, '//peso'), 0) = 0) then
+          LogFrente('Peso recebido: ' + FloatToStr(dPesoAutonomo) + ' etapa: ' + IntToStr(Form1.iEtapaPesagem));
+
+          if dPesoAutonomo > 0 then // Se recebeu o peso zerado, ou negativo quando tem tara, é porque a balança está livre para pesar
           begin
 
-            dPesoAutonomo := StrToFloatDef(xmlNodeValue(req.Resposta, '//peso'), 0);
+            PesagemAutonoma;  // Realiza o processamento do peso recebido
 
-            LogFrente('Peso recebido: ' + FloatToStr(dPesoAutonomo) + ' etapa: ' + IntToStr(Form1.iEtapaPesagem));
+            DestroiMesas(True);
 
-            if dPesoAutonomo > 0 then // Se recebeu o peso zerado, ou negativo quando tem tara, é porque a balança está livre para pesar
-            begin
+            Sleep(50);
 
-              PesagemAutonoma;  // Realiza o processamento do peso recebido
+          end; // if xmlNodeValue(sMsgRecebida, '//id') = Form1.sIdPesagem then
 
-              DestroiMesas(True);
-
-              Sleep(50);
-
-            end; // if xmlNodeValue(sMsgRecebida, '//id') = Form1.sIdPesagem then
-
-          end;
-
-          Break;
         end;
 
+        //Break;
       end;
 
       req.Free;
@@ -34969,7 +34743,7 @@ end;
 
 procedure TForm1.itemMenugerencialClick(Sender: TObject);
 var
-  Importar: TConverteVendaParaNovoDocFiscal;
+//  Importar: TConverteVendaParaNovoDocFiscal;
   sNumeroGerencial: String;
 begin
 
@@ -35023,16 +34797,16 @@ end;
 
 procedure TForm1.EnviarANFCe;
 var
-  Mais1ini: tIniFile;
+//  Mais1ini: tIniFile;
   bTimer2EnabledOld: Boolean;
   sNumeroNFEnvio: String;
   sCaixaEnvio: String;
   bAbrirGerenicadorNoFinal: Boolean; // Sandro Silva 2023-08-22
-  ConverteVenda: TConverteVendaParaNovoDocFiscal; // Sandro Silva 2023-08-30
+//  ConverteVenda: TConverteVendaParaNovoDocFiscal; // Sandro Silva 2023-08-30
   sGerencial: String; // Sandro Silva 2023-08-30
   sNumeroNFOld: String; // Sandro Silva 2023-08-30
-  sNumeroNFNew: String; // Sandro Silva 2023-08-30
-  IBQTOTAL: TIBQuery; // Sandro Silva 2023-08-30
+//  sNumeroNFNew: String; // Sandro Silva 2023-08-30
+//  IBQTOTAL: TIBQuery; // Sandro Silva 2023-08-30
 begin
   bAbrirGerenicadorNoFinal := True; // Sandro Silva 2023-08-22
   bTimer2EnabledOld := Timer2.Enabled;

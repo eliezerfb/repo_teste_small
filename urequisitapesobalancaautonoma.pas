@@ -29,7 +29,7 @@ uses
   SysUtils, Classes, Controls, DateUtils,
   StrUtils;
 
-  constructor TRequisitaPesoAutonomo.Create;
+constructor TRequisitaPesoAutonomo.Create;
 begin
   FSinalRecebido := False;
 end;
