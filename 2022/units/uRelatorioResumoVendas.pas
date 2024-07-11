@@ -650,7 +650,8 @@ end;
 function TfrmRelResumoVendas.RetornaWhereNota: String;
 begin
     Result := '(VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(dtFinal.Date))+') and (VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(dtInicial.Date))+')' + sLineBreak +
-              RetornarWhereOperacoes+' and (VENDAS.EMITIDA=''S'')';
+              RetornarWhereOperacoes+' and (VENDAS.EMITIDA=''S'')' + sLineBreak +
+              'and (VENDAS.MODELO <> ''SV'')';
 end;
 {Dailon Parisotto (f-19509) 2024-07-02 Fim}
 
