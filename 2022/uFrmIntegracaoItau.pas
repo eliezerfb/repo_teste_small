@@ -135,8 +135,10 @@ begin
     ibqEmitente.Open;
   end;
 
+  //Recarrega datasets
   ibdIntegracaoItau.Open;
   ibdIntegracaoItau.Edit;
+  fraContaBancaria.CarregaDescricaoCodigo;
 end;
 
 procedure TFrmIntegracaoItau.btnEnviarClick(Sender: TObject);
@@ -182,7 +184,7 @@ begin
   if uIntegracaoItau.AmbienteItauProd then
   begin
     user_role_id     := '9f2b6c07-da54-4eee-a625-8dbde593e4f7';
-    retail_chain_id  := '1d57912e-8f09-4bad-94ff-e932037b5289'
+    retail_chain_id  := '1d57912e-8f09-4bad-94ff-e932037b5289';
   end else
   begin
     retail_chain_id  := '2ef0b250-f103-49c5-941e-feb51bc875eb';
@@ -236,7 +238,7 @@ begin
       TThread.Synchronize(TThread.CurrentThread,
       procedure()
       begin
-         FechaTelaProcessamento();
+        FechaTelaProcessamento();
 
         if msRet <> '' then
         begin
