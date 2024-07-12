@@ -9525,7 +9525,8 @@ begin
         Form1.spdNFCe1.UF                               := UpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString);
         Form1.spdNFCe1.VersaoManual                     := vm60;
         // Sandro Silva 2023-05-19 Form1.spdNFCeDataSets1.VersaoEsquema            := pl_009;
-        Form1.spdNFCeDataSets1.VersaoEsquema            := pl_009k;
+        //Form1.spdNFCeDataSets1.VersaoEsquema            := pl_009k; // Mauricio Parizotto 2024-07-11
+        Form1.spdNFCeDataSets1.VersaoEsquema            := pl_009o;
         Form1.spdNFCeDataSets1.XMLDicionario            := Form1.sAtual + '\nfce\Templates\vm60\Conversor\NFCeDataSets.xml';
         //
         // Nestas 3 linhas que dava o erro ....

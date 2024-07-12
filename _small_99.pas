@@ -33,6 +33,7 @@ const GERENCIAL_FORMA_16_DEPOSITO_BANCARIO                            = '16';
 const GERENCIAL_FORMA_17_PAGAMENTO_INSTANTANEO                        = '17';
 const GERENCIAL_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL      = '18'; //Transferência bancária, Carteira Digital
 const GERENCIAL_FORMA_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL = '19'; //Programa de fidelidade, Cashback, Crédito Virtual
+const GERENCIAL_FORMA_20_PAGAMENTO_INSTANTANEO                        = '20'; //PIX Estático
 const GERENCIAL_FORMA_99_OUTROS                                       = '99';
 
 type
@@ -178,7 +179,7 @@ type
       var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
       var dvPag_YA03_16: Double; var dvPag_YA03_17: Double;
       var dvPag_YA03_18: Double; var dvPag_YA03_19: Double;
-      var dvPag_YA03_99: Double
+      var dvPag_YA03_20: Double; var dvPag_YA03_99: Double
       );
 
 var
@@ -296,6 +297,7 @@ var
   Mais1ini: TIniFile;
   dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13,
   dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19,
+  dvPag_YA03_20,
   dvPag_YA03_99: Double;
   sPdfMobile: String; // Sandro Silva 2020-10-08
 begin
@@ -511,42 +513,42 @@ begin
     begin
       if Form1.ibDataSet25VALOR01.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe1, Form1.ibDataSet25VALOR01.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe1, Form1.ibDataSet25VALOR01.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR02.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe2, Form1.ibDataSet25VALOR02.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe2, Form1.ibDataSet25VALOR02.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR03.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe3, Form1.ibDataSet25VALOR03.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe3, Form1.ibDataSet25VALOR03.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR04.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe4, Form1.ibDataSet25VALOR04.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe4, Form1.ibDataSet25VALOR04.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR05.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe5, Form1.ibDataSet25VALOR05.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe5, Form1.ibDataSet25VALOR05.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR06.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe6, Form1.ibDataSet25VALOR06.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe6, Form1.ibDataSet25VALOR06.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR07.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe7, Form1.ibDataSet25VALOR07.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe7, Form1.ibDataSet25VALOR07.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
       end;
 
       if Form1.ibDataSet25VALOR08.AsFloat    <> 0 then
       begin
-        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe8, Form1.ibDataSet25VALOR08.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_99);
+        _ecf99_AcumulaFormaExtraNFCe(Form1.sOrdemExtraNFCe8, Form1.ibDataSet25VALOR08.AsFloat, dvPag_YA03_10, dvPag_YA03_11, dvPag_YA03_12, dvPag_YA03_13, dvPag_YA03_16, dvPag_YA03_17, dvPag_YA03_18, dvPag_YA03_19, dvPag_YA03_20, dvPag_YA03_99);
       end;
 
       if dvPag_YA03_10 > 0 then
@@ -565,7 +567,8 @@ begin
         Venda.AddForma('DEPOSITO BANCARIO', dvPag_YA03_16); // 16=Deposito Bancario
 
       if dvPag_YA03_17 > 0 then
-        Venda.AddForma('PAGAMENTO INSTANTANEO', dvPag_YA03_17); // 17=Pagamento Instantaneo
+        //Venda.AddForma('PAGAMENTO INSTANTANEO', dvPag_YA03_17); // 17=Pagamento Instantaneo //Mauricio Parizotto 2024-07-12
+        Venda.AddForma('PIX', dvPag_YA03_17); // 17=Pagamento Instantaneo - Dinâmico
 
       if dvPag_YA03_18 > 0 then
         Venda.AddForma('TRANSF.BANCARIA CARTEIRA DIGITAL', dvPag_YA03_18); // 18=Transf.Bancaria Carteira Digital
@@ -573,8 +576,13 @@ begin
       if dvPag_YA03_19 > 0 then
         Venda.AddForma('PROGR.FIDELIDADE CASHBACK CREDITO VIRTUAL', dvPag_YA03_19); // 19=Progr.Fidelidade Cashback Credito Virtual
 
+      //Mauricio Parizotto 2024-07-12
+      if dvPag_YA03_20 > 0 then
+        Venda.AddForma('PIX', dvPag_YA03_20); // 20=Pagamento Instantaneo - Estático
+
       if dvPag_YA03_99 > 0 then
         Venda.AddForma('OUTROS', dvPag_YA03_99); // 99=Outros
+
     end
     else
     begin
@@ -2599,7 +2607,8 @@ begin
   var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
   var dvPag_YA03_16: Double; var dvPag_YA03_17: Double;
   var dvPag_YA03_18: Double; var dvPag_YA03_19: Double;
-  var dvPag_YA03_99: Double);
+  //var dvPag_YA03_99: Double); Mauricio Parizotto 2024-07-12
+  var dvPag_YA03_20: Double; var dvPag_YA03_99: Double);
 begin
   if sOrdemExtra = GERENCIAL_FORMA_10_VALE_ALIMENTACAO then
     dvPag_YA03_10 := dvPag_YA03_10 + dValor;
@@ -2624,6 +2633,10 @@ begin
 
   if sOrdemExtra = GERENCIAL_FORMA_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL then
     dvPag_YA03_19 := dvPag_YA03_19 + dValor;
+
+  //Mauricio Parizotto 2024-07-12
+  if sOrdemExtra = GERENCIAL_FORMA_20_PAGAMENTO_INSTANTANEO then
+    dvPag_YA03_20 := dvPag_YA03_20 + dValor;
 
   if sOrdemExtra = GERENCIAL_FORMA_99_OUTROS then
     dvPag_YA03_99 := dvPag_YA03_99 + dValor;

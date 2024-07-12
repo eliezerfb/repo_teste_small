@@ -73,6 +73,7 @@ uses
   const SAT_CODIGO_MEIO_PAGAMENTO_17_PAGAMENTO_INSTANTANEO                        = '17';
   const SAT_CODIGO_MEIO_PAGAMENTO_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL      = '18'; //Transferência bancária, Carteira Digital
   const SAT_CODIGO_MEIO_PAGAMENTO_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL = '19'; //Programa de fidelidade, Cashback, Crédito Virtual
+  const SAT_CODIGO_MEIO_PAGAMENTO_20_PAGAMENTO_INSTANTANEO                        = '20';
   const SAT_CODIGO_MEIO_PAGAMENTO_99_OUTROS                                       = '99';
 
   const SAT_MENSAGEM_AGUARDANDO_RESPOSTA_DO_SERVIDOR = 'Aguardando resposta do Servidor'; // Sandro Silva 2021-08-27 const SAT_MENSAGEM_AGUARDANDO_RESPOSTA_DO_SERVIDOR_SAT = 'Aguardando resposta do Servidor SAT';
