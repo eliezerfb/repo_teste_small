@@ -146,6 +146,9 @@ const
   const _PixManual   = 'PIX Manual';
   const _PixEstatico = 'PIX Estático';
   const _PixDinamico = 'PIX Dinâmico';
+
+  const _FormaPixEstatico = 'Pagamento Instantâneo (PIX) Estático';
+  const _FormaPixDinamico = 'Pagamento Instantâneo (PIX) Dinâmico';
 implementation
 
 end.
