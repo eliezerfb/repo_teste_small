@@ -262,7 +262,8 @@ uses
   uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro},
   uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
   uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas',
-  uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas';
+  uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas',
+  uFrmEstoque in 'uFrmEstoque.pas' {FrmEstoque};
 
 {$R *.RES}
 
@@ -345,6 +346,7 @@ begin
   Application.CreateForm(TForm26, Form26);
   Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
   Application.CreateForm(TForm31, Form31);
+  Application.CreateForm(TFrmEstoque, FrmEstoque);
   //Application.CreateForm(TForm32, Form32); Mauricio Parizotto 2024-05-07
   Application.CreateForm(TForm38, Form38);
   Application.CreateForm(TForm39, Form39);
