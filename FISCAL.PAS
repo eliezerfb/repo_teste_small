@@ -129,7 +129,7 @@ uses
   const TRACO_CUPOM_TELA                = '---------------------------------------------';
   const DIRETORIO_BKP_TEF               = 'c:\TEFBKP';
   const PARCELAS_EM_CARTAO              = 'PARCELAS';
-  const EXECUTAVEL_PESADO                      = 'pesado.exe';//'pesado.exe';
+  const EXECUTAVEL_PESADO               = 'pesado.exe';
   const IMPRESSORA_PADRAO_WINDOWS       = 'Padrão Windows';
   const TAMANHO_REFERENCIA_ARQUIVO_LOGOTIPO = 307200;
   const TITULO_PARCELAS_CARNE_RESUMIDO  = 'Documento   Vencimento    Valor R$ '; // Interfere no título relat. gerencial para venda a prazo Sandro Silva 2018-04-29
@@ -10806,6 +10806,7 @@ begin
     Sleep(250); // Tempo para excluir
   end;
 
+  //TimerBalancaAutonoma.Interval := 2000; // Sandro Silva 2024-07-12
   TimerBalancaAutonoma.Enabled := Form1.bBalancaAutonoma;
 end;
 
@@ -32900,6 +32901,8 @@ begin
     begin
       // Se o pesado.exe estiver em execução inicia o ciclo de captura do peso
 
+      //SetForegroundWindow(FindWindow(nil,PChar('Pesado'))); /// 2024-07-12
+
       TimerBalancaAutonoma.Enabled := False; // Para poder acessar F10 Menu ou fechar a aplicação
 
       Form1.lbOrientacaoPesagem.Caption := 'Coloque o prato na balança...';
@@ -32920,7 +32923,9 @@ begin
 
         sMsgRecebida  := req.Resposta;
 
-        if sUltimoPesoAutonomo <> xmlNodeValue(req.Resposta, '//peso') then
+        //2024-07-12 if sUltimoPesoAutonomo <> xmlNodeValue(req.Resposta, '//peso') then
+        if (sUltimoPesoAutonomo <> xmlNodeValue(req.Resposta, '//peso'))
+         or (StrToFloatDef(xmlNodeValue(req.Resposta, '//peso'), 0) = 0) then
         begin
 
           sUltimoPesoAutonomo := xmlNodeValue(req.Resposta, '//peso');
@@ -32935,17 +32940,16 @@ begin
 
             DestroiMesas(True);
 
-            Sleep(50);
+            //Sleep(50);
 
           end; // if xmlNodeValue(sMsgRecebida, '//id') = Form1.sIdPesagem then
 
         end;
 
-        //Break;
       end;
 
       req.Free;
-
+      //TimerBalancaAutonoma.Interval := 2000; // Sandro Silva 2024-07-12
       TimerBalancaAutonoma.Enabled := True;
 
     end; // if ConsultaProcesso(EXECUTAVEL_PESADO) then

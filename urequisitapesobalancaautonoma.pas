@@ -8,7 +8,6 @@ type
     FSinalRecebido: Boolean;
     FResposta: String;
     FRequisicao: String;
-    FID: String;
     FPastaResposta: String;
     FPastaRequisicao: String;
     function BalancaLivre: Boolean;
@@ -37,16 +36,29 @@ end;
 procedure TRequisitaPesoAutonomo.EscreverArquivoRequisicao(iEtapaPesagem: Integer);
 var
   Arquivo: TextFile;
+  iTentativa: Integer;
 begin
   DeleteFile(FPastaRequisicao + 'pesar.xml');
-  AssignFile(Arquivo, FPastaRequisicao + 'pesar.tmp');
-  FRequisicao := TimeToStr(Time);
-  FID := TimeToStr(Time);
-  try
-    Rewrite(Arquivo);
-    WriteLn(Arquivo, '<commerce><etapa>' + IntToStr(iEtapaPesagem) + '</etapa></commerce>');
-  finally
-    CloseFile(Arquivo);
+
+  iTentativa := 1;
+  while iTentativa <= 3 do
+  begin
+
+    try
+      AssignFile(Arquivo, FPastaRequisicao + 'pesar.tmp');
+      FRequisicao := TimeToStr(Time);
+      try
+        Rewrite(Arquivo);
+        WriteLn(Arquivo, '<commerce><etapa>' + IntToStr(iEtapaPesagem) + '</etapa></commerce>');
+      finally
+        CloseFile(Arquivo);
+      end;
+    except
+
+    end;
+
+    Inc(iTentativa);
+
   end;
   RenameFile(FPastaRequisicao + 'pesar.tmp', pastaRequisicao + 'pesar.xml');
 end;
@@ -67,27 +79,32 @@ begin
     Sleep(50); // Aguarda 1 segundo (simulação)
     if FileExists(FPastaResposta + nomeArquivo) then
     begin
-      AssignFile(ArquivoResposta, FPastaResposta + nomeArquivo);
       try
-        Reset(ArquivoResposta);
-        sLinha := '';
-        while (not eof(ArquivoResposta)) do
-        begin
-          ReadLn(ArquivoResposta, sLinha);
-          FResposta := FResposta + #13 + slinha;
-        end
-      finally
-        CloseFile(ArquivoResposta);
-        DeleteFile(FPastaResposta + nomeArquivo);
-      end;
+        AssignFile(ArquivoResposta, FPastaResposta + nomeArquivo);
+        try
+          Reset(ArquivoResposta);
+          sLinha := '';
+          while (not eof(ArquivoResposta)) do
+          begin
+            ReadLn(ArquivoResposta, sLinha);
+            FResposta := FResposta + #13 + slinha;
+          end
+        finally
+          CloseFile(ArquivoResposta);
+          DeleteFile(FPastaResposta + nomeArquivo);
+        end;
 
-      FSinalRecebido := True; // Sinaliza que recebeu a resposta
-      //FResposta := Result;
-      Result := FResposta;
-      Exit;
+        FSinalRecebido := True; // Sinaliza que recebeu a resposta
+        //FResposta := Result;
+        Result := FResposta;
+        Exit;
+      except
+
+      end;
     end;
     SegundosDecorridos := SecondsBetween(hrEnvio, Now);
-    if SegundosDecorridos >= 20 then
+    //2024-07-12 if SegundosDecorridos >= 10 then
+    if SegundosDecorridos >= 3 then
       Exit;
   until False;
 end;
