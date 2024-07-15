@@ -3228,47 +3228,52 @@ begin
 end;
 
 function AtualizaPromocao(sP1 : Boolean):Boolean;
+var
+  qryUpdate: TIBQuery;
 begin
   Form22.Repaint;
   Mensagem22('Atualizando promoção...');
-
+  qryUpdate := CriaIBQuery(Form7.IBTransaction1);
   try
-    // Volta o preco fora da promoção
-    Form7.ibDataSet99.Close;
-    Form7.ibDataSet99.SelectSQL.Clear;
-    Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set PRECO=OFFPROMO where (CURRENT_DATE not between PROMOINI and PROMOFIM) and (PRECO=ONPROMO) ');
-    Form7.ibDataSet99.Open;
-    {Sandro Silva 2024-04-22 inicio}
-    if Form7.ibDataSet99.RowsAffected > 0 then
-      Result := True;
-    {Sandro Silva 2024-04-22 fim}
-  except end;
+    try
+      // Volta o preco fora da promoção
+      qryUpdate.Close;
+      qryUpdate.SQL.Clear;
+      qryUpdate.SQL.Add('update ESTOQUE set PRECO=OFFPROMO where (CURRENT_DATE not between PROMOINI and PROMOFIM) and (PRECO=ONPROMO) ');
+      qryUpdate.Open;
+      {Sandro Silva 2024-04-22 inicio}
+      if qryUpdate.RowsAffected > 0 then
+        Result := True;
+      {Sandro Silva 2024-04-22 fim}
+    except end;
 
-  try
-    // Guarda o preço anterior (normal) fora da promoção
-    Form7.ibDataSet99.Close;
-    Form7.ibDataSet99.SelectSQL.Clear;
-    Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set OFFPROMO=PRECO where (CURRENT_DATE not between PROMOINI and PROMOFIM) and (OFFPROMO<>PRECO)');
-    Form7.ibDataSet99.Open;
-    {Sandro Silva 2024-04-22 inicio}
-    if Form7.ibDataSet99.RowsAffected > 0 then
-      Result := True;
-    {Sandro Silva 2024-04-22 fim}
-  except end;
+    try
+      // Guarda o preço anterior (normal) fora da promoção
+      qryUpdate.Close;
+      qryUpdate.SQL.Clear;
+      qryUpdate.SQL.Add('update ESTOQUE set OFFPROMO=PRECO where (CURRENT_DATE not between PROMOINI and PROMOFIM) and (OFFPROMO<>PRECO)');
+      qryUpdate.Open;
+      {Sandro Silva 2024-04-22 inicio}
+      if qryUpdate.RowsAffected > 0 then
+        Result := True;
+      {Sandro Silva 2024-04-22 fim}
+    except end;
 
-  try
-    // Altera para o preço promocional
-    Form7.ibDataSet99.Close;
-    Form7.ibDataSet99.SelectSQL.Clear;
-    Form7.ibDataSet99.SelectSQL.Add('update ESTOQUE set PRECO=ONPROMO where (CURRENT_DATE between PROMOINI and PROMOFIM) and (PRECO<>ONPROMO) ');
-    Form7.ibDataSet99.Open;
-    {Sandro Silva 2024-04-22 inicio}
-    if Form7.ibDataSet99.RowsAffected > 0 then
-      Result := True;
-    {Sandro Silva 2024-04-22 fim}
-  except end;
-
-  Mensagem22('Aguarde...');
+    try
+      // Altera para o preço promocional
+      qryUpdate.Close;
+      qryUpdate.SQL.Clear;
+      qryUpdate.SQL.Add('update ESTOQUE set PRECO=ONPROMO where (CURRENT_DATE between PROMOINI and PROMOFIM) and (PRECO<>ONPROMO) ');
+      qryUpdate.Open;
+      {Sandro Silva 2024-04-22 inicio}
+      if qryUpdate.RowsAffected > 0 then
+        Result := True;
+      {Sandro Silva 2024-04-22 fim}
+    except end;
+  finally
+    FreeAndNil(qryUpdate);
+    Mensagem22('Aguarde...');
+  end;
 
   // Sandro Silva 2024-04-22 Result := True;
 end;
