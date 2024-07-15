@@ -289,6 +289,7 @@ uses
   , uimpressaopdf
   , ucadadquirentes
   , urecuperaxmlnfce
+  , uSmallConsts
   , umfe
 //  , _Small_IntegradorFiscal // Sandro Silva 2018-07-03
   ,  ufuncoesfrente // Sandro Silva 2018-07-03
@@ -9420,10 +9421,16 @@ procedure _ecf65_IdentificacaoResponsavelTecnico(spdNFCeDataSets: TspdNFCeDataSe
 begin
   // Ficha 4578 // Sandro Silva 2019-04-11
   // Grupo Responsável técnico
+  {Mauricio Parizotto 2024-07-15
   spdNFCeDataSets.Campo('CNPJ_ZD02').Value     := LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF); 	// Informar o CNPJ da pessoa jurídica responsável pelo sistema utilizado na emissão do documento fiscal eletrônico.
   spdNFCeDataSets.Campo('xContato_ZD04').Value := 'Alessio Mainardi'; // Sandro Silva 2022-12-02 Unochapeco 'Ronei Ivo Weber'; // 	Informar o nome da pessoa a ser contatada na empresa desenvolvedora do sistema utilizado na emissão do documento fiscal eletrônico.
   spdNFCeDataSets.Campo('email_ZD05').Value    := 'smallsoft@smallsoft.com.br';   //	Informar o e-mail da pessoa a ser contatada na empresa desenvolvedora do sistema.
   spdNFCeDataSets.Campo('fone_ZD06').Value     := '04934255800'; 	// Informar o telefone da pessoa a ser contatada na empresa desenvolvedora do sistema. Preencher com o Código DDD + número do telefone
+  }
+  spdNFCeDataSets.Campo('CNPJ_ZD02').Value     := _RespTecCNPJ; 	// Informar o CNPJ da pessoa jurídica responsável pelo sistema utilizado na emissão do documento fiscal eletrônico.
+  spdNFCeDataSets.Campo('xContato_ZD04').Value := _RespTecContato; // 	Informar o nome da pessoa a ser contatada na empresa desenvolvedora do sistema utilizado na emissão do documento fiscal eletrônico.
+  spdNFCeDataSets.Campo('email_ZD05').Value    := _RespTecEmail; //	Informar o e-mail da pessoa a ser contatada na empresa desenvolvedora do sistema.
+  spdNFCeDataSets.Campo('fone_ZD06').Value     := _RespTecFone; 	// Informar o telefone da pessoa a ser contatada na empresa desenvolvedora do sistema. Preencher com o Código DDD + número do telefone
 end;
 
 procedure _ecf65_ImportaXmlInutilizacao(sCaminhoXml: String);
