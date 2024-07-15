@@ -1578,7 +1578,7 @@ type
     Parmetrosdetributao1: TMenuItem;
     ibDataSet7VALOR_MULTA: TIBBCDField;
     ibDataSet7PERCENTUAL_MULTA: TIBBCDField;
-	Configurarobservaofixa1: TMenuItem;
+  	Configurarobservaofixa1: TMenuItem;
     N69: TMenuItem;
     DuplicarProduto: TMenuItem;
     DuplicaOrcamento: TMenuItem;
@@ -1707,6 +1707,7 @@ type
     SRevendaInativa1: TMenuItem;
     SClienteInativo1: TMenuItem;
     VendasporestadoNotaFiscal1: TMenuItem;
+    IBDataSet2PRODUTORRURAL: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2427,6 +2428,7 @@ type
     procedure ibDataSet14STSetText(Sender: TField; const Text: string);
     procedure FiltroRelacaoCom(Sender: TObject);
     procedure VendasporestadoNotaFiscal1Click(Sender: TObject);
+    procedure IBDataSet2IESetText(Sender: TField; const Text: string);
     procedure ibDataSet4PROMOINIChange(Sender: TField);
     procedure ibDataSet4ONPROMOChange(Sender: TField);
     {    procedure EscondeBarra(Visivel: Boolean);}
@@ -8906,7 +8908,7 @@ begin
     Exit;
   end;
 
-  if sModulo = 'GRUPOS_' then
+  if sModulo = 'GRUPOS' then
   begin
     Form7.IBTransaction1.CommitRetaining;
     if FrmGrupoMercadoria = nil then
@@ -12508,7 +12510,6 @@ begin
   if FileExists(Form1.sAtual+'\sintegra.exe') then
     ShellExecute( 0, 'Open', 'sintegra.exe', '', '', SW_SHOW)
   else
-    //ShowMessage('O executável sintegra.exe não foi encontrado na pasta de instalação do programa.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('O executável sintegra.exe não foi encontrado na pasta de instalação do programa.',msgAtencao);
 end;
 
@@ -12527,7 +12528,6 @@ begin
   if (Pos('1'+UpperCase(Text)+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX21  21mg2')
      = 0) and (AllTrim(Text)<>'') then
   begin
-    //ShowMessage('Estado inválido'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Estado inválido',msgAtencao);
     ibDataSet2ESTADO.AsString := UpperCase(Form7.ibDataSet13ESTADO.AsString);
   end
@@ -12536,12 +12536,31 @@ begin
 end;
 
 
+procedure TForm7.IBDataSet2IESetText(Sender: TField; const Text: string);
+var
+  cTexto: String;
+begin
+  {Mauricio Parizotto 2024-07-04 Inicio}
+  cTexto := Trim(Text);
+  IBDataSet2IE.AsString := cTexto;
+
+  //Produtor Rural
+  if (Length(Trim(ibDAtaset2CGC.AsString)) = 14) then
+  begin
+    if (Copy(cTexto,1,2) = 'PR') and (IBDataSet2PRODUTORRURAL.AsString = 'N') then
+      IBDataSet2PRODUTORRURAL.AsString := 'S';
+
+    if (Copy(cTexto,1,2) <> 'PR') and (IBDataSet2PRODUTORRURAL.AsString = 'S') then
+      IBDataSet2PRODUTORRURAL.AsString := 'N';
+  end;
+  {Mauricio Parizotto 2024-07-04 Fim}
+end;
+
 procedure TForm7.ibDataSet13ESTADOSetText(Sender: TField; const Text: String);
 begin
   if (Pos('1'+UpperCase(Text)+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21EX21  21mg2')
      = 0) and (AllTrim(Text)<>'') then
   begin
-    //ShowMessage('Estado inválido'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Estado inválido',msgAtencao);
     Form7.ibDataSet13ESTADO.AsString := UpperCase(Form7.ibDataSet13ESTADO.AsString);
   end
@@ -15112,7 +15131,7 @@ begin
             Form7.IBDataSet2IE.AsString     := xmlNodeValue(sRetorno,'//IE');
             Form7.IBDataSet2ESTADO.AsString := xmlNodeValue(sRetorno,'//UF');
 
-            Form7.IBDataSet2NOME.AsString := cNome;
+            Form7.IBDataSet2NOME.AsString := Trim(cNome);
 
             {Dailon Parisotto (f-17692) 2024-04-12 Fim}
             Form7.IBDataSet2ENDERE.AsString := Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr'))), 1, Form7.IBDataSet2ENDERE.Size - TamanhoNumeroComplmento(', ' + xmlNodeValue(sRetorno,'//nro'))) + ', ' + PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//nro'))); // Sandro Silva 2024-01-15 PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')));
@@ -18647,6 +18666,10 @@ var
   ItemNFe: TItemNFe;
   nUnitario: Real;
 begin
+
+  LogSistema('Início TForm7.ibDataSet16DESCRICAOChange( 18637 ' + QuotedStr(ibDataSet16DESCRICAO.AsString), lgInformacao); // Sandro Silva 2024-04-16
+
+
   try
     //Form7.ibDataSet4.DisableControls; // Sandro Silva 2023-05-08 Teste de otimização
     try
@@ -18667,6 +18690,8 @@ begin
         //
         // Procura por: código
         //
+        { Sandro Silva 2024-04-30
+        f-17706 Testando lentidão quando navega nos itens da nota, teclando Enter
         if (Length(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet16DESCRICAO.AsString))<>'') then
         begin
           if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
@@ -18677,6 +18702,23 @@ begin
             Form7.ibDataSet4.Open;
           end;
         end;
+        }
+        if (Length(Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) <= 5) and (LimpaNumero(Alltrim(Form7.ibDataSet16DESCRICAO.AsString))<>'') then
+        begin
+          if Form7.ibDataSet16CODIGO.AsString <> Form7.ibDataSet4CODIGO.AsString then
+          begin
+            Form7.ibDataSet4.Close;
+            Form7.ibDataSet4.Selectsql.Clear;
+            Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString));
+            Form7.ibDataSet4.Open;
+          end;
+        end
+        else
+        begin
+          if Trim(Form7.ibDataSet16CODIGO.AsString) <> '' then
+            bFind := Form7.ibDataSet4.Locate('CODIGO', Form7.ibDataSet16CODIGO.AsString, []);
+        end;
+        {Sandro Silva 2024-04-30 fim}
 
         if Form7.ibDataSet16DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString then
         begin
@@ -19350,12 +19392,18 @@ begin
   finally
     // Form7.ibDataSet4.EnableControls; // Sandro Silva 2023-05-08 Teste de otimização
   end;
+
+  LogSistema('Fim TForm7.ibDataSet16DESCRICAOChange( 19321 ' + QuotedStr(ibDataSet16DESCRICAO.AsString), lgInformacao); // Sandro Silva 2024-04-16
+
 end;
 
 
 procedure TForm7.ibDataSet16DESCRICAOSetText(Sender: TField;
   const Text: String);
 begin
+
+//  LogSistema('Início TForm7.ibDataSet16DESCRICAOSetText( 19323 ' + Text, lgInformacao); // Sandro Silva 2024-04-16
+
   // Localiza pela descricao
   if Limpanumero(Text) <> Text then
   begin
@@ -19394,6 +19442,9 @@ begin
   end;
   //
   ibDataSet16DESCRICAO.AsString := Text;
+
+//  LogSistema('Fim TForm7.ibDataSet16DESCRICAOSetText( 19323 ', lgInformacao); // Sandro Silva 2024-04-16
+
 end;
 
 function TestarNatOperacaoMovEstoque: Boolean;
@@ -22108,8 +22159,9 @@ end;
 
 procedure TForm7.IBDataSet2NewRecord(DataSet: TDataSet);
 begin
-  ibDataSet2REGISTRO.AsString   := sProximo;
-  ibDataSet2CADASTRO.AsDateTime := Date;
+  ibDataSet2REGISTRO.AsString      := sProximo;
+  ibDataSet2CADASTRO.AsDateTime    := Date;
+  IBDataSet2PRODUTORRURAL.AsString := 'N'; //Mauricio Parizotto 2024-06-27
 end;
 
 procedure TForm7.DBGrid1ColEnter(Sender: TObject);
@@ -31776,6 +31828,7 @@ procedure TForm7.Visu1Click(Sender: TObject);
 var
   F : TextFile;
   sPDF : String;
+  cXML: String;
 begin
   //
   BuscaNumeroNFSe(True);
@@ -31816,7 +31869,25 @@ begin
         if (RetornaValorDaTagNoCampo('Nfse', Form7.ibDAtaSet15RECIBOXML.AsString) <> '') and (AnsiUpperCase(Form7.ibDataSet13MUNICIPIO.AsString) = 'BRASÍLIA') then
           Writeln(F,'<XMLImpressao>' + RetornaValorDaTagNoCampo('Nfse', Form7.ibDAtaSet15RECIBOXML.AsString) + '</XMLImpressao>')
         else
-          Writeln(F,'<XMLImpressao>'+Form7.ibDAtaSet15RECIBOXML.AsString+'</XMLImpressao>');
+        begin
+//          cXML := Form7.ibDAtaSet15RECIBOXML.AsString;
+          cXML := Form7.ibDataSet15NFEXML.AsString;
+          if (AnsiUpperCase(Form7.ibDataSet13MUNICIPIO.AsString) = 'CAMPOS DO JORDÃO') then
+          begin
+{            cXML := Copy(cXML, Pos('<Status>SUCESSO', cXML), Length(cXML));
+            cXML := Copy(cXML, 1, Pos('<Json>', cXML)-1);       }
+
+            cXML := RetornaValorDaTagNoCampo('xmlretorno', Form7.ibDataSet15RECIBOXML.AsString);
+
+            Writeln(F,'<XMLImpressao>'+cXML+'</XMLImpressao>');
+
+            cXML := RetornaValorDaTagNoCampo('tx2', Form7.ibDataSet15RECIBOXML.AsString);
+
+            Writeln(F,'<tx2>'+cXML+'</tx2>');
+          end
+          else
+            Writeln(F,'<XMLImpressao>'+Form7.ibDAtaSet15RECIBOXML.AsString+'</XMLImpressao>');
+        end;
         {Sandro Silva 2023-01-26 fim}
       end;
       //
@@ -31831,7 +31902,7 @@ begin
       //
       ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
       //
-      while ConsultaProcesso('NFSE.EXE') or ConsultaProcesso('NFSE.exe') or ConsultaProcesso('nfe.exe') do
+      while ConsultaProcesso('NFSE.EXE') or ConsultaProcesso('nfse.exe') or ConsultaProcesso('NFSE.exe') or ConsultaProcesso('nfe.exe') do
       begin
         Application.ProcessMessages;
         sleep(100);

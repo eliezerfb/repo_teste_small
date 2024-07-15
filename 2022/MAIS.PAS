@@ -34,7 +34,7 @@ uses
   function ExecutaComando(comando:string):Boolean;  overload;
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
+const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -5110,6 +5110,12 @@ begin
     ExibeRazaoSocialNoCaptionDoForm;
     {Sandro Silva 2022-12-15 fim}
 
+    //Mauricio Parizotto 2024-06-27
+    //Ajusta se é produto rural
+    ExecutaComando(' Update CLIFOR set PRODUTORRURAL = ''S'' '+
+                   ' Where Substring( Upper(Coalesce(IE,'''')) from 1 for 2) = ''PR'' '+
+                   '   and CHAR_LENGTH(CGC) = 14 ');
+
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     //
     if not (Form1.iReduzida = 1) then
@@ -5120,8 +5126,9 @@ begin
           try
             Mais1Ini.WriteString('Outros','Data',DateToStr(Date));
             Mais1Ini.Free;
-          except end;
-          //
+          except
+          end;
+
           Form22.Repaint;
           Mensagem22('Atualizando valores no contas a receber...');
 
@@ -12575,6 +12582,11 @@ begin
         sCertificado := '&certificado_tp='+TSistema.GetInstance.CertificadoTipo+
                         '&certificado_vl='+sCertificadoValidade;
       end;
+      {Dailon Parisotto (f-19325) 2024-06-12 Inicio}
+      // Busca do INI as informações faltantes
+      sOrigem := LerParametroIni(Form1.sAtual+'\small.ini', 'T','Origem', EmptyStr);
+      sConve  := LerParametroIni(Form1.sAtual+'\small.ini', 'T','Tempo', '00:05:' + SecondOf(Now).ToString);
+      {Dailon Parisotto (f-19325) 2024-06-12 Fim}
 
       sURL := 'http://www.smallsoft.com.br/legal.php?'+
               'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+

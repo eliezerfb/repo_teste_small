@@ -2577,6 +2577,17 @@ begin
       ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2024-04-29 Fim}
+  
+  {Mauricio Parizotto 2024-06-27 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CLIFOR', 'PRODUTORRURAL') = False then
+  begin
+    if ExecutaComando('Alter table CLIFOR add PRODUTORRURAL varchar(1);') then
+      ExecutaComando('Commit');
+
+    if ExecutaComando('Update CLIFOR set PRODUTORRURAL = ''N'' ;') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-06-27 Fim}
 
   {Mauricio Parizotto 2024-06-10 Inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'IDBANCO') = False then

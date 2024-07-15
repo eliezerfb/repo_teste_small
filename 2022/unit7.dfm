@@ -11124,7 +11124,7 @@ object Form7: TForm7
   end
   object SMALL_DBEdit3: TSMALL_DBEdit
     Left = 644
-    Top = 608
+    Top = 596
     Width = 100
     Height = 20
     AutoSize = False
@@ -13089,7 +13089,7 @@ object Form7: TForm7
       object Mostrartodososclientesefornecedores1: TMenuItem
         Caption = 'Todos'
       end
-object S1: TMenuItem
+      object S1: TMenuItem
         Caption = 'S'#243' Cliente'
         OnClick = FiltroRelacaoCom
       end
@@ -13260,6 +13260,10 @@ object S1: TMenuItem
       object RelatriodevendasporclienteNFeCupom1: TMenuItem
         Caption = 'Vendas por cliente (Nota Fiscal/Cupom)'
         OnClick = RelatriodevendasporclienteNFeCupom1Click
+      end
+      object VendasporestadoNotaFiscal1: TMenuItem
+        Caption = 'Vendas por estado (Nota Fiscal)'
+        OnClick = VendasporestadoNotaFiscal1Click
       end
       object Relatriodeprodutosmonofsicos1: TMenuItem
         Caption = 'Produtos monof'#225'sicos (Cupom Fiscal)'
@@ -20400,7 +20404,7 @@ object S1: TMenuItem
       
         '   PROXDATA, CUSTO, COMPRA, ATIVO, MOSTRAR, CLIFOR, CONTATOS, RE' +
         'GISTRO, '
-      '   FOTO, WHATSAPP, CONTRIBUINTE)'
+      '   FOTO, WHATSAPP, CONTRIBUINTE, PRODUTORRURAL)'
       'values'
       
         '  (:NOME, :CONTATO, :IE, :CGC, :ENDERE, :COMPLE, :CIDADE, :ESTAD' +
@@ -20416,7 +20420,7 @@ object S1: TMenuItem
         'ATIVO, '
       
         '   :MOSTRAR, :CLIFOR, :CONTATOS, :REGISTRO, :FOTO, :WHATSAPP, :C' +
-        'ONTRIBUINTE)')
+        'ONTRIBUINTE, :PRODUTORRURAL)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -20453,7 +20457,8 @@ object S1: TMenuItem
       '  REGISTRO,'
       '  FOTO,'
       '  WHATSAPP,'
-      '  CONTRIBUINTE'
+      '  CONTRIBUINTE,'
+      '  PRODUTORRURAL'
       'from CLIFOR '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -20496,7 +20501,8 @@ object S1: TMenuItem
       '  REGISTRO = :REGISTRO,'
       '  FOTO = :FOTO,'
       '  WHATSAPP = :WHATSAPP,'
-      '  CONTRIBUINTE = :CONTRIBUINTE'
+      '  CONTRIBUINTE = :CONTRIBUINTE,'
+      '  PRODUTORRURAL = :PRODUTORRURAL'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -20568,6 +20574,7 @@ object S1: TMenuItem
       DisplayWidth = 14
       FieldName = 'IE'
       Origin = 'CLIFOR.IE'
+      OnSetText = IBDataSet2IESetText
       Size = 16
     end
     object IBDataSet2FONE: TIBStringField
@@ -20748,6 +20755,12 @@ object S1: TMenuItem
       FieldName = 'CONTRIBUINTE'
       Origin = 'CLIFOR.CONTRIBUINTE'
       Visible = False
+    end
+    object IBDataSet2PRODUTORRURAL: TIBStringField
+      FieldName = 'PRODUTORRURAL'
+      Origin = 'CLIFOR.PRODUTORRURAL'
+      Visible = False
+      Size = 1
     end
   end
   object IBDataSet99: TIBDataSet

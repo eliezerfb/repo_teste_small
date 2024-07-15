@@ -3123,7 +3123,7 @@ begin
       Form7.ibDataSet4VAL_VEND.AsFloat := 0;
       Form7.ibDataSet4LUC_VEND.AsFloat := 0;
 
-      if Form7.ibDataSet99.Locate('DESCRICAO',Form7.ibDAtaSet4DESCRICAO.AsString,[]) then
+      if (not Form7.ibDataSet99.IsEmpty) and (Form7.ibDataSet99.Locate('DESCRICAO',Form7.ibDAtaSet4DESCRICAO.AsString,[])) then
       begin
         Form7.ibDataSet4QTD_VEND.AsFloat := Form7.ibDataSet4QTD_VEND.AsFloat + Form7.ibDataSet99.FieldByname('VQTD1').AsFloat;
         Form7.ibDataSet4VAL_VEND.AsFloat := Form7.ibDataSet4VAL_VEND.AsFloat + Form7.ibDataSet99.FieldByname('VTOT1').AsFloat;
@@ -3540,14 +3540,14 @@ begin
       Form7.ibDataSet4VAL_VEND.AsFloat := 0;
       Form7.ibDataSet4LUC_VEND.AsFloat := 0;
 
-      if Form7.ibDataSet99.Locate('DESCRICAO',AllTrim(Form7.ibDAtaSet4DESCRICAO.AsString),[]) then
+      if (not Form7.ibDataSet99.IsEmpty) and (Form7.ibDataSet99.Locate('DESCRICAO',AllTrim(Form7.ibDAtaSet4DESCRICAO.AsString),[])) then
       begin
         Form7.ibDataSet4QTD_VEND.AsFloat := Form7.ibDataSet4QTD_VEND.AsFloat + Form7.ibDataSet99.FieldByname('VQTD1').AsFloat;
         Form7.ibDataSet4VAL_VEND.AsFloat := Form7.ibDataSet4VAL_VEND.AsFloat + Form7.ibDataSet99.FieldByname('VTOT1').AsFloat;
         Form7.ibDataSet4CUS_VEND.AsFloat := Form7.ibDataSet4CUS_VEND.AsFloat + Form7.ibDataSet99.FieldByname('VCUS1').AsFloat;
       end;
 
-      if Form7.ibDataSet100.Locate('DESCRICAO',AllTrim(Form7.ibDAtaSet4DESCRICAO.AsString),[]) then
+      if (not Form7.ibDataSet100.IsEmpty) and (Form7.ibDataSet100.Locate('DESCRICAO',AllTrim(Form7.ibDAtaSet4DESCRICAO.AsString),[])) then
       begin
         Form7.ibDataSet4QTD_VEND.AsFloat := Form7.ibDataSet4QTD_VEND.AsFloat + Form7.ibDataSet100.FieldByname('VQTD2').AsFloat;
         Form7.ibDataSet4VAL_VEND.AsFloat := Form7.ibDataSet4VAL_VEND.AsFloat + Form7.ibDataSet100.FieldByname('VTOT2').AsFloat;

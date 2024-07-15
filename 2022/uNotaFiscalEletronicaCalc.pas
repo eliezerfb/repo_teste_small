@@ -28,7 +28,8 @@ type
 
 implementation
 
-uses Unit7, Mais, uFuncoesFiscais, StrUtils, uDialogs;
+uses Unit7, Mais, uFuncoesFiscais, StrUtils, uDialogs
+  , uLogSistema;
 
 procedure TNotaFiscalEletronicaCalc.CalculaCstPisCofins(DataSetNF, DataSetItens: TibDataSet);
 var
@@ -48,6 +49,9 @@ var
 
   bSobreLucro : boolean;
 begin
+
+  LogSistema('Início TNotaFiscalEletronicaCalc.CalculaCstPisCofins( 53', lgInformacao); // Sandro Silva 2024-04-16
+
   IBQProduto := Form7.CriaIBQuery(DataSetNF.Transaction);
 
   IBQIcm.Locate('NOME',NotaFiscal.Operacao,[]);
@@ -162,6 +166,9 @@ begin
   end;
 
   FreeAndNil(IBQProduto);
+
+  LogSistema('Fim TNotaFiscalEletronicaCalc.CalculaCstPisCofins( 176', lgInformacao); // Sandro Silva 2024-04-16
+
 end;
 
 procedure TNotaFiscalEletronicaCalc.CalculaImpostos(AbCalcPesoLiq : Boolean);
@@ -184,6 +191,9 @@ var
   oItem : TITENS001;
   i : integer;
 begin
+
+  LogSistema('Início TNotaFiscalEletronicaCalc.CalculaImpostos( 200', lgInformacao); // Sandro Silva 2024-04-16
+
   //Se não for complemento zera totais 
   if not NFeFinalidadeComplemento(NotaFiscal.Finnfe) then
   begin
@@ -750,6 +760,9 @@ begin
   end;
 
   FreeAndNil(IBQProduto);
+
+  LogSistema('Fim TNotaFiscalEletronicaCalc.CalculaImpostos( 790', lgInformacao); // Sandro Silva 2024-04-16
+
 end;
 
 
@@ -762,6 +775,8 @@ begin
     try
       Calculando := True;
       sReg16 := DataSetItens.fieldByName('REGISTRO').AsString;
+
+      LogSistema('Início DataSetItens.Locate( 861 ', lgInformacao); // Sandro Silva 2024-04-16
 
       AtualizaValoresNota(DataSetNF, DataSetItens);
 
@@ -780,8 +795,13 @@ begin
 
       AtualizaDataSetNota(DataSetNF,DataSetItens);
 
+      LogSistema('Início DataSetItens.Locate( 861 ', lgInformacao); // Sandro Silva 2024-04-16
+
       if Trim(sReg16) <> '' then
         DataSetItens.Locate('REGISTRO', sReg16, []);
+
+      LogSistema('Fim DataSetItens.Locate( 861 ', lgInformacao); // Sandro Silva 2024-04-16
+
     finally
       Calculando := False;
     end;
@@ -1120,6 +1140,9 @@ var
   oItem : TITENS001;
   bTemItemComPeso: Boolean;
 begin
+
+  LogSistema('Início TNotaFiscalEletronicaCalc.CalculaPesoLiquido 1281', lgInformacao); // Sandro Silva 2024-04-16
+
   bTemItemComPeso := False;
 
   if not((NFeFinalidadeComplemento(NotaFiscal.Finnfe))) then
@@ -1143,6 +1166,9 @@ begin
       end;
     end;
   end;
+
+  LogSistema('Fim TNotaFiscalEletronicaCalc.CalculaPesoLiquido 1307', lgInformacao); // Sandro Silva 2024-04-16
+
 end;
 
 procedure TNotaFiscalEletronicaCalc.SetRateioDescAcre;
@@ -1151,6 +1177,8 @@ var
   oItem : TITENS001;
   fTotalMercadoria : Real;
 begin
+  LogSistema('Início SetRateioDescAcre 1317', lgInformacao); // Sandro Silva 2024-04-16
+
   fTotalMercadoria := GetTotalMercadoria;
 
   for i := 0 to NotaFiscal.Itens.Count -1 do
@@ -1162,6 +1190,9 @@ begin
     oItem.SeguroRateado   := Arredonda((NotaFiscal.Seguro / fTotalMercadoria) * oItem.TOTAL,2);
     oItem.DespesaRateado  := Arredonda((NotaFiscal.Despesas / fTotalMercadoria * oItem.TOTAL),2);
   end;
+
+  LogSistema('Fim SetRateioDescAcre 1331', lgInformacao); // Sandro Silva 2024-04-16
+
 end;
 
 function TNotaFiscalEletronicaCalc.RetornaObjetoNota(DataSetNF, DataSetItens: TibDataSet; CalcPesoLiq: Boolean): TVENDAS;
