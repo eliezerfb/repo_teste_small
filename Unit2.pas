@@ -182,6 +182,9 @@ type
     procedure SelecionaMarketplace(sNome: String);
     procedure AplicaMarketplaceSelecionadaoNaVenda;
     procedure ValidaValorParceladoAprazo;
+    procedure AjustaParcelasZeradasNegativas;
+    function RetornaTotalParcelas: Currency;
+    procedure DefineVencimentoParcela(AnParcela: Integer);
   public
     { Public declarations }
     bCancela : Boolean;
@@ -1143,18 +1146,7 @@ procedure TForm2.MaskEdit1Exit(Sender: TObject);
 var
   I : Integer;
   dDiferenca : Double;
-  Mais1Ini: TIniFile;
-  sIntervalo4, sIntervalo5, sIntervalo6 : String;
 begin
-  //
-  // Lê as configurações no .INF
-  //
-  Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-  sIntervalo4  := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','7');
-  sIntervalo5  := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','14');
-  sIntervalo6  := Mais1Ini.ReadString('Nota Fiscal','Intervalo3','21');
-  Mais1Ini.Free;
-  //
   // Consistência
   //
   if LimpaNumero(MaskEdit1.Text) = '' then MaskEdit1.Text := '1';
@@ -1183,24 +1175,20 @@ begin
       //
       Form1.ibDataSet7.Append;
       Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(I); //chr(69+Form1.iCaixa-1)+FormataNumeroDoCupom(Form1.iCupom) + chr(64+I);
-      Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat    := StrToFloat(Format('%8.2f',[Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat / StrToInt(AllTrim(MaskEdit1.Text))]));
-      Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,I*7);
+//      Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat    := StrToFloat(Format('%8.2f',[Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat / StrToInt(AllTrim(MaskEdit1.Text))]));
+      Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat := 0;
+      DefineVencimentoParcela(i);
       Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime    := Date;
       Form1.ibDataSet7.FieldByName('VALOR_RECE').AsFloat    := 0;
       Form1.ibDataSet7.FieldByName('VALOR_JURO').AsFloat    := 0;
       Form1.ibDataSet7.FieldByName('NOME').AsString         := Form1.sConveniado;
       Form1.ibDataSet7.FieldByName('HISTORICO').Value       := 'Venda Caixa: '+Form1.sCaixa+' Cupom: '+FormataNumeroDoCupom(Form1.iCupom);
       Form1.ibDataSet7.FieldByName('CONTA').AsString        := Form1.ibDataSet14.FieldByname('CONTA').AsString;
-      //
-      if I = 1 then Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,StrToInt(sIntervalo4));
-      if I = 2 then Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,StrToInt(sIntervalo5));
-      if I = 3 then Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,StrToInt(sIntervalo6));
-      if I > 3 then Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,StrToInt(sIntervalo6)+((StrToInt(sIntervalo6)-StrToInt(sIntervalo5))*(I-3)));
     end;
     //
     // Valor quebrado
     //
-    dDiferenca := Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat;
+{    dDiferenca := Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat;
     Form1.ibDataSet7.First;
     while not Form1.ibDataSet7.Eof do
     begin
@@ -1213,12 +1201,41 @@ begin
       Form1.ibDataSet7.First;
       Form1.ibDataSet7.Edit;
       Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat := Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat + ddiferenca;
-    end;
+    end;                       }
+    ValidaValorParceladoAprazo;
   end;
   //
   Form1.ibDataSet7.First;
   Button1.Caption := 'F3 Finalizar'; // Sandro Silva 2021-07-02 Button1.Caption := '&Finalizar';
   //
+end;
+
+procedure TForm2.DefineVencimentoParcela(AnParcela: Integer);
+var
+  Mais1Ini: TIniFile;
+  sIntervalo4, sIntervalo5, sIntervalo6 : String;
+begin
+  // Lê as configurações no .INF
+  //
+  Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
+  try
+    sIntervalo4  := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','7');
+    sIntervalo5  := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','14');
+    sIntervalo6  := Mais1Ini.ReadString('Nota Fiscal','Intervalo3','21');
+  finally
+    Mais1Ini.Free;
+  end;
+
+  Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,AnParcela*7);
+
+  if AnParcela = 1 then
+    Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,StrToInt(sIntervalo4));
+  if AnParcela = 2 then
+    Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,StrToInt(sIntervalo5));
+  if AnParcela = 3 then
+    Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,StrToInt(sIntervalo6));
+  if AnParcela > 3 then
+    Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := SomaDias(Date,StrToInt(sIntervalo6)+((StrToInt(sIntervalo6)-StrToInt(sIntervalo5))*(AnParcela-3)));
 end;
 
 procedure TForm2.Edit9Change(Sender: TObject);
@@ -2158,8 +2175,10 @@ end;
 procedure TForm2.ValidaValorParceladoAprazo;
 var
   dDiferenca : Double;
+  nValorParcela: Currency;
   MyBookmark: TBookmark;
   iRegistro, iDuplicatas: Integer;
+  nRecNo: Integer;
   sPortador: String;// Sandro Silva 2016-12-15 Ficha 3404
 begin
   //
@@ -2174,49 +2193,186 @@ begin
   begin
     //
     iRegistro   := Form1.ibDataSet7.Recno;
-    ddiferenca  := Form1.ibDataSet25.FieldByname('DIFERENCA_').AsFloat;;
+    ddiferenca  := Form1.ibDataSet25.FieldByname('DIFERENCA_').AsFloat;
     iDuplicatas := StrToInt(AllTrim(MaskEdit1.Text));
     //
     Form1.ibDataSet7.DisableControls;
-    Form1.ibDataSet7.First;
-    sPortador := Form1.ibDataSet7.FieldByName('PORTADOR').AsString; // Sandro Silva 2016-12-15 Ficha 3404
-    while not Form1.ibDataSet7.Eof do
-    begin
-      if Form1.ibDataSet7.Recno <= iRegistro then
+    try
+      if Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat > 0 then
       begin
-        iDuplicatas := iDuplicatas - 1;
-        dDiferenca := dDiferenca - Form1.ibDataSet7.FieldByname('VALOR_DUPL').Value;
-      end else
-      begin
-       Form1.ibDataSet7.Edit;
-       Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := dDiferenca / iDuplicatas;
-       Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := StrToFloat(Format('%8.2f',[Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat]));
+        if Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat >= ddiferenca then
+        begin
+          Form1.ibDataSet7.First;
+          while not Form1.ibDataSet7.Eof do
+          begin
+            if Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat < ddiferenca then
+            begin
+              Form1.ibDataSet7.Edit;
+              Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := 0;
+              Form1.ibDataSet7.Post;
+            end;
+            Form1.ibDataSet7.Next;
+          end;
+          AjustaParcelasZeradasNegativas;
+        end else
+        begin
+          if RetornaTotalParcelas <> ddiferenca then
+          begin
+            nRecNo := Form1.ibDataSet7.RecNo;
+            dDiferenca := dDiferenca - Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat;
+            if StrToIntDef(MaskEdit1.Text, 2) <> 1 then
+              nValorParcela := Arredonda(dDiferenca / (StrToIntDef(MaskEdit1.Text, 2) -1), 2)
+            else
+              nValorParcela := Arredonda(dDiferenca / 1, 2);
+
+            Form1.ibDataSet7.First;
+            while not Form1.ibDataSet7.Eof do
+            begin
+              if Form1.ibDataSet7.RecNo <> nRecNo then
+              begin
+                Form1.ibDataSet7.Edit;
+                if ((dDiferenca - nValorParcela) >= 0) then
+                  Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := nValorParcela
+                else
+                begin
+                  nValorParcela := nValorParcela - ((dDiferenca - nValorParcela) * -1);
+                  Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := nValorParcela;
+                end;
+                Form1.ibDataSet7.Post;
+
+                dDiferenca := dDiferenca - nValorParcela;
+              end;
+              Form1.ibDataSet7.Next;
+            end;
+            if dDiferenca <> 0 then
+            begin
+              Form1.ibDataSet7.First;
+
+              Form1.ibDataSet7.Edit;
+              if dDiferenca > 0 then
+                Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat + Arredonda(dDiferenca,2);
+              if dDiferenca < 0 then
+                Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat - Arredonda(dDiferenca*-1,2);
+              Form1.ibDataSet7.Post;
+
+              dDiferenca := 0;
+            end;
+          end else
+            dDiferenca := 0;
+        end;
       end;
 
-      if sPortador <> Form1.ibDataSet7.FieldByName('PORTADOR').AsString then
+      Form1.ibDataSet7.First;
+
+      sPortador := Form1.ibDataSet7.FieldByName('PORTADOR').AsString; // Sandro Silva 2016-12-15 Ficha 3404
+
+      while not Form1.ibDataSet7.Eof do
       begin
-        Form1.ibDataSet7.Edit;
-        Form1.ibDataSet7.FieldByName('PORTADOR').AsString := sPortador;
+        if (dDiferenca <> 0) then
+        begin
+          if (Form1.ibDataSet7.Recno <= iRegistro) and (Form1.ibDataSet7.FieldByname('VALOR_DUPL').Value > 0) then
+          begin
+            iDuplicatas := iDuplicatas - 1;
+            dDiferenca := dDiferenca - Form1.ibDataSet7.FieldByname('VALOR_DUPL').Value;
+          end else
+          begin
+           Form1.ibDataSet7.Edit;
+           Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := dDiferenca / iDuplicatas;
+           Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := StrToFloat(Format('%8.2f',[Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat]));
+          end;
+        end;
+
+        if sPortador <> Form1.ibDataSet7.FieldByName('PORTADOR').AsString then
+        begin
+          Form1.ibDataSet7.Edit;
+          Form1.ibDataSet7.FieldByName('PORTADOR').AsString := sPortador;
+        end;
+        Form1.ibDataSet7.Next;
       end;
-      Form1.ibDataSet7.Next;
+      //
+      ddiferenca  := Form1.ibDataSet25.FieldByname('DIFERENCA_').AsFloat;
+      Form1.ibDataSet7.First;
+      while not Form1.ibDataSet7.Eof do
+      begin
+        dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat]));
+        Form1.ibDataSet7.Next;
+      end;
+      //
+      Form1.ibDataSet7.First;
+      Form1.ibDataSet7.Edit;
+      if dDiferenca <> 0 then
+        Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat + ddiferenca;
+      //
+      AjustaParcelasZeradasNegativas;
+
+      Form1.ibDataSet7.GotoBookmark(MyBookmark);
+      Form1.ibDataSet7.FreeBookmark(MyBookmark);
+    finally
+      Form1.ibDataSet7.Refresh;
+      Form1.ibDataSet7.EnableControls;
     end;
-    //
-    ddiferenca  := Form1.ibDataSet25.FieldByname('DIFERENCA_').AsFloat;;
-    Form1.ibDataSet7.First;
+  end;
+end;
+
+function TForm2.RetornaTotalParcelas: Currency;
+var
+  nRecNo: Integer;
+begin
+  Result := 0;
+  nRecNo := Form1.ibDataSet7.RecNo;
+
+  Form1.ibDataSet7.First;
+  try
     while not Form1.ibDataSet7.Eof do
     begin
-      dDiferenca := dDiferenca - StrToFloat(Format('%8.2f',[Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat]));
+      Result := Result + Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsCurrency;
       Form1.ibDataSet7.Next;
     end;
-    //
+  finally
+    Form1.ibDataSet7.RecNo := nRecNo;
+  end;
+end;
+
+procedure TForm2.AjustaParcelasZeradasNegativas;
+var
+  i: Integer;
+begin
+  Form1.ibDataSet7.First;
+  try
+    while not Form1.ibDataSet7.Eof do
+    begin
+      if Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat <= 0 then
+      begin
+//        MaskEdit1.Text := (StrToIntDef(MaskEdit1.Text,1) -1).ToString;
+        Form1.ibDataSet7.Delete;
+      end else
+      begin
+        if Form1.ibDataSet7.State <> dsEdit then
+          Form1.ibDataSet7.Edit;
+        Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(Form1.ibDataSet7.RecNo);
+        Form1.ibDataSet7.Next;
+      end;
+    end;
+
     Form1.ibDataSet7.First;
-    Form1.ibDataSet7.Edit;
-    if dDiferenca <> 0 then Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat := Form1.ibDataSet7.FieldByname('VALOR_DUPL').AsFloat + ddiferenca;
-    //
-    Form1.ibDataSet7.GotoBookmark(MyBookmark);
-    Form1.ibDataSet7.FreeBookmark(MyBookmark);
-    Form1.ibDataSet7.EnableControls;
-    //
+    if Form1.ibDataSet7.RecordCount > 0 then
+      MaskEdit1.Text := Form1.ibDataSet7.RecordCount.ToString
+    else
+      MaskEdit1.Text := '1';
+
+    Form1.ibDataSet7.First;
+    for I := 1 to Form1.ibDataSet7.RecordCount do
+    begin
+      if Form1.ibDataSet7.State <> dsEdit then
+        Form1.ibDataSet7.Edit;
+      Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(I);
+      DefineVencimentoParcela(I);
+      Form1.ibDataSet7.Post;
+
+      Form1.ibDataSet7.Next;
+    end;
+  finally
+    Form1.ibDataSet7.First;
   end;
 end;
 
