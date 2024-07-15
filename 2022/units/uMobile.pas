@@ -297,18 +297,18 @@ begin
         WriteLN(F,'delete from emitentes where cpf_cnpj = '+QuotedStr(sCNPJ)+'; '); // Apaga somente as inf atuais deste CNPJ
 
         WriteLN(F,'Insert into emitentes (nome_razao_social, contato, endereco, bairro, municipio, cep, uf, cpf_cnpj, ie, fone, email, site, im, crt, cnae) values ('+
-                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('NOME').AsString,1,60)) +','+
-                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('CONTATO').AsString,1,35)) +','+
-                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('ENDERECO').AsString,1,35)) +','+
-                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('COMPLE').AsString,1,20)) +','+
-                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString,1,40)) +','+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('NOME').AsString),1,60)) +','+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('CONTATO').AsString),1,35)) +','+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('ENDERECO').AsString),1,35)) +','+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('COMPLE').AsString),1,20)) +','+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString),1,40)) +','+
                  QuotedStr(Copy(Form7.ibDataSet13.FieldByname('CEP').AsString,1,9)) +','+
                  QuotedStr(Copy(Form7.ibDataSet13.FieldByname('ESTADO').AsString,1,2)) +','+
                  QuotedStr(sCNPJ)+','+
                  QuotedStr(Copy(Form7.ibDataSet13.FieldByname('IE').AsString,1,16)) +','+
                  QuotedStr(Copy(Form7.ibDataSet13.FieldByname('TELEFO').AsString,1,16)) +','+
                  QuotedStr(Copy(Form7.ibDataSet13.FieldByname('EMAIL').AsString,1,132)) +','+
-                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('HP').AsString,1,130)) +','+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('HP').AsString),1,130)) +','+
                  QuotedStr(Copy(Form7.ibDataSet13.FieldByname('IM').AsString,1,16)) +','+
                  QuotedStr(Copy(Form7.ibDataSet13.FieldByname('CRT').AsString,1,1)) +','+
                  QuotedStr(Copy(Form7.ibDataSet13.FieldByname('CNAE').AsString,1,8)) +
