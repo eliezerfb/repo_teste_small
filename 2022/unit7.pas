@@ -2430,6 +2430,7 @@ type
     procedure IBDataSet2IESetText(Sender: TField; const Text: string);
     procedure ibDataSet4PROMOINIChange(Sender: TField);
     procedure ibDataSet4ONPROMOChange(Sender: TField);
+    procedure ibDataSet16CST_ICMSChange(Sender: TField);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -18651,6 +18652,12 @@ begin
     Form7.ibDataSet16CFOP.AsString := '';
 end;
 
+procedure TForm7.ibDataSet16CST_ICMSChange(Sender: TField);
+begin
+  if (Form12.Showing) and (Form12.DBGrid1.SelectedField = Sender) then
+    ibDataSet16DESCRICAOChange(Sender);
+end;
+
 procedure TForm7.ibDataSet16DESCRICAOChange(Sender: TField);
 var
   Mais1Ini: TiniFile;
@@ -19241,7 +19248,7 @@ begin
               Form7.ibDataSet16.Edit;
 
               // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução
-              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then // Devolucao Devolução
+              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then
               begin
                 if AllTrim(Form7.ibDataSet14CFOP.AsString) <> '' then
                 begin
@@ -19335,6 +19342,13 @@ begin
                   begin
                     Form7.ibDataSet16CST_ICMS.AsString := CampoICMporNatureza('CST',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction);
                   end;
+
+                  {Dailon Parisotto (f-17696) 2024-07-11 Inicio}
+
+                  if (Copy(Form7.ibDataSet16CST_ICMS.AsString,2,2) = '51')
+                    and (Form7.ibDataSet16BASE.AsFloat <= 0) then
+                    Form7.ibDataSet16BASE.AsFloat    := Form7.ibQuery14.FieldByName('BASE').AsFloat;
+                  {Dailon Parisotto (f-17696) 2024-07-11 Fim}
                 except
                 end;
               end;
@@ -19348,27 +19362,33 @@ begin
               Form7.ibDataSet16ICM.AsFloat      := 0;
             end;
 
-            if not (Form7.ibDataSet4PIVA.AsFloat > 0) then
+            if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString))
+              and (Copy(Form7.ibDataSet16CST_ICMS.AsString,2,2) = '51') then // Devolucao
+              // Não faz nada
+            else
             begin
-              if AllTrim(Form7.ibQuery14.FieldByName('CST').AsString) <> '' then // Tabela de ICM
+              if not (Form7.ibDataSet4PIVA.AsFloat > 0) then
               begin
-                if (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '30') or
-                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '40') or
-                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '41') or
-                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '50') or
-                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '60') then
+                if AllTrim(Form7.ibQuery14.FieldByName('CST').AsString) <> '' then // Tabela de ICM
                 begin
-                  Form7.ibDataSet16BASE.AsFloat     := 0;
-                end;
-              end else  //
-              begin     // Estoque
-                if (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '30') or
-                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '40') or
-                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '41') or
-                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '50') or
-                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '60') then
-                begin
-                  Form7.ibDataSet16BASE.AsFloat     := 0;
+                  if (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '30') or
+                     (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '40') or
+                     (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '41') or
+                     (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '50') or
+                     (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '60') then
+                  begin
+                    Form7.ibDataSet16BASE.AsFloat     := 0;
+                  end;
+                end else  //
+                begin     // Estoque
+                  if (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '30') or
+                     (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '40') or
+                     (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '41') or
+                     (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '50') or
+                     (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '60') then
+                  begin
+                    Form7.ibDataSet16BASE.AsFloat     := 0;
+                  end;
                 end;
               end;
             end;
