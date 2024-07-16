@@ -2698,6 +2698,9 @@ begin
 end;
 
 function _ecf59_Imprime_DANFECE(pSLote: String; pFNFe : WideString): Boolean;
+var
+  sChaveNFCE, sCaminhoZPOS : string;
+  sXML : TStringList;
 begin
   Result := False; // Sandro Silva 2018-08-29
   Form1.ExibePanelMensagem('Aguarde, imprimindo Extrato do CF-e...');
@@ -2717,29 +2720,53 @@ begin
 
   _59.ExtratoDetalhado := Form1.DANFCEdetalhado1.Checked;
 
-  if Printer.Printers.Count > 0 then // Sandro Silva 2018-06-13
+  //Mauricio Parizotto 2024-07-09 SMAL-551
+  //Continuar quando terminar a rotina no ZPOS
+  {if Pos('ZPOS', String(pfNFe)) > 0 then
   begin
-    Printer.PrinterIndex := Printer.Printers.IndexOf(Form1.sImpressoraPadraoWindows);
-    if Trim(Form1.sImpressoraDestino) <> '' then
-    begin
-      try
-        Printer.PrinterIndex := Printer.Printers.IndexOf(Form1.sImpressoraDestino);
-      except
-        Printer.PrinterIndex := Printer.Printers.IndexOf(Form1.sImpressoraPadraoWindows);
-      end;
-    end;
     try
-      Result := _59.ImprimirCupomDinamico(pFNFe, toPrinter, _59.Ambiente);
+      sChaveNFCE := xmlNodeValue(pFNFe, '//infCFe/@Id');
 
-      if Trim(Form1.sImpressoraDestino) <> '' then
-        Printer.PrinterIndex := Printer.Printers.IndexOf(Form1.sImpressoraPadraoWindows);
+      sCaminhoZPOS := 'c:\' + LerParametroIni(FRENTE_INI, 'ZPOS', 'PASTA', '') + '\' + LerParametroIni(FRENTE_INI, 'ZPOS', 'REQ', '');
 
-    except
-      Screen.Cursor := crDefault;
+      DeleteFile(sCaminhoZPOS + '\'+sChaveNFCE+'.xml');
+
+      sXML := TStringList.Create;
+      sXML.Text := pfNFe;
+      sXML.SaveToFile(sCaminhoZPOS + '\'+sChaveNFCE+'.tmp');
+
+      Sleep(200);
+
+      RenameFile(sCaminhoZPOS + '\'+sChaveNFCE+'.tmp', sCaminhoZPOS + '\'+sChaveNFCE+'.xml');
+    finally
+      FreeAndNil(sXML);
     end;
-  end
-  else
-    ShowMessage('Instale uma impressora no Windows');
+  end else}
+  begin
+    if Printer.Printers.Count > 0 then // Sandro Silva 2018-06-13
+    begin
+      Printer.PrinterIndex := Printer.Printers.IndexOf(Form1.sImpressoraPadraoWindows);
+      if Trim(Form1.sImpressoraDestino) <> '' then
+      begin
+        try
+          Printer.PrinterIndex := Printer.Printers.IndexOf(Form1.sImpressoraDestino);
+        except
+          Printer.PrinterIndex := Printer.Printers.IndexOf(Form1.sImpressoraPadraoWindows);
+        end;
+      end;
+      try
+        Result := _59.ImprimirCupomDinamico(pFNFe, toPrinter, _59.Ambiente);
+
+        if Trim(Form1.sImpressoraDestino) <> '' then
+          Printer.PrinterIndex := Printer.Printers.IndexOf(Form1.sImpressoraPadraoWindows);
+
+      except
+        Screen.Cursor := crDefault;
+      end;
+    end
+    else
+      ShowMessage('Instale uma impressora no Windows');
+  end;
 
   Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible := False;
 end;
@@ -2802,7 +2829,6 @@ var
     Result := True;
   end;
 begin
-  //
   sEmail    := AllTrim(Copy(StrTran(AllTrim(Form2.Edit10.Text),';',Replicate(' ',512))+Replicate(' ',265),1,256)); // Fica sómente um e-mail
   //
   if ValidaEmail(sEmail) then
@@ -2861,9 +2887,7 @@ begin
           sTextoCorpoEmail := sTextoCorpoEmail + Form1.sPropaganda + Chr(10);
         sTextoCorpoEmail := sTextoCorpoEmail + Chr(10) + 'Este e-mail foi enviado automaticamente pelo sistema Small.'+chr(10)+'www.smallsoft.com.br';
         EnviarEMail('', sEmail, '', PChar('Extrato Cupom Fiscal Eletrônico'), PChar(sTextoCorpoEmail), PChar(sFileCFeSAT), False); // Sandro Silva 2024-03-26 EnviarEMail('',sEmail,'','Extrato Cupom Fiscal Eletrônico',PansiChar(sTextoCorpoEmail),PansiChar(sFileCFeSAT),False);
-
       end;
-
     end
     else
     begin
@@ -2890,9 +2914,9 @@ begin
   if Form1.Panel3.Visible then
     Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible := False;
   {Sandro Silva 2022-09-02 fim}
-  //
+
   Result := True;
-  //
+
   ChDir(Form1.sAtual); // Sandro Silva 2017-03-31
 end;
 
