@@ -25432,8 +25432,11 @@ begin
 end;
 
 procedure TForm1.ConfigurarDANFCE1Click(Sender: TObject);
+var
+  qryNFCe: TIBQuery;
 begin
-  //
+  {Dailon Parisotto (f-19878) 2024-07-16 Inicio
+
   Form1.ibDataset150.Close;
   Form1.ibDataset150.SelectSql.Clear;
   Form1.ibDataset150.SelectSQL.Add('select * from NFCE order by NUMERONF');
@@ -25449,7 +25452,32 @@ begin
     ConfiguraNFCE(True);
     Form1.spdNFCe1.EditarModeloDanfce(Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('NFEXML').AsString, _ecf65_ArquivoRTM);
   end;
-  //
+  }
+  qryNFCe := CriaIBQuery(IBTransaction1);
+  try
+    qryNFCe.Close;
+    qryNFCe.SQL.Clear;
+    qryNFCe.SQL.Add('select first 1');
+    qryNFCe.SQL.Add('*');
+    qryNFCe.SQL.Add('from NFCE');
+    qryNFCe.SQL.Add('where');
+    qryNFCe.SQL.Add('  (upper(STATUS) containing upper(' + QuotedStr('Autorizad') + '))');
+    qryNFCe.SQL.Add('  and (NFEXML containing ' + QuotedStr('<nfeProc') + ')');
+    qryNFCe.SQL.Add('order by NUMERONF desc');
+    qryNFCe.Open;
+
+    if qryNFCe.IsEmpty then
+      Exit;
+
+    if Pos('<nfeProc',qryNFCe.FieldByName('NFEXML').AsString) <> 0 then
+    begin
+      ConfiguraNFCE(True);
+      Form1.spdNFCe1.EditarModeloDanfce(qryNFCe.FieldByName('NUMERONF').AsString, qryNFCe.FieldByName('NFEXML').AsString, _ecf65_ArquivoRTM);
+    end;
+  finally
+    FreeAndNil(qryNFCe);
+  end;
+  {Dailon Parisotto (f-19878) 2024-07-16 Fim}
 end;
 
 procedure TForm1.IDTokenNFCE1Click(Sender: TObject);
