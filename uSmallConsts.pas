@@ -149,6 +149,15 @@ const
 
   const _FormaPixEstatico = 'Pagamento Instantâneo (PIX) Estático';
   const _FormaPixDinamico = 'Pagamento Instantâneo (PIX) Dinâmico';
+
+  //Mauricio Parizotto 2024-07-15
+  //Responsável Técnico infRespTec
+  const _RespTecCNPJ    = '03916076000664';
+  const _RespTecContato = 'Bernardo Rachadel Junior';
+  const _RespTecEmail   = 'bernardo.rachadel@zucchetti.com';
+  const _RespTecFone    = '4934255800';
+
+
 implementation
 
 end.

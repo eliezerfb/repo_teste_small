@@ -162,6 +162,8 @@ begin
 
     sJson := TJson.ObjectToJsonString(registration_pub,[TJsonOption.joIgnoreEmptyStrings]);
 
+    LogSistema(sJson,lgInformacao);
+
     if RequisicaoItau(rmPOST,GetURL+'/registration/pub',sJson,sJsonRet,StatusCode) then
     begin
       try
