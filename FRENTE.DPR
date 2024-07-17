@@ -86,7 +86,8 @@ uses
   ufrmSelecionarPIX in 'ufrmSelecionarPIX.pas' {FrmSelecionarPIX},
   uPagamentoPix in 'uPagamentoPix.pas',
   uQrCode in '..\unit_compartilhada\uQrCode.pas',
-  uGeraChavePix in '..\unit_compartilhada\uGeraChavePix.pas';
+  uGeraChavePix in '..\unit_compartilhada\uGeraChavePix.pas',
+  urequisitapesobalancaautonoma in 'urequisitapesobalancaautonoma.pas';
 
 {$R *.RES}
 
