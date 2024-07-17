@@ -13666,7 +13666,12 @@ begin
 end;
 
 procedure TForm7.ibDataSet4MARGEMLBChange(Sender: TField);
+var
+  nMargemRecalc: Double;
+  nNewPreco: Double;
 begin
+  nMargemRecalc := 0;
+
   if ibDataSet4CUSTOCOMPR.Asfloat < 0 then
     ibDataSet4CUSTOCOMPR.Asfloat := 0;
 
@@ -13677,7 +13682,22 @@ begin
     ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.3f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
 
     }
+
+    {Dailon Parisotto (f-19887) 2024-07-12 Inicio
+
     ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.'+RetornarCasasDecimaisPreco.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+
+    }
+    nMargemRecalc := (((ibDataSet4PRECO.AsFloat - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100);
+    nNewPreco     := StrToFloat(Format('%8.'+RetornarCasasDecimaisPreco.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+
+    nMargemRecalc := StrToFloat(Format('%8.2f',[nMargemRecalc]));
+
+    if (ibDataSet4PRECO.AsFloat <= 0)
+      or ((ibDataSet4MARGEMLB.AsFloat <> nMargemRecalc)
+      and ((((nNewPreco - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100) <> nMargemRecalc)) then
+    {Dailon Parisotto (f-19887) 2024-07-12 Fim}
+      ibDataSet4PRECO.AsFloat := nNewPreco;
     {Dailon Parisotto (f-18540) 2024-05-Fim}
   end;
 end;
@@ -15317,7 +15337,7 @@ begin
         begin
           nVendaRecalc := StrToFloat(Format('%8.'+nDecimal.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
           if (nVendaRecalc <> ibDataSet4PRECO.AsFloat) then
-            ibDataSet4MARGEMLB.AsCurrency := nMargem
+            ibDataSet4MARGEMLB.AsCurrency := nMargem;
         end;
       end;
     end;
