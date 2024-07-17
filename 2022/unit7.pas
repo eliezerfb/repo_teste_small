@@ -2602,6 +2602,10 @@ type
     spdNFeDPEC1: TspdNFeDPEC;
     {Sandro Silva 2024-04-08 fim}
 
+    {Dailon Parisotto (f-19945) 2024-07-17 inicio}
+    bPesqProdNFPorConsulta: Boolean;
+    {Dailon Parisotto (f-19945) 2024-07-17 fim}
+
     procedure RefreshDados;
     procedure TotalizaItensCompra;
     procedure CalculaTotalNota;
@@ -2656,10 +2660,10 @@ type
   function RetornaValorDaTagNoCampoCRLF(sTag: String; sObs: String): String;
   function Manifesto(iP1: integer) : Boolean;
   function ProdutoValidoParaMarketplace(bP1 : Boolean): String;
-  
+
 var
   Form7: TForm7;
-  
+
 implementation
 
 uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais,
@@ -3005,10 +3009,10 @@ begin
     end;
   end;
 
-  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then 
+  if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
     Form7.ibDataset15.Edit;
   Form7.ibDataSet15NFEXML.AsString  := LoadXmlDestinatarioSaida(pChar(Form7.ibDataSet15NFEID.AsString));
- 
+
   if (Pos('xMotivo',Form7.ibDataSet15NFEXML.AsString) <> 0) or (Pos('nProt',Form7.ibDataSet15NFEXML.AsString) <> 0) then
   begin
     Form7.SetTextoCampoSTATUSNFe(RetornaValorDaTagNoCampo('xMotivo',Form7.ibDataSet15NFEXML.AsString));
@@ -3309,7 +3313,7 @@ begin
         end
       end;
     end;
-    
+
     slXMLDescom.Free;
     lXMLDocZip := nil;
   except
@@ -3319,7 +3323,7 @@ begin
       MensagemSistema('Erro 2503: '+E.Message,msgErro);
     end
   end;
-  
+
   Result := True;
 end;
 
@@ -3422,7 +3426,7 @@ begin
       lXMLDocZip  := CoDOMDocument.Create;
 
       //LogRetaguarda('3107 com docZip ' + sP1);
-      
+
       lXMLDocZip.loadXML(sP1);
       NodeZip     := lXMLDocZip.selectNodes('//retDistDFeInt/loteDistDFeInt/docZip');
 
@@ -3486,7 +3490,7 @@ begin
           end
         end;
       end;
-      
+
       slXMLDescom.Free;
       lXMLDocZip := nil;
     end;
@@ -3554,7 +3558,7 @@ begin
   end else
   begin
     Commitatudo(True);
-    
+
     Form7.ibQuery2.Close;
     Form7.ibQuery2.SQL.Clear;
     Form7.ibQuery2.SQL.Add('select count(REGISTRO) from '+sP1+' ');
@@ -3589,7 +3593,7 @@ var
 
   sSemCest, sAntigoSemCest : String; // Sandro Silva 2017-11-13  HOMOLOGA 2017 compatibilizar os hashs que estão no registros e foram gerados pelo PAF anterior
   sAntigoENCRYPTHASH, sAntigoSemCestENCRYPTHASH: String;
-  sAntigoOrcamentENCRYPTHASH, sAntigoOrcamentSemCodigoENCRYPTHASH: String;  
+  sAntigoOrcamentENCRYPTHASH, sAntigoOrcamentSemCodigoENCRYPTHASH: String;
 begin
   Result := True;
   s := '';
@@ -3605,7 +3609,7 @@ begin
       DataSet.FieldByname('CGC').AsString+
       DataSet.FieldByname('IE').AsString;
     end;
-    
+
     if pNome = 'VENDA' then
     begin
       sAntigo :=
@@ -3876,7 +3880,7 @@ begin
         DataSet.FieldByName('CEST').AsString+
         DataSet.FieldByName('IPPT').AsString;
     end;
-    
+
     if pNome = 'ALTERACA' then
     begin
       //Sandro Silva 2018-05-25 inicio
@@ -4092,7 +4096,7 @@ begin
 
     Form1.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
 
-    if (pNome = 'ALTERACA') or (pNome = 'ESTOQUE') then 
+    if (pNome = 'ALTERACA') or (pNome = 'ESTOQUE') then
     begin
       //sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(MD5Print(MD5String(sAntigo)));
       sAntigoENCRYPTHASH        := Form1.LbBlowfish1.EncryptString(MD5String(sAntigo));
@@ -4247,7 +4251,7 @@ end;
 function DenegadoOuCancelado(bP1:Boolean): boolean;
 begin
   Result := False;
-  
+
   if FileExists(pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml'))) then
   begin
     if (Pos('cancelada',LowerCase(Form7.ibDataSet15NFEXML.AsString)) = 0) then
@@ -4275,7 +4279,7 @@ begin
       Form7.Show;
     end;
   end;
-  
+
   if (FileExists(pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-den.xml'))))
   or (  Pos('denegado',LowerCase(Form7.ibDataSet15STATUS.AsString)) <> 0) then
   begin
@@ -4321,7 +4325,7 @@ begin
       Form7.bEstaSendoUsado := True;
     end;
   end;
-  
+
   if not bP1 then
   begin
     if Form7.bEstaSendoUsado then
@@ -4329,7 +4333,7 @@ begin
       AgendaCommit(True);
       Form7.Close;
       Form7.Show;
-      
+
       try
         Form7.ArquivoAberto.Edit;
         Form7.ArquivoAberto.Post;
@@ -4339,7 +4343,7 @@ begin
       end;
     end;
   end;
-  
+
   Result := Form7.bEstaSendoUsado;
 end;
 
@@ -4421,7 +4425,7 @@ begin
     except
     end;
   end;
-  
+
   if (Form7.ibDataSet15EMITIDA.AsString = 'S') then
   begin
     try
@@ -4448,7 +4452,7 @@ begin
         end;
 
         if not Form7.ibDataSet1.Active then Form7.ibDataSet1.Open;
-        
+
         Form7.ibDataSet1.Append;
         Form7.ibDataSet1DATA.Value      := Form7.ibDataSet15EMISSAO.Value;
         //Form7.ibDataSet1HISTORICO.Value := 'Nota Fiscal: '+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+' de '+Form7.ibDataSet15CLIENTE.asString; Mauricio Parizotto 2024-02-19
@@ -4510,7 +4514,7 @@ begin
                 Form7.ibDataSet4.Post;
               end;
             end;
-            
+
             Form7.sModulo := 'FECHAVENDA';
             Form7.ibDataSet16.Edit;
             Form7.ibDataSet16SINCRONIA.AsFloat := Form7.ibDataSet16QUANTIDADE.AsFloat; // Resolvi este problema as 4 da madrugada no NoteBook em casa
@@ -4587,11 +4591,11 @@ begin
   begin
     Result := xNodes.item[iNode].text;
   end;
-  
+
 //  Result := Utf8ToAnsi(Result);
   Result := Utf8Fix(Result);
   XMLDOM := nil;
-  
+
 end;
 
 {
@@ -5213,7 +5217,7 @@ begin
     // Cria um diretório com uma cópias dos dados //
     // ------------------------------------------ //
     ForceDirectories(sP1+'\XML');
-    
+
     Form7.fNFe := Form7.ibDataSet15NFEXML.AsString;
 
     if (Pos('>Cancelamento</descEvento>',Form7.ibDataSet15NFEXML.AsString) <> 0) then
@@ -5371,7 +5375,7 @@ begin
 
     sRegistro := '1'+StrZero(StrToInt(Form7.ibDataSet100.FieldByname('GEN_ID').AsString),9,0);
     Form7.ibDataset100.Close;
-    
+
     Form7.ibDataSet100.Close;
     Form7.ibDataSet100.SelectSql.Clear;
     Form7.ibDataSet100.SelectSql.Add('insert into AUDIT0RIA (ATO, MODULO, USUARIO, HISTORICO, VALOR_DE, VALOR_PARA, DATA, HORA, REGISTRO) values('
@@ -5426,7 +5430,7 @@ begin
     Form7.Panel4.Visible  := True;
     Form1.Panel_3.Visible := True;
   end;
-  
+
   Result := True;
 end;
 
@@ -5842,7 +5846,7 @@ begin
   P1 := StrTran(P1, '(select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0)<>0',' clientes com contas a receber ');
   P1 := StrTran(P1, '(select sum(VALOR_DUPL) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and RECEBER.VENCIMENTO < CURRENT_DATE)<>0',' clientes com contas atrasadas ');
   P1 := StrTran(P1, '(select Coalesce(sum(VALOR_DUPL),0) from RECEBER where CLIFOR.NOME=RECEBER.NOME and Coalesce(RECEBER.VALOR_RECE,0)=0 and RECEBER.VENCIMENTO < CURRENT_DATE)=0',' clientes com contas em dia ');
-  
+
   P1 := StrTran(P1,'substring(DATANAS from 6 for 5)', ' aniverssário ');
   P1 := StrTran(P1, 'MOSTRAR<>'+QuotedStr('0'),' está atrasado ');
   P1 := StrTran(P1, 'MOSTRAR<>'+QuotedStr('1'),' está em dia ');
@@ -5915,7 +5919,7 @@ begin
     {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
     {$ELSE}
-    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
     {$ENDIF}
 
     iPagina         := 72;
@@ -6329,7 +6333,7 @@ begin
                 Form7.ibDataSet19.Edit;
                 Form7.ibDataSet19COLUNA.AsFloat := 300;
               end;
-              
+
               if (Form7.ibDataSet19LINHA.Value + Form7.ibDataSet19COLUNA.Value) > 0 then
               begin
                 try
@@ -6341,7 +6345,7 @@ begin
                   end;
                 except
                 end;
-                
+
                 if (Form7.ibDataSet19ELEMENTO.Value >= 150) and (Form7.ibDataSet19ELEMENTO.Value < 999) then
                 begin
                   try
@@ -6604,7 +6608,7 @@ begin
     except
     end;
   end;
-  
+
   Result := True;
 end;
 
@@ -6627,7 +6631,7 @@ begin
     {$IFDEF VER150}
     ShortDateFormat := 'dd/mm/yyyy';
     {$ELSE}
-    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
     {$ENDIF}
 
     iPagina         := 72;
@@ -6985,7 +6989,7 @@ begin
 
             // Impressão da NF
             Form7.ibDataSet19.First;
-            
+
             if Copy(Form7.ibDataSet15NUMERONF.AsString,10,3) = '001' then
             begin
               Mais2ini := TIniFile.Create('retaguarda.ini');
@@ -6997,7 +7001,7 @@ begin
               AssignFile(F,Mais2Ini.ReadString('Nota Fiscal 2','Porta','LPT1'));
               Mais2ini.Free;
             end;
-            
+
             try
               Rewrite(F);
             except
@@ -7020,7 +7024,7 @@ begin
                 Form7.ibDataSet19.Edit;
                 Form7.ibDataSet19COLUNA.AsFloat := 300;
               end;
-              
+
               if (Form7.ibDataSet19LINHA.Value + Form7.ibDataSet19COLUNA.Value) > 0 then
               begin
                 try
@@ -7234,7 +7238,7 @@ begin
                         iPagina := StrToInt('0'+Limpanumero((Copy(Form7.ibDataSet19Tipo.AsString,Length(Form7.ibDataSet19TIPO.AsString)-3,3))));
                       end;
                     end;
-                    
+
                     if Copy(Form7.ibDataSet19TIPO.AsString,1,2) = '@R' then // Texto fixo
                     begin
                         vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ] := Copy(vLinha[ Trunc(Form7.ibDataSet19LINHA.AsFloat) ]+Replicate(' ',200),1,Trunc(Form7.ibDataSet19COLUNA.Value))+
@@ -8256,7 +8260,7 @@ begin
     //
     for I := 1 to 9999999 do
       Form7.fSaldoVetorCaixa[I] := 0;
-      
+
     SaldoAnterior  := 0;
     Form7.ibDataSet1.DisableControls;
     sRegistro := Form7.ibDataSet1REGISTRO.AsString;
@@ -8398,7 +8402,7 @@ begin
     MensagemSistema(_cOrcamentoComDocFiscal,msgAtencao);
     Exit;
   end;
-    
+
   Result := True;
 end;
 
@@ -8410,7 +8414,7 @@ begin
   begin
     Exit;
   end;
-    
+
   Result := True;
 end;
 
@@ -8648,7 +8652,7 @@ begin
     Exit;
   end;
   {Mauricio Parizotto 2024-04-15 Fim}
-  
+
   //Mauricio Parizotto 2024-05-15
   if (sModulo = 'CLIENTES') or (sModulo = 'VENDEDOR') then
   begin
@@ -8843,7 +8847,7 @@ begin
   begin
     if FrmParametroTributacao = nil then
       FrmParametroTributacao := TFrmParametroTributacao.Create(Self);
-      
+
     FrmParametroTributacao.lblNovoClick(Sender);
     FrmParametroTributacao.Show;
     Exit;
@@ -8854,7 +8858,7 @@ begin
   begin
     if FrmPerfilTributacao = nil then
       FrmPerfilTributacao := TFrmPerfilTributacao.Create(Self);
-      
+
     FrmPerfilTributacao.lblNovoClick(Sender);
     FrmPerfilTributacao.Show;
     Exit;
@@ -9088,7 +9092,7 @@ begin
             Application.ProcessMessages;
             sleep(100);
           end;
-          
+
           Form7.Caption := '';
           AgendaCommit(True);
           Form7.Close;
@@ -9121,7 +9125,7 @@ begin
     end
     else
       Form16.ShowModal;
-    
+
     Form7.Close;
     Form7.Show;
   end;
@@ -9563,7 +9567,7 @@ begin
         Clipboard.SetTextBuf(pChar(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)));
 
         {Dailon Parisotto 2023-10-11 Inicio
-        
+
         if Length(LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)) = 14 then
           ShellExecute( 0, 'Open',pChar('http://www.receita.fazenda.gov.br/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao.asp?cnpj='+LimpaNumero(TabelaAberta.FieldByname('CGC').AsString)),'', '', SW_SHOWMAXIMIZED)
         else
@@ -9623,7 +9627,7 @@ begin
         Mais1Ini.Free;
         close;
         Form1.imgBancosClick(Sender);
-      end;  
+      end;
 
       if sModulo = 'OS' then
       begin
@@ -9916,7 +9920,7 @@ begin
     Form39.Label1.Caption := Mais1Ini.ReadString('Lista de preços','Intervalo1','0,00');
     Form39.Label2.Caption := Mais1Ini.ReadString('Lista de preços','Intervalo2','0,00');
     Form39.Label3.Caption := Mais1Ini.ReadString('Lista de preços','Intervalo3','0,00');
-    
+
     Form39.CheckBox1.Visible := False;
     Form39.CheckBox2.Visible := False;
     Form39.CheckBox3.Visible := False;
@@ -10611,6 +10615,8 @@ begin
   bProximas := False;
   bContingencia := False;
   bFirst := False;
+
+  bPesqProdNFPorConsulta := False;
 
   sAjuda := 'INDEX.HTM';
 
@@ -11957,7 +11963,7 @@ begin
       pnlFiltro.Height := pnlFiltro.Height + lblHomologacao.Height;
       Panel7.Top := lblHomologacao.Top + lblHomologacao.Height;
       // Diminui do Grid o LABEL
-      DBGrid1.Height := DBGrid1.Height - lblHomologacao.Height; 
+      DBGrid1.Height := DBGrid1.Height - lblHomologacao.Height;
     end;
   end;
 
@@ -12054,7 +12060,7 @@ begin
       '      , cast(list(distinct coalesce(ORCAMENT.VENDEDOR, '''')) as varchar(5000)) as VENDEDOR' +
       '      , SUM(CASE WHEN ORCAMENT.DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS TOTALBRUTO ' +
       '      , SUM(CASE WHEN ORCAMENT.DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS DESCONTO ' +
-      '      , max(ORCAMENT.REGISTRO) as REGISTRO ' +      
+      '      , max(ORCAMENT.REGISTRO) as REGISTRO ' +
       '   FROM ORCAMENT ' +
       '   GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
       '  ) Q ' +
@@ -12371,6 +12377,8 @@ var
   CampoPK   : string;
 begin
   try
+    bPesqProdNFPorConsulta := False;
+
     if sTitulo = 'Cadastro dos vendedores' then
       sModulo := 'VENDEDOR'; // Não grava o Filtro registro coluna etc
 
@@ -12473,7 +12481,7 @@ begin
   end;
 
   try
-    //dbGrid1.DataSource := DataSource13; Mauricio Parizotto 2023-08-14  causa erro invalid transaction handle f-7258 
+    //dbGrid1.DataSource := DataSource13; Mauricio Parizotto 2023-08-14  causa erro invalid transaction handle f-7258
     dbGrid1.DataSource := nil;
     {Dailon Parisotto (f-7803) 2024-01-11 Inicio}
     DataSourceAtual    := nil;
@@ -12584,7 +12592,7 @@ begin
     if ibDataSet15MARCA.AsString   = '' then
       ibDataSet15MARCA.AsString   := 'VARIAS';
   end;
-  
+
   if ibDataSet15VOLUMES.AsFloat > 1 then
   begin
     if ibDataSet15ESPECIE.AsString = '' then
@@ -12650,7 +12658,7 @@ begin
 
     Screen.Cursor := crDefault;
   end;
-  
+
   AgendaCommit(True);
 end;
 
@@ -13023,7 +13031,7 @@ begin
   begin
     Key := Form1.BloqueiaCtrlXTField(Sender, Key, Shift);
   end;
-  {Sandro Silva 2022-10-19 final}  
+  {Sandro Silva 2022-10-19 final}
 end;
 
 procedure TForm7.ibDataSet1NOMEChange(Sender: TField);
@@ -13070,7 +13078,7 @@ begin
     end;
     ibDataSet11.Next;
   end;
-  
+
   for I := 0 to (MenuItem34.Count-1) do
   begin
     if I > 7 then
@@ -13169,7 +13177,7 @@ begin
   N2ConsultarrecibodaNFe1.Visible                  := False;
   N3ConsultarNFe1.Visible                          := False;
   N4ImprimirDANFE1.Visible                         := False;
-  N70.Visible                                      := False; 
+  N70.Visible                                      := False;
   ExportarXML1.Visible                             := False;
   N5EnviarDANFEporemail1.Visible                   := False;
   N6VisualizarDANFE1.Visible                       := False;
@@ -13296,7 +13304,7 @@ begin
       EnviarOrcamentoPorEmail1.Enabled := (cEmails <> EmptyStr);
       EnviarOrcamentoPorEmail1.Caption := 'Enviar orçamento por e-mail ' + cEmails;
     end;
-    
+
     if sModulo = 'OS'  then
     begin
       //Mauricio Parizotto 2023-12-26
@@ -13417,7 +13425,7 @@ begin
         end;
 
         ExportarXML1.Enabled := N4ImprimirDANFE1.Enabled;
-         
+
         N5EnviarDANFEporemail1.Enabled       := True;
         CancelarNFe1.Enabled                 := True;
         CCartadeCorreoEletronicaCCe1.Enabled := True;
@@ -13707,7 +13715,7 @@ begin
     ibDataSet23.SelectSQL.Clear;
     ibDataSet23.SelectSQL.Add('select * from ITENS002 where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString));
     ibDataSet23.Open;
-    
+
     ibDataSet27.Close;
     ibDataSet27.SelectSQL.Clear;
     ibDataSet27.SelectSQL.Add('select * from ALTERACA where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString));
@@ -13776,7 +13784,7 @@ begin
     IBDataSet99.SelectSQL.Add('select gen_id(G_CODIGO,-1) from rdb$database');
     IBDataSet99.Open;
   end;
-  
+
   try
     ibDataSet99.Close;
     ibDataSet99.SelectSql.Clear;
@@ -14066,7 +14074,7 @@ begin
               if ibDataSet1.FieldByName('DATA').Value <> date then DBGrid1.Canvas.Font.Color := $009F9FFF else DBGrid1.Canvas.Font.Color :=  clRed;
             end;
           end;
-          
+
           if sModulo = 'ICM' then
           begin
             if (Copy(ibDataSet14CFOP.AsString,1,1) = '1') or (Copy(ibDataSet14CFOP.AsString,1,1) = '2')  then DBGrid1.Canvas.Font.Color := clGreen;
@@ -14311,7 +14319,7 @@ begin
   ibDataSet1.SelectSQL.Clear;
   ibDataSet1.SelectSQL.Add('select * from CAIXA order by DATA, REGISTRO');
   ibDataSet1.Open;
-  
+
   CalculaSaldo(True);
 
   ibDataSet99.Close;
@@ -15541,7 +15549,7 @@ begin
   if (sNomeAnterior <> ibDataSet4DESCRICAO.AsString) and (AllTrim(sNomeAnterior) <> '') and (sNumeroAnterior = ibDataSet4REGISTRO.AsString) then
   begin
     Form1.LbBlowfish1.GenerateKey(Form1.sPasta);
-    
+
     Form7.ibDataSet4.DisableControls;
 
     sNomeNovo  := ibDataSet4DESCRICAO.AsString;
@@ -15605,7 +15613,7 @@ begin
       Form7.TabelaAberta.DisableControls;
     except
     end;
-    
+
     // Está variavel foi Iniciada no BeforeEdit        //
     // Se o nome for alterado deve ser                 //
     // atualizado o arquivo VENDAS e o arquivo RECEBER //
@@ -15663,7 +15671,7 @@ begin
       //ShowMessage('Erro 7/1 ao renomear o nome do cliente.') Mauricio Parizotto 2023-10-25
       MensagemSistema('Erro 7/1 ao renomear o nome do cliente.',msgErro);
     end;
-    
+
     Form7.TabelaAberta.EnableControls;
     AgendaCommit(True);
   end;
@@ -16139,7 +16147,7 @@ begin
     //ShowMessage('Erro 7/10042 comunique o suporte técnico.') Mauricio Parizotto 2023-10-25
     MensagemSistema('Erro 7/10042 comunique o suporte técnico.',msgErro);
   end;
-  
+
   AgendaCommit(True);
 end;
 
@@ -16284,7 +16292,7 @@ end;
 procedure TForm7.ibDataSet2CONVENIOSetText(Sender: TField; const Text: String);
 begin
   ibDataSet29.Locate('NOME',AllTrim(Text),[]);
-  
+
   if AllTrim(Text) = '' then
     ibDataSet2CONVENIO.AsString := Text
   else
@@ -16404,7 +16412,7 @@ var
   sNome : String;
 begin
   try
-    AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  
+    AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));
     try
       Rewrite(F);                           // Abre para gravação
     except
@@ -16429,7 +16437,7 @@ begin
     // CONTAS A RECEBER
     fTotal  := 0;
     fTotal1 := 0;
-    
+
     Writeln(F,'<br><font face="Microsoft Sans Serif" size=1><b>CONTAS A RECEBER</b>');
     WriteLn(F,'<table  border=1  style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
     WriteLn(F,' <tr>');
@@ -16835,7 +16843,7 @@ begin
   if ibDataSet8VALOR_DUPL.AsFloat < 0 then
     ibDataSet8VALOR_DUPL.AsFloat := 0;
   {Sandro Silva 2023-12-27 inicio}
-  // F7709 - Caso do banco onde existia registro com VALOR_DUPL e VALOR_PAGO armazenando o valor "INF"  
+  // F7709 - Caso do banco onde existia registro com VALOR_DUPL e VALOR_PAGO armazenando o valor "INF"
   if AnsiContainsText(ibDataSet8VALOR_DUPL.AsString, 'INF') then
     ibDataSet8VALOR_DUPL.AsFloat := 0;
   {Sandro Silva 2023-12-27 fim}
@@ -16923,7 +16931,7 @@ begin
   if ibDataSet8VALOR_PAGO.Value > 0
     then if ibDataSet8PAGAMENTO.AsString = ''
       then ibDataSet8PAGAMENTO.AsDateTime := Date + Time;
-  
+
   if ibDataSet8VALOR_PAGO.Value <> 0 then // Se valor Zero apaga o antigo mas não grava o novo
   begin
     ibDataSet1.Append;
@@ -16953,14 +16961,14 @@ begin
 
   Form7.Close;
   Form7.Show;
-  
+
   Mostrartodososclientesefornecedores1.Checked := False;
 end;
 
 procedure TForm7.Sosfornecedores1Click(Sender: TObject);
 begin
   sWhere := 'where CLIFOR='+QuotedStr('F')+ ' ';
-  
+
   Form7.Close;
   Form7.Show;
 
@@ -16982,13 +16990,13 @@ begin
     except
       //ShowMessage('Não foi possível gravar no arquivo '+'ARQU001.HTM'+Chr(10)+Chr(10)+'Este programa será fechado.'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Não foi possível gravar no arquivo '+'ARQU001.HTM'+Chr(10)+Chr(10)+'Este programa será fechado.',msgAtencao);
-      
+
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
       FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
     end;
-    
+
     Writeln(F,'<html><head><title>'+AllTrim(Form7.Acertodecontasde2.Caption)+'</title></head>');
     WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="30">');
     //
@@ -17432,9 +17440,9 @@ begin
     Form1.ibQuery1.Sql.Clear;
     Form1.ibQuery1.Sql.Add('select NOME from PAGAR where NOME='+QuotedStr(Form7.ibDataSet2NOME.AsString)+' ');
     Form1.ibQuery1.Open;
-    
+
     if Form1.ibQuery1.FieldByname('NOME').AsString = Form7.ibDataSet2NOME.AsString then  sApagar := sApagar + '      Contas a pagar'+Chr(10);
-    
+
     if Length(sApagar) <> 84 then
     begin
       sApagar := sApagar + Chr(10) + Chr(10) + 'Portanto não pode ser apagado.' + Chr(10)
@@ -17445,7 +17453,7 @@ begin
       MensagemSistema(sApagar,msgAtencao);
       Abort;
     end;
-    
+
     DeleteFile(Pchar('contatos\'+AllTrim(LimpaLetrasPor_(Form7.ibDataSet2NOME.AsString))+'.txt')); // Quando apara o cliente
   end;
   Form7.ibDataSet9.Close;                                                    //
@@ -17564,7 +17572,7 @@ begin
     {Dailon Parisotto 2023-10-13 Fim}
     Abort;
   end;
-  
+
   Form38.DateTimePicker1.Date := StrToDate('31/12/1899');
   Form10.Image203Click(Sender);
 end;
@@ -17642,7 +17650,7 @@ end;
 procedure TForm7.Cadastrodetcnicos1Click(Sender: TObject);
 begin
   Label1.Caption := 'CADASTRO DE TÉCNICOS';
-  
+
   Form7.Close;
   Form7.sModulo := 'TECNICO';
   Form7.sTitulo := Label1.Caption;
@@ -17893,7 +17901,7 @@ begin
     //Remove sub menus
     Imprimiretiqueta1.Clear;
     sOSEtiqueta := '';
-    
+
     if iOSQtdEtiqueta = 1 then
     begin
       sOSEtiqueta := Etiquetas.Strings[0];
@@ -18114,7 +18122,7 @@ end;
 procedure TForm7.ibDataSet4QTD_ATUALSetText(Sender: TField;
   const Text: String);
 var
-  bBlocoX : Boolean;  
+  bBlocoX : Boolean;
 begin
   //
   try
@@ -18185,7 +18193,7 @@ end;
 procedure TForm7.AuditaAlteracaoEstoqueManual;
 var
   QrySaldo: TIBQuery;
-begin  
+begin
   QrySaldo := TIBQuery.Create(nil);
   try
     QrySaldo.Close;
@@ -18456,7 +18464,7 @@ var
 begin
   if ibDataSet16.IsEmpty then
     Exit;
-    
+
   nRecNo := Form7.ibDataSet16.RecNo;
   Form7.ibDataSet16.DisableControls;
   try
@@ -18525,7 +18533,7 @@ begin
     Exit;
   if (ibDataSet16.IsEmpty) then
     Exit;
-    
+
   nRecNo := Form7.ibDataSet16.RecNo;
   ibDataSet16.DisableControls;
   try
@@ -18558,7 +18566,7 @@ begin
     begin
       if Form30.Visible then
       begin
-        //ShowMessage('Não é possível apagar este item porque foi importado para nota fiscal.'); Mauricio Parizotto 2023-10-25 
+        //ShowMessage('Não é possível apagar este item porque foi importado para nota fiscal.'); Mauricio Parizotto 2023-10-25
         MensagemSistema('Não é possível apagar este item porque foi importado para nota fiscal.',msgAtencao);
         Abort;
       end;
@@ -18580,7 +18588,7 @@ begin
     Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
     Form7.ibDataSet10.Open;
     Form7.ibDataSet10.First;
-    
+
     if (Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString) then
     begin
       try
@@ -18646,7 +18654,7 @@ begin
   end
   else
     Form7.ibDataSet16CFOP.AsString := '';
-    
+
   if Form7.ibDataSet16TOTAL.AsFloat <=0 then
     Form7.ibDataSet16CFOP.AsString := '';
 end;
@@ -18715,7 +18723,22 @@ begin
         else
         begin
           if Trim(Form7.ibDataSet16CODIGO.AsString) <> '' then
-            bFind := Form7.ibDataSet4.Locate('CODIGO', Form7.ibDataSet16CODIGO.AsString, []);
+          begin
+            {Dailon Parisotto (f-19945) 2024-07-17 Inicio
+            Neste caso se utilizar uma nova consulta é mais rapido que utilizar Locate
+            }
+            if bPesqProdNFPorConsulta then
+            begin
+              Form7.ibDataSet4.Close;
+              Form7.ibDataSet4.Selectsql.Clear;
+              Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString));
+              Form7.ibDataSet4.Open;
+
+              bFind := (not Form7.ibDataSet4.IsEmpty);
+            end else
+            {Dailon Parisotto (f-19945) 2024-07-17 Fim}
+              bFind := Form7.ibDataSet4.Locate('CODIGO', Form7.ibDataSet16CODIGO.AsString, []);
+          end;
         end;
         {Sandro Silva 2024-04-30 fim}
 
