@@ -68,7 +68,9 @@ var
 
 implementation
 
-uses Unit7, Mais, Unit10;
+uses Unit7, Mais
+  //, Unit10
+  ;
 
 {$R *.dfm}
 
@@ -77,9 +79,9 @@ begin
   FbClicouOK := True;
   
   Form7.AlphaBlend       := True;
-  Form10.AlphaBlend      := True;
+//  Form10.AlphaBlend      := True;
   Form7.AlphaBlendValue  := 0;
-  Form10.AlphaBlendValue := 0;
+//  Form10.AlphaBlendValue := 0;
 
   if Form29.btnOK.CanFocus then Form29.btnOK.SetFocus;
   if Form29.Edit1.CanFocus then Form29.Edit1.SetFocus;
@@ -143,8 +145,7 @@ end;
 
 procedure TForm29.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  //
-  Form10.AlphaBlendValue := 255;
+//  Form10.AlphaBlendValue := 255;
   Form7.AlphaBlendValue  := 255;
   //
   Form29.Label_01.Visible := False;

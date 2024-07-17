@@ -79,7 +79,7 @@ begin
     tpSelect:
     begin
       Query.Close;
-      Query.SQL.Text := SelectPesquisa;   
+      Query.SQL.Text := SelectPesquisa;
       Query.Open;
     end;
   else
@@ -169,6 +169,7 @@ begin
     end
   else
     Query.SQL.Text := ' Select ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
+                      CampoAuxExiber+// Mauricio Parizotto 2024-07-16
                       ' From ' + FTabela +
                       ' Where 1=1 ' +
                       FFiltro +

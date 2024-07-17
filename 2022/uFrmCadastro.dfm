@@ -1,13 +1,23 @@
 inherited FrmCadastro: TFrmCadastro
+  ClientWidth = 929
   OnActivate = FormActivate
+  ExplicitWidth = 945
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
+    Width = 929
+    inherited pnlBotoesSuperior: TPanel
+      Width = 929
+    end
     inherited pnlBotoesPosterior: TPanel
+      Width = 929
+      inherited btnOK: TBitBtn
+        Left = 799
+      end
       object btnRenogiarDivida: TBitBtn
         Left = 556
         Top = 8
-        Width = 150
+        Width = 237
         Height = 25
         Anchors = [akLeft, akTop, akRight]
         Caption = 'Renegociar d'#237'vida'
@@ -20,9 +30,14 @@ inherited FrmCadastro: TFrmCadastro
         TabOrder = 1
         Visible = False
         OnClick = btnRenogiarDividaClick
+        ExplicitWidth = 150
       end
     end
+    inherited Panel8: TPanel
+      Left = 919
+    end
     inherited pgcFicha: TPageControl
+      Width = 909
       ActivePage = tbsCadastro
       object tbsCadastro: TTabSheet
         Caption = 'Ficha'
