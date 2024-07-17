@@ -53,7 +53,8 @@ type
 
 implementation
 
-uses uGeraXmlNFeEntrada, uGeraXmlNFeSaida, uDialogs, uFuncoesRetaguarda;
+uses uGeraXmlNFeEntrada, uGeraXmlNFeSaida, uDialogs, uFuncoesRetaguarda,
+  uSmallConsts;
 
 
 function GeraXmlNFe: String;
@@ -101,6 +102,7 @@ begin
       GeraXmlNFeSaida;
     end;
 
+    {Mauricio Parizotto 2024-07-15
     // Grupo ZD. Informações do Responsável Técnico
 //  if Form1.bHomologacao then
     begin
@@ -109,6 +111,12 @@ begin
       Form7.spdNFeDataSets.Campo('email_ZD05').Value                        := 'smallsoft@smallsoft.com.br';
       Form7.spdNFeDataSets.Campo('fone_ZD06').Value                         := '4934255800';
     end;
+    }
+    //Responsável Técnico
+    Form7.spdNFeDataSets.Campo('CNPJ_ZD02').Value       := _RespTecCNPJ;
+    Form7.spdNFeDataSets.Campo('xContato_ZD04').Value   := _RespTecContato;
+    Form7.spdNFeDataSets.Campo('email_ZD05').Value      := _RespTecEmail;
+    Form7.spdNFeDataSets.Campo('fone_ZD06').Value       := _RespTecFone;
     
     if Form1.bModoSVC then
     begin
