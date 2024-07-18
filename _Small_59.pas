@@ -73,6 +73,7 @@ uses
   const SAT_CODIGO_MEIO_PAGAMENTO_17_PAGAMENTO_INSTANTANEO                        = '17';
   const SAT_CODIGO_MEIO_PAGAMENTO_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL      = '18'; //Transferência bancária, Carteira Digital
   const SAT_CODIGO_MEIO_PAGAMENTO_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL = '19'; //Programa de fidelidade, Cashback, Crédito Virtual
+  const SAT_CODIGO_MEIO_PAGAMENTO_20_PAGAMENTO_INSTANTANEO                        = '20';
   const SAT_CODIGO_MEIO_PAGAMENTO_99_OUTROS                                       = '99';
 
   const SAT_MENSAGEM_AGUARDANDO_RESPOSTA_DO_SERVIDOR = 'Aguardando resposta do Servidor'; // Sandro Silva 2021-08-27 const SAT_MENSAGEM_AGUARDANDO_RESPOSTA_DO_SERVIDOR_SAT = 'Aguardando resposta do Servidor SAT';
@@ -2253,6 +2254,7 @@ begin
           end; // while
 
           Form1.AtualizaDetalhe(Form1.ibDataSet27.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sCFe, 'Fechada');
+          Form1.AtualizaDocumentoTransItau(Form1.ibDataSet27.Transaction, Form1.sCaixa, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, FormataNumeroDoCupom(StrToInt(sCFe))); // Mauricio Parizotto 2024-06-18
 
           // Seleciona novamente os dados para usar na sequência da venda
           Form1.ibDataSet27.Close;

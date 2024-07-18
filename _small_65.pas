@@ -43,11 +43,7 @@ uses
   Dialogs, StdCtrls, ExtCtrls, Mask, Grids, DBGrids, DB, DBCtrls,
   IniFiles, FileCtrl, spdNFCeDataSets, spdNFCe, spdNFCeType, Printers,
   shellApi, Registry, TLHelp32
-  {$IFDEF VER150}
-  , IBCustomDataSet, IBQuery, IBDatabase
-  {$ELSE}
   , IBX.IBDatabase, IBX.IBQuery, IBX.IBCustomDataSet
-  {$ENDIF}
   , StrUtils, Variants,
   Math, ComCtrls, msxml, DateUtils, RTLConsts
   ;
@@ -200,6 +196,7 @@ uses
     var dvPag_YA03_99: Double);                                           // Sandro Silva 2018-08-01
   procedure _ecf65_DadosCredenciadoraCartoes(spdNFCeDataSets: TspdNFCeDataSets;
     sCNPJ_YA05: String; NomeRede: String; NumeroAutorizacao: String);     // Sandro Silva 2018-08-01
+  procedure _ecf65_DadosAutorizacaoPix(spdNFCeDataSets: TspdNFCeDataSets; sCodigoAutorizacao, sCNPJInstituicaoPIX : string); // Mauricio Parizotto 2024-07-03
   function _ecf65_DescricaoFormaExtra99: String;
   function _ecf65_DadosCarneNoXML: String;                                       // Sandro Silva 2018-08-01
   function _ecf65_CNPJAdministradoraCartao(xml: String): String;
@@ -293,7 +290,7 @@ uses
   , umfe
 //  , _Small_IntegradorFiscal // Sandro Silva 2018-07-03
   ,  ufuncoesfrente // Sandro Silva 2018-07-03
-  , uValidaRecursosDelphi7, uEmail;
+  , uValidaRecursosDelphi7, uEmail, uSmallConsts;
 
 function AlertaCredenciadoraCartao(sNomeRede: String): String;
 begin
@@ -2443,7 +2440,6 @@ end;
 
 function _ecf65_EnviarNFCe(pp1: Boolean): Boolean;
 var
-  //
   Mais1Ini : tIniFile;
   bButton: Integer;
   //{Sandro Silva 2019-07-24 inicio
@@ -4364,7 +4360,9 @@ begin
           _ecf65_AdicionaPagamento(NFCE_FORMA_16_DEPOSITO_BANCARIO, FormatFloatXML(dvPag_YA03_16)); // 16=Depósito Bancário
 
         if dvPag_YA03_17 > 0 then
+        begin
           _ecf65_AdicionaPagamento(NFCE_FORMA_17_PAGAMENTO_INSTANTANEO_PIX_DINAMICO, FormatFloatXML(dvPag_YA03_17)); // 17=Pagamento Instantâneo (PIX)
+        end;
 
         if dvPag_YA03_18 > 0 then
           _ecf65_AdicionaPagamento(NFCE_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL, FormatFloatXML(dvPag_YA03_18)); // 18=Transferência bancária, Carteira Digital
@@ -4374,7 +4372,7 @@ begin
         {Sandro Silva 2021-03-05 fim}
 
         if dvPag_YA03_20 > 0 then
-          _ecf65_AdicionaPagamento(NFCE_FORMA_20_PAGAMENTO_INSTANTANEO_PIX_ESTATICO, FormatFloatXML(dvPag_YA03_20)); // 17=Pagamento Instantâneo (PIX)
+          _ecf65_AdicionaPagamento(NFCE_FORMA_20_PAGAMENTO_INSTANTANEO_PIX_ESTATICO, FormatFloatXML(dvPag_YA03_20)); // 20=Pagamento Instantâneo (PIX)
 
         if dvPag_YA03_99 > 0 then
           _ecf65_AdicionaPagamento(NFCE_FORMA_99_OUTROS, FormatFloatXML(dvPag_YA03_99)); // 99=Outros
@@ -6695,10 +6693,8 @@ end;
 // ------------------------------ //
 function _ecf65_Pagamento(Pp1: Boolean):Boolean;
 begin
-  //
   Result := _ecf65_EnviarNFCe(True);
-  //
-end;  
+end;
 
 // ------------------------------ //
 // Cancela o último cupom emitido //
@@ -8704,6 +8700,20 @@ begin
   //end;
   {Sandro Silva 2021-08-16 fim}
 
+  //Mauricio Parizotto 2024-07-03
+  //Pagamento PIX
+  if tPag_YA02 = NFCE_FORMA_17_PAGAMENTO_INSTANTANEO_PIX_DINAMICO then
+  begin
+    if Form1.sTipoPix = _PixDinamico then
+    begin
+      Form1.spdNFCeDataSets1.Campo('tpIntegra_YA04a').Value := '1';
+      _ecf65_DadosAutorizacaoPix(Form1.spdNFCeDataSets1, Form1.sCodigoAutorizacaoPIX, Form1.sCNPJInstituicaoPIX);
+    end else
+    begin
+      Form1.spdNFCeDataSets1.Campo('tpIntegra_YA04a').Value := '2';
+    end;
+  end;
+
   Form1.spdNFCeDataSets1.SalvarPart('YA');
 end;
 
@@ -8813,6 +8823,13 @@ begin
   spdNFCeDataSets.Campo('cAut_YA07').Value  := NumeroAutorizacao; // Número de autorização da operação cartão de crédito e/ou débito
 
 end;
+
+procedure _ecf65_DadosAutorizacaoPix(spdNFCeDataSets: TspdNFCeDataSets; sCodigoAutorizacao, sCNPJInstituicaoPIX : string);
+begin
+  spdNFCeDataSets.Campo('CNPJ_YA05').Value  := LimpaNumero(sCNPJInstituicaoPIX); //CNPJ da Instituição Financeira
+  spdNFCeDataSets.Campo('cAut_YA07').Value  := sCodigoAutorizacao; // Número de autorização da operação
+end;
+
 
 function _ecf65_DescricaoFormaExtra99: String;
 // Identifica a primeira forma extra que estiver configurada com código 99-Outros

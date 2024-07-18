@@ -110,6 +110,7 @@ type
     dvMP_WA03_17: Double; // Sandro Silva 2021-08-10
     dvMP_WA03_18: Double; // Sandro Silva 2021-08-10
     dvMP_WA03_19: Double; // Sandro Silva 2021-08-10
+    dvMP_WA03_20: Double; // Mauricio Parizotto 2024-07-12
     dvMP_WA03_99: Double; // Sandro Silva 2016-08-12
     dvBCPisCofins: Double; // Sandro Silva 2016-10-12
     dpPIS: Double; // Sandro Silva 2016-10-12
@@ -369,6 +370,9 @@ begin
   if sOrdemExtra = SAT_CODIGO_MEIO_PAGAMENTO_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL then
     dvMP_WA03_19 := dvMP_WA03_19 + dValor;
   {Sandro Silva 2021-08-09 fim}
+  //Mauricio Parizotto 2024-07-12
+  if sOrdemExtra = SAT_CODIGO_MEIO_PAGAMENTO_20_PAGAMENTO_INSTANTANEO then
+    dvMP_WA03_20 := dvMP_WA03_20 + dValor;
 
   if sOrdemExtra = SAT_CODIGO_MEIO_PAGAMENTO_99_OUTROS then
     dvMP_WA03_99 := dvMP_WA03_99 + dValor;
@@ -1339,6 +1343,9 @@ begin
           if dvMP_WA03_19 > 0 then
             sDadosPagamento := sDadosPagamento + DadosPagamento(SAT_CODIGO_MEIO_PAGAMENTO_19_PROGRAMA_FIDELIDADE_CASHBACK_CREDITO_VIRTUAL, dvMP_WA03_19); // 19=Programa de fidelidade, Cashback, Crédito Virtual
           {Sandro Silva 2021-08-10 fim}
+          //Mauricio Parizotto 2024-07-12
+           if dvMP_WA03_20 > 0 then
+            sDadosPagamento := sDadosPagamento + DadosPagamento(SAT_CODIGO_MEIO_PAGAMENTO_20_PAGAMENTO_INSTANTANEO, dvMP_WA03_20); // 19=Programa de fidelidade, Cashback, Crédito Virtual
 
           if dvMP_WA03_99 > 0 then
             sDadosPagamento := sDadosPagamento + DadosPagamento(SAT_CODIGO_MEIO_PAGAMENTO_99_OUTROS, dvMP_WA03_99); // 99=Outros

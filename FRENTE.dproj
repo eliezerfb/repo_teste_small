@@ -3,7 +3,7 @@
         <ProjectGuid>{376CE32D-BC53-40E7-BD4E-12B5F2B54C24}</ProjectGuid>
         <MainSource>FRENTE.DPR</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -202,7 +202,6 @@
         <DCCReference Include="ufuncoesfrentepaf.pas"/>
         <DCCReference Include="urequisitospafnfce.pas"/>
         <DCCReference Include="upromocoesscanntech.pas"/>
-        <DCCReference Include="uajustaresolucao.pas"/>
         <DCCReference Include="umontaxmlvendasat.pas"/>
         <DCCReference Include="uregistrosdopafecf.pas"/>
         <DCCReference Include="upafecfmenufiscal.pas"/>
@@ -254,12 +253,22 @@
         <DCCReference Include="ufrmQRCodePixEst.pas">
             <Form>FrmQRCodePixEst</Form>
         </DCCReference>
+        <DCCReference Include="ufrmQRCodePixDin.pas">
+            <Form>FrmQRCodePixDin</Form>
+        </DCCReference>
         <DCCReference Include="ufrmSelecionarPIX.pas">
             <Form>FrmSelecionarPIX</Form>
         </DCCReference>
         <DCCReference Include="uPagamentoPix.pas"/>
         <DCCReference Include="..\unit_compartilhada\uQrCode.pas"/>
         <DCCReference Include="..\unit_compartilhada\uGeraChavePix.pas"/>
+        <DCCReference Include="uajustaresolucao.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Itau\uIntegracaoItau.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Itau\uClassesItau.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Itau\uWebServiceItau.pas"/>
+        <DCCReference Include="uFrmTransacoesItau.pas">
+            <Form>FrmTransacoesItau</Form>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
