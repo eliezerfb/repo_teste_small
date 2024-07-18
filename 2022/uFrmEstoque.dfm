@@ -9030,6 +9030,8 @@ inherited FrmEstoque: TFrmEstoque
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 3
+          OnChange = SMALL_DBEdit31Change
+          OnExit = SMALL_DBEdit31Change
           OnKeyDown = PadraoKeyDown
         end
         inline fraPerfilTrib: TfFrameCampo
@@ -10518,11 +10520,13 @@ inherited FrmEstoque: TFrmEstoque
           OnClick = Button22Click
         end
         object WebBrowser1: TWebBrowser
-          Left = 785
+          Left = -2000
           Top = -1
           Width = 639
           Height = 446
           TabOrder = 4
+          OnNavigateComplete2 = WebBrowser1NavigateComplete2
+          OnDocumentComplete = WebBrowser1DocumentComplete
           ControlData = {
             4C0000000B420000182E00000000000000000000000000000000000000000000
             000000004C000000000000000000000001000000E0D057007335CF11AE690800

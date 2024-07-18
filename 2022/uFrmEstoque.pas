@@ -374,6 +374,10 @@ type
     procedure lblAnteriorClick(Sender: TObject);
     procedure lblProximoClick(Sender: TObject);
     procedure lblProcurarClick(Sender: TObject);
+    procedure WebBrowser1DocumentComplete(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
+    procedure WebBrowser1NavigateComplete2(ASender: TObject;
+      const pDisp: IDispatch; const URL: OleVariant);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -392,7 +396,7 @@ type
     procedure DefinirVisibleConsultaProdComposicao;
     procedure AtribuirItemPesquisaComposicao;
     procedure CarregaCit;
-    function MostraImagemEstoque: Boolean;
+    function GravaImagemEstoque: Boolean;
   public
     { Public declarations }
   end;
@@ -661,6 +665,8 @@ procedure TFrmEstoque.FormCreate(Sender: TObject);
 begin
   inherited;
 
+  WebBrowser1.Left := -20000;
+
   framePesquisaProdComposicao.setDataBase(Form7.IBDatabase1);
 
   StringGrid2.DrawingStyle       := gdsGradient;
@@ -770,6 +776,7 @@ begin
 
     MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
 //    AtualizaTela(True);
+    CarregaValoresObjeto;
   except
   end;
 end;
@@ -1690,6 +1697,18 @@ begin
   end;
 end;
 
+procedure TFrmEstoque.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+begin
+  FrmEstoque.Tag := FrmEstoque.Tag + 1;
+end;
+
+procedure TFrmEstoque.WebBrowser1NavigateComplete2(ASender: TObject;
+  const pDisp: IDispatch; const URL: OleVariant);
+begin
+  FrmEstoque.Tag := 33;
+end;
+
 procedure TFrmEstoque._RRClick(Sender: TObject);
 begin
   with Sender as TLabel do
@@ -1788,7 +1807,7 @@ begin
   except
   end;
 
-  MostraImagemEstoque;
+  GravaImagemEstoque;
 end;
 
 
@@ -2032,6 +2051,7 @@ begin
       Image5.Picture.LoadFromFile(pChar(sNomeDoJPG));
 
 //      AtualizaTela(True);
+      CarregaValoresObjeto;
     except end;
   end;
 end;
@@ -2309,6 +2329,7 @@ begin
     Image5.Picture.LoadFromFile(pChar(sNomeDoJPG));
 
 //    AtualizaTela(True);
+    CarregaValoresObjeto;
   end;
 end;
 
@@ -2509,7 +2530,7 @@ begin
             sleep(100);
         end;
 
-        WebBrowser1.Left := -20000;
+
 
         Screen.Cursor             := crDefault;              // Cursor de Aguardo
 
@@ -2532,6 +2553,8 @@ begin
                   DownloadArquivoImg(PChar(sLinkDaFoto), PChar(sNomeDoJPG));
                   if FileExists(sNomeDoJPG) then
                   begin
+                    CarregaValoresObjeto;
+
 //                    if AtualizaTela(True) then
                     begin
                       if Form7.ibDataset4FOTO.BlobSize <> 0 then
@@ -2544,6 +2567,7 @@ begin
                           else
                             Form7.ibDataset4FOTO.Value := FotoOld; //Usando variavel pois valor do OldValue não estava correto
 
+                            CarregaValoresObjeto;
 //                          AtualizaTela(True);
                           Break;
                         end else
@@ -2564,6 +2588,7 @@ begin
                               Form7.ibDataset4FOTO.Value := FotoOld; //Usando variavel pois valor do OldValue não estava correto
 
 //                            AtualizaTela(True);
+                              CarregaValoresObjeto;
                             Break;
                           end;
                         end;
@@ -3865,7 +3890,7 @@ begin
 end;
 
 
-function TFrmEstoque.MostraImagemEstoque: Boolean;
+function TFrmEstoque.GravaImagemEstoque: Boolean;
 var
   FileStream : TFileStream;
   BlobStream : TStream;
