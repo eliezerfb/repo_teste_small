@@ -95,8 +95,8 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Frente de Caixa;FileVersion=2024.23.0.30;InternalName=frente.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=frente.exe;ProductName=Frente de Caixa;ProductVersion=2024.23.0.30;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
-        <VerInfo_MinorVer>23</VerInfo_MinorVer>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Frente de Caixa;FileVersion=2024.24.0.30;InternalName=frente.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=frente.exe;ProductName=Frente de Caixa;ProductVersion=2024.24.0.30;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_MinorVer>24</VerInfo_MinorVer>
         <VerInfo_Build>30</VerInfo_Build>
         <DCC_ExeOutput>\Desenvolvimento\Executaveis\Small Commerce\</DCC_ExeOutput>
         <Manifest_File>xp.manifest</Manifest_File>
@@ -261,6 +261,7 @@
         <DCCReference Include="uPagamentoPix.pas"/>
         <DCCReference Include="..\unit_compartilhada\uQrCode.pas"/>
         <DCCReference Include="..\unit_compartilhada\uGeraChavePix.pas"/>
+        <DCCReference Include="urequisitapesobalancaautonoma.pas"/>
         <DCCReference Include="uajustaresolucao.pas"/>
         <DCCReference Include="..\unit_compartilhada\Itau\uIntegracaoItau.pas"/>
         <DCCReference Include="..\unit_compartilhada\Itau\uClassesItau.pas"/>

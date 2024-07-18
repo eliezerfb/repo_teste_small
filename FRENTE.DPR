@@ -92,7 +92,8 @@ uses
   uWebServiceItau in '..\unit_compartilhada\Itau\uWebServiceItau.pas',
   uFrmTransacoesItau in 'uFrmTransacoesItau.pas' {FrmTransacoesItau},
   uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
-  uLogSistema in '..\unit_compartilhada\uLogSistema.pas';
+  uLogSistema in '..\unit_compartilhada\uLogSistema.pas',  
+  urequisitapesobalancaautonoma in 'urequisitapesobalancaautonoma.pas';
 
 {$R *.RES}
 
