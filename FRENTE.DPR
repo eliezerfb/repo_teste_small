@@ -65,7 +65,6 @@ uses
   _small_65 in '_small_65.pas',
   _small_99 in '_small_99.pas',
   uConfiguracaoTEF in 'uConfiguracaoTEF.pas' {FConfiguracaoTEF},
-  uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
   ufrmEditaMovimento in 'ufrmEditaMovimento.pas' {FEditaMovimento},
   uSmallEnumerados in '..\unit_compartilhada\uSmallEnumerados.pas',
   uframeCampoCaixasRelatorio in 'uframeCampoCaixasRelatorio.pas' {frameCampoCaixasRel: TFrame},
@@ -91,7 +90,9 @@ uses
   uIntegracaoItau in '..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\unit_compartilhada\Itau\uClassesItau.pas',
   uWebServiceItau in '..\unit_compartilhada\Itau\uWebServiceItau.pas',
-  uFrmTransacoesItau in 'uFrmTransacoesItau.pas' {FrmTransacoesItau};
+  uFrmTransacoesItau in 'uFrmTransacoesItau.pas' {FrmTransacoesItau},
+  uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
+  uLogSistema in '..\unit_compartilhada\uLogSistema.pas';
 
 {$R *.RES}
 
