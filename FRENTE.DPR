@@ -91,7 +91,8 @@ uses
   uIntegracaoItau in '..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\unit_compartilhada\Itau\uClassesItau.pas',
   uWebServiceItau in '..\unit_compartilhada\Itau\uWebServiceItau.pas',
-  uFrmTransacoesItau in 'uFrmTransacoesItau.pas' {FrmTransacoesItau};
+  uFrmTransacoesItau in 'uFrmTransacoesItau.pas' {FrmTransacoesItau},
+  uLogSistema in '..\unit_compartilhada\uLogSistema.pas';
 
 {$R *.RES}
 
