@@ -353,6 +353,9 @@ function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
 procedure SleepWithoutFreeze(msec: int64);
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
 procedure ResizeBitmap(var Bitmap: TBitmap; Width, Height: Integer; Background: TColor); // Mauricio Parizotto 2024-05-03
+function GetAutorizacaoItau(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction;
+  out CodigoAutorizacao, CNPJinstituicao : string) : boolean;
+function GetCNPJInstituicaoFinanceira(sInstituicaoFinanceira: string; IBTRANSACTION: TIBTransaction) : string;
 
 var
   //cWinDir: array[0..200] of WideChar;
@@ -2810,6 +2813,57 @@ begin
     finally
       B.Free;
     end;
+  end;
+end;
+
+function GetAutorizacaoItau(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction; out CodigoAutorizacao, CNPJinstituicao: string) : boolean;
+var
+  IbqTransacao: TIBQuery;
+begin
+  Result            := False;
+  CodigoAutorizacao := '';
+  CNPJinstituicao   := '';
+
+  try
+    IbqTransacao := CriaIBQuery(IBTransaction);
+    IbqTransacao.Close;
+    IbqTransacao.sql.Text := ' Select '+
+                             '   CODIGOAUTORIZACAO,'+
+                             '   CNPJINSTITUICAO'+
+                             ' From ITAUTRANSACAO'+
+                             ' Where STATUS = ''Aprovado'' '+
+                             '   and NUMERONF = '+QuotedStr(sNumeroNF)+
+                             '   and CAIXA = '+QuotedStr(sCaixa);
+    IbqTransacao.Open;
+
+    if not IbqTransacao.IsEmpty then
+    begin
+      Result            := True;
+      CodigoAutorizacao := IbqTransacao.FieldByName('CODIGOAUTORIZACAO').AsString;
+      CNPJinstituicao   := IbqTransacao.FieldByName('CNPJINSTITUICAO').AsString;
+    end;
+  finally
+    FreeAndNil(IbqTransacao);
+  end;
+
+end;
+
+function GetCNPJInstituicaoFinanceira(sInstituicaoFinanceira: string; IBTRANSACTION: TIBTransaction) : string;
+var
+  IbqInstituicao: TIBQuery;
+begin
+  Result := '';
+
+  try
+    IbqInstituicao := CriaIBQuery(IBTransaction);
+    IbqInstituicao.Close;
+    IbqInstituicao.sql.Text := ' Select CGC'+
+                               ' From CLIFOR'+
+                               ' Where NOME = '+QuotedStr(sInstituicaoFinanceira);
+    IbqInstituicao.Open;
+    Result := IbqInstituicao.FieldByName('CGC').AsString;
+  finally
+    FreeAndNil(IbqInstituicao);
   end;
 end;
 

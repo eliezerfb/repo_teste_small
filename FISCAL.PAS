@@ -1029,8 +1029,8 @@ type
     EmitirNFCedogerencial1: TMenuItem;
     FechamentodeCaixa1: TMenuItem;
     Iniciarnovavenda1: TMenuItem;
-    PIXEsttico1: TMenuItem;
     ibDataSet7INSTITUICAOFINANCEIRA: TIBStringField;
+    FunesAdministrativasIntegraoIta1: TMenuItem;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1402,7 +1402,7 @@ type
     procedure CDC1Click(Sender: TObject);
     procedure CCF1Click(Sender: TObject);
     procedure COO1Click(Sender: TObject);
-    procedure PIXEsttico1Click(Sender: TObject);
+    procedure FunesAdministrativasIntegraoIta1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1475,14 +1475,13 @@ type
     procedure EnviarANFCe;
     procedure ConfigurarINITEFsPadrao(AoIniFile: TIniFile);
     procedure DefineTemTEF;
-    procedure DefineUsoPIXEstatico;
     procedure ChamarTelaConfiguracaoTEF;
     procedure IniciarNovaVendaComDocAberto;
     procedure AbreEdicaoMovimento;
     procedure AjustaDataSetTamanhoCampoDescricao(Sender: TObject);
     procedure AtualizarTEMTEF;
+    procedure ConverteConfPix;
     procedure ValidaPastaNfce;
-
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -1521,6 +1520,7 @@ type
     bFlag2: Boolean; // False define calcular o troco a partir dos valores das formas de pagamento
     bCupomAberto, bSairDoPrograma, bVolta, bNFazMaisNada, bChave, bNaoSaiComESC, bFechaTudo, bFecha : Boolean;
     iMesasAbertas, iMesaAberta, iStatusGaveta, iGaveta, iPeso, iTrunca, iItem, iVias, iAjuste, icupom, iCCF, iGNF, iParcelas, bButton, Retorno : Integer;
+    sCNPJInstituicaoPIX, sTipoPIX, sCodigoAutorizacaoPIX : string;
     sTamanhoPapel: String;
     bFechaRapidoCartao: Boolean; // Sandro Silva 2021-09-08
     //
@@ -1533,7 +1533,7 @@ type
     sSenhaDeUsuario, sMotivoContingencia, sTipoDocumento, sTipoDocumento2, sMenuFiscal, sCreditosDF, sPromissoria, sConcomitante, sUF, sPERFIL, sMesaOuConta, sMesasOuContas, sSuperCodigo, sF4Conferencia, sMensagemMesaConferida,
     sHoraMovimento, sDataMovimento, sF, sMesas, sMesasOffLine, sStatusECF, sStatusECF_RES, sMD5DaLista, sTipo, sCPF_CNPJ_Validado,
     sPastaVoltaOffLine, sPasta, sAjuda, sAbreComOLeitor, sAviso, sPlanoDeContas, sOs, sOrcame, sProximo, sProximo27, sProximo150, sProximo027, sProximo28, sProximo38, sGertec, sTipoEtiqueta, sIdentificaConsumidor, sTef, sPastaDoExecutavel, sNumeroDeSerieDaImpressora : String;
-    bUsaPixEstatico : Boolean;//Mauricio Parizotto 2024-04-30
+    //bUsaPixEstatico : Boolean;//Mauricio Parizotto 2024-04-30
     sDataDoCupom, sHoraDoCupom, sSangria, sModeloECF, sModeloECF_Reserva, sMFD_, sBalanca, sCRLF, sCortaPapel, sTipoImpressora, sCripto, sConveniado, sCaixa, sArquivo, sAtual, sAtualOnLine, OKSim, sVendedor, sGaveta,
     sRGTurbo, sUltimoItem, sPorta, sSeriais, sMensagemPromocional ,sVendedorFixo ,sAliquotas, ConfCusto,
     ConfNegat, sPrazo, ConfCasas, ConfPreco, ModoMercado, sDiretorio, sCupomTEF, sCupomTEFReduzido, sCupomTEFCancelado,
@@ -1697,6 +1697,7 @@ type
       FModeloDocOld: String // Sandro Silva 2023-08-30
     ): Boolean;
     function RetornarTipoDocumentoConfigurado: tTipoDocFrente; // Dailon Parisotto 2023-11-13
+    procedure AtualizaDocumentoTransItau(IBTransaction: TIBTransaction; sCaixaOld, sDocOld, sCaixaNew, sDocNew: string); // Mauricio Parizotto 2024-06-18
   end;
 
 var
@@ -1778,11 +1779,20 @@ uses
   , ucredencialtecnospeed
   //, uClasseValidaRecursos
   , uValidaRecursosDelphi7
+  , uTypesRecursos
+  , uValidaRecursos
   , uFuncoesPOS
   , uConverteDocumentoParaDocFiscal
   , uConfiguracaoTEF
   , uSmallConsts
-  , ufrmEditaMovimento, uPagamentoPix, urequisitapesobalancaautonoma;
+  , ufrmEditaMovimento
+  , uPagamentoPix
+  , urequisitapesobalancaautonoma
+  , uIntegracaoItau
+  , uConectaBancoSmall
+  , uFrmTransacoesItau
+  , uDialogs
+  ;
 
 {$R *.DFM}
 
@@ -8935,8 +8945,9 @@ begin
     }
     SmallMsgBox(PChar('Este sistema está licenciado somente para ' + IntToStr(iLimiteUsuariosSimultaneos) + ' usuário(s)' + Chr(10) +
              'neste momento ' + IntToStr(iUsuariosConectados) + ' estão tentando usar o sistema.' + Chr(10) + Chr(10) +
-             'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
-             'entre em contato com a Zucchetti pelo telefone 0800 645 2008')
+             //'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
+             //'entre em contato com a Zucchetti pelo telefone 0800 645 2008')
+             _RecursoIndisponivel) // Mauricio Parizotto 2024-06-25
              , 'Atenção', MB_ICONWARNING
              ); // Sandro Silva 2022-12-02 Unochapeco 'em contato com a Smallsoft.');
     {Sandro Silva 2023-05-31 fim}
@@ -9519,7 +9530,8 @@ begin
         Form1.spdNFCe1.UF                               := UpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString);
         Form1.spdNFCe1.VersaoManual                     := vm60;
         // Sandro Silva 2023-05-19 Form1.spdNFCeDataSets1.VersaoEsquema            := pl_009;
-        Form1.spdNFCeDataSets1.VersaoEsquema            := pl_009k;
+        //Form1.spdNFCeDataSets1.VersaoEsquema            := pl_009k; // Mauricio Parizotto 2024-07-11
+        Form1.spdNFCeDataSets1.VersaoEsquema            := pl_009o;
         Form1.spdNFCeDataSets1.XMLDicionario            := Form1.sAtual + '\nfce\Templates\vm60\Conversor\NFCeDataSets.xml';
         //
         // Nestas 3 linhas que dava o erro ....
@@ -9815,9 +9827,11 @@ var
   I : Integer;
   sSecoes :  TStrings;
   Mais1Ini: TIniFile;
-//  sExeName: String;
   bInicializa: Boolean;// Sandro Silva 2017-07-05
 begin
+  //Integração Itaú
+  CarregaTipoAmbiente; // Mauricio Parizotto 2024-06-17
+
   Form1.bEditandoMovimento := False; // Sandro Silva 2023-11-08
   AjustarBufferChuncks(Form1);
   ClienteSmallMobile := TSmallMobileCliente.Create;
@@ -9829,24 +9843,6 @@ begin
   if ValidaRecursos = nil then
     ValidaRecursos := TValidaRecurso.Create;
   {Sandro Silva 2023-05-25 fim}
-
-
-  {Sandro Silva 2023-12-26 inicio
-  Form1.IBTransaction1.Params.Clear;
-  Form1.IBTransaction1.Params.Add('read_committed');
-  Form1.IBTransaction1.Params.Add('rec_version');
-  Form1.IBTransaction1.Params.Add('nowait');
-
-  Form1.IBTransaction2.Params.Clear;
-  Form1.IBTransaction2.Params.Add('read_committed');
-  Form1.IBTransaction2.Params.Add('rec_version');
-  Form1.IBTransaction2.Params.Add('nowait');
-
-  Form1.IBTransaction3.Params.Clear;
-  Form1.IBTransaction3.Params.Add('read_committed');
-  Form1.IBTransaction3.Params.Add('rec_version');
-  Form1.IBTransaction3.Params.Add('nowait');
-  {Sandro Silva 2023-12-26 fim}
 
   DadosEmitentePDV := TDadosEmitente.Create; // Sandro Silva 2023-07-18
 
@@ -9892,10 +9888,6 @@ begin
 
   touch_baixo.Visible := False;
   touch_cima.Visible  := False; // Sandro Silva 2016-08-12
-
-  //
-  //SmallMsg('Teste 01 Create início');
-  //LogFrente('Teste 01: Inciando FormCreate');
 
   LabelESC2.Width  := touch_ESC2.Width;
   LabelESC2.Height := touch_ESC2.Height;
@@ -9944,64 +9936,34 @@ begin
 
   NotifyIconData.cbSize := SizeOf(TNotifyIconData);
 
-  //
-  // ChDir('c:\Projeto 2014\2014');
-  //
   // Altera
   Form1.Caption := 'Programa Aplicativo Fiscal (PAF-ECF)';
 
-  (*
-  sExeName := AnsiLowerCase(ExtractFileName(Application.ExeName));
-
-  if (sExeName = 'nfce.exe') or (NFCe)then // Sandro Silva 2021-03-19 if (sExeName = 'nfce.exe') then
-  begin
-    Form1.Caption := 'Aplicativo emissor NFC-e';
-  end;
-  if (sExeName = 'cfesat.exe') or (SAT) or (MFE) then // Sandro Silva 2021-03-19 if (sExeName = 'cfesat.exe') then
-  begin
-    Form1.Caption := 'Aplicativo emissor CF-e';
-  end;
-  {Sandro Silva 2023-06-26 inicio
-  if (sExeName = 'mei.exe') or (MEI) then // Sandro Silva 2021-03-19 if (sExeName = 'mei.exe') then
-  begin
-    Form1.Caption := 'Aplicativo MEI';
-  end;
-  }
-  if (PAFNFCe) then
-  begin
-    Form1.Caption := 'Aplicativo emissor NFC-e (PAF-NFC-e)';
-  end;
-  *)
-  //
   Getdir(0,sAtualOnLine);
   Getdir(0,sAtual);
 
-  //
   Form22.Image1.Left    := (Screen.Width - Form22.Image1.Width ) div 2;
   Form22.Image1.Top     := ((Screen.Height - Form22.Image1.Height ) div 2) - 160 - 70;//90 // Sandro Silva 2021-07-22 (Screen.Height - Form22.Image1.Height ) div 2 - 160 - 50;
   Form22.Image1.Visible := True;
-  //
+
   Form22.Button1.Left   := (Screen.Width - Form22.Button1.Width ) div 2;
   Form22.Button1.Top    := (Screen.Height - Form22.Button1.Height ) div 2 - 160 + 250;
-  //
-  //
+
   Form22.Label6.Top     := Form22.Image1.Top + Form22.Image1.Height + 20;
   Form22.Label6.Width   := Screen.Width;
   Form22.Label6.Left    := 0;
-  //
+
   //if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65')
   //  and (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'FRENTE.EXE') then // Sandro Silva 2017-04-12
   begin
-
     if Trim(Form1.sPastaDoExecutavel) <> '' then
     begin
       Form22.Label6.Caption := 'O arquivo: LISTA.TXT foi gravado na pasta: '+Form1.sPastaDoExecutavel + '\';
       Form22.Label6.Repaint; // 2015-09-08
       ExibirCaminhoLista;
     end;
-
   end;
-  //
+
   Form1.touch_F2.Picture           := Form1.touch_F1.Picture;
   Form1.touch_F3.Picture           := Form1.touch_F1.Picture;
   Form1.touch_F4.Picture           := Form1.touch_F1.Picture;
@@ -10038,13 +10000,10 @@ begin
   Form1.sProximo27 := '';
   Form1.sModeloECF := '01';
 
-  //ShowMessage('Teste 01 12283'); // Sandro Silva 2017-11-03
-
   // A partir deste ponto o tamanho dos objetos está dimensionado conforme a resolução do monitor
   AjustaResolucao(Form1);
   AjustaResolucao(Form1.Frame_teclado1);
 
-  //
   Mais1ini   := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
   sLiberacao := Mais1Ini.ReadString('Frente de caixa','B17','1');
   //
@@ -10060,7 +10019,6 @@ begin
   bData           := True;
   //
   // Configuração visuais
-  //
   Mais1ini    := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
   //
   ConfCusto   := Mais1Ini.ReadString('Permitir','Vendas abaixo do custo','Sim');
@@ -10072,7 +10030,6 @@ begin
   iDiasCartaoCredito := StrToIntDef(Mais1Ini.ReadString('Cartoes','Dias Credito','30'), 30); // Sandro Silva 2019-11-19
   iDiasCartaoDebito  := StrToIntDef(Mais1Ini.ReadString('Cartoes','Dias Debito','30'), 30); // Sandro Silva 2019-11-19
 
-  //
   GetWindowsDirectory(aWinDir,200);
   //
   Mais1Ini.Free;
@@ -10083,9 +10040,6 @@ begin
   sPorta  := '';
   fQuantidadeVendida := 1; // Produto pesado
 
-  //ShowMessage('Teste 01 12320'); // Sandro Silva 2017-11-03
-
-  //
   Mais1ini               := TIniFile.Create('FRENTE.INI');
 
   try
@@ -10097,7 +10051,6 @@ begin
 
   if Mais1Ini.ReadString('Frente de caixa', 'Modelo do ECF', '') = '' then
   begin
-
     // Faz a configuração automática se não existir configuração do modelo de ecf para SAT e NFCe
     if AnsiContainsText(ExtractFileName(Application.ExeName), 'cfesat.exe') then // Sandro Silva 2023-07-28 if AnsiContainsText(ExtractFileName(Application.ExeName), 'cfesat.exe') or (SAT) or (MFE) then
     begin
@@ -10112,7 +10065,6 @@ begin
     begin
       Mais1Ini.WriteString('Frente de caixa', 'Modelo do ECF', '99');
     end;
-
   end
   else
   begin
@@ -10234,7 +10186,6 @@ begin
   Form1.sSAngria         := Mais1Ini.ReadString('Frente de caixa', 'Sangria'                 ,'999.999,99');
   iPeso                  := Mais1Ini.ReadInteger('Frente de caixa', 'Peso'       ,1);
   DefineTemTEF;
-  DefineUsoPIXEstatico;//Mauricio Parizotto 2024-04-30
   sGertec                := Mais1Ini.ReadString('Frente de caixa', 'Teclado gertec','Não');
   sPromissoria           := Mais1Ini.ReadString('Frente de caixa', 'Promissória','Não');
   sCreditosDF            := Mais1Ini.ReadString('Frente de caixa', 'Créditos DF','Não');
@@ -10316,14 +10267,13 @@ begin
   if StrToIntDef(sMesas, 0) > 999 then
     sMesas := '999';
 
-  //
   if Form1.sModeloECF = '01' then
   begin
     Form1.sModeloECF := '00';
   end;
-  //
+
   sMesasOffline := sMesas;
-  //
+
   Form1.sModeloECF_Reserva := Form1.sModeloECF;
 
   Form1.sImpressoraDestino := ''; // Sandro Silva 2017-09-06
@@ -10356,7 +10306,6 @@ begin
         BlocoXSelecionaCertificadoDigital
       else
         MensagemAlertaCertificado;
-
     end;
 
     ForceDirectories(PASTA_ESTOQUE_BLOCO_X);
@@ -10378,7 +10327,6 @@ begin
     sImpressoraDestino := LerParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_IMPRESSORA_PADRAO, '');
   end;
 
-  //
   if AllTrim(sPastaVoltaOffLine) <> '' then
     sAtualOnLine := sPastaVoltaOffLine;
   //
@@ -10658,12 +10606,10 @@ begin
       //
     end else
     begin
-      //
       SmallMsg('Não foi possível estabelecer comunicação com'+Chr(10)+
                   'a impressora fiscal.                        '+Chr(10)+
                   'Sugestão: Desligue/ligue a impressora e reinicie'+Chr(10)+
                   'o aplicativo.');
-      //
     end;
   except
     on E: Exception do
@@ -10681,10 +10627,7 @@ begin
 
   ExibeScrollCupom(Form1.Memo1.Visible); // Sandro Silva 2016-08-03
 
-  //
   TipoDeConta(True);
-
-  //
 
   if (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '99') then
   begin
@@ -10698,7 +10641,6 @@ begin
 
     end;
   end;
-  //
 
   if (Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '99') then
   begin
@@ -10808,6 +10750,8 @@ begin
 
   //TimerBalancaAutonoma.Interval := 2000; // Sandro Silva 2024-07-12
   TimerBalancaAutonoma.Enabled := Form1.bBalancaAutonoma;
+  
+  ConverteConfPix;
 end;
 
 procedure TForm1.Button18Click(Sender: TObject); // Fechamento Cupom
@@ -10845,22 +10789,24 @@ var
   //iFormaExtra: Integer; // Sandro Silva 2022-08-04
   //iniFormas: TIniFile;
 
-  CodFormaPix : integer;
+  CodFormaPixEst, CodFormaPixDin : integer;
   InstituicaoFinanceira : string;
   PagouNoPIX : boolean;
   ValorPIX : Double;
   IDTransacaoPIX : string;
   sEmailCliente: String; //Sandro Silva 2024-05-07
 begin
-  Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  bFechado            := False; // Sandro Silva 2016-04-12
-  Form1.bNFazMaisNada := False;
-  bInicializa         := False;
-  bChave              := False; // Sandro Silva 2020-04-14
-  sCOOModelo02        := '';
-  sCCFModelo02        := '';
-  sPedidoModelo02     := '';
-  bNFCeUsoDenegado    := False; // Sandro Silva 2020-05-21
+  Screen.Cursor             := crHourGlass; // Cursor de Aguardo
+  bFechado                  := False; // Sandro Silva 2016-04-12
+  Form1.bNFazMaisNada       := False;
+  bInicializa               := False;
+  bChave                    := False; // Sandro Silva 2020-04-14
+  sCOOModelo02              := '';
+  sCCFModelo02              := '';
+  sPedidoModelo02           := '';
+  bNFCeUsoDenegado          := False; // Sandro Silva 2020-05-21
+  sCNPJInstituicaoPIX       := '';    //Mauricio Parizotto 2024-07-03
+  sTipoPix                  := '';    //Mauricio Parizotto 2024-07-03
 
   AtualizarTEMTEF;
   //
@@ -11078,17 +11024,18 @@ begin
         {$Region'//// PIX ////'}
         //Mauricio Parizotto 2024-04-30
         ValorPIX := 0;
-        if (bUsaPixEstatico) and (Form1.ClienteSmallMobile.sVendaImportando = '') then
+        //if (bUsaPixEstatico) and (Form1.ClienteSmallMobile.sVendaImportando = '') then // Mauricio Parizotto 2024-06-14
+        if (Form1.ClienteSmallMobile.sVendaImportando = '') then
         begin
           try
-            //Usou forma PIX - 17
-            CodFormaPix := FormaPagamentoPix(ibDataSet25);
+            //Usou forma PIX - 17 Estático
+            CodFormaPixEst := FormaPagamentoPix(ibDataSet25,_PixEstatico);
 
-            if CodFormaPix > 0 then
+            if CodFormaPixEst > 0 then
             begin
-              ValorPIX := ibDataSet25.FieldByName('VALOR0'+CodFormaPix.ToString).AsFloat;
+              ValorPIX := ibDataSet25.FieldByName('VALOR0'+CodFormaPixEst.ToString).AsFloat;
 
-              IDTransacaoPIX := sCaixa + FormataNumeroDoCupom(Form1.icupom) + CodFormaPix.ToString;
+              IDTransacaoPIX := sCaixa + FormataNumeroDoCupom(Form1.icupom) + CodFormaPixEst.ToString;
 
               if Form1.sModeloECF = '59' then
                 IDTransacaoPIX := '';
@@ -11099,8 +11046,46 @@ begin
                                                  InstituicaoFinanceira,
                                                  ibDataSet25.Transaction);
 
+              if PagouNoPIX then
+              begin
+                sTipoPix                  := _PixEstatico;
+              end;
             end;
           except
+          end;
+
+          //Mauricio Parizotto 2024-06-14
+          try
+            //Usou forma PIX - 17 Dinâmico
+            CodFormaPixDin := FormaPagamentoPix(ibDataSet25,_PixDinamico);
+
+            if CodFormaPixDin > 0 then
+            begin
+              ValorPIX := ibDataSet25.FieldByName('VALOR0'+CodFormaPixDin.ToString).AsFloat;
+
+              IDTransacaoPIX := sCaixa + FormataNumeroDoCupom(Form1.icupom) + CodFormaPixDin.ToString;
+
+              if Form1.sModeloECF = '59' then
+                IDTransacaoPIX := '';
+
+              //Se cofirmou pagamento com PIX
+              PagouNoPIX := PagamentoPixDinamico(ValorPIX,
+                                                 IDTransacaoPIX,//ID Transação
+                                                 FormataNumeroDoCupom(Form1.icupom),
+                                                 sCaixa,
+                                                 InstituicaoFinanceira,
+                                                 sCodigoAutorizacaoPIX,
+                                                 ibDataSet25.Transaction);
+
+              if PagouNoPIX then
+              begin
+                sCNPJInstituicaoPIX :=    GetCNPJInstituicaoFinanceira(InstituicaoFinanceira,ibDataSet25.Transaction);
+                sTipoPix                  := _PixDinamico;
+              end;
+            end;
+          except
+            on e:exception do
+              ShowMessage('Erro ao gerar chave PIX. '+e.Message);
           end;
         end;
         {$Endregion}
@@ -17756,19 +17741,6 @@ begin
   end;
 end;
 
-//Mauricio Parizotto 2024-04-30
-procedure TForm1.DefineUsoPIXEstatico;
-var
-  oArq : TiniFile;
-begin
-  oArq := TIniFile.Create('FRENTE.INI');
-  try
-    bUsaPixEstatico     := AnsiUpperCase(oArq.ReadString('Frente de caixa', 'USA PIX ESTATICO', _cNao)) = AnsiUpperCase(_cSim);
-    PIXEsttico1.Checked := bUsaPixEstatico;
-  finally
-    oArq.Free;
-  end;
-end;
 
 {Dailon (f-7256) 2023-08-29 inicio}
 procedure TForm1.ChamarTelaConfiguracaoTEF;
@@ -27655,27 +27627,6 @@ begin
   Form1.Pesquisarpeloinciodotexto1.Checked       := True;
 end;
 
-//Mauricio Parizotto 2024-04-30
-procedure TForm1.PIXEsttico1Click(Sender: TObject);
-var
-  oArq : TiniFile;
-  Valor : string;
-begin
-  if PIXEsttico1.Checked then
-    Valor := _cNao
-  else
-    Valor := _cSim;
-
-  oArq := TIniFile.Create('FRENTE.INI');
-  try
-    oArq.WriteString('Frente de caixa', 'USA PIX ESTATICO', Valor);
-  finally
-    oArq.Free;
-  end;
-
-  DefineUsoPIXEstatico;
-end;
-
 procedure TForm1.Pesquisaremqualquerpartedotexto1Click(Sender: TObject);
 begin
   //Pesquisarpeloinciodotexto1Click(Sender);
@@ -33918,6 +33869,24 @@ begin
 
 end;
 
+procedure TForm1.FunesAdministrativasIntegraoIta1Click(Sender: TObject);
+var
+  bLiberado : Boolean;
+  dLimiteRecurso : Tdate;
+begin
+  bLiberado := (RecursoLiberado(IBDatabase1,rcIntegracaoItau,dLimiteRecurso));
+
+  if not bLiberado then
+  begin
+    MensagemSistema('Integração Itaú não está disponível para esta licença' + Chr(10) + Chr(10) +
+                    _RecursoIndisponivel
+                    ,msgAtencao);
+    Exit;
+  end;
+
+  ListaTransacoesItau(sCaixa,Form1);
+end;
+
 procedure TForm1.FunesAdministrativasPosElginPay1Click(Sender: TObject);
 begin
   Form1.Display('Funções Administrativas do POS','Funções Administrativas do POS');
@@ -34311,8 +34280,9 @@ begin
                    AllTrim(Form1.ibDataSet13.FieldByName('NOME').AsString)+chr(10)+chr(10)+
                    AllTrim(Form1.ibDataSet13.FieldByName('CGC').AsString)+chr(10)+chr(10)+
                    'Código: 100 '+chr(10)+chr(10) +
-                   'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
-                   'entre em contato com a Zucchetti pelo telefone 0800 645 2008'
+                   //'Para ter acesso à esse recurso, procure seu revendedor ou' + Chr(10) +
+                   //'entre em contato com a Zucchetti pelo telefone 0800 645 2008'
+                   _RecursoIndisponivel // Mauricio Parizotto 2024-06-25
                    ),
                    'Atenção', MB_ICONWARNING + MB_OK);
 
@@ -35788,5 +35758,48 @@ procedure TForm1.FechamentodeCaixa1Click(Sender: TObject);
 begin
   RelatorioFechamentoDeCaixa; // Sandro Silva 2023-11-01
 end;
+
+
+procedure TForm1.AtualizaDocumentoTransItau(IBTransaction: TIBTransaction; sCaixaOld,sDocOld,sCaixaNew,sDocNew : string);
+begin
+  //Mauricio Parizotto 2024-06-18
+  //Atualiza Tabela Transação Itaú
+  try
+    ExecutaComando(IBTransaction,' Update ITAUTRANSACAO'+
+                                 '   set NUMERONF = '+QuotedStr(sDocNew)+
+                                 '   , CAIXA = '+QuotedStr(sCaixaNew)+
+                                 ' Where NUMERONF = '+QuotedStr(sDocOld)+
+                                 '   and CAIXA = '+QuotedStr(sCaixaOld));
+  except
+  end;
+end;
+
+
+
+procedure TForm1.ConverteConfPix; //Remover no futuro - Mauricio Parizotto 2024-06-28
+var
+  oArq : TiniFile;
+  bUsaPixEstatico : boolean;
+  i : integer;
+begin
+  oArq := TIniFile.Create('FRENTE.INI');
+  try
+    bUsaPixEstatico     := AnsiUpperCase(oArq.ReadString('Frente de caixa', 'USA PIX ESTATICO', _cNao)) = AnsiUpperCase(_cSim);
+
+    if bUsaPixEstatico then
+    begin
+      for I := 1 to 8 do
+      begin
+        if Copy(oArq.ReadString('NFCE', 'Ordem forma extra '+i.ToString, '') ,1,2) = '17' then
+          oArq.WriteString('NFCE','Tipo Pix '+i.ToString,'PIX Estático');
+      end;
+
+      oArq.WriteString('Frente de caixa','USA PIX ESTATICO',_cNao);
+    end;
+  finally
+    oArq.Free;
+  end;
+end;
+
 
 end.

@@ -202,7 +202,6 @@
         <DCCReference Include="ufuncoesfrentepaf.pas"/>
         <DCCReference Include="urequisitospafnfce.pas"/>
         <DCCReference Include="upromocoesscanntech.pas"/>
-        <DCCReference Include="uajustaresolucao.pas"/>
         <DCCReference Include="umontaxmlvendasat.pas"/>
         <DCCReference Include="uregistrosdopafecf.pas"/>
         <DCCReference Include="upafecfmenufiscal.pas"/>
@@ -254,6 +253,9 @@
         <DCCReference Include="ufrmQRCodePixEst.pas">
             <Form>FrmQRCodePixEst</Form>
         </DCCReference>
+        <DCCReference Include="ufrmQRCodePixDin.pas">
+            <Form>FrmQRCodePixDin</Form>
+        </DCCReference>
         <DCCReference Include="ufrmSelecionarPIX.pas">
             <Form>FrmSelecionarPIX</Form>
         </DCCReference>
@@ -261,6 +263,14 @@
         <DCCReference Include="..\unit_compartilhada\uQrCode.pas"/>
         <DCCReference Include="..\unit_compartilhada\uGeraChavePix.pas"/>
         <DCCReference Include="urequisitapesobalancaautonoma.pas"/>
+        <DCCReference Include="uajustaresolucao.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Itau\uIntegracaoItau.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Itau\uClassesItau.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Itau\uWebServiceItau.pas"/>
+        <DCCReference Include="uFrmTransacoesItau.pas">
+            <Form>FrmTransacoesItau</Form>
+        </DCCReference>
+        <DCCReference Include="..\unit_compartilhada\uLogSistema.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

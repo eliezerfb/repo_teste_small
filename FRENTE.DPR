@@ -40,7 +40,6 @@ uses
   ufuncoesfrentepaf in 'ufuncoesfrentepaf.pas',
   urequisitospafnfce in 'urequisitospafnfce.pas',
   upromocoesscanntech in 'upromocoesscanntech.pas',
-  uajustaresolucao in 'uajustaresolucao.pas',
   umontaxmlvendasat in 'umontaxmlvendasat.pas',
   uregistrosdopafecf in 'uregistrosdopafecf.pas',
   upafecfmenufiscal in 'upafecfmenufiscal.pas',
@@ -83,10 +82,17 @@ uses
   uValidaRecursos in '..\unit_compartilhada\uValidaRecursos.pas',
   DelphiZXIngQRCode in '..\unit_compartilhada\DelphiZXIngQRCode.pas',
   ufrmQRCodePixEst in 'ufrmQRCodePixEst.pas' {FrmQRCodePixEst},
+  ufrmQRCodePixDin in 'ufrmQRCodePixDin.pas' {FrmQRCodePixDin},
   ufrmSelecionarPIX in 'ufrmSelecionarPIX.pas' {FrmSelecionarPIX},
   uPagamentoPix in 'uPagamentoPix.pas',
   uQrCode in '..\unit_compartilhada\uQrCode.pas',
   uGeraChavePix in '..\unit_compartilhada\uGeraChavePix.pas',
+  uajustaresolucao in 'uajustaresolucao.pas',
+  uIntegracaoItau in '..\unit_compartilhada\Itau\uIntegracaoItau.pas',
+  uClassesItau in '..\unit_compartilhada\Itau\uClassesItau.pas',
+  uWebServiceItau in '..\unit_compartilhada\Itau\uWebServiceItau.pas',
+  uFrmTransacoesItau in 'uFrmTransacoesItau.pas' {FrmTransacoesItau},
+  uLogSistema in '..\unit_compartilhada\uLogSistema.pas',  
   urequisitapesobalancaautonoma in 'urequisitapesobalancaautonoma.pas';
 
 {$R *.RES}
@@ -269,6 +275,7 @@ begin
   Application.CreateForm(TFDadosPOS, FDadosPOS);
   Application.CreateForm(TFCadAdquirentes, FCadAdquirentes);
   Application.CreateForm(TForm27, Form27);
+  Application.CreateForm(TFrmQRCodePixDin, FrmQRCodePixDin);
   Application.Run;
     //
   end else
