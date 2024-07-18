@@ -1372,9 +1372,9 @@ begin
 
       oDataSet.Edit;
 
-      oDataSet.FieldByName('PORTADOR').AsString         := oDataSetTemp.FieldByName('PORTADOR').AsString;
-      oDataSet.FieldByName('VENCIMENTO').AsDateTime       := IncMonth(Date, i);
-      oDataSet.FieldByName('VALOR_DUPL').AsCurrency       := nValorParc + nRestoParc;
+      oDataSet.FieldByName('PORTADOR').AsString             := oDataSetTemp.FieldByName('PORTADOR').AsString;
+      oDataSet.FieldByName('VENCIMENTO').AsDateTime         := IncMonth(Date, i);
+      oDataSet.FieldByName('VALOR_DUPL').AsCurrency         := nValorParc + nRestoParc;
       oDataSet.FieldByName('BANDEIRA').AsString             := AoDadosTransacao.Bandeira;
       oDataSet.FieldByName('AUTORIZACAOTRANSACAO').AsString := AoDadosTransacao.Autoriza;
       if (AoDadosTransacao.DebitoOuCredito = 'CREDITO') then
@@ -1382,7 +1382,8 @@ begin
       if (AoDadosTransacao.DebitoOuCredito = 'DEBITO') then
         oDataSet.FieldByName('FORMADEPAGAMENTO').AsString := 'Cartão de Débito';
       if (AoDadosTransacao.DebitoOuCredito = 'PIX') then
-        oDataSet.FieldByName('FORMADEPAGAMENTO').AsString := 'Pagamento Instantâneo (PIX)';
+        //oDataSet.FieldByName('FORMADEPAGAMENTO').AsString := 'Pagamento Instantâneo (PIX)'; Mauricio Parizotto 2024-07-10
+        oDataSet.FieldByName('FORMADEPAGAMENTO').AsString := _FormaPixDinamico;
       oDataSet.Post;
     end;
 
@@ -2209,7 +2210,8 @@ end;
 
 function TFrmParcelas.FormaDePagamentoEnvolveBancos(sForma: String): Boolean;
 begin
-  Result := (Pos('|' + IdFormasDePagamentoNFe(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) + '|', '|02|16|17|18|') > 0); /// envolvem bancos
+  //Result := (Pos('|' + IdFormasDePagamentoNFe(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) + '|', '|02|16|17|18|') > 0); /// envolvem bancos Mauricio Parizotto 2024-07-10
+  Result := (Pos('|' + IdFormasDePagamentoNFe(DBGrid1.DataSource.DataSet.FieldByName('FORMADEPAGAMENTO').AsString) + '|', '|02|16|17|20|18|') > 0); /// envolvem bancos
 end;
 
 function TFrmParcelas.ValidarDesdobramentoParcela: Boolean;

@@ -2591,6 +2591,13 @@ begin
   {Mauricio Parizotto 2024-06-27 Fim}
 
 
+  {Mauricio Parizotto 204-07-10 Inicio}
+  if ExecutaComando(' Update RECEBER'+
+                    '  set FORMADEPAGAMENTO = ''Pagamento Instantâneo (PIX) Estático''  '+
+                    ' Where FORMADEPAGAMENTO = ''Pagamento Instantâneo (PIX)'' ') then
+      ExecutaComando('Commit');
+  {Mauricio Parizotto 204-07-10 Fim}
+
   Form22.Repaint;
   Mensagem22('Aguarde...');
 
