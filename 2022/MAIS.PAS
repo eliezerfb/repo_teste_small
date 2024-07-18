@@ -284,6 +284,8 @@ type
     NaoDescontarIssQuandoRetido1: TMenuItem;
     N13: TMenuItem;
     timerLegal: TTimer;
+    Integraes1: TMenuItem;
+    IntegraoIta1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -457,6 +459,7 @@ type
     procedure Clculododescontopeloprovedor1Click(Sender: TObject);
     procedure miProd120CaracClick(Sender: TObject);
     procedure NaoDescontarIssQuandoRetido1Click(Sender: TObject);
+    procedure IntegraoIta1Click(Sender: TObject);
     procedure timerLegalTimer(Sender: TObject);
 
 
@@ -569,9 +572,9 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
   uconstantes_chaves_privadas
   , ucredencialtecnospeed
-  , uAtualizaBancoDados,
-  uFazerBackup,
-  uRetornaBuildEXE
+  , uAtualizaBancoDados
+  , uFazerBackup
+  , uRetornaBuildEXE
   , uCriptografia
   , uFrmTermosUso
   , uSmallConsts
@@ -585,11 +588,13 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmConfigEmailAutContabilidade
   , uDialogs
   , uFuncoesRetaguarda
-  , uSmallResourceString, uSistema
+  , uSmallResourceString
+  , uSistema
+  , uValidaRecursos
+  , uFrmIntegracaoItau
   , uConfiguracaoTEFCommerce
   , uFrmContaPagar
-  , uFrmContaReceber
-  , uFrmCadastro;
+  , uFrmContaReceber, uFrmCadastro;
 
 {$R *.DFM}
 
@@ -5623,6 +5628,27 @@ begin
   {Dailon Parisotto (f-7599) 2023-12-11 fim}
   Halt(1);
   {Sandro Silva 2023-11-06 fim}
+end;
+
+procedure TForm1.IntegraoIta1Click(Sender: TObject);
+var
+  bLiberado : Boolean;
+  dLimiteRecurso : Tdate;
+begin
+  bLiberado := (RecursoLiberado(Form7.IBDatabase1,rcIntegracaoItau,dLimiteRecurso));
+
+  if not bLiberado then
+  begin
+    MensagemRecursoIndisponivel('Integração Itaú não está disponível para esta licença');
+    Exit;
+  end;
+
+  try
+    FrmIntegracaoItau := TFrmIntegracaoItau.Create(self);
+    FrmIntegracaoItau.ShowModal;
+  finally
+    FreeAndNil(FrmIntegracaoItau);
+  end;
 end;
 
 procedure TForm1.Postit1Click(Sender: TObject);

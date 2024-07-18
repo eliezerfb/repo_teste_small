@@ -1691,7 +1691,8 @@ type
     ibDataSet11PIXTIPOCHAVE: TIBStringField;
     ibDataSet11PIXTITULAR: TIBStringField;
     ibDataSet11PIXCHAVE: TIBStringField;
-    ibDataSet14REFERENCIANOTA: TIBStringField;
+    ibDataSet11IDBANCO: TIntegerField;
+	ibDataSet14REFERENCIANOTA: TIBStringField;
     S1: TMenuItem;
     SFornecedor1: TMenuItem;
     SClienteFornecedor1: TMenuItem;
@@ -22801,12 +22802,21 @@ begin
   ibDataset99.Open;
   sProximo := strZero(StrToInt(ibDataSet99.FieldByname('GEN_ID').AsString),10,0);
   ibDataset99.Close;
+
+  //Mauricio Parizotto 2024-06-11
+  ibDataSet99.Close;
+  ibDataSet99.SelectSql.Clear;
+  ibDataset99.SelectSql.Add('select gen_id(G_BANCOSIDBANCO,1) from rdb$database');
+  ibDataset99.Open;
+  sProximoID := ibDataSet99.FieldByname('GEN_ID').AsInteger;
+  ibDataset99.Close;
 end;
 
 procedure TForm7.ibDataSet11NewRecord(DataSet: TDataSet);
 begin
   ibDataSet11REGISTRO.AsString    := sProximo;
   ibDataSet11PIXESTATICO.AsString := 'N'; //Mauricio Parizotto 2024-04-29
+  ibDataSet11IDBANCO.AsInteger    := sProximoID; //Mauricio Parizotto 2024-06-11
 end;
 
 procedure TForm7.ibDataSet1DATAChange(Sender: TField);
