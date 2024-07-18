@@ -13938,6 +13938,13 @@ object Form1: TForm1
     object N18: TMenuItem
       Caption = '-'
     end
+    object Integraes1: TMenuItem
+      Caption = 'Integra'#231#245'es'
+      object IntegraoIta1: TMenuItem
+        Caption = 'Integra'#231#227'o Ita'#250
+        OnClick = IntegraoIta1Click
+      end
+    end
     object Calendrio1: TMenuItem
       Caption = 'Calend'#225'rio'
       Visible = False

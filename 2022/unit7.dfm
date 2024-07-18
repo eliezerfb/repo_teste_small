@@ -10968,7 +10968,7 @@ object Form7: TForm7
       OnMouseLeave = lblNovoMouseLeave
     end
     object lblExcluir: TLabel
-      Left = 70
+      Left = 64
       Top = 25
       Width = 70
       Height = 80
@@ -14261,14 +14261,14 @@ object Form7: TForm7
       
         '  (NOME, AGENCIA, CONTA, PLANO, SALDO1, SALDO2, SALDO3, ARQUIVO,' +
         ' REGISTRO,INSTITUICAOFINANCEIRA,PIXESTATICO,PIXTIPOCHAVE,PIXTITU' +
-        'LAR,PIXCHAVE)'
+        'LAR,PIXCHAVE,IDBANCO)'
       'values'
       
         '  (:NOME, :AGENCIA, :CONTA, :PLANO, :SALDO1, :SALDO2, :SALDO3, :' +
         'ARQUIVO, '
       
         '   :REGISTRO,:INSTITUICAOFINANCEIRA,:PIXESTATICO,:PIXTIPOCHAVE,:' +
-        'PIXTITULAR,:PIXCHAVE)')
+        'PIXTITULAR,:PIXCHAVE,:IDBANCO)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14284,7 +14284,8 @@ object Form7: TForm7
       '  PIXESTATICO,'
       '  PIXTIPOCHAVE,'
       '  PIXTITULAR,'
-      '  PIXCHAVE'
+      '  PIXCHAVE,'
+      '  IDBANCO'
       'from BANCOS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14416,6 +14417,11 @@ object Form7: TForm7
       OnSetText = ibDataSet11PLANOSetText
       EditMask = '99999;1;_'
       Size = 5
+    end
+    object ibDataSet11IDBANCO: TIntegerField
+      FieldName = 'IDBANCO'
+      Origin = 'BANCOS.IDBANCO'
+      Visible = False
     end
   end
   object DataSource11: TDataSource
