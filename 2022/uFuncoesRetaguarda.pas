@@ -77,7 +77,7 @@ uses
 
 implementation
 
-uses uFuncoesBancoDados;
+uses uFuncoesBancoDados, uSmallConsts;
 
 type
   TModulosSmall = (tmNenhum, tmNao, tmEstoque, tmICM, tmReceber);
@@ -507,30 +507,17 @@ procedure GetFormasDePagamentoNFe(slForma: TStringList);
 begin
 
   slForma.Clear;
-  {
-  slForma.Add('Dinheiro');
-  slForma.Add('Cheque');
-  slForma.Add('Cartão de Crédito');
-  slForma.Add('Cartão de Débito');
-  slForma.Add('Crédito de Loja');
-  slForma.Add('Vale Alimentação');
-  slForma.Add('Vale Refeição');
-  slForma.Add('Vale Presente');
-  slForma.Add('Vale Combustível');
-  slForma.Add('Duplicata Mercantil');
-  slForma.Add('Boleto Bancário');
-  slForma.Add('Depósito Bancário');
-  slForma.Add('Pagamento Instantâneo (PIX)');
-  slForma.Add('Transfer.bancária, Carteira Digital');
-  slForma.Add('Progr.de fidelidade, Cashback, Crédito Virtual');
-  slForma.Add('Outros');
-  }
+
   slForma.Add('Dinheiro');
   slForma.Add('Cartão de Crédito');
   slForma.Add('Cartão de Débito');
   slForma.Add('Boleto Bancário');
   slForma.Add('Depósito Bancário');
-  slForma.Add('Pagamento Instantâneo (PIX)');
+  {Mauricio Parizotto 204-07-10 Inicio}
+  //slForma.Add('Pagamento Instantâneo (PIX)');
+  slForma.Add(_FormaPixEstatico);
+  slForma.Add(_FormaPixDinamico);
+  {Mauricio Parizotto 204-07-10 Fim}
   slForma.Add('Cheque');
   slForma.Add('Crédito de Loja');
   slForma.Add('Vale Alimentação');
@@ -571,8 +558,14 @@ begin
     Result := '15';
   if sDescricaoForma = 'Depósito Bancário' then
     Result := '16';
-  if sDescricaoForma = 'Pagamento Instantâneo (PIX)' then
+  {Mauricio Parizotto 204-07-10 Inicio}
+  //if sDescricaoForma = 'Pagamento Instantâneo (PIX)' then
+  //  Result := '17';
+  if sDescricaoForma = _FormaPixDinamico then
     Result := '17';
+  if sDescricaoForma = _FormaPixEstatico then
+    Result := '20';
+  {Mauricio Parizotto 204-07-10 Fim}
   if sDescricaoForma = 'Transfer.bancária, Carteira Digital' then
     Result := '18';
   if sDescricaoForma = 'Progr.de fidelidade, Cashback, Crédito Virtual' then
@@ -681,7 +674,8 @@ end;
 
 function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
 begin
-  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '|03|04|') > 0); // envolvem instituição financeiras/credenciadoras
+  // envolvem instituição financeiras/credenciadoras
+  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '|03|04|') > 0);
 end;
 
 function FormaDePagamentoGeraBoleto(sForma: String): Boolean;

@@ -40,12 +40,14 @@ begin
   DeleteFile(pChar(Form1.sAtual+'\estoque.sql'));
   DeleteFile(pChar(Form1.sAtual+'\clifor.sql'));
   DeleteFile(pChar(Form1.sAtual+'\usuarios.sql'));
+  DeleteFile(pChar(Form1.sAtual+'\emitente.sql'));//Mauricio Parizotto 2024-07-15
 
   sCNPJ := AllTrim(LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString));
 
   try
     if sCNPJ <> '' then
     begin
+      {$Region'//// Estoque ////'}
       try
         // estoque.sql
         Form7.IBDataSet4.DisableControls;
@@ -173,6 +175,9 @@ begin
         except
         end;
       end;
+      {$Endregion}
+
+      {$Region'//// CLiesntes/Fornecedores ////'}
       try
         // clifor.off
         Form1.IBQuery1.Close;
@@ -224,6 +229,9 @@ begin
         except
         end;
       end;
+      {$Endregion}
+
+      {$Region'//// Usuários ////'}
       try
         // usuarios.off
         AssignFile(F,pchar(Form1.sAtual+'\usuarios.sql'));
@@ -279,6 +287,41 @@ begin
         except
         end;
       end;
+      {$Endregion}
+
+      {$Region'//// Emitentes ////'}
+      try
+        //Mauricio Parizotto 2024-07-15
+        AssignFile(F,pchar(Form1.sAtual+'\emitente.sql'));
+        Rewrite(F);
+        WriteLN(F,'delete from emitentes where cpf_cnpj = '+QuotedStr(sCNPJ)+'; '); // Apaga somente as inf atuais deste CNPJ
+
+        WriteLN(F,'Insert into emitentes (nome_razao_social, contato, endereco, bairro, municipio, cep, uf, cpf_cnpj, ie, fone, email, site, im, crt, cnae) values ('+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('NOME').AsString),1,60)) +','+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('CONTATO').AsString),1,35)) +','+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('ENDERECO').AsString),1,35)) +','+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('COMPLE').AsString),1,20)) +','+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString),1,40)) +','+
+                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('CEP').AsString,1,9)) +','+
+                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('ESTADO').AsString,1,2)) +','+
+                 QuotedStr(sCNPJ)+','+
+                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('IE').AsString,1,16)) +','+
+                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('TELEFO').AsString,1,16)) +','+
+                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('EMAIL').AsString,1,132)) +','+
+                 QuotedStr(Copy(ConverteAcentosPHP(Form7.ibDataSet13.FieldByname('HP').AsString),1,130)) +','+
+                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('IM').AsString,1,16)) +','+
+                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('CRT').AsString,1,1)) +','+
+                 QuotedStr(Copy(Form7.ibDataSet13.FieldByname('CNAE').AsString,1,8)) +
+                ');');
+
+        CloseFile(F);
+      except
+        try
+          CloseFile(F);
+        except
+        end;
+      end;
+      {$Endregion}
 
       Form7.LbBlowfish1.GenerateKey(Form1.sPasta);
 
@@ -322,6 +365,7 @@ begin
       UploadMobile(pChar('usuarios.sql'));
       UploadMobile(pChar('estoque.sql'));
       UploadMobile(pChar('logo.jpg'));
+      UploadMobile(pChar('emitente.sql'));//Mauricio Parizotto 2024-07-15
 
       DeleteFile(pChar(Form1.sAtual+'\usuarios.sql'));
     end else
