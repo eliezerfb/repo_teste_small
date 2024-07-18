@@ -12063,7 +12063,7 @@ object Form7: TForm7
       Size = 25
     end
     object ibDataSet4MEDIDA: TIBStringField
-      DisplayLabel = 'Und'
+      DisplayLabel = 'Medida'
       FieldName = 'MEDIDA'
       Origin = 'ESTOQUE.MEDIDA'
       OnSetText = ibDataSet4MEDIDASetText
@@ -12199,7 +12199,7 @@ object Form7: TForm7
       Size = 30
     end
     object ibDataSet4OBS: TIBStringField
-      DisplayLabel = 'Aplica'#231#227'o'
+      DisplayLabel = 'Observa'#231#227'o'
       FieldName = 'OBS'
       Origin = 'ESTOQUE.OBS'
       OnValidate = ibDataSet4OBSValidate

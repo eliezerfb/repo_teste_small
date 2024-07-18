@@ -16404,8 +16404,9 @@ procedure TForm7.ibDataSet30NewRecord(DataSet: TDataSet);
 begin
   ibDataSet30REGISTRO.AsString := sProximo;
   ibDataSet30CODIGO.AsString   := ibDataSet4CODIGO.AsString;
-  ibDataSet30.Post;
-  ibDataSet30.Edit;
+  //Mauricio Parizotto 2024-04-18
+  //  ibDataSet30.Post;
+  //  ibDataSet30.Edit;
 end;
 procedure TForm7.ibDataSet30FilterRecord(DataSet: TDataSet;
   var Accept: Boolean);
@@ -23663,6 +23664,12 @@ end;
 
 procedure TForm7.ibDataSet30AfterPost(DataSet: TDataSet);
 begin
+  //Mauricio Parizotto 2024-04-18
+  if ibDataSet30SERIAL.AsString = '' then
+  begin
+    ibDataSet30.Delete;
+  end;
+
   AgendaCommit(True);
 end;
 

@@ -1,44 +1,28 @@
 inherited FrmEstoque: TFrmEstoque
-  ClientWidth = 929
   OnActivate = FormActivate
   OnClose = FormClose
   OnDeactivate = FormDeactivate
-  ExplicitWidth = 945
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
-    Width = 929
-    ExplicitWidth = 929
-    inherited pnlBotoesSuperior: TPanel
-      Width = 929
-      ExplicitWidth = 929
-    end
-    inherited pnlBotoesPosterior: TPanel
-      Width = 929
-      ExplicitWidth = 929
-      inherited btnOK: TBitBtn
-        Left = 799
-        ExplicitLeft = 799
-      end
-    end
     inherited Panel8: TPanel
-      Left = 919
-      ExplicitLeft = 919
+      ExplicitLeft = 822
     end
     inherited pgcFicha: TPageControl
-      Width = 909
-      ActivePage = tbsFoto
-      ExplicitWidth = 909
+      ActivePage = tbsCadastro
+      ExplicitLeft = 20
+      ExplicitWidth = 802
+      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object lblCodigo: TLabel
           Left = 0
-          Top = 16
+          Top = 13
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'C'#243'digo:'
+          Caption = 'C'#243'digo'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -51,12 +35,12 @@ inherited FrmEstoque: TFrmEstoque
         end
         object lblCodBarras: TLabel
           Left = 0
-          Top = 40
+          Top = 38
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'C'#243'digo Barras:'
+          Caption = 'C'#243'digo Barras'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -74,7 +58,7 @@ inherited FrmEstoque: TFrmEstoque
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Descri'#231#227'o:'
+          Caption = 'Descri'#231#227'o'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -92,7 +76,7 @@ inherited FrmEstoque: TFrmEstoque
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Grupo:'
+          Caption = 'Grupo'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -110,7 +94,7 @@ inherited FrmEstoque: TFrmEstoque
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Und:'
+          Caption = 'Medida'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -128,7 +112,7 @@ inherited FrmEstoque: TFrmEstoque
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Pre'#231'o:'
+          Caption = 'Pre'#231'o'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -141,12 +125,12 @@ inherited FrmEstoque: TFrmEstoque
         end
         object lblPrecoUS: TLabel
           Left = 0
-          Top = 164
+          Top = 163
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Pre'#231'o em US$:'
+          Caption = 'Pre'#231'o em US$'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -164,7 +148,7 @@ inherited FrmEstoque: TFrmEstoque
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Custo de Compra:'
+          Caption = 'Custo de Compra'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -177,12 +161,12 @@ inherited FrmEstoque: TFrmEstoque
         end
         object lblUltCompra: TLabel
           Left = 0
-          Top = 212
+          Top = 213
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = #218'lt. Compra:'
+          Caption = #218'lt. Compra'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -195,12 +179,12 @@ inherited FrmEstoque: TFrmEstoque
         end
         object lblCustoMedio: TLabel
           Left = 0
-          Top = 237
+          Top = 238
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Custo M'#233'dio:'
+          Caption = 'Custo M'#233'dio'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -218,7 +202,7 @@ inherited FrmEstoque: TFrmEstoque
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Quantidade:'
+          Caption = 'Quantidade'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -231,12 +215,12 @@ inherited FrmEstoque: TFrmEstoque
         end
         object lblQtdMinima: TLabel
           Left = 0
-          Top = 286
+          Top = 288
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Qtd. M'#237'nima:'
+          Caption = 'Qtd. M'#237'nima'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -249,12 +233,12 @@ inherited FrmEstoque: TFrmEstoque
         end
         object lblUltVenda: TLabel
           Left = 0
-          Top = 311
+          Top = 313
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = #218'lt. Venda:'
+          Caption = #218'lt. Venda'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -267,12 +251,12 @@ inherited FrmEstoque: TFrmEstoque
         end
         object lblLocalizacao: TLabel
           Left = 0
-          Top = 336
+          Top = 338
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Localiza'#231#227'o:'
+          Caption = 'Localiza'#231#227'o'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -285,12 +269,12 @@ inherited FrmEstoque: TFrmEstoque
         end
         object lblPeso: TLabel
           Left = 0
-          Top = 361
+          Top = 363
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Peso:'
+          Caption = 'Peso'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -302,13 +286,13 @@ inherited FrmEstoque: TFrmEstoque
           Transparent = True
         end
         object Label18: TLabel
-          Left = 488
-          Top = 177
+          Left = 410
+          Top = 163
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Identificador1:'
+          Caption = 'Identificador1'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -323,13 +307,13 @@ inherited FrmEstoque: TFrmEstoque
           OnMouseLeave = Label18MouseLeave
         end
         object Label19: TLabel
-          Left = 486
-          Top = 201
+          Left = 408
+          Top = 188
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Identificador2:'
+          Caption = 'Identificador2'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -344,13 +328,13 @@ inherited FrmEstoque: TFrmEstoque
           OnMouseLeave = Label18MouseLeave
         end
         object Label20: TLabel
-          Left = 486
-          Top = 225
+          Left = 408
+          Top = 213
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Identificador3:'
+          Caption = 'Identificador3'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -365,13 +349,13 @@ inherited FrmEstoque: TFrmEstoque
           OnMouseLeave = Label18MouseLeave
         end
         object Label21: TLabel
-          Left = 486
-          Top = 248
+          Left = 408
+          Top = 238
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Identificador4:'
+          Caption = 'Identificador4'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -386,13 +370,13 @@ inherited FrmEstoque: TFrmEstoque
           OnMouseLeave = Label18MouseLeave
         end
         object lblAplicacao: TLabel
-          Left = 486
-          Top = 271
+          Left = 408
+          Top = 263
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Aplica'#231#227'o:'
+          Caption = 'Observa'#231#227'o'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -404,13 +388,13 @@ inherited FrmEstoque: TFrmEstoque
           Transparent = True
         end
         object lblComissao: TLabel
-          Left = 486
-          Top = 125
+          Left = 408
+          Top = 113
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Comiss'#227'o:'
+          Caption = 'Comiss'#227'o'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -422,13 +406,13 @@ inherited FrmEstoque: TFrmEstoque
           Transparent = True
         end
         object lblLucroBruto: TLabel
-          Left = 486
-          Top = 151
+          Left = 408
+          Top = 138
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = '% Lucro Bruto:'
+          Caption = '% Lucro Bruto'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -441,8 +425,8 @@ inherited FrmEstoque: TFrmEstoque
         end
         object edtCodigo: TSMALL_DBEdit
           Left = 100
-          Top = 16
-          Width = 69
+          Top = 13
+          Width = 141
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -463,7 +447,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object edtCodBarras: TSMALL_DBEdit
           Left = 100
-          Top = 40
+          Top = 38
           Width = 141
           Height = 20
           AutoSize = False
@@ -487,7 +471,7 @@ inherited FrmEstoque: TFrmEstoque
         object edtDescricao: TSMALL_DBEdit
           Left = 100
           Top = 63
-          Width = 445
+          Width = 674
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -530,7 +514,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object edtPrecoUS: TSMALL_DBEdit
           Left = 100
-          Top = 164
+          Top = 163
           Width = 85
           Height = 20
           AutoSize = False
@@ -572,7 +556,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object edtUltCompra: TSMALL_DBEdit
           Left = 100
-          Top = 212
+          Top = 213
           Width = 85
           Height = 20
           AutoSize = False
@@ -593,7 +577,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object edtCustoMedio: TSMALL_DBEdit
           Left = 100
-          Top = 237
+          Top = 238
           Width = 85
           Height = 20
           AutoSize = False
@@ -635,7 +619,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object edtQtdMinima: TSMALL_DBEdit
           Left = 100
-          Top = 286
+          Top = 288
           Width = 85
           Height = 20
           AutoSize = False
@@ -656,7 +640,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object edtUltVenda: TSMALL_DBEdit
           Left = 100
-          Top = 311
+          Top = 313
           Width = 85
           Height = 20
           AutoSize = False
@@ -677,7 +661,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object edtLocalizacao: TSMALL_DBEdit
           Left = 100
-          Top = 336
+          Top = 338
           Width = 85
           Height = 20
           AutoSize = False
@@ -698,7 +682,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object edtPeso: TSMALL_DBEdit
           Left = 100
-          Top = 361
+          Top = 363
           Width = 85
           Height = 20
           AutoSize = False
@@ -761,8 +745,8 @@ inherited FrmEstoque: TFrmEstoque
           ExplicitTop = 113
           ExplicitWidth = 281
           inherited txtCampo: TEdit
-            Width = 36
-            ExplicitWidth = 36
+            Width = 85
+            ExplicitWidth = 85
           end
           inherited gdRegistros: TDBGrid
             Width = 281
@@ -782,8 +766,8 @@ inherited FrmEstoque: TFrmEstoque
           end
         end
         object edtIdentificador1: TSMALL_DBEdit
-          Left = 586
-          Top = 177
+          Left = 508
+          Top = 163
           Width = 266
           Height = 20
           AutoSize = False
@@ -803,8 +787,8 @@ inherited FrmEstoque: TFrmEstoque
           OnKeyDown = PadraoKeyDown
         end
         object edtIdentificador2: TSMALL_DBEdit
-          Left = 586
-          Top = 201
+          Left = 508
+          Top = 188
           Width = 266
           Height = 20
           AutoSize = False
@@ -824,8 +808,8 @@ inherited FrmEstoque: TFrmEstoque
           OnKeyDown = PadraoKeyDown
         end
         object edtIdentificador3: TSMALL_DBEdit
-          Left = 586
-          Top = 225
+          Left = 508
+          Top = 213
           Width = 266
           Height = 20
           AutoSize = False
@@ -845,8 +829,8 @@ inherited FrmEstoque: TFrmEstoque
           OnKeyDown = PadraoKeyDown
         end
         object edtIdentificador4: TSMALL_DBEdit
-          Left = 586
-          Top = 248
+          Left = 508
+          Top = 238
           Width = 266
           Height = 20
           AutoSize = False
@@ -866,10 +850,10 @@ inherited FrmEstoque: TFrmEstoque
           OnKeyDown = PadraoKeyDown
         end
         object memAtivacao: TDBMemo
-          Left = 586
-          Top = 271
+          Left = 508
+          Top = 263
           Width = 266
-          Height = 105
+          Height = 120
           DataField = 'OBS'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
@@ -883,8 +867,8 @@ inherited FrmEstoque: TFrmEstoque
           OnKeyDown = PadraoKeyDown
         end
         object edtComissao: TSMALL_DBEdit
-          Left = 586
-          Top = 125
+          Left = 508
+          Top = 113
           Width = 85
           Height = 20
           AutoSize = False
@@ -904,8 +888,8 @@ inherited FrmEstoque: TFrmEstoque
           OnKeyDown = PadraoKeyDown
         end
         object edtLucroBruto: TSMALL_DBEdit
-          Left = 586
-          Top = 151
+          Left = 508
+          Top = 138
           Width = 85
           Height = 20
           AutoSize = False
@@ -924,6 +908,16 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 16
           OnKeyDown = PadraoKeyDown
         end
+        object chkMarketplace: TCheckBox
+          Left = 508
+          Top = 387
+          Width = 97
+          Height = 17
+          Caption = 'Marketplace'
+          TabOrder = 22
+          OnClick = chkMarketplaceClick
+          OnKeyDown = PadraoKeyDown
+        end
       end
       object tbsICMS: TTabSheet
         Caption = 'ICMS'
@@ -931,7 +925,7 @@ inherited FrmEstoque: TFrmEstoque
         OnShow = tbsICMSShow
         object Label31: TLabel
           Left = 10
-          Top = 77
+          Top = 61
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -949,7 +943,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label32: TLabel
           Left = 10
-          Top = 127
+          Top = 111
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -967,7 +961,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label33: TLabel
           Left = 10
-          Top = 152
+          Top = 138
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -985,7 +979,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label34: TLabel
           Left = 10
-          Top = 177
+          Top = 165
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1003,7 +997,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label35: TLabel
           Left = 10
-          Top = 252
+          Top = 244
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1021,7 +1015,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label36: TLabel
           Left = 10
-          Top = 227
+          Top = 218
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1038,8 +1032,8 @@ inherited FrmEstoque: TFrmEstoque
           Transparent = True
         end
         object Label37: TLabel
-          Left = 18
-          Top = 235
+          Left = 10
+          Top = 217
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1057,7 +1051,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label53: TLabel
           Left = 10
-          Top = 52
+          Top = 34
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1072,7 +1066,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label51: TLabel
           Left = 10
-          Top = 202
+          Top = 190
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1090,7 +1084,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object lblCIT: TLabel
           Left = 165
-          Top = 254
+          Top = 246
           Width = 98
           Height = 13
           Caption = '5102 - Venda a vista'
@@ -1103,7 +1097,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object LabelDescricaoNCM: TLabel
           Left = 215
-          Top = 77
+          Top = 61
           Width = 48
           Height = 13
           Caption = 'Descri'#231#227'o'
@@ -1116,7 +1110,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label83: TLabel
           Left = 10
-          Top = 277
+          Top = 268
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1134,7 +1128,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label72: TLabel
           Left = 10
-          Top = 302
+          Top = 296
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1151,8 +1145,8 @@ inherited FrmEstoque: TFrmEstoque
           Transparent = True
         end
         object Label84: TLabel
-          Left = 18
-          Top = 310
+          Left = 10
+          Top = 296
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1170,7 +1164,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label92: TLabel
           Left = 10
-          Top = 327
+          Top = 323
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1188,7 +1182,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label71: TLabel
           Left = 165
-          Top = 352
+          Top = 348
           Width = 187
           Height = 13
           Caption = '% do Imposto Aproximado (Fonte: IBPT)'
@@ -1201,7 +1195,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label90: TLabel
           Left = 10
-          Top = 352
+          Top = 348
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1219,7 +1213,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label91: TLabel
           Left = 64
-          Top = 377
+          Top = 373
           Width = 41
           Height = 13
           Alignment = taRightJustify
@@ -1236,7 +1230,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label93: TLabel
           Left = 60
-          Top = 402
+          Top = 398
           Width = 45
           Height = 13
           Alignment = taRightJustify
@@ -1253,7 +1247,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label94: TLabel
           Left = 163
-          Top = 327
+          Top = 323
           Width = 8
           Height = 13
           Alignment = taCenter
@@ -1270,7 +1264,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label95: TLabel
           Left = 10
-          Top = 101
+          Top = 86
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1288,7 +1282,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label96: TLabel
           Left = 165
-          Top = 377
+          Top = 373
           Width = 187
           Height = 13
           Caption = '% do Imposto Aproximado (Fonte: IBPT)'
@@ -1301,7 +1295,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Label97: TLabel
           Left = 165
-          Top = 402
+          Top = 398
           Width = 187
           Height = 13
           Caption = '% do Imposto Aproximado (Fonte: IBPT)'
@@ -1313,8 +1307,8 @@ inherited FrmEstoque: TFrmEstoque
           ParentFont = False
         end
         object Label118: TLabel
-          Left = 10
-          Top = 26
+          Left = 9
+          Top = 9
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -1329,7 +1323,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object SMALL_DBEdit31: TSMALL_DBEdit
           Left = 110
-          Top = 77
+          Top = 61
           Width = 100
           Height = 20
           AutoSize = False
@@ -1352,7 +1346,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object SMALL_DBEdit37: TSMALL_DBEdit
           Left = 110
-          Top = 177
+          Top = 165
           Width = 50
           Height = 20
           AutoSize = False
@@ -1373,7 +1367,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object SMALL_DBEdit38: TSMALL_DBEdit
           Left = 110
-          Top = 252
+          Top = 244
           Width = 50
           Height = 20
           AutoSize = False
@@ -1395,8 +1389,8 @@ inherited FrmEstoque: TFrmEstoque
         end
         object cboCST_Prod: TComboBox
           Left = 110
-          Top = 227
-          Width = 390
+          Top = 217
+          Width = 385
           Height = 22
           Style = csOwnerDrawVariable
           Font.Charset = ANSI_CHARSET
@@ -1426,7 +1420,7 @@ inherited FrmEstoque: TFrmEstoque
             '90 - Outras')
         end
         object pnlMapaICMS: TPanel
-          Left = 510
+          Left = 498
           Top = 24
           Width = 300
           Height = 265
@@ -1437,7 +1431,7 @@ inherited FrmEstoque: TFrmEstoque
           ParentCtl3D = False
           TabOrder = 18
           object Image4: TImage
-            Left = 2
+            Left = -6
             Top = 2
             Width = 274
             Height = 264
@@ -8686,8 +8680,8 @@ inherited FrmEstoque: TFrmEstoque
         end
         object ComboBox9: TComboBox
           Left = 110
-          Top = 52
-          Width = 390
+          Top = 34
+          Width = 385
           Height = 22
           Style = csOwnerDrawVariable
           Font.Charset = ANSI_CHARSET
@@ -8716,8 +8710,8 @@ inherited FrmEstoque: TFrmEstoque
         end
         object ComboBox6: TComboBox
           Left = 110
-          Top = 152
-          Width = 390
+          Top = 138
+          Width = 385
           Height = 22
           Style = csOwnerDrawVariable
           Font.Charset = ANSI_CHARSET
@@ -8735,8 +8729,8 @@ inherited FrmEstoque: TFrmEstoque
         end
         object cboOrigemProd: TComboBox
           Left = 110
-          Top = 202
-          Width = 390
+          Top = 190
+          Width = 385
           Height = 22
           Style = csOwnerDrawVariable
           Font.Charset = ANSI_CHARSET
@@ -8779,9 +8773,9 @@ inherited FrmEstoque: TFrmEstoque
               'a 70%')
         end
         object cboCSOSN_Prod: TComboBox
-          Left = 119
-          Top = 230
-          Width = 390
+          Left = 110
+          Top = 217
+          Width = 385
           Height = 22
           Style = csOwnerDrawVariable
           Font.Charset = ANSI_CHARSET
@@ -8820,9 +8814,9 @@ inherited FrmEstoque: TFrmEstoque
               'nte')
         end
         object ComboBox11: TComboBox
-          Left = 111
-          Top = 278
-          Width = 390
+          Left = 110
+          Top = 269
+          Width = 385
           Height = 22
           Style = csOwnerDrawVariable
           Font.Charset = ANSI_CHARSET
@@ -8865,8 +8859,8 @@ inherited FrmEstoque: TFrmEstoque
         end
         object ComboBox14: TComboBox
           Left = 110
-          Top = 302
-          Width = 390
+          Top = 296
+          Width = 385
           Height = 22
           Style = csOwnerDrawVariable
           Font.Charset = ANSI_CHARSET
@@ -8891,9 +8885,9 @@ inherited FrmEstoque: TFrmEstoque
             '90 - Outras')
         end
         object ComboBox15: TComboBox
-          Left = 118
-          Top = 310
-          Width = 390
+          Left = 110
+          Top = 296
+          Width = 385
           Height = 22
           Style = csOwnerDrawVariable
           Font.Charset = ANSI_CHARSET
@@ -8923,7 +8917,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object SMALL_DBEdit66: TSMALL_DBEdit
           Left = 110
-          Top = 327
+          Top = 323
           Width = 50
           Height = 20
           AutoSize = False
@@ -8944,7 +8938,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object SMALL_DBEdit52: TSMALL_DBEdit
           Left = 110
-          Top = 352
+          Top = 348
           Width = 50
           Height = 20
           AutoSize = False
@@ -8967,7 +8961,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object SMALL_DBEdit63: TSMALL_DBEdit
           Left = 110
-          Top = 377
+          Top = 373
           Width = 50
           Height = 20
           AutoSize = False
@@ -8990,7 +8984,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object SMALL_DBEdit65: TSMALL_DBEdit
           Left = 110
-          Top = 402
+          Top = 398
           Width = 50
           Height = 20
           AutoSize = False
@@ -9013,7 +9007,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object SMALL_DBEdit67: TSMALL_DBEdit
           Left = 110
-          Top = 101
+          Top = 86
           Width = 100
           Height = 20
           AutoSize = False
@@ -9036,8 +9030,8 @@ inherited FrmEstoque: TFrmEstoque
         end
         inline fraPerfilTrib: TfFrameCampo
           Left = 110
-          Top = 25
-          Width = 390
+          Top = 9
+          Width = 385
           Height = 20
           Color = clWhite
           Ctl3D = False
@@ -9047,18 +9041,18 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 0
           OnExit = fraPerfilTribExit
           ExplicitLeft = 110
-          ExplicitTop = 25
-          ExplicitWidth = 390
+          ExplicitTop = 9
+          ExplicitWidth = 385
           DesignSize = (
-            390
+            385
             20)
           inherited txtCampo: TEdit
-            Width = 390
+            Width = 385
             OnKeyDown = fraPerfilTribtxtCampoKeyDown
-            ExplicitWidth = 390
+            ExplicitWidth = 385
           end
           inherited gdRegistros: TDBGrid
-            Width = 390
+            Width = 385
             Font.Charset = ANSI_CHARSET
             Font.Name = 'System'
             TitleFont.Charset = ANSI_CHARSET
@@ -9067,8 +9061,8 @@ inherited FrmEstoque: TFrmEstoque
         end
         object ComboBox5: TComboBox
           Left = 110
-          Top = 127
-          Width = 390
+          Top = 111
+          Width = 385
           Height = 22
           Style = csOwnerDrawVariable
           Font.Charset = ANSI_CHARSET
@@ -9086,147 +9080,201 @@ inherited FrmEstoque: TFrmEstoque
         end
       end
       object tbsIPI: TTabSheet
-        Caption = 'IPI'
+        Caption = 'IPI/PIS/COFINS'
         ImageIndex = 2
         OnEnter = tbsIPIEnter
         OnShow = tbsIPIShow
-        object Label41: TLabel
-          Left = 0
-          Top = 25
-          Width = 165
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'CST IPI'
-          Color = clBtnHighlight
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label40: TLabel
-          Left = 0
-          Top = 50
-          Width = 165
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = '% IPI'
-          Color = clBtnHighlight
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label98: TLabel
-          Left = 0
-          Top = 75
-          Width = 165
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'C'#243'digo Enquad. Legal do IPI'
-          Color = clBtnHighlight
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object ComboBox1: TComboBox
-          Left = 170
-          Top = 25
-          Width = 420
-          Height = 22
-          Style = csOwnerDrawVariable
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentFont = False
+        object GroupBox1: TGroupBox
+          Left = 17
+          Top = 16
+          Width = 758
+          Height = 118
+          Caption = ' IPI '
           TabOrder = 0
-          OnChange = ComboBox1Change
-          OnKeyDown = PadraoKeyDown
-          Items.Strings = (
-            ''
-            '50 - Sa'#237'da Tributada'
-            '51 - Sa'#237'da Tribut'#225'vel com Al'#237'quota Zero'
-            '52 - Sa'#237'da Isenta'
-            '53 - Sa'#237'da N'#227'o-Tributada'
-            '54 - Sa'#237'da Imune'
-            '55 - Sa'#237'da com Suspens'#227'o'
-            '99 - Outras Sa'#237'das')
+          object Label41: TLabel
+            Left = 36
+            Top = 27
+            Width = 75
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = 'CST IPI'
+            Color = clBtnHighlight
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentColor = False
+            ParentFont = False
+            Transparent = True
+          end
+          object Label40: TLabel
+            Left = 28
+            Top = 55
+            Width = 83
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = '% IPI'
+            Color = clBtnHighlight
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentColor = False
+            ParentFont = False
+            Transparent = True
+          end
+          object Label98: TLabel
+            Left = 20
+            Top = 73
+            Width = 91
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = 'C'#243'digo Enquad.'
+            Color = clBtnHighlight
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentColor = False
+            ParentFont = False
+            Transparent = True
+          end
+          object Label1: TLabel
+            Left = 20
+            Top = 86
+            Width = 91
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = 'Legal do IPI'
+            Color = clBtnHighlight
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentColor = False
+            ParentFont = False
+            Transparent = True
+          end
+          object ComboBox1: TComboBox
+            Left = 118
+            Top = 22
+            Width = 619
+            Height = 22
+            Style = csOwnerDrawVariable
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -13
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 0
+            OnChange = ComboBox1Change
+            OnKeyDown = PadraoKeyDown
+            Items.Strings = (
+              ''
+              '50 - Sa'#237'da Tributada'
+              '51 - Sa'#237'da Tribut'#225'vel com Al'#237'quota Zero'
+              '52 - Sa'#237'da Isenta'
+              '53 - Sa'#237'da N'#227'o-Tributada'
+              '54 - Sa'#237'da Imune'
+              '55 - Sa'#237'da com Suspens'#227'o'
+              '99 - Outras Sa'#237'das')
+          end
+          object SMALL_DBEdit41: TSMALL_DBEdit
+            Left = 118
+            Top = 50
+            Width = 50
+            Height = 20
+            AutoSize = False
+            BevelInner = bvLowered
+            BevelOuter = bvNone
+            Ctl3D = True
+            DataField = 'IPI'
+            DataSource = Form7.DataSource4
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -13
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentCtl3D = False
+            ParentFont = False
+            TabOrder = 1
+            OnKeyDown = PadraoKeyDown
+          end
+          object SMALL_DBEdit68: TSMALL_DBEdit
+            Left = 118
+            Top = 76
+            Width = 50
+            Height = 20
+            AutoSize = False
+            BevelInner = bvLowered
+            BevelOuter = bvNone
+            Ctl3D = True
+            DataField = 'ENQ_IPI'
+            DataSource = Form7.DataSource4
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -13
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentCtl3D = False
+            ParentFont = False
+            TabOrder = 2
+            OnKeyDown = PadraoKeyDown
+          end
         end
-        object SMALL_DBEdit41: TSMALL_DBEdit
-          Left = 170
-          Top = 50
-          Width = 50
-          Height = 20
-          AutoSize = False
-          BevelInner = bvLowered
-          BevelOuter = bvNone
-          Ctl3D = True
-          DataField = 'IPI'
-          DataSource = Form7.DataSource4
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentCtl3D = False
-          ParentFont = False
+        object GroupBox2: TGroupBox
+          Left = 17
+          Top = 144
+          Width = 758
+          Height = 264
+          Caption = 'PIS/COFINS'
           TabOrder = 1
-          OnKeyDown = PadraoKeyDown
-        end
-        object SMALL_DBEdit68: TSMALL_DBEdit
-          Left = 170
-          Top = 75
-          Width = 50
-          Height = 20
-          AutoSize = False
-          BevelInner = bvLowered
-          BevelOuter = bvNone
-          Ctl3D = True
-          DataField = 'ENQ_IPI'
-          DataSource = Form7.DataSource4
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentCtl3D = False
-          ParentFont = False
-          TabOrder = 2
-          OnKeyDown = PadraoKeyDown
-        end
-      end
-      object tbsPISCOFINS: TTabSheet
-        Caption = 'PIS/COFINS'
-        ImageIndex = 3
-        OnEnter = tbsPISCOFINSEnter
-        OnShow = tbsPISCOFINSShow
-        object gbPisCofinsSaida: TGroupBox
-          Left = 10
-          Top = 10
-          Width = 790
-          Height = 126
-          Caption = 'Sa'#237'da'
-          TabOrder = 0
+          object Label6: TLabel
+            Left = 24
+            Top = 20
+            Width = 73
+            Height = 13
+            AutoSize = False
+            Caption = 'Sa'#237'da'
+            Color = clBtnHighlight
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentColor = False
+            ParentFont = False
+            Transparent = True
+          end
+          object Label7: TLabel
+            Left = 24
+            Top = 151
+            Width = 73
+            Height = 13
+            AutoSize = False
+            Caption = 'Entrada'
+            Color = clBtnHighlight
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentColor = False
+            ParentFont = False
+            Transparent = True
+          end
           object Label42: TLabel
-            Left = 0
-            Top = 25
+            Left = 16
+            Top = 44
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -9243,8 +9291,8 @@ inherited FrmEstoque: TFrmEstoque
             Transparent = True
           end
           object Label43: TLabel
-            Left = 0
-            Top = 50
+            Left = 16
+            Top = 72
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -9261,8 +9309,8 @@ inherited FrmEstoque: TFrmEstoque
             Transparent = True
           end
           object Label49: TLabel
-            Left = 0
-            Top = 75
+            Left = 16
+            Top = 98
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -9279,8 +9327,8 @@ inherited FrmEstoque: TFrmEstoque
             Transparent = True
           end
           object lbBCPISCOFINS: TLabel
-            Left = 0
-            Top = 99
+            Left = 16
+            Top = 124
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -9296,10 +9344,64 @@ inherited FrmEstoque: TFrmEstoque
             ParentFont = False
             Transparent = True
           end
+          object Label38: TLabel
+            Left = 16
+            Top = 174
+            Width = 95
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = 'CST PIS/COFINS'
+            Color = clBtnHighlight
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentColor = False
+            ParentFont = False
+            Transparent = True
+          end
+          object Label50: TLabel
+            Left = 16
+            Top = 202
+            Width = 95
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = '% PIS'
+            Color = clBtnHighlight
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentColor = False
+            ParentFont = False
+            Transparent = True
+          end
+          object Label54: TLabel
+            Left = 16
+            Top = 228
+            Width = 95
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = '% COFINS'
+            Color = clBtnHighlight
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
+            ParentColor = False
+            ParentFont = False
+            Transparent = True
+          end
           object ComboBox7: TComboBox
-            Left = 100
-            Top = 25
-            Width = 670
+            Left = 118
+            Top = 39
+            Width = 619
             Height = 22
             Style = csOwnerDrawVariable
             Font.Charset = ANSI_CHARSET
@@ -9328,8 +9430,8 @@ inherited FrmEstoque: TFrmEstoque
               '99-Outras Opera'#231#245'es')
           end
           object dbepPisSaida: TSMALL_DBEdit
-            Left = 100
-            Top = 50
+            Left = 118
+            Top = 67
             Width = 60
             Height = 20
             AutoSize = False
@@ -9349,8 +9451,8 @@ inherited FrmEstoque: TFrmEstoque
             OnKeyDown = PadraoKeyDown
           end
           object dbepCofinsSaida: TSMALL_DBEdit
-            Left = 100
-            Top = 75
+            Left = 118
+            Top = 93
             Width = 60
             Height = 20
             AutoSize = False
@@ -9370,8 +9472,8 @@ inherited FrmEstoque: TFrmEstoque
             OnKeyDown = PadraoKeyDown
           end
           object dbeIcmBCPISCOFINS: TSMALL_DBEdit
-            Left = 100
-            Top = 99
+            Left = 118
+            Top = 119
             Width = 60
             Height = 20
             AutoSize = False
@@ -9390,72 +9492,10 @@ inherited FrmEstoque: TFrmEstoque
             TabOrder = 3
             OnKeyDown = PadraoKeyDown
           end
-        end
-        object gbPisCofinsEntrada: TGroupBox
-          Left = 10
-          Top = 160
-          Width = 790
-          Height = 126
-          Caption = 'Entrada'
-          TabOrder = 1
-          object Label38: TLabel
-            Left = 0
-            Top = 25
-            Width = 95
-            Height = 13
-            Alignment = taRightJustify
-            AutoSize = False
-            Caption = 'CST PIS/COFINS'
-            Color = clBtnHighlight
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clBlack
-            Font.Height = -11
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = []
-            ParentColor = False
-            ParentFont = False
-            Transparent = True
-          end
-          object Label50: TLabel
-            Left = 0
-            Top = 50
-            Width = 95
-            Height = 13
-            Alignment = taRightJustify
-            AutoSize = False
-            Caption = '% PIS'
-            Color = clBtnHighlight
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clBlack
-            Font.Height = -11
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = []
-            ParentColor = False
-            ParentFont = False
-            Transparent = True
-          end
-          object Label54: TLabel
-            Left = 0
-            Top = 75
-            Width = 95
-            Height = 13
-            Alignment = taRightJustify
-            AutoSize = False
-            Caption = '% COFINS'
-            Color = clBtnHighlight
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clBlack
-            Font.Height = -11
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = []
-            ParentColor = False
-            ParentFont = False
-            Transparent = True
-          end
           object ComboBox10: TComboBox
-            Left = 100
-            Top = 25
-            Width = 670
+            Left = 118
+            Top = 169
+            Width = 619
             Height = 22
             Style = csOwnerDrawVariable
             Font.Charset = ANSI_CHARSET
@@ -9464,7 +9504,7 @@ inherited FrmEstoque: TFrmEstoque
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
             ParentFont = False
-            TabOrder = 0
+            TabOrder = 4
             OnChange = ComboBox10Change
             OnEnter = ComboBox10Enter
             OnKeyDown = PadraoKeyDown
@@ -9523,8 +9563,8 @@ inherited FrmEstoque: TFrmEstoque
               '99-Outras Opera'#231#245'es')
           end
           object dbepPisEntrada: TSMALL_DBEdit
-            Left = 100
-            Top = 50
+            Left = 118
+            Top = 197
             Width = 60
             Height = 20
             AutoSize = False
@@ -9540,12 +9580,12 @@ inherited FrmEstoque: TFrmEstoque
             Font.Style = []
             ParentCtl3D = False
             ParentFont = False
-            TabOrder = 1
+            TabOrder = 5
             OnKeyDown = PadraoKeyDown
           end
           object dbepCofinsEntrada: TSMALL_DBEdit
-            Left = 100
-            Top = 75
+            Left = 118
+            Top = 223
             Width = 60
             Height = 20
             AutoSize = False
@@ -9561,7 +9601,7 @@ inherited FrmEstoque: TFrmEstoque
             Font.Style = []
             ParentCtl3D = False
             ParentFont = False
-            TabOrder = 2
+            TabOrder = 6
             OnKeyDown = PadraoKeyDown
           end
         end
@@ -9571,14 +9611,14 @@ inherited FrmEstoque: TFrmEstoque
         ImageIndex = 4
         OnShow = tbsGradeShow
         object Label39: TLabel
-          Left = 20
-          Top = 320
+          Left = 19
+          Top = 360
           Width = 282
           Height = 13
           Caption = '12345678901234567890123456789012345678901234567'
           Color = clWhite
           Font.Charset = DEFAULT_CHARSET
-          Font.Color = clRed
+          Font.Color = clBlack
           Font.Height = -11
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
@@ -9586,15 +9626,15 @@ inherited FrmEstoque: TFrmEstoque
           ParentFont = False
         end
         object StringGrid1: TStringGrid
-          Left = 20
+          Left = 21
           Top = 25
-          Width = 510
-          Height = 265
+          Width = 752
+          Height = 324
           BorderStyle = bsNone
           Color = clWhite
           ColCount = 20
           Ctl3D = False
-          DefaultColWidth = 85
+          DefaultColWidth = 92
           DefaultRowHeight = 25
           DrawingStyle = gdsClassic
           FixedColor = clWhite
@@ -9618,11 +9658,11 @@ inherited FrmEstoque: TFrmEstoque
           OnKeyUp = StringGrid1KeyUp
         end
         object Button1: TBitBtn
-          Left = 18
-          Top = 388
-          Width = 130
+          Left = 16
+          Top = 383
+          Width = 100
           Height = 25
-          Caption = 'Excluir grade'
+          Caption = 'Excluir Grade'
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
@@ -9633,9 +9673,9 @@ inherited FrmEstoque: TFrmEstoque
           OnClick = Button1Click
         end
         object Button2: TBitBtn
-          Left = 158
-          Top = 388
-          Width = 130
+          Left = 120
+          Top = 383
+          Width = 100
           Height = 25
           Caption = 'Cancelar'
           Font.Charset = ANSI_CHARSET
@@ -9648,9 +9688,9 @@ inherited FrmEstoque: TFrmEstoque
           OnClick = Button2Click
         end
         object Button3: TBitBtn
-          Left = 400
-          Top = 380
-          Width = 130
+          Left = 224
+          Top = 383
+          Width = 100
           Height = 25
           Caption = 'Salvar Grade'
           Font.Charset = ANSI_CHARSET
@@ -9662,17 +9702,37 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 3
           OnClick = Button3Click
         end
+        object TPanel
+          Left = 20
+          Top = 25
+          Width = 2
+          Height = 324
+          BevelOuter = bvNone
+          Color = clSilver
+          ParentBackground = False
+          TabOrder = 4
+        end
+        object TPanel
+          Left = 20
+          Top = 23
+          Width = 753
+          Height = 2
+          BevelOuter = bvNone
+          Color = clSilver
+          ParentBackground = False
+          TabOrder = 5
+        end
       end
       object tbsSerial: TTabSheet
         Caption = 'Serial'
         ImageIndex = 5
         OnShow = tbsSerialShow
-        object Edit8: TEdit
-          Left = 10
-          Top = 25
-          Width = 152
+        object edtTitulo1: TEdit
+          Left = 17
+          Top = 45
+          Width = 213
           Height = 22
-          Color = clSilver
+          Color = clWhite
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -9683,14 +9743,15 @@ inherited FrmEstoque: TFrmEstoque
           ParentFont = False
           ReadOnly = True
           TabOrder = 0
-          Text = 'N'#250'mero de s'#233'rie'
+          Text = '  N'#250'mero de s'#233'rie'
         end
-        object Edit9: TEdit
-          Left = 161
-          Top = 25
-          Width = 77
+        object edtTitulo2: TEdit
+          Left = 229
+          Top = 45
+          Width = 89
           Height = 22
-          Color = clSilver
+          Alignment = taCenter
+          Color = clWhite
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -9703,30 +9764,13 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 1
           Text = 'NF Compra'
         end
-        object Edit11: TEdit
-          Left = 313
-          Top = 25
-          Width = 77
+        object edtTitulo4: TEdit
+          Left = 405
+          Top = 45
+          Width = 89
           Height = 22
-          Color = clSilver
-          Ctl3D = False
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentCtl3D = False
-          ParentFont = False
-          ReadOnly = True
-          TabOrder = 2
-          Text = 'Compra'
-        end
-        object Edit3: TEdit
-          Left = 237
-          Top = 25
-          Width = 77
-          Height = 22
-          Color = clSilver
+          Alignment = taCenter
+          Color = clWhite
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -9737,14 +9781,34 @@ inherited FrmEstoque: TFrmEstoque
           ParentFont = False
           ReadOnly = True
           TabOrder = 3
+          Text = 'Compra'
+        end
+        object edtTitulo3: TEdit
+          Left = 317
+          Top = 45
+          Width = 89
+          Height = 22
+          Alignment = taCenter
+          Color = clWhite
+          Ctl3D = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentCtl3D = False
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 2
           Text = 'Pago'
         end
-        object Edit10: TEdit
-          Left = 389
-          Top = 25
-          Width = 77
+        object edtTitulo5: TEdit
+          Left = 493
+          Top = 45
+          Width = 89
           Height = 22
-          Color = clSilver
+          Alignment = taCenter
+          Color = clWhite
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -9757,12 +9821,13 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 4
           Text = 'NF Venda'
         end
-        object Edit12: TEdit
-          Left = 465
-          Top = 25
-          Width = 77
+        object edtTitulo6: TEdit
+          Left = 581
+          Top = 45
+          Width = 89
           Height = 22
-          Color = clSilver
+          Alignment = taCenter
+          Color = clWhite
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -9775,12 +9840,13 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 5
           Text = 'Recebido'
         end
-        object Edit13: TEdit
-          Left = 541
-          Top = 25
-          Width = 94
+        object edtTitulo7: TEdit
+          Left = 669
+          Top = 45
+          Width = 106
           Height = 22
-          Color = clSilver
+          Alignment = taCenter
+          Color = clWhite
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
@@ -9793,11 +9859,72 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 6
           Text = 'Venda'
         end
-        object DBGrid4: TDBGrid
-          Left = 10
-          Top = 46
-          Width = 625
-          Height = 290
+        object chkControlaSerial: TCheckBox
+          Left = 20
+          Top = 16
+          Width = 300
+          Height = 17
+          Caption = 'Controlar este produto por n'#250'mero de s'#233'rie'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 7
+          OnClick = chkControlaSerialClick
+          OnExit = chkControlaSerialExit
+        end
+        object btnProcurarSer: TBitBtn
+          Left = 16
+          Top = 383
+          Width = 120
+          Height = 25
+          Caption = 'Procurar'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 8
+          OnClick = btnProcurarSerClick
+        end
+        object btnHistoricoItemSer: TBitBtn
+          Left = 140
+          Top = 383
+          Width = 120
+          Height = 25
+          Caption = 'Hist'#243'rico do item'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 9
+          OnClick = btnHistoricoItemSerClick
+        end
+        object btnHistoricoSer: TBitBtn
+          Left = 264
+          Top = 383
+          Width = 120
+          Height = 25
+          Caption = 'Hist'#243'rico do serial'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 10
+          OnClick = btnHistoricoSerClick
+        end
+        object dbgSerial: TDBGrid
+          Left = 17
+          Top = 66
+          Width = 758
+          Height = 298
           BiDiMode = bdLeftToRight
           Ctl3D = False
           DataSource = Form7.DataSource30
@@ -9813,118 +9940,57 @@ inherited FrmEstoque: TFrmEstoque
           ParentFont = False
           ParentShowHint = False
           ShowHint = False
-          TabOrder = 7
+          TabOrder = 11
           TitleFont.Charset = ANSI_CHARSET
           TitleFont.Color = clWindowText
           TitleFont.Height = -13
           TitleFont.Name = 'Microsoft Sans Serif'
           TitleFont.Style = []
-          OnKeyDown = DBGrid4KeyDown
-          OnKeyPress = DBGrid4KeyPress
+          OnKeyDown = dbgSerialKeyDown
+          OnKeyPress = dbgSerialKeyPress
           Columns = <
             item
               Expanded = False
               FieldName = 'SERIAL'
-              Width = 150
+              Width = 211
               Visible = True
             end
             item
               Expanded = False
               FieldName = 'NFCOMPRA'
-              Width = 75
+              Width = 87
               Visible = True
             end
             item
               Expanded = False
               FieldName = 'VALCOMPRA'
-              Width = 75
+              Width = 87
               Visible = True
             end
             item
               Expanded = False
               FieldName = 'DATCOMPRA'
-              Width = 75
+              Width = 87
               Visible = True
             end
             item
               Expanded = False
               FieldName = 'NFVENDA'
-              Width = 75
+              Width = 87
               Visible = True
             end
             item
               Expanded = False
               FieldName = 'VALVENDA'
-              Width = 75
+              Width = 87
               Visible = True
             end
             item
               Expanded = False
               FieldName = 'DATVENDA'
-              Width = 75
+              Width = 87
               Visible = True
             end>
-        end
-        object CheckBox1: TCheckBox
-          Left = 10
-          Top = 350
-          Width = 300
-          Height = 17
-          Caption = 'Controlar este produto por n'#250'mero de s'#233'rie'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 8
-          OnClick = CheckBox1Click
-          OnExit = CheckBox1Exit
-        end
-        object Button17: TBitBtn
-          Left = 26
-          Top = 396
-          Width = 130
-          Height = 25
-          Caption = 'Procura'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 9
-          OnClick = Button17Click
-        end
-        object Button15: TBitBtn
-          Left = 166
-          Top = 396
-          Width = 130
-          Height = 25
-          Caption = 'Hist'#243'rico do item'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 10
-          OnClick = Button15Click
-        end
-        object Button16: TBitBtn
-          Left = 306
-          Top = 396
-          Width = 130
-          Height = 25
-          Caption = 'Hist'#243'rico do serial'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 11
-          OnClick = Button16Click
         end
       end
       object tbsComposicao: TTabSheet
@@ -9932,12 +9998,12 @@ inherited FrmEstoque: TFrmEstoque
         ImageIndex = 6
         OnShow = tbsComposicaoShow
         object Edit5: TEdit
-          Left = 20
-          Top = 25
-          Width = 658
+          Left = 17
+          Top = 23
+          Width = 634
           Height = 22
           BevelInner = bvNone
-          Color = clSilver
+          Color = clWhite
           Ctl3D = False
           Enabled = False
           Font.Charset = ANSI_CHARSET
@@ -9949,14 +10015,15 @@ inherited FrmEstoque: TFrmEstoque
           ParentFont = False
           ReadOnly = True
           TabOrder = 0
-          Text = 'C'#243'digo/ C'#243'digo de barras/ Descri'#231#227'o'
+          Text = '  C'#243'digo/ C'#243'digo de barras/ Descri'#231#227'o'
         end
         object Edit6: TEdit
-          Left = 676
-          Top = 25
+          Left = 650
+          Top = 23
           Width = 125
           Height = 22
-          Color = clSilver
+          Alignment = taCenter
+          Color = clWhite
           Ctl3D = False
           Enabled = False
           Font.Charset = ANSI_CHARSET
@@ -9972,17 +10039,17 @@ inherited FrmEstoque: TFrmEstoque
           OnEnter = Edit6Enter
         end
         object dbgComposicao: TDBGrid
-          Left = 20
-          Top = 46
-          Width = 781
-          Height = 235
+          Left = 17
+          Top = 44
+          Width = 758
+          Height = 250
           Ctl3D = False
           DataSource = Form7.DataSource28
           DrawingStyle = gdsClassic
           Font.Charset = ANSI_CHARSET
           Font.Color = clWindowText
           Font.Height = -13
-          Font.Name = 'Courier New'
+          Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           Options = [dgEditing, dgColLines, dgRowLines]
           ParentCtl3D = False
@@ -10002,18 +10069,19 @@ inherited FrmEstoque: TFrmEstoque
             item
               Expanded = False
               FieldName = 'DESCRICAO'
-              Width = 655
+              Width = 632
               Visible = True
             end
             item
               Expanded = False
               FieldName = 'QUANTIDADE'
+              Width = 103
               Visible = True
             end>
         end
         object SMALL_DBEdit33: TSMALL_DBEdit
-          Left = 160
-          Top = 310
+          Left = 570
+          Top = 315
           Width = 100
           Height = 23
           AutoSize = False
@@ -10032,8 +10100,8 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 3
         end
         object SMALL_DBEdit34: TSMALL_DBEdit
-          Left = 160
-          Top = 345
+          Left = 570
+          Top = 350
           Width = 100
           Height = 23
           AutoSize = False
@@ -10052,9 +10120,9 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 4
         end
         object Button8: TBitBtn
-          Left = 20
-          Top = 310
-          Width = 130
+          Left = 676
+          Top = 314
+          Width = 100
           Height = 25
           Caption = '&Fabricar'
           Font.Charset = ANSI_CHARSET
@@ -10067,9 +10135,9 @@ inherited FrmEstoque: TFrmEstoque
           OnClick = Button8Click
         end
         object Button10: TBitBtn
-          Left = 20
-          Top = 345
-          Width = 130
+          Left = 676
+          Top = 349
+          Width = 100
           Height = 25
           Caption = '&Desmontar'
           Font.Charset = ANSI_CHARSET
@@ -10082,9 +10150,9 @@ inherited FrmEstoque: TFrmEstoque
           OnClick = Button10Click
         end
         object Button11: TBitBtn
-          Left = 20
-          Top = 388
-          Width = 130
+          Left = 676
+          Top = 383
+          Width = 100
           Height = 25
           Caption = 'C&usto'
           Font.Charset = ANSI_CHARSET
@@ -10097,24 +10165,24 @@ inherited FrmEstoque: TFrmEstoque
           OnClick = Button11Click
         end
         inline framePesquisaProdComposicao: TframePesquisaProduto
-          Left = 20
-          Top = 280
-          Width = 781
-          Height = 100
+          Left = 17
+          Top = 293
+          Width = 758
+          Height = 114
           TabOrder = 8
           Visible = False
-          ExplicitLeft = 20
-          ExplicitTop = 280
-          ExplicitWidth = 781
-          ExplicitHeight = 100
+          ExplicitLeft = 17
+          ExplicitTop = 293
+          ExplicitWidth = 758
+          ExplicitHeight = 114
           inherited pnlPrincipal: TPanel
-            Width = 781
-            Height = 100
-            ExplicitWidth = 781
-            ExplicitHeight = 100
+            Width = 758
+            Height = 114
+            ExplicitWidth = 758
+            ExplicitHeight = 114
             inherited dbgItensPesq: TDBGrid
-              Width = 781
-              Height = 100
+              Width = 758
+              Height = 114
               OnCellClick = framePesquisaProdComposicaodbgItensPesqCellClick
               OnKeyDown = framePesquisaProdComposicaodbgItensPesqKeyDown
               OnKeyPress = framePesquisaProdComposicaodbgItensPesqKeyPress
@@ -11752,19 +11820,6 @@ inherited FrmEstoque: TFrmEstoque
           ReadOnly = True
           TabOrder = 2
           Visible = False
-        end
-      end
-      object tbsMarketplace: TTabSheet
-        Caption = 'Marketplace'
-        ImageIndex = 13
-        object chkMarketplace: TCheckBox
-          Left = 24
-          Top = 40
-          Width = 97
-          Height = 17
-          Caption = 'Marketplace'
-          TabOrder = 0
-          OnClick = chkMarketplaceClick
         end
       end
     end

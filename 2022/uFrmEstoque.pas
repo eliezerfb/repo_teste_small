@@ -59,7 +59,6 @@ type
     edtLucroBruto: TSMALL_DBEdit;
     lblLucroBruto: TLabel;
     tbsIPI: TTabSheet;
-    tbsPISCOFINS: TTabSheet;
     tbsGrade: TTabSheet;
     tbsSerial: TTabSheet;
     tbsComposicao: TTabSheet;
@@ -69,8 +68,6 @@ type
     tbsConversao: TTabSheet;
     tbsCodBarras: TTabSheet;
     tbsTags: TTabSheet;
-    tbsMarketplace: TTabSheet;
-    chkMarketplace: TCheckBox;
     RichEdit1: TRichEdit;
     dbgCodBar: TDBGrid;
     Label85: TLabel;
@@ -150,12 +147,6 @@ type
     Button1: TBitBtn;
     Button2: TBitBtn;
     Button3: TBitBtn;
-    Label41: TLabel;
-    Label40: TLabel;
-    Label98: TLabel;
-    ComboBox1: TComboBox;
-    SMALL_DBEdit41: TSMALL_DBEdit;
-    SMALL_DBEdit68: TSMALL_DBEdit;
     Edit5: TEdit;
     Edit6: TEdit;
     dbgComposicao: TDBGrid;
@@ -165,34 +156,17 @@ type
     Button10: TBitBtn;
     Button11: TBitBtn;
     framePesquisaProdComposicao: TframePesquisaProduto;
-    Edit8: TEdit;
-    Edit9: TEdit;
-    Edit11: TEdit;
-    Edit3: TEdit;
-    Edit10: TEdit;
-    Edit12: TEdit;
-    Edit13: TEdit;
-    DBGrid4: TDBGrid;
-    CheckBox1: TCheckBox;
-    Button17: TBitBtn;
-    Button15: TBitBtn;
-    Button16: TBitBtn;
-    gbPisCofinsSaida: TGroupBox;
-    Label42: TLabel;
-    Label43: TLabel;
-    Label49: TLabel;
-    lbBCPISCOFINS: TLabel;
-    ComboBox7: TComboBox;
-    dbepPisSaida: TSMALL_DBEdit;
-    dbepCofinsSaida: TSMALL_DBEdit;
-    dbeIcmBCPISCOFINS: TSMALL_DBEdit;
-    gbPisCofinsEntrada: TGroupBox;
-    Label38: TLabel;
-    Label50: TLabel;
-    Label54: TLabel;
-    ComboBox10: TComboBox;
-    dbepPisEntrada: TSMALL_DBEdit;
-    dbepCofinsEntrada: TSMALL_DBEdit;
+    edtTitulo1: TEdit;
+    edtTitulo2: TEdit;
+    edtTitulo4: TEdit;
+    edtTitulo3: TEdit;
+    edtTitulo5: TEdit;
+    edtTitulo6: TEdit;
+    edtTitulo7: TEdit;
+    chkControlaSerial: TCheckBox;
+    btnProcurarSer: TBitBtn;
+    btnHistoricoItemSer: TBitBtn;
+    btnHistoricoSer: TBitBtn;
     Label31: TLabel;
     Label32: TLabel;
     Label33: TLabel;
@@ -266,6 +240,33 @@ type
     SMALL_DBEdit67: TSMALL_DBEdit;
     fraPerfilTrib: TfFrameCampo;
     ComboBox5: TComboBox;
+    chkMarketplace: TCheckBox;
+    GroupBox1: TGroupBox;
+    Label41: TLabel;
+    Label40: TLabel;
+    Label98: TLabel;
+    ComboBox1: TComboBox;
+    SMALL_DBEdit41: TSMALL_DBEdit;
+    SMALL_DBEdit68: TSMALL_DBEdit;
+    Label1: TLabel;
+    GroupBox2: TGroupBox;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label42: TLabel;
+    ComboBox7: TComboBox;
+    dbepPisSaida: TSMALL_DBEdit;
+    Label43: TLabel;
+    Label49: TLabel;
+    dbepCofinsSaida: TSMALL_DBEdit;
+    dbeIcmBCPISCOFINS: TSMALL_DBEdit;
+    lbBCPISCOFINS: TLabel;
+    Label38: TLabel;
+    ComboBox10: TComboBox;
+    Label50: TLabel;
+    dbepPisEntrada: TSMALL_DBEdit;
+    Label54: TLabel;
+    dbepCofinsEntrada: TSMALL_DBEdit;
+    dbgSerial: TDBGrid;
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
     procedure FormActivate(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
@@ -337,18 +338,16 @@ type
     procedure Button10Click(Sender: TObject);
     procedure Button11Click(Sender: TObject);
     procedure tbsSerialShow(Sender: TObject);
-    procedure CheckBox1Click(Sender: TObject);
-    procedure CheckBox1Exit(Sender: TObject);
-    procedure DBGrid4KeyDown(Sender: TObject; var Key: Word;
+    procedure chkControlaSerialClick(Sender: TObject);
+    procedure chkControlaSerialExit(Sender: TObject);
+    procedure dbgSerialKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure DBGrid4KeyPress(Sender: TObject; var Key: Char);
-    procedure Button17Click(Sender: TObject);
-    procedure Button15Click(Sender: TObject);
-    procedure Button16Click(Sender: TObject);
+    procedure dbgSerialKeyPress(Sender: TObject; var Key: Char);
+    procedure btnProcurarSerClick(Sender: TObject);
+    procedure btnHistoricoItemSerClick(Sender: TObject);
+    procedure btnHistoricoSerClick(Sender: TObject);
     procedure tbsICMSShow(Sender: TObject);
     procedure tbsIPIShow(Sender: TObject);
-    procedure tbsPISCOFINSShow(Sender: TObject);
-    procedure tbsPISCOFINSEnter(Sender: TObject);
     procedure ComboBox7Change(Sender: TObject);
     procedure ComboBox10Change(Sender: TObject);
     procedure ComboBox10Enter(Sender: TObject);
@@ -370,7 +369,7 @@ type
     procedure fraPerfilTribtxtCampoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormDeactivate(Sender: TObject);
-    procedure CarregaValoresObjeto;
+    function CarregaValoresObjeto : boolean;
     procedure lblAnteriorClick(Sender: TObject);
     procedure lblProximoClick(Sender: TObject);
     procedure lblProcurarClick(Sender: TObject);
@@ -673,23 +672,6 @@ begin
   StringGrid2.GradientStartColor := $00F0F0F0;
   StringGrid2.GradientEndColor   := $00F0F0F0;
 
-  {Mauricio Parizotto 2024-07-17
-  Edit8.Color  := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
-  Edit9.Color  := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
-  Edit3.Color  := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
-  Edit11.Color := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
-  Edit10.Color := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
-  Edit12.Color := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
-  Edit13.Color := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
-  }
-  Edit8.Color  := clWhite;
-  Edit9.Color  := clWhite;
-  Edit3.Color  := clWhite;
-  Edit11.Color := clWhite;
-  Edit10.Color := clWhite;
-  Edit12.Color := clWhite;
-  Edit13.Color := clWhite;
-
   Form7.ibDataSet28DESCRICAO.OnChange := ibDataSet28DESCRICAOChange;
 end;
 
@@ -707,10 +689,10 @@ begin
   inherited;
 
   try
-    Label18.Caption := DSCadastro.DataSet.FieldByName('LIVRE1').DisplayLabel + ':';
-    Label19.Caption := DSCadastro.DataSet.FieldByName('LIVRE2').DisplayLabel + ':';
-    Label20.Caption := DSCadastro.DataSet.FieldByName('LIVRE3').DisplayLabel + ':';
-    Label21.Caption := DSCadastro.DataSet.FieldByName('LIVRE4').DisplayLabel + ':';
+    Label18.Caption := DSCadastro.DataSet.FieldByName('LIVRE1').DisplayLabel;
+    Label19.Caption := DSCadastro.DataSet.FieldByName('LIVRE2').DisplayLabel;
+    Label20.Caption := DSCadastro.DataSet.FieldByName('LIVRE3').DisplayLabel;
+    Label21.Caption := DSCadastro.DataSet.FieldByName('LIVRE4').DisplayLabel;
   except
   end;
 
@@ -720,9 +702,6 @@ begin
     edtCodBarras.SetFocus;
 
   AjustaCampoPrecoQuandoEmPromocao;
-
-  Edit5.Color  := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
-  Edit6.Color  := Form19.Image9.Picture.BitMap.canvas.pixels[600,500];
 end;
 
 procedure TFrmEstoque.framePesquisaProdComposicaodbgItensPesqCellClick(
@@ -1385,6 +1364,9 @@ end;
 
 procedure TFrmEstoque.tbsICMSShow(Sender: TObject);
 begin
+  if fraPerfilTrib.txtCampo.CanFocus then
+    fraPerfilTrib.txtCampo.SetFocus;
+
   CarregaValoresObjeto;
 end;
 
@@ -1395,17 +1377,6 @@ begin
 end;
 
 procedure TFrmEstoque.tbsIPIShow(Sender: TObject);
-begin
-  CarregaValoresObjeto;
-end;
-
-procedure TFrmEstoque.tbsPISCOFINSEnter(Sender: TObject);
-begin
-  if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-    Form7.ibDataset4.Edit;
-end;
-
-procedure TFrmEstoque.tbsPISCOFINSShow(Sender: TObject);
 begin
   CarregaValoresObjeto;
 end;
@@ -1489,16 +1460,17 @@ end;
 
 procedure TFrmEstoque.tbsSerialShow(Sender: TObject);
 begin
-  if CheckBox1.CanFocus then CheckBox1.SetFocus;
+  if chkControlaSerial.CanFocus then
+    chkControlaSerial.SetFocus;
 
   if Form7.bSoLeitura or Form7.bEstaSendoUsado then
   begin
-    dbGrid4.ReadOnly    := True;
-    CheckBox1.Enabled   := False;
+    dbgSerial.ReadOnly          := True;
+    chkControlaSerial.Enabled   := False;
   end else
   begin
-    dbGrid4.ReadOnly    := False;
-    CheckBox1.Enabled   := True;
+    dbgSerial.ReadOnly          := False;
+    chkControlaSerial.Enabled   := True;
   end;
 
 
@@ -1509,22 +1481,36 @@ begin
 
   if Form7.ibDataSet4.FieldByname('SERIE').Value = 1 then
   begin
-    CheckBox1.Checked := True;
+    chkControlaSerial.Checked    := True;
     Form7.ibDataSet30.Active     := False;
     Form7.ibDataSet30.Active     := True;
-    DBGrid4.Visible          := True;
-    Button15.Visible         := True;
-    Button16.Visible         := True;
-    Button17.Visible         := True;
+    dbgSerial.Enabled            := True;
+    btnHistoricoItemSer.Enabled  := True;
+    btnHistoricoSer.Enabled      := True;
+    btnProcurarSer.Enabled       := True;
+    edtTitulo1.Enabled           := True;
+    edtTitulo2.Enabled           := True;
+    edtTitulo3.Enabled           := True;
+    edtTitulo4.Enabled           := True;
+    edtTitulo5.Enabled           := True;
+    edtTitulo6.Enabled           := True;
+    edtTitulo7.Enabled           := True;
   end else
   begin
-    CheckBox1.Checked := False;
+    chkControlaSerial.Checked    := False;
     Form7.ibDataSet30.Active     := False;
     Form7.ibDataSet30.Active     := True;
-    DBGrid4.Visible          := False;
-    Button15.Visible         := False;
-    Button16.Visible         := False;
-    Button17.Visible         := False;
+    dbgSerial.Enabled            := False;
+    btnHistoricoItemSer.Enabled  := False;
+    btnHistoricoSer.Enabled      := False;
+    btnProcurarSer.Enabled       := False;
+    edtTitulo1.Enabled           := False;
+    edtTitulo2.Enabled           := False;
+    edtTitulo3.Enabled           := False;
+    edtTitulo4.Enabled           := False;
+    edtTitulo5.Enabled           := False;
+    edtTitulo6.Enabled           := False;
+    edtTitulo7.Enabled           := False;
   end;
 
   Form7.ibDataSet30.Last;
@@ -1756,6 +1742,8 @@ begin
 end;
 
 procedure TFrmEstoque.AtualizaObjComValorDoBanco;
+var
+  i : integer;
 begin
   //Se não estiver ativo não carrega informações
   if not FormularioAtivo(Self) then
@@ -1806,6 +1794,374 @@ begin
     fraPerfilTrib.CarregaDescricao;
   except
   end;
+
+  // Antes de tudo Zera os combos
+  ComboBox1.ItemIndex := -1;
+  cboCST_Prod.ItemIndex := -1;
+  cboOrigemProd.ItemIndex := -1;
+  cboCSOSN_Prod.ItemIndex := -1;
+  ComboBox5.ItemIndex := -1;
+  ComboBox6.ItemIndex := -1;
+  ComboBox7.ItemIndex := -1;
+  ComboBox9.ItemIndex := -1;
+  ComboBox10.ItemIndex := -1;
+  ComboBox11.ItemIndex := -1;
+
+  ComboBox14.ItemIndex := -1;
+  ComboBox15.ItemIndex := -1;
+
+  // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
+  begin
+    CarregaCit;
+  end;
+
+  if Form7.ibDataSet13CRT.AsString = '1' then
+  begin
+    Label36.Visible          := True;
+    cboCSOSN_Prod.Visible           := True;
+    Label37.Visible          := False;
+    cboCST_Prod.Visible             := False;
+
+    Label72.Visible          := True;
+    ComboBox15.Visible       := True;
+    Label84.Visible          := False;
+    ComboBox14.Visible       := False;
+  end else
+  begin
+    Label36.Visible          := False;
+    cboCSOSN_Prod.Visible           := False;
+    Label37.Visible          := True;
+    cboCST_Prod.Visible             := True;
+
+    Label72.Visible          := False;
+    ComboBox15.Visible       := False;
+    Label84.Visible          := True;
+    ComboBox14.Visible       := True;
+  end;
+
+  if Form7.ibDataSet13ESTADO.AsString = 'SP' then
+  begin
+    Label83.Caption := StrTran(Label83.Caption,'NFC-e','SAT');
+    Label84.Caption := StrTran(Label84.Caption,'NFC-e','SAT');
+    Label92.Caption := StrTran(Label92.Caption,'NFC-e','SAT');
+    Label72.Caption := StrTran(Label72.Caption,'NFC-e','SAT');
+  end else
+  begin
+    Label83.Caption := StrTran(Label83.Caption,'SAT','NFC-e');
+    Label84.Caption := StrTran(Label84.Caption,'SAT','NFC-e');
+    Label92.Caption := StrTran(Label92.Caption,'SAT','NFC-e');
+    Label72.Caption := StrTran(Label72.Caption,'SAT','NFC-e');
+  end;
+
+  Form7.ibDataSet4.Edit;
+  // P - Produção própria
+  // T - Produção por terceiros
+  for I := 0 to ComboBox5.Items.Count -1 do
+  begin
+    if Copy(ComboBox5.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IPPT.AsString)) then
+    begin
+      ComboBox5.ItemIndex := I;
+      Break; // Sandro Silva 2024-01-15
+    end;
+  end;
+
+  // A - Arredondamento
+  // T - Truncamento
+  for I := 0 to ComboBox6.Items.Count -1 do
+  begin
+    if Copy(ComboBox6.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IAT.AsString)) then
+    begin
+      ComboBox6.ItemIndex := I;
+      Break; // Sandro Silva 2024-01-15
+    end;
+  end;
+
+
+  // 101 - Tributada pelo Simples Nacional com permissão de crédito
+  // 102 - Tributada pelo Simples Nacional sem permissão de crédito
+  // 103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta
+  // 201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária
+  // 202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária
+  // 203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária
+  // 300 - Imune
+  // 400 - Não tributada pelo Simples Nacional
+  // 500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação
+  // 900 - Outros
+  if AllTrim(Form7.ibDataSet4CSOSN.AsString)<>'' then
+  begin
+    for I := 0 to cboCSOSN_Prod.Items.Count -1 do
+    begin
+      // Com a inclusão do valor 61 - Tributação monofásica sobre combustíveis cobrado anteriormente nos CSOSN precisa mudar aqui onde seleciona o valor do combo
+      if Trim(Form7.ibDataSet4CSOSN.AsString) <> '' then
+      begin
+        if Copy(cboCSOSN_Prod.Items[I],1, Length(Trim(Form7.ibDataSet4CSOSN.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN.AsString)) then
+        begin
+          cboCSOSN_Prod.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
+        end;
+      end;
+    end;
+  end;
+
+  // 101 - Tributada pelo Simples Nacional com permissão de crédito
+  // 102 - Tributada pelo Simples Nacional sem permissão de crédito
+  // 103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta
+  // 201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária
+  // 202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária
+  // 203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária
+  // 300 - Imune
+  // 400 - Não tributada pelo Simples Nacional
+  // 500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação
+  // 900 - Outros
+  if AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)<>'' then
+  begin
+    for I := 0 to ComboBox15.Items.Count -1 do
+    begin
+      // Com a inclusão do valor 61 - Tributação monofásica sobre combustíveis cobrado anteriormente nos CSOSN precisa mudar aqui onde seleciona o valor do combo
+      if Trim(Form7.ibDataSet4CSOSN_NFCE.AsString) <> '' then
+      begin
+        if Copy(ComboBox15.Items[I],1,Length(Trim(Form7.ibDataSet4CSOSN_NFCE.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)) then
+        begin
+          ComboBox15.ItemIndex := I;
+          Break; // Sandro Silva 2024-01-15
+        end;
+      end;
+    end;
+  end;
+
+
+  if AllTrim(Form7.ibDataSet4CST.AsString)<>'' then
+  begin
+    for I := 0 to cboOrigemProd.Items.Count -1 do
+    begin
+      // 0 - Nacional, exceto as indicadas nos códigos 3 a 5
+      // 1 - Estrangeira - Importação direta, exceto a indicada no código 6
+      // 2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7
+      // 3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% (quarenta por cento)
+      // 4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam o Decreto-Lei nº 288/1967, e as Leis nºs 8.248/1991, 8.387/1991, 10.176/2001 e 11.484/2007;
+      // 5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40% (quarenta por cento)
+      // 6 - Estrangeira - Importação direta, sem similar nacional, constante em lista de Resolução CAMEX;
+      // 7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX.
+      // 8 - Nacional, mercadoria ou bem com Conteúdo de Importação sup. a 70%
+      if Copy(cboOrigemProd.Items[I],1,1) = Copy(Form7.ibDataSet4CST.AsString+'000',1,1) then
+      begin
+        cboOrigemProd.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
+      end;
+    end;
+  end;
+
+
+  if AllTrim(Form7.ibDataSet4CST.AsString)<>'' then
+  begin
+    for I := 0 to cboCST_Prod.Items.Count -1 do
+    begin
+      // 00 - Tributada integralmente
+      // 10 - Tributada e com cobrança de ICMS por substituição tributária
+      // 20 - Com redução de base de cálculo
+      // 30 - Isenta e não tributada de ICMS por substituição tributária
+      // 40 - Isenta
+      // 41 - Não tributada
+      // 50 - Suspensão
+      // 51 - Diferimento
+      // 60 - ICMS Cobrado anteriormente por substituição tributária
+      // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
+      // 90 - Outras
+      if Copy(cboCST_Prod.Items[I],1,2) = Copy(Form7.ibDataSet4CST.AsString+'000',2,2) then
+      begin
+        cboCST_Prod.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
+      end;
+    end;
+  end;
+
+  if AllTrim(Form7.ibDataSet4CST_NFCE.AsString)<>'' then
+  begin
+    for I := 0 to ComboBox14.Items.Count -1 do
+    begin
+      // 00 - Tributada integralmente
+      // 10 - Tributada e com cobrança de ICMS por substituição tributária
+      // 20 - Com redução de base de cálculo
+      // 30 - Isenta e não tributada de ICMS por substituição tributária
+      // 40 - Isenta
+      // 41 - Não tributada
+      // 50 - Suspensão
+      // 51 - Diferimento
+      // 60 - ICMS Cobrado anteriormente por substituição tributária
+      // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
+      // 90 - Outras
+      if Copy(ComboBox14.Items[I],1,2) = Copy(Form7.ibDataSet4CST_NFCE.AsString+'000',2,2) then
+      begin
+        ComboBox14.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
+      end;
+    end;
+  end;
+
+
+  // 50 - Saída Tributada
+  // 51 - Saída Tributável com Alíquota Zero
+  // 52 - Saída Isenta
+  // 53 - Saída Não-Tributada
+  // 54 - Saída Imune
+  // 55 - Saída com Suspensão
+  // 99 - Outras Saídas
+  if AllTrim(Form7.ibDataSet4CST_IPI.AsString)<>'' then
+  begin
+    for I := 0 to ComboBox1.Items.Count -1 do
+    begin
+      if Copy(ComboBox1.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_IPI.AsString)) then
+      begin
+        ComboBox1.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
+      end;
+    end;
+  end;
+
+  // 01-Operação Tributável com Alíquota Básica
+  // 02-Operação Tributável com Alíquota Diferenciada
+  // 03-Operação Tributável com Alíquota por Unidade de Medida de Produto
+  // 04-Operação Tributável Monofásica - Revenda a Alíquota Zero
+  // 05-Operação Tributável por Substituição Tributária
+  // 06-Operação Tributável a Alíquota Zero
+  // 07-Operação Isenta da Contribuição
+  // 08-Operação sem Incidência da Contribuição
+  // 09-Operação com Suspensão da Contribuição
+  // 49-Outras Operações de Saída
+  // 50-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno
+  // 51-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não Tributada no Mercado Interno
+  // 52-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação
+  // 53-Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno
+  // 54-Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação
+  // 55-Operação com Direito a Crédito - Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação
+  // 56-Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
+  // 60-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno
+  // 61-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno
+  // 62-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação
+  // 63-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno
+  // 64-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação
+  // 65-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação
+  // 66-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
+  // 67-Crédito Presumido - Outras Operações
+  // 70-Operação de Aquisição sem Direito a Crédito
+  // 71-Operação de Aquisição com Isenção
+  // 72-Operação de Aquisição com Suspensão
+  // 73-Operação de Aquisição a Alíquota Zero
+  // 74-Operação de Aquisição sem Incidência da Contribuição
+  // 75-Operação de Aquisição por Substituição Tributária
+  // 98-Outras Operações de Entrada
+  // 99-Outras Operações
+
+  if AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString)<>'' then
+  begin
+    for I := 0 to ComboBox7.Items.Count -1 do
+    begin
+      if Copy(ComboBox7.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString)) then
+      begin
+        ComboBox7.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
+      end;
+    end;
+  end;
+
+  // 01-Operação Tributável com Alíquota Básica
+  // 02-Operação Tributável com Alíquota Diferenciada
+  // 03-Operação Tributável com Alíquota por Unidade de Medida de Produto
+  // 04-Operação Tributável Monofásica - Revenda a Alíquota Zero
+  // 05-Operação Tributável por Substituição Tributária
+  // 06-Operação Tributável a Alíquota Zero
+  // 07-Operação Isenta da Contribuição
+  // 08-Operação sem Incidência da Contribuição
+  // 09-Operação com Suspensão da Contribuição
+  // 49-Outras Operações de Saída
+  // 50-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno
+  // 51-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não Tributada no Mercado Interno
+  // 52-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação
+  // 53-Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno
+  // 54-Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação
+  // 55-Operação com Direito a Crédito - Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação
+  // 56-Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
+  // 60-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno
+  // 61-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno
+  // 62-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação
+  // 63-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno
+  // 64-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação
+  // 65-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação
+  // 66-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
+  // 67-Crédito Presumido - Outras Operações
+  // 70-Operação de Aquisição sem Direito a Crédito
+  // 71-Operação de Aquisição com Isenção
+  // 72-Operação de Aquisição com Suspensão
+  // 73-Operação de Aquisição a Alíquota Zero
+  // 74-Operação de Aquisição sem Incidência da Contribuição
+  // 75-Operação de Aquisição por Substituição Tributária
+  // 98-Outras Operações de Entrada
+  // 99-Outras Operações
+  if AllTrim(Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString)<>'' then
+  begin
+    for I := 0 to ComboBox10.Items.Count -1 do
+    begin
+      if Copy(ComboBox10.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString)) then
+      begin
+        ComboBox10.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
+      end;
+    end;
+  end;
+
+  // 00 - Mercadoria para Revenda
+  // 01 - Matéria-Prima
+  // 02 - Embalagem
+  // 03 - Produto em Processo
+  // 04 - Produto Acabado
+  // 05 - Subproduto
+  // 06 - Produto Intermediário
+  // 07 - Material de Uso e Consumo
+  // 08 - Ativo Imobilizado
+  // 09 - Serviços
+  // 10 - Outros insumos
+  // 99 - Outras
+  if AllTrim(Form7.ibDataSet4TIPO_ITEM.AsString)<>'' then
+  begin
+    for I := 0 to ComboBox9.Items.Count -1 do
+    begin
+      if Copy(ComboBox9.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4TIPO_ITEM.AsString)) then
+      begin
+        ComboBox9.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
+      end;
+    end;
+  end;
+           {
+  if Form7.StatusTrocaPerfil <> 'PR' then //Mauricio Parizotto 2024-01-15
+    if fraPerfilTrib.txtCampo.CanFocus then
+      fraPerfilTrib.txtCampo.SetFocus;
+           }
+
+  if SMALL_DBEDITY.CanFocus then
+    SMALL_DBEDITY.SetFocus;
+
+  // 5101 - Venda de produção do estabelecimento;
+  // 5102 - Venda de mercadoria de terceiros;
+  // 5103 - Venda de produção do estabelecimento efetuada fora do estabelecimento;
+  // 5104 - Venda de mercadoria adquirida ou recebida de terceiros, efetuada fora do estabelecimento;
+  // 5115 - Venda de mercadoria de terceiros, recebida anteriormente em consignação mercantil;
+  // 5405 - Venda de mercadoria de terceiros, sujeita a ST, como contribuinte substituído;
+  // 5656 - Venda de combustível ou lubrificante de terceiros, destinados a consumidor final;
+  // 5667 - Venda de combustível ou lubrificante a consumidor ou usuário final estabelecido em outra Unidade da Federação;
+  // 5933 - Prestação de serviço tributado pelo ISSQN (Nota Fiscal conjugada);
+  if AllTrim(Form7.ibDataSet4CFOP.AsString)<>'' then
+  begin
+    for I := 0 to ComboBox11.Items.Count -1 do
+    begin
+      if Copy(ComboBox11.Items[I],1,4) = UpperCase(AllTrim(Form7.ibDataSet4CFOP.AsString)) then
+      begin
+        ComboBox11.ItemIndex := I;
+        Break; // Sandro Silva 2024-01-15
+      end;
+    end;
+  end;
+
 
   GravaImagemEstoque;
 end;
@@ -2056,7 +2412,7 @@ begin
   end;
 end;
 
-procedure TFrmEstoque.Button15Click(Sender: TObject);
+procedure TFrmEstoque.btnHistoricoItemSerClick(Sender: TObject);
 var
   F: TextFile;
 begin
@@ -2168,7 +2524,7 @@ begin
   Form7.ibDataSet24.EnableControls;
 end;
 
-procedure TFrmEstoque.Button16Click(Sender: TObject);
+procedure TFrmEstoque.btnHistoricoSerClick(Sender: TObject);
 var
   F: TextFile;
 begin
@@ -2253,7 +2609,7 @@ begin
   Form7.ibDataSet24.EnableControls;
 end;
 
-procedure TFrmEstoque.Button17Click(Sender: TObject);
+procedure TFrmEstoque.btnProcurarSerClick(Sender: TObject);
 var
   sSerial : String;
 begin
@@ -2268,7 +2624,9 @@ begin
     if (AllTrim(Form7.ibDataSet30SERIAL.AsString) <> AllTrim(sSerial)) then
       MensagemSistema('Não encontrado.');
   end;
-  if dBgrid4.CanFocus then dbGrid4.SetFocus;
+
+  if dbgSerial.CanFocus then
+    dbgSerial.SetFocus;
 end;
 
 procedure TFrmEstoque.Button1Click(Sender: TObject);
@@ -2553,9 +2911,8 @@ begin
                   DownloadArquivoImg(PChar(sLinkDaFoto), PChar(sNomeDoJPG));
                   if FileExists(sNomeDoJPG) then
                   begin
-                    CarregaValoresObjeto;
-
 //                    if AtualizaTela(True) then
+                    if CarregaValoresObjeto then
                     begin
                       if Form7.ibDataset4FOTO.BlobSize <> 0 then
                       begin
@@ -2773,7 +3130,7 @@ begin
   end;
 end;
 
-procedure TFrmEstoque.CheckBox1Click(Sender: TObject);
+procedure TFrmEstoque.chkControlaSerialClick(Sender: TObject);
 begin
   if Form7.ibDataSet30.Modified then
   begin
@@ -2781,27 +3138,39 @@ begin
     Form7.ibDataSet30.Post;
   end;
 
-  if CheckBox1.Checked then
+  if chkControlaSerial.Checked then
   begin
-    CheckBox1.Checked := True;
-    DBGrid4.Visible          := True;
-    Button15.Visible         := True;
-    Button16.Visible         := True;
-    Button17.Visible         := True;
+    dbgSerial.Enabled            := True;
+    btnHistoricoItemSer.Enabled  := True;
+    btnHistoricoSer.Enabled      := True;
+    btnProcurarSer.Enabled       := True;
+    edtTitulo1.Enabled           := True;
+    edtTitulo2.Enabled           := True;
+    edtTitulo3.Enabled           := True;
+    edtTitulo4.Enabled           := True;
+    edtTitulo5.Enabled           := True;
+    edtTitulo6.Enabled           := True;
+    edtTitulo7.Enabled           := True;
   end else
   begin
-    CheckBox1.Checked := False;
-    DBGrid4.Visible          := False;
-    Button15.Visible         := False;
-    Button16.Visible         := False;
-    Button17.Visible         := False;
+    dbgSerial.Enabled            := False;
+    btnHistoricoItemSer.Enabled  := False;
+    btnHistoricoSer.Enabled      := False;
+    btnProcurarSer.Enabled       := False;
+    edtTitulo1.Enabled           := False;
+    edtTitulo2.Enabled           := False;
+    edtTitulo3.Enabled           := False;
+    edtTitulo4.Enabled           := False;
+    edtTitulo5.Enabled           := False;
+    edtTitulo6.Enabled           := False;
+    edtTitulo7.Enabled           := False;
   end;
 end;
 
-procedure TFrmEstoque.CheckBox1Exit(Sender: TObject);
+procedure TFrmEstoque.chkControlaSerialExit(Sender: TObject);
 begin
   Form7.ibDataSet4.Edit;
-  if CheckBox1.Checked then
+  if chkControlaSerial.Checked then
   begin
     Form7.ibDataSet4.FieldByname('SERIE').Value := 1;
   end else
@@ -3187,23 +3556,23 @@ begin
   end;
 end;
 
-procedure TFrmEstoque.DBGrid4KeyDown(Sender: TObject; var Key: Word;
+procedure TFrmEstoque.dbgSerialKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 end;
 
-procedure TFrmEstoque.DBGrid4KeyPress(Sender: TObject; var Key: Char);
+procedure TFrmEstoque.dbgSerialKeyPress(Sender: TObject; var Key: Char);
 var
   I : Integer;
 begin
   if Key = chr(13) then
   begin
-    I := DbGrid4.SelectedIndex;
-    DbGrid4.SelectedIndex := DbGrid4.SelectedIndex  + 1;
-    if (I = DbGrid4.SelectedIndex) then
+    I := dbgSerial.SelectedIndex;
+    dbgSerial.SelectedIndex := dbgSerial.SelectedIndex  + 1;
+    if (I = dbgSerial.SelectedIndex) then
     begin
-      DbGrid4.SelectedIndex := 0;
+      dbgSerial.SelectedIndex := 0;
       Form7.ibDataSet30.Next;
       if Form7.ibDataSet30.EOF then Form7.ibDataSet30.Append;
     end;
@@ -3233,7 +3602,7 @@ begin
   end;
 end;
 
-procedure TFrmEstoque.CarregaValoresObjeto;
+function TFrmEstoque.CarregaValoresObjeto : boolean;
 var
   I : Integer;
 
@@ -3242,371 +3611,7 @@ var
   JP2        : TJPEGImage;
   sRegistroOld: String;
 begin
-  // Antes de tudo Zera os combos
-  ComboBox1.ItemIndex := -1;
-  cboCST_Prod.ItemIndex := -1;
-  cboOrigemProd.ItemIndex := -1;
-  cboCSOSN_Prod.ItemIndex := -1;
-  ComboBox5.ItemIndex := -1;
-  ComboBox6.ItemIndex := -1;
-  ComboBox7.ItemIndex := -1;
-  ComboBox9.ItemIndex := -1;
-  ComboBox10.ItemIndex := -1;
-  ComboBox11.ItemIndex := -1;
-
-  ComboBox14.ItemIndex := -1;
-  ComboBox15.ItemIndex := -1;
-
-  // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
-  begin
-    CarregaCit;
-  end;
-
-  if Form7.ibDataSet13CRT.AsString = '1' then
-  begin
-    Label36.Visible          := True;
-    cboCSOSN_Prod.Visible           := True;
-    Label37.Visible          := False;
-    cboCST_Prod.Visible             := False;
-
-    Label72.Visible          := True;
-    ComboBox15.Visible       := True;
-    Label84.Visible          := False;
-    ComboBox14.Visible       := False;
-  end else
-  begin
-    Label36.Visible          := False;
-    cboCSOSN_Prod.Visible           := False;
-    Label37.Visible          := True;
-    cboCST_Prod.Visible             := True;
-
-    Label72.Visible          := False;
-    ComboBox15.Visible       := False;
-    Label84.Visible          := True;
-    ComboBox14.Visible       := True;
-  end;
-
-  if Form7.ibDataSet13ESTADO.AsString = 'SP' then
-  begin
-    Label83.Caption := StrTran(Label83.Caption,'NFC-e','SAT');
-    Label84.Caption := StrTran(Label84.Caption,'NFC-e','SAT');
-    Label92.Caption := StrTran(Label92.Caption,'NFC-e','SAT');
-    Label72.Caption := StrTran(Label72.Caption,'NFC-e','SAT');
-  end else
-  begin
-    Label83.Caption := StrTran(Label83.Caption,'SAT','NFC-e');
-    Label84.Caption := StrTran(Label84.Caption,'SAT','NFC-e');
-    Label92.Caption := StrTran(Label92.Caption,'SAT','NFC-e');
-    Label72.Caption := StrTran(Label72.Caption,'SAT','NFC-e');
-  end;
-
-  Form7.ibDataSet4.Edit;
-  // P - Produção própria
-  // T - Produção por terceiros
-  for I := 0 to ComboBox5.Items.Count -1 do
-  begin
-    if Copy(ComboBox5.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IPPT.AsString)) then
-    begin
-      ComboBox5.ItemIndex := I;
-      Break; // Sandro Silva 2024-01-15
-    end;
-  end;
-
-  // A - Arredondamento
-  // T - Truncamento
-  for I := 0 to ComboBox6.Items.Count -1 do
-  begin
-    if Copy(ComboBox6.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IAT.AsString)) then
-    begin
-      ComboBox6.ItemIndex := I;
-      Break; // Sandro Silva 2024-01-15
-    end;
-  end;
-
-
-  // 101 - Tributada pelo Simples Nacional com permissão de crédito
-  // 102 - Tributada pelo Simples Nacional sem permissão de crédito
-  // 103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta
-  // 201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária
-  // 202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária
-  // 203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária
-  // 300 - Imune
-  // 400 - Não tributada pelo Simples Nacional
-  // 500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação
-  // 900 - Outros
-  if AllTrim(Form7.ibDataSet4CSOSN.AsString)<>'' then
-  begin
-    for I := 0 to cboCSOSN_Prod.Items.Count -1 do
-    begin
-      // Com a inclusão do valor 61 - Tributação monofásica sobre combustíveis cobrado anteriormente nos CSOSN precisa mudar aqui onde seleciona o valor do combo
-      if Trim(Form7.ibDataSet4CSOSN.AsString) <> '' then
-      begin
-        if Copy(cboCSOSN_Prod.Items[I],1, Length(Trim(Form7.ibDataSet4CSOSN.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN.AsString)) then
-        begin
-          cboCSOSN_Prod.ItemIndex := I;
-          Break; // Sandro Silva 2024-01-15
-        end;
-      end;
-    end;
-  end;
-
-  // 101 - Tributada pelo Simples Nacional com permissão de crédito
-  // 102 - Tributada pelo Simples Nacional sem permissão de crédito
-  // 103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta
-  // 201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária
-  // 202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária
-  // 203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária
-  // 300 - Imune
-  // 400 - Não tributada pelo Simples Nacional
-  // 500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação
-  // 900 - Outros
-  if AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)<>'' then
-  begin
-    for I := 0 to ComboBox15.Items.Count -1 do
-    begin
-      // Com a inclusão do valor 61 - Tributação monofásica sobre combustíveis cobrado anteriormente nos CSOSN precisa mudar aqui onde seleciona o valor do combo
-      if Trim(Form7.ibDataSet4CSOSN_NFCE.AsString) <> '' then
-      begin
-        if Copy(ComboBox15.Items[I],1,Length(Trim(Form7.ibDataSet4CSOSN_NFCE.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)) then
-        begin
-          ComboBox15.ItemIndex := I;
-          Break; // Sandro Silva 2024-01-15
-        end;
-      end;
-    end;
-  end;
-
-
-  if AllTrim(Form7.ibDataSet4CST.AsString)<>'' then
-  begin
-    for I := 0 to cboOrigemProd.Items.Count -1 do
-    begin
-      // 0 - Nacional, exceto as indicadas nos códigos 3 a 5
-      // 1 - Estrangeira - Importação direta, exceto a indicada no código 6
-      // 2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7
-      // 3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% (quarenta por cento)
-      // 4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam o Decreto-Lei nº 288/1967, e as Leis nºs 8.248/1991, 8.387/1991, 10.176/2001 e 11.484/2007;
-      // 5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40% (quarenta por cento)
-      // 6 - Estrangeira - Importação direta, sem similar nacional, constante em lista de Resolução CAMEX;
-      // 7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX.
-      // 8 - Nacional, mercadoria ou bem com Conteúdo de Importação sup. a 70%
-      if Copy(cboOrigemProd.Items[I],1,1) = Copy(Form7.ibDataSet4CST.AsString+'000',1,1) then
-      begin
-        cboOrigemProd.ItemIndex := I;
-        Break; // Sandro Silva 2024-01-15
-      end;
-    end;
-  end;
-
-
-  if AllTrim(Form7.ibDataSet4CST.AsString)<>'' then
-  begin
-    for I := 0 to cboCST_Prod.Items.Count -1 do
-    begin
-      // 00 - Tributada integralmente
-      // 10 - Tributada e com cobrança de ICMS por substituição tributária
-      // 20 - Com redução de base de cálculo
-      // 30 - Isenta e não tributada de ICMS por substituição tributária
-      // 40 - Isenta
-      // 41 - Não tributada
-      // 50 - Suspensão
-      // 51 - Diferimento
-      // 60 - ICMS Cobrado anteriormente por substituição tributária
-      // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
-      // 90 - Outras
-      if Copy(cboCST_Prod.Items[I],1,2) = Copy(Form7.ibDataSet4CST.AsString+'000',2,2) then
-      begin
-        cboCST_Prod.ItemIndex := I;
-        Break; // Sandro Silva 2024-01-15
-      end;
-    end;
-  end;
-
-  if AllTrim(Form7.ibDataSet4CST_NFCE.AsString)<>'' then
-  begin
-    for I := 0 to ComboBox14.Items.Count -1 do
-    begin
-      // 00 - Tributada integralmente
-      // 10 - Tributada e com cobrança de ICMS por substituição tributária
-      // 20 - Com redução de base de cálculo
-      // 30 - Isenta e não tributada de ICMS por substituição tributária
-      // 40 - Isenta
-      // 41 - Não tributada
-      // 50 - Suspensão
-      // 51 - Diferimento
-      // 60 - ICMS Cobrado anteriormente por substituição tributária
-      // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
-      // 90 - Outras
-      if Copy(ComboBox14.Items[I],1,2) = Copy(Form7.ibDataSet4CST_NFCE.AsString+'000',2,2) then
-      begin
-        ComboBox14.ItemIndex := I;
-        Break; // Sandro Silva 2024-01-15
-      end;
-    end;
-  end;
-
-
-  // 50 - Saída Tributada
-  // 51 - Saída Tributável com Alíquota Zero
-  // 52 - Saída Isenta
-  // 53 - Saída Não-Tributada
-  // 54 - Saída Imune
-  // 55 - Saída com Suspensão
-  // 99 - Outras Saídas
-  if AllTrim(Form7.ibDataSet4CST_IPI.AsString)<>'' then
-  begin
-    for I := 0 to ComboBox1.Items.Count -1 do
-    begin
-      if Copy(ComboBox1.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_IPI.AsString)) then
-      begin
-        ComboBox1.ItemIndex := I;
-        Break; // Sandro Silva 2024-01-15
-      end;
-    end;
-  end;
-
-  // 01-Operação Tributável com Alíquota Básica
-  // 02-Operação Tributável com Alíquota Diferenciada
-  // 03-Operação Tributável com Alíquota por Unidade de Medida de Produto
-  // 04-Operação Tributável Monofásica - Revenda a Alíquota Zero
-  // 05-Operação Tributável por Substituição Tributária
-  // 06-Operação Tributável a Alíquota Zero
-  // 07-Operação Isenta da Contribuição
-  // 08-Operação sem Incidência da Contribuição
-  // 09-Operação com Suspensão da Contribuição
-  // 49-Outras Operações de Saída
-  // 50-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno
-  // 51-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não Tributada no Mercado Interno
-  // 52-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação
-  // 53-Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno
-  // 54-Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação
-  // 55-Operação com Direito a Crédito - Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação
-  // 56-Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
-  // 60-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno
-  // 61-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno
-  // 62-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação
-  // 63-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno
-  // 64-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação
-  // 65-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação
-  // 66-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
-  // 67-Crédito Presumido - Outras Operações
-  // 70-Operação de Aquisição sem Direito a Crédito
-  // 71-Operação de Aquisição com Isenção
-  // 72-Operação de Aquisição com Suspensão
-  // 73-Operação de Aquisição a Alíquota Zero
-  // 74-Operação de Aquisição sem Incidência da Contribuição
-  // 75-Operação de Aquisição por Substituição Tributária
-  // 98-Outras Operações de Entrada
-  // 99-Outras Operações
-
-  if AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString)<>'' then
-  begin
-    for I := 0 to ComboBox7.Items.Count -1 do
-    begin
-      if Copy(ComboBox7.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString)) then
-      begin
-        ComboBox7.ItemIndex := I;
-        Break; // Sandro Silva 2024-01-15
-      end;
-    end;
-  end;
-
-  // 01-Operação Tributável com Alíquota Básica
-  // 02-Operação Tributável com Alíquota Diferenciada
-  // 03-Operação Tributável com Alíquota por Unidade de Medida de Produto
-  // 04-Operação Tributável Monofásica - Revenda a Alíquota Zero
-  // 05-Operação Tributável por Substituição Tributária
-  // 06-Operação Tributável a Alíquota Zero
-  // 07-Operação Isenta da Contribuição
-  // 08-Operação sem Incidência da Contribuição
-  // 09-Operação com Suspensão da Contribuição
-  // 49-Outras Operações de Saída
-  // 50-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno
-  // 51-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita Não Tributada no Mercado Interno
-  // 52-Operação com Direito a Crédito - Vinculada Exclusivamente a Receita de Exportação
-  // 53-Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno
-  // 54-Operação com Direito a Crédito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportação
-  // 55-Operação com Direito a Crédito - Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação
-  // 56-Operação com Direito a Crédito - Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
-  // 60-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Tributada no Mercado Interno
-  // 61-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita Não-Tributada no Mercado Interno
-  // 62-Crédito Presumido - Operação de Aquisição Vinculada Exclusivamente a Receita de Exportação
-  // 63-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno
-  // 64-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas no Mercado Interno e de Exportação
-  // 65-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Não-Tributadas no Mercado Interno e de Exportação
-  // 66-Crédito Presumido - Operação de Aquisição Vinculada a Receitas Tributadas e Não-Tributadas no Mercado Interno, e de Exportação
-  // 67-Crédito Presumido - Outras Operações
-  // 70-Operação de Aquisição sem Direito a Crédito
-  // 71-Operação de Aquisição com Isenção
-  // 72-Operação de Aquisição com Suspensão
-  // 73-Operação de Aquisição a Alíquota Zero
-  // 74-Operação de Aquisição sem Incidência da Contribuição
-  // 75-Operação de Aquisição por Substituição Tributária
-  // 98-Outras Operações de Entrada
-  // 99-Outras Operações
-  if AllTrim(Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString)<>'' then
-  begin
-    for I := 0 to ComboBox10.Items.Count -1 do
-    begin
-      if Copy(ComboBox10.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString)) then
-      begin
-        ComboBox10.ItemIndex := I;
-        Break; // Sandro Silva 2024-01-15
-      end;
-    end;
-  end;
-
-  // 00 - Mercadoria para Revenda
-  // 01 - Matéria-Prima
-  // 02 - Embalagem
-  // 03 - Produto em Processo
-  // 04 - Produto Acabado
-  // 05 - Subproduto
-  // 06 - Produto Intermediário
-  // 07 - Material de Uso e Consumo
-  // 08 - Ativo Imobilizado
-  // 09 - Serviços
-  // 10 - Outros insumos
-  // 99 - Outras
-  if AllTrim(Form7.ibDataSet4TIPO_ITEM.AsString)<>'' then
-  begin
-    for I := 0 to ComboBox9.Items.Count -1 do
-    begin
-      if Copy(ComboBox9.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4TIPO_ITEM.AsString)) then
-      begin
-        ComboBox9.ItemIndex := I;
-        Break; // Sandro Silva 2024-01-15
-      end;
-    end;
-  end;
-
-  if Form7.StatusTrocaPerfil <> 'PR' then //Mauricio Parizotto 2024-01-15
-    if fraPerfilTrib.txtCampo.CanFocus then
-      fraPerfilTrib.txtCampo.SetFocus;
-
-  if SMALL_DBEDITY.CanFocus then
-    SMALL_DBEDITY.SetFocus;
-
-  // 5101 - Venda de produção do estabelecimento;
-  // 5102 - Venda de mercadoria de terceiros;
-  // 5103 - Venda de produção do estabelecimento efetuada fora do estabelecimento;
-  // 5104 - Venda de mercadoria adquirida ou recebida de terceiros, efetuada fora do estabelecimento;
-  // 5115 - Venda de mercadoria de terceiros, recebida anteriormente em consignação mercantil;
-  // 5405 - Venda de mercadoria de terceiros, sujeita a ST, como contribuinte substituído;
-  // 5656 - Venda de combustível ou lubrificante de terceiros, destinados a consumidor final;
-  // 5667 - Venda de combustível ou lubrificante a consumidor ou usuário final estabelecido em outra Unidade da Federação;
-  // 5933 - Prestação de serviço tributado pelo ISSQN (Nota Fiscal conjugada);
-  if AllTrim(Form7.ibDataSet4CFOP.AsString)<>'' then
-  begin
-    for I := 0 to ComboBox11.Items.Count -1 do
-    begin
-      if Copy(ComboBox11.Items[I],1,4) = UpperCase(AllTrim(Form7.ibDataSet4CFOP.AsString)) then
-      begin
-        ComboBox11.ItemIndex := I;
-        Break; // Sandro Silva 2024-01-15
-      end;
-    end;
-  end;
+  Result := True;
 
   if Copy(ComboBox7.Text, 1, 2) = '03' then
   begin
@@ -3682,7 +3687,7 @@ begin
           Image5.Picture.Assign(jp2);
           Image5.Repaint;
         except
-          //Result := False;
+          Result := False;
         end;
       finally
         BlobStream.Free;
