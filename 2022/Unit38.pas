@@ -5097,12 +5097,12 @@ begin
   Form7.ibDataSet27.SelectSQL.Clear;
   Form7.ibDataSet27.SelectSQL.Add('select ALTERACA.*');
   Form7.ibDataSet27.SelectSQL.Add('from ALTERACA');
-  Form7.ibDataSet27.SelectSQL.Add('join NFCE on (ALTERACA.PEDIDO = NFCE.NUMERONF) and (ALTERACA.CAIXA = NFCE.CAIXA)');
+  Form7.ibDataSet27.SelectSQL.Add('left join NFCE on (ALTERACA.PEDIDO = NFCE.NUMERONF) and (ALTERACA.CAIXA = NFCE.CAIXA)');
   Form7.ibDataSet27.SelectSQL.Add('where');
   Form7.ibDataSet27.SelectSQL.Add('(ALTERACA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+')');
   Form7.ibDataSet27.SelectSQL.Add('and (ALTERACA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+')');
   Form7.ibDataSet27.SelectSQL.Add('and ((ALTERACA.TIPO='+QuotedStr('BALCAO')+') or (ALTERACA.TIPO='+QuotedStr('VENDA')+'))');
-  Form7.ibDataSet27.SelectSQL.Add('and ((NFCE.STATUS containing ''Autorizad'') or (NFCE.STATUS containing ''Emitido com sucesso'') or (NFCE.STATUS containing ' + QuotedStr(_cNFCE_EMITIDA_EM_CONTINGENCIA) + ') or (NFCE.STATUS containing ' + QuotedStr(_cVENDA_GERENCIAL_FINALIZADA) + ') or (NFCE.STATUS containing ' + QuotedStr(_cVENDA_MEI_ANTIGA_FINALIZADA) + '))');
+  Form7.ibDataSet27.SelectSQL.Add('and ((coalesce(NFCE.REGISTRO,'''') = '''') or (NFCE.STATUS containing ''Autorizad'') or (NFCE.STATUS containing ''Emitido com sucesso'') or (NFCE.STATUS containing ' + QuotedStr(_cNFCE_EMITIDA_EM_CONTINGENCIA) + ') or (NFCE.STATUS containing ' + QuotedStr(_cVENDA_GERENCIAL_FINALIZADA) + ') or (NFCE.STATUS containing ' + QuotedStr(_cVENDA_MEI_ANTIGA_FINALIZADA) + '))');
   Form7.ibDataSet27.SelectSQL.Add('order by ALTERACA.DATA, ALTERACA.PEDIDO');
   Form7.ibDataSet27.Open;
   Form7.ibDataSet27.First;
