@@ -47,6 +47,8 @@ uses
   , uajustaresolucao
   , uValidaRecursos
   , uTypesRecursos
+  , uDialogs
+  , Vcl.Dialogs
   ;
 {Sandro Silva 2023-09-05 inicio
 type
@@ -283,6 +285,20 @@ var
   FormasExtras: TPagamentoPDV; // Sandro Silva 2023-09-05 FormasExtras: TFormasExtras;
 
   bTEFZPOS: Boolean;
+
+  function TestarTEFSelecionado(AcNome: String): Boolean;
+  var
+    oFile: TIniFile;
+  begin
+    Result := False;
+    oFile := TIniFile.Create('FRENTE.INI');
+    try
+      Result := (AnsiUpperCase(AcNome) = AnsiUpperCase(oFile.ReadString('Frente de caixa','TEF USADO', EmptyStr)));
+    finally
+      FreeAndNil(oFile);
+    end;
+  end;
+
   procedure RecuperaValoresFormasExtras;
   begin
     // Quando transaciona mais que um cartão na mesma venda e informa valores nas formas extras,
@@ -594,7 +610,17 @@ begin
               end else
               begin
                 // CRT Pedido de autorização para transação por meio de cartão
+
+                {Dailon Parisotto (f-19886) 2024-07-19 Inicio
+
                 WriteLn(F,'000-000 = CRT');                                                     // Header: Cartão 3c
+
+                }
+                if (TestarTEFSelecionado('ELGIN')) and (MensagemSistemaPerguntaCustom('De que forma deseja finalizar o pagamento?', mtInformation,[mbYes,mbNo],['Cartão','PIX']) = mrNo) then
+                  WriteLn(F,'000-000 = PIX')
+                else
+                  WriteLn(F,'000-000 = CRT');                                                     // Header: Cartão 3c
+                {Dailon Parisotto (f-19886) 2024-07-19 Fim}
                 WriteLn(F,'001-000 = '+StrTran(TimeToStr(Time),':',''));  // Identificação: Eu uso a hora
                 WriteLn(F,'003-000 = '+AllTrim(LimpaNumero(Format('%9.2n',[Abs(dValorPagarCartao)]))));             // Valor Total: 12c// Sandro Silva 2017-06-12  WriteLn(F,'003-000 = '+AllTrim(LimpaNumero(Format('%9.2n',[Abs(Form1.ibDataSet25.FieldByName('PAGAR').AsFloat)]))));             // Valor Total: 12c
               end;
