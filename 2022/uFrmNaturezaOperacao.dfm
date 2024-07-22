@@ -7240,7 +7240,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label73: TLabel
           Left = 14
-          Top = 25
+          Top = 23
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7258,7 +7258,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label74: TLabel
           Left = 14
-          Top = 50
+          Top = 48
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7276,7 +7276,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label75: TLabel
           Left = 14
-          Top = 75
+          Top = 74
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7294,7 +7294,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label76: TLabel
           Left = 14
-          Top = 124
+          Top = 125
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7312,7 +7312,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label77: TLabel
           Left = 14
-          Top = 149
+          Top = 150
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7330,7 +7330,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label78: TLabel
           Left = 14
-          Top = 174
+          Top = 175
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7348,7 +7348,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label79: TLabel
           Left = 14
-          Top = 223
+          Top = 225
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7366,7 +7366,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label80: TLabel
           Left = 14
-          Top = 248
+          Top = 250
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7384,7 +7384,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label108: TLabel
           Left = 14
-          Top = 198
+          Top = 200
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7402,7 +7402,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label109: TLabel
           Left = 14
-          Top = 272
+          Top = 275
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7420,7 +7420,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label110: TLabel
           Left = 14
-          Top = 338
+          Top = 325
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7456,7 +7456,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label1: TLabel
           Left = 14
-          Top = 296
+          Top = 300
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -7474,8 +7474,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object dbeIcmCFOP: TSMALL_DBEdit
           Left = 150
-          Top = 25
-          Width = 50
+          Top = 23
+          Width = 78
           Height = 20
           AutoSize = False
           BevelInner = bvLowered
@@ -7496,7 +7496,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object SMALL_DBEdit54: TSMALL_DBEdit
           Left = 150
-          Top = 50
+          Top = 48
           Width = 313
           Height = 20
           AutoSize = False
@@ -7517,7 +7517,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object SMALL_DBEdit55: TSMALL_DBEdit
           Left = 150
-          Top = 75
+          Top = 74
           Width = 313
           Height = 20
           AutoSize = False
@@ -7539,8 +7539,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object SMALL_DBEdit57: TSMALL_DBEdit
           Left = 150
-          Top = 149
-          Width = 40
+          Top = 150
+          Width = 78
           Height = 20
           AutoSize = False
           BevelInner = bvLowered
@@ -7560,8 +7560,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object SMALL_DBEdit58: TSMALL_DBEdit
           Left = 150
-          Top = 174
-          Width = 100
+          Top = 175
+          Width = 78
           Height = 20
           AutoSize = False
           BevelInner = bvLowered
@@ -7581,8 +7581,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object SMALL_DBEdit59: TSMALL_DBEdit
           Left = 150
-          Top = 223
-          Width = 100
+          Top = 225
+          Width = 78
           Height = 20
           AutoSize = False
           BevelInner = bvLowered
@@ -7602,8 +7602,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object SMALL_DBEdit60: TSMALL_DBEdit
           Left = 150
-          Top = 248
-          Width = 67
+          Top = 250
+          Width = 78
           Height = 20
           AutoSize = False
           BevelInner = bvLowered
@@ -7646,8 +7646,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object SMALL_DBEdit44: TSMALL_DBEdit
           Left = 150
-          Top = 198
-          Width = 100
+          Top = 200
+          Width = 78
           Height = 20
           AutoSize = False
           BevelInner = bvLowered
@@ -7667,8 +7667,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object SMALL_DBEdit47: TSMALL_DBEdit
           Left = 150
-          Top = 272
-          Width = 67
+          Top = 275
+          Width = 78
           Height = 20
           AutoSize = False
           BevelInner = bvLowered
@@ -7687,14 +7687,16 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckSobreIPI: TDBCheckBox
-          Left = 108
-          Top = 318
+          Left = 324
+          Top = 187
           Width = 92
           Height = 17
           Alignment = taLeftJustify
+          BiDiMode = bdRightToLeft
           Caption = 'ICMS sobre IPI'
           DataField = 'SOBREIPI'
           DataSource = DSCadastro
+          ParentBiDiMode = False
           TabOrder = 13
           ValueChecked = 'S'
           ValueUnchecked = 'N'
@@ -7702,14 +7704,16 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckSobreOutras: TDBCheckBox
-          Left = 239
-          Top = 318
+          Left = 324
+          Top = 209
           Width = 109
           Height = 17
           Alignment = taLeftJustify
+          BiDiMode = bdRightToLeft
           Caption = 'ICMS sobre Outras'
           DataField = 'SOBREOUTRAS'
           DataSource = DSCadastro
+          ParentBiDiMode = False
           TabOrder = 14
           ValueChecked = 'S'
           ValueUnchecked = 'N'
@@ -7717,14 +7721,16 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckFRETESOBREIPI: TDBCheckBox
-          Left = 387
-          Top = 318
+          Left = 324
+          Top = 232
           Width = 89
           Height = 17
           Alignment = taLeftJustify
+          BiDiMode = bdRightToLeft
           Caption = 'IPI sobre Frete'
           DataField = 'FRETESOBREIPI'
           DataSource = DSCadastro
+          ParentBiDiMode = False
           TabOrder = 15
           ValueChecked = 'S'
           ValueUnchecked = 'N'
@@ -7733,7 +7739,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object DBMemo4: TDBMemo
           Left = 150
-          Top = 338
+          Top = 325
           Width = 640
           Height = 75
           DataField = 'OBS'
@@ -7768,8 +7774,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object cbIntegracaoFinanceira: TComboBox
           Left = 150
-          Top = 74
-          Width = 90
+          Top = 73
+          Width = 195
           Height = 21
           Style = csDropDownList
           ItemIndex = 0
@@ -7784,9 +7790,9 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         inline fraPlanoContas: TfFrameCampo
           Left = 150
-          Top = 123
+          Top = 125
           Width = 313
-          Height = 22
+          Height = 20
           Color = clWhite
           Ctl3D = False
           ParentBackground = False
@@ -7794,9 +7800,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           ParentCtl3D = False
           TabOrder = 5
           ExplicitLeft = 150
-          ExplicitTop = 123
+          ExplicitTop = 125
           ExplicitWidth = 313
-          ExplicitHeight = 22
           inherited txtCampo: TEdit
             Width = 313
             ExplicitWidth = 313
@@ -7820,8 +7825,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object SMALL_DBEdit1: TSMALL_DBEdit
           Left = 150
-          Top = 296
-          Width = 100
+          Top = 300
+          Width = 78
           Height = 20
           AutoSize = False
           BevelInner = bvLowered
@@ -7840,14 +7845,16 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckBox1: TDBCheckBox
-          Left = 514
-          Top = 318
+          Left = 324
+          Top = 256
           Width = 93
           Height = 17
           Alignment = taLeftJustify
+          BiDiMode = bdRightToLeft
           Caption = 'IPI sobre Outras'
           DataField = 'IPISOBREOUTRA'
           DataSource = DSCadastro
+          ParentBiDiMode = False
           TabOrder = 16
           ValueChecked = 'S'
           ValueUnchecked = 'N'
@@ -7855,15 +7862,34 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnKeyDown = PadraoKeyDown
         end
         object chkRefenciarNota: TDBCheckBox
-          Left = 647
-          Top = 318
+          Left = 324
+          Top = 279
           Width = 99
           Height = 17
           Alignment = taLeftJustify
+          BiDiMode = bdRightToLeft
           Caption = 'Referenciar Nota'
           DataField = 'REFERENCIANOTA'
           DataSource = DSCadastro
+          ParentBiDiMode = False
           TabOrder = 17
+          ValueChecked = 'S'
+          ValueUnchecked = 'N'
+          OnClick = DBCheckSobreClick
+          OnKeyDown = PadraoKeyDown
+        end
+        object DBCheckBox2: TDBCheckBox
+          Left = 324
+          Top = 302
+          Width = 99
+          Height = 17
+          Alignment = taLeftJustify
+          BiDiMode = bdRightToLeft
+          Caption = 'Referenciar Nota'
+          DataField = 'REFERENCIANOTA'
+          DataSource = DSCadastro
+          ParentBiDiMode = False
+          TabOrder = 20
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick

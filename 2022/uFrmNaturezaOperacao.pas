@@ -89,6 +89,7 @@ type
     chkPisCofinsSobLucro: TDBCheckBox;
     DBCheckBox1: TDBCheckBox;
     chkRefenciarNota: TDBCheckBox;
+    DBCheckBox2: TDBCheckBox;
     procedure DBMemo4Enter(Sender: TObject);
     procedure DBMemo4KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
