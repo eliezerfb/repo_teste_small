@@ -396,6 +396,11 @@ begin
               Form7.ibDataSet16VBCFCPST.AsFloat   := cdsProdutosNotaVBCFCPST.AsFloat;
               Form7.ibDataSet16PFCPST.AsFloat     := cdsProdutosNotaPFCPST.AsFloat;
               Form7.ibDataSet16VFCPST.AsFloat     := cdsProdutosNotaVFCPST.AsFloat;
+
+              {Dailon Parisotto (f-17696) 2024-07-11 Inicio}
+              if (Copy(Form7.ibDataSet16CST_ICMS.AsString,2,2) = '51') then
+                Form7.ibDataSet16BASE.AsFloat     := cdsProdutosNotaBASE.AsFloat;
+              {Dailon Parisotto (f-17696) 2024-07-11 Fim}
             end;
           end
           else

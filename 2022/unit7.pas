@@ -2435,6 +2435,7 @@ type
     procedure IBDataSet2IESetText(Sender: TField; const Text: string);
     procedure ibDataSet4PROMOINIChange(Sender: TField);
     procedure ibDataSet4ONPROMOChange(Sender: TField);
+    procedure ibDataSet16CST_ICMSChange(Sender: TField);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -13695,7 +13696,12 @@ begin
 end;
 
 procedure TForm7.ibDataSet4MARGEMLBChange(Sender: TField);
+var
+  nMargemRecalc: Double;
+  nNewPreco: Double;
 begin
+  nMargemRecalc := 0;
+
   if ibDataSet4CUSTOCOMPR.Asfloat < 0 then
     ibDataSet4CUSTOCOMPR.Asfloat := 0;
 
@@ -13706,7 +13712,22 @@ begin
     ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.3f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
 
     }
+
+    {Dailon Parisotto (f-19887) 2024-07-12 Inicio
+
     ibDataSet4PRECO.AsFloat := StrToFloat(Format('%8.'+RetornarCasasDecimaisPreco.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+
+    }
+    nMargemRecalc := (((ibDataSet4PRECO.AsFloat - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100);
+    nNewPreco     := StrToFloat(Format('%8.'+RetornarCasasDecimaisPreco.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+
+    nMargemRecalc := StrToFloat(Format('%8.2f',[nMargemRecalc]));
+
+    if (ibDataSet4PRECO.AsFloat <= 0)
+      or ((ibDataSet4MARGEMLB.AsFloat <> nMargemRecalc)
+      and ((((nNewPreco - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100) <> nMargemRecalc)) then
+    {Dailon Parisotto (f-19887) 2024-07-12 Fim}
+      ibDataSet4PRECO.AsFloat := nNewPreco;
     {Dailon Parisotto (f-18540) 2024-05-Fim}
   end;
 end;
@@ -15349,7 +15370,7 @@ begin
         begin
           nVendaRecalc := StrToFloat(Format('%8.'+nDecimal.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
           if (nVendaRecalc <> ibDataSet4PRECO.AsFloat) then
-            ibDataSet4MARGEMLB.AsCurrency := nMargem
+            ibDataSet4MARGEMLB.AsCurrency := nMargem;
         end;
       end;
     end;
@@ -18678,6 +18699,12 @@ begin
     Form7.ibDataSet16CFOP.AsString := '';
 end;
 
+procedure TForm7.ibDataSet16CST_ICMSChange(Sender: TField);
+begin
+  if (Form12.Showing) and (Form12.DBGrid1.SelectedField = Sender) then
+    ibDataSet16DESCRICAOChange(Sender);
+end;
+
 procedure TForm7.ibDataSet16DESCRICAOChange(Sender: TField);
 var
   Mais1Ini: TiniFile;
@@ -19268,7 +19295,7 @@ begin
               Form7.ibDataSet16.Edit;
 
               // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução
-              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then // Devolucao Devolução
+              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then
               begin
                 if AllTrim(Form7.ibDataSet14CFOP.AsString) <> '' then
                 begin
@@ -19362,6 +19389,13 @@ begin
                   begin
                     Form7.ibDataSet16CST_ICMS.AsString := CampoICMporNatureza('CST',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction);
                   end;
+
+                  {Dailon Parisotto (f-17696) 2024-07-11 Inicio}
+
+                  if (Copy(Form7.ibDataSet16CST_ICMS.AsString,2,2) = '51')
+                    and (Form7.ibDataSet16BASE.AsFloat <= 0) then
+                    Form7.ibDataSet16BASE.AsFloat    := Form7.ibQuery14.FieldByName('BASE').AsFloat;
+                  {Dailon Parisotto (f-17696) 2024-07-11 Fim}
                 except
                 end;
               end;
@@ -19375,27 +19409,33 @@ begin
               Form7.ibDataSet16ICM.AsFloat      := 0;
             end;
 
-            if not (Form7.ibDataSet4PIVA.AsFloat > 0) then
+            if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString))
+              and (Copy(Form7.ibDataSet16CST_ICMS.AsString,2,2) = '51') then // Devolucao
+              // Não faz nada
+            else
             begin
-              if AllTrim(Form7.ibQuery14.FieldByName('CST').AsString) <> '' then // Tabela de ICM
+              if not (Form7.ibDataSet4PIVA.AsFloat > 0) then
               begin
-                if (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '30') or
-                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '40') or
-                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '41') or
-                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '50') or
-                   (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '60') then
+                if AllTrim(Form7.ibQuery14.FieldByName('CST').AsString) <> '' then // Tabela de ICM
                 begin
-                  Form7.ibDataSet16BASE.AsFloat     := 0;
-                end;
-              end else  //
-              begin     // Estoque
-                if (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '30') or
-                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '40') or
-                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '41') or
-                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '50') or
-                   (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '60') then
-                begin
-                  Form7.ibDataSet16BASE.AsFloat     := 0;
+                  if (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '30') or
+                     (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '40') or
+                     (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '41') or
+                     (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '50') or
+                     (Copy(AllTrim(Form7.ibQuery14.FieldByname('CST').AsString),2,2) = '60') then
+                  begin
+                    Form7.ibDataSet16BASE.AsFloat     := 0;
+                  end;
+                end else  //
+                begin     // Estoque
+                  if (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '30') or
+                     (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '40') or
+                     (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '41') or
+                     (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '50') or
+                     (Copy(AllTrim(Form7.ibDAtaSet4.FieldByName('CST').AsString),2,2) = '60') then
+                  begin
+                    Form7.ibDataSet16BASE.AsFloat     := 0;
+                  end;
                 end;
               end;
             end;

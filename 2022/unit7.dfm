@@ -16299,6 +16299,7 @@ object Form7: TForm7
       FieldName = 'CST_ICMS'
       Origin = 'ITENS001.CST_ICMS'
       Visible = False
+      OnChange = ibDataSet16CST_ICMSChange
       FixedChar = True
       Size = 3
     end
