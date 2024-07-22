@@ -3,7 +3,7 @@
         <ProjectGuid>{376CE32D-BC53-40E7-BD4E-12B5F2B54C24}</ProjectGuid>
         <MainSource>FRENTE.DPR</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -261,7 +261,6 @@
         <DCCReference Include="uPagamentoPix.pas"/>
         <DCCReference Include="..\unit_compartilhada\uQrCode.pas"/>
         <DCCReference Include="..\unit_compartilhada\uGeraChavePix.pas"/>
-        <DCCReference Include="urequisitapesobalancaautonoma.pas"/>
         <DCCReference Include="uajustaresolucao.pas"/>
         <DCCReference Include="..\unit_compartilhada\Itau\uIntegracaoItau.pas"/>
         <DCCReference Include="..\unit_compartilhada\Itau\uClassesItau.pas"/>
@@ -271,6 +270,7 @@
         </DCCReference>
         <DCCReference Include="..\unit_compartilhada\uSmallConsts.pas"/>
         <DCCReference Include="..\unit_compartilhada\uLogSistema.pas"/>
+        <DCCReference Include="urequisitapesobalancaautonoma.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1116,8 +1116,8 @@
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

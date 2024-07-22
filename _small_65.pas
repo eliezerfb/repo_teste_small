@@ -2602,7 +2602,9 @@ begin
 
   if (Form1.UsaIntegradorFiscal() = False)
     and ((AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'SC') and PAFNFCe) // Sandro Silva 2020-12-09  and (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'SC')
-    and (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'SP') then // Sandro Silva 2020-11-11  if (Form1.UsaIntegradorFiscal() = False) and (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'SC') then // Sandro Silva 2019-10-16
+    //Mauricio Parizotto 2024-07-22
+    //and (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'SP') then // Sandro Silva 2020-11-11  if (Form1.UsaIntegradorFiscal() = False) and (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'SC') then // Sandro Silva 2019-10-16
+    then
   begin
     if Form1.bStatusECF = False then
     begin
