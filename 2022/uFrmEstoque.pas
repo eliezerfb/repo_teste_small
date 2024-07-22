@@ -6,9 +6,10 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFrmFichaPadrao, Data.DB, Vcl.ComCtrls, WinInet,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask, Vcl.DBCtrls, SMALL_DBEdit,
-  uframeCampo, System.IniFiles, Vcl.Grids, Vcl.DBGrids, Videocap,
+  uframeCampo, System.IniFiles, Vcl.Grids, Vcl.DBGrids, Videocap, VFrames,
   Vcl.Imaging.jpeg, Vcl.Clipbrd, Vcl.OleCtrls, SHDocVw, Vcl.ExtDlgs,
-  Winapi.ShellAPI, uframePesquisaPadrao, uframePesquisaProduto;
+  Winapi.ShellAPI, uframePesquisaPadrao, uframePesquisaProduto,
+  Vcl.Imaging.pngimage;
 
 type
   TFrmEstoque = class(TFrmFichaPadrao)
@@ -68,30 +69,29 @@ type
     tbsConversao: TTabSheet;
     tbsCodBarras: TTabSheet;
     tbsTags: TTabSheet;
-    RichEdit1: TRichEdit;
     dbgCodBar: TDBGrid;
     Label85: TLabel;
     Label86: TLabel;
     Label87: TLabel;
     Label88: TLabel;
     lblExemploConversao: TLabel;
-    SMALL_DBEdit64: TSMALL_DBEdit;
-    ComboBox12: TComboBox;
-    ComboBox13: TComboBox;
-    StringGrid2: TStringGrid;
+    edtFatorCon: TSMALL_DBEdit;
+    cboConvEntrada: TComboBox;
+    cboConvSaida: TComboBox;
+    sgridTags: TStringGrid;
     Label106: TLabel;
     Memo1: TMemo;
     memTags: TDBMemo;
-    StringGrid1: TStringGrid;
+    sgrdGrade: TStringGrid;
     GroupBox3: TGroupBox;
     Label44: TLabel;
     Label46: TLabel;
     Label47: TLabel;
     Label48: TLabel;
-    SMALL_DBEdit45: TSMALL_DBEdit;
-    SMALL_DBEdit46: TSMALL_DBEdit;
-    SMALL_DBEdit50: TSMALL_DBEdit;
-    SMALL_DBEdit51: TSMALL_DBEdit;
+    edtPromoIni: TSMALL_DBEdit;
+    edtPromoFim: TSMALL_DBEdit;
+    edtPrecoPromo: TSMALL_DBEdit;
+    edtPrecoNormal: TSMALL_DBEdit;
     GroupBox4: TGroupBox;
     Label99: TLabel;
     Label102: TLabel;
@@ -99,16 +99,14 @@ type
     Label103: TLabel;
     Label104: TLabel;
     Label105: TLabel;
-    SMALL_DBEdit69: TSMALL_DBEdit;
-    SMALL_DBEdit71: TSMALL_DBEdit;
-    SMALL_DBEdit70: TSMALL_DBEdit;
-    SMALL_DBEdit72: TSMALL_DBEdit;
-    Image6: TImage;
+    edtCompraA: TSMALL_DBEdit;
+    edtDescontoDe: TSMALL_DBEdit;
+    edtCompraA2: TSMALL_DBEdit;
+    edtDescontoDe2: TSMALL_DBEdit;
     Label57: TLabel;
-    Label58: TLabel;
+    lblPrcVlPg: TLabel;
     Label59: TLabel;
-    Label60: TLabel;
-    Label70: TLabel;
+    lblPrcFreteIPIOut: TLabel;
     Label61: TLabel;
     Label62: TLabel;
     Label63: TLabel;
@@ -117,41 +115,30 @@ type
     Label66: TLabel;
     Label67: TLabel;
     Label68: TLabel;
-    Label69: TLabel;
-    Edit15: TEdit;
     SMALL_DBEdit32: TSMALL_DBEdit;
-    Edit16: TEdit;
     SMALL_DBEdit36: TSMALL_DBEdit;
-    Edit17: TEdit;
     SMALL_DBEdit39: TSMALL_DBEdit;
     btnPrecoIgual: TBitBtn;
-    Edit18: TEdit;
     SMALL_DBEdit40: TSMALL_DBEdit;
-    Edit19: TEdit;
     SMALL_DBEdit42: TSMALL_DBEdit;
-    Edit20: TEdit;
     SMALL_DBEdit43: TSMALL_DBEdit;
-    Edit21: TEdit;
-    Edit22: TEdit;
     btnPreco: TBitBtn;
     btnPrecoTodos: TBitBtn;
-    Image3: TImage;
-    Image5: TImage;
-    VideoCap1: TVideoCap;
-    Button13: TBitBtn;
-    Button7: TBitBtn;
-    Button22: TBitBtn;
+    imgFotoProd: TImage;
+    btnWebcam: TBitBtn;
+    btnProcurarWeb: TBitBtn;
+    btnSelecionarArquivo: TBitBtn;
     WebBrowser1: TWebBrowser;
     OpenPictureDialog1: TOpenPictureDialog;
     Label39: TLabel;
-    Button1: TBitBtn;
-    Button2: TBitBtn;
-    Button3: TBitBtn;
+    btnExcluirGrade: TBitBtn;
+    btnCancelarGrade: TBitBtn;
+    btnSalvarGrade: TBitBtn;
     Edit5: TEdit;
     Edit6: TEdit;
     dbgComposicao: TDBGrid;
-    SMALL_DBEdit33: TSMALL_DBEdit;
-    SMALL_DBEdit34: TSMALL_DBEdit;
+    edtAcum1: TSMALL_DBEdit;
+    edtAcum2: TSMALL_DBEdit;
     Button8: TBitBtn;
     Button10: TBitBtn;
     Button11: TBitBtn;
@@ -182,18 +169,12 @@ type
     Label72: TLabel;
     Label84: TLabel;
     Label92: TLabel;
-    Label71: TLabel;
-    Label90: TLabel;
-    Label91: TLabel;
-    Label93: TLabel;
-    Label94: TLabel;
+    lblImpostoAprox: TLabel;
     Label95: TLabel;
-    Label96: TLabel;
-    Label97: TLabel;
     Label118: TLabel;
-    SMALL_DBEdit31: TSMALL_DBEdit;
-    SMALL_DBEdit37: TSMALL_DBEdit;
-    SMALL_DBEdit38: TSMALL_DBEdit;
+    edtNCM: TSMALL_DBEdit;
+    edtIVA: TSMALL_DBEdit;
+    edtCIT: TSMALL_DBEdit;
     cboCST_Prod: TComboBox;
     pnlMapaICMS: TPanel;
     Image4: TImage;
@@ -226,34 +207,31 @@ type
     _SC: TLabel;
     _RS: TLabel;
     SMALL_DBEditY: TSMALL_DBEdit;
-    ComboBox9: TComboBox;
-    ComboBox6: TComboBox;
+    cboTipoItem: TComboBox;
+    cboIAT: TComboBox;
     cboOrigemProd: TComboBox;
     cboCSOSN_Prod: TComboBox;
-    ComboBox11: TComboBox;
-    ComboBox14: TComboBox;
-    ComboBox15: TComboBox;
-    SMALL_DBEdit66: TSMALL_DBEdit;
-    SMALL_DBEdit52: TSMALL_DBEdit;
-    SMALL_DBEdit63: TSMALL_DBEdit;
-    SMALL_DBEdit65: TSMALL_DBEdit;
-    SMALL_DBEdit67: TSMALL_DBEdit;
+    cboCFOP_NFCe: TComboBox;
+    cboCST_NFCE: TComboBox;
+    cboCSOSN_NFCE: TComboBox;
+    edtAliquota: TSMALL_DBEdit;
+    edtCEST: TSMALL_DBEdit;
     fraPerfilTrib: TfFrameCampo;
-    ComboBox5: TComboBox;
+    cboIPPT: TComboBox;
     chkMarketplace: TCheckBox;
     GroupBox1: TGroupBox;
     Label41: TLabel;
     Label40: TLabel;
     Label98: TLabel;
-    ComboBox1: TComboBox;
-    SMALL_DBEdit41: TSMALL_DBEdit;
-    SMALL_DBEdit68: TSMALL_DBEdit;
+    cboCST_IPI: TComboBox;
+    edtIPI: TSMALL_DBEdit;
+    edtEnqIPI: TSMALL_DBEdit;
     Label1: TLabel;
     GroupBox2: TGroupBox;
     Label6: TLabel;
     Label7: TLabel;
     Label42: TLabel;
-    ComboBox7: TComboBox;
+    cboCST_PIS_COFINS: TComboBox;
     dbepPisSaida: TSMALL_DBEdit;
     Label43: TLabel;
     Label49: TLabel;
@@ -261,12 +239,51 @@ type
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
     lbBCPISCOFINS: TLabel;
     Label38: TLabel;
-    ComboBox10: TComboBox;
+    cboCST_PIS_COFINS_E: TComboBox;
     Label50: TLabel;
     dbepPisEntrada: TSMALL_DBEdit;
     Label54: TLabel;
     dbepCofinsEntrada: TSMALL_DBEdit;
     dbgSerial: TDBGrid;
+    Image1: TImage;
+    Image2: TImage;
+    Image7: TImage;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    lblCusto1: TLabel;
+    lblCusto2: TLabel;
+    lblCusto3: TLabel;
+    lblCusto4: TLabel;
+    lblCusto5: TLabel;
+    lblCusto6: TLabel;
+    lblPrecoCustoCompra: TLabel;
+    lblPrecoTotVenda: TLabel;
+    Label24: TLabel;
+    Label25: TLabel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    edtAcum3: TSMALL_DBEdit;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    Image5: TImage;
+    Image6: TImage;
+    Label16: TLabel;
+    Label17: TLabel;
+    Label22: TLabel;
+    Label23: TLabel;
+    Label26: TLabel;
+    cboDrivers: TComboBox;
+    pbWebCam: TPaintBox;
+    Image3: TImage;
+    Image8: TImage;
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
     procedure FormActivate(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
@@ -283,17 +300,17 @@ type
     procedure chkMarketplaceClick(Sender: TObject);
     procedure dbgCodBarKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure ComboBox12Change(Sender: TObject);
-    procedure ComboBox13Change(Sender: TObject);
-    procedure SMALL_DBEdit64Change(Sender: TObject);
-    procedure SMALL_DBEdit64Exit(Sender: TObject);
+    procedure cboConvEntradaChange(Sender: TObject);
+    procedure cboConvSaidaChange(Sender: TObject);
+    procedure edtFatorConChange(Sender: TObject);
+    procedure edtFatorConExit(Sender: TObject);
     procedure tbsCodBarrasEnter(Sender: TObject);
     procedure tbsConversaoEnter(Sender: TObject);
     procedure tbsTagsExit(Sender: TObject);
     procedure tbsTagsShow(Sender: TObject);
-    procedure StringGrid2DrawCell(Sender: TObject; ACol, ARow: Integer;
+    procedure sgridTagsDrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
-    procedure StringGrid2SelectCell(Sender: TObject; ACol, ARow: Integer;
+    procedure sgridTagsSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure btnPrecoTodosClick(Sender: TObject);
@@ -303,22 +320,22 @@ type
     procedure btnPrecoIgualClick(Sender: TObject);
     procedure SMALL_DBEdit32KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure Button13Click(Sender: TObject);
+    procedure btnWebcamClick(Sender: TObject);
     procedure tbsFotoShow(Sender: TObject);
-    procedure Button7Click(Sender: TObject);
-    procedure Button22Click(Sender: TObject);
-    procedure Image5Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure btnProcurarWebClick(Sender: TObject);
+    procedure btnSelecionarArquivoClick(Sender: TObject);
+    procedure imgFotoProdClick(Sender: TObject);
+    procedure btnExcluirGradeClick(Sender: TObject);
+    procedure btnCancelarGradeClick(Sender: TObject);
     procedure tbsGradeShow(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
-    procedure StringGrid1DrawCell(Sender: TObject; ACol, ARow: Integer;
+    procedure btnSalvarGradeClick(Sender: TObject);
+    procedure sgrdGradeDrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
-    procedure StringGrid1Click(Sender: TObject);
-    procedure StringGrid1KeyPress(Sender: TObject; var Key: Char);
-    procedure StringGrid1KeyUp(Sender: TObject; var Key: Word;
+    procedure sgrdGradeClick(Sender: TObject);
+    procedure sgrdGradeKeyPress(Sender: TObject; var Key: Char);
+    procedure sgrdGradeKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure ComboBox1Change(Sender: TObject);
+    procedure cboCST_IPIChange(Sender: TObject);
     procedure Button8Click(Sender: TObject);
     procedure tbsComposicaoShow(Sender: TObject);
     procedure dbgComposicaoColEnter(Sender: TObject);
@@ -348,19 +365,19 @@ type
     procedure btnHistoricoSerClick(Sender: TObject);
     procedure tbsICMSShow(Sender: TObject);
     procedure tbsIPIShow(Sender: TObject);
-    procedure ComboBox7Change(Sender: TObject);
-    procedure ComboBox10Change(Sender: TObject);
-    procedure ComboBox10Enter(Sender: TObject);
+    procedure cboCST_PIS_COFINSChange(Sender: TObject);
+    procedure cboCST_PIS_COFINS_EChange(Sender: TObject);
+    procedure cboCST_PIS_COFINS_EEnter(Sender: TObject);
     procedure tbsIPIEnter(Sender: TObject);
-    procedure ComboBox9Change(Sender: TObject);
-    procedure SMALL_DBEdit31Change(Sender: TObject);
-    procedure ComboBox5Change(Sender: TObject);
-    procedure ComboBox6Change(Sender: TObject);
+    procedure cboTipoItemChange(Sender: TObject);
+    procedure edtNCMChange(Sender: TObject);
+    procedure cboIPPTChange(Sender: TObject);
+    procedure cboIATChange(Sender: TObject);
     procedure cboOrigemProdChange(Sender: TObject);
-    procedure SMALL_DBEdit38Exit(Sender: TObject);
-    procedure ComboBox11Change(Sender: TObject);
-    procedure ComboBox15Change(Sender: TObject);
-    procedure ComboBox14Change(Sender: TObject);
+    procedure edtCITExit(Sender: TObject);
+    procedure cboCFOP_NFCeChange(Sender: TObject);
+    procedure cboCSOSN_NFCEChange(Sender: TObject);
+    procedure cboCST_NFCEChange(Sender: TObject);
     procedure cboCSOSN_ProdChange(Sender: TObject);
     procedure cboCST_ProdChange(Sender: TObject);
     procedure SMALL_DBEditYExit(Sender: TObject);
@@ -370,6 +387,7 @@ type
       Shift: TShiftState);
     procedure FormDeactivate(Sender: TObject);
     function CarregaValoresObjeto : boolean;
+    procedure AtualizaObjComValorDoBanco;
     procedure lblAnteriorClick(Sender: TObject);
     procedure lblProximoClick(Sender: TObject);
     procedure lblProcurarClick(Sender: TObject);
@@ -384,9 +402,12 @@ type
     rCusto : Real;
     fQuantidade : Real;
     FotoOld : String;
+    fActivated  : boolean;
+    fVideoImage : TVideoImage;
+    fVideoBitmap: TBitmap;
+    procedure OnNewVideoFrame(Sender : TObject; Width, Height: integer; DataPtr: pointer);
     procedure SetaStatusUso; override;
     function GetPaginaAjuda:string; override;
-    procedure AtualizaObjComValorDoBanco;
     procedure AjustaCampoPrecoQuandoEmPromocao;
     function EmPeriodoPromocional: Boolean;
     function Exemplo(sP1: boolean): Boolean;
@@ -396,6 +417,7 @@ type
     procedure AtribuirItemPesquisaComposicao;
     procedure CarregaCit;
     function GravaImagemEstoque: Boolean;
+    procedure IniciaCamera;
   public
     { Public declarations }
   end;
@@ -413,6 +435,73 @@ uses unit7, MAIS, smallfunc_xe, uDialogs, uPermissaoUsuario, MAIS3,
 { TFrmEstoque }
 
 
+procedure ResizeBmp(Dest: TBitmap; const WMax, HMax: Word);
+type
+  pRGBArray = ^TRGBArray;
+  TRGBArray = array[Word] of TRGBTriple;
+var
+  TBmp: TBitmap;
+  DstGap: Integer;
+  WNew, HNew: Integer;
+  X, Y, T3: Integer;
+  Z1, Z2, IZ2: Integer;
+  W1, W2, W3, W4: Integer;
+  XP, XP2, YP, YP2: Integer;
+  SrcLine1, SrcLine2, DstLine: pRGBArray;
+Begin
+  TBmp := TBitmap.Create;
+  try
+    try
+      WNew := (Dest.Width * HMax) div Dest.Height;
+      HNew := (WMax * Dest.Height) div Dest.Width;
+      if (WMax < WNew) then
+      begin
+        TBmp.Width := WMax;
+        TBmp.Height := HNew;
+      end else
+      begin
+        TBmp.Width := WNew;
+        TBmp.Height := HMax;
+      end;
+      Dest.PixelFormat := pf24Bit;
+      TBmp.PixelFormat := pf24bit;
+      DstLine := TBmp.ScanLine[0];
+      DstGap  := Integer(TBmp.ScanLine[1]) - Integer(DstLine);
+      XP2 := MulDiv(Pred(Dest.Width), $10000, TBmp.Width);
+      YP2 := MulDiv(Pred(Dest.Height), $10000, TBmp.Height);
+      YP  := 0;
+      for Y := 0 to Pred(TBmp.Height) do
+      begin
+        XP := 0;
+        SrcLine1 := Dest.ScanLine[YP shr 16];
+        if (YP shr 16 < Pred(Dest.Height))
+          then SrcLine2 := Dest.ScanLine[Succ(YP shr 16)]
+          else SrcLine2 := Dest.ScanLine[YP shr 16];
+        Z2  := Succ(YP and $FFFF);
+        IZ2 := Succ((not YP) and $FFFF);
+        for X := 0 to Pred(TBmp.Width) do
+        begin
+          T3 := XP shr 16;
+          Z1 := XP and $FFFF;
+          W2 := MulDiv(Z1, IZ2, $10000);
+          W1 := IZ2 - W2;
+          W4 := MulDiv(Z1, Z2, $10000);
+          W3 := Z2 - W4;
+          DstLine[X].rgbtRed   := (SrcLine1[T3].rgbtRed   * W1 + SrcLine1[T3 + 1].rgbtRed   * W2 + SrcLine2[T3].rgbtRed   * W3 + SrcLine2[T3 + 1].rgbtRed   * W4) shr 16;
+          DstLine[X].rgbtGreen := (SrcLine1[T3].rgbtGreen * W1 + SrcLine1[T3 + 1].rgbtGreen * W2 + SrcLine2[T3].rgbtGreen * W3 + SrcLine2[T3 + 1].rgbtGreen * W4) shr 16;
+          DstLine[X].rgbtBlue  := (SrcLine1[T3].rgbtBlue  * W1 + SrcLine1[T3 + 1].rgbtBlue  * W2 + SrcLine2[T3].rgbtBlue  * W3 + SrcLine2[T3 + 1].rgbtBlue  * W4) shr 16;
+          Inc(XP, XP2);
+        end;
+        Inc(YP, YP2);
+        DstLine := pRGBArray(Integer(DstLine) + DstGap);
+      end;
+      Dest.Assign(TBmp);
+    except
+    end;
+  finally
+    TBmp.Free;
+  end;
+end;
 
 procedure TFrmEstoque.dbgCodBarKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -574,6 +663,9 @@ procedure TFrmEstoque.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
   inherited;
 
+  lblImpostoAprox.Caption := 'Imposto aproximado (Fonte:IBPT): Federal '+DSCadastro.DataSet.FieldByName('IIA').AsString+'% /Estadual '+
+                              DSCadastro.DataSet.FieldByName('IIA_UF').AsString+'% /Municipal '+DSCadastro.DataSet.FieldByName('IIA_MUNI').AsString+'%';
+
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
 
@@ -642,18 +734,23 @@ procedure TFrmEstoque.FormActivate(Sender: TObject);
 begin
   inherited;
 
-  pgcFicha.ActivePage := tbsCadastro;
-
-  Image5.Left     := 20;
-  Image5.Top      := 80;
-  Image5.Width    := 640 div 2;
-  Image5.Height   := 480 div 2;
+  if edtCodBarras.CanFocus then
+    edtCodBarras.SetFocus;
 
   AtualizaObjComValorDoBanco;
 end;
 
 procedure TFrmEstoque.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  try
+    if FVideoImage <> nil then
+    begin
+      FVideoImage.VideoStop;
+      FreeAndNil(FVideoImage);
+    end;
+  except
+  end;
+
   inherited;
 
   framePesquisaProdComposicao.Visible := False;
@@ -663,16 +760,18 @@ end;
 procedure TFrmEstoque.FormCreate(Sender: TObject);
 begin
   inherited;
+  pgcFicha.ActivePageIndex := 0;
 
   WebBrowser1.Left := -20000;
 
   framePesquisaProdComposicao.setDataBase(Form7.IBDatabase1);
 
-  StringGrid2.DrawingStyle       := gdsGradient;
-  StringGrid2.GradientStartColor := $00F0F0F0;
-  StringGrid2.GradientEndColor   := $00F0F0F0;
+  sgridTags.DrawingStyle       := gdsGradient;
+  sgridTags.GradientStartColor := $00F0F0F0;
+  sgridTags.GradientEndColor   := $00F0F0F0;
 
   Form7.ibDataSet28DESCRICAO.OnChange := ibDataSet28DESCRICAOChange;
+  fVideoBitmap    := TBitmap.create;
 end;
 
 procedure TFrmEstoque.FormDeactivate(Sender: TObject);
@@ -696,12 +795,8 @@ begin
   except
   end;
 
-  pgcFicha.ActivePage := tbsCadastro;
-
-  if edtCodBarras.CanFocus then
-    edtCodBarras.SetFocus;
-
   AjustaCampoPrecoQuandoEmPromocao;
+
 end;
 
 procedure TFrmEstoque.framePesquisaProdComposicaodbgItensPesqCellClick(
@@ -739,7 +834,7 @@ begin
   Result := 'estoque.htm';
 end;
 
-procedure TFrmEstoque.Image5Click(Sender: TObject);
+procedure TFrmEstoque.imgFotoProdClick(Sender: TObject);
 begin
   try
     while FileExists(pChar(sNomeDoJPG)) do
@@ -747,7 +842,7 @@ begin
       DeleteFile(pChar(sNomeDoJPG));
     end;
 
-    Image5.Picture.SaveToFile(sNomeDoJPG);
+    imgFotoProd.Picture.SaveToFile(sNomeDoJPG);
 
     Sleep(1000);
 
@@ -864,23 +959,94 @@ begin
   btnPreco.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
   btnPrecoIgual.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
   framePesquisaProdComposicao.Enabled := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCodBarras.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtDescricao.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraGrupo.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraUndMed.Enabled                   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPreco.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPrecoUS.Enabled                  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCustoCompra.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtUltCompra.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCustoMedio.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtQuantidade.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtQtdMinima.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtUltVenda.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtLocalizacao.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPeso.Enabled                     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtComissao.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtLucroBruto.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtIdentificador1.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtIdentificador2.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtIdentificador3.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtIdentificador4.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  memAtivacao.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  fraPerfilTrib.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboTipoItem.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtNCM.Enabled                      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCEST.Enabled                     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboIPPT.Enabled                     := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboIAT.Enabled                      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtIVA.Enabled                      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboOrigemProd.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboCST_Prod.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboCSOSN_Prod.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCIT.Enabled                      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboCFOP_NFCe.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboCSOSN_NFCE.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboCST_NFCE.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtAliquota.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  pnlMapaICMS.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboCST_IPI.Enabled                  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtIPI.Enabled                      := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtEnqIPI.Enabled                   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboCST_PIS_COFINS.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  dbepPisSaida.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  dbepCofinsSaida.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  dbeIcmBCPISCOFINS.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboCST_PIS_COFINS_E.Enabled         := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  dbepPisEntrada.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  dbepCofinsEntrada.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  sgrdGrade.Enabled                   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnExcluirGrade.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnCancelarGrade.Enabled            := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnSalvarGrade.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  dbgComposicao.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnWebcam.Enabled                   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnProcurarWeb.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnSelecionarArquivo.Enabled        := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  imgFotoProd.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPromoIni.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPromoFim.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPrecoPromo.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPrecoNormal.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCompraA.Enabled                  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtCompraA2.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtDescontoDe.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtDescontoDe2.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboConvEntrada.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtFatorCon.Enabled                 := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  cboConvSaida.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  dbgCodBar.Enabled                   := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtAcum1.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtAcum2.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtAcum3.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
 
   if bSomenteLeitura then
     tbsPreco.TabVisible := False;
 
   //Tags
-  StringGrid2.EditorMode := not(bSomenteLeitura);
+  sgridTags.EditorMode := not(bSomenteLeitura);
   if bSomenteLeitura then
-    StringGrid2.Options := StringGrid2.Options - [goEditing]
+    sgridTags.Options := sgridTags.Options - [goEditing]
   else
-    StringGrid2.Options := StringGrid2.Options + [goEditing];
+    sgridTags.Options := sgridTags.Options + [goEditing];
 
   //Grade
-  StringGrid1.EditorMode := not(bSomenteLeitura);
+  sgrdGrade.EditorMode := not(bSomenteLeitura);
   if bSomenteLeitura then
-    StringGrid1.Options := StringGrid1.Options - [goEditing]
+    sgrdGrade.Options := sgrdGrade.Options - [goEditing]
   else
-    StringGrid1.Options := StringGrid1.Options + [goEditing];
+    sgrdGrade.Options := sgrdGrade.Options + [goEditing];
 
   //Composição
   if bSomenteLeitura then
@@ -890,7 +1056,7 @@ begin
 end;
 
 
-procedure TFrmEstoque.SMALL_DBEdit31Change(Sender: TObject);
+procedure TFrmEstoque.edtNCMChange(Sender: TObject);
 begin
   Form1.ibQuery1.Close;
   Form1.ibQuery1.SQL.Clear;
@@ -928,16 +1094,16 @@ begin
     begin
       CustoDeAquisicao := Form7.ibDataSet4CUSTOCOMPR.AsFloat - ( rCusto * (Form7.ibDataSet13ICME.AsFloat / 100));
 
-      Edit16.Text := '-R$ '+Format('%9.2n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat - CustoDeAquisicao]);
+      lblCusto1.Caption := Format('%9.2n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat - CustoDeAquisicao]);
 
       if PercentualCalcul <> 0 then PrecoDeVenda := CustoDeAquisicao * 100 / PercentualCalcul else PrecoDeVenda := 0;
 
-      Edit22.Text := '=R$ '+Format('%9.2n',[PrecoDeVenda]);
-      Edit18.Text := '+R$ '+Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13COPE.AsFloat / 100]);
-      Edit17.Text := '+R$ '+Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13ICMS.AsFloat / 100]);
-      Edit19.Text := '+R$ '+Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13IMPO.AsFloat / 100]);
-      Edit20.Text := '+R$ '+Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13CVEN.AsFloat / 100]);
-      Edit21.Text := '+R$ '+Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13LUCR.AsFloat / 100]);
+      lblPrecoTotVenda.Caption := Format('%9.2n',[PrecoDeVenda]);
+      lblCusto3.Caption := Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13COPE.AsFloat / 100]);
+      lblCusto2.Caption := Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13ICMS.AsFloat / 100]);
+      lblCusto4.Caption := Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13IMPO.AsFloat / 100]);
+      lblCusto5.Caption := Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13CVEN.AsFloat / 100]);
+      lblCusto6.Caption := Format('%9.2n',[PrecoDeVenda * Form7.ibDataSet13LUCR.AsFloat / 100]);
 
       if not (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then Form7.ibDataset13.Edit;
       if Form7.ibDataSet4CUSTOCOMPR.AsFloat <> 0 then Form7.ibDataSet13RESE.AsFloat :=  ((PrecoDeVenda / Form7.ibDataSet4CUSTOCOMPR.AsFloat) * 100) - 100 else Form7.ibDataSet13RESE.AsFloat := 0;
@@ -966,17 +1132,17 @@ begin
   end;
 end;
 
-procedure TFrmEstoque.SMALL_DBEdit38Exit(Sender: TObject);
+procedure TFrmEstoque.edtCITExit(Sender: TObject);
 begin
   CarregaCit;
 end;
 
-procedure TFrmEstoque.SMALL_DBEdit64Change(Sender: TObject);
+procedure TFrmEstoque.edtFatorConChange(Sender: TObject);
 begin
   Exemplo(True);
 end;
 
-procedure TFrmEstoque.SMALL_DBEdit64Exit(Sender: TObject);
+procedure TFrmEstoque.edtFatorConExit(Sender: TObject);
 begin
   if Form7.IbDataSet4FATORC.AsFloat = 0 then
   begin
@@ -1023,29 +1189,29 @@ begin
   _RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
 end;
 
-procedure TFrmEstoque.StringGrid1Click(Sender: TObject);
+procedure TFrmEstoque.sgrdGradeClick(Sender: TObject);
 var
   i, iColunas, iLinhas: Integer;
 begin
-  if (StringGrid1.Col = 0) and (StringGrid1.Row = 0) then
-    StringGrid1.Row := 1;
+  if (sgrdGrade.Col = 0) and (sgrdGrade.Row = 0) then
+    sgrdGrade.Row := 1;
 
-  if (StringGrid1.Col <> 0) and (StringGrid1.Row <> 0) then
+  if (sgrdGrade.Col <> 0) and (sgrdGrade.Row <> 0) then
   begin
     iColunas := 0;
     iLinhas  := 0;
-    for I := 0 to 20 do if AllTrim(StringGrid1.Cells[I,0]) <> '' then
+    for I := 0 to 20 do if AllTrim(sgrdGrade.Cells[I,0]) <> '' then
       iColunas := I;
-    for I := 0 to 20 do if AllTrim(StringGrid1.Cells[0,I]) <> '' then
+    for I := 0 to 20 do if AllTrim(sgrdGrade.Cells[0,I]) <> '' then
       iLinhas  := I;
-    if StringGrid1.Col > iColunas then StringGrid1.Col :=
+    if sgrdGrade.Col > iColunas then sgrdGrade.Col :=
       iColunas;
-    if StringGrid1.Row > iLinhas  then StringGrid1.Row :=
+    if sgrdGrade.Row > iLinhas  then sgrdGrade.Row :=
       iLinhas;
   end;
 end;
 
-procedure TFrmEstoque.StringGrid1DrawCell(Sender: TObject; ACol, ARow: Integer;
+procedure TFrmEstoque.sgrdGradeDrawCell(Sender: TObject; ACol, ARow: Integer;
   Rect: TRect; State: TGridDrawState);
 var
   rQtd : Real;
@@ -1055,94 +1221,106 @@ begin
 
   for I := 0 to 19 do
     for J := 0 to 19 do
-      if AllTrim(StringGrid1.Cells[I,J]) <> '' then
+      if AllTrim(sgrdGrade.Cells[I,J]) <> '' then
         try
           if (I <> 0) and (J <> 0) then
-            rQtd := rQtd + StrToFloat(AllTrim(LimpaNumeroDeixandoAVirgula(StringGrid1.Cells[I,J])));
+            rQtd := rQtd + StrToFloat(AllTrim(LimpaNumeroDeixandoAVirgula(sgrdGrade.Cells[I,J])));
         except
-          StringGrid1.Cells[I,J] := '0,00'
+          sgrdGrade.Cells[I,J] := '0,00'
         end;
 
   Label39.Caption := 'Diferença: '+Format('%12.'+Form1.ConfCasas+'n',[Form7.ibDataSet4QTD_ATUAL.AsFloat - rQtd]);
 
   try
-    if StringGrid1.Cells[aCol,aRow] <> '' then
+    if sgrdGrade.Cells[aCol,aRow] <> '' then
     begin
       if (aCol <> 0) and (aRow <> 0) then
       begin
-        if StringGrid1.Cells[aCol,aRow] <> Format('%12.'+Form1.ConfCasas+'n',[StrToFloat(LimpaNumeroDeixandoAVirgula(StringGrid1.Cells[aCol,aRow]))]) then
+        if sgrdGrade.Cells[aCol,aRow] <> Format('%12.'+Form1.ConfCasas+'n',[StrToFloat(LimpaNumeroDeixandoAVirgula(sgrdGrade.Cells[aCol,aRow]))]) then
         begin
-          StringGrid1.Cells[aCol,aRow] := Format('%12.'+Form1.ConfCasas+'n',[StrToFloat(LimpaNumeroDeixandoAVirgula(StringGrid1.Cells[aCol,aRow]))]);
+          sgrdGrade.Cells[aCol,aRow] := Format('%12.'+Form1.ConfCasas+'n',[StrToFloat(LimpaNumeroDeixandoAVirgula(sgrdGrade.Cells[aCol,aRow]))]);
         end;
       end;
     end;
-  except StringGrid1.Cells[aCol,aRow] := '' end;
+  except sgrdGrade.Cells[aCol,aRow] := '' end;
 
   if ACol = 0 then
-    StringGrid1.Canvas.Font.Color := clREd
+    sgrdGrade.Canvas.Font.Color := clREd
     else
       if ARow = 0 then
-        StringGrid1.Canvas.Font.Color := clBlue
-          else StringGrid1.Canvas.Font.Color := clBlack;
+        sgrdGrade.Canvas.Font.Color := clBlue
+          else sgrdGrade.Canvas.Font.Color := clBlack;
 
-  StringGrid1.Canvas.FillRect(Rect);
+  sgrdGrade.Canvas.FillRect(Rect);
 
 
   if ARow = 0 then
-    StringGrid1.Canvas.TextOut(Rect.Left+2,Rect.Top+2, StringGrid1.Cells[aCol,aRow])
+    sgrdGrade.Canvas.TextOut(Rect.Left+2,Rect.Top+2, sgrdGrade.Cells[aCol,aRow])
   else
-    StringGrid1.Canvas.TextOut(Rect.Right - StringGrid1.Canvas.TextWidth(StringGrid1.Cells[aCol,aRow]) -2 ,Rect.Top+2,  StringGrid1.Cells[aCol,aRow]);
+    sgrdGrade.Canvas.TextOut(Rect.Right - sgrdGrade.Canvas.TextWidth(sgrdGrade.Cells[aCol,aRow]) -2 ,Rect.Top+2,  sgrdGrade.Cells[aCol,aRow]);
 end;
 
-procedure TFrmEstoque.StringGrid1KeyPress(Sender: TObject; var Key: Char);
+procedure TFrmEstoque.sgrdGradeKeyPress(Sender: TObject; var Key: Char);
 begin
   try
     if Key = chr(13) then
     begin
       try
-        StringGrid1.Col := StringGrid1.Col + 1;
+        sgrdGrade.Col := sgrdGrade.Col + 1;
       except
       end;
-      if (StringGrid1.Row <> 0) and (StringGrid1.Cells[StringGrid1.Col,0] = '') then
+      if (sgrdGrade.Row <> 0) and (sgrdGrade.Cells[sgrdGrade.Col,0] = '') then
       begin
-        StringGrid1.Row := StringGrid1.Row + 1;
-        StringGrid1.Col := 0;
+        sgrdGrade.Row := sgrdGrade.Row + 1;
+        sgrdGrade.Col := 0;
       end;
     end;
   except
   end;
 end;
 
-procedure TFrmEstoque.StringGrid1KeyUp(Sender: TObject; var Key: Word;
+procedure TFrmEstoque.sgrdGradeKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (StringGrid1.Col = 0) and (StringGrid1.Row = 0) then
-    StringGrid1.Row := 1;
+  if (sgrdGrade.Col = 0) and (sgrdGrade.Row = 0) then
+    sgrdGrade.Row := 1;
 end;
 
-procedure TFrmEstoque.StringGrid2DrawCell(Sender: TObject; ACol, ARow: Integer;
+procedure TFrmEstoque.sgridTagsDrawCell(Sender: TObject; ACol, ARow: Integer;
   Rect: TRect; State: TGridDrawState);
 begin
-  if (ACol > 1) and not (gdSelected in State) and (ARow > 0) then
+  //if (ACol > 1) and not (gdSelected in State) and (ARow > 0) then Mauricio Parizotto 2024-07-22
+  if (ACol > 1) and (ARow > 0) then
   begin
     {Dailon Parisotto (f-7704) 2023-12-26 INICIO}
-    StringGrid2.Canvas.Brush.Color  := clBtnFace;
-    StringGrid2.Canvas.Font.Color  := clBlack;
+    sgridTags.Canvas.Brush.Color  := clBtnFace;
+    sgridTags.Canvas.Font.Color   := clBlack;
     {Dailon Parisotto (f-7704) 2023-12-26 FIM}
-    StringGrid2.Canvas.FillRect(Rect);
-    StringGrid2.Canvas.TextOut(Rect.Left+2, Rect.Top+2, StringGrid2.Cells[Acol,Arow]);
+    sgridTags.Canvas.FillRect(Rect);
+    sgridTags.Canvas.TextOut(Rect.Left+2, Rect.Top+2, sgridTags.Cells[Acol,Arow]);
   end;
 end;
 
-procedure TFrmEstoque.StringGrid2SelectCell(Sender: TObject; ACol,
+procedure TFrmEstoque.sgridTagsSelectCell(Sender: TObject; ACol,
   ARow: Integer; var CanSelect: Boolean);
 begin
-  if StringGrid2.EditorMode then
+  {
+  if sgridTags.EditorMode then
   begin
     if ACol = 1 then
-      StringGrid2.Options := StringGrid1.Options + [goEditing]
+      sgridTags.Options := StringGrid1.Options + [goEditing]
     else
-      StringGrid2.Options := StringGrid1.Options - [goEditing];
+      sgridTags.Options := StringGrid1.Options - [goEditing];
+  end;
+  }
+
+  if (ACol = 1) and not(bSomenteLeitura) then
+  begin
+    sgridTags.EditorMode := True;
+    sgridTags.Options := sgridTags.Options + [goEditing];
+  end else
+  begin
+    sgridTags.Options := sgridTags.Options - [goEditing];
   end;
 end;
 
@@ -1243,8 +1421,8 @@ procedure TFrmEstoque.tbsConversaoEnter(Sender: TObject);
 var
   I : Integer;
 begin
-  ComboBox12.Items.Clear;
-  ComboBox13.Items.Clear;
+  cboConvEntrada.Items.Clear;
+  cboConvSaida.Items.Clear;
 
   Form7.IBDataSet49.Close;
   Form7.IBDataSet49.SelectSQL.Text := ' Select * '+
@@ -1254,8 +1432,8 @@ begin
 
   while not Form7.IBDataSet49.Eof do
   begin
-    ComboBox12.Items.Add(Form7.IBDataSet49SIGLA.AsString);
-    ComboBox13.Items.Add(Form7.IBDataSet49SIGLA.AsString);
+    cboConvEntrada.Items.Add(Form7.IBDataSet49SIGLA.AsString);
+    cboConvSaida.Items.Add(Form7.IBDataSet49SIGLA.AsString);
     Form7.IBDataSet49.Next;
   end;
 
@@ -1269,16 +1447,16 @@ begin
     end;
   end;
 
-  for I := 0 to ComboBox12.Items.Count do
+  for I := 0 to cboConvEntrada.Items.Count do
   begin
-    if Form7.ibDataSet4MEDIDAE.AsString = ComboBox12.Items[I] then
+    if Form7.ibDataSet4MEDIDAE.AsString = cboConvEntrada.Items[I] then
     begin
-      ComboBox12.ItemIndex := I;
+      cboConvEntrada.ItemIndex := I;
     end;
 
-    if Form7.ibDataSet4MEDIDA.AsString = ComboBox13.Items[I] then
+    if Form7.ibDataSet4MEDIDA.AsString = cboConvSaida.Items[I] then
     begin
-      ComboBox13.ItemIndex := I;
+      cboConvSaida.ItemIndex := I;
     end;
   end;
 
@@ -1296,15 +1474,8 @@ begin
   // Nome certo da imagem
   sNomeDoJPG := Form1.sAtual+'\tempo1'+Form7.IBDataSet4REGISTRO.AsString+'.jpg';
 
-  Button13.Caption       := '&Webcam';
-  VideoCap1.visible      := False;
-  Image5.Visible         := True;
-//  AtualizaTela(False);
-//  if not Form7.bSoLeitura then
-//  begin
-//    Orelhas.ActivePage := orelha_cadastro;
-//    if dbgComposicao.CanFocus then dbgComposicao.SetFocus;
-//  end;
+  btnWebcam.Caption       := '&Webcam';
+  imgFotoProd.Visible    := True;
 end;
 
 procedure TFrmEstoque.tbsGradeShow(Sender: TObject);
@@ -1313,21 +1484,21 @@ var
   I, J : Integer;
   bChave : Boolean;
 begin
-  StringGrid1.Col := 0;
-  StringGrid1.Row := 0;
+  sgrdGrade.Col := 0;
+  sgrdGrade.Row := 0;
 
   begin
-    StringGrid1.RowCount := 20;
+    sgrdGrade.RowCount := 20;
 
-    StringGrid1.Col := 1;
-    StringGrid1.Row := 1;
+    sgrdGrade.Col := 1;
+    sgrdGrade.Row := 1;
 
     for I := 0 to 19 do
      for J := 0 to 19 do
-       StringGrid1.Cells[I,J] := '';
+       sgrdGrade.Cells[I,J] := '';
 
     FrmEstoque.Caption := form7.ibDataSet4DESCRICAO.AsString;
-    StringGrid1.Repaint;
+    sgrdGrade.Repaint;
 
     bChave := True;
 
@@ -1344,7 +1515,7 @@ begin
       begin
         if StrToInt(Form7.ibDataSet10COR.AsString) + strtoInt(Form7.ibDataSet10TAMANHO.AsString) <> 0 then
         begin
-          StringGrid1.Cells[StrToInt(Form7.ibDataSet10COR.AsString),strtoInt(Form7.ibDataSet10TAMANHO.AsString)] := Form7.ibDataSet10QTD.AsString;
+          sgrdGrade.Cells[StrToInt(Form7.ibDataSet10COR.AsString),strtoInt(Form7.ibDataSet10TAMANHO.AsString)] := Form7.ibDataSet10QTD.AsString;
           bChave := False;
         end;
       end;
@@ -1355,8 +1526,8 @@ begin
     begin
       // Lê os dados a partir de um .ini
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-      for I := 1 to 19 do StringGrid1.Cells[0,I] := Mais1Ini.ReadString('Grade',pChar('X'+StrZero(I,2,0)),'');
-      for I := 1 to 19 do StringGrid1.Cells[I,0] := Mais1Ini.ReadString('Grade',pChar('Y'+StrZero(I,2,0)),'');
+      for I := 1 to 19 do sgrdGrade.Cells[0,I] := Mais1Ini.ReadString('Grade',pChar('X'+StrZero(I,2,0)),'');
+      for I := 1 to 19 do sgrdGrade.Cells[I,0] := Mais1Ini.ReadString('Grade',pChar('Y'+StrZero(I,2,0)),'');
       Mais1ini.Free;
     end;
   end;
@@ -1384,8 +1555,6 @@ end;
 procedure TFrmEstoque.tbsPrecoShow(Sender: TObject);
 begin
   // Descrobre o percentual de Comissao
-
-  Image6.Picture := Form1.imgEstoque.Picture;
 
   if not (Form7.ibDataset13.State in ([dsEdit, dsInsert])) then Form7.ibDataset13.Edit;
 
@@ -1450,10 +1619,9 @@ begin
 
   if rCusto = 0 then rCusto := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
 
-  Label58.Caption :=   '+R$ '+Format('%9.2n',[rCusto]);
-  Label60.Caption :=  '+R$ '+Format('%9.2n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat - rCusto]);
-
-  Edit15.Text := '=R$ '+Format('%9.2n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat]);
+  lblPrcVlPg.Caption          := Format('%9.2n',[rCusto]);
+  lblPrcFreteIPIOut.Caption   := Format('%9.2n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat - rCusto]);
+  lblPrecoCustoCompra.Caption := Format('%9.2n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat]);
 
   SMALL_DBEdit32Exit(Sender);
 end;
@@ -1526,14 +1694,14 @@ var
 begin
   for I := 1 to 100 do
   begin
-    if (AllTrim(StringGrid2.Cells[0,I])<>'') and (AllTrim(StringGrid2.Cells[1,I])<>'') then
+    if (AllTrim(sgridTags.Cells[0,I])<>'') and (AllTrim(sgridTags.Cells[1,I])<>'') then
     begin
-      cValor := AllTrim(StringGrid2.Cells[1,I]);
+      cValor := AllTrim(sgridTags.Cells[1,I]);
 
-      if Pos(';' + AnsiUpperCase(Copy(AllTrim(StringGrid2.Cells[0,I]),1,4)) + ';', _cCamposObs) > 0 then
+      if Pos(';' + AnsiUpperCase(Copy(AllTrim(sgridTags.Cells[0,I]),1,4)) + ';', _cCamposObs) > 0 then
         cValor := Copy(cValor, 1, Form7.ibDataSet4DESCRICAO.Size);
 
-      sEx := sEx + '<'+AllTrim(StringGrid2.Cells[0,I])+'>'+cValor+'</'+AllTrim(StringGrid2.Cells[0,I])+'>'+chr(10);
+      sEx := sEx + '<'+AllTrim(sgridTags.Cells[0,I])+'>'+cValor+'</'+AllTrim(sgridTags.Cells[0,I])+'>'+chr(10);
     end;
   end;
 
@@ -1554,10 +1722,10 @@ var
   I : Integer;
   sEx, sTag, sValor, sExemplo, sDescricao : String;
 begin
-  StringGrid2.ColWidths[0] := 150;
-  StringGrid2.ColWidths[1] := 150;
-  StringGrid2.ColWidths[2] := 150;
-  StringGrid2.ColWidths[3] := 670;
+  sgridTags.ColWidths[0] := 150;
+  sgridTags.ColWidths[1] := 150;
+  sgridTags.ColWidths[2] := 100;
+  sgridTags.ColWidths[3] := 670;
 
   Memo1.Width   := 800;
   memTags.Width := 1000;
@@ -1642,14 +1810,14 @@ begin
   Memo1.Lines.Add('<lota>5"Capacidade máxima de lotação Quantidade máxima permitida de passageiros sentados, inclusive o motorista. (v2.0) "</lota>');
   Memo1.Lines.Add('<CNAEISSQN>"CNAE compatível com este serviço na prefeitura"</CNAEISSQN>'); // Sandro Silva 2023-02-28
 
-  StringGrid2.Cells[0,0] := 'Nome';
-  StringGrid2.Cells[1,0] := 'Valor';
-  StringGrid2.Cells[2,0] := 'Exemplo';
-  StringGrid2.Cells[3,0] := 'Descrição';
+  sgridTags.Cells[0,0] := 'Nome';
+  sgridTags.Cells[1,0] := 'Valor';
+  sgridTags.Cells[2,0] := 'Exemplo';
+  sgridTags.Cells[3,0] := 'Descrição';
 
   //Ajustar a quantidade de linhas no grid ao número de linhas a serem preenchidas com as tags
-  if StringGrid2.RowCount <= Memo1.Lines.Count + 1 then
-    StringGrid2.RowCount := Memo1.Lines.Count + 1;
+  if sgridTags.RowCount <= Memo1.Lines.Count + 1 then
+    sgridTags.RowCount := Memo1.Lines.Count + 1;
 
 
   for I := 0 to Memo1.Lines.Count + 1 do
@@ -1676,10 +1844,10 @@ begin
       sValor   := '';
     end;
 
-    StringGrid2.Cells[0,I+1] := sTag;
-    StringGrid2.Cells[1,I+1] := sValor;
-    StringGrid2.Cells[2,I+1] := sExemplo;
-    StringGrid2.Cells[3,I+1] := sDescricao;
+    sgridTags.Cells[0,I+1] := sTag;
+    sgridTags.Cells[1,I+1] := sValor;
+    sgridTags.Cells[2,I+1] := sExemplo;
+    sgridTags.Cells[3,I+1] := sDescricao;
   end;
 end;
 
@@ -1796,19 +1964,19 @@ begin
   end;
 
   // Antes de tudo Zera os combos
-  ComboBox1.ItemIndex := -1;
+  cboCST_IPI.ItemIndex := -1;
   cboCST_Prod.ItemIndex := -1;
   cboOrigemProd.ItemIndex := -1;
   cboCSOSN_Prod.ItemIndex := -1;
-  ComboBox5.ItemIndex := -1;
-  ComboBox6.ItemIndex := -1;
-  ComboBox7.ItemIndex := -1;
-  ComboBox9.ItemIndex := -1;
-  ComboBox10.ItemIndex := -1;
-  ComboBox11.ItemIndex := -1;
+  cboIPPT.ItemIndex := -1;
+  cboIAT.ItemIndex := -1;
+  cboCST_PIS_COFINS.ItemIndex := -1;
+  cboTipoItem.ItemIndex := -1;
+  cboCST_PIS_COFINS_E.ItemIndex := -1;
+  cboCFOP_NFCe.ItemIndex := -1;
 
-  ComboBox14.ItemIndex := -1;
-  ComboBox15.ItemIndex := -1;
+  cboCST_NFCE.ItemIndex := -1;
+  cboCSOSN_NFCE.ItemIndex := -1;
 
   // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
   begin
@@ -1823,9 +1991,9 @@ begin
     cboCST_Prod.Visible             := False;
 
     Label72.Visible          := True;
-    ComboBox15.Visible       := True;
+    cboCSOSN_NFCE.Visible       := True;
     Label84.Visible          := False;
-    ComboBox14.Visible       := False;
+    cboCST_NFCE.Visible       := False;
   end else
   begin
     Label36.Visible          := False;
@@ -1834,9 +2002,9 @@ begin
     cboCST_Prod.Visible             := True;
 
     Label72.Visible          := False;
-    ComboBox15.Visible       := False;
+    cboCSOSN_NFCE.Visible       := False;
     Label84.Visible          := True;
-    ComboBox14.Visible       := True;
+    cboCST_NFCE.Visible       := True;
   end;
 
   if Form7.ibDataSet13ESTADO.AsString = 'SP' then
@@ -1856,22 +2024,22 @@ begin
   Form7.ibDataSet4.Edit;
   // P - Produção própria
   // T - Produção por terceiros
-  for I := 0 to ComboBox5.Items.Count -1 do
+  for I := 0 to cboIPPT.Items.Count -1 do
   begin
-    if Copy(ComboBox5.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IPPT.AsString)) then
+    if Copy(cboIPPT.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IPPT.AsString)) then
     begin
-      ComboBox5.ItemIndex := I;
+      cboIPPT.ItemIndex := I;
       Break; // Sandro Silva 2024-01-15
     end;
   end;
 
   // A - Arredondamento
   // T - Truncamento
-  for I := 0 to ComboBox6.Items.Count -1 do
+  for I := 0 to cboIAT.Items.Count -1 do
   begin
-    if Copy(ComboBox6.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IAT.AsString)) then
+    if Copy(cboIAT.Items[I],1,1) = UpperCase(AllTrim(Form7.ibDataSet4IAT.AsString)) then
     begin
-      ComboBox6.ItemIndex := I;
+      cboIAT.ItemIndex := I;
       Break; // Sandro Silva 2024-01-15
     end;
   end;
@@ -1915,14 +2083,14 @@ begin
   // 900 - Outros
   if AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)<>'' then
   begin
-    for I := 0 to ComboBox15.Items.Count -1 do
+    for I := 0 to cboCSOSN_NFCE.Items.Count -1 do
     begin
       // Com a inclusão do valor 61 - Tributação monofásica sobre combustíveis cobrado anteriormente nos CSOSN precisa mudar aqui onde seleciona o valor do combo
       if Trim(Form7.ibDataSet4CSOSN_NFCE.AsString) <> '' then
       begin
-        if Copy(ComboBox15.Items[I],1,Length(Trim(Form7.ibDataSet4CSOSN_NFCE.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)) then
+        if Copy(cboCSOSN_NFCE.Items[I],1,Length(Trim(Form7.ibDataSet4CSOSN_NFCE.AsString))) = UpperCase(AllTrim(Form7.ibDataSet4CSOSN_NFCE.AsString)) then
         begin
-          ComboBox15.ItemIndex := I;
+          cboCSOSN_NFCE.ItemIndex := I;
           Break; // Sandro Silva 2024-01-15
         end;
       end;
@@ -1977,7 +2145,7 @@ begin
 
   if AllTrim(Form7.ibDataSet4CST_NFCE.AsString)<>'' then
   begin
-    for I := 0 to ComboBox14.Items.Count -1 do
+    for I := 0 to cboCST_NFCE.Items.Count -1 do
     begin
       // 00 - Tributada integralmente
       // 10 - Tributada e com cobrança de ICMS por substituição tributária
@@ -1990,9 +2158,9 @@ begin
       // 60 - ICMS Cobrado anteriormente por substituição tributária
       // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
       // 90 - Outras
-      if Copy(ComboBox14.Items[I],1,2) = Copy(Form7.ibDataSet4CST_NFCE.AsString+'000',2,2) then
+      if Copy(cboCST_NFCE.Items[I],1,2) = Copy(Form7.ibDataSet4CST_NFCE.AsString+'000',2,2) then
       begin
-        ComboBox14.ItemIndex := I;
+        cboCST_NFCE.ItemIndex := I;
         Break; // Sandro Silva 2024-01-15
       end;
     end;
@@ -2008,11 +2176,11 @@ begin
   // 99 - Outras Saídas
   if AllTrim(Form7.ibDataSet4CST_IPI.AsString)<>'' then
   begin
-    for I := 0 to ComboBox1.Items.Count -1 do
+    for I := 0 to cboCST_IPI.Items.Count -1 do
     begin
-      if Copy(ComboBox1.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_IPI.AsString)) then
+      if Copy(cboCST_IPI.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_IPI.AsString)) then
       begin
-        ComboBox1.ItemIndex := I;
+        cboCST_IPI.ItemIndex := I;
         Break; // Sandro Silva 2024-01-15
       end;
     end;
@@ -2054,11 +2222,11 @@ begin
 
   if AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString)<>'' then
   begin
-    for I := 0 to ComboBox7.Items.Count -1 do
+    for I := 0 to cboCST_PIS_COFINS.Items.Count -1 do
     begin
-      if Copy(ComboBox7.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString)) then
+      if Copy(cboCST_PIS_COFINS.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString)) then
       begin
-        ComboBox7.ItemIndex := I;
+        cboCST_PIS_COFINS.ItemIndex := I;
         Break; // Sandro Silva 2024-01-15
       end;
     end;
@@ -2099,11 +2267,11 @@ begin
   // 99-Outras Operações
   if AllTrim(Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString)<>'' then
   begin
-    for I := 0 to ComboBox10.Items.Count -1 do
+    for I := 0 to cboCST_PIS_COFINS_E.Items.Count -1 do
     begin
-      if Copy(ComboBox10.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString)) then
+      if Copy(cboCST_PIS_COFINS_E.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString)) then
       begin
-        ComboBox10.ItemIndex := I;
+        cboCST_PIS_COFINS_E.ItemIndex := I;
         Break; // Sandro Silva 2024-01-15
       end;
     end;
@@ -2123,11 +2291,11 @@ begin
   // 99 - Outras
   if AllTrim(Form7.ibDataSet4TIPO_ITEM.AsString)<>'' then
   begin
-    for I := 0 to ComboBox9.Items.Count -1 do
+    for I := 0 to cboTipoItem.Items.Count -1 do
     begin
-      if Copy(ComboBox9.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4TIPO_ITEM.AsString)) then
+      if Copy(cboTipoItem.Items[I],1,2) = UpperCase(AllTrim(Form7.ibDataSet4TIPO_ITEM.AsString)) then
       begin
-        ComboBox9.ItemIndex := I;
+        cboTipoItem.ItemIndex := I;
         Break; // Sandro Silva 2024-01-15
       end;
     end;
@@ -2152,12 +2320,12 @@ begin
   // 5933 - Prestação de serviço tributado pelo ISSQN (Nota Fiscal conjugada);
   if AllTrim(Form7.ibDataSet4CFOP.AsString)<>'' then
   begin
-    for I := 0 to ComboBox11.Items.Count -1 do
+    for I := 0 to cboCFOP_NFCe.Items.Count -1 do
     begin
-      if Copy(ComboBox11.Items[I],1,4) = UpperCase(AllTrim(Form7.ibDataSet4CFOP.AsString)) then
+      if Copy(cboCFOP_NFCe.Items[I],1,4) = UpperCase(AllTrim(Form7.ibDataSet4CFOP.AsString)) then
       begin
-        ComboBox11.ItemIndex := I;
-        Break; // Sandro Silva 2024-01-15
+        cboCFOP_NFCe.ItemIndex := I;
+        Break;
       end;
     end;
   end;
@@ -2351,64 +2519,52 @@ begin
   lblVisualizarClick(Sender);
 end;
 
-procedure TFrmEstoque.Button13Click(Sender: TObject);
+procedure TFrmEstoque.btnWebcamClick(Sender: TObject);
 var
   jp : TJPEGImage;
 begin
-  if Button13.Caption <> '&Captura' then
+  if btnWebcam.Caption <> '&Captura' then
   begin
     try
-      VideoCap1.visible    := True;
-      Image5.Visible       := False;
-      VideoCAp1.Left       := 5;
-      VideoCAp1.Top        := 5;
-
-      VideoCAp1.Width      := 640;
-      VideoCAp1.Height     := 480;
-
-      VideoCap1.visible    := True;
-
-      try
-        Videocap1.DriverIndex := 0;
-      except
-      end;
-
-      try
-        VideoCap1.VideoPreview := True;
-        VideoCap1.CapAudio     := False;
-      except end;
-
-      Button13.Caption := '&Captura';
+      //imgFotoProd.Visible  := False;
+      IniciaCamera;
+      btnProcurarWeb.Enabled       := False;
+      btnSelecionarArquivo.Enabled := False;
+      pbWebCam.Visible             := True;
     except
     end;
   end else
   begin
     try
-      VideoCap1.SaveToClipboard;
-      Image5.Picture.Bitmap.LoadFromClipboardFormat(cf_BitMap,ClipBoard.GetAsHandle(cf_Bitmap),0);
-      VideoCap1.VideoPreview := False;
-      VideoCap1.visible      := False;
+      FVideoImage.VideoStop;
+      pbWebCam.Visible := False;
 
-      jp := TJPEGImage.Create;
-      jp.Assign(Image5.Picture.Bitmap);
-      jp.CompressionQuality := 100;
+      try
+        jp := TJPEGImage.Create;
+        //jp.Assign(imgFotoProd.Picture.Bitmap);
+        jp.Assign(fVideoBitmap);
+        jp.CompressionQuality := 100;
 
-      jp.SaveToFile(sNomeDoJPG);
-
-      Button13.Caption     := '&Webcam';
-      Image5.Visible       := True;
+        jp.SaveToFile(sNomeDoJPG);
+      finally
+        FreeAndNil(jp);
+      end;
 
       while not FileExists(pChar(sNomeDoJPG)) do
       begin
         Sleep(100);
       end;
 
-      Image3.Picture.LoadFromFile(pChar(sNomeDoJPG));
-      Image5.Picture.LoadFromFile(pChar(sNomeDoJPG));
+      imgFotoProd.Picture.LoadFromFile(pChar(sNomeDoJPG));
 
-//      AtualizaTela(True);
       CarregaValoresObjeto;
-    except end;
+
+      btnWebcam.Caption            := '&Webcam';
+      imgFotoProd.Visible          := True;
+      btnProcurarWeb.Enabled       := True;
+      btnSelecionarArquivo.Enabled := True;
+    except
+    end;
   end;
 end;
 
@@ -2629,7 +2785,7 @@ begin
     dbgSerial.SetFocus;
 end;
 
-procedure TFrmEstoque.Button1Click(Sender: TObject);
+procedure TFrmEstoque.btnExcluirGradeClick(Sender: TObject);
 var
   I, J : Integer;
   Mais1Ini: TIniFile;
@@ -2644,7 +2800,7 @@ begin
     begin
       for I := 0 to 19 do
        for J := 0 to 19 do
-         StringGrid1.Cells[I,J] := '';
+         sgrdGrade.Cells[I,J] := '';
 
       Form7.ibDataSet10.DisableControls;
       Form7.ibDataSet10.First;
@@ -2653,14 +2809,14 @@ begin
         if Form7.ibDataSet10CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then Form7.ibDataSet10.Delete else Form7.ibDataSet10.Next;
 
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-      for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('X'+StrZero(I,2,0)),StringGrid1.Cells[0,I]);
-      for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('Y'+StrZero(I,2,0)),StringGrid1.Cells[I,0]);
+      for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('X'+StrZero(I,2,0)),sgrdGrade.Cells[0,I]);
+      for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('Y'+StrZero(I,2,0)),sgrdGrade.Cells[I,0]);
       Mais1ini.Free;
     end;
   end;
 end;
 
-procedure TFrmEstoque.Button22Click(Sender: TObject);
+procedure TFrmEstoque.btnSelecionarArquivoClick(Sender: TObject);
 begin
   OpenPictureDialog1.Execute;
   CHDir(Form1.sAtual);
@@ -2683,21 +2839,20 @@ begin
 
     Screen.Cursor             := crDefault;              // Cursor de Aguardo
 
-    Image3.Picture.LoadFromFile(pChar(sNomeDoJPG));
-    Image5.Picture.LoadFromFile(pChar(sNomeDoJPG));
+    imgFotoProd.Picture.LoadFromFile(pChar(sNomeDoJPG));
 
 //    AtualizaTela(True);
     CarregaValoresObjeto;
   end;
 end;
 
-procedure TFrmEstoque.Button2Click(Sender: TObject);
+procedure TFrmEstoque.btnCancelarGradeClick(Sender: TObject);
 begin
   tbsGradeShow(Sender);
   FrmEstoque.Repaint;
 end;
 
-procedure TFrmEstoque.Button3Click(Sender: TObject);
+procedure TFrmEstoque.btnSalvarGradeClick(Sender: TObject);
 var
   Mais1Ini: TIniFile;
   I, J : Integer;
@@ -2709,8 +2864,8 @@ begin
 
     for I := 0 to 19 do
       for J := 0 to 19 do
-        if AllTrim(StringGrid1.Cells[I,J]) <> '' then
-          if (I <> 0) and (J <> 0) then rQtd := rQtd + StrToFloat(LimpaNumeroDeixandoAVirgula(StringGrid1.Cells[I,J]));
+        if AllTrim(sgrdGrade.Cells[I,J]) <> '' then
+          if (I <> 0) and (J <> 0) then rQtd := rQtd + StrToFloat(LimpaNumeroDeixandoAVirgula(sgrdGrade.Cells[I,J]));
 
     if rQtd <> 0 then
     begin
@@ -2726,9 +2881,9 @@ begin
         begin
           for J := 0 to 19 do
           begin
-            if (AllTrim(StringGrid1.Cells[I,0]) <> '') and (AllTrim(StringGrid1.Cells[0,J]) <> '') and (StringGrid1.Cells[I,J] = '') then StringGrid1.Cells[I,J] := '0,00';
+            if (AllTrim(sgrdGrade.Cells[I,0]) <> '') and (AllTrim(sgrdGrade.Cells[0,J]) <> '') and (sgrdGrade.Cells[I,J] = '') then sgrdGrade.Cells[I,J] := '0,00';
 
-            if AllTrim(StringGrid1.Cells[I,J]) <> '' then
+            if AllTrim(sgrdGrade.Cells[I,J]) <> '' then
             begin
               Form7.ibDataSet10.First;
               while (not Form7.ibDataSet10.Eof) and not ((Form7.ibDataSet10COR.AsString = StrZero(I,2,0)) and (Form7.ibDataSet10TAMANHO.AsString = StrZero(J,2,0))) do
@@ -2741,12 +2896,12 @@ begin
                 if (I = 0) or (J = 0) then
                 begin
                   Form7.ibDataSet10.Edit;
-                  Form7.ibDataSet10QTD.AsString  := StringGrid1.Cells[I,J];
+                  Form7.ibDataSet10QTD.AsString  := sgrdGrade.Cells[I,J];
                   Form7.ibDataSet10.Post;
                 end else
                 begin
                   Form7.ibDataSet10.Edit;
-                  Form7.ibDataSet10QTD.AsString  := LimpaNumeroDeixandoAVirgula(Format('%12.'+Form1.ConfCasas+'n',[(StrToFloat(LimpaNumeroDeixandoAvirgula(StringGrid1.Cells[I,J])))]));
+                  Form7.ibDataSet10QTD.AsString  := LimpaNumeroDeixandoAVirgula(Format('%12.'+Form1.ConfCasas+'n',[(StrToFloat(LimpaNumeroDeixandoAvirgula(sgrdGrade.Cells[I,J])))]));
                   Form7.ibDataSet10.Post;
                 end;
               end else
@@ -2761,12 +2916,12 @@ begin
                 if (I = 0) or (J = 0) then
                 begin
                   Form7.ibDataSet10.Edit;
-                  Form7.ibDataSet10QTD.AsString  := StringGrid1.Cells[I,J];
+                  Form7.ibDataSet10QTD.AsString  := sgrdGrade.Cells[I,J];
                   Form7.ibDataSet10.Post;
                 end else
                 begin
                   Form7.ibDataSet10.Edit;
-                  Form7.ibDataSet10QTD.AsString := LimpaNumeroDeixandoAVirgula(Format('%12.'+Form1.ConfCasas+'n',[(StrToFloat(LimpaNumeroDeixandoAvirgula(StringGrid1.Cells[I,J])))]));
+                  Form7.ibDataSet10QTD.AsString := LimpaNumeroDeixandoAVirgula(Format('%12.'+Form1.ConfCasas+'n',[(StrToFloat(LimpaNumeroDeixandoAvirgula(sgrdGrade.Cells[I,J])))]));
                   Form7.ibDataSet10.Post;
                   Form7.ibDataSet10.Edit;
                   Form7.ibDataSet10ENTRADAS.AsString := Form7.ibDataSet10QTD.AsString;
@@ -2788,15 +2943,15 @@ begin
       end;
 
       Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
-      for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('X'+StrZero(I,2,0)),StringGrid1.Cells[0,I]);
-      for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('Y'+StrZero(I,2,0)),StringGrid1.Cells[I,0]);
+      for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('X'+StrZero(I,2,0)),sgrdGrade.Cells[0,I]);
+      for I := 1 to 19 do Mais1Ini.WriteString('Grade',pChar('Y'+StrZero(I,2,0)),sgrdGrade.Cells[I,0]);
       Mais1ini.Free;
     end else
     begin
       pgcFicha.ActivePage := tbsCadastro;
     end;
 
-    if (AllTrim(StringGrid1.Cells[0,1]) = '') and (AllTrim(StringGrid1.Cells[1,0]) = '') then
+    if (AllTrim(sgrdGrade.Cells[0,1]) = '') and (AllTrim(sgrdGrade.Cells[1,0]) = '') then
     begin
       Form7.ibDataSet10.Close;
       Form7.ibDataSet10.SelectSQL.Clear;
@@ -2812,7 +2967,7 @@ begin
   Screen.Cursor             := crDefault;
 end;
 
-procedure TFrmEstoque.Button7Click(Sender: TObject);
+procedure TFrmEstoque.btnProcurarWebClick(Sender: TObject);
 var
   sLinkDaFoto, s: String;
   documentoAtivo : variant;
@@ -2859,7 +3014,7 @@ begin
 
   Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
 
-  Image5.Picture.SaveToFile('res'+Form7.IBDataSet4REGISTRO.AsString+'.jpg');
+  imgFotoProd.Picture.SaveToFile('res'+Form7.IBDataSet4REGISTRO.AsString+'.jpg');
 
   try
     begin
@@ -3274,7 +3429,7 @@ begin
   end;
 end;
 
-procedure TFrmEstoque.ComboBox10Change(Sender: TObject);
+procedure TFrmEstoque.cboCST_PIS_COFINS_EChange(Sender: TObject);
 begin
   // 01-Operação Tributável com Alíquota Básica
   // 02-Operação Tributável com Alíquota Diferenciada
@@ -3309,16 +3464,16 @@ begin
   // 75-Operação de Aquisição por Substituição Tributária
   // 98-Outras Operações de Entrada
   // 99-Outras Operações
-  Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString := Copy(ComboBox10.Items[ComboBox10.ItemIndex]+'  ',1,2);
+  Form7.ibDataSet4CST_PIS_COFINS_ENTRADA.AsString := Copy(cboCST_PIS_COFINS_E.Items[cboCST_PIS_COFINS_E.ItemIndex]+'  ',1,2);
 end;
 
-procedure TFrmEstoque.ComboBox10Enter(Sender: TObject);
+procedure TFrmEstoque.cboCST_PIS_COFINS_EEnter(Sender: TObject);
 begin
   with Sender as tComboBox do
     SendMessage(Handle, CB_SETDROPPEDWIDTH, FrmEstoque.Width - Left - 30, 0);
 end;
 
-procedure TFrmEstoque.ComboBox11Change(Sender: TObject);
+procedure TFrmEstoque.cboCFOP_NFCeChange(Sender: TObject);
 begin
   // 5101 - Venda de produção do estabelecimento;
   // 5102 - Venda de mercadoria de terceiros;
@@ -3329,25 +3484,25 @@ begin
   // 5656 - Venda de combustível ou lubrificante de terceiros, destinados a consumidor final;
   // 5667 - Venda de combustível ou lubrificante a consumidor ou usuário final estabelecido em outra Unidade da Federação;
   // 5933 - Prestação de serviço tributado pelo ISSQN (Nota Fiscal conjugada);
-  Form7.ibDataSet4CFOP.AsString := Copy(ComboBox11.Items[ComboBox11.ItemIndex]+'    ',1,4);
+  Form7.ibDataSet4CFOP.AsString := Copy(cboCFOP_NFCe.Items[cboCFOP_NFCe.ItemIndex]+'    ',1,4);
 end;
 
-procedure TFrmEstoque.ComboBox12Change(Sender: TObject);
+procedure TFrmEstoque.cboConvEntradaChange(Sender: TObject);
 begin
   if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
     Form7.ibDataset4.Edit;
-  Form7.ibDataSet4MEDIDAE.AsString :=  ComboBox12.Text;
+  Form7.ibDataSet4MEDIDAE.AsString :=  cboConvEntrada.Text;
 
   Exemplo(True);
 end;
 
-procedure TFrmEstoque.ComboBox13Change(Sender: TObject);
+procedure TFrmEstoque.cboConvSaidaChange(Sender: TObject);
 begin
-  Form7.ibDataSet4MEDIDA.AsString  :=  ComboBox13.Text;
+  Form7.ibDataSet4MEDIDA.AsString  :=  cboConvSaida.Text;
   Exemplo(True);
 end;
 
-procedure TFrmEstoque.ComboBox14Change(Sender: TObject);
+procedure TFrmEstoque.cboCST_NFCEChange(Sender: TObject);
 begin
   // 00 - Tributada integralmente
   // 10 - Tributada e com cobrança de ICMS por substituição tributária
@@ -3360,10 +3515,10 @@ begin
   // 60 - ICMS Cobrado anteriormente por substituição tributária
   // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
   // 90 - Outras
-  Form7.ibDataSet4CST_NFCE.AsString := Copy(Form7.ibDataSet4CST.AsString+' ',1,1)+Copy(ComboBox14.Items[ComboBox14.ItemIndex]+'   ',1,2);
+  Form7.ibDataSet4CST_NFCE.AsString := Copy(Form7.ibDataSet4CST.AsString+' ',1,1)+Copy(cboCST_NFCE.Items[cboCST_NFCE.ItemIndex]+'   ',1,2);
 end;
 
-procedure TFrmEstoque.ComboBox15Change(Sender: TObject);
+procedure TFrmEstoque.cboCSOSN_NFCEChange(Sender: TObject);
 begin
   // 101 - Tributada pelo Simples Nacional com permissão de crédito
   // 102 - Tributada pelo Simples Nacional sem permissão de crédito
@@ -3375,10 +3530,10 @@ begin
   // 400 - Não tributada pelo Simples Nacional
   // 500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação
   // 900 - Outros
-  Form7.ibDataSet4CSOSN_NFCE.AsString := Trim(Copy(ComboBox15.Items[ComboBox15.ItemIndex]+'   ',1,3));
+  Form7.ibDataSet4CSOSN_NFCE.AsString := Trim(Copy(cboCSOSN_NFCE.Items[cboCSOSN_NFCE.ItemIndex]+'   ',1,3));
 end;
 
-procedure TFrmEstoque.ComboBox1Change(Sender: TObject);
+procedure TFrmEstoque.cboCST_IPIChange(Sender: TObject);
 begin
   // 50 - Saída Tributada
   // 51 - Saída Tributável com Alíquota Zero
@@ -3387,25 +3542,25 @@ begin
   // 54 - Saída Imune
   // 55 - Saída com Suspensão
   // 99 - Outras Saídas
-  Form7.ibDataSet4CST_IPI.AsString := Copy(ComboBox1.Items[ComboBox1.ItemIndex]+'  ',1,2);
+  Form7.ibDataSet4CST_IPI.AsString := Copy(cboCST_IPI.Items[cboCST_IPI.ItemIndex]+'  ',1,2);
 end;
 
-procedure TFrmEstoque.ComboBox5Change(Sender: TObject);
+procedure TFrmEstoque.cboIPPTChange(Sender: TObject);
 begin
   inherited;
   // P - Produção própria
   // T - Produção por terceiros
-  Form7.ibDataSet4IPPT.AsString := Copy(ComboBox5.Items[ComboBox5.ItemIndex]+' ',1,1);
+  Form7.ibDataSet4IPPT.AsString := Copy(cboIPPT.Items[cboIPPT.ItemIndex]+' ',1,1);
 end;
 
-procedure TFrmEstoque.ComboBox6Change(Sender: TObject);
+procedure TFrmEstoque.cboIATChange(Sender: TObject);
 begin
   // A - Arredondamento
   // T - Truncamento
-  Form7.ibDataSet4IAT.AsString := Copy(ComboBox6.Items[ComboBox6.ItemIndex]+' ',1,1);
+  Form7.ibDataSet4IAT.AsString := Copy(cboIAT.Items[cboIAT.ItemIndex]+' ',1,1);
 end;
 
-procedure TFrmEstoque.ComboBox7Change(Sender: TObject);
+procedure TFrmEstoque.cboCST_PIS_COFINSChange(Sender: TObject);
 begin
   // 01-Operação Tributável com Alíquota Básica
   // 02-Operação Tributável com Alíquota Diferenciada
@@ -3440,9 +3595,9 @@ begin
   // 75-Operação de Aquisição por Substituição Tributária
   // 98-Outras Operações de Entrada
   // 99-Outras Operações
-  Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString := Copy(ComboBox7.Items[ComboBox7.ItemIndex]+'  ',1,2);
+  Form7.ibDataSet4CST_PIS_COFINS_SAIDA.AsString := Copy(cboCST_PIS_COFINS.Items[cboCST_PIS_COFINS.ItemIndex]+'  ',1,2);
 
-  if Copy(ComboBox7.Items[ComboBox7.ItemIndex]+'  ',1,2) = '03' then
+  if Copy(cboCST_PIS_COFINS.Items[cboCST_PIS_COFINS.ItemIndex]+'  ',1,2) = '03' then
   begin
     Label43.Caption := 'R$ PIS:';
     Label49.Caption := 'R$ COFINS:';
@@ -3454,7 +3609,7 @@ begin
   {Sandro Silva 2023-06-27 fim}
 end;
 
-procedure TFrmEstoque.ComboBox9Change(Sender: TObject);
+procedure TFrmEstoque.cboTipoItemChange(Sender: TObject);
 begin
   // 00 - Mercadoria para Revenda
   // 01 - Matéria-Prima
@@ -3468,7 +3623,7 @@ begin
   // 09 - Serviços
   // 10 - Outros insumos
   // 99 - Outras
-  Form7.ibDataSet4TIPO_ITEM.AsString := Copy(ComboBox9.Items[ComboBox9.ItemIndex]+'  ',1,2);
+  Form7.ibDataSet4TIPO_ITEM.AsString := Copy(cboTipoItem.Items[cboTipoItem.ItemIndex]+'  ',1,2);
 end;
 
 procedure TFrmEstoque.AjustaCampoPrecoQuandoEmPromocao;
@@ -3476,7 +3631,7 @@ var
   iObj: Integer;
   sRegistroOld: String;
 begin
-  edtPreco.Enabled    := not EmPeriodoPromocional;
+  edtPreco.Enabled    := not EmPeriodoPromocional and not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtPreco.ReadOnly   := EmPeriodoPromocional;
   if not EmPeriodoPromocional then
     edtPreco.Font.Color := clWindowText;
@@ -3523,14 +3678,14 @@ begin
   Form1.ibQuery1.SQL.Add('select SIGLA, DESCRICAO from MEDIDA where SIGLA='+QuotedStr(Form7.ibDataSet4MEDIDAE.AsString)+' ');
   Form1.ibQuery1.Open;
 
-  lblExemploConversao.Caption := 'Compra 1 '+Form1.IBQuery1.FieldByname('DESCRICAO').AsString+' e vende'+chr(10);
+  lblExemploConversao.Caption := 'Compra 1 '+ LowerCase(Form1.IBQuery1.FieldByname('DESCRICAO').AsString)+' e vende';
 
   Form1.ibQuery1.Close;
   Form1.ibQuery1.SQL.Clear;
   Form1.ibQuery1.SQL.Add('select SIGLA, DESCRICAO from MEDIDA where SIGLA='+QuotedStr(Form7.ibDataSet4MEDIDA.AsString)+' ');
   Form1.ibQuery1.Open;
 
-  lblExemploConversao.Caption := lblExemploConversao.Caption + FloatToStr(Form7.ibDataSet4FATORC.AsFloat) + ' ' + Form1.IBQuery1.FieldByname('DESCRICAO').AsString;
+  lblExemploConversao.Caption := lblExemploConversao.Caption + FloatToStr(Form7.ibDataSet4FATORC.AsFloat) + ' ' + LowerCase(Form1.IBQuery1.FieldByname('DESCRICAO').AsString);
 
   Result := True;
 end;
@@ -3613,7 +3768,7 @@ var
 begin
   Result := True;
 
-  if Copy(ComboBox7.Text, 1, 2) = '03' then
+  if Copy(cboCST_PIS_COFINS.Text, 1, 2) = '03' then
   begin
     Label43.Caption := 'R$ PIS:';
     Label49.Caption := 'R$ COFINS:';
@@ -3622,6 +3777,8 @@ begin
     Label43.Caption := '% PIS:';
     Label49.Caption := '% COFINS:';
   end;
+
+  CarregaCit;
 
   {$Region'/// Atualiza Layout Estoque ////'}
   try
@@ -3655,8 +3812,7 @@ begin
 
   {$Region '////  Atualiza Layout Estoque Foto ////'}
 
-  Image5.Picture := nil;
-  Image3.Picture := nil;
+  imgFotoProd.Picture := nil;
 
   if AllTrim(Form7.ibDataSet4DESCRICAO.AsString) <> '' then
   begin
@@ -3684,8 +3840,8 @@ begin
       try
         try
           jp2.LoadFromStream(BlobStream);
-          Image5.Picture.Assign(jp2);
-          Image5.Repaint;
+          imgFotoProd.Picture.Assign(jp2);
+          imgFotoProd.Repaint;
         except
           Result := False;
         end;
@@ -3695,32 +3851,32 @@ begin
       end;
     end
     else
-      Image5.Picture := Image3.Picture;
+      imgFotoProd.Picture := Form7.ImgSemProduto.Picture;
   end
   else
-    Image5.Picture := Image3.Picture;
+    imgFotoProd.Picture := Form7.ImgSemProduto.Picture;
   {$EndRegion}
 
   {$Region '/// Ajusta proporção imagem da foto ///'}
   // Mantem a proporção da imagem
   try
-    if Image5.Picture.Width <> 0 then
+    if imgFotoProd.Picture.Width <> 0 then
     begin
-      Image5.Width   := 256;
-      Image5.Height  := 256;
-
-      if Image5.Picture.Width > Image5.Picture.Height then
+//      imgFotoProd.Width   := 410;
+//      imgFotoProd.Height  := 292;
+            {
+      if imgFotoProd.Picture.Width > imgFotoProd.Picture.Height then
       begin
-        Image5.Width  := StrToInt(StrZero((Image5.Picture.Width * (Image5.Width / Image5.Picture.Width)),10,0));
-        Image5.Height := StrToInt(StrZero((Image5.Picture.Height* (Image5.Width / Image5.Picture.Width)),10,0));
+        imgFotoProd.Width  := StrToInt(StrZero((imgFotoProd.Picture.Width * (imgFotoProd.Width / imgFotoProd.Picture.Width)),10,0));
+        imgFotoProd.Height := StrToInt(StrZero((imgFotoProd.Picture.Height* (imgFotoProd.Width / imgFotoProd.Picture.Width)),10,0));
       end else
       begin
-        Image5.Width  := StrToInt(StrZero((Image5.Picture.Width * (Image5.Height / Image5.Picture.Height)),10,0));
-        Image5.Height := StrToInt(StrZero((Image5.Picture.Height* (Image5.Height / Image5.Picture.Height)),10,0));
-      end;
+        imgFotoProd.Width  := StrToInt(StrZero((imgFotoProd.Picture.Width * (imgFotoProd.Height / imgFotoProd.Picture.Height)),10,0));
+        imgFotoProd.Height := StrToInt(StrZero((imgFotoProd.Picture.Height* (imgFotoProd.Height / imgFotoProd.Picture.Height)),10,0));
+      end;   }
 
-      Image5.Picture := Image5.Picture;
-      Image5.Repaint; // Sandro Silva 2023-08-21
+      imgFotoProd.Picture := imgFotoProd.Picture;
+      imgFotoProd.Repaint; // Sandro Silva 2023-08-21
     end;
   except
   end;
@@ -3858,33 +4014,33 @@ begin
       _SC.font.size := 8;
       _RS.font.size := 8;
 
-      if Form7.ibDataSet13ESTADO.AsString = 'RR' then _RR.Font.Color := clRed else _RR.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'AP' then _AP.Font.Color := clRed else _AP.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'AM' then _AM.Font.Color := clRed else _AM.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'PA' then _PA.Font.Color := clRed else _PA.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'MA' then _MA.Font.Color := clRed else _MA.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'AC' then _AC.Font.Color := clRed else _AC.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'RO' then _RO.Font.Color := clRed else _RO.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'MT' then _MT.Font.Color := clRed else _MT.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'TO' then _TO.Font.Color := clRed else _TO.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'CE' then _CE.Font.Color := clRed else _CE.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'RN' then _RN.Font.Color := clRed else _RN.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'PI' then _PI.Font.Color := clRed else _PI.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'PB' then _PB.Font.Color := clRed else _PB.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'PE' then _PE.Font.Color := clRed else _PE.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'AL' then _AL.Font.Color := clRed else _AL.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'SE' then _SE.Font.Color := clRed else _SE.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'BA' then _BA.Font.Color := clRed else _BA.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'GO' then _GO.Font.Color := clRed else _GO.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'DF' then _DF.Font.Color := clRed else _DF.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'MG' then _MG.Font.Color := clRed else _MG.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'ES' then _ES.Font.Color := clRed else _ES.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'MS' then _MS.Font.Color := clRed else _MS.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'SP' then _SP.Font.Color := clRed else _SP.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'RJ' then _RJ.Font.Color := clRed else _RJ.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'PR' then _PR.Font.Color := clRed else _PR.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'SC' then _SC.Font.Color := clRed else _SC.Font.Color := clSilver;
-      if Form7.ibDataSet13ESTADO.AsString = 'RS' then _RS.Font.Color := clRed else _RS.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'RR' then _RR.Font.Color := clRed else _RR.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'AP' then _AP.Font.Color := clRed else _AP.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'AM' then _AM.Font.Color := clRed else _AM.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'PA' then _PA.Font.Color := clRed else _PA.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'MA' then _MA.Font.Color := clRed else _MA.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'AC' then _AC.Font.Color := clRed else _AC.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'RO' then _RO.Font.Color := clRed else _RO.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'MT' then _MT.Font.Color := clRed else _MT.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'TO' then _TO.Font.Color := clRed else _TO.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'CE' then _CE.Font.Color := clRed else _CE.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'RN' then _RN.Font.Color := clRed else _RN.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'PI' then _PI.Font.Color := clRed else _PI.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'PB' then _PB.Font.Color := clRed else _PB.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'PE' then _PE.Font.Color := clRed else _PE.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'AL' then _AL.Font.Color := clRed else _AL.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'SE' then _SE.Font.Color := clRed else _SE.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'BA' then _BA.Font.Color := clRed else _BA.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'GO' then _GO.Font.Color := clRed else _GO.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'DF' then _DF.Font.Color := clRed else _DF.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'MG' then _MG.Font.Color := clRed else _MG.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'ES' then _ES.Font.Color := clRed else _ES.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'MS' then _MS.Font.Color := clRed else _MS.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'SP' then _SP.Font.Color := clRed else _SP.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'RJ' then _RJ.Font.Color := clRed else _RJ.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'PR' then _PR.Font.Color := clRed else _PR.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'SC' then _SC.Font.Color := clRed else _SC.Font.Color := clBlack;
+      if Form7.ibDataSet13ESTADO.AsString = 'RS' then _RS.Font.Color := clRed else _RS.Font.Color := clBlack;
     end else
     begin
       lblCIT.Caption      := '';
@@ -3901,8 +4057,7 @@ var
   BlobStream : TStream;
   JP2        : TJPEGImage;
 begin
-  Image5.Picture := nil;
-  Image3.Picture := nil;
+  imgFotoProd.Picture := nil;
 
   if AllTrim(Form7.ibDataSet4DESCRICAO.AsString) <> '' then
   begin
@@ -3930,8 +4085,8 @@ begin
       try
         try
           jp2.LoadFromStream(BlobStream);
-          Image5.Picture.Assign(jp2);
-          Image5.Repaint;
+          imgFotoProd.Picture.Assign(jp2);
+          imgFotoProd.Repaint;
 
         except
           Result := False;
@@ -3942,34 +4097,86 @@ begin
       end;
     end
     else
-      Image5.Picture := Image3.Picture;
+      imgFotoProd.Picture := Form7.ImgSemProduto.Picture;
   end
   else
-    Image5.Picture := Image3.Picture;
+    imgFotoProd.Picture := Form7.ImgSemProduto.Picture;
 
   // Mantem a proporção da imagem
   try
-    if Image5.Picture.Width <> 0 then
+    if imgFotoProd.Picture.Width <> 0 then
     begin
-      Image5.Width   := 256;
-      Image5.Height  := 256;
-
-      if Image5.Picture.Width > Image5.Picture.Height then
+//      imgFotoProd.Width   := 410;
+//      imgFotoProd.Height  := 292;
+           {
+      if imgFotoProd.Picture.Width > imgFotoProd.Picture.Height then
       begin
-        Image5.Width  := StrToInt(StrZero((Image5.Picture.Width * (Image5.Width / Image5.Picture.Width)),10,0));
-        Image5.Height := StrToInt(StrZero((Image5.Picture.Height* (Image5.Width / Image5.Picture.Width)),10,0));
+        imgFotoProd.Width  := StrToInt(StrZero((imgFotoProd.Picture.Width * (imgFotoProd.Width / imgFotoProd.Picture.Width)),10,0));
+        imgFotoProd.Height := StrToInt(StrZero((imgFotoProd.Picture.Height* (imgFotoProd.Width / imgFotoProd.Picture.Width)),10,0));
       end else
       begin
-        Image5.Width  := StrToInt(StrZero((Image5.Picture.Width * (Image5.Height / Image5.Picture.Height)),10,0));
-        Image5.Height := StrToInt(StrZero((Image5.Picture.Height* (Image5.Height / Image5.Picture.Height)),10,0));
+        imgFotoProd.Width  := StrToInt(StrZero((imgFotoProd.Picture.Width * (imgFotoProd.Height / imgFotoProd.Picture.Height)),10,0));
+        imgFotoProd.Height := StrToInt(StrZero((imgFotoProd.Picture.Height* (imgFotoProd.Height / imgFotoProd.Picture.Height)),10,0));
       end;
-
-      Image5.Picture := Image5.Picture;
-      Image5.Repaint; // Sandro Silva 2023-08-21
+            }
+      imgFotoProd.Picture := imgFotoProd.Picture;
+      imgFotoProd.Repaint; // Sandro Silva 2023-08-21
     end;
   except
   end;
 
 end;
+
+
+procedure TFrmEstoque.IniciaCamera;
+var
+  DeviceList : TStringList;
+begin
+  fActivated      := false;
+
+  if fVideoImage = nil then
+  begin
+    fVideoImage     := TVideoImage.Create;
+    fVideoImage.OnNewVideoFrame := OnNewVideoFrame;
+  end;
+
+  if fActivated then
+    exit;
+
+  fActivated := true;
+
+  // Get list of available cameras
+  DeviceList := TStringList.Create;
+  fVideoImage.GetListOfDevices(DeviceList);
+
+  if DeviceList.Count < 1 then
+  begin
+    MensagemSistema('Câmera não encontrada.',msgAtencao);
+    Exit;
+  end
+  else begin
+    // If at least one camera has been found.
+    cboDrivers.items.Assign(DeviceList);
+    cboDrivers.ItemIndex := 0;
+    btnWebcam.Caption := '&Captura';
+
+    Application.ProcessMessages;
+    fVideoImage.VideoStart(cboDrivers.Items[cboDrivers.itemindex]);
+  end;
+end;
+
+procedure TFrmEstoque.OnNewVideoFrame(Sender : TObject; Width, Height: integer; DataPtr: pointer);
+var
+  i, r : integer;
+begin
+  try
+   fVideoImage.GetBitmap(fVideoBitmap);
+   ResizeBmp(fVideoBitmap, 533,300);
+   pbWebCam.Canvas.Draw(0, 0, fVideoBitmap);
+  except
+  end;
+end;
+
+
 
 end.

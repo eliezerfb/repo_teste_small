@@ -34272,7 +34272,9 @@ begin
 //    Form10.orelha_ICMSShow(sender); Mauricio Parizotto 2024-07-17
     try
       if FrmEstoque <> nil then
+      begin
         FrmEstoque.CarregaValoresObjeto;
+      end;
     except
     end;
     Form7.StatusTrocaPerfil := 'OK';
