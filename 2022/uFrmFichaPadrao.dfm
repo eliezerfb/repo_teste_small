@@ -823,9 +823,9 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
     end
     object pnlBotoesPosterior: TPanel
       Left = 0
-      Top = 578
+      Top = 558
       Width = 842
-      Height = 40
+      Height = 60
       Align = alBottom
       BevelOuter = bvNone
       Color = clWhite
@@ -837,14 +837,14 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       TabOrder = 2
       DesignSize = (
         842
-        40)
+        60)
       object btnOK: TBitBtn
-        Left = 712
-        Top = 8
-        Width = 120
+        Left = 723
+        Top = 16
+        Width = 100
         Height = 25
         Anchors = [akRight, akBottom]
-        Caption = '&Ok'
+        Caption = '&OK'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -858,8 +858,8 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
     object Panel1: TPanel
       Left = 0
       Top = 105
-      Width = 10
-      Height = 473
+      Width = 20
+      Height = 453
       Align = alLeft
       BevelOuter = bvNone
       Color = clWhite
@@ -877,10 +877,10 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       end
     end
     object Panel8: TPanel
-      Left = 832
+      Left = 822
       Top = 105
-      Width = 10
-      Height = 473
+      Width = 20
+      Height = 453
       Align = alRight
       BevelOuter = bvNone
       Color = clWhite
@@ -888,6 +888,7 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 4
+      ExplicitLeft = 832
       object Button19: TBitBtn
         Left = 350
         Top = 5
@@ -898,10 +899,10 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       end
     end
     object pgcFicha: TPageControl
-      Left = 10
+      Left = 20
       Top = 105
-      Width = 822
-      Height = 473
+      Width = 802
+      Height = 453
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -910,6 +911,9 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      ExplicitLeft = 10
+      ExplicitWidth = 822
+      ExplicitHeight = 460
     end
   end
   object DSCadastro: TDataSource

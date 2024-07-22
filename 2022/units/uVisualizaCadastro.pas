@@ -19,7 +19,7 @@ implementation
 uses
   Unit7
   , Mais3
-  , Unit10
+//  , Unit10
   , Unit38
   , Mais
   , uFuncoesBancoDados
@@ -109,7 +109,7 @@ begin
     WriteLn(F,'  <td>');
     
     // Exportar
-    if (Form10.Visible) or (DateToStr(Form38.DateTimePicker1.Date) = '31/12/1899') then
+    if {(Form10.Visible) or} (DateToStr(Form38.DateTimePicker1.Date) = '31/12/1899') then
     begin
       dInicio := StrToDate('31/12/1899');
       dFinal  := StrToDate('30/12/2899');

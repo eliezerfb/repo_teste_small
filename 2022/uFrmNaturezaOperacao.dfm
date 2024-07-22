@@ -5,8 +5,14 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
+    inherited Panel8: TPanel
+      ExplicitLeft = 822
+    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsNatureza
+      ExplicitLeft = 20
+      ExplicitWidth = 802
+      ExplicitHeight = 453
       object tbsNatureza: TTabSheet
         Caption = 'Natureza da opera'#231#227'o '
         OnEnter = tbsNaturezaEnter
@@ -7739,9 +7745,9 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object DBMemo4: TDBMemo
           Left = 150
-          Top = 325
-          Width = 640
-          Height = 75
+          Top = 338
+          Width = 625
+          Height = 70
           DataField = 'OBS'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
@@ -7903,7 +7909,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         object gbPisCofinsSaida: TGroupBox
           Left = 10
           Top = 10
-          Width = 790
+          Width = 766
           Height = 136
           TabOrder = 0
           object Label42: TLabel
@@ -7981,7 +7987,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           object ComboBox7: TComboBox
             Left = 100
             Top = 20
-            Width = 670
+            Width = 646
             Height = 22
             Style = csOwnerDrawVariable
             Font.Charset = ANSI_CHARSET
@@ -8076,7 +8082,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         object GroupBox1: TGroupBox
           Left = 10
           Top = 160
-          Width = 790
+          Width = 766
           Height = 53
           Caption = ' Venda de ve'#237'culos '
           TabOrder = 1

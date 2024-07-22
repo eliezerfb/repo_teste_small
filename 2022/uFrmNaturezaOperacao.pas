@@ -138,14 +138,6 @@ begin
     if Form7.sModulo = 'ICM' then
     begin
       Form7.ibDataSet14.Edit;
-
-      {
-      if (Form10.dBGrid3.Visible) and (Form10.dBGrid3.DataSource.Name = 'DSConsulta') then
-      begin
-        Form7.ibDataSet14CONTA.AsString := Form7.ibqConsulta.FieldByName('NOME').AsString;
-        Form10.dBGrid3.Visible := False;
-      end;
-      }
     end;
     {Sandro Silva 2023-06-28 fim}
   except
