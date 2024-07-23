@@ -12377,6 +12377,7 @@ var
 begin
   sNumeroAnterior14 := EmptyStr;
   sNomeAnterior14 := EmptyStr;
+  FbClicouModulo := False;
 
   try
     if sTitulo = 'Cadastro dos vendedores' then
@@ -16111,7 +16112,7 @@ begin
   { alterar o nome. Se o nome for alterado deve ser }
   { atualizado o arquivo VENDAS e o arquivo RECEBER }
 
-  if (FbClicouModulo) or (not Assigned(FrmNaturezaOperacao)) or ((Assigned(FrmNaturezaOperacao)) and (not FrmNaturezaOperacao.Showing)) then
+  if (not FbClicouModulo) then
   begin
     sNumeroAnterior14 := ibDataSet14REGISTRO.AsString;
     sNomeAnterior14 := ibDataSet14NOME.AsString;
@@ -16679,7 +16680,7 @@ begin
   if Valida_Campo('ICM',Text,'NOME','Esta operação já foi cadastrada') then
   begin
     ibDataSet14NOME.AsString := Text;
-    if (FbClicouModulo) or (not Assigned(FrmNaturezaOperacao)) or ((Assigned(FrmNaturezaOperacao)) and (not FrmNaturezaOperacao.Showing)) then
+    if (not FbClicouModulo) then
       DefineNovoNomeNatOperacao;
   end;
 end;
