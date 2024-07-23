@@ -1097,7 +1097,7 @@ object Form7: TForm7
   end
   object Image11: TImage
     Left = 1168
-    Top = 371
+    Top = 372
     Width = 124
     Height = 19
     AutoSize = True
@@ -14743,6 +14743,7 @@ object Form7: TForm7
     BeforeDelete = ibDataSet14BeforeDelete
     BeforeEdit = ibDataSet14BeforeEdit
     BeforeInsert = ibDataSet14BeforeInsert
+    BeforePost = ibDataSet14BeforePost
     OnEditError = IBDataSet2EditError
     OnNewRecord = ibDataSet14NewRecord
     OnPostError = IBDataSet2PostError
@@ -14768,7 +14769,8 @@ object Form7: TForm7
       '   BCPISCOFINS, '
       
         '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
-        'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA)'
+        'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA,'
+      '   IMPOSTOMANUAL)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14785,7 +14787,8 @@ object Form7: TForm7
       
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
         'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
-        'A,:REFERENCIANOTA)')
+        'A,:REFERENCIANOTA,'
+      '   :IMPOSTOMANUAL)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14840,7 +14843,8 @@ object Form7: TForm7
       '  CBENEF,'
       '  PISCOFINSLUCRO,'
       '  IPISOBREOUTRA,'
-      '  REFERENCIANOTA'
+      '  REFERENCIANOTA,'
+      '  IMPOSTOMANUAL'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14901,7 +14905,8 @@ object Form7: TForm7
       '  CBENEF = :CBENEF,'
       '  PISCOFINSLUCRO = :PISCOFINSLUCRO,'
       '  IPISOBREOUTRA = :IPISOBREOUTRA,'
-      '  REFERENCIANOTA = :REFERENCIANOTA'
+      '  REFERENCIANOTA = :REFERENCIANOTA,'
+      '  IMPOSTOMANUAL = :IMPOSTOMANUAL'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -15221,6 +15226,13 @@ object Form7: TForm7
       DisplayWidth = 20
       FieldName = 'REFERENCIANOTA'
       Origin = 'ICM.REFERENCIANOTA'
+      Size = 1
+    end
+    object ibDataSet14IMPOSTOMANUAL: TIBStringField
+      DisplayLabel = 'Imposto Manual'
+      DisplayWidth = 20
+      FieldName = 'IMPOSTOMANUAL'
+      Origin = 'ICM.IMPOSTOMANUAL'
       Size = 1
     end
     object ibDataSet14CSTPISCOFINS: TIBStringField
