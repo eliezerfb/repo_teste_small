@@ -109,6 +109,7 @@ type
     procedure lblNovoClick(Sender: TObject);
     procedure DBCheckSobreClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     procedure AtualizaObjComValorDoBanco;
@@ -424,6 +425,13 @@ begin
   end;
 end;
 
+procedure TFrmNaturezaOperacao.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  Form7.FbClicouModulo := False;
+  inherited;
+end;
+
 procedure TFrmNaturezaOperacao.FormCreate(Sender: TObject);
 begin
   inherited;
@@ -515,6 +523,7 @@ end;
 procedure TFrmNaturezaOperacao.FormShow(Sender: TObject);
 begin
   inherited;
+  Form7.FbClicouModulo := True;
   Form7.sNumeroAnterior14 := Form7.ibDataSet14REGISTRO.AsString;
   Form7.sNomeAnterior14   := Form7.ibDataSet14NOME.AsString;
 

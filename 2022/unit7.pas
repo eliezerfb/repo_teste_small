@@ -2603,6 +2603,8 @@ type
     spdNFeDPEC1: TspdNFeDPEC;
     {Sandro Silva 2024-04-08 fim}
 
+    FbClicouModulo: Boolean;
+
     procedure RefreshDados;
     procedure TotalizaItensCompra;
     procedure CalculaTotalNota;
@@ -10593,6 +10595,7 @@ end;
 
 procedure TForm7.FormCreate(Sender: TObject);
 begin
+  FbClicouModulo := False;
   IBDatabase1.Connected := False; // Garantia, caso esquecer a propriedade Connected := True no objeto Sandro Silva 2023-12-26
   {Sandro Silva 2023-07-05 inicio}
   FbDuplicandoNFSe      := False;
@@ -12372,6 +12375,9 @@ var
   Mais1ini : tIniFile;
   CampoPK   : string;
 begin
+  sNumeroAnterior14 := EmptyStr;
+  sNomeAnterior14 := EmptyStr;
+
   try
     if sTitulo = 'Cadastro dos vendedores' then
       sModulo := 'VENDEDOR'; // Não grava o Filtro registro coluna etc
@@ -16104,7 +16110,8 @@ begin
   { É necessário saber o Nome anterior no caso de   }
   { alterar o nome. Se o nome for alterado deve ser }
   { atualizado o arquivo VENDAS e o arquivo RECEBER }
-  if (not Assigned(FrmNaturezaOperacao)) or ((Assigned(FrmNaturezaOperacao)) and (not FrmNaturezaOperacao.Showing)) then
+
+  if (FbClicouModulo) or (not Assigned(FrmNaturezaOperacao)) or ((Assigned(FrmNaturezaOperacao)) and (not FrmNaturezaOperacao.Showing)) then
   begin
     sNumeroAnterior14 := ibDataSet14REGISTRO.AsString;
     sNomeAnterior14 := ibDataSet14NOME.AsString;
@@ -16672,7 +16679,7 @@ begin
   if Valida_Campo('ICM',Text,'NOME','Esta operação já foi cadastrada') then
   begin
     ibDataSet14NOME.AsString := Text;
-    if (not Assigned(FrmNaturezaOperacao)) or ((Assigned(FrmNaturezaOperacao)) and (not FrmNaturezaOperacao.Showing)) then
+    if (FbClicouModulo) or (not Assigned(FrmNaturezaOperacao)) or ((Assigned(FrmNaturezaOperacao)) and (not FrmNaturezaOperacao.Showing)) then
       DefineNovoNomeNatOperacao;
   end;
 end;
