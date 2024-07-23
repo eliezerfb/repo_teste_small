@@ -333,6 +333,34 @@ begin
     if Form7.ibDataSet13ESTADO.AsString = 'PR' then _PR.Font.Color := clRed else _PR.Font.Color := clBlack;
     if Form7.ibDataSet13ESTADO.AsString = 'SC' then _SC.Font.Color := clRed else _SC.Font.Color := clBlack;
     if Form7.ibDataSet13ESTADO.AsString = 'RS' then _RS.Font.Color := clRed else _RS.Font.Color := clBlack;
+
+    if Form7.ibDataSet13ESTADO.AsString = 'RR' then _RR.Font.Style := [fsBold] else _RR.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'AP' then _AP.Font.Style := [fsBold] else _AP.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'AM' then _AM.Font.Style := [fsBold] else _AM.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'PA' then _PA.Font.Style := [fsBold] else _PA.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'MA' then _MA.Font.Style := [fsBold] else _MA.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'AC' then _AC.Font.Style := [fsBold] else _AC.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'RO' then _RO.Font.Style := [fsBold] else _RO.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'MT' then _MT.Font.Style := [fsBold] else _MT.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'TO' then _TO.Font.Style := [fsBold] else _TO.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'CE' then _CE.Font.Style := [fsBold] else _CE.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'RN' then _RN.Font.Style := [fsBold] else _RN.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'PI' then _PI.Font.Style := [fsBold] else _PI.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'PB' then _PB.Font.Style := [fsBold] else _PB.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'PE' then _PE.Font.Style := [fsBold] else _PE.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'AL' then _AL.Font.Style := [fsBold] else _AL.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'SE' then _SE.Font.Style := [fsBold] else _SE.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'BA' then _BA.Font.Style := [fsBold] else _BA.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'GO' then _GO.Font.Style := [fsBold] else _GO.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'DF' then _DF.Font.Style := [fsBold] else _DF.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'MG' then _MG.Font.Style := [fsBold] else _MG.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'ES' then _ES.Font.Style := [fsBold] else _ES.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'MS' then _MS.Font.Style := [fsBold] else _MS.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'SP' then _SP.Font.Style := [fsBold] else _SP.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'RJ' then _RJ.Font.Style := [fsBold] else _RJ.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'PR' then _PR.Font.Style := [fsBold] else _PR.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'SC' then _SC.Font.Style := [fsBold] else _SC.Font.Style := [];
+    if Form7.ibDataSet13ESTADO.AsString = 'RS' then _RS.Font.Style := [fsBold] else _RS.Font.Style := [];
   except
   end;
 end;
