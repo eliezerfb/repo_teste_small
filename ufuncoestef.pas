@@ -283,6 +283,7 @@ var
   ModalidadeTransacao: TTipoModalidadeTransacao; // Sandro Silva 2021-07-05
   sRespostaTef: String; // Para capturar linhas da resposta do tef
   FormasExtras: TPagamentoPDV; // Sandro Silva 2023-09-05 FormasExtras: TFormasExtras;
+  nTEFElginPergunta: Integer;
 
   bTEFZPOS: Boolean;
 
@@ -617,7 +618,14 @@ begin
 
                 }
 
-                if (TestarTEFSelecionado('ELGIN')) and (MensagemSistemaPerguntaCustom('De que forma deseja finalizar o pagamento?', TMsgDlgType.mtConfirmation,[TMsgDlgBtn.mbAll,TMsgDlgBtn.mbRetry],['Cartão','PIX']) = 12) then
+                nTEFElginPergunta := -1;
+                if (TestarTEFSelecionado('ELGIN')) then
+                begin                               //      Cartão                        PIX
+                  while (nTEFElginPergunta = -1) or ((nTEFElginPergunta <> 4) and (nTEFElginPergunta <> 12)) do
+                    nTEFElginPergunta := MensagemSistemaPerguntaCustom('De que forma deseja finalizar o pagamento?', TMsgDlgType.mtConfirmation,[TMsgDlgBtn.mbAll,TMsgDlgBtn.mbRetry],['Cartão','PIX'])
+                end;
+
+                if (nTEFElginPergunta = 12) then
                   WriteLn(F,'000-000 = PIX')
                 else
                   WriteLn(F,'000-000 = CRT');                                                     // Header: Cartão 3c
