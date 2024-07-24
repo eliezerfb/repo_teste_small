@@ -1481,6 +1481,7 @@ type
     procedure AtualizarTEMTEF;
     procedure ValidaPastaNfce;
     function CancelaItem(sItem: string): boolean;
+    procedure CancelaDescontoAcrescimo;
 
   protected
     procedure WndProc(var Msg: TMessage); override;
@@ -18041,7 +18042,7 @@ var
   sSituacaoOS: String; // Sandro Silva 2021-08-19
   bTemServicoNoOrcamento: Boolean; // Sandro Silva 2021-09-13
   bTemServicoNaOS: Boolean; // Sandro Silva 2021-09-13
-  sITEM : string;
+  sITEM, sRegistro : string;
 begin
   bPesouAutomatico := False; // Sandro Silva 2021-11-25
 
@@ -18272,6 +18273,13 @@ begin
                 Form1.ibDataSet27.Open;
               end;
 
+              //Mauricio Parizotto 2024-07-23
+              try
+                Panel1.Enabled       := False;
+                Form1.Enabled        := False;
+                Edit1.Enabled        := False;
+                lbDisplayPDV.Enabled := False;
+
               Form1.ibDataSet27.First;
               while not Form1.ibDataSet27.Eof do
               begin
@@ -18320,25 +18328,41 @@ begin
                     // Cancela Item N
                     if (Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = '<CANCELADO>') or (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'KOLNAC') then // Sandro Silva 2019-03-26 if Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = '<CANCELADO>' then
                     begin
-                      //SmallMsg('Este item já foi cancelado!');
-                      SmallMsg(ibDataSet27.FieldByName('ITEM').AsString+#13#10+
-                              'Este item já foi cancelado!');
+                      if Copy(AllTrim(sTexto),2,1) <> '*' then //Mauricio Parizotto 2024-07-23
+                        SmallMsg(ibDataSet27.FieldByName('ITEM').AsString+#13#10+
+                                'Este item já foi cancelado!');
                     end
                     else
                     begin
                       //Form1.Button11Click(Sender); // CalcelaItenN Mauricio Parizotto 2024-07-08
-                      sITEM := ibDataSet27.FieldByName('ITEM').AsString;
-                      CancelaItem(sITEM);
+                      sITEM     := ibDataSet27.FieldByName('ITEM').AsString;
+                      sRegistro := ibDataSet27.FieldByName('REGISTRO').AsString;
+
+                      if sITEM <> '' then
+                      begin
+                        CancelaItem(sITEM);
+                      end else
+                      begin
+                        CancelaDescontoAcrescimo; //Mauricio Parizotto 2024-07-24
+                      end;
 
                       //Volta ao registro que estava para continuar o cancelamento
                       if (Copy(AllTrim(sTexto),2,1) = '*') then
-                        Form1.ibDataSet27.Locate('ITEM',sITEM,[]);
+                        Form1.ibDataSet27.Locate('REGISTRO',sRegistro,[]);
                     end;
                   end;
                 end;
 
                 Form1.ibDataSet27.Next;
               end;
+
+              finally
+                Panel1.Enabled       := True;
+                Form1.Enabled        := True;
+                Edit1.Enabled        := True;
+                lbDisplayPDV.Enabled := True;
+              end;
+
 
               {Mauricio Parizotto 2024-07-08 Inicio}
               Edit1.Text           := '';
@@ -35674,6 +35698,24 @@ begin
     end;
 
     Result     := True;
+  end;
+end;
+
+
+procedure TForm1.CancelaDescontoAcrescimo;
+begin
+  try
+    ibDataSet27.Edit;
+    ibDataSet27.FieldByName('DESCRICAO').AsString := '<CANCELADO>';
+    ibDataSet27.FieldByName('TIPO').AsString := 'CANCEL';
+    ibDataSet27.Post;
+  except
+    try
+      ibDataSet27.Edit;
+      ibDataSet27.FieldByName('TIPO').AsString := 'KOLNAC';
+      ibDataSet27.Post;
+    except
+    end;
   end;
 end;
 
