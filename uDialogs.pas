@@ -110,6 +110,8 @@ end;
 
 }
 
+(*Sandro Silva 2024-07-24 inicio
+Customizado o título a partir do tipo de mensagem
 function MensagemSistemaPerguntaCustom(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; Captions: array of string): Integer;
 var
   aMsgDlg: TForm;
@@ -120,6 +122,43 @@ begin
   { Criar o dialogo }
   aMsgDlg := CreateMessageDialog(Msg, DlgType, Buttons);
   aMsgDlg.Caption := 'Informação';
+
+  CaptionIndex := 0;
+  { Faz um loop varrendo os objetos do dialogo }
+  for i := 0 to pred(aMsgDlg.ComponentCount) do
+  begin
+    if (aMsgDlg.Components[i] is TButton) then
+    begin
+      { Apenas entra na condição se o objeto for um button }
+      dlgButton := TButton(aMsgDlg.Components[i]);
+      if CaptionIndex > High(Captions) then //Captura o Index dos captions dos buttons criado no array
+         Break;
+      dlgButton.Caption := Captions[CaptionIndex];
+      Inc(CaptionIndex);
+    end;
+  end;
+  Result := aMsgDlg.ShowModal;
+end;
+*)
+function MensagemSistemaPerguntaCustom(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; Captions: array of string): Integer;
+var
+  aMsgDlg: TForm;
+  i: Integer;
+  dlgButton: TButton;
+  CaptionIndex: Integer;
+begin
+  { Criar o dialogo }
+  aMsgDlg := CreateMessageDialog(Msg, DlgType, Buttons);
+  aMsgDlg.BorderStyle := bsSizeable;
+  aMsgDlg.BorderIcons := [];
+  case DlgType of
+    TMsgDlgType.mtConfirmation: aMsgDlg.Caption := 'Confirme';
+    TMsgDlgType.mtError       : aMsgDlg.Caption := 'Erro';
+    TMsgDlgType.mtInformation : aMsgDlg.Caption := 'Informação';
+    TMsgDlgType.mtWarning     : aMsgDlg.Caption := 'Atenção';
+  else
+    aMsgDlg.Caption := '';
+  end;
 
   CaptionIndex := 0;
   { Faz um loop varrendo os objetos do dialogo }
