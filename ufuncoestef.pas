@@ -293,7 +293,7 @@ var
     Result := False;
     oFile := TIniFile.Create('FRENTE.INI');
     try
-      Result := (AnsiUpperCase(AcNome) = AnsiUpperCase(oFile.ReadString('Frente de caixa','TEF USADO', EmptyStr)));
+      Result := (Pos(AnsiUpperCase(AcNome), AnsiUpperCase(oFile.ReadString('Frente de caixa','TEF USADO', EmptyStr))) > 0);
     finally
       FreeAndNil(oFile);
     end;
@@ -616,7 +616,8 @@ begin
                 WriteLn(F,'000-000 = CRT');                                                     // Header: Cartão 3c
 
                 }
-                if (TestarTEFSelecionado('ELGIN')) and (MensagemSistemaPerguntaCustom('De que forma deseja finalizar o pagamento?', mtInformation,[mbYes,mbNo],['Cartão','PIX']) = mrNo) then
+
+                if (TestarTEFSelecionado('ELGIN')) and (MensagemSistemaPerguntaCustom('De que forma deseja finalizar o pagamento?', TMsgDlgType.mtConfirmation,[TMsgDlgBtn.mbAll,TMsgDlgBtn.mbRetry],['Cartão','PIX']) = 12) then
                   WriteLn(F,'000-000 = PIX')
                 else
                   WriteLn(F,'000-000 = CRT');                                                     // Header: Cartão 3c
