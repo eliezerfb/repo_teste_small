@@ -2336,7 +2336,9 @@ end;
 procedure TForm2.AjustaParcelasZeradasNegativas;
 var
   i: Integer;
+  bRefazVenc: Boolean;
 begin
+  bRefazVenc := False;
   Form1.ibDataSet7.First;
   try
     while not Form1.ibDataSet7.Eof do
@@ -2345,6 +2347,7 @@ begin
       begin
 //        MaskEdit1.Text := (StrToIntDef(MaskEdit1.Text,1) -1).ToString;
         Form1.ibDataSet7.Delete;
+        bRefazVenc := True;
       end else
       begin
         if Form1.ibDataSet7.State <> dsEdit then
@@ -2366,7 +2369,8 @@ begin
       if Form1.ibDataSet7.State <> dsEdit then
         Form1.ibDataSet7.Edit;
       Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(I);
-      DefineVencimentoParcela(I);
+      if bRefazVenc then
+        DefineVencimentoParcela(I);
       Form1.ibDataSet7.Post;
 
       Form1.ibDataSet7.Next;
