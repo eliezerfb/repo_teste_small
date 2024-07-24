@@ -110,6 +110,9 @@ type
     procedure DBCheckSobreClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure lblAnteriorClick(Sender: TObject);
+    procedure lblProximoClick(Sender: TObject);
+    procedure lblProcurarClick(Sender: TObject);
   private
     { Private declarations }
     procedure AtualizaObjComValorDoBanco;
@@ -577,11 +580,47 @@ begin
     Form7.ibDataSet14.Edit;
 end;
 
+procedure TFrmNaturezaOperacao.lblAnteriorClick(Sender: TObject);
+begin
+  if Form7.ibDataSet14NOME.AsString <> SMALL_DBEdit54.Text then
+  begin
+    btnOK.SetFocus;
+    SMALL_DBEdit54.SetFocus;
+  end;
+  Form7.DefineNovoNomeNatOperacao;
+  inherited;
+  Form7.AtualizaVariaveisAnteriorNatOper;
+end;
+
 procedure TFrmNaturezaOperacao.lblNovoClick(Sender: TObject);
 begin
+  if Form7.ibDataSet14NOME.AsString <> SMALL_DBEdit54.Text then
+  begin
+    btnOK.SetFocus;
+    SMALL_DBEdit54.SetFocus;
+  end;
+  Form7.DefineNovoNomeNatOperacao;
   inherited;
-
   AtualizaObjComValorDoBanco;
+  Form7.AtualizaVariaveisAnteriorNatOper;
+end;
+
+procedure TFrmNaturezaOperacao.lblProcurarClick(Sender: TObject);
+begin
+  inherited;
+  Form7.AtualizaVariaveisAnteriorNatOper;
+end;
+
+procedure TFrmNaturezaOperacao.lblProximoClick(Sender: TObject);
+begin
+  if Form7.ibDataSet14NOME.AsString <> SMALL_DBEdit54.Text then
+  begin
+    btnOK.SetFocus;
+    SMALL_DBEdit54.SetFocus;
+  end;
+  Form7.DefineNovoNomeNatOperacao;
+  inherited;
+  Form7.AtualizaVariaveisAnteriorNatOper;
 end;
 
 end.

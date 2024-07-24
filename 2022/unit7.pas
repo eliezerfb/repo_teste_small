@@ -2432,6 +2432,7 @@ type
     procedure ibDataSet4PROMOINIChange(Sender: TField);
     procedure ibDataSet4ONPROMOChange(Sender: TField);
     procedure ibDataSet16CST_ICMSChange(Sender: TField);
+    procedure ibDataSet14AfterInsert(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -2638,6 +2639,7 @@ type
     function CriarComponenteNFeRunTime: Boolean;
     procedure SetTextoCampoSTATUSNFe(AcTexto: String);
     procedure DefineNovoNomeNatOperacao;
+    procedure AtualizaVariaveisAnteriorNatOper;
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -16114,11 +16116,14 @@ begin
   { atualizado o arquivo VENDAS e o arquivo RECEBER }
 
   if (not FbClicouModulo) then
-  begin
-    sNumeroAnterior14 := ibDataSet14REGISTRO.AsString;
-    sNomeAnterior14 := ibDataSet14NOME.AsString;
-  end;
+    AtualizaVariaveisAnteriorNatOper
   { Está variável também será usada no evento AfterPost }
+end;
+
+procedure TForm7.AtualizaVariaveisAnteriorNatOper;
+begin
+  sNumeroAnterior14 := ibDataSet14REGISTRO.AsString;
+  sNomeAnterior14 := ibDataSet14NOME.AsString;
 end;
 
 procedure TForm7.ibDataSet14AfterPost(DataSet: TDataSet);
@@ -23727,6 +23732,11 @@ end;
 procedure TForm7.ibDataSet14AfterDelete(DataSet: TDataSet);
 begin
   AgendaCommit(True);
+end;
+
+procedure TForm7.ibDataSet14AfterInsert(DataSet: TDataSet);
+begin
+  Form7.AtualizaVariaveisAnteriorNatOper;
 end;
 
 procedure TForm7.ibDataSet8AfterDelete(DataSet: TDataSet);
