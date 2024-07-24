@@ -53,7 +53,8 @@ type
 
 implementation
 
-uses uGeraXmlNFeEntrada, uGeraXmlNFeSaida, uDialogs, uFuncoesRetaguarda;
+uses uGeraXmlNFeEntrada, uGeraXmlNFeSaida, uDialogs, uFuncoesRetaguarda,
+  uSmallConsts;
 
 
 function GeraXmlNFe: String;
@@ -101,6 +102,7 @@ begin
       GeraXmlNFeSaida;
     end;
 
+    {Mauricio Parizotto 2024-07-15
     // Grupo ZD. Informações do Responsável Técnico
 //  if Form1.bHomologacao then
     begin
@@ -109,6 +111,12 @@ begin
       Form7.spdNFeDataSets.Campo('email_ZD05').Value                        := 'smallsoft@smallsoft.com.br';
       Form7.spdNFeDataSets.Campo('fone_ZD06').Value                         := '4934255800';
     end;
+    }
+    //Responsável Técnico
+    Form7.spdNFeDataSets.Campo('CNPJ_ZD02').Value       := _RespTecCNPJ;
+    Form7.spdNFeDataSets.Campo('xContato_ZD04').Value   := _RespTecContato;
+    Form7.spdNFeDataSets.Campo('email_ZD05').Value      := _RespTecEmail;
+    Form7.spdNFeDataSets.Campo('fone_ZD06').Value       := _RespTecFone;
     
     if Form1.bModoSVC then
     begin
@@ -122,7 +130,6 @@ begin
       begin
         if AllTrim(sJustificativa) <> '' then
         begin
-          //ShowMessage('A justificativa tem que ter no minimo 15 caracteres.'); Mauricio Parizotto 2023-10-25
           MensagemSistema('A justificativa tem que ter no minimo 15 caracteres.',msgAtencao);
           Abort;
         end;
@@ -141,7 +148,6 @@ begin
       begin
         if AllTrim(sJustificativa) <> '' then
         begin
-          //ShowMessage('A justificativa tem que ter no minimo 15 caracteres.'); Mauricio Parizotto 2023-10-25
           MensagemSistema('A justificativa tem que ter no minimo 15 caracteres.',msgAtencao);
           Abort;
         end;
@@ -164,7 +170,6 @@ begin
       begin
         if AllTrim(sJustificativa) <> '' then
         begin
-          //ShowMessage('A justificativa tem que ter no minimo 15 caracteres.'); Mauricio Parizotto 2023-10-25
           MensagemSistema('A justificativa tem que ter no minimo 15 caracteres.',msgAtencao);
           Abort;
         end;
@@ -192,11 +197,6 @@ begin
     except
       on E: Exception do
       begin
-        {
-        Application.MessageBox(pChar(E.Message+chr(10)+
-        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
-        ),'Atenção',mb_Ok + MB_ICONWARNING);
-        Mauricio Parizotto 2023-10-25}
         MensagemSistema(E.Message+chr(10)+
                         chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                         ,msgAtencao);
@@ -231,7 +231,6 @@ begin
       CloseFile(F);
 
       ShellExecute( 0, 'Open',pChar(Form1.sAtual+'\dbug.txt'),'','', SW_SHOWMAXIMIZED);
-      //ShowMessage('Tecle Ok para continuar'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Tecle Ok para continuar');
 
       if FileExists(pChar(Form1.sAtual+'\dbug.txt')) then

@@ -8,6 +8,7 @@ uses
   , IBDatabase
   , IBQuery
   , DB
+  , uSmallConsts
   , IBCustomDataSet
 ;
 
@@ -40,7 +41,12 @@ const SELECT_TABELA_VIRTUAL_FORMAS_DE_PAGAMENTO =
   'union ' +
   'select cast(''16'' as varchar(2)) as ID, cast(''Depósito Bancário'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +
-  'select cast(''17'' as varchar(2)) as ID, cast(''Pagamento Instantâneo (PIX)'' as varchar(60)) as NOME from rdb$database ' +
+  {Mauricio Parizotto 204-07-10 Inicio}
+  //'select cast(''17'' as varchar(2)) as ID, cast(''Pagamento Instantâneo (PIX)'' as varchar(60)) as NOME from rdb$database ' +
+  'select cast(''20'' as varchar(2)) as ID, cast('+''''+ _FormaPixEstatico+''''+' as varchar(60)) as NOME from rdb$database ' +
+  'union ' +
+  'select cast(''17'' as varchar(2)) as ID, cast('+''''+ _FormaPixDinamico+''''+' as varchar(60)) as NOME from rdb$database ' +
+  {Mauricio Parizotto 204-07-10 Fim}
   'union ' +
   'select cast(''18'' as varchar(2)) as ID, cast(''Transferência bancária, Carteira Digital'' as varchar(60)) as NOME from rdb$database ' +
   'union ' +

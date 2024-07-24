@@ -2360,7 +2360,7 @@ begin
     if ExecutaComando('ALTER TABLE OS ADD IDOS INTEGER') then
     begin
       ExecutaComando('Commit');
-      ExecutaComando('UPDATE OS SET IDOS = cast(REGISTRO as integer)');
+      //ExecutaComando('UPDATE OS SET IDOS = cast(REGISTRO as integer)'); Mauricio Parizotto 2024-06-10
     end;
   end;
 
@@ -2577,8 +2577,7 @@ begin
       ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2024-04-29 Fim}
-
-
+  
   {Mauricio Parizotto 2024-06-27 Inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CLIFOR', 'PRODUTORRURAL') = False then
   begin
@@ -2590,6 +2589,74 @@ begin
   end;
   {Mauricio Parizotto 2024-06-27 Fim}
 
+  {Mauricio Parizotto 2024-06-10 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'IDBANCO') = False then
+  begin
+    if ExecutaComando('ALTER TABLE BANCOS ADD IDBANCO INTEGER') then
+    begin
+      ExecutaComando('Commit');
+
+      ExecutaComando('CREATE SEQUENCE G_BANCOSIDBANCO');
+
+      ExecutaComando('UPDATE BANCOS SET IDBANCO = (select gen_id(G_BANCOSIDBANCO,1) from rdb$database)');
+
+      ExecutaComando('Commit');
+
+      ExecutaComando('CREATE UNIQUE INDEX BANCOS_IDBANCO_IDX ON BANCOS (IDBANCO)');
+
+      ExecutaComando('Commit');
+    end;
+  end;
+
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONFIGURACAOITAU')) then
+  begin
+    ExecutaComando(' Create table CONFIGURACAOITAU('+
+                   ' 	 IDCONFIGURACAOITAU integer NOT NULL,'+
+                   ' 	 IDBANCO integer,'+
+                   ' 	 HABILITADO VARCHAR(1),'+
+                   ' 	 USUARIO VARCHAR(100),'+
+                   ' 	 SENHA VARCHAR(100),'+
+                   ' 	 CLIENTID VARCHAR(300),'+
+                   ' 	 CONSTRAINT PK_CONFIGURACAOITAU PRIMARY KEY(IDCONFIGURACAOITAU)'+
+                   ' )');
+
+    ExecutaComando('CREATE SEQUENCE G_CONFIGURACAOITAU');
+
+    ExecutaComando('Commit');
+  end;
+
+
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITAUTRANSACAO')) then
+  begin
+    ExecutaComando(' Create table ITAUTRANSACAO('+
+                   '   IDTRANSACAO integer NOT NULL,'+
+                   '   NUMERONF varchar(6),'+
+                   '   CAIXA varchar(3),'+
+                   '   ORDERID varchar(40),'+
+                   '   DATAHORA timestamp,'+
+                   '   STATUS varchar(12),'+
+                   '   VALOR numeric(18,2),'+
+                   '   CODIGOAUTORIZACAO varchar(40), '+
+                   '   CNPJINSTITUICAO varchar(19), '+
+                   '   CONSTRAINT PK_ITAUTRANSACAO PRIMARY KEY (IDTRANSACAO)'+
+                   ' )');
+
+    ExecutaComando('CREATE SEQUENCE G_ITAUTRANSACAO');
+
+    ExecutaComando('CREATE INDEX ITAUTRANSACAOORDERID ON ITAUTRANSACAO (ORDERID);');
+
+    ExecutaComando('Commit');
+  end;
+
+
+  {Mauricio Parizotto 2024-06-10 Fim}
+
+  {Mauricio Parizotto 204-07-10 Inicio}
+  if ExecutaComando(' Update RECEBER'+
+                    '  set FORMADEPAGAMENTO = ''Pagamento Instantâneo (PIX) Estático''  '+
+                    ' Where FORMADEPAGAMENTO = ''Pagamento Instantâneo (PIX)'' ') then
+      ExecutaComando('Commit');
+  {Mauricio Parizotto 204-07-10 Fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');
@@ -2612,7 +2679,7 @@ begin
     begin
       Form7.ibDataSet2.Close;
       Form7.ibDataSet2.Selectsql.Clear;
-      Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form1.ibDataset200.FieldByname('NOME').AsString)+' ');  //
+      Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form1.ibDataset200.FieldByname('NOME').AsString));
       Form7.ibDataSet2.Open;
 
       if AllTrim(Form7.ibDataSet2NOME.AsString) = AllTrim(Form1.ibDataset200.FieldByname('NOME').AsString) then
