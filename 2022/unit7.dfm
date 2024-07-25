@@ -14566,6 +14566,7 @@ object Form7: TForm7
     Database = IBDatabase1
     Transaction = IBTransaction1
     AfterDelete = ibDataSet14AfterDelete
+    AfterInsert = ibDataSet14AfterInsert
     AfterPost = ibDataSet14AfterPost
     BeforeDelete = ibDataSet14BeforeDelete
     BeforeEdit = ibDataSet14BeforeEdit

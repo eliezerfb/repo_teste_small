@@ -108,6 +108,11 @@ type
     procedure tbsNaturezaEnter(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure DBCheckSobreClick(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure lblAnteriorClick(Sender: TObject);
+    procedure lblProximoClick(Sender: TObject);
+    procedure lblProcurarClick(Sender: TObject);
   private
     { Private declarations }
     procedure AtualizaObjComValorDoBanco;
@@ -213,133 +218,137 @@ begin
     if not FrmNaturezaOperacao.Active then
       Exit;
 
-    if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
-      Form7.ibDataSet14.Edit;
 
-    if Form7.ibDataSet14SOBREIPI.AsString <> 'S' then
-      Form7.ibDataSet14SOBREIPI.AsString := 'N';
-    if Form7.ibDataSet14SOBREOUTRAS.AsString <> 'S' then
-      Form7.ibDataSet14SOBREOUTRAS.AsString := 'N';
-    if Form7.ibDataSet14FRETESOBREIPI.AsString <> 'S' then
-      Form7.ibDataSet14FRETESOBREIPI.AsString := 'N';
-    if Form7.ibDataSet14IPISOBREOUTRA.AsString <> 'S' then
-      Form7.ibDataSet14IPISOBREOUTRA.AsString := 'N';
-
-    cbIntegracaoFinanceira.ItemIndex := 0;
-    cbMovimentacaoEstoque.ItemIndex  := 0;
-    ComboBox7.ItemIndex := -1;
-
-    if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), 'CAIXA') then
-      cbIntegracaoFinanceira.ItemIndex := 1;
-
-    if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), 'PAGAR') then
-      cbIntegracaoFinanceira.ItemIndex := 2;
-
-    if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), 'RECEBER') then
-      cbIntegracaoFinanceira.ItemIndex := 3;
-
-    if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), '=') then
-      cbMovimentacaoEstoque.ItemIndex := 1;
-
-    if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), '0') then
-      cbMovimentacaoEstoque.ItemIndex := 2;
-
-
-    if AllTrim(Form7.ibDataSet14CSTPISCOFINS.AsString)<>'' then
+    if (Form7.ibDataSet14.State <> dsInactive) then
     begin
-      for I := 0 to ComboBox7.Items.Count -1 do
+      if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
+        Form7.ibDataSet14.Edit;
+
+      if Form7.ibDataSet14SOBREIPI.AsString <> 'S' then
+        Form7.ibDataSet14SOBREIPI.AsString := 'N';
+      if Form7.ibDataSet14SOBREOUTRAS.AsString <> 'S' then
+        Form7.ibDataSet14SOBREOUTRAS.AsString := 'N';
+      if Form7.ibDataSet14FRETESOBREIPI.AsString <> 'S' then
+        Form7.ibDataSet14FRETESOBREIPI.AsString := 'N';
+      if Form7.ibDataSet14IPISOBREOUTRA.AsString <> 'S' then
+        Form7.ibDataSet14IPISOBREOUTRA.AsString := 'N';
+
+      cbIntegracaoFinanceira.ItemIndex := 0;
+      cbMovimentacaoEstoque.ItemIndex  := 0;
+      ComboBox7.ItemIndex := -1;
+
+      if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), 'CAIXA') then
+        cbIntegracaoFinanceira.ItemIndex := 1;
+
+      if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), 'PAGAR') then
+        cbIntegracaoFinanceira.ItemIndex := 2;
+
+      if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), 'RECEBER') then
+        cbIntegracaoFinanceira.ItemIndex := 3;
+
+      if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), '=') then
+        cbMovimentacaoEstoque.ItemIndex := 1;
+
+      if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), '0') then
+        cbMovimentacaoEstoque.ItemIndex := 2;
+
+
+      if AllTrim(Form7.ibDataSet14CSTPISCOFINS.AsString)<>'' then
       begin
-        if Copy(ComboBox7.Items[I], 1, 2) = UpperCase(AllTrim(Form7.ibDataSet14CSTPISCOFINS.AsString)) then
+        for I := 0 to ComboBox7.Items.Count -1 do
         begin
-          ComboBox7.ItemIndex := I;
+          if Copy(ComboBox7.Items[I], 1, 2) = UpperCase(AllTrim(Form7.ibDataSet14CSTPISCOFINS.AsString)) then
+          begin
+            ComboBox7.ItemIndex := I;
+          end;
         end;
       end;
+
+      //Mapa
+      __RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';
+      __AP.Caption := 'AP '+Form7.ibDataSet14.FieldByname('AP_').AsString+'%';
+      __AM.Caption := 'AM '+Form7.ibDataSet14.FieldByname('AM_').AsString+'%';
+      __PA.Caption := 'PA '+Form7.ibDataSet14.FieldByname('PA_').AsString+'%';
+      __MA.Caption := 'MA '+Form7.ibDataSet14.FieldByname('MA_').AsString+'%';
+      __AC.Caption := 'AC '+Form7.ibDataSet14.FieldByname('AC_').AsString+'%';
+      __RO.Caption := 'RO '+Form7.ibDataSet14.FieldByname('RO_').AsString+'%';
+      __MT.Caption := 'MT '+Form7.ibDataSet14.FieldByname('MT_').AsString+'%';
+      __TO.Caption := 'TO '+Form7.ibDataSet14.FieldByname('TO_').AsString+'%';
+      __CE.Caption := 'CE '+Form7.ibDataSet14.FieldByname('CE_').AsString+'%';
+      __RN.Caption := 'RN '+Form7.ibDataSet14.FieldByname('RN_').AsString+'%';
+      __PI.Caption := 'PI '+Form7.ibDataSet14.FieldByname('PI_').AsString+'%';
+      __PB.Caption := 'PB '+Form7.ibDataSet14.FieldByname('PB_').AsString+'%';
+      __PE.Caption := 'PE '+Form7.ibDataSet14.FieldByname('PE_').AsString+'%';
+      __AL.Caption := 'AL '+Form7.ibDataSet14.FieldByname('AL_').AsString+'%';
+      __SE.Caption := 'SE '+Form7.ibDataSet14.FieldByname('SE_').AsString+'%';
+      __BA.Caption := 'BA '+Form7.ibDataSet14.FieldByname('BA_').AsString+'%';
+      __GO.Caption := 'GO '+Form7.ibDataSet14.FieldByname('GO_').AsString+'%';
+      __DF.Caption := 'DF '+Form7.ibDataSet14.FieldByname('DF_').AsString+'%';
+      __MG.Caption := 'MG '+Form7.ibDataSet14.FieldByname('MG_').AsString+'%';
+      __ES.Caption := 'ES '+Form7.ibDataSet14.FieldByname('ES_').AsString+'%';
+      __MS.Caption := 'MS '+Form7.ibDataSet14.FieldByname('MS_').AsString+'%';
+      __SP.Caption := 'SP '+Form7.ibDataSet14.FieldByname('SP_').AsString+'%';
+      __RJ.Caption := 'RJ '+Form7.ibDataSet14.FieldByname('RJ_').AsString+'%';
+      __PR.Caption := 'PR '+Form7.ibDataSet14.FieldByname('PR_').AsString+'%';
+      __SC.Caption := 'SC '+Form7.ibDataSet14.FieldByname('SC_').AsString+'%';
+      __RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
+
+      __RR.font.size := 8;
+      __AP.font.size := 8;
+      __AM.font.size := 8;
+      __PA.font.size := 8;
+      __MA.font.size := 8;
+      __AC.font.size := 8;
+      __RO.font.size := 8;
+      __MT.font.size := 8;
+      __TO.font.size := 8;
+      __CE.font.size := 8;
+      __RN.font.size := 8;
+      __PI.font.size := 8;
+      __PB.font.size := 8;
+      __PE.font.size := 8;
+      __AL.font.size := 8;
+      __SE.font.size := 8;
+      __BA.font.size := 8;
+      __GO.font.size := 8;
+      __DF.font.size := 8;
+      __MG.font.size := 8;
+      __ES.font.size := 8;
+      __MS.font.size := 8;
+      __SP.font.size := 8;
+      __RJ.font.size := 8;
+      __PR.font.size := 8;
+      __SC.font.size := 8;
+      __RS.font.size := 8;
+
+      if Form7.ibDataSet13ESTADO.AsString = 'RR' then __RR.Font.Color := clRed else __RR.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'AP' then __AP.Font.Color := clRed else __AP.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'AM' then __AM.Font.Color := clRed else __AM.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'PA' then __PA.Font.Color := clRed else __PA.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'MA' then __MA.Font.Color := clRed else __MA.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'AC' then __AC.Font.Color := clRed else __AC.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'RO' then __RO.Font.Color := clRed else __RO.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'MT' then __MT.Font.Color := clRed else __MT.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'TO' then __TO.Font.Color := clRed else __TO.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'CE' then __CE.Font.Color := clRed else __CE.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'RN' then __RN.Font.Color := clRed else __RN.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'PI' then __PI.Font.Color := clRed else __PI.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'PB' then __PB.Font.Color := clRed else __PB.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'PE' then __PE.Font.Color := clRed else __PE.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'AL' then __AL.Font.Color := clRed else __AL.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'SE' then __SE.Font.Color := clRed else __SE.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'BA' then __BA.Font.Color := clRed else __BA.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'GO' then __GO.Font.Color := clRed else __GO.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'DF' then __DF.Font.Color := clRed else __DF.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'MG' then __MG.Font.Color := clRed else __MG.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'ES' then __ES.Font.Color := clRed else __ES.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'MS' then __MS.Font.Color := clRed else __MS.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'SP' then __SP.Font.Color := clRed else __SP.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'RJ' then __RJ.Font.Color := clRed else __RJ.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'PR' then __PR.Font.Color := clRed else __PR.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'SC' then __SC.Font.Color := clRed else __SC.Font.Color := clSilver;
+      if Form7.ibDataSet13ESTADO.AsString = 'RS' then __RS.Font.Color := clRed else __RS.Font.Color := clSilver;
     end;
-
-    //Mapa
-    __RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';
-    __AP.Caption := 'AP '+Form7.ibDataSet14.FieldByname('AP_').AsString+'%';
-    __AM.Caption := 'AM '+Form7.ibDataSet14.FieldByname('AM_').AsString+'%';
-    __PA.Caption := 'PA '+Form7.ibDataSet14.FieldByname('PA_').AsString+'%';
-    __MA.Caption := 'MA '+Form7.ibDataSet14.FieldByname('MA_').AsString+'%';
-    __AC.Caption := 'AC '+Form7.ibDataSet14.FieldByname('AC_').AsString+'%';
-    __RO.Caption := 'RO '+Form7.ibDataSet14.FieldByname('RO_').AsString+'%';
-    __MT.Caption := 'MT '+Form7.ibDataSet14.FieldByname('MT_').AsString+'%';
-    __TO.Caption := 'TO '+Form7.ibDataSet14.FieldByname('TO_').AsString+'%';
-    __CE.Caption := 'CE '+Form7.ibDataSet14.FieldByname('CE_').AsString+'%';
-    __RN.Caption := 'RN '+Form7.ibDataSet14.FieldByname('RN_').AsString+'%';
-    __PI.Caption := 'PI '+Form7.ibDataSet14.FieldByname('PI_').AsString+'%';
-    __PB.Caption := 'PB '+Form7.ibDataSet14.FieldByname('PB_').AsString+'%';
-    __PE.Caption := 'PE '+Form7.ibDataSet14.FieldByname('PE_').AsString+'%';
-    __AL.Caption := 'AL '+Form7.ibDataSet14.FieldByname('AL_').AsString+'%';
-    __SE.Caption := 'SE '+Form7.ibDataSet14.FieldByname('SE_').AsString+'%';
-    __BA.Caption := 'BA '+Form7.ibDataSet14.FieldByname('BA_').AsString+'%';
-    __GO.Caption := 'GO '+Form7.ibDataSet14.FieldByname('GO_').AsString+'%';
-    __DF.Caption := 'DF '+Form7.ibDataSet14.FieldByname('DF_').AsString+'%';
-    __MG.Caption := 'MG '+Form7.ibDataSet14.FieldByname('MG_').AsString+'%';
-    __ES.Caption := 'ES '+Form7.ibDataSet14.FieldByname('ES_').AsString+'%';
-    __MS.Caption := 'MS '+Form7.ibDataSet14.FieldByname('MS_').AsString+'%';
-    __SP.Caption := 'SP '+Form7.ibDataSet14.FieldByname('SP_').AsString+'%';
-    __RJ.Caption := 'RJ '+Form7.ibDataSet14.FieldByname('RJ_').AsString+'%';
-    __PR.Caption := 'PR '+Form7.ibDataSet14.FieldByname('PR_').AsString+'%';
-    __SC.Caption := 'SC '+Form7.ibDataSet14.FieldByname('SC_').AsString+'%';
-    __RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
-  
-    __RR.font.size := 8;
-    __AP.font.size := 8;
-    __AM.font.size := 8;
-    __PA.font.size := 8;
-    __MA.font.size := 8;
-    __AC.font.size := 8;
-    __RO.font.size := 8;
-    __MT.font.size := 8;
-    __TO.font.size := 8;
-    __CE.font.size := 8;
-    __RN.font.size := 8;
-    __PI.font.size := 8;
-    __PB.font.size := 8;
-    __PE.font.size := 8;
-    __AL.font.size := 8;
-    __SE.font.size := 8;
-    __BA.font.size := 8;
-    __GO.font.size := 8;
-    __DF.font.size := 8;
-    __MG.font.size := 8;
-    __ES.font.size := 8;
-    __MS.font.size := 8;
-    __SP.font.size := 8;
-    __RJ.font.size := 8;
-    __PR.font.size := 8;
-    __SC.font.size := 8;
-    __RS.font.size := 8;
-
-    if Form7.ibDataSet13ESTADO.AsString = 'RR' then __RR.Font.Color := clRed else __RR.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AP' then __AP.Font.Color := clRed else __AP.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AM' then __AM.Font.Color := clRed else __AM.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PA' then __PA.Font.Color := clRed else __PA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MA' then __MA.Font.Color := clRed else __MA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AC' then __AC.Font.Color := clRed else __AC.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RO' then __RO.Font.Color := clRed else __RO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MT' then __MT.Font.Color := clRed else __MT.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'TO' then __TO.Font.Color := clRed else __TO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'CE' then __CE.Font.Color := clRed else __CE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RN' then __RN.Font.Color := clRed else __RN.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PI' then __PI.Font.Color := clRed else __PI.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PB' then __PB.Font.Color := clRed else __PB.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PE' then __PE.Font.Color := clRed else __PE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'AL' then __AL.Font.Color := clRed else __AL.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SE' then __SE.Font.Color := clRed else __SE.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'BA' then __BA.Font.Color := clRed else __BA.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'GO' then __GO.Font.Color := clRed else __GO.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'DF' then __DF.Font.Color := clRed else __DF.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MG' then __MG.Font.Color := clRed else __MG.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'ES' then __ES.Font.Color := clRed else __ES.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'MS' then __MS.Font.Color := clRed else __MS.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SP' then __SP.Font.Color := clRed else __SP.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RJ' then __RJ.Font.Color := clRed else __RJ.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'PR' then __PR.Font.Color := clRed else __PR.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'SC' then __SC.Font.Color := clRed else __SC.Font.Color := clSilver;
-    if Form7.ibDataSet13ESTADO.AsString = 'RS' then __RS.Font.Color := clRed else __RS.Font.Color := clSilver;
   except
   end;
 end;
@@ -353,6 +362,12 @@ begin
     Exit;
 
   AtualizaObjComValorDoBanco;
+end;
+
+procedure TFrmNaturezaOperacao.btnOKClick(Sender: TObject);
+begin
+  Form7.DefineNovoNomeNatOperacao;
+  inherited;
 end;
 
 procedure TFrmNaturezaOperacao.cbIntegracaoFinanceiraExit(Sender: TObject);
@@ -411,6 +426,13 @@ begin
       Form7.ibDataSet14INTEGRACAO.AsString := Form7.ibDataSet14INTEGRACAO.AsString + '0';
     end;
   end;
+end;
+
+procedure TFrmNaturezaOperacao.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  Form7.FbClicouModulo := False;
+  inherited;
 end;
 
 procedure TFrmNaturezaOperacao.FormCreate(Sender: TObject);
@@ -504,6 +526,9 @@ end;
 procedure TFrmNaturezaOperacao.FormShow(Sender: TObject);
 begin
   inherited;
+  Form7.FbClicouModulo := True;
+  Form7.sNumeroAnterior14 := Form7.ibDataSet14REGISTRO.AsString;
+  Form7.sNomeAnterior14   := Form7.ibDataSet14NOME.AsString;
 
   pgcFicha.TabIndex := 0;
 
@@ -555,11 +580,47 @@ begin
     Form7.ibDataSet14.Edit;
 end;
 
+procedure TFrmNaturezaOperacao.lblAnteriorClick(Sender: TObject);
+begin
+  if Form7.ibDataSet14NOME.AsString <> SMALL_DBEdit54.Text then
+  begin
+    btnOK.SetFocus;
+    SMALL_DBEdit54.SetFocus;
+  end;
+  Form7.DefineNovoNomeNatOperacao;
+  inherited;
+  Form7.AtualizaVariaveisAnteriorNatOper;
+end;
+
 procedure TFrmNaturezaOperacao.lblNovoClick(Sender: TObject);
 begin
+  if Form7.ibDataSet14NOME.AsString <> SMALL_DBEdit54.Text then
+  begin
+    btnOK.SetFocus;
+    SMALL_DBEdit54.SetFocus;
+  end;
+  Form7.DefineNovoNomeNatOperacao;
   inherited;
-
   AtualizaObjComValorDoBanco;
+  Form7.AtualizaVariaveisAnteriorNatOper;
+end;
+
+procedure TFrmNaturezaOperacao.lblProcurarClick(Sender: TObject);
+begin
+  inherited;
+  Form7.AtualizaVariaveisAnteriorNatOper;
+end;
+
+procedure TFrmNaturezaOperacao.lblProximoClick(Sender: TObject);
+begin
+  if Form7.ibDataSet14NOME.AsString <> SMALL_DBEdit54.Text then
+  begin
+    btnOK.SetFocus;
+    SMALL_DBEdit54.SetFocus;
+  end;
+  Form7.DefineNovoNomeNatOperacao;
+  inherited;
+  Form7.AtualizaVariaveisAnteriorNatOper;
 end;
 
 end.
