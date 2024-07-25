@@ -227,9 +227,12 @@ begin
   if Form7.sModulo = 'BALCAO' then
   begin
     ImportaCupom;
-  end;
 
-  Retributa(True);
+    // Vai fazer retributa na Nota depois. Fazer aqui só adiciona tempo ao processo.
+    //Retributa(True); // Dailon Parisotto 2024-07-17
+  end else
+    Retributa(True);
+
   Form41.Close;
 
   //Mauricio Parizotto 2023-07-26
@@ -319,7 +322,6 @@ begin
     IBQCupom.Open;
     IBQCupom.First;
     Form7.ibDataSet16.Edit;
-
     //Se não encontrar
     if IBQCupom.IsEmpty then
     begin
@@ -327,7 +329,6 @@ begin
       MensagemSistema('Cupom fiscal não encontrado ou já importado.',msgAtencao);
       Exit;
     end;
-
     //Se for cupom fiscal verifica se tem o CFOP
     if IBQCupom.FieldByName('Modelo').AsString <> '99' then
     begin
@@ -369,7 +370,6 @@ begin
         Exit;
       end;
     end;
-
     while not IBQCupom.Eof do
     begin
       Form7.ibDataSet4.Close;
@@ -485,10 +485,15 @@ begin
 
           // Acerta os tributos e o CFOP
           Form1.bFlag := True;
-          Form7.sModulo := 'VENDA';
-          Form7.ibDataSet16DESCRICAO.AsString := IBQCupom.FieldByName('DESCRICAO').AsString;
-          Form7.sModulo := 'BALCAO';
-          Form1.bFlag := False;
+          try
+            Form7.sModulo := 'VENDA';
+            Form7.bPesqProdNFPorConsulta := True;
+            Form7.ibDataSet16DESCRICAO.AsString := IBQCupom.FieldByName('DESCRICAO').AsString;
+            Form7.sModulo := 'BALCAO';
+          finally
+            Form7.bPesqProdNFPorConsulta := False;
+            Form1.bFlag := False;
+          end;
 
           Form7.ibDataSet16.Edit;
           Form7.ibDataSet16QUANTIDADE.AsFloat := IBQCupom.FieldByName('QUANTIDADE').AsFloat;
@@ -543,7 +548,6 @@ begin
       end;
       IBQCupom.Next;
     end;
-
     Form7.ibDataSet7.DisableControls;
     Form7.IbDataSet7.Close;
     Form7.IbDataSet7.SelectSQL.Text := ' Select * from RECEBER '+
@@ -566,13 +570,11 @@ begin
     Form7.IbDataSet7.First;
 
     I := 0;
-
     while not Form7.IbDataSet7.Eof do
     begin
       I := I + 1;
       Form7.ibDataSet7.Next;
     end;
-
     if I <> 0 then
       Form7.ibDataSet15DUPLICATAS.AsFloat := I;
 
