@@ -286,6 +286,7 @@ var
   nTEFElginPergunta: Integer;
 
   bTEFZPOS: Boolean;
+  bTemElgin: Boolean;
 
   function TestarTEFSelecionado(AcNome: String): Boolean;
   var
@@ -619,10 +620,13 @@ begin
                 }
 
                 nTEFElginPergunta := -1;
+                bTemElgin := False;
                 if (TestarTEFSelecionado('ELGIN')) then
                 begin                               //      Cartão                        PIX
                   while (nTEFElginPergunta = -1) or ((nTEFElginPergunta <> 4) and (nTEFElginPergunta <> 12)) do
-                    nTEFElginPergunta := MensagemSistemaPerguntaCustom('De que forma deseja finalizar o pagamento?', TMsgDlgType.mtConfirmation,[TMsgDlgBtn.mbAll,TMsgDlgBtn.mbRetry],['Cartão','PIX'])
+                    nTEFElginPergunta := MensagemSistemaPerguntaCustom('De que forma deseja finalizar o pagamento?', TMsgDlgType.mtConfirmation,[TMsgDlgBtn.mbAll,TMsgDlgBtn.mbRetry],['Cartão','PIX']);
+
+                  bTemElgin := True;
                 end;
 
                 if (nTEFElginPergunta = 12) then
@@ -1020,6 +1024,12 @@ begin
                 //
                 Inc(iContaCartao); // Sandro Silva 2017-07-24
 
+                {Dailon Parisotto (f-19886) 2024-07-25 Inicio}
+                if (bTemElgin) and (Form1.sCupomTEF <> EmptyStr) then
+                  Form1.sCupomTEF := Form1.sCupomTEF + chr(10);
+                if (bTemElgin) and (Form1.sCupomTEF = EmptyStr) then
+                  Form1.sCupomTEF := chr(10) + Form1.sCupomTEF;
+                {Dailon Parisotto (f-19886) 2024-07-25 Fim}
                 Form1.sCupomTEF := Form1.sCupomTEF + sCupom + DupeString('-', 40); // Sandro Silva 2023-10-24 Form1.sCupomTEF := Form1.sCupomTEF + sCupom + '     ' + DupeString('-', 40); // Sandro Silva 2017-06-14
 
                 //
@@ -1164,6 +1174,13 @@ begin
   if Result = True then
   begin
     Form1.sCupomTEF := sCupomReduzidoAutorizado + Form1.sCupomTEFReduzido + sCupomAutorizado + Form1.sCupomTEF;
+
+    // Ajuste para situação do TEF Elgin que pode ficar uma quebra linha no inicio.
+    // Neste caso irá remover a quebra linha do inicio do arquivo caso exista.
+    {Dailon Parisotto (f-19886) 2024-07-25 Inicio}
+    if Pos(chr(10), Form1.sCupomTEF) = 1 then
+      Form1.sCupomTEF := Copy(Form1.sCupomTEF, 2, Length(Form1.sCupomTEF));
+    {Dailon Parisotto (f-19886) 2024-07-25 Fim}
   end;
   // ---------------------------------------------- //
   // Transferência Eletrônica de Fundos (TEF)       //
