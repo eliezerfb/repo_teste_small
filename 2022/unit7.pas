@@ -2499,6 +2499,7 @@ type
     function PodeUtilizarCIT(AcTexto: String): Boolean;
     function TestarPodeUtilizarCIT(AcRegistro, AcCITInformado: String): Boolean;
     function RetornarCasasDecimaisPreco: Integer;
+    procedure DesvincularCupomImportado;
   public
     // Public declarations
 
@@ -21436,6 +21437,9 @@ begin
         //
         Form7.ibDataSet15.EnableControls;
         Form7.ibDataSet35.EnableControls;
+        {Dailon Parisotto (f-20024) 2024-07-25 Inicio}
+        DesvincularCupomImportado;
+        {Dailon Parisotto (f-20024) 2024-07-25 Fim}
         //
         if form21.Visible then form21.Close;
         //
@@ -21567,6 +21571,14 @@ begin
   RegistraExclusaoRegistro(ibDataSet15, 'VENDA');
   //
 end;
+
+{Dailon Parisotto (f-20024) 2024-07-25 Inicio}
+procedure TForm7.DesvincularCupomImportado;
+begin
+  uFuncoesBancoDados.ExecutaComando('update ALTERACA set VALORICM=null where (VALORICM='+FloatToStr(StrToFloatDef(Form7.ibDataSet15NUMERONF.AsString,0))+')'
+                                    , IBTransaction1);
+end;
+{Dailon Parisotto (f-20024) 2024-07-25 Fim}
 
 procedure TForm7.ibDataSet24BeforeDelete(DataSet: TDataSet);
 var
