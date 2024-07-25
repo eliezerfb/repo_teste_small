@@ -16092,8 +16092,10 @@ begin
   end;
 
   // Em São Paulo não é permitido emitir NFC-e em contingência, servidor rejeita
+  {SMAL-595 Mauricio Parizotto 2024-07-22
   if (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'SP') and (Form1.sModeloECF_Reserva = '65') then
     NFCeemContingncia1.Enabled := False;
+  }
 
   Form1.MeiosdePagto1.Visible := NFCe1.Visible; // Ficha 4734 Depois de abrir uma mesa NFCe1.Visible fica False
 
@@ -24310,8 +24312,8 @@ begin
 end;
 
 procedure TForm1.NFCeemContingncia1Click(Sender: TObject);
-  function TrocaFrente(sNovoModeloDocumento: String;
-    bEstaEmContingencia: Boolean): Boolean;
+  (* SMAL-595 Mauricio Parizotto 2024-07-22
+  function TrocaFrente(sNovoModeloDocumento: String; bEstaEmContingencia: Boolean): Boolean;
   begin
     Result := False;
     if (Trim(LerParametroIni('FRENTE.INI', SECAO_59, _59_CHAVE_CAMINHO_DLL, '')) <> '')
@@ -24352,41 +24354,6 @@ procedure TForm1.NFCeemContingncia1Click(Sender: TObject);
       end
       else
       begin
-        {Sandro Silva 2021-05-20 inicio}
-        // Está em contingência
-        {Sandro Silva 2023-07-18 inicio
-        if LerParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', '') <> '' then
-        begin
-
-          if LerParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', '') <> '' then
-          begin
-            if (Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0) or (NFCe) or (PAFNFCE) then // Sandro Silva 2021-03-19 if Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0 then
-              Form1.sModeloECF   := '65';
-
-            if (Pos(NOME_APLICATIVO_59, AnsiLowerCase(Application.ExeName))<>0) or (SAT) or (MFE) then // Sandro Silva 2021-03-19 if Pos(NOME_APLICATIVO_59, AnsiLowerCase(Application.ExeName))<>0 then
-              Form1.sModeloECF   := '59';
-
-            Form1.sCaixa := LerParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', '');
-            GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Caixa', Form1.sCaixa);
-            GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', LerParametroIni('FRENTE.INI', 'Contingencia', 'Tipo Documento Online', ''));
-
-            GravarParametroIni('FRENTE.INI', 'Frente de caixa', 'Tipo Documento', 'SAT');
-            GravarParametroIni('FRENTE.INI', 'Contingencia', 'Tipo Documento Online', '');
-            GravarParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', '');
-
-          end;
-
-          GetDir(0,Form1.sAtual);
-          FecharAplicacao(Application.ExeName);
-
-          ShellExecute( 0, 'Open', pChar(Form1.sAtual + ExtractFileName(Application.ExeName)), '', '', SW_SHOW);
-
-        end
-        else
-        begin
-          SmallMsgBox(PChar('Finalizando modo contingência'), 'Atenção', MB_ICONWARNING + MB_OK);
-        end;
-        }
         if LerParametroIni('FRENTE.INI', 'Contingencia', 'Caixa Online', '') <> '' then
         begin
           if (Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0) or (NFCe) or (PAFNFCE) then // Sandro Silva 2021-03-19 if Pos('nfce.exe',AnsiLowerCase(Application.ExeName))<>0 then
@@ -24416,6 +24383,7 @@ procedure TForm1.NFCeemContingncia1Click(Sender: TObject);
       Result := True;
     end;
   end;
+  *)
 begin
   if Form1.UsaIntegradorFiscal() = False then // Sandro Silva 2019-10-16
   begin
@@ -24451,44 +24419,38 @@ begin
       StatusECF(Form1.bStatusECF, 10);
       {Sandro Silva 2021-12-27 fim}
 
+      {SMAL-595 Mauricio Parizotto 2024-07-22
       if TrocaFrente('59', NFCeemContingncia1.Checked) then
         Exit;
+      }
         
     end;
 
-    //
     if NFCeemContingncia1.Checked then
     begin
-
       try
         Audita('EMISSAO','FRENTE', '', 'Usuário desativou contingência ' + ExtractFileName(Application.ExeName) + ' ' + LimpaNumero(Form22.sBuild),0,0); // Ato, Modulo, Usuário, Histórico, Valor
       except
-
       end;
 
-      TrocaFrente('65', NFCeemContingncia1.Checked);
+      //TrocaFrente('65', NFCeemContingncia1.Checked); SMAL-595 Mauricio Parizotto 2024-07-22
       NFCeemContingncia1.Checked := False;
       Form1.Display(Form1.Frame_teclado1.Led_ECF.Hint, Form1.sF); // Sandro Silva 2017-09-20
-
     end else
     begin
-      //
-      //    Mais1Ini.WriteString('NFCE','contingencia','Sim');
-      //
       if Form1.bStatusECF then
       begin
         Form1.NFCeemContingncia1.Checked := False;
         Application.MessageBox('Não é possível entrar em modo de contingência, o serviço está em operação.', 'Atenção', MB_ICONINFORMATION + MB_OK);
       end;
-      //
+
       if (Form1.bStatusECF = False) and (Form1.UsaIntegradorFiscal() = False) then // Sandro Silva 2019-10-16 if Form1.bStatusECF = False then
       begin
         sMotivoContingencia := Trim(Small_InputBox('Motivo da contingência', 'Motivo da contingência: (mínimo 15 carateres)', sMotivoContingencia)); // Sandro Silva 2021-06-15 sMotivoContingencia := Small_InputBox('Motivo da contingência', 'Motivo da contingência: (mínimo 15 carateres)', sMotivoContingencia);
-        //
+
         // Sandro Silva 2016-05-04 Não permitir entrar em contingência se não informar motivo  if true then
         if (Trim(sMotivoContingencia) <> '') and (Length(Trim(sMotivoContingencia)) > 15) then
         begin
-
           try
             Audita('EMISSAO','FRENTE', '', 'Usuário ativou contingência ' + ExtractFileName(Application.ExeName) + ' ' + LimpaNumero(Form22.sBuild),0,0); // Ato, Modulo, Usuário, Histórico, Valor
           except
@@ -24499,11 +24461,8 @@ begin
                                        'Lembre-se de transmitir as notas quando voltar o serviço.'), 'Modo de Contingência Ativado', MB_ICONWARNING + MB_OK);
           NFCeemContingncia1.Checked := True;
 
-          //
-          // FormShow já faz TestaTudo(True);  // NFCeemContingncia1Click
-          //
           Form1.FormShow(Sender); // NFCeemContingncia1Click()
-          //
+
           Form1.sStatusECF := 'OPERANDO EM CONTINGÊNCIA';
           Form1.Display(Form1.sStatusECF,Form1.sF);
         end
@@ -24516,10 +24475,9 @@ begin
                                           ), 'Atenção', MB_ICONWARNING + MB_YESNO) = id_yes then
             NFCeemContingncia1Click(Sender);
         end;
-      end; // if NFCeemContingncia1.Checked then
-      //
+      end;
     end;
-  end; // if Form1.UsaIntegradorFiscal() = False then // Sandro Silva 2019-10-16
+  end;
 end;
 
 procedure TForm1.DANFCEdetalhado1Click(Sender: TObject);
@@ -29202,8 +29160,10 @@ procedure TForm1.PopupMenu2Popup(Sender: TObject);
 begin
   ransmitirContingncia1.Enabled := (NFCeemContingncia1.Checked = False);
   // Em São Paulo não é permitido emitir NFC-e em contingência, servidor rejeita
+  {
   if ((AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) = 'SP') and (Form1.sModeloECF_Reserva = '65')) then
     ransmitirContingncia1.Enabled := False; // Sandro Silva 2020-11-11
+  Mauricio Parizotto 2024-07-22}
   EnviaraNFCe1.Enabled := PDV_CupomAberto = False; // Sandro Silva 2019-07-16
   ConsultaChaveNFCe1.Visible := (Form1.sModeloECF = '65');
 
