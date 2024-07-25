@@ -18865,7 +18865,9 @@ begin
 
         if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') then
         begin
-          if (Pos('*',Edit1.Text+Chr(KEY)) <> 0) or (Pos('$',Edit1.Text+Chr(KEY)) <> 0)  then
+          //if (Pos('*',Edit1.Text+Chr(KEY)) <> 0) or (Pos('$',Edit1.Text+Chr(KEY)) <> 0)  then //Mauricio Parizotto 2024-07-25
+          if ( (Pos('*',Edit1.Text+Chr(KEY)) <> 0) or (Pos('$',Edit1.Text+Chr(KEY)) <> 0) )
+            and ((Pos('-*',Edit1.Text) = 0)) then
           begin
             if (Pos(Copy(Edit1.Text+Chr(KEY),Pos('*',Edit1.Text)+1,1),'0123456789') = 0) or (Pos(Copy(Edit1.Text+Chr(KEY),Pos('$',Edit1.Text)+1,1),'0123456789') = 0) then
             begin
