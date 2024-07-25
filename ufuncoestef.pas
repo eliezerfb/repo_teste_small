@@ -47,6 +47,8 @@ uses
   , uajustaresolucao
   , uValidaRecursos
   , uTypesRecursos
+  , uDialogs
+  , Vcl.Dialogs
   ;
 {Sandro Silva 2023-09-05 inicio
 type
@@ -281,8 +283,24 @@ var
   ModalidadeTransacao: TTipoModalidadeTransacao; // Sandro Silva 2021-07-05
   sRespostaTef: String; // Para capturar linhas da resposta do tef
   FormasExtras: TPagamentoPDV; // Sandro Silva 2023-09-05 FormasExtras: TFormasExtras;
+  nTEFElginPergunta: Integer;
 
   bTEFZPOS: Boolean;
+  bTemElgin: Boolean;
+
+  function TestarTEFSelecionado(AcNome: String): Boolean;
+  var
+    oFile: TIniFile;
+  begin
+    Result := False;
+    oFile := TIniFile.Create('FRENTE.INI');
+    try
+      Result := (Pos(AnsiUpperCase(AcNome), AnsiUpperCase(oFile.ReadString('Frente de caixa','TEF USADO', EmptyStr))) > 0);
+    finally
+      FreeAndNil(oFile);
+    end;
+  end;
+
   procedure RecuperaValoresFormasExtras;
   begin
     // Quando transaciona mais que um cartão na mesma venda e informa valores nas formas extras,
@@ -594,7 +612,28 @@ begin
               end else
               begin
                 // CRT Pedido de autorização para transação por meio de cartão
+
+                {Dailon Parisotto (f-19886) 2024-07-19 Inicio
+
                 WriteLn(F,'000-000 = CRT');                                                     // Header: Cartão 3c
+
+                }
+
+                nTEFElginPergunta := -1;
+                bTemElgin := False;
+                if (TestarTEFSelecionado('ELGIN')) then
+                begin                               //      Cartão                        PIX
+                  while (nTEFElginPergunta = -1) or ((nTEFElginPergunta <> 4) and (nTEFElginPergunta <> 12)) do
+                    nTEFElginPergunta := MensagemSistemaPerguntaCustom('De que forma deseja finalizar o pagamento?', TMsgDlgType.mtConfirmation,[TMsgDlgBtn.mbAll,TMsgDlgBtn.mbRetry],['Cartão','PIX']);
+
+                  bTemElgin := True;
+                end;
+
+                if (nTEFElginPergunta = 12) then
+                  WriteLn(F,'000-000 = PIX')
+                else
+                  WriteLn(F,'000-000 = CRT');                                                     // Header: Cartão 3c
+                {Dailon Parisotto (f-19886) 2024-07-19 Fim}
                 WriteLn(F,'001-000 = '+StrTran(TimeToStr(Time),':',''));  // Identificação: Eu uso a hora
                 WriteLn(F,'003-000 = '+AllTrim(LimpaNumero(Format('%9.2n',[Abs(dValorPagarCartao)]))));             // Valor Total: 12c// Sandro Silva 2017-06-12  WriteLn(F,'003-000 = '+AllTrim(LimpaNumero(Format('%9.2n',[Abs(Form1.ibDataSet25.FieldByName('PAGAR').AsFloat)]))));             // Valor Total: 12c
               end;
@@ -985,6 +1024,12 @@ begin
                 //
                 Inc(iContaCartao); // Sandro Silva 2017-07-24
 
+                {Dailon Parisotto (f-19886) 2024-07-25 Inicio}
+                if (bTemElgin) and (Form1.sCupomTEF <> EmptyStr) then
+                  Form1.sCupomTEF := Form1.sCupomTEF + chr(10);
+                if (bTemElgin) and (Form1.sCupomTEF = EmptyStr) then
+                  Form1.sCupomTEF := chr(10) + Form1.sCupomTEF;
+                {Dailon Parisotto (f-19886) 2024-07-25 Fim}
                 Form1.sCupomTEF := Form1.sCupomTEF + sCupom + DupeString('-', 40); // Sandro Silva 2023-10-24 Form1.sCupomTEF := Form1.sCupomTEF + sCupom + '     ' + DupeString('-', 40); // Sandro Silva 2017-06-14
 
                 //
@@ -1129,6 +1174,13 @@ begin
   if Result = True then
   begin
     Form1.sCupomTEF := sCupomReduzidoAutorizado + Form1.sCupomTEFReduzido + sCupomAutorizado + Form1.sCupomTEF;
+
+    // Ajuste para situação do TEF Elgin que pode ficar uma quebra linha no inicio.
+    // Neste caso irá remover a quebra linha do inicio do arquivo caso exista.
+    {Dailon Parisotto (f-19886) 2024-07-25 Inicio}
+    if Pos(chr(10), Form1.sCupomTEF) = 1 then
+      Form1.sCupomTEF := Copy(Form1.sCupomTEF, 2, Length(Form1.sCupomTEF));
+    {Dailon Parisotto (f-19886) 2024-07-25 Fim}
   end;
   // ---------------------------------------------- //
   // Transferência Eletrônica de Fundos (TEF)       //
