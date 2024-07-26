@@ -1020,6 +1020,8 @@ begin
 
         Form7.ibDataSet16.Next;
       end;
+      vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
+      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
 
       Retributa(True);
 
@@ -1027,8 +1029,8 @@ begin
         Form7.ibDataSet16.Post;
 
     finally
-      vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
-      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+      if (not Assigned(vNotaFiscal)) then
+        vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
 
       Form7.bPesqProdNFPorConsulta := False;
     end;
