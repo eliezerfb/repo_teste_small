@@ -951,6 +951,8 @@ begin
   // Joga p/obs a obs na tabela de icm  Limpando o que tinha
   Form7.ibDataSet14.Locate('NOME',AllTrim(SMALL_DBEdit40.Text),[]);
 
+(*     Dailon Parisotto (f-20023) 2024-07-26 inicio
+
   if AllTrim(sOperacaoAntiga) <> AllTrim(Form7.ibDataSet14NOME.AsString) then
   begin
     Form7.ibQuery1.Close;
@@ -988,7 +990,51 @@ begin
     {Dailon Parisotto (f-19945) 2024-07-17 Fim}
     if Form7.ibDataSet16.Modified then
       Form7.ibDataSet16.Post;
+  end;         *)
+
+    if AllTrim(sOperacaoAntiga) <> AllTrim(Form7.ibDataSet14NOME.AsString) then
+  begin
+    Form7.ibQuery1.Close;
+    Form7.ibQuery1.SQL.Clear;
+    Form7.ibQuery1.SQL.Add('select * from ICM where NOME='+QuotedStr(sOperacaoAntiga)+' ');
+    Form7.ibQuery1.Open;
+
+    Form7.ibDataSet16.DisableControls;
+    Form7.ibDataSet16.First;
+    Form7.bPesqProdNFPorConsulta := True;
+
+    try
+      // Fica muito lento devido a recalcular o total em todos os itens
+      // Irá recalcular 1 unica vez ao final deste processo
+      FreeAndNil(vNotaFiscal);
+      while not Form7.ibDataSet16.EOF do // Disable
+      begin
+        if Form7.ibDataSet16TOTAL.AsString <> '' then
+        begin
+          if Form7.ibDataSet16CFOP.AsString = Form7.ibQuery1.FieldByName('CFOP').AsString then
+          begin
+            Form7.ibDataSet16.Edit;
+            Form7.ibDataSet16CFOP.AsString := '';
+          end;
+        end;
+
+        Form7.ibDataSet16.Next;
+      end;
+
+      Retributa(True);
+
+      if Form7.ibDataSet16.Modified then
+        Form7.ibDataSet16.Post;
+
+    finally
+      vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
+      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+
+      Form7.bPesqProdNFPorConsulta := False;
+    end;
   end;
+
+  {Dailon Parisotto (f-20023) 2024-07-26 Fim}
 
   if SMALL_DBEdit40.Text <> '' then
   begin
