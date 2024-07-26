@@ -16136,10 +16136,11 @@ begin
 end;
 
 procedure TForm7.ibDataSet14AfterPost(DataSet: TDataSet);
-var
-  bButton : Integer;
-  sNomeNovo, sNomevolta : String;
+//var
+//  bButton : Integer;
+//  sNomeNovo, sNomevolta : String;
 begin
+  (* Dailon migrou esse código para o método DefineNovoNomeNatOperacao
   // NATUREZE DA OPERAÇÃO
   try
     if (sNomeAnterior14 <> ibDataSet14NOME.AsString) and (sNomeAnterior14 <> '') and (sNumeroAnterior14 = ibDataSet14REGISTRO.AsString) then
@@ -16187,7 +16188,7 @@ begin
     //ShowMessage('Erro 7/10042 comunique o suporte técnico.') Mauricio Parizotto 2023-10-25
     MensagemSistema('Erro 7/10042 comunique o suporte técnico.',msgErro);
   end;
-
+  *)
   AgendaCommit(True);
 end;
 
