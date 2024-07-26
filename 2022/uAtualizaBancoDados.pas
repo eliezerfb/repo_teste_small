@@ -2659,7 +2659,7 @@ begin
   {Mauricio Parizotto 204-07-10 Fim}
 
   Form22.Repaint;
-  Mensagem22('Aguarde...');
+//  Mensagem22('Aguarde...');
 
   
   try
@@ -2709,7 +2709,6 @@ begin
 
   try
     Form1.este1Click(nil);
-    Form22.Button1.Visible := False;
     ExecutaComando('set generator G_BUILD to ' + BUILD_DO_BANCO); // Sandro Silva 2022-09-12 Form1.ibDataset200.SelectSql.Add('set generator G_BUILD to 2022004');
   except
   end;

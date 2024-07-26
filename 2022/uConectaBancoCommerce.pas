@@ -128,7 +128,6 @@ begin
           Sleep(100);
         end;
 
-        Form22.Image1.Visible := False;
         Mensagem22('');
         Form22.Repaint;
         Sleep(1000);
@@ -146,7 +145,6 @@ begin
           Sleep(1000);
         end;
 
-        Form22.Image1.Visible := True;
         Form22.Repaint;
 
         try
