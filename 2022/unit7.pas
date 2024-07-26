@@ -33640,6 +33640,21 @@ begin
 
     PrevCompra.Enabled                       := False;
   end;
+
+  {Dailon Parisotto (f-20148) 2024-07-26 Inicio}
+  // Ajuste caso o usuario clique na tela da unit7 quando esta com
+  // a tela do cadastro de natureza aberto e alterou o nome.
+  if FbClicouModulo then
+  begin
+    if ibDataSet14.State = dsEdit then
+    begin
+      ibDataSet14.Post;
+      ibDataSet14.Edit;
+      DefineNovoNomeNatOperacao;
+      FrmNaturezaOperacao.Close;
+    end;
+  end;
+  {Dailon Parisotto (f-20148) 2024-07-26 Fim}
 end;
 
 procedure TForm7.RefreshDados;
