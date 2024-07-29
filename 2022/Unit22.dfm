@@ -573,7 +573,7 @@ object Form22: TForm22
         Height = 20
         Alignment = taCenter
         AutoSize = False
-        Caption = 'Aguarde....'
+        Caption = 'Aguarde...'
         Color = 16750592
         Font.Charset = ANSI_CHARSET
         Font.Color = clWhite

@@ -38,6 +38,8 @@ type
     pnlVisSenha3: TPanel;
     imgVisSenha3: TImage;
     edtUserAdm: TEdit;
+    imgEntrarFoco: TImage;
+    imgCancelar: TImage;
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure USUARIOKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -64,6 +66,10 @@ type
     procedure edtSenhaMouseEnter(Sender: TObject);
     procedure imgVisSenha1Click(Sender: TObject);
     procedure imgVisSenha3Click(Sender: TObject);
+    procedure lblCancelarMouseEnter(Sender: TObject);
+    procedure lblCancelarMouseLeave(Sender: TObject);
+    procedure lblEntrarMouseEnter(Sender: TObject);
+    procedure lblEntrarMouseLeave(Sender: TObject);
   private
     FcSenhaPub: String;
     FcUsuarioPub: String;
@@ -486,6 +492,16 @@ begin
   end;
 end;
 
+procedure TSenhas.lblEntrarMouseEnter(Sender: TObject);
+begin
+  imgEntrarFoco.Visible := True;
+end;
+
+procedure TSenhas.lblEntrarMouseLeave(Sender: TObject);
+begin
+  imgEntrarFoco.Visible := False;
+end;
+
 procedure TSenhas.lblCancelarClick(Sender: TObject);
 begin
   case iTpApresentacao of
@@ -497,6 +513,16 @@ begin
           Close;
         end;
   end;
+end;
+
+procedure TSenhas.lblCancelarMouseEnter(Sender: TObject);
+begin
+  imgCancelar.Visible := True;
+end;
+
+procedure TSenhas.lblCancelarMouseLeave(Sender: TObject);
+begin
+  imgCancelar.Visible := False;
 end;
 
 function TSenhas.getSenhaAdmPub: String;

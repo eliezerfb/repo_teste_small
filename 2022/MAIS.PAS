@@ -3231,7 +3231,7 @@ var
   qryUpdate: TIBQuery;
 begin
   Form22.Repaint;
-  Mensagem22('Atualizando promoção...');
+  Mensagem22('Atualizando promoção');
   qryUpdate := CriaIBQuery(Form7.IBTransaction1);
   try
     try
@@ -3745,6 +3745,7 @@ begin
   Form22.lblLicenca.Caption := Form22.sTitulo;
   Form22.lblLicenca.Visible := True;
   Form22.redtSobre.Width    := 623;
+  Form22.lblAguarde.Visible := False;
 
   with Form22.redtSobre do
   begin
@@ -5046,7 +5047,6 @@ begin
 
   try
     try
-//      Mensagem22('Aguarde.');
       CommitaTudo(True);
 
       (*
@@ -5115,7 +5115,7 @@ begin
           end;
 
           Form22.Repaint;
-          Mensagem22('Atualizando valores no contas a receber...');
+          Mensagem22('Atualizando valores no contas a receber');
 
           if Form19.rbJurosSimples.Checked then
           begin
@@ -5181,7 +5181,7 @@ begin
           //         if fJuro <> ibDataSet7VALOR_DUPL.AsFloat then ibDataSet7VALOR_JURO.AsFloat  := fJuro;
           try
             Form22.Repaint;
-            Mensagem22('Verificando clientes atrasados...');
+            Mensagem22('Verificando clientes atrasados');
 
             Form7.ibQuery2.Close;
             Form7.ibQuery2.Sql.Clear;
@@ -5204,7 +5204,7 @@ begin
             end;
 
             Form22.Repaint;
-            Mensagem22('Pronto...');
+            Mensagem22('Pronto');
           except
           end;
         end;
@@ -5394,7 +5394,7 @@ begin
 
     frmExportaXML := TfrmExportaXML.Create(nil);
     try
-      Mensagem22('Enviando arquivos XML para a contabilidade...');
+      Mensagem22('Enviando arquivos XML para a contabilidade');
       // Seta data atual para não ocorrer dois envios simultaneos.
       oArqDat.NFe.XML.DataUltimoEnvio := Date;
 
@@ -5405,7 +5405,7 @@ begin
         oArqDat.NFe.XML.DataUltimoEnvio := bDataAnt;
       end;
     finally
-      Mensagem22('Pronto...');
+      Mensagem22('Pronto');
       FreeAndNil(frmExportaXML);
     end;
   finally
@@ -6452,6 +6452,7 @@ begin
   iNumeroArquivo := -1; // Sandro Silva 2022-12-28
 
   Form22.pnlCarregamento.Visible    := True;
+  Form22.lblAguarde.Visible         := True;
   Form22.Show;
   Form22.Repaint;
   sMensagem := 'Arquivos ajustados com sucesso';
@@ -6754,7 +6755,7 @@ begin
   except
   end;
 
-  Mensagem22('Aguarde ajustando arquivos ' + NumeroArquivo() + '...');
+  Mensagem22('Ajustando arquivos ' + NumeroArquivo());
 
   if Trim(form1.sSerieEspecial) <> '' then // Sandro Silva 2022-12-22
   begin
@@ -7328,7 +7329,7 @@ begin
       MensagemSistema('Não foi possível ativar os seguintes indices: '+chr(10)+chr(10)+sMensagem2+chr(10)+chr(10)+'Feche o sistema nas outras máquinas e tente novamente.' ,msgAtencao);
     end else
     begin
-      sMensagem := sMensagem + ' e indíces ativados';
+      sMensagem := sMensagem + ' e indíces ativados.';
     end;
 
     Form1.ibQuery1.Close;
@@ -7535,7 +7536,7 @@ begin
     end;
   end;
 
-  Form7.Caption := sMensagem + '...';
+  Form7.Caption := sMensagem;
 
   Mensagem22('Abrindo arquivos.');
 
@@ -7544,11 +7545,15 @@ begin
   Audita('AJUSTOU','SMALL', Senhas.UsuarioPub, sMensagem,0,0); // Ato, Modulo, Usuário, Histórico, Valor
   Screen.Cursor        := crDefault;
 
-  Mensagem22(sMensagem+'...');
+  Mensagem22(sMensagem);
   Form22.lblMsgCarregamento.Repaint;
 
-  Form22.lblOK.Visible   := True;
-  Form22.imgOK.Visible   := True;
+  if Sender <> nil then
+  begin
+    Form22.lblAguarde.Visible  := False;
+    Form22.lblOK.Visible       := True;
+    Form22.imgOK.Visible       := True;
+  end;
 end;
 
 procedure TForm1.DBGrid200KeyPress(Sender: TObject; var Key: Char);
@@ -8046,8 +8051,10 @@ begin
 
       while iSenha < 6 do
       begin
+        {Mauricio Parizotto 2024-07-29 - Faz o show no create já
         Form22.Close;
         Form22.Show;
+        }
 
         Mensagem22('');
         Application.ProcessMessages;

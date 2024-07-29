@@ -102,7 +102,7 @@ begin
         Form7.IbDatabase1.Open;
         Form7.IBTransaction1.Active := True;
       except
-        Mensagem22('Aguarde instalando arquivos de atualização (10)...');
+        Mensagem22('Instalando arquivos de atualização (10)...');
 
         while FileExists(Form1.sAtual+'\firebird.exe') do
         begin
