@@ -291,6 +291,7 @@ type
     procedure ExibeColunasFCPST(bExibe: Boolean);
     procedure ExibeColunaCSOSN(bExibe: Boolean);
     procedure ExibeColunaCSTICMS(FINNFE: String; CRT: String); // procedure ExibeColunaCSTICMS(bExibe: Boolean);
+    procedure CriaVariavelCalcNota;
 
     property PodeFecharTela: Boolean read getPodeFecharTela;
   end;
@@ -3511,9 +3512,10 @@ begin
     Exit;
 end;
 
+procedure TForm12.CriaVariavelCalcNota;
+begin
+  if (not Assigned(vNotaFiscal)) then
+    vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
+end;
+
 end.
-
-
-
-
-
