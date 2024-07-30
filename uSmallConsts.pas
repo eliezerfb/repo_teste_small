@@ -105,6 +105,7 @@ const
   _cTipoPrazo         = 'Tipo do Prazo';
   _cDiaVencimento     = 'Dia Vencimento';
   _cTemaIcones        = 'Tema dos ícones';
+  _cCalculaLucroAltVenda = 'Calcula lucro alt preço venda';
 
   //Impressora
   _cSectionImpressora = 'Impressora';

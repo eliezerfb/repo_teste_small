@@ -19,12 +19,15 @@ type
     procedure setDiaVencimento(const Value: integer);
     function getTemaIcones: string;
     procedure setTemaIcones(const Value: string);
+    function getCalculaLucroAltVenda: Boolean;
+    procedure setCalculaLucroAltVenda(const Value: Boolean);
   public
     property LogSistema: Boolean read getLogSistema write setLogSistema;
     property FabricaProdutoSemQtd: Boolean read getFabricaProdutoSemQtd write setFabricaProdutoSemQtd;
     property TipoPrazo: string read getTipoPrazo write setTipoPrazo;
     property DiaVencimento: integer read getDiaVencimento write setDiaVencimento;
     property TemaIcones: string read getTemaIcones write setTemaIcones;
+    property CalculaLucroAltVenda: Boolean read getCalculaLucroAltVenda write setCalculaLucroAltVenda;
   protected
   end;
 
@@ -34,6 +37,11 @@ implementation
 uses uSmallConsts;
 
 { TSectionOutras }
+
+function TSectionOutras.getCalculaLucroAltVenda: Boolean;
+begin
+  Result := getValorBD(_cCalculaLucroAltVenda) = '1';
+end;
 
 function TSectionOutras.getDiaVencimento: integer;
 begin
@@ -61,6 +69,20 @@ begin
 
   if Result = '' then
     Result := 'dias';
+end;
+
+procedure TSectionOutras.setCalculaLucroAltVenda(const Value: Boolean);
+var
+  valorBD : string;
+begin
+  if Value then
+    valorBD := '1'
+  else
+    valorBD := '0';
+
+  setValorBD(_cCalculaLucroAltVenda,
+           'Cálculo do Lucro ao alterar Preço de venda no estoque',
+           valorBD);
 end;
 
 procedure TSectionOutras.setDiaVencimento(const Value: integer);
