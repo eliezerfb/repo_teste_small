@@ -11096,7 +11096,7 @@ begin
   end;
 
   if oArqConfiguracao = nil then
-    oArqConfiguracao := TArquivosDAT.Create(Usuario);
+    oArqConfiguracao := TArquivosDAT.Create(Usuario, IBTransaction1);
 
 
   {Sandro Silva 2023-06-19 inicio}
@@ -15343,21 +15343,24 @@ begin
   end
   else
   begin
-    if (ibDataSet4MARGEMLB.Value <> 0) and (ibDataSet4CUSTOCOMPR.AsFloat <> 0) then
+    if Form7.oArqConfiguracao.BD.Outras.CalculaLucroAltVenda then
     begin
-      nDecimal := RetornarCasasDecimaisPreco;
-
-      nMargem := StrToFloat(Format('%8.2f',[(((ibDataSet4PRECO.AsFloat - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100)]));
-      if ibDataSet4MARGEMLB.AsCurrency <> nMargem then
+      if (ibDataSet4MARGEMLB.Value <> 0) and (ibDataSet4CUSTOCOMPR.AsFloat <> 0) then
       begin
-        nVendaRecalc := StrToFloat(Format('%8.'+nDecimal.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((nMargem / 100)+1))]));
-        if (nVendaRecalc <> ibDataSet4PRECO.AsFloat) then
-          ibDataSet4MARGEMLB.AsCurrency := nMargem
-        else
+        nDecimal := RetornarCasasDecimaisPreco;
+
+        nMargem := StrToFloat(Format('%8.2f',[(((ibDataSet4PRECO.AsFloat - ibDataSet4CUSTOCOMPR.AsFloat) / ibDataSet4CUSTOCOMPR.AsFloat) * 100)]));
+        if ibDataSet4MARGEMLB.AsCurrency <> nMargem then
         begin
-          nVendaRecalc := StrToFloat(Format('%8.'+nDecimal.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+          nVendaRecalc := StrToFloat(Format('%8.'+nDecimal.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((nMargem / 100)+1))]));
           if (nVendaRecalc <> ibDataSet4PRECO.AsFloat) then
-            ibDataSet4MARGEMLB.AsCurrency := nMargem;
+            ibDataSet4MARGEMLB.AsCurrency := nMargem
+          else
+          begin
+            nVendaRecalc := StrToFloat(Format('%8.'+nDecimal.ToString+'f',[(ibDataSet4CUSTOCOMPR.AsFloat * ((ibDataSet4MARGEMLB.AsFloat / 100)+1))]));
+            if (nVendaRecalc <> ibDataSet4PRECO.AsFloat) then
+              ibDataSet4MARGEMLB.AsCurrency := nMargem;
+          end;
         end;
       end;
     end;
