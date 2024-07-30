@@ -18727,7 +18727,8 @@ begin
 
   LogSistema('Início TForm7.ibDataSet16DESCRICAOChange( 18637 ' + QuotedStr(ibDataSet16DESCRICAO.AsString), lgInformacao); // Sandro Silva 2024-04-16
 
-
+  if FbDuplicandoNFe then
+    Form7.ibDataSet16DESCRICAO.OnChange := nil;
   try
     //Form7.ibDataSet4.DisableControls; // Sandro Silva 2023-05-08 Teste de otimização
     try
@@ -19519,6 +19520,8 @@ begin
       Form7.ibDataSet4.Close;
       Form7.ibDataSet4.SelectSQL.Clear;
       Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 order by upper(DESCRICAO)');
+
+      Form7.ibDataSet16DESCRICAO.OnChange := Form7.ibDataSet16DESCRICAOChange;
     end;
     {Dailon Parisotto (f-20020) 2024-07-29 Fim}
     // Form7.ibDataSet4.EnableControls; // Sandro Silva 2023-05-08 Teste de otimização
@@ -32612,7 +32615,7 @@ begin
   FbDuplicandoNFe := True;
   Form7.bPesqProdNFPorConsulta := True;
   try
-//    FreeAndNil(Form12.vNotaFiscal);
+    FreeAndNil(Form12.vNotaFiscal);
     vCli := Form7.ibDataSet15CLIENTE.AsString;
     vOpe := Form7.ibDataSet15OPERACAO.AsString;
 
@@ -32681,10 +32684,10 @@ begin
         try
           Form7.ibDataSet16.Edit;
           Form7.ibDataSet16DESCRICAOSetText(Form7.ibDataSet16DESCRICAO, Form7.ibDataSet16DESCRICAO.AsString);
-//          Form7.ibDataSet16DESCRICAOChange(Form7.ibDataSet16DESCRICAO); Dailon Parisotto 2024-07-29 - Já faz no SetText
+//          Form7.ibDataSet16DESCRICAOChange(Form7.ibDataSet16DESCRICAO); // Já faz no SetText da Descrição, vai poupar tempo
           if (Form7.ibDataSet16QUANTIDADE.AsFloat > 0) then
             Form7.ibDataSet16QUANTIDADESetText(Form7.ibDataSet16QUANTIDADE, Form7.ibDataSet16QUANTIDADE.AsString);
-//          Form7.ibDataSet16QUANTIDADEChange(Form7.ibDataSet16QUANTIDADE);
+          Form7.ibDataSet16QUANTIDADEChange(Form7.ibDataSet16QUANTIDADE);
           Form7.ibDataSet16UNITARIOChange(Form7.ibDataSet16UNITARIO);
           Form7.ibDataSet16TOTALChange(Form7.ibDataSet16TOTAL);
         finally
