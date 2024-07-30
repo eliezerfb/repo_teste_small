@@ -52,6 +52,7 @@ begin
     GeraImagemQRCode(ChaveQrPIX, FrmQRCodePixDin.imgQrCode.Picture.Bitmap);
     FrmQRCodePixDin.lblValor.Caption := 'R$ '+ FormatFloat( '#,##0.00', Valor);
     FrmQRCodePixDin.OrderID          := order_id;
+    FrmQRCodePixDin.tmrConsultaPgto.Enabled := True; // Habilitar somente após criar Sandro/Mauricio 2024-07-30
     FrmQRCodePixDin.ShowModal;
     Result := FrmQRCodePixDin.PixConfirmado;
 

@@ -130,6 +130,7 @@ object FrmQRCodePixDin: TFrmQRCodePixDin
     OnClick = btnImprimirClick
   end
   object tmrConsultaPgto: TTimer
+    Enabled = False
     Interval = 3000
     OnTimer = tmrConsultaPgtoTimer
     Left = 164
