@@ -164,7 +164,7 @@ object Senhas: TSenhas
       Left = 20
       Top = 120
       Width = 350
-      Height = 21
+      Height = 26
       Hint = 'Digite a senha. do usu'#225'rio.   Tecle <F1> para obter mais ajuda.'
       BevelInner = bvNone
       BevelOuter = bvNone

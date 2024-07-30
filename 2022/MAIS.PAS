@@ -599,7 +599,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmContaPagar
   , uFrmContaReceber
   , uFrmCadastro
-  ;
+  , uFrmMsgNovoLayout;
 
 {$R *.DFM}
 
@@ -1072,12 +1072,14 @@ begin
   Form29.lblCaracteresMax.Visible := True;
   Form29.memTexto.Text            := sP3;
   Form29.memTexto.Left            := 60;
-  Form29.memTexto.Height          := 210;
+  //Form29.memTexto.Height          := 210; Mauricio Parizotto 2024-07-30
+  Form29.memTexto.Height          := 150;
   Form29.memTexto.Top             := 170;
   Form29.memTexto.Width           := 910;
   Form29.memTexto.MaxLength       := MaxLength;
   Form29.lblCaracteresMax.Left    := 60;
-  Form29.lblCaracteresMax.top     := 390;
+  //Form29.lblCaracteresMax.top     := 390; Mauricio Parizotto 2024-07-30
+  Form29.lblCaracteresMax.top     := 330;
 
   Form29.ShowModal;
 
@@ -4636,7 +4638,7 @@ begin
   {Mauricio Parizotto 2023-05-31 Fim}
 
   //Mauricio Parizotto 2023-09-22
-  CarregaIconesSistema;
+  //CarregaIconesSistema; Mauricio Parizotto 2024-07-29
 
   //Mauricio Parizotto 2024-03-19
   VersodolayoutdaNFE1.Visible  := False;
@@ -4698,7 +4700,6 @@ begin
     Mais1Ini.WriteString('Uso','Uso','1');
     Mais1Ini.Free;
   except
-    //ShowMessage('Execute este programa como administrador. Altere o atalho na aba compatibilidade.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Execute este programa como administrador. Altere o atalho na aba compatibilidade.',msgAtencao);
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
@@ -4710,10 +4711,6 @@ begin
     Mais1Ini.WriteString('Geral','Rede','OK');
   except
     // Não tem
-    {
-    ShowMessage('Verifique se o usuário do windows tem direito '+chr(10)+
-                'de leitura e gravação em '+Form1.sAtual+'. Erro 1170');
-    Mauricio Parizotto 2023-10-25}
     MensagemSistema('Verifique se o usuário do windows tem direito '+chr(10)+
                     'de leitura e gravação em '+Form1.sAtual+'. Erro 1170'
                     ,msgErro);
@@ -4867,8 +4864,10 @@ begin
     SincronizarSmallMobile1.Visible := True;
   end;
 
+  {Mauricio Parizotto 2024-07-30 Inicio
   if FileExists(Form1.sAtual+'\inicial\fundo\_small_6.bmp') then
-    Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_6.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_6.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_6.bmp');
+    Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_6.bmp') ;
+  }
 
   if (Form1.iReduzida = 1) then
   begin
@@ -6368,6 +6367,8 @@ end;
 
 procedure TForm1.Label201MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move icone NF-e
   if Label201.Font.Style <> [fsBold] then
@@ -6376,8 +6377,16 @@ begin
     Label201.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_10.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_10.bmp');
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'10');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo(
 
@@ -7947,6 +7956,7 @@ var
   wndHandle : THandle;
   wndClass  : array[0..50] of char;
   InfTermo : Boolean;
+  sImgFundo : string;
 begin
   //Termos de Uso - Deve ficar no inicio antes de criar o arquivo smallcom.inf
   InfTermo := GetTermoUso;
@@ -7957,7 +7967,8 @@ begin
     sNomePAF        := Mais1Ini.ReadString('Frente de caixa','Nome do ECF','02');
     Mais1ini.Free;
 
-    if (not FileExists(Form1.sAtual+'\graficos.exe')) or (not FileExists(Form1.sAtual+'\retaguarda.chm') or (not FileExists(Form1.sAtual+'\inicial\small_22_.bmp')) ) then
+    //if (not FileExists(Form1.sAtual+'\graficos.exe')) or (not FileExists(Form1.sAtual+'\retaguarda.chm') or (not FileExists(Form1.sAtual+'\inicial\small_22_.bmp')) ) then
+    if (not FileExists(Form1.sAtual+'\graficos.exe')) or (not FileExists(Form1.sAtual+'\retaguarda.chm') ) then
     begin
       MensagemSistema('Não foi possível iniciar o sistema'+chr(10)+
                       chr(10)+
@@ -7972,14 +7983,11 @@ begin
                       ,msgAtencao);
 
       if (not FileExists(Form1.sAtual+'\graficos.exe')) then
-        //ShowMessage('O arquivo GRAFICOS.EXE não foi encontrado na pasta.'); Mauricio Parizotto 2023-10-25
         MensagemSistema('O arquivo GRAFICOS.EXE não foi encontrado na pasta.',msgAtencao);
       if (not FileExists(Form1.sAtual+'\retaguarda.chm')) then
-        //ShowMessage('O arquivo RETAGUARDA.CHM não foi encontrado na pasta.'); Mauricio Parizotto 2023-10-25
         MensagemSistema('O arquivo RETAGUARDA.CHM não foi encontrado na pasta.',msgAtencao);
-      if (not FileExists(Form1.sAtual+'\inicial\small_22_.bmp')) then
-        //ShowMessage('O arquivo \inicial\small_22_.bmp não foi encontrado.');  Mauricio Parizotto 2023-10-25
-        MensagemSistema('O arquivo \inicial\small_22_.bmp não foi encontrado.',msgAtencao);
+      //if (not FileExists(Form1.sAtual+'\inicial\small_22_.bmp')) then Mauricio Parizotto 2024-07-29
+      //  MensagemSistema('O arquivo \inicial\small_22_.bmp não foi encontrado.',msgAtencao);
 
       Form1.Instalarpackcomasltimasalteraes1Click(Instalarpackcomasltimasalteraes1);
 
@@ -8431,6 +8439,16 @@ begin
       //Mauricio Parizotto 2024-02-22
       CarregaConfiguracoes;
       ConfiguraNFE;
+
+      //Mauricio Parizotto 2024-07-29
+      Form19.CarregaIconesSistema;
+      CarregaIconesSistema;
+
+      //Define fundo inicial
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'6');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
     except
     end;
 
@@ -10886,9 +10904,19 @@ end;
 
 procedure TForm1.imgCaixaMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
+  {Mauricio Parizotto 2024-07-30 Inicio
   if FileExists(Form1.sAtual+'\inicial\fundo\_small_4.bmp') then
-    Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ; // else if FileExists(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp') then Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\512\_small_4.bmp');
+    Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ;
+  }
+  sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'4');
+
+  if FileExists(sImgFundo) then
+    Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+  {Mauricio Parizotto 2024-07-30 Fim}
 end;
 
 
@@ -10996,6 +11024,8 @@ end;
 
 procedure TForm1.Label202MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move icone ESTOQUE
   if Label202.Font.Style <> [fsBold] then
@@ -11004,8 +11034,16 @@ begin
     Label202.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_8.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_8.bmp') ;
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'8');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo('CONTROLE O '+chr(10)+
              'ESTOQUE'
@@ -11021,6 +11059,8 @@ end;
 
 procedure TForm1.Label201_MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move icone OS
   if Label201_.Font.Style <> [fsBold] then
@@ -11029,8 +11069,16 @@ begin
     Label201_.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_9.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_9.bmp') ;
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'9');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo(
             'UTILIZE A ORDEM '+chr(10)+
@@ -11048,6 +11096,8 @@ end;
 
 procedure TForm1.Label203MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move icone CADASTRO
   if Label203.Font.Style <> [fsBold] then
@@ -11056,8 +11106,16 @@ begin
     Label203.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_1.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_1.bmp') ;
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'1');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo('MANTENHA O CADASTRO'+chr(10)+'ATUALIZADO',
              'O cadastro com as informações'+chr(10)+
@@ -11073,6 +11131,8 @@ end;
 
 procedure TForm1.Label204MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move RECEBER
   if Label204.Font.Style <> [fsBold] then
@@ -11081,8 +11141,16 @@ begin
     Label204.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_2.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_2.bmp') ;
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'2');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo(
              'MONITORE AS CONTAS'+chr(10)+
@@ -11099,6 +11167,8 @@ end;
 
 procedure TForm1.Label205MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move CAIXA
   if Label205.Font.Style <> [fsBold] then
@@ -11107,8 +11177,16 @@ begin
     Label205.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_4.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ;
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'4');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo(
             'CONTROLE O '+chr(10)+
@@ -11127,6 +11205,8 @@ end;
 
 procedure TForm1.Label206MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move BANCOS
   if Label206.Font.Style <> [fsBold] then
@@ -11135,8 +11215,16 @@ begin
     Label206.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_5.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_5.bmp') ;
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'5');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo(
             'FIQUE DE OLHO NOS '+chr(10)+
@@ -11155,6 +11243,8 @@ end;
 
 procedure TForm1.Label207MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move CONFIG
   if Label207.Font.Style <> [fsBold] then
@@ -11163,8 +11253,16 @@ begin
     Label207.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_6.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_6.bmp') ;
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'6');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo(
             'CONFIGURE'+chr(10)+
@@ -11181,6 +11279,8 @@ end;
 
 procedure TForm1.Label208MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move BACKUP
   if Label208.Font.Style <> [fsBold] then
@@ -11189,8 +11289,16 @@ begin
     Label208.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_7.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_7.bmp') ;
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'7');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo(
             'FAÇA BACKUP'+chr(10)+
@@ -11208,6 +11316,8 @@ end;
 
 procedure TForm1.Label210MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move PAGAR
   if Label210.Font.Style <> [fsBold] then
@@ -11216,8 +11326,16 @@ begin
     Label210.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_3.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_3.bmp') ;
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'3');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo(
             'ORGANIZE AS CONTAS'+chr(10)+
@@ -11330,6 +11448,8 @@ end;
 
 procedure TForm1.Label200MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move icone MOBILE
   if Label200.Font.Style <> [fsBold] then
@@ -11338,8 +11458,16 @@ begin
     Label200.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_0.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_0.bmp') ;
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'0');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo(
             'ACOMPANHE OS'+chr(10)+
@@ -12068,6 +12196,8 @@ end;
 
 procedure TForm1.LAbel201CMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move icone NF-e
   if Label201C.Font.Style <> [fsBold] then
@@ -12076,8 +12206,16 @@ begin
     Label201C.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_11.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_11.bmp') ;
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'11');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo(
             'CONTROLE AS NOTAS'+Chr(10)+'DE COMPRAS',
@@ -12092,6 +12230,8 @@ end;
 
 procedure TForm1.Label201SMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+var
+  sImgFundo : string;
 begin
   // Mouse move icone NF-e
   if Label201S.Font.Style <> [fsBold] then
@@ -12100,8 +12240,16 @@ begin
     Label201S.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
+      {Mauricio Parizotto 2024-07-30 Inicio
       if FileExists(Form1.sAtual+'\inicial\fundo\_small_12.bmp') then
         Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_12.bmp');
+      }
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'12');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      {Mauricio Parizotto 2024-07-30 Fim}
 
       Titulo(
             'EMITA A NFS-e DE'+chr(10)+'SERVIÇOS',
@@ -12624,6 +12772,7 @@ begin
               '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
               '&conve='     + sConve  +
               '&origem='    + sOrigem +
+              '&tema='      + ConverteAcentosIBPT(TSistema.GetInstance.Tema) +
               '&Check='     + Form1.sPublicCheck +
               '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20))+
               sCertificado+
@@ -12954,8 +13103,10 @@ begin
 
   {Mauricio parizotto 2023-08-09 Fim}
 
+  {Mauricio Parizotto 2024-07-29
   if Backup.FazerBackup = IDYES then
-    Form19.Button1Click(Sender);
+    Form19.CarregaIconesSistema;
+  }
 
   FreeAndNil(Backup);
 
@@ -13083,6 +13234,24 @@ begin
     Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim';
     NaoDescontarIssQuandoRetido1.Checked  := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-23
     {Sandro Silva 2024-04-24 fim}
+
+    //Mauricio Parizotto 2024-07-29
+    if now < StrToDate('01/01/2025') then
+    begin
+      TSistema.GetInstance.Tema             := ConfSistema.BD.Outras.TemaIcones;
+      if TSistema.GetInstance.Tema = '' then
+      begin
+        try
+          FrmMsgNovoLayout := TFrmMsgNovoLayout.Create(self);
+          FrmMsgNovoLayout.ShowModal;
+        finally
+          FreeAndNil(FrmMsgNovoLayout);
+        end;
+
+        ConfSistema.BD.Outras.TemaIcones := _TemaModerno;
+        TSistema.GetInstance.Tema        := _TemaModerno;
+      end;
+    end;
   finally
     FreeAndNil(ConfSistema);
   end;

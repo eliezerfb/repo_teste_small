@@ -245,12 +245,14 @@ procedure TSenhas.FormShow(Sender: TObject);
 var
   Mais1Ini : TIniFile;
 begin
+  {
   try
     Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario.Text+'.inf');
     Form19.Image7Click(Sender);
     Mais1Ini.Free;
   except
   end;
+  Mauricio Parizotto 2024-07-29}
 end;
 
 procedure TSenhas.Button1Click(Sender: TObject);

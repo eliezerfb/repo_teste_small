@@ -8,7 +8,7 @@ uses
 
 type
   TForm29 = class(TForm)
-    Image1: TImage;
+    imgFundoAviso: TImage;
     lblTitulo1: TLabel;
     lblTitulo2: TLabel;
     Edit1: TEdit;
@@ -68,7 +68,7 @@ var
 
 implementation
 
-uses Unit7, Mais, Unit10;
+uses Unit7, Mais, Unit10, uSistema;
 
 {$R *.dfm}
 
@@ -111,7 +111,8 @@ begin
   Form29.Left   := Form7.Left;
 
   lblTitulo1.Top       := 60;
-  lblTitulo2.Top       := lblTitulo1.Top + lblTitulo1.Height + 35;
+  //lblTitulo2.Top       := lblTitulo1.Top + lblTitulo1.Height + 35;
+  lblTitulo2.Top       := lblTitulo1.Top + lblTitulo1.Height + 20;
 
   if Form29.lblTitulo2.Height > 250 then
   begin
@@ -132,21 +133,22 @@ begin
     Form29.lblTitulo2.Repaint;
   end;
 
-  Form29.Edit1.Top      := Form29.lblTitulo2.Top + Form29.lblTitulo2.Height + 20;
+  //Form29.Edit1.Top      := Form29.lblTitulo2.Top + Form29.lblTitulo2.Height + 20;
+  Form29.Edit1.Top      := Form29.lblTitulo2.Top + Form29.lblTitulo2.Height + 10;
   Form29.Edit1.Left     := Form29.lblTitulo2.Left;
 
   Form29.Gauge1.Progress := 0;
   Form29.Panel1.Width    := 650;
-  Form29.Panel1.Top      := 300;
+  //Form29.Panel1.Top      := 300; Mauricio Parizotto 2024-07-30
+  Form29.Panel1.Top      := 250;
   Form29.Panel1.Left     := 70;
 end;
 
 procedure TForm29.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  //
   Form10.AlphaBlendValue := 255;
   Form7.AlphaBlendValue  := 255;
-  //
+
   Form29.Label_01.Visible := False;
   Form29.Label_02.Visible := False;
   Form29.Label_03.Visible := False;
@@ -157,7 +159,7 @@ begin
   Form29.Label_08.Visible := False;
   Form29.Label_09.Visible := False;
   Form29.Label_10.Visible := False;
-  //
+
   Form29.Edit_01.Visible := False;
   Form29.Edit_02.Visible := False;
   Form29.Edit_03.Visible := False;
@@ -168,11 +170,11 @@ begin
   Form29.Edit_08.Visible := False;
   Form29.Edit_09.Visible := False;
   Form29.Edit_10.Visible := False;
-  //
+
   btnOK.Visible     := True;
   Panel1.Visible      := False;
   Panel_Dados.Visible  := False;
-  //
+
   FnMaxLength      := 0;
   Edit1.OnChange   := nil;
   Edit1.OnKeyPress := nil;
@@ -197,11 +199,20 @@ begin
 end;
 
 procedure TForm29.FormCreate(Sender: TObject);
+var
+  sImgFundo : string;
 begin
   Gauge1.Font.Name := 'MS Serif'; //Problema fonte borada no Delphi 7
   Gauge1.Font.Style := [fsBold];
 
   Panel_dados.Left := 40;
+
+  //Mauricio Parizotto 2024-07-30
+  sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'13');
+
+  if FileExists(sImgFundo) then
+    imgFundoAviso.Picture.LoadFromFile(sImgFundo) ;
+
 end;
 
 procedure TForm29.DefinirSomenteNumeros;
