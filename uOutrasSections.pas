@@ -13,17 +13,18 @@ type
     procedure setLogSistema(const Value: Boolean);
     function getFabricaProdutoSemQtd: Boolean;
     procedure setFabricaProdutoSemQtd(const Value: Boolean);
-
     function getTipoPrazo: string;
     procedure setTipoPrazo(const Value: string);
-
     function getDiaVencimento: integer;
     procedure setDiaVencimento(const Value: integer);
+    function getTemaIcones: string;
+    procedure setTemaIcones(const Value: string);
   public
     property LogSistema: Boolean read getLogSistema write setLogSistema;
     property FabricaProdutoSemQtd: Boolean read getFabricaProdutoSemQtd write setFabricaProdutoSemQtd;
     property TipoPrazo: string read getTipoPrazo write setTipoPrazo;
     property DiaVencimento: integer read getDiaVencimento write setDiaVencimento;
+    property TemaIcones: string read getTemaIcones write setTemaIcones;
   protected
   end;
 
@@ -47,6 +48,11 @@ end;
 function TSectionOutras.getLogSistema: Boolean;
 begin
   Result := getValorBD(_cOutrasLog) = '1';
+end;
+
+function TSectionOutras.getTemaIcones: string;
+begin
+  Result := getValorBD(_cTemaIcones);
 end;
 
 function TSectionOutras.getTipoPrazo: string;
@@ -91,6 +97,13 @@ begin
   setValorBD(_cOutrasLog,
              'Ativa a geração de logs no sistema',
              valorBD);
+end;
+
+procedure TSectionOutras.setTemaIcones(const Value: string);
+begin
+  setValorBD(_cTemaIcones,
+             'Tema usado para ícones do sistema',
+             Value);
 end;
 
 procedure TSectionOutras.setTipoPrazo(const Value: string);

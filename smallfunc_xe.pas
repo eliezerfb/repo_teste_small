@@ -64,7 +64,8 @@ const COR_CAMPO_OBRIGATORIO = $0080FFFF; //Mauricio Parizotto 2022-09-14
 type
   TConsisteInscricaoEstadual  = function (const Insc, UF: AnsiString): Integer; stdcall; // Usar dinamicamente a dll para validar IE obtida em http://www.sintegra.gov.br/
 
-function ImagemIconesSmall: String;
+function ImagemIconesSmall(Tema : string = _TemaClassico): String;
+function ImagemFundoSmall(Tema, Numero : string): String;
 {$IFNDEF VER150}
 function GetIP: String;
 {$ENDIF}
@@ -219,14 +220,37 @@ var
 implementation
 
 
-function ImagemIconesSmall: String;
+function ImagemIconesSmall(Tema : string = _TemaClassico): String; //Mauricio Parizotto 2024-07-30
 begin
-  {
-  if FileExists('inicial\Small_21_.bmp') then // Provisório, para manter compatível versão 2021 e 2022
-    Result := 'inicial\Small_21_.bmp'
+  Result := '';
+
+  if now >= StrToDate('01/01/2025') then
+  begin
+    Result := 'inicial\Small_.ssz';
+    Exit;
+  end;
+
+  if Tema = _TemaClassico then
+    Result := 'inicial\Small_22_.bmp'
   else
-  }
-  Result := 'inicial\Small_22_.bmp';
+    Result := 'inicial\Small_.ssz';
+end;
+
+
+function ImagemFundoSmall(Tema, Numero : string): String; //Mauricio Parizotto 2024-07-30
+begin
+  Result := '';
+
+  if now >= StrToDate('01/01/2025') then
+  begin
+    Result := '\inicial\fundo\_fundo_'+Numero+'.bmp';
+    Exit;
+  end;
+
+  if Tema = _TemaClassico then
+    Result := '\inicial\fundo\_small_'+Numero+'.bmp'
+  else
+    Result := '\inicial\fundo\_fundo_'+Numero+'.bmp';
 end;
 
 {$IFNDEF VER150}

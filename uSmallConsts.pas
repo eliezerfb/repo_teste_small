@@ -26,7 +26,7 @@ const
   _cMedidaKU = 'KU';
   _cMedidaKG = 'KG';
 
-  _DirImagemIcones = '\inicial\small_22_.bmp'; //Mauricio Parizotto 2023-09-26
+  //_DirImagemIcones = '\inicial\small_22_.bmp'; //Mauricio Parizotto 2023-09-26
 
   _cAmbienteHomologacao = 'Homologacao';
   _cAmbienteProducao = 'Producao';  
@@ -104,6 +104,7 @@ const
   _cFabricaProdSemQtd = 'Fabricação Prod Sem Qtd';
   _cTipoPrazo         = 'Tipo do Prazo';
   _cDiaVencimento     = 'Dia Vencimento';
+  _cTemaIcones        = 'Tema dos ícones';
 
   //Impressora
   _cSectionImpressora = 'Impressora';
@@ -157,6 +158,9 @@ const
   const _RespTecEmail   = 'bernardo.rachadel@zucchetti.com';
   const _RespTecFone    = '4934255800';
 
+  //Mauricio Parizotto 2024-07-30
+  const _TemaClassico = 'Clássico';
+  const _TemaModerno  = 'Moderno';
 
 implementation
 
