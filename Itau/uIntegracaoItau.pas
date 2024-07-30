@@ -327,6 +327,9 @@ var
 begin
   Result := '';
 
+  if order_id = '' then
+    Exit;
+
   try
     if RequisicaoItau(rmGET,GetURL+'/order/'+order_id,'',sJsonRet,StatusCode) then
     begin
