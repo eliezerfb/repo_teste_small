@@ -267,7 +267,8 @@ uses
   uIntegracaoItau in '..\..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\..\unit_compartilhada\Itau\uClassesItau.pas',
   uWebServiceItau in '..\..\unit_compartilhada\Itau\uWebServiceItau.pas',
-  uFrmTelaProcessamento in '..\..\unit_compartilhada\uFrmTelaProcessamento.pas' {FrmTelaProcessamento};
+  uFrmTelaProcessamento in '..\..\unit_compartilhada\uFrmTelaProcessamento.pas' {FrmTelaProcessamento},
+  uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout};
 
 {$R *.RES}
 

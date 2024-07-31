@@ -591,6 +591,10 @@
         <DCCReference Include="..\..\unit_compartilhada\uFrmTelaProcessamento.pas">
             <Form>FrmTelaProcessamento</Form>
         </DCCReference>
+        <DCCReference Include="uFrmMsgNovoLayout.pas">
+            <Form>FrmMsgNovoLayout</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1436,6 +1440,7 @@
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>

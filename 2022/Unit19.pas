@@ -143,6 +143,10 @@ type
     rbPrazoDias: TRadioButton;
     rbPrazoFixo: TRadioButton;
     cboDiaVencimento: TComboBox;
+    tbsTema: TTabSheet;
+    gbTema: TGroupBox;
+    rbClassico: TRadioButton;
+    rbModerno: TRadioButton;
     procedure FormActivate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
@@ -174,7 +178,7 @@ type
     procedure Edit7Enter(Sender: TObject);
     procedure Edit8Enter(Sender: TObject);
     procedure Image7Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure CarregaIconesSistema;
     procedure FormShow(Sender: TObject);
     procedure CheckBox8Click(Sender: TObject);
     procedure JurosEnter(Sender: TObject);
@@ -190,6 +194,8 @@ type
     procedure edtJurosAnoExit(Sender: TObject);
     procedure edtVlMultaExit(Sender: TObject);
     procedure rbMultaPercentualClick(Sender: TObject);
+    procedure rbClassicoClick(Sender: TObject);
+    procedure rbModernoClick(Sender: TObject);
   private
     { Private declarations }
     procedure SetTipoMulta;
@@ -205,7 +211,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit14, Unit22, Unit12, Unit10, Unit2, Unit4,
-  Unit24, Unit8, uDialogs, uArquivosDAT, uSmallConsts;
+  Unit24, Unit8, uDialogs, uArquivosDAT, uSmallConsts, uSistema;
 
 {$R *.DFM}
 
@@ -396,6 +402,15 @@ begin
 
     cboDiaVencimento.ItemIndex := cboDiaVencimento.Items.IndexOf(ConfSistema.BD.Outras.DiaVencimento.ToString);
     {Mauricio Parizotto 2024-04-23 Fim}
+    //Mauricio Parizotto 2024-07-29
+    rbClassico.Checked := False;
+    rbModerno.Checked  := False;
+
+    if ConfSistema.BD.Outras.TemaIcones = _TemaClassico then
+      rbClassico.Checked := True
+    else
+      rbModerno.Checked  := True;
+
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -525,6 +540,11 @@ begin
 
     ConfSistema.BD.Outras.DiaVencimento := StrToIntDef(cboDiaVencimento.Text,1);
     {Mauricio Parizotto 2024-04-23 Fim}
+    //Mauricio Parizotto 2024-07-29
+    if rbClassico.Checked then
+      ConfSistema.BD.Outras.TemaIcones := _TemaClassico
+    else
+      ConfSistema.BD.Outras.TemaIcones := _TemaModerno;
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -730,6 +750,10 @@ begin
   // Opções
   Form19.Width  := 650;
   Form19.Height := 450;
+
+  //Mauricio Parizotto 2024-07-29
+  if now >= StrToDate('01/01/2025') then
+    tbsTema.TabVisible := False;
 end;
 
 procedure TForm19.SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
@@ -878,6 +902,24 @@ begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config.htm')));
 end;
 
+procedure TForm19.rbClassicoClick(Sender: TObject);
+begin
+  if Orelhas.ActivePage = tbsTema then
+  begin
+    if uDialogs.MensagemSistemaPergunta('A nova iconografia foi desenvolvida para ser mais moderna, intuitiva e funcional.'+#13#10+
+                                        'Consideramos importante que você experimente essa mudança.'+#13#10+
+                                        'Você pode poderá utilizar o tema clássico até sua descontinuação em 31/12/2024.'+#13#10+
+                                        #13#10+
+                                        'Deseja mudar mesmo assim?', [mb_YesNo]) <> mrYes then
+    begin
+      rbModerno.Checked := True;
+    end else
+    begin
+      MensagemSistema('Reinicie o sistema para que as alterações sejam aplicadas!');
+    end;
+  end;
+end;
+
 procedure TForm19.rbJurosCompostoClick(Sender: TObject);
 begin
   bChave := True;
@@ -910,20 +952,23 @@ begin
 end;
 
 procedure TForm19.Image7Click(Sender: TObject);
+{Mauricio Parizotto 2024-07-29
 var
   Mais1Ini: TIniFile;
+}
 begin
   Form19.Image9.Picture.Bitmap := Form19.Image7.Picture.Bitmap;
-  Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-  Mais1Ini.WriteString('Perfil','tela_3d','1');
-  Mais1Ini.Free;
+  //Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
+  //Mais1Ini.WriteString('Perfil','tela_3d','1');
+  //Mais1Ini.Free;
   Form1.sContrasteCor := 'PRETO';
-  Form19.Button1Click(Sender);
+  Form19.CarregaIconesSistema;
 end;
 
-procedure TForm19.Button1Click(Sender: TObject);
+procedure TForm19.CarregaIconesSistema;
 var
   r1 : tRect;
+  DirImg, DirImgBmp : string;
 begin
   begin
     Form7.imgNovo.Picture := Form1.imgVendas.Picture;
@@ -936,12 +981,20 @@ begin
     Form7.imgFiltrar.Picture := Form1.imgVendas.Picture;
     Form7.Image308.Picture := Form1.imgVendas.Picture;
 
-    if FileExists(Form1.sAtual+'\inicial\small_22_.bmp') then
-    begin
-      if FileExists(Form1.sAtual+'\inicial\small_22_.bmp') then
-        Form19.Image7.Picture.LoadFromFile(Form1.sAtual+'\inicial\small_22_.bmp');
+    DirImg    := ExtractFilePath(Application.ExeName)+ImagemIconesSmall(TSistema.GetInstance.Tema);
+    DirImgBmp := ExtractFilePath(DirImg)+'imgTemp.bmp';
 
+    CopyFile(pchar(DirImg),
+            pchar(DirImgBmp),
+            False
+            );
+
+    //if FileExists(Form1.sAtual+'\inicial\small_22_.bmp') then Mauricio Parizotto 2024-07-29
+    if FileExists(DirImgBmp) then
+    begin
+      Form19.Image7.Picture.LoadFromFile(DirImgBmp);
       Form19.Image9.Picture.Bitmap := Form19.Image7.Picture.Bitmap;
+      DeleteFile(DirImgBmp);
 
       // BOTOES PRINCIPAIS
       r1.Top     := 30;
@@ -1360,8 +1413,8 @@ begin
   Form19.Width  := 640;
   Form19.Height := 480;
 
-  btnOK.Left  := Panel3.Width - btnOK.Width - 10;
-  btnCancelar.Left  := btnOK.Left - 140;
+  btnOK.Left  := Panel3.Width - btnOK.Width - 19;
+  btnCancelar.Left  := btnOK.Left - 104;
 
   ComboBoxImpressora.Items.Clear;
   comboBoxNF.Items.clear;
@@ -1400,9 +1453,10 @@ begin
   begin
     Mais1Ini.WriteString('Perfil','Labels','Não');
   end;
-  }
 
-  Button1Click(Sender);
+  CarregaIconesSistema;
+
+  }
 
   if (Form19.Visible) and (Form19.CanFocus) then
     Form19.SetFocus;
@@ -1532,6 +1586,14 @@ end;
 procedure TForm19.edtVlMultaExit(Sender: TObject);
 begin
   edtVlMulta.Text := FormatFloat('#,##0.00', StrToFloatDef(edtVlMulta.Text,0));
+end;
+
+procedure TForm19.rbModernoClick(Sender: TObject);
+begin
+  if Orelhas.ActivePage = tbsTema then
+  begin
+    MensagemSistema('Reinicie o sistema para que as alterações sejam aplicadas!');
+  end;
 end;
 
 procedure TForm19.rbMultaPercentualClick(Sender: TObject);

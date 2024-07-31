@@ -17,7 +17,7 @@ inherited frmRelatorioPadrao: TfrmRelatorioPadrao
   PixelsPerInch = 96
   TextHeight = 13
   object ImgRel: TImage
-    Left = 20
+    Left = 44
     Top = 20
     Width = 89
     Height = 89

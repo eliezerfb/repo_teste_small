@@ -568,7 +568,6 @@ type
     miExibirAjudaTransport: TMenuItem;
     miTermoUsoTransport: TMenuItem;
     miSobreSistemaTransport: TMenuItem;
-    Image24: TImage;
     ibDataSet18EMAIL: TIBStringField;
     ibDataSet13EMAIL: TIBStringField;
     ibDataSet7NOSSONUM: TIBStringField;
@@ -1075,7 +1074,6 @@ type
     ibDataSet14PPIS: TIBBCDField;
     ibDataSet14PCOFINS: TIBBCDField;
     XConsultarcadastro1: TMenuItem;
-    Image12: TImage;
     vendaspara: TMenuItem;
     Ca1: TMenuItem;
     SaveDialog2: TSaveDialog;
