@@ -288,6 +288,8 @@ type
     timerLegal: TTimer;
     Integraes1: TMenuItem;
     IntegraoIta1: TMenuItem;
+    imgOrcamento: TImage;
+    lblModOrcamento: TLabel;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -463,6 +465,9 @@ type
     procedure NaoDescontarIssQuandoRetido1Click(Sender: TObject);
     procedure IntegraoIta1Click(Sender: TObject);
     procedure timerLegalTimer(Sender: TObject);
+    procedure imgOrcamentoClick(Sender: TObject);
+    procedure lblModOrcamentoMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
 
 
   private
@@ -2294,9 +2299,7 @@ begin
   iFixL := 70;
   iLeft := 5+5;
 
-  // ------ //
-  // Vendas //
-  // ------ //
+  {$Region'//// Vendas //// '}
   if imgVendas.Visible = True then
   begin
     imgVendas.Top     := iTop;
@@ -2328,10 +2331,9 @@ begin
     end;
     {Mauricio Parizotto 2023-07-13 Fim}
   end;
+  {$Endregion}
 
-  // ------- //
-  // Compras //
-  // ------- //
+  {$Region'//// Compras ////'}
   if imgCompras.Visible = True then
   begin
     imgCompras.Top     := iTop;
@@ -2373,10 +2375,9 @@ begin
       Label_Bola_NFe.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // --------- //
-  // Serviços  //
-  // --------- //
+  {$Region'//// Serviços ////'}
   if imgServicos.Visible = True then
   begin
     imgServicos.Top     := iTop;
@@ -2385,10 +2386,9 @@ begin
     iLeft            := iLeft + iFixL;
     MostraLabels(imgServicos,Label201S);
   end;
+  {$Endregion}
 
-  // ----------------- //
-  // Ordem de serviços //
-  // ----------------- //
+  {$Region'//// Ordem de serviços ////'}
   if imgOrdemServico.Visible = True then
   begin
     imgOrdemServico.Top     := iTop;
@@ -2430,10 +2430,21 @@ begin
       Label_Bola_OS.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // -------- //
-  // Estoque  //
-  // -------- //
+  {$Region'//// Orçamento ////'}
+  //Mauricio Parizotto 2024-07-31
+  if imgOrcamento.Visible = True then
+  begin
+    imgOrcamento.Top     := iTop;
+    iTop                 := iTop + iFix;
+    imgOrcamento.Left    := iLeft;
+    iLeft                := iLeft + iFixL;
+    MostraLabels(imgOrcamento,lblModOrcamento);
+  end;
+  {$Endregion}
+
+  {$Region'//// Estoque ////'}
   if imgEstoque.Visible = True then
   begin
     imgEstoque.Top     := iTop;
@@ -2475,10 +2486,9 @@ begin
       Label_Bola_Estoque.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // ----------------------- //
-  // Clientes e Fornecedores //
-  // ----------------------- //
+  {$Region'//// Clientes e Fornecedores ////'}
   if imgCliFor.Visible = True then
   begin
     imgCliFor.Top     := iTop;
@@ -2520,10 +2530,9 @@ begin
       Label_Bola_CliFor.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // -------- //
-  // Receber  //
-  // -------- //
+  {$Region'//// Receber ////'}
   if imgContaReceber.Visible = True then
   begin
     imgContaReceber.Top     := iTop;
@@ -2565,10 +2574,9 @@ begin
       Label_Bola_Receber.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // -------- //
-  // Pagar    //
-  // -------- //
+  {$Region'//// Pagar ////'}
   if imgContaPagar.Visible = True then
   begin
     imgContaPagar.Top     := iTop;
@@ -2610,10 +2618,9 @@ begin
       Label_Bola_Pagar.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // ----- //
-  // Caixa //
-  // ----- //
+  {$Region'//// Caixa ////'}
   if imgCaixa.Visible = True then
   begin
     imgCaixa.Top     := iTop;
@@ -2655,10 +2662,9 @@ begin
       Label_Bola_Caixa.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // ------- //
-  // Bancos  //
-  // ------- //
+  {$Region'//// Bancos ////'}
   if imgBancos.Visible = True then
   begin
     imgBancos.Top     := iTop;
@@ -2700,10 +2706,9 @@ begin
       Label_Bola_banco.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // ---------------- //
-  // Indicadores     //
-  // ---------------- //
+  {$Region'//// Indicadores ////'}
   if imgIndicadores.Visible = True then
   begin
     imgIndicadores.Top     := iTop;
@@ -2745,7 +2750,9 @@ begin
       Label_Bola_Indicadores.Visible  := False;
     end;
   end;
+  {$Endregion}
 
+  {$Region'//// Configuracoes ////'}
   // CONFIG
   if imgConfiguracoes.Visible = True then
   begin
@@ -2788,19 +2795,16 @@ begin
       Label_Bola_Config.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // --------- //
-  // Cópias   //
-  // ------- //
+  {$Region'//// Backup ////'}
   if imgBackup.Visible = True then
   begin
     imgBackup.Top     := iTop;
     imgBackup.Left    := iLeft;
     MostraLabels(imgBackup,Label208);
-  end else
-  begin
-//    Label_Perigo.Visible       := False;
   end;
+  {$Endregion}
 
   Result := True;
 end;
@@ -4619,6 +4623,7 @@ begin
   imgBackup.Transparent := False;
   imgCompras.Transparent := False;
   imgServicos.Transparent := False;
+  imgOrcamento.Transparent := False;
 
   Image_Bola_indicadores.Transparent := False;
   Image_Bola_NFe.Transparent := False;
@@ -6068,6 +6073,27 @@ begin
   end;
 end;
 
+procedure TForm1.imgOrcamentoClick(Sender: TObject);
+begin
+  if not Legal(True) then
+    Exit;
+
+  try
+    if not FechaTudo(bFechaTudo) then
+      Exit;
+
+    Form7.Close;
+    Form7.sModulo := 'ORCAMENTO';
+    Form1.Label201MouseLeave(Sender);
+    Form7.sTitulo := 'Orçamentos';
+    Form7.sRPS := 'N';
+    Form7.Show;
+  except end;
+
+  if Form30.Visible then
+    Form30.Show;
+end;
+
 procedure TForm1.imgOrdemServicoClick(Sender: TObject);
 begin
   if not Legal(True) then
@@ -6203,13 +6229,14 @@ end;
 
 procedure TForm1.Label201MouseLeave(Sender: TObject);
 begin
-  // Nota
+  {$Region'//// Nota ////'}
   if not ((Form7.sModulo = 'NOTA') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO')) then
   begin
     Form1.Panel_3.Visible := True;
   end;
+  {$Endregion}
 
-  // Vendas
+  {$Region'//// Vendas ////'}
   if Label201.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'VENDA') then
@@ -6230,8 +6257,9 @@ begin
       Label201.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // Compras
+  {$Region'//// Compras ////'}
   if Label201C.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'COMPRA') then
@@ -6241,8 +6269,9 @@ begin
       Label201C.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // Serviços
+  {$Region'//// Serviços ////'}
   if Label201S.Font.Style <> [] then
   begin
     if (Form7.sRPS <> 'S') then
@@ -6252,8 +6281,9 @@ begin
       Label201S.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // INDICADORES
+  {$Region'//// INDICADORES ////'}
   if Label200.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'INDICADORES') then
@@ -6263,8 +6293,9 @@ begin
       Label200.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // OS
+  {$Region'//// OS ////'}
   if Label201_.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'OS') then
@@ -6274,8 +6305,21 @@ begin
       Label201_.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // ESTOQUE
+  {$Region'//// Orçamento ////'}
+  if lblModOrcamento.Font.Style <> [] then
+  begin
+    if (Form7.sModulo <> 'ORCAMENTO') then
+    begin
+      imgOrcamento.Picture := IconesSistema.GetIconOrcamento(False).Picture;
+      lblModOrcamento.Font.Style := [];
+      lblModOrcamento.Font.Color := clBlack;
+    end;
+  end;
+  {$Endregion}
+
+  {$Region'//// ESTOQUE ////'}
   if Label202.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'ESTOQUE') then
@@ -6285,8 +6329,9 @@ begin
       Label202.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // CADATRO
+  {$Region'//// CADATRO ////'}
   if Label203.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'CLIENTES') then
@@ -6296,8 +6341,9 @@ begin
       Label203.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // RECEBER
+  {$Region'//// RECEBER ////'}
   if Label204.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'RECEBER') then
@@ -6307,8 +6353,9 @@ begin
       Label204.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // PAGAR
+  {$Region'//// PAGAR ////'}
   if Label210.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'PAGAR') then
@@ -6318,8 +6365,9 @@ begin
       Label210.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // CAIXA
+  {$Region'//// CAIXA ////'}
   if Label205.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'CAIXA') then
@@ -6329,8 +6377,9 @@ begin
       Label205.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // BANCOS
+  {$Region'//// BANCOS ////'}
   if Label206.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'BANCOS') then
@@ -6340,8 +6389,9 @@ begin
       Label206.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // CONFIG
+  {$Region'//// CONFIG ////'}
   if Label207.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'CONFIG') then
@@ -6351,8 +6401,9 @@ begin
       Label207.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // BACKUP
+  {$Region'//// BACKUP ////'}
   if Label208.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'BACKUP') then
@@ -6362,6 +6413,7 @@ begin
       Label208.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
   MontaTela(True);
 end;
@@ -8208,6 +8260,8 @@ begin
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B8','0'))  > 0 then imgBackup.Visible  := True else imgBackup.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B10','0')) > 0 then imgContaPagar.Visible  := True else imgContaPagar.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B11','0')) > 0 then imgIndicadores.Visible  := True else imgIndicadores.Visible := False;
+
+        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B11','0')) > 0 then imgOrcamento.Visible  := True else imgOrcamento.Visible := False; //Mauricio Parizotto 2024-07-30
 
         // Indicadores
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I01','0')) > 0 then Form5.Panel1.Visible  := True else Form5.Panel1.Visible := False;
@@ -11237,6 +11291,32 @@ end;
 procedure TForm1.Label_fecha_0Click(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TForm1.lblModOrcamentoMouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  // Mouse move icone OS
+  if lblModOrcamento.Font.Style <> [fsBold] then
+  begin
+    imgOrcamento.Picture    := IconesSistema.GetIconOrcamento(True).Picture;
+    lblModOrcamento.Font.Style := [fsBold];
+    if AllTrim(Form7.sModulo) = '' then
+    begin
+      if FileExists(Form1.sAtual+'\inicial\fundo\_small_9.bmp') then
+        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_9.bmp') ;
+
+      Titulo(
+            'UTILIZE O ORÇAMENTO'
+            ,
+            'O orçamento facilita'+chr(10)+
+            'o atendimento ao cliente'+chr(10)+
+            'e organiza e mantém todo'+chr(10)+
+            'o trabalho documentado'
+            , 'SERVIÇO'
+            );
+    end;
+  end;
 end;
 
 procedure TForm1.RichEdit1Enter(Sender: TObject);

@@ -30,6 +30,9 @@ type
       imgLiberarF : Timage;
       imgFiltrar : Timage;
       imgFiltrarF : Timage;
+
+      imgOrcamento : Timage;
+      imgOrcamentoF : Timage;
     public
      function GetIconNovo(F : Boolean) : Timage;
      function GetIconProcurar(F : Boolean) : Timage;
@@ -40,6 +43,8 @@ type
      function GetIconAlterar(F : Boolean) : Timage;
      function GetIconLiberar(F : Boolean) : Timage;
      function GetIconFiltrar(F : Boolean) : Timage;
+
+     function GetIconOrcamento(F : Boolean) : Timage;
      constructor Create;
   end;
 
@@ -118,6 +123,11 @@ begin
     MostraImagemCoordenada(imgTemplate,IconesSistema.imgFiltrar,2,7);
     MostraImagemCoordenada(imgTemplate,IconesSistema.imgFiltrarF,6,7);
 
+    //Mauricio Parizotto 2024-07-31
+    //Módulos
+    MostraImagemCoordenada(imgTemplate,IconesSistema.imgOrcamento,2,7);
+    MostraImagemCoordenada(imgTemplate,IconesSistema.imgOrcamentoF,6,7);
+
   finally
     FreeAndNil(imgTemplate);
   end;
@@ -147,6 +157,10 @@ begin
   imgLiberarF     := Timage.Create(nil);
   imgFiltrar      := Timage.Create(nil);
   imgFiltrarF     := Timage.Create(nil);
+
+  //Módulos
+  imgOrcamento    := Timage.Create(nil);
+  imgOrcamentoF   := Timage.Create(nil);
 end;
 
 function TIconesSistema.GetIconAlterar(F: Boolean): Timage;
@@ -195,6 +209,14 @@ begin
     Result := imgNovoF
   else
     Result := imgNovo;
+end;
+
+function TIconesSistema.GetIconOrcamento(F: Boolean): Timage;
+begin
+  if F then
+    Result := imgOrcamentoF
+  else
+    Result := imgOrcamento;
 end;
 
 function TIconesSistema.GetIconProcurar(F : Boolean): Timage;
