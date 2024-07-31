@@ -522,7 +522,7 @@ begin
     ExecutaComando('commit');
   end;
 
-  // Imformações complementares VENDA
+  // Informações complementares VENDA
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'COMPLEMENTO') = False then
     ExecutaComando('alter table VENDAS add COMPLEMENTO blob sub_type 1');
 
@@ -556,9 +556,9 @@ begin
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'DESCRICAO4') then
     ExecutaComando('alter table VENDAS drop DESCRICAO4');
 
-  // Imformações complementares COMPRAS
+  // Informações complementares COMPRAS
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados... (Imformações complementares COMPRAS)');
+  Mensagem22('Aguarde alterando estrutura do banco de dados... (Informações complementares COMPRAS)');
 
   try
     if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'COMPLEMENTO') = False then
@@ -2657,6 +2657,18 @@ begin
                     ' Where FORMADEPAGAMENTO = ''Pagamento Instantâneo (PIX)'' ') then
       ExecutaComando('Commit');
   {Mauricio Parizotto 204-07-10 Fim}
+
+
+  {Mauricio Parizotto 2024-07-23 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'IMPOSTOMANUAL') = False then
+  begin
+    if ExecutaComando('Alter table ICM add IMPOSTOMANUAL VARCHAR(1);') then
+      ExecutaComando('Commit');
+
+    if ExecutaComando('Update ICM set IMPOSTOMANUAL = ''N'' ') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-07-23 Fim}
 
   Form22.Repaint;
   Mensagem22('Aguarde...');

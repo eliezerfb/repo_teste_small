@@ -158,7 +158,9 @@ var
 
 implementation
 
-uses Mais, Unit10, Unit22, Unit38, Unit7, Unit37;
+uses Mais
+//  , Unit10
+  , Unit22, Unit38, Unit7, Unit37;
 
 {$R *.DFM}
 
