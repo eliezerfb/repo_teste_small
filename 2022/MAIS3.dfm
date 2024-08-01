@@ -841,11 +841,11 @@ object Senhas: TSenhas
       OnMouseEnter = lblEntrarMouseEnter
       OnMouseLeave = lblEntrarMouseLeave
     end
-    object edtSenha: TEdit
-      Left = 319
-      Top = 160
-      Width = 343
-      Height = 22
+    object SENHA: TEdit
+      Left = 20
+      Top = 120
+      Width = 350
+      Height = 26
       Hint = 'Digite a senha. do usu'#225'rio.   Tecle <F1> para obter mais ajuda.'
       BevelInner = bvNone
       BevelOuter = bvNone

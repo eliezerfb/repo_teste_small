@@ -7,7 +7,7 @@ uses
   Forms
   , Windows
   , Classes
-  , ExtCtrls;
+  , ExtCtrls, System.AnsiStrings;
 
 type
   TIconesSistema = class
@@ -51,7 +51,7 @@ var
 
 implementation
 
-uses SysUtils, uSmallConsts;
+uses SysUtils, uSmallConsts, smallfunc_xe, uSistema;
 
 procedure MostraImagemCoordenada(ImgOri: TImage; ImgDest: TImage; Linha:integer; Coluna: Integer; Tamanho : integer = 70);
 var
@@ -83,7 +83,7 @@ end;
 procedure CarregaIconesSistema;
 var
   imgTemplate : TImage;
-  DirImg : string;
+  DirImg, DirImgBmp : string;
 
   r1 : tRect;
 begin
@@ -92,11 +92,19 @@ begin
   try
     imgTemplate := TImage.Create(nil);
 
-    DirImg := ExtractFilePath(Application.ExeName)+_DirImagemIcones;
+    //DirImg := ExtractFilePath(Application.ExeName)+_DirImagemIcones; Mauricio Parizotto 2024-07-29
+    DirImg    := ExtractFilePath(Application.ExeName)+ImagemIconesSmall(TSistema.GetInstance.Tema);
+    DirImgBmp := ExtractFilePath(DirImg)+'imgTemp.bmp';
 
-    if FileExists(DirImg) then
+    CopyFile(pchar(DirImg),
+            pchar(DirImgBmp),
+            False
+            );
+
+    if FileExists(DirImgBmp) then
     begin
-      imgTemplate.Picture.LoadFromFile(DirImg);
+      imgTemplate.Picture.LoadFromFile(DirImgBmp);
+      DeleteFile(DirImgBmp);
     end;
 
     MostraImagemCoordenada(imgTemplate,IconesSistema.imgNovo,2,1);

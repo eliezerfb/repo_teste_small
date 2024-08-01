@@ -343,6 +343,7 @@ var
   sSenha : String;
   I : Integer;
 begin
+  {
   try
     // Nova senha
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
@@ -355,7 +356,7 @@ begin
   finally
     Mais1Ini.Free;
   end;
-
+ Mauricio Parizotto 2024-07-29}
   SenhaAdmPub  := edtSenha.Text;
   Close;
 end;
