@@ -25,6 +25,8 @@ type
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure lblOKClick(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -59,7 +61,7 @@ end;
 
 procedure TForm22.FormClick(Sender: TObject);
 begin
-  Close;
+ // Close; Mauricio Parizotto 2024-08-01
 end;
 
 procedure TForm22.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -74,6 +76,17 @@ begin
 end;
 
 procedure TForm22.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+//  Close; Mauricio Parizotto 2024-08-01
+end;
+
+procedure TForm22.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_ESCAPE then
+    Close;
+end;
+
+procedure TForm22.lblOKClick(Sender: TObject);
 begin
   Close;
 end;

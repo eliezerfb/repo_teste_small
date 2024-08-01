@@ -22,6 +22,7 @@ object Form22: TForm22
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
+  OnKeyUp = FormKeyUp
   PixelsPerInch = 96
   TextHeight = 13
   object pnlFundo: TPanel
@@ -38,7 +39,6 @@ object Form22: TForm22
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
-    OnClick = FormClick
     object pnlCarregamento: TPanel
       Left = 14
       Top = 48
@@ -527,7 +527,7 @@ object Form22: TForm22
           FD2F2A3141EC10FAE1D9BE496CC10F482DA028505C113E0000000049454E44AE
           426082}
         Visible = False
-        OnClick = FormClick
+        OnClick = lblOKClick
       end
       object lblOK: TLabel
         Left = 548
@@ -545,7 +545,7 @@ object Form22: TForm22
         Font.Style = []
         ParentFont = False
         Visible = False
-        OnClick = FormClick
+        OnClick = lblOKClick
       end
       object lblLicenca: TLabel
         Left = 296
