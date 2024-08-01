@@ -7473,8 +7473,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1210
-    ExplicitWidth = 1560
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7548,7 +7546,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1560
   end
   object Panel_0: TPanel
     Left = 0
@@ -10278,7 +10275,7 @@ object Form7: TForm7
       OnMouseLeave = lblVisualizarMouseLeave
     end
     object lblEditar: TLabel
-      Left = 420
+      Left = 422
       Top = 25
       Width = 70
       Height = 80
@@ -20959,8 +20956,8 @@ object Form7: TForm7
     CachedUpdates = False
     ParamCheck = True
     UniDirectional = False
-    Left = 752
-    Top = 931
+    Left = 608
+    Top = 883
   end
   object DataSource97: TDataSource
     DataSet = IBDataSet97

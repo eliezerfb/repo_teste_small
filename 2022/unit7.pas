@@ -11541,8 +11541,11 @@ begin
     begin
       imgExcluir.Visible := True;
       lblExcluir.Visible := True;
-      imgEditar.Visible := False;
-      lblEditar.Visible := False;
+      imgEditar.Visible  := False;
+      lblEditar.Visible  := False;
+      //Mauricio Parizotto 204-07-31
+      imgLibBloq.Visible := False;
+      Label208.Visible   := False;
     end;
 
     if sModulo = 'VENDA' then
@@ -11677,11 +11680,6 @@ begin
             sWhere   := '';
             if Form7.sModulo <> 'ORCAMENTO' then
             begin
-              {
-              Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+TabelaAberta.SelectSQL.Text+chr(10)+chr(10)
-              ),'Erro: 2211',mb_Ok + MB_ICONWARNING);
-              Mauricio Parizotto 2023-10-24}
-
               MensagemSistema(E.Message+chr(10)+chr(10)+TabelaAberta.SelectSQL.Text+chr(10)+chr(10)+#13#10+'Erro: 2211'
                               ,msgErro);
 

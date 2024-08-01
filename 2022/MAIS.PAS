@@ -288,6 +288,8 @@ type
     timerLegal: TTimer;
     Integraes1: TMenuItem;
     IntegraoIta1: TMenuItem;
+    imgOrcamento: TImage;
+    lblModOrcamento: TLabel;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -463,6 +465,9 @@ type
     procedure NaoDescontarIssQuandoRetido1Click(Sender: TObject);
     procedure IntegraoIta1Click(Sender: TObject);
     procedure timerLegalTimer(Sender: TObject);
+    procedure imgOrcamentoClick(Sender: TObject);
+    procedure lblModOrcamentoMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
 
 
   private
@@ -473,6 +478,7 @@ type
     procedure EnviarXMLContabilidadeAut;
     procedure ClickOKInformacoesInutilizacao(Sender: TObject);
     procedure CarregaConfiguracoes;
+    procedure CarregaPermissaoModulos;
     //Sandro Silva 2024-04-08 procedure AjustarDataSetCamposProduto;
 
   public
@@ -2295,9 +2301,7 @@ begin
   iFixL := 70;
   iLeft := 5+5;
 
-  // ------ //
-  // Vendas //
-  // ------ //
+  {$Region'//// Vendas //// '}
   if imgVendas.Visible = True then
   begin
     imgVendas.Top     := iTop;
@@ -2329,10 +2333,9 @@ begin
     end;
     {Mauricio Parizotto 2023-07-13 Fim}
   end;
+  {$Endregion}
 
-  // ------- //
-  // Compras //
-  // ------- //
+  {$Region'//// Compras ////'}
   if imgCompras.Visible = True then
   begin
     imgCompras.Top     := iTop;
@@ -2374,10 +2377,9 @@ begin
       Label_Bola_NFe.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // --------- //
-  // Serviços  //
-  // --------- //
+  {$Region'//// Serviços ////'}
   if imgServicos.Visible = True then
   begin
     imgServicos.Top     := iTop;
@@ -2386,10 +2388,9 @@ begin
     iLeft            := iLeft + iFixL;
     MostraLabels(imgServicos,Label201S);
   end;
+  {$Endregion}
 
-  // ----------------- //
-  // Ordem de serviços //
-  // ----------------- //
+  {$Region'//// Ordem de serviços ////'}
   if imgOrdemServico.Visible = True then
   begin
     imgOrdemServico.Top     := iTop;
@@ -2431,10 +2432,21 @@ begin
       Label_Bola_OS.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // -------- //
-  // Estoque  //
-  // -------- //
+  {$Region'//// Orçamento ////'}
+  //Mauricio Parizotto 2024-07-31
+  if imgOrcamento.Visible = True then
+  begin
+    imgOrcamento.Top     := iTop;
+    iTop                 := iTop + iFix;
+    imgOrcamento.Left    := iLeft;
+    iLeft                := iLeft + iFixL;
+    MostraLabels(imgOrcamento,lblModOrcamento);
+  end;
+  {$Endregion}
+
+  {$Region'//// Estoque ////'}
   if imgEstoque.Visible = True then
   begin
     imgEstoque.Top     := iTop;
@@ -2476,10 +2488,9 @@ begin
       Label_Bola_Estoque.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // ----------------------- //
-  // Clientes e Fornecedores //
-  // ----------------------- //
+  {$Region'//// Clientes e Fornecedores ////'}
   if imgCliFor.Visible = True then
   begin
     imgCliFor.Top     := iTop;
@@ -2521,10 +2532,9 @@ begin
       Label_Bola_CliFor.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // -------- //
-  // Receber  //
-  // -------- //
+  {$Region'//// Receber ////'}
   if imgContaReceber.Visible = True then
   begin
     imgContaReceber.Top     := iTop;
@@ -2566,10 +2576,9 @@ begin
       Label_Bola_Receber.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // -------- //
-  // Pagar    //
-  // -------- //
+  {$Region'//// Pagar ////'}
   if imgContaPagar.Visible = True then
   begin
     imgContaPagar.Top     := iTop;
@@ -2611,10 +2620,9 @@ begin
       Label_Bola_Pagar.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // ----- //
-  // Caixa //
-  // ----- //
+  {$Region'//// Caixa ////'}
   if imgCaixa.Visible = True then
   begin
     imgCaixa.Top     := iTop;
@@ -2656,10 +2664,9 @@ begin
       Label_Bola_Caixa.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // ------- //
-  // Bancos  //
-  // ------- //
+  {$Region'//// Bancos ////'}
   if imgBancos.Visible = True then
   begin
     imgBancos.Top     := iTop;
@@ -2701,10 +2708,9 @@ begin
       Label_Bola_banco.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // ---------------- //
-  // Indicadores     //
-  // ---------------- //
+  {$Region'//// Indicadores ////'}
   if imgIndicadores.Visible = True then
   begin
     imgIndicadores.Top     := iTop;
@@ -2746,7 +2752,9 @@ begin
       Label_Bola_Indicadores.Visible  := False;
     end;
   end;
+  {$Endregion}
 
+  {$Region'//// Configuracoes ////'}
   // CONFIG
   if imgConfiguracoes.Visible = True then
   begin
@@ -2789,19 +2797,16 @@ begin
       Label_Bola_Config.Visible  := False;
     end;
   end;
+  {$Endregion}
 
-  // --------- //
-  // Cópias   //
-  // ------- //
+  {$Region'//// Backup ////'}
   if imgBackup.Visible = True then
   begin
     imgBackup.Top     := iTop;
     imgBackup.Left    := iLeft;
     MostraLabels(imgBackup,Label208);
-  end else
-  begin
-//    Label_Perigo.Visible       := False;
   end;
+  {$Endregion}
 
   Result := True;
 end;
@@ -4605,6 +4610,7 @@ begin
   imgBackup.Transparent := False;
   imgCompras.Transparent := False;
   imgServicos.Transparent := False;
+  imgOrcamento.Transparent := False;
 
   Image_Bola_indicadores.Transparent := False;
   Image_Bola_NFe.Transparent := False;
@@ -6047,6 +6053,25 @@ begin
   end;
 end;
 
+procedure TForm1.imgOrcamentoClick(Sender: TObject);
+begin
+  if not Legal(True) then
+    Exit;
+
+  if ValidaRecursoExibeMensagemIndisponivel then
+  begin
+    if not FechaTudo(bFechaTudo) then
+      Exit;
+
+    Form7.Close;
+    Form7.sModulo := 'ORCAMENTO';
+    Form1.Label201MouseLeave(Sender);
+    Form7.sTitulo := 'Orçamentos';
+    Form7.sRPS := 'N';
+    Form7.Show;
+  end;
+end;
+
 procedure TForm1.imgOrdemServicoClick(Sender: TObject);
 begin
   if not Legal(True) then
@@ -6182,13 +6207,14 @@ end;
 
 procedure TForm1.Label201MouseLeave(Sender: TObject);
 begin
-  // Nota
+  {$Region'//// Nota ////'}
   if not ((Form7.sModulo = 'NOTA') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO')) then
   begin
     Form1.Panel_3.Visible := True;
   end;
+  {$Endregion}
 
-  // Vendas
+  {$Region'//// Vendas ////'}
   if Label201.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'VENDA') then
@@ -6209,8 +6235,9 @@ begin
       Label201.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // Compras
+  {$Region'//// Compras ////'}
   if Label201C.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'COMPRA') then
@@ -6220,8 +6247,9 @@ begin
       Label201C.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // Serviços
+  {$Region'//// Serviços ////'}
   if Label201S.Font.Style <> [] then
   begin
     if (Form7.sRPS <> 'S') then
@@ -6231,8 +6259,9 @@ begin
       Label201S.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // INDICADORES
+  {$Region'//// INDICADORES ////'}
   if Label200.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'INDICADORES') then
@@ -6242,8 +6271,9 @@ begin
       Label200.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // OS
+  {$Region'//// OS ////'}
   if Label201_.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'OS') then
@@ -6253,8 +6283,21 @@ begin
       Label201_.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // ESTOQUE
+  {$Region'//// Orçamento ////'}
+  if lblModOrcamento.Font.Style <> [] then
+  begin
+    if (Form7.sModulo <> 'ORCAMENTO') then
+    begin
+      imgOrcamento.Picture := IconesSistema.GetIconOrcamento(False).Picture;
+      lblModOrcamento.Font.Style := [];
+      lblModOrcamento.Font.Color := clBlack;
+    end;
+  end;
+  {$Endregion}
+
+  {$Region'//// ESTOQUE ////'}
   if Label202.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'ESTOQUE') then
@@ -6264,8 +6307,9 @@ begin
       Label202.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // CADATRO
+  {$Region'//// CADATRO ////'}
   if Label203.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'CLIENTES') then
@@ -6275,8 +6319,9 @@ begin
       Label203.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // RECEBER
+  {$Region'//// RECEBER ////'}
   if Label204.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'RECEBER') then
@@ -6286,8 +6331,9 @@ begin
       Label204.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // PAGAR
+  {$Region'//// PAGAR ////'}
   if Label210.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'PAGAR') then
@@ -6297,8 +6343,9 @@ begin
       Label210.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // CAIXA
+  {$Region'//// CAIXA ////'}
   if Label205.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'CAIXA') then
@@ -6308,8 +6355,9 @@ begin
       Label205.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // BANCOS
+  {$Region'//// BANCOS ////'}
   if Label206.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'BANCOS') then
@@ -6319,8 +6367,9 @@ begin
       Label206.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // CONFIG
+  {$Region'//// CONFIG ////'}
   if Label207.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'CONFIG') then
@@ -6330,8 +6379,9 @@ begin
       Label207.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
-  // BACKUP
+  {$Region'//// BACKUP ////'}
   if Label208.Font.Style <> [] then
   begin
     if (Form7.sModulo <> 'BACKUP') then
@@ -6341,6 +6391,7 @@ begin
       Label208.Font.Color := clBlack;
     end;
   end;
+  {$Endregion}
 
   MontaTela(True);
 end;
@@ -8142,7 +8193,9 @@ begin
 
       if (AnsiUpperCase(sSenha) = AnsiUpperCase(Senha)) then
       begin
-        //
+        {Mauricio Parizotto 2024-07-31 Inicio}
+
+        (*
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B3','0'))  > 0 then
         begin
           if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B9','9')) = 9 then
@@ -8165,6 +8218,12 @@ begin
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B8','0'))  > 0 then imgBackup.Visible  := True else imgBackup.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B10','0')) > 0 then imgContaPagar.Visible  := True else imgContaPagar.Visible := False;
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B11','0')) > 0 then imgIndicadores.Visible  := True else imgIndicadores.Visible := False;
+
+        if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'BOR', Mais1Ini.ReadString(Usuario,'B2','0')  )) > 0)
+          and (TSistema.GetInstance.Tema = _TemaModerno) then
+          imgOrcamento.Visible  := True
+        else
+          imgOrcamento.Visible := False; //Mauricio Parizotto 2024-07-30
 
         // Indicadores
         if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I01','0')) > 0 then Form5.Panel1.Visible  := True else Form5.Panel1.Visible := False;
@@ -8304,6 +8363,7 @@ begin
         Label207.Visible   := False;
         Label208.Visible   := False;
         Label210.Visible   := False;
+        lblModOrcamento.Visible := False;
 
         if Form5.Panel1.Visible
         or Form5.Panel2.Visible
@@ -8331,6 +8391,9 @@ begin
           Form7.Gerarnotafiscalsrie11.Enabled := True;
           Form7.Gerarnotafiscalsrie21.Enabled := True;
         end;
+        *)
+
+        {Mauricio Parizotto 2024-07-31 Fim}
       end else
       begin
         if Senha = '#####' then
@@ -8385,7 +8448,7 @@ begin
     end;
 
     try
-      //Mauricio Parizotto 2024-02-22
+      {Mauricio Parizotto 2024-07-31 Inicio}
       CarregaConfiguracoes;
       ConfiguraNFE;
 
@@ -8393,11 +8456,17 @@ begin
       Form19.CarregaIconesSistema;
       CarregaIconesSistema;
 
+      //Novo método - ir migrando de Form19.CarregaIconesSistema
+      imgOrcamento.Picture    := IconesSistema.GetIconOrcamento(True).Picture;
+
       //Define fundo inicial
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'6');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      CarregaPermissaoModulos;
+      {Mauricio Parizotto 2024-07-31 Fim}
     except
     end;
 
@@ -11353,6 +11422,36 @@ begin
   Close;
 end;
 
+procedure TForm1.lblModOrcamentoMouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
+var
+  sImgFundo : string;
+begin
+  // Mouse move icone OS
+  if lblModOrcamento.Font.Style <> [fsBold] then
+  begin
+    imgOrcamento.Picture    := IconesSistema.GetIconOrcamento(True).Picture;
+    lblModOrcamento.Font.Style := [fsBold];
+    if AllTrim(Form7.sModulo) = '' then
+    begin
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'14');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      Titulo(
+            'UTILIZE O ORÇAMENTO'
+            ,
+            'O orçamento facilita'+chr(10)+
+            'o atendimento ao cliente'+chr(10)+
+            'e organiza e mantém todo'+chr(10)+
+            'o trabalho documentado'
+            , 'SERVIÇO'
+            );
+    end;
+  end;
+end;
+
 procedure TForm1.RichEdit1Enter(Sender: TObject);
 begin
   Edit2.SetFocus;
@@ -13253,6 +13352,9 @@ begin
         ConfSistema.BD.Outras.TemaIcones := _TemaModerno;
         TSistema.GetInstance.Tema        := _TemaModerno;
       end;
+    end else
+    begin
+      TSistema.GetInstance.Tema := _TemaModerno;
     end;
   finally
     FreeAndNil(ConfSistema);
@@ -13351,6 +13453,214 @@ begin
   except
   end;
 end;
+
+
+procedure TForm1.CarregaPermissaoModulos;
+var
+  Mais1ini : TIniFile;
+  J, I : integer;
+begin
+  Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
+  Mais1Ini.UpdateFile;
+
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B3','0'))  > 0 then
+  begin
+    if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B9','9')) = 9 then
+    begin
+      Mais1Ini.WriteString(Senhas.UsuarioPub,'B9','1');
+    end;
+  end;
+
+  if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1','0'))   > 0) then imgVendas.Visible   := True else imgVendas.Visible   := False;
+  if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_E','0')) > 0) then imgCompras.Visible  := True else imgCompras.Visible  := False;
+  if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_S','0')) > 0) then imgServicos.Visible  := True else imgServicos.Visible  := False;
+
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B_','0'))  > 0 then imgOrdemServico.Visible := True else imgOrdemServico.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B2','0'))  > 0 then imgEstoque.Visible  := True else imgEstoque.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B3','0'))  > 0 then imgCliFor.Visible  := True else imgCliFor.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B4','0'))  > 0 then imgContaReceber.Visible  := True else imgContaReceber.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B5','0'))  > 0 then imgCaixa.Visible  := True else imgCaixa.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B6','0'))  > 0 then imgBancos.Visible  := True else imgBancos.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B7','0'))  > 0 then imgConfiguracoes.Visible  := True else imgConfiguracoes.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B8','0'))  > 0 then imgBackup.Visible  := True else imgBackup.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B10','0')) > 0 then imgContaPagar.Visible  := True else imgContaPagar.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B11','0')) > 0 then imgIndicadores.Visible  := True else imgIndicadores.Visible := False;
+
+  if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'BOR', Mais1Ini.ReadString(Usuario,'B2','0')  )) > 0)
+    and (TSistema.GetInstance.Tema = _TemaModerno) then
+    imgOrcamento.Visible  := True
+  else
+    imgOrcamento.Visible := False; //Mauricio Parizotto 2024-07-30
+
+  // Indicadores
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I01','0')) > 0 then Form5.Panel1.Visible  := True else Form5.Panel1.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I02','0')) > 0 then Form5.Panel2.Visible  := True else Form5.Panel2.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I03','0')) > 0 then Form5.Panel3.Visible  := True else Form5.Panel3.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I04','0')) > 0 then Form5.Panel4.Visible  := True else Form5.Panel4.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I05','0')) > 0 then Form5.Panel5.Visible  := True else Form5.Panel5.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I06','0')) > 0 then Form5.Panel6.Visible  := True else Form5.Panel6.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I07','0')) > 0 then Form5.Panel7.Visible  := True else Form5.Panel7.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I08','0')) > 0 then Form5.Panel8.Visible  := True else Form5.Panel8.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I09','0')) > 0 then Form5.Panel9.Visible  := True else Form5.Panel9.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I10','0')) > 0 then Form5.Panel10.Visible  := True else Form5.Panel10.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I11','0')) > 0 then Form5.Panel11.Visible  := True else Form5.Panel11.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I12','0')) > 0 then Form5.Panel12.Visible  := True else Form5.Panel12.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I13','0')) > 0 then Form5.Panel13.Visible  := True else Form5.Panel13.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I14','0')) > 0 then Form5.Panel14.Visible  := True else Form5.Panel14.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I15','0')) > 0 then Form5.Panel15.Visible  := True else Form5.Panel15.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I16','0')) > 0 then Form5.Panel16.Visible  := True else Form5.Panel16.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I17','0')) > 0 then Form5.Panel17.Visible  := True else Form5.Panel17.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I18','0')) > 0 then Form5.Panel18.Visible  := True else Form5.Panel18.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I19','0')) > 0 then Form5.Panel19.Visible  := True else Form5.Panel19.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I20','0')) > 0 then Form5.Panel20.Visible  := True else Form5.Panel20.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I21','0')) > 0 then Form5.Panel21.Visible  := True else Form5.Panel21.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I22','0')) > 0 then Form5.Panel22.Visible  := True else Form5.Panel22.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I23','0')) > 0 then Form5.Panel23.Visible  := True else Form5.Panel23.Visible := False;
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I24','0')) > 0 then Form5.Panel24.Visible  := True else Form5.Panel24.Visible := False;
+
+  // Ordem de apresentaçao dos indicadores
+  Form5.Panel1.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I01ORDEM','0'));
+  Form5.Panel2.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I02ORDEM','0'));
+  Form5.Panel3.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I03ORDEM','0'));
+  Form5.Panel4.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I04ORDEM','0'));
+  Form5.Panel5.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I05ORDEM','0'));
+  Form5.Panel6.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I06ORDEM','0'));
+  Form5.Panel7.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I07ORDEM','0'));
+  Form5.Panel8.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I08ORDEM','0'));
+  Form5.Panel9.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I09ORDEM','0'));
+  Form5.Panel10.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I10ORDEM','0'));
+  Form5.Panel11.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I11ORDEM','0'));
+  Form5.Panel12.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I12ORDEM','0'));
+  Form5.Panel13.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I13ORDEM','0'));
+  Form5.Panel14.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I14ORDEM','0'));
+  Form5.Panel15.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I15ORDEM','0'));
+  Form5.Panel16.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I16ORDEM','0'));
+  Form5.Panel17.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I17ORDEM','0'));
+  Form5.Panel18.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I18ORDEM','0'));
+  Form5.Panel19.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I19ORDEM','0'));
+  Form5.Panel20.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I20ORDEM','0'));
+  Form5.Panel21.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I21ORDEM','0'));
+  Form5.Panel22.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I22ORDEM','0'));
+  Form5.Panel23.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I23ORDEM','0'));
+  Form5.Panel24.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I24ORDEM','0'));
+
+  // E Importante fazer na ordem certa ai o taborder acerta
+  J := 0;
+
+  for I := 23 downto 0 do
+  begin
+    if Form5.Panel1.Tag  = I then if Form5.Panel1.Visible  then Form5.Panel1.TabOrder  := 0;
+    if Form5.Panel2.Tag  = I then if Form5.Panel2.Visible  then Form5.Panel2.TabOrder  := 0;
+    if Form5.Panel3.Tag  = I then if Form5.Panel3.Visible  then Form5.Panel3.TabOrder  := 0;
+    if Form5.Panel4.Tag  = I then if Form5.Panel4.Visible  then Form5.Panel4.TabOrder  := 0;
+    if Form5.Panel5.Tag  = I then if Form5.Panel5.Visible  then Form5.Panel5.TabOrder  := 0;
+    if Form5.Panel6.Tag  = I then if Form5.Panel6.Visible  then Form5.Panel6.TabOrder  := 0;
+    if Form5.Panel7.Tag  = I then if Form5.Panel7.Visible  then Form5.Panel7.TabOrder  := 0;
+    if Form5.Panel8.Tag  = I then if Form5.Panel8.Visible  then Form5.Panel8.TabOrder  := 0;
+    if Form5.Panel9.Tag  = I then if Form5.Panel9.Visible  then Form5.Panel9.TabOrder  := 0;
+    if Form5.Panel10.Tag = I then if Form5.Panel10.Visible then Form5.Panel10.TabOrder := 0;
+    if Form5.Panel11.Tag = I then if Form5.Panel11.Visible then Form5.Panel11.TabOrder := 0;
+    if Form5.Panel12.Tag = I then if Form5.Panel12.Visible then Form5.Panel12.TabOrder := 0;
+    if Form5.Panel13.Tag = I then if Form5.Panel13.Visible then Form5.Panel13.TabOrder := 0;
+    if Form5.Panel14.Tag = I then if Form5.Panel14.Visible then Form5.Panel14.TabOrder := 0;
+    if Form5.Panel15.Tag = I then if Form5.Panel15.Visible then Form5.Panel15.TabOrder := 0;
+    if Form5.Panel16.Tag = I then if Form5.Panel16.Visible then Form5.Panel16.TabOrder := 0;
+    if Form5.Panel17.Tag = I then if Form5.Panel17.Visible then Form5.Panel17.TabOrder := 0;
+    if Form5.Panel18.Tag = I then if Form5.Panel18.Visible then Form5.Panel18.TabOrder := 0;
+    if Form5.Panel19.Tag = I then if Form5.Panel19.Visible then Form5.Panel19.TabOrder := 0;
+    if Form5.Panel20.Tag = I then if Form5.Panel20.Visible then Form5.Panel20.TabOrder := 0;
+    if Form5.Panel21.Tag = I then if Form5.Panel21.Visible then Form5.Panel21.TabOrder := 0;
+    if Form5.Panel22.Tag = I then if Form5.Panel22.Visible then Form5.Panel22.TabOrder := 0;
+    if Form5.Panel23.Tag = I then if Form5.Panel23.Visible then Form5.Panel23.TabOrder := 0;
+    if Form5.Panel24.Tag = I then if Form5.Panel24.Visible then Form5.Panel24.TabOrder := 0;
+  end;
+
+  // ---------- //
+  // Configura //
+  // -------- //
+  if (not Form1.imgConfiguracoes.Visible) or (Form1.Label207.Tag = 1) then
+  begin
+    Form1.imgConfiguracoes.OnClick          := Form1.Liberarosmdulosparaesteusurio1Click;
+    Form1.Label207.OnClick          := Form1.Liberarosmdulosparaesteusurio1Click;
+    Form1.Label_bola_config.OnClick := Form1.imgConfiguracoesClick;
+    Form1.Label207.Tag              := 1;
+    Form1.imgConfiguracoes.Visible          := True;
+  end else
+  begin
+    Form1.imgConfiguracoes.OnClick          := Form1.imgConfiguracoesClick;
+    Form1.Label207.OnClick          := Form1.imgConfiguracoesClick;
+    Form1.Label_bola_config.OnClick := Form1.Label_Bola_ConfigClick;
+  end;
+
+  Form7.Label208.Caption  := 'Liberar';
+
+  if Pos('Ordem de Serviço',Form22.sTitulo) = 0 then
+  begin
+    imgOrdemServico.Visible := False;
+  end;
+
+  if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99')  then
+  begin
+    if (Form7.ibDataSet13ESTADO.AsString = 'TO') then // or (Form7.ibDataSet13ESTADO.AsString = 'SC') then
+    begin
+      imgOrdemServico.Visible := False; // Sem OS
+    end;
+  end;
+
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1','0'))   > 0  then bNotaVendaLiberada   := True  else bNotaVendaLiberada  := False; // Venda
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_E','0')) > 0  then bNotaCompraLiberada  := True else bNotaCompraLiberada  := False; // compra
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_S','0')) > 0  then bNotaServicoLiberada := True else bNotaServicoLiberada := False; // compra
+
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B3','0')) > 0  then bClientesLiberados := True else bClientesLiberados := False; // Clientes
+  if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B9','0')) > 0  then bFornecedoresLiberados := True else bFornecedoresLiberados := False; // Fornecedores
+
+  Form7.Exibir1.Visible := True;
+  //2024-01-10 Form7.Mostrartodososclientesefornecedores1.Visible := True;
+  Form7.N10.Visible := True;
+
+  Label200.Visible   := False;
+  Label201.Visible   := False;
+  Label201C.Visible  := False;
+  Label201S.Visible  := False;
+  Label201_.Visible  := False;
+  Label202.Visible   := False;
+  Label203.Visible   := False;
+  Label204.Visible   := False;
+  Label205.Visible   := False;
+  Label206.Visible   := False;
+  Label207.Visible   := False;
+  Label208.Visible   := False;
+  Label210.Visible   := False;
+  lblModOrcamento.Visible := False;
+
+  if Form5.Panel1.Visible
+  or Form5.Panel2.Visible
+  or Form5.Panel3.Visible
+  or Form5.Panel4.Visible
+  or Form5.Panel5.Visible
+  or Form5.Panel6.Visible
+  or Form5.Panel7.Visible
+  or Form5.Panel8.Visible
+  or Form5.Panel9.Visible
+  or Form5.Panel10.Visible
+  or Form5.Panel11.Visible
+  or Form5.Panel12.Visible
+  or Form5.Panel13.Visible
+  or Form5.Panel14.Visible
+  or Form5.Panel15.Visible
+  or Form5.Panel16.Visible then Form5.Tag := 1 else Form5.Tag := 0;
+
+  if not Form1.bNotaVendaLiberada then
+  begin
+    Form7.Gerarnotafiscalsrie11.Enabled := False;
+    Form7.Gerarnotafiscalsrie21.Enabled := False;
+  end else
+  begin
+    Form7.Gerarnotafiscalsrie11.Enabled := True;
+    Form7.Gerarnotafiscalsrie21.Enabled := True;
+  end;
+end;
+
 
 end.
 // set generator G_SERIE1 to 0

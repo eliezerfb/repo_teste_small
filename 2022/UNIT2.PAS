@@ -91,6 +91,9 @@ type
     CheckBox37: TCheckBox;
     Label_c: TLabel;
     Label_s: TLabel;
+    imgOrcamento: TImage;
+    chkOrcamento: TCheckBox;
+    lblOrcamento: TLabel;
     procedure CheckBox1Click(Sender: TObject);
     procedure CheckBox3Click(Sender: TObject);
     procedure CheckBox4Click(Sender: TObject);
@@ -146,6 +149,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure CheckBox37Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure chkOrcamentoClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -158,7 +162,8 @@ var
 
 implementation
 
-uses Mais, Unit10, Unit22, Unit38, Unit7, Unit37;
+uses Mais, Unit10, Unit22, Unit38, Unit7, Unit37, uSistema, uSmallConsts,
+  uDialogs;
 
 {$R *.DFM}
 
@@ -357,7 +362,7 @@ begin
     //
     Mais1Ini.Free;
     if Form2.Tag <> 99 then Form1.FormShow(Sender);
-  end;  
+  end;
   //
 end;
 
@@ -582,10 +587,11 @@ end;
 
 procedure TForm2.FormCreate(Sender: TObject);
 begin
+  {Mauricio Parizotto 2024-07-31
   Image1.Picture      :=  Form1.imgVendas.Picture;
   Image1__2.Picture   :=  Form1.imgCompras.Picture;
   Image1__3.Picture   :=  Form1.imgServicos.Picture;
-  
+
   Image_.Picture   :=  Form1.imgOrdemServico.Picture;
   Image2.Picture   :=  Form1.imgEstoque.Picture;
   Image3.Picture   :=  Form1.imgCliFor.Picture;
@@ -596,6 +602,7 @@ begin
   Image9.Picture   :=  Form1.imgIndicadores.Picture;
   Image8.Picture   :=  Form1.imgBackup.Picture;
   Image10.Picture  :=  Form1.imgContaPagar.Picture;
+  }
 end;
 
 procedure TForm2.FormKeyDown(Sender: TObject; var Key: Word;
@@ -609,96 +616,75 @@ procedure TForm2.CheckBox9Click(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  // Nova Senha
   if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox9.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B1_E','0');
     if CheckBox9.State = cbChecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B1_E','1');
-    //
+
     with Sender as TCheckBox do
     begin
       if State = cbChecked then Label_C.Caption     := 'Notas de compras liberadas';
       if State = cbUnchecked then Label_C.Caption   := 'Notas de compras bloqueadas';
     end;
-    //
+
     Mais1Ini.Free;
     if Form2.Tag <> 99 then Form1.FormShow(Sender);
   end;
-  //
+end;
+
+procedure TForm2.chkOrcamentoClick(Sender: TObject);
+var
+  Mais1Ini: TIniFile;
+begin
+  if (TSistema.GetInstance.Tema <> _TemaModerno)
+    and (chkOrcamento.State <> cbUnchecked) then
+  begin
+    MensagemSistema('Esse módulo está disponível apenas para o tema Moderno do sistema.',msgAtencao);
+    chkOrcamento.State := cbUnchecked;
+    Exit;
+  end;
+
+  if Form2.bFlag then
+  begin
+    Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
+    if chkOrcamento.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'BOR','0');
+    if chkOrcamento.State = cbChecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'BOR','1');
+    if chkOrcamento.State = cbGrayed then Mais1Ini.WriteString(Senhas.UsuarioPub,'BOR','2');
+
+    with Sender as TCheckBox do
+    begin
+      if State = cbUnchecked then lblOrcamento.Caption := 'Não liberado';
+      if State = cbChecked then lblOrcamento.Caption := 'Liberado';
+      if State = cbGrayed then lblOrcamento.Caption := 'Liberado';
+    end;
+
+    Mais1Ini.Free;
+    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+  end;
 end;
 
 procedure TForm2.CheckBox10Click(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  // Nova Senha
   if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if CheckBox10.State = cbUnchecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B11','0');
     if CheckBox10.State = cbChecked then Mais1Ini.WriteString(Senhas.UsuarioPub,'B11','1');
     if CheckBox10.State = cbGrayed then Mais1Ini.WriteString(Senhas.UsuarioPub,'B11','2');
-    //
+
     with Sender as TCheckBox do
     begin
       if State = cbUnchecked then Label4.Caption := 'Não liberado';
       if State = cbChecked then Label4.Caption := 'Liberado';
       if State = cbGrayed then Label4.Caption := 'Liberado';
     end;
-    //
-{
-    if CheckBox10.State = cbChecked then
-    begin
-      //
-      CheckBox11.State := cbChecked;
-      CheckBox12.State := cbChecked;
-      CheckBox13.State := cbChecked;
-      CheckBox15.State := cbChecked;
-      CheckBox17.State := cbChecked;
-      CheckBox18.State := cbChecked;
-      CheckBox19.State := cbChecked;
-      CheckBox20.State := cbChecked;
-      CheckBox21.State := cbChecked;
-      CheckBox22.State := cbChecked;
-      CheckBox23.State := cbChecked;
-      CheckBox24.State := cbChecked;
-      CheckBox25.State := cbChecked;
-      CheckBox26.State := cbChecked;
-      CheckBox27.State := cbChecked;
-      CheckBox28.State := cbChecked;
-      CheckBox29.State := cbChecked;
-      CheckBox30.State := cbChecked;
-      CheckBox31.State := cbChecked;
-    end else
-    begin
-      CheckBox11.State := cbUnchecked;
-      CheckBox12.State := cbUnchecked;
-      CheckBox13.State := cbUnchecked;
-      CheckBox15.State := cbUnchecked;
-      CheckBox17.State := cbUnchecked;
-      CheckBox18.State := cbUnchecked;
-      CheckBox19.State := cbUnchecked;
-      CheckBox20.State := cbUnchecked;
-      CheckBox21.State := cbUnchecked;
-      CheckBox22.State := cbUnchecked;
-      CheckBox23.State := cbUnchecked;
-      CheckBox24.State := cbUnchecked;
-      CheckBox25.State := cbUnchecked;
-      CheckBox26.State := cbUnchecked;
-      CheckBox27.State := cbUnchecked;
-      CheckBox28.State := cbUnchecked;
-      CheckBox29.State := cbUnchecked;
-      CheckBox30.State := cbUnchecked;
-      CheckBox31.State := cbUnchecked;
-    end;
-}
-    //
+
     Mais1Ini.Free;
     if Form2.Tag <> 99 then Form1.FormShow(Sender);
-    //
   end;
-  //
 end;
 
 
@@ -712,18 +698,13 @@ procedure TForm2.FormShow(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  //
-  // Quando ativa
-  // Nova Senha
-  //
   Form2.bFlag := True;
   Form2.Tag := 99;
-  //
+
   if AllTrim(Senhas.UsuarioPub) <> '' then
   begin
-    //
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
-    //
+
     case StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'B_','9')) of
       0 : CheckBox7.State := cbUnchecked;
       1 : CheckBox7.State := cbChecked;
@@ -767,7 +748,6 @@ begin
     end;
 
 
-    //
     case StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'B2','9')) of
       0 : CheckBox3.State := cbUnchecked;
       1 : CheckBox3.State := cbChecked;
@@ -777,7 +757,7 @@ begin
             CheckBox3.State := cbChecked;
           end;
     end;
-    //
+
     case StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'B3','9')) of
       0 : CheckBox1.State := cbUnchecked;
       1 : CheckBox1.State := cbChecked;
@@ -788,7 +768,20 @@ begin
           end;
 
     end;
-    //
+
+    //Orçamento
+    case StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'BOR',   Mais1Ini.ReadString(Senhas.UsuarioPub,'B2','9')     )) of
+      0 : chkOrcamento.State := cbUnchecked;
+      1 : chkOrcamento.State := cbChecked;
+      2 : chkOrcamento.State := cbGrayed;
+      9 : begin
+            chkOrcamento.State := cbUnchecked;
+            chkOrcamento.State := cbChecked;
+          end;
+
+    end;
+
+
     case StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'B4','9')) of
       0 : CheckBox5.State := cbUnchecked;
       1 : CheckBox5.State := cbChecked;
@@ -809,7 +802,7 @@ begin
           end;
 
     end;
-    //
+
     case StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'B6','9')) of
       0 : CheckBox6.State := cbUnchecked;
       1 : CheckBox6.State := cbChecked;
@@ -820,7 +813,8 @@ begin
           end;
 
     end;
-    //
+
+
     case StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'B7','9')) of
       0 : CheckBox14.State := cbUnchecked;
       1 : CheckBox14.State := cbChecked;
@@ -830,6 +824,7 @@ begin
             CheckBox14.State := cbChecked;
           end;
     end;
+
     //
     case StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'B8','9')) of
       0 : CheckBox16.State := cbUnchecked;
@@ -864,9 +859,8 @@ begin
 
 
     end;
-    //
+
     // Indicadores
-    //
     if (Mais1Ini.ReadString(Senhas.UsuarioPub,'I01','9') = '1') or (Mais1Ini.ReadString(Senhas.UsuarioPub,'I01','9') = '9') then CheckBox11.State := cbChecked else CheckBox11.State := cbUnchecked;
     if (Mais1Ini.ReadString(Senhas.UsuarioPub,'I02','9') = '1') or (Mais1Ini.ReadString(Senhas.UsuarioPub,'I02','9') = '9') then CheckBox12.State := cbChecked else CheckBox12.State := cbUnchecked;
     if (Mais1Ini.ReadString(Senhas.UsuarioPub,'I03','9') = '1') or (Mais1Ini.ReadString(Senhas.UsuarioPub,'I03','9') = '9') then CheckBox13.State := cbChecked else CheckBox13.State := cbUnchecked;
@@ -891,16 +885,35 @@ begin
     if (Mais1Ini.ReadString(Senhas.UsuarioPub,'I22','9') = '1') or (Mais1Ini.ReadString(Senhas.UsuarioPub,'I22','9') = '9') then CheckBox34.State := cbChecked else CheckBox34.State := cbUnchecked;
     if (Mais1Ini.ReadString(Senhas.UsuarioPub,'I23','9') = '1') or (Mais1Ini.ReadString(Senhas.UsuarioPub,'I23','9') = '9') then CheckBox35.State := cbChecked else CheckBox35.State := cbUnchecked;
     if (Mais1Ini.ReadString(Senhas.UsuarioPub,'I24','9') = '1') or (Mais1Ini.ReadString(Senhas.UsuarioPub,'I24','9') = '9') then CheckBox36.State := cbChecked else CheckBox36.State := cbUnchecked;
-    //
+
     Mais1Ini.Free;
     Button2.SetFocus;
-    //
   end;
-  //
+
   Form2.bFlag := True;
   Form2.Tag := 0;
   Form1.FormShow(Sender);
-  //
+
+  //Mauricio Parizotto 2024-07-31
+  Image1.Picture       :=  Form1.imgVendas.Picture;
+  Image1__2.Picture    :=  Form1.imgCompras.Picture;
+  Image1__3.Picture    :=  Form1.imgServicos.Picture;
+
+  Image_.Picture       :=  Form1.imgOrdemServico.Picture;
+  Image2.Picture       :=  Form1.imgEstoque.Picture;
+  Image3.Picture       :=  Form1.imgCliFor.Picture;
+  Image4.Picture       :=  Form1.imgContaReceber.Picture;
+  Image5.Picture       :=  Form1.imgCaixa.Picture;
+  Image6.Picture       :=  Form1.imgBancos.Picture;
+  Image7.Picture       :=  Form1.imgConfiguracoes.Picture;
+  Image9.Picture       :=  Form1.imgIndicadores.Picture;
+  Image8.Picture       :=  Form1.imgBackup.Picture;
+  Image10.Picture      :=  Form1.imgContaPagar.Picture;
+
+  if TSistema.GetInstance.Tema <> _TemaModerno then
+    imgOrcamento.Picture := Form1.imgOrdemServico.Picture
+  else
+    imgOrcamento.Picture := Form1.imgOrcamento.Picture;
 end;
 
 procedure TForm2.CheckBox11Click(Sender: TObject);
@@ -1188,7 +1201,6 @@ end;
 
 procedure TForm2.Auditoria1Click(Sender: TObject);
 begin
-  //
   Form38.Label25.Visible    := True;
   Form38.ComboBox1.Visible  := True;
   Form38.Label2.Visible     := True;
@@ -1197,7 +1209,6 @@ begin
   Form38.DateTimePicker2.Visible := True;
   Form7.sModulo := 'Auditoria';
   Form38.Show;
-  //
 end;
 
 procedure TForm2.Button1Click(Sender: TObject);
@@ -1209,9 +1220,6 @@ procedure TForm2.CheckBox37Click(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  //
-  // Nova Senha
-  //
   if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
@@ -1228,8 +1236,6 @@ begin
     if Form2.Tag <> 99 then Form1.FormShow(Sender);
     //
   end;
-  //
-
 end;
 
 end.
