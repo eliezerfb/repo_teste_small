@@ -1107,7 +1107,7 @@ inherited FrmCadastro: TFrmCadastro
           MaxLength = 254
           ParentFont = False
           TabOrder = 25
-          OnKeyDown = PadraoKeyDown
+          OnKeyDown = memContatoKeyDown
         end
         object edtProxContato: TSMALL_DBEdit
           Left = 530
