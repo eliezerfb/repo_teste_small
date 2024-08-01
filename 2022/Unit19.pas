@@ -1152,6 +1152,7 @@ begin
       Form10.Image205.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form10.Image205.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
+      {Mauricio Parizotto 2024-08-01 Inicio
       // Botão Small Mobile
       if not (Form1.iReduzida = 1) then
       begin
@@ -1161,6 +1162,13 @@ begin
         Form1.imgIndicadores.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
         Form1.imgIndicadores.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
       end;
+      }
+      r1.Left    := 10 + (70 * 2);
+      r1.Right   := 10 + (70 * 3);
+
+      Form1.imgIndicadores.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgIndicadores.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      {Mauricio Parizotto 2024-08-01 Fim}
 
       r1.Left    := 10 + (70 * 3);
       r1.Right   := 10 + (70 * 4);
