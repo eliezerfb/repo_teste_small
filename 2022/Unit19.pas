@@ -143,6 +143,7 @@ type
     rbPrazoDias: TRadioButton;
     rbPrazoFixo: TRadioButton;
     cboDiaVencimento: TComboBox;
+    chkCalcLucroEstoque: TCheckBox;
     procedure FormActivate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
@@ -386,7 +387,8 @@ begin
   //Mauricio Parizotto 2024-02-02
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
-    chkFabricaProdSemQtd.Checked  := ConfSistema.BD.Outras.FabricaProdutoSemQtd;
+    chkFabricaProdSemQtd.Checked := ConfSistema.BD.Outras.FabricaProdutoSemQtd;
+    chkCalcLucroEstoque.Checked  := ConfSistema.BD.Outras.CalculaLucroAltVenda;
     ComboBoxOS.ItemIndex := ComboBoxOS.Items.IndexOf(ConfSistema.BD.Impressora.ImpressoraOS); // Mauricio Parizotto 2024-05-10
 	{Mauricio Parizotto 2024-04-23 Inicio}
     if ConfSistema.BD.Outras.TipoPrazo = 'dias' then
@@ -516,6 +518,7 @@ begin
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
     ConfSistema.BD.Outras.FabricaProdutoSemQtd := chkFabricaProdSemQtd.Checked;
+    ConfSistema.BD.Outras.CalculaLucroAltVenda := chkCalcLucroEstoque.Checked;
     ConfSistema.BD.Impressora.ImpressoraOS     := ComboBoxOS.Text; // Mauricio Parizotto 2024-05-10
     {Mauricio Parizotto 2024-04-23 Inicio}
     if rbPrazoFixo.Checked then
