@@ -111,7 +111,7 @@ var
 begin
   if iTpApresentacao <> 3 then
   begin
-    Senhas.edtSenha.SetFocus;
+    edtSenha.SetFocus;
 
     Mais1ini := TIniFile.Create('MAIS1.INI');
     Usuario.Text := Mais1Ini.ReadString('Usuarios','Nome',Usuario.Text);
