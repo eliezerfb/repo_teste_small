@@ -5,7 +5,7 @@ object Form2: TForm2
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Liberar os m'#243'dulos:'
-  ClientHeight = 571
+  ClientHeight = 598
   ClientWidth = 784
   Color = clWhite
   Ctl3D = False
@@ -42,7 +42,7 @@ object Form2: TForm2
     Left = 0
     Top = 0
     Width = 784
-    Height = 571
+    Height = 598
     Align = alClient
     BevelOuter = bvNone
     Color = clWhite
@@ -50,6 +50,10 @@ object Form2: TForm2
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 1
+    ExplicitHeight = 571
+    DesignSize = (
+      784
+      598)
     object Label1: TLabel
       Left = 10
       Top = 10
@@ -116,7 +120,7 @@ object Form2: TForm2
     object Image2: TImage
       Tag = 1
       Left = 10
-      Top = 230
+      Top = 265
       Width = 35
       Height = 35
       Stretch = True
@@ -125,7 +129,7 @@ object Form2: TForm2
     object Image3: TImage
       Tag = 1
       Left = 10
-      Top = 265
+      Top = 300
       Width = 35
       Height = 35
       Stretch = True
@@ -134,7 +138,7 @@ object Form2: TForm2
     object Image4: TImage
       Tag = 1
       Left = 10
-      Top = 300
+      Top = 335
       Width = 35
       Height = 35
       Stretch = True
@@ -143,7 +147,7 @@ object Form2: TForm2
     object Image7: TImage
       Tag = 1
       Left = 10
-      Top = 475
+      Top = 510
       Width = 35
       Height = 35
       Stretch = True
@@ -152,7 +156,7 @@ object Form2: TForm2
     object Image8: TImage
       Tag = 1
       Left = 10
-      Top = 510
+      Top = 545
       Width = 35
       Height = 35
       Stretch = True
@@ -174,7 +178,7 @@ object Form2: TForm2
     object Label_3: TLabel
       Tag = 1
       Left = 210
-      Top = 240
+      Top = 275
       Width = 97
       Height = 16
       Caption = 'Somente Leitura'
@@ -191,7 +195,7 @@ object Form2: TForm2
     object Label_1: TLabel
       Tag = 1
       Left = 210
-      Top = 275
+      Top = 310
       Width = 93
       Height = 16
       Caption = 'Somente leitura'
@@ -208,7 +212,7 @@ object Form2: TForm2
     object Label_5: TLabel
       Tag = 1
       Left = 210
-      Top = 310
+      Top = 345
       Width = 97
       Height = 16
       Caption = 'Somente Leitura'
@@ -225,7 +229,7 @@ object Form2: TForm2
     object Label_4: TLabel
       Tag = 1
       Left = 210
-      Top = 380
+      Top = 415
       Width = 97
       Height = 16
       Caption = 'Somente Leitura'
@@ -242,7 +246,7 @@ object Form2: TForm2
     object Label_6: TLabel
       Tag = 1
       Left = 210
-      Top = 415
+      Top = 450
       Width = 97
       Height = 16
       Caption = 'Somente Leitura'
@@ -259,7 +263,7 @@ object Form2: TForm2
     object Label_14: TLabel
       Tag = 1
       Left = 210
-      Top = 485
+      Top = 520
       Width = 97
       Height = 16
       Caption = 'Somente Leitura'
@@ -276,7 +280,7 @@ object Form2: TForm2
     object Label_16: TLabel
       Tag = 1
       Left = 210
-      Top = 520
+      Top = 555
       Width = 97
       Height = 16
       Caption = 'Somente Leitura'
@@ -293,7 +297,7 @@ object Form2: TForm2
     object Image10: TImage
       Tag = 1
       Left = 10
-      Top = 335
+      Top = 370
       Width = 35
       Height = 35
       Stretch = True
@@ -302,7 +306,7 @@ object Form2: TForm2
     object Label_2: TLabel
       Tag = 1
       Left = 210
-      Top = 345
+      Top = 380
       Width = 97
       Height = 16
       Caption = 'Somente Leitura'
@@ -343,7 +347,7 @@ object Form2: TForm2
     object Image5: TImage
       Tag = 1
       Left = 10
-      Top = 370
+      Top = 405
       Width = 35
       Height = 35
       Stretch = True
@@ -352,7 +356,7 @@ object Form2: TForm2
     object Image6: TImage
       Tag = 1
       Left = 10
-      Top = 405
+      Top = 440
       Width = 35
       Height = 35
       Stretch = True
@@ -361,7 +365,7 @@ object Form2: TForm2
     object Image9: TImage
       Tag = 1
       Left = 10
-      Top = 440
+      Top = 475
       Width = 35
       Height = 35
       Stretch = True
@@ -370,7 +374,7 @@ object Form2: TForm2
     object Label4: TLabel
       Tag = 1
       Left = 210
-      Top = 450
+      Top = 485
       Width = 97
       Height = 16
       Caption = 'Somente Leitura'
@@ -445,6 +449,31 @@ object Form2: TForm2
       ParentFont = False
       Transparent = True
     end
+    object imgOrcamento: TImage
+      Tag = 1
+      Left = 10
+      Top = 230
+      Width = 35
+      Height = 35
+      Stretch = True
+      Transparent = True
+    end
+    object lblOrcamento: TLabel
+      Left = 210
+      Top = 240
+      Width = 79
+      Height = 16
+      Caption = 'N'#227'o liberado'
+      Color = clWhite
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -13
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      Transparent = True
+    end
     object Usuario: TComboBox
       Left = 55
       Top = 10
@@ -480,7 +509,7 @@ object Form2: TForm2
     object CheckBox3: TCheckBox
       Tag = 1
       Left = 65
-      Top = 240
+      Top = 275
       Width = 120
       Height = 17
       AllowGrayed = True
@@ -498,7 +527,7 @@ object Form2: TForm2
     object CheckBox1: TCheckBox
       Tag = 1
       Left = 65
-      Top = 275
+      Top = 310
       Width = 120
       Height = 17
       AllowGrayed = True
@@ -516,7 +545,7 @@ object Form2: TForm2
     object CheckBox5: TCheckBox
       Tag = 1
       Left = 65
-      Top = 310
+      Top = 345
       Width = 120
       Height = 17
       AllowGrayed = True
@@ -534,7 +563,7 @@ object Form2: TForm2
     object CheckBox4: TCheckBox
       Tag = 1
       Left = 65
-      Top = 380
+      Top = 415
       Width = 120
       Height = 17
       AllowGrayed = True
@@ -552,7 +581,7 @@ object Form2: TForm2
     object CheckBox6: TCheckBox
       Tag = 1
       Left = 65
-      Top = 415
+      Top = 450
       Width = 120
       Height = 17
       AllowGrayed = True
@@ -570,7 +599,7 @@ object Form2: TForm2
     object CheckBox14: TCheckBox
       Tag = 1
       Left = 65
-      Top = 485
+      Top = 520
       Width = 120
       Height = 17
       AllowGrayed = True
@@ -588,7 +617,7 @@ object Form2: TForm2
     object CheckBox16: TCheckBox
       Tag = 1
       Left = 65
-      Top = 520
+      Top = 555
       Width = 120
       Height = 17
       Caption = 'Backup'
@@ -606,19 +635,22 @@ object Form2: TForm2
       Left = 200
       Top = 55
       Width = 1
-      Height = 500
+      Height = 527
+      Anchors = [akLeft, akTop, akBottom]
       BevelOuter = bvNone
       Color = clBlack
       Ctl3D = True
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 32
+      ExplicitHeight = 500
     end
     object Panel3: TPanel
       Left = 55
       Top = 55
       Width = 1
-      Height = 500
+      Height = 527
+      Anchors = [akLeft, akTop, akBottom]
       BevelOuter = bvNone
       BorderStyle = bsSingle
       Color = clBlack
@@ -626,6 +658,7 @@ object Form2: TForm2
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 33
+      ExplicitHeight = 500
     end
     object Panel4: TPanel
       Left = 10
@@ -642,7 +675,7 @@ object Form2: TForm2
     object CheckBox2: TCheckBox
       Tag = 1
       Left = 65
-      Top = 345
+      Top = 380
       Width = 120
       Height = 17
       AllowGrayed = True
@@ -692,7 +725,7 @@ object Form2: TForm2
     object CheckBox10: TCheckBox
       Tag = 1
       Left = 65
-      Top = 450
+      Top = 485
       Width = 120
       Height = 17
       Caption = 'Indicadores'
@@ -726,13 +759,15 @@ object Form2: TForm2
       Left = 420
       Top = 55
       Width = 1
-      Height = 500
+      Height = 527
+      Anchors = [akLeft, akTop, akBottom]
       BevelOuter = bvNone
       Color = clBlack
       Ctl3D = True
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 39
+      ExplicitHeight = 500
     end
     object Panel6: TPanel
       Left = 420
@@ -1143,6 +1178,22 @@ object Form2: TForm2
       ParentFont = False
       TabOrder = 43
       OnClick = CheckBox37Click
+      OnKeyUp = CheckBox8KeyUp
+    end
+    object chkOrcamento: TCheckBox
+      Left = 65
+      Top = 240
+      Width = 120
+      Height = 17
+      Caption = 'Or'#231'amento'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 44
+      OnClick = chkOrcamentoClick
       OnKeyUp = CheckBox8KeyUp
     end
   end

@@ -133,8 +133,8 @@ begin
 
     //Mauricio Parizotto 2024-07-31
     //Módulos
-    MostraImagemCoordenada(imgTemplate,IconesSistema.imgOrcamento,2,7);
-    MostraImagemCoordenada(imgTemplate,IconesSistema.imgOrcamentoF,6,7);
+    MostraImagemCoordenada(imgTemplate,IconesSistema.imgOrcamento,3,7);
+    MostraImagemCoordenada(imgTemplate,IconesSistema.imgOrcamentoF,7,7);
 
   finally
     FreeAndNil(imgTemplate);

@@ -199,20 +199,11 @@ begin
 end;
 
 procedure TForm29.FormCreate(Sender: TObject);
-var
-  sImgFundo : string;
 begin
   Gauge1.Font.Name := 'MS Serif'; //Problema fonte borada no Delphi 7
   Gauge1.Font.Style := [fsBold];
 
   Panel_dados.Left := 40;
-
-  //Mauricio Parizotto 2024-07-30
-  sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'13');
-
-  if FileExists(sImgFundo) then
-    imgFundoAviso.Picture.LoadFromFile(sImgFundo) ;
-
 end;
 
 procedure TForm29.DefinirSomenteNumeros;
@@ -253,9 +244,17 @@ begin
 end;
 
 procedure TForm29.FormShow(Sender: TObject);
+var
+  sImgFundo : string;
 begin
   if memTexto.Visible then
     memTextoChange(sender);
+
+  //Mauricio Parizotto 2024-07-30
+  sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'13');
+
+  if FileExists(sImgFundo) then
+    imgFundoAviso.Picture.LoadFromFile(sImgFundo) ;
 end;
 
 procedure TForm29.btnOKClick(Sender: TObject);

@@ -28,11 +28,9 @@ object Form19: TForm19
     Top = 20
     Width = 773
     Height = 546
-    ActivePage = Orelha_perfil
+    ActivePage = Orelha_relatorios
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 771
-    ExplicitHeight = 538
     object Orelha_relatorios: TTabSheet
       Caption = 'Relat'#243'rios'
       object GroupBox3: TGroupBox
@@ -319,7 +317,6 @@ object Form19: TForm19
           ShowHint = True
           TabOrder = 1
           TabStop = True
-          OnClick = rbModernoClick
           OnKeyDown = FormKeyDown
         end
       end
@@ -1516,7 +1513,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
-    ExplicitHeight = 538
     object Button2: TButton
       Left = 350
       Top = 5
@@ -1538,8 +1534,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 2
-    ExplicitLeft = 791
-    ExplicitHeight = 538
     object Button6: TButton
       Left = 350
       Top = 5
@@ -1561,8 +1555,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 3
-    ExplicitTop = 558
-    ExplicitWidth = 811
     object btnCancelar: TButton
       Left = 588
       Top = 19
@@ -1607,7 +1599,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 4
-    ExplicitWidth = 811
   end
   object ColorDialog1: TColorDialog
     Color = clGreen
