@@ -205,7 +205,7 @@ var
 implementation
 
 uses Mais, Unit7, Unit14, Unit22, Unit12, Unit10, Unit2, Unit4,
-  Unit24, Unit8, uDialogs, uArquivosDAT, uSmallConsts;
+  Unit24, uDialogs, uArquivosDAT, uSmallConsts;
 
 {$R *.DFM}
 

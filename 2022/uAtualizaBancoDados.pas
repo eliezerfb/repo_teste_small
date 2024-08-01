@@ -135,7 +135,7 @@ begin
   end;
 
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados...');
+  Mensagem22('Alterando estrutura do banco de dados');
 
   DropViewProcedure;
 
@@ -558,7 +558,7 @@ begin
 
   // Imformações complementares COMPRAS
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados... (Imformações complementares COMPRAS)');
+  Mensagem22('Alterando estrutura do banco de dados... (Imformações complementares COMPRAS)');
 
   try
     if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'COMPLEMENTO') = False then
@@ -585,7 +585,7 @@ begin
   end;
 
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados... (COMPRAS NFEID)');
+  Mensagem22('Alterando estrutura do banco de dados... (COMPRAS NFEID)');
 
   // COMPRAS NFEID
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'NFEID') = False then
@@ -610,11 +610,10 @@ begin
 
   // IVA
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados... (IVA)');
+  Mensagem22('Alterando estrutura do banco de dados... (IVA)');
 
   try
-    Mensagem22('Aguarde atualizando o campo IVA...');
-    //
+    Mensagem22('Atualizando o campo IVA');
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
     Form1.ibDataset200.SelectSql.Add('alter table ESTOQUE add PIVA double precision');
@@ -780,7 +779,7 @@ begin
 
   // NFC-e
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados... (NFC-e)');
+  Mensagem22('Alterando estrutura do banco de dados... (NFC-e)');
 
   if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'NFCE') = False then
   begin
@@ -919,7 +918,7 @@ begin
 
   // PAF
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados... (PAF)');
+  Mensagem22('Alterando estrutura do banco de dados... (PAF)');
 
   if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'DEMAIS') = False then
   begin
@@ -940,7 +939,7 @@ begin
   
   // SPED
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados... (SPED)');
+  Mensagem22('Alterando estrutura do banco de dados... (SPED)');
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'VICMS') = False then
     ExecutaComando('alter table ITENS001 add VICMS numeric(18,2)');
@@ -957,7 +956,7 @@ begin
   ExecutaComando('commit');
   // vIPI
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados... (vIPI)');
+  Mensagem22('Alterando estrutura do banco de dados... (vIPI)');
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'vIPI') = False then
     ExecutaComando('alter table ITENS001 add vIPI numeric(18,2)');
@@ -967,7 +966,7 @@ begin
 
   // SPED COMPRAS
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados... (vICMS)');
+  Mensagem22('Alterando estrutura do banco de dados... (vICMS)');
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'VICMS') = False then
     ExecutaComando('alter table ITENS002 add VICMS numeric(18,2)');
@@ -999,7 +998,7 @@ begin
   ExecutaComando('commit');
 
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados... (NUMERONF)');
+  Mensagem22('Alterando estrutura do banco de dados... (NUMERONF)');
 
   ExecutaComando('alter table RESUMO alter DOCUMENTO type varchar(12)');
   ExecutaComando('commit');
@@ -1658,7 +1657,7 @@ begin
   if sBuild < '336' then
   begin
     Form22.Repaint;
-    Mensagem22('Aguarde alterando estrutura do banco de dados... (336)');
+    Mensagem22('Alterando estrutura do banco de dados... (336)');
     // Para atender o PAF o DAV tem que ter Número com 10 dígitos
     ExecutaComando('alter table ORCAMENT alter PEDIDO type varchar(10)');
 
@@ -1692,7 +1691,7 @@ begin
   end;
 
   Form22.Repaint;
-  Mensagem22('Aguarde alterando estrutura do banco de dados... (337)');
+  Mensagem22('Alterando estrutura do banco de dados... (337)');
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'EMITENTE', 'IM') = False then
     ExecutaComando('alter table EMITENTE add IM varchar(16)');
@@ -2659,9 +2658,7 @@ begin
   {Mauricio Parizotto 204-07-10 Fim}
 
   Form22.Repaint;
-  Mensagem22('Aguarde...');
 
-  
   try
     Form7.TabelaAberta           := Form7.ibDataSet2;
 
@@ -2709,7 +2706,6 @@ begin
 
   try
     Form1.este1Click(nil);
-    Form22.Button1.Visible := False;
     ExecutaComando('set generator G_BUILD to ' + BUILD_DO_BANCO); // Sandro Silva 2022-09-12 Form1.ibDataset200.SelectSql.Add('set generator G_BUILD to 2022004');
   except
   end;
@@ -2720,7 +2716,7 @@ begin
 
   Form13.Tag := 99;
 
-  Mensagem22('Criando indicadores...');
+  Mensagem22('Criando indicadores');
 
   Form22.Repaint;
   Mensagem22('Alteração na estrutura Ok');

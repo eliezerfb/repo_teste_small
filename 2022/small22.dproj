@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -126,7 +126,7 @@
         <DCCReference Include="MAIS.PAS">
             <Form>Form1</Form>
         </DCCReference>
-        <DCCReference Include="MAIS3.PAS">
+        <DCCReference Include="Mais3.pas">
             <Form>Senhas</Form>
         </DCCReference>
         <DCCReference Include="UNIT2.PAS">
@@ -155,9 +155,6 @@
         </DCCReference>
         <DCCReference Include="Unit17.pas">
             <Form>Form17</Form>
-        </DCCReference>
-        <DCCReference Include="unit99.pas">
-            <Form>Form99</Form>
         </DCCReference>
         <DCCReference Include="uFrmParcelas.pas">
             <Form>FrmParcelas</Form>
@@ -216,9 +213,6 @@
         <DCCReference Include="Unit13.pas">
             <Form>Form13</Form>
         </DCCReference>
-        <DCCReference Include="UNIT3.PAS">
-            <Form>Senhas2</Form>
-        </DCCReference>
         <DCCReference Include="unit24.pas">
             <Form>Form24</Form>
         </DCCReference>
@@ -233,9 +227,6 @@
         </DCCReference>
         <DCCReference Include="Unit35.pas">
             <Form>Form35</Form>
-        </DCCReference>
-        <DCCReference Include="Unit8.pas">
-            <Form>Form8</Form>
         </DCCReference>
         <DCCReference Include="uExportaXML.pas">
             <Form>frmExportaXML</Form>
@@ -520,7 +511,6 @@
         <DCCReference Include="units\uConsultaCEP.pas"/>
         <DCCReference Include="uFrmConversaoCFOP.pas">
             <Form>FrmConversaoCFOP</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uConfiguracaoTEFCommerce.pas">
             <Form>frmConfiguracaoTEFCommerce</Form>
@@ -539,40 +529,31 @@
         <DCCReference Include="units\uDuplicaNFSe.pas"/>
         <DCCReference Include="uFrmConvenio.pas">
             <Form>FrmConvenio</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmCaixa.pas">
             <Form>FrmCaixa</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmGrupoMercadoria.pas">
             <Form>FrmGrupoMercadoria</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmTransportadora.pas">
             <Form>FrmTransportadora</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmPlanoContas.pas">
             <Form>FrmPlanoContas</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmBanco.pas">
             <Form>FrmBanco</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmContaBancaria.pas">
             <Form>FrmContaBancaria</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\unit_compartilhada\uImpressoraSections.pas"/>
         <DCCReference Include="uFrmContaReceber.pas">
             <Form>FrmContaReceber</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmContaPagar.pas">
             <Form>FrmContaPagar</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmIntegracaoItau.pas">
             <Form>FrmIntegracaoItau</Form>
@@ -1435,6 +1416,7 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
@@ -2259,6 +2241,7 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>

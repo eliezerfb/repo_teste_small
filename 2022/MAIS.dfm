@@ -8,14 +8,14 @@ object Form1: TForm1
   AlphaBlendValue = 250
   BorderStyle = bsSingle
   Caption = 'form'
-  ClientHeight = 887
-  ClientWidth = 1297
+  ClientHeight = 895
+  ClientWidth = 1299
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
+  Font.Color = clBlack
   Font.Height = -13
-  Font.Name = 'System'
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   WindowState = wsMaximized
   OnActivate = FormActivate
@@ -5818,6 +5818,7 @@ object Form1: TForm1
     Width = 800
     Height = 669
     BevelOuter = bvNone
+    BorderStyle = bsSingle
     Color = clWhite
     Ctl3D = False
     ParentBackground = False

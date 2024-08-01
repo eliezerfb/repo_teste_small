@@ -31137,10 +31137,9 @@ begin
 
     end else
     begin
-      Form22.Label6.Caption := 'Última consulta de NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString+' foi as '+sHora+
+      Form22.lblMsgCarregamento.Caption := 'Última consulta de NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString+' foi as '+sHora+
                                 Form7.GetMensagemCertificado('ABERTURA');
-      Form22.Label6.Width   := Screen.Width;
-      Form22.Label6.Repaint;
+      Form22.lblMsgCarregamento.Repaint;
     end;
   end;
 end;
