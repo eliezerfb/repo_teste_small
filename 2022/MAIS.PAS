@@ -239,7 +239,7 @@ type
     ConsultarNFesemitidas1: TMenuItem;
     N14: TMenuItem;
     Modoinventrio1: TMenuItem;
-    Label1: TLabel;
+    lblTitulo: TLabel;
     Label3: TLabel;
     Panel1: TPanel;
     Panel5: TPanel;
@@ -1939,9 +1939,11 @@ begin
   Form1.Panel4.Visible  := False;
   //Form1.Panel_3.Visible := False;
 
-  Form1.Label1.Caption      := sP1;
+  Form1.lblTitulo.Top      := 110;
+  Form1.lblTitulo.Caption  := sP1;
 
-  Form1.Label3.Top := Form1.Label1.Top + Form1.Label1.Height + 35;
+  //Form1.Label3.Top := Form1.lblTitulo.Top + Form1.lblTitulo.Height + 35; Mauricio Parizotto 2024-08-02
+  Form1.Label3.Top := Form1.lblTitulo.Top + Form1.lblTitulo.Height + 100;
 
   Form1.Label3.Caption      := sP2;
 
@@ -4870,10 +4872,10 @@ begin
 
   if (Form1.iReduzida = 1) then
   begin
-
     Form1.Caption     := 'Small Go';
     Application.Title := 'Small Go';
 
+    {Mauricio Parizotto 2024-08-02
     Titulo(
            'SMALL GO, SIMPLES'+chr(10)+
            'FÁCIL E VERSÁTIL',
@@ -4882,12 +4884,16 @@ begin
            'simples de usar e atende a'+chr(10)+
            'necessidade de emissão de'+chr(10)+
            'NF-e, NFC-e e SAT.');
-
+    }
+    Titulo(
+           'Small GO: Completo, simples e versátil',
+           'O Small GO é simples de usar e atende às necessidades da sua empresa.');
   end;
 
   if (Form1.iReduzida = 0) then
   begin
     Form1.Caption := 'Small Commerce';
+    {Mauricio Parizotto 2024-08-02
     Titulo(
          'SMALL COMMERCE, '+chr(10)+
          'COMPLETO, SIMPLES E'+chr(10)+
@@ -4899,9 +4905,16 @@ begin
          'das mais variadas'+chr(10)+
          'empresas de'+chr(10)+
          'comércio');
+    }
+    Titulo(
+         'Small Commerce: Completo, simples e versátil',
+         'O Small Commerce é simples de usar e atende '+#13#10+
+         'às necessidades da sua empresa.');
+
   end;
 
   // Sandro Silva 2023-06-02 if (Form1.iReduzida = 2) then
+  {Mauricio Parizotto 2024-08-02
   if bEmpresaMei then
   begin
     Form1.Caption := 'Small Commerce (MEI)';
@@ -4915,6 +4928,7 @@ begin
          'e atende a legislação'+chr(10)+
          'do MEI');
   end;
+  }
 
   Screen.Cursor             := crHourGlass;    // Cursor de Aguardo
   Mais1Ini.Free;
@@ -6428,10 +6442,19 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto 2024-08-02
       Titulo(
 
             'EMITA A NF-e DE'+chr(10)+'VENDA',
 
+            'A Nota Fiscal Eletrônica além de'+chr(10)+
+            'atender a legislação controla as'+chr(10)+
+            'vendas da sua empresa'+chr(10)+
+            'de forma automática'
+
+            );
+      }
+      Titulo('Emita a NF-e de Venda',
             'A Nota Fiscal Eletrônica além de'+chr(10)+
             'atender a legislação controla as'+chr(10)+
             'vendas da sua empresa'+chr(10)+
@@ -11119,9 +11142,17 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto 2024-08-02
       Titulo('CONTROLE O '+chr(10)+
              'ESTOQUE'
              ,
+             'O controle de estoque bem'+chr(10)+
+             'organizado evita prejuízos'+chr(10)+
+             'e garante uma maior'+chr(10)+
+             'margem de lucro'
+            );
+      }
+      Titulo('Controle o Estoque',
              'O controle de estoque bem'+chr(10)+
              'organizado evita prejuízos'+chr(10)+
              'e garante uma maior'+chr(10)+
@@ -11154,10 +11185,19 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto 2024-08-02
       Titulo(
             'UTILIZE A ORDEM '+chr(10)+
             'DE SERVIÇOS'
             ,
+            'A Ordem de Serviços facilita'+chr(10)+
+            'o atendimento ao cliente'+chr(10)+
+            'e organiza e mantém todo'+chr(10)+
+            'o trabalho documentado'
+            , 'SERVIÇO'
+            );
+      }
+      Titulo('Utilize a Ordem de Serviços',
             'A Ordem de Serviços facilita'+chr(10)+
             'o atendimento ao cliente'+chr(10)+
             'e organiza e mantém todo'+chr(10)+
@@ -11191,7 +11231,17 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto 2024-08-02
       Titulo('MANTENHA O CADASTRO'+chr(10)+'ATUALIZADO',
+             'O cadastro com as informações'+chr(10)+
+             'corretamente registradas'+chr(10)+
+             'conserva seus canais de'+chr(10)+
+             'comunicação com clientes,'+chr(10)+
+             'fornecedores, funcionários,'+chr(10)+
+             'entre outros'
+             );
+      }
+      Titulo('Mantenha o Cadastro atualizado',
              'O cadastro com as informações'+chr(10)+
              'corretamente registradas'+chr(10)+
              'conserva seus canais de'+chr(10)+
@@ -11226,10 +11276,18 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto 2024-08-02
       Titulo(
              'MONITORE AS CONTAS'+chr(10)+
              'A RECEBER'
              ,
+             'As contas a receber bem controladas'+chr(10)+
+             'diminuem o impacto que a inadimplência'+chr(10)+
+             'pode ter em seu negócio'
+             , 'RECEBER'
+             );
+      }
+      Titulo('Monitore as Contas a Receber',
              'As contas a receber bem controladas'+chr(10)+
              'diminuem o impacto que a inadimplência'+chr(10)+
              'pode ter em seu negócio'
@@ -11262,6 +11320,7 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto 2024-08-02
       Titulo(
             'CONTROLE O '+chr(10)+
             'CAIXA'
@@ -11273,6 +11332,16 @@ begin
             'análise das contas'
             , 'CAIXA'
             );
+      }
+      Titulo('Controle o Caixa',
+            'O fechamento exato do caixa permite'+chr(10)+
+            'total controle financeiro'+chr(10)+
+            'auxiliando na tomadas de'+chr(10)+
+            'decisões através da'+chr(10)+
+            'análise das contas'
+            , 'CAIXA'
+            );
+
     end;
   end;
 end;
@@ -11299,11 +11368,20 @@ begin
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
       {Mauricio Parizotto 2024-07-30 Fim}
-
+      {Mauricio Parizotto 2024-08-02
       Titulo(
             'FIQUE DE OLHO NOS '+chr(10)+
             'BANCOS'
             ,
+            'O controle rigoroso das contas'+chr(10)+
+            'bancárias previne o pagamento'+chr(10)+
+            'de juros e permite um'+chr(10)+
+            'planejamento dos'+chr(10)+
+            'investimentos'
+            , 'BANCOS'
+            );
+      }
+      Titulo('Fique de olho nos Bancos',
             'O controle rigoroso das contas'+chr(10)+
             'bancárias previne o pagamento'+chr(10)+
             'de juros e permite um'+chr(10)+
@@ -11338,10 +11416,18 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto 2024-08-02
       Titulo(
             'CONFIGURE'+chr(10)+
             'O SISTEMA'
             ,
+            'A configuração correta, ajusta'+chr(10)+
+            'o sistema de acordo com as'+chr(10)+
+            'particularidades da'+chr(10)+
+            'sua empresa'
+            );
+      }
+      Titulo('Configure o Sistema',
             'A configuração correta, ajusta'+chr(10)+
             'o sistema de acordo com as'+chr(10)+
             'particularidades da'+chr(10)+
@@ -11374,11 +11460,19 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto 2024-08-02
       Titulo(
             'FAÇA BACKUP'+chr(10)+
             'TODOS OS'+chr(10)+
             'DIAS'
             ,
+            'O Backup é a única forma de'+chr(10)+
+            'manter seus dados'+chr(10)+
+            'seguros'+chr(10)+chr(10)+
+            Form1.imgBackup.Hint
+            );
+      }
+      Titulo('Faça o Backup todos os dias',
             'O Backup é a única forma de'+chr(10)+
             'manter seus dados'+chr(10)+
             'seguros'+chr(10)+chr(10)+
@@ -11411,10 +11505,20 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto 2024-08-02
       Titulo(
             'ORGANIZE AS CONTAS'+chr(10)+
             'A PAGAR'
             ,
+            'As contas a pagar bem organizadas geram'+chr(10)+
+            'uma previsão dos compromissos'+chr(10)+
+            'financeiros facilitando o'+chr(10)+
+            'controle do fluxo'+chr(10)+
+            'de caixa'
+            , 'PAGAR'
+            );
+      }
+      Titulo('Organize as Contas a Pagar',
             'As contas a pagar bem organizadas geram'+chr(10)+
             'uma previsão dos compromissos'+chr(10)+
             'financeiros facilitando o'+chr(10)+
@@ -11448,6 +11552,7 @@ begin
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
+      {Mauricio Parizotto 2024-08-02
       Titulo(
             'UTILIZE O ORÇAMENTO'
             ,
@@ -11457,6 +11562,16 @@ begin
             'o trabalho documentado'
             , 'SERVIÇO'
             );
+      }
+
+      Titulo('Orçamentos Detalhados',
+            'O orçamento facilita'+chr(10)+
+            'o atendimento ao cliente'+chr(10)+
+            'e organiza e mantém todo'+chr(10)+
+            'o trabalho documentado'
+            , 'SERVIÇO'
+            );
+
     end;
   end;
 end;
@@ -11573,10 +11688,19 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto 2024-08-02
       Titulo(
             'ACOMPANHE OS'+chr(10)+
             'INDICADORES'
             ,
+            'Configure um painel de indicadores'+chr(10)+
+            'personalizado por usuário de'+chr(10)+
+            'acordo com as necessidades'+chr(10)+
+            'gerenciais da sua empresa'+chr(10)
+            , 'INDICADORES'
+            );
+      }
+      Titulo('Acompanhe os Indicadores',
             'Configure um painel de indicadores'+chr(10)+
             'personalizado por usuário de'+chr(10)+
             'acordo com as necessidades'+chr(10)+
@@ -12327,8 +12451,16 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto
       Titulo(
             'CONTROLE AS NOTAS'+Chr(10)+'DE COMPRAS',
+            'Controle as entradas de '+chr(10)+
+            'mercadoria da sua'+chr(10)+
+            'empresa de forma'+chr(10)+
+            'automática'
+            );
+      }
+      Titulo('Controle as Notas de Compra',
             'Controle as entradas de '+chr(10)+
             'mercadoria da sua'+chr(10)+
             'empresa de forma'+chr(10)+
@@ -12361,8 +12493,17 @@ begin
 
       {Mauricio Parizotto 2024-07-30 Fim}
 
+      {Mauricio Parizotto 2024-08-02
       Titulo(
             'EMITA A NFS-e DE'+chr(10)+'SERVIÇOS',
+            'A Nota Fiscal Eletrônica de Serviços além'+chr(10)+
+            'de atender a legislação controla os'+chr(10)+
+            'serviços prestados pela sua'+chr(10)+
+            'empresa'
+            , 'SERVIÇO'
+            );
+      }
+      Titulo('Emita a NFS-e de Serviços',
             'A Nota Fiscal Eletrônica de Serviços além'+chr(10)+
             'de atender a legislação controla os'+chr(10)+
             'serviços prestados pela sua'+chr(10)+
