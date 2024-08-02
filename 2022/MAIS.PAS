@@ -4552,6 +4552,12 @@ begin
     bTemAtuaNFeSetup := True; // Controlar que não execute 2x o nfe_setup.exe devido a build salva no frente.ini diferente do build do NFE_SETUP.EXE
   end;
   {Sandro Silva 2024-05-06 fim}
+
+  //Mauricio Parizotto 2024-08-02
+  Form22.pnlCarregamento.Left    := (Form22.Width div 2) - (Form22.pnlCarregamento.Width div 2) ;
+  Form22.pnlCarregamento.Top     := (Form22.Height div 2) - (Form22.pnlCarregamento.Height div 2) ;
+  Form22.pnlCarregamento.Visible := True;
+
   InstalaAtualizacao('nfe_setup','1');
   InstalaAtualizacao('nfse_setup','2');
   InstalaAtualizacao('nfce_setup','3');
@@ -4561,9 +4567,12 @@ begin
   InstalaAtualizacao('pastanfce','7');
   InstalaAtualizacao('pastadllsat','8');
   InstalaAtualizacao('pastaopenssl','2');
-  // Sandro Silva 2022-12-28 InstalaAtualizacao('cdf_to','9');
   InstalaAtualizacao('paf2022_','10');
   InstalaAtualizacao('paf2023_','10');// Sandro Silva 2022-12-28
+
+  //Mauricio Parizotto 2024-08-02
+  Form22.pnlCarregamento.Visible := False;
+  Application.ProcessMessages;
 
   if FileExists(Form1.sAtual+'\small.saas') then
   begin
