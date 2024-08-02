@@ -907,7 +907,7 @@ begin
   begin
     if uDialogs.MensagemSistemaPergunta('A nova iconografia foi desenvolvida para ser mais moderna, intuitiva e funcional.'+#13#10+
                                         'Consideramos importante que você experimente essa mudança.'+#13#10+
-                                        'Você pode poderá utilizar o tema clássico até sua descontinuação em 31/12/2024.'+#13#10+
+                                        'Você poderá utilizar o tema clássico até sua descontinuação em 31/12/2024.'+#13#10+
                                         #13#10+
                                         'Deseja mudar mesmo assim?', [mb_YesNo]) <> mrYes then
     begin
