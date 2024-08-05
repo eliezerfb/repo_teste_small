@@ -8508,7 +8508,7 @@ begin
       CarregaIconesSistema;
 
       //Novo método - ir migrando de Form19.CarregaIconesSistema
-      imgOrcamento.Picture    := IconesSistema.GetIconOrcamento(True).Picture;
+      imgOrcamento.Picture    := IconesSistema.GetIconOrcamento(False).Picture;
 
       //Define fundo inicial
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'6');
@@ -13202,10 +13202,8 @@ begin
 
   {Mauricio parizotto 2023-08-09 Fim}
 
-  {Mauricio Parizotto 2024-07-29
   if Backup.FazerBackup = IDYES then
     Form19.CarregaIconesSistema;
-  }
 
   FreeAndNil(Backup);
 
