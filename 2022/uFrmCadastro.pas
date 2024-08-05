@@ -537,9 +537,13 @@ end;
 
 procedure TFrmCadastro.memObsEnter(Sender: TObject);
 begin
+  //Mauricio Parizotto - SMAL-629
+  Form7.ibDataSet2OBS.AsString := StringReplace(Form7.ibDataSet2OBS.AsString,#13#10#13#10,#13#10,[rfReplaceAll]);
+  Form7.ibDataSet2OBS.AsString := StringReplace(Form7.ibDataSet2OBS.AsString,#13#10#13#10,#13#10,[rfReplaceAll]);
+
   //Mauricio Parizotto 2024-08-02
   SendMessage(memObs.Handle, WM_VSCROLL, SB_BOTTOM, 0); //vai pra ultima linha
-  SendMessage(memObs.Handle, WM_HSCROLL, SB_RIGHT, 0); //vai pra ultima coluna
+  //SendMessage(memObs.Handle, WM_HSCROLL, SB_RIGHT, 0); //vai pra ultima coluna
   memObs.SelStart := Length(memObs.Text); //move o cursor pra o final da ultima linha
 end;
 
