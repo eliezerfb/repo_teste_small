@@ -6,8 +6,14 @@ inherited FrmEstoque: TFrmEstoque
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
+    inherited Panel8: TPanel
+      ExplicitLeft = 822
+    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
+      ExplicitLeft = 20
+      ExplicitWidth = 802
+      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object lblCodigo: TLabel
@@ -859,7 +865,8 @@ inherited FrmEstoque: TFrmEstoque
           MaxLength = 254
           ParentFont = False
           TabOrder = 21
-          OnKeyDown = PadraoKeyDown
+          OnEnter = memAtivacaoEnter
+          OnKeyDown = memAtivacaoKeyDown
         end
         object edtComissao: TSMALL_DBEdit
           Left = 508

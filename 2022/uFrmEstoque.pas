@@ -387,6 +387,9 @@ type
       const pDisp: IDispatch; const URL: OleVariant);
     procedure WebBrowser1NavigateComplete2(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
+    procedure memAtivacaoEnter(Sender: TObject);
+    procedure memAtivacaoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -397,6 +400,7 @@ type
     fActivated  : boolean;
     fVideoImage : TVideoImage;
     fVideoBitmap: TBitmap;
+    bProximo  : boolean;
     procedure OnNewVideoFrame(Sender : TObject; Width, Height: integer; DataPtr: pointer);
     procedure SetaStatusUso; override;
     function GetPaginaAjuda:string; override;
@@ -937,6 +941,32 @@ begin
   pgcFicha.ActivePage := tbsCadastro;
 
   inherited;
+end;
+
+procedure TFrmEstoque.memAtivacaoEnter(Sender: TObject);
+begin
+  Form7.ibDataSet4OBS.AsString := StringReplace(Form7.ibDataSet4OBS.AsString,#13#10#13#10,#13#10,[rfReplaceAll]);
+  Form7.ibDataSet4OBS.AsString := StringReplace(Form7.ibDataSet4OBS.AsString,#13#10#13#10,#13#10,[rfReplaceAll]);
+
+  SendMessage(memAtivacao.Handle, WM_VSCROLL, SB_BOTTOM, 0); //vai pra ultima linha
+  memAtivacao.SelStart := Length(memAtivacao.Text); //move o cursor pra o final da ultima linh
+end;
+
+procedure TFrmEstoque.memAtivacaoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+  begin
+    if bProximo then
+    begin
+      Key := 0;
+      Perform(Wm_NextDlgCtl,0,0);
+    end
+    else
+      bProximo := True;
+  end
+  else
+  	bProximo := False;
 end;
 
 procedure TFrmEstoque.SetaStatusUso;
