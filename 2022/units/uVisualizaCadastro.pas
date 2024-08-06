@@ -1251,10 +1251,22 @@ begin
   
   if ((Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'KARDEX')) then
   begin
+    {Mauricio Parizotto 2024-08-06 Inicio * estáva bugando a tela caso aberta
     Form7.sModulo := 'ESTOQUE'; // Mauricio Parizotto 2024-01-25
-
     Form7.Close;
     Form7.Show;
+    }
+
+    if (Form7.sModulo = 'KARDEX') then
+    begin
+      Form7.sModulo := 'ESTOQUE';
+      Form7.Close;
+      Form7.Show;
+    end;
+
+    Form7.sModulo := 'ESTOQUE';
+
+    {Mauricio Parizotto 2024-08-06 Fim}
     
     try
       Form7.ibDataSet28.Open;

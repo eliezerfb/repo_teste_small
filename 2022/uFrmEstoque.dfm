@@ -7,7 +7,7 @@ inherited FrmEstoque: TFrmEstoque
   TextHeight = 16
   inherited Panel_branco: TPanel
     inherited pgcFicha: TPageControl
-      ActivePage = tbsICMS
+      ActivePage = tbsCadastro
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object lblCodigo: TLabel
@@ -848,7 +848,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 508
           Top = 263
           Width = 266
-          Height = 95
+          Height = 120
           DataField = 'OBS'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
@@ -905,11 +905,12 @@ inherited FrmEstoque: TFrmEstoque
         end
         object chkMarketplace: TCheckBox
           Left = 508
-          Top = 364
+          Top = 388
           Width = 97
           Height = 17
           Caption = 'Marketplace'
           TabOrder = 22
+          Visible = False
           OnClick = chkMarketplaceClick
           OnKeyDown = PadraoKeyDown
         end
@@ -1176,8 +1177,8 @@ inherited FrmEstoque: TFrmEstoque
           Transparent = True
         end
         object lblImpostoAprox: TLabel
-          Left = 115
-          Top = 94
+          Left = 110
+          Top = 92
           Width = 385
           Height = 13
           AutoSize = False

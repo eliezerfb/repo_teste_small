@@ -855,7 +855,7 @@ begin
   with Sender as TLabel do
   begin
     sNome   := StrTran(Trim(Form1.Small_InputForm('Personalização do sistema','Nome do campo:',Caption)),':','');
-    Caption := sNome+':';
+    Caption := sNome;
     Repaint;
 
     SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
@@ -1528,6 +1528,9 @@ end;
 
 procedure TFrmEstoque.tbsICMSShow(Sender: TObject);
 begin
+  if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+    Form7.ibDataset4.Edit;
+
   if fraPerfilTrib.txtCampo.CanFocus then
     fraPerfilTrib.txtCampo.SetFocus;
 
@@ -2062,6 +2065,9 @@ begin
         end;
       end;
     end;
+  end else
+  begin
+    cboCSOSN_Prod.ItemIndex := 0;
   end;
 
   // 101 - Tributada pelo Simples Nacional com permissão de crédito
@@ -2088,6 +2094,9 @@ begin
         end;
       end;
     end;
+  end else
+  begin
+    cboCSOSN_NFCE.ItemIndex := 0;
   end;
 
 
@@ -2104,12 +2113,15 @@ begin
       // 6 - Estrangeira - Importação direta, sem similar nacional, constante em lista de Resolução CAMEX;
       // 7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX.
       // 8 - Nacional, mercadoria ou bem com Conteúdo de Importação sup. a 70%
-      if Copy(cboOrigemProd.Items[I],1,1) = Copy(Form7.ibDataSet4CST.AsString+'000',1,1) then
+      if Copy(cboOrigemProd.Items[I],1,1) = Trim( Copy(Form7.ibDataSet4CST.AsString+'000',1,1) ) then
       begin
         cboOrigemProd.ItemIndex := I;
         Break; // Sandro Silva 2024-01-15
       end;
     end;
+  end else
+  begin
+    cboOrigemProd.ItemIndex := 0;
   end;
 
 
@@ -2128,12 +2140,15 @@ begin
       // 60 - ICMS Cobrado anteriormente por substituição tributária
       // 70 - Com red. de base de calculo e cob. do ICMS por subs. tributária
       // 90 - Outras
-      if Copy(cboCST_Prod.Items[I],1,2) = Copy(Form7.ibDataSet4CST.AsString+'000',2,2) then
+      if Copy(cboCST_Prod.Items[I],1,2) = Trim( Copy(Form7.ibDataSet4CST.AsString+'000',2,2) ) then
       begin
         cboCST_Prod.ItemIndex := I;
         Break; // Sandro Silva 2024-01-15
       end;
     end;
+  end else
+  begin
+    cboCST_Prod.ItemIndex := 0;
   end;
 
   if AllTrim(Form7.ibDataSet4CST_NFCE.AsString)<>'' then
@@ -2157,6 +2172,9 @@ begin
         Break; // Sandro Silva 2024-01-15
       end;
     end;
+  end else
+  begin
+    cboCST_NFCE.ItemIndex := 0;
   end;
 
 
@@ -2177,6 +2195,9 @@ begin
         Break; // Sandro Silva 2024-01-15
       end;
     end;
+  end else
+  begin
+    cboCST_IPI.ItemIndex := 0;
   end;
 
   // 01-Operação Tributável com Alíquota Básica
@@ -2223,6 +2244,9 @@ begin
         Break; // Sandro Silva 2024-01-15
       end;
     end;
+  end else
+  begin
+    cboCST_PIS_COFINS.ItemIndex := 0;
   end;
 
   // 01-Operação Tributável com Alíquota Básica
@@ -2268,6 +2292,9 @@ begin
         Break; // Sandro Silva 2024-01-15
       end;
     end;
+  end else
+  begin
+    cboCST_PIS_COFINS_E.ItemIndex := 0;
   end;
 
   // 00 - Mercadoria para Revenda
@@ -2292,6 +2319,9 @@ begin
         Break; // Sandro Silva 2024-01-15
       end;
     end;
+  end else
+  begin
+    cboTipoItem.ItemIndex := 0;
   end;
            {
   if Form7.StatusTrocaPerfil <> 'PR' then //Mauricio Parizotto 2024-01-15
@@ -2321,6 +2351,9 @@ begin
         Break;
       end;
     end;
+  end else
+  begin
+    cboCFOP_NFCe.ItemIndex := 0;
   end;
 
 
@@ -3822,7 +3855,7 @@ begin
         FileStream.Free;
         BlobStream.Free;
       end;
-      // Form7.ibDataset4.Post;
+
       Deletefile(pChar(sNomeDoJPG));
     end;
 
@@ -4095,7 +4128,7 @@ begin
         FileStream.Free;
         BlobStream.Free;
       end;
-      // Form7.ibDataset4.Post;
+
       Deletefile(pChar(sNomeDoJPG));
     end;
 
