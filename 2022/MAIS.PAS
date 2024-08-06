@@ -1940,10 +1940,12 @@ begin
   //Form1.Panel_3.Visible := False;
 
   Form1.lblTitulo.Top      := 110;
+  Form1.lblTitulo.Left     := 99;
+  Form1.Label3.Left        := 99;
   Form1.lblTitulo.Caption  := sP1;
 
   //Form1.Label3.Top := Form1.lblTitulo.Top + Form1.lblTitulo.Height + 35; Mauricio Parizotto 2024-08-02
-  Form1.Label3.Top := Form1.lblTitulo.Top + Form1.lblTitulo.Height + 100;
+  Form1.Label3.Top := Form1.lblTitulo.Top + Form1.lblTitulo.Height + 50;
 
   Form1.Label3.Caption      := sP2;
 
@@ -4885,9 +4887,9 @@ begin
            'necessidade de emissão de'+chr(10)+
            'NF-e, NFC-e e SAT.');
     }
-    Titulo(
-           'Small GO: Completo, simples e versátil',
-           'O Small GO é simples de usar e atende às necessidades da sua empresa.');
+    Titulo('Completo, simples e versátil',
+           'O Small GO é simples de usar e atende'+#13#10+
+           'às necessidades da sua empresa.');
   end;
 
   if (Form1.iReduzida = 0) then
@@ -4906,10 +4908,9 @@ begin
          'empresas de'+chr(10)+
          'comércio');
     }
-    Titulo(
-         'Small Commerce: Completo, simples e versátil',
-         'O Small Commerce é simples de usar e atende '+#13#10+
-         'às necessidades da sua empresa.');
+    Titulo('Completo, simples e versátil',
+           'O Small Commerce é simples de usar e atende '+#13#10+
+           'às necessidades da sua empresa.');
 
   end;
 
@@ -6455,11 +6456,9 @@ begin
             );
       }
       Titulo('Emita a NF-e de Venda',
-            'A Nota Fiscal Eletrônica além de'+chr(10)+
-            'atender a legislação controla as'+chr(10)+
-            'vendas da sua empresa'+chr(10)+
-            'de forma automática'
-
+            'A Nota Fiscal Eletrônica facilita as'+chr(10)+
+            'operações comerciais, garantindo'+chr(10)+
+            'o controle eficiente das suas vendas.'
             );
     end;
   end;
@@ -11152,11 +11151,9 @@ begin
              'margem de lucro'
             );
       }
-      Titulo('Controle o Estoque',
-             'O controle de estoque bem'+chr(10)+
-             'organizado evita prejuízos'+chr(10)+
-             'e garante uma maior'+chr(10)+
-             'margem de lucro'
+      Titulo('Controle seu Estoque',
+             'O controle correto do estoque evita perdas'+chr(10)+
+             'e maximiza os lucros da sua empresa.'
             );
     end;
   end;
@@ -11197,11 +11194,9 @@ begin
             , 'SERVIÇO'
             );
       }
-      Titulo('Utilize a Ordem de Serviços',
-            'A Ordem de Serviços facilita'+chr(10)+
-            'o atendimento ao cliente'+chr(10)+
-            'e organiza e mantém todo'+chr(10)+
-            'o trabalho documentado'
+      Titulo('Gerencie as Ordens de Serviços',
+            'A Ordem de Serviço facilita e controla o atendimento'+chr(10)+
+            'ao cliente garantindo um serviço eficiente.'
             , 'SERVIÇO'
             );
     end;
@@ -11242,12 +11237,9 @@ begin
              );
       }
       Titulo('Mantenha o Cadastro atualizado',
-             'O cadastro com as informações'+chr(10)+
-             'corretamente registradas'+chr(10)+
-             'conserva seus canais de'+chr(10)+
-             'comunicação com clientes,'+chr(10)+
-             'fornecedores, funcionários,'+chr(10)+
-             'entre outros'
+             'O cadastro atualizado assegura uma'+chr(10)+
+             'comunicação eficiente e personalizada'+chr(10)+
+             'com seus clientes e fornecedores.'
              );
     end;
   end;
@@ -11288,9 +11280,9 @@ begin
              );
       }
       Titulo('Monitore as Contas a Receber',
-             'As contas a receber bem controladas'+chr(10)+
-             'diminuem o impacto que a inadimplência'+chr(10)+
-             'pode ter em seu negócio'
+             'O controle eficiente das contas a receber'+chr(10)+
+             'reduz a inadimplência e garante'+chr(10)+
+             'a saúde financeira do seu negócio.'
              , 'RECEBER'
              );
     end;
@@ -11333,12 +11325,9 @@ begin
             , 'CAIXA'
             );
       }
-      Titulo('Controle o Caixa',
-            'O fechamento exato do caixa permite'+chr(10)+
-            'total controle financeiro'+chr(10)+
-            'auxiliando na tomadas de'+chr(10)+
-            'decisões através da'+chr(10)+
-            'análise das contas'
+      Titulo('Controle o seu Caixa',
+            'O fechamento do caixa garante o controle'+chr(10)+
+            'financeiro e suporte na tomada de decisões.'
             , 'CAIXA'
             );
 
@@ -11381,12 +11370,9 @@ begin
             , 'BANCOS'
             );
       }
-      Titulo('Fique de olho nos Bancos',
-            'O controle rigoroso das contas'+chr(10)+
-            'bancárias previne o pagamento'+chr(10)+
-            'de juros e permite um'+chr(10)+
-            'planejamento dos'+chr(10)+
-            'investimentos'
+      Titulo('Monitore suas Contas Bancárias',
+            'O controle das contas bancárias permite'+chr(10)+
+            'melhor planejamento dos seus investimentos.'
             , 'BANCOS'
             );
     end;
@@ -11427,11 +11413,10 @@ begin
             'sua empresa'
             );
       }
-      Titulo('Configure o Sistema',
-            'A configuração correta, ajusta'+chr(10)+
-            'o sistema de acordo com as'+chr(10)+
-            'particularidades da'+chr(10)+
-            'sua empresa'
+      Titulo('Configure o seu sistema',
+            'A configuração correta ajusta o sistema'+chr(10)+
+            'de acordo com as particularidades da'+chr(10)+
+            'sua empresa, obtendo máxima eficiência.'
             );
     end;
   end;
@@ -11473,10 +11458,8 @@ begin
             );
       }
       Titulo('Faça o Backup todos os dias',
-            'O Backup é a única forma de'+chr(10)+
-            'manter seus dados'+chr(10)+
-            'seguros'+chr(10)+chr(10)+
-            Form1.imgBackup.Hint
+            'O Backup garante a segurança e a'+chr(10)+
+            'integridade dos dados da sua empresa.'
             );
     end;
   end;
@@ -11519,11 +11502,9 @@ begin
             );
       }
       Titulo('Organize as Contas a Pagar',
-            'As contas a pagar bem organizadas geram'+chr(10)+
-            'uma previsão dos compromissos'+chr(10)+
-            'financeiros facilitando o'+chr(10)+
-            'controle do fluxo'+chr(10)+
-            'de caixa'
+            'As contas a pagar geram uma previsão dos'+chr(10)+
+            'seus compromissos financeiros, garantindo'+chr(10)+
+            'um controle preciso do fluxo de caixa.'
             , 'PAGAR'
             );
     end;
@@ -11564,11 +11545,9 @@ begin
             );
       }
 
-      Titulo('Orçamentos Detalhados',
-            'O orçamento facilita'+chr(10)+
-            'o atendimento ao cliente'+chr(10)+
-            'e organiza e mantém todo'+chr(10)+
-            'o trabalho documentado'
+      Titulo('Crie Orçamentos detalhados',
+            'O Orçamento facilita a negociação'+chr(10)+
+            'e o fechamento das suas vendas.'
             , 'SERVIÇO'
             );
 
@@ -11700,11 +11679,9 @@ begin
             , 'INDICADORES'
             );
       }
-      Titulo('Acompanhe os Indicadores',
-            'Configure um painel de indicadores'+chr(10)+
-            'personalizado por usuário de'+chr(10)+
-            'acordo com as necessidades'+chr(10)+
-            'gerenciais da sua empresa'+chr(10)
+      Titulo('Acompanhe os seus Indicadores',
+            'O painel de indicadores mostra o desempenho'+chr(10)+
+            'da sua empresa com dados atualizados.'
             , 'INDICADORES'
             );
     end;
@@ -12461,10 +12438,9 @@ begin
             );
       }
       Titulo('Controle as Notas de Compra',
-            'Controle as entradas de '+chr(10)+
-            'mercadoria da sua'+chr(10)+
-            'empresa de forma'+chr(10)+
-            'automática'
+            'O registro das notas de compra'+chr(10)+
+            'garante o gerenciamento das'+chr(10)+
+            'entradas das suas mercadorias.'
             );
     end;
   end;
@@ -12504,10 +12480,8 @@ begin
             );
       }
       Titulo('Emita a NFS-e de Serviços',
-            'A Nota Fiscal Eletrônica de Serviços além'+chr(10)+
-            'de atender a legislação controla os'+chr(10)+
-            'serviços prestados pela sua'+chr(10)+
-            'empresa'
+            'A Nota Fiscal Eletrônica de Serviços formaliza'+chr(10)+
+            'os serviços prestados pela sua empresa.'
             , 'SERVIÇO'
             );
     end;

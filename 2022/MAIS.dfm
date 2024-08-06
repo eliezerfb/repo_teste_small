@@ -5913,26 +5913,26 @@ object Form1: TForm1
       OnMouseMove = FormMouseMove
     end
     object lblTitulo: TLabel
-      Left = 94
+      Left = 99
       Top = 110
       Width = 301
       Height = 37
       Caption = 'SMALL COMMERCE'
       Font.Charset = ANSI_CHARSET
-      Font.Color = clBlack
+      Font.Color = 3355443
       Font.Height = -32
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
     end
     object Label3: TLabel
-      Left = 94
+      Left = 99
       Top = 150
       Width = 211
       Height = 29
       Caption = 'O Small Commerce'
       Font.Charset = ANSI_CHARSET
-      Font.Color = clBlack
+      Font.Color = 3355443
       Font.Height = -24
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
