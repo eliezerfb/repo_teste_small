@@ -52,7 +52,7 @@ uses
 //  , uTestaEmail
   {$ENDIF}
   , uSmallConsts
-  , uDialogs
+  , uDialogs, System.Variants
   ;
 
 
@@ -213,6 +213,7 @@ function VersaoBuild(NomeAplicativo: String): String;
 function HasFile(Directory: String): boolean;
 function TestarTEFConfigurado: Boolean;
 function TestarUFMovimentaEstoqueFinanceiroSemFaturar(AcUF: String): Boolean;
+function Coalesce(Value1: Variant; Value2: Variant): Variant;
 
 var
   IMG: TImage;
@@ -2676,6 +2677,15 @@ begin
   // Método para deixar claro aos DEVs as UFs que só movimenta estoque/financeiro
   // quando é faturado nota. SENDO ELES SC e MG.
   Result := (AcUF <> 'SC') and (AcUF <> 'MG');
+end;
+
+
+function Coalesce(Value1: Variant; Value2: Variant): Variant;
+begin
+  if not VarIsNull(Value1) then
+    Result := Value1
+  else
+    Result := Value2
 end;
 
 end.
