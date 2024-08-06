@@ -976,7 +976,18 @@ begin
       Form7.ibDataSet16.Next;
     end;
 
+    {Dailon Parisotto (f-19945) 2024-07-17 inicio
+
     Retributa(True);
+
+    }
+    Form7.bPesqProdNFPorConsulta := True;
+    try
+      Retributa(True);
+    finally
+      Form7.bPesqProdNFPorConsulta := False;
+    end;
+    {Dailon Parisotto (f-19945) 2024-07-17 Fim}
     if Form7.ibDataSet16.Modified then
       Form7.ibDataSet16.Post;
   end;
@@ -2290,7 +2301,12 @@ begin
   else
     Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
 
-  Retributa(True);
+  Form7.bPesqProdNFPorConsulta := True;
+  try
+    Retributa(True);
+  finally
+    Form7.bPesqProdNFPorConsulta := False;
+  end;
 
   {Mauricio Parizotto 2023-07-19 Fim}
 

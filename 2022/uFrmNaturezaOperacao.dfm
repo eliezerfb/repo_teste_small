@@ -2,6 +2,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
   Left = 587
   Top = 178
   OnActivate = FormActivate
+  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
