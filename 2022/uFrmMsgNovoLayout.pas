@@ -12,11 +12,13 @@ type
     imgFundo: TImage;
     Label1: TLabel;
     Label2: TLabel;
-    Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     imgOK: TImage;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
     procedure imgOKClick(Sender: TObject);
   private
     { Private declarations }
