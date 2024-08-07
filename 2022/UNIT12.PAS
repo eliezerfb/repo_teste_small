@@ -857,7 +857,9 @@ begin
     Panel2.Top     := Panel1.Top  + dbGrid1.Top  + 100;
     Panel2.Left    := Panel1.Left + dbGrid1.Left + dbGrid1.Width + 20;
 
-    if Form7.ibDataSet13CRT.AsString = '1' then
+    //if Form7.ibDataSet13CRT.AsString = '1' then Mauricio Parizotto 2024-08-07
+    if (Form7.ibDataSet13CRT.AsString = '1')
+      or (Form7.ibDataSet13CRT.AsString = '4') then
     begin
       ExibeColunaCSOSN(True);
       ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString); //ExibeColunaCSTICMS(False);
@@ -1003,10 +1005,12 @@ begin
         Form12.Edit2.Text := '4-Devolução de mercadoria';
         Form7.ibDataSet15FINNFE.AsString   := '4';
         ExibeColunasFCPST(True);
-        if Form7.ibDataSet13CRT.AsString = '1' then // Sandro Silva 2023-05-24
+        //if Form7.ibDataSet13CRT.AsString = '1' then // Mauricio Parizotto 2024-08-07
+        if (Form7.ibDataSet13CRT.AsString = '1')
+          or (Form7.ibDataSet13CRT.AsString = '4') then
         begin
           ExibeColunaCSOSN(True); // Sandro Silva 2023-05-24
-          ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString); //ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
+          ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString);
         end;
         SMALL_DBEdit40Enter(Sender);
       end;
@@ -2415,7 +2419,9 @@ begin
             begin
               Edit2.Text := '4-Devolução de mercadoria';
               ExibeColunasFCPST(True);
-              if Form7.ibDataSet13CRT.AsString = '1' then // Sandro Silva 2023-05-24
+              //if Form7.ibDataSet13CRT.AsString = '1' then // Mauricio Parizotto 2024-08-07
+              if (Form7.ibDataSet13CRT.AsString = '1')
+                or (Form7.ibDataSet13CRT.AsString = '4') then
               begin
                 ExibeColunaCSOSN(True); // Sandro Silva 2023-05-24
                 ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString); //ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
@@ -2928,7 +2934,9 @@ begin
   if (LimpaNumero(Edit2.Text) = '4') then
   begin
     ExibeColunasFCPST(True);
-    if Form7.ibDataSet13CRT.AsString = '1' then // Sandro Silva 2023-05-24
+    //if Form7.ibDataSet13CRT.AsString = '1' then // Mauricio Parizotto 2024-08-07
+    if (Form7.ibDataSet13CRT.AsString = '1')
+      or (Form7.ibDataSet13CRT.AsString = '4') then
     begin
       ExibeColunaCSOSN(True); // Sandro Silva 2023-05-24
       ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString); //ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
@@ -3386,7 +3394,8 @@ procedure TForm12.ExibeColunaCSTICMS(FINNFE: String; CRT: String); //procedure T
 begin
   //Form7.ibDataSet16CST_ICMS.Visible := bExibe;
   Form7.ibDataSet16CST_ICMS.DisplayLabel := 'CST ICMS';
-  if (FINNFE = '4') and (CRT = '1') then // Devolução e simples nacional
+  //if (FINNFE = '4') and (CRT = '1') then // Devolução e simples nacional Mauricio Parizotto 2024-08-07
+  if (FINNFE = '4') and ( ( CRT = '1' ) or (CRT = '4' ) ) then // Devolução e simples nacional
     Form7.ibDataSet16CST_ICMS.DisplayLabel := 'Origem';
 end;
 
