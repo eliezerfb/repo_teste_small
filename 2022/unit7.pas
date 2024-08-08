@@ -2735,6 +2735,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uTypesImpressao
   , uFrmContaPagar
   , uFrmContaReceber
+  , uFrmTecnico
   , uPermissaoUsuario
   , uFrmCadastro;
 
@@ -8556,6 +8557,17 @@ begin
     Exit;
   end;
 
+  //Mauricio Parizotto 2024-08-07
+  if sModulo = 'TECNICO' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmTecnico = nil then
+      FrmTecnico := TFrmTecnico.Create(Self);
+
+    FrmTecnico.Show;
+    Exit;
+  end;
+
   {Mauricio Parizotto 2024-04-05 Inicio}
   if sModulo = 'CONVENIO' then
   begin
@@ -8893,6 +8905,18 @@ begin
 
     FrmSituacaoOS.lblNovoClick(Sender);
     FrmSituacaoOS.Show;
+    Exit;
+  end;
+
+  //Mauricio Parizotto 2024-08-07
+  if sModulo = 'TECNICO' then
+  begin
+    Form7.IBTransaction1.CommitRetaining;
+    if FrmTecnico = nil then
+      FrmTecnico := TFrmTecnico.Create(Self);
+
+    FrmTecnico.lblNovoClick(Sender);
+    FrmTecnico.Show;
     Exit;
   end;
 
