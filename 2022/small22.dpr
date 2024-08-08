@@ -267,7 +267,11 @@ uses
   uIntegracaoItau in '..\..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\..\unit_compartilhada\Itau\uClassesItau.pas',
   uWebServiceItau in '..\..\unit_compartilhada\Itau\uWebServiceItau.pas',
-  uFrmTelaProcessamento in '..\..\unit_compartilhada\uFrmTelaProcessamento.pas' {FrmTelaProcessamento};
+  uFrmTelaProcessamento in '..\..\unit_compartilhada\uFrmTelaProcessamento.pas' {FrmTelaProcessamento},
+  uSmallNFSe in 'uSmallNFSe.pas',
+  Frm_Status in '..\..\unit_compartilhada\Frm_Status.pas' {frmStatus},
+  ufrmConfiguraNFSe in 'ufrmConfiguraNFSe.pas' {frmConfiguraNFSe},
+  ufrmSelecionaCertificadoNFSe in 'ufrmSelecionaCertificadoNFSe.pas' {frmSelecionaCertificadoNFSe};
 
 {$R *.RES}
 

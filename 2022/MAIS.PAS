@@ -288,6 +288,7 @@ type
     timerLegal: TTimer;
     Integraes1: TMenuItem;
     IntegraoIta1: TMenuItem;
+    Opo21: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -463,6 +464,7 @@ type
     procedure NaoDescontarIssQuandoRetido1Click(Sender: TObject);
     procedure IntegraoIta1Click(Sender: TObject);
     procedure timerLegalTimer(Sender: TObject);
+    procedure Opo21Click(Sender: TObject);
 
 
   private
@@ -599,7 +601,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmContaPagar
   , uFrmContaReceber
   , uFrmCadastro
-  ;
+  , ufrmConfiguraNFSe;
 
 {$R *.DFM}
 
@@ -4292,6 +4294,13 @@ procedure TForm1.Opes1Click(Sender: TObject);
 begin
   Form7.Close;
   Form19.ShowModal;
+end;
+
+procedure TForm1.Opo21Click(Sender: TObject);
+begin
+  Application.CreateForm(TfrmConfiguraNFSe, frmConfiguraNFSe);
+  frmConfiguraNFSe.ShowModal;
+  FreeAndNil(frmConfiguraNFSe);
 end;
 
 procedure TForm1.Planodecontas1Click(Sender: TObject);

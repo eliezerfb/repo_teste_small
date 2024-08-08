@@ -13864,6 +13864,10 @@ object Form1: TForm1
           Caption = 'Debug'
           OnClick = Debug1Click
         end
+        object Opo21: TMenuItem
+          Caption = 'Op'#231#227'o 2'
+          OnClick = Opo21Click
+        end
       end
       object N14: TMenuItem
         Caption = '-'
