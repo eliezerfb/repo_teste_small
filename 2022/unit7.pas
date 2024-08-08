@@ -34459,7 +34459,7 @@ begin
     try
       if FrmEstoque <> nil then
       begin
-        FrmEstoque.CarregaValoresObjeto;
+        FrmEstoque.AtualizaObjComValorDoBanco;
       end;
     except
     end;

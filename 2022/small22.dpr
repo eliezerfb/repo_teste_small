@@ -303,6 +303,9 @@ begin
   //ReportMemoryLeaksOnShutdown := True;
   {$ENDIF}
 
+  //Mauricio Parizotto 2024-08-08
+  Application.HintHidePause := 6000;
+
   oHwnd := FindWindowCaptionParcial('Small Commerce - [ ');
 
   if oHwnd = 0 then

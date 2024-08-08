@@ -226,7 +226,6 @@ type
     cboCST_IPI: TComboBox;
     edtIPI: TSMALL_DBEdit;
     edtEnqIPI: TSMALL_DBEdit;
-    Label1: TLabel;
     GroupBox2: TGroupBox;
     Label6: TLabel;
     Label7: TLabel;
@@ -236,8 +235,6 @@ type
     Label43: TLabel;
     Label49: TLabel;
     dbepCofinsSaida: TSMALL_DBEdit;
-    dbeIcmBCPISCOFINS: TSMALL_DBEdit;
-    lbBCPISCOFINS: TLabel;
     Label38: TLabel;
     cboCST_PIS_COFINS_E: TComboBox;
     Label50: TLabel;
@@ -768,6 +765,8 @@ begin
 
   Form7.ibDataSet28DESCRICAO.OnChange := ibDataSet28DESCRICAOChange;
   fVideoBitmap    := TBitmap.create;
+
+  lblAplicacao.Caption := Form7.ibDataSet4OBS.DisplayLabel;
 end;
 
 procedure TFrmEstoque.FormDeactivate(Sender: TObject);
@@ -792,6 +791,8 @@ begin
   end;
 
   AjustaCampoPrecoQuandoEmPromocao;
+
+
 
 end;
 
@@ -1024,7 +1025,6 @@ begin
   cboCST_PIS_COFINS.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
   dbepPisSaida.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
   dbepCofinsSaida.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
-  dbeIcmBCPISCOFINS.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
   cboCST_PIS_COFINS_E.Enabled         := not(bEstaSendoUsado) and not (bSomenteLeitura);
   dbepPisEntrada.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
   dbepCofinsEntrada.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);

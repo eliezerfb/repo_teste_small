@@ -8467,7 +8467,8 @@ begin
       Form7.Livrodereceitas1.Visible   := True;
     end else
     begin
-      Form7.ibDataSet4OBS.DisplayLabel    := 'Aplicação';
+      //Form7.ibDataSet4OBS.DisplayLabel    := 'Aplicação';
+      Form7.ibDataSet4OBS.DisplayLabel    := 'Observação';
       Form7.Cardpio1.Visible              := False;
       Form7.Livrodereceitas1.Visible      := True;
       Form7.Livrodereceitas1.Caption      := 'Relatório de composição';
