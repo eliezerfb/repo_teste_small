@@ -24087,12 +24087,35 @@ procedure TForm7.ibDataSet7BeforePost(DataSet: TDataSet);
 begin
   if sModulo = 'RECEBER' then
   begin
+    {Mauricio Parizotto 2024-08-05 Inicio
     if (fValorAnterior <> ibDataSet7VALOR_DUPL.AsFloat) and (fValorAnterior <> 0) then
     begin
       Audita('ALTEROU', sModulo, Senhas.UsuarioPub,
       Alltrim(ibDataSet7VENCIMENTO.AsString + ' - ' + Alltrim(ibDataSet7DOCUMENTO.AsString + ' - ' + ibDataSet7HISTORICO.AsString)),
       fValorAnterior, (ibDataSet7VALOR_DUPL.AsFloat));   // Ato, Modulo, Usuário, Histórico
     end;
+    }
+
+    //Só grava auditoria de alteração que não for de seleção
+    if (Coalesce(Form7.ibDataSet7ATIVO.Value,0) = Coalesce(Form7.ibDataSet7ATIVO.OldValue,0))
+      and (Coalesce(Form7.ibDataSet7VALOR_DUPL.OldValue,0) <> Coalesce(Form7.ibDataSet7VALOR_DUPL.Value,0))
+      and (Coalesce(Form7.ibDataSet7VALOR_DUPL.OldValue,0) <> 0) then
+    begin
+      Audita('ALTEROU', sModulo, Senhas.UsuarioPub,
+            Alltrim(ibDataSet7VENCIMENTO.AsString + ' - ' + Alltrim(ibDataSet7DOCUMENTO.AsString + ' - ' + ibDataSet7HISTORICO.AsString)),
+            Coalesce(Form7.ibDataSet7VALOR_DUPL.OldValue,0), (ibDataSet7VALOR_DUPL.AsFloat));   // Ato, Modulo, Usuário, Histórico
+    end;
+
+    if (Coalesce(Form7.ibDataSet7ATIVO.Value,0) = Coalesce(Form7.ibDataSet7ATIVO.OldValue,0))
+      and (Coalesce(Form7.ibDataSet7VALOR_RECE.OldValue,0) <> Coalesce(Form7.ibDataSet7VALOR_RECE.Value,0))
+      and (Coalesce(Form7.ibDataSet7VALOR_RECE.Value,0) > 0) then
+    begin
+      Audita('RECEBEU', sModulo, Senhas.UsuarioPub,
+            Alltrim(ibDataSet7VENCIMENTO.AsString + ' - ' + Alltrim(ibDataSet7DOCUMENTO.AsString + ' - ' + ibDataSet7HISTORICO.AsString)),
+            Coalesce(Form7.ibDataSet7VALOR_DUPL.Value,0), (ibDataSet7VALOR_RECE.AsFloat));   // Ato, Modulo, Usuário, Histórico
+    end;
+
+    {Mauricio Parizotto 2024-08-05 Fim}
   end;
 end;
 
@@ -24127,12 +24150,35 @@ procedure TForm7.ibDataSet8BeforePost(DataSet: TDataSet);
 begin
   if sModulo = 'PAGAR' then
   begin
+    {Mauricio Parizotto 2024-08-05 Inicio
     if (fValorAnterior <> ibDataSet8VALOR_DUPL.AsFloat) and (fValorAnterior <> 0) then
     begin
       Audita('ALTEROU', sModulo, Senhas.UsuarioPub,
       Alltrim(ibDataSet8VENCIMENTO.AsString +' - ' +Alltrim(ibDataSet8DOCUMENTO.AsString + ' - ' + ibDataSet8HISTORICO.AsString)),
       fValorAnterior, (ibDataSet8VALOR_DUPL.AsFloat));   // Ato, Modulo, Usuário, Histórico
     end;
+    }
+
+    //Só grava auditoria de alteração que não for de seleção
+    if (Coalesce(Form7.ibDataSet8ATIVO.Value,0) = Coalesce(Form7.ibDataSet8ATIVO.OldValue,0))
+      and (Coalesce(Form7.ibDataSet8VALOR_DUPL.OldValue,0) <> Coalesce(Form7.ibDataSet8VALOR_DUPL.Value,0))
+      and (Coalesce(Form7.ibDataSet8VALOR_DUPL.OldValue,0) <> 0) then
+    begin
+      Audita('ALTEROU', sModulo, Senhas.UsuarioPub,
+            Alltrim(ibDataSet8VENCIMENTO.AsString +' - ' +Alltrim(ibDataSet8DOCUMENTO.AsString + ' - ' + ibDataSet8HISTORICO.AsString)),
+            Coalesce(Form7.ibDataSet8VALOR_DUPL.OldValue,0), (ibDataSet8VALOR_DUPL.AsFloat));   // Ato, Modulo, Usuário, Histórico
+    end;
+
+    if (Coalesce(Form7.ibDataSet8ATIVO.Value,0) = Coalesce(Form7.ibDataSet8ATIVO.OldValue,0))
+      and (Coalesce(Form7.ibDataSet8VALOR_PAGO.OldValue,0) <> Coalesce(Form7.ibDataSet8VALOR_PAGO.Value,0))
+      and (Coalesce(Form7.ibDataSet8VALOR_PAGO.Value,0) > 0) then
+    begin
+      Audita('PAGOU', sModulo, Senhas.UsuarioPub,
+            Alltrim(ibDataSet8VENCIMENTO.AsString + ' - ' + Alltrim(ibDataSet8DOCUMENTO.AsString + ' - ' + ibDataSet8HISTORICO.AsString)),
+            Coalesce(Form7.ibDataSet8VALOR_DUPL.Value,0), (ibDataSet8VALOR_PAGO.AsFloat));   // Ato, Modulo, Usuário, Histórico
+    end;
+
+    {Mauricio Parizotto 2024-08-05 Fim}
   end;
 end;
 
@@ -26677,23 +26723,22 @@ procedure TForm7.Button7Click(Sender: TObject);
 var
   ftotal : Real;
   iRecno: Integer; // Sandro Silva 2023-08-30
+  qryAux : TIBQuery;
 begin
   Form7.Edit2.SetFocus;
-  //
   {Sandro Silva 2023-10-30 inicio
   CalculaTotalRecebido(True);
   fTotal := StrToFloat(LimpaNumeroDeixandoAVirgula(Form7.Label49.Caption));
   }
-
   fTotal := StrToFloat(FormatFloat('0.00', CalculaTotalRecebido(True)));
   {Sandro Silva 2023-10-30 fim}
-  //
+
   if Form7.sModulo = 'PAGAR' then
   begin
+    {$Region'//// Pagar ////'}
     if FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat) = '0,00' then // Sandro Silva 2023-10-30 if Form7.ibDataSet25DIFERENCA_.AsFloat = 0 then
     begin
       Form7.SMALL_DBEdit6.Visible := True;
-      //ShowMessage('Informe o total pago.'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Informe o total pago.',msgAtencao);
       Form7.SMALL_DBEdit6.SetFocus;
       Abort;
@@ -26706,7 +26751,6 @@ begin
       begin
         if ComboBox2.Text = '<Plano de contas para a diferença>' then
         begin
-          //ShowMessage('Informe o <Plano de contas para a diferença>.'); Mauricio Parizotto 2023-10-25
           MensagemSistema('Informe o <Plano de contas para a diferença>.');
           Form7.ComboBox2.SetFocus;
           Abort;
@@ -26745,30 +26789,52 @@ begin
         Form7.ibDataSet1.Post;
       end;
 
+      //Auditoria
+      {Mauricio Parizotto 2024-08-05 Inicio}
+      try
+        qryAux := CriaIBQuery(Form7.ibDataSet8.Transaction);
+        qryAux.SQL.Text := ' Select * '+
+                           ' From PAGAR'+
+                           ' Where ATIVO >= 5';
+        qryAux.Open;
+        while not qryAux.Eof do
+        begin
+          Audita('PAGOU', sModulo, Senhas.UsuarioPub,
+                 Alltrim(qryAux.FieldByName('VENCIMENTO').AsString + ' - ' + Alltrim(qryAux.FieldByName('DOCUMENTO').AsString + ' - ' + qryAux.FieldByName('HISTORICO').AsString)),
+                 Coalesce(qryAux.FieldByName('VALOR_DUPL').Value,0), (qryAux.FieldByName('VALOR_PAGO').AsFloat));   // Ato, Modulo, Usuário, Histórico
+
+          qryAux.Next;
+        end;
+      finally
+        FreeAndNil(qryAux);
+      end;
+      {Mauricio Parizotto 2024-08-05 Fim}
+
+
       // Cancela todas as contas marcadas para receber
       Form7.ibQuery1.Close;
       Form7.IBQuery1.SQL.Clear;
       Form7.IBQuery1.SQL.Add('update PAGAR set ATIVO = ATIVO-5 where ATIVO >= 5');
       Form7.IBQuery1.Open;
-      //
+
       Form7.ibDataSet25.Edit;
       Form7.ibDataSet25DIFERENCA_.AsFloat := 0;
       Form7.ibDataSet25.Post;
       Form7.ibDataSet25.Edit;
-      //
+
       Form7.Close;
       Form7.Show;
       Form7.DBGrid1.SetFocus;
     end;
+    {$Endregion}
   end else
   begin
-
+    {$Region'//// Receber ////'}
     iRecno := Form7.DBGrid1.DataSource.DataSet.RecNo;// Sandro Silva 2023-08-30
 
     if Form7.ibDataSet25DIFERENCA_.AsFloat = 0 then
     begin
       Form7.SMALL_DBEdit6.Visible := True;
-      //ShowMessage('Informe o total recebido.'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Informe o total recebido.');
       Form7.SMALL_DBEdit6.SetFocus;
       Abort;
@@ -26815,6 +26881,28 @@ begin
         Form7.ibDataSet1SAIDA.AsFloat        := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)); // Sandro Silva 2023-10-30 Form7.ibDataSet1SAIDA.AsFloat        := Form7.ibDataSet25DIFERENCA_.AsFloat;
         Form7.ibDataSet1.Post;
       end;
+
+      //Auditoria
+      {Mauricio Parizotto 2024-08-05 Inicio}
+      try
+        qryAux := CriaIBQuery(Form7.ibDataSet8.Transaction);
+        qryAux.SQL.Text := ' Select * '+
+                           ' From RECEBER'+
+                           ' Where ATIVO >= 5';
+        qryAux.Open;
+        while not qryAux.Eof do
+        begin
+          Audita('RECEBEU', sModulo, Senhas.UsuarioPub,
+                 Alltrim(qryAux.FieldByName('VENCIMENTO').AsString + ' - ' + Alltrim(qryAux.FieldByName('DOCUMENTO').AsString + ' - ' + qryAux.FieldByName('HISTORICO').AsString)),
+                 Coalesce(qryAux.FieldByName('VALOR_RECE').Value,0), (qryAux.FieldByName('VALOR_RECE').AsFloat));   // Ato, Modulo, Usuário, Histórico
+
+          qryAux.Next;
+        end;
+      finally
+        FreeAndNil(qryAux);
+      end;
+      {Mauricio Parizotto 2024-08-05 Fim}
+
       // Cancela todas as contas marcadas para receber
       Form7.ibQuery1.Close;
       Form7.IBQuery1.SQL.Clear;
@@ -26827,9 +26915,7 @@ begin
       Form7.ibDataSet25.Edit;
 
       Form7.Close;
-      //LogRetaguarda('26640'); // Sandro Silva 2023-09-13
       Form7.Show;
-      //LogRetaguarda('26642'); // Sandro Silva 2023-09-13
 
       {Sandro Silva 2023-08-30 inicio}
       // f-7283 Pode ser que isso deixe lento nos casos onde há muitas contas pendentes e o usuário quite uma das últimas contas da lista
@@ -26845,116 +26931,97 @@ begin
       end;
       Form7.DBGrid1.DataSource.DataSet.EnableControls;
       {Sandro Silva 2023-08-30 fim}
-      //LogRetaguarda('26658'); // Sandro Silva 2023-09-13
 
       Form7.DBGrid1.SetFocus;
-
-      //LogRetaguarda('26662'); // Sandro Silva 2023-09-13
     end;
+    {$Endregion}
   end;
 end;
 
 procedure TForm7.Button8Click(Sender: TObject);
 begin
-  //
-  //
-  //
   if Form7.sModulo = 'PAGAR' then
   begin
-    //
     // Cancela todas as contas marcadas para pagar
-    //
     Form7.ibDataSet8.DisableControls;
-    //
+
     Form7.ibDataSet8.Close;
     Form7.ibDataSet8.SelectSQL.Clear;
     Form7.ibDataSet8.SelectSQL.Add('select * from PAGAR where ATIVO >=5');
     Form7.ibDataSet8.Open;
-    //
+
     Form7.ibDataSet8.First;
-    //
+
     while not Form7.ibDataSet8.Eof do
     begin
-      //
       if Form7.ibDataSet8ATIVO.AsFloat >= 5 then
       begin
         Form7.ibDataSet8.Edit;
         Form7.ibDataSet8VALOR_PAGO.AsFloat := 0;
         Form7.ibDataSet8.Post;
       end;
-      //
+
       Form7.ibDataSet8.Next;
-      //
     end;
-    //
+
     Label49.CAption := 'R$ 0,00';
-    //
+
     Form7.ibQuery1.Close;
     Form7.IBQuery1.SQL.Clear;
     Form7.IBQuery1.SQL.Add('update PAGAR set ATIVO = ATIVO-5 where ATIVO >= 5');
     Form7.IBQuery1.Open;
-    //
   end else
   begin
-    //
     // Cancela todas as contas marcadas para receber
-    //
     Form7.ibDataSet7.DisableControls;
-    //
+
     Form7.ibDataSet7.Close;
     Form7.ibDataSet7.SelectSQL.Clear;
     Form7.ibDataSet7.SelectSQL.Add('select * from RECEBER where ATIVO >=5');
     Form7.ibDataSet7.Open;
-    //
+
     Form7.ibDataSet7.First;
-    //
+
     while not Form7.ibDataSet7.Eof do
     begin
-      //
       if Form7.ibDataSet7ATIVO.AsFloat >= 5 then
       begin
         Form7.ibDataSet7.Edit;
         Form7.ibDataSet7VALOR_RECE.AsFloat := 0;
         Form7.ibDataSet7.Post;
       end;
-      //
+
       Form7.ibDataSet7.Next;
-      //
     end;
-    //
+
     Label49.CAption := 'R$ 0,00';
-    //
+
     Form7.ibQuery1.Close;
     Form7.IBQuery1.SQL.Clear;
     Form7.IBQuery1.SQL.Add('update RECEBER set ATIVO = ATIVO-5 where ATIVO >= 5');
     Form7.IBQuery1.Open;
-    //
   end;
-  //
+
   Form7.ibDataSet25.Edit;
   Form7.ibDataSet25DIFERENCA_.AsFloat := 0;
   Form7.ibDataSet25.Post;
   Form7.ibDataSet25.Edit;
-  //
+
   Form7.Close;
   Form7.Show;
   Form7.DBGrid1.SetFocus;
-  //
-
 end;
 
 procedure TForm7.RelatriodeIPI1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
-  //
+
   Form38.Label2.Visible := True;
   Form38.Label3.Visible := True;
   Form38.DateTimePicker1.Visible := True;
   Form38.DateTimePicker2.Visible := True;
   sModulo := 'Relatório de IPI';
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.RelatriodePISCOFINS1Click(Sender: TObject);
