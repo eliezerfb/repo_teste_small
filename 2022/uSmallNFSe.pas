@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, StdCtrls, Spin, Buttons, ComCtrls, OleCtrls, SHDocVw,
   ShellAPI, XMLIntf, XMLDoc, zlib, System.IniFiles, System.Math,
-  Winapi.ActiveX,
+  Winapi.ActiveX, System.StrUtils,
   Data.DB, IBX.IBCustomDataSet, IBX.IBDatabase,
   IBX.IBQuery,
   pcnConversao,
@@ -21,7 +21,7 @@ uses
   ACBrNFSeXDANFSeFR,
   ACBrNFSeXWebserviceBase,
   ACBrNFSeXDANFSeRLClass, ACBrNFSeXClass
-  , uDialogs
+  , uDialogs, uFuncoesBancoDados
   ;
 
 const DADO_SIM = 'Sim';
@@ -31,10 +31,19 @@ type
   private
     Fiid_Cidade: String;
     FsCnae: String;
+    FsEnd_Cep: String;
+    FsSimples_Nacional: String;
+    FsFone_Comer: String;
+    FsTelefone: String;
   public
-    property iid_Cidade: String;
-    property sCnae: String;
+    property iid_Cidade: String read Fiid_Cidade write Fiid_Cidade;
+    property sCnae: String read FsCnae write FsCnae;
+    property sEnd_Cep: String read FsEnd_Cep write FsEnd_Cep;
+    property sSimples_Nacional: String read FsSimples_Nacional write FsSimples_Nacional;
+    property sFone_Comer: String read FsFone_Comer write FsFone_Comer;
+    property sTelefone: String read FsTelefone write FsTelefone;
   end;
+
   TNFSe_Dados = class
   private
     FsCNAEZerado: String;
@@ -146,6 +155,7 @@ TVar_Dados_novo  = class
     FACBrNFSeXDANFSeRL1: TACBrNFSeXDANFSeRL;
     FACBrNFSeXDANFSeFR1: TACBrNFSeXDANFSeFR;
     TNFSe_Emitente: TNFSeEmitente;
+    TNFSeDados: TNFSe_Dados;
     procedure AlimentaNFSe(AID_NFVenda: Integer; Emei : Boolean);
     procedure Carrega_NFSe(FID_NFVenda: Integer);
     function GetCidade_Goiania(id_cidade: string): string;
@@ -1093,7 +1103,7 @@ var
     if ACBrNFSeX1.Configuracoes.Geral.LayoutNFSe = lnfsPadraoNacionalv1 then
       Result := ''
     else if (ACBrNFSeX1.Configuracoes.Geral.Provedor in [proEloTech, proInfisc]) then
-      Result := TFuncao.Numero.LimpaNumero(TNFSe_Emitente.sEnd_Cep)
+      Result := LimpaNumero(TNFSe_Emitente.sEnd_Cep)
     else
       Result := TNFSe_Emitente.sEnd_Cep;
   end;
@@ -1104,7 +1114,7 @@ var
        (ACBrNFSeX1.Configuracoes.Geral.Provedor in [proGoverna,
        proInfisc,
        proSoftPlan]) then
-      Result := TFuncao.Numero.LimpaNumero(FDQueryCliente.FieldByName('END_CEP').AsString)
+      Result := LimpaNumero(FDQueryCliente.FieldByName('END_CEP').AsString)
     else
       Result := FDQueryCliente.FieldByName('END_CEP').AsString;
   end;
@@ -1182,23 +1192,23 @@ var
   function getTelefoneCliente : string;
   begin
     if ACBrNFSeX1.Configuracoes.Geral.Provedor = proInfisc then
-      Result := TFuncao.Numero.SoNumero(
+      Result := LimpaNumero(
         FDQueryCliente.FieldByName('DDD_RESID').AsString +
         FDQueryCliente.FieldByName('FONE_RESID').AsString
       )
     else
     begin
-      if TFuncao.Numero.SoNumero(FDQueryCliente.FieldByName('FONE_RESID').AsString) <> '' then
-        Result := TFuncao.Numero.SoNumero(
+      if LimpaNumero(FDQueryCliente.FieldByName('FONE_RESID').AsString) <> '' then
+        Result := LimpaNumero(
           FDQueryCliente.FieldByName('DDD_RESID').AsString +
           FDQueryCliente.FieldByName('FONE_RESID').AsString
         )
-      else if TFuncao.Numero.SoNumero(FDQueryCliente.FieldByName('FONE_COMER').AsString) <> '' then
-        Result := TFuncao.Numero.SoNumero(
+      else if LimpaNumero(FDQueryCliente.FieldByName('FONE_COMER').AsString) <> '' then
+        Result := LimpaNumero(
           FDQueryCliente.FieldByName('DDD_COMER').AsString +
           FDQueryCliente.FieldByName('FONE_COMER').AsString)
         else
-          Result := TFuncao.Numero.SoNumero(
+          Result := LimpaNumero(
           FDQueryCliente.FieldByName('DDD_CELUL').AsString +
           FDQueryCliente.FieldByName('FONE_CELUL').AsString);
     end;
@@ -1207,14 +1217,14 @@ var
   begin
     if ACBrNFSeX1.Configuracoes.Geral.Provedor = proPadraoNacional then
     begin
-      Result := trim(TFuncao.Numero.LimpaNumero(TNFSe_Emitente.sFone_Comer));
+      Result := trim(LimpaNumero(TNFSe_Emitente.sFone_Comer));
       exit;
     end;
     if ACBrNFSeX1.Configuracoes.Geral.Provedor <> proGoverna then
       result := TNFSe_Emitente.sTelefone;
     if ACBrNFSeX1.Configuracoes.Geral.Provedor = proInfisc then
     begin
-      result := TFuncao.Numero.SoNumero(result);
+      result := LimpaNumero(result);
     end;
   end;
 
@@ -1272,22 +1282,25 @@ var
 begin
   TVar_Dados_novo.fLimpa_VarDados;
 
-  Num_lote := gen_id(ConexaoTemp, 'GEN_TB_NFSE_NUM_LOTE',0); //Informa o último número de lote e grava na tabela para posterior consulta.
+  //Num_lote := gen_id(ConexaoTemp, 'GEN_TB_NFSE_NUM_LOTE',0); //Informa o último número de lote e grava na tabela para posterior consulta.
+  Num_lote := IncGenerator(ConexaoTemp, 'GEN_TB_NFSE_NUM_LOTE', 0).ToInteger; //Informa o último número de lote e grava na tabela para posterior consulta.
   try
-    qryUpdate := CriaSQLQuery(nil,ConexaoTemp);
-    qrYUpdate.ExecSQL('update TB_NFSE set NUM_LOTE = '+IntToStr(Num_lote)+' where ID_NFVENDA = '+QuotedStr(IntToStr(AID_NFVenda)));
+    qryUpdate := CriaIBQuery(FIBTRANSACTION); // qryUpdate := CriaSQLQuery(nil, ConexaoTemp);
+    qrYUpdate.Close;
+    qrYUpdate.SQL.Text := 'update TB_NFSE set NUM_LOTE = '+IntToStr(Num_lote)+' where ID_NFVENDA = '+QuotedStr(IntToStr(AID_NFVenda));
+    qrYUpdate.Open;
   finally
     FreeAndNil(qryUpdate);
   end;
 
   (*É o provedor que controla a numeração do lote. Só pode incrementar a numeração se a nota for autorizada.*)
   if not(ACBrNFSeX1.Configuracoes.Geral.Provedor = proSystemPro) then
-    gen_id(ConexaoTemp,'GEN_TB_NFSE_NUM_LOTE', 1);
+    IncGenerator(ConexaoTemp, 'GEN_TB_NFSE_NUM_LOTE', 1); // gen_id(ConexaoTemp,'GEN_TB_NFSE_NUM_LOTE', 1);
 
   Carrega_NFSe(AID_NFVenda);
 
-  FDQueryV_NFSeItem.Connection := ConexaoTemp;
-  FDQueryV_NFSeItem.Transaction := TransacaoLeitura;
+  //FDQueryV_NFSeItem.Connection := ConexaoTemp;
+  FDQueryV_NFSeItem.Transaction := FIBTRANSACTION; //TransacaoLeitura;
 
   FDQueryV_NFSeItem.Close();
   FDQueryV_NFSeItem.SQL.Text := 'select V_NFSE_ITEM.* '+
@@ -1299,16 +1312,18 @@ begin
   var Description_Prefix: String := '';
   var Description_Sufix: String := '';
 
-  if TNFSeDados.AddQtdVlUnitDiscriminacao then
+  {???
+  if TNFSeDados.AddQtdVlUnitDiscriminacao then ?????
   begin
     Description_Prefix :=
       'QTD_ITEM||'+QuotedStr(' ')+'||COALESCE(UNI_MEDIDA,'''')||'+QuotedStr(' - ')+'||';
     Description_Sufix :=
       '||'+QuotedStr(' Vlr. Unit. R$')+'||VLR_UNIT';
   end;
+  }
 
-  FDQueryNFSeItemDiscriminacao.Connection := ConexaoTemp;
-  FDQueryNFSeItemDiscriminacao.Transaction := TransacaoLeitura;
+  //FDQueryNFSeItemDiscriminacao.Connection := ConexaoTemp;
+  FDQueryNFSeItemDiscriminacao.Transaction := FIBTRANSACTION; // TransacaoLeitura;
 
   FDQueryNFSeItemDiscriminacao.Close();
   FDQueryNFSeItemDiscriminacao.SQL.Text := 'select '+
@@ -1348,6 +1363,7 @@ begin
 
 
 
+      {????
       (*#16969 - 2023-07-07*)
       if (ACBrNFSeX1.Configuracoes.Geral.Provedor = proGoverna) and
         (TNFSe_Funcao.Geral.controlaCodAutorizacao) then
@@ -1356,10 +1372,11 @@ begin
         RegRec := regMovimento;//StrToRegRec(Ok,Copy(TNFSeDados.sRegime_Recolhimento,0,2));
         FrmRec := StrToFrmRec(Ok,Copy(TNFSeDados.sForma_Recolhimento,0,2));
       end;
+      }
 
 
       // Provedor Infisc - Layout Proprio
-      cNFSe := GerarCodigoDFe(StrToIntDef(Numero, 0));
+      //??? cNFSe := GerarCodigoDFe(StrToIntDef(Numero, 0));
       if ACBrNFSeX1.Configuracoes.Geral.Provedor = proInfisc then
         ModeloNFSe := '90';
       //
@@ -1406,9 +1423,11 @@ begin
 
 
       RegimeEspecialTributacao := getRegimeEspecialTributacao;
+ (*????
       OptanteSimplesNacional := TFuncao.Condicao.ifthen(
                                                       TNFSe_Emitente.sSimples_Nacional = DADO_SIM, snSim, snNao
                                                       );
+
       if ACBrNFSeX1.Configuracoes.Geral.Provedor = proPadraoNacional then
       begin
         if emei then
@@ -1447,6 +1466,7 @@ begin
       Producao := TFuncao.Condicao.ifThen(
         Configuracoes.WebServices.Ambiente = taProducao, snSim, snNao
       );
+
 
       // TnfseStatusRPS = ( srNormal, srCancelado );
       StatusRPS := srNormal;
@@ -1942,13 +1962,14 @@ begin
 
       ConstrucaoCivil.CodigoObra     := FDQueryV_NFSe.FieldByName('CODIGO_OBRA').AssTRING;
       ConstrucaoCivil.Art            := FDQueryV_NFSe.FieldByName('ART').AsString;
+*)
     end;
   end;
-
 end;
 
 procedure TDataModuleNFSeX.AtualizaPathXML;
 begin
+(*???
   FPathLocalExe := ExtractFilePath(Application.ExeName);
 
   {2022-06-27 - #10376 - Ficha 11741 - definir pasta para salvar XML - Renan}
@@ -1956,6 +1977,7 @@ begin
 
   FPathLogNFSe := FPathXMLs + 'logNFSe\NFSe';
   FPathGeral := FPathXMLs + 'logNFSe\Geral';
+*)
 end;
 
 function TDataModuleNFSeX.AutorizaNFSe(AID_NFVenda, metodoEnvio: Integer;
@@ -3951,7 +3973,7 @@ begin
   //DataModuleCreate(Sender);
   TNFSe_Emitente := TNFSeEmitente.Create;
   TNFSeDados := TNFSe_Dados.Create;
-  TNFSeDados.s
+  //TNFSeDados.s
 end;
 
 
