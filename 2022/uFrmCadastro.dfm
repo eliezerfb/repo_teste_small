@@ -1143,7 +1143,7 @@ inherited FrmCadastro: TFrmCadastro
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          MaxLength = 254
+          MaxLength = 32768
           ParentFont = False
           TabOrder = 27
           OnEnter = memContatoEnter
