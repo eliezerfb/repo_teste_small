@@ -5,7 +5,7 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
   BorderStyle = bsSingle
   Caption = 'Selecione o certificado'
   ClientHeight = 359
-  ClientWidth = 645
+  ClientWidth = 493
   Color = clWindow
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -23,14 +23,13 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
   object pnlBody: TPanel
     Left = 0
     Top = 0
-    Width = 645
+    Width = 493
     Height = 318
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 10
     Color = clWhite
     TabOrder = 0
-    ExplicitWidth = 493
     object lbList: TListBox
       Left = 10
       Top = 10
@@ -45,30 +44,29 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
     object Panel1: TPanel
       Left = 10
       Top = 10
-      Width = 625
+      Width = 473
       Height = 298
       Align = alClient
       BevelInner = bvRaised
       BevelOuter = bvLowered
       Color = clWhite
       TabOrder = 1
-      ExplicitWidth = 473
       object dbcgCertificados: TDBCtrlGrid
         Left = 2
         Top = 2
-        Width = 621
+        Width = 469
         Height = 294
         Align = alClient
         AllowDelete = False
         AllowInsert = False
         DataSource = DSCertificados
         PanelHeight = 49
-        PanelWidth = 604
+        PanelWidth = 448
         TabOrder = 0
         RowCount = 6
         SelectedColor = 14120960
         OnDblClick = dbcgCertificadosDblClick
-        ExplicitHeight = 882
+        ExplicitWidth = 621
         object DBText1: TDBText
           Left = 8
           Top = 7
@@ -148,18 +146,17 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
   object pnlMenu: TPanel
     Left = 0
     Top = 318
-    Width = 645
+    Width = 493
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
     Color = clWhite
     TabOrder = 1
-    ExplicitWidth = 493
     DesignSize = (
-      645
+      493
       41)
     object btnSelect: TBitBtn
-      Left = 479
+      Left = 327
       Top = 8
       Width = 75
       Height = 25
@@ -174,10 +171,9 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
       ParentFont = False
       TabOrder = 0
       OnClick = btnSelectClick
-      ExplicitLeft = 327
     end
     object btnCancel: TBitBtn
-      Left = 559
+      Left = 407
       Top = 8
       Width = 75
       Height = 25
@@ -186,10 +182,9 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
       Caption = 'Cancelar'
       ModalResult = 2
       TabOrder = 1
-      ExplicitLeft = 407
     end
     object btnRemove: TBitBtn
-      Left = 162
+      Left = 10
       Top = 8
       Width = 75
       Height = 25
@@ -204,7 +199,6 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
       ParentFont = False
       TabOrder = 2
       Visible = False
-      ExplicitLeft = 10
     end
   end
   object DSCertificados: TDataSource

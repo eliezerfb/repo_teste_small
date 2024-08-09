@@ -1,15 +1,13 @@
 inherited frmConfiguraNFSe: TfrmConfiguraNFSe
   BorderIcons = []
   Caption = 'Configura'#231#227'o NFS-e'
-  ClientHeight = 442
-  ClientWidth = 618
+  ClientWidth = 865
   Font.Name = 'Microsoft Sans Serif'
   Position = poMainFormCenter
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitWidth = 634
-  ExplicitHeight = 481
+  ExplicitWidth = 883
   PixelsPerInch = 96
   TextHeight = 16
   object Label30: TLabel
@@ -168,8 +166,8 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     OnClick = lbCertificadoClick
   end
   object BitBtn1: TBitBtn
-    Left = 532
-    Top = 407
+    Left = 779
+    Top = 601
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
