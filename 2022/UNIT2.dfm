@@ -50,7 +50,6 @@ object Form2: TForm2
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 1
-    ExplicitHeight = 571
     DesignSize = (
       784
       598)
@@ -643,7 +642,6 @@ object Form2: TForm2
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 32
-      ExplicitHeight = 500
     end
     object Panel3: TPanel
       Left = 55
@@ -658,7 +656,6 @@ object Form2: TForm2
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 33
-      ExplicitHeight = 500
     end
     object Panel4: TPanel
       Left = 10
@@ -767,7 +764,6 @@ object Form2: TForm2
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 39
-      ExplicitHeight = 500
     end
     object Panel6: TPanel
       Left = 420

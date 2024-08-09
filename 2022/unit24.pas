@@ -3363,9 +3363,9 @@ end;
 
 procedure TForm24.Edit7Click(Sender: TObject);
 begin
-  //
-  Edit7.Text := LimpaNumero(Form1.Small_InputForm('Finalidade da NFe','Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)',LimpaNumero(Edit7.Text)));
-  //
+  //Edit7.Text := LimpaNumero(Form1.Small_InputForm('Finalidade da NFe','Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)',LimpaNumero(Edit7.Text))); Mauricio Parizotto 2024-08-08
+  Edit7.Text := LimpaNumero(Form1.Small_InputForm('Finalidade da NFe:','1-Normal'+chr(10)+'2-Complementar'+chr(10)+'3-de Ajuste'+chr(10)+'4-Devolução de mercadoria',LimpaNumero(Edit7.Text)));
+
   if (LimpaNumero(Edit7.Text) = '1') then
   begin
     Edit7.Text := '1-Normal';
@@ -3391,24 +3391,23 @@ begin
       end;
     end;
   end;
-  //
+
   if Form7.ibDataSet24FINNFE.AsString   <> LimpaNumero(Edit7.Text) then
     Form7.ibDataSet24FINNFE.AsString   := LimpaNumero(Edit7.Text);
-  //
+
   try
     Form24.SMALL_DBEdit40.SetFocus;
   except
   end;
-  //
+
   // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
-  //
 end;
 
 procedure TForm24.Edit8Click(Sender: TObject);
 begin
-  //
-  Edit8.Text := LimpaNumero(Form1.Small_InputForm('Indicador de operação', 'Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final)', LimpaNumero(Edit8.Text)));
-  //
+  //Edit8.Text := LimpaNumero(Form1.Small_InputForm('Indicador de operação', 'Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final)', LimpaNumero(Edit8.Text))); Mauricio Parizotto 2024-08-08
+  Edit8.Text := LimpaNumero(Form1.Small_InputForm('Indicador de operação com Consumidor Final:','0-Normal'+chr(10)+'1-Consumidor Final', LimpaNumero(Edit8.Text)));
+
   if (LimpaNumero(Edit8.Text) = '1') then
   begin
     Edit8.Text := '1-Consumidor Final';
@@ -3416,17 +3415,15 @@ begin
   begin
     Edit8.Text := '0-Normal';
   end;
-  //
+
   if Form7.ibDataSet24INDFINAL.AsString <> LimpaNumero(Edit8.Text) then
     Form7.ibDataSet24INDFINAL.AsString := LimpaNumero(Edit8.Text);
-  //
+
   try
     Form24.SMALL_DBEdit40.SetFocus;
   except
   end;
-  //
   // Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final)
-  //
 end;
 
 procedure TForm24.Edit9Click(Sender: TObject);

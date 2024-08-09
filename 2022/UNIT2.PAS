@@ -645,6 +645,9 @@ begin
     Exit;
   end;
 
+  if (TSistema.GetInstance.Tema <> _TemaModerno) then
+    Exit;
+
   if Form2.bFlag then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
@@ -770,15 +773,21 @@ begin
     end;
 
     //Orçamento
-    case StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'BOR',   Mais1Ini.ReadString(Senhas.UsuarioPub,'B2','9')     )) of
-      0 : chkOrcamento.State := cbUnchecked;
-      1 : chkOrcamento.State := cbChecked;
-      2 : chkOrcamento.State := cbGrayed;
-      9 : begin
-            chkOrcamento.State := cbUnchecked;
-            chkOrcamento.State := cbChecked;
-          end;
+    if (TSistema.GetInstance.Tema = _TemaModerno) then
+    begin
+      case StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'BOR',   Mais1Ini.ReadString(Senhas.UsuarioPub,'B2','9')     )) of
+        0 : chkOrcamento.State := cbUnchecked;
+        1 : chkOrcamento.State := cbChecked;
+        2 : chkOrcamento.State := cbGrayed;
+        9 : begin
+              chkOrcamento.State := cbUnchecked;
+              chkOrcamento.State := cbChecked;
+            end;
 
+      end;
+    end else
+    begin
+      chkOrcamento.State := cbUnchecked;
     end;
 
 

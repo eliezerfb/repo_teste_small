@@ -1021,13 +1021,16 @@ begin
   Form7.AlphaBlend      := True;
   Form7.AlphaBlendValue := 0;
 
-  form29.Label3.Caption := sP1;
-  Form29.Panel_Dados.Visible  := True;
+  Form29.Label3.Caption := sP1;
+  Form29.lblTitulo2.Caption := ''; //Mauricio Parizotto 2024-08-08
+  //Form29.Panel_Dados.Visible  := True;
+  Form29.Label3.Visible       := True;
   Form29.btnCancelar.Visible  := True;
+  Form29.lblTitulo1.Visible   := False;
 
   Form29.ShowModal;
 
-  Form29.Panel_Dados.Visible  := False;
+  //Form29.Panel_Dados.Visible  := False;
   Form7.AlphaBlendValue := 255;
   Form29.Edit1.Text     := '';
 
@@ -2277,7 +2280,7 @@ function TForm1.MontaTela(sP1 : boolean):Boolean;
 var
   iTop, iFix, iFixL, iLeft : Integer;
 begin
-  Form1.Align    := alClient;
+  //Form1.Align    := alClient; Mauricio Parizotto 2024-08-08 - Tela cortava em baixo na abertura do sistema
 
   Panel_3.Left   := 0; // (Screen.Width - (1000)) div 2;
   Panel_3.Top    := Panel_0.Top + Form1.Panel_0.Height;
@@ -2289,21 +2292,16 @@ begin
 
   Form7.Top    := Form1.Panel_3.Top + 30;
   {Dailon Parisotto (f-7757) 2023-01-03 Inicio}
-  {$IFDEF VER150}
-  Form7.Left   := 0;
-  Form7.Width  := Form1.Width -6;
-  Form7.Height := Form1.Height - Form7.Top -6;
-  {$ELSE}
   Form7.Left   := Form1.Left;
   Form7.Width  := Form1.Width;
   Form7.Height := (Form1.Height - 9) - Form7.Top;
-  {$ENDIF}
   {Dailon Parisotto (f-7757) 2023-01-03 Fim}
 
   iTop := 6;
   iFix := 0;
   iFixL := 70;
   iLeft := 5+5;
+
 
   {$Region'//// Vendas //// '}
   if imgVendas.Visible = True then
@@ -4084,8 +4082,9 @@ begin
   bChaveDoTempo := True;
 
   // Limpar movimento
-  Form2.Top  := Form7.Top;
-  Form2.Left := (Form1.Width div 2) - (Form2.Width div 2);
+  //Mauricio Parizotto 2024-08-08
+  //Form2.Top  := Form7.Top;
+  //Form2.Left := (Form1.Width div 2) - (Form2.Width div 2);
 
   if FileExists(Form1.sAtual+'\smallzip_.exe') then
   begin
