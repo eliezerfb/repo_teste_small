@@ -19260,8 +19260,7 @@ object FrmMsgNovoLayout: TFrmMsgNovoLayout
       608542A15028140A8542A1503C175002AC5028140A8542A15028148AE7024A80
       150A8542A15028140A8542F15CE0FF07877EACFEB6C2BB250000000049454E44
       AE426082}
-    ExplicitLeft = 392
-    ExplicitTop = 8
+    ExplicitLeft = -1
   end
   object Label1: TLabel
     Left = 49
@@ -19378,8 +19377,8 @@ object FrmMsgNovoLayout: TFrmMsgNovoLayout
     OnClick = imgOKClick
   end
   object Label7: TLabel
-    Left = 86
-    Top = 359
+    Left = 85
+    Top = 357
     Width = 276
     Height = 21
     Alignment = taCenter
@@ -19394,8 +19393,8 @@ object FrmMsgNovoLayout: TFrmMsgNovoLayout
     WordWrap = True
   end
   object Label8: TLabel
-    Left = 86
-    Top = 379
+    Left = 85
+    Top = 377
     Width = 276
     Height = 24
     Alignment = taCenter
@@ -19410,8 +19409,8 @@ object FrmMsgNovoLayout: TFrmMsgNovoLayout
     WordWrap = True
   end
   object Label9: TLabel
-    Left = 86
-    Top = 400
+    Left = 85
+    Top = 398
     Width = 276
     Height = 24
     Alignment = taCenter
