@@ -343,9 +343,8 @@ var
   sSenha : String;
   I : Integer;
 begin
-  {
   try
-    // Nova senha
+    // Nova senha adm se não tiver
     Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
     if Length(Mais1Ini.ReadString('Administrador','Chave','')) = 0 then
     begin
@@ -356,7 +355,7 @@ begin
   finally
     Mais1Ini.Free;
   end;
- Mauricio Parizotto 2024-07-29}
+
   SenhaAdmPub  := edtSenha.Text;
   Close;
 end;
