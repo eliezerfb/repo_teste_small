@@ -273,6 +273,7 @@ type
     Image3: TImage;
     Image8: TImage;
     Label27: TLabel;
+    pnlEscondeWin11: TPanel;
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
     procedure FormActivate(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
@@ -792,8 +793,6 @@ begin
 
   AjustaCampoPrecoQuandoEmPromocao;
 
-
-
 end;
 
 procedure TFrmEstoque.framePesquisaProdComposicaodbgItensPesqCellClick(
@@ -986,7 +985,7 @@ begin
   edtDescricao.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
   fraGrupo.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
   fraUndMed.Enabled                   := not(bEstaSendoUsado) and not (bSomenteLeitura);
-  edtPreco.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPreco.Enabled                    := not EmPeriodoPromocional and not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtPrecoUS.Enabled                  := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtCustoCompra.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtUltCompra.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
@@ -1938,6 +1937,7 @@ end;
 procedure TFrmEstoque.AtualizaObjComValorDoBanco;
 var
   i : integer;
+  sRegistroOld: String;
 begin
   //Se não estiver ativo não carrega informações
   if not FormularioAtivo(Self) then
@@ -2008,6 +2008,51 @@ begin
   begin
     CarregaCit;
   end;
+
+  if Copy(cboCST_PIS_COFINS.Text, 1, 2) = '03' then
+  begin
+    Label43.Caption := 'R$ PIS:';
+    Label49.Caption := 'R$ COFINS:';
+  end else
+  begin
+    Label43.Caption := '% PIS:';
+    Label49.Caption := '% COFINS:';
+  end;
+
+  CarregaCit;
+
+  {$Region'/// Atualiza Layout Estoque ////'}
+  try
+    edtPreco.Enabled    := not EmPeriodoPromocional and not(bEstaSendoUsado) and not (bSomenteLeitura);
+    edtPreco.ReadOnly   := EmPeriodoPromocional;
+
+    if EmPeriodoPromocional then
+    begin
+      Form7.ibDataSet4PRECO.ReadOnly := True;
+      edtPreco.Font.Color := clGrayText;
+      lblPreco.Caption := 'Preço promocional:';
+    end else
+    begin
+      try
+        if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+          Form7.ibDataset4.Edit;
+        if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+        begin
+          sRegistroOld := Form7.sRegistro;
+          Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
+          if sRegistroOld <> Form7.sRegistro then
+            Form7.sRegistro := sRegistroOld;
+        end;
+
+        Form7.ibDataSet4PRECO.ReadOnly := False;
+        edtPreco.Font.Color := clblack;
+        lblPreco.Caption := 'Preço';
+      except
+      end;
+    end;
+  except
+  end;
+  {$Endregion}
 
   if Form7.ibDataSet13CRT.AsString = '1' then
   begin
@@ -3820,51 +3865,8 @@ var
   FileStream : TFileStream;
   BlobStream : TStream;
   JP2        : TJPEGImage;
-  sRegistroOld: String;
 begin
   Result := True;
-
-  if Copy(cboCST_PIS_COFINS.Text, 1, 2) = '03' then
-  begin
-    Label43.Caption := 'R$ PIS:';
-    Label49.Caption := 'R$ COFINS:';
-  end else
-  begin
-    Label43.Caption := '% PIS:';
-    Label49.Caption := '% COFINS:';
-  end;
-
-  CarregaCit;
-
-  {$Region'/// Atualiza Layout Estoque ////'}
-  try
-    if EmPeriodoPromocional then
-    begin
-      Form7.ibDataSet4PRECO.ReadOnly := True;
-      edtPreco.Font.Color := clGrayText;
-      lblPreco.Caption := 'Preço promocional:';
-    end else
-    begin
-      try
-        if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-          Form7.ibDataset4.Edit;
-        if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-        begin
-          sRegistroOld := Form7.sRegistro;
-          Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
-          if sRegistroOld <> Form7.sRegistro then
-            Form7.sRegistro := sRegistroOld;
-        end;
-
-        Form7.ibDataSet4PRECO.ReadOnly := False;
-        edtPreco.Font.Color := clblack;
-        lblPreco.Caption := 'Preço';
-      except
-      end;
-    end;
-  except
-  end;
-  {$Endregion}
 
   {$Region '////  Atualiza Layout Estoque Foto ////'}
 

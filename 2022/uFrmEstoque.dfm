@@ -10,7 +10,7 @@ inherited FrmEstoque: TFrmEstoque
       ExplicitLeft = 822
     end
     inherited pgcFicha: TPageControl
-      ActivePage = tbsICMS
+      ActivePage = tbsCadastro
       ExplicitLeft = 20
       ExplicitWidth = 802
       ExplicitHeight = 453
@@ -734,23 +734,18 @@ inherited FrmEstoque: TFrmEstoque
         inline fraUndMed: TfFrameCampo
           Left = 100
           Top = 113
-          Width = 281
+          Width = 313
           Height = 20
-          Color = clWhite
-          Ctl3D = False
-          ParentBackground = False
-          ParentColor = False
-          ParentCtl3D = False
           TabOrder = 4
           ExplicitLeft = 100
           ExplicitTop = 113
-          ExplicitWidth = 281
+          ExplicitWidth = 313
           inherited txtCampo: TEdit
             Width = 85
             ExplicitWidth = 85
           end
           inherited gdRegistros: TDBGrid
-            Width = 281
+            Width = 313
             Columns = <
               item
                 Expanded = False
@@ -920,6 +915,14 @@ inherited FrmEstoque: TFrmEstoque
           Visible = False
           OnClick = chkMarketplaceClick
           OnKeyDown = PadraoKeyDown
+        end
+        object pnlEscondeWin11: TPanel
+          Left = 185
+          Top = 112
+          Width = 230
+          Height = 26
+          BevelOuter = bvNone
+          TabOrder = 23
         end
       end
       object tbsICMS: TTabSheet
