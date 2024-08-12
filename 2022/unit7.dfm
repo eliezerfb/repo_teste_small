@@ -12115,6 +12115,7 @@ object Form7: TForm7
       DisplayWidth = 5
       FieldName = 'MARKETPLACE'
       Origin = 'ESTOQUE.MARKETPLACE'
+      Visible = False
       Size = 1
     end
     object ibDataSet4QTD_COMPRA: TFloatField

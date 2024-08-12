@@ -4642,6 +4642,9 @@ begin
   VersodolayoutdaNFE1.Visible  := False;
   HorarioDeVerao.Visible       := False;
   Enviardanfeporemail1.Visible := False;
+
+  //Mauricio Parizotto 2024-08-12 - Desabilitado temporariamente
+  Marketplace1.Visible         := False;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);

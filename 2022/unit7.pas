@@ -36125,22 +36125,11 @@ begin
     sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
     sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
 
-    {if Form1.bMKP then
-    begin
-      sMostra   := 'TFTFTFFFFF'+Replicate('F',40)+'T';
-    end else
-    begin
-      // Sandro Silva 2022-12-20 sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar','TFTFFFTFFT'+Replicate('F',40));
-      sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TFTFFFTFFT'+Replicate('F', 42));
-    end;}
-    //Mauricio Parizotto 2023-12-04
-    sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 41));
+    //sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 41)); Mauricio Parizotto 2024-08-12
+    sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 40));
 
-    iCampos   := 50; // Sandro Silva 2023-01-18 iCampos   := 51; // Sandro Silva 2023-01-04 iCampos   := 50;
-    {Sandro Silva 2022-12-20 inicio
-    if Form1.CampoDisponivelParaUsuario(sModulo, 'IDENTIFICADORPLANOCONTAS') then
-      iCampos   := 51;
-    {Sandro Silva 2022-12-20 fim}
+    //iCampos   := 50; Mauricio Parizotto 2024-08-12
+    iCampos   := 49;
   end;
   {$Endregion}
 
