@@ -3943,8 +3943,6 @@ begin
   Timer2.Interval       := 10000;
   Form1.Image4.Width    := 1024;
   Form1.Image4.Height   := 768;
-  Form1.Image4.Top := (Form1.Height - Form1.Image4.Height) div 2;
-  Form1.Image4.Left := (Form1.Width - Form1.Image4.Width) div 2;
 
   //
   {Dailon Parisotto (f-18201) 2024-05-08 Inicio
