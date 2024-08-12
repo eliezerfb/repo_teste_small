@@ -24106,7 +24106,9 @@ begin
             Coalesce(Form7.ibDataSet7VALOR_DUPL.OldValue,0), (ibDataSet7VALOR_DUPL.AsFloat));   // Ato, Modulo, Usuário, Histórico
     end;
 
-    if (Coalesce(Form7.ibDataSet7ATIVO.Value,0) = Coalesce(Form7.ibDataSet7ATIVO.OldValue,0))
+    //Só audita para recebimento sem opção de marcação
+    if (Coalesce(Form7.ibDataSet7ATIVO.Value,0) < 5)
+      and (Coalesce(Form7.ibDataSet7ATIVO.OldValue,0) < 5)
       and (Coalesce(Form7.ibDataSet7VALOR_RECE.OldValue,0) <> Coalesce(Form7.ibDataSet7VALOR_RECE.Value,0))
       and (Coalesce(Form7.ibDataSet7VALOR_RECE.Value,0) > 0) then
     begin
@@ -24169,7 +24171,9 @@ begin
             Coalesce(Form7.ibDataSet8VALOR_DUPL.OldValue,0), (ibDataSet8VALOR_DUPL.AsFloat));   // Ato, Modulo, Usuário, Histórico
     end;
 
-    if (Coalesce(Form7.ibDataSet8ATIVO.Value,0) = Coalesce(Form7.ibDataSet8ATIVO.OldValue,0))
+    //Só audita para pagamentos sem opção de marcação
+    if (Coalesce(Form7.ibDataSet8ATIVO.Value,0) < 5)
+      and  ( Coalesce(Form7.ibDataSet8ATIVO.OldValue,0) < 5)
       and (Coalesce(Form7.ibDataSet8VALOR_PAGO.OldValue,0) <> Coalesce(Form7.ibDataSet8VALOR_PAGO.Value,0))
       and (Coalesce(Form7.ibDataSet8VALOR_PAGO.Value,0) > 0) then
     begin
@@ -26894,7 +26898,7 @@ begin
         begin
           Audita('RECEBEU', sModulo, Senhas.UsuarioPub,
                  Alltrim(qryAux.FieldByName('VENCIMENTO').AsString + ' - ' + Alltrim(qryAux.FieldByName('DOCUMENTO').AsString + ' - ' + qryAux.FieldByName('HISTORICO').AsString)),
-                 Coalesce(qryAux.FieldByName('VALOR_RECE').Value,0), (qryAux.FieldByName('VALOR_RECE').AsFloat));   // Ato, Modulo, Usuário, Histórico
+                 Coalesce(qryAux.FieldByName('VALOR_DUPL').Value,0), (qryAux.FieldByName('VALOR_RECE').AsFloat));   // Ato, Modulo, Usuário, Histórico
 
           qryAux.Next;
         end;
