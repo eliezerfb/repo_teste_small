@@ -26266,6 +26266,10 @@ end;
 
 procedure TForm7.ibDataSet16BeforePost(DataSet: TDataSet);
 begin
+
+  { Dailon Parisotto (f-20346) 2024-08-13 Inicio
+  Estava zerando o IPI de todos os itens, e zerando o total de IPI da nota
+
   // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolucão
   if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then // Devolucao Devolucão
   begin
@@ -26289,6 +26293,41 @@ begin
       end;
     except end;
   end;
+  }
+
+  if Form7.ibDataSet16DESCRICAO.AsString <> EmptyStr then
+  begin
+    if (not NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) then
+    begin
+      try
+        if (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '5101') or (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '6101') or (Pos('IPI',Form7.ibDataSet14OBS.AsString) <> 0) then
+        begin
+          //
+          if (Form7.ibDataSet16DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString) and (Form7.ibDataSet16UNITARIO.AsCurrency > 0) then
+            Form7.ibDataSet4.Locate('DESCRICAO', Form7.ibDataSet16DESCRICAO.AsString, []);
+
+          if Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString then
+          begin
+            if Form7.ibDataSet16IPI.AsFloAt <> Form7.ibDataSet4IPI.AsFloat then
+            begin
+              Form7.ibDataSet16.Edit;
+              Form7.ibDataSet16IPI.AsFloAt := Form7.ibDataSet4IPI.AsFloat;
+            end;
+          end;
+          //
+        end else
+        begin
+          if Form7.ibDataSet16IPI.AsFloAt <> 0 then
+          begin
+            Form7.ibDataSet16.Edit;
+            Form7.ibDataSet16IPI.AsFloAt := 0;
+          end;
+        end;
+      except
+      end;
+    end;
+  end;
+  {Dailon Parisotto (f-20346) 2024-08-13 Fim}
 
   //
   AssinaRegistro('ITENS001',DataSet, True);
