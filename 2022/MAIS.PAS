@@ -10946,7 +10946,7 @@ begin
   {Mauricio Parizotto 2024-04-16 Fim}
 
   if Form7.sModulo = 'CLIENTES' then
-   Exit;
+   Exit; 
 
   //Mauricio Parizotto 2024-07-17
   if Form7.sModulo = 'ESTOQUE' then
@@ -11559,6 +11559,10 @@ begin
   //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'PERFILTRIBUTACAO' then
     Exit;
+
+  //Mauricio Parizotto 2024-0808
+  if Form7.sModulo = 'TECNICO' then
+   Exit;
 
   //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'ICM' then
