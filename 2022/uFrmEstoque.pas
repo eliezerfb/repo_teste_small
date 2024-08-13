@@ -115,13 +115,13 @@ type
     Label66: TLabel;
     Label67: TLabel;
     Label68: TLabel;
-    SMALL_DBEdit32: TSMALL_DBEdit;
-    SMALL_DBEdit36: TSMALL_DBEdit;
-    SMALL_DBEdit39: TSMALL_DBEdit;
+    edtPrecoICM_Entrada: TSMALL_DBEdit;
+    edtPrecoICM_Saida: TSMALL_DBEdit;
+    edtPrecoCustoOP: TSMALL_DBEdit;
     btnPrecoIgual: TBitBtn;
-    SMALL_DBEdit40: TSMALL_DBEdit;
-    SMALL_DBEdit42: TSMALL_DBEdit;
-    SMALL_DBEdit43: TSMALL_DBEdit;
+    edtPrecoOutrosImp: TSMALL_DBEdit;
+    edtPrecoComissao: TSMALL_DBEdit;
+    edtPrecoLucro: TSMALL_DBEdit;
     btnPreco: TBitBtn;
     btnPrecoTodos: TBitBtn;
     imgFotoProd: TImage;
@@ -306,9 +306,9 @@ type
     procedure btnPrecoTodosClick(Sender: TObject);
     procedure btnPrecoClick(Sender: TObject);
     procedure tbsPrecoShow(Sender: TObject);
-    procedure SMALL_DBEdit32Exit(Sender: TObject);
+    procedure edtPrecoICM_EntradaExit(Sender: TObject);
     procedure btnPrecoIgualClick(Sender: TObject);
-    procedure SMALL_DBEdit32KeyDown(Sender: TObject; var Key: Word;
+    procedure edtPrecoICM_EntradaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure btnWebcamClick(Sender: TObject);
     procedure tbsFotoShow(Sender: TObject);
@@ -412,6 +412,8 @@ type
     procedure CarregaCit;
     function GravaImagemEstoque: Boolean;
     procedure IniciaCamera;
+    function MensagemImagemWeb(Msg, Titulo : string; DlgType: TMsgDlgType;
+      Buttons: TMsgDlgButtons; Captions: array of string): Integer;
   public
     { Public declarations }
   end;
@@ -502,7 +504,7 @@ procedure TFrmEstoque.dbgCodBarKeyDown(Sender: TObject; var Key: Word;
 begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 
-  if bSomenteLeitura then
+  if (bEstaSendoUsado) or (bSomenteLeitura) then
     Exit;
 
   if Key = VK_DELETE then
@@ -531,12 +533,13 @@ begin
   DBGridCopiarCampo((Sender as TDBGrid), Key, Shift); // Mauricio Parizotto 2023-12-26
 
   try
-    if bSomenteLeitura then
+    if (bEstaSendoUsado) or (bSomenteLeitura) then
     begin
       // Se esta somente leitura não pode apagar registros
       if (Shift = [SsCtrl]) and (key = vk_delete) then
         Key := 0;
     end;
+
     if ((Key = VK_DOWN) or (Key = VK_UP)) and (framePesquisaProdComposicao.dbgItensPesq.CanFocus) then
     begin
       Key := VK_SHIFT;
@@ -977,9 +980,6 @@ begin
 
   chkMarketplace.Enabled              := not(bEstaSendoUsado) and not (bSomenteLeitura);
   memTags.Enabled                     := not(bEstaSendoUsado) and not (bSomenteLeitura);
-  btnPrecoTodos.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
-  btnPreco.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
-  btnPrecoIgual.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
   framePesquisaProdComposicao.Enabled := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtCodBarras.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtDescricao.Enabled                := not(bEstaSendoUsado) and not (bSomenteLeitura);
@@ -1052,25 +1052,32 @@ begin
   edtAcum2.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtAcum3.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
 
-  if bSomenteLeitura then
-    tbsPreco.TabVisible := False;
+  edtPrecoICM_Entrada.Enabled         := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPrecoICM_Saida.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPrecoCustoOP.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPrecoOutrosImp.Enabled           := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPrecoComissao.Enabled            := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtPrecoLucro.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnPrecoIgual.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnPrecoTodos.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnPreco.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
 
   //Tags
-  sgridTags.EditorMode := not(bSomenteLeitura);
-  if bSomenteLeitura then
+  sgridTags.EditorMode := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  if (bEstaSendoUsado) or (bSomenteLeitura) then
     sgridTags.Options := sgridTags.Options - [goEditing]
   else
     sgridTags.Options := sgridTags.Options + [goEditing];
 
   //Grade
-  sgrdGrade.EditorMode := not(bSomenteLeitura);
-  if bSomenteLeitura then
+  sgrdGrade.EditorMode := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  if (bEstaSendoUsado) or (bSomenteLeitura) then
     sgrdGrade.Options := sgrdGrade.Options - [goEditing]
   else
     sgrdGrade.Options := sgrdGrade.Options + [goEditing];
 
   //Composição
-  if bSomenteLeitura then
+  if (bEstaSendoUsado) or (bSomenteLeitura) then
     dbgComposicao.Options := dbgComposicao.Options - [dgEditing]
   else
     dbgComposicao.Options := dbgComposicao.Options + [dgEditing];
@@ -1095,7 +1102,7 @@ begin
   Form1.ibQuery1.Close;
 end;
 
-procedure TFrmEstoque.SMALL_DBEdit32Exit(Sender: TObject);
+procedure TFrmEstoque.edtPrecoICM_EntradaExit(Sender: TObject);
 var
   CustoDeAquisicao : Real;
   PercentualCalcul : Real;
@@ -1136,7 +1143,7 @@ begin
   end;
 end;
 
-procedure TFrmEstoque.SMALL_DBEdit32KeyDown(Sender: TObject; var Key: Word;
+procedure TFrmEstoque.edtPrecoICM_EntradaKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
@@ -1326,17 +1333,7 @@ end;
 procedure TFrmEstoque.sgridTagsSelectCell(Sender: TObject; ACol,
   ARow: Integer; var CanSelect: Boolean);
 begin
-  {
-  if sgridTags.EditorMode then
-  begin
-    if ACol = 1 then
-      sgridTags.Options := StringGrid1.Options + [goEditing]
-    else
-      sgridTags.Options := StringGrid1.Options - [goEditing];
-  end;
-  }
-
-  if (ACol = 1) and not(bSomenteLeitura) then
+  if (ACol = 1) and not(bEstaSendoUsado) and not(bSomenteLeitura) then
   begin
     sgridTags.EditorMode := True;
     sgridTags.Options := sgridTags.Options + [goEditing];
@@ -1401,7 +1398,7 @@ begin
 
         fCusto := fCusto + (Form7.ibQuery4.FieldByName('CUSTOCOMPR').AsFloat * Form7.ibDataSet28QUANTIDADE.AsFloat);
 
-        if Form7.bSoLeitura or Form7.bEstaSendoUsado then
+        if (bEstaSendoUsado) or (bSomenteLeitura) then
         begin
           Button10.Enabled := False;
           Button8.Enabled  := False;
@@ -1426,7 +1423,7 @@ begin
     if Button10.Enabled then
     begin
       try
-        if not (Form7.bSoLeitura or Form7.bEstaSendoUsado) then
+        if not(bEstaSendoUsado) and not(bSomenteLeitura) then
         begin
           Form7.ibDataSet4.Edit;
           Form7.ibDataSet4CUSTOCOMPR.AsFloat := fCusto; // Só atualiza o custo de produtos compostos
@@ -1648,7 +1645,7 @@ begin
   lblPrcFreteIPIOut.Caption   := Format('%9.2n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat - rCusto]);
   lblPrecoCustoCompra.Caption := Format('%9.2n',[Form7.ibDataSet4CUSTOCOMPR.AsFloat]);
 
-  SMALL_DBEdit32Exit(Sender);
+  edtPrecoICM_EntradaExit(Sender);
 end;
 
 procedure TFrmEstoque.tbsSerialShow(Sender: TObject);
@@ -1656,7 +1653,7 @@ begin
   if chkControlaSerial.CanFocus then
     chkControlaSerial.SetFocus;
 
-  if Form7.bSoLeitura or Form7.bEstaSendoUsado then
+  if (bEstaSendoUsado) or (bSomenteLeitura) then
   begin
     dbgSerial.ReadOnly          := True;
     chkControlaSerial.Enabled   := False;
@@ -2891,7 +2888,7 @@ var
   I, J : Integer;
   Mais1Ini: TIniFile;
 begin
-  if not Form7.bSoLeitura then
+  if not(bEstaSendoUsado) and not(bSomenteLeitura) then
   begin
     I := Application.MessageBox(Pchar('Tem certeza que quer excluir as informações'
                             + chr(10)+'da grade deste produto?'+ Chr(10)
@@ -3185,7 +3182,13 @@ begin
                           Break;
                         end else
                         begin
-                          I := Application.MessageBox(Pchar('Quer usar esta foto para este produto?'), Pchar('Sugestão ' + IntToStr(J) + ' de 6'), MB_YESNOCANCEL + mb_DefButton2 + MB_ICONQUESTION);
+                          //I := Application.MessageBox(Pchar('Quer usar esta foto para este produto?'), Pchar('Sugestão ' + IntToStr(J) + ' de 6'), MB_YESNOCANCEL + mb_DefButton2 + MB_ICONQUESTION);
+
+                          I := MensagemImagemWeb('Quer usar esta foto para este produto?',
+                                               'Sugestão ' + IntToStr(J) + ' de 6',
+                                               mtConfirmation, [mbYes, mbNo, mbCancel],
+                                               ['Sim','Não','Cancelar']);
+
                           if (I = IDYES) then
                           begin
                             DeleteFile(pChar('res' + Form7.IBDataSet4REGISTRO.AsString + '.jpg'));
@@ -4263,6 +4266,38 @@ begin
   end;
 end;
 
+
+
+function TFrmEstoque.MensagemImagemWeb(Msg, Titulo : string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; Captions: array of string): Integer;
+var
+  aMsgDlg: TForm;
+  i: Integer;
+  dlgButton: TButton;
+  CaptionIndex: Integer;
+begin
+  { Criar o dialogo }
+  aMsgDlg := CreateMessageDialog(Msg, DlgType, Buttons);
+  aMsgDlg.BorderStyle := bsSizeable;
+  aMsgDlg.BorderIcons := [];
+  aMsgDlg.Caption := Titulo;
+  aMsgDlg.Top     := FrmEstoque.Top + 120;
+
+  CaptionIndex := 0;
+  { Faz um loop varrendo os objetos do dialogo }
+  for i := 0 to pred(aMsgDlg.ComponentCount) do
+  begin
+    if (aMsgDlg.Components[i] is TButton) then
+    begin
+      { Apenas entra na condição se o objeto for um button }
+      dlgButton := TButton(aMsgDlg.Components[i]);
+      if CaptionIndex > High(Captions) then //Captura o Index dos captions dos buttons criado no array
+         Break;
+      dlgButton.Caption := Captions[CaptionIndex];
+      Inc(CaptionIndex);
+    end;
+  end;
+  Result := aMsgDlg.ShowModal;
+end;
 
 
 end.

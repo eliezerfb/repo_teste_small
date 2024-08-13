@@ -6,14 +6,8 @@ inherited FrmEstoque: TFrmEstoque
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
-    inherited Panel8: TPanel
-      ExplicitLeft = 822
-    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
-      ExplicitLeft = 20
-      ExplicitWidth = 802
-      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object lblCodigo: TLabel
@@ -736,6 +730,11 @@ inherited FrmEstoque: TFrmEstoque
           Top = 113
           Width = 313
           Height = 20
+          Color = clWhite
+          Ctl3D = False
+          ParentBackground = False
+          ParentColor = False
+          ParentCtl3D = False
           TabOrder = 4
           ExplicitLeft = 100
           ExplicitTop = 113
@@ -4249,7 +4248,7 @@ inherited FrmEstoque: TFrmEstoque
           Font.Style = []
           ParentFont = False
         end
-        object SMALL_DBEdit32: TSMALL_DBEdit
+        object edtPrecoICM_Entrada: TSMALL_DBEdit
           Left = 358
           Top = 101
           Width = 55
@@ -4272,10 +4271,10 @@ inherited FrmEstoque: TFrmEstoque
           ReadOnly = True
           ShowHint = True
           TabOrder = 0
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
-        object SMALL_DBEdit36: TSMALL_DBEdit
+        object edtPrecoICM_Saida: TSMALL_DBEdit
           Left = 358
           Top = 126
           Width = 55
@@ -4299,10 +4298,10 @@ inherited FrmEstoque: TFrmEstoque
           ParentShowHint = False
           ShowHint = True
           TabOrder = 1
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
-        object SMALL_DBEdit39: TSMALL_DBEdit
+        object edtPrecoCustoOP: TSMALL_DBEdit
           Left = 358
           Top = 151
           Width = 55
@@ -4324,8 +4323,8 @@ inherited FrmEstoque: TFrmEstoque
           ParentShowHint = False
           ShowHint = True
           TabOrder = 2
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
         object btnPrecoIgual: TBitBtn
           Left = 413
@@ -4336,7 +4335,7 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 3
           OnClick = btnPrecoIgualClick
         end
-        object SMALL_DBEdit40: TSMALL_DBEdit
+        object edtPrecoOutrosImp: TSMALL_DBEdit
           Left = 358
           Top = 176
           Width = 55
@@ -4360,10 +4359,10 @@ inherited FrmEstoque: TFrmEstoque
           ParentShowHint = False
           ShowHint = True
           TabOrder = 4
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
-        object SMALL_DBEdit42: TSMALL_DBEdit
+        object edtPrecoComissao: TSMALL_DBEdit
           Left = 358
           Top = 201
           Width = 55
@@ -4385,10 +4384,10 @@ inherited FrmEstoque: TFrmEstoque
           ParentShowHint = False
           ShowHint = True
           TabOrder = 5
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
-        object SMALL_DBEdit43: TSMALL_DBEdit
+        object edtPrecoLucro: TSMALL_DBEdit
           Left = 358
           Top = 226
           Width = 55
@@ -4410,8 +4409,8 @@ inherited FrmEstoque: TFrmEstoque
           ParentShowHint = False
           ShowHint = True
           TabOrder = 6
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
         object btnPreco: TBitBtn
           Left = 399
@@ -4610,8 +4609,8 @@ inherited FrmEstoque: TFrmEstoque
             OnKeyDown = PadraoKeyDown
           end
           object edtPrecoNormal: TSMALL_DBEdit
-            Left = 145
-            Top = 120
+            Left = 146
+            Top = 121
             Width = 100
             Height = 20
             AutoSize = False
