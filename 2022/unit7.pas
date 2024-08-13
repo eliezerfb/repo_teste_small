@@ -19778,7 +19778,13 @@ begin
   begin
     nSaldoDisp := RetornarSaldoDisponivelItemNota(ibDataSet16CODIGO.AsString);
 
+    {Dailon Parisotto (f-20355) 2024-08-13 Inicio
+
     if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < AnQtdeInformada) then
+
+    }
+    if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < FloatToCurr(AnQtdeInformada)) then
+    {Dailon Parisotto (f-20355) 2024-08-13 Fim}
     begin
       if ibDataSet4QTD_ATUAL.AsCurrency < 0 then
         nSaldoDisp := ibDataSet4QTD_ATUAL.AsCurrency;
