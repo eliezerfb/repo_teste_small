@@ -8097,6 +8097,8 @@ begin
       begin
         if (Copy(Form7.ibDataSet14OBS.AsString,1,24) = 'PERMITE O APROVEITAMENTO') then
         begin
+        {Dailon Parisotto (f-20353) 2024-08-14 Inicio  Não pode limpar o que já tem
+
           if (Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1,24) <> 'PERMITE O APROVEITAMENTO') then
           begin
             Form7.ibDataSet15COMPLEMENTO.AsString := '   ';
@@ -8104,6 +8106,8 @@ begin
           end;
         end else
         begin
+
+        Dailon Parisotto (f-20353) 2024-08-14 Fim}
           if Pos(AllTrim(Form7.ibDataSet14OBS.AsString),Form7.ibDataSet15COMPLEMENTO.AsString) = 0 then
           begin
             //
