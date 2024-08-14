@@ -326,14 +326,14 @@ object Form19: TForm19
       ImageIndex = 1
       object Label35: TLabel
         Left = 92
-        Top = 142
+        Top = 173
         Width = 213
         Height = 13
         Caption = '% m'#225'ximo de desconto no item do or'#231'amento'
       end
       object Label36: TLabel
         Left = 92
-        Top = 170
+        Top = 201
         Width = 214
         Height = 13
         Caption = '% m'#225'ximo de desconto no total do or'#231'amento'
@@ -364,22 +364,22 @@ object Form19: TForm19
       end
       object SMALL_DBEdit4: TSMALL_DBEdit
         Left = 15
-        Top = 134
+        Top = 165
         Width = 66
         Height = 19
         DataField = 'DIFERENCA_'
         DataSource = Form7.DataSource25
-        TabOrder = 4
+        TabOrder = 5
         OnKeyDown = SMALL_DBEdit1KeyDown
       end
       object SMALL_DBEdit5: TSMALL_DBEdit
         Left = 15
-        Top = 162
+        Top = 193
         Width = 66
         Height = 19
         DataField = 'PAGAR'
         DataSource = Form7.DataSource25
-        TabOrder = 5
+        TabOrder = 6
         OnKeyDown = SMALL_DBEdit1KeyDown
       end
       object chkFabricaProdSemQtd: TCheckBox
@@ -391,6 +391,14 @@ object Form19: TForm19
           'Fabrica'#231#227'o de produtos com quantidade insuficiente na Nota Fisca' +
           'l'
         TabOrder = 2
+      end
+      object chkCalcLucroEstoque: TCheckBox
+        Left = 15
+        Top = 134
+        Width = 290
+        Height = 17
+        Caption = 'C'#225'lculo do Lucro ao alterar Pre'#231'o de venda no estoque'
+        TabOrder = 4
       end
     end
     object Orelha_juros: TTabSheet

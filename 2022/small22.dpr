@@ -261,6 +261,7 @@ uses
   uPermissaoUsuario in 'uPermissaoUsuario.pas',
   uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro},
   uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
+  uFrmTecnico in 'uFrmTecnico.pas' {FrmTecnico},
   uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas',
   uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas',
   uIntegracaoItau in '..\..\unit_compartilhada\Itau\uIntegracaoItau.pas',

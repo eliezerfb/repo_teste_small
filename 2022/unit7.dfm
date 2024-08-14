@@ -315,7 +315,7 @@ object Form7: TForm7
     Font.Pitch = fpFixed
     Font.Style = []
     ParentFont = False
-    Visible = False
+    Visible = False 
   end
   object Label37: TLabel
     Left = 224
@@ -459,7 +459,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image8: TImage
-    Left = 1232
+    Left = 1104
     Top = 131
     Width = 20
     Height = 40
@@ -546,7 +546,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image9: TImage
-    Left = 1200
+    Left = 1072
     Top = 131
     Width = 20
     Height = 40
@@ -633,7 +633,7 @@ object Form7: TForm7
     Visible = False
   end
   object imgCheck: TImage
-    Left = 1168
+    Left = 1040
     Top = 347
     Width = 124
     Height = 19
@@ -865,7 +865,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image11: TImage
-    Left = 1168
+    Left = 1040
     Top = 371
     Width = 124
     Height = 19
@@ -1097,7 +1097,7 @@ object Form7: TForm7
     Visible = False
   end
   object imgChk: TImage
-    Left = 1208
+    Left = 1080
     Top = 315
     Width = 39
     Height = 20
@@ -1184,7 +1184,7 @@ object Form7: TForm7
     Visible = False
   end
   object imgUnChk: TImage
-    Left = 1248
+    Left = 1120
     Top = 315
     Width = 39
     Height = 20
@@ -1271,7 +1271,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image18: TImage
-    Left = 1168
+    Left = 1040
     Top = 315
     Width = 39
     Height = 20
@@ -1358,7 +1358,7 @@ object Form7: TForm7
     Visible = False
   end
   object Image1: TImage
-    Left = 1168
+    Left = 1040
     Top = 131
     Width = 20
     Height = 40
@@ -1427,7 +1427,7 @@ object Form7: TForm7
     Visible = False
   end
   object positivo: TImage
-    Left = 1202
+    Left = 1074
     Top = 211
     Width = 20
     Height = 40
@@ -1514,7 +1514,7 @@ object Form7: TForm7
     Visible = False
   end
   object Positivovermelho: TImage
-    Left = 1170
+    Left = 1042
     Top = 211
     Width = 20
     Height = 40
@@ -1608,7 +1608,7 @@ object Form7: TForm7
     Visible = False
   end
   object PositivoDownloadXML: TImage
-    Left = 1234
+    Left = 1106
     Top = 211
     Width = 20
     Height = 40
@@ -1857,7 +1857,7 @@ object Form7: TForm7
     Visible = False
   end
   object PositivoVerde: TImage
-    Left = 1266
+    Left = 1138
     Top = 211
     Width = 20
     Height = 40
@@ -10345,7 +10345,7 @@ object Form7: TForm7
     end
   end
   object Panel2: TPanel
-    Left = 1402
+    Left = 1192
     Top = 131
     Width = 395
     Height = 215

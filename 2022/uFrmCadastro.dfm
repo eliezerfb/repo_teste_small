@@ -1107,7 +1107,8 @@ inherited FrmCadastro: TFrmCadastro
           MaxLength = 254
           ParentFont = False
           TabOrder = 25
-          OnKeyDown = PadraoKeyDown
+          OnEnter = memObsEnter
+          OnKeyDown = memContatoKeyDown
         end
         object edtProxContato: TSMALL_DBEdit
           Left = 530
@@ -1142,7 +1143,7 @@ inherited FrmCadastro: TFrmCadastro
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          MaxLength = 254
+          MaxLength = 32768
           ParentFont = False
           TabOrder = 27
           OnEnter = memContatoEnter
