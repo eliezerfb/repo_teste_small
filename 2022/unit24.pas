@@ -304,7 +304,9 @@ var
 
 implementation
 
-uses Mais, Unit7, Unit10, uFrmParcelas, Unit43, Unit12, Unit22, Unit45,
+uses Mais, Unit7
+//  , Unit10
+  , uFrmParcelas, Unit43, Unit12, Unit22, Unit45,
   uFuncoesBancoDados, uDialogs, uFrmPrecificacaoProduto, uFuncoesRetaguarda;
 
 {$R *.DFM}
@@ -1708,6 +1710,10 @@ begin
 end;
 
 procedure TForm24.SMALL_DBEdit40Exit(Sender: TObject);
+var
+  //Mauricio Parizotto 2024-07-17
+  sText : string;
+  tProcura : TDataSet;
 begin
   //************************************
   // Joga p/obs a obs na tabela de icm *
@@ -1889,12 +1895,11 @@ begin
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select NUMERONF, FORNECEDOR, REGISTRO from COMPRAS where NUMERONF='+QuotedStr(Form7.ibDataSet24NUMERONF.AsString)+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' and REGISTRO<>'+QuotedStr(Form7.ibDataSet24REGISTRO.AsString)+' ');
   Form7.IBDataSet99.Open;
-  //
+
   if (Form7.IBDataSet99.FieldByName('NUMERONF').AsString = Form7.ibDataSet24NUMERONF.AsString) and (Form7.IBDataSet99.FieldByName('FORNECEDOR').AsString = Form7.ibDataSet24FORNECEDOR.AsString) and (Form7.IBDataSet99.FieldByName('REGISTRO').AsString <> Form7.ibDataSet24REGISTRO.AsString) then
   begin
     sRegistro := Form7.IBDataSet99.FieldByName('REGISTRO').AsString;
 
-    //ShowMessage('Nota fiscal já cadastrada.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Nota fiscal já cadastrada.',msgAtencao);
 
     Form7.sModulo := 'DUPLA';
@@ -1964,6 +1969,10 @@ begin
 end;
 
 procedure TForm24.SMALL_DBEdit41Exit(Sender: TObject);
+var
+  //Mauricio Parizotto 2024-07-17
+  sText : string;
+  tProcura : TDataSet;
 begin
   sText := AllTrim(SMALL_DBEdit41.Text);
   if sText <> '' then

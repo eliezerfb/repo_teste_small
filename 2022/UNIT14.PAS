@@ -41,7 +41,8 @@ implementation
 
 uses
   Unit7, Unit16, Unit9, Mais, Unit39, Unit19, Unit24, Mais3,
-  Unit10, uRelatorioCatalogoProdudos;
+  //Unit10
+  , uRelatorioCatalogoProdudos;
 
 {$R *.DFM}
 
@@ -881,22 +882,22 @@ begin
                   jp2 := TJPEGImage.Create;
                   try
                     jp2.LoadFromStream(BlobStream);
-                    Form10.Image5.Picture.Assign(jp2);
+                    Form7.ImgProduto.Picture.Assign(jp2);
                   finally
                     BlobStream.Free;
                     jp2.Free;
                   end;
                 end else
-                  Form10.Image5.Picture := Form10.Image3.Picture;
+                  Form7.ImgProduto.Picture := Form7.ImgSemProduto.Picture;
 
-                Form10.Image5.Picture.SaveToFile('_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg');
+                Form7.ImgProduto.Picture.SaveToFile('_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg');
 
-                if Form10.Image5.Picture.Width > Form10.Image5.Picture.Height then
+                if Form7.ImgProduto.Picture.Width > Form7.ImgProduto.Picture.Height then
                 begin
-                  WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (200 / Form10.Image5.Picture.Width)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (200 / Form10.Image5.Picture.Width)),10,0)+'>');
+                  WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+'" width='+StrZero((Form7.ImgProduto.Picture.Width * (200 / Form7.ImgProduto.Picture.Width)),10,0)+' Height='+StrZero((Form7.ImgProduto.Picture.Height* (200 / Form7.ImgProduto.Picture.Width)),10,0)+'>');
                 end else
                 begin
-                  WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (200 / Form10.Image5.Picture.Height)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (200 / Form10.Image5.Picture.Height)),10,0)+'>');
+                  WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset4CODIGO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet4DESCRICAO.AsString)+'" width='+StrZero((Form7.ImgProduto.Picture.Width * (200 / Form7.ImgProduto.Picture.Height)),10,0)+' Height='+StrZero((Form7.ImgProduto.Picture.Height* (200 / Form7.ImgProduto.Picture.Height)),10,0)+'>');
                 end;
               end;
 
@@ -908,21 +909,21 @@ begin
                   jp2 := TJPEGImage.Create;
                   try
                     jp2.LoadFromStream(BlobStream);
-                    Form10.Image5.Picture.Assign(jp2);
+                    Form7.ImgProduto.Picture.Assign(jp2);
                   finally
                     BlobStream.Free;
                     jp2.Free;
                   end;
-                end else Form10.Image5.Picture := Form10.Image3.Picture;
+                end else Form7.ImgProduto.Picture := Form7.ImgSemProduto.Picture;
 
-                Form10.Image5.Picture.SaveToFile('_t_'+Form7.ibDataset2REGISTRO.AsString+'.jpg');
+                Form7.ImgProduto.Picture.SaveToFile('_t_'+Form7.ibDataset2REGISTRO.AsString+'.jpg');
 
-                if Form10.Image5.Picture.Width > Form10.Image5.Picture.Height then
+                if Form7.ImgProduto.Picture.Width > Form7.ImgProduto.Picture.Height then
                 begin
-                  WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset2REGISTRO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet2NOME.AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (200 / Form10.Image5.Picture.Width)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (200 / Form10.Image5.Picture.Width)),10,0)+'>');
+                  WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset2REGISTRO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet2NOME.AsString)+'" width='+StrZero((Form7.ImgProduto.Picture.Width * (200 / Form7.ImgProduto.Picture.Width)),10,0)+' Height='+StrZero((Form7.ImgProduto.Picture.Height* (200 / Form7.ImgProduto.Picture.Width)),10,0)+'>');
                 end else
                 begin
-                  WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset2REGISTRO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet2NOME.AsString)+'" width='+StrZero((Form10.Image5.Picture.Width * (200 / Form10.Image5.Picture.Height)),10,0)+' Height='+StrZero((Form10.Image5.Picture.Height* (200 / Form10.Image5.Picture.Height)),10,0)+'>');
+                  WriteLn(F,'<img src="'+'_t_'+Form7.ibDataset2REGISTRO.AsString+'.jpg'+'" alt="'+AllTrim(Form7.ibDataSet2NOME.AsString)+'" width='+StrZero((Form7.ImgProduto.Picture.Width * (200 / Form7.ImgProduto.Picture.Height)),10,0)+' Height='+StrZero((Form7.ImgProduto.Picture.Height* (200 / Form7.ImgProduto.Picture.Height)),10,0)+'>');
                 end;
               end;
             end;

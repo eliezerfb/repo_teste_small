@@ -210,7 +210,9 @@ var
 
 implementation
 
-uses Mais, Unit7, Unit14, Unit22, Unit12, Unit10, Unit2, Unit4,
+uses Mais, Unit7, Unit14, Unit22, Unit12
+ //, Unit10
+ , Unit2, Unit4,
   Unit24, uDialogs, uArquivosDAT, uSmallConsts, uSistema;
 
 {$R *.DFM}
@@ -1128,6 +1130,7 @@ begin
       Form7.Image308.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       //Mauricio Parizotto 2024-07-31 Form7.Image308.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
+      {
       // BOTOES TERCIARIOS Form10
       Form10.Image201.Picture.Bitmap       := Form7.imgNovo.Picture.Bitmap;
       Form10.Image202.Picture.Bitmap       := Form7.imgProcurar.Picture.Bitmap;
@@ -1135,6 +1138,7 @@ begin
 
       Form10.Image204.Picture.Bitmap       := Form7.imgNovo.Picture.Bitmap;
       Form10.Image205.Picture.Bitmap       := Form7.imgNovo.Picture.Bitmap;
+      Mauricio Parizotto 2024-07-17}
 
       r1.Top     := 30 + 70 + 70;
       r1.Bottom  := 30 + 70 + 70 + 70;
@@ -1142,14 +1146,18 @@ begin
       r1.Left    := 10 + (70 * 0);
       r1.Right   := 10 + (70 * 1);
 
+      {
       Form10.Image204.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form10.Image204.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      Mauricio Parizotto 2024-07-17}
 
       r1.Left    := 10 + (70 * 1);
       r1.Right   := 10 + (70 * 2);
 
+      {
       Form10.Image205.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form10.Image205.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      Mauricio Parizotto 2024-07-17}
 
       {Mauricio Parizotto 2024-08-01 Inicio
       // Botão Small Mobile
@@ -1349,6 +1357,7 @@ begin
       Form7.Image308_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       //Mauricio Parizotto 2024-07-31 Form7.Image308_X.Picture.Bitmap.TransParentColor := Form1.Image208_X.Picture.BitMap.canvas.pixels[1,1];
 
+      {
       // BOTOES TERCIARIOS Form10 DESTACADOS
       Form10.Image201_X.Picture.Bitmap       := Form7.Image201_X.Picture.Bitmap;
       Form10.Image202_X.Picture.Bitmap       := Form7.Image203_X.Picture.Bitmap;
@@ -1356,26 +1365,30 @@ begin
       //
       Form10.Image204_X.Picture.Bitmap       := Form7.Image201_X.Picture.Bitmap;
       Form10.Image205_X.Picture.Bitmap       := Form7.Image201_X.Picture.Bitmap;
-      //
+      Mauricio Parizotto 2024-07-17}
+
       r1.Top     := 330 + 70 + 70;
       r1.Bottom  := 330 + 70 + 70 + 70;
       //
       r1.Left    := 10 + (70 * 0);
       r1.Right   := 10 + (70 * 1);
-      //
+
+      {
       Form10.Image204_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      //Mauricio Parizotto 2024-07-31 Form10.Image204_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
-      //
+      Form10.Image204_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      Mauricio Parizotto 2024-07-17}
       r1.Left    := 10 + (70 * 1);  //
       r1.Right   := 10 + (70 * 2);  //
-      //
+
+      {
       Form10.Image205_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      //Mauricio Parizotto 2024-07-31 Form10.Image205_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      Form10.Image205_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      Mauricio Parizotto 2024-07-17}
 
       // Botão Small Mobile
-      r1.Left    := 10 + (70 * 2);  //
-      r1.Right   := 10 + (70 * 3);  //
-      //
+      r1.Left    := 10 + (70 * 2);
+      r1.Right   := 10 + (70 * 3);
+
       Form1.Image200_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       //Mauricio Parizotto 2024-07-31 Form1.Image200_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
     end;
@@ -1406,11 +1419,13 @@ begin
   Form7.Image208_R.Picture.Bitmap := Form7.imgLibBloq.Picture.Bitmap;
   Form7.Image308_R.Picture.Bitmap := Form7.Image308.Picture.Bitmap;
 
+  {
   Form10.Image201_R.Picture.Bitmap       := Form10.Image201.Picture.Bitmap;
   Form10.Image202_R.Picture.Bitmap       := Form10.Image202.Picture.Bitmap;
   Form10.Image203_R.Picture.Bitmap       := Form10.Image203.Picture.Bitmap;
   Form10.Image204_R.Picture.Bitmap       := Form10.Image204.Picture.Bitmap;
   Form10.Image205_R.Picture.Bitmap       := Form10.Image205.Picture.Bitmap;
+  Mauricio Parizotto 2024-07-17}
 
   Form1.MontaTela(True);
 end;

@@ -522,7 +522,7 @@ begin
     ExecutaComando('commit');
   end;
 
-  // Imformações complementares VENDA
+  // Informações complementares VENDA
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'COMPLEMENTO') = False then
     ExecutaComando('alter table VENDAS add COMPLEMENTO blob sub_type 1');
 
@@ -556,9 +556,9 @@ begin
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'DESCRICAO4') then
     ExecutaComando('alter table VENDAS drop DESCRICAO4');
 
-  // Imformações complementares COMPRAS
+  // Informações complementares COMPRAS
   Form22.Repaint;
-  Mensagem22('Alterando estrutura do banco de dados... (Imformações complementares COMPRAS)');
+  Mensagem22('Alterando estrutura do banco de dados... (Informações complementares COMPRAS)');
 
   try
     if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'COMPLEMENTO') = False then

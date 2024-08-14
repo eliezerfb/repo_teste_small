@@ -147,9 +147,6 @@
         <DCCReference Include="UNIT48.PAS">
             <Form>Form48</Form>
         </DCCReference>
-        <DCCReference Include="Unit10.pas">
-            <Form>Form10</Form>
-        </DCCReference>
         <DCCReference Include="Unit16.pas">
             <Form>Form16</Form>
         </DCCReference>
@@ -565,7 +562,7 @@
         </DCCReference>
         <DCCReference Include="..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas"/>
         <DCCReference Include="uFrmTecnico.pas">
-            <Form>FrmTecnico</Form>
+            <Form>FrmTecnico</Form> 
         </DCCReference>
         <DCCReference Include="..\..\unit_compartilhada\uCarneSections.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uTypesImpressao.pas"/>
@@ -600,6 +597,10 @@
                     <Source Name="MainSource">small22.dpr</Source>
                 </Source>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfrxPDF28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfrxPDF28.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsADO28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsADO28.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsIBX28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsIBX28.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>

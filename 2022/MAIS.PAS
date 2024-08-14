@@ -5,7 +5,7 @@ interface
 uses
   Windows, SysUtils, Messages, Classes, Controls, Graphics,
   Menus, StdCtrls, Buttons, ExtCtrls, Forms, Dialogs, shellapi,
-  Mais3, unit2, IniFiles, Unit4, Unit10, Registry,
+  Mais3, unit2, unit3, IniFiles, Unit4, Registry,
   DBGrids, Grids, OleCtrls, SHDocVw, IBCustomDataSet, IBDatabase, Winsock,
   IBQuery, jpeg, Gauges, SpdNFeDataSets, IBServices, FileCtrl, xmldom, XMLIntf,
   {$IFDEF VER150}
@@ -22,7 +22,8 @@ uses
   , SMALL_DBEdit
   , uValidaRecursosDelphi7
   , uLogSistema
-  , uSmallEnumerados, Vcl.Imaging.GIFImg
+  , uSmallEnumerados
+  , Vcl.Imaging.GIFImg
   ;
 
   function LeLabels(sP1: Boolean): Boolean;
@@ -605,7 +606,9 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmContaPagar
   , uFrmContaReceber
   , uFrmCadastro
-  , uFrmMsgNovoLayout;
+  , uFrmEstoque
+  , uFrmMsgNovoLayout
+  ;
 
 {$R *.DFM}
 
@@ -3411,7 +3414,7 @@ begin
   Result := False;
 
   if Form5.Visible then Form5.Close;
-  if Form5.Visible then Form10.Close;
+//  if Form5.Visible then Form10.Close;
 
   if Form1.bFechaTudo then
   begin
@@ -8532,7 +8535,8 @@ begin
       Form7.Livrodereceitas1.Visible   := True;
     end else
     begin
-      Form7.ibDataSet4OBS.DisplayLabel    := 'Aplicação';
+      //Form7.ibDataSet4OBS.DisplayLabel    := 'Aplicação';
+      Form7.ibDataSet4OBS.DisplayLabel    := 'Observação';
       Form7.Cardpio1.Visible              := False;
       Form7.Livrodereceitas1.Visible      := True;
       Form7.Livrodereceitas1.Caption      := 'Relatório de composição';
@@ -9544,7 +9548,7 @@ begin
       //
       DeleteFile(pChar(sTLista[I])); // Apaga local
       //
-      if (not Form10.visible) and (not Form12.visible) and (not Form24.visible) and (not Form30.visible) then
+      if {(not Form10.visible) and} (not Form12.visible) and (not Form24.visible) and (not Form30.visible) then
       begin
         //
         if Form7.Visible then
@@ -11065,11 +11069,12 @@ begin
   {Mauricio Parizotto 2024-04-16 Fim}
 
   if Form7.sModulo = 'CLIENTES' then
+   Exit; 
+
+  //Mauricio Parizotto 2024-07-17
+  if Form7.sModulo = 'ESTOQUE' then
    Exit;
 
-  //Mauricio Parizotto 2024-08-08
-  if Form7.sModulo = 'TECNICO' then
-   Exit;
 
   if AllTrim(Form7.sModulo) <> '' then
   begin
@@ -11100,10 +11105,11 @@ begin
           Form7.BringToFront;
       end else
       begin
+        {Mauricio Parizotto 2024-07-17
         if Form10.Visible then
         begin
           Form10.BringToFront;
-        end else
+        end else}
         begin
           if (Form7.sModulo = 'NOTA') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO') then
           begin
@@ -11736,11 +11742,10 @@ begin
         Exit;
       try
         if form7.Visible then Form7.Close;
-        if form10.Visible then Form10.Close;
+//        if form10.Visible then Form10.Close;
       except end;
-      //
     except end;
-    //
+
     try
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
       //
@@ -11961,17 +11966,32 @@ begin
     end;
   end;
 
+  //Mauricio Parizotto 2024-04-17
+  if Form7.sModulo = 'ESTOQUE' then
+  begin
+    if FrmEstoque <> nil then
+    begin
+      if FrmEstoque.Visible then
+      begin
+        FrmEstoque.BringToFront;
+        Exit;
+      end;
+    end;
+  end;
+
   if Form5.Visible then
   begin
     Form5.BringToFront;
     Exit;
   end;
 
+  {Mauricio Parizotto 2024-07-17
   if Form7.Visible and Form10.Visible then
   begin
     Form10.BringToFront;
     Exit;
   end;
+  }
 
   if Form12.Visible then
   begin
@@ -12173,7 +12193,7 @@ begin
     Exit;
 
   if Form7.Visible then Form7.Close;
-  if Form10.Visible then Form10.Close;
+//  if Form10.Visible then Form10.Close;
 
   try
     sMSG := '';
@@ -13292,7 +13312,7 @@ begin
     Exit;
   
   if Form7.Visible then Form7.Close;
-  if Form10.Visible then Form10.Close;
+//  if Form10.Visible then Form10.Close;
 
   sMSG := Form7.GetMensagemCertificado;
 

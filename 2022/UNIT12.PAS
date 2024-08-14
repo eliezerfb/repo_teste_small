@@ -302,7 +302,9 @@ var
 
 implementation
 
-uses Unit7, Unit10, Mais, uFrmParcelas, Unit41, Unit43, Unit19,
+uses Unit7
+//  , Unit10
+  , Mais, uFrmParcelas, Unit41, Unit43, Unit19,
   Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
   uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
   ufrmPesquisaOrdemServico, uDialogs;
