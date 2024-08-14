@@ -26265,6 +26265,9 @@ begin
 end;
 
 procedure TForm7.ibDataSet16BeforePost(DataSet: TDataSet);
+var
+  qryIPI: TIBQuery;
+  nIPI: Double;
 begin
 
   { Dailon Parisotto (f-20346) 2024-08-13 Inicio
@@ -26294,6 +26297,7 @@ begin
     except end;
   end;
   }
+  nIPI := 0;
 
   if Form7.ibDataSet16DESCRICAO.AsString <> EmptyStr then
   begin
@@ -26303,16 +26307,30 @@ begin
         if (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '5101') or (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '6101') or (Pos('IPI',Form7.ibDataSet14OBS.AsString) <> 0) then
         begin
           //
-          if (Form7.ibDataSet16DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString) and (Form7.ibDataSet16UNITARIO.AsCurrency > 0) then
-            Form7.ibDataSet4.Locate('DESCRICAO', Form7.ibDataSet16DESCRICAO.AsString, []);
-
-          if Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString then
-          begin
-            if Form7.ibDataSet16IPI.AsFloAt <> Form7.ibDataSet4IPI.AsFloat then
+          try
+            if (Form7.ibDataSet16UNITARIO.AsCurrency > 0) then
             begin
-              Form7.ibDataSet16.Edit;
-              Form7.ibDataSet16IPI.AsFloAt := Form7.ibDataSet4IPI.AsFloat;
+              if (Form7.ibDataSet16DESCRICAO.AsString <> Form7.ibDataSet4DESCRICAO.AsString) then
+              begin
+                qryIPI := CriaIBQuery(IBTransaction1);
+                qryIPI.Close;
+                qryIPI.SQL.Clear;
+                qryIPI.SQL.Add('select IPI from ESTOQUE where CODIGO=' + QuotedStr(Form7.ibDataSet16CODIGO.AsString));
+                qryIPI.Open;
+
+                nIPI := qryIPI.FieldByName('IPI').AsFloat;
+              end else
+                nIPI := Form7.ibDataSet4IPI.AsFloat;
+
+              if Form7.ibDataSet16IPI.AsFloAt <> nIPI then
+              begin
+                Form7.ibDataSet16.Edit;
+                Form7.ibDataSet16IPI.AsFloAt := nIPI;
+              end;
             end;
+          finally
+            if Assigned(qryIPI) then
+              FreeAndNil(qryIPI);
           end;
           //
         end else
