@@ -12066,6 +12066,7 @@ object Form7: TForm7
       DisplayLabel = 'Final da promo'#231#227'o'
       FieldName = 'PROMOFIM'
       Origin = 'ESTOQUE.PROMOFIM'
+      OnChange = ibDataSet4PROMOINIChange
       OnSetText = ibDataSet4PROMOINISetText
       EditMask = '!99/99/9999;1; '
     end

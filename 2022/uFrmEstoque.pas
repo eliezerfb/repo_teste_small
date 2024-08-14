@@ -274,7 +274,6 @@ type
     Image8: TImage;
     Label27: TLabel;
     pnlEscondeWin11: TPanel;
-    procedure DSCadastroDataChange(Sender: TObject; Field: TField);
     procedure FormActivate(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -388,6 +387,8 @@ type
     procedure memAtivacaoEnter(Sender: TObject);
     procedure memAtivacaoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure tbsCadastroShow(Sender: TObject);
+    procedure edtCodigoChange(Sender: TObject);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -656,25 +657,6 @@ begin
   end;
 end;
 
-procedure TFrmEstoque.DSCadastroDataChange(Sender: TObject; Field: TField);
-begin
-  inherited;
-
-  lblImpostoAprox.Caption := 'Imposto aproximado (Fonte:IBPT): Federal '+DSCadastro.DataSet.FieldByName('IIA').AsString+'%  Estadual '+
-                              DSCadastro.DataSet.FieldByName('IIA_UF').AsString+'%  Municipal '+DSCadastro.DataSet.FieldByName('IIA_MUNI').AsString+'%';
-
-  if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
-    Exit;
-
-  if bGravandoRegistro then
-    Exit;
-
-  AtualizaObjComValorDoBanco;
-
-  //Contador
-  tbsCadastro.Caption := GetDescritivoNavegacao;
-end;
-
 procedure TFrmEstoque.Edit6Enter(Sender: TObject);
 begin
   if dbgComposicao.CanFocus then
@@ -693,6 +675,23 @@ begin
       TSMALL_DBEdit(Sender).Text := AllTrim(TSMALL_DBEdit(Sender).Text);
   end else
     cCadJaValidado := Form7.ibDataSet4DESCRICAO.AsString;
+end;
+
+procedure TFrmEstoque.edtCodigoChange(Sender: TObject);
+begin
+  lblImpostoAprox.Caption := 'Imposto aproximado (Fonte:IBPT): Federal '+DSCadastro.DataSet.FieldByName('IIA').AsString+'%  Estadual '+
+                              DSCadastro.DataSet.FieldByName('IIA_UF').AsString+'%  Municipal '+DSCadastro.DataSet.FieldByName('IIA_MUNI').AsString+'%';
+
+  if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
+    Exit;
+
+  if bGravandoRegistro then
+    Exit;
+
+  AtualizaObjComValorDoBanco;
+
+  //Contador
+  tbsCadastro.Caption := GetDescritivoNavegacao;
 end;
 
 procedure TFrmEstoque.edtDescricaoExit(Sender: TObject);
@@ -1341,6 +1340,11 @@ begin
   begin
     sgridTags.Options := sgridTags.Options - [goEditing];
   end;
+end;
+
+procedure TFrmEstoque.tbsCadastroShow(Sender: TObject);
+begin
+  AjustaCampoPrecoQuandoEmPromocao;
 end;
 
 procedure TFrmEstoque.tbsCodBarrasEnter(Sender: TObject);
@@ -2020,33 +2024,7 @@ begin
 
   {$Region'/// Atualiza Layout Estoque ////'}
   try
-    edtPreco.Enabled    := not EmPeriodoPromocional and not(bEstaSendoUsado) and not (bSomenteLeitura);
-    edtPreco.ReadOnly   := EmPeriodoPromocional;
-
-    if EmPeriodoPromocional then
-    begin
-      Form7.ibDataSet4PRECO.ReadOnly := True;
-      edtPreco.Font.Color := clGrayText;
-      lblPreco.Caption := 'Preço promocional:';
-    end else
-    begin
-      try
-        if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-          Form7.ibDataset4.Edit;
-        if (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
-        begin
-          sRegistroOld := Form7.sRegistro;
-          Form7.ibDataSet4OFFPROMO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
-          if sRegistroOld <> Form7.sRegistro then
-            Form7.sRegistro := sRegistroOld;
-        end;
-
-        Form7.ibDataSet4PRECO.ReadOnly := False;
-        edtPreco.Font.Color := clblack;
-        lblPreco.Caption := 'Preço';
-      except
-      end;
-    end;
+    AjustaCampoPrecoQuandoEmPromocao;
   except
   end;
   {$Endregion}
@@ -2054,25 +2032,25 @@ begin
   if Form7.ibDataSet13CRT.AsString = '1' then
   begin
     Label36.Visible          := True;
-    cboCSOSN_Prod.Visible           := True;
+    cboCSOSN_Prod.Visible    := True;
     Label37.Visible          := False;
-    cboCST_Prod.Visible             := False;
+    cboCST_Prod.Visible      := False;
 
     Label72.Visible          := True;
-    cboCSOSN_NFCE.Visible       := True;
+    cboCSOSN_NFCE.Visible    := True;
     Label84.Visible          := False;
-    cboCST_NFCE.Visible       := False;
+    cboCST_NFCE.Visible      := False;
   end else
   begin
     Label36.Visible          := False;
-    cboCSOSN_Prod.Visible           := False;
+    cboCSOSN_Prod.Visible    := False;
     Label37.Visible          := True;
-    cboCST_Prod.Visible             := True;
+    cboCST_Prod.Visible      := True;
 
     Label72.Visible          := False;
-    cboCSOSN_NFCE.Visible       := False;
+    cboCSOSN_NFCE.Visible    := False;
     Label84.Visible          := True;
-    cboCST_NFCE.Visible       := True;
+    cboCST_NFCE.Visible      := True;
   end;
 
   if Form7.ibDataSet13ESTADO.AsString = 'SP' then
@@ -3733,23 +3711,46 @@ end;
 procedure TFrmEstoque.AjustaCampoPrecoQuandoEmPromocao;
 var
   iObj: Integer;
-  sRegistroOld: String;
+  //sRegistroOld: String;
+
+  PRECO, ONPROMO, OFFPROMO : Double;
 begin
+  {Mauricio Parizotto 2024-08-14 Inicio}
+
   edtPreco.Enabled    := not EmPeriodoPromocional and not(bEstaSendoUsado) and not (bSomenteLeitura);
   edtPreco.ReadOnly   := EmPeriodoPromocional;
-  if not EmPeriodoPromocional then
-    edtPreco.Font.Color := clWindowText;
+
+  if EmPeriodoPromocional then
+  begin
+    Form7.ibDataSet4PRECO.ReadOnly := True;
+    lblPreco.Caption := 'Preço promocional:';
+  end else
+  begin
+    Form7.ibDataSet4PRECO.ReadOnly := False;
+    lblPreco.Caption := 'Preço';
+  end;
 
   if Form7.sSelect <> '' then
   begin
     if Form7.ibDataSet4.Active then
     begin
-      sRegistroOld := Form7.sRegistro;  // Sandro Silva 2024-06-18
+      //sRegistroOld := Form7.sRegistro;
       if EmPeriodoPromocional then
       begin
-        if Form7.ibDataSet4.FieldByName('PRECO').AsFloat <> Form7.ibDataSet4.FieldByName('ONPROMO').AsFloat then
+        PRECO    := Form7.ibDataSet4.FieldByName('PRECO').AsFloat;
+        ONPROMO  := Form7.ibDataSet4.FieldByName('ONPROMO').AsFloat;
+        OFFPROMO := Form7.ibDataSet4.FieldByName('OFFPROMO').AsFloat;
+
+        if PRECO <> ONPROMO then
         begin
           try
+            if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
+              Form7.ibDataset4.Edit;
+
+            Form7.ibDataSet4.FieldByName('PRECO').AsFloat := ONPROMO;
+            Form7.ibDataSet4.FieldByName('OFFPROMO').AsFloat := OFFPROMO;
+
+            {
             Form7.ibDataSet4.Refresh;
 
             if sRegistroOld <> Form7.sRegistro then
@@ -3759,6 +3760,7 @@ begin
             end;
 
             Form7.ibDataSet4.Edit;
+            }
           except
 
           end;
@@ -3766,6 +3768,7 @@ begin
       end;
     end;
   end;
+  {Mauricio Parizotto 2024-08-14 Fim}
 end;
 
 function TFrmEstoque.EmPeriodoPromocional: Boolean;

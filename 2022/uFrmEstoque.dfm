@@ -10,6 +10,7 @@ inherited FrmEstoque: TFrmEstoque
       ActivePage = tbsCadastro
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
+        OnShow = tbsCadastroShow
         object lblCodigo: TLabel
           Left = 0
           Top = 13
@@ -438,6 +439,7 @@ inherited FrmEstoque: TFrmEstoque
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 0
+          OnChange = edtCodigoChange
           OnKeyDown = PadraoKeyDown
         end
         object edtCodBarras: TSMALL_DBEdit
@@ -5129,7 +5131,6 @@ inherited FrmEstoque: TFrmEstoque
   end
   inherited DSCadastro: TDataSource
     DataSet = Form7.ibDataSet4
-    OnDataChange = DSCadastroDataChange
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Filter = 'JPEG Image File (*.jpg)|*.jpg|| | | | | | | | | '
