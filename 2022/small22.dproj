@@ -562,7 +562,7 @@
         </DCCReference>
         <DCCReference Include="..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas"/>
         <DCCReference Include="uFrmTecnico.pas">
-            <Form>FrmTecnico</Form> 
+            <Form>FrmTecnico</Form>
         </DCCReference>
         <DCCReference Include="..\..\unit_compartilhada\uCarneSections.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uTypesImpressao.pas"/>
@@ -571,6 +571,9 @@
         <DCCReference Include="..\..\unit_compartilhada\Itau\uWebServiceItau.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uFrmTelaProcessamento.pas">
             <Form>FrmTelaProcessamento</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmEstoque.pas">
+            <Form>FrmEstoque</Form>
         </DCCReference>
         <DCCReference Include="uFrmMsgNovoLayout.pas">
             <Form>FrmMsgNovoLayout</Form>
@@ -1418,15 +1421,14 @@
                     </Platform>
                     <Platform Name="Win64">
                         <RemoteDir>Assets</RemoteDir>
-                        <Operation>1</Operation> 
+                        <Operation>1</Operation>
                     </Platform>
-                </DeployClass> 
+                </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
@@ -2249,9 +2251,8 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>

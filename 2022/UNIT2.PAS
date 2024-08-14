@@ -162,13 +162,13 @@ var
 
 implementation
 
-uses Mais, 
-	//Unit10
+uses Mais
+	//,Unit10
 	, Unit22, Unit38, Unit7, Unit37
 	, uSistema
 	, uSmallConsts
-  	, uDialogs
-  	;
+  , uDialogs
+  ;
 
 {$R *.DFM}
 

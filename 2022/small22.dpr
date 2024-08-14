@@ -332,13 +332,12 @@ begin
       Form22.Update;
 
       Application.Title := 'Small Commerce';
-
+      Application.CreateForm(TForm1, Form1);
       Application.CreateForm(TForm2, Form2);
       Application.CreateForm(TSenhas, Senhas);
-      Application.CreateForm(TSenhas2, Senhas2);
+      //Application.CreateForm(TSenhas2, Senhas2);
       Application.CreateForm(TForm24, Form24);
       Application.CreateForm(TForm30, Form30);
-      Application.CreateForm(TSenhas2, Senhas2);
       Application.CreateForm(TForm7, Form7);
       Application.CreateForm(TForm9, Form9);
       Application.CreateForm(TForm14, Form14);
@@ -347,7 +346,7 @@ begin
       Application.CreateForm(TForm48, Form48);
       //Application.CreateForm(TForm10, Form10); Mauricio Parizotto 2024-07-17
       Application.CreateForm(TForm16, Form16);
-      Application.CreateForm(TForm99, Form99);
+      //Application.CreateForm(TForm99, Form99);
       Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
       Application.CreateForm(TForm21, Form21);
       Application.CreateForm(TForm25, Form25);
@@ -363,7 +362,7 @@ begin
       Application.CreateForm(TForm40, Form40);
       Application.CreateForm(TForm15, Form15);
       Application.CreateForm(TForm35, Form35);
-      Application.CreateForm(TForm8, Form8);
+      //Application.CreateForm(TForm8, Form8);
       Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
       Application.CreateForm(TForm6, Form6);
       Application.CreateForm(TForm11, Form11);
