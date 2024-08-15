@@ -18,7 +18,7 @@ uses
 
 type
   TfrmConfiguraNFSe = class(TFrmPadrao)
-    BitBtn1: TBitBtn;
+    btnGravar: TBitBtn;
     Label30: TLabel;
     Label33: TLabel;
     Label34: TLabel;
@@ -43,16 +43,19 @@ type
     Label49: TLabel;
     cbLayoutNFSe: TComboBox;
     Label3: TLabel;
-    lbCertificado: TLabel;
+    lbCertificado1: TLabel;
+    mmCertificado: TMemo;
+    btnSelecionaCertificado: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure BitBtn1Click(Sender: TObject);
+    procedure btnGravarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cbSSLLibChange(Sender: TObject);
     procedure cbCryptLibChange(Sender: TObject);
     procedure cbHttpLibChange(Sender: TObject);
     procedure cbXmlSignLibChange(Sender: TObject);
-    procedure lbCertificadoClick(Sender: TObject);
+    procedure lbCertificado1Click(Sender: TObject);
+    procedure btnSelecionaCertificadoClick(Sender: TObject);
   private
     { Private declarations }
     Ini: TIniFile;
@@ -79,11 +82,24 @@ begin
   cbSSLType.Enabled := (TSSLHttpLib(cbHttpLib.ItemIndex) in [httpWinHttp, httpOpenSSL]);
 end;
 
-procedure TfrmConfiguraNFSe.BitBtn1Click(Sender: TObject);
+procedure TfrmConfiguraNFSe.btnGravarClick(Sender: TObject);
 begin
   inherited;
   SalvarConfiguracao;
   Close;
+end;
+
+procedure TfrmConfiguraNFSe.btnSelecionaCertificadoClick(Sender: TObject);
+begin
+  inherited;
+  Application.CreateForm(TfrmSelecionaCertificadoNFSe, frmSelecionaCertificadoNFSe);
+  frmSelecionaCertificadoNFSe.ShowModal;
+  FreeAndNil(frmSelecionaCertificadoNFSe);
+
+  mmCertificado.Clear;
+  mmCertificado.Text := Ini.ReadString('Certificado', 'NumSerie',   '');
+  mmCertificado.Lines.Add(Ini.ReadString('Certificado', 'NomeCertificado', ''));
+
 end;
 
 procedure TfrmConfiguraNFSe.cbCryptLibChange(Sender: TObject);
@@ -127,6 +143,7 @@ var
   L: TLayoutNFSe;
 begin
   inherited;
+  mmCertificado.Clear;
   Ini := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'nfse.ini');
 
   cbSSLLib.Items.Clear;
@@ -167,7 +184,7 @@ begin
   LerConfiguracao;
 end;
 
-procedure TfrmConfiguraNFSe.lbCertificadoClick(Sender: TObject);
+procedure TfrmConfiguraNFSe.lbCertificado1Click(Sender: TObject);
 begin
   inherited;
   Application.CreateForm(TfrmSelecionaCertificadoNFSe, frmSelecionaCertificadoNFSe);
@@ -187,8 +204,15 @@ begin
   //edtNumSerie.Text       := Ini.ReadString('Certificado', 'NumSerie',   '');
   //edSubjectNameCertificado.Text := Ini.ReadString('Certificado', 'NomeCertificado', '');
 
+  {
   lbCertificado.Caption := Ini.ReadString('Certificado', 'NumSerie',   '') + ' ' + #13 +
                            Ini.ReadString('Certificado', 'NomeCertificado', '');
+  }
+
+  mmCertificado.Clear;
+  mmCertificado.Text := Ini.ReadString('Certificado', 'NumSerie',   '');
+  mmCertificado.Lines.Add(Ini.ReadString('Certificado', 'NomeCertificado', ''));
+
 
   if cbSSLLib.ItemIndex <> 5 then
     cbSSLLibChange(cbSSLLib);

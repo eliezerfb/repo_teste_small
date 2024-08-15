@@ -20,45 +20,26 @@ uses
 type
   {Declaração da classe do formulário de seleção de certificados}
   TfrmSelecionaCertificadoNFSe = class(TForm)
-    {Listbox responsável por listar os certificados. O usuário pode selecionar o certificado desejado com um duplo clique na linha do mesmo.
-
-    Com um duplo clique em qualquer linha do ListBox é chamado o evento lbListDblClick.
-    }
-    lbList: TListBox;
-    {Botão de seleção: clicando neste botão o usuário pode selecionar o certificado que estiver marcado na lista.
-
-    Ao clicar neste botão é chamado o evento btnSelectClick.
-    }
-    btnSelect: TBitBtn;
-    {Botão de cancelamento: clicando neste botão o usuário pode cancelar a operação de seleção do certificado}
-    btnCancel: TBitBtn;
-    {Painel que contém o componente de listagem}
-    pnlBody: TPanel;
-    {Painel que contém os botões de seleção (btnSelect) e cancelamento (btnCancel)}
-    pnlMenu: TPanel;
-    {Botão de remoção de certificado}
-    btnRemove: TBitBtn;
     DSCertificados: TDataSource;
     cdsCertificados: TClientDataSet;
     cdsCertificadosCertificado: TStringField;
     cdsCertificadosValidade: TStringField;
     cdsCertificadosDescricao: TStringField;
+    cdsCertificadosNUMEROSERIE: TStringField;
+    cdsCertificadosTIPO: TStringField;
+    btnRemove: TBitBtn;
+    btnSelect: TBitBtn;
+    btnCancel: TBitBtn;
     Panel1: TPanel;
     dbcgCertificados: TDBCtrlGrid;
     DBText1: TDBText;
     DBText2: TDBText;
     Label1: TLabel;
-    cdsCertificadosNUMEROSERIE: TStringField;
-    cdsCertificadosTIPO: TStringField;
     DBText3: TDBText;
     Label2: TLabel;
     {Evento responsável por salvar o certificado escolhido na propriedade SelectedCertificate e fechar o formulário.
     É chamado quando o usuário clica no botão btnSelect.}
     procedure btnSelectClick(Sender: TObject);
-    {Evento responsável por salvar o certificado escolhido na propriedade SelectedCertificate e fechar o formulário.
-    É chamado quando o usuário dá um duplo clique na linha do lbList.}
-    procedure lbListDblClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure dbcgCertificadosDblClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -112,19 +93,6 @@ procedure TfrmSelecionaCertificadoNFSe.UpdateSelectedCertificate;
 begin
   SelectedCertificateName      := cdsCertificadosCertificado.AsString;
   FSelectedCertificateNumSerie := cdsCertificadosNUMEROSERIE.AsString;
-end;
-
-procedure TfrmSelecionaCertificadoNFSe.lbListDblClick(Sender: TObject);
-begin
-  UpdateSelectedCertificate;
-  ModalResult := mrOk;
-  frmSelecionaCertificadoNFSe.btnSelectClick(Sender);
-end;
-
-procedure TfrmSelecionaCertificadoNFSe.FormClose(Sender: TObject;
-  var Action: TCloseAction);
-begin
-  lbList.Items.Clear;
 end;
 
 procedure TfrmSelecionaCertificadoNFSe.FormCloseQuery(Sender: TObject;

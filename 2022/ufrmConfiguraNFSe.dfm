@@ -1,17 +1,21 @@
 inherited frmConfiguraNFSe: TfrmConfiguraNFSe
   BorderIcons = []
   Caption = 'Configura'#231#227'o NFS-e'
-  ClientWidth = 865
+  ClientHeight = 507
+  ClientWidth = 762
   Font.Name = 'Microsoft Sans Serif'
   Position = poMainFormCenter
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitWidth = 883
+  ExplicitLeft = 3
+  ExplicitTop = 3
+  ExplicitWidth = 778
+  ExplicitHeight = 546
   PixelsPerInch = 96
   TextHeight = 16
   object Label30: TLabel
-    Left = 133
+    Left = 134
     Top = 117
     Width = 36
     Height = 15
@@ -24,7 +28,7 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     ParentFont = False
   end
   object Label33: TLabel
-    Left = 6
+    Left = 7
     Top = 117
     Width = 43
     Height = 15
@@ -37,7 +41,7 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     ParentFont = False
   end
   object Label34: TLabel
-    Left = 6
+    Left = 7
     Top = 166
     Width = 76
     Height = 15
@@ -50,7 +54,7 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     ParentFont = False
   end
   object Label41: TLabel
-    Left = 6
+    Left = 7
     Top = 216
     Width = 93
     Height = 15
@@ -63,7 +67,7 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     ParentFont = False
   end
   object Label44: TLabel
-    Left = 6
+    Left = 7
     Top = 264
     Width = 118
     Height = 15
@@ -142,15 +146,15 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 6
+    Left = 7
     Top = 320
     Width = 67
     Height = 16
     Caption = 'Certificado:'
   end
-  object lbCertificado: TLabel
-    Left = 78
-    Top = 320
+  object lbCertificado1: TLabel
+    Left = 351
+    Top = 224
     Width = 515
     Height = 66
     Cursor = crHandPoint
@@ -162,20 +166,21 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     ParentFont = False
+    Visible = False
     WordWrap = True
-    OnClick = lbCertificadoClick
+    OnClick = lbCertificado1Click
   end
-  object BitBtn1: TBitBtn
-    Left = 779
-    Top = 601
+  object btnGravar: TBitBtn
+    Left = 676
+    Top = 472
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'Gravar'
     TabOrder = 0
-    OnClick = BitBtn1Click
-    ExplicitLeft = 728
-    ExplicitTop = 467
+    OnClick = btnGravarClick
+    ExplicitLeft = 779
+    ExplicitTop = 601
   end
   object rgTipoAmb: TRadioGroup
     Left = 7
@@ -197,7 +202,7 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     TabOrder = 1
   end
   object edtSenhaWeb: TEdit
-    Left = 133
+    Left = 134
     Top = 138
     Width = 126
     Height = 22
@@ -205,28 +210,28 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     TabOrder = 2
   end
   object edtUserWeb: TEdit
-    Left = 6
+    Left = 7
     Top = 138
     Width = 124
     Height = 22
     TabOrder = 3
   end
   object edtFraseSecWeb: TEdit
-    Left = 6
+    Left = 7
     Top = 188
     Width = 254
     Height = 22
     TabOrder = 4
   end
   object edtChaveAcessoWeb: TEdit
-    Left = 6
+    Left = 7
     Top = 238
     Width = 255
     Height = 22
     TabOrder = 5
   end
   object edtChaveAutorizWeb: TEdit
-    Left = 6
+    Left = 7
     Top = 286
     Width = 255
     Height = 22
@@ -284,5 +289,24 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     Height = 24
     Style = csDropDownList
     TabOrder = 12
+  end
+  object mmCertificado: TMemo
+    Left = 7
+    Top = 342
+    Width = 747
+    Height = 123
+    Lines.Strings = (
+      'mmCertificado')
+    ReadOnly = True
+    TabOrder = 13
+  end
+  object btnSelecionaCertificado: TBitBtn
+    Left = 7
+    Top = 471
+    Width = 160
+    Height = 25
+    Caption = 'Selecionar Certificado'
+    TabOrder = 14
+    OnClick = btnSelecionaCertificadoClick
   end
 end

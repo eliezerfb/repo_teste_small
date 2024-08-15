@@ -233,22 +233,26 @@ TVar_Dados_novo  = class
     FIBQNFSE: TIBQuery;
     FIBQEMITENTE: TIBQuery;
     TNFSe_Emitente: TNFSeEmitente;
+    FEnviaThread: Boolean;
     procedure ACBrNFSeX1GerarLog(const ALogLine: string; var Tratado: Boolean);
     procedure ACBrNFSeX1StatusChange(Sender: TObject);
     function GetCodigoMunicipioServico: String;
     function GetCidade_Goiania(id_cidade: string): string;
     function GetCodigoCNAE: String;
+    function getTipoEnvio(tipoEnvio: integer) : TmodoEnvio;
     procedure SetIBTRANSACTION(const Value: TIBTransaction);
     procedure SelecionarDadosEmitente;
+    procedure ImportaConfiguracaoTecnospeed;
   public
     property ACBrNFSeX: TACBrNFSeX read FACBrNFSeX1 write FACBrNFSeX1;
     //property ACBrNFSeXDANFSeRL1: TACBrNFSeXDANFSeRL read FACBrNFSeXDANFSeRL1 write FACBrNFSeXDANFSeRL1;
     //property ACBrNFSeXDANFSeFR1: TACBrNFSeXDANFSeFR read FACBrNFSeXDANFSeFR1 write FACBrNFSeXDANFSeFR1;
     property ACBrMail1: TACBrMail read FACBrMail1 write FACBrMail1;
     property IBTRANSACTION: TIBTransaction read FIBTRANSACTION write SetIBTRANSACTION;
+    property EnviaThread : Boolean read FEnviaThread write FEnviaThread;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy;
-    function ConfigurarComponente: Boolean;
+    function ConfigurarComponente(TipoEnvio: Integer = 0): Boolean;
   end;
 
 const
@@ -362,7 +366,7 @@ begin
 
 end;
 
-function TNFS.ConfigurarComponente: Boolean;
+function TNFS.ConfigurarComponente(TipoEnvio: Integer = 0): Boolean;
 var
   Ok: Boolean;
   PathMensal: String;
@@ -395,79 +399,70 @@ begin
   FACBrNFSeX1.Configuracoes.Certificados.Senha       := FIniNFSe.ReadString( 'Certificado', 'Senha',      '');
   FACBrNFSeX1.Configuracoes.Certificados.NumeroSerie := FIniNFSe.ReadString( 'Certificado', 'NumSerie',   '');
 
-  //FACBrNFSeX1.SSL.DescarregarCertificado;
+  FACBrNFSeX1.Configuracoes.Geral.SSLLib        := TSSLLib(FIniNFSe.ReadInteger('Certificado', 'SSLLib',     4));
+  FACBrNFSeX1.Configuracoes.Geral.SSLCryptLib   := TSSLCryptLib(FIniNFSe.ReadInteger('Certificado', 'CryptLib',   3));
+  FACBrNFSeX1.Configuracoes.Geral.SSLHttpLib    := TSSLHttpLib(FIniNFSe.ReadInteger('Certificado', 'HttpLib',    2));
+  FACBrNFSeX1.Configuracoes.Geral.SSLXmlSignLib := TSSLXmlSignLib(FIniNFSe.ReadInteger('Certificado', 'XmlSignLib', 0));
 
-  //with FACBrNFSeX1.Configuracoes.Geral do
-  begin
-    FACBrNFSeX1.Configuracoes.Geral.SSLLib        := TSSLLib(FIniNFSe.ReadInteger('Certificado', 'SSLLib',     4));
-    FACBrNFSeX1.Configuracoes.Geral.SSLCryptLib   := TSSLCryptLib(FIniNFSe.ReadInteger('Certificado', 'CryptLib',   3));
-    FACBrNFSeX1.Configuracoes.Geral.SSLHttpLib    := TSSLHttpLib(FIniNFSe.ReadInteger('Certificado', 'HttpLib',    2));
-    FACBrNFSeX1.Configuracoes.Geral.SSLXmlSignLib := TSSLXmlSignLib(FIniNFSe.ReadInteger('Certificado', 'XmlSignLib', 0));
+  FACBrNFSeX1.Configuracoes.Geral.Salvar           := FIniNFSe.ReadBool('Geral', 'Salvar',         True);
+  FACBrNFSeX1.Configuracoes.Geral.ExibirErroSchema := FIniNFSe.ReadBool('Geral', 'ExibirErroSchema', True);
+  FACBrNFSeX1.Configuracoes.Geral.RetirarAcentos   := FIniNFSe.ReadBool('Geral', 'RetirarAcentos', True);
+  FACBrNFSeX1.Configuracoes.Geral.FormatoAlerta    := FIniNFSe.ReadString('Geral', 'FormatoAlerta', 'TAG:%TAGNIVEL% ID:%ID%/%TAG%(%DESCRICAO%) - %MSG%.');
+  FACBrNFSeX1.Configuracoes.Geral.FormaEmissao     := TpcnTipoEmissao(FIniNFSe.ReadInteger('Geral', 'FormaEmissao', 0)); // 0-Normal
 
-    //AtualizarSSLLibsCombo;
+  //if (TipoEnvio = meLoteAssincrono) or (FACBrNFSeX1.Configuracoes.Geral.Provedor in [proIPM]) then//
+  if (getTipoEnvio(TipoEnvio) = meLoteAssincrono) or (FACBrNFSeX1.Configuracoes.Geral.Provedor in [proIPM]) then
+    FACBrNFSeX1.Configuracoes.Geral.ConsultaLoteAposEnvio  := True;
 
-    FACBrNFSeX1.Configuracoes.Geral.Salvar           := FIniNFSe.ReadBool('Geral', 'Salvar',         True);
-    FACBrNFSeX1.Configuracoes.Geral.ExibirErroSchema := FIniNFSe.ReadBool('Geral', 'ExibirErroSchema', True);
-    FACBrNFSeX1.Configuracoes.Geral.RetirarAcentos   := FIniNFSe.ReadBool('Geral', 'RetirarAcentos', True);
-    FACBrNFSeX1.Configuracoes.Geral.FormatoAlerta    := FIniNFSe.ReadString('Geral', 'FormatoAlerta', 'TAG:%TAGNIVEL% ID:%ID%/%TAG%(%DESCRICAO%) - %MSG%.');
-    FACBrNFSeX1.Configuracoes.Geral.FormaEmissao     := TpcnTipoEmissao(FIniNFSe.ReadInteger('Geral', 'FormaEmissao', 0)); // 0-Normal
+  if FACBrNFSeX1.Configuracoes.Geral.Provedor in ([proSiapSistemas, profintelISS, proNFSeBrasil]) then
+    FACBrNFSeX1.Configuracoes.Geral.ConsultaLoteAposEnvio  := False;
 
-    //FACBrNFSeX1.Configuracoes.Geral.ConsultaLoteAposEnvio := FIniNFSe.ReadBool('Geral', 'ConsultaAposEnvio',    False);
+  //FACBrNFSeX1.Configuracoes.Geral.ConsultaAposCancelar  := FIniNFSe.ReadBool('Geral', 'ConsultaAposCancelar', False);
+  FACBrNFSeX1.Configuracoes.Geral.ConsultaAposCancelar   := True;
 
-    if (TipoEnvio = meLoteAssincrono) or (FACBrNFSeX1.Configuracoes.Geral.Provedor in [proIPM]) then//if (getTipoEnvio(TipoEnvio) = meLoteAssincrono) or (FACBrNFSeX1.Configuracoes.Geral.Provedor in [proIPM]) then
-      FACBrNFSeX1.Configuracoes.Geral.ConsultaLoteAposEnvio  := True;
+  if FACBrNFSeX1.Configuracoes.Geral.Provedor in [proPronim, profintelISS, proEl, proISSNet] then
+    FACBrNFSeX1.Configuracoes.Geral.ConsultaAposCancelar := False;
 
-    if FACBrNFSeX1.Configuracoes.Geral.Provedor in ([proSiapSistemas, profintelISS, proNFSeBrasil]) then
-      FACBrNFSeX1.Configuracoes.Geral.ConsultaLoteAposEnvio  := False;
 
-    //FACBrNFSeX1.Configuracoes.Geral.ConsultaAposCancelar  := FIniNFSe.ReadBool('Geral', 'ConsultaAposCancelar', False);
-    FACBrNFSeX1.Configuracoes.Geral.ConsultaAposCancelar   := True;
+  FACBrNFSeX1.Configuracoes.Geral.MontarPathSchema      := FIniNFSe.ReadBool('Geral', 'MontarPathSchemas',    True);
 
-    if FACBrNFSeX1.Configuracoes.Geral.Provedor in
-      [proPronim, profintelISS, proEl, proISSNet]
-    then
-      FACBrNFSeX1.Configuracoes.Geral.ConsultaAposCancelar := False;
+  FACBrNFSeX1.Configuracoes.Geral.CNPJPrefeitura := FIniNFSe.ReadString('Emitente', 'CNPJPref',    '');
 
-    FACBrNFSeX1.Configuracoes.Geral.MontarPathSchema      := FIniNFSe.ReadBool('Geral', 'MontarPathSchemas',    True);
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.CNPJ           := LimpaNumero(FIBQEMITENTE.FieldByName('CGC').AsString);
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.InscMun        := LimpaNumero(FIBQEMITENTE.FieldByName('IM').AsString);
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.RazSocial      := FIBQEMITENTE.FieldByName('NOME').AsString;
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.WSUser         := FIniNFSe.ReadString( 'WebService', 'UserWeb',      '');
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.WSSenha        := FIniNFSe.ReadString( 'WebService', 'SenhaWeb',     '');
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.WSFraseSecr    := FIniNFSe.ReadString( 'WebService', 'FraseSecWeb',  '');
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.WSChaveAcesso  := FIniNFSe.ReadString( 'WebService', 'ChAcessoWeb',  '');
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.WSChaveAutoriz := FIniNFSe.ReadString( 'WebService', 'ChAutorizWeb', '');
 
-    FACBrNFSeX1.Configuracoes.Geral.CNPJPrefeitura := FIniNFSe.ReadString('Emitente', 'CNPJPref',    '');
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.NomeFantasia      := FIBQEMITENTE.FieldByName('NOME').AsString;
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.InscricaoEstadual := LimpaNumero(FIBQEMITENTE.FieldByName('IE').AsString);
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Endereco          := ExtraiEnderecoSemONumero(FIBQEMITENTE.FieldByName('ENDERECO').AsString);
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Numero            := ExtraiNumeroSemOEndereco(FIBQEMITENTE.FieldByName('ENDERECO').AsString);
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.CEP               := LimpaNumero(FIBQEMITENTE.FieldByName('CEP').AsString);
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Bairro            := FIBQEMITENTE.FieldByName('COMPLE').AsString;
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Complemento       := '';
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Municipio         := FIBQEMITENTE.FieldByName('MUNICIPIO').AsString;
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.UF                := FIBQEMITENTE.FieldByName('ESTADO').AsString;
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.CodigoMunicipio   := FIBQEMITENTE.FieldByName('CODIGO_IBGE').AsString;
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Telefone          := LimpaNumero(FIBQEMITENTE.FieldByName('TELEFO').AsString);
+  FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Email             := FIBQEMITENTE.FieldByName('EMAIL').AsString;
 
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.CNPJ           := LimpaNumero(FIBQEMITENTE.FieldByName('CGC').AsString);
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.InscMun        := LimpaNumero(FIBQEMITENTE.FieldByName('IM').AsString);
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.RazSocial      := FIBQEMITENTE.FieldByName('NOME').AsString;
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.WSUser         := FIniNFSe.ReadString( 'WebService', 'UserWeb',      '');
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.WSSenha        := FIniNFSe.ReadString( 'WebService', 'SenhaWeb',     '');
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.WSFraseSecr    := FIniNFSe.ReadString( 'WebService', 'FraseSecWeb',  '');
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.WSChaveAcesso  := FIniNFSe.ReadString( 'WebService', 'ChAcessoWeb',  '');
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.WSChaveAutoriz := FIniNFSe.ReadString( 'WebService', 'ChAutorizWeb', '');
+  {
+    Para o provedor ADM, utilizar as seguintes propriedades de configurações:
+    WSChaveAcesso  para o Key
+    WSChaveAutoriz para o Auth
+    WSUser         para o RequestId
 
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.NomeFantasia      := FIBQEMITENTE.FieldByName('NOME').AsString;
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.InscricaoEstadual := LimpaNumero(FIBQEMITENTE.FieldByName('IE').AsString);
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Endereco          := ExtraiEnderecoSemONumero(FIBQEMITENTE.FieldByName('ENDERECO').AsString);
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Numero            := ExtraiNumeroSemOEndereco(FIBQEMITENTE.FieldByName('ENDERECO').AsString);
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.CEP               := LimpaNumero(FIBQEMITENTE.FieldByName('CEP').AsString);
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Bairro            := FIBQEMITENTE.FieldByName('COMPLE').AsString;
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Complemento       := '';
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Municipio         := FIBQEMITENTE.FieldByName('MUNICIPIO').AsString;
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.UF                := FIBQEMITENTE.FieldByName('ESTADO').AsString;
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.CodigoMunicipio   := FIBQEMITENTE.FieldByName('CODIGO_IBGE').AsString;
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Telefone          := LimpaNumero(FIBQEMITENTE.FieldByName('TELEFO').AsString);
-    FACBrNFSeX1.Configuracoes.Geral.Emitente.DadosEmitente.Email             := FIBQEMITENTE.FieldByName('EMAIL').AsString;
-
-    {
-      Para o provedor ADM, utilizar as seguintes propriedades de configurações:
-      WSChaveAcesso  para o Key
-      WSChaveAutoriz para o Auth
-      WSUser         para o RequestId
-
-      O Key, Auth e RequestId são gerados pelo provedor quando o emitente se cadastra.
-    }
-  end;
+    O Key, Auth e RequestId são gerados pelo provedor quando o emitente se cadastra.
+  }
 
   //with FACBrNFSeX1.Configuracoes.WebServices do
   begin
     //FACBrNFSeX1.Configuracoes.WebServices.Ambiente   := StrToTpAmb(Ok, FIniNFSe.ReadString('NFSE', 'Ambiente', '2')); // StrToTpAmb(Ok,IntToStr(rgTipoAmb.ItemIndex+1));
-    FACBrNFSeX1.Configuracoes.WebServices.Visualizar := FIniNFSe.ReadBool('WebService', 'Visualizar', True);;//cbxVisualizar.Checked;
+    FACBrNFSeX1.Configuracoes.WebServices.Visualizar := FIniNFSe.ReadBool('WebService', 'Visualizar', True);//cbxVisualizar.Checked;
     FACBrNFSeX1.Configuracoes.WebServices.Salvar     := FIniNFSe.ReadBool('WebService', 'SalvarSOAP', True);//chkSalvarSOAP.Checked;
     FACBrNFSeX1.Configuracoes.WebServices.UF         := FIBQEMITENTE.FieldByName('ESTADO').AsString;// edtEmitUF.Text;
 
@@ -477,21 +472,19 @@ begin
     iAguardar := FIniNFSe.ReadInteger('WebService', 'Aguardar', 3000);
     if iAguardar > 0 then //if NaoEstaVazio(edtAguardar.Text) then
       FACBrNFSeX1.Configuracoes.WebServices.AguardarConsultaRet := ifThen(iAguardar < 1000, iAguardar * 1000, iAguardar); //FACBrNFSeX1.Configuracoes.WebServices.AguardarConsultaRet := ifThen(StrToInt(edtAguardar.Text) < 1000, StrToInt(edtAguardar.Text) * 1000, StrToInt(edtAguardar.Text))
-    //else
-    //  edtAguardar.Text := IntToStr(FACBrNFSeX1.Configuracoes.WebServices.AguardarConsultaRet);
 
-    //if FIniNFSe.ReadInteger('WebService', 'Tentativas', 5) > 0 then //if NaoEstaVazio(edtTentativas.Text) then
-      FACBrNFSeX1.Configuracoes.WebServices.Tentativas := FIniNFSe.ReadInteger('WebService', 'Tentativas', 5);// StrToInt(edtTentativas.Text)
-    //else
-    //  edtTentativas.Text := IntToStr(FACBrNFSeX1.Configuracoes.WebServices.Tentativas);
+    if FACBrNFSeX1.Configuracoes.Geral.Provedor in [proInfisc, proWebISS, proNFSeBrasil, proPronim, proAssessorPublico] then
+      FACBrNFSeX1.Configuracoes.WebServices.AguardarConsultaRet := 5000;
+
+    FACBrNFSeX1.Configuracoes.WebServices.Tentativas := FIniNFSe.ReadInteger('WebService', 'Tentativas', 5);// StrToInt(edtTentativas.Text)
 
     iIntervalo := FIniNFSe.ReadInteger('WebService', 'Intervalo', 5000);
     if iIntervalo > 0 then //if NaoEstaVazio(edtIntervalo.Text) then
       FACBrNFSeX1.Configuracoes.WebServices.IntervaloTentativas := ifThen(iIntervalo < 1000, iIntervalo * 1000, iIntervalo);//FACBrNFSeX1.Configuracoes.WebServices.IntervaloTentativas := ifThen(StrToInt(edtIntervalo.Text) < 1000, StrToInt(edtIntervalo.Text) * 1000, StrToInt(edtIntervalo.Text))
-    //else
-    //  edtIntervalo.Text := IntToStr(FACBrNFSeX1.Configuracoes.WebServices.IntervaloTentativas);
 
     FACBrNFSeX1.Configuracoes.WebServices.TimeOut   := FIniNFSe.ReadInteger('WebService', 'TimeOut', 5000);//seTimeOut.Value;
+    if FACBrNFSeX1.Configuracoes.Geral.Provedor in ([proSigCorp, proSimplISS, proTecnos, proNFSeBrasil, proPronim]) then
+      FACBrNFSeX1.Configuracoes.WebServices.TimeOut := 60000;
     FACBrNFSeX1.Configuracoes.WebServices.ProxyHost := FIniNFSe.ReadString('Proxy', 'Host', '');//edtProxyHost.Text;
     FACBrNFSeX1.Configuracoes.WebServices.ProxyPort := FIniNFSe.ReadString('Proxy', 'Porta', '');//edtProxyPorta.Text;
     FACBrNFSeX1.Configuracoes.WebServices.ProxyUser := FIniNFSe.ReadString('Proxy', 'User', '');//edtProxyUser.Text;
@@ -499,6 +492,8 @@ begin
   end;
 
   FACBrNFSeX1.SSL.SSLType := TSSLType(FIniNFSe.ReadInteger('WebService', 'SSLType',      5));// TSSLType(cbSSLType.ItemIndex);
+
+  FACBrNFSeX1.DANFSe.Sistema := 'Zucchetti';
 
   //with FACBrNFSeX1.Configuracoes.Arquivos do
   begin
@@ -526,24 +521,22 @@ begin
   DANFSeNovo.fr3    X Detalhada           X DANFSEDetalhada.fr3
   DANFSEPadrao.fr3  X Detalhada com itens X DANFSEDetalhada_itens.fr3}
 
-  FACBrNFSeXDANFSeFR1.ACBrNFSe := ACBrNFSeX;
-  {
-  if TNFSeDados.STipoImpressao = 'Padrão' then
-    ACBrNFSeXDANFSeFR1.FastFile := ExtractFilePath(Application.ExeName)+'DANFSE'
-  else if TNFSeDados.STipoImpressao = 'Detalhada com itens' then
-     ACBrNFSeXDANFSeFR1.FastFile := ExtractFilePath(Application.ExeName)+'DANFSEDetalhada_itens'
-  else
-  }
-    FACBrNFSeXDANFSeFR1.FastFile := ExtractFilePath(Application.ExeName)+'DANFSEDetalhada';
 
-  FastFile := FACBrNFSeXDANFSeFR1.FastFile +
-     LimpaNumero(FIBQEMITENTE.FieldByName('CGC').AsString)+'.fr3';
+  FACBrNFSeXDANFSeFR1.ACBrNFSe := FACBrNFSeX1;
+  if TNFSeDados.STipoImpressao = 'Padrão' then
+    FACBrNFSeXDANFSeFR1.FastFile := ExtractFilePath(Application.ExeName) + 'DANFSE'
+  else
+    if TNFSeDados.STipoImpressao = 'Detalhada com itens' then
+     FACBrNFSeXDANFSeFR1.FastFile := ExtractFilePath(Application.ExeName) + 'DANFSEDetalhada_itens'
+  else
+    FACBrNFSeXDANFSeFR1.FastFile := ExtractFilePath(Application.ExeName) + 'DANFSEDetalhada';
+
+  FastFile := FACBrNFSeXDANFSeFR1.FastFile + LimpaNumero(TNFSe_Emitente.sCNPJ) + '.fr3';
 
   if FileExists(FastFile) then
     FACBrNFSeXDANFSeFR1.FastFile := FastFile
   else
-    FACBrNFSeXDANFSeFR1.FastFile := FACBrNFSeXDANFSeFR1.FastFile+'.fr3';
-
+    FACBrNFSeXDANFSeFR1.FastFile := FACBrNFSeXDANFSeFR1.FastFile + '.fr3';
 
   if FACBrNFSeX1.DANFSE <> nil then
   begin
@@ -555,6 +548,8 @@ begin
 
     FACBrNFSeX1.DANFSE.Prestador.Logo := ExtractFilePath(Application.ExeName) + 'logonsfe'; //edtPrestLogo.Text;
 
+    FACBrNFSeX1.DANFSe.ExpandeLogoMarca  := True;
+
     FACBrNFSeX1.DANFSE.MargemDireita  := 5;
     FACBrNFSeX1.DANFSE.MargemEsquerda := 5;
     FACBrNFSeX1.DANFSE.MargemSuperior := 5;
@@ -565,6 +560,10 @@ begin
     // Defini a quantidade de casas decimais para o campo aliquota
     FACBrNFSeX1.DANFSE.CasasDecimais.Aliquota := 2;
   end;
+
+
+  if not(FEnviaThread) then
+    FACBrNFSeX1.OnStatusChange  := ACBrNFSeX1StatusChange;
 
   {Usar mail.exe
   //with FACBrNFSeX1.MAIL do
@@ -639,7 +638,7 @@ begin
   FACBrNFSeXDANFSeFR1 := TACBrNFSeXDANFSeFR.Create(nil);
   FACBrMail1 := TACBrMail.Create(nil);
   FACBrNFSeX1.OnGerarLog := ACBrNFSeX1GerarLog;
-  FACBrNFSeX1.OnStatusChange := ACBrNFSeX1StatusChange;
+//  FACBrNFSeX1.OnStatusChange := ACBrNFSeX1StatusChange;
   FACBrNFSeX1.DANFSE := FACBrNFSeXDANFSeFR1;//FACBrNFSeXDANFSeRL1;
   FACBrNFSeX1.MAIL := FACBrMail1;
   FIniNFSe := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'nfseConfig.ini');
@@ -731,6 +730,7 @@ end;
 
 function TNFS.GetCodigoCNAE: String;
 begin
+ {
   if not(FACBrNFSeX1.Configuracoes.Geral.Provedor = proSystemPro) then
     Result := TNFSe_Emitente.sCnae;
 
@@ -742,18 +742,19 @@ begin
 
   //#14273 - Anderson
   if (FACBrNFSeX1.Configuracoes.Geral.Provedor = proISSNet) and
-     (FDQueryV_NFSeItem.FieldByName('CNAE').AsString <> EmptyStr) then
-    Result := FDQueryV_NFSeItem.FieldByName('CNAE').AsString;
+     (FIBQEMITENTE.FieldByName('CNAE').AsString <> EmptyStr) then
+    Result := FIBQEMITENTE.FieldByName('CNAE').AsString;
 
 
   //#13997 - Anderson > internamente na AssessorPublico.GravarXml é convertido para ATIVIDADE
   if FACBrNFSeX1.Configuracoes.Geral.Provedor in [proAssessorPublico, proSoftPlan] then
 	  Result := FDQueryV_NFSe.FieldByName('cod_lst').AsString;
-
+}
 end;
 
 function TNFS.GetCodigoMunicipioServico: String;
 begin
+{
   if (FACBrNFSeX1.Configuracoes.Geral.Provedor = proISSNET) and (FACBrNFSeX1.Configuracoes.WebServices.Ambiente = taHomologacao) then
     Exit('999'); // Para o provedor ISS.NET em ambiente de Homologação  o Codigo do Municipio tem que ser '999'
 
@@ -777,22 +778,37 @@ begin
     Exit(GetCidade_Goiania(TNFSe_Emitente.iid_Cidade));
 
   Exit(TNFSe_Emitente.iid_Cidade);
-
+}
 end;
 
-//class procedure TNFS.SelecionarDadosEmitente(var IBQEMITENTE: TIBQuery);
-//begin
-//  FIBQEMITENTE   := CriaIBQuery(FIBTRANSACTION);
-//  IBQEMITENTE.Close;
-//  IBQEMITENTE.SQL.Text :=
-//    'select E.CGC, E.IM, E.NOME, E.IE, E.ENDERECO, E.CEP, E.COMPLE, E.MUNICIPIO, E.ESTADO, ' +
-//    'E.TELEFO, E.EMAIL, ' +
-//    'M.CODIGO as CODIGO_IBGE ' +
-//    'from EMITENTE E ' +
-//    'left join MUNICIPIOS M on M.NOME = E.MUNICIPIO and M.UF = E.ESTADO';
-//  IBQEMITENTE.Open;
-//
-//end;
+function TNFS.getTipoEnvio(tipoEnvio: integer): TmodoEnvio;
+begin
+  result :=  meAutomatico;
+  case tipoEnvio of
+    0 : result :=  meAutomatico;
+    1 : result :=  meLoteSincrono;
+    2 : result :=  meUnitario;
+    3 : result :=  meLoteAssincrono;
+  end;
+end;
+
+procedure TNFS.ImportaConfiguracaoTecnospeed;
+var
+  Ini: TIniFile;
+begin
+
+  if FileExists(ExtractFilePath(Application.ExeName) + 'nfse.ini') then
+    Exit;
+
+  if not FileExists(ExtractFilePath(Application.ExeName) + 'nfseConfig.ini') then
+    Exit;
+
+  Ini := TIniFile(ExtractFilePath(Application.ExeName) + 'nfseConfig.ini');
+
+
+  Ini.Free;
+
+end;
 
 procedure TNFS.SelecionarDadosEmitente;
 begin
@@ -803,29 +819,29 @@ begin
   FIBQEMITENTE.Close;
   FIBQEMITENTE.SQL.Text :=
     'select E.CGC, E.IM, E.NOME, E.IE, E.ENDERECO, E.CEP, E.COMPLE, E.MUNICIPIO, E.ESTADO, ' +
-    'E.TELEFO, E.EMAIL, ' +
+    'E.TELEFO, E.EMAIL, E.CNAE, E.CRT, ' +
     'M.CODIGO as CODIGO_IBGE, M.CODIGO_SEDETEC ' +
     'from EMITENTE E ' +
     'left join MUNICIPIOS M on M.NOME = E.MUNICIPIO and M.UF = E.ESTADO';
   FIBQEMITENTE.Open;
 
   TNFSe_Emitente.iid_Cidade := FIBQEMITENTE.FieldByName('CODIGO_SEDETEC').AsString;
-    TNFSe_Emitente.sCnae  := FIBQEMITENTE.FieldByName('CNAE').AsString;
-    TNFSe_Emitente.sEnd_Cep := FIBQEMITENTE.FieldByName('CEP').AsString;
-    TNFSe_Emitente.sSimples_Nacional := IfThen(FIBQEMITENTE.FieldByName('CRT').AsString = '1', 'Sim', 'Não');
-    TNFSe_Emitente.sFone_Comer := FIBQEMITENTE.FieldByName('TELEFO').AsString;
-    TNFSe_Emitente.sTelefone := FIBQEMITENTE.FieldByName('TELEFO').AsString;
-    TNFSe_Emitente.sCNPJ := FIBQEMITENTE.FieldByName('').AsString;
-    TNFSe_Emitente.sInscricao_Municipal := FIBQEMITENTE.FieldByName('IM').AsString;
-    TNFSe_Emitente.sRazao_Social := FIBQEMITENTE.FieldByName('NOME').AsString;
-    TNFSe_Emitente.sNome_Fantasia := FIBQEMITENTE.FieldByName('NOME').AsString;
-    TNFSe_Emitente.sUF := FIBQEMITENTE.FieldByName('ESTADO').AsString;
-    TNFSe_Emitente.sEnd_Logradouro := ExtraiEnderecoSemONumero(FIBQEMITENTE.FieldByName('ENDERECO').AsString);
-    TNFSe_Emitente.sEnd_Numero := ExtraiNumeroSemOEndereco(FIBQEMITENTE.FieldByName('ENDERECO').AsString);
-    TNFSe_Emitente.sEnd_Bairro := FIBQEMITENTE.FieldByName('COMPLE').AsString;
-    TNFSe_Emitente.cidade := FIBQEMITENTE.FieldByName('MUNICIPIO').AsString;
-    TNFSe_Emitente.sEmail := FIBQEMITENTE.FieldByName('EMAIL').AsString;
-    TNFSe_Emitente.endComplemento := '';
+  TNFSe_Emitente.sCnae  := FIBQEMITENTE.FieldByName('CNAE').AsString;
+  TNFSe_Emitente.sEnd_Cep := FIBQEMITENTE.FieldByName('CEP').AsString;
+  TNFSe_Emitente.sSimples_Nacional := IfThen(FIBQEMITENTE.FieldByName('CRT').AsString = '1', 'Sim', 'Não');
+  TNFSe_Emitente.sFone_Comer := FIBQEMITENTE.FieldByName('TELEFO').AsString;
+  TNFSe_Emitente.sTelefone := FIBQEMITENTE.FieldByName('TELEFO').AsString;
+  TNFSe_Emitente.sCNPJ := FIBQEMITENTE.FieldByName('CGC').AsString;
+  TNFSe_Emitente.sInscricao_Municipal := FIBQEMITENTE.FieldByName('IM').AsString;
+  TNFSe_Emitente.sRazao_Social := FIBQEMITENTE.FieldByName('NOME').AsString;
+  TNFSe_Emitente.sNome_Fantasia := FIBQEMITENTE.FieldByName('NOME').AsString;
+  TNFSe_Emitente.sUF := FIBQEMITENTE.FieldByName('ESTADO').AsString;
+  TNFSe_Emitente.sEnd_Logradouro := ExtraiEnderecoSemONumero(FIBQEMITENTE.FieldByName('ENDERECO').AsString);
+  TNFSe_Emitente.sEnd_Numero := ExtraiNumeroSemOEndereco(FIBQEMITENTE.FieldByName('ENDERECO').AsString);
+  TNFSe_Emitente.sEnd_Bairro := FIBQEMITENTE.FieldByName('COMPLE').AsString;
+  TNFSe_Emitente.cidade := FIBQEMITENTE.FieldByName('MUNICIPIO').AsString;
+  TNFSe_Emitente.sEmail := FIBQEMITENTE.FieldByName('EMAIL').AsString;
+  TNFSe_Emitente.endComplemento := '';
 end;
 
 procedure TNFS.SetIBTRANSACTION(const Value: TIBTransaction);
