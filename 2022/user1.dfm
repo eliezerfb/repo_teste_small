@@ -12,7 +12,6 @@ object Form1: TForm1
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poDesktopCenter
   OnActivate = FormActivate
   OnCreate = FormCreate
@@ -35,7 +34,7 @@ object Form1: TForm1
   end
   object Label2: TLabel
     Left = 30
-    Top = 30
+    Top = 34
     Width = 78
     Height = 13
     Caption = 'Programa aberto'
@@ -52,7 +51,7 @@ object Form1: TForm1
     Left = 10
     Top = 10
     Width = 15
-    Height = 15
+    Height = 16
     Picture.Data = {
       07544269746D6170AA030000424DAA0300000000000036000000280000001100
       0000110000000100180000000000740300000000000000000000000000000000
@@ -88,7 +87,7 @@ object Form1: TForm1
   end
   object Image2: TImage
     Left = 10
-    Top = 30
+    Top = 34
     Width = 17
     Height = 17
     AutoSize = True

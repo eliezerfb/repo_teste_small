@@ -2,7 +2,9 @@ program user;
 
 uses
   Forms,
-  user1 in 'user1.pas' {Form1};
+  user1 in 'user1.pas' {Form1},
+  uTestaEmail in '..\..\unit_compartilhada\uTestaEmail.pas',
+  uITestaEmail in '..\..\unit_compartilhada\interfaces\uITestaEmail.pas';
 
 {$R *.RES}
 
