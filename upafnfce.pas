@@ -338,9 +338,10 @@ begin
         if Copy(allTrim(Form1.IBDataSet4.FieldByName('ST').AsString),1,1) = 'N' then sSituacaoTributaria := 'N';
   end;
 
-  if (LimpaNumero(Form1.IBDataSet13.FieldByname('CRT').AsString) = '1') then
+  //if (LimpaNumero(Form1.IBDataSet13.FieldByname('CRT').AsString) = '1') then Mauricio Parizotto 2024-08-15
+  if (LimpaNumero(Form1.IBDataSet13.FieldByname('CRT').AsString) = '1')
+    or (LimpaNumero(Form1.IBDataSet13.FieldByname('CRT').AsString) = '4') then
   begin // NÃO É SIMPLES NACIONAL
-
     if Trim(Form1.IBDataSet4.FieldByname('CSOSN_NFCE').AsString) <> '' then // Se existir CSOSN para NFC-e usa a configuração
     begin
       if (RightStr(Trim(Form1.IBDataSet4.FieldByname('CSOSN_NFCE').AsString), 3) = '102') or (RightStr(Trim(Form1.IBDataSet4.FieldByname('CSOSN_NFCE').AsString), 3)  = '103') or (RightStr(Trim(Form1.IBDataSet4.FieldByname('CSOSN_NFCE').AsString), 3)  = '300') then
@@ -350,11 +351,9 @@ begin
       if RightStr(Trim(Form1.IBDataSet4.FieldByname('CSOSN_NFCE').AsString), 3)  = '500' then
         sSituacaoTributaria := 'F';
     end;
-
   end
   else
   begin
-
     if Length(LimpaNumero(Form1.IBDataSet4.FieldByname('CST_NFCE').AsString)) > 1 then
     begin
       if (RightStr('000' + Form1.IBDataSet4.FieldByname('CST_NFCE').AsString, 2) = '60') then
@@ -364,10 +363,8 @@ begin
       if RightStr('000' + Form1.IBDataSet4.FieldByname('CST_NFCE').AsString, 2) = '41' then
         sSituacaoTributaria := 'N';
     end;
-
   end;
 
-  //
   if (sSituacaoTributaria = 'I') or (sSituacaoTributaria = 'F') or (sSituacaoTributaria = 'N') then
     sAliquota := '0000';
 

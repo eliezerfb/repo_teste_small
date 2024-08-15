@@ -1683,7 +1683,9 @@ begin
               begin // Produtos/Mercadorias
                 fValorProdutos := fValorProdutos + dvProd_I11;
 
-                if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+                //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+                if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                  and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
                 begin // NÃO É SIMPLES NACIONAL
                   Form1.spdNFCeDataSets1.Campo('orig_N11').Value    := Copy(Right('000' + LimpaNumero(Form1.ibDataSet4.FieldByname('CST').AsString), 3), 1, 1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
                   Form1.spdNFCeDataSets1.Campo('CST_N12').Value     := Right('000' + LimpaNumero(Form1.ibDataSet4.FieldByname('CST').AsString), 2); // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
@@ -1767,11 +1769,8 @@ begin
                     LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
                     ConcatenaLog(sLogErroItens, sLogErro); // Sandro Silva 2018-07-20 sLogErroItens := sLogErroItens + Chr(10) + sLogErro;
                   end;
-
                 end;
-                //
-                //
-                //
+
                 dpRedBC_N14 := 0.00;
                 _ecf65_IdentificaPercentuaisBaseICMS(dpRedBC_N14);
 
@@ -1780,7 +1779,9 @@ begin
                    (Pos('|' + Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').AsString + '|', '|61|') > 0) then
                   dvBC_N15 := 0.00;
 
-                if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+                //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+                if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                  and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
                 begin
                    //Cálculo da desoneração
                   _ecf65_CalculaDesoneracao(Form1.ibDataSet13.FieldByName('ESTADO').AsString,
@@ -1799,12 +1800,11 @@ begin
 
                 if LimpaNumero(Form1.ibDataSet27.FieldByName('ALIQUICM').AsString) <> '' then
                 begin
-                  //
-                  if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+                  //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+                  if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                    and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
                   begin
-                    //
                     // Só quando não é simples nacional
-                    //
                     if (Form1.spdNFCeDataSets1.Campo('CST_N12').AsString = '20') then
                     begin
                       if dpRedBC_N14 = 0.00 then
@@ -1826,7 +1826,6 @@ begin
                     
                     Form1.spdNFCeDataSets1.Campo('vBC_N15').Value := FormatFloatXML(dvBC_N15); // BC // Sandro Silva 2018-02-08
 
-                    //
                     dvICMS_N17 := 0.00;
                     // Diferente de 40=isenta;41=Não tributada;50=Suspensão
                     if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|50|61|') = 0 then // Sandro Silva 2023-05-23 if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|50|') = 0 then
@@ -1834,7 +1833,6 @@ begin
                       dvICMS_N17 := StrToFloat(FormatFloat('##0.00', (dvBC_N15 * (StrToIntDef(LimpaNumero(Form1.ibDataSet27.FieldByName('ALIQUICM').AsString), 0) / 10000))));// Sandro Silva 2018-02-19  dvICMS_N17 := StrToFloat(FormatFloat('##0.00', (dvProd_I11 - fDescontoTotalRateado + dRateioAcrescimoItem) * (StrToIntDef(LimpaNumero(Form1.ibDataSet27.FieldByName('ALIQUICM').AsString), 0) / 10000)));
                     end;
 
-                    //
                     // Diferente de 40=Isenta; 41=Não tributada; 60=ST
                     if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|60|61|') = 0 then // Sandro Silva 2023-05-23 if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|60|') = 0 then
                       rBaseICMS  := rBaseICMS + dvBC_N15;// Sandro Silva 2018-02-19  rBaseICMS  := rBaseICMS + (dvProd_I11 - fDescontoTotalRateado + dRateioAcrescimoItem);
@@ -1926,30 +1924,25 @@ begin
                         Form1.spdNFCeDataSets1.Campo('vFCP_N17c').Value := FormatFloatXML(dvFCP_N17c); // Valor do Fundo de Combate à Pobreza (FCP) E N17.1 N 1-1 13v2 Valor do ICMS relativo ao Fundo de Combate à Pobreza (FCP).
                         {Sandro Silva 2019-05-13 fim}
                       end;
-
                     end; // if RetornaValorDaTagNoCampo('pFCP', Form1.ibDataSet4.FieldByname('OBS').AsString) <> '' then
-
-                    ////////////////////////////////////////////////////////////////////////
-                  end; // if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
-                  //
+                  end;
                 end else
                 begin
                   dvBC_N15 := 0.00;
-                  //
+
                   // Sandro Silva 2023-05-23 Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := '0.00';  // BC
                   Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := FormatFloatXML(dvBC_N15);  // BC
 
-
-                  //
-                  if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+                  //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+                  if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                    and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
                   begin // NÃO É SIMPLES NACIONAL
                     if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring + '|', '|40|41|50|') = 0 then
                     begin
                       Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
                     end;
                   end;
-                  //
-                end; // if LimpaNumero(Form1.ibDataSet27.FieldByName('ALIQUICM').AsString) <> '' then      
+                end;
 
                 {Sandro Silva 2023-05-17 inicio}
                 //qBCMonoRet = será igual à quantidade do produto informado na nota
@@ -2001,7 +1994,9 @@ begin
                     dvBCPIS_Q07 := dvProd_I11 - fDescontoTotalRateado + dRateioAcrescimoItem;
 
                     {Sandro Silva 2021-07-26 inicio}
-                    if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+                    //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+                    if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                      and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
                     begin
                       if (Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring <> '60') then // CST 60 icms efetivo Sandro Silva 2021-08-04
                       begin
@@ -2025,7 +2020,9 @@ begin
 
                     dvBCCofins_S07 := dvProd_I11 - fDescontoTotalRateado + dRateioAcrescimoItem;
                     {Sandro Silva 2021-07-26 inicio}
-                    if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+                    //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+                    if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                      and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
                     begin
                       if (Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring <> '60') then // CST 60 icms efetivo Sandro Silva 2021-08-04
                       begin
@@ -2330,17 +2327,15 @@ begin
           Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + sMensagemIcmMonofasicoSobreCombustiveis;
         {Sandro Silva 2023-09-05 fim}
 
-        //
         // SAIDA
-        //
         if LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '' then
         begin
-          Form1.spdNFCeDataSets1.Campo('CRT_C21').Value := LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString); // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
+          Form1.spdNFCeDataSets1.Campo('CRT_C21').Value := LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString); // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal 4 - Simples MEI
         end else
         begin
-          Form1.spdNFCeDataSets1.Campo('CRT_C21').Value := '1'; // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
+          Form1.spdNFCeDataSets1.Campo('CRT_C21').Value := '1'; // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal 4 - Simples MEI
         end;
-        //
+
         Form1.spdNFCeDataSets1.Campo('versao_A02').Value := '4.00'; // Versão do Layout que está utilizando - Manual 4.0
         // Salva DataSets e Converte em XML montando um LOTE de XMLS a ser assinados
         //
@@ -3461,9 +3456,10 @@ begin
             begin // Produtos/Mercadorias
               fValorProdutos := fValorProdutos + dvProd_I11;
 
-              if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+              //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+              if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
               begin // NÃO É SIMPLES NACIONAL
-
                 Form1.spdNFCeDataSets1.Campo('orig_N11').Value    := Copy(Right('000' + LimpaNumero(Form1.ibDataSet4.FieldByname('CST').AsString), 3), 1, 1); //Origem da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
                 Form1.spdNFCeDataSets1.Campo('CST_N12').Value     := Right('000' + LimpaNumero(Form1.ibDataSet4.FieldByname('CST').AsString), 2); // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
 
@@ -3563,9 +3559,8 @@ begin
                   sLogErro := sLogErroCredenciadoraCartao + 'Erro:22' + Chr(10) + sStatus +chr(10);   // Sandro Silva 2017-08-16  +chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema.'+chr(10)+'Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.';
                   ConcatenaLog(sLogErroItens, sLogErro); // Sandro Silva 2018-07-20 sLogErroItens := sLogErroItens + Chr(10) + sLogErro;
                 end;
+              end;
 
-              end; /// if Tipo CRT (1;2;3)
-              //
               dpRedBC_N14 := 0.00;
               _ecf65_IdentificaPercentuaisBaseICMS(dpRedBC_N14);
 
@@ -3574,7 +3569,9 @@ begin
                  (Pos('|' + Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').AsString + '|', '|61|') > 0) then
                 dvBC_N15 := 0.00;
 
-              if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+              //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+              if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
               begin
                  //Cálculo da desoneração
                 _ecf65_CalculaDesoneracao(Form1.ibDataSet13.FieldByName('ESTADO').AsString,
@@ -3593,12 +3590,11 @@ begin
 
               if LimpaNumero(Form1.ibDataSet27.FieldByName('ALIQUICM').AsString) <> '' then
               begin
-                //
-                if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+                //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+                if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                  and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
                 begin
-                  //
                   // Só quando não é simples nacional
-                  //
                   if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AsString + '|', '|20|90|') > 0 then // Se CST for 02=Com redução de base de cálculo; 90=Outros
                   begin
                     if dpRedBC_N14 = 0.00 then
@@ -3720,27 +3716,23 @@ begin
                     end;
 
                   end; // if RetornaValorDaTagNoCampo('FCP', Form1.ibDataSet4.FieldByname('TAGS_').AsString) <> '' then
-                  ////////////////////////////////////////////////////////////////////////
-                end; // if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
-                //
+                end;
               end else
               begin
                 dvBC_N15 := 0.00;
-                //
                 // Sandro Silva 2023-05-23 Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := '0.00';  // BC
                 Form1.spdNFCeDataSets1.Campo('vBC_N15').Value     := FormatFloatXML(dvBC_N15);  // BC
 
-                //
-                if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+                //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+                if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                  and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
                 begin // NÃO É SIMPLES NACIONAL
                   if Pos('|' + Form1.spdNFCeDataSets1.Campo('CST_N12').AsString + '|', '|40|41|50|') = 0 then
                   begin
                     Form1.spdNFCeDataSets1.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
                   end;
                 end;
-                //
-              end; // if LimpaNumero(Form1.ibDataSet27.FieldByName('ALIQUICM').AsString) <> '' then
-              //
+              end;
 
               {Sandro Silva 2023-05-17 inicio}
               //qBCMonoRet = será igual à quantidade do produto informado na nota
@@ -3792,7 +3784,9 @@ begin
                   // Q05 PISOutr 99=Outras Operações;
                   dvBCPIS_Q07 := dvProd_I11 - fDescontoTotalRateado + dRateioAcrescimoItem;
                   {Sandro Silva 2021-07-26 inicio}
-                  if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+                  //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+                  if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                    and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
                   begin
                     if (Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring <> '60') then // CST 60 icms efetivo Sandro Silva 2021-08-04
                     begin
@@ -3816,7 +3810,9 @@ begin
 
                   dvBCCofins_S07 := dvProd_I11 - fDescontoTotalRateado + dRateioAcrescimoItem;
                   {Sandro Silva 2021-07-26 inicio}
-                  if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+                  //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+                  if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+                    and (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
                   begin
                     if (Form1.spdNFCeDataSets1.Campo('CST_N12').AssTring <> '60') then // CST 60 icms efetivo Sandro Silva 2021-08-04
                     begin
@@ -4450,9 +4446,7 @@ begin
 
       {Sandro Silva 2023-05-19 fim}
 
-      //
       // SAIDA
-      //
       if LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '' then
       begin
         Form1.spdNFCeDataSets1.Campo('CRT_C21').Value := LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString); // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
@@ -4460,65 +4454,47 @@ begin
       begin
         Form1.spdNFCeDataSets1.Campo('CRT_C21').Value := '1'; // 1 - Simples nacional 2 - Simples Nacional excesso 3 - Regime normal
       end;
-      //
+
       // Apenas configuração para servidor versão 3.10. O servidor 3.00 foi desativado
       Form1.spdNFCeDataSets1.Campo('versao_A02').Value := '4.00'; // Versão do Layout que está utilizando - Manual 4.0
-      //
+
       // Salva DataSets e Converte em XML montando um LOTE de XMLS a ser assinados
-      //
       try
         Form1.spdNFCeDataSets1.Salvar; // Salva DataSets e Converte em XML montando um LOTE de XMLS a ser assinados
       except
         on E: Exception do
         begin
-          //
           sLogErro := sLogErroCredenciadoraCartao + 'Erro: 21' + Chr(10) + E.Message+chr(10)+
             chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.';
 
           sStatus := E.Message;
           Exit;
-          //
         end;
       end;
 
-      ////
       // Final geração do xml
-      ////
 
-      //
       // Assinando
-      //
       try
-        //
         fNFe := Form1.spdNFCeDataSets1.LoteNFCe.GetText;  //Copia XML que está Componente p/ Field fNFe
-        //
       except
-        //
         sLogErro := sLogErroCredenciadoraCartao + 'Erro ao gravar NFC-e';
         sStatus := sLogErro;
         Exit;
-        //
       end;
-
 
       //validar se a soma dos pagamentos fecha com o total da nota menos o troco?
 
-      //
       // Assinando
-      //
       try
-        //
         fNFe := Form1.spdNFCe1.AssinarNota(fNFe);
         wsNFCeAssinada := fNFe; // Sandro Silva 2015-03-31 XML assinado para gravar em NFCE.NFEXML se ocorrer rejeição;
-        //
       except
-        //
         sLogErro := sLogErroCredenciadoraCartao + 'Erro ao assinar NFC-e';
         sStatus := sLogErro;
         Exit;
-        //
       end;
-      //
+
       try
         if _ecf65_LoadXmlDestinatario(Form1.ibDataSet150.FieldByName('NFEID').AsString) <> '' then // Sandro Silva 2024-02-16 if _ecf65_LoadXmlDestinatario(PAnsiChar(Form1.ibDataSet150.FieldByName('NFEID').AsString)) <> '' then
         begin
@@ -4528,9 +4504,9 @@ begin
         end;
       except
       end;
-      //
-      sLote := FormataNumeroDoCupom(Form1.iCupom); 
-      //
+
+      sLote := FormataNumeroDoCupom(Form1.iCupom);
+
       try
         if Form1.DANFCEdetalhado1.Checked then
           Form1.spdNFCe1.DanfceSettings.ExibirDetalhamento := True
@@ -4543,13 +4519,9 @@ begin
         end;
       end;
 
-      //
       if not Form1.NFCeemContingncia1.Checked then // SERVIÇO ONLINE   não é contingência
       begin
-        //
         // Transmitindo
-        //
-
         try
           _ecf65_NumeroSessaoIntegradorFiscal; // Sandro Silva 2018-04-23
 
@@ -4568,7 +4540,6 @@ begin
           sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
 
           {Sandro Silva 2021-12-02 inicio}
-
           if (Trim(sRetorno) = '') or (AnsiContainsText(Trim(sRetorno), '<cStat>') = False) then  // Sem Retorno ou sem cStat
           begin
             // Não retornando nada da SEFAZ (caso de MG) faz 3 tentativas de consultar e enviar antes de entrar no fluxo de emissão de contingência para cancelamento por substituição
@@ -4593,8 +4564,6 @@ begin
 
           // Permite simular a situação de uso denegado
           sRetorno := _ecf65_SimulaRetornoUsoDenegado(sRetorno); // Sandro Silva 2020-05-13
-          //
-          ////////////////////////////
 
           if (Trim(sRetorno) = '') or (AnsiContainsText(Trim(sRetorno), '<cStat>') = False) then  // Sem Retorno ou sem cStat
           begin
@@ -4607,16 +4576,14 @@ begin
 
             end;
             {Sandro Silva 2022-07-14 fim}
-
           end;
-
         except
           on E: Exception do
           begin
             sLogErro := E.Message+chr(10)+chr(10)+'Ao enviar sincrono';
           end;
         end;
-        //
+
         Sleep(100);
         {
         //
@@ -4632,7 +4599,6 @@ begin
         if _ecf65_xmlAutorizado(sRetorno)
           and (xmlNodeValue(sRetorno, '//infProt/digVal') = xmlNodeValue(fNFe, '//DigestValue')) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo; e o DIGEST autorizado é o mesmo dos dados enviados
         begin
-          //
           Sleep(100);// Aguarda tempo do sistema operacional gravar o arquivo na pasta xmldestinatario
           sID  := Copy(Form1.spdNFCeDataSets1.Campo('Id_A03').AsString,4,44);
 
@@ -9327,7 +9293,9 @@ begin
   begin
     // Se não tiver a alíquota configurada no produto usa aquele que está cadastrada no CIT
     Form1.ibDataSet14.First;
-    if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+    //if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) = '1') then Mauricio Parizotto 2024-08-15
+    if (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) = '1')
+      or (LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) = '4') then
     begin
       //Primeiro, Simples nacional busca o CIT e o CSOSN
       if (Form1.ibDataSet4.FieldByname('ST').AsString <> '') and (Form1.ibDataSet14.Locate('ST;CSOSN', VarArrayOf([Form1.ibDataSet4.FieldByname('ST').AsString, Form1.spdNFCeDataSets1.Campo('CSOSN_N12a').Value]), [])) then // Localiza a Alíquota cadastrada na tabela ICM para o CIT e o CSOSN
@@ -9406,15 +9374,14 @@ procedure _ecf65_CalculaDesoneracao(sUF: String; sCit: String; sCrt: String;
 var
   dvIcmsIntegral: Real;
 begin
-  //
   // Calcula valores para aplicar na desoneração
-  //
   // Sandro Silva 2020-04-14  if Form1.sVersaoLayoutNFCe = '4.00' then // Sandro Silva 2018-02-14 4.0
   //begin
 
-    if (LimpaNumero(sCrt) <> '1') then
+    //if (LimpaNumero(sCrt) <> '1') then Mauricio Parizotto 2024-08-15
+    if (LimpaNumero(sCrt) <> '1')
+      and (LimpaNumero(sCrt) <> '4') then
     begin
-
       if DataSetEstoque.FieldByname('ALIQUOTA_NFCE').AsFloat > 0.00 then
       begin
         sAliquota := FormatFloat('0.00', DataSetEstoque.FieldByName('ALIQUOTA_NFCE').AsFloat);
@@ -9447,11 +9414,8 @@ begin
       begin
         dvICMSDeson_N28a := dvIcmsIntegral;
       end;
-
     end;
-
   //end;
-
 end;
 
 procedure _ecf65_IdentificacaoResponsavelTecnico(spdNFCeDataSets: TspdNFCeDataSets);
