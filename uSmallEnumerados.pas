@@ -15,7 +15,8 @@ type
                       tmcOrcamento, tmcConvenio, tmcContas, tmcTransport,
                       tmcGrupos, tmcParametroTributacao, tmcPerfilTributacao,
                       tmcConversaoCFOP, tmcICM, tmc2Contas);
-  tCRTEmitente = (tcrteSimplesNacional = 1, tcrteSimplesNacionalExcessoSublimite = 2, tcrteRegimeNormal = 3);
+  //tCRTEmitente = (tcrteSimplesNacional = 1, tcrteSimplesNacionalExcessoSublimite = 2, tcrteRegimeNormal = 3); Mauricio Parizotto 2024-08-07
+  tCRTEmitente = (tcrteSimplesNacional = 1, tcrteSimplesNacionalExcessoSublimite = 2, tcrteRegimeNormal = 3, tcrteRegimeSimplesMEI = 4);
 
 implementation
 
