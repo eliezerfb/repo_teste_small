@@ -711,7 +711,7 @@ object Senhas: TSenhas
       Top = 23
       Width = 132
       Height = 16
-      Caption = 'Confirme a sua senha.'
+      Caption = 'Confirme a sua senha'
       Color = clBlack
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
