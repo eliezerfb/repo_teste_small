@@ -4021,9 +4021,9 @@ begin
   end;
 
   AutoMarketplace1.Checked := False;
+  {Mauricio Parizotto 2024-08-13 - SMAL-638
   if ValidaRecursos.PermiteRecursoParaProduto then
   begin
-
     if Mais1Ini.ReadString('GERAL','MARKETPLACE ATIVO','Não') = 'Sim' then
     begin
       AutoMarketplace1.Checked := True;
@@ -4041,6 +4041,7 @@ begin
   begin
     Marketplace1.Enabled := False;
   end;
+  }
 
   AutoSmallMobile1.Checked := False;
   if ValidaRecursos.PermiteRecursoParaProduto then
@@ -4649,6 +4650,9 @@ begin
   VersodolayoutdaNFE1.Visible  := False;
   HorarioDeVerao.Visible       := False;
   Enviardanfeporemail1.Visible := False;
+
+  //Mauricio Parizotto 2024-08-12 - Desabilitado temporariamente
+  Marketplace1.Visible         := False;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
@@ -10418,6 +10422,7 @@ var
 begin
   if AllTrim(Form7.ibDataSet13.fieldByName('CGC').AsString) <> '' then
   begin
+    {Mauricio Parizotto 2024-08-13 SMAL-638
     if AutoMarketplace1.Checked then
     begin
       if not ConsultaProcesso('mkp.exe') then // Form1Ativate
@@ -10425,6 +10430,7 @@ begin
         ShellExecute( 0, 'Open', 'mkp.exe','', '', SW_HIDE); // Form1Ativate
       end;
     end;
+    }
 
     if AutoSmallMobile1.Checked then
     begin
@@ -12356,6 +12362,9 @@ var
   Mais1Ini : TiniFile;
   sMostra  : string;
 begin
+  //Mauricio Parizotto 2024-08-13 SMAL-638
+  Exit;
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
 
   if AutoMarketplace1.Checked then
@@ -12378,6 +12387,7 @@ begin
     Mais1Ini.WriteString('ESTOQUE','Mostrar',sMostra);
 
     Form1.Timer2.Enabled := True;
+
 
     if Legal(True) then
     begin

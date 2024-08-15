@@ -14477,6 +14477,7 @@ object Form1: TForm1
     end
     object Marketplace1: TMenuItem
       Caption = 'Marketplace'
+      Visible = False
       object AutoMarketplace1: TMenuItem
         Caption = 'Auto Marketplace'
         OnClick = AutoMarketplace1Click
