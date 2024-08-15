@@ -304,7 +304,9 @@ var
 
 implementation
 
-uses Mais, Unit7, Unit10, uFrmParcelas, Unit43, Unit12, Unit22, Unit45,
+uses Mais, Unit7
+//  , Unit10
+  , uFrmParcelas, Unit43, Unit12, Unit22, Unit45,
   uFuncoesBancoDados, uDialogs, uFrmPrecificacaoProduto, uFuncoesRetaguarda;
 
 {$R *.DFM}
@@ -1708,6 +1710,10 @@ begin
 end;
 
 procedure TForm24.SMALL_DBEdit40Exit(Sender: TObject);
+var
+  //Mauricio Parizotto 2024-07-17
+  sText : string;
+  tProcura : TDataSet;
 begin
   //************************************
   // Joga p/obs a obs na tabela de icm *
@@ -1889,12 +1895,11 @@ begin
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select NUMERONF, FORNECEDOR, REGISTRO from COMPRAS where NUMERONF='+QuotedStr(Form7.ibDataSet24NUMERONF.AsString)+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' and REGISTRO<>'+QuotedStr(Form7.ibDataSet24REGISTRO.AsString)+' ');
   Form7.IBDataSet99.Open;
-  //
+
   if (Form7.IBDataSet99.FieldByName('NUMERONF').AsString = Form7.ibDataSet24NUMERONF.AsString) and (Form7.IBDataSet99.FieldByName('FORNECEDOR').AsString = Form7.ibDataSet24FORNECEDOR.AsString) and (Form7.IBDataSet99.FieldByName('REGISTRO').AsString <> Form7.ibDataSet24REGISTRO.AsString) then
   begin
     sRegistro := Form7.IBDataSet99.FieldByName('REGISTRO').AsString;
 
-    //ShowMessage('Nota fiscal já cadastrada.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Nota fiscal já cadastrada.',msgAtencao);
 
     Form7.sModulo := 'DUPLA';
@@ -1964,6 +1969,10 @@ begin
 end;
 
 procedure TForm24.SMALL_DBEdit41Exit(Sender: TObject);
+var
+  //Mauricio Parizotto 2024-07-17
+  sText : string;
+  tProcura : TDataSet;
 begin
   sText := AllTrim(SMALL_DBEdit41.Text);
   if sText <> '' then
@@ -3363,9 +3372,9 @@ end;
 
 procedure TForm24.Edit7Click(Sender: TObject);
 begin
-  //
-  Edit7.Text := LimpaNumero(Form1.Small_InputForm('Finalidade da NFe','Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)',LimpaNumero(Edit7.Text)));
-  //
+  //Edit7.Text := LimpaNumero(Form1.Small_InputForm('Finalidade da NFe','Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)',LimpaNumero(Edit7.Text))); Mauricio Parizotto 2024-08-08
+  Edit7.Text := LimpaNumero(Form1.Small_InputForm('Finalidade da NFe:','1-Normal'+chr(10)+'2-Complementar'+chr(10)+'3-de Ajuste'+chr(10)+'4-Devolução de mercadoria',LimpaNumero(Edit7.Text)));
+
   if (LimpaNumero(Edit7.Text) = '1') then
   begin
     Edit7.Text := '1-Normal';
@@ -3391,24 +3400,23 @@ begin
       end;
     end;
   end;
-  //
+
   if Form7.ibDataSet24FINNFE.AsString   <> LimpaNumero(Edit7.Text) then
     Form7.ibDataSet24FINNFE.AsString   := LimpaNumero(Edit7.Text);
-  //
+
   try
     Form24.SMALL_DBEdit40.SetFocus;
   except
   end;
-  //
+
   // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
-  //
 end;
 
 procedure TForm24.Edit8Click(Sender: TObject);
 begin
-  //
-  Edit8.Text := LimpaNumero(Form1.Small_InputForm('Indicador de operação', 'Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final)', LimpaNumero(Edit8.Text)));
-  //
+  //Edit8.Text := LimpaNumero(Form1.Small_InputForm('Indicador de operação', 'Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final)', LimpaNumero(Edit8.Text))); Mauricio Parizotto 2024-08-08
+  Edit8.Text := LimpaNumero(Form1.Small_InputForm('Indicador de operação com Consumidor Final:','0-Normal'+chr(10)+'1-Consumidor Final', LimpaNumero(Edit8.Text)));
+
   if (LimpaNumero(Edit8.Text) = '1') then
   begin
     Edit8.Text := '1-Consumidor Final';
@@ -3416,17 +3424,15 @@ begin
   begin
     Edit8.Text := '0-Normal';
   end;
-  //
+
   if Form7.ibDataSet24INDFINAL.AsString <> LimpaNumero(Edit8.Text) then
     Form7.ibDataSet24INDFINAL.AsString := LimpaNumero(Edit8.Text);
-  //
+
   try
     Form24.SMALL_DBEdit40.SetFocus;
   except
   end;
-  //
   // Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final)
-  //
 end;
 
 procedure TForm24.Edit9Click(Sender: TObject);

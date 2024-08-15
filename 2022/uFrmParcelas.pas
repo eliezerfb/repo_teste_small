@@ -104,7 +104,7 @@ var
 
 implementation
 
-uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, Unit3, uFuncoesBancoDados,
+uses Unit12, Mais, unit24, Unit19, Unit43, Unit25, Unit16, Unit22, uFuncoesBancoDados,
   uFuncoesRetaguarda, StrUtils, uDialogs, uRaterioDiferencaEntreParcelasReceber,
   uSmallConsts, uRetornaBuildEXE, uArquivosDAT;
 
