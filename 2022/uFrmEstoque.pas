@@ -860,7 +860,9 @@ var
 begin
   with Sender as TLabel do
   begin
+    FrmEstoque.SendToBack;
     sNome   := StrTran(Trim(Form1.Small_InputForm('Personalização do sistema','Nome do campo:',Caption)),':','');
+    FrmEstoque.BringToFront;
     Caption := sNome;
     Repaint;
 
@@ -2845,7 +2847,10 @@ procedure TFrmEstoque.btnProcurarSerClick(Sender: TObject);
 var
   sSerial : String;
 begin
+  FrmEstoque.SendToBack;
   sSerial := AllTrim(Form1.Small_InputForm('Procura','Número de série:',''));
+  FrmEstoque.BringToFront;
+
   if (AllTrim(Form7.ibDataSet30SERIAL.AsString) = AllTrim(sSerial)) then Form7.ibDataSet30.Next else Form7.ibDataSet30.First;
   if AllTrim(sSerial) <> '' then
   begin
@@ -3402,6 +3407,8 @@ begin
     edtTitulo6.Enabled           := False;
     edtTitulo7.Enabled           := False;
   end;
+
+  dbgSerial.Repaint;
 end;
 
 procedure TFrmEstoque.chkControlaSerialExit(Sender: TObject);
