@@ -8,6 +8,8 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
+  ExplicitLeft = 3
+  ExplicitTop = 3
   ExplicitWidth = 780
   ExplicitHeight = 554
   PixelsPerInch = 96
@@ -308,9 +310,10 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
   object BitBtn1: TBitBtn
     Left = 232
     Top = 472
-    Width = 100
+    Width = 160
     Height = 25
-    Caption = 'Outras Op'#231#245'es'
+    Caption = 'Outras configura'#231#245'es'
     TabOrder = 15
+    OnClick = BitBtn1Click
   end
 end

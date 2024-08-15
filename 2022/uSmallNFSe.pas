@@ -857,16 +857,16 @@ begin
 
   FIniNFSe.WriteString('WebService', 'Ambiente', Ini.ReadString('NFSE', 'Ambiente', '2'));
 
-  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'IncentivadorCultural', '');
-  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'RegimeEspecialTributacao', '');
-  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'NaturezaTributacao', '');
-  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'IncentivoFiscal', '');
-  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'TipoTributacao', '');
-  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'ExigibilidadeISS', '');
-  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'Operacao', '');
-  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'CodigoCnae', '');
-  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'MultiplosServicos', '');
-  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'TipoPagamentoPrazo', '');
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'IncentivadorCultural', Ini.ReadString('Informacoes obtidas na prefeitura', 'IncentivadorCultural', ''));
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'RegimeEspecialTributacao', Ini.ReadString('Informacoes obtidas na prefeitura', 'RegimeEspecialTributacao', ''));
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'NaturezaTributacao', Ini.ReadString('Informacoes obtidas na prefeitura', 'NaturezaTributacao', ''));
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'IncentivoFiscal', Ini.ReadString('Informacoes obtidas na prefeitura', 'IncentivoFiscal', ''));
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'TipoTributacao', Ini.ReadString('Informacoes obtidas na prefeitura', 'TipoTributacao', ''));
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'ExigibilidadeISS', Ini.ReadString('Informacoes obtidas na prefeitura', 'ExigibilidadeISS', ''));
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'Operacao', Ini.ReadString('Informacoes obtidas na prefeitura', 'Operacao', ''));
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'CodigoCnae', Ini.ReadString('Informacoes obtidas na prefeitura', 'CodigoCnae', ''));
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'MultiplosServicos', Ini.ReadString('Informacoes obtidas na prefeitura', 'MultiplosServicos', ''));
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'TipoPagamentoPrazo', Ini.ReadString('Informacoes obtidas na prefeitura', 'TipoPagamentoPrazo', ''));
 
   Ini.Free;
 

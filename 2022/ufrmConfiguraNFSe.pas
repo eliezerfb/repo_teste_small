@@ -57,6 +57,7 @@ type
     procedure cbXmlSignLibChange(Sender: TObject);
     procedure lbCertificado1Click(Sender: TObject);
     procedure btnSelecionaCertificadoClick(Sender: TObject);
+    procedure BitBtn1Click(Sender: TObject);
   private
     { Private declarations }
     Ini: TIniFile;
@@ -74,13 +75,22 @@ implementation
 
 {$R *.dfm}
 
-uses unit7, ufrmSelecionaCertificadoNFSe, uSmallNFSe;
+uses unit7, ufrmSelecionaCertificadoNFSe, uSmallNFSe,
+  ufrmOutrasConfiguracoesNFSe;
 
 { TfrmConfiguraNFSe }
 
 procedure TfrmConfiguraNFSe.AtualizarSSLLibsCombo;
 begin
   cbSSLType.Enabled := (TSSLHttpLib(cbHttpLib.ItemIndex) in [httpWinHttp, httpOpenSSL]);
+end;
+
+procedure TfrmConfiguraNFSe.BitBtn1Click(Sender: TObject);
+begin
+  inherited;
+  Application.CreateForm(TfrmOutrasConfiguracoesNFSe, frmOutrasConfiguracoesNFSe);
+  frmOutrasConfiguracoesNFSe.ShowModal;
+  FreeAndNil(frmOutrasConfiguracoesNFSe);
 end;
 
 procedure TfrmConfiguraNFSe.btnGravarClick(Sender: TObject);
@@ -97,10 +107,12 @@ begin
   frmSelecionaCertificadoNFSe.ShowModal;
   FreeAndNil(frmSelecionaCertificadoNFSe);
 
+  {
   mmCertificado.Clear;
   mmCertificado.Text := Ini.ReadString('Certificado', 'NumSerie',   '');
   mmCertificado.Lines.Add(Ini.ReadString('Certificado', 'NomeCertificado', ''));
-
+  }
+  LerConfiguracao;
 end;
 
 procedure TfrmConfiguraNFSe.cbCryptLibChange(Sender: TObject);
@@ -198,11 +210,13 @@ end;
 procedure TfrmConfiguraNFSe.LerConfiguracao;
 var
   NFSe: TNFS;
+  dtValidadeCertificado: TDate;
 begin
 
   NFSe := TNFS.Create(nil);
   NFSe.IBTRANSACTION := Form7.IBTransaction1;
   NFSe.ConfigurarComponente;
+  dtValidadeCertificado := NFSe.ACBrNFSeX.SSL.CertDataVenc;
   FreeAndNil(NFSe);
 
   cbSSLLib.ItemIndex     := Ini.ReadInteger('Certificado', 'SSLLib',     4);
@@ -221,6 +235,7 @@ begin
   mmCertificado.Clear;
   mmCertificado.Text := Ini.ReadString('Certificado', 'NumSerie',   '');
   mmCertificado.Lines.Add(Ini.ReadString('Certificado', 'NomeCertificado', ''));
+  mmCertificado.Lines.Add('Validade: ' + FormatDateTime('dd/mm/yyyy', dtValidadeCertificado));
 
 
   if cbSSLLib.ItemIndex <> 5 then

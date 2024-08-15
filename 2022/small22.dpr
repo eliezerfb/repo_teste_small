@@ -272,7 +272,8 @@ uses
   uSmallNFSe in 'uSmallNFSe.pas',
   Frm_Status in '..\..\unit_compartilhada\Frm_Status.pas' {frmStatus},
   ufrmConfiguraNFSe in 'ufrmConfiguraNFSe.pas' {frmConfiguraNFSe},
-  ufrmSelecionaCertificadoNFSe in 'ufrmSelecionaCertificadoNFSe.pas' {frmSelecionaCertificadoNFSe};
+  ufrmSelecionaCertificadoNFSe in 'ufrmSelecionaCertificadoNFSe.pas' {frmSelecionaCertificadoNFSe},
+  ufrmOutrasConfiguracoesNFSe in 'ufrmOutrasConfiguracoesNFSe.pas' {frmOutrasConfiguracoesNFSe};
 
 {$R *.RES}
 
