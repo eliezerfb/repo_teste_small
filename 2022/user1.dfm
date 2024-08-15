@@ -12,7 +12,7 @@ object Form1: TForm1
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  Position = poDesktopCenter
+  Position = poOwnerFormCenter
   OnActivate = FormActivate
   OnCreate = FormCreate
   PixelsPerInch = 96
