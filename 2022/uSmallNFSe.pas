@@ -24,7 +24,7 @@ uses
   , uDialogs, uFuncoesBancoDados
   ;
 
-const DADO_SIM = 'Sim';
+//const DADO_SIM = 'Sim';
 
 type
 
@@ -161,7 +161,7 @@ type
               AddQtdVlUnitDiscriminacao,
               AdicionaObsNosItens : Boolean;
     //Fun  es e procedures
-    class procedure Carrega_ConfigIni;
+//    class procedure Carrega_ConfigIni;
 //    class procedure Carrega_base;
 //    class procedure Carrega_Dados_Envio;
 //    class procedure pFvalida_Nfse;
@@ -382,6 +382,8 @@ begin
   FIniNFSe := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'nfse.ini');
 
   SelecionarDadosEmitente;
+
+  ImportaConfiguracaoTecnospeed;
 
   FACBrNFSeX1.LerCidades;
 
@@ -641,7 +643,7 @@ begin
 //  FACBrNFSeX1.OnStatusChange := ACBrNFSeX1StatusChange;
   FACBrNFSeX1.DANFSE := FACBrNFSeXDANFSeFR1;//FACBrNFSeXDANFSeRL1;
   FACBrNFSeX1.MAIL := FACBrMail1;
-  FIniNFSe := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'nfseConfig.ini');
+  FIniNFSe := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'nfse.ini');
   TipoEnvio := meLoteAssincrono;
 
   FACBrNFSeX1.Configuracoes.Geral.SSLLib := libNone;
@@ -794,7 +796,10 @@ end;
 
 procedure TNFS.ImportaConfiguracaoTecnospeed;
 var
+  I: Integer;
   Ini: TIniFile;
+  sUsuario: String;
+  sSenha: String;
 begin
 
   if FileExists(ExtractFilePath(Application.ExeName) + 'nfse.ini') then
@@ -803,8 +808,65 @@ begin
   if not FileExists(ExtractFilePath(Application.ExeName) + 'nfseConfig.ini') then
     Exit;
 
-  Ini := TIniFile(ExtractFilePath(Application.ExeName) + 'nfseConfig.ini');
+  Ini := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'nfseConfig.ini');
 
+  if Ini.ReadString('NFSE', 'NomeCertificado', '') <> '' then
+  begin
+
+    FACBrNFSeX1.Configuracoes.Geral.SSLLib        := TSSLLib(FIniNFSe.ReadInteger('Certificado', 'SSLLib',     4));
+    FACBrNFSeX1.Configuracoes.Geral.SSLCryptLib   := TSSLCryptLib(FIniNFSe.ReadInteger('Certificado', 'CryptLib',   3));
+    FACBrNFSeX1.Configuracoes.Geral.SSLHttpLib    := TSSLHttpLib(FIniNFSe.ReadInteger('Certificado', 'HttpLib',    2));
+    FACBrNFSeX1.Configuracoes.Geral.SSLXmlSignLib := TSSLXmlSignLib(FIniNFSe.ReadInteger('Certificado', 'XmlSignLib', 0));
+
+    FACBrNFSeX1.SSL.LerCertificadosStore;
+    for I := 0 to FACBrNFSeX1.SSL.ListaCertificados.Count-1 do
+    begin
+
+      if (FACBrNFSeX1.SSL.ListaCertificados[I].CNPJ <> '') then
+      begin
+
+        if Pos(LimpaNumero(FACBrNFSeX1.SSL.ListaCertificados[I].CNPJ), Ini.ReadString('NFSE', 'NomeCertificado', '')) > 0 then
+        begin
+
+          if FACBrNFSeX1.SSL.ListaCertificados[I].DataVenc >= Now then
+          begin
+            FIniNFSe.WriteString('Certificado', 'NomeCertificado', FACBrNFSeX1.SSL.ListaCertificados[I].SubjectName);
+            FIniNFSe.WriteString('Certificado', 'NumSerie', FACBrNFSeX1.SSL.ListaCertificados[I].NumeroSerie);
+            Break;
+          end;
+
+        end;
+
+      end;
+
+    end;
+
+  end;
+
+  if Ini.ReadString('NFSE', 'ParametrosExtras', '') <> '' then
+  begin
+    sUsuario := Ini.ReadString('NFSE', 'ParametrosExtras', '');
+    sUsuario := Copy(sUsuario, 7, Pos(';', sUsuario) - 7);
+
+    sSenha := Ini.ReadString('NFSE', 'ParametrosExtras', '');
+    sSenha := Copy(sSenha, Pos(';', sSenha) + 7, 1000);
+
+    FIniNFSe.WriteString( 'WebService', 'SenhaWeb',     sSenha);
+    FIniNFSe.WriteString( 'WebService', 'UserWeb',      sUsuario);
+  end;
+
+  FIniNFSe.WriteString('WebService', 'Ambiente', Ini.ReadString('NFSE', 'Ambiente', '2'));
+
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'IncentivadorCultural', '');
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'RegimeEspecialTributacao', '');
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'NaturezaTributacao', '');
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'IncentivoFiscal', '');
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'TipoTributacao', '');
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'ExigibilidadeISS', '');
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'Operacao', '');
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'CodigoCnae', '');
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'MultiplosServicos', '');
+  FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'TipoPagamentoPrazo', '');
 
   Ini.Free;
 
@@ -865,10 +927,5 @@ begin
 end;
 
 { TNFSeDados }
-
-class procedure TNFSeDados.Carrega_ConfigIni;
-begin
-
-end;
 
 end.

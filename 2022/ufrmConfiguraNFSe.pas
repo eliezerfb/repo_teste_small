@@ -46,6 +46,7 @@ type
     lbCertificado1: TLabel;
     mmCertificado: TMemo;
     btnSelecionaCertificado: TBitBtn;
+    BitBtn1: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure btnGravarClick(Sender: TObject);
@@ -73,7 +74,7 @@ implementation
 
 {$R *.dfm}
 
-uses unit7, ufrmSelecionaCertificadoNFSe;
+uses unit7, ufrmSelecionaCertificadoNFSe, uSmallNFSe;
 
 { TfrmConfiguraNFSe }
 
@@ -195,7 +196,15 @@ begin
 end;
 
 procedure TfrmConfiguraNFSe.LerConfiguracao;
+var
+  NFSe: TNFS;
 begin
+
+  NFSe := TNFS.Create(nil);
+  NFSe.IBTRANSACTION := Form7.IBTransaction1;
+  NFSe.ConfigurarComponente;
+  FreeAndNil(NFSe);
+
   cbSSLLib.ItemIndex     := Ini.ReadInteger('Certificado', 'SSLLib',     4);
 
   cbCryptLib.ItemIndex   := Ini.ReadInteger('Certificado', 'CryptLib',   3);

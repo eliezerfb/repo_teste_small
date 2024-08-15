@@ -8,10 +8,8 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitLeft = 3
-  ExplicitTop = 3
-  ExplicitWidth = 778
-  ExplicitHeight = 546
+  ExplicitWidth = 780
+  ExplicitHeight = 554
   PixelsPerInch = 96
   TextHeight = 16
   object Label30: TLabel
@@ -179,8 +177,6 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     Caption = 'Gravar'
     TabOrder = 0
     OnClick = btnGravarClick
-    ExplicitLeft = 779
-    ExplicitTop = 601
   end
   object rgTipoAmb: TRadioGroup
     Left = 7
@@ -308,5 +304,13 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     Caption = 'Selecionar Certificado'
     TabOrder = 14
     OnClick = btnSelecionaCertificadoClick
+  end
+  object BitBtn1: TBitBtn
+    Left = 232
+    Top = 472
+    Width = 100
+    Height = 25
+    Caption = 'Outras Op'#231#245'es'
+    TabOrder = 15
   end
 end
