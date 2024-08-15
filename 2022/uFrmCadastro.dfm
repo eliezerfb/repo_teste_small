@@ -22,14 +22,8 @@ inherited FrmCadastro: TFrmCadastro
         OnClick = btnRenogiarDividaClick
       end
     end
-    inherited Panel8: TPanel
-      ExplicitLeft = 822
-    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
-      ExplicitLeft = 20
-      ExplicitWidth = 802
-      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Ficha'
         object Label2: TLabel
@@ -1172,7 +1166,7 @@ inherited FrmCadastro: TFrmCadastro
           ExplicitWidth = 245
           inherited txtCampo: TEdit
             Width = 245
-            ExplicitWidth = 266
+            ExplicitWidth = 245
           end
           inherited gdRegistros: TDBGrid
             Width = 245
