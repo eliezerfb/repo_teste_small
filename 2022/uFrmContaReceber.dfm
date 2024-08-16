@@ -16,13 +16,13 @@ inherited FrmContaReceber: TFrmContaReceber
       Width = 929
       ExplicitWidth = 929
       inherited btnOK: TBitBtn
-        Left = 799
-        ExplicitLeft = 799
+        Left = 810
+        ExplicitLeft = 810
       end
       object btnRecibo: TBitBtn
-        Left = 10
-        Top = 8
-        Width = 120
+        Left = 19
+        Top = 16
+        Width = 100
         Height = 25
         Anchors = [akRight, akBottom]
         Caption = 'Recibo'
@@ -36,9 +36,9 @@ inherited FrmContaReceber: TFrmContaReceber
         OnClick = btnReciboClick
       end
       object btnReplicar: TBitBtn
-        Left = 134
-        Top = 8
-        Width = 120
+        Left = 123
+        Top = 16
+        Width = 100
         Height = 25
         Anchors = [akRight, akBottom]
         Caption = 'Replicar'
@@ -53,18 +53,20 @@ inherited FrmContaReceber: TFrmContaReceber
       end
     end
     inherited Panel8: TPanel
-      Left = 919
-      ExplicitLeft = 919
+      Left = 909
+      ExplicitLeft = 909
     end
     inherited pgcFicha: TPageControl
-      Width = 909
+      Width = 889
       ActivePage = tbsCadastro
-      ExplicitWidth = 909
+      ExplicitLeft = 20
+      ExplicitWidth = 889
+      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label1: TLabel
           Left = 10
-          Top = 52
+          Top = 46
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -79,7 +81,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label129: TLabel
           Left = 10
-          Top = 26
+          Top = 20
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -94,7 +96,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label2: TLabel
           Left = 10
-          Top = 78
+          Top = 72
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -109,7 +111,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label3: TLabel
           Left = 10
-          Top = 104
+          Top = 98
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -124,7 +126,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label4: TLabel
           Left = 10
-          Top = 130
+          Top = 124
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -139,7 +141,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label5: TLabel
           Left = 10
-          Top = 156
+          Top = 150
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -154,7 +156,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label6: TLabel
           Left = 10
-          Top = 182
+          Top = 176
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -169,7 +171,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label7: TLabel
           Left = 10
-          Top = 208
+          Top = 202
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -184,7 +186,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label8: TLabel
           Left = 10
-          Top = 234
+          Top = 228
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -199,7 +201,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label9: TLabel
           Left = 10
-          Top = 312
+          Top = 306
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -214,7 +216,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label10: TLabel
           Left = 10
-          Top = 390
+          Top = 384
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -229,7 +231,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label11: TLabel
           Left = 10
-          Top = 260
+          Top = 254
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -244,7 +246,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label12: TLabel
           Left = 10
-          Top = 286
+          Top = 280
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -259,7 +261,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label13: TLabel
           Left = 10
-          Top = 338
+          Top = 332
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -274,7 +276,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label14: TLabel
           Left = 10
-          Top = 364
+          Top = 358
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -289,7 +291,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label15: TLabel
           Left = 464
-          Top = 26
+          Top = 20
           Width = 104
           Height = 13
           Alignment = taRightJustify
@@ -304,7 +306,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label16: TLabel
           Left = 464
-          Top = 52
+          Top = 46
           Width = 104
           Height = 13
           Alignment = taRightJustify
@@ -319,7 +321,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label17: TLabel
           Left = 473
-          Top = 78
+          Top = 72
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -334,7 +336,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label18: TLabel
           Left = 473
-          Top = 104
+          Top = 98
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -349,7 +351,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label19: TLabel
           Left = 473
-          Top = 130
+          Top = 124
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -364,7 +366,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label20: TLabel
           Left = 473
-          Top = 156
+          Top = 150
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -379,7 +381,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label21: TLabel
           Left = 473
-          Top = 182
+          Top = 176
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -394,7 +396,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label22: TLabel
           Left = 473
-          Top = 208
+          Top = 202
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -409,7 +411,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object Label23: TLabel
           Left = 473
-          Top = 234
+          Top = 228
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -424,7 +426,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         inline fraPlanoContas: TfFrameCampo
           Left = 110
-          Top = 51
+          Top = 45
           Width = 313
           Height = 20
           Color = clWhite
@@ -434,7 +436,7 @@ inherited FrmContaReceber: TFrmContaReceber
           ParentCtl3D = False
           TabOrder = 1
           ExplicitLeft = 110
-          ExplicitTop = 51
+          ExplicitTop = 45
           ExplicitWidth = 313
           inherited txtCampo: TEdit
             Width = 313
@@ -453,7 +455,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtDocumento: TSMALL_DBEdit
           Left = 110
-          Top = 25
+          Top = 19
           Width = 94
           Height = 20
           AutoSize = False
@@ -474,7 +476,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtHistorico: TSMALL_DBEdit
           Left = 110
-          Top = 77
+          Top = 71
           Width = 313
           Height = 20
           AutoSize = False
@@ -495,7 +497,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtEmissao: TSMALL_DBEdit
           Left = 110
-          Top = 129
+          Top = 123
           Width = 94
           Height = 20
           AutoSize = False
@@ -516,7 +518,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtVencimento: TSMALL_DBEdit
           Left = 110
-          Top = 155
+          Top = 149
           Width = 94
           Height = 20
           AutoSize = False
@@ -537,7 +539,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtMovimento: TSMALL_DBEdit
           Left = 110
-          Top = 181
+          Top = 175
           Width = 94
           Height = 20
           AutoSize = False
@@ -558,7 +560,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtDtQuitacao: TSMALL_DBEdit
           Left = 110
-          Top = 207
+          Top = 201
           Width = 94
           Height = 20
           AutoSize = False
@@ -579,7 +581,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtValor: TSMALL_DBEdit
           Left = 110
-          Top = 233
+          Top = 227
           Width = 94
           Height = 20
           AutoSize = False
@@ -600,7 +602,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtPortador: TSMALL_DBEdit
           Left = 111
-          Top = 311
+          Top = 305
           Width = 313
           Height = 20
           AutoSize = False
@@ -621,7 +623,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtNotaFiscal: TSMALL_DBEdit
           Left = 110
-          Top = 389
+          Top = 383
           Width = 94
           Height = 20
           AutoSize = False
@@ -642,7 +644,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         inline fraCliente: TfFrameCampo
           Left = 110
-          Top = 103
+          Top = 97
           Width = 313
           Height = 20
           Color = clWhite
@@ -653,7 +655,7 @@ inherited FrmContaReceber: TFrmContaReceber
           TabOrder = 3
           OnExit = fraClienteExit
           ExplicitLeft = 110
-          ExplicitTop = 103
+          ExplicitTop = 97
           ExplicitWidth = 313
           inherited txtCampo: TEdit
             Width = 313
@@ -672,7 +674,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtValorQuitado: TSMALL_DBEdit
           Left = 110
-          Top = 259
+          Top = 253
           Width = 94
           Height = 20
           AutoSize = False
@@ -693,7 +695,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtValorAtual: TSMALL_DBEdit
           Left = 110
-          Top = 285
+          Top = 279
           Width = 94
           Height = 20
           AutoSize = False
@@ -714,7 +716,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtCodBarra: TSMALL_DBEdit
           Left = 110
-          Top = 337
+          Top = 331
           Width = 313
           Height = 20
           AutoSize = False
@@ -735,7 +737,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtNossoNum: TSMALL_DBEdit
           Left = 110
-          Top = 363
+          Top = 357
           Width = 313
           Height = 20
           AutoSize = False
@@ -756,8 +758,8 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         inline fraInstituicao: TfFrameCampo
           Left = 574
-          Top = 25
-          Width = 313
+          Top = 19
+          Width = 288
           Height = 20
           Color = clWhite
           Ctl3D = False
@@ -766,14 +768,14 @@ inherited FrmContaReceber: TFrmContaReceber
           ParentCtl3D = False
           TabOrder = 15
           ExplicitLeft = 574
-          ExplicitTop = 25
-          ExplicitWidth = 313
+          ExplicitTop = 19
+          ExplicitWidth = 288
           inherited txtCampo: TEdit
-            Width = 313
+            Width = 288
             ExplicitWidth = 313
           end
           inherited gdRegistros: TDBGrid
-            Width = 313
+            Width = 288
             Columns = <
               item
                 Expanded = False
@@ -785,8 +787,8 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         inline fraFormaPag: TfFrameCampo
           Left = 574
-          Top = 51
-          Width = 313
+          Top = 45
+          Width = 288
           Height = 20
           Color = clWhite
           Ctl3D = False
@@ -795,14 +797,14 @@ inherited FrmContaReceber: TFrmContaReceber
           ParentCtl3D = False
           TabOrder = 16
           ExplicitLeft = 574
-          ExplicitTop = 51
-          ExplicitWidth = 313
+          ExplicitTop = 45
+          ExplicitWidth = 288
           inherited txtCampo: TEdit
-            Width = 313
+            Width = 288
             ExplicitWidth = 313
           end
           inherited gdRegistros: TDBGrid
-            Width = 313
+            Width = 288
             Columns = <
               item
                 Expanded = False
@@ -814,7 +816,7 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtAutorizacao: TSMALL_DBEdit
           Left = 574
-          Top = 77
+          Top = 71
           Width = 94
           Height = 20
           AutoSize = False
@@ -835,8 +837,8 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtBandeira: TSMALL_DBEdit
           Left = 574
-          Top = 103
-          Width = 313
+          Top = 97
+          Width = 288
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -856,8 +858,8 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtContato: TSMALL_DBEdit
           Left = 574
-          Top = 129
-          Width = 313
+          Top = 123
+          Width = 288
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -877,8 +879,8 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtTelefone: TSMALL_DBEdit
           Left = 574
-          Top = 155
-          Width = 313
+          Top = 149
+          Width = 288
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -898,8 +900,8 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtCelular: TSMALL_DBEdit
           Left = 574
-          Top = 181
-          Width = 313
+          Top = 175
+          Width = 288
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -919,8 +921,8 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object edtEmail: TSMALL_DBEdit
           Left = 574
-          Top = 207
-          Width = 313
+          Top = 201
+          Width = 288
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -940,8 +942,8 @@ inherited FrmContaReceber: TFrmContaReceber
         end
         object memContatos: TDBMemo
           Left = 574
-          Top = 233
-          Width = 313
+          Top = 227
+          Width = 288
           Height = 176
           DataField = 'CONTATOS'
           DataSource = DSCliente

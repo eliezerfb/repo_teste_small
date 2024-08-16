@@ -93,11 +93,11 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_MajorVer>2024</VerInfo_MajorVer>
-        <VerInfo_Build>72</VerInfo_Build>
+        <VerInfo_Build>74</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.27.0.72;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.27.0.72;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.28.0.74;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.28.0.74;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
         <Manifest_File>xp.manifest</Manifest_File>
-        <VerInfo_MinorVer>27</VerInfo_MinorVer>
+        <VerInfo_MinorVer>28</VerInfo_MinorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -126,7 +126,7 @@
         <DCCReference Include="MAIS.PAS">
             <Form>Form1</Form>
         </DCCReference>
-        <DCCReference Include="MAIS3.PAS">
+        <DCCReference Include="Mais3.pas">
             <Form>Senhas</Form>
         </DCCReference>
         <DCCReference Include="UNIT2.PAS">
@@ -147,17 +147,11 @@
         <DCCReference Include="UNIT48.PAS">
             <Form>Form48</Form>
         </DCCReference>
-        <DCCReference Include="Unit10.pas">
-            <Form>Form10</Form>
-        </DCCReference>
         <DCCReference Include="Unit16.pas">
             <Form>Form16</Form>
         </DCCReference>
         <DCCReference Include="Unit17.pas">
             <Form>Form17</Form>
-        </DCCReference>
-        <DCCReference Include="unit99.pas">
-            <Form>Form99</Form>
         </DCCReference>
         <DCCReference Include="uFrmParcelas.pas">
             <Form>FrmParcelas</Form>
@@ -216,9 +210,6 @@
         <DCCReference Include="Unit13.pas">
             <Form>Form13</Form>
         </DCCReference>
-        <DCCReference Include="UNIT3.PAS">
-            <Form>Senhas2</Form>
-        </DCCReference>
         <DCCReference Include="unit24.pas">
             <Form>Form24</Form>
         </DCCReference>
@@ -233,9 +224,6 @@
         </DCCReference>
         <DCCReference Include="Unit35.pas">
             <Form>Form35</Form>
-        </DCCReference>
-        <DCCReference Include="Unit8.pas">
-            <Form>Form8</Form>
         </DCCReference>
         <DCCReference Include="uExportaXML.pas">
             <Form>frmExportaXML</Form>
@@ -520,7 +508,6 @@
         <DCCReference Include="units\uConsultaCEP.pas"/>
         <DCCReference Include="uFrmConversaoCFOP.pas">
             <Form>FrmConversaoCFOP</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uConfiguracaoTEFCommerce.pas">
             <Form>frmConfiguracaoTEFCommerce</Form>
@@ -539,40 +526,31 @@
         <DCCReference Include="units\uDuplicaNFSe.pas"/>
         <DCCReference Include="uFrmConvenio.pas">
             <Form>FrmConvenio</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmCaixa.pas">
             <Form>FrmCaixa</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmGrupoMercadoria.pas">
             <Form>FrmGrupoMercadoria</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmTransportadora.pas">
             <Form>FrmTransportadora</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmPlanoContas.pas">
             <Form>FrmPlanoContas</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmBanco.pas">
             <Form>FrmBanco</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmContaBancaria.pas">
             <Form>FrmContaBancaria</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\unit_compartilhada\uImpressoraSections.pas"/>
         <DCCReference Include="uFrmContaReceber.pas">
             <Form>FrmContaReceber</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmContaPagar.pas">
             <Form>FrmContaPagar</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmIntegracaoItau.pas">
             <Form>FrmIntegracaoItau</Form>
@@ -593,6 +571,13 @@
         <DCCReference Include="..\..\unit_compartilhada\Itau\uWebServiceItau.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uFrmTelaProcessamento.pas">
             <Form>FrmTelaProcessamento</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmEstoque.pas">
+            <Form>FrmEstoque</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmMsgNovoLayout.pas">
+            <Form>FrmMsgNovoLayout</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
@@ -615,6 +600,10 @@
                     <Source Name="MainSource">small22.dpr</Source>
                 </Source>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfrxPDF28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfrxPDF28.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsADO28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsADO28.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsIBX28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsIBX28.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
@@ -1438,11 +1427,11 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
@@ -2263,11 +2252,11 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>

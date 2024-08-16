@@ -189,8 +189,9 @@ var
 
 implementation
 
-uses Mais, Unit7, Unit12, Unit41, Unit19, Unit22, Unit24, Mais3, preco1,
-  Unit10, uTestaClienteDevendo, uFuncoesBancoDados, uFrmAnexosOS;
+uses Mais, Unit7, Unit12, Unit41, Unit19, Unit22, Unit24, Mais3, //preco1,
+  //Unit10,
+  uTestaClienteDevendo, uFuncoesBancoDados, uFrmAnexosOS;
 
 {$R *.dfm}
 

@@ -9,17 +9,17 @@ uses
   SysUtils,
   ShellApi,
   MAIS in 'MAIS.PAS' {Form1},
-  MAIS3 in 'MAIS3.PAS' {Senhas},
+  Mais3 in 'Mais3.pas' {Senhas},
   UNIT2 in 'UNIT2.PAS' {Form2},
   unit7 in 'unit7.pas' {Form7},
   UNIT9 in 'UNIT9.PAS' {Form9},
   UNIT14 in 'UNIT14.PAS' {Form14},
   UNIT12 in 'UNIT12.PAS' {Form12},
   UNIT48 in 'UNIT48.PAS' {Form48},
-  Unit10 in 'Unit10.pas' {Form10},
+  //Unit10 in 'Unit10.pas' {Form10},
   Unit16 in 'Unit16.pas' {Form16},
   Unit17 in 'Unit17.pas' {Form17},
-  unit99 in 'unit99.pas' {Form99},
+  //unit99 in 'unit99.pas' {Form99},
   uFrmParcelas in 'uFrmParcelas.pas' {FrmParcelas},
   Unit19 in 'Unit19.pas' {Form19},
   uFrmAssistenteProcura in 'uFrmAssistenteProcura.pas' {FrmAssistenteProcura},
@@ -39,13 +39,12 @@ uses
   Unit43 in 'Unit43.pas' {Form43},
   Unit4 in 'Unit4.pas' {Form4},
   Unit13 in 'Unit13.pas' {Form13},
-  UNIT3 in 'UNIT3.PAS' {Senhas2},
+  //UNIT3 in 'UNIT3.PAS' {Senhas2},
   unit24 in 'unit24.pas' {Form24},
   Unit30 in 'Unit30.pas' {Form30},
   Unit40 in 'Unit40.pas' {Form40},
   Unit15 in 'Unit15.pas' {Form15},
   Unit35 in 'Unit35.pas' {Form35},
-  Unit8 in 'Unit8.pas' {Form8},
   uExportaXML in 'uExportaXML.pas' {frmExportaXML},
   SelecionaCertificado in 'SelecionaCertificado.pas' {frmSelectCertificate},
   Unit23 in 'Unit23.pas' {Form23},
@@ -264,11 +263,13 @@ uses
   uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
   uFrmTecnico in 'uFrmTecnico.pas' {FrmTecnico},
   uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas',
-  uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas',
+  uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas',  
   uIntegracaoItau in '..\..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\..\unit_compartilhada\Itau\uClassesItau.pas',
   uWebServiceItau in '..\..\unit_compartilhada\Itau\uWebServiceItau.pas',
-  uFrmTelaProcessamento in '..\..\unit_compartilhada\uFrmTelaProcessamento.pas' {FrmTelaProcessamento};
+  uFrmTelaProcessamento in '..\..\unit_compartilhada\uFrmTelaProcessamento.pas' {FrmTelaProcessamento},
+  uFrmEstoque in 'uFrmEstoque.pas' {FrmEstoque},
+  uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout};
 
 {$R *.RES}
 
@@ -303,6 +304,9 @@ begin
   //ReportMemoryLeaksOnShutdown := True;
   {$ENDIF}
 
+  //Mauricio Parizotto 2024-08-08
+  Application.HintHidePause := 6000;
+
   oHwnd := FindWindowCaptionParcial('Small Commerce - [ ');
 
   if oHwnd = 0 then
@@ -328,58 +332,57 @@ begin
       Form22.Update;
 
       Application.Title := 'Small Commerce';
-
       Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TForm2, Form2);
-  Application.CreateForm(TSenhas, Senhas);
-  Application.CreateForm(TSenhas2, Senhas2);
-  Application.CreateForm(TForm24, Form24);
-  Application.CreateForm(TForm30, Form30);
-  Application.CreateForm(TSenhas2, Senhas2);
-  Application.CreateForm(TForm7, Form7);
-  Application.CreateForm(TForm9, Form9);
-  Application.CreateForm(TForm14, Form14);
-  Application.CreateForm(TForm19, Form19);
-  Application.CreateForm(TForm12, Form12);
-  Application.CreateForm(TForm48, Form48);
-  Application.CreateForm(TForm10, Form10);
-  Application.CreateForm(TForm16, Form16);
-  Application.CreateForm(TForm99, Form99);
-  Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
-  Application.CreateForm(TForm21, Form21);
-  Application.CreateForm(TForm25, Form25);
-  Application.CreateForm(TForm26, Form26);
-  Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
-  Application.CreateForm(TForm31, Form31);
-  //Application.CreateForm(TForm32, Form32); Mauricio Parizotto 2024-05-07
-  Application.CreateForm(TForm38, Form38);
-  Application.CreateForm(TForm39, Form39);
-  Application.CreateForm(TForm41, Form41);
-  Application.CreateForm(TForm43, Form43);
-  Application.CreateForm(TForm4, Form4);
-  Application.CreateForm(TForm13, Form13);
-  Application.CreateForm(TForm40, Form40);
-  Application.CreateForm(TForm15, Form15);
-  Application.CreateForm(TForm35, Form35);
-  Application.CreateForm(TForm8, Form8);
-  Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
-  Application.CreateForm(TForm6, Form6);
-  Application.CreateForm(TForm11, Form11);
-  Application.CreateForm(TForm36, Form36);
-  Application.CreateForm(TForm5, Form5);
-  Application.CreateForm(TForm29, Form29);
-  Application.CreateForm(TForm45, Form45);
-  Application.CreateForm(TForm37, Form37);
-  Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
-  Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
-  Application.Run;
+      Application.CreateForm(TForm2, Form2);
+      Application.CreateForm(TSenhas, Senhas);
+      //Application.CreateForm(TSenhas2, Senhas2);
+      Application.CreateForm(TForm24, Form24);
+      Application.CreateForm(TForm30, Form30);
+      Application.CreateForm(TForm7, Form7);
+      Application.CreateForm(TForm9, Form9);
+      Application.CreateForm(TForm14, Form14);
+      Application.CreateForm(TForm19, Form19);
+      Application.CreateForm(TForm12, Form12);
+      Application.CreateForm(TForm48, Form48);
+      //Application.CreateForm(TForm10, Form10); Mauricio Parizotto 2024-07-17
+      Application.CreateForm(TForm16, Form16);
+      //Application.CreateForm(TForm99, Form99);
+      Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
+      Application.CreateForm(TForm21, Form21);
+      Application.CreateForm(TForm25, Form25);
+      Application.CreateForm(TForm26, Form26);
+      Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
+      Application.CreateForm(TForm31, Form31);
+      Application.CreateForm(TForm38, Form38);
+      Application.CreateForm(TForm39, Form39);
+      Application.CreateForm(TForm41, Form41);
+      Application.CreateForm(TForm43, Form43);
+      Application.CreateForm(TForm4, Form4);
+      Application.CreateForm(TForm13, Form13);
+      Application.CreateForm(TForm40, Form40);
+      Application.CreateForm(TForm15, Form15);
+      Application.CreateForm(TForm35, Form35);
+      //Application.CreateForm(TForm8, Form8);
+      Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
+      Application.CreateForm(TForm6, Form6);
+      Application.CreateForm(TForm11, Form11);
+      Application.CreateForm(TForm36, Form36);
+      Application.CreateForm(TForm5, Form5);
+      Application.CreateForm(TForm29, Form29);
+      Application.CreateForm(TForm45, Form45);
+      Application.CreateForm(TForm37, Form37);
+      Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
+      Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
+      Application.Run;
     end else
     begin
       if not IsWindowVisible(oHwnd) then PostMessage(oHwnd, wm_User,0,0);
       SetForegroundWindow(oHwnd);
     end;
   except
-    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+    Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+    Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+    Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
 end.

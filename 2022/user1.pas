@@ -3,7 +3,7 @@ unit user1;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, IniFiles, SmallFunc,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, IniFiles, SmallFunc_xe,
   ExtCtrls, StdCtrls;
 
 type

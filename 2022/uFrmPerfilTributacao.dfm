@@ -4,8 +4,14 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
+    inherited Panel8: TPanel
+      ExplicitLeft = 822
+    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsPerfilTributacao
+      ExplicitLeft = 20
+      ExplicitWidth = 802
+      ExplicitHeight = 453
       object tbsPerfilTributacao: TTabSheet
         Caption = 'Perfil Tributa'#231#227'o'
         OnEnter = tbsIPIEnter
@@ -270,7 +276,7 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
         end
         object lblAtencaoPerfilTrib: TLabel
           Left = 18
-          Top = 417
+          Top = 401
           Width = 703
           Height = 13
           AutoSize = False
@@ -723,7 +729,7 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
         end
         object lbAtencaoIPI: TLabel
           Left = 18
-          Top = 417
+          Top = 401
           Width = 703
           Height = 13
           AutoSize = False
@@ -815,7 +821,7 @@ inherited FrmPerfilTributacao: TFrmPerfilTributacao
         OnShow = tbsIPIShow
         object lbAtencaoPisCofins: TLabel
           Left = 18
-          Top = 417
+          Top = 401
           Width = 703
           Height = 13
           AutoSize = False

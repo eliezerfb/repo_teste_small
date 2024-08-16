@@ -102,7 +102,7 @@ begin
         Form7.IbDatabase1.Open;
         Form7.IBTransaction1.Active := True;
       except
-        Mensagem22('Aguarde instalando arquivos de atualização (10)...');
+        Mensagem22('Instalando arquivos de atualização (10)...');
 
         while FileExists(Form1.sAtual+'\firebird.exe') do
         begin
@@ -128,7 +128,6 @@ begin
           Sleep(100);
         end;
 
-        Form22.Image1.Visible := False;
         Mensagem22('');
         Form22.Repaint;
         Sleep(1000);
@@ -146,7 +145,6 @@ begin
           Sleep(1000);
         end;
 
-        Form22.Image1.Visible := True;
         Form22.Repaint;
 
         try

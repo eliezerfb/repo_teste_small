@@ -12,7 +12,6 @@ object FrmPadrao: TFrmPadrao
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
-  OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 16
 end

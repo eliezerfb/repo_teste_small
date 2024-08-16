@@ -5,8 +5,14 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
+    inherited Panel8: TPanel
+      ExplicitLeft = 822
+    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
+      ExplicitLeft = 20
+      ExplicitWidth = 802
+      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label1: TLabel
@@ -21,7 +27,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
         object gbPisCofinsEntrada: TGroupBox
           Left = 10
           Top = 22
-          Width = 795
+          Width = 770
           Height = 177
           Caption = 'XML de entrada'
           TabOrder = 0
@@ -318,8 +324,8 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
         object GroupBox1: TGroupBox
           Left = 10
           Top = 204
-          Width = 795
-          Height = 231
+          Width = 770
+          Height = 216
           Caption = 'Cadastro no estoque'
           TabOrder = 1
           object Label3: TLabel
@@ -342,7 +348,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object Label119: TLabel
             Left = 10
-            Top = 49
+            Top = 46
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -357,7 +363,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object Label113: TLabel
             Left = 10
-            Top = 65
+            Top = 62
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -375,7 +381,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object Label114: TLabel
             Left = 10
-            Top = 81
+            Top = 78
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -393,7 +399,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object Label115: TLabel
             Left = 10
-            Top = 97
+            Top = 94
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -411,7 +417,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object Label120: TLabel
             Left = 10
-            Top = 113
+            Top = 110
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -429,7 +435,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object Label116: TLabel
             Left = 10
-            Top = 147
+            Top = 144
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -447,7 +453,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object lblCSOSNPerfilTrib: TLabel
             Left = 10
-            Top = 130
+            Top = 127
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -465,7 +471,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object lblCSTPerfilTrib: TLabel
             Left = 10
-            Top = 130
+            Top = 127
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -483,7 +489,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object lblCFOPNfce: TLabel
             Left = 10
-            Top = 164
+            Top = 161
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -501,7 +507,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object lblCSOSN_NFCePerfilTrib: TLabel
             Left = 10
-            Top = 181
+            Top = 178
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -519,7 +525,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object lblCST_NFCePerfilTrib: TLabel
             Left = 10
-            Top = 181
+            Top = 178
             Width = 95
             Height = 18
             Alignment = taRightJustify
@@ -537,7 +543,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object lblAliqNFCEPerfilTrib: TLabel
             Left = 10
-            Top = 198
+            Top = 195
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -555,7 +561,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object DBText1: TDBText
             Left = 113
-            Top = 49
+            Top = 46
             Width = 273
             Height = 17
             DataField = 'TIPO_ITEM'
@@ -569,7 +575,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object DBText2: TDBText
             Left = 113
-            Top = 65
+            Top = 62
             Width = 273
             Height = 17
             DataField = 'IPPT'
@@ -583,7 +589,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object DBText3: TDBText
             Left = 113
-            Top = 81
+            Top = 78
             Width = 225
             Height = 17
             DataField = 'IAT'
@@ -597,7 +603,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object DBText4: TDBText
             Left = 113
-            Top = 97
+            Top = 94
             Width = 225
             Height = 17
             DataField = 'PIVA'
@@ -611,7 +617,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object DBText5: TDBText
             Left = 113
-            Top = 113
+            Top = 110
             Width = 273
             Height = 17
             DataField = 'ORIGEM'
@@ -625,7 +631,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object descCSTPerfilTrib: TDBText
             Left = 113
-            Top = 130
+            Top = 127
             Width = 225
             Height = 17
             DataField = 'CST'
@@ -639,7 +645,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object descCSOSNPerfilTrib: TDBText
             Left = 112
-            Top = 130
+            Top = 127
             Width = 225
             Height = 17
             DataField = 'CSOSN'
@@ -653,7 +659,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object DBText8: TDBText
             Left = 113
-            Top = 147
+            Top = 144
             Width = 225
             Height = 17
             DataField = 'ST'
@@ -667,7 +673,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object DBText9: TDBText
             Left = 113
-            Top = 164
+            Top = 161
             Width = 273
             Height = 17
             DataField = 'CFOP'
@@ -681,7 +687,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object descCST_NFCePerfilTrib: TDBText
             Left = 113
-            Top = 181
+            Top = 178
             Width = 273
             Height = 17
             DataField = 'CST_NFCE'
@@ -695,7 +701,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object DBText11: TDBText
             Left = 113
-            Top = 198
+            Top = 195
             Width = 273
             Height = 17
             DataField = 'ALIQUOTA_NFCE'
@@ -709,7 +715,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object descCSOSN_NFCePerfilTrib: TDBText
             Left = 113
-            Top = 181
+            Top = 178
             Width = 225
             Height = 17
             DataField = 'CSOSN_NFCE'
@@ -723,7 +729,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object Label10: TLabel
             Left = 412
-            Top = 51
+            Top = 48
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -738,7 +744,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object Label11: TLabel
             Left = 412
-            Top = 67
+            Top = 64
             Width = 95
             Height = 13
             Alignment = taRightJustify
@@ -756,7 +762,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object Label12: TLabel
             Left = 400
-            Top = 83
+            Top = 80
             Width = 107
             Height = 13
             Alignment = taRightJustify
@@ -774,7 +780,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object DBText13: TDBText
             Left = 516
-            Top = 51
+            Top = 48
             Width = 257
             Height = 17
             DataField = 'CST_IPI'
@@ -788,7 +794,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object DBText14: TDBText
             Left = 516
-            Top = 67
+            Top = 64
             Width = 257
             Height = 17
             DataField = 'IPI'
@@ -802,7 +808,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object DBText15: TDBText
             Left = 516
-            Top = 83
+            Top = 80
             Width = 257
             Height = 17
             DataField = 'ENQ_IPI'
@@ -818,7 +824,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Left = 104
             Top = 19
             Width = 390
-            Height = 22
+            Height = 20
             Color = clWhite
             Ctl3D = False
             ParentBackground = False
@@ -842,14 +848,14 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object GroupBox2: TGroupBox
             Left = 394
-            Top = 98
-            Width = 388
-            Height = 59
+            Top = 95
+            Width = 366
+            Height = 55
             Caption = 'Sa'#237'da'
             TabOrder = 1
             object Label4: TLabel
-              Left = 19
-              Top = 13
+              Left = 50
+              Top = 11
               Width = 95
               Height = 13
               Alignment = taRightJustify
@@ -863,8 +869,8 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               ParentFont = False
             end
             object Label5: TLabel
-              Left = 19
-              Top = 27
+              Left = 50
+              Top = 25
               Width = 95
               Height = 13
               Alignment = taRightJustify
@@ -881,8 +887,8 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               Transparent = True
             end
             object Label6: TLabel
-              Left = 19
-              Top = 41
+              Left = 50
+              Top = 39
               Width = 95
               Height = 13
               Alignment = taRightJustify
@@ -899,9 +905,9 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               Transparent = True
             end
             object DBText16: TDBText
-              Left = 122
-              Top = 41
-              Width = 257
+              Left = 153
+              Top = 39
+              Width = 206
               Height = 16
               DataField = 'ALIQ_COFINS_SAIDA'
               DataSource = DSPerfilTrib
@@ -913,9 +919,9 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               ParentFont = False
             end
             object DBText17: TDBText
-              Left = 122
-              Top = 13
-              Width = 257
+              Left = 153
+              Top = 11
+              Width = 206
               Height = 16
               DataField = 'CST_PIS_COFINS_SAIDA'
               DataSource = DSPerfilTrib
@@ -927,9 +933,9 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               ParentFont = False
             end
             object DBText18: TDBText
-              Left = 122
-              Top = 27
-              Width = 257
+              Left = 153
+              Top = 25
+              Width = 206
               Height = 16
               DataField = 'ALIQ_PIS_SAIDA'
               DataSource = DSPerfilTrib
@@ -943,14 +949,14 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
           end
           object GroupBox3: TGroupBox
             Left = 395
-            Top = 159
-            Width = 387
-            Height = 59
+            Top = 151
+            Width = 365
+            Height = 55
             Caption = 'Entrada'
             TabOrder = 2
             object Label7: TLabel
-              Left = 19
-              Top = 13
+              Left = 49
+              Top = 10
               Width = 95
               Height = 13
               Alignment = taRightJustify
@@ -964,8 +970,8 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               ParentFont = False
             end
             object Label8: TLabel
-              Left = 19
-              Top = 27
+              Left = 49
+              Top = 24
               Width = 95
               Height = 13
               Alignment = taRightJustify
@@ -982,8 +988,8 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               Transparent = True
             end
             object Label9: TLabel
-              Left = 19
-              Top = 41
+              Left = 49
+              Top = 38
               Width = 95
               Height = 13
               Alignment = taRightJustify
@@ -1000,9 +1006,9 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               Transparent = True
             end
             object DBText19: TDBText
-              Left = 122
-              Top = 13
-              Width = 257
+              Left = 152
+              Top = 10
+              Width = 206
               Height = 16
               DataField = 'CST_PIS_COFINS_ENTRADA'
               DataSource = DSPerfilTrib
@@ -1014,9 +1020,9 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               ParentFont = False
             end
             object DBText20: TDBText
-              Left = 122
-              Top = 27
-              Width = 257
+              Left = 152
+              Top = 24
+              Width = 206
               Height = 16
               DataField = 'ALIQ_PIS_ENTRADA'
               DataSource = DSPerfilTrib
@@ -1028,9 +1034,9 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
               ParentFont = False
             end
             object DBText21: TDBText
-              Left = 122
-              Top = 41
-              Width = 257
+              Left = 152
+              Top = 38
+              Width = 206
               Height = 16
               DataField = 'ALIQ_COFINS_ENTRADA'
               DataSource = DSPerfilTrib
