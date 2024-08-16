@@ -2031,7 +2031,9 @@ begin
   end;
   {$Endregion}
 
-  if Form7.ibDataSet13CRT.AsString = '1' then
+  //if Form7.ibDataSet13CRT.AsString = '1' then Mauricio Parizotto 2024-08-16
+  if (Form7.ibDataSet13CRT.AsString = '1')
+    or (Form7.ibDataSet13CRT.AsString = '4') then
   begin
     Label36.Visible          := True;
     cboCSOSN_Prod.Visible    := True;
