@@ -5,7 +5,7 @@ object FEmissorNFSe: TFEmissorNFSe
   Height = 400
   HorzScrollBar.Visible = False
   VertScrollBar.Visible = False
-  Caption = 'nn'
+  Caption = 'Nota Fiscal de Servi'#231'os Eletr'#244'nica (NFS-e)'
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

@@ -10944,6 +10944,9 @@ begin
   if Form7.sModulo = 'CLIENTES' then
    Exit;
 
+  //Mauricio Parizotto 2024-08-08
+  if Form7.sModulo = 'TECNICO' then
+   Exit;
 
   if AllTrim(Form7.sModulo) <> '' then
   begin
@@ -11551,6 +11554,10 @@ begin
   //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'PERFILTRIBUTACAO' then
     Exit;
+
+  //Mauricio Parizotto 2024-0808
+  if Form7.sModulo = 'TECNICO' then
+   Exit;
 
   //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'ICM' then
