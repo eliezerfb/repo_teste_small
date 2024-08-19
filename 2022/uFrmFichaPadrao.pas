@@ -81,7 +81,7 @@ uses uIconesSistema
     , uFrmAssistenteProcura
     , uVisualizaCadastro
     , uFuncoesBancoDados
-    , smallfunc_xe;
+    , smallfunc_xe, unit7;
 
 {$R *.dfm}
 
@@ -282,6 +282,31 @@ begin
     end;
 
     DSCadastro.DataSet.EnableControls;
+  end;
+
+  //Mauricio Parizotto 2024-08-12
+  if bEstaSendoUsado then
+  //Faz commit e testa novamente
+  begin
+    try
+      AgendaCommit(True);
+      Form7.Close;
+      Form7.Show;
+
+      Self.BringToFront;
+
+      try
+        DSCadastro.DataSet.DisableControls;
+        DSCadastro.DataSet.Edit;
+        DSCadastro.DataSet.Post;
+        bEstaSendoUsado := False;
+      except
+        bEstaSendoUsado := True;
+      end;
+
+      DSCadastro.DataSet.EnableControls;
+    except
+    end;
   end;
 
   VerificandoUso := False;

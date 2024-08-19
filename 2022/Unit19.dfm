@@ -5,8 +5,8 @@ object Form19: TForm19
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Configura'#231#245'es e ajustes do sistema'
-  ClientHeight = 621
-  ClientWidth = 811
+  ClientHeight = 629
+  ClientWidth = 813
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -24,10 +24,10 @@ object Form19: TForm19
   PixelsPerInch = 96
   TextHeight = 13
   object Orelhas: TPageControl
-    Left = 10
+    Left = 20
     Top = 20
-    Width = 791
-    Height = 561
+    Width = 773
+    Height = 546
     ActivePage = Orelha_relatorios
     Align = alClient
     TabOrder = 0
@@ -282,6 +282,42 @@ object Form19: TForm19
             Text = '00004'
             OnEnter = Edit8Enter
           end
+        end
+      end
+    end
+    object tbsTema: TTabSheet
+      Caption = 'Tema'
+      ImageIndex = 10
+      object gbTema: TGroupBox
+        Left = 15
+        Top = 15
+        Width = 213
+        Height = 68
+        TabOrder = 0
+        object rbClassico: TRadioButton
+          Left = 8
+          Top = 13
+          Width = 113
+          Height = 17
+          Caption = 'Cl'#225'ssico'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+          OnClick = rbClassicoClick
+          OnKeyDown = FormKeyDown
+        end
+        object rbModerno: TRadioButton
+          Left = 8
+          Top = 36
+          Width = 113
+          Height = 21
+          Caption = 'Moderno'
+          Checked = True
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+          TabStop = True
+          OnKeyDown = FormKeyDown
         end
       end
     end
@@ -1355,7 +1391,7 @@ object Form19: TForm19
       Caption = 'e-mail'
       ImageIndex = 9
       object Label1: TLabel
-        Left = 135
+        Left = 15
         Top = 30
         Width = 259
         Height = 13
@@ -1363,7 +1399,7 @@ object Form19: TForm19
         Caption = 'Servidor de sa'#237'da de e-mails  (smtp.seudominio.com.br)'
       end
       object Label3: TLabel
-        Left = 164
+        Left = 44
         Top = 60
         Width = 230
         Height = 13
@@ -1371,7 +1407,7 @@ object Form19: TForm19
         Caption = 'Login do usu'#225'rio: (seuemail@seudominio.com.br)'
       end
       object Label10: TLabel
-        Left = 345
+        Left = 225
         Top = 90
         Width = 49
         Height = 13
@@ -1379,7 +1415,7 @@ object Form19: TForm19
         Caption = 'Porta: (25)'
       end
       object Label24: TLabel
-        Left = 215
+        Left = 95
         Top = 122
         Width = 179
         Height = 13
@@ -1387,7 +1423,7 @@ object Form19: TForm19
         Caption = 'e-mail: (seuemail@seudominio.com.br)'
       end
       object Label25: TLabel
-        Left = 328
+        Left = 208
         Top = 154
         Width = 66
         Height = 13
@@ -1395,7 +1431,7 @@ object Form19: TForm19
         Caption = 'Nome: (nome)'
       end
       object Label15: TLabel
-        Left = 360
+        Left = 240
         Top = 186
         Width = 34
         Height = 13
@@ -1403,7 +1439,7 @@ object Form19: TForm19
         Caption = 'Senha:'
       end
       object Edit1: TEdit
-        Left = 400
+        Left = 280
         Top = 30
         Width = 185
         Height = 19
@@ -1413,7 +1449,7 @@ object Form19: TForm19
         OnKeyDown = Edit1KeyDown
       end
       object Edit2: TEdit
-        Left = 400
+        Left = 280
         Top = 60
         Width = 185
         Height = 19
@@ -1423,7 +1459,7 @@ object Form19: TForm19
         OnKeyDown = Edit1KeyDown
       end
       object Edit3: TEdit
-        Left = 400
+        Left = 280
         Top = 90
         Width = 185
         Height = 19
@@ -1433,7 +1469,7 @@ object Form19: TForm19
         OnKeyDown = Edit1KeyDown
       end
       object Edit4: TEdit
-        Left = 400
+        Left = 280
         Top = 122
         Width = 185
         Height = 19
@@ -1443,7 +1479,7 @@ object Form19: TForm19
         OnKeyDown = Edit1KeyDown
       end
       object Edit5: TEdit
-        Left = 400
+        Left = 280
         Top = 154
         Width = 185
         Height = 19
@@ -1453,7 +1489,7 @@ object Form19: TForm19
         OnKeyDown = Edit1KeyDown
       end
       object Edit6: TEdit
-        Left = 400
+        Left = 280
         Top = 186
         Width = 185
         Height = 19
@@ -1464,7 +1500,7 @@ object Form19: TForm19
         OnKeyDown = Edit1KeyDown
       end
       object CheckBox3: TCheckBox
-        Left = 135
+        Left = 15
         Top = 224
         Width = 278
         Height = 17
@@ -1477,8 +1513,8 @@ object Form19: TForm19
   object Panel2: TPanel
     Left = 0
     Top = 20
-    Width = 10
-    Height = 561
+    Width = 20
+    Height = 546
     Align = alLeft
     BevelOuter = bvNone
     Color = clWhite
@@ -1496,10 +1532,10 @@ object Form19: TForm19
     end
   end
   object Panel4: TPanel
-    Left = 801
+    Left = 793
     Top = 20
-    Width = 10
-    Height = 561
+    Width = 20
+    Height = 546
     Align = alRight
     BevelOuter = bvNone
     Color = clWhite
@@ -1518,9 +1554,9 @@ object Form19: TForm19
   end
   object Panel3: TPanel
     Left = 0
-    Top = 581
-    Width = 811
-    Height = 40
+    Top = 566
+    Width = 813
+    Height = 63
     Align = alBottom
     BevelOuter = bvNone
     Color = clWhite
@@ -1528,9 +1564,9 @@ object Form19: TForm19
     ParentCtl3D = False
     TabOrder = 3
     object btnCancelar: TButton
-      Left = 556
-      Top = 10
-      Width = 120
+      Left = 588
+      Top = 19
+      Width = 100
       Height = 25
       Caption = 'Cancelar'
       Font.Charset = DEFAULT_CHARSET
@@ -1544,9 +1580,9 @@ object Form19: TForm19
       OnKeyDown = btnOKKeyDown
     end
     object btnOK: TButton
-      Left = 681
-      Top = 10
-      Width = 120
+      Left = 692
+      Top = 19
+      Width = 100
       Height = 25
       Caption = 'OK'
       Font.Charset = DEFAULT_CHARSET
@@ -1563,7 +1599,7 @@ object Form19: TForm19
   object Panel5: TPanel
     Left = 0
     Top = 0
-    Width = 811
+    Width = 813
     Height = 20
     Align = alTop
     BevelOuter = bvNone

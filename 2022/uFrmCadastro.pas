@@ -243,7 +243,9 @@ var
 begin
   with Sender as TLabel do
   begin
+    FrmCadastro.SendToBack; //Mauricio Parizotto 2024-08-15
     sNome   := StrTran(Trim(Form1.Small_InputForm('Personalização do sistema','Nome do campo:',Caption)),':','');
+    FrmCadastro.BringToFront;
     Caption := sNome+':';
     Repaint;
 

@@ -302,7 +302,9 @@ var
 
 implementation
 
-uses Unit7, Unit10, Mais, uFrmParcelas, Unit41, Unit43, Unit19,
+uses Unit7
+//  , Unit10
+  , Mais, uFrmParcelas, Unit41, Unit43, Unit19,
   Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
   uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
   ufrmPesquisaOrdemServico, uDialogs;
@@ -3097,8 +3099,8 @@ end;
 
 procedure TForm12.Edit6Click(Sender: TObject);
 begin
-  //
-  Edit6.Text := LimpaNumero(Form1.Small_InputForm('Indicador de presença','Indicador de presença do comprador no estabelecimento comercial no momento da operação:'+chr(10)+chr(10)+
+  //Edit6.Text := LimpaNumero(Form1.Small_InputForm('Indicador de presença','Indicador de presença do comprador no estabelecimento comercial no momento da operação:'+chr(10)+chr(10)+ Mauricio Parizotto 2024-08-08
+  Edit6.Text := LimpaNumero(Form1.Small_InputForm('Indicador de presença do comprador no estabelecimento comercial no momento da operação:',//+chr(10)+chr(10)+
                 '0=Não se aplica (por exemplo, para a Nota Fiscal complementar ou de ajuste);'+chr(10)+
                 '1=Operação presencial;'+chr(10)+
                 '2=Operação não presencial, pela Internet;'+chr(10)+
@@ -3106,7 +3108,7 @@ begin
                 '4=NFC-e em operação com entrega em domicílio;'+chr(10)+
                 '5=Operação presencial fora do estabelecimento;'+chr(10)+
                 '9=Operação não presencial, outros.',LimpaNumero(Edit6.Text)));
-  //
+
   if (LimpaNumero(Edit6.Text) = '0') then
   begin
     Edit6.Text := '0=Não se aplica';
@@ -3144,18 +3146,18 @@ begin
       end;
     end;
   end;
-  //
+
   mkp(True);
-  //
+
   if Form7.ibDataSet15INDPRES.AsString  <> LimpaNumero(Edit6.Text) then
     Form7.ibDataSet15INDPRES.AsString  := LimpaNumero(Edit6.Text);
-  //
+
   try
     Form12.SMALL_DBEdit40.SetFocus;
-  except end;
-  //
+  except
+  end;
+
   // Indicador de presença do comprador no estabelecimento comercial no momento da operação
-  //
 end;
 
 procedure TForm12.PopupMenu3Change(Sender: TObject; Source: TMenuItem;

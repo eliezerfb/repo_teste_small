@@ -826,9 +826,9 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
     end
     object pnlBotoesPosterior: TPanel
       Left = 0
-      Top = 570
-      Width = 840
-      Height = 40
+      Top = 558
+      Width = 842
+      Height = 60
       Align = alBottom
       BevelOuter = bvNone
       Color = clWhite
@@ -841,15 +841,15 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ExplicitTop = 578
       ExplicitWidth = 842
       DesignSize = (
-        840
-        40)
+        842
+        60)
       object btnOK: TBitBtn
-        Left = 710
-        Top = 8
-        Width = 120
+        Left = 723
+        Top = 16
+        Width = 100
         Height = 25
         Anchors = [akRight, akBottom]
-        Caption = '&Ok'
+        Caption = '&OK'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -864,8 +864,8 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
     object Panel1: TPanel
       Left = 0
       Top = 105
-      Width = 10
-      Height = 465
+      Width = 20
+      Height = 453
       Align = alLeft
       BevelOuter = bvNone
       Color = clWhite
@@ -884,10 +884,10 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       end
     end
     object Panel8: TPanel
-      Left = 830
+      Left = 822
       Top = 105
-      Width = 10
-      Height = 465
+      Width = 20
+      Height = 453
       Align = alRight
       BevelOuter = bvNone
       Color = clWhite
@@ -907,10 +907,10 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       end
     end
     object pgcFicha: TPageControl
-      Left = 10
+      Left = 20
       Top = 105
-      Width = 820
-      Height = 465
+      Width = 802
+      Height = 453
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText

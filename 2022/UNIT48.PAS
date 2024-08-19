@@ -137,7 +137,9 @@ var
 
 implementation
 
-uses Unit7, Unit10, Mais, uFrmParcelas, Unit41, Unit43, Unit19,
+uses Unit7
+//  , Unit10
+  , Mais, uFrmParcelas, Unit41, Unit43, Unit19,
   Unit24, uTransmiteNFSe, uFrmPesquisaOrcamento, uFrmPesquisaOrdemServico,
   uImportaOrcamento, uImportaOrdemServico;
 
