@@ -43,7 +43,6 @@ type
     Label49: TLabel;
     cbLayoutNFSe: TComboBox;
     Label3: TLabel;
-    lbCertificado1: TLabel;
     mmCertificado: TMemo;
     btnSelecionaCertificado: TBitBtn;
     BitBtn1: TBitBtn;
@@ -107,11 +106,6 @@ begin
   frmSelecionaCertificadoNFSe.ShowModal;
   FreeAndNil(frmSelecionaCertificadoNFSe);
 
-  {
-  mmCertificado.Clear;
-  mmCertificado.Text := Ini.ReadString('Certificado', 'NumSerie',   '');
-  mmCertificado.Lines.Add(Ini.ReadString('Certificado', 'NomeCertificado', ''));
-  }
   LerConfiguracao;
 end;
 
@@ -202,8 +196,6 @@ begin
   inherited;
   Application.CreateForm(TfrmSelecionaCertificadoNFSe, frmSelecionaCertificadoNFSe);
   frmSelecionaCertificadoNFSe.ShowModal;
-  //edSubjectNameCertificado.Text := frmSelecionaCertificadoNFSe.SelectedCertificateName;
-  //edtNumSerie.Text := frmSelecionaCertificadoNFSe.SelectedCertificateNumSerie;
   FreeAndNil(frmSelecionaCertificadoNFSe);
 end;
 
@@ -220,17 +212,9 @@ begin
   FreeAndNil(NFSe);
 
   cbSSLLib.ItemIndex     := Ini.ReadInteger('Certificado', 'SSLLib',     4);
-
   cbCryptLib.ItemIndex   := Ini.ReadInteger('Certificado', 'CryptLib',   3);
   cbHttpLib.ItemIndex    := Ini.ReadInteger('Certificado', 'HttpLib',    2);
   cbXmlSignLib.ItemIndex := Ini.ReadInteger('Certificado', 'XmlSignLib', 0);
-  //edtNumSerie.Text       := Ini.ReadString('Certificado', 'NumSerie',   '');
-  //edSubjectNameCertificado.Text := Ini.ReadString('Certificado', 'NomeCertificado', '');
-
-  {
-  lbCertificado.Caption := Ini.ReadString('Certificado', 'NumSerie',   '') + ' ' + #13 +
-                           Ini.ReadString('Certificado', 'NomeCertificado', '');
-  }
 
   mmCertificado.Clear;
   mmCertificado.Text := Ini.ReadString('Certificado', 'NumSerie',   '');

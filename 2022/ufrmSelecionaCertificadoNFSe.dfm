@@ -4,7 +4,7 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
   BorderIcons = []
   Caption = 'Selecione o certificado'
   ClientHeight = 377
-  ClientWidth = 590
+  ClientWidth = 598
   Color = clWindow
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -18,11 +18,11 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
   OnShow = FormShow
   PixelsPerInch = 96
   DesignSize = (
-    590
+    598
     377)
   TextHeight = 16
   object btnRemove: TBitBtn
-    Left = 107
+    Left = 115
     Top = 352
     Width = 100
     Height = 22
@@ -31,9 +31,10 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
     ModalResult = 1
     TabOrder = 0
     Visible = False
+    ExplicitLeft = 107
   end
   object btnSelect: TBitBtn
-    Left = 384
+    Left = 390
     Top = 352
     Width = 100
     Height = 22
@@ -44,7 +45,7 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
     OnClick = btnSelectClick
   end
   object btnCancel: TBitBtn
-    Left = 487
+    Left = 493
     Top = 352
     Width = 100
     Height = 22
@@ -55,9 +56,9 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
     TabOrder = 2
   end
   object Panel1: TPanel
-    Left = 20
+    Left = 4
     Top = 0
-    Width = 587
+    Width = 589
     Height = 346
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelInner = bvRaised
@@ -67,20 +68,20 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
     object dbcgCertificados: TDBCtrlGrid
       Left = 2
       Top = 2
-      Width = 583
+      Width = 585
       Height = 342
       Align = alClient
       AllowDelete = False
       AllowInsert = False
       DataSource = DSCertificados
       PanelHeight = 57
-      PanelWidth = 566
+      PanelWidth = 568
       TabOrder = 0
       RowCount = 6
       SelectedColor = 14120960
       OnDblClick = dbcgCertificadosDblClick
-      ExplicitWidth = 469
-      ExplicitHeight = 158
+      ExplicitLeft = -6
+      ExplicitWidth = 583
       object DBText1: TDBText
         Left = 8
         Top = 7

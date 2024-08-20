@@ -14,13 +14,19 @@ uses
   ACBrDFeSSL,
   ACBrBase,
   ACBrUtil.Base,
-  ACBrUtil.DateTime, ACBrUtil.FilesIO,
-  ACBrDFe, ACBrDFeReport, ACBrMail, ACBrNFSeX,
-  ACBrNFSeXConversao, ACBrNFSeXWebservicesResponse,
+  ACBrUtil.DateTime,
+  ACBrUtil.FilesIO,
+  ACBrDFe,
+  ACBrDFeReport,
+  ACBrMail,
+  ACBrNFSeX,
+  ACBrNFSeXConversao,
+  ACBrNFSeXWebservicesResponse,
   ACBrNFSeXDANFSeClass,
   ACBrNFSeXDANFSeFR,
   ACBrNFSeXWebserviceBase,
-  ACBrNFSeXDANFSeRLClass, ACBrNFSeXClass
+  ACBrNFSeXDANFSeRLClass,
+  ACBrNFSeXClass
   , uDialogs, uFuncoesBancoDados
   ;
 
@@ -234,6 +240,7 @@ TVar_Dados_novo  = class
     FIBQEMITENTE: TIBQuery;
     TNFSe_Emitente: TNFSeEmitente;
     FEnviaThread: Boolean;
+    FslLog: TStringList;
     procedure ACBrNFSeX1GerarLog(const ALogLine: string; var Tratado: Boolean);
     procedure ACBrNFSeX1StatusChange(Sender: TObject);
     function GetCodigoMunicipioServico: String;
@@ -277,6 +284,7 @@ uses
 procedure TNFS.ACBrNFSeX1GerarLog(const ALogLine: string; var Tratado: Boolean);
 begin
   //memoLog.Lines.Add(ALogLine);
+  FslLog.Add(ALogLine);
   Tratado := False;
 end;
 
@@ -461,55 +469,49 @@ begin
     O Key, Auth e RequestId são gerados pelo provedor quando o emitente se cadastra.
   }
 
-  //with FACBrNFSeX1.Configuracoes.WebServices do
-  begin
-    //FACBrNFSeX1.Configuracoes.WebServices.Ambiente   := StrToTpAmb(Ok, FIniNFSe.ReadString('NFSE', 'Ambiente', '2')); // StrToTpAmb(Ok,IntToStr(rgTipoAmb.ItemIndex+1));
-    FACBrNFSeX1.Configuracoes.WebServices.Visualizar := FIniNFSe.ReadBool('WebService', 'Visualizar', True);//cbxVisualizar.Checked;
-    FACBrNFSeX1.Configuracoes.WebServices.Salvar     := FIniNFSe.ReadBool('WebService', 'SalvarSOAP', True);//chkSalvarSOAP.Checked;
-    FACBrNFSeX1.Configuracoes.WebServices.UF         := FIBQEMITENTE.FieldByName('ESTADO').AsString;// edtEmitUF.Text;
+  //FACBrNFSeX1.Configuracoes.WebServices.Ambiente   := StrToTpAmb(Ok, FIniNFSe.ReadString('NFSE', 'Ambiente', '2')); // StrToTpAmb(Ok,IntToStr(rgTipoAmb.ItemIndex+1));
+  FACBrNFSeX1.Configuracoes.WebServices.Visualizar := FIniNFSe.ReadBool('WebService', 'Visualizar', True);//cbxVisualizar.Checked;
+  FACBrNFSeX1.Configuracoes.WebServices.Salvar     := FIniNFSe.ReadBool('WebService', 'SalvarSOAP', True);//chkSalvarSOAP.Checked;
+  FACBrNFSeX1.Configuracoes.WebServices.UF         := FIBQEMITENTE.FieldByName('ESTADO').AsString;// edtEmitUF.Text;
 
-    FACBrNFSeX1.Configuracoes.WebServices.AjustaAguardaConsultaRet := True;// cbxAjustarAut.Checked;
+  FACBrNFSeX1.Configuracoes.WebServices.AjustaAguardaConsultaRet := True;// cbxAjustarAut.Checked;
 
 
-    iAguardar := FIniNFSe.ReadInteger('WebService', 'Aguardar', 3000);
-    if iAguardar > 0 then //if NaoEstaVazio(edtAguardar.Text) then
-      FACBrNFSeX1.Configuracoes.WebServices.AguardarConsultaRet := ifThen(iAguardar < 1000, iAguardar * 1000, iAguardar); //FACBrNFSeX1.Configuracoes.WebServices.AguardarConsultaRet := ifThen(StrToInt(edtAguardar.Text) < 1000, StrToInt(edtAguardar.Text) * 1000, StrToInt(edtAguardar.Text))
+  iAguardar := FIniNFSe.ReadInteger('WebService', 'Aguardar', 3000);
+  if iAguardar > 0 then //if NaoEstaVazio(edtAguardar.Text) then
+    FACBrNFSeX1.Configuracoes.WebServices.AguardarConsultaRet := ifThen(iAguardar < 1000, iAguardar * 1000, iAguardar); //FACBrNFSeX1.Configuracoes.WebServices.AguardarConsultaRet := ifThen(StrToInt(edtAguardar.Text) < 1000, StrToInt(edtAguardar.Text) * 1000, StrToInt(edtAguardar.Text))
 
-    if FACBrNFSeX1.Configuracoes.Geral.Provedor in [proInfisc, proWebISS, proNFSeBrasil, proPronim, proAssessorPublico] then
-      FACBrNFSeX1.Configuracoes.WebServices.AguardarConsultaRet := 5000;
+  if FACBrNFSeX1.Configuracoes.Geral.Provedor in [proInfisc, proWebISS, proNFSeBrasil, proPronim, proAssessorPublico] then
+    FACBrNFSeX1.Configuracoes.WebServices.AguardarConsultaRet := 5000;
 
-    FACBrNFSeX1.Configuracoes.WebServices.Tentativas := FIniNFSe.ReadInteger('WebService', 'Tentativas', 5);// StrToInt(edtTentativas.Text)
+  FACBrNFSeX1.Configuracoes.WebServices.Tentativas := FIniNFSe.ReadInteger('WebService', 'Tentativas', 5);// StrToInt(edtTentativas.Text)
 
-    iIntervalo := FIniNFSe.ReadInteger('WebService', 'Intervalo', 5000);
-    if iIntervalo > 0 then //if NaoEstaVazio(edtIntervalo.Text) then
-      FACBrNFSeX1.Configuracoes.WebServices.IntervaloTentativas := ifThen(iIntervalo < 1000, iIntervalo * 1000, iIntervalo);//FACBrNFSeX1.Configuracoes.WebServices.IntervaloTentativas := ifThen(StrToInt(edtIntervalo.Text) < 1000, StrToInt(edtIntervalo.Text) * 1000, StrToInt(edtIntervalo.Text))
+  iIntervalo := FIniNFSe.ReadInteger('WebService', 'Intervalo', 5000);
+  if iIntervalo > 0 then //if NaoEstaVazio(edtIntervalo.Text) then
+    FACBrNFSeX1.Configuracoes.WebServices.IntervaloTentativas := ifThen(iIntervalo < 1000, iIntervalo * 1000, iIntervalo);//FACBrNFSeX1.Configuracoes.WebServices.IntervaloTentativas := ifThen(StrToInt(edtIntervalo.Text) < 1000, StrToInt(edtIntervalo.Text) * 1000, StrToInt(edtIntervalo.Text))
 
-    FACBrNFSeX1.Configuracoes.WebServices.TimeOut   := FIniNFSe.ReadInteger('WebService', 'TimeOut', 5000);//seTimeOut.Value;
-    if FACBrNFSeX1.Configuracoes.Geral.Provedor in ([proSigCorp, proSimplISS, proTecnos, proNFSeBrasil, proPronim]) then
-      FACBrNFSeX1.Configuracoes.WebServices.TimeOut := 60000;
-    FACBrNFSeX1.Configuracoes.WebServices.ProxyHost := FIniNFSe.ReadString('Proxy', 'Host', '');//edtProxyHost.Text;
-    FACBrNFSeX1.Configuracoes.WebServices.ProxyPort := FIniNFSe.ReadString('Proxy', 'Porta', '');//edtProxyPorta.Text;
-    FACBrNFSeX1.Configuracoes.WebServices.ProxyUser := FIniNFSe.ReadString('Proxy', 'User', '');//edtProxyUser.Text;
-    FACBrNFSeX1.Configuracoes.WebServices.ProxyPass := FIniNFSe.ReadString('Proxy', 'Pass', '');//edtProxySenha.Text;
-  end;
+  FACBrNFSeX1.Configuracoes.WebServices.TimeOut   := FIniNFSe.ReadInteger('WebService', 'TimeOut', 5000);//seTimeOut.Value;
+  if FACBrNFSeX1.Configuracoes.Geral.Provedor in ([proSigCorp, proSimplISS, proTecnos, proNFSeBrasil, proPronim]) then
+    FACBrNFSeX1.Configuracoes.WebServices.TimeOut := 60000;
+  FACBrNFSeX1.Configuracoes.WebServices.ProxyHost := FIniNFSe.ReadString('Proxy', 'Host', '');//edtProxyHost.Text;
+  FACBrNFSeX1.Configuracoes.WebServices.ProxyPort := FIniNFSe.ReadString('Proxy', 'Porta', '');//edtProxyPorta.Text;
+  FACBrNFSeX1.Configuracoes.WebServices.ProxyUser := FIniNFSe.ReadString('Proxy', 'User', '');//edtProxyUser.Text;
+  FACBrNFSeX1.Configuracoes.WebServices.ProxyPass := FIniNFSe.ReadString('Proxy', 'Pass', '');//edtProxySenha.Text;
 
   FACBrNFSeX1.SSL.SSLType := TSSLType(FIniNFSe.ReadInteger('WebService', 'SSLType',      5));// TSSLType(cbSSLType.ItemIndex);
 
   FACBrNFSeX1.DANFSe.Sistema := 'Zucchetti';
 
-  //with FACBrNFSeX1.Configuracoes.Arquivos do
-  begin
-    FACBrNFSeX1.Configuracoes.Arquivos.NomeLongoNFSe    := True;
-    FACBrNFSeX1.Configuracoes.Arquivos.Salvar           := FIniNFSe.ReadBool('Arquivos', 'Salvar',          False);//chkSalvarArq.Checked;
-    FACBrNFSeX1.Configuracoes.Arquivos.SepararPorMes    := FIniNFSe.ReadBool('Arquivos', 'PastaMensal',     False);//cbxPastaMensal.Checked;
-    FACBrNFSeX1.Configuracoes.Arquivos.AdicionarLiteral := FIniNFSe.ReadBool('Arquivos', 'AddLiteral',    False);//cbxAdicionaLiteral.Checked;
-    FACBrNFSeX1.Configuracoes.Arquivos.EmissaoPathNFSe  := FIniNFSe.ReadBool('Arquivos', 'EmissaoPathNFSe', False);//cbxEmissaoPathNFSe.Checked;
-    FACBrNFSeX1.Configuracoes.Arquivos.SepararPorCNPJ   := FIniNFSe.ReadBool('Arquivos', 'SepararPorCNPJ',  False);//cbxSepararPorCNPJ.Checked;
-    FACBrNFSeX1.Configuracoes.Arquivos.PathSchemas      := ExtractFilePath(Application.ExeName) + 'ArquivosNFSe';// edtPathSchemas.Text;
-    FACBrNFSeX1.Configuracoes.Arquivos.PathGer          := ExtractFilePath(Application.ExeName) + 'log\nfse'; //edtPathLogs.Text;
-    PathMensal       := FACBrNFSeX1.Configuracoes.Arquivos.GetPathGer(0);
-    FACBrNFSeX1.Configuracoes.Arquivos.PathSalvar       := PathMensal;
-  end;
+  FACBrNFSeX1.Configuracoes.Arquivos.NomeLongoNFSe    := True;
+  FACBrNFSeX1.Configuracoes.Arquivos.Salvar           := FIniNFSe.ReadBool('Arquivos', 'Salvar',          False);//chkSalvarArq.Checked;
+  FACBrNFSeX1.Configuracoes.Arquivos.SepararPorMes    := FIniNFSe.ReadBool('Arquivos', 'PastaMensal',     False);//cbxPastaMensal.Checked;
+  FACBrNFSeX1.Configuracoes.Arquivos.AdicionarLiteral := FIniNFSe.ReadBool('Arquivos', 'AddLiteral',    False);//cbxAdicionaLiteral.Checked;
+  FACBrNFSeX1.Configuracoes.Arquivos.EmissaoPathNFSe  := FIniNFSe.ReadBool('Arquivos', 'EmissaoPathNFSe', False);//cbxEmissaoPathNFSe.Checked;
+  FACBrNFSeX1.Configuracoes.Arquivos.SepararPorCNPJ   := FIniNFSe.ReadBool('Arquivos', 'SepararPorCNPJ',  False);//cbxSepararPorCNPJ.Checked;
+  FACBrNFSeX1.Configuracoes.Arquivos.PathSchemas      := ExtractFilePath(Application.ExeName) + 'ArquivosNFSe';// edtPathSchemas.Text;
+  FACBrNFSeX1.Configuracoes.Arquivos.PathGer          := ExtractFilePath(Application.ExeName) + 'log\nfse'; //edtPathLogs.Text;
+  PathMensal       := FACBrNFSeX1.Configuracoes.Arquivos.GetPathGer(0);
+  FACBrNFSeX1.Configuracoes.Arquivos.PathSalvar       := PathMensal;
   if DirectoryExists(ExtractFilePath(Application.ExeName) + 'log') = False then
     CreateDir(ExtractFilePath(Application.ExeName) + 'log');
   if DirectoryExists(ExtractFilePath(Application.ExeName) + 'log\nfse') = False then
@@ -633,6 +635,8 @@ begin
   inherited;
   CoInitialize(nil);
 
+  FslLog := TStringList.Create;
+
   TNFSe_Emitente := TNFSeEmitente.Create;
 
   FACBrNFSeX1 := TACBrNFSeX.Create(nil);
@@ -640,7 +644,7 @@ begin
   FACBrNFSeXDANFSeFR1 := TACBrNFSeXDANFSeFR.Create(nil);
   FACBrMail1 := TACBrMail.Create(nil);
   FACBrNFSeX1.OnGerarLog := ACBrNFSeX1GerarLog;
-//  FACBrNFSeX1.OnStatusChange := ACBrNFSeX1StatusChange;
+  FACBrNFSeX1.OnStatusChange := ACBrNFSeX1StatusChange;
   FACBrNFSeX1.DANFSE := FACBrNFSeXDANFSeFR1;//FACBrNFSeXDANFSeRL1;
   FACBrNFSeX1.MAIL := FACBrMail1;
   FIniNFSe := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'nfse.ini');
@@ -704,6 +708,7 @@ begin
   FreeAndNil(FIniNFSe);
   TNFSe_Emitente.Free;
 
+  FreeAndNil(FslLog);
   inherited;
 end;
 
@@ -713,7 +718,7 @@ var
 begin
 
   //Goiânia utiliza código específico - Emitente
-  QryConsulta := CriaIBQuery(FIBQNFSE.Transaction);
+  QryConsulta := CriaIBQuery(FIBTRANSACTION);
   try
     //QryConsulta.Connection := ConexaoTemp;
     QryConsulta.Close;

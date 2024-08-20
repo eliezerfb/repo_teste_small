@@ -8,10 +8,8 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitLeft = 3
-  ExplicitTop = 3
-  ExplicitWidth = 780
-  ExplicitHeight = 554
+  ExplicitWidth = 778
+  ExplicitHeight = 546
   PixelsPerInch = 96
   TextHeight = 16
   object Label30: TLabel
@@ -151,24 +149,6 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     Width = 67
     Height = 16
     Caption = 'Certificado:'
-  end
-  object lbCertificado1: TLabel
-    Left = 351
-    Top = 224
-    Width = 515
-    Height = 66
-    Cursor = crHandPoint
-    AutoSize = False
-    Caption = 'N'#250'mero de S'#233'rie + Nome'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -13
-    Font.Name = 'Microsoft Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    Visible = False
-    WordWrap = True
-    OnClick = lbCertificado1Click
   end
   object btnGravar: TBitBtn
     Left = 676

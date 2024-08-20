@@ -572,13 +572,6 @@
         <DCCReference Include="..\..\unit_compartilhada\uFrmTelaProcessamento.pas">
             <Form>FrmTelaProcessamento</Form>
         </DCCReference>
-        <DCCReference Include="uFrmEstoque.pas">
-            <Form>FrmEstoque</Form>
-        </DCCReference>
-        <DCCReference Include="uFrmMsgNovoLayout.pas">
-            <Form>FrmMsgNovoLayout</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="uSmallNFSe.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\Frm_Status.pas">
             <Form>frmStatus</Form>
@@ -594,6 +587,13 @@
         </DCCReference>
         <DCCReference Include="ufrmOutrasConfiguracoesNFSe.pas">
             <Form>frmOutrasConfiguracoesNFSe</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uFrmEstoque.pas">
+            <Form>FrmEstoque</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmMsgNovoLayout.pas">
+            <Form>FrmMsgNovoLayout</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">
@@ -1447,6 +1447,7 @@
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
@@ -2270,6 +2271,7 @@
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
