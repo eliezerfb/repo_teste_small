@@ -2718,6 +2718,9 @@ begin
     ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
                    ' Values(16,''20'',''Pagamento Instantâneo (PIX) Estático'')');
 
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(17,''99'',''Outros'')');
+
     ExecutaComando('Commit');
   end;
 
