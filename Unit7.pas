@@ -102,6 +102,7 @@ type
     chkFechamentoDeCaixaHoraF: TCheckBox;
     chklbCaixas: TCheckListBox;
     frameCampoCaixasRelVendaPorDoc: TframeCampoCaixasRel;
+    chkRelacionarReceber: TCheckBox;
     procedure FormActivate(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);

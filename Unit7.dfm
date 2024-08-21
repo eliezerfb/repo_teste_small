@@ -100,7 +100,6 @@ object Form7: TForm7
     ParentFont = False
     Style = tsFlatButtons
     TabOrder = 3
-    ExplicitWidth = 290
     object TabSheet1: TTabSheet
       Caption = 'TabSheet1'
       object Label1: TLabel
@@ -1278,6 +1277,20 @@ object Form7: TForm7
         ParentFont = False
         TabOrder = 8
         OnClickCheck = chklbCaixasClickCheck
+      end
+      object chkRelacionarReceber: TCheckBox
+        Left = 97
+        Top = 183
+        Width = 241
+        Height = 17
+        Caption = 'Relacionar contas recebidas'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 10
       end
     end
   end
