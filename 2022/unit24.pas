@@ -1184,7 +1184,7 @@ end;
 
 procedure TForm24.FormClose(Sender: TObject; var Action: TCloseAction);
 var
-  F : TextFile;
+//  F : TextFile;  Dailon Parisotto 2024-08-22
   sCustoCompra : String;
 begin
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
@@ -1195,11 +1195,22 @@ begin
   Form24.Panel5.Visible := False;
   Form24.Panel9.Visible := False;
   try
-    DeleteFile(pChar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));   // Apaga o arquivo anterior
+    {Dailon Parisotto (smal-630) 2024-08-22 Inicio
+
+    if FileExists(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt') then
+      DeleteFile(pChar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));   // Apaga o arquivo anterior
+
     AssignFile(F,pchar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));
     Rewrite(F);           // Abre para gravação
 
-	DefineDataSetInfNFe;
+    }
+
+    if FileExists(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt') then
+      DeleteFile(pChar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));
+
+    {Dailon Parisotto (smal-630) 2024-08-22 Fim}
+
+  	DefineDataSetInfNFe;
     // Tudo que for feito alteração no DATASET24 coloque depois da linha abaixo
     // caso contrário pode ocorrer de tentar alterar valores e o dataset não ta
     // no estado de alteração (vai dar erro).
@@ -1234,6 +1245,7 @@ begin
       // Atenção a rotina abaixo altera a quantidade no estoque                       //
       //////////////////////////////////////////////////////////////////////////////////
       Form1.bFlag := True;
+      {Dailon Parisotto (smal-630) 2024-08-22
 
       Writeln(F,'CÁLCULO DO CUSTO MÉDIO DA ÚLTIMA NOTA');
       Writeln(F,Replicate('-',80));
@@ -1241,6 +1253,7 @@ begin
       Writeln(F,'CUSTO COMPRA = (VALOR UNITARIO + ((TOTAL ICMS ST + TOTAL VIPI)/ QUANTIDADE) ) + (( VALOR UNITARIO / TOTAL MERCADORIAS ) * ( FRETE + SEGURO + OUTRAS DESPESAS - DESCONTO ))');
       Writeln(F,Replicate('-',80));
 
+      }
       // Precis posicionar no primeiro porque outra rotina pode ter movimentado o ponteiro do dataset e deixado no final (.Eof True)
       Form7.ibDataSet23.First; // Sandro Silva 2024-02-23
 
@@ -1344,8 +1357,13 @@ begin
 
                           if not Form1.bMediaPonderadaFixa then
                           begin
+                            (*Dailon Parisotto (smal-630) 2024-08-21 Inicio
+
+                            Comentado devido a alteração desta ficha efetuar muitos calculos, o que torna o LOG inviavel para analise posterior.
+
                             if Form7.ibDataSet23CUSTO.AsFloat = 0 then
                             begin
+
                               if (Form7.ibDataSet4CUSTOMEDIO.AsFloat = 0) or (Form7.ibDataSet4QTD_ATUAL.AsFloat <= 0)  then
                               begin
                                 Form7.ibDataSet4CUSTOMEDIO.AsFloat := Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat);
@@ -1360,6 +1378,7 @@ begin
                                 Writeln(F,'Custo de compra...: ' + sCustoCompra);
                                 Writeln(F,'Custo médio.......: ' + Form7.ibDataSet4CUSTOMEDIO.AsString + ' = '+Form7.ibDataSet4CUSTOMEDIO.AsString);
                               end else
+
                               begin
 
                                 {Sandro Silva 2023-03-01 inicio}
@@ -1383,16 +1402,22 @@ begin
 
                                 Form7.ibDataSet4CUSTOMEDIO.AsFloat := ((Form7.ibDataSet4QTD_ATUAL.Asfloat * Form7.ibDataSet4CUSTOMEDIO.AsFloat) + (Form7.ibDataSet23QUANTIDADE.Asfloat * (Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat))))
                                                                         / (Form7.ibDataSet23QUANTIDADE.Asfloat + Form7.ibDataSet4QTD_ATUAL.Asfloat);
+                                *)
+                              if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                                Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
 
-                                {Sandro Silva 2023-03-01 inicio}
-                                if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
-                                  Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
-                                {Sandro Silva 2023-03-01 fim}
+                              Form7.ibDataSet4CUSTOMEDIO.AsFloat := Form7.RetornaCustoMedio(Form7.ibDataset4CODIGO.AsString);
+                              {Dailon Parisotto (smal-630) 2024-08-21 Fim}
 
-                              end;
+                              {Sandro Silva 2023-03-01 inicio}
+                              if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                                Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
+                              {Sandro Silva 2023-03-01 fim}
 
-                              Writeln(F,Replicate('-',80));
-                            end;
+//                              end;
+
+//                              Writeln(F,Replicate('-',80));
+//                            end;
                           end;
 
                           Form7.ibDataSet4.Post;
@@ -1638,9 +1663,9 @@ begin
     Form7.Show;
     Screen.Cursor            := crDefault;
   end;
-  
+
   try
-    CloseFile(F);  // Fecha o arquivo
+//    CloseFile(F);  // Fecha o arquivo Dailon Parisotto 2024-08-22
   except
   end;
 end;

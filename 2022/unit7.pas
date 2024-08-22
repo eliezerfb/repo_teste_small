@@ -35,6 +35,7 @@ uses
   , TypInfo
   , uSmallEnumerados
   , synPDF, System.MaskUtils
+  , uRetornaCustoMedio
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -2647,6 +2648,7 @@ type
     procedure SetTextoCampoSTATUSNFe(AcTexto: String);
     procedure DefineNovoNomeNatOperacao;
     procedure AtualizaVariaveisAnteriorNatOper;
+    function RetornaCustoMedio(AcCodigo: String): Double;
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -36768,6 +36770,16 @@ begin
     Form7.ibDataSet14ST.AsString := EmptyStr;
     Form7.ibDataSet14.Post;
   end;
+end;
+
+function TForm7.RetornaCustoMedio(AcCodigo: String): Double;
+begin
+  Result := TRetornaCustoMedio.New
+                              .setCodigo(AcCodigo)
+                              .setTransaction(IBTransaction1)
+                              .setDecimaisCusto(StrToIntDef(Form1.ConfPreco,2))
+                              .ConsultaDados
+                              .CustoMedio;
 end;
 
 end.

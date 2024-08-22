@@ -2657,6 +2657,30 @@ begin
       ExecutaComando('Commit');
   {Mauricio Parizotto 204-07-10 Fim}
 
+  {Dailon Parisotto 2024-08-22 Inicio}
+  try
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Clear;
+    Form1.ibDataSet200.SelectSQL.Add('SELECT I.RDB$INDEX_NAME AS INDICENAME');
+    Form1.ibDataSet200.SelectSQL.Add('FROM RDB$INDEX_SEGMENTS S');
+    Form1.ibDataSet200.SelectSQL.Add('INNER JOIN RDB$INDICES I');
+    Form1.ibDataSet200.SelectSQL.Add('    ON (I.RDB$INDEX_NAME=S.RDB$INDEX_NAME)');
+    Form1.ibDataSet200.SelectSQL.Add('    AND (I.RDB$RELATION_NAME=''ITENS002'')');
+    Form1.ibDataSet200.SelectSQL.Add('WHERE (S.RDB$FIELD_NAME=''CODIGO'')');
+    Form1.ibDataSet200.Open;
+
+    if (Trim(Form1.ibDataSet200.FieldByName('INDICENAME').AsString) = EmptyStr) then
+    begin
+      ExecutaComando('CREATE INDEX IDX_ITENS002_CODIGO ON ITENS002 (CODIGO);');
+
+      ExecutaComando('Commit');
+    end;
+  finally
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Clear;
+  end;
+  {Dailon Parisotto 2024-08-22 Fim}
+
   Form22.Repaint;
 
   try

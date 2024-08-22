@@ -269,7 +269,9 @@ uses
   uWebServiceItau in '..\..\unit_compartilhada\Itau\uWebServiceItau.pas',
   uFrmTelaProcessamento in '..\..\unit_compartilhada\uFrmTelaProcessamento.pas' {FrmTelaProcessamento},
   uFrmEstoque in 'uFrmEstoque.pas' {FrmEstoque},
-  uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout};
+  uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout},
+  uIRetornaCustoMedio in 'interfaces\uIRetornaCustoMedio.pas',
+  uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas';
 
 {$R *.RES}
 
