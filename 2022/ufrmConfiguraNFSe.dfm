@@ -8,8 +8,10 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitWidth = 778
-  ExplicitHeight = 546
+  ExplicitLeft = 3
+  ExplicitTop = 3
+  ExplicitWidth = 780
+  ExplicitHeight = 554
   PixelsPerInch = 96
   TextHeight = 16
   object Label30: TLabel
@@ -159,6 +161,8 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     Caption = 'Gravar'
     TabOrder = 0
     OnClick = btnGravarClick
+    ExplicitLeft = 678
+    ExplicitTop = 480
   end
   object rgTipoAmb: TRadioGroup
     Left = 7

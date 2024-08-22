@@ -271,7 +271,8 @@ uses
   ufrmSelecionaCertificadoNFSe in 'ufrmSelecionaCertificadoNFSe.pas' {frmSelecionaCertificadoNFSe},
   ufrmOutrasConfiguracoesNFSe in 'ufrmOutrasConfiguracoesNFSe.pas' {frmOutrasConfiguracoesNFSe},
   uFrmEstoque in 'uFrmEstoque.pas' {FrmEstoque},
-  uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout};
+  uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout},
+  uListaToJson in '..\..\unit_compartilhada\uListaToJson.pas';
 
 {$R *.RES}
 

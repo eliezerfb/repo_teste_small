@@ -75,7 +75,7 @@ implementation
 {$R *.dfm}
 
 uses unit7, ufrmSelecionaCertificadoNFSe, uSmallNFSe,
-  ufrmOutrasConfiguracoesNFSe;
+  ufrmOutrasConfiguracoesNFSe, uArquivosDAT;
 
 { TfrmConfiguraNFSe }
 
@@ -203,7 +203,10 @@ procedure TfrmConfiguraNFSe.LerConfiguracao;
 var
   NFSe: TNFS;
   dtValidadeCertificado: TDate;
+  config: TArquivosDAT;
 begin
+
+  config := TArquivosDAT.Create('', Form7.IBTransaction1);
 
   NFSe := TNFS.Create(nil);
   NFSe.IBTRANSACTION := Form7.IBTransaction1;
@@ -211,14 +214,19 @@ begin
   dtValidadeCertificado := NFSe.ACBrNFSeX.SSL.CertDataVenc;
   FreeAndNil(NFSe);
 
-  cbSSLLib.ItemIndex     := Ini.ReadInteger('Certificado', 'SSLLib',     4);
-  cbCryptLib.ItemIndex   := Ini.ReadInteger('Certificado', 'CryptLib',   3);
-  cbHttpLib.ItemIndex    := Ini.ReadInteger('Certificado', 'HttpLib',    2);
-  cbXmlSignLib.ItemIndex := Ini.ReadInteger('Certificado', 'XmlSignLib', 0);
-
+  cbSSLLib.ItemIndex     := config.BD.NFSe.Certificado.SSLLib.ToInteger;// Ini.ReadInteger('Certificado', 'SSLLib',     4);
+  cbCryptLib.ItemIndex   := config.BD.NFSe.Certificado.CryptLib.ToInteger;// Ini.ReadInteger('Certificado', 'CryptLib',   3);
+  cbHttpLib.ItemIndex    := config.BD.NFSe.Certificado.HttpLib.ToInteger;// Ini.ReadInteger('Certificado', 'HttpLib',    2);
+  cbXmlSignLib.ItemIndex := config.BD.NFSe.Certificado.XmlSignLib.ToInteger;// Ini.ReadInteger('Certificado', 'XmlSignLib', 0);
+  {
   mmCertificado.Clear;
   mmCertificado.Text := Ini.ReadString('Certificado', 'NumSerie',   '');
   mmCertificado.Lines.Add(Ini.ReadString('Certificado', 'NomeCertificado', ''));
+  mmCertificado.Lines.Add('Validade: ' + FormatDateTime('dd/mm/yyyy', dtValidadeCertificado));
+  }
+  mmCertificado.Clear;
+  mmCertificado.Text := config.BD.NFSe.Certificado.NumSerie;
+  mmCertificado.Lines.Add(config.BD.NFSe.Certificado.NomeCertificado);
   mmCertificado.Lines.Add('Validade: ' + FormatDateTime('dd/mm/yyyy', dtValidadeCertificado));
 
 
@@ -234,6 +242,7 @@ begin
   rgTipoAmb.ItemIndex     := Ini.ReadInteger('WebService', 'Ambiente',     2) - 1;
 
   cbLayoutNFSe.ItemIndex     := Ini.ReadInteger('Geral', 'LayoutNFSe',     0);
+  config.Free;
 end;
 
 procedure TfrmConfiguraNFSe.SalvarConfiguracao;

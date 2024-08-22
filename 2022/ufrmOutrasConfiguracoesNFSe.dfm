@@ -1,21 +1,19 @@
 inherited frmOutrasConfiguracoesNFSe: TfrmOutrasConfiguracoesNFSe
   BorderIcons = []
   Caption = 'Outras Configura'#231#245'es da NFS-e'
-  ClientHeight = 495
-  ClientWidth = 1022
+  ClientHeight = 487
+  ClientWidth = 1020
   Font.Name = 'Microsoft Sans Serif'
   Position = poScreenCenter
   OnCreate = FormCreate
-  ExplicitLeft = 3
-  ExplicitTop = 3
-  ExplicitWidth = 1040
-  ExplicitHeight = 542
+  ExplicitWidth = 1038
+  ExplicitHeight = 534
   PixelsPerInch = 96
   TextHeight = 16
   object DBGCONFIG: TDBGrid
     Left = 8
     Top = 8
-    Width = 1004
+    Width = 1002
     Height = 449
     Anchors = [akLeft, akTop, akRight]
     BiDiMode = bdLeftToRight
@@ -50,14 +48,15 @@ inherited frmOutrasConfiguracoesNFSe: TfrmOutrasConfiguracoesNFSe
       end>
   end
   object btnOk: TBitBtn
-    Left = 923
-    Top = 468
+    Left = 921
+    Top = 460
     Width = 89
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     TabOrder = 1
     OnClick = btnOkClick
+    ExplicitLeft = 923
     ExplicitTop = 478
   end
   object CDSConfig: TClientDataSet

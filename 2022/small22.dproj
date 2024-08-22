@@ -596,6 +596,7 @@
             <Form>FrmMsgNovoLayout</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\unit_compartilhada\uListaToJson.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -3,8 +3,8 @@ object FrmPadrao: TFrmPadrao
   Top = 73
   BorderStyle = bsSingle
   Caption = 'FrmPadrao'
-  ClientHeight = 628
-  ClientWidth = 1020
+  ClientHeight = 612
+  ClientWidth = 1016
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET

@@ -3667,9 +3667,9 @@ begin
     IBTransaction := CriaIBTransaction(Form7.ibDataSet13.Transaction.DefaultDatabase);
     ConfSistema := TArquivosDAT.Create(Usuario, IBTransaction);
     try
-      ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido := IfThen(NaoDescontarIssQuandoRetido1.Checked, 'Não', 'Sim');
+      ConfSistema.BD.NFSe.NaoDescontarIssQuandoRetido := IfThen(NaoDescontarIssQuandoRetido1.Checked, 'Não', 'Sim');
       IBTransaction.Commit;
-      bNaoDescontarIssQuandoRetido := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim';// NaoDescontarIssQuandoRetido1.Checked;
+      bNaoDescontarIssQuandoRetido := ConfSistema.BD.NFSe.NaoDescontarIssQuandoRetido = 'Sim';// NaoDescontarIssQuandoRetido1.Checked;
       NaoDescontarIssQuandoRetido1.Checked := bNaoDescontarIssQuandoRetido;
     except
       on E: Exception do
@@ -9130,9 +9130,9 @@ begin
     IBTransaction := CriaIBTransaction(Form7.ibDataSet13.Transaction.DefaultDatabase);
     ConfSistema := TArquivosDAT.Create(Usuario, IBTransaction);
     try
-      ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor := IfThen(Clculododescontopeloprovedor1.Checked, 'Não', 'Sim');
+      ConfSistema.BD.NFSe.CalculoDoDescontoPeloProvedor := IfThen(Clculododescontopeloprovedor1.Checked, 'Não', 'Sim');
       IBTransaction.Commit;
-      Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim'; // Sandro Silva 2024-04-24
+      Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSe.CalculoDoDescontoPeloProvedor = 'Sim'; // Sandro Silva 2024-04-24
     except
       on E: Exception do
       begin
@@ -13465,10 +13465,10 @@ begin
     IBTransaction := CriaIBTransaction(Form7.ibDataSet13.Transaction.DefaultDatabase);
     ConfSistema := TArquivosDAT.Create(Usuario, IBTransaction); // Transação isolada para alteração ficar visível aos outros usuários Sandro Silva 2024-03-26 ConfSistema := TArquivosDAT.Create(Usuario,Form7.ibDataSet3.Transaction);
     try
-      ConfSistema.BD.NFSE.ObsNaDescricao := not(ConfSistema.BD.NFSE.ObsNaDescricao);
+      ConfSistema.BD.NFSe.ObsNaDescricao := not(ConfSistema.BD.NFSe.ObsNaDescricao);
       IBTransaction.Commit;
 
-      Observaonadescriodosservios1.Checked := ConfSistema.BD.NFSE.ObsNaDescricao; /// Sandro Silva 2024-04-24
+      Observaonadescriodosservios1.Checked := ConfSistema.BD.NFSe.ObsNaDescricao; /// Sandro Silva 2024-04-24
     except
       on E: Exception do
       begin
@@ -13497,11 +13497,11 @@ begin
 
     GeraLogSistema               := ConfSistema.BD.Outras.LogSistema;
     ConfPermitFabricarSemQtd     := ConfSistema.BD.Outras.FabricaProdutoSemQtd; //Mauricio Parizotto 2024-02-02
-    bNaoDescontarIssQuandoRetido := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-24
+    bNaoDescontarIssQuandoRetido := ConfSistema.BD.NFSe.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-24
     {Sandro Silva 2024-04-24 inicio}
-    Observaonadescriodosservios1.Checked  := ConfSistema.BD.NFSE.ObsNaDescricao;
-    Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor = 'Sim';
-    NaoDescontarIssQuandoRetido1.Checked  := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-23
+    Observaonadescriodosservios1.Checked  := ConfSistema.BD.NFSe.ObsNaDescricao;
+    Clculododescontopeloprovedor1.Checked := ConfSistema.BD.NFSe.CalculoDoDescontoPeloProvedor = 'Sim';
+    NaoDescontarIssQuandoRetido1.Checked  := ConfSistema.BD.NFSe.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-23
     {Sandro Silva 2024-04-24 fim}
 
     //Mauricio Parizotto 2024-07-29

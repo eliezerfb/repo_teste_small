@@ -2328,6 +2328,14 @@ begin
     ExecutaComando('Commit');
   end;
 
+  {Sandro Silva 2024-08-21 inicio}
+  if (TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONFIGURACAOSISTEMA')) then
+  begin
+    ExecutaComando('ALTER TABLE CONFIGURACAOSISTEMA ALTER MODULO TYPE VARCHAR(50) CHARACTER SET NONE');
+    ExecutaComando('Commit');
+  end;
+  {Sandro Silva 2024-08-21 final}
+
   if TamanhoCampo(Form1.ibDataSet200.Transaction, 'OS', 'OBSERVACAO') < 1000 then
   begin
     if ExecutaComando(' ALTER TABLE OS ALTER COLUMN OBSERVACAO TYPE VARCHAR(1000) ') then

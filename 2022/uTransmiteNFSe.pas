@@ -167,7 +167,7 @@ begin
       Mais1Ini.WriteString('Informacoes obtidas na prefeitura','Padrao',RetornaValorDaTagNoCampo('Padrao',sPadraoCidade));
     except
       Mais1Ini.WriteString('Informacoes obtidas na prefeitura','MultiplosServicos','NAO');
-      bMultiplosServicos := True;
+      bMultiplosServicos := False;// True;
     end;
   end else
   begin
@@ -233,15 +233,15 @@ begin
       then
     begin
       //Só vai marcar como True se não tiver configuração ainda
-      if ConfSistema.BD.NFSE.ConfObsNaDescricao = '' then
-        ConfSistema.BD.NFSE.ObsNaDescricao := True;
+      if ConfSistema.BD.NFSe.ConfObsNaDescricao = '' then
+        ConfSistema.BD.NFSe.ObsNaDescricao := True;
     end;
 
     CriaConfiguracaoDeComoDescontoSeraAplicado;
-    sCalculoDoDescontoPeloProvedor := ConfSistema.BD.NFSE.CalculoDoDescontoPeloProvedor; // Sandro Silva 2024-03-25
-    bNaoDescontarIssQuandoRetido   := ConfSistema.BD.NFSE.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-24
+    sCalculoDoDescontoPeloProvedor := ConfSistema.BD.NFSe.CalculoDoDescontoPeloProvedor; // Sandro Silva 2024-03-25
+    bNaoDescontarIssQuandoRetido   := ConfSistema.BD.NFSe.NaoDescontarIssQuandoRetido = 'Sim'; // Sandro Silva 2024-04-24
 
-    sObsNaDescricao := ConfSistema.BD.NFSE.ObsNaDescricao;
+    sObsNaDescricao := ConfSistema.BD.NFSe.ObsNaDescricao;
   finally
     FreeAndNil(ConfSistema);
   end;
