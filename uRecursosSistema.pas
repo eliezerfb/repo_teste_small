@@ -70,6 +70,7 @@ type
     FTipoCliente: string;
     FPlano: string;
     FUsuarios: Integer;
+    FAvisoVencimento : Boolean;
   published
     property CNPJ: string read FCNPJ write FCNPJ;
     property Produto: string read FProduto write FProduto;
@@ -78,6 +79,7 @@ type
     property TipoCliente: string read FTipoCliente write FTipoCliente;
     property Plano: string read FPlano write FPlano;
     property Usuarios: Integer read FUsuarios write FUsuarios;
+    property AvisoVencimento: Boolean read FAvisoVencimento write FAvisoVencimento;
   public
     constructor Create;
     destructor Destroy; override;

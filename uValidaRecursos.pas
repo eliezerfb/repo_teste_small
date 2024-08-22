@@ -29,6 +29,8 @@ uses
   function RecursoQuantidade(IBDATABASE: TIBDatabase; sRecurso : TRecursos): Integer;
   function RecursoQtd(vRecursosSistema: TRecursosSistema; sRecurso : TRecursos): integer;
 
+  function RecursosSistema(IBDATABASE: TIBDatabase): TRecursosSistema;
+
 implementation
 
 function SistemaSerial(IBDATABASE: TIBDatabase): String;
@@ -275,5 +277,27 @@ begin
   end;
 end;
 
+
+function RecursosSistema(IBDATABASE: TIBDatabase): TRecursosSistema;
+var
+ vRecuso, vCNPJ : string;
+begin
+  try
+    // Informações BD
+    InformacoesBD(IBDATABASE, vRecuso, vCNPJ);
+
+    //Descriptografa
+    vRecuso := SmallDecrypt(CHAVE_CIFRAR_NOVA,vRecuso);
+
+    if Trim(vRecuso) <> '' then
+    begin
+      try
+        Result := TJson.JsonToObject<TRecursosSistema>(vRecuso);
+      except
+      end;
+    end;
+  except
+  end;
+end;
 
 end.
