@@ -1,4 +1,4 @@
-unit uSectionDATPadrao;
+﻿unit uSectionDATPadrao;
 
 interface
 
@@ -31,6 +31,7 @@ type
     function getValorBD(nome: string): string;
     procedure setValorBD(nome,descricao,valor: string);
     destructor Destroy; override;
+    property Transaction: TIBTransaction read SecTransaction;
   protected
     FoQConfiguracoes: TIBQuery;
     procedure CarregarTabela; virtual;

@@ -84,7 +84,7 @@ const
   _cIdentNFCe = 'NFCE';
   _cIdentDataUltimoEnvio = 'Data ultimo envio';
 
-  //SECTION NFE (NFSe.ini)
+  //SECTION NFSE (NFSe.ini)
   _cSectionNFSE = 'NFSE';
   _cSectionNFSE_InformacoesObtidasPrefeitura = 'Informacoes obtidas na prefeitura'; // Sandro Silva 2023-10-02
   _cIdentiPadraoCidade = 'Padrao'; // Sandro Silva 2023-10-02
@@ -92,6 +92,38 @@ const
   _cObsNaDescricaoNFSE  = 'Observação na descrição';
   _cCalculoDoDescontoPeloProvedor = 'Cálculo desconto no provedor';
   _cNaoDescontarIssQuandoRetido = 'Não descontar o ISS retido';
+  _cNFSeLayoutNFSe = 'LayoutNFSe';
+
+
+  _cSectionNFSeCertificado = 'NFSeCertificado';
+  _cCertificadoNFSeSSLLib = 'SSLLib';
+  _cCertificadoNFSeCryptLib = 'CryptLib';
+  _cCertificadoNFSeHttpLib = 'HttpLib';
+  _cCertificadoNFSeXmlSignLib = 'XmlSignLib';
+  _cCertificadoNFSeNumSerie = 'NumSerie';
+  _cCertificadoNFSeNomeCertificado = 'NomeCertificado';
+
+  _cSectionNFSeWebService = 'NFSeWebService';
+  _cWebServiceNFSeSSLType = 'SSLType';
+  _cWebServiceNFSeSenhaWeb = 'SenhaWeb';
+  _cWebServiceNFSeUserWeb  = 'UserWeb';
+  _cWebServiceNFSeFraseSecWeb = 'FraseSecWeb';
+  _cWebServiceNFSeChAcessoWeb = 'ChAcessoWeb';
+  _cWebServiceNFSeChAutorizWeb = 'ChAutorizWeb';
+  _cWebServiceNFSeAmbiente = 'Ambiente';
+
+
+  _cSectionNFSeInformacoesObtidasNaPrefeitura = 'NFSeInformacoesObtidasNaPrefeitura';
+  _cNFSeIncentivadorCultural = 'IncentivadorCultural';
+  _cNFSeRegimeEspecialTributario = 'RegimeEspecialTributacao';
+  _cNFSeNaturezaTributacao = 'NaturezaTributacao';
+  _cNFSeIncentivoFiscal = 'IncentivoFiscal';
+  _cNFSeTipoTributacao = 'TipoTributacao';
+  _cNFSeExigibilidadeISS = 'ExigibilidadeISS';
+  _cNFSeOperacao = 'Operacao';
+  _cNFSeCodigoCnae = 'CodigoCnae';
+  _cNFSeMultiplosServicos = 'MultiplosServicos';
+  _cNFSeTipoPagamentoPrazo = 'TipoPagamentoPrazo';
 
   //OS
   _cSectionOS = 'OS';

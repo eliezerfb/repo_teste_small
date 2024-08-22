@@ -19,6 +19,7 @@ type
     FoOS: TSectionOS;
     FoOutras: TSectionOutras;
     FoNFSE: TSectionNFSE_BD;
+    //FoNFSeInformacoesObtidasPrefeitura: TSectionNFSeInformacoesObtidasNaPrefeitura_BD;
     FoImpressora: TSectionImpressora;
     FoCarne: TSectionCarne;
     function getOS: TSectionOS;
@@ -30,7 +31,7 @@ type
     destructor Destroy; override;
     property OS: TSectionOS read getOS;
     property Outras: TSectionOutras read getOutras;
-    property NFSE: TSectionNFSE_BD read getNFSE;
+    property NFSe: TSectionNFSE_BD read getNFSE;
     property Impressora: TSectionImpressora read getImpressora;
     property Carne: TSectionCarne read getCarne;
   protected
@@ -38,9 +39,7 @@ type
 
 implementation
 
-
 { TOSBD }
-
 
 destructor TConfBD.Destroy;
 begin
@@ -72,6 +71,32 @@ begin
   Result := FoNFSE;
 end;
 
+{
+function TConfBD.getNFSeCertificao: TSectionNFSeCertificado_BD;
+begin
+  if not Assigned(FoNFSeCerficicado) then
+    FoNFSeCerficicado := TSectionNFSeCertificado_BD.Create(Transaction, _cSectionNFSeCertificado);
+
+  Result := FoNFSeCerficicado;
+end;
+
+function TConfBD.getNFSeInformacoesObtidasNaPrefeitura: TSectionNFSeInformacoesObtidasNaPrefeitura_BD;
+begin
+  if not Assigned(FoNFSeInformacoesObtidasPrefeitura) then
+    FoNFSeInformacoesObtidasPrefeitura := TSectionNFSeInformacoesObtidasNaPrefeitura_BD.Create(Transaction, _cSectionNFSeInformacoesObtidasNaPrefeitura);
+
+  Result := FoNFSeInformacoesObtidasPrefeitura;
+
+end;
+
+function TConfBD.getNFSeWebServico: TSectionNFSeWebService_BD;
+begin
+  if not Assigned(FoNFSeWebService) then
+    FoNFSeWebService := TSectionNFSeWebService_BD.Create(Transaction, _cSectionNFSeWebService);
+
+  Result := FoNFSeWebService;
+end;
+}
 function TConfBD.getOS: TSectionOS;
 begin
   if not Assigned(FoOS) then
