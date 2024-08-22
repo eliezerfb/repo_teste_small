@@ -356,6 +356,7 @@ procedure ResizeBitmap(var Bitmap: TBitmap; Width, Height: Integer; Background: 
 function GetAutorizacaoItau(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction;
   out CodigoAutorizacao, CNPJinstituicao : string) : boolean;
 function GetCNPJInstituicaoFinanceira(sInstituicaoFinanceira: string; IBTRANSACTION: TIBTransaction) : string;
+function GetIDFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : integer;
 
 var
   //cWinDir: array[0..200] of WideChar;
@@ -2866,5 +2867,26 @@ begin
     FreeAndNil(IbqInstituicao);
   end;
 end;
+
+
+function GetIDFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : integer;
+var
+  IbqForma: TIBQuery;
+begin
+  Result := 0;
+
+  try
+    IbqForma := CriaIBQuery(IBTransaction);
+    IbqForma.Close;
+    IbqForma.sql.Text := ' Select IDFORMA'+
+                         ' From FORMAPAGAMENTO'+
+                         ' Where CODIGO_TPAG = '+QuotedStr(sCodTpag);
+    IbqForma.Open;
+    Result := IbqForma.FieldByName('IDFORMA').AsInteger;
+  finally
+    FreeAndNil(IbqForma);
+  end;
+end;
+
 
 end.

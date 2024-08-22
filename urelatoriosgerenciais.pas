@@ -35,6 +35,14 @@ function ListaCaixasSelecionados(Lista: TCheckListBox): String;
 procedure FechamentoDeCaixa(bNaHora, bListaReceber: Boolean);
 function RetornarAvisoCaixasComContigenciaNFCe(AdtInicio: TDate; AdtFinal: TDate; AcCaixas: String): String;
 
+
+type
+  TTotalizadorGeral = class
+    Forma : string;
+    Valor : double;
+  end;
+
+
 implementation
 
 uses
@@ -2542,7 +2550,7 @@ var
   sRegraNFCe: String;
   sJoinPagament: String;
   dTotalSuprimento: Double;
-  dTotalDinheiro: Double;
+  dTotalDinheiro, dTotalDinheiroRec: Double;
   dTotalTroco: Double;
   dTotalSangria: Double;
   dTotal, dTotalRece: Double;
@@ -2551,7 +2559,11 @@ var
   slListaCaixas: TStringList;
   sListaCaixas: String;
   sSQLVendas, sSQLReceber : string;
+  TotalizadorGeral : TArray<TTotalizadorGeral>;
+  I : integer;
+  bAchou : boolean;
 begin
+  i := 0;
   // Solicitado por migração de concorrente
   Commitatudo(True); // TotalDiario()
   IBQNFCE       := CriaIBQuery(Form1.ibDataSet27.Transaction);
@@ -2600,6 +2612,29 @@ begin
       sPeriodo;// +
     IBQNFCE.Open;
     dTotalDinheiro := IBQNFCE.FieldByName('VALOR').AsFloat;
+
+    //Mauricio Parizotto 2024-08-21
+    //Dinheiro Receber
+    dTotalDinheiroRec := 0;
+    if bListaReceber then
+    begin
+      try
+        sSQLReceber :=  ' Select '+
+                        ' 	sum(VALOR_RECE) VALOR'+
+                        ' From RECEBER'+
+                        ' Where RECEBIMENT BETWEEN ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpFechamentoDeCaixaIni.Date)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpFechamentoDeCaixaFim.Date)) +
+                        ' 	AND VALOR_RECE > 0'+
+                        ' 	AND COALESCE(ATIVO,0) = 0'+
+                        '   AND FORMADEPAGAMENTO = ''Dinheiro'' ';
+
+        IBQRECEBER := CriaIBQuery(Form1.ibDataSet27.Transaction);
+        IBQRECEBER.SQL.Text := sSQLReceber;
+        IBQRECEBER.Open;
+        dTotalDinheiroRec := IBQRECEBER.FieldByName('VALOR').AsFloat;
+      finally
+        FreeAndNil(IBQRECEBER);
+      end;
+    end;
 
     //'-- Troco ' +
     IBQNFCE.Close;
@@ -2664,7 +2699,8 @@ begin
       + 'MOVIMENTAÇÃO EM DINHEIRO  ' + Chr(10)
       + ImprimeTracos() + Chr(10)
       + 'Suprimento ' + Format('%9.2n',[dTotalSuprimento]) + chr(10)
-      + 'Dinheiro   ' + Format('%9.2n',[dTotalDinheiro]) + chr(10)
+      //+ 'Dinheiro   ' + Format('%9.2n',[dTotalDinheiro]) + chr(10)
+      + 'Dinheiro   ' + Format('%9.2n',[dTotalDinheiro+dTotalDinheiroRec]) + chr(10)
       + 'Troco      ' + Format('%9.2n',[dTotalTroco * (-1)]) + chr(10)
       + 'Sangria    ' + Format('%9.2n',[dTotalSangria * (-1)]) + chr(10)
       + ImprimeTracos() + Chr(10)
@@ -2674,16 +2710,17 @@ begin
     // Totalizadores
     {Mauricio Parizotto 2024-08-20 Inicio}
     sSQLVendas := ' Select '+
-                  '   replace(substring(P.FORMA from 4 for char_length(P.FORMA)), ''NFC-e'', '''') as FORMA, ' +
+                  '   Coalesce(F.DESCRICAO, replace(substring(P.FORMA from 4 for char_length(P.FORMA)), ''NFC-e'', '''')  ) FORMA, ' +
                   '   sum(P.VALOR) as VALOR ' +
                   ' From PAGAMENT P ' +
+                  '   Left Join FORMAPAGAMENTO F on F.IDFORMA = P.IDFORMA '+
                   ' Where P.FORMA not like ''00%'' ' +
                   '   and P.FORMA not like ''02%'' ' +
                   '   and P.FORMA not like ''13%'' ' +
                   '   and (coalesce(P.CLIFOR, '''') <> ''Sangria'' and coalesce(P.CLIFOR, '''') <> ''Suprimento'') ' +
                   sCaixasMarcados +
                   sPeriodo +
-                  ' Group by replace(substring(P.FORMA from 4 for char_length(P.FORMA)), ''NFC-e'', '''') ';
+                  ' Group by Coalesce(F.DESCRICAO, replace(substring(P.FORMA from 4 for char_length(P.FORMA)), ''NFC-e'', '''')  )  ';
 
     IBQNFCE.Close;
     IBQNFCE.SQL.Text := sSQLVendas+
@@ -2731,13 +2768,30 @@ begin
     sCupomFiscalVinculado := sCupomFiscalVinculado
       + Copy('Dinheiro' + DupeString(' ', 31), 1, 31) + Format('%9.2n', [dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria]) + Chr(10);
 
+    if bListaReceber then
+    begin
+      i := Length(TotalizadorGeral) + 1;
+      SetLength(TotalizadorGeral, i );
+      TotalizadorGeral[i-1] := TTotalizadorGeral.Create;
+      TotalizadorGeral[i-1].Forma := 'Dinheiro';
+      TotalizadorGeral[i-1].Valor := dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria;
+    end;
+
     dTotal := dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria;
     while IBQNFCE.Eof = False do
     begin
-
       sCupomFiscalVinculado := sCupomFiscalVinculado
         + Copy(IBQNFCE.FieldByName('Forma').AsString + DupeString(' ', 31), 1, 31) + Format('%9.2n', [IBQNFCE.FieldByName('VALOR').AsFloat]) + Chr(10);
       dTotal   := dTotal + IBQNFCE.FieldByName('VALOR').AsFloat;
+
+      if bListaReceber then
+      begin
+        i := Length(TotalizadorGeral) + 1;
+        SetLength(TotalizadorGeral, i );
+        TotalizadorGeral[i-1] := TTotalizadorGeral.Create;
+        TotalizadorGeral[i-1].Forma := IBQNFCE.FieldByName('Forma').AsString;
+        TotalizadorGeral[i-1].Valor := IBQNFCE.FieldByName('VALOR').AsFloat;
+      end;
 
       IBQNFCE.Next;
     end;
@@ -2764,7 +2818,7 @@ begin
                         ' 	COALESCE(FORMADEPAGAMENTO,''Não Informado'') Forma,'+
                         ' 	sum(VALOR_RECE) VALOR'+
                         ' From RECEBER'+
-                        ' Where RECEBIMENT BETWEEN ''2024-08-01'' and ''2024-08-20'''+
+                        ' Where RECEBIMENT BETWEEN ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpFechamentoDeCaixaIni.Date)) + ' and ' + QuotedStr(FormatDateTime('yyyy-mm-dd', Form7.dtpFechamentoDeCaixaFim.Date)) +
                         ' 	AND VALOR_RECE > 0'+
                         ' 	AND COALESCE(ATIVO,0) = 0'+
                         ' Group By'+
@@ -2781,6 +2835,29 @@ begin
             + Copy(IBQRECEBER.FieldByName('Forma').AsString + DupeString(' ', 31), 1, 31) + Format('%9.2n', [IBQRECEBER.FieldByName('VALOR').AsFloat]) + Chr(10);
 
           dTotalRece   := dTotalRece + IBQRECEBER.FieldByName('VALOR').AsFloat;
+
+          //Totaliza
+
+          //Verifica se já tem
+          bAchou := False;
+          for I := Low(TotalizadorGeral) to High(TotalizadorGeral) do
+          begin
+            if TotalizadorGeral[i].Forma = IBQRECEBER.FieldByName('Forma').AsString then
+            begin
+              TotalizadorGeral[i].Valor := TotalizadorGeral[i].Valor + IBQRECEBER.FieldByName('VALOR').AsFloat;
+              bAchou := True;
+              Break;
+            end;
+          end;
+
+          if not bAchou then
+          begin
+            i := Length(TotalizadorGeral) + 1;
+            SetLength(TotalizadorGeral, i );
+            TotalizadorGeral[i-1] := TTotalizadorGeral.Create;
+            TotalizadorGeral[i-1].Forma := IBQRECEBER.FieldByName('Forma').AsString;
+            TotalizadorGeral[i-1].Valor := IBQRECEBER.FieldByName('VALOR').AsFloat;
+          end;
 
           IBQRECEBER.Next;
         end;
@@ -2800,28 +2877,24 @@ begin
         + 'TOTALIZADOR GERAL         ' + Chr(10)
         + ImprimeTracos() + Chr(10)
         ;
-      try
-        IBQRECEBER := CriaIBQuery(Form1.ibDataSet27.Transaction);
-        IBQRECEBER.SQL.Text := sSQLReceber + ' Union All '+sSQLVendas;
-        IBQRECEBER.Open;
 
-        while not(IBQRECEBER.Eof) do
-        begin
-          sCupomFiscalVinculado := sCupomFiscalVinculado
-            + Copy(IBQRECEBER.FieldByName('Forma').AsString + DupeString(' ', 31), 1, 31) + Format('%9.2n', [IBQRECEBER.FieldByName('VALOR').AsFloat]) + Chr(10);
-
-          dTotalRece   := dTotalRece + IBQRECEBER.FieldByName('VALOR').AsFloat;
-
-          IBQRECEBER.Next;
-        end;
-
-      finally
-        FreeAndNil(IBQRECEBER);
+      for I := Low(TotalizadorGeral) to High(TotalizadorGeral) do
+      begin
+        sCupomFiscalVinculado := sCupomFiscalVinculado
+            + Copy(TotalizadorGeral[i].Forma + DupeString(' ', 31), 1, 31) + Format('%9.2n', [TotalizadorGeral[i].Valor]) + Chr(10);
       end;
 
+      sCupomFiscalVinculado := sCupomFiscalVinculado
+        + ImprimeTracos() + Chr(10)
+        +  Copy('Total' + DupeString(' ', 31), 1, 31) + Format('%9.2n',[dTotal + dTotalRece]) + Chr(10) + Chr(10);
 
-
+      for I := Low(TotalizadorGeral) to High(TotalizadorGeral) do
+      begin
+        FreeAndNil(TotalizadorGeral[i]);
+      end;
     end;
+
+
     {$Endregion}
 
     if Form1.sModeloECF = '59' then
