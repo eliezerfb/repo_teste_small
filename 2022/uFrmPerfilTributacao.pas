@@ -310,7 +310,9 @@ begin
 
 
   //CST-CSOCN
-  if Form7.ibDataSet13CRT.AsString = '1' then
+  //if Form7.ibDataSet13CRT.AsString = '1' then Mauricio Parizotto 2024-08-07
+  if (Form7.ibDataSet13CRT.AsString = '1')
+    or (Form7.ibDataSet13CRT.AsString = '4') then
   begin
     lblCSOSNPerfilTrib.Visible       := True;
     cboCSOSNPerfilTrib.Visible       := True;

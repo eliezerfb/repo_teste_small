@@ -3298,7 +3298,11 @@ begin
   fPercentualFCP   := Form7.ibDataSet16PFCP.AsFloat; // tributos da NF-e
   fPercentualFCPST := Form7.ibDataSet16PFCPST.AsFloat; // tributos da NF-e
 
-  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+  {$Region '//// CRT 2 e 3 - Normal //// ' }
+
+  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-07
+  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+    and (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
   begin
     try
       // Sandro Silva 2023-06-13 if Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4' then // 4=NFe Devolução
@@ -3871,11 +3875,13 @@ begin
       end;
     end;
 
+    {Mauricio Parizoto 2024-08-07 - Já tem uma condição que não entra nesse bloco se for = 1
     if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1' then
     begin
       Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0';  // BC
       Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0';  // Valor do ICMS em Reais
     end;
+    }
 
     if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30') or
        (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10') or
@@ -4117,15 +4123,17 @@ begin
         end;
       end;
     end;
+  end;
+  {$Endregion}
 
+  {$Region '//// CRT 1 e 4 - Simples Nacional //// ' }
 
-    // final TAGS saaída por CST - CRT 2 ou 3 - Regime normal
-  end; // if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
-
-
-  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then Mauricio Parizotto 2024-08-07
+  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') or
+    (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '4') then
   begin
-    // Início TAGS saída por CSOSN - CRT = 1 imples Nacional
+    // Início TAGS saída por CSOSN - CRT = 1 Simples Nacional ou 4 Simples MEI
     // TAGS - Simples NAcional - CSOSN
     // N12a Tem em todas - e eé referencia para classificar as tags
 
@@ -5042,9 +5050,9 @@ begin
     begin
       // Ficha 6907
       // Simples nacional usa CST 61 no lugar do CSOSN
-      if (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1')
-      or (not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
-      //if Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString = '61'
+      //if (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') Mauricio Parizotto 2024-08-07
+      if ( (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') and (Form7.ibDataSet13.FieldByname('CRT').AsString <> '4') )
+        or (not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
       then
       begin
         Form7.spdNFeDataSets.Campo('CSOSN_N12a').Clear;
@@ -5052,9 +5060,9 @@ begin
       end;
     end;
     {Sandro Silva 2023-06-01 fim}
-
-    // Final TAGS saída por CSOSN - CRT = 1 imples Nacional
   end;
+
+  {$Endregion}
 
   {Sandro Silva 2023-06-07 inicio}
   //qBCMonoRet = será igual à quantidade do produto informado na nota
