@@ -137,8 +137,10 @@ var
 implementation
 
 uses
-  Unit7, Unit10, Unit19, Mais, uListaCnaes, Mais3, uDialogs,
-  uConsultaCEP, uFuncoesBancoDados;
+  Unit7
+//  , Unit10
+  , Unit19, Mais, uListaCnaes, Mais3, uDialogs,
+  uConsultaCEP, uFuncoesBancoDados, uVisualizaCadastro;
 
 {$R *.DFM}
 
@@ -275,7 +277,8 @@ begin
   Form7.TabelaAberta           := TIBDataSet(DSEmitente.DataSet);
   Form7.iCampos                := 12;
 
-  Form10.Image203Click(Sender);
+  //Form10.Image203Click(Sender);
+  GeraVisualizacaoFichaCadastro;
 end;
 
 procedure TForm17.ComboBox1Change(Sender: TObject);
