@@ -12009,7 +12009,7 @@ begin
                     Form1.ibDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
                     //Mauricio Parizotto 2024-08-21
-                    CODIGO_TPAG := Form1.sOrdemExtraNFCe8;
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe1;
                     IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
                     if IDFORMA > 0 then
                       Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
@@ -12051,7 +12051,7 @@ begin
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
                     //Mauricio Parizotto 2024-08-21
-                    CODIGO_TPAG := Form1.sOrdemExtraNFCe8;
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe2;
                     IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
                     if IDFORMA > 0 then
                       Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
@@ -12092,7 +12092,7 @@ begin
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
                     //Mauricio Parizotto 2024-08-21
-                    CODIGO_TPAG := Form1.sOrdemExtraNFCe8;
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe3;
                     IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
                     if IDFORMA > 0 then
                       Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
@@ -12137,7 +12137,7 @@ begin
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
                     //Mauricio Parizotto 2024-08-21
-                    CODIGO_TPAG := Form1.sOrdemExtraNFCe8;
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe4;
                     IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
                     if IDFORMA > 0 then
                       Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
@@ -12178,7 +12178,7 @@ begin
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
                     //Mauricio Parizotto 2024-08-21
-                    CODIGO_TPAG := Form1.sOrdemExtraNFCe8;
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe5;
                     IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
                     if IDFORMA > 0 then
                       Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
@@ -12219,7 +12219,7 @@ begin
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
                     //Mauricio Parizotto 2024-08-21
-                    CODIGO_TPAG := Form1.sOrdemExtraNFCe8;
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe6;
                     IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
                     if IDFORMA > 0 then
                       Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
@@ -12260,7 +12260,7 @@ begin
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
                     //Mauricio Parizotto 2024-08-21
-                    CODIGO_TPAG := Form1.sOrdemExtraNFCe8;
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe7;
                     IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
                     if IDFORMA > 0 then
                       Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
@@ -12443,27 +12443,24 @@ begin
           Form1.Display('Feche a gaveta'+Replicate('.',I),'Gaveta aberta');
           while Form1.sGaveta = '255' do
           begin
-            //
             I := I + 1;
             if I > 10 then I := 1;
-            //
+
             Form1.lbDisplayPDV.Caption := 'Feche a gaveta'+Replicate('.',I);
             Form1.lbDisplayPDV.Repaint;
-            //
+
             Form1.sGaveta := Form1.PDV_StatusGaveta(True);
-            //
+
             if I = 600 then
             begin
               I := 0;
               SmallMsg('Feche a gaveta.');
             end;
-            //
           end;
-          //
+
           Form1.Display('Aguarde...','Aguarde...');
           Form1.Repaint;
         end;
-
 
         //----------------------------------------- //
         //                 C A R N Ê                //
