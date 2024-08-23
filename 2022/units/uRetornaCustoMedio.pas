@@ -72,6 +72,7 @@ begin
   FqryDados.SQL.Add('from ITENS002');
   FqryDados.SQL.Add('inner join COMPRAS');
   FqryDados.SQL.Add('    on (COMPRAS.NUMERONF=ITENS002.NUMERONF)');
+  FqryDados.SQL.Add('    and (COMPRAS.FORNECEDOR=ITENS002.FORNECEDOR)');
   FqryDados.SQL.Add('inner join ESTOQUE');
   FqryDados.SQL.Add('    on (ESTOQUE.CODIGO=ITENS002.CODIGO)');
   FqryDados.SQL.Add('where');
@@ -87,16 +88,16 @@ function TRetornaCustoMedio.CustoMedio: Double;
 var
   nQuantidade: Currency;
 begin
-  // Fórmula do custo médio                                                //
-  // * Primeiro                                                            //
-  //    (Custo da primeira compra - (VICMS / Quantidade))                  //
-  // * Depois                                                              //
-  //    Custo Médio = (( Quantidade Atual * Custo Médio ) +                //
-  //                  ( Quantidade comprada * ( Custo Compra - VICMS))     //
-  //                  / (Quantidade comprada + Quantidade Atual)           //
-  //                                                                       //
-  // Obs: O Custo Médio é a média ponderada entre o custo da mercadoria    //
-  // comprada menos o crédito de ICMS e o custo da mercadoria em estoque.  //
+  // Fórmula do custo médio                                                                        //
+  // * Primeiro                                                                                    //
+  //    (Custo da primeira compra - (VICMS / Quantidade))                                          //
+  // * Depois                                                                                      //
+  //    Custo Médio = (( Quantidade Atual * Custo Médio ) +                                        //
+  //                  ( Quantidade comprada * ( Custo Compra - (VICMS / Quantidade comprada)))     //
+  //                  / (Quantidade comprada + Quantidade Atual)                                   //
+  //                                                                                               //
+  // Obs: O Custo Médio é a média ponderada entre o custo da mercadoria                            //
+  // comprada menos o crédito de ICMS e o custo da mercadoria em estoque.                          //
 
   Result := 0;
 
