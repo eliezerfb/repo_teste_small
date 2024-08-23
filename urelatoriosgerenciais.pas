@@ -1114,7 +1114,9 @@ begin
 
             if (sAliquota <> 'ISS') then
             begin
-              if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) <> '1') then
+              //if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+              if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) <> '1')
+                and (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) <> '4') then
               begin
                 if (Right(sCST, 2) = '40') then //I - Isento
                   sAliquota := 'I';
@@ -1490,7 +1492,9 @@ begin
         slMovimento.Add('045-' + ImprimeTracos());
         slMovimento.Add('046-Total' + Replicate(' ', 25) + Format('%16s', [FormatFloat(',0.00', dTotal)]));
 
-        if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) <> '1') then
+        //if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-15
+        if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) <> '1')
+          and (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) <> '4') then
         begin
           // Totaliza por CST ICMS
           slMovimento.Add('060-');

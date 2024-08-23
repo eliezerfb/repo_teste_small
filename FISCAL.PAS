@@ -20503,7 +20503,9 @@ begin
         begin
           if Trim(ibDataSet4.FieldByName('ST').AsString) = '' then
           begin
-            if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) = '1') then
+            //if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) = '1') then Mauricio Parizotto 2024-08-18
+            if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) = '1')
+              or (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) = '4') then
             begin // Simples Nacional CSOSN
               if (ibDataSet4.FieldByName('CSOSN').AsString = '300') then //I - Isento
                 sT := 'II';
@@ -20947,20 +20949,19 @@ begin
               if Trim(Form1.ibDataSet27.FieldByName('CSOSN').AsString) = '' then
                 Form1.ibDataSet27.FieldByName('CSOSN').AsString := Trim(IBDataSet4.FieldByName('CSOSN').AsString); // CSOSN para emissão de NF-e
 
-              if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) = '1') then
+              //if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) = '1') then Mauricio Parizotto 2024-08-15
+              if (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) = '1')
+                or (LimpaNumero(Form1.ibDAtaset13.FieldByname('CRT').AsString) = '4') then
               begin // Simples Nacional
-
                 if (Form1.ibDataSet27.FieldByName('CSOSN').AsString = '300') then //I - Isento
                   Form1.ibDataSet27.FieldByName('ALIQUICM').AsString := 'I';
                 if (Form1.ibDataSet27.FieldByName('CSOSN').AsString = '400') then // N - Não trib.
                   Form1.ibDataSet27.FieldByName('ALIQUICM').AsString := 'N';
                 if (Form1.ibDataSet27.FieldByName('CSOSN').AsString = '500') then // F - Substituíção
                   Form1.ibDataSet27.FieldByName('ALIQUICM').AsString := 'F';
-
               end
               else
               begin
-
                 if (Right('000' + Trim(Form1.ibDataSet27.FieldByName('CST_ICMS').AsString), 2) = '40') then //I - Isento
                   Form1.ibDataSet27.FieldByName('ALIQUICM').AsString := 'I';
                 if (Right('000' + Trim(Form1.ibDataSet27.FieldByName('CST_ICMS').AsString), 2) = '41') then // N - Não trib.

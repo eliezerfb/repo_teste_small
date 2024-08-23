@@ -1423,6 +1423,9 @@ begin
     Result := '2-Simples Nacional, excesso sublimite de receita bruta';
   if sCrt = '3' then
     Result := '3-Regime normal';
+  //Mauricio Parizotto 2024-08-15
+  if sCrt = '4' then
+    Result := '4-Simples Nacional, Microempreendedor Individual - MEI';
 end;
 
 function ConcatencaNodeNFeComProtNFe(sNFe: String; sprotNFe: String): String;
