@@ -11189,7 +11189,10 @@ begin
 end;
 
 procedure _ecf65_ValidaNFCe_Setup;
+var
+  sBuildNFCe_Setup: String;
 begin
+  {Sandro Silva 2024-08-23 inicio
   if Form1.sModeloECF = '65' then
   begin
     if FileExists('nfce_setup.exe') then
@@ -11200,7 +11203,8 @@ begin
         Form22.Label6.Repaint;
 
         SalvarConfiguracao('FRENTE.INI', 'NFCE', 'BUILD', Build);
-        ShellExecute( 0, 'Open', 'nfce_setup.exe /verysilent', '', '', SW_HIDE);
+        //ShellExecute( 0, 'Open', 'nfce_setup.exe /verysilent', '', '', SW_HIDE);
+        ShellExecute( 0, 'Open', 'nfce_setup.exe', ' /verysilent', '', SW_HIDE);
         while ConsultaProcesso('nfce_setup.exe') do
         begin
           Sleep(2000);
@@ -11211,7 +11215,30 @@ begin
       end;
     end;
   end;
+  }
+  if FileExists('nfce_setup.exe') then
+  begin
 
+    sBuildNFCe_Setup := VersaoBuild(ExtractFilePath(Application.ExeName) + 'nfce_setup.exe');
+
+    if LerParametroIni('FRENTE.INI', 'NFCE', 'BUILD', '') <> sBuildNFCe_Setup then
+    begin
+      Form22.Label6.Caption := 'Instalando dependências para NFC-e';
+      Form22.Label6.Repaint;
+
+      ShellExecute( 0, 'Open', 'nfce_setup.exe', ' /verysilent', '', SW_HIDE);
+      while ConsultaProcesso('nfce_setup.exe') do
+      begin
+        Sleep(2000);
+      end;
+
+      GravarParametroIni('FRENTE.INI', 'NFCE', 'BUILD', sBuildNFCe_Setup);
+
+      Form22.Label6.Caption := '';
+      Form22.Label6.Repaint;
+    end;
+  end;
+  {Sandro Silva 2024-08-23 fim}
 end;
 
 procedure _ecf65_AdicionaCNPJCOntabilidade(spdNFCeDataSets: TspdNFCeDataSets); // Sandro Silva 2020-09-01
