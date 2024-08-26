@@ -77,7 +77,7 @@ begin
   FqryDados.SQL.Add('    on (ESTOQUE.CODIGO=ITENS002.CODIGO)');
   FqryDados.SQL.Add('where');
   FqryDados.SQL.Add('    (ITENS002.CODIGO=:XCODIGO)');
-  FqryDados.SQL.Add('order by COMPRAS.SAIDAD, COMPRAS.SAIDAH');
+  FqryDados.SQL.Add('order by COMPRAS.EMISSAO');
   FqryDados.ParamByName('XCODIGO').AsString := FcCodigo;
   FqryDados.Open;
 
