@@ -2090,16 +2090,19 @@ begin
       sEx14    := Mais1Ini.ReadString('DI','Ex14','');
 
       try
-        sEx14 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número do ato concessório de Drawback:',sEx14);
+        //sEx14 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número do ato concessório de Drawback:',sEx14); Mauricio Parizotto 2024-08-08
+        sEx14 := Form1.Small_InputForm('NF-e exportação','Item: '+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número do ato concessório de Drawback:',sEx14);
         Form7.spdNFeDataSets.Campo('nDraw_I51').Value  := sEx14;      // Número do ato concessório de Drawback
 
         // Nota fiscal de exportação referenciada
         if (Copy(Form7.ibDataSet16CFOP.AsString,2,3) = '503') or (Copy(Form7.ibDataSet16CFOP.AsString,2,3) = '501') then
         begin
-          sEx16 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número de Registro de Exportação:',sEx16);
+          //sEx16 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número de Registro de Exportação:',sEx16); Mauricio Parizotto 2024-08-08
+          sEx16 := Form1.Small_InputForm('NF-e exportação','Item: '+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número de Registro de Exportação:',sEx16);
           Form7.spdNFeDataSets.Campo('nRE_I53').Value  := sEx16;      // Número de Registro de Exportação
 
-          sEx15 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Chave de Acesso da NF-e recebida para exportação:',sEx15);
+          //sEx15 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Chave de Acesso da NF-e recebida para exportação:',sEx15); Mauricio Parizotto 2024-08-08
+          sEx15 := Form1.Small_InputForm('NF-e exportação','Item: '+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Chave de Acesso da NF-e recebida para exportação:',sEx15);
           Form7.spdNFeDataSets.Campo('chNFe_I54').Value  := sEx15;      // Chave de Acesso da NF-e recebida para exportação
           Form7.spdNFeDataSets.Campo('qExport_I55').Value := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade do item realmente exportado
 
@@ -3307,7 +3310,11 @@ begin
   fPercentualFCP   := Form7.ibDataSet16PFCP.AsFloat; // tributos da NF-e
   fPercentualFCPST := Form7.ibDataSet16PFCPST.AsFloat; // tributos da NF-e
 
-  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+  {$Region '//// CRT 2 e 3 - Normal //// ' }
+
+  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-07
+  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+    and (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
   begin
     try
       // Sandro Silva 2023-06-13 if Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4' then // 4=NFe Devolução
@@ -3881,11 +3888,13 @@ begin
       end;
     end;
 
+    {Mauricio Parizoto 2024-08-07 - Já tem uma condição que não entra nesse bloco se for = 1
     if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1' then
     begin
       Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0';  // BC
       Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0';  // Valor do ICMS em Reais
     end;
+    }
 
     if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30') or
        (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10') or
@@ -4127,15 +4136,17 @@ begin
         end;
       end;
     end;
+  end;
+  {$Endregion}
 
+  {$Region '//// CRT 1 e 4 - Simples Nacional //// ' }
 
-    // final TAGS saaída por CST - CRT 2 ou 3 - Regime normal
-  end; // if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
-
-
-  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then Mauricio Parizotto 2024-08-07
+  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') or
+    (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '4') then
   begin
-    // Início TAGS saída por CSOSN - CRT = 1 imples Nacional
+    // Início TAGS saída por CSOSN - CRT = 1 Simples Nacional ou 4 Simples MEI
     // TAGS - Simples NAcional - CSOSN
     // N12a Tem em todas - e eé referencia para classificar as tags
 
@@ -5057,7 +5068,7 @@ begin
       // Ficha 6907
       // Simples nacional usa CST 61 no lugar do CSOSN
       // Dailon Parisotto 2024-08-07 or (not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
-      if (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1')
+      if ( (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') and (Form7.ibDataSet13.FieldByname('CRT').AsString <> '4') )
         or (not DevolucaoOuImpostoManual(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
       //if Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString = '61'
       then
@@ -5067,9 +5078,9 @@ begin
       end;
     end;
     {Sandro Silva 2023-06-01 fim}
-
-    // Final TAGS saída por CSOSN - CRT = 1 imples Nacional
   end;
+
+  {$Endregion}
 
   {Sandro Silva 2023-06-07 inicio}
   //qBCMonoRet = será igual à quantidade do produto informado na nota

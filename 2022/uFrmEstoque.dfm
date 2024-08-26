@@ -7,9 +7,10 @@ inherited FrmEstoque: TFrmEstoque
   TextHeight = 16
   inherited Panel_branco: TPanel
     inherited pgcFicha: TPageControl
-      ActivePage = tbsICMS
+      ActivePage = tbsCadastro
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
+        OnShow = tbsCadastroShow
         object lblCodigo: TLabel
           Left = 0
           Top = 13
@@ -438,6 +439,7 @@ inherited FrmEstoque: TFrmEstoque
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 0
+          OnChange = edtCodigoChange
           OnKeyDown = PadraoKeyDown
         end
         object edtCodBarras: TSMALL_DBEdit
@@ -728,7 +730,7 @@ inherited FrmEstoque: TFrmEstoque
         inline fraUndMed: TfFrameCampo
           Left = 100
           Top = 113
-          Width = 281
+          Width = 313
           Height = 20
           Color = clWhite
           Ctl3D = False
@@ -738,13 +740,13 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 4
           ExplicitLeft = 100
           ExplicitTop = 113
-          ExplicitWidth = 281
+          ExplicitWidth = 313
           inherited txtCampo: TEdit
             Width = 85
             ExplicitWidth = 85
           end
           inherited gdRegistros: TDBGrid
-            Width = 281
+            Width = 313
             Columns = <
               item
                 Expanded = False
@@ -848,7 +850,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 508
           Top = 263
           Width = 266
-          Height = 95
+          Height = 120
           DataField = 'OBS'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
@@ -859,7 +861,8 @@ inherited FrmEstoque: TFrmEstoque
           MaxLength = 254
           ParentFont = False
           TabOrder = 21
-          OnKeyDown = PadraoKeyDown
+          OnEnter = memAtivacaoEnter
+          OnKeyDown = memAtivacaoKeyDown
         end
         object edtComissao: TSMALL_DBEdit
           Left = 508
@@ -905,13 +908,22 @@ inherited FrmEstoque: TFrmEstoque
         end
         object chkMarketplace: TCheckBox
           Left = 508
-          Top = 364
+          Top = 388
           Width = 97
           Height = 17
           Caption = 'Marketplace'
           TabOrder = 22
+          Visible = False
           OnClick = chkMarketplaceClick
           OnKeyDown = PadraoKeyDown
+        end
+        object pnlEscondeWin11: TPanel
+          Left = 185
+          Top = 112
+          Width = 230
+          Height = 26
+          BevelOuter = bvNone
+          TabOrder = 23
         end
       end
       object tbsICMS: TTabSheet
@@ -1176,8 +1188,8 @@ inherited FrmEstoque: TFrmEstoque
           Transparent = True
         end
         object lblImpostoAprox: TLabel
-          Left = 115
-          Top = 94
+          Left = 110
+          Top = 92
           Width = 385
           Height = 13
           AutoSize = False
@@ -1224,51 +1236,53 @@ inherited FrmEstoque: TFrmEstoque
         end
         object Image3: TImage
           Left = 164
-          Top = 194
-          Width = 16
-          Height = 16
-          Hint = 'Exemplo: Para 55,77% de IVA, preencher: 1,5577.'
+          Top = 193
+          Width = 17
+          Height = 17
+          Hint = 'Exemplo: Para 55,77% de IVA, preencher: 1,5577'
           Picture.Data = {
-            0954506E67496D61676589504E470D0A1A0A0000000D49484452000000100000
-            001008060000001FF3FF61000000097048597300000B1300000B1301009A9C18
+            0954506E67496D61676589504E470D0A1A0A0000000D49484452000000110000
+            001108060000003B6D47FA000000097048597300000B1300000B1301009A9C18
             000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000001
-            604944415478DA9D93D151C2401086FF651C197DA204ACC0A4024C05860A9419
-            1F401F940AC00AE049C017B402A102E8003A003BE0554759FFBB4B0284C04CBC
-            999D5C367BDFFED9DD13A4574FAF50C0351421DFCAD62798F3DDD8331AB2DC0E
-            976437D412BED1C21AB7F4BEF339B507D728F159A685B41B46765124A826AB0D
-            C01D9ED8FD1AD574962D750634A1AD708AC0401C60A01D2BB9083F261F5C1D26
-            3B2744A9B02E4D89A80B3A2E3233F774447FB8A70498D1AA82BE0EADB32EB5CC
-            8C7D9DF05B90E1EFBA1A0C74865F16E55E46B9002F1AB25B1DA34009F0F120F3
-            5C80E8D71DE0846DBA93CF5C8057F5D8B199012CB869FEF3175A121783414F99
-            0033990D99668087AE886E743FA8C23FD0C67DC056EB256989A0124FD7518099
-            DA2F3B0363A3DA0136D355A2054747D9A8356B679463C819DADC3DD2DEA8688C
-            1F2C796045F3E8AB2417ADC8B89DCB94CE0206147049355EE45D5AC98A51BA1E
-            7F9EFCA402C8CCA5CE0000000049454E44AE426082}
+            6E4944415478DA9D54CB510241107D0D559647429008C408840C3402E1E4EF20
+            46B04B04E041714FAB1168060B11B8194006EED952DBD7BBACEC1791AE1AA619
+            BA5FBFE9E987A068BEB6F0811B28BA5C1D085ADC23EE21F76746CC7029CB6C8A
+            E4001ED5925D9E46718232D1FCC4BAF4CF624F3122D05319C45307DF18A2C180
+            7399A0CE3C1D1264CC4C9771A335C854FBF47C7CE108D712E22FBBD70E8B0569
+            4121C0010102AEBB4A069E9E906144FAB31223C0C11EDAB262E1E042DA9555A7
+            EAF27399ED41A6870BEB9DD009E8CC19E4FE1BC47E131C1B93777E3D2DD1DD06
+            E481576DC237264A26BD9D40A66ACF1E244C14035CC9EB4E200DBC6CD7131BBA
+            AA22999EB8F124D6BDCE264B5E672418532BFB58D44E6A322761512FB144009B
+            DE9EAC0293C1F964838B136B82341B48F47B6613DBC45BDC4BF66AAD9DE45A0E
+            D7ED46EDA42205277CD5C7BC8AD3E9354B656FD680B139E4599FAB55BCBA942A
+            999652D997FF4FE6ECDF247735DA0F2478B7D2783B7D950000000049454E44AE
+            426082}
         end
         object Image8: TImage
           Left = 164
-          Top = 273
-          Width = 16
-          Height = 16
+          Top = 272
+          Width = 17
+          Height = 17
           Hint = 
             'Vincula o produto '#224' um CFOP e permite preencher o % ICMS diretam' +
-            'ente no mapa ao lado.'
+            'ente no mapa ao lado'
           Picture.Data = {
-            0954506E67496D61676589504E470D0A1A0A0000000D49484452000000100000
-            001008060000001FF3FF61000000097048597300000B1300000B1301009A9C18
+            0954506E67496D61676589504E470D0A1A0A0000000D49484452000000110000
+            001108060000003B6D47FA000000097048597300000B1300000B1301009A9C18
             000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000001
-            604944415478DA9D93D151C2401086FF651C197DA204ACC0A4024C05860A9419
-            1F401F940AC00AE049C017B402A102E8003A003BE0554759FFBB4B0284C04CBC
-            999D5C367BDFFED9DD13A4574FAF50C0351421DFCAD62798F3DDD8331AB2DC0E
-            976437D412BED1C21AB7F4BEF339B507D728F159A685B41B46765124A826AB0D
-            C01D9ED8FD1AD574962D750634A1AD708AC0401C60A01D2BB9083F261F5C1D26
-            3B2744A9B02E4D89A80B3A2E3233F774447FB8A70498D1AA82BE0EADB32EB5CC
-            8C7D9DF05B90E1EFBA1A0C74865F16E55E46B9002F1AB25B1DA34009F0F120F3
-            5C80E8D71DE0846DBA93CF5C8057F5D8B199012CB869FEF3175A121783414F99
-            0033990D99668087AE886E743FA8C23FD0C67DC056EB256989A0124FD7518099
-            DA2F3B0363A3DA0136D355A2054747D9A8356B679463C819DADC3DD2DEA8688C
-            1F2C796045F3E8AB2417ADC8B89DCB94CE0206147049355EE45D5AC98A51BA1E
-            7F9EFCA402C8CCA5CE0000000049454E44AE426082}
+            6E4944415478DA9D54CB510241107D0D559647429008C408840C3402E1E4EF20
+            46B04B04E041714FAB1168060B11B8194006EED952DBD7BBACEC1791AE1AA619
+            BA5FBFE9E987A068BEB6F0811B28BA5C1D085ADC23EE21F76746CC7029CB6C8A
+            E4001ED5925D9E46718232D1FCC4BAF4CF624F3122D05319C45307DF18A2C180
+            7399A0CE3C1D1264CC4C9771A335C854FBF47C7CE108D712E22FBBD70E8B0569
+            4121C0010102AEBB4A069E9E906144FAB31223C0C11EDAB262E1E042DA9555A7
+            EAF27399ED41A6870BEB9DD009E8CC19E4FE1BC47E131C1B93777E3D2DD1DD06
+            E481576DC237264A26BD9D40A66ACF1E244C14035CC9EB4E200DBC6CD7131BBA
+            AA22999EB8F124D6BDCE264B5E672418532BFB58D44E6A322761512FB144009B
+            DE9EAC0293C1F964838B136B82341B48F47B6613DBC45BDC4BF66AAD9DE45A0E
+            D7ED46EDA42205277CD5C7BC8AD3E9354B656FD680B139E4599FAB55BCBA942A
+            999652D997FF4FE6ECDF247735DA0F2478B7D2783B7D950000000049454E44AE
+            426082}
         end
         object edtNCM: TSMALL_DBEdit
           Left = 110
@@ -2598,31 +2612,13 @@ inherited FrmEstoque: TFrmEstoque
             Transparent = True
           end
           object Label98: TLabel
-            Left = 20
-            Top = 73
-            Width = 91
+            Left = 5
+            Top = 81
+            Width = 106
             Height = 13
             Alignment = taRightJustify
             AutoSize = False
-            Caption = 'C'#243'digo Enquad.'
-            Color = clBtnHighlight
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clBlack
-            Font.Height = -11
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = []
-            ParentColor = False
-            ParentFont = False
-            Transparent = True
-          end
-          object Label1: TLabel
-            Left = 20
-            Top = 86
-            Width = 91
-            Height = 13
-            Alignment = taRightJustify
-            AutoSize = False
-            Caption = 'Legal do IPI'
+            Caption = 'C'#243'd. Enquadramento'
             Color = clBtnHighlight
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
@@ -2796,24 +2792,6 @@ inherited FrmEstoque: TFrmEstoque
             ParentFont = False
             Transparent = True
           end
-          object lbBCPISCOFINS: TLabel
-            Left = 16
-            Top = 124
-            Width = 95
-            Height = 13
-            Alignment = taRightJustify
-            AutoSize = False
-            Caption = '% Base'
-            Color = clBtnHighlight
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clBlack
-            Font.Height = -11
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = []
-            ParentColor = False
-            ParentFont = False
-            Transparent = True
-          end
           object Label38: TLabel
             Left = 16
             Top = 174
@@ -2941,27 +2919,6 @@ inherited FrmEstoque: TFrmEstoque
             TabOrder = 2
             OnKeyDown = PadraoKeyDown
           end
-          object dbeIcmBCPISCOFINS: TSMALL_DBEdit
-            Left = 118
-            Top = 119
-            Width = 60
-            Height = 20
-            AutoSize = False
-            BevelInner = bvLowered
-            BevelOuter = bvNone
-            Ctl3D = True
-            DataField = 'BCPISCOFINS'
-            DataSource = Form7.DataSource14
-            Font.Charset = ANSI_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -13
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = []
-            ParentCtl3D = False
-            ParentFont = False
-            TabOrder = 3
-            OnKeyDown = PadraoKeyDown
-          end
           object cboCST_PIS_COFINS_E: TComboBox
             Left = 118
             Top = 169
@@ -2974,7 +2931,7 @@ inherited FrmEstoque: TFrmEstoque
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
             ParentFont = False
-            TabOrder = 4
+            TabOrder = 3
             OnChange = cboCST_PIS_COFINS_EChange
             OnEnter = cboCST_PIS_COFINS_EEnter
             OnKeyDown = PadraoKeyDown
@@ -3050,7 +3007,7 @@ inherited FrmEstoque: TFrmEstoque
             Font.Style = []
             ParentCtl3D = False
             ParentFont = False
-            TabOrder = 5
+            TabOrder = 4
             OnKeyDown = PadraoKeyDown
           end
           object dbepCofinsEntrada: TSMALL_DBEdit
@@ -3071,7 +3028,7 @@ inherited FrmEstoque: TFrmEstoque
             Font.Style = []
             ParentCtl3D = False
             ParentFont = False
-            TabOrder = 6
+            TabOrder = 5
             OnKeyDown = PadraoKeyDown
           end
         end
@@ -3492,7 +3449,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 17
           Top = 23
           Width = 634
-          Height = 22
+          Height = 19
           BevelInner = bvNone
           Color = clWhite
           Ctl3D = False
@@ -3512,7 +3469,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 650
           Top = 23
           Width = 125
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -4293,7 +4250,7 @@ inherited FrmEstoque: TFrmEstoque
           Font.Style = []
           ParentFont = False
         end
-        object SMALL_DBEdit32: TSMALL_DBEdit
+        object edtPrecoICM_Entrada: TSMALL_DBEdit
           Left = 358
           Top = 101
           Width = 55
@@ -4316,10 +4273,10 @@ inherited FrmEstoque: TFrmEstoque
           ReadOnly = True
           ShowHint = True
           TabOrder = 0
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
-        object SMALL_DBEdit36: TSMALL_DBEdit
+        object edtPrecoICM_Saida: TSMALL_DBEdit
           Left = 358
           Top = 126
           Width = 55
@@ -4343,10 +4300,10 @@ inherited FrmEstoque: TFrmEstoque
           ParentShowHint = False
           ShowHint = True
           TabOrder = 1
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
-        object SMALL_DBEdit39: TSMALL_DBEdit
+        object edtPrecoCustoOP: TSMALL_DBEdit
           Left = 358
           Top = 151
           Width = 55
@@ -4368,8 +4325,8 @@ inherited FrmEstoque: TFrmEstoque
           ParentShowHint = False
           ShowHint = True
           TabOrder = 2
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
         object btnPrecoIgual: TBitBtn
           Left = 413
@@ -4380,7 +4337,7 @@ inherited FrmEstoque: TFrmEstoque
           TabOrder = 3
           OnClick = btnPrecoIgualClick
         end
-        object SMALL_DBEdit40: TSMALL_DBEdit
+        object edtPrecoOutrosImp: TSMALL_DBEdit
           Left = 358
           Top = 176
           Width = 55
@@ -4404,10 +4361,10 @@ inherited FrmEstoque: TFrmEstoque
           ParentShowHint = False
           ShowHint = True
           TabOrder = 4
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
-        object SMALL_DBEdit42: TSMALL_DBEdit
+        object edtPrecoComissao: TSMALL_DBEdit
           Left = 358
           Top = 201
           Width = 55
@@ -4429,10 +4386,10 @@ inherited FrmEstoque: TFrmEstoque
           ParentShowHint = False
           ShowHint = True
           TabOrder = 5
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
-        object SMALL_DBEdit43: TSMALL_DBEdit
+        object edtPrecoLucro: TSMALL_DBEdit
           Left = 358
           Top = 226
           Width = 55
@@ -4454,8 +4411,8 @@ inherited FrmEstoque: TFrmEstoque
           ParentShowHint = False
           ShowHint = True
           TabOrder = 6
-          OnExit = SMALL_DBEdit32Exit
-          OnKeyDown = SMALL_DBEdit32KeyDown
+          OnExit = edtPrecoICM_EntradaExit
+          OnKeyDown = edtPrecoICM_EntradaKeyDown
         end
         object btnPreco: TBitBtn
           Left = 399
@@ -4654,8 +4611,8 @@ inherited FrmEstoque: TFrmEstoque
             OnKeyDown = PadraoKeyDown
           end
           object edtPrecoNormal: TSMALL_DBEdit
-            Left = 145
-            Top = 120
+            Left = 146
+            Top = 121
             Width = 100
             Height = 20
             AutoSize = False
@@ -5083,7 +5040,7 @@ inherited FrmEstoque: TFrmEstoque
           Columns = <
             item
               Expanded = False
-              FieldName = 'CODIGO'
+              FieldName = 'EAN'
               Title.Caption = 'C'#243'digo de barras'
               Width = 133
               Visible = True
@@ -5174,7 +5131,6 @@ inherited FrmEstoque: TFrmEstoque
   end
   inherited DSCadastro: TDataSource
     DataSet = Form7.ibDataSet4
-    OnDataChange = DSCadastroDataChange
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Filter = 'JPEG Image File (*.jpg)|*.jpg|| | | | | | | | | '

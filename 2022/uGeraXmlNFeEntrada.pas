@@ -1580,7 +1580,9 @@ begin
         end;
         {Sandro Silva 2023-12-13 fim}
 
-        if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+        //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then Mauricio Parizotto 2024-08-07
+        if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1')
+          or (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '4') then
         begin
           Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value := '900';
         end;
@@ -1934,11 +1936,16 @@ begin
   /// Verificar Manual pois existe uma variação nos campos de acordo com Tipo de Tribucação ////
   // ICMS
   fAliquota := 0;
-  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+
+  {$Region '//// CRT 2 e 3 - Normal //// ' }
+  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-07
+  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+    and (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
   begin
     // 1 - Simples nacional
     // 2 - Simples nacional - Excesso de Sublimite de Receita Bruta
     // 3 - Regime normal
+    // 4 - MEI
     //
     // N11 e N12 todos Tem
     //
@@ -2150,11 +2157,13 @@ begin
         Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := StrTran(Alltrim(FormatFloat('##0.00',((Form7.ibDAtaset23.FieldByname('VICMSST').AsFloat / Form7.ibDAtaset23.FieldByname('VBCST').AsFloat) * 100))),',','.') else Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := '0.00';  // Aliquota do Imposto do ICMS ST
     end;
 
+    {Mauricio Parizotto 2024-08-07 - Tem condição que não entra nesse bloco se for 1
     if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1' then
     begin
       Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0';  // BC
       Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0';  // Valor do ICMS em Reais
     end;
+    }
 
     if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '30') or
        (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '40') or
@@ -2311,18 +2320,19 @@ begin
     end;
     }
 
-    // FCP
-
   end;
+  {$Endregion}
 
-
+  {$Region '//// CRT 1 e 4 - Simples //// ' }
   // TAGS - Simples NAcional - CSOSN
-  if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1' then
+  //if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1' then Mauricio Parizotto 2024-08-07
+  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1')
+    or (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '4')then
   begin
     // 1 - Simples nacional
     // 2 - Simples nacional - Excesso de Sublimite de Receita Bruta
     // 3 - Regime normal
-
+    // 4 - Simples nacional - MEI
 
     // N12a Tem em todas - e eé referencia para classificar as tags
     if AllTrim(Form7.ibDataSet14.FieldByName('CSOSN').AsString) <> '' then
@@ -2705,7 +2715,8 @@ begin
     {Sandro Silva 2023-06-13 fim}
 
   end;
-  // Fim SIMPLES NACIONAL
+  {$Endregion}
+
 
   {Sandro Silva 2023-06-13 inicio}
   // Não é posssível informar CSOSN 61. Para CSOSN 61 será criado no grupo imposto a tag CST

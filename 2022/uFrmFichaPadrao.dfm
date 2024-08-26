@@ -888,7 +888,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 4
-      ExplicitLeft = 832
       object Button19: TBitBtn
         Left = 350
         Top = 5
@@ -911,9 +910,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 10
-      ExplicitWidth = 822
-      ExplicitHeight = 460
     end
   end
   object DSCadastro: TDataSource

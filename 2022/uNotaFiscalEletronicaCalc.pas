@@ -345,8 +345,10 @@ begin
           if oItem.BASE > 0 then
           begin
             // NOTA DEVOLUCAO D E V
-            if ((Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') ))
-            or ((Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and (
+            //if ((Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') )) Mauricio Parizotto 2024-08-07
+            if (( ( Form7.ibDAtaset13.FieldByname('CRT').AsString = '1' ) or (Form7.ibDAtaset13.FieldByname('CRT').AsString = '4')  ) and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') ))
+            //or ((Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and ( Mauricio Parizotto 2024-08-07
+            or (( (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '4') ) and (
                                                                        (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '00') or
                                                                        (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '10') or
                                                                        (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '20') or
@@ -416,8 +418,10 @@ begin
               if IBQProduto.FieldByName('PIVA').AsFloat > 0 then
               begin
                 // NOTA DEVOLUCAO D E V
-                if ((Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') ))
-                or ((Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and (
+                //if ((Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') )) Mauricio Parizotto 2024-08-07
+                if (( (Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') or (Form7.ibDAtaset13.FieldByname('CRT').AsString = '4') ) and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') ))
+                //or ((Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and ( Mauricio Parizotto 2024-08-07
+                or (( (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '4') ) and (
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '00') or
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '10') or
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '20') or
@@ -439,7 +443,6 @@ begin
                 // CALCULO DO IVA
                 if AliqICMdoCliente(oItem) <= IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
                 begin
-                  //
                   if pos('<BCST>',IBQIcm.FieldByName('OBS').AsString) <> 0 then
                   begin
                     // VINICULAS
@@ -491,8 +494,10 @@ begin
               end else
               begin
                 // NOTA DEVOLUCAO D E V
-                if ((Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByName('CSOSN').AsString = '900') ))
-                or ((Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and (
+                //if ((Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByName('CSOSN').AsString = '900') )) Mauricio Parizotto 2024-08-07
+                if (( (Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') or (Form7.ibDAtaset13.FieldByname('CRT').AsString = '4') ) and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByName('CSOSN').AsString = '900') ))
+                //or ((Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and ( Mauricio Parizotto 2024-08-07
+                or (( (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '4') ) and (
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '00') or
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '10') or
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '20') or
@@ -697,7 +702,8 @@ begin
                     or (IBQProduto.FieldByname('CSOSN').AsString = '900')
                     then
             begin
-              if (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '1')
+              //if (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '1') Mauricio Parizotto 2024-08-07
+              if ( (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '1') and (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '4') )
               or (Copy(oItem.CFOP,2,3) = '201')
               or (Copy(oItem.CFOP,2,3) = '202')
               or (Copy(oItem.CFOP,2,3) = '411') then
@@ -908,9 +914,11 @@ begin
       oItem.VFCPST   := 0.00; // Valor da Base de Cálculo do FCP ST
     end;
 
-    if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+    {$Region '//// CRT 2 e 3 - Normal //// ' }
+    //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-07
+    if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+      and (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
     begin
-
       dVBCFCPST := oItem.Vbcst;
 
       // Saída empresa no Regime normal por CST
@@ -1040,17 +1048,16 @@ begin
           end;
         end;
       end;
-      // final TAGS saaída por CST - CRT 2 ou 3 - Regime normal
     end;
+    {$Endregion}
 
+    {$Region '//// CRT 1 e 4 - Simples //// ' }
 
-    if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+    //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+    if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1')
+      or (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '4') then
     begin
-      ///////////////////////////////
-      //
-      // Início TAGS saída por CSOSN - CRT = 1 imples Nacional
-      //
-      ///////////////////////////////
+      // Início TAGS saída por CSOSN - CRT = 1 imples Nacional e 4 Simples MEI
 
       if Form1.sVersaoLayout = '4.00' then
       begin
@@ -1142,9 +1149,8 @@ begin
           end;
         end;
       end;
-
-      // Final TAGS saída por CSOSN - CRT = 1 imples Nacional
     end;
+    {$Endregion}
 
   finally
     FreeAndNil(IBQProduto);

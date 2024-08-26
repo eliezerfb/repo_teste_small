@@ -7,7 +7,7 @@ uses
   Forms
   , Windows
   , Classes
-  , ExtCtrls;
+  , ExtCtrls, System.AnsiStrings;
 
 type
   TIconesSistema = class
@@ -30,6 +30,9 @@ type
       imgLiberarF : Timage;
       imgFiltrar : Timage;
       imgFiltrarF : Timage;
+
+      imgOrcamento : Timage;
+      imgOrcamentoF : Timage;
     public
      function GetIconNovo(F : Boolean) : Timage;
      function GetIconProcurar(F : Boolean) : Timage;
@@ -40,6 +43,8 @@ type
      function GetIconAlterar(F : Boolean) : Timage;
      function GetIconLiberar(F : Boolean) : Timage;
      function GetIconFiltrar(F : Boolean) : Timage;
+
+     function GetIconOrcamento(F : Boolean) : Timage;
      constructor Create;
   end;
 
@@ -51,7 +56,7 @@ var
 
 implementation
 
-uses SysUtils, uSmallConsts;
+uses SysUtils, uSmallConsts, smallfunc_xe, uSistema;
 
 procedure MostraImagemCoordenada(ImgOri: TImage; ImgDest: TImage; Linha:integer; Coluna: Integer; Tamanho : integer = 70);
 var
@@ -83,7 +88,7 @@ end;
 procedure CarregaIconesSistema;
 var
   imgTemplate : TImage;
-  DirImg : string;
+  DirImg, DirImgBmp : string;
 
   r1 : tRect;
 begin
@@ -92,11 +97,19 @@ begin
   try
     imgTemplate := TImage.Create(nil);
 
-    DirImg := ExtractFilePath(Application.ExeName)+_DirImagemIcones;
+    //DirImg := ExtractFilePath(Application.ExeName)+_DirImagemIcones; Mauricio Parizotto 2024-07-29
+    DirImg    := ExtractFilePath(Application.ExeName)+ImagemIconesSmall(TSistema.GetInstance.Tema);
+    DirImgBmp := ExtractFilePath(DirImg)+'imgTemp.bmp';
 
-    if FileExists(DirImg) then
+    CopyFile(pchar(DirImg),
+            pchar(DirImgBmp),
+            False
+            );
+
+    if FileExists(DirImgBmp) then
     begin
-      imgTemplate.Picture.LoadFromFile(DirImg);
+      imgTemplate.Picture.LoadFromFile(DirImgBmp);
+      DeleteFile(DirImgBmp);
     end;
 
     MostraImagemCoordenada(imgTemplate,IconesSistema.imgNovo,2,1);
@@ -117,6 +130,11 @@ begin
     MostraImagemCoordenada(imgTemplate,IconesSistema.imgLiberarF,6,9);
     MostraImagemCoordenada(imgTemplate,IconesSistema.imgFiltrar,2,7);
     MostraImagemCoordenada(imgTemplate,IconesSistema.imgFiltrarF,6,7);
+
+    //Mauricio Parizotto 2024-07-31
+    //Módulos
+    MostraImagemCoordenada(imgTemplate,IconesSistema.imgOrcamento,3,7);
+    MostraImagemCoordenada(imgTemplate,IconesSistema.imgOrcamentoF,7,7);
 
   finally
     FreeAndNil(imgTemplate);
@@ -147,6 +165,10 @@ begin
   imgLiberarF     := Timage.Create(nil);
   imgFiltrar      := Timage.Create(nil);
   imgFiltrarF     := Timage.Create(nil);
+
+  //Módulos
+  imgOrcamento    := Timage.Create(nil);
+  imgOrcamentoF   := Timage.Create(nil);
 end;
 
 function TIconesSistema.GetIconAlterar(F: Boolean): Timage;
@@ -195,6 +217,14 @@ begin
     Result := imgNovoF
   else
     Result := imgNovo;
+end;
+
+function TIconesSistema.GetIconOrcamento(F: Boolean): Timage;
+begin
+  if F then
+    Result := imgOrcamentoF
+  else
+    Result := imgOrcamento;
 end;
 
 function TIconesSistema.GetIconProcurar(F : Boolean): Timage;

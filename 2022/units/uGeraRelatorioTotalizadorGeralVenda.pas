@@ -117,7 +117,8 @@ end;
 
 function TGeraRelatorioTotalizadorGeralVenda.TestarGeraCSOSN: Boolean;
 begin
-  Result := (FdmRelatorio.qryEmitente.FieldByName('CRT').AsInteger in [1]);
+  //Result := (FdmRelatorio.qryEmitente.FieldByName('CRT').AsInteger in [1]); Mauricio Parizotto 2024-08-07
+  Result := (FdmRelatorio.qryEmitente.FieldByName('CRT').AsInteger in [1,4]);
 end;
 
 procedure TGeraRelatorioTotalizadorGeralVenda.CarregaPorCFOPCSTCSOSN(AenDoc: TDocsImprimirTotGeralVenda);
