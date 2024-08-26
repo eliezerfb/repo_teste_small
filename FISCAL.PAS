@@ -139,6 +139,23 @@ uses
 
   const TITULO_FORM_SANGRIA = 'Retirada de caixa';
 
+  {Mauricio Parizotto 2024-08-23 Inicio}
+  const SQL_NFCE_ibd150         = ' Select N.*, '+
+                                  '   Cast('''' as BLOB SUB_TYPE TEXT) FORMAPAGAMENTO, '+
+                                  '   Cast('''' as Varchar(60) ) CLIFOR '+
+                                  ' From NFCE N ';
+  const SQL_FORMAPAGAMENTO_LIST = ' (Select list(DISTINCT trim(substring(P.FORMA from 3 for char_length(P.FORMA))), ''; '') '+
+                                  '  From PAGAMENT P'+
+                                  '  Where P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA '+
+                                  '    and substring(P.FORMA from 1 for 2) not in (''00'', ''13'')'+
+                                  ' ) FORMAPAGAMENTO,';
+  const SQL_CLIENTE             = ' (Select First 1 A.CLIFOR'+
+                                  '  From ALTERACA A'+
+                                  '  Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
+                                  '    and coalesce(A.CLIFOR, '''') <> '''' '+
+                                  ' ) CLIFOR';
+  {Mauricio Parizotto 2024-08-23 Fim}
+
   procedure ExibeScrollCupom(bVisible: Boolean); // Sandro Silva 2016-08-03
   function Audita(sAto, sModulo, sUsuario, sHistorico: String; ValorDe, ValorPara: Double): Boolean;
   function ValidaOffLine(Mais1Ini: TIniFile; bCargaNova: Boolean;
@@ -166,7 +183,7 @@ uses
   function AssinaRegistro(pNome: String; DataSet: TDataSet; bAssina: Boolean): Boolean; // 2015-10-16
   function AssinaRegistroE2(sTexto: String): String; // Sandro Silva 2019-09-13 ER 02.06 UnoChapeco
   function HasHs(sP1: String; bP2: Boolean): boolean; // Sandro Silva 2016-02-26
-  procedure AjustaLarguraDBGrid(DBGrid: TDBGrid);
+  procedure AjustaLarguraDBGrid(DBGrid: TDBGrid; WidthExtra : integer = 0);
   function ContaCasasDecimais(dValor: Double): Integer;
   function IniciaHashOffLine(sp1: String): Boolean;
   //
@@ -1031,6 +1048,8 @@ type
     Iniciarnovavenda1: TMenuItem;
     ibDataSet7INSTITUICAOFINANCEIRA: TIBStringField;
     FunesAdministrativasIntegraoIta1: TMenuItem;
+    IBDataSet150FORMAPAGAMENTO: TWideMemoField;
+    IBDataSet150CLIFOR: TIBStringField;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -2224,19 +2243,14 @@ end;
 
 function MostraALogo(pP1: Boolean; bExibirNoCupomEmTela: Boolean = True): Boolean;// Sandro Silva 2018-04-26  function MostraALogo(pP1: Boolean): Boolean;
 begin
-  //
   if ((StrToInt(Form1.sMesas) > 0) and (Form1.bBalancaAutonoma = False)) and (Form1.Memo1.Visible=False) then // Sandro Silva 2018-12-19 if (StrToInt(Form1.sMesas) > 0) and (Form1.Memo1.Visible=False) then
   begin
-    //
     Form1.Image2.Visible := False;
     Form1.Panel9.Visible := False;
-    //
   end else
   begin
-    //
     if FileExists(Form1.sAtualOnLine+'\logofrente.bmp') then
     begin
-      //
       Form1.Image2.Visible := True;
       Form1.Panel9.Visible := True;
       //
@@ -2257,13 +2271,11 @@ begin
       begin
         if Form1.Image2.Picture.Width >= Form1.Image2.Picture.Height then
         begin
-          //
           Form1.Image2.Width  := (StrToInt(StrZero((Form1.Image2.Picture.Width * (Form1.Panel9.Width / 2 / Form1.Image2.Picture.Width)),10,0))*2);
           Form1.Image2.Height := (StrToInt(StrZero((Form1.Image2.Picture.Height* (Form1.Panel9.Width / 2 / Form1.Image2.Picture.Width)),10,0))*2);
           //
           // SmallMsg(IntToStr(Form1.Image2.Width));
           // SmallMsg(IntToStr(Form1.Image2.Height));
-          //
         end else
         begin
           Form1.Image2.Width  := StrToInt(StrZero((Form1.Image2.Picture.Width  * (Form1.Panel9.Height / 2 / Form1.Image2.Picture.Height)),10,0))*2;
@@ -2274,15 +2286,11 @@ begin
       Form1.Image2.Left := 0;
       Form1.Image2.Top  := 0;
       Form1.Image2.Repaint;
-      //
     end;
-    //
   end;
   //
   // Mostra a logo
-  //
   Result := True
-  //
 end;
 
 function FunctionDetect(LibName, FuncName: String; var LibPointer: Pointer): boolean;
@@ -2742,10 +2750,8 @@ begin
     end;
 
   end;
-  //
-  //
+
   Result := True;
-  //
 end;
 
 function TForm1.EstoqueDoDia(P1:Boolean): Boolean;
@@ -2754,17 +2760,15 @@ var
 begin
   Cursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;
-  //
-  //
+
   if FileExists(Form1.sAtualOnLine+'\small.ini') and not FileExists(pchar(Form1.sPastadoExecutavel+'\offline.fdb')) then 
   begin
     Form1.bStatusRede := True; // Liga o botão rede
   end;
-  //
+
   Screen.Cursor := Cursor;
-  //
+
   Result := True;
-  //
 end;
 
 function TForm1.GetNumeroCaixa(sModeloDocumento: String; sNumeroSerie: String): String;
@@ -2835,7 +2839,6 @@ begin
       end;
     end;
 
-    //
     IBTCAIXA := CriaIBTransaction(Form1.IBTransaction1.DefaultDatabase);
     IBQCAIXA := CriaIBQuery(IBTCAIXA);
     try
@@ -2845,7 +2848,6 @@ begin
       if StrToIntDef(Result, 0) = 0 then// Validando se configurar valor inválido
         Result := 'xxx';
 
-      //
       if Result = 'xxx' then
       begin
         // Não tem caixa configurado no FRENTE.INI
@@ -5572,7 +5574,7 @@ begin
 
 end;
 
-procedure AjustaLarguraDBGrid(DBGrid: TDBGrid);
+procedure AjustaLarguraDBGrid(DBGrid: TDBGrid; WidthExtra : integer = 0);
 var
   iWidthTotalColunas: Integer;
   iColuna: Integer;
@@ -5586,7 +5588,8 @@ begin
     end;
     for iColuna := 0 to DBGrid.Columns.Count -1 do
     begin
-      DBGrid.Columns[iColuna].Width := Trunc((DBGrid.Columns[iColuna].Width / iWidthTotalColunas) * (DBGrid.Width - GetSystemMetrics(SM_CXVSCROLL) - IndicatorWidth));
+      //DBGrid.Columns[iColuna].Width := Trunc((DBGrid.Columns[iColuna].Width / iWidthTotalColunas) * (DBGrid.Width - GetSystemMetrics(SM_CXVSCROLL) - IndicatorWidth)); Mauricio Parizotto 2024-08-26
+      DBGrid.Columns[iColuna].Width := Trunc((DBGrid.Columns[iColuna].Width / iWidthTotalColunas) * (DBGrid.Width - GetSystemMetrics(SM_CXVSCROLL) - IndicatorWidth + WidthExtra));
     end;
   end;
 end;
@@ -11713,9 +11716,12 @@ begin
                 // Se a data contida em sDataDoCupom for diferente daquela contida no campo NFCE.DATA então será usada a data da tabela NFCE para ser aplicada em ALTERACA e PAGAMENT
                 Form1.IBDataSet150.Close;
                 Form1.IBDataSet150.SelectSQL.Text :=
+                  {Mauricio Parizotto 2024-08-23
                   'select * ' +
                   'from NFCE ' +
-                  'where MODELO = ' + QuotedStr(Form1.sModeloECF) +
+                  }
+                  SQL_NFCE_ibd150+
+                  ' where MODELO = ' + QuotedStr(Form1.sModeloECF) +
                   ' and NUMERONF = ' + QuotedStr(Form1.ibDataSet27.FieldByName('PEDIDO').AsString) +
                   ' and CAIXA = ' + QuotedStr(Form1.ibDataSet27.FieldByName('CAIXA').AsString);
                 Form1.IBDataSet150.Open;
@@ -12296,8 +12302,11 @@ begin
 
                     Form1.IBDataSet150.Close;
                     Form1.IBDataSet150.SelectSQL.Text :=
+                      {Mauricio Parizotto 2024-08-23
                       'select * ' +
                       'from NFCE ' +
+                      }
+                      SQL_NFCE_ibd150+
                       'where MODELO = ' + QuotedStr(Form1.sModeloECF) +
                       ' and NUMERONF = ' + QuotedStr(Form1.ibDataSet27.FieldByName('PEDIDO').AsString) +
                       ' and CAIXA = ' + QuotedStr(Form1.ibDataSet27.FieldByName('CAIXA').AsString);
@@ -13092,8 +13101,13 @@ begin
 
         Screen.Cursor := crHourGlass; // Cursor de Aguardo
         Form1.ibDataset150.Close;
-        Form1.ibDataset150.SelectSql.Clear;
-        Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65')); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
+        //Mauricio Parizotto 2024-08-23
+        //Form1.ibDataset150.SelectSql.Clear;
+        //Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65')); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
+        Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                            ' Where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                            '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                                            '   and MODELO = ' + QuotedStr('65');
         Form1.ibDataset150.Open;
 
         if _ecf65_UsoDenegado(Form1.IBDataSet150.FieldByName('NFEXML').AsString) then
@@ -23208,16 +23222,12 @@ begin
       Demais('RG');
 
     Sleep(3000);
-    //
-    //
   end;
 end;
 
 procedure TForm1.Edit1Enter(Sender: TObject);
 begin
-  //
   dBgrid2.Visible := False;
-  //
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -23926,27 +23936,23 @@ begin
     pnlMenuFiscalPAFNFCeInacessivel.BringToFront;
     pnlMenuFiscalPAFNFCeInacessivel.Repaint;
   end;
-  //                                                                           
+
   Form1.DateTimePicker1.Date := Date;
-  //
-  //
-  //  Form1.dbGrid1.Align              := AlTop;
-  //
 
   // Executando na resolução do notebook do Ronei, quando acessa o gerenciador de venda fica aparecendo a imagem de fundo e o label com texto "Descrição"
   Form1.Image1.Visible  := False; // Sandro Silva 2021-07-13
   // Sandro Silva 2021-07-29 Form1.Label13.Visible := False; // Sandro Silva 2021-07-13
 
   Form1.DateTimePicker1.Visible := True;
-  //
+
   Form1.DBGrid1.Top     := 0 + Form1.DateTimePicker1.Height;// Sandro Silva 2021-11-03 + AjustaAltura(1); // Sandro Silva 2021-09-14 Form1.DBGrid1.Top     := 0 + Form1.DateTimePicker1.Height
   Form1.DBGrid1.Left    := 0;
   Form1.DBGrid1.Height  := Panel1.Height - Form1.DateTimePicker1.Height - AjustaAltura(1); // Sandro Silva 2021-09-14 Form1.DBGrid1.Height  := Panel1.Height - Form1.DateTimePicker1.Height;
   Form1.DBGrid1.Width   := Panel1.Width;
   Form1.DBGrid1.Visible := True;
-  Form1.DBGrid1.BringToFront; // Sandro Silva 2016-09-09
+  Form1.DBGrid1.BringToFront;
 
-  Form1.dbGrid1.DataSource.DataSet := Form1.ibDataSet150; // Sandro Silva 2016-08-12
+  Form1.dbGrid1.DataSource.DataSet := Form1.ibDataSet150;
 
   Form1.ibDataset150.Close;
   Form1.ibDataset150.SelectSql.Clear;
@@ -23954,33 +23960,30 @@ begin
   Form1.ibDataset150.SelectSQL.Text := SelectSQLGerenciadorVendasF10(Form1.sModeloECF, Form1.sModeloECF_Reserva, Form1.DateTimePicker1.Date);
   Form1.ibDataset150.Open;
 
-  //
   Form1.ibDataset150.Last;
 
-  //
-  Form1.Panel6.Width   := Form1.touch_ESC2.Width; // Sandro Silva 2017-04-25
-  Form1.Panel6.Height  := Form1.touch_ESC2.Height; // Sandro Silva 2017-04-25
+  Form1.Panel6.Width   := Form1.touch_ESC2.Width;
+  Form1.Panel6.Height  := Form1.touch_ESC2.Height;
   Form1.Panel6.Top     := AjustaAltura(4); // Sandro Silva 2023-08-08 Form1.Panel6.Top     := AjustaAltura(5); // Sandro Silva 2021-07-12 Form1.Panel6.Top     := 5; // Sandro Silva 2017-04-25  2;
-  Form1.Panel6.Left    := Panel1.Width - Form1.Panel6.Width - AjustaLargura(10); // Sandro Silva 2021-07-12 Form1.Panel6.Left    := Panel1.Width - Form1.Panel6.Width - 10;
-  //
+  Form1.Panel6.Left    := Panel1.Width - Form1.Panel6.Width - AjustaLargura(10);
+
   Form1.Panel6.Visible := True;
-  //
+
   Form1.Panel7.Width   := Form1.touch_PesquisaNFCe.Width;
   Form1.Panel7.Height  := Form1.touch_PesquisaNFCe.Height;
   Form1.Panel7.Top     := Form1.Panel6.Top;
-  Form1.Panel7.Left    := Form1.Panel6.Left - Form1.Panel7.Width - AjustaLargura(10); // Sandro Silva 2021-07-12 Form1.Panel7.Left    := Form1.Panel6.Left - Form1.Panel7.Width - 10;
+  Form1.Panel7.Left    := Form1.Panel6.Left - Form1.Panel7.Width - AjustaLargura(10);
   Form1.Panel7.Visible := True;
 
   Form1.Panel8.Width   := Form1.touch_OpcoesNFCe.Width;
   Form1.Panel8.Height  := Form1.touch_OpcoesNFCe.Height;
   Form1.Panel8.Top     := Form1.Panel6.Top;
-  Form1.Panel8.Left    := Form1.Panel7.Left - Form1.Panel8.Width - AjustaLargura(10); // Sandro Silva 2021-07-12 Form1.Panel8.Left    := Form1.Panel7.Left - Form1.Panel8.Width - 10;
+  Form1.Panel8.Left    := Form1.Panel7.Left - Form1.Panel8.Width - AjustaLargura(10);
   Form1.Panel8.Visible := True;
-  //
+
   //Sandro Silva 2015-04-09 Grid com as NFC-e recebe foco para evitar problema de teclar ESC e fechar toda aplicação
   if Form1.DBGrid1.CanFocus then
     Form1.DBGrid1.SetFocus;
-  //
 end;
 
 procedure TForm1.DBGrid1KeyUp(Sender: TObject; var Key: Word;
@@ -24749,24 +24752,6 @@ begin
           if (DBGrid1.DataSource.DataSet.FieldByName('CAIXA').AsString <> Form1.sCaixa)
             or (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '59') then
           begin
-
-            {Sandro Silva 2023-09-04 inicio
-            //Sandro Silva 2023-08-30 inicio
-            if (DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString = '59') and (DBGrid1.DataSource.DataSet.FieldByName('GERENCIAL').AsString <> '') then
-            begin
-              PDV_ImportaGerencial(DBGrid1.DataSource.DataSet.FieldByName('NUMERONF').AsString, '59', DBGrid1.DataSource.DataSet.FieldByName('MODELO').AsString);
-
-              Form1.ibDataset150.Close;
-              Form1.ibDataset150.SelectSql.Clear;
-              Form1.ibDataset150.SelectSQL.Text := SelectSQLGerenciadorVendasF10(Form1.sModeloECF, Form1.sModeloECF_Reserva, Form1.DateTimePicker1.Date);
-              Form1.ibDataset150.Open;
-
-              Exit;
-            end;
-            //Sandro Silva 2023-08-30 fim
-            }
-            {Sandro Silva 2023-09-04 fim}
-
             IBQDADOS := CriaIBQuery(Form1.ibQuery65.Transaction);
             try
               sCaixaOld    := DBGrid1.DataSource.DataSet.FieldByName('CAIXA').AsString;
@@ -25049,12 +25034,12 @@ begin
     Form1.ibDataset150.DisableControls; // Sandro Silva 2017-09-29
 
     Form1.Button4Click(Sender);
-    //
+
     Form1.ibDataset150.Close;
     Form1.ibDataset150.SelectSql.Clear;
     Form1.ibDataset150.SelectSQL.Add(sSqlOld);
     Form1.ibDataset150.Open;
-    //
+
     Form1.ibDataset150.Last;
   finally
     Form1.iCupom := iCupomOld;
@@ -25310,7 +25295,6 @@ procedure TForm1.DateTimePicker1Change(Sender: TObject);
 begin
   Form1.ibDataset150.Close;
   Form1.ibDataset150.SelectSql.Clear;
-  // Sandro Silva 2023-06-23 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where DATA='+QuotedStr(DateToStrInvertida(Form1.DateTimePicker1.Date))+'order by NUMERONF ');
   Form1.ibDataset150.SelectSQL.Text := SelectSQLGerenciadorVendasF10(Form1.sModeloECF, Form1.sModeloECF_Reserva, Form1.DateTimePicker1.Date);
   Form1.ibDataset150.Open;
 end;
@@ -26091,11 +26075,14 @@ begin
 
                       Form1.IBDataSet150.Close;
                       Form1.IBDataSet150.SelectSQL.Text :=
+                        {Mauricio Parizotto 2024-08-23
                         'select * ' +
                         'from NFCE ' +
-                        'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
-                        ' and CAIXA = ' + QuotedStr(Form1.sCaixa) +
-                        ' and MODELO = ' + QuotedStr(Form1.sModeloECF);
+                        }
+                        SQL_NFCE_ibd150 +
+                        ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                        '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                        '   and MODELO = ' + QuotedStr(Form1.sModeloECF);
                       Form1.IBDataSet150.Open;
 
                       while Form1.IBDataSet150.Eof = False do
@@ -27041,7 +27028,8 @@ begin
   {Sandro Silva 2023-08-16 fim}
 
   if DBGrid1.Visible then
-    AjustaLarguraDBGrid(DBGrid1); // Sandro Silva 2016-08-12
+    //AjustaLarguraDBGrid(DBGrid1); Mauricio Parizotto 2024-08-26
+    AjustaLarguraDBGrid(DBGrid1,605);
 
 end;
 
@@ -31634,23 +31622,6 @@ begin
   try
     if (Length(sPesquisa) = 11) or (Length(sPesquisa) = 14) then
     begin
-      {Mauricio Parizotto 2023-07-24 Inicio
-      if (Length(sPesquisa) = 11) then
-      begin
-        sPesquisa := '<dest><CPF>' + sPesquisa + '</CPF>';
-      end;
-
-      if (Length(sPesquisa) = 14) then
-      begin
-        sPesquisa := '<dest><CNPJ>' + sPesquisa + '</CNPJ>';
-      end;
-
-      Form1.ibDataset150.Close;
-      Form1.ibDataset150.SelectSql.Clear;
-      Form1.ibDataset150.SelectSQL.Add('select * from NFCE where MODELO = ' + QuotedStr(Form1.sModeloECF) + ' and  NFEXML containing ' + QuotedStr(sPesquisa) + ' order by NUMERONF ');
-      Form1.ibDataset150.Open;
-      }
-
       if Form1.sModeloECF <> '99' then
       begin
         if (Length(sPesquisa) = 11) then
@@ -31663,19 +31634,17 @@ begin
           sPesquisa := '<dest><CNPJ>' + sPesquisa + '</CNPJ>';
         end;
 
-        {Sandro Silva 2023-08-22 inicio
-        Form1.ibDataset150.Close;
-        Form1.ibDataset150.SelectSQL.Text := ' Select * from NFCE '+
-                                             ' Where MODELO = ' + QuotedStr(Form1.sModeloECF) +
-                                             '   and  NFEXML containing ' + QuotedStr(sPesquisa) +
-                                             ' Order by DATA, NUMERONF ';
-        Form1.ibDataset150.Open;
-        }
         Form1.ibDataset150.Close;
         Form1.ibDataset150.SelectSQL.Text :=
+          {Mauricio Parizotto 2024-08-23
           ' select N.* ' +
           ' from NFCE N '+
-          ' where ' +
+          }
+          ' Select'+
+          '   N.*,'+
+          SQL_FORMAPAGAMENTO_LIST+ ' FORMAPAGAMENTO '+
+          ' From NFCE N '+
+          ' Where ' +
           '  ( ' +
           '  N.MODELO = ' + QuotedStr(Form1.sModeloECF) +
           '   and N.NFEXML containing ' + QuotedStr(sPesquisa) +
@@ -31701,8 +31670,14 @@ begin
         sPesquisa := ' and CNPJ = ' + QuotedStr(FormataCpfCgc(sPesquisa));
 
         Form1.ibDataset150.Close;
+        {Mauricio Parizotto 2024-08-23
         Form1.ibDataset150.SelectSQL.Text := ' Select N.* '+
                                              ' From NFCE N '+
+        }
+        Form1.ibDataset150.SelectSQL.Text := ' Select'+
+                                             '   N.*,'+
+                                             SQL_FORMAPAGAMENTO_LIST+
+                                             SQL_CLIENTE+
                                              ' Where N.MODELO = ' + QuotedStr(Form1.sModeloECF) +
                                              '   and EXISTS (Select 1 From ALTERACA A'+
                                              '               Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
@@ -31726,30 +31701,20 @@ var
 begin
   sPesquisa := Small_InputBox('Pesquisa no XML', 'Informe o nome do cliente', '');
   try
-    { Mauricio Parizotto 2023-07-04 Inicio
-    Form1.ibDataset150.Close;
-    Form1.ibDataset150.SelectSql.Clear;
-    Form1.ibDataset150.SelectSQL.Add('select * from NFCE where MODELO = ' + QuotedStr(Form1.sModeloECF) + ' and (NFEXML containing ' + QuotedStr('</CPF><xNome>' + sPesquisa) + ' or NFEXML containing ' + QuotedStr('</CNPJ><xNome>' + sPesquisa) + ' or NFEXML containing ' + QuotedStr('<dest><xNome>' + sPesquisa) + ') order by DATA, NUMERONF ');
-    Form1.ibDataset150.Open;
-    }
-
     Form1.ibDataset150.Close;
     if Form1.sModeloECF <> '99' then
     begin
-      {Sandro Silva 2023-08-22 inicio
-      Form1.ibDataset150.SelectSQL.Text := ' Select * '+
-                                           ' From NFCE '+
-                                           ' Where MODELO = ' + QuotedStr(Form1.sModeloECF) +
-                                           '   and (NFEXML containing ' + QuotedStr('</CPF><xNome>' + sPesquisa) +
-                                           '   or NFEXML containing ' + QuotedStr('</CNPJ><xNome>' + sPesquisa) +
-                                           '   or NFEXML containing ' + QuotedStr('<dest><xNome>' + sPesquisa) +
-                                           '   )'+
-                                           ' Order by DATA, NUMERONF ';
-      }
       Form1.ibDataset150.SelectSQL.Text :=
+        {Mauricio Parizotto 2024-08-23
         ' select N.* '+
         ' from NFCE N '+
-        ' where '+
+        }
+        ' Select'+
+        '   N.*,'+
+        SQL_FORMAPAGAMENTO_LIST+
+        SQL_CLIENTE+
+        ' From NFCE N '+
+        ' Where '+
         ' ( ' +  // Tem o nome no xml da venda NFC-e/SAT
         '   N.MODELO = ' + QuotedStr(Form1.sModeloECF) +
         '   and (N.NFEXML containing ' + QuotedStr('</CPF><xNome>' + sPesquisa) +
@@ -31773,24 +31738,22 @@ begin
       {Sandro Silva 2023-08-22 fim}
     end else
     begin
-      {Sandro Silva 2023-08-24 inicio
-      Form1.ibDataset150.SelectSQL.Text := ' Select N.* ' +
-                                           ' From NFCE N ' +
-                                           ' Where MODELO = ' + QuotedStr(Form1.sModeloECF) +
-                                           '   and EXISTS (Select 1 From ALTERACA A' +
-                                           '               Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA' +
-                                           '                 and coalesce(A.CLIFOR, '''') containing ' + QuotedStr(sPesquisa) + ')' +
-                                           ' Order by N.DATA, N.NUMERONF ';
-      }
+      {Mauricio Parizotto 2024-08-23
       Form1.ibDataset150.SelectSQL.Text := ' select N.* ' +
                                            ' from NFCE N ' +
-                                           ' where MODELO = ' + QuotedStr(Form1.sModeloECF) +
+      }
+      Form1.ibDataset150.SelectSQL.Text := ' Select'+
+                                           '   N.*,'+
+                                           SQL_FORMAPAGAMENTO_LIST+
+                                           SQL_CLIENTE+
+                                           ' From NFCE N '+
+                                           ' Where MODELO = ' + QuotedStr(Form1.sModeloECF) +
                                            '   and exists (select 1 From ALTERACA A' +
                                            '               where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA' +
-                                           '               and coalesce(A.VALORICM, 0) = 0 ' + // Não listar as importações para NF-e
-                                           '               and coalesce(A.CODIGO, '''') <> '''' ' + // Para os gerenciais importados para NF-e, os registros de desconto/acrécimo não tem o campo ALTERACA.VALORICM preenchido
-                                           '               and coalesce(A.CLIFOR, '''') containing ' + QuotedStr(sPesquisa) + ')' +
-                                           ' order by N.DATA, N.NUMERONF ';
+                                           '                 and coalesce(A.VALORICM, 0) = 0 ' + // Não listar as importações para NF-e
+                                           '                 and coalesce(A.CODIGO, '''') <> '''' ' + // Para os gerenciais importados para NF-e, os registros de desconto/acrécimo não tem o campo ALTERACA.VALORICM preenchido
+                                           '                 and coalesce(A.CLIFOR, '''') containing ' + QuotedStr(sPesquisa) + ')' +
+                                           ' Order by N.DATA, N.NUMERONF ';
 
       {Sandro Silva 2023-08-24 fim}
     end;
@@ -33435,8 +33398,15 @@ begin
 
   Form1.IBDataSet150.Close;
   Form1.IBDataSet150.SelectSQL.Text :=
+    {Mauricio Parizotto 2024-08-23
     'select * ' +
-    'from NFCE ' +    
+    'from NFCE ' +
+    }
+    ' Select'+
+    '   N.*,'+
+    SQL_FORMAPAGAMENTO_LIST+
+    SQL_CLIENTE+
+    ' From NFCE N '+
     sCondicaoSelectSql;
   Form1.IBDataSet150.Open;
 
@@ -34532,11 +34502,14 @@ begin
 
             Form1.IBDataSet150.Close;
             Form1.IBDataSet150.SelectSQL.Text :=
+              {Mauricio Parizotto 2024-08-23
               'select * ' +
               'from NFCE ' +
-              'where NUMERONF = ' + QuotedStr(sNumeroNFEnvio) +
-              ' and CAIXA = ' + QuotedStr(sCaixaEnvio) +
-              ' and MODELO = ''65'' ';
+              }
+              SQL_NFCE_ibd150 +
+              ' Where NUMERONF = ' + QuotedStr(sNumeroNFEnvio) +
+              '   and CAIXA = ' + QuotedStr(sCaixaEnvio) +
+              '   and MODELO = ''65'' ';
             Form1.IBDataSet150.Open;
 
             if AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad') = False then

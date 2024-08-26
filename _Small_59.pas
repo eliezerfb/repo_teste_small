@@ -1365,26 +1365,26 @@ begin
         end;
       end;
 
-      //
       try
-        //
         Form1.ibDataset150.Close;
-        Form1.ibDataset150.SelectSql.Clear;
         Form1.ibDataset150.SelectSQL.Text :=
+          {Mauricio Parizotto 2024-08-23
           'select * ' +
           'from NFCE ' +
-          'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) + // Sandro Silva 2021-12-02 'where NUMERONF=''000000'' ' +
-          ' and CAIXA = ' + QuotedStr(Form1.sCaixa) +
-          ' and MODELO = ' + QuotedStr('59');
+          }
+          SQL_NFCE_ibd150 +
+          ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) +
+          '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+          '   and MODELO = ' + QuotedStr('59');
         Form1.ibDataset150.Open;
-        //
+
         Form1.IBDataSet150.Append;
         Form1.IBDataSet150.FieldByName('NUMERONF').AsString := Result;
         Form1.IBDataSet150.FieldByName('DATA').AsDateTime   := Date;
         Form1.IBDataSet150.FieldByName('CAIXA').AsString    := Form1.sCaixa;
         Form1.IBDataSet150.FieldByName('MODELO').AsString   := '59';
         Form1.IBDataSet150.Post;
-        //
+
         {Sandro Silva 2023-08-22 inicio
         Mais1Ini.WriteString('NFCE','CUPOM',Result);
         }
@@ -2097,12 +2097,16 @@ begin
           FIBQuery65.SQL.Add('delete from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('59')); // Sandro Silva 2021-11-29 FIBQuery65.SQL.Add('delete from NFCE where NUMERONF = ' + QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('59'));
           FIBQuery65.ExecSQL;
 
-          //
           Form1.ibDataset150.Close;
+          {Mauricio Parizotto 2024-08-23
           Form1.ibDataset150.SelectSql.Clear;
           Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=' + QuotedStr(FormataNumeroDoCupom(0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa)); // Sandro Silva 2021-12-02 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=''000000'' and CAIXA = ' + QuotedStr(Form1.sCaixa));
+          }
+          Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                               ' Where NUMERONF=' + QuotedStr(FormataNumeroDoCupom(0)) +
+                                               '   and CAIXA = ' + QuotedStr(Form1.sCaixa);
           Form1.ibDataset150.Open;
-          //
+
           Form1.IBDataSet150.Append;
           Form1.IBDataSet150.FieldByName('NFEID').AsString    := _59.CFeID;// sID;
           Form1.IBDataSet150.FieldByName('NFEXML').AsString   := _59.CFeXML; // fNFe;
@@ -2422,11 +2426,16 @@ begin
           Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible := False;
 
         try
-          //
           // Seleciona o último registro com o NUMERONF = iCupom
           Form1.ibDataset150.Close;
+          {Mauricio Parizotto 2024-08-23
           Form1.ibDataset150.SelectSql.Clear;
           Form1.ibDataset150.SelectSQL.Add('select first 1 * from NFCE where coalesce(NFEID, '''') = '''' and NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' order by REGISTRO desc'); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select first 1 * from NFCE where coalesce(NFEID, '''') = '''' and NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' order by REGISTRO desc');
+          }
+          Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                               ' Where coalesce(NFEID, '''') = '''' '+
+                                               '   and NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                               ' Order by REGISTRO desc';
           Form1.ibDataset150.Open;
 
           // Salva o XML para poder analisar os dados lançados
@@ -2436,9 +2445,8 @@ begin
           Form1.IBDataSet150.FieldByName('MODELO').AsString := '59';
           Form1.IBDataSet150.FieldByName('STATUS').AsString := Copy(_59.CFeStatus + ' ' + Trim(sLog), 1, Form1.IBDataSet150.FieldByName('STATUS').Size); // Sandro Silva 2021-11-17 Form1.IBDataSet150.FieldByName('STATUS').AsString := Copy(_59.CFeStatus, 1, Form1.IBDataSet150.FieldByName('STATUS').Size);
           Form1.IBDataSet150.Post;
-          //
-          Form1.ibDataset150.Close;
 
+          Form1.ibDataset150.Close;
 
           {Sandro Silva 2023-08-25 inicio}
           ConverteVenda := TConverteVendaParaNovoDocFiscal.Create;
@@ -2541,18 +2549,19 @@ begin
   _59.VersaoDadosEnt    := Trim(LerParametroIni(FRENTE_INI, SECAO_59, _59_CHAVE_VERSAO_DADOS_ENTRADA, VDE_007));
   _59.CNPJSoftwareHouse := Trim(LerParametroIni(FRENTE_INI, SECAO_59, _59_CHAVE_CNPJ_SOFTWARE_HOUSE, ''));
 
-  //
   try
-    //
     Form1.ibDataset150.Close;
+    {Mauricio Parizotto 2024-08-23
     Form1.ibDataset150.SelectSql.Clear;
     Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0))
-    + ' and MODELO = ' + QuotedStr(_59.ModeloDocumento)
-    + ' and CAIXA = ' + QuotedStr(Form1.sCaixa)
-    + ' and substring(NFEID from 23 for 9) = ' + QuotedStr(_59.NumeroSerieSAT) // 2014-10-22 Identifica o número do sat para não excluir o cupom com mesmo número emitido por outro equipamento
-    );
+    }
+    Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                         ' Where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom))+
+                                         '   and MODELO = ' + QuotedStr(_59.ModeloDocumento)+
+                                         '   and CAIXA = ' + QuotedStr(Form1.sCaixa)+
+                                         '   and substring(NFEID from 23 for 9) = ' + QuotedStr(_59.NumeroSerieSAT); // 2014-10-22 Identifica o número do sat para não excluir o cupom com mesmo número emitido por outro equipamento
     Form1.ibDataset150.Open;
-    //
+
     if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
     begin
       // Sandro Silva 2016-10-06  if (Pos('<infCFe Id="',Form1.ibDataSet150.FieldByName('NFEXML').AsString) <> 0)
@@ -2602,11 +2611,14 @@ begin
 
           {Sandro Silva 2016-11-09 inicio}
           Form1.ibDataset150.Close;
+          {Mauricio Parizotto 2024-08-23
           Form1.ibDataset150.SelectSql.Clear;
           Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0))
-                                        + ' and (substring(NFEID from 21 for 2) = ' + QuotedStr(_59.ModeloDocumento) + ' or coalesce(NFEID, '''') = '''') ' // 2014-10-22 para não selecionar nfc-e
-                                        + ' and substring(NFEID from 23 for 9) = ' + QuotedStr(_59.NumeroSerieSAT) // 2014-10-22 Identifica o número do sat para não excluir o cupom com mesmo número emitido por outro equipamento
-                                          );
+          }
+          Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                               ' Where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom))+
+                                               '   and (substring(NFEID from 21 for 2) = ' + QuotedStr(_59.ModeloDocumento) + ' or coalesce(NFEID, '''') = '''') '+ // 2014-10-22 para não selecionar nfc-e
+                                               '   and substring(NFEID from 23 for 9) = ' + QuotedStr(_59.NumeroSerieSAT); // 2014-10-22 Identifica o número do sat para não excluir o cupom com mesmo número emitido por outro equipamento
           Form1.ibDataset150.Open;
 
           Form1.ibDataSet150.Edit;
