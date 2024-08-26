@@ -99,13 +99,14 @@ const
   _cOSObservacaoRecibo = 'Observação Recibo';
 
   //Outras
-  _cSectionOutras = 'Outras';
-  _cOutrasLog     = 'Log Sistema';
-  _cFabricaProdSemQtd = 'Fabricação Prod Sem Qtd';
-  _cTipoPrazo         = 'Tipo do Prazo';
-  _cDiaVencimento     = 'Dia Vencimento';
-  _cTemaIcones        = 'Tema dos ícones';
-  _cCalculaLucroAltVenda = 'Calcula lucro alt preço venda';
+  _cSectionOutras         = 'Outras';
+  _cOutrasLog             = 'Log Sistema';
+  _cFabricaProdSemQtd     = 'Fabricação Prod Sem Qtd';
+  _cTipoPrazo             = 'Tipo do Prazo';
+  _cDiaVencimento         = 'Dia Vencimento';
+  _cTemaIcones            = 'Tema dos ícones';
+  _cCalculaLucroAltVenda  = 'Calcula lucro alt preço venda';
+  _PermiteImportaMesmoOrc = 'Importar Mesmo Orc Cupom';
 
   //Impressora
   _cSectionImpressora = 'Impressora';

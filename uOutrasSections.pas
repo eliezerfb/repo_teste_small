@@ -21,6 +21,8 @@ type
     procedure setTemaIcones(const Value: string);
     function getCalculaLucroAltVenda: Boolean;
     procedure setCalculaLucroAltVenda(const Value: Boolean);
+    function getPermiteImportarMesmoOrc: Boolean;
+    procedure setPermiteImportarMesmoOrc(const Value: Boolean);
   public
     property LogSistema: Boolean read getLogSistema write setLogSistema;
     property FabricaProdutoSemQtd: Boolean read getFabricaProdutoSemQtd write setFabricaProdutoSemQtd;
@@ -28,6 +30,7 @@ type
     property DiaVencimento: integer read getDiaVencimento write setDiaVencimento;
     property TemaIcones: string read getTemaIcones write setTemaIcones;
     property CalculaLucroAltVenda: Boolean read getCalculaLucroAltVenda write setCalculaLucroAltVenda;
+    property PermiteImportarMesmoOrc: Boolean read getPermiteImportarMesmoOrc write setPermiteImportarMesmoOrc; //Mauricio Parizotto 2024-08-26
   protected
   end;
 
@@ -56,6 +59,11 @@ end;
 function TSectionOutras.getLogSistema: Boolean;
 begin
   Result := getValorBD(_cOutrasLog) = '1';
+end;
+
+function TSectionOutras.getPermiteImportarMesmoOrc: Boolean;
+begin
+  Result := getValorBD(_PermiteImportaMesmoOrc) = 'Sim';
 end;
 
 function TSectionOutras.getTemaIcones: string;
@@ -118,6 +126,20 @@ begin
 
   setValorBD(_cOutrasLog,
              'Ativa a geração de logs no sistema',
+             valorBD);
+end;
+
+procedure TSectionOutras.setPermiteImportarMesmoOrc(const Value: Boolean);
+var
+  valorBD : string;
+begin
+  if Value then
+    valorBD := 'Sim'
+  else
+    valorBD := 'Não';
+
+  setValorBD(_PermiteImportaMesmoOrc,
+             'Permite importar mesmo orçamento múltiplas vezes no cupom',
              valorBD);
 end;
 
