@@ -2697,14 +2697,16 @@ begin
     sCupomFiscalVinculado := sCupomFiscalVinculado
       + ImprimeTracos() + Chr(10)
       + 'MOVIMENTAÇÃO EM DINHEIRO  ' + Chr(10)
+      + IfThen(bListaReceber,'VENDAS + CONTAS RECEBIDAS'+ Chr(10))
       + ImprimeTracos() + Chr(10)
       + 'Suprimento ' + Format('%9.2n',[dTotalSuprimento]) + chr(10)
-      //+ 'Dinheiro   ' + Format('%9.2n',[dTotalDinheiro]) + chr(10)
+      //+ 'Dinheiro   ' + Format('%9.2n',[dTotalDinheiro]) + chr(10) Mauricio Parizotto 2024-08-26
       + 'Dinheiro   ' + Format('%9.2n',[dTotalDinheiro+dTotalDinheiroRec]) + chr(10)
       + 'Troco      ' + Format('%9.2n',[dTotalTroco * (-1)]) + chr(10)
       + 'Sangria    ' + Format('%9.2n',[dTotalSangria * (-1)]) + chr(10)
       + ImprimeTracos() + Chr(10)
-      + 'Total      ' + Format('%9.2n',[dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria]) + chr(10)
+      //+ 'Total      ' + Format('%9.2n',[dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria]) + chr(10) Mauricio Parizotto 2024-08-26
+      + 'Total      ' + Format('%9.2n',[dTotalSuprimento + dTotalDinheiro - dTotalTroco - dTotalSangria + dTotalDinheiroRec]) + chr(10)
       + chr(10);
 
     // Totalizadores
@@ -2807,7 +2809,7 @@ begin
     begin
       sCupomFiscalVinculado := sCupomFiscalVinculado
         + ImprimeTracos() + Chr(10)
-        + 'TOTALIZADOR DAS PARCELAS  ' + Chr(10)
+        + 'TOTALIZADOR DE CONTAS RECEBIDAS' + Chr(10)
         + ImprimeTracos() + Chr(10)
         ;
 
