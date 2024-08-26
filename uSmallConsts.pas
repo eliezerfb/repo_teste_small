@@ -164,6 +164,11 @@ const
   const _TemaClassico = 'Clássico';
   const _TemaModerno  = 'Moderno';
 
+  {Dailon Parisotto (small-653) 2024-08-26 Inicio}
+  _cNaturezaSINIEF = 'Anulação de operação - Ajuste SINIEF 13/24';
+  _cObsNFeSINIEF  = 'Procedimento autorizado pelo Ajuste SINIEF 13/24';
+  {Dailon Parisotto (small-653) 2024-08-26 Fim}
+
 implementation
 
 end.
