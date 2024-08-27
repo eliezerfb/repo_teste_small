@@ -98,6 +98,7 @@ uses
   , umfe
   , usmall_elginpay_pos
   , usincronizamobile
+  , uArquivosDAT
   , uSmallEnumerados, System.Contnrs, spdNFCeDataSets, spdNFCeType, spdNFCe
   ;
 
@@ -1411,6 +1412,7 @@ type
     bFechandoCupom: Boolean; // Sandro Silva 2016-02-10 Controlar que pressione F7 durante o fechamento do cupom e cancela a venda na impressora
     bGerarXmlReducaoRecuperada: Boolean; // Sandro Silva 2019-09-09 ER 02.06 UnoChapeco
     sUltimoPesoAutonomo: String;//Sandro Silva 2024-07-11
+    bPermiteImportarMesmoOrc : Boolean; // Mauricio Parizotto 2024-08-26
     procedure AberturaDoCupom;
     procedure AtualizaBase(IBDATABASE: TIBDatabase);
     procedure HabilitaBotaoF11(bHabilitar: Boolean);
@@ -1483,7 +1485,8 @@ type
     procedure ConverteConfPix;
     procedure ValidaPastaNfce;
     function CancelaItem(sItem: string): boolean;
-    procedure CancelaDescontoAcrescimo;  
+    procedure CancelaDescontoAcrescimo;
+    procedure CarregaConfiguracoes;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -10507,9 +10510,6 @@ begin
           FecharAplicacao(ExtractFileName(Application.ExeName));
         end;
       end;
-      //
-      //    Form22.Label6.Caption := '';
-      //
       Form1.fTotal := 0;
       //
     end else
@@ -10660,6 +10660,8 @@ begin
   TimerBalancaAutonoma.Enabled := Form1.bBalancaAutonoma;
   
   ConverteConfPix;
+
+  CarregaConfiguracoes; //Mauricio Parizotto 2024-08-26
 end;
 
 procedure TForm1.Button18Click(Sender: TObject); // Fechamento Cupom
@@ -18881,7 +18883,6 @@ begin
         begin
           if ((Copy(Form1.sConcomitante,1,3) = 'DAV') or (sModeloECF = '65') or (sModeloECF = '59') or (sModeloECF = '99')) then // Sandro Silva 2020-12-11  if ((Copy(Form1.sConcomitante,1,3) = 'DAV') or ((sModeloECF = '65') and (PAFNFCe = False)) or (sModeloECF = '59') or (sModeloECF = '99')) then // Sandro Silva 2020-07-01 if ((Copy(Form1.sConcomitante,1,3) = 'DAV') or ((sModeloECF = '65') and (AnsiUpperCase(ExtractFileName(Application.ExeName)) <> 'PAFNFCE.EXE')) or (sModeloECF = '59')) then
           begin
-            //
             Commitatudo(False); // DAV
             //
             try // Sandro Silva 2017-06-30
@@ -18902,6 +18903,17 @@ begin
                 begin
                   sOrcame := ''; // Sandro Silva 2017-08-04
                   SmallMsg('Nenhum orçamento encontrado');
+                end;
+
+                //Mauricio Parizotto 2024-08-26
+                //Verifica se pode importar orçamento mais de uma vez
+                if Form1.ibDataSet37NUMERONF.AsString <> '' then
+                begin
+                  if not(bPermiteImportarMesmoOrc) then
+                  begin
+                    sOrcame := '';
+                    SmallMsg('Este Orçamento já possui documento fiscal vinculado e não poderá ser importado');
+                  end;
                 end;
 
               except
@@ -35643,5 +35655,22 @@ begin
     end;
   end;
 end;
+
+
+procedure TForm1.CarregaConfiguracoes;
+var
+  ConfSistema : TArquivosDAT;
+begin
+  //Carrega coniguraçõs do sistema
+  try
+    ConfSistema := TArquivosDAT.Create('',IBTransaction1);
+
+    bPermiteImportarMesmoOrc := ConfSistema.BD.Outras.PermiteImportarMesmoOrc;
+  finally
+    FreeAndNil(ConfSistema);
+  end;
+end;
+
+
 
 end.
