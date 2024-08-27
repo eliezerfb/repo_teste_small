@@ -35,6 +35,7 @@ uses
 
   function ExecutaComando(comando:string):Boolean;  overload;
   procedure VencimentoCertificadoDigital;
+  function AvisoVencimentoSerial:Boolean; // Mauricio Parizotto 2024-08-16
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
@@ -5381,36 +5382,11 @@ begin
       Form1.ibDataset200.Open;
     end else
     begin
+      {Mauricio Parizotto 2024-08-16 Inicio
       if fDias <= 20 then
       begin
-        //ShowMessage('Número de série: ' + Form1.sSerial + ' licenciado para mais ' + FloatToStr(fDias) + ' dias'); Mauricio Parizotto 2023-10-25
         MensagemSistema('Número de série: ' + Form1.sSerial + ' licenciado para mais ' + FloatToStr(fDias) + ' dias');
       end;
-
-      {Sandro Silva 2023-03-15 inicio
-      if fDias <= 40 then
-      begin
-        //
-        if fDias <> 0 then
-        begin
-          for I := 1 to (40 - StrToInt(FloatToStr(fDias)) ) do
-          begin
-            //
-            Mensagem22('Número de série: ' + Form1.sSerial +  chr(10) + ' licenciado para mais ' + FloatToStr(fDias) + ' dias' + chr(10) + chr(10) + Replicate('_',( (40 - StrToInt(FloatToStr(fDias)) ) +1 - I)));
-            //
-            //if I = 1 then Sleep(2000) else Sleep(200);
-            if I = 1 then
-              Sleep(2000)
-            else
-              Sleep(200);
-            //
-          end;
-        end;
-        //
-      end;
-      }
-
-      //fDias := 7;
 
       if fDias <= 8 then
       begin
@@ -5420,11 +5396,34 @@ begin
           for I := 1 to 5 do
           begin
             Mensagem22('Número de série: ' + Form1.sSerial +  chr(10) + ' licenciado para mais ' + FloatToStr(fDias) + ' dias');
-
+             Application.ProcessMessages;
             Sleep(1000);
           end;
         end;
       end;
+      }
+      if fDias <= 20 then
+      begin
+        if AvisoVencimentoSerial then
+        begin
+          MensagemSistema('Número de série: ' + Form1.sSerial + ' licenciado para mais ' + FloatToStr(fDias) + ' dias');
+
+          if fDias <= 8 then
+          begin
+            if fDias <> 0 then
+            begin
+              // Exibe mensagem de alerta dos dias restantes por 5 segundos
+              for I := 1 to 5 do
+              begin
+                Mensagem22('Número de série: ' + Form1.sSerial +  chr(10) + ' licenciado para mais ' + FloatToStr(fDias) + ' dias');
+                Sleep(1000);
+              end;
+            end;
+          end;
+        end;
+      end;
+      {Mauricio Parizotto 2024-08-16 Fim}
+
       {Sandro Silva 2023-03-15 fim}
     end;
   except
@@ -13617,6 +13616,31 @@ begin
       finally
         FreeAndNil(Recuros);
       end;
+    end;
+  except
+  end;
+end;
+
+
+function AvisoVencimentoSerial:Boolean;  // Mauricio Parizotto 2024-08-16
+var
+  Recuros : TRecursosSistema;
+  sJsonRecurso :string;
+begin
+  Result := True;
+
+  try
+    try
+      sJsonRecurso := ExecutaComandoEscalar(Form7.IBTransaction1,
+                                            'Select RECURSO From EMITENTE');
+
+      sJsonRecurso := SmallDecrypt(CHAVE_CIFRAR_NOVA,sJsonRecurso);
+
+      Recuros := TJson.JsonToObject<TRecursosSistema>(sJsonRecurso);
+
+      Result := Recuros.AvisoVencimento;
+    finally
+      FreeAndNil(Recuros);
     end;
   except
   end;
