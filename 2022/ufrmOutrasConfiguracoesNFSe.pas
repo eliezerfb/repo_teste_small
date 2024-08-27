@@ -33,6 +33,8 @@ implementation
 
 {$R *.dfm}
 
+uses unit7, uArquivosDAT;
+
 { TFrmPadrao18 }
 
 procedure TfrmOutrasConfiguracoesNFSe.btnOkClick(Sender: TObject);
@@ -47,7 +49,9 @@ var
   Ini: TIniFile;
   sSection: TStrings;
   iParam: Integer;
+  config: TArquivosDAT;
 begin
+  {
   Ini := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'nfse.ini');
 
   sSection := TStringList.Create;
@@ -65,7 +69,9 @@ begin
   end;
 
   Ini.Free;
-
+  }
+  config := TArquivosDAT.Create('', Form7.IBTransaction1);
+  config.BD.NFSe.InformacoesObtidasPrefeitura.Informacoes.Itens
 end;
 
 procedure TfrmOutrasConfiguracoesNFSe.FormCreate(Sender: TObject);

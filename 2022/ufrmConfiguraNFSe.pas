@@ -57,6 +57,7 @@ type
     procedure lbCertificado1Click(Sender: TObject);
     procedure btnSelecionaCertificadoClick(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     Ini: TIniFile;
@@ -131,6 +132,13 @@ procedure TfrmConfiguraNFSe.cbXmlSignLibChange(Sender: TObject);
 begin
   inherited;
   AtualizarSSLLibsCombo;
+end;
+
+procedure TfrmConfiguraNFSe.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  inherited;
+  Action := caFree;
 end;
 
 procedure TfrmConfiguraNFSe.FormCloseQuery(Sender: TObject;

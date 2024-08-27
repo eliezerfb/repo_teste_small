@@ -277,7 +277,7 @@ implementation
 uses
   //uFuncoesC4, C4Funcoes30, uConstantes, blcksock, UFuncNFSe, ufrmStatus, udm;
 
-  Frm_Status, smallfunc_xe, uConectaBancoSmall, uArquivosDAT;
+  Frm_Status, smallfunc_xe, uConectaBancoSmall, uArquivosDAT, uListaToJson;
 
 { TNFS }
 
@@ -799,19 +799,6 @@ begin
   end;
 end;
 
-/// <summary> Importa configuração antiga do componente Tecnospeed
-/// </summary>
-/// <param name="Item">The item to remove
-/// </param>
-/// <param name="Collection">The group containing the item
-/// </param>
-/// <remarks>
-/// If parameter "Item" is null, an exception is raised.
-/// <see cref="EArgumentNilException"/>
-/// </remarks>
-/// <returns>True if the specified item is successfully removed;
-/// otherwise False is returned.
-/// </returns>
 procedure TNFS.ImportaConfiguracaoTecnospeed;
 var
   I: Integer;
@@ -819,11 +806,9 @@ var
   sUsuario: String;
   sSenha: String;
   config: TArquivosDAT;
-  stringsSection: TStrings;
+  stringsSection: TStringList;
+  Parametros: TParametros;
 begin
-
-//  if FileExists(ExtractFilePath(Application.ExeName) + 'nfse.ini') then
-//    Exit;
 
   if not FileExists(ExtractFilePath(Application.ExeName) + 'nfseConfig.ini') then
     Exit;
@@ -833,7 +818,10 @@ begin
   if Ini.ReadString('NFSE', 'Migrado', '') = 'Sim' then
     Exit;
 
+
   config := TArquivosDAT.Create('', FIBTRANSACTION);
+
+
   try
     if Ini.ReadString('NFSE', 'NomeCertificado', '') <> '' then
     begin
@@ -896,11 +884,17 @@ begin
 
     FIniNFSe.WriteString('WebService', 'Ambiente', Ini.ReadString('NFSE', 'Ambiente', '2'));
 
-    stringsSection := TStrings.Create;
+    stringsSection := TStringList.Create;
 
-    Ini.ReadSection('Informacoes obtidas na prefeitura', stringsSection);
+    Ini.ReadSectionValues('Informacoes obtidas na prefeitura', stringsSection);
+    Parametros := TParametros.Create;
+    Parametros.IniToJson(stringsSection);
 
-    config.BD.NFSe.InformacoesObtidasPrefeitura.Parametros.
+    config.BD.NFSe.InformacoesObtidasPrefeitura.Informacoes := Parametros;
+
+    Parametros.Free;
+    FreeAndNil(stringsSection);
+
 
     {
     config.BD.NFSe.InformacoesObtidasPrefeitura.IncentivadorCultural     := Ini.ReadString('Informacoes obtidas na prefeitura', 'IncentivadorCultural', '');

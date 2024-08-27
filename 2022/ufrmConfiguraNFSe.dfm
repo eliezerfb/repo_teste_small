@@ -5,13 +5,12 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
   ClientWidth = 762
   Font.Name = 'Microsoft Sans Serif'
   Position = poMainFormCenter
+  OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitLeft = 3
-  ExplicitTop = 3
-  ExplicitWidth = 780
-  ExplicitHeight = 554
+  ExplicitWidth = 778
+  ExplicitHeight = 546
   PixelsPerInch = 96
   TextHeight = 16
   object Label30: TLabel
@@ -161,8 +160,6 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     Caption = 'Gravar'
     TabOrder = 0
     OnClick = btnGravarClick
-    ExplicitLeft = 678
-    ExplicitTop = 480
   end
   object rgTipoAmb: TRadioGroup
     Left = 7

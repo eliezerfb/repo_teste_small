@@ -6,8 +6,8 @@ inherited frmOutrasConfiguracoesNFSe: TfrmOutrasConfiguracoesNFSe
   Font.Name = 'Microsoft Sans Serif'
   Position = poScreenCenter
   OnCreate = FormCreate
-  ExplicitWidth = 1038
-  ExplicitHeight = 534
+  ExplicitWidth = 1036
+  ExplicitHeight = 526
   PixelsPerInch = 96
   TextHeight = 16
   object DBGCONFIG: TDBGrid
