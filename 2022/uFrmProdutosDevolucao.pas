@@ -325,7 +325,9 @@ begin
     Form12.ExibeColunasFCPST(True);
     Form12.ExibeColunaCSOSN(False);
     
-    if Form7.ibDataSet13CRT.AsString = '1' then
+    //if Form7.ibDataSet13CRT.AsString = '1' then Mauricio Parizotto 2024-08-07
+    if (Form7.ibDataSet13CRT.AsString = '1')
+      or (Form7.ibDataSet13CRT.AsString = '4') then
     begin
       Form12.ExibeColunaCSOSN(True);
       Form12.ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString);

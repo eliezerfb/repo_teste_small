@@ -535,7 +535,9 @@ begin
             Writeln(F,'CepPrestador='+LimpaNumero(Form7.ibDAtaSet13CEP.AsString));
             Writeln(F,'');
 
-            if Form7.ibDataSet13CRT.AsString = '1' then
+            //if Form7.ibDataSet13CRT.AsString = '1' then Mauricio Parizotto 2024-08-07
+            if (Form7.ibDataSet13CRT.AsString = '1')
+              or (Form7.ibDataSet13CRT.AsString = '4') then
             begin
               Writeln(F,'OptanteSimplesNacional=1');  // Indica se o prestador é optante do regime Simples Nacional	1 - SIM/ 2 -NÃO
             end else

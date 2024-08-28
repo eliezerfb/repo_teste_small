@@ -835,6 +835,7 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             ExplicitLeft = 104
             ExplicitTop = 19
             ExplicitWidth = 390
+            ExplicitHeight = 22
             inherited txtCampo: TEdit
               Width = 390
               ExplicitWidth = 390
