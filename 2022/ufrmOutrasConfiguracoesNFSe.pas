@@ -71,7 +71,7 @@ begin
   Ini.Free;
   }
   config := TArquivosDAT.Create('', Form7.IBTransaction1);
-  config.BD.NFSe.InformacoesObtidasPrefeitura.Informacoes.Itens
+//  config.BD.NFSe.InformacoesObtidasPrefeitura.Informacoes.Itens
 end;
 
 procedure TfrmOutrasConfiguracoesNFSe.FormCreate(Sender: TObject);

@@ -56,8 +56,6 @@ inherited frmOutrasConfiguracoesNFSe: TfrmOutrasConfiguracoesNFSe
     Caption = 'OK'
     TabOrder = 1
     OnClick = btnOkClick
-    ExplicitLeft = 923
-    ExplicitTop = 478
   end
   object CDSConfig: TClientDataSet
     Aggregates = <>
