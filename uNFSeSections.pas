@@ -4,7 +4,6 @@ interface
 
 uses
   uSectionDATPadrao, uSmallEnumerados
-  //, System.Classes, System.Generics.Collections
   , REST.Json.Types, REST.Json
   , uListaToJson
   ;
@@ -85,44 +84,11 @@ type
 
   TSectionNFSeInformacoesObtidasNaPrefeitura_BD = class(TSectionBD)
   private
+    FParametros: TParametros;
     function getParametros: TParametros;
-    procedure SetParametros(const Value: TParametros);
-    {
-    function GetCodigoCnae: String;
-    function GetExigibilidadeISS: String;
-    function GetIncentivoFiscal: String;
-    function GetMultiplosServicos: String;
-    function GetNaturezaTributacao: String;
-    function GetOperacao: String;
-    function GetRegimeEspecialTributacao: String;
-    function GetTipoPagamentoPrazo: String;
-    function GetTipoTributacao: String;
-    procedure SetCodigoCnae(const Value: String);
-    procedure SetExigibilidadeISS(Value: String);
-    procedure SetIncentivadorCultural(Value: String);
-    procedure SetIncentivoFiscal(Value: String);
-    procedure SetMultiplosServicos(const Value: String);
-    procedure SetNaturezaTributacao(Value: String);
-    procedure SetOperacao(Value: String);
-    procedure SetRegimeEspecialTributacao(Value: String);
-    procedure SetTipoPagamentoPrazo(Value: String);
-    procedure SetTipoTributacao(Value: String);
-    function GetIncentivadorCultural: String;
-    }
+    procedure SetInformacoes(const Value: TParametros);
   public
-    {
-    property IncentivadorCultural: String read GetIncentivadorCultural write SetIncentivadorCultural;
-    property RegimeEspecialTributacao: String read GetRegimeEspecialTributacao write SetRegimeEspecialTributacao;
-    property NaturezaTributacao: String read GetNaturezaTributacao write SetNaturezaTributacao;
-    property IncentivoFiscal: String read GetIncentivoFiscal write SetIncentivoFiscal;
-    property TipoTributacao: String read GetTipoTributacao write SetTipoTributacao;
-    property ExigibilidadeISS: String read GetExigibilidadeISS write SetExigibilidadeISS;
-    property Operacao: String read GetOperacao write SetOperacao;
-    property CodigoCnae: String read GetCodigoCnae write SetCodigoCnae;
-    property MultiplosServicos: String read GetMultiplosServicos write SetMultiplosServicos;
-    property TipoPagamentoPrazo: String read GetTipoPagamentoPrazo write SetTipoPagamentoPrazo;
-    }
-    property Parametros: TParametros read getParametros write SetParametros;
+    property Informacoes: TParametros read getParametros write SetInformacoes;
   protected
   end;
 
@@ -162,7 +128,7 @@ type
 implementation
 
 uses
-  SysUtils, uSmallConsts//, System.Classes
+  SysUtils, uSmallConsts
   ;
 
 { TSectionNFEINI }
@@ -462,167 +428,15 @@ end;
 
 { TSectionNFSeInformacoesObtidasNaPrefeitura_BD }
 
-{
-function TSectionNFSeInformacoesObtidasNaPrefeitura_BD.GetCodigoCnae: String;
-begin
-  Result := getValorBD(_cNFSeCodigoCnae);
-end;
-
-function TSectionNFSeInformacoesObtidasNaPrefeitura_BD.GetExigibilidadeISS: String;
-begin
-  Result := getValorBD(_cNFSeExigibilidadeISS);
-  if Result = '' then
-    Result := '1';
-end;
-
-function TSectionNFSeInformacoesObtidasNaPrefeitura_BD.GetIncentivadorCultural: String;
-begin
-  Result := getValorBD(_cNFSeIncentivadorCultural);
-  if Result = '' then
-    Result := '2';
-end;
-
-function TSectionNFSeInformacoesObtidasNaPrefeitura_BD.GetIncentivoFiscal: String;
-begin
-  Result := getValorBD(_cNFSeIncentivoFiscal);
-  if Result = '' then
-    Result := '1';
-end;
-
-function TSectionNFSeInformacoesObtidasNaPrefeitura_BD.GetMultiplosServicos: String;
-begin
-  Result := getValorBD(_cNFSeMultiplosServicos);
-  if Result = '' then
-    Result := 'Sim';
-end;
-
-function TSectionNFSeInformacoesObtidasNaPrefeitura_BD.GetNaturezaTributacao: String;
-begin
-  Result := getValorBD(_cNFSeNaturezaTributacao);
-  if Result = '' then
-    Result := '1';
-end;
-
-function TSectionNFSeInformacoesObtidasNaPrefeitura_BD.GetOperacao: String;
-begin
-  Result := getValorBD(_cNFSeOperacao);
-  if Result = '' then
-    Result := 'A';
-end;
-
-function TSectionNFSeInformacoesObtidasNaPrefeitura_BD.GetRegimeEspecialTributacao: String;
-begin
-  Result := getValorBD(_cNFSeRegimeEspecialTributario);
-  if Result = '' then
-    Result := '1';
-end;
-
-function TSectionNFSeInformacoesObtidasNaPrefeitura_BD.GetTipoPagamentoPrazo: String;
-begin
-  Result := getValorBD(_cNFSeTipoPagamentoPrazo);
-  if Result = '' then
-    Result := '3';
-end;
-
-function TSectionNFSeInformacoesObtidasNaPrefeitura_BD.GetTipoTributacao: String;
-begin
-  Result := getValorBD(_cNFSeTipoTributacao);
-  if Result = '' then
-    Result := '6';
-end;
-
-procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetCodigoCnae(
-  const Value: String);
-begin
-  setValorBD(_cNFSeCodigoCnae, 'Codigo CNAE', Value);
-end;
-
-procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetExigibilidadeISS(
-  Value: String);
-begin
-  if Value = '' then
-    Value := '1';
-  setValorBD(_cNFSeExigibilidadeISS, 'Exigibilidade ISS', Value);
-end;
-
-procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetIncentivadorCultural(
-  Value: String);
-begin
-  if Value = '' then
-    Value := '2';
-  setValorBD(_cNFSeIncentivadorCultural, 'Incentivador Cultural', Value);
-end;
-
-procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetIncentivoFiscal(
-  Value: String);
-begin
-  if Value = '' then
-    Value := '1';
-
-  setValorBD(_cNFSeIncentivoFiscal, 'Incentivo Fiscal', Value);
-end;
-
-procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetMultiplosServicos(
-  const Value: String);
-begin
-  setValorBD(_cNFSeMultiplosServicos, 'Múltiplos Serviços', Value);
-end;
-
-procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetNaturezaTributacao(
-  Value: String);
-begin
-  if Value = '' then
-    Value := '1';
-  setValorBD(_cNFSeNaturezaTributacao, 'Natureza Tributaçao', Value);
-end;
-
-procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetOperacao(
-  Value: String);
-begin
-  if Value = '' then
-    Value := 'A';
-  setValorBD(_cNFSeOperacao, 'Operação', Value);
-end;
-
-procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetRegimeEspecialTributacao(
-  Value: String);
-begin
-  if Value = '' then
-    Value := '1';
-  setValorBD(_cNFSeRegimeEspecialTributario, 'Regime Especial Tributário', Value);
-end;
-
-procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetTipoPagamentoPrazo(
-  Value: String);
-begin
-  if Value = '' then
-    Value := '3';
-  setValorBD(_cNFSeTipoPagamentoPrazo, 'Tipo Pagamento Prazo', Value);
-end;
-
-procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetTipoTributacao(
-  Value: String);
-begin
-  if Value = '' then
-    Value := '6';
-  setValorBD(_cNFSeTipoTributacao, 'Tipo Tributação', Value);
-end;
-}
-
-{ TSectionNFSeInformacoesObtidasNaPrefeitura_BD }
-
 function TSectionNFSeInformacoesObtidasNaPrefeitura_BD.getParametros: TParametros;
-var
-  sJson: String;
 begin
-  sJson := getValorBD(_cSectionNFSeInformacoesObtidasNaPrefeitura);
-  Result := TJson.JsonToObject<TParametros>(sJson);
+  Result := TJson.JsonToObject<TParametros>(getValorBD(_cInformacoesObtidasNaPrefeitura));
 end;
 
-procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetParametros(
+procedure TSectionNFSeInformacoesObtidasNaPrefeitura_BD.SetInformacoes(
   const Value: TParametros);
 begin
-
+  setValorBD(_cInformacoesObtidasNaPrefeitura, _cSectionNFSeInformacoesObtidasNaPrefeitura, Value.Json);
 end;
 
 end.

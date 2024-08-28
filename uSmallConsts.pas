@@ -113,7 +113,9 @@ const
   _cWebServiceNFSeAmbiente = 'Ambiente';
 
 
-  _cSectionNFSeInformacoesObtidasNaPrefeitura = 'NFSeInformacoesObtidasNaPrefeitura';
+  _cSectionNFSeInformacoesObtidasNaPrefeitura = 'NFSeInformacoesDaPrefeitura';
+  _cInformacoesObtidasNaPrefeitura = 'InformacoesDaPrefeitura';
+ {
   _cNFSeIncentivadorCultural = 'IncentivadorCultural';
   _cNFSeRegimeEspecialTributario = 'RegimeEspecialTributacao';
   _cNFSeNaturezaTributacao = 'NaturezaTributacao';
@@ -124,7 +126,7 @@ const
   _cNFSeCodigoCnae = 'CodigoCnae';
   _cNFSeMultiplosServicos = 'MultiplosServicos';
   _cNFSeTipoPagamentoPrazo = 'TipoPagamentoPrazo';
-
+  }
   //OS
   _cSectionOS = 'OS';
   _cOSObservacao  ='Observação';

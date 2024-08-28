@@ -19,7 +19,6 @@ type
     FoOS: TSectionOS;
     FoOutras: TSectionOutras;
     FoNFSE: TSectionNFSE_BD;
-    //FoNFSeInformacoesObtidasPrefeitura: TSectionNFSeInformacoesObtidasNaPrefeitura_BD;
     FoImpressora: TSectionImpressora;
     FoCarne: TSectionCarne;
     function getOS: TSectionOS;
@@ -71,32 +70,6 @@ begin
   Result := FoNFSE;
 end;
 
-{
-function TConfBD.getNFSeCertificao: TSectionNFSeCertificado_BD;
-begin
-  if not Assigned(FoNFSeCerficicado) then
-    FoNFSeCerficicado := TSectionNFSeCertificado_BD.Create(Transaction, _cSectionNFSeCertificado);
-
-  Result := FoNFSeCerficicado;
-end;
-
-function TConfBD.getNFSeInformacoesObtidasNaPrefeitura: TSectionNFSeInformacoesObtidasNaPrefeitura_BD;
-begin
-  if not Assigned(FoNFSeInformacoesObtidasPrefeitura) then
-    FoNFSeInformacoesObtidasPrefeitura := TSectionNFSeInformacoesObtidasNaPrefeitura_BD.Create(Transaction, _cSectionNFSeInformacoesObtidasNaPrefeitura);
-
-  Result := FoNFSeInformacoesObtidasPrefeitura;
-
-end;
-
-function TConfBD.getNFSeWebServico: TSectionNFSeWebService_BD;
-begin
-  if not Assigned(FoNFSeWebService) then
-    FoNFSeWebService := TSectionNFSeWebService_BD.Create(Transaction, _cSectionNFSeWebService);
-
-  Result := FoNFSeWebService;
-end;
-}
 function TConfBD.getOS: TSectionOS;
 begin
   if not Assigned(FoOS) then
