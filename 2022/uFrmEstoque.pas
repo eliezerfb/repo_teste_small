@@ -4029,8 +4029,9 @@ begin
       lblCIT.Caption := Form7.ibDataSet14CFOP.AsString + ' - ' + Form7.ibDataSet14NOME.AsString;
 
       {Dailon Parisotto (smal-653) 2024-08-28 Inicio}
-      if lblCIT.Width >= (cboTipoItem.Width - (edtCIT.Left - lblCIT.Left)) then
-        lblCIT.Caption := Copy(lblCIT.Caption,1,48) + '...';
+      lblCIT.ShowHint := False;
+      lblCIT.Hint := lblCIT.Caption;
+      lblCIT.ShowHint := True;
       {Dailon Parisotto (smal-653) 2024-08-28 Fim}
       pnlMapaICMS.Visible := True;
 
