@@ -25344,7 +25344,9 @@ begin
   bProximas := True;
   while not Form7.ibDataSet15.Eof do
   begin
-    EnviarConsultaImprimirDANFE;
+    if AnsiUpperCase(Form7.ibDataSet15STATUS.AsString) <> AnsiUpperCase('NF-e cancelada') then // Dailon Parisotto (f-20672) 2024-08-28
+      EnviarConsultaImprimirDANFE;
+
     Form7.ibDataSet15.Next;
   end;
   bProximas := False;
