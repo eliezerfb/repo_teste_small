@@ -61,6 +61,7 @@ type
   public
     bEstaSendoUsado : Boolean;
     bSomenteLeitura: Boolean;
+    bGravandoRegistro : Boolean;
     procedure VerificaSeEstaSendoUsado;
     function GetDescritivoNavegacao:string;
     function FormularioAtivo(Form : TForm): boolean;
@@ -80,7 +81,7 @@ uses uIconesSistema
     , uFrmAssistenteProcura
     , uVisualizaCadastro
     , uFuncoesBancoDados
-    , smallfunc_xe;
+    , smallfunc_xe, unit7;
 
 {$R *.dfm}
 
@@ -182,12 +183,14 @@ end;
 procedure TFrmFichaPadrao.FormCreate(Sender: TObject);
 begin
   inherited;
-  
+
   imgNovo.Picture       := IconesSistema.GetIconNovo(False).Picture;
   imgProcurar.Picture   := IconesSistema.GetIconProcurar(False).Picture;
   imgVisualizar.Picture := IconesSistema.GetIconVisualizar(False).Picture;
   imgProximo.Picture    := IconesSistema.GetIconProximo(False).Picture;
   imgAnterior.Picture   := IconesSistema.GetIconAnterior(False).Picture;
+
+  bGravandoRegistro     := False;
 end;
 
 procedure TFrmFichaPadrao.btnOKClick(Sender: TObject);
@@ -237,6 +240,8 @@ end;
 
 function TFrmFichaPadrao.GravaRegistro:Boolean;
 begin
+  bGravandoRegistro  := True;
+
   if bEstaSendoUsado then
   begin
     DSCadastro.DataSet.Cancel;
@@ -253,6 +258,8 @@ begin
 
   TibDataSet(DSCadastro.DataSet).Transaction.CommitRetaining;
   Result := True;
+
+  bGravandoRegistro  := False;
 end;
 
 procedure TFrmFichaPadrao.VerificaSeEstaSendoUsado;
@@ -275,6 +282,31 @@ begin
     end;
 
     DSCadastro.DataSet.EnableControls;
+  end;
+
+  //Mauricio Parizotto 2024-08-12
+  if bEstaSendoUsado then
+  //Faz commit e testa novamente
+  begin
+    try
+      AgendaCommit(True);
+      Form7.Close;
+      Form7.Show;
+
+      Self.BringToFront;
+
+      try
+        DSCadastro.DataSet.DisableControls;
+        DSCadastro.DataSet.Edit;
+        DSCadastro.DataSet.Post;
+        bEstaSendoUsado := False;
+      except
+        bEstaSendoUsado := True;
+      end;
+
+      DSCadastro.DataSet.EnableControls;
+    except
+    end;
   end;
 
   VerificandoUso := False;

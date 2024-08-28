@@ -137,8 +137,10 @@ var
 implementation
 
 uses
-  Unit7, Unit10, Unit19, Mais, uListaCnaes, Mais3, uDialogs,
-  uConsultaCEP, uFuncoesBancoDados;
+  Unit7
+//  , Unit10
+  , Unit19, Mais, uListaCnaes, Mais3, uDialogs,
+  uConsultaCEP, uFuncoesBancoDados, uVisualizaCadastro;
 
 {$R *.DFM}
 
@@ -275,7 +277,8 @@ begin
   Form7.TabelaAberta           := TIBDataSet(DSEmitente.DataSet);
   Form7.iCampos                := 12;
 
-  Form10.Image203Click(Sender);
+  //Form10.Image203Click(Sender);
+  GeraVisualizacaoFichaCadastro;
 end;
 
 procedure TForm17.ComboBox1Change(Sender: TObject);
@@ -576,11 +579,11 @@ begin
         begin
           ibdEmitenteIE.AsString       := xmlNodeValue(sRetorno,'//IE');
           ibdEmitenteESTADO.AsString   := xmlNodeValue(sRetorno,'//UF');
-          ibdEmitenteNOME.AsString     := PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome')));
-          ibdEmitenteENDERECO.AsString := Copy(Trim(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')))),1,35);
-          ibdEmitenteCOMPLE.AsString   := Copy(Trim(PrimeiraMaiuscula((xmlNodeValue(sRetorno,'//xBairro')))),1,20);
-          ibdEmitenteCEP.AsString      := copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
-          ibdEmitenteCNAE.AsString     := xmlNodeValue(sRetorno,'//CNAE');
+          ibdEmitenteNOME.AsString     := Trim(Copy(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xNome'))), 1, ibdEmitenteNOME.Size));
+          ibdEmitenteENDERECO.AsString := Copy(Trim(PrimeiraMaiuscula(ConverteAcentos(xmlNodeValue(sRetorno,'//xLgr')+', '+xmlNodeValue(sRetorno,'//nro') + ' ' + xmlNodeValue(sRetorno,'//xCpl')))),1,ibdEmitenteENDERECO.Size);
+          ibdEmitenteCOMPLE.AsString   := Copy(Trim(PrimeiraMaiuscula((xmlNodeValue(sRetorno,'//xBairro')))),1,ibdEmitenteCOMPLE.Size);
+          ibdEmitenteCEP.AsString      := Copy(xmlNodeValue(sRetorno,'//CEP'),1,5)+'-'+copy(xmlNodeValue(sRetorno,'//CEP'),6,3);
+          ibdEmitenteCNAE.AsString     := Copy(xmlNodeValue(sRetorno,'//CNAE'),1,ibdEmitenteCNAE.Size);
 
           for I := 0 to Form17.ComboBox7.Items.Count -1 do
           begin

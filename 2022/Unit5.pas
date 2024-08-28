@@ -921,7 +921,7 @@ begin
     //
     Form1.ibQueryGrafico.Close;
     Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=3 and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS');
+    Form1.ibQueryGrafico.SQL.Add('select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=''3'' and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS');
     Form1.ibQueryGrafico.Open;
     //
     I := 0;
@@ -992,7 +992,7 @@ begin
     //
     Form1.ibQueryGrafico.Close;
     Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add( 'select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=3 and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS');
+    Form1.ibQueryGrafico.SQL.Add( 'select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=''3'' and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS');
     Form1.ibQueryGrafico.Open;
     //
     I := 0;
@@ -1061,7 +1061,7 @@ begin
     //
     Form1.ibQueryGrafico.Close;
     Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add( 'select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=1 and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS desc');
+    Form1.ibQueryGrafico.SQL.Add( 'select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=''1'' and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS desc');
     Form1.ibQueryGrafico.Open;
     //
     I := 0;
@@ -1445,7 +1445,7 @@ begin
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
     Form1.ibQuery1.SQL.Add('select sum(CAIXA.ENTRADA-CAIXA.SAIDA) as FATURAMENTO, extract(year from CAIXA.DATA) as ANO from CAIXA, CONTAS'
-    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=1 and CAIXA.NOME=CONTAS.NOME group by extract(year from CAIXA.DATA) order by extract(year from CAIXA.DATA)');
+    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=''1'' and CAIXA.NOME=CONTAS.NOME group by extract(year from CAIXA.DATA) order by extract(year from CAIXA.DATA)');
     Form1.ibQuery1.Open;
     //
     I := 0;
@@ -1505,7 +1505,7 @@ begin
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
     Form1.ibQuery2.SQL.Add('select sum(CAIXA.ENTRADA-CAIXA.SAIDA) as despesas, extract(year from CAIXA.DATA) as ANO from CAIXA, CONTAS'
-    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=3 and CAIXA.NOME=CONTAS.NOME group by extract(year from CAIXA.DATA) order by extract(year from CAIXA.DATA)');
+    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=''3'' and CAIXA.NOME=CONTAS.NOME group by extract(year from CAIXA.DATA) order by extract(year from CAIXA.DATA)');
     Form1.ibQuery2.Open;
     //
     I := 0;
@@ -1562,13 +1562,13 @@ begin
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
     Form1.ibQuery1.SQL.Add('select sum(CAIXA.ENTRADA-CAIXA.SAIDA) as FATURAMENTO, extract(year from CAIXA.DATA) as ANO from CAIXA, CONTAS'
-    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=1 and CAIXA.NOME=CONTAS.NOME group by extract(year from CAIXA.DATA) order by extract(year from CAIXA.DATA)');
+    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=''1'' and CAIXA.NOME=CONTAS.NOME group by extract(year from CAIXA.DATA) order by extract(year from CAIXA.DATA)');
     Form1.ibQuery1.Open;
 
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
     Form1.ibQuery2.SQL.Add('select sum(CAIXA.ENTRADA-CAIXA.SAIDA) as despesas, extract(year from CAIXA.DATA) as ANO from CAIXA, CONTAS'
-    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=3 and CAIXA.NOME=CONTAS.NOME group by extract(year from CAIXA.DATA) order by extract(year from CAIXA.DATA)');
+    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=''3'' and CAIXA.NOME=CONTAS.NOME group by extract(year from CAIXA.DATA) order by extract(year from CAIXA.DATA)');
     Form1.ibQuery2.Open;
 
     Form1.ibQuery1.First;
@@ -1634,13 +1634,13 @@ begin
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
     Form1.ibQuery1.SQL.Add('select sum(CAIXA.ENTRADA-CAIXA.SAIDA) as FATURAMENTO, extract(month from CAIXA.DATA) as MES from CAIXA, CONTAS'
-    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=1 and CAIXA.NOME=CONTAS.NOME and extract(year from CAIXA.DATA)='+QuotedStr(IntToStr(Year(DATE)))+' group by extract(month from CAIXA.DATA) order by extract(month from CAIXA.DATA)');
+    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=''1'' and CAIXA.NOME=CONTAS.NOME and extract(year from CAIXA.DATA)='+QuotedStr(IntToStr(Year(DATE)))+' group by extract(month from CAIXA.DATA) order by extract(month from CAIXA.DATA)');
     Form1.ibQuery1.Open;
     //
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
     Form1.ibQuery2.SQL.Add('select sum(CAIXA.ENTRADA-CAIXA.SAIDA) as despesas, extract(month from CAIXA.DATA) as MES from CAIXA, CONTAS'
-    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=3 and CAIXA.NOME=CONTAS.NOME and extract(year from CAIXA.DATA)='+QuotedStr(IntToStr(Year(DATE)))+' group by extract(month from CAIXA.DATA) order by extract(month from CAIXA.DATA)');
+    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=''3'' and CAIXA.NOME=CONTAS.NOME and extract(year from CAIXA.DATA)='+QuotedStr(IntToStr(Year(DATE)))+' group by extract(month from CAIXA.DATA) order by extract(month from CAIXA.DATA)');
     Form1.ibQuery2.Open;
     //
     for I := 1 to 12 do
@@ -1716,7 +1716,7 @@ begin
     Form1.ibQuery1.Close;
     Form1.ibQuery1.SQL.Clear;
     Form1.ibQuery1.SQL.Add('select sum(CAIXA.ENTRADA-CAIXA.SAIDA) as FATURAMENTO, extract(month from CAIXA.DATA) as MES from CAIXA, CONTAS'
-    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=1 and CAIXA.NOME=CONTAS.NOME and extract(year from CAIXA.DATA)='+QuotedStr(IntToStr(Year(DATE)))+' group by extract(month from CAIXA.DATA) order by extract(month from CAIXA.DATA)');
+    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=''1'' and CAIXA.NOME=CONTAS.NOME and extract(year from CAIXA.DATA)='+QuotedStr(IntToStr(Year(DATE)))+' group by extract(month from CAIXA.DATA) order by extract(month from CAIXA.DATA)');
     Form1.ibQuery1.Open;
     //
     for I := 1 to 12 do
@@ -1783,7 +1783,7 @@ begin
     Form1.ibQuery2.Close;
     Form1.ibQuery2.SQL.Clear;
     Form1.ibQuery2.SQL.Add('select sum(CAIXA.ENTRADA-CAIXA.SAIDA) as despesas, extract(month from CAIXA.DATA) as MES from CAIXA, CONTAS'
-    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=3 and CAIXA.NOME=CONTAS.NOME and extract(year from CAIXA.DATA)='+QuotedStr(IntToStr(Year(DATE)))+' group by extract(month from CAIXA.DATA) order by extract(month from CAIXA.DATA)');
+    +' where substring(CONTAS.CONTA||''0'' from 1 for 1)=''3'' and CAIXA.NOME=CONTAS.NOME and extract(year from CAIXA.DATA)='+QuotedStr(IntToStr(Year(DATE)))+' group by extract(month from CAIXA.DATA) order by extract(month from CAIXA.DATA)');
     Form1.ibQuery2.Open;
     //
     for I := 1 to 12 do

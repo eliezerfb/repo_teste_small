@@ -2,11 +2,18 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
   Left = 587
   Top = 178
   OnActivate = FormActivate
+  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
+    inherited Panel8: TPanel
+      ExplicitLeft = 822
+    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsNatureza
+      ExplicitLeft = 20
+      ExplicitWidth = 802
+      ExplicitHeight = 453
       object tbsNatureza: TTabSheet
         Caption = 'Natureza da opera'#231#227'o '
         OnEnter = tbsNaturezaEnter
@@ -7639,7 +7646,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = [fsBold]
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 18
+          TabOrder = 19
           Visible = False
           OnExit = SMALL_DBEditXExit
           OnKeyDown = PadraoKeyDown
@@ -7734,8 +7741,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         object DBMemo4: TDBMemo
           Left = 150
           Top = 338
-          Width = 640
-          Height = 75
+          Width = 625
+          Height = 70
           DataField = 'OBS'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
@@ -7745,7 +7752,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           MaxLength = 32768
           ParentFont = False
-          TabOrder = 17
+          TabOrder = 18
           OnEnter = DBMemo4Enter
           OnKeyDown = DBMemo4KeyDown
           OnKeyPress = DBMemo4KeyPress
@@ -7786,7 +7793,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Left = 150
           Top = 123
           Width = 313
-          Height = 22
+          Height = 20
           Color = clWhite
           Ctl3D = False
           ParentBackground = False
@@ -7796,7 +7803,6 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           ExplicitLeft = 150
           ExplicitTop = 123
           ExplicitWidth = 313
-          ExplicitHeight = 22
           inherited txtCampo: TEdit
             Width = 313
             ExplicitWidth = 313
@@ -7840,7 +7846,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnKeyDown = PadraoKeyDown
         end
         object DBCheckBox1: TDBCheckBox
-          Left = 515
+          Left = 514
           Top = 318
           Width = 93
           Height = 17
@@ -7854,6 +7860,21 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
+        object chkRefenciarNota: TDBCheckBox
+          Left = 647
+          Top = 318
+          Width = 99
+          Height = 17
+          Alignment = taLeftJustify
+          Caption = 'Referenciar Nota'
+          DataField = 'REFERENCIANOTA'
+          DataSource = DSCadastro
+          TabOrder = 17
+          ValueChecked = 'S'
+          ValueUnchecked = 'N'
+          OnClick = DBCheckSobreClick
+          OnKeyDown = PadraoKeyDown
+        end
       end
       object tbsPisCofins: TTabSheet
         Caption = 'PIS/COFINS'
@@ -7862,7 +7883,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         object gbPisCofinsSaida: TGroupBox
           Left = 10
           Top = 10
-          Width = 790
+          Width = 766
           Height = 136
           TabOrder = 0
           object Label42: TLabel
@@ -7940,7 +7961,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           object ComboBox7: TComboBox
             Left = 100
             Top = 20
-            Width = 670
+            Width = 646
             Height = 22
             Style = csOwnerDrawVariable
             Font.Charset = ANSI_CHARSET
@@ -8035,7 +8056,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         object GroupBox1: TGroupBox
           Left = 10
           Top = 160
-          Width = 790
+          Width = 766
           Height = 53
           Caption = ' Venda de ve'#237'culos '
           TabOrder = 1

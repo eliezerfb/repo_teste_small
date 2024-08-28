@@ -1,13 +1,14 @@
 inherited FrmContaPagar: TFrmContaPagar
   OnActivate = FormActivate
+  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
     inherited pnlBotoesPosterior: TPanel
       object btnReplicar: TBitBtn
-        Left = 10
-        Top = 8
-        Width = 120
+        Left = 19
+        Top = 16
+        Width = 100
         Height = 25
         Anchors = [akLeft, akTop, akRight]
         Caption = '&Replicar'
@@ -21,8 +22,14 @@ inherited FrmContaPagar: TFrmContaPagar
         OnClick = btnReplicarClick
       end
     end
+    inherited Panel8: TPanel
+      ExplicitLeft = 822
+    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
+      ExplicitLeft = 20
+      ExplicitWidth = 802
+      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label129: TLabel

@@ -227,9 +227,12 @@ begin
   if Form7.sModulo = 'BALCAO' then
   begin
     ImportaCupom;
-  end;
 
-  Retributa(True);
+    // Vai fazer retributa na Nota depois. Fazer aqui só adiciona tempo ao processo.
+    //Retributa(True); // Dailon Parisotto 2024-07-17
+  end else
+    Retributa(True);
+
   Form41.Close;
 
   //Mauricio Parizotto 2023-07-26
@@ -297,15 +300,46 @@ var
   I : Integer;
 
   IBQCupom: TIBQuery;
+  qryValida: TIBQuery;
 begin
   sReg := Form7.ibDataSet14REGISTRO.AsString;
 
   IBQCupom := Form7.CriaIBQuery(Form7.ibDataSet13.Transaction);
 
   try
+    {Dailon Parisotto (f-20025) 2024-07-24 Inicio}
+    qryValida := Form7.CriaIBQuery(Form7.ibDataSet13.Transaction);
+    try
+      qryValida.Close;
+      qryValida.SQL.Clear;
+      qryValida.SQL.Add('select');
+      qryValida.SQL.Add('   A.REGISTRO,');
+      qryValida.SQL.Add('   Coalesce(N.MODELO,'''') Modelo,');
+      qryValida.SQL.Add('   UPPER(N.STATUS) StatusNFCE');
+      qryValida.SQL.Add('from ALTERACA A');
+      qryValida.SQL.Add('   	Left Join NFCE N on (N.NUMERONF = A.PEDIDO) and (N.CAIXA = A.CAIXA)'); // Precisa ser Left Join pois vendas de ECF não tem na tabela NFCE
+      qryValida.SQL.Add('where (A.PEDIDO='+QuotedStr(MaskEdit1.Text) +')');
+      qryValida.SQL.Add('   and (A.CAIXA='+QuotedStr(MaskEdit2.Text)+')');
+      qryValida.SQL.Add('   and (coalesce(A.VALORICM,''0'')=''0'')');
+      qryValida.SQL.Add('   and ((A.TIPO = ''BALCAO'') or (A.TIPO = ''LOKED''))');
+      qryValida.SQL.Add('   and (upper(A.DESCRICAO) <> upper(''Desconto''))');
+      qryValida.SQL.Add('   and (upper(A.DESCRICAO) <> upper(''Acréscimo''))');
+      qryValida.Open;
+
+      if qryValida.IsEmpty then
+      begin
+        MensagemSistema('Não é possível importar esse cupom fiscal por um dos motivos abaixo:' + SlineBreak +
+                        '   - Cupom fiscal não encontrado.' + SlineBreak +
+                        '   - Cupom fiscal foi cancelado.' + SlineBreak +
+                        '   - Cupom fiscal já foi importado.',msgAtencao);
+        Exit;
+      end;
+    finally
+      FreeAndNil(qryValida);
+    end;
+    {Dailon Parisotto (f-20025) 2024-07-24 Fim}
+
     IBQCupom.Close;
-    //Form7.IbDataSet27.SelectSQL.Clear;
-    //Form7.IbDataSet27.SelectSQL.Add('Select * from ALTERACA where PEDIDO='+QuotedStr(MaskEdit1.Text)+' and CAIXA='+QuotedStr(MaskEdit2.Text)+' and coalesce(VALORICM,''0'')=''0'' ');
     IBQCupom.SQL.Text := ' Select '+
                          '   A.*,'+
                          '   Coalesce(N.MODELO,'''') Modelo, '+
@@ -319,14 +353,17 @@ begin
     IBQCupom.Open;
     IBQCupom.First;
     Form7.ibDataSet16.Edit;
-
     //Se não encontrar
+    {Dailon Parisotto (f-20025) 2024-07-24 Inicio
+
     if IBQCupom.IsEmpty then
     begin
       //ShowMessage('Cupom fiscal não encontrado ou já importado.'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Cupom fiscal não encontrado ou já importado.',msgAtencao);
       Exit;
     end;
+}
+    {Dailon Parisotto (f-20025) 2024-07-24 Fim}
 
     //Se for cupom fiscal verifica se tem o CFOP
     if IBQCupom.FieldByName('Modelo').AsString <> '99' then
@@ -369,7 +406,6 @@ begin
         Exit;
       end;
     end;
-
     while not IBQCupom.Eof do
     begin
       Form7.ibDataSet4.Close;
@@ -485,10 +521,15 @@ begin
 
           // Acerta os tributos e o CFOP
           Form1.bFlag := True;
-          Form7.sModulo := 'VENDA';
-          Form7.ibDataSet16DESCRICAO.AsString := IBQCupom.FieldByName('DESCRICAO').AsString;
-          Form7.sModulo := 'BALCAO';
-          Form1.bFlag := False;
+          try
+            Form7.sModulo := 'VENDA';
+            Form7.bPesqProdNFPorConsulta := True;
+            Form7.ibDataSet16DESCRICAO.AsString := IBQCupom.FieldByName('DESCRICAO').AsString;
+            Form7.sModulo := 'BALCAO';
+          finally
+            Form7.bPesqProdNFPorConsulta := False;
+            Form1.bFlag := False;
+          end;
 
           Form7.ibDataSet16.Edit;
           Form7.ibDataSet16QUANTIDADE.AsFloat := IBQCupom.FieldByName('QUANTIDADE').AsFloat;
@@ -543,7 +584,6 @@ begin
       end;
       IBQCupom.Next;
     end;
-
     Form7.ibDataSet7.DisableControls;
     Form7.IbDataSet7.Close;
     Form7.IbDataSet7.SelectSQL.Text := ' Select * from RECEBER '+
@@ -566,13 +606,11 @@ begin
     Form7.IbDataSet7.First;
 
     I := 0;
-
     while not Form7.IbDataSet7.Eof do
     begin
       I := I + 1;
       Form7.ibDataSet7.Next;
     end;
-
     if I <> 0 then
       Form7.ibDataSet15DUPLICATAS.AsFloat := I;
 

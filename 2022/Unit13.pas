@@ -51,7 +51,9 @@ var
 
 implementation
 
-uses Unit7, Mais, Unit24, Unit12, Unit10, Unit14, Unit30, uDialogs,
+uses Unit7, Mais, Unit24, Unit12
+//  , Unit10
+  , Unit14, Unit30, uDialogs,
   uFuncoesRetaguarda;
 
 {$R *.DFM}

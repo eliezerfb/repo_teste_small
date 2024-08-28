@@ -13,7 +13,7 @@ uses
   , smallfunc_xe
   , IniFiles
   , Unit22
-  , Unit3
+  //, Unit3
   , Mais
   , Controls
   {$IFDEF VER150}
@@ -77,7 +77,7 @@ uses
 
 implementation
 
-uses uFuncoesBancoDados;
+uses uFuncoesBancoDados, uSmallConsts, Mais3;
 
 type
   TModulosSmall = (tmNenhum, tmNao, tmEstoque, tmICM, tmReceber);
@@ -380,41 +380,25 @@ begin
   ChDir(sDirAtual); // Para voltar
 end;
 
-{Mauricio Parizotto 2023-12-29
-function GetIP:string;
-var
-  WSAData: TWSAData;
-  HostEnt: PHostEnt;
-  Name:string;
-begin
-  WSAStartup(2, WSAData);
-  SetLength(Name, 255);
-  Gethostname(PChar(Name), 255);
-  SetLength(Name, StrLen(PChar(Name)));
-  HostEnt := gethostbyname(PChar(Name));
-  with HostEnt^  do
-  begin
-    Result := Format('%d.%d.%d.%d',[Byte(h_addr^[0]),Byte(h_addr^[1]),Byte(h_addr^[2]),Byte(h_addr^[3])]);
-  end;
-  WSACleanup;
-end;
-}
-
 function GetSenhaAdmin : Boolean;
 var
   Mais1Ini : tIniFile;
-  sSenhaX, sSenha : string;
+  sSenhaX, sSenha, sSenhaAdm : string;
   I : integer;
 begin
   Result := False;
 
   Form22.Show;
-  Form22.Label6.Caption := '';
-  Form22.Label6.Width   := Screen.Width;
-  Form22.Label6.Repaint;
-  Senhas2.ShowModal;
+  Form22.lblMsgCarregamento.Caption := '';
+  Form22.lblMsgCarregamento.Repaint;
+  //Mauricio Parizotto 2024-07-26
+//  Senhas2.ShowModal;
+  Senhas.iTpApresentacao := 3;
+  Senhas.ShowModal;
   Form22.Close;
-  Senha2:=Senhas2.SenhaPub2;
+//  Senha2:=Senhas2.SenhaPub2;
+  sSenhaAdm := Senhas.SenhaAdmPub;
+  Senhas.SenhaAdmPub := '';
   Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
   sSenhaX := Mais1Ini.ReadString('Administrador','Chave','15706143431572013809150491382314104');
   sSenha := '';
@@ -427,12 +411,12 @@ begin
                   )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
   // ----------------------------- //
 
-  Result := AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2);
+  Result := AnsiUpperCase(sSenha) = AnsiUpperCase(sSenhaAdm);
 
   if Result = False then
   begin
     if Application.MessageBox(PChar('Senha inválida. Deseja tentar novamente?'),
-                              'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
+                              'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON1) = id_Yes then
     begin
       Result := GetSenhaAdmin;
     end;
@@ -507,30 +491,17 @@ procedure GetFormasDePagamentoNFe(slForma: TStringList);
 begin
 
   slForma.Clear;
-  {
-  slForma.Add('Dinheiro');
-  slForma.Add('Cheque');
-  slForma.Add('Cartão de Crédito');
-  slForma.Add('Cartão de Débito');
-  slForma.Add('Crédito de Loja');
-  slForma.Add('Vale Alimentação');
-  slForma.Add('Vale Refeição');
-  slForma.Add('Vale Presente');
-  slForma.Add('Vale Combustível');
-  slForma.Add('Duplicata Mercantil');
-  slForma.Add('Boleto Bancário');
-  slForma.Add('Depósito Bancário');
-  slForma.Add('Pagamento Instantâneo (PIX)');
-  slForma.Add('Transfer.bancária, Carteira Digital');
-  slForma.Add('Progr.de fidelidade, Cashback, Crédito Virtual');
-  slForma.Add('Outros');
-  }
+
   slForma.Add('Dinheiro');
   slForma.Add('Cartão de Crédito');
   slForma.Add('Cartão de Débito');
   slForma.Add('Boleto Bancário');
   slForma.Add('Depósito Bancário');
-  slForma.Add('Pagamento Instantâneo (PIX)');
+  {Mauricio Parizotto 204-07-10 Inicio}
+  //slForma.Add('Pagamento Instantâneo (PIX)');
+  slForma.Add(_FormaPixEstatico);
+  slForma.Add(_FormaPixDinamico);
+  {Mauricio Parizotto 204-07-10 Fim}
   slForma.Add('Cheque');
   slForma.Add('Crédito de Loja');
   slForma.Add('Vale Alimentação');
@@ -571,8 +542,14 @@ begin
     Result := '15';
   if sDescricaoForma = 'Depósito Bancário' then
     Result := '16';
-  if sDescricaoForma = 'Pagamento Instantâneo (PIX)' then
+  {Mauricio Parizotto 204-07-10 Inicio}
+  //if sDescricaoForma = 'Pagamento Instantâneo (PIX)' then
+  //  Result := '17';
+  if sDescricaoForma = _FormaPixDinamico then
     Result := '17';
+  if sDescricaoForma = _FormaPixEstatico then
+    Result := '20';
+  {Mauricio Parizotto 204-07-10 Fim}
   if sDescricaoForma = 'Transfer.bancária, Carteira Digital' then
     Result := '18';
   if sDescricaoForma = 'Progr.de fidelidade, Cashback, Crédito Virtual' then
@@ -681,7 +658,8 @@ end;
 
 function FormaDePagamentoEnvolveCartao(sForma: String): Boolean;
 begin
-  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '|03|04|') > 0); // envolvem instituição financeiras/credenciadoras
+  // envolvem instituição financeiras/credenciadoras
+  Result := (Pos('|' + IdFormasDePagamentoNFe(sForma) + '|', '|03|04|') > 0);
 end;
 
 function FormaDePagamentoGeraBoleto(sForma: String): Boolean;

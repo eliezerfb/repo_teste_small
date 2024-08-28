@@ -291,6 +291,7 @@ type
     procedure ExibeColunasFCPST(bExibe: Boolean);
     procedure ExibeColunaCSOSN(bExibe: Boolean);
     procedure ExibeColunaCSTICMS(FINNFE: String; CRT: String); // procedure ExibeColunaCSTICMS(bExibe: Boolean);
+    procedure CriaVariavelCalcNota;
 
     property PodeFecharTela: Boolean read getPodeFecharTela;
   end;
@@ -301,10 +302,12 @@ var
 
 implementation
 
-uses Unit7, Unit10, Mais, uFrmParcelas, Unit41, Unit43, Unit19,
+uses Unit7
+//  , Unit10
+  , Mais, uFrmParcelas, Unit41, Unit43, Unit19,
   Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
   uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
-  ufrmPesquisaOrdemServico, uDialogs, ufrmFichaCadastros;
+  ufrmPesquisaOrdemServico, uDialogs;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -676,7 +679,9 @@ begin
   Form1.bChaveSelecionaCliente := False;
   // CPF/CGC
   if Form7.ibDataSet15CLIENTE.AsString <> Form7.ibDataSet2NOME.AsString then
-  begin 
+  begin
+    {Dailon Parisotto (f-20023) 2024-07-29 Inicio
+
     if AllTrim(LimpaNumero(SMALL_DBEdit39.Text))<>'' then
     begin
       if Length(LimpaNumero(Copy(SMALL_DBEdit39.Text,1,3)))=3 then
@@ -708,6 +713,55 @@ begin
     Retributa(True);
     if form7.ibDataSet16.Modified then
       Form7.ibDataset16.Post;
+
+    }
+    Form7.bPesqProdNFPorConsulta := True;
+    try
+      // Fica muito lento devido a recalcular o total em todos os itens
+      // Irá recalcular 1 unica vez ao final deste processo
+      FreeAndNil(vNotaFiscal);
+
+      if AllTrim(LimpaNumero(SMALL_DBEdit39.Text))<>'' then
+      begin
+        if Length(LimpaNumero(Copy(SMALL_DBEdit39.Text,1,3)))=3 then
+        begin
+          if CpfCgc(LimpaNumero(SMALL_DBEdit39.Text)) then
+          begin
+            // CAAD9
+            Form7.ibDataSet2.DisableControls;
+            Form7.ibDataSet2.Close;
+            Form7.ibDataSet2.SelectSQL.Clear;
+            Form7.ibDataSet2.SelectSQL.Add('select * FROM CLIFOR where CGC='+QuotedStr(ConverteCpfCgc(AllTrim(LimpaNumero(SMALL_DBEdit39.Text))))+'');
+            Form7.ibDataSet2.Open;
+            Form7.ibDataSet2.EnableControls;
+
+            Form7.ibDataSet15CLIENTE.AsString := Form7.ibDataSet2NOME.AsString;
+          end;
+        end;
+      end;
+      // CPF/CGC
+      if AllTrim(SMALL_DBEdit39.Text)<>AllTrim(Form7.ibDAtaSet2NOME.AsString) then
+      begin
+        Form7.ibDataSet15CLIENTE.AsString := Form7.ibDataSet2NOME.AsString;
+      end;
+
+      try
+        Form7.ibDataSet15TOTALChange(Form7.ibDataSet15TOTAL);
+      except end;
+
+      vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
+      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+
+      Retributa(True);
+      if form7.ibDataSet16.Modified then
+        Form7.ibDataset16.Post;
+    finally
+      if (not Assigned(vNotaFiscal)) then
+        vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
+
+      Form7.bPesqProdNFPorConsulta := False;
+    end;
+    {Dailon Parisotto (f-20023) 2024-07-29 Fim}
   end;
   // Cliente atrasado em vermelho
   if Form7.ibDataSet2MOSTRAR.AsString = '1' then SMALL_DBEdit39.Font.Color := clRed else SMALL_DBEdit39.Font.Color := clBlack;
@@ -834,6 +888,8 @@ begin
 end;
 
 procedure TForm12.SMALL_DBEdit40Enter(Sender: TObject);
+var
+  nRecNo: Integer;
 begin
   mkp(True);
 
@@ -855,7 +911,9 @@ begin
     Panel2.Top     := Panel1.Top  + dbGrid1.Top  + 100;
     Panel2.Left    := Panel1.Left + dbGrid1.Left + dbGrid1.Width + 20;
 
-    if Form7.ibDataSet13CRT.AsString = '1' then
+    //if Form7.ibDataSet13CRT.AsString = '1' then Mauricio Parizotto 2024-08-07
+    if (Form7.ibDataSet13CRT.AsString = '1')
+      or (Form7.ibDataSet13CRT.AsString = '4') then
     begin
       ExibeColunaCSOSN(True);
       ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString); //ExibeColunaCSTICMS(False);
@@ -889,7 +947,29 @@ begin
   end;
 
   if Form7.sModulo <> 'RETRIBUTA' then
+  begin
+    {Dailon Parisotto (f-18604) 2024-05-10 Inicio
+
     Form7.ibDataSet16.EnableControls;
+
+    Por algum motivo ocorre o erro, se setar para o primeiro não ocorre problema
+    }
+
+    if Form7.ibDataSet16.ControlsDisabled then
+    begin
+      nRecNo := Form7.ibDataSet16.RecNo;
+      DBGrid1.DataSource := nil;
+      try
+          Form7.ibDataSet16.First;
+          Form7.ibDataSet16.EnableControls;
+
+      finally
+        Form7.ibDataSet16.RecNo := nRecNo;
+        DBGrid1.DataSource := Form7.DataSource16;
+      end;
+    end;
+    {Dailon Parisotto (f-18604) 2024-05-10 Fim}
+  end;
   Form7.ibDataSet15.Enablecontrols;
 
   AtivaPesquisaNaturezaOP;
@@ -927,6 +1007,8 @@ begin
   // Joga p/obs a obs na tabela de icm  Limpando o que tinha
   Form7.ibDataSet14.Locate('NOME',AllTrim(SMALL_DBEdit40.Text),[]);
 
+(*     Dailon Parisotto (f-20023) 2024-07-26 inicio
+
   if AllTrim(sOperacaoAntiga) <> AllTrim(Form7.ibDataSet14NOME.AsString) then
   begin
     Form7.ibQuery1.Close;
@@ -950,10 +1032,67 @@ begin
       Form7.ibDataSet16.Next;
     end;
 
+    {Dailon Parisotto (f-19945) 2024-07-17 inicio
+
     Retributa(True);
+
+    }
+    Form7.bPesqProdNFPorConsulta := True;
+    try
+      Retributa(True);
+    finally
+      Form7.bPesqProdNFPorConsulta := False;
+    end;
+    {Dailon Parisotto (f-19945) 2024-07-17 Fim}
     if Form7.ibDataSet16.Modified then
       Form7.ibDataSet16.Post;
+  end;         *)
+
+    if AllTrim(sOperacaoAntiga) <> AllTrim(Form7.ibDataSet14NOME.AsString) then
+  begin
+    Form7.ibQuery1.Close;
+    Form7.ibQuery1.SQL.Clear;
+    Form7.ibQuery1.SQL.Add('select * from ICM where NOME='+QuotedStr(sOperacaoAntiga)+' ');
+    Form7.ibQuery1.Open;
+
+    Form7.ibDataSet16.DisableControls;
+    Form7.ibDataSet16.First;
+    Form7.bPesqProdNFPorConsulta := True;
+
+    try
+      // Fica muito lento devido a recalcular o total em todos os itens
+      // Irá recalcular 1 unica vez ao final deste processo
+      FreeAndNil(vNotaFiscal);
+      while not Form7.ibDataSet16.EOF do // Disable
+      begin
+        if Form7.ibDataSet16TOTAL.AsString <> '' then
+        begin
+          if Form7.ibDataSet16CFOP.AsString = Form7.ibQuery1.FieldByName('CFOP').AsString then
+          begin
+            Form7.ibDataSet16.Edit;
+            Form7.ibDataSet16CFOP.AsString := '';
+          end;
+        end;
+
+        Form7.ibDataSet16.Next;
+      end;
+      vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
+      vNotaFiscal.CalculaValores(Form7.ibDataSet15,Form7.ibDataSet16);
+
+      Retributa(True);
+
+      if Form7.ibDataSet16.Modified then
+        Form7.ibDataSet16.Post;
+
+    finally
+      if (not Assigned(vNotaFiscal)) then
+        vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
+
+      Form7.bPesqProdNFPorConsulta := False;
+    end;
   end;
+
+  {Dailon Parisotto (f-20023) 2024-07-26 Fim}
 
   if SMALL_DBEdit40.Text <> '' then
   begin
@@ -968,10 +1107,12 @@ begin
         Form12.Edit2.Text := '4-Devolução de mercadoria';
         Form7.ibDataSet15FINNFE.AsString   := '4';
         ExibeColunasFCPST(True);
-        if Form7.ibDataSet13CRT.AsString = '1' then // Sandro Silva 2023-05-24
+        //if Form7.ibDataSet13CRT.AsString = '1' then // Mauricio Parizotto 2024-08-07
+        if (Form7.ibDataSet13CRT.AsString = '1')
+          or (Form7.ibDataSet13CRT.AsString = '4') then
         begin
           ExibeColunaCSOSN(True); // Sandro Silva 2023-05-24
-          ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString); //ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
+          ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString);
         end;
         SMALL_DBEdit40Enter(Sender);
       end;
@@ -2011,7 +2152,7 @@ begin
           if DbGrid1.SelectedIndex = 0 then
           begin
             Form1.bFlag := True;
-            //
+
             if Alltrim(Form7.ibDataSet16DESCRICAO.AsString) = AllTrim(Form7.ibDataSet4DESCRICAO.AsString) then
             begin
               Form7.ibDataSet16DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
@@ -2019,6 +2160,7 @@ begin
             begin
               Form7.ibDataSet16DESCRICAO.AsString := AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
             end;
+
           end;
 
           I := DbGrid1.SelectedIndex;
@@ -2029,6 +2171,7 @@ begin
             Form7.ibDataSet16.Next;
             if Form7.ibDataSet16.EOF then Form7.ibDataSet16.Append;
           end;
+
         end else
         begin
           //Sai do Grid
@@ -2262,7 +2405,12 @@ begin
   else
     Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
 
-  Retributa(True);
+  Form7.bPesqProdNFPorConsulta := True;
+  try
+    Retributa(True);
+  finally
+    Form7.bPesqProdNFPorConsulta := False;
+  end;
 
   {Mauricio Parizotto 2023-07-19 Fim}
 
@@ -2373,7 +2521,9 @@ begin
             begin
               Edit2.Text := '4-Devolução de mercadoria';
               ExibeColunasFCPST(True);
-              if Form7.ibDataSet13CRT.AsString = '1' then // Sandro Silva 2023-05-24
+              //if Form7.ibDataSet13CRT.AsString = '1' then // Mauricio Parizotto 2024-08-07
+              if (Form7.ibDataSet13CRT.AsString = '1')
+                or (Form7.ibDataSet13CRT.AsString = '4') then
               begin
                 ExibeColunaCSOSN(True); // Sandro Silva 2023-05-24
                 ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString); //ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
@@ -2886,7 +3036,9 @@ begin
   if (LimpaNumero(Edit2.Text) = '4') then
   begin
     ExibeColunasFCPST(True);
-    if Form7.ibDataSet13CRT.AsString = '1' then // Sandro Silva 2023-05-24
+    //if Form7.ibDataSet13CRT.AsString = '1' then // Mauricio Parizotto 2024-08-07
+    if (Form7.ibDataSet13CRT.AsString = '1')
+      or (Form7.ibDataSet13CRT.AsString = '4') then
     begin
       ExibeColunaCSOSN(True); // Sandro Silva 2023-05-24
       ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString); //ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
@@ -2955,8 +3107,8 @@ end;
 
 procedure TForm12.Edit6Click(Sender: TObject);
 begin
-  //
-  Edit6.Text := LimpaNumero(Form1.Small_InputForm('Indicador de presença','Indicador de presença do comprador no estabelecimento comercial no momento da operação:'+chr(10)+chr(10)+
+  //Edit6.Text := LimpaNumero(Form1.Small_InputForm('Indicador de presença','Indicador de presença do comprador no estabelecimento comercial no momento da operação:'+chr(10)+chr(10)+ Mauricio Parizotto 2024-08-08
+  Edit6.Text := LimpaNumero(Form1.Small_InputForm('Indicador de presença do comprador no estabelecimento comercial no momento da operação:',//+chr(10)+chr(10)+
                 '0=Não se aplica (por exemplo, para a Nota Fiscal complementar ou de ajuste);'+chr(10)+
                 '1=Operação presencial;'+chr(10)+
                 '2=Operação não presencial, pela Internet;'+chr(10)+
@@ -2964,7 +3116,7 @@ begin
                 '4=NFC-e em operação com entrega em domicílio;'+chr(10)+
                 '5=Operação presencial fora do estabelecimento;'+chr(10)+
                 '9=Operação não presencial, outros.',LimpaNumero(Edit6.Text)));
-  //
+
   if (LimpaNumero(Edit6.Text) = '0') then
   begin
     Edit6.Text := '0=Não se aplica';
@@ -3002,18 +3154,18 @@ begin
       end;
     end;
   end;
-  //
+
   mkp(True);
-  //
+
   if Form7.ibDataSet15INDPRES.AsString  <> LimpaNumero(Edit6.Text) then
     Form7.ibDataSet15INDPRES.AsString  := LimpaNumero(Edit6.Text);
-  //
+
   try
     Form12.SMALL_DBEdit40.SetFocus;
-  except end;
-  //
+  except
+  end;
+
   // Indicador de presença do comprador no estabelecimento comercial no momento da operação
-  //
 end;
 
 procedure TForm12.PopupMenu3Change(Sender: TObject; Source: TMenuItem;
@@ -3344,7 +3496,8 @@ procedure TForm12.ExibeColunaCSTICMS(FINNFE: String; CRT: String); //procedure T
 begin
   //Form7.ibDataSet16CST_ICMS.Visible := bExibe;
   Form7.ibDataSet16CST_ICMS.DisplayLabel := 'CST ICMS';
-  if (FINNFE = '4') and (CRT = '1') then // Devolução e simples nacional
+  //if (FINNFE = '4') and (CRT = '1') then // Devolução e simples nacional Mauricio Parizotto 2024-08-07
+  if (FINNFE = '4') and ( ( CRT = '1' ) or (CRT = '4' ) ) then // Devolução e simples nacional
     Form7.ibDataSet16CST_ICMS.DisplayLabel := 'Origem';
 end;
 
@@ -3370,9 +3523,10 @@ begin
     Exit;
 end;
 
+procedure TForm12.CriaVariavelCalcNota;
+begin
+  if (not Assigned(vNotaFiscal)) then
+    vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
+end;
+
 end.
-
-
-
-
-
