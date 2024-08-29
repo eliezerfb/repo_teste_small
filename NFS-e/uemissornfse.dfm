@@ -1,6 +1,6 @@
 object FEmissorNFSe: TFEmissorNFSe
-  Left = 673
-  Top = 414
+  Left = 538
+  Top = 332
   Width = 800
   Height = 400
   HorzScrollBar.Visible = False
@@ -14111,7 +14111,6 @@ object FEmissorNFSe: TFEmissorNFSe
     DiretorioXmlImpressao = 'XmlImpressao\'
     DelimitadorDoCampoCSV = ';'
     DelimitadorDaLinhaCSV = #13#10
-    ModoAtualizarArquivos = mkParcial
     Left = 741
     Top = 13
   end
