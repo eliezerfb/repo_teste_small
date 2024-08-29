@@ -2657,6 +2657,14 @@ begin
       ExecutaComando('Commit');
   {Mauricio Parizotto 204-07-10 Fim}
 
+  {Dailon Parisotto (smal-653) 2024-08-26 Inicio}
+  ExecutaComando('alter table ICM alter NOME type varchar(60)');
+  ExecutaComando('alter table VENDAS alter OPERACAO type varchar(60)');
+  ExecutaComando('alter table COMPRAS alter OPERACAO type varchar(60)');
+
+  ExecutaComando('commit');
+  {Dailon Parisotto (smal-653) 2024-08-26 Fim}
+
   Form22.Repaint;
 
   try
