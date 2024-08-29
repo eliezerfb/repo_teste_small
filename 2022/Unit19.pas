@@ -674,6 +674,11 @@ begin
   Mais2Ini.Free;
   Mais3Ini.Free;
 
+  //Mauricio Parizotto 2024-08-29
+  Commitatudo(True);
+  AgendaCommit(False);
+  AbreArquivos(False);
+
   Close;
 end;
 
