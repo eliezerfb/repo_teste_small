@@ -39,6 +39,7 @@ var
   sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-06-16
   dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
   dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-09-04
+  vTotalFCP, vTotalFCPST : Real; // Dailon Parisotto 2024-07-01
 
   procedure GeraXmlNFeEntrada;
   procedure GeraXmlNFeEntradaTags;
@@ -61,7 +62,7 @@ var
   sRecibo : String;
   sCupomReferenciado : String;
   sDentroOuForadoEStado, sUFEmbarq, sLocaldeEmbarque, sLocalDespacho, sPais, sCodPais : String;
-  vST, vBC, vBCST, vPIS, vPIS_S, vCOFINS, vCOFINS_S, vICMS : Real;
+  vST, vBC, vBCST, vPIS, vPIS_S, vCOFINS, vCOFINS_S, vICMS: Real;
   fTotaldeTriubutos, fTotaldeTriubutos_uf, fTotaldeTriubutos_muni : Real;
   Mais1Ini : tIniFile;
 
@@ -103,6 +104,9 @@ var
 begin
   bAjusteICMS := False;
   
+  vTotalFCP := 0;
+  vTotalFCPST := 0;
+
   Form7.ibDataSet24.Close;
   Form7.ibDataSet24.SelectSQL.Clear;
   Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where NUMERONF='+QuotedStr(Copy(Form7.ibDataSet15NUMERONF.AsString,1,12))+' and FORNECEDOR='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString) );
@@ -161,7 +165,7 @@ begin
   if AllTrim(Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7)) = '' then
   begin
     Form7.ibDataset15.Edit;
-    Form7.ibDataSet15STATUS.AsString    := 'Erro: Nome do município do emitente inválido.';
+    Form7.SetTextoCampoSTATUSNFe('Erro: Nome do município do emitente inválido.');
     Abort;
   end;
 
@@ -513,7 +517,7 @@ begin
   if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
   begin
     Form7.ibDataSet15.Edit;
-    Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o CEP do emitente';
+    Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o CEP do emitente');
     Abort;
   end;
 
@@ -549,7 +553,7 @@ begin
     if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o município do destinatário';
+      Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o município do destinatário');
       Abort;
     end;
 
@@ -602,14 +606,14 @@ begin
     if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 0) then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: CNPJ ou CPF do destinatário inválido';
+      Form7.SetTextoCampoSTATUSNFe('Erro: CNPJ ou CPF do destinatário inválido');
       Abort;
     end;
 
     if (Length(AllTrim(Form7.ibDAtaset2CEP.AsString)) <> 9) then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: CEP do destinatário inválido';
+      Form7.SetTextoCampoSTATUSNFe('Erro: CEP do destinatário inválido');
       Abort;
     end;
 
@@ -618,7 +622,7 @@ begin
       if Length(Limpanumero(Form7.ibDAtaset2FONE.AsString)) < 8 then
       begin
         Form7.ibDataSet15.Edit;
-        Form7.ibDataSet15STATUS.AsString    := 'Erro: Telefone do destinatário inválido.';
+        Form7.SetTextoCampoSTATUSNFe('Erro: Telefone do destinatário inválido.');
         Abort;
       end;
     end;
@@ -670,7 +674,7 @@ begin
               end else
               begin
                 Form7.ibDataSet15.Edit;
-                Form7.ibDataSet15STATUS.AsString    := 'Erro: Inscrição Estadual Inválida';
+                Form7.SetTextoCampoSTATUSNFe('Erro: Inscrição Estadual Inválida');
                 Abort;
               end;
             end;
@@ -1051,7 +1055,7 @@ begin
       if Alltrim(Form7.spdNFeDataSets.Campo('NCM_I05').Value) = '' then
       begin
         Form7.ibDataSet15.Edit;
-        Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o NCM do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+        Form7.SetTextoCampoSTATUSNFe('Erro: Informe o NCM do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString));
         Abort;
       end;
 
@@ -1576,7 +1580,9 @@ begin
         end;
         {Sandro Silva 2023-12-13 fim}
 
-        if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+        //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then Mauricio Parizotto 2024-08-07
+        if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1')
+          or (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '4') then
         begin
           Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value := '900';
         end;
@@ -1685,6 +1691,16 @@ begin
     Form7.spdNFeDataSets.campo('vFCP_W04h').Value       := '0.00'; // Valor Total do FCP (Fundo de Combate à Pobreza)
     Form7.spdNFeDataSets.campo('vFCPST_W06a').Value     := '0.00'; // Valor Total do FCP (Fundo de Combate à Pobreza) retido por substituição tributária
     Form7.spdNFeDataSets.campo('vFCPSTRet_W06b').Value  := '0.00'; // Valor Total do FCP retido anteriormente por Substituição Tributária
+
+
+    {Dailon Parisotto (f-19455) 2024-07-01 Inicio}
+    // Soma os valores de FCP/FCPST para informar no totalizador do XML
+    if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '3' then
+    begin
+      Form7.spdNFeDataSets.campo('vFCP_W04h').Value       := StrTran(Alltrim(FormatFloat('##0.00',vTotalFCP)),',','.');
+      Form7.spdNFeDataSets.campo('vFCPST_W06a').Value     := StrTran(Alltrim(FormatFloat('##0.00',vTotalFCPST)),',','.');
+    end;
+    {Dailon Parisotto (f-19455) 2024-07-01 Fim}
   end;
 
   Form7.spdNFeDataSets.Campo('vST_W06').Value     := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset24.FieldByname('ICMSSUBSTI').AsFloat)),',','.');; // Valor Total do ICMS Sibst. Tributária
@@ -1732,7 +1748,7 @@ begin
         if ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet18IE.AsString),Form7.ibDataSet18UF.AsString) then
         begin
           Form7.ibDataSet15.Edit;
-          Form7.ibDataSet15STATUS.AsString    := 'Erro: Inscrição Estadual da transportadora Inválida.';
+          Form7.SetTextoCampoSTATUSNFe('Erro: Inscrição Estadual da transportadora Inválida.');
           
           Abort;
         end;
@@ -1914,16 +1930,22 @@ procedure GeraXmlNFeEntradaTags;
 var
   fAliquota: Real;
   dvICMSMonoRet_N45: Real; // Sandro Silva 2023-06-13
+  nTotalFCP: Real;
 begin
   //////////////////// Aqui começam os Impostos Incidentes sobre o Item////////////////////////
   /// Verificar Manual pois existe uma variação nos campos de acordo com Tipo de Tribucação ////
   // ICMS
   fAliquota := 0;
-  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+
+  {$Region '//// CRT 2 e 3 - Normal //// ' }
+  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-07
+  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+    and (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
   begin
     // 1 - Simples nacional
     // 2 - Simples nacional - Excesso de Sublimite de Receita Bruta
     // 3 - Regime normal
+    // 4 - MEI
     //
     // N11 e N12 todos Tem
     //
@@ -2135,11 +2157,13 @@ begin
         Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := StrTran(Alltrim(FormatFloat('##0.00',((Form7.ibDAtaset23.FieldByname('VICMSST').AsFloat / Form7.ibDAtaset23.FieldByname('VBCST').AsFloat) * 100))),',','.') else Form7.spdNFeDataSets.Campo('pICMSST_N22').Value   := '0.00';  // Aliquota do Imposto do ICMS ST
     end;
 
+    {Mauricio Parizotto 2024-08-07 - Tem condição que não entra nesse bloco se for 1
     if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1' then
     begin
       Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0';  // BC
       Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0';  // Valor do ICMS em Reais
     end;
+    }
 
     if (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '30') or
        (Form7.spdNFeDataSets.Campo('CST_N12').AsString = '40') or
@@ -2185,7 +2209,39 @@ begin
     end;
 
     // Entrada empresa no Regime normal por CST
-    //
+    // FCP
+    // FCP ST
+
+    {Dailon Parisotto (f-19455) 2024-06-26 Inicio}
+    if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '10' then
+    begin
+
+      if (Form7.ibDataSet23.FieldByname('PFCP').AsFloat) <> 0 then
+      begin
+        Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet23.FieldByname('VBCFCP').AsFloat);// Valor da Base de Cálculo do FCP
+        Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(Form7.ibDataSet23.FieldByname('PFCP').AsFloat); // Percentual do Fundo de Combate à Pobreza (FCP)
+        Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(Form7.ibDataSet23.FieldByname('VFCP').AsFloat); // Valor do Fundo de Combate à Pobreza (FCP)
+        vTotalFCP := vTotalFCP + Form7.ibDataSet23.FieldByname('VFCP').AsFloat;
+      end;
+
+      if Form7.ibDataSet23.FieldByname('PFCPST').AsFloat <> 0 then
+      begin
+        Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(Form7.ibDataSet23.FieldByname('VBCFCPST').AsFloat); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
+        Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := FormatFloatXML(Form7.ibDataSet23.FieldByname('PFCPST').AsFloat); // Percentual do FCP retido por Substituição Tributária
+
+        if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
+        begin
+          Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML(Form7.ibDataSet23.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+        end else
+        begin
+          Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML(Form7.ibDataSet23.FieldByname('VFCPST').AsFloat); // Valor do FCP retido por Substituição Tributária
+        end;
+        vTotalFCPST := vTotalFCPST + Form7.ibDataSet23.FieldByname('VFCPST').AsFloat;
+      end;
+
+    end;
+    {Dailon Parisotto (f-19455) 2024-06-26 Fim}
+
     {
     if Form1.sVersaoLayout = '4.00' then
     begin
@@ -2264,18 +2320,19 @@ begin
     end;
     }
 
-    // FCP
-
   end;
+  {$Endregion}
 
-
+  {$Region '//// CRT 1 e 4 - Simples //// ' }
   // TAGS - Simples NAcional - CSOSN
-  if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1' then
+  //if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1' then Mauricio Parizotto 2024-08-07
+  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1')
+    or (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '4')then
   begin
     // 1 - Simples nacional
     // 2 - Simples nacional - Excesso de Sublimite de Receita Bruta
     // 3 - Regime normal
-
+    // 4 - Simples nacional - MEI
 
     // N12a Tem em todas - e eé referencia para classificar as tags
     if AllTrim(Form7.ibDataSet14.FieldByName('CSOSN').AsString) <> '' then
@@ -2313,7 +2370,7 @@ begin
         then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+      Form7.SetTextoCampoSTATUSNFe('Erro: Informe o CSOSN do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString));
       Abort;
     end;
     // CSOSN 101
@@ -2658,7 +2715,8 @@ begin
     {Sandro Silva 2023-06-13 fim}
 
   end;
-  // Fim SIMPLES NACIONAL
+  {$Endregion}
+
 
   {Sandro Silva 2023-06-13 inicio}
   // Não é posssível informar CSOSN 61. Para CSOSN 61 será criado no grupo imposto a tag CST
@@ -2670,9 +2728,15 @@ begin
     Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0.00';  // BC
     Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
 
+    {Dailon Parisotto (f-20002) 2024-07-23 Inicio
+
     Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').Value  := Form7.spdNFeDataSets.Campo('qCom_I10').Value;
     dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + XmlValueToFloat(Form7.spdNFeDataSets.Campo('qCom_I10').Value); // Sandro Silva 2023-09-04
 
+    }
+    Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').Value  := Form7.spdNFeDataSets.Campo('qTrib_I14').Value;
+    dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + XmlValueToFloat(Form7.spdNFeDataSets.Campo('qTrib_I14').Value); // Sandro Silva 2023-09-04
+    {Dailon Parisotto (f-20002) 2024-07-23 Fiim}
     Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
     dvICMSMonoRet_N45     := XmlValueToFloat(Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').AsString);
 

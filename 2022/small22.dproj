@@ -93,11 +93,11 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_MajorVer>2024</VerInfo_MajorVer>
-        <VerInfo_Build>48</VerInfo_Build>
+        <VerInfo_Build>76</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.16.0.48;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.16.0.48;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.29.0.76;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.29.0.76;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
         <Manifest_File>xp.manifest</Manifest_File>
-        <VerInfo_MinorVer>16</VerInfo_MinorVer>
+        <VerInfo_MinorVer>29</VerInfo_MinorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -126,7 +126,7 @@
         <DCCReference Include="MAIS.PAS">
             <Form>Form1</Form>
         </DCCReference>
-        <DCCReference Include="MAIS3.PAS">
+        <DCCReference Include="Mais3.pas">
             <Form>Senhas</Form>
         </DCCReference>
         <DCCReference Include="UNIT2.PAS">
@@ -147,17 +147,11 @@
         <DCCReference Include="UNIT48.PAS">
             <Form>Form48</Form>
         </DCCReference>
-        <DCCReference Include="Unit10.pas">
-            <Form>Form10</Form>
-        </DCCReference>
         <DCCReference Include="Unit16.pas">
             <Form>Form16</Form>
         </DCCReference>
         <DCCReference Include="Unit17.pas">
             <Form>Form17</Form>
-        </DCCReference>
-        <DCCReference Include="unit99.pas">
-            <Form>Form99</Form>
         </DCCReference>
         <DCCReference Include="uFrmParcelas.pas">
             <Form>FrmParcelas</Form>
@@ -216,9 +210,6 @@
         <DCCReference Include="Unit13.pas">
             <Form>Form13</Form>
         </DCCReference>
-        <DCCReference Include="UNIT3.PAS">
-            <Form>Senhas2</Form>
-        </DCCReference>
         <DCCReference Include="unit24.pas">
             <Form>Form24</Form>
         </DCCReference>
@@ -233,9 +224,6 @@
         </DCCReference>
         <DCCReference Include="Unit35.pas">
             <Form>Form35</Form>
-        </DCCReference>
-        <DCCReference Include="Unit8.pas">
-            <Form>Form8</Form>
         </DCCReference>
         <DCCReference Include="uExportaXML.pas">
             <Form>frmExportaXML</Form>
@@ -492,9 +480,6 @@
         <DCCReference Include="..\..\unit_compartilhada\uLogSistema.pas"/>
         <DCCReference Include="units\uDrawCellGridModulos.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uEmail.pas"/>
-        <DCCReference Include="ufrmFichaCadastros.pas">
-            <Form>FrmFichaCadastros</Form>
-        </DCCReference>
         <DCCReference Include="units\uDesenhaBoleto.pas"/>
         <DCCReference Include="ufrmRelatorioProdMonofasicoCupom.pas">
             <Form>frmRelProdMonofasicoCupom</Form>
@@ -523,7 +508,6 @@
         <DCCReference Include="units\uConsultaCEP.pas"/>
         <DCCReference Include="uFrmConversaoCFOP.pas">
             <Form>FrmConversaoCFOP</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uConfiguracaoTEFCommerce.pas">
             <Form>frmConfiguracaoTEFCommerce</Form>
@@ -542,43 +526,59 @@
         <DCCReference Include="units\uDuplicaNFSe.pas"/>
         <DCCReference Include="uFrmConvenio.pas">
             <Form>FrmConvenio</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmCaixa.pas">
             <Form>FrmCaixa</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmGrupoMercadoria.pas">
             <Form>FrmGrupoMercadoria</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmTransportadora.pas">
             <Form>FrmTransportadora</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmPlanoContas.pas">
             <Form>FrmPlanoContas</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmBanco.pas">
             <Form>FrmBanco</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmContaBancaria.pas">
             <Form>FrmContaBancaria</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\unit_compartilhada\uImpressoraSections.pas"/>
         <DCCReference Include="uFrmContaReceber.pas">
             <Form>FrmContaReceber</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmContaPagar.pas">
             <Form>FrmContaPagar</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmIntegracaoItau.pas">
+            <Form>FrmIntegracaoItau</Form>
+        </DCCReference>
+        <DCCReference Include="units\uMobile.pas"/>
+        <DCCReference Include="uPermissaoUsuario.pas"/>
+        <DCCReference Include="uFrmCadastro.pas">
+            <Form>FrmCadastro</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas"/>
+        <DCCReference Include="uFrmTecnico.pas">
+            <Form>FrmTecnico</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\unit_compartilhada\uCarneSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uTypesImpressao.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\Itau\uIntegracaoItau.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\Itau\uClassesItau.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\Itau\uWebServiceItau.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uFrmTelaProcessamento.pas">
+            <Form>FrmTelaProcessamento</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmEstoque.pas">
+            <Form>FrmEstoque</Form>
+        </DCCReference>
+        <DCCReference Include="uFrmMsgNovoLayout.pas">
+            <Form>FrmMsgNovoLayout</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="uPermissaoUsuario.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1425,7 +1425,6 @@
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
@@ -2249,7 +2248,6 @@
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

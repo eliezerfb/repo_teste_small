@@ -16,9 +16,6 @@ uses
   , IBQuery
   , ShellApi
   , SpdNFeDataSets
-  {$IFDEF VER150}
-  , spdXMLUtils
-  {$ENDIF}
   , spdNFeType
   , spdNFe
   , smallfunc_xe
@@ -185,7 +182,7 @@ var
   vlOutrasDespRateadoItem : Double; //Mauricio Parizotto 2024-04-22
 
   bFreteSobreIPI,bIPISobreICMS : Boolean;
-  bIPISobreOutras : Boolean; //Mauricio Parizotto 2024-04-22
+  bIPISobreOutras, bReferenciaNota : Boolean;
 
   cBenef, cBenefItem : string;
 
@@ -212,6 +209,7 @@ begin
   bIPISobreICMS   := CampoICMporNatureza('SOBREIPI',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S';
   cBenef          := trim(CampoICMporNatureza('CBENEF',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction)); //Mauricio Parizotto 2023-12-12
   bIPISobreOutras := CampoICMporNatureza('IPISOBREOUTRA',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S'; //Mauricio Parizotto 2024-04-22
+  bReferenciaNota := CampoICMporNatureza('REFERENCIANOTA',Form7.ibDataSet15OPERACAO.AsString,Form7.ibDataSet15.Transaction) = 'S'; //Mauricio Parizotto 2024-06-21
 
   // Relaciona os clientes com o arquivo de vendas
   Form7.ibDAtaset2.Close;
@@ -249,7 +247,7 @@ begin
   if AllTrim(Copy(IBQUERY99.FieldByname('CODIGO').AsString,1,7)) = '' then
   begin
     Form7.ibDataSet15.Edit;
-    Form7.ibDataSet15STATUS.AsString    := 'Erro: Nome do município do emitente inválido.';
+    Form7.SetTextoCampoSTATUSNFe('Erro: Nome do município do emitente inválido.');
     Abort;
   end;
 
@@ -450,20 +448,18 @@ begin
       except
         on E: Exception do
         begin
-          {
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar MKP'
-          ),'Atenção',mb_Ok + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-25}
           MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar MKP',msgAtencao);
         end;
       end;
     end;
   end;
 
-  // Complemento de ICMS
-  if NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString) then
+  {Mauricio Parizotto 2024-06-21 Inicio}
+  //SMAL-504
+  if (NFeIndicadorFinalidadeConsumidorFinal(Form7.ibDataSet15FINNFE.AsString))
+    and (bReferenciaNota) then
   begin
-    sChave                                      := Form1.Small_InputForm_ApenasNumeros('NFe', 'Chave de acesso da NF-e referenciada (ID da NF-e)', '', 44);
+    sChave := Form1.Small_InputForm_ApenasNumeros('NFe', 'Chave de acesso da NF-e referenciada (ID da NF-e)', '', 44);
 
     try
       if sChave <> '' then
@@ -475,10 +471,27 @@ begin
     except
       on E: Exception do
       begin
-        {
-        Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 2'
-        ),'Atenção',mb_Ok + MB_ICONWARNING);
-        Mauricio Parizotto 2023-10-25}
+        MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 1',msgAtencao);
+      end;
+    end;
+  end;
+  {Mauricio Parizotto 2024-06-21 Fim}
+
+  // Complemento de ICMS
+  if NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString) then
+  begin
+    sChave := Form1.Small_InputForm_ApenasNumeros('NFe', 'Chave de acesso da NF-e referenciada (ID da NF-e)', '', 44);
+
+    try
+      if sChave <> '' then
+      begin
+        Form7.spdNFeDataSets.IncluirPart('NREF');
+        Form7.spdNFeDataSets.Campo('refNFe_BA02').Value := sChave;
+        Form7.spdNFeDataSets.SalvarPart('NREF');
+      end;
+    except
+      on E: Exception do
+      begin
         MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 2',msgAtencao);
       end;
     end;
@@ -519,12 +532,6 @@ begin
             Form7.spdNFeDataSets.SalvarPart('NREF');
           end else
           begin
-            {
-            ShowMessage('Informação inválida informe a'+chr(10)+
-                        'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
-                        '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
-                        'cupom fiscal referenciado');
-            Mauricio Parizotto 2023-10-25}
             MensagemSistema('Informação inválida informe a'+chr(10)+
                             'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
                             '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
@@ -537,10 +544,6 @@ begin
       except
         on E: Exception do
         begin
-          {
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 3'
-          ),'Atenção',mb_Ok + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-25}
           MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 3',msgAtencao);
 
           Abort;
@@ -579,7 +582,7 @@ begin
   if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
   begin
     Form7.ibDataSet15.Edit;
-    Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o CEP do emitente';
+    Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o CEP do emitente');
     Abort;
   end;
 
@@ -614,13 +617,19 @@ begin
   begin
     IBQUERY99.Close;
     IBQUERY99.SQL.Clear;
+    {Dailon Parisotto (f-18465) 2024-04-30 Inicio
+
     IBQUERY99.SQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
+
+    }
+    IBQUERY99.SQL.Add('select * from MUNICIPIOS where UPPER(NOME)=UPPER('+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+') and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
+    {Dailon Parisotto (f-18465) 2024-04-30 Fim}
     IBQUERY99.Open;
 
     if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o município do destinatário';
+      Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o município do destinatário');
       Abort;
     end;
 
@@ -673,14 +682,14 @@ begin
     if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 0) then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: CNPJ ou CPF do destinatário inválido';
+      Form7.SetTextoCampoSTATUSNFe('Erro: CNPJ ou CPF do destinatário inválido');
       Abort;
     end;
 
     if (Length(AllTrim(Form7.ibDAtaset2CEP.AsString)) <> 9) then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: CEP do destinatário inválido';
+      Form7.SetTextoCampoSTATUSNFe('Erro: CEP do destinatário inválido');
       Abort;
     end;
 
@@ -689,7 +698,7 @@ begin
       if Length(Limpanumero(Form7.ibDAtaset2FONE.AsString)) < 8 then
       begin
         Form7.ibDataSet15.Edit;
-        Form7.ibDataSet15STATUS.AsString    := 'Erro: Telefone do destinatário inválido.';
+        Form7.SetTextoCampoSTATUSNFe('Erro: Telefone do destinatário inválido.');
         Abort;
       end;
     end;
@@ -742,7 +751,7 @@ begin
               end else
               begin
                 Form7.ibDataSet15.Edit;
-                Form7.ibDataSet15STATUS.AsString    := 'Erro: Inscrição Estadual do Destinatário Inválida';
+                Form7.SetTextoCampoSTATUSNFe('Erro: Inscrição Estadual do Destinatário Inválida');
                 Abort;
               end;
             end;
@@ -1969,7 +1978,6 @@ begin
               Form7.spdNFeDataSets.campo('pDevol_UA02').Value        := '100.00';    // Percentual da mercadoria devolvida
               Form7.spdNFeDataSets.campo('vIPIDevol_UA04').Value     := FormatFloatXML(Form7.ibDataSet16VIPI.AsFloat); // Valor do IPI devolvido
               fIPIDevolvido     := fIPIDevolvido + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vIPIDevol_UA04').AsString,',',''),'.',','));
-              //ShowMessage('Nota fiscal referenciada não encontrada'); Mauricio Parizotto 2023-10-25
               MensagemSistema('Nota fiscal referenciada não encontrada',msgAtencao);
             end;
           end;
@@ -2071,16 +2079,19 @@ begin
       sEx14    := Mais1Ini.ReadString('DI','Ex14','');
 
       try
-        sEx14 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número do ato concessório de Drawback:',sEx14);
+        //sEx14 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número do ato concessório de Drawback:',sEx14); Mauricio Parizotto 2024-08-08
+        sEx14 := Form1.Small_InputForm('NF-e exportação','Item: '+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número do ato concessório de Drawback:',sEx14);
         Form7.spdNFeDataSets.Campo('nDraw_I51').Value  := sEx14;      // Número do ato concessório de Drawback
 
         // Nota fiscal de exportação referenciada
         if (Copy(Form7.ibDataSet16CFOP.AsString,2,3) = '503') or (Copy(Form7.ibDataSet16CFOP.AsString,2,3) = '501') then
         begin
-          sEx16 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número de Registro de Exportação:',sEx16);
+          //sEx16 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número de Registro de Exportação:',sEx16); Mauricio Parizotto 2024-08-08
+          sEx16 := Form1.Small_InputForm('NF-e exportação','Item: '+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número de Registro de Exportação:',sEx16);
           Form7.spdNFeDataSets.Campo('nRE_I53').Value  := sEx16;      // Número de Registro de Exportação
 
-          sEx15 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Chave de Acesso da NF-e recebida para exportação:',sEx15);
+          //sEx15 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Chave de Acesso da NF-e recebida para exportação:',sEx15); Mauricio Parizotto 2024-08-08
+          sEx15 := Form1.Small_InputForm('NF-e exportação','Item: '+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Chave de Acesso da NF-e recebida para exportação:',sEx15);
           Form7.spdNFeDataSets.Campo('chNFe_I54').Value  := sEx15;      // Chave de Acesso da NF-e recebida para exportação
           Form7.spdNFeDataSets.Campo('qExport_I55').Value := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade do item realmente exportado
 
@@ -2813,7 +2824,7 @@ begin
                         ,msgErro);
 
         Form7.ibDataSet15.Edit;
-        Form7.ibDataSet15STATUS.AsString    := 'Erro: Ao salvar XML.';
+        Form7.SetTextoCampoSTATUSNFe('Erro: Ao salvar XML.');
         Abort;
       end;
     end;
@@ -2870,7 +2881,7 @@ begin
         if ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet18IE.AsString),Form7.ibDataSet18UF.AsString) then
         begin
           Form7.ibDataSet15.Edit;
-          Form7.ibDataSet15STATUS.AsString    := 'Erro: Inscrição Estadual da transportadora Inválida.';
+          Form7.SetTextoCampoSTATUSNFe('Erro: Inscrição Estadual da transportadora Inválida.');
 
           Abort;
         end;
@@ -3069,6 +3080,33 @@ begin
 }
       end;
 
+      //Mauricio Parizotto 2024-07-10
+      if IdFormasDePagamentoNFe(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) = '17' then
+      begin
+        if bPagouComTEF then
+        begin
+          IBQCREDENCIADORA.Close;
+          IBQCREDENCIADORA.SQL.Clear;
+          IBQCREDENCIADORA.SQL.Add('select * from CLIFOR');
+          IBQCREDENCIADORA.SQL.Add('WHERE (CLIFOR in (''Credenciadora de cartão'', ''Instituição financeira''))');
+          // Se não tem pega o primeiro
+          if Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString <> EmptyStr then
+            IBQCREDENCIADORA.SQL.Add('and (NOME = ' + QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString) + ')');
+          IBQCREDENCIADORA.Open;
+
+          Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '1';
+          Form7.spdNFeDataSets.campo('cAut_YA07').Value       := Copy(Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString, 1, 20);
+          Form7.spdNFeDataSets.campo('CNPJ_YA05').Value       := LimpaNumero(IBQCREDENCIADORA.FieldByName('CGC').AsString);  // CNPJ da Credenciadora de cartão de crédito e/ou débito
+
+          IBQCREDENCIADORA.Close;
+        end else
+        begin
+          //Se não for no cartão e For PIX Dinâmico marca como sem integração
+          Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
+        end;
+      end;
+
+
       Form7.spdNFeDataSets.SalvarPart('YA');
 
       Form7.ibDataSet7.Next;
@@ -3260,7 +3298,11 @@ begin
   fPercentualFCP   := Form7.ibDataSet16PFCP.AsFloat; // tributos da NF-e
   fPercentualFCPST := Form7.ibDataSet16PFCPST.AsFloat; // tributos da NF-e
 
-  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
+  {$Region '//// CRT 2 e 3 - Normal //// ' }
+
+  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-07
+  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1')
+    and (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
   begin
     try
       // Sandro Silva 2023-06-13 if Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4' then // 4=NFe Devolução
@@ -3833,11 +3875,13 @@ begin
       end;
     end;
 
+    {Mauricio Parizoto 2024-08-07 - Já tem uma condição que não entra nesse bloco se for = 1
     if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1' then
     begin
       Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0';  // BC
       Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0';  // Valor do ICMS em Reais
     end;
+    }
 
     if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30') or
        (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10') or
@@ -4079,15 +4123,17 @@ begin
         end;
       end;
     end;
+  end;
+  {$Endregion}
 
+  {$Region '//// CRT 1 e 4 - Simples Nacional //// ' }
 
-    // final TAGS saaída por CST - CRT 2 ou 3 - Regime normal
-  end; // if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then
-
-
-  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then Mauricio Parizotto 2024-08-07
+  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then
+  if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') or
+    (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '4') then
   begin
-    // Início TAGS saída por CSOSN - CRT = 1 imples Nacional
+    // Início TAGS saída por CSOSN - CRT = 1 Simples Nacional ou 4 Simples MEI
     // TAGS - Simples NAcional - CSOSN
     // N12a Tem em todas - e eé referencia para classificar as tags
 
@@ -4138,7 +4184,14 @@ begin
         then
     begin
       Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+      {Dailon Parisotto (f-18465) 2024-04-30 Inicio
+
+      Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
+
+      }
+      Form7.SetTextoCampoSTATUSNFe(Copy('Erro: Informe o CSOSN do produto '+ Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' +
+                                                  ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString),1,Form7.ibDataSet15STATUS.Size));
+      {Dailon Parisotto (f-18465) 2024-04-30 Fim}
       Abort;
 
     end;
@@ -4320,7 +4373,7 @@ begin
             end;
           except
             Form7.ibDataSet15.Edit;
-            Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o IVA do produto código: '+Form7.ibDataSet4CODIGO.AsString;
+            Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o IVA do produto código: '+Form7.ibDataSet4CODIGO.AsString);
             Abort;
           end;
         end else
@@ -4502,7 +4555,7 @@ begin
             end;
           except
             Form7.ibDataSet15.Edit;
-            Form7.ibDataSet15STATUS.AsString    := 'Erro: Verifique o IVA do produto código: '+Form7.ibDataSet4CODIGO.AsString;
+            Form7.SetTextoCampoSTATUSNFe('Erro: Verifique o IVA do produto código: '+Form7.ibDataSet4CODIGO.AsString);
             Abort;
           end;
         end else
@@ -4997,9 +5050,9 @@ begin
     begin
       // Ficha 6907
       // Simples nacional usa CST 61 no lugar do CSOSN
-      if (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1')
-      or (not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
-      //if Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString = '61'
+      //if (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') Mauricio Parizotto 2024-08-07
+      if ( (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') and (Form7.ibDataSet13.FieldByname('CRT').AsString <> '4') )
+        or (not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
       then
       begin
         Form7.spdNFeDataSets.Campo('CSOSN_N12a').Clear;
@@ -5007,9 +5060,9 @@ begin
       end;
     end;
     {Sandro Silva 2023-06-01 fim}
-
-    // Final TAGS saída por CSOSN - CRT = 1 imples Nacional
   end;
+
+  {$Endregion}
 
   {Sandro Silva 2023-06-07 inicio}
   //qBCMonoRet = será igual à quantidade do produto informado na nota
@@ -5025,9 +5078,15 @@ begin
 
     Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0.00';  // BC
     Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
+    {Dailon Parisotto (f-19905) 2024-07-17 Inicio
 
     Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').Value  := Form7.spdNFeDataSets.Campo('qCom_I10').Value;
     dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + XmlValueToFloat(Form7.spdNFeDataSets.Campo('qCom_I10').Value); // Sandro Silva 2023-09-04
+
+    }
+    Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').Value  := Form7.spdNFeDataSets.Campo('qTrib_I14').Value;
+    dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + XmlValueToFloat(Form7.spdNFeDataSets.Campo('qTrib_I14').Value); // Sandro Silva 2023-09-04
+    {Dailon Parisotto (f-19905) 2024-07-17 Fim}
     Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
     dvICMSMonoRet_N45       := XmlValueToFloat(Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').AsString);
     // Sandro Silva 2023-09-04 dvICMSMonoRet_N45Total := dvICMSMonoRet_N45Total + dvICMSMonoRet_N45;

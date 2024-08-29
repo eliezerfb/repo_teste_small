@@ -278,7 +278,9 @@ type
 
 implementation
 
-uses Mais;
+uses Mais
+, uLogSistema
+;
 
 { TITENS001List }
 
@@ -373,11 +375,16 @@ var
   oItem: TITENS001;
   bEstadoFlag: Boolean;
 begin
+
+//  LogSistema('Início TNotaFiscalEletronica.AtualizaDataSetItens( 379 ', lgInformacao); // Sandro Silva 2024-04-16
+
   try
     DataSetItens.DisableControls;
 
     bEstadoFlag := Form1.bFlag; // Sandro Silva 2023-05-08
 
+    {Sandro Silva 2024-04-30 inicio
+    f-17706 - Otimizar rotina que apresenta lentidão ao navegar pelos itens
     for i := 0 to FNotaFiscal.FItens.Count -1 do
     begin
       oItem := FNotaFiscal.FItens.GetItem(i);
@@ -396,12 +403,8 @@ begin
         DataSetItens.FieldByName('ICM').AsFloat             := oItem.Icm;
         DataSetItens.FieldByName('ISS').AsFloat             := oItem.Iss;
         DataSetItens.FieldByName('MEDIDA').AsString         := oItem.Medida;
-        {Sandro Silva 2023-10-09 inicio
-        DataSetItens.FieldByName('QUANTIDADE').AsFloat      := oItem.Quantidade;
-        }
         if DataSetItens.FieldByName('QUANTIDADE').AsFloat <> oItem.Quantidade then
           DataSetItens.FieldByName('QUANTIDADE').AsFloat      := oItem.Quantidade;
-        {Sandro Silva 2023-10-09 fim}
         DataSetItens.FieldByName('SINCRONIA').AsFloat       := oItem.Sincronia;
         DataSetItens.FieldByName('UNITARIO').AsFloat        := oItem.Unitario;
         DataSetItens.FieldByName('TOTAL').AsFloat           := oItem.Total;
@@ -444,14 +447,86 @@ begin
         Form1.bFlag := bEstadoFlag; // Sandro Silva 2023-05-08
       end;
     end;
+    }
+    for i := 0 to FNotaFiscal.FItens.Count -1 do
+    begin
+      oItem := FNotaFiscal.FItens.GetItem(i);
+
+      if DataSetItens.Locate('REGISTRO', oItem.Registro, []) then
+      begin
+        DataSetItens.Edit;
+
+        Form1.bFlag := False; // Sandro Silva 2023-05-08
+
+        //DataSetItens.FieldByName('NUMERONF').AsString       := oItem.Numeronf;
+        //DataSetItens.FieldByName('CODIGO').AsString         := oItem.Codigo;
+        //DataSetItens.FieldByName('DESCRICAO').AsString      := oItem.Descricao;
+        DataSetItens.FieldByName('ST').AsString             := oItem.St;
+        DataSetItens.FieldByName('IPI').AsFloat             := oItem.Ipi;
+        DataSetItens.FieldByName('ICM').AsFloat             := oItem.Icm;
+        DataSetItens.FieldByName('ISS').AsFloat             := oItem.Iss;
+        DataSetItens.FieldByName('MEDIDA').AsString         := oItem.Medida;
+        if DataSetItens.FieldByName('QUANTIDADE').AsFloat <> oItem.Quantidade then
+          DataSetItens.FieldByName('QUANTIDADE').AsFloat      := oItem.Quantidade;
+        DataSetItens.FieldByName('SINCRONIA').AsFloat       := oItem.Sincronia;
+        if DataSetItens.FieldByName('UNITARIO').AsFloat <> oItem.Unitario then
+          DataSetItens.FieldByName('UNITARIO').AsFloat        := oItem.Unitario;
+        if DataSetItens.FieldByName('TOTAL').AsFloat <> oItem.Total then
+          DataSetItens.FieldByName('TOTAL').AsFloat           := oItem.Total;
+        DataSetItens.FieldByName('LISTA').AsFloat           := oItem.Lista;
+        DataSetItens.FieldByName('CUSTO').AsFloat           := oItem.Custo;
+        DataSetItens.FieldByName('PESO').AsFloat            := oItem.Peso;
+        DataSetItens.FieldByName('BASE').AsFloat            := oItem.Base;
+        DataSetItens.FieldByName('BASEISS').AsFloat         := oItem.Baseiss;
+        DataSetItens.FieldByName('ALIQUOTA').AsFloat        := oItem.Aliquota;
+        DataSetItens.FieldByName('CFOP').AsString           := oItem.Cfop;
+        //DataSetItens.FieldByName('NUMEROOS').AsString       := oItem.Numeroos;
+        DataSetItens.FieldByName('VICMS').AsFloat           := oItem.Vicms;
+        DataSetItens.FieldByName('VBC').AsFloat             := oItem.Vbc;
+        DataSetItens.FieldByName('VBCST').AsFloat           := oItem.Vbcst;
+        DataSetItens.FieldByName('VICMSST').AsFloat         := oItem.Vicmsst;
+        DataSetItens.FieldByName('VIPI').AsFloat            := oItem.Vipi;
+        DataSetItens.FieldByName('CST_PIS_COFINS').AsString := oItem.Cst_pis_cofins;
+        DataSetItens.FieldByName('ALIQ_PIS').AsFloat        := oItem.Aliq_pis;
+        DataSetItens.FieldByName('ALIQ_COFINS').AsFloat     := oItem.Aliq_cofins;
+        DataSetItens.FieldByName('CST_IPI').AsString        := oItem.Cst_ipi;
+        DataSetItens.FieldByName('CST_ICMS').AsString       := oItem.Cst_icms;
+        //DataSetItens.FieldByName('XPED').AsString           := oItem.Xped;
+        DataSetItens.FieldByName('NITEMPED').AsString       := oItem.Nitemped;
+        //DataSetItens.FieldByName('ANVISA').AsInteger        := oItem.Anvisa;
+        DataSetItens.FieldByName('PFCPUFDEST').AsFloat      := oItem.Pfcpufdest;
+        DataSetItens.FieldByName('PICMSUFDEST').AsFloat     := oItem.Picmsufdest;
+        //DataSetItens.FieldByName('ENCRYPTHASH').AsString    := oItem.Encrypthash;
+        DataSetItens.FieldByName('CSOSN').AsString          := oItem.Csosn;
+        DataSetItens.FieldByName('VBC_PIS_COFINS').AsFloat  := oItem.Vbc_pis_cofins;
+        //DataSetItens.FieldByName('IDENTIFICADORPLANOCONTAS').AsString := oItem.Identificadorplanocontas;
+        DataSetItens.FieldByName('VBCFCP').AsFloat          := oItem.VBCFCP;
+        DataSetItens.FieldByName('PFCP').AsFloat            := oItem.PFCP;
+        DataSetItens.FieldByName('VFCP').AsFloat            := oItem.VFCP;
+        if DataSetItens.FieldByName('VBCFCPST').AsFloat <> oItem.VBCFCPST then
+          DataSetItens.FieldByName('VBCFCPST').AsFloat        := oItem.VBCFCPST;
+        DataSetItens.FieldByName('PFCPST').AsFloat          := oItem.PFCPST;
+        DataSetItens.FieldByName('VFCPST').AsFloat          := oItem.VFCPST;
+
+        DataSetItens.Post;
+        Form1.bFlag := bEstadoFlag; // Sandro Silva 2023-05-08
+      end;
+    end;
+    {Sandro Silva 2024-04-30 fim}
   finally
     Form1.bFlag := bEstadoFlag; // Sandro Silva 2023-05-08
     DataSetItens.EnableControls;
-  end
+  end;
+
+//  LogSistema('Fim TNotaFiscalEletronica.AtualizaDataSetItens( 457 ', lgInformacao); // Sandro Silva 2024-04-16
+
 end;
 
 procedure TNotaFiscalEletronica.AtualizaDataSetNota(DataSetNF,DataSetItens : TibDataSet);
 begin
+
+//  LogSistema('Início TNotaFiscalEletronica.AtualizaDataSetNota( 456 ', lgInformacao); // Sandro Silva 2024-04-16
+
   //DataSetNF.FieldByName('NUMERONF').AsString        := FNotaFiscal.Numeronf;
   //DataSetNF.FieldByName('MODELO').AsString          := FNotaFiscal.Modelo;
   DataSetNF.FieldByName('VENDEDOR').AsString        := FNotaFiscal.Vendedor;
@@ -508,11 +583,16 @@ begin
   DataSetNF.FieldByName('ENCRYPTHASH').AsString     := FNotaFiscal.Encrypthash;
   DataSetNF.FieldByName('MARKETPLACE').AsString     := FNotaFiscal.Marketplace;
 
+//  LogSistema('Fim TNotaFiscalEletronica.AtualizaDataSetNota( 514 ', lgInformacao); // Sandro Silva 2024-04-16
+
   AtualizaDataSetItens(DataSetItens);
 end;
 
 procedure TNotaFiscalEletronica.AtualizaValoresItens(DataSetItens: TibDataSet);
 begin
+
+//  LogSistema('Início TNotaFiscalEletronica.AtualizaValoresItens( 594 ', lgInformacao); // Sandro Silva 2024-04-16
+
   LimpaItens;
 
   try
@@ -527,10 +607,16 @@ begin
   finally
     DataSetItens.EnableControls;
   end;
+
+//  LogSistema('Fim TNotaFiscalEletronica.AtualizaValoresItens( 611 ', lgInformacao); // Sandro Silva 2024-04-16
+
 end;
 
 procedure TNotaFiscalEletronica.AtualizaValoresNota(DataSetNF, DataSetItens : TibDataSet);
 begin
+
+//  LogSistema('Início TNotaFiscalEletronica.AtualizaValoresNota( 612 ', lgInformacao); // Sandro Silva 2024-04-16
+
   FNotaFiscal.Numeronf        := DataSetNF.FieldByName('NUMERONF').AsString;
   FNotaFiscal.Modelo          := DataSetNF.FieldByName('MODELO').AsString;
   FNotaFiscal.Vendedor        := DataSetNF.FieldByName('VENDEDOR').AsString;
@@ -586,6 +672,8 @@ begin
   FNotaFiscal.Indpres         := DataSetNF.FieldByName('INDPRES').AsString;
   FNotaFiscal.Encrypthash     := DataSetNF.FieldByName('ENCRYPTHASH').AsString;
   FNotaFiscal.Marketplace     := DataSetNF.FieldByName('MARKETPLACE').AsString;
+
+//  LogSistema('Fim TNotaFiscalEletronica.AtualizaValoresNota( 670 ', lgInformacao); // Sandro Silva 2024-04-16
 
   AtualizaValoresItens(DataSetItens);
 end;

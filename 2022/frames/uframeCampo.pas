@@ -74,12 +74,13 @@ procedure TfFrameCampo.Pesquisar;
 begin
   Self.BringToFront;
   gdRegistros.Visible := True;
-  Self.Height := txtCampo.Height + gdRegistros.Height + 5;
+  //Self.Height := txtCampo.Height + gdRegistros.Height + 5; Mauricio Parizotto 2024-06-11
+  Self.Height := txtCampo.Height + gdRegistros.Height + 1;
   case FTipoPesquisa of
     tpSelect:
     begin
       Query.Close;
-      Query.SQL.Text := SelectPesquisa;   
+      Query.SQL.Text := SelectPesquisa;
       Query.Open;
     end;
   else
@@ -169,6 +170,7 @@ begin
     end
   else
     Query.SQL.Text := ' Select ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
+                      CampoAuxExiber+// Mauricio Parizotto 2024-07-16
                       ' From ' + FTabela +
                       ' Where 1=1 ' +
                       FFiltro +
@@ -199,6 +201,7 @@ procedure TfFrameCampo.CarregaDescricaoCodigo; // Mauricio Parizotto 2024-04-08
 var
   CampoChange: TNotifyEvent;
   sNomeCampoChave: String;
+  sCodigo : string;
 begin
   //Para controle de somente leitura
   txtCampo.Enabled := Self.Enabled; //Mauricio Parizotto 2024-04-17
@@ -207,10 +210,16 @@ begin
   if sNomeCampoChave = '' then
     sNomeCampoChave := CampoCodigo.FieldName;
 
+  sCodigo := CampoCodigo.AsString;
+
+  //Mauricio Parizotto 2024-06-11
+  if trim(sCodigo) = '' then
+    sCodigo := '-1';
+
   Query.Close;
   Query.SQL.Text := ' Select ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
                     ' From ' + FTabela +
-                    ' Where '+sNomeCampoChave+ ' = ' +QuotedStr(CampoCodigo.AsString);
+                    ' Where '+sNomeCampoChave+ ' = ' +QuotedStr(sCodigo);
   Query.Open;
 
   if not Query.IsEmpty then
@@ -223,6 +232,15 @@ begin
   begin
     txtCampo.Text := '';
   end;
+
+  //Abre query para pesquisa/locate
+  Query.Close;
+  Query.SQL.Text := ' Select ' + sNomeCampoChave + ',' + sCampoDescricao + ' as ' + ALIAS_CAMPO_PESQUISADO +
+                    ' From ' + FTabela+
+                    ' Where 1=1 ' +
+                    FFiltro+
+                    ' Order by upper(' + sCampoDescricao + ') ';
+  Query.Open;
 end;
 
 procedure TfFrameCampo.txtCampoChange(Sender: TObject);

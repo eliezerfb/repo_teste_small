@@ -137,10 +137,17 @@ type
     edtJurosAno: TEdit;
     lblMulta: TLabel;
     chkFabricaProdSemQtd: TCheckBox;
+    Label38: TLabel;
+    Label39: TLabel;
+    ComboBoxOS: TComboBox;
     rbPrazoDias: TRadioButton;
     rbPrazoFixo: TRadioButton;
     cboDiaVencimento: TComboBox;
-    Label38: TLabel;
+    chkCalcLucroEstoque: TCheckBox;
+    tbsTema: TTabSheet;
+    gbTema: TGroupBox;
+    rbClassico: TRadioButton;
+    rbModerno: TRadioButton;
     procedure FormActivate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
@@ -172,7 +179,7 @@ type
     procedure Edit7Enter(Sender: TObject);
     procedure Edit8Enter(Sender: TObject);
     procedure Image7Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure CarregaIconesSistema;
     procedure FormShow(Sender: TObject);
     procedure CheckBox8Click(Sender: TObject);
     procedure JurosEnter(Sender: TObject);
@@ -188,6 +195,7 @@ type
     procedure edtJurosAnoExit(Sender: TObject);
     procedure edtVlMultaExit(Sender: TObject);
     procedure rbMultaPercentualClick(Sender: TObject);
+    procedure rbClassicoClick(Sender: TObject);
   private
     { Private declarations }
     procedure SetTipoMulta;
@@ -202,8 +210,10 @@ var
 
 implementation
 
-uses Mais, Unit7, Unit14, Unit22, Unit12, Unit10, Unit2, Unit4,
-  Unit24, Unit8, uDialogs, uArquivosDAT;
+uses Mais, Unit7, Unit14, Unit22, Unit12
+ //, Unit10
+ , Unit2, Unit4,
+  Unit24, uDialogs, uArquivosDAT, uSmallConsts, uSistema;
 
 {$R *.DFM}
 
@@ -269,11 +279,11 @@ begin
 
   bMostra := ((cEstado <> 'SC') and (cEstado <> 'MG'));
   //Campos
-  ComboBoxBloqueto.Visible := bMostra;
+  //ComboBoxBloqueto.Visible := bMostra; Mauricio Parizotto 2024-05-10
   ComboBoxNF.Visible       := bMostra;
   ComboBoxNF2.Visible      := bMostra;
   //Labels
-  Label27.Visible := bMostra;
+  //Label27.Visible := bMostra; Mauricio Parizotto 2024-05-10
   Label26.Visible := bMostra;
   Label29.Visible := bMostra;
 end;
@@ -384,9 +394,10 @@ begin
   //Mauricio Parizotto 2024-02-02
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
-    chkFabricaProdSemQtd.Checked  := ConfSistema.BD.Outras.FabricaProdutoSemQtd;
-
-    {Mauricio Parizotto 2024-04-23 Inicio}
+    chkFabricaProdSemQtd.Checked := ConfSistema.BD.Outras.FabricaProdutoSemQtd;
+    chkCalcLucroEstoque.Checked  := ConfSistema.BD.Outras.CalculaLucroAltVenda;
+    ComboBoxOS.ItemIndex := ComboBoxOS.Items.IndexOf(ConfSistema.BD.Impressora.ImpressoraOS); // Mauricio Parizotto 2024-05-10
+	{Mauricio Parizotto 2024-04-23 Inicio}
     if ConfSistema.BD.Outras.TipoPrazo = 'dias' then
       rbPrazoDias.Checked := True
     else
@@ -394,6 +405,15 @@ begin
 
     cboDiaVencimento.ItemIndex := cboDiaVencimento.Items.IndexOf(ConfSistema.BD.Outras.DiaVencimento.ToString);
     {Mauricio Parizotto 2024-04-23 Fim}
+    //Mauricio Parizotto 2024-07-29
+    rbClassico.Checked := False;
+    rbModerno.Checked  := False;
+
+    if ConfSistema.BD.Outras.TemaIcones = _TemaClassico then
+      rbClassico.Checked := True
+    else
+      rbModerno.Checked  := True;
+
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -457,7 +477,8 @@ begin
   Edit4.Text         := Mais4Ini.ReadString('mail','From','');
   Edit5.Text         := Mais4Ini.ReadString('mail','Name','');
   Edit6.Text         := Mais4Ini.ReadString('mail','Password','');
-  ComboBoxORCA.Text  := Mais4Ini.ReadString('Orçamento','Porta','Impressora padrão do windows');
+  //ComboBoxORCA.Text  := Mais4Ini.ReadString('Orçamento','Porta','Impressora padrão do windows');
+  ComboBoxORCA.ItemIndex := ComboBoxORCA.Items.IndexOf( Mais4Ini.ReadString('Orçamento','Porta','HTML') );
 
   if Mais4Ini.ReadString('mail','UseSSL','0') = '1' then
   begin
@@ -513,7 +534,8 @@ begin
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
     ConfSistema.BD.Outras.FabricaProdutoSemQtd := chkFabricaProdSemQtd.Checked;
-
+    ConfSistema.BD.Outras.CalculaLucroAltVenda := chkCalcLucroEstoque.Checked;
+    ConfSistema.BD.Impressora.ImpressoraOS     := ComboBoxOS.Text; // Mauricio Parizotto 2024-05-10
     {Mauricio Parizotto 2024-04-23 Inicio}
     if rbPrazoFixo.Checked then
       ConfSistema.BD.Outras.TipoPrazo := 'fixo'
@@ -522,6 +544,11 @@ begin
 
     ConfSistema.BD.Outras.DiaVencimento := StrToIntDef(cboDiaVencimento.Text,1);
     {Mauricio Parizotto 2024-04-23 Fim}
+    //Mauricio Parizotto 2024-07-29
+    if rbClassico.Checked then
+      ConfSistema.BD.Outras.TemaIcones := _TemaClassico
+    else
+      ConfSistema.BD.Outras.TemaIcones := _TemaModerno;
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -727,6 +754,10 @@ begin
   // Opções
   Form19.Width  := 650;
   Form19.Height := 450;
+
+  //Mauricio Parizotto 2024-07-29
+  if now >= StrToDate('01/01/2025') then
+    tbsTema.TabVisible := False;
 end;
 
 procedure TForm19.SMALL_DBEdit1KeyDown(Sender: TObject; var Key: Word;
@@ -837,7 +868,6 @@ begin
     Form14.Image1.Picture.SaveToFile('LOGOTIP.BMP');
 
   ShellExecute( 0, 'Open','pbrush.exe','LOGOTIP.BMP', '', SW_SHOW);
-  //ShowMessage('Tecle <enter> para que a nova imagem seja exibida.'); Mauricio Parizotto 2023-10-25
   MensagemSistema('Tecle <enter> para que a nova imagem seja exibida.');
 
   if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
@@ -876,6 +906,21 @@ begin
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('config.htm')));
 end;
 
+procedure TForm19.rbClassicoClick(Sender: TObject);
+begin
+  if Orelhas.ActivePage = tbsTema then
+  begin
+    if uDialogs.MensagemSistemaPergunta('A nova iconografia foi desenvolvida para ser mais moderna, intuitiva e funcional.'+#13#10+
+                                        'Consideramos importante que você experimente essa mudança.'+#13#10+
+                                        'Você poderá utilizar o tema clássico até sua descontinuação em 31/12/2024.'+#13#10+
+                                        #13#10+
+                                        'Deseja mudar mesmo assim?', [mb_YesNo]) <> mrYes then
+    begin
+      rbModerno.Checked := True;
+    end;
+  end;
+end;
+
 procedure TForm19.rbJurosCompostoClick(Sender: TObject);
 begin
   bChave := True;
@@ -908,20 +953,23 @@ begin
 end;
 
 procedure TForm19.Image7Click(Sender: TObject);
+{Mauricio Parizotto 2024-07-29
 var
   Mais1Ini: TIniFile;
+}
 begin
   Form19.Image9.Picture.Bitmap := Form19.Image7.Picture.Bitmap;
-  Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-  Mais1Ini.WriteString('Perfil','tela_3d','1');
-  Mais1Ini.Free;
+  //Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
+  //Mais1Ini.WriteString('Perfil','tela_3d','1');
+  //Mais1Ini.Free;
   Form1.sContrasteCor := 'PRETO';
-  Form19.Button1Click(Sender);
+  Form19.CarregaIconesSistema;
 end;
 
-procedure TForm19.Button1Click(Sender: TObject);
+procedure TForm19.CarregaIconesSistema;
 var
   r1 : tRect;
+  DirImg, DirImgBmp : string;
 begin
   begin
     Form7.imgNovo.Picture := Form1.imgVendas.Picture;
@@ -934,12 +982,20 @@ begin
     Form7.imgFiltrar.Picture := Form1.imgVendas.Picture;
     Form7.Image308.Picture := Form1.imgVendas.Picture;
 
-    if FileExists(Form1.sAtual+'\inicial\small_22_.bmp') then
-    begin
-      if FileExists(Form1.sAtual+'\inicial\small_22_.bmp') then
-        Form19.Image7.Picture.LoadFromFile(Form1.sAtual+'\inicial\small_22_.bmp');
+    DirImg    := ExtractFilePath(Application.ExeName)+ImagemIconesSmall(TSistema.GetInstance.Tema);
+    DirImgBmp := ExtractFilePath(DirImg)+'imgTemp.bmp';
 
+    CopyFile(pchar(DirImg),
+            pchar(DirImgBmp),
+            False
+            );
+
+    //if FileExists(Form1.sAtual+'\inicial\small_22_.bmp') then Mauricio Parizotto 2024-07-29
+    if FileExists(DirImgBmp) then
+    begin
+      Form19.Image7.Picture.LoadFromFile(DirImgBmp);
       Form19.Image9.Picture.Bitmap := Form19.Image7.Picture.Bitmap;
+      DeleteFile(DirImgBmp);
 
       // BOTOES PRINCIPAIS
       r1.Top     := 30;
@@ -949,73 +1005,73 @@ begin
       r1.Right   := 10 + (70 * 1);
 
       Form1.imgVendas.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgVendas.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.imgVendas.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 1);
       r1.Right   := 10 + (70 * 2);
 
       Form1.imgOrdemServico.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgOrdemServico.Picture.Bitmap.TransParentColor := Form1.imgOrdemServico.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.imgOrdemServico.Picture.Bitmap.TransParentColor := Form1.imgOrdemServico.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 2);
       r1.Right   := 10 + (70 * 3);
 
       Form1.imgEstoque.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgEstoque.Picture.Bitmap.TransParentColor := Form1.imgEstoque.Picture.BitMap.canvas.pixels[1,1];
-      
+      //Mauricio Parizotto 2024-07-31 Form1.imgEstoque.Picture.Bitmap.TransParentColor := Form1.imgEstoque.Picture.BitMap.canvas.pixels[1,1];
+
       r1.Left    := 10 + (70 * 3);
       r1.Right   := 10 + (70 * 4);
 
       Form1.imgCliFor.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgCliFor.Picture.Bitmap.TransParentColor := Form1.imgCliFor.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.imgCliFor.Picture.Bitmap.TransParentColor := Form1.imgCliFor.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 4);
       r1.Right   := 10 + (70 * 5);
 
       Form1.imgContaReceber.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgContaReceber.Picture.Bitmap.TransParentColor := Form1.imgContaReceber.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.imgContaReceber.Picture.Bitmap.TransParentColor := Form1.imgContaReceber.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 5);
       r1.Right   := 10 + (70 * 6);
 
       Form1.imgContaPagar.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgContaPagar.Picture.Bitmap.TransParentColor := Form1.imgContaPagar.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.imgContaPagar.Picture.Bitmap.TransParentColor := Form1.imgContaPagar.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 6);
       r1.Right   := 10 + (70 * 7);
 
       Form1.imgCaixa.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgCaixa.Picture.Bitmap.TransParentColor := Form1.imgCaixa.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.imgCaixa.Picture.Bitmap.TransParentColor := Form1.imgCaixa.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 7);
       r1.Right   := 10 + (70 * 8);
 
       Form1.imgBancos.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgBancos.Picture.Bitmap.TransParentColor := Form1.imgBancos.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.imgBancos.Picture.Bitmap.TransParentColor := Form1.imgBancos.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 8);
       r1.Right   := 10 + (70 * 9);
 
       Form1.imgConfiguracoes.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgConfiguracoes.Picture.Bitmap.TransParentColor := Form1.imgConfiguracoes.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.imgConfiguracoes.Picture.Bitmap.TransParentColor := Form1.imgConfiguracoes.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 9);
       r1.Right   := 10 + (70 *10);
 
       Form1.imgBackup.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgBackup.Picture.Bitmap.TransParentColor := Form1.imgBackup.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.imgBackup.Picture.Bitmap.TransParentColor := Form1.imgBackup.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 10);
       r1.Right   := 10 + (70 * 11);
 
       Form1.imgServicos.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgServicos.Picture.Bitmap.TransParentColor := Form1.imgServicos.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.imgServicos.Picture.Bitmap.TransParentColor := Form1.imgServicos.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 11);
       r1.Right   := 10 + (70 * 12);
 
       Form1.imgCompras.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.imgCompras.Picture.Bitmap.TransParentColor := Form1.imgCompras.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.imgCompras.Picture.Bitmap.TransParentColor := Form1.imgCompras.Picture.BitMap.canvas.pixels[1,1];
 
       // BOTOES SECUNDARIOS
       r1.Top     := 30 + 70;
@@ -1025,55 +1081,56 @@ begin
       r1.Right   := 10 + (70 * 1);
 
       Form7.imgNovo.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.imgNovo.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.imgNovo.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 1);
       r1.Right   := 10 + (70 * 2);
 
       Form7.imgExcluir.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.imgExcluir.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.imgExcluir.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 2);
       r1.Right   := 10 + (70 * 3);
 
       Form7.imgProcurar.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.imgProcurar.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.imgProcurar.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 3);
       r1.Right   := 10 + (70 * 4);
 
       Form7.imgImprimir.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.imgImprimir.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.imgImprimir.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 4);
       r1.Right   := 10 + (70 * 5);
 
       Form7.imgVisualizar.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.imgVisualizar.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.imgVisualizar.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 5);
       r1.Right   := 10 + (70 * 6);
       Form7.imgEditar.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.imgEditar.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.imgEditar.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 6);
       r1.Right   := 10 + (70 * 7);
 
       Form7.imgFiltrar.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.imgFiltrar.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.imgFiltrar.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 8);
       r1.Right   := 10 + (70 * 9);
 
       Form7.imgLibBloq.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.imgLibBloq.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.imgLibBloq.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 9);
       r1.Right   := 10 + (70 * 10);
 
       Form7.Image308.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image308.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.Image308.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
+      {
       // BOTOES TERCIARIOS Form10
       Form10.Image201.Picture.Bitmap       := Form7.imgNovo.Picture.Bitmap;
       Form10.Image202.Picture.Bitmap       := Form7.imgProcurar.Picture.Bitmap;
@@ -1081,6 +1138,7 @@ begin
 
       Form10.Image204.Picture.Bitmap       := Form7.imgNovo.Picture.Bitmap;
       Form10.Image205.Picture.Bitmap       := Form7.imgNovo.Picture.Bitmap;
+      Mauricio Parizotto 2024-07-17}
 
       r1.Top     := 30 + 70 + 70;
       r1.Bottom  := 30 + 70 + 70 + 70;
@@ -1088,15 +1146,20 @@ begin
       r1.Left    := 10 + (70 * 0);
       r1.Right   := 10 + (70 * 1);
 
+      {
       Form10.Image204.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form10.Image204.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      Mauricio Parizotto 2024-07-17}
 
       r1.Left    := 10 + (70 * 1);
       r1.Right   := 10 + (70 * 2);
 
+      {
       Form10.Image205.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form10.Image205.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      Mauricio Parizotto 2024-07-17}
 
+      {Mauricio Parizotto 2024-08-01 Inicio
       // Botão Small Mobile
       if not (Form1.iReduzida = 1) then
       begin
@@ -1106,6 +1169,13 @@ begin
         Form1.imgIndicadores.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
         Form1.imgIndicadores.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
       end;
+      }
+      r1.Left    := 10 + (70 * 2);
+      r1.Right   := 10 + (70 * 3);
+
+      Form1.imgIndicadores.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      Form1.imgIndicadores.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      {Mauricio Parizotto 2024-08-01 Fim}
 
       r1.Left    := 10 + (70 * 3);
       r1.Right   := 10 + (70 * 4);
@@ -1151,73 +1221,73 @@ begin
       r1.Right   := 10 + (70 * 1);
 
       Form1.Image201_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image201_X.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image201_X.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 1);
       r1.Right   := 10 + (70 * 2);
 
       Form1.Image201__X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image201__X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image201__X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 2);
       r1.Right   := 10 + (70 * 3);
 
       Form1.Image202_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image202_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image202_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
 
       r1.Left    := 10 + (70 * 3);
       r1.Right   := 10 + (70 * 4);
 
       Form1.Image203_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image203_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image203_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       
       r1.Left    := 10 + (70 * 4);
       r1.Right   := 10 + (70 * 5);
       //
       Form1.Image204_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image204_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image204_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 5);
       r1.Right   := 10 + (70 * 6);
       //
       Form1.Image210_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image210_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image210_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 6);
       r1.Right   := 10 + (70 * 7);
       //
       Form1.Image205_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image205_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image205_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 7);
       r1.Right   := 10 + (70 * 8);
       //
       Form1.Image206_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image206_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image206_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 8);
       r1.Right   := 10 + (70 * 9);
       //
       Form1.Image207_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image207_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image207_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 9);
       r1.Right   := 10 + (70 *10);
       //
       Form1.Image208_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image208_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image208_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 10);
       r1.Right   := 10 + (70 * 11);
       //
       Form1.Image201S_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image201S_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image201S_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 11);
       r1.Right   := 10 + (70 * 12);
       //
       Form1.Image201C_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image201C_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image201C_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
 
       // BOTOES SECUNDARIOS DESTACADOS
       Form7.Image201_X.Picture.Bitmap := Form1.imgCliFor.Picture.Bitmap;
@@ -1237,56 +1307,57 @@ begin
       r1.Right   := 10 + (70 * 1);
       //
       Form7.Image201_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image201_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.Image201_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 1);  //
       r1.Right   := 10 + (70 * 2);  //
       //
       Form7.Image202_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image202_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.Image202_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 2);  //
       r1.Right   := 10 + (70 * 3);  //
       //
       Form7.Image203_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image203_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.Image203_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 3);  //
       r1.Right   := 10 + (70 * 4);  //
       //
       Form7.Image205_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image205_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.Image205_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 4);  //
       r1.Right   := 10 + (70 * 5);  //
       //
       Form7.Image204_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image204_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.Image204_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 5);
       r1.Right   := 10 + (70 * 6);
       Form7.Image206_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image206_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.Image206_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 6);
       r1.Right   := 10 + (70 * 7);
       //
       Form7.Image209_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image209_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.Image209_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       //
       r1.Left    := 10 + (70 * 8);
       r1.Right   := 10 + (70 * 9);
       //
       Form7.Image208_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image208_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.Image208_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
       //
       r1.Left    := 10 + (70 * 9);
       r1.Right   := 10 + (70 *10);
       //
       Form7.Image308_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form7.Image308_X.Picture.Bitmap.TransParentColor := Form1.Image208_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form7.Image308_X.Picture.Bitmap.TransParentColor := Form1.Image208_X.Picture.BitMap.canvas.pixels[1,1];
 
+      {
       // BOTOES TERCIARIOS Form10 DESTACADOS
       Form10.Image201_X.Picture.Bitmap       := Form7.Image201_X.Picture.Bitmap;
       Form10.Image202_X.Picture.Bitmap       := Form7.Image203_X.Picture.Bitmap;
@@ -1294,28 +1365,32 @@ begin
       //
       Form10.Image204_X.Picture.Bitmap       := Form7.Image201_X.Picture.Bitmap;
       Form10.Image205_X.Picture.Bitmap       := Form7.Image201_X.Picture.Bitmap;
-      //
+      Mauricio Parizotto 2024-07-17}
+
       r1.Top     := 330 + 70 + 70;
       r1.Bottom  := 330 + 70 + 70 + 70;
       //
       r1.Left    := 10 + (70 * 0);
       r1.Right   := 10 + (70 * 1);
-      //
+
+      {
       Form10.Image204_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form10.Image204_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
-      //
+      Mauricio Parizotto 2024-07-17}
       r1.Left    := 10 + (70 * 1);  //
       r1.Right   := 10 + (70 * 2);  //
-      //
+
+      {
       Form10.Image205_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
       Form10.Image205_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      Mauricio Parizotto 2024-07-17}
 
       // Botão Small Mobile
-      r1.Left    := 10 + (70 * 2);  //
-      r1.Right   := 10 + (70 * 3);  //
-      //
+      r1.Left    := 10 + (70 * 2);
+      r1.Right   := 10 + (70 * 3);
+
       Form1.Image200_X.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image200_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
+      //Mauricio Parizotto 2024-07-31 Form1.Image200_X.Picture.Bitmap.TransParentColor := Form1.Image201_X.Picture.BitMap.canvas.pixels[1,1];
     end;
   end;
 
@@ -1344,11 +1419,13 @@ begin
   Form7.Image208_R.Picture.Bitmap := Form7.imgLibBloq.Picture.Bitmap;
   Form7.Image308_R.Picture.Bitmap := Form7.Image308.Picture.Bitmap;
 
+  {
   Form10.Image201_R.Picture.Bitmap       := Form10.Image201.Picture.Bitmap;
   Form10.Image202_R.Picture.Bitmap       := Form10.Image202.Picture.Bitmap;
   Form10.Image203_R.Picture.Bitmap       := Form10.Image203.Picture.Bitmap;
   Form10.Image204_R.Picture.Bitmap       := Form10.Image204.Picture.Bitmap;
   Form10.Image205_R.Picture.Bitmap       := Form10.Image205.Picture.Bitmap;
+  Mauricio Parizotto 2024-07-17}
 
   Form1.MontaTela(True);
 end;
@@ -1358,19 +1435,26 @@ begin
   Form19.Width  := 640;
   Form19.Height := 480;
 
-  btnOK.Left  := Panel3.Width - btnOK.Width - 10;
-  btnCancelar.Left  := btnOK.Left - 140;
+  btnOK.Left  := Panel3.Width - btnOK.Width - 19;
+  btnCancelar.Left  := btnOK.Left - 104;
 
   ComboBoxImpressora.Items.Clear;
   comboBoxNF.Items.clear;
   comboBoxNF2.Items.clear;
-  comboBoxORCA.Items.clear;
   comboBoxBloqueto.Items.clear;
 
-  Form19.ComboBoxORCA.Items.Add('Impressora padrão do windows');
-  Form19.ComboBoxORCA.Items.Add('PDF');
-  Form19.ComboBoxORCA.Items.Add('HTML');
-  Form19.ComboBoxORCA.Items.Add('TXT');
+  comboBoxORCA.Items.clear;
+  ComboBoxORCA.Items.Add(_cImpressoraPadrao);
+  ComboBoxORCA.Items.Add('PDF');
+  ComboBoxORCA.Items.Add('HTML');
+  ComboBoxORCA.Items.Add('TXT');
+
+  //Mauricio Parizotto 2024-05-10
+  ComboBoxOS.Items.Clear;
+  ComboBoxOS.Items.Add(_cImpressoraPadrao);
+  ComboBoxOS.Items.Add('PDF');
+  ComboBoxOS.Items.Add('HTML');
+  ComboBoxOS.Items.Add('TXT');
   
   GetTheListOfPrinters;
 
@@ -1391,9 +1475,13 @@ begin
   begin
     Mais1Ini.WriteString('Perfil','Labels','Não');
   end;
+
+  CarregaIconesSistema;
+
   }
 
-  Form19.Button1Click(Sender);
+  if (Form19.Visible) and (Form19.CanFocus) then
+    Form19.SetFocus;
 end;
 
 procedure TForm19.JurosEnter(Sender: TObject);

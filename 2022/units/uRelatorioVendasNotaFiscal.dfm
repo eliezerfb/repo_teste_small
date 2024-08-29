@@ -146,7 +146,7 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       Left = 0
       Top = 49
       Width = 230
-      Height = 106
+      Height = 93
       Hint = 'Opera'#231#245'es que devem ser listadas'
       Ctl3D = False
       Font.Charset = DEFAULT_CHARSET

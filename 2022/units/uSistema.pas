@@ -12,14 +12,18 @@ type
 
     FCertificadoDtVal : TDate;
     FCertificadoTipo : string;
+    FTema : string;
 
     function GetCertificadoDtVal: TDate;
     procedure SetCertificadoDtVal(const Value: TDate);
     function GetCertificadoTipo: string;
     procedure SetCertificadoTipo(const Value: string);
+    function GetTema: string;
+    procedure SetTema(const Value: string);
   published
     property CertificadoDtVal: TDate read GetCertificadoDtVal write SetCertificadoDtVal;
     property CertificadoTipo: string read GetCertificadoTipo write SetCertificadoTipo;
+    property Tema: string read GetTema write SetTema;
   public
     class function GetInstance: TSistema;
     class procedure Destroy;
@@ -36,7 +40,17 @@ begin
     Sistema := TSistema(inherited NewInstance);
   end;
 
-  result := Sistema;
+  Result := Sistema;
+end;
+
+function TSistema.GetTema: string;
+begin
+  if not Assigned(Sistema) then
+  begin
+    Sistema := TSistema(inherited NewInstance);
+  end;
+
+  Result := FTema;
 end;
 
 class procedure TSistema.destroy;
@@ -66,6 +80,11 @@ end;
 procedure TSistema.SetCertificadoTipo(const Value: string);
 begin
   FCertificadoTipo := Value;
+end;
+
+procedure TSistema.SetTema(const Value: string);
+begin
+  FTema := Value;
 end;
 
 end.

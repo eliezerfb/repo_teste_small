@@ -1,22 +1,34 @@
-inherited FrmFichaCadastros: TFrmFichaCadastros
-  Caption = 'FrmFichaCadastros'
-  Ctl3D = False
-  KeyPreview = True
+inherited FrmCadastro: TFrmCadastro
+  OnActivate = FormActivate
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
     inherited pnlBotoesPosterior: TPanel
-      ExplicitTop = 580
+      object btnRenogiarDivida: TBitBtn
+        Left = 579
+        Top = 16
+        Width = 140
+        Height = 25
+        Anchors = [akLeft, akTop, akRight]
+        Caption = 'Renegociar d'#237'vida'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+        Visible = False
+        OnClick = btnRenogiarDividaClick
+      end
     end
     inherited pgcFicha: TPageControl
-      ActivePage = tsCadastro
-      ExplicitLeft = 10
-      ExplicitTop = 105
-      object tsCadastro: TTabSheet
-        Caption = 'Cadastro'
+      ActivePage = tbsCadastro
+      object tbsCadastro: TTabSheet
+        Caption = 'Ficha'
         object Label2: TLabel
           Left = 0
-          Top = 16
+          Top = 12
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -34,7 +46,7 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
         end
         object Label3: TLabel
           Left = 0
-          Top = 39
+          Top = 35
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -52,7 +64,7 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
         end
         object Label4: TLabel
           Left = 0
-          Top = 63
+          Top = 59
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -70,7 +82,7 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
         end
         object Label5: TLabel
           Left = 0
-          Top = 87
+          Top = 83
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -88,7 +100,7 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
         end
         object Label6: TLabel
           Left = 0
-          Top = 110
+          Top = 106
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -104,406 +116,9 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           ParentFont = False
           Transparent = True
         end
-        object Label7: TLabel
-          Left = 0
-          Top = 134
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Bairro:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label8: TLabel
-          Left = 0
-          Top = 158
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Munic'#237'pio:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label9: TLabel
-          Left = 0
-          Top = 180
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Estado:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label10: TLabel
-          Left = 0
-          Top = 204
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'RG/IE:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label11: TLabel
-          Left = 0
-          Top = 228
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Telefone:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label12: TLabel
-          Left = 2
-          Top = 254
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Celular:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label13: TLabel
-          Left = 0
-          Top = 276
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'WhatsApp'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label14: TLabel
-          Left = 0
-          Top = 300
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'e-mail:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label15: TLabel
-          Left = 0
-          Top = 324
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Limite de Cr'#233'dito:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label16: TLabel
-          Left = 0
-          Top = 351
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Cadastro:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label17: TLabel
-          Left = 0
-          Top = 377
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = #218'ltima Venda:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object lblLimiteCredDisponivel: TLabel
-          Left = 208
-          Top = 324
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Limite dispon'#237'vel:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-          Visible = False
-        end
-        object Label18: TLabel
-          Left = 0
-          Top = 401
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Nascido em:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label19: TLabel
-          Left = 430
-          Top = 16
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Conv'#234'nio:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label20: TLabel
-          Left = 430
-          Top = 39
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Identificador1:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label21: TLabel
-          Left = 430
-          Top = 63
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Identificador2:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label22: TLabel
-          Left = 430
-          Top = 87
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Identificador3:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label23: TLabel
-          Left = 430
-          Top = 107
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Identificador4:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label24: TLabel
-          Left = 430
-          Top = 131
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Identificador5:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label25: TLabel
-          Left = 430
-          Top = 153
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Observa'#231#227'o:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label26: TLabel
-          Left = 430
-          Top = 267
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Pr'#243'ximo contato:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Label27: TLabel
-          Left = 430
-          Top = 289
-          Width = 95
-          Height = 13
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = 'Contatos:'
-          Color = clBtnHighlight
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentColor = False
-          ParentFont = False
-          Transparent = True
-        end
-        object Image1: TImage
-          Left = 397
-          Top = 73
+        object imgEndereco: TImage
+          Left = 403
+          Top = 69
           Width = 22
           Height = 30
           Hint = 'Procurar endere'#231'o no mapa'
@@ -577,12 +192,436 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
             FBECC3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
           ShowHint = True
           Transparent = True
-          Visible = False
-          OnClick = Image1Click
+          OnClick = imgEnderecoClick
         end
-        object SMALL_DBEdit1: TSMALL_DBEdit
+        object Label7: TLabel
+          Left = 0
+          Top = 130
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Bairro:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label8: TLabel
+          Left = 0
+          Top = 153
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Munic'#237'pio:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label9: TLabel
+          Left = 0
+          Top = 177
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Estado:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label10: TLabel
+          Left = 0
+          Top = 201
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'RG/IE:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label11: TLabel
+          Left = 0
+          Top = 225
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Telefone:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label12: TLabel
+          Left = 2
+          Top = 251
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Celular:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label13: TLabel
+          Left = 0
+          Top = 273
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'WhatsApp'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label14: TLabel
+          Left = 0
+          Top = 297
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'e-mail:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label15: TLabel
+          Left = 0
+          Top = 321
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Limite de Cr'#233'dito:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object lblLimiteCredDisponivel: TLabel
+          Left = 234
+          Top = 321
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Limite dispon'#237'vel:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label16: TLabel
+          Left = 0
+          Top = 347
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Cadastro:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label17: TLabel
+          Left = 0
+          Top = 373
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = #218'ltima Venda:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label18: TLabel
+          Left = 0
+          Top = 397
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Nascido em:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object lblConvenio: TLabel
+          Left = 430
+          Top = 12
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Conv'#234'nio:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label19: TLabel
+          Left = 432
+          Top = 35
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Identificador1:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+          OnClick = Label19Click
+          OnMouseMove = Label19MouseMove
+          OnMouseLeave = Label19MouseLeave
+        end
+        object Label20: TLabel
+          Left = 430
+          Top = 59
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Identificador2:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+          OnClick = Label19Click
+          OnMouseMove = Label19MouseMove
+          OnMouseLeave = Label19MouseLeave
+        end
+        object Label21: TLabel
+          Left = 430
+          Top = 83
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Identificador3:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+          OnClick = Label19Click
+          OnMouseMove = Label19MouseMove
+          OnMouseLeave = Label19MouseLeave
+        end
+        object Label22: TLabel
+          Left = 430
+          Top = 106
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Identificador4:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+          OnClick = Label19Click
+          OnMouseMove = Label19MouseMove
+          OnMouseLeave = Label19MouseLeave
+        end
+        object Label23: TLabel
+          Left = 430
+          Top = 130
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Identificador5:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+          OnClick = Label19Click
+          OnMouseMove = Label19MouseMove
+          OnMouseLeave = Label19MouseLeave
+        end
+        object Label25: TLabel
+          Left = 430
+          Top = 153
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Observa'#231#227'o:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label26: TLabel
+          Left = 430
+          Top = 263
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Pr'#243'ximo contato:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label27: TLabel
+          Left = 430
+          Top = 287
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Contatos:'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label56: TLabel
+          Left = 434
+          Top = 400
+          Width = 91
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Rela'#231#227'o comercial:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object edtCPFCNPJ: TSMALL_DBEdit
           Left = 100
-          Top = 16
+          Top = 12
           Width = 199
           Height = 20
           AutoSize = False
@@ -599,10 +638,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 0
+          OnChange = edtCPFCNPJChange
+          OnExit = edtCPFCNPJExit
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit2: TSMALL_DBEdit
+        object edtRazaoSocial: TSMALL_DBEdit
           Left = 100
-          Top = 39
+          Top = 35
           Width = 325
           Height = 20
           AutoSize = False
@@ -620,12 +662,12 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 1
-          OnExit = SMALL_DBEdit2Exit
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit3: TSMALL_DBEdit
+        object edtContato: TSMALL_DBEdit
           Left = 100
-          Top = 63
-          Width = 190
+          Top = 59
+          Width = 199
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -641,10 +683,11 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 2
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit4: TSMALL_DBEdit
+        object edtCEP: TSMALL_DBEdit
           Left = 100
-          Top = 87
+          Top = 83
           Width = 91
           Height = 20
           AutoSize = False
@@ -661,10 +704,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 3
+          OnEnter = edtCEPEnter
+          OnExit = edtCEPExit
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit5: TSMALL_DBEdit
+        object edtEndereco: TSMALL_DBEdit
           Left = 100
-          Top = 110
+          Top = 106
           Width = 325
           Height = 20
           AutoSize = False
@@ -681,11 +727,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 4
-          OnKeyUp = SMALL_DBEdit5KeyUp
+          OnExit = edtEnderecoExit
+          OnKeyDown = PadraoKeyDown
+          OnKeyUp = edtEnderecoKeyUp
         end
-        object SMALL_DBEdit6: TSMALL_DBEdit
+        object edtBairro: TSMALL_DBEdit
           Left = 100
-          Top = 134
+          Top = 130
           Width = 325
           Height = 20
           AutoSize = False
@@ -702,33 +750,14 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 5
-          OnKeyUp = SMALL_DBEdit6KeyUp
+          OnExit = edtBairroExit
+          OnKeyDown = PadraoKeyDown
+          OnKeyUp = edtBairroKeyUp
         end
-        object SMALL_DBEdit7: TSMALL_DBEdit
+        object edtEstado: TSMALL_DBEdit
           Left = 100
-          Top = 158
-          Width = 190
-          Height = 20
-          AutoSize = False
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          Ctl3D = True
-          DataField = 'CIDADE'
-          DataSource = DSCadastro
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentCtl3D = False
-          ParentFont = False
-          TabOrder = 6
-          OnChange = SMALL_DBEdit7Change
-        end
-        object SMALL_DBEdit8: TSMALL_DBEdit
-          Left = 100
-          Top = 180
-          Width = 199
+          Top = 177
+          Width = 30
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -744,11 +773,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 7
+          OnExit = edtEstadoExit
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit9: TSMALL_DBEdit
+        object edtRG_IE: TSMALL_DBEdit
           Left = 100
-          Top = 204
-          Width = 190
+          Top = 201
+          Width = 127
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -764,11 +795,12 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 8
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit10: TSMALL_DBEdit
+        object edtTelefone: TSMALL_DBEdit
           Left = 100
-          Top = 228
-          Width = 199
+          Top = 225
+          Width = 162
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -783,12 +815,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 9
+          TabOrder = 10
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit11: TSMALL_DBEdit
+        object edtCelular: TSMALL_DBEdit
           Left = 100
-          Top = 252
-          Width = 199
+          Top = 249
+          Width = 162
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -803,12 +836,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 10
+          TabOrder = 11
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit12: TSMALL_DBEdit
+        object edtWhatsApp: TSMALL_DBEdit
           Left = 100
-          Top = 276
-          Width = 190
+          Top = 273
+          Width = 162
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -823,11 +857,12 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 11
+          TabOrder = 12
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit13: TSMALL_DBEdit
+        object edtEmail: TSMALL_DBEdit
           Left = 100
-          Top = 300
+          Top = 297
           Width = 325
           Height = 20
           AutoSize = False
@@ -843,12 +878,14 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 12
-          OnKeyUp = SMALL_DBEdit13KeyUp
+          TabOrder = 13
+          OnExit = edtEmailExit
+          OnKeyDown = PadraoKeyDown
+          OnKeyUp = edtEmailKeyUp
         end
-        object SMALL_DBEdit14: TSMALL_DBEdit
+        object edtLimiteCredito: TSMALL_DBEdit
           Left = 100
-          Top = 324
+          Top = 322
           Width = 91
           Height = 20
           AutoSize = False
@@ -864,11 +901,32 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 13
+          TabOrder = 14
+          OnExit = edtLimiteCreditoExit
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit15: TSMALL_DBEdit
+        object eLimiteCredDisponivel: TEdit
+          Left = 334
+          Top = 322
+          Width = 91
+          Height = 20
+          TabStop = False
+          AutoSize = False
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 15
+          OnKeyDown = PadraoKeyDown
+        end
+        object edtCadastro: TSMALL_DBEdit
           Left = 100
-          Top = 351
+          Top = 347
           Width = 91
           Height = 20
           AutoSize = False
@@ -884,11 +942,12 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 14
+          TabOrder = 16
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit16: TSMALL_DBEdit
+        object edtUltVenda: TSMALL_DBEdit
           Left = 100
-          Top = 377
+          Top = 373
           Width = 91
           Height = 20
           AutoSize = False
@@ -904,30 +963,12 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 15
+          TabOrder = 17
+          OnKeyDown = PadraoKeyDown
         end
-        object eLimiteCredDisponivel: TEdit
-          Left = 308
-          Top = 324
-          Width = 91
-          Height = 20
-          TabStop = False
-          AutoSize = False
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentFont = False
-          ReadOnly = True
-          TabOrder = 16
-          Visible = False
-        end
-        object SMALL_DBEdit17: TSMALL_DBEdit
+        object edtNascido: TSMALL_DBEdit
           Left = 100
-          Top = 401
+          Top = 397
           Width = 91
           Height = 20
           AutoSize = False
@@ -943,33 +984,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 17
-        end
-        object SMALL_DBEdit18: TSMALL_DBEdit
-          Left = 530
-          Top = 16
-          Width = 266
-          Height = 20
-          AutoSize = False
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          Ctl3D = True
-          DataField = 'CONVENIO'
-          DataSource = DSCadastro
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentCtl3D = False
-          ParentFont = False
           TabOrder = 18
-          OnChange = SMALL_DBEdit18Change
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit19: TSMALL_DBEdit
+        object edtIdentificador1: TSMALL_DBEdit
           Left = 530
-          Top = 39
-          Width = 266
+          Top = 35
+          Width = 245
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -984,12 +1005,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 19
+          TabOrder = 20
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit20: TSMALL_DBEdit
+        object edtIdentificador2: TSMALL_DBEdit
           Left = 530
-          Top = 63
-          Width = 266
+          Top = 59
+          Width = 245
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -1004,12 +1026,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 20
+          TabOrder = 21
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit21: TSMALL_DBEdit
+        object edtIdentificador3: TSMALL_DBEdit
           Left = 530
-          Top = 87
-          Width = 266
+          Top = 83
+          Width = 245
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -1024,12 +1047,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 21
+          TabOrder = 22
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit22: TSMALL_DBEdit
+        object edtIdentificador4: TSMALL_DBEdit
           Left = 530
-          Top = 107
-          Width = 266
+          Top = 106
+          Width = 245
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -1044,12 +1068,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 22
+          TabOrder = 23
+          OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit23: TSMALL_DBEdit
-          Left = 531
-          Top = 133
-          Width = 266
+        object edtIdentificador5: TSMALL_DBEdit
+          Left = 530
+          Top = 130
+          Width = 245
           Height = 20
           AutoSize = False
           BevelInner = bvNone
@@ -1064,12 +1089,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 23
+          TabOrder = 24
+          OnKeyDown = PadraoKeyDown
         end
-        object DBMemo1: TDBMemo
+        object memObs: TDBMemo
           Left = 530
-          Top = 157
-          Width = 266
+          Top = 153
+          Width = 245
           Height = 105
           DataField = 'OBS'
           DataSource = DSCadastro
@@ -1080,11 +1106,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           MaxLength = 254
           ParentFont = False
-          TabOrder = 24
+          TabOrder = 25
+          OnEnter = memObsEnter
+          OnKeyDown = memContatoKeyDown
         end
-        object SMALL_DBEdit24: TSMALL_DBEdit
+        object edtProxContato: TSMALL_DBEdit
           Left = 530
-          Top = 267
+          Top = 263
           Width = 91
           Height = 20
           AutoSize = False
@@ -1100,12 +1128,13 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 25
+          TabOrder = 26
+          OnKeyDown = PadraoKeyDown
         end
-        object DBMemo2: TDBMemo
+        object memContato: TDBMemo
           Left = 530
-          Top = 293
-          Width = 266
+          Top = 287
+          Width = 245
           Height = 105
           DataField = 'CONTATOS'
           DataSource = DSCadastro
@@ -1114,115 +1143,164 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
-          MaxLength = 254
+          MaxLength = 32768
           ParentFont = False
-          TabOrder = 26
-        end
-        object pnRelacaoComercial: TPanel
-          Left = 430
-          Top = 403
-          Width = 375
-          Height = 22
-          BevelOuter = bvNone
-          BorderStyle = bsSingle
-          Color = clWhite
-          Ctl3D = False
-          ParentCtl3D = False
           TabOrder = 27
-          object Label56: TLabel
-            Left = 1
-            Top = 0
-            Width = 94
-            Height = 13
-            Alignment = taRightJustify
-            Caption = 'Rela'#231#227'o  comercial:'
-            Font.Charset = ANSI_CHARSET
-            Font.Color = clBlack
-            Font.Height = -11
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = []
-            ParentFont = False
-          end
-          object ComboBox8: TComboBox
-            Left = 100
-            Top = 0
-            Width = 266
-            Height = 22
-            Style = csOwnerDrawVariable
-            Font.Charset = ANSI_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -13
-            Font.Name = 'Microsoft Sans Serif'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 0
-            Items.Strings = (
-              ''
-              'Cliente'
-              'Fornecedor'
-              'Cliente/Fornecedor'
-              'Funcion'#225'rio'
-              'Revenda'
-              'Representante'
-              'Distribuidor'
-              'Vendedor'
-              'Credenciadora de cart'#227'o'
-              'Institui'#231#227'o financeira'
-              'Marketplace')
-          end
+          OnEnter = memContatoEnter
+          OnExit = memContatoExit
+          OnKeyDown = memContatoKeyDown
         end
-        object DBEControleDeNavegacao: TSMALL_DBEdit
-          Left = 336
-          Top = 0
-          Width = 53
+        inline fraConvenio: TfFrameCampo
+          Left = 530
+          Top = 12
+          Width = 245
           Height = 20
-          AutoSize = False
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          Ctl3D = True
-          DataField = 'REGISTRO'
-          DataSource = DSCadastro
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentCtl3D = False
-          ParentFont = False
-          ReadOnly = True
-          TabOrder = 28
-          Visible = False
-          OnChange = DBEControleDeNavegacaoChange
-        end
-        inline fraPerfilTrib: TfFrameCampo
-          Left = 311
-          Top = 161
-          Width = 195
-          Height = 22
           Color = clWhite
           Ctl3D = False
           ParentBackground = False
           ParentColor = False
           ParentCtl3D = False
-          TabOrder = 29
-          OnExit = fraPerfilTribExit
-          ExplicitLeft = 311
-          ExplicitTop = 161
-          ExplicitWidth = 195
+          TabOrder = 19
+          ExplicitLeft = 530
+          ExplicitTop = 12
+          ExplicitWidth = 245
           inherited txtCampo: TEdit
-            Width = 195
-            ExplicitWidth = 390
+            Width = 245
+            ExplicitWidth = 245
           end
           inherited gdRegistros: TDBGrid
-            Width = 195
-            OnDblClick = fraPerfilTribgdRegistrosDblClick
+            Width = 245
+            Columns = <
+              item
+                Expanded = False
+                FieldName = 'NOME'
+                Width = 240
+                Visible = True
+              end>
+          end
+        end
+        inline fraMunicipio: TfFrameCampo
+          Left = 100
+          Top = 153
+          Width = 325
+          Height = 20
+          Color = clWhite
+          Ctl3D = False
+          ParentBackground = False
+          ParentColor = False
+          ParentCtl3D = False
+          TabOrder = 6
+          ExplicitLeft = 100
+          ExplicitTop = 153
+          ExplicitWidth = 325
+          inherited txtCampo: TEdit
+            Width = 325
+            ExplicitWidth = 325
+          end
+          inherited gdRegistros: TDBGrid
+            Width = 325
+            Columns = <
+              item
+                Expanded = False
+                FieldName = 'NOME'
+                Width = 300
+                Visible = True
+              end>
+          end
+        end
+        object cboRelacaoCom: TComboBox
+          Left = 530
+          Top = 397
+          Width = 245
+          Height = 22
+          Style = csOwnerDrawVariable
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 28
+          OnChange = cboRelacaoComChange
+          OnKeyDown = PadraoKeyDown
+          Items.Strings = (
+            ''
+            'Cliente'
+            'Fornecedor'
+            'Cliente/Fornecedor'
+            'Funcion'#225'rio'
+            'Revenda'
+            'Representante'
+            'Distribuidor'
+            'Vendedor'
+            'Credenciadora de cart'#227'o'
+            'Institui'#231#227'o financeira'
+            'Marketplace')
+        end
+        object pnl_IE: TPanel
+          Left = 230
+          Top = 202
+          Width = 256
+          Height = 23
+          BevelOuter = bvNone
+          TabOrder = 9
+          object rgIEContribuinte: TRadioButton
+            Left = 6
+            Top = 0
+            Width = 78
+            Height = 17
+            Caption = 'Contribuinte'
+            TabOrder = 0
+            OnClick = rgIEContribuinteClick
+            OnKeyDown = PadraoKeyDown
+          end
+          object rgIENaoContribuinte: TRadioButton
+            Left = 87
+            Top = 0
+            Width = 100
+            Height = 17
+            Caption = 'N'#227'o Contribuinte'
+            TabOrder = 1
+            OnClick = rgIENaoContribuinteClick
+            OnKeyDown = PadraoKeyDown
+          end
+          object rgIEIsento: TRadioButton
+            Left = 189
+            Top = 0
+            Width = 113
+            Height = 17
+            Caption = 'Isento'
+            TabOrder = 2
+            OnClick = rgIEIsentoClick
+            OnKeyDown = PadraoKeyDown
+          end
+        end
+        object pnl_IE_PR: TPanel
+          Left = 332
+          Top = 224
+          Width = 125
+          Height = 23
+          BevelOuter = bvNone
+          TabOrder = 29
+          object chkProdRural: TDBCheckBox
+            Left = 6
+            Top = 0
+            Width = 97
+            Height = 17
+            Caption = 'Produtor Rural'
+            DataField = 'PRODUTORRURAL'
+            DataSource = DSCadastro
+            TabOrder = 0
+            ValueChecked = 'S'
+            ValueUnchecked = 'N'
+            OnClick = chkProdRuralClick
           end
         end
       end
-      object tsFoto: TTabSheet
+      object tbsFoto: TTabSheet
         Caption = 'Foto'
         ImageIndex = 1
-        OnShow = tsFotoShow
+        OnShow = tbsFotoShow
         object Image3: TImage
           Left = 280
           Top = 25
@@ -1545,7 +1623,6 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Height = 168
           Center = True
           Stretch = True
-          OnClick = Image5Click
         end
         object VideoCap1: TVideoCap
           Left = 28
@@ -1571,7 +1648,7 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           CapToFile = True
           BufferFileSize = 0
         end
-        object Button13: TBitBtn
+        object btnWebCam: TBitBtn
           Left = 20
           Top = 380
           Width = 130
@@ -1584,9 +1661,9 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentFont = False
           TabOrder = 1
-          OnClick = Button13Click
+          OnClick = btnWebCamClick
         end
-        object Button22: TBitBtn
+        object btnSelecionarArquivo: TBitBtn
           Left = 304
           Top = 380
           Width = 130
@@ -1599,473 +1676,102 @@ inherited FrmFichaCadastros: TFrmFichaCadastros
           Font.Style = []
           ParentFont = False
           TabOrder = 2
-          OnClick = Button22Click
+          OnClick = btnSelecionarArquivoClick
+        end
+      end
+      object tbsComissao: TTabSheet
+        Caption = 'Comiss'#227'o'
+        ImageIndex = 2
+        OnEnter = tbsComissaoEnter
+        object Label81: TLabel
+          Left = 16
+          Top = 15
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = '% '#224' vista'
+          Color = clBtnHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object Label82: TLabel
+          Left = 16
+          Top = 45
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = '% a prazo'
+          Color = clBtnHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object SMALL_DBEdit61: TSMALL_DBEdit
+          Left = 116
+          Top = 15
+          Width = 100
+          Height = 20
+          AutoSize = False
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          Ctl3D = True
+          DataField = 'COMISSA1'
+          DataSource = Form7.DataSource9
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 0
+          OnKeyDown = PadraoKeyDown
+        end
+        object SMALL_DBEdit62: TSMALL_DBEdit
+          Left = 116
+          Top = 45
+          Width = 100
+          Height = 20
+          AutoSize = False
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          Color = clWhite
+          Ctl3D = True
+          DataField = 'COMISSA2'
+          DataSource = Form7.DataSource9
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 1
+          OnKeyDown = PadraoKeyDown
         end
       end
     end
   end
   inherited DSCadastro: TDataSource
     DataSet = Form7.IBDataSet2
+    OnDataChange = DSCadastroDataChange
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Filter = 'JPEG Image File (*.jpg)|*.jpg|| | | | | | | | | '
-    Left = 566
-    Top = 425
-  end
-  object DSPerfilTrib: TDataSource
-    DataSet = ibdPerfilTrib
-    Left = 792
-    Top = 76
-  end
-  object ibdPerfilTrib: TIBDataSet
-    Database = Form7.IBDatabase1
-    Transaction = Form7.IBTransaction1
-    BufferChunks = 1000
-    CachedUpdates = False
-    SelectSQL.Strings = (
-      'Select'
-      #9'Case'
-      #9#9'When TIPO_ITEM = '#39'00'#39' then '#39'00 - Mercadoria para Revenda'#39
-      #9#9'When TIPO_ITEM = '#39'01'#39' then '#39'01 - Mat'#233'ria-Prima'#39
-      #9#9'When TIPO_ITEM = '#39'02'#39' then '#39'02 - Embalagem'#39
-      #9#9'When TIPO_ITEM = '#39'03'#39' then '#39'03 - Produto em Processo'#39
-      #9#9'When TIPO_ITEM = '#39'04'#39' then '#39'04 - Produto Acabado'#39
-      #9#9'When TIPO_ITEM = '#39'05'#39' then '#39'05 - Subproduto'#39
-      #9#9'When TIPO_ITEM = '#39'06'#39' then '#39'06 - Produto Intermedi'#225'rio'#39
-      #9#9'When TIPO_ITEM = '#39'07'#39' then '#39'07 - Material de Uso e Consumo'#39
-      #9#9'When TIPO_ITEM = '#39'08'#39' then '#39'08 - Ativo Imobilizado'#39
-      #9#9'When TIPO_ITEM = '#39'09'#39' then '#39'09 - Servi'#231'os'#39
-      #9#9'When TIPO_ITEM = '#39'10'#39' then '#39'10 - Outros insumos'#39
-      #9#9'When TIPO_ITEM = '#39'99'#39' then '#39'99 - Outras'#39
-      #9'End TIPO_ITEM,'
-      #9'Case'
-      #9#9'When IPPT = '#39'P'#39' then '#39'P - Produ'#231#227'o pr'#243'pria'#39' '#9
-      #9#9'When IPPT = '#39'T'#39' then '#39'T - Produ'#231#227'o por terceiros'#39
-      #9'End IPPT,'
-      #9'Case'
-      #9#9'When IAT = '#39'A'#39' then '#39'A - Arredondamento'#39' '#9
-      #9#9'When IAT = '#39'T'#39' then '#39'T - Truncamento'#39
-      #9'End IAT,'
-      #9'Case'
-      
-        #9#9'When Substring(CST from 1  for 1) = '#39'0'#39' then '#39'0 - Nacional, ex' +
-        'ceto as indicadas nos c'#243'digos 3 a 5'#39' '#9
-      
-        #9#9'When Substring(CST from 1  for 1) = '#39'1'#39' then '#39'1 - Estrangeira ' +
-        '- Importa'#231#227'o direta, exceto a indicada no c'#243'digo 6'#39
-      
-        #9#9'When Substring(CST from 1  for 1) = '#39'2'#39' then '#39'2 - Estrangeira ' +
-        '- Adquirida no mercado interno, exceto a indicada no c'#243'digo 7'#39
-      
-        #9#9'When Substring(CST from 1  for 1) = '#39'3'#39' then '#39'3 - Nacional, me' +
-        'rcadoria ou bem com Conte'#250'do de Importa'#231#227'o superior a 40% (quare' +
-        'nta por cento)'#39
-      
-        #9#9'When Substring(CST from 1  for 1) = '#39'4'#39' then '#39'4 - Nacional, cu' +
-        'ja produ'#231#227'o tenha sido feita em conformidade com os processos pr' +
-        'odutivos b'#225'sicos de que tratam o Decreto-Lei n'#186' 288/1967, e as L' +
-        'eis n'#186's 8.248/1991, 8.387/1991, 10.176/2001 e 11.484/2007;'#39
-      
-        #9#9'When Substring(CST from 1  for 1) = '#39'5'#39' then '#39'5 - Nacional, me' +
-        'rcadoria ou bem com Conte'#250'do de Importa'#231#227'o inferior ou igual a 4' +
-        '0% (quarenta por cento)'#39
-      
-        #9#9'When Substring(CST from 1  for 1) = '#39'6'#39' then '#39'6 - Estrangeira ' +
-        '- Importa'#231#227'o direta, sem similar nacional, constante em lista de' +
-        ' Resolu'#231#227'o CAMEX'#39
-      
-        #9#9'When Substring(CST from 1  for 1) = '#39'7'#39' then '#39'7 - Estrangeira ' +
-        '- Adquirida no mercado interno, sem similar nacional, constante ' +
-        'em lista de Resolu'#231#227'o CAMEX.'#39
-      
-        #9#9'When Substring(CST from 1  for 1) = '#39'8'#39' then '#39'8 - Nacional, me' +
-        'rcadoria ou bem com Conte'#250'do de Importa'#231#227'o sup. a 70%'#39
-      #9'End ORIGEM,'
-      #9'PIVA,'
-      #9'Case'
-      
-        #9#9'When Substring(CST from 2  for 2) = '#39'00'#39' then '#39'00 - Tributada ' +
-        'integralmente'#39
-      
-        #9#9'When Substring(CST from 2  for 2) = '#39'10'#39' then '#39'10 - Tributada ' +
-        'e com cobran'#231'a de ICMS por ST'#39
-      
-        #9#9'When Substring(CST from 2  for 2) = '#39'20'#39' then '#39'20 - Com redu'#231#227 +
-        'o de base de c'#225'lculo'#39
-      
-        #9#9'When Substring(CST from 2  for 2) = '#39'30'#39' then '#39'30 - Isenta ou ' +
-        'n'#227'o tributada e com cobran'#231'a do ICMS por ST'#39
-      #9#9'When Substring(CST from 2  for 2) = '#39'40'#39' then '#39'40 - Isenta'#39
-      
-        #9#9'When Substring(CST from 2  for 2) = '#39'41'#39' then '#39'41 - N'#227'o tribut' +
-        'ada'#39
-      #9#9'When Substring(CST from 2  for 2) = '#39'50'#39' then '#39'50 - Suspens'#227'o'#39
-      
-        #9#9'When Substring(CST from 2  for 2) = '#39'51'#39' then '#39'51 - Diferiment' +
-        'o'#39
-      
-        #9#9'When Substring(CST from 2  for 2) = '#39'60'#39' then '#39'60 - ICMS Cobra' +
-        'do anteriormente por ST'#39
-      
-        #9#9'When Substring(CST from 2  for 2) = '#39'61'#39' then '#39'61 - Tributa'#231#227'o' +
-        ' monof'#225'sica sobre combust'#237'veis cobrado anteriormente'#39
-      
-        #9#9'When Substring(CST from 2  for 2) = '#39'70'#39' then '#39'70 - Com red. d' +
-        'e base de c'#225'lculo e cob. do ICMS por ST'#39
-      #9#9'When Substring(CST from 2  for 2) = '#39'90'#39' then '#39'90 - Outras'#39#9#9
-      #9'End CST,'
-      #9'Case'
-      
-        #9#9'When CSOSN = '#39'101'#39' then '#39'101 - Tributada pelo Simples Nacional' +
-        ' com permiss'#227'o de cr'#233'dito'#39
-      
-        #9#9'When CSOSN = '#39'102'#39' then '#39'102 - Tributada pelo Simples Nacional' +
-        ' sem permiss'#227'o de cr'#233'dito'#39
-      
-        #9#9'When CSOSN = '#39'103'#39' then '#39'103 - Isen'#231#227'o do ICMS no Simples Naci' +
-        'onal para faixa de receita bruta'#39
-      
-        #9#9'When CSOSN = '#39'201'#39' then '#39'201 - Trib. pelo Simples Nacional com' +
-        ' permiss'#227'o de cr'#233'dito e com cobr. do ICMS por ST'#39
-      
-        #9#9'When CSOSN = '#39'203'#39' then '#39'203 - Isen'#231#227'o do ICMS no Simples Naci' +
-        'onal para faixa de receita bruta e com cobran'#231'a do ICMS por ST'#39
-      #9#9'When CSOSN = '#39'300'#39' then '#39'300 - Imune'#39
-      
-        #9#9'When CSOSN = '#39'400'#39' then '#39'400 - N'#227'o tributada pelo Simples Naci' +
-        'onal'#39
-      
-        #9#9'When CSOSN = '#39'500'#39' then '#39'500 - ICMS cobrado anteriormente por ' +
-        'ST (substitu'#237'do) ou por antecipa'#231#227'o'#39
-      #9#9'When CSOSN = '#39'900'#39' then '#39'900 - Outros'#39
-      
-        #9#9'When CSOSN = '#39'61'#39' then '#39'61 - Tributa'#231#227'o monof'#225'sica sobre combu' +
-        'st'#237'veis cobrado anteriormente'#39#9
-      #9'End CSOSN,'
-      #9'ST,'
-      #9'Case'
-      
-        #9#9'When CFOP = '#39'5101'#39' then '#39'5101 - Venda de produ'#231#227'o do estabelec' +
-        'imento'#39
-      
-        #9#9'When CFOP = '#39'5102'#39' then '#39'5102 - Venda de mercadoria de terceir' +
-        'os'#39
-      
-        #9#9'When CFOP = '#39'5103'#39' then '#39'5103 - Venda de produ'#231#227'o do estabelec' +
-        'imento efetuada fora do estabelecimento'#39
-      
-        #9#9'When CFOP = '#39'5104'#39' then '#39'5104 - Venda de mercadoria adquirida ' +
-        'ou recebida de terceiros, efetuada fora do estabelecimento'#39
-      
-        #9#9'When CFOP = '#39'5115'#39' then '#39'5115 - Venda de mercadoria de terceir' +
-        'os, recebida anteriormente em consigna'#231#227'o mercantil'#39
-      
-        #9#9'When CFOP = '#39'5405'#39' then '#39'5405 - Venda de mercadoria de terceir' +
-        'os, sujeita a ST, como contribuinte substitu'#237'do'#39
-      
-        #9#9'When CFOP = '#39'5656'#39' then '#39'5656 - Venda de combust'#237'vel ou lubrif' +
-        'icante de terceiros, destinados a consumidor final'#39
-      
-        #9#9'When CFOP = '#39'5667'#39' then '#39'5667 - Venda de combust'#237'vel ou lubrif' +
-        'icante a consumidor ou usu'#225'rio final estabelecido em outra Unida' +
-        'de da Federa'#231#227'o'#39
-      
-        #9#9'When CFOP = '#39'5933'#39' then '#39'5933 - Presta'#231#227'o de servi'#231'o tributado' +
-        ' pelo ISSQN (Nota Fiscal conjugada)'#39
-      
-        #9#9'When CFOP = '#39'5949'#39' then '#39'5949 - Outra sa'#237'da de mercadoria ou p' +
-        'resta'#231#227'o de servi'#231'o n'#227'o especificado'#39
-      #9'End CFOP,'
-      #9'Case'
-      #9#9'When CST_NFCE = '#39'00'#39' then '#39'00 - Tributada integralmente'#39
-      
-        #9#9'When CST_NFCE = '#39'20'#39' then '#39'20 - Com redu'#231#227'o de base de c'#225'lculo' +
-        #39
-      #9#9'When CST_NFCE = '#39'40'#39' then '#39'40 - Isenta'#39
-      #9#9'When CST_NFCE = '#39'41'#39' then '#39'41 - N'#227'o tributada'#39
-      
-        #9#9'When CST_NFCE = '#39'60'#39' then '#39'60 - ICMS Cobrado anteriormente por' +
-        ' ST'#39
-      
-        #9#9'When CST_NFCE = '#39'61'#39' then '#39'61 - Tributa'#231#227'o monof'#225'sica sobre co' +
-        'mbust'#237'veis cobrado anteriormente'#39
-      #9#9'When CST_NFCE = '#39'90'#39' then '#39'90 - Outras'#39
-      #9'End CST_NFCE,'
-      #9'Case'
-      
-        #9#9'When CSOSN_NFCE = '#39'102'#39' then '#39'102 - Tributada pelo Simples Nac' +
-        'ional sem permiss'#227'o de cr'#233'dito'#39
-      
-        #9#9'When CSOSN_NFCE = '#39'103'#39' then '#39'103 - Isen'#231#227'o do ICMS no Simples' +
-        ' Nacional para faixa de receita bruta'#39
-      #9#9'When CSOSN_NFCE = '#39'300'#39' then '#39'300 - Imune'#39
-      
-        #9#9'When CSOSN_NFCE = '#39'400'#39' then '#39'400 - N'#227'o tributada pelo Simples' +
-        ' Nacional'#39
-      
-        #9#9'When CSOSN_NFCE = '#39'500'#39' then '#39'500 - ICMS cobrado anteriormente' +
-        ' por ST (substitu'#237'do) ou por antecipa'#231#227'o'#39
-      #9#9'When CSOSN_NFCE = '#39'900'#39' then '#39'900 - Outros'#39
-      
-        #9#9'When CSOSN_NFCE = '#39'61'#39' then '#39'61 - Tributa'#231#227'o monof'#225'sica sobre ' +
-        'combust'#237'veis cobrado anteriormente'#39
-      #9'End CSOSN_NFCE,'
-      #9'ALIQUOTA_NFCE,'
-      #9'Case'
-      #9#9'When CST_IPI = '#39'50'#39' then '#39'50 - Sa'#237'da Tributada'#39
-      
-        #9#9'When CST_IPI = '#39'51'#39' then '#39'51 - Sa'#237'da Tribut'#225'vel com Al'#237'quota Z' +
-        'ero'#39
-      #9#9'When CST_IPI = '#39'52'#39' then '#39'52 - Sa'#237'da Isenta'#39
-      #9#9'When CST_IPI = '#39'53'#39' then '#39'53 - Sa'#237'da N'#227'o-Tributada'#39
-      #9#9'When CST_IPI = '#39'54'#39' then '#39'54 - Sa'#237'da Imune'#39
-      #9#9'When CST_IPI = '#39'55'#39' then '#39'55 - Sa'#237'da com Suspens'#227'o'#39
-      #9#9'When CST_IPI = '#39'99'#39' then '#39'99 - Outras Sa'#237'das'#39
-      #9'End CST_IPI,'
-      #9'IPI,'
-      #9'ENQ_IPI,'
-      #9'Case'
-      
-        #9#9'When CST_PIS_COFINS_SAIDA = '#39'01'#39' then '#39'01-Opera'#231#227'o Tribut'#225'vel ' +
-        'com Al'#237'quota B'#225'sica'#39
-      
-        #9#9'When CST_PIS_COFINS_SAIDA = '#39'02'#39' then '#39'02-Opera'#231#227'o Tribut'#225'vel ' +
-        'com Al'#237'quota Diferenciada'#39
-      
-        #9#9'When CST_PIS_COFINS_SAIDA = '#39'03'#39' then '#39'03-Opera'#231#227'o Tribut'#225'vel ' +
-        'com Al'#237'quota por Unidade de Medida de Produto'#39
-      
-        #9#9'When CST_PIS_COFINS_SAIDA = '#39'04'#39' then '#39'04-Opera'#231#227'o Tribut'#225'vel ' +
-        'Monof'#225'sica - Revenda a Al'#237'quota Zero'#39
-      
-        #9#9'When CST_PIS_COFINS_SAIDA = '#39'05'#39' then '#39'05-Opera'#231#227'o Tribut'#225'vel ' +
-        'por Substitui'#231#227'o Tribut'#225'ria'#39
-      
-        #9#9'When CST_PIS_COFINS_SAIDA = '#39'06'#39' then '#39'06-Opera'#231#227'o Tribut'#225'vel ' +
-        'a Al'#237'quota Zero'#39
-      
-        #9#9'When CST_PIS_COFINS_SAIDA = '#39'07'#39' then '#39'07-Opera'#231#227'o Isenta da C' +
-        'ontribui'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_SAIDA = '#39'08'#39' then '#39'08-Opera'#231#227'o sem Incid'#234'n' +
-        'cia da Contribui'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_SAIDA = '#39'09'#39' then '#39'09-Opera'#231#227'o com Suspens' +
-        #227'o da Contribui'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_SAIDA = '#39'49'#39' then '#39'49-Outras Opera'#231#245'es de ' +
-        'Sa'#237'da'#39
-      #9#9'When CST_PIS_COFINS_SAIDA = '#39'99'#39' then '#39'99-Outras Opera'#231#245'es'#39
-      #9'End CST_PIS_COFINS_SAIDA,'
-      #9'ALIQ_PIS_SAIDA,'
-      #9'ALIQ_COFINS_SAIDA,'
-      #9'Case'
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'50'#39' then '#39'50-Opera'#231#227'o com Direi' +
-        'to a Cr'#233'dito - Vinculada Exclusivamente a Receita Tributada no M' +
-        'ercado Interno'#39#9
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'51'#39' then '#39'51-Opera'#231#227'o com Direi' +
-        'to a Cr'#233'dito - Vinculada Exclusivamente a Receita N'#227'o-Tributada ' +
-        'no Mercado Interno'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'52'#39' then '#39'52-Opera'#231#227'o com Direi' +
-        'to a Cr'#233'dito - Vinculada Exclusivamente a Receita de Exporta'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'53'#39' then '#39'53-Opera'#231#227'o com Direi' +
-        'to a Cr'#233'dito - Vinculada a Receitas Tributadas e N'#227'o-Tributadas ' +
-        'no Mercado Interno'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'54'#39' then '#39'54-Opera'#231#227'o com Direi' +
-        'to a Cr'#233'dito - Vinculada a Receitas Tributadas no Mercado Intern' +
-        'o e de Exporta'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'55'#39' then '#39'55-Opera'#231#227'o com Direi' +
-        'to a Cr'#233'dito - Vinculada a Receitas N'#227'o Tributadas no Mercado In' +
-        'terno e de Exporta'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'56'#39' then '#39'56-Opera'#231#227'o com Direi' +
-        'to a Cr'#233'dito - Vinculada a Receitas Tributadas e N'#227'o-Tributadas ' +
-        'no Mercado Interno e de Exporta'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'60'#39' then '#39'60-Cr'#233'dito Presumido ' +
-        '- Opera'#231#227'o de Aquisi'#231#227'o Vinculada Exclusivamente a Receita Tribu' +
-        'tada no Mercado Interno'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'61'#39' then '#39'61-Cr'#233'dito Presumido ' +
-        '- Opera'#231#227'o de Aquisi'#231#227'o Vinculada Exclusivamente a Receita N'#227'o-T' +
-        'ributada no Mercado Interno'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'62'#39' then '#39'62-Cr'#233'dito Presumido ' +
-        '- Opera'#231#227'o de Aquisi'#231#227'o Vinculada Exclusivamente a Receita de Ex' +
-        'porta'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'63'#39' then '#39'63-Cr'#233'dito Presumido ' +
-        '- Opera'#231#227'o de Aquisi'#231#227'o Vinculada a Receitas Tributadas e N'#227'o-Tr' +
-        'ibutadas no Mercado Interno'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'64'#39' then '#39'64-Cr'#233'dito Presumido ' +
-        '- Opera'#231#227'o de Aquisi'#231#227'o Vinculada a Receitas Tributadas no Merca' +
-        'do Interno e de Exporta'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'65'#39' then '#39'65-Cr'#233'dito Presumido ' +
-        '- Opera'#231#227'o de Aquisi'#231#227'o Vinculada a Receitas N'#227'o-Tributadas no M' +
-        'ercado Interno e de Exporta'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'66'#39' then '#39'66-Cr'#233'dito Presumido ' +
-        '- Opera'#231#227'o de Aquisi'#231#227'o Vinculada a Receitas Tributadas e N'#227'o-Tr' +
-        'ibutadas no Mercado Interno e de Exporta'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'67'#39' then '#39'67-Cr'#233'dito Presumido ' +
-        '- Outras Opera'#231#245'es'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'70'#39' then '#39'70-Opera'#231#227'o de Aquisi' +
-        #231#227'o sem Direito a Cr'#233'dito'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'71'#39' then '#39'71-Opera'#231#227'o de Aquisi' +
-        #231#227'o com Isen'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'72'#39' then '#39'72-Opera'#231#227'o de Aquisi' +
-        #231#227'o com Suspens'#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'73'#39' then '#39'73-Opera'#231#227'o de Aquisi' +
-        #231#227'o a Al'#237'quota Zero'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'74'#39' then '#39'74-Opera'#231#227'o de Aquisi' +
-        #231#227'o sem Incid'#234'ncia da Contribui'#231#227'o'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'75'#39' then '#39'75-Opera'#231#227'o de Aquisi' +
-        #231#227'o por Substitui'#231#227'o Tribut'#225'ria'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'98'#39' then '#39'98-Outras Opera'#231#245'es d' +
-        'e Entrada'#39
-      
-        #9#9'When CST_PIS_COFINS_ENTRADA = '#39'99'#39' then '#39'99-Outras Opera'#231#245'es'#39#9 +
-        #9
-      #9'End CST_PIS_COFINS_ENTRADA,'
-      #9'ALIQ_PIS_ENTRADA,'
-      #9'ALIQ_COFINS_ENTRADA'
-      'From PERFILTRIBUTACAO'
-      'Where IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO')
-    ParamCheck = True
-    UniDirectional = False
-    DataSource = DSCadastro
-    Left = 760
-    Top = 76
-    object ibdPerfilTribTIPO_ITEM: TIBStringField
-      FieldName = 'TIPO_ITEM'
-      FixedChar = True
-      Size = 30
-    end
-    object ibdPerfilTribIPPT: TIBStringField
-      FieldName = 'IPPT'
-      FixedChar = True
-      Size = 26
-    end
-    object ibdPerfilTribIAT: TIBStringField
-      FieldName = 'IAT'
-      FixedChar = True
-      Size = 18
-    end
-    object ibdPerfilTribORIGEM: TIBStringField
-      FieldName = 'ORIGEM'
-      FixedChar = True
-      Size = 202
-    end
-    object ibdPerfilTribPIVA: TFloatField
-      FieldName = 'PIVA'
-      Origin = 'PERFILTRIBUTACAO.PIVA'
-      DisplayFormat = '#,##0.00000'
-    end
-    object ibdPerfilTribCST: TIBStringField
-      FieldName = 'CST'
-      FixedChar = True
-      Size = 67
-    end
-    object ibdPerfilTribCSOSN: TIBStringField
-      FieldName = 'CSOSN'
-      FixedChar = True
-      Size = 99
-    end
-    object ibdPerfilTribST: TIBStringField
-      FieldName = 'ST'
-      Origin = 'PERFILTRIBUTACAO.ST'
-      Size = 3
-    end
-    object ibdPerfilTribCFOP: TIBStringField
-      FieldName = 'CFOP'
-      FixedChar = True
-      Size = 116
-    end
-    object ibdPerfilTribCST_NFCE: TIBStringField
-      FieldName = 'CST_NFCE'
-      FixedChar = True
-      Size = 67
-    end
-    object ibdPerfilTribCSOSN_NFCE: TIBStringField
-      FieldName = 'CSOSN_NFCE'
-      FixedChar = True
-      Size = 72
-    end
-    object ibdPerfilTribALIQUOTA_NFCE: TIBBCDField
-      FieldName = 'ALIQUOTA_NFCE'
-      Origin = 'PERFILTRIBUTACAO.ALIQUOTA_NFCE'
-      DisplayFormat = '##0.00'
-      Precision = 18
-      Size = 2
-    end
-    object ibdPerfilTribCST_IPI: TIBStringField
-      FieldName = 'CST_IPI'
-      FixedChar = True
-      Size = 39
-    end
-    object ibdPerfilTribIPI: TFloatField
-      FieldName = 'IPI'
-      Origin = 'PERFILTRIBUTACAO.IPI'
-      DisplayFormat = '#0.00'
-    end
-    object ibdPerfilTribENQ_IPI: TIBStringField
-      FieldName = 'ENQ_IPI'
-      Origin = 'PERFILTRIBUTACAO.ENQ_IPI'
-      Size = 3
-    end
-    object ibdPerfilTribCST_PIS_COFINS_SAIDA: TIBStringField
-      FieldName = 'CST_PIS_COFINS_SAIDA'
-      FixedChar = True
-      Size = 68
-    end
-    object ibdPerfilTribALIQ_PIS_SAIDA: TIBBCDField
-      FieldName = 'ALIQ_PIS_SAIDA'
-      Origin = 'PERFILTRIBUTACAO.ALIQ_PIS_SAIDA'
-      DisplayFormat = '#0.0000'
-      Precision = 18
-      Size = 4
-    end
-    object ibdPerfilTribALIQ_COFINS_SAIDA: TIBBCDField
-      FieldName = 'ALIQ_COFINS_SAIDA'
-      Origin = 'PERFILTRIBUTACAO.ALIQ_COFINS_SAIDA'
-      DisplayFormat = '#0.0000'
-      Precision = 18
-      Size = 4
-    end
-    object ibdPerfilTribCST_PIS_COFINS_ENTRADA: TIBStringField
-      FieldName = 'CST_PIS_COFINS_ENTRADA'
-      FixedChar = True
-      Size = 128
-    end
-    object ibdPerfilTribALIQ_PIS_ENTRADA: TIBBCDField
-      FieldName = 'ALIQ_PIS_ENTRADA'
-      Origin = 'PERFILTRIBUTACAO.ALIQ_PIS_ENTRADA'
-      DisplayFormat = '#0.0000'
-      Precision = 18
-      Size = 4
-    end
-    object ibdPerfilTribALIQ_COFINS_ENTRADA: TIBBCDField
-      FieldName = 'ALIQ_COFINS_ENTRADA'
-      Origin = 'PERFILTRIBUTACAO.ALIQ_COFINS_ENTRADA'
-      DisplayFormat = '#0.0000'
-      Precision = 18
-      Size = 4
-    end
+    Left = 502
+    Top = 465
   end
 end

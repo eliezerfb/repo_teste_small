@@ -574,7 +574,8 @@ object Form17: TForm17
       Items.Strings = (
         '1 - Simples nacional '
         '2 - Simples nacional - Excesso de Sublimite de Receita Bruta'
-        '3 - Regime normal')
+        '3 - Regime normal'
+        '4 - Simples nacional - Microempreendedor Individual - MEI')
     end
     object dbgPesquisa: TDBGrid
       Left = 110

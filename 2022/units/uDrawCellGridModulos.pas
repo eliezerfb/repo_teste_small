@@ -30,9 +30,9 @@ begin
       if (Form7.ibDataSet7VALOR_RECE.Asfloat = 0) or (FORM7.ibDataSet7ATIVO.AsFloat >= 5) then
       begin
         if Form7.ibDataSet7ATIVO.AsFloat >= 5 then
-          Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.Image13.Picture.Graphic)
+          Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.imgChk.Picture.Graphic)
         else
-          Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.Image14.Picture.Graphic);
+          Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.imgUnChk.Picture.Graphic);
       end else
       begin
         Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.Image18.Picture.Graphic);
@@ -72,9 +72,9 @@ begin
       if (Form7.ibDataSet8VALOR_PAGO.Asfloat = 0) or (Form7.ibDataSet8ATIVO.AsFloat >= 5) then
       begin
         if Form7.ibDataSet8ATIVO.AsFloat >= 5 then
-          Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.Image13.Picture.Graphic)
+          Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.imgChk.Picture.Graphic)
         else
-          Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.Image14.Picture.Graphic);
+          Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.imgUnChk.Picture.Graphic);
       end else
       begin
         Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.Image18.Picture.Graphic);
@@ -92,10 +92,10 @@ begin
     begin
       if (Form7.ibDataSet4MARKETPLACE.AsString = '1') then
       begin
-        Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.Image13.Picture.Graphic);
+        Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.imgChk.Picture.Graphic);
       end else
       begin
-        Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.Image14.Picture.Graphic);
+        Form7.dbGrid1.Canvas.Draw(Rect.Left +1,Rect.Top + 1,Form7.imgUnChk.Picture.Graphic);
       end;
     end;
   end;
@@ -157,6 +157,8 @@ begin
      (Column.Field.Name = 'ibDataSet14SOBRESEGURO') or
      (Column.Field.Name = 'ibDataSet14SOBREOUTRAS') or
      (Column.Field.Name = 'ibDataSet14IPISOBREOUTRA') or //Mauricio Parizotto 2024-04-22
+     (Column.Field.Name = 'ibDataSet14REFERENCIANOTA') or //Mauricio Parizotto 2024-06-21
+     (Column.Field.Name = 'ibDataSet11PIXESTATICO') or //Mauricio Parizotto 2024-05-27
      (Column.Field.Name = 'ibDataSet14FRETESOBREIPI')  then
   begin
     Form7.dbGrid1.Canvas.FillRect(Rect);
@@ -167,7 +169,7 @@ begin
       if Column.Field.Name = 'ibDataSet14SOBREIPI' then
       begin
         if (Alltrim(Form7.ibDataSet14SOBREIPI.AsString) = 'S') then
-          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.imgCheck.Picture.Graphic)
         else
           Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
       end;
@@ -175,7 +177,7 @@ begin
       if Column.Field.Name = 'ibDataSet14SOBREFRETE' then
       begin
         if (Alltrim(Form7.ibDataSet14SOBREFRETE.AsString) = 'S') then
-          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.imgCheck.Picture.Graphic)
         else
           Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
       end;
@@ -183,7 +185,7 @@ begin
       if Column.Field.Name = 'ibDataSet14SOBRESEGURO' then
       begin
         if (Alltrim(Form7.ibDataSet14SOBRESEGURO.AsString) = 'S') then
-          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.imgCheck.Picture.Graphic)
         else
           Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
       end;
@@ -191,7 +193,7 @@ begin
       if Column.Field.Name = 'ibDataSet14SOBREOUTRAS' then
       begin
         if (Alltrim(Form7.ibDataSet14SOBREOUTRAS.AsString) = 'S') then
-          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.imgCheck.Picture.Graphic)
         else
           Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
       end;
@@ -200,7 +202,7 @@ begin
       if Column.Field.Name = 'ibDataSet14FRETESOBREIPI' then
       begin
         if (Alltrim(Form7.ibDataSet14FRETESOBREIPI.AsString) = 'S') then
-          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.imgCheck.Picture.Graphic)
         else
           Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
       end;
@@ -209,9 +211,40 @@ begin
       if Column.Field.Name = 'ibDataSet14IPISOBREOUTRA' then
       begin
         if (Alltrim(Form7.ibDataSet14IPISOBREOUTRA.AsString) = 'S') then
-          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image10.Picture.Graphic)
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.imgCheck.Picture.Graphic)
         else
           Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
+      end;
+
+      //Mauricio Parizotto 2024-06-21
+      if Column.Field.Name = 'ibDataSet14REFERENCIANOTA' then
+      begin
+        if (Alltrim(Form7.ibDataSet14REFERENCIANOTA.AsString) = 'S') then
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.imgCheck.Picture.Graphic)
+        else
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
+      end;
+    end;
+
+    //Mauricio Parizotto 2024-05-27
+    if Column.Field.Name = 'ibDataSet11PIXESTATICO' then
+    begin
+      with (Sender as TDBGrid).Canvas do
+      begin
+        if (gdSelected in State) then
+        begin
+          Brush.Color := clWhite;
+          FillRect(Rect);
+          (Sender as TDBGrid).DefaultDrawColumnCell(Rect, DataCol, Column, State);
+        end;
+      end;
+
+      if (Alltrim(Form7.ibDataSet11PIXESTATICO.AsString) = 'S') then
+      begin
+        Form7.dbGrid1.Canvas.Draw(Rect.Left +20,Rect.Top + 1,Form7.imgChk.Picture.Graphic);
+      end else
+      begin
+        Form7.dbGrid1.Canvas.Draw(Rect.Left +20,Rect.Top + 1,Form7.imgUnChk.Picture.Graphic);
       end;
     end;
   end;

@@ -1080,7 +1080,7 @@ begin
     end;
   end;   *)
 
-  {Sandro Silva 2024-05-24 inicio
+  {Sandro Silva 2024-05-24 inicio 
   Form25.sNossoNum := (AllTrim(LimpaNumero(sCarteira)) + '/'
                       + (StrZero(StrtoInt('0'+LimpaNumero(sConvenio)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0)) +'-'+
                       Modulo_11((StrZero(StrtoInt('0'+LimpaNumero(sConvenio)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0))));

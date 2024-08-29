@@ -31,6 +31,7 @@ type
     cdsTotalGrupoCustocompra: TFMTBCDField;
     cdsTotalGrupoVendidopor: TFMTBCDField;
     cdsTotalGrupoLucrobruto: TFMTBCDField;
+    cdsTotalGrupoQuantidade: TFMTBCDField;
     procedure FormShow(Sender: TObject);
     procedure btnAvancarClick(Sender: TObject);
     procedure btnVoltarClick(Sender: TObject);
@@ -63,6 +64,7 @@ type
       AcdsDestino: TClientDataSet);
     procedure AjustaCasasDecimais;
     function RetornarApenasData(AdDataHora: TDateTime): TDate;
+    function RetornaWhereNota: String;
   public
     property DataSetEstoque: TIBDataSet read FoDataSetEstoque write FoDataSetEstoque;
     property CasasDecimaisPreco: Integer read FnCasasDecimais write FnCasasDecimais;
@@ -135,6 +137,11 @@ begin
   cdsTotalGrupoVendidopor.Size := FnCasasDecimais;
   cdsTotalGrupo.FieldDefs.Items[cdsTotalGrupo.FieldDefs.IndexOf(cdsTotalGrupoLucrobruto.FieldName)].Size := FnCasasDecimais;
   cdsTotalGrupoLucrobruto.Size := FnCasasDecimais;
+  //Mauricio Parizotto 2024-05-20
+  cdsTotalGrupo.FieldDefs.Items[cdsTotalGrupo.FieldDefs.IndexOf(cdsTotalGrupoQuantidade.FieldName)].Size := FnCasasDecimaisQtde;
+  cdsTotalGrupoQuantidade.Size := FnCasasDecimaisQtde;
+
+
 
   // cdsExcluidos
   cdsExcluidos.FieldDefs.Items[cdsExcluidos.FieldDefs.IndexOf(cdsExcluidosVALOR.FieldName)].Size := FnCasasDecimais;
@@ -280,10 +287,9 @@ begin
     }
     qryDados.Close;
     qryDados.SQL.Text :=
-      'select sum(DESCONTO) as DESCONTOS ' +
+      'select sum(VENDAS.DESCONTO) as DESCONTOS ' +
       'from VENDAS ' +
-      'where (EMITIDA = ''S'') ' +
-      'and (EMISSAO between ' + QuotedStr(DateToStrInvertida(dtInicial.Date)) + ' and ' + QuotedStr(DateToStrInvertida(dtFinal.Date)) + ')';
+      'where ' + RetornaWhereNota; // Dailon Parisotto (f-19509) 2024-07-02
     qryDados.Open;
 
     Result := Result + (qryDados.FieldByname('DESCONTOS').AsFloat*-1);
@@ -458,7 +464,7 @@ begin
         case AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).DataType of
           ftString, ftWideString: AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).AsString := AqryOrigem.FieldByName(AqryOrigem.Fields[i].FieldName).AsString;
           ftInteger, ftSmallint, ftLargeint: AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).AsInteger := AqryOrigem.FieldByName(AqryOrigem.Fields[i].FieldName).AsInteger;
-          ftFMTBcd, ftFloat, ftCurrency, ftBCD:AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).AsFloat := AqryOrigem.FieldByName(AqryOrigem.Fields[i].FieldName).AsFloat;
+          ftFMTBcd, ftFloat, ftCurrency, ftBCD: AcdsDestino.FieldByName(AqryOrigem.Fields[i].FieldName).AsFloat := AqryOrigem.FieldByName(AqryOrigem.Fields[i].FieldName).AsFloat;
         end;
       end;
     end;
@@ -505,6 +511,7 @@ begin
     QryDados.SQL.Add('SELECT');
     QryDados.SQL.Add('    0 as "Ord"');
     QryDados.SQL.Add('    , CASE WHEN COALESCE(GRUPO.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE GRUPO.NOME END AS "Grupo"');
+    QryDados.SQL.Add('    , SUM(CAST(ESTOQUE.QTD_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+'))) AS "Quantidade"'); //Mauricio Parizotto 2024-05-20
     QryDados.SQL.Add('    , SUM(CAST(ESTOQUE.CUS_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Custo compra"');
     QryDados.SQL.Add('    , SUM(CAST(ESTOQUE.VAL_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Vendido por"');
     QryDados.SQL.Add('    , SUM(CAST(ESTOQUE.LUC_VEND AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+'))) AS "Lucro bruto"');
@@ -525,6 +532,7 @@ begin
       QryDados.SQL.Add('SELECT FIRST 1');
       QryDados.SQL.Add('    1 as "Ord"');
       QryDados.SQL.Add('    , ' + QuotedStr(_cDescontoAcrescimo) + ' AS "Grupo"');
+      QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimaisQtde)+')) AS "Quantidade"'); //Mauricio Parizotto 2024-05-20
       QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Custo compra"');
       QryDados.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalDescontoAcresc) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
       QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
@@ -538,12 +546,15 @@ begin
         QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionadosHTML) + ' AS "Grupo"')
       else
         QryDados.SQL.Add('    , ' + QuotedStr(_cItensNaoRelacionados) + ' AS "Grupo"');
+      QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Quantidade"'); //Mauricio Parizotto 2024-05-20
       QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Custo compra"');
       QryDados.SQL.Add('    , CAST(SUM(' + RetornaFormatoValorSQL(RetornarTotalNaoRelacionados) + ') AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Vendido por"');
       QryDados.SQL.Add('    , CAST(SUM(0) AS NUMERIC(18,2)) AS "Lucro bruto"');
       QryDados.SQL.Add('FROM EMITENTE');
     end;
-    QryDados.SQL.Add('ORDER BY 1, 5 DESC');
+
+    //QryDados.SQL.Add('ORDER BY 1, 5 DESC');
+    QryDados.SQL.Add('ORDER BY 1, 6 DESC');
     QryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
     QryDados.Open;
     QryDados.First;
@@ -635,6 +646,15 @@ begin
   inherited;
 end;
 
+{Dailon Parisotto (f-19509) 2024-07-02 Inicio}
+function TfrmRelResumoVendas.RetornaWhereNota: String;
+begin
+    Result := '(VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(dtFinal.Date))+') and (VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(dtInicial.Date))+')' + sLineBreak +
+              RetornarWhereOperacoes+' and (VENDAS.EMITIDA=''S'')' + sLineBreak +
+              'and (VENDAS.MODELO <> ''SV'')';
+end;
+{Dailon Parisotto (f-19509) 2024-07-02 Fim}
+
 procedure TfrmRelResumoVendas.FazUpdateValores;
 var
   nRecNo: Integer;
@@ -671,8 +691,8 @@ begin
     qryCons99.SQL.Add('sum(ITENS001.CUSTO*ITENS001.QUANTIDADE) as vCUS1');
     qryCons99.SQL.Add('from ITENS001, VENDAS');
     qryCons99.SQL.Add('where');
-    qryCons99.SQL.Add('(VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(dtFinal.Date))+') and (VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(dtInicial.Date))+')');
-    qryCons99.SQL.Add('and (VENDAS.NUMERONF=ITENS001.NUMERONF) '+RetornarWhereOperacoes+' and (VENDAS.EMITIDA=''S'')');
+    qryCons99.SQL.Add('(VENDAS.NUMERONF=ITENS001.NUMERONF)');
+    qryCons99.SQL.Add('AND ' + RetornaWhereNota); // Dailon Parisotto (f-19509) 2024-07-02
     qryCons99.SQL.Add('group by DESCRICAO, CODIGO'); // Sandro Silva 2024-04-08 qryCons99.SQL.Add('group by DESCRICAO');
     qryCons99.Open;
 

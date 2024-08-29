@@ -137,7 +137,9 @@ var
 
 implementation
 
-uses Unit7, Unit10, Mais, uFrmParcelas, Unit41, Unit43, Unit19,
+uses Unit7
+//  , Unit10
+  , Mais, uFrmParcelas, Unit41, Unit43, Unit19,
   Unit24, uTransmiteNFSe, uFrmPesquisaOrcamento, uFrmPesquisaOrdemServico,
   uImportaOrcamento, uImportaOrdemServico;
 
@@ -321,10 +323,24 @@ end;
 procedure TForm48.DBGrid2DblClick(Sender: TObject);
 begin
   Form7.ibDataSet15.Edit;
+  {Dailon Parisotto (f-18425) 2024-05-03 Inicio
+
   Form7.ibDataSet15OPERACAO.AsString   := form7.ibDataSet14NOME.AsString;
   Form7.ibDataSet15CLIENTE.AsString    := form7.ibDataSet2NOME.AsString;
   Form7.ibDataSet15TRANSPORTA.AsString := form7.ibDataSet18NOME.AsString;
   Form7.ibDataSet15VENDEDOR.AsString   := Form7.ibDataSet9NOME.AsString;
+
+  }
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet14 then
+    Form7.ibDataSet15OPERACAO.AsString   := form7.ibDataSet14NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet2 then
+    Form7.ibDataSet15CLIENTE.AsString    := form7.ibDataSet2NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet18 then
+    Form7.ibDataSet15TRANSPORTA.AsString := form7.ibDataSet18NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet9 then
+    Form7.ibDataSet15VENDEDOR.AsString   := Form7.ibDataSet9NOME.AsString;
+  {Dailon Parisotto (f-18425) 2024-05-03 Fim}
+
   if dbGrid2.Top = (SMALL_DBEdit39.Top + SMALL_DBEdit39.Height -1) then SMALL_DBEdit39.SetFocus;
   if dbGrid2.Top = (SMALL_DBEdit43.Top + SMALL_DBEdit43.Height -1) then SMALL_DBEdit43.SetFocus;
   dBGrid2.Visible := False;
@@ -335,10 +351,23 @@ end;
 procedure TForm48.DBGrid2CellClick(Column: TColumn);
 begin
   Form7.ibDataSet15.Edit;
+  {Dailon Parisotto (f-18425) 2024-05-03 Inicio
+
   Form7.ibDataSet15OPERACAO.AsString   := Form7.ibDataSet14NOME.AsString;
   Form7.ibDataSet15CLIENTE.AsString    := Form7.ibDataSet2NOME.AsString;
   Form7.ibDataSet15TRANSPORTA.AsString := Form7.ibDataSet18NOME.AsString;
   Form7.ibDataSet15VENDEDOR.AsString   := Form7.ibDataSet9NOME.AsString;
+
+  }
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet14 then
+    Form7.ibDataSet15OPERACAO.AsString   := Form7.ibDataSet14NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet2 then
+    Form7.ibDataSet15CLIENTE.AsString    := Form7.ibDataSet2NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet18 then
+    Form7.ibDataSet15TRANSPORTA.AsString := Form7.ibDataSet18NOME.AsString;
+  if DBGrid2.DataSource.DataSet = Form7.ibDataSet9 then
+    Form7.ibDataSet15VENDEDOR.AsString   := Form7.ibDataSet9NOME.AsString;
+  {Dailon Parisotto (f-18425) 2024-05-03 Fim}
 end;
 
 procedure TForm48.DBGrid2KeyPress(Sender: TObject; var Key: Char);
@@ -829,7 +858,7 @@ begin
 
   }
   {Dailon Parisotto (f-18202) 2024-04-23 Fim}
-  if dbGrid4.SelectedField.DataType = ftFloat then
+  if TipoCampoFloat(dbGrid4.SelectedField) then // Sandro Silva 2024-04-29 if dbGrid4.SelectedField.DataType = ftFloat then
   begin
     if Key = chr(46) then
       Key := chr(44);
@@ -1155,7 +1184,15 @@ begin
       
     Perform(Wm_NextDlgCtl,0,0);
   end;
-  Key := VK_SHIFT;
+  {Dailon Parisotto (f-18425) 2024-05-03 Inicio
+
+    Key := VK_SHIFT;
+
+  }
+  // Adicionado validação para permitir utilizar DELETE no campo
+  if Key <> VK_DELETE then
+    Key := VK_SHIFT;
+  {Dailon Parisotto (f-18425) 2024-05-03 Fim}
 end;
 
 procedure TForm48.Label_fecha_0Click(Sender: TObject);
@@ -1287,7 +1324,15 @@ begin
     else
       Perform(Wm_NextDlgCtl,1,0);
   end;
-  Key := VK_SHIFT;
+  {Dailon Parisotto (f-18425) 2024-05-03 Inicio
+
+    Key := VK_SHIFT;
+
+  }
+  // Adicionado validação para permitir utilizar DELETE no campo
+  if Key <> VK_DELETE then
+    Key := VK_SHIFT;
+  {Dailon Parisotto (f-18425) 2024-05-03 Fim}
 end;
 
 procedure TForm48.SMALL_DBEdit40KeyUp(Sender: TObject; var Key: Word;

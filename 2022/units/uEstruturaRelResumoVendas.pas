@@ -36,7 +36,8 @@ function TEstruturaRelResumoVendas.getColunasNaoTotalizar(out AcColunas: String)
 begin
   Result := Self;
 
-  AcColunas := ';Quantidade;%;';
+  //AcColunas := ';Quantidade;%;'; Mauricio Parizotto 2024-05-20  f-18859
+  AcColunas := ';%;';
 end;
 
 function TEstruturaRelResumoVendas.FiltrosRodape: IFiltrosRodapeRelatorio;
