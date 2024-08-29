@@ -1710,6 +1710,7 @@ type
     IBDataSet2PRODUTORRURAL: TIBStringField;
     ImgProduto: TImage;
     ImgSemProduto: TImage;
+    DetalhamentodasOrdensfiltradas1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2435,6 +2436,7 @@ type
     procedure ibDataSet4ONPROMOChange(Sender: TField);
     procedure ibDataSet16CST_ICMSChange(Sender: TField);
     procedure ibDataSet14AfterInsert(DataSet: TDataSet);
+    procedure DetalhamentodasOrdensfiltradas1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -21508,17 +21510,13 @@ begin
                 Form7.ibDataSet7ATIVO.AsString := '1';
                 Form7.ibDataSet7.Post;
                 Form7.ibDataSet7.Next;
-                //
               end else
               begin
                 Form7.ibDataSet7.Next;
               end;
-              //
             end;
-            //
           end else
           begin
-            //
             while not Form7.ibDataSet7.Eof do
             begin
               if Form7.ibDataSet7NUMERONF.AsString = Form7.ibDataSet15NUMERONF.AsString then
@@ -21534,9 +21532,7 @@ begin
         end;
         //
         // CAIXA
-        //
         ApagaIntegracaoComOCaixa(True);
-        //
         //
         Form7.ibDataSet15.EnableControls;
         Form7.ibDataSet35.EnableControls;
@@ -21545,11 +21541,9 @@ begin
         {Dailon Parisotto (f-20024) 2024-07-25 Fim}
         //
         if form21.Visible then form21.Close;
-        //
       except end;
       //
       // Reaproveita o Número do NSU
-      //
       IBDataSet99.Close;
       IBDataSet99.SelectSQL.Clear;
       IBDataSet99.SelectSQL.Add('select gen_id(G_NSU,0) from rdb$database');
@@ -21557,14 +21551,12 @@ begin
       //
       if (Form7.ibDataSet15NSU.AsString = StrZero(StrtoFloat(AllTrim(ibDataSet99.FieldByname('GEN_ID').AsString)),10,0)) and (Form7.ibDataSet15STATUS.AsString = '') then
       begin
-        //
         IBDataSet99.Close;
         IBDataSet99.SelectSQL.Clear;
         IBDataSet99.SelectSQL.Add('select gen_id(G_NSU,-1) from rdb$database');
         IBDataSet99.Open;
         //
         // Reaproveita o Número da NF
-        //
         if Form7.sTitulo = 'Notas fiscais de saída (vendas) série 001' then
         begin
           Form7.IBDataSet99.Close;
@@ -21597,7 +21589,6 @@ begin
           begin
             if Form7.sTitulo = 'Notas fiscais de saída (vendas) com CPF série 920' then
             begin
-              //
               // Notas fiscais de saída (vendas) série 001
               // Notas fiscais de saída (vendas) série 002
               // Notas fiscais de saída (vendas) série XXX
@@ -21615,10 +21606,8 @@ begin
                 IBDataSet99.SelectSQL.Add('select gen_id(G_SERIE920,-1) from rdb$database');
                 IBDataSet99.Open;
               end;
-              //
             end else
             begin
-              //
               Form7.IBDataSet99.Close;
               Form7.IBDataSet99.SelectSQL.Clear;
               Form7.ibDataset99.SelectSql.Add('select gen_id(G_SERIE'+Right(Form7.sTitulo,3)+',0) from rdb$database');
@@ -21631,7 +21620,6 @@ begin
                 IBDataSet99.SelectSQL.Add('select gen_id(G_SERIE'+Right(Form7.sTitulo,3)+',-1) from rdb$database');
                 IBDataSet99.Open;
               end;
-              //
             end;
           end;
         end;
@@ -21653,7 +21641,6 @@ begin
         Screen.Cursor := crDefault; // Cursor de Aguardo
         Form7.sModulo := ssModulo;
         Abort;
-        //
       end;
     end else
     begin
@@ -21672,7 +21659,6 @@ begin
   Form7.sModulo := ssModulo;
 
   RegistraExclusaoRegistro(ibDataSet15, 'VENDA');
-  //
 end;
 
 {Dailon Parisotto (f-20024) 2024-07-25 Inicio}
@@ -21681,6 +21667,13 @@ begin
   uFuncoesBancoDados.ExecutaComando('update ALTERACA set VALORICM=null where (VALORICM='+FloatToStr(StrToFloatDef(Form7.ibDataSet15NUMERONF.AsString,0))+')'
                                     , IBTransaction1);
 end;
+procedure TForm7.DetalhamentodasOrdensfiltradas1Click(Sender: TObject);
+begin
+  //Mauricio Parizotto 2024-08-28
+  imgImprimirClick(Sender);
+  Form39.CheckBox4.Checked := True;
+end;
+
 {Dailon Parisotto (f-20024) 2024-07-25 Fim}
 
 procedure TForm7.ibDataSet24BeforeDelete(DataSet: TDataSet);
@@ -26701,6 +26694,8 @@ begin
   Form39.CheckBox8.Visible := False;
   {Mauricio Parizotto 2023-05-24 Fim}
 
+  Form39.CheckBox4.Width := 160;
+
   if Form7.sModulo = 'ESTOQUE' then
   begin
     { Lê as configurações no .INF }
@@ -26717,9 +26712,6 @@ begin
     Form39.CheckBox1.Visible := True;
     Form39.CheckBox2.Visible := True;
     Form39.CheckBox3.Visible := True;
-    //Form39.CheckBox4.Visible := False;
-    //Form39.CheckBox5.Visible := False;
-    //Form39.CheckBox6.Visible := False;
     Form39.Height := 80;
 
     Form39.Show;
@@ -26737,9 +26729,6 @@ begin
       Form39.Label2.Caption := '';
       Form39.Label3.Caption := '';
 
-      //Form39.CheckBox1.Visible := False;
-      //Form39.CheckBox2.Visible := False;
-      //Form39.CheckBox3.Visible := False;
       Form39.CheckBox4.Visible := True;
       Form39.CheckBox5.Visible := True;
       Form39.CheckBox6.Visible := True;
@@ -26758,9 +26747,6 @@ begin
     Form39.Label2.Caption := '';
     Form39.Label3.Caption := '';
 
-    //Form39.CheckBox1.Visible := False;
-    //Form39.CheckBox2.Visible := False;
-    //Form39.CheckBox3.Visible := False;
     Form39.CheckBox4.Visible := True;
     Form39.CheckBox5.Visible := True;
     Form39.CheckBox6.Visible := True;
@@ -26786,6 +26772,23 @@ begin
     Form39.CheckBox7.Visible := True;
     Form39.CheckBox8.Visible := True;
     Form39.Height := 115;
+    Form39.Show;
+  end;
+
+  //Mauricio Parizotto 2024-08-28
+  if Form7.sModulo = 'OS' then
+  begin
+    Form39.CheckBox4.WordWrap := True;
+    Form39.CheckBox4.Width := 200;
+    Form39.Height := 40;
+    Form39.CheckBox4.Caption := 'Detalhamento de peças e serviços';
+
+    Form39.Label1.Caption := '';
+    Form39.Label2.Caption := '';
+    Form39.Label3.Caption := '';
+
+    Form39.CheckBox4.Visible := True;
+
     Form39.Show;
   end;
 

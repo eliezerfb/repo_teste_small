@@ -19420,6 +19420,10 @@ object Form7: TForm7
         Caption = 'Total de servi'#231'os por t'#233'cnico'
         OnClick = Relatriodetotaldeserviosporvendedor1Click
       end
+      object DetalhamentodasOrdensfiltradas1: TMenuItem
+        Caption = 'Detalhamento das Ordens filtradas'
+        OnClick = DetalhamentodasOrdensfiltradas1Click
+      end
     end
     object MenuItem100: TMenuItem
       Caption = '&Editar'
