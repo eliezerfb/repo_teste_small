@@ -24510,6 +24510,13 @@ begin
       begin
         if nProtFromXml(Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
           Form7.ibDataSet15NFEPROTOCOLO.AsString := nProtFromXml(Form7.ibDAtaSet15RECIBOXML.AsString);
+
+        //Mauricio Parizotto 2024-08-22
+        Audita('EMITIU',
+               'SMALL',
+               Senhas.UsuarioPub,
+               Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'/'+ Copy(Form7.ibDataSet15NUMERONF.AsString,10,3) +' - '+Form7.ibDataSet15CLIENTE.AsString+' - ('+Form7.ibDataSet15NFEID.AsString+')',
+               0,0);
       end;
       {Sandro Silva 2024-04-12 fim}
 
@@ -24831,6 +24838,13 @@ begin
 
             Form7.ibDataSet15EMITIDA.AsString := 'X';
             Form7.ibDataSet15.Post;
+
+            //Mauricio Parizotto 2024-08-23
+            Audita('CANCELOU',
+                   'SMALL',
+                   Senhas.UsuarioPub,
+                   Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'/'+ Copy(Form7.ibDataSet15NUMERONF.AsString,10,3) +' - '+Form7.ibDataSet15CLIENTE.AsString+' - ('+Form7.ibDataSet15NFEID.AsString+')',
+                   0,0);
 
             while not FileExists(pChar(Alltrim(Form1.sAtual + '\XmlDestinatario\'+Form7.ibDAtaSet15NFEID.AsString+'-caneve.xml'))) do
             begin
