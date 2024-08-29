@@ -1554,12 +1554,12 @@ begin
     begin
       sItens := sItens +
                 '          <tr>'+#13#10+
-                '             <td align=center>'+qryAux.FieldByName('CODIGO').AsString+'</td>'+#13#10+
-                '             <td>'+qryAux.FieldByName('DESCRICAO').AsString+'</td>'+#13#10+
-                '             <td>'+qryAux.FieldByName('TECNICO').AsString+'</td>'+#13#10+
-                '             <td align=right>'+FormatFloat('#,##0.00', qryAux.FieldByName('QUANTIDADE').AsFloat)+'</td>'+#13#10+
-                '             <td align=right>'+FormatFloat('#,##0.00', qryAux.FieldByName('UNITARIO').AsFloat)+'</td>'+#13#10+
-                '             <td align=right>'+FormatFloat('#,##0.00', qryAux.FieldByName('TOTAL').AsFloat)+'</td>'+#13#10+
+                '             <td align=center><font face="verdana" size=2>'+qryAux.FieldByName('CODIGO').AsString+'</td>'+#13#10+
+                '             <td><font face="verdana" size=2>'+qryAux.FieldByName('DESCRICAO').AsString+'</td>'+#13#10+
+                '             <td><font face="verdana" size=2>'+qryAux.FieldByName('TECNICO').AsString+'</td>'+#13#10+
+                '             <td align=right><font face="verdana" size=2>'+FormatFloat('#,##0.00', qryAux.FieldByName('QUANTIDADE').AsFloat)+'</td>'+#13#10+
+                '             <td align=right><font face="verdana" size=2>'+FormatFloat('#,##0.00', qryAux.FieldByName('UNITARIO').AsFloat)+'</td>'+#13#10+
+                '             <td align=right><font face="verdana" size=2>'+FormatFloat('#,##0.00', qryAux.FieldByName('TOTAL').AsFloat)+'</td>'+#13#10+
                 '          </tr>'+#13#10;
 
       qryAux.Next;
@@ -1575,12 +1575,12 @@ begin
               '    <td colspan="'+iColunas.ToString+'">'+#13#10+
               '       <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=3 width=100%> '+#13#10+
               '          <tr>'+#13#10+
-              '             <td width="100">Codigo</td>'+#13#10+
-              '             <td>Produto/Serviço</td>'+#13#10+
-              '             <td width="150">'+ sCampoTecnico +'</td>'+#13#10+
-              '             <td width="100">Qtd</td>'+#13#10+
-              '             <td width="100">Unitário</td>'+#13#10+
-              '             <td width="100">Total</td>'+#13#10+
+              '             <td width="100"><font face="verdana" size=2>Código</td>'+#13#10+
+              '             <td><font face="verdana" size=2>Produto/Serviço</td>'+#13#10+
+              '             <td width="150"><font face="verdana" size=2>'+ sCampoTecnico +'</td>'+#13#10+
+              '             <td width="100"><font face="verdana" size=2>Qtd</td>'+#13#10+
+              '             <td width="100"><font face="verdana" size=2>Unitário</td>'+#13#10+
+              '             <td width="100"><font face="verdana" size=2>Total</td>'+#13#10+
               '          </tr>'+#13#10+
               sItens+
               '       </table>'+#13#10+
