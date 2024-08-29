@@ -12952,6 +12952,7 @@ var
   sTermoUso, sCertificado : string;
   sCertificadoValidade : string;
   sURL : string;
+  sSerialSistema : string;
 begin
   sPublicCheck := GeraCheck;
 
@@ -13015,8 +13016,14 @@ begin
       sConve  := LerParametroIni(Form1.sAtual+'\small.ini', 'T','Tempo', '00:05:' + SecondOf(Now).ToString);
       {Dailon Parisotto (f-19325) 2024-06-12 Fim}
 
+
+      //Mauricio Parizotto 2024-08-29
+      //Pega serial atualizado
+      sSerialSistema := ValidaRecursos.SistemaSerial;
+
       sURL := 'http://www.smallsoft.com.br/legal.php?'+
-              'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
+              //'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+ Mauricio Parizotto 2024-08-29
+              'serial='     + sSerialSistema+
               '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
               '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
               '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
