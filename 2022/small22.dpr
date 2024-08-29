@@ -269,7 +269,6 @@ uses
   Frm_Status in '..\..\unit_compartilhada\Frm_Status.pas' {frmStatus},
   ufrmConfiguraNFSe in 'ufrmConfiguraNFSe.pas' {frmConfiguraNFSe},
   ufrmSelecionaCertificadoNFSe in 'ufrmSelecionaCertificadoNFSe.pas' {frmSelecionaCertificadoNFSe},
-  ufrmOutrasConfiguracoesNFSe in 'ufrmOutrasConfiguracoesNFSe.pas' {frmOutrasConfiguracoesNFSe},
   uFrmEstoque in 'uFrmEstoque.pas' {FrmEstoque},
   uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout},
   uListaToJson in '..\..\unit_compartilhada\uListaToJson.pas';

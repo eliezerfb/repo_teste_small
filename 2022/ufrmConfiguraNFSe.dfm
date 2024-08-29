@@ -9,8 +9,10 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  ExplicitWidth = 821
-  ExplicitHeight = 604
+  ExplicitLeft = 3
+  ExplicitTop = 3
+  ExplicitWidth = 823
+  ExplicitHeight = 612
   PixelsPerInch = 96
   TextHeight = 16
   object btnGravar: TBitBtn
@@ -22,16 +24,6 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     Caption = 'Gravar'
     TabOrder = 0
     OnClick = btnGravarClick
-    ExplicitLeft = 676
-  end
-  object BitBtn1: TBitBtn
-    Left = 240
-    Top = 535
-    Width = 160
-    Height = 25
-    Caption = 'Outras configura'#231#245'es'
-    TabOrder = 1
-    OnClick = BitBtn1Click
   end
   object pgConexoesNFSe: TPageControl
     Left = 2
@@ -40,7 +32,7 @@ inherited frmConfiguraNFSe: TfrmConfiguraNFSe
     Height = 531
     ActivePage = tsConexaoPrefeitura
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabOrder = 2
+    TabOrder = 1
     object tsConexaoPrefeitura: TTabSheet
       Caption = 'Transmiss'#227'o'
       object Label30: TLabel

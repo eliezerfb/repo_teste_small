@@ -21,7 +21,6 @@ uses
 type
   TfrmConfiguraNFSe = class(TFrmPadrao)
     btnGravar: TBitBtn;
-    BitBtn1: TBitBtn;
     pgConexoesNFSe: TPageControl;
     tsConexaoPrefeitura: TTabSheet;
     Label30: TLabel;
@@ -66,7 +65,6 @@ type
     procedure cbXmlSignLibChange(Sender: TObject);
     procedure lbCertificado1Click(Sender: TObject);
     procedure btnSelecionaCertificadoClick(Sender: TObject);
-    procedure BitBtn1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
@@ -96,16 +94,6 @@ uses unit7, ufrmSelecionaCertificadoNFSe, uSmallNFSe
 procedure TfrmConfiguraNFSe.AtualizarSSLLibsCombo;
 begin
   cbSSLType.Enabled := (TSSLHttpLib(cbHttpLib.ItemIndex) in [httpWinHttp, httpOpenSSL]);
-end;
-
-procedure TfrmConfiguraNFSe.BitBtn1Click(Sender: TObject);
-begin
-  inherited;
-{
-  Application.CreateForm(TfrmOutrasConfiguracoesNFSe, frmOutrasConfiguracoesNFSe);
-  frmOutrasConfiguracoesNFSe.ShowModal;
-  FreeAndNil(frmOutrasConfiguracoesNFSe);
-  }
 end;
 
 procedure TfrmConfiguraNFSe.btnGravarClick(Sender: TObject);

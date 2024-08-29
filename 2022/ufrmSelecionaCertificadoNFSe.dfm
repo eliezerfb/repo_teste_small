@@ -31,7 +31,6 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
     ModalResult = 1
     TabOrder = 0
     Visible = False
-    ExplicitLeft = 107
   end
   object btnSelect: TBitBtn
     Left = 390
@@ -75,13 +74,11 @@ object frmSelecionaCertificadoNFSe: TfrmSelecionaCertificadoNFSe
       AllowInsert = False
       DataSource = DSCertificados
       PanelHeight = 57
-      PanelWidth = 568
+      PanelWidth = 564
       TabOrder = 0
       RowCount = 6
       SelectedColor = 14120960
       OnDblClick = dbcgCertificadosDblClick
-      ExplicitLeft = -6
-      ExplicitWidth = 583
       object DBText1: TDBText
         Left = 8
         Top = 7
