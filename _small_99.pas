@@ -345,20 +345,24 @@ begin
           Form1.ibDataSet25VALOR08.AsFloat := Form1.ibDataSet25VALOR08.AsFloat - Form1.ibDataSet25ACUMULADO3.AsFloat;
 
       end; // if Form1.ibDataSet25ACUMULADO2.AsFloat = 0.00 then //Dinheiro
-
     end;
 
     try
       Form1.ibDataset150.Close;
+      {Mauricio Parizotto 2024-08-23
       Form1.ibDataset150.SelectSql.Clear;
       Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('99')); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('99'));
+      }
+      Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                           ' Where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                           '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                                           '   and MODELO = ' + QuotedStr('99');
       Form1.ibDataset150.Open;
 
       // Troca ALTERACA.DATA
       Form1.ibDataSet27.First;
       while Form1.ibDataSet27.Eof = False do
       begin
-
         try
           Form1.ibDataSet27.Edit;
           Form1.ibDataSet27.FieldByName('DATA').AsDateTime := dtEnvio;
@@ -373,7 +377,6 @@ begin
       Form1.IBDataSet28.First;
       while Form1.IBDataSet28.Eof = False do
       begin
-
         try
           Form1.IBDataSet28.Edit;
           Form1.IBDataSet28.FieldByName('DATA').AsDateTime := dtEnvio;
@@ -390,7 +393,6 @@ begin
       begin
         if (Form1.ibDataSet7.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.icupom)+Copy(Form1.sCaixa, 1, 3)) then // Sandro Silva 2021-11-29 if (Form1.ibDataSet7.FieldByName('NUMERONF').AsString = StrZero(Form1.icupom,6,0)+Copy(Form1.sCaixa, 1, 3)) then
         begin
-
           try
             Form1.ibDataSet7.Edit;
             Form1.ibDataSet7.FieldByName('NUMERONF').AsString  := FormataNumeroDoCupom(Form1.iCupom) + Copy(Form1.sCaixa, 1, 3); // Sandro Silva 2021-11-29 Form1.ibDataSet7.FieldByName('NUMERONF').AsString  := StrZero(Form1.iCupom, 6, 0) + Copy(Form1.sCaixa, 1, 3);
@@ -595,7 +597,6 @@ begin
           Form1.ibDataSet25VALOR07.AsFloat +
           Form1.ibDataSet25VALOR08.AsFloat) <> 0 then
       begin
-        //
         Venda.AddForma('Outros',(Form1.ibDataSet25VALOR01.AsFloat +
                                  Form1.ibDataSet25VALOR02.AsFloat +
                                  Form1.ibDataSet25VALOR03.AsFloat +
@@ -604,7 +605,6 @@ begin
                                  Form1.ibDataSet25VALOR06.AsFloat +
                                  Form1.ibDataSet25VALOR07.AsFloat +
                                  Form1.ibDataSet25VALOR08.AsFloat));
-  //
       end;
     end;
 
@@ -619,8 +619,14 @@ begin
     Mais1ini.Free;
 
     Form1.ibDataset150.Close;
+    {Mauricio Parizotto 2024-08-23
     Form1.ibDataset150.SelectSql.Clear;
     Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('99')); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('99'));
+    }
+    Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                         ' Where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                         '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                                         '   and MODELO = ' + QuotedStr('99');
     Form1.ibDataset150.Open;
 
     Form1.ibDataset150.Edit;
@@ -638,7 +644,6 @@ begin
     end
     else
     begin  // Importando MOBILE
-
       if Form1.ClienteSmallMobile.ImportandoMobile then // Sandro Silva 2022-08-08 if ImportandoMobile then
       begin
         //Primeiro envia extrato cf-e para mobile
@@ -670,12 +675,10 @@ begin
             _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Venda.CNPJCliente, Venda.Cliente, Venda.EmailCliente, Venda.EnderecoCliente); // Sandro Silva 2023-12-28 _ecf99_ImprimeVenda(Venda, nil, FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, Form2.Edit2.Text, Form2.Edit8.Text, Form2.Edit10.Text, Form2.Edit1.Text + Chr(10) + Form2.Edit3.Text);
         except
         end;
-
       end; // não é contingência if Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) = 0 then
     end;
 
     FreeAndNil(Venda);
-
   except
 
   end;
@@ -683,7 +686,6 @@ begin
   //
   //DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
   //Ativar para medir tempo Form1.Label_7.Hint := Form1.Label_7.Hint + #13 + 'Tempo de envio e impressão: '+' '+StrZero(Hora,2,0)+':'+StrZero(Min,2,0)+':'+StrZero(Seg,2,0)+':'+StrZero(cent,3,0)+' ';    // Sandro Silva 2018-04-24  Form1.Label_7.Hint := 'Tempo de envio e impressão: '+' '+StrZero(Hora,2,0)+':'+StrZero(Min,2,0)+':'+StrZero(Seg,2,0)+':'+StrZero(cent,3,0)+' ';
-
 end;
 
 // ------------------------------ //
@@ -701,14 +703,18 @@ begin
   IBQALTERACA := CriaIBQuery(Form1.ibDataSet27.Transaction);
 
   Result := False;
-  //
+
   try
-    //
     Form1.ibDataset150.Close;
+    {Mauricio Parizotto 2024-08-23
     Form1.ibDataset150.SelectSql.Clear;
     Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa)); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa));
+    }
+    Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                         ' Where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                         '   and CAIXA = ' + QuotedStr(Form1.sCaixa);
     Form1.ibDataset150.Open;
-    //
+
     if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
     begin
       {Sandro Silva 2023-11-01 inicio
@@ -771,10 +777,8 @@ end;
 // ------------------------------ //
 function _ecf99_AbreNovoCupom(Pp1: Boolean):Boolean;
 begin
-
   Form1.bCupomAberto := _ecf99_CupomAberto(True); // Sandro Silva 2018-08-01
   Result := True;
-
 end;
 
 // -------------------------------- //
@@ -784,18 +788,14 @@ function _ecf99_NumeroDoCupom(Pp1: Boolean):String;
 var
   Mais1Ini : tIniFile;
 begin
-  //
   try
-    //
     Mais1ini  := TIniFile.Create('FRENTE.INI');
-    //
+
     if _ecf99_CupomAberto(True) then
       Pp1 := False;
-    //
 
     if pP1 then
     begin
-      //
       while True do
       begin
         Result := FormataNumeroDoCupom(IncrementaGenerator('G_NUMEROCUPOMMEI', 1)); // Sandro Silva 2021-12-02 Result := StrZero(IncrementaGenerator('G_NUMEROCUPOMMEI', 1), 6, 0);
@@ -812,21 +812,21 @@ begin
         end;
       end;
 
-      //
       try
-        //
         Form1.ibDataset150.Close;
+        {Mauricio Parizotto 2024-08-23
         Form1.ibDataset150.SelectSql.Clear;
         Form1.ibDataset150.SelectSQL.Text :=
           'select * ' +
           'from NFCE ' +
-          'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) + // Sandro Silva 2021-12-02 'where NUMERONF=''000000'' ' +
-          ' and CAIXA = ' + QuotedStr(Form1.sCaixa) +
-          ' and MODELO = ' + QuotedStr('99');
+        }
+        Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                             ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) +
+                                             '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                                             '   and MODELO = ' + QuotedStr('99');
         Form1.ibDataset150.Open;
-        //
+
         Form1.IBDataSet150.Append;
-        //SmallMsg('Teste 01 3844'); // Sandro Silva 2016-04-28
 
         Form1.IBDataSet150.FieldByName('NUMERONF').AsString := Result;
         Form1.IBDataSet150.FieldByName('DATA').AsDateTime   := Date;
@@ -841,8 +841,6 @@ begin
         }
         GravaNumeroCupomFrenteINI(Result, '99'); // Sandro Silva 2023-08-22
         {Sandro Silva 2023-08-22 fim}
-
-        //
       except end;
     end else
     begin
@@ -859,20 +857,15 @@ begin
         Result := '000000';
       end;
       {Sandro Silva 2023-08-22 fim}
-      //
     end;
-    //
+
     Mais1Ini.Free;
-    //
   except
-    //
     Result := '000001';
-    //
   end;
-  //
+
   if StrToInt('0'+LimpaNumero(Result))=0 then
     Result := '000001';
-  //
 
   Result := FormataNumeroDoCupom(StrToInt(Result)); // Sandro Silva 2021-12-01
 end;
@@ -882,9 +875,7 @@ end;
 // ------------------------------ //
 function _ecf99_CancelaItemN(pP1, pP2 : String):Boolean;
 begin
-  //
   Result := True
-  //
 end;
 
 // -------------------------------- //

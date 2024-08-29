@@ -179,9 +179,14 @@ begin
       }
 
       FIBDataset150.Close;
+      {Mauricio Parizotto 2024-08-23
       FIBDataset150.SelectSql.Clear;
-      // Sandro Silva 2023-08-30 FIBDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and CAIXA = ' + QuotedStr(sCaixaOld) + ' and MODELO = ' + QuotedStr(sModeloOld));
       FIBDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FNumeroGerencial) + ' and CAIXA = ' + QuotedStr(sCaixaOld) + ' and MODELO = ' + QuotedStr(FModeloOld));
+      }
+      FIBDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                      ' Where NUMERONF = ' + QuotedStr(FNumeroGerencial) +
+                                      ' and CAIXA = ' + QuotedStr(sCaixaOld) +
+                                      ' and MODELO = ' + QuotedStr(FModeloOld);
       FIBDataset150.Open;
 
       {Sandro Silva 2023-08-29 inicio
@@ -229,8 +234,14 @@ begin
         FIBDataset150.Delete;
 
         FIBDataset150.Close;
+        {Mauricio Parizotto 2024-08-23
         FIBDataset150.SelectSql.Clear;
         FIBDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) + ' and CAIXA = ' + QuotedStr(FCaixa) + ' and MODELO = ' + QuotedStr(FModeloDocumento));
+        }
+        FIBDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                        ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) +
+                                        '   and CAIXA = ' + QuotedStr(FCaixa) +
+                                        '   and MODELO = ' + QuotedStr(FModeloDocumento);
         FIBDataset150.Open;
 
         if FModeloDocumento = '65' then

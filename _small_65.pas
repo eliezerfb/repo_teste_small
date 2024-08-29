@@ -533,32 +533,32 @@ var
     Result := sXml;
   end;
 begin
-  //
   Result := False;
-  //
+
   try
-    //
     Form1.ibDataset150.Close;
+    {Mauricio Parizotto 2024-08-23
     Form1.ibDataset150.SelectSql.Clear;
     Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa)); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa));
+    }
+    Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                         ' Where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                         '   and CAIXA = ' + QuotedStr(Form1.sCaixa);
     Form1.ibDataset150.Open;
-    //
+
     if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
     begin
-      //
       if (((Pos('<nfeProc',Form1.ibDataSet150.FieldByName('NFEXML').AsString) <> 0) and (Pos('<nProt>',Form1.ibDataSet150.FieldByName('NFEXML').AsString) <> 0)))
         or (_ecf65_XmlNfceCancelado(Form1.ibDataSet150.FieldByName('NFEXML').AsString))
-        and (_ecf65_UsoDenegado(Form1.ibDataSet150.FieldByName('NFEXML').AsString) = False) // Sandro Silva 2020-05-14 
+        and (_ecf65_UsoDenegado(Form1.ibDataSet150.FieldByName('NFEXML').AsString) = False) // Sandro Silva 2020-05-14
         then
       begin
-        //
         try
-          //
           if _ecf65_XmlNfceCancelado(Form1.ibDataSet150.FieldByName('NFEXML').AsString) = False then // Sandro Silva 2019-07-31
             sJustificativa := ConverteAcentos2(Form1.Small_InputBox('Atenção',
                                                                     'Para cancelar a NFC-e: '+Form1.ibDataSet150.FieldByName('NUMERONF').AsString+' insira uma justificativa (min. 15 caracteres)'+chr(10)+
                                                                     chr(10), ''));
-          //
+
           if (Length(sJustificativa) >= 15)
             or _ecf65_XmlNfceCancelado(Form1.ibDataSet150.FieldByName('NFEXML').AsString) then
           begin
@@ -568,42 +568,30 @@ begin
 
               Form1.ExibePanelMensagem('Transmitindo cancelamento da NFC-e ' + Form1.IBDataSet150.FieldByName('NFEID').AsString); // Sandro Silva 2017-09-21
 
-              //
               // Cancelamento da NF-e por evento.
-              //
               sProtocolo := Copy(Form1.IBDataSet150.FieldByName('NFEXML').AsString, pos('<nProt>',Form1.ibDataSet150.FieldByName('NFEXML').AsString)+7,15);
-              //
+
               try
                 sRetorno := Form1.spdNFCe1.CancelarNF(Form1.ibDataSet150.FieldByName('NFEID').AsString,sProtocolo,sJustificativa, FormatDateTime('yyyy-mm-dd"T"hh:nn:"00"',Now), 1, Form1.sFuso);
 
                 sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
 
-                /////////////////////////////
                 // Somente para teste. Comentar estas linhas depois de testado
-                //
                 sRetorno := _ecf65_SimulaSemRetornoSefaz(sRetorno); // Sandro Silva 2020-06-25
-                //
-                ////////////////////////////
 
                 if Trim(sRetorno) = '' then
                 begin
-                  //
                   // Timeout atingido sem retorno da SEFAZ
                   // Consulta a NFC-e para saber a situação atual dela
                   try // Sandro Silva 2021-09-13
                     sRetorno := Form1.spdNFCe1.ConsultarNF(LimpaNumero(Form1.ibDataSet150.FieldByName('NFEID').AsString));
                   except
-
                   end;
 
                   sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
 
-                  /////////////////////////////
                   // Somente para teste. Comentar estas linhas depois de testado
-                  //
                   sRetorno := _ecf65_SimulaSemRetornoSefaz(sRetorno); // Sandro Silva 2020-06-25
-                  //
-                  ////////////////////////////
 
                   if (Pos('<cStat>135</cStat>',sRetorno) <> 0) // Recebido pelo Sistema de Registro de Eventos, com vinculação do evento na NF-e,
                     or (Pos('<cStat>136</cStat>',sRetorno) <> 0) // Recebido pelo Sistema de Registro de Eventos – vinculação do evento à respectiva NF-e prejudicada
@@ -611,10 +599,9 @@ begin
                   begin
                     sXmlCancelamento := SalvaXmlCancelamentoEmXmlDestinatario(sRetorno, Form1.ibDAtaSet150.FieldByName('NFEID').AsString);
                   end;
-
                 end;
-
-              except end;
+              except
+              end;
             end
             else
             begin
@@ -624,7 +611,6 @@ begin
                 // Salva o retorno para depois abaixo não ficar em loop esperando o arquivo de cancelamento em xmldestinatario
                 sXmlCancelamento := SalvaXmlCancelamentoEmXmlDestinatario(sRetorno, Form1.ibDAtaSet150.FieldByName('NFEID').AsString);
               end;
-
             end; // if _ecf65_XmlNfceCancelado(Form1.ibDataSet150.FieldByName('NFEXML').AsString) = False then  // Sandro Silva 2019-07-31
 
             sXmlCancelamento := '';
@@ -945,8 +931,13 @@ begin
     XMLNFE.loadXML(Form1.ibDataset150.FieldByName('NFEXML').AsString);
 
     Form1.ibDataset150.Close;
+    {Mauricio Parizotto 2024-08-23
     Form1.ibDataset150.SelectSql.Clear;
     Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(iPedido)) + ' and CAIXA = ' + QuotedStr(sCaixaXml)); // Sandro Silva 2021-12-01 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(StrZero(iPedido,6,0)) + ' and CAIXA = ' + QuotedStr(sCaixaXml));
+    }
+    Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                         ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(iPedido)) +
+                                         '   and CAIXA = ' + QuotedStr(sCaixaXml);
     Form1.ibDataset150.Open;
 
     if ((Pos('contingência', AnsiLowerCase(Form1.ibDataset150.FieldByName('STATUS').AsString)) > 0)
@@ -2344,60 +2335,51 @@ begin
         except
           on E: Exception do
           begin
-            //
             sLogErro := 'Erro: 21' + Chr(10) + E.Message+chr(10)+
               chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.';
             LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
             sStatus := E.Message;
             Exit;
-            //
           end;
         end;
-        //
+
         // Assinando
-        //
         try
-          //
           fNFe := Form1.spdNFCeDataSets1.LoteNFCe.GetText;  //Copia XML que está Componente p/ Field fNFe
-          //
         except
-          //
           sLogErro := 'Erro ao gravar NFC-e';
           LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
 
           sStatus := sLogErro;
           Exit;
-          //
         end;
-        //
+
         // Assinando
-        //
         try
-          //
           fNFe := Form1.spdNFCe1.AssinarNota(fNFe);
           wsNFCeAssinada := fNFe; // Sandro Silva 2015-03-31 XML assinado para gravar em NFCE.NFEXML se ocorrer rejeição;
           sResultado := wsNFCeAssinada;
-          //
         except
-          //
           sLogErro := 'Erro ao assinar NFC-e';
           LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
           sStatus := sLogErro;
           sResultado := ''; // Sandro Silva 2020-02-13 
           Exit;
-          //
         end;
-        //
+
         try
           if Trim(sResultado) <> '' then //if _ecf65_LoadXmlDestinatario(pChar(Form1.ibDataSet150.FieldByName('NFEID').AsString)) <> '' then
           begin
             Form1.IBDataSet150.Close;
             Form1.IBDataSet150.SelectSQL.Text :=
+              {Mauricio Parizotto 2024-08-23
               'select * ' +
               'from NFCE ' +
-              'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(iPedido)) + // Sandro Silva 2020-10-16 'where NUMERONF = ' + QuotedStr(FormatFloat('000000', iPedido)) +   
-              ' and CAIXA = ' + QuotedStr(sCaixaXml) + // Sandro Silva 2018-03-07  ' and CAIXA = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('CAIXA').AsString) +
-              ' and MODELO = ''65'' ';
+              }
+              SQL_NFCE_ibd150 +
+              ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(iPedido)) + // Sandro Silva 2020-10-16 'where NUMERONF = ' + QuotedStr(FormatFloat('000000', iPedido)) +
+              '   and CAIXA = ' + QuotedStr(sCaixaXml) + // Sandro Silva 2018-03-07  ' and CAIXA = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('CAIXA').AsString) +
+              '   and MODELO = ''65'' ';
             Form1.IBDataSet150.Open;
 
             if (Form1.ibDataSet150.State in [dsEdit, dsInsert]) = False then
@@ -2408,9 +2390,7 @@ begin
         except
           sResultado := ''; // Sandro Silva 2020-02-13
         end;
-        //
       except
-        //
         on E: Exception do
         begin
           if sLogErro <> '' then
@@ -2421,9 +2401,7 @@ begin
           LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
           Exit;
         end;
-        //
         // aqui volta na venda
-        //
       end;
     finally
       // Sandro Silva 2018-08-06  Result := wsNFCeAssinada;
@@ -2631,8 +2609,13 @@ begin
   IBQALTERACA := CriaIBQuery(Form1.ibDataSet27.Transaction); // Sandro Silva 2019-08-05
 
   Form1.ibDataset150.Close;
+  {Mauricio Parizotto 2024-08-23
   Form1.ibDataset150.SelectSql.Clear;
   Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa));
+  }
+  Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                       ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                       '   and CAIXA = ' + QuotedStr(Form1.sCaixa);
   Form1.ibDataset150.Open;
 
   if ((Pos('contingência', AnsiLowerCase(Form1.ibDataset150.FieldByName('STATUS').AsString)) > 0)
@@ -4656,8 +4639,14 @@ begin
 
               try
                 Form1.ibDataset150.Close;
+                {Mauricio Parizotto 2024-08-23
                 Form1.ibDataset150.SelectSql.Clear;
                 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65')); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
+                }
+                Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                                     ' Where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                                     '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                                                     '   and MODELO = ' + QuotedStr('65');
                 Form1.ibDataset150.Open;
                 {Sandro Silva 2023-07-20 inicio}
                 sNumeroGerencialConvertido := Form1.ibDataset150.FieldByName('GERENCIAL').AsString; //  Recupera o número da venda gerencial, caso tenha sido importada
@@ -4665,8 +4654,13 @@ begin
                 Form1.ibDataset150.Delete;
 
                 Form1.ibDataset150.Close;
+                {Mauricio Parizotto 2024-08-23
                 Form1.ibDataset150.SelectSql.Clear;
                 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=' + QuotedStr(FormataNumeroDoCupom(0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa)); // Sandro Silva 2021-12-02 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=''000000'' and CAIXA = ' + QuotedStr(Form1.sCaixa));
+                }
+                Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                                     ' Where NUMERONF=' + QuotedStr(FormataNumeroDoCupom(0)) +
+                                                     '   and CAIXA = ' + QuotedStr(Form1.sCaixa);
                 Form1.ibDataset150.Open;
 
                 Form1.IBDataSet150.Append;
@@ -4886,8 +4880,14 @@ begin
                 end;
 
                 Form1.ibDataset150.Close;
+                {Mauricio Parziotto 2024-08-23
                 Form1.ibDataset150.SelectSql.Clear;
                 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
+                }
+                Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                                     ' Where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                                     '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                                                     '   and MODELO = ' + QuotedStr('65');
                 Form1.ibDataset150.Open;
 
                 if _ecf65_UsoDenegado(sRetorno) then // Sandro Silva 2020-05-13
@@ -4920,12 +4920,16 @@ begin
 
                 end; // if _ecf65_UsoDenegado(sRetorno) then // Sandro Silva 2020-05-13
 
-                //
                 Form1.ibDataset150.Close;
+                {Mauricio Parizotto 2024-08-23
                 Form1.ibDataset150.SelectSql.Clear;
                 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=' + QuotedStr(FormataNumeroDoCupom(0)) +' and CAIXA = ' + QuotedStr(Form1.sCaixa)); // Sandro Silva 2021-12-02 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=''000000'' and CAIXA = ' + QuotedStr(Form1.sCaixa));
+                }
+                Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                                     ' Where NUMERONF=' + QuotedStr(FormataNumeroDoCupom(0)) +
+                                                     '   and CAIXA = ' + QuotedStr(Form1.sCaixa);
                 Form1.ibDataset150.Open;
-                //
+
                 Form1.IBDataSet150.Append;
 
                 {Sandro Silva 2023-07-20 inicio}
@@ -4966,7 +4970,6 @@ begin
 
                 Form1.AtualizaDetalhe(Form1.IBQuery65.Transaction, sTIPODAV, sDAV, Form1.sCaixa, Form1.sCaixa, sNovoNumero, 'Fechada');
 
-                //
                 if FormataNumeroDoCupom(Form1.iCupom) <> sNovoNumero then // Sandro Silva 2021-11-29 if StrZero(Form1.iCupom,6,0) <> sNovoNumero then
                 begin
                   Form1.Memo1.Text := StrTran(Form1.Memo1.Text,FormataNumeroDoCupom(form1.iCupom),sNovoNumero); // Sandro Silva 2021-11-29 Form1.Memo1.Text := StrTran(Form1.Memo1.Text,StrZero(form1.iCupom,6,0),sNovoNumero);
@@ -4976,24 +4979,27 @@ begin
                 Form1.iCupom := StrToInt(sNovoNumero);
 
                 sLogErro := 'Tente novamente.';
-                //
               except
                 on E: Exception do
                 begin
                   sLogErro := E.Message;
                 end;
               end;  
-              //
             end
             else
             begin
               // Escolheu não gerar novo número 
               if _ecf65_UsoDenegado(sRetorno) then // Sandro Silva 2020-05-13
               begin
-
                 Form1.ibDataset150.Close;
+                {Mauricio Parizotto 2024-08-23
                 Form1.ibDataset150.SelectSql.Clear;
                 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65')); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
+                }
+                Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                                     ' Where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                                     '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                                                     '   and MODELO = ' + QuotedStr('65');
                 Form1.ibDataset150.Open;
 
                 Form1.ibDataset150.Edit;
@@ -5009,7 +5015,6 @@ begin
             end; // if bButton = IDYES then
             //
             Exit;
-            //
           end; // if (Pos('<cStat>204</cStat>',sRetorno) <> 0) or (Pos('<cStat>539</cStat>',sRetorno) <> 0) then
 
           ////////////////////////////////
@@ -5020,10 +5025,7 @@ begin
           /// 301 Uso Denegado: Irregularidade fiscal do emitente;
           /// 302 Uso Denegado: Irregularidade fiscal do destinatário;
           /// 303 Uso Denegado: Destinatário não habilitado a operar na UF
-          ///
-          ////////////////////////////////
 
-          //
           if (Trim(sRetorno) <> '') and (Trim(sRetorno) <> NFCE_NAO_HOUVE_RETORNO_SERVIDOR) then // Sandro Silva 2021-09-14 if Trim(sRetorno) <> '' then
           begin
 
@@ -5232,20 +5234,23 @@ begin
       end;
       //
       // aqui volta na venda
-      //
     end;
-    //
+
     Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible  := False;
     if sLogErro = '' then
     begin
       //aqui deve continuar próximo, qdo erro na importação quando um pedido estiver com problema?
-      //
       try
-        //
         try
           Form1.ibDataset150.Close;
+          {Mauricio Parizotto 2024-08-23
           Form1.ibDataset150.SelectSql.Clear;
           Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65')); // Sandro Silva 2021-11-29 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF='+QuotedStr(StrZero(Form1.iCupom,6,0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa) + ' and MODELO = ' + QuotedStr('65'));
+          }
+          Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                               ' Where NUMERONF='+QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                               '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                                               '   and MODELO = ' + QuotedStr('65');
           Form1.ibDataset150.Open;
           if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
           begin
@@ -5258,12 +5263,16 @@ begin
         except
         end;
 
-        //
         Form1.ibDataset150.Close;
+        {Mauricio Parizotto 2024-08-23
         Form1.ibDataset150.SelectSql.Clear;
         Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=' + QuotedStr(FormataNumeroDoCupom(0)) + ' and CAIXA = ' + QuotedStr(Form1.sCaixa)); // Sandro Silva 2021-12-02 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=''000000'' and CAIXA = ' + QuotedStr(Form1.sCaixa));
+        }
+        Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                             ' Where NUMERONF=' + QuotedStr(FormataNumeroDoCupom(0)) +
+                                             '   and CAIXA = ' + QuotedStr(Form1.sCaixa);
         Form1.ibDataset150.Open;
-        //
+
         Form1.IBDataSet150.Append;
 
         {Sandro Silva 2023-07-20 inicio}
@@ -5443,19 +5452,21 @@ begin
       begin
         try
           Form1.ibDataset150.Close;
+          {Mauricio Parizotto 2024-08-23
           Form1.ibDataset150.SelectSql.Clear;
           Form1.ibDataset150.SelectSQL.Add(
             'select * ' +
             'from NFCE ' +
-            'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + // Sandro Silva 2021-11-29 'where NUMERONF = ' + QuotedStr(StrZero(Form1.iCupom,6,0)) +
-            ' and CAIXA = ' + QuotedStr(Form1.sCaixa) +
-            ' and MODELO = ' + QuotedStr('65') +
-            ' and (coalesce(STATUS, '''') not containing ''Autoriza'') ' +
-            ' and (coalesce(STATUS, '''') not containing ''Cancela'') ' +
-            ' and (coalesce(STATUS, '''') not containing ''conting'') '
-            );
+          }
+          Form1.ibDataset150.SelectSQL.Text :=  SQL_NFCE_ibd150 +
+                                                ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                                '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                                                '   and MODELO = ' + QuotedStr('65') +
+                                                '   and (coalesce(STATUS, '''') not containing ''Autoriza'') ' +
+                                                '   and (coalesce(STATUS, '''') not containing ''Cancela'') ' +
+                                                '   and (coalesce(STATUS, '''') not containing ''conting'') ';
           Form1.ibDataset150.Open;
-          //
+
           if Form1.ibDataset150.FieldByName('NUMERONF').AsString = FormataNumeroDoCupom(Form1.iCupom) then // Sandro Silva 2021-11-29 if Form1.ibDataset150.FieldByName('NUMERONF').AsString = StrZero(Form1.iCupom,6,0) then
           begin
             Form1.IBDataSet150.Edit;
@@ -5497,20 +5508,16 @@ begin
 
             if _ecf65_JaTemContingenciaPorSubstituicao(Form1.ibDataSet27.Transaction, LimpaNumero(xmlNodeValue(sXmlNFCeSubstituida, '//infNFe/@Id'))) = False then
             begin
-
               // Esse if precisa ser revisto se não há algum problema em ocorrer cancelamento por substituição nestas 2 UFs
               if (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'CE') and (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'SC') then
               begin
-
                 if sXmlNFCeSubstituida <> '' then
                 begin
-
                   _ecf65_sDataHoraNFCeSubstituida := xmlNodeValue(sXmlNFCeSubstituida, '//ide/dhEmi'); // Sandro Silva 2019-08-27
 
                   // Lança mesmas informações da venda em outra NFC-e
                   if _ecf65_GeraContingenciaParaCancelamentoPorSubstituicao(FormataNumeroDoCupom(Form1.iCupom), Form1.sCaixa, dtEnvio, sXmlNFCeSubstituida, Form1.sOrcame, Form1.sOs) then // Sandro Silva 2021-11-29 if _ecf65_GeraContingenciaParaCancelamentoPorSubstituicao(StrZero(Form1.iCupom,6,0), Form1.sCaixa, dtEnvio, sXmlNFCeSubstituida, Form1.sOrcame, Form1.sOs) then
                   begin
-
                     //Ativa a Contingência temporariamente, se ainda não estiver
                     try
                       if Form1.NFCeemContingncia1.Checked = False then
@@ -5534,14 +5541,16 @@ begin
 
                           // Seleciona o ID da NFC-e em contingência que substituirá a outra NFC-e
                           Form1.ibDataset150.Close;
+                          {Mauricio Parizotto 2024-08-23
                           Form1.ibDataset150.SelectSql.Clear;
                           Form1.ibDataset150.SelectSQL.Add(
                             'select * ' +
                             'from NFCE ' +
-                            'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) + // Sandro Silva 2021-11-29 'where NUMERONF = ' + QuotedStr(StrZero(Form1.iCupom,6,0)) +
-                            ' and CAIXA = ' + QuotedStr(Form1.sCaixa) +
-                            ' and MODELO = ' + QuotedStr('65')
-                            );
+                          }
+                          Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                                               ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.iCupom)) +
+                                                               '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                                                               '   and MODELO = ' + QuotedStr('65');
                           Form1.ibDataset150.Open;
 
                           sNfeIdSubstituta := LimpaNumero(xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//infNFe/@Id'));
@@ -5558,15 +5567,17 @@ begin
 
                           //Seleciona a NFC-e a ser substituída e salva o ID da NFC-e substituta
                           Form1.ibDataset150.Close;
+                          {Mauricio Parizotto 2024-08-23
                           Form1.ibDataset150.SelectSql.Clear;
                           Form1.ibDataset150.SelectSQL.Add(
                             'select * ' +
                             'from NFCE ' +
-                            'where NFEID = ' + QuotedStr(LimpaNumero(xmlNodeValue(sXmlNFCeSubstituida, '//infNFe/@Id'))) +
-                            ' and CAIXA = ' + QuotedStr(Form1.sCaixa) +
-                            ' and MODELO = ' + QuotedStr('65') +
-                            ' and (coalesce(STATUS, '''') containing ' + QuotedStr(NFCE_NAO_HOUVE_RETORNO_SERVIDOR) + ') '
-                            );
+                          }
+                          Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                                               ' Where NFEID = ' + QuotedStr(LimpaNumero(xmlNodeValue(sXmlNFCeSubstituida, '//infNFe/@Id'))) +
+                                                               '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                                                               '   and MODELO = ' + QuotedStr('65') +
+                                                               '   and (coalesce(STATUS, '''') containing ' + QuotedStr(NFCE_NAO_HOUVE_RETORNO_SERVIDOR) + ') ';
                           Form1.ibDataset150.Open;
 
                           if Form1.IBDataSet150.FieldByName('NFEID').AsString <> '' then
@@ -5600,11 +5611,14 @@ begin
 
                       Form1.ibDataset150.Close;
                       Form1.ibDataset150.SelectSql.Text :=
+                        {Mauricio Parizotto 2024-08-23
                         'select * ' +
                         'from NFCE ' +
-                        'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) + // Sandro Silva 2021-11-29 'where NUMERONF = ' + QuotedStr(StrZero(Form1.iCupom,6,0)) +
-                        ' and CAIXA = ' + QuotedStr(Form1.sCaixa) +
-                        ' and MODELO = ' + QuotedStr('65');
+                        }
+                        SQL_NFCE_ibd150 +
+                        ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) +
+                        '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+                        '   and MODELO = ' + QuotedStr('65');
                       Form1.ibDataset150.Open;
 
                       if (AnsiContainsText(Form1.ibDataset150.FieldByName('STATUS').AsString, 'Autorizad') = False) and
@@ -6733,19 +6747,19 @@ begin
         end;
       end;
 
-      //
       try
-        //
         Form1.ibDataset150.Close;
-        Form1.ibDataset150.SelectSql.Clear;
         Form1.ibDataset150.SelectSQL.Text :=
+          {Mauricio Parizotto 2024-08-23
           'select * ' +
           'from NFCE ' +
-          'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) + // Sandro Silva 2021-12-02 'where NUMERONF=''000000'' ' +
-          ' and CAIXA = ' + QuotedStr(Form1.sCaixa) +
-          ' and MODELO = ' + QuotedStr('65');
+          }
+          SQL_NFCE_ibd150 +
+          ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) +
+          '   and CAIXA = ' + QuotedStr(Form1.sCaixa) +
+          '   and MODELO = ' + QuotedStr('65');
         Form1.ibDataset150.Open;
-        //
+
         Form1.IBDataSet150.Append;
 
         Form1.IBDataSet150.FieldByName('NUMERONF').AsString := Result;
@@ -6778,18 +6792,15 @@ begin
       end;
       {Sandro Silva 2023-08-22 fim}
     end;
-    //
+
     Mais1Ini.Free;
-    //
   except
-    //
     Result := '000001';
-    //
   end;
-  //
+
   if StrToInt('0'+LimpaNumero(Result))=0 then
     Result := '000001';
-  //
+
   try
     Result := FormataNumeroDoCupom(StrToInt(Result)); // Sandro Silva 2021-12-01
   except
@@ -6826,7 +6837,6 @@ begin
     begin
       Mais1ini  := TIniFile.Create('FRENTE.INI');
       try
-        //
         if UpperCase(Mais1Ini.ReadString('Frente de Caixa','Porta','LPT1')) = 'LPT0' then
         begin
           AssignFile(FLocal,'GAVETA.TXT');
@@ -6854,11 +6864,9 @@ begin
         except
           SmallMsg('Dados inválidos na chave "Abre Gaveta".')
         end;
-        //
+
         CloseFile(FLocal);
-        //
       except end;
-      //
     end;
   end else
   begin
@@ -6872,9 +6880,8 @@ begin
       except SmallMsg('Dados inválidos na chave "Abre Gaveta".') end;
     end;
   end;
-  //
+
   Result := True;
-  //
 end;
 
 // -------------------------------- //
@@ -7503,11 +7510,14 @@ begin
 
               Form1.IBDataSet150.Close;
               Form1.IBDataSet150.SelectSQL.Text :=
+                {Mauricio Parizotto 2024-08-23
                 'select * ' +
                 'from NFCE ' +
-                'where MODELO = ''65'' ' +
-                ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
-                ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
+                }
+                SQL_NFCE_ibd150 +
+                ' Where MODELO = ''65'' ' +
+                '   and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
+                '   and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
               Form1.IBDataSet150.Open;
 
               if ((xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//ide/tpEmis') <> TPEMIS_NFCE_NORMAL) // Não é emissão normal
@@ -7648,11 +7658,14 @@ begin
 
                             Form1.IBDataSet150.Close;
                             Form1.IBDataSet150.SelectSQL.Text :=
+                              {Mauricio Parizotto 2024-08-23
                               'select * ' +
                               'from NFCE ' +
-                              'where MODELO = ''65'' ' +
-                              ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
-                              ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
+                              }
+                              SQL_NFCE_ibd150 +
+                              ' Where MODELO = ''65'' ' +
+                              '   and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
+                              '   and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
                             Form1.IBDataSet150.Open;
 
                             try
@@ -7964,17 +7977,17 @@ begin
                       // Autorizou NFC-e
                       // Atualiza dados da venda no banco
                       try
-
-                        {Sandro Silva 2021-11-19 inicio} 
                         Form1.IBDataSet150.Close;
                         Form1.IBDataSet150.SelectSQL.Text :=
+                          {Mauricio Parizotto 2024-08-23
                           'select * ' +
                           'from NFCE ' +
-                          'where MODELO = ''65'' ' +
-                          ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
-                          ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
+                          }
+                          SQL_NFCE_ibd150 +
+                          ' Where MODELO = ''65'' ' +
+                          '   and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
+                          '   and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
                         Form1.IBDataSet150.Open;
-                        {Sandro Silva 2021-11-19 fim}
 
                         Form1.IBDataSet150.Edit;
                         Form1.IBDataSet150.FieldByName('NFEXML').AsString := _ecf65_LoadXmlDestinatario(LimpaNumero(xmlNodeValue(fNFe1, '//infNFe/@Id')));
@@ -7997,11 +8010,14 @@ begin
                       // Seleciona novamente os dados da NFC-e porque o campo CAIXA estava ficando vazio depois do post acima
                       Form1.IBDataSet150.Close;
                       Form1.IBDataSet150.SelectSQL.Text :=
+                        {Mauricio Parizotto 2024-08-23
                         'select * ' +
                         'from NFCE ' +
-                        'where MODELO = ''65'' ' +
-                        ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
-                        ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
+                        }
+                        SQL_NFCE_ibd150 +
+                        ' Where MODELO = ''65'' ' +
+                        '   and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
+                        '   and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
                       Form1.IBDataSet150.Open;
                       sNfceIdSubstituto  := Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString;
                       sNfceIdSubstituido := Form1.IBDataSet150.FieldByName('NFEID').AsString;
@@ -8021,9 +8037,12 @@ begin
                             // Seleciona os dados da NFC-e a ser substituída
                             Form1.IBDataSet150.Close;
                             Form1.IBDataSet150.SelectSQL.Text :=
+                              {Mauricio Parizotto 2024-08-23
                               'select * ' +
                               'from NFCE ' +
-                              'where NFEID = ' + QuotedStr(sNfceIdSubstituido);
+                              }
+                              SQL_NFCE_ibd150 +
+                              ' Where NFEID = ' + QuotedStr(sNfceIdSubstituido);
                             Form1.IBDataSet150.Open;
 
                             if (Pos('<cStat>501</cStat>', sRetorno) > 0)   // Rejeição: Prazo de cancelamento superior ao previsto na Legislação
@@ -8063,9 +8082,12 @@ begin
                               // Seleciona os dados da NFC-e substituida
                               Form1.IBDataSet150.Close;
                               Form1.IBDataSet150.SelectSQL.Text :=
+                                {Mauricio Parizotto 2024-08-23
                                 'select * ' +
                                 'from NFCE ' +
-                                'where NFEID = ' + QuotedStr(sNfceIdSubstituido);
+                                }
+                                SQL_NFCE_ibd150 +
+                                ' Where NFEID = ' + QuotedStr(sNfceIdSubstituido);
                               Form1.IBDataSet150.Open;
 
                               if (Form1.IBDataSet150.FieldByName('NFEID').AsString <> '') and (Form1.IBDataSet150.FieldByName('NFEID').AsString = sNfceIdSubstituido) then
@@ -8091,9 +8113,12 @@ begin
                             // Seleciona os dados da NFC-e a ser substituída
                             Form1.IBDataSet150.Close;
                             Form1.IBDataSet150.SelectSQL.Text :=
+                              {Mauricio Parizotto 2024-08-23
                               'select * ' +
                               'from NFCE ' +
-                              'where NFEID = ' + QuotedStr(sNfceIdSubstituido);
+                              }
+                              SQL_NFCE_ibd150 +
+                              ' Where NFEID = ' + QuotedStr(sNfceIdSubstituido);
                             Form1.IBDataSet150.Open;
 
                             if (Pos('<cStat>501</cStat>', sRetorno) > 0)   // Rejeição: Prazo de cancelamento superior ao previsto na Legislação
@@ -8130,11 +8155,14 @@ begin
                   // Seleciona novamente os dados da NFC-e porque o campo CAIXA estava ficando vazio depois do post acima
                   Form1.IBDataSet150.Close;
                   Form1.IBDataSet150.SelectSQL.Text :=
+                    {Mauricio Parizotto 2024-08-23
                     'select * ' +
                     'from NFCE ' +
-                    'where MODELO = ''65'' ' +
-                    ' and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
-                    ' and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
+                    }
+                    SQL_NFCE_ibd150 +
+                    ' Where MODELO = ''65'' ' +
+                    '   and NUMERONF = ' + QuotedStr(Form1.IBQuery65.FieldByName('NUMERONF').AsString) +
+                    '   and CAIXA = ' + QuotedStr(Form1.IBQuery65.FieldByName('CAIXA').AsString);
                   Form1.IBDataSet150.Open;
 
                   // Grava as formas de pagamento contidas no xml ou exclui quando for cancelada
@@ -8154,11 +8182,8 @@ begin
 
           Form1.IBQuery65.Next;
 
-          //
           // Aqui adicionar um Sleep para evitar Consumo Indevido - 656?
           // Ou adicionar Sleep(2000) a cada requisição realizada ao servidor?
-          //
-
         end; // while Form1.IBQuery65.Eof = False do
 
         //Passa por todas NFCe identificadas com problema, gera novamente o xml e transmite
@@ -8167,10 +8192,9 @@ begin
           Form1.ClientDataSet1.First;
           while Form1.ClientDataSet1.Eof = False do
           begin
-
-            sArquivoXMLAutorizado := ''; // Sandro Silva 2018-08-06
-            sRetorno              := ''; // Sandro Silva 2018-08-06
-            fNFe1                 := ''; // Sandro Silva 2018-08-06
+            sArquivoXMLAutorizado := '';
+            sRetorno              := '';
+            fNFe1                 := '';
 
             // Abrir e atualizar dados dos produtos apenas das NFC-e do caixa atual.
             // Não tem como tratar vendas de outros caixas, as funções levam em consideração o caixa atual
@@ -8178,11 +8202,14 @@ begin
             begin
               Form1.IBDataSet150.Close;
               Form1.IBDataSet150.SelectSQL.Text :=
+                {Mauricio Parizotto 2024-08-23
                 'select * ' +
                 'from NFCE ' +
-                'where NUMERONF = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('NUMERONF').AsString) +
-                ' and CAIXA = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('CAIXA').AsString) +
-                ' and MODELO = ''65'' ';
+                }
+                SQL_NFCE_ibd150 +
+                ' Where NUMERONF = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('NUMERONF').AsString) +
+                '   and CAIXA = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('CAIXA').AsString) +
+                '   and MODELO = ''65'' ';
               Form1.IBDataSet150.Open;
               if (Form1.IBDataSet150.FieldByName('NUMERONF').AsString = Form1.ClientDataSet1.FieldByName('NUMERONF').AsString) and (Form1.IBDataSet150.FieldByName('NFEIDSUBSTITUTO').AsString = '') then // Sandro Silva 2019-07-25 if Form1.IBDataSet150.FieldByName('NUMERONF').AsString = Form1.ClientDataSet1.FieldByName('NUMERONF').AsString then
               begin
@@ -8191,11 +8218,14 @@ begin
 
                 Form1.IBDataSet150.Close;
                 Form1.IBDataSet150.SelectSQL.Text :=
+                  {Mauricio Parizotto 2024-08-23
                   'select * ' +
                   'from NFCE ' +
-                  'where NUMERONF = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('NUMERONF').AsString) +
-                  ' and CAIXA = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('CAIXA').AsString) +
-                  ' and MODELO = ''65'' ';
+                  }
+                  SQL_NFCE_ibd150 +
+                  ' Where NUMERONF = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('NUMERONF').AsString) +
+                  '   and CAIXA = ' + QuotedStr(Form1.ClientDataSet1.FieldByName('CAIXA').AsString) +
+                  '   and MODELO = ''65'' ';
                 Form1.IBDataSet150.Open;
 
                 // Transmite o xml corrigido
@@ -8206,27 +8236,21 @@ begin
                   _ecf65_NumeroSessaoIntegradorFiscal; // Sandro Silva 2018-04-23
 
                   sRetorno := Form1.spdNFCe1.EnviarNFSincrono(sLote, fNFe1, False); // Transmitindo contingência
-
                   sRetorno := _ecf65_CorrigePadraoRespostaSefaz(sRetorno);
-
                 except
                   on E: Exception do
                   begin
-
                     Form1.ClientDataSet1.Edit;
                     Form1.ClientDataSet1.FieldByName('LOG').AsString      := E.Message;
                     Form1.ClientDataSet1.Post;
-
-                  end; // on E: Exception do
-                end; // try
+                  end;
+                end;
 
                 // Sandro Silva 2022-04-12 if (Pos('<cStat>100</cStat>', sRetorno) <> 0) or (Pos('<cStat>150</cStat>', sRetorno) <> 0) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo
                 if (_ecf65_xmlAutorizado(sRetorno)) then // 100|Autorizado o uso da NF-e ou 150|Autorizado o uso da NF-e, autorização fora de prazo
                 begin
-                  //
                   sID   := xmlNodeValue(sRetorno, '//chNFe'); // Copia o ID da NFe p/ o Edit
                   fNFe1 := _ecf65_LoadXmlDestinatario(sID);
-                  //
 
                   Form1.ibDataSet27.Close;
                   Form1.ibDataSet27.SelectSQL.Text :=
@@ -9844,7 +9868,6 @@ begin
             begin
               if (AnsiUpperCase(IBQRECEBER.Fields[iField].FieldName) <> 'REGISTRO') then
               begin
-
                 try
                   if AnsiUpperCase(IBQRECEBER.Fields[iField].FieldName) = 'NUMERONF' then
                     Form1.IBDataSet7.FieldByName(IBQRECEBER.Fields[iField].FieldName).Value := FormataNumeroDoCupom(StrToInt(sNovoNumero)) + Copy(sCaixa, 1, 3) // Sandro Silva 2021-12-02 Form1.IBDataSet7.FieldByName(IBQRECEBER.Fields[iField].FieldName).Value := StrZero(StrToInt(sNovoNumero), 6, 0) + Copy(sCaixa, 1, 3)
@@ -9859,13 +9882,9 @@ begin
                     if AnsiContainsText(Form1.IBDataSet7.FieldByName(IBQRECEBER.Fields[iField].FieldName).Value, 'Cupom: ') then
                       Form1.IBDataSet7.FieldByName(IBQRECEBER.Fields[iField].FieldName).Value := StringReplace(Form1.IBDataSet7.FieldByName(IBQRECEBER.Fields[iField].FieldName).Value, FormataNumeroDoCupom(StrToIntDef(sNumeroNF, 0)), FormataNumeroDoCupom(StrToIntDef(sNovoNumero, 0)), [rfReplaceAll]) // Sandro Silva 2021-12-02 Form1.IBDataSet7.FieldByName(IBQRECEBER.Fields[iField].FieldName).Value := StringReplace(Form1.IBDataSet7.FieldByName(IBQRECEBER.Fields[iField].FieldName).Value, StrZero(StrToIntDef(sNumeroNF, 0), 6, 0), StrZero(StrToIntDef(sNovoNumero, 0), 6, 0), [rfReplaceAll])
                   end;
-
                 except
-
                 end;
-
-              end; // if (AnsiUpperCase(IBQRECEBER.Fields[iField].FieldName) <> 'REGISTRO') then
-
+              end;
             end;
             Form1.ibDataSet7.Post;
           except
@@ -9876,18 +9895,22 @@ begin
 
       end;
       ////////////////////////////////////////
-      //
       // Fim dados da tabela contas a receber
-      //
-      ////////////////////////////////////////    
+      ////////////////////////////////////////
 
       try
         // Dados da tabela NFCE
         Form1.ibDataset150.Close;
+        {Mauricio Parizotto 2024-08-23
         Form1.ibDataset150.SelectSql.Clear;
         Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) + ' and CAIXA = ' + QuotedStr(sCaixa) + ' and MODELO = ''65'' '); // Sandro Silva 2021-12-02 Form1.ibDataset150.SelectSQL.Add('select * from NFCE where NUMERONF=''000000'' and CAIXA = ' + QuotedStr(sCaixa) + ' and MODELO = ''65'' ');
+        }
+        Form1.ibDataset150.SelectSQL.Text := SQL_NFCE_ibd150 +
+                                             ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) +
+                                             '   and CAIXA = ' + QuotedStr(sCaixa) +
+                                             '   and MODELO = ''65'' ';
         Form1.ibDataset150.Open;
-        //
+
         Form1.IBDataSet150.Append;
         Form1.IBDataSet150.FieldByName('NUMERONF').AsString := sNovoNumero;
         Form1.IBDataSet150.FieldByName('DATA').AsDateTime   := dtEnvio;
@@ -9895,7 +9918,6 @@ begin
         Form1.IBDataSet150.FieldByName('MODELO').AsString   := '65';
         Form1.IBDataSet150.Post;
       except
-
       end;
 
       {Sandro Silva 2021-11-03 inicio}
@@ -10100,7 +10122,6 @@ begin
         and (Form1.IBDataSet150.FieldByName('NUMERONF').AsString = sNumeroNF)
         and (Form1.IBDataSet150.FieldByName('CAIXA').AsString = sCaixaNF) then
       begin
-
         try
           Form1.IBDataSet150.Edit;
           Form1.IBDataSet150.FieldByName('NFEXML').AsString := sRetorno;
@@ -10111,12 +10132,14 @@ begin
           // Precisa selecionar novamente os dados. Post está influenciando e deixando Dataset com campos vazios (?)
           Form1.IBDataSet150.Close;
           Form1.IBDataSet150.SelectSQL.Text :=
+            {Mauricio Parizotto 2024-08-23
             'select * ' +
             'from NFCE ' +
-            'where NUMERONF = ' + QuotedStr(sNumeroNF) +
-            ' and CAIXA = ' + QuotedStr(sCaixaNF);
+            }
+            SQL_NFCE_ibd150 +
+            ' Where NUMERONF = ' + QuotedStr(sNumeroNF) +
+            '   and CAIXA = ' + QuotedStr(sCaixaNF);
           Form1.IBDataSet150.Open;
-
         except
         end;
 
@@ -10133,7 +10156,6 @@ begin
 
         FecharAplicacao(ExtractFileName(Application.ExeName));
       end;
-
     end;
 
        //Chave de Acesso difere da existente em BD    <cStat>613
@@ -10153,10 +10175,9 @@ begin
 
         FecharAplicacao(ExtractFileName(Application.ExeName));
       end;
-
     end;
-    
   end;
+
   FreeAndNil(slArquivoEnvio);
   Sleep(2000);
   Form1.OcultaPanelMensagem;
@@ -10349,24 +10370,24 @@ begin
           // Sandro Silva 2021-06-10 if sXML <> IBQCONSULTA.FieldByName('NFEXML').AsString then
           if Pos('</nfeProc', AnsiLowerCase(sXml)) <> Pos('</nfeProc', AnsiLowerCase(IBQCONSULTA.FieldByName('NFEXML').AsString)) then // Usando comparação direta (sXml <> IBQCONSULTA.FieldByName('NFEXML').AsString) sempre retorna verdadeiro, mesmo variável sendo igual o FieldByName(). Estranho!?
           begin
-
             if xmlNodeValue(sXml, '//protNFe/infProt/chNFe') <> '' then // Sandro Silva 2020-06-05
             begin
               try
                 Form1.IBDataSet150.Close;
                 Form1.IBDataSet150.SelectSQL.Text :=
+                  {Mauricio Parizotto 2024-08-23
                   'select * ' +
                   'from NFCE ' +
-                  // Sandro Silva 2021-11-17 'where REGISTRO = ' + QuotedStr(IBQCONSULTA.FieldByName('REGISTRO').AsString);
-                  'where MODELO = ''65'' ' +
-                  ' and NUMERONF = ' + QuotedStr(IBQCONSULTA.FieldByName('NUMERONF').AsString) +
-                  ' and CAIXA = ' + QuotedStr(IBQCONSULTA.FieldByName('CAIXA').AsString);
+                  }
+                  SQL_NFCE_ibd150 +
+                  ' Where MODELO = ''65'' ' +
+                  '   and NUMERONF = ' + QuotedStr(IBQCONSULTA.FieldByName('NUMERONF').AsString) +
+                  '   and CAIXA = ' + QuotedStr(IBQCONSULTA.FieldByName('CAIXA').AsString);
                 Form1.IBDataSet150.Open;
 
                 // Sandro Silva 2021-11-17 Validar que xml pertence a nfce selecionada
                 if RightStr('000' + Form1.IBDataSet150.FieldByName('NUMERONF').AsString, 9) = _ecf65_NumeroNfFromChave(xmlNodeValue(sXml, '//protNFe/infProt/chNFe')) then
                 begin
-
                   Form1.IBDataSet150.Edit;
                   Form1.IBDataSet150.FieldByName('STATUS').AsString := 'Autorizado o uso da NFC-e';
                   Form1.IBDataSet150.FieldByName('NFEXML').AsString := sXml;
@@ -10375,7 +10396,6 @@ begin
 
                   if xmlNodeXml(sXml, '//pag') <> '' then
                     _ecf65_GravaPagamentFromXML(sXml, IBQCONSULTA.FieldByName('NUMERONF').AsString, IBQCONSULTA.FieldByName('CAIXA').AsString); // Sandro Silva 2021-11-17 _ecf65_GravaPagamentFromXML(sXmlAutorizado, sNumeroNF, sCaixaNF);
-
                 end;
 
                 Commitatudo(True);  // TForm1.ConsultaChaveNFCe1Click()
@@ -10445,12 +10465,14 @@ begin
 
                   Form1.IBDataSet150.Close;
                   Form1.IBDataSet150.SelectSQL.Text :=
+                    {Mauricio Parizotto 2024-08-23
                     'select * ' +
                     'from NFCE ' +
-                    // Sandro Silva 2021-11-17 'where REGISTRO = ' + QuotedStr(IBQCONSULTA.FieldByName('REGISTRO').AsString);
-                    'where MODELO = ''65'' ' +
-                    ' and NUMERONF = ' + QuotedStr(IBQCONSULTA.FieldByName('NUMERONF').AsString) +
-                    ' and CAIXA = ' + QuotedStr(IBQCONSULTA.FieldByName('CAIXA').AsString);
+                    }
+                    SQL_NFCE_ibd150 +
+                    ' Where MODELO = ''65'' ' +
+                    '   and NUMERONF = ' + QuotedStr(IBQCONSULTA.FieldByName('NUMERONF').AsString) +
+                    '   and CAIXA = ' + QuotedStr(IBQCONSULTA.FieldByName('CAIXA').AsString);
                   Form1.IBDataSet150.Open;
 
                   // Sandro Silva 2021-11-17 Validar que xml pertence a nfce selecionada
@@ -10508,12 +10530,14 @@ begin
 
               Form1.IBDataSet150.Close;
               Form1.IBDataSet150.SelectSQL.Text :=
+                {Mauricio Parizotto 2024-08-23
                 'select * ' +
                 'from NFCE ' +
-                // Sandro Silva 2021-11-17 'where REGISTRO = ' + QuotedStr(IBQCONSULTA.FieldByName('REGISTRO').AsString);
-                'where MODELO = ''65'' ' +
-                ' and NUMERONF = ' + QuotedStr(IBQCONSULTA.FieldByName('NUMERONF').AsString) +
-                ' and CAIXA = ' + QuotedStr(IBQCONSULTA.FieldByName('CAIXA').AsString);
+                }
+                SQL_NFCE_ibd150 +
+                ' Where MODELO = ''65'' ' +
+                '   and NUMERONF = ' + QuotedStr(IBQCONSULTA.FieldByName('NUMERONF').AsString) +
+                '   and CAIXA = ' + QuotedStr(IBQCONSULTA.FieldByName('CAIXA').AsString);
               Form1.IBDataSet150.Open;
 
               Form1.IBDataSet150.Edit;
@@ -10656,12 +10680,10 @@ begin
             if Pos(#$C'Àþ'#9, sXmlAutorizado) > 0 then
               sXmlAutorizado := StringReplace(sXmlAutorizado, #$C'Àþ'#9, '<?xm',[rfReplaceAll]);
 
-
             // Ter certeza que está com xml válido  e o digest do xml enviado é igual ao digest da autorização
             if (xmlNodeXml(sXmlAutorizado, '//NFe') <> '') and (xmlNodeXml(sXmlAutorizado, '//protNFe') <> '') and (xmlNodeValue(sXmlAutorizado, '//DigestValue') = xmlNodeValue(sXmlAutorizado, '//digVal')) then
             begin
               // xml assinado e autorizado
-
               if Pos('<tpAmb>2</tpAmb>', sXmlAutorizado) > 0  then
               begin
                 sStatus := NFCE_STATUS_AUTORIZADO_USO_EM_HOMOLOGACAO;// 'Autorizado o uso da NFC-e em ambiente de homologação';
@@ -10671,21 +10693,21 @@ begin
               end;
 
               try
-
                 Form1.IBDataSet150.Close;
                 Form1.IBDataSet150.SelectSQL.Text :=
+                  {Mauricio Parizotto 2024-08-23
                   'select * ' +
                   'from NFCE ' +
-                  // Sandro Silva 2021-11-17 'where REGISTRO = ' + QuotedStr(IBQCONSULTA.FieldByName('REGISTRO').AsString);
-                  'where MODELO = ''65'' ' +
-                  ' and NUMERONF = ' + QuotedStr(sNumeroNF) +
-                  ' and CAIXA = ' + QuotedStr(sCaixaNF);
+                  }
+                  SQL_NFCE_ibd150 +
+                  ' Where MODELO = ''65'' ' +
+                  '   and NUMERONF = ' + QuotedStr(sNumeroNF) +
+                  '   and CAIXA = ' + QuotedStr(sCaixaNF);
                 Form1.IBDataSet150.Open;
 
                 // Sandro Silva 2021-11-17 Validar que xml pertence a nfce selecionada
                 if RightStr('000' + Form1.IBDataSet150.FieldByName('NUMERONF').AsString, 9) = _ecf65_NumeroNfFromChave(xmlNodeValue(sXmlAutorizado, '//protNFe/infProt/chNFe')) then
                 begin
-
                   Form1.IBDataSet150.Edit;
                   Form1.IBDataSet150.FieldByName('NFEXML').AsString := sXmlAutorizado;
                   Form1.IBDataSet150.FieldByName('NFEID').AsString  := LimpaNumero(xmlNodeValue(sXmlAutorizado, '//protNFe/infProt/chNFe'));
@@ -10734,18 +10756,19 @@ begin
                     try
                       Form1.IBDataSet150.Close;
                       Form1.IBDataSet150.SelectSQL.Text :=
+                        {Mauricio Parizotto 2024-08-23
                         'select * ' +
                         'from NFCE ' +
-                        // Sandro Silva 2021-11-17 'where REGISTRO = ' + QuotedStr(IBQCONSULTA.FieldByName('REGISTRO').AsString);
-                        'where MODELO = ''65'' ' +
-                        ' and NUMERONF = ' + QuotedStr(sNumeroNF) +
-                        ' and CAIXA = ' + QuotedStr(sCaixaNF);
+                        }
+                        SQL_NFCE_ibd150 +
+                        ' Where MODELO = ''65'' ' +
+                        '   and NUMERONF = ' + QuotedStr(sNumeroNF) +
+                        '   and CAIXA = ' + QuotedStr(sCaixaNF);
                       Form1.IBDataSet150.Open;
 
                       // Sandro Silva 2021-11-17 Validar que xml pertence a nfce selecionada
                       if RightStr('000' + Form1.IBDataSet150.FieldByName('NUMERONF').AsString, 9) = _ecf65_NumeroNfFromChave(xmlNodeValue(sXmlEnvio, '//infNFe/@Id')) then
                       begin
-
                         Form1.IBDataSet150.Edit;
                         Form1.IBDataSet150.FieldByName('NFEXML').AsString := sXmlEnvio;
                         Form1.IBDataSet150.FieldByName('STATUS').AsString := sStatus;
@@ -10761,23 +10784,15 @@ begin
 
                         LogFrente('Recupera4 NFC-e ' + xmlNodeValue(sXmlEnvio, '//protNFe/infProt/chNFe'));
                       end;
-
                     except
-
                     end;
 
                     Commitatudo(True);  // TForm1.ConsultaChaveNFCe1Click()
-
                   end;
-
                 end;// if do cnpj do emitente do small está no id do xml lido
-
               end;// Tem arquivo de lote transmitido
-
             end;// xml autorizado
-
           end; // if (Trim(IBQCONSULTA.FieldByName('NFEXML').AsString) = '') or ((Trim(IBQCONSULTA.FieldByName('NFEXML').AsString) <> '') and (Trim(IBQCONSULTA.FieldByName('STATUS').AsString) = 'Autorizado o uso da NFC-e') and (Trim(IBQCONSULTA.FieldByName('NFEID').AsString) = '')) then // Sandro Silva 2019-10-05 if Trim(IBQCONSULTA.FieldByName('NFEXML').AsString) = '' then
-
         except
 
         end;
@@ -10963,21 +10978,21 @@ begin
             end;
 
             try
-
               Form1.IBDataSet150.Close;
               Form1.IBDataSet150.SelectSQL.Text :=
+                {Mauricio Parizotto 2024-08-23
                 'select * ' +
                 'from NFCE ' +
-                // Sandro Silva 2021-11-17 'where REGISTRO = ' + QuotedStr(IBQCONSULTA.FieldByName('REGISTRO').AsString);
-                'where MODELO = ''65'' ' +
-                ' and NUMERONF = ' + QuotedStr(IBQCONSULTA.FieldByName('NUMERONF').AsString) +
-                ' and CAIXA = ' + QuotedStr(IBQCONSULTA.FieldByName('CAIXA').AsString);
+                }
+                SQL_NFCE_ibd150 +
+                ' Where MODELO = ''65'' ' +
+                '   and NUMERONF = ' + QuotedStr(IBQCONSULTA.FieldByName('NUMERONF').AsString) +
+                '   and CAIXA = ' + QuotedStr(IBQCONSULTA.FieldByName('CAIXA').AsString);
               Form1.IBDataSet150.Open;
 
               // Sandro Silva 2021-11-17 Validar que xml pertence a nfce selecionada
               if RightStr('000' + Form1.IBDataSet150.FieldByName('NUMERONF').AsString, 9) = _ecf65_NumeroNfFromChave(LimpaNumero(xmlNodeValue(sXmlAutorizado, '//protNFe/infProt/chNFe'))) then
               begin
-
                 Form1.IBDataSet150.Edit;
                 Form1.IBDataSet150.FieldByName('NFEXML').AsString := sXmlAutorizado;
                 Form1.IBDataSet150.FieldByName('NFEID').AsString  := LimpaNumero(xmlNodeValue(sXmlAutorizado, '//protNFe/infProt/chNFe'));
@@ -11499,14 +11514,16 @@ begin
 
     Form1.IBDataSet150.Close;
     Form1.IBDataSet150.SelectSQL.Text :=
+      {Mauricio Parizotto 2024-08-23
       'select * ' +
       'from NFCE ' +
+      }
+      SQL_NFCE_ibd150 +
       'where NUMERONF = ' + QuotedStr(sNumeroNF) +
       ' and CAIXA = ' + QuotedStr(sCaixaNF);
     Form1.IBDataSet150.Open;
 
     try
-
       if recupera.cStatNFCe = '' then
       begin
         recupera.RecuperaXML(sNumeroNF, Form1.spdNFCe1.DiretorioLog);
@@ -11514,14 +11531,11 @@ begin
 
       if (recupera.cStatNFCe <> '') and (recupera.XmlRecuperado <> '') then
       begin
-
         if (RightStr('000' + sNumeroNF, 9) = _ecf65_NumeroNfFromChave(xmlNodeValue(recupera.XmlRecuperado, '//chNFe')))
           and (Form1.IBDataSet150.FieldByName('NUMERONF').AsString = sNumeroNF)
           and (Form1.IBDataSet150.FieldByName('CAIXA').AsString = sCaixaNF) then
         begin
-
           try
-
             Form1.IBDataSet150.Edit;
             Form1.IBDataSet150.FieldByName('NFEXML').AsString := recupera.XmlRecuperado;
             Form1.IBDataSet150.FieldByName('NFEID').AsString  := xmlNodeValue(Form1.IBDataSet150.FieldByName('NFEXML').AsString, '//chNFe');
@@ -11535,9 +11549,7 @@ begin
             {Sandro Silva 2022-06-02 inicio}
             Audita('RECUPERA','FRENTE', '', 'Recuperou XML NFC-e: ' + xmlNodeValue(recupera.XmlRecuperado, '//protNFe/infProt/chNFe'), 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
             {Sandro Silva 2022-06-02 fim}
-
           except
-
           end;
 
           if recupera.cStatNFCe = NFCE_CSTAT_AUTORIZADO_100 then // Autorizada
@@ -11548,12 +11560,10 @@ begin
             begin
               _ecf65_GravaPagamentFromXML(recupera.XmlRecuperado, sNumeroNF, sCaixaNF);
             end;
-
           end;
 
           if (recupera.cStatNFCe = NFCE_CSTAT_CANCELADA_135) or (_ecf65_UsoDenegado(recupera.XmlRecuperado)) then
           begin
-
             if recupera.cStatNFCe = NFCE_CSTAT_CANCELADA_135 then // Cancelada
             begin
               TBlobField(Form1.IBDataSet150.FieldByName('NFEXML')).SaveToFile(Form1.spdNFCe1.DiretorioXmlDestinatario + '\' + xmlNodeValue(recupera.XmlRecuperado, '//chNFe') + '-caneve.xml');
@@ -11564,39 +11574,28 @@ begin
             // Excluir RECEBER
             // Excluir PAGAMENT
             Form1.CancelaVendaAtualNoBanco(sNumeroNF, sData, True);
-
           end;
-
         end;
-
       end
       else
       begin
-
         if (recupera.IdNFCe <> '') then
         begin
-
           // Atualiza somente o id
 
           if (RightStr('000' + sNumeroNF, 9) = _ecf65_NumeroNfFromChave(recupera.IdNFCe))
             and (Form1.IBDataSet150.FieldByName('NUMERONF').AsString = sNumeroNF)
             and (Form1.IBDataSet150.FieldByName('CAIXA').AsString = sCaixaNF) then
           begin
-
             try
-
               Form1.IBDataSet150.Edit;
               Form1.IBDataSet150.FieldByName('NFEID').AsString := recupera.IdNFCe;
               Form1.IBDataSet150.Post;
-
             except
-
             end;
           end;
         end;
-
       end;
-
     finally
       Form1.icupom := iCupomOld;
       Form1.sCaixa := sCaixaOld;
@@ -11604,7 +11603,6 @@ begin
       Form1.IBDataSet150.Close;
       Form1.IBDataSet150.SelectSQL.Text := SelectIBDataSet150Old;
       Form1.IBDataSet150.Open;
-
     end;
 
     FreeAndNil(recupera);
