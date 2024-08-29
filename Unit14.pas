@@ -81,9 +81,10 @@ uses fiscal, ufuncoesfrente, ufuncoestef;
 {$R *.dfm}
 
 procedure TForm14.Button1Click(Sender: TObject);
+var
+  IDFORMA : integer;
 begin
   try
-    //
     if Application.MessageBox(Pchar('Tem certeza que as informações digitadas estão corretas?'+ chr(10)
                                    +'Elas não poderão ser alteradas depois que forem processadas.'+ chr(10)
                                    + chr(10)
@@ -99,7 +100,7 @@ begin
       ExcluirLinhasSemProduto;
 
       ibDataSet027.First;
-      //
+
       while not ibDataSet027.Eof do // disable
       begin
 
@@ -130,11 +131,9 @@ begin
         ibDataSet027.Next;
       end;
 
-      //
       ibDataSet1.First;
       while not ibDataSet1.Eof do // disable
       begin
-        //
         Form1.ibDataSet28.Append;
         //
         Form1.ibDataSet28.FieldByName('DATA').AsDateTime    := Date;
@@ -142,22 +141,24 @@ begin
         Form1.ibDataSet28.FieldByName('FORMA').AsString     := '02 Dinheiro NF-e';
         Form1.ibDataSet28.FieldByName('VALOR').Asfloat      := ibDataSet1.FieldByName('TOTAL').AsFloat;
         Form1.ibDataSet28.FieldByName('HORA').AsString      := FormatDateTime('HH:nn:ss', Time); // Sandro Silva 2018-11-30
-        //
+
+        //Mauricio Parizotto 2024-08-21
+        IDFORMA     := GetIDFORMA('01',Form1.ibDataSet28.Transaction);
+        if IDFORMA > 0 then
+          Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
+
         Form1.ibDataSet28.Post;
         //
         ibDataSet1.Next;
       end;
-      //
+
       ibDataSet027.First;
       //
       while not ibDataSet027.Eof do // disable
       begin
-        //
         try
-          //
           if AllTrim(ibDataSet027CODIGO.AsString)<>'' then
           begin
-            //
             Form1.ibDataSet4.Close;
             Form1.ibDataSet4.SelectSQL.Clear;
             Form1.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(ibDataSet027CODIGO.AsString)+' ');
@@ -173,9 +174,7 @@ begin
             //
             ibDataSet027.Edit;
             ibDataSet027TIPO.AsString  := 'VENDA'; // Resolvi este problema baseado no sincronia
-            //
           end;
-          //
         except end;
 
         try
@@ -186,16 +185,12 @@ begin
         except
         end;
 
-        //
         ibDataSet027.Next;
-        //
       end;
-      //
+
       Commitatudo(True); // Form14.Button1Click()
       Close;
-      //
     end;
-    //
   finally
     ibDataSet027.EnableControls;
   end;

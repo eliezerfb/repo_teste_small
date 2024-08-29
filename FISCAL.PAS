@@ -10703,6 +10703,9 @@ var
   ValorPIX : Double;
   IDTransacaoPIX : string;
   sEmailCliente: String; //Sandro Silva 2024-05-07
+
+  IDFORMA : integer;
+  CODIGO_TPAG : string;
 begin
   Screen.Cursor             := crHourGlass; // Cursor de Aguardo
   bFechado                  := False; // Sandro Silva 2016-04-12
@@ -11796,6 +11799,11 @@ begin
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
+                    //Mauricio Parizotto 2024-08-21
+                    IDFORMA     := GetIDFORMA('02',Form1.ibDataSet28.Transaction);
+                    if IDFORMA > 0 then
+                      Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
+
                     Form1.ibDataSet28.Post;
                   except
                         on E: Exception do
@@ -11828,6 +11836,11 @@ begin
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('ACUMULADO2').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
+                    //Mauricio Parizotto 2024-08-21
+                    IDFORMA     := GetIDFORMA('01',Form1.ibDataSet28.Transaction);
+                    if IDFORMA > 0 then
+                      Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
+
                     Form1.ibDataSet28.Post;
                   except
                         on E: Exception do
@@ -11845,9 +11858,26 @@ begin
                     for iTransacaoCartao := 0 to Form1.TransacoesCartao.Transacoes.Count -1 do  // Um registro para cada transação com cartão
                     begin
                       try
-                        if Pos('CREDITO',Form10.sNomeDoTEF) <> 0 then Form1.sDebitoOuCredito := 'CREDITO';
-                        if Pos('DEBITO',Form10.sNomeDoTEF) <> 0  then Form1.sDebitoOuCredito := 'DEBITO';
-                        if AllTrim(Form1.sDebitoOuCredito) = ''  then Form1.sDebitoOuCredito := 'DEBITO';
+                        {Mauricio Parizotto 2024-08-21 Inicio}
+                        CODIGO_TPAG := '';
+
+                        if Pos('CREDITO',Form10.sNomeDoTEF) <> 0 then
+                        begin
+                          Form1.sDebitoOuCredito := 'CREDITO';
+                          CODIGO_TPAG            := '03';
+                        end;
+
+                        if Pos('DEBITO',Form10.sNomeDoTEF) <> 0  then
+                        begin
+                          Form1.sDebitoOuCredito := 'DEBITO';
+                          CODIGO_TPAG            := '04';
+                        end;
+
+                        if AllTrim(Form1.sDebitoOuCredito) = ''  then
+                        begin
+                          Form1.sDebitoOuCredito := 'DEBITO';
+                          CODIGO_TPAG            := '04';
+                        end;
 
                         {Sandro Silva 2023-07-25 inicio}
                         if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
@@ -11868,9 +11898,16 @@ begin
                         {Sandro Silva 2021-07-07 inicio}
                         //if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].CarteiraDigital = True then
                         if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade = tModalidadeCarteiraDigital then
+                        begin
                           Form1.ibDataSet28.FieldByName('FORMA').AsString     := '18 Carteira Digital';
+                          CODIGO_TPAG := '18';
+                        end;
+
                         if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade = tModalidadePix then
+                        begin
                           Form1.ibDataSet28.FieldByName('FORMA').AsString     := '17 Pagto Instantaneo';
+                          CODIGO_TPAG := '17';
+                        end;
                         {Sandro Silva 2021-07-07 fim}
 
                         Form1.ibDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago)); // Sandro Silva 2017-08-25  StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('PAGAR').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('PAGAR').AsFloat;
@@ -11891,32 +11928,15 @@ begin
                           Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Bandeira // Sandro Silva 2018-07-03
                           );
 
-                        {Sandro Silva 2023-07-24 fim}
+                        //Mauricio Parizotto 2024-08-21
+                        IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                        if IDFORMA > 0 then
+                          Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
 
-                        {Sandro Silva 2023-06-14 inicio
-                        if (UsaIntegradorFiscal()) then // Sandro Silva 2017-06-28 if Form1.sModeloECF = '59' then
-                        begin
-                          GravarRespostaFiscalValidadorFiscal(Form1.ibDataSet28.FieldByName('DATA').AsDateTime,
-                                                      Form1.ibDataSet28.FieldByName('PEDIDO').AsString,
-                                                      Form1.ibDataSet28.FieldByName('CAIXA').AsString,
-                                                      Form1.ibDataSet28.FieldByName('FORMA').AsString,
-                                                      Form1.ibDataSet28.FieldByName('VALOR').AsFloat,
-                                                      IntegradorCE.GetidPagamento('03', iTransacaoCartao),
-                                                      IntegradorCE.GetidRespostaFiscal('03', IntegradorCE.GetidPagamento('03', iTransacaoCartao)),
-                                                      IntegradorCE.GetStatusTransmissaoidRespostaFiscal('03', IntegradorCE.GetidPagamento('03', iTransacaoCartao)),
-                                                      Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca,
-                                                      Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede,
-                                                      Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Autorizacao, // Sandro Silva 2018-07-03
-                                                      Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Bandeira // Sandro Silva 2018-07-03
-                                                      );
-                        end;
-                        }
-
-                        //
                         Form1.ibDataSet28.Post;
                       except
                       end;
-                    end; // for iTransacaoCartao := 0 to Form1.TransacoesCartao.Transacoes.Count -1 do
+                    end;
 
                     {Sandro Silva 2023-06-14 inicio
                     if Form1.UsaIntegradorFiscal() then
@@ -11956,6 +11976,11 @@ begin
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('DIFERENCA_').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('DIFERENCA_').Asfloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
+                    //Mauricio Parizotto 2024-08-21
+                    IDFORMA     := GetIDFORMA('05',Form1.ibDataSet28.Transaction);
+                    if IDFORMA > 0 then
+                      Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
+
                     Form1.ibDataSet28.Post;
                   except
                         on E: Exception do
@@ -11982,6 +12007,12 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString     := '05 ' + AllTrim(Form2.Label18.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat      := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR01').AsFloat)); // Sandro Silva 2016-09-05 Form1.ibDataSet25.FieldByName('VALOR01').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+
+                    //Mauricio Parizotto 2024-08-21
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe1;
+                    IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    if IDFORMA > 0 then
+                      Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
 
                     Form1.ibDataSet28.Post;
                   except
@@ -12019,6 +12050,12 @@ begin
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR02').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('VALOR02').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
+                    //Mauricio Parizotto 2024-08-21
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe2;
+                    IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    if IDFORMA > 0 then
+                      Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
+
                     Form1.ibDataSet28.Post;
                   except
                         on E: Exception do
@@ -12053,6 +12090,12 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '07 ' + AllTrim(Form2.Label20.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR03').AsFloat)); // Sandro Silva 2016-09-05 Form1.ibDataSet25.FieldByName('VALOR03').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+
+                    //Mauricio Parizotto 2024-08-21
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe3;
+                    IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    if IDFORMA > 0 then
+                      Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
 
                     Form1.ibDataSet28.Post;
                   except
@@ -12093,6 +12136,12 @@ begin
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR04').AsFloat)); // Sandro Silva 2016-09-05 Form1.ibDataSet25.FieldByName('VALOR04').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
+                    //Mauricio Parizotto 2024-08-21
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe4;
+                    IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    if IDFORMA > 0 then
+                      Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
+
                     Form1.ibDataSet28.Post;
                   except
                         on E: Exception do
@@ -12127,6 +12176,12 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '09 ' + AllTrim(Form2.Label22.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR05').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('VALOR05').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+
+                    //Mauricio Parizotto 2024-08-21
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe5;
+                    IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    if IDFORMA > 0 then
+                      Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
 
                     Form1.ibDataSet28.Post;
                   except
@@ -12163,6 +12218,12 @@ begin
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR06').AsFloat)); // Sandro Silva 2016-09-05 Form1.ibDataSet25.FieldByName('VALOR06').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
+                    //Mauricio Parizotto 2024-08-21
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe6;
+                    IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    if IDFORMA > 0 then
+                      Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
+
                     Form1.ibDataSet28.Post;
                   except
                         on E: Exception do
@@ -12198,6 +12259,12 @@ begin
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR07').AsFloat));// Sandro Silva 2016-09-05 Form1.ibDataSet25.FieldByName('VALOR07').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
+                    //Mauricio Parizotto 2024-08-21
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe7;
+                    IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    if IDFORMA > 0 then
+                      Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
+
                     Form1.ibDataSet28.Post;
                   except
                         on E: Exception do
@@ -12232,6 +12299,12 @@ begin
                     Form1.ibDataSet28.FieldByName('FORMA').AsString    := '12 ' + AllTrim(Form2.Label25.Caption);
                     Form1.ibDataSet28.FieldByName('VALOR').AsFloat     := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByName('VALOR08').AsFloat));// Sandro Silva 2016-09-05  Form1.ibDataSet25.FieldByName('VALOR08').AsFloat;
                     Form1.ibDataSet28.FieldByName('HORA').AsString     := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
+
+                    //Mauricio Parizotto 2024-08-21
+                    CODIGO_TPAG := Form1.sOrdemExtraNFCe8;
+                    IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    if IDFORMA > 0 then
+                      Form1.ibDataSet28.FieldByName('IDFORMA').AsInteger := IDFORMA;
 
                     Form1.ibDataSet28.Post;
                   except
@@ -12370,27 +12443,24 @@ begin
           Form1.Display('Feche a gaveta'+Replicate('.',I),'Gaveta aberta');
           while Form1.sGaveta = '255' do
           begin
-            //
             I := I + 1;
             if I > 10 then I := 1;
-            //
+
             Form1.lbDisplayPDV.Caption := 'Feche a gaveta'+Replicate('.',I);
             Form1.lbDisplayPDV.Repaint;
-            //
+
             Form1.sGaveta := Form1.PDV_StatusGaveta(True);
-            //
+
             if I = 600 then
             begin
               I := 0;
               SmallMsg('Feche a gaveta.');
             end;
-            //
           end;
-          //
+
           Form1.Display('Aguarde...','Aguarde...');
           Form1.Repaint;
         end;
-
 
         //----------------------------------------- //
         //                 C A R N Ê                //
