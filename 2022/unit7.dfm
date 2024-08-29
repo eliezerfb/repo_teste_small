@@ -315,7 +315,7 @@ object Form7: TForm7
     Font.Pitch = fpFixed
     Font.Style = []
     ParentFont = False
-    Visible = False 
+    Visible = False
   end
   object Label37: TLabel
     Left = 224
@@ -19419,6 +19419,10 @@ object Form7: TForm7
       object Relatriodetotaldeserviosporvendedor1: TMenuItem
         Caption = 'Total de servi'#231'os por t'#233'cnico'
         OnClick = Relatriodetotaldeserviosporvendedor1Click
+      end
+      object DetalhamentodasOrdensfiltradas1: TMenuItem
+        Caption = 'Detalhamento das Ordens filtradas'
+        OnClick = DetalhamentodasOrdensfiltradas1Click
       end
     end
     object MenuItem100: TMenuItem
