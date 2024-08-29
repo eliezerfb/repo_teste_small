@@ -1133,7 +1133,10 @@ begin
 
   if CodBanco = '237' then // BRADESCO
   begin
-    Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + '0'+ sNossoNumero + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+'0'+LimpaNumero(sNossoNumero));
+    if Length(sNossoNumero) = 11 then
+      Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + sNossoNumero + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+LimpaNumero(sNossoNumero))
+    else
+      Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + '0'+ sNossoNumero + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+'0'+LimpaNumero(sNossoNumero));
     Result := Form25.sNossoNum;
   end;
 

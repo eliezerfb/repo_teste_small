@@ -255,7 +255,7 @@ uses
   uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria},
   uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas',
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
-  uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar}
+  uFrmContaPagar in 'uFrmContaPagar.pas', {FrmContaPagar}
   uFrmIntegracaoItau in 'uFrmIntegracaoItau.pas' {FrmIntegracaoItau},
   uMobile in 'units\uMobile.pas',
   uPermissaoUsuario in 'uPermissaoUsuario.pas',
