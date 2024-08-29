@@ -317,7 +317,7 @@
         <DCCReference Include="..\..\unit_compartilhada\uRecursosSistema.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uTypesRecursos.pas"/>
         <DCCReference Include="uConectaBancoCommerce.pas"/>
-        <DCCReference Include="uFuncoesBancoDados.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uFuncoesBancoDados.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uSmallConsts.pas"/>
         <DCCReference Include="units\uRelatorioVendasClliente.pas">
             <Form>frmRelVendasPorCliente</Form>
