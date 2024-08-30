@@ -498,6 +498,12 @@ begin
               Writeln(F,'SerieRps=1');    // Série Itaúna MG, padrão ISSNETONLINE20, não deve ter zeros a esquerda
             end else
             {Sandro Silva 2023-08-22 fim}
+            {Sandro Silva 2024-08-30 inicio}
+            if (sPadraoSistema = 'SYSTEM') and (GetCidadeUF = 'ERECHIMRS') then
+            begin
+              Writeln(F,'SerieRps=RPP');    // Série Erechim - RS, padrão SYSTEM, deve ser sempre RPP
+            end else
+            {Sandro Silva 2024-08-30 fim}
             begin
               Writeln(F,'SerieRps=001');    // Série
             end;
