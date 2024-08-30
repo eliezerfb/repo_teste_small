@@ -95,7 +95,26 @@ uses
   uFrmTransacoesItau in 'uFrmTransacoesItau.pas' {FrmTransacoesItau},
   uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
   uLogSistema in '..\unit_compartilhada\uLogSistema.pas',
-  urequisitapesobalancaautonoma in 'urequisitapesobalancaautonoma.pas';
+  urequisitapesobalancaautonoma in 'urequisitapesobalancaautonoma.pas',
+  uEstoqueDAT in '..\unit_compartilhada\uEstoqueDAT.pas',
+  uArquivoDATINFPadrao in '..\unit_compartilhada\uArquivoDATINFPadrao.pas',
+  uEstoqueSections in '..\unit_compartilhada\uEstoqueSections.pas',
+  uSectionDATPadrao in '..\unit_compartilhada\uSectionDATPadrao.pas',
+  uSmallComINF in '..\unit_compartilhada\uSmallComINF.pas',
+  uSmallComSections in '..\unit_compartilhada\uSmallComSections.pas',
+  uUsuarioINF in '..\unit_compartilhada\uUsuarioINF.pas',
+  uUsuarioSections in '..\unit_compartilhada\uUsuarioSections.pas',
+  uFrenteINI in '..\unit_compartilhada\uFrenteINI.pas',
+  uFrenteSections in '..\unit_compartilhada\uFrenteSections.pas',
+  uNFeINI in '..\unit_compartilhada\uNFeINI.pas',
+  uNFeSections in '..\unit_compartilhada\uNFeSections.pas',
+  uNFSeINI in '..\unit_compartilhada\uNFSeINI.pas',
+  uNFSeSections in '..\unit_compartilhada\uNFSeSections.pas',
+  uConfSisBD in '..\unit_compartilhada\uConfSisBD.pas',
+  uOSSections in '..\unit_compartilhada\uOSSections.pas',
+  uOutrasSections in '..\unit_compartilhada\uOutrasSections.pas',
+  uImpressoraSections in '..\unit_compartilhada\uImpressoraSections.pas',
+  uCarneSections in '..\unit_compartilhada\uCarneSections.pas';
 
 {$R *.RES}
 
