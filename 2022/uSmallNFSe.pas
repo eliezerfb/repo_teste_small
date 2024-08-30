@@ -30,10 +30,8 @@ uses
   , uDialogs, uFuncoesBancoDados
   ;
 
-//const DADO_SIM = 'Sim';
-
 type
-
+  {
   TNFSeEmitente = class
   private
     Fiid_Cidade: String;
@@ -72,22 +70,8 @@ type
     property sEmail: String read FsEmail write FsEmail;
     property endComplemento: String read FendComplemento write FendComplemento;
   end;
-
-  {
-  NFSe_Dados = class
-  private
-    FsCNAEZerado: String;
-    FsForma_Recolhimento: String;
-    FsBCISS_Zerado: String;
-    FsListaServ: String;
-    FsImprime_Danfse: String;
-    FiNum_Copias: Integer;
-    FimpPrefeitura: String;
-  public
-    property sCNAEZerado: String read FsCNAEZerado write FsCNAEZerado;
-  end;
   }
-
+(*
   TNFSeDados = class
   public
     //Variaveis
@@ -206,10 +190,10 @@ TVar_Dados_novo  = class
 
     class procedure fLimpa_VarDados;
   end;
-
+*)
   TNFS = class(TComponent)
   public
-    class var
+//    class var
       //FACBrNFSeX1: TACBrNFSeX;
 //      Protocolo,
 //      Mensagem,
@@ -227,45 +211,45 @@ TVar_Dados_novo  = class
 //      Protocolo_Origem   : string;
 //      cancelada          : Boolean;
 //      data               : TDate;
-      TipoEnvio          :  TmodoEnvio; //Integer;
+//      TipoEnvio          :  TmodoEnvio; //Integer;
 //      Nfse_Nf_Numero: integer;
   private
     FIniNFSe: TIniFile;
     FACBrNFSeX1: TACBrNFSeX;
     FACBrNFSeXDANFSeRL1: TACBrNFSeXDANFSeRL;
     FACBrNFSeXDANFSeFR1: TACBrNFSeXDANFSeFR;
-    FACBrMail1: TACBrMail;
+//    FACBrMail1: TACBrMail;
     FIBTRANSACTION: TIBTransaction;
     FIBQNFSE: TIBQuery;
     FIBQEMITENTE: TIBQuery;
-    TNFSe_Emitente: TNFSeEmitente;
-    FEnviaThread: Boolean;
+//    TNFSe_Emitente: TNFSeEmitente;
+    //FEnviaThread: Boolean;
     FslLog: TStringList;
-    procedure ACBrNFSeX1GerarLog(const ALogLine: string; var Tratado: Boolean);
-    procedure ACBrNFSeX1StatusChange(Sender: TObject);
-    function GetCodigoMunicipioServico: String;
-    function GetCidade_Goiania(id_cidade: string): string;
-    function GetCodigoCNAE: String;
-    function getTipoEnvio(tipoEnvio: integer) : TmodoEnvio;
+//    procedure ACBrNFSeX1GerarLog(const ALogLine: string; var Tratado: Boolean);
+//    procedure ACBrNFSeX1StatusChange(Sender: TObject);
+//    function GetCodigoMunicipioServico: String;
+//    function GetCidade_Goiania(id_cidade: string): string;
+//    function GetCodigoCNAE: String;
+//    function getTipoEnvio(tipoEnvio: integer) : TmodoEnvio;
     procedure SetIBTRANSACTION(const Value: TIBTransaction);
-    procedure SelecionarDadosEmitente;
+//    procedure SelecionarDadosEmitente;
     procedure ImportaConfiguracaoTecnospeed;
   public
     property ACBrNFSeX: TACBrNFSeX read FACBrNFSeX1 write FACBrNFSeX1;
     //property ACBrNFSeXDANFSeRL1: TACBrNFSeXDANFSeRL read FACBrNFSeXDANFSeRL1 write FACBrNFSeXDANFSeRL1;
     //property ACBrNFSeXDANFSeFR1: TACBrNFSeXDANFSeFR read FACBrNFSeXDANFSeFR1 write FACBrNFSeXDANFSeFR1;
-    property ACBrMail1: TACBrMail read FACBrMail1 write FACBrMail1;
+//    property ACBrMail1: TACBrMail read FACBrMail1 write FACBrMail1;
     property IBTRANSACTION: TIBTransaction read FIBTRANSACTION write SetIBTRANSACTION;
-    property EnviaThread : Boolean read FEnviaThread write FEnviaThread;
+    //property EnviaThread : Boolean read FEnviaThread write FEnviaThread;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy;
     function ConfigurarComponente(TipoEnvio: Integer = 0): Boolean;
   end;
-
+{
 const
   Lucas_Do_Rio_Verde = '5105259';
   Ponta_Grossa = '4119905';
-
+}
 
 //  SIT_Lote_Processamento = '2';
 //  SIT_Erro = '3';
@@ -280,14 +264,15 @@ uses
   Frm_Status, smallfunc_xe, uConectaBancoSmall, uArquivosDAT, uListaToJson;
 
 { TNFS }
-
+{
 procedure TNFS.ACBrNFSeX1GerarLog(const ALogLine: string; var Tratado: Boolean);
 begin
   //memoLog.Lines.Add(ALogLine);
   FslLog.Add(ALogLine);
   Tratado := False;
 end;
-
+}
+(*
 procedure TNFS.ACBrNFSeX1StatusChange(Sender: TObject);
 begin
   case TACBrNFSeX(Sender).Status of
@@ -373,7 +358,7 @@ begin
   Application.ProcessMessages;
 
 end;
-
+*)
 function TNFS.ConfigurarComponente(TipoEnvio: Integer = 0): Boolean;
 var
   Ok: Boolean;
@@ -389,7 +374,7 @@ begin
 
   FIniNFSe := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'nfse.ini');
 
-  SelecionarDadosEmitente;
+//  SelecionarDadosEmitente;
 
   ImportaConfiguracaoTecnospeed;
 
@@ -420,9 +405,10 @@ begin
   FACBrNFSeX1.Configuracoes.Geral.FormatoAlerta    := FIniNFSe.ReadString('Geral', 'FormatoAlerta', 'TAG:%TAGNIVEL% ID:%ID%/%TAG%(%DESCRICAO%) - %MSG%.');
   FACBrNFSeX1.Configuracoes.Geral.FormaEmissao     := TpcnTipoEmissao(FIniNFSe.ReadInteger('Geral', 'FormaEmissao', 0)); // 0-Normal
 
-  //if (TipoEnvio = meLoteAssincrono) or (FACBrNFSeX1.Configuracoes.Geral.Provedor in [proIPM]) then//
+{
   if (getTipoEnvio(TipoEnvio) = meLoteAssincrono) or (FACBrNFSeX1.Configuracoes.Geral.Provedor in [proIPM]) then
     FACBrNFSeX1.Configuracoes.Geral.ConsultaLoteAposEnvio  := True;
+}
 
   if FACBrNFSeX1.Configuracoes.Geral.Provedor in ([proSiapSistemas, profintelISS, proNFSeBrasil]) then
     FACBrNFSeX1.Configuracoes.Geral.ConsultaLoteAposEnvio  := False;
@@ -523,9 +509,10 @@ begin
   Reports do Acbr   X Descricao no sitema X Nome do report enviado no Pack
   DANFSE.fr3        X Padrão              X DANFSE.fr3
   DANFSeNovo.fr3    X Detalhada           X DANFSEDetalhada.fr3
-  DANFSEPadrao.fr3  X Detalhada com itens X DANFSEDetalhada_itens.fr3}
+  DANFSEPadrao.fr3  X Detalhada com itens X DANFSEDetalhada_itens.fr3
+  }
 
-
+{
   FACBrNFSeXDANFSeFR1.ACBrNFSe := FACBrNFSeX1;
   if TNFSeDados.STipoImpressao = 'Padrão' then
     FACBrNFSeXDANFSeFR1.FastFile := ExtractFilePath(Application.ExeName) + 'DANFSE'
@@ -564,10 +551,10 @@ begin
     // Defini a quantidade de casas decimais para o campo aliquota
     FACBrNFSeX1.DANFSE.CasasDecimais.Aliquota := 2;
   end;
+  }
 
-
-  if not(FEnviaThread) then
-    FACBrNFSeX1.OnStatusChange  := ACBrNFSeX1StatusChange;
+//  if not(FEnviaThread) then
+//    FACBrNFSeX1.OnStatusChange  := ACBrNFSeX1StatusChange;
 
   {Usar mail.exe
   //with FACBrNFSeX1.MAIL do
@@ -637,18 +624,18 @@ begin
 
   FslLog := TStringList.Create;
 
-  TNFSe_Emitente := TNFSeEmitente.Create;
+//  TNFSe_Emitente := TNFSeEmitente.Create;
 
   FACBrNFSeX1 := TACBrNFSeX.Create(nil);
   FACBrNFSeXDANFSeRL1 := TACBrNFSeXDANFSeRL.Create(nil);
   FACBrNFSeXDANFSeFR1 := TACBrNFSeXDANFSeFR.Create(nil);
-  FACBrMail1 := TACBrMail.Create(nil);
-  FACBrNFSeX1.OnGerarLog := ACBrNFSeX1GerarLog;
-  FACBrNFSeX1.OnStatusChange := ACBrNFSeX1StatusChange;
+//  FACBrMail1 := TACBrMail.Create(nil);
+//  FACBrNFSeX1.OnGerarLog := ACBrNFSeX1GerarLog;
+//  FACBrNFSeX1.OnStatusChange := ACBrNFSeX1StatusChange;
   FACBrNFSeX1.DANFSE := FACBrNFSeXDANFSeFR1;//FACBrNFSeXDANFSeRL1;
-  FACBrNFSeX1.MAIL := FACBrMail1;
+//  FACBrNFSeX1.MAIL := FACBrMail1;
   FIniNFSe := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'nfse.ini');
-  TipoEnvio := meLoteAssincrono;
+//  TipoEnvio := meLoteAssincrono;
 
   FACBrNFSeX1.Configuracoes.Geral.SSLLib := libNone;
   FACBrNFSeX1.Configuracoes.Geral.SSLCryptLib := cryNone;
@@ -703,15 +690,15 @@ destructor TNFS.Destroy;
 begin
   FreeAndNil(FACBrNFSeXDANFSeRL1);
   FreeAndNil(FACBrNFSeXDANFSeFR1);
-  FreeAndNil(FACBrMail1);
+//  FreeAndNil(FACBrMail1);
   FreeAndNil(FACBrNFSeX1);
   FreeAndNil(FIniNFSe);
-  TNFSe_Emitente.Free;
+  //TNFSe_Emitente.Free;
 
   FreeAndNil(FslLog);
   inherited;
 end;
-
+(*
 function TNFS.GetCidade_Goiania(id_cidade: string): string;
 var
   qryConsulta : TIBQuery;
@@ -734,7 +721,8 @@ begin
   end;
 
 end;
-
+*)
+(*
 function TNFS.GetCodigoCNAE: String;
 begin
  {
@@ -758,7 +746,8 @@ begin
 	  Result := FDQueryV_NFSe.FieldByName('cod_lst').AsString;
 }
 end;
-
+*)
+(*
 function TNFS.GetCodigoMunicipioServico: String;
 begin
 {
@@ -787,7 +776,8 @@ begin
   Exit(TNFSe_Emitente.iid_Cidade);
 }
 end;
-
+*)
+(*
 function TNFS.getTipoEnvio(tipoEnvio: integer): TmodoEnvio;
 begin
   result :=  meAutomatico;
@@ -798,7 +788,7 @@ begin
     3 : result :=  meLoteAssincrono;
   end;
 end;
-
+*)
 procedure TNFS.ImportaConfiguracaoTecnospeed;
 var
   I: Integer;
@@ -818,9 +808,7 @@ begin
   if Ini.ReadString('NFSE', 'Migrado', '') = 'Sim' then
     Exit;
 
-
   config := TArquivosDAT.Create('', FIBTRANSACTION);
-
 
   try
     if Ini.ReadString('NFSE', 'NomeCertificado', '') <> '' then
@@ -895,30 +883,6 @@ begin
     Parametros.Free;
     FreeAndNil(stringsSection);
 
-
-    {
-    config.BD.NFSe.InformacoesObtidasPrefeitura.IncentivadorCultural     := Ini.ReadString('Informacoes obtidas na prefeitura', 'IncentivadorCultural', '');
-    config.BD.NFSe.InformacoesObtidasPrefeitura.RegimeEspecialTributacao := Ini.ReadString('Informacoes obtidas na prefeitura', 'RegimeEspecialTributacao', '');
-    config.BD.NFSe.InformacoesObtidasPrefeitura.NaturezaTributacao       := Ini.ReadString('Informacoes obtidas na prefeitura', 'NaturezaTributacao', '');
-    config.BD.NFSe.InformacoesObtidasPrefeitura.IncentivoFiscal          := Ini.ReadString('Informacoes obtidas na prefeitura', 'IncentivoFiscal', '');
-    config.BD.NFSe.InformacoesObtidasPrefeitura.TipoTributacao           := Ini.ReadString('Informacoes obtidas na prefeitura', 'TipoTributacao', '');
-    config.BD.NFSe.InformacoesObtidasPrefeitura.ExigibilidadeISS         := Ini.ReadString('Informacoes obtidas na prefeitura', 'ExigibilidadeISS', '');
-    config.BD.NFSe.InformacoesObtidasPrefeitura.Operacao                 := Ini.ReadString('Informacoes obtidas na prefeitura', 'Operacao', '');
-    config.BD.NFSe.InformacoesObtidasPrefeitura.CodigoCnae               := Ini.ReadString('Informacoes obtidas na prefeitura', 'CodigoCnae', '');
-    config.BD.NFSe.InformacoesObtidasPrefeitura.MultiplosServicos        := Ini.ReadString('Informacoes obtidas na prefeitura', 'MultiplosServicos', '');
-    config.BD.NFSe.InformacoesObtidasPrefeitura.TipoPagamentoPrazo       := Ini.ReadString('Informacoes obtidas na prefeitura', 'TipoPagamentoPrazo', '');
-    }
-    FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'IncentivadorCultural', Ini.ReadString('Informacoes obtidas na prefeitura', 'IncentivadorCultural', ''));
-    FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'RegimeEspecialTributacao', Ini.ReadString('Informacoes obtidas na prefeitura', 'RegimeEspecialTributacao', ''));
-    FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'NaturezaTributacao', Ini.ReadString('Informacoes obtidas na prefeitura', 'NaturezaTributacao', ''));
-    FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'IncentivoFiscal', Ini.ReadString('Informacoes obtidas na prefeitura', 'IncentivoFiscal', ''));
-    FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'TipoTributacao', Ini.ReadString('Informacoes obtidas na prefeitura', 'TipoTributacao', ''));
-    FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'ExigibilidadeISS', Ini.ReadString('Informacoes obtidas na prefeitura', 'ExigibilidadeISS', ''));
-    FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'Operacao', Ini.ReadString('Informacoes obtidas na prefeitura', 'Operacao', ''));
-    FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'CodigoCnae', Ini.ReadString('Informacoes obtidas na prefeitura', 'CodigoCnae', ''));
-    FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'MultiplosServicos', Ini.ReadString('Informacoes obtidas na prefeitura', 'MultiplosServicos', ''));
-    FIniNFSe.WriteString('Informacoes obtidas na prefeitura', 'TipoPagamentoPrazo', Ini.ReadString('Informacoes obtidas na prefeitura', 'TipoPagamentoPrazo', ''));
-
   except
 
   end;
@@ -928,7 +892,7 @@ begin
 
   config.Free;
 end;
-
+(*
 procedure TNFS.SelecionarDadosEmitente;
 begin
 
@@ -943,7 +907,7 @@ begin
     'from EMITENTE E ' +
     'left join MUNICIPIOS M on M.NOME = E.MUNICIPIO and M.UF = E.ESTADO';
   FIBQEMITENTE.Open;
-
+  {
   TNFSe_Emitente.iid_Cidade := FIBQEMITENTE.FieldByName('CODIGO_SEDETEC').AsString;
   TNFSe_Emitente.sCnae  := FIBQEMITENTE.FieldByName('CNAE').AsString;
   TNFSe_Emitente.sEnd_Cep := FIBQEMITENTE.FieldByName('CEP').AsString;
@@ -961,8 +925,9 @@ begin
   TNFSe_Emitente.cidade := FIBQEMITENTE.FieldByName('MUNICIPIO').AsString;
   TNFSe_Emitente.sEmail := FIBQEMITENTE.FieldByName('EMAIL').AsString;
   TNFSe_Emitente.endComplemento := '';
+  }
 end;
-
+*)
 procedure TNFS.SetIBTRANSACTION(const Value: TIBTransaction);
 begin
   FIBTRANSACTION := Value;
@@ -970,6 +935,7 @@ begin
   FIBQNFSE := CriaIBQuery(FIBTRANSACTION);
 end;
 
+(*
 { TVar_Dados_novo }
 
 class procedure TVar_Dados_novo.fLimpa_VarDados;
@@ -984,5 +950,5 @@ begin
 end;
 
 { TNFSeDados }
-
+*)
 end.
