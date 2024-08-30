@@ -3449,7 +3449,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 17
           Top = 23
           Width = 634
-          Height = 19
+          Height = 22
           BevelInner = bvNone
           Color = clWhite
           Ctl3D = False
@@ -3469,7 +3469,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 650
           Top = 23
           Width = 125
-          Height = 19
+          Height = 22
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False

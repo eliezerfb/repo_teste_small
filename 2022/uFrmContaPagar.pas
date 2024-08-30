@@ -173,6 +173,10 @@ procedure TFrmContaPagar.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
   inherited;
 
+  //Mauricio Parizotto 2024-08-29
+  if not Self.Visible then
+    Exit;
+
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
 
@@ -209,6 +213,8 @@ begin
   finally
     Form7.ibDataSet8.EnableControls;
   end;
+
+  FreeAndNil(FrmContaPagar);
 end;
 
 procedure TFrmContaPagar.FormShow(Sender: TObject);

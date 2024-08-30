@@ -34880,10 +34880,10 @@ begin
 
     {Mauricio Parizotto 2024-04-16 Inicio}
     if FrmContaPagar <> nil then
-      FreeAndNil(FrmCaixa);
+      FreeAndNil(FrmContaPagar);
 
     if FrmContaReceber <> nil then
-      FreeAndNil(FrmCaixa);
+      FreeAndNil(FrmContaReceber);
     {Mauricio Parizotto 2024-04-16 Fim}
 
     if FrmCadastro <> nil then
