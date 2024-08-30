@@ -27109,9 +27109,23 @@ begin
   end;
   {Sandro Silva 2023-08-16 fim}
 
+  {Mauricio Parizotto 2024-08-24 Inicio
   if DBGrid1.Visible then
-    //AjustaLarguraDBGrid(DBGrid1); Mauricio Parizotto 2024-08-26
-    AjustaLarguraDBGrid(DBGrid1,605);
+    AjustaLarguraDBGrid(DBGrid1);
+  }
+
+  if DBGrid1.Visible then
+  begin
+    AjustaLarguraDBGrid(DBGrid1);
+
+    if Form1.sModeloECF = '65' then
+      AjustaLarguraDBGrid(DBGrid1,605);
+
+    if Form1.sModeloECF = '59' then
+      AjustaLarguraDBGrid(DBGrid1,195);
+  end;
+
+  {Mauricio Parizotto 2024-08-24 Fim}
 
 end;
 
