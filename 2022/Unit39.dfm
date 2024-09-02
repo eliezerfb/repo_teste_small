@@ -5,14 +5,13 @@ object Form39: TForm39
   BorderStyle = bsNone
   Caption = 'Colunas'
   ClientHeight = 117
-  ClientWidth = 164
+  ClientWidth = 181
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
@@ -20,7 +19,7 @@ object Form39: TForm39
   object Panel10: TPanel
     Left = 0
     Top = 0
-    Width = 164
+    Width = 181
     Height = 117
     Align = alClient
     BevelOuter = bvNone
@@ -68,6 +67,7 @@ object Form39: TForm39
       ParentFont = False
       TabOrder = 0
       Visible = False
+      OnClick = CheckBox4Click
     end
     object CheckBox5: TCheckBox
       Left = 10
