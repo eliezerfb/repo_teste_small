@@ -26,6 +26,7 @@ uses
   , Mais
   , ugeraxmlnfe
   , StrUtils
+  , uSmallConsts
 ;
 
 
@@ -147,6 +148,7 @@ var
   bTributa : Boolean;
 
   sDIFAL_OBS : String;
+  sSINIEF_OBS: String;
   fAliquotaPadrao, fPercentualDeReducaoDeBC, fICMSDesonerado, vICMSDeson, fFCPST, fFCPUFDest, fICMSUFDest, fICMSUFREmet, fDIFAL, fIPIDevolvido,  fFCP: Real;
 
   stpOp_VeiculosNovos,
@@ -3252,6 +3254,15 @@ while not Form7.ibDataSet7.Eof do
     {Sandro Silva 2023-06-29 fim}
     Form7.spdNFeDataSets.Y.Post; // Grava a Duplicata em questão.
   end;
+
+  {Dailon Parisotto (small-653) 2024-08-26 Inicio}
+  sSINIEF_OBS := EmptyStr;
+  if AnsiUpperCase(Form7.ibDataSet14.FieldByname('NOME').AsString) = AnsiUpperCase(_cNaturezaSINIEF) then
+  begin
+    sSINIEF_OBS := _cObsNFeSINIEF;
+    Form7.spdNFeDataSets.Campo('infAdFisco_Z02').Value := AllTrim(Form7.spdNFeDataSets.Campo('infAdFisco_Z02').Value + ' ' + _cObsNFeSINIEF);
+  end;
+  {Dailon Parisotto (small-653) 2024-08-26 Fim}
 
   // Dados Adicionais da NFe - Observações
   if RetornaValorDaTagNoCampo('infAdFisco', Form7.ibDataSet14.FieldByname('OBS').AsString) <> '' then
