@@ -21,7 +21,8 @@ uses
 
 implementation
 
-uses Unit7, Mais, uSmallConsts, unit29, StdCtrls, uDialogs, uArquivosDAT;
+uses Unit7, Mais, uSmallConsts, unit29, StdCtrls, uDialogs, uArquivosDAT
+  , uFuncoesBancoDados;
 
 function GetCidadeUF: String;
 begin
@@ -447,6 +448,12 @@ begin
               Writeln(F,'NumeroLote=' + IntToStr(StrToIntDef(Copy(Form7.ibDataSet15NUMERONF.AsString,1,9), 0)) );
             end else
             {Sandro Silva 2023-09-05 fim}
+            {Sandro Silva 2024-08-30 inicio}
+            if (sPadraoSistema = 'SYSTEM') and (GetCidadeUF = 'ERECHIMRS') then
+            begin
+              Writeln(F,'NumeroLote=' + IncGenerator(FOrm7.ibDataSet15.Transaction.DefaultDatabase, 'G_LOTENFSE', 0) );
+            end else
+            {Sandro Silva 2024-08-30 fim}
             begin
               Writeln(F,'NumeroLote='+ IntToStr(Trunc(Now*1000000)) );
             end;
@@ -1288,6 +1295,20 @@ begin
 
                   Form7.ibDataSet15.Post;
                   Form7.ibDataSet15.Edit;
+
+                  {Sandro Silva 2024-08-30 inicio}
+                  if (Limpanumero(Form7.ibDAtaSet15NFEPROTOCOLO.AsString) = '1') or (Limpanumero(Form7.ibDAtaSet15NFEPROTOCOLO.AsString) = '') then
+                  begin
+
+                    // Para Erechim RS, provedor SYSTEM usa G_LOTENFSE que é incrementado após autorizar a nota
+                    if (sPadraoSistema = 'SYSTEM') and (GetCidadeUF = 'ERECHIMRS') then
+                    begin
+                      if RetornaValorDaTagNoCampo('NumeroDaNFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> '' then
+                        IncGenerator(FOrm7.ibDataSet15.Transaction.DefaultDatabase, 'G_LOTENFSE');
+                    end;
+
+                  end;
+                  {Sandro Silva 2024-08-30 fim}
 
                   if RetornaValorDaTagNoCampo('Status',Form7.ibDAtaSet15RECIBOXML.AsString)       <> '' then
                     Form7.SetTextoCampoSTATUSNFe(AllTrim(RetornaValorDaTagNoCampo('Status',Form7.ibDAtaSet15RECIBOXML.AsString)));
