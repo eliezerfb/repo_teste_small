@@ -19418,7 +19418,7 @@ begin
               Form7.ibDataSet16.Edit;
 
               // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução
-              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then
+              if (not NFeFinalidadeDevolucaoImpostoManual(Form7.ibDataSet15FINNFE.AsString, Form7.ibDataSet14IMPOSTOMANUAL.AsString)) then
               begin
                 if AllTrim(Form7.ibDataSet14CFOP.AsString) <> '' then
                 begin
