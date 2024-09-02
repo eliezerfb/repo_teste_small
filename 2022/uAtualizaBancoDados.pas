@@ -2731,6 +2731,15 @@ begin
 
   {Mauricio Parizotto 2024-08-21 Fim}
 
+  {Sandro Silva 2024-09-02 inicio}
+  // Generator para sequencial do número do lote de NFSe. Inicialmente usao para padrão SYSTEM, prefeitura Erechim - RS
+  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase,'G_LOTENFSE') = False then
+  begin
+    if ExecutaComando('CREATE SEQUENCE G_LOTENFSE') then
+      ExecutaComando('commit');
+  end;
+  {Sandro Silva 2024-09-02 fim}
+
   {Dailon Parisotto (smal-653) 2024-08-26 Inicio}
   if TamanhoCampo(Form1.ibDataSet200.Transaction, 'ICM', 'NOME') < 60 then
   begin
