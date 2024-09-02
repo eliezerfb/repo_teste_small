@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -317,7 +317,7 @@
         <DCCReference Include="..\..\unit_compartilhada\uRecursosSistema.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uTypesRecursos.pas"/>
         <DCCReference Include="uConectaBancoCommerce.pas"/>
-        <DCCReference Include="uFuncoesBancoDados.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uFuncoesBancoDados.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uSmallConsts.pas"/>
         <DCCReference Include="units\uRelatorioVendasClliente.pas">
             <Form>frmRelVendasPorCliente</Form>

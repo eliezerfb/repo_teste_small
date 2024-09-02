@@ -14462,7 +14462,7 @@ object Form7: TForm7
       DisplayWidth = 38
       FieldName = 'NOME'
       OnSetText = ibDataSet14NOMESetText
-      Size = 40
+      Size = 60
     end
     object ibDataSet14INTEGRACAO: TIBStringField
       DisplayLabel = 'Integra'#231#227'o'
@@ -15174,7 +15174,7 @@ object Form7: TForm7
       DisplayLabel = 'Natureza da opera'#231#227'o'
       FieldName = 'OPERACAO'
       Origin = 'VENDAS.OPERACAO'
-      Size = 40
+      Size = 60
     end
     object ibDataSet15VENDEDOR: TIBStringField
       DisplayLabel = 'Vendedor'
@@ -17054,7 +17054,7 @@ object Form7: TForm7
     object ibDataSet24OPERACAO: TIBStringField
       DisplayLabel = 'Natureza da opera'#231#227'o'
       FieldName = 'OPERACAO'
-      Size = 40
+      Size = 60
     end
     object ibDataSet24ICMS: TFloatField
       DisplayLabel = 'ICMs'
@@ -19422,6 +19422,10 @@ object Form7: TForm7
       object Relatriodetotaldeserviosporvendedor1: TMenuItem
         Caption = 'Total de servi'#231'os por t'#233'cnico'
         OnClick = Relatriodetotaldeserviosporvendedor1Click
+      end
+      object DetalhamentodasOrdensfiltradas1: TMenuItem
+        Caption = 'Detalhamento das Ordens filtradas'
+        OnClick = DetalhamentodasOrdensfiltradas1Click
       end
     end
     object MenuItem100: TMenuItem
