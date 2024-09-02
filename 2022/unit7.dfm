@@ -315,7 +315,7 @@ object Form7: TForm7
     Font.Pitch = fpFixed
     Font.Style = []
     ParentFont = False
-    Visible = False 
+    Visible = False
   end
   object Label37: TLabel
     Left = 224
