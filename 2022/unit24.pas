@@ -1184,7 +1184,7 @@ end;
 
 procedure TForm24.FormClose(Sender: TObject; var Action: TCloseAction);
 var
-//  F : TextFile;  Dailon Parisotto 2024-08-22
+  F : TextFile;
   sCustoCompra : String;
 begin
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
@@ -1195,20 +1195,21 @@ begin
   Form24.Panel5.Visible := False;
   Form24.Panel9.Visible := False;
   try
-    {Dailon Parisotto (smal-630) 2024-08-22 Inicio
+    {Dailon Parisotto (smal-630/smal-674) 2024-08-22 Inicio}
+    if (not Form7.oArqConfiguracao.BD.Outras.RecalculaCustoMedioRetroativo) then
+    begin
 
-    if FileExists(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt') then
-      DeleteFile(pChar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));   // Apaga o arquivo anterior
+      if FileExists(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt') then
+        DeleteFile(pChar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));   // Apaga o arquivo anterior
 
-    AssignFile(F,pchar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));
-    Rewrite(F);           // Abre para gravação
-
-    }
-
-    if FileExists(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt') then
-      DeleteFile(pChar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));
-
-    {Dailon Parisotto (smal-630) 2024-08-22 Fim}
+      AssignFile(F,pchar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));
+      Rewrite(F);           // Abre para gravação
+    end else
+    begin
+      if FileExists(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt') then
+        DeleteFile(pChar(Form1.sAtual+'\Cálculos de Custos da Última Nota.txt'));
+    end;
+    {Dailon Parisotto (smal-630/smal-674) 2024-08-22 Fim}
 
   	DefineDataSetInfNFe;
     // Tudo que for feito alteração no DATASET24 coloque depois da linha abaixo
@@ -1245,15 +1246,17 @@ begin
       // Atenção a rotina abaixo altera a quantidade no estoque                       //
       //////////////////////////////////////////////////////////////////////////////////
       Form1.bFlag := True;
-      {Dailon Parisotto (smal-630) 2024-08-22
+      {Dailon Parisotto (smal-630/smal-674) 2024-08-22 Inicio}
+      if (not Form7.oArqConfiguracao.BD.Outras.RecalculaCustoMedioRetroativo) then
+      begin
+        Writeln(F,'CÁLCULO DO CUSTO MÉDIO DA ÚLTIMA NOTA');
+        Writeln(F,Replicate('-',80));
+        Writeln(F,'CUSTO MÉDIO  = ((QTD_ATUAL * CUSTOMEDIO ANTERIOR) + (QUANTIDADE * CUSTOCOMPR - (VICMS / QUANTIDADE))))/ (QUANTIDADE + QTD_ATUAL)');
+        Writeln(F,'CUSTO COMPRA = (VALOR UNITARIO + ((TOTAL ICMS ST + TOTAL VIPI)/ QUANTIDADE) ) + (( VALOR UNITARIO / TOTAL MERCADORIAS ) * ( FRETE + SEGURO + OUTRAS DESPESAS - DESCONTO ))');
+        Writeln(F,Replicate('-',80));
+      end;
+      {Dailon Parisotto (smal-630/smal-674) 2024-08-22 Fim}
 
-      Writeln(F,'CÁLCULO DO CUSTO MÉDIO DA ÚLTIMA NOTA');
-      Writeln(F,Replicate('-',80));
-      Writeln(F,'CUSTO MÉDIO  = ((QTD_ATUAL * CUSTOMEDIO ANTERIOR) + (QUANTIDADE * CUSTOCOMPR - (VICMS / QUANTIDADE))))/ (QUANTIDADE + QTD_ATUAL)');
-      Writeln(F,'CUSTO COMPRA = (VALOR UNITARIO + ((TOTAL ICMS ST + TOTAL VIPI)/ QUANTIDADE) ) + (( VALOR UNITARIO / TOTAL MERCADORIAS ) * ( FRETE + SEGURO + OUTRAS DESPESAS - DESCONTO ))');
-      Writeln(F,Replicate('-',80));
-
-      }
       // Precis posicionar no primeiro porque outra rotina pode ter movimentado o ponteiro do dataset e deixado no final (.Eof True)
       Form7.ibDataSet23.First; // Sandro Silva 2024-02-23
 
@@ -1354,70 +1357,120 @@ begin
                           //                                                                       //
                           // Obs: O Custo Médio é a média ponderada entre o custo da mercadoria    //
                           // comprada menos o crédito de ICMS e o custo da mercadoria em estoque.  //
-
                           if not Form1.bMediaPonderadaFixa then
                           begin
-                            (*Dailon Parisotto (smal-630) 2024-08-21 Inicio
+                            (*Dailon Parisotto (smal-630/smal-674) 2024-09-03 Inicio
 
-                            Comentado devido a alteração desta ficha efetuar muitos calculos, o que torna o LOG inviavel para analise posterior.
+                              if Form7.ibDataSet23CUSTO.AsFloat = 0 then
+                              begin
+                                if (Form7.ibDataSet4CUSTOMEDIO.AsFloat = 0) or (Form7.ibDataSet4QTD_ATUAL.AsFloat <= 0)  then
+                                begin
+                                  Form7.ibDataSet4CUSTOMEDIO.AsFloat := Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat);
 
-                            if Form7.ibDataSet23CUSTO.AsFloat = 0 then
+                                  {Sandro Silva 2023-03-01 inicio}
+                                  if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                                    Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
+                                  {Sandro Silva 2023-03-01 fim}
+
+                                  Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
+                                  Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
+                                  Writeln(F,'Custo de compra...: ' + sCustoCompra);
+                                  Writeln(F,'Custo médio.......: ' + Form7.ibDataSet4CUSTOMEDIO.AsString + ' = '+Form7.ibDataSet4CUSTOMEDIO.AsString);
+                                end else
+                                begin
+
+                                  {Sandro Silva 2023-03-01 inicio}
+                                  if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                                    Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
+                                  {Sandro Silva 2023-03-01 fim}
+
+                                  Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
+                                  Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
+                                  Writeln(F,'Custo de compra...: ' + sCustoCompra);
+                                  Writeln(F,'Custo médio.......: ' + FloatToStr(((Form7.ibDataSet4QTD_ATUAL.Asfloat * Form7.ibDataSet4CUSTOMEDIO.AsFloat) +
+                                                                                (Form7.ibDataSet23QUANTIDADE.Asfloat * (Form7.ibDataSet4CUSTOCOMPR.AsFloat -
+                                                                                (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat))))
+                                                                                 / (Form7.ibDataSet23QUANTIDADE.Asfloat + Form7.ibDataSet4QTD_ATUAL.Asfloat))+
+                                                                     ' = (('+Form7.ibDataSet4QTD_ATUAL.AsString+' * ' +
+                                                                     Form7.ibDataSet4CUSTOMEDIO.AsString+') + ('+Form7.ibDataSet23QUANTIDADE.AsString +
+                                                                     ' * ('+Form7.ibDataSet4CUSTOCOMPR.AsString+
+                                                                     ' - ('+Form7.ibDataSet23VICMS.AsString+' / '+Form7.ibDataSet23QUANTIDADE.AsString+'))))'+
+                                                                     '/ ('+Form7.ibDataSet23QUANTIDADE.AsString+' + '+Form7.ibDataSet4QTD_ATUAL.AsString+')'
+                                                                     );
+
+                                  Form7.ibDataSet4CUSTOMEDIO.AsFloat := ((Form7.ibDataSet4QTD_ATUAL.Asfloat * Form7.ibDataSet4CUSTOMEDIO.AsFloat) + (Form7.ibDataSet23QUANTIDADE.Asfloat * (Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat))))
+                                                                          / (Form7.ibDataSet23QUANTIDADE.Asfloat + Form7.ibDataSet4QTD_ATUAL.Asfloat);
+
+                                  {Sandro Silva 2023-03-01 inicio}
+                                  if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                                    Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
+                                  {Sandro Silva 2023-03-01 fim}
+
+                                end;
+
+                                Writeln(F,Replicate('-',80));
+                              end;
+                            *)
+
+                            if (not Form7.oArqConfiguracao.BD.Outras.RecalculaCustoMedioRetroativo) then
                             begin
-
-                              if (Form7.ibDataSet4CUSTOMEDIO.AsFloat = 0) or (Form7.ibDataSet4QTD_ATUAL.AsFloat <= 0)  then
+                              if Form7.ibDataSet23CUSTO.AsFloat = 0 then
                               begin
-                                Form7.ibDataSet4CUSTOMEDIO.AsFloat := Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat);
+                                if (Form7.ibDataSet4CUSTOMEDIO.AsFloat = 0) or (Form7.ibDataSet4QTD_ATUAL.AsFloat <= 0)  then
+                                begin
+                                  Form7.ibDataSet4CUSTOMEDIO.AsFloat := Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat);
 
-                                {Sandro Silva 2023-03-01 inicio}
-                                if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
-                                  Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
-                                {Sandro Silva 2023-03-01 fim}
+                                  {Sandro Silva 2023-03-01 inicio}
+                                  if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                                    Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
+                                  {Sandro Silva 2023-03-01 fim}
 
-                                Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
-                                Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
-                                Writeln(F,'Custo de compra...: ' + sCustoCompra);
-                                Writeln(F,'Custo médio.......: ' + Form7.ibDataSet4CUSTOMEDIO.AsString + ' = '+Form7.ibDataSet4CUSTOMEDIO.AsString);
-                              end else
+                                  Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
+                                  Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
+                                  Writeln(F,'Custo de compra...: ' + sCustoCompra);
+                                  Writeln(F,'Custo médio.......: ' + Form7.ibDataSet4CUSTOMEDIO.AsString + ' = '+Form7.ibDataSet4CUSTOMEDIO.AsString);
+                                end else
+                                begin
 
-                              begin
+                                  {Sandro Silva 2023-03-01 inicio}
+                                  if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                                    Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
+                                  {Sandro Silva 2023-03-01 fim}
 
-                                {Sandro Silva 2023-03-01 inicio}
-                                if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
-                                  Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
-                                {Sandro Silva 2023-03-01 fim}
+                                  Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
+                                  Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
+                                  Writeln(F,'Custo de compra...: ' + sCustoCompra);
+                                  Writeln(F,'Custo médio.......: ' + FloatToStr(((Form7.ibDataSet4QTD_ATUAL.Asfloat * Form7.ibDataSet4CUSTOMEDIO.AsFloat) +
+                                                                                (Form7.ibDataSet23QUANTIDADE.Asfloat * (Form7.ibDataSet4CUSTOCOMPR.AsFloat -
+                                                                                (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat))))
+                                                                                 / (Form7.ibDataSet23QUANTIDADE.Asfloat + Form7.ibDataSet4QTD_ATUAL.Asfloat))+
+                                                                     ' = (('+Form7.ibDataSet4QTD_ATUAL.AsString+' * ' +
+                                                                     Form7.ibDataSet4CUSTOMEDIO.AsString+') + ('+Form7.ibDataSet23QUANTIDADE.AsString +
+                                                                     ' * ('+Form7.ibDataSet4CUSTOCOMPR.AsString+
+                                                                     ' - ('+Form7.ibDataSet23VICMS.AsString+' / '+Form7.ibDataSet23QUANTIDADE.AsString+'))))'+
+                                                                     '/ ('+Form7.ibDataSet23QUANTIDADE.AsString+' + '+Form7.ibDataSet4QTD_ATUAL.AsString+')'
+                                                                     );
 
-                                Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
-                                Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
-                                Writeln(F,'Custo de compra...: ' + sCustoCompra);
-                                Writeln(F,'Custo médio.......: ' + FloatToStr(((Form7.ibDataSet4QTD_ATUAL.Asfloat * Form7.ibDataSet4CUSTOMEDIO.AsFloat) +
-                                                                              (Form7.ibDataSet23QUANTIDADE.Asfloat * (Form7.ibDataSet4CUSTOCOMPR.AsFloat -
-                                                                              (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat))))
-                                                                               / (Form7.ibDataSet23QUANTIDADE.Asfloat + Form7.ibDataSet4QTD_ATUAL.Asfloat))+
-                                                                   ' = (('+Form7.ibDataSet4QTD_ATUAL.AsString+' * ' +
-                                                                   Form7.ibDataSet4CUSTOMEDIO.AsString+') + ('+Form7.ibDataSet23QUANTIDADE.AsString +
-                                                                   ' * ('+Form7.ibDataSet4CUSTOCOMPR.AsString+
-                                                                   ' - ('+Form7.ibDataSet23VICMS.AsString+' / '+Form7.ibDataSet23QUANTIDADE.AsString+'))))'+
-                                                                   '/ ('+Form7.ibDataSet23QUANTIDADE.AsString+' + '+Form7.ibDataSet4QTD_ATUAL.AsString+')'
-                                                                   );
+                                  Form7.ibDataSet4CUSTOMEDIO.AsFloat := ((Form7.ibDataSet4QTD_ATUAL.Asfloat * Form7.ibDataSet4CUSTOMEDIO.AsFloat) + (Form7.ibDataSet23QUANTIDADE.Asfloat * (Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat))))
+                                                                          / (Form7.ibDataSet23QUANTIDADE.Asfloat + Form7.ibDataSet4QTD_ATUAL.Asfloat);
 
-                                Form7.ibDataSet4CUSTOMEDIO.AsFloat := ((Form7.ibDataSet4QTD_ATUAL.Asfloat * Form7.ibDataSet4CUSTOMEDIO.AsFloat) + (Form7.ibDataSet23QUANTIDADE.Asfloat * (Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat))))
-                                                                        / (Form7.ibDataSet23QUANTIDADE.Asfloat + Form7.ibDataSet4QTD_ATUAL.Asfloat);
-                                *)
+                                  {Sandro Silva 2023-03-01 inicio}
+                                  if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
+                                    Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
+                                  {Sandro Silva 2023-03-01 fim}
+
+                                end;
+
+                                Writeln(F,Replicate('-',80));
+                              end;
+                            end else
+                            begin
                               if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
                                 Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
 
                               Form7.ibDataSet4CUSTOMEDIO.AsFloat := Form7.RetornaCustoMedio(Form7.ibDataset4CODIGO.AsString);
-                              {Dailon Parisotto (smal-630) 2024-08-21 Fim}
-
-                              {Sandro Silva 2023-03-01 inicio}
-                              if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
-                                Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
-                              {Sandro Silva 2023-03-01 fim}
-
-//                              end;
-
-//                              Writeln(F,Replicate('-',80));
-//                            end;
+                            end;
+                            {Dailon Parisotto (smal-630/smal-674) 2024-09-03 Fim}
                           end;
 
                           Form7.ibDataSet4.Post;
@@ -1665,7 +1718,8 @@ begin
   end;
 
   try
-//    CloseFile(F);  // Fecha o arquivo Dailon Parisotto 2024-08-22
+    if (not Form7.oArqConfiguracao.BD.Outras.RecalculaCustoMedioRetroativo) then
+      CloseFile(F);
   except
   end;
 end;

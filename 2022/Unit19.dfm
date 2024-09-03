@@ -326,14 +326,14 @@ object Form19: TForm19
       ImageIndex = 1
       object Label35: TLabel
         Left = 92
-        Top = 204
+        Top = 231
         Width = 213
         Height = 13
         Caption = '% m'#225'ximo de desconto no item do or'#231'amento'
       end
       object Label36: TLabel
         Left = 92
-        Top = 232
+        Top = 259
         Width = 214
         Height = 13
         Caption = '% m'#225'ximo de desconto no total do or'#231'amento'
@@ -364,22 +364,22 @@ object Form19: TForm19
       end
       object SMALL_DBEdit4: TSMALL_DBEdit
         Left = 15
-        Top = 196
+        Top = 223
         Width = 66
         Height = 19
         DataField = 'DIFERENCA_'
         DataSource = Form7.DataSource25
-        TabOrder = 6
+        TabOrder = 7
         OnKeyDown = SMALL_DBEdit1KeyDown
       end
       object SMALL_DBEdit5: TSMALL_DBEdit
         Left = 15
-        Top = 224
+        Top = 251
         Width = 66
         Height = 19
         DataField = 'PAGAR'
         DataSource = Form7.DataSource25
-        TabOrder = 7
+        TabOrder = 8
         OnKeyDown = SMALL_DBEdit1KeyDown
       end
       object chkFabricaProdSemQtd: TCheckBox
@@ -407,6 +407,14 @@ object Form19: TForm19
         Height = 17
         Caption = 'Importar mesmo or'#231'amento m'#250'ltiplas vezes no cupom'
         TabOrder = 5
+      end
+      object chkRecalculaCustoMedioRetroativo: TCheckBox
+        Left = 15
+        Top = 193
+        Width = 194
+        Height = 17
+        Caption = 'Recalcular custo m'#233'dio retroativo'
+        TabOrder = 6
       end
     end
     object Orelha_juros: TTabSheet
