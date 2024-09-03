@@ -10826,6 +10826,8 @@ begin
               +', '+QuotedStr(ibDataSet7NUMERONF.AsString)
               +', '+QuotedStr(sP)+') ');
             Form7.ibDataSet100.Open;
+
+            bAtualizaRegReceber := True;
           except
           end;
         end;
@@ -10883,7 +10885,6 @@ begin
           except
             begin
               Form7.bFlag := False;
-              //ShowMessage('Esta data não é válida, digite-a novamente.'); Mauricio Parizotto 2023-10-25
               MensagemSistema('Esta data não é válida, digite-a novamente.',msgAtencao);
             end;
           end;
@@ -10895,14 +10896,12 @@ begin
         except
           begin
             Form7.bFlag := False;
-            //ShowMessage('Esta data não é válida, digite-a novamente.');  Mauricio Parizotto 2023-10-25
             MensagemSistema('Esta data não é válida, digite-a novamente.',msgAtencao);
           end;
         end;
       end;
     except
       Form7.bFlag := False;
-      //ShowMessage('Esta data não é válida, digite-a novamente.');  Mauricio Parizotto 2023-10-25
       MensagemSistema('Esta data não é válida, digite-a novamente.',msgAtencao);
     end;
   end;

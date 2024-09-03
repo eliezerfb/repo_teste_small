@@ -75,6 +75,7 @@ type
     procedure memContatosKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -87,13 +88,14 @@ type
     var
     sContatos : String;
     bProximo : Boolean;
-    bAtualizaRegistros : Boolean;
   public
     { Public declarations }
   end;
 
 var
   FrmContaReceber: TFrmContaReceber;
+
+   bAtualizaRegReceber : Boolean;
 
 implementation
 
@@ -120,7 +122,8 @@ begin
   end;
 
   //AlteracaoInstituicaoFinanceira; Mauricio Parizotto 2024-08-30
-  bAtualizaRegistros := AlteracaoInstituicaoFinanceira;
+  if AlteracaoInstituicaoFinanceira then
+    bAtualizaRegReceber := True;
 
   inherited;
 end;
@@ -282,7 +285,7 @@ begin
   inherited;
 
   //Fas refresh do grid e volta para o registro atual
-  if bAtualizaRegistros then //Mauricio Parizotto 2024-08-30 add
+  if bAtualizaRegReceber then //Mauricio Parizotto 2024-08-30 add
   begin
     try
       try
@@ -299,6 +302,13 @@ begin
   end;
 
   FreeAndNil(FrmContaReceber);
+end;
+
+procedure TFrmContaReceber.FormCreate(Sender: TObject);
+begin
+  inherited;
+
+   bAtualizaRegReceber := False;
 end;
 
 procedure TFrmContaReceber.FormShow(Sender: TObject);
