@@ -2031,7 +2031,9 @@ begin
   end;
   {$Endregion}
 
-  if Form7.ibDataSet13CRT.AsString = '1' then
+  //if Form7.ibDataSet13CRT.AsString = '1' then Mauricio Parizotto 2024-08-16
+  if (Form7.ibDataSet13CRT.AsString = '1')
+    or (Form7.ibDataSet13CRT.AsString = '4') then
   begin
     Label36.Visible          := True;
     cboCSOSN_Prod.Visible    := True;
@@ -4025,6 +4027,12 @@ begin
     if Localizado then
     begin
       lblCIT.Caption := Form7.ibDataSet14CFOP.AsString + ' - ' + Form7.ibDataSet14NOME.AsString;
+
+      {Dailon Parisotto (smal-653) 2024-08-28 Inicio}
+      lblCIT.ShowHint := False;
+      lblCIT.Hint := lblCIT.Caption;
+      lblCIT.ShowHint := True;
+      {Dailon Parisotto (smal-653) 2024-08-28 Fim}
       pnlMapaICMS.Visible := True;
 
       Form7.ibDataSet14.Edit;

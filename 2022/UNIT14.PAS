@@ -30,6 +30,7 @@ type
   private
     FbQuebraLinha: Boolean;
     function RetornarQuebraLinhaHTML: String;
+    function GetDetalheOS(sNumeroOS, sCampoTecnico : string; iColunas: integer): string;
   public
     property QuebraLinha: Boolean read FbQuebraLinha write FbQuebraLinha;
   end;
@@ -42,7 +43,7 @@ implementation
 uses
   Unit7, Unit16, Unit9, Mais, Unit39, Unit19, Unit24, Mais3
   //,Unit10
-  , uRelatorioCatalogoProdudos;
+  , uRelatorioCatalogoProdudos, uFuncoesBancoDados;
 
 {$R *.DFM}
 
@@ -61,11 +62,13 @@ var
   fRecebido, fReceber, fAtrasado: Double;
   bImprimir: boolean;
   sCor: String;
-  //
+
   BlobStream: TStream;
   jp, JP2: TJPEGImage;
-  //
+
   IBQCLIENTE: TIBQuery;
+  sCampoTecnico : string;
+  SmallIni : tIniFile;
 begin
   // Campos extras no estoque //
   Button1.Enabled := False;
@@ -88,7 +91,7 @@ begin
     rTotal[I] := 0;
   sGRUPO := '';
 
-  //Arquivo TXM
+  {$Region'//// Arquivo TXM ////'}
   if not Form1.bHtml1 then
   begin
     if (Form7.Caption = 'Catálogo de produtos') then
@@ -140,6 +143,7 @@ begin
           end;
         end else
         begin
+          {$Region'//// Estoque ////'}
            if Form7.sModulo = 'ESTOQUE' then
            begin
              // 1 Parcela
@@ -191,7 +195,9 @@ begin
                sOP2 := sOp2 + '------------- '; // Display Labels
              end;
            end;
-         
+           {$Endregion}
+
+          {$Region'//// Clientes e Fornecedores ////'}
            if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') then
            begin
              // Recebido
@@ -216,7 +222,9 @@ begin
                sOP2 := sOp2 + '------------- '; // Display Labels
              end;
            end;
+          {$Endregion}
 
+          {$Region'//// Receber ////'}
            if (Form7.sModulo = 'RECEBER') then
            begin
              // Endereco
@@ -259,6 +267,7 @@ begin
                sOP2 := sOp2 + Replicate('-',16)+' '; // Display Labels
              end;
            end;
+          {$Endregion}
         end;
       end;
 
@@ -378,6 +387,7 @@ begin
               end;
             end else
             begin
+              {$Region'//// Estoque ////'}
               if Form7.sModulo = 'ESTOQUE' then
               begin
                 // formata o preço e a quantidade
@@ -419,7 +429,9 @@ begin
                   fTotal[I] :=  fTotal[I] + Arredonda(Form7.ibDataSet4CUSTOMEDIO.AsFloat,StrToInt(form1.ConfPreco)) * Form7.ibDataSet4QTD_ATUAL.AsFloat;
                 end;
               end;
-            
+              {$Endregion}
+
+              {$Region'//// Clientes Fornecedores ////'}
               if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') then
               begin
                 // Recebido
@@ -441,7 +453,9 @@ begin
                   fTotal[I] :=  fTotal[I] +  fAtrasado;
                 end;
               end;
+              {$Endregion}
 
+              {$Region'//// Receber ////'}
               if (Form7.sModulo = 'RECEBER') then
               begin
                 // Procura pelo nome no cadastro de clientes //
@@ -490,6 +504,7 @@ begin
                   end;
                 end;
               end;
+              {$Endregion}
             end;
           end;
 
@@ -527,6 +542,7 @@ begin
             end;
           end else
           begin
+            {$Region'//// Estoque ////'}
             if Form7.sModulo = 'ESTOQUE' then
             begin
               // 1 Parcela
@@ -545,7 +561,9 @@ begin
               if (I = Form7.iCampos + 6) and (Form39.CheckBox3.Checked) then
                 if fTotal[I] <> 0 then sOP := sOP + Format('%13.2n',[fTotal[I]])  + ' ' else sOP := sOP + Replicate(' ',14);
             end;
-          
+            {$Endregion}
+
+            {$Region'//// Clientes Forncedores ////'}
             if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') then
             begin
               // Recebido
@@ -558,6 +576,7 @@ begin
               if (I = Form7.iCampos + 3) and (Form39.CheckBox6.Checked) then
                 if fTotal[I] <> 0 then sOP := sOP + Format('%13.2n',[fTotal[I]])  + ' ' else sOP := sOP + Replicate(' ',14);
             end;
+            {$Endregion}
           end;
         end;
       end else sOP := '';
@@ -580,8 +599,9 @@ begin
       end;
     end;
   end;
+  {$Endregion}
 
-  //Arquivo HTML
+  {$Region'//// Arquivo HTML ////'}
   if Form1.bHtml1 then
   begin
     CriaJpg('logotip.jpg');
@@ -629,6 +649,7 @@ begin
           end;
         end else
         begin
+          {$Region'//// Estoque ////'}
            if Form7.sModulo = 'ESTOQUE' then
            begin
              // 1 Parcela
@@ -668,7 +689,9 @@ begin
                iColunas := iColunas + 1;
              end;
            end;
+          {$Endregion}
 
+          {$Region'//// Clientes e Fornecedores ////'}
            if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') then
            begin
              // Recebido
@@ -690,7 +713,9 @@ begin
                iColunas := iColunas + 1;
              end;
            end;
+          {$Endregion}
 
+          {$Region'//// Receber ////'}
            if (Form7.sModulo = 'RECEBER') then
            begin
              // Endereço
@@ -728,6 +753,7 @@ begin
                iColunas := iColunas + 1;
              end;
            end;
+          {$Endregion}
         end;
       end;
 
@@ -758,7 +784,7 @@ begin
         fReceber  := 0;
         fAtrasado := 0;
 
-        // Divide em grupos
+        {$Region'//// Estoque ////'}
         if (form7.sModulo = 'ESTOQUE')  or (Form7.Caption = 'Cardápio') or (Form7.Caption = 'Receitas') then
         begin
           if pos('order by upper(NOME)',Form7.ibDataSet4.SelectSQL.Text) <> 0 then
@@ -779,8 +805,9 @@ begin
             end;
           end;
         end;
-        
-        // Divide em clientes
+        {$Endregion}
+
+        {$Region'//// Receber ////'}
         if (form7.sModulo = 'RECEBER') then
         begin
           if pos('order by NOME',Form7.ibDataSet7.SelectSQL.Text) <> 0 then
@@ -826,6 +853,7 @@ begin
             end;
           end;
         end;
+        {$Endregion}
 
         bImprimir := True;
 
@@ -841,17 +869,17 @@ begin
 
         if bImprimir then
         begin
+          {$Region'//// Clientes ////'}
           if Form7.sModulo = 'CLIENTES' then
           begin
             if (Form39.CheckBox4.Checked = True) or (Form39.CheckBox5.Checked = True) or
                 (Form39.CheckBox6.Checked = True) then
             begin
-              //
               Form7.IBDataSet100.Close;
               Form7.IBDataSet100.SelectSQL.Clear;
               Form7.IBDataSet100.SelectSQL.Add('select * from RECEBER where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+'  and coalesce(HISTORICO,''XXX'')<>''NFE NAO AUTORIZADA'' ');
               Form7.IBDataSet100.Open;
-              //
+
               while not Form7.ibDataSet100.Eof do
               begin
                 Application.ProcessMessages;
@@ -865,12 +893,14 @@ begin
               end;
             end;
           end;
-          
+          {$Endregion}
+
           // ----------------------------------------------------------- //
           // Calcula os valores do contas a receber se estiver abilitado //
           // ----------------------------------------------------------- //
           if (Form7.Caption = 'Catálogo de produtos') or (Form7.Caption = 'Álbum de fotografias') or (Form7.Caption = 'Cardápio')  or (Form7.Caption = 'Receitas') then
           begin
+            {$Region'//// Estoque ////'}
             WriteLn(F,'<tr bgcolor=#FFFFFF>');
             WriteLn(F,' <td '+RetornarQuebraLinhaHTML+' vAlign=Center Height=200 Width=200>');
             begin
@@ -982,6 +1012,7 @@ begin
             end;
 
             WriteLn(F,'</tr>');
+            {$Endregion}
           end else
           begin
             WriteLn(F,'    <tr bgcolor=#FFFFFF>');
@@ -1042,6 +1073,7 @@ begin
                 end;
               end else
               begin
+                {$Region'//// Estoque ////'}
                 if Form7.sModulo = 'ESTOQUE' then
                 begin
                   // formata o preço e a quantidade
@@ -1083,7 +1115,9 @@ begin
                     fTotal[I] :=  fTotal[I] + Arredonda(Form7.ibDataSet4CUSTOMEDIO.AsFloat,StrToInt(Form1.ConfPreco)) * Form7.ibDataSet4QTD_ATUAL.AsFloat;
                   end;
                 end;
-                
+                {$Endregion}
+
+                {$Region'//// Clientes e Fornecedores ////'}
                 if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'FORNECED') then
                 begin
                   // Recebido
@@ -1108,7 +1142,9 @@ begin
                     fTotal[I] :=  fTotal[I] +  fAtrasado;
                   end;
                 end;
+                {$Endregion}
 
+                {$Region'//// Receber ////'}
                 if (Form7.sModulo = 'RECEBER') and
                   (
                     Form39.CheckBox4.Checked
@@ -1204,9 +1240,36 @@ begin
                   end;
                 end;
               end;
+              {$Endregion}
             end;
 
             WriteLn(F,'    </tr>');
+
+            {$Region'//// Gera detalhe da linha ////'}
+            //Mauricio Parizotto 2024-08-28
+            if Form7.sModulo = 'OS' then
+            begin
+              if Form39.CheckBox4.Checked then
+              begin
+                if sCampoTecnico = '' then
+                begin
+                  try
+                    SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
+                    sCampoTecnico := SmallIni.ReadString('OS','Label34','Técnico');
+                  finally
+                    SmallIni.Free;
+                  end;
+                end;
+
+                WriteLn(F,
+                        GetDetalheOS(Form7.ArquivoAberto.FieldByName('NUMERO').AsString,
+                                     sCampoTecnico,
+                                     iColunas)
+                        );
+              end;
+            end;
+            {$Endregion}
+
           end;
         end;
       end;
@@ -1380,6 +1443,7 @@ begin
     WriteLn(F,'</html>');
     CloseFile(F);                               
   end;
+  {$Endregion}
 
   if IBQCLIENTE <> nil then
     FreeAndNil(IBQCLIENTE);
@@ -1451,6 +1515,82 @@ end;
 procedure TForm14.Button2Click(Sender: TObject);
 begin
   Form19.ShowModal;
+end;
+
+
+function TForm14.GetDetalheOS(sNumeroOS, sCampoTecnico : string; iColunas:integer):string; //Mauricio Parizotto 2024-08-28
+var
+  qryAux: TIBQuery;
+  sItens : string;
+begin
+  Result := '';
+
+  try
+    qryAux := CriaIBQuery(Form7.IBTransaction1);
+
+    qryAux.SQL.Text := ' Select '+
+                       ' 	 CODIGO,'+
+                       ' 	 DESCRICAO,'+
+                       ' 	 QUANTIDADE,'+
+                       ' 	 UNITARIO,'+
+                       ' 	 TOTAL,'+
+                       ' 	 '''' TECNICO'+
+                       ' From ITENS001'+
+                       ' Where NUMEROOS = '+QuotedStr(sNumeroOS)+
+                       ' Union All'+
+                       ' Select '+
+                       ' 	 CODIGO,'+
+                       ' 	 DESCRICAO,'+
+                       ' 	 QUANTIDADE,'+
+                       ' 	 UNITARIO,'+
+                       '   TOTAL,'+
+                       '   TECNICO'+
+                       ' From ITENS003'+
+                       ' Where NUMEROOS = '+QuotedStr(sNumeroOS);
+
+    qryAux.Open;
+
+    while not qryAux.Eof do
+    begin
+      sItens := sItens +
+                '          <tr>'+#13#10+
+                '             <td align=center><font face="verdana" size=2>'+qryAux.FieldByName('CODIGO').AsString+'</td>'+#13#10+
+                '             <td><font face="verdana" size=2>'+qryAux.FieldByName('DESCRICAO').AsString+'</td>'+#13#10+
+                '             <td><font face="verdana" size=2>'+qryAux.FieldByName('TECNICO').AsString+'</td>'+#13#10+
+                '             <td align=right><font face="verdana" size=2>'+FormatFloat('#,##0.00', qryAux.FieldByName('QUANTIDADE').AsFloat)+'</td>'+#13#10+
+                '             <td align=right><font face="verdana" size=2>'+FormatFloat('#,##0.00', qryAux.FieldByName('UNITARIO').AsFloat)+'</td>'+#13#10+
+                '             <td align=right><font face="verdana" size=2>'+FormatFloat('#,##0.00', qryAux.FieldByName('TOTAL').AsFloat)+'</td>'+#13#10+
+                '          </tr>'+#13#10;
+
+      qryAux.Next;
+    end;
+
+  finally
+    FreeAndNil(qryAux);
+  end;
+
+  if sItens <> '' then
+  begin
+    Result := ' <tr >'+#13#10+
+              '    <td colspan="'+iColunas.ToString+'">'+#13#10+
+              '       <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=3 width=100%> '+#13#10+
+              '          <tr>'+#13#10+
+              '             <td width="100"><font face="verdana" size=2>Código</td>'+#13#10+
+              '             <td><font face="verdana" size=2>Produto/Serviço</td>'+#13#10+
+              '             <td width="150"><font face="verdana" size=2>'+ sCampoTecnico +'</td>'+#13#10+
+              '             <td width="100"><font face="verdana" size=2>Qtd</td>'+#13#10+
+              '             <td width="100"><font face="verdana" size=2>Unitário</td>'+#13#10+
+              '             <td width="100"><font face="verdana" size=2>Total</td>'+#13#10+
+              '          </tr>'+#13#10+
+              sItens+
+              '       </table>'+#13#10+
+              '    </td>'+#13#10+
+              ' </tr>'+#13#10
+              ;
+  end;
+
+  //Separa com uma linha em branco
+  Result := Result + '<tr> <td colspan="11"> <br> </td>';
 end;
 
 end.

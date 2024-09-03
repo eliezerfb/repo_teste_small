@@ -2681,6 +2681,100 @@ begin
   end;
   {Dailon Parisotto 2024-08-22 Fim}
 
+  {Mauricio Parizotto 2024-08-21 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'FORMAPAGAMENTO')) then
+  begin
+    ExecutaComando(' CREATE TABLE FORMAPAGAMENTO ('+
+                   ' 	IDFORMA INTEGER NOT NULL,'+
+                   ' 	CODIGO_TPAG VARCHAR(2),'+
+                   ' 	DESCRICAO VARCHAR(60),'+
+                   ' 	CONSTRAINT PK_FORMAPAGAMENTO PRIMARY KEY (IDFORMA)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(1,''01'',''Dinheiro'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(2,''02'',''Cheque'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(3,''03'',''Cartão de Crédito'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(4,''04'',''Cartão de Débito'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(5,''05'',''Crédito de Loja'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(6,''10'',''Vale Alimentação'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(7,''11'',''Vale Refeição'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(8,''12'',''Vale Presente'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(9,''13'',''Vale Combustível'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(10,''14'',''Duplicata Mercantil'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(11,''15'',''Boleto Bancário'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(12,''16'',''Depósito Bancário'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(13,''17'',''Pagamento Instantâneo (PIX) Dinâmico'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                  ' Values(14,''18'',''Transfer.bancária, Carteira Digital'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(15,''19'',''Progr.de fidelidade, Cashback, Crédito Virtual'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(16,''20'',''Pagamento Instantâneo (PIX) Estático'')');
+
+    ExecutaComando(' Insert Into FORMAPAGAMENTO(IDFORMA,CODIGO_TPAG,DESCRICAO)'+
+                   ' Values(17,''99'',''Outros'')');
+
+    ExecutaComando('Commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAGAMENT', 'IDFORMA') = False then
+  begin
+    ExecutaComando('Alter table PAGAMENT add IDFORMA int;');
+    ExecutaComando('Commit');
+  end;
+
+  {Mauricio Parizotto 2024-08-21 Fim}
+
+  {Sandro Silva 2024-09-02 inicio}
+  // Generator para sequencial do número do lote de NFSe. Inicialmente usao para padrão SYSTEM, prefeitura Erechim - RS
+  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase,'G_LOTENFSE') = False then
+  begin
+    if ExecutaComando('CREATE SEQUENCE G_LOTENFSE') then
+      ExecutaComando('commit');
+  end;
+  {Sandro Silva 2024-09-02 fim}
+
+  {Dailon Parisotto (smal-653) 2024-08-26 Inicio}
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'ICM', 'NOME') < 60 then
+  begin
+    ExecutaComando('alter table ICM alter NOME type varchar(60)');
+    ExecutaComando('alter table VENDAS alter OPERACAO type varchar(60)');
+    ExecutaComando('alter table COMPRAS alter OPERACAO type varchar(60)');
+
+    ExecutaComando('commit');
+  end;
+  {Dailon Parisotto (smal-653) 2024-08-26 Fim}
+
   Form22.Repaint;
 
   try

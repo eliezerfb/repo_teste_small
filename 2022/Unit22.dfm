@@ -588,7 +588,7 @@ object Form22: TForm22
         Left = 3
         Top = 178
         Width = 701
-        Height = 20
+        Height = 50
         Alignment = taCenter
         AutoSize = False
         Caption = '____________'

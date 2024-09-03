@@ -1092,8 +1092,9 @@ inherited FrmEstoque: TFrmEstoque
         object lblCIT: TLabel
           Left = 193
           Top = 273
-          Width = 98
+          Width = 302
           Height = 13
+          AutoSize = False
           Caption = '5102 - Venda a vista'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
