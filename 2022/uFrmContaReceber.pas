@@ -95,7 +95,7 @@ type
 var
   FrmContaReceber: TFrmContaReceber;
 
-   bAtualizaRegReceber : Boolean;
+  bAtualizaRegReceber : Boolean;
 
 implementation
 
