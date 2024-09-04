@@ -1217,6 +1217,7 @@ begin
 
   if CodBanco = '748' then // SICREDI
   begin
+    {Sandro Silva 2024-09-04 inicio
     Form25.sNossoNum := Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2) + '/2' + Copy(Form7.ibDataSet7NN.AsString, 6, 5) + '-' +
       Modulo_11(
         LimpaNumero(sAgencia) +
@@ -1224,7 +1225,15 @@ begin
         Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2) +
         '2' + Right(StrZero(StrToInt64Def(LimpaNumero(sNossoNumero), 0), 15, 0), 5)
         );
-
+    }
+    Form25.sNossoNum := Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2) + '/2' + Right('00000' + Form7.ibDataSet7NN.AsString, 5) + '-' +
+      Modulo_11(
+        LimpaNumero(sAgencia) +
+        LimpaNumero(sCodCedente) +
+        Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2) +
+        '2' + Right(StrZero(StrToInt64Def(LimpaNumero(sNossoNumero), 0), 15, 0), 5)
+        );
+    {Sandro Silva 2024-09-04 fim}
     Result := Right(Replicate(' ',30)+Form25.sNossoNum,16);
   end;
   {Sandro Silva 2024-05-24 fim}
