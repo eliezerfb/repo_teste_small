@@ -148,6 +148,7 @@ type
     gbTema: TGroupBox;
     rbClassico: TRadioButton;
     rbModerno: TRadioButton;
+    chkImportaMesmoOrc: TCheckBox;
     procedure FormActivate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
@@ -396,6 +397,7 @@ begin
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
     chkFabricaProdSemQtd.Checked := ConfSistema.BD.Outras.FabricaProdutoSemQtd;
     chkCalcLucroEstoque.Checked  := ConfSistema.BD.Outras.CalculaLucroAltVenda;
+    chkImportaMesmoOrc.Checked   := ConfSistema.BD.Outras.PermiteImportarMesmoOrc; // Mauricio Parizotto 2024-08-26
     ComboBoxOS.ItemIndex := ComboBoxOS.Items.IndexOf(ConfSistema.BD.Impressora.ImpressoraOS); // Mauricio Parizotto 2024-05-10
 	{Mauricio Parizotto 2024-04-23 Inicio}
     if ConfSistema.BD.Outras.TipoPrazo = 'dias' then
@@ -533,9 +535,10 @@ begin
   //Mauricio Parizotto 2024-02-02
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
-    ConfSistema.BD.Outras.FabricaProdutoSemQtd := chkFabricaProdSemQtd.Checked;
-    ConfSistema.BD.Outras.CalculaLucroAltVenda := chkCalcLucroEstoque.Checked;
-    ConfSistema.BD.Impressora.ImpressoraOS     := ComboBoxOS.Text; // Mauricio Parizotto 2024-05-10
+    ConfSistema.BD.Outras.FabricaProdutoSemQtd    := chkFabricaProdSemQtd.Checked;
+    ConfSistema.BD.Outras.CalculaLucroAltVenda    := chkCalcLucroEstoque.Checked;
+    ConfSistema.BD.Outras.PermiteImportarMesmoOrc := chkImportaMesmoOrc.Checked; //Mauricio Parizotto 2024-08-26
+    ConfSistema.BD.Impressora.ImpressoraOS        := ComboBoxOS.Text; // Mauricio Parizotto 2024-05-10
     {Mauricio Parizotto 2024-04-23 Inicio}
     if rbPrazoFixo.Checked then
       ConfSistema.BD.Outras.TipoPrazo := 'fixo'
@@ -670,6 +673,11 @@ begin
   Mais1Ini.Free;
   Mais2Ini.Free;
   Mais3Ini.Free;
+
+  //Mauricio Parizotto 2024-08-29
+  Commitatudo(True);
+  AgendaCommit(False);
+  AbreArquivos(False);
 
   Close;
 end;

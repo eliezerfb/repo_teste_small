@@ -19,7 +19,6 @@ implementation
 uses
   Unit7
   , Mais3
-//  , Unit10
   , Unit38
   , Mais
   , uFuncoesBancoDados
@@ -50,6 +49,7 @@ begin
   Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
  
   try
+    {$Region'//// Pagar ////'}
     if (Form7.sModulo = 'PAGAR') then
     begin
       Form7.ibDataSet2.Close;
@@ -57,7 +57,9 @@ begin
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(form7.ibDataSet8NOME.AsString)+' ');  //
       Form7.ibDataSet2.Open;
     end;
-    
+    {$Endregion}
+
+    {$Region'//// Receber ////'}
     if (Form7.sModulo = 'RECEBER') then
     begin
       Form7.ibDataSet2.Close;
@@ -65,6 +67,7 @@ begin
       Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(form7.ibDataSet7NOME.AsString)+' ');  //
       Form7.ibDataSet2.Open;
     end;
+    {$Endregion}
     
     if Form7.ArquivoAberto.Modified then
     begin
@@ -73,17 +76,12 @@ begin
       Form7.ArquivoAberto.Edit;
     end;
     
-    //Form7.iFoco := 0;
-
     Form7.ArquivoAberto.DisableControls;
     Form7.ibDataSet27.DisableControls;
     Form7.ibDataSet26.DisableControls;
     Form7.ibDataSet24.DisableControls;
 
-    //LogRetaguarda('ibDataSet24.DisableControls; 83'); // Sandro Silva 2023-11-27
-
     Form7.ibDataSet23.DisableControls;
-    //LogRetaguarda('uvisualizacadastro ibDataSet23.DisableControls 86'); // Sandro Silva 2023-12-04
     Form7.ibDataSet28.DisableControls;
     Form7.ibDataSet16.DisableControls;
     Form7.ibDataSet15.DisableControls;
@@ -103,13 +101,12 @@ begin
     WriteLn(F,'<img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
     WriteLn(F,'<br><font face="Microsoft Sans Serif" size=2><b>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString))+'</b></font>');
     WriteLn(F,'<br><font face="Microsoft Sans Serif" size=2><b>'+AnsiUpperCase(Form7.Caption)+'</b></font>');
-    //    WriteLn(F,'<table border=0 cellpadding=10 cellspacing=0><tr><td>');
     WriteLn(F,'<table border=0 bgcolor=#FFFFFFFF cellspacing=1 cellpadding=4>');
     WriteLn(F,' <tr>');
     WriteLn(F,'  <td>');
     
     // Exportar
-    if {(Form10.Visible) or} (DateToStr(Form38.DateTimePicker1.Date) = '31/12/1899') then
+    if (DateToStr(Form38.DateTimePicker1.Date) = '31/12/1899') then
     begin
       dInicio := StrToDate('31/12/1899');
       dFinal  := StrToDate('30/12/2899');
@@ -200,7 +197,8 @@ begin
       end;
       
       Writeln(F,'</table><p><p>');
-      
+
+      {$Region'//// Receber ////'}
       if Form7.sModulo = 'RECEBER' then
       begin
         if not ((Form7.sModulo = 'RECEBER')  and (AllTrim(Form7.ibDataSet7NOME.AsString) = '')) then
@@ -230,7 +228,9 @@ begin
           WriteLn(F,'</table>');
         end;
       end;
+      {$Endregion}
 
+      {$Region'//// Clientes, Receber e Pagar ////'}
       if (Form7.sModulo = 'CLIENTES') or (Form7.sModulo = 'RECEBER') or (Form7.sModulo = 'PAGAR') then
       begin
         if (Form7.sModulo = 'RECEBER') then
@@ -280,7 +280,6 @@ begin
                     WriteLn(F,' <tr>');
                     Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet15EMISSAO.AsDateTime)      +'</td>'+  // Data
                             '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet15NUMERONF.AsString,10,3)+'</td>'+  // Doc
-                            //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
                             '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'</td>'+  // Descricao
                             '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n',[Form7.ibDataSet16QUANTIDADE.AsFloat])            +'</td>'+  // Quantidade
                             '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet16UNITARIO.AsFloat * Form7.ibDataSet16QUANTIDADE.AsFloat])+'</td>'); // Valor
@@ -292,7 +291,6 @@ begin
                     WriteLn(F,' <tr>');
                     Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Data
                             '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Doc
-                            //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
                             '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'</td>'+  // Descricao
                             '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
                             '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'); // Valor
@@ -356,10 +354,8 @@ begin
                 begin
                   WriteLn(F,' <tr>');
                   Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet15EMISSAO.AsDateTime)      +'</td>'+  // Data
-                          // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+ ifThen(Form7.ibDataSet15.FieldByName('MODELO').AsString = 'SV', ifThen(Form7.ibDAtaSet15.FieldByName('NFEPROTOCOLO').AsString <> '', Form7.ibDAtaSet15.FieldByName('NFEPROTOCOLO').AsString, Form7.ibDataSet15.FieldByName('NUMERONF').AsString), Form7.ibDataSet15.FieldByName('NUMERONF').AsString)+'</td>'+  // Doc    // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDAtaSet15NFEPROTOCOLO.AsString+'</td>'+  // Doc
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+ sNumeroNF +'</td>'+  // Doc    // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDAtaSet15NFEPROTOCOLO.AsString+'</td>'+  // Doc
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10) + Replicate(' ', 10),1,10)    +'</td>'+  // Doc  // Sandro Silva 2023-09-26 '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Copy(Form7.ibDataSet35NUMEROOS.AsString,1,10)+Replicate(' ',8),1,8)    +'</td>'+  // Doc
-                          //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet35DESCRICAO.AsString+'</td>'+  // Descricao
                           '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet35TOTAL.AsFloat])+'</td>'); // Valor
                   WriteLn(F,' </tr>');
@@ -409,7 +405,6 @@ begin
               WriteLn(F,' <tr>');
               Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet27DATA.AsDateTime)+'</td>');  // Data
               Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27PEDIDO.AsString+'</td>'); // Doc
-              //Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet27DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao Mauricio Parizotto 2023-12-19
               Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27DESCRICAO.AsString+'</td>'); // Descricao
               Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n',[Form7.ibDataSet27QUANTIDADE.AsFloat])+'</td>'); // Quantidade
               Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet27UNITARIO.AsFloat* Form7.ibDataSet27QUANTIDADE.AsFloat])+'</td>'); // Valor
@@ -458,7 +453,6 @@ begin
                 WriteLn(F,' <tr>');
                 Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet37DATA.AsDateTime)+'</td>');  // Data
                 Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet37PEDIDO.AsString+'</td>'); // Doc
-                //Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet37DESCRICAO.AsString+Replicate(' ',40),1,40)+'</td>'); // Descricao Mauricio Parizotto 2023-12-19
                 Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet37DESCRICAO.AsString+'</td>'); // Descricao
                 Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n',[Form7.ibDataSet37QUANTIDADE.AsFloat])+'</td>'); // Quantidade
                 Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet37UNITARIO.AsFloat* Form7.ibDataSet37QUANTIDADE.AsFloat])+'</td>'); // Valor
@@ -622,7 +616,6 @@ begin
                   WriteLn(F,' <tr>');
                   Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.ibDataSet24EMISSAO.AsDateTime)      +'</td>'+  // Data
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet24NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet24NUMERONF.AsString,10,3)+'</td>'+  // Doc
-                          //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet23DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
                           '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet23DESCRICAO.AsString+'</td>'+  // Descricao
                           '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n',[Form7.ibDataSet23QUANTIDADE.AsFloat])            +'</td>'+  // Quantidade
                           '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet23UNITARIO.AsFloat * Form7.ibDataSet23QUANTIDADE.AsFloat])+'</td>'); // Valor
@@ -737,15 +730,15 @@ begin
           end;
         end;
       end;
+      {$Endregion}
 
+      {$Region'//// Estoque e Kardex ////'}
       if ((Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'KARDEX')) and (Form7.ibDataSet4DESCRICAO.AsString <> '') then
       begin
         vDescricaoProduto := Form7.ibDataSet4DESCRICAO.AsString; //Mauricio Parizotto 2023-08-22
 
         if Form7.sModulo <> 'KARDEX' then
         begin
-          //vDescricaoProduto := Form7.ibDataSet4DESCRICAO.AsString; //Mauricio Parizotto 2023-08-04
-
           Form7.ibDataSet10.Close;
           Form7.ibDataSet10.SelectSQL.Clear;
           Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+
@@ -849,7 +842,6 @@ begin
                                        ' Where C.CODIGO = '+QuotedStr(Form7.ibDataSet4CODIGO.AsString);
             IBQProdutoComp.Open;
           
-            //if Form7.ibDataSet28CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
             if not IBQProdutoComp.IsEmpty then
             begin
               Writeln(F,'<p><font face="Microsoft Sans Serif" size=2><b>COMPOSIÇÃO DO PRODUTO</b>');
@@ -939,7 +931,6 @@ begin
         end;
 
         Form7.IBDataSet97.Close;
-        //Form7.IBDataSet97.SelectSQL.Text := SqlSelectMovimentacaoItem(Form7.ibDataSet4DESCRICAO.AsString);  Mauricio Parizotto 2023-08-04
         Form7.IBDataSet97.SelectSQL.Text := SqlSelectMovimentacaoItem(vDescricaoProduto);
         Form7.IBDataSet97.DisableControls;
         Form7.IBDataSet97.Open;
@@ -978,8 +969,9 @@ begin
 
         Form7.IBDataSet97.EnableControls;
       end;
+      {$Endregion}
 
-      // Fecha o arquivo
+      {$Region'//// Contas ////'}
       if Form7.sModulo = 'CONTAS' then
       begin
         Screen.Cursor             := crHourGlass;              // Cursor de Aguardo
@@ -1045,7 +1037,9 @@ begin
         Form7.sModulo := 'CONTAS';
         Form7.DBGrid1.Repaint;
       end;
-      
+      {$Endregion}
+
+      {$Region'//// Venda e OS ////'}
       if (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'OS') then
       begin
         fTotal := 0;
@@ -1066,7 +1060,6 @@ begin
           if Form7.ibDataSet16QUANTIDADE.AsFloat <> 0 then
           begin
             WriteLn(F,' <tr>'+
-                    //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35)                     +'</td>'+ Mauricio Parizotto 2023-12-19
                     '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n', [Form7.ibDataSet16QUANTIDADE.AsFloat]) +'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet16UNITARIO.AsFloat]  ) +'</td>'+
@@ -1077,7 +1070,6 @@ begin
           begin
             // Descrição no corpo da NF
             WriteLn(F,' <tr>');
-            //Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet16DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
             Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet16DESCRICAO.AsString+'</td>'+  // Descricao
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
@@ -1114,7 +1106,6 @@ begin
           if Form7.ibDataSet35QUANTIDADE.AsFloat <> 0 then
           begin
             WriteLn(F,' <tr>'+
-                    //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35)                     +'</td>'+ // Mauricio Parizotto 2023-12-19
                     '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet35DESCRICAO.AsString+'</td>'+
                     '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35TECNICO.AsString+Replicate(' ',20),1,20)                       +'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n', [Form7.ibDataSet35QUANTIDADE.AsFloat]) +'</td>'+
@@ -1125,7 +1116,6 @@ begin
           begin
             // Descrição no corpo da NF
             WriteLn(F,' <tr>');
-            //Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet35DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
             Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet35DESCRICAO.AsString+'</td>'+  // Descricao
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
@@ -1145,7 +1135,9 @@ begin
         WriteLn(F,' </tr>');
         WriteLn(F,'</table>');
       end;
-      
+      {$Endregion}
+
+      {$Region'//// Compra ////'}
       if (Form7.sModulo = 'COMPRA') then
       begin
         fTotal := 0;
@@ -1168,7 +1160,6 @@ begin
           begin
             WriteLn(F,' <tr>'+
                     '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>' + Form7.ibDataSet23CODIGO.AsString + '</td>'+
-                    //'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet23DESCRICAO.AsString+Replicate(' ',35),1,35)                     +'</td>'+ Mauricio Parizotto 2023-12-19
                     '  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet23DESCRICAO.AsString+'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%8.'+Form1.ConfCasas+'n', [Form7.ibDataSet23QUANTIDADE.AsFloat]) +'</td>'+
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfPreco+'n',[Form7.ibDataSet23UNITARIO.AsFloat]  ) +'</td>'+
@@ -1179,7 +1170,6 @@ begin
           begin
             // Descrição no corpo da NF
             WriteLn(F,' <tr>');
-            //Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.ibDataSet23DESCRICAO.AsString+Replicate(' ',35),1,35) +'</td>'+  // Descricao Mauricio Parizotto 2023-12-19
             Writeln(F,' <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet23DESCRICAO.AsString+'</td>'+  // Descricao
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
                     '  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1></td>'+  // Quantidade
@@ -1199,6 +1189,7 @@ begin
         WriteLn(F,' </tr>');
         WriteLn(F,'</table><br>');
       end;
+      {$Endregion}
       
       if (Form7.sModulo = 'KARDEX') then
       begin
@@ -1251,12 +1242,6 @@ begin
   
   if ((Form7.sModulo = 'ESTOQUE') or (Form7.sModulo = 'KARDEX')) then
   begin
-    {Mauricio Parizotto 2024-08-06 Inicio * estáva bugando a tela caso aberta
-    Form7.sModulo := 'ESTOQUE'; // Mauricio Parizotto 2024-01-25
-    Form7.Close;
-    Form7.Show;
-    }
-
     if (Form7.sModulo = 'KARDEX') then
     begin
       Form7.sModulo := 'ESTOQUE';
@@ -1266,8 +1251,6 @@ begin
 
     Form7.sModulo := 'ESTOQUE';
 
-    {Mauricio Parizotto 2024-08-06 Fim}
-    
     try
       Form7.ibDataSet28.Open;
       Form7.ibDataSet4.EnableControls;
