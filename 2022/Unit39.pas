@@ -22,6 +22,7 @@ type
     CheckBox8: TCheckBox;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure CheckBox4Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -33,7 +34,7 @@ var
 
 implementation
 
-uses Unit14;
+uses Unit14, MAIS, uDialogs;
 
 {$R *.DFM}
 
@@ -51,11 +52,23 @@ begin
   CheckBox7.Checked := False;
   CheckBox8.Checked := False;
 
-  Form39.Width := 180;
+  Form39.Width := 210;
   Form39.Left  := Form14.Left + Form14.Width - Form39.Width;
   Form39.Top   := Form14.Top  + Form14.Height + 2;
 end;
 
+
+procedure TForm39.CheckBox4Click(Sender: TObject);
+begin
+  //Mauricio Parizotto 2024-08-28
+  if (not Form1.bHtml1)
+    and (CheckBox4.Caption = 'Detalhamento de peças e serviços')
+    and (CheckBox4.Checked) then
+  begin
+    MensagemSistema('Somente disponível para formato PDF e HTML.',msgInformacao);
+    CheckBox4.Checked := False;
+  end;
+end;
 
 procedure TForm39.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
