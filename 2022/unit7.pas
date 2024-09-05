@@ -17071,6 +17071,8 @@ begin
       finally
         ibDataSet100.Close;
       end;
+
+      bAtualizaRegPagar := True;
     end;
   end;
   {Dailon Parisotto (f-6594) 2023-02-01 Fim}
