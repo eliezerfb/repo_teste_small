@@ -214,6 +214,7 @@ function HasFile(Directory: String): boolean;
 function TestarTEFConfigurado: Boolean;
 function TestarUFMovimentaEstoqueFinanceiroSemFaturar(AcUF: String): Boolean;
 function Coalesce(Value1: Variant; Value2: Variant): Variant;
+function SalvaArquivoTemp(Campo : Tfield; Nome : string) : string;
 
 var
   IMG: TImage;
@@ -2686,6 +2687,42 @@ begin
     Result := Value1
   else
     Result := Value2
+end;
+
+function SalvaArquivoTemp(Campo : Tfield; Nome : string) : string;
+var
+  Stream : TMemoryStream;
+  DirArquivo, NomeArquivo : string;
+
+  DiretorioTemp : PChar;
+  TempBuffer    : Dword;
+begin
+  Result := '';
+  try
+    try
+      Stream := TMemoryStream.Create;
+      TBlobField(Campo).SaveToStream(Stream);
+      Stream.Position := 0;
+      NomeArquivo := Nome;
+
+      //Salva na pasta temporaria do windows
+      TempBuffer := 255;
+      GetMem(DiretorioTemp,255);
+      GetTempPath(tempbuffer,diretoriotemp);
+      DirArquivo := DiretorioTemp;
+
+      if FileExists(DirArquivo+NomeArquivo) then
+        DeleteFile(pchar(DirArquivo+NomeArquivo));
+
+      Stream.SaveToFile(DirArquivo+NomeArquivo);
+
+      Result := DirArquivo+NomeArquivo;
+    finally
+      FreeAndNil(Stream);
+      FreeMem(diretoriotemp);
+    end;
+  except
+  end;
 end;
 
 end.
