@@ -19689,6 +19689,10 @@ object Form7: TForm7
         Caption = 'Vendas por vendedor'
         OnClick = miRelVendasVendedorClick
       end
+      object Notasfaltantes1: TMenuItem
+        Caption = 'Notas faltantes'
+        OnClick = Notasfaltantes1Click
+      end
     end
     object MenuItem167: TMenuItem
       Caption = '&Editar'

@@ -3,7 +3,7 @@ unit uIEstruturaTipoRelatorioPadrao;
 interface
 
 uses
-  uSmallEnumerados, uIEstruturaRelatorioPadrao;
+  uSmallEnumerados, uIEstruturaRelatorioPadrao, uIFiltrosRodapeRelatorio;
 
 type
   IEstruturaTipoRelatorioPadrao = interface
@@ -12,6 +12,8 @@ type
   function GerarImpressao(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
   function GerarImpressaoAgrupado(AoEstruturaRel: IEstruturaRelatorioPadrao; AcTitulo: String): IEstruturaTipoRelatorioPadrao;
   function GerarImpressaoCabecalho(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
+  function AdicionarTitulo(AcTitulo: String; AbQuebraLinhaIni: Boolean = True; AbQuebraLinhaFim: Boolean = True): IEstruturaTipoRelatorioPadrao;
+  function AdicionarRodape(AoFiltros: IFiltrosRodapeRelatorio): IEstruturaTipoRelatorioPadrao;
   function Imprimir: IEstruturaTipoRelatorioPadrao;
   function Salvar: IEstruturaTipoRelatorioPadrao; overload;
   function Salvar(AenTipoRel: tTipoRelatorio): IEstruturaTipoRelatorioPadrao; overload;
