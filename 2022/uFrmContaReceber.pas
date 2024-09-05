@@ -75,12 +75,14 @@ type
     procedure memContatosKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
     function GetPaginaAjuda:string; override;
     procedure AtualizaObjComValorDoBanco;
-    procedure AlteracaoInstituicaoFinanceira;
+    //procedure AlteracaoInstituicaoFinanceira;
+    function  AlteracaoInstituicaoFinanceira : boolean;
     procedure CarregaCliente;
 
     var
@@ -92,6 +94,8 @@ type
 
 var
   FrmContaReceber: TFrmContaReceber;
+
+   bAtualizaRegReceber : Boolean;
 
 implementation
 
@@ -117,7 +121,9 @@ begin
   except
   end;
 
-  AlteracaoInstituicaoFinanceira;
+  //AlteracaoInstituicaoFinanceira; Mauricio Parizotto 2024-08-30
+  if AlteracaoInstituicaoFinanceira then
+    bAtualizaRegReceber := True;
 
   inherited;
 end;
@@ -253,6 +259,10 @@ procedure TFrmContaReceber.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
   inherited;
 
+  //Mauricio Parizotto 2024-08-29
+  if not Self.Visible then
+    Exit;
+
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
 
@@ -270,25 +280,35 @@ end;
 
 procedure TFrmContaReceber.FormClose(Sender: TObject; var Action: TCloseAction);
 var
-  t: TTime;
   iRecno: Integer;
 begin
   inherited;
 
   //Fas refresh do grid e volta para o registro atual
-  try
+  if bAtualizaRegReceber then //Mauricio Parizotto 2024-08-30 add
+  begin
     try
-      t := Time;
-      iRecno := Form7.ibDataSet7.RecNo;
-      Form7.ibDataSet7.DisableControls;
-      Form7.ibDataSet7.Close;
-      Form7.ibDataSet7.Open;
-      Form7.ibDataSet7.RecNo := iRecno;
-    except
+      try
+        iRecno := Form7.ibDataSet7.RecNo;
+        Form7.ibDataSet7.DisableControls;
+        Form7.ibDataSet7.Close;
+        Form7.ibDataSet7.Open;
+        Form7.ibDataSet7.RecNo := iRecno;
+      except
+      end;
+    finally
+      Form7.ibDataSet7.EnableControls;
     end;
-  finally
-    Form7.ibDataSet7.EnableControls;
   end;
+
+  FreeAndNil(FrmContaReceber);
+end;
+
+procedure TFrmContaReceber.FormCreate(Sender: TObject);
+begin
+  inherited;
+
+   bAtualizaRegReceber := False;
 end;
 
 procedure TFrmContaReceber.FormShow(Sender: TObject);
@@ -502,11 +522,14 @@ begin
   end;
 end;
 
-procedure TFrmContaReceber.AlteracaoInstituicaoFinanceira;
+//procedure TFrmContaReceber.AlteracaoInstituicaoFinanceira; Mauricio Parizotto 2024-08-30
+function TFrmContaReceber.AlteracaoInstituicaoFinanceira : boolean;
 var
   vDescricaoAntes : string;
   vQtdParcelas : integer;
 begin
+  Result := False;
+
   //Mauricio Parizotto 2023-05-29
   try
     //Verifica se mudou
@@ -532,6 +555,8 @@ begin
         if Application.MessageBox(PChar('Deseja atribuir essa mesma Instituição financeira para os demais registros dessa venda?'),
                                   'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_Yes then
         begin
+          Result := True;
+
           ExecutaComando(' Update RECEBER'+
                          '   set INSTITUICAOFINANCEIRA ='+QuotedStr(Form7.ibDataSet7INSTITUICAOFINANCEIRA.AsString)+
                          ' Where NUMERONF ='+QuotedStr(Form7.ibDataSet7NUMERONF.AsString),
