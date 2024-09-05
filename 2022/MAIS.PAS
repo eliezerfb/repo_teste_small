@@ -292,6 +292,7 @@ type
     IntegraoIta1: TMenuItem;
     imgOrcamento: TImage;
     lblModOrcamento: TLabel;
+    IntegraoSicoob1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -470,6 +471,7 @@ type
     procedure imgOrcamentoClick(Sender: TObject);
     procedure lblModOrcamentoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure IntegraoSicoob1Click(Sender: TObject);
 
 
   private
@@ -609,7 +611,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmCadastro
   , uFrmEstoque
   , uFrmMsgNovoLayout
-  ;
+  , uFrmIntegracaoSicoob;
 
 {$R *.DFM}
 
@@ -5673,6 +5675,27 @@ begin
     FrmIntegracaoItau.ShowModal;
   finally
     FreeAndNil(FrmIntegracaoItau);
+  end;
+end;
+
+procedure TForm1.IntegraoSicoob1Click(Sender: TObject);
+var
+  bLiberado : Boolean;
+  dLimiteRecurso : Tdate;
+begin
+  bLiberado := (RecursoLiberado(Form7.IBDatabase1,rcIntegracaoSicoob,dLimiteRecurso));
+
+  if not bLiberado then
+  begin
+    MensagemRecursoIndisponivel('Integração Sicoob não está disponível para esta licença');
+    Exit;
+  end;
+
+  try
+    FrmIntegracaoSicoob := TFrmIntegracaoSicoob.Create(self);
+    FrmIntegracaoSicoob.ShowModal;
+  finally
+    FreeAndNil(FrmIntegracaoSicoob);
   end;
 end;
 
@@ -13014,6 +13037,9 @@ begin
       sOrigem := LerParametroIni(Form1.sAtual+'\small.ini', 'T','Origem', EmptyStr);
       sConve  := LerParametroIni(Form1.sAtual+'\small.ini', 'T','Tempo', '00:05:' + SecondOf(Now).ToString);
       {Dailon Parisotto (f-19325) 2024-06-12 Fim}
+
+      //Mauricio Parizotto 2024-09-04
+      TSistema.GetInstance.Serial := AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20));
 
       sURL := 'http://www.smallsoft.com.br/legal.php?'+
               'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
