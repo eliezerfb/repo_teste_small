@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2023/10/25 09:44:48.000.495,=D:\Desenvolvimento\clipp360-nfse-bin\src\Unit1.pas</Transaction>
+    <Transaction>2023/10/25 09:45:15.000.119,D:\Desenvolvimento\clipp360-nfse-bin\src\controller.status.pas=D:\Desenvolvimento\clipp360-nfse-bin\src\Unit1.pas</Transaction>
+    <Transaction>2023/10/25 09:51:41.000.326,=D:\Desenvolvimento\clipp360-nfse-bin\src\Unit1.pas</Transaction>
+    <Transaction>2023/10/25 09:52:04.000.179,D:\Desenvolvimento\clipp360-nfse-bin\src\Classes\nfse.classes.status.pas=D:\Desenvolvimento\clipp360-nfse-bin\src\Unit1.pas</Transaction>
+    <Transaction>2023/10/25 10:10:13.000.872,D:\Desenvolvimento\clipp360-nfse-bin\src\Classes\nfse.classes.status.pas=</Transaction>
+    <Transaction>2024/04/26 15:42:06.000.604,=C:\Workspace\clipp360-nfse-bin\src\Unit1.pas</Transaction>
+    <Transaction>2024/04/26 15:43:53.000.993,C:\Workspace\clipp360-nfse-bin\src\uFunctions.pas=C:\Workspace\clipp360-nfse-bin\src\Unit1.pas</Transaction>
+  </Transactions>
+</BorlandProject>

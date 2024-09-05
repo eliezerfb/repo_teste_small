@@ -1,0 +1,28 @@
+unit nfse.classes.regimeespecialtributacao;
+
+interface
+
+type
+  TRegimeEspecialTributacao = type Integer;
+
+const
+  REGIME_NENHUM = 0;
+  REGIME_MICRO_EMPRESA_MUNICIPAL = 1;
+  REGIME_ESTIMATIVA = 2;
+  REGIME_SOCIEDADE_PROFISSIONAIS = 3;
+  REGIME_COOPERATIVA = 4;
+  REGIME_MEI = 5;
+  REGIME_MICRO_EMPRESARIO_EPP = 6;
+  REGIME_LUCRO_REAL = 7;
+  REGIME_LUCRO_PRESUMIDO = 8;
+  REGIME_SIMPLES_NACIONAL = 9;
+  REGIME_IMUNE = 10;
+  REGIME_EIRELI = 11;
+  REGIME_EPP = 12;
+  REGIME_MICRO_EMPRESARIO = 13;
+  REGIME_OUTROS = 14;
+
+implementation
+
+end.
+
