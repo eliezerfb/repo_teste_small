@@ -137,7 +137,7 @@ begin
     CarregaValorObjeto;
   end else
   begin
-    MensagemSistema('Falha ao fazer cadastro.'+#13#10+Mensagem,msgErro);
+    MensagemSistema(Mensagem,msgErro);
   end;
 end;
 
@@ -153,6 +153,16 @@ begin
   ValidaDados;
 
   ExtraiCertificado;
+
+  if chkAtivo.Checked then
+  begin
+    if VarIsNull(ibdIntegracaoSicoobIDAPIPIX.AsVariant) then
+    begin
+      MensagemSistema('Realize o cadastro da conta antes de continuar!',msgAtencao);
+      btnCadastro.SetFocus;
+      Exit;
+    end;
+  end;
 
   ibdIntegracaoSicoob.Post;
   AgendaCommit(True);
