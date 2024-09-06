@@ -7646,8 +7646,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1223
-    ExplicitWidth = 1562
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7721,7 +7719,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1562
   end
   object Panel_0: TPanel
     Left = 0
@@ -12857,6 +12854,21 @@ object Form7: TForm7
       object SClienteInativo1: TMenuItem
         Caption = 'S'#243' Cliente Inativo'
         OnClick = FiltroRelacaoCom
+      end
+      object Aniversariantes1: TMenuItem
+        Caption = 'Aniversariantes'
+        object Dia1: TMenuItem
+          Caption = 'Dia'
+          OnClick = Dia1Click
+        end
+        object Semana1: TMenuItem
+          Caption = 'Semana'
+          OnClick = Semana1Click
+        end
+        object Ms1: TMenuItem
+          Caption = 'M'#234's'
+          OnClick = Ms1Click
+        end
       end
     end
     object MenuItem9: TMenuItem
