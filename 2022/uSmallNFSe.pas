@@ -514,6 +514,7 @@ ajustar
     end;
 *)
   finally
+  (*
     if not (NFSeJsonDTO.IndependentNfse) then
     begin
       try
@@ -529,8 +530,9 @@ ajustar
       except
       end;
     end;
-    //Res.Send(ResponseDTO.AsJson);
+    Res.Send(ResponseDTO.AsJson);
     FreeAndNil(AcbrNFSe);
+  *)
   end;
 end;
 
