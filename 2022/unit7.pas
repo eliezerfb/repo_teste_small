@@ -10223,8 +10223,18 @@ begin
 
   Form12.sObservacaoAntiga := AcObs;
 
+  {Sandro Silva 2024-09-09 inicio
+  Identificado na revisão, com banco novo, em branco ocorre Not in Edit Mode
   if Pos(Trim(Form12.sObservacaoAntiga), ibDataSet15COMPLEMENTO.AsString) <= 0 then
     ibDataSet15COMPLEMENTO.AsString := Form12.sObservacaoAntiga + ibDataSet15COMPLEMENTO.AsString;
+  }
+  if Pos(Trim(Form12.sObservacaoAntiga), ibDataSet15COMPLEMENTO.AsString) <= 0 then
+  begin
+    if not (Form7.ibDataSet15.State in [dsEdit, dsInsert]) then
+      Form7.ibDataSet15.Edit;
+    ibDataSet15COMPLEMENTO.AsString := Form12.sObservacaoAntiga + ibDataSet15COMPLEMENTO.AsString;
+  end;
+  {Sandro Silva 2024-09-09 fim}
 end;
 
 procedure TForm7.ibDataSet15MERCADORIAChange(Sender: TField);
