@@ -82,9 +82,19 @@ begin
       begin
         if Form7.ibDataSet23.Locate('REGISTRO',cdsProdutosNotaREGISTRO.AsString,[]) then
         begin
+          {Mauricio Parizotto 2024-09-02 SMAL-690
           Form7.ibDataSet23.Edit;
           Form7.ibDataSet23LISTA.AsFloat := cdsProdutosNotaPRECO_NOVO.AsFloat;
           Form7.ibDataSet23.Post;
+          }
+
+          //só deve gravar quando tiver alteração de preço
+          if cdsProdutosNotaPRECO_VENDA.AsFloat <> cdsProdutosNotaPRECO_NOVO.AsFloat then
+          begin
+            Form7.ibDataSet23.Edit;
+            Form7.ibDataSet23LISTA.AsFloat := cdsProdutosNotaPRECO_NOVO.AsFloat;
+            Form7.ibDataSet23.Post;
+          end;
         end;
 
         cdsProdutosNota.Next;

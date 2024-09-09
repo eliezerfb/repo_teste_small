@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1263
-  ClientWidth = 1562
+  ClientHeight = 1250
+  ClientWidth = 1560
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -315,7 +315,7 @@ object Form7: TForm7
     Font.Pitch = fpFixed
     Font.Style = []
     ParentFont = False
-    Visible = False 
+    Visible = False
   end
   object Label37: TLabel
     Left = 224
@@ -7636,8 +7636,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1223
-    Width = 1562
+    Top = 1210
+    Width = 1560
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7709,7 +7709,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1562
+    Width = 1560
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -14459,7 +14459,7 @@ object Form7: TForm7
       DisplayWidth = 38
       FieldName = 'NOME'
       OnSetText = ibDataSet14NOMESetText
-      Size = 40
+      Size = 60
     end
     object ibDataSet14INTEGRACAO: TIBStringField
       DisplayLabel = 'Integra'#231#227'o'
@@ -15171,7 +15171,7 @@ object Form7: TForm7
       DisplayLabel = 'Natureza da opera'#231#227'o'
       FieldName = 'OPERACAO'
       Origin = 'VENDAS.OPERACAO'
-      Size = 40
+      Size = 60
     end
     object ibDataSet15VENDEDOR: TIBStringField
       DisplayLabel = 'Vendedor'
@@ -17051,7 +17051,7 @@ object Form7: TForm7
     object ibDataSet24OPERACAO: TIBStringField
       DisplayLabel = 'Natureza da opera'#231#227'o'
       FieldName = 'OPERACAO'
-      Size = 40
+      Size = 60
     end
     object ibDataSet24ICMS: TFloatField
       DisplayLabel = 'ICMs'
@@ -19419,6 +19419,10 @@ object Form7: TForm7
       object Relatriodetotaldeserviosporvendedor1: TMenuItem
         Caption = 'Total de servi'#231'os por t'#233'cnico'
         OnClick = Relatriodetotaldeserviosporvendedor1Click
+      end
+      object DetalhamentodasOrdensfiltradas1: TMenuItem
+        Caption = 'Detalhamento das Ordens filtradas'
+        OnClick = DetalhamentodasOrdensfiltradas1Click
       end
     end
     object MenuItem100: TMenuItem

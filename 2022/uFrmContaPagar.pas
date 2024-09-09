@@ -40,6 +40,7 @@ type
     procedure btnReplicarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -51,6 +52,8 @@ type
 
 var
   FrmContaPagar: TFrmContaPagar;
+
+  bAtualizaRegPagar : Boolean;
 
 implementation
 
@@ -173,6 +176,10 @@ procedure TFrmContaPagar.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
   inherited;
 
+  //Mauricio Parizotto 2024-08-29
+  if not Self.Visible then
+    Exit;
+
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
 
@@ -190,25 +197,35 @@ end;
 
 procedure TFrmContaPagar.FormClose(Sender: TObject; var Action: TCloseAction);
 var
-  t: TTime;
   iRecno: Integer;
 begin
   inherited;
 
   //Fas refresh do grid e volta para o registro atual
-  iRecno := Form7.ibDataSet8.RecNo;
-  Form7.ibDataSet8.DisableControls;
-  try
+  if bAtualizaRegPagar then //Mauricio Parizotto 2024-09-04
+  begin
+    iRecno := Form7.ibDataSet8.RecNo;
+    Form7.ibDataSet8.DisableControls;
     try
-      t := Time;
-      Form7.ibDataSet8.Close;
-      Form7.ibDataSet8.Open;
-      Form7.ibDataSet8.RecNo := iRecno;
-    except
+      try
+        Form7.ibDataSet8.Close;
+        Form7.ibDataSet8.Open;
+        Form7.ibDataSet8.RecNo := iRecno;
+      except
+      end;
+    finally
+      Form7.ibDataSet8.EnableControls;
     end;
-  finally
-    Form7.ibDataSet8.EnableControls;
   end;
+
+  FreeAndNil(FrmContaPagar);
+end;
+
+procedure TFrmContaPagar.FormCreate(Sender: TObject);
+begin
+  inherited;
+
+  bAtualizaRegPagar := False;
 end;
 
 procedure TFrmContaPagar.FormShow(Sender: TObject);
