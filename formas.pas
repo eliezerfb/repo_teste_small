@@ -97,7 +97,8 @@ type
     { Private declarations }
     sSecaoFrente: String;
     procedure CarregaInformacoes;
-    procedure CarregaOpcaoTipoPix(ComboOpcao: Tcombobox; FormaPgto: string); // Sandro Silva 2021-07-27
+    procedure CarregaOpcaoTipoPix(ComboOpcao: Tcombobox; FormaPgto: string);
+    procedure OpcaoLancaContaReceber; // Sandro Silva 2021-07-27
   public
     { Public declarations }
   end;
@@ -967,6 +968,46 @@ begin
 
   //Tenta voltar para a opção que tinha antes
   ComboOpcao.ItemIndex := ComboOpcao.Items.IndexOf(sTipoPix);
+
+  OpcaoLancaContaReceber;
+end;
+
+procedure TFormasP.OpcaoLancaContaReceber;  //Mauricio Parizotto 2024-09-06
+begin
+  chkReceberExtra1.Enabled := Copy(cboForma01.Text,1,2) <> '17';
+  chkReceberExtra2.Enabled := Copy(cboForma02.Text,1,2) <> '17';
+  chkReceberExtra3.Enabled := Copy(cboForma03.Text,1,2) <> '17';
+  chkReceberExtra4.Enabled := Copy(cboForma04.Text,1,2) <> '17';
+  chkReceberExtra5.Enabled := Copy(cboForma05.Text,1,2) <> '17';
+  chkReceberExtra6.Enabled := Copy(cboForma06.Text,1,2) <> '17';
+  chkReceberExtra7.Enabled := Copy(cboForma07.Text,1,2) <> '17';
+  chkReceberExtra8.Enabled := Copy(cboForma08.Text,1,2) <> '17';
+
+
+  //Marca a opção se tiver desabilitada
+  if not chkReceberExtra1.Enabled then
+   chkReceberExtra1.Checked := True;
+
+  if not chkReceberExtra2.Enabled then
+   chkReceberExtra2.Checked := True;
+
+  if not chkReceberExtra3.Enabled then
+   chkReceberExtra3.Checked := True;
+
+  if not chkReceberExtra4.Enabled then
+   chkReceberExtra4.Checked := True;
+
+  if not chkReceberExtra5.Enabled then
+   chkReceberExtra5.Checked := True;
+
+  if not chkReceberExtra6.Enabled then
+   chkReceberExtra6.Checked := True;
+
+  if not chkReceberExtra7.Enabled then
+   chkReceberExtra7.Checked := True;
+
+  if not chkReceberExtra8.Enabled then
+   chkReceberExtra8.Checked := True;
 end;
 
 end.

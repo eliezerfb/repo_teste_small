@@ -1051,6 +1051,8 @@ type
     FunesAdministrativasIntegraoIta1: TMenuItem;
     IBDataSet150FORMAPAGAMENTO: TWideMemoField;
     IBDataSet150CLIFOR: TIBStringField;
+    ibDataSet7FORMADEPAGAMENTO: TIBStringField;
+    ibDataSet7AUTORIZACAOTRANSACAO: TIBStringField;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1485,7 +1487,7 @@ type
     procedure OcultaGerenciadorVendas;
     procedure FormaExtraLancaReceber(sIndiceFormaExtra: String;
       sCaixa: String; sCupom: String; dValor: Double; dtEmissao: TDate;
-      dtVencimento: TDate; sInstituicaoFinanceira : string = '');
+      dtVencimento: TDate; sInstituicaoFinanceira : string = ''; sAutorizacao : string = '');
     procedure FechaVendaRapidaFormaPagamentoCartao;
     procedure TransmiteContingenciaAutomatico(data: TDate; Caixa: String);
     procedure LeConfiguracaoTipoEtiquetaBalanca;
@@ -10704,6 +10706,7 @@ var
 
   CodFormaPixEst, CodFormaPixDin : integer;
   InstituicaoFinanceira : string;
+  sAutorizacao1, sAutorizacao2, sAutorizacao3, sAutorizacao4, sAutorizacao5, sAutorizacao6, sAutorizacao7, sAutorizacao8 : string;
   PagouNoPIX : boolean;
   ValorPIX : Double;
   IDTransacaoPIX : string;
@@ -10997,6 +11000,18 @@ begin
               begin
                 sCNPJInstituicaoPIX :=    GetCNPJInstituicaoFinanceira(InstituicaoFinanceira,ibDataSet25.Transaction);
                 sTipoPix                  := _PixDinamico;
+
+                //Mauricio Parizotto 2024-09-06
+                case CodFormaPixDin of
+                  1 : sAutorizacao1 := sCodigoAutorizacaoPIX;
+                  2 : sAutorizacao2 := sCodigoAutorizacaoPIX;
+                  3 : sAutorizacao3 := sCodigoAutorizacaoPIX;
+                  4 : sAutorizacao4 := sCodigoAutorizacaoPIX;
+                  5 : sAutorizacao5 := sCodigoAutorizacaoPIX;
+                  6 : sAutorizacao6 := sCodigoAutorizacaoPIX;
+                  7 : sAutorizacao7 := sCodigoAutorizacaoPIX;
+                  8 : sAutorizacao8 := sCodigoAutorizacaoPIX;
+                end;
               end;
             end;
           except
@@ -12033,7 +12048,8 @@ begin
                   {Sandro Silva 2021-07-27 inicio}
                   try
                     //FormaExtraLancaReceber('1', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('1', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
-                    FormaExtraLancaReceber('1', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira);
+                    //FormaExtraLancaReceber('1', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
+                    FormaExtraLancaReceber('1', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao1);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12075,7 +12091,8 @@ begin
                   {Sandro Silva 2021-07-27 inicio}
                   try
                     //FormaExtraLancaReceber('2', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('2', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
-                    FormaExtraLancaReceber('2', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira);
+                    //FormaExtraLancaReceber('2', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
+                    FormaExtraLancaReceber('2', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira, sAutorizacao2);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12116,7 +12133,8 @@ begin
                   {Sandro Silva 2021-07-27 inicio}
                   try
                     //FormaExtraLancaReceber('3', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('3', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
-                    FormaExtraLancaReceber('3', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira);
+                    //FormaExtraLancaReceber('3', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
+                    FormaExtraLancaReceber('3', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao3);
                   except
                         on E: Exception do
                         begin
@@ -12161,7 +12179,8 @@ begin
                   {Sandro Silva 2021-07-27 inicio}
                   try
                     //FormaExtraLancaReceber('4', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('4', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
-                    FormaExtraLancaReceber('4', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira);
+                    //FormaExtraLancaReceber('4', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
+                    FormaExtraLancaReceber('4', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao4);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12202,7 +12221,8 @@ begin
                   {Sandro Silva 2021-07-27 inicio}
                   try
                     //FormaExtraLancaReceber('5', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('5', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
-                    FormaExtraLancaReceber('5', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira);
+                    //FormaExtraLancaReceber('5', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
+                    FormaExtraLancaReceber('5', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao5);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12243,7 +12263,8 @@ begin
                   {Sandro Silva 2021-07-27 inicio}
                   try
                     //FormaExtraLancaReceber('6', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('6', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
-                    FormaExtraLancaReceber('6', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
+                    //FormaExtraLancaReceber('6', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-09-06
+                    FormaExtraLancaReceber('6', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira,sAutorizacao6);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12284,7 +12305,8 @@ begin
                   {Sandro Silva 2021-07-27 inicio}
                   try
                     //FormaExtraLancaReceber('7', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('7', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
-                    FormaExtraLancaReceber('7', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30);
+                    //FormaExtraLancaReceber('7', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-09-06
+                    FormaExtraLancaReceber('7', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira,sAutorizacao7);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12325,7 +12347,8 @@ begin
                   {Sandro Silva 2021-07-27 inicio}
                   try
                     //FormaExtraLancaReceber('8', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('8', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Maurici Parizoto 2024-05-02
-                    FormaExtraLancaReceber('8', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira);
+                    //FormaExtraLancaReceber('8', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
+                    FormaExtraLancaReceber('8', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao8);
                   except
                     on E: Exception do
                     begin
@@ -33392,7 +33415,7 @@ end;
 
 procedure TForm1.FormaExtraLancaReceber(sIndiceFormaExtra: String;
   sCaixa: String; sCupom: String; dValor: Double; dtEmissao: TDate;
-  dtVencimento: TDate; sInstituicaoFinanceira : string = '');
+  dtVencimento: TDate; sInstituicaoFinanceira : string = ''; sAutorizacao : string = '');
 // Sandro Silva 2021-07-27
 // Lança no contas a receber o valor informado na forma extra se tiver sido configurado essa regra para a forma extra
 var
@@ -33414,6 +33437,7 @@ begin
       Form1.ibDataSet7.FieldByName('HISTORICO').Value       := 'Venda Caixa: ' + sCaixa + ' Cupom: ' + sCupom;
       Form1.ibDataSet7.FieldByName('CONTA').AsString        := Form1.ibDataSet14.FieldByname('CONTA').AsString;
       Form1.ibDataSet7.FieldByName('INSTITUICAOFINANCEIRA').AsString := sInstituicaoFinanceira; //Mauricio Parizotto 2024-05-03
+      Form1.ibDataSet7.FieldByName('AUTORIZACAOTRANSACAO').AsString  := sAutorizacao; //Mauricio Parizotto 2024-09-06
       Form1.ibDataSet7.Post;
     end;
 

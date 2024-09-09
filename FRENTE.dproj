@@ -3,7 +3,7 @@
         <ProjectGuid>{376CE32D-BC53-40E7-BD4E-12B5F2B54C24}</ProjectGuid>
         <MainSource>FRENTE.DPR</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -265,8 +265,6 @@
         <DCCReference Include="..\unit_compartilhada\uGeraChavePix.pas"/>
         <DCCReference Include="uajustaresolucao.pas"/>
         <DCCReference Include="..\unit_compartilhada\Itau\uIntegracaoItau.pas"/>
-        <DCCReference Include="..\unit_compartilhada\Itau\uClassesItau.pas"/>
-        <DCCReference Include="..\unit_compartilhada\Itau\uWebServiceItau.pas"/>
         <DCCReference Include="uFrmTransacoesItau.pas">
             <Form>FrmTransacoesItau</Form>
         </DCCReference>
@@ -292,6 +290,11 @@
         <DCCReference Include="..\unit_compartilhada\uOutrasSections.pas"/>
         <DCCReference Include="..\unit_compartilhada\uImpressoraSections.pas"/>
         <DCCReference Include="..\unit_compartilhada\uCarneSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Itau\uWebServiceItau.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Itau\uClassesItau.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Sicoob\uClassesSicoob.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1135,10 +1138,10 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

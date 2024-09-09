@@ -90,8 +90,6 @@ uses
   uGeraChavePix in '..\unit_compartilhada\uGeraChavePix.pas',
   uajustaresolucao in 'uajustaresolucao.pas',
   uIntegracaoItau in '..\unit_compartilhada\Itau\uIntegracaoItau.pas',
-  uClassesItau in '..\unit_compartilhada\Itau\uClassesItau.pas',
-  uWebServiceItau in '..\unit_compartilhada\Itau\uWebServiceItau.pas',
   uFrmTransacoesItau in 'uFrmTransacoesItau.pas' {FrmTransacoesItau},
   uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
   uLogSistema in '..\unit_compartilhada\uLogSistema.pas',
@@ -114,7 +112,12 @@ uses
   uOSSections in '..\unit_compartilhada\uOSSections.pas',
   uOutrasSections in '..\unit_compartilhada\uOutrasSections.pas',
   uImpressoraSections in '..\unit_compartilhada\uImpressoraSections.pas',
-  uCarneSections in '..\unit_compartilhada\uCarneSections.pas';
+  uCarneSections in '..\unit_compartilhada\uCarneSections.pas',
+  uWebServiceItau in '..\unit_compartilhada\Itau\uWebServiceItau.pas',
+  uIntegracaoSicoob in '..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas',
+  uClassesItau in '..\unit_compartilhada\Itau\uClassesItau.pas',
+  uClassesSicoob in '..\unit_compartilhada\Sicoob\uClassesSicoob.pas',
+  uWebServiceSicoob in '..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas';
 
 {$R *.RES}
 
