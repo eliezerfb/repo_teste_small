@@ -5,9 +5,9 @@ interface
 uses
   System.SysUtils, REST.JSON, System.Generics.Collections, REST.Json.Types,
   Vcl.Forms, REST.Types, IBX.IBDatabase, IBX.IBQuery,
-  System.Classes, Winapi.Windows, Data.DB, System.Variants;
+  System.Classes, Winapi.Windows, Data.DB, System.Variants, System.StrUtils;
 
-  const URL_ITAU   = 'https://api.eclipp.com.br/api/pix/';
+  const URL_SICOOB   = 'https://api.eclipp.com.br/api/pix/';
 
   function RegistraContaSicoob(name,identifier,token, idBank,
                                description, pixMerchantName, pixMerchantCity,
@@ -15,6 +15,9 @@ uses
                                out id_api_pix : integer;
                                out Mensagem:string):boolean;
   function GetCertificateSicoobPem(IBTRANSACTION: TIBTransaction) : string;
+  function GeraChavePixISicoob(idBankAccount : integer; description : string;
+                             Valor : double; out ChaveQRCode, order_id, Mensagem : string):boolean;
+  function GetStatusPixSicoob(txId:string; out CodigoAutorizacao:string):string;
 
 
 implementation
@@ -22,7 +25,10 @@ implementation
 uses
   uFuncoesBancoDados
   , uChaveCertificado
-  , uWebServiceSicoob, uClassesSicoob, uClassesItau, uLogSistema, smallfunc_xe;
+  , uWebServiceSicoob
+  , uClassesSicoob
+  , uLogSistema
+  , smallfunc_xe;
 
 function RegistraContaSicoob(name,identifier,token, idBank,
                              description, pixMerchantName, pixMerchantCity,
@@ -84,7 +90,7 @@ begin
     {$Endregion}
 
     if RequisicaoSicoob(rmPOST,
-                        URL_ITAU+'bank-account',
+                        URL_SICOOB+'bank-account',
                         '',
                         token,
                         apiPixCertificate,
@@ -157,6 +163,66 @@ begin
   end;
 end;
 
+
+
+function GeraChavePixISicoob(idBankAccount : integer; description : string;
+                             Valor : double; out ChaveQRCode, order_id, Mensagem : string):boolean;
+var
+  sJson, sJsonRet : string;
+  StatusCode : integer;
+  PixGenerate : TPixGenerate;
+  RetErro : TRetErro;
+begin
+  Result := False;
+
+  try
+    PixGenerate := TPixGenerate.Create;
+    PixGenerate.Description := description;
+    PixGenerate.IdBankAccount := idBankAccount;
+    PixGenerate.Value := Valor;
+    PixGenerate.DaysToExpire := 1;
+
+    sJson := TJson.ObjectToJsonString(PixGenerate);
+
+    if RequisicaoSicoob(rmPOST,URL_SICOOB+'generate',sJson,'','',nil,sJsonRet,StatusCode) then
+    begin
+      try
+//        OrderRet  := TJson.JsonToObject<TOrderRet>(sJsonRet);
+//
+//        ChaveQRCode := OrderRet.QrCodeText;
+//        order_id    := OrderRet.OrderId;
+      finally
+//        FreeAndNil(OrderRet);
+      end;
+
+      Result := True;
+    end else
+    begin
+      LogSistema('Falha ao gerar chave PIX. '+'Código: '+StatusCode.ToString+' '+sJsonRet);
+
+      try
+        RetErro  := TJson.JsonToObject<TRetErro>(sJsonRet);
+        Mensagem := 'Falha ao gerar chave PIX.'+#13#10+
+                    RetErro.Message+#13#10+
+                    'Código: '+StatusCode.ToString;
+
+        FreeAndNil(RetErro);
+      except
+        Mensagem := 'Falha ao gerar chave PIX.'+#13#10+
+                    'Verifique com o suporte técnico!'+#13#10+
+                    'Código: '+StatusCode.ToString;
+      end;
+
+    end;
+  finally
+    FreeAndNil(PixGenerate);
+  end;
+end;
+
+function GetStatusPixSicoob(txId:string; out CodigoAutorizacao:string):string;
+begin
+  Result := '';
+end;
 
 
 end.

@@ -53,6 +53,35 @@ type
     property UpdatedAt: TDateTime read FUpdatedAt write FUpdatedAt;
   end;
 
+type
+  TPixGenerate = class
+  private
+    FDaysToExpire: Integer;
+    FDebtorIdentifier: string;
+    FDebtorName: string;
+    FDescription: string;
+    FIdBankAccount: Integer;
+    FValue: Double;
+  published
+    property DaysToExpire: Integer read FDaysToExpire write FDaysToExpire;
+    property DebtorIdentifier: string read FDebtorIdentifier write FDebtorIdentifier;
+    property DebtorName: string read FDebtorName write FDebtorName;
+    property Description: string read FDescription write FDescription;
+    property IdBankAccount: Integer read FIdBankAccount write FIdBankAccount;
+    property Value: Double read FValue write FValue;
+  end;
+
+
+type
+  TRetErro = class
+  private
+    FMessage: string;
+    FStatus: Boolean;
+  published
+    property Message: string read FMessage write FMessage;
+    property Status: Boolean read FStatus write FStatus;
+  end;
+
 implementation
 
 destructor TCamposApi.Destroy;

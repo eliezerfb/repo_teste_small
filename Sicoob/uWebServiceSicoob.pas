@@ -10,10 +10,6 @@ uses
   IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
   REST.Types;
 
-var
-  ITAU_access_token, ITAU_refresh_token : string;
-  ITAU_ClientId, ITAU_AccessKey, ITAU_SecretKey : string;
-
   function RequisicaoSicoob(vMethod : TRESTRequestMethod; EndPoint:string; sBody, sToken, sCertFile : string; Campos : TCamposApi; out Resposta : string; out StatusCode : integer) : Boolean;
 
 implementation
