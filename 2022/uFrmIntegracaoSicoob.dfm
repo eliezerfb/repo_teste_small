@@ -521,9 +521,10 @@ inherited FrmIntegracaoSicoob: TFrmIntegracaoSicoob
       Size = 8
     end
     object ibdIntegracaoSicoobCERTIFICADONOME: TIBStringField
+      DisplayWidth = 80
       FieldName = 'CERTIFICADONOME'
       Origin = 'CONFIGURACAOSICOOB.CERTIFICADONOME'
-      Size = 40
+      Size = 80
     end
     object ibdIntegracaoSicoobCERTIFICADOSENHA: TIBStringField
       FieldName = 'CERTIFICADOSENHA'

@@ -2761,7 +2761,7 @@ begin
                    ' 	 CLIENTIDPIX VARCHAR(100), '+
                    ' 	 CLIENTIDBOLETO VARCHAR(100), '+
                    ' 	 CERTIFICADO BLOB SUB_TYPE TEXT,'+
-                   ' 	 CERTIFICADONOME VARCHAR(40), '+
+                   ' 	 CERTIFICADONOME VARCHAR(80), '+
                    ' 	 CERTIFICADOSENHA VARCHAR(40), '+
                    ' 	 CONSTRAINT PK_CONFIGURACAOSICOOB PRIMARY KEY (IDCONFIGURACAOSICOOB)'+
                    ' );');
