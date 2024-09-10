@@ -4,7 +4,7 @@ interface
 
 uses
   uIRetornaCustoMedio, IBX.IBDatabase, IBX.IBQuery, System.SysUtils,
-  System.StrUtils;
+  System.StrUtils, System.Classes;
 
 type
   TRetornaCustoMedio = class(TInterfacedObject, IRetornaCustoMedio)
@@ -13,6 +13,7 @@ type
     FcCodigo: String;
     FoTransaction: TIBTransaction;
     FnDecimais: Integer;
+    function RetornaCustoCompraNota: Double;
   public
     class function New: IRetornaCustoMedio;
     destructor Destroy; override;
@@ -67,8 +68,19 @@ begin
   FqryDados.SQL.Add('select');
   FqryDados.SQL.Add('    ITENS002.QUANTIDADE');
   FqryDados.SQL.Add('    , ESTOQUE.QTD_ATUAL');
-  FqryDados.SQL.Add('    , coalesce(ITENS002.CUSTO, ITENS002.UNITARIO) as CUSTO');
+  FqryDados.SQL.Add('    , ESTOQUE.CUSTOCOMPR AS CUSTO');
+  FqryDados.SQL.Add('    , coalesce(ITENS002.CUSTO, ITENS002.UNITARIO) as CUSTONOTA');
   FqryDados.SQL.Add('    , coalesce(ITENS002.VICMS,0) as VICMS');
+  FqryDados.SQL.Add('    , ITENS002.UNITARIO');
+  FqryDados.SQL.Add('    , ITENS002.VICMSST');
+  FqryDados.SQL.Add('    , ITENS002.VIPI');
+  FqryDados.SQL.Add('    , ITENS002.VFCPST');
+  FqryDados.SQL.Add('    , ITENS002.QUANTIDADE');
+  FqryDados.SQL.Add('    , COMPRAS.MERCADORIA');
+  FqryDados.SQL.Add('    , COMPRAS.FRETE');
+  FqryDados.SQL.Add('    , COMPRAS.SEGURO');
+  FqryDados.SQL.Add('    , COMPRAS.DESPESAS');
+  FqryDados.SQL.Add('    , COMPRAS.DESCONTO');
   FqryDados.SQL.Add('from ITENS002');
   FqryDados.SQL.Add('inner join COMPRAS');
   FqryDados.SQL.Add('    on (COMPRAS.NUMERONF=ITENS002.NUMERONF)');
@@ -77,7 +89,7 @@ begin
   FqryDados.SQL.Add('    on (ESTOQUE.CODIGO=ITENS002.CODIGO)');
   FqryDados.SQL.Add('where');
   FqryDados.SQL.Add('    (ITENS002.CODIGO=:XCODIGO)');
-  FqryDados.SQL.Add('order by COMPRAS.EMISSAO');
+  FqryDados.SQL.Add('order by COMPRAS.EMISSAO, COMPRAS.SAIDAH');
   FqryDados.ParamByName('XCODIGO').AsString := FcCodigo;
   FqryDados.Open;
 
@@ -87,6 +99,9 @@ end;
 function TRetornaCustoMedio.CustoMedio: Double;
 var
   nQuantidade: Currency;
+  nCustoCompra: Double;
+  nVICMS: Double;
+  nSaldoAtual: Currency;  // Saldo do momento da nota
 begin
   // Fórmula do custo médio                                                                        //
   // * Primeiro                                                                                    //
@@ -99,21 +114,31 @@ begin
   // Obs: O Custo Médio é a média ponderada entre o custo da mercadoria                            //
   // comprada menos o crédito de ICMS e o custo da mercadoria em estoque.                          //
 
-  Result := 0;
+  Result      := 0;
+  nSaldoAtual := 0;
 
   while not FqryDados.Eof do
   begin
-    nQuantidade := FqryDados.FieldByName('QUANTIDADE').AsFloat;
+    nQuantidade  := FqryDados.FieldByName('QUANTIDADE').AsFloat;
+    nCustoCompra := FqryDados.FieldByName('CUSTO').AsFloat;
+    nVICMS       := FqryDados.FieldByName('VICMS').AsFloat;
 
     if Result = 0 then
     begin
-      Result := FqryDados.FieldByName('CUSTO').AsFloat - (FqryDados.FieldByName('VICMS').AsFloat / nQuantidade);
+      nCustoCompra := FqryDados.FieldByName('CUSTONOTA').AsFloat;
+
+      Result := nCustoCompra - (nVICMS / nQuantidade);
     end else
     begin
-      Result := ((FqryDados.FieldByName('QTD_ATUAL').AsFloat * Result) +
-                (nQuantidade * (FqryDados.FieldByName('CUSTO').AsFloat - (FqryDados.FieldByName('VICMS').AsFloat / nQuantidade)))) /
-                (nQuantidade + FqryDados.FieldByName('QTD_ATUAL').AsFloat);
+
+      nCustoCompra := RetornaCustoCompraNota;
+
+      Result := ((nSaldoAtual * Result) +
+                (nQuantidade * (nCustoCompra - (nVICMS / nQuantidade)))) /
+                (nQuantidade + nSaldoAtual);
     end;
+    nSaldoAtual := nSaldoAtual + nQuantidade;
+
     FqryDados.Next;
   end;
 
@@ -121,6 +146,19 @@ begin
     Result := 0;
 
   Result := Arredonda(Result, FnDecimais);
+end;
+
+function TRetornaCustoMedio.RetornaCustoCompraNota: Double;
+begin
+  //Se alterar aqui, alerar sql da tela FrmPrecificacaoProduto e Unit24
+  Result := (FqryDados.FieldByName('UNITARIO').AsFloat + ((FqryDados.FieldByName('VICMSST').AsFloat + FqryDados.FieldByName('VIPI').AsFloat + FqryDados.FieldByName('VFCPST').AsFloat)/FqryDados.FieldByName('QUANTIDADE').AsFloat) ) // Unitário + ICMSST + IPI + FCP ST
+                                        + (( FqryDados.FieldByName('UNITARIO').AsFloat     // Rateio   //
+                                           / FqryDados.FieldByName('MERCADORIA').AsFloat ) * //          //
+                                          ( FqryDados.FieldByName('FRETE').AsFloat +         // o frete  //
+                                             FqryDados.FieldByName('SEGURO').AsFloat +       // o seguro //
+                                             FqryDados.FieldByName('DESPESAS').AsFloat -     // outras   //
+                                             FqryDados.FieldByName('DESCONTO').AsFloat       // desconto //
+                                          ));
 end;
 
 destructor TRetornaCustoMedio.Destroy;

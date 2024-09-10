@@ -1319,7 +1319,7 @@ begin
                         // despesas proporcionais de frete seguro e outras.                                               //
                         if (Form7.ibDataSet4ULT_COMPRA.AsDateTime <= Form7.ibDataSet24EMISSAO.AsDateTime) then
                         begin
-                          //Se alterar aqui, alerar sql da tela FrmPrecificacaoProduto
+                          //Se alterar aqui, alerar sql da tela FrmPrecificacaoProduto e a uRetornaCustoMedio
                           Form7.ibDataSet4CUSTOCOMPR.AsFloat := (Form7.ibDataSet23UNITARIO.AsFloat + ((Form7.ibDataSet23VICMSST.AsFloat + Form7.ibDataSet23VIPI.AsFloat + Form7.ibDataSet23VFCPST.AsFloat)/Form7.ibDataSet23QUANTIDADE.AsFloat) ) // Unitário + ICMSST + IPI + FCP ST
                                                                 + (( Form7.ibDataSet23UNITARIO.AsFloat     // Rateio   //
                                                                    / Form7.ibDataSet24MERCADORIA.AsFloat ) * //          //
