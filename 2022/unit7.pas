@@ -26382,7 +26382,7 @@ begin
 
   if Form7.ibDataSet16DESCRICAO.AsString <> EmptyStr then
   begin
-    if (not NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) then
+    if (not NFeFinalidadeDevolucaoImpostoManual(Form7.ibDataSet15FINNFE.AsString, Form7.ibDataSet14IMPOSTOMANUAL.AsString)) then
     begin
       try
         if (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '5101') or (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '6101') or (Pos('IPI',Form7.ibDataSet14OBS.AsString) <> 0) then
