@@ -133,13 +133,14 @@ const
   _cOSObservacaoRecibo = 'Observação Recibo';
 
   //Outras
-  _cSectionOutras = 'Outras';
-  _cOutrasLog     = 'Log Sistema';
-  _cFabricaProdSemQtd = 'Fabricação Prod Sem Qtd';
-  _cTipoPrazo         = 'Tipo do Prazo';
-  _cDiaVencimento     = 'Dia Vencimento';
-  _cTemaIcones        = 'Tema dos ícones';
-  _cCalculaLucroAltVenda = 'Calcula lucro alt preço venda';
+  _cSectionOutras         = 'Outras';
+  _cOutrasLog             = 'Log Sistema';
+  _cFabricaProdSemQtd     = 'Fabricação Prod Sem Qtd';
+  _cTipoPrazo             = 'Tipo do Prazo';
+  _cDiaVencimento         = 'Dia Vencimento';
+  _cTemaIcones            = 'Tema dos ícones';
+  _cCalculaLucroAltVenda  = 'Calcula lucro alt preço venda';
+  _PermiteImportaMesmoOrc = 'Importar Mesmo Orc Cupom';
 
   //Impressora
   _cSectionImpressora = 'Impressora';
@@ -196,6 +197,11 @@ const
   //Mauricio Parizotto 2024-07-30
   const _TemaClassico = 'Clássico';
   const _TemaModerno  = 'Moderno';
+
+  {Dailon Parisotto (small-653) 2024-08-26 Inicio}
+  _cNaturezaSINIEF = 'Anulação de operação - Ajuste SINIEF 13/24';
+  _cObsNFeSINIEF  = 'Procedimento autorizado pelo Ajuste SINIEF 13/24';
+  {Dailon Parisotto (small-653) 2024-08-26 Fim}
 
 implementation
 

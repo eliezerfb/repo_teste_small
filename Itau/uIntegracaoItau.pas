@@ -41,7 +41,9 @@ uses
   , uWebServiceItau
   , uconstantes_chaves_privadas
   , uLogSistema
-  , uSmallConsts, uDialogs, uConectaBancoSmall;
+  , uSmallConsts
+  , uDialogs
+  , uFuncoesBancoDados;
 
 function GetURL : string;
 begin
