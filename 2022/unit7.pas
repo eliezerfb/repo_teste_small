@@ -1,3 +1,4 @@
+
 unit Unit7;
 
 interface
@@ -45,6 +46,24 @@ const CAMPO_SOMENTE_LEITURA_NO_GRID = 10;
 const ID_FILTRAR_FORMAS_GERAM_BOLETO = 15;
 const ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA = 05;
 const ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS = 1;
+
+//Mauricio Parizotto 2024-09-02
+const FILTRO_ANIVERSARIANTES_SEMANA = ' where EXTRACT(week from current_date) = '+
+                                      ' 		EXTRACT(week from 				'+
+                                      ' 			Cast('+
+                                      ' 				Cast('+
+                                      ' 					Case'+
+                                      ' 						When EXTRACT(week from current_date) = 1 then '+
+                                      ' 							Case'+
+                                      ' 								When EXTRACT(month from current_date) = 1 AND EXTRACT(month from DATANAS)  = 12 then EXTRACT(year from current_date) -1	'+
+                                      ' 								When EXTRACT(month from current_date) = 12 AND EXTRACT(month from DATANAS)  = 1 then EXTRACT(year from current_date) +1'+
+                                      ' 								Else EXTRACT(year from current_date)'+
+                                      ' 							End					'+
+                                      ' 						Else EXTRACT(year from current_date)'+
+                                      ' 					End '+
+                                      ' 				as varchar(4)) || Substring(DATANAS from 5 for 6)'+
+                                      ' 			as Date)				'+
+                                      ' 		)';
 
 const VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE = 'Consulte o recibo desta NF-e'; // Sandro Silva 2024-04-16
 
@@ -1712,6 +1731,10 @@ type
     ImgProduto: TImage;
     ImgSemProduto: TImage;
     DetalhamentodasOrdensfiltradas1: TMenuItem;
+    Aniversariantes1: TMenuItem;
+    Dia1: TMenuItem;
+    Semana1: TMenuItem;
+    Ms1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2438,6 +2461,9 @@ type
     procedure ibDataSet16CST_ICMSChange(Sender: TField);
     procedure ibDataSet14AfterInsert(DataSet: TDataSet);
     procedure DetalhamentodasOrdensfiltradas1Click(Sender: TObject);
+    procedure Dia1Click(Sender: TObject);
+    procedure Ms1Click(Sender: TObject);
+    procedure Semana1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -2651,6 +2677,7 @@ type
     procedure DefineNovoNomeNatOperacao;
     procedure AtualizaVariaveisAnteriorNatOper;
     function RetornaCustoMedio(AcCodigo: String): Double;
+    procedure DefineObservacaoAnt(AcObs: String);
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -2658,6 +2685,7 @@ type
 //  Function Valida_Campo(ibDataSet_P:TibDataSet; Text:String; Indice,Mensagem:String):Boolean;
   function Valida_Campo(Arquivo: String; Text: String;
     Indice, Mensagem: String):Boolean;
+  procedure RemoveObservacaoAproveitamento;
   function ObservacaoProduto(pP1:Boolean):Boolean;
   function ObservacaoOperacao(pP1:Boolean):Boolean;
   function Observacao2(pP1:Boolean):Boolean;
@@ -5850,6 +5878,13 @@ begin
   P1 := StrTran(P1,'IDSITUACAO', 'Código'); // Mauricio Parizotto 2023-12-04
   P1 := StrTran(P1,'where coalesce(CLIFOR,'+QuotedStr('C')+')='+QuotedStr('C')+'', ' só clientes ');
   P1 := StrTran(P1,'where coalesce(CLIFOR,'+QuotedStr('F')+')='+QuotedStr('F')+'', ' só fornecedores ');
+  //Mauricio Parizotto 2024-09-02
+  P1 := StrTran(P1,'where EXTRACT(day from DATANAS) = EXTRACT(day from current_date) AND EXTRACT(month from DATANAS) = EXTRACT(month from current_date)', ' só aniversariantes do dia ');
+  P1 := StrTran(P1,'where EXTRACT(month from DATANAS) = EXTRACT(month from current_date)', ' só aniversariantes do mês ');
+  P1 := StrTran(P1,'EXTRACT(day from DATANAS) = EXTRACT(day from current_date) AND EXTRACT(month from DATANAS) = EXTRACT(month from current_date)', ' só aniversariantes do dia ');
+  P1 := StrTran(P1,'EXTRACT(month from DATANAS) = EXTRACT(month from current_date)', ' só aniversariantes do mês ');
+  P1 := StrTran(P1,FILTRO_ANIVERSARIANTES_SEMANA, ' só aniversariantes da semana ');
+  P1 := StrTran(P1, StrTran(FILTRO_ANIVERSARIANTES_SEMANA,'where ',''), ' só aniversariantes da semana ');
 
   P1 := StrTran(P1,'Coalesce(VALOR_RECE,0)=0', ' a receber ');
 
@@ -8034,6 +8069,7 @@ var
   sSQLQuery14Old: String;
 begin
   // Relacionado ao produto
+  // Este método busca a observação da natureza conforme o CIT do produto - Dailon Parisotto 2024-08-28
   //
   if (Copy(Form7.ibDataSet14OBS.AsString,1,24) <> 'PERMITE O APROVEITAMENTO') and  (Copy(Form7.ibDataSet14OBS.AsString,1,24) <> 'DEVOLUCAO DA NF-e')  then
   begin
@@ -8056,6 +8092,7 @@ begin
             Form7.IBQuery14.Open;
           end;
           {Sandro Silva 2024-04-17 fim}
+
           Form7.ibDataSet15COMPLEMENTO.AsString := AllTrim(Form7.ibDataSet15COMPLEMENTO.AsString) + ' ' + Form7.ibQuery14.FieldByname('OBS').AsString; // Nunca limpa só vai acrescentando OK
         end;
       end
@@ -8064,6 +8101,11 @@ begin
   end;
   //
   Result := True;
+end;
+
+procedure RemoveObservacaoAproveitamento;
+begin
+  Form7.ibDataSet15COMPLEMENTO.AsString := Trim(StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,AllTrim(Form7.sAproveitamento), EmptyStr));
 end;
 
 function ObservacaoOperacao(pP1:Boolean):Boolean;
@@ -8075,6 +8117,7 @@ begin
     // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução Não deve mudar
     if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then // Devolucao Devolução Não deve mudar
     begin
+
       if pP1 then
       begin
         // Quando o parametro pP1 e true se nao contem limpa tudo e poe
@@ -8082,8 +8125,14 @@ begin
         begin
           if (Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1,24) <> 'PERMITE O APROVEITAMENTO') then
           begin
+            {Dailon Parisotto (f-20353) 2024-08-22 Inicio
+
             Form7.ibDataSet15COMPLEMENTO.AsString := '   ';
-            Form12.sObservacaoAntiga := '   ';
+
+            }
+            RemoveObservacaoAproveitamento;
+            {Dailon Parisotto (f-20353) 2024-08-22 Inicio}
+            Form12.sObservacaoAntiga := EmptyStr;
           end;
         end else
         begin
@@ -8099,17 +8148,24 @@ begin
 
             Form7.ibDataSet15COMPLEMENTO.AsString := sRef + AllTrim(Form7.ibDataSet14OBS.AsString);
 
-            Form12.sObservacaoAntiga := Form7.ibDataSet14OBS.AsString;
+//            Form12.sObservacaoAntiga := Form7.ibDataSet14OBS.AsString;
           end;
         end;
       end else
       begin
         if (Copy(Form7.ibDataSet14OBS.AsString,1,24) = 'PERMITE O APROVEITAMENTO') then
         begin
+
           if (Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1,24) <> 'PERMITE O APROVEITAMENTO') then
           begin
+            {Dailon Parisotto (f-20353) 2024-08-22 Inicio
+
             Form7.ibDataSet15COMPLEMENTO.AsString := '   ';
-            Form12.sObservacaoAntiga := '   ';
+
+            }
+            RemoveObservacaoAproveitamento;
+            {Dailon Parisotto (f-20353) 2024-08-22 Inicio}
+            Form12.sObservacaoAntiga := EmptyStr;
           end;
         end else
         begin
@@ -8120,7 +8176,7 @@ begin
             begin
               if AllTrim(Form12.sObservacaoAntiga) <> AllTrim(Form7.ibDataSet14OBS.AsString) then
               begin
-                Form7.ibDataSet15COMPLEMENTO.AsString := '';
+                RemoveObservacaoAproveitamento;
               end;
             end;
 
@@ -8141,7 +8197,7 @@ begin
               end;
             end;
 
-            Form12.sObservacaoAntiga := AllTrim(Form7.ibDataSet14OBS.AsString);
+//            Form12.sObservacaoAntiga := AllTrim(Form7.ibDataSet14OBS.AsString);
           end;
         end;
       end;
@@ -10160,6 +10216,31 @@ begin
   Form1.Sobreoprograma1Click(Sender);
 end;
 
+procedure TForm7.DefineObservacaoAnt(AcObs: String);
+begin
+  AcObs := Trim(AcObs);
+  if (Form12.sObservacaoAntiga <> EmptyStr) and (Form12.sObservacaoAntiga <> AcObs) then
+    ibDataSet15COMPLEMENTO.AsString := TrimLeft(StrTran(ibDataSet15COMPLEMENTO.AsString, Form12.sObservacaoAntiga, EmptyStr));
+
+  if AcObs <> EmptyStr then
+    AcObs := AcObs + ' ';
+
+  Form12.sObservacaoAntiga := AcObs;
+
+  {Sandro Silva 2024-09-09 inicio
+  Identificado na revisão, com banco novo, em branco ocorre Not in Edit Mode
+  if Pos(Trim(Form12.sObservacaoAntiga), ibDataSet15COMPLEMENTO.AsString) <= 0 then
+    ibDataSet15COMPLEMENTO.AsString := Form12.sObservacaoAntiga + ibDataSet15COMPLEMENTO.AsString;
+  }
+  if Pos(Trim(Form12.sObservacaoAntiga), ibDataSet15COMPLEMENTO.AsString) <= 0 then
+  begin
+    if not (Form7.ibDataSet15.State in [dsEdit, dsInsert]) then
+      Form7.ibDataSet15.Edit;
+    ibDataSet15COMPLEMENTO.AsString := Form12.sObservacaoAntiga + ibDataSet15COMPLEMENTO.AsString;
+  end;
+  {Sandro Silva 2024-09-09 fim}
+end;
+
 procedure TForm7.ibDataSet15MERCADORIAChange(Sender: TField);
 var
   I, bButton : Integer;
@@ -10300,17 +10381,18 @@ begin
               }
 
               //Alterado para copiar texto padrão até a palavra CORRESPONDENTE somente, para alterar somente o valor, cliente configura mais informações na observação
-              if Pos(Copy(Form7.sAproveitamento,1, Pos('CORRESPONDENTE',Form7.sAproveitamento) ),    Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1, Pos('CORRESPONDENTE',Form7.ibDataSet15COMPLEMENTO.AsString)  )) <> 0 then
+              {if Pos(Copy(Form7.sAproveitamento,1, Pos('CORRESPONDENTE',Form7.sAproveitamento) ),    Copy(Form7.ibDataSet15COMPLEMENTO.AsString,1, Pos('CORRESPONDENTE',Form7.ibDataSet15COMPLEMENTO.AsString)  )) <> 0 then
               begin
                 if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
                   Form7.ibDataset15.Edit;
 
                 ibDataSet15COMPLEMENTO.AsString := StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,Copy(sAproveitamento,1, Pos('CORRESPONDENTE',Form7.sAproveitamento) -1 ),'');                      // Retira o anterios
-              end;
+              end; }
 
-              sAproveitamento := StrTran(Form7.ibDataSet14OBS.AsString,'R$;','R$ '+Alltrim(Format('%12.2n',[fST])) +'; ');  // Gera o novo e grava em sAproveitamento
+              sAproveitamento := StrTran(Form7.ibDataSet14OBS.AsString,'R$;','R$ '+Alltrim(Format('%12.2n',[fST])));  // Gera o novo e grava em sAproveitamento
 
-              if Pos(sAproveitamento,ibDataSet15COMPLEMENTO.AsString) = 0 then
+              sAproveitamento := Trim(sAproveitamento) + '; ';
+{              if Pos(sAproveitamento,ibDataSet15COMPLEMENTO.AsString) = 0 then
               begin
                 if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
                   Form7.ibDataset15.Edit;
@@ -10319,8 +10401,11 @@ begin
                 if Pos('CORRESPONDENTE Á',ibDataSet15COMPLEMENTO.AsString) > 0 then
                   ibDataSet15COMPLEMENTO.AsString := Copy(sAproveitamento, 1, Pos('CORRESPONDENTE',Form7.sAproveitamento) -1  ) + ibDataSet15COMPLEMENTO.AsString
                 else
-                  ibDataSet15COMPLEMENTO.AsString := sAproveitamento + ibDataSet15COMPLEMENTO.AsString
-              end;
+                  ibDataSet15COMPLEMENTO.AsString := sAproveitamento + ibDataSet15COMPLEMENTO.AsString;
+              end;}
+
+              if (Form12.sObservacaoAntiga <> sAproveitamento) then
+                DefineObservacaoAnt(sAproveitamento);
 
               {Mauricio Parizotto 2024-01-31 Fim}
             end;
@@ -10340,12 +10425,22 @@ begin
               Form7.ibDataSet15.Edit;
               Form7.ibDataSet15COMPLEMENTO.AsString  := StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,'R$','X$');
               Form7.ibDataSet15COMPLEMENTO.AsString  := StrTran(Form7.ibDataSet15COMPLEMENTO.AsString,'X$','R$ '+AllTrim(Format('%12.2n',[fRetencao])));
+
+              DefineObservacaoAnt(Form7.ibDataSet15COMPLEMENTO.AsString);
             except
             end;
+          end else
+          begin
+            if ((Pos(Trim(Form7.ibDataSet14OBS.AsString), Trim(Form12.sObservacaoAntiga)) <= 0) and (not Form12.SMALL_DBEdit40.Focused))
+              or ((Trim(Form12.sObservacaoAntiga) = EmptyStr) and  (Trim(Form7.ibDataSet14OBS.AsString) <> EmptyStr)) then
+              DefineObservacaoAnt(Form7.ibDataSet14OBS.AsString);
           end;
         end;
       except
       end;
+      if (AllTrim(Form12.sObservacaoAntiga) <> EmptyStr) and (AllTrim(Form7.ibDataSet14OBS.AsString) = EmptyStr) then
+        DefineObservacaoAnt(EmptyStr);
+
       //
       Form7.ibDataSet14.EnableControls;
 
@@ -10828,6 +10923,8 @@ begin
               +', '+QuotedStr(ibDataSet7NUMERONF.AsString)
               +', '+QuotedStr(sP)+') ');
             Form7.ibDataSet100.Open;
+
+            bAtualizaRegReceber := True;
           except
           end;
         end;
@@ -10885,7 +10982,6 @@ begin
           except
             begin
               Form7.bFlag := False;
-              //ShowMessage('Esta data não é válida, digite-a novamente.'); Mauricio Parizotto 2023-10-25
               MensagemSistema('Esta data não é válida, digite-a novamente.',msgAtencao);
             end;
           end;
@@ -10897,14 +10993,12 @@ begin
         except
           begin
             Form7.bFlag := False;
-            //ShowMessage('Esta data não é válida, digite-a novamente.');  Mauricio Parizotto 2023-10-25
             MensagemSistema('Esta data não é válida, digite-a novamente.',msgAtencao);
           end;
         end;
       end;
     except
       Form7.bFlag := False;
-      //ShowMessage('Esta data não é válida, digite-a novamente.');  Mauricio Parizotto 2023-10-25
       MensagemSistema('Esta data não é válida, digite-a novamente.',msgAtencao);
     end;
   end;
@@ -17022,6 +17116,8 @@ begin
       finally
         ibDataSet100.Close;
       end;
+
+      bAtualizaRegPagar := True;
     end;
   end;
   {Dailon Parisotto (f-6594) 2023-02-01 Fim}
@@ -23747,6 +23843,14 @@ begin
   //Form10.Image203Click(Sender);
   GeraVisualizacaoFichaCadastro;
   Form7.sModulo := 'ESTOQUE';
+end;
+
+procedure TForm7.Ms1Click(Sender: TObject);
+begin
+  //Mauricio Parizotto 2024-09-02
+  sWhere := 'where EXTRACT(month from DATANAS) = EXTRACT(month from current_date) '; // se mudar aqui mudar o traduz sql
+  Form7.Close;
+  Form7.Show;
 end;
 
 procedure TForm7.ibDataSet30SERIALSetText(Sender: TField;
@@ -32657,6 +32761,14 @@ begin
   end;
 end;
 
+procedure TForm7.Dia1Click(Sender: TObject);
+begin
+  //Mauricio Parizotto 2024-09-02
+  sWhere := 'where EXTRACT(day from DATANAS) = EXTRACT(day from current_date) AND EXTRACT(month from DATANAS) = EXTRACT(month from current_date) '; // se mudar aqui mudar o traduz sql
+  Form7.Close;
+  Form7.Show;
+end;
+
 procedure TForm7.RelatriodeprodutosmonofsicosNFe1Click(Sender: TObject);
 begin
   frmRelProdMonofasicoNota := TfrmRelProdMonofasicoNota.Create(nil);
@@ -33498,6 +33610,19 @@ begin
   end;
 end;
 
+
+procedure TForm7.Semana1Click(Sender: TObject);
+begin
+  {Mauricio Parizotto 2024-09-02 SMAL-679
+  Se for primeira semana e
+  Se for primeiro mês do ano e data nas for mês 12 usa o último ano
+  Se for último mês do ano e data nas for mês 1 usa o próximo ano}
+
+  // se mudar aqui mudar o traduz sql
+  sWhere := FILTRO_ANIVERSARIANTES_SEMANA;
+  Form7.Close;
+  Form7.Show;
+end;
 
 procedure TForm7.SetDataSetCadastros(CaminhoIni: String);
 var
@@ -34901,10 +35026,10 @@ begin
 
     {Mauricio Parizotto 2024-04-16 Inicio}
     if FrmContaPagar <> nil then
-      FreeAndNil(FrmCaixa);
+      FreeAndNil(FrmContaPagar);
 
     if FrmContaReceber <> nil then
-      FreeAndNil(FrmCaixa);
+      FreeAndNil(FrmContaReceber);
     {Mauricio Parizotto 2024-04-16 Fim}
 
     if FrmCadastro <> nil then

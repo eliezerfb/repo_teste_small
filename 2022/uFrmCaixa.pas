@@ -27,6 +27,7 @@ type
     procedure lblNovoClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -54,6 +55,10 @@ procedure TFrmCaixa.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
   inherited;
 
+  //Mauricio Parizotto 2024-08-29
+  if not Self.Visible then
+    Exit;
+
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
 
@@ -67,6 +72,13 @@ procedure TFrmCaixa.FormActivate(Sender: TObject);
 begin
   inherited;
   AtualizaObjComValorDoBanco;
+end;
+
+procedure TFrmCaixa.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  inherited;
+
+  FreeAndNil(FrmCaixa);
 end;
 
 procedure TFrmCaixa.FormShow(Sender: TObject);

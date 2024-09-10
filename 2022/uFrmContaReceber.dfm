@@ -59,9 +59,7 @@ inherited FrmContaReceber: TFrmContaReceber
     inherited pgcFicha: TPageControl
       Width = 889
       ActivePage = tbsCadastro
-      ExplicitLeft = 20
       ExplicitWidth = 889
-      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label1: TLabel
@@ -772,7 +770,7 @@ inherited FrmContaReceber: TFrmContaReceber
           ExplicitWidth = 288
           inherited txtCampo: TEdit
             Width = 288
-            ExplicitWidth = 313
+            ExplicitWidth = 288
           end
           inherited gdRegistros: TDBGrid
             Width = 288
@@ -801,7 +799,7 @@ inherited FrmContaReceber: TFrmContaReceber
           ExplicitWidth = 288
           inherited txtCampo: TEdit
             Width = 288
-            ExplicitWidth = 313
+            ExplicitWidth = 288
           end
           inherited gdRegistros: TDBGrid
             Width = 288
