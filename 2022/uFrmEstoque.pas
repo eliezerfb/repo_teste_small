@@ -679,6 +679,10 @@ end;
 
 procedure TFrmEstoque.edtCodigoChange(Sender: TObject);
 begin
+  //Mauricio Parizotto 2024-08-29
+  if not Self.Visible then
+    Exit;
+
   lblImpostoAprox.Caption := 'Imposto aproximado (Fonte:IBPT): Federal '+DSCadastro.DataSet.FieldByName('IIA').AsString+'%  Estadual '+
                               DSCadastro.DataSet.FieldByName('IIA_UF').AsString+'%  Municipal '+DSCadastro.DataSet.FieldByName('IIA_MUNI').AsString+'%';
 
@@ -751,6 +755,8 @@ begin
 
   framePesquisaProdComposicao.Visible := False;
   framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.Close;
+
+  FreeAndNil(FrmEstoque);
 end;
 
 procedure TFrmEstoque.FormCreate(Sender: TObject);
@@ -4027,6 +4033,12 @@ begin
     if Localizado then
     begin
       lblCIT.Caption := Form7.ibDataSet14CFOP.AsString + ' - ' + Form7.ibDataSet14NOME.AsString;
+
+      {Dailon Parisotto (smal-653) 2024-08-28 Inicio}
+      lblCIT.ShowHint := False;
+      lblCIT.Hint := lblCIT.Caption;
+      lblCIT.ShowHint := True;
+      {Dailon Parisotto (smal-653) 2024-08-28 Fim}
       pnlMapaICMS.Visible := True;
 
       Form7.ibDataSet14.Edit;
