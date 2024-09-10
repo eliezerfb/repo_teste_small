@@ -952,7 +952,14 @@ begin
       try
         Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
       finally
+        {Sandro Silva 2024-09-09 inicio
+        Identificado na revisão, com banco novo, em branco ocorre Not in Edit Mode
         Form7.ibDataSet15COMPLEMENTO.AsString := cObsAnt;
+        }
+        if not (Form7.ibDataSet15.State in [dsEdit, dsInsert]) then
+          Form7.ibDataSet15.Edit;
+        Form7.ibDataSet15COMPLEMENTO.AsString := cObsAnt;
+        {Sandro Silva 2024-09-09 fim}
       end;
     end;
   end;

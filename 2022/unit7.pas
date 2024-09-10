@@ -47,15 +47,15 @@ const ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA = 05;
 const ID_BLOQUEAR_APPEND_NO_GRID_DESDOBRAMENTO_PARCELAS = 1;
 
 //Mauricio Parizotto 2024-09-02
-const FILTRO_ANIVERSARIANTES_SEMANA = ' Where EXTRACT(week from current_date) = '+
+const FILTRO_ANIVERSARIANTES_SEMANA = ' where EXTRACT(week from current_date) = '+
                                       ' 		EXTRACT(week from 				'+
                                       ' 			Cast('+
                                       ' 				Cast('+
                                       ' 					Case'+
                                       ' 						When EXTRACT(week from current_date) = 1 then '+
                                       ' 							Case'+
-                                      ' 								When EXTRACT(month from current_date) = 1 and EXTRACT(month from DATANAS)  = 12 then EXTRACT(year from current_date) -1	'+
-                                      ' 								When EXTRACT(month from current_date) = 12 and EXTRACT(month from DATANAS)  = 1 then EXTRACT(year from current_date) +1'+
+                                      ' 								When EXTRACT(month from current_date) = 1 AND EXTRACT(month from DATANAS)  = 12 then EXTRACT(year from current_date) -1	'+
+                                      ' 								When EXTRACT(month from current_date) = 12 AND EXTRACT(month from DATANAS)  = 1 then EXTRACT(year from current_date) +1'+
                                       ' 								Else EXTRACT(year from current_date)'+
                                       ' 							End					'+
                                       ' 						Else EXTRACT(year from current_date)'+
@@ -5877,10 +5877,12 @@ begin
   P1 := StrTran(P1,'where coalesce(CLIFOR,'+QuotedStr('C')+')='+QuotedStr('C')+'', ' só clientes ');
   P1 := StrTran(P1,'where coalesce(CLIFOR,'+QuotedStr('F')+')='+QuotedStr('F')+'', ' só fornecedores ');
   //Mauricio Parizotto 2024-09-02
-  P1 := StrTran(P1,'where EXTRACT(day from DATANAS) = EXTRACT(day from current_date) and EXTRACT(month from DATANAS) = EXTRACT(month from current_date)', ' só aniversariantes do dia ');
+  P1 := StrTran(P1,'where EXTRACT(day from DATANAS) = EXTRACT(day from current_date) AND EXTRACT(month from DATANAS) = EXTRACT(month from current_date)', ' só aniversariantes do dia ');
   P1 := StrTran(P1,'where EXTRACT(month from DATANAS) = EXTRACT(month from current_date)', ' só aniversariantes do mês ');
+  P1 := StrTran(P1,'EXTRACT(day from DATANAS) = EXTRACT(day from current_date) AND EXTRACT(month from DATANAS) = EXTRACT(month from current_date)', ' só aniversariantes do dia ');
+  P1 := StrTran(P1,'EXTRACT(month from DATANAS) = EXTRACT(month from current_date)', ' só aniversariantes do mês ');
   P1 := StrTran(P1,FILTRO_ANIVERSARIANTES_SEMANA, ' só aniversariantes da semana ');
-
+  P1 := StrTran(P1, StrTran(FILTRO_ANIVERSARIANTES_SEMANA,'where ',''), ' só aniversariantes da semana ');
 
   P1 := StrTran(P1,'Coalesce(VALOR_RECE,0)=0', ' a receber ');
 
@@ -10223,8 +10225,18 @@ begin
 
   Form12.sObservacaoAntiga := AcObs;
 
+  {Sandro Silva 2024-09-09 inicio
+  Identificado na revisão, com banco novo, em branco ocorre Not in Edit Mode
   if Pos(Trim(Form12.sObservacaoAntiga), ibDataSet15COMPLEMENTO.AsString) <= 0 then
     ibDataSet15COMPLEMENTO.AsString := Form12.sObservacaoAntiga + ibDataSet15COMPLEMENTO.AsString;
+  }
+  if Pos(Trim(Form12.sObservacaoAntiga), ibDataSet15COMPLEMENTO.AsString) <= 0 then
+  begin
+    if not (Form7.ibDataSet15.State in [dsEdit, dsInsert]) then
+      Form7.ibDataSet15.Edit;
+    ibDataSet15COMPLEMENTO.AsString := Form12.sObservacaoAntiga + ibDataSet15COMPLEMENTO.AsString;
+  end;
+  {Sandro Silva 2024-09-09 fim}
 end;
 
 procedure TForm7.ibDataSet15MERCADORIAChange(Sender: TField);
@@ -32750,7 +32762,7 @@ end;
 procedure TForm7.Dia1Click(Sender: TObject);
 begin
   //Mauricio Parizotto 2024-09-02
-  sWhere := 'where EXTRACT(day from DATANAS) = EXTRACT(day from current_date) and EXTRACT(month from DATANAS) = EXTRACT(month from current_date) '; // se mudar aqui mudar o traduz sql
+  sWhere := 'where EXTRACT(day from DATANAS) = EXTRACT(day from current_date) AND EXTRACT(month from DATANAS) = EXTRACT(month from current_date) '; // se mudar aqui mudar o traduz sql
   Form7.Close;
   Form7.Show;
 end;
