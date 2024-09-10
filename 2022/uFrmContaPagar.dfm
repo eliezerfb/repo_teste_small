@@ -22,14 +22,8 @@ inherited FrmContaPagar: TFrmContaPagar
         OnClick = btnReplicarClick
       end
     end
-    inherited Panel8: TPanel
-      ExplicitLeft = 822
-    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
-      ExplicitLeft = 20
-      ExplicitWidth = 802
-      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label129: TLabel
