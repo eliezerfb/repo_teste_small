@@ -413,7 +413,12 @@ object Form19: TForm19
         Top = 193
         Width = 194
         Height = 17
+        Hint = 
+          'Recalcular custo m'#233'dio retroativo do item baseado em todas as no' +
+          'tas de entrada'
         Caption = 'Recalcular custo m'#233'dio retroativo'
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 6
       end
     end
