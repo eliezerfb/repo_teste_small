@@ -11180,8 +11180,8 @@ object Form7: TForm7
     InsertSQL.Strings = (
       'insert into ESTOQUE'
       
-        '  (CODIGO, REFERENCIA, DESCRICAO, NOME, FORNECEDOR, MEDIDA, PREC' +
-        'O, INDEXADOR, '
+        '  (IDESTOQUE, CODIGO, REFERENCIA, DESCRICAO, NOME, FORNECEDOR, M' +
+        'EDIDA, PRECO, INDEXADOR, '
       
         '   CUSTOCOMPR, CUSTOMEDIO, QTD_COMPRA, QTD_ATUAL, QTD_MINIM, QTD' +
         '_INICIO, '
@@ -11212,8 +11212,8 @@ object Form7: TForm7
       '   MARKETPLACE, IDENTIFICADORPLANOCONTAS, IDPERFILTRIBUTACAO)'
       'values'
       
-        '  (:CODIGO, :REFERENCIA, :DESCRICAO, :NOME, :FORNECEDOR, :MEDIDA' +
-        ', :PRECO, '
+        '  (:IDESTOQUE,:CODIGO, :REFERENCIA, :DESCRICAO, :NOME, :FORNECED' +
+        'OR, :MEDIDA, :PRECO, '
       
         '   :INDEXADOR, :CUSTOCOMPR, :CUSTOMEDIO, :QTD_COMPRA, :QTD_ATUAL' +
         ', :QTD_MINIM, '
@@ -11249,6 +11249,7 @@ object Form7: TForm7
         'ERFILTRIBUTACAO)')
     RefreshSQL.Strings = (
       'Select '
+      '  IDESTOQUE,'
       '  CODIGO,'
       '  REFERENCIA,'
       '  DESCRICAO,'
@@ -11334,6 +11335,7 @@ object Form7: TForm7
     ModifySQL.Strings = (
       'update ESTOQUE'
       'set'
+      '  IDESTOQUE = :IDESTOQUE,'
       '  CODIGO = :CODIGO,'
       '  REFERENCIA = :REFERENCIA,'
       '  DESCRICAO = :DESCRICAO,'
@@ -11996,6 +11998,10 @@ object Form7: TForm7
       Origin = 'ESTOQUE.IDPERFILTRIBUTACAO'
       Visible = False
       OnChange = ibDataSet4IDPERFILTRIBUTACAOChange
+    end
+    object ibDataSet4IDESTOQUE: TIntegerField
+      FieldName = 'IDESTOQUE'
+      Origin = 'ESTOQUE.IDESTOQUE'
     end
   end
   object DataSource4: TDataSource
@@ -20094,7 +20100,8 @@ object Form7: TForm7
     Top = 286
   end
   object IBDatabase1: TIBDatabase
-    DatabaseName = 'D:\desenvolvimento1\executaveis\Small Commerce\small.fdb'
+    Connected = True
+    DatabaseName = 'C:\Dados\SMALL.FDB'
     Params.Strings = (
       'user_name=SYSDBA'
       'password=masterkey')

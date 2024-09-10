@@ -274,6 +274,7 @@ type
     Image8: TImage;
     Label27: TLabel;
     pnlEscondeWin11: TPanel;
+    lblIVAPorEstado: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -389,6 +390,10 @@ type
       Shift: TShiftState);
     procedure tbsCadastroShow(Sender: TObject);
     procedure edtCodigoChange(Sender: TObject);
+    procedure lblIVAPorEstadoClick(Sender: TObject);
+    procedure lblIVAPorEstadoMouseLeave(Sender: TObject);
+    procedure lblIVAPorEstadoMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -427,7 +432,7 @@ implementation
 {$R *.dfm}
 
 uses unit7, MAIS, smallfunc_xe, uDialogs, uPermissaoUsuario, MAIS3,
-     uTestaProdutoExiste, uITestaProdutoExiste, Unit19;
+     uTestaProdutoExiste, uITestaProdutoExiste, Unit19, uFrmEstoqueIVA;
 
 { TFrmEstoque }
 
@@ -905,6 +910,23 @@ begin
     end;
   except
   end;
+end;
+
+procedure TFrmEstoque.lblIVAPorEstadoClick(Sender: TObject);
+begin
+  //Mauricio Parizotto 2024-09-10
+  ConfiguraIVAporEstado(DSCadastro.DataSet.FieldByName('IDESTOQUE').AsInteger,Form7.ibDataSet13ESTADO.AsString);
+end;
+
+procedure TFrmEstoque.lblIVAPorEstadoMouseLeave(Sender: TObject);
+begin
+  lblIVAPorEstado.Font.Style := [];
+end;
+
+procedure TFrmEstoque.lblIVAPorEstadoMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  lblIVAPorEstado.Font.Style := [fsBold,fsUnderline];
 end;
 
 procedure TFrmEstoque.lblAnteriorClick(Sender: TObject);

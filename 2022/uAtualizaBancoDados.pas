@@ -2751,6 +2751,69 @@ begin
   end;
   {Dailon Parisotto (smal-653) 2024-08-26 Fim}
 
+
+  {Mauricio Parizotto 2024-09-09 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'IDESTOQUE') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ESTOQUE ADD IDESTOQUE INTEGER') then
+    begin
+      ExecutaComando('Commit');
+
+      ExecutaComando('CREATE SEQUENCE G_ESTOQUEIDESTOQUE');
+
+      ExecutaComando('UPDATE ESTOQUE SET IDESTOQUE = (select gen_id(G_ESTOQUEIDESTOQUE,1) from rdb$database)');
+
+      ExecutaComando('Commit');
+
+      ExecutaComando('CREATE UNIQUE INDEX ESTOQUE_IDESTOQUE_IDX ON ESTOQUE (IDESTOQUE)');
+
+      ExecutaComando('Commit');
+    end;
+  end;
+
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUEIVA')) then
+  begin
+    ExecutaComando(' Create table ESTOQUEIVA('+
+                   ' 	 IDESTOQUEIVA INTEGER NOT NULL,'+
+                   ' 	 IDESTOQUE INTEGER NOT NULL,'+
+                   ' 	 AC_ DECIMAL(18,4),'+
+                   ' 	 AL_ DECIMAL(18,4),'+
+                   ' 	 AP_ DECIMAL(18,4),'+
+                   ' 	 AM_ DECIMAL(18,4),'+
+                   ' 	 BA_ DECIMAL(18,4),'+
+                   ' 	 CE_ DECIMAL(18,4),'+
+                   ' 	 DF_ DECIMAL(18,4),'+
+                   ' 	 ES_ DECIMAL(18,4),'+
+                   ' 	 GO_ DECIMAL(18,4),'+
+                   ' 	 MA_ DECIMAL(18,4),'+
+                   ' 	 MT_ DECIMAL(18,4),'+
+                   ' 	 MS_ DECIMAL(18,4),'+
+                   ' 	 MG_ DECIMAL(18,4),'+
+                   ' 	 PA_ DECIMAL(18,4),'+
+                   ' 	 PB_ DECIMAL(18,4),'+
+                   ' 	 PR_ DECIMAL(18,4),'+
+                   ' 	 PE_ DECIMAL(18,4),'+
+                   ' 	 PI_ DECIMAL(18,4),'+
+                   ' 	 RJ_ DECIMAL(18,4),'+
+                   ' 	 RN_ DECIMAL(18,4),'+
+                   ' 	 RS_ DECIMAL(18,4),'+
+                   ' 	 RO_ DECIMAL(18,4),'+
+                   ' 	 RR_ DECIMAL(18,4),'+
+                   ' 	 SC_ DECIMAL(18,4),'+
+                   ' 	 SP_ DECIMAL(18,4),'+
+                   ' 	 SE_ DECIMAL(18,4),'+
+                   ' 	 TO_ DECIMAL(18,4),'+
+                   ' 	 CONSTRAINT PK_ESTOQUEIVA PRIMARY KEY (IDESTOQUEIVA)'+
+                   ' )');
+
+    ExecutaComando('Commit');
+
+    if ExecutaComando('CREATE SEQUENCE G_ESTOQUEIVAIDESTOQUEIVA') then
+      ExecutaComando('commit');
+  end;
+
+  {Mauricio Parizotto 2024-09-09 Fim}
+
   Form22.Repaint;
 
   try

@@ -7,7 +7,7 @@ inherited FrmEstoque: TFrmEstoque
   TextHeight = 16
   inherited Panel_branco: TPanel
     inherited pgcFicha: TPageControl
-      ActivePage = tbsCadastro
+      ActivePage = tbsICMS
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         OnShow = tbsCadastroShow
@@ -1105,7 +1105,7 @@ inherited FrmEstoque: TFrmEstoque
         end
         object LabelDescricaoNCM: TLabel
           Left = 215
-          Top = 69
+          Top = 71
           Width = 48
           Height = 13
           Caption = 'Descri'#231#227'o'
@@ -1284,6 +1284,23 @@ inherited FrmEstoque: TFrmEstoque
             D7ED46EDA42205277CD5C7BC8AD3E9354B656FD680B139E4599FAB55BCBA942A
             999652D997FF4FE6ECDF247735DA0F2478B7D2783B7D950000000049454E44AE
             426082}
+        end
+        object lblIVAPorEstado: TLabel
+          Left = 193
+          Top = 194
+          Width = 70
+          Height = 13
+          Cursor = crHandPoint
+          Caption = 'IVA por estado'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = 16752400
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          OnClick = lblIVAPorEstadoClick
+          OnMouseMove = lblIVAPorEstadoMouseMove
+          OnMouseLeave = lblIVAPorEstadoMouseLeave
         end
         object edtNCM: TSMALL_DBEdit
           Left = 110
@@ -1778,6 +1795,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 29
             Width = 14
             Height = 14
+            Cursor = crIBeam
             Caption = 'AP'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1793,6 +1811,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 24
             Width = 14
             Height = 14
+            Cursor = crIBeam
             Caption = 'RR'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1808,6 +1827,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 68
             Width = 16
             Height = 14
+            Cursor = crIBeam
             Caption = 'AM'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1823,6 +1843,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 99
             Width = 15
             Height = 14
+            Cursor = crIBeam
             Caption = 'AC'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1838,6 +1859,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 106
             Width = 15
             Height = 14
+            Cursor = crIBeam
             Caption = 'RO'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1853,6 +1875,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 68
             Width = 13
             Height = 14
+            Cursor = crIBeam
             Caption = 'PA'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1868,6 +1891,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 72
             Width = 16
             Height = 14
+            Cursor = crIBeam
             Caption = 'MA'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1883,6 +1907,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 61
             Width = 13
             Height = 14
+            Cursor = crIBeam
             Caption = 'CE'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1898,6 +1923,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 71
             Width = 14
             Height = 14
+            Cursor = crIBeam
             Caption = 'RN'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1913,6 +1939,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 83
             Width = 13
             Height = 14
+            Cursor = crIBeam
             Caption = 'PB'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1928,6 +1955,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 94
             Width = 12
             Height = 14
+            Cursor = crIBeam
             Caption = 'PE'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1943,6 +1971,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 104
             Width = 14
             Height = 14
+            Cursor = crIBeam
             Caption = 'AL'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1958,6 +1987,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 115
             Width = 13
             Height = 14
+            Cursor = crIBeam
             Caption = 'SE'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1973,6 +2003,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 91
             Width = 8
             Height = 14
+            Cursor = crIBeam
             Caption = 'PI'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -1988,6 +2019,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 106
             Width = 14
             Height = 14
+            Cursor = crIBeam
             Caption = 'TO'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2003,6 +2035,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 122
             Width = 14
             Height = 14
+            Cursor = crIBeam
             Caption = 'MT'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2018,6 +2051,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 133
             Width = 13
             Height = 14
+            Cursor = crIBeam
             Caption = 'DF'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2033,6 +2067,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 121
             Width = 15
             Height = 14
+            Cursor = crIBeam
             Caption = 'BA'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2048,6 +2083,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 144
             Width = 16
             Height = 14
+            Cursor = crIBeam
             Caption = 'GO'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2063,6 +2099,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 156
             Width = 16
             Height = 14
+            Cursor = crIBeam
             Caption = 'MG'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2078,6 +2115,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 169
             Width = 13
             Height = 14
+            Cursor = crIBeam
             Caption = 'ES'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2093,6 +2131,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 188
             Width = 12
             Height = 14
+            Cursor = crIBeam
             Caption = 'RJ'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2108,6 +2147,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 177
             Width = 13
             Height = 14
+            Cursor = crIBeam
             Caption = 'SP'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2123,6 +2163,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 166
             Width = 15
             Height = 14
+            Cursor = crIBeam
             Caption = 'MS'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2138,6 +2179,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 195
             Width = 13
             Height = 14
+            Cursor = crIBeam
             Caption = 'PR'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2153,6 +2195,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 210
             Width = 14
             Height = 14
+            Cursor = crIBeam
             Caption = 'SC'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443
@@ -2168,6 +2211,7 @@ inherited FrmEstoque: TFrmEstoque
             Top = 227
             Width = 14
             Height = 14
+            Cursor = crIBeam
             Caption = 'RS'
             Font.Charset = ANSI_CHARSET
             Font.Color = 3355443

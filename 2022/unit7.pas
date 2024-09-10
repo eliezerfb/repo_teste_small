@@ -1734,6 +1734,7 @@ type
     Dia1: TMenuItem;
     Semana1: TMenuItem;
     Ms1: TMenuItem;
+    ibDataSet4IDESTOQUE: TIntegerField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -12421,6 +12422,7 @@ begin
     ibDataSet4CODIGO.ReadOnly       := False;
     ibDataSet4REGISTRO.AsString     := sProximo;
     ibDataSet4CODIGO.AsString       := sCodigo;
+    ibDataSet4IDESTOQUE.AsInteger   := sProximoID;
     ibDataSet4PRECO.AsFloat         := 0.01;
     ibDataSet4CUSTOCOMPR.AsFloat    := 0;
     ibDataSet4CUSTOMEDIO.AsFloat    := 0;
@@ -13873,7 +13875,6 @@ procedure TForm7.ibDataSet4BeforeDelete(DataSet: TDataSet);
 var
   sApagar : String;
 begin
-  //
   if AllTrim(Form7.ibDataSet4DESCRICAO.AsString) <> '' then
   begin
     //
@@ -13884,12 +13885,11 @@ begin
                Chr(10)+
                'nos seguintes arquivos:'+chr(10)+chr(10);
 
-    //
     ibDataSet16.Close;
     ibDataSet16.SelectSQL.Clear;
     ibDataSet16.SelectSQL.Add('select * from ITENS001 where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString));
     ibDataSet16.Open;
-    //
+
     ibDataSet23.Close;
     ibDataSet23.SelectSQL.Clear;
     ibDataSet23.SelectSQL.Add('select * from ITENS002 where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString));
@@ -13955,6 +13955,10 @@ begin
   IBDataSet99.SelectSQL.Clear;
   IBDataSet99.SelectSQL.Add('select gen_id(G_CODIGO,0) from rdb$database');
   IBDataSet99.Open;
+
+  //Mauricio Parizotto 2024-09-10
+  //Apaga IVA
+  ExecutaComando('Delete from ESTOQUEIVA Where IDESTOQUE = '+Form7.ibDataSet4IDESTOQUE.AsString, IBTransaction1);
 
   if Form7.ibDataSet4CODIGO.AsString = StrZero(StrtoFloat(AllTrim(ibDataSet99.FieldByname('GEN_ID').AsString)),5,0) then
   begin
@@ -23667,6 +23671,14 @@ begin
     ibDataset99.SelectSql.Add('select gen_id(G_HASH_ESTOQUE,1) from rdb$database');
     ibDataset99.Open;
   except end;
+
+  //Mauricio Parizotto 2024-09-09
+  ibDataSet99.Close;
+  ibDataSet99.SelectSql.Clear;
+  ibDataset99.SelectSql.Add('select gen_id(G_ESTOQUEIDESTOQUE,1) from rdb$database');
+  ibDataset99.Open;
+  sProximoID := ibDataSet99.FieldByname('GEN_ID').AsInteger;
+  ibDataset99.Close;
 end;
 
 procedure TForm7.ImprimirtodasasOSfiltradas1Click(Sender: TObject);
