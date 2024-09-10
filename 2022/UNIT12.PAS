@@ -891,6 +891,7 @@ end;
 procedure TForm12.SMALL_DBEdit40Enter(Sender: TObject);
 var
   nRecNo: Integer;
+  cObsAnt: String;
 begin
   mkp(True);
   {Dailon Parisotto (smal-593) 2024-07-31 Inicio
@@ -949,7 +950,24 @@ begin
   if not dBGrid2.Visible then
   begin
     sOperacaoAntiga   := Form7.ibDAtaSet15OPERACAO.AsString;
-    sObservacaoAntiga := Form7.ibDataSet14OBS.AsString;
+
+    // Roda o evento MERCADORIACHANGE para seta a variavel sObservacaoAnt com os valores corretos.
+    if Form7.ibDataSet15COMPLEMENTO.AsString <> EmptyStr then
+    begin
+      cObsAnt := Form7.ibDataSet15COMPLEMENTO.AsString;
+      try
+        Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
+      finally
+        {Sandro Silva 2024-09-09 inicio
+        Identificado na revisão, com banco novo, em branco ocorre Not in Edit Mode
+        Form7.ibDataSet15COMPLEMENTO.AsString := cObsAnt;
+        }
+        if not (Form7.ibDataSet15.State in [dsEdit, dsInsert]) then
+          Form7.ibDataSet15.Edit;
+        Form7.ibDataSet15COMPLEMENTO.AsString := cObsAnt;
+        {Sandro Silva 2024-09-09 fim}
+      end;
+    end;
   end;
 
   if Form7.sModulo <> 'RETRIBUTA' then
