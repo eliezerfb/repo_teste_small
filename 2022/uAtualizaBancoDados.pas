@@ -2767,6 +2767,12 @@ begin
                    ' );');
 
   end;
+
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'RECEBER', 'AUTORIZACAOTRANSACAO') = 20 then
+  begin
+    ExecutaComando('alter table RECEBER alter AUTORIZACAOTRANSACAO type varchar(128)');
+  end;
+
   {Mauricio Parizotto 2024-09-04 Fim}
 
 
