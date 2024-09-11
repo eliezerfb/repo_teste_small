@@ -19186,7 +19186,7 @@ begin
             else
             begin
               //if not (Form7.ibDataSet4PIVA.AsFloat > 0) then Mauricio Parizotto 2024-09-11
-              if not (GetIVAProduto(Form7.ibDataSet4IDESTOQUE.AsInteger,sEstado, IBTransaction1) > 0) then
+              if not (GetIVAProduto(Form7.ibDataSet4IDESTOQUE.AsInteger,Form7.ibDataSet2ESTADO.AsString, IBTransaction1) > 0) then
               begin
                 if AllTrim(Form7.ibQuery14.FieldByName('CST').AsString) <> '' then // Tabela de ICM
                 begin
