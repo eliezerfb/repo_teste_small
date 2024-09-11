@@ -17,7 +17,7 @@ uses
   function GetCertificateSicoobPem(IBTRANSACTION: TIBTransaction) : string;
   function GeraChavePixISicoob(idBankAccount : integer; description : string;
                              Valor : double; out ChaveQRCode, order_id, Mensagem : string):boolean;
-  function GetStatusPixSicoob(txId:string; out CodigoAutorizacao:string):string;
+  function GetStatusPixSicoob(txId:string; IdBankAccount : integer; out CodigoAutorizacao:string):string;
 
 
 implementation
@@ -171,6 +171,7 @@ var
   sJson, sJsonRet : string;
   StatusCode : integer;
   PixGenerate : TPixGenerate;
+  RetPixGenerate : TRetPixGenerate;
   RetErro : TRetErro;
 begin
   Result := False;
@@ -187,12 +188,12 @@ begin
     if RequisicaoSicoob(rmPOST,URL_SICOOB+'generate',sJson,'','',nil,sJsonRet,StatusCode) then
     begin
       try
-//        OrderRet  := TJson.JsonToObject<TOrderRet>(sJsonRet);
-//
-//        ChaveQRCode := OrderRet.QrCodeText;
-//        order_id    := OrderRet.OrderId;
+        RetPixGenerate  := TJson.JsonToObject<TRetPixGenerate>(sJsonRet);
+
+        ChaveQRCode := RetPixGenerate.payloadQrCode;
+        order_id    := RetPixGenerate.TxId;
       finally
-//        FreeAndNil(OrderRet);
+        FreeAndNil(RetPixGenerate);
       end;
 
       Result := True;
@@ -219,9 +220,35 @@ begin
   end;
 end;
 
-function GetStatusPixSicoob(txId:string; out CodigoAutorizacao:string):string;
+function GetStatusPixSicoob(txId:string; IdBankAccount : integer; out CodigoAutorizacao:string):string;
+var
+  sJson, sJsonRet : string;
+  StatusCode : integer;
+  GetStatus : TGetStatus;
+  RetPixGenerate : TRetPixGenerate;
 begin
   Result := '';
+
+  try
+    GetStatus := TGetStatus.Create;
+    GetStatus.IdBankAccount := IdBankAccount;
+    GetStatus.TxId := txId;
+
+    sJson := TJson.ObjectToJsonString(GetStatus);
+
+    if RequisicaoSicoob(rmPOST,URL_SICOOB+'get',sJson,'','',nil,sJsonRet,StatusCode) then
+    begin
+      RetPixGenerate  := TJson.JsonToObject<TRetPixGenerate>(sJsonRet);
+
+      if RetPixGenerate.PaidOut then
+      begin
+        Result := 'approved';
+        CodigoAutorizacao := RetPixGenerate.EndToEndId;
+      end;
+    end;
+  finally
+    FreeAndNil(GetStatus);
+  end;
 end;
 
 

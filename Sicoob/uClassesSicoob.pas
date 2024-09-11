@@ -71,6 +71,55 @@ type
     property Value: Double read FValue write FValue;
   end;
 
+type
+  TRetPixGenerate = class
+  private
+    FApiRequest: string;
+    FApiResponse: string;
+    [SuppressZero, JSONName('created_at')]
+    FCreatedAt: TDateTime;
+    FDaysToExpire: Integer;
+    FDebtorIdentifier: string;
+    FDebtorName: string;
+    FDescription: string;
+    FIdBankAccount: Integer;
+    FIdClient: Integer;
+    FIdPixCharge: Integer;
+    FPaidOut: Boolean;
+    FPayloadQrCode: string;
+    FPixImageUrl: string;
+    FSecondsToExpire: Integer;
+    FSequence: Integer;
+    FTxId: string;
+    [SuppressZero, JSONName('updated_at')]
+    FUpdatedAt: TDateTime;
+    FValue: Integer;
+    FEndToEndId: string;
+    FCnpjSicoob: string;
+  published
+    property ApiRequest: string read FApiRequest write FApiRequest;
+    property ApiResponse: string read FApiResponse write FApiResponse;
+    property CreatedAt: TDateTime read FCreatedAt write FCreatedAt;
+    property DaysToExpire: Integer read FDaysToExpire write FDaysToExpire;
+    property DebtorIdentifier: string read FDebtorIdentifier write FDebtorIdentifier;
+    property DebtorName: string read FDebtorName write FDebtorName;
+    property Description: string read FDescription write FDescription;
+    property IdBankAccount: Integer read FIdBankAccount write FIdBankAccount;
+    property IdClient: Integer read FIdClient write FIdClient;
+    property IdPixCharge: Integer read FIdPixCharge write FIdPixCharge;
+    property PaidOut: Boolean read FPaidOut write FPaidOut;
+    property PayloadQrCode: string read FPayloadQrCode write FPayloadQrCode;
+    property PixImageUrl: string read FPixImageUrl write FPixImageUrl;
+    property SecondsToExpire: Integer read FSecondsToExpire write FSecondsToExpire;
+    property Sequence: Integer read FSequence write FSequence;
+    property TxId: string read FTxId write FTxId;
+    property UpdatedAt: TDateTime read FUpdatedAt write FUpdatedAt;
+    property Value: Integer read FValue write FValue;
+
+    property EndToEndId: string read FEndToEndId write FEndToEndId;
+    property CnpjSicoob: string read FCnpjSicoob write FCnpjSicoob;
+  end;
+
 
 type
   TRetErro = class
@@ -80,6 +129,16 @@ type
   published
     property Message: string read FMessage write FMessage;
     property Status: Boolean read FStatus write FStatus;
+  end;
+
+type
+  TGetStatus = class
+  private
+    FIdBankAccount: Integer;
+    FTxId: string;
+  published
+    property IdBankAccount: Integer read FIdBankAccount write FIdBankAccount;
+    property TxId: string read FTxId write FTxId;
   end;
 
 implementation
