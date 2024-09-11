@@ -20100,8 +20100,6 @@ object Form7: TForm7
     Top = 286
   end
   object IBDatabase1: TIBDatabase
-    Connected = True
-    DatabaseName = 'C:\Dados\SMALL.FDB'
     Params.Strings = (
       'user_name=SYSDBA'
       'password=masterkey')
