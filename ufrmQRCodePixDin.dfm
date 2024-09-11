@@ -96,7 +96,7 @@ object FrmQRCodePixDin: TFrmQRCodePixDin
       2ED649C70000000049454E44AE426082}
   end
   object imgSicoob: TImage
-    Left = 239
+    Left = 136
     Top = 0
     Width = 121
     Height = 31

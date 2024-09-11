@@ -8,7 +8,7 @@ uses
   Vcl.ExtCtrls, Vcl.Printers, IBX.IBDatabase, Vcl.Imaging.pngimage;
 
   function PagamentoQRCodePIXDinItau(ChaveQrPIX,order_id:string; Valor : double; CNPJInstituicao : string; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
-  function PagamentoQRCodePIXDinSicoob(ChaveQrPIX,order_id:string; Valor : double; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
+  function PagamentoQRCodePIXDinSicoob(ChaveQrPIX,order_id:string; idBankAccount : integer; Valor : double; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
 
 type
   TFrmQRCodePixDin = class(TForm)
@@ -30,6 +30,7 @@ type
     PixConfirmado : Boolean;
     CodigoAutorizacao : string;
     OrderID : string;
+    IDConta : integer;
     Integracao : TRecursos;
   public
     { Public declarations }
@@ -78,7 +79,7 @@ begin
   end;
 end;
 
-function PagamentoQRCodePIXDinSicoob(ChaveQrPIX,order_id:string; Valor : double; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
+function PagamentoQRCodePIXDinSicoob(ChaveQrPIX,order_id:string; idBankAccount : integer; Valor : double; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
 begin
   Result             := False;
   CodigoAutorizacao  := '';
@@ -88,6 +89,7 @@ begin
     GeraImagemQRCode(ChaveQrPIX, FrmQRCodePixDin.imgQrCode.Picture.Bitmap);
     FrmQRCodePixDin.lblValor.Caption := 'R$ '+ FormatFloat( '#,##0.00', Valor);
     FrmQRCodePixDin.OrderID          := order_id;
+    FrmQRCodePixDin.IDConta          := idBankAccount;
     FrmQRCodePixDin.tmrConsultaPgto.Enabled := True;
     FrmQRCodePixDin.Integracao       := rcIntegracaoSicoob;
     FrmQRCodePixDin.ShowModal;
@@ -217,7 +219,7 @@ begin
 
   if Integracao = rcIntegracaoSicoob then
   begin
-    Status := GetStatusPixSicoob(OrderID,CodigoAutorizacao);
+    Status := GetStatusPixSicoob(OrderID,IDConta,CodigoAutorizacao);
   end;
 
   if Status = 'approved' then

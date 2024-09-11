@@ -347,7 +347,8 @@ begin
 
   if (bHabItau) and (bHabSicoob) then
   begin
-    /////////////////////////////////////////////////
+    //Criar tela para escolher qual vai usar caso necessário
+    Integracao := rcIntegracaoSicoob;
   end else
   begin
     if bHabItau then
@@ -414,6 +415,7 @@ begin
 
     if PagamentoQRCodePIXDinSicoob(ChaveQRCode,
                                    order_id,
+                                   IDAPIPIX,
                                    Valor,
                                    CodigoAutorizacao,
                                    IBTRANSACTION.DefaultDatabase) then
