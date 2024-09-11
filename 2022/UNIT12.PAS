@@ -3138,7 +3138,7 @@ begin
     Form7.ibDataSet16XPED.Visible           := False;
     Form7.ibDataSet16NITEMPED.Visible       := False;
 
-    Panel2.Visible := True;
+    Panel2.Visible := (not AbNatOperManual);
     Panel2.Top     := Panel1.Top  + dbGrid1.Top  + 100;
     Panel2.Left    := Panel1.Left + dbGrid1.Left + dbGrid1.Width + 20;
 

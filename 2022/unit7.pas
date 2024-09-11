@@ -19308,7 +19308,8 @@ begin
               //
               Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
               Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
-              Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet4IPI.AsFloat;
+              if (ibDataSet14IMPOSTOMANUAL.AsString <> 'S') then
+                Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet4IPI.AsFloat;
               Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
               Form7.ibDataSet16CUSTO.AsFloat      := CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat); // Sandro Silva 2023-04-26 Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
               Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
@@ -19593,7 +19594,7 @@ begin
 
 
               {Mauricio Parizotto 2023-06-19 inicio}
-              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao
+              if NFeFinalidadeDevolucaoImpostoManual(Form7.ibDataSet15FINNFE.AsString, Form7.ibDataSet14IMPOSTOMANUAL.AsString) then // Devolucao
               begin
                 //Só preenche se campos estiverem em branco
                 try
