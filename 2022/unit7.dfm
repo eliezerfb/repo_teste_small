@@ -12855,6 +12855,21 @@ object Form7: TForm7
         Caption = 'S'#243' Cliente Inativo'
         OnClick = FiltroRelacaoCom
       end
+      object Aniversariantes1: TMenuItem
+        Caption = 'Aniversariantes'
+        object Dia1: TMenuItem
+          Caption = 'Dia'
+          OnClick = Dia1Click
+        end
+        object Semana1: TMenuItem
+          Caption = 'Semana'
+          OnClick = Semana1Click
+        end
+        object Ms1: TMenuItem
+          Caption = 'M'#234's'
+          OnClick = Ms1Click
+        end
+      end
     end
     object MenuItem9: TMenuItem
       Caption = '&Procurar'

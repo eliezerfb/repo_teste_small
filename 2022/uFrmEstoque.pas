@@ -679,6 +679,10 @@ end;
 
 procedure TFrmEstoque.edtCodigoChange(Sender: TObject);
 begin
+  //Mauricio Parizotto 2024-08-29
+  if not Self.Visible then
+    Exit;
+
   lblImpostoAprox.Caption := 'Imposto aproximado (Fonte:IBPT): Federal '+DSCadastro.DataSet.FieldByName('IIA').AsString+'%  Estadual '+
                               DSCadastro.DataSet.FieldByName('IIA_UF').AsString+'%  Municipal '+DSCadastro.DataSet.FieldByName('IIA_MUNI').AsString+'%';
 
@@ -751,6 +755,8 @@ begin
 
   framePesquisaProdComposicao.Visible := False;
   framePesquisaProdComposicao.dbgItensPesq.DataSource.DataSet.Close;
+
+  FreeAndNil(FrmEstoque);
 end;
 
 procedure TFrmEstoque.FormCreate(Sender: TObject);
