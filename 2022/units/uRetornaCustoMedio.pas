@@ -124,8 +124,10 @@ begin
     nVICMS       := FqryDados.FieldByName('VICMS').AsFloat;
 
     if Result = 0 then
+    begin
+      nCustoCompra := FqryDados.FieldByName('UNITARIO').AsFloat;
       Result := nCustoCompra - (nVICMS / nQuantidade)
-    else
+    end else
     begin
 
       nCustoCompra := RetornaCustoCompraNota;
