@@ -355,8 +355,11 @@ function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-1
 procedure ResizeBitmap(var Bitmap: TBitmap; Width, Height: Integer; Background: TColor); // Mauricio Parizotto 2024-05-03
 function GetAutorizacaoItau(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction;
   out CodigoAutorizacao, CNPJinstituicao : string) : boolean;
+function GetAutorizacaoPixRec(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction;
+  out CodigoAutorizacao, CNPJinstituicao: string) : boolean;
 function GetCNPJInstituicaoFinanceira(sInstituicaoFinanceira: string; IBTRANSACTION: TIBTransaction) : string;
 function GetIDFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : integer;
+function GetDescricaoFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : string;
 
 var
   //cWinDir: array[0..200] of WideChar;
@@ -2823,8 +2826,8 @@ var
   IbqTransacao: TIBQuery;
 begin
   Result            := False;
-  CodigoAutorizacao := '';
-  CNPJinstituicao   := '';
+//  CodigoAutorizacao := '';
+//  CNPJinstituicao   := '';
 
   try
     IbqTransacao := CriaIBQuery(IBTransaction);
@@ -2850,7 +2853,36 @@ begin
 
 end;
 
-function GetCNPJInstituicaoFinanceira(sInstituicaoFinanceira: string; IBTRANSACTION: TIBTransaction) : string;
+function GetAutorizacaoPixRec(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction; out CodigoAutorizacao, CNPJinstituicao: string) : boolean; //Mauricio Parizotto 2024-09-12
+var
+  IbqTransacao: TIBQuery;
+begin
+  Result            := False;
+  try
+    IbqTransacao := CriaIBQuery(IBTransaction);
+    IbqTransacao.Close;
+    IbqTransacao.sql.Text := ' Select'+
+                             '   R.AUTORIZACAOTRANSACAO,'+
+                             '   C.CGC'+
+                             ' From RECEBER R'+
+                             '   Left Join CLIFOR C on C.NOME = R.INSTITUICAOFINANCEIRA'+
+                             ' Where R.NUMERONF = ' + QuotedStr( sNumeroNF + Copy(sCaixa, 1, 3) ) +
+                             '  and FORMADEPAGAMENTO = ''Pagamento Instantâneo (PIX) Dinâmico'' ';
+    IbqTransacao.Open;
+
+    if not IbqTransacao.IsEmpty then
+    begin
+      Result            := True;
+      CodigoAutorizacao := IbqTransacao.FieldByName('AUTORIZACAOTRANSACAO').AsString;
+      CNPJinstituicao   := LimpaNumero(IbqTransacao.FieldByName('CGC').AsString);
+    end;
+  finally
+    FreeAndNil(IbqTransacao);
+  end;
+
+end;
+
+function GetCNPJInstituicaoFinanceira(sInstituicaoFinanceira: string; IBTRANSACTION: TIBTransaction) : string; //Mauricio Parizotto 2024-09-12
 var
   IbqInstituicao: TIBQuery;
 begin
@@ -2870,7 +2902,7 @@ begin
 end;
 
 
-function GetIDFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : integer;
+function GetIDFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : integer; //Mauricio Parizotto 2024-09-12
 var
   IbqForma: TIBQuery;
 begin
@@ -2884,6 +2916,25 @@ begin
                          ' Where CODIGO_TPAG = '+QuotedStr(sCodTpag);
     IbqForma.Open;
     Result := IbqForma.FieldByName('IDFORMA').AsInteger;
+  finally
+    FreeAndNil(IbqForma);
+  end;
+end;
+
+function GetDescricaoFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : string; //Mauricio Parizotto 2024-09-12
+var
+  IbqForma: TIBQuery;
+begin
+  Result := '';
+
+  try
+    IbqForma := CriaIBQuery(IBTransaction);
+    IbqForma.Close;
+    IbqForma.sql.Text := ' Select DESCRICAO'+
+                         ' From FORMAPAGAMENTO'+
+                         ' Where CODIGO_TPAG = '+QuotedStr(sCodTpag);
+    IbqForma.Open;
+    Result := IbqForma.FieldByName('DESCRICAO').AsString;
   finally
     FreeAndNil(IbqForma);
   end;

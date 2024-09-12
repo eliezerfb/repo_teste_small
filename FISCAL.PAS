@@ -1487,7 +1487,7 @@ type
     procedure OcultaGerenciadorVendas;
     procedure FormaExtraLancaReceber(sIndiceFormaExtra: String;
       sCaixa: String; sCupom: String; dValor: Double; dtEmissao: TDate;
-      dtVencimento: TDate; sInstituicaoFinanceira : string = ''; sAutorizacao : string = '');
+      dtVencimento: TDate; sInstituicaoFinanceira : string = ''; sAutorizacao : string = ''; sFormaPgto : string = '');
     procedure FechaVendaRapidaFormaPagamentoCartao;
     procedure TransmiteContingenciaAutomatico(data: TDate; Caixa: String);
     procedure LeConfiguracaoTipoEtiquetaBalanca;
@@ -10707,6 +10707,7 @@ var
   CodFormaPixEst, CodFormaPixDin : integer;
   InstituicaoFinanceira : string;
   sAutorizacao1, sAutorizacao2, sAutorizacao3, sAutorizacao4, sAutorizacao5, sAutorizacao6, sAutorizacao7, sAutorizacao8 : string;
+  sFormaPgto1, sFormaPgto2, sFormaPgto3, sFormaPgto4, sFormaPgto5, sFormaPgto6, sFormaPgto7, sFormaPgto8 : string;
   PagouNoPIX : boolean;
   ValorPIX : Double;
   IDTransacaoPIX : string;
@@ -12049,7 +12050,8 @@ begin
                   try
                     //FormaExtraLancaReceber('1', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('1', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
                     //FormaExtraLancaReceber('1', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
-                    FormaExtraLancaReceber('1', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao1);
+                    sFormaPgto1 := GetDescricaoFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    FormaExtraLancaReceber('1', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR01').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao1, sFormaPgto1);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12092,7 +12094,8 @@ begin
                   try
                     //FormaExtraLancaReceber('2', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('2', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
                     //FormaExtraLancaReceber('2', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
-                    FormaExtraLancaReceber('2', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira, sAutorizacao2);
+                    sFormaPgto2 := GetDescricaoFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    FormaExtraLancaReceber('2', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR02').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira, sAutorizacao2, sFormaPgto2);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12134,7 +12137,8 @@ begin
                   try
                     //FormaExtraLancaReceber('3', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('3', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
                     //FormaExtraLancaReceber('3', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
-                    FormaExtraLancaReceber('3', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao3);
+                    sFormaPgto3 := GetDescricaoFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    FormaExtraLancaReceber('3', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR03').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao3, sFormaPgto3);
                   except
                         on E: Exception do
                         begin
@@ -12180,7 +12184,8 @@ begin
                   try
                     //FormaExtraLancaReceber('4', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('4', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
                     //FormaExtraLancaReceber('4', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
-                    FormaExtraLancaReceber('4', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao4);
+                    sFormaPgto4 := GetDescricaoFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    FormaExtraLancaReceber('4', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR04').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao4, sFormaPgto4);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12222,7 +12227,8 @@ begin
                   try
                     //FormaExtraLancaReceber('5', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('5', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
                     //FormaExtraLancaReceber('5', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
-                    FormaExtraLancaReceber('5', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao5);
+                    sFormaPgto5 := GetDescricaoFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    FormaExtraLancaReceber('5', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR05').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao5, sFormaPgto5);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12264,7 +12270,8 @@ begin
                   try
                     //FormaExtraLancaReceber('6', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('6', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
                     //FormaExtraLancaReceber('6', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-09-06
-                    FormaExtraLancaReceber('6', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira,sAutorizacao6);
+                    sFormaPgto6 := GetDescricaoFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    FormaExtraLancaReceber('6', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR06').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira,sAutorizacao6, sFormaPgto6);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12306,7 +12313,8 @@ begin
                   try
                     //FormaExtraLancaReceber('7', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('7', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-05-02
                     //FormaExtraLancaReceber('7', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Mauricio Parizotto 2024-09-06
-                    FormaExtraLancaReceber('7', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira,sAutorizacao7);
+                    sFormaPgto7 := GetDescricaoFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    FormaExtraLancaReceber('7', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR07').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30,InstituicaoFinanceira, sAutorizacao7, sFormaPgto7);
                   except
                   end;
                   {Sandro Silva 2021-07-27 fim}
@@ -12348,7 +12356,8 @@ begin
                   try
                     //FormaExtraLancaReceber('8', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); // Sandro Silva 2021-12-02 FormaExtraLancaReceber('8', sCaixa, StrZero(iCOO, 6, 0), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30); Maurici Parizoto 2024-05-02
                     //FormaExtraLancaReceber('8', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira); Mauricio Parizotto 2024-09-06
-                    FormaExtraLancaReceber('8', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao8);
+                    sFormaPgto8 := GetDescricaoFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
+                    FormaExtraLancaReceber('8', sCaixa, FormataNumeroDoCupom(iCOO), Form1.ibDataSet25.FieldByName('VALOR08').AsFloat, StrToDate(Form1.sDataDoCupom), StrToDate(Form1.sDataDoCupom) + 30, InstituicaoFinanceira, sAutorizacao8, sFormaPgto8);
                   except
                     on E: Exception do
                     begin
@@ -33401,22 +33410,21 @@ end;
 procedure TForm1.OcultaGerenciadorVendas;
 begin
   Form1.Image1.Visible  := True;
-  // Sandro Silva 2021-07-29 Form1.Label13.Visible := True;
 
   Form1.dbGrid1.Visible         := False;
   Form1.DateTimePicker1.Visible := False;
 
-  Form1.pnlMenuFiscalPAFNFCeInacessivel.Visible := False; // Sandro Silva 2020-12-16
+  Form1.pnlMenuFiscalPAFNFCeInacessivel.Visible := False;
 
   Form1.Panel6.Visible := False;
-  Form1.Panel7.Visible := False; // Sandro Silva 2017-12-13
-  Form1.Panel8.Visible := False; // Sandro Silva 2017-12-13
+  Form1.Panel7.Visible := False;
+  Form1.Panel8.Visible := False;
 end;
 
 procedure TForm1.FormaExtraLancaReceber(sIndiceFormaExtra: String;
   sCaixa: String; sCupom: String; dValor: Double; dtEmissao: TDate;
-  dtVencimento: TDate; sInstituicaoFinanceira : string = ''; sAutorizacao : string = '');
-// Sandro Silva 2021-07-27
+  dtVencimento: TDate; sInstituicaoFinanceira : string = '';
+  sAutorizacao : string = ''; sFormaPgto : string = '');
 // Lança no contas a receber o valor informado na forma extra se tiver sido configurado essa regra para a forma extra
 var
   sSecaoFrente: String;
@@ -33426,21 +33434,21 @@ begin
     if (LerParametroIni(FRENTE_INI, sSecaoFrente, 'Forma extra ' + sIndiceFormaExtra + ' Contas Receber', 'Não') = 'Sim') then
     begin
       Form1.ibDataSet7.Append;
-      Form1.ibDataSet7.FieldByName('PORTADOR').AsString     := LerParametroIni(FRENTE_INI, sSecaoFrente,'Forma extra ' + sIndiceFormaExtra, 'Forma Extra ' + sIndiceFormaExtra);
-      Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := sCaixa + sCupom + sIndiceFormaExtra;
-      Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat    := StrToFloat(Format('%8.2f',[dValor]));
-      Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := dtVencimento;
-      Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime    := dtEmissao;
-      Form1.ibDataSet7.FieldByName('VALOR_RECE').AsFloat    := 0;
-      Form1.ibDataSet7.FieldByName('VALOR_JURO').AsFloat    := 0;
-      Form1.ibDataSet7.FieldByName('NOME').AsString         := Form1.ibDataSet7.FieldByName('PORTADOR').AsString;
-      Form1.ibDataSet7.FieldByName('HISTORICO').Value       := 'Venda Caixa: ' + sCaixa + ' Cupom: ' + sCupom;
-      Form1.ibDataSet7.FieldByName('CONTA').AsString        := Form1.ibDataSet14.FieldByname('CONTA').AsString;
+      Form1.ibDataSet7.FieldByName('PORTADOR').AsString              := LerParametroIni(FRENTE_INI, sSecaoFrente,'Forma extra ' + sIndiceFormaExtra, 'Forma Extra ' + sIndiceFormaExtra);
+      Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString             := sCaixa + sCupom + sIndiceFormaExtra;
+      Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat             := StrToFloat(Format('%8.2f',[dValor]));
+      Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime          := dtVencimento;
+      Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime             := dtEmissao;
+      Form1.ibDataSet7.FieldByName('VALOR_RECE').AsFloat             := 0;
+      Form1.ibDataSet7.FieldByName('VALOR_JURO').AsFloat             := 0;
+      Form1.ibDataSet7.FieldByName('NOME').AsString                  := Form1.ibDataSet7.FieldByName('PORTADOR').AsString;
+      Form1.ibDataSet7.FieldByName('HISTORICO').Value                := 'Venda Caixa: ' + sCaixa + ' Cupom: ' + sCupom;
+      Form1.ibDataSet7.FieldByName('CONTA').AsString                 := Form1.ibDataSet14.FieldByname('CONTA').AsString;
       Form1.ibDataSet7.FieldByName('INSTITUICAOFINANCEIRA').AsString := sInstituicaoFinanceira; //Mauricio Parizotto 2024-05-03
       Form1.ibDataSet7.FieldByName('AUTORIZACAOTRANSACAO').AsString  := sAutorizacao; //Mauricio Parizotto 2024-09-06
+      Form1.ibDataSet7.FieldByName('FORMADEPAGAMENTO').AsString      := sFormaPgto; //Mauricio Parizotto 2024-09-12
       Form1.ibDataSet7.Post;
     end;
-
   except
   end;
 end;
@@ -33483,7 +33491,6 @@ begin
     bFechandoCupom := True; // Sandro Silva 2016-02-10 Controlar que pressione F7 durante o fechamento do cupom e cancela a venda na impressora
     Button18Click(Button18);
   end;
-
 end;
 
 procedure TForm1.RecuperarXMLdaNFCe1Click(Sender: TObject);
@@ -33565,9 +33572,7 @@ begin
       Form1.GerenciadordeNFCe1Click(Form1.GerenciadordeNFCe1);
 
     end;
-
-  end;   
-
+  end;
 end;
 
 procedure TForm1.PopupMenu6Popup(Sender: TObject);
@@ -33578,14 +33583,12 @@ end;
 
 procedure TForm1.TransmiteContingenciaAutomatico(data: TDate; Caixa: String);
 begin
-
   _ecf65_EnviarNFCeContingencia(Data, '', '');
 
   // Alerta contingência não transmitida
   _ecf65_VerificaContingenciaPendentedeTransmissao(Data - Form1.ContingenciaPendente.LimiteDias, Data, Form1.sCaixa); // Sandro Silva 2019-08-09
   Form1.ExibeAlertaContingenciaPendente; // Sandro Silva 2019-08-14
   Form1.Display(Form1.sStatusECF, Form1.sF);
-
 end;
 
 procedure TForm1.SmartPOSElginPay1Click(Sender: TObject);
@@ -33618,7 +33621,6 @@ begin
     PosElginPay.Ativa(Form1.ibDataSet13.FieldByName('CGC').AsString, AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString), Form1.sModeloECF_Reserva{, Form1.sTef = 'Sim'}); // Sandro Silva 2022-02-11
 
   Form1.SmartPOSElginPay1.Checked := (PosElginPay.Configuracao.Ativo = 'Sim');
-
 end;
 
 procedure TForm1.FunesAdministrativasIntegraoIta1Click(Sender: TObject);
@@ -33673,7 +33675,6 @@ begin
     EtiquetaBalancaPesoKG1.Checked := True;
     EtiquetaBalancaPrecoR1.Checked := False;
   end;
-
 end;
 
 procedure TForm1.GeraraoFISCOREDUOZ1Click(Sender: TObject);
@@ -33704,21 +33705,18 @@ begin
 
   Form1.Display(Form1.sStatusECF,Form1.sF);
   Screen.Cursor := crDefault;
-
 end;
 
 procedure TForm1.SadasIdentificadaspeloCPFCNPJ1Click(Sender: TObject);
 var
   Requisitos: TRequisitosPafNfce;
 begin
-
   try
     Form7.bVendaCPF := True;
     Form7.Caption := 'Saídas Identificadas pelo CPF/CNPJ';// Sandro Silva 2016-08-19
     Form7.ShowModal;
     if Form7.ModalResult = mrOK then
     begin
-
       Commitatudo(True); // TForm1.SadasIdentificadaspeloCPFCNPJ1Click(
       Requisitos := TRequisitosPafNfce.Create;
       Requisitos.IBTransaction := IBTransaction2;
@@ -33726,14 +33724,12 @@ begin
       Requisitos.spdNFCe       := Form1.spdNFCe1; // Sandro Silva 2023-02-13      
       Requisitos.VendasIdentificadaspeloCPFCNPJ(Form7.DateTimePicker3.Date, Form7.edCPFCNPJ.Text);
       FreeAndNil(Requisitos);
-
     end;
   except
-
   end;
+
   Form7.bVendaCPF := False;
   CHDir(Form1.sAtual);
-
 end;
 
 procedure TForm1.ESTOQUEANOANTERIOR1Click(Sender: TObject);
@@ -33821,7 +33817,6 @@ begin
   Screen.Cursor := crDefault;
 
   CHDir(Form1.sAtual);
-
 end;
 
 procedure TForm1.ESTOQUEMUDANADEREGIME1Click(Sender: TObject);
@@ -33851,7 +33846,6 @@ begin
   Screen.Cursor := crDefault;
 
   CHDir(Form1.sAtual);
-
 end;
 
 procedure TForm1.ESTOQUEATUAL1Click(Sender: TObject);
@@ -33881,30 +33875,11 @@ begin
   Screen.Cursor := crDefault;
 
   CHDir(Form1.sAtual);
-
 end;
 
 procedure TForm1.ConfiguraCredencialTecnospeed;
-//var
-//  CredencialTecnospeed: TCredenciaisTecnospeed;
 begin
-  //Form1.spdNFCe1.ConfigurarSoftwareHouse('07426598000124', '9830b685216a9c4613bc76c84098272d');// Sandro Silva 2018-05-30
   Form1.spdNFCe1.ConfigurarSoftwareHouse('03916076000664', '5236f0fc4fb818efe845ebff0d0457af');// Sandro Silva 2023-02-27
-
-  {
-  try
-    CredencialTecnospeed := TCredenciaisTecnospeed.Create;
-    CredencialTecnospeed.PrivateKey := Form1.sPasta;
-    CredencialTecnospeed.LeCredencial(Form1.sAtual);
-
-    if CredencialTecnospeed.CNJP <> '' then
-      Form1.spdNFCe1.ConfigurarSoftwareHouse(CredencialTecnospeed.CNJP, CredencialTecnospeed.Token);
-
-    FreeAndNil(CredencialTecnospeed);
-  except
-  end;
-  }
-  //
 end;
 
 procedure TForm1.VincularAssinaturaAC(bForcarObterNovaAssinaturaAC: Boolean = False);
@@ -33923,7 +33898,6 @@ begin
     if (Trim(xmlNodeValue(sResposta, '//assinaturaassociada')) <> '') then
       _ecf59_GravaAssinaturaAssociada(Trim(xmlNodeValue(sResposta, '//assinaturaassociada')));
 
-    //    '<?xml version="1.0" encoding="UTF-8"?><smallsoft><sat><assinaturaassociada>SGR-SAT SISTEMA DE GESTAO E RETAGUARDA DO SAT</assinaturaassociada><cnpjsh>16716114000172</cnpjsh><cnpjsmallsoft>07426598000124</cnpjsmallsoft></sat></smallsoft> '
     if (Trim(xmlNodeValue(sResposta, '//cnpjsmallsoft')) <> '') then
     begin
       if CifrarTexto(Trim(xmlNodeValue(sResposta, '//cnpjsmallsoft'))) <> '' then
@@ -33957,23 +33931,21 @@ begin
   //
   Form1.sSuperCodigo := '';
   sCodigo := 'XXX';
-  //
+
   while sCodigo <> '' do
   begin
-    //
     sCodigo := '';
     sCodigo := Form1.Small_InputBox('Estoque parcial','Itens escolhidos: '+chr(10)+sDescri+chr(10)+chr(10)+'Digite o Código ou <Enter> em branco para finalizar:','');
-    //
+
     if AllTrim(sCodigo)<>'' then
     begin
-      //
       if LimpaNumero(Trim(sCodigo)) <> Trim(sCodigo) then
       begin
         Form1.ibQuery1.Close;
         Form1.ibQuery1.SQL.Clear;
         Form1.ibQuery1.SQL.Add('select CODIGO, DESCRICAO, REFERENCIA from ESTOQUE where upper(DESCRICAO) like '+QuotedStr(UpperCase(sCodigo)+'%')+' ');
         Form1.ibQuery1.Open;
-        //
+
         bAchou := Pos(AnsiUpperCase(sCodigo), AnsiUpperCase(Form1.ibQuery1.FieldByName('DESCRICAO').AsString)) > 0;
       end
       else
@@ -33984,7 +33956,7 @@ begin
           Form1.ibQuery1.SQL.Clear;
           Form1.ibQuery1.SQL.Add('select CODIGO, DESCRICAO, REFERENCIA from ESTOQUE where REFERENCIA='+QuotedStr(LimpaNumero(sCodigo))+' ');
           Form1.ibQuery1.Open;
-          //
+
           bAchou := Form1.ibQuery1.FieldByName('REFERENCIA').AsString = LimpaNumero(sCodigo);
         end
         else
@@ -34002,16 +33974,13 @@ begin
         sCodigo := Form1.ibQuery1.FieldByName('CODIGO').AsString;
         Form1.sSuperCodigo := Form1.sSuperCodigo + '|' + StrZero(StrToInt('0'+LimpaNumero(sCodigo)),5,0);
         sDescri := sDescri + StrZero(StrToInt('0'+LimpaNumero(sCodigo)),5,0) + ' ' + Form1.ibQuery1.FieldByName('DESCRICAO').AsString + chr(10);
-        // SmallMsg(Form1.ibQuery1.FieldByName('DESCRICAO').AsString);
       end else
       begin
         SmallMsg('Não cadastrado no estoque.');
       end;
-
-      //
     end;
   end;
-  //
+
   if Alltrim(Form1.sSuperCodigo) <> '' then
   begin
     if PAFNFCe then
@@ -34019,9 +33988,9 @@ begin
     else
       RegistrosDoPafEcfEstoquetotal; // Form1.Estoquetotal1Click(Sender);
   end;
-  //
+
   Form1.sSuperCodigo := '';
-  Form1.ibQuery1.Close;  //
+  Form1.ibQuery1.Close;
 end;
 
 procedure TForm1.MensagemAlertaLimiteDocumentosEmitidos;
@@ -34177,7 +34146,6 @@ begin
                 Form1.sMensagemPromocional := 'Conv.: '+Form1.ibDataSet2.FieldByName('CONVENIO').AsString + chr(10) +  Form1.sMensagemPromocional;
           end;
 
-
           // Identifica se produtos são de origem de orçamento ou OS importados para a venda
           Form1.ibDataSet27.First;
           while Form1.ibDataSet27.Eof = False do
@@ -34269,7 +34237,6 @@ begin
       end
       else
       begin
-
         if Form1.ibDataSet27.Transaction.Active then
           Form1.ibDataSet27.Transaction.Rollback;
 
@@ -34322,7 +34289,6 @@ begin
   TestaTudo(True); // Form1.PDV_ImportaGerencial(
   Form1.Display(Form1.sStatusECF, Form1.sF);
   Screen.Cursor := crDefault;
-
 end;
 
 procedure TForm1.AtualizaDetalhe(IBTransaction: TIBTransaction; sTipo: String;
@@ -34381,11 +34347,8 @@ begin
 
           Form1.ibDataSet37.Next;
         end;
-
       except
-
       end;
-
     end;
 
     if (sNumero <> '') and (sTipo = 'OS') then
@@ -34462,9 +34425,7 @@ begin
               'NUMERONF = ' + QuotedStr(sNumeroDocumento + 'I') +
               ' where NUMEROOS = ' + QuotedStr(sNumero);
             IBQuery.ExecSQL;
-
           end;
-
         end;
         {Sandro Silva 2023-10-25 fim}
       except
@@ -34501,7 +34462,6 @@ var
 //  Importar: TConverteVendaParaNovoDocFiscal;
   sNumeroGerencial: String;
 begin
-
   {Sandro Silva 2023-08-30 inicio}
   if PDV_CupomAberto then
   begin
@@ -34517,7 +34477,6 @@ end;
 
 procedure TForm1.EmitirNFCedogerencial1Click(Sender: TObject);
 begin
-
   {Sandro Silva 2023-08-30 inicio}
   if PDV_CupomAberto then
   begin
@@ -34552,7 +34511,6 @@ end;
 
 procedure TForm1.EnviarANFCe;
 var
-//  Mais1ini: tIniFile;
   bTimer2EnabledOld: Boolean;
   sNumeroNFEnvio: String;
   sCaixaEnvio: String;
@@ -34570,10 +34528,8 @@ begin
     Timer2.Enabled    := False;
     if sModeloECF = '65' then
     begin
-
       if Form1.bStatusECF then
       begin
-        //
         if (AnsiContainsText(Form1.ibDataSet150.FieldByName('STATUS').AsString, 'Autorizad')) or (Pos('|' + xmlNodeValue(Form1.ibDataSet150.FieldByName('NFEXML').AsString, '//infProt/cStat') + '|', '|100|150|') > 0) then
         begin
           Application.MessageBox('NFC-e transmitida e autorizada', 'Aviso', MB_OK + MB_ICONINFORMATION);
@@ -34588,17 +34544,14 @@ begin
 
         if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) or (xmlNodeValue(Form1.ibDataSet150.FieldByName('NFEXML').AsString, '//tpEmis') = '9') then // Sandro Silva 2018-03-06  if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) then
         begin
-
           if Form1.bStatusECF then // Sandro Silva 2020-06-25
           begin
-
             if Application.MessageBox(PChar('NFC-e em contingência com transmissão pendente' + #13 + #13 + 'Deseja transmitir a contingência agora?'), PChar('Atenção - NFC-e em Contingência'), MB_YESNO + MB_DEFBUTTON1 + MB_ICONQUESTION) = id_Yes then
             begin
 
               _ecf65_EnviarNFCeContingencia(Form1.IBDataSet150.FieldByName('DATA').AsDateTime, '', ''); //  , Form1.ibDataSet150.FieldByName('CAIXA').AsString); // Sandro Silva 2018-03-06  Form1.sCaixa);
 
               Form1.GerenciadordeNFCe1Click(Form1.GerenciadordeNFCe1);
-
             end
             else
               Exit;
@@ -34665,10 +34618,7 @@ begin
 
           end; // if Form1.sCaixa <> Form1.ibDataSet150.FieldByName('CAIXA').AsString then
         end; // if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) or (xmlNodeValue(Form1.ibDataSet150.FieldByName('NFEXML').AsString, '//tpEmis') = '9') then // Sandro Silva 2018-03-06  if (Pos('contingência',Form1.ibDataSet150.FieldByName('STATUS').AsString) <> 0) then
-
       end; // if Form1.bStatusECF then // Sandro Silva 2020-06-25
-      //
-      //
     end; // if sModeloECF = '65' then {Sandro Silva 2014-01-20 inicio}
 
     if sModeloECF = '59' then {Sandro Silva 2014-01-20 inicio}
@@ -34706,17 +34656,13 @@ begin
       Form1.Edit1.Text := '';
       Form1.Edit1.SetFocus;
 
-      //
       CortaPapelNoVideo(True); // Transmite documento TForm1.EnviaraNFCe1Click()
       // Sandro Silva 2023-09-06 Form1.FormShow(Sender); // EnviaraNFCe1Click()
       Form1.FormShow(Form1); // EnviaraNFCe1Click()
-      //
-      //
     end;
 
     if sModeloECF = '99' then {Sandro Silva 2014-01-20 inicio}
     begin
-      //
       if (Form1.ibDataSet150.FieldByName('MODELO').AsString = '99') and (Form1.ibDataSet150.FieldByName('STATUS').AsString = VENDA_GERENCIAL_ABERTA)  then
       begin
 
