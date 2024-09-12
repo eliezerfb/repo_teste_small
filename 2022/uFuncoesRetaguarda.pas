@@ -904,10 +904,10 @@ begin
             '      , MIN(ORCAMENT.DATA) AS DATA ' +
             '      , max(ORCAMENT.NUMERONF) as NUMERONF ' +
             '      , max(ORCAMENT.CLIFOR) as CLIFOR ' +
-            '      , cast(list(distinct coalesce(ORCAMENT.VENDEDOR, '''')) as varchar(5000)) as VENDEDOR' +
+            '      , cast(list(distinct coalesce(ORCAMENT.VENDEDOR, '''')) as varchar(5000)) as VENDEDOR' +   /// ???? Por que está seleciolando a lista de vendedores do orçamento se não usa essa lista retornada?
             '      , SUM(CASE WHEN ORCAMENT.DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS TOTALBRUTO ' +
             '      , SUM(CASE WHEN ORCAMENT.DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS DESCONTO ' +
-            '      , max(ORCAMENT.REGISTRO) as REGISTRO ' +      
+            '      , max(ORCAMENT.REGISTRO) as REGISTRO ' +
             '   FROM ORCAMENT ' +
             '   GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
             '  ) Q ' +
