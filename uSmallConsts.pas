@@ -107,6 +107,7 @@ const
   _cTemaIcones            = 'Tema dos ícones';
   _cCalculaLucroAltVenda  = 'Calcula lucro alt preço venda';
   _PermiteImportaMesmoOrc = 'Importar Mesmo Orc Cupom';
+  _RecalculaCustoMedioRetroativo = 'Recalc Custo Medio Retroativo';
 
   //Impressora
   _cSectionImpressora = 'Impressora';

@@ -23,6 +23,8 @@ type
     procedure setCalculaLucroAltVenda(const Value: Boolean);
     function getPermiteImportarMesmoOrc: Boolean;
     procedure setPermiteImportarMesmoOrc(const Value: Boolean);
+    function getRecalculaCustoMedioRetroativo: Boolean;
+    procedure setRecalculaCustoMedioRetroativo(const Value: Boolean);
   public
     property LogSistema: Boolean read getLogSistema write setLogSistema;
     property FabricaProdutoSemQtd: Boolean read getFabricaProdutoSemQtd write setFabricaProdutoSemQtd;
@@ -31,6 +33,7 @@ type
     property TemaIcones: string read getTemaIcones write setTemaIcones;
     property CalculaLucroAltVenda: Boolean read getCalculaLucroAltVenda write setCalculaLucroAltVenda;
     property PermiteImportarMesmoOrc: Boolean read getPermiteImportarMesmoOrc write setPermiteImportarMesmoOrc; //Mauricio Parizotto 2024-08-26
+    property RecalculaCustoMedioRetroativo: Boolean read getRecalculaCustoMedioRetroativo write setRecalculaCustoMedioRetroativo; //Dailon Parisotto 2024-09-02
   protected
   end;
 
@@ -64,6 +67,11 @@ end;
 function TSectionOutras.getPermiteImportarMesmoOrc: Boolean;
 begin
   Result := getValorBD(_PermiteImportaMesmoOrc) = 'Sim';
+end;
+
+function TSectionOutras.getRecalculaCustoMedioRetroativo: Boolean;
+begin
+  Result := getValorBD(_RecalculaCustoMedioRetroativo) = 'Sim';
 end;
 
 function TSectionOutras.getTemaIcones: string;
@@ -140,6 +148,20 @@ begin
 
   setValorBD(_PermiteImportaMesmoOrc,
              'Permite importar mesmo orçamento múltiplas vezes no cupom',
+             valorBD);
+end;
+
+procedure TSectionOutras.setRecalculaCustoMedioRetroativo(const Value: Boolean);
+var
+  valorBD : string;
+begin
+  if Value then
+    valorBD := 'Sim'
+  else
+    valorBD := 'Não';
+
+  setValorBD(_RecalculaCustoMedioRetroativo,
+             'Recalcular custo médio retroativo',
              valorBD);
 end;
 
