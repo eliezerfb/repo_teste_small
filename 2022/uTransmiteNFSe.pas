@@ -64,6 +64,8 @@ var
   bMultiplosServicos : Boolean;
   sDescricaoDosServicos, sPadraoCidade, sCodigoCnae, sCodigoLocalPrestacao, sRetornoNFse, sArquivoXML : String;
   sCodigoCnaePrestador: String; // Sandro Silva 2023-02-28
+  sCodigoCidadePrestador: String;
+  sMunicipioIncidencia: String;
 
   F: TextFile;
   I, J: Integer;
@@ -409,10 +411,37 @@ begin
             Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
             Form7.ibDataSet2.Open;
 
+            {Sandro Silva 2024-09-06 inicio
             Form7.ibDataset99.Close;
             Form7.ibDataset99.SelectSql.Clear;
             Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDataSet13MUNICIPIO.AsString)+' '+' and UF='+QuotedStr(UpperCase(Form7.ibDataSet13ESTADO.AsString))+' ');
             Form7.ibDataset99.Open;
+            }
+
+            Form7.ibDataset99.Close;
+            Form7.ibDataset99.SelectSql.Clear;
+            Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDataSet13MUNICIPIO.AsString)+' '+' and UF='+QuotedStr(UpperCase(Form7.ibDataSet13ESTADO.AsString))+' ');
+            Form7.ibDataset99.Open;
+
+            sCodigoCidadePrestador := Copy(Form7.ibDAtaSet99.FieldByname('CODIGO').AsString,1,7);
+            sMunicipioIncidencia   := Copy(Form7.ibDAtaSet99.FieldByname('CODIGO').AsString,1,7);
+
+            Form7.ibDataset99.Close;
+            Form7.ibDataset99.SelectSql.Clear;
+            Form7.ibDataset99.SelectSQL.Add('select * from MUNICIPIOS where NOME = :NOME and UF = :UF ');
+            if (AnsiUpperCase(Trim(Form7.ibDataSet13MUNICIPIO.AsString)) = 'PASSO FUNDO') and (AnsiUpperCase(Trim(Form7.ibDataSet13ESTADO.AsString)) = 'RS')
+              and (sPadraoSistema = 'THEMA') then
+            begin
+              Form7.ibDataset99.ParamByName('NOME').AsString := Form7.IBDataSet2CIDADE.AsString;
+              Form7.ibDataset99.ParamByName('UF').AsString   := UpperCase(Form7.ibDataSet2ESTADO.AsString);
+            end
+            else
+            begin
+              Form7.ibDataset99.ParamByName('NOME').AsString := Form7.ibDataSet13MUNICIPIO.AsString;
+              Form7.ibDataset99.ParamByName('UF').AsString   := UpperCase(Form7.ibDataSet13ESTADO.AsString);
+            end;
+            Form7.ibDataset99.Open;
+            {Sandro Silva 2024-09-06 fim}
 
             sCodigoLocalPrestacao := Copy(Form7.ibDAtaSet99.FieldByname('CODIGO').AsString,1,7);
             
@@ -540,7 +569,8 @@ begin
             Writeln(F,'ComplementoPrestador='+ConverteAcentos2(Form7.ibDAtaSet13NOME.AsString)); // Complemento
             Writeln(F,'TipoBairroPrestador=');
             Writeln(F,'BairroPrestador='+ConverteAcentos2(Form7.ibDAtaSet13COMPLE.AsString)); // Bairro
-            Writeln(F,'CodigoCidadePrestador='+Copy(Form7.ibDAtaSet99.FieldByname('CODIGO').AsString,1,7)); // Código da Cidade do Emitente (Tabela do IBGE)
+            //Sandro Silva 2024-09-06 Writeln(F,'CodigoCidadePrestador='+Copy(Form7.ibDAtaSet99.FieldByname('CODIGO').AsString,1,7)); // Código da Cidade do Emitente (Tabela do IBGE)
+            Writeln(F,'CodigoCidadePrestador='+sCodigoCidadePrestador); // Código da Cidade do Emitente (Tabela do IBGE)
 
             Writeln(F,'DescricaoCidadePrestador='+ConverteAcentos2(Form7.ibDAtaSet13MUNICIPIO.AsString)); // Municipio
             Writeln(F,'TelefonePrestador='+LimpaNumero(Form7.ibDAtaSet13TELEFO.AsString)); // Telefone
@@ -653,7 +683,9 @@ begin
               Writeln(F,'CodigoTributacaoMunicipio='+AllTrim(RetornaValorDaTagNoCampo('CodigoTributacaoMunicipio',form7.ibDataSet4.FieldByname('TAGS_').AsString))); // Código do item da lista de serviço.	T	 Obtido na prefeitura
             end;
 
-            Writeln(F,'MunicipioIncidencia='+Copy(Form7.ibDAtaSet99.FieldByname('CODIGO').AsString,1,7)); // Código IBGE do município onde ocorrerá a aplicação do imposto.	T	Usado quando o serviço for retido.
+            //Sandro Silva 2024-09-06 Writeln(F,'MunicipioIncidencia='+Copy(Form7.ibDAtaSet99.FieldByname('CODIGO').AsString,1,7)); // Código IBGE do município onde ocorrerá a aplicação do imposto.	T	Usado quando o serviço for retido.
+            Writeln(F,'MunicipioIncidencia='+sMunicipioIncidencia); // Código IBGE do município onde ocorrerá a aplicação do imposto.	T	Usado quando o serviço for retido.
+
             Writeln(F,'DescricaoCidadePrestacao='+ConverteAcentos2(Form7.ibDAtaSet13MUNICIPIO.AsString)); // Município onde o serviço foi prestado
             Writeln(F,'');
 
