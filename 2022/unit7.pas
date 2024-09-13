@@ -2696,7 +2696,7 @@ type
   function BaixaEstoqueDaNFeAutorizada(sPp1: String): boolean;
   function LoadXmlDestinatarioSaida(aChaveNFe: String): WideString;
   function LoadXmlDestinatarioEntrada(aChaveNFe: String): WideString;
-  function RetornaValorDaTagNoCampo(sTag: String; sObs: String): String;
+  function RetornaValorDaTagNoCampo(sTag: String; sObs: String; bEliminarQuebraLinha: Boolean = True): String;
   function RetornaValorDaTagNoCampoCRLF(sTag: String; sObs: String): String;
   function Manifesto(iP1: integer) : Boolean;
   function ProdutoValidoParaMarketplace(bP1 : Boolean): String;
@@ -3081,7 +3081,7 @@ begin
 end;
 }
 
-function RetornaValorDaTagNoCampo(sTag: String; sObs: String): String;
+function RetornaValorDaTagNoCampo(sTag: String; sObs: String; bEliminarQuebraLinha: Boolean = True): String;
 // Extrai o valor do parâmetro configurado
 // Parâmetros:
 // sTag: Nome da tag parâmetro
@@ -3093,7 +3093,8 @@ var
 begin
   Result := '';
   sObs := Trim(sObs);
-  sObs := StringReplace(sObs, #$D#$A, '', [rfReplaceAll]); // Eliminar quebras de linha geradas no cadastro de produto pelo campo blob
+  if bEliminarQuebraLinha then
+    sObs := StringReplace(sObs, #$D#$A, '', [rfReplaceAll]); // Eliminar quebras de linha geradas no cadastro de produto pelo campo blob
   if AnsiContainsText(sObs, '<' + sTag + '>') then
   begin
     sTextoTag := Copy(sObs, Pos('<' + sTag + '>', sObs) + Length('<' + sTag + '>'), Length(sObs));
@@ -32490,6 +32491,22 @@ var
   F: TextFile;
   Mais1Ini : tIniFile; // 2022-07-14
   sPadraoSistema: String; //2022-07-14
+  {Sandro Silva 2024-08-28 inicio}
+  function RetornoNFSeCancelada(sRetornoPrefeitura: String): Boolean;
+  begin
+    Result := False;
+    if (AnsiUpperCase(Form7.ibDataSet13.FieldByName('MUNICIPIO').AsString) = 'SERRA') and (AnsiUpperCase(Form7.ibDataSet13.FieldByName('ESTADO').AsString) = 'ES') then
+    begin
+      if (Pos('CANCELADA', AnsiUpperCase(sRetornoPrefeitura)) <> 0) then
+        Result := True;
+    end
+    else
+    begin
+      if (Pos('CANCELADA', sRetornoPrefeitura) <> 0) then
+        Result := True;
+    end;
+  end;
+  {Sandro Silva 2024-08-28 fim}
 begin
   try
     //2022-07-14 Identificar o padrão da prefeitura
@@ -32525,7 +32542,8 @@ begin
         ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
 
         // Aguarda fechar o NFSE.EXE
-        while ConsultaProcesso('NFSE.EXE') or ConsultaProcesso('NFSE.exe') or ConsultaProcesso('nfe.exe') do
+        // Sandro Silva 2024-08-28 while ConsultaProcesso('NFSE.EXE') or ConsultaProcesso('NFSE.exe') or ConsultaProcesso('nfe.exe') do
+        while ConsultaProcesso('NFSE.EXE') or ConsultaProcesso('NFSE.exe') or ConsultaProcesso('nfse.exe') do
         begin
           Application.ProcessMessages;
           sleep(100);
@@ -32539,7 +32557,7 @@ begin
 
           sRetornoNFse := _File.Text;
 
-          if Pos('CANCELADA',_File.Text)<>0 then
+          if RetornoNFSeCancelada(_File.Text) then //Sandro Silva 2024-08-28 if Pos('CANCELADA',_File.Text)<>0 then
           begin
             CancelarNFSe(_File.Text);
           end else
