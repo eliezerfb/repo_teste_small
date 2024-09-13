@@ -1682,7 +1682,8 @@ begin
         // Form7.spdNFeDataSets.Campo('CST_O09').Value       := '50';  // Saída tributada de IPI
         Form7.spdNFeDataSets.Campo('CST_O09').Value       :=  Form7.ibDataSet16.FieldByname('CST_IPI').AsString; // Saída tributada de IPI
 
-        if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
+        if (LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '')
+          and ((Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'N') or ((Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S') and (Form7.ibDataSet16.FieldByname('IPI').AsCurrency = 0))) then
         begin
           Form7.spdNFeDataSets.Campo('qUnid_O11').Value := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade Total da Unidade padrao para tributacao
           Form7.spdNFeDataSets.Campo('vUnid_O12').Value := StrTran(Alltrim(FormatFloat('##0.0000',StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString))))),',','.'); // Valor por unidade tributavel
@@ -1812,8 +1813,8 @@ begin
 
       // Devolucao
       // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução
-      // Dailon Parisotto 2024-08-06 if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolução
-      if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolução
+//      if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolução
+      if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolução
       begin
         // Imposto da NF de DEVOLUCAO devolução
         // neste ponto é possível informar os impostos com os valores da nota de entrada
