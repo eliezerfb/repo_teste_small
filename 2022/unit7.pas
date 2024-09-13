@@ -19357,6 +19357,7 @@ begin
               end;
             end;
 
+            {Dailon Parisotto (f-20580) 2024-09-06 Inicio
             // Comentário do produto
             for I := 1 to 9 do
             begin
@@ -19381,6 +19382,37 @@ begin
                 Form7.sMoDulo := sModuloRes;
               end;
             end;
+
+            }
+            if not FbDuplicandoNFe then
+            begin
+              // Necessário o IF acima para não duplicar a observação do produto ao duplicar a NF
+              // Comentário do produto
+              for I := 1 to 9 do
+              begin
+                if (Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString) <> 0) and (Pos('</Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString) > Pos('<Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString)) then
+                begin
+                  // Mostra como comentário
+                  sModuloREs := Form7.sMoDulo;
+                  Form7.sMoDulo := 'Não';
+
+                  Form7.ibDataSet16.Post;
+
+                  sRegistro1 := Form7.ibDataSet16REGISTRO.AsString;
+
+                  Form7.ibDataSet16.Append;
+                  Form1.bFlag := False;
+                  Form7.ibDataSet16DESCRICAO.AsString := Copy(Copy(Form7.ibDataSet4TAGS_.AsString,Pos('<Obs'+IntToStr(I)+'>',Form7.ibDataSet4TAGS_.AsString)+6,(Pos('</Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString)-Pos('<Obs'+IntToStr(I)+'>',ibDataSet4TAGS_.AsString))-6),1, ibDataSet4DESCRICAO.Size);
+                  Form7.ibDataSet16.Post;
+
+                  Form7.ibDataSet16.Locate('REGISTRO',sRegistro1,[]);
+
+                  Form7.ibDataSet16.Edit;
+                  Form7.sMoDulo := sModuloRes;
+                end;
+              end;
+            end;
+            {Dailon Parisotto (f-20580) 2024-09-06 Fim}
           end;
 
           if (Form7.sModulo = 'VENDA') or (Form7.sModulo = 'RETRIBUTA') then
