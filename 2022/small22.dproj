@@ -580,6 +580,8 @@
             <Form>FrmMsgNovoLayout</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="interfaces\uIRetornaCustoMedio.pas"/>
+        <DCCReference Include="units\uRetornaCustoMedio.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
