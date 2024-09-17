@@ -13045,6 +13045,10 @@ object Form7: TForm7
         Caption = 'Movimenta'#231#227'o do item'
         OnClick = Movimentaodoitem1Click
       end
+      object Movimentaodoitemporperodo1: TMenuItem
+        Caption = 'Movimenta'#231#227'o do item por per'#237'odo'
+        OnClick = Movimentaodoitemporperodo1Click
+      end
       object Movimentaodositemskardex1: TMenuItem
         Caption = 'Movimenta'#231#227'o dos itens filtrados (Kardex'#174')'
         OnClick = Movimentaodositemskardex1Click

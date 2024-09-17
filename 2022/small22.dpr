@@ -271,7 +271,8 @@ uses
   uFrmEstoque in 'uFrmEstoque.pas' {FrmEstoque},
   uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout},
   uIRetornaCustoMedio in 'interfaces\uIRetornaCustoMedio.pas',
-  uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas';
+  uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas',
+  ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo};
 
 {$R *.RES}
 

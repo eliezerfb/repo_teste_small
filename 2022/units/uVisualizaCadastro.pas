@@ -23,6 +23,7 @@ uses
   , Mais
   , uFuncoesBancoDados
   , uFuncoesRetaguarda
+  , ufrmRelatorioMovItensPeriodo
   ;
 
 procedure GeraVisualizacaoFichaCadastro;
@@ -943,6 +944,8 @@ begin
           fTotal := fTotal + Form7.IBDataSet97.FieldByName('QUANTIDADE').AsFloat;
           if Form7.IBDataSet97.FieldByName('HISTORICO').AsString <> 'Quantidade inicial' then
           begin
+            {Dailon Parisotto (smal-705) 2024-09-17 Inicio
+
             WriteLn(F,' <tr>');
             Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.IBDataSet97.FieldByName('DATA').AsDateTime)+'</td>');
             Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.IBDataSet97.FieldByname('DOCUMENTO').AsString,1,9)+'/'+Copy(Form7.IBDataSet97.FieldByname('DOCUMENTO').AsString,10,3)+'</td>');
@@ -951,6 +954,23 @@ begin
             Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.IBDataSet97.FieldByName('QUANTIDADE').AsFloat])+'</td>');
             Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[fTotal])+'</td>');
             WriteLn(F,' </tr>');
+
+            }
+            if (not Assigned(frmRelatorioMovItensPeriodo)) or
+              ((Form7.IBDataSet97.FieldByName('DATA').AsDateTime = Date) or
+              ((Form7.IBDataSet97.FieldByName('DATA').AsDateTime >= frmRelatorioMovItensPeriodo.dtInicial.Date) and
+              (Form7.IBDataSet97.FieldByName('DATA').AsDateTime <= frmRelatorioMovItensPeriodo.dtFinal.Date))) then
+            begin
+              WriteLn(F,' <tr>');
+              Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.IBDataSet97.FieldByName('DATA').AsDateTime)+'</td>');
+              Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Copy(Form7.IBDataSet97.FieldByname('DOCUMENTO').AsString,1,9)+'/'+Copy(Form7.IBDataSet97.FieldByname('DOCUMENTO').AsString,10,3)+'</td>');
+              Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Form7.IBDataSet97.FieldByName('HISTORICO').AsString+'</td>');
+              Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.IBDataSet97.FieldByName('VALOR').AsFloat])+'</td>');
+              Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[Form7.IBDataSet97.FieldByName('QUANTIDADE').AsFloat])+'</td>');
+              Writeln(F,'  <td align=Right bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+Format('%12.'+Form1.ConfCasas+'n',[fTotal])+'</td>');
+              WriteLn(F,' </tr>');
+            end;
+            {Dailon Parisotto (smal-705) 2024-09-17 Fim}
           end;
           Form7.IBDataSet97.Next;
         end;
@@ -1202,6 +1222,12 @@ begin
     end;
     
     if dInicio <> StrToDate('31/12/1899') then if (Form7.sModulo <> 'ESTOQUE') and (Form7.sModulo <> 'KARDEX') then Writeln(F,'<center><font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br></center>');
+
+    {Dailon Parisotto (smal-705) 2024-09-17 Inicio}
+    if (Assigned(frmRelatorioMovItensPeriodo)) then
+      Writeln(F,'<center><font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(frmRelatorioMovItensPeriodo.dtInicial.Date) + ' até ' + DateTimeToStr(frmRelatorioMovItensPeriodo.dtFinal.Date)+'<br></center>');
+    {Dailon Parisotto (smal-705) 2024-09-17 Fim}
+
     WriteLn(F,'</center><center><br><font face="Microsoft Sans Serif" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
     + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
     + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br></center>');
