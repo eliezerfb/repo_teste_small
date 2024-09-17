@@ -1107,7 +1107,7 @@ begin
       Result := ExecutaComandoEscalar(Transaction,
                                       ' Select'+
                                       '   Case'+
-                                      '     When Coalesce(I.ES_,0) > 0 then Coalesce(I.'+UF+'_,0)'+
+                                      '     When Coalesce(I.'+UF+'_,0) > 0 then Coalesce(I.'+UF+'_,0)'+
                                       '     Else Coalesce(E.PIVA,0)'+
                                       '  End'+
                                       ' From ESTOQUE E'+
