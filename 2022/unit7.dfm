@@ -13037,6 +13037,10 @@ object Form7: TForm7
         Caption = 'Resumo das vendas'
         OnClick = Resumodasvendas1Click
       end
+      object Rankingdeprodutosvendidos1: TMenuItem
+        Caption = 'Ranking de produtos vendidos'
+        OnClick = Rankingdeprodutosvendidos1Click
+      end
       object Resumodascompras1: TMenuItem
         Caption = 'Resumo das compras'
         OnClick = Resumodascompras1Click

@@ -9,6 +9,8 @@ uses
   uIEstruturaRelatorioPadrao, IBCustomDataSet, DBClient;
 
 type
+  TTipoRelatorioResumoVenda = (trrvResumoVendas, trrvRankingProdVendido);
+
   TfrmRelResumoVendas = class(TfrmRelatorioPadrao)
     pnlPrincipal: TPanel;
     Label2: TLabel;
@@ -32,6 +34,8 @@ type
     cdsTotalGrupoVendidopor: TFMTBCDField;
     cdsTotalGrupoLucrobruto: TFMTBCDField;
     cdsTotalGrupoQuantidade: TFMTBCDField;
+    cbxOrdenadoPor: TComboBox;
+    lblOrdenadoPor: TLabel;
     procedure FormShow(Sender: TObject);
     procedure btnAvancarClick(Sender: TObject);
     procedure btnVoltarClick(Sender: TObject);
@@ -47,6 +51,7 @@ type
     FcWhereEstoque: String;
     FcSqlTraduzido: String;
     FcOrderBy: String;
+    FenTipoRelatorio: TTipoRelatorioResumoVenda;
     procedure AjustaLayout;
     function FazValidacoes: Boolean;
     function RetornarWhereOperacoes: String;
@@ -65,6 +70,7 @@ type
     procedure AjustaCasasDecimais;
     function RetornarApenasData(AdDataHora: TDateTime): TDate;
     function RetornaWhereNota: String;
+    procedure setTipoRelatiorio(const Value: TTipoRelatorioResumoVenda);
   public
     property DataSetEstoque: TIBDataSet read FoDataSetEstoque write FoDataSetEstoque;
     property CasasDecimaisPreco: Integer read FnCasasDecimais write FnCasasDecimais;
@@ -72,6 +78,7 @@ type
     property WhereEstoque: String read FcWhereEstoque write FcWhereEstoque;
     property SqlTraduzido: String read FcSqlTraduzido write FcSqlTraduzido;
     property OrderBy: String read FcOrderBy write FcOrderBy;
+    property TipoRelatorio: TTipoRelatorioResumoVenda read FenTipoRelatorio write setTipoRelatiorio;
   protected
     function Estrutura: IEstruturaTipoRelatorioPadrao; override;
   end;
@@ -110,6 +117,26 @@ begin
   pnlSelOperacoes.Left := 180;
   pnlSelOperacoes.Top  := pnlPrincipal.Top;
   pnlSelOperacoes.Left := pnlPrincipal.Left;
+
+  {Dailon Parisotto (smal-704) 2024-09-17 Inicio}
+  if TipoRelatorio = trrvRankingProdVendido then
+  begin
+    lblOrdenadoPor.Left := 0;
+    cbxOrdenadoPor.Left := 0;
+
+    lblOrdenadoPor.Top := cbAgruparGrupo.Top + 1;
+    cbxOrdenadoPor.Top := lblOrdenadoPor.Top + lblOrdenadoPor.Height + 3;
+    cbxOrdenadoPor.Width := dtInicial.Width;
+
+    cbxOrdenadoPor.ItemIndex := 0;
+
+    Self.Caption := 'Ranking de produtos vendidos';
+  end;
+  cbAgruparGrupo.Visible := (TipoRelatorio <> trrvRankingProdVendido);
+  cbAgruparGrupo.Checked := (TipoRelatorio <> trrvRankingProdVendido);
+  lblOrdenadoPor.Visible := (TipoRelatorio = trrvRankingProdVendido);
+  cbxOrdenadoPor.Visible := (TipoRelatorio = trrvRankingProdVendido);
+  {Dailon Parisotto (smal-704) 2024-09-17 Fim}
 
   AjustaCasasDecimais;
 end;
@@ -354,6 +381,15 @@ begin
       AoEstruturaCat.FiltrosRodape.AddItem(chkOperacoes.Items[i]);
   end;
   AoEstruturaCat.FiltrosRodape.AddItem('Vendas por ECF, NFC-e ou SAT');
+
+  if TipoRelatorio = trrvRankingProdVendido then
+  begin
+    AoEstruturaCat.FiltrosRodape.AddItem(EmptyStr);
+    if FoArquivoDAT.Usuario.Html.TipoRelatorio in [ttiHTML, ttiPDF] then
+      AoEstruturaCat.FiltrosRodape.AddItem('<b>Ordenado por: ' + cbxOrdenadoPor.Text + '</b>')
+    else
+      AoEstruturaCat.FiltrosRodape.AddItem('Ordenado por: ' + cbxOrdenadoPor.Text);
+  end;
 end;
 
 function TfrmRelResumoVendas.RetornarDescrFiltroData: string;
@@ -368,6 +404,10 @@ begin
   AcGrupo := Copy(AcGrupo,1,25);
   QryProdutos := CriaIBQuery(DataSetEstoque.Transaction);
   try
+    {ATEN플O!!!!! SE ADICIONAR OU REMOVER COLUNAS DA CONSULTA VERIFIQUE OS ORDER BY!!!!}
+    {ATEN플O!!!!! SE ADICIONAR OU REMOVER COLUNAS DA CONSULTA VERIFIQUE OS ORDER BY!!!!}
+    {ATEN플O!!!!! SE ADICIONAR OU REMOVER COLUNAS DA CONSULTA VERIFIQUE OS ORDER BY!!!!}
+
     QryProdutos.Close;
     QryProdutos.Database := DataBase;
     QryProdutos.SQL.Clear;
@@ -393,6 +433,9 @@ begin
       QryProdutos.SQL.Add('AND (CASE WHEN COALESCE(ESTOQUE.NOME,'''') = '''' THEN ' + QuotedStr(_cSemGrupo) + ' ELSE ESTOQUE.NOME END = :XGRUPO)');
     if (AcGrupo = EmptyStr) then
     begin
+      {ATEN플O!!!!! SE ADICIONAR OU REMOVER COLUNAS DA CONSULTA VERIFIQUE OS ORDER BY!!!!}
+      {ATEN플O!!!!! SE ADICIONAR OU REMOVER COLUNAS DA CONSULTA VERIFIQUE OS ORDER BY!!!!}
+      {ATEN플O!!!!! SE ADICIONAR OU REMOVER COLUNAS DA CONSULTA VERIFIQUE OS ORDER BY!!!!}
       if (Trim(FcWhereEstoque) = EmptyStr) then
       begin
         QryProdutos.SQL.Add('UNION ALL');
@@ -406,6 +449,10 @@ begin
         QryProdutos.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "Lucro bruto"');
         QryProdutos.SQL.Add('    , CAST(0 AS NUMERIC(18,'+IntToStr(FnCasasDecimais)+')) AS "%"');
         QryProdutos.SQL.Add('FROM EMITENTE');
+
+        {ATEN플O!!!!! SE ADICIONAR OU REMOVER COLUNAS DA CONSULTA VERIFIQUE OS ORDER BY!!!!}
+        {ATEN플O!!!!! SE ADICIONAR OU REMOVER COLUNAS DA CONSULTA VERIFIQUE OS ORDER BY!!!!}
+        {ATEN플O!!!!! SE ADICIONAR OU REMOVER COLUNAS DA CONSULTA VERIFIQUE OS ORDER BY!!!!}
 
         QryProdutos.SQL.Add('UNION ALL');
         QryProdutos.SQL.Add('SELECT FIRST 1');
@@ -423,7 +470,15 @@ begin
         QryProdutos.SQL.Add('FROM EMITENTE');
       end;
     end;
-    QryProdutos.SQL.Add('ORDER BY 1,7 DESC');
+    if TipoRelatorio = trrvRankingProdVendido then
+    begin
+      case cbxOrdenadoPor.ItemIndex of
+        0: QryProdutos.SQL.Add('ORDER BY 1,4 DESC');
+        1: QryProdutos.SQL.Add('ORDER BY 1,6 DESC');
+        2: QryProdutos.SQL.Add('ORDER BY 1,7 DESC');
+      end;
+    end else
+      QryProdutos.SQL.Add('ORDER BY 1,7 DESC');
     QryProdutos.ParamByName('XDATAINI').AsDate := dtInicial.Date;
     if AcGrupo <> EmptyStr then
       QryProdutos.ParamByName('XGRUPO').AsString := AcGrupo;
@@ -653,6 +708,12 @@ begin
               RetornarWhereOperacoes+' and (VENDAS.EMITIDA=''S'')' + sLineBreak +
               'and (VENDAS.MODELO <> ''SV'')';
 end;
+procedure TfrmRelResumoVendas.setTipoRelatiorio(
+  const Value: TTipoRelatorioResumoVenda);
+begin
+  FenTipoRelatorio := Value;
+end;
+
 {Dailon Parisotto (f-19509) 2024-07-02 Fim}
 
 procedure TfrmRelResumoVendas.FazUpdateValores;
