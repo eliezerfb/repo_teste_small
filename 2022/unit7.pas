@@ -1730,6 +1730,7 @@ type
     IBDataSet2PRODUTORRURAL: TIBStringField;
     ImgProduto: TImage;
     ImgSemProduto: TImage;
+    ibDataSet14IMPOSTOMANUAL: TIBStringField;
     DetalhamentodasOrdensfiltradas1: TMenuItem;
     Aniversariantes1: TMenuItem;
     Dia1: TMenuItem;
@@ -2460,6 +2461,7 @@ type
     procedure ibDataSet4ONPROMOChange(Sender: TField);
     procedure ibDataSet16CST_ICMSChange(Sender: TField);
     procedure ibDataSet14AfterInsert(DataSet: TDataSet);
+    procedure ibDataSet14BeforePost(DataSet: TDataSet);
     procedure DetalhamentodasOrdensfiltradas1Click(Sender: TObject);
     procedure Dia1Click(Sender: TObject);
     procedure Ms1Click(Sender: TObject);
@@ -5438,7 +5440,6 @@ begin
 
     Form7.ibDataSet100.Open;
   except
-    //ShowMessage('Erro na tabela de auditoria. Cod. 2'+chr(10)+chr(10)+Form7.ibDataSet100.SelectSql.Text); Mauricio Parizotto 2023-10-25
     MensagemSistema('Erro na tabela de auditoria. Cod. 2'+chr(10)+chr(10)+Form7.ibDataSet100.SelectSql.Text,msgErro);
   end;
 
@@ -9631,6 +9632,19 @@ begin
         Form7.ibDataSet14REFERENCIANOTA.AsString := 'N'
       else
         Form7.ibDataSet14REFERENCIANOTA.AsString := 'S';
+      Form7.ibDataSet14.Post;
+      Screen.Cursor            := crDefault;
+      Abort;
+    end;
+
+    //Mauricio Parizotto 2024-06-21
+    if DBGrid1.SelectedField.Name = 'ibDataSet14IMPOSTOMANUAL' then
+    begin
+      Form7.ibDataSet14.Edit;
+      if (Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S') then
+        Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'N'
+      else
+        Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'S';
       Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
@@ -19297,7 +19311,8 @@ begin
               //
               Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
               Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
-              Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet4IPI.AsFloat;
+              if (ibDataSet14IMPOSTOMANUAL.AsString <> 'S') then
+                Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet4IPI.AsFloat;
               Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
               Form7.ibDataSet16CUSTO.AsFloat      := CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat); // Sandro Silva 2023-04-26 Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
               Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
@@ -19537,7 +19552,7 @@ begin
               Form7.ibDataSet16.Edit;
 
               // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução
-              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then
+              if (not NFeFinalidadeDevolucaoImpostoManual(Form7.ibDataSet15FINNFE.AsString, Form7.ibDataSet14IMPOSTOMANUAL.AsString)) then
               begin
                 if AllTrim(Form7.ibDataSet14CFOP.AsString) <> '' then
                 begin
@@ -19614,7 +19629,7 @@ begin
 
 
               {Mauricio Parizotto 2023-06-19 inicio}
-              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao
+              if NFeFinalidadeDevolucaoImpostoManual(Form7.ibDataSet15FINNFE.AsString, Form7.ibDataSet14IMPOSTOMANUAL.AsString) then // Devolucao
               begin
                 //Só preenche se campos estiverem em branco
                 try
@@ -22664,6 +22679,26 @@ begin
   end;
 end;
 
+procedure TForm7.ibDataSet14BeforePost(DataSet: TDataSet);
+var
+  sMensagem : string;
+begin
+  if sModulo = 'ICM' then
+  begin
+    if (ibDataSet14IMPOSTOMANUAL.OldValue <> ibDataSet14IMPOSTOMANUAL.AsVariant) then
+    begin
+      if ibDataSet14IMPOSTOMANUAL.AsString = 'S' then
+        sMensagem := 'Habilitou a opção "Lançamento manual de impostos" na Natureza: '
+      else
+        sMensagem := 'Desabilitou a opção "Lançamento manual de impostos" na Natureza: ';
+
+      Audita('ALTEROU', sModulo, Senhas.UsuarioPub,
+             sMensagem+ibDataSet14NOME.AsString,
+             0, 0);   // Ato, Modulo, Usuário, Histórico
+    end;
+  end;
+end;
+
 procedure TForm7.ibDataSet8BeforeInsert(DataSet: TDataSet);
 begin
   try
@@ -22883,6 +22918,7 @@ begin
   ibDataSet14REGISTRO.AsString  := sProximo;
   ibDataSet14PISCOFINSLUCRO.AsString  := 'N';
   ibDataSet14REFERENCIANOTA.AsString  := 'N'; //Mauricio Parizotto 2024-06-21
+  ibDataSet14IMPOSTOMANUAL.AsString   := 'N'; //Mauricio Parizotto 2024-07-24
 end;
 
 procedure TForm7.ibDataSet18NewRecord(DataSet: TDataSet);
@@ -26486,7 +26522,7 @@ begin
 
   if Form7.ibDataSet16DESCRICAO.AsString <> EmptyStr then
   begin
-    if (not NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) then
+    if (not NFeFinalidadeDevolucaoImpostoManual(Form7.ibDataSet15FINNFE.AsString, Form7.ibDataSet14IMPOSTOMANUAL.AsString)) then
     begin
       try
         if (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '5101') or (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '6101') or (Pos('IPI',Form7.ibDataSet14OBS.AsString) <> 0) then
@@ -36488,14 +36524,10 @@ begin
     sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
     sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
     sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
-    //sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 47)); // Mauricio Parizotto 2023-12-11 sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 46)); // Sandro Silva 2023-07-03 sMostra   := Replicate('T',47); //Mauricio Parizotto 2024-04-22
-    //sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 48)); Mauricio Parizotto 2024-06-21
-    sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 49));
-    // Sandro Silva 2023-07-03 iCampos   := 44;
-    //iCampos   := 46; // Sandro Silva 2023-07-03 iCampos   := 5; Mauricio Parizotto 2023-12-11
-    //iCampos   := 47; //Mauricio Parizotto 2024-04-22
-    //iCampos   := 48; Mauricio Parizotto 2024-06-21
-    iCampos   := 49;
+    //sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 49)); Mauricio Parizotto 2024-07-23
+    sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 50));
+    //iCampos   := 49; Mauricio Parizotto 204-07-23
+    iCampos   := 50;
   end;
   {$Endregion}
 

@@ -18,6 +18,7 @@ type
     procedure CalculaPesoLiquido;
     function AliqICMdoCliente(oItem: TITENS001): Double;
     procedure SetRateioDescAcre;
+    function DevolucaoOuImpostoManual: Boolean;
   public
     Calculando: Boolean;
     procedure CalculaValores(DataSetNF, DataSetItens: TibDataSet; CalcPesoLiq : Boolean = True);
@@ -171,6 +172,13 @@ begin
 
 end;
 
+{Dailon Parisotto (smal-593) 2024-08-06 Inicio}
+function TNotaFiscalEletronicaCalc.DevolucaoOuImpostoManual: Boolean;
+begin
+  Result := (NFeFinalidadeDevolucao(NotaFiscal.Finnfe)) or (Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S');
+end;
+{Dailon Parisotto (smal-593) 2024-08-06 Fim}
+
 procedure TNotaFiscalEletronicaCalc.CalculaImpostos(AbCalcPesoLiq : Boolean);
 var
   fFCP, fPercentualFCP, fPercentualFCPST, fTotalMercadoria, {fRateioDoDesconto, }fIPIPorUnidade, fSomaNaBase, TotalBASE, TotalICMS : Real;
@@ -236,7 +244,8 @@ begin
   {Mauricio Parizotto 2023-06-05 Fim}
 
   // Sandro Silva 2023-05-18 if NotaFiscal.Finnfe = '4' then // Devolucao Devolução
-  if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) then // Devolucao Devolução
+  // Dailon Parisotto 2024-08-06 if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) then // Devolucao Devolução
+  if DevolucaoOuImpostoManual then // Devolucao Devolução
   begin
     for i := 0 to NotaFiscal.Itens.Count -1 do
     begin
@@ -279,7 +288,8 @@ begin
     end;
   end;
 
-  if not(NFeFinalidadeDevolucao(NotaFiscal.Finnfe)) and not((NFeFinalidadeComplemento(NotaFiscal.Finnfe)))  then
+  // Dailon Parisotto 2024-08-06 if not(NFeFinalidadeDevolucao(NotaFiscal.Finnfe)) and not((NFeFinalidadeComplemento(NotaFiscal.Finnfe)))  then
+  if not (DevolucaoOuImpostoManual) and not((NFeFinalidadeComplemento(NotaFiscal.Finnfe)))  then
   begin
     //Mauricio Parizotto 2023-04-03
     fTotalMercadoria := GetTotalMercadoria;
@@ -895,7 +905,8 @@ begin
 
 
 
-    if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then // Não é Devolução
+    // Dailon Parisotto 2024-08-06 if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then // Não é Devolução
+    if not DevolucaoOuImpostoManual then // Não é Devolução
     begin
       oItem.VBCFCP   := oItem.Total;// Valor da Base de Cálculo do FCP
       oItem.VBCFCPST := oItem.Vbcst; // Valor da Base de Cálculo do FCP ST
@@ -941,7 +952,8 @@ begin
             // Calcula VBCFCPST da mesma forma que é calculado VBCST na geração do XML
             {Sandro Silva 2023-05-18 fim}
 
-            if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+            // Dailon Parisotto 2024-08-06 if not NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+            if not DevolucaoOuImpostoManual then
             begin
               if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
               begin
@@ -976,7 +988,8 @@ begin
           begin
             oItem.VBCFCPST := oItem.Vbcst; // Valor da Base de Cálculo do FCP retido por Substituição Tributária
 
-            if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+            // Dailon Parisotto 2024-08-06 if not NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+            if not DevolucaoOuImpostoManual then
             begin
               if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
               begin
@@ -1020,7 +1033,8 @@ begin
           begin
             oItem.VBCFCPST  := oItem.Vbcst; // Valor da Base de Cálculo do FCP retido por Substituição Tributária
 
-            if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+            // Dailon Parisotto 2024-08-06 if not NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+            if not DevolucaoOuImpostoManual then
             begin
               if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
               begin
@@ -1057,7 +1071,8 @@ begin
             begin
               oItem.VBCFCPST  := oItem.Vbcst; // Valor da Base de Cálculo do FCP retido por Substituição Tributária
 
-              if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+              // Dailon Parisotto 2024-08-06 if not NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+              if not DevolucaoOuImpostoManual then
               begin
                 if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
                 begin
@@ -1076,7 +1091,8 @@ begin
             begin
               oItem.VBCFCPST := oItem.Vbcst; // Valor da Base de Cálculo do FCP retido por Substituição Tributária
 
-              if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+              // Dailon Parisotto 2024-08-06 if not NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+              if not DevolucaoOuImpostoManual then
               begin
                 if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
                 begin
@@ -1104,7 +1120,8 @@ begin
               begin
                 oItem.VBCFCPST := oItem.Vbcst; // Valor da Base de Cálculo do FCP retido por Substituição Tributária
 
-                if NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+                // Dailon Parisotto 2024-08-06 if not NFeFinalidadeDevolucao(NotaFiscal.Finnfe) = False then //F-7824 Sandro Silva 2024-01-17
+                if not DevolucaoOuImpostoManual then
                 begin
                   if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString) = 'RJ') then
                   begin

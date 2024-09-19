@@ -2656,6 +2656,18 @@ begin
                     ' Where FORMADEPAGAMENTO = ''Pagamento Instantâneo (PIX)'' ') then
       ExecutaComando('Commit');
   {Mauricio Parizotto 204-07-10 Fim}
+  
+  
+  {Mauricio Parizotto 2024-07-23 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'IMPOSTOMANUAL') = False then
+  begin
+    if ExecutaComando('Alter table ICM add IMPOSTOMANUAL VARCHAR(1);') then
+      ExecutaComando('Commit');
+
+    if ExecutaComando('Update ICM set IMPOSTOMANUAL = ''N'' ') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-07-23 Fim}
 
   {Dailon Parisotto 2024-08-22 Inicio}
   try

@@ -125,6 +125,13 @@ begin
 
 end;
 
+{Dailon Parisotto (smal-593) 2024-08-06 Inicio}
+function DevolucaoOuImpostoManual(AcFinalidade: String): Boolean;
+begin
+  Result := (NFeFinalidadeDevolucao(AcFinalidade)) or (Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S');
+end;
+{Dailon Parisotto (smal-593) 2024-08-06 Fim}
+
 procedure GeraXmlNFeSaida;
 var
   spMVAST, spICMSST, sChave, sEx1, sEx2, sEx3, sEx4, sEx5, sEx6, sEx7, sEx8, sEx9, sEx10, sEx11, sEx12, sEx13, sEx14, sEx15, sEx16, sEx17, sEx18 : String;
@@ -1675,7 +1682,8 @@ begin
         // Form7.spdNFeDataSets.Campo('CST_O09').Value       := '50';  // Saída tributada de IPI
         Form7.spdNFeDataSets.Campo('CST_O09').Value       :=  Form7.ibDataSet16.FieldByname('CST_IPI').AsString; // Saída tributada de IPI
 
-        if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
+        if (LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '')
+          and ((Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'N') or ((Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S') and (Form7.ibDataSet16.FieldByname('IPI').AsCurrency = 0))) then
         begin
           Form7.spdNFeDataSets.Campo('qUnid_O11').Value := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade Total da Unidade padrao para tributacao
           Form7.spdNFeDataSets.Campo('vUnid_O12').Value := StrTran(Alltrim(FormatFloat('##0.0000',StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString))))),',','.'); // Valor por unidade tributavel
@@ -1700,7 +1708,8 @@ begin
           Form7.spdNFeDataSets.Campo('pIPI_O13').Value      := FormatFloatXML(Form7.ibDataSet16.FieldByname('IPI').AsFloat); // Percentual do IPI
 
           // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução Não deve mudar
-          if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
+          // Dailon Parisotto 2024-08-06 if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
+          if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
           begin
             Form7.spdNFeDataSets.Campo('vIPI_O14').Value      := FormatFloatXML(Arredonda2(Form7.ibDataSet16.FieldByname('VIPI').AsFloat,2)); // Valor do IPI
           end else
@@ -1804,6 +1813,7 @@ begin
 
       // Devolucao
       // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução
+//      if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolução
       if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolução
       begin
         // Imposto da NF de DEVOLUCAO devolução
@@ -1872,6 +1882,7 @@ begin
         if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60') then
         begin
           if (not NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) or
+             (Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S') or  // Dailon Parisotto 2024-08-06
              ((NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (Form7.spdNFeDataSets.Campo('indFinal_B25a').Value  = '0')) then
           begin
             Form7.spdNFeDataSets.Campo('vbCSTRet_N26').Value    := FormatFloatXML(Form7.ibDataSet16VBCST.AsFloat);  // Valor do BC do ICMS ST retido na UF Emitente ok
@@ -1958,7 +1969,8 @@ begin
           Form7.spdNFeDataSets.Campo('pIPI_O13').Value      := FormatFloatXML(Form7.ibDataSet16.FieldByname('IPI').AsFloat); // Percentual do IPI
 
           // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução Não deve mudar
-          if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
+          // Dailon Parisotto 2024-08-06 if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
+          if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
           begin
             Form7.spdNFeDataSets.Campo('vIPI_O14').Value      := FormatFloatXML(Arredonda2(Form7.ibDataSet16.FieldByname('VIPI').AsFloat,2)); // Valor do IPI
           end else
@@ -2529,7 +2541,8 @@ begin
   // No caso de nota fiscal de devolucao
   // Sandro Silva 2023-05-18 if (Form7.ibDataSet15FINNFE.AsString = '4') and (AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) = '') then
   //if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) = '') then //Mauricio Parizotto 2024-02-02 estava considerando o último item, e esse podia ser uma observação fihca 7876
-  if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (fIPIDevolvido > 0) then // ficha 7876
+  // Dailon Parisotto 2024-08-07 if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (fIPIDevolvido > 0) then // ficha 7876
+  if (DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString)) and (fIPIDevolvido > 0) then // ficha 7876
   begin
     Form7.spdNFeDataSets.campo('vIPIDevol_W12a').Value  := FormatFloatXML(Arredonda2(fIPIDevolvido,2)); // Valor Total do IPI devolvido
     Form7.spdNFeDataSets.Campo('vIPI_W12').Value        := '0.00'; // Valor Total do IPI
@@ -3317,7 +3330,8 @@ begin
   begin
     try
       // Sandro Silva 2023-06-13 if Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4' then // 4=NFe Devolução
-      if NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then // Devolução
+      // Dailon Parisotto 2024-08-07 if (NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value)) then // Devolução
+      if DevolucaoOuImpostoManual(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then // Devolução
       begin
         Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet16.FieldByname('CST_ICMS').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
         Form7.spdNFeDataSets.Campo('CST_N12').Value    := Copy(LimpaNumero(Form7.ibDataSet16.FieldByname('CST_ICMS').AsString)+'000',2,2); // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
@@ -4158,7 +4172,8 @@ begin
     FreeAndNil(ItemNFe);
     }
     // Sandro Silva 2023-06-13 if Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4' then // 4=NFe Devolução
-    if NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then // Devolução
+    // Dailon Parisotto 2024-08-07 if (NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value)) then // Devolução
+    if DevolucaoOuImpostoManual(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then // Devolução
     begin
       Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value := Form7.ibDataSet16.FieldByname('CSOSN').AsString;
 
@@ -4595,9 +4610,10 @@ begin
 
     // CSOSN 500
     // Sandro Silva 2023-05-25 if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '500') then
+    // Dailon Parisotto 2024-08-07 ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '500') and (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)))
     if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '500') or
-     ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '500') and (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)))
-     then
+      ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '500') and (DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString)))
+    then
     begin
       if Form7.spdNFeDataSets.Campo('indFinal_B25a').Value  = '1' then
       begin
@@ -4642,9 +4658,10 @@ begin
     // CSOSN 900
     // NOTA DEVOLUCAO D E V
     // Sandro Silva 2023-05-25 if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900') or (Form7.ibDataSet14.FieldByname('CSOSN').AsString = '900') then
+    // Dailon Parisotto 2024-08-07 or ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '900') and (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)))
     if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900')
-     or ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '900') and (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)))
-     then
+      or ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '900') and (DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString)))
+    then
     begin
       // 900 – Outros – Classificam-se neste código as demais operações que não se enquadrem nos códigos 101, 102, 103, 201, 202, 203, 300, 400 e 500.
       //
@@ -4987,9 +5004,10 @@ begin
           //                            Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := '0.00'; // Valor da Base de Cálculo do FCP retido anteriormente por ST
           //                            Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := '0.00'; // Percentual do FCP retido anteriormente por Substituição Tributária
           //                            Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := '0.00'; // Valor do FCP retido por Substituição Tributária
-          if not NFeIndicadorFinalidadeConsumidorFinal(Form7.spdNFeDataSets.Campo('indFinal_B25a').Value)
-            and not NFeFinalidadeComplemento(Form7.spdNFeDataSets.Campo('finNFe_B25').Value)
-            and not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then
+          // Dailon Parisotto 2024-08-07 and (not (NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))) then
+          if (not NFeIndicadorFinalidadeConsumidorFinal(Form7.spdNFeDataSets.Campo('indFinal_B25a').Value))
+            and (not NFeFinalidadeComplemento(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
+            and (not (DevolucaoOuImpostoManual(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))) then
           begin
             SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
             // Sandro Silva 2024-03-27
@@ -5061,9 +5079,10 @@ begin
     begin
       // Ficha 6907
       // Simples nacional usa CST 61 no lugar do CSOSN
-      //if (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') Mauricio Parizotto 2024-08-07
+      // Dailon Parisotto 2024-08-07 or (not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
       if ( (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') and (Form7.ibDataSet13.FieldByname('CRT').AsString <> '4') )
-        or (not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
+        or (not DevolucaoOuImpostoManual(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
+      //if Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString = '61'
       then
       begin
         Form7.spdNFeDataSets.Campo('CSOSN_N12a').Clear;
