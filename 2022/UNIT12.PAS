@@ -281,6 +281,8 @@ type
     function TestarLimiteDisponivel: Boolean;
     procedure DefineVisibleHomologacao;
     procedure AjustaTamnhoColunasGridProduto;
+    procedure CarregaTipoConsumidor(sTipo : string);
+    function IsConsumidorFinal: boolean;
   public
     { Public declarations }  
     vNotaFiscal : TNotaFiscalEletronicaCalc;
@@ -755,6 +757,12 @@ begin
       Retributa(True);
       if form7.ibDataSet16.Modified then
         Form7.ibDataset16.Post;
+
+      //Mauricio Parizotto 2024-09-19
+      if IsConsumidorFinal then
+        CarregaTipoConsumidor('1')
+      else
+        CarregaTipoConsumidor('0');
     finally
       if (not Assigned(vNotaFiscal)) then
         vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
@@ -829,7 +837,15 @@ begin
   if DBGrid2.DataSource.DataSet = Form7.ibDataSet14 then
     Form7.ibDataSet15OPERACAO.AsString   := form7.ibDataSet14NOME.AsString;
   if DBGrid2.DataSource.DataSet = Form7.ibDataSet2 then
+  begin
     Form7.ibDataSet15CLIENTE.AsString    := form7.ibDataSet2NOME.AsString;
+
+    //Mauricio Parizotto 2024-09-19
+    if IsConsumidorFinal then
+      CarregaTipoConsumidor('1')
+    else
+      CarregaTipoConsumidor('0');
+  end;
   if DBGrid2.DataSource.DataSet = Form7.ibDataSet18 then
     Form7.ibDataSet15TRANSPORTA.AsString := form7.ibDataSet18NOME.AsString;
   if DBGrid2.DataSource.DataSet = Form7.ibDataSet9 then
@@ -870,8 +886,18 @@ begin
   }
   if DBGrid2.DataSource.DataSet = Form7.ibDataSet14 then
     Form7.ibDataSet15OPERACAO.AsString   := Form7.ibDataSet14NOME.AsString;
+
   if DBGrid2.DataSource.DataSet = Form7.ibDataSet2 then
+  begin
     Form7.ibDataSet15CLIENTE.AsString    := Form7.ibDataSet2NOME.AsString;
+
+    //Mauricio Parizotto 2024-09-19
+    if IsConsumidorFinal then
+      CarregaTipoConsumidor('1')
+    else
+      CarregaTipoConsumidor('0');
+  end;
+
   if DBGrid2.DataSource.DataSet = Form7.ibDataSet18 then
     Form7.ibDataSet15TRANSPORTA.AsString := Form7.ibDataSet18NOME.AsString;
   if DBGrid2.DataSource.DataSet = Form7.ibDataSet9 then
@@ -3078,9 +3104,17 @@ end;
 
 procedure TForm12.Edit3Click(Sender: TObject);
 begin
-  //
   Edit3.Text := LimpaNumero(Form1.Small_InputForm('Indicador de operação com Consumidor Final:','0-Normal'+chr(10)+'1-Consumidor Final',LimpaNumero(Edit3.Text)));
-  //
+
+  {Mauricio Parizotto 2024-09-19 Inicio}
+  CarregaTipoConsumidor(LimpaNumero(Edit3.Text));
+
+  try
+    Form12.SMALL_DBEdit40.SetFocus;
+  except
+  end;
+
+  {
   if (LimpaNumero(Edit3.Text) = '1') then
   begin
     //
@@ -3121,6 +3155,7 @@ begin
   //
   // Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final)
   //
+  Mauricio Parizotto 2024-09-19 Fim}
 end;
 
 procedure TForm12.Edit6Click(Sender: TObject);
@@ -3546,5 +3581,47 @@ begin
   if (not Assigned(vNotaFiscal)) then
     vNotaFiscal := TNotaFiscalEletronicaCalc.Create;
 end;
+
+
+procedure TForm12.CarregaTipoConsumidor(sTipo : string); //Mauricio Parizotto 2024-09-19
+begin
+  // Indicador de operação com Consumidor Final (0-Normal, 1-Consumidor Final)
+
+  if (sTipo = '1') then
+  begin
+    Edit3.Text := '1-Consumidor Final';
+
+    if (Form7.ibDataSet13ESTADO.AsString <> Form7.ibDataSet2ESTADO.AsString) and (Form7.ibDataSet2ESTADO.AsString <> 'EX') then
+    begin
+      Form7.ibDataSet16PFCPUFDEST.Visible := True;
+      Form7.ibDataSet16PICMSUFDEST.Visible := True;
+    end else
+    begin
+      Form7.ibDataSet16PFCPUFDEST.Visible := False;
+      Form7.ibDataSet16PICMSUFDEST.Visible := False;
+    end;
+  end else
+  begin
+    Edit3.Text := '0-Normal';
+
+    Form7.ibDataSet16PFCPUFDEST.Visible := False;
+    Form7.ibDataSet16PICMSUFDEST.Visible := False;
+  end;
+
+  if Form7.ibDataSet15INDFINAL.AsString <> LimpaNumero(Edit3.Text) then
+    Form7.ibDataSet15INDFINAL.AsString := LimpaNumero(Edit3.Text);
+
+  if AllTrim(Form7.ibDataSet2ESTADO.AsString)='EX' then
+  begin
+    Form7.ibDataSet16PFCPUFDEST.Visible := False;
+    Form7.ibDataSet16PICMSUFDEST.Visible := False;
+  end;
+end;
+
+function TForm12.IsConsumidorFinal : boolean; //Mauricio Parizotto 2024-09-19
+begin
+  Result := (Length(LimpaNumero(Form7.IBDataSet2CGC.AsString)) = 11) and (Copy(Form7.IBDataSet2IE.AsString,1,2) <> 'PR');
+end;
+
 
 end.
