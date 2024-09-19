@@ -73,6 +73,7 @@ uses
     dQtdMovimentada: Double; var bFabrica: Boolean; iHierarquia: Integer; var sModulo: String); // Sandro Silva 2023-11-06
   function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
   function GetFatorConversaoItemCompra(CodRegItem:string; valPadrao: Double; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-02-19
+  function GetIVAProduto(IDESTOQUE : integer; UF : string; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-09-11
 
 
 implementation
@@ -1096,6 +1097,38 @@ begin
 end;
 
 
+function GetIVAProduto(IDESTOQUE : integer; UF : string; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-09-11
+begin
+  Result := 0;
+
+  if UF <> '' then
+  begin
+    try
+      Result := ExecutaComandoEscalar(Transaction,
+                                      ' Select'+
+                                      '   Case'+
+                                      '     When Coalesce(I.'+UF+'_,0) > 0 then Coalesce(I.'+UF+'_,0)'+
+                                      '     Else Coalesce(E.PIVA,0)'+
+                                      '  End'+
+                                      ' From ESTOQUE E'+
+                                      '   Left Join ESTOQUEIVA I on I.IDESTOQUE = E.IDESTOQUE'+
+                                      ' Where E.IDESTOQUE = '+IDESTOQUE.ToString
+                                      );
+    except
+    end;
+  end else
+  begin
+    try
+      Result := ExecutaComandoEscalar(Transaction,
+                                      ' Select'+
+                                      '   Coalesce(E.PIVA,0)'+
+                                      ' From ESTOQUE E'+
+                                      ' Where E.IDESTOQUE = '+IDESTOQUE.ToString
+                                      );
+    except
+    end;
+  end;
+end;
 
 end.
 
