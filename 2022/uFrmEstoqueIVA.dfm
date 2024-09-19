@@ -827,7 +827,7 @@ inherited FrmEstoqueIVA: TFrmEstoqueIVA
   end
   object _SE: TLabel
     Left = 395
-    Top = 172
+    Top = 170
     Width = 13
     Height = 14
     Cursor = crIBeam
@@ -922,8 +922,8 @@ inherited FrmEstoqueIVA: TFrmEstoqueIVA
     OnClick = _RRClick
   end
   object _BA: TLabel
-    Left = 351
-    Top = 178
+    Left = 347
+    Top = 182
     Width = 15
     Height = 14
     Cursor = crIBeam
