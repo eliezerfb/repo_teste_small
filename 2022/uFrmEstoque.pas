@@ -1810,6 +1810,10 @@ begin
   Memo1.Lines.Add('<rastro>Sim"Informar grupo Rastreamento de Produto"</rastro>');
 
   Memo1.Lines.Add('<cBenef>0000000000 "Código de Benefício Fiscal na UF aplicado ao item"</cBenef>');
+
+  Memo1.Lines.Add('<cCredPresumido> "Código do crédito presumido"</cCredPresumido>');
+  Memo1.Lines.Add('<pCredPresumido>0,00 "Alíquota do crédito presumido"</pCredPresumido>');
+
   Memo1.Lines.Add('<motDesICMS>00 "Motivo da desoneração do ICMS"</motDesICMS>');
   Memo1.Lines.Add('<FCP>0,00 "Fundo de Combate a Pobreza"</FCP>');
   Memo1.Lines.Add('<FCPST>0,00 "Fundo de Combate a Pobreza ST"</FCPST>');

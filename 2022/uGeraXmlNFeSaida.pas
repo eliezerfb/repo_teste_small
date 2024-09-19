@@ -193,7 +193,8 @@ var
   bFreteSobreIPI,bIPISobreICMS : Boolean;
   bIPISobreOutras, bReferenciaNota : Boolean;
 
-  cBenef, cBenefItem : string;
+  cBenef, cBenefItem, cCredPresumido: string;
+  pCredPresumido, vCredPresumido : Double;
 
   bPagouComTEF: Boolean;
 begin
@@ -1180,6 +1181,29 @@ begin
         // Serviço
         Form7.spdNFeDataSets.Campo('NCM_I05').Value      := '00'; // Código do NCM - informar de acordo com o Tabela oficial do NCM
       end;
+
+      {Mauricio Parizotto 2024-09-09 Inicio}
+
+      if (Copy(Form7.ibDataSet16.FieldByname('CST_ICMS').AsString, 2, 2) = '51')
+        and (Form7.spdNFeDataSets.Campo('cBenef_I05f').Value <> '') then
+      begin
+        Form7.spdNFeDataSets.Campo('cBenefRBC_N14a').Value := Form7.spdNFeDataSets.Campo('cBenef_I05f').Value;
+      end;
+
+      cCredPresumido := RetornaValorDaTagNoCampo('cCredPresumido',Form7.ibDataSet4.FieldByname('TAGS_').AsString);
+      pCredPresumido := StrToFloatDef(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('pCredPresumido',Form7.ibDataSet4.FieldByname('TAGS_').AsString)),0);
+
+      if (Trim(cCredPresumido) <> '') and (pCredPresumido > 0) then
+      begin
+        vCredPresumido := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat * (pCredPresumido/100);
+
+        Form7.spdNFeDataSets.Campo('cCredPresumido_I05h').Value := cCredPresumido;
+        Form7.spdNFeDataSets.Campo('pCredPresumido_I05i').Value := StrTran(FormatFloat('##0.0000',pCredPresumido),'.',',');
+        Form7.spdNFeDataSets.Campo('vCredPresumido_I05j').Value := StrTran(FormatFloat('##0.00',vCredPresumido),'.',',');
+      end;
+      {Mauricio Parizotto 2024-09-09 Fim}
+
+
 
       Form7.spdNFeDataSets.Campo('CFOP_I08').Value     := Alltrim(Form7.ibDataSet16.FieldByname('CFOP').AsString); // CFOP incidente neste Item da NF
       if Alltrim(ConverteAcentos2(Form7.ibDataSet4.FieldByname('MEDIDA').AsString)) <> '' then
