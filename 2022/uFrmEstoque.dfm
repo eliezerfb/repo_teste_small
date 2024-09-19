@@ -6,8 +6,25 @@ inherited FrmEstoque: TFrmEstoque
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
+    inherited pnlBotoesSuperior: TPanel
+      ExplicitWidth = 842
+    end
+    inherited pnlBotoesPosterior: TPanel
+      inherited btnOK: TBitBtn
+        ExplicitLeft = 723
+      end
+    end
+    inherited Panel1: TPanel
+      ExplicitHeight = 453
+    end
+    inherited Panel8: TPanel
+      ExplicitLeft = 822
+      ExplicitHeight = 453
+    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
+      ExplicitWidth = 802
+      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         OnShow = tbsCadastroShow
@@ -5132,6 +5149,7 @@ inherited FrmEstoque: TFrmEstoque
   end
   inherited DSCadastro: TDataSource
     DataSet = Form7.ibDataSet4
+    OnDataChange = DSCadastroDataChange
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Filter = 'JPEG Image File (*.jpg)|*.jpg|| | | | | | | | | '

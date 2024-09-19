@@ -389,6 +389,7 @@ type
       Shift: TShiftState);
     procedure tbsCadastroShow(Sender: TObject);
     procedure edtCodigoChange(Sender: TObject);
+    procedure DSCadastroDataChange(Sender: TObject; Field: TField);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -3868,6 +3869,21 @@ begin
                                          and (Form7.ibDataSet28DESCRICAO.AsString <> EmptyStr);
 end;
 
+
+procedure TFrmEstoque.DSCadastroDataChange(Sender: TObject; Field: TField);
+begin
+  {Sandro Silva 2024-09-19 inicio}
+  inherited;
+  if not Self.Visible then
+    Exit;
+
+  if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
+    Exit;
+
+  //Contador
+  tbsCadastro.Caption := GetDescritivoNavegacao;
+  {Sandro Silva 2024-09-19 fim}
+end;
 
 procedure TFrmEstoque.AtribuirItemPesquisaComposicao;
 begin
