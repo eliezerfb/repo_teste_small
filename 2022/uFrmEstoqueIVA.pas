@@ -10,7 +10,7 @@ uses
 
 type
   TFrmEstoqueIVA = class(TFrmPadrao)
-    btnEmitente: TBitBtn;
+    btnCancelar: TBitBtn;
     btnEnviar: TBitBtn;
     Image4: TImage;
     Image3: TImage;
@@ -74,7 +74,7 @@ type
     ibdEstoqueIVASP_: TIBBCDField;
     ibdEstoqueIVASE_: TIBBCDField;
     ibdEstoqueIVATO_: TIBBCDField;
-    procedure btnEmitenteClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
     procedure btnEnviarClick(Sender: TObject);
     procedure _RRClick(Sender: TObject);
     procedure edt_valorExit(Sender: TObject);
@@ -100,7 +100,7 @@ implementation
 
 uses unit7, smallfunc_xe, uFuncoesBancoDados;
 
-procedure TFrmEstoqueIVA.btnEmitenteClick(Sender: TObject);
+procedure TFrmEstoqueIVA.btnCancelarClick(Sender: TObject);
 begin
   ibdEstoqueIVA.Cancel;
   Close;
@@ -253,10 +253,12 @@ end;
 
 procedure TFrmEstoqueIVA.edt_valorExit(Sender: TObject);
 begin
+  {não funciona o cancelar
   try
     ibdEstoqueIVA.Post;
   except
   end;
+  }
 
   try
     ibdEstoqueIVA.Edit;

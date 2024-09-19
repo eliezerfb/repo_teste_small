@@ -1065,7 +1065,7 @@ inherited FrmEstoqueIVA: TFrmEstoqueIVA
     Transparent = True
     OnClick = _RRClick
   end
-  object btnEmitente: TBitBtn
+  object btnCancelar: TBitBtn
     Left = 296
     Top = 403
     Width = 100
@@ -1079,8 +1079,7 @@ inherited FrmEstoqueIVA: TFrmEstoqueIVA
     Font.Style = []
     ParentFont = False
     TabOrder = 0
-    OnClick = btnEmitenteClick
-    ExplicitLeft = 295
+    OnClick = btnCancelarClick
   end
   object btnEnviar: TBitBtn
     Left = 400
@@ -1097,7 +1096,6 @@ inherited FrmEstoqueIVA: TFrmEstoqueIVA
     ParentFont = False
     TabOrder = 1
     OnClick = btnEnviarClick
-    ExplicitLeft = 399
   end
   object edt_valor: TSMALL_DBEdit
     Left = 8
