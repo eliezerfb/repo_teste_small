@@ -12002,6 +12002,7 @@ object Form7: TForm7
     object ibDataSet4IDESTOQUE: TIntegerField
       FieldName = 'IDESTOQUE'
       Origin = 'ESTOQUE.IDESTOQUE'
+      Visible = False
     end
   end
   object DataSource4: TDataSource
