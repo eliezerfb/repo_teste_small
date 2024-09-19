@@ -416,6 +416,7 @@ type
     procedure IniciaCamera;
     function MensagemImagemWeb(Msg, Titulo : string; DlgType: TMsgDlgType;
       Buttons: TMsgDlgButtons; Captions: array of string): Integer;
+    procedure AtualizaInformacoesDoProduto;
   public
     { Public declarations }
   end;
@@ -693,10 +694,14 @@ begin
   if bGravandoRegistro then
     Exit;
 
+  {Sandro Silva 2024-09-19
   AtualizaObjComValorDoBanco;
 
   //Contador
   tbsCadastro.Caption := GetDescritivoNavegacao;
+  }
+  AtualizaInformacoesDoProduto;
+  {Sandro Silva 2024-09-19}
 end;
 
 procedure TFrmEstoque.edtDescricaoExit(Sender: TObject);
@@ -738,7 +743,13 @@ begin
   if edtCodBarras.CanFocus then
     edtCodBarras.SetFocus;
 
+  {Sandro Silva 2024-09-19
   AtualizaObjComValorDoBanco;
+
+  tbsCadastro.Caption := GetDescritivoNavegacao; // Sandro Silva 2024-09-19
+  }
+  AtualizaInformacoesDoProduto;
+  {Sandro Silva 2024-09-19}
 end;
 
 procedure TFrmEstoque.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -928,10 +939,14 @@ begin
 
   pgcFicha.ActivePage := tbsCadastro;
 
+  {Sandro Silva 2024-09-19
   AtualizaObjComValorDoBanco;
 
   //Contador
   tbsCadastro.Caption := GetDescritivoNavegacao;
+  }
+  AtualizaInformacoesDoProduto;
+  {Sandro Silva 2024-09-19 fim}
 
   try
     if edtCodBarras.CanFocus then
@@ -1942,6 +1957,18 @@ begin
       SMALL_DBEDITY.SetFocus;
     end;
   end;
+end;
+
+procedure TFrmEstoque.AtualizaInformacoesDoProduto;
+begin
+  // Há situações que tem que atualizar sempre os 2 métodos (AtualizaObjComValorDoBanco e GetDescritivoNavegacao).
+  // Se usar em outros locais avaliar se contempla atualizar os 2 métodos ou somente aquele que for pertinente
+
+  AtualizaObjComValorDoBanco;
+
+  //Contador
+  tbsCadastro.Caption := GetDescritivoNavegacao;
+
 end;
 
 procedure TFrmEstoque.AtualizaObjComValorDoBanco;
@@ -3872,7 +3899,7 @@ end;
 
 procedure TFrmEstoque.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
-  {Sandro Silva 2024-09-19 inicio}
+  {Sandro Silva 2024-09-19 inicio
   inherited;
   if not Self.Visible then
     Exit;
