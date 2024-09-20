@@ -1198,11 +1198,10 @@ begin
         vCredPresumido := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat * (pCredPresumido/100);
 
         Form7.spdNFeDataSets.Campo('cCredPresumido_I05h').Value := cCredPresumido;
-        Form7.spdNFeDataSets.Campo('pCredPresumido_I05i').Value := StrTran(FormatFloat('##0.0000',pCredPresumido),'.',',');
-        Form7.spdNFeDataSets.Campo('vCredPresumido_I05j').Value := StrTran(FormatFloat('##0.00',vCredPresumido),'.',',');
+        Form7.spdNFeDataSets.Campo('pCredPresumido_I05i').Value := StrTran(FormatFloat('##0.0000',pCredPresumido),',','.');
+        Form7.spdNFeDataSets.Campo('vCredPresumido_I05j').Value := StrTran(FormatFloat('##0.00',vCredPresumido),',','.');
       end;
       {Mauricio Parizotto 2024-09-09 Fim}
-
 
 
       Form7.spdNFeDataSets.Campo('CFOP_I08').Value     := Alltrim(Form7.ibDataSet16.FieldByname('CFOP').AsString); // CFOP incidente neste Item da NF
