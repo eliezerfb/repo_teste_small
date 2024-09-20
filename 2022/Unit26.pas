@@ -223,18 +223,21 @@ begin
     MaskEdit48.Text := UpperCase(StrTran(MaskEdit45.Text,'N','W'));
 
     try
-      if Pos('AAMMDD',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'AAMMDD',
-      (Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),9,2)+
-      Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),4,2)+
-      Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,2))); // Data de vencimento AAMMDD
+      if Pos('AAMMDD',MaskEdit48.Text) <> 0 then
+        MaskEdit48.Text := StrTran(MaskEdit48.Text,'AAMMDD',
+          (Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),9,2)+
+          Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),4,2)+
+          Copy(DateToStr(Form7.ibDataSet7VENCIMENTO.AsDateTime),1,2))); // Data de vencimento AAMMDD
     except
     end;
 
-    if Pos('K',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('K',Length(LimpaDeixando(MaskEdit48.Text,'K'))),
-       Copy(StrZero(StrtoInt('0'+LimpaNumero(MaskEdit43.Text)),Length(LimpaDeixando(MaskEdit48.Text,'K')),0),1,Length(LimpaDeixando(MaskEdit48.Text,'K'))));
+    if Pos('K',MaskEdit48.Text) <> 0 then
+      MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('K',Length(LimpaDeixando(MaskEdit48.Text,'K'))),
+        Copy(StrZero(StrtoInt('0'+LimpaNumero(MaskEdit43.Text)),Length(LimpaDeixando(MaskEdit48.Text,'K')),0),1,Length(LimpaDeixando(MaskEdit48.Text,'K'))));
 
-    if Pos('X',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('X',Length(LimpaDeixando(MaskEdit48.Text,'X'))),
-       Copy(StrZero(StrtoFloat('0'+LimpaNumero(MaskEdit50.Text)),Length(LimpaDeixando(MaskEdit48.Text,'X')),0),1,Length(LimpaDeixando(MaskEdit48.Text,'X'))));
+    if Pos('X',MaskEdit48.Text) <> 0 then
+      MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('X',Length(LimpaDeixando(MaskEdit48.Text,'X'))),
+        Copy(StrZero(StrtoFloat('0'+LimpaNumero(MaskEdit50.Text)),Length(LimpaDeixando(MaskEdit48.Text,'X')),0),1,Length(LimpaDeixando(MaskEdit48.Text,'X'))));
 
 
     if Pos('A',MaskEdit48.Text) <> 0 then
@@ -251,12 +254,14 @@ begin
 
     if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '237') or (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '041') then // BRADESCO OU BANRISUL
     begin
-      if Pos('C',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('C',Length(LimpaDeixando(MaskEdit48.Text,'C'))),
-      Copy( LimpaNumero(MaskEdit46.Text)+Replicate('0',Length(LimpaDeixando(MaskEdit48.Text,'C'))),1,Length(LimpaDeixando(MaskEdit48.Text,'C'))));
+      if Pos('C',MaskEdit48.Text) <> 0 then
+        MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('C',Length(LimpaDeixando(MaskEdit48.Text,'C'))),
+          Copy( LimpaNumero(MaskEdit46.Text)+Replicate('0',Length(LimpaDeixando(MaskEdit48.Text,'C'))),1,Length(LimpaDeixando(MaskEdit48.Text,'C'))));
     end else
     begin
-      if Pos('C',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('C',Length(LimpaDeixando(MaskEdit48.Text,'C'))),
-      Copy(StrZero(StrtoInt('0'+LimpaNumero(MaskEdit46.Text)),Length(LimpaDeixando(MaskEdit48.Text,'C')),0),1,Length(LimpaDeixando(MaskEdit48.Text,'C'))));
+      if Pos('C',MaskEdit48.Text) <> 0 then
+        MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('C',Length(LimpaDeixando(MaskEdit48.Text,'C'))),
+          Copy(StrZero(StrtoInt('0'+LimpaNumero(MaskEdit46.Text)),Length(LimpaDeixando(MaskEdit48.Text,'C')),0),1,Length(LimpaDeixando(MaskEdit48.Text,'C'))));
     end;
 
     if Pos('PP',MaskEdit48.Text) <> 0 then
@@ -272,23 +277,38 @@ begin
       MaskEdit48.Text := StrTran(MaskEdit48.Text,'PP',sParcela);
     end;
 
+    {Sandro Silva 2024-05-24 inicio
     if Pos('N',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('N',Length(LimpaDeixando(MaskEdit48.Text,'N'))),
              Right(StrZero(StrtoInt('0'+LimpaNumero(medtNossoNu.Text)),Length(LimpaDeixando(MaskEdit48.Text,'N')),0),Length(LimpaDeixando(MaskEdit48.Text,'N'))));
     if Pos('J',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('J',Length(LimpaDeixando(MaskEdit48.Text,'J'))),
        Copy(StrZero(StrtoInt('0'+LimpaNumero(MaskEdit49.Text)),Length(LimpaDeixando(MaskEdit48.Text,'J')),0),1,Length(LimpaDeixando(MaskEdit48.Text,'J'))));
-    if Pos('YY',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'YY',Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)),3,2));
+    if Pos('YY',MaskEdit48.Text) <> 0 then
+      MaskEdit48.Text := StrTran(MaskEdit48.Text, 'YY',Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2));
 
     if Pos('W',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,Replicate('W',Length(LimpaDeixando(MaskEdit48.Text,'W'))),
        Right(StrZero(StrtoInt('0'+LimpaNumero(medtNossoNu.Text)),15,0),Length(LimpaDeixando(MaskEdit48.Text,'W'))));
+    }
+    if Pos('N',MaskEdit48.Text) <> 0 then
+      MaskEdit48.Text := StrTran(MaskEdit48.Text, Replicate('N', Length(LimpaDeixando(MaskEdit48.Text, 'N'))),
+                         Right(StrZero(StrToInt64Def(LimpaNumero(medtNossoNu.Text), 0), Length(LimpaDeixando(MaskEdit48.Text, 'N')), 0), Length(LimpaDeixando(MaskEdit48.Text, 'N'))));
+    if Pos('J',MaskEdit48.Text) <> 0 then
+      MaskEdit48.Text := StrTran(MaskEdit48.Text, Replicate('J', Length(LimpaDeixando(MaskEdit48.Text,'J'))),
+                         Copy(StrZero(StrToInt64Def(LimpaNumero(MaskEdit49.Text), 0), Length(LimpaDeixando(MaskEdit48.Text, 'J')), 0), 1, Length(LimpaDeixando(MaskEdit48.Text, 'J'))));
+    if Pos('YY',MaskEdit48.Text) <> 0 then
+      MaskEdit48.Text := StrTran(MaskEdit48.Text, 'YY', Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2));
+    if Pos('W',MaskEdit48.Text) <> 0 then
+      MaskEdit48.Text := StrTran(MaskEdit48.Text, Replicate('W', Length(LimpaDeixando(MaskEdit48.Text, 'W'))),
+                         Right(StrZero(StrToInt64Def(LimpaNumero(medtNossoNu.Text), 0), 15, 0), Length(LimpaDeixando(MaskEdit48.Text, 'W'))));
+    {Sandro Silva 2024-05-24 fim}
 
     if Pos('d',MaskEdit45.Text) <> 0 then
     begin
-       // descrobre qual o caracter anterior ao "d" minusculo
-       // descrobre a 1_ posição deste caracter
-       // Descobre a última - o 1_ da a posição para o Copy(1_,último-1_);
-       MaskEdit48.Text :=
-       StrTran(MaskEdit48.Text,'D',Modulo_11(Copy(MaskEdit48.Text,
-       Pos(Copy(MaskEdit45.Text,Pos('d',MaskEdit45.Text)-1,1),MaskEdit45.Text)
+      // descrobre qual o caracter anterior ao "d" minusculo
+      // descrobre a 1_ posição deste caracter
+      // Descobre a última - o 1_ da a posição para o Copy(1_,último-1_);
+      MaskEdit48.Text :=
+        StrTran(MaskEdit48.Text,'D',Modulo_11(Copy(MaskEdit48.Text,
+        Pos(Copy(MaskEdit45.Text,Pos('d',MaskEdit45.Text)-1,1),MaskEdit45.Text)
            ,
            (Pos('d',MaskEdit45.Text)) - (Pos(Copy(MaskEdit45.Text,Pos('d',MaskEdit45.Text)-1,1),MaskEdit45.Text))
            )));
@@ -302,17 +322,18 @@ begin
 
     if Pos('m',MaskEdit45.Text) <> 0 then
     begin
-       // descrobre qual o caracter anterior ao "m" minusculo
-       // descrobre a 1_ posição deste caracter
-       // Descobre a última - o 1_ da a posição para o Copy(1_,último-1_);
-       MaskEdit48.Text :=
-       StrTran(MaskEdit48.Text,'M',Modulo_10(Copy(MaskEdit48.Text,
-       Pos(Copy(MaskEdit45.Text,Pos('m',MaskEdit45.Text)-1,1),MaskEdit45.Text)
+      // descrobre qual o caracter anterior ao "m" minusculo
+      // descrobre a 1_ posição deste caracter
+      // Descobre a última - o 1_ da a posição para o Copy(1_,último-1_);
+      MaskEdit48.Text :=
+        StrTran(MaskEdit48.Text,'M',Modulo_10(Copy(MaskEdit48.Text,
+        Pos(Copy(MaskEdit45.Text,Pos('m',MaskEdit45.Text)-1,1),MaskEdit45.Text)
            ,
            (Pos('m',MaskEdit45.Text)) - (Pos(Copy(MaskEdit45.Text,Pos('m',MaskEdit45.Text)-1,1),MaskEdit45.Text))
            )));
     end;
 
+    {Sandro Silva 2024-05-24 inicio
     if Pos('V',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'V',Modulo_11(LimpaNumero(MaskEdit44.Text)+LimpaNumero(MaskEdit46.Text)+Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)),3,2)+'2'+Right(StrZero(StrtoInt('0'+LimpaNumero(medtNossoNu.Text)),15,0),5)));
 
     if Pos('S',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'S',
@@ -320,10 +341,23 @@ begin
                             Copy(Form26.MaskEdit44.Text,1,4)+
                             StrZero(StrtoInt('0'+LimpaNumero(Form26.MaskEdit46.Text)),10,0)+
                             StrZero(StrtoInt('0'+LimpaNumero(Form26.medtNossoNu.Text)),7,0)));
-    
-    if Pos('M',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'M',Modulo_10(Copy(MaskEdit48.Text,1,Pos('M',MaskEdit48.Text)-1)));
+    }
+    if Pos('V',MaskEdit48.Text) <> 0 then
+      MaskEdit48.Text := StrTran(MaskEdit48.Text, 'V', Modulo_11(LimpaNumero(MaskEdit44.Text) + LimpaNumero(MaskEdit46.Text) + Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2) + '2' + Right(StrZero(StrToInt64Def(LimpaNumero(medtNossoNu.Text), 0), 15, 0), 5)));
+
+    if Pos('S',MaskEdit48.Text) <> 0 then
+      MaskEdit48.Text := StrTran(MaskEdit48.Text,'S',
+                         Modulo_sicoob(
+                            Copy(Form26.MaskEdit44.Text, 1, 4) +
+                            StrZero(StrToInt64Def(LimpaNumero(Form26.MaskEdit46.Text), 0), 10, 0) +
+                            StrZero(StrToInt64Def(LimpaNumero(Form26.medtNossoNu.Text), 0), 7, 0)));
+    {Sandro Silva 2024-05-24 fim}
+
+    if Pos('M',MaskEdit48.Text) <> 0 then
+      MaskEdit48.Text := StrTran(MaskEdit48.Text,'M',Modulo_10(Copy(MaskEdit48.Text,1,Pos('M',MaskEdit48.Text)-1)));
     try
       if Pos('I',MaskEdit48.Text) <> 0 then
+      begin
         {Mauricio Parizotto 2024-04-18
         MaskEdit48.Text := StrTran(MaskEdit48.Text,'I',Modulo_10(
                                                                   AllTrim(MaskEdit44.Text)           // 4 Agencia
@@ -332,14 +366,38 @@ begin
                                                                   +Right(AllTrim(medtNossoNu.Text),8) // 8 Nosso Número
                                                                  ));
         }
+        {Sandro Silva 2024-09-10 inicio
         MaskEdit48.Text := StrTran(MaskEdit48.Text,'I',Modulo_10(
                                                                   Copy(AllTrim(MaskEdit44.Text),1,4)  // Agencia (sem dv)
                                                                   +AllTrim(MaskEdit43.Text)           // Carteira
                                                                   +AllTrim(medtNossoNu.Text)          // Nosso Número
                                                                  ));
-    except end;
+        }
+        if (Copy(AllTrim(Form26.MaskEdit42.Text),1,3) = '077') then
+        begin
+          MaskEdit48.Text := StrTran(MaskEdit48.Text,'I',Modulo_10(
+                                                                  Copy(AllTrim(MaskEdit44.Text),1,4)    // Agencia (sem dv)
+                                                                  +AllTrim(MaskEdit43.Text)             // Carteira
+                                                                  +Right(AllTrim(medtNossoNu.Text), 10) // Nosso Número
+                                                                 ));
+        end
+        else
+        begin
+          MaskEdit48.Text := StrTran(MaskEdit48.Text,'I',Modulo_10(
+                                                                  Copy(AllTrim(MaskEdit44.Text),1,4)  // Agencia (sem dv)
+                                                                  +AllTrim(MaskEdit43.Text)           // Carteira
+                                                                  +AllTrim(medtNossoNu.Text)          // Nosso Número
+                                                                 ));
+        end;
+        {Sandro Silva 2024-09-10 fim}
+      end;
+
+    except
+
+    end;
     try
-      if Pos('U',MaskEdit48.Text) <> 0 then MaskEdit48.Text := StrTran(MaskEdit48.Text,'U',Modulo_11('1'+Right(AllTrim(medtNossoNu.Text),11))); // Nosso Número acrescido de 1 a esquerda 1/NNNNNNNNNNN
+      if Pos('U',MaskEdit48.Text) <> 0 then
+        MaskEdit48.Text := StrTran(MaskEdit48.Text,'U',Modulo_11('1'+Right(AllTrim(medtNossoNu.Text),11))); // Nosso Número acrescido de 1 a esquerda 1/NNNNNNNNNNN
     except
     end;
 
@@ -348,7 +406,7 @@ begin
 
     if Pos('BB',MaskEdit48.Text) <> 0 then
       MaskEdit48.Text := StrTran(MaskEdit48.Text,'BB',Modulo_Duplo_Digito_Banrisul(LimpaNumero(MaskEdit48.Text)));
-    
+
   except
     on E: Exception do
     begin

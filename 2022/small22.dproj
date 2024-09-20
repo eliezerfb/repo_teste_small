@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -578,7 +578,6 @@
         </DCCReference>
         <DCCReference Include="uFrmMsgNovoLayout.pas">
             <Form>FrmMsgNovoLayout</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="uFrmEstoqueIVA.pas">
             <Form>FrmEstoqueIVA</Form>

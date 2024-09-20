@@ -12455,10 +12455,11 @@ object Form7: TForm7
       Size = 10
     end
     object ibDataSet7NN: TIBStringField
+      DisplayWidth = 11
       FieldName = 'NN'
       Origin = 'RECEBER.NN'
       Visible = False
-      Size = 10
+      Size = 11
     end
     object ibDataSet7VALOR_MULTA: TIBBCDField
       FieldName = 'VALOR_MULTA'
