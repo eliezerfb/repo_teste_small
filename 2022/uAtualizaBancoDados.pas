@@ -2303,6 +2303,14 @@ begin
   end;
   {Mauricio Parizotto 2023-09-29 Fim}
 
+  {Sandro Silva 2024-04-01 inicio}
+  if TamanhoCampoFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'NN') = 10 then
+  begin
+    if ExecutaComando('alter table RECEBER alter NN type varchar(11) character set none') then
+      ExecutaComando('Commit');
+  end;
+  {Sandro Silva 2024-04-01 final}
+
   {Mauricio Parizotto 2023-11-15 Inicio}
   if TamanhoCampo(Form1.ibDataSet200.Transaction, 'OS', 'PROBLEMA') < 1000 then
   begin
