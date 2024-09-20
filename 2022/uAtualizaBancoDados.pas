@@ -2671,6 +2671,7 @@ begin
 
   {Dailon Parisotto 2024-08-22 Inicio}
   try
+    {Sandro Silva 2024-09-19 inicio
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSQL.Clear;
     Form1.ibDataSet200.SelectSQL.Add('SELECT I.RDB$INDEX_NAME AS INDICENAME');
@@ -2687,6 +2688,14 @@ begin
 
       ExecutaComando('Commit');
     end;
+    }
+    if (IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'IDX_ITENS002_CODIGO') = False) then
+    begin
+      ExecutaComando('CREATE INDEX IDX_ITENS002_CODIGO ON ITENS002 (CODIGO);');
+
+      ExecutaComando('Commit');
+    end;
+    {Sandro Silva 2024-09-19 fim}
   finally
     Form1.ibDataSet200.Close;
     Form1.ibDataSet200.SelectSQL.Clear;
