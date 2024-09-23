@@ -2790,8 +2790,8 @@ begin
                    '    NUMERONF VARCHAR(12),'+
                    '    IDPAIS INTEGER,'+
                    '    UFEMBARQUE VARCHAR(2),'+
-                   '    LOCALEMBARQUE VARCHAR(120),'+
-                   '    RECINTOALFANDEGARIO VARCHAR(120),'+
+                   '    LOCALEMBARQUE VARCHAR(60),'+
+                   '    RECINTOALFANDEGARIO VARCHAR(60),'+
                    '    IDENTESTRANGEIRO VARCHAR(50),'+
                    '    CONSTRAINT PK_VENDASEXPORTACAO PRIMARY KEY (IDVENDASEXPORTACAO)'+
                    ' );');
