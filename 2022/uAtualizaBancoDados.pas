@@ -2775,6 +2775,303 @@ begin
   end;
   {Dailon Parisotto (smal-653) 2024-08-26 Fim}
 
+  {Dailon Parisotto (smal-706) 2024-09-18 Inicio}
+  if (not CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'DRAWBACK')) then
+  begin
+    ExecutaComando('ALTER TABLE ITENS001 ADD DRAWBACK VARCHAR(11);');
+
+    ExecutaComando('Commit');
+  end;
+
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDASEXPORTACAO')) then
+  begin
+    ExecutaComando('CREATE TABLE VENDASEXPORTACAO ('+
+                   '    IDVENDASEXPORTACAO INTEGER NOT NULL,'+
+                   '    NUMERONF VARCHAR(12),'+
+                   '    IDPAIS INTEGER,'+
+                   '    UFEMBARQUE VARCHAR(2),'+
+                   '    LOCALEMBARQUE VARCHAR(120),'+
+                   '    RECINTOALFANDEGARIO VARCHAR(120),'+
+                   '    IDENTESTRANGEIRO VARCHAR(50),'+
+                   '    CONSTRAINT PK_VENDASEXPORTACAO PRIMARY KEY (IDVENDASEXPORTACAO)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando('CREATE SEQUENCE G_VENDASEXPORTACAO');
+
+    ExecutaComando('Commit');
+  end;
+
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'PAIS')) then
+  begin
+    ExecutaComando(' CREATE TABLE PAIS ('+
+                   '   IDPAIS INTEGER NOT NULL,'+
+                   '   CODIGO INTEGER,'+
+                   '   NOME VARCHAR(80),'+
+                   '   CONSTRAINT PK_PAIS PRIMARY KEY (IDPAIS)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (1,132,'+QuotedStr('AFEGANISTAO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (2,7560,'+QuotedStr('AFRICA DO SUL') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (3,153,'+QuotedStr('ALAND, ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (4,175,'+QuotedStr('ALBANIA, REPUBLICA  DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (5,230,'+QuotedStr('ALEMANHA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (6,370,'+QuotedStr('ANDORRA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (7,400,'+QuotedStr('ANGOLA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (8,418,'+QuotedStr('ANGUILLA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (9,420,'+QuotedStr('ANTARTICA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (10,434,'+QuotedStr('ANTIGUA E BARBUDA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (11,531,'+QuotedStr('ARABIA SAUDITA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (12,590,'+QuotedStr('ARGELIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (13,639,'+QuotedStr('ARGENTINA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (14,647,'+QuotedStr('ARMENIA, REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (15,655,'+QuotedStr('ARUBA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (16,698,'+QuotedStr('AUSTRALIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (17,728,'+QuotedStr('AUSTRIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (18,736,'+QuotedStr('AZERBAIJAO, REPUBLICA DO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (19,779,'+QuotedStr('BAHAMAS, ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (20,809,'+QuotedStr('BAHREIN, ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (21,817,'+QuotedStr('BANGLADESH') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (22,833,'+QuotedStr('BARBADOS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (23,850,'+QuotedStr('BELARUS, REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (24,876,'+QuotedStr('BELGICA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (25,884,'+QuotedStr('BELIZE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (26,2291,'+QuotedStr('BENIN') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (27,906,'+QuotedStr('BERMUDAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (28,973,'+QuotedStr('BOLIVIA, ESTADO PLURINACIONAL DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (29,990,'+QuotedStr('BONAIRE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (30,981,'+QuotedStr('BOSNIA-HERZEGOVINA (REPUBLICA DA)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (31,1015,'+QuotedStr('BOTSUANA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (32,1023,'+QuotedStr('BOUVET, ILHA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (33,1058,'+QuotedStr('BRASIL') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (34,1082,'+QuotedStr('BRUNEI') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (35,1112,'+QuotedStr('BULGARIA, REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (36,310,'+QuotedStr('BURKINA FASO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (37,1155,'+QuotedStr('BURUNDI') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (38,1198,'+QuotedStr('BUTAO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (39,1279,'+QuotedStr('CABO VERDE, REPUBLICA DE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (40,1457,'+QuotedStr('CAMAROES') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (41,1414,'+QuotedStr('CAMBOJA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (42,1490,'+QuotedStr('CANADA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (43,1546,'+QuotedStr('CATAR') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (44,1376,'+QuotedStr('CAYMAN, ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (45,1538,'+QuotedStr('CAZAQUISTAO, REPUBLICA DO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (46,7889,'+QuotedStr('CHADE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (47,1589,'+QuotedStr('CHILE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (48,1600,'+QuotedStr('CHINA, REPUBLICA POPULAR') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (49,1635,'+QuotedStr('CHIPRE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (50,5118,'+QuotedStr('CHRISTMAS,ILHA (NAVIDAD)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (51,7412,'+QuotedStr('CINGAPURA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (52,1651,'+QuotedStr('COCOS(KEELING),ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (53,1694,'+QuotedStr('COLOMBIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (54,1732,'+QuotedStr('COMORES, ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (55,1775,'+QuotedStr('CONGO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (56,8885,'+QuotedStr('CONGO, REPUBLICA DEMOCRATICA DO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (57,1830,'+QuotedStr('COOK, ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (58,1872,'+QuotedStr('COREIA (DO NORTE), REP.POP.DEMOCRATICA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (59,1902,'+QuotedStr('COREIA (DO SUL), REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (60,1937,'+QuotedStr('COSTA DO MARFIM') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (61,1961,'+QuotedStr('COSTA RICA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (62,1988,'+QuotedStr('COVEITE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (63,1953,'+QuotedStr('CROACIA (REPUBLICA DA)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (64,1996,'+QuotedStr('CUBA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (65,2003,'+QuotedStr('CURACAO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (66,2321,'+QuotedStr('DINAMARCA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (67,7838,'+QuotedStr('DJIBUTI') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (68,2356,'+QuotedStr('DOMINICA,ILHA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (69,2402,'+QuotedStr('EGITO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (70,6874,'+QuotedStr('EL SALVADOR') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (71,2445,'+QuotedStr('EMIRADOS ARABES UNIDOS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (72,2399,'+QuotedStr('EQUADOR') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (73,2437,'+QuotedStr('ERITREIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (74,2470,'+QuotedStr('ESLOVACA, REPUBLICA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (75,2461,'+QuotedStr('ESLOVENIA, REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (76,2453,'+QuotedStr('ESPANHA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (77,7544,'+QuotedStr('ESSUATINI') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (78,2496,'+QuotedStr('ESTADOS UNIDOS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (79,2518,'+QuotedStr('ESTONIA, REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (80,2534,'+QuotedStr('ETIOPIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (81,2550,'+QuotedStr('FALKLAND (ILHAS MALVINAS)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (82,2593,'+QuotedStr('FEROE, ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (83,8702,'+QuotedStr('FIJI') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (84,2674,'+QuotedStr('FILIPINAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (85,2712,'+QuotedStr('FINLANDIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (86,1619,'+QuotedStr('FORMOSA (TAIWAN)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (87,2755,'+QuotedStr('FRANCA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (88,2810,'+QuotedStr('GABAO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (89,2852,'+QuotedStr('GAMBIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (90,2895,'+QuotedStr('GANA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (91,2917,'+QuotedStr('GEORGIA, REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (92,2933,'+QuotedStr('GIBRALTAR') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (93,2976,'+QuotedStr('GRANADA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (94,3018,'+QuotedStr('GRECIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (95,3050,'+QuotedStr('GROENLANDIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (96,3093,'+QuotedStr('GUADALUPE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (97,3131,'+QuotedStr('GUAM') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (98,3174,'+QuotedStr('GUATEMALA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (99,3212,'+QuotedStr('GUERNSEY, ILHA DO CANAL (INCLUI ALDERNEY E SARK)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (100,3379,'+QuotedStr('GUIANA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (101,3255,'+QuotedStr('GUIANA FRANCESA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (102,3298,'+QuotedStr('GUINE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (103,3344,'+QuotedStr('GUINE-BISSAU') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (104,3310,'+QuotedStr('GUINE-EQUATORIAL') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (105,3417,'+QuotedStr('HAITI') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (106,3450,'+QuotedStr('HONDURAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (107,3514,'+QuotedStr('HONG KONG') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (108,3557,'+QuotedStr('HUNGRIA, REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (109,3573,'+QuotedStr('IEMEN') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (110,3433,'+QuotedStr('ILHA HEARD E ILHAS MCDONALD') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (111,2925,'+QuotedStr('ILHAS GEORGIA DO SUL E SANDWICH DO SUL') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (112,3611,'+QuotedStr('INDIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (113,3654,'+QuotedStr('INDONESIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (114,3727,'+QuotedStr('IRA, REPUBLICA ISLAMICA DO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (115,3697,'+QuotedStr('IRAQUE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (116,3751,'+QuotedStr('IRLANDA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (117,3794,'+QuotedStr('ISLANDIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (118,3832,'+QuotedStr('ISRAEL') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (119,3867,'+QuotedStr('ITALIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (120,3913,'+QuotedStr('JAMAICA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (121,3999,'+QuotedStr('JAPAO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (122,3930,'+QuotedStr('JERSEY, ILHA DO CANAL') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (123,4030,'+QuotedStr('JORDANIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (124,4111,'+QuotedStr('KIRIBATI') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (125,1988,'+QuotedStr('KUWAIT') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (126,4200,'+QuotedStr('LAOS, REP.POP.DEMOCR.DO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (127,4260,'+QuotedStr('LESOTO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (128,4278,'+QuotedStr('LETONIA, REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (129,4316,'+QuotedStr('LIBANO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (130,4340,'+QuotedStr('LIBERIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (131,4383,'+QuotedStr('LIBIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (132,4405,'+QuotedStr('LIECHTENSTEIN') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (133,4421,'+QuotedStr('LITUANIA, REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (134,4456,'+QuotedStr('LUXEMBURGO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (135,4472,'+QuotedStr('MACAU') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (136,4499,'+QuotedStr('MACEDONIA DO NORTE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (137,4499,'+QuotedStr('MACEDONIA, ANT.REP.IUGOSLAVA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (138,4502,'+QuotedStr('MADAGASCAR') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (139,4553,'+QuotedStr('MALASIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (140,4588,'+QuotedStr('MALAVI') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (141,4618,'+QuotedStr('MALDIVAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (142,4642,'+QuotedStr('MALI') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (143,4677,'+QuotedStr('MALTA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (144,3595,'+QuotedStr('MAN, ILHA DE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (145,4723,'+QuotedStr('MARIANAS DO NORTE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (146,4740,'+QuotedStr('MARROCOS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (147,4766,'+QuotedStr('MARSHALL,ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (148,4774,'+QuotedStr('MARTINICA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (149,4855,'+QuotedStr('MAURICIO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (150,4880,'+QuotedStr('MAURITANIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (151,4898,'+QuotedStr('MAYOTTE (ILHAS FRANCESAS)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (152,4936,'+QuotedStr('MEXICO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (153,930,'+QuotedStr('MIANMAR (BIRMANIA)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (154,4995,'+QuotedStr('MICRONESIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (155,5053,'+QuotedStr('MOCAMBIQUE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (156,4944,'+QuotedStr('MOLDAVIA, REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (157,4952,'+QuotedStr('MONACO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (158,4979,'+QuotedStr('MONGOLIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (159,4985,'+QuotedStr('MONTENEGRO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (160,5010,'+QuotedStr('MONTSERRAT,ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (161,5070,'+QuotedStr('NAMIBIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (162,5088,'+QuotedStr('NAURU') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (163,5177,'+QuotedStr('NEPAL') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (164,5215,'+QuotedStr('NICARAGUA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (165,5258,'+QuotedStr('NIGER') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (166,5282,'+QuotedStr('NIGERIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (167,5312,'+QuotedStr('NIUE,ILHA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (168,5355,'+QuotedStr('NORFOLK,ILHA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (169,5380,'+QuotedStr('NORUEGA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (170,5428,'+QuotedStr('NOVA CALEDONIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (171,5487,'+QuotedStr('NOVA ZELANDIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (172,5568,'+QuotedStr('OMA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (173,5665,'+QuotedStr('PACIFICO,ILHAS DO (POSSESSAO DOS EUA)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (174,5738,'+QuotedStr('PAISES BAIXOS (HOLANDA)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (175,5754,'+QuotedStr('PALAU') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (176,5780,'+QuotedStr('PALESTINA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (177,5800,'+QuotedStr('PANAMA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (178,5452,'+QuotedStr('PAPUA NOVA GUINE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (179,5762,'+QuotedStr('PAQUISTAO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (180,5860,'+QuotedStr('PARAGUAI') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (181,5894,'+QuotedStr('PERU') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (182,5932,'+QuotedStr('PITCAIRN,ILHA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (183,5991,'+QuotedStr('POLINESIA FRANCESA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (184,6033,'+QuotedStr('POLONIA, REPUBLICA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (185,6114,'+QuotedStr('PORTO RICO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (186,6076,'+QuotedStr('PORTUGAL') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (187,6238,'+QuotedStr('QUENIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (188,6254,'+QuotedStr('QUIRGUIZ, REPUBLICA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (189,6289,'+QuotedStr('REINO UNIDO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (190,6408,'+QuotedStr('REPUBLICA CENTRO-AFRICANA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (191,6475,'+QuotedStr('REPUBLICA DOMINICANA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (192,6602,'+QuotedStr('REUNIAO, ILHA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (193,6700,'+QuotedStr('ROMENIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (194,6750,'+QuotedStr('RUANDA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (195,6769,'+QuotedStr('RUSSIA, FEDERACAO DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (196,6858,'+QuotedStr('SAARA OCIDENTAL') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (197,6777,'+QuotedStr('SALOMAO, ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (198,6904,'+QuotedStr('SAMOA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (199,6912,'+QuotedStr('SAMOA AMERICANA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (200,6971,'+QuotedStr('SAN MARINO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (201,7102,'+QuotedStr('SANTA HELENA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (202,7153,'+QuotedStr('SANTA LUCIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (203,6939,'+QuotedStr('SAO BARTOLOMEU') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (204,6955,'+QuotedStr('SAO CRISTOVAO E NEVES,ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (205,6980,'+QuotedStr('SAO MARTINHO, ILHA DE (PARTE FRANCESA)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (206,6998,'+QuotedStr('SAO MARTINHO, ILHA DE (PARTE HOLANDESA)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (207,7005,'+QuotedStr('SAO PEDRO E MIQUELON') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (208,7200,'+QuotedStr('SAO TOME E PRINCIPE, ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (209,7056,'+QuotedStr('SAO VICENTE E GRANADINAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (210,7285,'+QuotedStr('SENEGAL') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (211,7358,'+QuotedStr('SERRA LEOA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (212,7370,'+QuotedStr('SERVIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (213,7315,'+QuotedStr('SEYCHELLES') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (214,7447,'+QuotedStr('SIRIA, REPUBLICA ARABE DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (215,7480,'+QuotedStr('SOMALIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (216,7501,'+QuotedStr('SRI LANKA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (217,7544,'+QuotedStr('SUAZILANDIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (218,7595,'+QuotedStr('SUDAO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (219,7600,'+QuotedStr('SUDÃO DO SUL') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (220,7641,'+QuotedStr('SUECIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (221,7676,'+QuotedStr('SUICA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (222,7706,'+QuotedStr('SURINAME') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (223,7552,'+QuotedStr('SVALBARD E JAN MAYERN') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (224,7722,'+QuotedStr('TADJIQUISTAO, REPUBLICA DO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (225,7765,'+QuotedStr('TAILANDIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (226,7803,'+QuotedStr('TANZANIA, REP.UNIDA DA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (227,7919,'+QuotedStr('TCHECA, REPUBLICA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (228,7811,'+QuotedStr('TERRAS AUSTRAIS E ANTARTICAS FRANCESAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (229,7820,'+QuotedStr('TERRITORIO BRIT.OC.INDICO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (230,7951,'+QuotedStr('TIMOR LESTE') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (231,8001,'+QuotedStr('TOGO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (232,8109,'+QuotedStr('TONGA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (233,8052,'+QuotedStr('TOQUELAU,ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (234,8150,'+QuotedStr('TRINIDAD E TOBAGO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (235,8206,'+QuotedStr('TUNISIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (236,8230,'+QuotedStr('TURCAS E CAICOS,ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (237,8249,'+QuotedStr('TURCOMENISTAO, REPUBLICA DO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (238,8273,'+QuotedStr('TURQUIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (239,8281,'+QuotedStr('TUVALU') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (240,8311,'+QuotedStr('UCRANIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (241,8338,'+QuotedStr('UGANDA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (242,8451,'+QuotedStr('URUGUAI') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (243,8478,'+QuotedStr('UZBEQUISTAO, REPUBLICA DO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (244,5517,'+QuotedStr('VANUATU') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (245,8486,'+QuotedStr('VATICANO, EST.DA CIDADE DO') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (246,8508,'+QuotedStr('VENEZUELA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (247,8583,'+QuotedStr('VIETNA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (248,8630,'+QuotedStr('VIRGENS,ILHAS (BRITANICAS)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (249,8664,'+QuotedStr('VIRGENS,ILHAS (E.U.A.)') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (250,8753,'+QuotedStr('WALLIS E FUTUNA, ILHAS') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (251,8907,'+QuotedStr('ZAMBIA') + ');');
+    ExecutaComando(' INSERT INTO PAIS (IDPAIS, CODIGO, NOME) VALUES (252,6653,'+QuotedStr('ZIMBABUE') + ');');
+
+    ExecutaComando('Commit');
+  end;
+  {Dailon Parisotto (smal-706) 2024-09-18 Inicio}
+
+
   Form22.Repaint;
 
   try

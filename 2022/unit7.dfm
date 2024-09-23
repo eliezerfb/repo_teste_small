@@ -15557,7 +15557,8 @@ object Form7: TForm7
         ','
       
         '   IDENTIFICADORPLANOCONTAS, VBCFCP, PFCP, VFCP, VBCFCPST, PFCPS' +
-        'T, VFCPST)'
+        'T, VFCPST,'
+      '   DRAWBACK)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :ISS, :MEDID' +
@@ -15576,7 +15577,8 @@ object Form7: TForm7
         'PTHASH, :CSOSN,'
       
         '   :VBC_PIS_COFINS, :IDENTIFICADORPLANOCONTAS, :VBCFCP, :PFCP, :' +
-        'VFCP, :VBCFCPST, :PFCPST, :VFCPST)')
+        'VFCP, :VBCFCPST, :PFCPST, :VFCPST,'
+      '   :DRAWBACK)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -15624,7 +15626,8 @@ object Form7: TForm7
       '  VFCP,'
       '  VBCFCPST,'
       '  PFCPST,'
-      '  VFCPST'
+      '  VFCPST,'
+      '  DRAWBACK'
       'from ITENS001 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -15678,7 +15681,8 @@ object Form7: TForm7
       '  VFCP = :VFCP,'
       '  VBCFCPST = :VBCFCPST,'
       '  PFCPST = :PFCPST,'
-      '  VFCPST = :VFCPST'
+      '  VFCPST = :VFCPST,'
+      '  DRAWBACK = :DRAWBACK'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -16002,6 +16006,11 @@ object Form7: TForm7
       EditFormat = '##0.00'
       Precision = 15
       Size = 4
+    end
+    object ibDataSet16DRAWBACK: TIBStringField
+      FieldName = 'DRAWBACK'
+      Origin = 'ITENS001.DRAWBACK'
+      Size = 11
     end
   end
   object DataSource16: TDataSource
