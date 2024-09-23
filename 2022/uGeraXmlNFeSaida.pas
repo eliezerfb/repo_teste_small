@@ -1836,8 +1836,8 @@ begin
 
       // Devolucao
       // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução
-//      if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolução
-      if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolução
+      if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolução
+//      if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolução
       begin
         // Imposto da NF de DEVOLUCAO devolução
         // neste ponto é possível informar os impostos com os valores da nota de entrada
@@ -1973,49 +1973,52 @@ begin
                                         '   and ITENS002.CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');
         Form7.ibDataset97.Open;
 
-        if AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) <> '' then
+        if (Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'N') then
         begin
-          vlFreteRateadoItem      := 0;
-          vlOutrasDespRateadoItem := 0;
-
-          if bFreteSobreIPI then
-            vlFreteRateadoItem := fFrete[I];
-
-          //Mauricio Parizotto 2024-04-22
-          if bIPISobreOutras then
-            vlOutrasDespRateadoItem := fOutras[I];
-
-          //vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem; //Mauricio Parizotto 2023-03-27 Mauricio Parizotto 2024-04-22
-          vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem + vlOutrasDespRateadoItem;
-
-          Form7.spdNFeDataSets.Campo('vBC_O10').Value       := FormatFloatXML(vlBalseIPI); // Valor da BC do IPI
-          Form7.spdNFeDataSets.Campo('pIPI_O13').Value      := FormatFloatXML(Form7.ibDataSet16.FieldByname('IPI').AsFloat); // Percentual do IPI
-
-          // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução Não deve mudar
-          // Dailon Parisotto 2024-08-06 if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
-          if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
+          if (AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) <> '') then
           begin
-            Form7.spdNFeDataSets.Campo('vIPI_O14').Value      := FormatFloatXML(Arredonda2(Form7.ibDataSet16.FieldByname('VIPI').AsFloat,2)); // Valor do IPI
-          end else
-          begin
-            Form7.spdNFeDataSets.Campo('vIPI_O14').Value      := FormatFloatXML(Arredonda2(Form7.ibDataSet16.FieldByname('IPI').AsFloat*vlBalseIPI/100,2)); // Valor do IPI
-          end;
-        end else
-        begin
-          if sChave <> '' then
-          begin
-            // Já está no item certo
-            if sChave = Form7.ibDataset97.FieldByName('NFEID').AsString then
+            vlFreteRateadoItem      := 0;
+            vlOutrasDespRateadoItem := 0;
+
+            if bFreteSobreIPI then
+              vlFreteRateadoItem := fFrete[I];
+
+            //Mauricio Parizotto 2024-04-22
+            if bIPISobreOutras then
+              vlOutrasDespRateadoItem := fOutras[I];
+
+            //vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem; //Mauricio Parizotto 2023-03-27 Mauricio Parizotto 2024-04-22
+            vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem + vlOutrasDespRateadoItem;
+
+            Form7.spdNFeDataSets.Campo('vBC_O10').Value       := FormatFloatXML(vlBalseIPI); // Valor da BC do IPI
+            Form7.spdNFeDataSets.Campo('pIPI_O13').Value      := FormatFloatXML(Form7.ibDataSet16.FieldByname('IPI').AsFloat); // Percentual do IPI
+
+            // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução Não deve mudar
+            // Dailon Parisotto 2024-08-06 if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
+            if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
             begin
-              Form7.spdNFeDataSets.campo('pDevol_UA02').Value        := FormatFloatXML((Form7.ibDataSet16QUANTIDADE.AsFloat/Form7.ibDataset97.FieldByname('QTD_ORIGINAL').Asfloat) * 100);    // Percentual da mercadoria devolvida
-              Form7.spdNFeDataSets.campo('vIPIDevol_UA04').Value     := FormatFloatXML((Form7.ibDataset97.FieldByname('VIPI').Asfloat /Form7.ibDataset97.FieldByname('QTD_ORIGINAL').Asfloat ) * Form7.ibDataSet16QUANTIDADE.AsFloat); // Valor do IPI devolvido
-              fIPIDevolvido     := fIPIDevolvido + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vIPIDevol_UA04').AsString,',',''),'.',','));
+              Form7.spdNFeDataSets.Campo('vIPI_O14').Value      := FormatFloatXML(Arredonda2(Form7.ibDataSet16.FieldByname('VIPI').AsFloat,2)); // Valor do IPI
             end else
             begin
-              Form7.spdNFeDataSets.campo('pDevol_UA02').Value        := '100.00';    // Percentual da mercadoria devolvida
-              Form7.spdNFeDataSets.campo('vIPIDevol_UA04').Value     := FormatFloatXML(Form7.ibDataSet16VIPI.AsFloat); // Valor do IPI devolvido
-              fIPIDevolvido     := fIPIDevolvido + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vIPIDevol_UA04').AsString,',',''),'.',','));
-              MensagemSistema('Nota fiscal referenciada não encontrada',msgAtencao);
+              Form7.spdNFeDataSets.Campo('vIPI_O14').Value      := FormatFloatXML(Arredonda2(Form7.ibDataSet16.FieldByname('IPI').AsFloat*vlBalseIPI/100,2)); // Valor do IPI
+            end;
+          end else
+          begin
+            if sChave <> '' then
+            begin
+              // Já está no item certo
+              if sChave = Form7.ibDataset97.FieldByName('NFEID').AsString then
+              begin
+                Form7.spdNFeDataSets.campo('pDevol_UA02').Value        := FormatFloatXML((Form7.ibDataSet16QUANTIDADE.AsFloat/Form7.ibDataset97.FieldByname('QTD_ORIGINAL').Asfloat) * 100);    // Percentual da mercadoria devolvida
+                Form7.spdNFeDataSets.campo('vIPIDevol_UA04').Value     := FormatFloatXML((Form7.ibDataset97.FieldByname('VIPI').Asfloat /Form7.ibDataset97.FieldByname('QTD_ORIGINAL').Asfloat ) * Form7.ibDataSet16QUANTIDADE.AsFloat); // Valor do IPI devolvido
+                fIPIDevolvido     := fIPIDevolvido + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vIPIDevol_UA04').AsString,',',''),'.',','));
+              end else
+              begin
+                Form7.spdNFeDataSets.campo('pDevol_UA02').Value        := '100.00';    // Percentual da mercadoria devolvida
+                Form7.spdNFeDataSets.campo('vIPIDevol_UA04').Value     := FormatFloatXML(Form7.ibDataSet16VIPI.AsFloat); // Valor do IPI devolvido
+                fIPIDevolvido     := fIPIDevolvido + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vIPIDevol_UA04').AsString,',',''),'.',','));
+                MensagemSistema('Nota fiscal referenciada não encontrada',msgAtencao);
+              end;
             end;
           end;
         end;
