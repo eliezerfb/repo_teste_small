@@ -4,8 +4,8 @@ object Form25: TForm25
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Boleto de cobran'#231'a banc'#225'ria'
-  ClientHeight = 528
-  ClientWidth = 712
+  ClientHeight = 553
+  ClientWidth = 720
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

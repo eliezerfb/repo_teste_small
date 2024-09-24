@@ -81,12 +81,15 @@ begin
   FqryDados.SQL.Add('    , COMPRAS.SEGURO');
   FqryDados.SQL.Add('    , COMPRAS.DESPESAS');
   FqryDados.SQL.Add('    , COMPRAS.DESCONTO');
+  FqryDados.SQL.Add('    , ICM.INTEGRACAO');
   FqryDados.SQL.Add('from ITENS002');
   FqryDados.SQL.Add('inner join COMPRAS');
   FqryDados.SQL.Add('    on (COMPRAS.NUMERONF=ITENS002.NUMERONF)');
   FqryDados.SQL.Add('    and (COMPRAS.FORNECEDOR=ITENS002.FORNECEDOR)');
   FqryDados.SQL.Add('inner join ESTOQUE');
   FqryDados.SQL.Add('    on (ESTOQUE.CODIGO=ITENS002.CODIGO)');
+  FqryDados.SQL.Add('inner join ICM');
+  FqryDados.SQL.Add('    on (ICM.NOME=COMPRAS.OPERACAO)');
   FqryDados.SQL.Add('where');
   FqryDados.SQL.Add('    (ITENS002.CODIGO=:XCODIGO)');
   FqryDados.SQL.Add('order by COMPRAS.EMISSAO, COMPRAS.SAIDAH');
@@ -119,24 +122,28 @@ begin
 
   while not FqryDados.Eof do
   begin
-    nQuantidade  := FqryDados.FieldByName('QUANTIDADE').AsFloat;
-    nCustoCompra := FqryDados.FieldByName('CUSTO').AsFloat;
-    nVICMS       := FqryDados.FieldByName('VICMS').AsFloat;
-
-    if Result = 0 then
+    if (AnsiContainsText(AnsiUpperCase(FqryDados.FieldByName('INTEGRACAO').AsString),'PAGAR'))
+      or (AnsiContainsText(AnsiUpperCase(FqryDados.FieldByName('INTEGRACAO').AsString),'CAIXA')) then
     begin
-      nCustoCompra := FqryDados.FieldByName('UNITARIO').AsFloat;
-      Result := nCustoCompra - (nVICMS / nQuantidade)
-    end else
-    begin
+      nQuantidade  := FqryDados.FieldByName('QUANTIDADE').AsFloat;
+      nCustoCompra := FqryDados.FieldByName('CUSTO').AsFloat;
+      nVICMS       := FqryDados.FieldByName('VICMS').AsFloat;
 
-      nCustoCompra := RetornaCustoCompraNota;
+      if Result = 0 then
+      begin
+        nCustoCompra := FqryDados.FieldByName('UNITARIO').AsFloat;
+        Result := nCustoCompra - (nVICMS / nQuantidade)
+      end else
+      begin
 
-      Result := ((nSaldoAtual * Result) +
-                (nQuantidade * (nCustoCompra - (nVICMS / nQuantidade)))) /
-                (nQuantidade + nSaldoAtual);
+        nCustoCompra := RetornaCustoCompraNota;
+
+        Result := ((nSaldoAtual * Result) +
+                  (nQuantidade * (nCustoCompra - (nVICMS / nQuantidade)))) /
+                  (nQuantidade + nSaldoAtual);
+      end;
+      nSaldoAtual := nSaldoAtual + nQuantidade;
     end;
-    nSaldoAtual := nSaldoAtual + nQuantidade;
 
     FqryDados.Next;
   end;
