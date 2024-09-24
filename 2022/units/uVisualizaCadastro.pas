@@ -957,9 +957,8 @@ begin
 
             }
             if (not Assigned(frmRelatorioMovItensPeriodo)) or
-              ((Form7.IBDataSet97.FieldByName('DATA').AsDateTime = Date) or
               ((Form7.IBDataSet97.FieldByName('DATA').AsDateTime >= frmRelatorioMovItensPeriodo.dtInicial.Date) and
-              (Form7.IBDataSet97.FieldByName('DATA').AsDateTime <= frmRelatorioMovItensPeriodo.dtFinal.Date))) then
+              (Form7.IBDataSet97.FieldByName('DATA').AsDateTime <= frmRelatorioMovItensPeriodo.dtFinal.Date)) then
             begin
               WriteLn(F,' <tr>');
               Writeln(F,'  <td bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+DateTimeToStr(Form7.IBDataSet97.FieldByName('DATA').AsDateTime)+'</td>');
