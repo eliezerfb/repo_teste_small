@@ -3,8 +3,12 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
   Top = 132
   BorderIcons = []
   Caption = 'Ficha'
-  ClientHeight = 610
-  ClientWidth = 840
+  ClientHeight = 618
+  ClientWidth = 842
+  Constraints.MaxHeight = 657
+  Constraints.MaxWidth = 858
+  Constraints.MinHeight = 657
+  Constraints.MinWidth = 858
   Ctl3D = True
   Position = poScreenCenter
   OnCreate = FormCreate
@@ -16,19 +20,19 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
   object Panel_branco: TPanel
     Left = 0
     Top = 0
-    Width = 840
-    Height = 610
+    Width = 842
+    Height = 618
     Align = alClient
     BevelOuter = bvNone
     Color = clWhite
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 842
-    ExplicitHeight = 618
+    ExplicitWidth = 840
+    ExplicitHeight = 610
     object pnlBotoesSuperior: TPanel
       Left = 0
       Top = 0
-      Width = 840
+      Width = 842
       Height = 105
       Align = alTop
       BevelOuter = bvNone
@@ -37,7 +41,7 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 1
-      ExplicitWidth = 842
+      ExplicitWidth = 840
       object imgNovo: TImage
         Left = 10
         Top = 0
@@ -826,8 +830,8 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
     end
     object pnlBotoesPosterior: TPanel
       Left = 0
-      Top = 550
-      Width = 840
+      Top = 558
+      Width = 842
       Height = 60
       Align = alBottom
       BevelOuter = bvNone
@@ -838,13 +842,13 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
-      ExplicitTop = 558
-      ExplicitWidth = 842
+      ExplicitTop = 550
+      ExplicitWidth = 840
       DesignSize = (
-        840
+        842
         60)
       object btnOK: TBitBtn
-        Left = 721
+        Left = 723
         Top = 16
         Width = 100
         Height = 25
@@ -858,14 +862,14 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
         ParentFont = False
         TabOrder = 0
         OnClick = btnOKClick
-        ExplicitLeft = 723
+        ExplicitLeft = 721
       end
     end
     object Panel1: TPanel
       Left = 0
       Top = 105
       Width = 20
-      Height = 445
+      Height = 453
       Align = alLeft
       BevelOuter = bvNone
       Color = clWhite
@@ -873,7 +877,7 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 3
-      ExplicitHeight = 453
+      ExplicitHeight = 445
       object Button4: TBitBtn
         Left = 350
         Top = 5
@@ -884,10 +888,10 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       end
     end
     object Panel8: TPanel
-      Left = 820
+      Left = 822
       Top = 105
       Width = 20
-      Height = 445
+      Height = 453
       Align = alRight
       BevelOuter = bvNone
       Color = clWhite
@@ -895,8 +899,8 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 4
-      ExplicitLeft = 822
-      ExplicitHeight = 453
+      ExplicitLeft = 820
+      ExplicitHeight = 445
       object Button19: TBitBtn
         Left = 350
         Top = 5
@@ -909,8 +913,8 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
     object pgcFicha: TPageControl
       Left = 20
       Top = 105
-      Width = 800
-      Height = 445
+      Width = 802
+      Height = 453
       Align = alClient
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -919,8 +923,8 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      ExplicitWidth = 802
-      ExplicitHeight = 453
+      ExplicitWidth = 800
+      ExplicitHeight = 445
     end
   end
   object DSCadastro: TDataSource

@@ -4,8 +4,8 @@ object Form26: TForm26
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Configura'#231#227'o do boleto banc'#225'rio'
-  ClientHeight = 483
-  ClientWidth = 534
+  ClientHeight = 500
+  ClientWidth = 540
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
