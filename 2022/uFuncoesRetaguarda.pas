@@ -1101,7 +1101,8 @@ function GetIVAProduto(IDESTOQUE : integer; UF : string; Transaction: TIBTransac
 begin
   Result := 0;
 
-  if UF <> '' then
+  //Sandro Silva 2024-09-23 evitar erro com cliente do exterior if UF <> '' then
+  if (UF <> '') and (AnsiUpperCase(UF) <> 'EX') then
   begin
     try
       Result := ExecutaComandoEscalar(Transaction,
