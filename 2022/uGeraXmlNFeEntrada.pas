@@ -154,6 +154,7 @@ begin
   Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
   Form7.ibDataSet2.Open;
 
+
   Form7.ibDataSet18.Locate('NOME',Form7.ibDataSet24TRANSPORTA.AsString,[]);
 
   IBQUERY99 := Form7.CriaIBQuery(Form7.IBDataSet99.Transaction);
@@ -1943,11 +1944,15 @@ var
   fAliquota: Real;
   dvICMSMonoRet_N45: Real; // Sandro Silva 2023-06-13
   nTotalFCP: Real;
+  sEstado : string;
+  IVAProd : Real;
 begin
   //////////////////// Aqui começam os Impostos Incidentes sobre o Item////////////////////////
   /// Verificar Manual pois existe uma variação nos campos de acordo com Tipo de Tribucação ////
   // ICMS
   fAliquota := 0;
+
+  sEstado := Form7.ibDAtaset2ESTADO.AsString;
 
   {$Region '//// CRT 2 e 3 - Normal //// ' }
   //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-07
@@ -2480,13 +2485,15 @@ begin
 
       Form7.spdNFeDataSets.Campo('modBCST_N18').Value   := '4'; // Modalidade de determinação da Base de Cálculo do ICMS ST - ver Manual
 
-      if Form7.ibDataSet4PIVA.AsFloat > 0 then
+      //if Form7.ibDataSet4PIVA.AsFloat > 0 then Mauricio Parizotto 2024-09-11
+      IVAProd := GetIVAProduto(Form7.ibDataSet4IDESTOQUE.AsInteger,sEstado, Form7.IBTransaction1);
+      if IVAProd > 0 then
       begin
         if Form7.ibDAtaset23.FieldByname('BASE').AsFloat > 0 then
         begin
           // (1.3 * 100) - 100
-
-          Form7.spdNFeDataSets.Campo('pMVAST_N19').Value := StrTran(Alltrim(FormatFloat('##0.00', (Form7.ibDataSet4PIVA.AsFloat*100)-100 )),',','.'); // Percentual de margem de valor adicionado do ICMS ST
+          //Form7.spdNFeDataSets.Campo('pMVAST_N19').Value := StrTran(Alltrim(FormatFloat('##0.00', (Form7.ibDataSet4PIVA.AsFloat*100)-100 )),',','.'); // Percentual de margem de valor adicionado do ICMS ST Mauricio Parizotto 2024-09-11
+          Form7.spdNFeDataSets.Campo('pMVAST_N19').Value := StrTran(Alltrim(FormatFloat('##0.00', (IVAProd*100)-100 )),',','.'); // Percentual de margem de valor adicionado do ICMS ST
         end else
         begin
           Form7.spdNFeDataSets.Campo('pMVAST_N19').Value := '100'; // Percentual de margem de valor adicionado do ICMS ST
@@ -2496,7 +2503,7 @@ begin
         Form7.spdNFeDataSets.Campo('pMVAST_N19').Value := '100'; // Percentual de margem de valor adicionado do ICMS ST
       end;
       Form7.spdNFeDataSets.Campo('pREDBCST_N20').Value    := '100'; // Percentual de redução de BC do ICMS ST
-      //
+
       if Form7.ibDAtaset23.FieldByname('VBCST').AsFloat > 0 then
       begin
         try
@@ -2517,38 +2524,6 @@ begin
 
       Form7.spdNFeDataSets.Campo('pCredSN_N29').VAlue       := StrTran(Alltrim(FormatFloat('##0.00',fAliquota)),',','.'); // Aliquota aplicave de cálculo de crédito (Simples Nacional)
       Form7.spdNFeDataSets.Campo('vCredICMSSN_N30').VAlue  := StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDAtaset23.FieldByname('TOTAL').AsFloat * fAliquota / 100)),',','.'); // VAlor de crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)
-
-      {Sandro Silva 2023-05-09 inicio
-      if Form1.sVersaoLayout = '4.00' then
-      begin
-        // Nf de entrada Entrada Simples Nacinal
-
-        if fPercentualFCP <> 0 then
-        begin
-          if Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '201' then
-          begin
-            Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := '0.00'; // Valor da Base de Cálculo do FCP retido por Substituição Tributária
-            Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := '0.00'; // Percentual do FCP retido por Substituição Tributária
-            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := '0.00'; // Valor do FCP retido por Substituição Tributária
-          end;
-
-          if (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '202') or (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '203') then
-          begin
-            Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := '0.00'; // Valor da Base de Cálculo do FCP retido por Substituição Tributária
-            Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := '0.00'; // Percentual do FCP retido por Substituição Tributária
-            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := '0.00'; // Valor do FCP retido por Substituição Tributária
-          end;
-
-          if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900') then
-          begin
-            Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := '0.00'; // Valor da Base de Cálculo do FCP retido por Substituição Tributária
-            Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := '0.00'; // Percentual do FCP retido por Substituição Tributária
-            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := '0.00'; // Valor do FCP retido por Substituição Tributária
-          end;
-        end;
-
-      end;
-      }
 
       if Form7.spdNFeDataSets.Campo('CST_N12').AsString = '00' then
       begin

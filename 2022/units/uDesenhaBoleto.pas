@@ -1004,7 +1004,8 @@ begin
       begin
         if CodBanco = '237' then // BRADESCO
         begin
-          Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + '0'+ sNossoNumero + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+'0'+LimpaNumero(sNossoNumero));
+          //Sandro Silva 2024-04-05 Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + '0'+ sNossoNumero + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+'0'+LimpaNumero(sNossoNumero));
+          Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + Right('0'+ sNossoNumero, 11) + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+'0'+LimpaNumero(sNossoNumero));
           Result := Form25.sNossoNum;
         end else
         begin
@@ -1079,15 +1080,15 @@ begin
     end;
   end;   *)
 
-  {Sandro Silva 2024-05-13 inicio
+  {Sandro Silva 2024-05-24 inicio 
   Form25.sNossoNum := (AllTrim(LimpaNumero(sCarteira)) + '/'
                       + (StrZero(StrtoInt('0'+LimpaNumero(sConvenio)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0)) +'-'+
                       Modulo_11((StrZero(StrtoInt('0'+LimpaNumero(sConvenio)),3,0)+StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0))));
   }
   Form25.sNossoNum := (AllTrim(LimpaNumero(sCarteira)) + '/'
-                      + (StrZero(StrtoIntDef(LimpaNumero(sConvenio), 0),3,0) + StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0)) +'-'+
-                      Modulo_11((StrZero(StrtoIntDef(LimpaNumero(sConvenio), 0),3,0)+StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0))));
-  {Sandro Silva 2024-05-13 fim}
+                      + (StrZero(StrToInt64Def(LimpaNumero(sConvenio), 0), 3, 0) + StrZero(StrtoInt64Def(LimpaNumero(sNossoNumero), 0), 5, 0)) + '-'+
+                      Modulo_11((StrZero(StrtoInt64Def(LimpaNumero(sConvenio), 0), 3, 0) + StrZero(StrtoInt64Def(LimpaNumero(sNossoNumero), 0), 5, 0))));
+  {Sandro Silva 2024-05-24 fim}
 
   Result := Right(Replicate(' ',30)+Form25.sNossoNum,16);
 
@@ -1110,6 +1111,7 @@ begin
     Result := Right(Replicate(' ',30)+Form25.sNossoNum,17);
   end;
 
+  {Sandro Silva 2024-05-24 inicio
   if CodBanco = '341' then // Itaú ITAU
   begin
     Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/'
@@ -1118,13 +1120,27 @@ begin
 
     Result := Form25.sNossoNum;
   end;
+  }
+  if CodBanco = '341' then // Itaú ITAU
+  begin
+    Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/'
+      + StrZero(StrToInt64Def(LimpaNumero(sNossoNumero), 0), 8, 0) + '-' +
+      Modulo_10(Copy(sAgencia + '0000', 1, 4) + Copy(sCodCedente + '00000', 1, 5) + Copy(sCarteira + '000', 1, 3) + Right('00000000' + sNossoNumero, 8));
+
+    Result := Form25.sNossoNum;
+  end;
+  {Sandro Silva 2024-05-24 fim}
 
   if CodBanco = '237' then // BRADESCO
   begin
-    Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + '0'+ sNossoNumero + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+'0'+LimpaNumero(sNossoNumero));
+    if Length(sNossoNumero) = 11 then
+      Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + sNossoNumero + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+LimpaNumero(sNossoNumero))
+    else
+      Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/' + '0'+ sNossoNumero + '-' + Modulo_11_bradesco(LimpaNumero(sCarteira)+'0'+LimpaNumero(sNossoNumero));
     Result := Form25.sNossoNum;
   end;
 
+  {Sandro Silva 2024-05-24 inicio
   if CodBanco = '041' then // Banrisul
   begin
     Form25.sNossoNum := (StrZero(0,3,0) + StrZero(StrtoInt('0'+LimpaNumero(sNossoNumero)),5,0)) +'-'+
@@ -1164,6 +1180,63 @@ begin
 
     Result := Right(Replicate(' ',30)+Form25.sNossoNum,16);
   end;
+
+  }
+  if CodBanco = '041' then // Banrisul
+  begin
+    Form25.sNossoNum := (StrZero(0, 3, 0) + StrZero(StrToInt64Def(LimpaNumero(sNossoNumero), 0), 5, 0)) + '-' +
+      Modulo_Duplo_Digito_Banrisul((StrZero(0, 3, 0) + StrZero(StrToInt64Def(LimpaNumero(sNossoNumero), 0), 5, 0)));
+
+    Result := Right(Replicate(' ',30) + Form25.sNossoNum, 16);
+  end;
+
+  if CodBanco = '104' then // CAIXA
+  begin
+    Form25.sNossoNum := AllTrim(LimpaNumero(sCarteira)) + '/'
+      + StrZero(StrToInt64Def(LimpaNumero(sNossoNumero), 0), 15, 0) + '-' +
+      Modulo_11((
+        StrZero(StrToInt64Def(LimpaNumero(sCarteira), 0), 2, 0) +
+        StrZero(StrToInt64Def(LimpaNumero(sNossoNumero), 0), 15, 0)
+        ));
+
+    Result := Right(Replicate(' ',30)+Form25.sNossoNum,20);
+  end;
+
+  if CodBanco = '756' then // SICOOB
+  begin
+    Form25.sNossoNum := Right(Replicate(' ',30)+
+      StrZero(StrToInt64Def(LimpaNumero(sNossoNumero), 0 ), 7, 0) + '-' +
+      Modulo_sicoob(
+        Copy(sAgencia,1,4)+
+        StrZero(StrToInt64Def(LimpaNumero(sCodCedente), 0), 10, 0) +
+        StrZero(StrToInt64Def(LimpaNumero(sNossoNumero), 0), 7, 0))
+        ,16);
+
+    Result := Right(Replicate(' ',30)+Form25.sNossoNum,16);
+  end;
+
+  if CodBanco = '748' then // SICREDI
+  begin
+    {Sandro Silva 2024-09-04 inicio
+    Form25.sNossoNum := Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2) + '/2' + Copy(Form7.ibDataSet7NN.AsString, 6, 5) + '-' +
+      Modulo_11(
+        LimpaNumero(sAgencia) +
+        LimpaNumero(sCodCedente) +
+        Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2) +
+        '2' + Right(StrZero(StrToInt64Def(LimpaNumero(sNossoNumero), 0), 15, 0), 5)
+        );
+    }
+    Form25.sNossoNum := Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2) + '/2' + Right('00000' + Form7.ibDataSet7NN.AsString, 5) + '-' +
+      Modulo_11(
+        LimpaNumero(sAgencia) +
+        LimpaNumero(sCodCedente) +
+        Copy(IntToStr(Year(Form7.ibDataSet7EMISSAO.AsDateTime)), 3, 2) +
+        '2' + Right(StrZero(StrToInt64Def(LimpaNumero(sNossoNumero), 0), 15, 0), 5)
+        );
+    {Sandro Silva 2024-09-04 fim}
+    Result := Right(Replicate(' ',30)+Form25.sNossoNum,16);
+  end;
+  {Sandro Silva 2024-05-24 fim}
 
   if CodBanco = '085' then // AILOS
   begin

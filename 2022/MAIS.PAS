@@ -38,7 +38,7 @@ uses
   function AvisoVencimentoSerial:Boolean; // Mauricio Parizotto 2024-08-16
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024028'; //Sandro Silva 2024-08-29 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
+const BUILD_DO_BANCO = '2024030'; //Sandro Silva 2024-09-19 const BUILD_DO_BANCO = '2024028'; //Sandro Silva 2024-08-29 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -483,6 +483,7 @@ type
     procedure ClickOKInformacoesInutilizacao(Sender: TObject);
     procedure CarregaConfiguracoes;
     procedure CarregaPermissaoModulos;
+    function GetDiasRestanteLicenca: Real;
     //Sandro Silva 2024-04-08 procedure AjustarDataSetCamposProduto;
 
   public
@@ -1377,6 +1378,8 @@ var
   CredencialTecnospeed: TCredenciaisTecnospeed;
 
   GeraAviso: boolean;
+
+  DiasR : Real;
 begin
   Result := False;
 
@@ -1481,14 +1484,13 @@ begin
         end;
       end;
       }
+    {Mauricio Parizotto 2024-09-18 Inicio}
       try
         //Estava liberado e vai ser bloqueado
         GeraAviso := Legal_ok(True);
 
-        Form1.ibDataset200.Close;
-        Form1.ibDataset200.SelectSql.Clear;
-        Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to 19670926');
-        Form1.ibDataset200.Open;
+        //Bloqueia
+        ExecutaComando('set generator G_LEGAL to 19670926');
 
         if GeraAviso then
           MensagemSistema('Este sistema foi bloqueado');
@@ -1498,29 +1500,31 @@ begin
     begin
       if pos('LEGAL',UpperCase(S)) <> 0 then
       begin
-        try
-          Form1.ibDataset200.Close;
-          Form1.ibDataset200.SelectSql.Clear;
-          Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to 0');
-          Form1.ibDataset200.Open;
-        except
-        end;
+        DiasR := Form1.GetDiasRestanteLicenca;
 
-        Result := True;
+        if DiasR >= 0 then
+        begin
+          //Libera
+          ExecutaComando('set generator G_LEGAL to 0');
+          Result := True;
+        end else
+        begin
+          //Bloqueia
+          ExecutaComando('set generator G_LEGAL to 19670926');
+        end;
       end else
       begin
-        //Sem retorno nenhum
+        //Sem retorno nenhum - sem conexao
         if Legal_ok(True) then
         begin
           try
-            Form1.ibDataset200.Close;
-            Form1.ibDataset200.SelectSql.Clear;
-            Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to ' + Copy(dateToStr(Date),7,4) + Copy(dateToStr(Date),4,2) + Copy(dateToStr(Date),1,2));
-            Form1.ibDataset200.Open;
+            ExecutaComando('set generator G_LEGAL to ' + Copy(dateToStr(Date),7,4) + Copy(dateToStr(Date),4,2) + Copy(dateToStr(Date),1,2));
           except
           end;
         end;
       end;
+      {Mauricio Parizotto 2024-09-18 Fim}
+
 
       (* Mauricio Parizotto 2024-05-20
       if (pos('[BUILD]',UpperCase(S)) <> 0) or (pos('[VERSAO]',UpperCase(S)) <> 0) then
@@ -1651,6 +1655,7 @@ begin
         begin
           if FileExists(Form1.sAtual+'\smallcon.exe') then
           begin
+            {Mauricio Parizotto 2024-06-24
             ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20241001.sma '+
                                                            '20241002.sma '+
                                                            '20241003.sma '+
@@ -1662,6 +1667,9 @@ begin
                                                            '20241009.sma '+
                                                            'nfce2024.sma '+
                                                            '2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
+                                                           , '', SW_SHOW);
+            }
+            ShellExecute( 0, 'Open', 'smallcon.exe', pChar('2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
                                                            , '', SW_SHOW);
           end
           else
@@ -1739,75 +1747,6 @@ begin
   CloseHandle(FSnapshotHandle);
 end;
 
-{Sandro Silva 2023-04-12 inicio
-procedure DropViewProcedure;
-begin
-  try
-    Form1.ibQuery1.Close;
-    Form1.ibQuery1.SQL.Text :=
-      'select rdb$relation_name as OBJETO ' +
-      'from rdb$relations ' +
-      'where rdb$view_blr is not null ' +
-      'and (rdb$system_flag is null or rdb$system_flag = 0)';
-    Form1.ibQuery1.Open;
-    if Form1.ibQuery1.FieldByName('OBJETO').AsString <> '' then
-    begin
-      Application.ProcessMessages;
-      ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)');
-    end;
-    while Form1.ibQuery1.Eof = False do
-    begin
-      Form1.ibQuery2.Close;
-      Form1.ibQuery2.SQL.Text := 'drop view ' + Form1.ibQuery1.FieldByName('OBJETO').AsString;
-      Form1.ibQuery2.ExecSQL;
-      Form1.ibQuery1.Next;
-    end;
-  except
-  end;
-  try
-    Form1.ibQuery1.Close;
-    Form1.ibQuery1.SQL.Text :=
-      'select rdb$procedure_name as OBJETO ' +
-      'from rdb$procedures ' +
-      'where rdb$system_flag is null or rdb$system_flag = 0';
-    Form1.ibQuery1.Open;
-    if Form1.ibQuery1.FieldByName('OBJETO').AsString <> '' then
-    begin
-      Application.ProcessMessages;
-      ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)');
-    end;
-    while Form1.ibQuery1.Eof = False do
-    begin
-      Form1.ibQuery2.Close;
-      Form1.ibQuery2.SQL.Text := 'drop procedure ' + Form1.ibQuery1.FieldByName('OBJETO').AsString;
-      Form1.ibQuery2.ExecSQL;
-      Form1.ibQuery1.Next;
-    end;
-  except
-  end;
-  try
-    Form1.ibQuery1.Close;
-    Form1.ibQuery1.SQL.Text :=
-      'select rdb$trigger_name  as OBJETO ' +
-      'from rdb$triggers ' +
-      'where (rdb$system_flag = 0 or rdb$system_flag is null)';
-    Form1.ibQuery1.Open;
-    if Form1.ibQuery1.FieldByName('OBJETO').AsString <> '' then
-    begin
-      Application.ProcessMessages;
-      ShowMessage('Foi(ram) encontrado(s) objeto(s) desconhecido(s) na estrutura do banco e' + #13 + ' será(ão) excluído(s)');
-    end;
-    while Form1.ibQuery1.Eof = False do
-    begin
-      Form1.ibQuery2.Close;
-      Form1.ibQuery2.SQL.Text := 'drop trigger ' + Form1.ibQuery1.FieldByName('OBJETO').AsString;
-      Form1.ibQuery2.ExecSQL;
-      Form1.ibQuery1.Next;
-    end;
-  except
-  end;
-end;
-}
 
 procedure ValidaRazaoSmall;
 var
@@ -5292,86 +5231,40 @@ begin
 
   EnviarXMLContabilidadeAut;
 
-  // Legal
-  {Mauricio Parizotto 2024-05-24
-  if not bLegal then
-  begin
-    if Legal_ok(True) then
-    begin
-      Form1.ibDataset200.Close;
-      Form1.ibDataset200.SelectSql.Clear;
-      Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to ' + Copy(dateToStr(Date),7,4) + Copy(dateToStr(Date),4,2) + Copy(dateToStr(Date),1,2) );
-      Form1.ibDataset200.Open;
-    end;
-  end;
-  }
-
   // Licença
   try
+    {Mauricio Parizotto 2024-09-18
     try
       Form1.ibQuery2.Close;
       Form1.ibQuery2.SQL.Clear;
       Form1.ibQuery2.SQL.Add('select LICENCA from EMITENTE');
       Form1.ibQuery2.Open;
-      //
+
       Form7.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-      //
-      {Sandro Silva 2022-11-11 inicio
+
       if AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) <> '' then
       begin
-        fDias := 365 - (Date - StrToDate(Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),7,2)
+        // Calcula o número de dias restantes para usar o sistema
+        // Data limite - data atual do PC
+        fDias := (StrToDate(Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),7,2)
                  +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),5,2)
-                 +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),1,4)));
+                 +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),1,4))
+                 - Date);
       end else
       begin
         fDias := -1;
       end;
-      }
 
-      {if ValidacaoNova = False then
-      begin
-
-        if AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) <> '' then
-        begin
-          // Calcula o número de dias restantes para usar o sistema
-          // 365 - (Data do PC - Data do registro)
-          fDias := 365 - (Date - StrToDate(Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),7,2)
-                   +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),5,2)
-                   +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),1,4)));
-        end else
-        begin
-          fDias := -1;
-        end;
-
-      end
-      else Mauricio Parizotto 2024-05-24}
-      begin
-        if AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) <> '' then
-        begin
-          // Calcula o número de dias restantes para usar o sistema
-          // Data limite - data atual do PC
-          fDias := (StrToDate(Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),7,2)
-                   +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),5,2)
-                   +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),1,4))
-                   - Date);
-        end else
-        begin
-          fDias := -1;
-        end;
-
-      end;
-      {Sandro Silva 2022-11-11 fim}
-      //
     except
       fDias := -1;
     end;
+    }
+    fdias := GetDiasRestanteLicenca;
 
     if fdias <= 0 then
     begin
-      Form1.ibDataset200.Close;
-      Form1.ibDataset200.SelectSql.Clear;
-      Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to 19670926');
-      Form1.ibDataset200.Open;
+      //Bloqueia
+      ExecutaComando('set generator G_LEGAL to 19670926');
     end else
     begin
       {Mauricio Parizotto 2024-08-16 Inicio
@@ -5624,6 +5517,7 @@ begin
                                               '',
                                               SW_SHOW);
     }
+    {Mauricio Parizotto 2024-06-24
     ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20241001.sma '+
                                                    '20241002.sma '+
                                                    '20241003.sma '+
@@ -5635,6 +5529,10 @@ begin
                                                    '20241009.sma '+
                                                    'nfce2024.sma '+
                                                    '2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma '),
+                                              '',
+                                              SW_SHOW);
+    }
+    ShellExecute( 0, 'Open', 'smallcon.exe', pChar('2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma '),
                                               '',
                                               SW_SHOW);
     {Sandro Silva 2024-01-12 fim}
@@ -12975,6 +12873,7 @@ var
   sTermoUso, sCertificado : string;
   sCertificadoValidade : string;
   sURL : string;
+  sSerialSistema : string;
 begin
   sPublicCheck := GeraCheck;
 
@@ -13038,11 +12937,16 @@ begin
       sConve  := LerParametroIni(Form1.sAtual+'\small.ini', 'T','Tempo', '00:05:' + SecondOf(Now).ToString);
       {Dailon Parisotto (f-19325) 2024-06-12 Fim}
 
+	  //Mauricio Parizotto 2024-08-29
+      //Pega serial atualizado
+      sSerialSistema := ValidaRecursos.SistemaSerial;	
+
       //Mauricio Parizotto 2024-09-04
       TSistema.GetInstance.Serial := AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20));
 
       sURL := 'http://www.smallsoft.com.br/legal.php?'+
-              'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
+              //'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+ Mauricio Parizotto 2024-08-29
+              'serial='     + sSerialSistema+
               '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
               '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
               '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
@@ -13870,7 +13774,39 @@ begin
 end;
 
 
+function TForm1.GetDiasRestanteLicenca : Real;
+begin
+  Result := -1;
+
+  try
+    Form1.ibQuery2.Close;
+    Form1.ibQuery2.SQL.Clear;
+    Form1.ibQuery2.SQL.Add('select LICENCA from EMITENTE');
+    Form1.ibQuery2.Open;
+
+    Form7.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
+
+    if AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) <> '' then
+    begin
+      // Calcula o número de dias restantes para usar o sistema
+      // Data limite - data atual do PC
+      Result :=(StrToDate(Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),7,2)
+                         +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),5,2)
+                         +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),1,4))
+                         - Date);
+    end else
+    begin
+      Result := -1;
+    end;
+  except
+    Result := -1;
+  end;
+
+end;
+
 end.
+
+
 // set generator G_SERIE1 to 0
 // set generator G_SERIERPS to 40
 //                                                                     //

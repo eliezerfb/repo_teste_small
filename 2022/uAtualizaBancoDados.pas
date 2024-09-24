@@ -2303,6 +2303,14 @@ begin
   end;
   {Mauricio Parizotto 2023-09-29 Fim}
 
+  {Sandro Silva 2024-04-01 inicio}
+  if TamanhoCampoFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'NN') = 10 then
+  begin
+    if ExecutaComando('alter table RECEBER alter NN type varchar(11) character set none') then
+      ExecutaComando('Commit');
+  end;
+  {Sandro Silva 2024-04-01 final}
+
   {Mauricio Parizotto 2023-11-15 Inicio}
   if TamanhoCampo(Form1.ibDataSet200.Transaction, 'OS', 'PROBLEMA') < 1000 then
   begin
@@ -2656,6 +2664,51 @@ begin
                     ' Where FORMADEPAGAMENTO = ''Pagamento Instantâneo (PIX)'' ') then
       ExecutaComando('Commit');
   {Mauricio Parizotto 204-07-10 Fim}
+  
+  
+  {Mauricio Parizotto 2024-07-23 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'IMPOSTOMANUAL') = False then
+  begin
+    if ExecutaComando('Alter table ICM add IMPOSTOMANUAL VARCHAR(1);') then
+      ExecutaComando('Commit');
+
+    if ExecutaComando('Update ICM set IMPOSTOMANUAL = ''N'' ') then
+      ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-07-23 Fim}
+
+  {Dailon Parisotto 2024-08-22 Inicio}
+  try
+    {Sandro Silva 2024-09-19 inicio
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Clear;
+    Form1.ibDataSet200.SelectSQL.Add('SELECT I.RDB$INDEX_NAME AS INDICENAME');
+    Form1.ibDataSet200.SelectSQL.Add('FROM RDB$INDEX_SEGMENTS S');
+    Form1.ibDataSet200.SelectSQL.Add('INNER JOIN RDB$INDICES I');
+    Form1.ibDataSet200.SelectSQL.Add('    ON (I.RDB$INDEX_NAME=S.RDB$INDEX_NAME)');
+    Form1.ibDataSet200.SelectSQL.Add('    AND (I.RDB$RELATION_NAME=''ITENS002'')');
+    Form1.ibDataSet200.SelectSQL.Add('WHERE (S.RDB$FIELD_NAME=''CODIGO'')');
+    Form1.ibDataSet200.Open;
+
+    if (Trim(Form1.ibDataSet200.FieldByName('INDICENAME').AsString) = EmptyStr) then
+    begin
+      ExecutaComando('CREATE INDEX IDX_ITENS002_CODIGO ON ITENS002 (CODIGO);');
+
+      ExecutaComando('Commit');
+    end;
+    }
+    if (IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'IDX_ITENS002_CODIGO') = False) then
+    begin
+      ExecutaComando('CREATE INDEX IDX_ITENS002_CODIGO ON ITENS002 (CODIGO);');
+
+      ExecutaComando('Commit');
+    end;
+    {Sandro Silva 2024-09-19 fim}
+  finally
+    Form1.ibDataSet200.Close;
+    Form1.ibDataSet200.SelectSQL.Clear;
+  end;
+  {Dailon Parisotto 2024-08-22 Fim}
 
   {Mauricio Parizotto 2024-08-21 Inicio}
   if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'FORMAPAGAMENTO')) then
@@ -2774,6 +2827,68 @@ begin
   end;
 
   {Mauricio Parizotto 2024-09-04 Fim}
+  
+  {Mauricio Parizotto 2024-09-09 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'IDESTOQUE') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ESTOQUE ADD IDESTOQUE INTEGER') then
+    begin
+      ExecutaComando('Commit');
+
+      ExecutaComando('CREATE SEQUENCE G_ESTOQUEIDESTOQUE');
+
+      ExecutaComando('UPDATE ESTOQUE SET IDESTOQUE = (select gen_id(G_ESTOQUEIDESTOQUE,1) from rdb$database)');
+
+      ExecutaComando('Commit');
+
+      ExecutaComando('CREATE UNIQUE INDEX ESTOQUE_IDESTOQUE_IDX ON ESTOQUE (IDESTOQUE)');
+
+      ExecutaComando('Commit');
+    end;
+  end;
+
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUEIVA')) then
+  begin
+    ExecutaComando(' Create table ESTOQUEIVA('+
+                   ' 	 IDESTOQUEIVA INTEGER NOT NULL,'+
+                   ' 	 IDESTOQUE INTEGER NOT NULL,'+
+                   ' 	 AC_ DECIMAL(18,4),'+
+                   ' 	 AL_ DECIMAL(18,4),'+
+                   ' 	 AP_ DECIMAL(18,4),'+
+                   ' 	 AM_ DECIMAL(18,4),'+
+                   ' 	 BA_ DECIMAL(18,4),'+
+                   ' 	 CE_ DECIMAL(18,4),'+
+                   ' 	 DF_ DECIMAL(18,4),'+
+                   ' 	 ES_ DECIMAL(18,4),'+
+                   ' 	 GO_ DECIMAL(18,4),'+
+                   ' 	 MA_ DECIMAL(18,4),'+
+                   ' 	 MT_ DECIMAL(18,4),'+
+                   ' 	 MS_ DECIMAL(18,4),'+
+                   ' 	 MG_ DECIMAL(18,4),'+
+                   ' 	 PA_ DECIMAL(18,4),'+
+                   ' 	 PB_ DECIMAL(18,4),'+
+                   ' 	 PR_ DECIMAL(18,4),'+
+                   ' 	 PE_ DECIMAL(18,4),'+
+                   ' 	 PI_ DECIMAL(18,4),'+
+                   ' 	 RJ_ DECIMAL(18,4),'+
+                   ' 	 RN_ DECIMAL(18,4),'+
+                   ' 	 RS_ DECIMAL(18,4),'+
+                   ' 	 RO_ DECIMAL(18,4),'+
+                   ' 	 RR_ DECIMAL(18,4),'+
+                   ' 	 SC_ DECIMAL(18,4),'+
+                   ' 	 SP_ DECIMAL(18,4),'+
+                   ' 	 SE_ DECIMAL(18,4),'+
+                   ' 	 TO_ DECIMAL(18,4),'+
+                   ' 	 CONSTRAINT PK_ESTOQUEIVA PRIMARY KEY (IDESTOQUEIVA)'+
+                   ' )');
+
+    ExecutaComando('Commit');
+
+    if ExecutaComando('CREATE SEQUENCE G_ESTOQUEIVAIDESTOQUEIVA') then
+      ExecutaComando('commit');
+  end;
+
+  {Mauricio Parizotto 2024-09-09 Fim}
 
 
   Form22.Repaint;

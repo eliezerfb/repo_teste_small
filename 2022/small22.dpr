@@ -252,7 +252,7 @@ uses
   uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria},
   uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas',
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
-  uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
+  uFrmContaPagar in 'uFrmContaPagar.pas', {FrmContaPagar}
   uFrmIntegracaoItau in 'uFrmIntegracaoItau.pas' {FrmIntegracaoItau},
   uFrmIntegracaoSicoob in 'uFrmIntegracaoSicoob.pas' {FrmIntegracaoSicoob},
   uMobile in 'units\uMobile.pas',
@@ -271,7 +271,10 @@ uses
   uChaveCertificado in '..\..\unit_compartilhada\uChaveCertificado.pas',
   uIntegracaoSicoob in '..\..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas',
   uWebServiceSicoob in '..\..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas',
-  uClassesSicoob in '..\..\unit_compartilhada\Sicoob\uClassesSicoob.pas';
+  uClassesSicoob in '..\..\unit_compartilhada\Sicoob\uClassesSicoob.pas',
+  uFrmEstoqueIVA in 'uFrmEstoqueIVA.pas' {FrmEstoqueIVA},
+  uIRetornaCustoMedio in 'interfaces\uIRetornaCustoMedio.pas',
+  uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas';
 
 {$R *.RES}
 
@@ -335,9 +338,9 @@ begin
 
       Application.Title := 'Small Commerce';
       Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TForm2, Form2);
-  Application.CreateForm(TSenhas, Senhas);
-  //Application.CreateForm(TSenhas2, Senhas2);
+  	  Application.CreateForm(TForm2, Form2);
+      Application.CreateForm(TSenhas, Senhas);
+      //Application.CreateForm(TSenhas2, Senhas2);
       Application.CreateForm(TForm24, Form24);
       Application.CreateForm(TForm30, Form30);
       Application.CreateForm(TForm7, Form7);
@@ -346,9 +349,7 @@ begin
       Application.CreateForm(TForm19, Form19);
       Application.CreateForm(TForm12, Form12);
       Application.CreateForm(TForm48, Form48);
-      //Application.CreateForm(TForm10, Form10); Mauricio Parizotto 2024-07-17
       Application.CreateForm(TForm16, Form16);
-      //Application.CreateForm(TForm99, Form99);
       Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
       Application.CreateForm(TForm21, Form21);
       Application.CreateForm(TForm25, Form25);
@@ -364,7 +365,6 @@ begin
       Application.CreateForm(TForm40, Form40);
       Application.CreateForm(TForm15, Form15);
       Application.CreateForm(TForm35, Form35);
-      //Application.CreateForm(TForm8, Form8);
       Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
       Application.CreateForm(TForm6, Form6);
       Application.CreateForm(TForm11, Form11);

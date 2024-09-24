@@ -1,5 +1,7 @@
 inherited FrmContaReceber: TFrmContaReceber
   ClientWidth = 929
+  Constraints.MaxWidth = 945
+  Constraints.MinWidth = 945
   OnActivate = FormActivate
   OnClose = FormClose
   ExplicitWidth = 945
@@ -52,14 +54,19 @@ inherited FrmContaReceber: TFrmContaReceber
         OnClick = btnReplicarClick
       end
     end
+    inherited Panel1: TPanel
+      ExplicitHeight = 453
+    end
     inherited Panel8: TPanel
       Left = 909
       ExplicitLeft = 909
+      ExplicitHeight = 453
     end
     inherited pgcFicha: TPageControl
       Width = 889
       ActivePage = tbsCadastro
       ExplicitWidth = 889
+      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label1: TLabel
@@ -599,7 +606,7 @@ inherited FrmContaReceber: TFrmContaReceber
           OnKeyDown = PadraoKeyDown
         end
         object edtPortador: TSMALL_DBEdit
-          Left = 111
+          Left = 110
           Top = 305
           Width = 313
           Height = 20
