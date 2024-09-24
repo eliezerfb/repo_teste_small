@@ -380,6 +380,7 @@ inherited FrmIntegracaoSicoob: TFrmIntegracaoSicoob
           DataField = 'CLIENTIDPIX'
           DataSource = DSCadastro
           TabOrder = 0
+          OnExit = edtClientID_PixExit
           OnKeyDown = edtUsuarioKeyDown
         end
         object btnCadastro: TBitBtn
@@ -409,16 +410,14 @@ inherited FrmIntegracaoSicoob: TFrmIntegracaoSicoob
       TabOrder = 1
       OnKeyDown = edtUsuarioKeyDown
     end
-    object edtSenhaCertificado: TDBEdit
+    object edtSenhaCertificado: TEdit
       Left = 20
-      Top = 110
-      Width = 479
+      Top = 111
+      Width = 478
       Height = 22
-      DataField = 'CERTIFICADOSENHA'
-      DataSource = DSCadastro
       PasswordChar = '*'
       TabOrder = 2
-      OnKeyDown = edtUsuarioKeyDown
+      OnKeyDown = edtSenhaCertificadoKeyDown
     end
   end
   object DSCadastro: TDataSource

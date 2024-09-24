@@ -35,13 +35,13 @@ type
     ibdIntegracaoSicoobCERTIFICADO: TWideMemoField;
     ibdIntegracaoSicoobCERTIFICADOSENHA: TIBStringField;
     ibdIntegracaoSicoobNOME: TIBStringField;
-    edtSenhaCertificado: TDBEdit;
     btnCadastro: TBitBtn;
     imgProcurar: TImage;
     imgExcluirCad: TImage;
     lblExcluirCad: TLabel;
     OpenDlgCertificado: TOpenDialog;
     ibdIntegracaoSicoobCERTIFICADONOME: TIBStringField;
+    edtSenhaCertificado: TEdit;
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -54,6 +54,9 @@ type
     procedure imgProcurarClick(Sender: TObject);
     procedure lblExcluirCadClick(Sender: TObject);
     procedure btnCadastroClick(Sender: TObject);
+    procedure edtSenhaCertificadoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edtClientID_PixExit(Sender: TObject);
   private
     procedure AtualizaObjComValorDoBanco;
     procedure GetPaginaAjuda;
@@ -81,7 +84,7 @@ uses
   , uFrmTelaProcessamento
   , uChaveCertificado
   , uIntegracaoSicoob
-  , uSistema;
+  , uSistema, uCriptografia, uconstantes_chaves_privadas;
 
 procedure TFrmIntegracaoSicoob.btnCadastroClick(Sender: TObject);
 var
@@ -126,7 +129,7 @@ begin
                          pixMerchantCity,
                          ibdIntegracaoSicoobCLIENTIDPIX.AsString,
                          apiPixCertificate,
-                         ibdIntegracaoSicoobCERTIFICADOSENHA.AsString,
+                         SmallDecrypt(CHAVE_CIFRAR_NOVA,ibdIntegracaoSicoobCERTIFICADOSENHA.AsString),
                          id_api_pix,
                          Mensagem) then
   begin
@@ -169,6 +172,24 @@ begin
   Close;
 end;
 
+procedure TFrmIntegracaoSicoob.edtClientID_PixExit(Sender: TObject);
+begin
+  ibdIntegracaoSicoobCERTIFICADOSENHA.AsString := SmallEncrypt(CHAVE_CIFRAR_NOVA,edtSenhaCertificado.Text);
+end;
+
+procedure TFrmIntegracaoSicoob.edtSenhaCertificadoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    if edtClientID_Pix.CanFocus then
+      edtClientID_Pix.SetFocus
+    else
+      Perform(Wm_NextDlgCtl,0,0);
+
+  if Key = VK_F1 then
+    GetPaginaAjuda;
+end;
+
 procedure TFrmIntegracaoSicoob.edtUsuarioKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -195,7 +216,8 @@ begin
     chkAtivo.Visible := True;
   end;
 
-  edtCertificado.Text := ibdIntegracaoSicoobCERTIFICADONOME.AsString;
+  edtCertificado.Text      := ibdIntegracaoSicoobCERTIFICADONOME.AsString;
+  edtSenhaCertificado.Text := SmallDecrypt(CHAVE_CIFRAR_NOVA,ibdIntegracaoSicoobCERTIFICADOSENHA.AsString);
 
   CarregaValorObjeto;
 end;
@@ -249,7 +271,14 @@ procedure TFrmIntegracaoSicoob.imgProcurarClick(Sender: TObject);
 begin
   if OpenDlgCertificado.Execute then
   begin
-    edtCertificado.Text := OpenDlgCertificado.FileName;
+    if Length( ExtractFileName(OpenDlgCertificado.FileName)) > 80 then
+    begin
+      MensagemSistema('Nome do certificado digital muito grande!',msgAtencao);
+      edtCertificado.Text := '';
+    end else
+    begin
+      edtCertificado.Text := OpenDlgCertificado.FileName;
+    end;
   end;
 end;
 
@@ -258,10 +287,8 @@ procedure TFrmIntegracaoSicoob.lblExcluirCadClick(Sender: TObject);
 begin
   ibdIntegracaoSicoobIDAPIPIX.Clear;
   ibdIntegracaoSicoobCLIENTIDPIX.Clear;
-  ibdIntegracaoSicoobCERTIFICADO.Clear;
-  ibdIntegracaoSicoobCERTIFICADOSENHA.Clear;
 
-  CarregaValorObjeto
+  CarregaValorObjeto;
 end;
 
 procedure TFrmIntegracaoSicoob.SalvaArquivoBD(dirAnexo:string);
@@ -319,7 +346,7 @@ end;
 
 procedure TFrmIntegracaoSicoob.ExtraiCertificado;
 var
-  sDirArquivo : string;
+  sDirArquivo, mErro : string;
 begin
   if Trim(edtCertificado.Text) <> '' then
   begin
@@ -335,9 +362,11 @@ begin
       if not ExtraiChavesCertificado(edtCertificado.Text,
                                     edtSenhaCertificado.Text,
                                     sDirArquivo+'SicoobChavePrivada.key',
-                                    sDirArquivo+'SicoobCertificado.pem') then
+                                    sDirArquivo+'SicoobCertificado.pem',
+                                    mErro) then
       begin
-        MensagemSistema('Ocorreu uma falha ao extrair as chaves pública/privada!',msgAtencao);
+        MensagemSistema('Ocorreu uma falha ao extrair as chaves pública/privada!'+#13#10+
+                        mErro,msgAtencao);
         Abort;
       end;
     end;
