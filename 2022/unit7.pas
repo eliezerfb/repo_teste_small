@@ -12448,7 +12448,11 @@ begin
         FreeAndNil(oIni);
       end;
     end;
-    frmRelResumoVendas.SqlTraduzido       := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por lucro bruto',True, ibDataSet4);
+
+    frmRelResumoVendas.SqlTraduzido := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por ',True, ibDataSet4);
+    if AenTipoRelatorio <> trrvRankingProdVendido then
+      frmRelResumoVendas.SqlTraduzido := frmRelResumoVendas.SqlTraduzido + 'lucro bruto';
+
     frmRelResumoVendas.ShowModal;
   finally
     AgendaCommit(True);

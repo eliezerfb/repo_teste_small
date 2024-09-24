@@ -91,7 +91,7 @@ implementation
 uses
   uRetornaOperacoesRelatorio, uSmallResourceString, uEstruturaTipoRelatorioPadrao, uEstruturaRelResumoVendas,
   uDadosRelatorioPadraoDAO, uFuncoesBancoDados, uSmallEnumerados, uEstruturaRelResumoVendasNaoList,
-  uDialogs;
+  uDialogs, uEstruturaRelRankingProdutosVendidos;
 
 {$R *.dfm}
 
@@ -133,7 +133,9 @@ begin
     Self.Caption := 'Ranking de produtos vendidos';
   end;
   cbAgruparGrupo.Visible := (TipoRelatorio <> trrvRankingProdVendido);
-  cbAgruparGrupo.Checked := (TipoRelatorio <> trrvRankingProdVendido);
+
+  if (TipoRelatorio = trrvRankingProdVendido) then
+    cbAgruparGrupo.Checked := False;
   lblOrdenadoPor.Visible := (TipoRelatorio = trrvRankingProdVendido);
   cbxOrdenadoPor.Visible := (TipoRelatorio = trrvRankingProdVendido);
   {Dailon Parisotto (smal-704) 2024-09-17 Fim}
@@ -235,17 +237,21 @@ begin
   begin
     try
 
-    CarregaDadosProdutos;
-    oEstruturaCat := TEstruturaRelResumoVendas.New
-                                              .setDAO(TDadosRelatorioPadraoDAO.New
-                                                                              .setDataBase(DataBase)
-                                                                              //.CarregarDados(cdsProdutos) Mauricio Parizotto 2023-12-21
-                                                                              .CarregarDados(QryProdutos)
-                                                     );
+      CarregaDadosProdutos;
 
-    MontarFiltrosRodape(oEstruturaCat);
+      if FenTipoRelatorio = trrvRankingProdVendido then
+        oEstruturaCat := TEstruturaRelRankingProdutosVendidos.New
+      else
+        oEstruturaCat := TEstruturaRelResumoVendas.New;
 
-    Estrutura.GerarImpressao(oEstruturaCat);
+      oEstruturaCat.setDAO(TDadosRelatorioPadraoDAO.New
+                                                   .setDataBase(DataBase)
+                                                   .CarregarDados(QryProdutos)
+                          );
+
+      MontarFiltrosRodape(oEstruturaCat);
+
+      Estrutura.GerarImpressao(oEstruturaCat);
 
     finally
       FreeAndNil(QryProdutos);
@@ -366,6 +372,9 @@ begin
     AoEstruturaCat.FiltrosRodape.AddItem(EmptyStr);
   end;
 
+  if TipoRelatorio = trrvRankingProdVendido then
+    SqlTraduzido := SqlTraduzido + AnsiLowerCase(cbxOrdenadoPor.Text);
+
   AoEstruturaCat.FiltrosRodape.AddItem(SqlTraduzido);
   AoEstruturaCat.FiltrosRodape.AddItem(EmptyStr);  
     
@@ -381,15 +390,6 @@ begin
       AoEstruturaCat.FiltrosRodape.AddItem(chkOperacoes.Items[i]);
   end;
   AoEstruturaCat.FiltrosRodape.AddItem('Vendas por ECF, NFC-e ou SAT');
-
-  if TipoRelatorio = trrvRankingProdVendido then
-  begin
-    AoEstruturaCat.FiltrosRodape.AddItem(EmptyStr);
-    if FoArquivoDAT.Usuario.Html.TipoRelatorio in [ttiHTML, ttiPDF] then
-      AoEstruturaCat.FiltrosRodape.AddItem('<b>Ordenado por: ' + cbxOrdenadoPor.Text + '</b>')
-    else
-      AoEstruturaCat.FiltrosRodape.AddItem('Ordenado por: ' + cbxOrdenadoPor.Text);
-  end;
 end;
 
 function TfrmRelResumoVendas.RetornarDescrFiltroData: string;

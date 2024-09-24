@@ -584,6 +584,7 @@
         </DCCReference>
         <DCCReference Include="interfaces\uIRetornaCustoMedio.pas"/>
         <DCCReference Include="units\uRetornaCustoMedio.pas"/>
+        <DCCReference Include="units\uEstruturaRelRankingProdutosVendidos.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
