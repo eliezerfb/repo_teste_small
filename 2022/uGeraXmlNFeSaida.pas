@@ -45,6 +45,7 @@ var
   dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
   dvFCPSTRet_W06b: Double; // Sandro Silva 2024-03-25
   sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-06-16
+  FbAbortar: Boolean; // Dailon Parisotto 2024-09-23
 
   procedure GeraXmlNFeSaida;
   procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
@@ -190,6 +191,7 @@ var
 
   bPagouComTEF: Boolean;
 begin
+  FbAbortar := False;
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
   else
@@ -817,8 +819,12 @@ begin
           Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
           Form7.spdNFeDataSets.Campo('CNPJ_E02').Value := '';
 
-{          sPais    := 'Estados Unidos';
-          sCodPais := '2496';     }
+          sPais            := EmptyStr;
+          sCodPais         := EmptyStr;
+          sUFEmbarq        := EmptyStr;
+          sLocaldeEmbarque := EmptyStr;
+          sLocalDespacho   := EmptyStr;
+          sEx15            := EmptyStr;
 
           frmInformacoesExportacaoNFe := TfrmInformacoesExportacaoNFe.Create(nil);
           try
@@ -836,8 +842,9 @@ begin
               sEx15            := frmInformacoesExportacaoNFe.IdentCompradorExterior;
             end else
             begin
-              Form7.SetTextoCampoSTATUSNFe('Informações para exportação não informadas ou inválidas.');
-              Exit;
+              FbAbortar := True;
+              Form7.SetTextoCampoSTATUSNFe('Processo cancelado pelo usuário (informações de exportação/drawback)');
+              raise Exception.Create('Processo cancelado pelo usuário (informações de exportação/drawback)');
             end;
           finally
             FreeAndNil(frmInformacoesExportacaoNFe);

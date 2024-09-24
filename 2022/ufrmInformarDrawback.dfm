@@ -1,18 +1,18 @@
 inherited frmInformarDrawback: TfrmInformarDrawback
   BorderIcons = []
   Caption = 'C'#243'digo Drawback'
-  ClientHeight = 383
-  ClientWidth = 714
+  ClientHeight = 382
+  ClientWidth = 713
   Position = poScreenCenter
   OnClose = FormClose
-  ExplicitWidth = 730
-  ExplicitHeight = 422
+  ExplicitWidth = 729
+  ExplicitHeight = 421
   PixelsPerInch = 96
   TextHeight = 16
   object dbgPrincipal: TDBGrid
     Left = 20
     Top = 10
-    Width = 673
+    Width = 672
     Height = 317
     Anchors = [akLeft, akTop, akRight]
     BiDiMode = bdLeftToRight
@@ -59,8 +59,8 @@ inherited frmInformarDrawback: TfrmInformarDrawback
       end>
   end
   object btnOK: TBitBtn
-    Left = 490
-    Top = 344
+    Left = 482
+    Top = 337
     Width = 100
     Height = 25
     Anchors = [akTop, akRight]
@@ -75,8 +75,8 @@ inherited frmInformarDrawback: TfrmInformarDrawback
     OnClick = btnOKClick
   end
   object btnCancelar: TBitBtn
-    Left = 594
-    Top = 344
+    Left = 592
+    Top = 337
     Width = 100
     Height = 25
     Anchors = [akTop, akRight]
