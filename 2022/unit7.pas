@@ -9584,9 +9584,10 @@ procedure TForm7.Movimentaodoitemporperodo1Click(Sender: TObject);
 begin
   frmRelatorioMovItensPeriodo := TfrmRelatorioMovItensPeriodo.Create(nil);
   try
-    frmRelatorioMovItensPeriodo.Imagem             := imgImprimir.Picture;
-    frmRelatorioMovItensPeriodo.Usuario            := Usuario;
-    frmRelatorioMovItensPeriodo.Transaction        := IBTransaction1;
+    frmRelatorioMovItensPeriodo.Imagem           := imgImprimir.Picture;
+    frmRelatorioMovItensPeriodo.Usuario          := Usuario;
+    frmRelatorioMovItensPeriodo.Transaction      := IBTransaction1;
+    frmRelatorioMovItensPeriodo.DescricaoProduto := ibDataSet4DESCRICAO.AsString;
     frmRelatorioMovItensPeriodo.ShowModal;
   finally
     FreeAndNil(frmRelatorioMovItensPeriodo);

@@ -18,8 +18,11 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
+    FcDescricaoProduto: String;
     function FazValidacoes: Boolean;
+    procedure setDescricaoProduto(const Value: String);
   public
+    property DescricaoProduto: String read FcDescricaoProduto write setDescricaoProduto;
   end;
 
 var
@@ -70,6 +73,13 @@ begin
 
   dtInicial.Date := FoArquivoDAT.Usuario.Outros.PeriodoInicial;
   dtFinal.Date   := FoArquivoDAT.Usuario.Outros.PeriodoFinal;
+end;
+
+procedure TfrmRelatorioMovItensPeriodo.setDescricaoProduto(const Value: String);
+begin
+  FcDescricaoProduto := Value;
+
+  Self.Caption := Self.Caption + ' - ' + FcDescricaoProduto;
 end;
 
 end.
