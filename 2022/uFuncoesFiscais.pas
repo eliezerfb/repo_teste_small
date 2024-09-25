@@ -20,6 +20,7 @@ function NFeIndicadorFinalidadeConsumidorFinal(IndFinal: String): Boolean;
 function ProdutoOrigemImportado(sOrigem: String): Boolean;
 function CampoICMporNatureza(vCampo,vNatureza : string; Transacao : TIBTransaction) : string;
 function RetornaValorSQL(vSQL : string;  Transacao : TIBTransaction) : variant;
+function NFeFinalidadeDevolucaoImpostoManual(sFinnfe, sImpostoManual: String): Boolean;
 
 implementation
 
@@ -37,6 +38,11 @@ function NFeIndicadorFinalidadeConsumidorFinal(IndFinal: String): Boolean;
 // Retorna True se IndFinal for de consumudor final. Inicialmento = 1
 begin
   Result := IndFinal = '1';
+end;
+
+function NFeFinalidadeDevolucaoImpostoManual(sFinnfe, sImpostoManual: String): Boolean;
+begin
+  Result := (sFinnfe = '4') or (sImpostoManual = 'S');
 end;
 
 function ProdutoOrigemImportado(sOrigem: String): Boolean;

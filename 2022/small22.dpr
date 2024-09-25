@@ -16,10 +16,8 @@ uses
   UNIT14 in 'UNIT14.PAS' {Form14},
   UNIT12 in 'UNIT12.PAS' {Form12},
   UNIT48 in 'UNIT48.PAS' {Form48},
-  //Unit10 in 'Unit10.pas' {Form10},
   Unit16 in 'Unit16.pas' {Form16},
   Unit17 in 'Unit17.pas' {Form17},
-  //unit99 in 'unit99.pas' {Form99},
   uFrmParcelas in 'uFrmParcelas.pas' {FrmParcelas},
   Unit19 in 'Unit19.pas' {Form19},
   uFrmAssistenteProcura in 'uFrmAssistenteProcura.pas' {FrmAssistenteProcura},
@@ -39,7 +37,6 @@ uses
   Unit43 in 'Unit43.pas' {Form43},
   Unit4 in 'Unit4.pas' {Form4},
   Unit13 in 'Unit13.pas' {Form13},
-  //UNIT3 in 'UNIT3.PAS' {Senhas2},
   unit24 in 'unit24.pas' {Form24},
   Unit30 in 'Unit30.pas' {Form30},
   Unit40 in 'Unit40.pas' {Form40},
@@ -263,13 +260,14 @@ uses
   uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
   uFrmTecnico in 'uFrmTecnico.pas' {FrmTecnico},
   uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas',
-  uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas',  
+  uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas',
   uIntegracaoItau in '..\..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\..\unit_compartilhada\Itau\uClassesItau.pas',
   uWebServiceItau in '..\..\unit_compartilhada\Itau\uWebServiceItau.pas',
   uFrmTelaProcessamento in '..\..\unit_compartilhada\uFrmTelaProcessamento.pas' {FrmTelaProcessamento},
   uFrmEstoque in 'uFrmEstoque.pas' {FrmEstoque},
   uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout},
+  uFrmEstoqueIVA in 'uFrmEstoqueIVA.pas' {FrmEstoqueIVA},
   uIRetornaCustoMedio in 'interfaces\uIRetornaCustoMedio.pas',
   uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas';
 
@@ -337,7 +335,6 @@ begin
       Application.CreateForm(TForm1, Form1);
       Application.CreateForm(TForm2, Form2);
       Application.CreateForm(TSenhas, Senhas);
-      //Application.CreateForm(TSenhas2, Senhas2);
       Application.CreateForm(TForm24, Form24);
       Application.CreateForm(TForm30, Form30);
       Application.CreateForm(TForm7, Form7);
@@ -346,9 +343,7 @@ begin
       Application.CreateForm(TForm19, Form19);
       Application.CreateForm(TForm12, Form12);
       Application.CreateForm(TForm48, Form48);
-      //Application.CreateForm(TForm10, Form10); Mauricio Parizotto 2024-07-17
       Application.CreateForm(TForm16, Form16);
-      //Application.CreateForm(TForm99, Form99);
       Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
       Application.CreateForm(TForm21, Form21);
       Application.CreateForm(TForm25, Form25);
@@ -364,7 +359,6 @@ begin
       Application.CreateForm(TForm40, Form40);
       Application.CreateForm(TForm15, Form15);
       Application.CreateForm(TForm35, Form35);
-      //Application.CreateForm(TForm8, Form8);
       Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
       Application.CreateForm(TForm6, Form6);
       Application.CreateForm(TForm11, Form11);

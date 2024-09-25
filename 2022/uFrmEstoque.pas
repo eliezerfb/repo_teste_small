@@ -274,6 +274,7 @@ type
     Image8: TImage;
     Label27: TLabel;
     pnlEscondeWin11: TPanel;
+    lblIVAPorEstado: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -390,6 +391,10 @@ type
     procedure tbsCadastroShow(Sender: TObject);
     procedure edtCodigoChange(Sender: TObject);
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
+    procedure lblIVAPorEstadoClick(Sender: TObject);
+    procedure lblIVAPorEstadoMouseLeave(Sender: TObject);
+    procedure lblIVAPorEstadoMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -428,8 +433,16 @@ implementation
 
 {$R *.dfm}
 
-uses unit7, MAIS, smallfunc_xe, uDialogs, uPermissaoUsuario, MAIS3,
-     uTestaProdutoExiste, uITestaProdutoExiste, Unit19;
+uses unit7
+, MAIS
+, smallfunc_xe
+, uDialogs
+, uPermissaoUsuario
+, MAIS3
+, uTestaProdutoExiste
+, uITestaProdutoExiste
+, Unit19
+, uFrmEstoqueIVA;
 
 { TFrmEstoque }
 
@@ -917,6 +930,23 @@ begin
     end;
   except
   end;
+end;
+
+procedure TFrmEstoque.lblIVAPorEstadoClick(Sender: TObject);
+begin
+  //Mauricio Parizotto 2024-09-10
+  ConfiguraIVAporEstado(DSCadastro.DataSet.FieldByName('IDESTOQUE').AsInteger,Form7.ibDataSet13ESTADO.AsString);
+end;
+
+procedure TFrmEstoque.lblIVAPorEstadoMouseLeave(Sender: TObject);
+begin
+  lblIVAPorEstado.Font.Style := [];
+end;
+
+procedure TFrmEstoque.lblIVAPorEstadoMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  lblIVAPorEstado.Font.Style := [fsBold,fsUnderline];
 end;
 
 procedure TFrmEstoque.lblAnteriorClick(Sender: TObject);
@@ -1810,6 +1840,10 @@ begin
   Memo1.Lines.Add('<rastro>Sim"Informar grupo Rastreamento de Produto"</rastro>');
 
   Memo1.Lines.Add('<cBenef>0000000000 "Código de Benefício Fiscal na UF aplicado ao item"</cBenef>');
+
+  Memo1.Lines.Add('<cCredPresumido> "Código do crédito presumido"</cCredPresumido>');
+  Memo1.Lines.Add('<pCredPresumido>0,00 "Alíquota do crédito presumido"</pCredPresumido>');
+
   Memo1.Lines.Add('<motDesICMS>00 "Motivo da desoneração do ICMS"</motDesICMS>');
   Memo1.Lines.Add('<FCP>0,00 "Fundo de Combate a Pobreza"</FCP>');
   Memo1.Lines.Add('<FCPST>0,00 "Fundo de Combate a Pobreza ST"</FCPST>');

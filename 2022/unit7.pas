@@ -1730,11 +1730,13 @@ type
     IBDataSet2PRODUTORRURAL: TIBStringField;
     ImgProduto: TImage;
     ImgSemProduto: TImage;
+    ibDataSet14IMPOSTOMANUAL: TIBStringField;
     DetalhamentodasOrdensfiltradas1: TMenuItem;
     Aniversariantes1: TMenuItem;
     Dia1: TMenuItem;
     Semana1: TMenuItem;
     Ms1: TMenuItem;
+    ibDataSet4IDESTOQUE: TIntegerField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2460,6 +2462,7 @@ type
     procedure ibDataSet4ONPROMOChange(Sender: TField);
     procedure ibDataSet16CST_ICMSChange(Sender: TField);
     procedure ibDataSet14AfterInsert(DataSet: TDataSet);
+    procedure ibDataSet14BeforePost(DataSet: TDataSet);
     procedure DetalhamentodasOrdensfiltradas1Click(Sender: TObject);
     procedure Dia1Click(Sender: TObject);
     procedure Ms1Click(Sender: TObject);
@@ -4580,30 +4583,6 @@ begin
 end;
 
 
-
-{Sandro Silva 2022-09-12 inicio
-// A PEDIDO DO
-// VANDERLEI PERETI
-// FONES: 49 35664136 / 91427178
-// EMAIL: comercial@vpinformatica.com.br
-function AliqICMdoCliente16: double;
-begin
-  if Form1.fAliqICMdoCliente <> 0 then
-  begin
-    if Form7.ibDataSet13ESTADO.AsString =  Form7.ibDataSet2ESTADO.AsString then
-    begin
-      Result :=  Form1.fAliqICMdoCliente;
-    end else
-    begin
-      Result := Form7.IbDataSet16.FieldByName('ICM').AsFloat;
-    end;
-  end else
-  begin
-    Result := Form7.IbDataSet16.FieldByName('ICM').AsFloat;
-  end;
-end;
-}
-
 function utf8Fix(sTexto: String): String;
 const
   acento : array[1..47] of string = ('á', 'à', 'â', 'ã', 'ä', 'é', 'è', 'ê', 'ë', 'í', 'ì', 'î', 'ï', 'ó', 'ò', 'ô', 'õ', 'ö', 'ú', 'ù', 'û', 'ü', 'ç', 'Á', 'À', 'Â', 'Ã', 'Ä', 'É', 'È', 'Ê', 'Ë', 'Í', 'Ì', 'Î', 'Ï', 'Ó', 'Ò', 'Ô', 'Õ', 'Ö', 'Ú', 'Ù', 'Û', 'Ü', 'Ç', 'Ã');
@@ -5438,7 +5417,6 @@ begin
 
     Form7.ibDataSet100.Open;
   except
-    //ShowMessage('Erro na tabela de auditoria. Cod. 2'+chr(10)+chr(10)+Form7.ibDataSet100.SelectSql.Text); Mauricio Parizotto 2023-10-25
     MensagemSistema('Erro na tabela de auditoria. Cod. 2'+chr(10)+chr(10)+Form7.ibDataSet100.SelectSql.Text,msgErro);
   end;
 
@@ -7362,427 +7340,6 @@ end;
 
 
 
-(*function ExportaNF(pP1:Boolean):Boolean;
-var
-  vCampo: array [0..30000] of Variant; // Cria uma matriz com 1000 elementos
-  I, J : Integer; // e conteúdo variável
-  F: TextFile;
-  vTipo : Word;
-begin
-  Result := True;
-
-  {$IFDEF VER150}
-  ShortDateFormat := 'dd/mm/yyyy';
-  {$ELSE}
-  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
-  {$ENDIF}
-
-  // Relaciona a natureza da operação com o arquivo de vendas
-  if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
-    Form7.ibDataSet14.Append
-  else
-    Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-  //
-  // Relaciona os clientes com o arquivo de vendas
-  //
-  Form7.ibDataSet2.Close;
-  Form7.ibDataSet2.Selectsql.Clear;
-  Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
-  Form7.ibDataSet2.Open;
-  //
-  Form7.ibDataSet9.Locate('NOME',Form7.ibDataSet15VENDEDOR.AsString,[]);
-  Form7.ibDataSet18.Locate('NOME',Form7.ibDataSet15TRANSPORTA.AsString,[]);
-  //
-  // Verifica se o cliente está cadastrado se a nota tem valor
-  //
-  if (AllTrim(Form7.ibDataSet15CLIENTE.AsString) <> '') and ((Form7.ibDataSet15TOTAL.AsFloat <> 0) or (Form7.ibDataSet15ICMS.AsFloat <> 0)) then
-  begin
-    {                                           }
-    { Inicializa todos os elementos dos vetores }
-    {                                           }
-    for I := 1 to 13000 do vCampo[I] := '';
-    {                                                      }
-    { Atribui o valor a cada elemento conf fonte no dBFAST }
-    {                                                      }
-    vCampo[001] := Form7.ibDataSet13CGC.Value;        //   1 C.G.C. do Emitente
-    vCampo[002] := Form7.ibDataSet15OPERACAO.Value;   //   2 Natureza da operacão
-    vCampo[003] := Form7.ibDataSet14CFOP.Value;       //   3 C.F.O.
-    vCampo[005] := Form7.ibDataSet13IE.Value;         //   5 I.E. do emitente
-    vCampo[007] := Form7.ibDataSet2NOME.Value;        //   7 Razão Social do Destinatário
-    vCampo[008] := Form7.ibDataSet2CGC.Value;         //   8 C.G.C. do Destinatário
-    vCampo[009] := DateTimeToStr(Form7.ibDataSet15EMISSAO.asDateTime); //   9 Data de emissão
-    vCampo[010] := Form7.ibDataSet2ENDERE.Value;      //  10 Endereço do Destinatário
-    vCampo[011] := Form7.ibDataSet2COMPLE.Value;      //  11 Bairro do cliente
-    vCampo[012] := Form7.ibDataSet2CEP.Value;         //  12 CEP do Destinatário
-    vCampo[013] := Form7.ibDataSet15SAIDAD.AsString;  //  13 Data de Saída
-    vCampo[014] := Form7.ibDataSet2CIDADE.Value;      //  14 Município do Destinatário
-    vCampo[015] := Form7.ibDataSet2FONE.Value;        //  15 Telefone do cliente
-    vCampo[016] := Form7.ibDataSet2ESTADO.Value;      //  16 U.F. do Destinatário
-    vCampo[017] := Form7.ibDataSet2IE.Value;          //  17 I.E. do Destinatário
-    vCampo[018] := Form7.ibDataSet15SAIDAH.Value;     //  18 Hora de saída
-
-    vCampo[086] := AllTrim(Form7.ibDataSet2IDENTIFICADOR1.AsString);  // Identificador 1 do cliente
-    vCampo[087] := AllTrim(Form7.ibDataSet2IDENTIFICADOR2.AsString);  // Identificador 2 do cliente
-    vCampo[088] := AllTrim(Form7.ibDataSet2IDENTIFICADOR3.AsString);  // Identificador 3 do cliente
-    vCampo[089] := AllTrim(Form7.ibDataSet2IDENTIFICADOR4.AsString);  // Identificador 4 do cliente
-
-    VCampo[076] := 'X'; // 76 X da nota de saida
-    vCampo[077] := ' '; // 77 X da nota de entrada
-    vCampo[034] := Form7.ibDataSet15TRANSPORTA.Value;   //  34 Transportadora Nome
-    vCampo[035] := Form7.ibDataSet15FRETE12.Value;      //  35 Frete por conta (0 ou 1)
-
-    // Transportadora
-    if AllTrim(Form7.ibDataSet15TRANSPORTA.AsString)=AllTrim(Form7.ibDataSet18NOME.AsString) then
-    begin
-      vCampo[036] := Form7.ibDataSet15PLACA.Value;        //  36 Placa do veículo
-      vCampo[037] := Form7.ibDataSet18ESTADO.Value;       //  37 estado do veículo
-      vCampo[038] := Form7.ibDataSet18CGC.Value;          //  38 CGC da tranportadora
-      vCampo[039] := Form7.ibDataSet18ENDERECO.Value;     //  39 Transportadora endereço
-      vCampo[040] := Form7.ibDataSet18MUNICIPIO.Value;    //  40 Transportadora município
-      vCampo[041] := Form7.ibDataSet18UF.Value;           //  41 Estado da transportadora
-      vCampo[042] := Form7.ibDataSet18IE.Value;           //  42 IE da transportadora
-    end;
-    //
-    vCampo[043] := Form7.ibDataSet15VOLUMES.Value;      //  43 Quantidade de volumes
-    vCampo[044] := Form7.ibDataSet15ESPECIE.Value;      //  44 Espécie de volumes
-    vCampo[045] := Form7.ibDataSet15MARCA.Value;        //  45 Marca dos volumes
-    vCampo[047] := Form7.ibDataSet15PESOBRUTO.Value;    //  47 Peso bruto
-    vCampo[048] := Form7.ibDataSet15PESOLIQUI.Value;    //  48 Peso liquido
-    //
-    vCampo[049] := Copy(Form7.ibDataSet15COMPLEMENTO.AsString+REplicate(' ',3000),1,60);        //  49 Informacoes Complementares 1
-    vCampo[050] := Copy(Form7.ibDataSet15COMPLEMENTO.AsString+REplicate(' ',3000),1+(60*1),60); //  49 Informacoes Complementares 1
-    vCampo[051] := Copy(Form7.ibDataSet15COMPLEMENTO.AsString+REplicate(' ',3000),1+(60*2),60); //  49 Informacoes Complementares 1
-    vCampo[052] := Copy(Form7.ibDataSet15COMPLEMENTO.AsString+REplicate(' ',3000),1+(60*3),60); //  49 Informacoes Complementares 1
-    vCampo[053] := Copy(Form7.ibDataSet15COMPLEMENTO.AsString+REplicate(' ',3000),1+(60*4),60); //  49 Informacoes Complementares 1
-    //
-    vCampo[054] := ''; //  54 Descrição dos serviços 1
-    vCampo[055] := ''; //  55 Descrição dos Serviços 2
-    vCampo[056] := ''; //  56 Descrição dos Serviços 3
-    //
-    vCampo[057] := Form7.ibDataSet13ENDERECO.Value;   //  57 Endereco do Emitente
-    vCampo[059] := Form7.ibDataSet13MUNICIPIO.Value;  //  59 Cidade do Emitente
-    vCampo[060] := Form7.ibDataSet13CEP.Value;        //  60 C.E.P. Emitente
-    vCampo[061] := UpperCase(Form7.ibDataSet13ESTADO.AsString);     //  61 Estado do Emitente
-    vCampo[062] := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9);   //  62 Número da Nota Fiscal
-    //
-    vCampo[064] := Form7.ibDataSet15IDENTIFICADOR1.Value;     //  Identificador 1
-    //
-    vCampo[067] := Form7.ibDataSet13NOME.Value;       //  67 Nome do emitente
-    vCampo[098] := Form7.ibDataSet15VENDEDOR.Value;     //  98 Nome do vendedor
-    vCampo[090] := 'NSU: '+Form7.ibDataSet15NSU.Value;  //  90 NSU
-    vCampo[091] := 'Geracao da NSU: '+Form7.ibDataSet15NSUD.AsString +' '+ Copy(Form7.ibDataSet15NSUH.AsString,1,5);  //  Geração da NSU:
-
-    // Passa os dados do arquivo ITENS001 para os vetores
-    I := 0;
-
-    while (not Form7.ibDataSet16.Eof) do // Disable
-    begin
-      if (Form7.ibDataSet16DESCRICAO.AsString <> '') and (Form7.ibDataSet16QUANTIDADE.AsFloat > 0) then
-      begin
-        Form7.ibDataSet4.Close;                                                //
-        Form7.ibDataSet4.Selectsql.Clear;                                      // receber Relacionado
-        Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)+' ');  //
-        Form7.ibDataSet4.Open;
-
-        vCampo[01000 + I] := Form7.ibDataSet16DESCRICAO.Value;  // 01000 Descrição do item
-        vCampo[02000 + I] := Form7.ibDataSet16MEDIDA.Value;     // 02000 Unidades de medida do item
-        vCampo[03000 + I] := Form7.ibDataSet16QUANTIDADE.Value; // 03000 Quantidades do item
-        vCampo[04000 + I] := Form7.ibDataSet16UNITARIO.Value;   // 04000 Valor unitário do item
-        vCampo[05000 + I] := Form7.ibDataSet16QUANTIDADE.Value  //
-                           * Form7.ibDataSet16UNITARIO.Value;   // 05000 Valor total do item
-        if Form7.ibDataSet16IPI.AsFloat >= 0 then  vCampo[6000 + I] := Form7.ibDataSet16IPI.AsFloat else vCampo[6000 + I] := 0;        // 06000 % IPI do item
-        vCampo[07000 + I] := (Form7.ibDataSet16QUANTIDADE.Value * Form7.ibDataSet16UNITARIO.Value * ( Form7.ibDataSet16IPI.Value / 100 )); // 07000 Valor IPI do item
-        //
-        vCampo[08000 + I] := Form7.ibDataSet16ICM.Value;        // 08000 % ICM do item
-        vCampo[09000 + I] := Form7.ibDataSet16CODIGO.Value;     // 09000 Códigos do item
-
-        // Procura o produto no estoque
-        if Form7.ibDataSet4CODIGO.Value = Form7.ibDataSet16CODIGO.Value then
-        begin
-          vCampo[11000 + I] := Form7.ibDataSet4CF.Value;          // 11000 CF do item
-          vCampo[12000 + I] := Form7.ibDataSet4CST.Value;         // 12000 ST do item
-          vCampo[13000 + I] := Form7.ibDataSet4REFERENCIA.Value;  // 13000 Referência
-        end;
-
-        vCampo[14000 + I] := Form7.ibDataSet16CFOP.Value;  // 14000 CFOP do item
-        vCampo[15000 + I] := Form7.ibDataSet4LOCAL.Value;  // 15000 Local do item
-
-        I := I + 1;
-      end else
-      begin
-        // DESCRICAO NO CORPO DA NOTA
-        if (Form7.ibDataSet16DESCRICAO.AsString <> '') then
-        begin
-          vCampo[01000 + I] := Form7.ibDataSet16DESCRICAO.Value;  // 150 Descrição do item
-          I := I + 1;
-        end;
-      end;
-      Form7.ibDataSet16.next;
-    end;
-
-    vCampo[020] := Form7.ibDataSet15SERVICOS.Value;   //  20 Base de Cálculo do ISS
-    if Form7.ibDataSet15SERVICOS.AsFloat <> 0 then vCampo[021] := Form7.ibDataSet15ISS.AsFloat / Form7.ibDataSet15SERVICOS.AsFloat * 100 else vCampo[021] := 0;
-    vCampo[022] := Form7.ibDataSet15ISS.Value;          //  22 Valor total do ISS
-    vCampo[023] := Form7.ibDataSet15BASEICM.Value;      //  23 Base de Cálculo do ICMS
-    vCampo[025] := Form7.ibDataSet15ICMS.Value;         //  25 Valor do ICM
-    vCampo[026] := Form7.ibDataSet15BASESUBSTI.Asfloat; //  26 Base de subst
-    vCampo[027] := Form7.ibDataSet15ICMSSUBSTI.AsFloat; //  27 ICMS de Subst
-    vCampo[028] := Form7.ibDataSet15MERCADORIA.Value;   //  28 Total dos Produtos
-    vCampo[029] := Form7.ibDataSet15FRETE.Value;        //  29 Valor do frete
-    vCampo[030] := Form7.ibDataSet15SEGURO.Value;       //  30 Seguro
-    vCampo[031] := Form7.ibDataSet15DESPESAS.Value;     //  31 Outras despesas
-    vCampo[032] := Form7.ibDataSet15IPI.Value;          //  32 Valor total do IPI
-    vCampo[033] := Form7.ibDataSet15TOTAL.Value;        //  33 Valor total da nota
-    vCampo[046] := Form7.ibDataSet15DESCONTO.Value;     //  29 Valor do desconto
-    vCampo[069] := vCampo[0330];
-    vCampo[085] := Form7.ibDataSet15MERCADORIA.Value;   //  Valor total dos produtos
-
-    vCampo[063] := Alltrim(Extenso(vCampo[033]));
-    // Imposto de renda: Se o valor for maior do que o Teto limite para tributação de IR sobre serviços tributa: Servicos >= ConfLimite then IR = Servicos * (( ConfIR / 100) * 1) else IR = 0;
-    try
-      if vCampo[020] >= Form1.ConfLimite  then vCampo[068] := vCampo[020] * ((Form1.ConfIR / 100) * 1) else vCAmpo[068] := 0;
-    except end;
-    //
-    J := 0;
-
-    // servicos
-    Form7.ibDataSet35.First;
-    while not Form7.ibDataSet35.Eof do
-    begin
-      if (Form7.ibDataSet35DESCRICAO.AsString <> '') then
-      begin
-        vCampo[2150 + J] := Form7.ibDataSet35DESCRICAO.Value;  // 2150 Descrição do item de servico
-        vCampo[2300 + J] := Form7.ibDataSet35QUANTIDADE.Value; // 2300 Quantidades do item de servico
-        if Form7.ibDataSet35QUANTIDADE.AsFloat <> 0 then vCampo[2350 + J] := Form7.ibDataSet35TOTAL.AsFloat / Form7.ibDataSet35QUANTIDADE.Asfloat;   // 2350 Valor unitário do item de servico
-        vCampo[2400 + J] := Form7.ibDataSet35TOTAL.Value;      // 2400 Valor total do item de servico
-        vCampo[2600 + J] := '   ';
-        //
-        J := J + 1;
-      end;
-      Form7.ibDataSet35.Next;
-    end;
-  end;
-
-  Form7.SaveDialog1.FileName := 'SmallNF'+Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'.TXT';
-  Form7.SaveDialog1.Title    := 'Exportar Nota Fiscal';
-
-  if not Form7.SaveDialog1.Execute then
-    Exit;
-
-  DeleteFile(pChar(Form7.SaveDialog1.FileName));
-  AssignFile(F, Form7.SaveDialog1.FileName);
-  Rewrite(F);
-
-  for I := 1 to 30000 do
-  begin
-    vTipo := VarType(vCampo[I]);
-
-    //if (vTipo = varString) then Mauricio Parizotto 2024-01-10
-    if (vTipo = varUString) then
-    begin
-      if Alltrim(vCampo[I]) <> '' then
-        Writeln(F,StrZero(I,5,0)+'='+vCampo[I]);
-    end;
-
-    if (vTipo = varDouble) then
-    begin
-      Writeln(F,StrZero(I,5,0)+'='+StrZero(vCampo[I],14,4));
-    end;
-  end;
-
-  CloseFile(F);
-end;    *)
-
-(*
-function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
-const
-  _cNomeMailEXE = 'email.exe';
-type
-  TAttachAccessArray = array [0..0] of TMapiFileDesc;
-  PAttachAccessArray = ^TAttachAccessArray;
-var
-{
-  RetVal : Integer;
-}
-  Mais1Ini : tIniFile;
-  sAtual : String;
-  Msg: TMapiMessage;
-  lpSender, lpRecepient, lpComCopia: TMapiRecipDesc;
-  FileAttach: TMapiFileDesc;
-  SM: TFNMapiSendMail;
-  MAPIModule: HModule;
-  Flags: Cardinal;
-  slAnexos: TStringList;
-  Attachments: PAttachAccessArray;
-
-  i: Integer;
-  //
-begin
-  //
-  GetDir(0,sAtual);
-  //
-  Mais1ini := TIniFile.Create('frente.ini');
-  //
-  if FileExists(pChar('mail.exe')) and (Mais1Ini.ReadString('mail','Host','') <> '') then
-  begin
-    //
-    while FileExists(pChar('email.exe')) do
-    begin
-      DeleteFile(pChar(Form1.sAtual+'\email.exe'));
-      sleep(10);
-    end;
-    //
-    while not FileExists(pChar('email.exe')) do
-    begin
-      CopyFile(pChar(Form1.sAtual+'\mail.exe'), pChar(Form1.sAtual+'\email.exe'),True);
-      sleep(10);
-    end;
-    //
-    ShellExecute( 0, 'Open', pChar(Form1.sAtual+'\'+_cNomeMailEXE) , pChar(sPara+' '+'"'+sAssunto+'"'+' '+'"'+sTexto+'"'+' '+'"'+cAnexo+'"'), '', SW_Show);
-    // Deve aguardar o processo do mail finalizar o processo de envio
-    while processExists(_cNomeMailEXE) do
-    begin
-      Sleep(250);
-    end;
-    //
-    Result := 1;
-  end else
-  begin
-    // cria propriedades da mensagem
-    FillChar(Msg, SizeOf(Msg), 0);
-    //
-    with Msg do
-    begin
-      if (sAssunto <> '') then
-        //lpszSubject := PChar(sAssunto);  Mauricio Parizotto 2023-12-29
-        lpszSubject := PAnsiChar(AnsiString(sAssunto));
-
-      if (sTexto <> '')   then
-        //lpszNoteText := PChar(sTexto); //Corpo da Mensagem Mauricio Parizotto 2023-12-29
-        lpszNoteText := PAnsiChar(AnsiString(sTexto)); //Corpo da Mensagem
-
-      // remetente
-      if (sDe <> '') then
-      begin
-        lpSender.ulRecipClass := MAPI_ORIG;
-        //lpSender.lpszName := PChar(sDe); Mauricio Parizotto 2023-12-29
-        lpSender.lpszName := PAnsiChar(AnsiString(sDe));
-        //lpSender.lpszAddress := PChar(sDe); Mauricio Parizotto 2023-12-29
-        lpSender.lpszAddress := PAnsiChar(AnsiString(sDe));
-        lpSender.ulReserved := 0;
-        lpSender.ulEIDSize := 0;
-        lpSender.lpEntryID := nil;
-        lpOriginator := @lpSender;
-      end;
-
-      // destinatário
-      if (sPara <> '') then
-      begin
-        //
-        if not bConfirma then
-        begin
-          sPara := StrTran(StrTran(sPara,';','><'),' ','');
-          sPara := StrTran(sPara,'><','>;<');
-        end;
-        //
-        lpRecepient.ulRecipClass := MAPI_TO;
-        //lpRecepient.lpszName := PChar(''); Mauricio Parizotto 2023-12-19
-        lpRecepient.lpszName := PAnsiChar(AnsiString(''));
-        //lpRecepient.lpszAddress := PChar(sPara); Mauricio Parizotto 2023-12-19
-        lpRecepient.lpszAddress := PAnsiChar(AnsiString(sPara));
-        lpRecepient.ulReserved := 0;
-        lpRecepient.ulEIDSize := 0;
-        lpRecepient.lpEntryID := nil;
-        nRecipCount := 1;
-        lpRecips := @lpRecepient;
-      end else
-      begin
-        if (sCC <> '') then
-        begin
-          lpComCopia.ulRecipClass := MAPI_CC;
-          //lpComCopia.lpszName     := PChar(sCC);
-          lpComCopia.lpszName     := PAnsiChar(AnsiString(sCC));
-          //lpComCopia.lpszAddress  := PChar(sCC);
-          lpComCopia.lpszAddress  := PAnsiChar(AnsiString(sCC));
-          lpComCopia.ulReserved   := 0;
-          lpComCopia.ulEIDSize    := 0;
-          lpComCopia.lpEntryID    := nil;
-          nRecipCount             := 1;
-          lpRecips                := @lpComCopia;
-        end else
-        begin
-          lpRecips := nil;
-        end;
-      end;
-      // arquivo anexo
-      if (cAnexo = '') then
-      begin
-        nFileCount := 0;
-        lpFiles := nil;
-      end else
-      begin
-        slAnexos := RetornaListaQuebraLinha(cAnexo);
-        try
-          if slAnexos.Count > 0 then
-          begin
-            GetMem(Attachments, SizeOf(TMapiFileDesc) * slAnexos.Count);
-            for i := 0 to Pred(slAnexos.Count) do
-            begin
-              Attachments[i].ulReserved := 0;
-              Attachments[i].flFlags := 0;
-              Attachments[i].nPosition := ULONG($FFFFFFFF);
-              Attachments[i].lpszPathName := StrNew( PAnsichar(PChar(slAnexos.Strings[i]) ));
-              Attachments[i].lpszFileName :=
-              StrNew( PAnsichar(PChar( ExtractFileName(slAnexos.Strings[i]) ) ));
-              Attachments[i].lpFileType := nil;
-            end;
-          end
-          {endif};
-          nFileCount := slAnexos.Count;
-          lpFiles := @Attachments^;
-        finally
-          FreeAndNil(slAnexos);
-        end;
-      end;
-
-      // carrega dll e o método sPara envio do email
-      MAPIModule := LoadLibrary(PChar(MAPIDLL));
-      if MAPIModule = 0 then
-      begin
-        Result := -1
-      end else
-      begin
-        try
-          if bConfirma then
-          begin
-            Flags := MAPI_DIALOG or MAPI_LOGON_UI;
-          end else
-          begin
-            Flags := 0;
-          end;
-          //
-          @SM := GetProcAddress(MAPIModule, 'MAPISendMail');
-          if @SM <> nil then
-          begin
-            Result := SM(0, Application.Handle, Msg, Flags, 0);
-          end else
-          begin
-            Result := 1;
-          end;
-        finally
-          FreeLibrary(MAPIModule);
-        end;
-      end;
-    end;
-
-  end;
-
-  Mais1Ini.Free;
-
-  CHDir(sAtual);
-end;
-*)
-
 function CriaJpg(sP1: String) :Boolean;
 var
   jp: TJPEGImage;  //Requires the "jpeg" unit added to "uses" clause.
@@ -9633,6 +9190,19 @@ begin
         Form7.ibDataSet14REFERENCIANOTA.AsString := 'N'
       else
         Form7.ibDataSet14REFERENCIANOTA.AsString := 'S';
+      Form7.ibDataSet14.Post;
+      Screen.Cursor            := crDefault;
+      Abort;
+    end;
+
+    //Mauricio Parizotto 2024-06-21
+    if DBGrid1.SelectedField.Name = 'ibDataSet14IMPOSTOMANUAL' then
+    begin
+      Form7.ibDataSet14.Edit;
+      if (Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S') then
+        Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'N'
+      else
+        Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'S';
       Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
@@ -12426,6 +11996,7 @@ begin
     ibDataSet4CODIGO.ReadOnly       := False;
     ibDataSet4REGISTRO.AsString     := sProximo;
     ibDataSet4CODIGO.AsString       := sCodigo;
+    ibDataSet4IDESTOQUE.AsInteger   := sProximoID;
     ibDataSet4PRECO.AsFloat         := 0.01;
     ibDataSet4CUSTOCOMPR.AsFloat    := 0;
     ibDataSet4CUSTOMEDIO.AsFloat    := 0;
@@ -13878,7 +13449,6 @@ procedure TForm7.ibDataSet4BeforeDelete(DataSet: TDataSet);
 var
   sApagar : String;
 begin
-  //
   if AllTrim(Form7.ibDataSet4DESCRICAO.AsString) <> '' then
   begin
     //
@@ -13889,12 +13459,11 @@ begin
                Chr(10)+
                'nos seguintes arquivos:'+chr(10)+chr(10);
 
-    //
     ibDataSet16.Close;
     ibDataSet16.SelectSQL.Clear;
     ibDataSet16.SelectSQL.Add('select * from ITENS001 where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString));
     ibDataSet16.Open;
-    //
+
     ibDataSet23.Close;
     ibDataSet23.SelectSQL.Clear;
     ibDataSet23.SelectSQL.Add('select * from ITENS002 where DESCRICAO='+QuotedStr(Form7.ibDataSet4DESCRICAO.AsString));
@@ -13960,6 +13529,10 @@ begin
   IBDataSet99.SelectSQL.Clear;
   IBDataSet99.SelectSQL.Add('select gen_id(G_CODIGO,0) from rdb$database');
   IBDataSet99.Open;
+
+  //Mauricio Parizotto 2024-09-10
+  //Apaga IVA
+  ExecutaComando('Delete from ESTOQUEIVA Where IDESTOQUE = '+Form7.ibDataSet4IDESTOQUE.AsString, IBTransaction1);
 
   if Form7.ibDataSet4CODIGO.AsString = StrZero(StrtoFloat(AllTrim(ibDataSet99.FieldByname('GEN_ID').AsString)),5,0) then
   begin
@@ -19299,7 +18872,8 @@ begin
               //
               Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
               Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
-              Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet4IPI.AsFloat;
+              if (ibDataSet14IMPOSTOMANUAL.AsString <> 'S') then
+                Form7.ibDataSet16IPI.AsFloat        := Form7.ibDataSet4IPI.AsFloat;
               Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
               Form7.ibDataSet16CUSTO.AsFloat      := CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat); // Sandro Silva 2023-04-26 Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
               Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
@@ -19539,7 +19113,7 @@ begin
               Form7.ibDataSet16.Edit;
 
               // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString <> '4' then // Devolucao Devolução
-              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) = False then
+              if (not NFeFinalidadeDevolucaoImpostoManual(Form7.ibDataSet15FINNFE.AsString, Form7.ibDataSet14IMPOSTOMANUAL.AsString)) then
               begin
                 if AllTrim(Form7.ibDataSet14CFOP.AsString) <> '' then
                 begin
@@ -19616,7 +19190,7 @@ begin
 
 
               {Mauricio Parizotto 2023-06-19 inicio}
-              if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao
+              if NFeFinalidadeDevolucaoImpostoManual(Form7.ibDataSet15FINNFE.AsString, Form7.ibDataSet14IMPOSTOMANUAL.AsString) then // Devolucao
               begin
                 //Só preenche se campos estiverem em branco
                 try
@@ -19663,7 +19237,8 @@ begin
               // Não faz nada
             else
             begin
-              if not (Form7.ibDataSet4PIVA.AsFloat > 0) then
+              //if not (Form7.ibDataSet4PIVA.AsFloat > 0) then Mauricio Parizotto 2024-09-11
+              if not (GetIVAProduto(Form7.ibDataSet4IDESTOQUE.AsInteger,Form7.ibDataSet2ESTADO.AsString, IBTransaction1) > 0) then
               begin
                 if AllTrim(Form7.ibQuery14.FieldByName('CST').AsString) <> '' then // Tabela de ICM
                 begin
@@ -22666,6 +22241,26 @@ begin
   end;
 end;
 
+procedure TForm7.ibDataSet14BeforePost(DataSet: TDataSet);
+var
+  sMensagem : string;
+begin
+  if sModulo = 'ICM' then
+  begin
+    if (ibDataSet14IMPOSTOMANUAL.OldValue <> ibDataSet14IMPOSTOMANUAL.AsVariant) then
+    begin
+      if ibDataSet14IMPOSTOMANUAL.AsString = 'S' then
+        sMensagem := 'Habilitou a opção "Lançamento manual de impostos" na Natureza: '
+      else
+        sMensagem := 'Desabilitou a opção "Lançamento manual de impostos" na Natureza: ';
+
+      Audita('ALTEROU', sModulo, Senhas.UsuarioPub,
+             sMensagem+ibDataSet14NOME.AsString,
+             0, 0);   // Ato, Modulo, Usuário, Histórico
+    end;
+  end;
+end;
+
 procedure TForm7.ibDataSet8BeforeInsert(DataSet: TDataSet);
 begin
   try
@@ -22885,6 +22480,7 @@ begin
   ibDataSet14REGISTRO.AsString  := sProximo;
   ibDataSet14PISCOFINSLUCRO.AsString  := 'N';
   ibDataSet14REFERENCIANOTA.AsString  := 'N'; //Mauricio Parizotto 2024-06-21
+  ibDataSet14IMPOSTOMANUAL.AsString   := 'N'; //Mauricio Parizotto 2024-07-24
 end;
 
 procedure TForm7.ibDataSet18NewRecord(DataSet: TDataSet);
@@ -23704,6 +23300,14 @@ begin
     ibDataset99.SelectSql.Add('select gen_id(G_HASH_ESTOQUE,1) from rdb$database');
     ibDataset99.Open;
   except end;
+
+  //Mauricio Parizotto 2024-09-09
+  ibDataSet99.Close;
+  ibDataSet99.SelectSql.Clear;
+  ibDataset99.SelectSql.Add('select gen_id(G_ESTOQUEIDESTOQUE,1) from rdb$database');
+  ibDataset99.Open;
+  sProximoID := ibDataSet99.FieldByname('GEN_ID').AsInteger;
+  ibDataset99.Close;
 end;
 
 procedure TForm7.ImprimirtodasasOSfiltradas1Click(Sender: TObject);
@@ -26488,7 +26092,7 @@ begin
 
   if Form7.ibDataSet16DESCRICAO.AsString <> EmptyStr then
   begin
-    if (not NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) then
+    if (not NFeFinalidadeDevolucaoImpostoManual(Form7.ibDataSet15FINNFE.AsString, Form7.ibDataSet14IMPOSTOMANUAL.AsString)) then
     begin
       try
         if (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '5101') or (Copy(Form7.ibDataSet14CFOP.AsString,1,4) = '6101') or (Pos('IPI',Form7.ibDataSet14OBS.AsString) <> 0) then
@@ -36490,14 +36094,10 @@ begin
     sREgistro := Mais1Ini.ReadString(sModulo,'REGISTRO','0000000001');
     sColuna   := Mais1Ini.ReadString(sModulo,'COLUNA','01');
     sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
-    //sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 47)); // Mauricio Parizotto 2023-12-11 sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 46)); // Sandro Silva 2023-07-03 sMostra   := Replicate('T',47); //Mauricio Parizotto 2024-04-22
-    //sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 48)); Mauricio Parizotto 2024-06-21
-    sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 49));
-    // Sandro Silva 2023-07-03 iCampos   := 44;
-    //iCampos   := 46; // Sandro Silva 2023-07-03 iCampos   := 5; Mauricio Parizotto 2023-12-11
-    //iCampos   := 47; //Mauricio Parizotto 2024-04-22
-    //iCampos   := 48; Mauricio Parizotto 2024-06-21
-    iCampos   := 49;
+    //sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 49)); Mauricio Parizotto 2024-07-23
+    sMostra   := Mais1Ini.ReadString(sModulo,'Mostrar', DupeString('T', 50));
+    //iCampos   := 49; Mauricio Parizotto 204-07-23
+    iCampos   := 50;
   end;
   {$Endregion}
 
