@@ -176,10 +176,7 @@ begin
   cdsNotasFaltantes.Filter   := '(TIPODOC=' + Ord(AenDoc).ToString + ')';
   cdsNotasFaltantes.Filtered := True;
 
-  if AenDoc = dinfNFe then
-    cdsNotasFaltantesSERIE.DisplayLabel := 'Série'
-  else
-    cdsNotasFaltantesSERIE.DisplayLabel := 'Caixa';
+  cdsNotasFaltantesSERIE.Visible := (AenDoc = dinfNFe);
 
 //  if cdsNotasFaltantes.IsEmpty then
 //    Exit;
@@ -288,14 +285,14 @@ begin
   fQryMaxNumero.SQL.Add('union all');
   fQryMaxNumero.SQL.Add('select');
   fQryMaxNumero.SQL.Add('    '+Ord(dinfNFCe).ToString+' as TIPODOC');
-  fQryMaxNumero.SQL.Add('    , NFCE.CAIXA as SERIE');
+  fQryMaxNumero.SQL.Add('    , ''001'' as SERIE'); // NFCe não tem controle de caixa
   fQryMaxNumero.SQL.Add('    , max(NFCE.NUMERONF) as NUMERO');
   fQryMaxNumero.SQL.Add('from NFCE');
   fQryMaxNumero.SQL.Add('where');
   fQryMaxNumero.SQL.Add('    (NFCE.MODELO=''65'')');
   fQryMaxNumero.SQL.Add('    and (coalesce(NFCE.NUMERONF,'''') <> '''')');
   fQryMaxNumero.SQL.Add('    and (NFCE.DATA <= :XDATA)');
-  fQryMaxNumero.SQL.Add('group by NFCE.CAIXA');
+  fQryMaxNumero.SQL.Add('group by 2');
   fQryMaxNumero.SQL.Add('order by 1,2');
   fQryMaxNumero.ParamByName('XDATA').AsDate := RetornaDataDiaAnterior;
   fQryMaxNumero.Open;
@@ -336,7 +333,7 @@ end;
 
 procedure TfrmRelatorioNotasFaltantes.DefinirDadosClientDataSetNotasFaltante;
 var
-  cNota, cSerie: string;
+  cNota, cSerie, cSerieDataSet: string;
   enTipoDoc: TDocsImprimirNotasFaltantes;
 begin
   cNota  := EmptyStr;
@@ -345,10 +342,15 @@ begin
   fQryDocumentos.First;
   while not fQryDocumentos.Eof do
   begin
-    if (cSerie <> fQryDocumentos.FieldByName('SERIE').AsString) or (enTipoDoc <> TDocsImprimirNotasFaltantes(fQryDocumentos.FieldByName('TIPODOC').AsInteger)) then
+    cSerieDataSet := fQryDocumentos.FieldByName('SERIE').AsString;
+    // Quando NFCe define como 001 a serie, APENAS para notas faltantes
+    if TDocsImprimirNotasFaltantes(fQryDocumentos.FieldByName('TIPODOC').AsInteger) = dinfNFCe then
+      cSerieDataSet := '001';
+
+    if (cSerie <> cSerieDataSet) or (enTipoDoc <> TDocsImprimirNotasFaltantes(fQryDocumentos.FieldByName('TIPODOC').AsInteger)) then
     begin
       enTipoDoc := TDocsImprimirNotasFaltantes(fQryDocumentos.FieldByName('TIPODOC').AsInteger);
-      cSerie := fQryDocumentos.FieldByName('SERIE').AsString;
+      cSerie := cSerieDataSet;
       cNota := RetornarNumeroNFAnterior(enTipoDoc, cSerie);
     end;
     if cNota = EmptyStr then
