@@ -1,19 +1,21 @@
 inherited frmInformarDrawback: TfrmInformarDrawback
   BorderIcons = []
   Caption = 'C'#243'digo Drawback'
-  ClientHeight = 382
-  ClientWidth = 713
+  ClientHeight = 616
+  ClientWidth = 840
+  Font.Charset = ANSI_CHARSET
+  Font.Name = 'Microsoft Sans Serif'
   Position = poScreenCenter
   OnClose = FormClose
-  ExplicitWidth = 729
-  ExplicitHeight = 421
+  ExplicitWidth = 856
+  ExplicitHeight = 655
   PixelsPerInch = 96
   TextHeight = 16
   object dbgPrincipal: TDBGrid
     Left = 20
-    Top = 10
-    Width = 672
-    Height = 317
+    Top = 20
+    Width = 800
+    Height = 531
     Anchors = [akLeft, akTop, akRight]
     BiDiMode = bdLeftToRight
     Color = clWhite
@@ -43,11 +45,10 @@ inherited frmInformarDrawback: TfrmInformarDrawback
     OnKeyDown = dbgPrincipalKeyDown
     Columns = <
       item
-        Color = clBtnFace
         Expanded = False
         FieldName = 'DESCRICAO'
         Title.Caption = 'Descri'#231#227'o'
-        Width = 500
+        Width = 630
         Visible = True
       end
       item
@@ -59,8 +60,8 @@ inherited frmInformarDrawback: TfrmInformarDrawback
       end>
   end
   object btnOK: TBitBtn
-    Left = 482
-    Top = 337
+    Left = 614
+    Top = 571
     Width = 100
     Height = 25
     Anchors = [akTop, akRight]
@@ -75,8 +76,8 @@ inherited frmInformarDrawback: TfrmInformarDrawback
     OnClick = btnOKClick
   end
   object btnCancelar: TBitBtn
-    Left = 592
-    Top = 337
+    Left = 720
+    Top = 571
     Width = 100
     Height = 25
     Anchors = [akTop, akRight]

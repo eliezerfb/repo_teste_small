@@ -7646,8 +7646,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1210
-    ExplicitWidth = 1560
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7721,7 +7719,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1560
   end
   object Panel_0: TPanel
     Left = 0
@@ -16033,6 +16030,7 @@ object Form7: TForm7
     object ibDataSet16DRAWBACK: TIBStringField
       FieldName = 'DRAWBACK'
       Origin = 'ITENS001.DRAWBACK'
+      Visible = False
       Size = 11
     end
   end

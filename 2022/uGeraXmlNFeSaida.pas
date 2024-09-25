@@ -852,7 +852,7 @@ begin
             begin
               FbAbortar := True;
               Form7.SetTextoCampoSTATUSNFe('Processo cancelado pelo usuário (informações de exportação/drawback)');
-              raise Exception.Create('Processo cancelado pelo usuário (informações de exportação/drawback)');
+              MensagemSistema('Processo cancelado pelo usuário (informações de exportação/drawback).', msgInformacao);
             end;
           finally
             FreeAndNil(frmInformacoesExportacaoNFe);
