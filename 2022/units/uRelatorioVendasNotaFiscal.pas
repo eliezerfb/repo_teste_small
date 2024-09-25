@@ -43,6 +43,12 @@ type
     cdsRelICMSDESPESAS: TFMTBCDField;
     cdsRelICMSTOTAL: TFMTBCDField;
     cdsRelICMSICMS: TFMTBCDField;
+    cbSubstituicaoTributICMS: TCheckBox;
+    cdsRelICMSICMSSUBSTI: TFMTBCDField;
+    cbSubstituicaoTributItem: TCheckBox;
+    cdsItemPorItemNCM: TStringField;
+    cdsItemPorItemVICMSST: TFMTBCDField;
+    cbNCM: TCheckBox;
     procedure btnVoltarClick(Sender: TObject);
     procedure btnAvancarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -115,14 +121,33 @@ begin
 
   if rbRelatorioICMS.Checked then
   begin
-    oEstruturaCat.FiltrosRodape.AddItem(rbRelatorioICMS.Caption);
+    cAux := rbRelatorioICMS.Caption;
+    if cbSubstituicaoTributICMS.Checked then
+      cAux := cAux + ' (' + cbSubstituicaoTributICMS.Caption + ')';
+    oEstruturaCat.FiltrosRodape.AddItem(cAux);
     oEstruturaCat.FiltrosRodape.AddItem(EmptyStr);
   end;
   if rbItemPorITem.Checked then
   begin
-    cAux := rbItemPorITem.Caption;
     if cbListarCodigos.Checked then
-      cAux := cAux + ' (' + cbListarCodigos.Caption + ')';
+      cAux := cbListarCodigos.Caption;
+    if cbSubstituicaoTributItem.Checked then
+    begin
+      if cAux <> EmptyStr then
+        cAux := cAux + ', ';
+      cAux := cAux + cbSubstituicaoTributItem.Caption;
+    end;
+    if cbNCM.Checked then
+    begin
+      if cAux <> EmptyStr then
+        cAux := cAux + ', ';
+      cAux := cAux + cbNCM.Caption;
+    end;
+    if cAux <> EmptyStr then
+      cAux := rbItemPorITem.Caption + ' (' + cAux + ')'
+    else
+      cAux := rbItemPorITem.Caption;
+
     oEstruturaCat.FiltrosRodape.AddItem(cAux);
     oEstruturaCat.FiltrosRodape.AddItem(EmptyStr);
   end;
@@ -240,9 +265,13 @@ begin
   FqryDados.SQL.Add('    , ITENS001.QUANTIDADE AS QUANTIDADE');
   FqryDados.SQL.Add('    , (ITENS001.QUANTIDADE * ITENS001.UNITARIO) AS VENDIDOPOR');
   FqryDados.SQL.Add('    , (ITENS001.QUANTIDADE * ITENS001.CUSTO) AS CUSTOCOMPRA');
+  FqryDados.SQL.Add('    , ITENS001.VICMSST AS VICMSST');
+  FqryDados.SQL.Add('    , ESTOQUE.CF AS NCM');
   FqryDados.SQL.Add('FROM VENDAS');
   FqryDados.SQL.Add('INNER JOIN ITENS001');
   FqryDados.SQL.Add('    ON (ITENS001.NUMERONF=VENDAS.NUMERONF)');
+  FqryDados.SQL.Add('LEFT JOIN ESTOQUE');
+  FqryDados.SQL.Add('    ON (ESTOQUE.CODIGO=ITENS001.CODIGO)');
   FqryDados.SQL.Add('WHERE');
   FqryDados.SQL.Add('    (EMITIDA=''S'')');
   FqryDados.SQL.Add('    AND (EMISSAO BETWEEN :XDATAINI AND :XDATAFIM)');
@@ -254,6 +283,9 @@ begin
   FqryDados.First;
 
   cdsItemPorItemCODIGO.Visible := cbListarCodigos.Checked;
+  cdsItemPorItemVICMSST.Visible := cbSubstituicaoTributItem.Checked;
+  cdsItemPorItemNCM.Visible     := cbNCM.Checked;
+
   cdsItemPorItem.Close;
   cdsItemPorItem.CreateDataSet;
   while not FqryDados.Eof do
@@ -295,6 +327,8 @@ begin
   cdsRelICMSTOTAL.Size := FnDecimaisValor;
   cdsRelICMS.FieldDefs.Items[cdsRelICMS.FieldDefs.IndexOf(cdsRelICMSICMS.FieldName)].Size := FnDecimaisValor;
   cdsRelICMSICMS.Size := FnDecimaisValor;  
+  cdsRelICMS.FieldDefs.Items[cdsRelICMS.FieldDefs.IndexOf(cdsRelICMSICMSSUBSTI.FieldName)].Size := FnDecimaisValor;
+  cdsRelICMSICMSSUBSTI.Size := FnDecimaisValor;
 
   // cdsItemPorItem
   cdsItemPorItem.FieldDefs.Items[cdsItemPorItem.FieldDefs.IndexOf(cdsItemPorItemQUANTIDADE.FieldName)].Size := FnDecimaisQuantidade;
@@ -303,6 +337,8 @@ begin
   cdsItemPorItemVENDIDOPOR.Size := FnDecimaisValor;
   cdsItemPorItem.FieldDefs.Items[cdsItemPorItem.FieldDefs.IndexOf(cdsItemPorItemCUSTOCOMPRA.FieldName)].Size := FnDecimaisValor;
   cdsItemPorItemCUSTOCOMPRA.Size := FnDecimaisValor;
+  cdsItemPorItem.FieldDefs.Items[cdsItemPorItem.FieldDefs.IndexOf(cdsItemPorItemVICMSST.FieldName)].Size := FnDecimaisValor;
+  cdsItemPorItemVICMSST.Size := FnDecimaisValor;
 end;
 
 procedure TfrmRelVendasNotaFiscal.CarregaDadosICMS;
@@ -322,6 +358,7 @@ begin
   FqryDados.SQL.Add('    , VENDAS.DESPESAS AS DESPESAS');
   FqryDados.SQL.Add('    , VENDAS.TOTAL AS TOTAL');
   FqryDados.SQL.Add('    , VENDAS.ICMS AS ICMS');
+  FqryDados.SQL.Add('    , VENDAS.ICMSSUBSTI AS ICMSSUBSTI');
   FqryDados.SQL.Add('FROM VENDAS');
   FqryDados.SQL.Add('WHERE');
   FqryDados.SQL.Add('    (VENDAS.EMITIDA=''S'')');
@@ -333,6 +370,8 @@ begin
   FqryDados.Open;
   FqryDados.First;
 
+
+  cdsRelICMSICMSSUBSTI.Visible  := cbSubstituicaoTributICMS.Checked;
   cdsRelICMS.Close;
   cdsRelICMS.CreateDataSet;
   while not FqryDados.Eof do
@@ -386,10 +425,19 @@ end;
 
 procedure TfrmRelVendasNotaFiscal.DefinirEnabledListarCodigo;
 begin
-  cbListarCodigos.Enabled := rbItemPorITem.Checked;
-  cbListarCodigos.TabStop := cbListarCodigos.Enabled;
+  cbSubstituicaoTributICMS.Enabled := rbRelatorioICMS.Checked;
+  cbListarCodigos.Enabled          := rbItemPorITem.Checked;
+  cbListarCodigos.TabStop          := cbListarCodigos.Enabled;
+  cbSubstituicaoTributItem.Enabled := rbItemPorITem.Checked;
+  cbNCM.Enabled                    := rbItemPorITem.Checked;
+  if not cbSubstituicaoTributICMS.Enabled then
+    cbSubstituicaoTributICMS.Checked := False;
   if not cbListarCodigos.Enabled then
     cbListarCodigos.Checked := False;
+  if not cbSubstituicaoTributItem.Enabled then
+    cbSubstituicaoTributItem.Checked := False;
+  if not cbNCM.Enabled then
+    cbNCM.Checked := False;
 end;
 
 procedure TfrmRelVendasNotaFiscal.rbRelatorioICMSClick(Sender: TObject);
