@@ -281,6 +281,7 @@ type
     function TestarLimiteDisponivel: Boolean;
     procedure DefineVisibleHomologacao;
     procedure AjustaTamnhoColunasGridProduto;
+    procedure ControlaColunasGridImpostos(AbNatOperManual: Boolean = False);
   public
     { Public declarations }  
     vNotaFiscal : TNotaFiscalEletronicaCalc;
@@ -890,8 +891,10 @@ end;
 procedure TForm12.SMALL_DBEdit40Enter(Sender: TObject);
 var
   nRecNo: Integer;
+  cObsAnt: String;
 begin
   mkp(True);
+  {Dailon Parisotto (smal-593) 2024-07-31 Inicio
 
   if (LimpaNumero(Edit2.Text) = '4') then
   begin
@@ -940,10 +943,31 @@ begin
     Panel2.Visible := False;
   end;
 
+  }
+  ControlaColunasGridImpostos(Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S');
+  {Dailon Parisotto (smal-593) 2024-07-31 Fim}
+
   if not dBGrid2.Visible then
   begin
     sOperacaoAntiga   := Form7.ibDAtaSet15OPERACAO.AsString;
-    sObservacaoAntiga := Form7.ibDataSet14OBS.AsString;
+
+    // Roda o evento MERCADORIACHANGE para seta a variavel sObservacaoAnt com os valores corretos.
+    if Form7.ibDataSet15COMPLEMENTO.AsString <> EmptyStr then
+    begin
+      cObsAnt := Form7.ibDataSet15COMPLEMENTO.AsString;
+      try
+        Form7.ibDataSet15MERCADORIAChange(Form7.ibDataSet15MERCADORIA);
+      finally
+        {Sandro Silva 2024-09-09 inicio
+        Identificado na revisão, com banco novo, em branco ocorre Not in Edit Mode
+        Form7.ibDataSet15COMPLEMENTO.AsString := cObsAnt;
+        }
+        if not (Form7.ibDataSet15.State in [dsEdit, dsInsert]) then
+          Form7.ibDataSet15.Edit;
+        Form7.ibDataSet15COMPLEMENTO.AsString := cObsAnt;
+        {Sandro Silva 2024-09-09 fim}
+      end;
+    end;
   end;
 
   if Form7.sModulo <> 'RETRIBUTA' then
@@ -1130,6 +1154,8 @@ begin
       end;
     end;
   end;
+
+  ControlaColunasGridImpostos(Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S'); // Dailon Parisotto 2024-07-31
 
   Form7.ibDataSet16.EnableControls;
 end;
@@ -1876,6 +1902,11 @@ begin
   Screen.Cursor := crDefault; // Cursor de Aguardo
 
   vNotaFiscal := TNotaFiscalEletronicaCalc.create;
+
+  {Dailon Parisotto (smal-593) 2024-08-06 Inicio}
+  Panel2.Top     := Panel1.Top  + dbGrid1.Top  + 100;
+  Panel2.Left    := Panel1.Left + dbGrid1.Left + dbGrid1.Width + 20;
+  {Dailon Parisotto (smal-593) 2024-08-06 Fim}
 end;
 
 procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -2999,6 +3030,9 @@ procedure TForm12.Edit2Click(Sender: TObject);
 begin
   Edit2.Text := LimpaNumero(Form1.Small_InputForm('Finalidade da NFe:','1-Normal'+chr(10)+'2-Complementar'+chr(10)+'3-de Ajuste'+chr(10)+'4-Devolução de mercadoria',LimpaNumero(Edit2.Text)));
 
+
+  (* Dailon Parisotto (SMAL-593) 2024-07-31 Inicio
+
   ExibeColunasFCPST(False);
   ExibeColunasFCP(False);
   ExibeColunaCSOSN(False); // Sandro Silva 2023-05-24
@@ -3044,7 +3078,10 @@ begin
       ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString); //ExibeColunaCSTICMS(False); // Sandro Silva 2023-05-24
     end;
   end;
-  {Sandro Silva 2023-05-08 fim}
+  {Sandro Silva 2023-05-08 fim}               *)
+
+  ControlaColunasGridImpostos(Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S');
+  {Dailon Parisotto (SMAL-593) 2024-07-31 Fim}
 
   //
   if Form7.ibDataSet15FINNFE.AsString   <> LimpaNumero(Edit2.Text) then
@@ -3057,6 +3094,63 @@ begin
   // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
   //
 end;
+
+{ Dailon Parisotto (SMAL-593) 2024-07-31 Inicio}
+procedure TForm12.ControlaColunasGridImpostos(AbNatOperManual: Boolean = False);
+begin
+  ExibeColunasFCPST(False);
+  ExibeColunasFCP(False);
+  ExibeColunaCSOSN(False);
+
+  Form7.ibDataSet16IPI.Visible            := False;
+  Form7.ibDataSet16CST_IPI.Visible        := False;
+  Form7.ibDataSet16CST_ICMS.Visible       := False;
+  Form7.ibDataSet16VICMS.Visible          := False;
+  Form7.ibDataSet16VBC.Visible            := False;
+  Form7.ibDataSet16ICM.Visible            := False;
+  Form7.ibDataSet16VBCST.Visible          := False;
+  Form7.ibDataSet16VICMSST.Visible        := False;
+  Form7.ibDataSet16VIPI.Visible           := False;
+  Form7.ibDataSet16XPED.Visible           := True;
+  Form7.ibDataSet16NITEMPED.Visible       := True;
+
+  Edit2.Text := TextoIdentificadorFinalidadeNFe(Edit2.Text);
+  if (LimpaNumero(Edit2.Text) = '4') or (AbNatOperManual) then
+  begin
+    if AbNatOperManual then
+      ExibeColunasFCPST(True);
+    ExibeColunasFCPST(True);
+    if Form7.ibDataSet13CRT.AsString = '1' then
+    begin
+      ExibeColunaCSOSN(True);
+      ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString);
+    end;
+
+    Form7.ibDataSet16IPI.Visible            := True;
+    Form7.ibDataSet16CST_IPI.Visible        := True;
+    Form7.ibDataSet16CST_ICMS.Visible       := True;
+    Form7.ibDataSet16VICMS.Visible          := True;
+    Form7.ibDataSet16VBC.Visible            := True;
+    Form7.ibDataSet16ICM.Visible            := True;
+    Form7.ibDataSet16VBCST.Visible          := True;
+    Form7.ibDataSet16VICMSST.Visible        := True;
+    Form7.ibDataSet16VIPI.Visible           := True;
+    Form7.ibDataSet16XPED.Visible           := False;
+    Form7.ibDataSet16NITEMPED.Visible       := False;
+
+    Panel2.Visible := (not AbNatOperManual);
+    Panel2.Top     := Panel1.Top  + dbGrid1.Top  + 100;
+    Panel2.Left    := Panel1.Left + dbGrid1.Left + dbGrid1.Width + 20;
+
+    Form12.Label2.Caption := 'Atenção!'+chr(10)+chr(10)+'Quando não for contribuinte do IPI'+chr(10)+
+                                                        'deixar o campo CST IPI em branco (vai'+chr(10)+
+                                                        'criar grupo IPIDevol).'+chr(10)+chr(10)+
+                                                        'Quando for contribuinte do IPI deve preencher'+chr(10)+
+                                                        'o campo CST IPI (vai criar grupo do IPI normal)'
+  end else
+    Panel2.Visible := False;
+end;
+{ Dailon Parisotto (SMAL-593) 2024-07-31 Fim}
 
 procedure TForm12.Edit3Click(Sender: TObject);
 begin

@@ -127,6 +127,7 @@ type
     procedure edtCPFCNPJExit(Sender: TObject);
     procedure chkProdRuralClick(Sender: TObject);
     procedure memObsEnter(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     FcCEPAnterior: String;
@@ -168,6 +169,13 @@ procedure TFrmCadastro.FormActivate(Sender: TObject);
 begin
   inherited;
   AtualizaObjComValorDoBanco;
+end;
+
+procedure TFrmCadastro.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  inherited;
+
+  FreeAndNil(FrmCadastro);
 end;
 
 procedure TFrmCadastro.FormCreate(Sender: TObject);
@@ -586,6 +594,10 @@ end;
 procedure TFrmCadastro.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
   inherited;
+
+  //Mauricio Parizotto 2024-08-29
+  if not Self.Visible then
+    Exit;
 
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;

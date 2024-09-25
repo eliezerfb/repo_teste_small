@@ -73,6 +73,7 @@ uses
     dQtdMovimentada: Double; var bFabrica: Boolean; iHierarquia: Integer; var sModulo: String); // Sandro Silva 2023-11-06
   function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
   function GetFatorConversaoItemCompra(CodRegItem:string; valPadrao: Double; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-02-19
+  function GetIVAProduto(IDESTOQUE : integer; UF : string; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-09-11
 
 
 implementation
@@ -904,10 +905,10 @@ begin
             '      , MIN(ORCAMENT.DATA) AS DATA ' +
             '      , max(ORCAMENT.NUMERONF) as NUMERONF ' +
             '      , max(ORCAMENT.CLIFOR) as CLIFOR ' +
-            '      , cast(list(distinct coalesce(ORCAMENT.VENDEDOR, '''')) as varchar(5000)) as VENDEDOR' +
+            '      , cast(list(distinct coalesce(ORCAMENT.VENDEDOR, '''')) as varchar(5000)) as VENDEDOR' +   /// ???? Por que está seleciolando a lista de vendedores do orçamento se não usa essa lista retornada?
             '      , SUM(CASE WHEN ORCAMENT.DESCRICAO <> ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS TOTALBRUTO ' +
             '      , SUM(CASE WHEN ORCAMENT.DESCRICAO  = ' + QuotedStr('Desconto') + ' THEN ORCAMENT.TOTAL ELSE 0 END) AS DESCONTO ' +
-            '      , max(ORCAMENT.REGISTRO) as REGISTRO ' +      
+            '      , max(ORCAMENT.REGISTRO) as REGISTRO ' +
             '   FROM ORCAMENT ' +
             '   GROUP BY ORCAMENT.PEDIDO ' + //, ORCAMENT.CLIFOR, ORCAMENT.VENDEDOR ' +
             '  ) Q ' +
@@ -1096,6 +1097,39 @@ begin
 end;
 
 
+function GetIVAProduto(IDESTOQUE : integer; UF : string; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-09-11
+begin
+  Result := 0;
+
+  //Sandro Silva 2024-09-23 evitar erro com cliente do exterior if UF <> '' then
+  if (UF <> '') and (AnsiUpperCase(UF) <> 'EX') then
+  begin
+    try
+      Result := ExecutaComandoEscalar(Transaction,
+                                      ' Select'+
+                                      '   Case'+
+                                      '     When Coalesce(I.'+UF+'_,0) > 0 then Coalesce(I.'+UF+'_,0)'+
+                                      '     Else Coalesce(E.PIVA,0)'+
+                                      '  End'+
+                                      ' From ESTOQUE E'+
+                                      '   Left Join ESTOQUEIVA I on I.IDESTOQUE = E.IDESTOQUE'+
+                                      ' Where E.IDESTOQUE = '+IDESTOQUE.ToString
+                                      );
+    except
+    end;
+  end else
+  begin
+    try
+      Result := ExecutaComandoEscalar(Transaction,
+                                      ' Select'+
+                                      '   Coalesce(E.PIVA,0)'+
+                                      ' From ESTOQUE E'+
+                                      ' Where E.IDESTOQUE = '+IDESTOQUE.ToString
+                                      );
+    except
+    end;
+  end;
+end;
 
 end.
 

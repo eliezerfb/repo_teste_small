@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1250
-  ClientWidth = 1560
+  ClientHeight = 1237
+  ClientWidth = 1558
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7636,8 +7636,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1210
-    Width = 1560
+    Top = 1197
+    Width = 1558
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7646,8 +7646,8 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1223
-    ExplicitWidth = 1562
+    ExplicitTop = 1210
+    ExplicitWidth = 1560
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7711,7 +7711,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1560
+    Width = 1558
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -7721,7 +7721,7 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1562
+    ExplicitWidth = 1560
   end
   object Panel_0: TPanel
     Left = 0
@@ -11183,8 +11183,8 @@ object Form7: TForm7
     InsertSQL.Strings = (
       'insert into ESTOQUE'
       
-        '  (CODIGO, REFERENCIA, DESCRICAO, NOME, FORNECEDOR, MEDIDA, PREC' +
-        'O, INDEXADOR, '
+        '  (IDESTOQUE, CODIGO, REFERENCIA, DESCRICAO, NOME, FORNECEDOR, M' +
+        'EDIDA, PRECO, INDEXADOR, '
       
         '   CUSTOCOMPR, CUSTOMEDIO, QTD_COMPRA, QTD_ATUAL, QTD_MINIM, QTD' +
         '_INICIO, '
@@ -11215,8 +11215,8 @@ object Form7: TForm7
       '   MARKETPLACE, IDENTIFICADORPLANOCONTAS, IDPERFILTRIBUTACAO)'
       'values'
       
-        '  (:CODIGO, :REFERENCIA, :DESCRICAO, :NOME, :FORNECEDOR, :MEDIDA' +
-        ', :PRECO, '
+        '  (:IDESTOQUE,:CODIGO, :REFERENCIA, :DESCRICAO, :NOME, :FORNECED' +
+        'OR, :MEDIDA, :PRECO, '
       
         '   :INDEXADOR, :CUSTOCOMPR, :CUSTOMEDIO, :QTD_COMPRA, :QTD_ATUAL' +
         ', :QTD_MINIM, '
@@ -11252,6 +11252,7 @@ object Form7: TForm7
         'ERFILTRIBUTACAO)')
     RefreshSQL.Strings = (
       'Select '
+      '  IDESTOQUE,'
       '  CODIGO,'
       '  REFERENCIA,'
       '  DESCRICAO,'
@@ -11337,6 +11338,7 @@ object Form7: TForm7
     ModifySQL.Strings = (
       'update ESTOQUE'
       'set'
+      '  IDESTOQUE = :IDESTOQUE,'
       '  CODIGO = :CODIGO,'
       '  REFERENCIA = :REFERENCIA,'
       '  DESCRICAO = :DESCRICAO,'
@@ -12000,6 +12002,11 @@ object Form7: TForm7
       Visible = False
       OnChange = ibDataSet4IDPERFILTRIBUTACAOChange
     end
+    object ibDataSet4IDESTOQUE: TIntegerField
+      FieldName = 'IDESTOQUE'
+      Origin = 'ESTOQUE.IDESTOQUE'
+      Visible = False
+    end
   end
   object DataSource4: TDataSource
     DataSet = ibDataSet4
@@ -12448,10 +12455,11 @@ object Form7: TForm7
       Size = 10
     end
     object ibDataSet7NN: TIBStringField
+      DisplayWidth = 11
       FieldName = 'NN'
       Origin = 'RECEBER.NN'
       Visible = False
-      Size = 10
+      Size = 11
     end
     object ibDataSet7VALOR_MULTA: TIBBCDField
       FieldName = 'VALOR_MULTA'
@@ -12856,6 +12864,21 @@ object Form7: TForm7
       object SClienteInativo1: TMenuItem
         Caption = 'S'#243' Cliente Inativo'
         OnClick = FiltroRelacaoCom
+      end
+      object Aniversariantes1: TMenuItem
+        Caption = 'Aniversariantes'
+        object Dia1: TMenuItem
+          Caption = 'Dia'
+          OnClick = Dia1Click
+        end
+        object Semana1: TMenuItem
+          Caption = 'Semana'
+          OnClick = Semana1Click
+        end
+        object Ms1: TMenuItem
+          Caption = 'M'#234's'
+          OnClick = Ms1Click
+        end
       end
     end
     object MenuItem9: TMenuItem
@@ -14287,6 +14310,7 @@ object Form7: TForm7
     BeforeDelete = ibDataSet14BeforeDelete
     BeforeEdit = ibDataSet14BeforeEdit
     BeforeInsert = ibDataSet14BeforeInsert
+    BeforePost = ibDataSet14BeforePost
     OnEditError = IBDataSet2EditError
     OnNewRecord = ibDataSet14NewRecord
     OnPostError = IBDataSet2PostError
@@ -14312,7 +14336,8 @@ object Form7: TForm7
       '   BCPISCOFINS, '
       
         '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
-        'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA)'
+        'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA,'
+      '   IMPOSTOMANUAL)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14329,7 +14354,8 @@ object Form7: TForm7
       
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
         'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
-        'A,:REFERENCIANOTA)')
+        'A,:REFERENCIANOTA,'
+      '   :IMPOSTOMANUAL)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14384,7 +14410,8 @@ object Form7: TForm7
       '  CBENEF,'
       '  PISCOFINSLUCRO,'
       '  IPISOBREOUTRA,'
-      '  REFERENCIANOTA'
+      '  REFERENCIANOTA,'
+      '  IMPOSTOMANUAL'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14445,7 +14472,8 @@ object Form7: TForm7
       '  CBENEF = :CBENEF,'
       '  PISCOFINSLUCRO = :PISCOFINSLUCRO,'
       '  IPISOBREOUTRA = :IPISOBREOUTRA,'
-      '  REFERENCIANOTA = :REFERENCIANOTA'
+      '  REFERENCIANOTA = :REFERENCIANOTA,'
+      '  IMPOSTOMANUAL = :IMPOSTOMANUAL'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14765,6 +14793,13 @@ object Form7: TForm7
       DisplayWidth = 20
       FieldName = 'REFERENCIANOTA'
       Origin = 'ICM.REFERENCIANOTA'
+      Size = 1
+    end
+    object ibDataSet14IMPOSTOMANUAL: TIBStringField
+      DisplayLabel = 'Imposto Manual'
+      DisplayWidth = 20
+      FieldName = 'IMPOSTOMANUAL'
+      Origin = 'ICM.IMPOSTOMANUAL'
       Size = 1
     end
     object ibDataSet14CSTPISCOFINS: TIBStringField
@@ -20086,7 +20121,6 @@ object Form7: TForm7
     Top = 286
   end
   object IBDatabase1: TIBDatabase
-    DatabaseName = 'D:\desenvolvimento1\executaveis\Small Commerce\small.fdb'
     Params.Strings = (
       'user_name=SYSDBA'
       'password=masterkey')
