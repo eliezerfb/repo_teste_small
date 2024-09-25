@@ -3353,12 +3353,14 @@ function FechaTudo(bP1 : Boolean):Boolean;
 begin
   Result := False;
 
-  if Form5.Visible then Form5.Close;
+  if Form5.Visible then
+    Form5.Close;
 //  if Form5.Visible then Form10.Close;
 
   if Form1.bFechaTudo then
   begin
-    if Form24.Visible then Form24.Close;
+    if Form24.Visible then
+      Form24.Close;
     if (Form12.Visible) then
     begin
       if (Form12.PodeFecharTela) then
@@ -3370,14 +3372,19 @@ begin
         Exit;
       end;
     end;
-    if Form30.Visible then Form30.Close;
-    if Form48.Visible then Form48.Close;
+    if Form30.Visible then
+      Form30.Close;
+    if Form48.Visible then
+      Form48.Close;
   end;
 
-  if Form7.Visible  then Form7.Close;
-  if Form19.Visible then Form19.Close;
+  if Form7.Visible  then
+    Form7.Close;
+  if Form19.Visible then
+    Form19.Close;
 
-  if Form7.sModulo <> 'INDICADORES' then Form7.sModulo := '';
+  if Form7.sModulo <> 'INDICADORES' then
+    Form7.sModulo := '';
 
   Result := True;
 end;

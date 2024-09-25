@@ -5520,7 +5520,7 @@ begin
     Form7.ibDataSet19.BufferChunks := 500;
     Form7.ibDataSet18.BufferChunks := 500;
     Form7.ibDataSet16.BufferChunks := 500;
-    Form7.ibDataSet15.BufferChunks := 500;//100; //Sandro Silva 2024-09-24 500;
+    Form7.ibDataSet15.BufferChunks := 500;
     Form7.ibDataSet23.BufferChunks := 500;
     Form7.ibDataSet24.BufferChunks := 500;
     Form7.ibDataSet35.BufferChunks := 500;
@@ -12108,8 +12108,9 @@ var
   Mais1ini : tIniFile;
   CampoPK   : string;
 begin
+
   sNumeroAnterior14 := EmptyStr;
-  sNomeAnterior14 := EmptyStr;
+  sNomeAnterior14   := EmptyStr;
   FbClicouModulo := False;
 
   try
@@ -12246,6 +12247,7 @@ begin
 
     end;
   end;
+
 end;
 
 procedure TForm7.RegistroFiscal1Click(Sender: TObject);
@@ -25457,7 +25459,10 @@ end;
 procedure TForm7.GerarNFedeentrada1Click(Sender: TObject);
 var
   sSerie : String;
+  IBQULTIMANFe: TIBQuery;
 begin
+  (* Sandro Silva 2024-09-25 inicio
+
   try
     Screen.Cursor            := crHourGlass;
     sSerie := Copy(Form7.ibDAtaSet24NUMERONF.AsString,10,3);
@@ -25508,6 +25513,73 @@ begin
     end;
   except
   end;
+
+  FreeAndNil(IBQULTIMANFe); // Sandro Silva 2024-09-25
+
+  Form7.sModulo := 'COMPRA';
+  Screen.Cursor            := crDefault;
+  *)
+
+  IBQULTIMANFe := CriaIBQuery(Form7.ibDataSet15.Transaction);
+
+  try
+    Screen.Cursor            := crHourGlass;
+    sSerie := Copy(Form7.ibDAtaSet24NUMERONF.AsString,10,3);
+
+    Form7.ibDataSet15.Close;
+    Form7.ibDataSet15.SelectSQL.Clear;
+    ///Form7.ibDataSet15.SelectSQL.Add('select * from VENDAS where NUMERONF like '+QuotedStr('%'+sSerie)+ ' order by NUMERONF');
+    Form7.ibDataSet15.SelectSQL.Add('select * from VENDAS where NUMERONF = ' + QuotedStr(Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) + sSerie));
+    Form7.ibDataSet15.Open;
+
+    // Seleciona a última nota emitida para a série selecionada
+    IBQULTIMANFe.Close;
+    IBQULTIMANFe.SQL.Text :=
+      'select first 1 * from VENDAS where NUMERONF like '+QuotedStr('%'+sSerie)+ ' order by NUMERONF desc';
+    IBQULTIMANFe.Open;
+
+    if Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) = Right(StrZero(StrToInt('0'+Copy(IBQULTIMANFe.FieldByName('NUMERONF').AsString,1,9))+1,9,0),9) then
+    begin
+      Form7.sTitulo := 'Notas fiscais de saída (vendas) série '+sSerie;
+      Form7.ibDataSet15.Append;
+      {
+      Form7.ibDataSet15.Edit; Form7.ibDataSet15NUMERONF.AsString := Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) + sSerie;
+      Form7.ibDataSet15.Edit; Form7.ibDataSet15CLIENTE.AsString  := Form7.ibDataSet24FORNECEDOR.AsString;
+      Form7.ibDataSet15.Edit; Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet24OPERACAO.AsString;
+      }
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15NUMERONF.AsString := Copy(Form7.ibDataSet24NUMERONF.AsString,1,9) + sSerie;
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15CLIENTE.AsString  := Form7.ibDataSet24FORNECEDOR.AsString;
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15OPERACAO.AsString := Form7.ibDataSet24OPERACAO.AsString;
+      //
+      if AllTrim(Form7.ibDataSet24FRETE12.AsString) <> '' then
+      begin
+        Form7.ibDataSet15.Edit;
+        Form7.ibDataSet15FRETE12.AsString  := Form7.ibDataSet24FRETE12.AsString;
+      end else
+      begin
+        Form7.ibDataSet15.Edit;
+        Form7.ibDataSet15FRETE12.AsString  := '0';
+      end;
+
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15COMPLEMENTO.AsString := 'ENTRADA';
+      Form7.ibDataSet15.Edit;
+      Form7.ibDataSet15EMITIDA.AsString     := 'E';
+
+      Form7.ibDataSet15.Post;
+
+      MensagemSistema('Nota fiscal de entrada gerada com sucesso.');
+    end else
+    begin
+      MensagemSistema('Nota Fiscal fora de sequência.',msgAtencao);
+    end;
+  except
+  end;
+
+  FreeAndNil(IBQULTIMANFe); // Sandro Silva 2024-09-25
 
   Form7.sModulo := 'COMPRA';
   Screen.Cursor            := crDefault;
