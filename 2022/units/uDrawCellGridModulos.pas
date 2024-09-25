@@ -158,6 +158,7 @@ begin
      (Column.Field.Name = 'ibDataSet14SOBREOUTRAS') or
      (Column.Field.Name = 'ibDataSet14IPISOBREOUTRA') or //Mauricio Parizotto 2024-04-22
      (Column.Field.Name = 'ibDataSet14REFERENCIANOTA') or //Mauricio Parizotto 2024-06-21
+     (Column.Field.Name = 'ibDataSet14IMPOSTOMANUAL') or //Mauricio Parizotto 2024-07-23
      (Column.Field.Name = 'ibDataSet11PIXESTATICO') or //Mauricio Parizotto 2024-05-27
      (Column.Field.Name = 'ibDataSet14FRETESOBREIPI')  then
   begin
@@ -220,6 +221,15 @@ begin
       if Column.Field.Name = 'ibDataSet14REFERENCIANOTA' then
       begin
         if (Alltrim(Form7.ibDataSet14REFERENCIANOTA.AsString) = 'S') then
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.imgCheck.Picture.Graphic)
+        else
+          Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);
+      end;
+
+      //Mauricio Parizotto 2024-07-23
+      if Column.Field.Name = 'ibDataSet14IMPOSTOMANUAL' then
+      begin
+        if (Alltrim(Form7.ibDataSet14IMPOSTOMANUAL.AsString) = 'S') then
           Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.imgCheck.Picture.Graphic)
         else
           Form7.dbGrid1.Canvas.StretchDraw(Rect,Form7.Image11.Picture.Graphic);

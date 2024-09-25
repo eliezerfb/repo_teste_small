@@ -274,6 +274,7 @@ type
     Image8: TImage;
     Label27: TLabel;
     pnlEscondeWin11: TPanel;
+    lblIVAPorEstado: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -389,6 +390,11 @@ type
       Shift: TShiftState);
     procedure tbsCadastroShow(Sender: TObject);
     procedure edtCodigoChange(Sender: TObject);
+    procedure DSCadastroDataChange(Sender: TObject; Field: TField);
+    procedure lblIVAPorEstadoClick(Sender: TObject);
+    procedure lblIVAPorEstadoMouseLeave(Sender: TObject);
+    procedure lblIVAPorEstadoMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -415,6 +421,7 @@ type
     procedure IniciaCamera;
     function MensagemImagemWeb(Msg, Titulo : string; DlgType: TMsgDlgType;
       Buttons: TMsgDlgButtons; Captions: array of string): Integer;
+    procedure AtualizaInformacoesDoProduto;
   public
     { Public declarations }
   end;
@@ -426,8 +433,16 @@ implementation
 
 {$R *.dfm}
 
-uses unit7, MAIS, smallfunc_xe, uDialogs, uPermissaoUsuario, MAIS3,
-     uTestaProdutoExiste, uITestaProdutoExiste, Unit19;
+uses unit7
+, MAIS
+, smallfunc_xe
+, uDialogs
+, uPermissaoUsuario
+, MAIS3
+, uTestaProdutoExiste
+, uITestaProdutoExiste
+, Unit19
+, uFrmEstoqueIVA;
 
 { TFrmEstoque }
 
@@ -692,10 +707,14 @@ begin
   if bGravandoRegistro then
     Exit;
 
+  {Sandro Silva 2024-09-19
   AtualizaObjComValorDoBanco;
 
   //Contador
   tbsCadastro.Caption := GetDescritivoNavegacao;
+  }
+  AtualizaInformacoesDoProduto;
+  {Sandro Silva 2024-09-19}
 end;
 
 procedure TFrmEstoque.edtDescricaoExit(Sender: TObject);
@@ -737,7 +756,13 @@ begin
   if edtCodBarras.CanFocus then
     edtCodBarras.SetFocus;
 
+  {Sandro Silva 2024-09-19
   AtualizaObjComValorDoBanco;
+
+  tbsCadastro.Caption := GetDescritivoNavegacao; // Sandro Silva 2024-09-19
+  }
+  AtualizaInformacoesDoProduto;
+  {Sandro Silva 2024-09-19}
 end;
 
 procedure TFrmEstoque.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -907,6 +932,23 @@ begin
   end;
 end;
 
+procedure TFrmEstoque.lblIVAPorEstadoClick(Sender: TObject);
+begin
+  //Mauricio Parizotto 2024-09-10
+  ConfiguraIVAporEstado(DSCadastro.DataSet.FieldByName('IDESTOQUE').AsInteger,Form7.ibDataSet13ESTADO.AsString);
+end;
+
+procedure TFrmEstoque.lblIVAPorEstadoMouseLeave(Sender: TObject);
+begin
+  lblIVAPorEstado.Font.Style := [];
+end;
+
+procedure TFrmEstoque.lblIVAPorEstadoMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  lblIVAPorEstado.Font.Style := [fsBold,fsUnderline];
+end;
+
 procedure TFrmEstoque.lblAnteriorClick(Sender: TObject);
 begin
   pgcFicha.ActivePage := tbsCadastro;
@@ -927,10 +969,14 @@ begin
 
   pgcFicha.ActivePage := tbsCadastro;
 
+  {Sandro Silva 2024-09-19
   AtualizaObjComValorDoBanco;
 
   //Contador
   tbsCadastro.Caption := GetDescritivoNavegacao;
+  }
+  AtualizaInformacoesDoProduto;
+  {Sandro Silva 2024-09-19 fim}
 
   try
     if edtCodBarras.CanFocus then
@@ -1794,6 +1840,10 @@ begin
   Memo1.Lines.Add('<rastro>Sim"Informar grupo Rastreamento de Produto"</rastro>');
 
   Memo1.Lines.Add('<cBenef>0000000000 "Código de Benefício Fiscal na UF aplicado ao item"</cBenef>');
+
+  Memo1.Lines.Add('<cCredPresumido> "Código do crédito presumido"</cCredPresumido>');
+  Memo1.Lines.Add('<pCredPresumido>0,00 "Alíquota do crédito presumido"</pCredPresumido>');
+
   Memo1.Lines.Add('<motDesICMS>00 "Motivo da desoneração do ICMS"</motDesICMS>');
   Memo1.Lines.Add('<FCP>0,00 "Fundo de Combate a Pobreza"</FCP>');
   Memo1.Lines.Add('<FCPST>0,00 "Fundo de Combate a Pobreza ST"</FCPST>');
@@ -1941,6 +1991,18 @@ begin
       SMALL_DBEDITY.SetFocus;
     end;
   end;
+end;
+
+procedure TFrmEstoque.AtualizaInformacoesDoProduto;
+begin
+  // Há situações que tem que atualizar sempre os 2 métodos (AtualizaObjComValorDoBanco e GetDescritivoNavegacao).
+  // Se usar em outros locais avaliar se contempla atualizar os 2 métodos ou somente aquele que for pertinente
+
+  AtualizaObjComValorDoBanco;
+
+  //Contador
+  tbsCadastro.Caption := GetDescritivoNavegacao;
+
 end;
 
 procedure TFrmEstoque.AtualizaObjComValorDoBanco;
@@ -3868,6 +3930,21 @@ begin
                                          and (Form7.ibDataSet28DESCRICAO.AsString <> EmptyStr);
 end;
 
+
+procedure TFrmEstoque.DSCadastroDataChange(Sender: TObject; Field: TField);
+begin
+  {Sandro Silva 2024-09-19 inicio
+  inherited;
+  if not Self.Visible then
+    Exit;
+
+  if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
+    Exit;
+
+  //Contador
+  tbsCadastro.Caption := GetDescritivoNavegacao;
+  {Sandro Silva 2024-09-19 fim}
+end;
 
 procedure TFrmEstoque.AtribuirItemPesquisaComposicao;
 begin
