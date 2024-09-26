@@ -270,7 +270,8 @@ uses
   uFrmEstoqueIVA in 'uFrmEstoqueIVA.pas' {FrmEstoqueIVA},
   uIRetornaCustoMedio in 'interfaces\uIRetornaCustoMedio.pas',
   uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas',
-  uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas';
+  uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas',
+  ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo};
 
 {$R *.RES}
 

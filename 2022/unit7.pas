@@ -1737,6 +1737,7 @@ type
     Dia1: TMenuItem;
     Semana1: TMenuItem;
     Ms1: TMenuItem;
+    Movimentaodoitemporperodo1: TMenuItem;
     Rankingdeprodutosvendidos1: TMenuItem;
     ibDataSet4IDESTOQUE: TIntegerField;
     procedure IntegraBanco(Sender: TField);
@@ -2468,6 +2469,7 @@ type
     procedure Dia1Click(Sender: TObject);
     procedure Ms1Click(Sender: TObject);
     procedure Semana1Click(Sender: TObject);
+    procedure Movimentaodoitemporperodo1Click(Sender: TObject);
     procedure Resumodasvendas1Click(Sender: TObject);
     procedure Rankingdeprodutosvendidos1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
@@ -2779,7 +2781,8 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uPermissaoUsuario
   , uFrmCadastro
   , uFrmEstoque
-  , uVisualizaCadastro;
+  , uVisualizaCadastro
+  , ufrmRelatorioMovItensPeriodo;
 
 {$R *.DFM}
 
@@ -9580,6 +9583,20 @@ procedure TForm7.Movimentaodoitem1Click(Sender: TObject);
 begin
   GeraVisualizacaoFichaCadastro;
   //Form10.Image203Click(Sender);
+end;
+
+procedure TForm7.Movimentaodoitemporperodo1Click(Sender: TObject);
+begin
+  frmRelatorioMovItensPeriodo := TfrmRelatorioMovItensPeriodo.Create(nil);
+  try
+    frmRelatorioMovItensPeriodo.Imagem           := imgImprimir.Picture;
+    frmRelatorioMovItensPeriodo.Usuario          := Usuario;
+    frmRelatorioMovItensPeriodo.Transaction      := IBTransaction1;
+    frmRelatorioMovItensPeriodo.DescricaoProduto := ibDataSet4DESCRICAO.AsString;
+    frmRelatorioMovItensPeriodo.ShowModal;
+  finally
+    FreeAndNil(frmRelatorioMovItensPeriodo);
+  end;
 end;
 
 procedure TForm7.Imprimirpedidosdevenda1Click(Sender: TObject);
