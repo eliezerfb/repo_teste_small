@@ -1914,6 +1914,11 @@ var
   Mais1Ini: TIniFile;
   ConsultaImprimeDanfe : Boolean;
 begin
+  {Dailon Parisotto (f-21050) 2024-09-26 Inicio}
+  if (not bOk) and (Button1.Enabled) then
+    Button1.SetFocus;
+  {Dailon Parisotto (f-21050) 2024-09-26 Fim}
+
    // Apaga ítens em branco
   try
     Form7.IBQuery99.Close;
