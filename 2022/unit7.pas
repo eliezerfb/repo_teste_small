@@ -37,6 +37,7 @@ uses
   , uSmallEnumerados
   , synPDF, System.MaskUtils
   , uRetornaCustoMedio
+  , uRelatorioResumoVendas
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -1736,6 +1737,7 @@ type
     Dia1: TMenuItem;
     Semana1: TMenuItem;
     Ms1: TMenuItem;
+    Rankingdeprodutosvendidos1: TMenuItem;
     ibDataSet4IDESTOQUE: TIntegerField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
@@ -1809,7 +1811,6 @@ type
     procedure ibDataSet12BeforeEdit(DataSet: TDataSet);
     procedure ibDataSet12AfterPost(DataSet: TDataSet);
     procedure Relatriodecomisses1Click(Sender: TObject);
-    procedure Resumodasvendas1Click(Sender: TObject);
     procedure Histrico1Click(Sender: TObject);
     procedure ibDataSet7AfterPost(DataSet: TDataSet);
     procedure ibDataSet7VALOR_RECEChange(Sender: TField);
@@ -2467,6 +2468,8 @@ type
     procedure Dia1Click(Sender: TObject);
     procedure Ms1Click(Sender: TObject);
     procedure Semana1Click(Sender: TObject);
+    procedure Resumodasvendas1Click(Sender: TObject);
+    procedure Rankingdeprodutosvendidos1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -2534,6 +2537,7 @@ type
     function TestarPodeUtilizarCIT(AcRegistro, AcCITInformado: String): Boolean;
     function RetornarCasasDecimaisPreco: Integer;
     procedure DesvincularCupomImportado;
+    procedure ChamarRelResumoVendas(AenTipoRelatorio: TTipoRelatorioResumoVenda);
   public
     // Public declarations
 
@@ -2740,7 +2744,6 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uImpressaoOrcamento
   , uFrenteSections
   , uFrmParametroTributacao
-  , uRelatorioResumoVendas
   , uDuplicaOrcamento
   , uDuplicaProduto
   , uImportaOrcamento
@@ -12413,7 +12416,7 @@ begin
     Form37.ShowModal;
 end;
 
-procedure TForm7.Resumodasvendas1Click(Sender: TObject);
+procedure TForm7.ChamarRelResumoVendas(AenTipoRelatorio: TTipoRelatorioResumoVenda);
 var
   oIni : tIniFile;
 begin
@@ -12430,6 +12433,8 @@ begin
     frmRelResumoVendas.DataSetEstoque     := ibDataSet4;
     frmRelResumoVendas.CasasDecimaisPreco := StrToIntDef(Form1.ConfPreco,2);
     frmRelResumoVendas.CasasDecimaisQtde  := StrToIntDef(Form1.ConfCasas,2);
+    frmRelResumoVendas.TipoRelatorio      := AenTipoRelatorio;
+
     if sModulo = 'ESTOQUE' then
     begin
       frmRelResumoVendas.WhereEstoque     := sWhere;
@@ -12447,7 +12452,11 @@ begin
         FreeAndNil(oIni);
       end;
     end;
-    frmRelResumoVendas.SqlTraduzido       := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por lucro bruto',True, ibDataSet4);
+
+    frmRelResumoVendas.SqlTraduzido := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por ',True, ibDataSet4);
+    if AenTipoRelatorio <> trrvRankingProdVendido then
+      frmRelResumoVendas.SqlTraduzido := frmRelResumoVendas.SqlTraduzido + 'lucro bruto';
+
     frmRelResumoVendas.ShowModal;
   finally
     AgendaCommit(True);
@@ -22716,6 +22725,11 @@ begin
   Form38.ShowModal; // Ok
 end;
 
+procedure TForm7.Rankingdeprodutosvendidos1Click(Sender: TObject);
+begin
+  ChamarRelResumoVendas(trrvRankingProdVendido);
+end;
+
 procedure TForm7.ibDataSet11BeforeInsert(DataSet: TDataSet);
 begin
   try if AllTrim(Form7.ibDataSet11NOME.AsString)='' then Form7.ibDataSet11.Delete; except end;
@@ -23809,6 +23823,11 @@ begin
   Form7.sModulo := 'Resumo das compras';
   Form38.ShowModal;
   Form38.Label21.Visible := False;
+end;
+
+procedure TForm7.Resumodasvendas1Click(Sender: TObject);
+begin
+  ChamarRelResumoVendas(trrvResumoVendas);
 end;
 
 procedure TForm7.miExibirAjudaICMClick(Sender: TObject);

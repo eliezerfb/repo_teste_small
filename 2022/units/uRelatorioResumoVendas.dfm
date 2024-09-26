@@ -38,6 +38,26 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
       Width = 16
       Height = 13
       Caption = 'At'#233
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object lblOrdenadoPor: TLabel
+      Left = 0
+      Top = 121
+      Width = 65
+      Height = 13
+      Caption = 'Ordenado por'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Visible = False
     end
     object dtInicial: TDateTimePicker
       Left = 0
@@ -72,8 +92,8 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
       TabOrder = 1
     end
     object cbAgruparGrupo: TCheckBox
-      Left = 0
-      Top = 89
+      Left = 11
+      Top = 87
       Width = 193
       Height = 17
       Caption = 'Separado por grupo de mercadoria'
@@ -84,6 +104,27 @@ inherited frmRelResumoVendas: TfrmRelResumoVendas
       Font.Style = []
       ParentFont = False
       TabOrder = 2
+    end
+    object cbxOrdenadoPor: TComboBox
+      Left = 0
+      Top = 137
+      Width = 190
+      Height = 21
+      Style = csDropDownList
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
+      ItemIndex = 0
+      ParentFont = False
+      TabOrder = 3
+      Text = 'Quantidade'
+      Visible = False
+      Items.Strings = (
+        'Quantidade'
+        'Valor vendido'
+        'Lucro')
     end
   end
   object pnlSelOperacoes: TPanel

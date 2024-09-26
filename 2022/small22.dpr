@@ -269,7 +269,8 @@ uses
   uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout},
   uFrmEstoqueIVA in 'uFrmEstoqueIVA.pas' {FrmEstoqueIVA},
   uIRetornaCustoMedio in 'interfaces\uIRetornaCustoMedio.pas',
-  uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas';
+  uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas',
+  uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas';
 
 {$R *.RES}
 
