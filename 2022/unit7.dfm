@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1237
-  ClientWidth = 1558
+  ClientHeight = 1250
+  ClientWidth = 1560
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7636,8 +7636,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1197
-    Width = 1558
+    Top = 1210
+    Width = 1560
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7646,8 +7646,8 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1210
-    ExplicitWidth = 1560
+    ExplicitTop = 1197
+    ExplicitWidth = 1558
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7711,7 +7711,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1558
+    Width = 1560
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -7721,7 +7721,7 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1560
+    ExplicitWidth = 1558
   end
   object Panel_0: TPanel
     Left = 0
@@ -19815,7 +19815,7 @@ object Form7: TForm7
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 143
-    Top = 236
+    Top = 237
     object MenuItem183: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem183Click

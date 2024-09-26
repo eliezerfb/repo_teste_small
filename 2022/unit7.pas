@@ -8134,6 +8134,8 @@ end;
 
 procedure TForm7.Image106Click(Sender: TObject);
 begin
+  LogRetaguarda('inicio procedure TForm7.Image106Click(): 8137'); // Sandro Silva 2024-09-26
+
   FechaModulos;
 
   //Mauricio Parizotto 2023-09-21
@@ -8377,6 +8379,9 @@ begin
       end;
     end;
   end;
+
+  LogRetaguarda('fim procedure TForm7.Image106Click(): 8383'); // Sandro Silva 2024-09-26
+
 end;
 
 procedure TForm7.VerificaItensInativos;
@@ -20787,14 +20792,14 @@ begin
         Form7.ibDataSet23QUANTIDADE.AsFloat := 1;
       end else
       begin
-        Form7.ibDataSet23DESCRICAO.AsString := EmptyStr;
+        Form7.ibDataSet23DESCRICAO.AsString  := EmptyStr;
         Form7.ibDataSet23QUANTIDADE.AsString := EmptyStr;
-        Form7.ibDataSet23UNITARIO.AsString := EmptyStr;
-        Form7.ibDataSet23TOTAL.AsString := EmptyStr;
-        Form7.ibDataSet23CFOP.AsString := EmptyStr;
-        Form7.ibDataSet23ICM.AsString := EmptyStr;
-        Form7.ibDataSet23CST_ICMS.AsString := EmptyStr;
-        Form7.ibDataSet23CODIGO.AsString := EmptyStr;
+        Form7.ibDataSet23UNITARIO.AsString   := EmptyStr;
+        Form7.ibDataSet23TOTAL.AsString      := EmptyStr;
+        Form7.ibDataSet23CFOP.AsString       := EmptyStr;
+        Form7.ibDataSet23ICM.AsString        := EmptyStr;
+        Form7.ibDataSet23CST_ICMS.AsString   := EmptyStr;
+        Form7.ibDataSet23CODIGO.AsString     := EmptyStr;
 
         Form24.DbGrid1.SelectedIndex := 6;
       end;
@@ -36275,6 +36280,8 @@ end;
 
 procedure TForm7.TotalizaItensCompra;
 begin
+  LogRetaguarda('procedure TForm7.TotalizaItensCompra: 36278'); // Sandro Silva 2024-09-26
+
   try
     Form7.ibDataSet24.Edit;
     Form7.ibDataSet24MERCADORIA.AsFloat      := 0;
@@ -36286,7 +36293,7 @@ begin
     Form7.ibDataSet24ICMSSUBSTI.AsFloat      := 0;
     Form7.ibDataSet24BASESUBSTI.AsFloat      := 0;
     Form7.ibDataSet24IPI.AsFloat             := 0;
-    Form7.ibDataSet24VFCPST.AsFloat          := 0.00;// Sandro Silva 2023-04-11
+    Form7.ibDataSet24VFCPST.AsFloat          := 0.00; // Sandro Silva 2023-04-11
     Form7.ibDataSet24ICMS_DESONERADO.AsFloat := 0; //Mauricio Parizotto 2023-07-18
 
     Form7.ibDataSet101.DisableControls;
@@ -36334,6 +36341,8 @@ begin
     CalculaTotalNota;
   except
   end;
+
+  LogRetaguarda('procedure TForm7.TotalizaItensCompra: 36340'); // Sandro Silva 2024-09-26
 
   AgendaCommit(True);
 end;
