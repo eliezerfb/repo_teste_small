@@ -276,7 +276,7 @@ begin
   FqryDados.SQL.Add('    (EMITIDA=''S'')');
   FqryDados.SQL.Add('    AND (EMISSAO BETWEEN :XDATAINI AND :XDATAFIM)');
   FqryDados.SQL.Add(RetornarWhereOperacoes);
-  FqryDados.SQL.Add('ORDER BY VENDAS.EMISSAO, VENDAS.NUMERONF');
+  FqryDados.SQL.Add('ORDER BY VENDAS.EMISSAO, VENDAS.NUMERONF, ITENS001.REGISTRO');
   FqryDados.ParamByName('XDATAINI').AsDate := dtInicial.Date;
   FqryDados.ParamByName('XDATAFIM').AsDate := dtFinal.Date;
   FqryDados.Open;

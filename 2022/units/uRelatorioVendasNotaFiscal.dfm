@@ -225,7 +225,7 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       item
         Name = 'NOTA'
         DataType = ftString
-        Size = 12
+        Size = 13
       end
       item
         Name = 'EMISSAO'
@@ -288,11 +288,12 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
     Params = <>
     StoreDefs = True
     Left = 39
-    Top = 120
+    Top = 119
     object cdsRelICMSNOTA: TStringField
       DisplayLabel = 'Nota'
+      DisplayWidth = 13
       FieldName = 'NOTA'
-      Size = 12
+      Size = 13
     end
     object cdsRelICMSEMISSAO: TDateField
       DisplayLabel = 'Data'
@@ -358,7 +359,7 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       item
         Name = 'NOTA'
         DataType = ftString
-        Size = 12
+        Size = 13
       end
       item
         Name = 'EMISSAO'
@@ -406,12 +407,13 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
     IndexDefs = <>
     Params = <>
     StoreDefs = True
-    Left = 37
+    Left = 38
     Top = 182
     object cdsItemPorItemNOTA: TStringField
       DisplayLabel = 'Nota'
+      DisplayWidth = 13
       FieldName = 'NOTA'
-      Size = 12
+      Size = 13
     end
     object cdsItemPorItemEMISSAO: TDateField
       DisplayLabel = 'Data'
