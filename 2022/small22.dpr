@@ -267,6 +267,8 @@ uses
   uFrmTelaProcessamento in '..\..\unit_compartilhada\uFrmTelaProcessamento.pas' {FrmTelaProcessamento},
   uFrmEstoque in 'uFrmEstoque.pas' {FrmEstoque},
   uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout},
+  ufrmRelatorioNotasFaltantes in 'units\ufrmRelatorioNotasFaltantes.pas' {frmRelatorioNotasFaltantes},
+  uEstruturaRelNotasFaltantes in 'units\uEstruturaRelNotasFaltantes.pas',
   uFrmEstoqueIVA in 'uFrmEstoqueIVA.pas' {FrmEstoqueIVA},
   uIRetornaCustoMedio in 'interfaces\uIRetornaCustoMedio.pas',
   uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas',

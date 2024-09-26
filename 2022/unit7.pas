@@ -1733,6 +1733,7 @@ type
     ImgSemProduto: TImage;
     ibDataSet14IMPOSTOMANUAL: TIBStringField;
     DetalhamentodasOrdensfiltradas1: TMenuItem;
+    Notasfaltantes1: TMenuItem;
     Aniversariantes1: TMenuItem;
     Dia1: TMenuItem;
     Semana1: TMenuItem;
@@ -2466,6 +2467,7 @@ type
     procedure ibDataSet14AfterInsert(DataSet: TDataSet);
     procedure ibDataSet14BeforePost(DataSet: TDataSet);
     procedure DetalhamentodasOrdensfiltradas1Click(Sender: TObject);
+    procedure Notasfaltantes1Click(Sender: TObject);
     procedure Dia1Click(Sender: TObject);
     procedure Ms1Click(Sender: TObject);
     procedure Semana1Click(Sender: TObject);
@@ -2782,7 +2784,8 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmCadastro
   , uFrmEstoque
   , uVisualizaCadastro
-  , ufrmRelatorioMovItensPeriodo;
+  , ufrmRelatorioMovItensPeriodoaCadastro
+  , ufrmRelatorioNotasFaltantes;
 
 {$R *.DFM}
 
@@ -23418,6 +23421,20 @@ begin
 
   // Sandro Silva 2024-01-11 Notasfiscaiscanceladas1.Checked := True;
   // Sandro Silva 2024-01-11 Notasfiscaisabertas1.Checked    := False;
+end;
+
+procedure TForm7.Notasfaltantes1Click(Sender: TObject);
+begin
+  frmRelatorioNotasFaltantes := TfrmRelatorioNotasFaltantes.Create(nil);
+  try
+    frmRelatorioNotasFaltantes.DataBase    := IBDatabase1;
+    frmRelatorioNotasFaltantes.Imagem      := imgImprimir.Picture;
+    frmRelatorioNotasFaltantes.Usuario     := Usuario;
+    frmRelatorioNotasFaltantes.Transaction := IBTransaction1;
+    frmRelatorioNotasFaltantes.ShowModal;
+  finally
+    FreeAndNil(frmRelatorioNotasFaltantes);
+  end;
 end;
 
 procedure TForm7.Notasfiscaisabertas1Click(Sender: TObject);

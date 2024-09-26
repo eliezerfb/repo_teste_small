@@ -579,6 +579,11 @@
         <DCCReference Include="uFrmMsgNovoLayout.pas">
             <Form>FrmMsgNovoLayout</Form>
         </DCCReference>
+        <DCCReference Include="units\ufrmRelatorioNotasFaltantes.pas">
+            <Form>frmRelatorioNotasFaltantes</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="units\uEstruturaRelNotasFaltantes.pas"/>
         <DCCReference Include="uFrmEstoqueIVA.pas">
             <Form>FrmEstoqueIVA</Form>
         </DCCReference>
