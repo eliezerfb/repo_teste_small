@@ -31304,7 +31304,7 @@ var
   Mais1Ini : tIniFile;
   I, YY, J : Integer;
   sMandados : String;
-  MyBookMark1 : TBookMark;
+//Sandro Silva 2024-09-26  MyBookMark1 : TBookMark;
 begin
   Form40.MaskEdit1.Visible := False;
   Form40.Edit1.Visible     := False;
@@ -31816,8 +31816,10 @@ begin
 end;
 
 procedure TForm7.EnvioaoFISCOREDUOZ1Click(Sender: TObject);
+{Sandro Silva 2024-09-26
 var
   bBlocoX : Boolean;
+  }
 begin
   //
   {Sandro Silva 2023-02-14 inicio
@@ -32718,7 +32720,8 @@ end;
 
 procedure TForm7.PrvisualizarDANFE1Click(Sender: TObject);
 var
-  sFormato, sLote: String;
+  //Sandro Silva 2024-09-26 sFormato,
+  sLote: String;
 begin
   {Sandro Silva 2022-09-12 inicio}
   //Ficha 4128
@@ -36513,8 +36516,10 @@ begin
 end;
 
 function TForm7.RetornarHistoricoPorModulo: String;
+{Sandro Silva 2024-09-26
 var
   i: Integer;
+  }
 begin
   case RetornaTipoModulo of
     tmcVenda    : Result := 'NÚMERO NF: ' + ibDataSet15NUMERONF.AsString + ', CLIENTE: ' + ibDataSet15CLIENTE.AsString;

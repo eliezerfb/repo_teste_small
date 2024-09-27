@@ -138,7 +138,7 @@ procedure TForm9.FormShow(Sender: TObject);
 var
   I: Integer;
   iChecked: Integer; // Quantidade de checkbox
-  iCamposExibir: Integer;
+//2024-09-26  iCamposExibir: Integer;
 begin
   bChave := False;
 

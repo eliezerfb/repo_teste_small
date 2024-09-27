@@ -991,7 +991,7 @@ procedure GeraCNAB240SegmentoP_Unicred(var F: TextFile; iReg : integer; sComando
   sAgencia, sDVdaAgencia, sNumeroContaCorrente, sDigitocontacorrente, sNumerodoDocumento, sEspecieDoTitulo,
   sCodigodoJurosdeMora, sNumeroContratoOP : string);
 var
-  vMulta : Double;
+//Sandro Silva09-26  vMulta : Double;
   TipoMulta : string;
 begin
   //Mauricio Parizotto 2024-04-03

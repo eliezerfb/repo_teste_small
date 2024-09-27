@@ -93,7 +93,7 @@ end;
 function TframeConfiguraTEF.SalvarINI: Boolean;
 var
   cNomeSecao: String;
-  iQtdPadrao: Integer;
+//Sandro Silva 2024-09-26  iQtdPadrao: Integer;
 begin
   Result := False;
   try
