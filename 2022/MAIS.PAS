@@ -2074,7 +2074,7 @@ end;
 
 function PegaImpostosDoXML(sP1: String):Boolean;
 var
-  I : Integer;
+//Sandro Silva 2024-09-26  I : Integer;
   NodePrim, NodePai, NodeSec, NodeTmp: IXMLNode; // Node é um nó do XML
 
   sDesc    ,
@@ -3353,12 +3353,14 @@ function FechaTudo(bP1 : Boolean):Boolean;
 begin
   Result := False;
 
-  if Form5.Visible then Form5.Close;
+  if Form5.Visible then
+    Form5.Close;
 //  if Form5.Visible then Form10.Close;
 
   if Form1.bFechaTudo then
   begin
-    if Form24.Visible then Form24.Close;
+    if Form24.Visible then
+      Form24.Close;
     if (Form12.Visible) then
     begin
       if (Form12.PodeFecharTela) then
@@ -3370,14 +3372,19 @@ begin
         Exit;
       end;
     end;
-    if Form30.Visible then Form30.Close;
-    if Form48.Visible then Form48.Close;
+    if Form30.Visible then
+      Form30.Close;
+    if Form48.Visible then
+      Form48.Close;
   end;
 
-  if Form7.Visible  then Form7.Close;
-  if Form19.Visible then Form19.Close;
+  if Form7.Visible  then
+    Form7.Close;
+  if Form19.Visible then
+    Form19.Close;
 
-  if Form7.sModulo <> 'INDICADORES' then Form7.sModulo := '';
+  if Form7.sModulo <> 'INDICADORES' then
+    Form7.sModulo := '';
 
   Result := True;
 end;
@@ -7820,11 +7827,13 @@ begin
 end;
 
 procedure TForm1.Liberarosmdulosparaesteusurio1Click(Sender: TObject);
+{Sandro Silva 2024-09-26
 var
   Mais1Ini: TIniFile;
   sSenha  : String;
   sSenhaX : String;
   I : Integer;
+  }
 begin
   {Mauricio Parizotto 2024-07-06
   Form22.Show;
@@ -8744,9 +8753,11 @@ end;
 
 procedure TForm1.ConfigurarNFEINI1Click(Sender: TObject);
 var
+{Sandro Silva 2024-09-26
   sSenha  : String;
   sSenhaX : String;
   I : Integer;
+  }
   Mais1Ini : tIniFile;
 begin
   {Mauricio Parizotto 2024-07-26
@@ -9495,8 +9506,10 @@ end;
 
 procedure TForm1.Ambiente1Click(Sender: TObject);
 var
+{Sandro Silva 2024-09-26
   sSenha  : String;
   sSenhaX : String;
+  }
   I : Integer;
   Mais1Ini : tIniFile;
 begin
@@ -12205,11 +12218,13 @@ begin
 end;
 
 procedure TForm1.Modoinventrio1Click(Sender: TObject);
+{Sandro Silva 2024-09-26
 var
   Mais1Ini: TIniFile;
   sSenha  : String;
   sSenhaX : String;
   I : Integer;
+  }
 begin
   if not Modoinventrio1.Checked then
   begin
@@ -13424,8 +13439,8 @@ begin
 end;
 
 procedure TForm1.ConfiguraesdaNFSe1Click(Sender: TObject);
-var
-  ConfSistema : TArquivosDAT;
+//var
+//  ConfSistema : TArquivosDAT;
 begin
   {Sandro Silva 2024-04-24 inicio
   try

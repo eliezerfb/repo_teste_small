@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1250
-  ClientWidth = 1560
+  ClientHeight = 1224
+  ClientWidth = 1556
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7636,8 +7636,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1210
-    Width = 1560
+    Top = 1184
+    Width = 1556
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7711,7 +7711,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1560
+    Width = 1556
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -13048,6 +13048,10 @@ object Form7: TForm7
         Caption = 'Resumo das vendas'
         OnClick = Resumodasvendas1Click
       end
+      object Rankingdeprodutosvendidos1: TMenuItem
+        Caption = 'Ranking de produtos vendidos'
+        OnClick = Rankingdeprodutosvendidos1Click
+      end
       object Resumodascompras1: TMenuItem
         Caption = 'Resumo das compras'
         OnClick = Resumodascompras1Click
@@ -13055,6 +13059,10 @@ object Form7: TForm7
       object Movimentaodoitem1: TMenuItem
         Caption = 'Movimenta'#231#227'o do item'
         OnClick = Movimentaodoitem1Click
+      end
+      object Movimentaodoitemporperodo1: TMenuItem
+        Caption = 'Movimenta'#231#227'o do item por per'#237'odo'
+        OnClick = Movimentaodoitemporperodo1Click
       end
       object Movimentaodositemskardex1: TMenuItem
         Caption = 'Movimenta'#231#227'o dos itens filtrados (Kardex'#174')'
@@ -19724,6 +19732,10 @@ object Form7: TForm7
         Caption = 'Vendas por vendedor'
         OnClick = miRelVendasVendedorClick
       end
+      object Notasfaltantes1: TMenuItem
+        Caption = 'Notas faltantes'
+        OnClick = Notasfaltantes1Click
+      end
     end
     object MenuItem167: TMenuItem
       Caption = '&Editar'
@@ -19815,7 +19827,7 @@ object Form7: TForm7
     AutoHotkeys = maManual
     OwnerDraw = True
     Left = 143
-    Top = 237
+    Top = 236
     object MenuItem183: TMenuItem
       Caption = '&Arquivo'
       OnClick = MenuItem183Click
