@@ -1737,6 +1737,10 @@ type
     Semana1: TMenuItem;
     Ms1: TMenuItem;
     ibDataSet4IDESTOQUE: TIntegerField;
+    ibDataSet4CONSULTA_TRIBUTACAO: TIBStringField;
+    ibDataSet4STATUS_TRIBUTACAO: TIBStringField;
+    ibDataSet4DATA_STATUS_TRIBUTACAO: TDateTimeField;
+    ibDataSet4CODIGO_IMENDES: TIntegerField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -8854,51 +8858,22 @@ begin
       Abort;
     end;
 
-    if Pos('STATUS',DBGrid1.SelectedField.Name) <> 0 then
+    //if Pos('STATUS',DBGrid1.SelectedField.Name) <> 0 then Mauricio Parizotto 2024-09-26
+    if (Pos('STATUS',DBGrid1.SelectedField.Name) <> 0)
+      and (sModulo = 'VENDA') then
     begin
       if ValidaLimiteDeEmissaoDeVenda(DBGrid1.DataSource.DataSet.FieldByName('EMISSAO').AsDateTime) then
       begin
         if not DenegadoOuCancelado(True) then
         begin
-
           // Faz todas as etapas de transmissão, impressão, envio de email...
           EnviarConsultaImprimirDANFE;
 
           if Form7.sRPS = 'S' then
           begin
-            {try
-              Screen.Cursor := crHourGlass; // Cursor de Aguardo //
-              if Pos('ChaveDeCancelamento',Form7.ibDataSet15RECIBOXML.AsString) = 0 then
-              begin
-                Sleep(15000);
-
-                  Form1.sConsultaNfse := 'SIM';
-                  EnviarConsultaImprimirDANFE;
-                  Form1.sConsultaNfse := 'NAO';
-              end;
-            except
-            end; Mauricio Parizotto 2023-04-28}
-
             Application.ProcessMessages;
 
             EnviarNFSeporemail1Click(Sender);
-
-            {try
-              {try
-                Form7.ibDAtaSet15.Post;
-              except
-              end;
-
-              Screen.Cursor            := crHourGlass;
-              AgendaCommit(True);
-
-              Form7.Close;
-              Form7.Show;
-
-              Screen.Cursor            := crDefault;
-              Form7.ibDAtaSet15.Edit;
-            except
-            end; Mauricio Parizotto 2023-04-28}
 
             Screen.Cursor            := crDefault;
             Form7.ibDataSet15.EnableControls;
@@ -8917,9 +8892,7 @@ begin
       begin
         Clipboard.SetTextBuf(pchar(Form7.ibDataSet24NFEID.AsString));
       end;
-      //    ShellExecute( 0, 'Open',pChar('http://www.nfe.fazenda.gov.br/PORTAL/consulta.aspx?tipoConsulta=completa&tipoConteudo=XbSeqxE8pl8='),'','', SW_SHOWMAXIMIZED); // Antigo
-      //
-      // ShellExecute( 0, 'Open',pChar('http://www.nfe.fazenda.gov.br/PORTAL/consultaRecaptcha.aspx?tipoConsulta=completa&tipoConteudo=XbSeqxE8pl8='),'','', SW_SHOWMAXIMIZED); // Atualizado em 19/03/18
+
       ShellExecute( 0, 'Open',pChar('http://www.nfe.fazenda.gov.br/portal/consultaRecaptcha.aspx?tipoConsulta=resumo&tipoConteudo=7PhJ+gAVw2g='),'','', SW_SHOWMAXIMIZED); // Atualizado em 10/11/2021
 
       Screen.Cursor            := crDefault;
@@ -9024,19 +8997,7 @@ begin
       Abort;
     end;
 
-  {
-    //
-    // Procura pelo código de barras no no google
-    //
-    if DBGrid1.SelectedField.Name = 'ibDataSet4REFERENCIA' then
-    begin
-  //    ShellExecute( 0, 'Open',pchar('http://www.google.com/products?hl=en&q='+ibDAtaSet4REFERENCIA.AsString+'&ie=UTF-8&sa=N&tab=df'),'', '', SW_SHOWMAXIMIZED)
-      ShellExecute( 0, 'Open',pchar('http://www.google.com/products?q='+ibDAtaSet4REFERENCIA.AsString+''),'', '', SW_SHOWMAXIMIZED)
-    end;
-  }
-    //
     // Duplo CLICK no ativo REC
-    //
     if DBGrid1.SelectedField.Name = 'ibDataSet7ATIVO' then
     begin
       if (Form7.ibDataSet7VALOR_RECE.Asfloat = 0) or (Form7.ibDataSet7ATIVO.AsFloat >= 5) then
@@ -9562,19 +9523,16 @@ end;
 
 procedure TForm7.Previsodecompra1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
-  //
+
   Form38.Panel3.Visible  := True;
   Form7.sModulo := 'Previsão de compras';
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.Movimentaodoitem1Click(Sender: TObject);
 begin
   GeraVisualizacaoFichaCadastro;
-  //Form10.Image203Click(Sender);
 end;
 
 procedure TForm7.Imprimirpedidosdevenda1Click(Sender: TObject);
@@ -12010,14 +11968,18 @@ begin
     ibDataSet4FATORC.AsFloat        := 1;
     ibDataSet4MEDIDA.AsString       := 'UND';
     ibDataSet4MEDIDAE.AsString      := 'UND';
-    //
+
+    //Mauricio Parizotto 2024-09-26
+    ibDataSet4CONSULTA_TRIBUTACAO.AsString := 'S';
+    ibDataSet4STATUS_TRIBUTACAO.AsString   := 'Não consultado';
+
     ibDataSet4CODIGO.ReadOnly       := True;
-    //
+
     ibDataSet4.Post;
     ibDataSet4.Edit;
-    //
+
     AgendaCommit(True);
-    //
+
     Form7.sModulo := 'ESTOQUE';
   end;
 end;
@@ -35894,10 +35856,12 @@ begin
     sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
 
     //sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 41)); Mauricio Parizotto 2024-08-12
-    sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 40));
+    //sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 40)); Mauricio Parizotto 2024-09-26
+    sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 41));
 
     //iCampos   := 50; Mauricio Parizotto 2024-08-12
-    iCampos   := 49;
+    //iCampos   := 49; Mauricio Parizotto 2024-09-26
+    iCampos   := 50;
   end;
   {$Endregion}
 

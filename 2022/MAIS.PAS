@@ -292,6 +292,7 @@ type
     IntegraoIta1: TMenuItem;
     imgOrcamento: TImage;
     lblModOrcamento: TLabel;
+    IntegraoIMendes1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -470,6 +471,7 @@ type
     procedure imgOrcamentoClick(Sender: TObject);
     procedure lblModOrcamentoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure IntegraoIMendes1Click(Sender: TObject);
 
 
   private
@@ -610,7 +612,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmCadastro
   , uFrmEstoque
   , uFrmMsgNovoLayout
-  ;
+  , uFrmIntegracaoIMendes;
 
 {$R *.DFM}
 
@@ -1378,6 +1380,7 @@ var
   GeraAviso: boolean;
 
   DiasR : Real;
+  dLimiteRecurso : Tdate;
 begin
   Result := False;
 
@@ -1619,6 +1622,8 @@ begin
                         ,msgAtencao);
       end;
     end;
+
+     TSistema.GetInstance.ModuloImendes := (RecursoLiberado(Form7.IBDatabase1,rcIntegracaoImendes,dLimiteRecurso));
   except
   end;
 end;
@@ -5551,6 +5556,16 @@ begin
   {Dailon Parisotto (f-7599) 2023-12-11 fim}
   Halt(1);
   {Sandro Silva 2023-11-06 fim}
+end;
+
+procedure TForm1.IntegraoIMendes1Click(Sender: TObject);
+begin
+  try
+    FrmIntegracaoIMendes := TFrmIntegracaoIMendes.Create(self);
+    FrmIntegracaoIMendes.ShowModal;
+  finally
+    FreeAndNil(FrmIntegracaoIMendes);
+  end;
 end;
 
 procedure TForm1.IntegraoIta1Click(Sender: TObject);

@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -584,6 +584,16 @@
         </DCCReference>
         <DCCReference Include="interfaces\uIRetornaCustoMedio.pas"/>
         <DCCReference Include="units\uRetornaCustoMedio.pas"/>
+        <DCCReference Include="uFrmIntegracaoIMendes.pas">
+            <Form>FrmIntegracaoIMendes</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="units\uClassesIMendes.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uIMendesSections.pas"/>
+        <DCCReference Include="uFrmSaneamentoIMendes.pas">
+            <Form>FrmSaneamentoIMendes</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

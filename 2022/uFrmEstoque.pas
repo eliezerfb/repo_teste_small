@@ -9,7 +9,7 @@ uses
   uframeCampo, System.IniFiles, Vcl.Grids, Vcl.DBGrids, Videocap, VFrames,
   Vcl.Imaging.jpeg, Vcl.Clipbrd, Vcl.OleCtrls, SHDocVw, Vcl.ExtDlgs,
   Winapi.ShellAPI, uframePesquisaPadrao, uframePesquisaProduto,
-  Vcl.Imaging.pngimage;
+  Vcl.Imaging.pngimage, Vcl.Menus;
 
 type
   TFrmEstoque = class(TFrmFichaPadrao)
@@ -275,6 +275,13 @@ type
     Label27: TLabel;
     pnlEscondeWin11: TPanel;
     lblIVAPorEstado: TLabel;
+    pnlImendes: TPanel;
+    lblStatusImendes: TLabel;
+    DBCheckSobreIPI: TDBCheckBox;
+    btnConsultarTrib: TBitBtn;
+    ppmTributacao: TPopupMenu;
+    PorEAN1: TMenuItem;
+    PorDescrio1: TMenuItem;
     procedure FormActivate(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -395,6 +402,7 @@ type
     procedure lblIVAPorEstadoMouseLeave(Sender: TObject);
     procedure lblIVAPorEstadoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure btnConsultarTribClick(Sender: TObject);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -442,7 +450,7 @@ uses unit7
 , uTestaProdutoExiste
 , uITestaProdutoExiste
 , Unit19
-, uFrmEstoqueIVA;
+, uFrmEstoqueIVA, uSmallConsts, uSistema;
 
 { TFrmEstoque }
 
@@ -826,6 +834,7 @@ begin
 
   AjustaCampoPrecoQuandoEmPromocao;
 
+  pnlImendes.Visible := TSistema.GetInstance.ModuloImendes;
 end;
 
 procedure TFrmEstoque.framePesquisaProdComposicaodbgItensPesqCellClick(
@@ -2009,6 +2018,7 @@ procedure TFrmEstoque.AtualizaObjComValorDoBanco;
 var
   i : integer;
   sRegistroOld: String;
+  sStatusImendes : string;
 begin
   //Se não estiver ativo não carrega informações
   if not FormularioAtivo(Self) then
@@ -2478,8 +2488,24 @@ begin
     cboCFOP_NFCe.ItemIndex := 0;
   end;
 
-
   GravaImagemEstoque;
+
+  //Mauricio Parizotto 2024-09-26
+  sStatusImendes  := DSCadastro.DataSet.FieldByName('STATUS_TRIBUTACAO').AsString;
+  lblStatusImendes.Caption :=  sStatusImendes + ' '+DSCadastro.DataSet.FieldByName('DATA_STATUS_TRIBUTACAO').AsString;
+
+  if sStatusImendes = _cStatusImendesConsultado then
+    lblStatusImendes.Font.Color := $00279D2D;
+
+  if sStatusImendes = _cStatusImendesNaoConsultado then
+    lblStatusImendes.Font.Color := clBlack;
+
+  if sStatusImendes = _cStatusImendesAlterado then
+    lblStatusImendes.Font.Color := $000F0FFF;
+
+  if sStatusImendes = _cStatusImendesPendente then
+    lblStatusImendes.Font.Color := $00FD6102;
+
 end;
 
 
@@ -3001,6 +3027,12 @@ procedure TFrmEstoque.btnCancelarGradeClick(Sender: TObject);
 begin
   tbsGradeShow(Sender);
   FrmEstoque.Repaint;
+end;
+
+procedure TFrmEstoque.btnConsultarTribClick(Sender: TObject);
+begin
+  ppmTributacao.Popup(FrmEstoque.Left + 28,
+                      FrmEstoque.Top + pnlBotoesPosterior.Top + 71);
 end;
 
 procedure TFrmEstoque.btnSalvarGradeClick(Sender: TObject);

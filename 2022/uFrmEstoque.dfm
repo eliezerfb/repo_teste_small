@@ -6,8 +6,97 @@ inherited FrmEstoque: TFrmEstoque
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
+    inherited pnlBotoesSuperior: TPanel
+      ExplicitWidth = 842
+    end
+    inherited pnlBotoesPosterior: TPanel
+      inherited btnOK: TBitBtn
+        ExplicitLeft = 723
+      end
+      object pnlImendes: TPanel
+        Left = 20
+        Top = 6
+        Width = 621
+        Height = 51
+        BevelOuter = bvNone
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+        DesignSize = (
+          621
+          51)
+        object lblStatusImendes: TLabel
+          Left = 361
+          Top = 17
+          Width = 236
+          Height = 13
+          AutoSize = False
+          Caption = 'Consultado'
+          Color = clBtnHighlight
+          Font.Charset = ANSI_CHARSET
+          Font.Color = 16605442
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
+        object DBCheckSobreIPI: TDBCheckBox
+          Left = 160
+          Top = 15
+          Width = 182
+          Height = 17
+          Alignment = taLeftJustify
+          BiDiMode = bdRightToLeft
+          Caption = 'Consulta autom'#225'tica da tributa'#231#227'o'
+          DataField = 'CONSULTA_TRIBUTACAO'
+          DataSource = DSCadastro
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentBiDiMode = False
+          ParentFont = False
+          TabOrder = 0
+          ValueChecked = 'S'
+          ValueUnchecked = 'N'
+          OnKeyDown = PadraoKeyDown
+        end
+        object btnConsultarTrib: TBitBtn
+          Left = -1
+          Top = 10
+          Width = 140
+          Height = 25
+          Anchors = [akRight, akBottom]
+          Caption = 'Consultar tributa'#231#227'o'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 1
+          OnClick = btnConsultarTribClick
+        end
+      end
+    end
+    inherited Panel1: TPanel
+      ExplicitHeight = 453
+    end
+    inherited Panel8: TPanel
+      ExplicitLeft = 822
+      ExplicitHeight = 453
+    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
+      ExplicitWidth = 802
+      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         OnShow = tbsCadastroShow
@@ -3203,7 +3292,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 17
           Top = 45
           Width = 213
-          Height = 19
+          Height = 22
           Color = clWhite
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -3221,7 +3310,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 229
           Top = 45
           Width = 89
-          Height = 19
+          Height = 22
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3240,7 +3329,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 405
           Top = 45
           Width = 89
-          Height = 19
+          Height = 22
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3259,7 +3348,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 317
           Top = 45
           Width = 89
-          Height = 19
+          Height = 22
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3278,7 +3367,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 493
           Top = 45
           Width = 89
-          Height = 19
+          Height = 22
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3297,7 +3386,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 581
           Top = 45
           Width = 89
-          Height = 19
+          Height = 22
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3316,7 +3405,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 669
           Top = 45
           Width = 106
-          Height = 19
+          Height = 22
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3494,7 +3583,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 17
           Top = 23
           Width = 634
-          Height = 19
+          Height = 22
           BevelInner = bvNone
           Color = clWhite
           Ctl3D = False
@@ -3514,7 +3603,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 650
           Top = 23
           Width = 125
-          Height = 19
+          Height = 22
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -5182,5 +5271,15 @@ inherited FrmEstoque: TFrmEstoque
     Filter = 'JPEG Image File (*.jpg)|*.jpg|| | | | | | | | | '
     Left = 765
     Top = 7
+  end
+  object ppmTributacao: TPopupMenu
+    Left = 47
+    Top = 510
+    object PorEAN1: TMenuItem
+      Caption = 'Por EAN'
+    end
+    object PorDescrio1: TMenuItem
+      Caption = 'Por Descri'#231#227'o'
+    end
   end
 end

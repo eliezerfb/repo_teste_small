@@ -7646,8 +7646,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1210
-    ExplicitWidth = 1560
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7721,7 +7719,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1560
   end
   object Panel_0: TPanel
     Left = 0
@@ -11212,7 +11209,10 @@ object Form7: TForm7
       
         '   CODIGO_FCI, IIA_UF, IIA_MUNI, ENQ_IPI, CEST, CSOSN_NFCE, CST_' +
         'NFCE, ALIQUOTA_NFCE, '
-      '   MARKETPLACE, IDENTIFICADORPLANOCONTAS, IDPERFILTRIBUTACAO)'
+      '   MARKETPLACE, IDENTIFICADORPLANOCONTAS, IDPERFILTRIBUTACAO,'
+      
+        '  CONSULTA_TRIBUTACAO, STATUS_TRIBUTACAO, DATA_STATUS_TRIBUTACAO' +
+        ', CODIGO_IMENDES)'
       'values'
       
         '  (:IDESTOQUE,:CODIGO, :REFERENCIA, :DESCRICAO, :NOME, :FORNECED' +
@@ -11249,7 +11249,10 @@ object Form7: TForm7
         ', :CST_NFCE, '
       
         '   :ALIQUOTA_NFCE, :MARKETPLACE, :IDENTIFICADORPLANOCONTAS, :IDP' +
-        'ERFILTRIBUTACAO)')
+        'ERFILTRIBUTACAO,'
+      
+        '  :CONSULTA_TRIBUTACAO, :STATUS_TRIBUTACAO, :DATA_STATUS_TRIBUTA' +
+        'CAO, :CODIGO_IMENDES)')
     RefreshSQL.Strings = (
       'Select '
       '  IDESTOQUE,'
@@ -11329,7 +11332,11 @@ object Form7: TForm7
       '  ALIQUOTA_NFCE,'
       '  MARKETPLACE,'
       '  IDENTIFICADORPLANOCONTAS,'
-      '  IDPERFILTRIBUTACAO'
+      '  IDPERFILTRIBUTACAO,'
+      '  CONSULTA_TRIBUTACAO,'
+      '  STATUS_TRIBUTACAO,'
+      '  DATA_STATUS_TRIBUTACAO,'
+      '  CODIGO_IMENDES'
       'from ESTOQUE '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -11404,8 +11411,9 @@ object Form7: TForm7
       '  CFOP = :CFOP,'
       '  MEDIDAE = :MEDIDAE,'
       '  FATORC = :FATORC,'
-      '  VALOR_PARCELA_IMPORTADA_EXTERIO = '
-      ':VALOR_PARCELA_IMPORTADA_EXTERIO,'
+      
+        '  VALOR_PARCELA_IMPORTADA_EXTERIO = :VALOR_PARCELA_IMPORTADA_EXT' +
+        'ERIO,'
       '  CODIGO_FCI = :CODIGO_FCI,'
       '  IIA_UF = :IIA_UF,'
       '  IIA_MUNI = :IIA_MUNI,'
@@ -11416,7 +11424,11 @@ object Form7: TForm7
       '  ALIQUOTA_NFCE = :ALIQUOTA_NFCE,'
       '  MARKETPLACE = :MARKETPLACE,'
       '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
-      '  IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO'
+      '  IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO,'
+      '  CONSULTA_TRIBUTACAO =:CONSULTA_TRIBUTACAO,'
+      '  STATUS_TRIBUTACAO =:STATUS_TRIBUTACAO,'
+      '  DATA_STATUS_TRIBUTACAO =:DATA_STATUS_TRIBUTACAO,'
+      '  CODIGO_IMENDES =:CODIGO_IMENDES'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -11827,6 +11839,14 @@ object Form7: TForm7
       Precision = 18
       Size = 2
     end
+    object ibDataSet4STATUS_TRIBUTACAO: TIBStringField
+      DisplayLabel = 'Status Trib.'
+      DisplayWidth = 30
+      FieldName = 'STATUS_TRIBUTACAO'
+      Origin = 'ESTOQUE.STATUS_TRIBUTACAO'
+      ReadOnly = True
+      Size = 30
+    end
     object ibDataSet4MARKETPLACE: TIBStringField
       DisplayLabel = 'MKP'
       DisplayWidth = 5
@@ -12005,6 +12025,22 @@ object Form7: TForm7
     object ibDataSet4IDESTOQUE: TIntegerField
       FieldName = 'IDESTOQUE'
       Origin = 'ESTOQUE.IDESTOQUE'
+      Visible = False
+    end
+    object ibDataSet4CONSULTA_TRIBUTACAO: TIBStringField
+      FieldName = 'CONSULTA_TRIBUTACAO'
+      Origin = 'ESTOQUE.CONSULTA_TRIBUTACAO'
+      Visible = False
+      Size = 1
+    end
+    object ibDataSet4DATA_STATUS_TRIBUTACAO: TDateTimeField
+      FieldName = 'DATA_STATUS_TRIBUTACAO'
+      Origin = 'ESTOQUE.DATA_STATUS_TRIBUTACAO'
+      Visible = False
+    end
+    object ibDataSet4CODIGO_IMENDES: TIntegerField
+      FieldName = 'CODIGO_IMENDES'
+      Origin = 'ESTOQUE.CODIGO_IMENDES'
       Visible = False
     end
   end

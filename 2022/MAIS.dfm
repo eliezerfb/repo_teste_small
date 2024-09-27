@@ -14448,6 +14448,10 @@ object Form1: TForm1
         Caption = 'Integra'#231#227'o Ita'#250
         OnClick = IntegraoIta1Click
       end
+      object IntegraoIMendes1: TMenuItem
+        Caption = 'Integra'#231#227'o IMendes'
+        OnClick = IntegraoIMendes1Click
+      end
     end
     object Calendrio1: TMenuItem
       Caption = 'Calend'#225'rio'
