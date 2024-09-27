@@ -274,8 +274,6 @@ uses
   uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas',
   uFrmIntegracaoIMendes in 'uFrmIntegracaoIMendes.pas' {FrmIntegracaoIMendes},
   uClassesIMendes in 'units\uClassesIMendes.pas',
-  uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas',
-  ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo}
   uIMendesSections in '..\..\unit_compartilhada\DAT\uIMendesSections.pas',
   uFrmSaneamentoIMendes in 'uFrmSaneamentoIMendes.pas' {FrmSaneamentoIMendes},
   uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas',

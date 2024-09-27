@@ -585,7 +585,7 @@
         </DCCReference>
         <DCCReference Include="units\uEstruturaRelNotasFaltantes.pas"/>
         <DCCReference Include="uFrmEstoqueIVA.pas">
-            <Form>FrmEstoqueIVA</Form> 
+            <Form>FrmEstoqueIVA</Form>
         </DCCReference>
         <DCCReference Include="interfaces\uIRetornaCustoMedio.pas"/>
         <DCCReference Include="units\uRetornaCustoMedio.pas"/>
@@ -597,7 +597,10 @@
         <DCCReference Include="..\..\unit_compartilhada\DAT\uIMendesSections.pas"/>
         <DCCReference Include="uFrmSaneamentoIMendes.pas">
             <Form>FrmSaneamentoIMendes</Form>
-            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="units\uEstruturaRelRankingProdutosVendidos.pas"/>
+        <DCCReference Include="units\ufrmRelatorioMovItensPeriodo.pas">
+            <Form>frmRelatorioMovItensPeriodo</Form>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
