@@ -170,6 +170,16 @@ const
   _cObsNFeSINIEF  = 'Procedimento autorizado pelo Ajuste SINIEF 13/24';
   {Dailon Parisotto (small-653) 2024-08-26 Fim}
 
+  //Imendes
+  _cSectionIMendes   = 'IMendes';
+  _cConsultaIPI      = 'Consular IPI';
+  _cFaixaFaturameto  = 'Faixa de faturamento';
+
+  _cStatusImendesPendente      = 'Pendente';
+  _cStatusImendesAlterado      = 'Alterado pelo usuário';
+  _cStatusImendesConsultado    = 'Consultado';
+  _cStatusImendesNaoConsultado = 'Não consultado';
+
 implementation
 
 end.

@@ -9,11 +9,11 @@ uses
   , System.Classes
   ;
 
-  function ExtraiChavesCertificado(sRquivoPfx, sSenhaPfx, sArquivoKey, sArquivoPem : string) : boolean;
+  function ExtraiChavesCertificado(sRquivoPfx, sSenhaPfx, sArquivoKey, sArquivoPem : string; out erro : string) : boolean;
 
 implementation
 
-function ExtraiChavesCertificado(sRquivoPfx, sSenhaPfx, sArquivoKey, sArquivoPem : string) : boolean;
+function ExtraiChavesCertificado(sRquivoPfx, sSenhaPfx, sArquivoKey, sArquivoPem : string; out erro : string) : boolean;
 var
   ACBrOpenSSLUtils : TACBrOpenSSLUtils;
   wSL: TStringList;
@@ -41,6 +41,10 @@ begin
       FreeAndNil(wSL);
     end;
   except
+    on e:exception do
+    begin
+      erro := e.Message;
+    end;
   end;
 end;
 

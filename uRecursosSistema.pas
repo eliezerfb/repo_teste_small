@@ -37,6 +37,7 @@ type
     FZPOS: TDateTime;
     FIntegracaoItau: TDateTime;
     FIntegracaoSicoob: TDateTime;
+    FIntegracaoIMendes: TDateTime;
   published
     property Anvisa: TDateTime read FAnvisa write FAnvisa;
     property Bancos: TDateTime read FBancos write FBancos;
@@ -61,6 +62,7 @@ type
     property ZPOS: TDateTime read FZPOS write FZPOS;
     property IntegracaoItau: TDateTime read FIntegracaoItau write FIntegracaoItau;
     property IntegracaoSicoob: TDateTime read FIntegracaoSicoob write FIntegracaoSicoob;
+    property IntegracaoIMendes: TDateTime read FIntegracaoIMendes write FIntegracaoIMendes;
   end;
   
   TRecursosSistema = class

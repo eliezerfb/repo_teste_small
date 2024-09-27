@@ -26,7 +26,8 @@ type
                rcQtdNFE,
                rcZPOS,
                rcIntegracaoItau,
-               rcIntegracaoSicoob
+               rcIntegracaoSicoob,
+               rcIntegracaoImendes
                );
 
 

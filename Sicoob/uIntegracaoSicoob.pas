@@ -121,6 +121,7 @@ var
   sDir : string;
   ibqSicoob: TIBQuery;
   sDirArquivo, sDirCertificado : string;
+  mErro : string;
 begin
   Result := '';
 
@@ -153,7 +154,8 @@ begin
       if ExtraiChavesCertificado(sDirCertificado,
                                  ibqSicoob.FieldByName('CERTIFICADOSENHA').AsString,
                                  sDirArquivo+'SicoobChavePrivada.key',
-                                 sDirArquivo+'SicoobCertificado.pem') then
+                                 sDirArquivo+'SicoobCertificado.pem',
+                                 mErro) then
       begin
         Result := sDirArquivo+'SicoobCertificado.pem';
       end;
