@@ -2784,7 +2784,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmCadastro
   , uFrmEstoque
   , uVisualizaCadastro
-  , ufrmRelatorioMovItensPeriodoaCadastro
+  , ufrmRelatorioMovItensPeriodo
   , ufrmRelatorioNotasFaltantes;
 
 {$R *.DFM}
