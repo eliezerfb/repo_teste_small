@@ -2698,8 +2698,16 @@ begin
     // THE END;
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet14.Close;
+    {Mauricio Parizotto 2024-09-24 Inicio
     Form7.ibDataSet14.SelectSQL.Clear;
     Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or SubString(CFOP from 1 for 1) = ''7'' order by upper(NOME)');
+    }
+    Form7.ibDataSet14.SelectSQL.Text := ' Select * '+
+                                        ' From ICM '+
+                                        ' Where (SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or SubString(CFOP from 1 for 1) = ''7'' ) '+
+                                        '   and (Coalesce(LISTAR,''S'') = ''S''  or NOME = '+QuotedStr(Form7.ibDAtaSet15OPERACAO.AsString)+')'+
+                                        ' Order by upper(NOME)';
+    {Mauricio Parizotto 2024-09-24 Fim}
     Form7.ibDataSet14.Open;
     Form7.ibDataSet14.EnableControls;
 

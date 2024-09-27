@@ -7646,8 +7646,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1197
-    ExplicitWidth = 1558
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7721,7 +7719,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1558
   end
   object Panel_0: TPanel
     Left = 0
@@ -14345,7 +14342,7 @@ object Form7: TForm7
       
         '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
         'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA,'
-      '   IMPOSTOMANUAL)'
+      '   IMPOSTOMANUAL, LISTAR)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14363,7 +14360,7 @@ object Form7: TForm7
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
         'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
         'A,:REFERENCIANOTA,'
-      '   :IMPOSTOMANUAL)')
+      '   :IMPOSTOMANUAL, :LISTAR)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14419,7 +14416,8 @@ object Form7: TForm7
       '  PISCOFINSLUCRO,'
       '  IPISOBREOUTRA,'
       '  REFERENCIANOTA,'
-      '  IMPOSTOMANUAL'
+      '  IMPOSTOMANUAL,'
+      '  LISTAR'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14481,7 +14479,8 @@ object Form7: TForm7
       '  PISCOFINSLUCRO = :PISCOFINSLUCRO,'
       '  IPISOBREOUTRA = :IPISOBREOUTRA,'
       '  REFERENCIANOTA = :REFERENCIANOTA,'
-      '  IMPOSTOMANUAL = :IMPOSTOMANUAL'
+      '  IMPOSTOMANUAL = :IMPOSTOMANUAL,'
+      '  LISTAR = :LISTAR'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14853,6 +14852,13 @@ object Form7: TForm7
       FieldName = 'CBENEF'
       Origin = 'ICM.CBENEF'
       Size = 10
+    end
+    object ibDataSet14LISTAR: TIBStringField
+      DisplayLabel = 'Listar'
+      FieldName = 'LISTAR'
+      Origin = 'ICM.LISTAR'
+      Visible = False
+      Size = 1
     end
     object ibDataSet14REGISTRO: TIBStringField
       FieldName = 'REGISTRO'
