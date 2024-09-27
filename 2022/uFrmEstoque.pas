@@ -430,6 +430,7 @@ type
     function MensagemImagemWeb(Msg, Titulo : string; DlgType: TMsgDlgType;
       Buttons: TMsgDlgButtons; Captions: array of string): Integer;
     procedure AtualizaInformacoesDoProduto;
+    procedure DefineLabelImpostosAproximados;
   public
     { Public declarations }
   end;
@@ -700,14 +701,30 @@ begin
     cCadJaValidado := Form7.ibDataSet4DESCRICAO.AsString;
 end;
 
+  {Dailon Parisotto (f-21075) 2024-09-25 Inicio}
+procedure TFrmEstoque.DefineLabelImpostosAproximados;
+begin
+  lblImpostoAprox.Caption := 'Imposto aproximado (Fonte:IBPT)';
+  if edtNCM.Text <> EmptyStr then
+    lblImpostoAprox.Caption := lblImpostoAprox.Caption + ': Federal '+DSCadastro.DataSet.FieldByName('IIA').AsString+'%  Estadual '+
+                                DSCadastro.DataSet.FieldByName('IIA_UF').AsString+'%  Municipal '+DSCadastro.DataSet.FieldByName('IIA_MUNI').AsString+'%';
+end;
+  {Dailon Parisotto (f-21075) 2024-09-25 Fim}
+
 procedure TFrmEstoque.edtCodigoChange(Sender: TObject);
 begin
   //Mauricio Parizotto 2024-08-29
   if not Self.Visible then
     Exit;
 
+  {Dailon Parisotto (f-21075) 2024-09-25 Inicio
+
   lblImpostoAprox.Caption := 'Imposto aproximado (Fonte:IBPT): Federal '+DSCadastro.DataSet.FieldByName('IIA').AsString+'%  Estadual '+
-                              DSCadastro.DataSet.FieldByName('IIA_UF').AsString+'%  Municipal '+DSCadastro.DataSet.FieldByName('IIA_MUNI').AsString+'%';
+                            DSCadastro.DataSet.FieldByName('IIA_UF').AsString+'%  Municipal '+DSCadastro.DataSet.FieldByName('IIA_MUNI').AsString+'%';
+
+  }
+  DefineLabelImpostosAproximados;
+  {Dailon Parisotto (f-21075) 2024-09-25 Fim}
 
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
@@ -1162,6 +1179,8 @@ begin
   end;
 
   Form1.ibQuery1.Close;
+
+  DefineLabelImpostosAproximados;
 end;
 
 procedure TFrmEstoque.edtPrecoICM_EntradaExit(Sender: TObject);
@@ -1628,6 +1647,8 @@ begin
     fraPerfilTrib.txtCampo.SetFocus;
 
   CarregaValoresObjeto;
+
+  DefineLabelImpostosAproximados;
 end;
 
 procedure TFrmEstoque.tbsIPIEnter(Sender: TObject);
