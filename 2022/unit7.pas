@@ -8145,7 +8145,7 @@ end;
 
 procedure TForm7.Image106Click(Sender: TObject);
 begin
-  LogRetaguarda('inicio procedure TForm7.Image106Click(): 8137'); // Sandro Silva 2024-09-26
+  //LogRetaguarda('inicio procedure TForm7.Image106Click(): 8137'); // Sandro Silva 2024-09-26
 
   FechaModulos;
 
@@ -8391,7 +8391,7 @@ begin
     end;
   end;
 
-  LogRetaguarda('fim procedure TForm7.Image106Click(): 8383'); // Sandro Silva 2024-09-26
+  //LogRetaguarda('fim procedure TForm7.Image106Click(): 8383'); // Sandro Silva 2024-09-26
 
 end;
 
@@ -15392,9 +15392,12 @@ begin
 
   {Sandro Silva 2024-04-22 inicio}
   // Aqui Atualiza promoção no grid
-  if AtualizaPromocao(True) then
+  if not (Form24.Showing) then // Sandro Silva 2024-09-27
   begin
-    DataSet.Refresh; //exibe o preço atualizado pela promoção ou não
+    if AtualizaPromocao(True) then
+    begin
+      DataSet.Refresh; //exibe o preço atualizado pela promoção ou não
+    end;
   end;
   {Sandro Silva 2024-04-22 fim}
 
@@ -15856,7 +15859,11 @@ begin
   sRegistro := DataSet.FieldByname('REGISTRO').AsString;
   if ibDataSet4PRECO.AsFloat <=0 then
     ibDataSet4PRECO.AsFloat := 0.01;
+
+  LogRetaguarda('inicio assina registro procedure TForm7.ibDataSet4BeforePost(): 15860'); // Sandro Silva 2024-09-26
   AssinaRegistro('ESTOQUE',DataSet, True);
+  LogRetaguarda('fim assina registro procedure TForm7.ibDataSet4BeforePost(): 15862'); // Sandro Silva 2024-09-26
+
   AuditaAlteracaoEstoqueManual;
 end;
 
@@ -36410,7 +36417,7 @@ end;
 
 procedure TForm7.TotalizaItensCompra;
 begin
-  LogRetaguarda('procedure TForm7.TotalizaItensCompra: 36278'); // Sandro Silva 2024-09-26
+  //LogRetaguarda('procedure TForm7.TotalizaItensCompra: 36278'); // Sandro Silva 2024-09-26
 
   try
     Form7.ibDataSet24.Edit;
@@ -36472,7 +36479,7 @@ begin
   except
   end;
 
-  LogRetaguarda('procedure TForm7.TotalizaItensCompra: 36340'); // Sandro Silva 2024-09-26
+  //LogRetaguarda('procedure TForm7.TotalizaItensCompra: 36340'); // Sandro Silva 2024-09-26
 
   AgendaCommit(True);
 end;

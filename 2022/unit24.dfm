@@ -33,8 +33,6 @@ object Form24: TForm24
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 0
-    ExplicitWidth = 1125
-    ExplicitHeight = 805
     object pnlNota: TPanel
       Left = 10
       Top = 10

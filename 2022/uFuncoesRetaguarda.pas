@@ -786,13 +786,13 @@ begin
       if DataSetEstoque.Locate('CODIGO', sCodigo, []) then
       begin
 
-        LogRetaguarda(DupeString(' ', iHierarquia) + '>Início da composição do produto: ' + DataSetEstoque.FieldByName('CODIGO').AsString + ' - ' + DataSetEstoque.FieldByName('DESCRICAO').AsString);
+        //LogRetaguarda(DupeString(' ', iHierarquia) + '>Início da composição do produto: ' + DataSetEstoque.FieldByName('CODIGO').AsString + ' - ' + DataSetEstoque.FieldByName('DESCRICAO').AsString);
 
         IBQCOMPOSTO.First;
         while not IBQCOMPOSTO.Eof do
         begin
 
-          LogRetaguarda(DupeString(' ', iHierarquia) + 'Insumo do produto ' + IBQCOMPOSTO.FieldByName('CODIGO').AsString + ': ' + IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString + ' - ' + IBQCOMPOSTO.FieldByName('DESCRICAO').AsString + ' - Qtd ' + FormatFloat('0.00####', IBQCOMPOSTO.FieldByName('QUANTIDADE').AsFloat));
+          //LogRetaguarda(DupeString(' ', iHierarquia) + 'Insumo do produto ' + IBQCOMPOSTO.FieldByName('CODIGO').AsString + ': ' + IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString + ' - ' + IBQCOMPOSTO.FieldByName('DESCRICAO').AsString + ' - Qtd ' + FormatFloat('0.00####', IBQCOMPOSTO.FieldByName('QUANTIDADE').AsFloat));
 
           if (DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat - (IBQCOMPOSTO.FieldByName('QUANTIDADE').AsFloat * dQtdMovimentada)) < 0 then
             FabricaComposto(IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString, DataSetEstoque, Abs(DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat - (IBQCOMPOSTO.FieldByName('QUANTIDADE').AsFloat * dQtdMovimentada)), bFabrica, iHierarquia + 2, sModulo);
@@ -817,7 +817,7 @@ begin
         DataSetEstoque.Edit;
         DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat := DataSetEstoque.FieldByName('QTD_ATUAL').AsFloat + dQtdMovimentada;  // Atribui a quantidade produzida ao estoque do produto para ficar disponível de ser baixado posteriormente
 
-        LogRetaguarda(DupeString(' ', iHierarquia) + '<Fim da composição do produto ' + DataSetEstoque.FieldByName('CODIGO').AsString + ' - ' + DataSetEstoque.FieldByName('DESCRICAO').AsString);
+        //LogRetaguarda(DupeString(' ', iHierarquia) + '<Fim da composição do produto ' + DataSetEstoque.FieldByName('CODIGO').AsString + ' - ' + DataSetEstoque.FieldByName('DESCRICAO').AsString);
       end;
     end;
   finally
