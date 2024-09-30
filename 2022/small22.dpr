@@ -268,13 +268,17 @@ uses
   uFrmTelaProcessamento in '..\..\unit_compartilhada\uFrmTelaProcessamento.pas' {FrmTelaProcessamento},
   uFrmEstoque in 'uFrmEstoque.pas' {FrmEstoque},
   uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout},
+  ufrmRelatorioNotasFaltantes in 'units\ufrmRelatorioNotasFaltantes.pas' {frmRelatorioNotasFaltantes},
+  uEstruturaRelNotasFaltantes in 'units\uEstruturaRelNotasFaltantes.pas',
   uChaveCertificado in '..\..\unit_compartilhada\uChaveCertificado.pas',
   uIntegracaoSicoob in '..\..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas',
   uWebServiceSicoob in '..\..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas',
   uClassesSicoob in '..\..\unit_compartilhada\Sicoob\uClassesSicoob.pas',
   uFrmEstoqueIVA in 'uFrmEstoqueIVA.pas' {FrmEstoqueIVA},
   uIRetornaCustoMedio in 'interfaces\uIRetornaCustoMedio.pas',
-  uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas';
+  uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas',
+  uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas',
+  ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo};
 
 {$R *.RES}
 
