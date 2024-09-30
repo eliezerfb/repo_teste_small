@@ -113,6 +113,11 @@ inherited frmInformarDrawback: TfrmInformarDrawback
         Name = 'DRAWBACK'
         DataType = ftString
         Size = 11
+      end
+      item
+        Name = 'REGISTRO'
+        DataType = ftString
+        Size = 10
       end>
     IndexDefs = <>
     Params = <>
@@ -133,6 +138,11 @@ inherited frmInformarDrawback: TfrmInformarDrawback
     object cdsDrawbackDRAWBACK: TStringField
       FieldName = 'DRAWBACK'
       Size = 11
+    end
+    object cdsDrawbackREGISTRO: TStringField
+      FieldName = 'REGISTRO'
+      Visible = False
+      Size = 10
     end
   end
 end

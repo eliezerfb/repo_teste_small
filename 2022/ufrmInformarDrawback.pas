@@ -17,6 +17,7 @@ type
     cdsDrawbackCODIGO: TStringField;
     cdsDrawbackDESCRICAO: TStringField;
     cdsDrawbackDRAWBACK: TStringField;
+    cdsDrawbackREGISTRO: TStringField;
     procedure btnCancelarClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -58,7 +59,7 @@ begin
 
     while not cdsDrawback.Eof do
     begin
-      if DataSet.Locate('CODIGO', cdsDrawbackCODIGO.AsString, []) then
+      if DataSet.Locate('REGISTRO', cdsDrawbackREGISTRO.AsString, []) then
       begin
         DataSet.Edit;
         DataSet.FieldByName('DRAWBACK').AsString := cdsDrawbackDRAWBACK.AsString;
@@ -135,14 +136,21 @@ begin
     FDataSet.First;
     while not FDataSet.Eof do
     begin
-      cdsDrawback.Append;
-      cdsDrawbackCODIGO.AsString    := FDataSet.FieldByName('CODIGO').AsString;
-      cdsDrawbackDESCRICAO.AsString := FDataSet.FieldByName('DESCRICAO').AsString;
-      cdsDrawbackDRAWBACK.AsString  := FDataSet.FieldByName('DRAWBACK').AsString;
-      cdsDrawback.Post;
+      // Não adicionar itens de observação
+      if FDataSet.FieldByName('CODIGO').AsString <> EmptyStr then
+      begin
+        cdsDrawback.Append;
+        cdsDrawbackREGISTRO.AsString  := FDataSet.FieldByName('REGISTRO').AsString;
+        cdsDrawbackCODIGO.AsString    := FDataSet.FieldByName('CODIGO').AsString;
+        cdsDrawbackDESCRICAO.AsString := FDataSet.FieldByName('DESCRICAO').AsString;
+        cdsDrawbackDRAWBACK.AsString  := FDataSet.FieldByName('DRAWBACK').AsString;
+        cdsDrawback.Post;
+      end;
 
       FDataSet.Next;
     end;
+
+    cdsDrawback.IndexFieldNames := cdsDrawbackREGISTRO.FieldName;
   finally
     cdsDrawbackCODIGO.ReadOnly := True;
     cdsDrawbackDESCRICAO.ReadOnly := True;

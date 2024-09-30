@@ -16034,6 +16034,12 @@ object Form7: TForm7
       Precision = 15
       Size = 4
     end
+    object ibDataSet16DRAWBACK: TIBStringField
+      FieldName = 'DRAWBACK'
+      Origin = 'ITENS001.DRAWBACK'
+      Visible = False
+      Size = 11
+    end
   end
   object DataSource16: TDataSource
     DataSet = ibDataSet16

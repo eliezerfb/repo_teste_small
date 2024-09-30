@@ -17,7 +17,7 @@ type
     ibVENDASExportacao: TIBDataSet;
     btnDrawback: TBitBtn;
     ibVENDASExportacaoIDVENDASEXPORTACAO: TIntegerField;
-    ibVENDASExportacaoIDPAIS: TIntegerField;
+    ibVENDASExportacaoIDPAISES: TIntegerField;
     ibVENDASExportacaoUFEMBARQUE: TIBStringField;
     ibVENDASExportacaoLOCALEMBARQUE: TIBStringField;
     ibVENDASExportacaoRECINTOALFANDEGARIO: TIBStringField;
@@ -181,7 +181,7 @@ begin
   try
     qryPais.Close;
     qryPais.SQL.Clear;
-    qryPais.SQL.Add('select CODIGO from PAIS where (NOME=:XNOME) order by NOME');
+    qryPais.SQL.Add('select CODIGO from PAISES where (NOME=:XNOME) order by NOME');
     qryPais.ParamByName('XNOME').AsString := fraPais.txtCampo.Text;
     qryPais.Open;
 
@@ -256,11 +256,11 @@ begin
     try
       qryPais.Close;
       qryPais.SQL.Clear;
-      qryPais.SQL.Add('select IDPAIS from PAIS where (NOME=:XNOME) order by NOME');
+      qryPais.SQL.Add('select IDPAISES from PAISES where (NOME=:XNOME) order by NOME');
       qryPais.ParamByName('XNOME').AsString := 'ESTADOS UNIDOS';
       qryPais.Open;
 
-      ibVENDASExportacaoIDPAIS.AsString     := qryPais.FieldByName('IDPAIS').AsString;
+      ibVENDASExportacaoIDPAISES.AsString     := qryPais.FieldByName('IDPAISES').AsString;
     finally
       FreeAndNil(qryPais)
     end;
@@ -272,7 +272,7 @@ procedure TfrmInformacoesExportacaoNFe.AjustaLayout;
 var
   cImgFundo: String;
 begin
-  cImgFundo := ImagemFundoSmall(TSistema.GetInstance.Tema,'13');
+  cImgFundo := ExtractFilePath(Application.ExeName) + ImagemFundoSmall(TSistema.GetInstance.Tema,'13');
 
   if FileExists(cImgFundo) then
     imgFundoAviso.Picture.LoadFromFile(cImgFundo) ;
@@ -288,10 +288,10 @@ begin
   fraPais.TipoDePesquisa               := tpLocate;
   fraPais.GravarSomenteTextoEncontrato := True;
   fraPais.CampoVazioAbrirGridPesquisa  := True;
-  fraPais.CampoCodigo                  := ibVENDASExportacaoIDPAIS;
-  fraPais.CampoCodigoPesquisa          := 'IDPAIS';
+  fraPais.CampoCodigo                  := ibVENDASExportacaoIDPAISES;
+  fraPais.CampoCodigoPesquisa          := 'IDPAISES';
   fraPais.sCampoDescricao              := 'NOME';
-  fraPais.sTabela                      := 'PAIS';
+  fraPais.sTabela                      := 'PAISES';
   fraPais.CarregaDescricao;
   // UF Embarque
   fraUFEmbarque.TipoDePesquisa               := tpSelect;
