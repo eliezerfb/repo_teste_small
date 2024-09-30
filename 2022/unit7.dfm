@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1237
-  ClientWidth = 1558
+  ClientHeight = 1224
+  ClientWidth = 1556
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7636,8 +7636,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1197
-    Width = 1558
+    Top = 1184
+    Width = 1556
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7646,6 +7646,8 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
+    ExplicitTop = 1197
+    ExplicitWidth = 1558
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7709,7 +7711,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1558
+    Width = 1556
     Height = 5
     Align = alTop
     BevelOuter = bvNone
@@ -7719,6 +7721,7 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
+    ExplicitWidth = 1558
   end
   object Panel_0: TPanel
     Left = 0
@@ -13045,6 +13048,10 @@ object Form7: TForm7
         Caption = 'Resumo das vendas'
         OnClick = Resumodasvendas1Click
       end
+      object Rankingdeprodutosvendidos1: TMenuItem
+        Caption = 'Ranking de produtos vendidos'
+        OnClick = Rankingdeprodutosvendidos1Click
+      end
       object Resumodascompras1: TMenuItem
         Caption = 'Resumo das compras'
         OnClick = Resumodascompras1Click
@@ -13052,6 +13059,10 @@ object Form7: TForm7
       object Movimentaodoitem1: TMenuItem
         Caption = 'Movimenta'#231#227'o do item'
         OnClick = Movimentaodoitem1Click
+      end
+      object Movimentaodoitemporperodo1: TMenuItem
+        Caption = 'Movimenta'#231#227'o do item por per'#237'odo'
+        OnClick = Movimentaodoitemporperodo1Click
       end
       object Movimentaodositemskardex1: TMenuItem
         Caption = 'Movimenta'#231#227'o dos itens filtrados (Kardex'#174')'
@@ -15577,8 +15588,7 @@ object Form7: TForm7
         ','
       
         '   IDENTIFICADORPLANOCONTAS, VBCFCP, PFCP, VFCP, VBCFCPST, PFCPS' +
-        'T, VFCPST,'
-      '   DRAWBACK)'
+        'T, VFCPST)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :ISS, :MEDID' +
@@ -15597,8 +15607,7 @@ object Form7: TForm7
         'PTHASH, :CSOSN,'
       
         '   :VBC_PIS_COFINS, :IDENTIFICADORPLANOCONTAS, :VBCFCP, :PFCP, :' +
-        'VFCP, :VBCFCPST, :PFCPST, :VFCPST,'
-      '   :DRAWBACK)')
+        'VFCP, :VBCFCPST, :PFCPST, :VFCPST)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -15646,8 +15655,7 @@ object Form7: TForm7
       '  VFCP,'
       '  VBCFCPST,'
       '  PFCPST,'
-      '  VFCPST,'
-      '  DRAWBACK'
+      '  VFCPST'
       'from ITENS001 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -15701,8 +15709,7 @@ object Form7: TForm7
       '  VFCP = :VFCP,'
       '  VBCFCPST = :VBCFCPST,'
       '  PFCPST = :PFCPST,'
-      '  VFCPST = :VFCPST,'
-      '  DRAWBACK = :DRAWBACK'
+      '  VFCPST = :VFCPST'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -16026,12 +16033,6 @@ object Form7: TForm7
       EditFormat = '##0.00'
       Precision = 15
       Size = 4
-    end
-    object ibDataSet16DRAWBACK: TIBStringField
-      FieldName = 'DRAWBACK'
-      Origin = 'ITENS001.DRAWBACK'
-      Visible = False
-      Size = 11
     end
   end
   object DataSource16: TDataSource
@@ -19730,6 +19731,10 @@ object Form7: TForm7
       object miRelVendasVendedor: TMenuItem
         Caption = 'Vendas por vendedor'
         OnClick = miRelVendasVendedorClick
+      end
+      object Notasfaltantes1: TMenuItem
+        Caption = 'Notas faltantes'
+        OnClick = Notasfaltantes1Click
       end
     end
     object MenuItem167: TMenuItem
