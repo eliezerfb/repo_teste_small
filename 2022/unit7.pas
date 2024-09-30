@@ -15860,9 +15860,9 @@ begin
   if ibDataSet4PRECO.AsFloat <=0 then
     ibDataSet4PRECO.AsFloat := 0.01;
 
-  LogRetaguarda('inicio assina registro procedure TForm7.ibDataSet4BeforePost(): 15860'); // Sandro Silva 2024-09-26
+  //LogRetaguarda('inicio assina registro procedure TForm7.ibDataSet4BeforePost(): 15860'); // Sandro Silva 2024-09-26
   AssinaRegistro('ESTOQUE',DataSet, True);
-  LogRetaguarda('fim assina registro procedure TForm7.ibDataSet4BeforePost(): 15862'); // Sandro Silva 2024-09-26
+  //LogRetaguarda('fim assina registro procedure TForm7.ibDataSet4BeforePost(): 15862'); // Sandro Silva 2024-09-26
 
   AuditaAlteracaoEstoqueManual;
 end;
