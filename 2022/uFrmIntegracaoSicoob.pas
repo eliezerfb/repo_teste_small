@@ -56,7 +56,7 @@ type
     procedure btnCadastroClick(Sender: TObject);
     procedure edtSenhaCertificadoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure edtClientID_PixExit(Sender: TObject);
+    procedure edtSenhaCertificadoExit(Sender: TObject);
   private
     procedure AtualizaObjComValorDoBanco;
     procedure GetPaginaAjuda;
@@ -153,6 +153,8 @@ end;
 procedure TFrmIntegracaoSicoob.btnOKClick(Sender: TObject);
 
 begin
+  ibdIntegracaoSicoobCERTIFICADOSENHA.AsString := SmallEncrypt(CHAVE_CIFRAR_NOVA,edtSenhaCertificado.Text);
+
   ValidaDados;
 
   ExtraiCertificado;
@@ -172,7 +174,7 @@ begin
   Close;
 end;
 
-procedure TFrmIntegracaoSicoob.edtClientID_PixExit(Sender: TObject);
+procedure TFrmIntegracaoSicoob.edtSenhaCertificadoExit(Sender: TObject);
 begin
   ibdIntegracaoSicoobCERTIFICADOSENHA.AsString := SmallEncrypt(CHAVE_CIFRAR_NOVA,edtSenhaCertificado.Text);
 end;
