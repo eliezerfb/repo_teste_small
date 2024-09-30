@@ -1741,6 +1741,7 @@ type
     Movimentaodoitemporperodo1: TMenuItem;
     Rankingdeprodutosvendidos1: TMenuItem;
     ibDataSet4IDESTOQUE: TIntegerField;
+    ExportarNFesfiltradasemarquivoPDF1: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2474,6 +2475,7 @@ type
     procedure Movimentaodoitemporperodo1Click(Sender: TObject);
     procedure Resumodasvendas1Click(Sender: TObject);
     procedure Rankingdeprodutosvendidos1Click(Sender: TObject);
+    procedure ExportarNFesfiltradasemarquivoPDF1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -26516,6 +26518,81 @@ begin
       RecuperaXML(True);
     end;
   except end;
+end;
+
+procedure TForm7.ExportarNFesfiltradasemarquivoPDF1Click(Sender: TObject);
+var
+  cDirectory, cLote, cNomePDF : string;
+  nRecNo, nCount: Integer;
+begin
+  SelectDirectory('Selecione a pasta para salvar o(s) PDF', '', cDirectory);
+  if AllTrim(cDirectory) <> EmptyStr then
+  begin
+    try
+      nCount := 0;
+      cDirectory := cDirectory + '\PDF';
+      ExcluirPasta(cDirectory);
+
+      CreateDir(cDirectory);
+      Sleep(100);
+
+      ConfiguraNFE;
+
+      nRecNo := Form7.ibDataSet15.RecNo;
+      Form7.ibDataSet15.DisableControls;
+      try
+        Screen.Cursor := crHourGlass;
+        Form7.ibDataSet15.First;
+        while not Form7.ibDataSet15.Eof do
+        begin
+          if Form7.ibDataSet15NFEID.AsString <> EmptyStr then
+          begin
+            if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
+            begin
+              MensagemSistema('Recuperando XML da pasta \log');
+              Form7.ibDataSet15.Edit;
+              Form7.ibDataSet15NFEXML.AsString := LoadXmlDestinatarioSaida(Form7.ibDataSet15NFEID.AsString);
+              Form7.ibDataSet15.Post;
+            end;
+
+            fNFE :=  Form7.ibDataSet15NFEXML.AsString;
+
+            if fNFE <> EmptyStr then
+            begin
+              cNomePDF := Form7.ibDataSet15NFEID.AsString;
+
+              if (Pos('>Cancelamento</descEvento>', Form7.ibDataSet15NFEXML.AsString) <> 0) then
+                cNomePDF := cNomePDF + '-caneve.pdf'
+              else
+                cNomePDF := cNomePDF + '-nfe.pdf';
+
+              spdNFe.ExportarDanfe(cLote, fNFE, Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm',1, cDirectory +'\'+cNomePDF);
+              Inc(nCount);
+            end;
+          end;
+          Form7.ibDataSet15.Next;
+        end;
+      finally
+        Screen.Cursor := crDefault;
+        Form7.ibDataSet15.RecNo := nRecNo;
+        Form7.ibDataSet15.EnableControls;
+      end;
+
+      if nCount >= 1 then
+      begin
+        if nCount > 1 then
+          MensagemSistema('Foram gerados ' + nCount.ToString + ' PDFs na pasta ' + cDirectory + '.')
+        else
+          MensagemSistema('Foi gerado ' + nCount.ToString + ' PDF na pasta ' + cDirectory + '.');
+      end else
+        MensagemSistema('Nenhum PDF foi gerado.' + sLineBreak +
+                        '   - Verifique os filtros utilizados;' + sLineBreak +
+                        '   - Verifique se as notas filtradas possuem XML.');
+    except
+      on E: exception do
+        MensagemSistema('Não foi possível concluir o processo de exportar PDFs.' + sLineBreak + E.Message, msgErro);
+    end;
+  end;
 end;
 
 procedure TForm7.ExportarNFesfiltradasemarquivoXML1Click(Sender: TObject);
