@@ -2815,7 +2815,7 @@ begin
                    ' 	 CLIENTIDBOLETO VARCHAR(100), '+
                    ' 	 CERTIFICADO BLOB SUB_TYPE TEXT,'+
                    ' 	 CERTIFICADONOME VARCHAR(80), '+
-                   ' 	 CERTIFICADOSENHA VARCHAR(40), '+
+                   ' 	 CERTIFICADOSENHA VARCHAR(200), '+
                    ' 	 CONSTRAINT PK_CONFIGURACAOSICOOB PRIMARY KEY (IDCONFIGURACAOSICOOB)'+
                    ' );');
 
