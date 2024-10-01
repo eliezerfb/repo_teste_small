@@ -7646,8 +7646,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1197
-    ExplicitWidth = 1558
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7721,7 +7719,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1558
   end
   object Panel_0: TPanel
     Left = 0
@@ -11211,7 +11208,7 @@ object Form7: TForm7
         'RCELA_IMPORTADA_EXTERIO, '
       
         '   CODIGO_FCI, IIA_UF, IIA_MUNI, ENQ_IPI, CEST, CSOSN_NFCE, CST_' +
-        'NFCE, ALIQUOTA_NFCE, '
+        'NFCE, ALIQUOTA_NFCE,  NATUREZA_RECEITA,'
       '   MARKETPLACE, IDENTIFICADORPLANOCONTAS, IDPERFILTRIBUTACAO)'
       'values'
       
@@ -11246,7 +11243,7 @@ object Form7: TForm7
         '_EXTERIO, '
       
         '   :CODIGO_FCI, :IIA_UF, :IIA_MUNI, :ENQ_IPI, :CEST, :CSOSN_NFCE' +
-        ', :CST_NFCE, '
+        ', :CST_NFCE,  :NATUREZA_RECEITA,'
       
         '   :ALIQUOTA_NFCE, :MARKETPLACE, :IDENTIFICADORPLANOCONTAS, :IDP' +
         'ERFILTRIBUTACAO)')
@@ -11327,6 +11324,7 @@ object Form7: TForm7
       '  CSOSN_NFCE,'
       '  CST_NFCE,'
       '  ALIQUOTA_NFCE,'
+      '  NATUREZA_RECEITA,'
       '  MARKETPLACE,'
       '  IDENTIFICADORPLANOCONTAS,'
       '  IDPERFILTRIBUTACAO'
@@ -11414,6 +11412,7 @@ object Form7: TForm7
       '  CSOSN_NFCE = :CSOSN_NFCE,'
       '  CST_NFCE = :CST_NFCE,'
       '  ALIQUOTA_NFCE = :ALIQUOTA_NFCE,'
+      '  NATUREZA_RECEITA = :NATUREZA_RECEITA,'
       '  MARKETPLACE = :MARKETPLACE,'
       '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
       '  IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO'
@@ -12006,6 +12005,12 @@ object Form7: TForm7
       FieldName = 'IDESTOQUE'
       Origin = 'ESTOQUE.IDESTOQUE'
       Visible = False
+    end
+    object ibDataSet4NATUREZA_RECEITA: TIBStringField
+      FieldName = 'NATUREZA_RECEITA'
+      Origin = 'ESTOQUE.NATUREZA_RECEITA'
+      Visible = False
+      Size = 3
     end
   end
   object DataSource4: TDataSource

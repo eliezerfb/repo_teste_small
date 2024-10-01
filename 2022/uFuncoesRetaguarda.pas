@@ -74,6 +74,7 @@ uses
   function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
   function GetFatorConversaoItemCompra(CodRegItem:string; valPadrao: Double; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-02-19
   function GetIVAProduto(IDESTOQUE : integer; UF : string; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-09-11
+  function ExtrairConfiguracao(sTexto: String; sSigla: String): String; // Mauricio Parizotto 2024-10-01
 
 
 implementation
@@ -1130,6 +1131,33 @@ begin
     end;
   end;
 end;
+
+function ExtrairConfiguracao(sTexto: String; sSigla: String): String;
+{Sandro Silva 2012-01-11 inicio
+Extrai configuração existente no texto.
+Quando existir mais de uma configuração deverão estar separadas por ponto e vírgula(;)
+Inicialmente usado para configuração D101-Indicador da Natureza do Frete Contratado e
+D101-Código da Base de Cálculo do Crédito}
+var
+  iConfig: Integer;
+begin
+  with TStringList.Create do
+  begin
+    Delimiter := ';';
+    DelimitedText := AnsiUpperCase(sTexto);
+
+    for iConfig := 0 to Count - 1 do
+    begin
+      if Pos(sSigla, Strings[iConfig]) > 0 then
+      begin
+        Result := LimpaNumero(Strings[iConfig]);
+        Break;
+      end;
+    end;
+    Free;
+  end;
+end;
+
 
 end.
 

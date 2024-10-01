@@ -1741,6 +1741,7 @@ type
     Movimentaodoitemporperodo1: TMenuItem;
     Rankingdeprodutosvendidos1: TMenuItem;
     ibDataSet4IDESTOQUE: TIntegerField;
+    ibDataSet4NATUREZA_RECEITA: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -20106,11 +20107,22 @@ begin
   end;
 
   //if Form10.Visible then
-  if FrmEstoque.Visible then
+  //if FrmEstoque.Visible then Mauricio Parizotto 2024-10-01
+  if FrmEstoque <> nil then
   begin
     if (pos('<',Sender.AsString)<>0) and (pos('>',Sender.AsString)<>0) then
     begin
       MensagemSistema('Parece que você está tentando incluir uma TAG. Verifique se existe um campo específico na aba Tags para incluir esta informação.',msgAtencao);
+    end;
+  end;
+
+  //Mauricio Parizotto 2024-10-01
+  if (Sender.FieldName = 'LIVRE4' ) then
+  begin
+    if (pos('NR=',UpperCase(Sender.AsString))<>0) then
+    begin
+      MensagemSistema('Parece que você está tentando informar o número da natureza da receita de PIS/COFINS.'+#13#10+
+                      'Agora essa informação deverá ser preenchida diretamente na aba IPI/PIS/COFINS.',msgAtencao);
     end;
   end;
 end;
