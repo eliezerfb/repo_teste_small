@@ -600,6 +600,19 @@ begin
 
           ibdEmitenteMUNICIPIO.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
 
+          {Dailon Parisotto (f-20714) 2024-10-01 Inicio}
+          if (AnsiUpperCase(ibdEmitenteESTADO.AsString) = 'ES') and (Trim(ibdEmitenteIE.AsString) <> EmptyStr) then
+          begin
+            if (ConsisteInscricaoEstadual(LimpaNumero(ibdEmitenteIE.AsString),ibdEmitenteESTADO.AsString)) then
+            begin
+              ibdEmitenteIE.AsString := '0' + ibdEmitenteIE.AsString;
+
+              if (ConsisteInscricaoEstadual(LimpaNumero(ibdEmitenteIE.AsString),ibdEmitenteESTADO.AsString)) then
+                ibdEmitenteIE.AsString := Copy(ibdEmitenteIE.AsString,2, Length(ibdEmitenteIE.AsString));
+            end;
+          end;
+          {Dailon Parisotto (f-20714) 2024-10-01 Fim}
+
           ComboBox1.ItemIndex    := 0;
           ibdEmitenteCRT.AsString := '1';
         end;
