@@ -6,7 +6,7 @@ uses
   uIEstruturaTipoRelatorioPadrao, uSmallEnumerados, uArquivosDAT,
   Classes, Dialogs, DB, Windows, uIEstruturaRelatorioPadrao, IBQuery,
   SysUtils, DateUtils, Forms, Controls, IBDatabase
-  , uConverteHtmlToPDF
+  , uConverteHtmlToPDF, uIFiltrosRodapeRelatorio
   ;
 
 type
@@ -46,6 +46,8 @@ type
     function GerarImpressao(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
     function GerarImpressaoAgrupado(AoEstruturaRel: IEstruturaRelatorioPadrao; AcTitulo: String): IEstruturaTipoRelatorioPadrao;
     function GerarImpressaoCabecalho(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
+    function AdicionarTitulo(AcTitulo: String; AbQuebraLinhaIni: Boolean = True; AbQuebraLinhaFim: Boolean = True): IEstruturaTipoRelatorioPadrao;
+    function AdicionarRodape(AoFiltros: IFiltrosRodapeRelatorio): IEstruturaTipoRelatorioPadrao;
     function Imprimir: IEstruturaTipoRelatorioPadrao;
     function Salvar: IEstruturaTipoRelatorioPadrao; overload;
     function Salvar(AenTipoRel: tTipoRelatorio): IEstruturaTipoRelatorioPadrao; overload;    
@@ -258,7 +260,8 @@ begin
 
   FlsImpressao.Add('</table>');
 
-  if Assigned(FoEstruturaRel.FiltrosRodape) then
+  AdicionarRodape(FoEstruturaRel.FiltrosRodape);
+{  if Assigned(FoEstruturaRel.FiltrosRodape) then
   begin
     if FoEstruturaRel.FiltrosRodape.getItens.Count > 0 then
     begin
@@ -277,7 +280,7 @@ begin
     end;
     if (FoEstruturaRel.FiltrosRodape.getFiltroData <> EmptyStr) then
       FlsImpressao.Add('<br><font face="Microsoft Sans Serif" size=1>'+FoEstruturaRel.FiltrosRodape.getFiltroData+'</font>');
-  end;
+  end;}
 end;
 
 procedure TEstruturaTipoRelatorioPadrao.MontarCabecalhoTXT;
@@ -388,7 +391,9 @@ begin
     FlsImpressao.Add(cLinhaTotal);
   end;
 
-  if Assigned(FoEstruturaRel.FiltrosRodape) then
+
+  AdicionarRodape(FoEstruturaRel.FiltrosRodape);
+{  if Assigned(FoEstruturaRel.FiltrosRodape) then
   begin
     if FoEstruturaRel.FiltrosRodape.getItens.Count > 0 then
     begin
@@ -401,7 +406,7 @@ begin
     end;
     if (FoEstruturaRel.FiltrosRodape.getFiltroData <> EmptyStr) then
       FlsImpressao.Add(FoEstruturaRel.FiltrosRodape.getFiltroData);
-  end;
+  end;      }
 end;
 
 function TEstruturaTipoRelatorioPadrao.SomarValor(AoField: TField) : Currency;
@@ -508,6 +513,88 @@ end;
 function TEstruturaTipoRelatorioPadrao.TestarFieldValor(AoField: TField): Boolean;
 begin
   Result := (AoField.DataType in [ftBCD, ftFloat, ftCurrency, ftFMTBcd]);
+end;
+
+function TEstruturaTipoRelatorioPadrao.AdicionarRodape(AoFiltros: IFiltrosRodapeRelatorio): IEstruturaTipoRelatorioPadrao;
+var
+  I: Integer;
+begin
+  Result := Self;
+
+  case FoArquivoDAT.Usuario.Html.TipoRelatorio of
+    ttiHTML, ttiPDF:
+    begin
+      if Assigned(AoFiltros) then
+      begin
+        if AoFiltros.getItens.Count > 0 then
+        begin
+          FlsImpressao.Add('   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+          FlsImpressao.Add('    <tr bgcolor=#FFFFFF align=left>');
+          FlsImpressao.Add('     <td><P><font face="Microsoft Sans Serif" size=1><b>'+AoFiltros.getTitulo+'</b><br>');
+
+
+          for I := 0 to Pred(AoFiltros.getItens.Count) do
+            FlsImpressao.Add('     <br><font face="Microsoft Sans Serif" size=1>'+AllTrim(AoFiltros.getItens[I]));
+
+          FlsImpressao.Add('');
+          FlsImpressao.Add('      </td><br>');
+          FlsImpressao.Add('     </td>');
+          FlsImpressao.Add('    </table>');
+        end;
+        if (AoFiltros.getFiltroData <> EmptyStr) then
+          FlsImpressao.Add('<br><font face="Microsoft Sans Serif" size=1>'+AoFiltros.getFiltroData+'</font>');
+      end;
+    end;
+    ttiTXT:
+    begin
+      if Assigned(AoFiltros) then
+      begin
+        if AoFiltros.getItens.Count > 0 then
+        begin
+          FlsImpressao.Add(EmptyStr);
+          if AoFiltros.getTitulo <> EmptyStr then
+            FlsImpressao.Add(AoFiltros.getTitulo);
+
+          for I := 0 to Pred(AoFiltros.getItens.Count) do
+            FlsImpressao.Add(AllTrim(AoFiltros.getItens[I]));
+        end;
+        if (AoFiltros.getFiltroData <> EmptyStr) then
+          FlsImpressao.Add(AoFiltros.getFiltroData);
+      end;
+    end;
+  end;
+end;
+
+function TEstruturaTipoRelatorioPadrao.AdicionarTitulo(AcTitulo: String; AbQuebraLinhaIni: Boolean = True; AbQuebraLinhaFim: Boolean = True): IEstruturaTipoRelatorioPadrao;
+var
+  cLinha: String;
+begin
+  Result := Self;
+
+  case FoArquivoDAT.Usuario.Html.TipoRelatorio of
+    ttiHTML, ttiPDF:
+    begin
+      if AbQuebraLinhaIni then
+        cLinha := '<br>';
+      cLinha := cLinha + '<font size=4 color=#000000><b>' + AcTitulo + '</b></font><br></center>';
+      if AbQuebraLinhaFim then
+        cLinha := cLinha + '<br>';
+
+      FlsImpressao.Add(cLinha);
+      FlsImpressao.Add('<center>');
+      FlsImpressao.Add('<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
+    end;
+    ttiTXT:
+    begin
+      if AbQuebraLinhaIni then
+        cLinha := sLineBreak;
+      cLinha := cLinha + AcTitulo;
+      if AbQuebraLinhaFim then
+        cLinha := cLinha + sLineBreak;
+
+      FlsImpressao.Add(cLinha);
+    end;
+  end;
 end;
 
 constructor TEstruturaTipoRelatorioPadrao.Create;

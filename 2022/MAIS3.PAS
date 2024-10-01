@@ -340,8 +340,10 @@ end;
 procedure TSenhas.ConfirmaAdm;
 var
   Mais1Ini: TIniFile;
+  {Sandro Silva 2024-09-26
   sSenha : String;
   I : Integer;
+  }
 begin
   try
     // Nova senha adm se não tiver

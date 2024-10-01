@@ -2074,7 +2074,7 @@ end;
 
 function PegaImpostosDoXML(sP1: String):Boolean;
 var
-  I : Integer;
+//Sandro Silva 2024-09-26  I : Integer;
   NodePrim, NodePai, NodeSec, NodeTmp: IXMLNode; // Node é um nó do XML
 
   sDesc    ,
@@ -7827,11 +7827,13 @@ begin
 end;
 
 procedure TForm1.Liberarosmdulosparaesteusurio1Click(Sender: TObject);
+{Sandro Silva 2024-09-26
 var
   Mais1Ini: TIniFile;
   sSenha  : String;
   sSenhaX : String;
   I : Integer;
+  }
 begin
   {Mauricio Parizotto 2024-07-06
   Form22.Show;
@@ -8751,9 +8753,11 @@ end;
 
 procedure TForm1.ConfigurarNFEINI1Click(Sender: TObject);
 var
+{Sandro Silva 2024-09-26
   sSenha  : String;
   sSenhaX : String;
   I : Integer;
+  }
   Mais1Ini : tIniFile;
 begin
   {Mauricio Parizotto 2024-07-26
@@ -9502,8 +9506,10 @@ end;
 
 procedure TForm1.Ambiente1Click(Sender: TObject);
 var
+{Sandro Silva 2024-09-26
   sSenha  : String;
   sSenhaX : String;
+  }
   I : Integer;
   Mais1Ini : tIniFile;
 begin
@@ -12212,11 +12218,13 @@ begin
 end;
 
 procedure TForm1.Modoinventrio1Click(Sender: TObject);
+{Sandro Silva 2024-09-26
 var
   Mais1Ini: TIniFile;
   sSenha  : String;
   sSenhaX : String;
   I : Integer;
+  }
 begin
   if not Modoinventrio1.Checked then
   begin
@@ -13431,8 +13439,8 @@ begin
 end;
 
 procedure TForm1.ConfiguraesdaNFSe1Click(Sender: TObject);
-var
-  ConfSistema : TArquivosDAT;
+//var
+//  ConfSistema : TArquivosDAT;
 begin
   {Sandro Silva 2024-04-24 inicio
   try

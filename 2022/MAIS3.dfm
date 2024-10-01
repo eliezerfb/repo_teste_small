@@ -709,7 +709,7 @@ object Senhas: TSenhas
     object lblConfNS: TLabel
       Left = 310
       Top = 23
-      Width = 132
+      Width = 129
       Height = 16
       Caption = 'Confirme a sua senha'
       Color = clBlack

@@ -37,6 +37,7 @@ uses
   , uSmallEnumerados
   , synPDF, System.MaskUtils
   , uRetornaCustoMedio
+  , uRelatorioResumoVendas
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -1732,10 +1733,13 @@ type
     ImgSemProduto: TImage;
     ibDataSet14IMPOSTOMANUAL: TIBStringField;
     DetalhamentodasOrdensfiltradas1: TMenuItem;
+    Notasfaltantes1: TMenuItem;
     Aniversariantes1: TMenuItem;
     Dia1: TMenuItem;
     Semana1: TMenuItem;
     Ms1: TMenuItem;
+    Movimentaodoitemporperodo1: TMenuItem;
+    Rankingdeprodutosvendidos1: TMenuItem;
     ibDataSet4IDESTOQUE: TIntegerField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
@@ -1809,7 +1813,6 @@ type
     procedure ibDataSet12BeforeEdit(DataSet: TDataSet);
     procedure ibDataSet12AfterPost(DataSet: TDataSet);
     procedure Relatriodecomisses1Click(Sender: TObject);
-    procedure Resumodasvendas1Click(Sender: TObject);
     procedure Histrico1Click(Sender: TObject);
     procedure ibDataSet7AfterPost(DataSet: TDataSet);
     procedure ibDataSet7VALOR_RECEChange(Sender: TField);
@@ -2464,9 +2467,13 @@ type
     procedure ibDataSet14AfterInsert(DataSet: TDataSet);
     procedure ibDataSet14BeforePost(DataSet: TDataSet);
     procedure DetalhamentodasOrdensfiltradas1Click(Sender: TObject);
+    procedure Notasfaltantes1Click(Sender: TObject);
     procedure Dia1Click(Sender: TObject);
     procedure Ms1Click(Sender: TObject);
     procedure Semana1Click(Sender: TObject);
+    procedure Movimentaodoitemporperodo1Click(Sender: TObject);
+    procedure Resumodasvendas1Click(Sender: TObject);
+    procedure Rankingdeprodutosvendidos1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -2534,6 +2541,7 @@ type
     function TestarPodeUtilizarCIT(AcRegistro, AcCITInformado: String): Boolean;
     function RetornarCasasDecimaisPreco: Integer;
     procedure DesvincularCupomImportado;
+    procedure ChamarRelResumoVendas(AenTipoRelatorio: TTipoRelatorioResumoVenda);
   public
     // Public declarations
 
@@ -2740,7 +2748,6 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uImpressaoOrcamento
   , uFrenteSections
   , uFrmParametroTributacao
-  , uRelatorioResumoVendas
   , uDuplicaOrcamento
   , uDuplicaProduto
   , uImportaOrcamento
@@ -2776,7 +2783,9 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uPermissaoUsuario
   , uFrmCadastro
   , uFrmEstoque
-  , uVisualizaCadastro;
+  , uVisualizaCadastro
+  , ufrmRelatorioMovItensPeriodo
+  , ufrmRelatorioNotasFaltantes;
 
 {$R *.DFM}
 
@@ -9579,6 +9588,20 @@ begin
   //Form10.Image203Click(Sender);
 end;
 
+procedure TForm7.Movimentaodoitemporperodo1Click(Sender: TObject);
+begin
+  frmRelatorioMovItensPeriodo := TfrmRelatorioMovItensPeriodo.Create(nil);
+  try
+    frmRelatorioMovItensPeriodo.Imagem           := imgImprimir.Picture;
+    frmRelatorioMovItensPeriodo.Usuario          := Usuario;
+    frmRelatorioMovItensPeriodo.Transaction      := IBTransaction1;
+    frmRelatorioMovItensPeriodo.DescricaoProduto := ibDataSet4DESCRICAO.AsString;
+    frmRelatorioMovItensPeriodo.ShowModal;
+  finally
+    FreeAndNil(frmRelatorioMovItensPeriodo);
+  end;
+end;
+
 procedure TForm7.Imprimirpedidosdevenda1Click(Sender: TObject);
 begin
   sModuloAnterior := sModulo;
@@ -12413,7 +12436,7 @@ begin
     Form37.ShowModal;
 end;
 
-procedure TForm7.Resumodasvendas1Click(Sender: TObject);
+procedure TForm7.ChamarRelResumoVendas(AenTipoRelatorio: TTipoRelatorioResumoVenda);
 var
   oIni : tIniFile;
 begin
@@ -12430,6 +12453,8 @@ begin
     frmRelResumoVendas.DataSetEstoque     := ibDataSet4;
     frmRelResumoVendas.CasasDecimaisPreco := StrToIntDef(Form1.ConfPreco,2);
     frmRelResumoVendas.CasasDecimaisQtde  := StrToIntDef(Form1.ConfCasas,2);
+    frmRelResumoVendas.TipoRelatorio      := AenTipoRelatorio;
+
     if sModulo = 'ESTOQUE' then
     begin
       frmRelResumoVendas.WhereEstoque     := sWhere;
@@ -12447,7 +12472,11 @@ begin
         FreeAndNil(oIni);
       end;
     end;
-    frmRelResumoVendas.SqlTraduzido       := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por lucro bruto',True, ibDataSet4);
+
+    frmRelResumoVendas.SqlTraduzido := TraduzSql('Listando ' + frmRelResumoVendas.WhereEstoque + ' e ordenado por ',True, ibDataSet4);
+    if AenTipoRelatorio <> trrvRankingProdVendido then
+      frmRelResumoVendas.SqlTraduzido := frmRelResumoVendas.SqlTraduzido + 'lucro bruto';
+
     frmRelResumoVendas.ShowModal;
   finally
     AgendaCommit(True);
@@ -22729,6 +22758,11 @@ begin
   Form38.ShowModal; // Ok
 end;
 
+procedure TForm7.Rankingdeprodutosvendidos1Click(Sender: TObject);
+begin
+  ChamarRelResumoVendas(trrvRankingProdVendido);
+end;
+
 procedure TForm7.ibDataSet11BeforeInsert(DataSet: TDataSet);
 begin
   try if AllTrim(Form7.ibDataSet11NOME.AsString)='' then Form7.ibDataSet11.Delete; except end;
@@ -23402,6 +23436,20 @@ begin
   // Sandro Silva 2024-01-11 Notasfiscaisabertas1.Checked    := False;
 end;
 
+procedure TForm7.Notasfaltantes1Click(Sender: TObject);
+begin
+  frmRelatorioNotasFaltantes := TfrmRelatorioNotasFaltantes.Create(nil);
+  try
+    frmRelatorioNotasFaltantes.DataBase    := IBDatabase1;
+    frmRelatorioNotasFaltantes.Imagem      := imgImprimir.Picture;
+    frmRelatorioNotasFaltantes.Usuario     := Usuario;
+    frmRelatorioNotasFaltantes.Transaction := IBTransaction1;
+    frmRelatorioNotasFaltantes.ShowModal;
+  finally
+    FreeAndNil(frmRelatorioNotasFaltantes);
+  end;
+end;
+
 procedure TForm7.Notasfiscaisabertas1Click(Sender: TObject);
 begin
   sWhere := sWhere + ' and EMITIDA<>'+QuotedStr('S')+' and EMITIDA<>'+QuotedStr('X');
@@ -23822,6 +23870,11 @@ begin
   Form7.sModulo := 'Resumo das compras';
   Form38.ShowModal;
   Form38.Label21.Visible := False;
+end;
+
+procedure TForm7.Resumodasvendas1Click(Sender: TObject);
+begin
+  ChamarRelResumoVendas(trrvResumoVendas);
 end;
 
 procedure TForm7.miExibirAjudaICMClick(Sender: TObject);
@@ -31264,7 +31317,7 @@ var
   Mais1Ini : tIniFile;
   I, YY, J : Integer;
   sMandados : String;
-  MyBookMark1 : TBookMark;
+//Sandro Silva 2024-09-26  MyBookMark1 : TBookMark;
 begin
   Form40.MaskEdit1.Visible := False;
   Form40.Edit1.Visible     := False;
@@ -31776,8 +31829,10 @@ begin
 end;
 
 procedure TForm7.EnvioaoFISCOREDUOZ1Click(Sender: TObject);
+{Sandro Silva 2024-09-26
 var
   bBlocoX : Boolean;
+  }
 begin
   //
   {Sandro Silva 2023-02-14 inicio
@@ -32678,7 +32733,8 @@ end;
 
 procedure TForm7.PrvisualizarDANFE1Click(Sender: TObject);
 var
-  sFormato, sLote: String;
+  //Sandro Silva 2024-09-26 sFormato,
+  sLote: String;
 begin
   {Sandro Silva 2022-09-12 inicio}
   //Ficha 4128
@@ -36473,8 +36529,10 @@ begin
 end;
 
 function TForm7.RetornarHistoricoPorModulo: String;
+{Sandro Silva 2024-09-26
 var
   i: Integer;
+  }
 begin
   case RetornaTipoModulo of
     tmcVenda    : Result := 'NÚMERO NF: ' + ibDataSet15NUMERONF.AsString + ', CLIENTE: ' + ibDataSet15CLIENTE.AsString;
