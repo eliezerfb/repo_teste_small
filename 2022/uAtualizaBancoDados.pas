@@ -2872,6 +2872,7 @@ begin
   begin
     if ExecutaComando('ALTER TABLE ICM ADD LISTAR VARCHAR(1)') then
     begin
+      ExecutaComando('commit');
       ExecutaComando('UPDATE ICM set LISTAR = ''S'' ');
       ExecutaComando('commit');
     end;
