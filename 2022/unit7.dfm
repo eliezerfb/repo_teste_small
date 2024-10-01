@@ -15709,7 +15709,8 @@ object Form7: TForm7
       '  VFCP = :VFCP,'
       '  VBCFCPST = :VBCFCPST,'
       '  PFCPST = :PFCPST,'
-      '  VFCPST = :VFCPST'
+      '  VFCPST = :VFCPST,'
+      '  DRAWBACK = :DRAWBACK'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True

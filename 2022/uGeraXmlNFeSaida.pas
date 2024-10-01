@@ -2101,7 +2101,8 @@ begin
     </veicProd>
     }
 
-    if Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7' then // Exportação
+//    if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7') then // Exportação Dailon Parisotto 2024-10-01 - Devido a item de obs estar limpando o DrawBack
+    if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7') and (Form7.ibDataSet16.FieldByname('CODIGO').AsString <> EmptyStr) then // Exportação
     begin
       // Controle de Exportação por Item
       Form7.spdNFeDataSets.IncluirPart('adi');
