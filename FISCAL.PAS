@@ -1817,6 +1817,7 @@ uses
   , uConectaBancoSmall
   , uFrmTransacoesItau
   , uDialogs
+  , uLogSistema
   ;
 
 {$R *.DFM}
@@ -10390,8 +10391,11 @@ begin
 
               IDTransacaoPIX := sCaixa + FormataNumeroDoCupom(Form1.icupom) + CodFormaPixDin.ToString;
 
+              {Mauricio Parizotto 2024-10-02
+              Campo obrigatório API Sicoob
               if Form1.sModeloECF = '59' then
                 IDTransacaoPIX := '';
+              }
 
               //Se cofirmou pagamento com PIX
               PagouNoPIX := PagamentoPixDinamico(ValorPIX,
@@ -34089,6 +34093,7 @@ begin
     ConfSistema := TArquivosDAT.Create('',IBTransaction1);
 
     bPermiteImportarMesmoOrc := ConfSistema.BD.Outras.PermiteImportarMesmoOrc;
+    GeraLogSistema           := ConfSistema.BD.Outras.LogSistema; //Mauricio Parizotto 2024-10-02
   finally
     FreeAndNil(ConfSistema);
   end;
