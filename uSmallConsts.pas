@@ -180,6 +180,10 @@ const
   _cStatusImendesConsultado    = 'Consultado';
   _cStatusImendesNaoConsultado = 'Não consultado';
 
+  //Frente Sections BD
+  _cSectionFrenteBD = 'Frente';
+  _cTransmiteContingenciaAbertura = 'Trans Contingência Abertura';
+
 implementation
 
 end.

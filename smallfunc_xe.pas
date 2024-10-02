@@ -215,6 +215,7 @@ function TestarTEFConfigurado: Boolean;
 function TestarUFMovimentaEstoqueFinanceiroSemFaturar(AcUF: String): Boolean;
 function Coalesce(Value1: Variant; Value2: Variant): Variant;
 function SalvaArquivoTemp(Campo : Tfield; Nome : string) : string;
+procedure ExcluirPasta(AcPasta: String);
 
 var
   IMG: TImage;
@@ -2723,6 +2724,34 @@ begin
     end;
   except
   end;
+end;
+
+procedure ExcluirPasta(AcPasta: String);
+var
+  sr : TSearchRec;
+  iRetorno : Integer;
+begin
+  AcPasta := IncludeTrailingPathDelimiter(AcPasta);
+  if not(DirectoryExists(AcPasta)) then
+    Exit;
+
+  iRetorno := FindFirst(AcPasta + '*.*', faAnyFile, sr);
+  while iRetorno = 0 do
+  begin
+    if (sr.Name <> '.') and (sr.Name <> '..') then
+      if sr.Attr = faDirectory then
+        ExcluirPasta(AcPasta + sr.Name)
+      else
+      begin
+        if GetFileAttributes(PWideChar(AcPasta + sr.Name)) > 0 then
+          SetFileAttributes(PWideChar(AcPasta + sr.Name), 0);
+        DeleteFile(PWideChar(AcPasta + sr.Name));
+      end;
+      iRetorno := FindNext(sr);
+  end;
+  FindClose(sr.FindHandle);
+  RemoveDir(AcPasta);
+  Sleep(200);
 end;
 
 end.

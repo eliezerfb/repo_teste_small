@@ -12,6 +12,7 @@ uses
   , uImpressoraSections
   , uCarneSections
   , uIMendesSections
+  , uFrenteSectionsBD
   ;
 
 type
@@ -23,12 +24,14 @@ type
     FoImpressora: TSectionImpressora;
     FoCarne: TSectionCarne;
     FoIMendes: TSectionIMendes;
+    FoFrente: TSectionFrenteBD;
     function getOS: TSectionOS;
     function getOutras: TSectionOutras;
     function getNFSE: TSectionNFSE_BD;
     function getImpressora: TSectionImpressora;
     function getCarne: TSectionCarne;
     function getIMendes: TSectionIMendes;
+    function getFrente: TSectionFrenteBD;
   public
     destructor Destroy; override;
     property OS: TSectionOS read getOS;
@@ -37,6 +40,7 @@ type
     property Impressora: TSectionImpressora read getImpressora;
     property Carne: TSectionCarne read getCarne;
     property IMendes: TSectionIMendes read getIMendes;
+    property Frente: TSectionFrenteBD read getFrente;
   protected
   end;
 
@@ -49,6 +53,7 @@ implementation
 destructor TConfBD.Destroy;
 begin
   FreeAndNil(FoOS);
+  FreeAndNil(FoFrente);
   inherited;
 end;
 
@@ -74,6 +79,14 @@ begin
     FoCarne := TSectionCarne.Create(Transaction,_cSectionCarne);
 
   Result := FoCarne;
+end;
+
+function TConfBD.getFrente: TSectionFrenteBD;
+begin
+  if not Assigned(FoFrente) then
+    FoFrente := TSectionFrenteBD.Create(Transaction,_cSectionFrenteBD);
+
+  Result := FoFrente;
 end;
 
 function TConfBD.getNFSE: TSectionNFSE_BD;
