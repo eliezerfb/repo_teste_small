@@ -1738,6 +1738,7 @@ type
     Dia1: TMenuItem;
     Semana1: TMenuItem;
     Ms1: TMenuItem;
+    ibDataSet16DRAWBACK: TIBStringField;
     Movimentaodoitemporperodo1: TMenuItem;
     Rankingdeprodutosvendidos1: TMenuItem;
     ibDataSet4IDESTOQUE: TIntegerField;

@@ -265,6 +265,8 @@ uses
   uFrmEstoqueIVA in 'uFrmEstoqueIVA.pas' {FrmEstoqueIVA},
   uIRetornaCustoMedio in 'interfaces\uIRetornaCustoMedio.pas',
   uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas',
+  ufrmInformarDrawback in 'ufrmInformarDrawback.pas' {frmInformarDrawback},
+  ufrmInformacoesExportacaoNFe in 'ufrmInformacoesExportacaoNFe.pas' {frmInformacoesExportacaoNFe},
   uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas',
   ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo};
 

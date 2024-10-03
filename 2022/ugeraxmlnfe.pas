@@ -100,6 +100,14 @@ begin
     begin
       //Saida
       GeraXmlNFeSaida;
+      {Dailon Parisotto (smal-706) 2024-09-23 Inicio}
+      if FbAbortar then
+      begin
+        // Limpa para não validar o XML
+        Form7.ibDataSet15NFEXML.AsString := EmptyStr;
+        Abort;
+      end;
+      {Dailon Parisotto (smal-706) 2024-09-23 Fim}
     end;
 
     {Mauricio Parizotto 2024-07-15
