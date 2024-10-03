@@ -3,7 +3,7 @@
         <ProjectGuid>{376CE32D-BC53-40E7-BD4E-12B5F2B54C24}</ProjectGuid>
         <MainSource>FRENTE.DPR</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -215,7 +215,7 @@
         <DCCReference Include="..\unit_compartilhada\uValidaRecursosDelphi7.pas"/>
         <DCCReference Include="..\unit_compartilhada\uRecursosSistema.pas"/>
         <DCCReference Include="..\unit_compartilhada\uCriptografia.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uArquivosDAT.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uArquivosDAT.pas"/>
         <DCCReference Include="..\unit_compartilhada\uFuncoesBancoDados.pas"/>
         <DCCReference Include="uFuncoesPOS.pas"/>
         <DCCReference Include="uConverteDocumentoParaDocFiscal.pas"/>
@@ -273,25 +273,31 @@
         <DCCReference Include="..\unit_compartilhada\uSmallConsts.pas"/>
         <DCCReference Include="..\unit_compartilhada\uLogSistema.pas"/>
         <DCCReference Include="urequisitapesobalancaautonoma.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uEstoqueDAT.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uArquivoDATINFPadrao.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uEstoqueSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uSectionDATPadrao.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uEstoqueDAT.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uArquivoDATINFPadrao.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uEstoqueSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uSectionDATPadrao.pas"/>
         <DCCReference Include="..\unit_compartilhada\uSmallComINF.pas"/>
         <DCCReference Include="..\unit_compartilhada\uSmallComSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uUsuarioINF.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uUsuarioSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uFrenteINI.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uFrenteSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uNFeINI.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uNFeSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uNFSeINI.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uNFSeSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uConfSisBD.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uOSSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uOutrasSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uImpressoraSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\uCarneSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uUsuarioINF.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uUsuarioSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uFrenteINI.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uFrenteSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uNFeINI.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uNFeSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uNFSeINI.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uNFSeSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uConfSisBD.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uOSSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uOutrasSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uImpressoraSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uCarneSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
+        <DCCReference Include="..\unit_compartilhada\DAT\uIMendesSections.pas"/>
+        <DCCReference Include="ufrmSobre.pas">
+            <Form>frmSobre</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1135,10 +1141,10 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

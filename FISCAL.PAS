@@ -1506,6 +1506,7 @@ type
     function CancelaItem(sItem: string): boolean;
     procedure CancelaDescontoAcrescimo;
     procedure CarregaConfiguracoes;
+    procedure ChamarTelaSobre;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -1816,6 +1817,7 @@ uses
   , uConectaBancoSmall
   , uFrmTransacoesItau
   , uDialogs
+  , ufrmSobre
   ;
 
 {$R *.DFM}
@@ -14824,33 +14826,8 @@ begin
 end;
 
 procedure TForm1.Sobreoprograma1Click(Sender: TObject);
-var
-  sVersaoNFCe: String;
-  sMarcaECF: String; // Sandro Silva 2018-10-23
-  sTempovalidadeCertificado: String;
-  iUsuariosAtivos: Integer; // Sandro Silva 2019-06-19
-  sMensagemDiasExpirar: String; // Sandro Silva 2022-12-08 Unochapeco
 begin
-  //
-  Form22.Close;
-  //
-  try
-   if StrToIntDef(Copy(StrTran(Form22.sSerie, 'Número de série: ', ''), 2, 2), 0) < 15 then
-   begin
-    if Form1.IBDatabaseInfo1.UserNames.Count = 1 then
-      Form22.sAtivos :=  AllTrim(InttoStr(Form1.IBDatabaseInfo1.UserNames.Count))+' usuário ativo'
-    else
-      Form22.sAtivos :=  AllTrim(InttoStr(Form1.IBDatabaseInfo1.UserNames.Count))+' usuários ativos';
-   end
-   else
-   begin
-     iUsuariosAtivos := Form1.IBDatabaseInfo1.UserNames.Count; // Sandro Silva 2023-06-01 iUsuariosAtivos := UsuariosConectados(Form1.IBDatabase1);
-     Form22.sAtivos := InttoStr(iUsuariosAtivos) + IfThen(iUsuariosAtivos = 1, ' usuário ativo', ' usuários ativos');
-   end;
-  except
-    Form22.sAtivos := '? usuários ativos';
-  end;
-
+{ Dailon Parisotto 2024-10-03
   sVersaoNFCe := '';
   if Form1.sModeloECF = '59' then
   begin
@@ -14915,7 +14892,7 @@ begin
                Form22.sHoraNoServidor
                + sVersaoNFCe
                ;
-    }
+
 
     sMensagemDiasExpirar := 'Seu sistema está devidamente licenciado para mais ' + IntToStr(DiasParaExpirar(Form1.IBDatabase1)) + ' dias';
     if DiasParaExpirar(Form1.IBDatabase1) < 0 then
@@ -14936,6 +14913,9 @@ begin
     //
   end;
 
+
+
+
   Form22.RichEdit1.Left  := Form22.Image1.Left;
   Form22.RichEdit1.Top   := Form22.Image1.Top + Form22.Image1.Height + AjustaAltura(20); // Sandro Silva 2017-09-26  20;
   Form22.RichEdit1.Width := AjustaLargura(700); // Sandro Silva 2017-09-26  700;
@@ -14949,10 +14929,16 @@ begin
   Form22.Button1.Visible   := True;
 
   Form22.Label6.Caption := Copyright;
-  Form22.Button1.Visible := True;
+  Form22.Button1.Visible := True; }
 
   Timer2.Enabled := False; // Sandro Silva 2016-03-23
-  Form22.ShowModal;
+
+//  Form22.ShowModal; // Dailon Parisotto 2024-10-03 Agora usa a tela especifica do Sobre
+
+  Timer2.Enabled := False; // Sandro Silva 2016-03-23
+
+  ChamarTelaSobre;
+
   if Form1.ImportarvendasdoSmallMobile1.Checked then // Sandro Silva 2016-03-23
     Timer2.Enabled := True;
 
@@ -14961,6 +14947,154 @@ begin
   Form22.RichEdit1.Visible := False;
 
   Form1.Panel1.BringToFront; // 2015-11-07
+end;
+
+procedure TForm1.ChamarTelaSobre;
+var
+  qryGenerator: TIBQuery;
+  nLicenca: Integer;
+  dtLimite: TDate;
+  nUsuariosAtivos: Integer; // Sandro Silva 2019-06-19
+  Mais1Ini, Mais2Ini : TIniFile;
+  cVersaoNFCe, cMarcaECF, cTempovalidadeCertificado: String;
+begin
+  frmSobre := TfrmSobre.Create(nil);
+  qryGenerator := CriaIBQuery(Form1.IBTransaction1);
+  try
+    Form22.Close;
+    //
+    try
+     if StrToIntDef(Copy(StrTran(Form22.sSerie, 'Número de série: ', ''), 2, 2), 0) < 15 then
+     begin
+      if Form1.IBDatabaseInfo1.UserNames.Count = 1 then
+        Form22.sAtivos :=  AllTrim(InttoStr(Form1.IBDatabaseInfo1.UserNames.Count))+' usuário ativo'
+      else
+        Form22.sAtivos :=  AllTrim(InttoStr(Form1.IBDatabaseInfo1.UserNames.Count))+' usuários ativos';
+     end
+     else
+     begin
+       nUsuariosAtivos := Form1.IBDatabaseInfo1.UserNames.Count; // Sandro Silva 2023-06-01 iUsuariosAtivos := UsuariosConectados(Form1.IBDatabase1);
+       Form22.sAtivos := InttoStr(nUsuariosAtivos) + IfThen(nUsuariosAtivos = 1, ' usuário ativo', ' usuários ativos');
+     end;
+    except
+      Form22.sAtivos := '? usuários ativos';
+    end;
+
+    with frmSobre.redtSobre do
+    begin
+      Lines.Clear;
+
+      SelAttributes.Color := clWhite; // 2024-01-05
+
+      qryGenerator.Close;
+      qryGenerator.Sql.Clear;
+      qryGenerator.Sql.Add('select gen_id(G_LEGAL,0) from rdb$database');
+      qryGenerator.Open;
+
+      if qryGenerator.FieldByname('GEN_ID').AsString <> '0' then
+      begin
+        if Date >= StrToDate(Copy(qryGenerator.FieldByname('GEN_ID').AsString,7,2)+'/'+Copy(qryGenerator.FieldByname('GEN_ID').AsString,5,2)+'/'+Copy(qryGenerator.FieldByname('GEN_ID').AsString,1,4))+31 then
+        begin
+          SelText := Form22.sBuild + chr(10) +
+                     'Usuário: ' + Usuario + chr(10) +
+                     Form22.sLicenca + chr(10) +
+                     Form22.sSerie + chr(10) +
+                     Form22.sIniciandoEm  + chr(10) +
+                     Form22.sUrlDoGdb + chr(10) +
+                     Form22.sAtivos  + chr(10) +
+                     Chr(10) + 'Sistema bloqueado';
+        end else
+        begin
+          SelText := Form22.sBuild + chr(10) +
+                     'Usuário: ' + Usuario + chr(10) +
+                     Form22.sLicenca + chr(10) +
+                     Form22.sSerie + chr(10) +
+                     Form22.sIniciandoEm  + chr(10) +
+                     Form22.sUrlDoGdb + chr(10) +
+                     Form22.sAtivos  + chr(10) +
+                     Chr(10) + 'Uso indevido sistema liberado por + ' +
+                     IntToStr(DaysBetween(StrToDate(Copy(qryGenerator.FieldByname('GEN_ID').AsString,7,2)+'/'+Copy(qryGenerator.FieldByname('GEN_ID').AsString,5,2)+'/'+Copy(qryGenerator.FieldByname('GEN_ID').AsString,1,4))+31,Date))
+                     + ' dias';
+        end;
+      end else
+      begin
+        SelText := Form22.sBuild + chr(10) +
+                   'Usuário: ' + Usuario + chr(10) +
+                   Form22.sLicenca + chr(10) +
+                   Form22.sSerie + chr(10) +
+                   Form22.sIniciandoEm  + chr(10) +
+                   Form22.sUrlDoGdb + chr(10) +
+                   Form22.sAtivos  + chr(10) +
+                   'Seu sistema está devidamente licenciado para mais ' + AllTrim(IntToStr(DiasParaExpirar(Form1.IBDatabase1))) + ' dias';
+      end;
+
+      Lines.Add('Modo operação: ' + Copy(AnsiUpperCase(Form1.sConcomitante),1, 1) + Copy(AnsiLowerCase(Form1.sConcomitante),2, Length(Form1.sConcomitante)));
+
+      cVersaoNFCe := '';
+      if Form1.sModeloECF = '59' then
+      begin
+        cVersaoNFCe := Form1.PDV_TipoDaImpressora(True) + ' Leiaute Versão: ' + _59.VersaoDadosEnt + Chr(10);
+      end;
+
+      if Form1.sModeloECF = '65' then
+      begin
+        if Form1.spdNFCe1.GetVencimentoCertificado >= Date then
+          cTempovalidadeCertificado := ' - restando ' + FormatFloat('0', Form1.spdNFCe1.GetVencimentoCertificado - Date) + ' dia(s)'
+        else
+          cTempovalidadeCertificado := ' - Expirado';
+
+        cVersaoNFCe := 'Certificado Digital: ' + Copy(Form1.spdNFCe1.NomeCertificado.Text, 1, Pos(',', Form1.spdNFCe1.NomeCertificado.Text) - 1) +
+                       Chr(10) + 'Validade Certificado: ' + FormatDateTime('dd/mm/yyyy', Form1.spdNFCe1.GetVencimentoCertificado) + cTempovalidadeCertificado;
+      end;
+
+      Lines.Add(cVersaoNFCe);
+    end;
+
+    frmSobre.lblLicenca.Caption := ValidaRecursos.rsRecursoSistema.Produto;
+
+    if AnsiContainsText(ValidaRecursos.rsRecursoSistema.Produto, ' Go') then
+      nLicenca := 1;
+
+    if ValidaRecursos.RecursoLiberado(rcOS, dtLimite) then
+      frmSobre.lblLicenca.Caption := ValidaRecursos.rsRecursoSistema.Produto + ' + Ordem de Serviço';
+
+
+    // Empresas MEI
+    Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
+    try
+      if Mais1Ini.ReadString('LICENCA','MEI','NAO') = 'SIM' then
+      begin
+        nLicenca := 2;
+        frmSobre.lblLicenca.Caption := frmSobre.lblLicenca.Caption + ' - Mei';
+      end else
+      begin
+        // Note que agora é no WIND0WS.L0G individual em cada maquina
+        Mais2ini := TIniFile.Create('WIND0WS.L0G');
+
+        if (Mais2Ini.ReadString('LICENCA','MEI','NAO') = 'SIM') or (Length(Mais2Ini.ReadString('LICENCA','MEI','')) > 8) then
+        begin
+          Mais2Ini.WriteString('LICENCA','MEI','OK');
+          nLicenca := 2;
+        end;
+
+        if nLicenca = 2 then
+        begin
+          Mais1Ini.WriteString('LICENCA','MEI','SIM');
+
+          frmSobre.lblLicenca.Caption := frmSobre.lblLicenca.Caption + ' - Mei';
+        end;
+
+      end;
+    finally
+      Mais1ini.Free;
+      Mais2Ini.Free;
+    end;
+
+    frmSobre.ShowModal;
+  finally
+    FreeAndNil(qryGenerator);
+    FreeAndNil(frmSobre);
+  end;
 end;
 
 procedure TForm1.Cadastraraliquota1Click(Sender: TObject);
