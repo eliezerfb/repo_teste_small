@@ -14949,6 +14949,19 @@ begin
 
             Form7.IBDataSet2CIDADE.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
 
+            {Dailon Parisotto (f-20714) 2024-09-27 Inicio}
+            if (AnsiUpperCase(Form7.IBDataSet2ESTADO.AsString) = 'ES') and (Trim(Form7.IBDataSet2IE.AsString) <> EmptyStr) then
+            begin
+              if (ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet2IE.AsString),Form7.ibDataSet2ESTADO.AsString)) then
+              begin
+                Form7.IBDataSet2IE.AsString := '0' + Form7.IBDataSet2IE.AsString;
+
+                if (ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet2IE.AsString),Form7.ibDataSet2ESTADO.AsString)) then
+                  Form7.IBDataSet2IE.AsString := Copy(Form7.IBDataSet2IE.AsString,2, Length(Form7.IBDataSet2IE.AsString));
+              end;
+            end;
+            {Dailon Parisotto (f-20714) 2024-09-27 Fim}
+
             { Dailon 2023-08-01 Inicio}
             slCNAE := TStringList.Create;
             try
