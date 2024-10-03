@@ -77,8 +77,8 @@ begin
   qryDados.SQL.Add('    , ITENS001.ALIQ_COFINS');
   qryDados.SQL.Add('    , ITENS001.CFOP');
   qryDados.SQL.Add('    , ESTOQUE.CF');
-  qryDados.SQL.Add('    , ITENS001.CST_ICMS');
-  qryDados.SQL.Add('    , ITENS001.CSOSN');
+  qryDados.SQL.Add('    , COALESCE(ITENS001.CST_ICMS, '''') AS CST_ICMS');
+  qryDados.SQL.Add('    , COALESCE(ITENS001.CSOSN, ESTOQUE.CSOSN) AS CSOSN');
   qryDados.SQL.Add('FROM ITENS001');
   qryDados.SQL.Add('INNER JOIN VENDAS ON (VENDAS.NUMERONF=ITENS001.NUMERONF)');
   qryDados.SQL.Add('INNER JOIN ESTOQUE ON (ITENS001.CODIGO=ESTOQUE.CODIGO)');
@@ -122,7 +122,10 @@ begin
       cdsDadosCFOP.AsString      := qryDados.FieldByName('CFOP').Value;
       cdsDadosNCM.AsString       := qryDados.FieldByName('CF').Value;
       cdsDadosCSTICMS.AsString   := qryDados.FieldByName('CST_ICMS').Value;
-      cdsDadosCSOSN.AsString     := qryDados.FieldByName('CSOSN').Value;
+      if qryDados.FieldByName('CSOSN').AsString <> EmptyStr then
+        cdsDadosCSOSN.AsString     := qryDados.FieldByName('CSOSN').Value
+      else
+        cdsDadosCSOSN.AsString     := EmptyStr;
 
       cdsDadosCSTICMS.Visible        := (tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) = tcrteRegimeNormal);
       cdsDadosCSOSN.Visible          := (tCRTEmitente(qryEmitente.FieldByName('CRT').AsInteger) <> tcrteRegimeNormal);
