@@ -2783,7 +2783,6 @@ begin
     ExecutaComando('Alter table PAGAMENT add IDFORMA int;');
     ExecutaComando('Commit');
   end;
-
   {Mauricio Parizotto 2024-08-21 Fim}
 
   {Sandro Silva 2024-09-02 inicio}
@@ -2806,6 +2805,30 @@ begin
   end;
   {Dailon Parisotto (smal-653) 2024-08-26 Fim}
 
+  {Mauricio Parizotto 2024-09-04 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONFIGURACAOSICOOB')) then
+  begin
+    ExecutaComando(' CREATE TABLE CONFIGURACAOSICOOB ('+
+                   ' 	 IDCONFIGURACAOSICOOB INTEGER NOT NULL,'+
+                   ' 	 IDBANCO INTEGER,'+
+                   ' 	 HABILITADO VARCHAR(1),	'+
+                   ' 	 IDAPIPIX INTEGER,'+
+                   ' 	 CLIENTIDPIX VARCHAR(100), '+
+                   ' 	 CLIENTIDBOLETO VARCHAR(100), '+
+                   ' 	 CERTIFICADO BLOB SUB_TYPE TEXT,'+
+                   ' 	 CERTIFICADONOME VARCHAR(80), '+
+                   ' 	 CERTIFICADOSENHA VARCHAR(200), '+
+                   ' 	 CONSTRAINT PK_CONFIGURACAOSICOOB PRIMARY KEY (IDCONFIGURACAOSICOOB)'+
+                   ' );');
+
+  end;
+
+  if TamanhoCampo(Form1.ibDataSet200.Transaction, 'RECEBER', 'AUTORIZACAOTRANSACAO') = 20 then
+  begin
+    ExecutaComando('alter table RECEBER alter AUTORIZACAOTRANSACAO type varchar(128)');
+  end;
+
+  {Mauricio Parizotto 2024-09-04 Fim}
   {Mauricio Parizotto 2024-09-09 Inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'IDESTOQUE') = False then
   begin

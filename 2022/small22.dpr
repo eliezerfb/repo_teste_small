@@ -247,6 +247,7 @@ uses
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas', {FrmContaPagar}
   uFrmIntegracaoItau in 'uFrmIntegracaoItau.pas' {FrmIntegracaoItau},
+  uFrmIntegracaoSicoob in 'uFrmIntegracaoSicoob.pas' {FrmIntegracaoSicoob},
   uMobile in 'units\uMobile.pas',
   uPermissaoUsuario in 'uPermissaoUsuario.pas',
   uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro},
@@ -262,6 +263,10 @@ uses
   uFrmMsgNovoLayout in 'uFrmMsgNovoLayout.pas' {FrmMsgNovoLayout},
   ufrmRelatorioNotasFaltantes in 'units\ufrmRelatorioNotasFaltantes.pas' {frmRelatorioNotasFaltantes},
   uEstruturaRelNotasFaltantes in 'units\uEstruturaRelNotasFaltantes.pas',
+  uChaveCertificado in '..\..\unit_compartilhada\uChaveCertificado.pas',
+  uIntegracaoSicoob in '..\..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas',
+  uWebServiceSicoob in '..\..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas',
+  uClassesSicoob in '..\..\unit_compartilhada\Sicoob\uClassesSicoob.pas',
   uFrmEstoqueIVA in 'uFrmEstoqueIVA.pas' {FrmEstoqueIVA},
   uIRetornaCustoMedio in 'interfaces\uIRetornaCustoMedio.pas',
   uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas',
@@ -332,8 +337,9 @@ begin
 
       Application.Title := 'Small Commerce';
       Application.CreateForm(TForm1, Form1);
-      Application.CreateForm(TForm2, Form2);
+  	  Application.CreateForm(TForm2, Form2);
       Application.CreateForm(TSenhas, Senhas);
+      //Application.CreateForm(TSenhas2, Senhas2);
       Application.CreateForm(TForm24, Form24);
       Application.CreateForm(TForm30, Form30);
       Application.CreateForm(TForm7, Form7);

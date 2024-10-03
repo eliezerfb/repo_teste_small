@@ -556,6 +556,9 @@
         <DCCReference Include="uFrmIntegracaoItau.pas">
             <Form>FrmIntegracaoItau</Form>
         </DCCReference>
+        <DCCReference Include="uFrmIntegracaoSicoob.pas">
+            <Form>FrmIntegracaoSicoob</Form>
+        </DCCReference>
         <DCCReference Include="units\uMobile.pas"/>
         <DCCReference Include="uPermissaoUsuario.pas"/>
         <DCCReference Include="uFrmCadastro.pas">
@@ -593,9 +596,13 @@
         <DCCReference Include="units\ufrmRelatorioMovItensPeriodo.pas">
             <Form>frmRelatorioMovItensPeriodo</Form>
         </DCCReference>
+        <DCCReference Include="..\..\unit_compartilhada\uChaveCertificado.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\Sicoob\uClassesSicoob.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
-        </BuildConfiguration>
+        </BuildConfiguration> 
         <BuildConfiguration Include="Release">
             <Key>Cfg_1</Key>
             <CfgParent>Base</CfgParent>

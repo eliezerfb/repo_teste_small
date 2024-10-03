@@ -12446,6 +12446,7 @@ object Form7: TForm7
       DisplayWidth = 8
       FieldName = 'AUTORIZACAOTRANSACAO'
       Origin = 'RECEBER.AUTORIZACAOTRANSACAO'
+      Size = 128
     end
     object ibDataSet7BANDEIRA: TIBStringField
       DisplayLabel = 'Bandeira'
