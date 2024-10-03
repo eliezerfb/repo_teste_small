@@ -1741,6 +1741,7 @@ type
     Movimentaodoitemporperodo1: TMenuItem;
     Rankingdeprodutosvendidos1: TMenuItem;
     ibDataSet4IDESTOQUE: TIntegerField;
+    ibDataSet14LISTAR: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -22524,6 +22525,7 @@ begin
   ibDataSet14PISCOFINSLUCRO.AsString  := 'N';
   ibDataSet14REFERENCIANOTA.AsString  := 'N'; //Mauricio Parizotto 2024-06-21
   ibDataSet14IMPOSTOMANUAL.AsString   := 'N'; //Mauricio Parizotto 2024-07-24
+  ibDataSet14LISTAR.AsString          := 'S'; //Mauricio Parizotto 2024-09-27
 end;
 
 procedure TForm7.ibDataSet18NewRecord(DataSet: TDataSet);

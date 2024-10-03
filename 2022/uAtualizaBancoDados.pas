@@ -2867,6 +2867,18 @@ begin
 
   {Mauricio Parizotto 2024-09-09 Fim}
 
+  {Mauricio Parizotto 2024-09-27 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'LISTAR') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ICM ADD LISTAR VARCHAR(1)') then
+    begin
+      ExecutaComando('commit');
+      ExecutaComando('UPDATE ICM set LISTAR = ''S'' ');
+      ExecutaComando('commit');
+    end;
+  end;
+  {Mauricio Parizotto 2024-09-27 Fim}
+
   Form22.Repaint;
 
   try
