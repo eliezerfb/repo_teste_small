@@ -15,12 +15,14 @@ uses
   , Dialogs
   , DB
   , IBQuery
+  , IBX.IBDatabase
   , smallfunc_xe
   , unit7
   ;
 
 procedure DropViewProcedure;
 procedure AtualizaBancoDeDados(sBuild : string);
+procedure RemoveValorLIVRE4(Sigla, sNovoCampo : string; IBTRANSACTION : TIBTransaction); // Mauricio Parizotto 2024-10-01
 // Sandro Silva 2023-09-22  function ExecutaComando(comando:string):Boolean;
 
 implementation
@@ -2879,6 +2881,18 @@ begin
   end;
   {Mauricio Parizotto 2024-09-27 Fim}
 
+  {Mauricio Parizotto 2024-09-30 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'NATUREZA_RECEITA') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ESTOQUE ADD NATUREZA_RECEITA VARCHAR(3)') then
+    begin
+      ExecutaComando('Commit');
+
+      RemoveValorLIVRE4('NR', 'NATUREZA_RECEITA', Form1.ibDataSet200.Transaction);
+    end;
+  end;
+  {Mauricio Parizotto 2024-09-30 Fim}
+  
   Form22.Repaint;
 
   try
@@ -2943,5 +2957,43 @@ begin
   Form22.Repaint;
   Mensagem22('Alteração na estrutura Ok');
 end;
+
+
+procedure RemoveValorLIVRE4(Sigla, sNovoCampo : string; IBTRANSACTION : TIBTransaction); // Mauricio Parizotto 2024-10-01
+var
+  IBQUERY: TIBQuery;
+  sNR, sIdent4 : string;
+begin
+  try
+    IBQUERY := CriaIBQuery(IBTRANSACTION);
+
+    try
+      IBQUERY.Close;
+      IBQUERY.SQL.Text := ' Select'+
+                          '   * '+
+                          ' From ESTOQUE'+
+                          ' Where UPPER(LIVRE4) like ''%'+Sigla+'=%'' ';
+      IBQUERY.Open;
+
+      while not IBQUERY.Eof do
+      begin
+        sIdent4 := UpperCase(IBQUERY.FieldByName('LIVRE4').AsString);
+
+        sNR := ExtrairConfiguracao(sIdent4, Sigla);
+
+        ExecutaComando(' Update ESTOQUE set '+sNovoCampo+' = '+ QuotedStr(Copy(sNR,1,3) )+
+                       '   , LIVRE4 = '+ QuotedStr( StringReplace(  StringReplace(sIdent4,Sigla+'='+sNR,'',[rfReplaceAll]) , ';;',';',[rfReplaceAll] ) )+
+                       ' Where IDESTOQUE = '+IBQUERY.FieldByName('IDESTOQUE').AsString,
+                       IBTRANSACTION);
+
+        IBQUERY.Next;
+      end;
+    finally
+      FreeAndNil(IBQUERY);
+    end;
+  except
+  end;
+end;
+
 
 end.
