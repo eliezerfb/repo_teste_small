@@ -3280,7 +3280,7 @@ end;
 procedure RemoveValorLIVRE4(Sigla, sNovoCampo : string; IBTRANSACTION : TIBTransaction); // Mauricio Parizotto 2024-10-01
 var
   IBQUERY: TIBQuery;
-  sNR, sIdent4 : string;
+  sNR, sIdent4, sNovoIdent4 : string;
 begin
   try
     IBQUERY := CriaIBQuery(IBTRANSACTION);
@@ -3299,8 +3299,18 @@ begin
 
         sNR := ExtrairConfiguracao(sIdent4, Sigla);
 
+        sNovoIdent4 := StringReplace(sIdent4,Sigla+'='+sNR,'',[rfReplaceAll]);
+        sNovoIdent4 := StringReplace(sNovoIdent4, ';;',';',[rfReplaceAll] );
+        sNovoIdent4 := StringReplace(sNovoIdent4, '; ;',';',[rfReplaceAll] );
+
+        if (Copy(sNovoIdent4,1,1) = ';') then
+          Delete(sNovoIdent4,1,1);
+
+        if (Copy(sNovoIdent4,1,1) = ' ') then
+          Delete(sNovoIdent4,1,1);
+
         ExecutaComando(' Update ESTOQUE set '+sNovoCampo+' = '+ QuotedStr(Copy(sNR,1,3) )+
-                       '   , LIVRE4 = '+ QuotedStr( StringReplace(  StringReplace(sIdent4,Sigla+'='+sNR,'',[rfReplaceAll]) , ';;',';',[rfReplaceAll] ) )+
+                       '   , LIVRE4 = '+ QuotedStr(sNovoIdent4)+
                        ' Where IDESTOQUE = '+IBQUERY.FieldByName('IDESTOQUE').AsString,
                        IBTRANSACTION);
 
