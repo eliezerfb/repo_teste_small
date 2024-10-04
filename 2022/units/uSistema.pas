@@ -14,6 +14,7 @@ type
     FCertificadoTipo : string;
     FTema : string;
     FModuloImendes: boolean;
+    FSerial : string;
 
     function GetCertificadoDtVal: TDate;
     procedure SetCertificadoDtVal(const Value: TDate);
@@ -24,11 +25,14 @@ type
 
     function GetModuloImendes: boolean;
     procedure SetModuloImendes(const Value: boolean);
+    function GetSerial: string;
+    procedure SetSerial(const Value: string);
   published
     property CertificadoDtVal: TDate read GetCertificadoDtVal write SetCertificadoDtVal;
     property CertificadoTipo: string read GetCertificadoTipo write SetCertificadoTipo;
     property Tema: string read GetTema write SetTema;
     property ModuloImendes: boolean read GetModuloImendes write SetModuloImendes;
+    property Serial: string read GetSerial write SetSerial;
   public
     class function GetInstance: TSistema;
     class procedure Destroy;
@@ -58,6 +62,16 @@ begin
   Result := FModuloImendes;
 end;
 
+function TSistema.GetSerial: string;
+begin
+  if not Assigned(Sistema) then
+  begin
+    Sistema := TSistema(inherited NewInstance);
+  end;
+
+  Result := FSerial;
+end;
+
 function TSistema.GetTema: string;
 begin
   if not Assigned(Sistema) then
@@ -75,7 +89,6 @@ begin
     FreeAndNil(Sistema);
   end;
 end;
-
 
 procedure TSistema.SetCertificadoDtVal(const Value: TDate);
 begin
@@ -101,6 +114,11 @@ procedure TSistema.SetModuloImendes(const Value: boolean);
 begin
   FModuloImendes := Value;
 end;
+
+procedure TSistema.SetSerial(const Value: string);
+begin
+  FSerial := Value;
+end
 
 procedure TSistema.SetTema(const Value: string);
 begin

@@ -987,8 +987,16 @@ begin
     // THE END;
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet14.Close;
+    {Mauricio Parizotto 2024-09-24 Inicio
     Form7.ibDataSet14.SelectSQL.Clear;
     Form7.ibDataSet14.SelectSQL.Add('select * from ICM where (ISS<>0) or (CFOP=''5933'') or (CFOP=''6933'') order by ISS');
+    }
+    Form7.ibDataSet14.SelectSQL.Text := ' Select * '+
+                                        ' From ICM '+
+                                        ' Where ( (ISS<>0) or (CFOP=''5933'') or (CFOP=''6933'') )'+
+                                        '   and (Coalesce(LISTAR,''S'') = ''S''  or NOME = '+QuotedStr(Form7.ibDAtaSet15OPERACAO.AsString)+')'+
+                                        ' Order by ISS';
+    {Mauricio Parizotto 2024-09-24 Fim}
     Form7.ibDataSet14.Open;
     Form7.ibDataSet14.EnableControls;
 

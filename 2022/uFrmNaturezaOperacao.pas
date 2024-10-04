@@ -91,6 +91,7 @@ type
     _SC: TLabel;
     _RS: TLabel;
     SMALL_DBEditX: TSMALL_DBEdit;
+    DBCheckBox3: TDBCheckBox;
     procedure memObservacaoEnter(Sender: TObject);
     procedure memObservacaoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
