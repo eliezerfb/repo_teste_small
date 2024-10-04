@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -590,6 +590,9 @@
         <DCCReference Include="interfaces\uIRetornaCustoMedio.pas"/>
         <DCCReference Include="units\uRetornaCustoMedio.pas"/>
         <DCCReference Include="units\uEstruturaRelRankingProdutosVendidos.pas"/>
+        <DCCReference Include="units\ufrmRelatorioMovItensPeriodo.pas">
+            <Form>frmRelatorioMovItensPeriodo</Form>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
