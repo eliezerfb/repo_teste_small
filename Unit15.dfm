@@ -805,10 +805,10 @@ object Form15: TForm15
         OnMouseLeave = lblCancelarMouseLeave
       end
       object lblCancelar: TLabel
-        Left = 445
+        Left = 439
         Top = 244
-        Width = 97
-        Height = 19
+        Width = 113
+        Height = 25
         Cursor = crHandPoint
         Alignment = taCenter
         AutoSize = False
@@ -827,10 +827,10 @@ object Form15: TForm15
         OnMouseLeave = lblCancelarMouseLeave
       end
       object lblEntrar: TLabel
-        Left = 564
+        Left = 558
         Top = 244
-        Width = 102
-        Height = 17
+        Width = 113
+        Height = 25
         Cursor = crHandPoint
         Alignment = taCenter
         AutoSize = False
