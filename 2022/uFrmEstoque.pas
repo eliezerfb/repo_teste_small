@@ -3062,14 +3062,20 @@ end;
 procedure TFrmEstoque.btnConsultarTribClick(Sender: TObject);
 begin
   //Mauricio Parizotto 2024-10-04
-  if TSistema.GetInstance.ModuloImendes then
+  if false then
+  //if TSistema.GetInstance.ModuloImendes then
   begin
     ppmTributacao.Popup(FrmEstoque.Left + 28,
                         FrmEstoque.Top + pnlBotoesPosterior.Top + 71);
   end else
   begin
-    if MensagemSistemaPergunta('Plugin não está ativado!'+#13#10+
-                               'Deseja fazer uma simulação?',
+    if MensagemSistemaPergunta('A tributação inteligente é uma nova funcionalidade que pode transformar a gestão do seu negócio,'+
+                               ' preenchendo automaticamente as tributações dos seus produtos.'+#13#10+#13#10+
+                               'Esta função oferece uma série de benefícios que ajudam a otimizar o cadastro de produtos,'+
+                               ' reduzir erros na transmissão de documentos fiscais e garantir que a tributação esteja sempre correta,'+
+                               ' minimizando os riscos de multas.'+#13#10+#13#10+
+                               'Para ter acesso a esse recurso, entre em contato com sua revenda.'+#13#10+#13#10+
+                               'Gostaria de fazer uma simulação das tributações atuais dos seus produtos?',
                                [mb_YesNo]) = mrYes then
     begin
       try
