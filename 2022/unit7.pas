@@ -1744,6 +1744,7 @@ type
     ibDataSet4IDESTOQUE: TIntegerField;
     ibDataSet4NATUREZA_RECEITA: TIBStringField;
     ibDataSet14LISTAR: TIBStringField;
+    ibDataSet14TRIB_INTELIGENTE: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2477,6 +2478,7 @@ type
     procedure Movimentaodoitemporperodo1Click(Sender: TObject);
     procedure Resumodasvendas1Click(Sender: TObject);
     procedure Rankingdeprodutosvendidos1Click(Sender: TObject);
+    procedure ibDataSet14AfterScroll(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -9110,56 +9112,113 @@ begin
       Abort;
     end;
 
-    // Duplo CLICK no ICM configuração
-    if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREIPI' then
+    {$Region'//// Módulo Natureza OP ////'}
+    //Mauricio Parizotto 2024-10-07
+    if (sModulo = 'ICM')
+      and (Form7.ibDataSet14TRIB_INTELIGENTE.AsString <> 'S') then
     begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14SOBREIPI.AsString = 'S') then
-        Form7.ibDataSet14SOBREIPI.AsString := 'N'
-      else
-        Form7.ibDataSet14SOBREIPI.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
-    end;
+      // Duplo CLICK no ICM configuração
+      if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREIPI' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14SOBREIPI.AsString = 'S') then
+          Form7.ibDataSet14SOBREIPI.AsString := 'N'
+        else
+          Form7.ibDataSet14SOBREIPI.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
 
-    //Mauricio Parizotto 2023-03-28
-    if DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI' then
-    begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14FRETESOBREIPI.AsString = 'S') then
-        Form7.ibDataSet14FRETESOBREIPI.AsString := 'N'
-      else
-        Form7.ibDataSet14FRETESOBREIPI.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
-    end;
+      //Mauricio Parizotto 2023-03-28
+      if DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14FRETESOBREIPI.AsString = 'S') then
+          Form7.ibDataSet14FRETESOBREIPI.AsString := 'N'
+        else
+          Form7.ibDataSet14FRETESOBREIPI.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
 
-    //Mauricio Parizotto 2023-03-28
-    if DBGrid1.SelectedField.Name = 'ibDataSet14IPISOBREOUTRA' then
-    begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14IPISOBREOUTRA.AsString = 'S') then
-        Form7.ibDataSet14IPISOBREOUTRA.AsString := 'N'
-      else
-        Form7.ibDataSet14IPISOBREOUTRA.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
-    end;
+      //Mauricio Parizotto 2023-03-28
+      if DBGrid1.SelectedField.Name = 'ibDataSet14IPISOBREOUTRA' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14IPISOBREOUTRA.AsString = 'S') then
+          Form7.ibDataSet14IPISOBREOUTRA.AsString := 'N'
+        else
+          Form7.ibDataSet14IPISOBREOUTRA.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
 
-    if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREFRETE' then
-    begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14SOBREFRETE.AsString = 'S') then
-        Form7.ibDataSet14SOBREFRETE.AsString := 'N'
-      else
-        Form7.ibDataSet14SOBREFRETE.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
+      if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREFRETE' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14SOBREFRETE.AsString = 'S') then
+          Form7.ibDataSet14SOBREFRETE.AsString := 'N'
+        else
+          Form7.ibDataSet14SOBREFRETE.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
+
+      if DBGrid1.SelectedField.Name = 'ibDataSet14SOBRESEGURO' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14SOBRESEGURO.AsString = 'S') then
+          Form7.ibDataSet14SOBRESEGURO.AsString := 'N'
+        else
+          Form7.ibDataSet14SOBRESEGURO.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
+
+      if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14SOBREOUTRAS.AsString = 'S') then
+          Form7.ibDataSet14SOBREOUTRAS.AsString := 'N'
+        else
+          Form7.ibDataSet14SOBREOUTRAS.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
+
+      //Mauricio Parizotto 2024-06-21
+      if DBGrid1.SelectedField.Name = 'ibDataSet14REFERENCIANOTA' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14REFERENCIANOTA.AsString = 'S') then
+          Form7.ibDataSet14REFERENCIANOTA.AsString := 'N'
+        else
+          Form7.ibDataSet14REFERENCIANOTA.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
+
+      //Mauricio Parizotto 2024-06-21
+      if DBGrid1.SelectedField.Name = 'ibDataSet14IMPOSTOMANUAL' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S') then
+          Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'N'
+        else
+          Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
     end;
+    {$Endregion}
 
     //Mauricio Parizotto 2024-05-27
     if DBGrid1.SelectedField.Name = 'ibDataSet11PIXESTATICO' then
@@ -9175,55 +9234,6 @@ begin
       Abort;
     end;
 
-    if DBGrid1.SelectedField.Name = 'ibDataSet14SOBRESEGURO' then
-    begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14SOBRESEGURO.AsString = 'S') then
-        Form7.ibDataSet14SOBRESEGURO.AsString := 'N'
-      else
-        Form7.ibDataSet14SOBRESEGURO.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
-    end;
-
-    if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS' then
-    begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14SOBREOUTRAS.AsString = 'S') then
-        Form7.ibDataSet14SOBREOUTRAS.AsString := 'N'
-      else
-        Form7.ibDataSet14SOBREOUTRAS.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
-    end;
-
-    //Mauricio Parizotto 2024-06-21
-    if DBGrid1.SelectedField.Name = 'ibDataSet14REFERENCIANOTA' then
-    begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14REFERENCIANOTA.AsString = 'S') then
-        Form7.ibDataSet14REFERENCIANOTA.AsString := 'N'
-      else
-        Form7.ibDataSet14REFERENCIANOTA.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
-    end;
-
-    //Mauricio Parizotto 2024-06-21
-    if DBGrid1.SelectedField.Name = 'ibDataSet14IMPOSTOMANUAL' then
-    begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S') then
-        Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'N'
-      else
-        Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
-    end;
 
     // --------------------------------------------------------------------------------- //
     // duplo clique no CGC                                                               //
@@ -11264,7 +11274,8 @@ begin
         if not Form7.bSoLeitura then
         begin
           Form7.Image308.Visible   := False;
-          Form7.imgLibBloq.Visible := True; Form7.Label208.Caption  := 'Liberar';
+          Form7.imgLibBloq.Visible := True;
+          Form7.Label208.Caption  := 'Liberar';
           Form7.Label208.Visible   := True;
         end;
         if (sModulo = 'NOTA') or (sModulo = 'CONCILIACAO') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO') then
@@ -15981,11 +15992,26 @@ begin
   AgendaCommit(True);
 end;
 
+procedure TForm7.ibDataSet14AfterScroll(DataSet: TDataSet);
+begin
+  //Mauricio Parizotto 2024-10-07
+  Form7.DBGrid1.ReadOnly := ibDataSet14TRIB_INTELIGENTE.AsString = 'S';
+end;
+
 procedure TForm7.ibDataSet14BeforeDelete(DataSet: TDataSet);
 var
   sApagar : String;
 begin
   sNomeAnterior := Form7.ibDataSet14NOME.AsString;
+
+  //Mauricio Parizotto 2024-10-07
+  if Form7.ibDataSet14TRIB_INTELIGENTE.AsString = 'S' then
+  begin
+    MensagemSistema('Registro criado pela tributação inteligente não pode ser apagado.',
+                    msgAtencao);
+    Abort;
+  end;
+
 
   if AllTrim(Form7.ibDataSet14NOME.AsString) <> '' then
   begin
@@ -16006,10 +16032,8 @@ begin
     end;
     Screen.Cursor := crDefault; // Cursor de Aguardo
     ibDataSet15.EnableControls;
-    //
-    ibDataSet24.DisableControls;
 
-    //LogRetaguarda('ibDataSet24.DisableControls; 16549'); // Sandro Silva 2023-11-27
+    ibDataSet24.DisableControls;
 
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     // Procura e altera o novo nome no Arquivo de VENDAS//
@@ -16026,13 +16050,11 @@ begin
     Screen.Cursor := crDefault; // Cursor de Aguardo
     ibDataSet24.EnableControls;
 
-    //LogRetaguarda('ibDataSet24.EnableControls; 16567'); // Sandro Silva 2023-11-27
 
     if Length(sApagar) <> 85 then
     begin
       sApagar := sApagar + Chr(10) + Chr(10) + 'Portanto não pode ser apagado.' + Chr(10)
                                              + Chr(10);
-      //ShowMessage(sApagar); Mauricio Parizotto 2023-10-25
       MensagemSistema(sApagar);
       Abort;
     end;
@@ -16573,10 +16595,10 @@ begin
       if (Assigned(FrmNaturezaOperacao)) and (FrmNaturezaOperacao.Showing) then
       begin
         // Quando a tela de cadastro estiver aberta
-        FrmNaturezaOperacao.SMALL_DBEdit57.Text := EmptyStr;
+        FrmNaturezaOperacao.edtCIT.Text := EmptyStr;
         Form7.ibDataSet14.Post;
         Form7.ibDataSet14.Edit;
-        FrmNaturezaOperacao.SMALL_DBEdit57.SetFocus;
+        FrmNaturezaOperacao.edtCIT.SetFocus;
       end
       else
       begin

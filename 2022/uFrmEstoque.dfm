@@ -6,25 +6,8 @@ inherited FrmEstoque: TFrmEstoque
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
-    inherited pnlBotoesSuperior: TPanel
-      ExplicitWidth = 842
-    end
-    inherited pnlBotoesPosterior: TPanel
-      inherited btnOK: TBitBtn
-        ExplicitLeft = 723
-      end
-    end
-    inherited Panel1: TPanel
-      ExplicitHeight = 453
-    end
-    inherited Panel8: TPanel
-      ExplicitLeft = 822
-      ExplicitHeight = 453
-    end
     inherited pgcFicha: TPageControl
-      ActivePage = tbsIPI
-      ExplicitWidth = 802
-      ExplicitHeight = 453
+      ActivePage = tbsCadastro
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         OnShow = tbsCadastroShow
@@ -3277,7 +3260,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 17
           Top = 45
           Width = 213
-          Height = 22
+          Height = 19
           Color = clWhite
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -3295,7 +3278,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 229
           Top = 45
           Width = 89
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3314,7 +3297,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 405
           Top = 45
           Width = 89
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3333,7 +3316,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 317
           Top = 45
           Width = 89
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3352,7 +3335,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 493
           Top = 45
           Width = 89
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3371,7 +3354,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 581
           Top = 45
           Width = 89
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3390,7 +3373,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 669
           Top = 45
           Width = 106
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3568,7 +3551,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 17
           Top = 23
           Width = 634
-          Height = 22
+          Height = 19
           BevelInner = bvNone
           Color = clWhite
           Ctl3D = False
@@ -3588,7 +3571,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 650
           Top = 23
           Width = 125
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False

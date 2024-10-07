@@ -142,7 +142,11 @@ begin
   {----------------------------------------------}
   {Mensagem esperta, que retorna o valor do botão}
   {----------------------------------------------}
-  if ((Form7.sModulo <> 'VENDA') and (Form7.sModulo = 'ORCAMENTO')) then bButton := Application.MessageBox(PChar(_cMensagemExcluir), PChar(_cTituloMsg), MB_ICONQUESTION + MB_OKCANCEL + MB_DEFBUTTON1) else bButton := IDOK;
+  if ((Form7.sModulo <> 'VENDA') and (Form7.sModulo = 'ORCAMENTO')) then
+    bButton := Application.MessageBox(PChar(_cMensagemExcluir), PChar(_cTituloMsg), MB_ICONQUESTION + MB_OKCANCEL + MB_DEFBUTTON1)
+  else
+    bButton := IDOK;
+
   if bButton = IDOK then
   begin
     try
