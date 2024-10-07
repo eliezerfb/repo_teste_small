@@ -3092,8 +3092,7 @@ begin
                 begin
                   if (_59.CodigoRetornoSAT <> '08000') then
                   begin
-                    Form22.Label6.Caption := _59.MensagemSat;
-                    Form22.Label6.Repaint;
+                    Form22.Mensagem := _59.MensagemSat;
                   end;
                 end
                 else
@@ -3450,8 +3449,7 @@ begin
 
     if (_59.AssinaturaAssociada = '') then
     begin
-      Form22.Label6.Caption := 'Aguarde! Obtendo a Assinatura Associada....';
-      Form22.Label6.Repaint;
+      Form22.Mensagem := 'Aguarde! Obtendo a Assinatura Associada....';
 
       sResposta := Form1.GetAssinaturaHttpPost(StrTran(Form22.sSerie, 'Número de série: ', ''), _59.Emitente.CNPJ, _59.Fabricante, _59.NumeroSerieSAT);
 
@@ -3487,14 +3485,12 @@ begin
           and (_59.CodigoAtivacao <> '') then
         begin
 
-          Form22.Label6.Caption := 'Aguarde! Ativando SAT....';
-          Form22.Label6.Repaint;
+          Form22.Mensagem := 'Aguarde! Ativando SAT....';
 
           if _ecf59_AtivarSat(_59.CodigoAtivacao, _59.Emitente.CNPJ, _59.Emitente.UF) then
           begin
 
-            Form22.Label6.Caption := 'Aguarde! Associando Assinatura do Contribuinte + Software House....';
-            Form22.Label6.Repaint;
+            Form22.Mensagem := 'Aguarde! Associando Assinatura do Contribuinte + Software House....';
 
           end
           else
@@ -3555,8 +3551,7 @@ begin
   //ShowMessage('Teste 01 4988'); // Sandro Silva 2018-11-19
       if Form1.bBalancaAutonoma = False then // Sandro Silva 2019-01-23
       begin
-        Form22.Label6.Caption := 'Aguarde! Verificando a disponibilidade dos serviços ' + _ecf59_Tipodaimpressora(True) + '....';
-        Form22.Label6.Repaint;
+        Form22.Mensagem := 'Aguarde! Verificando a disponibilidade dos serviços ' + _ecf59_Tipodaimpressora(True) + '....';
       end;
 
     end;

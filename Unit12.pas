@@ -89,7 +89,7 @@ begin
   if Form12.Label1.Caption = 'Senha do usuário' then
   begin
     //
-    Form15.Senha.Text := Edit1.Text;
+    Form15.edtSenha.Text := Edit1.Text;
     //
   end;
 

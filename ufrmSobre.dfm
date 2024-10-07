@@ -5,7 +5,7 @@ object frmSobre: TfrmSobre
   BorderStyle = bsNone
   ClientHeight = 641
   ClientWidth = 1055
-  Color = clWindow
+  Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -13,6 +13,7 @@ object frmSobre: TfrmSobre
   Font.Style = []
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnKeyUp = FormKeyUp
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 15
@@ -23,7 +24,7 @@ object frmSobre: TfrmSobre
     Height = 641
     Align = alClient
     BevelOuter = bvNone
-    Color = 16053492
+    Color = clWhite
     Ctl3D = False
     ParentBackground = False
     ParentCtl3D = False

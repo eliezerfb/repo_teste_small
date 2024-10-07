@@ -587,7 +587,7 @@ begin
 //      ShowMessage('EPSON '+Chr(10)+'Testando COM'+StrZero(I,1,0));
       EPSON_Serial_Fechar_Porta();
       EPSON_Serial_Abrir_Porta(iBPS,I);
-      if Form22.Label6.Caption = 'Detectando porta de comunicação...' then
+      if Form22.Mensagem = 'Detectando porta de comunicação...' then
         EPSON_NaoFiscal_Fechar_Relatorio_Gerencial(True);
       if Length(_ecf15_Dataehoradaimpressora(True)) <> 12 then
         iRetorno := 99
@@ -610,7 +610,7 @@ begin
 
   //Timer3 := Time;
   //
-  if Form22.Label6.Caption = 'Detectando porta de comunicação...' then
+  if Form22.Mensagem = 'Detectando porta de comunicação...' then
   begin
     //
     szDados := AnsiString(StringOfChar(' ', 15));

@@ -11238,8 +11238,7 @@ begin
 
     if LerParametroIni('FRENTE.INI', 'NFCE', 'BUILD', '') <> sBuildNFCe_Setup then
     begin
-      Form22.Label6.Caption := 'Instalando dependências para NFC-e';
-      Form22.Label6.Repaint;
+      Form22.Mensagem := 'Instalando dependências para NFC-e';
 
       ShellExecute( 0, 'Open', 'nfce_setup.exe', ' /verysilent', '', SW_HIDE);
       while ConsultaProcesso('nfce_setup.exe') do
@@ -11248,9 +11247,6 @@ begin
       end;
 
       GravarParametroIni('FRENTE.INI', 'NFCE', 'BUILD', sBuildNFCe_Setup);
-
-      Form22.Label6.Caption := '';
-      Form22.Label6.Repaint;
     end;
   end;
   {Sandro Silva 2024-08-23 fim}

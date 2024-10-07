@@ -939,7 +939,7 @@ begin
   // Daruma_FI_AbrePortaSerial
   //
   //
-  if Form22.Label6.Caption = 'Detectando porta de comunicação...' then
+  if Form22.Mensagem = 'Detectando porta de comunicação...' then
   begin
     //
     _ecf03.Daruma_Registry_Porta(AnsiString(pP1)); // Sandro Silva 2023-12-13 _ecf03.Daruma_Registry_Porta(pchar(pP1));

@@ -21,6 +21,7 @@ type
     procedure lblOKClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
   public
   end;
@@ -36,6 +37,13 @@ procedure TfrmSobre.FormCreate(Sender: TObject);
 begin
   pnlCarregamento.Visible := False;
   redtSobre.Width    := 623;
+end;
+
+procedure TfrmSobre.FormKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if key = VK_ESCAPE then
+    Close;
 end;
 
 procedure TfrmSobre.FormResize(Sender: TObject);
