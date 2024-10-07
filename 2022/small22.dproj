@@ -326,13 +326,13 @@
         <DCCReference Include="interfaces\uIChamaRelatorioCommerceFactory.pas"/>
         <DCCReference Include="units\uChamaRelatorioCommerceFactory.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uSmallEnumerados.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uArquivosDAT.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uArquivoDATINFPadrao.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uEstoqueDAT.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uFrenteINI.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uSectionDATPadrao.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uSmallComINF.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uUsuarioINF.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uArquivosDAT.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uArquivoDATINFPadrao.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uEstoqueDAT.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteINI.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uSectionDATPadrao.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uSmallComINF.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uUsuarioINF.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\interfaces\uIAssinaturaDigital.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uAssinaturaDigital.pas"/>
         <DCCReference Include="interfaces\uIEstruturaRelVendasPorCliente.pas"/>
@@ -344,8 +344,8 @@
         <DCCReference Include="units\uRetornaOperacoesRelatorio.pas"/>
         <DCCReference Include="units\uFiltrosRodapeRelatorioVendasClienteNota.pas"/>
         <DCCReference Include="units\uFiltrosRodapeRelatorioVendasClienteCupom.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uNFeINI.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uNFSeINI.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uNFeINI.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uNFSeINI.pas"/>
         <DCCReference Include="units\uRelatorioCatalogoProdudos.pas">
             <Form>frmRelatorioCatalogoProduto</Form>
         </DCCReference>
@@ -406,12 +406,12 @@
         <DCCReference Include="units\uDuplicaProduto.pas"/>
         <DCCReference Include="interfaces\uIDuplicaOrcamento.pas"/>
         <DCCReference Include="units\uDuplicaOrcamento.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uFrenteSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uNFeSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uNFSeSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uNFeSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uNFSeSections.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uSmallComSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uEstoqueSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uUsuarioSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uEstoqueSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uUsuarioSections.pas"/>
         <DCCReference Include="uFrmProdutosDevolucao.pas">
             <Form>FrmProdutosDevolucao</Form>
         </DCCReference>
@@ -452,8 +452,8 @@
         <DCCReference Include="uFrmNaturezaOperacao.pas">
             <Form>FrmNaturezaOperacao</Form>
         </DCCReference>
-        <DCCReference Include="..\..\unit_compartilhada\uConfSisBD.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uOSSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uConfSisBD.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uOSSections.pas"/>
         <DCCReference Include="uFrmSituacaoOS.pas">
             <Form>FrmSituacaoOS</Form>
         </DCCReference>
@@ -462,7 +462,7 @@
         <DCCReference Include="uFrmAnexosOS.pas">
             <Form>FrmAnexosOS</Form>
         </DCCReference>
-        <DCCReference Include="..\..\unit_compartilhada\uOutrasSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uOutrasSections.pas"/>
         <DCCReference Include="units\uRelatorioTotalGeralVenda.pas">
             <Form>frmRelTotalizadorGeralVenda</Form>
         </DCCReference>
@@ -546,7 +546,7 @@
         <DCCReference Include="uFrmContaBancaria.pas">
             <Form>FrmContaBancaria</Form>
         </DCCReference>
-        <DCCReference Include="..\..\unit_compartilhada\uImpressoraSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uImpressoraSections.pas"/>
         <DCCReference Include="uFrmContaReceber.pas">
             <Form>FrmContaReceber</Form>
         </DCCReference>
@@ -565,7 +565,7 @@
         <DCCReference Include="uFrmTecnico.pas">
             <Form>FrmTecnico</Form>
         </DCCReference>
-        <DCCReference Include="..\..\unit_compartilhada\uCarneSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uCarneSections.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uTypesImpressao.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\Itau\uIntegracaoItau.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\Itau\uClassesItau.pas"/>
@@ -590,6 +590,11 @@
         <DCCReference Include="interfaces\uIRetornaCustoMedio.pas"/>
         <DCCReference Include="units\uRetornaCustoMedio.pas"/>
         <DCCReference Include="units\uEstruturaRelRankingProdutosVendidos.pas"/>
+        <DCCReference Include="units\ufrmRelatorioMovItensPeriodo.pas">
+            <Form>frmRelatorioMovItensPeriodo</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uIMendesSections.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

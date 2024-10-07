@@ -109,13 +109,13 @@ uses
   uIChamaRelatorioCommerceFactory in 'interfaces\uIChamaRelatorioCommerceFactory.pas',
   uChamaRelatorioCommerceFactory in 'units\uChamaRelatorioCommerceFactory.pas',
   uSmallEnumerados in '..\..\unit_compartilhada\uSmallEnumerados.pas',
-  uArquivosDAT in '..\..\unit_compartilhada\uArquivosDAT.pas',
-  uArquivoDATINFPadrao in '..\..\unit_compartilhada\uArquivoDATINFPadrao.pas',
-  uEstoqueDAT in '..\..\unit_compartilhada\uEstoqueDAT.pas',
-  uFrenteINI in '..\..\unit_compartilhada\uFrenteINI.pas',
-  uSectionDATPadrao in '..\..\unit_compartilhada\uSectionDATPadrao.pas',
-  uSmallComINF in '..\..\unit_compartilhada\uSmallComINF.pas',
-  uUsuarioINF in '..\..\unit_compartilhada\uUsuarioINF.pas',
+  uArquivosDAT in '..\..\unit_compartilhada\DAT\uArquivosDAT.pas',
+  uArquivoDATINFPadrao in '..\..\unit_compartilhada\DAT\uArquivoDATINFPadrao.pas',
+  uEstoqueDAT in '..\..\unit_compartilhada\DAT\uEstoqueDAT.pas',
+  uFrenteINI in '..\..\unit_compartilhada\DAT\uFrenteINI.pas',
+  uSectionDATPadrao in '..\..\unit_compartilhada\DAT\uSectionDATPadrao.pas',
+  uSmallComINF in '..\..\unit_compartilhada\DAT\uSmallComINF.pas',
+  uUsuarioINF in '..\..\unit_compartilhada\DAT\uUsuarioINF.pas',
   uIAssinaturaDigital in '..\..\unit_compartilhada\interfaces\uIAssinaturaDigital.pas',
   uAssinaturaDigital in '..\..\unit_compartilhada\uAssinaturaDigital.pas',
   uIEstruturaRelVendasPorCliente in 'interfaces\uIEstruturaRelVendasPorCliente.pas',
@@ -127,8 +127,8 @@ uses
   uRetornaOperacoesRelatorio in 'units\uRetornaOperacoesRelatorio.pas',
   uFiltrosRodapeRelatorioVendasClienteNota in 'units\uFiltrosRodapeRelatorioVendasClienteNota.pas',
   uFiltrosRodapeRelatorioVendasClienteCupom in 'units\uFiltrosRodapeRelatorioVendasClienteCupom.pas',
-  uNFeINI in '..\..\unit_compartilhada\uNFeINI.pas',
-  uNFSeINI in '..\..\unit_compartilhada\uNFSeINI.pas',
+  uNFeINI in '..\..\unit_compartilhada\DAT\uNFeINI.pas',
+  uNFSeINI in '..\..\unit_compartilhada\DAT\uNFSeINI.pas',
   uRelatorioCatalogoProdudos in 'units\uRelatorioCatalogoProdudos.pas' {frmRelatorioCatalogoProduto},
   uEstruturaRelCatalogoProdutos in 'units\uEstruturaRelCatalogoProdutos.pas',
   uFiltrosRodapeRelatorioCatalogoProdutos in 'units\uFiltrosRodapeRelatorioCatalogoProdutos.pas',
@@ -174,12 +174,12 @@ uses
   uDuplicaProduto in 'units\uDuplicaProduto.pas',
   uIDuplicaOrcamento in 'interfaces\uIDuplicaOrcamento.pas',
   uDuplicaOrcamento in 'units\uDuplicaOrcamento.pas',
-  uFrenteSections in '..\..\unit_compartilhada\uFrenteSections.pas',
-  uNFeSections in '..\..\unit_compartilhada\uNFeSections.pas',
-  uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',
+  uFrenteSections in '..\..\unit_compartilhada\DAT\uFrenteSections.pas',
+  uNFeSections in '..\..\unit_compartilhada\DAT\uNFeSections.pas',
+  uNFSeSections in '..\..\unit_compartilhada\DAT\uNFSeSections.pas',
   uSmallComSections in '..\..\unit_compartilhada\uSmallComSections.pas',
-  uEstoqueSections in '..\..\unit_compartilhada\uEstoqueSections.pas',
-  uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas',
+  uEstoqueSections in '..\..\unit_compartilhada\DAT\uEstoqueSections.pas',
+  uUsuarioSections in '..\..\unit_compartilhada\DAT\uUsuarioSections.pas',
   uFrmProdutosDevolucao in 'uFrmProdutosDevolucao.pas' {FrmProdutosDevolucao},
   uFrmSmallImput in 'uFrmSmallImput.pas' {FrmSmallImput},
   uFrmGridPesquisaPadrao in 'uFrmGridPesquisaPadrao.pas' {FrmGridPesquisaPadrao},
@@ -200,13 +200,13 @@ uses
   uRaterioDiferencaEntreParcelasReceber in 'uRaterioDiferencaEntreParcelasReceber.pas',
   uFrmPerfilTributacao in 'uFrmPerfilTributacao.pas' {FrmPerfilTributacao},
   uFrmNaturezaOperacao in 'uFrmNaturezaOperacao.pas' {FrmNaturezaOperacao},
-  uConfSisBD in '..\..\unit_compartilhada\uConfSisBD.pas',
-  uOSSections in '..\..\unit_compartilhada\uOSSections.pas',
+  uConfSisBD in '..\..\unit_compartilhada\DAT\uConfSisBD.pas',
+  uOSSections in '..\..\unit_compartilhada\DAT\uOSSections.pas',
   uFrmSituacaoOS in 'uFrmSituacaoOS.pas' {FrmSituacaoOS},
   uOrdemServico in 'units\uOrdemServico.pas',
   uFuncaoMD5 in '..\..\unit_compartilhada\uFuncaoMD5.pas',
   uFrmAnexosOS in 'uFrmAnexosOS.pas' {FrmAnexosOS},
-  uOutrasSections in '..\..\unit_compartilhada\uOutrasSections.pas',
+  uOutrasSections in '..\..\unit_compartilhada\DAT\uOutrasSections.pas',
   uRelatorioTotalGeralVenda in 'units\uRelatorioTotalGeralVenda.pas' {frmRelTotalizadorGeralVenda},
   uIGeraRelatorioTotalizadorGeralVenda in 'interfaces\uIGeraRelatorioTotalizadorGeralVenda.pas',
   uGeraRelatorioTotalizadorGeralVenda in 'units\uGeraRelatorioTotalizadorGeralVenda.pas',
@@ -250,16 +250,16 @@ uses
   uFrmPlanoContas in 'uFrmPlanoContas.pas' {FrmPlanoContas},
   uFrmBanco in 'uFrmBanco.pas' {FrmBanco},
   uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria},
-  uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas',
+  uImpressoraSections in '..\..\unit_compartilhada\DAT\uImpressoraSections.pas',
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
-  uFrmContaPagar in 'uFrmContaPagar.pas', {FrmContaPagar}
+  uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
   uFrmIntegracaoItau in 'uFrmIntegracaoItau.pas' {FrmIntegracaoItau},
   uMobile in 'units\uMobile.pas',
   uPermissaoUsuario in 'uPermissaoUsuario.pas',
   uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro},
   uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
   uFrmTecnico in 'uFrmTecnico.pas' {FrmTecnico},
-  uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas',
+  uCarneSections in '..\..\unit_compartilhada\DAT\uCarneSections.pas',
   uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas',
   uIntegracaoItau in '..\..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\..\unit_compartilhada\Itau\uClassesItau.pas',
@@ -273,7 +273,9 @@ uses
   uIRetornaCustoMedio in 'interfaces\uIRetornaCustoMedio.pas',
   uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas',
   uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas',
-  ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo};
+  ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo},
+  uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
+  uIMendesSections in '..\..\unit_compartilhada\DAT\uIMendesSections.pas';
 
 {$R *.RES}
 
@@ -337,43 +339,43 @@ begin
 
       Application.Title := 'Small Commerce';
       Application.CreateForm(TForm1, Form1);
-      Application.CreateForm(TForm2, Form2);
-      Application.CreateForm(TSenhas, Senhas);
-      Application.CreateForm(TForm24, Form24);
-      Application.CreateForm(TForm30, Form30);
-      Application.CreateForm(TForm7, Form7);
-      Application.CreateForm(TForm9, Form9);
-      Application.CreateForm(TForm14, Form14);
-      Application.CreateForm(TForm19, Form19);
-      Application.CreateForm(TForm12, Form12);
-      Application.CreateForm(TForm48, Form48);
-      Application.CreateForm(TForm16, Form16);
-      Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
-      Application.CreateForm(TForm21, Form21);
-      Application.CreateForm(TForm25, Form25);
-      Application.CreateForm(TForm26, Form26);
-      Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
-      Application.CreateForm(TForm31, Form31);
-      Application.CreateForm(TForm38, Form38);
-      Application.CreateForm(TForm39, Form39);
-      Application.CreateForm(TForm41, Form41);
-      Application.CreateForm(TForm43, Form43);
-      Application.CreateForm(TForm4, Form4);
-      Application.CreateForm(TForm13, Form13);
-      Application.CreateForm(TForm40, Form40);
-      Application.CreateForm(TForm15, Form15);
-      Application.CreateForm(TForm35, Form35);
-      Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
-      Application.CreateForm(TForm6, Form6);
-      Application.CreateForm(TForm11, Form11);
-      Application.CreateForm(TForm36, Form36);
-      Application.CreateForm(TForm5, Form5);
-      Application.CreateForm(TForm29, Form29);
-      Application.CreateForm(TForm45, Form45);
-      Application.CreateForm(TForm37, Form37);
-      Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
-      Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
-      Application.Run;
+  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TSenhas, Senhas);
+  Application.CreateForm(TForm24, Form24);
+  Application.CreateForm(TForm30, Form30);
+  Application.CreateForm(TForm7, Form7);
+  Application.CreateForm(TForm9, Form9);
+  Application.CreateForm(TForm14, Form14);
+  Application.CreateForm(TForm19, Form19);
+  Application.CreateForm(TForm12, Form12);
+  Application.CreateForm(TForm48, Form48);
+  Application.CreateForm(TForm16, Form16);
+  Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
+  Application.CreateForm(TForm21, Form21);
+  Application.CreateForm(TForm25, Form25);
+  Application.CreateForm(TForm26, Form26);
+  Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
+  Application.CreateForm(TForm31, Form31);
+  Application.CreateForm(TForm38, Form38);
+  Application.CreateForm(TForm39, Form39);
+  Application.CreateForm(TForm41, Form41);
+  Application.CreateForm(TForm43, Form43);
+  Application.CreateForm(TForm4, Form4);
+  Application.CreateForm(TForm13, Form13);
+  Application.CreateForm(TForm40, Form40);
+  Application.CreateForm(TForm15, Form15);
+  Application.CreateForm(TForm35, Form35);
+  Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
+  Application.CreateForm(TForm6, Form6);
+  Application.CreateForm(TForm11, Form11);
+  Application.CreateForm(TForm36, Form36);
+  Application.CreateForm(TForm5, Form5);
+  Application.CreateForm(TForm29, Form29);
+  Application.CreateForm(TForm45, Form45);
+  Application.CreateForm(TForm37, Form37);
+  Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
+  Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
+  Application.Run;
     end else
     begin
       if not IsWindowVisible(oHwnd) then PostMessage(oHwnd, wm_User,0,0);

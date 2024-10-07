@@ -2484,6 +2484,7 @@ type
     FbImportandoXML: Boolean;
     iOSQtdEtiqueta : integer;
     sOSEtiqueta : string;
+    FoGerandoPDFs: Boolean;
     { Private declarations }
     // cTotalvFCPST: Currency; // Sandro Silva 2023-04-11
     // function ImportaNF(pP1: boolean; sP1: String):Boolean;
@@ -2787,7 +2788,8 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmEstoque
   , uVisualizaCadastro
   , ufrmRelatorioMovItensPeriodo
-  , ufrmRelatorioNotasFaltantes;
+  , ufrmRelatorioNotasFaltantes
+  , uFrmTelaProcessamento;
 
 {$R *.DFM}
 
@@ -10809,6 +10811,8 @@ var
 begin
   tInicio               := Time;
 
+  FoGerandoPDFs := False;
+
   {$Region'/// Ajustes de Layout ////'}
   Form1.Panel4.Visible  := True;
   FbDuplicandoProd      := False;
@@ -12133,7 +12137,7 @@ var
   Mais1ini : tIniFile;
   CampoPK   : string;
 begin
-
+  FoGerandoPDFs := False;
   sNumeroAnterior14 := EmptyStr;
   sNomeAnterior14   := EmptyStr;
   FbClicouModulo := False;
@@ -26524,11 +26528,21 @@ procedure TForm7.ExportarNFesfiltradasemarquivoPDF1Click(Sender: TObject);
 var
   cDirectory, cLote, cNomePDF : string;
   nRecNo, nCount: Integer;
+  slLog: TStringList;
+  cFormato: String;
+  FbTemFalha: Boolean;
+  cNomeArquivoLog: String;
 begin
+  FbTemFalha := False;
+  cNomeArquivoLog := ExtractFilePath(Application.ExeName)+ '\LOG\log_exporta_pdf.txt';
+
   SelectDirectory('Selecione a pasta para salvar o(s) PDF', '', cDirectory);
   if AllTrim(cDirectory) <> EmptyStr then
   begin
+    FoGerandoPDFs := True;
+    MostraTelaProcessamento('Exportando PDFs');
     try
+      Form1.Refresh;
       nCount := 0;
       cDirectory := cDirectory + '\PDF';
       ExcluirPasta(cDirectory);
@@ -26536,61 +26550,107 @@ begin
       CreateDir(cDirectory);
       Sleep(100);
 
-      ConfiguraNFE;
-
       nRecNo := Form7.ibDataSet15.RecNo;
       Form7.ibDataSet15.DisableControls;
-      try
-        Screen.Cursor := crHourGlass;
-        Form7.ibDataSet15.First;
-        while not Form7.ibDataSet15.Eof do
+      slLog := TStringList.Create;
+      slLog.Add('Não foi possível exportar o arquivo PDF das seguintes notas:');
+      slLog.Add(EmptyStr);
+
+      ConfiguraNFE;
+      Screen.Cursor := crHourGlass;
+      Form7.ibDataSet15.First;
+      while not Form7.ibDataSet15.Eof do
+      begin
+        if not FoGerandoPDFs then
         begin
+          MensagemSistema('Exportação de PDFs cancelada pelo usuário.');
+          ExcluirPasta(cDirectory);
+          Abort;
+        end;
+        try
           if Form7.ibDataSet15NFEID.AsString <> EmptyStr then
           begin
-            if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
+            if (Alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) <> '') then
             begin
-              MensagemSistema('Recuperando XML da pasta \log');
-              Form7.ibDataSet15.Edit;
-              Form7.ibDataSet15NFEXML.AsString := LoadXmlDestinatarioSaida(Form7.ibDataSet15NFEID.AsString);
-              Form7.ibDataSet15.Post;
-            end;
+              if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
+              begin
+                Form7.ibDataSet15.Edit;
+                Form7.ibDataSet15NFEXML.AsString := LoadXmlDestinatarioSaida(Form7.ibDataSet15NFEID.AsString);
+                Form7.ibDataSet15.Post;
+              end;
 
-            fNFE :=  Form7.ibDataSet15NFEXML.AsString;
+              fNFE :=  Form7.ibDataSet15NFEXML.AsString;
 
-            if fNFE <> EmptyStr then
-            begin
-              cNomePDF := Form7.ibDataSet15NFEID.AsString;
+              if (Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) <> 0) or (Form7.ibDataSet15EMITIDA.AsString = 'X') then
+              begin
+                cFormato := Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm';
+                if Form7.ibDataSet15EMITIDA.AsString = 'X' then
+                begin
+                  cFormato := Form7.spdNFe.DanfeSettings.ModeloRetratoCancelamento;
+                end;
 
-              if (Pos('>Cancelamento</descEvento>', Form7.ibDataSet15NFEXML.AsString) <> 0) then
-                cNomePDF := cNomePDF + '-caneve.pdf'
-              else
-                cNomePDF := cNomePDF + '-nfe.pdf';
+                if fNFE <> EmptyStr then
+                begin
+                  cNomePDF := Form7.ibDataSet15NFEID.AsString;
 
-              spdNFe.ExportarDanfe(cLote, fNFE, Form1.sAtual + '\nfe\Templates\vm60\danfe\'+Form7.sFormatoDoDanfe+'.rtm',1, cDirectory +'\'+cNomePDF);
-              Inc(nCount);
+                  if (Pos('>Cancelamento</descEvento>', Form7.ibDataSet15NFEXML.AsString) <> 0) then
+                    cNomePDF := cNomePDF + '-caneve.pdf'
+                  else
+                    cNomePDF := cNomePDF + '-nfe.pdf';
+
+                  spdNFe.ExportarDanfe(cLote, fNFE, cFormato,1, cDirectory +'\'+cNomePDF);
+                  Inc(nCount);
+                end;
+              end;
             end;
           end;
-          Form7.ibDataSet15.Next;
+        except
+          on E: exception do
+          begin
+            FbTemFalha := True;
+            slLog.Add(Copy(Form7.ibDataSet15NUMERONF.AsString,1,9) + '/' + Copy(Form7.ibDataSet15NUMERONF.AsString,10,3));
+          end;
         end;
-      finally
-        Screen.Cursor := crDefault;
-        Form7.ibDataSet15.RecNo := nRecNo;
-        Form7.ibDataSet15.EnableControls;
+
+        Form7.ibDataSet15.Next;
+      end;
+    finally
+      Screen.Cursor := crDefault;
+      Form7.ibDataSet15.RecNo := nRecNo;
+      Form7.ibDataSet15.EnableControls;
+
+      if FoGerandoPDFs then
+      begin
+        if FbTemFalha then
+        begin
+          if not DirectoryExists(ExtractFilePath(Application.ExeName)+ '\LOG') then
+            CreateDir(ExtractFilePath(Application.ExeName)+ '\LOG');
+
+          if (slLog.Count > 1) and (DirectoryExists(cNomeArquivoLog)) then
+            slLog.SaveToFile(cNomeArquivoLog);
+        end;
+
+        FechaTelaProcessamento;
+
+        if nCount >= 1 then
+        begin
+          if nCount > 1 then
+            MensagemSistema('Foram gerados ' + nCount.ToString + ' PDFs na pasta ' + cDirectory + '.')
+          else
+            MensagemSistema('Foi gerado ' + nCount.ToString + ' PDF na pasta ' + cDirectory + '.');
+        end else
+          MensagemSistema('Nenhum PDF foi gerado.' + sLineBreak +
+                          '   - Verifique os filtros utilizados.');
+
+        if FbTemFalha then
+        begin
+          if FileExists(cNomeArquivoLog) then
+            ShellExecute( 0, 'Open', pChar(cNomeArquivoLog),'', '', SW_SHOW);
+        end;
       end;
 
-      if nCount >= 1 then
-      begin
-        if nCount > 1 then
-          MensagemSistema('Foram gerados ' + nCount.ToString + ' PDFs na pasta ' + cDirectory + '.')
-        else
-          MensagemSistema('Foi gerado ' + nCount.ToString + ' PDF na pasta ' + cDirectory + '.');
-      end else
-        MensagemSistema('Nenhum PDF foi gerado.' + sLineBreak +
-                        '   - Verifique os filtros utilizados;' + sLineBreak +
-                        '   - Verifique se as notas filtradas possuem XML.');
-    except
-      on E: exception do
-        MensagemSistema('Não foi possível concluir o processo de exportar PDFs.' + sLineBreak + E.Message, msgErro);
+      FreeAndNil(slLog);
+      FoGerandoPDFs := False;
     end;
   end;
 end;
@@ -33691,6 +33751,8 @@ end;
 
 procedure TForm7.FormActivate(Sender: TObject);
 begin
+  FoGerandoPDFs := False;
+
   Oramento1.Enabled                 := True;
   Inventrio1.Enabled                := True;
   SPEDFiscal1.Enabled               := True;
