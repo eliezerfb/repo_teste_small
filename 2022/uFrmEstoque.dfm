@@ -3346,7 +3346,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 17
           Top = 45
           Width = 213
-          Height = 22
+          Height = 19
           Color = clWhite
           Ctl3D = False
           Font.Charset = ANSI_CHARSET
@@ -3364,7 +3364,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 229
           Top = 45
           Width = 89
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3383,7 +3383,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 405
           Top = 45
           Width = 89
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3402,7 +3402,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 317
           Top = 45
           Width = 89
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3421,7 +3421,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 493
           Top = 45
           Width = 89
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3440,7 +3440,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 581
           Top = 45
           Width = 89
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3459,7 +3459,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 669
           Top = 45
           Width = 106
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False
@@ -3637,7 +3637,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 17
           Top = 23
           Width = 634
-          Height = 22
+          Height = 19
           BevelInner = bvNone
           Color = clWhite
           Ctl3D = False
@@ -3657,7 +3657,7 @@ inherited FrmEstoque: TFrmEstoque
           Left = 650
           Top = 23
           Width = 125
-          Height = 22
+          Height = 19
           Alignment = taCenter
           Color = clWhite
           Ctl3D = False

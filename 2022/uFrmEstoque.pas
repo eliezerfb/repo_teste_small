@@ -3062,8 +3062,7 @@ end;
 procedure TFrmEstoque.btnConsultarTribClick(Sender: TObject);
 begin
   //Mauricio Parizotto 2024-10-04
-  if false then
-  //if TSistema.GetInstance.ModuloImendes then
+  if TSistema.GetInstance.ModuloImendes then
   begin
     ppmTributacao.Popup(FrmEstoque.Left + 28,
                         FrmEstoque.Top + pnlBotoesPosterior.Top + 71);
