@@ -1,10 +1,9 @@
 inherited FrmIntegracaoIMendes: TFrmIntegracaoIMendes
   BorderIcons = [biSystemMenu]
-  Caption = 'IMendes'
+  Caption = 'Tributa'#231#227'o Inteligente'
   ClientHeight = 384
   ClientWidth = 604
   Font.Name = 'Microsoft Sans Serif'
-  Position = poScreenCenter
   ShowHint = True
   OnCreate = FormCreate
   ExplicitWidth = 620

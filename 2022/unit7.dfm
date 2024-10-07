@@ -12972,6 +12972,13 @@ object Form7: TForm7
       object N7: TMenuItem
         Caption = '-'
       end
+      object ributaoInteligente1: TMenuItem
+        Caption = 'Tributa'#231#227'o Inteligente'
+        OnClick = ributaoInteligente1Click
+      end
+      object N3: TMenuItem
+        Caption = '-'
+      end
       object EnvioaoFISCOREDUOZ1: TMenuItem
         Caption = 'Envio ao FISCO-REDU'#199#195'O Z'
         Visible = False

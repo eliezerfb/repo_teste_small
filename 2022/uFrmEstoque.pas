@@ -281,10 +281,10 @@ type
     pnlImendes: TPanel;
     lblStatusImendes: TLabel;
     DBCheckSobreIPI: TDBCheckBox;
-    btnConsultarTrib: TBitBtn;
     ppmTributacao: TPopupMenu;
     PorEAN1: TMenuItem;
     PorDescrio1: TMenuItem;
+    btnConsultarTrib: TBitBtn;
     procedure FormActivate(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -455,7 +455,7 @@ uses unit7
 , uTestaProdutoExiste
 , uITestaProdutoExiste
 , Unit19
-, uFrmEstoqueIVA, uSmallConsts, uSistema;
+, uFrmEstoqueIVA, uSmallConsts, uSistema, uFrmIntegracaoIMendes;
 
 { TFrmEstoque }
 
@@ -3061,8 +3061,26 @@ end;
 
 procedure TFrmEstoque.btnConsultarTribClick(Sender: TObject);
 begin
-  ppmTributacao.Popup(FrmEstoque.Left + 28,
-                      FrmEstoque.Top + pnlBotoesPosterior.Top + 71);
+  //Mauricio Parizotto 2024-10-04
+  if TSistema.GetInstance.ModuloImendes then
+  begin
+    ppmTributacao.Popup(FrmEstoque.Left + 28,
+                        FrmEstoque.Top + pnlBotoesPosterior.Top + 71);
+  end else
+  begin
+    if MensagemSistemaPergunta('Plugin não está ativado!'+#13#10+
+                               'Deseja fazer uma simulação?',
+                               [mb_YesNo]) = mrYes then
+    begin
+      try
+        FrmIntegracaoIMendes := TFrmIntegracaoIMendes.Create(self);
+        FrmIntegracaoIMendes.pgcImendes.ActivePage :=  FrmIntegracaoIMendes.tbsSimulacao;
+        FrmIntegracaoIMendes.ShowModal;
+      finally
+        FreeAndNil(FrmIntegracaoIMendes);
+      end;
+    end;
+  end;
 end;
 
 procedure TFrmEstoque.btnSalvarGradeClick(Sender: TObject);

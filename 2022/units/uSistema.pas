@@ -118,7 +118,7 @@ end;
 procedure TSistema.SetSerial(const Value: string);
 begin
   FSerial := Value;
-end
+end;
 
 procedure TSistema.SetTema(const Value: string);
 begin

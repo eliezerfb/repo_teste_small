@@ -246,6 +246,7 @@ begin
                          ' 	 E.CF,'+
                          ' 	 E.PRECO,'+
                          ' 	 E.IPI,'+
+                         '   E.NATUREZA_RECEITA,'+
                          ' 	 E.CST_PIS_COFINS_ENTRADA,'+
                          ' 	 E.CST_PIS_COFINS_SAIDA,'+
                          ' 	 E.CST,'+
@@ -284,7 +285,7 @@ begin
         ProdutoArray[i].CSTCSOSN                       := CST_CSOSN;
         ProdutoArray[i].CSTPISCOFINSEntrada            := qryAux.FieldByName('CST_PIS_COFINS_ENTRADA').AsString;
         ProdutoArray[i].CSTPISCOFINSSaida              := qryAux.FieldByName('CST_PIS_COFINS_SAIDA').AsString;
-        ProdutoArray[i].NaturezaReceitaIsentaPISCOFINS := ''; // campo novo
+        ProdutoArray[i].NaturezaReceitaIsentaPISCOFINS := qryAux.FieldByName('NATUREZA_RECEITA').AsString;
         ProdutoArray[i].Ncm                            := qryAux.FieldByName('CF').AsString;
         ProdutoArray[i].PICMS                          := qryAux.FieldByName('ICMS').AsFloat;
         ProdutoArray[i].PIPI                           := qryAux.FieldByName('IPI').AsFloat;

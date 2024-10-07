@@ -1748,6 +1748,8 @@ type
     ibDataSet4STATUS_TRIBUTACAO: TIBStringField;
     ibDataSet4DATA_STATUS_TRIBUTACAO: TDateTimeField;
     ibDataSet4CODIGO_IMENDES: TIntegerField;
+    ributaoInteligente1: TMenuItem;
+    N3: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2481,6 +2483,7 @@ type
     procedure Movimentaodoitemporperodo1Click(Sender: TObject);
     procedure Resumodasvendas1Click(Sender: TObject);
     procedure Rankingdeprodutosvendidos1Click(Sender: TObject);
+    procedure ributaoInteligente1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -2792,7 +2795,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmEstoque
   , uVisualizaCadastro
   , ufrmRelatorioMovItensPeriodo
-  , ufrmRelatorioNotasFaltantes;
+  , ufrmRelatorioNotasFaltantes, uFrmIntegracaoIMendes;
 
 {$R *.DFM}
 
@@ -36521,6 +36524,24 @@ begin
       Break;
     end;
   end;
+end;
+
+procedure TForm7.ributaoInteligente1Click(Sender: TObject);
+begin
+  {Mauricio Parizotto 2024-10-04 Inicio}
+  if not FechaTudo(true) then
+    Exit;
+
+  Form7.sModulo := 'CONFIG';
+  Form1.Label201MouseLeave(Sender);
+
+  try
+    FrmIntegracaoIMendes := TFrmIntegracaoIMendes.Create(self);
+    FrmIntegracaoIMendes.ShowModal;
+  finally
+    FreeAndNil(FrmIntegracaoIMendes);
+  end;
+  {Mauricio Parizotto 2024-10-04 Fim}
 end;
 
 function TForm7.RetornarHistoricoPorModulo: String;

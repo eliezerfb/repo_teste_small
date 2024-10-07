@@ -14,9 +14,9 @@ inherited FrmEstoque: TFrmEstoque
         ExplicitLeft = 723
       end
       object pnlImendes: TPanel
-        Left = 20
+        Left = 166
         Top = 6
-        Width = 621
+        Width = 555
         Height = 51
         BevelOuter = bvNone
         Font.Charset = DEFAULT_CHARSET
@@ -26,11 +26,8 @@ inherited FrmEstoque: TFrmEstoque
         Font.Style = []
         ParentFont = False
         TabOrder = 1
-        DesignSize = (
-          621
-          51)
         object lblStatusImendes: TLabel
-          Left = 361
+          Left = 241
           Top = 17
           Width = 236
           Height = 13
@@ -47,7 +44,7 @@ inherited FrmEstoque: TFrmEstoque
           Transparent = True
         end
         object DBCheckSobreIPI: TDBCheckBox
-          Left = 160
+          Left = 40
           Top = 15
           Width = 182
           Height = 17
@@ -68,30 +65,23 @@ inherited FrmEstoque: TFrmEstoque
           ValueUnchecked = 'N'
           OnKeyDown = PadraoKeyDown
         end
-        object btnConsultarTrib: TBitBtn
-          Left = -1
-          Top = 10
-          Width = 140
-          Height = 25
-          Anchors = [akRight, akBottom]
-          Caption = 'Consultar tributa'#231#227'o'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -13
-          Font.Name = 'Microsoft Sans Serif'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 1
-          OnClick = btnConsultarTribClick
-        end
       end
-    end
-    inherited Panel1: TPanel
-      ExplicitHeight = 453
-    end
-    inherited Panel8: TPanel
-      ExplicitLeft = 822
-      ExplicitHeight = 453
+      object btnConsultarTrib: TBitBtn
+        Left = 19
+        Top = 16
+        Width = 140
+        Height = 25
+        Anchors = [akRight, akBottom]
+        Caption = 'Consultar tributa'#231#227'o'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 2
+        OnClick = btnConsultarTribClick
+      end
     end
     inherited Panel1: TPanel
       ExplicitHeight = 453

@@ -14453,7 +14453,7 @@ object Form1: TForm1
         OnClick = IntegraoSicoob1Click
       end
       object IntegraoIMendes1: TMenuItem
-        Caption = 'Integra'#231#227'o IMendes'
+        Caption = 'Tributa'#231#227'o Inteligente'
         OnClick = IntegraoIMendes1Click
       end
     end

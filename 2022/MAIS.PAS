@@ -5851,7 +5851,6 @@ begin
   except
     on E: Exception do
     begin
-      //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-24
       MensagemSistema(E.Message,msgAtencao);
     end;
   end;
@@ -5859,47 +5858,7 @@ end;
 
 
 procedure TForm1.imgBackupClick(Sender: TObject);
-{
-var
-  Backup: TBackup;
-}
 begin
-(*
-  if not FechaTudo(bFechaTudo) then
-    Exit;
-
-  Form7.sModulo := 'BACKUP';
-  Form1.Label201MouseLeave(Sender);
-
-  Backup := TBackup.Create;
-  {Mauricio parizotto 2023-08-09 Inicio}
-
-  Backup.FMostraDialogs := True;
-  SelectDirectory('Selecione um dispositivo de armazenamento externo que seja seguro para fazer uma cópia do banco de dados.', '', Backup.FDiretorioBKP);
-  Backup.FNomeArquivoBKP := Limpanumero(Form7.ibDataset13CGC.AsString) + '_' + Alltrim(DiaDaSemana(date));
-
-  try
-    Commitatudo(True);
-  except
-  end;
-
-  try
-    FechaTudo(Form1.bFechaTudo);
-    Form7.ibDataSet13.Close;
-  except
-  end;
-
-  {Mauricio parizotto 2023-08-09 Fim}
-
-  if Backup.FazerBackup = IDYES then
-    Form19.Button1Click(Sender);
-
-  FreeAndNil(Backup);
-
-  if Form7.sModulo <> 'INDICADORES' then
-    Form7.sModulo := '';
-Mauricio Parizotto 2023-08-10*)
-
   ppmBackup.Popup(Form1.imgBackup.Left,Form1.imgBackup.Top + Form1.imgBackup.Height + 35);
 end;
 
@@ -6083,9 +6042,7 @@ var
   dContador : TdateTime;
   I, J : Integer;
 begin
-  /////////////////////////
   // C A L E N D A R I O //
-  /////////////////////////
   CriaJpg('logotip.jpg');
   DeleteFile(pChar(Senhas.UsuarioPub+'.HTM'));
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
@@ -6096,13 +6053,12 @@ begin
   WriteLn(F,'<br><font face="verdana" size=1 color=#c0c0c0><b>'+AllTrim(Form7.ibDataSet13NOME.AsString)+'</b></font><br>');
   WriteLn(F,'<br><font face="verdana" size=1 color=#000000><b>CALENDÁRIO</font>');
   WriteLn(F,'<br><font face="verdana" size=7 color=#c0c0c0>'+IntToStr(Year(Date))+'</b></font>');
-  //
+
   WriteLn(F,'<table border=0 bgcolor=#FFFFFF cellspacing=5 cellpadding=5>');
   WriteLn(F,' <tr  align=left>');
-  //
+
   for J := 1 to 12 do
   begin
-    //
     if (J = 4) or (J=7) or (J=10)  then
     begin
       WriteLn(F,' </tr>');
@@ -6110,7 +6066,7 @@ begin
       WriteLn(F,'<table border=0 bgcolor=#FFFFFF cellspacing=5 cellpadding=5>');
       WriteLn(F,' <tr  align=left>');
     end;
-    //
+
     WriteLn(F,'  <td>');
     WriteLn(F,'   <font face="verdana" size=1><center><b>'+MesExtenso(J)+'</b></center><br>'); // Mês e ano
     WriteLn(F,'   <table border=0 bgcolor=#FFFFFF cellspacing=0 cellpadding=0>');
@@ -6123,13 +6079,13 @@ begin
     WriteLn(F,'     <td '+{nowrap}' align=Right width=30><font face="verdana" size=1>Sex</font></td>');
     WriteLn(F,'     <td '+{nowrap}' align=Right width=30><font face="verdana" size=1 color=FF0000>Sab</font></td>');
     WriteLn(F,'    </tr>');
-    //
+
     WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-    //
+
     dContador  := StrToDate('01/'+StrZero(J,2,0)+'/'+StrZero(Year(Date),4,0));
-    //
+
     for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'     <td '+{nowrap}' align=left><font face="verdana" size=1></td>');
-    //
+
     for I := 1 to DiasPorMes(Year(Date),J) do
     begin
       if DayOfWeek(dContador) = 1 then WriteLn(F,'    <tr bgcolor=#FFFFFF>');
@@ -6137,46 +6093,36 @@ begin
       if DayOfWeek(dContador) = 7 then WriteLn(F,'    </tr>');
       dContador := SomaDias(dContador, 1);                // Incrementa o contador
     end;
-    //
+
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
     WriteLn(F,'  </td>');
-    //
   end;
-  //
+
   WriteLn(F,' </tr>');
   WriteLn(F,'</table>');
-  //
+
   WriteLn(F,'<br><font face="verdana" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
   + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
   + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font>');
-  //
+
   WriteLn(F,'<br>');              // Linha em branco
-  //
-  // WWW
-  //
+
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
-    //WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
   end else
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
   end;
-  //
+
   if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
   WriteLn(F,'</center>');
-  //
+
   WriteLn(F,'</html>');
   CloseFile(F);                                    // Fecha o arquivo
-  //
+
   AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
-  //
-  //
-/////////////////////////
-// C A L E N D A R I O //
-/////////////////////////
-  //
 end;
 
 procedure TForm1.Label201MouseLeave(Sender: TObject);
