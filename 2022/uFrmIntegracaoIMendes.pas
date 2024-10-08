@@ -205,7 +205,7 @@ function TFrmIntegracaoIMendes.GetArquivoSimulacao(out ProdsSemICMS : string):st
 var
   qryAux: TIBQuery;
   SimuladorDTO : TRootSimuladorDTO;
-  ProdutoArray : TArray<TProduto>;
+  ProdutoArray : TArray<TProdutoSimulacao>;
   i : integer;
   CST_CSOSN : string;
   IVA : Double;
@@ -263,7 +263,7 @@ begin
       begin
         i := Length(ProdutoArray);
         SetLength(ProdutoArray, i +1);
-        ProdutoArray[i] := TProduto.Create;
+        ProdutoArray[i] := TProdutoSimulacao.Create;
 
         if (SimuladorDTO.Cabecalho.Crt = 1) or (SimuladorDTO.Cabecalho.Crt = 4) then
           CST_CSOSN := qryAux.FieldByName('CSOSN').AsString

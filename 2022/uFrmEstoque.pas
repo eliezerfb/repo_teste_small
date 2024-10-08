@@ -7,9 +7,9 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFrmFichaPadrao, Data.DB, Vcl.ComCtrls, WinInet,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask, Vcl.DBCtrls, SMALL_DBEdit,
   uframeCampo, System.IniFiles, Vcl.Grids, Vcl.DBGrids, Videocap, VFrames,
-  Vcl.Imaging.jpeg, Vcl.Clipbrd, Vcl.OleCtrls, SHDocVw, Vcl.ExtDlgs,
+  Vcl.Imaging.jpeg, Vcl.Clipbrd, Vcl.OleCtrls, SHDocVw, Vcl.ExtDlgs, REST.Types, uClassesIMendes,
   Winapi.ShellAPI, uframePesquisaPadrao, uframePesquisaProduto,
-  Vcl.Imaging.pngimage, Vcl.Menus;
+  Vcl.Imaging.pngimage, Vcl.Menus, REST.Json, uFrmProdutosIMendes;
 
 type
   TFrmEstoque = class(TFrmFichaPadrao)
@@ -407,6 +407,7 @@ type
       Y: Integer);
     procedure btnConsultarTribClick(Sender: TObject);
     procedure edtNaturezaReceitaKeyPress(Sender: TObject; var Key: Char);
+    procedure PorDescrio1Click(Sender: TObject);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -455,7 +456,11 @@ uses unit7
 , uTestaProdutoExiste
 , uITestaProdutoExiste
 , Unit19
-, uFrmEstoqueIVA, uSmallConsts, uSistema, uFrmIntegracaoIMendes;
+, uFrmEstoqueIVA
+, uSmallConsts
+, uSistema
+, uImendes
+, uFrmIntegracaoIMendes;
 
 { TFrmEstoque }
 
@@ -4453,6 +4458,30 @@ begin
 end;
 
 
+
+procedure TFrmEstoque.PorDescrio1Click(Sender: TObject);
+var
+  ProdutoImendesArray : TArray<TProdutoImendes>;
+  i, CodIMendes : integer;
+begin
+  CodIMendes := DSCadastro.DataSet.FieldByName('CODIGO_IMENDES').AsInteger;
+
+  if CodIMendes = 0 then
+  begin
+    CodIMendes := GetCodImendes(LimpaNumero(Form7.ibDataSet13CGC.AsString),
+                                DSCadastro.DataSet.FieldByName('DESCRICAO').AsString);
+
+    if CodIMendes > 0 then
+    begin
+      DSCadastro.DataSet.FieldByName('CODIGO_IMENDES').AsInteger := CodIMendes;
+    end;
+  end;
+
+  if CodIMendes > 0 then
+  begin
+    //Busca tributação
+  end;
+end;
 
 function TFrmEstoque.MensagemImagemWeb(Msg, Titulo : string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; Captions: array of string): Integer;
 var
