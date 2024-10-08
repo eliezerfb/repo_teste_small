@@ -124,26 +124,33 @@ var
   Mascara : string;
   oArqDat: TArquivosDAT;
 begin
-  oArqDat := TArquivosDAT.Create(Usuario);
   try
-    CasasPreco  := oArqDat.SmallCom.Outros.CasasDecimaisPreco;
-  finally
-    FreeAndNil(oArqDat);
-  end;
+    oArqDat := TArquivosDAT.Create(Usuario);
+    try
+      CasasPreco  := oArqDat.SmallCom.Outros.CasasDecimaisPreco;
+    finally
+      FreeAndNil(oArqDat);
+    end;
 
-  Mascara := MontaMascaraCasaDec(CasasPreco);
+    Mascara := MontaMascaraCasaDec(CasasPreco);
 
-  cdsProdutosNotaPRECO_CUSTO.DisplayFormat := Mascara;
-  cdsProdutosNotaPRECO_VENDA.DisplayFormat := Mascara;
-  cdsProdutosNotaPRECO_NOVO.DisplayFormat  := Mascara;
-  cdsProdutosNotaPRECO_NOVO.EditFormat     := Mascara;
+    cdsProdutosNotaPRECO_CUSTO.DisplayFormat := Mascara;
+    cdsProdutosNotaPRECO_VENDA.DisplayFormat := Mascara;
+    cdsProdutosNotaPRECO_NOVO.DisplayFormat  := Mascara;
+    cdsProdutosNotaPRECO_NOVO.EditFormat     := Mascara;
 
-  cdsProdutosNota.Open;
+    cdsProdutosNota.Open;
 
-  try
-    dbgPrincipal.SetFocus;
-    dbgPrincipal.SelectedIndex := 3;
+    try
+      dbgPrincipal.SetFocus;
+      dbgPrincipal.SelectedIndex := 3;
+    except
+    end;
   except
+    on E: Exception do
+    begin
+      MensagemSistema('Não foi possível selecionar os dados para precificação', msgAtencao);
+    end;
   end;
 end;
 
@@ -189,7 +196,7 @@ end;
 procedure TFrmPrecificacaoProduto.cdsProdutosNotaPERC_LUCSetText(
   Sender: TField; const Text: String);
 begin
-  cdsProdutosNotaPRECO_NOVO.AsFloat := cdsProdutosNotaPRECO_CUSTO.AsFloat + (cdsProdutosNotaPRECO_CUSTO.AsFloat * (StrToFloatDef(Text,0) / 100));
+  cdsProdutosNotaPRECO_NOVO.AsFloat := cdsProdutosNotaPRECO_CUSTO.AsFloat + (cdsProdutosNotaPRECO_CUSTO.AsFloat * (StrToFloatDef(Text, 0) / 100));
 
   Sender.AsString := Text;
 end;
@@ -251,7 +258,7 @@ end;
 procedure TFrmPrecificacaoProduto.cdsProdutosNotaPRECO_NOVOSetText(
   Sender: TField; const Text: String);
 begin
-  cdsProdutosNotaPERC_LUC.AsFloat :=  ( (( StrToFloatDef(Text,0) / cdsProdutosNotaPRECO_CUSTO.AsFloat ) - 1) *100) ;
+  cdsProdutosNotaPERC_LUC.AsFloat :=  ( (( StrToFloatDef(Text,0) / cdsProdutosNotaPRECO_CUSTO.AsFloat ) - 1) * 100) ;
 
   Sender.AsString := Text;
 end;

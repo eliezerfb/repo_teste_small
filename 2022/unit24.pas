@@ -2246,7 +2246,8 @@ begin
       begin
         DbGrid1.SelectedIndex := 0;
         Form7.ibDataSet23.Next;
-        if Form7.ibDataSet23.EOF then Form7.ibDataSet23.Append;
+        if Form7.ibDataSet23.EOF then
+          Form7.ibDataSet23.Append;
       end;
     end else
     begin
@@ -2270,8 +2271,10 @@ end;
 procedure TForm24.DBGrid1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_TAB    then Key := VK_RETURN;
-  if Key = VK_ESCAPE then Key := VK_RETURN;
+  if Key = VK_TAB    then
+    Key := VK_RETURN;
+  if Key = VK_ESCAPE then
+    Key := VK_RETURN;
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
   //
   if DbGrid1.SelectedIndex = 0 then
@@ -2320,11 +2323,16 @@ procedure TForm24.SMALL_DBEdit22KeyUp(Sender: TObject; var Key: Word;
 begin
   if Form7.sModulo <> 'FRETE' then
   begin
-    if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  end else Form7.sModulo := 'COMPRA';
+    if Key = VK_RETURN then
+      Perform(Wm_NextDlgCtl,0,0);
+  end
+  else
+    Form7.sModulo := 'COMPRA';
   //
-  if Key = VK_DOWN   then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
+  if Key = VK_DOWN   then
+    Perform(Wm_NextDlgCtl,0,0);
+  if Key = VK_UP     then
+    Perform(Wm_NextDlgCtl,1,0);
 end;
 
 procedure TForm24.SMALL_DBEdit22Exit(Sender: TObject);
@@ -3997,9 +4005,13 @@ begin
 
   try
     FrmPrecificacaoProduto := TFrmPrecificacaoProduto.Create(self);
-    FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('NUMERONF').AsString := Form7.ibDataSet24NUMERONF.AsString;
+    FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('NUMERONF').AsString   := Form7.ibDataSet24NUMERONF.AsString;
     FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('FORNECEDOR').AsString := Form7.ibDataSet24FORNECEDOR.AsString;
-    FrmPrecificacaoProduto.ShowModal;
+    try
+      FrmPrecificacaoProduto.ShowModal;
+    except
+
+    end;
   finally
     FreeAndNil(FrmPrecificacaoProduto);
   end;

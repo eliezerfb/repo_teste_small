@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -313,7 +313,6 @@
         <DCCReference Include="units\uTestaClienteDevendo.pas"/>
         <DCCReference Include="interfaces\uIRetornaLimiteDisponivel.pas"/>
         <DCCReference Include="units\uRetornaLimiteDisponivel.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uValidaRecursosDelphi7.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uRecursosSistema.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uTypesRecursos.pas"/>
         <DCCReference Include="uConectaBancoCommerce.pas"/>
@@ -326,13 +325,6 @@
         <DCCReference Include="interfaces\uIChamaRelatorioCommerceFactory.pas"/>
         <DCCReference Include="units\uChamaRelatorioCommerceFactory.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uSmallEnumerados.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uArquivosDAT.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uArquivoDATINFPadrao.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uEstoqueDAT.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uFrenteINI.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uSectionDATPadrao.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uSmallComINF.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uUsuarioINF.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\interfaces\uIAssinaturaDigital.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uAssinaturaDigital.pas"/>
         <DCCReference Include="interfaces\uIEstruturaRelVendasPorCliente.pas"/>
@@ -344,8 +336,6 @@
         <DCCReference Include="units\uRetornaOperacoesRelatorio.pas"/>
         <DCCReference Include="units\uFiltrosRodapeRelatorioVendasClienteNota.pas"/>
         <DCCReference Include="units\uFiltrosRodapeRelatorioVendasClienteCupom.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uNFeINI.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uNFSeINI.pas"/>
         <DCCReference Include="units\uRelatorioCatalogoProdudos.pas">
             <Form>frmRelatorioCatalogoProduto</Form>
         </DCCReference>
@@ -452,8 +442,6 @@
         <DCCReference Include="uFrmNaturezaOperacao.pas">
             <Form>FrmNaturezaOperacao</Form>
         </DCCReference>
-        <DCCReference Include="..\..\unit_compartilhada\uConfSisBD.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uOSSections.pas"/>
         <DCCReference Include="uFrmSituacaoOS.pas">
             <Form>FrmSituacaoOS</Form>
         </DCCReference>
@@ -462,7 +450,6 @@
         <DCCReference Include="uFrmAnexosOS.pas">
             <Form>FrmAnexosOS</Form>
         </DCCReference>
-        <DCCReference Include="..\..\unit_compartilhada\uOutrasSections.pas"/>
         <DCCReference Include="units\uRelatorioTotalGeralVenda.pas">
             <Form>frmRelTotalizadorGeralVenda</Form>
         </DCCReference>
@@ -546,7 +533,6 @@
         <DCCReference Include="uFrmContaBancaria.pas">
             <Form>FrmContaBancaria</Form>
         </DCCReference>
-        <DCCReference Include="..\..\unit_compartilhada\uImpressoraSections.pas"/>
         <DCCReference Include="uFrmContaReceber.pas">
             <Form>FrmContaReceber</Form>
         </DCCReference>
@@ -568,7 +554,6 @@
         <DCCReference Include="uFrmTecnico.pas">
             <Form>FrmTecnico</Form>
         </DCCReference>
-        <DCCReference Include="..\..\unit_compartilhada\uCarneSections.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uTypesImpressao.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\Itau\uIntegracaoItau.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\Itau\uClassesItau.pas"/>
@@ -587,22 +572,28 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="units\uEstruturaRelNotasFaltantes.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uChaveCertificado.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\Sicoob\uClassesSicoob.pas"/>
         <DCCReference Include="uFrmEstoqueIVA.pas">
             <Form>FrmEstoqueIVA</Form>
         </DCCReference>
         <DCCReference Include="interfaces\uIRetornaCustoMedio.pas"/>
         <DCCReference Include="units\uRetornaCustoMedio.pas"/>
+        <DCCReference Include="ufrmInformarDrawback.pas">
+            <Form>frmInformarDrawback</Form>
+        </DCCReference>
+        <DCCReference Include="ufrmInformacoesExportacaoNFe.pas">
+            <Form>frmInformacoesExportacaoNFe</Form>
+        </DCCReference>
         <DCCReference Include="units\uEstruturaRelRankingProdutosVendidos.pas"/>
         <DCCReference Include="units\ufrmRelatorioMovItensPeriodo.pas">
             <Form>frmRelatorioMovItensPeriodo</Form>
         </DCCReference>
-        <DCCReference Include="..\..\unit_compartilhada\uChaveCertificado.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\Sicoob\uClassesSicoob.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
-        </BuildConfiguration> 
+        </BuildConfiguration>
         <BuildConfiguration Include="Release">
             <Key>Cfg_1</Key>
             <CfgParent>Base</CfgParent>
