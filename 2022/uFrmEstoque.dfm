@@ -22,7 +22,7 @@ inherited FrmEstoque: TFrmEstoque
       ExplicitHeight = 453
     end
     inherited pgcFicha: TPageControl
-      ActivePage = tbsCadastro
+      ActivePage = tbsIPI
       ExplicitWidth = 802
       ExplicitHeight = 453
       object tbsCadastro: TTabSheet
@@ -2694,7 +2694,7 @@ inherited FrmEstoque: TFrmEstoque
           object cboCST_IPI: TComboBox
             Left = 142
             Top = 22
-            Width = 619
+            Width = 595
             Height = 22
             Style = csOwnerDrawVariable
             Font.Charset = ANSI_CHARSET
