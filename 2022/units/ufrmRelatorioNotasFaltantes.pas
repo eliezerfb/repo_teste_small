@@ -228,6 +228,7 @@ begin
   fQryDocumentos.SQL.Add('    '+Ord(dinfNFe).ToString+' as TIPODOC');
   fQryDocumentos.SQL.Add('    , substring(VENDAS.NUMERONF from 1 for 9) as NUMERONF');
   fQryDocumentos.SQL.Add('    , VENDAS.STATUS');
+  fQryDocumentos.SQL.Add('    , substring(VENDAS.NUMERONF from 10 for 3) as SERIEORDENACAO');
   fQryDocumentos.SQL.Add('    , substring(VENDAS.NUMERONF from 10 for 3) as SERIE');
   fQryDocumentos.SQL.Add('    , VENDAS.EMISSAO as DATA');
   fQryDocumentos.SQL.Add('from VENDAS');
@@ -240,7 +241,8 @@ begin
   fQryDocumentos.SQL.Add('    '+Ord(dinfNFCe).ToString+' as TIPODOC');
   fQryDocumentos.SQL.Add('    , NFCE.NUMERONF');
   fQryDocumentos.SQL.Add('    , NFCE.STATUS');
-  fQryDocumentos.SQL.Add('    , '+QuotedStr(_cSerieNFCe)+' as SERIE');
+  fQryDocumentos.SQL.Add('    , '+QuotedStr(_cSerieNFCe)+' as SERIEORDENACAO');
+  fQryDocumentos.SQL.Add('    , NFCE.CAIXA AS SERIE');
   fQryDocumentos.SQL.Add('    , NFCE.DATA');
   fQryDocumentos.SQL.Add('from NFCE');
   fQryDocumentos.SQL.Add('where');
