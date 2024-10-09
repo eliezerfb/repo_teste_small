@@ -1738,9 +1738,12 @@ type
     Dia1: TMenuItem;
     Semana1: TMenuItem;
     Ms1: TMenuItem;
+    ibDataSet16DRAWBACK: TIBStringField;
     Movimentaodoitemporperodo1: TMenuItem;
     Rankingdeprodutosvendidos1: TMenuItem;
     ibDataSet4IDESTOQUE: TIntegerField;
+    ibDataSet4NATUREZA_RECEITA: TIBStringField;
+    ibDataSet14LISTAR: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -14946,6 +14949,19 @@ begin
 
             Form7.IBDataSet2CIDADE.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
 
+            {Dailon Parisotto (f-20714) 2024-09-27 Inicio}
+            if (AnsiUpperCase(Form7.IBDataSet2ESTADO.AsString) = 'ES') and (Trim(Form7.IBDataSet2IE.AsString) <> EmptyStr) then
+            begin
+              if (ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet2IE.AsString),Form7.ibDataSet2ESTADO.AsString)) then
+              begin
+                Form7.IBDataSet2IE.AsString := '0' + Form7.IBDataSet2IE.AsString;
+
+                if (ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet2IE.AsString),Form7.ibDataSet2ESTADO.AsString)) then
+                  Form7.IBDataSet2IE.AsString := Copy(Form7.IBDataSet2IE.AsString,2, Length(Form7.IBDataSet2IE.AsString));
+              end;
+            end;
+            {Dailon Parisotto (f-20714) 2024-09-27 Fim}
+
             { Dailon 2023-08-01 Inicio}
             slCNAE := TStringList.Create;
             try
@@ -20118,11 +20134,22 @@ begin
   end;
 
   //if Form10.Visible then
-  if FrmEstoque.Visible then
+  //if FrmEstoque.Visible then Mauricio Parizotto 2024-10-01
+  if FrmEstoque <> nil then
   begin
     if (pos('<',Sender.AsString)<>0) and (pos('>',Sender.AsString)<>0) then
     begin
       MensagemSistema('Parece que você está tentando incluir uma TAG. Verifique se existe um campo específico na aba Tags para incluir esta informação.',msgAtencao);
+    end;
+  end;
+
+  //Mauricio Parizotto 2024-10-01
+  if (Sender.FieldName = 'LIVRE4' ) then
+  begin
+    if (pos('NR=',UpperCase(Sender.AsString))<>0) then
+    begin
+      MensagemSistema('Parece que você está tentando informar o número da natureza da receita de PIS/COFINS.'+#13#10+
+                      'Agora essa informação deverá ser preenchida diretamente na aba IPI/PIS/COFINS.',msgAtencao);
     end;
   end;
 end;
@@ -22524,6 +22551,7 @@ begin
   ibDataSet14PISCOFINSLUCRO.AsString  := 'N';
   ibDataSet14REFERENCIANOTA.AsString  := 'N'; //Mauricio Parizotto 2024-06-21
   ibDataSet14IMPOSTOMANUAL.AsString   := 'N'; //Mauricio Parizotto 2024-07-24
+  ibDataSet14LISTAR.AsString          := 'S'; //Mauricio Parizotto 2024-09-27
 end;
 
 procedure TForm7.ibDataSet18NewRecord(DataSet: TDataSet);

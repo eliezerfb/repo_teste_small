@@ -2828,9 +2828,7 @@ begin
                     Edit9.Text := '9=Operação não presencial, outros';
                   end else
                   begin
-                    //
                     Edit9.Text := '1=Operação presencial';
-                    //
                   end;
                 end;
               end;
@@ -2843,10 +2841,19 @@ begin
       Edit8.OnChange := Edit8Change;
       Edit9.OnChange := Edit9Change;
     end;
+
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet14.Close;
+    {Mauricio Parizotto 2024-09-24 Inicio
     Form7.ibDataSet14.SelectSQL.Clear;
     Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''1'' or  SubString(CFOP from 1 for 1) = ''2'' or SubString(CFOP from 1 for 1) = ''3''  order by upper(NOME)');
+    }
+    Form7.ibDataSet14.SelectSQL.Text := ' Select * '+
+                                        ' From ICM '+
+                                        ' Where (SubString(CFOP from 1 for 1) = ''1'' or  SubString(CFOP from 1 for 1) = ''2'' or SubString(CFOP from 1 for 1) = ''3'')  '+
+                                        '   and (Coalesce(LISTAR,''S'') = ''S''  or NOME = '+QuotedStr(Form7.ibDAtaSet24OPERACAO.AsString)+') '+
+                                        ' Order by upper(NOME)';
+    {Mauricio Parizotto 2024-09-24 Fim}
     Form7.ibDataSet14.Open;
     Form7.ibDataSet14.EnableControls;
 

@@ -11208,7 +11208,7 @@ object Form7: TForm7
         'RCELA_IMPORTADA_EXTERIO, '
       
         '   CODIGO_FCI, IIA_UF, IIA_MUNI, ENQ_IPI, CEST, CSOSN_NFCE, CST_' +
-        'NFCE, ALIQUOTA_NFCE, '
+        'NFCE, ALIQUOTA_NFCE,  NATUREZA_RECEITA,'
       '   MARKETPLACE, IDENTIFICADORPLANOCONTAS, IDPERFILTRIBUTACAO)'
       'values'
       
@@ -11243,7 +11243,7 @@ object Form7: TForm7
         '_EXTERIO, '
       
         '   :CODIGO_FCI, :IIA_UF, :IIA_MUNI, :ENQ_IPI, :CEST, :CSOSN_NFCE' +
-        ', :CST_NFCE, '
+        ', :CST_NFCE,  :NATUREZA_RECEITA,'
       
         '   :ALIQUOTA_NFCE, :MARKETPLACE, :IDENTIFICADORPLANOCONTAS, :IDP' +
         'ERFILTRIBUTACAO)')
@@ -11324,6 +11324,7 @@ object Form7: TForm7
       '  CSOSN_NFCE,'
       '  CST_NFCE,'
       '  ALIQUOTA_NFCE,'
+      '  NATUREZA_RECEITA,'
       '  MARKETPLACE,'
       '  IDENTIFICADORPLANOCONTAS,'
       '  IDPERFILTRIBUTACAO'
@@ -11411,6 +11412,7 @@ object Form7: TForm7
       '  CSOSN_NFCE = :CSOSN_NFCE,'
       '  CST_NFCE = :CST_NFCE,'
       '  ALIQUOTA_NFCE = :ALIQUOTA_NFCE,'
+      '  NATUREZA_RECEITA = :NATUREZA_RECEITA,'
       '  MARKETPLACE = :MARKETPLACE,'
       '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
       '  IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO'
@@ -12004,6 +12006,12 @@ object Form7: TForm7
       Origin = 'ESTOQUE.IDESTOQUE'
       Visible = False
     end
+    object ibDataSet4NATUREZA_RECEITA: TIBStringField
+      FieldName = 'NATUREZA_RECEITA'
+      Origin = 'ESTOQUE.NATUREZA_RECEITA'
+      Visible = False
+      Size = 3
+    end
   end
   object DataSource4: TDataSource
     DataSet = ibDataSet4
@@ -12438,6 +12446,7 @@ object Form7: TForm7
       DisplayWidth = 8
       FieldName = 'AUTORIZACAOTRANSACAO'
       Origin = 'RECEBER.AUTORIZACAOTRANSACAO'
+      Size = 128
     end
     object ibDataSet7BANDEIRA: TIBStringField
       DisplayLabel = 'Bandeira'
@@ -14342,7 +14351,7 @@ object Form7: TForm7
       
         '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
         'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA,'
-      '   IMPOSTOMANUAL)'
+      '   IMPOSTOMANUAL, LISTAR)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14360,7 +14369,7 @@ object Form7: TForm7
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
         'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
         'A,:REFERENCIANOTA,'
-      '   :IMPOSTOMANUAL)')
+      '   :IMPOSTOMANUAL, :LISTAR)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14416,7 +14425,8 @@ object Form7: TForm7
       '  PISCOFINSLUCRO,'
       '  IPISOBREOUTRA,'
       '  REFERENCIANOTA,'
-      '  IMPOSTOMANUAL'
+      '  IMPOSTOMANUAL,'
+      '  LISTAR'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14478,7 +14488,8 @@ object Form7: TForm7
       '  PISCOFINSLUCRO = :PISCOFINSLUCRO,'
       '  IPISOBREOUTRA = :IPISOBREOUTRA,'
       '  REFERENCIANOTA = :REFERENCIANOTA,'
-      '  IMPOSTOMANUAL = :IMPOSTOMANUAL'
+      '  IMPOSTOMANUAL = :IMPOSTOMANUAL,'
+      '  LISTAR = :LISTAR'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14850,6 +14861,13 @@ object Form7: TForm7
       FieldName = 'CBENEF'
       Origin = 'ICM.CBENEF'
       Size = 10
+    end
+    object ibDataSet14LISTAR: TIBStringField
+      DisplayLabel = 'Listar'
+      FieldName = 'LISTAR'
+      Origin = 'ICM.LISTAR'
+      Visible = False
+      Size = 1
     end
     object ibDataSet14REGISTRO: TIBStringField
       FieldName = 'REGISTRO'
@@ -15706,7 +15724,8 @@ object Form7: TForm7
       '  VFCP = :VFCP,'
       '  VBCFCPST = :VBCFCPST,'
       '  PFCPST = :PFCPST,'
-      '  VFCPST = :VFCPST'
+      '  VFCPST = :VFCPST,'
+      '  DRAWBACK = :DRAWBACK'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -16030,6 +16049,12 @@ object Form7: TForm7
       EditFormat = '##0.00'
       Precision = 15
       Size = 4
+    end
+    object ibDataSet16DRAWBACK: TIBStringField
+      FieldName = 'DRAWBACK'
+      Origin = 'ITENS001.DRAWBACK'
+      Visible = False
+      Size = 11
     end
   end
   object DataSource16: TDataSource

@@ -19,7 +19,7 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
     Left = 180
     Top = 15
     Width = 241
-    Height = 187
+    Height = 202
     BevelOuter = bvNone
     Color = clWhite
     Font.Charset = DEFAULT_CHARSET
@@ -88,22 +88,48 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
     end
     object rbItemPorITem: TRadioButton
       Left = 0
-      Top = 112
+      Top = 130
       Width = 185
       Height = 17
       Caption = 'Item por item'
-      TabOrder = 3
+      TabOrder = 4
       TabStop = True
       OnClick = rbItemPorITemClick
     end
     object cbListarCodigos: TCheckBox
       Left = 25
-      Top = 131
+      Top = 149
       Width = 97
       Height = 17
       Caption = 'Listar c'#243'digos'
       Enabled = False
-      TabOrder = 4
+      TabOrder = 5
+    end
+    object cbSubstituicaoTributICMS: TCheckBox
+      Left = 25
+      Top = 108
+      Width = 125
+      Height = 17
+      Caption = 'Substitui'#231#227'o tribut'#225'ria'
+      TabOrder = 3
+    end
+    object cbSubstituicaoTributItem: TCheckBox
+      Left = 25
+      Top = 166
+      Width = 125
+      Height = 17
+      Caption = 'Substitui'#231#227'o tribut'#225'ria'
+      Enabled = False
+      TabOrder = 6
+    end
+    object cbNCM: TCheckBox
+      Left = 25
+      Top = 183
+      Width = 125
+      Height = 17
+      Caption = 'NCM'
+      Enabled = False
+      TabOrder = 7
     end
   end
   object pnlSelOperacoes: TPanel
@@ -199,7 +225,7 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       item
         Name = 'NOTA'
         DataType = ftString
-        Size = 12
+        Size = 13
       end
       item
         Name = 'EMISSAO'
@@ -251,16 +277,23 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
         DataType = ftFMTBcd
         Precision = 18
         Size = 6
+      end
+      item
+        Name = 'ICMSSUBSTI'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
       end>
     IndexDefs = <>
     Params = <>
     StoreDefs = True
-    Left = 40
-    Top = 120
+    Left = 39
+    Top = 119
     object cdsRelICMSNOTA: TStringField
       DisplayLabel = 'Nota'
+      DisplayWidth = 13
       FieldName = 'NOTA'
-      Size = 12
+      Size = 13
     end
     object cdsRelICMSEMISSAO: TDateField
       DisplayLabel = 'Data'
@@ -313,6 +346,12 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       Precision = 18
       Size = 6
     end
+    object cdsRelICMSICMSSUBSTI: TFMTBCDField
+      DisplayLabel = 'ICMS ST R$'
+      FieldName = 'ICMSSUBSTI'
+      Precision = 18
+      Size = 6
+    end
   end
   object cdsItemPorItem: TClientDataSet
     Aggregates = <>
@@ -320,7 +359,7 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       item
         Name = 'NOTA'
         DataType = ftString
-        Size = 12
+        Size = 13
       end
       item
         Name = 'EMISSAO'
@@ -353,16 +392,28 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
         DataType = ftFMTBcd
         Precision = 18
         Size = 6
+      end
+      item
+        Name = 'NCM'
+        DataType = ftString
+        Size = 8
+      end
+      item
+        Name = 'VICMSST'
+        DataType = ftFMTBcd
+        Precision = 18
+        Size = 6
       end>
     IndexDefs = <>
     Params = <>
     StoreDefs = True
-    Left = 40
-    Top = 152
+    Left = 38
+    Top = 182
     object cdsItemPorItemNOTA: TStringField
       DisplayLabel = 'Nota'
+      DisplayWidth = 13
       FieldName = 'NOTA'
-      Size = 12
+      Size = 13
     end
     object cdsItemPorItemEMISSAO: TDateField
       DisplayLabel = 'Data'
@@ -377,6 +428,10 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
       FieldName = 'DESCRICAO'
       Size = 150
     end
+    object cdsItemPorItemNCM: TStringField
+      FieldName = 'NCM'
+      Size = 8
+    end
     object cdsItemPorItemQUANTIDADE: TFMTBCDField
       DisplayLabel = 'Quantidade'
       FieldName = 'QUANTIDADE'
@@ -386,6 +441,12 @@ inherited frmRelVendasNotaFiscal: TfrmRelVendasNotaFiscal
     object cdsItemPorItemVENDIDOPOR: TFMTBCDField
       DisplayLabel = 'Vendido por'
       FieldName = 'VENDIDOPOR'
+      Precision = 18
+      Size = 6
+    end
+    object cdsItemPorItemVICMSST: TFMTBCDField
+      DisplayLabel = 'ICMS ST R$'
+      FieldName = 'VICMSST'
       Precision = 18
       Size = 6
     end

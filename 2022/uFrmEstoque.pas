@@ -275,6 +275,9 @@ type
     Label27: TLabel;
     pnlEscondeWin11: TPanel;
     lblIVAPorEstado: TLabel;
+    lblNatReceita: TLabel;
+    edtNaturezaReceita: TSMALL_DBEdit;
+    lblGeral: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -395,6 +398,7 @@ type
     procedure lblIVAPorEstadoMouseLeave(Sender: TObject);
     procedure lblIVAPorEstadoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure edtNaturezaReceitaKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -1253,6 +1257,11 @@ begin
   Exemplo(True);
 end;
 
+procedure TFrmEstoque.edtNaturezaReceitaKeyPress(Sender: TObject; var Key: Char);
+begin
+  ValidaValor(Sender,Key,'I');
+end;
+
 procedure TFrmEstoque.SMALL_DBEditYExit(Sender: TObject);
 begin
   try Form7.ibDataSet14.Post; except end;
@@ -2103,12 +2112,12 @@ begin
 
   if Copy(cboCST_PIS_COFINS.Text, 1, 2) = '03' then
   begin
-    Label43.Caption := 'R$ PIS:';
-    Label49.Caption := 'R$ COFINS:';
+    Label43.Caption := 'R$ PIS';
+    Label49.Caption := 'R$ COFINS';
   end else
   begin
-    Label43.Caption := '% PIS:';
-    Label49.Caption := '% COFINS:';
+    Label43.Caption := '% PIS';
+    Label49.Caption := '% COFINS';
   end;
 
   CarregaCit;

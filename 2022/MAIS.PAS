@@ -38,7 +38,7 @@ uses
   function AvisoVencimentoSerial:Boolean; // Mauricio Parizotto 2024-08-16
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024030'; //Sandro Silva 2024-09-19 const BUILD_DO_BANCO = '2024028'; //Sandro Silva 2024-08-29 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
+const BUILD_DO_BANCO = '2024032'; //Sandro Silva 2024-10-03 const BUILD_DO_BANCO = '2024030'; //Sandro Silva 2024-09-19 const BUILD_DO_BANCO = '2024028'; //Sandro Silva 2024-08-29 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -292,6 +292,7 @@ type
     IntegraoIta1: TMenuItem;
     imgOrcamento: TImage;
     lblModOrcamento: TLabel;
+    IntegraoSicoob1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -470,6 +471,7 @@ type
     procedure imgOrcamentoClick(Sender: TObject);
     procedure lblModOrcamentoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure IntegraoSicoob1Click(Sender: TObject);
 
 
   private
@@ -610,7 +612,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmCadastro
   , uFrmEstoque
   , uFrmMsgNovoLayout
-  ;
+  , uFrmIntegracaoSicoob;
 
 {$R *.DFM}
 
@@ -5578,6 +5580,27 @@ begin
     FrmIntegracaoItau.ShowModal;
   finally
     FreeAndNil(FrmIntegracaoItau);
+  end;
+end;
+
+procedure TForm1.IntegraoSicoob1Click(Sender: TObject);
+var
+  bLiberado : Boolean;
+  dLimiteRecurso : Tdate;
+begin
+  bLiberado := (RecursoLiberado(Form7.IBDatabase1,rcIntegracaoSicoob,dLimiteRecurso));
+
+  if not bLiberado then
+  begin
+    MensagemRecursoIndisponivel('Integração Sicoob não está disponível para esta licença');
+    Exit;
+  end;
+
+  try
+    FrmIntegracaoSicoob := TFrmIntegracaoSicoob.Create(self);
+    FrmIntegracaoSicoob.ShowModal;
+  finally
+    FreeAndNil(FrmIntegracaoSicoob);
   end;
 end;
 
@@ -12929,10 +12952,12 @@ begin
       sConve  := LerParametroIni(Form1.sAtual+'\small.ini', 'T','Tempo', '00:05:' + SecondOf(Now).ToString);
       {Dailon Parisotto (f-19325) 2024-06-12 Fim}
 
-
-      //Mauricio Parizotto 2024-08-29
+	  //Mauricio Parizotto 2024-08-29
       //Pega serial atualizado
-      sSerialSistema := ValidaRecursos.SistemaSerial;
+      sSerialSistema := ValidaRecursos.SistemaSerial;	
+
+      //Mauricio Parizotto 2024-09-04
+      TSistema.GetInstance.Serial := AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20));
 
       sURL := 'http://www.smallsoft.com.br/legal.php?'+
               //'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+ Mauricio Parizotto 2024-08-29
