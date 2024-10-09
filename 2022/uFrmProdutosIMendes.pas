@@ -8,7 +8,7 @@ uses
   Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, Datasnap.DBClient;
+  FireDAC.Comp.Client, Datasnap.DBClient, smallfunc_xe;
 
   function GetCodigoImendesProd(Produtos : TArray<TProdutoImendes>):integer;
 
@@ -25,6 +25,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure dbgProdutosDblClick(Sender: TObject);
+    procedure dbgProdutosDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
   private
     { Private declarations }
     iCodImendes : integer;
@@ -80,6 +82,12 @@ procedure TFrmProdutosIMendes.dbgProdutosDblClick(Sender: TObject);
 begin
   iCodImendes := cdsProdutosCodImendes.AsInteger;
   Close;
+end;
+
+procedure TFrmProdutosIMendes.dbgProdutosDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  AjustaVisualGrid(TDBGrid(Sender), Rect, Column);
 end;
 
 procedure TFrmProdutosIMendes.FormCreate(Sender: TObject);

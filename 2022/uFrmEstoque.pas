@@ -9,7 +9,8 @@ uses
   uframeCampo, System.IniFiles, Vcl.Grids, Vcl.DBGrids, Videocap, VFrames,
   Vcl.Imaging.jpeg, Vcl.Clipbrd, Vcl.OleCtrls, SHDocVw, Vcl.ExtDlgs, REST.Types, uClassesIMendes,
   Winapi.ShellAPI, uframePesquisaPadrao, uframePesquisaProduto,
-  Vcl.Imaging.pngimage, Vcl.Menus, REST.Json, uFrmProdutosIMendes;
+  Vcl.Imaging.pngimage, Vcl.Menus, REST.Json, uFrmProdutosIMendes,
+  IBX.IBCustomDataSet;
 
 type
   TFrmEstoque = class(TFrmFichaPadrao)
@@ -436,6 +437,7 @@ type
       Buttons: TMsgDlgButtons; Captions: array of string): Integer;
     procedure AtualizaInformacoesDoProduto;
     procedure DefineLabelImpostosAproximados;
+    procedure AtualizaStatusIMendes;
   public
     { Public declarations }
   end;
@@ -2053,7 +2055,6 @@ procedure TFrmEstoque.AtualizaObjComValorDoBanco;
 var
   i : integer;
   sRegistroOld: String;
-  sStatusImendes : string;
 begin
   //Se não estiver ativo não carrega informações
   if not FormularioAtivo(Self) then
@@ -2526,21 +2527,7 @@ begin
   GravaImagemEstoque;
 
   //Mauricio Parizotto 2024-09-26
-  sStatusImendes  := DSCadastro.DataSet.FieldByName('STATUS_TRIBUTACAO').AsString;
-  lblStatusImendes.Caption :=  sStatusImendes + ' '+DSCadastro.DataSet.FieldByName('DATA_STATUS_TRIBUTACAO').AsString;
-
-  if sStatusImendes = _cStatusImendesConsultado then
-    lblStatusImendes.Font.Color := $00279D2D;
-
-  if sStatusImendes = _cStatusImendesNaoConsultado then
-    lblStatusImendes.Font.Color := clBlack;
-
-  if sStatusImendes = _cStatusImendesAlterado then
-    lblStatusImendes.Font.Color := $000F0FFF;
-
-  if sStatusImendes = _cStatusImendesPendente then
-    lblStatusImendes.Font.Color := $00FD6102;
-
+  AtualizaStatusIMendes;
 end;
 
 
@@ -4474,12 +4461,16 @@ begin
     if CodIMendes > 0 then
     begin
       DSCadastro.DataSet.FieldByName('CODIGO_IMENDES').AsInteger := CodIMendes;
+      DSCadastro.DataSet.Post;
+      DSCadastro.DataSet.Edit;
     end;
   end;
 
   if CodIMendes > 0 then
   begin
     //Busca tributação
+    GetTributacaoProd(TibDataSet(DSCadastro.DataSet));
+    AtualizaStatusIMendes;
   end;
 end;
 
@@ -4512,6 +4503,26 @@ begin
     end;
   end;
   Result := aMsgDlg.ShowModal;
+end;
+
+procedure TFrmEstoque.AtualizaStatusIMendes;
+var
+  sStatusImendes : string;
+begin
+  sStatusImendes  := DSCadastro.DataSet.FieldByName('STATUS_TRIBUTACAO').AsString;
+  lblStatusImendes.Caption :=  sStatusImendes + ' '+DSCadastro.DataSet.FieldByName('DATA_STATUS_TRIBUTACAO').AsString;
+
+  if sStatusImendes = _cStatusImendesConsultado then
+    lblStatusImendes.Font.Color := $00279D2D;
+
+  if sStatusImendes = _cStatusImendesNaoConsultado then
+    lblStatusImendes.Font.Color := clBlack;
+
+  if sStatusImendes = _cStatusImendesAlterado then
+    lblStatusImendes.Font.Color := $000F0FFF;
+
+  if sStatusImendes = _cStatusImendesPendente then
+    lblStatusImendes.Font.Color := $00FD6102;
 end;
 
 

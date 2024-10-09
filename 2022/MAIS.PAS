@@ -13421,6 +13421,8 @@ begin
     begin
       TSistema.GetInstance.Tema := _TemaModerno;
     end;
+
+    TSistema.GetInstance.CodFaixaImendes := ConfSistema.BD.IMendes.FaixaFaturamento;
   finally
     FreeAndNil(ConfSistema);
   end;

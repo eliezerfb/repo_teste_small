@@ -1,55 +1,46 @@
 inherited FrmProdutosIMendes: TFrmProdutosIMendes
   BorderIcons = [biSystemMenu]
-  Caption = 'Produtos'
+  Caption = 'Selecione o produto correspondente'
   ClientHeight = 380
   ClientWidth = 588
   Font.Height = -12
+  Font.Name = 'Microsoft Sans Serif'
   OnCreate = FormCreate
   ExplicitWidth = 604
   ExplicitHeight = 419
   PixelsPerInch = 96
-  TextHeight = 16
+  TextHeight = 15
   object dbgProdutos: TDBGrid
     Left = 20
-    Top = 15
+    Top = 5
     Width = 548
-    Height = 302
-    Anchors = [akLeft, akTop, akRight, akBottom]
+    Height = 312
     Ctl3D = False
     DataSource = DSProdutos
     DrawingStyle = gdsClassic
     FixedColor = clWindow
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -12
-    Font.Name = 'System'
-    Font.Style = [fsBold]
+    Font.Height = -13
+    Font.Name = 'Microsoft Sans Serif'
+    Font.Style = []
     Options = [dgEditing, dgTitles, dgColLines, dgRowLines, dgTabs, dgCancelOnExit]
     ParentCtl3D = False
     ParentFont = False
+    ReadOnly = True
     TabOrder = 0
     TitleFont.Charset = ANSI_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -13
     TitleFont.Name = 'Microsoft Sans Serif'
     TitleFont.Style = []
+    OnDrawColumnCell = dbgProdutosDrawColumnCell
     OnDblClick = dbgProdutosDblClick
     Columns = <
       item
         Expanded = False
         FieldName = 'Descricao'
-        Width = 200
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'CodEAN'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'Cest'
-        Width = 156
+        Width = 527
         Visible = True
       end>
   end
