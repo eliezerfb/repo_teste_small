@@ -1738,10 +1738,13 @@ type
     Dia1: TMenuItem;
     Semana1: TMenuItem;
     Ms1: TMenuItem;
+    ibDataSet16DRAWBACK: TIBStringField;
     Movimentaodoitemporperodo1: TMenuItem;
     Rankingdeprodutosvendidos1: TMenuItem;
     ibDataSet4IDESTOQUE: TIntegerField;
     ExportarNFesfiltradasemarquivoPDF1: TMenuItem;
+    ibDataSet4NATUREZA_RECEITA: TIBStringField;
+    ibDataSet14LISTAR: TIBStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -8149,6 +8152,8 @@ end;
 
 procedure TForm7.Image106Click(Sender: TObject);
 begin
+  //LogRetaguarda('inicio procedure TForm7.Image106Click(): 8137'); // Sandro Silva 2024-09-26
+
   FechaModulos;
 
   //Mauricio Parizotto 2023-09-21
@@ -8392,6 +8397,9 @@ begin
       end;
     end;
   end;
+
+  //LogRetaguarda('fim procedure TForm7.Image106Click(): 8383'); // Sandro Silva 2024-09-26
+
 end;
 
 procedure TForm7.VerificaItensInativos;
@@ -14947,6 +14955,19 @@ begin
 
             Form7.IBDataSet2CIDADE.AsString := Form7.IBDataSet99.FieldByname('NOME').AsString;
 
+            {Dailon Parisotto (f-20714) 2024-09-27 Inicio}
+            if (AnsiUpperCase(Form7.IBDataSet2ESTADO.AsString) = 'ES') and (Trim(Form7.IBDataSet2IE.AsString) <> EmptyStr) then
+            begin
+              if (ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet2IE.AsString),Form7.ibDataSet2ESTADO.AsString)) then
+              begin
+                Form7.IBDataSet2IE.AsString := '0' + Form7.IBDataSet2IE.AsString;
+
+                if (ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDataSet2IE.AsString),Form7.ibDataSet2ESTADO.AsString)) then
+                  Form7.IBDataSet2IE.AsString := Copy(Form7.IBDataSet2IE.AsString,2, Length(Form7.IBDataSet2IE.AsString));
+              end;
+            end;
+            {Dailon Parisotto (f-20714) 2024-09-27 Fim}
+
             { Dailon 2023-08-01 Inicio}
             slCNAE := TStringList.Create;
             try
@@ -15393,9 +15414,12 @@ begin
 
   {Sandro Silva 2024-04-22 inicio}
   // Aqui Atualiza promoção no grid
-  if AtualizaPromocao(True) then
+  if not (Form24.Showing) then // Sandro Silva 2024-09-27
   begin
-    DataSet.Refresh; //exibe o preço atualizado pela promoção ou não
+    if AtualizaPromocao(True) then
+    begin
+      DataSet.Refresh; //exibe o preço atualizado pela promoção ou não
+    end;
   end;
   {Sandro Silva 2024-04-22 fim}
 
@@ -15857,7 +15881,11 @@ begin
   sRegistro := DataSet.FieldByname('REGISTRO').AsString;
   if ibDataSet4PRECO.AsFloat <=0 then
     ibDataSet4PRECO.AsFloat := 0.01;
+
+  //LogRetaguarda('inicio assina registro procedure TForm7.ibDataSet4BeforePost(): 15860'); // Sandro Silva 2024-09-26
   AssinaRegistro('ESTOQUE',DataSet, True);
+  //LogRetaguarda('fim assina registro procedure TForm7.ibDataSet4BeforePost(): 15862'); // Sandro Silva 2024-09-26
+
   AuditaAlteracaoEstoqueManual;
 end;
 
@@ -20112,11 +20140,22 @@ begin
   end;
 
   //if Form10.Visible then
-  if FrmEstoque.Visible then
+  //if FrmEstoque.Visible then Mauricio Parizotto 2024-10-01
+  if FrmEstoque <> nil then
   begin
     if (pos('<',Sender.AsString)<>0) and (pos('>',Sender.AsString)<>0) then
     begin
       MensagemSistema('Parece que você está tentando incluir uma TAG. Verifique se existe um campo específico na aba Tags para incluir esta informação.',msgAtencao);
+    end;
+  end;
+
+  //Mauricio Parizotto 2024-10-01
+  if (Sender.FieldName = 'LIVRE4' ) then
+  begin
+    if (pos('NR=',UpperCase(Sender.AsString))<>0) then
+    begin
+      MensagemSistema('Parece que você está tentando informar o número da natureza da receita de PIS/COFINS.'+#13#10+
+                      'Agora essa informação deverá ser preenchida diretamente na aba IPI/PIS/COFINS.',msgAtencao);
     end;
   end;
 end;
@@ -20826,14 +20865,14 @@ begin
         Form7.ibDataSet23QUANTIDADE.AsFloat := 1;
       end else
       begin
-        Form7.ibDataSet23DESCRICAO.AsString := EmptyStr;
+        Form7.ibDataSet23DESCRICAO.AsString  := EmptyStr;
         Form7.ibDataSet23QUANTIDADE.AsString := EmptyStr;
-        Form7.ibDataSet23UNITARIO.AsString := EmptyStr;
-        Form7.ibDataSet23TOTAL.AsString := EmptyStr;
-        Form7.ibDataSet23CFOP.AsString := EmptyStr;
-        Form7.ibDataSet23ICM.AsString := EmptyStr;
-        Form7.ibDataSet23CST_ICMS.AsString := EmptyStr;
-        Form7.ibDataSet23CODIGO.AsString := EmptyStr;
+        Form7.ibDataSet23UNITARIO.AsString   := EmptyStr;
+        Form7.ibDataSet23TOTAL.AsString      := EmptyStr;
+        Form7.ibDataSet23CFOP.AsString       := EmptyStr;
+        Form7.ibDataSet23ICM.AsString        := EmptyStr;
+        Form7.ibDataSet23CST_ICMS.AsString   := EmptyStr;
+        Form7.ibDataSet23CODIGO.AsString     := EmptyStr;
 
         Form24.DbGrid1.SelectedIndex := 6;
       end;
@@ -22518,6 +22557,7 @@ begin
   ibDataSet14PISCOFINSLUCRO.AsString  := 'N';
   ibDataSet14REFERENCIANOTA.AsString  := 'N'; //Mauricio Parizotto 2024-06-21
   ibDataSet14IMPOSTOMANUAL.AsString   := 'N'; //Mauricio Parizotto 2024-07-24
+  ibDataSet14LISTAR.AsString          := 'S'; //Mauricio Parizotto 2024-09-27
 end;
 
 procedure TForm7.ibDataSet18NewRecord(DataSet: TDataSet);
@@ -36544,6 +36584,8 @@ end;
 
 procedure TForm7.TotalizaItensCompra;
 begin
+  //LogRetaguarda('procedure TForm7.TotalizaItensCompra: 36278'); // Sandro Silva 2024-09-26
+
   try
     Form7.ibDataSet24.Edit;
     Form7.ibDataSet24MERCADORIA.AsFloat      := 0;
@@ -36555,7 +36597,7 @@ begin
     Form7.ibDataSet24ICMSSUBSTI.AsFloat      := 0;
     Form7.ibDataSet24BASESUBSTI.AsFloat      := 0;
     Form7.ibDataSet24IPI.AsFloat             := 0;
-    Form7.ibDataSet24VFCPST.AsFloat          := 0.00;// Sandro Silva 2023-04-11
+    Form7.ibDataSet24VFCPST.AsFloat          := 0.00; // Sandro Silva 2023-04-11
     Form7.ibDataSet24ICMS_DESONERADO.AsFloat := 0; //Mauricio Parizotto 2023-07-18
 
     Form7.ibDataSet101.DisableControls;
@@ -36603,6 +36645,8 @@ begin
     CalculaTotalNota;
   except
   end;
+
+  //LogRetaguarda('procedure TForm7.TotalizaItensCompra: 36340'); // Sandro Silva 2024-09-26
 
   AgendaCommit(True);
 end;

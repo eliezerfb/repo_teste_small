@@ -8,8 +8,8 @@ object Form1: TForm1
   AlphaBlendValue = 250
   BorderStyle = bsSingle
   Caption = 'form'
-  ClientHeight = 895
-  ClientWidth = 1299
+  ClientHeight = 903
+  ClientWidth = 1301
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -14447,6 +14447,10 @@ object Form1: TForm1
       object IntegraoIta1: TMenuItem
         Caption = 'Integra'#231#227'o Ita'#250
         OnClick = IntegraoIta1Click
+      end
+      object IntegraoSicoob1: TMenuItem
+        Caption = 'Integra'#231#227'o Sicoob'
+        OnClick = IntegraoSicoob1Click
       end
     end
     object Calendrio1: TMenuItem

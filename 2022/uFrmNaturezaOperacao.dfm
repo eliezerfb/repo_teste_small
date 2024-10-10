@@ -11,7 +11,6 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
     end
     inherited pgcFicha: TPageControl
       ActivePage = tbsNatureza
-      ExplicitLeft = 20
       ExplicitWidth = 802
       ExplicitHeight = 453
       object tbsNatureza: TTabSheet
@@ -460,7 +459,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'SOBREIPI'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 13
+          TabOrder = 14
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
@@ -477,7 +476,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'SOBREOUTRAS'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 14
+          TabOrder = 15
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
@@ -494,7 +493,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'FRETESOBREIPI'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 15
+          TabOrder = 16
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
@@ -514,7 +513,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           MaxLength = 32768
           ParentFont = False
-          TabOrder = 19
+          TabOrder = 20
           OnEnter = memObservacaoEnter
           OnKeyDown = memObservacaoKeyDown
           OnKeyPress = memObservacaoKeyPress
@@ -618,7 +617,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'IPISOBREOUTRA'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 16
+          TabOrder = 17
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
@@ -635,7 +634,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'REFERENCIANOTA'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 17
+          TabOrder = 18
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
@@ -652,7 +651,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'IMPOSTOMANUAL'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 18
+          TabOrder = 19
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
@@ -665,7 +664,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Height = 272
           BevelOuter = bvNone
           Color = clWhite
-          TabOrder = 20
+          TabOrder = 21
           object Image4: TImage
             Left = 17
             Top = 15
@@ -1506,6 +1505,23 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
             OnExit = SMALL_DBEditXExit
             OnKeyDown = PadraoKeyDown
           end
+        end
+        object DBCheckBox3: TDBCheckBox
+          Left = 293
+          Top = 191
+          Width = 124
+          Height = 17
+          Alignment = taLeftJustify
+          BiDiMode = bdRightToLeft
+          Caption = 'Listar na Nota Fiscal'
+          DataField = 'LISTAR'
+          DataSource = DSCadastro
+          ParentBiDiMode = False
+          TabOrder = 13
+          ValueChecked = 'S'
+          ValueUnchecked = 'N'
+          OnClick = DBCheckSobreClick
+          OnKeyDown = PadraoKeyDown
         end
       end
       object tbsPisCofins: TTabSheet

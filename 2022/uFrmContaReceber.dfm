@@ -822,7 +822,7 @@ inherited FrmContaReceber: TFrmContaReceber
         object edtAutorizacao: TSMALL_DBEdit
           Left = 574
           Top = 71
-          Width = 94
+          Width = 288
           Height = 20
           AutoSize = False
           BevelInner = bvNone

@@ -312,7 +312,7 @@ uses Mais, Unit7
 {$R *.DFM}
 
 
-procedure GetDescricaoConvercao;
+procedure GetDescricaoConversao;
 begin
   {Mauricio Parizotto 2024-02-21
   Form1.ibQuery1.Close;
@@ -1257,11 +1257,17 @@ begin
       end;
       {Dailon Parisotto (smal-630/smal-674) 2024-08-22 Fim}
 
-      // Precis posicionar no primeiro porque outra rotina pode ter movimentado o ponteiro do dataset e deixado no final (.Eof True)
+      //LogRetaguarda('procedure TForm24.FormClose(): 1260'); // Sandro Silva 2024-09-26
+
+      // Precisa posicionar no primeiro porque outra rotina pode ter movimentado o ponteiro do dataset e deixado no final (.Eof True)
       Form7.ibDataSet23.First; // Sandro Silva 2024-02-23
 
       while not Form7.ibDataSet23.Eof do
       begin
+
+        // LogRetaguarda('procedure TForm24.FormClose() ' + Form7.ibDataSet23DESCRICAO.AsString + ': 1268'); // Sandro Silva 2024-09-26
+
+
         Form7.ibDataSet23.Edit;
 
         if (Form7.ibDataSet23QUANTIDADE.AsFloat > 0)  and (AllTrim (Form7.ibDataSet23DESCRICAO.AsString) <> '') then
@@ -1275,7 +1281,7 @@ begin
 
           //Mauricio Parizotto 2024-02-19
           edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString, Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
-          GetDescricaoConvercao;
+          GetDescricaoConversao;
 
           try
             //Remove marcação de prduto novo
@@ -1330,7 +1336,7 @@ begin
                                                                      Form7.ibDataSet24SEGURO.AsFloat +       // o seguro //
                                                                      Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
-                                                                  )); 
+                                                                  ));
                           {Sandro Silva 2023-10-16 fim}
 
                           {Sandro Silva 2023-03-02 inicio}
@@ -1473,8 +1479,9 @@ begin
                             {Dailon Parisotto (smal-630/smal-674) 2024-09-03 Fim}
                           end;
 
-                          Form7.ibDataSet4.Post;
-                          Form7.ibDataSet4.Edit;
+                          //Sandro Silva 2024-09-27 Form7.ibDataSet4.Post;
+                          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then // Sandro Silva 2024-09-27
+                            Form7.ibDataSet4.Edit;
                           Form7.ibDataSet4QTD_COMPRA.AsFloat    := Form7.ibDataSet4QTD_COMPRA.AsFloat + Form7.ibDataSet23QUANTIDADE.Asfloat;
 
                           Form7.ibDataSet4FORNECEDOR.ReadOnly   := False;
@@ -1519,7 +1526,7 @@ begin
                         end;
                         {Sandro Silva 2023-10-17 fim}
 
-                        Form7.ibDataSet4.Post;
+                        //Sandro Silva 2024-09-27 Form7.ibDataSet4.Post;
                       end;
 
                       //Mauricio Parizotto 2024-03-19
@@ -1527,10 +1534,11 @@ begin
                       begin
                         if Form7.ibDataSet23LISTA.AsFloat <> 0 then
                         begin
-                          Form7.ibDataSet4.Edit;
+                          if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then // Sandro Silva 2024-09-27
+                            Form7.ibDataSet4.Edit;
                           Form7.ibDataSet4PRECO.AsFloat      := Form7.ibDataSet23LISTA.AsFloat;
                           Form7.ibDataSet4ALTERADO.AsString  := '1';
-                          Form7.ibDataSet4.Post;
+                          //Sandro Silva 2024-09-27 Form7.ibDataSet4.Post;
                         end;
                       end;
 
@@ -1550,12 +1558,13 @@ begin
                       if Pos('=',UpperCase(Form7.ibDataSet14INTEGRACAO.AsString)) = 0 then
                       begin
                         // Atenção a rotina acima altera a quantidade no estoque
-                        Form7.ibDataSet4.Edit;
+                        if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then // Sandro Silva 2024-09-27
+                          Form7.ibDataSet4.Edit;
                         Form7.ibDataSet4QTD_ATUAL.AsFloat := Form7.ibDataSet4QTD_ATUAL.AsFloat + Form7.ibDataSet23QUANTIDADE.AsFloat;
-                        
+
                         // Atenção a rotina acima altera a quantidade no estoque
 
-                        Form7.ibDataSet4.Post;
+                        //Sandro Silva 2024-09-27 Form7.ibDataSet4.Post;
                       end;
 
                       Form7.sModulo := 'NAO';
@@ -1597,7 +1606,7 @@ begin
                 end;
 
                 // Grava a nova quantidade o novo fornecedor e a ultima compra no estoque //
-                Form7.ibDataset4.Post;
+                //Sandro Silva 2024-09-27 Form7.ibDataset4.Post;
               except
               end;
             end;
@@ -1613,7 +1622,12 @@ begin
 
         Form7.ibDataSet23.Post;
         Form7.ibDataSet23.Next;
+
+        //LogRetaguarda('procedure TForm24.FormClose() ' + Form7.ibDataSet23DESCRICAO.AsString + ': 1623'); // Sandro Silva 2024-09-26
+
       end;
+
+      //LogRetaguarda('procedure TForm24.FormClose(): 1620'); // Sandro Silva 2024-09-26
 
       Form1.bFlag := True;
       Form7.sModulo := 'COMPRAS';
@@ -1726,6 +1740,9 @@ end;
 
 procedure TForm24.SMALL_DBEdit40Change(Sender: TObject);
 begin
+
+  //LogRetaguarda('inicio procedure TForm24.SMALL_DBEdit40Change(): 1741'); // Sandro Silva 2024-09-26
+
   if (Form24.Visible) and (Form7.ibDataSet14.Active) then
   begin
     Form7.ibDataSet99.Close;
@@ -1744,10 +1761,15 @@ begin
     Form7.ibDataSet14.EnableControls;
     //
   end;
+
+  //LogRetaguarda('inicio procedure TForm24.SMALL_DBEdit40Change(): 1762'); // Sandro Silva 2024-09-26
+
 end;
 
 procedure TForm24.SMALL_DBEdit40Enter(Sender: TObject);
 begin
+  //LogRetaguarda('inicio procedure TForm24.SMALL_DBEdit40Enter(): 1762'); // Sandro Silva 2024-09-26
+
   //
   Panel5.Visible  := False;
   dBGrid3.Visible := False;
@@ -1786,6 +1808,7 @@ begin
   //
   SMALL_DBEdit40.SelectAll;
   //
+  //LogRetaguarda('fim procedure TForm24.SMALL_DBEdit40Enter(): 1762'); // Sandro Silva 2024-09-26
 end;
 
 procedure TForm24.SMALL_DBEdit40Exit(Sender: TObject);
@@ -1794,6 +1817,8 @@ var
   sText : string;
   tProcura : TDataSet;
 begin
+  //LogRetaguarda('inicio procedure TForm24.SMALL_DBEdit40Exit(): 1808'); // Sandro Silva 2024-09-26
+
   //************************************
   // Joga p/obs a obs na tabela de icm *
   //************************************
@@ -1831,6 +1856,8 @@ begin
   //
   if SMALL_DBEdit40.Text = '' then SMALL_DBEdit40.Text := Form7.ibDataSet14NOME.AsString;
   //
+
+  //LogRetaguarda('fim procedure TForm24.SMALL_DBEdit40Exit(): 1848'); // Sandro Silva 2024-09-26
 end;
 
 
@@ -1919,7 +1946,8 @@ begin
   //
   Form1.bChaveSelecionaCliente := True;
   //
-  if SMALL_DBEdit39.Text = Form7.ibDataSet2.fieldByName('NOME').AsString then  MostraFoto2(True);
+  if SMALL_DBEdit39.Text = Form7.ibDataSet2.fieldByName('NOME').AsString then
+    MostraFoto2(True);
   //
   SMALL_DBEdit39.SetFocus;
   dBGrid3.Visible := False;
@@ -1940,6 +1968,9 @@ procedure TForm24.SMALL_DBEdit39Exit(Sender: TObject);
 var
   sRegistro : String;
 begin
+
+  //LogRetaguarda('inicio procedure TForm24.SMALL_DBEdit39Exit(): 1969'); // Sandro Silva 2024-09-26
+
   //
   Form1.bChaveSelecionaCliente := False;
   //
@@ -2008,7 +2039,10 @@ begin
     end;
   end;
   //
-  if SMALL_DBEdit39.Text = Form7.ibDataSet2.fieldByName('NOME').AsString then  MostraFoto2(True);
+  if SMALL_DBEdit39.Text = Form7.ibDataSet2.fieldByName('NOME').AsString then
+    MostraFoto2(True);
+
+  //LogRetaguarda('fim procedure TForm24.SMALL_DBEdit39Exit(): 1969'); // Sandro Silva 2024-09-26
 end;
 
 procedure TForm24.SMALL_DBEdit39KeyUp(Sender: TObject; var Key: Word;
@@ -2269,7 +2303,7 @@ begin
 
     //Mauricio Parizotto 2024-02-19
     edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
-    GetDescricaoConvercao;
+    GetDescricaoConversao;
   end;
 
   MostraFoto(True);
@@ -2373,12 +2407,13 @@ begin
 
   //Mauricio Parizotto 2024-02-19
   edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
-  GetDescricaoConvercao;
+  GetDescricaoConversao;
 end;
 
 procedure TForm24.DBGrid1ColExit(Sender: TObject);
 begin
   exit;
+
   Form7.ibDataSet23DESCRICAOChange(Form7.ibDataSet23DESCRICAO);
   Form7.ibDataSet23QTD_ORIGINALChange(Form7.ibDataSet23QTD_ORIGINAL);
   Form7.ibDataSet23UNITARIO_OChange(Form7.ibDataSet23UNITARIO_O);
@@ -2454,6 +2489,8 @@ procedure TForm24.FormShow(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
+  //LogRetaguarda('inicio procedure TForm24.FormShow(): 2468'); // Sandro Silva 2024-09-26
+
   //
   Form24.Tag := 1;
   Form24.ActiveControl := Nil;
@@ -2573,7 +2610,9 @@ begin
   begin
     // Atenção a rotina abaixo altera a quantidade no estoque
     Form7.ibDataSet23.DisableControls;
-    //LogRetaguarda('unit24 ibDataSet23.DisableControls 2473'); // Sandro Silva 2023-12-04
+
+    //LogRetaguarda('unit24 ibDataSet23.DisableControls 2473'); // Sandro Silva 2024-09-26
+
     Form7.ibDataSet23.First;
     while not Form7.ibDataSet23.Eof do
     begin
@@ -2587,7 +2626,7 @@ begin
 
       //Mauricio Parizotto 2024-02-19
       edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
-      GetDescricaoConvercao;
+      GetDescricaoConversao;
 
       if Form7.ibDataSet23CODIGO.AsString = Form7.ibDataSet4CODIGO.AsString then
       begin
@@ -2611,6 +2650,8 @@ begin
     end;
   end;
 
+  //LogRetaguarda('unit24 ibDataSet23.DisableControls 2614'); // Sandro Silva 2024-09-26
+
   Form7.sModulo := 'COMPRA';
 
   Form7.ibDataSet4.Close;
@@ -2620,7 +2661,7 @@ begin
 
   //Mauricio Parizotto 2024-02-19
   edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
-  GetDescricaoConvercao;
+  GetDescricaoConversao;
 
   Form7.ibDataSet23.EnableControls;
 
@@ -2648,7 +2689,9 @@ begin
 
   {Sandro Silva 2023-12-04 inicio}
   Grid_Compra(True);
-  //LogRetaguarda('unit24 exibiu colunas 2549'); // Sandro Silva 2023-12-04
+
+  //LogRetaguarda('unit24 exibiu colunas 2655'); // Sandro Silva 2024-09-26
+
   {Sandro Silva 2023-12-04 fim}
 
   Form24.Button1Click(Sender);
@@ -2662,12 +2705,17 @@ begin
 
   if DBGrid1.DataSource.DataSet.Active then
     DBGrid1.DataSource.DataSet.First;
+
+  //LogRetaguarda('fim procedure TForm24.FormShow(): 2685'); // Sandro Silva 2024-09-26
+
 end;
 
 procedure TForm24.FormActivate(Sender: TObject);
 var
   cIndPres: String;
 begin
+  //LogRetaguarda('inicio procedure TForm24.FormActivate(): 2693'); // Sandro Silva 2024-09-26
+
   // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria);
   Form24.Top     := Form7.Top;
   Form24.Left    := Form7.Left;
@@ -2780,9 +2828,7 @@ begin
                     Edit9.Text := '9=Operação não presencial, outros';
                   end else
                   begin
-                    //
                     Edit9.Text := '1=Operação presencial';
-                    //
                   end;
                 end;
               end;
@@ -2795,10 +2841,19 @@ begin
       Edit8.OnChange := Edit8Change;
       Edit9.OnChange := Edit9Change;
     end;
+
     Form7.ibDataSet14.DisableControls;
     Form7.ibDataSet14.Close;
+    {Mauricio Parizotto 2024-09-24 Inicio
     Form7.ibDataSet14.SelectSQL.Clear;
     Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''1'' or  SubString(CFOP from 1 for 1) = ''2'' or SubString(CFOP from 1 for 1) = ''3''  order by upper(NOME)');
+    }
+    Form7.ibDataSet14.SelectSQL.Text := ' Select * '+
+                                        ' From ICM '+
+                                        ' Where (SubString(CFOP from 1 for 1) = ''1'' or  SubString(CFOP from 1 for 1) = ''2'' or SubString(CFOP from 1 for 1) = ''3'')  '+
+                                        '   and (Coalesce(LISTAR,''S'') = ''S''  or NOME = '+QuotedStr(Form7.ibDAtaSet24OPERACAO.AsString)+') '+
+                                        ' Order by upper(NOME)';
+    {Mauricio Parizotto 2024-09-24 Fim}
     Form7.ibDataSet14.Open;
     Form7.ibDataSet14.EnableControls;
 
@@ -2863,6 +2918,9 @@ begin
   Form7.HintTotalNotaCompra;
 
   dBGrid2.Visible := False;
+
+  //LogRetaguarda('fim procedure TForm24.FormActivate(): 2891'); // Sandro Silva 2024-09-26
+
 end;
 
 procedure TForm24.Incluirnovoitemnoestoque1Click(Sender: TObject);
@@ -3015,7 +3073,7 @@ begin
       if Form7.ibDataSet4FATORC.AsFloat = 0 then
         Form7.ibDataSet4FATORC.AsFloat :=1;
 
-      GetDescricaoConvercao;
+      GetDescricaoConversao;
 
       try
         if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then Form7.ibDataset23.Edit;
@@ -3245,7 +3303,7 @@ begin
 
       //Mauricio Parizotto 2024-02-19
       edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
-      GetDescricaoConvercao;
+      GetDescricaoConversao;
     end;
   end;
 end;
@@ -3271,7 +3329,7 @@ begin
 
     //Mauricio Parizotto 2024-02-19
     edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
-    GetDescricaoConvercao;
+    GetDescricaoConversao;
   end;
 
   if Form7.ibDataSet4DESCRICAO.AsString <> '' then
@@ -3354,7 +3412,7 @@ begin
 
       //Mauricio Parizotto 2024-02-19
       edtFatorC.Text := FloatToStr(GetFatorConversaoItemCompra(Form7.ibDataSet23REGISTRO.AsString,Form7.ibDataSet4FATORC.AsFloat,Form7.ibDataSet23.Transaction));
-      GetDescricaoConvercao;
+      GetDescricaoConversao;
 
       Form24.edtAlteraEntrada.Text :=  '';
       
@@ -3626,7 +3684,7 @@ begin
           Form7.ibDataSet4FATORC.AsFloat := 1;
         end;
 
-        GetDescricaoConvercao;
+        GetDescricaoConversao;
       end else
       begin
         Form24.Label89.Caption := '';
@@ -3647,7 +3705,7 @@ begin
       if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
         Form7.ibDataset4.Edit;
       Form7.ibDataSet4MEDIDAE.AsString :=  cboUnidadeEntrada.Text;
-      GetDescricaoConvercao;
+      GetDescricaoConversao;
     end else
     begin
       Form24.Label89.Caption := '';
@@ -3668,7 +3726,7 @@ begin
       if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then
         Form7.ibDataset4.Edit;
       Form7.ibDataSet4MEDIDA.AsString  :=  cboUnidadeSaida.Text;
-      GetDescricaoConvercao;
+      GetDescricaoConversao;
     end else
     begin
       Form24.Label89.Caption := '';
@@ -3689,7 +3747,7 @@ begin
         Form7.ibDataset4.Post;
       Form7.ibDataset4.Edit;
 
-      GetDescricaoConvercao;
+      GetDescricaoConversao;
     end else
     begin
       Form24.Label89.Caption := '';
@@ -3711,7 +3769,7 @@ begin
         Form7.ibDataset4.Post;
       Form7.ibDataset4.Edit;
 
-      GetDescricaoConvercao;
+      GetDescricaoConversao;
     end else
     begin
       Form24.Label89.Caption := '';

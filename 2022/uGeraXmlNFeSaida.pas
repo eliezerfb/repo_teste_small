@@ -45,6 +45,7 @@ var
   dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
   dvFCPSTRet_W06b: Double; // Sandro Silva 2024-03-25
   sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-06-16
+  FbAbortar: Boolean; // Dailon Parisotto 2024-09-23
 
   procedure GeraXmlNFeSaida;
   procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
@@ -54,7 +55,7 @@ var
 implementation
 
 uses uFrmInformacoesRastreamento, uFuncoesFiscais, uFuncoesRetaguarda,
-  uDialogs, ufrmOrigemCombustivel, uFuncoesBancoDados;
+  uDialogs, ufrmOrigemCombustivel, uFuncoesBancoDados, ufrmInformacoesExportacaoNFe;
 
 {
 function SqlSelectDadosItensNotaEntrada(sCodigo: String): String;
@@ -198,6 +199,7 @@ var
 
   bPagouComTEF: Boolean;
 begin
+  FbAbortar := False;
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
   else
@@ -825,47 +827,37 @@ begin
           Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
           Form7.spdNFeDataSets.Campo('CNPJ_E02').Value := '';
 
-          sPais    := 'Estados Unidos';
-          sCodPais := '2496';
+          sPais            := EmptyStr;
+          sCodPais         := EmptyStr;
+          sUFEmbarq        := EmptyStr;
+          sLocaldeEmbarque := EmptyStr;
+          sLocalDespacho   := EmptyStr;
+          sEx15            := EmptyStr;
 
-          Form29.Label_01.Visible := True;
-          Form29.Label_02.Visible := True;
-          Form29.Label_03.Visible := True;
-          Form29.Label_04.Visible := True;
-          Form29.Label_05.Visible := True;
-          Form29.Label_06.Visible := True;
+          frmInformacoesExportacaoNFe := TfrmInformacoesExportacaoNFe.Create(nil);
+          try
+            frmInformacoesExportacaoNFe.Transaction := Form7.IBTransaction1;
+            frmInformacoesExportacaoNFe.NumeroNF    := Form7.ibDataSet15.FieldByname('NUMERONF').AsString;
+            frmInformacoesExportacaoNFe.ShowModal;
 
-          Form29.Edit_01.Visible := True;
-          Form29.Edit_02.Visible := True;
-          Form29.Edit_03.Visible := True;
-          Form29.Edit_04.Visible := True;
-          Form29.Edit_05.Visible := True;
-          Form29.Edit_06.Visible := True;
+            if frmInformacoesExportacaoNFe.ClicouOK then
+            begin
+              sPais            := frmInformacoesExportacaoNFe.Pais;
+              sCodPais         := frmInformacoesExportacaoNFe.CodPais;
+              sUFEmbarq        := frmInformacoesExportacaoNFe.UFEmbarq;
+              sLocaldeEmbarque := frmInformacoesExportacaoNFe.LocalEmbarque;
+              sLocalDespacho   := frmInformacoesExportacaoNFe.LocalDespacho;
+              sEx15            := frmInformacoesExportacaoNFe.IdentCompradorExterior;
+            end else
+            begin
+              FbAbortar := True;
+              Form7.SetTextoCampoSTATUSNFe('Processo cancelado pelo usuário (informações de exportação/drawback)');
+              MensagemSistema('Processo cancelado pelo usuário (informações de exportação/drawback).', msgInformacao);
+            end;
+          finally
+            FreeAndNil(frmInformacoesExportacaoNFe);
+          end;
 
-          Form29.Label_01.Caption := 'País destino:';
-          Form29.Label_02.Caption := 'Código do País destino:';
-          Form29.Label_03.Caption := 'Identificação do destinatário no caso de comprador estrangeiro:';
-          Form29.Label_04.Caption := 'UF de embarque:';
-          Form29.Label_05.Caption := 'Local de embarque:';
-          Form29.Label_06.Caption := 'Descrição do Recinto Alfandegado'+chr(10)+
-                                     'onde foi efetivado o despacho'+chr(10)+
-                                     'conforme padronização da RFB:';
-
-          Form29.Edit_01.Text := sPais;
-          Form29.Edit_02.Text := sCodPais;
-          Form29.Edit_03.Text := '';
-          Form29.Edit_04.Text := UpperCase(Form7.ibDataSet13ESTADO.AsString);
-          Form29.Edit_05.Text := '';
-          Form29.Edit_06.Text := '';
-
-          Form1.Small_InputForm_Dados('Exportação');
-
-          sPais            := Form29.Edit_01.Text;
-          sCodPais         := Form29.Edit_02.Text;
-          sEx15            := Form29.Edit_03.Text;
-          sUFEmbarq        := Form29.Edit_04.Text;
-          sLocaldeEmbarque := Form29.Edit_05.Text;
-          sLocalDespacho   := Form29.Edit_06.Text;
 {
           sPais    := Form1.Small_InputForm('NFe', 'País destino', 'Estados Unidos');
           sCodPais := Form1.Small_InputForm('NFe', 'Código do País destino', '2496');
@@ -934,7 +926,7 @@ begin
     begin
       Form7.ibDataSet4.Close;
       Form7.ibDataSet4.Selectsql.Clear;
-      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString)); 
+      Form7.ibDataSet4.Selectsql.Add('select * from ESTOQUE where CODIGO='+QuotedStr(Form7.ibDataSet16CODIGO.AsString));
       Form7.ibDataSet4.Open;
 
       if (Alltrim(Form7.ibDataSet4DESCRICAO.AsString) = Alltrim(Form7.ibDataSet16DESCRICAO.AsString)) and (Alltrim(Form7.ibDataSet4DESCRICAO.AsString) <> '') then
@@ -2109,7 +2101,8 @@ begin
     </veicProd>
     }
 
-    if Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7' then // Exportação
+//    if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7') then // Exportação Dailon Parisotto 2024-10-01 - Devido a item de obs estar limpando o DrawBack
+    if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7') and (Form7.ibDataSet16.FieldByname('CODIGO').AsString <> EmptyStr) then // Exportação
     begin
       // Controle de Exportação por Item
       Form7.spdNFeDataSets.IncluirPart('adi');
@@ -2120,8 +2113,15 @@ begin
 
       try
         //sEx14 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número do ato concessório de Drawback:',sEx14); Mauricio Parizotto 2024-08-08
+
+        {Dailon Parisotto (smal-706) 2024-09-19 Inicio
+
         sEx14 := Form1.Small_InputForm('NF-e exportação','Item: '+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número do ato concessório de Drawback:',sEx14);
         Form7.spdNFeDataSets.Campo('nDraw_I51').Value  := sEx14;      // Número do ato concessório de Drawback
+        }
+        sEx14 := Form7.ibDataSet16.FieldByname('DRAWBACK').AsString;
+        Form7.spdNFeDataSets.Campo('nDraw_I51').Value  := Form7.ibDataSet16.FieldByname('DRAWBACK').AsString;      // Número do ato concessório de Drawback
+        {Dailon Parisotto (smal-706) 2024-09-19 Fim}
 
         // Nota fiscal de exportação referenciada
         if (Copy(Form7.ibDataSet16CFOP.AsString,2,3) = '503') or (Copy(Form7.ibDataSet16CFOP.AsString,2,3) = '501') then
@@ -2475,7 +2475,7 @@ begin
 
 
     {Sandro Silva 2023-10-31 inicio}
-    if (Form7.spdNFeDataSets.Campo('indFinal_B25a').Value <> '1') // não é consumidor final 
+    if (Form7.spdNFeDataSets.Campo('indFinal_B25a').Value <> '1') // não é consumidor final
     and (Trim(Form7.spdNFeDataSets.Campo('cProdANP_LA02').AsString) <> '')
     and ((StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0) + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0) > 0)) // regra LA18-20
     and ((Pos('|' + Form7.spdNFeDataSets.Campo('CST_N12').AssTring + '|', '|61|') > 0) or
@@ -2770,7 +2770,7 @@ begin
           Form7.spdNFeDataSets.Campo('pPIS_Q08').Value  := '0.00'; // Alíquota em Percencual do PIS
           Form7.spdNFeDataSets.Campo('vPIS_Q09').Value  := '0.00';  // Valor do PIS sobre serviços
         end;
-            
+
         // COFINS Sobre Serviços
         if (rpCOFINS * bcPISCOFINS_op <> 0) then
         begin
@@ -3077,7 +3077,7 @@ begin
       //
 
       if Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) = '' then
-        stPag_YA02 := '' 
+        stPag_YA02 := ''
       else
         stPag_YA02 := IdFormasDePagamentoNFe(Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString)); // Sandro Silva 2023-07-13 stPag_YA02 := Copy(Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString), 1, 2);
       if stPag_YA02 = '' then
@@ -3214,7 +3214,7 @@ while not Form7.ibDataSet7.Eof do
 //                  Form7.spdNFeDataSets.Campo('nDup_Y08').Value  := Form7.ibDataSet7DOCUMENTO.AsString; // Número da Duplicata
       Form7.spdNFeDataSets.Campo('dVenc_Y09').Value := StrTran(DateToStrInvertida(Form7.ibDataSet7VENCIMENTO.AsDateTime),'/','-');; // Data de Vencimento da Duplicata
       Form7.spdNFeDataSets.Campo('vDup_Y10').Value  := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat); // Valor da Duplicata
-          
+
       // Soma o total das parcelas
       try
         fTotalDupl := fTotalDupl + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vDup_Y10').AsString,',',''),'.',','));
@@ -3231,7 +3231,7 @@ while not Form7.ibDataSet7.Eof do
         end;
       except
       end;
-          
+
       Form7.spdNFeDataSets.SalvarCobranca;
     end;
     }
