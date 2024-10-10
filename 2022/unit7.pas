@@ -26641,9 +26641,12 @@ begin
                   spdNFe.ExportarDanfe(cLote, fNFE, cFormato,1, cDirectory +'\'+cNomePDF);
                   Inc(nCount);
                 end;
-              end;
-            end;
-          end;
+              end else
+                raise Exception.Create('Nota sem tag <nfeProc>.');
+            end else
+              raise Exception.Create('Nota sem PROTOCOLO.');
+          end else
+            raise Exception.Create('Nota sem NFEID.');
         except
           on E: exception do
           begin
@@ -26666,8 +26669,11 @@ begin
           if not DirectoryExists(ExtractFilePath(Application.ExeName)+ '\LOG') then
             CreateDir(ExtractFilePath(Application.ExeName)+ '\LOG');
 
-          if (slLog.Count > 1) and (DirectoryExists(cNomeArquivoLog)) then
+          if (slLog.Count > 1) and (DirectoryExists(ExtractFilePath(Application.ExeName)+ '\LOG')) then
+          begin
             slLog.SaveToFile(cNomeArquivoLog);
+            Sleep(200);
+          end;
         end;
 
         FechaTelaProcessamento;
