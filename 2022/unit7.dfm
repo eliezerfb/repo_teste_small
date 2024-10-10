@@ -19661,8 +19661,12 @@ object Form7: TForm7
         OnClick = Exportar1Click
       end
       object ExportarNFesfiltradasemarquivoXML1: TMenuItem
-        Caption = 'Exportar NFe'#39's filtradas em arquivo XML '
+        Caption = 'Exportar NF-e'#39's filtradas em arquivo XML '
         OnClick = ExportarNFesfiltradasemarquivoXML1Click
+      end
+      object ExportarNFesfiltradasemarquivoPDF1: TMenuItem
+        Caption = 'Exportar NF-e'#39's filtradas em arquivo PDF'
+        OnClick = ExportarNFesfiltradasemarquivoPDF1Click
       end
       object ExportarNFesemarquivoXML1: TMenuItem
         Caption = 'Enviar XML'#39's por e-mail para contabilidade'
