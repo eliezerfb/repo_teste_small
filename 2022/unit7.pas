@@ -18719,6 +18719,22 @@ begin
           Form7.ibDataSet16.Delete;
         end;
 
+        {Sandro Silva 2024-10-10 inicio}
+        if bFind then
+        begin
+          if ProdutoTemComposicaoCircular(Form7.ibDataSet4CODIGO.AsString, Form7.ibDataSet4.Transaction) then
+          begin
+            Form7.ibDataSet16CODIGO.Clear;
+            Form7.ibDataSet16DESCRICAO.Clear;
+            bFind := False;
+            MensagemSistema(Form7.ibDataSet4CODIGO.AsString + ' - ' + Form7.ibDataSet4DESCRICAO.AsString + #13 + #13 +
+              'Produto com composição circular' + #13 + #13 +
+              'Corrija a composição antes de lançar na nota' + #13 + #13
+              , msgAtencao);
+          end;
+        end;
+        {Sandro Silva 2024-10-10 fim}
+
         //  Preenche os dados do arquivo NOTA0001.DBF
         //  se o produto for encontrado
         if bFind then

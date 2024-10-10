@@ -71,6 +71,10 @@ uses
   function ProdutoComposto(IBTransaction: TIBTransaction; sCodigoProduto: String): Boolean;
   procedure FabricaComposto(const sCodigo: String; DataSetEstoque: TIBDataSet;
     dQtdMovimentada: Double; var bFabrica: Boolean; iHierarquia: Integer; var sModulo: String); // Sandro Silva 2023-11-06
+  function ProdutoTemComposicaoCircular(sCodigo: String;
+    IBTRANSACTION: TIBTransaction): Boolean;
+  function ComposicaoCircular(const sCodigo: String;
+    IBTRANSACTION: TIBTransaction; slCompostoPai: TStringList): Boolean;
   function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
   function GetFatorConversaoItemCompra(CodRegItem:string; valPadrao: Double; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-02-19
   function GetIVAProduto(IDESTOQUE : integer; UF : string; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-09-11
@@ -825,6 +829,99 @@ begin
     FreeAndNil(IBQCOMPOSTO);
     sModulo := sModuloOld;// Sandro Silva 2023-12-05
   end;
+end;
+
+function ProdutoTemComposicaoCircular(sCodigo: String;
+  IBTRANSACTION: TIBTransaction): Boolean;
+var
+  slCompostoPai: TStringList;
+begin
+  slCompostoPai := TStringList.Create;
+  Result := ComposicaoCircular(sCodigo, IBTRANSACTION, slCompostoPai);
+  FreeAndNil(slCompostoPai);
+end;
+
+function ComposicaoCircular(const sCodigo: String;
+  IBTRANSACTION: TIBTransaction; slCompostoPai: TStringList): Boolean;
+var
+  IBQCOMPOSTO: TIBQuery;
+  IBQESTOQUE: TIBQuery;
+  function ValidaSeInsumoEhComposto(sCodigo: String): Boolean;
+  var
+    iCodigo: Integer;
+  begin
+    for iCodigo := 0 to slCompostoPai.Count - 1 do
+    begin
+      if sCodigo = slCompostoPai.Strings[iCodigo] then
+      begin
+        Result := True;
+        Break;
+      end;
+    end;
+  end;
+begin
+  Result := False;
+
+  //Faz a fabricação do produto composto
+
+  IBQCOMPOSTO := CriaIBQuery(IBTRANSACTION);
+  IBQESTOQUE  := CriaIBQuery(IBTRANSACTION);
+  try
+
+    //Seleciona a mat rias-prima do produto
+    IBQCOMPOSTO.Close;
+    IBQCOMPOSTO.SQL.Clear;
+    IBQCOMPOSTO.SQL.Text :=
+      'select C.*, E.CODIGO as CODIGO_INSUMO ' +
+      'from COMPOSTO C ' +
+      'join ESTOQUE E on E.DESCRICAO = C.DESCRICAO ' +
+      'where C.CODIGO = ' + QuotedStr(sCodigo);
+    IBQCOMPOSTO.Open;
+
+    if IBQCOMPOSTO.RecordCount > 0 then
+    begin
+
+      slCompostoPai.Add(sCodigo);
+
+      IBQESTOQUE.Close;
+      IBQESTOQUE.SQL.Text :=
+        'select * ' +
+        'from ESTOQUE ' +
+        'where CODIGO = :CODIGO ';
+      IBQESTOQUE.ParamByName('CODIGO').AsString := sCodigo;
+      IBQESTOQUE.Open;
+
+      if IBQESTOQUE.Locate('CODIGO', sCodigo, []) then
+      begin
+
+        //LogRetaguarda(DupeString(' ', iHierarquia) + '>Início da composição do produto: ' + IBQESTOQUE.FieldByName('CODIGO').AsString + ' - ' + IBQESTOQUE.FieldByName('DESCRICAO').AsString);
+
+        IBQCOMPOSTO.First;
+        while not IBQCOMPOSTO.Eof do
+        begin
+
+          if ValidaSeInsumoEhComposto(IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString) then
+          begin
+            Break;
+          end;
+
+          if ComposicaoCircular(IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString, IBTRANSACTION, slCompostoPai) = False then
+          begin
+            Result := True;
+            Break;
+          end;
+
+          IBQCOMPOSTO.Next;
+
+        end;
+
+      end;
+    end;
+  finally
+    FreeAndNil(IBQCOMPOSTO);
+    FreeAndNil(IBQESTOQUE);
+  end;
+
 end;
 
 function CampoAlterado(Field: TField):Boolean; //Mauricio Parizotto 2023-09-06
