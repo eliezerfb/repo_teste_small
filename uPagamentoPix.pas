@@ -33,7 +33,7 @@ uses
   , uTypesRecursos
   , uValidaRecursos
   , _small_65
-  , uSmallConsts;
+  , uSmallConsts, uIntegracaoSicoob;
 
 
 function CRC16CCITT(texto: string): WORD;
@@ -155,15 +155,27 @@ end;
 function PagamentoPixDinamico(Valor : double; IDTransacao, NumeroNF, Caixa : string;
   out InstituicaoFinanceira, CodigoAutorizacao : string; IBTRANSACTION: TIBTransaction):boolean;
 var
-  ibqItau: TIBQuery;
+  ibqItau, ibqSicoob: TIBQuery;
   ChaveQRCode, order_id, Mensagem : string;
 
-  bLiberado : Boolean;
+  //bLiberado : Boolean;
+  bLibItau, bLibSicoob, bHabItau, bHabSicoob : Boolean;
   dLimiteRecurso : Tdate;
+  Integracao : TRecursos;
+  ITAU_CLIENTID, ITAU_USUARIO, ITAU_SENHA, ITAU_CGC, ITAU_INSTITUICAOFINANCEIRA : string;
+  IDAPIPIX : integer;
+  SICOOB_INSTITUICAOFINANCEIRA : string;
 begin
   CodigoAutorizacao := '';
   Result            := False;
+  bLibItau          := False;
+  bLibSicoob        := False;
+  bHabItau          := False;
+  bHabSicoob        := False;
 
+  {$Region'//// Código Antigo ////'}
+
+  {Mauricio Parizotto 2024-09-06
   bLiberado := (RecursoLiberado(IBTRANSACTION.DefaultDatabase,rcIntegracaoItau,dLimiteRecurso));
 
   if not bLiberado then
@@ -237,6 +249,183 @@ begin
   finally
     FreeAndNil(ibqItau);
   end;
+
+  }
+  {$Endregion}
+
+  bLibItau    := (RecursoLiberado(IBTRANSACTION.DefaultDatabase,rcIntegracaoItau,dLimiteRecurso));
+  bLibSicoob  := (RecursoLiberado(IBTRANSACTION.DefaultDatabase,rcIntegracaoSicoob,dLimiteRecurso));
+
+  if (not bLibItau) and (not bLibSicoob) then
+  begin
+    MensagemSistema('Nenhuma integração disponível para esta licença' + Chr(10) + Chr(10) +
+                    _RecursoIndisponivel
+                    ,msgAtencao);
+    Exit;
+  end;
+
+  {$Region'//// Consulta Itaú ////'}
+  if bLibItau then
+  begin
+    try
+      ibqItau := CriaIBQuery(IBTRANSACTION);
+      ibqItau.SQL.Text := ' Select '+
+                          ' 	I.USUARIO,'+
+                          ' 	I.SENHA,'+
+                          ' 	I.CLIENTID,'+
+                          '   B.NOME,'+
+                          ' 	B.INSTITUICAOFINANCEIRA,'+
+                          '   C.CGC'+
+                          ' From CONFIGURACAOITAU I'+
+                          ' 	Left Join BANCOS B on B.IDBANCO = I.IDBANCO'+
+                          '   Left Join CLIFOR C on C.NOME = B.INSTITUICAOFINANCEIRA '+
+                          ' Where I.HABILITADO = ''S'' ';
+      ibqItau.Open;
+
+      if not(ibqItau.IsEmpty) then
+      begin
+        if  (Trim(ibqItau.FieldByName('INSTITUICAOFINANCEIRA').AsString) = '') then
+        begin
+          MensagemSistema('A conta bancaria "'+ibqItau.FieldByName('NOME').AsString+'" não possui Instituição Financeira vinculada!',msgAtencao);
+          Exit;
+        end else
+        begin
+          bHabItau := True;
+          ITAU_CLIENTID              := ibqItau.FieldByName('CLIENTID').AsString;
+          ITAU_USUARIO               := ibqItau.FieldByName('USUARIO').AsString;
+          ITAU_SENHA                 := ibqItau.FieldByName('SENHA').AsString;
+          ITAU_CGC                   := ibqItau.FieldByName('CGC').AsString;
+          ITAU_INSTITUICAOFINANCEIRA := ibqItau.FieldByName('INSTITUICAOFINANCEIRA').AsString;
+        end;
+      end;
+    finally
+      FreeAndNil(ibqItau);
+    end;
+  end;
+  {$Endregion}
+
+  {$Region'//// Consulta Sicoob ////'}
+  if bLibSicoob then
+  begin
+    try
+      ibqSicoob := CriaIBQuery(IBTRANSACTION);
+      ibqSicoob.SQL.Text := ' Select '+
+                            ' 	S.IDAPIPIX,'+
+                            '   B.NOME,'+
+                            ' 	B.INSTITUICAOFINANCEIRA'+
+                            ' From CONFIGURACAOSICOOB S'+
+                            ' 	Left Join BANCOS B on B.IDBANCO = S.IDBANCO'+
+                            ' Where S.HABILITADO = ''S'' ';
+      ibqSicoob.Open;
+
+      if not(ibqSicoob.IsEmpty) then
+      begin
+        if  (Trim(ibqSicoob.FieldByName('INSTITUICAOFINANCEIRA').AsString) = '') then
+        begin
+          MensagemSistema('A conta bancaria "'+ibqSicoob.FieldByName('NOME').AsString+'" não possui Instituição Financeira vinculada!',msgAtencao);
+          Exit;
+        end else
+        begin
+          bHabSicoob := True;
+          IDAPIPIX                     := ibqSicoob.FieldByName('IDAPIPIX').AsInteger;
+          SICOOB_INSTITUICAOFINANCEIRA := ibqSicoob.FieldByName('INSTITUICAOFINANCEIRA').AsString;
+        end;
+      end;
+    finally
+      FreeAndNil(ibqSicoob);
+    end;
+  end;
+  {$Endregion}
+
+  {$Region'//// Seleciona Integração ////'}
+
+  if not(bHabItau) and not(bHabSicoob) then
+  begin
+    MensagemSistema('Nenhuma integração habilitada!',msgAtencao);
+    Exit;
+  end;
+
+  if (bHabItau) and (bHabSicoob) then
+  begin
+    //Criar tela para escolher qual vai usar caso necessário
+    Integracao := rcIntegracaoSicoob;
+  end else
+  begin
+    if bHabItau then
+      Integracao := rcIntegracaoItau;
+
+    if bHabSicoob then
+      Integracao := rcIntegracaoSicoob;
+  end;
+  {$Endregion}
+
+  {$Region'//// Gera PIX Itaú ////'}
+  if Integracao = rcIntegracaoItau then
+  begin
+    if GeraChavePixItau(ITAU_CLIENTID,
+                        ITAU_USUARIO,
+                        ITAU_SENHA,
+                        IDTransacao,
+                        Valor,
+                        ChaveQRCode,
+                        order_id,
+                        Mensagem) then
+    begin
+      //Grava
+      GravaTransacaoItau(NumeroNF,
+                         Caixa,
+                         order_id,
+                         'Pendente',
+                         Valor,
+                         IBTRANSACTION.DefaultDatabase);
+    end else
+    begin
+      MensagemSistema(Mensagem,msgAtencao);
+      Exit;
+    end;
+
+    if PagamentoQRCodePIXDinItau(ChaveQRCode,
+                                 order_id,
+                                 Valor,
+                                 LimpaNumero(ITAU_CGC),
+                                 CodigoAutorizacao,
+                                 IBTRANSACTION.DefaultDatabase) then
+    begin
+      InstituicaoFinanceira := ITAU_INSTITUICAOFINANCEIRA;
+      Result := True;
+    end;
+  end;
+  {$Endregion}
+
+  {$Region'//// Gera PIX Sicoob ////'}
+  if Integracao = rcIntegracaoSicoob then
+  begin
+    if GeraChavePixISicoob(IDAPIPIX,
+                           IDTransacao,
+                           Valor,
+                           ChaveQRCode,
+                           order_id,
+                           Mensagem) then
+    begin
+    end else
+    begin
+      MensagemSistema(Mensagem,msgAtencao);
+      Exit;
+    end;
+
+    if PagamentoQRCodePIXDinSicoob(ChaveQRCode,
+                                   order_id,
+                                   IDAPIPIX,
+                                   Valor,
+                                   CodigoAutorizacao,
+                                   IBTRANSACTION.DefaultDatabase) then
+    begin
+      InstituicaoFinanceira := SICOOB_INSTITUICAOFINANCEIRA;
+      Result := True;
+    end;
+  end;
+  {$Endregion}
+
 end;
 
 procedure GravaTransacaoItau(NumeroNF, Caixa, OrderID, Status : string; Valor : Double; IBDatabase: TIBDatabase);

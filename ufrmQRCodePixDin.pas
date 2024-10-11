@@ -4,10 +4,11 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Buttons,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Buttons, uTypesRecursos,
   Vcl.ExtCtrls, Vcl.Printers, IBX.IBDatabase, Vcl.Imaging.pngimage;
 
-  function PagamentoQRCodePIXDin(ChaveQrPIX,order_id:string; Valor : double; CNPJInstituicao : string; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
+  function PagamentoQRCodePIXDinItau(ChaveQrPIX,order_id:string; Valor : double; CNPJInstituicao : string; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
+  function PagamentoQRCodePIXDinSicoob(ChaveQrPIX,order_id:string; idBankAccount : integer; Valor : double; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
 
 type
   TFrmQRCodePixDin = class(TForm)
@@ -17,7 +18,8 @@ type
     btnImprimir: TBitBtn;
     imgQrCode: TImage;
     tmrConsultaPgto: TTimer;
-    imgLogo: TImage;
+    imgItau: TImage;
+    imgSicoob: TImage;
     procedure btnCancelClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnImprimirClick(Sender: TObject);
@@ -28,6 +30,8 @@ type
     PixConfirmado : Boolean;
     CodigoAutorizacao : string;
     OrderID : string;
+    IDConta : integer;
+    Integracao : TRecursos;
   public
     { Public declarations }
   end;
@@ -40,9 +44,9 @@ implementation
 {$R *.dfm}
 
 uses uQrCode, FISCAL, uSmallConsts, ufuncoesfrente, uIntegracaoItau,
-  uPagamentoPix;
+  uPagamentoPix, uIntegracaoSicoob;
 
-function PagamentoQRCodePIXDin(ChaveQrPIX,order_id:string; Valor : double; CNPJInstituicao : string;  out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
+function PagamentoQRCodePIXDinItau(ChaveQrPIX,order_id:string; Valor : double; CNPJInstituicao : string;  out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
 begin
   Result             := False;
   CodigoAutorizacao  := '';
@@ -53,6 +57,7 @@ begin
     FrmQRCodePixDin.lblValor.Caption := 'R$ '+ FormatFloat( '#,##0.00', Valor);
     FrmQRCodePixDin.OrderID          := order_id;
     FrmQRCodePixDin.tmrConsultaPgto.Enabled := True; // Habilitar somente após criar Sandro/Mauricio 2024-07-30
+    FrmQRCodePixDin.Integracao       := rcIntegracaoItau;
     FrmQRCodePixDin.ShowModal;
     Result := FrmQRCodePixDin.PixConfirmado;
 
@@ -68,6 +73,31 @@ begin
     begin
       if CancelOrder(order_id) then
         AtualizaStatusTransacaoItau(order_id, 'Cancelado', IBDatabase);
+    end;
+  finally
+    FreeAndNil(FrmQRCodePixDin);
+  end;
+end;
+
+function PagamentoQRCodePIXDinSicoob(ChaveQrPIX,order_id:string; idBankAccount : integer; Valor : double; out CodigoAutorizacao : string; IBDatabase: TIBDatabase) : Boolean;
+begin
+  Result             := False;
+  CodigoAutorizacao  := '';
+
+  try
+    FrmQRCodePixDin := TFrmQRCodePixDin.Create(nil);
+    GeraImagemQRCode(ChaveQrPIX, FrmQRCodePixDin.imgQrCode.Picture.Bitmap);
+    FrmQRCodePixDin.lblValor.Caption := 'R$ '+ FormatFloat( '#,##0.00', Valor);
+    FrmQRCodePixDin.OrderID          := order_id;
+    FrmQRCodePixDin.IDConta          := idBankAccount;
+    FrmQRCodePixDin.tmrConsultaPgto.Enabled := True;
+    FrmQRCodePixDin.Integracao       := rcIntegracaoSicoob;
+    FrmQRCodePixDin.ShowModal;
+    Result := FrmQRCodePixDin.PixConfirmado;
+
+    if FrmQRCodePixDin.PixConfirmado then
+    begin
+      CodigoAutorizacao := FrmQRCodePixDin.CodigoAutorizacao;
     end;
   finally
     FreeAndNil(FrmQRCodePixDin);
@@ -169,6 +199,10 @@ end;
 procedure TFrmQRCodePixDin.FormShow(Sender: TObject);
 begin
   btnImprimir.SetFocus;
+
+  //Mauricio Parizotto 2024-09-06
+  imgItau.Visible   := Integracao = rcIntegracaoItau;
+  imgSicoob.Visible := Integracao = rcIntegracaoSicoob;
 end;
 
 procedure TFrmQRCodePixDin.tmrConsultaPgtoTimer(Sender: TObject);
@@ -177,7 +211,16 @@ var
 begin
   tmrConsultaPgto.Enabled := False;
 
-  Status := GetStatusOrder(OrderID,CodigoAutorizacao);
+  {Mauricio Parizotto 2024-09-06 Inicio}
+  if Integracao = rcIntegracaoItau then
+  begin
+    Status := GetStatusOrder(OrderID,CodigoAutorizacao);
+  end;
+
+  if Integracao = rcIntegracaoSicoob then
+  begin
+    Status := GetStatusPixSicoob(OrderID,IDConta,CodigoAutorizacao);
+  end;
 
   if Status = 'approved' then
   begin
@@ -187,6 +230,7 @@ begin
   begin
     tmrConsultaPgto.Enabled := True;
   end;
+  {Mauricio Parizotto 2024-09-06 Fim}
 end;
 
 

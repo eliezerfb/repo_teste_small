@@ -95,9 +95,9 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Frente de Caixa;FileVersion=2024.30.0.38;InternalName=frente.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=frente.exe;ProductName=Frente de Caixa;ProductVersion=2024.30.0.38;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
-        <VerInfo_MinorVer>30</VerInfo_MinorVer>
-        <VerInfo_Build>38</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Frente de Caixa;FileVersion=2024.35.0.40;InternalName=frente.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=frente.exe;ProductName=Frente de Caixa;ProductVersion=2024.35.0.40;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_MinorVer>35</VerInfo_MinorVer>
+        <VerInfo_Build>40</VerInfo_Build>
         <DCC_ExeOutput>\Desenvolvimento\Executaveis\Small Commerce\</DCC_ExeOutput>
         <Manifest_File>xp.manifest</Manifest_File>
     </PropertyGroup>
@@ -215,7 +215,7 @@
         <DCCReference Include="..\unit_compartilhada\uValidaRecursosDelphi7.pas"/>
         <DCCReference Include="..\unit_compartilhada\uRecursosSistema.pas"/>
         <DCCReference Include="..\unit_compartilhada\uCriptografia.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uArquivosDAT.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uArquivosDAT.pas"/>
         <DCCReference Include="..\unit_compartilhada\uFuncoesBancoDados.pas"/>
         <DCCReference Include="uFuncoesPOS.pas"/>
         <DCCReference Include="uConverteDocumentoParaDocFiscal.pas"/>
@@ -265,35 +265,36 @@
         <DCCReference Include="..\unit_compartilhada\uGeraChavePix.pas"/>
         <DCCReference Include="uajustaresolucao.pas"/>
         <DCCReference Include="..\unit_compartilhada\Itau\uIntegracaoItau.pas"/>
-        <DCCReference Include="..\unit_compartilhada\Itau\uClassesItau.pas"/>
-        <DCCReference Include="..\unit_compartilhada\Itau\uWebServiceItau.pas"/>
         <DCCReference Include="uFrmTransacoesItau.pas">
             <Form>FrmTransacoesItau</Form>
         </DCCReference>
         <DCCReference Include="..\unit_compartilhada\uSmallConsts.pas"/>
         <DCCReference Include="..\unit_compartilhada\uLogSistema.pas"/>
         <DCCReference Include="urequisitapesobalancaautonoma.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uEstoqueDAT.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uArquivoDATINFPadrao.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uEstoqueSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uSectionDATPadrao.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uSmallComINF.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uSmallComSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uUsuarioINF.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uUsuarioSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uFrenteINI.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uFrenteSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uNFeINI.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uNFeSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uNFSeINI.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uNFSeSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uConfSisBD.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uOSSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uOutrasSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uImpressoraSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uCarneSections.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
-        <DCCReference Include="..\unit_compartilhada\DAT\uIMendesSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uEstoqueDAT.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uArquivoDATINFPadrao.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uEstoqueSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uSectionDATPadrao.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uSmallComINF.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uSmallComSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uUsuarioINF.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uUsuarioSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uFrenteINI.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uFrenteSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uNFeINI.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uNFeSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uNFSeINI.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uNFSeSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uConfSisBD.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uOSSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uOutrasSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uImpressoraSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\uCarneSections.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Itau\uWebServiceItau.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Itau\uClassesItau.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Sicoob\uClassesSicoob.pas"/>
+        <DCCReference Include="..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

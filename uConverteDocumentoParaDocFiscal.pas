@@ -277,23 +277,20 @@ begin
 
       // Seleciona o desconto no total
       // Seleciona os desconto lançados para a venda (tanto nos itens qto no total do cupom)
-
       FIBDataSet27.Close;
       FIBDataSet27.SelectSQL.Clear;
-      FIBDataSet27.SelectSQL.Text :=
-        'select A.* ' +
-        'from ALTERACA A ' +
-        'where A.PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(StrToIntDef(FNumeroGerencial, 0))) + // Sandro Silva 2021-11-29 'where A.PEDIDO = ' + QuotedStr(strZero(Form1.icupom,6,0)) +
-        ' and (A.TIPO = ''BALCAO'' or A.TIPO = ''LOKED'') ' +
-        ' and A.CAIXA = ' + QuotedStr(sCaixaOld) +
-        ' and A.DESCRICAO = ''Desconto'' ' +
-        ' and coalesce(A.ITEM, '''') = '''' ';
+      FIBDataSet27.SelectSQL.Text := ' Select A.* ' +
+                                     ' From ALTERACA A ' +
+                                     ' Where A.PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(StrToIntDef(FNumeroGerencial, 0))) +
+                                     '   and (A.TIPO = ''BALCAO'' or A.TIPO = ''LOKED'') ' +
+                                     '   and A.CAIXA = ' + QuotedStr(sCaixaOld) +
+                                     '   and A.DESCRICAO = ''Desconto'' ' +
+                                     '   and coalesce(A.ITEM, '''') = '''' ';
       FIBDataSet27.Open;
 
       FDescontoNoTotal := 0.00; // 2015-12-10
       while FIBDataSet27.Eof = False do
       begin
-
         if (Trim(FIBDataSet27.FieldByName('DESCRICAO').AsString) = 'Desconto') and (Trim(FIBDataSet27.FieldByName('ITEM').AsString) = '') then
         begin // Corrigir casos que ao entrar em contingência zerou Form1.fDescontoNoTotal, gerando xml com ICMSTot/vDesc zerado e ICMSTot/vNF com valor diferente da soma dos detPag/vPag
           FDescontoNoTotal := FIBDataSet27.FieldByName('TOTAL').AsFloat * -1;
@@ -302,20 +299,19 @@ begin
         FIBDataSet27.Next;
       end;
 
-///////////////////////
       if bPrecisarGerarNovoNumero then
       begin
-
         //Seleciona novamente o itens para alterar o número do pedido para o número do CFe
         FIBDataSet27.Close;
-        FIBDataSet27.SelectSQL.Text :=
-          'select * from ALTERACA where CAIXA = ' + QuotedStr(sCaixaOld) + ' and PEDIDO = ' + QuotedStr(FNumeroGerencial) +
-          ' and COO is null'; // Apenas os itens da venda atual. Para separar de vendas anteriores com mesmo número do caixa
+        FIBDataSet27.SelectSQL.Text := ' Select * '+
+                                       ' From ALTERACA '+
+                                       ' Where CAIXA = ' + QuotedStr(sCaixaOld) +
+                                       '   and PEDIDO = ' + QuotedStr(FNumeroGerencial) +
+                                       '   and COO is null'; // Apenas os itens da venda atual. Para separar de vendas anteriores com mesmo número do caixa
         FIBDataSet27.Open;
 
         sDAV     := '';
         sTIPODAV := '';
-        //sAlteracaPedidoOld := FIBDataSet27.FieldByName('PEDIDO').AsString;
 
         {Sandro Silva 2023-08-25 inicio
         IBQPENDENCIA := CriaIBQuery(FIBTransaction);
@@ -355,12 +351,9 @@ begin
           if (FIBDataSet27.FieldByName('CAIXA').AsString = sCaixaOld)
             and (FIBDataSet27.FieldByName('PEDIDO').AsString = FNumeroGerencial) then
           begin
-            //
             // NFC-e não grava COO e CCF para os descontos e acréscimos
-            //
             if (FIBDataSet27.FieldByName('COO').AsString = '') and (FIBDataSet27.FieldByName('CCF').AsString = '') then // Não atualizar número do CF-e em vendas antigas de ECF
             begin
-
               try
                 // Produtos com controle de número de série
                   if (FIBDataSet27.FieldByName('CODIGO').AsString <> '') and
@@ -369,11 +362,10 @@ begin
                     // Seleciona o produto na tabela SERIE, com a data e o número temporário da venda, para atualizar com a data e o número do CF-e gerados pelo SAT
                     FIBDataSet30.Close;
                     FIBDataSet30.SelectSQL.Clear;
-                    FIBDataSet30.Selectsql.Text :=
-                      'select * from SERIE ' +
-                      ' where CODIGO = ' + QuotedStr(FIBDataSet27.FieldByName('CODIGO').AsString) +
-                      ' and NFVENDA = ' + QuotedStr(FNumeroGerencial) +
-                      ' and DATVENDA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', FIBDataSet27.FieldByName('DATA').AsDateTime));
+                    FIBDataSet30.Selectsql.Text := ' Select * from SERIE ' +
+                                                   ' Where CODIGO = ' + QuotedStr(FIBDataSet27.FieldByName('CODIGO').AsString) +
+                                                   '   and NFVENDA = ' + QuotedStr(FNumeroGerencial) +
+                                                   '   and DATVENDA = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', FIBDataSet27.FieldByName('DATA').AsDateTime));
                     FIBDataSet30.Open;
 
                     while FIBDataSet30.Eof = False do
@@ -393,7 +385,6 @@ begin
                     end;
                   end;
               except
-
               end;
 
               try
@@ -403,12 +394,9 @@ begin
                 FIBDataSet27.FieldByName('DATA').AsDateTime := dtDataNovo;
                 FIBDataSet27.Post;
               except
-
               end;
-
-            end; // if (FIBDataSet27.FieldByName('DATA').AsDateTime >= StrToDate(sDataOld))
-
-          end; // if (FIBDataSet27.FieldByName('CAIXA').AsString = Form1.sCaixa)
+            end;
+          end;
 
           FIBDataSet27.Next;
         end; // while
@@ -425,18 +413,19 @@ begin
 
         // Seleciona novamente os dados para usar na sequência da venda
         FIBDataSet27.Close;
-        FIBDataSet27.SelectSQL.Text :=
-          'select * from ALTERACA where CAIXA = ' + QuotedStr(FCaixa) + ' and PEDIDO = ' + QuotedStr(sNovoNumero);
+        FIBDataSet27.SelectSQL.Text := ' Select *'+
+                                       ' From ALTERACA '+
+                                       ' Where CAIXA = ' + QuotedStr(FCaixa) +
+                                       '   and PEDIDO = ' + QuotedStr(sNovoNumero);
         FIBDataSet27.Open;
         FIBDataSet27.Last;
 
         // Receber
         FIBDataSet7.Close;
-        FIBDataSet7.SelectSQL.Text :=
-          'select * ' +
-          'from RECEBER ' +
-          'where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(StrToInt(FNumeroGerencial)) + RightStr(sCaixaOld, 3)) +
-          ' order by REGISTRO';
+        FIBDataSet7.SelectSQL.Text := ' Select * ' +
+                                      ' From RECEBER ' +
+                                      ' Where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(StrToInt(FNumeroGerencial)) + RightStr(sCaixaOld, 3)) +
+                                      ' Order by REGISTRO';
         FIBDataSet7.Open;
 
         FIBDataSet7.First;
@@ -470,6 +459,10 @@ begin
       AtualizaDadosPagament(FIBDataSet28, FModeloDocumento, sCaixaOld, FNumeroGerencial, FCaixa, sNovoNumero, dtDataNovo,
         FConveniado, FVendedor, FormasPagamento, FValorTotalTEFPago, FTransacoesCartao, ModalidadeTransacao);
       {Sandro Silva 2023-08-25 fim}
+
+      //Mauricio Parizotto 2024-09-12
+      if GetAutorizacaoPixRec(sNovoNumero, FCaixa, FIBDataSet7.Transaction, Form1.sCodigoAutorizacaoPIX, Form1.sCNPJInstituicaoPIX ) then
+        Form1.sTipoPix := _PixDinamico;
 
       FIBDataSet25.FieldByName('RECEBER').AsFloat    := FormasPagamento.TotalReceber;
       FIBDataSet25.FieldByName('ACUMULADO1').AsFloat := FormasPagamento.Cheque;
