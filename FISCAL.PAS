@@ -15913,15 +15913,14 @@ begin
 
             }
 
-            if (FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura) or (uDialogs.MensagemSistemaPergunta('Existem documentos emitidos em contingência pendentes de transmissão.' + sLineBreak +
-                                                                                                            'Deseja transmiti-los agora?', [mb_YesNo]) = mrYes) then
+            if Form1.bStatusRede then
             begin
-              if Form1.bStatusRede then
+
+              if Form1.ContingenciaPendente.dtUltimaTransmissao < Date then
               begin
-
-                if Form1.ContingenciaPendente.dtUltimaTransmissao < Date then
+                if (FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura) or (uDialogs.MensagemSistemaPergunta('Existem documentos emitidos em contingência pendentes de transmissão.' + sLineBreak +
+                                                                                                                'Transmitir agora?', [mb_YesNo]) = mrYes) then
                 begin
-
                   // Seleciona as NFC-e em contingência até o dia anterior ao atual
                   for iDiaContingencia := 0 to Form1.ContingenciaPendente.LimiteDias - 1 do //while Form1.ContingenciaPendente.dtUltimaTransmissao <= Date do
                   begin
@@ -15950,9 +15949,9 @@ begin
                   Sleep(50);
                   SalvarConfiguracao(FRENTE_INI, SECAO_65, 'Transmissao Contingencia', FormatDateTime('dd/mm/yyyy', Date));
                 end;
+              end;
 
-              end; // if Form1.bStatusRede then
-            end;
+            end; // if Form1.bStatusRede then
             {Dailon Parisoto (smal-741) 2024-10-02 Fim}
 
           end; // if _ecf65_VerificaContingenciaPendentedeTransmissao(Date - Form1.ContingenciaPendente.LimiteDias, Date, Form1.sCaixa) then
