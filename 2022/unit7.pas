@@ -1,4 +1,3 @@
-
 unit Unit7;
 
 interface
@@ -5788,6 +5787,7 @@ begin
     if not Form7.ibdPerfilTributa.active  then Form7.ibdPerfilTributa.active       := True; //Mauricio Parizotto 2023-08-30
     if not Form7.ibdParametroTributa.active  then Form7.ibdParametroTributa.active := True; //Mauricio Parizotto 2023-09-21
     if not Form7.ibdSituacaoOS.active  then Form7.ibdSituacaoOS.active             := True; //Mauricio Parizotto 2023-12-04
+
   except
     on E: Exception do
     begin
@@ -13882,10 +13882,13 @@ begin
           if sModulo = 'ORCAMENTO' then
           begin
             try
-              if AllTrim(Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString) = '' then
-                DBGrid1.Canvas.Font.Color := clBlack
-              else
-                DBGrid1.Canvas.Font.Color  := _COR_AZUL;//$00EAB231;
+              if Form7.ibDataSet97.Active then // Sandro Silva 2024-10-11 Algumas rotinas fecham o Form7.ibDataSet97, até o momento não é necessário inclui-lo na lista de dataset que são sempre abertos no método AbreArquivos()
+              begin
+                if AllTrim(Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString) = '' then
+                  DBGrid1.Canvas.Font.Color := clBlack
+                else
+                  DBGrid1.Canvas.Font.Color  := _COR_AZUL;//$00EAB231;
+              end;
             except
             end;
           end;
@@ -26325,6 +26328,8 @@ begin
 end;
 
 procedure TForm7.GerarNotaFiscalSrie12Click(Sender: TObject);
+var
+  sOrcamentoImportar: String;
 begin
   // Gera a nota fiscal
   if Form1.bNotaVendaLiberada then
@@ -26346,11 +26351,13 @@ begin
                                                   + Chr(10))
                                                   ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
       begin
+        sOrcamentoImportar := ibDataSet97.FieldByname('Orçamento').AsString; // Sandro Silva 2024-10-11
+
         Form7.Close;
         Form7.Vendas_1Click(Sender);                        // Nota fiscal série 001
         Form7.Image101Click(Sender);                        // Nova Nota
         Form7.sModulo := 'ORCAMENTO';
-        ImportaOrcamento(ibDataSet97.FieldByname('Orçamento').AsString,sModulo);
+        ImportaOrcamento(sOrcamentoImportar, sModulo); // Sandro Silva 2024-10-11 ImportaOrcamento(ibDataSet97.FieldByname('Orçamento').AsString,sModulo);
         Form7.sModulo := 'VENDA';
 
         Form7.ibDataSet16.First;
