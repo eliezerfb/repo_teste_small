@@ -30,6 +30,13 @@ type
     ibdProdutosNotaREGISTRO: TWideStringField;
     cdsProdutosNotaREGISTRO: TWideStringField;
     cdsProdutosNotaPRODUTO: TWideStringField;
+    IBDataSet1: TIBDataSet;
+    WideStringField1: TWideStringField;
+    WideStringField2: TWideStringField;
+    FloatField1: TFloatField;
+    FloatField2: TFloatField;
+    FloatField3: TFloatField;
+    FloatField4: TFloatField;
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -243,6 +250,15 @@ procedure TFrmPrecificacaoProduto.dbgPrincipalDrawColumnCell(
   Sender: TObject; const Rect: TRect; DataCol: Integer; Column: TColumn;
   State: TGridDrawState);
 begin
+
+  {Sandro Silva 2024-10-11 inicio}
+  if (Column.FieldName = 'PRECO_NOVO') or (Column.FieldName = 'PRECO_VENDA') then
+  begin
+    if (cdsProdutosNotaPRECO_VENDA.AsFloat <= 0.00) and (cdsProdutosNotaPRECO_NOVO.AsFloat <= 0.00) then
+      TDBGrid(Sender).Canvas.Font.Color := clRed;
+  end;
+  {Sandro Silva 2024-10-11 fim}
+
   if Column.Field.Name = 'cdsProdutosNotaPRECO_NOVO' then
   begin
     if cdsProdutosNotaPRECO_VENDA.AsFloat <> cdsProdutosNotaPRECO_NOVO.AsFloat then
@@ -270,6 +286,49 @@ begin
   SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
   cdsProdutosNotaPRODUTO.Size := SizeDescricaoProd;
   ibdProdutosNotaPRODUTO.Size := SizeDescricaoProd;
+
+
+  ibdProdutosNota.SelectSQL.Text :=
+    'Select ' +
+    'REGISTRO, ' +
+    'PRODUTO, ' +
+    'PRECO_CUSTO, ' +
+    'PRECO_VENDA, ' +
+    'Case ' +
+    '  When LISTA > 0 then (((LISTA / PRECO_CUSTO) -1 ) * 100) ' +
+    '  When Coalesce(MARGEMLB, 0) > 0 then MARGEMLB ' +
+    '  Else (((Coalesce(PRECO, 0) / PRECO_CUSTO) -1 ) * 100) ' +
+    'End PERC_LUC, ' +
+    'Case ' +
+    '  When LISTA > 0 then LISTA ' +
+    '  When Coalesce(MARGEMLB, 0) > 0 then PRECO_CUSTO + (PRECO_CUSTO * (MARGEMLB / 100) ) ' +
+    '  Else Coalesce(PRECO,0) ' +
+    'End PRECO_NOVO ' +
+    'From ' +
+    '(Select ' +
+    '  I.REGISTRO, ' +
+    '  I.DESCRICAO PRODUTO, ' +
+    '  Coalesce(I.LISTA, 0) LISTA, ' +
+    '  (I.UNITARIO + (Coalesce(I.VICMSST, 0) + Coalesce(I.VIPI, 0) + Coalesce(I.VFCPST, 0)) / I.QUANTIDADE)  + ' +
+    '    ( ' +
+    '      (I.UNITARIO / C.MERCADORIA) * ' +
+    '      (Coalesce(C.FRETE, 0) + Coalesce(C.SEGURO, 0) + Coalesce(C.DESPESAS, 0) - Coalesce(C.DESCONTO, 0)) ' +
+    '    ) PRECO_CUSTO, ' +
+//    '  Coalesce(E.PRECO,0) PRECO_VENDA, ' +
+    '  case when Coalesce(E.PRECO, 0) containing ''INF'' then 0.00 else Coalesce(E.PRECO, 0) end as PRECO_VENDA, ' +
+    '  E.MARGEMLB, ' +
+//    '  E.PRECO, ' +
+    '  case when E.PRECO containing ''INF'' then 0.00 else E.PRECO end as PRECO ' +
+    'From ITENS002 I ' +
+    '  Left Join COMPRAS C on C.NUMERONF = I.NUMERONF and C.FORNECEDOR = I.FORNECEDOR ' +
+    '  Left Join ESTOQUE E on E.DESCRICAO = I.DESCRICAO ' +
+    'Where I.NUMERONF = :NUMERONF ' +
+    '  and I.FORNECEDOR  =  :FORNECEDOR ' +
+    '  and Coalesce(I.CODIGO,'''') <> '''' ' +
+    ') A ' +
+    'Order By REGISTRO';
+
+
 end;
 
 end.
