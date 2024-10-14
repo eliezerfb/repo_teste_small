@@ -51,7 +51,6 @@ var
   procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
   function CalculavTotTrib_M02(sCodigo: String; sOperacaoDoTopo: String): Boolean;
 
-
 implementation
 
 uses uFrmInformacoesRastreamento, uFuncoesFiscais, uFuncoesRetaguarda,
@@ -63,6 +62,15 @@ begin
   Result := 'select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST, ITENS002.PICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(sCodigo)+' order by COMPRAS.EMISSAO desc';
 end;
 }
+
+procedure SelecionaDadosTabelaICM;
+begin
+  Form7.ibDataSet14.DisableControls;
+  Form7.ibDataSet14.Close;
+  Form7.ibDataSet14.SelectSQL.Clear;
+  Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
+  Form7.ibDataSet14.Open;
+end;
 
 function SelectDadosItensNotaEntrada(IBQuery: TIBQuery; sCodigo: String): String;
 // Seleciona os dados da última entrada do código que é passado no parâmetro sCodigo
@@ -1137,7 +1145,7 @@ begin
               begin
                 if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
                 begin
-                  // Nova rotina para posicionar na tabéla de CFOP
+                  // Nova rotina para posicionar na tabela de CFOP
                   Form7.IBQuery14.Close;
                   Form7.IBQuery14.SQL.Clear;
                   Form7.IBQuery14.SQL.Add('select * from ICM where ST='+QuotedStr(Form7.ibDataSet4ST.AsString)+''); // Nova rotina
@@ -2802,11 +2810,15 @@ begin
 
       Form7.spdNFeDataSets.Campo('vServ_W18').Value   := FormatFloatXML(Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat); // Valor Total de serviços
 
+      {Sandro Silva 2024-10-14 inicio
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Close;
       Form7.ibDataSet14.SelectSQL.Clear;
       Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
       Form7.ibDataSet14.Open;
+      }
+      SelecionaDadosTabelaICM;
+      {Sandro Silva 2024-10-14 fim}
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
       Form7.ibDataSet14.EnableControls;
 
@@ -3391,21 +3403,30 @@ begin
     if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
     begin
       sReg := Form7.ibDataSet14REGISTRO.AsString;
+      {Sandro Silva 2024-10-14 inicio
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Close;
       Form7.ibDataSet14.SelectSQL.Clear;
       Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
       Form7.ibDataSet14.Open;
+      }
+      SelecionaDadosTabelaICM;
+      {Sandro Silva 2024-10-14 fim}
+
       if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
         Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
       Form7.ibDataSet14.EnableControls;
     end else
     begin
+      {Sandro Silva 2024-10-14 inicio
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Close;
       Form7.ibDataSet14.SelectSQL.Clear;
       Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
       Form7.ibDataSet14.Open;
+      }
+      SelecionaDadosTabelaICM;
+      {Sandro Silva 2024-10-14 fim}
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
       Form7.ibDataSet14.EnableControls;
     end;
@@ -3447,21 +3468,29 @@ begin
       if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
       begin
         sReg := Form7.ibDataSet14REGISTRO.AsString;
+        {Sandro Silva 2024-10-14 inicio
         Form7.ibDataSet14.DisableControls;
         Form7.ibDataSet14.Close;
         Form7.ibDataSet14.SelectSQL.Clear;
         Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
         Form7.ibDataSet14.Open;
+        }
+        SelecionaDadosTabelaICM;
+        {Sandro Silva 2024-10-14 fim}
         if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
           Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
         Form7.ibDataSet14.EnableControls;
       end else
       begin
+        {Sandro Silva 2024-10-14 inicio
         Form7.ibDataSet14.DisableControls;
         Form7.ibDataSet14.Close;
         Form7.ibDataSet14.SelectSQL.Clear;
         Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
         Form7.ibDataSet14.Open;
+        }
+        SelecionaDadosTabelaICM;
+        {Sandro Silva 2024-10-14 fim}
         Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
         Form7.ibDataSet14.EnableControls;
       end;
@@ -4390,21 +4419,29 @@ begin
               if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
               begin
                 sReg := Form7.ibDataSet14REGISTRO.AsString;
+                {Sandro Silva 2024-10-14 inicio
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
                   Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
                 Form7.ibDataSet14.EnableControls;
               end else
               begin
+                {Sandro Silva 2024-10-14 inicio
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
                 Form7.ibDataSet14.EnableControls;
               end;
@@ -4515,20 +4552,28 @@ begin
               if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
               begin
                 sReg := Form7.ibDataSet14REGISTRO.AsString;
+                {Sandro Silva 2024-10-14 inicio
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
                 Form7.ibDataSet14.EnableControls;
               end else
               begin
+                {Sandro Silva 2024-10-14 inicio
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
                 Form7.ibDataSet14.EnableControls;
               end;
@@ -4583,21 +4628,29 @@ begin
               if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
               begin
                 sReg := Form7.ibDataSet14REGISTRO.AsString;
+                {Sandro Silva 2024-10-14 inicio
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
                   Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
                 Form7.ibDataSet14.EnableControls;
               end else
               begin
+                {Sandro Silva 2024-10-14 inicio
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
                 Form7.ibDataSet14.EnableControls;
               end;
@@ -4770,21 +4823,29 @@ begin
             if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
             begin
               sReg := Form7.ibDataSet14REGISTRO.AsString;
+              {Sandro Silva 2024-10-14 inicio
               Form7.ibDataSet14.DisableControls;
               Form7.ibDataSet14.Close;
               Form7.ibDataSet14.SelectSQL.Clear;
               Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
               Form7.ibDataSet14.Open;
+              }
+              SelecionaDadosTabelaICM;
+              {Sandro Silva 2024-10-14 fim}
               if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
                 Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
               Form7.ibDataSet14.EnableControls;
             end else
             begin
+              {Sandro Silva 2024-10-14 inicio
               Form7.ibDataSet14.DisableControls;
               Form7.ibDataSet14.Close;
               Form7.ibDataSet14.SelectSQL.Clear;
               Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
               Form7.ibDataSet14.Open;
+              }
+              SelecionaDadosTabelaICM;
+              {Sandro Silva 2024-10-14 fim}
               Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
               Form7.ibDataSet14.EnableControls;
             end;

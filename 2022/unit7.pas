@@ -19060,6 +19060,9 @@ begin
             end;
 
             try
+              {Sandro Silva 2024-10-14
+              // Esse bloco não faz sentido existir porque logo abaixo define que sEstado é a UF do destinatário
+
               // Verifica se pode usar tributação interestadual
               if UpperCase(Copy(Form7.ibDataSet2IE.AsString,1,2)) = 'PR' then // Quando é produtor rural não precisa ter CGC
               begin
@@ -19077,6 +19080,7 @@ begin
                 if Length(AllTrim(Form7.ibDataSet2CGC.AsString)) <= 14 then
                   sEstado := UpperCase(Form7.ibDataSet13ESTADO.AsString);
               end;
+              }
 
               sEstado := Form7.ibDataSet2ESTADO.AsString;
 
@@ -19133,7 +19137,7 @@ begin
                 // reduzida, ou tributado de ISS
                 if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
                 begin
-                  // Nova rotina para posicionar na tabéla de CFOP
+                  // Nova rotina para posicionar na tabela de CFOP
                   Form7.IBQuery14.Close;
                   Form7.IBQuery14.SQL.Clear;
                   Form7.IBQuery14.SQL.Add('select * from ICM where ST='+QuotedStr(Form7.ibDataSet4ST.AsString)+''); // Nova rotina
@@ -19218,6 +19222,13 @@ begin
 
                 Form7.ibDataSet16CST_IPI.AsString     := Form7.ibDataSet4CST_IPI.AsString;   // Cst do IPI no estoque
                 Form7.ibDataSet16CST_ICMS.AsString    := Form7.ibDataSet4CST.AsString;       // CST do ICMS no estoque
+                {Sandro Silva 2024-10-14 inicio}
+                if (Form7.ibDataSet4ST.AsString <> '') and (Trim(Form7.ibDataSet4ST.AsString) = Trim(Form7.ibQuery14.FieldByName('ST').AsString)) then
+                begin
+                  if Trim(Form7.ibQuery14.FieldByName('CST').AsString) <> '' then
+                    Form7.ibDataSet16CST_ICMS.AsString := Form7.ibQuery14.FieldByName('CST').AsString;   // CST do ICMS do CIT
+                end;
+                {Sandro Silva 2024-10-14 fim}
 
                 try
                   //if Form7.ibDataSet13.FieldByName('CRT').AsString = '1' then Mauricio Parizotto 2024-08-07
