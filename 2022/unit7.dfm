@@ -14367,6 +14367,7 @@ object Form7: TForm7
     AfterDelete = ibDataSet14AfterDelete
     AfterInsert = ibDataSet14AfterInsert
     AfterPost = ibDataSet14AfterPost
+    AfterScroll = ibDataSet14AfterScroll
     BeforeDelete = ibDataSet14BeforeDelete
     BeforeEdit = ibDataSet14BeforeEdit
     BeforeInsert = ibDataSet14BeforeInsert
@@ -14397,7 +14398,7 @@ object Form7: TForm7
       
         '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
         'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA,'
-      '   IMPOSTOMANUAL, LISTAR)'
+      '   IMPOSTOMANUAL, LISTAR, TRIB_INTELIGENTE)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14415,7 +14416,7 @@ object Form7: TForm7
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
         'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
         'A,:REFERENCIANOTA,'
-      '   :IMPOSTOMANUAL, :LISTAR)')
+      '   :IMPOSTOMANUAL, :LISTAR, :TRIB_INTELIGENTE)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14472,7 +14473,8 @@ object Form7: TForm7
       '  IPISOBREOUTRA,'
       '  REFERENCIANOTA,'
       '  IMPOSTOMANUAL,'
-      '  LISTAR'
+      '  LISTAR,'
+      '  TRIB_INTELIGENTE'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14535,7 +14537,8 @@ object Form7: TForm7
       '  IPISOBREOUTRA = :IPISOBREOUTRA,'
       '  REFERENCIANOTA = :REFERENCIANOTA,'
       '  IMPOSTOMANUAL = :IMPOSTOMANUAL,'
-      '  LISTAR = :LISTAR'
+      '  LISTAR = :LISTAR,'
+      '  TRIB_INTELIGENTE = :TRIB_INTELIGENTE'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14940,6 +14943,12 @@ object Form7: TForm7
     object ibDataSet14PISCOFINSLUCRO: TIBStringField
       FieldName = 'PISCOFINSLUCRO'
       Origin = 'ICM.PISCOFINSLUCRO'
+      Visible = False
+      Size = 1
+    end
+    object ibDataSet14TRIB_INTELIGENTE: TIBStringField
+      FieldName = 'TRIB_INTELIGENTE'
+      Origin = 'ICM.TRIB_INTELIGENTE'
       Visible = False
       Size = 1
     end

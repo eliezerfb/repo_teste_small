@@ -29,17 +29,17 @@ type
     Label110: TLabel;
     Label111: TLabel;
     dbeIcmCFOP: TSMALL_DBEdit;
-    SMALL_DBEdit54: TSMALL_DBEdit;
-    SMALL_DBEdit55: TSMALL_DBEdit;
-    SMALL_DBEdit57: TSMALL_DBEdit;
-    SMALL_DBEdit58: TSMALL_DBEdit;
-    SMALL_DBEdit59: TSMALL_DBEdit;
-    SMALL_DBEdit60: TSMALL_DBEdit;
-    SMALL_DBEdit44: TSMALL_DBEdit;
-    SMALL_DBEdit47: TSMALL_DBEdit;
-    DBCheckSobreIPI: TDBCheckBox;
-    DBCheckSobreOutras: TDBCheckBox;
-    DBCheckFRETESOBREIPI: TDBCheckBox;
+    edtDescricao: TSMALL_DBEdit;
+    edtIntegracao: TSMALL_DBEdit;
+    edtCIT: TSMALL_DBEdit;
+    edtBase: TSMALL_DBEdit;
+    edtBaseICMS: TSMALL_DBEdit;
+    edtCST: TSMALL_DBEdit;
+    edtISS: TSMALL_DBEdit;
+    edtCSOSN: TSMALL_DBEdit;
+    chkICMS_IPI: TDBCheckBox;
+    chkICMS_Outras: TDBCheckBox;
+    chkIPI_Frete: TDBCheckBox;
     memObservacao: TDBMemo;
     cbMovimentacaoEstoque: TComboBox;
     cbIntegracaoFinanceira: TComboBox;
@@ -48,18 +48,18 @@ type
     Label43: TLabel;
     Label49: TLabel;
     lbBCPISCOFINS: TLabel;
-    ComboBox7: TComboBox;
+    cboCST_PISCOFINS: TComboBox;
     dbepPisSaida: TSMALL_DBEdit;
     dbepCofinsSaida: TSMALL_DBEdit;
     dbeIcmBCPISCOFINS: TSMALL_DBEdit;
     fraPlanoContas: TfFrameCampo;
     Label1: TLabel;
-    SMALL_DBEdit1: TSMALL_DBEdit;
+    edtCBenef: TSMALL_DBEdit;
     GroupBox1: TGroupBox;
     chkPisCofinsSobLucro: TDBCheckBox;
-    DBCheckBox1: TDBCheckBox;
+    chkIPI_Outras: TDBCheckBox;
     chkRefenciarNota: TDBCheckBox;
-    DBCheckBox2: TDBCheckBox;
+    chkLancaManual: TDBCheckBox;
     pnlMapaICMS: TPanel;
     Image4: TImage;
     Label52: TLabel;
@@ -91,7 +91,7 @@ type
     _SC: TLabel;
     _RS: TLabel;
     SMALL_DBEditX: TSMALL_DBEdit;
-    DBCheckBox3: TDBCheckBox;
+    chkListaNF: TDBCheckBox;
     procedure memObservacaoEnter(Sender: TObject);
     procedure memObservacaoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -107,7 +107,7 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure tbsPisCofinsEnter(Sender: TObject);
-    procedure ComboBox7Change(Sender: TObject);
+    procedure cboCST_PISCOFINSChange(Sender: TObject);
     procedure tbsNaturezaEnter(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure DBCheckSobreClick(Sender: TObject);
@@ -228,7 +228,7 @@ begin
 
       cbIntegracaoFinanceira.ItemIndex := 0;
       cbMovimentacaoEstoque.ItemIndex  := 0;
-      ComboBox7.ItemIndex := -1;
+      cboCST_PISCOFINS.ItemIndex := -1;
 
       if AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString), 'CAIXA') then
         cbIntegracaoFinanceira.ItemIndex := 1;
@@ -248,11 +248,11 @@ begin
 
       if AllTrim(Form7.ibDataSet14CSTPISCOFINS.AsString)<>'' then
       begin
-        for I := 0 to ComboBox7.Items.Count -1 do
+        for I := 0 to cboCST_PISCOFINS.Items.Count -1 do
         begin
-          if Copy(ComboBox7.Items[I], 1, 2) = UpperCase(AllTrim(Form7.ibDataSet14CSTPISCOFINS.AsString)) then
+          if Copy(cboCST_PISCOFINS.Items[I], 1, 2) = UpperCase(AllTrim(Form7.ibDataSet14CSTPISCOFINS.AsString)) then
           begin
-            ComboBox7.ItemIndex := I;
+            cboCST_PISCOFINS.ItemIndex := I;
           end;
         end;
       end;
@@ -536,7 +536,38 @@ end;
 procedure TFrmNaturezaOperacao.SetaStatusUso;
 begin
   inherited;
-  //
+
+  {Mauricio Parizotto 2024-10-07 Inicio}
+  bSomenteLeitura := DSCadastro.DataSet.FieldByName('TRIB_INTELIGENTE').AsString = 'S';
+
+  dbeIcmCFOP.Enabled             := not (bSomenteLeitura);
+  edtDescricao.Enabled           := not (bSomenteLeitura);
+  edtIntegracao.Enabled          := not (bSomenteLeitura);
+  cbIntegracaoFinanceira.Enabled := not (bSomenteLeitura);
+  cbMovimentacaoEstoque.Enabled  := not (bSomenteLeitura);
+  fraPlanoContas.Enabled         := not (bSomenteLeitura);
+  edtCIT.Enabled                 := not (bSomenteLeitura);
+  edtBase.Enabled                := not (bSomenteLeitura);
+  edtISS.Enabled                 := not (bSomenteLeitura);
+  edtBaseICMS.Enabled            := not (bSomenteLeitura);
+  edtCST.Enabled                 := not (bSomenteLeitura);
+  edtCSOSN.Enabled               := not (bSomenteLeitura);
+  edtCBenef.Enabled              := not (bSomenteLeitura);
+  chkListaNF.Enabled             := not (bSomenteLeitura);
+  chkICMS_IPI.Enabled            := not (bSomenteLeitura);
+  chkICMS_Outras.Enabled         := not (bSomenteLeitura);
+  chkIPI_Frete.Enabled           := not (bSomenteLeitura);
+  chkIPI_Outras.Enabled          := not (bSomenteLeitura);
+  chkRefenciarNota.Enabled       := not (bSomenteLeitura);
+  chkLancaManual.Enabled         := not (bSomenteLeitura);
+  memObservacao.Enabled          := not (bSomenteLeitura);
+  cboCST_PISCOFINS.Enabled       := not (bSomenteLeitura);
+  dbepPisSaida.Enabled           := not (bSomenteLeitura);
+  dbepCofinsSaida.Enabled        := not (bSomenteLeitura);
+  dbeIcmBCPISCOFINS.Enabled      := not (bSomenteLeitura);
+  chkPisCofinsSobLucro.Enabled   := not (bSomenteLeitura);
+  pnlMapaICMS.Enabled            := not (bSomenteLeitura);
+  {Mauricio Parizotto 2024-10-07 Fim}
 end;
 
 function TFrmNaturezaOperacao.GetPaginaAjuda: string;
@@ -563,11 +594,11 @@ begin
     Form7.ibDataSet14.Edit;
 end;
 
-procedure TFrmNaturezaOperacao.ComboBox7Change(Sender: TObject);
+procedure TFrmNaturezaOperacao.cboCST_PISCOFINSChange(Sender: TObject);
 begin
-  Form7.ibDataSet14CSTPISCOFINS.AsString := Copy(ComboBox7.Items[ComboBox7.ItemIndex]+'  ',1,2);
+  Form7.ibDataSet14CSTPISCOFINS.AsString := Copy(cboCST_PISCOFINS.Items[cboCST_PISCOFINS.ItemIndex]+'  ',1,2);
 
-  if Copy(ComboBox7.Items[ComboBox7.ItemIndex]+'  ',1,2) = '03' then
+  if Copy(cboCST_PISCOFINS.Items[cboCST_PISCOFINS.ItemIndex]+'  ',1,2) = '03' then
   begin
     Label43.Caption := 'R$ PIS:';
     Label49.Caption := 'R$ COFINS:';
@@ -603,10 +634,10 @@ end;
 
 procedure TFrmNaturezaOperacao.lblAnteriorClick(Sender: TObject);
 begin
-  if Form7.ibDataSet14NOME.AsString <> SMALL_DBEdit54.Text then
+  if Form7.ibDataSet14NOME.AsString <> edtDescricao.Text then
   begin
     btnOK.SetFocus;
-    SMALL_DBEdit54.SetFocus;
+    edtDescricao.SetFocus;
   end;
   Form7.DefineNovoNomeNatOperacao;
   inherited;
@@ -615,15 +646,25 @@ end;
 
 procedure TFrmNaturezaOperacao.lblNovoClick(Sender: TObject);
 begin
-  if Form7.ibDataSet14NOME.AsString <> SMALL_DBEdit54.Text then
+  {Mauricio Parizotto 2024-10-07 Inicio}
+  if Form7.ibDataSet14NOME.AsString <> edtDescricao.Text then
   begin
     btnOK.SetFocus;
-    SMALL_DBEdit54.SetFocus;
+    //edtDescricao.SetFocus;
   end;
   Form7.DefineNovoNomeNatOperacao;
   inherited;
   AtualizaObjComValorDoBanco;
   Form7.AtualizaVariaveisAnteriorNatOper;
+
+  SetaStatusUso;
+
+  try
+    if dbeIcmCFOP.CanFocus then
+      dbeIcmCFOP.SetFocus;
+  except
+  end;
+  {Mauricio Parizotto 2024-10-07 Fim}
 end;
 
 procedure TFrmNaturezaOperacao.lblProcurarClick(Sender: TObject);
@@ -634,10 +675,10 @@ end;
 
 procedure TFrmNaturezaOperacao.lblProximoClick(Sender: TObject);
 begin
-  if Form7.ibDataSet14NOME.AsString <> SMALL_DBEdit54.Text then
+  if Form7.ibDataSet14NOME.AsString <> edtDescricao.Text then
   begin
     btnOK.SetFocus;
-    SMALL_DBEdit54.SetFocus;
+    edtDescricao.SetFocus;
   end;
   Form7.DefineNovoNomeNatOperacao;
   inherited;

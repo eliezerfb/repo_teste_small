@@ -4200,6 +4200,9 @@ begin
       {Dailon Parisotto (smal-653) 2024-08-28 Fim}
       pnlMapaICMS.Visible := True;
 
+      //Mauricio Parizotto 2024-10-07
+      SMALL_DBEditY.ReadOnly  := Form7.ibDataSet14TRIB_INTELIGENTE.AsString = 'S';
+
       Form7.ibDataSet14.Edit;
 
       _RR.Caption := 'RR '+Form7.ibDataSet14.FieldByname('RR_').AsString+'%';

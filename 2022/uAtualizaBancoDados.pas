@@ -3210,6 +3210,15 @@ begin
     end;
   end;
   {Mauricio Parizotto 2024-09-30 Fim}
+
+  {Mauricio Parizotto 2024-09-27 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'TRIB_INTELIGENTE') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ICM ADD TRIB_INTELIGENTE VARCHAR(1)') then
+      ExecutaComando('commit');
+  end;
+  {Mauricio Parizotto 2024-09-27 Fim}
+
   
   {Mauricio Parizotto 2024-09-26 Inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CONSULTA_TRIBUTACAO') = False then
