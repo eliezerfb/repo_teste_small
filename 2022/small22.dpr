@@ -164,12 +164,12 @@ uses
   uDuplicaProduto in 'units\uDuplicaProduto.pas',
   uIDuplicaOrcamento in 'interfaces\uIDuplicaOrcamento.pas',
   uDuplicaOrcamento in 'units\uDuplicaOrcamento.pas',
-  uFrenteSections in '..\..\unit_compartilhada\uFrenteSections.pas',
-  uNFeSections in '..\..\unit_compartilhada\uNFeSections.pas',
-  uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',
+  uFrenteSections in '..\..\unit_compartilhada\DAT\uFrenteSections.pas',
+  uNFeSections in '..\..\unit_compartilhada\DAT\uNFeSections.pas',
+  uNFSeSections in '..\..\unit_compartilhada\DAT\uNFSeSections.pas',
   uSmallComSections in '..\..\unit_compartilhada\uSmallComSections.pas',
-  uEstoqueSections in '..\..\unit_compartilhada\uEstoqueSections.pas',
-  uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas',
+  uEstoqueSections in '..\..\unit_compartilhada\DAT\uEstoqueSections.pas',
+  uUsuarioSections in '..\..\unit_compartilhada\DAT\uUsuarioSections.pas',
   uFrmProdutosDevolucao in 'uFrmProdutosDevolucao.pas' {FrmProdutosDevolucao},
   uFrmSmallImput in 'uFrmSmallImput.pas' {FrmSmallImput},
   uFrmGridPesquisaPadrao in 'uFrmGridPesquisaPadrao.pas' {FrmGridPesquisaPadrao},
@@ -272,6 +272,8 @@ uses
   ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo},
   uWebServiceIMendes in 'units\uWebServiceIMendes.pas',
   uFrmProdutosIMendes in 'uFrmProdutosIMendes.pas' {FrmProdutosIMendes},
+  uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
+  uIMendesSections in '..\..\unit_compartilhada\DAT\uIMendesSections.pas',
   uImendes in 'units\uImendes.pas';
 
 {$R *.RES}
