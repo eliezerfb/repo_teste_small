@@ -850,6 +850,7 @@ var
   var
     iCodigo: Integer;
   begin
+    Result := False;
     for iCodigo := 0 to slCompostoPai.Count - 1 do
     begin
       if sCodigo = slCompostoPai.Strings[iCodigo] then
@@ -902,14 +903,21 @@ begin
 
           if ValidaSeInsumoEhComposto(IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString) then
           begin
+            Result := True;
             Break;
           end;
 
-          if ComposicaoCircular(IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString, IBTRANSACTION, slCompostoPai) = False then
+          {
+          if ComposicaoCircular(IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString, IBTRANSACTION, slCompostoPai) then
           begin
             Result := True;
             Break;
           end;
+          }
+          Result := ComposicaoCircular(IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString, IBTRANSACTION, slCompostoPai);
+
+          if Result then
+            Break;
 
           IBQCOMPOSTO.Next;
 

@@ -19381,7 +19381,6 @@ begin
 
 end;
 
-
 procedure TForm7.ibDataSet16DESCRICAOSetText(Sender: TField;
   const Text: String);
 begin
@@ -32782,6 +32781,7 @@ var
   I, J : Integer;
 
   oNotaFiscal : TNotaFiscalEletronicaCalc;
+  bTemComposicaoCircular: Boolean; // Sandro Silva 2024-10-14
 begin
   FbDuplicandoNFe := True;
   Form7.bPesqProdNFPorConsulta := True;
@@ -32795,6 +32795,28 @@ begin
     Form7.ibDataSet16.First;
     while not Form7.ibDataSet16.Eof do // disable
     begin
+
+      {Sandro Silva 2024-10-14 inicio}
+      if Form7.ibDataSet16CODIGO.AsString <> '' then
+      begin
+
+        if ProdutoTemComposicaoCircular(Form7.ibDataSet16CODIGO.AsString, Form7.ibDataSet16.Transaction) then
+        begin
+
+          bTemComposicaoCircular := True;
+
+          MensagemSistema(Form7.ibDataSet4CODIGO.AsString + ' - ' + Form7.ibDataSet4DESCRICAO.AsString + #13 + #13 +
+            'Produto com composição circular' + #13 + #13 +
+            'Corrija a composição antes de lançar na nota' + #13 + #13
+            , msgAtencao);
+
+          Break;
+
+        end;
+
+      end;
+      {Sandro Silva 2024-10-14 fim}
+
       sDesVetor[I] := Form7.ibDataSet16DESCRICAO.AsString;
       fValVetor[I] := Form7.ibDataSet16UNITARIO.Asfloat;
       fQtdVetor[I] := Form7.ibDataSet16QUANTIDADE.AsFloat;
@@ -32802,6 +32824,13 @@ begin
       I := I + 1;
       Form7.ibDataSet16.Next;
     end;
+
+    {Sandro Silva 2024-10-14 inicio}
+    if bTemComposicaoCircular then
+    begin
+      Exit;
+    end;
+    {Sandro Silva 2024-10-14 fim}
 
     Form7.ibDataSet15.Append;
     if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
