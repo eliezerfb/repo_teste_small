@@ -4,14 +4,20 @@ interface
 
 uses SysUtils, Winapi.Windows, uClassesIMendes, Rest.Json, Rest.Types, uWebServiceIMendes,
   uDialogs, uLogSistema, uFrmProdutosIMendes, IBX.IBQuery, IBX.IBDatabase,
-  uFuncoesBancoDados, smallfunc_xe, IBX.IBCustomDataSet, uSistema, Data.DB;
+  uFuncoesBancoDados, smallfunc_xe, IBX.IBCustomDataSet, uSistema, Data.DB, 
+  System.StrUtils, unit7;
 
+type TPesquisaImendes = (tpCodigo, tpEAN);
+  
   function ProdutosDescricaoImendes(sCNPJ, sDescricao: string): TArray<TProdutoImendes>;
   function GetCodImendes(sCNPJ, sDescricao: string): integer;
-  function GetTributacaoProd(ibdEstoque : TibDataSet): boolean;
-  procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo);
+  function GetTributacaoProd(ibdEstoque : TibDataSet; TipoPesquisa: TPesquisaImendes): boolean;
+  procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo; PreencheIPI : Boolean; UF : string);
   procedure GetDadosCabecalho(Cabecalho: TCabecalhoTrib; Transaction : TIBTransaction);
+  function GetCitTribIMendes(AliqICMS, BcIcms : double; CFOP, UF : string; Transaction : TIBTransaction):string;
+  function GetSeqCitIMendes(Transaction : TIBTransaction):string;
 
+  
 implementation
 
 function ProdutosDescricaoImendes(sCNPJ,sDescricao : string): TArray<TProdutoImendes>;
@@ -42,7 +48,6 @@ begin
     end else
     begin
       MensagemSistema('Falha ao consultar informações.',msgErro);
-      LogSistema(sJsonRet);
     end;
   finally
     FreeAndNil(ConsultaProdDesc);
@@ -82,13 +87,14 @@ begin
   Result := CodIMendes;
 end;
 
-function GetTributacaoProd(ibdEstoque : TibDataSet): boolean;
+function GetTributacaoProd(ibdEstoque : TibDataSet; TipoPesquisa: TPesquisaImendes): boolean;
 var
   TributacaoIMendesDTO : TTributacaoIMendesDTO;
   RetTributacaoIMendesDTO : TRetTributacaoIMendesDTO;
   ProdutoArray : TArray<TProdutoTrib>;
   sJson, sJsonRet : string;
   sUF : TArray<string>;
+  bEncontrado : boolean;
 begin
   Result := False;
 
@@ -104,7 +110,7 @@ begin
     ProdutoArray[0] := TProdutoTrib.Create;
     ProdutoArray[0].Descricao  := ibdEstoque.FieldByName('DESCRICAO').AsString;
 
-    if ibdEstoque.FieldByName('CODIGO_IMENDES').AsString <> '' then
+    if TipoPesquisa = tpCodigo then
       ProdutoArray[0].CodIMendes := ibdEstoque.FieldByName('CODIGO_IMENDES').AsString
     else
       ProdutoArray[0].Codigo     := ibdEstoque.FieldByName('REFERENCIA').AsString;
@@ -128,9 +134,26 @@ begin
 
         if RetTributacaoIMendesDTO <> nil then
         begin
-          //Atribui tributação ao produto
-          SetTribProd(ibdEstoque, RetTributacaoIMendesDTO.Grupo[0]);
-          Result := True;
+          bEncontrado := False;
+
+          if Length(RetTributacaoIMendesDTO.Grupo[0].Produto) > 0 then
+            if ContainsText(RetTributacaoIMendesDTO.Grupo[0].Produto[0], ibdEstoque.FieldByName('REFERENCIA').AsString) then
+              bEncontrado := True;
+
+          if Length(RetTributacaoIMendesDTO.Grupo[0].CodIMendes) > 0 then
+            if (RetTributacaoIMendesDTO.Grupo[0].CodIMendes[0] = ibdEstoque.FieldByName('CODIGO_IMENDES').AsString) then
+              bEncontrado := True;
+
+          if bEncontrado then
+          begin
+            //Atribui tributação ao produto
+            SetTribProd(ibdEstoque,
+                        RetTributacaoIMendesDTO.Grupo[0],
+                        TSistema.GetInstance.ConsultarIPIImendes,
+                        TributacaoIMendesDTO.Uf[0]);
+            
+            Result := True;
+          end;
         end;
       finally
         FreeAndNil(RetTributacaoIMendesDTO);
@@ -138,7 +161,6 @@ begin
     end else
     begin
       MensagemSistema('Falha ao consultar regras fiscais.',msgErro);
-      LogSistema(sJsonRet);
     end;
   finally
     FreeAndNil(TributacaoIMendesDTO);
@@ -187,23 +209,115 @@ begin
   end;
 end;
 
-procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo);
+procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo; PreencheIPI : Boolean; UF : string);
 begin
+  Form7.SaneamentoIMendes := True;
+
   try
     if not (ibdEstoque.State = dsEdit) then
       ibdEstoque.Edit;
 
-    ibdEstoque.FieldByName('CF').AsString   := LimpaNumero(Grupo.Ncm);
-    ibdEstoque.FieldByName('CEST').AsString := LimpaNumero(Grupo.Cest);
-    //ibdEstoque.FieldByName('CST_PIS_COFINS_ENTRADA').AsString := LimpaNumero(Grupo.c);
+    ibdEstoque.FieldByName('CF').AsString                     := LimpaNumero(Grupo.Ncm);
+    ibdEstoque.FieldByName('CEST').AsString                   := LimpaNumero(Grupo.Cest);
+    ibdEstoque.FieldByName('TAGS_').AsString                  := AlteraValorDaTagNoCampo('cProdANP', Grupo.Codanp, ibdEstoque.FieldByName('TAGS_').AsString);
+    
+    ibdEstoque.FieldByName('CST_PIS_COFINS_ENTRADA').AsString := Grupo.Piscofins.CstEnt;
+    ibdEstoque.FieldByName('CST_PIS_COFINS_SAIDA').AsString   := Grupo.Piscofins.CstSai;
+    ibdEstoque.FieldByName('ALIQ_PIS_SAIDA').AsFloat          := Grupo.Piscofins.AliqPIS;
+    ibdEstoque.FieldByName('ALIQ_PIS_SAIDA').AsFloat          := Grupo.Piscofins.AliqCOFINS;
+    ibdEstoque.FieldByName('NATUREZA_RECEITA').AsString       := Grupo.Piscofins.Nri;
 
+    if PreencheIPI then
+    begin
+      ibdEstoque.FieldByName('CST_IPI').AsString              := Grupo.Ipi.CstSai;
+      ibdEstoque.FieldByName('IPI').AsFloat                   := Grupo.Ipi.AliqIPI;
+      ibdEstoque.FieldByName('ENQ_IPI').AsString              := Grupo.Ipi.Codenq;
+    end;
+    
+    ibdEstoque.FieldByName('CST').AsString                    := Grupo.Regra[0].Cst;
+    ibdEstoque.FieldByName('CSOSN').AsString                  := Grupo.Regra[0].Csosn;
+    
+    if (Copy(Grupo.Regra[0].Cst,2,2) = '00')
+      or (Copy(Grupo.Regra[0].Cst,2,2) = '20') 
+      or (Copy(Grupo.Regra[0].Cst,2,2) = '40') 
+      or (Copy(Grupo.Regra[0].Cst,2,2) = '41') 
+      or (Copy(Grupo.Regra[0].Cst,2,2) = '60') 
+      or (Copy(Grupo.Regra[0].Cst,2,2) = '61') 
+      or (Copy(Grupo.Regra[0].Cst,2,2) = '90') then
+    begin
+      ibdEstoque.FieldByName('CST_NFCE').AsString             := Copy(Grupo.Regra[0].Cst,2,2);
+    end else
+    begin
+      ibdEstoque.FieldByName('CST_NFCE').Clear;
+    end;
+
+    if (Grupo.Regra[0].Csosn = '102') 
+      or (Grupo.Regra[0].Csosn = '103')
+      or (Grupo.Regra[0].Csosn = '300')
+      or (Grupo.Regra[0].Csosn = '400')
+      or (Grupo.Regra[0].Csosn = '500')
+      or (Grupo.Regra[0].Csosn = '900')
+      or (Grupo.Regra[0].Csosn = '61') then
+    begin
+      ibdEstoque.FieldByName('CSOSN_NFCE').AsString           := Grupo.Regra[0].Csosn;
+    end else
+    begin
+      ibdEstoque.FieldByName('CSOSN_NFCE').Clear;
+    end;
+
+    if (Grupo.Regra[0].Cst = '010') 
+      or (Grupo.Regra[0].Cst = '030')
+      or (Grupo.Regra[0].Cst = '070')
+      or (Grupo.Regra[0].Csosn = '201')
+      or (Grupo.Regra[0].Csosn = '202')
+      or (Grupo.Regra[0].Csosn = '203') then
+    begin
+      ibdEstoque.FieldByName('PIVA').AsFloat                  := 1 + (Grupo.Regra[0].Iva / 100);
+    end else
+    begin
+      ibdEstoque.FieldByName('PIVA').Clear;
+    end;
+
+    ibdEstoque.FieldByName('TAGS_').AsString                  := AlteraValorDaTagNoCampo('FCP', Grupo.Regra[0].Fcp.ToString, ibdEstoque.FieldByName('TAGS_').AsString);
+    ibdEstoque.FieldByName('TAGS_').AsString                  := AlteraValorDaTagNoCampo('cBenef', Grupo.Regra[0].CodBenef, ibdEstoque.FieldByName('TAGS_').AsString);
+    ibdEstoque.FieldByName('TAGS_').AsString                  := AlteraValorDaTagNoCampo('pRedBC', FloatToStr(100 - Grupo.Regra[0].Reducaobcicms), ibdEstoque.FieldByName('TAGS_').AsString);
+    
+    if (Grupo.Regra[0].CfopVenda = 5101) 
+      or (Grupo.Regra[0].CfopVenda = 5102)
+      or (Grupo.Regra[0].CfopVenda = 5103)
+      or (Grupo.Regra[0].CfopVenda = 5104)
+      or (Grupo.Regra[0].CfopVenda = 5115)
+      or (Grupo.Regra[0].CfopVenda = 5405) 
+      or (Grupo.Regra[0].CfopVenda = 5656) 
+      or (Grupo.Regra[0].CfopVenda = 5667) 
+      or (Grupo.Regra[0].CfopVenda = 5933) 
+      or (Grupo.Regra[0].CfopVenda = 5949) then
+    begin
+      ibdEstoque.FieldByName('CFOP').AsString                 := Grupo.Regra[0].CfopVenda.ToString;
+    end else
+    begin
+      ibdEstoque.FieldByName('CFOP').Clear;
+    end;
+
+    //CIT
+    ibdEstoque.FieldByName('ST').AsString  := GetCitTribIMendes(Grupo.Regra[0].Aliqicms, 
+                                                                100 - Grupo.Regra[0].Reducaobcicms,  
+                                                                Grupo.Regra[0].CfopVenda.ToString,
+                                                                UF,
+                                                                ibdEstoque.Transaction);
+
+    
+    //Define Status
     ibdEstoque.FieldByName('STATUS_TRIBUTACAO').AsString        := 'Consultado';
     ibdEstoque.FieldByName('DATA_STATUS_TRIBUTACAO').AsDateTime := now;
+    ibdEstoque.FieldByName('IDPERFILTRIBUTACAO').Clear;
   except
     on e:exception do
       MensagemSistema('Erro ao atribuir tributação.'+#13#10+e.Message,
                       msgErro);
   end;
+
+  Form7.SaneamentoIMendes := False;
 end;
 
 
@@ -240,5 +354,79 @@ begin
 end;
 }
 
+
+function GetCitTribIMendes(AliqICMS, BcIcms : double; CFOP, UF : string; Transaction : TIBTransaction):string;
+var
+  qryAux: TIBQuery;
+  sCIT : string;
+  sDescricao : string;
+begin
+  Result := '';
+
+  try
+    {$Region'//// Verifica se já tem tributação cadastrada ////'}
+    try
+      qryAux := CriaIBQuery(Transaction);
+      qryAux.SQL.Text := ' Select'+
+                         '   ST'+
+                         ' From ICM'+
+                         ' Where TRIB_INTELIGENTE = ''S'' '+
+                         '   and CFOP = '+QuotedStr(CFOP)+
+                         '   and '+UF+'_ = '+AliqICMS.ToString+
+                         '   and BASE = '+BcIcms.ToString+
+                         '   and COALESCE(ST,'''') <> ''''  ';
+      qryAux.Open;
+
+      if not qryAux.IsEmpty then
+      begin
+        Result := qryAux.FieldByName('ST').AsString;
+        Exit;
+      end;
+    finally
+      FreeAndNil(qryAux);
+    end;
+    {$Endregion}
+
+    {$Region'//// Se não tem tributação cadastrada ////'}
+    sCIT       := GetSeqCitIMendes(Transaction);
+    sDescricao := 'Tributação '+AliqICMS.ToString+'% BASE ICMS '+ BcIcms.ToString + '% CFOP ' + CFOP;
+
+    Form7.ibDataSet14.Append;
+    Form7.ibDataSet14CFOP.AsString                := CFOP;
+    Form7.ibDataSet14NOME.AsString                := sDescricao;
+    Form7.ibDataSet14ST.AsString                  := sCIT;
+    Form7.ibDataSet14BASE.AsFloat                 := BcIcms;
+    Form7.ibDataSet14.FieldByName(UF+'_').AsFloat := AliqICMS;
+    Form7.ibDataSet14LISTAR.AsString              := 'N';
+    Form7.ibDataSet14.Post;
+
+    Result := sCIT;
+    {$Endregion}
+  except
+  end;
+end;
+
+function GetSeqCitIMendes(Transaction : TIBTransaction):string;
+var
+  iSec : integer;
+  sSeq, sLetra : string;
+begin
+  Result := '';
+
+  try
+    iSec   := StrToIntDef(IncGenerator(Transaction.DefaultDatabase,'G_CIT'),1);
+    sSeq   := StrZero(iSec,3,0);
+    sLetra := LetraNumeroAlfabeto(StrToIntDef(Copy(sSeq,1,1),0)+1);
+    sSeq   := sLetra+Copy(sSeq,2,2);
+
+    //Verifica se já esta em uso
+    if ExecutaComandoEscalar(Transaction,' Select Count(*) From ICM'+
+                                         ' Where ST ='+QuotedStr(sSeq)) > 0 then
+      sSeq := GetSeqCitIMendes(Transaction);
+
+    Result := sSeq;
+  except
+  end;
+end;
 
 end.

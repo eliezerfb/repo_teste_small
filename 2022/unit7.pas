@@ -2562,6 +2562,7 @@ type
     fSaldoVetorBanco : array[0..9999999] of real;
 
     StatusTrocaPerfil : String; // Mauricio Parizotto 2023-09-26
+    SaneamentoIMendes : Boolean; // Mauricio Parizotto 2024-10-14
 
     //
     // NFe
@@ -10373,6 +10374,8 @@ begin
   //Mauricio Parizotto 2023-12-05
   //Marca campo chave da tabela
   ibdSituacaoOSIDSITUACAO.ProviderFlags := [pfInUpdate,pfInWhere,pfInKey];
+
+  SaneamentoIMendes := False;
 end;
 
 procedure TForm7.ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -27094,8 +27097,13 @@ begin
   {Dailon Parisotto 2023-10-09 fim}
 
   //Mauricio Parizotto 2023-09-18
-  if Form7.StatusTrocaPerfil = 'PR' then
+  if StatusTrocaPerfil = 'PR' then
     Exit;
+
+  //Mauricio Parizotto 2024-10-14
+  if SaneamentoIMendes then
+    Exit;
+
 
   I := Application.MessageBox(Pchar('Atribuir o novo valor para todas as compras deste produto?'+ Chr(10)
                     + Chr(10))

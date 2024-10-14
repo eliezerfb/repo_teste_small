@@ -409,6 +409,7 @@ type
     procedure btnConsultarTribClick(Sender: TObject);
     procedure edtNaturezaReceitaKeyPress(Sender: TObject; var Key: Char);
     procedure PorDescrio1Click(Sender: TObject);
+    procedure PorEAN1Click(Sender: TObject);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -862,7 +863,8 @@ begin
 
   AjustaCampoPrecoQuandoEmPromocao;
 
-  pnlImendes.Visible := TSistema.GetInstance.ModuloImendes;
+  //Mauricio Parizotto 2024-10-11
+  AtualizaStatusIMendes;
 end;
 
 procedure TFrmEstoque.framePesquisaProdComposicaodbgItensPesqCellClick(
@@ -2526,7 +2528,7 @@ begin
 
   GravaImagemEstoque;
 
-  //Mauricio Parizotto 2024-09-26
+  //Mauricio Parizotto 2024-10-11
   AtualizaStatusIMendes;
 end;
 
@@ -3860,6 +3862,9 @@ begin
   // 10 - Outros insumos
   // 99 - Outras
   Form7.ibDataSet4TIPO_ITEM.AsString := Copy(cboTipoItem.Items[cboTipoItem.ItemIndex]+'  ',1,2);
+
+  //Mauricio Parizotto 2024-10-11
+  AtualizaStatusIMendes;
 end;
 
 procedure TFrmEstoque.AjustaCampoPrecoQuandoEmPromocao;
@@ -4448,8 +4453,7 @@ end;
 
 procedure TFrmEstoque.PorDescrio1Click(Sender: TObject);
 var
-  ProdutoImendesArray : TArray<TProdutoImendes>;
-  i, CodIMendes : integer;
+  CodIMendes : integer;
 begin
   CodIMendes := DSCadastro.DataSet.FieldByName('CODIGO_IMENDES').AsInteger;
 
@@ -4469,9 +4473,27 @@ begin
   if CodIMendes > 0 then
   begin
     //Busca tributação
-    GetTributacaoProd(TibDataSet(DSCadastro.DataSet));
-    AtualizaStatusIMendes;
+    GetTributacaoProd(TibDataSet(DSCadastro.DataSet),tpCodigo);
+    AtualizaObjComValorDoBanco;
   end;
+end;
+
+procedure TFrmEstoque.PorEAN1Click(Sender: TObject);
+begin
+  if (Trim(DSCadastro.DataSet.FieldByName('REFERENCIA').AsString) = '')
+    or not ValidaEAN(DSCadastro.DataSet.FieldByName('REFERENCIA').AsString) then
+  begin
+    MensagemSistema('Preencha o Código de Barras para realizar a consulta ou utilize a opção Por Descrição.',msgAtencao);
+
+    if edtCodBarras.CanFocus then
+      edtCodBarras.SetFocus;
+
+    Exit;
+  end;
+
+  //Busca tributação
+  GetTributacaoProd(TibDataSet(DSCadastro.DataSet),tpEAN);
+  AtualizaObjComValorDoBanco;
 end;
 
 function TFrmEstoque.MensagemImagemWeb(Msg, Titulo : string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; Captions: array of string): Integer;
@@ -4523,6 +4545,9 @@ begin
 
   if sStatusImendes = _cStatusImendesPendente then
     lblStatusImendes.Font.Color := $00FD6102;
+
+  btnConsultarTrib.Visible := DSCadastro.DataSet.FieldByName('TIPO_ITEM').AsString <> '09';
+  pnlImendes.Visible       := (DSCadastro.DataSet.FieldByName('TIPO_ITEM').AsString <> '09') and (TSistema.GetInstance.ModuloImendes);
 end;
 
 

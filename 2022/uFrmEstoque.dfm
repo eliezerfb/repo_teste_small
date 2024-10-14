@@ -91,7 +91,7 @@ inherited FrmEstoque: TFrmEstoque
       ExplicitHeight = 453
     end
     inherited pgcFicha: TPageControl
-      ActivePage = tbsCadastro
+      ActivePage = tbsICMS
       ExplicitWidth = 802
       ExplicitHeight = 453
       object tbsCadastro: TTabSheet
@@ -5331,6 +5331,7 @@ inherited FrmEstoque: TFrmEstoque
     Top = 510
     object PorEAN1: TMenuItem
       Caption = 'Por EAN'
+      OnClick = PorEAN1Click
     end
     object PorDescrio1: TMenuItem
       Caption = 'Por Descri'#231#227'o'

@@ -14,6 +14,7 @@ const
   _HostIMendes     = 'http://consultatributos.com.br:8080/api/v1/public/';
 
   function EnviaRequisicaoIMendes(vMethod : TRESTRequestMethod; Endpoint:string; sBody : string; out sResposta : string) : Boolean;
+  procedure GravaLogIMendes(sLog:string);
 
 implementation
 
@@ -79,7 +80,9 @@ begin
   {$Endregion}
 
   try
+    GravaLogIMendes('Envio '+Endpoint+' : '+sBody);
     FRESTRequest.Execute;
+    GravaLogIMendes('Retorno '+Endpoint+' : '+FRESTRequest.Response.Content);
   except
   end;
 
@@ -102,5 +105,41 @@ begin
   {$Endregion}
 end;
 
+
+procedure GravaLogIMendes(sLog:string);
+var
+  DirArquivo, NomeArquivo : string;
+  arq: TextFile;
+begin
+  DirArquivo := ExtractFileDir(Application.ExeName)+'\log\IMendes\';
+
+  try
+    if not DirectoryExists(DirArquivo) then
+      CreateDir(DirArquivo);
+
+    NomeArquivo := 'Log_'+FormatDateTime('yyyy-mm-dd', Date)+'.txt';
+
+    AssignFile(arq,DirArquivo+NomeArquivo);
+
+    {$I-} // desativa a diretiva de Input
+
+    if FileExists(DirArquivo+NomeArquivo) then
+      Append(arq) // Abre o arquivo texto
+    else
+      Rewrite(arq); // Cria arquivo
+
+    {$I+} // ativa a diretiva de Input
+
+    if (IOResult <> 0) then // verifica o resultado da operação de abertura
+    begin
+      //
+    end else
+    begin
+      WriteLn (arq, DateTimeToStr(now)+' '+sLog); //lê uma linha do arquivo
+      CloseFile(arq); //fecha o arquivo
+    end;
+  except
+  end;
+end;
 
 end.

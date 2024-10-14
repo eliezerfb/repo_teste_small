@@ -3243,6 +3243,14 @@ begin
       ExecutaComando('commit');
   end;
   {Mauricio Parizotto 2024-09-26 Fim}
+
+  {Mauricio Parizotto 2024-10-14 Inicio}
+  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase,'G_CIT') = False then
+  begin
+    if ExecutaComando('CREATE SEQUENCE G_CIT') then
+      ExecutaComando('commit');
+  end;
+  {Mauricio Parizotto 2024-10-14 Fim}
   
   
   Form22.Repaint;
