@@ -167,12 +167,12 @@ uses
   uDuplicaProduto in 'units\uDuplicaProduto.pas',
   uIDuplicaOrcamento in 'interfaces\uIDuplicaOrcamento.pas',
   uDuplicaOrcamento in 'units\uDuplicaOrcamento.pas',
-  uFrenteSections in '..\..\unit_compartilhada\uFrenteSections.pas',
-  uNFeSections in '..\..\unit_compartilhada\uNFeSections.pas',
-  uNFSeSections in '..\..\unit_compartilhada\uNFSeSections.pas',
+  uFrenteSections in '..\..\unit_compartilhada\DAT\uFrenteSections.pas',
+  uNFeSections in '..\..\unit_compartilhada\DAT\uNFeSections.pas',
+  uNFSeSections in '..\..\unit_compartilhada\DAT\uNFSeSections.pas',
   uSmallComSections in '..\..\unit_compartilhada\uSmallComSections.pas',
-  uEstoqueSections in '..\..\unit_compartilhada\uEstoqueSections.pas',
-  uUsuarioSections in '..\..\unit_compartilhada\uUsuarioSections.pas',
+  uEstoqueSections in '..\..\unit_compartilhada\DAT\uEstoqueSections.pas',
+  uUsuarioSections in '..\..\unit_compartilhada\DAT\uUsuarioSections.pas',
   uFrmProdutosDevolucao in 'uFrmProdutosDevolucao.pas' {FrmProdutosDevolucao},
   uFrmSmallImput in 'uFrmSmallImput.pas' {FrmSmallImput},
   uFrmGridPesquisaPadrao in 'uFrmGridPesquisaPadrao.pas' {FrmGridPesquisaPadrao},
@@ -245,7 +245,7 @@ uses
   uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria},
   //uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas',
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
-  uFrmContaPagar in 'uFrmContaPagar.pas', {FrmContaPagar}
+  uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
   uFrmIntegracaoItau in 'uFrmIntegracaoItau.pas' {FrmIntegracaoItau},
   uFrmIntegracaoSicoob in 'uFrmIntegracaoSicoob.pas' {FrmIntegracaoSicoob},
   uMobile in 'units\uMobile.pas',
@@ -273,7 +273,9 @@ uses
   ufrmInformarDrawback in 'ufrmInformarDrawback.pas' {frmInformarDrawback},
   ufrmInformacoesExportacaoNFe in 'ufrmInformacoesExportacaoNFe.pas' {frmInformacoesExportacaoNFe},
   uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas',
-  ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo};
+  ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo},
+  uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
+  uIMendesSections in '..\..\unit_compartilhada\DAT\uIMendesSections.pas';
 
 {$R *.RES}
 
