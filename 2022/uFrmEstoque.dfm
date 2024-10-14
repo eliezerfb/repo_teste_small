@@ -2638,7 +2638,7 @@ inherited FrmEstoque: TFrmEstoque
           Caption = ' IPI '
           TabOrder = 0
           object Label41: TLabel
-            Left = 36
+            Left = 60
             Top = 27
             Width = 75
             Height = 13
@@ -2656,7 +2656,7 @@ inherited FrmEstoque: TFrmEstoque
             Transparent = True
           end
           object Label40: TLabel
-            Left = 28
+            Left = 52
             Top = 55
             Width = 83
             Height = 13
@@ -2674,7 +2674,7 @@ inherited FrmEstoque: TFrmEstoque
             Transparent = True
           end
           object Label98: TLabel
-            Left = 5
+            Left = 29
             Top = 81
             Width = 106
             Height = 13
@@ -2692,9 +2692,9 @@ inherited FrmEstoque: TFrmEstoque
             Transparent = True
           end
           object cboCST_IPI: TComboBox
-            Left = 118
+            Left = 142
             Top = 22
-            Width = 619
+            Width = 595
             Height = 22
             Style = csOwnerDrawVariable
             Font.Charset = ANSI_CHARSET
@@ -2717,7 +2717,7 @@ inherited FrmEstoque: TFrmEstoque
               '99 - Outras Sa'#237'das')
           end
           object edtIPI: TSMALL_DBEdit
-            Left = 118
+            Left = 142
             Top = 50
             Width = 50
             Height = 20
@@ -2738,7 +2738,7 @@ inherited FrmEstoque: TFrmEstoque
             OnKeyDown = PadraoKeyDown
           end
           object edtEnqIPI: TSMALL_DBEdit
-            Left = 118
+            Left = 142
             Top = 76
             Width = 50
             Height = 20

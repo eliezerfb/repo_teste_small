@@ -54,6 +54,9 @@ type
 var
   frmRelatorioNotasFaltantes: TfrmRelatorioNotasFaltantes;
 
+const
+  _cSerieNFCe = '10000';
+
 implementation
 
 uses
@@ -225,6 +228,7 @@ begin
   fQryDocumentos.SQL.Add('    '+Ord(dinfNFe).ToString+' as TIPODOC');
   fQryDocumentos.SQL.Add('    , substring(VENDAS.NUMERONF from 1 for 9) as NUMERONF');
   fQryDocumentos.SQL.Add('    , VENDAS.STATUS');
+  fQryDocumentos.SQL.Add('    , substring(VENDAS.NUMERONF from 10 for 3) as SERIEORDENACAO');
   fQryDocumentos.SQL.Add('    , substring(VENDAS.NUMERONF from 10 for 3) as SERIE');
   fQryDocumentos.SQL.Add('    , VENDAS.EMISSAO as DATA');
   fQryDocumentos.SQL.Add('from VENDAS');
@@ -237,7 +241,8 @@ begin
   fQryDocumentos.SQL.Add('    '+Ord(dinfNFCe).ToString+' as TIPODOC');
   fQryDocumentos.SQL.Add('    , NFCE.NUMERONF');
   fQryDocumentos.SQL.Add('    , NFCE.STATUS');
-  fQryDocumentos.SQL.Add('    , NFCE.CAIXA as SERIE');
+  fQryDocumentos.SQL.Add('    , '+QuotedStr(_cSerieNFCe)+' as SERIEORDENACAO');
+  fQryDocumentos.SQL.Add('    , NFCE.CAIXA AS SERIE');
   fQryDocumentos.SQL.Add('    , NFCE.DATA');
   fQryDocumentos.SQL.Add('from NFCE');
   fQryDocumentos.SQL.Add('where');
@@ -285,7 +290,7 @@ begin
   fQryMaxNumero.SQL.Add('union all');
   fQryMaxNumero.SQL.Add('select');
   fQryMaxNumero.SQL.Add('    '+Ord(dinfNFCe).ToString+' as TIPODOC');
-  fQryMaxNumero.SQL.Add('    , ''001'' as SERIE'); // NFCe não tem controle de caixa
+  fQryMaxNumero.SQL.Add('    , '+QuotedStr(_cSerieNFCe)+' as SERIE'); // NFCe não tem controle de caixa
   fQryMaxNumero.SQL.Add('    , max(NFCE.NUMERONF) as NUMERO');
   fQryMaxNumero.SQL.Add('from NFCE');
   fQryMaxNumero.SQL.Add('where');
@@ -364,7 +369,7 @@ begin
         enTipoDoc := TDocsImprimirNotasFaltantes(fQryDocumentos.FieldByName('TIPODOC').AsInteger);
         if cNota = EmptyStr then
         begin
-          cNota := RetornarNumeroNFAnterior(enTipoDoc, '001');
+          cNota := RetornarNumeroNFAnterior(enTipoDoc, _cSerieNFCe);
           if cNota = EmptyStr then
             cNota := fQryDocumentos.FieldByName('NUMERONF').AsString;
         end;
