@@ -49,6 +49,8 @@ type
 
 
   function GeraXmlNFe: String;
+  procedure CstComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
+    ItemNF: TItemNFe);
   procedure CsosnComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String; ItemNF: TItemNFe);
 
 implementation
@@ -262,7 +264,86 @@ begin
   end;
 end;
 
+procedure CstComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
+  ItemNF: TItemNFe);
+var
+  IBQESTOQUE: TIBQuery;
+  IBQICM: TIBQuery;
+  sReg: String;
+begin
+  if (Trim(sCodigo) <> '') and (Trim(sOperacao) <> '') then
+  begin
+    IBQESTOQUE := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
+    IBQICM     := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
 
+    IBQESTOQUE.Close;
+    IBQESTOQUE.SQL.Text := ' select ST, CST ' +
+                           ' from ESTOQUE ' +
+                           ' where CODIGO = :CODIGO';
+    IBQESTOQUE.ParamByName('CODIGO').AsString := sCodigo;
+    IBQESTOQUE.Open;
+
+    IBQICM.Close;
+    IBQICM.SQL.Text := ' select * ' +
+                       ' from ICM ' +
+                       ' where upper(NOME) = upper(:OPERACAO) ' +
+                       ' order by upper(NOME)';
+    IBQICM.ParamByName('OPERACAO').AsString := sOperacao;
+    IBQICM.Open;
+
+    if AllTrim(IBQESTOQUE.FieldByName('ST').AsString) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
+    begin
+      sReg := IBQICM.FieldByName('REGISTRO').AsString;
+      IBQICM.DisableControls;
+      IBQICM.Close;
+      IBQICM.SQL.Clear;
+      IBQICM.SQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
+      IBQICM.Open;
+      if not IBQICM.Locate('ST', IBQESTOQUE.FieldByName('ST').AsString, [loCaseInsensitive, loPartialKey]) then
+        IBQICM.Locate('REGISTRO', sReg, []);
+      IBQICM.EnableControls;
+
+      if not (AllTrim(IBQICM.FieldByName('CST').AsString) <> '') then
+      begin
+        IBQICM.DisableControls;
+        IBQICM.Close;
+        IBQICM.SQL.Clear;
+        IBQICM.SQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
+        IBQICM.Open;
+        IBQICM.Locate('NOME', sOperacao, []);
+        IBQICM.EnableControls;
+      end;
+    end else
+    begin
+      IBQICM.DisableControls;
+      IBQICM.Close;
+      IBQICM.SQL.Clear;
+      IBQICM.SQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
+      IBQICM.Open;
+      IBQICM.Locate('NOME', sOperacao, []);
+      IBQICM.EnableControls;
+    end;
+
+    if Trim(IBQICM.FieldByName('CST').AsString) <> '' then
+      ItemNF.CST := Right(IBQICM.FieldByname('CST').AsString, 2)
+    else
+      ItemNF.CST := Right(IBQESTOQUE.FieldByname('CST').AsString, 2);
+    ItemNF.Codigo := sCodigo;
+
+    try
+      if AllTrim(IBQICM.FieldByName('CST').AsString) <> '' then
+        ItemNF.Origem   := Copy(LimpaNumero(IBQICM.FieldByname('CST').AsString) + '000', 1, 1) //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
+      else
+        ItemNF.Origem   := Copy(LimpaNumero(IBQESTOQUE.FieldByname('CST').AsString) + '000', 1, 1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
+
+    except
+      ItemNF.Origem   := '0';
+    end;
+
+    FreeAndNil(IBQESTOQUE);
+    FreeAndNil(IBQICM);
+  end;
+end;
 
 procedure CsosnComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
   ItemNF: TItemNFe);

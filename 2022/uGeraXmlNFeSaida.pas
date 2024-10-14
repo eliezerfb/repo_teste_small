@@ -3211,7 +3211,7 @@ begin
 
     Form7.ibDataSet7.First;
     {Sandro Silva 2023-06-29 inicio
-while not Form7.ibDataSet7.Eof do
+    while not Form7.ibDataSet7.Eof do
     begin
       // Note que Os dados da Fatura se encontram no Parte "Y" da NFe que vamos
       // fazer várias inserções para a Mesma NFe como demonstracao
@@ -3382,6 +3382,7 @@ begin
       end
       else
       begin
+        {Sandro Silva 2024-10-14 inicio
         if AllTrim(Form7.ibDataSet14.FieldByName('CST').AsString) <> '' then
         begin
           Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet14.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
@@ -3391,6 +3392,13 @@ begin
           Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
           Form7.spdNFeDataSets.Campo('CST_N12').Value    := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2); // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
         end;
+        }
+        ItemNFe := TItemNFe.Create;
+        CstComOrigemdoProdutoNaOperacao(Form7.ibDataSet4.FieldByName('CODIGO').AsString, Form7.ibDataSet15OPERACAO.AsString, ItemNFe);
+        Form7.spdNFeDataSets.Campo('CST_N12').Value  := ItemNFe.CST; // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
+        Form7.spdNFeDataSets.Campo('orig_N11').Value := ItemNFe.Origem;   //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
+        FreeAndNil(ItemNFe);
+        {Sandro Silva 2024-10-14 fim}
       end;
     except
       Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
