@@ -32,7 +32,8 @@ uses
   uCriptografia in '..\unit_compartilhada\uCriptografia.pas',
   uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
   uDialogs in '..\unit_compartilhada\uDialogs.pas',
-  uFuncaoMD5 in '..\unit_compartilhada\uFuncaoMD5.pas';
+  FuncaoMD5 in '..\unit_compartilhada\uFuncaoMD5.pas'
+  ;
 
 {$R *.res}
 
