@@ -4,11 +4,11 @@ interface
 
 uses SysUtils, Winapi.Windows, uClassesIMendes, Rest.Json, Rest.Types, uWebServiceIMendes,
   uDialogs, uLogSistema, uFrmProdutosIMendes, IBX.IBQuery, IBX.IBDatabase,
-  uFuncoesBancoDados, smallfunc_xe, IBX.IBCustomDataSet, uSistema, Data.DB, 
-  System.StrUtils, unit7;
+  uFuncoesBancoDados, smallfunc_xe, IBX.IBCustomDataSet, uSistema, Data.DB,
+  System.StrUtils, unit7, Mais3, uSmallConsts;
 
 type TPesquisaImendes = (tpCodigo, tpEAN);
-  
+
   function ProdutosDescricaoImendes(sCNPJ, sDescricao: string): TArray<TProdutoImendes>;
   function GetCodImendes(sCNPJ, sDescricao: string): integer;
   function GetTributacaoProd(ibdEstoque : TibDataSet; TipoPesquisa: TPesquisaImendes): boolean;
@@ -16,6 +16,7 @@ type TPesquisaImendes = (tpCodigo, tpEAN);
   procedure GetDadosCabecalho(Cabecalho: TCabecalhoTrib; Transaction : TIBTransaction);
   function GetCitTribIMendes(AliqICMS, BcIcms : double; CFOP, UF : string; Transaction : TIBTransaction):string;
   function GetSeqCitIMendes(Transaction : TIBTransaction):string;
+  function LimpaCaracteresEspeciaisIM(sTexto:string):string;
 
   
 implementation
@@ -58,9 +59,10 @@ end;
 function GetCodImendes(sCNPJ,sDescricao : string):integer;
 var
   ProdutoImendesArray : TArray<TProdutoImendes>;
-  i, CodIMendes : integer;
+  i : integer;
 begin
   Result := 0;
+  sDescricao := LimpaCaracteresEspeciaisIM(sDescricao);
 
   //Busca código pela descrição do produto
   try
@@ -69,11 +71,18 @@ begin
     if Length(ProdutoImendesArray) > 0 then
     begin
       //Lista para usuário selecionar um produto
-      CodIMendes := GetCodigoImendesProd(ProdutoImendesArray);
+      Result := GetCodigoImendesProd(ProdutoImendesArray);
     end else
     begin
-      MensagemSistema('Nenhum produto encontrado com essa descrição!',msgAtencao);
-      Exit;
+      if (Length(sDescricao) > 10)
+        and (Pos(' ',RemoveUltimoTexto(sDescricao)) > 0) then
+      begin
+        Result := GetCodImendes(sCNPJ,RemoveUltimoTexto(sDescricao));
+      end else
+      begin
+        MensagemSistema('Nenhum produto encontrado com essa descrição!',msgAtencao);
+        Exit;
+      end;
     end;
   finally
     for I := Low(ProdutoImendesArray) to High(ProdutoImendesArray) do
@@ -83,8 +92,6 @@ begin
 
     SetLength(ProdutoImendesArray,0);
   end;
-
-  Result := CodIMendes;
 end;
 
 function GetTributacaoProd(ibdEstoque : TibDataSet; TipoPesquisa: TPesquisaImendes): boolean;
@@ -108,7 +115,7 @@ begin
     //Produtos
     SetLength(ProdutoArray,1);
     ProdutoArray[0] := TProdutoTrib.Create;
-    ProdutoArray[0].Descricao  := ibdEstoque.FieldByName('DESCRICAO').AsString;
+    ProdutoArray[0].Descricao  := LimpaCaracteresEspeciaisIM(ibdEstoque.FieldByName('DESCRICAO').AsString);
 
     if TipoPesquisa = tpCodigo then
       ProdutoArray[0].CodIMendes := ibdEstoque.FieldByName('CODIGO_IMENDES').AsString
@@ -131,11 +138,10 @@ begin
     begin
       try
         RetTributacaoIMendesDTO := TJson.JsonToObject<TRetTributacaoIMendesDTO>(sJsonRet);
+        bEncontrado := False;
 
-        if RetTributacaoIMendesDTO <> nil then
+        if RetTributacaoIMendesDTO.Grupo <> nil then
         begin
-          bEncontrado := False;
-
           if Length(RetTributacaoIMendesDTO.Grupo[0].Produto) > 0 then
             if ContainsText(RetTributacaoIMendesDTO.Grupo[0].Produto[0], ibdEstoque.FieldByName('REFERENCIA').AsString) then
               bEncontrado := True;
@@ -151,9 +157,25 @@ begin
                         RetTributacaoIMendesDTO.Grupo[0],
                         TSistema.GetInstance.ConsultarIPIImendes,
                         TributacaoIMendesDTO.Uf[0]);
+
+            //Auditoria
+            Audita('ALTEROU', 'ESTOQUE',
+                   Senhas.UsuarioPub,
+                   'TRIBUTAÇÃO  INTELIGENTE '+ibdEstoque.FieldByName('CODIGO').AsString+' - '+ibdEstoque.FieldByName('DESCRICAO').AsString,
+                   0,0);
             
             Result := True;
           end;
+        end;
+
+        if not(bEncontrado) then
+        begin
+          //Define Status
+          if not (ibdEstoque.State = dsEdit) then
+            ibdEstoque.Edit;
+
+          ibdEstoque.FieldByName('STATUS_TRIBUTACAO').AsString        := _cStatusImendesPendente;
+          ibdEstoque.FieldByName('DATA_STATUS_TRIBUTACAO').AsDateTime := now;
         end;
       finally
         FreeAndNil(RetTributacaoIMendesDTO);
@@ -299,8 +321,11 @@ begin
       ibdEstoque.FieldByName('CFOP').Clear;
     end;
 
+    ibdEstoque.FieldByName('ALIQUOTA_NFCE').AsFloat           := Grupo.Regra[0].Aliqicms;
+
+
     //CIT
-    ibdEstoque.FieldByName('ST').AsString  := GetCitTribIMendes(Grupo.Regra[0].Aliqicms, 
+    ibdEstoque.FieldByName('ST').AsString  := GetCitTribIMendes(Grupo.Regra[0].Aliqicms,
                                                                 100 - Grupo.Regra[0].Reducaobcicms,  
                                                                 Grupo.Regra[0].CfopVenda.ToString,
                                                                 UF,
@@ -308,7 +333,7 @@ begin
 
     
     //Define Status
-    ibdEstoque.FieldByName('STATUS_TRIBUTACAO').AsString        := 'Consultado';
+    ibdEstoque.FieldByName('STATUS_TRIBUTACAO').AsString        := _cStatusImendesConsultado;
     ibdEstoque.FieldByName('DATA_STATUS_TRIBUTACAO').AsDateTime := now;
     ibdEstoque.FieldByName('IDPERFILTRIBUTACAO').Clear;
   except
@@ -372,8 +397,8 @@ begin
                          ' From ICM'+
                          ' Where TRIB_INTELIGENTE = ''S'' '+
                          '   and CFOP = '+QuotedStr(CFOP)+
-                         '   and '+UF+'_ = '+AliqICMS.ToString+
-                         '   and BASE = '+BcIcms.ToString+
+                         '   and '+UF+'_ = '+StringReplace(AliqICMS.ToString,',','.',[rfReplaceAll])+
+                         '   and BASE = '+StringReplace(BcIcms.ToString,',','.',[rfReplaceAll])+
                          '   and COALESCE(ST,'''') <> ''''  ';
       qryAux.Open;
 
@@ -398,6 +423,7 @@ begin
     Form7.ibDataSet14BASE.AsFloat                 := BcIcms;
     Form7.ibDataSet14.FieldByName(UF+'_').AsFloat := AliqICMS;
     Form7.ibDataSet14LISTAR.AsString              := 'N';
+    Form7.ibDataSet14TRIB_INTELIGENTE.AsString    := 'S';
     Form7.ibDataSet14.Post;
 
     Result := sCIT;
@@ -427,6 +453,22 @@ begin
     Result := sSeq;
   except
   end;
+end;
+
+function LimpaCaracteresEspeciaisIM(sTexto:string):string;
+begin
+  sTexto := StringReplace(sTexto,'\',' ',[rfReplaceAll]);
+  sTexto := StringReplace(sTexto,'/',' ',[rfReplaceAll]);
+  sTexto := StringReplace(sTexto,'''',' ',[rfReplaceAll]);
+  sTexto := StringReplace(sTexto,':',' ',[rfReplaceAll]);
+  sTexto := StringReplace(sTexto,'*',' ',[rfReplaceAll]);
+  sTexto := StringReplace(sTexto,'?',' ',[rfReplaceAll]);
+  sTexto := StringReplace(sTexto,'"',' ',[rfReplaceAll]);
+  sTexto := StringReplace(sTexto,'<',' ',[rfReplaceAll]);
+  sTexto := StringReplace(sTexto,'>',' ',[rfReplaceAll]);
+  sTexto := StringReplace(sTexto,'|',' ',[rfReplaceAll]);
+
+  Result := sTexto;
 end;
 
 end.

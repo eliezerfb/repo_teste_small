@@ -438,9 +438,9 @@ type
       Buttons: TMsgDlgButtons; Captions: array of string): Integer;
     procedure AtualizaInformacoesDoProduto;
     procedure DefineLabelImpostosAproximados;
-    procedure AtualizaStatusIMendes;
   public
     { Public declarations }
+    procedure AtualizaStatusIMendes;
   end;
 
 var
@@ -4467,6 +4467,9 @@ begin
 
     if CodIMendes > 0 then
     begin
+      if not (DSCadastro.DataSet.State in ([dsEdit, dsInsert]) ) then
+        DSCadastro.DataSet.Edit;
+
       DSCadastro.DataSet.FieldByName('CODIGO_IMENDES').AsInteger := CodIMendes;
       DSCadastro.DataSet.Post;
       DSCadastro.DataSet.Edit;

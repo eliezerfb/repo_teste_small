@@ -11806,6 +11806,7 @@ object Form7: TForm7
     object ibDataSet4CEST: TIBStringField
       FieldName = 'CEST'
       Origin = 'ESTOQUE.CEST'
+      OnChange = ibDataSet4CESTChange
       OnSetText = ibDataSet4CESTSetText
       Size = 7
     end
@@ -12033,6 +12034,7 @@ object Form7: TForm7
       FieldName = 'NATUREZA_RECEITA'
       Origin = 'ESTOQUE.NATUREZA_RECEITA'
       Visible = False
+      OnChange = ibDataSet4NATUREZA_RECEITAChange
       Size = 3
     end
     object ibDataSet4CONSULTA_TRIBUTACAO: TIBStringField

@@ -273,7 +273,6 @@ uses
   uWebServiceIMendes in 'units\uWebServiceIMendes.pas',
   uFrmProdutosIMendes in 'uFrmProdutosIMendes.pas' {FrmProdutosIMendes},
   uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
-  uIMendesSections in '..\..\unit_compartilhada\DAT\uIMendesSections.pas',
   uImendes in 'units\uImendes.pas';
 
 {$R *.RES}

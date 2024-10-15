@@ -1890,6 +1890,7 @@ type
     procedure Label38Click(Sender: TObject);
     procedure ibDataSet14BeforeEdit(DataSet: TDataSet);
     procedure ibDataSet14AfterPost(DataSet: TDataSet);
+    procedure ibDataSet14AfterScroll(DataSet: TDataSet);
     procedure ibDataSet14BeforeDelete(DataSet: TDataSet);
     procedure ibDataSet28AfterDelete(DataSet: TDataSet);
     procedure ibDataSet11PLANOSetText(Sender: TField; const Text: String);
@@ -2486,7 +2487,9 @@ type
     procedure Resumodasvendas1Click(Sender: TObject);
     procedure Rankingdeprodutosvendidos1Click(Sender: TObject);
     procedure ExportarNFesfiltradasemarquivoPDF1Click(Sender: TObject);
-    procedure ributaoInteligente1Click(Sender: TObject);    
+    procedure ributaoInteligente1Click(Sender: TObject);
+    procedure ibDataSet4CESTChange(Sender: TField);
+    procedure ibDataSet4NATUREZA_RECEITAChange(Sender: TField);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -2556,6 +2559,7 @@ type
     function RetornarCasasDecimaisPreco: Integer;
     procedure DesvincularCupomImportado;
     procedure ChamarRelResumoVendas(AenTipoRelatorio: TTipoRelatorioResumoVenda);
+    procedure VerificaAlteracaoIMendes;
   public
     // Public declarations
 
@@ -11980,6 +11984,12 @@ begin
   end;
 end;
 
+procedure TForm7.ibDataSet4NATUREZA_RECEITAChange(Sender: TField);
+begin
+  //Mauricio Parizotto 2024-10-14
+  VerificaAlteracaoIMendes;
+end;
+
 procedure TForm7.ibDataSet4NewRecord(DataSet: TDataSet);
 var
   sCodigo : String;
@@ -12028,7 +12038,7 @@ begin
 
     //Mauricio Parizotto 2024-09-26
     ibDataSet4CONSULTA_TRIBUTACAO.AsString := 'S';
-    ibDataSet4STATUS_TRIBUTACAO.AsString   := 'Não consultado';
+    ibDataSet4STATUS_TRIBUTACAO.AsString   := _cStatusImendesNaoConsultado;
 
     ibDataSet4CODIGO.ReadOnly       := True;
 
@@ -27293,6 +27303,8 @@ begin
   end;
 
   VerificaAlteracaoPerfil;//Mauricio Parizotto 2023-09-18
+
+  VerificaAlteracaoIMendes;//Mauricio Parizotto 2024-10-14
 end;
 
 procedure TForm7.SPEDPISCOFINS1Click(Sender: TObject);
@@ -27984,13 +27996,8 @@ end;
 
 procedure TForm7.ibDataSet4CFChange(Sender: TField);
 begin
-  //
   Form7.ibQuery3.Close;
   Form7.ibQuery3.SQL.Clear;
-//  Form7.ibQuery3.SQL.Add('select * from IBPT_ where CODIGO like '+QuotedStr(Form7.ibDataSet4CF.AsString+'%'));
-//
-//  Form7.ibQuery3.SQL.Add('select * from IBPT_ where '+QuotedStr(Form7.ibDataSet4CF.AsString)+' like CODIGO||''%''');
-//  Form7.ibQuery3.SQL.Add('select * from IBPT_ where char_length(CODIGO) >= 8 and '+QuotedStr(Form7.ibDataSet4CF.AsString)+' like CODIGO||''%''');
   Form7.ibQuery3.SQL.Add('select * from IBPT_ where char_length(CODIGO) >= 8 and CODIGO='+QuotedStr(Form7.ibDataSet4CF.AsString));
   Form7.ibQuery3.Open;
   //
@@ -27999,14 +28006,11 @@ begin
     Form7.ibDataSet4.Edit;
     //
     // INDICE DE IMPOSTO APROXIMADO - IIA - ESTADUAL
-    //
     Form7.ibDataSet4IIA_UF.ReadOnly := False;
     Form7.ibDataSet4IIA_UF.AsFloat := Form7.ibQuery3.FieldByname('ESTADUAL').AsFloat;
     Form7.ibDataSet4IIA_UF.ReadOnly := True;
     //
     // INDICE DE IMPOSTO APROXIMADO - IIA - MUNICIPAL
-    //
-    //
     Form7.ibDataSet4IIA_MUNI.ReadOnly := False;
     Form7.ibDataSet4IIA_MUNI.AsFloat := Form7.ibQuery3.FieldByname('MUNICIPAL').AsFloat;
     Form7.ibDataSet4IIA_MUNI.ReadOnly := True;
@@ -28042,12 +28046,16 @@ begin
     Form7.ibDataSet4.Post;
     Form7.ibDataSet4.Edit;
     Form7.ibQuery3.Close;
-    //
   end;
 
   //Mauricio Parizotto 2023-09-20
   if TField(Sender).FieldName = 'CST' then
     VerificaAlteracaoPerfil;
+
+  //Mauricio Parizotto 2024-10-14
+  if (TField(Sender).FieldName = 'CST')
+    or (TField(Sender).FieldName = 'CF') then
+    VerificaAlteracaoIMendes;
 
 end;
 
@@ -30314,6 +30322,12 @@ begin
   end;
 
   Screen.Cursor := crDefault; // Cursor de Aguardo
+end;
+
+procedure TForm7.ibDataSet4CESTChange(Sender: TField);
+begin
+  //Mauricio Parizotto 2024-10-14
+  VerificaAlteracaoIMendes;
 end;
 
 procedure TForm7.ibDataSet4CESTSetText(Sender: TField; const Text: String);
@@ -34668,9 +34682,37 @@ begin
   ibDataSet4IDPERFILTRIBUTACAO.AsString := '';
 end;
 
+procedure TForm7.VerificaAlteracaoIMendes;
+begin
+  if FbDuplicandoProd then
+    Exit;
+
+  if SaneamentoIMendes then
+    Exit;
+
+  if ibDataSet4STATUS_TRIBUTACAO.AsString = _cStatusImendesConsultado then
+  begin
+    ibDataSet4STATUS_TRIBUTACAO.AsString        := _cStatusImendesAlterado;
+    ibDataSet4DATA_STATUS_TRIBUTACAO.AsDateTime := now;
+
+    //Auditoria
+    Audita('ALTEROU', sModulo,
+           Senhas.UsuarioPub,
+           'TRIBUTAÇÃO MANUAL '+ibDataSet4CODIGO.AsString+' - '+ibDataSet4DESCRICAO.AsString,
+           0,0);
+
+    if FrmEstoque <> nil then
+      FrmEstoque.AtualizaStatusIMendes;
+  end;
+end;
+
 procedure TForm7.ibDataSet4TIPO_ITEMChange(Sender: TField);
 begin
   VerificaAlteracaoPerfil;
+
+  //Mauricio Parizotto 2024-10-14 TIPO_ITEM
+  if Sender.FieldName <> 'TIPO_ITEM' then
+    VerificaAlteracaoIMendes;
 end;
 
 procedure TForm7.ibdParametroTributaAfterDelete(DataSet: TDataSet);
