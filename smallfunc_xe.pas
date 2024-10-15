@@ -15,17 +15,19 @@ unit smallfunc_xe;
 interface
 
 uses
+  (*
   {$IFDEF VER150}
   Classes, SysUtils, StrUtils, Dialogs, IniFiles, Forms, Printers
   , ExtCtrls, IBDatabase, IBQuery, Controls, DBCtrls, StdCtrls
   , Mask, TLHelp32
   {$ELSE}
+  *)
   System.Classes, System.SysUtils, System.StrUtils, Vcl.Dialogs
   , System.IniFiles, Winapi.WinSock, Vcl.Forms, Soap.EncdDecd
   , Vcl.Printers, Vcl.ExtCtrls, IBX.IBDatabase, IBX.IBQuery
   , Vcl.Controls, Vcl.DBCtrls , Vcl.StdCtrls, Vcl.Mask
   , Winapi.TlHelp32
-  {$ENDIF}
+//  {$ENDIF}
   , Windows
   , IdBaseComponent, IdCoder, IdCoder3to4, IdCoderMIME
   , LbCipher, LbClass // 2020-07-21
@@ -42,17 +44,17 @@ uses
   , ClipBrd
   , uConectaBancoSmall
   , uconstantes_chaves_privadas
-  {$IFDEF VER150}
-  , Grids
-  , DB
-  {$ELSE}
+//  {$IFDEF VER150}
+//  , Grids
+//  , DB
+//  {$ELSE}
   , Vcl.Grids
   , Data.DB
-//  , uITestaEmail
-//  , uTestaEmail
-  {$ENDIF}
+//  {$ENDIF}
   , uSmallConsts
-  , uDialogs, System.Variants
+  , uDialogs
+  , System.Variants
+  , Vcl.Graphics
   ;
 
 
@@ -104,6 +106,7 @@ function Arredonda2(fP1 : Double; iP2 : Integer): Double;
 function ValidaEAN13(sP1:String):Boolean;
 function _ecf65_ValidaGtinNFCe(sEan: String): Boolean;
 function RetornaValorDaTagNoCampo(sTag: String; sObs: String): String;
+function AlteraValorDaTagNoCampo(sTag, sNovoValor, sTexto : String): String; // Mauricio Parizotto 2024-10-11
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
 function StrZero(Num : Double ; Zeros,Deci: integer): string;
 function Replicate(pP1:String; pP2:Integer):String;
@@ -181,6 +184,7 @@ function SomaDias(Data: TDateTime; Dias: Integer): TDateTime;
 function DiasPorMes(AAno, AMes: Integer): Integer;
 function Bisexto(AAno: Integer): Boolean;
 function LimpaLetrasPor_(pP1:String):String;
+function LetraNumeroAlfabeto(pos:integer):String;
 function QuebraLinhaHtml(sTexto : string) : string;
 function LimpaNumeroDeixandoOponto(pP1:String):String;
 function LimpaNome(pP1:String):String;
@@ -216,6 +220,8 @@ function TestarUFMovimentaEstoqueFinanceiroSemFaturar(AcUF: String): Boolean;
 function Coalesce(Value1: Variant; Value2: Variant): Variant;
 function SalvaArquivoTemp(Campo : Tfield; Nome : string) : string;
 procedure ExcluirPasta(AcPasta: String);
+procedure AjustaVisualGrid(dbgGrid: TDBGrid; Rect: TRect; Column: TColumn); // Mauricio Parizotto 2024-10-09
+function RemoveUltimoTexto(sTexto:string):string;
 
 var
   IMG: TImage;
@@ -849,6 +855,31 @@ begin
     sTextoTag := StringReplace(STextoTag, '</' + sTag, '<' + sTag, []);
     Result := Copy(sTextoTag, 1, Pos('<' + sTag + '>', STextoTag) -1);
   end;
+end;
+
+
+function AlteraValorDaTagNoCampo(sTag, sNovoValor, sTexto : String): String;// Mauricio Parizotto 2024-10-11
+var
+  sTextoTag: String;
+
+  posI, PosF : integer;
+begin
+  Result := sTexto;
+
+  posI := Pos('<'+ sTag+'>', sTexto) ;
+  posF := Pos('</'+ sTag+'>', sTexto) + Length('</'+sTag+'>');
+
+  if (posI>0) and (posF>0) then
+  begin
+    //Remove valor antigo
+    Delete(sTexto,posI,posF-posI)
+  end;
+
+  //Add novo valor
+  if Trim(sNovoValor) <> '' then
+    sTexto := sTexto + '<'+sTag+'>'+Trim(sNovoValor)+'</'+ sTag+'>'+ chr(10);
+
+  Result := sTexto;
 end;
 
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
@@ -2173,7 +2204,7 @@ begin
   Result := (AAno mod 4 = 0) and ((AAno mod 100 <> 0) or (AAno mod 400 = 0));
 end;
 
-Function LimpaLetrasPor_(pP1:String):String;
+function LimpaLetrasPor_(pP1:String):String;
 var
    I:Integer;
 begin
@@ -2183,6 +2214,11 @@ begin
      if Pos(AnsiUpperCase(Copy(pP1,I,1)),'ABCDEFGHIJKLMNOPQRSTUVXZ') > 0 then
         Result := Result+Copy(pP1,I,1) else Result := Result+'_';
    end;
+end;
+
+function LetraNumeroAlfabeto(pos:integer):String;
+begin
+  Result := Copy('ABCDEFGHIJKLMNOPQRSTUVXZ',pos,1);
 end;
 
 
@@ -2752,6 +2788,41 @@ begin
   FindClose(sr.FindHandle);
   RemoveDir(AcPasta);
   Sleep(200);
+end;
+
+procedure AjustaVisualGrid(dbgGrid: TDBGrid; Rect: TRect; Column: TColumn); // Mauricio Parizotto 2024-10-09
+var
+  OldBkMode : Integer;
+  xRect : tREct;
+begin
+  try
+    dbgGrid.Canvas.Brush.Color := $00F0F0F0;
+    dbgGrid.Canvas.Pen.Color   := clRed;
+
+    xRect.Left   := REct.Left;
+    xRect.Top    := -1;
+    xRect.Right  := Rect.Right;
+    xRect.Bottom := Rect.Bottom - Rect.Top + 0;
+
+    dbgGrid.Canvas.FillRect(xRect);
+
+    OldBkMode := SetBkMode(Application.Handle, TRANSPARENT);
+    dbgGrid.Canvas.Font := dbgGrid.TitleFont;
+    dbgGrid.Canvas.TextOut(Rect.Left + 2, 2, Trim(Column.Field.DisplayLabel));
+    dbgGrid.Canvas.Font.Color := clblack;
+    SetBkMode(Application.Handle, OldBkMode);
+  except
+  end;
+end;
+
+function RemoveUltimoTexto(sTexto:string):string;
+var
+  vPos: Integer;
+begin
+  sTexto := StringReplace(sTexto,'  ',' ',[rfReplaceAll]);
+
+  vPos := Pos(' ', ReverseString(sTexto));
+  Result := StringReplace(sTexto,RightStr(sTexto, vPos),'',[rfReplaceAll]);
 end;
 
 end.
