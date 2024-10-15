@@ -32,14 +32,14 @@ uses
 
 
 var
-  sCodigoANP, sDentroOuForadoEStado : string;
-  vIVA60_V_ICMST : Real;
+  sCodigoANP, sDentroOuForadoEStado: string;
+  vIVA60_V_ICMST: Real;
 
   // Rateio
-  fCalculo, vFRETE, vOUTRAS, vDESCONTO, vSEGURO : Real;
-  fDesconto, fFrete, fOutras, fSeguro : array[0..999] of double;
+  fCalculo, vFRETE, vOUTRAS, vDESCONTO, vSEGURO: Real;
+  fDesconto, fFrete, fOutras, fSeguro: array[0..999] of double;
 
-  fRateioDoDesconto, {fPercentualFCPST, fPercentualFCP, }vIVA60_B_ICMST : Real;
+  fRateioDoDesconto, {fPercentualFCPST, fPercentualFCP, }vIVA60_B_ICMST: Real;
 
   dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-06-07
   dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
@@ -48,13 +48,14 @@ var
   FbAbortar: Boolean; // Dailon Parisotto 2024-09-23
 
   procedure GeraXmlNFeSaida;
-  procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
+  procedure GeraXmlNFeSaidaTags(vIPISobreICMS: Boolean; fSomaNaBase: Real);
   function CalculavTotTrib_M02(sCodigo: String; sOperacaoDoTopo: String): Boolean;
 
 implementation
 
 uses uFrmInformacoesRastreamento, uFuncoesFiscais, uFuncoesRetaguarda,
-  uDialogs, ufrmOrigemCombustivel, uFuncoesBancoDados, ufrmInformacoesExportacaoNFe;
+  uDialogs, ufrmOrigemCombustivel, uFuncoesBancoDados,
+  ufrmInformacoesExportacaoNFe;
 
 {
 function SqlSelectDadosItensNotaEntrada(sCodigo: String): String;
