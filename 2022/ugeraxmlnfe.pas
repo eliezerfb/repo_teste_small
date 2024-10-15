@@ -297,8 +297,8 @@ begin
     IBQICM.SQL.Clear;
     IBQICM.SQL.Text :=
       'select first 1 * from ICM ' +
-      'where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' ' +
-      ' and ST = : ST ' +
+      'where (SubString(CFOP from 1 for 1) in (''5'', ''6'', ''7'')  or Coalesce(CFOP,''XXX'') = ''XXX'') ' +
+      ' and coalesce(ST, '''') = :ST ' +
       'order by upper(NOME)';
     IBQICM.ParamByName('ST').AsString := IBQESTOQUE.FieldByName('ST').AsString;
     IBQICM.Open;
