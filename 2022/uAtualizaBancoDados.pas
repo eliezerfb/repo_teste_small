@@ -3225,6 +3225,7 @@ begin
   begin
     if ExecutaComando('Alter table ESTOQUE add CONSULTA_TRIBUTACAO varchar(1);') then
     begin
+      ExecutaComando('commit');
       ExecutaComando('Update ESTOQUE set CONSULTA_TRIBUTACAO = ''S'' ');
       ExecutaComando('commit');
     end;
