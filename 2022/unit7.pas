@@ -19597,29 +19597,30 @@ begin
 
   if TestarNatOperacaoMovEstoque then
   begin
-    nSaldoDisp := RetornarSaldoDisponivelItemNota(ibDataSet16CODIGO.AsString);
+    nSaldoDisp := RetornarSaldoDisponivelItemNota(Form7.ibDataSet16CODIGO.AsString);
 
     {Dailon Parisotto (f-20355) 2024-08-13 Inicio
 
     if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < AnQtdeInformada) then
 
     }
-    if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < FloatToCurr(AnQtdeInformada)) then
+    if (nSaldoDisp < 0) or (Form7.ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < FloatToCurr(AnQtdeInformada)) then
     {Dailon Parisotto (f-20355) 2024-08-13 Fim}
     begin
-      if ibDataSet4QTD_ATUAL.AsCurrency < 0 then
-        nSaldoDisp := ibDataSet4QTD_ATUAL.AsCurrency;
+      if Form7.ibDataSet4QTD_ATUAL.AsCurrency < 0 then
+        nSaldoDisp := Form7.ibDataSet4QTD_ATUAL.AsCurrency;
       // Necessario remover os eventos para não mostrar mensagem 2 vezes
       Form7.ibDataSet16QUANTIDADE.OnSetText := nil;
       Form7.ibDataSet16QUANTIDADE.OnChange  := nil;
       try
         Result := False;
         MensagemSistema('Não é possível efetuar a venda deste item, saldo insuficiente em estoque para a quantidade informada. Cod. 3.' + sLineBreak +
+                         sLineBreak + Form7.ibDataSet4CODIGO.AsString + ' - ' + Form7.ibDataSet4DESCRICAO.AsString + sLineBreak + // Sandro Silva 2024-10-15
                         'Saldo atual: ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), nSaldoDisp) + '.'
-                        ,msgAtencao);
+                        , msgAtencao);
       finally
-        Form7.ibDataSet16QUANTIDADE.OnSetText := ibDataSet16QUANTIDADESetText;
-        Form7.ibDataSet16QUANTIDADE.OnChange  := ibDataSet16QUANTIDADEChange;
+        Form7.ibDataSet16QUANTIDADE.OnSetText := Form7.ibDataSet16QUANTIDADESetText;
+        Form7.ibDataSet16QUANTIDADE.OnChange  := Form7.ibDataSet16QUANTIDADEChange;
       end;
     end;
 
@@ -26381,6 +26382,8 @@ begin
 end;
 
 procedure TForm7.GerarNotaFiscalSrie22Click(Sender: TObject);
+var
+  sOrcamentoImportar: String;
 begin
   // Gera a nota fiscal
   if Form1.bNotaVendaLiberada then
@@ -26402,11 +26405,13 @@ begin
                                                   + Chr(10))
                                                   ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
       begin
+        sOrcamentoImportar := ibDataSet97.FieldByname('Orçamento').AsString; // Sandro Silva 2024-10-11
+
         Form7.Close;
         Form7.NotasfiscaisdesadavendasSrie11Click(Sender);  // Nota fiscal série 002
         Form7.Image101Click(Sender);                        // Nova Nota
         Form7.sModulo := 'ORCAMENTO';
-        ImportaOrcamento(ibDataSet97.FieldByname('Orçamento').AsString,sModulo);
+        ImportaOrcamento(sOrcamentoImportar, sModulo); // Sandro Silva 2024-10-11 ImportaOrcamento(ibDataSet97.FieldByname('Orçamento').AsString,sModulo);
         Form7.sModulo := 'VENDA';
 
         Form7.ibDataSet16.First;
@@ -32805,7 +32810,7 @@ begin
 
           bTemComposicaoCircular := True;
 
-          MensagemSistema(Form7.ibDataSet4CODIGO.AsString + ' - ' + Form7.ibDataSet4DESCRICAO.AsString + #13 + #13 +
+          MensagemSistema(Form7.ibDataSet16CODIGO.AsString + ' - ' + Form7.ibDataSet16DESCRICAO.AsString + #13 + #13 +
             'Produto com composição circular' + #13 + #13 +
             'Corrija a composição antes de lançar na nota' + #13 + #13
             , msgAtencao);
