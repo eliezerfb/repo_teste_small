@@ -300,7 +300,11 @@ begin
       ibdEstoque.FieldByName('PIVA').Clear;
     end;
 
-    ibdEstoque.FieldByName('TAGS_').AsString                  := AlteraValorDaTagNoCampo('FCP', Grupo.Regra[0].Fcp.ToString, ibdEstoque.FieldByName('TAGS_').AsString);
+    if Grupo.Regra[0].Fcp > 0 then
+      ibdEstoque.FieldByName('TAGS_').AsString                  := AlteraValorDaTagNoCampo('FCP', Grupo.Regra[0].Fcp.ToString, ibdEstoque.FieldByName('TAGS_').AsString)
+    else
+      ibdEstoque.FieldByName('TAGS_').AsString                  := AlteraValorDaTagNoCampo('FCP', '', ibdEstoque.FieldByName('TAGS_').AsString);
+
     ibdEstoque.FieldByName('TAGS_').AsString                  := AlteraValorDaTagNoCampo('cBenef', Grupo.Regra[0].CodBenef, ibdEstoque.FieldByName('TAGS_').AsString);
     ibdEstoque.FieldByName('TAGS_').AsString                  := AlteraValorDaTagNoCampo('pRedBC', FloatToStr(100 - Grupo.Regra[0].Reducaobcicms), ibdEstoque.FieldByName('TAGS_').AsString);
     
@@ -344,40 +348,6 @@ begin
 
   Form7.SaneamentoIMendes := False;
 end;
-
-
-
-{
-procedure SetTribProd(ibdEstoque : TibDataSet; RetTributacaoIMendesDTO : TRetTributacaoIMendesDTO);
-var
-  i : integer;
-  sCodIMendes, sCodEan : string;
-  bLocalizado : boolean;
-begin
-  for I := Low(RetTributacaoIMendesDTO.Grupo) to High(RetTributacaoIMendesDTO.Grupo) do
-  begin
-    bLocalizado := False;
-    sCodIMendes := '';
-    sCodEan     := '';
-
-    if Length(RetTributacaoIMendesDTO.Grupo[i].CodIMendes) > 0 then
-    begin
-      sCodIMendes := RetTributacaoIMendesDTO.Grupo[i].CodIMendes[0];
-    end;
-
-    if Length(RetTributacaoIMendesDTO.Grupo[i].Produto) > 0 then
-    begin
-      sCodEan     := RetTributacaoIMendesDTO.Grupo[i].Produto[0];
-    end;
-
-    if bLocalizado then
-    begin
-      /////
-    end;
-
-  end;
-end;
-}
 
 
 function GetCitTribIMendes(AliqICMS, BcIcms : double; CFOP, UF : string; Transaction : TIBTransaction):string;
