@@ -118,6 +118,7 @@ type
     procedure lblProcurarClick(Sender: TObject);
   private
     { Private declarations }
+    bTribInteligente : boolean;
     procedure AtualizaObjComValorDoBanco;
     procedure SetaStatusUso; override;
     function GetPaginaAjuda:string; override;
@@ -470,6 +471,13 @@ procedure TFrmNaturezaOperacao.__RRClick(Sender: TObject);
 begin
   with Sender as TLabel do
   begin
+    //Mauricio Parizotto 2024-10-26
+    if (bTribInteligente)
+      and (Font.Color = clRed) then
+    begin
+      Exit;
+    end;
+
     SMALL_DBEditX.DataField := Copy(Caption,1,2)+'_';
     SMALL_DBEditX.Top       := Top;
     SMALL_DBEditX.Left      := Left;
@@ -538,35 +546,29 @@ begin
   inherited;
 
   {Mauricio Parizotto 2024-10-07 Inicio}
-  bSomenteLeitura := DSCadastro.DataSet.FieldByName('TRIB_INTELIGENTE').AsString = 'S';
+  bTribInteligente := DSCadastro.DataSet.FieldByName('TRIB_INTELIGENTE').AsString = 'S';
 
-  dbeIcmCFOP.Enabled             := not (bSomenteLeitura);
-  edtDescricao.Enabled           := not (bSomenteLeitura);
-  edtIntegracao.Enabled          := not (bSomenteLeitura);
-  cbIntegracaoFinanceira.Enabled := not (bSomenteLeitura);
-  cbMovimentacaoEstoque.Enabled  := not (bSomenteLeitura);
-  fraPlanoContas.Enabled         := not (bSomenteLeitura);
-  edtCIT.Enabled                 := not (bSomenteLeitura);
-  edtBase.Enabled                := not (bSomenteLeitura);
-  edtISS.Enabled                 := not (bSomenteLeitura);
-  edtBaseICMS.Enabled            := not (bSomenteLeitura);
-  edtCST.Enabled                 := not (bSomenteLeitura);
-  edtCSOSN.Enabled               := not (bSomenteLeitura);
-  edtCBenef.Enabled              := not (bSomenteLeitura);
-  chkListaNF.Enabled             := not (bSomenteLeitura);
-  chkICMS_IPI.Enabled            := not (bSomenteLeitura);
-  chkICMS_Outras.Enabled         := not (bSomenteLeitura);
-  chkIPI_Frete.Enabled           := not (bSomenteLeitura);
-  chkIPI_Outras.Enabled          := not (bSomenteLeitura);
-  chkRefenciarNota.Enabled       := not (bSomenteLeitura);
-  chkLancaManual.Enabled         := not (bSomenteLeitura);
-  memObservacao.Enabled          := not (bSomenteLeitura);
-  cboCST_PISCOFINS.Enabled       := not (bSomenteLeitura);
-  dbepPisSaida.Enabled           := not (bSomenteLeitura);
-  dbepCofinsSaida.Enabled        := not (bSomenteLeitura);
-  dbeIcmBCPISCOFINS.Enabled      := not (bSomenteLeitura);
-  chkPisCofinsSobLucro.Enabled   := not (bSomenteLeitura);
-  pnlMapaICMS.Enabled            := not (bSomenteLeitura);
+  dbeIcmCFOP.Enabled             := not (bTribInteligente);
+  edtDescricao.Enabled           := not (bTribInteligente);
+  edtIntegracao.Enabled          := not (bTribInteligente);
+  cbIntegracaoFinanceira.Enabled := not (bTribInteligente);
+  cbMovimentacaoEstoque.Enabled  := not (bTribInteligente);
+  fraPlanoContas.Enabled         := not (bTribInteligente);
+  edtCIT.Enabled                 := not (bTribInteligente);
+  edtBase.Enabled                := not (bTribInteligente);
+  edtISS.Enabled                 := not (bTribInteligente);
+  edtBaseICMS.Enabled            := not (bTribInteligente);
+  edtCST.Enabled                 := not (bTribInteligente);
+  edtCSOSN.Enabled               := not (bTribInteligente);
+  edtCBenef.Enabled              := not (bTribInteligente);
+  chkListaNF.Enabled             := not (bTribInteligente);
+  chkRefenciarNota.Enabled       := not (bTribInteligente);
+  chkLancaManual.Enabled         := not (bTribInteligente);
+  cboCST_PISCOFINS.Enabled       := not (bTribInteligente);
+  dbepPisSaida.Enabled           := not (bTribInteligente);
+  dbepCofinsSaida.Enabled        := not (bTribInteligente);
+  dbeIcmBCPISCOFINS.Enabled      := not (bTribInteligente);
+  chkPisCofinsSobLucro.Enabled   := not (bTribInteligente);
   {Mauricio Parizotto 2024-10-07 Fim}
 end;
 

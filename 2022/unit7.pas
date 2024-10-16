@@ -1217,6 +1217,7 @@ type
     RelatriodeIPI1: TMenuItem;
     RelatriodePISCOFINS1: TMenuItem;
     ibDataSet14CSTPISCOFINS: TIBStringField;
+    ibDataSet14BCPISCOFINS: TIBBCDField; // Mauricio Parizotto 2024-10-16
     ibDataSet23CST_PIS_COFINS: TIBStringField;
     ibDataSet23ALIQ_PIS: TIBBCDField;
     ibDataSet23ALIQ_COFINS: TIBBCDField;
@@ -9113,49 +9114,63 @@ begin
     end;
 
     {$Region'//// Módulo Natureza OP ////'}
+
+    // Duplo CLICK no ICM configuração
+    if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREIPI' then
+    begin
+      Form7.ibDataSet14.Edit;
+      if (Form7.ibDataSet14SOBREIPI.AsString = 'S') then
+        Form7.ibDataSet14SOBREIPI.AsString := 'N'
+      else
+        Form7.ibDataSet14SOBREIPI.AsString := 'S';
+      Form7.ibDataSet14.Post;
+      Screen.Cursor            := crDefault;
+      Abort;
+    end;
+
+    if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS' then
+    begin
+      Form7.ibDataSet14.Edit;
+      if (Form7.ibDataSet14SOBREOUTRAS.AsString = 'S') then
+        Form7.ibDataSet14SOBREOUTRAS.AsString := 'N'
+      else
+        Form7.ibDataSet14SOBREOUTRAS.AsString := 'S';
+      Form7.ibDataSet14.Post;
+      Screen.Cursor            := crDefault;
+      Abort;
+    end;
+
+    //Mauricio Parizotto 2023-03-28
+    if DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI' then
+    begin
+      Form7.ibDataSet14.Edit;
+      if (Form7.ibDataSet14FRETESOBREIPI.AsString = 'S') then
+        Form7.ibDataSet14FRETESOBREIPI.AsString := 'N'
+      else
+        Form7.ibDataSet14FRETESOBREIPI.AsString := 'S';
+      Form7.ibDataSet14.Post;
+      Screen.Cursor            := crDefault;
+      Abort;
+    end;
+
+    //Mauricio Parizotto 2023-03-28
+    if DBGrid1.SelectedField.Name = 'ibDataSet14IPISOBREOUTRA' then
+    begin
+      Form7.ibDataSet14.Edit;
+      if (Form7.ibDataSet14IPISOBREOUTRA.AsString = 'S') then
+        Form7.ibDataSet14IPISOBREOUTRA.AsString := 'N'
+      else
+        Form7.ibDataSet14IPISOBREOUTRA.AsString := 'S';
+      Form7.ibDataSet14.Post;
+      Screen.Cursor            := crDefault;
+      Abort;
+    end;
+
+
     //Mauricio Parizotto 2024-10-07
     if (sModulo = 'ICM')
       and (Form7.ibDataSet14TRIB_INTELIGENTE.AsString <> 'S') then
     begin
-      // Duplo CLICK no ICM configuração
-      if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREIPI' then
-      begin
-        Form7.ibDataSet14.Edit;
-        if (Form7.ibDataSet14SOBREIPI.AsString = 'S') then
-          Form7.ibDataSet14SOBREIPI.AsString := 'N'
-        else
-          Form7.ibDataSet14SOBREIPI.AsString := 'S';
-        Form7.ibDataSet14.Post;
-        Screen.Cursor            := crDefault;
-        Abort;
-      end;
-
-      //Mauricio Parizotto 2023-03-28
-      if DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI' then
-      begin
-        Form7.ibDataSet14.Edit;
-        if (Form7.ibDataSet14FRETESOBREIPI.AsString = 'S') then
-          Form7.ibDataSet14FRETESOBREIPI.AsString := 'N'
-        else
-          Form7.ibDataSet14FRETESOBREIPI.AsString := 'S';
-        Form7.ibDataSet14.Post;
-        Screen.Cursor            := crDefault;
-        Abort;
-      end;
-
-      //Mauricio Parizotto 2023-03-28
-      if DBGrid1.SelectedField.Name = 'ibDataSet14IPISOBREOUTRA' then
-      begin
-        Form7.ibDataSet14.Edit;
-        if (Form7.ibDataSet14IPISOBREOUTRA.AsString = 'S') then
-          Form7.ibDataSet14IPISOBREOUTRA.AsString := 'N'
-        else
-          Form7.ibDataSet14IPISOBREOUTRA.AsString := 'S';
-        Form7.ibDataSet14.Post;
-        Screen.Cursor            := crDefault;
-        Abort;
-      end;
-
       if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREFRETE' then
       begin
         Form7.ibDataSet14.Edit;
@@ -9175,18 +9190,6 @@ begin
           Form7.ibDataSet14SOBRESEGURO.AsString := 'N'
         else
           Form7.ibDataSet14SOBRESEGURO.AsString := 'S';
-        Form7.ibDataSet14.Post;
-        Screen.Cursor            := crDefault;
-        Abort;
-      end;
-
-      if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS' then
-      begin
-        Form7.ibDataSet14.Edit;
-        if (Form7.ibDataSet14SOBREOUTRAS.AsString = 'S') then
-          Form7.ibDataSet14SOBREOUTRAS.AsString := 'N'
-        else
-          Form7.ibDataSet14SOBREOUTRAS.AsString := 'S';
         Form7.ibDataSet14.Post;
         Screen.Cursor            := crDefault;
         Abort;
@@ -15993,9 +15996,58 @@ begin
 end;
 
 procedure TForm7.ibDataSet14AfterScroll(DataSet: TDataSet);
+var
+  bTribInteligente : boolean;
+  sUFEmit : string;
 begin
-  //Mauricio Parizotto 2024-10-07
-  Form7.DBGrid1.ReadOnly := ibDataSet14TRIB_INTELIGENTE.AsString = 'S';
+  {Mauricio Parizotto 2024-10-16 Inicio}
+  bTribInteligente := ibDataSet14TRIB_INTELIGENTE.AsString = 'S';
+  sUFEmit          := ibDataSet13ESTADO.AsString;
+
+  ibDataSet14RR_.ReadOnly  := (bTribInteligente) and (sUFEmit='RR');
+  ibDataSet14AP_.ReadOnly  := (bTribInteligente) and (sUFEmit='AP');
+  ibDataSet14AM_.ReadOnly  := (bTribInteligente) and (sUFEmit='AM');
+  ibDataSet14PA_.ReadOnly  := (bTribInteligente) and (sUFEmit='PA');
+  ibDataSet14MA_.ReadOnly  := (bTribInteligente) and (sUFEmit='MA');
+  ibDataSet14AC_.ReadOnly  := (bTribInteligente) and (sUFEmit='AC');
+  ibDataSet14RO_.ReadOnly  := (bTribInteligente) and (sUFEmit='RO');
+  ibDataSet14MT_.ReadOnly  := (bTribInteligente) and (sUFEmit='MT');
+  ibDataSet14TO_.ReadOnly  := (bTribInteligente) and (sUFEmit='TO');
+  ibDataSet14CE_.ReadOnly  := (bTribInteligente) and (sUFEmit='CE');
+  ibDataSet14RN_.ReadOnly  := (bTribInteligente) and (sUFEmit='RN');
+  ibDataSet14PI_.ReadOnly  := (bTribInteligente) and (sUFEmit='PI');
+  ibDataSet14PB_.ReadOnly  := (bTribInteligente) and (sUFEmit='PB');
+  ibDataSet14PB_.ReadOnly  := (bTribInteligente) and (sUFEmit='PB');
+  ibDataSet14PE_.ReadOnly  := (bTribInteligente) and (sUFEmit='PE');
+  ibDataSet14AL_.ReadOnly  := (bTribInteligente) and (sUFEmit='AL');
+  ibDataSet14SE_.ReadOnly  := (bTribInteligente) and (sUFEmit='SE');
+  ibDataSet14BA_.ReadOnly  := (bTribInteligente) and (sUFEmit='BA');
+  ibDataSet14GO_.ReadOnly  := (bTribInteligente) and (sUFEmit='GO');
+  ibDataSet14DF_.ReadOnly  := (bTribInteligente) and (sUFEmit='DF');
+  ibDataSet14MG_.ReadOnly  := (bTribInteligente) and (sUFEmit='MG');
+  ibDataSet14ES_.ReadOnly  := (bTribInteligente) and (sUFEmit='ES');
+  ibDataSet14MS_.ReadOnly  := (bTribInteligente) and (sUFEmit='MS');
+  ibDataSet14SP_.ReadOnly  := (bTribInteligente) and (sUFEmit='SP');
+  ibDataSet14RJ_.ReadOnly  := (bTribInteligente) and (sUFEmit='RJ');
+  ibDataSet14PR_.ReadOnly  := (bTribInteligente) and (sUFEmit='PR');
+  ibDataSet14SC_.ReadOnly  := (bTribInteligente) and (sUFEmit='SC');
+  ibDataSet14RS_.ReadOnly  := (bTribInteligente) and (sUFEmit='RS');
+
+  ibDataSet14CFOP.ReadOnly         := (bTribInteligente);
+  ibDataSet14NOME.ReadOnly         := (bTribInteligente);
+  ibDataSet14INTEGRACAO.ReadOnly   := (bTribInteligente);
+  ibDataSet14CONTA.ReadOnly        := (bTribInteligente);
+  ibDataSet14ST.ReadOnly           := (bTribInteligente);
+  ibDataSet14BASEISS.ReadOnly      := (bTribInteligente);
+  ibDataSet14ISS.ReadOnly          := (bTribInteligente);
+  ibDataSet14BASE.ReadOnly         := (bTribInteligente);
+  ibDataSet14CST.ReadOnly          := (bTribInteligente);
+  ibDataSet14CSTPISCOFINS.ReadOnly := (bTribInteligente);
+  ibDataSet14BCPISCOFINS.ReadOnly  := (bTribInteligente);
+  ibDataSet14PCOFINS.ReadOnly      := (bTribInteligente);
+  ibDataSet14PPIS.ReadOnly         := (bTribInteligente);
+  ibDataSet14CSOSN.ReadOnly        := (bTribInteligente);
+  {Mauricio Parizotto 2024-10-16 Fim}
 end;
 
 procedure TForm7.ibDataSet14BeforeDelete(DataSet: TDataSet);

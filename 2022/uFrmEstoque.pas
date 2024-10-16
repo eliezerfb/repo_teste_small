@@ -1978,6 +1978,8 @@ begin
 end;
 
 procedure TFrmEstoque._RRClick(Sender: TObject);
+var
+  bTribInteligente : boolean;
 begin
   with Sender as TLabel do
   begin
@@ -2005,6 +2007,14 @@ begin
         Form7.ibDataSet14NOME.AsString := 'Código Interno de Tributação '+Form7.ibDataSet4ST.AsString;
         Form7.IbDataSet14.Post;
       end;
+    end;
+
+    //Mauricio Parizotto 2024-10-26
+    bTribInteligente := Form7.ibDataSet14TRIB_INTELIGENTE.AsString = 'S';
+    if (bTribInteligente)
+      and (Font.Color = clRed) then
+    begin
+      Exit;
     end;
 
     Form7.IbDataSet14.EnableControls;
@@ -4147,9 +4157,6 @@ begin
       lblCIT.ShowHint := True;
       {Dailon Parisotto (smal-653) 2024-08-28 Fim}
       pnlMapaICMS.Visible := True;
-
-      //Mauricio Parizotto 2024-10-07
-      SMALL_DBEditY.ReadOnly  := Form7.ibDataSet14TRIB_INTELIGENTE.AsString = 'S';
 
       Form7.ibDataSet14.Edit;
 
