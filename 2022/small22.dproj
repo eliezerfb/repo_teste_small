@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -93,9 +93,9 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_MajorVer>2024</VerInfo_MajorVer>
-        <VerInfo_Build>92</VerInfo_Build>
+        <VerInfo_Build>94</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.36.0.92;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.36.0.92;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.36.0.94;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.36.0.94;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
         <Manifest_File>xp.manifest</Manifest_File>
         <VerInfo_MinorVer>36</VerInfo_MinorVer>
     </PropertyGroup>
@@ -396,12 +396,12 @@
         <DCCReference Include="units\uDuplicaProduto.pas"/>
         <DCCReference Include="interfaces\uIDuplicaOrcamento.pas"/>
         <DCCReference Include="units\uDuplicaOrcamento.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uFrenteSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uNFeSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uNFSeSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uNFeSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uNFSeSections.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uSmallComSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uEstoqueSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uUsuarioSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uEstoqueSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uUsuarioSections.pas"/>
         <DCCReference Include="uFrmProdutosDevolucao.pas">
             <Form>FrmProdutosDevolucao</Form>
         </DCCReference>
@@ -591,6 +591,8 @@
         <DCCReference Include="units\ufrmRelatorioMovItensPeriodo.pas">
             <Form>frmRelatorioMovItensPeriodo</Form>
         </DCCReference>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uIMendesSections.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
