@@ -198,9 +198,17 @@ begin
                         or ((not Form1.ConfPermitFabricarSemQtd) and (Form7.ibDataSet4QTD_ATUAL.AsFloat < Form7.IbDataSet37QUANTIDADE.AsFloat) and ((sTipo <> 'BALCAO') and (sTipo <> 'VENDA')) and (ProdComposto)) //Com composição
                       then
                       begin
+                        {Sandro Silva 2024-10-16 inicio
+                         Mensagem padronizada igual quando lança direto na nota
                         MensagemSistema('Não é possível efetuar a venda de '+Form7.IbDataSet37DESCRICAO.AsString+chr(10)
                                         +'só tem ' + Form7.ibDataSet4QTD_ATUAL.AsString + ' no estoque'
                                         ,msgAtencao);
+                        }
+                        MensagemSistema('Não é possível efetuar a venda deste item, saldo insuficiente em estoque para a quantidade informada.' + sLineBreak +
+                                         sLineBreak + Form7.ibDataSet4CODIGO.AsString + ' - ' + Form7.ibDataSet4DESCRICAO.AsString + sLineBreak + // Sandro Silva 2024-10-15
+                                        'Saldo atual: ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), Form7.ibDataSet4QTD_ATUAL.AsFloat) + '.'
+                                        , msgAtencao);
+                        {Sandro Silva 2024-10-16 fim}
                       end else
                       begin
                         Form7.ibDataSet15COMPLEMENTO.AsString := RetornarOBSOrcamento(Form7.ibDataSet37PEDIDO.AsString);
