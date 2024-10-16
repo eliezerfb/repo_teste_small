@@ -14902,16 +14902,16 @@ object Form7: TForm7
       Precision = 18
       Size = 2
     end
-    object ibDataSet14CSOSN: TIBStringField
-      FieldName = 'CSOSN'
-      Origin = 'ICM.CSOSN'
-      Size = 3
-    end
     object ibDataSet14CBENEF: TIBStringField
       DisplayLabel = 'cBenef'
       FieldName = 'CBENEF'
       Origin = 'ICM.CBENEF'
       Size = 10
+    end
+    object ibDataSet14CSOSN: TIBStringField
+      FieldName = 'CSOSN'
+      Origin = 'ICM.CSOSN'
+      Size = 3
     end
     object ibDataSet14LISTAR: TIBStringField
       DisplayLabel = 'Listar'
