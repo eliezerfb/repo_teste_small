@@ -14994,8 +14994,7 @@ begin
                    Form22.sAtivos  + chr(10) +
                    'Seu sistema está devidamente licenciado para mais ' + AllTrim(IntToStr(DiasParaExpirar(Form1.IBDatabase1))) + ' dias';
       end;
-
-      Lines.Add('Modo operação: ' + Copy(AnsiUpperCase(Form1.sConcomitante),1, 1) + Copy(AnsiLowerCase(Form1.sConcomitante),2, Length(Form1.sConcomitante)));
+      Lines.Add('Modo operação: ' + Copy(Form22.sTitulo, Pos(' - ', Form22.sTitulo) +3, Length(Form22.sTitulo)));
 
       cVersaoNFCe := '';
       if Form1.sModeloECF = '59' then
