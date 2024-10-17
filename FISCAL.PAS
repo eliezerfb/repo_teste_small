@@ -15481,7 +15481,7 @@ var
   iDiaContingencia: Integer; // Sandro Silva 2019-08-14
   dtDataUltimaRZ: TDate; // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
   bEnviarContingenciaNaAbertura: Boolean;
-  function EnviarContingenciaNaAbertura(dtUltimaTransmissao: TDate;
+  function EnviarContingenciaNaAbertura(dtDataMinimaTransmitir: TDate;
     TransmitirContingenciaAbertura: Boolean): Boolean;
   var
     iResposta: Integer;
@@ -15492,7 +15492,7 @@ var
     // Considera contingências pendentes com data de emissão menor que a data atual
     //**** Usar esse método apenas aqui ***
     iResposta := mrNo;
-    if _ecf65_VerificaContingenciaPendentedeTransmissao(dtUltimaTransmissao, Date - 1, Form1.sCaixa) then
+    if _ecf65_VerificaContingenciaPendentedeTransmissao(dtDataMinimaTransmitir, Date - 1, Form1.sCaixa) then
     begin
       iResposta := mrYes;
       if (TransmitirContingenciaAbertura = False) then
@@ -15977,7 +15977,7 @@ begin
             if Form1.bStatusRede then
             begin
 
-              bEnviarContingenciaNaAbertura := EnviarContingenciaNaAbertura(Form1.ContingenciaPendente.dtUltimaTransmissao,
+              bEnviarContingenciaNaAbertura := EnviarContingenciaNaAbertura(Date - Form1.ContingenciaPendente.LimiteDias,
                                                                             FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura);
 
               if Form1.ContingenciaPendente.dtUltimaTransmissao < Date then
