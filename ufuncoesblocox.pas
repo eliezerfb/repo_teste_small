@@ -154,7 +154,7 @@ type
 function CertificadoPertenceAoEmitente(sSubjectName: String;
   sCNPJEmitente: String): Boolean;
 procedure LogFrente(sTexto: String; sDiretorioAtual: String);
-procedure ConectaIBDataBase(IBDATABASE: TIBDatabase; CaminhoBanco: String);
+procedure ConectaIBDataBase(IBDATABASE: TIBDatabase; CaminhoBanco: PAnsiChar);
 procedure FechaIBDataBase(IBDATABASE: TIBDatabase);
 function DadosEmitente(IBTransaction:  TIBTransaction;
   DiretorioAtual: String): TEmitente;
@@ -258,10 +258,21 @@ function XmlRespostaPadraoSucessoBlocoX(NumeroRecibo: String): String;
 function XmlRespostaPadraoAguardandoBlocoX(NumeroRecibo: String): String;
 function RespostaComSucessoNoXmlBlocoX(XmlResposta: String): Boolean;
 function RespostaComErroNoXmlBlocoX(XmlResposta: String): Boolean;
+function PerfilPAFGeraBlocoX(sPerfilPAF: String): Boolean;
 
 implementation
 
 uses uarquivosblocox, uconstantes_chaves_privadas;
+
+function PerfilPAFGeraBlocoX(sPerfilPAF: String): Boolean;
+begin
+  Result := False;
+  {Sandro Silva 2024-10-16 inicio
+  Ato Diat 56/2024 revoga explicitamente os Atos 46 e 55, ambos de 2022, que estabeleciam regras para a geração e transmissão de arquivos do Bloco X. Com isso, o Bloco X deixa de existir imediatamente.
+  if (Copy(sPerfilPAF, 1, 1) = 'T') or (Copy(sPerfilPAF, 1, 1) = 'V') or (Copy(sPerfilPAF, 1, 1) = 'W') then // Sandro Silva 2019-08-06
+    Result := True;
+  }
+end;
 
 function GetCredenciamentoFomXML(sXML: String): String;
 var
@@ -514,16 +525,19 @@ begin
   end;
 end;
 
-procedure ConectaIBDataBase(IBDATABASE: TIBDatabase; CaminhoBanco: String);
+procedure ConectaIBDataBase(IBDATABASE: TIBDatabase; CaminhoBanco: PAnsiChar);
 begin
   //ShowMessage('Abrindo banco 692'); // Sandro Silva 2018-09-17
   //LogFrente('Abrindo banco 692', CaminhoBanco);
 
-  IBDATABASE.DatabaseName := CaminhoBanco;
+  ShowMessage('Caminho banco ' + CaminhoBanco);//
+
+  IBDATABASE.DatabaseName := String(CaminhoBanco);
   try
     IBDATABASE.Open;
   except
-
+    on E: Exception do
+      ShowMessage('Caminho banco ' + IBDATABASE.DatabaseName + #13 + e.Message);//
   end;
 end;
 
@@ -1431,7 +1445,11 @@ begin
 
 //ShowMessage('Teste 01 1459'); // Sandro Silva 2021-01-04
 
+  {Sandro Silva 2024-10-16 inicio
   if (Copy(Emitente.Configuracao.PerfilPAF, 1, 1) = 'T') or (Copy(Emitente.Configuracao.PerfilPAF, 1, 1) = 'V') or (Copy(Emitente.Configuracao.PerfilPAF, 1, 1) = 'W') then // Sandro Silva 2019-08-06
+  }
+  if PerfilPAFGeraBlocoX(Emitente.Configuracao.PerfilPAF) then
+  {Sandro Silva 2024-10-16 fim}
   begin
 
     IBQREDUCOES   := CriaIBQuery(IBTransaction1);
@@ -1926,6 +1944,10 @@ begin
       bAssinarXML        := True;
       bForcarGeracao     := True;
       bExibirCaminhoSalvoXml := True;
+      {Sandro Silva 2024-10-16 inicio}
+      if PerfilPAFGeraBlocoX(Emitente.Configuracao.PerfilPAF) = False then
+        bExibirCaminhoSalvoXml := False;
+      {Sandro Silva 2024-10-16 fim}
 
       sdtFinal   := '31/12/' + IntToStr(YearOf(IncYear(Date, -1)));
       sdtInicial := '01/12/' + IntToStr(YearOf(StrToDate(sdtFinal)));
@@ -1978,6 +2000,11 @@ begin
       bAssinarXML        := True;
       bForcarGeracao     := True;
       bExibirCaminhoSalvoXml := True;
+
+      {Sandro Silva 2024-10-16 inicio}
+      if PerfilPAFGeraBlocoX(Emitente.Configuracao.PerfilPAF) = False then
+        bExibirCaminhoSalvoXml := False;
+      {Sandro Silva 2024-10-16 fim}
 
       dtFinal   := StrToDateDef(InputBox('Data Final', 'Informe a Data em que ocorreu a mudança de tributação - (dd/mm/yyyy)', ''), StrToDate('30/12/1899'));
       dtInicial := StrToDate('01/01/' + IntToStr(YearOf(dtFinal)));
@@ -2041,6 +2068,11 @@ begin
       bForcarGeracao     := True;
       bExibirCaminhoSalvoXml := True;
 
+      {Sandro Silva 2024-10-16 inicio}
+      if PerfilPAFGeraBlocoX(Emitente.Configuracao.PerfilPAF) = False then
+        bExibirCaminhoSalvoXml := False;
+      {Sandro Silva 2024-10-16 fim}
+
       dtFinal   := StrToDateDef(InputBox('Data Final', 'Informe a Data em que ocorreu a baixa da inscrição estadual - (dd/mm/yyyy)', ''), StrToDate('30/12/1899'));
       dtInicial := StrToDate('01/01/' + IntToStr(YearOf(dtFinal)));
 
@@ -2102,6 +2134,11 @@ begin
       bAssinarXML        := True;
       bForcarGeracao     := True;
       bExibirCaminhoSalvoXml := True;
+      {Sandro Silva 2024-10-16 inicio}
+      if PerfilPAFGeraBlocoX(Emitente.Configuracao.PerfilPAF) = False then
+        bExibirCaminhoSalvoXml := False;
+      {Sandro Silva 2024-10-16 fim}
+
 
       dtFinal   := StrToDateDef(InputBox('Data Final', 'Informe a Data em que ocorreu a mudança de regime de tributação - (dd/mm/yyyy)', ''), StrToDate('30/12/1899'));
       dtInicial := StrToDate('01/01/' + IntToStr(YearOf(dtFinal)));
@@ -2164,6 +2201,11 @@ begin
       bAssinarXML        := True;
       bForcarGeracao     := True;
       bExibirCaminhoSalvoXml := True;
+      {Sandro Silva 2024-10-16 inicio}
+      if PerfilPAFGeraBlocoX(Emitente.Configuracao.PerfilPAF) = False then
+        bExibirCaminhoSalvoXml := False;
+      {Sandro Silva 2024-10-16 fim}
+
 
       dtFinal   := Date;
       dtInicial := StrToDate('01/01/' + IntToStr(YearOf(dtFinal)));
@@ -2449,7 +2491,11 @@ begin
   else
   begin
 
+    {Sandro Silva 2024-10-16 inicio
     if (Copy(Emitente.Configuracao.PerfilPAF, 1, 1) = 'T') or (Copy(Emitente.Configuracao.PerfilPAF, 1, 1) = 'V') or (Copy(Emitente.Configuracao.PerfilPAF, 1, 1) = 'W') then // Sandro Silva 2019-08-06
+    }
+    if PerfilPAFGeraBlocoX(Emitente.Configuracao.PerfilPAF) then
+    {Sandro Silva 2024-10-16 fim}
     begin
 
       Result := False;
@@ -3072,8 +3118,11 @@ function BXGeraXmlEstoqueMes(Emitente: TEmitente;
 // Permite gerar o xml do estoque se for com data menor que 01/06/2020 ou período anual
 begin
   //t := Time;
-
+  {Sandro Silva 2024-10-16 inicio
   if (Copy(Emitente.Configuracao.PerfilPAF, 1, 1) = 'T') or (Copy(Emitente.Configuracao.PerfilPAF, 1, 1) = 'V') or (Copy(Emitente.Configuracao.PerfilPAF, 1, 1) = 'W') then // Sandro Silva 2019-08-06
+  }
+  if PerfilPAFGeraBlocoX(Emitente.Configuracao.PerfilPAF) then
+  {Sandro Silva 2024-10-16 fim}
   begin
 
     // Essa rotina só deve ser acionada durante a emissão da redução Z
@@ -3321,8 +3370,11 @@ begin
   sPerfilPAF := Copy(PerfilPAF(CHAVE_CIFRAR), 1, 1);
 
 //ShowMessage('teste 1 etapa perfil'); // Sandro Silva 2020-03-13
-
+  {Sandro Silva 2024-10-16 inicio
   if (sPerfilPAF = 'T') or (sPerfilPAF = 'V') or (sPerfilPAF = 'W') then // Sandro Silva 2019-08-06
+  }
+  if PerfilPAFGeraBlocoX(sPerfilPAF) then
+  {Sandro Silva 2024-10-16 fim}
   begin
 
     ArqConfigXml := TStringList.Create;
@@ -3910,8 +3962,6 @@ var
   IBTBLOCOX: TIBTransaction; // Sandro Silva 2017-11-13  HOMOLOGA 2017 para ler os dados atualizados no banco por outra transação
   IBQBLOCOX: TIBQuery; // Sandro Silva 2017-03-20
   sMensagemAlerta: String; // Sandro Silva 2018-09-21
-  // Sandro Silva 2023-02-28 bBlocoxRZPendente: Boolean;
-  // Sandro Silva 2023-02-28 bBlocoxEstoquePendente: Boolean;
   sDataPendencia: String; // Sandro Silva 2019-06-21 ER 02.06
   Retorno: TRetornoBlocoX; // Sandro Silva 2022-09-06
   function AlertaRZ(iQtd: Integer; sDataPendencia: String): String; // Sandro Silva 2019-06-21 ER 02.06 function AlertaRZ(iQtd: Integer): String;
@@ -3919,8 +3969,6 @@ var
     Result := '';
     if iQtd > 0 then
     begin
-      // Sandro Silva 2019-06-21 ER 02.06   Result := 'HÁ  ' + IntToStr(iQtd) + '  ' + AnsiUpperCase(PREFIXO_ALERTA_ARQUIVOS_RZ_BLOCO_X) + ' PENDENTES DE TRANSMISSÃO AO FISCO. O CONTRIBUINTE PODE TRANSMITIR OS ARQUIVOS PELO MENU FISCAL POR MEIO DO COMANDO ''TRANSMITIR ARQUIVOS COM INFORMAÇÕES DA REDUÇÃO Z DO PAF-ECF''.';
-      // Sandro Silva 2022-09-02
       //ATO DIAT Nº 46/2022 Result := 'HÁ  ' + IntToStr(iQtd) + '  ' + AnsiUpperCase(PREFIXO_ALERTA_ARQUIVOS_RZ_BLOCO_X) + ' PENDENTES DE TRANSMISSÃO AO FISCO. O CONTRIBUINTE PODE TRANSMITIR OS ARQUIVOS PELO MENU FISCAL POR MEIO DO COMANDO ''TRANSMITIR ARQUIVO REDUÇÃO Z ' + sDataPendencia + '''.';
       Result := '';
       // NOVAS REGRAS SOBRE BLOCO X DA ER 02.06 PARA SC – ATO DIAT Nº 011/2020
@@ -3980,13 +4028,13 @@ begin
 
     TrataErrosInternosServidorSEFAZ(Emitente, IBTransaction); // Sandro Silva 2019-06-18
 
-     //LogFrente('Verificando existência de arquivos pendentes de transmissão', Emitente.Configuracao.DiretorioAtual);
+    //LogFrente('Verificando existência de arquivos pendentes de transmissão', Emitente.Configuracao.DiretorioAtual);
 
-     // Gera XML da reduções não encontradas no blocoX
-     if sTipo = 'REDUCAO' then
-     begin
-       BXGeraXmlReducaoSemBlocoX(Emitente, IBTransaction);
-     end;
+    // Gera XML da reduções não encontradas no blocoX
+    if sTipo = 'REDUCAO' then
+    begin
+      BXGeraXmlReducaoSemBlocoX(Emitente, IBTransaction);
+    end;
 
     IBTBLOCOX := CriaIBTransaction(IBTransaction.DefaultDatabase); // Sandro Silva 2017-11-13  HOMOLOGA 2017 para ler os dados atualizados no banco por outra transação
     IBQBLOCOX := CriaIBQuery(IBTBLOCOX); // Sandro Silva 2017-11-13  HOMOLOGA 2017 para ler os dados atualizados no banco por outra transação IBQBLOCOX := CriaIBQuery(Form1.ibDataset88.Transaction); // Sandro Silva 2017-03-27  CriaIBQuery(Form1.IBQuery65.Transaction);
@@ -4183,7 +4231,6 @@ begin
 
     if (sTipo = 'REDUCAO') or (sTipo = '') then
       LogFrente('Arquivos da RZ PENDENTES: ' + FormatFloat('0', IBQBLOCOX.FieldByName('PENDENTE').AsInteger)  + ' ' + Emitente.UF + ' Perfil ' + Copy(Emitente.Configuracao.PerfilPAF,1,1), Emitente.Configuracao.DiretorioAtual);
-
 
     {Sandro Silva 2022-09-06 inicio}
     if IBQBLOCOX.FieldByName('PENDENTE').AsInteger > 0 then
@@ -4998,7 +5045,9 @@ function CNAEDispensadoEnvioEstoque: Boolean;
 begin
   // ATO DIAT 17 2017: Especificamente os restaurantes, bares e similares deverão iniciar a transmissão dos arquivos eletrônicos em 01 de junho de 2019.
   // A transmissão mensal do arquivo eletrônico do Estoque continua dispensada para os restaurantes, bares e similares, conforme regra disposta no próprio Ato COTEPE ICMS 09/2013, desde que utilizem aplicativo específico.
-  Result := (LerParametroIni('Frente.ini', 'Frente de Caixa', 'Dispensado do Envio do Estoque', 'Não') = 'Sim');
+  // Ato Diat 56/2024 revoga explicitamente os Atos 46 e 55, ambos de 2022, que estabeleciam regras para a geração e transmissão de arquivos do Bloco X. Com isso, o Bloco X deixa de existir imediatamente.
+  // Result := (LerParametroIni('Frente.ini', 'Frente de Caixa', 'Dispensado do Envio do Estoque', 'Não') = 'Sim');
+  Result := True;
 end;
 
 function BXSelecionarCertificadoDigital: String;
@@ -5992,7 +6041,12 @@ begin
           IBQREDUCAO.Next;
         end;
 
+        {Sandro Silva 2024-10-16 inicio
         AbrirPastaXmlBlocox(PASTA_REDUCOES_BLOCO_X);// AbrirPastaXmlBlocox(PASTA_GERAR_AO_FISCO_REDUCAO_Z);
+        }
+        if PerfilPAFGeraBlocoX(Emitente.Configuracao.PerfilPAF) then
+          AbrirPastaXmlBlocox(PASTA_REDUCOES_BLOCO_X);// AbrirPastaXmlBlocox(PASTA_GERAR_AO_FISCO_REDUCAO_Z);
+        {Sandro Silva 2024-10-16 fim}
 
       except
       end;

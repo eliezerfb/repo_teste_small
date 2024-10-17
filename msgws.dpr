@@ -56,7 +56,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PansiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -99,7 +99,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PansiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -143,7 +143,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PansiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -186,7 +186,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, Pansichar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -223,7 +223,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -275,7 +275,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -320,7 +320,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -367,7 +367,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -409,7 +409,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -453,7 +453,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -518,7 +518,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -559,7 +559,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -608,7 +608,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -649,7 +649,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -691,7 +691,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -729,7 +729,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -767,7 +767,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -805,7 +805,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -843,7 +843,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -881,7 +881,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin
@@ -919,7 +919,7 @@ begin
   IBDATABASE1    := CriaIBDataBase;
   IBTransaction1 := CriaIBTransaction(IBDATABASE1);
 
-  ConectaIBDataBase(IBDATABASE1, CaminhoBanco);
+  ConectaIBDataBase(IBDATABASE1, PAnsiChar(CaminhoBanco));
 
   if IBDATABASE1.Connected then
   begin

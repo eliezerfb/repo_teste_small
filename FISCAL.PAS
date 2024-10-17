@@ -876,7 +876,7 @@ type
     IBDSAssinaRegistro: TIBDataSet;
     ArquivocomInformaesdaReduoZdoPAFECF1: TMenuItem;
     EnvioaoFISCOESTOQUE: TMenuItem;
-    IBQDadosRequisitoXXIV____: TIBQuery;
+    //IBQDadosRequisitoXXIV____: TIBQuery;
     ibDataSet27SERIE: TIBStringField;
     ibDataSet27SUBSERIE: TIBStringField;
     EnviarDANFCEeXMLcompactado1: TMenuItem;
