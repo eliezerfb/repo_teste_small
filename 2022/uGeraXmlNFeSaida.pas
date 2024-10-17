@@ -226,7 +226,7 @@ begin
   // Relaciona os clientes com o arquivo de vendas
   Form7.ibDAtaset2.Close;
   Form7.ibDAtaset2.Selectsql.Clear;
-  Form7.ibDAtaset2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
+  Form7.ibDAtaset2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString));
   Form7.ibDAtaset2.Open;
 
   // Data da última venda para o cliente
@@ -882,10 +882,6 @@ begin
         except
           on E: Exception do
           begin
-            {
-            Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'Ao preencher Identificação do destinatário no caso de comprador estrangeiro'
-            ),'Atenção',mb_Ok + MB_ICONWARNING);
-            Mauricio Parizotto 2023-10-25}
             MensagemSistema(E.Message+chr(10)+chr(10)+ 'Ao preencher Identificação do destinatário no caso de comprador estrangeiro',msgErro);
           end;
         end;
@@ -893,7 +889,6 @@ begin
     except
       on E: Exception do
       begin
-        //Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao preencher dados para exportação'),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
         MensagemSistema(E.Message+chr(10)+chr(10)+'Ao preencher dados para exportação',msgErro);
       end;
     end;
@@ -1063,7 +1058,6 @@ begin
         if Form7._ecf65_ValidaGtinNFCe(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString) then
           Form7.spdNFeDataSets.Campo('cProd_I02').Value    := Form7.ibDataSet4.FieldByname('CODIGO').AsString //Código do PRoduto ou Serviço
         else
-          //Form7.spdNFeDataSets.Campo('cProd_I02').Value   := LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString); // Código de BARRAS
           if Length(Alltrim(LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString))) < 6 then
             Form7.spdNFeDataSets.Campo('cProd_I02').Value    := Form7.ibDataSet4.FieldByname('CODIGO').AsString //Código do PRoduto ou Serviço
           else
