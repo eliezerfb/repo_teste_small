@@ -51,6 +51,11 @@ type
     sOperacao: String; ItemNF: TItemNFe);
   procedure CsosnComOrigemdoProdutoNaOperacao(sCodigo: String;
     sOperacao: String; ItemNF: TItemNFe);
+  function GetPercentualDiferenciado(IcmObs: String): String;
+  function ValorIcms(dAliquota: Double; dValorTotal: Double;
+    dBase: Double): Double;
+  function ValorIcmsDiferenciado(dValorIcms: Double;
+    dPercentualDiferenciado: Double): Double;
 
 implementation
 
@@ -189,6 +194,23 @@ begin
     FreeAndNil(IBQESTOQUE);
     FreeAndNil(IBQICM);
   end;
+end;
+
+function GetPercentualDiferenciado(IcmObs: String): String;
+begin
+  Result := RetornaValorDaTagNoCampo('pDif', IcmObs);
+end;
+
+function ValorIcms(dAliquota: Double; dValorTotal: Double;
+  dBase: Double): Double;
+begin
+  Result := (dAliquota * dValorTotal / 100 * dBase / 100);
+end;
+
+function ValorIcmsDiferenciado(dValorIcms: Double;
+  dPercentualDiferenciado: Double): Double;
+begin
+  Result := dValorIcms * dPercentualDiferenciado / 100;
 end;
 
 end.

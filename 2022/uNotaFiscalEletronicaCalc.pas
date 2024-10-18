@@ -201,7 +201,7 @@ var
   i : integer;
   sEstado : string;
   IVAProd : Real;
-  sCSTProduto: String; // Sandro Silva 2024-10-17
+  sCSTIcms: String; // Sandro Silva 2024-10-17
   sCSOSNProduto: String; // Sandro Silva 2024-10-17
   iItemNF: TItemNFe; // Sandro Silva 2024-10-17
 begin
@@ -332,7 +332,7 @@ begin
       {Sandro Silva (f-21199) 2024-10-17 inicio}
       iItemNF := TItemNFe.Create;
       CstComOrigemdoProdutoNaOperacao(oItem.Codigo, NotaFiscal.Operacao, iItemNF);
-      sCSTProduto := iItemNF.CST; // Somente as 2 últimas casas (00, 20, 30, 40, 41...)
+      sCSTIcms := iItemNF.CST; // Somente as 2 últimas casas (00, 20, 30, 40, 41...)
 
       CsosnComOrigemdoProdutoNaOperacao(oItem.Codigo, NotaFiscal.Operacao, iItemNF);
       sCSOSNProduto := iItemNF.CSOSN;
@@ -378,20 +378,28 @@ begin
             }
             // NOTA DEVOLUCAO D E V
             if ( ( StrToIntDef(Form7.ibDAtaset13.FieldByname('CRT').AsString, 0) in [1,4] ) and ( sCSOSNProduto = '900' ))
-            or ((not( StrToIntDef(Form7.ibDAtaset13.FieldByname('CRT').AsString, 0)  in [1, 4]) ) and (
-                                                                       (sCSTProduto = '00') or
-                                                                       (sCSTProduto = '10') or
-                                                                       (sCSTProduto = '20') or
-                                                                       (sCSTProduto = '51') or
-                                                                       (sCSTProduto = '70') or
-                                                                       (sCSTProduto = '90')))
+              or ((not( StrToIntDef(Form7.ibDAtaset13.FieldByname('CRT').AsString, 0)  in [1, 4]) ) and (
+                                                                       (sCSTIcms = '00') or
+                                                                       (sCSTIcms = '10') or
+                                                                       (sCSTIcms = '20') or
+                                                                       (sCSTIcms = '51') or
+                                                                       (sCSTIcms = '70') or
+                                                                       (sCSTIcms = '90')))
             then
             begin
-              NotaFiscal.Baseicm    := NotaFiscal.Baseicm  + Arredonda((oItem.TOTAL * oItem.BASE / 100 ),2);
-              NotaFiscal.Icms       := NotaFiscal.Icms     + Arredonda(( (oItem.TOTAL) * oItem.BASE / 100 *  oItem.ICM / 100 ),2); // Acumula em 16 After post
-
               oItem.Vbc             := oItem.Vbc + Arredonda((oItem.TOTAL * oItem.BASE / 100 ),2);
-              oItem.Vicms           := oItem.Vicms + Arredonda(( (oItem.TOTAL) * oItem.BASE / 100 *  oItem.ICM / 100 ),2);
+              oItem.Vicms           := oItem.Vicms + Arredonda(( oItem.Vbc *  oItem.ICM / 100 ),2);
+
+              if sCSTIcms = '51' then
+              begin
+                oItem.Vicms := Arredonda2(oItem.Vicms -
+                                          ValorIcmsDiferenciado(oItem.Vicms, StrToFloatDef(GetPercentualDiferenciado(IBQIcmItem.FieldByname('OBS').AsString), 0))
+                                          , 2);
+              end;
+
+              NotaFiscal.Baseicm    := NotaFiscal.Baseicm  + oItem.Vbc;
+              NotaFiscal.Icms       := NotaFiscal.Icms     + oItem.Vicms; // Acumula em 16 After post
+
             end;
           end;
 
@@ -464,12 +472,12 @@ begin
                 // NOTA DEVOLUCAO D E V
                 if (( (Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') or (Form7.ibDAtaset13.FieldByname('CRT').AsString = '4') ) and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') ))
                 or (( (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '4') ) and (
-                                                                           (sCSTProduto = '00') or
-                                                                           (sCSTProduto = '10') or
-                                                                           (sCSTProduto = '20') or
-                                                                           (sCSTProduto = '51') or
-                                                                           (sCSTProduto = '70') or
-                                                                           (sCSTProduto = '90')))
+                                                                           (sCSTIcms = '00') or
+                                                                           (sCSTIcms = '10') or
+                                                                           (sCSTIcms = '20') or
+                                                                           (sCSTIcms = '51') or
+                                                                           (sCSTIcms = '70') or
+                                                                           (sCSTIcms = '90')))
 
                 {Sandro Silva (f-21199) 2024-10-17 fim}
                 then
@@ -585,12 +593,12 @@ begin
                 // NOTA DEVOLUCAO D E V
                 if (( (Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') or (Form7.ibDAtaset13.FieldByname('CRT').AsString = '4') ) and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByName('CSOSN').AsString = '900') ))
                 or (( (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '4') ) and (
-                                                                           (sCSTProduto = '00') or
-                                                                           (sCSTProduto = '10') or
-                                                                           (sCSTProduto = '20') or
-                                                                           (sCSTProduto = '51') or
-                                                                           (sCSTProduto = '70') or
-                                                                           (sCSTProduto = '90')))
+                                                                           (sCSTIcms = '00') or
+                                                                           (sCSTIcms = '10') or
+                                                                           (sCSTIcms = '20') or
+                                                                           (sCSTIcms = '51') or
+                                                                           (sCSTIcms = '70') or
+                                                                           (sCSTIcms = '90')))
                 {Sandro Silva (f-21199) 2024-10-17 fim}
                 then
                 begin
@@ -805,7 +813,7 @@ begin
             {Sandro Silva (f-21199) 2024-10-17 inicio}
             iItemNF := TItemNFe.Create;
             CstComOrigemdoProdutoNaOperacao(oItem.Codigo, NotaFiscal.Operacao, iItemNF);
-            sCSTProduto := iItemNF.CST; // Somente as 2 últimas casas (00, 20, 30, 40, 41...)
+            sCSTIcms := iItemNF.CST; // Somente as 2 últimas casas (00, 20, 30, 40, 41...)
 
             CsosnComOrigemdoProdutoNaOperacao(oItem.Codigo, NotaFiscal.Operacao, iItemNF);
             sCSOSNProduto := iItemNF.CSOSN;
@@ -822,9 +830,9 @@ begin
                     then
             }
             if not ( IVAProd > 0 )
-                    or (sCSTProduto = '10')
-                    or (sCSTProduto = '70')
-                    or (sCSTProduto = '90') // Sandro Silva 2023-05-19
+                    or (sCSTIcms = '10')
+                    or (sCSTIcms = '70')
+                    or (sCSTIcms = '90') // Sandro Silva 2023-05-19
                     or (sCSOSNProduto = '900')
                     then
             {Sandro Silva (f-21199) 2024-10-17 fim}

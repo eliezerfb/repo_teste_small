@@ -3354,6 +3354,7 @@ var
   dvBCFCPSTRet_N27a: Real;// Sandro Silva 2024-03-27
   sEstado : string;
   IVAProd : Real;
+  dValorIcms: Double; //Sandro Silva 2024-10-18
 begin
   //Mauricio Parizotto 2023-04-03
   fTotalMercadoria := RetornaValorSQL(' Select coalesce(sum(TOTAL),0) '+
@@ -3889,6 +3890,7 @@ begin
       Form7.spdNFeDataSets.Campo('vICMSOp_N16a').Value  := FormatFloatXML(Arredonda2( (Form7.ibDataSet16.FieldByname('ICM').AsFloat*(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase )/100*Form7.ibDataSet16.FieldByname('BASE').AsFloat/100) ,2));
 
 
+      {Sandro Silva 2024-10-18 inicio
       // Tag OBS no ICMS <pDIF>33,33</pDIF>
       if RetornaValorDaTagNoCampo('pDif', Form7.ibDataSet14.FieldByname('OBS').AsString) <> '' then
         Form7.spdNFeDataSets.Campo('pDif_N16b').Value      := StrTran(FormatFloat('##0.0000', Arredonda(StrToFloatDef(RetornaValorDaTagNoCampo('pDif', Form7.ibDataSet14.FieldByname('OBS').AsString), 0),4)),',','.')
@@ -3907,6 +3909,23 @@ begin
             - StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMSDif_N16c').AsString,',',''),'.',','))
             )),',','.');
       end;
+      }
+      // Tag OBS no ICMS <pDIF>33,33</pDIF>
+      if GetPercentualDiferenciado(Form7.ibDataSet14.FieldByname('OBS').AsString) <> '' then
+        Form7.spdNFeDataSets.Campo('pDif_N16b').Value      := FormatFloatXML(StrToFloatDef(GetPercentualDiferenciado(Form7.ibDataSet14.FieldByname('OBS').AsString), 0), 4)
+      else
+        Form7.spdNFeDataSets.Campo('pDif_N16b').Value      := '100';
+
+      dValorIcms := ValorIcms(Form7.ibDataSet16.FieldByname('ICM').AsFloat, (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase ), Form7.ibDataSet16.FieldByname('BASE').AsFloat);
+
+      // Fórmula complexa poderia ser simplificada mas foi testada e está funcionando
+      Form7.spdNFeDataSets.Campo('vICMSDif_N16c').Value := FormatFloatXML(ValorIcmsDiferenciado(dValorIcms, FormatXMLToFloat(Form7.spdNFeDataSets.Campo('pDif_N16b').AsString)));
+
+      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '51' then
+      begin
+        Form7.spdNFeDataSets.Campo('vICMS_N17').Value := FormatFloatXML(Arredonda2(dValorIcms, 2) - FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vICMSDif_N16c').AsString));
+      end;
+      {Sandro Silva 2024-10-18 fim}
     end;
 
     if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30' then
@@ -4286,7 +4305,7 @@ begin
       Abort;
 
     end;
-
+AJUSTAR CSOSN
     // CSOSN 101
     if Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '101' then
     begin
