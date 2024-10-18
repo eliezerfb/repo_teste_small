@@ -15482,7 +15482,7 @@ var
   dtDataUltimaRZ: TDate; // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
   bEnviarContingenciaNaAbertura: Boolean;
   function EnviarContingenciaNaAbertura(dtDataMinimaTransmitir: TDate;
-    TransmitirContingenciaAbertura: Boolean): Boolean;
+    TransmitirContingenciaAbertura: Boolean; dtUltimaTransmissao: TDate): Boolean;
   var
     iResposta: Integer;
   begin
@@ -15490,14 +15490,16 @@ var
     // Valida a configuração para transimitir a contingência automaticamente na abertura
     // Quando a configuração estiver desmarcada e tiver contingência pendente, irá perguntar se deseja transmitir
     // Considera contingências pendentes com data de emissão menor que a data atual
+    // Não exibe pergunta quando a data da última transmissão for menor que a data atual
     //**** Usar esse método apenas aqui ***
     iResposta := mrNo;
     if _ecf65_VerificaContingenciaPendentedeTransmissao(dtDataMinimaTransmitir, Date - 1, Form1.sCaixa) then
     begin
       iResposta := mrYes;
       if (TransmitirContingenciaAbertura = False) then
-        iResposta := uDialogs.MensagemSistemaPergunta('Existem documentos emitidos em contingência pendentes de transmissão.' + sLineBreak +
-                                                      'Transmitir agora?', [mb_YesNo]);
+        if (dtUltimaTransmissao < Date) then
+          iResposta := uDialogs.MensagemSistemaPergunta('Existem documentos emitidos em contingência pendentes de transmissão.' + sLineBreak +
+                                                        'Transmitir agora?', [mb_YesNo]);
     end;
     Result := (iResposta = mrYes);
   end;
@@ -15978,7 +15980,8 @@ begin
             begin
 
               bEnviarContingenciaNaAbertura := EnviarContingenciaNaAbertura(Date - Form1.ContingenciaPendente.LimiteDias,
-                                                                            FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura);
+                                                                            FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura,
+                                                                            Form1.ContingenciaPendente.dtUltimaTransmissao);
 
               if Form1.ContingenciaPendente.dtUltimaTransmissao < Date then
               begin
@@ -16012,8 +16015,9 @@ begin
 
                   _ecf65_VerificaContingenciaPendentedeTransmissao(Date - Form1.ContingenciaPendente.LimiteDias, Date, Form1.sCaixa);
                   Sleep(50);
-                  SalvarConfiguracao(FRENTE_INI, SECAO_65, 'Transmissao Contingencia', FormatDateTime('dd/mm/yyyy', Date));
+                  // Sandro Silva (smal-741) 2024-10-17 SalvarConfiguracao(FRENTE_INI, SECAO_65, 'Transmissao Contingencia', FormatDateTime('dd/mm/yyyy', Date));
                 end;
+                SalvarConfiguracao(FRENTE_INI, SECAO_65, 'Transmissao Contingencia', FormatDateTime('dd/mm/yyyy', Date)); // Sandro Silva (smal-741) 2024-10-17
               end;
 
             end; // if Form1.bStatusRede then
