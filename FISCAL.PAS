@@ -16015,9 +16015,8 @@ begin
 
                   _ecf65_VerificaContingenciaPendentedeTransmissao(Date - Form1.ContingenciaPendente.LimiteDias, Date, Form1.sCaixa);
                   Sleep(50);
-                  // Sandro Silva (smal-741) 2024-10-17 SalvarConfiguracao(FRENTE_INI, SECAO_65, 'Transmissao Contingencia', FormatDateTime('dd/mm/yyyy', Date));
+                  SalvarConfiguracao(FRENTE_INI, SECAO_65, 'Transmissao Contingencia', FormatDateTime('dd/mm/yyyy', Date));
                 end;
-                SalvarConfiguracao(FRENTE_INI, SECAO_65, 'Transmissao Contingencia', FormatDateTime('dd/mm/yyyy', Date)); // Sandro Silva (smal-741) 2024-10-17
               end;
 
             end; // if Form1.bStatusRede then
