@@ -907,13 +907,6 @@ begin
             Break;
           end;
 
-          {
-          if ComposicaoCircular(IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString, IBTRANSACTION, slCompostoPai) then
-          begin
-            Result := True;
-            Break;
-          end;
-          }
           Result := ComposicaoCircular(IBQCOMPOSTO.FieldByName('CODIGO_INSUMO').AsString, IBTRANSACTION, slCompostoPai);
 
           if Result then

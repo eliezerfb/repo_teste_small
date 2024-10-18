@@ -32788,6 +32788,9 @@ var
   oNotaFiscal : TNotaFiscalEletronicaCalc;
   bTemComposicaoCircular: Boolean; // Sandro Silva 2024-10-14
 begin
+
+  bTemComposicaoCircular := False;  // Precisa inicializar como False Sandro Silva 2024-10-18
+
   FbDuplicandoNFe := True;
   Form7.bPesqProdNFPorConsulta := True;
   try
@@ -32915,6 +32918,7 @@ begin
       Form7.ibDataSet16.EnableControls;
     end;
     {Dailon Parisotto (f-18201) 2024-05-07 Fim}
+
   finally
     Form7.bPesqProdNFPorConsulta := False;
     FbDuplicandoNFe := False;
