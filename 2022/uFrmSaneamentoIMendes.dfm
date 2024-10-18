@@ -1,10 +1,11 @@
 inherited FrmSaneamentoIMendes: TFrmSaneamentoIMendes
-  BorderIcons = []
+  BorderIcons = [biSystemMenu]
   Caption = 'Saneamento'
   ClientHeight = 199
   ClientWidth = 270
   Font.Height = -11
   Font.Name = 'Microsoft Sans Serif'
+  OnCreate = FormCreate
   ExplicitWidth = 286
   ExplicitHeight = 238
   PixelsPerInch = 96
@@ -37,7 +38,6 @@ inherited FrmSaneamentoIMendes: TFrmSaneamentoIMendes
     ParentFont = False
     TabOrder = 0
     OnClick = btnOKClick
-    ExplicitLeft = 137
   end
   object chkTodos: TCheckBox
     Left = 20
@@ -45,8 +45,6 @@ inherited FrmSaneamentoIMendes: TFrmSaneamentoIMendes
     Width = 222
     Height = 17
     Caption = 'Todos os produtos da base de dados'
-    Checked = True
-    State = cbChecked
     TabOrder = 1
     OnClick = chkTodosClick
   end
@@ -89,8 +87,6 @@ inherited FrmSaneamentoIMendes: TFrmSaneamentoIMendes
     Width = 225
     Height = 17
     Caption = 'Produtos com status Consultado'
-    Checked = True
-    State = cbChecked
     TabOrder = 5
     OnClick = chkPendentesClick
   end

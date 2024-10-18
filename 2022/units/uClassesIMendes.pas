@@ -130,10 +130,12 @@ type
     FCodigo: string;
     FCodIMendes: string;
     FDescricao: string;
+    FTipoCodigo: integer;
   published
     property Codigo: string read FCodigo write FCodigo;
     property CodIMendes: string read FCodIMendes write FCodIMendes;
     property Descricao: string read FDescricao write FDescricao;
+    property TipoCodigo: integer read FTipoCodigo write FTipoCodigo;
   end;
 
   TCabecalhoTrib = class

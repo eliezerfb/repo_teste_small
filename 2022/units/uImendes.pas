@@ -12,7 +12,8 @@ type TPesquisaImendes = (tpCodigo, tpEAN);
   function ProdutosDescricaoImendes(sCNPJ, sDescricao: string): TArray<TProdutoImendes>;
   function GetCodImendes(sCNPJ, sDescricao: string): integer;
   function GetTributacaoProd(ibdEstoque : TibDataSet; TipoPesquisa: TPesquisaImendes): boolean;
-  procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo; PreencheIPI : Boolean; UF : string);
+  function GetTributacaoEstoque(ibdEstoque : TibDataSet; sFiltro : string; out sMensagem : string): boolean;
+  procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo; PreencheIPI : Boolean; UF : string; out sErro : string);
   procedure GetDadosCabecalho(Cabecalho: TCabecalhoTrib; Transaction : TIBTransaction);
   function GetCitTribIMendes(AliqICMS, BcIcms : double; CFOP, UF : string; Transaction : TIBTransaction):string;
   function GetSeqCitIMendes(Transaction : TIBTransaction):string;
@@ -102,6 +103,7 @@ var
   sJson, sJsonRet : string;
   sUF : TArray<string>;
   bEncontrado : boolean;
+  sErro : string;
 begin
   Result := False;
 
@@ -156,7 +158,8 @@ begin
             SetTribProd(ibdEstoque,
                         RetTributacaoIMendesDTO.Grupo[0],
                         TSistema.GetInstance.ConsultarIPIImendes,
-                        TributacaoIMendesDTO.Uf[0]);
+                        TributacaoIMendesDTO.Uf[0],
+                        sErro);
 
             //Auditoria
             Audita('ALTEROU', 'ESTOQUE',
@@ -185,11 +188,229 @@ begin
       MensagemSistema('Falha ao consultar regras fiscais.',msgErro);
     end;
   finally
+    FreeAndNil(RetTributacaoIMendesDTO);
     FreeAndNil(TributacaoIMendesDTO);
     FreeAndNil(ProdutoArray[0]);
     SetLength(sUF,0);
   end;
 end;
+
+
+function GetTributacaoEstoque(ibdEstoque : TibDataSet; sFiltro : string; out sMensagem : string): boolean;
+var
+  TributacaoIMendesDTO : TTributacaoIMendesDTO;
+  ProdutoArray : TArray<TProdutoTrib>;
+  sSQL, sCodigo, sCodEan, sCodEan2 : string;
+  sUF : TArray<string>;
+
+  qryProduto: TIBQuery;
+  iProd : integer;
+  bEanValido : boolean;
+
+  {$Region'//// EnviaPacoteRequest ////'}
+  procedure EnviaPacoteRequest;
+    var
+      i, iGrupo, iProduto, iImendes : integer;
+      sJson, sJsonRet : string;
+      RetTributacaoIMendesDTO : TRetTributacaoIMendesDTO;
+      sErro : string;
+  begin
+    //Gera Json envio
+    try
+      TributacaoIMendesDTO.Produto := ProdutoArray;
+
+      sJson := TJson.ObjectToJsonString(TributacaoIMendesDTO);
+    finally
+      for i := Low(ProdutoArray) to High(ProdutoArray) do
+      begin
+        FreeAndNil(ProdutoArray[i]);
+      end;
+
+      SetLength(ProdutoArray,0);
+    end;
+
+    //Envia requisição API
+    if EnviaRequisicaoIMendes(rmPOST,
+                             'RegrasFiscais',
+                             sJson,
+                             sJsonRet) then
+    begin
+      try
+        RetTributacaoIMendesDTO := TJson.JsonToObject<TRetTributacaoIMendesDTO>(sJsonRet);
+
+        if RetTributacaoIMendesDTO.Grupo <> nil then
+        begin
+          for iGrupo := Low(RetTributacaoIMendesDTO.Grupo) to High(RetTributacaoIMendesDTO.Grupo) do
+          begin
+            //Código IMendes
+            for iImendes := Low(RetTributacaoIMendesDTO.Grupo[iGrupo].CodIMendes) to High(RetTributacaoIMendesDTO.Grupo[iGrupo].CodIMendes) do
+            begin
+              if ibdEstoque.Locate('CODIGO_IMENDES',RetTributacaoIMendesDTO.Grupo[iGrupo].CodIMendes[iImendes],[]) then
+              begin
+                //Atribui tributação ao produto
+                SetTribProd(ibdEstoque,
+                            RetTributacaoIMendesDTO.Grupo[iGrupo],
+                            TSistema.GetInstance.ConsultarIPIImendes,
+                            TributacaoIMendesDTO.Uf[0],
+                            sErro);
+
+                ibdEstoque.Post;
+              end;
+            end;
+
+            //Código de Barras
+            for iProduto := Low(RetTributacaoIMendesDTO.Grupo[iGrupo].Produto) to High(RetTributacaoIMendesDTO.Grupo[iGrupo].Produto) do
+            begin
+              if Length(RetTributacaoIMendesDTO.Grupo[iGrupo].Produto[iProduto]) = 5 then
+              begin
+                //Código Interno
+                sCodigo := RetTributacaoIMendesDTO.Grupo[iGrupo].Produto[iProduto];
+
+                if ibdEstoque.Locate('CODIGO',sCodigo,[]) then
+                begin
+                  //Atribui tributação ao produto
+                  SetTribProd(ibdEstoque,
+                              RetTributacaoIMendesDTO.Grupo[iGrupo],
+                              TSistema.GetInstance.ConsultarIPIImendes,
+                              TributacaoIMendesDTO.Uf[0],
+                              sErro);
+
+                  ibdEstoque.Post;
+                end;
+
+              end else
+              begin
+                //Código de barras
+                sCodEan   := RetTributacaoIMendesDTO.Grupo[iGrupo].Produto[iProduto];
+                sCodEan2  := RetTributacaoIMendesDTO.Grupo[iGrupo].Produto[iProduto];
+
+                if Copy(sCodEan2,1,1) = '0' then
+                  Delete(sCodEan2,1,1);
+
+                if (ibdEstoque.Locate('REFERENCIA',sCodEan,[]))
+                  or (ibdEstoque.Locate('REFERENCIA',sCodEan2,[])) then
+                begin
+                  //Atribui tributação ao produto
+                  SetTribProd(ibdEstoque,
+                              RetTributacaoIMendesDTO.Grupo[iGrupo],
+                              TSistema.GetInstance.ConsultarIPIImendes,
+                              TributacaoIMendesDTO.Uf[0],
+                              sErro);
+
+                  ibdEstoque.Post;
+                end;
+              end;
+            end;
+          end;
+        end;
+
+        sMensagem := sMensagem + sErro;
+      finally
+        FreeAndNil(RetTributacaoIMendesDTO);
+      end;
+    end else
+    begin
+      sMensagem := 'Falha ao consultar regras fiscais.'
+    end;
+  end;
+  {$Endregion}
+begin
+  Result := False;
+
+  sSQL := ' Select *'+
+          ' From ESTOQUE'+
+          ' Where Coalesce(ATIVO,0) = 0 '+
+          '   and Coalesce(TIPO_ITEM,'''') <> ''09'' '+//Serviço
+          '   and Coalesce(CONSULTA_TRIBUTACAO,''N'') = ''S'' '+//Marcado
+          sFiltro+
+          ' Order By IDESTOQUE';
+
+  //Consulta para retorno
+  ibdEstoque.Close;
+  ibdEstoque.SelectSQL.Text := sSQL;
+  ibdEstoque.Open;
+
+  if ibdEstoque.IsEmpty then
+  begin
+    sMensagem := 'Nenhum produto para sanear!';
+    Exit;
+  end;
+
+  try
+    try
+      TributacaoIMendesDTO := TTributacaoIMendesDTO.Create;
+
+      //Cabeçalho
+      GetDadosCabecalho(TributacaoIMendesDTO.Cabecalho,ibdEstoque.Transaction);
+
+      //UF
+      SetLength(sUF,1);
+      sUF[0] := TributacaoIMendesDTO.Cabecalho.Uf;
+      TributacaoIMendesDTO.Uf := sUF;
+
+      {$Region'//// Consulta produtos para enviar ////'}
+      qryProduto := CriaIBQuery(ibdEstoque.Transaction);
+      qryProduto.SQL.Text := sSQL;
+      qryProduto.FetchAll;
+      qryProduto.Open;
+
+      while not qryProduto.Eof do
+      begin
+        bEanValido := (qryProduto.FieldByName('REFERENCIA').AsString <> '')
+                      and (ValidaEAN(qryProduto.FieldByName('REFERENCIA').AsString))
+                      and (Copy(qryProduto.FieldByName('REFERENCIA').AsString,1,2) <> '20' ); //Codigo interno
+
+
+        iProd := Length(ProdutoArray);
+        SetLength(ProdutoArray,iProd+1);
+
+        ProdutoArray[iProd] := TProdutoTrib.Create;
+        ProdutoArray[iProd].Descricao  := LimpaCaracteresEspeciaisIM(qryProduto.FieldByName('DESCRICAO').AsString);
+
+        ProdutoArray[iProd].CodIMendes := qryProduto.FieldByName('CODIGO_IMENDES').AsString;
+
+        if bEanValido then
+        begin
+          ProdutoArray[iProd].Codigo     := qryProduto.FieldByName('REFERENCIA').AsString;
+          ProdutoArray[iProd].TipoCodigo := 0; //Código EAN (barras)
+        end else
+        begin
+          ProdutoArray[iProd].Codigo     := qryProduto.FieldByName('CODIGO').AsString;
+          ProdutoArray[iProd].TipoCodigo := 1; //Código Interno
+        end;
+
+        qryProduto.Next;
+
+        //Envia para API pacotes de 1000 produtos
+        if (qryProduto.Eof)
+          or (Length(ProdutoArray) >= 1000) then
+        begin
+          EnviaPacoteRequest;
+        end;
+      end;
+      {$Endregion}
+
+      Result := sMensagem = '';
+    finally
+      FreeAndNil(qryProduto);
+      FreeAndNil(TributacaoIMendesDTO);
+      SetLength(sUF,0);
+    end;
+
+    //O que não retornou marca como Pendente
+    ExecutaComando(' Update ESTOQUE '+
+                   '   set STATUS_TRIBUTACAO = '+QuotedStr(_cStatusImendesPendente)+
+                   '   , DATA_STATUS_TRIBUTACAO = CURRENT_TIMESTAMP '+
+                   ' Where Coalesce(ATIVO,0) = 0 '+
+                   '   and Coalesce(TIPO_ITEM,'''') <> ''09'' '+//Serviço
+                   '   and Coalesce(CONSULTA_TRIBUTACAO,''N'') = ''S'' '+//Marcado
+                   '   and STATUS_TRIBUTACAO <> '+QuotedStr(_cStatusImendesConsultado)+
+                   sFiltro,
+                   ibdEstoque.Transaction);
+  except
+  end;
+end;
+
 
 procedure GetDadosCabecalho(Cabecalho: TCabecalhoTrib; Transaction : TIBTransaction);
 var
@@ -231,7 +452,7 @@ begin
   end;
 end;
 
-procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo; PreencheIPI : Boolean; UF : string);
+procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo; PreencheIPI : Boolean; UF : string; out sErro : string);
 begin
   Form7.SaneamentoIMendes := True;
 
@@ -342,8 +563,7 @@ begin
     ibdEstoque.FieldByName('IDPERFILTRIBUTACAO').Clear;
   except
     on e:exception do
-      MensagemSistema('Erro ao atribuir tributação.'+#13#10+e.Message,
-                      msgErro);
+      sErro := 'Erro ao atribuir tributação prod: '+ibdEstoque.FieldByName('CODIGO').AsString+#13#10+e.Message+#13#10;
   end;
 
   Form7.SaneamentoIMendes := False;

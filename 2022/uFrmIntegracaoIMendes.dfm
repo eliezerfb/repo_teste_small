@@ -25,11 +25,11 @@ inherited FrmIntegracaoIMendes: TFrmIntegracaoIMendes
       object Label1: TLabel
         Left = 17
         Top = 20
-        Width = 493
+        Width = 512
         Height = 13
         Caption = 
-          'Baseado no c'#243'digo de barras ou na descri'#231#227'o do produto, esse ass' +
-          'istente retornar'#225' automaticamente as'
+          'Baseado no c'#243'digo de barras, esse assistente retornar'#225' automatic' +
+          'amente as principais informa'#231#245'es referente'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -40,11 +40,11 @@ inherited FrmIntegracaoIMendes: TFrmIntegracaoIMendes
       object Label2: TLabel
         Left = 17
         Top = 38
-        Width = 523
+        Width = 490
         Height = 13
         Caption = 
-          'principais informa'#231#245'es referente '#224' tributa'#231#227'o dos produtos (NCM,' +
-          ' CEST, CST PIS/COFINS, % PIS, % COFINS, '
+          #224' tributa'#231#227'o dos produtos (NCM, CEST, CST PIS/COFINS, % PIS, % C' +
+          'OFINS,  CST IPI, % IPI, % ICMS, '
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -55,9 +55,9 @@ inherited FrmIntegracaoIMendes: TFrmIntegracaoIMendes
       object Label3: TLabel
         Left = 17
         Top = 57
-        Width = 251
+        Width = 135
         Height = 13
-        Caption = 'CST IPI, % IPI, % ICMS, CST/CSOSN, % IVA e FCP).'
+        Caption = 'CST/CSOSN, % IVA e FCP).'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11

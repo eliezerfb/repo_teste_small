@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFrmPadrao, Vcl.StdCtrls, Vcl.Buttons, shellapi, IBX.IBQuery,
-  Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Imaging.pngimage, REST.JSON, System.Threading, uArquivosDAT;
+  Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Imaging.pngimage, REST.JSON, System.Threading, uArquivosDAT,
+  uImendes;
 
 type
   TFrmIntegracaoIMendes = class(TFrmPadrao)
@@ -145,6 +146,9 @@ begin
 end;
 
 procedure TFrmIntegracaoIMendes.btnSanearClick(Sender: TObject);
+var
+  sFiltro : string;
+
 begin
   if not TSistema.GetInstance.ModuloImendes then
   begin
@@ -152,11 +156,32 @@ begin
     Exit;
   end;
 
-  FrmSaneamentoIMendes := TFrmSaneamentoIMendes.Create(self);
-  try
-    FrmSaneamentoIMendes.ShowModal;
-  finally
-    FreeAndNil(FrmSaneamentoIMendes);
+  if GetFiltroSaneamento(sFiltro) then
+  begin
+    MostraTelaProcessamento('Saneando tributação dos produtos...');
+
+    TTask.Run(
+    procedure()
+    var
+      bRealizada : boolean;
+      sMensgem : string;
+    begin
+      bRealizada := GetTributacaoEstoque(Form7.ibDataSet4,sFiltro,sMensgem);
+
+      TThread.Synchronize(TThread.CurrentThread,
+      procedure()
+      begin
+        FechaTelaProcessamento();
+
+        if bRealizada then
+        begin
+          MensagemSistema('Saneamento realizado com sucesso!');
+        end else
+        begin
+          MensagemSistema(sMensgem,msgAtencao);
+        end;
+      end);
+    end);
   end;
 end;
 

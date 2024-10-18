@@ -78,7 +78,7 @@ inherited FrmEstoque: TFrmEstoque
       end
     end
     inherited pgcFicha: TPageControl
-      ActivePage = tbsTags
+      ActivePage = tbsCadastro
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         OnShow = tbsCadastroShow
