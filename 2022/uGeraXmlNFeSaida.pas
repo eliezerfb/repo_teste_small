@@ -27,8 +27,8 @@ uses
   , ugeraxmlnfe
   , StrUtils
   , uSmallConsts
+  , uCalculaImpostos // Sandro Silva 2024-
 ;
-
 
 
 var
@@ -2811,7 +2811,7 @@ begin
 
       Form7.spdNFeDataSets.Campo('vServ_W18').Value   := FormatFloatXML(Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat); // Valor Total de serviços
 
-      {Sandro Silva 2024-10-14 inicio
+      {Sandro Silva 2024-10-14 inicio f-21199
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Close;
       Form7.ibDataSet14.SelectSQL.Clear;
@@ -3383,7 +3383,7 @@ begin
       end
       else
       begin
-        {Sandro Silva 2024-10-14 inicio
+        {Sandro Silva 2024-10-14 inicio f-21199
         if AllTrim(Form7.ibDataSet14.FieldByName('CST').AsString) <> '' then
         begin
           Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet14.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
@@ -3412,7 +3412,7 @@ begin
     if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
     begin
       sReg := Form7.ibDataSet14REGISTRO.AsString;
-      {Sandro Silva 2024-10-14 inicio
+      {Sandro Silva 2024-10-14 inicio f-21199
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Close;
       Form7.ibDataSet14.SelectSQL.Clear;
@@ -3427,7 +3427,7 @@ begin
       Form7.ibDataSet14.EnableControls;
     end else
     begin
-      {Sandro Silva 2024-10-14 inicio
+      {Sandro Silva 2024-10-14 inicio f-21199
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Close;
       Form7.ibDataSet14.SelectSQL.Clear;
@@ -3477,7 +3477,7 @@ begin
       if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
       begin
         sReg := Form7.ibDataSet14REGISTRO.AsString;
-        {Sandro Silva 2024-10-14 inicio
+        {Sandro Silva 2024-10-14 inicio f-21199
         Form7.ibDataSet14.DisableControls;
         Form7.ibDataSet14.Close;
         Form7.ibDataSet14.SelectSQL.Clear;
@@ -3491,7 +3491,7 @@ begin
         Form7.ibDataSet14.EnableControls;
       end else
       begin
-        {Sandro Silva 2024-10-14 inicio
+        {Sandro Silva 2024-10-14 inicio f-21199
         Form7.ibDataSet14.DisableControls;
         Form7.ibDataSet14.Close;
         Form7.ibDataSet14.SelectSQL.Clear;
@@ -4428,7 +4428,7 @@ begin
               if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
               begin
                 sReg := Form7.ibDataSet14REGISTRO.AsString;
-                {Sandro Silva 2024-10-14 inicio
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
@@ -4442,7 +4442,7 @@ begin
                 Form7.ibDataSet14.EnableControls;
               end else
               begin
-                {Sandro Silva 2024-10-14 inicio
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
@@ -4561,7 +4561,7 @@ begin
               if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
               begin
                 sReg := Form7.ibDataSet14REGISTRO.AsString;
-                {Sandro Silva 2024-10-14 inicio
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
@@ -4574,7 +4574,7 @@ begin
                 Form7.ibDataSet14.EnableControls;
               end else
               begin
-                {Sandro Silva 2024-10-14 inicio
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
@@ -4637,7 +4637,7 @@ begin
               if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
               begin
                 sReg := Form7.ibDataSet14REGISTRO.AsString;
-                {Sandro Silva 2024-10-14 inicio
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
@@ -4651,7 +4651,7 @@ begin
                 Form7.ibDataSet14.EnableControls;
               end else
               begin
-                {Sandro Silva 2024-10-14 inicio
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
@@ -4832,7 +4832,7 @@ begin
             if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
             begin
               sReg := Form7.ibDataSet14REGISTRO.AsString;
-              {Sandro Silva 2024-10-14 inicio
+              {Sandro Silva 2024-10-14 inicio f-21199
               Form7.ibDataSet14.DisableControls;
               Form7.ibDataSet14.Close;
               Form7.ibDataSet14.SelectSQL.Clear;
@@ -4846,7 +4846,7 @@ begin
               Form7.ibDataSet14.EnableControls;
             end else
             begin
-              {Sandro Silva 2024-10-14 inicio
+              {Sandro Silva 2024-10-14 inicio f-21199
               Form7.ibDataSet14.DisableControls;
               Form7.ibDataSet14.Close;
               Form7.ibDataSet14.SelectSQL.Clear;

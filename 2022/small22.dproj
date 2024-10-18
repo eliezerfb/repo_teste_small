@@ -396,12 +396,12 @@
         <DCCReference Include="units\uDuplicaProduto.pas"/>
         <DCCReference Include="interfaces\uIDuplicaOrcamento.pas"/>
         <DCCReference Include="units\uDuplicaOrcamento.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uFrenteSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uNFeSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uNFSeSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uNFeSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uNFSeSections.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uSmallComSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uEstoqueSections.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\uUsuarioSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uEstoqueSections.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uUsuarioSections.pas"/>
         <DCCReference Include="uFrmProdutosDevolucao.pas">
             <Form>FrmProdutosDevolucao</Form>
         </DCCReference>
@@ -591,6 +591,9 @@
         <DCCReference Include="units\ufrmRelatorioMovItensPeriodo.pas">
             <Form>frmRelatorioMovItensPeriodo</Form>
         </DCCReference>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uIMendesSections.pas"/>
+        <DCCReference Include="uCalculaImpostos.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

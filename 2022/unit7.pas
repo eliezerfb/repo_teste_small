@@ -2791,7 +2791,9 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uVisualizaCadastro
   , ufrmRelatorioMovItensPeriodo
   , ufrmRelatorioNotasFaltantes
-  , uFrmTelaProcessamento;
+  , uFrmTelaProcessamento
+  , uCalculaImpostos // Sandro Silva 2024-10-17
+  ;
 
 {$R *.DFM}
 
@@ -19065,7 +19067,7 @@ begin
             end;
 
             try
-              {Sandro Silva 2024-10-14
+              {Sandro Silva 2024-10-14 f-21199
               // Esse bloco não faz sentido existir porque logo abaixo define que sEstado é a UF do destinatário
 
               // Verifica se pode usar tributação interestadual
@@ -19227,7 +19229,7 @@ begin
 
                 Form7.ibDataSet16CST_IPI.AsString     := Form7.ibDataSet4CST_IPI.AsString;   // Cst do IPI no estoque
                 Form7.ibDataSet16CST_ICMS.AsString    := Form7.ibDataSet4CST.AsString;       // CST do ICMS no estoque
-                {Sandro Silva 2024-10-14 inicio}
+                {Sandro Silva 2024-10-14 inicio f-21199}
                 if (Form7.ibDataSet4ST.AsString <> '') and (Trim(Form7.ibDataSet4ST.AsString) = Trim(Form7.ibQuery14.FieldByName('ST').AsString)) then
                 begin
                   if Trim(Form7.ibQuery14.FieldByName('CST').AsString) <> '' then

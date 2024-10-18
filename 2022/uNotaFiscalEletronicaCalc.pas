@@ -30,7 +30,8 @@ type
 implementation
 
 uses Unit7, Mais, uFuncoesFiscais, StrUtils, uDialogs
-  , uLogSistema, uFuncoesRetaguarda;
+  , uLogSistema, uFuncoesRetaguarda
+  , uCalculaImpostos;
 
 procedure TNotaFiscalEletronicaCalc.CalculaCstPisCofins(DataSetNF, DataSetItens: TibDataSet);
 var
@@ -200,6 +201,9 @@ var
   i : integer;
   sEstado : string;
   IVAProd : Real;
+  sCSTProduto: String; // Sandro Silva 2024-10-17
+  sCSOSNProduto: String; // Sandro Silva 2024-10-17
+  iItemNF: TItemNFe; // Sandro Silva 2024-10-17
 begin
   LogSistema('Início TNotaFiscalEletronicaCalc.CalculaImpostos( 200', lgInformacao); // Sandro Silva 2024-04-16
 
@@ -325,6 +329,16 @@ begin
       sEstado          := Form7.ibDAtaset2ESTADO.AsString;
       IVAProd          := GetIVAProduto(IBQProduto.FieldByName('IDESTOQUE').AsInteger,sEstado, Form7.IBTransaction1);
 
+      {Sandro Silva (f-21199) 2024-10-17 inicio}
+      iItemNF := TItemNFe.Create;
+      CstComOrigemdoProdutoNaOperacao(oItem.Codigo, NotaFiscal.Operacao, iItemNF);
+      sCSTProduto := iItemNF.CST; // Somente as 2 últimas casas (00, 20, 30, 40, 41...)
+
+      CsosnComOrigemdoProdutoNaOperacao(oItem.Codigo, NotaFiscal.Operacao, iItemNF);
+      sCSOSNProduto := iItemNF.CSOSN;
+      iItemNF.Free;
+      {Sandro Silva (f-21199) 2024-10-17 fim}
+
       //CIT
       if AllTrim(IBQProduto.FieldByName('ST').AsString) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
       begin
@@ -349,6 +363,7 @@ begin
           NotaFiscal.Baseiss := NotaFiscal.Baseiss + (oItem.TOTAL * oItem.BASEISS / 100 );
           if oItem.BASE > 0 then
           begin
+            {Sandro Silva 2024-10-17 f-21199
             // NOTA DEVOLUCAO D E V
             //if ((Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') )) Mauricio Parizotto 2024-08-07
             if (( ( Form7.ibDAtaset13.FieldByname('CRT').AsString = '1' ) or (Form7.ibDAtaset13.FieldByname('CRT').AsString = '4')  ) and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') ))
@@ -360,6 +375,16 @@ begin
                                                                        (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '51') or
                                                                        (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '70') or
                                                                        (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '90')))
+            }
+            // NOTA DEVOLUCAO D E V
+            if ( ( StrToIntDef(Form7.ibDAtaset13.FieldByname('CRT').AsString, 0) in [1,4] ) and ( sCSOSNProduto = '900' ))
+            or ((not( StrToIntDef(Form7.ibDAtaset13.FieldByname('CRT').AsString, 0)  in [1, 4]) ) and (
+                                                                       (sCSTProduto = '00') or
+                                                                       (sCSTProduto = '10') or
+                                                                       (sCSTProduto = '20') or
+                                                                       (sCSTProduto = '51') or
+                                                                       (sCSTProduto = '70') or
+                                                                       (sCSTProduto = '90')))
             then
             begin
               NotaFiscal.Baseicm    := NotaFiscal.Baseicm  + Arredonda((oItem.TOTAL * oItem.BASE / 100 ),2);
@@ -423,6 +448,7 @@ begin
               //if IBQProduto.FieldByName('PIVA').AsFloat > 0 then Mauricio Parizotto 2024-09-11
               if IVAProd > 0 then
               begin
+                {Sandro Silva (f-21199) 2024-10-17 inicio
                 // NOTA DEVOLUCAO D E V
                 //if ((Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') )) Mauricio Parizotto 2024-08-07
                 if (( (Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') or (Form7.ibDAtaset13.FieldByname('CRT').AsString = '4') ) and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') ))
@@ -434,6 +460,18 @@ begin
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '51') or
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '70') or
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '90')))
+                }
+                // NOTA DEVOLUCAO D E V
+                if (( (Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') or (Form7.ibDAtaset13.FieldByname('CRT').AsString = '4') ) and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByname('CSOSN').AsString = '900') ))
+                or (( (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '4') ) and (
+                                                                           (sCSTProduto = '00') or
+                                                                           (sCSTProduto = '10') or
+                                                                           (sCSTProduto = '20') or
+                                                                           (sCSTProduto = '51') or
+                                                                           (sCSTProduto = '70') or
+                                                                           (sCSTProduto = '90')))
+
+                {Sandro Silva (f-21199) 2024-10-17 fim}
                 then
                 begin
                   vlBaseICMSItem := Arredonda(( ((oItem.IPI * oItem.TOTAL) / 100) * oItem.BASE / 100 ),2);
@@ -453,6 +491,7 @@ begin
                   begin
                     // VINICULAS
                     try
+                      {Sandro Silva 2024-10-17 f-21199
                       //NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * IBQProduto.fieldByName('PIVA').AsFloat ),2); // Rateio desconto Mauricio Parizotto 2024-09-11
                       NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * IVAProd ),2); // Rateio desconto
                       //NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * IBQProduto.FieldByname('PIVA').AsFloat),2); // Acumula Mauricio Parizotto 2024-09-11
@@ -462,10 +501,18 @@ begin
                       oItem.Vbcst           := Arredonda((oItem.Vbcst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * IVAProd ),2); // Rateio desconto
                       //oItem.Vicmsst         := Arredonda((oItem.Vicmsst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * IBQProduto.fieldByName('PIVA').AsFloat),2); Mauricio Parizotto 2024-09-11
                       oItem.Vicmsst         := Arredonda((oItem.Vicmsst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * IVAProd),2);
+                      }
+                      NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * IVAProd ),2); // Rateio desconto
+                      NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * IVAProd),2); // Acumula
+
+                      oItem.Vbcst           := Arredonda((oItem.Vbcst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * IVAProd ),2); // Rateio desconto
+                      oItem.Vicmsst         := Arredonda((oItem.Vicmsst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * IVAProd),2);
+                      {Sandro Silva 2024-10-17}
                     except
                     end;
                   end else
                   begin
+                    {Sandro Silva 2024-10-17 inicio f-21199
                     //NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100) * IBQProduto.fieldByName('PIVA').AsFloat ),2); Mauricio Parizotto 2024-09-11
                     NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100) * IVAProd ),2);
                     //NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * IBQProduto.fieldByName('PIVA').AsFloat),2); // Acumula Mauricio Parizotto 2024-09-11
@@ -475,6 +522,13 @@ begin
                     oItem.Vbcst           := Arredonda((oItem.Vbcst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100) * IVAProd),2);
                     //oItem.Vicmsst         := Arredonda((oItem.Vicmsst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * IBQProduto.fieldByName('PIVA').AsFloat),2); Mauricio Parizotto 2024-09-11
                     oItem.Vicmsst         := Arredonda((oItem.Vicmsst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * IVAProd),2);
+                    }
+                    NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100) * IVAProd ),2);
+                    NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * IVAProd),2); // Acumula
+
+                    oItem.Vbcst           := Arredonda((oItem.Vbcst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100) * IVAProd),2);
+                    oItem.Vicmsst         := Arredonda((oItem.Vicmsst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * IVAProd),2);
+                    {Sandro Silva 2024-10-17 fim}
                   end;
 
                   // Desconta do ICMS substituido o ICMS normal
@@ -515,6 +569,7 @@ begin
                 end;
               end else
               begin
+                {Sandro Silva (f-21199) 2024-10-17 inicio
                 // NOTA DEVOLUCAO D E V
                 //if ((Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByName('CSOSN').AsString = '900') )) Mauricio Parizotto 2024-08-07
                 if (( (Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') or (Form7.ibDAtaset13.FieldByname('CRT').AsString = '4') ) and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByName('CSOSN').AsString = '900') ))
@@ -526,6 +581,17 @@ begin
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '51') or
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '70') or
                                                                            (Copy(LimpaNumero(IBQProduto.FieldByname('CST').AsString)+'000',2,2) = '90')))
+                }
+                // NOTA DEVOLUCAO D E V
+                if (( (Form7.ibDAtaset13.FieldByname('CRT').AsString = '1') or (Form7.ibDAtaset13.FieldByname('CRT').AsString = '4') ) and ( (IBQProduto.FieldByname('CSOSN').AsString = '900') or (IBQIcm.FieldByName('CSOSN').AsString = '900') ))
+                or (( (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '1') and (Form7.ibDAtaset13.FieldByname('CRT').AsString <> '4') ) and (
+                                                                           (sCSTProduto = '00') or
+                                                                           (sCSTProduto = '10') or
+                                                                           (sCSTProduto = '20') or
+                                                                           (sCSTProduto = '51') or
+                                                                           (sCSTProduto = '70') or
+                                                                           (sCSTProduto = '90')))
+                {Sandro Silva (f-21199) 2024-10-17 fim}
                 then
                 begin
                   vlBaseICMSItem := Arredonda(( ((oItem.IPI * oItem.TOTAL) / 100) * oItem.BASE / 100 ),2);
@@ -736,14 +802,32 @@ begin
             sEstado          := Form7.ibDAtaset2ESTADO.AsString;
             IVAProd          := GetIVAProduto(IBQProduto.FieldByName('IDESTOQUE').AsInteger,sEstado, Form7.IBTransaction1);
 
-            // Sandro Silva 2023-05-19 if not ( IBQProduto.FieldByName('PIVA').AsFloat > 0 ) or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='70') or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='10') or (IBQProduto.FieldByname('CSOSN').AsString = '900') then
+            {Sandro Silva (f-21199) 2024-10-17 inicio}
+            iItemNF := TItemNFe.Create;
+            CstComOrigemdoProdutoNaOperacao(oItem.Codigo, NotaFiscal.Operacao, iItemNF);
+            sCSTProduto := iItemNF.CST; // Somente as 2 últimas casas (00, 20, 30, 40, 41...)
+
+            CsosnComOrigemdoProdutoNaOperacao(oItem.Codigo, NotaFiscal.Operacao, iItemNF);
+            sCSOSNProduto := iItemNF.CSOSN;
+            iItemNF.Free;
+            {Sandro Silva (f-21199) 2024-10-17 fim}
+
             //if not ( IBQProduto.FieldByName('PIVA').AsFloat > 0 ) Mauricio Parizotto 2024-09-11
+            {Sandro Silva (f-21199) 2024-10-17 inicio
             if not ( IVAProd > 0 )
                     or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='10')
                     or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='70')
                     or (Copy(IBQProduto.FieldByname('CST').AsString,2,2)='90') // Sandro Silva 2023-05-19
                     or (IBQProduto.FieldByname('CSOSN').AsString = '900')
                     then
+            }
+            if not ( IVAProd > 0 )
+                    or (sCSTProduto = '10')
+                    or (sCSTProduto = '70')
+                    or (sCSTProduto = '90') // Sandro Silva 2023-05-19
+                    or (sCSOSNProduto = '900')
+                    then
+            {Sandro Silva (f-21199) 2024-10-17 fim}
             begin
               //if (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '1') Mauricio Parizotto 2024-08-07
               if ( (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '1') and (LimpaNumero(Form7.ibDAtaset13.FieldByname('CRT').AsString) <> '4') )

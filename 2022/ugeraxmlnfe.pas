@@ -31,8 +31,10 @@ uses
   , unit29
   , unit12
   , Mais
+  , ucalculaimpostos
 ;
 
+{Sandro Silva 2024-10-17 movido para ucalculaimpostos
 type
   TItemNFe = class
   private
@@ -46,19 +48,20 @@ type
     property Origem: String read FOrigem write FOrigem;
     property CST: String read FCST write FCST;
   end;
-
+}
 
   function GeraXmlNFe: String;
+{Sandro Silva 2024-10-17 movido para ucalculaimpostos
   procedure CstComOrigemdoProdutoNaOperacao(sCodigo: String;
     sOperacao: String; ItemNF: TItemNFe);
   procedure CsosnComOrigemdoProdutoNaOperacao(sCodigo: String;
     sOperacao: String; ItemNF: TItemNFe);
+}
 
 implementation
 
 uses uGeraXmlNFeEntrada, uGeraXmlNFeSaida, uDialogs, uFuncoesRetaguarda,
   uSmallConsts;
-
 
 function GeraXmlNFe: String;
 var
@@ -265,6 +268,7 @@ begin
   end;
 end;
 
+(* Sandro Silva 2024-10-17 movido para ucalculaimpostos
 procedure CstComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
   ItemNF: TItemNFe);
 var
@@ -401,6 +405,6 @@ begin
     FreeAndNil(IBQICM);
   end;
 end;
-
+*)
 
 end.
