@@ -25,11 +25,11 @@ inherited FrmIntegracaoIMendes: TFrmIntegracaoIMendes
       object Label1: TLabel
         Left = 17
         Top = 20
-        Width = 512
+        Width = 493
         Height = 13
         Caption = 
-          'Baseado no c'#243'digo de barras, esse assistente retornar'#225' automatic' +
-          'amente as principais informa'#231#245'es referente'
+          'Baseado no c'#243'digo de barras ou na descri'#231#227'o do produto, esse ass' +
+          'istente retornar'#225' automaticamente as'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -40,11 +40,11 @@ inherited FrmIntegracaoIMendes: TFrmIntegracaoIMendes
       object Label2: TLabel
         Left = 17
         Top = 38
-        Width = 490
+        Width = 523
         Height = 13
         Caption = 
-          #224' tributa'#231#227'o dos produtos (NCM, CEST, CST PIS/COFINS, % PIS, % C' +
-          'OFINS,  CST IPI, % IPI, % ICMS, '
+          'principais informa'#231#245'es referente '#224' tributa'#231#227'o dos produtos (NCM,' +
+          ' CEST, CST PIS/COFINS, % PIS, % COFINS, '
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -55,9 +55,9 @@ inherited FrmIntegracaoIMendes: TFrmIntegracaoIMendes
       object Label3: TLabel
         Left = 17
         Top = 57
-        Width = 135
+        Width = 251
         Height = 13
-        Caption = 'CST/CSOSN, % IVA e FCP).'
+        Caption = 'CST IPI, % IPI, % ICMS, CST/CSOSN, % IVA e FCP).'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -436,7 +436,7 @@ inherited FrmIntegracaoIMendes: TFrmIntegracaoIMendes
         ParentBackground = False
         TabOrder = 0
       end
-      object BitBtn1: TBitBtn
+      object btnSimulador: TBitBtn
         Left = 346
         Top = 142
         Width = 100
@@ -450,7 +450,7 @@ inherited FrmIntegracaoIMendes: TFrmIntegracaoIMendes
         Font.Style = []
         ParentFont = False
         TabOrder = 1
-        OnClick = BitBtn1Click
+        OnClick = btnSimuladorClick
       end
       object btnsOK: TBitBtn
         Left = 438

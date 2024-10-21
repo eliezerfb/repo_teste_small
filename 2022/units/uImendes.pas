@@ -18,20 +18,25 @@ type TPesquisaImendes = (tpCodigo, tpEAN);
   function GetCitTribIMendes(AliqICMS, BcIcms : double; CFOP, UF : string; Transaction : TIBTransaction):string;
   function GetSeqCitIMendes(Transaction : TIBTransaction):string;
   function LimpaCaracteresEspeciaisIM(sTexto:string):string;
+  function GetProdutosDevolvidos(sCNPJ:string; out sMensagem : string; Transaction : TIBTransaction):boolean;
+  function RemoveDevolvidos(sCNPJ:string; Produtos : TArray<TProdDevolvidos> ):boolean;
+  function GetProdutosPendentes(sCNPJ,sUF:string; out sFiltro, sMensagem : string):boolean;
 
   
 implementation
 
+uses uFrmTelaProcessamento;
+
 function ProdutosDescricaoImendes(sCNPJ,sDescricao : string): TArray<TProdutoImendes>;
 var
-  ConsultaProdDesc : TConsultaProdDesc;
+  ConsultaProdDesc : TConsultaEnvDados;
   RetConsultaProdDesc : TRetConsultaProdDesc;
   sJson, sJsonRet : string;
 begin
   Result := nil;
 
   try
-    ConsultaProdDesc := TConsultaProdDesc.Create;
+    ConsultaProdDesc := TConsultaEnvDados.Create;
     ConsultaProdDesc.NomeServico := 'DESCRPRODUTOS';
     ConsultaProdDesc.Dados       := sCNPJ + '|'+ sDescricao;
     sJson := TJson.ObjectToJsonString(ConsultaProdDesc);
@@ -208,7 +213,7 @@ var
   bEanValido : boolean;
 
   {$Region'//// EnviaPacoteRequest ////'}
-  procedure EnviaPacoteRequest;
+  procedure EnviaPacoteRequest(sProgresso : string);
     var
       i, iGrupo, iProduto, iImendes : integer;
       sJson, sJsonRet : string;
@@ -229,6 +234,10 @@ var
       SetLength(ProdutoArray,0);
     end;
 
+    //Atualiza status processamento
+    AtualizaStatusProc('Consultando tributação ',
+                       sProgresso);
+
     //Envia requisição API
     if EnviaRequisicaoIMendes(rmPOST,
                              'RegrasFiscais',
@@ -236,6 +245,10 @@ var
                              sJsonRet) then
     begin
       try
+        //Atualiza status processamento
+        AtualizaStatusProc('Atribuindo tributação aos produtos ',
+                           sProgresso);
+
         RetTributacaoIMendesDTO := TJson.JsonToObject<TRetTributacaoIMendesDTO>(sJsonRet);
 
         if RetTributacaoIMendesDTO.Grupo <> nil then
@@ -351,8 +364,8 @@ begin
       {$Region'//// Consulta produtos para enviar ////'}
       qryProduto := CriaIBQuery(ibdEstoque.Transaction);
       qryProduto.SQL.Text := sSQL;
-      qryProduto.FetchAll;
       qryProduto.Open;
+      qryProduto.FetchAll;
 
       while not qryProduto.Eof do
       begin
@@ -385,7 +398,17 @@ begin
         if (qryProduto.Eof)
           or (Length(ProdutoArray) >= 1000) then
         begin
-          EnviaPacoteRequest;
+          var
+            sAtual, sTotal : string;
+
+          if qryProduto.Eof then
+            sAtual := IntToStr(qryProduto.RecNo)
+          else
+            sAtual := IntToStr(qryProduto.RecNo-1);
+
+          sTotal := qryProduto.RecordCount.ToString;
+
+          EnviaPacoteRequest(sAtual+'/'+sTotal);
         end;
       end;
       {$Endregion}
@@ -636,7 +659,8 @@ begin
     sSeq   := sLetra+Copy(sSeq,2,2);
 
     //Verifica se já esta em uso
-    if ExecutaComandoEscalar(Transaction,' Select Count(*) From ICM'+
+    if ExecutaComandoEscalar(Transaction,' Select Count(*)'+
+                                         ' From ICM'+
                                          ' Where ST ='+QuotedStr(sSeq)) > 0 then
       sSeq := GetSeqCitIMendes(Transaction);
 
@@ -659,6 +683,176 @@ begin
   sTexto := StringReplace(sTexto,'|',' ',[rfReplaceAll]);
 
   Result := sTexto;
+end;
+
+function GetProdutosDevolvidos(sCNPJ:string; out sMensagem : string; Transaction : TIBTransaction):boolean;
+var
+  ConsultaProdDesc : TConsultaEnvDados;
+  RetDevolvidos : TRetDevolvidosDTO;
+  sJson, sJsonRet : string;
+  sFiltroCodigo, sFiltroEan, sCodEAN : string;
+  i: Integer;
+begin
+  Result := False;
+
+  try
+    ConsultaProdDesc := TConsultaEnvDados.Create;
+    ConsultaProdDesc.NomeServico := 'HISTORICOACESSO';
+    ConsultaProdDesc.Dados       := sCNPJ;
+    sJson := TJson.ObjectToJsonString(ConsultaProdDesc);
+
+    if EnviaRequisicaoIMendes(rmPOST,
+                             'EnviaRecebeDados',
+                             sJson,
+                             sJsonRet) then
+    begin
+      try
+        RetDevolvidos := TJson.JsonToObject<TRetDevolvidosDTO>(sJsonRet);
+
+        sFiltroCodigo := QuotedStr('XYZ');
+        sFiltroEan    := QuotedStr('XYZ');
+
+        for i := Low(RetDevolvidos.ProdDevolvidos) to High(RetDevolvidos.ProdDevolvidos) do
+        begin
+          if RetDevolvidos.ProdDevolvidos[i].CodInterno = 'S' then
+          begin
+            sFiltroCodigo := sFiltroCodigo + ','+QuotedStr(RetDevolvidos.ProdDevolvidos[i].Codigo);
+          end else
+          begin
+            sCodEAN       := RetDevolvidos.ProdDevolvidos[i].Codigo;
+            sFiltroEan    := sFiltroEan + ','+QuotedStr(sCodEAN);
+
+            if Copy(sCodEAN,1,1) = '0' then
+            begin
+              Delete(sCodEAN,1,1);
+              sFiltroEan    := sFiltroEan + ','+QuotedStr(sCodEAN);
+            end;
+          end;
+        end;
+
+        if Length(RetDevolvidos.ProdDevolvidos) > 0 then
+        begin
+          //Marca rejeitados
+          ExecutaComando(' Update ESTOQUE '+
+                         '   set STATUS_TRIBUTACAO ='+QuotedStr(_cStatusImendesRejeitado)+
+                         ' Where STATUS_TRIBUTACAO = '+QuotedStr(_cStatusImendesPendente)+
+                         '   and ( CODIGO IN ('+sFiltroCodigo+')  or REFERENCIA IN ('+sFiltroEan+') )',
+                         Transaction);
+
+          //Remove Devolvidos
+          if RemoveDevolvidos(sCNPJ,RetDevolvidos.ProdDevolvidos) then
+            Result := True;
+        end;
+      finally
+        FreeAndNil(RetDevolvidos);
+      end;
+    end else
+    begin
+      sMensagem := 'Falha ao consultar informações.';
+    end;
+  finally
+    FreeAndNil(ConsultaProdDesc);
+  end;
+end;
+
+
+function RemoveDevolvidos(sCNPJ:string; Produtos : TArray<TProdDevolvidos> ):boolean;
+var
+  ConsultaProdDesc : TConsultaEnvDados;
+  sJson, sJsonRet, sIds : string;
+  i: Integer;
+begin
+  Result := False;
+
+  for I := Low(Produtos) to High(Produtos) do
+  begin
+    sIds := sIds + ',{ \"id\": '+Produtos[i].Id.tostring+' }';
+  end;
+
+  Delete(sIds,1,1);
+
+  try
+    ConsultaProdDesc := TConsultaEnvDados.Create;
+    ConsultaProdDesc.NomeServico := 'REMOVEDEVOLVIDOS';
+    ConsultaProdDesc.Dados       := '{ \"cnpj\": \"'+sCNPJ+'\",\"produtos\": [ '+sIds+' ] }';
+    sJson := TJson.ObjectToJsonString(ConsultaProdDesc);
+    sJson := StringReplace(sJson,'\\\','\',[rfReplaceAll]);
+
+    if EnviaRequisicaoIMendes(rmPOST,
+                             'EnviaRecebeDados',
+                             sJson,
+                             sJsonRet) then
+    begin
+      Result := True;
+    end;
+  finally
+    FreeAndNil(ConsultaProdDesc);
+  end;
+end;
+
+function GetProdutosPendentes(sCNPJ,sUF:string; out sFiltro, sMensagem : string):boolean;
+var
+  ConsultaProdDesc : TConsultaEnvDados;
+  sJson, sJsonRet : string;
+  sFiltroCodigo, sFiltroEan, sCodEAN : string;
+  RetPendentesDTO : TRetPendentesDTO;
+  i : integer;
+begin
+  Result := False;
+
+  try
+    ConsultaProdDesc := TConsultaEnvDados.Create;
+    ConsultaProdDesc.NomeServico := 'ALTERADOS';
+    ConsultaProdDesc.Dados       := sCNPJ+'|'+sUF+'|1000';
+    sJson := TJson.ObjectToJsonString(ConsultaProdDesc);
+
+    if EnviaRequisicaoIMendes(rmPOST,
+                             'EnviaRecebeDados',
+                             sJson,
+                             sJsonRet) then
+    begin
+      try
+        RetPendentesDTO := TJson.JsonToObject<TRetPendentesDTO>(sJsonRet);
+
+        if RetPendentesDTO.Cabecalho.ProdutosRetornados > 0 then
+        begin
+          sFiltroCodigo := QuotedStr('XYZ');
+          sFiltroEan    := QuotedStr('XYZ');
+
+          for I := Low(RetPendentesDTO.Produto) to High(RetPendentesDTO.Produto) do
+          begin
+            if RetPendentesDTO.Produto[i].CodigoInterno = 'S' then
+            begin
+              sFiltroCodigo := sFiltroCodigo + ','+QuotedStr(RetPendentesDTO.Produto[i].Codigo);
+            end else
+            begin
+              sCodEAN       := RetPendentesDTO.Produto[i].Codigo;
+              sFiltroEan    := sFiltroEan + ','+QuotedStr(sCodEAN);
+
+              if Copy(sCodEAN,1,1) = '0' then
+              begin
+                Delete(sCodEAN,1,1);
+                sFiltroEan    := sFiltroEan + ','+QuotedStr(sCodEAN);
+              end;
+            end;
+          end;
+
+          sFiltro := ' and ( CODIGO IN ('+sFiltroCodigo+')  or REFERENCIA IN ('+sFiltroEan+') )';
+          Result := True;
+        end else
+        begin
+          sMensagem := 'Nenhum produto pendente retornado.';
+        end;
+      finally
+        FreeAndNil(RetPendentesDTO);
+      end;
+    end else
+    begin
+      sMensagem := 'Falha ao consultar produtos pendentes.';
+    end;
+  finally
+    FreeAndNil(ConsultaProdDesc);
+  end;
 end;
 
 end.

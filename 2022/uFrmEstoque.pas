@@ -4559,6 +4559,9 @@ begin
   if sStatusImendes = _cStatusImendesPendente then
     lblStatusImendes.Font.Color := $00FD6102;
 
+  if sStatusImendes = _cStatusImendesRejeitado then
+    lblStatusImendes.Font.Color := $004080FF;
+
   btnConsultarTrib.Visible := DSCadastro.DataSet.FieldByName('TIPO_ITEM').AsString <> '09';
   pnlImendes.Visible       := (DSCadastro.DataSet.FieldByName('TIPO_ITEM').AsString <> '09') and (TSistema.GetInstance.ModuloImendes);
 end;

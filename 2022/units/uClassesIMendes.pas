@@ -72,7 +72,7 @@ type
 
 //Consulta Descrição
 type
-  TConsultaProdDesc = class
+  TConsultaEnvDados = class
   private
     FDados: string;
     FNomeServico: string;
@@ -335,6 +335,129 @@ type
     destructor Destroy; override;
   end;
 
+
+  //Pendentes
+  type
+  TProdutoPendente = class
+  private
+    FCodigo: string;
+    FCodigoInterno: string;
+    [SuppressZero]
+    FDtrev: TDateTime;
+    [SuppressZero]
+    FDtultcons: TDateTime;
+  published
+    property Codigo: string read FCodigo write FCodigo;
+    property CodigoInterno: string read FCodigoInterno write FCodigoInterno;
+    property Dtrev: TDateTime read FDtrev write FDtrev;
+    property Dtultcons: TDateTime read FDtultcons write FDtultcons;
+  end;
+
+  TCabecalhoPendente = class
+  private
+    FCNPJ: string;
+    FMensagem: string;
+    FProdutosRetornados: Integer;
+    FUF: string;
+  published
+    property CNPJ: string read FCNPJ write FCNPJ;
+    property Mensagem: string read FMensagem write FMensagem;
+    property ProdutosRetornados: Integer read FProdutosRetornados write FProdutosRetornados;
+    property UF: string read FUF write FUF;
+  end;
+
+  TRetPendentesDTO = class
+  private
+    FCabecalho: TCabecalhoPendente;
+    [JSONName('produto'), JSONMarshalled(False)]
+    FProduto: TArray<TProdutoPendente>;
+  published
+    property Cabecalho: TCabecalhoPendente read FCabecalho;
+    property Produto: TArray<TProdutoPendente> read FProduto write FProduto;
+  public
+    destructor Destroy; override;
+  end;
+
+  //Devolvidos
+  type
+  TProdDevolvidos = class
+  private
+    FCodInterno: string;
+    FCodigo: string;
+    FDescricao: string;
+    [SuppressZero]
+    FDtdevolucao: TDateTime;
+    [SuppressZero]
+    FDtinclusao: TDateTime;
+    FId: Int64;
+    FMotivodevolucao: string;
+  published
+    property CodInterno: string read FCodInterno write FCodInterno;
+    property Codigo: string read FCodigo write FCodigo;
+    property Descricao: string read FDescricao write FDescricao;
+    property Dtdevolucao: TDateTime read FDtdevolucao write FDtdevolucao;
+    property Dtinclusao: TDateTime read FDtinclusao write FDtinclusao;
+    property Id: Int64 read FId write FId;
+    property Motivodevolucao: string read FMotivodevolucao write FMotivodevolucao;
+  end;
+
+  TDetalhes = class
+  private
+    [SuppressZero]
+    FData: TDateTime;
+    FEnviados: Integer;
+    FMetodo: string;
+    FMsg: string;
+    FRequisicoes: Integer;
+    FRetornados: Integer;
+  published
+    property Data: TDateTime read FData write FData;
+    property Enviados: Integer read FEnviados write FEnviados;
+    property Metodo: string read FMetodo write FMetodo;
+    property Msg: string read FMsg write FMsg;
+    property Requisicoes: Integer read FRequisicoes write FRequisicoes;
+    property Retornados: Integer read FRetornados write FRetornados;
+  end;
+
+  TResumo = class
+  private
+    [SuppressZero]
+    FDataPrimeiroConsumo: TDateTime;
+    [SuppressZero]
+    FDataUltimoConsumo: TDateTime;
+    [SuppressZero, JSONName('produtosPendentes_DataInicio')]
+    FProdutosPendentesDataInicio: TDateTime;
+    [JSONName('produtosPendentes_Devolvidos')]
+    FProdutosPendentesDevolvidos: Integer;
+    [JSONName('produtosPendentes_EAN')]
+    FProdutosPendentesEAN: Integer;
+    [JSONName('produtosPendentes_Interno')]
+    FProdutosPendentesInterno: Integer;
+  published
+    property DataPrimeiroConsumo: TDateTime read FDataPrimeiroConsumo write FDataPrimeiroConsumo;
+    property DataUltimoConsumo: TDateTime read FDataUltimoConsumo write FDataUltimoConsumo;
+    property ProdutosPendentesDataInicio: TDateTime read FProdutosPendentesDataInicio write FProdutosPendentesDataInicio;
+    property ProdutosPendentesDevolvidos: Integer read FProdutosPendentesDevolvidos write FProdutosPendentesDevolvidos;
+    property ProdutosPendentesEAN: Integer read FProdutosPendentesEAN write FProdutosPendentesEAN;
+    property ProdutosPendentesInterno: Integer read FProdutosPendentesInterno write FProdutosPendentesInterno;
+  end;
+
+  TRetDevolvidosDTO = class
+  private
+    [JSONName('detalhes'), JSONMarshalled(False)]
+    FDetalhes: TArray<TDetalhes>;
+    [JSONName('prodDevolvidos'), JSONMarshalled(False)]
+    FProdDevolvidos: TArray<TProdDevolvidos>;
+    FResumo: TResumo;
+  published
+    property Detalhes: TArray<TDetalhes> read FDetalhes write FDetalhes;
+    property ProdDevolvidos: TArray<TProdDevolvidos> read FProdDevolvidos write FProdDevolvidos;
+    property Resumo: TResumo read FResumo;
+  public
+    destructor Destroy; override;
+  end;
+
+
 implementation
 
 { TRoot }
@@ -395,6 +518,44 @@ begin
 
   inherited;
 end;
+
+{ TRetPendentesDTO }
+
+destructor TRetPendentesDTO.Destroy;
+var
+  i : integer;
+begin
+  FreeAndNil(FCabecalho);
+
+  for I := Low(FProduto) to High(FProduto) do
+  begin
+    FreeAndNil(FProduto[i]);
+  end;
+
+  inherited;
+end;
+
+{ TRetDevolvidosDTO }
+
+destructor TRetDevolvidosDTO.Destroy;
+var
+  i : integer;
+begin
+  FreeAndNil(FResumo);
+
+  for I := Low(FDetalhes) to High(FDetalhes) do
+  begin
+    FreeAndNil(FDetalhes[i]);
+  end;
+
+  for I := Low(FProdDevolvidos) to High(FProdDevolvidos) do
+  begin
+    FreeAndNil(FProdDevolvidos[i]);
+  end;
+
+  inherited;
+end;
+
 
 end.
 

@@ -29,7 +29,7 @@ inherited FrmEstoque: TFrmEstoque
           Caption = 'Consultado'
           Color = clBtnHighlight
           Font.Charset = ANSI_CHARSET
-          Font.Color = 16605442
+          Font.Color = 4227327
           Font.Height = -11
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []

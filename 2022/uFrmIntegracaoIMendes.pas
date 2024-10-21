@@ -35,7 +35,7 @@ type
     Label12: TLabel;
     Label13: TLabel;
     Panel2: TPanel;
-    BitBtn1: TBitBtn;
+    btnSimulador: TBitBtn;
     Label14: TLabel;
     Label15: TLabel;
     Label16: TLabel;
@@ -46,7 +46,7 @@ type
     SaveDialog: TSaveDialog;
     procedure btnOKClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure BitBtn1Click(Sender: TObject);
+    procedure btnSimuladorClick(Sender: TObject);
     procedure btnGeraSimulacaoClick(Sender: TObject);
     procedure btnSanearClick(Sender: TObject);
     procedure btnSincronizarClick(Sender: TObject);
@@ -68,7 +68,7 @@ uses unit7, uFuncoesBancoDados, uClassesIMendes, smallfunc_xe,
   uFrmTelaProcessamento, uDialogs, uFuncoesRetaguarda, uValidaRecursos,
   uTypesRecursos, MAIS, uSistema, uFrmSaneamentoIMendes;
 
-procedure TFrmIntegracaoIMendes.BitBtn1Click(Sender: TObject);
+procedure TFrmIntegracaoIMendes.btnSimuladorClick(Sender: TObject);
 begin
   ShellExecute(0, 'Open',pChar('https://smallsoft.com.br/contador/click.php?id=imendes2024')
                ,'', '', SW_SHOWMAXIMIZED);
@@ -176,6 +176,7 @@ begin
         if bRealizada then
         begin
           MensagemSistema('Saneamento realizado com sucesso!');
+          AgendaCommit(true);
         end else
         begin
           MensagemSistema(sMensgem,msgAtencao);
@@ -192,6 +193,56 @@ begin
     Form1.MensagemRecursoIndisponivel('Integração IMendes não está disponível para esta licença');
     Exit;
   end;
+
+  MostraTelaProcessamento('Consultando produtos pendentes');
+
+  TTask.Run(
+  procedure()
+  var
+    bRealizada : boolean;
+    sFiltro, sMensagem : string;
+  begin
+    bRealizada := False;
+
+    //Devolvidos
+    if GetProdutosDevolvidos(LimpaNumero(Form7.ibDataSet13CGC.AsString),
+                             sMensagem,
+                             Form7.IBTransaction1) then
+    begin
+      bRealizada := True;
+    end;
+
+    //Pendentes
+    if GetProdutosPendentes(LimpaNumero(Form7.ibDataSet13CGC.AsString),
+                            Form7.ibDataSet13ESTADO.AsString,
+                            sFiltro,
+                            sMensagem) then
+    begin
+      AtualizaStatusProc('Saneando produtos pendentes', '');
+
+      if GetTributacaoEstoque(Form7.ibDataSet4,
+                              sFiltro,
+                              sMensagem) then
+      begin
+        bRealizada := True;
+      end;
+    end;
+
+    TThread.Synchronize(TThread.CurrentThread,
+    procedure()
+    begin
+      FechaTelaProcessamento();
+
+      if bRealizada then
+      begin
+        MensagemSistema('Atualização realizado com sucesso!');
+        AgendaCommit(true);
+      end else
+      begin
+        MensagemSistema(sMensagem,msgAtencao);
+      end;
+    end);
+  end);
 end;
 
 procedure TFrmIntegracaoIMendes.FormCreate(Sender: TObject);
