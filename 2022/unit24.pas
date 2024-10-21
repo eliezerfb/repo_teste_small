@@ -1541,7 +1541,28 @@ begin
                           //Sandro Silva 2024-09-27 Form7.ibDataSet4.Post;
                         end;
                       end;
+                    {Sandro Silva (f-21327) 2024-10-21 inicio}
+                    end
+                    else
+                    begin
+                      // Quando o Valor Unitário está zerado no xml
 
+                      if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then // Sandro Silva 2024-09-27
+                        Form7.ibDataSet4.Edit;
+
+                      Form7.ibDataSet4QTD_COMPRA.AsFloat    := Form7.ibDataSet4QTD_COMPRA.AsFloat + Form7.ibDataSet23QUANTIDADE.Asfloat;
+
+                      Form7.ibDataSet4FORNECEDOR.ReadOnly   := False;
+                      Form7.ibDataSet4FORNECEDOR.AsString   := Form7.ibDataSet24FORNECEDOR.AsString;
+                      Form7.ibDataSet4FORNECEDOR.ReadOnly   := True;
+
+                      Form7.ibDataSet4ULT_COMPRA.AsDateTime := Form7.ibDataSet24EMISSAO.AsDateTime;
+                      Form7.ibDataSet4ALTERADO.AsString     := '0';
+
+                      Form7.ibDataSet23CUSTO.AsFloat    := 0.00;
+                      Form7.ibDataSet23UNITARIO.AsFloat := 0.00;
+                      Form7.ibDataSet23TOTAL.AsFloat    := 0.00;
+                    {Sandro Silva (f-21327) 2024-10-21 fim}
                     end;
                   except
                     on E: Exception do
