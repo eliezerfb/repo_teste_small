@@ -154,7 +154,7 @@ type
 function CertificadoPertenceAoEmitente(sSubjectName: String;
   sCNPJEmitente: String): Boolean;
 procedure LogFrente(sTexto: String; sDiretorioAtual: String);
-procedure ConectaIBDataBase(IBDATABASE: TIBDatabase; CaminhoBanco: PAnsiChar);
+procedure ConectaIBDataBase(IBDATABASE: TIBDatabase; CaminhoBanco: PAnsiChar); // Sandro Silva 2024-10-17 procedure ConectaIBDataBase(IBDATABASE: TIBDatabase; CaminhoBanco: String);
 procedure FechaIBDataBase(IBDATABASE: TIBDatabase);
 function DadosEmitente(IBTransaction:  TIBTransaction;
   DiretorioAtual: String): TEmitente;
@@ -218,7 +218,7 @@ function BXConsultarRecibo(Emitente: TEmitente; IBTransaction: TIBTransaction;
 procedure BXRestaurarArquivos(IBTransaction1: TIBTransaction;
   DiretorioAtual: String; sTipo: String;
   sSerieECF: String; bApenasUltimo: Boolean = False);
-function BXValidaCertificadoDigital(sCNPJ: String): Boolean;
+function BXValidaCertificadoDigital(sCNPJ: PAnsiChar): Boolean; // Sandro Silva 2024-10-21 function BXValidaCertificadoDigital(sCNPJ: String): Boolean;
 function CNAEDispensadoEnvioEstoque: Boolean;
 function BXSelecionarCertificadoDigital: String;
 function BXValidaFalhaNaGeracaoXML(Emitente: TEmitente; IBTransaction1: TIBTransaction): Boolean;
@@ -530,7 +530,7 @@ begin
   //ShowMessage('Abrindo banco 692'); // Sandro Silva 2018-09-17
   //LogFrente('Abrindo banco 692', CaminhoBanco);
 
-  ShowMessage('Caminho banco ' + CaminhoBanco);//
+//Sandro Silva 2024-10-21  ShowMessage('Caminho banco ' + CaminhoBanco);//
 
   IBDATABASE.DatabaseName := String(CaminhoBanco);
   try
@@ -4988,7 +4988,7 @@ begin
 
 end;
 
-function BXValidaCertificadoDigital(sCNPJ: String): Boolean;
+function BXValidaCertificadoDigital(sCNPJ: PAnsiChar): Boolean; //Sandro Silva 2024-10-21 function BXValidaCertificadoDigital(sCNPJ: String): Boolean;
 var
   BXReducaoZ: TBlocoXReducaoZ;
 begin
@@ -5002,6 +5002,14 @@ begin
     if BXReducaoZ.CertificadoSubjectName <> '' then
     begin
 
+      {
+      if AnsiContainsText(BXReducaoZ.CertificadoSubjectName, Copy(LimpaNumero(AnsiString(sCNPJ)), 1, 8)) then
+        ShowMessage('Ok')
+      else
+        ShowMessage('CNPJ certificado "' + sCNPJ + '"'+ #13 +
+          BXReducaoZ.CertificadoSubjectName
+          );//2024-10-21
+      }
       if (AnsiContainsText(BXReducaoZ.CertificadoSubjectName, Copy(LimpaNumero({EMITENTE.CNPJ}sCNPJ), 1, 8)) = False) then
       begin
         Application.ProcessMessages;

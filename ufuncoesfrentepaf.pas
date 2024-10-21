@@ -296,7 +296,7 @@ end;
 function TSmallBlocoX.ValidaCertificadoDigital(sCNPJ: String): Boolean;
 begin
   if FLoad = False then
-    Result := BXValidaCertificadoDigital(sCNPJ)
+    Result := BXValidaCertificadoDigital(PAnsiChar(sCNPJ)) // Sandro Silva 2024-10-21 Result := BXValidaCertificadoDigital(sCNPJ)
   else
     Result := _ValidaCertificadoDigitalBlocoX(PAnsiChar(AnsiString(sCNPJ)));
 end;

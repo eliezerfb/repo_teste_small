@@ -492,7 +492,7 @@ begin
   Screen.Cursor := crHourGlass;
 
   try
-    Result := BXValidaCertificadoDigital(sCNPJ);
+    Result := BXValidaCertificadoDigital(Pansichar(sCNPJ)); // Sandro Silva 2024-10-21 Result := BXValidaCertificadoDigital(sCNPJ);
   except
 
   end;
