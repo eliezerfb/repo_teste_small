@@ -3835,7 +3835,6 @@ begin
       end;
     end;
 
-
     if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10' then
     begin
       // St 10
@@ -3888,7 +3887,6 @@ begin
 
       Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('ICM').AsFloat); // Alíquota do ICMS em Percentual
       Form7.spdNFeDataSets.Campo('vICMSOp_N16a').Value  := FormatFloatXML(Arredonda2( (Form7.ibDataSet16.FieldByname('ICM').AsFloat*(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase )/100*Form7.ibDataSet16.FieldByname('BASE').AsFloat/100) ,2));
-
 
       {Sandro Silva 2024-10-18 inicio
       // Tag OBS no ICMS <pDIF>33,33</pDIF>
@@ -4305,7 +4303,7 @@ begin
       Abort;
 
     end;
-AJUSTAR CSOSN
+
     // CSOSN 101
     if Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '101' then
     begin
@@ -4327,6 +4325,7 @@ AJUSTAR CSOSN
       Form7.spdNFeDataSets.Campo('pCredSN_N29').VAlue      := FormatFloatXML(fAliquota); // Aliquota aplicave de cálculo de crédito (Simples Nacional)
       Form7.spdNFeDataSets.Campo('vCredICMSSN_N30').VAlue  := FormatFloatXML(((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)) * fAliquota / 100); // VAlor de crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)
     end;
+
     // CSOSN 102, 103, 300, 400
     if (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '102')
     or (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '103')
