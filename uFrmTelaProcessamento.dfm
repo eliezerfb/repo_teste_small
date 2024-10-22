@@ -54,6 +54,7 @@ object FrmTelaProcessamento: TFrmTelaProcessamento
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
+      WordWrap = True
     end
     object imgGif: TImage
       Left = 128
@@ -216,6 +217,22 @@ object FrmTelaProcessamento: TFrmTelaProcessamento
         6CBF9B1061F705C17B8CB76ABDC7F1C827C472B62CBC0701CD68AD218C766961
         C103B2D73F8500003B}
     end
+    object lblInformacao2: TLabel
+      Left = 4
+      Top = 264
+      Width = 310
+      Height = 21
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Processando informa'#231#245'es...'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      WordWrap = True
+    end
     object Panel2: TPanel
       Left = 33
       Top = 160
@@ -226,5 +243,10 @@ object FrmTelaProcessamento: TFrmTelaProcessamento
       ParentBackground = False
       TabOrder = 0
     end
+  end
+  object TimerAtu: TTimer
+    OnTimer = TimerAtuTimer
+    Left = 16
+    Top = 16
   end
 end
