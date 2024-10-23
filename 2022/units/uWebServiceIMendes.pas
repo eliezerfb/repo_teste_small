@@ -84,6 +84,7 @@ begin
     FRESTRequest.Execute;
     GravaLogIMendes('Retorno '+Endpoint+' : '+FRESTRequest.Response.Content);
   except
+    GravaLogIMendes('Retorno '+Endpoint+' : '+FRESTRequest.Response.Content);
   end;
 
   {$Region'////Retorno////'}
