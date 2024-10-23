@@ -82,10 +82,10 @@ begin
   try
     GravaLogIMendes('Envio '+Endpoint+' : '+sBody);
     FRESTRequest.Execute;
-    GravaLogIMendes('Retorno '+Endpoint+' : '+FRESTRequest.Response.Content);
   except
-    GravaLogIMendes('Retorno '+Endpoint+' : '+FRESTRequest.Response.Content);
   end;
+
+  GravaLogIMendes('Retorno '+Endpoint+' : '+FRESTRequest.Response.Content);
 
   {$Region'////Retorno////'}
   if (FRESTResponse.StatusCode <> 200) and (FRESTResponse.StatusCode <> 201) then
