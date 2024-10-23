@@ -149,6 +149,7 @@ end;
 procedure TFrmIntegracaoIMendes.btnSanearClick(Sender: TObject);
 var
   sFiltro : string;
+  vQtdConexoes : integer;
 begin
   if not TSistema.GetInstance.ModuloImendes then
   begin
@@ -156,9 +157,22 @@ begin
     Exit;
   end;
 
+
+  vQtdConexoes := ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase,
+                                        'Select Count(*) From MON$ATTACHMENTS');
+
+  if vQtdConexoes > 1 then
+  begin
+    MensagemSistema('Não foi possível iniciar o saneamento. Existem outros usuários com o sistema aberto.'+#13#10+
+                    'Feche o sistema em todos os computadores e tente novamente.'
+                    ,msgAtencao);
+
+    Exit;
+  end;
+
   if GetFiltroSaneamento(sFiltro) then
   begin
-    MostraTelaProcessamento('Saneando tributação dos produtos...');
+    MostraTelaProcessamento('Saneando tributação dos produtos');
 
     TTask.Run(
     procedure()
@@ -187,10 +201,10 @@ begin
 
           //Relatório
           RelatoioSaneamento(' Where DATA_STATUS_TRIBUTACAO between '+
-                              QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataIni))+
-                              ' and  '+
-                              QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataFim))
-                              );
+                             QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataIni))+
+                             '   and '+
+                             QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataFim))
+                             );
         end else
         begin
           MensagemSistema(sMensgem,msgAtencao);
@@ -208,7 +222,13 @@ begin
     Exit;
   end;
 
-  MostraTelaProcessamento('Consultando produtos pendentes');
+  if MensagemSistemaPergunta('Essa rotina irá consultar alterações tributárias nos produtos já saneados e verificar se as pendências foram analisadas.' + sLineBreak +
+                             'Deseja prosseguir?', [mb_YesNo, mb_DefButton1]) <> mrYes then
+    Exit;
+
+
+
+  MostraTelaProcessamento('Consultando alterações');
 
   TTask.Run(
   procedure()
@@ -232,7 +252,7 @@ begin
                             sFiltro,
                             sMensagem) then
     begin
-      AtualizaStatusProc('Saneando produtos pendentes', '');
+      AtualizaStatusProc('Saneando tributação dos produtos', '');
 
       if GetTributacaoEstoque(Form7.ibDataSet4,
                               sFiltro,
@@ -249,7 +269,7 @@ begin
 
       if bRealizada then
       begin
-        MensagemSistema('Atualização realizado com sucesso!');
+        MensagemSistema('Saneamento realizado com sucesso!');
         AgendaCommit(true);
       end else
       begin

@@ -251,7 +251,7 @@ inherited FrmIntegracaoIMendes: TFrmIntegracaoIMendes
         Width = 150
         Height = 24
         Anchors = [akRight, akBottom]
-        Caption = 'Sincronizar pendentes'
+        Caption = 'Consultar altera'#231#245'es'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13

@@ -54,8 +54,6 @@ inherited FrmSaneamentoIMendes: TFrmSaneamentoIMendes
     Width = 225
     Height = 17
     Caption = 'Produtos com status Pendente'
-    Checked = True
-    State = cbChecked
     TabOrder = 2
     OnClick = chkPendentesClick
   end
@@ -65,8 +63,6 @@ inherited FrmSaneamentoIMendes: TFrmSaneamentoIMendes
     Width = 225
     Height = 17
     Caption = 'Produtos com status Alterado pelo usu'#225'rio'
-    Checked = True
-    State = cbChecked
     TabOrder = 3
     OnClick = chkPendentesClick
   end
