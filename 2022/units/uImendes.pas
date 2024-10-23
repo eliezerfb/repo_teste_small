@@ -68,7 +68,7 @@ var
   i : integer;
 begin
   Result := 0;
-  sDescricao := LimpaCaracteresEspeciaisIM(sDescricao);
+  sDescricao := Trim(LimpaCaracteresEspeciaisIM(sDescricao));
 
   //Busca código pela descrição do produto
   try
@@ -190,7 +190,7 @@ begin
       end;
     end else
     begin
-      MensagemSistema('Falha ao consultar regras fiscais.',msgErro);
+      MensagemSistema('Falha ao consultar tributação.',msgErro);
     end;
   finally
     FreeAndNil(RetTributacaoIMendesDTO);

@@ -89,7 +89,7 @@ begin
   {$Region'////Retorno////'}
   if (FRESTResponse.StatusCode <> 200) and (FRESTResponse.StatusCode <> 201) then
   begin
-    sResposta := FRESTRequest.Response.JSONValue.ToString;
+    sResposta := FRESTRequest.Response.Content;
     Result    := False;
   end else
   begin
