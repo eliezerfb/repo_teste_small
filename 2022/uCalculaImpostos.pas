@@ -56,6 +56,7 @@ type
     dBase: Double): Double;
   function ValorIcmsDiferenciado(dValorIcms: Double;
     dPercentualDiferenciado: Double): Double;
+  function CSTCalculaST(sCst: String): Boolean;
 
 implementation
 
@@ -211,6 +212,16 @@ function ValorIcmsDiferenciado(dValorIcms: Double;
   dPercentualDiferenciado: Double): Double;
 begin
   Result := dValorIcms * dPercentualDiferenciado / 100;
+end;
+
+function CSTCalculaST(sCst: String): Boolean;
+begin
+  Result := False;
+  if (sCst = '10')
+    or (sCst = '30')
+    or (sCst = '70')
+    or (sCst = '90') then
+    Result := True;
 end;
 
 end.

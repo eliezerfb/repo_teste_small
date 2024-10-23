@@ -2848,6 +2848,17 @@ begin
     end;
   end;
 
+  {Sandro Silva 2024-10-23 inicio}
+  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'ESTOQUE_IDESTOQUE_IDX') then
+  begin
+    // Padronizar nomeclatura dos índices. Sempre começar com prefixo IDX_, seguido pelo nome da tabela mai o caractere "_", na sequencia o nome dos campos que compõem o índice
+    ExecutaComando('DROP INDEX ESTOQUE_IDESTOQUE_IDX');
+    ExecutaComando('Commit');
+
+    ExecutaComando('CREATE UNIQUE INDEX IDX_ESTOQUE_IDESTOQUE ON ESTOQUE (IDESTOQUE)');
+  end;
+  {Sandro Silva 2024-10-23 fim}
+
   if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUEIVA')) then
   begin
     ExecutaComando(' Create table ESTOQUEIVA('+
