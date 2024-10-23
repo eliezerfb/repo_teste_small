@@ -16012,12 +16012,17 @@ begin
                     Form1.ContingenciaPendente.dtUltimaTransmissao := Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia);
 
                   end;
-
                   _ecf65_VerificaContingenciaPendentedeTransmissao(Date - Form1.ContingenciaPendente.LimiteDias, Date, Form1.sCaixa);
                   Sleep(50);
                   SalvarConfiguracao(FRENTE_INI, SECAO_65, 'Transmissao Contingencia', FormatDateTime('dd/mm/yyyy', Date));
                 end;
               end;
+
+              {Sandro Silva (smal-741) 2024-10-23}
+              _ecf65_VerificaContingenciaPendentedeTransmissao(Date - Form1.ContingenciaPendente.LimiteDias, Date, Form1.sCaixa);
+              Form1.ExibeAlertaContingenciaPendente; // Sandro Silva 2019-08-14
+              Form1.Display(Form1.sStatusECF, Form1.sF);
+              {Sandro Silva (smal-741) 2024-10-23}
 
             end; // if Form1.bStatusRede then
             {Sandro Silva (smal-741) 2024-10-17 fim}
