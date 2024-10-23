@@ -35,6 +35,14 @@ implementation
 
 procedure TfrmSobre.FormCreate(Sender: TObject);
 begin
+  Self.Align := AlNone;
+  Self.AutoSize := False;
+  Self.WindowState := wsNormal;
+  Self.Top := 0;
+  Self.Left := 0;
+  Self.Width := Screen.Width;
+  Self.Height := Screen.Height;
+
   pnlCarregamento.Visible := False;
   redtSobre.Width    := 623;
 end;

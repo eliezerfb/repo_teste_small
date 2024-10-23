@@ -11,7 +11,7 @@ object frmSobre: TfrmSobre
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
-  Position = poScreenCenter
+  WindowState = wsMaximized
   OnCreate = FormCreate
   OnKeyUp = FormKeyUp
   OnResize = FormResize
