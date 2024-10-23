@@ -289,7 +289,8 @@ begin
   // País
   fraPais.TipoDePesquisa               := tpLocate;
   fraPais.GravarSomenteTextoEncontrato := True;
-  fraPais.CampoVazioAbrirGridPesquisa  := True;
+  //fraPais.CampoVazioAbrirGridPesquisa  := True; Mauricio Parizotto 2024-10-23
+  fraPais.CampoVazioAbrirGridPesquisa  := False;
   fraPais.CampoCodigo                  := ibVENDASExportacaoIDPAISES;
   fraPais.CampoCodigoPesquisa          := 'IDPAISES';
   fraPais.sCampoDescricao              := 'NOME';

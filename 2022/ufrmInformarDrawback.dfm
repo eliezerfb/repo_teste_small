@@ -55,7 +55,7 @@ inherited frmInformarDrawback: TfrmInformarDrawback
       item
         Expanded = False
         FieldName = 'DRAWBACK'
-        Width = 150
+        Width = 147
         Visible = True
       end>
   end
