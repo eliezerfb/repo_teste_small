@@ -15359,6 +15359,10 @@ var
   sNomeNovo  : String;
   sNomeVolta : String;
 begin
+  //Mauricio Parizotto 2024-10-23
+  if SaneamentoIMendes then
+    Exit;
+
   // Quando troca o nome do produto
   if (sNomeAnterior <> ibDataSet4DESCRICAO.AsString) and (AllTrim(sNomeAnterior) <> '') and (sNumeroAnterior = ibDataSet4REGISTRO.AsString) then
   begin
@@ -15878,6 +15882,10 @@ begin
   //LogRetaguarda('inicio assina registro procedure TForm7.ibDataSet4BeforePost(): 15860'); // Sandro Silva 2024-09-26
   AssinaRegistro('ESTOQUE',DataSet, True);
   //LogRetaguarda('fim assina registro procedure TForm7.ibDataSet4BeforePost(): 15862'); // Sandro Silva 2024-09-26
+
+  //Mauricio Parizotto 2024-10-23
+  if SaneamentoIMendes then
+    Exit;
 
   AuditaAlteracaoEstoqueManual;
 end;
@@ -28048,6 +28056,10 @@ end;
 
 procedure TForm7.ibDataSet4CFChange(Sender: TField);
 begin
+  //Mauricio Parizotto 2024-10-23
+  if SaneamentoIMendes then
+    Exit;
+
   Form7.ibQuery3.Close;
   Form7.ibQuery3.SQL.Clear;
   Form7.ibQuery3.SQL.Add('select * from IBPT_ where char_length(CODIGO) >= 8 and CODIGO='+QuotedStr(Form7.ibDataSet4CF.AsString));

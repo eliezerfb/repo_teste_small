@@ -329,6 +329,8 @@
         <DCCReference Include="..\..\unit_compartilhada\uAssinaturaDigital.pas"/>
         <DCCReference Include="interfaces\uIEstruturaRelVendasPorCliente.pas"/>
         <DCCReference Include="units\uEstruturaRelVendasPorCliente.pas"/>
+        <DCCReference Include="interfaces\uIEstruturaRelGenerico.pas"/>
+        <DCCReference Include="units\uEstruturaRelGenerico.pas"/>
         <DCCReference Include="units\uEstruturaRelVendasPorClienteNota.pas"/>
         <DCCReference Include="interfaces\uIDadosVendasPorClienteFactory.pas"/>
         <DCCReference Include="units\uEstruturaRelVendasPorClienteCupom.pas"/>

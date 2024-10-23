@@ -112,6 +112,8 @@ uses
   uAssinaturaDigital in '..\..\unit_compartilhada\uAssinaturaDigital.pas',
   uIEstruturaRelVendasPorCliente in 'interfaces\uIEstruturaRelVendasPorCliente.pas',
   uEstruturaRelVendasPorCliente in 'units\uEstruturaRelVendasPorCliente.pas',
+  uIEstruturaRelGenerico in 'interfaces\uIEstruturaRelGenerico.pas',
+  uEstruturaRelGenerico in 'units\uEstruturaRelGenerico.pas',
   uEstruturaRelVendasPorClienteNota in 'units\uEstruturaRelVendasPorClienteNota.pas',
   uIDadosVendasPorClienteFactory in 'interfaces\uIDadosVendasPorClienteFactory.pas',
   uEstruturaRelVendasPorClienteCupom in 'units\uEstruturaRelVendasPorClienteCupom.pas',

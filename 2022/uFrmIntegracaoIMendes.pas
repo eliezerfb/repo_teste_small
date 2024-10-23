@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFrmPadrao, Vcl.StdCtrls, Vcl.Buttons, shellapi, IBX.IBQuery,
   Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Imaging.pngimage, REST.JSON, System.Threading, uArquivosDAT,
-  uImendes;
+  uImendes, uIEstruturaTipoRelatorioPadrao;
 
 type
   TFrmIntegracaoIMendes = class(TFrmPadrao)
@@ -52,6 +52,7 @@ type
     procedure btnSincronizarClick(Sender: TObject);
   private
     function GetArquivoSimulacao(out ProdsSemICMS : string): string;
+    procedure RelatoioSaneamento(sFiltro: string);
     { Private declarations }
   public
     { Public declarations }
@@ -66,7 +67,7 @@ implementation
 
 uses unit7, uFuncoesBancoDados, uClassesIMendes, smallfunc_xe,
   uFrmTelaProcessamento, uDialogs, uFuncoesRetaguarda, uValidaRecursos,
-  uTypesRecursos, MAIS, uSistema, uFrmSaneamentoIMendes;
+  uTypesRecursos, MAIS, uSistema, uFrmSaneamentoIMendes, uEstruturaRelGenerico;
 
 procedure TFrmIntegracaoIMendes.btnSimuladorClick(Sender: TObject);
 begin
@@ -148,7 +149,6 @@ end;
 procedure TFrmIntegracaoIMendes.btnSanearClick(Sender: TObject);
 var
   sFiltro : string;
-
 begin
   if not TSistema.GetInstance.ModuloImendes then
   begin
@@ -165,7 +165,10 @@ begin
     var
       bRealizada : boolean;
       sMensgem : string;
+      DataIni, DataFim : TDateTime;
     begin
+      DataIni := now;
+
       bRealizada := GetTributacaoEstoque(Form7.ibDataSet4,sFiltro,sMensgem);
 
       TThread.Synchronize(TThread.CurrentThread,
@@ -173,10 +176,21 @@ begin
       begin
         FechaTelaProcessamento();
 
+        DataFim := now;
+
         if bRealizada then
         begin
           MensagemSistema('Saneamento realizado com sucesso!');
-          AgendaCommit(true);
+          Commitatudo(True);
+          AgendaCommit(False);
+          AbreArquivos(False);
+
+          //Relatório
+          RelatoioSaneamento(' Where DATA_STATUS_TRIBUTACAO between '+
+                              QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataIni))+
+                              ' and  '+
+                              QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataFim))
+                              );
         end else
         begin
           MensagemSistema(sMensgem,msgAtencao);
@@ -200,7 +214,7 @@ begin
   procedure()
   var
     bRealizada : boolean;
-    sFiltro, sMensagem : string;
+    sFiltro, sMensagem, sEstoqueIDs : string;
   begin
     bRealizada := False;
 
@@ -392,6 +406,46 @@ begin
 
     SetLength(ProdutoArray,0);
   end;
+end;
+
+procedure TFrmIntegracaoIMendes.RelatoioSaneamento(sFiltro:string);
+var
+  sSql, sSql2, sSql3 : string;
+begin
+  sSql := ' Select '+
+          '  	STATUS_TRIBUTACAO "Status",'+
+          '  	Count(*)  "Quantidade"	'+
+          ' From ESTOQUE'+
+          sFiltro+
+          ' and STATUS_TRIBUTACAO in (''Pendente'',''Consultado'') '+
+          ' Group By STATUS_TRIBUTACAO';
+
+  sSql2 :=' Select '+
+          ' 	CODIGO "Código",'+
+          ' 	REFERENCIA "Código Barras",'+
+          ' 	DESCRICAO "Descrição" 	'+
+          ' From ESTOQUE'+
+          sFiltro+
+          ' and STATUS_TRIBUTACAO = ''Consultado''';
+
+  sSql3 :=' Select '+
+          ' 	CODIGO "Código",'+
+          ' 	REFERENCIA "Código Barras",'+
+          ' 	DESCRICAO "Descrição" 	'+
+          ' From ESTOQUE'+
+          sFiltro+
+          ' and STATUS_TRIBUTACAO = ''Pendente''';
+
+  TEstruturaRelGenerico.New
+                       .setUsuario(Usuario)
+                       .SetDataBase(Form7.IBDatabase1)
+                       .Estrutura
+                       .GerarImpressaoTitCabecalho('Relatório de Saneamento')
+                       .ImprimeQuery(sSql,'Totalizadores')
+                       .ImprimeQuery(sSql2,'Produtos Consultados')
+                       .ImprimeQuery(sSql3,'Produtos Pendentes')
+                       .Imprimir;
+
 end;
 
 end.

@@ -201,7 +201,7 @@ begin
 end;
 
 
-function GetTributacaoEstoque(ibdEstoque : TibDataSet; sFiltro : string; out sMensagem : string): boolean;
+function GetTributacaoEstoque(ibdEstoque : TibDataSet; sFiltro : string; out sMensagem :string): boolean;
 var
   TributacaoIMendesDTO : TTributacaoIMendesDTO;
   ProdutoArray : TArray<TProdutoTrib>;
