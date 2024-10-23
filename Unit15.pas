@@ -36,6 +36,7 @@ type
     imgVisSenha1: TImage;
     pnlVisSenha3: TPanel;
     imgVisSenha3: TImage;
+    LabelF10Indisponivel: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -290,6 +291,16 @@ end;
 procedure TForm15.FormShow(Sender: TObject);
 begin
   Form22.pnlCarregamento.Visible := False;
+
+  if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
+  begin
+    LabelF10Indisponivel.Visible := False;
+    if PAFNFCe then
+    begin
+      LabelF10Indisponivel.Caption := MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
+      LabelF10Indisponivel.Visible := True;
+    end;
+  end;
 end;
 
 procedure TForm15.imgEntrarMouseEnter(Sender: TObject);

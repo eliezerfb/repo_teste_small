@@ -848,6 +848,22 @@ object Form15: TForm15
         OnMouseEnter = imgEntrarMouseEnter
         OnMouseLeave = imgEntrarMouseLeave
       end
+      object LabelF10Indisponivel: TLabel
+        Left = 281
+        Top = 301
+        Width = 432
+        Height = 20
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 'Menu Fiscal Indispon'#237'vel nesta tela'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clSilver
+        Font.Height = -16
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Visible = False
+      end
       object edtSenha: TEdit
         Left = 318
         Top = 160
