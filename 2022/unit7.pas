@@ -19237,6 +19237,14 @@ begin
                 end;
                 {Sandro Silva 2024-10-14 fim}
 
+                {Sandro Silva (f-21199) 2024-10-24 inicio}
+                if (Form7.ibDataSet13.FieldByName('CRT').AsString = '2')
+                  or (Form7.ibDataSet13.FieldByName('CRT').AsString = '3')then
+                begin
+                  Form7.ibDataSet16CST_ICMS.AsString    := CstComOrigemdoProdutoNaOperacao(Form7.ibDataSet16CODIGO.AsString, Form7.ibDataSet15OPERACAO.AsString, nil);
+                end;
+                {Sandro Silva (f-21199) 2024-10-24 fim}
+
                 try
                   //if Form7.ibDataSet13.FieldByName('CRT').AsString = '1' then Mauricio Parizotto 2024-08-07
                   if (Form7.ibDataSet13.FieldByName('CRT').AsString = '1')
