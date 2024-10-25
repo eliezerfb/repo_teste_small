@@ -1511,7 +1511,7 @@ type
     procedure CancelaDescontoAcrescimo;
     procedure CarregaConfiguracoes;
     procedure ChamarTelaSobre;
-    procedure DefineTransmiteContingenciaAbertura
+    procedure DefineTransmiteContingenciaAbertura;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -16165,13 +16165,18 @@ begin
                     if _ecf65_VerificaContingenciaPendentedeTransmissao(Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), Form1.sCaixa) then // Ficha 5567
                     begin
 
-                      Form22.Label6.Caption := 'Aguarde! Transmitindo NFC-e em contingência emitidas em ' + FormatDateTime('dd/mm/yyyy', Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia));
+                      //Form22.Label6.Caption := 'Aguarde! Transmitindo NFC-e em contingência emitidas em ' + FormatDateTime('dd/mm/yyyy', Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia));
+                      Form22.Mensagem  := 'Aguarde! Transmitindo NFC-e em contingência emitidas em ' + FormatDateTime('dd/mm/yyyy', Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia));
 
                       //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
+                      {
                       if PAFNFCe then
                         Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' - ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
 
                       Form22.Label6.Repaint;
+                      }
+                      if PAFNFCe then
+                        Form22.Mensagem := Form22.Mensagem + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' - ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
 
                       _ecf65_EnviarNFCeContingencia(Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), '', Form1.sCaixa);
 
