@@ -5,8 +5,8 @@ object Form19: TForm19
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Configura'#231#245'es e ajustes do sistema'
-  ClientHeight = 629
-  ClientWidth = 813
+  ClientHeight = 486
+  ClientWidth = 624
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -26,11 +26,12 @@ object Form19: TForm19
   object Orelhas: TPageControl
     Left = 20
     Top = 20
-    Width = 773
-    Height = 546
-    ActivePage = Orelha_relatorios
+    Width = 584
+    Height = 403
+    ActivePage = Orelha_matricial
     Align = alClient
     TabOrder = 0
+    ExplicitHeight = 518
     object Orelha_relatorios: TTabSheet
       Caption = 'Relat'#243'rios'
       object GroupBox3: TGroupBox
@@ -1258,59 +1259,58 @@ object Form19: TForm19
       Caption = 'Impress'#227'o'
       ImageIndex = 5
       object Label26: TLabel
-        Left = 44
-        Top = 90
-        Width = 206
+        Left = 36
+        Top = 92
+        Width = 86
         Height = 13
         Alignment = taRightJustify
-        Caption = 'Impressora matricial para nota fiscal Serie 1:'
+        Caption = 'Nota fiscal Serie 1'
       end
       object Label29: TLabel
-        Left = 44
-        Top = 120
-        Width = 206
+        Left = 36
+        Top = 122
+        Width = 86
         Height = 13
         Alignment = taRightJustify
-        Caption = 'Impressora matricial para nota fiscal Serie 2:'
-      end
-      object Label27: TLabel
-        Left = 80
-        Top = 220
-        Width = 168
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'Impressora matricial para bloquetos:'
-        Visible = False
+        Caption = 'Nota fiscal Serie 2'
       end
       object Label37: TLabel
-        Left = 129
-        Top = 30
-        Width = 119
+        Left = 68
+        Top = 32
+        Width = 52
         Height = 13
         Alignment = taRightJustify
-        Caption = 'Impress'#227'o do or'#231'amento:'
+        Caption = 'Or'#231'amento'
       end
       object Label39: TLabel
-        Left = 98
-        Top = 59
-        Width = 150
+        Left = 37
+        Top = 61
+        Width = 83
         Height = 13
         Alignment = taRightJustify
-        Caption = 'Impress'#227'o da ordem de servi'#231'o:'
+        Caption = 'Ordem de servi'#231'o'
+      end
+      object lblFormatoOrc: TLabel
+        Left = 343
+        Top = 32
+        Width = 38
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Formato'
       end
       object ComboBoxNF: TComboBox
-        Left = 253
+        Left = 125
         Top = 90
-        Width = 200
-        Height = 21
-        TabOrder = 2
-      end
-      object ComboBoxNF2: TComboBox
-        Left = 253
-        Top = 120
         Width = 200
         Height = 21
         TabOrder = 3
+      end
+      object ComboBoxNF2: TComboBox
+        Left = 125
+        Top = 120
+        Width = 200
+        Height = 21
+        TabOrder = 4
       end
       object ComboBoxImpressora: TComboBox
         Left = 15
@@ -1321,29 +1321,35 @@ object Form19: TForm19
         Text = 'ComboBoxImpressora'
         Visible = False
       end
-      object ComboBoxBloqueto: TComboBox
-        Left = 253
-        Top = 217
-        Width = 200
-        Height = 21
-        TabOrder = 4
-        Visible = False
-      end
       object ComboBoxORCA: TComboBox
-        Left = 253
-        Top = 30
+        Left = 126
+        Top = 31
         Width = 200
         Height = 22
         Style = csOwnerDrawFixed
         TabOrder = 0
+        OnChange = ComboBoxORCAChange
       end
       object ComboBoxOS: TComboBox
-        Left = 253
+        Left = 125
         Top = 59
         Width = 200
         Height = 22
         Style = csOwnerDrawFixed
+        TabOrder = 2
+      end
+      object cboFormatoOrc: TComboBox
+        Left = 387
+        Top = 30
+        Width = 87
+        Height = 22
+        Style = csOwnerDrawFixed
+        ItemIndex = 0
         TabOrder = 1
+        Text = '80mm'
+        Items.Strings = (
+          '80mm'
+          'A5')
       end
     end
     object Orelha_atendimento: TTabSheet
@@ -1535,13 +1541,14 @@ object Form19: TForm19
     Left = 0
     Top = 20
     Width = 20
-    Height = 546
+    Height = 403
     Align = alLeft
     BevelOuter = bvNone
     Color = clWhite
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
+    ExplicitHeight = 546
     object Button2: TButton
       Left = 350
       Top = 5
@@ -1553,16 +1560,18 @@ object Form19: TForm19
     end
   end
   object Panel4: TPanel
-    Left = 793
+    Left = 604
     Top = 20
     Width = 20
-    Height = 546
+    Height = 403
     Align = alRight
     BevelOuter = bvNone
     Color = clWhite
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 2
+    ExplicitLeft = 793
+    ExplicitHeight = 546
     object Button6: TButton
       Left = 350
       Top = 5
@@ -1575,8 +1584,8 @@ object Form19: TForm19
   end
   object Panel3: TPanel
     Left = 0
-    Top = 566
-    Width = 813
+    Top = 423
+    Width = 624
     Height = 63
     Align = alBottom
     BevelOuter = bvNone
@@ -1584,8 +1593,10 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 3
+    ExplicitTop = 566
+    ExplicitWidth = 813
     object btnCancelar: TButton
-      Left = 588
+      Left = 400
       Top = 19
       Width = 100
       Height = 25
@@ -1601,7 +1612,7 @@ object Form19: TForm19
       OnKeyDown = btnOKKeyDown
     end
     object btnOK: TButton
-      Left = 692
+      Left = 506
       Top = 19
       Width = 100
       Height = 25
@@ -1620,7 +1631,7 @@ object Form19: TForm19
   object Panel5: TPanel
     Left = 0
     Top = 0
-    Width = 813
+    Width = 624
     Height = 20
     Align = alTop
     BevelOuter = bvNone
@@ -1628,23 +1639,24 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 4
+    ExplicitWidth = 813
   end
   object ColorDialog1: TColorDialog
     Color = clGreen
     CustomColors.Strings = (
       'c0c0c0c0')
     Options = [cdFullOpen, cdPreventFullOpen, cdSolidColor]
-    Left = 746
-    Top = 300
+    Left = 218
+    Top = 340
   end
   object OpenDialog4: TOpenDialog
     InitialDir = 'c:\'
-    Left = 752
+    Left = 304
     Top = 336
   end
   object OpenDialog3: TOpenDialog
     InitialDir = 'c:\'
-    Left = 752
-    Top = 368
+    Left = 376
+    Top = 336
   end
 end
