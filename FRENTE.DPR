@@ -53,7 +53,7 @@ uses
   uValidaRecursosDelphi7 in '..\unit_compartilhada\uValidaRecursosDelphi7.pas',
   uRecursosSistema in '..\unit_compartilhada\uRecursosSistema.pas',
   uCriptografia in '..\unit_compartilhada\uCriptografia.pas',
-  uArquivosDAT in '..\unit_compartilhada\uArquivosDAT.pas',
+  uArquivosDAT in '..\unit_compartilhada\DAT\uArquivosDAT.pas',
   uFuncoesBancoDados in '..\unit_compartilhada\uFuncoesBancoDados.pas',
   uFuncoesPOS in 'uFuncoesPOS.pas',
   uConverteDocumentoParaDocFiscal in 'uConverteDocumentoParaDocFiscal.pas',
@@ -94,10 +94,10 @@ uses
   uSmallConsts in '..\unit_compartilhada\uSmallConsts.pas',
   uLogSistema in '..\unit_compartilhada\uLogSistema.pas',
   urequisitapesobalancaautonoma in 'urequisitapesobalancaautonoma.pas',
-  uEstoqueDAT in '..\unit_compartilhada\uEstoqueDAT.pas',
-  uArquivoDATINFPadrao in '..\unit_compartilhada\uArquivoDATINFPadrao.pas',
-  uEstoqueSections in '..\unit_compartilhada\uEstoqueSections.pas',
-  uSectionDATPadrao in '..\unit_compartilhada\uSectionDATPadrao.pas',
+  uEstoqueDAT in '..\unit_compartilhada\DAT\uEstoqueDAT.pas',
+  uArquivoDATINFPadrao in '..\unit_compartilhada\DAT\uArquivoDATINFPadrao.pas',
+  uEstoqueSections in '..\unit_compartilhada\DAT\uEstoqueSections.pas',
+  uSectionDATPadrao in '..\unit_compartilhada\DAT\uSectionDATPadrao.pas',
   uSmallComINF in '..\unit_compartilhada\uSmallComINF.pas',
   uSmallComSections in '..\unit_compartilhada\uSmallComSections.pas',
   uUsuarioINF in '..\unit_compartilhada\uUsuarioINF.pas',
@@ -117,7 +117,10 @@ uses
   uIntegracaoSicoob in '..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas',
   uClassesItau in '..\unit_compartilhada\Itau\uClassesItau.pas',
   uClassesSicoob in '..\unit_compartilhada\Sicoob\uClassesSicoob.pas',
-  uWebServiceSicoob in '..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas';
+  uWebServiceSicoob in '..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas',
+  uFrenteSectionsBD in '..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
+  uIMendesSections in '..\unit_compartilhada\DAT\uIMendesSections.pas',
+  ufrmSobre in 'ufrmSobre.pas' {frmSobre};
 
 {$R *.RES}
 

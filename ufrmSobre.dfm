@@ -1,35 +1,30 @@
-object Form22: TForm22
+object frmSobre: TfrmSobre
   Left = 0
-  Top = 1
+  Top = 0
   Align = alClient
-  BorderIcons = []
   BorderStyle = bsNone
-  Caption = 'Zucchetti'
-  ClientHeight = 474
-  ClientWidth = 804
+  ClientHeight = 641
+  ClientWidth = 1055
   Color = clWhite
-  DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'Microsoft Sans Serif'
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
   Font.Style = []
-  Visible = True
   WindowState = wsMaximized
-  OnActivate = FormActivate
-  OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyUp = FormKeyUp
   OnResize = FormResize
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 15
   object pnlFundo: TPanel
     Left = 0
     Top = 0
-    Width = 804
-    Height = 474
+    Width = 1055
+    Height = 641
     Align = alClient
     BevelOuter = bvNone
-    Color = 16053492
+    Color = clWhite
     Ctl3D = False
     ParentBackground = False
     ParentCtl3D = False
@@ -45,7 +40,6 @@ object Form22: TForm22
       Color = 16053492
       ParentBackground = False
       TabOrder = 0
-      Visible = False
       object imgFundo: TImage
         Left = 0
         Top = 0
@@ -401,6 +395,69 @@ object Form22: TForm22
           895A8902D00EA2AF563B80187A8E04B51305302128FEE3D8F1602F4401409618
           7A8E077F0105E4F950C8514F540000000049454E44AE426082}
       end
+      object imgOK: TImage
+        Left = 548
+        Top = 282
+        Width = 121
+        Height = 32
+        Cursor = crHandPoint
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000780000
+          001E0806000000E7C9DA95000000097048597300000B1300000B1301009A9C18
+          000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000001
+          CE4944415478DAED9B8F6D82401487DF6DE00838413B029DA0ED04C509AC13A8
+          13A81348276837689DA06E5036281BD0DFF3C008154A0CF4E4F2FB929723FC31
+          CF7C39B83B1E465A9065D908CD2DE21E112202C4A8CDB5A43352C43E8F9D31E6
+          ADCD45A6E9602E768A78160ABD3612448C7881ECA4EEA45AC190AB621742B1D7
+          4E825842727CEEE059C190BB12DB6BC9705843F2ACBAF39760C8DDA2895C674B
+          2E2286E4C9E98E9260F65C2F28F5E4A360C88DD06C5D67473A6106C96BDD3808
+          86DC00CDBBD8E90F193E3AA51A43725A089E8B1D31137FD091F5A210FC25ECBD
+          BE617B31E43E60E3D57536A417EE54B03E8CA7AE3321BDB051C13AB80A5D6742
+          7A61AF82BF85CB91BE92AAE0CC7516A43F28D873788BF69BC32DFA53ECCB7CE2
+          1F1F9C26F9CD619A148A5D8726FEF168F2B21C5DAAE473D82F1263CCB8588B5E
+          A099BBCE88744AE965037BB15F24A2EBD0C624A72FFCB59263E53A33D20993A2
+          08AF5AB2C311F5F0D940EEB1ECEA5CD15D8CE6C97596E422B4463A3ADD515736
+          CB9E3C3C4A3DB7A0A9F03D123BB20E5C674E1AD1CA8D65516457E5AF4F5702B1
+          35D27ACB0E5CFF135242C56EC496C9A6752799B6BF9697F684881BB16BD79C52
+          FD2F2A3141EC10FAE1D9BE496CC10F482DA028505C113E0000000049454E44AE
+          426082}
+        OnClick = lblOKClick
+      end
+      object lblOK: TLabel
+        Left = 548
+        Top = 290
+        Width = 121
+        Height = 13
+        Cursor = crHandPoint
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 'OK'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = 16750592
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        OnClick = lblOKClick
+      end
+      object lblLicenca: TLabel
+        Left = 296
+        Top = 51
+        Width = 373
+        Height = 20
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Small Commerce'
+        Color = 16750592
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWhite
+        Font.Height = -17
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        Transparent = True
+      end
       object Image2: TImage
         Left = 46
         Top = 26
@@ -497,41 +554,24 @@ object Form22: TForm22
           EBA6C8F1AF93DF7B42273C2E2442273C2A2442273C2AFC1F803CFA40C94554F0
           0000000049454E44AE426082}
       end
-      object lblAguarde: TLabel
-        Left = 3
-        Top = 138
-        Width = 701
-        Height = 20
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 'Aguarde...'
+      object redtSobre: TRichEdit
+        Left = 46
+        Top = 85
+        Width = 187
+        Height = 180
+        TabStop = False
+        BorderStyle = bsNone
         Color = 16750592
         Font.Charset = ANSI_CHARSET
         Font.Color = clWhite
-        Font.Height = -16
+        Font.Height = -13
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
-        ParentColor = False
+        Lines.Strings = (
+          '')
         ParentFont = False
-        Transparent = True
-      end
-      object lblMensagem: TLabel
-        Left = 4
-        Top = 177
-        Width = 699
-        Height = 50
-        Alignment = taCenter
-        AutoSize = False
-        Caption = '____________'
-        Color = 16750592
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWhite
-        Font.Height = -16
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentColor = False
-        ParentFont = False
-        Transparent = True
+        ReadOnly = True
+        TabOrder = 0
       end
     end
   end

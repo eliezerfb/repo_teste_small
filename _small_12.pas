@@ -246,7 +246,7 @@ begin
   //
   if Length(AllTrim(Retorno)) <> 10 then
   begin
-    if Form22.Label6.Caption = 'Detectando porta de comunicação...' then
+    if Form22.Mensagem = 'Detectando porta de comunicação...' then
     begin
       for I := 1 to 7 do
       begin

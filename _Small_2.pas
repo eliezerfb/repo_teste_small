@@ -563,7 +563,7 @@ var
 //  Mais1Ini : tIniFile;
 begin
   //
-  if Form22.Label6.Caption = 'Detectando porta de comunicação...' then
+  if Form22.Mensagem = 'Detectando porta de comunicação...' then
   begin
    Bematech_FI_AbrePortaSerial();
    //_ecf02_CodeErro(Bematech_FI_AbrePortaSerial());

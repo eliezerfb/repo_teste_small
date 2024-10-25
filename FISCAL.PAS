@@ -1508,6 +1508,7 @@ type
     function CancelaItem(sItem: string): boolean;
     procedure CancelaDescontoAcrescimo;
     procedure CarregaConfiguracoes;
+    procedure ChamarTelaSobre;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -1817,6 +1818,7 @@ uses
   , uConectaBancoSmall
   , uFrmTransacoesItau
   , uDialogs
+  , ufrmSobre
   , uLogSistema
   ;
 
@@ -3751,18 +3753,17 @@ begin
       if Form1.bBalancaAutonoma = False then // Sandro Silva 2019-01-23
       begin
         if Form1.sModeloECF_Reserva = '65' then
-          Form22.Label6.Caption := 'Aguarde! Verificando a disponibilidade dos serviços da NFC-e...';
+          Form22.Mensagem := 'Aguarde! Verificando a disponibilidade dos serviços da NFC-e...';
         if Form1.sModeloECF_Reserva = '59' then
-          Form22.Label6.Caption := 'Aguarde! Verificando a disponibilidade dos serviços do ' + _ecf59_Tipodaimpressora(True) + '...';
+          Form22.Mensagem := 'Aguarde! Verificando a disponibilidade dos serviços do ' + _ecf59_Tipodaimpressora(True) + '...';
         if Form1.sModeloECF_Reserva = '99' then
-          Form22.Label6.Caption := '';
+          Form22.Mensagem := '';
 
         //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
         if PAFNFCe then
-          Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
+          Form22.Mensagem := Form22.Mensagem + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
 
       end;
-      Form22.Label6.Repaint;
 
       try
         if Form1.sModeloECF_Reserva = '65' then
@@ -3879,8 +3880,7 @@ begin
       Form1.sF4Conferencia := '';
       //
       Result := True;
-      Form22.Label6.Caption := 'Aguarde! Validando o uso do ECF.';
-      Form22.Label6.Repaint;
+      Form22.Mensagem := 'Aguarde! Validando o uso do ECF.';
 
       try
         if Form1.sModeloECF = '02' then
@@ -4140,6 +4140,7 @@ begin
           //
           if StrToFloatDef(sTotalDia, 0) <> 0 then
           begin
+
             Mais2ini := TIniFile.Create(Form1.sArquivo);
             Form1.sCripto := '';
             Form1.sCripto := SmallCripto(FormatFloat('0.00',(StrToFloatDef(sTotalDia, 0)/100)));
@@ -4147,6 +4148,7 @@ begin
             sCRO := '000000';
             sCRO := Form1.PDV_NumeroIntervencoesTecnicas(True);
             sCRZ := Form1.PDV_NumeroDeReducoesZ(True);
+
 
             if (AllTrim(Mais2Ini.ReadString('ECF','GT','0000000000')) <> AllTrim(Form1.sCripto)) and (Form1.sNumeroDeSerieDaImpressora<>'EMULADOR') then
             begin
@@ -4157,9 +4159,12 @@ begin
 
               if StrToIntDef(sCRO, 0) < StrToIntDef(FormatFloat('0000', IBQDadosRequisitoXXIV.FieldByName('CRO').AsFloat), 0) then
               begin
+
                 sMotivo := 'Requisito XXIV - PAF-ECF'+chr(10)+chr(13)+'O valor acumulado no Totalizador Geral (GT) do ECF conectado neste momento não'+Chr(10)+
                   'corresponde ao armazenado em arquivo auxiliar criptografado.'+chr(10)+'';
+
                 begin
+
                   if P1 then
                   begin
                     SmallMsg(sMotivo);
@@ -4168,7 +4173,9 @@ begin
 
                   DesabilitaHabilitaImpressoes(False);
                   Result := False;
+
                 end;
+
               end
               else
               begin
@@ -4182,6 +4189,7 @@ begin
 
             Mais2Ini.Free;
           end;
+
         except
           sMotivo    := 'Requisito XXIV - PAF-ECF'+chr(10)+chr(13)+'O valor acumulado no Totalizador Geral (GT) do ECF conectado neste momento não'+Chr(10)+'corresponde ao armazenado em arquivo auxiliar criptografado.'+chr(10)+'';
           if P1 then
@@ -4200,13 +4208,18 @@ begin
         begin
           if Form1.bStatusRede then
           begin
+            {
             Form22.Label6.Caption := 'Aguarde! Consultando Recibos Bloco X'; // Sandro Silva 2018-11-22
             Form22.Label6.Repaint;
-
+            }    
+            Form22.Mensagem := 'Aguarde! Consultando Recibos Bloco X'; // Sandro Silva 2018-11-22        
             Form1.BlocoxConsultarRecibo1;
 
+            {
             Form22.Label6.Caption := 'Aguarde! Verificando pendências do Bloco X'; // Sandro Silva 2018-11-22
             Form22.Label6.Repaint;
+            }
+            Form22.Mensagem := 'Aguarde! Consultando Recibos Bloco X'; // Sandro Silva 2018-11-22
 
             Form1.BlocoXAlertarPendente1('', Form1.sNumeroDeSerieDaImpressora, False);
           end;
@@ -4511,7 +4524,8 @@ begin
       end;
     end;
 
-    Form22.Label6.Caption := Copyright;
+    //Form22.Label6.Caption := Copyright;
+    Form22.Mensagem := Copyright;
 
     StatusRede(True, 10);
     StatusECF(True, 10);
@@ -6345,8 +6359,8 @@ begin
         //
         if Pos('LISTA.TXT',sP1) <> 0 then
         begin
-          Form22.Label6.Caption := 'O arquivo: LISTA.TXT foi gravado na pasta: '+extractFilePath(sP1);
-          Form22.Label6.Repaint;
+          Form22.Mensagem := 'O arquivo: LISTA.TXT foi gravado na pasta: '+extractFilePath(sP1);
+
           ExibirCaminhoLista; // Na homologação ER 02.03 foi exigido que exibisse por mais tempo para poder ler o local
 //          Sleep(3000);
         end else
@@ -6733,7 +6747,7 @@ var
   sValores, sCampos : String;
 begin
   //
-  Form22.Label6.Caption     := 'Aguarde a CARGA do '+pP1; Form22.Label6.Repaint;
+  Form22.Mensagem     := 'Aguarde a CARGA do '+pP1;
   //
   Form1.ibDataset99.DisableControls;
   //
@@ -6838,8 +6852,7 @@ begin
         begin
           if FileExists(Form1.sAtualOnLine+'\off13.fdb') then
           begin
-            Form22.Label6.Caption     := 'Aguarde... Copiando base off13.fdb';
-            Form22.Label6.Repaint;
+            Form22.Mensagem     := 'Aguarde... Copiando base off13.fdb';
             // Atualiza o off13.fdb na estação
             CopyFile(PChar(Form1.sAtualOnLine+'\off13.fdb'), PChar(Form1.sPastadoExecutavel+'\off13.fdb'),True);
             //Sleep(7000); // Sandro Silva 2019-08-22 Aguardar até copiar o off13.fdb para a estação
@@ -6868,7 +6881,8 @@ begin
 
       Mais1Ini.Free;
 
-      Form22.Label6.Caption := Form1.sAtual;
+      //Form22.Label6.Caption := Form1.sAtual;
+      Form22.Mensagem := Form1.sAtual;
       Form22.sIniciandoEm   := 'Iniciando em: '+Form1.sAtual;
       Form22.sUrlDoGdb      := 'Url do FDB:   '+AllTrim(Url);
 
@@ -6913,8 +6927,11 @@ begin
       begin
         if UpperCase(Form1.sPastadoExecutavel) <> UpperCase(Form1.sAtual) then
         begin
+          {
           Form22.Label6.Caption := 'Aguarde exportando ESTOQUE.OFF para base off line';
           Form22.Label6.Repaint;
+          }
+          Form22.Mensagem := 'Aguarde exportando ESTOQUE.OFF para base off line';
           //
           while FileExists((Form1.sPastadoExecutavel+'\estoque.off')) do
           begin
@@ -6960,9 +6977,13 @@ begin
           //
           CloseFile(F);
 
+          {
           // icm.off
           Form22.Label6.Caption := 'Aguarde exportando ICM.off para base off line';
           Form22.Label6.Repaint;
+          }
+          // icm.off
+          Form22.Mensagem := 'Aguarde exportando ICM.off para base off line';
           //
           while FileExists((Form1.sPastadoExecutavel+'\icm.off')) do
           begin
@@ -6979,8 +7000,7 @@ begin
           //
           // emitente.off
           //
-          Form22.Label6.Caption := 'Aguarde exportando EMITENTE.off para base off line';
-          Form22.Label6.Repaint;
+          Form22.Mensagem := 'Aguarde exportando EMITENTE.off para base off line';
           //
           Form1.IBQuery1.Close;
           Form1.IBQuery1.SQL.Clear;
@@ -7030,9 +7050,13 @@ begin
           WriteLN(F,Form1.IBExtract1.Items.Text);
           CloseFile(F);
           //
+          {
           // clifor.off
           Form22.Label6.Caption := 'Aguarde exportando CLIFOR.off para base off line';
           Form22.Label6.Repaint;
+          }
+          // clifor.off
+          Form22.Mensagem := 'Aguarde exportando CLIFOR.off para base off line';
           //
           Form1.IBQuery1.Close;
           Form1.IBQuery1.SQL.Clear;
@@ -7064,8 +7088,7 @@ begin
           Form1.ibQuery1.Close;
           CloseFile(F);
 
-          Form22.Label6.Caption := 'Aguarde exportando ECFS.off para base off line';
-          Form22.Label6.Repaint;
+          Form22.Mensagem := 'Aguarde exportando ECFS.off para base off line';
           //
           while FileExists((Form1.sPastadoExecutavel+'\ecfs.off')) do
           begin
@@ -7096,9 +7119,13 @@ begin
           //
           CloseFile(F);
 
+          {
           // IBPT
           Form22.Label6.Caption := 'Aguarde exportando IBPT_.off para base off line';
           Form22.Label6.Repaint;
+          }
+          // IBPT
+          Form22.Mensagem := 'Aguarde exportando IBPT_.off para base off line';
 
           Form1.IBQuery1.Close;
           Form1.IBQuery1.SQL.Clear;
@@ -7158,8 +7185,11 @@ begin
           begin
             if FileExists(Form1.sPastadoExecutavel+'\off13.fdb') then
             begin
+              {
               Form22.Label6.Caption     := 'Aguarde... Copiando base off line.'+Form1.sPastadoExecutavel+'\off13.fdb' +' '+Form1.sPastadoExecutavel+'\offline.fdb';
               Form22.Label6.Repaint;
+              }
+              Form22.Mensagem     := 'Aguarde... Copiando base off line.'+Form1.sPastadoExecutavel+'\off13.fdb' +' '+Form1.sPastadoExecutavel+'\offline.fdb';
               GetDir(0,Form1.sAtual);
               // Cria o banco offline se ainda não existir. Deve informar no Copy() o parâmetro bFailExist = True para ñão sobrepor em casos de não realizar a descarga
               CopyFile(PChar(Form1.sPastadoExecutavel+'\off13.fdb'), PChar(Form1.sPastadoExecutavel+'\offline.fdb'),True);
@@ -7227,8 +7257,11 @@ begin
 
             if bCargaNova then
             begin
+              {
               Form22.Label6.Caption := 'Aguarde a CARGA do PDV';
               Form22.Label6.Repaint;
+              }
+              Form22.Mensagem := 'Aguarde a CARGA do PDV';
 
               try
                 Form1.IBQuery1.Close;
@@ -7345,7 +7378,7 @@ begin
               DeleteFile((Form1.sPastadoExecutavel+'\ecfs.off'));// 2015-10-01
               DeleteFile((Form1.sPastadoExecutavel+'\ibpt_.off'));// Sandro Silva 2016-08-16
               //
-              Form22.Label6.Caption := 'Tempo de carga: '+' '+StrZero(Hora,2,0)+':'+StrZero(Min,2,0)+':'+StrZero(Seg,2,0)+':'+StrZero(cent,3,0)+' ';
+              Form22.Mensagem := 'Tempo de carga: '+' '+StrZero(Hora,2,0)+':'+StrZero(Min,2,0)+':'+StrZero(Seg,2,0)+':'+StrZero(cent,3,0)+' ';
               //
               DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
               Form1.Label_7.Hint := 'Tempo de carga: '+' '+StrZero(Hora,2,0)+':'+StrZero(Min,2,0)+':'+StrZero(Seg,2,0)+':'+StrZero(cent,3,0)+' ';
@@ -7616,7 +7649,6 @@ begin
   Screen.Cursor := crHourGlass;    // Cursor de Aguardo
   Mais1Ini.Free;
   Form22.sLicenca := 'Licenciado para '+AllTrim(InttoStr(iLimiteUsuariosSimultaneos))+' usuários';
-  Form22.Label6.Width   := Screen.Width;
   //                                     //
   // Cria os arquivos no diretório atual //
   //                                     //
@@ -7676,7 +7708,7 @@ begin
           //
           if FileExists(Form1.sAtualOnLine+'\off13.fdb') then
           begin
-            Form22.Label6.Caption     := 'Aguarde... Copiando base off13.fdb';
+            Form22.Mensagem     := 'Aguarde... Copiando base off13.fdb';
             Form22.Label6.Repaint;
             // Atualiza o off13.fdb na estação
             CopyFile(pchar(Form1.sAtualOnLine+'\off13.fdb'),pchar(Form1.sPastadoExecutavel+'\off13.fdb'),True);
@@ -7714,7 +7746,7 @@ begin
       //
       Mais1Ini.Free;
       //
-      Form22.Label6.Caption := Form1.sAtual;
+      Form22.Mensagem := Form1.sAtual;
       Form22.sIniciandoEm   := 'Iniciando em: '+Form1.sAtual;
       Form22.sUrlDoGdb      := 'Url do FDB:   '+AllTrim(Url);
       //
@@ -7769,7 +7801,7 @@ begin
         if UpperCase(Form1.sPastadoExecutavel) <> UpperCase(Form1.sAtual) then
         begin
           //
-          Form22.Label6.Caption := 'Aguarde exportando ESTOQUE.OFF para base off line';
+          Form22.Mensagem := 'Aguarde exportando ESTOQUE.OFF para base off line';
           Form22.Label6.Repaint;
           //
           while FileExists(pchar(Form1.sPastadoExecutavel+'\estoque.off')) do
@@ -7820,7 +7852,7 @@ begin
           //
           // icm.off
           //
-          Form22.Label6.Caption := 'Aguarde exportando ICM.off para base off line';
+          Form22.Mensagem := 'Aguarde exportando ICM.off para base off line';
           Form22.Label6.Repaint;
           //
           while FileExists(pchar(Form1.sPastadoExecutavel+'\icm.off')) do
@@ -7838,7 +7870,7 @@ begin
           //
           // emitente.off
           //
-          Form22.Label6.Caption := 'Aguarde exportando EMITENTE.off para base off line';
+          Form22.Mensagem := 'Aguarde exportando EMITENTE.off para base off line';
           Form22.Label6.Repaint;
           //
           Form1.IBQuery1.Close;
@@ -7893,7 +7925,7 @@ begin
           //
           // clifor.off
           //
-          Form22.Label6.Caption := 'Aguarde exportando CLIFOR.off para base off line';
+          Form22.Mensagem := 'Aguarde exportando CLIFOR.off para base off line';
           Form22.Label6.Repaint;
           //
           Form1.IBQuery1.Close;
@@ -7927,7 +7959,7 @@ begin
           Form1.ibQuery1.Close;
           CloseFile(F);
 
-          Form22.Label6.Caption := 'Aguarde exportando ECFS.off para base off line';
+          Form22.Mensagem := 'Aguarde exportando ECFS.off para base off line';
           Form22.Label6.Repaint;
           //
           while FileExists(pchar(Form1.sPastadoExecutavel+'\ecfs.off')) do
@@ -7962,7 +7994,7 @@ begin
           //
           // IBPT
           //
-          Form22.Label6.Caption := 'Aguarde exportando IBPT_.off para base off line';
+          Form22.Mensagem := 'Aguarde exportando IBPT_.off para base off line';
           Form22.Label6.Repaint;
 
           Form1.IBQuery1.Close;
@@ -8038,7 +8070,7 @@ begin
             if FileExists(Form1.sPastadoExecutavel+'\off13.fdb') then
             begin
 
-              Form22.Label6.Caption     := 'Aguarde... Copiando base off line.'+Form1.sPastadoExecutavel+'\off13.fdb' +' '+Form1.sPastadoExecutavel+'\offline.fdb';
+              Form22.Mensagem     := 'Aguarde... Copiando base off line.'+Form1.sPastadoExecutavel+'\off13.fdb' +' '+Form1.sPastadoExecutavel+'\offline.fdb';
               Form22.Label6.Repaint;
               GetDir(0,Form1.sAtual);
               // Cria o banco offline se ainda não existir. Deve informar no Copy() o parâmetro bFailExist = True para ñão sobrepor em casos de não realizar a descarga
@@ -8127,7 +8159,7 @@ begin
             if bCargaNova then
             begin
               //
-              Form22.Label6.Caption := 'Aguarde a CARGA do PDV';
+              Form22.Mensagem := 'Aguarde a CARGA do PDV';
               Form22.Label6.Repaint;
 
               try
@@ -8249,7 +8281,7 @@ begin
               DeleteFile(pchar(Form1.sPastadoExecutavel+'\ecfs.off'));// 2015-10-01
               DeleteFile(pchar(Form1.sPastadoExecutavel+'\ibpt_.off'));// Sandro Silva 2016-08-16
               //
-              Form22.Label6.Caption := 'Tempo de carga: '+' '+StrZero(Hora,2,0)+':'+StrZero(Min,2,0)+':'+StrZero(Seg,2,0)+':'+StrZero(cent,3,0)+' ';
+              Form22.Mensagem := 'Tempo de carga: '+' '+StrZero(Hora,2,0)+':'+StrZero(Min,2,0)+':'+StrZero(Seg,2,0)+':'+StrZero(cent,3,0)+' ';
               //
               DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
               Form1.Label_7.Hint := 'Tempo de carga: '+' '+StrZero(Hora,2,0)+':'+StrZero(Min,2,0)+':'+StrZero(Seg,2,0)+':'+StrZero(cent,3,0)+' ';
@@ -8401,8 +8433,7 @@ begin
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   Result := False;
   //
-  Form22.Label6.Caption := 'Aguarde, lendo dados da última redução...';
-  Form22.Label6.Repaint;
+  Form22.Mensagem := 'Aguarde, lendo dados da última redução...';
   //
   try
     s := Replicate('0',1278);
@@ -8594,8 +8625,7 @@ begin
   Form1.ibQuery1.Close;
   //
   Form1.ibDataset88.EnableControls;
-  Form22.Label6.Caption := Copyright;
-  Form22.Label6.Repaint;
+  Form22.Mensagem := Copyright;
   //
   if pP1 = False then
     Result := True;
@@ -9291,24 +9321,12 @@ begin
   Getdir(0,sAtualOnLine);
   Getdir(0,sAtual);
 
-  Form22.Image1.Left    := (Screen.Width - Form22.Image1.Width ) div 2;
-  Form22.Image1.Top     := ((Screen.Height - Form22.Image1.Height ) div 2) - 160 - 70;//90 // Sandro Silva 2021-07-22 (Screen.Height - Form22.Image1.Height ) div 2 - 160 - 50;
-  Form22.Image1.Visible := True;
-
-  Form22.Button1.Left   := (Screen.Width - Form22.Button1.Width ) div 2;
-  Form22.Button1.Top    := (Screen.Height - Form22.Button1.Height ) div 2 - 160 + 250;
-
-  Form22.Label6.Top     := Form22.Image1.Top + Form22.Image1.Height + 20;
-  Form22.Label6.Width   := Screen.Width;
-  Form22.Label6.Left    := 0;
-
   //if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65')
   //  and (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'FRENTE.EXE') then // Sandro Silva 2017-04-12
   begin
     if Trim(Form1.sPastaDoExecutavel) <> '' then
     begin
-      Form22.Label6.Caption := 'O arquivo: LISTA.TXT foi gravado na pasta: '+Form1.sPastaDoExecutavel + '\';
-      Form22.Label6.Repaint; // 2015-09-08
+      Form22.Mensagem := 'O arquivo: LISTA.TXT foi gravado na pasta: '+Form1.sPastaDoExecutavel + '\';
       ExibirCaminhoLista;
     end;
   end;
@@ -9705,8 +9723,7 @@ begin
 
     if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
     begin
-      Form22.Label6.Caption := 'Detectando porta de comunicação...';
-      Form22.Label6.Repaint;
+      Form22.Mensagem := 'Detectando porta de comunicação...';
     end;
 
     bInicializa := Form1.PDV_Inicializa(sPorta); // Sandro Silva 2022-11-08
@@ -9741,7 +9758,7 @@ begin
                 '1 - Verifique sua conexão de rede.'+Chr(10)+
                 '2 - Verifique SMALL.INI'+Chr(10)+
                 '');
-    Form22.Label6.Caption := 'Este programa vai ser fechado...';
+    Form22.Mensagem := 'Este programa vai ser fechado...';
     bSairDoPrograma := True;
   end;
 
@@ -9770,14 +9787,14 @@ begin
     if Form1.bBalancaAutonoma = False then // Sandro Silva 2019-01-23
     begin
       if (Form1.sModeloECF = '65') then
-        Form22.Label6.Caption := 'Aguarde! Verificando a disponibilidade dos serviços da NFC-e...';
+        Form22.Mensagem := 'Aguarde! Verificando a disponibilidade dos serviços da NFC-e...';
       if (Form1.sModeloECF = '59') then
-        Form22.Label6.Caption := 'Aguarde! Verificando a disponibilidade dos serviços do ' + _ecf59_Tipodaimpressora + '...';
+        Form22.Mensagem := 'Aguarde! Verificando a disponibilidade dos serviços do ' + _ecf59_Tipodaimpressora + '...';
 
       {Sandro Silva 2020-12-07 inicio}
       //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
       if PAFNFCe then
-        Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
+        Form22.Mensagem := Form22.Mensagem + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Mensagem := Form22.Mensagem + ' ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
       {Sandro Silva 2020-12-07 fim}
 
       if Mais1ini.ReadString('NFCE', 'Fuso', '') = '' then
@@ -9789,15 +9806,14 @@ begin
       // Ajusta o fuso horário quando trocar a UF do Emitente
       Form1.sFuso := ValidaAjustaFusoHorario(Form1.ibDataSet13.FieldByName('ESTADO').AsString, Form1.sFuso, FusoHorarioPadrao(Form1.ibDataSet13.FieldByName('ESTADO').AsString), bHorarioDeVerao);
     end;
-    Form22.Label6.Repaint;
   end else
   if (Form1.sModeloECF = '99') then
   begin
     // MEI
   end else
   begin
-    Form22.Label6.Caption := 'Detectando porta de comunicação...';
-    Form22.Label6.Repaint;
+    Form22.Mensagem := 'Detectando porta de comunicação...';
+
   end;
   //
   try
@@ -9816,14 +9832,14 @@ begin
           if DaysBetween(Date, Form1.spdNFCe1.GetVencimentoCertificado) < 30 then
           begin
 
-            Form22.Label6.Caption := 'Certificado digital - Validade: ' + FormatDateTime('dd/mm/yyyy', Form1.spdNFCe1.GetVencimentoCertificado);
+            Form22.Mensagem := 'Certificado digital - Validade: ' + FormatDateTime('dd/mm/yyyy', Form1.spdNFCe1.GetVencimentoCertificado);
             if Form1.spdNFCe1.GetVencimentoCertificado >= Date then
-              Form22.Label6.Caption := Form22.Label6.Caption + ' - restando ' + FormatFloat('0', Form1.spdNFCe1.GetVencimentoCertificado - Date) + ' dia(s)'
+              Form22.Mensagem := Form22.Mensagem + ' - restando ' + FormatFloat('0', Form1.spdNFCe1.GetVencimentoCertificado - Date) + ' dia(s)'
             else
-              Form22.Label6.Caption := Form22.Label6.Caption + ' - Expirado';
-            Form22.Label6.Caption := Form22.Label6.Caption + #13 + 'Faça a renovação';
+              Form22.Mensagem := Form22.Mensagem + ' - Expirado';
+            Form22.Mensagem := Form22.Mensagem + #13 + 'Faça a renovação';
 
-            Form22.Label6.Repaint;
+
             if DaysBetween(Date, Form1.spdNFCe1.GetVencimentoCertificado) < 10 then
               Sleep(2000);
           end;
@@ -9852,8 +9868,11 @@ begin
     if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
       //and (AnsiUpperCase(ExtractFileName(Application.ExeName)) = 'FRENTE.EXE') then // Sandro Silva 2017-04-12
     begin
+      {
       Form22.Label6.Caption := 'O arquivo: LISTA.TXT foi gravado na pasta: '+Form1.sPastaDoExecutavel + '\';
       Form22.Label6.Repaint;
+      }
+      Form22.Mensagem := 'O arquivo: LISTA.TXT foi gravado na pasta: '+Form1.sPastaDoExecutavel + '\';
       ExibirCaminhoLista; // 2015-09-08
     end;
     //
@@ -13527,13 +13546,8 @@ begin
 end;
 
 procedure TForm1.Sobreoprograma1Click(Sender: TObject);
-var
-  sVersaoNFCe: String;
-  sMarcaECF: String; // Sandro Silva 2018-10-23
-  sTempovalidadeCertificado: String;
-  iUsuariosAtivos: Integer; // Sandro Silva 2019-06-19
-  sMensagemDiasExpirar: String; // Sandro Silva 2022-12-08 Unochapeco
 begin
+  { Dailon Parisotto 2024-10-03 
   Form22.Close;
   //
   try
@@ -13617,7 +13631,7 @@ begin
                Form22.sHoraNoServidor
                + sVersaoNFCe
                ;
-    }
+
 
     sMensagemDiasExpirar := 'Seu sistema está devidamente licenciado para mais ' + IntToStr(DiasParaExpirar(Form1.IBDatabase1)) + ' dias';
     if DiasParaExpirar(Form1.IBDatabase1) < 0 then
@@ -13637,6 +13651,9 @@ begin
                ;
   end;
 
+
+
+
   Form22.RichEdit1.Left  := Form22.Image1.Left;
   Form22.RichEdit1.Top   := Form22.Image1.Top + Form22.Image1.Height + AjustaAltura(20); // Sandro Silva 2017-09-26  20;
   Form22.RichEdit1.Width := AjustaLargura(700); // Sandro Silva 2017-09-26  700;
@@ -13649,19 +13666,170 @@ begin
   Form22.RichEdit1.Visible := True;
   Form22.Button1.Visible   := True;
 
-  Form22.Label6.Caption := Copyright;
-  Form22.Button1.Visible := True;
+  Form22.Mensagem := Copyright;
+  Form22.Button1.Visible := True; }
 
   Timer2.Enabled := False; // Sandro Silva 2016-03-23
-  Form22.ShowModal;
+
+//  Form22.ShowModal; // Dailon Parisotto 2024-10-03 Agora usa a tela especifica do Sobre
+
+  Timer2.Enabled := False; // Sandro Silva 2016-03-23
+
+  ChamarTelaSobre;
+
   if Form1.ImportarvendasdoSmallMobile1.Checked then // Sandro Silva 2016-03-23
     Timer2.Enabled := True;
 
-  Form22.Label6.Visible    := True;
-  Form22.Image1.Visible    := True;
-  Form22.RichEdit1.Visible := False;
-
   Form1.Panel1.BringToFront; // 2015-11-07
+end;
+
+procedure TForm1.ChamarTelaSobre;
+var
+  qryGenerator: TIBQuery;
+  nLicenca: Integer;
+  dtLimite: TDate;
+  nUsuariosAtivos: Integer; // Sandro Silva 2019-06-19
+  Mais1Ini, Mais2Ini : TIniFile;
+  cVersaoNFCe, cMarcaECF, cTempovalidadeCertificado: String;
+begin
+  frmSobre := TfrmSobre.Create(nil);
+  qryGenerator := CriaIBQuery(Form1.IBTransaction1);
+  try
+    Form22.Close;
+    //
+    try
+     if StrToIntDef(Copy(StrTran(Form22.sSerie, 'Número de série: ', ''), 2, 2), 0) < 15 then
+     begin
+      if Form1.IBDatabaseInfo1.UserNames.Count = 1 then
+        Form22.sAtivos :=  AllTrim(InttoStr(Form1.IBDatabaseInfo1.UserNames.Count))+' usuário ativo'
+      else
+        Form22.sAtivos :=  AllTrim(InttoStr(Form1.IBDatabaseInfo1.UserNames.Count))+' usuários ativos';
+     end
+     else
+     begin
+       nUsuariosAtivos := Form1.IBDatabaseInfo1.UserNames.Count; // Sandro Silva 2023-06-01 iUsuariosAtivos := UsuariosConectados(Form1.IBDatabase1);
+       Form22.sAtivos := InttoStr(nUsuariosAtivos) + IfThen(nUsuariosAtivos = 1, ' usuário ativo', ' usuários ativos');
+     end;
+    except
+      Form22.sAtivos := '? usuários ativos';
+    end;
+
+    with frmSobre.redtSobre do
+    begin
+      Lines.Clear;
+
+      SelAttributes.Color := clWhite; // 2024-01-05
+
+      qryGenerator.Close;
+      qryGenerator.Sql.Clear;
+      qryGenerator.Sql.Add('select gen_id(G_LEGAL,0) from rdb$database');
+      qryGenerator.Open;
+
+      if qryGenerator.FieldByname('GEN_ID').AsString <> '0' then
+      begin
+        if Date >= StrToDate(Copy(qryGenerator.FieldByname('GEN_ID').AsString,7,2)+'/'+Copy(qryGenerator.FieldByname('GEN_ID').AsString,5,2)+'/'+Copy(qryGenerator.FieldByname('GEN_ID').AsString,1,4))+31 then
+        begin
+          SelText := Form22.sBuild + chr(10) +
+                     'Usuário: ' + Usuario + chr(10) +
+                     Form22.sLicenca + chr(10) +
+                     Form22.sSerie + chr(10) +
+                     Form22.sIniciandoEm  + chr(10) +
+                     Form22.sUrlDoGdb + chr(10) +
+                     Form22.sAtivos  + chr(10) +
+                     Chr(10) + 'Sistema bloqueado';
+        end else
+        begin
+          SelText := Form22.sBuild + chr(10) +
+                     'Usuário: ' + Usuario + chr(10) +
+                     Form22.sLicenca + chr(10) +
+                     Form22.sSerie + chr(10) +
+                     Form22.sIniciandoEm  + chr(10) +
+                     Form22.sUrlDoGdb + chr(10) +
+                     Form22.sAtivos  + chr(10) +
+                     Chr(10) + 'Uso indevido sistema liberado por + ' +
+                     IntToStr(DaysBetween(StrToDate(Copy(qryGenerator.FieldByname('GEN_ID').AsString,7,2)+'/'+Copy(qryGenerator.FieldByname('GEN_ID').AsString,5,2)+'/'+Copy(qryGenerator.FieldByname('GEN_ID').AsString,1,4))+31,Date))
+                     + ' dias';
+        end;
+      end else
+      begin
+        SelText := Form22.sBuild + chr(10) +
+                   'Usuário: ' + Usuario + chr(10) +
+                   Form22.sLicenca + chr(10) +
+                   Form22.sSerie + chr(10) +
+                   Form22.sIniciandoEm  + chr(10) +
+                   Form22.sUrlDoGdb + chr(10) +
+                   Form22.sAtivos  + chr(10) +
+                   'Seu sistema está devidamente licenciado para mais ' + AllTrim(IntToStr(DiasParaExpirar(Form1.IBDatabase1))) + ' dias';
+      end;
+      Lines.Add('Modo operação: ' + Copy(Form22.sTitulo, Pos(' - ', Form22.sTitulo) +3, Length(Form22.sTitulo)));
+
+      cVersaoNFCe := '';
+      if Form1.sModeloECF = '59' then
+      begin
+        cVersaoNFCe := Form1.PDV_TipoDaImpressora(True) + ' Leiaute Versão: ' + _59.VersaoDadosEnt + Chr(10);
+      end;
+
+      if Form1.sModeloECF = '65' then
+      begin
+        if Form1.spdNFCe1.GetVencimentoCertificado >= Date then
+          cTempovalidadeCertificado := ' - restando ' + FormatFloat('0', Form1.spdNFCe1.GetVencimentoCertificado - Date) + ' dia(s)'
+        else
+          cTempovalidadeCertificado := ' - Expirado';
+
+        cVersaoNFCe := 'Certificado Digital: ' + Copy(Form1.spdNFCe1.NomeCertificado.Text, 1, Pos(',', Form1.spdNFCe1.NomeCertificado.Text) - 1) +
+                       Chr(10) + 'Validade Certificado: ' + FormatDateTime('dd/mm/yyyy', Form1.spdNFCe1.GetVencimentoCertificado) + cTempovalidadeCertificado;
+      end;
+
+      Lines.Add(cVersaoNFCe);
+    end;
+
+    frmSobre.lblLicenca.Caption := ValidaRecursos.rsRecursoSistema.Produto;
+
+    if AnsiContainsText(ValidaRecursos.rsRecursoSistema.Produto, ' Go') then
+      nLicenca := 1;
+
+    if ValidaRecursos.RecursoLiberado(rcOS, dtLimite) then
+      frmSobre.lblLicenca.Caption := ValidaRecursos.rsRecursoSistema.Produto + ' + Ordem de Serviço';
+
+
+    // Empresas MEI
+    Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
+    try
+      if Mais1Ini.ReadString('LICENCA','MEI','NAO') = 'SIM' then
+      begin
+        nLicenca := 2;
+        frmSobre.lblLicenca.Caption := frmSobre.lblLicenca.Caption + ' - Mei';
+      end else
+      begin
+        // Note que agora é no WIND0WS.L0G individual em cada maquina
+        Mais2ini := TIniFile.Create('WIND0WS.L0G');
+
+        if (Mais2Ini.ReadString('LICENCA','MEI','NAO') = 'SIM') or (Length(Mais2Ini.ReadString('LICENCA','MEI','')) > 8) then
+        begin
+          Mais2Ini.WriteString('LICENCA','MEI','OK');
+          nLicenca := 2;
+        end;
+
+        if nLicenca = 2 then
+        begin
+          Mais1Ini.WriteString('LICENCA','MEI','SIM');
+
+          frmSobre.lblLicenca.Caption := frmSobre.lblLicenca.Caption + ' - Mei';
+        end;
+
+      end;
+    finally
+      Mais1ini.Free;
+      Mais2Ini.Free;
+    end;
+
+    frmSobre.ClientWidth  := Self.ClientWidth;
+    frmSobre.ClientHeight := Self.ClientHeight;
+    frmSobre.ShowModal;
+  finally
+    FreeAndNil(qryGenerator);
+    FreeAndNil(frmSobre);
+  end;
 end;
 
 procedure TForm1.Cadastraraliquota1Click(Sender: TObject);
@@ -14330,7 +14498,7 @@ begin
   begin
     if (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then // NFC-e não precisa consultar o status do serviço quando abre menu. Fica lento se servidor não estiver respondendo e ainda não entrou em contingência Sandro Silva 2019-08-14
     begin
-      Form22.Label6.Caption := 'Detectando porta de comunicação...' ;
+      Form22.Mensagem := 'Detectando porta de comunicação...' ;
       try
         Form1.PDV_Inicializa(sPorta);
       except
@@ -15571,23 +15739,23 @@ begin
     if (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '99') then
     begin
       if (Form1.sModeloECF_Reserva = '65') then
-        Form22.Label6.Caption := 'Aguarde! Verificando a disponibilidade dos serviços da NFC-e...';
+        Form22.Mensagem := 'Aguarde! Verificando a disponibilidade dos serviços da NFC-e...';
       if (Form1.sModeloECF_Reserva = '59') then
       begin
-        Form22.Label6.Caption := 'Aguarde! Verificando a disponibilidade dos serviços do ' + _ecf59_Tipodaimpressora + '...';
+        Form22.Mensagem := 'Aguarde! Verificando a disponibilidade dos serviços do ' + _ecf59_Tipodaimpressora + '...';
       end;
       if (Form1.sModeloECF_Reserva = '99') then
-        Form22.Label6.Caption := '';
+        Form22.Mensagem := '';
 
       //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
       if PAFNFCe then
-        Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
+        Form22.Mensagem := Form22.Mensagem + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Mensagem := Form22.Mensagem + ' ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
 
-      Form22.Label6.Repaint;
+
     end else
     begin
-      Form22.Label6.Caption := 'Validando ECF...';
-      Form22.Label6.Repaint;
+      Form22.Mensagem := 'Validando ECF...';
+
     end;
   end;
 
@@ -15719,23 +15887,23 @@ begin
       begin
         if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then// Sandro Silva 2018-10-18  if _BlocoX.ValidaCertificadoDigital(PAnsiChar(Form1.IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual)) = False then
         begin
-          Form22.Label6.Caption := 'Selecione um Certificado Digital';
-          Form22.Label6.Repaint;
+          Form22.Mensagem := 'Selecione um Certificado Digital';
+
           Sleep(3000);
         end;
 
         if Form1.bStatusRede then
         begin
 
-          Form22.Label6.Caption := 'Aguarde! Transmitindo arquivos do Bloco X que estão pendentes';
-          Form22.Label6.Repaint;
+          Form22.Mensagem := 'Aguarde! Transmitindo arquivos do Bloco X que estão pendentes';
+
 
           BlocoxTransmitirPendente1('REDUCAO', Form1.sNumeroDeSerieDaImpressora, False);
           BlocoxTransmitirPendente1('ESTOQUE', '', False);
           BlocoxTransmitirPendente1('REDUCAO', '', False); // Sandro Silva 2018-01-24 Transmitir dos demais ECF
 
-          Form22.Label6.Caption := 'Aguarde! Verificando pendências da transmissão do Bloco X'; // Sandro Silva 2018-11-22
-          Form22.Label6.Repaint;
+          Form22.Mensagem := 'Aguarde! Verificando pendências da transmissão do Bloco X'; // Sandro Silva 2018-11-22
+
 
           BlocoXAlertarPendente1('', Form1.sNumeroDeSerieDaImpressora, True);
 
@@ -15774,8 +15942,8 @@ begin
 
       if _BlocoX.ValidaCertificadoDigital(LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)) = False then // Sandro Silva 2018-10-18 if _BlocoX.ValidaCertificadoDigital(PAnsiChar(Form1.IBDatabase1.DatabaseName), PAnsiChar(Form1.sAtual)) = False then
       begin
-        Form22.Label6.Caption := 'Selecione um Certificado Digital';
-        Form22.Label6.Repaint;
+        Form22.Mensagem := 'Selecione um Certificado Digital';
+
         Sleep(3000);
       end;
     end;
@@ -15845,13 +16013,13 @@ begin
             if (Form1.sModeloECF_Reserva = '65') then
             begin
 
-              Form22.Label6.Caption := 'Aguarde! Analisando NFC-e...';
+              Form22.Mensagem := 'Aguarde! Analisando NFC-e...';
 
               //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
               if PAFNFCe then
-                Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
+                Form22.Mensagem := Form22.Mensagem + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Mensagem := Form22.Mensagem + ' ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
 
-              Form22.Label6.Repaint;
+
 
               _ecf65_CorrigeXmlNoBanco;
 
@@ -15876,13 +16044,13 @@ begin
                   if _ecf65_VerificaContingenciaPendentedeTransmissao(Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), Form1.sCaixa) then // Ficha 5567
                   begin
 
-                    Form22.Label6.Caption := 'Aguarde! Transmitindo NFC-e em contingência emitidas em ' + FormatDateTime('dd/mm/yyyy', Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia));
+                    Form22.Mensagem := 'Aguarde! Transmitindo NFC-e em contingência emitidas em ' + FormatDateTime('dd/mm/yyyy', Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia));
 
                     //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
                     if PAFNFCe then
-                      Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' - ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
+                      Form22.Mensagem := Form22.Mensagem + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Mensagem := Form22.Mensagem + ' - ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
 
-                    Form22.Label6.Repaint;
+
 
                     _ecf65_EnviarNFCeContingencia(Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), '', Form1.sCaixa);
 
@@ -15961,6 +16129,7 @@ begin
       while iSenha < 6 do
       begin
         //
+        Form15.Tentativas := iSenha;
         Form15.ShowModal;
 
         // Sandro Silva 2022-11-04 Audita('ACESSOU','FRENTE', Form15.UsuarioPub,'ACESSOU O SISTEMA',0,0); // Ato, Modulo, Usuário, Histórico, Valor
@@ -15985,7 +16154,7 @@ begin
                         Copy(sSenhaX,(I*5)-4,5)
                         )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
         // ----------------------------- //
-        if (AnsiUpperCase(sSenha) = AnsiUpperCase(Senha)) or (AllTrim(Senha)='') then
+        if (AnsiUpperCase(sSenha) = AnsiUpperCase(Senha)) then
         begin
           iSenha := 6;
         end else
@@ -16021,6 +16190,7 @@ begin
     except end;
   end;
   //
+  Form22.Close;
 
   if AnsiLowerCase(ExtractFileName(Application.ExeName)) = 'pafdief.exe' then
   begin
@@ -20470,7 +20640,7 @@ begin
           Mais1Ini.Free;
           //
           Screen.Cursor         := crHourGlass;    // Cursor de Aguardo
-          Form22.Label6.Caption := 'Aguarde a DESCARGA do PDV...';
+          Form22.Mensagem := 'Aguarde a DESCARGA do PDV...';
 
           //
           Form1.IBDatabase2.Close;
@@ -26845,8 +27015,8 @@ begin
 
             if Form22.Visible then
             begin
-              Form22.Label6.Caption := 'Gerando “Arquivo com Informações da Redução Z do PAF-ECF” REQUISITO LVIII - PAF-ECF. SEFAZ - ' + Form1.ibDataSet13.FieldByName('ESTADO').AsString; // Sandro Silva 2019-05-02 Form22.Label6.Caption := 'Gerando “Arquivo com Informações da Redução Z do PAF-ECF” REQUISITO LVIII - PAF-ECF';
-              Form22.Label6.Repaint;
+              Form22.Mensagem := 'Gerando “Arquivo com Informações da Redução Z do PAF-ECF” REQUISITO LVIII - PAF-ECF. SEFAZ - ' + Form1.ibDataSet13.FieldByName('ESTADO').AsString; // Sandro Silva 2019-05-02 Form22.Mensagem := 'Gerando “Arquivo com Informações da Redução Z do PAF-ECF” REQUISITO LVIII - PAF-ECF';
+
             end
             else
             begin
@@ -26923,8 +27093,8 @@ begin
         Form1.Display('Aguarde! Analisando REQUISITO LIX...','Aguarde... Analisando xml do estoque mensal...');
         Form1.Repaint;
 
-        Form22.Label6.Caption := 'Aguarde... Analisando xml do estoque mensal...';
-        Form22.Label6.Repaint;
+        Form22.Mensagem := 'Aguarde... Analisando xml do estoque mensal...';
+
 
       end;
 
@@ -26973,8 +27143,8 @@ begin
 
               if Form22.Visible then
               begin
-                Form22.Label6.Caption := 'Gerando “Arquivo com Informações do Estoque Mensal do Estabelecimento” REQUISITO LIX - PAF-ECF. SEFAZ - ' + Form1.ibDataSet13.FieldByName('ESTADO').AsString; // Sandro Silva 2019-05-02 Form22.Label6.Caption := 'Gerando “Arquivo com Informações do Estoque Mensal do Estabelecimento” REQUISITO LIX - PAF-ECF';
-                Form22.Label6.Repaint;
+                Form22.Mensagem := 'Gerando “Arquivo com Informações do Estoque Mensal do Estabelecimento” REQUISITO LIX - PAF-ECF. SEFAZ - ' + Form1.ibDataSet13.FieldByName('ESTADO').AsString; // Sandro Silva 2019-05-02 Form22.Mensagem := 'Gerando “Arquivo com Informações do Estoque Mensal do Estabelecimento” REQUISITO LIX - PAF-ECF';
+
               end
               else
               begin
@@ -28228,7 +28398,7 @@ begin
     Form1.Visible := False;
     CriaIcone;
     bSystray := False;
-    Form22.Button1Click(Sender);
+    Form22.Close;
     Timer2.Interval := INTERVAL_FRENTE_MINIMIZADO; // 2015-06-23
     if Form1.ImportarvendasdoSmallMobile1.Checked then // Sandro Silva 2016-03-23
       Timer2.OnTimer(Sender);

@@ -4,42 +4,68 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, IniFiles, SmallFunc_xe, Buttons;
+  Dialogs, ExtCtrls, StdCtrls, IniFiles, SmallFunc_xe, Buttons,
+  Vcl.Imaging.pngimage;
 
 type
   TForm15 = class(TForm)
-    Panel1: TPanel;
-    Label5: TLabel;
-    Label4: TLabel;
-    Usuario: TComboBox;
-    SENHA: TEdit;
-    Button1: TBitBtn;
-    Button2: TBitBtn;
+    pnlPrincipal: TPanel;
+    pnlLogin: TPanel;
+    imgFundo: TImage;
+    imgLogin: TImage;
+    lblUsuario: TLabel;
+    lblSenha: TLabel;
+    imgOculta: TImage;
+    imgVer: TImage;
+    imgUsuario: TImage;
+    imgSenha: TImage;
+    imgLogo: TImage;
+    Image2: TImage;
+    imgEntrar: TImage;
+    lblConfNS: TLabel;
+    imgEntrarFoco: TImage;
+    imgCancelar: TImage;
+    lblCancelar: TLabel;
+    lblEntrar: TLabel;
+    edtSenha: TEdit;
+    pnlVisSenha2: TPanel;
+    imgVisSenha2: TImage;
+    pnlusuario: TPanel;
+    UsuarioNew: TComboBox;
+    pnlVisSenha1: TPanel;
+    imgVisSenha1: TImage;
+    pnlVisSenha3: TPanel;
+    imgVisSenha3: TImage;
     LabelF10Indisponivel: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure UsuarioKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure UsuarioExit(Sender: TObject);
-    procedure UsuarioKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure SENHAKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure Button2Click(Sender: TObject);
-    procedure SENHAClick(Sender: TObject);
-    procedure SENHAEnter(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure UsuarioNewKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure UsuarioNewExit(Sender: TObject);
+    procedure edtSenhaClick(Sender: TObject);
+    procedure edtSenhaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure lblEntrarClick(Sender: TObject);
+    procedure lblCancelarClick(Sender: TObject);
+    procedure edtSenhaMouseEnter(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure imgVisSenha2Click(Sender: TObject);
+    procedure imgEntrarMouseEnter(Sender: TObject);
+    procedure imgEntrarMouseLeave(Sender: TObject);
+    procedure lblCancelarMouseEnter(Sender: TObject);
+    procedure lblCancelarMouseLeave(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
-    { Private declarations }
+    FnTentativas: Integer;
+    procedure TremeTela;
   public
-    { Public declarations }
      SenhaPub: String;
      UsuarioPub: String;
 
+     property Tentativas: Integer read FnTentativas write FnTentativas;
   end;
 
 var
@@ -47,7 +73,8 @@ var
 
 implementation
 
-uses Unit22, fiscal, Unit12, ufuncoesfrente, urequisitospafnfce;
+uses Unit22, fiscal, Unit12, ufuncoesfrente, urequisitospafnfce,
+  uDialogs, uSmallConsts;
 
 {$R *.dfm}
 
@@ -55,13 +82,16 @@ procedure TForm15.FormCreate(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
+  Self.ClientWidth := Form22.ClientWidth;
+  Self.ClientHeight := Form22.ClientHeight;
+
   Form15.Position := poDesigned; // Sandro Silva 2021-07-30;
-  //
   Mais1ini := TIniFile.Create('MAIS1.INI');
-  Usuario.Text := Mais1Ini.ReadString('Usuarios','Nome',Usuario.Text);
-  Mais1Ini.Free;
-  if length(Usuario.Text) = 0 then Usuario.TabOrder := 0;
-  //
+  try
+    UsuarioNew.Text := Mais1Ini.ReadString('Usuarios','Nome',UsuarioNew.Text);
+  finally
+    Mais1Ini.Free;
+  end;
 end;
 
 procedure TForm15.FormActivate(Sender: TObject);
@@ -70,30 +100,26 @@ var
   sSecoes :  TStrings;
   I : Integer;
 begin
-  //
-  Form22.Label6.Caption := '';
-  //
-  Form15.Senha.Text := '';
-  Form15.SENHA.SetFocus;
-  //
+  Form15.edtSenha.SetFocus;
+
   sSecoes := TStringList.Create;
-  //
+
   Mais1ini := TIniFile.Create('MAIS1.INI');
-  Usuario.Text := Mais1Ini.ReadString('Usuarios','Nome',Usuario.Text);
-  //
+  UsuarioNew.Text := Mais1Ini.ReadString('Usuarios','Nome',UsuarioNew.Text);
+
   Mais1Ini.Free;
   Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
   Mais1Ini.ReadSections(sSecoes);
-  //
+
   for I := 0 to (sSecoes.Count - 1) do
   begin
     if Mais1Ini.ReadString(sSecoes[I],'Chave','ÁstreloPitecus') <> 'ÁstreloPitecus' then
     begin
-      if AllTrim(sSecoes[I]) <> 'Administrador' then
+      if AllTrim(sSecoes[I]) <> _cUsuarioAdmin then
       begin
         if Mais1Ini.ReadString(sSecoes[I],'Chave','') <> '' then
         begin
-          Usuario.Items.Add(sSecoes[I]);
+          UsuarioNew.Items.Add(sSecoes[I]);
         end else
         begin
           Mais1ini.EraseSection(sSecoes[I]);
@@ -107,50 +133,38 @@ begin
   Mais1Ini.Free;
   sSecoes.Free;
   {Sandro Silva 2018-11-21 fim}
+
+  if Tentativas > 0 then
+    TremeTela;
 end;
 
-procedure TForm15.UsuarioKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = VK_RETURN then SENHA.SetFocus;
-end;
-
-procedure TForm15.UsuarioExit(Sender: TObject);
+procedure TForm15.UsuarioNewExit(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
-  //
-  if UpperCase(AllTrim(USUARIO.Text)) = 'ADMINISTRADOR' then
+  if UpperCase(AllTrim(UsuarioNew.Text)) = UpperCase(_cUsuarioAdmin) then
   begin
-    ShowMessage('Usuário inválido.');
-    USUARIO.Text := '';
-    USUARIO.SetFocus;
+    MensagemSistema('Usuário inválido.');
+    UsuarioNew.SetFocus;
   end else
   begin
-    //
     try
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\'+USUARIO.Text+'.INF');
-      Mais1Ini.WriteString('Senha','Usuário e senha válidos','Sim');
-      Mais1Ini.Free;
-    except end;
+      Mais1ini := TIniFile.Create(Form1.sAtual+'\'+UsuarioNew.Text+'.INF');
+      try
+        Mais1Ini.WriteString('Senha','Usuário e senha válidos','Sim');
+      finally
+        Mais1Ini.Free;
+      end;
+    except
+    end;
   end;
-  //
 end;
 
-procedure TForm15.UsuarioKeyDown(Sender: TObject; var Key: Word;
+procedure TForm15.UsuarioNewKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_RETURN then Senha.SetFocus;
-end;
-
-procedure TForm15.SENHAKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  //
-  // Sandro Silva 2021-07-22 if Key = VK_RETURN then Button1.SetFocus;
   if Key = VK_RETURN then
-    Button1Click(Sender);
-  //
+    edtSenha.SetFocus;
 end;
 
 procedure TForm15.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -158,12 +172,12 @@ var
   Mais1Ini: TIniFile;
 begin
   //
-  if (AllTrim(Usuario.Text) <> '') and (Senha.Text<>'#####') then
+  if (AllTrim(UsuarioNew.Text) <> EmptyStr) and (edtSenha.Text <> _cSenhaSair) then
   begin
-    SenhaPub:=Senha.Text;
-    UsuarioPub:=Usuario.Text;
+    SenhaPub:=edtSenha.Text;
+    UsuarioPub:=UsuarioNew.Text;
     // Grava o o nome do último a usar o programa no .INI
-    if UsuarioPub <> 'Administrador' then
+    if UsuarioPub <> _cUsuarioAdmin then
     begin
       Mais1ini := TIniFile.Create('MAIS1.INI');
       Mais1Ini.WriteString('Usuarios','Nome',UsuarioPub);
@@ -175,9 +189,10 @@ begin
   end else
   begin
     //
-    if Senha.Text <> '#####' then
+    if edtSenha.Text <> _cSenhaSair then
     begin
-      Usuario.SetFocus;
+      UsuarioNew.SetFocus;
+      TremeTela;
       Abort;
     end;
     //
@@ -185,100 +200,77 @@ begin
   //
 end;
 
-procedure TForm15.Button2Click(Sender: TObject);
+procedure TForm15.TremeTela;
+var
+  I : Integer;
 begin
-  //
-  if AllTrim(Usuario.Text) = '' then Usuario.Text := '<Usuário>';
-  //
-  SENHA.Text  := '#####';
-  SenhaPub     := SENHA.Text;
-  UsuarioPub   := USUARIO.Text;
-  //
+  if Self.edtSenha.Text <> EmptyStr then
+  begin
+    for I := 1 to 3 do
+    begin
+      pnlLogin.Left := pnlLogin.Left +10;  pnlLogin.Repaint; sleep(20);
+      pnlLogin.Left := pnlLogin.Left -10;  pnlLogin.Repaint; sleep(20);
+      pnlLogin.Left := pnlLogin.Left +08;  pnlLogin.Repaint; sleep(15);
+      pnlLogin.Left := pnlLogin.Left -08;  pnlLogin.Repaint; sleep(15);
+      pnlLogin.Left := pnlLogin.Left +06;  pnlLogin.Repaint; sleep(10);
+      pnlLogin.Left := pnlLogin.Left -06;  pnlLogin.Repaint; sleep(10);
+      pnlLogin.Left := pnlLogin.Left +04;  pnlLogin.Repaint; sleep(05);
+      pnlLogin.Left := pnlLogin.Left -04;  pnlLogin.Repaint; sleep(05);
+    end;
+  end;
+  Self.edtSenha.Text := EmptyStr;
+end;
+
+procedure TForm15.edtSenhaClick(Sender: TObject);
+begin
+  Form1.Small_InputBox('Senha do usuário','Informe a senha de '+UsuarioNew.Text+':','');
+end;
+
+procedure TForm15.edtSenhaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    lblEntrarClick(Sender);
+end;
+
+procedure TForm15.edtSenhaMouseEnter(Sender: TObject);
+begin
+  pnlVisSenha2.Visible := True;
+  pnlVisSenha2.Top     := TEdit(Sender).Top + 3;
+  pnlVisSenha2.Left    := TEdit(Sender).Left + TEdit(Sender).Width - 20;
+end;
+
+procedure TForm15.lblCancelarClick(Sender: TObject);
+begin
+  if AllTrim(UsuarioNew.Text) = EmptyStr then
+    UsuarioNew.Text := '<Usuário>';
+
+  edtSenha.Text := _cSenhaSair;
+  SenhaPub      := edtSenha.Text;
+  UsuarioPub    := UsuarioNew.Text;
+
   Close;
   Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
   {Sandro Silva 2014-06-30 inicio}
   FecharAplicacao(ExtractFileName(Application.ExeName));
   {Sandro Silva 2014-06-30 final}
-  //
 end;
 
-procedure TForm15.SENHAClick(Sender: TObject);
+procedure TForm15.lblCancelarMouseEnter(Sender: TObject);
 begin
-  Form1.Small_InputBox('Senha do usuário','Informe a senha de '+Usuario.Text+':','');
+  imgCancelar.Visible := True;
+  Self.Repaint;
 end;
 
-procedure TForm15.SENHAEnter(Sender: TObject);
-var
-  I : Integer;
+procedure TForm15.lblCancelarMouseLeave(Sender: TObject);
 begin
-  //
-  for I := 1 to 3 do
-  begin
-{
-    Form15.Top  := Form15.Top  +07;  Form15.Repaint; sleep(7);
-    Form15.Left := Form15.Left +07;  Form15.Repaint; sleep(7);
-    Form15.Left := Form15.Left -07;  Form15.Repaint; sleep(7);
-    Form15.Top  := Form15.Top  -07;  Form15.Repaint; sleep(7);
-    Form15.Top  := Form15.Top  -07;  Form15.Repaint; sleep(7);
-    Form15.Left := Form15.Left -07;  Form15.Repaint; sleep(7);
-    Form15.Left := Form15.Left +07;  Form15.Repaint; sleep(7);
-    Form15.Top  := Form15.Top  +07;  Form15.Repaint; sleep(7);
-    Form15.Left := Form15.Left -07;  Form15.Repaint; sleep(7);
-    Form15.Top  := Form15.Top  +07;  Form15.Repaint; sleep(7);
-    Form15.Top  := Form15.Top  -07;  Form15.Repaint; sleep(7);
-    Form15.Left := Form15.Left +07;  Form15.Repaint; sleep(7);
-    Form15.Left := Form15.Left +07;  Form15.Repaint; sleep(7);
-    Form15.Top  := Form15.Top  -07;  Form15.Repaint; sleep(7);
-}
-
-    Form15.Left := Form15.Left +10;  Form15.Repaint; sleep(20);
-    Form15.Left := Form15.Left -10;  Form15.Repaint; sleep(20);
-    Form15.Left := Form15.Left +08;  Form15.Repaint; sleep(15);
-    Form15.Left := Form15.Left -08;  Form15.Repaint; sleep(15);
-    Form15.Left := Form15.Left +06;  Form15.Repaint; sleep(10);
-    Form15.Left := Form15.Left -06;  Form15.Repaint; sleep(10);
-    Form15.Left := Form15.Left +04;  Form15.Repaint; sleep(05);
-    Form15.Left := Form15.Left -04;  Form15.Repaint; sleep(05);
-    //
-
-    //
-  end;
-  //
+  imgCancelar.Visible := False;
+  Self.Repaint;
 end;
 
-procedure TForm15.Button1Click(Sender: TObject);
+procedure TForm15.lblEntrarClick(Sender: TObject);
 begin
   Close;
-end;
-
-procedure TForm15.FormShow(Sender: TObject);
-begin
-  if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
-  begin
-    LabelF10Indisponivel.Visible := False;
-    {Sandro Silva 2020-12-07 inicio}
-    //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
-    if PAFNFCe then
-    begin
-      LabelF10Indisponivel.Caption := MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
-      LabelF10Indisponivel.Visible := True;
-    end;
-    {Sandro Silva 2020-12-07 fim}
-  end;
-
-
-  {Sandro Silva 2021-07-22 inicio}
-  //Button1.Visible := False;
-  //Button2.Visible := Button1.Visible;
-  Label4.Font.Color := clWhite;
-  Label5.Font.Color := Label4.Font.Color;
-  LabelF10Indisponivel.Font.Color := Label4.Font.Color;
-  Self.Color := Aplicacao.ImgLogo.Canvas.Pixels[1,1];
-  Panel1.Color := Self.Color;
-  Form15.Left := (Screen.Width - Form15.Width ) div 2; // Sandro Silva 2021-07-30
-  Form15.Top  := ((Screen.Height - Form15.Height ) div 2) + 20;// Sandro Silva 2021-07-30
-  {Sandro Silva 2021-07-22 fim}
-  
 end;
 
 procedure TForm15.FormKeyDown(Sender: TObject; var Key: Word;
@@ -286,7 +278,56 @@ procedure TForm15.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   // Sandro Silva 2021-07-22
   if (Key = VK_ESCAPE) then
-    Button2Click(Button2);
+    lblCancelarClick(Self);
+end;
+
+procedure TForm15.FormResize(Sender: TObject);
+begin
+  pnlLogin.Left    := (Self.Width div 2) - (pnlLogin.Width div 2) ;
+  pnlLogin.Top     := (Self.Height div 2) - (pnlLogin.Height div 2);
+  pnlLogin.Visible := True;
+end;
+
+procedure TForm15.FormShow(Sender: TObject);
+begin
+  Form22.pnlCarregamento.Visible := False;
+
+  if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
+  begin
+    LabelF10Indisponivel.Visible := False;
+    if PAFNFCe then
+    begin
+      LabelF10Indisponivel.Caption := MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
+      LabelF10Indisponivel.Visible := True;
+    end;
+  end;
+end;
+
+procedure TForm15.imgEntrarMouseEnter(Sender: TObject);
+begin
+  imgEntrarFoco.Visible := True;
+  Self.Repaint;
+end;
+
+procedure TForm15.imgEntrarMouseLeave(Sender: TObject);
+begin
+  imgEntrarFoco.Visible := False;
+  Self.Repaint;
+end;
+
+procedure TForm15.imgVisSenha2Click(Sender: TObject);
+begin
+  if edtSenha.PasswordChar = '*' then
+  begin
+    imgVisSenha2.Picture := imgOculta.Picture;
+    imgVisSenha2.Visible := True;
+    edtSenha.PasswordChar := #0;
+  end else
+  begin
+    imgVisSenha2.Picture := imgVer.Picture;
+    imgVisSenha2.Visible := True;
+    edtSenha.PasswordChar := '*';
+  end;
 end;
 
 end.
