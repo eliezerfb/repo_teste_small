@@ -1051,6 +1051,7 @@ type
     FunesAdministrativasIntegraoIta1: TMenuItem;
     IBDataSet150FORMAPAGAMENTO: TWideMemoField;
     IBDataSet150CLIFOR: TIBStringField;
+    mmTransmitiContingenciaAbertura: TMenuItem;
     ibDataSet7FORMADEPAGAMENTO: TIBStringField;
     ibDataSet7AUTORIZACAOTRANSACAO: TIBStringField;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
@@ -1425,6 +1426,7 @@ type
     procedure CCF1Click(Sender: TObject);
     procedure COO1Click(Sender: TObject);
     procedure FunesAdministrativasIntegraoIta1Click(Sender: TObject);
+    procedure mmTransmitiContingenciaAberturaClick(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1509,6 +1511,7 @@ type
     procedure CancelaDescontoAcrescimo;
     procedure CarregaConfiguracoes;
     procedure ChamarTelaSobre;
+    procedure DefineTransmiteContingenciaAbertura
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -1628,6 +1631,8 @@ type
     sChaveMeiCifrada: String;
     ClienteSmallMobile: TSmallMobileCliente;
     bEditandoMovimento: Boolean; // Sandro Silva 2023-11-08
+    FoArquivoDAT: TArquivosDAT;
+    //
 
     function CortarImagem(Imagem: TGraphic; Valores: TRect): TBitmap;
 
@@ -10093,6 +10098,12 @@ begin
   ConverteConfPix;
 
   CarregaConfiguracoes; //Mauricio Parizotto 2024-08-26
+
+  {Dailon Parisotto (smal-741) 2024-10-02 Inicio}
+  FoArquivoDAT := TArquivosDAT.Create(EmptyStr, IBTransaction1);
+
+  DefineTransmiteContingenciaAbertura;
+  {Dailon Parisotto (smal-741) 2024-10-02 Fim}
 end;
 
 procedure TForm1.Button18Click(Sender: TObject); // Fechamento Cupom
@@ -15637,6 +15648,29 @@ var
   I, iSenha : Integer;
   iDiaContingencia: Integer; // Sandro Silva 2019-08-14
   dtDataUltimaRZ: TDate; // Sandro Silva 2019-08-29 ER 02.06 UnoChapeco
+  bEnviarContingenciaNaAbertura: Boolean;
+  function EnviarContingenciaNaAbertura(dtDataMinimaTransmitir: TDate;
+    TransmitirContingenciaAbertura: Boolean; dtUltimaTransmissao: TDate): Boolean;
+  var
+    iResposta: Integer;
+  begin
+    //smal-741
+    // Valida a configuração para transimitir a contingência automaticamente na abertura
+    // Quando a configuração estiver desmarcada e tiver contingência pendente, irá perguntar se deseja transmitir
+    // Considera contingências pendentes com data de emissão menor que a data atual
+    // Não exibe pergunta quando a data da última transmissão for menor que a data atual
+    //**** Usar esse método apenas aqui ***
+    iResposta := mrNo;
+    if _ecf65_VerificaContingenciaPendentedeTransmissao(dtDataMinimaTransmitir, Date - 1, Form1.sCaixa) then
+    begin
+      iResposta := mrYes;
+      if (TransmitirContingenciaAbertura = False) then
+        if (dtUltimaTransmissao < Date) then
+          iResposta := uDialogs.MensagemSistemaPergunta('Existem documentos emitidos em contingência pendentes de transmissão.' + sLineBreak +
+                                                        'Transmitir agora?', [mb_YesNo]);
+    end;
+    Result := (iResposta = mrYes);
+  end;
 begin
   bFechandoMesasAbertas := False;
   Form1.sReferenteNFModelo2 := '';
@@ -16029,6 +16063,7 @@ begin
 
           if _ecf65_VerificaContingenciaPendentedeTransmissao(Date - Form1.ContingenciaPendente.LimiteDias, Date, Form1.sCaixa) then // Verifica se tem pendências dentro do período
           begin
+            {Dailon Parisoto (smal-741) 2024-10-02 Inicio
 
             if Form1.bStatusRede then
             begin
@@ -16066,6 +16101,101 @@ begin
               end;
 
             end; // if Form1.bStatusRede then
+
+            }
+            {Sandro Silva (smal-741) 2024-10-17 inicio
+            if Form1.bStatusRede then
+            begin
+
+              if Form1.ContingenciaPendente.dtUltimaTransmissao < Date then
+              begin
+                if (FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura) or (uDialogs.MensagemSistemaPergunta('Existem documentos emitidos em contingência pendentes de transmissão.' + sLineBreak +
+                                                                                                                'Transmitir agora?', [mb_YesNo]) = mrYes) then
+                begin
+                  // Seleciona as NFC-e em contingência até o dia anterior ao atual
+                  for iDiaContingencia := 0 to Form1.ContingenciaPendente.LimiteDias - 1 do //while Form1.ContingenciaPendente.dtUltimaTransmissao <= Date do
+                  begin
+
+                    // Verifica se tem pendência no dia selecionado para exibir a mensagem
+                    if _ecf65_VerificaContingenciaPendentedeTransmissao(Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), Form1.sCaixa) then // Ficha 5567
+                    begin
+
+                      Form22.Label6.Caption := 'Aguarde! Transmitindo NFC-e em contingência emitidas em ' + FormatDateTime('dd/mm/yyyy', Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia));
+
+                      //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
+                      if PAFNFCe then
+                        Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' - ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
+
+                      Form22.Label6.Repaint;
+
+                      _ecf65_EnviarNFCeContingencia(Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), '', Form1.sCaixa);
+
+                    end;
+
+                    Form1.ContingenciaPendente.dtUltimaTransmissao := Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia);
+
+                  end;
+
+                  _ecf65_VerificaContingenciaPendentedeTransmissao(Date - Form1.ContingenciaPendente.LimiteDias, Date, Form1.sCaixa);
+                  Sleep(50);
+                  SalvarConfiguracao(FRENTE_INI, SECAO_65, 'Transmissao Contingencia', FormatDateTime('dd/mm/yyyy', Date));
+                end;
+              end;
+
+            end; // if Form1.bStatusRede then
+            }
+            if Form1.bStatusRede then
+            begin
+
+              bEnviarContingenciaNaAbertura := EnviarContingenciaNaAbertura(Date - Form1.ContingenciaPendente.LimiteDias,
+                                                                            FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura,
+                                                                            Form1.ContingenciaPendente.dtUltimaTransmissao);
+
+              if Form1.ContingenciaPendente.dtUltimaTransmissao < Date then
+              begin
+                //if (FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura) or (uDialogs.MensagemSistemaPergunta('Existem documentos emitidos em contingência pendentes de transmissão.' + sLineBreak +
+                //                                                                                                'Transmitir agora?', [mb_YesNo]) = mrYes) then
+                if bEnviarContingenciaNaAbertura then
+                begin
+                  // Seleciona as NFC-e em contingência até o dia anterior ao atual
+                  for iDiaContingencia := 0 to Form1.ContingenciaPendente.LimiteDias - 1 do //while Form1.ContingenciaPendente.dtUltimaTransmissao <= Date do
+                  begin
+
+                    // Verifica se tem pendência no dia selecionado para exibir a mensagem
+                    if _ecf65_VerificaContingenciaPendentedeTransmissao(Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), Form1.sCaixa) then // Ficha 5567
+                    begin
+
+                      Form22.Label6.Caption := 'Aguarde! Transmitindo NFC-e em contingência emitidas em ' + FormatDateTime('dd/mm/yyyy', Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia));
+
+                      //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
+                      if PAFNFCe then
+                        Form22.Label6.Caption := Form22.Label6.Caption + #13 + MSG_ALERTA_MENU_FISCAL_INACESSIVEL; // Sandro Silva 2021-07-28 Form22.Label6.Caption := Form22.Label6.Caption + ' - ' + MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
+
+                      Form22.Label6.Repaint;
+
+                      _ecf65_EnviarNFCeContingencia(Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia), '', Form1.sCaixa);
+
+                    end;
+
+                    Form1.ContingenciaPendente.dtUltimaTransmissao := Date - (Form1.ContingenciaPendente.LimiteDias - iDiaContingencia);
+
+                  end;
+                  _ecf65_VerificaContingenciaPendentedeTransmissao(Date - Form1.ContingenciaPendente.LimiteDias, Date, Form1.sCaixa);
+                  Sleep(50);
+                  SalvarConfiguracao(FRENTE_INI, SECAO_65, 'Transmissao Contingencia', FormatDateTime('dd/mm/yyyy', Date));
+                end;
+              end;
+
+              {Sandro Silva (smal-741) 2024-10-23}
+              _ecf65_VerificaContingenciaPendentedeTransmissao(Date - Form1.ContingenciaPendente.LimiteDias, Date, Form1.sCaixa);
+              Form1.ExibeAlertaContingenciaPendente; // Sandro Silva 2019-08-14
+              Form1.Display(Form1.sStatusECF, Form1.sF);
+              {Sandro Silva (smal-741) 2024-10-23}
+
+            end; // if Form1.bStatusRede then
+            {Sandro Silva (smal-741) 2024-10-17 fim}
+
+            {Dailon Parisoto (smal-741) 2024-10-02 Fim}
 
           end; // if _ecf65_VerificaContingenciaPendentedeTransmissao(Date - Form1.ContingenciaPendente.LimiteDias, Date, Form1.sCaixa) then
 
@@ -27546,6 +27676,21 @@ begin
   touch_ESCClick(touch_ESC2);// Fechar tela do gerenciador
 end;
 
+procedure TForm1.mmTransmitiContingenciaAberturaClick(Sender: TObject);
+begin
+  FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura := (not FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura);
+
+  DefineTransmiteContingenciaAbertura;
+end;
+
+procedure TForm1.DefineTransmiteContingenciaAbertura;
+begin
+  // Força gravar o valor
+  FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura := FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura;
+
+  mmTransmitiContingenciaAbertura.Checked := FoArquivoDAT.BD.Frente.TransmitirContingenciaAbertura;
+end;
+
 procedure TForm1.PopupMenu2Popup(Sender: TObject);
 begin
   ransmitirContingncia1.Enabled := (NFCeemContingncia1.Checked = False);
@@ -28334,6 +28479,7 @@ begin
   end;
 
 
+  FreeAndNil(FoArquivoDAT);
 end;
 
 procedure TForm1.SATInicializaoAlternativa1Click(Sender: TObject);
