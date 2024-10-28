@@ -252,6 +252,7 @@ begin
     ibVENDASExportacaoNUMERONF.AsString   := FcNumeroNF;
     ibVENDASExportacaoUFEMBARQUE.AsString := Form7.ibDataSet13ESTADO.AsString;
 
+    {Mauricio Parizotto 2024-10-16 - Não carrega pais por padrão
     qryPais := CriaIBQuery(FoTransaction);
     try
       qryPais.Close;
@@ -264,6 +265,7 @@ begin
     finally
       FreeAndNil(qryPais)
     end;
+    }
   end else
     ibVENDASExportacao.Edit;
 end;
@@ -287,23 +289,28 @@ begin
   // País
   fraPais.TipoDePesquisa               := tpLocate;
   fraPais.GravarSomenteTextoEncontrato := True;
-  fraPais.CampoVazioAbrirGridPesquisa  := True;
+  //fraPais.CampoVazioAbrirGridPesquisa  := True; Mauricio Parizotto 2024-10-23
+  fraPais.CampoVazioAbrirGridPesquisa  := False;
   fraPais.CampoCodigo                  := ibVENDASExportacaoIDPAISES;
   fraPais.CampoCodigoPesquisa          := 'IDPAISES';
   fraPais.sCampoDescricao              := 'NOME';
   fraPais.sTabela                      := 'PAISES';
   fraPais.CarregaDescricao;
   // UF Embarque
-  fraUFEmbarque.TipoDePesquisa               := tpSelect;
+  //fraUFEmbarque.TipoDePesquisa               := tpSelect; Mauricio Parizotto 2024-10-16
+  fraUFEmbarque.TipoDePesquisa               := tpLocate;
   fraUFEmbarque.GravarSomenteTextoEncontrato := True;
   fraUFEmbarque.CampoVazioAbrirGridPesquisa  := True;
   fraUFEmbarque.CampoCodigo                  := ibVENDASExportacaoUFEMBARQUE;
   fraUFEmbarque.CampoCodigoPesquisa          := 'UF';
   fraUFEmbarque.sCampoDescricao              := 'UF';
-  fraUFEmbarque.sTabela                      := 'MUNICIPIOS';
+  //fraUFEmbarque.sTabela                      := 'MUNICIPIOS'; Mauricio Parizotto 2024-10-16
+  fraUFEmbarque.sTabela                      := ' (Select UF'+
+                                                ' From MUNICIPIOS'+
+                                                ' Group By UF)';
   fraUFEmbarque.CarregaDescricao;
   // Se não aumentar corta a UF
-  fraUFEmbarque.gdRegistros.Columns[0].Width := fraUFEmbarque.gdRegistros.Columns[0].Width + 8;
+  //fraUFEmbarque.gdRegistros.Columns[0].Width := fraUFEmbarque.gdRegistros.Columns[0].Width + 8;  Mauricio Parizotto 2024-10-16
 end;
 
 procedure TfrmInformacoesExportacaoNFe.setTransaction(
