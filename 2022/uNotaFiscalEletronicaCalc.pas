@@ -544,7 +544,7 @@ begin
                     end;
 
                     // Desconta do ICMS substituido o ICMS normal
-                    NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2); // Acumula
+salvar valor ipi em variavel                    NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2); // Acumula
                     oItem.Vicmsst         := Arredonda(oItem.Vicmsst         - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2);
                   end else
                   begin

@@ -200,7 +200,7 @@ var
   vlBalseIPI, vlFreteRateadoItem : Double;
   vlOutrasDespRateadoItem : Double; //Mauricio Parizotto 2024-04-22
 
-  bFreteSobreIPI,bIPISobreICMS : Boolean;
+  bFreteSobreIPI, bIPISobreICMS : Boolean;
   bIPISobreOutras, bReferenciaNota : Boolean;
 
   cBenef, cBenefItem, cCredPresumido: string;
