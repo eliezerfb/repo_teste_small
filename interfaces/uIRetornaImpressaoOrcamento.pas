@@ -14,6 +14,7 @@ type
   function CarregaDados: IRetornaImpressaoOrcamento;
   function MontarHTML: IRetornaImpressaoOrcamento;
   function MontarTXT: IRetornaImpressaoOrcamento;
+  function MontarTXT_A5: IRetornaImpressaoOrcamento;
   function RetornarTexto: String;
   end;
 

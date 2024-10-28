@@ -35,6 +35,7 @@ type
     function CarregaDados: IRetornaImpressaoOrcamento;
     function MontarHTML: IRetornaImpressaoOrcamento;
     function MontarTXT: IRetornaImpressaoOrcamento;
+    function MontarTXT_A5: IRetornaImpressaoOrcamento;
     function RetornarTexto: String;
   end;
 
@@ -317,7 +318,140 @@ begin
   FlsImpressao.Add(EmptyStr);
   FlsImpressao.Add(EmptyStr);
   FlsImpressao.Add(EmptyStr);
-  FlsImpressao.Add(EmptyStr);        
+  FlsImpressao.Add(EmptyStr);
+end;
+
+function TRetornaImpressaoOrcamento.MontarTXT_A5: IRetornaImpressaoOrcamento; //Mauricio Parizotto 2024-10-24
+var
+  nTotal, nDesconto: Double;
+  sCodigo: String;
+  cObs: String;
+  sLinha1, sLinha2, sLinha3, sLinha4, sLinha5 : string;
+  sLinha1_2, sLinha2_2, sLinha3_2, sLinha4_2, sLinha5_2 : string;
+  i, iCap2, iAtual, iResto : integer;
+
+  procedure GeraCabecalho;
+  begin
+    FlsImpressao.Add('                          DOCUMENTO AUXILIAR DE VENDA (DAV) - ORCAMENTO                        ');
+    FlsImpressao.Add('              NÃO É DOCUMENTO FISCAL - NÃO É VÁLIDO COMO RECIBO E COMO GARANTIA DE             ');
+    FlsImpressao.Add('                               MERCADORIA - NÃO COMPROVA PAGAMENTO                             ');
+    FlsImpressao.Add(Copy('  ORÇAMENTO: '+ FcNumeroOrcamento+Replicate(' ',23),1,23)+
+                     Copy('  VENDEDOR: '+ FQryOrcamento.FieldByname('VENDEDOR').AsString+Replicate(' ',27),1,27) +
+                     Copy('  DATA: '+ DateToStr(Date) +Replicate(' ',18),1,18) +
+                     Copy('  DOC. FISCAL: '+ FQryOrcamento.FieldByname('NUMERONF').AsString,1,28) );
+    FlsImpressao.Add('  ---------------------------------------------------------------------------------------------');
+
+    sLinha1 := Copy('  CLIENTE: ' +FQryOrcamento.FieldByname('NOME').AsString + Replicate(' ',50) ,1,50 );
+    sLinha2 := Copy('  CNPJ: '+ FQryOrcamento.FieldByname('CGC').AsString + ' IE: '+ FQryOrcamento.FieldByname('IE').AsString + Replicate(' ',50) ,1,50 );
+    sLinha3 := Copy('  ENDEREÇO: '+FQryOrcamento.FieldByname('ENDERE').AsString  + Replicate(' ',50),1,50);
+    sLinha4 := Copy('  '+FQryOrcamento.FieldByname('CEP').AsString+' - '+FQryOrcamento.FieldByname('CIDADE').AsString+' - '+FQryOrcamento.FieldByname('ESTADO').AsString + Replicate(' ',50),1,50);
+    sLinha5 := Copy('  FONE: '+ FQryOrcamento.FieldByname('FONE').AsString + Replicate(' ',50),1,50);
+
+    sLinha1_2 := Copy(' EMITENTE: '+FQryEmitente.FieldByname('NOMEEMIT').AsString+Replicate(' ',46),1,46);
+    sLinha2_2 := Copy(' CNPJ: '+FQryEmitente.FieldByname('CGCEMIT').AsString+ ' IE: '+FQryEmitente.FieldByname('IEEMIT').AsString+Replicate(' ',46),1,46);
+    sLinha3_2 := Copy(' ENDEREÇO: '+FQryEmitente.FieldByname('ENDERECOEMIT').AsString+Replicate(' ',46),1,46);
+    sLinha4_2 := Copy(' '+FQryEmitente.FieldByname('CEPEMIT').AsString+' - '+FQryEmitente.FieldByname('MUNICIPIOEMIT').AsString+ ' - '+FQryEmitente.FieldByname('ESTADOEMIT').AsString+ Replicate(' ',46),1,46);
+    sLinha5_2 := Copy(' FONE: '+ FQryEmitente.FieldByname('TELEFONEEMIT').AsString + Replicate(' ',46),1,46);
+
+    FlsImpressao.Add(sLinha1+sLinha1_2);
+    FlsImpressao.Add(sLinha2+sLinha2_2);
+    FlsImpressao.Add(sLinha3+sLinha3_2);
+    FlsImpressao.Add(sLinha4+sLinha4_2);
+    FlsImpressao.Add(sLinha5+sLinha5_2);
+
+    FlsImpressao.Add('  ---------------------------------------------------------------------------------------------');
+    FlsImpressao.Add('  ITEM CÓDIGO         DESCRIÇÃO                              UND QTD      UNITARIO   TOTAL     ');
+    FlsImpressao.Add('  ---- -------------- -------------------------------------- --- -------- ---------- ----------');
+  end;
+
+  procedure GeraRodape;
+  begin
+    FlsImpressao.Add('');
+    FlsImpressao.Add('                                                                      SUB TOTAL R$   '+Format('%10.2n',[nTotal]));
+    FlsImpressao.Add('                                                                      DESCONTO  R$   '+Format('%10.2n',[nDesconto]));
+    FlsImpressao.Add('                                                                                     ----------');
+    FlsImpressao.Add('                                                                      TOTAL     R$   '+Format('%10.2n',[nTotal-nDesconto]));
+
+    FlsImpressao.Add('');
+    FlsImpressao.Add('');
+    FlsImpressao.Add('');
+    FlsImpressao.Add('                  -------------------------              ------------------------               ');
+    FlsImpressao.Add('                     Assinatura vendedor                    Assinatura cliente                  ');
+  end;
+begin
+  Result := Self;
+
+  nTotal := 0;
+  nDesconto := 0;
+
+  //Cabeçalho
+  GeraCabecalho;
+
+  FQryItens.FetchAll;
+  FQryItens.First;
+
+  //Controle de paginação
+  iCap2  := 37;
+  iAtual := 14;
+  iResto := FQryItens.RecordCount;
+
+  while not FQryItens.Eof do
+  begin
+    {$Region'//// Controle de paginação ////'}
+    if iAtual > iCap2 then
+    begin
+      FlsImpressao.Add('');
+      FlsImpressao.Add('');
+      //GeraCabecalho;
+
+      iResto := iResto - iCap2;
+      iAtual := 1;
+    end;
+
+    inc(iAtual);
+    {$Endregion}
+
+    if UpperCase(AllTrim(FQryItens.FieldByName('DESCRICAO').AsString))  = 'DESCONTO' then
+      nDesconto := nDesconto + FQryItens.FieldByname('TOTAL').AsFloat
+    else
+    begin
+      if Alltrim(FQryItens.FieldByName('DESCRICAO').AsString) <> EmptyStr then
+      begin
+        if (AllTrim(FQryItens.FieldByName('REFERENCIA').AsString) = EmptyStr) or (AllTrim(FQryItens.FieldByName('REFERENCIA').AsString) = 'SEM GTIN') then
+          sCodigo := FQryItens.FieldByName('CODIGO').AsString
+        else
+          sCodigo := FQryItens.FieldByName('REFERENCIA').AsString;
+
+        FlsImpressao.Add('  (  ) '+
+                        Copy(sCodigo+Replicate(' ',14), 1,14)  +
+                        Copy(' '+FQryItens.FieldByname('DESCRICAO').AsString+Replicate(' ',39),1,39)+
+                        Copy(' '+FQryItens.FieldByname('MEDIDA').AsString+Replicate(' ',4),1,4)+ //Und
+                        Copy(' '+Format('%8.2n',[FQryItens.FieldByname('QUANTIDADE').AsFloat])+Replicate(' ',9),1,9)+ //Qtd
+                        Copy(' '+Format('%10.2n',[FQryItens.FieldByname('UNITARIO').AsFloat])+Replicate(' ',11),1,11)+ //Preço
+                        Copy(' '+Format('%10.2n',[FQryItens.FieldByname('TOTAL').AsFloat])+Replicate(' ',11),1,11)//Total
+                        );
+
+          nTotal := nTotal +  FQryItens.FieldByname('TOTAL').AsFloat;
+      end;
+    end;
+
+    FQryItens.Next;
+  end;
+
+  //Completa com linhas em branco
+  if iAtual + 10 > iCap2 then
+  begin
+    for I := iAtual to iCap2 do
+      FlsImpressao.Add('');
+
+    iAtual := 1;
+  end;
+
+  for I := iAtual to iCap2 -10 do
+    FlsImpressao.Add('');
+
+  //Rodapé
+  GeraRodape;
 end;
 
 constructor TRetornaImpressaoOrcamento.Create;
@@ -372,6 +506,7 @@ begin
   FQryEmitente.SQL.Add('    , EMITENTE.ESTADO AS ESTADOEMIT');
   FQryEmitente.SQL.Add('    , EMITENTE.COMPLE AS COMPLEEMIT');
   FQryEmitente.SQL.Add('    , EMITENTE.CGC AS CGCEMIT');
+  FQryEmitente.SQL.Add('    , EMITENTE.IE AS IEEMIT'); // Mauricio Parizotto 2024-10-24
   FQryEmitente.SQL.Add('    , EMITENTE.HP');
   FQryEmitente.SQL.Add('FROM EMITENTE');
   FQryEmitente.Open;
@@ -396,15 +531,13 @@ begin
   FQryOrcamento.SQL.Add('    , CLIFOR.COMPLE');
   FQryOrcamento.SQL.Add('    , CLIFOR.FONE');
   FQryOrcamento.SQL.Add('    , CLIFOR.CGC');
+  FQryOrcamento.SQL.Add('    , CLIFOR.IE'); //Mauricio Parizotto 2024-10-24
   FQryOrcamento.SQL.Add('    , VENDEDOR.NOME AS VENDEDOR');
   FQryOrcamento.SQL.Add('    , ORCAMENTOBS.OBS AS OBS');
   FQryOrcamento.SQL.Add('FROM ORCAMENT');
-  FQryOrcamento.SQL.Add('LEFT JOIN CLIFOR ON');
-  FQryOrcamento.SQL.Add('    (CLIFOR.NOME=ORCAMENT.CLIFOR)');
-  FQryOrcamento.SQL.Add('LEFT JOIN VENDEDOR ON');
-  FQryOrcamento.SQL.Add('    (VENDEDOR.NOME=ORCAMENT.VENDEDOR)');
-  FQryOrcamento.SQL.Add('LEFT JOIN ORCAMENTOBS ON');
-  FQryOrcamento.SQL.Add('    (ORCAMENTOBS.PEDIDO=ORCAMENT.PEDIDO)');
+  FQryOrcamento.SQL.Add('LEFT JOIN CLIFOR ON (CLIFOR.NOME=ORCAMENT.CLIFOR)');
+  FQryOrcamento.SQL.Add('LEFT JOIN VENDEDOR ON (VENDEDOR.NOME=ORCAMENT.VENDEDOR)');
+  FQryOrcamento.SQL.Add('LEFT JOIN ORCAMENTOBS ON (ORCAMENTOBS.PEDIDO=ORCAMENT.PEDIDO)');
   FQryOrcamento.SQL.Add('WHERE (ORCAMENT.PEDIDO=:XORCAMENT)');
   FQryOrcamento.SQL.Add(' AND (ORCAMENT.DESCRICAO <> ' + QuotedStr('Desconto') + ')');
   FQryOrcamento.ParamByName('XORCAMENT').AsString := FcNumeroOrcamento;

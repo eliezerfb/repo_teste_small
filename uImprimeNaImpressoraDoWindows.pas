@@ -5,14 +5,14 @@ interface
 uses
   Vcl.Printers, Vcl.Graphics, System.SysUtils;
 
-  procedure ImprimeNaImpressoraDoWindows(sTexto : string);
+  procedure ImprimeNaImpressoraDoWindows(sTexto : string; iFsize : integer = 7; bBold : boolean = True; iTamLinha : double = 3);
 
 implementation
 
 uses uDialogs, smallfunc_xe;
 
 
-procedure ImprimeNaImpressoraDoWindows(sTexto : string);
+procedure ImprimeNaImpressoraDoWindows(sTexto : string; iFsize : integer = 7; bBold : boolean = True; iTamLinha : double = 3);
 var
   I, iLinha, iTamanho: Integer;
   sLinha: String;
@@ -26,13 +26,20 @@ begin
         iMargemLeft := 15;
       Printer.Canvas.Pen.Width  := 1;             // Largura da linha  //
       Printer.Canvas.Font.Name  := 'Courier New'; // Tipo da fonte     //
-      Printer.Canvas.Font.Size  := 7;             // Tamanho da fonte  //
+      //Printer.Canvas.Font.Size  := 7;             // Tamanho da fonte  // Mauricio Parizotto 2024-10-24
+      Printer.Canvas.Font.Size  := iFsize;
       if Printer.PageWidth <= 464 then // Sandro Silva 2018-03-26
         Printer.Canvas.Font.Size  := 5;
-      Printer.Canvas.Font.Style := [fsBold];      // Coloca em negrito //
+      //Printer.Canvas.Font.Style := [fsBold];      // Coloca em negrito // Mauricio Parizotto 2024-10-24
+      if bBold then
+        Printer.Canvas.Font.Style := [fsBold];
       Printer.Canvas.Font.Color := clBlack;
+
       //Sandro Silva 2015-05-06 "a" impresso ocupa menos espaço que "W" iTamanho := Printer.Canvas.TextWidth('a') * 3;   // Tamanho que cada caractere ocupa na impressão em pontos
-      iTamanho := Printer.Canvas.TextWidth('W') * 3;   // Tamanho que cada caractere ocupa na impressão em pontos
+      //iTamanho := Printer.Canvas.TextWidth('W') * 3;   // Tamanho que cada caractere ocupa na impressão em pontos Mauricio Parizotto 2024-10-24
+      iTamanho :=  Trunc(Printer.Canvas.TextWidth('W') * iTamLinha);
+
+
       if Printer.PageWidth <= 464 then // Sandro Silva 2018-03-26
         iTamanho := Trunc(Printer.Canvas.TextWidth('W') * 2.5);   // Tamanho que cada caractere ocupa na impressão em pontos // Sandro Silva 2018-03-23  iTamanho := Printer.Canvas.TextWidth('W') * 4;   // Tamanho que cada caractere ocupa na impressão em pontos
       Printer.Title := 'Relatório Gerencial';          // Este título é visto no spoool da impressora

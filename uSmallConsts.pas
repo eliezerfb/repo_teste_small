@@ -110,8 +110,10 @@ const
   _RecalculaCustoMedioRetroativo = 'Recalc Custo Medio Retroativo';
 
   //Impressora
-  _cSectionImpressora = 'Impressora';
-  _cIpressoraOS       = 'Impressora OS';
+  _cSectionImpressora  = 'Impressora';
+  _cIpressoraOS        = 'Impressora OS';
+  _cIpressoraOrcamento = 'Impressora Orçamento';
+  _cFormatoOrcamento   = 'Formato Orçamento';
 
   //Carne
   _cSectionCarne  = 'Carne';
