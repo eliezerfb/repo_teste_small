@@ -593,6 +593,7 @@
         </DCCReference>
         <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\DAT\uIMendesSections.pas"/>
+        <DCCReference Include="uCalculaImpostos.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
