@@ -31,7 +31,6 @@ object Form19: TForm19
     ActivePage = Orelha_matricial
     Align = alClient
     TabOrder = 0
-    ExplicitHeight = 518
     object Orelha_relatorios: TTabSheet
       Caption = 'Relat'#243'rios'
       object GroupBox3: TGroupBox
@@ -1344,12 +1343,11 @@ object Form19: TForm19
         Width = 87
         Height = 22
         Style = csOwnerDrawFixed
-        ItemIndex = 0
         TabOrder = 1
-        Text = '80mm'
         Items.Strings = (
           '80mm'
-          'A5')
+          'A5'
+          'A5 Matricial')
       end
     end
     object Orelha_atendimento: TTabSheet
@@ -1548,7 +1546,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
-    ExplicitHeight = 546
     object Button2: TButton
       Left = 350
       Top = 5
@@ -1570,8 +1567,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 2
-    ExplicitLeft = 793
-    ExplicitHeight = 546
     object Button6: TButton
       Left = 350
       Top = 5
@@ -1593,8 +1588,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 3
-    ExplicitTop = 566
-    ExplicitWidth = 813
     object btnCancelar: TButton
       Left = 400
       Top = 19
@@ -1639,7 +1632,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 4
-    ExplicitWidth = 813
   end
   object ColorDialog1: TColorDialog
     Color = clGreen
