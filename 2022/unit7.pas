@@ -1,4 +1,3 @@
-
 unit Unit7;
 
 interface
@@ -5792,6 +5791,7 @@ begin
     if not Form7.ibdPerfilTributa.active  then Form7.ibdPerfilTributa.active       := True; //Mauricio Parizotto 2023-08-30
     if not Form7.ibdParametroTributa.active  then Form7.ibdParametroTributa.active := True; //Mauricio Parizotto 2023-09-21
     if not Form7.ibdSituacaoOS.active  then Form7.ibdSituacaoOS.active             := True; //Mauricio Parizotto 2023-12-04
+
   except
     on E: Exception do
     begin
@@ -13888,10 +13888,13 @@ begin
           if sModulo = 'ORCAMENTO' then
           begin
             try
-              if AllTrim(Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString) = '' then
-                DBGrid1.Canvas.Font.Color := clBlack
-              else
-                DBGrid1.Canvas.Font.Color  := _COR_AZUL;//$00EAB231;
+              if Form7.ibDataSet97.Active then // Sandro Silva 2024-10-11 Algumas rotinas fecham o Form7.ibDataSet97, até o momento não é necessário inclui-lo na lista de dataset que são sempre abertos no método AbreArquivos()
+              begin
+                if AllTrim(Form7.ibDataSet97.FieldByName('Doc. Fiscal').AsString) = '' then
+                  DBGrid1.Canvas.Font.Color := clBlack
+                else
+                  DBGrid1.Canvas.Font.Color  := _COR_AZUL;//$00EAB231;
+              end;
             except
             end;
           end;
@@ -18725,6 +18728,22 @@ begin
           Form7.ibDataSet16.Delete;
         end;
 
+        {Sandro Silva 2024-10-10 inicio}
+        if bFind then
+        begin
+          if ProdutoTemComposicaoCircular(Form7.ibDataSet4CODIGO.AsString, Form7.ibDataSet4.Transaction) then
+          begin
+            Form7.ibDataSet16CODIGO.Clear;
+            Form7.ibDataSet16DESCRICAO.Clear;
+            bFind := False;
+            MensagemSistema(Form7.ibDataSet4CODIGO.AsString + ' - ' + Form7.ibDataSet4DESCRICAO.AsString + #13 + #13 +
+              'Produto com composição circular' + #13 + #13 +
+              'Corrija a composição antes de lançar na nota' + #13 + #13
+              , msgAtencao);
+          end;
+        end;
+        {Sandro Silva 2024-10-10 fim}
+
         //  Preenche os dados do arquivo NOTA0001.DBF
         //  se o produto for encontrado
         if bFind then
@@ -19362,7 +19381,6 @@ begin
 
 end;
 
-
 procedure TForm7.ibDataSet16DESCRICAOSetText(Sender: TField;
   const Text: String);
 begin
@@ -19579,29 +19597,30 @@ begin
 
   if TestarNatOperacaoMovEstoque then
   begin
-    nSaldoDisp := RetornarSaldoDisponivelItemNota(ibDataSet16CODIGO.AsString);
+    nSaldoDisp := RetornarSaldoDisponivelItemNota(Form7.ibDataSet16CODIGO.AsString);
 
     {Dailon Parisotto (f-20355) 2024-08-13 Inicio
 
     if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < AnQtdeInformada) then
 
     }
-    if (nSaldoDisp < 0) or (ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < FloatToCurr(AnQtdeInformada)) then
+    if (nSaldoDisp < 0) or (Form7.ibDataSet4QTD_ATUAL.AsCurrency <= 0) or (nSaldoDisp < FloatToCurr(AnQtdeInformada)) then
     {Dailon Parisotto (f-20355) 2024-08-13 Fim}
     begin
-      if ibDataSet4QTD_ATUAL.AsCurrency < 0 then
-        nSaldoDisp := ibDataSet4QTD_ATUAL.AsCurrency;
+      if Form7.ibDataSet4QTD_ATUAL.AsCurrency < 0 then
+        nSaldoDisp := Form7.ibDataSet4QTD_ATUAL.AsCurrency;
       // Necessario remover os eventos para não mostrar mensagem 2 vezes
       Form7.ibDataSet16QUANTIDADE.OnSetText := nil;
       Form7.ibDataSet16QUANTIDADE.OnChange  := nil;
       try
         Result := False;
         MensagemSistema('Não é possível efetuar a venda deste item, saldo insuficiente em estoque para a quantidade informada. Cod. 3.' + sLineBreak +
+                         sLineBreak + Form7.ibDataSet4CODIGO.AsString + ' - ' + Form7.ibDataSet4DESCRICAO.AsString + sLineBreak + // Sandro Silva 2024-10-15
                         'Saldo atual: ' + FormatFloat('0.' + Replicate('0', StrToInt(Form1.ConfCasas)), nSaldoDisp) + '.'
-                        ,msgAtencao);
+                        , msgAtencao);
       finally
-        Form7.ibDataSet16QUANTIDADE.OnSetText := ibDataSet16QUANTIDADESetText;
-        Form7.ibDataSet16QUANTIDADE.OnChange  := ibDataSet16QUANTIDADEChange;
+        Form7.ibDataSet16QUANTIDADE.OnSetText := Form7.ibDataSet16QUANTIDADESetText;
+        Form7.ibDataSet16QUANTIDADE.OnChange  := Form7.ibDataSet16QUANTIDADEChange;
       end;
     end;
 
@@ -26315,6 +26334,8 @@ begin
 end;
 
 procedure TForm7.GerarNotaFiscalSrie12Click(Sender: TObject);
+var
+  sOrcamentoImportar: String;
 begin
   // Gera a nota fiscal
   if Form1.bNotaVendaLiberada then
@@ -26336,11 +26357,13 @@ begin
                                                   + Chr(10))
                                                   ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
       begin
+        sOrcamentoImportar := ibDataSet97.FieldByname('Orçamento').AsString; // Sandro Silva 2024-10-11
+
         Form7.Close;
         Form7.Vendas_1Click(Sender);                        // Nota fiscal série 001
         Form7.Image101Click(Sender);                        // Nova Nota
         Form7.sModulo := 'ORCAMENTO';
-        ImportaOrcamento(ibDataSet97.FieldByname('Orçamento').AsString,sModulo);
+        ImportaOrcamento(sOrcamentoImportar, sModulo); // Sandro Silva 2024-10-11 ImportaOrcamento(ibDataSet97.FieldByname('Orçamento').AsString,sModulo);
         Form7.sModulo := 'VENDA';
 
         Form7.ibDataSet16.First;
@@ -26359,6 +26382,8 @@ begin
 end;
 
 procedure TForm7.GerarNotaFiscalSrie22Click(Sender: TObject);
+var
+  sOrcamentoImportar: String;
 begin
   // Gera a nota fiscal
   if Form1.bNotaVendaLiberada then
@@ -26380,11 +26405,13 @@ begin
                                                   + Chr(10))
                                                   ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING) = IDYES then
       begin
+        sOrcamentoImportar := ibDataSet97.FieldByname('Orçamento').AsString; // Sandro Silva 2024-10-11
+
         Form7.Close;
         Form7.NotasfiscaisdesadavendasSrie11Click(Sender);  // Nota fiscal série 002
         Form7.Image101Click(Sender);                        // Nova Nota
         Form7.sModulo := 'ORCAMENTO';
-        ImportaOrcamento(ibDataSet97.FieldByname('Orçamento').AsString,sModulo);
+        ImportaOrcamento(sOrcamentoImportar, sModulo); // Sandro Silva 2024-10-11 ImportaOrcamento(ibDataSet97.FieldByname('Orçamento').AsString,sModulo);
         Form7.sModulo := 'VENDA';
 
         Form7.ibDataSet16.First;
@@ -32759,7 +32786,11 @@ var
   I, J : Integer;
 
   oNotaFiscal : TNotaFiscalEletronicaCalc;
+  bTemComposicaoCircular: Boolean; // Sandro Silva 2024-10-14
 begin
+
+  bTemComposicaoCircular := False;  // Precisa inicializar como False Sandro Silva 2024-10-18
+
   FbDuplicandoNFe := True;
   Form7.bPesqProdNFPorConsulta := True;
   try
@@ -32772,6 +32803,28 @@ begin
     Form7.ibDataSet16.First;
     while not Form7.ibDataSet16.Eof do // disable
     begin
+
+      {Sandro Silva 2024-10-14 inicio}
+      if Form7.ibDataSet16CODIGO.AsString <> '' then
+      begin
+
+        if ProdutoTemComposicaoCircular(Form7.ibDataSet16CODIGO.AsString, Form7.ibDataSet16.Transaction) then
+        begin
+
+          bTemComposicaoCircular := True;
+
+          MensagemSistema(Form7.ibDataSet16CODIGO.AsString + ' - ' + Form7.ibDataSet16DESCRICAO.AsString + #13 + #13 +
+            'Produto com composição circular' + #13 + #13 +
+            'Corrija a composição antes de lançar na nota' + #13 + #13
+            , msgAtencao);
+
+          Break;
+
+        end;
+
+      end;
+      {Sandro Silva 2024-10-14 fim}
+
       sDesVetor[I] := Form7.ibDataSet16DESCRICAO.AsString;
       fValVetor[I] := Form7.ibDataSet16UNITARIO.Asfloat;
       fQtdVetor[I] := Form7.ibDataSet16QUANTIDADE.AsFloat;
@@ -32779,6 +32832,13 @@ begin
       I := I + 1;
       Form7.ibDataSet16.Next;
     end;
+
+    {Sandro Silva 2024-10-14 inicio}
+    if bTemComposicaoCircular then
+    begin
+      Exit;
+    end;
+    {Sandro Silva 2024-10-14 fim}
 
     Form7.ibDataSet15.Append;
     if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
@@ -32858,6 +32918,7 @@ begin
       Form7.ibDataSet16.EnableControls;
     end;
     {Dailon Parisotto (f-18201) 2024-05-07 Fim}
+
   finally
     Form7.bPesqProdNFPorConsulta := False;
     FbDuplicandoNFe := False;

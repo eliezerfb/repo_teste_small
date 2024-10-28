@@ -27,6 +27,9 @@ type
     procedure cdsDrawbackBeforeInsert(DataSet: TDataSet);
     procedure dbgPrincipalDrawDataCell(Sender: TObject; const Rect: TRect;
       Field: TField; State: TGridDrawState);
+    procedure FormShow(Sender: TObject);
+    procedure dbgPrincipalDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
   private
     FDataSet: TDataSet;
     FnRecNo: Integer;
@@ -80,11 +83,38 @@ begin
     Abort;
 end;
 
-procedure TfrmInformarDrawback.dbgPrincipalDrawDataCell(Sender: TObject; const Rect: TRect; Field: TField; State: TGridDrawState);
+procedure TfrmInformarDrawback.dbgPrincipalDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
 var
   OldBkMode : Integer;
   xRect : tREct;
 begin
+  //Mauricio Parizotto 2024-10-16
+  dbgPrincipal.Canvas.Brush.Color := FoColorGrid;
+  dbgPrincipal.Canvas.Pen.Color   := clRed;
+
+  xRect.Left   := REct.Left;
+  xRect.Top    := -1;
+  xRect.Right  := Rect.Right;
+  xRect.Bottom := Rect.Bottom - Rect.Top + 0;
+
+  dbgPrincipal.Canvas.FillRect(xRect);
+
+  OldBkMode := SetBkMode(Handle, TRANSPARENT);
+  dbgPrincipal.Canvas.Font := dbgPrincipal.TitleFont;
+  dbgPrincipal.Canvas.TextOut(Rect.Left + 2, 2, Trim(Column.Field.DisplayLabel));
+  dbgPrincipal.Canvas.Font.Color := clblack;
+  SetBkMode(Handle, OldBkMode);
+end;
+
+procedure TfrmInformarDrawback.dbgPrincipalDrawDataCell(Sender: TObject; const Rect: TRect; Field: TField; State: TGridDrawState);
+{
+var
+  OldBkMode : Integer;
+  xRect : tREct;
+}
+begin
+  { Mauricio Parizotto 2024-10-16
   dbgPrincipal.Canvas.Brush.Color := FoColorGrid;
   dbgPrincipal.Canvas.Pen.Color   := clRed;
 
@@ -100,6 +130,7 @@ begin
   dbgPrincipal.Canvas.TextOut(Rect.Left + 2, 2, Trim(Field.DisplayLabel));
   dbgPrincipal.Canvas.Font.Color := clblack;
   SetBkMode(Handle, OldBkMode);
+  }
 end;
 
 procedure TfrmInformarDrawback.dbgPrincipalEnter(Sender: TObject);
@@ -112,6 +143,18 @@ procedure TfrmInformarDrawback.dbgPrincipalKeyDown(Sender: TObject;
 begin
   if ((Shift = [ssCtrl]) or (Shift = [ssCtrl, ssShift])) and (Key = VK_DELETE) then
     Key := 0;
+
+  if (Key = VK_RETURN) then
+    begin
+      if Key in [VK_RETURN, VK_TAB] then
+      begin
+        dbgPrincipal.DataSource.DataSet.Next;
+        dbgPrincipal.SelectedIndex := 1;
+
+        if dbgPrincipal.DataSource.DataSet.EOF then
+          btnOK.SetFocus;
+      end;
+    end;
 end;
 
 procedure TfrmInformarDrawback.FormClose(Sender: TObject;
@@ -120,6 +163,13 @@ begin
   inherited;
   FDataSet.RecNo := FnRecNo;
   FDataSet.EnableControls;
+end;
+
+procedure TfrmInformarDrawback.FormShow(Sender: TObject);
+begin
+  inherited;
+  //Mauricio Parizotto 2024-10-16
+  dsDrawback.DataSet.First;
 end;
 
 procedure TfrmInformarDrawback.setDataSet(const Value: TDataSet);

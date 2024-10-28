@@ -13,8 +13,8 @@ object Form12: TForm12
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'NOTA FISCAL VENDA (SA'#205'DA)'
-  ClientHeight = 906
-  ClientWidth = 1022
+  ClientHeight = 914
+  ClientWidth = 1024
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -43,8 +43,8 @@ object Form12: TForm12
   object ScrollBox1: TScrollBox
     Left = 0
     Top = 0
-    Width = 1022
-    Height = 906
+    Width = 1024
+    Height = 914
     Align = alClient
     BorderStyle = bsNone
     Color = clWhite
@@ -56,6 +56,8 @@ object Form12: TForm12
     ParentColor = False
     ParentFont = False
     TabOrder = 0
+    ExplicitWidth = 1022
+    ExplicitHeight = 906
     object Panel1: TPanel
       Left = 10
       Top = 10

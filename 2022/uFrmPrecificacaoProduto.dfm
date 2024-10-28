@@ -161,51 +161,6 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
     Transaction = Form7.IBTransaction1
     BufferChunks = 1000
     CachedUpdates = True
-    SelectSQL.Strings = (
-      'Select'
-      #9'REGISTRO,'
-      #9'PRODUTO,'
-      #9'PRECO_CUSTO,'
-      #9'PRECO_VENDA,'
-      #9'Case'
-      #9#9'When LISTA > 0 then (((LISTA / PRECO_CUSTO) -1 ) * 100)'
-      #9#9'When Coalesce(MARGEMLB,0) > 0 then MARGEMLB '
-      #9#9'Else (((Coalesce(PRECO,0) / PRECO_CUSTO) -1 ) * 100)'
-      #9'End PERC_LUC,'
-      #9'Case'
-      #9#9'When LISTA > 0 then LISTA'
-      
-        #9#9'When Coalesce(MARGEMLB,0) > 0 then PRECO_CUSTO + (PRECO_CUSTO ' +
-        '* (MARGEMLB / 100) )'
-      #9#9'Else Coalesce(PRECO,0)'
-      #9'End PRECO_NOVO'
-      'From'
-      #9'(Select '
-      #9#9'I.REGISTRO,'
-      #9#9'I.DESCRICAO PRODUTO,'
-      #9#9'Coalesce(I.LISTA,0) LISTA,'
-      
-        #9#9'(I.UNITARIO + (Coalesce(I.VICMSST,0) + Coalesce(I.VIPI,0) + Co' +
-        'alesce(I.VFCPST,0)) / I.QUANTIDADE)  +'
-      #9#9#9'('
-      #9#9#9#9'(I.UNITARIO / C.MERCADORIA) * '
-      
-        #9#9#9#9'(Coalesce(C.FRETE,0) + Coalesce(C.SEGURO,0) + Coalesce(C.DES' +
-        'PESAS,0) - Coalesce(C.DESCONTO,0))      '#9#9
-      #9#9#9') PRECO_CUSTO,'
-      #9#9'Coalesce(E.PRECO,0) PRECO_VENDA,'
-      #9#9'E.MARGEMLB,'
-      #9#9'E.PRECO'#9#9
-      #9'From ITENS002 I'
-      
-        #9#9'Left Join COMPRAS C on C.NUMERONF = I.NUMERONF and C.FORNECEDO' +
-        'R = I.FORNECEDOR'
-      #9#9'Left Join ESTOQUE E on E.DESCRICAO = I.DESCRICAO'
-      #9'Where I.NUMERONF = :NUMERONF'
-      #9#9'and I.FORNECEDOR  =  :FORNECEDOR  '
-      #9#9'and Coalesce(I.CODIGO,'#39#39') <> '#39#39
-      #9') A'
-      'Order By REGISTRO')
     ParamCheck = True
     UniDirectional = False
     Left = 280
@@ -282,6 +237,85 @@ inherited FrmPrecificacaoProduto: TFrmPrecificacaoProduto
       OnSetText = cdsProdutosNotaPRECO_NOVOSetText
       DisplayFormat = '##0.00'
       EditFormat = '##0.00'
+    end
+  end
+  object IBDataSet1: TIBDataSet
+    Database = Form7.IBDatabase1
+    Transaction = Form7.IBTransaction1
+    BufferChunks = 1000
+    CachedUpdates = True
+    SelectSQL.Strings = (
+      'Select'
+      #9'REGISTRO,'
+      #9'PRODUTO,'
+      #9'PRECO_CUSTO,'
+      #9'PRECO_VENDA,'
+      #9'Case'
+      #9#9'When LISTA > 0 then (((LISTA / PRECO_CUSTO) -1 ) * 100)'
+      #9#9'When Coalesce(MARGEMLB,0) > 0 then MARGEMLB '
+      #9#9'Else (((Coalesce(PRECO,0) / PRECO_CUSTO) -1 ) * 100)'
+      #9'End PERC_LUC,'
+      #9'Case'
+      #9#9'When LISTA > 0 then LISTA'
+      
+        #9#9'When Coalesce(MARGEMLB,0) > 0 then PRECO_CUSTO + (PRECO_CUSTO ' +
+        '* (MARGEMLB / 100) )'
+      #9#9'Else Coalesce(PRECO,0)'
+      #9'End PRECO_NOVO'
+      'From'
+      #9'(Select '
+      #9#9'I.REGISTRO,'
+      #9#9'I.DESCRICAO PRODUTO,'
+      #9#9'Coalesce(I.LISTA,0) LISTA,'
+      
+        #9#9'(I.UNITARIO + (Coalesce(I.VICMSST,0) + Coalesce(I.VIPI,0) + Co' +
+        'alesce(I.VFCPST,0)) / I.QUANTIDADE)  +'
+      #9#9#9'('
+      #9#9#9#9'(I.UNITARIO / C.MERCADORIA) * '
+      
+        #9#9#9#9'(Coalesce(C.FRETE,0) + Coalesce(C.SEGURO,0) + Coalesce(C.DES' +
+        'PESAS,0) - Coalesce(C.DESCONTO,0))      '#9#9
+      #9#9#9') PRECO_CUSTO,'
+      #9#9'Coalesce(E.PRECO,0) PRECO_VENDA,'
+      #9#9'E.MARGEMLB,'
+      #9#9'E.PRECO'#9#9
+      #9'From ITENS002 I'
+      
+        #9#9'Left Join COMPRAS C on C.NUMERONF = I.NUMERONF and C.FORNECEDO' +
+        'R = I.FORNECEDOR'
+      #9#9'Left Join ESTOQUE E on E.DESCRICAO = I.DESCRICAO'
+      #9'Where I.NUMERONF = :NUMERONF'
+      #9#9'and I.FORNECEDOR  =  :FORNECEDOR  '
+      #9#9'and Coalesce(I.CODIGO,'#39#39') <> '#39#39
+      #9') A'
+      'Order By REGISTRO')
+    ParamCheck = True
+    UniDirectional = False
+    Left = 576
+    Top = 152
+    object WideStringField1: TWideStringField
+      FieldName = 'REGISTRO'
+      Origin = 'ITENS002.REGISTRO'
+      Required = True
+      Size = 10
+    end
+    object WideStringField2: TWideStringField
+      FieldName = 'PRODUTO'
+      Origin = 'ITENS002.DESCRICAO'
+      Size = 45
+    end
+    object FloatField1: TFloatField
+      FieldName = 'PRECO_CUSTO'
+      Origin = 'ITENS002.UNITARIO'
+    end
+    object FloatField2: TFloatField
+      FieldName = 'PRECO_VENDA'
+    end
+    object FloatField3: TFloatField
+      FieldName = 'PERC_LUC'
+    end
+    object FloatField4: TFloatField
+      FieldName = 'PRECO_NOVO'
     end
   end
 end
