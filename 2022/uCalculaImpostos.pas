@@ -65,6 +65,7 @@ function CstComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
 var
   IBQESTOQUE: TIBQuery;
   IBQICM: TIBQuery;
+  //sRegistro: String;
 begin
   {
   Combinado com Gian e Fernanda que a ordem para selecionar o CST ficará:
@@ -73,11 +74,16 @@ begin
   Se no estoque não tiver CST configurado usará por padrão “000”
   }
 
+  Result := '';
+
   if (Trim(sCodigo) <> '') and (Trim(sOperacao) <> '') then
   begin
-    Result := '000';
+    // Result := '000';
     IBQESTOQUE  := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
     IBQICM      := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
+
+    IBQESTOQUE.DisableControls;
+    IBQICM.DisableControls;
 
     IBQESTOQUE.Close;
     IBQESTOQUE.SQL.Text :=
@@ -96,61 +102,59 @@ begin
       'order by upper(NOME)';
     IBQICM.Open;
 
-    if ItemNF <> nil then    
-      ItemNF.Codigo := sCodigo;
-
-    if (Trim(IBQESTOQUE.FieldByName('ST').AsString) <> '') 
+    if (Trim(IBQESTOQUE.FieldByName('ST').AsString) <> '')
       or ((Trim(IBQESTOQUE.FieldByName('ST').AsString) = '') and (Trim(IBQESTOQUE.FieldByname('CST').AsString) <> '')) then
     begin
       // Produto tem CIT preenchido
-      if IBQICM.Locate('ST', IBQESTOQUE.FieldByName('ST').AsString, []) then
+      if IBQICM.Locate('ST', IBQESTOQUE.FieldByName('ST').AsString, [loCaseInsensitive, loPartialKey]) then
       begin
-        // Cadastro do CIT tem CST 
-        Result := Right('000' + Trim(IBQICM.FieldByname('CST').AsString), 3);
-        if ItemNF <> nil then            
+        // Cadastro do CIT tem CST
+        if Trim(IBQICM.FieldByname('CST').AsString) = ''  then
         begin
-          ItemNF.Origem := Copy(LimpaNumero(IBQICM.FieldByname('CST').AsString) + '000', 1, 1); // Origem da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
-          ItemNF.CST    := Right('00' + Trim(IBQICM.FieldByname('CST').AsString), 2);
-        end;        
+          // CIT NÃO tem CST
+          // Usa CST do estoque
+          Result := Trim(IBQESTOQUE.FieldByname('CST').AsString); // Result := Right('000' + Trim(IBQESTOQUE.FieldByname('CST').AsString), 3);
+        end
+        else
+        begin
+          // CIT tem CST
+          // Usa CST do CIT
+          Result := Trim(IBQICM.FieldByname('CST').AsString); /// Result := Right('000' + Trim(IBQICM.FieldByname('CST').AsString), 3);
+        end;
       end
       else
       begin
-        // Cadastro do CIT NÃO tem CST 
-        Result := Right('000' + Trim(IBQESTOQUE.FieldByname('CST').AsString), 3);
-        if ItemNF <> nil then            
-        begin
-          ItemNF.Origem := Copy(LimpaNumero(IBQESTOQUE.FieldByname('CST').AsString) + '000', 1, 1); // Origem da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
-          ItemNF.CST    := Right('00' + Trim(IBQESTOQUE.FieldByname('CST').AsString), 2);
-        end;
+        // Cadastro do CIT NÃO tem CST ou não localizou
+        // Usa CST do ESTOQUE
+        Result := Trim(IBQESTOQUE.FieldByname('CST').AsString); //Result := Right('000' + Trim(IBQESTOQUE.FieldByname('CST').AsString), 3);
       end;
     end
     else
     begin
       // Produto NÃO tem CIT configurado, usar CST da operação do topo da nota
-      
-      //Por garantia define como padrão CST 00
-      Result := '000';
-      if ItemNF <> nil then            
-      begin
-        ItemNF.Origem := '0'; // Origem da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
-        ItemNF.CST    := '00';     
-      end;
 
       if IBQICM.Locate('NOME', sOperacao, []) then
       begin
         // Posiciona na operação da nota
-        Result := Right('000' + Trim(IBQICM.FieldByname('CST').AsString), 3);
-        if ItemNF <> nil then            
-        begin
-          ItemNF.Origem := Copy(LimpaNumero(IBQICM.FieldByname('CST').AsString) + '000', 1, 1); // Origem da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
-          ItemNF.CST    := Right('00' + Trim(IBQICM.FieldByname('CST').AsString), 2);     
-        end;
+        Result := Trim(IBQICM.FieldByname('CST').AsString); //Result := Right('000' + Trim(IBQICM.FieldByname('CST').AsString), 3);
+
       end;
-    end;        
+    end;
 
     FreeAndNil(IBQESTOQUE);
     FreeAndNil(IBQICM);
   end;
+
+  //Por garantia define como padrão CST 000 e extrai as últimas 3 posições
+  Result := Right('000' + Result, 3);
+
+  if ItemNF <> nil then
+  begin
+    ItemNF.Codigo := sCodigo;
+    ItemNF.Origem := Copy(Result, 1, 1); // Origem da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
+    ItemNF.CST    := Right(Result, 2);
+  end;
+
 end;
 
 procedure CsosnComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
