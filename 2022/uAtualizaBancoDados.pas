@@ -3210,7 +3210,34 @@ begin
     end;
   end;
   {Mauricio Parizotto 2024-09-30 Fim}
-  
+
+
+  {Mauricio Parizotto 2024-10-28 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRASIMPORTACAO')) then
+  begin
+    ExecutaComando(' Create table COMPRASIMPORTACAO ('+
+                   ' 	 IDCOMPRASIMPORTACAO INTEGER NOT NULL,'+
+                   ' 	 NUMERONF VARCHAR(12),'+
+                   ' 	 IDPAISES INTEGER,'+
+                   ' 	 NUMRODI VARCHAR(12),'+
+                   ' 	 DATAREGISTRODI DATE,'+
+                   ' 	 LOCALDESEMBARACO VARCHAR(60),'+
+                   ' 	 UFDESEMBARACO VARCHAR(2),'+
+                   ' 	 DATADESEMBARACO DATE,'+
+                   ' 	 CODEXPORTADOR VARCHAR(60),'+
+                   ' 	 NUMADICAO INTEGER,'+
+                   ' 	 IDENTESTRANGEIRO VARCHAR(50),'+
+                   ' 	 CONSTRAINT PK_COMPRASIMPORTACAO PRIMARY KEY (IDCOMPRASIMPORTACAO)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando('CREATE SEQUENCE G_COMPRASIMPORTACAO');
+
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-10-28 Inicio}
+
   Form22.Repaint;
 
   try

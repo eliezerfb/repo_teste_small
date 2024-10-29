@@ -95,9 +95,12 @@ begin
     if Form7.ibDataSet15EMITIDA.AsString = 'E' then
     begin
       //Entrada
-      GeraXmlNFeEntrada;
+      //GeraXmlNFeEntrada; Mauricio Parizotto 2024-10-29
+      if not GeraXmlNFeEntrada then
+        Abort;
     end else
     begin
+      (*Mauricio Parizotto 2024-10-29 Inicio
       //Saida
       GeraXmlNFeSaida;
       {Dailon Parisotto (smal-706) 2024-09-23 Inicio}
@@ -108,6 +111,13 @@ begin
         Abort;
       end;
       {Dailon Parisotto (smal-706) 2024-09-23 Fim}
+      *)
+      if not GeraXmlNFeSaida then
+      begin
+        // Limpa para não validar o XML
+        Form7.ibDataSet15NFEXML.AsString := EmptyStr;
+        Abort;
+      end;
     end;
 
     {Mauricio Parizotto 2024-07-15
