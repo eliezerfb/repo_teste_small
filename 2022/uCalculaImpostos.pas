@@ -63,86 +63,43 @@ implementation
 function CstComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
   ItemNF: TItemNFe): String;
 var
-  IBQESTOQUE: TIBQuery;
-  IBQICM: TIBQuery;
-  //sRegistro: String;
+  IBQCST: TIBQuery;
 begin
-  {
-  Combinado com Gian e Fernanda que a ordem para selecionar o CST ficará:
-  Se o produto tiver CIT configurado, busca o CST do CIT
-  Se não tiver CIT ou se o CIT configurado não tiver CST, busca o CST do estoque
-  Se no estoque não tiver CST configurado usará por padrão “000”
-  }
-
   Result := '';
 
   if (Trim(sCodigo) <> '') and (Trim(sOperacao) <> '') then
   begin
-    // Result := '000';
-    IBQESTOQUE  := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
-    IBQICM      := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
+    IBQCST      := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
+    IBQCST.DisableControls;
 
-    IBQESTOQUE.DisableControls;
-    IBQICM.DisableControls;
-
-    IBQESTOQUE.Close;
-    IBQESTOQUE.SQL.Text :=
-      'select ST, CST ' +
-      'from ESTOQUE ' +
+    {Sandro Silva f-21199 2024-10-29
+    Primeiro verificar se tem CIT, se tiver buscar o CST do CIT.
+    Se não tiver preenchido o CST no CIT, buscar o CST do topo da nota.
+    Se o do topo da nota não tiver CST, buscar do estoque.
+    }
+    IBQCST.Close;
+    IBQCST.SQL.Text :=
+      'select ' +
+      'I.CST as CST_CIT ' +
+      ', I2.CST as CST_TOPO ' +
+      ', E.CODIGO, E.DESCRICAO, E.ST, E.CST as CST_ESTOQUE ' +
+      'from ESTOQUE E ' +
+      'left join ICM I on I.ST = E.ST ' +
+      'left join ICM I2 on I2.NOME = :OPERACAO_TOPO ' +
       'where CODIGO = :CODIGO';
-    IBQESTOQUE.ParamByName('CODIGO').AsString := sCodigo;
-    IBQESTOQUE.Open;
+    IBQCST.ParamByName('CODIGO').AsString        := sCodigo;
+    IBQCST.ParamByName('OPERACAO_TOPO').AsString := sOperacao;
+    IBQCST.Open;
 
-    IBQICM.DisableControls;
-    IBQICM.Close;
-    IBQICM.SQL.Clear;
-    IBQICM.SQL.Text :=
-      'select * from ICM ' +
-      'where (substring(CFOP from 1 for 1) in (''5'', ''6'', ''7'')  or coalesce(CFOP,''XXX'') = ''XXX'') ' +
-      'order by upper(NOME)';
-    IBQICM.Open;
-
-    if (Trim(IBQESTOQUE.FieldByName('ST').AsString) <> '')
-      or ((Trim(IBQESTOQUE.FieldByName('ST').AsString) = '') and (Trim(IBQESTOQUE.FieldByname('CST').AsString) <> '')) then
-    begin
-      // Produto tem CIT preenchido
-      if IBQICM.Locate('ST', IBQESTOQUE.FieldByName('ST').AsString, [loCaseInsensitive, loPartialKey]) then
-      begin
-        // Cadastro do CIT tem CST
-        if Trim(IBQICM.FieldByname('CST').AsString) = ''  then
-        begin
-          // CIT NÃO tem CST
-          // Usa CST do estoque
-          Result := Trim(IBQESTOQUE.FieldByname('CST').AsString); // Result := Right('000' + Trim(IBQESTOQUE.FieldByname('CST').AsString), 3);
-        end
-        else
-        begin
-          // CIT tem CST
-          // Usa CST do CIT
-          Result := Trim(IBQICM.FieldByname('CST').AsString); /// Result := Right('000' + Trim(IBQICM.FieldByname('CST').AsString), 3);
-        end;
-      end
-      else
-      begin
-        // Cadastro do CIT NÃO tem CST ou não localizou
-        // Usa CST do ESTOQUE
-        Result := Trim(IBQESTOQUE.FieldByname('CST').AsString); //Result := Right('000' + Trim(IBQESTOQUE.FieldByname('CST').AsString), 3);
-      end;
-    end
+    if Trim(IBQCST.FieldByName('CST_CIT').AsString) <> '' then // Primeiro verificar se tem CIT, se tiver buscar o CST do CIT.
+      Result := Trim(IBQCST.FieldByName('CST_CIT').AsString)
+    else if Trim(IBQCST.FieldByName('CST_TOPO').AsString) <> '' then // Se não tiver preenchido o CST no CIT, buscar o CST do topo da nota.
+      Result := Trim(IBQCST.FieldByName('CST_TOPO').AsString)
     else
-    begin
-      // Produto NÃO tem CIT configurado, usar CST da operação do topo da nota
+      Result := Trim(IBQCST.FieldByName('CST_ESTOQUE').AsString);
+    {Sandro Silva (f-21199) 2024-10-29 fim}
 
-      if IBQICM.Locate('NOME', sOperacao, []) then
-      begin
-        // Posiciona na operação da nota
-        Result := Trim(IBQICM.FieldByname('CST').AsString); //Result := Right('000' + Trim(IBQICM.FieldByname('CST').AsString), 3);
-
-      end;
-    end;
-
-    FreeAndNil(IBQESTOQUE);
-    FreeAndNil(IBQICM);
+    FreeAndNil(IBQCST);
   end;
 
   //Por garantia define como padrão CST 000 e extrai as últimas 3 posições
