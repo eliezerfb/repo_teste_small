@@ -734,6 +734,7 @@ begin
                        *  IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* rIVAProd ),2); // Não pode arredondar aqui
 
                   }
+                  {
                   NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd), 2);
                   oItem.Vbcst := Arredonda(oItem.Vbcst +                     ((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd), 2);
 
@@ -743,15 +744,34 @@ begin
 
                   oItem.Vicmsst := Arredonda(oItem.Vicmsst +
                     ((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd), 2); // Não pode arredondar aqui
+                  }
+                  NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + Arredonda(((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd), 2), 2);
+                  oItem.Vbcst := Arredonda(oItem.Vbcst +                     Arredonda(((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd), 2), 2);
+
+                  // Estava faltando aplicar a mesma lógia de oItem.Vicmsst com NotaFiscal.Icmssubsti
+                  NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti +
+                    Arredonda(((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd), 2), 2); // Não pode arredondar aqui
+
+                  oItem.Vicmsst := Arredonda(oItem.Vicmsst +
+                    Arredonda(((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd), 2), 2); // Não pode arredondar aqui
+
 
                   {Sandro Silva (f-21367) 2024-10-30 fim}
                 end;
 
+                {
                 // Desconta do ICMS substituido o ICMS normal
                 oItem.Vicmsst         := Arredonda(oItem.Vicmsst         - (((oItem.TOTAL - oItem.DescontoRateado)) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100), 2);
 
                 //2024-10-30 NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + oItem.Vicmsst, 2); // Acumula
                 NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - (((oItem.TOTAL - oItem.DescontoRateado)) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100), 2); // Acumula
+                }
+
+                // Desconta do ICMS substituido o ICMS normal
+                oItem.Vicmsst         := Arredonda(oItem.Vicmsst         - Arredonda((((oItem.TOTAL - oItem.DescontoRateado)) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100), 2), 2);
+
+                //2024-10-30 NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + oItem.Vicmsst, 2); // Acumula
+                NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - Arredonda((((oItem.TOTAL - oItem.DescontoRateado)) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100), 2), 2); // Acumula
 
               end else
               begin
