@@ -3600,6 +3600,7 @@ begin
                 end;
               end else
               begin
+                {Sandro Silva (f-21367) 2024-10-30 inicio
                 // Estava arredondando duas vezes. Arredondava a primeira parte do cálculo, depois subtraia a segunda parte, que não estava arredondada, e arredondava o resultado
                 // Isso causa diferença entre o cálculo feito para exibir os valores na tela de lançamento de itens
                 Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   :=
@@ -3613,6 +3614,19 @@ begin
                         , 2)
                       )
                   ,',','.'); // Valor do ICMS ST em Reais
+                  }
+                // Estava arredondando duas vezes. Arredondava a primeira parte do cálculo, depois subtraia a segunda parte, que não estava arredondada, e arredondava o resultado
+                // Isso causa diferença entre o cálculo feito para exibir os valores na tela de lançamento de itens
+                Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   :=
+                  FormatFloatXML(
+                        Arredonda(
+                             (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)+ (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100))) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.AliqICMdoCliente16() / 100 ) * IVAProd
+                             -
+                             ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat  / 100 )
+                        , 2)
+                  ); // Valor do ICMS ST em Reais
+                  {Sandro Silva (f-21367) 2024-10-30 fim }
+
               end;
             end;
           end else
