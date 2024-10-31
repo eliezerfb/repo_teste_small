@@ -39,7 +39,8 @@ var
   fCalculo, vFRETE, vOUTRAS, vDESCONTO, vSEGURO: Real;
   fDesconto, fFrete, fOutras, fSeguro: array[0..999] of double;
 
-  fRateioDoDesconto, {fPercentualFCPST, fPercentualFCP, }vIVA60_B_ICMST: Real;
+  fRateioDoDesconto {fPercentualFCPST, fPercentualFCP, }: Real;
+  // Sandro Silva (f-21199) 2024-10-31 vIVA60_B_ICMST: Real;
 
   dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-06-07
   dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
@@ -1007,7 +1008,7 @@ begin
     end;
   end;
 
-  vIVA60_B_ICMST := 0;
+  // Sandro Silva (f-21199) 2024-10-31 vIVA60_B_ICMST := 0;
   vIVA60_V_ICMST := 0;
   vPIS           := 0;
   vPIS_S         := 0;
@@ -2592,7 +2593,9 @@ begin
   // Sandro Silva 2024-03-25 Form7.spdNFeDataSets.campo('vFCPSTRet_W06b').Value  := '0.00'; // Valor Total do FCP retido anteriormente por Substituição Tributária
   Form7.spdNFeDataSets.campo('vFCPSTRet_W06b').Value  := FormatFloatXML(dvFCPSTRet_W06b); // Valor Total do FCP retido anteriormente por Substituição Tributária
 
-  Form7.spdNFeDataSets.Campo('vBCST_W05').Value   := FormatFloatXML(vBCST - vIVA60_B_ICMST); // Valor Total do ICMS Sibst. Tributária
+  // Sandro Silva (f-21199) 2024-10-31 Form7.spdNFeDataSets.Campo('vBCST_W05').Value   := FormatFloatXML(vBCST - vIVA60_B_ICMST); // Valor Total do ICMS Sibst. Tributária
+  // vBCST acumula valor da base quando diferente de 60
+  Form7.spdNFeDataSets.Campo('vBCST_W05').Value   := FormatFloatXML(vBCST); // Valor Total do ICMS Sibst. Tributária
   Form7.spdNFeDataSets.Campo('vST_W06').Value     := FormatFloatXML(vST); // Valor Total do ICMS Sibst. Tributária
 
   {Sandro Silva 2023-09-04 inicio}
@@ -3675,6 +3678,8 @@ begin
             end;
           end;
 
+          { Sandro Silva (f-21199) 2024-10-31
+          Não é mais necessário
           if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60' then
           begin
             //  CALCULO DO IVA
@@ -3693,6 +3698,7 @@ begin
               - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto))) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 );
             end;
           end;
+          }
 
           // Desconta o ICM sobre IPI normal do ST    CALCULO DO IVA
           if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60' then
