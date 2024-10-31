@@ -4770,16 +4770,15 @@ begin
                   bButton := Application.MessageBox(PChar('Esta numeração já foi utilizada.' + chr(10) + chr(10) + 'Definir um novo número para esta NFC-e?'), 'Atenção Duplicidade de NFC-e', mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
               end;
 
-            end;// if (Form1.ClienteSmallMobile.sVendaImportando <> '') then
+            end;
 
-            //
             if bButton = IDYES then
             begin
               try
-                sNovoNumero := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 sNovoNumero := '000000';
+                sNovoNumero := FormataNumeroDoCupom(0);
                 while Form1.iCupom >= StrToInt(sNovoNumero) do
                 begin
-                  sNovoNumero := FormataNumeroDoCupom(IncrementaGenerator('G_NUMERONFCE', 1)); // Sandro Silva 2021-12-02 sNovoNumero := StrZero(IncrementaGenerator('G_NUMERONFCE', 1), 6, 0);
+                  sNovoNumero := FormataNumeroDoCupom(IncrementaGenerator('G_NUMERONFCE', 1));
                   Sleep(10); // Sandro Silva 2020-05-20
                 end;
 
@@ -6110,7 +6109,6 @@ begin
 
     if bExibirMensagem then
     begin
-
       if Form1.bStatusECF = False then // Só exibe caixa mensagem quando sem serviço Sandro Silva 2021-11-03
       begin
         if Result = '' then
@@ -6118,17 +6116,13 @@ begin
         else
           Application.MessageBox(PChar(Result), 'Status do Serviço', MB_ICONINFORMATION + MB_OK);
       end;
-
     end;
 
     if Form1.NFCeemContingncia1.Checked = False then // Ocultar botoes apenas se não estiver em contingência
-      Form1.Teclas_touch(True);
+      Form1.Teclas_touch;
   finally
-    //Form1.NFCeemContingncia1.Checked := bContingencia;
     Screen.Cursor := Cursor;
   end;
-
-  //SmallMsg('Teste 01 consulta fim 3124');
 end;
 
 function _ecf65_InutilizacaoNFCe: String;
@@ -6716,18 +6710,14 @@ function _ecf65_NumeroDoCupom(Pp1: Boolean):String;
 var
   Mais1Ini : tIniFile;
 begin
-  //
   try
-    //
     Mais1ini  := TIniFile.Create('FRENTE.INI');
-    //
+
     if _ecf65_CupomAberto(True) then
       Pp1 := False;
-    //
 
     if pP1 then
     begin
-      //
       while True do
       begin
 
@@ -6769,28 +6759,15 @@ begin
 
         Form1.IBDataSet150.Post;
 
-        {Sandro Silva 2023-08-22 inicio
-        Mais1Ini.WriteString('NFCE','CUPOM',Result);
-        }
-        GravaNumeroCupomFrenteINI(Result, '65'); // Sandro Silva 2023-08-22
-        {Sandro Silva 2023-08-22 fim}
-
+        GravaNumeroCupomFrenteINI(Result, '65');
       except end;
     end else
     begin
-      {Sandro Silva 2023-08-22 inicio
-      try
-        Result := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM',FormataNumeroDoCupom(1))));
-      except
-        Result := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 Result := '000000';
-      end;
-      }
       try
         Result := FormataNumeroDoCupom(StrToInt(LeNumeroCupomFrenteINI('65', FormataNumeroDoCupom(1))));
       except
-        Result := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 Result := '000000';
+        Result := FormataNumeroDoCupom(0);
       end;
-      {Sandro Silva 2023-08-22 fim}
     end;
 
     Mais1Ini.Free;
@@ -6802,7 +6779,7 @@ begin
     Result := '000001';
 
   try
-    Result := FormataNumeroDoCupom(StrToInt(Result)); // Sandro Silva 2021-12-01
+    Result := FormataNumeroDoCupom(StrToInt(Result));
   except
   end;
 end;
