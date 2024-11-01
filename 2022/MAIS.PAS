@@ -2257,18 +2257,23 @@ begin
     iLeft            := iLeft + iFixL;
     MostraLabels(imgVendas,Label201);
 
+    //Avisos
+    //Primeiro aplica a imagem
+    Image_bola_vendas.Picture := ImageBola.Picture; // Sandro Silva 2024-11-01
+
     {Mauricio Parizotto 2023-07-13 Inicio}
     Image_bola_vendas.Top     := imgVendas.Top -6+1-1;
     Image_bola_vendas.Left    := imgVendas.Left + imgVendas.Width - 20;
 
-    Label_Bola_vendas.Caption := AllTrim(IntToStr(1));
-    Label_Bola_vendas.Width   := Image_Bola_NFe.Width;
+    Label_Bola_vendas.Caption := IntToStr(1); // Sandro Silva 2024-11-01 Label_Bola_vendas.Caption := AllTrim(IntToStr(1));
+    Label_Bola_vendas.Width   := Image_bola_vendas.Width; // Sandro Silva 2024-11-01 Label_Bola_vendas.Width   := Image_Bola_NFe.Width;
     Label_Bola_vendas.Left    := Image_bola_vendas.Left;
     Label_Bola_vendas.Top     := Image_bola_vendas.Top +1-1;
 
+    {Sandro Silva 2024-11-01
     //Avisos
     Image_bola_vendas.Picture := ImageBola.Picture;
-
+    }
     if Form7.GetMensagemCertificado <> '' then
     begin
       Image_bola_vendas.visible  := True;
