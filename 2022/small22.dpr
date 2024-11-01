@@ -98,7 +98,6 @@ uses
   uTestaClienteDevendo in 'units\uTestaClienteDevendo.pas',
   uIRetornaLimiteDisponivel in 'interfaces\uIRetornaLimiteDisponivel.pas',
   uRetornaLimiteDisponivel in 'units\uRetornaLimiteDisponivel.pas',
-  //uValidaRecursosDelphi7 in '..\..\unit_compartilhada\uValidaRecursosDelphi7.pas',
   uRecursosSistema in '..\..\unit_compartilhada\uRecursosSistema.pas',
   uTypesRecursos in '..\..\unit_compartilhada\uTypesRecursos.pas',
   uConectaBancoCommerce in 'uConectaBancoCommerce.pas',
@@ -120,8 +119,6 @@ uses
   uRetornaOperacoesRelatorio in 'units\uRetornaOperacoesRelatorio.pas',
   uFiltrosRodapeRelatorioVendasClienteNota in 'units\uFiltrosRodapeRelatorioVendasClienteNota.pas',
   uFiltrosRodapeRelatorioVendasClienteCupom in 'units\uFiltrosRodapeRelatorioVendasClienteCupom.pas',
-  //uNFeINI in '..\..\unit_compartilhada\uNFeINI.pas',
-  //uNFSeINI in '..\..\unit_compartilhada\uNFSeINI.pas',
   uRelatorioCatalogoProdudos in 'units\uRelatorioCatalogoProdudos.pas' {frmRelatorioCatalogoProduto},
   uEstruturaRelCatalogoProdutos in 'units\uEstruturaRelCatalogoProdutos.pas',
   uFiltrosRodapeRelatorioCatalogoProdutos in 'units\uFiltrosRodapeRelatorioCatalogoProdutos.pas',
@@ -193,13 +190,10 @@ uses
   uRaterioDiferencaEntreParcelasReceber in 'uRaterioDiferencaEntreParcelasReceber.pas',
   uFrmPerfilTributacao in 'uFrmPerfilTributacao.pas' {FrmPerfilTributacao},
   uFrmNaturezaOperacao in 'uFrmNaturezaOperacao.pas' {FrmNaturezaOperacao},
-  //uConfSisBD in '..\..\unit_compartilhada\uConfSisBD.pas',
-  //uOSSections in '..\..\unit_compartilhada\uOSSections.pas',
   uFrmSituacaoOS in 'uFrmSituacaoOS.pas' {FrmSituacaoOS},
   uOrdemServico in 'units\uOrdemServico.pas',
   uFuncaoMD5 in '..\..\unit_compartilhada\uFuncaoMD5.pas',
   uFrmAnexosOS in 'uFrmAnexosOS.pas' {FrmAnexosOS},
-  //uOutrasSections in '..\..\unit_compartilhada\uOutrasSections.pas',
   uRelatorioTotalGeralVenda in 'units\uRelatorioTotalGeralVenda.pas' {frmRelTotalizadorGeralVenda},
   uIGeraRelatorioTotalizadorGeralVenda in 'interfaces\uIGeraRelatorioTotalizadorGeralVenda.pas',
   uGeraRelatorioTotalizadorGeralVenda in 'units\uGeraRelatorioTotalizadorGeralVenda.pas',
@@ -243,7 +237,6 @@ uses
   uFrmPlanoContas in 'uFrmPlanoContas.pas' {FrmPlanoContas},
   uFrmBanco in 'uFrmBanco.pas' {FrmBanco},
   uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria},
-  //uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas',
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
   uFrmIntegracaoItau in 'uFrmIntegracaoItau.pas' {FrmIntegracaoItau},
@@ -253,7 +246,6 @@ uses
   uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro},
   uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
   uFrmTecnico in 'uFrmTecnico.pas' {FrmTecnico},
-  //uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas',
   uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas',
   uIntegracaoItau in '..\..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\..\unit_compartilhada\Itau\uClassesItau.pas',
@@ -276,7 +268,8 @@ uses
   uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas',
   ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo},
   uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
-  uIMendesSections in '..\..\unit_compartilhada\DAT\uIMendesSections.pas';
+  uIMendesSections in '..\..\unit_compartilhada\DAT\uIMendesSections.pas',
+  uCalculaImpostos in 'uCalculaImpostos.pas';
 
 {$R *.RES}
 
@@ -340,9 +333,9 @@ begin
 
       Application.Title := 'Small Commerce';
       Application.CreateForm(TForm1, Form1);
-  	  Application.CreateForm(TForm2, Form2);
-      Application.CreateForm(TSenhas, Senhas);
-      //Application.CreateForm(TSenhas2, Senhas2);
+  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TSenhas, Senhas);
+  //Application.CreateForm(TSenhas2, Senhas2);
       Application.CreateForm(TForm24, Form24);
       Application.CreateForm(TForm30, Form30);
       Application.CreateForm(TForm7, Form7);
