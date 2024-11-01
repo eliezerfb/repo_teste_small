@@ -1189,11 +1189,14 @@ begin
     )
   );
 
-  var ProductDescription := AllTrim(Copy(CaracteresHTML((AxProd))+
-     Replicate(' ', ASizeDescricaoProd-6), 1, ASizeDescricaoProd-6));
-                    
+  var ProductDescription := AllTrim(CaracteresHTML(AxProd));
+  ProductDescription := Copy(ProductDescription, 1, ASizeDescricaoProd);
+
   if ExistsDescription() then
+  begin
+    ProductDescription := Copy(ProductDescription, 1, ASizeDescricaoProd-6);
     ProductDescription := Format('%s %s', [ProductDescription, ACodigoProduto]);
+  end;
 
   Result := ProductDescription;
 end;
