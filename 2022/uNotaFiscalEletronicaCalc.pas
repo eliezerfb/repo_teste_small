@@ -207,7 +207,7 @@ var
 begin
   LogSistema('Início TNotaFiscalEletronicaCalc.CalculaImpostos( 200', lgInformacao); // Sandro Silva 2024-04-16
 
-  //Se não for complemento zera totais 
+  //Se não for complemento zera totais
   if not NFeFinalidadeComplemento(NotaFiscal.Finnfe) then
   begin
     //Zera Valores Nota
@@ -544,9 +544,15 @@ begin
                       NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + oItem.Vbcst, 2);
                       NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + oItem.Vicmsst, 2); // Acumula
                       }
+                      {2024-10-31
                       // Arredonda antes de somar
                       oItem.Vbcst           := Arredonda((oItem.Vbcst   + Arredonda(((oItem.IPI * (oItem.TOTAL - oItem.DescontoRateado) / 100) * oItem.BASE / 100) * rIVAProd, 2)), 2);
                       oItem.Vicmsst         := Arredonda((oItem.Vicmsst + Arredonda(((oItem.IPI * (oItem.TOTAL - oItem.DescontoRateado) / 100) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100) * rIVAProd, 2)),2);
+                      }
+                      // Arredonda antes de somar
+                      oItem.Vbcst           := (oItem.Vbcst   + ((oItem.IPI * (oItem.TOTAL - oItem.DescontoRateado) / 100) * oItem.BASE / 100) * rIVAProd);
+                      oItem.Vicmsst         := (oItem.Vicmsst + ((oItem.IPI * (oItem.TOTAL - oItem.DescontoRateado) / 100) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100) * rIVAProd);
+
 
                       NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + oItem.Vbcst, 2);
                       NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + oItem.Vicmsst, 2); // Acumula
@@ -560,9 +566,14 @@ begin
                     NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2); // Acumula
                     oItem.Vicmsst         := Arredonda(oItem.Vicmsst         - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ),2);
                     }
+                    {2024-10-31
                     // Arredonda antes de subtrair
                     NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - Arredonda(((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ), 2), 2); // Acumula
                     oItem.Vicmsst         := Arredonda(oItem.Vicmsst         - Arredonda(((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ), 2), 2);
+                    }
+                    // Arredonda antes de subtrair
+                    NotaFiscal.Icmssubsti := NotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ); // Acumula
+                    oItem.Vicmsst         := oItem.Vicmsst         - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 );
 
                   end else
                   begin
@@ -746,15 +757,16 @@ begin
                     ((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd), 2); // Não pode arredondar aqui
                   }
                   NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + Arredonda(((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd), 2), 2);
-                  oItem.Vbcst := Arredonda(oItem.Vbcst +                     Arredonda(((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd), 2), 2);
+                  //2024-10-31 oItem.Vbcst := Arredonda(oItem.Vbcst +                     Arredonda(((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd), 2), 2);
+                  oItem.Vbcst := oItem.Vbcst +                     ((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd);
 
                   // Estava faltando aplicar a mesma lógia de oItem.Vicmsst com NotaFiscal.Icmssubsti
                   NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti +
                     Arredonda(((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd), 2), 2); // Não pode arredondar aqui
 
-                  oItem.Vicmsst := Arredonda(oItem.Vicmsst +
-                    Arredonda(((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd), 2), 2); // Não pode arredondar aqui
+                  //2024-10-31 oItem.Vicmsst := Arredonda(oItem.Vicmsst + Arredonda(((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd), 2), 2); // Não pode arredondar aqui
 
+                  oItem.Vicmsst := oItem.Vicmsst + ((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd); // Não pode arredondar aqui
 
                   {Sandro Silva (f-21367) 2024-10-30 fim}
                 end;
@@ -768,7 +780,9 @@ begin
                 }
 
                 // Desconta do ICMS substituido o ICMS normal
-                oItem.Vicmsst         := Arredonda(oItem.Vicmsst         - Arredonda((((oItem.TOTAL - oItem.DescontoRateado)) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100), 2), 2);
+                // 2024-10-31 oItem.Vicmsst         := Arredonda(oItem.Vicmsst         - Arredonda((((oItem.TOTAL - oItem.DescontoRateado)) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100), 2), 2);
+                oItem.Vicmsst         := Arredonda(oItem.Vicmsst         - (((oItem.TOTAL - oItem.DescontoRateado)) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100), 2);
+                oItem.Vbcst         := Arredonda(oItem.Vbcst, 2); // Sandro Silva 2024-10-31
 
                 //2024-10-30 NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + oItem.Vicmsst, 2); // Acumula
                 NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - Arredonda((((oItem.TOTAL - oItem.DescontoRateado)) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100), 2), 2); // Acumula
@@ -967,12 +981,16 @@ begin
   // Aqui já deve ter feito o rateio de despesas e acréscimos e aplicado nos itens da nota
   // Passa pelos itens da nota para calcular o FCP de cada um
   NotaFiscal.VFCPST := 0.00;
+  NotaFiscal.Icmssubsti := 0.00; // Sandro Silva 2024-10-31
+  NotaFiscal.Basesubsti := 0.00; // Sandro Silva 2024-10-31
   for i := 0 to NotaFiscal.Itens.Count -1 do
   begin
     oItem := NotaFiscal.Itens.GetItem(i);
     if oItem.QUANTIDADE <> 0 then
       CalculaFCP( NotaFiscal, oItem);
     NotaFiscal.VFCPST := NotaFiscal.VFCPST + Arredonda(oItem.VFCPST, 2); // Sandro Silva 2023-05-18
+    NotaFiscal.Basesubsti := NotaFiscal.Basesubsti + Arredonda(oItem.Vbcst, 2); // Sandro Silva 2024-10-31
+    NotaFiscal.Icmssubsti := NotaFiscal.Icmssubsti + Arredonda(oItem.Vicmsst, 2); // Sandro Silva 2024-10-31
   end;
 
   FreeAndNil(IBQProduto);
