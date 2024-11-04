@@ -275,7 +275,8 @@ uses
   uWebServiceIMendes in 'units\uWebServiceIMendes.pas',
   uFrmProdutosIMendes in 'uFrmProdutosIMendes.pas' {FrmProdutosIMendes},
   uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
-  uImendes in 'units\uImendes.pas';
+  uImendes in 'units\uImendes.pas',
+  uCalculaImpostos in 'uCalculaImpostos.pas';
 
 {$R *.RES}
 

@@ -287,18 +287,22 @@ begin
   cdsProdutosNotaPRODUTO.Size := SizeDescricaoProd;
   ibdProdutosNotaPRODUTO.Size := SizeDescricaoProd;
 
-
+  {Sandro Silva (21327) 2024-10-21 inicio
   ibdProdutosNota.SelectSQL.Text :=
     'Select ' +
     'REGISTRO, ' +
     'PRODUTO, ' +
     'PRECO_CUSTO, ' +
     'PRECO_VENDA, ' +
-    'Case ' +
-    '  When LISTA > 0 then (((LISTA / PRECO_CUSTO) -1 ) * 100) ' +
-    '  When Coalesce(MARGEMLB, 0) > 0 then MARGEMLB ' +
-    '  Else (((Coalesce(PRECO, 0) / PRECO_CUSTO) -1 ) * 100) ' +
-    'End PERC_LUC, ' +
+    ' case ' +
+    '   when coalesce(PRECO_CUSTO, 0) = 0 then 0.00 ' +
+    '   else ' +
+    '     case ' +
+    '        When LISTA > 0 then (((LISTA / PRECO_CUSTO) -1 ) * 100) ' +
+    '        When Coalesce(MARGEMLB, 0) > 0 then MARGEMLB ' +
+    '        Else (((Coalesce(PRECO, 0) / PRECO_CUSTO) -1 ) * 100) ' +
+    '     end ' +
+    ' end PERC_LUC, ' +
     'Case ' +
     '  When LISTA > 0 then LISTA ' +
     '  When Coalesce(MARGEMLB, 0) > 0 then PRECO_CUSTO + (PRECO_CUSTO * (MARGEMLB / 100) ) ' +
@@ -327,7 +331,48 @@ begin
     '  and Coalesce(I.CODIGO,'''') <> '''' ' +
     ') A ' +
     'Order By REGISTRO';
-
+   }
+  ibdProdutosNota.SelectSQL.Text :=
+    'Select ' +
+    'REGISTRO, ' +
+    'PRODUTO, ' +
+    'PRECO_CUSTO, ' +
+    'PRECO_VENDA, ' +
+    ' case ' +
+    '   when coalesce(PRECO_CUSTO, 0) = 0 then 0.00 ' +
+    '   else ' +
+    '     case ' +
+    '        When LISTA > 0 then (((LISTA / PRECO_CUSTO) -1 ) * 100) ' +
+    '        When Coalesce(MARGEMLB, 0) > 0 then MARGEMLB ' +
+    '        Else (((Coalesce(PRECO, 0) / PRECO_CUSTO) -1 ) * 100) ' +
+    '     end ' +
+    ' end PERC_LUC, ' +
+    'Case ' +
+    '  When LISTA > 0 then LISTA ' +
+    '  When Coalesce(MARGEMLB, 0) > 0 then PRECO_CUSTO + (PRECO_CUSTO * (MARGEMLB / 100) ) ' +
+    '  Else Coalesce(PRECO,0) ' +
+    'End PRECO_NOVO ' +
+    'From ' +
+    '(Select ' +
+    '  I.REGISTRO, ' +
+    '  I.DESCRICAO PRODUTO, ' +
+    '  Coalesce(I.LISTA, 0) LISTA, ' +
+    '  (I.UNITARIO + (Coalesce(I.VICMSST, 0) + Coalesce(I.VIPI, 0) + Coalesce(I.VFCPST, 0)) / I.QUANTIDADE)  + ' +
+    '    ( ' +
+    '      (I.UNITARIO / C.MERCADORIA) * ' +
+    '      (Coalesce(C.FRETE, 0) + Coalesce(C.SEGURO, 0) + Coalesce(C.DESPESAS, 0) - Coalesce(C.DESCONTO, 0)) ' +
+    '    ) PRECO_CUSTO, ' +
+    '  case when Coalesce(E.PRECO, 0) containing ''INF'' then 0.00 else Coalesce(E.PRECO, 0) end as PRECO_VENDA, ' +
+    '  E.MARGEMLB, ' +
+    '  case when E.PRECO containing ''INF'' then 0.00 else E.PRECO end as PRECO ' +
+    'From ITENS002 I ' +
+    '  Left Join COMPRAS C on C.NUMERONF = I.NUMERONF and C.FORNECEDOR = I.FORNECEDOR ' +
+    '  Left Join ESTOQUE E on E.DESCRICAO = I.DESCRICAO ' +
+    'Where I.NUMERONF = :NUMERONF ' +
+    '  and I.FORNECEDOR  =  :FORNECEDOR ' +
+    '  and Coalesce(I.CODIGO,'''') <> '''' ' +
+    ') A ' +
+    'Order By REGISTRO';
 
 end;
 

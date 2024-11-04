@@ -472,7 +472,8 @@ begin
 
     cdsProdutosNotaTOTAL.AsFloat      := vQtdNova * cdsProdutosNotaUNITARIO.AsFloat;
     cdsProdutosNotaVIPI.AsFloat       := vQtdNova * (cdsProdutosNotaVIPI_ANT.AsFloat / vQtdAntes);
-    cdsProdutosNotaICM.Asfloat        := vQtdNova * (cdsProdutosNotaICM_ANT.Asfloat / vQtdAntes);
+    //Sandro Silva 2024-10-16 f-21308 cdsProdutosNotaICM.Asfloat        := vQtdNova * (cdsProdutosNotaICM_ANT.Asfloat / vQtdAntes);
+    cdsProdutosNotaICM.Asfloat        := cdsProdutosNotaICM_ANT.Asfloat;
     cdsProdutosNotaVICMS.AsFloat      := vQtdNova * (cdsProdutosNotaVICMS_ANT.AsFloat / vQtdAntes);
     cdsProdutosNotaVBC.AsFloat        := vQtdNova * (cdsProdutosNotaVBC_ANT.AsFloat / vQtdAntes);
     cdsProdutosNotaVBCST.AsFloat      := vQtdNova * (cdsProdutosNotaVBCST_ANT.AsFloat / vQtdAntes);

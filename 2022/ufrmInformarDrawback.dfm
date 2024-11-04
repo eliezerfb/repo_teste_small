@@ -7,6 +7,7 @@ inherited frmInformarDrawback: TfrmInformarDrawback
   Font.Name = 'Microsoft Sans Serif'
   Position = poScreenCenter
   OnClose = FormClose
+  OnShow = FormShow
   ExplicitWidth = 856
   ExplicitHeight = 655
   PixelsPerInch = 96
@@ -41,21 +42,20 @@ inherited frmInformarDrawback: TfrmInformarDrawback
     TitleFont.Pitch = fpFixed
     TitleFont.Style = []
     OnDrawDataCell = dbgPrincipalDrawDataCell
+    OnDrawColumnCell = dbgPrincipalDrawColumnCell
     OnEnter = dbgPrincipalEnter
     OnKeyDown = dbgPrincipalKeyDown
     Columns = <
       item
         Expanded = False
         FieldName = 'DESCRICAO'
-        Title.Caption = 'Descri'#231#227'o'
         Width = 630
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'DRAWBACK'
-        Title.Caption = 'C'#243'digo Drawback'
-        Width = 150
+        Width = 147
         Visible = True
       end>
   end
@@ -131,11 +131,13 @@ inherited frmInformarDrawback: TfrmInformarDrawback
       Size = 5
     end
     object cdsDrawbackDESCRICAO: TStringField
+      DisplayLabel = 'Descri'#231#227'o'
       FieldName = 'DESCRICAO'
       ReadOnly = True
       Size = 120
     end
     object cdsDrawbackDRAWBACK: TStringField
+      DisplayLabel = 'C'#243'digo Drawback'
       FieldName = 'DRAWBACK'
       Size = 11
     end

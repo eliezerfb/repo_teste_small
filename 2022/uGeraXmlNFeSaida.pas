@@ -27,19 +27,20 @@ uses
   , ugeraxmlnfe
   , StrUtils
   , uSmallConsts
+  , uCalculaImpostos // Sandro Silva 2024-
 ;
 
 
-
 var
-  sCodigoANP, sDentroOuForadoEStado : string;
-  vIVA60_V_ICMST : Real;
+  sCodigoANP, sDentroOuForadoEStado: string;
+  vIVA60_V_ICMST: Real;
 
   // Rateio
-  fCalculo, vFRETE, vOUTRAS, vDESCONTO, vSEGURO : Real;
-  fDesconto, fFrete, fOutras, fSeguro : array[0..999] of double;
+  fCalculo, vFRETE, vOUTRAS, vDESCONTO, vSEGURO: Real;
+  fDesconto, fFrete, fOutras, fSeguro: array[0..999] of double;
 
-  fRateioDoDesconto, {fPercentualFCPST, fPercentualFCP, }vIVA60_B_ICMST : Real;
+  fRateioDoDesconto {fPercentualFCPST, fPercentualFCP, }: Real;
+  // Sandro Silva (f-21199) 2024-10-31 vIVA60_B_ICMST: Real;
 
   dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-06-07
   dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
@@ -48,14 +49,14 @@ var
   FbAbortar: Boolean; // Dailon Parisotto 2024-09-23
 
   procedure GeraXmlNFeSaida;
-  procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
+  procedure GeraXmlNFeSaidaTags(vIPISobreICMS: Boolean; fSomaNaBase: Real);
   function CalculavTotTrib_M02(sCodigo: String; sOperacaoDoTopo: String): Boolean;
-
 
 implementation
 
 uses uFrmInformacoesRastreamento, uFuncoesFiscais, uFuncoesRetaguarda,
-  uDialogs, ufrmOrigemCombustivel, uFuncoesBancoDados, ufrmInformacoesExportacaoNFe;
+  uDialogs, ufrmOrigemCombustivel, uFuncoesBancoDados,
+  ufrmInformacoesExportacaoNFe;
 
 {
 function SqlSelectDadosItensNotaEntrada(sCodigo: String): String;
@@ -63,6 +64,15 @@ begin
   Result := 'select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST, ITENS002.PICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(sCodigo)+' order by COMPRAS.EMISSAO desc';
 end;
 }
+
+procedure SelecionaDadosTabelaICM;
+begin
+  Form7.ibDataSet14.DisableControls;
+  Form7.ibDataSet14.Close;
+  Form7.ibDataSet14.SelectSQL.Clear;
+  Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
+  Form7.ibDataSet14.Open;
+end;
 
 function SelectDadosItensNotaEntrada(IBQuery: TIBQuery; sCodigo: String): String;
 // Seleciona os dados da última entrada do código que é passado no parâmetro sCodigo
@@ -191,7 +201,7 @@ var
   vlBalseIPI, vlFreteRateadoItem : Double;
   vlOutrasDespRateadoItem : Double; //Mauricio Parizotto 2024-04-22
 
-  bFreteSobreIPI,bIPISobreICMS : Boolean;
+  bFreteSobreIPI, bIPISobreICMS : Boolean;
   bIPISobreOutras, bReferenciaNota : Boolean;
 
   cBenef, cBenefItem, cCredPresumido: string;
@@ -998,7 +1008,7 @@ begin
     end;
   end;
 
-  vIVA60_B_ICMST := 0;
+  // Sandro Silva (f-21199) 2024-10-31 vIVA60_B_ICMST := 0;
   vIVA60_V_ICMST := 0;
   vPIS           := 0;
   vPIS_S         := 0;
@@ -1137,7 +1147,7 @@ begin
               begin
                 if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
                 begin
-                  // Nova rotina para posicionar na tabéla de CFOP
+                  // Nova rotina para posicionar na tabela de CFOP
                   Form7.IBQuery14.Close;
                   Form7.IBQuery14.SQL.Clear;
                   Form7.IBQuery14.SQL.Add('select * from ICM where ST='+QuotedStr(Form7.ibDataSet4ST.AsString)+''); // Nova rotina
@@ -2583,7 +2593,9 @@ begin
   // Sandro Silva 2024-03-25 Form7.spdNFeDataSets.campo('vFCPSTRet_W06b').Value  := '0.00'; // Valor Total do FCP retido anteriormente por Substituição Tributária
   Form7.spdNFeDataSets.campo('vFCPSTRet_W06b').Value  := FormatFloatXML(dvFCPSTRet_W06b); // Valor Total do FCP retido anteriormente por Substituição Tributária
 
-  Form7.spdNFeDataSets.Campo('vBCST_W05').Value   := FormatFloatXML(vBCST - vIVA60_B_ICMST); // Valor Total do ICMS Sibst. Tributária
+  // Sandro Silva (f-21199) 2024-10-31 Form7.spdNFeDataSets.Campo('vBCST_W05').Value   := FormatFloatXML(vBCST - vIVA60_B_ICMST); // Valor Total do ICMS Sibst. Tributária
+  // vBCST acumula valor da base quando diferente de 60
+  Form7.spdNFeDataSets.Campo('vBCST_W05').Value   := FormatFloatXML(vBCST); // Valor Total do ICMS Sibst. Tributária
   Form7.spdNFeDataSets.Campo('vST_W06').Value     := FormatFloatXML(vST); // Valor Total do ICMS Sibst. Tributária
 
   {Sandro Silva 2023-09-04 inicio}
@@ -2802,11 +2814,15 @@ begin
 
       Form7.spdNFeDataSets.Campo('vServ_W18').Value   := FormatFloatXML(Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat); // Valor Total de serviços
 
+      {Sandro Silva 2024-10-14 inicio f-21199
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Close;
       Form7.ibDataSet14.SelectSQL.Clear;
       Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
       Form7.ibDataSet14.Open;
+      }
+      SelecionaDadosTabelaICM;
+      {Sandro Silva 2024-10-14 fim}
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
       Form7.ibDataSet14.EnableControls;
 
@@ -3199,7 +3215,7 @@ begin
 
     Form7.ibDataSet7.First;
     {Sandro Silva 2023-06-29 inicio
-while not Form7.ibDataSet7.Eof do
+    while not Form7.ibDataSet7.Eof do
     begin
       // Note que Os dados da Fatura se encontram no Parte "Y" da NFe que vamos
       // fazer várias inserções para a Mesma NFe como demonstracao
@@ -3341,6 +3357,7 @@ var
   dvBCFCPSTRet_N27a: Real;// Sandro Silva 2024-03-27
   sEstado : string;
   IVAProd : Real;
+  dValorIcms: Double; //Sandro Silva 2024-10-18
 begin
   //Mauricio Parizotto 2023-04-03
   fTotalMercadoria := RetornaValorSQL(' Select coalesce(sum(TOTAL),0) '+
@@ -3370,6 +3387,7 @@ begin
       end
       else
       begin
+        {Sandro Silva 2024-10-14 inicio f-21199
         if AllTrim(Form7.ibDataSet14.FieldByName('CST').AsString) <> '' then
         begin
           Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet14.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
@@ -3379,6 +3397,13 @@ begin
           Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
           Form7.spdNFeDataSets.Campo('CST_N12').Value    := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2); // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
         end;
+        }
+        ItemNFe := TItemNFe.Create;
+        CstComOrigemdoProdutoNaOperacao(Form7.ibDataSet4.FieldByName('CODIGO').AsString, Form7.ibDataSet15OPERACAO.AsString, ItemNFe);
+        Form7.spdNFeDataSets.Campo('CST_N12').Value  := ItemNFe.CST; // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
+        Form7.spdNFeDataSets.Campo('orig_N11').Value := ItemNFe.Origem;   //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
+        FreeAndNil(ItemNFe);
+        {Sandro Silva 2024-10-14 fim}
       end;
     except
       Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
@@ -3391,21 +3416,30 @@ begin
     if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
     begin
       sReg := Form7.ibDataSet14REGISTRO.AsString;
+      {Sandro Silva 2024-10-14 inicio f-21199
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Close;
       Form7.ibDataSet14.SelectSQL.Clear;
       Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
       Form7.ibDataSet14.Open;
+      }
+      SelecionaDadosTabelaICM;
+      {Sandro Silva 2024-10-14 fim}
+
       if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
         Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
       Form7.ibDataSet14.EnableControls;
     end else
     begin
+      {Sandro Silva 2024-10-14 inicio f-21199
       Form7.ibDataSet14.DisableControls;
       Form7.ibDataSet14.Close;
       Form7.ibDataSet14.SelectSQL.Clear;
       Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
       Form7.ibDataSet14.Open;
+      }
+      SelecionaDadosTabelaICM;
+      {Sandro Silva 2024-10-14 fim}
       Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
       Form7.ibDataSet14.EnableControls;
     end;
@@ -3447,21 +3481,29 @@ begin
       if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
       begin
         sReg := Form7.ibDataSet14REGISTRO.AsString;
+        {Sandro Silva 2024-10-14 inicio f-21199
         Form7.ibDataSet14.DisableControls;
         Form7.ibDataSet14.Close;
         Form7.ibDataSet14.SelectSQL.Clear;
         Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
         Form7.ibDataSet14.Open;
+        }
+        SelecionaDadosTabelaICM;
+        {Sandro Silva 2024-10-14 fim}
         if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
           Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
         Form7.ibDataSet14.EnableControls;
       end else
       begin
+        {Sandro Silva 2024-10-14 inicio f-21199
         Form7.ibDataSet14.DisableControls;
         Form7.ibDataSet14.Close;
         Form7.ibDataSet14.SelectSQL.Clear;
         Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
         Form7.ibDataSet14.Open;
+        }
+        SelecionaDadosTabelaICM;
+        {Sandro Silva 2024-10-14 fim}
         Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
         Form7.ibDataSet14.EnableControls;
       end;
@@ -3561,6 +3603,7 @@ begin
                 end;
               end else
               begin
+                {Sandro Silva (f-21367) 2024-10-30 inicio
                 // Estava arredondando duas vezes. Arredondava a primeira parte do cálculo, depois subtraia a segunda parte, que não estava arredondada, e arredondava o resultado
                 // Isso causa diferença entre o cálculo feito para exibir os valores na tela de lançamento de itens
                 Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   :=
@@ -3574,6 +3617,19 @@ begin
                         , 2)
                       )
                   ,',','.'); // Valor do ICMS ST em Reais
+                  }
+                // Estava arredondando duas vezes. Arredondava a primeira parte do cálculo, depois subtraia a segunda parte, que não estava arredondada, e arredondava o resultado
+                // Isso causa diferença entre o cálculo feito para exibir os valores na tela de lançamento de itens
+                Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   :=
+                  FormatFloatXML(
+                        Arredonda(
+                             (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)+ (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100))) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.AliqICMdoCliente16() / 100 ) * IVAProd
+                             -
+                             ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat  / 100 )
+                        , 2)
+                  ); // Valor do ICMS ST em Reais
+                  {Sandro Silva (f-21367) 2024-10-30 fim }
+
               end;
             end;
           end else
@@ -3636,6 +3692,8 @@ begin
             end;
           end;
 
+          { Sandro Silva (f-21199) 2024-10-31
+          Não é mais necessário
           if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60' then
           begin
             //  CALCULO DO IVA
@@ -3654,6 +3712,7 @@ begin
               - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto))) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 );
             end;
           end;
+          }
 
           // Desconta o ICM sobre IPI normal do ST    CALCULO DO IVA
           if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60' then
@@ -3796,7 +3855,6 @@ begin
       end;
     end;
 
-
     if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10' then
     begin
       // St 10
@@ -3850,7 +3908,7 @@ begin
       Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('ICM').AsFloat); // Alíquota do ICMS em Percentual
       Form7.spdNFeDataSets.Campo('vICMSOp_N16a').Value  := FormatFloatXML(Arredonda2( (Form7.ibDataSet16.FieldByname('ICM').AsFloat*(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase )/100*Form7.ibDataSet16.FieldByname('BASE').AsFloat/100) ,2));
 
-
+      {Sandro Silva 2024-10-18 inicio
       // Tag OBS no ICMS <pDIF>33,33</pDIF>
       if RetornaValorDaTagNoCampo('pDif', Form7.ibDataSet14.FieldByname('OBS').AsString) <> '' then
         Form7.spdNFeDataSets.Campo('pDif_N16b').Value      := StrTran(FormatFloat('##0.0000', Arredonda(StrToFloatDef(RetornaValorDaTagNoCampo('pDif', Form7.ibDataSet14.FieldByname('OBS').AsString), 0),4)),',','.')
@@ -3869,6 +3927,23 @@ begin
             - StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMSDif_N16c').AsString,',',''),'.',','))
             )),',','.');
       end;
+      }
+      // Tag OBS no ICMS <pDIF>33,33</pDIF>
+      if GetPercentualDiferenciado(Form7.ibDataSet14.FieldByname('OBS').AsString) <> '' then
+        Form7.spdNFeDataSets.Campo('pDif_N16b').Value      := FormatFloatXML(StrToFloatDef(GetPercentualDiferenciado(Form7.ibDataSet14.FieldByname('OBS').AsString), 0), 4)
+      else
+        Form7.spdNFeDataSets.Campo('pDif_N16b').Value      := '100';
+
+      dValorIcms := ValorIcms(Form7.ibDataSet16.FieldByname('ICM').AsFloat, (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase ), Form7.ibDataSet16.FieldByname('BASE').AsFloat);
+
+      // Fórmula complexa poderia ser simplificada mas foi testada e está funcionando
+      Form7.spdNFeDataSets.Campo('vICMSDif_N16c').Value := FormatFloatXML(ValorIcmsDiferenciado(dValorIcms, FormatXMLToFloat(Form7.spdNFeDataSets.Campo('pDif_N16b').AsString)));
+
+      if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '51' then
+      begin
+        Form7.spdNFeDataSets.Campo('vICMS_N17').Value := FormatFloatXML(Arredonda2(dValorIcms, 2) - FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vICMSDif_N16c').AsString));
+      end;
+      {Sandro Silva 2024-10-18 fim}
     end;
 
     if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30' then
@@ -4270,6 +4345,7 @@ begin
       Form7.spdNFeDataSets.Campo('pCredSN_N29').VAlue      := FormatFloatXML(fAliquota); // Aliquota aplicave de cálculo de crédito (Simples Nacional)
       Form7.spdNFeDataSets.Campo('vCredICMSSN_N30').VAlue  := FormatFloatXML(((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)) * fAliquota / 100); // VAlor de crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)
     end;
+
     // CSOSN 102, 103, 300, 400
     if (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '102')
     or (Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '103')
@@ -4390,21 +4466,29 @@ begin
               if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
               begin
                 sReg := Form7.ibDataSet14REGISTRO.AsString;
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
                   Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
                 Form7.ibDataSet14.EnableControls;
               end else
               begin
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
                 Form7.ibDataSet14.EnableControls;
               end;
@@ -4515,20 +4599,28 @@ begin
               if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
               begin
                 sReg := Form7.ibDataSet14REGISTRO.AsString;
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
                 Form7.ibDataSet14.EnableControls;
               end else
               begin
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
                 Form7.ibDataSet14.EnableControls;
               end;
@@ -4583,21 +4675,29 @@ begin
               if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
               begin
                 sReg := Form7.ibDataSet14REGISTRO.AsString;
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
                   Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
                 Form7.ibDataSet14.EnableControls;
               end else
               begin
+                {Sandro Silva 2024-10-14 inicio f-21199
                 Form7.ibDataSet14.DisableControls;
                 Form7.ibDataSet14.Close;
                 Form7.ibDataSet14.SelectSQL.Clear;
                 Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
                 Form7.ibDataSet14.Open;
+                }
+                SelecionaDadosTabelaICM;
+                {Sandro Silva 2024-10-14 fim}
                 Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
                 Form7.ibDataSet14.EnableControls;
               end;
@@ -4770,21 +4870,29 @@ begin
             if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
             begin
               sReg := Form7.ibDataSet14REGISTRO.AsString;
+              {Sandro Silva 2024-10-14 inicio f-21199
               Form7.ibDataSet14.DisableControls;
               Form7.ibDataSet14.Close;
               Form7.ibDataSet14.SelectSQL.Clear;
               Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
               Form7.ibDataSet14.Open;
+              }
+              SelecionaDadosTabelaICM;
+              {Sandro Silva 2024-10-14 fim}
               if not Form7.ibDataSet14.Locate('ST',Form7.ibDataSet4ST.AsString,[loCaseInsensitive, loPartialKey]) then
                 Form7.ibDataSet14.Locate('REGISTRO',sReg,[]);
               Form7.ibDataSet14.EnableControls;
             end else
             begin
+              {Sandro Silva 2024-10-14 inicio f-21199
               Form7.ibDataSet14.DisableControls;
               Form7.ibDataSet14.Close;
               Form7.ibDataSet14.SelectSQL.Clear;
               Form7.ibDataSet14.SelectSQL.Add('select * from ICM where SubString(CFOP from 1 for 1) = ''5'' or  SubString(CFOP from 1 for 1) = ''6'' or  SubString(CFOP from 1 for 1) = '''' or SubString(CFOP from 1 for 1) = ''7''  or Coalesce(CFOP,''XXX'') = ''XXX'' order by upper(NOME)');
               Form7.ibDataSet14.Open;
+              }
+              SelecionaDadosTabelaICM;
+              {Sandro Silva 2024-10-14 fim}
               Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
               Form7.ibDataSet14.EnableControls;
             end;
