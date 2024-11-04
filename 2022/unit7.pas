@@ -17423,7 +17423,7 @@ begin
   if IBDataSet97.IsEmpty then
     Exit;
 
-  TImpressaoOrcamento.New
+  TImpressaoOrcamento.New(IBTransaction1)
                      .SetTransaction(IBTransaction1)
                      .SetNumeroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
                      .Imprimir;
@@ -34698,7 +34698,7 @@ begin
     try
       oArqDAT.Frente.Orcamento.Porta := ttioPDF;
       // Gera o arquivo PDF
-      TImpressaoOrcamento.New
+      TImpressaoOrcamento.New(IBDataSet97.Transaction)
                          .SetTransaction(IBDataSet97.Transaction)
                          .SetNumeroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
                          .GetCaminhoImpressao(cCaminhoArq)
