@@ -67,7 +67,8 @@ implementation
 
 uses unit7, uFuncoesBancoDados, uClassesIMendes, smallfunc_xe,
   uFrmTelaProcessamento, uDialogs, uFuncoesRetaguarda, uValidaRecursos,
-  uTypesRecursos, MAIS, uSistema, uFrmSaneamentoIMendes, uEstruturaRelGenerico;
+  uTypesRecursos, MAIS, uSistema, uFrmSaneamentoIMendes, uEstruturaRelGenerico,
+  uSmallConsts;
 
 procedure TFrmIntegracaoIMendes.btnSimuladorClick(Sender: TObject);
 begin
@@ -135,6 +136,8 @@ procedure TFrmIntegracaoIMendes.btnOKClick(Sender: TObject);
 var
   ConfSistema : TArquivosDAT;
 begin
+  TSistema.GetInstance.ConsultarIPIImendes := chkConsultaIPI.Checked;
+
   try
     ConfSistema := TArquivosDAT.Create('',Form7.ibDataSet13.Transaction);
     ConfSistema.BD.IMendes.ConsultarIPI     := chkConsultaIPI.Checked;
@@ -169,6 +172,8 @@ begin
 
     Exit;
   end;
+
+  TSistema.GetInstance.ConsultarIPIImendes := chkConsultaIPI.Checked;
 
   if GetFiltroSaneamento(sFiltro) then
   begin
@@ -437,7 +442,7 @@ begin
           '  	Count(*)  "Quantidade"	'+
           ' From ESTOQUE'+
           sFiltro+
-          ' and STATUS_TRIBUTACAO in (''Pendente'',''Consultado'') '+
+          ' and STATUS_TRIBUTACAO in ('+QuotedStr(_cStatusImendesPendente)+','+QuotedStr(_cStatusImendesConsultado)+') '+
           ' Group By STATUS_TRIBUTACAO';
 
   sSql2 :=' Select '+
@@ -446,7 +451,7 @@ begin
           ' 	DESCRICAO "Descrição" 	'+
           ' From ESTOQUE'+
           sFiltro+
-          ' and STATUS_TRIBUTACAO = ''Consultado''';
+          ' and STATUS_TRIBUTACAO = '+QuotedStr(_cStatusImendesConsultado);
 
   sSql3 :=' Select '+
           ' 	CODIGO "Código",'+
@@ -454,7 +459,7 @@ begin
           ' 	DESCRICAO "Descrição" 	'+
           ' From ESTOQUE'+
           sFiltro+
-          ' and STATUS_TRIBUTACAO = ''Pendente''';
+          ' and STATUS_TRIBUTACAO = '+QuotedStr(_cStatusImendesPendente);
 
   TEstruturaRelGenerico.New
                        .setUsuario(Usuario)

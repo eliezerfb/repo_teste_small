@@ -199,7 +199,7 @@ inherited FrmIntegracaoIMendes: TFrmIntegracaoIMendes
         Top = 171
         Width = 77
         Height = 17
-        Caption = 'Consular IPI'
+        Caption = 'Consultar IPI'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11

@@ -1154,6 +1154,12 @@ begin
   btnPrecoTodos.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
   btnPreco.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
 
+  //Mauricio Parizotto 2024-11-04
+  lblIVAPorEstado.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtNaturezaReceita.Enabled          := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnConsultarTrib.Enabled            := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  DBCheckSobreIPI.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
+
   //Tags
   sgridTags.EditorMode := not(bEstaSendoUsado) and not (bSomenteLeitura);
   if (bEstaSendoUsado) or (bSomenteLeitura) then

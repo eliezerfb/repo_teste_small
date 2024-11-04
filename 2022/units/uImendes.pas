@@ -430,6 +430,9 @@ begin
                    '   and STATUS_TRIBUTACAO <> '+QuotedStr(_cStatusImendesConsultado)+
                    sFiltro,
                    ibdEstoque.Transaction);
+
+    //Tempo para depois rodar relatório com filtro DATA_STATUS_TRIBUTACAO
+    Sleep(2000);
   except
   end;
 end;
@@ -490,7 +493,7 @@ begin
     ibdEstoque.FieldByName('CST_PIS_COFINS_ENTRADA').AsString := Grupo.Piscofins.CstEnt;
     ibdEstoque.FieldByName('CST_PIS_COFINS_SAIDA').AsString   := Grupo.Piscofins.CstSai;
     ibdEstoque.FieldByName('ALIQ_PIS_SAIDA').AsFloat          := Grupo.Piscofins.AliqPIS;
-    ibdEstoque.FieldByName('ALIQ_PIS_SAIDA').AsFloat          := Grupo.Piscofins.AliqCOFINS;
+    ibdEstoque.FieldByName('ALIQ_COFINS_SAIDA').AsFloat       := Grupo.Piscofins.AliqCOFINS;
     ibdEstoque.FieldByName('NATUREZA_RECEITA').AsString       := Grupo.Piscofins.Nri;
 
     if PreencheIPI then
