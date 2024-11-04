@@ -6,7 +6,6 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, Grids, DBGrids, DB, ExtCtrls, Menus, Unit9, IniFiles,
   StdCtrls
-//  , Unit10
   , Unit11, Unit14, Unit16, Mask, DBCtrls, smallfunc_xe,
   SMALL_DBEdit, shellapi, Printers, ToolWin, ComCtrls, clipbrd,
   jpeg, MAPI, Variants,
@@ -3199,7 +3198,6 @@ begin
   except
     on E: Exception do
     begin
-      //ShowMessage(E.Message);Mauricio Parizotto 2023-10-25
       MensagemSistema(E.Message,msgErro);
       Result := nil;
     end
@@ -3219,7 +3217,6 @@ begin
   except
     on E: Exception do
     begin
-      //ShowMessage(E.Message); Mauricio Parizotto 2023-10-25
       MensagemSistema(e.Message,msgErro);
       Result := nil;
     end
@@ -3389,7 +3386,6 @@ begin
       except
         on E: Exception do
         begin
-          //ShowMessage('Erro ao descompactar XML: '+E.Message); Mauricio Parizotto 2023-10-25
           MensagemSistema('Erro ao descompactar XML: '+E.Message,msgErro);
         end
       end;
@@ -3400,7 +3396,6 @@ begin
   except
     on E: Exception do
     begin
-      //ShowMessage('Erro 2503: '+E.Message); Mauricio Parizotto 2023-10-25
       MensagemSistema('Erro 2503: '+E.Message,msgErro);
     end
   end;
@@ -3477,7 +3472,6 @@ begin
           except
             on E: Exception do
             begin
-              //ShowMessage('Erro 2397: '+E.Message); Mauricio Parizotto 2023-10-25
               MensagemSistema('Erro 2397: '+E.Message,msgErro);
             end
           end;
@@ -3539,7 +3533,6 @@ begin
             except
               on E: Exception do
               begin
-                //ShowMessage('Erro 2491 ao baixar lista de NF-e´s emitidas: '+E.Message); Mauricio Parizotto 2023-10-25
                 MensagemSistema('Erro 2491 ao baixar lista de NF-e´s emitidas: '+E.Message,msgErro);
               end
             end;
@@ -3566,7 +3559,6 @@ begin
         except
           on E: Exception do
           begin
-            //ShowMessage('Erro 2501 ao baixar lista de NF-e´s emitidas: '+E.Message); Mauricio Parizotto 2023-10-25
             MensagemSistema('Erro 2501 ao baixar lista de NF-e´s emitidas: '+E.Message,msgErro);
           end
         end;
@@ -3578,7 +3570,6 @@ begin
   except
     on E: Exception do
     begin
-      //ShowMessage('Erro 2503 ao baixar lista de NF-e´s emitidas: '+E.Message); Mauricio Parizotto 2023-10-25
       MensagemSistema('Erro 2503 ao baixar lista de NF-e´s emitidas: '+E.Message,msgErro);
     end;
   end;
@@ -4293,7 +4284,6 @@ begin
       {Dailon Parisotto 2023-10-06 (f-7420) Fim}
     end;
   except
-    //ShowMessage('Erro ao criptografar head do registro do arquivo '+pNome) Mauricio Parizotto 2023-10-25
     MensagemSistema('Erro ao criptografar head do registro do arquivo '+pNome,msgErro);
   end;
 end;
@@ -4818,7 +4808,6 @@ begin
   or AnsiContainsText(sRetorno, '<cStat>840</cStat>') // Rejeição: NCM de medicamento e não informado o grupo de medicamento (med) [nItem:nnn]
   then
   begin
-    //Application.MessageBox(pChar('Preencha os campos cProdANVISA, xMotivoIsencao e rastro, da Aba TAGs, no cadastro do produto ' + ItemRejeicao(sRetorno, XmlEnviado)), 'Atenção', mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-24
     MensagemSistema('Preencha os campos cProdANVISA, xMotivoIsencao e rastro, da Aba TAGs, no cadastro do produto ' + ItemRejeicao(sRetorno, XmlEnviado)
                     ,msgAtencao);
   end;
@@ -5263,7 +5252,6 @@ begin
   if AllTrim(sP1) = '' then sP1 := Form1.sAtual;
   if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
   begin
-    //ShowMessage('Recuperando XML da pasta \log'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Recuperando XML da pasta \log');
     Form7.ibDataSet15.Edit;
     Form7.ibDataSet15NFEXML.AsString := LoadXmlDestinatarioSaida(Form7.ibDataSet15NFEID.AsString);
@@ -5427,7 +5415,6 @@ begin
       Form7.ibDataset100.SelectSql.Add('select gen_id(G_AUDIT0RIA,1) from rdb$database');
       Form7.ibDataset100.Open;
     except
-      //ShowMessage('Erro na tabela de auditoria. Cod. 1'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Erro na tabela de auditoria. Cod. 1',msgErro);
     end;
 
@@ -5812,11 +5799,6 @@ begin
   except
     on E: Exception do
     begin
-      {
-      Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao abrir arquivos.'
-                          ),'Erro: 5179',mb_Ok + MB_ICONWARNING);
-      Mauricio Parizotto 2023-10-24}
-
       MensagemSistema(E.Message+chr(10)+chr(10)+'Ao abrir arquivos.'
                       +#13#10+'Erro: 5179'
                       ,msgErro);
@@ -6381,7 +6363,6 @@ begin
             try
               Rewrite(F);
             except
-              //ShowMessage('Verifique a impressora.'); Mauricio Parizotto 2023-10-25
               MensagemSistema('Verifique a impressora.');
             end;
 
@@ -6452,7 +6433,6 @@ begin
                           Replicate(' ',100)+FormatFloat(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(Form7.ibDataSet19TIPO.Value,'9','#'),'.','*'),',','.'),'*',','),'#.####','0.0000'),'#.###','0.000'),'#.##','0.00'),'#.#','0.0'),vCampo[ Trunc( Form7.ibDataSet19ELEMENTO.Value )+I])
                           ,length(Alltrim(Form7.ibDataSet19Tipo.Value)));
                         except
-                          //ShowMessage('Erro 2'); Mauricio Parizotto 2023-10-25
                           MensagemSistema('Erro 2',msgErro);
                         end;
                       end;
@@ -6651,14 +6631,12 @@ begin
                 try
                   Writeln(F,vLinha[I]);
                 except
-                  //ShowMessage('Verifique a impressora.'); Mauricio Parizotto 2023-10-25
                   MensagemSistema('Verifique a impressora.',msgAtencao);
                   Abort;
                 end;
               end;
               CloseFile(F);
             except
-              //ShowMessage('Verifique a impressora.'); Mauricio Parizotto 2023-10-25
               MensagemSistema('Verifique a impressora.',msgAtencao);
               Abort;
             end;
@@ -7072,7 +7050,6 @@ begin
             try
               Rewrite(F);
             except
-              //ShowMessage('Verifique a impressora.') Mauricio Parizotto 2023-10-25
               MensagemSistema('Verifique a impressora.',msgAtencao);
             end;
 
@@ -7146,7 +7123,6 @@ begin
                           Replicate(' ',100)+FormatFloat(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(StrTran(Form7.ibDataSet19TIPO.Value,'9','#'),'.','*'),',','.'),'*',','),'#.####','0.0000'),'#.###','0.000'),'#.##','0.00'),'#.#','0.0'),vCampo[ Trunc( Form7.ibDataSet19ELEMENTO.Value )+I])
                           ,length(Alltrim(Form7.ibDataSet19Tipo.Value)));
                         except
-                          //ShowMessage('Erro 2');Mauricio Parizotto 2023-10-25
                           MensagemSistema('Erro 2');
                         end;
                       end;
@@ -7342,7 +7318,6 @@ begin
                 try
                   Writeln(F,vLinha[I]);
                 except
-                  //ShowMessage('Verifique a impressora.'); Mauricio Parizotto 2023-10-25
                   MensagemSistema('Verifique a impressora.',msgAtencao);
                   Abort;
                 end;
@@ -7357,7 +7332,6 @@ begin
                 Form7.ibDataSet15.Post;
               end;
             except
-              //ShowMessage('Verifique a impressora.');Mauricio Parizotto 2023-10-25
               MensagemSistema('Verifique a impressora.');
               Abort;
             end;
@@ -7441,10 +7415,8 @@ begin
       //
       while not p1.EOF do
       begin
-        //
         if (AllTrim(p2.AsString) = AllTrim(sDescricao)) and (sReg1 <> p1.FieldByname('REGISTRO').AsString) then
         begin
-          //
           sREg2 := p1.FieldByname('REGISTRO').AsString;
           //
           if p3 then
@@ -7453,7 +7425,6 @@ begin
             p1.Delete;
             sREg1 := sREg2;
             p1.EnableControls;
-            //ShowMessage('Este item já está relacionado.'); Mauricio Parizotto 2023-10-25
             MensagemSistema('Este item já está relacionado.');
           end;
           Result := True;
@@ -16030,20 +16001,26 @@ begin
   ibDataSet14SC_.ReadOnly  := (bTribInteligente) and (sUFEmit='SC');
   ibDataSet14RS_.ReadOnly  := (bTribInteligente) and (sUFEmit='RS');
 
-  ibDataSet14CFOP.ReadOnly         := (bTribInteligente);
-  ibDataSet14NOME.ReadOnly         := (bTribInteligente);
-  ibDataSet14INTEGRACAO.ReadOnly   := (bTribInteligente);
-  ibDataSet14CONTA.ReadOnly        := (bTribInteligente);
-  ibDataSet14ST.ReadOnly           := (bTribInteligente);
-  ibDataSet14BASEISS.ReadOnly      := (bTribInteligente);
-  ibDataSet14ISS.ReadOnly          := (bTribInteligente);
-  ibDataSet14BASE.ReadOnly         := (bTribInteligente);
-  ibDataSet14CST.ReadOnly          := (bTribInteligente);
-  ibDataSet14CSTPISCOFINS.ReadOnly := (bTribInteligente);
-  ibDataSet14BCPISCOFINS.ReadOnly  := (bTribInteligente);
-  ibDataSet14PCOFINS.ReadOnly      := (bTribInteligente);
-  ibDataSet14PPIS.ReadOnly         := (bTribInteligente);
-  ibDataSet14CSOSN.ReadOnly        := (bTribInteligente);
+  ibDataSet14CFOP.ReadOnly           := (bTribInteligente);
+  ibDataSet14NOME.ReadOnly           := (bTribInteligente);
+  ibDataSet14INTEGRACAO.ReadOnly     := (bTribInteligente);
+  ibDataSet14CONTA.ReadOnly          := (bTribInteligente);
+  ibDataSet14ST.ReadOnly             := (bTribInteligente);
+  ibDataSet14BASEISS.ReadOnly        := (bTribInteligente);
+  ibDataSet14ISS.ReadOnly            := (bTribInteligente);
+  ibDataSet14BASE.ReadOnly           := (bTribInteligente);
+  ibDataSet14CST.ReadOnly            := (bTribInteligente);
+  ibDataSet14CSTPISCOFINS.ReadOnly   := (bTribInteligente);
+  ibDataSet14BCPISCOFINS.ReadOnly    := (bTribInteligente);
+  ibDataSet14PCOFINS.ReadOnly        := (bTribInteligente);
+  ibDataSet14PPIS.ReadOnly           := (bTribInteligente);
+  ibDataSet14CSOSN.ReadOnly          := (bTribInteligente);
+  ibDataSet14CBENEF.ReadOnly         := (bTribInteligente);
+
+  ibDataSet14SOBREFRETE.ReadOnly     := True;
+  ibDataSet14SOBRESEGURO.ReadOnly    := True;
+  ibDataSet14REFERENCIANOTA.ReadOnly := True;
+  ibDataSet14IMPOSTOMANUAL.ReadOnly  := True;
   {Mauricio Parizotto 2024-10-16 Fim}
 end;
 
@@ -27410,8 +27387,6 @@ begin
   end;
 
   VerificaAlteracaoPerfil;//Mauricio Parizotto 2023-09-18
-
-  VerificaAlteracaoIMendes;//Mauricio Parizotto 2024-10-14
 end;
 
 procedure TForm7.SPEDPISCOFINS1Click(Sender: TObject);
@@ -27419,7 +27394,6 @@ begin
   if FileExists(Form1.sAtual+'\spedpiscofins.exe') then
     ShellExecute( 0, 'Open', 'spedpiscofins.exe', '', '', SW_SHOW)
   else
-    //ShowMessage('O executável spedpiscofins.exe não foi encontrado na pasta de instalação do programa.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('O executável spedpiscofins.exe não foi encontrado na pasta de instalação do programa.',msgAtencao);
 end;
 
@@ -27515,7 +27489,6 @@ begin
 
             sRetorno := 'Carta de correção Eletrônica (Cc-e) vinculada a NF-e.';
 
-            //ShowMessage(sRetorno); Mauricio Parizotto 2023-10-25
             MensagemSistema(sRetorno);
           end else
           begin
@@ -27527,7 +27500,6 @@ begin
               sMotivo := Copy(sRetorno+'   ',Pos('<xMotivo>',sRetorno)+9,Pos('</xMotivo>',sRetorno)-Pos('<xMotivo>',sRetorno)-9);
             end;
 
-            //ShowMessage(sMotivo); Mauricio Parizotto 2023-10-25
             MensagemSistema(sMotivo);
 
             sRetorno := 'Erro ao gerar Cc-e para NF-e '+Form7.ibDataSet15NUMERONF.AsString;
@@ -27536,7 +27508,6 @@ begin
         begin
           if AllTrim(sCartaCorrecao) <> '' then
           begin
-            //ShowMessage('O texto livre da Carta de Correção Eletrônica (Cc-e) tem que ter no minimo 30 caracteres.'); Mauricio Parizotto 2023-10-25
             MensagemSistema('O texto livre da Carta de Correção Eletrônica (Cc-e) tem que ter no minimo 30 caracteres.',msgAtencao);
           end;
         end;
