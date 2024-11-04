@@ -65,8 +65,6 @@ const FILTRO_ANIVERSARIANTES_SEMANA = ' where EXTRACT(week from current_date) = 
 
 const VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE = 'Consulte o recibo desta NF-e'; // Sandro Silva 2024-04-16
 
-//function EnviarEMail(sDe, sPara, sCC, sAssunto, sTexto, cAnexo: string; bConfirma: Boolean): Integer;
-
 function Commitatudo(RefazSelect:Boolean): Boolean;
 function AbreArquivos(P1:Boolean): Boolean;
 function AgendaCommit(P1:Boolean): Boolean;
@@ -2545,6 +2543,7 @@ type
     function RetornarCasasDecimaisPreco: Integer;
     procedure DesvincularCupomImportado;
     procedure ChamarRelResumoVendas(AenTipoRelatorio: TTipoRelatorioResumoVenda);
+    function EnviaNFe: Boolean;
   public
     // Public declarations
 
@@ -24078,6 +24077,10 @@ var
   sRetorno : String;
   sRecibo : String;
 begin
+  EnviaNFe;
+
+  (* Mauricio Parizotto 2024-11-04
+
   if ValidaLimiteDeEmissaoDeVenda(Form7.ibDataSet15EMISSAO.AsDateTime) = False then
   begin
     Exit;
@@ -24110,7 +24113,9 @@ begin
           try
             begin
               sLote := Form7.ibDataSet15.FieldByName('NUMERONF').AsString;
-              fNFe := GeraXmlNFe;
+              //fNFe := GeraXmlNFe; Mauricio Parzitto 2024-11-04
+              if not GeraXmlNFe(fNFe) then
+                Exit;
 
               // Início geração do xml
               try
@@ -24179,7 +24184,8 @@ begin
               end;
               // End Transmitindo
             end;
-          except end;
+          except
+          end;
 
           {$IFDEF VER150}
           DecimalSeparator := ',';
@@ -24208,8 +24214,154 @@ begin
     except
     end;
   end;
+
+  *)
 end;
 
+
+
+
+function TForm7.EnviaNFe : Boolean;
+var
+  sLote : String;
+  sRetorno : String;
+  sRecibo : String;
+begin
+  Result := False;
+
+  if ValidaLimiteDeEmissaoDeVenda(Form7.ibDataSet15EMISSAO.AsDateTime) = False then
+  begin
+    Exit;
+  end;
+
+  if AllTrim(Form7.ibDataSet15NFEID.AsString) <> '' then
+  begin
+    Form7.RRecuperaroXMLdestaNFe1Click(nil);
+  end;
+
+  if FileExists(pChar(Form1.sAtual + '\XmlDestinatario\' + Form7.ibDataSet15NFEID.AsString + '-nfe.xml')) then
+  begin
+    if not (Form7.ibDataset15.State in ([dsEdit, dsInsert])) then
+      Form7.ibDataset15.Edit;
+    Form7.ibDataSet15NFEXML.AsString  := LoadXmlDestinatarioSaida(pChar(Form7.ibDataSet15NFEID.AsString));
+    Form7.ibDataset15.Post;
+    Form7.ibDataset15.Edit;
+  end else
+  begin
+    if Pos('<nfeProc',Form7.ibDataSet15NFEXML.AsString) = 0 then
+    begin
+      begin
+        Form7.ibDataset15.Edit;
+        SetTextoCampoSTATUSNFe(EmptyStr);
+
+        if alltrim(Form7.ibDataSet15NFEPROTOCOLO.AsString) = '' then
+        begin
+          try
+            begin
+              sLote := Form7.ibDataSet15.FieldByName('NUMERONF').AsString;
+
+              if not GeraXmlNFe(fNFe) then
+                Exit;
+
+              // Início geração do xml
+              try
+                fNFe := spdNFe.AssinarNota(fNFe);
+                Screen.Cursor            := crHourGlass;
+              except
+                Form7.ibDataset15.Edit;
+                Form7.SetTextoCampoSTATUSNFe('Erro ao assinar NFE');
+                Form7.ibDataset15.Post;
+                Form7.ibDataset15.Edit;
+              end;
+
+              // Transmitindo
+              Form7.ibDataset15.Edit;
+              Form7.ibDataSet15NFEXML.AsString    := fNFe;
+              Form7.ibDataset15.Post;
+
+              if not bContingencia then
+              begin
+                try
+                  Form7.Panel7.Caption          := 'Transmitindo arquivo XML...'+replicate(' ',100);
+                  Form7.Panel7.Repaint;
+                  sRetorno := spdNFe.EnviarNF(sLote, fNFe);
+                  Screen.Cursor            := crHourGlass;
+
+                  if Pos('<nRec>',sRetorno) <> 0 then
+                  begin
+                    sRecibo := Copy(sRetorno+'   ',Pos('<nRec>',sRetorno)+6,Pos('</nRec>',sRetorno)-Pos('<nRec>',sRetorno)-6);
+                  end else
+                  begin
+                    MensagemSistema(sRetorno);
+                  end;
+                except
+                  on E: Exception do
+                  begin
+                    MensagemSistema(E.Message+chr(10)+chr(10)+'ao enviar NFe',msgErro);
+                  end;
+                end;
+
+                // Grava na tabela VENDAS os dados da NF-e
+                Form7.Panel7.Caption          := 'Gravando número do recibo e arquivo XML...'+replicate(' ',100);
+                Form7.Panel7.Repaint;
+
+                Form7.ibDataset15.Edit;
+                Form7.ibDataSet15NFEID.AsString     := Copy(spdNFeDataSets.Campo('Id_A03').AsString,4,44); // Copia o ID da NFe p/ o Edit
+                Form7.ibDataSet15NFERECIBO.AsString := Copy(sRecibo+REplicate(' ',15),1,15);
+
+                Form7.ibDataSet15NFEXML.AsString    := fNFe;
+                Form7.ibDataSet15MODELO.AsString    := '55';
+                Form7.ibDataSet15.Post;
+                Form7.ibDataSet15.Edit;
+                if Alltrim(sRecibo) <> '' then
+                begin
+                  if Copy(Form7.ibDataSet15STATUS.AsString,1,4) <> 'Erro' then
+                    Form7.SetTextoCampoSTATUSNFe(VENDAS_STATUS_CONSULTE_O_RECIBO_DESTA_NFE);
+                end else
+                begin
+                  Form7.SetTextoCampoSTATUSNFe('Não foi possível acessar o servidor da receita.');
+                  Form7.N0TestarservidorNFe1Click(nil);
+                end;
+              end else
+              begin
+
+              end;
+              // End Transmitindo
+            end;
+          except
+          end;
+
+          FormatSettings.DecimalSeparator := ',';
+          FormatSettings.DateSeparator    := '/';
+
+          Form7.Panel7.Caption := TraduzSql('Listando '+swhere+' '+sOrderBy,True);
+          Form7.Panel7.Repaint;
+        end;
+
+        Screen.Cursor            := crDefault;
+      end;
+    end;
+
+    try
+      Form7.ibDataSet14.DisableControls;
+      Form7.ibDataSet14.Close;
+      Form7.ibDataSet14.SelectSQL.Text := ' Select * '+
+                                          ' From ICM '+
+                                          ' Where SubString(CFOP from 1 for 1) = ''5'' '+
+                                          '   or  SubString(CFOP from 1 for 1) = ''6'' '+
+                                          '   or  SubString(CFOP from 1 for 1) = ''''  '+
+                                          '   or SubString(CFOP from 1 for 1) = ''7'' '+
+                                          '   or Coalesce(CFOP,''XXX'') = ''XXX'' '+
+                                          ' Order by upper(NOME)';
+      Form7.ibDataSet14.Open;
+      Form7.ibDataSet14.EnableControls;
+      Form7.ibDataSet15.EnableControls;
+    except
+    end;
+  end;
+
+  Result := True;
+end;
 
 procedure TForm7.N2ConsultarrecibodaNFe1Click(Sender: TObject);
 var
@@ -24838,7 +24990,15 @@ begin
           begin
             Screen.Cursor            := crHourGlass;
             if NaoEnviouAinda then
-              Form7.N1EnviarNFe1Click(nil);
+            begin
+              //Form7.N1EnviarNFe1Click(nil); Mauricio Parizotto 2024-11-04
+              if not(EnviaNFe) then
+              begin
+                ibDataSet15.EnableControls;
+                Screen.Cursor := crDefault;
+                Exit;
+              end;
+            end;
 
             Screen.Cursor            := crHourGlass;
             Form7.N2ConsultarrecibodaNFe1Click(nil); Screen.Cursor            := crHourGlass;
@@ -24852,7 +25012,14 @@ begin
             begin
               if (AnsiContainsText(Form7.ibDataSet15STATUS.AsString, 'Autorizado o uso') = False) then
               begin
-                Form7.N1EnviarNFe1Click(nil);
+                //Form7.N1EnviarNFe1Click(nil); Mauricio Parizotto 2024-11-04
+                if not(EnviaNFe) then
+                begin
+                  ibDataSet15.EnableControls;
+                  Screen.Cursor := crDefault;
+                  Exit;
+                end;
+
                 Screen.Cursor            := crHourGlass;
                 Form7.N2ConsultarrecibodaNFe1Click(nil);
               end;
@@ -25500,18 +25667,21 @@ begin
         begin
           begin
             bContingencia := True;
-            Form7.N1EnviarNFe1Click(Sender);
+            //Form7.N1EnviarNFe1Click(Sender); Mauricio Parizotto 2024-11-04
+            if not(EnviaNFe) then
+              Exit;
+
             Form7.N4ImprimirDANFE1Click(Sender); Screen.Cursor := crHourGlass;
-            //
+
             if Form7.ibDataSet15EMITIDA.AsString <> 'X' then
             begin
               Form7.ibDataSet15.Edit;
               Form7.ibDataSet15EMITIDA.AsString := 'S';
               Form7.ibDataSet15.Post;
             end;
-            //
+
             BaixaEstoqueDaNFeAutorizada('');
-            //
+
             bContingencia := False;
           end;
         end else
@@ -25525,13 +25695,8 @@ begin
     Form7.ibDataSet15.EnableControls;
   end;
 
-  {$IFDEF VER150}
-  DecimalSeparator := ',';
-  DateSeparator    := '/';
-  {$ELSE}
   FormatSettings.DecimalSeparator := ',';
   FormatSettings.DateSeparator    := '/';
-  {$ENDIF}
 
   Screen.Cursor            := crDefault;
 end;
@@ -32729,7 +32894,10 @@ begin
 
   sLote := Form7.ibDataSet15.FieldByName('NUMERONF').AsString;
 
-  fNFE := GeraXmlNFe;//(True);
+  //fNFE := GeraXmlNFe; Mauricio Parizotto 2024-11-04
+  if not GeraXmlNFe(fNFe) then
+    Exit;
+
   if Trim(fNFE) <> '' then
   begin
 
