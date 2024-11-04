@@ -1541,7 +1541,28 @@ begin
                           //Sandro Silva 2024-09-27 Form7.ibDataSet4.Post;
                         end;
                       end;
+                    {Sandro Silva (f-21327) 2024-10-21 inicio}
+                    end
+                    else
+                    begin
+                      // Quando o Valor Unitário está zerado no xml
 
+                      if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then // Sandro Silva 2024-09-27
+                        Form7.ibDataSet4.Edit;
+
+                      Form7.ibDataSet4QTD_COMPRA.AsFloat    := Form7.ibDataSet4QTD_COMPRA.AsFloat + Form7.ibDataSet23QUANTIDADE.Asfloat;
+
+                      Form7.ibDataSet4FORNECEDOR.ReadOnly   := False;
+                      Form7.ibDataSet4FORNECEDOR.AsString   := Form7.ibDataSet24FORNECEDOR.AsString;
+                      Form7.ibDataSet4FORNECEDOR.ReadOnly   := True;
+
+                      Form7.ibDataSet4ULT_COMPRA.AsDateTime := Form7.ibDataSet24EMISSAO.AsDateTime;
+                      Form7.ibDataSet4ALTERADO.AsString     := '0';
+
+                      Form7.ibDataSet23CUSTO.AsFloat    := 0.00;
+                      Form7.ibDataSet23UNITARIO.AsFloat := 0.00;
+                      Form7.ibDataSet23TOTAL.AsFloat    := 0.00;
+                    {Sandro Silva (f-21327) 2024-10-21 fim}
                     end;
                   except
                     on E: Exception do
@@ -2246,7 +2267,8 @@ begin
       begin
         DbGrid1.SelectedIndex := 0;
         Form7.ibDataSet23.Next;
-        if Form7.ibDataSet23.EOF then Form7.ibDataSet23.Append;
+        if Form7.ibDataSet23.EOF then
+          Form7.ibDataSet23.Append;
       end;
     end else
     begin
@@ -2270,8 +2292,10 @@ end;
 procedure TForm24.DBGrid1KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_TAB    then Key := VK_RETURN;
-  if Key = VK_ESCAPE then Key := VK_RETURN;
+  if Key = VK_TAB    then
+    Key := VK_RETURN;
+  if Key = VK_ESCAPE then
+    Key := VK_RETURN;
   if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'Retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_compra.htm')));
   //
   if DbGrid1.SelectedIndex = 0 then
@@ -2320,11 +2344,16 @@ procedure TForm24.SMALL_DBEdit22KeyUp(Sender: TObject; var Key: Word;
 begin
   if Form7.sModulo <> 'FRETE' then
   begin
-    if Key = VK_RETURN then Perform(Wm_NextDlgCtl,0,0);
-  end else Form7.sModulo := 'COMPRA';
+    if Key = VK_RETURN then
+      Perform(Wm_NextDlgCtl,0,0);
+  end
+  else
+    Form7.sModulo := 'COMPRA';
   //
-  if Key = VK_DOWN   then Perform(Wm_NextDlgCtl,0,0);
-  if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
+  if Key = VK_DOWN   then
+    Perform(Wm_NextDlgCtl,0,0);
+  if Key = VK_UP     then
+    Perform(Wm_NextDlgCtl,1,0);
 end;
 
 procedure TForm24.SMALL_DBEdit22Exit(Sender: TObject);
@@ -3997,9 +4026,13 @@ begin
 
   try
     FrmPrecificacaoProduto := TFrmPrecificacaoProduto.Create(self);
-    FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('NUMERONF').AsString := Form7.ibDataSet24NUMERONF.AsString;
+    FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('NUMERONF').AsString   := Form7.ibDataSet24NUMERONF.AsString;
     FrmPrecificacaoProduto.ibdProdutosNota.ParamByName('FORNECEDOR').AsString := Form7.ibDataSet24FORNECEDOR.AsString;
-    FrmPrecificacaoProduto.ShowModal;
+    try
+      FrmPrecificacaoProduto.ShowModal;
+    except
+
+    end;
   finally
     FreeAndNil(FrmPrecificacaoProduto);
   end;
