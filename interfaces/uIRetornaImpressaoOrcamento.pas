@@ -3,7 +3,7 @@ unit uIRetornaImpressaoOrcamento;
 interface
 
 uses
-  IBDatabase;
+  IBDatabase, System.Classes;
 
 type
   IRetornaImpressaoOrcamento = interface
@@ -16,8 +16,10 @@ type
   function MontarTXT: IRetornaImpressaoOrcamento;
   function MontarTXT_A5: IRetornaImpressaoOrcamento;
   function RetornarTexto: String;
+  function RetornaPaginas: TArray<TStringList>;
   end;
 
 implementation
+
 
 end.

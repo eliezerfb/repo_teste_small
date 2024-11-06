@@ -95,10 +95,15 @@ begin
           ImprimeNaImpressoraDoWindows(FslImpressao.Text);
 
         if sFormato = 'A5' then
-          ImprimeNaImpressoraDoWindows(FslImpressao.Text,10,False,1.8);
+        begin
+          ImprimePaginaNaImpressoraDoWindows(FoRetornaTexto.RetornaPaginas,10,1.8);
+        end;
 
         if sFormato = 'A5 Matricial' then
-          ImprimeNaImpressoraDoWindows(FslImpressao.Text,10,False,1);
+        begin
+          SetConfiguracaoA5PaginaMatricial;
+          ImprimePaginaNaImpressoraDoWindows(FoRetornaTexto.RetornaPaginas,10,1);
+        end;
 
         {Mauricio Parizotto 2024-10-28}
       end;

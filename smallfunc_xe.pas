@@ -222,6 +222,7 @@ function SalvaArquivoTemp(Campo : Tfield; Nome : string) : string;
 procedure ExcluirPasta(AcPasta: String);
 procedure AjustaVisualGrid(dbgGrid: TDBGrid; Rect: TRect; Column: TColumn); // Mauricio Parizotto 2024-10-09
 function RemoveUltimoTexto(sTexto:string):string;
+procedure SetConfiguracaoA5PaginaMatricial;
 
 var
   IMG: TImage;
@@ -2823,6 +2824,30 @@ begin
 
   vPos := Pos(' ', ReverseString(sTexto));
   Result := StringReplace(sTexto,RightStr(sTexto, vPos),'',[rfReplaceAll]);
+end;
+
+procedure SetConfiguracaoA5PaginaMatricial;
+var
+  Device, Driver, Port: array[0..255] of Char;
+  hDMode: THandle;
+  PDMode: PDEVMODE;
+begin
+  Printer.GetPrinter(Device, Driver, Port, hDMode);
+
+  if hDMode <> 0 then
+  begin
+    PDMode := GlobalLock(hDMode);
+    if PDMode <> nil then
+    begin
+      // Configurar para tamanho de papel personalizado
+      PDMode^.dmFields      := PDMode^.dmFields or DM_PAPERSIZE or DM_PAPERWIDTH or DM_PAPERLENGTH;
+      PDMode^.dmPaperSize   := DMPAPER_USER;
+      PDMode^.dmPaperWidth  := 2100;  // Largura em décimos de milímetro (850 = 85 mm)
+      PDMode^.dmPaperLength := 1420; // Altura em décimos de milímetro (1100 = 110 mm)
+
+      GlobalUnlock(hDMode);
+    end;
+  end;
 end;
 
 end.

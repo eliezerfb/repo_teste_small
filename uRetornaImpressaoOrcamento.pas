@@ -4,11 +4,7 @@ interface
 
 uses
   uIRetornaImpressaoOrcamento, IBQuery, IBDataBase, uConectaBancoSmall, Classes,
-  {$IFDEF VER150}
-  smallfunc
-  {$ELSE}
   smallfunc_xe
-  {$ENDIF}
   ;
 
 type
@@ -17,6 +13,7 @@ type
     FcNumeroOrcamento: String;
     FoTransaction: TIBTransaction;
     FlsImpressao: TStringList;
+    FlsImpressaoPg: TArray<TStringList>;
     FQryEmitente: TIBQuery;
     FQryOrcamento: TIBQuery;
     FQryItens: TIBQuery;
@@ -37,6 +34,7 @@ type
     function MontarTXT: IRetornaImpressaoOrcamento;
     function MontarTXT_A5: IRetornaImpressaoOrcamento;
     function RetornarTexto: String;
+    function RetornaPaginas: TArray<TStringList>;
   end;
 
 implementation
@@ -48,6 +46,11 @@ uses SysUtils;
 class function TRetornaImpressaoOrcamento.New: IRetornaImpressaoOrcamento;
 begin
   Result := Self.Create;
+end;
+
+function TRetornaImpressaoOrcamento.RetornaPaginas: TArray<TStringList>;
+begin
+  Result := FlsImpressaoPg;
 end;
 
 function TRetornaImpressaoOrcamento.RetornarTexto: String;
@@ -328,18 +331,18 @@ var
   cObs: String;
   sLinha1, sLinha2, sLinha3, sLinha4, sLinha5 : string;
   sLinha1_2, sLinha2_2, sLinha3_2, sLinha4_2, sLinha5_2 : string;
-  i, iCap2, iAtual, iResto : integer;
+  i, iCap2, iAtual, iResto, iPg : integer;
 
   procedure GeraCabecalho;
   begin
-    FlsImpressao.Add('                          DOCUMENTO AUXILIAR DE VENDA (DAV) - ORCAMENTO                        ');
-    FlsImpressao.Add('              NÃO É DOCUMENTO FISCAL - NÃO É VÁLIDO COMO RECIBO E COMO GARANTIA DE             ');
-    FlsImpressao.Add('                               MERCADORIA - NÃO COMPROVA PAGAMENTO                             ');
-    FlsImpressao.Add(Copy('  ORÇAMENTO: '+ FcNumeroOrcamento+Replicate(' ',23),1,23)+
+    FlsImpressaoPg[iPg].Add('                          DOCUMENTO AUXILIAR DE VENDA (DAV) - ORCAMENTO                        ');
+    FlsImpressaoPg[iPg].Add('              NÃO É DOCUMENTO FISCAL - NÃO É VÁLIDO COMO RECIBO E COMO GARANTIA DE             ');
+    FlsImpressaoPg[iPg].Add('                               MERCADORIA - NÃO COMPROVA PAGAMENTO                             ');
+    FlsImpressaoPg[iPg].Add(Copy('  ORÇAMENTO: '+ FcNumeroOrcamento+Replicate(' ',23),1,23)+
                      Copy('  VENDEDOR: '+ FQryOrcamento.FieldByname('VENDEDOR').AsString+Replicate(' ',27),1,27) +
                      Copy('  DATA: '+ DateToStr(Date) +Replicate(' ',18),1,18) +
                      Copy('  DOC. FISCAL: '+ FQryOrcamento.FieldByname('NUMERONF').AsString,1,28) );
-    FlsImpressao.Add('  ---------------------------------------------------------------------------------------------');
+    FlsImpressaoPg[iPg].Add('  ---------------------------------------------------------------------------------------------');
 
     sLinha1 := Copy('  CLIENTE: ' +FQryOrcamento.FieldByname('NOME').AsString + Replicate(' ',50) ,1,50 );
     sLinha2 := Copy('  CNPJ: '+ FQryOrcamento.FieldByname('CGC').AsString + ' IE: '+ FQryOrcamento.FieldByname('IE').AsString + Replicate(' ',50) ,1,50 );
@@ -353,33 +356,38 @@ var
     sLinha4_2 := Copy(' '+FQryEmitente.FieldByname('CEPEMIT').AsString+' - '+FQryEmitente.FieldByname('MUNICIPIOEMIT').AsString+ ' - '+FQryEmitente.FieldByname('ESTADOEMIT').AsString+ Replicate(' ',46),1,46);
     sLinha5_2 := Copy(' FONE: '+ FQryEmitente.FieldByname('TELEFONEEMIT').AsString + Replicate(' ',46),1,46);
 
-    FlsImpressao.Add(sLinha1+sLinha1_2);
-    FlsImpressao.Add(sLinha2+sLinha2_2);
-    FlsImpressao.Add(sLinha3+sLinha3_2);
-    FlsImpressao.Add(sLinha4+sLinha4_2);
-    FlsImpressao.Add(sLinha5+sLinha5_2);
+    FlsImpressaoPg[iPg].Add(sLinha1+sLinha1_2);
+    FlsImpressaoPg[iPg].Add(sLinha2+sLinha2_2);
+    FlsImpressaoPg[iPg].Add(sLinha3+sLinha3_2);
+    FlsImpressaoPg[iPg].Add(sLinha4+sLinha4_2);
+    FlsImpressaoPg[iPg].Add(sLinha5+sLinha5_2);
 
-    FlsImpressao.Add('  ---------------------------------------------------------------------------------------------');
-    FlsImpressao.Add('  ITEM CÓDIGO         DESCRIÇÃO                              UND QTD      UNITARIO   TOTAL     ');
-    FlsImpressao.Add('  ---- -------------- -------------------------------------- --- -------- ---------- ----------');
+    FlsImpressaoPg[iPg].Add('  ---------------------------------------------------------------------------------------------');
+    FlsImpressaoPg[iPg].Add('  ITEM CÓDIGO         DESCRIÇÃO                              UND QTD      UNITARIO   TOTAL     ');
+    FlsImpressaoPg[iPg].Add('  ---- -------------- -------------------------------------- --- -------- ---------- ----------');
   end;
 
   procedure GeraRodape;
   begin
-    FlsImpressao.Add('');
-    FlsImpressao.Add('                                                                      SUB TOTAL R$   '+Format('%10.2n',[nTotal]));
-    FlsImpressao.Add('                                                                      DESCONTO  R$   '+Format('%10.2n',[nDesconto]));
-    FlsImpressao.Add('                                                                                     ----------');
-    FlsImpressao.Add('                                                                      TOTAL     R$   '+Format('%10.2n',[nTotal-nDesconto]));
+    FlsImpressaoPg[iPg].Add('');
+    FlsImpressaoPg[iPg].Add('                                                                      SUB TOTAL R$   '+Format('%10.2n',[nTotal]));
+    FlsImpressaoPg[iPg].Add('                                                                      DESCONTO  R$   '+Format('%10.2n',[nDesconto]));
+    FlsImpressaoPg[iPg].Add('                                                                                     ----------');
+    FlsImpressaoPg[iPg].Add('                                                                      TOTAL     R$   '+Format('%10.2n',[nTotal-nDesconto]));
 
-    FlsImpressao.Add('');
-    FlsImpressao.Add('');
-    FlsImpressao.Add('');
-    FlsImpressao.Add('                  -------------------------              ------------------------               ');
-    FlsImpressao.Add('                     Assinatura vendedor                    Assinatura cliente                  ');
+    FlsImpressaoPg[iPg].Add('');
+    FlsImpressaoPg[iPg].Add('');
+    FlsImpressaoPg[iPg].Add('');
+    FlsImpressaoPg[iPg].Add('                  -------------------------              ------------------------               ');
+    FlsImpressaoPg[iPg].Add('                     Assinatura vendedor                    Assinatura cliente                  ');
   end;
 begin
   Result := Self;
+
+  //Nova Pagina
+  iPg := 0;
+  SetLength(FlsImpressaoPg,iPg+1);
+  FlsImpressaoPg[iPg] := TStringList.Create;
 
   nTotal := 0;
   nDesconto := 0;
@@ -391,7 +399,7 @@ begin
   FQryItens.First;
 
   //Controle de paginação
-  iCap2  := 37;
+  iCap2  := 35;
   iAtual := 14;
   iResto := FQryItens.RecordCount;
 
@@ -400,9 +408,10 @@ begin
     {$Region'//// Controle de paginação ////'}
     if iAtual > iCap2 then
     begin
-      FlsImpressao.Add('');
-      FlsImpressao.Add('');
-      //GeraCabecalho;
+      //Nova Pagina
+      inc(iPg);
+      SetLength(FlsImpressaoPg,iPg+1);
+      FlsImpressaoPg[iPg] := TStringList.Create;
 
       iResto := iResto - iCap2;
       iAtual := 1;
@@ -422,7 +431,7 @@ begin
         else
           sCodigo := FQryItens.FieldByName('REFERENCIA').AsString;
 
-        FlsImpressao.Add('  (  ) '+
+        FlsImpressaoPg[iPg].Add('  (  ) '+
                         Copy(sCodigo+Replicate(' ',14), 1,14)  +
                         Copy(' '+FQryItens.FieldByname('DESCRICAO').AsString+Replicate(' ',39),1,39)+
                         Copy(' '+FQryItens.FieldByname('MEDIDA').AsString+Replicate(' ',4),1,4)+ //Und
@@ -439,16 +448,21 @@ begin
   end;
 
   //Completa com linhas em branco
-  if iAtual + 10 > iCap2 then
+  if iAtual + 9 > iCap2 then
   begin
     for I := iAtual to iCap2 do
-      FlsImpressao.Add('');
+      FlsImpressaoPg[iPg].Add('');
+
+    //Nova Pagina
+    inc(iPg);
+    SetLength(FlsImpressaoPg,iPg+1);
+    FlsImpressaoPg[iPg] := TStringList.Create;
 
     iAtual := 1;
   end;
 
   for I := iAtual to iCap2 -10 do
-    FlsImpressao.Add('');
+    FlsImpressaoPg[iPg].Add('');
 
   //Rodapé
   GeraRodape;
