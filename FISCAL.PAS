@@ -28686,7 +28686,7 @@ begin
         end
         else
         begin
-          bXmlPendente := _BlocoX.AlertaXmlPendente(Form1.IBDatabase1.DatabaseName, Form1.sAtual, 'REDUCAO', sSerieECF, bExibirAlerta);
+          bXmlPendente := _BlocoX.AlertaXmlPendente(PAnsiChar(Form1.IBDatabase1.DatabaseName), Form1.sAtual, 'REDUCAO', sSerieECF, bExibirAlerta);
           bBlocoxRZPendente := bXmlPendente;
         end;
 
@@ -28694,7 +28694,7 @@ begin
 
       if (sTipo = 'ESTOQUE') or (sTipo = '') then
       begin
-        bXmlPendente := _BlocoX.AlertaXmlPendente(Form1.IBDatabase1.DatabaseName, Form1.sAtual, 'ESTOQUE', sSerieECF, bExibirAlerta);
+        bXmlPendente := _BlocoX.AlertaXmlPendente(PAnsiChar(Form1.IBDatabase1.DatabaseName), Form1.sAtual, 'ESTOQUE', sSerieECF, bExibirAlerta);
         bBlocoxEstoquePendente := bXmlPendente;
       end;
 
