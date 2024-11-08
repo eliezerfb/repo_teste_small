@@ -2248,7 +2248,8 @@ begin
         Form7.ibDataSet23.Edit;
 
         //Localiza por descrição
-        if AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)) = Copy(AnsiUpperCase(Form7.ibDataSet4DESCRICAO.AsString),1,Length(AnsiUpperCase(AllTrim(Form7.ibDataSet23DESCRICAO.AsString)))) then
+        if AnsiUpperCase(Trim(Form7.ibDataSet23DESCRICAO.AsString)) =
+          AnsiUpperCase(Trim(Form7.ibDataSet4DESCRICAO.AsString)) then
         begin
           Form7.ibDataSet23DESCRICAO.AsString := Form7.ibDataSet4DESCRICAO.AsString;
         end else
