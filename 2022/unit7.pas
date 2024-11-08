@@ -7648,7 +7648,6 @@ var
 begin
   // Relacionado ao produto
   // Este método busca a observação da natureza conforme o CIT do produto - Dailon Parisotto 2024-08-28
-  //
   if (Copy(Form7.ibDataSet14OBS.AsString,1,24) <> 'PERMITE O APROVEITAMENTO') and  (Copy(Form7.ibDataSet14OBS.AsString,1,24) <> 'DEVOLUCAO DA NF-e')  then
   begin
     try
@@ -17424,7 +17423,7 @@ begin
   if IBDataSet97.IsEmpty then
     Exit;
 
-  TImpressaoOrcamento.New
+  TImpressaoOrcamento.New(IBTransaction1)
                      .SetTransaction(IBTransaction1)
                      .SetNumeroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
                      .Imprimir;
@@ -18751,7 +18750,6 @@ begin
         if bFind then
         begin
           // Grava no arquivo NOTA0001.DBF:
-          //
           // 1. Descricão do produto
           // 2. Valor unitário
           // 3. Quantidade
@@ -18760,7 +18758,6 @@ begin
           // 6. Percentual do IPI
           // 7. Peso
           // 7. Código
-          //
           Form7.ibDataSet16.Edit;
           Form7.ibDataSet16DESCRICAO.AsString := AllTrim(Form7.ibDataSet16DESCRICAO.AsString);
           {Sandro Silva 2022-12-20 inicio}
@@ -18865,9 +18862,9 @@ begin
                               sMensagem := 'Número de série já vendido.';
                             end;
                           end;
-                          //
-                        except end;
-                        //
+                        except
+                        end;
+
                         Form7.ibDataSet30.Next;
                       end;
                     end;
@@ -18940,9 +18937,8 @@ begin
                   begin
                     // Sandro Silva 2023-04-26 Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(Form7.ibDataSet4CUSTOCOMPR.AsFloat, StrToInt(Form1.ConfPreco));
                     // Sandro Silva 2023-05-29 Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
-                    //
+
                     // Venda pelo custo
-                    //
                     if Pos('0',Form7.ibDataSet14INTEGRACAO.AsString) = 0 then // Se não tiver configuração de integração para usar o preço de compra na venda, usará o preço de venda cadastrado no estoque
                     begin
                       Form7.ibDataSet16UNITARIO.AsFloat := Form7.ibDataSet4PRECO.AsFloat;
@@ -18950,12 +18946,10 @@ begin
                     begin
                       Form7.ibDataSet16UNITARIO.AsFloat := Arredonda(CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat), StrToInt(Form1.ConfPreco));
                     end;
-                    //
                   end;
                 end;
-                //
               end;
-              //
+
               Form7.ibDataSet16ST.AsString        := Form7.ibDataSet4ST.AsString;
               Form7.ibDataSet16MEDIDA.AsString    := Form7.ibDataSet4MEDIDA.AsString;
               if (ibDataSet14IMPOSTOMANUAL.AsString <> 'S') then
@@ -18963,20 +18957,18 @@ begin
               Form7.ibDataSet16PESO.AsFloat       := Form7.ibDataSet4PESO.AsFloat;
               Form7.ibDataSet16CUSTO.AsFloat      := CorrigeCustoCompraNaVenda(Form7.ibDataSet4CUSTOCOMPR.AsFloat); // Sandro Silva 2023-04-26 Form7.ibDataSet16CUSTO.AsFloat      := Form7.ibDataSet4CUSTOCOMPR.AsFloat;
               Form7.ibDataSet16LISTA.AsFloat      := Form7.ibDataSet4PRECO.AsFloat;
-              //
+
               // Grade
-              //
               if Form7.ibDataSet16DESCRICAO.AsString = Form7.ibDataSet4DESCRICAO.AsString then
               begin
-                //
                 Form7.ibDataSet10.Close;
                 Form7.ibDataSet10.SelectSQL.Clear;
                 Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
                 Form7.ibDataSet10.Open;
                 Form7.ibDataSet10.First;
-                //
+
                 Form7.ibDataSet16.Edit;
-                //
+
                 if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
                 begin
                   Form7.ibDataSet10.Close;
@@ -18984,9 +18976,9 @@ begin
                   Form7.ibDataSet10.Selectsql.Add('select * from GRADE where CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by CODIGO, COR, TAMANHO');
                   Form7.ibDataSet10.Open;
                   Form7.ibDataSet10.First;
-                  //
+
                   Form7.ibDataSet16.Edit;
-                  //
+
                   if Form7.ibDataSet4CODIGO.AsString = Form7.ibDataSet10CODIGO.AsString then
                   begin
                     // Cadastro do item na VENDA quantidade geralemtne = 1
@@ -18995,19 +18987,18 @@ begin
                       Form1.rReserva := 0;
                       Form13.Label1.Caption := 'Cadastro do item na venda';
                       Form13.ShowModal; //  Cadastro do item na VENDA quantidade geralemtne = 1
-                      //
+
                       // Mostra como comentário
-                      //
                       Form7.ibDataSet16.Post;
-                      //
+
                       sRegistro1 := Form7.ibDataSet16REGISTRO.AsString;
-                      //
+
                       Form7.ibDataSet16.Append;
                       Form7.ibDataSet16DESCRICAO.AsString := Form1.sGrade;
                       Form7.ibDataSet16.Post;
-                      //
+
                       Form7.ibDataSet16.Locate('REGISTRO',sRegistro1,[]);
-                      //
+
                       Form7.ibDataSet16.Edit;
                     end;
                   end;
@@ -19083,7 +19074,7 @@ begin
           begin
             if Form7.ibDataSet15OPERACAO.AsString <> Form7.ibDataSet14NOME.AsString then
             begin
-              Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);       //
+              Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
             end;
 
             try
@@ -19157,6 +19148,9 @@ begin
                 end;
               end;
 
+              {$Region'//// Busca a tributação do produto CIT ou Operação Principal ////'}
+
+              {Mauricio Parizotto 2024-10-16 inicio SMAL-761
               if Form7.ibDataSet14.FieldByName(sEstado+'_').AsFloat <> 0 then
               begin
                 // Se o ST do produto for <> de zero pode
@@ -19195,6 +19189,39 @@ begin
                 Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
                 Form7.IBQuery14.Open;
               end;
+              }
+
+              if AllTrim(ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa
+              begin
+                // Nova rotina para posicionar na tabéla de CFOP
+                IBQuery14.Close;
+                IBQuery14.SQL.Text := ' Select *'+
+                                      ' From ICM '+
+                                      ' Where ST='+QuotedStr(ibDataSet4ST.AsString);
+                IBQuery14.Open;
+
+                if IBQuery14.IsEmpty then
+                begin
+                  IBQuery14.Close;
+                  IBQuery14.SQL.Text := ' Select * '+
+                                        ' From ICM '+
+                                        ' Where NOME='+QuotedStr(ibDataSet15OPERACAO.AsString);
+                  IBQuery14.Open;
+                end else
+                begin
+                  // Joga p/obs a obs na tabela de icm
+                  ObservacaoProduto(False); // Obs do ibDAtaSet14 relacionado ao item
+                end;
+              end else
+              begin
+                IBQuery14.Close;
+                IBQuery14.SQL.Text := ' Select * '+
+                                      ' From ICM '+
+                                      ' Where NOME='+QuotedStr(ibDataSet15OPERACAO.AsString);
+                IBQuery14.Open;
+              end;
+              {Mauricio Parizotto 2024-10-16 Fim}
+              {$Endregion}
             except
             end;
 
@@ -19380,9 +19407,7 @@ begin
       end;
     except
     end;
-    // DecodeTime((Time - tInicio), Hora, Min, Seg, cent);
-    // Form12.Label65.Hint := 'Tempo: '+TimeToStr(Time - tInicio)+' ´ '+StrZero(cent,3,0);
-    //
+
     Form7.IBQuery14.Close;
   finally
     {Dailon Parisotto (f-20020) 2024-07-29 Inicio}
@@ -34673,7 +34698,7 @@ begin
     try
       oArqDAT.Frente.Orcamento.Porta := ttioPDF;
       // Gera o arquivo PDF
-      TImpressaoOrcamento.New
+      TImpressaoOrcamento.New(IBDataSet97.Transaction)
                          .SetTransaction(IBDataSet97.Transaction)
                          .SetNumeroOrcamento(IBDataSet97.FieldByName('Orçamento').AsString)
                          .GetCaminhoImpressao(cCaminhoArq)
