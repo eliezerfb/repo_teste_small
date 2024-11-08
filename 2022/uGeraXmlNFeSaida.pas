@@ -46,10 +46,11 @@ var
   dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
   dvFCPSTRet_W06b: Double; // Sandro Silva 2024-03-25
   sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-06-16
-  FbAbortar: Boolean; // Dailon Parisotto 2024-09-23
+  //FbAbortar: Boolean; // Dailon Parisotto 2024-09-23 Mauricio Parizotto 2024-10-29
 
-  procedure GeraXmlNFeSaida;
-  procedure GeraXmlNFeSaidaTags(vIPISobreICMS: Boolean; fSomaNaBase: Real);
+  //procedure GeraXmlNFeSaida; Mauricio Parizotto 2024-10-29
+  function GeraXmlNFeSaida : boolean;
+  procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
   function CalculavTotTrib_M02(sCodigo: String; sOperacaoDoTopo: String): Boolean;
 
 implementation
@@ -143,7 +144,8 @@ begin
 end;
 {Dailon Parisotto (smal-593) 2024-08-06 Fim}
 
-procedure GeraXmlNFeSaida;
+//procedure GeraXmlNFeSaida; Mauricio Parizotto 2024-10-29
+function GeraXmlNFeSaida : boolean;
 var
   spMVAST, spICMSST, sChave, sEx1, sEx2, sEx3, sEx4, sEx5, sEx6, sEx7, sEx8, sEx9, sEx10, sEx11, sEx12, sEx13, sEx14, sEx15, sEx16, sEx17, sEx18 : String;
   fTotalDupl,  vTotalImpostoImportacao : Real;
@@ -209,7 +211,8 @@ var
 
   bPagouComTEF: Boolean;
 begin
-  FbAbortar := False;
+  //FbAbortar := False;
+  Result := False;
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
   else
@@ -236,7 +239,7 @@ begin
   // Relaciona os clientes com o arquivo de vendas
   Form7.ibDAtaset2.Close;
   Form7.ibDAtaset2.Selectsql.Clear;
-  Form7.ibDAtaset2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString)+' ');  //
+  Form7.ibDAtaset2.Selectsql.Add('select * from CLIFOR where NOME='+QuotedStr(Form7.ibDataSet15CLIENTE.AsString));
   Form7.ibDAtaset2.Open;
 
   // Data da última venda para o cliente
@@ -860,9 +863,10 @@ begin
               sEx15            := frmInformacoesExportacaoNFe.IdentCompradorExterior;
             end else
             begin
-              FbAbortar := True;
+              //FbAbortar := True; Mauricio Parizotto 2024-10-29
               Form7.SetTextoCampoSTATUSNFe('Processo cancelado pelo usuário (informações de exportação/drawback)');
               MensagemSistema('Processo cancelado pelo usuário (informações de exportação/drawback).', msgInformacao);
+              Exit;
             end;
           finally
             FreeAndNil(frmInformacoesExportacaoNFe);
@@ -892,10 +896,6 @@ begin
         except
           on E: Exception do
           begin
-            {
-            Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'Ao preencher Identificação do destinatário no caso de comprador estrangeiro'
-            ),'Atenção',mb_Ok + MB_ICONWARNING);
-            Mauricio Parizotto 2023-10-25}
             MensagemSistema(E.Message+chr(10)+chr(10)+ 'Ao preencher Identificação do destinatário no caso de comprador estrangeiro',msgErro);
           end;
         end;
@@ -903,7 +903,6 @@ begin
     except
       on E: Exception do
       begin
-        //Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao preencher dados para exportação'),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
         MensagemSistema(E.Message+chr(10)+chr(10)+'Ao preencher dados para exportação',msgErro);
       end;
     end;
@@ -1073,7 +1072,6 @@ begin
         if Form7._ecf65_ValidaGtinNFCe(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString) then
           Form7.spdNFeDataSets.Campo('cProd_I02').Value    := Form7.ibDataSet4.FieldByname('CODIGO').AsString //Código do PRoduto ou Serviço
         else
-          //Form7.spdNFeDataSets.Campo('cProd_I02').Value   := LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString); // Código de BARRAS
           if Length(Alltrim(LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString))) < 6 then
             Form7.spdNFeDataSets.Campo('cProd_I02').Value    := Form7.ibDataSet4.FieldByname('CODIGO').AsString //Código do PRoduto ou Serviço
           else
@@ -1239,7 +1237,6 @@ begin
 //                    if Form7.ibDAtaset2ESTADO.AsString <> 'EX' then
           if  (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-(fDesconto[I]*Form7.ibDataSet4.FieldByname('IIA').AsFloat/100)) > 0  then
           begin
-            //
             Form7.spdNFeDataSets.Campo('vTotTrib_M02').Value  :=  StrTran(Alltrim(FormatFloat('##0.00',
             Arredonda(((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-(fDesconto[I]))*Form7.ibDataSet4.FieldByname('IIA').AsFloat/100),2) +    // Federais
             Arredonda(((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-(fDesconto[I]))*Form7.ibDataSet4.FieldByname('IIA_UF').AsFloat/100),2) + // Estaduais
@@ -1507,7 +1504,6 @@ begin
             begin
               if (RetornaValorDaTagNoCampo('descANP', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') then
               begin
-                //ShowMessage('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP'); Mauricio Parizotto 2023-10-25
                 MensagemSistema('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP',msgAtencao);
               end else
               begin
@@ -1623,10 +1619,6 @@ begin
               except
                 on E: Exception do
                 begin
-                  {
-                  Application.MessageBox(pChar(E.Message + chr(10) + chr(10) + Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('DESCRICAO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('MEDIDA').AsString + chr(10)+ 'ao gerar Grupo Rastro'
-                    ), 'Atenção', mb_Ok + MB_ICONWARNING);
-                   Mauricio Parizotto 2023-10-25}
                    MensagemSistema(E.Message + chr(10) + chr(10) + Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('DESCRICAO').AsString + ' - ' + Form7.ibDataSet4.FieldByname('MEDIDA').AsString + chr(10)+ 'ao gerar Grupo Rastro'
                                    ,msgAtencao);
                 end;
@@ -2024,29 +2016,12 @@ begin
             end;
           end;
         end;
-
-        {
-        if sChave <> Form7.ibDataset97.FieldByName('NFEID').AsString then
-        begin
-          // Devolução Quando não tem NF relacionada calcula a aliquota
-          // Ficha 6243
-          // Sandro Silva 2022-09-20 Form7.spdNFeDataSets.Campo('pICMS_N16').Value       := StrTran(Alltrim(FormatFloat('##0.00',Arredonda(((StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',',')) / StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))) * 100),1))),',','.'); // Calcula a Alíquota do ICMS em Percentual
-          try
-            // vBC_N15 não pode ser zero, causa erro na divisão para encontrar a alíquota
-            if StrToFloatDef(StrTran(StrTran(Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','), 0) > 0 then
-              Form7.spdNFeDataSets.Campo('pICMS_N16').Value := FormatFloatXML(Arredonda(((StrToFloatDef(StrTran(StrTran(Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',','), 0) / StrToFloatDef(StrTran(StrTran(Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','), 0)) * 100),1)); // Calcula a Alíquota do ICMS em Percentual
-          except
-          end;
-        end;
-        Mauricio Parizotto 2023-08-14 Comentado pois já faz na unit uNotaFiscalEletronicaCalc}
       end;
 
       // TOTALIZADOR DA NOTA
       // Calculo do valor real
-      //
       // vICMS
       // vBCST
-      //
       try
         if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60' then
         begin
@@ -2067,10 +2042,6 @@ begin
       except
         on E: Exception do
         begin
-          {
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'ao calcular o totalizadores da NF-e Erro: 25275'
-          ),'Atenção',mb_Ok + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-25}
           MensagemSistema(E.Message+chr(10)+chr(10)+ 'ao calcular o totalizadores da NF-e Erro: 25275',msgErro);
         end;
       end;
@@ -2083,35 +2054,6 @@ begin
     end;
 
     // Veículos
-
-    {
-    <veicProd>
-    <tpOp>1</tpOp>
-    <chassi>9321JD5109M027807</chassi>
-    <cCor>044</cCor>
-    <xCor>AZUL</xCor>
-    <pot>7</pot>
-    <CM3>15</CM3>
-    <pesoL>313.0000</pesoL>
-    <pesoB>350.0000</pesoB>
-    <nSerie>123456789</nSerie>
-    <tpComb>GASOLINA</tpComb>
-    <nMotor>JD59027807</nMotor>
-    <CMKG>1</CMKG>
-    <dist>16</dist>
-    <RENAVAM>000011231</RENAVAM>
-    <anoMod>2009</anoMod>
-    <anoFab>2009</anoFab>
-    <tpPint>S</tpPint>
-    <tpVeic>04</tpVeic>
-    <espVeic>1</espVeic>
-    <VIN>N</VIN>    // Veicle Identificação Number
-    <condVeic>1</condVeic> // 1-Acabado 2-Inacabado 3-Semi-Acabado
-    <cMod>000001</cMod>
-    </veicProd>
-    }
-
-//    if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7') then // Exportação Dailon Parisotto 2024-10-01 - Devido a item de obs estar limpando o DrawBack
     if (Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '7') and (Form7.ibDataSet16.FieldByname('CODIGO').AsString <> EmptyStr) then // Exportação
     begin
       // Controle de Exportação por Item
@@ -2155,10 +2097,6 @@ begin
       except
         on E: Exception do
         begin
-          {
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'ao informar Número do ato concessório de Drawback'
-          ),'Atenção',mb_Ok + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-25}
           MensagemSistema(E.Message+chr(10)+chr(10)+ 'ao informar Número do ato concessório de Drawback',msgErro);
         end;
       end;
@@ -2417,11 +2355,6 @@ begin
       except
         on E: Exception do
         begin
-          {
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao calcular o Grupo de Tributação do ICMS para UF Destino item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
-          chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
-          ),'Atenção',mb_Ok + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-25}
           MensagemSistema(E.Message+chr(10)+chr(10)+'Ao calcular o Grupo de Tributação do ICMS para UF Destino item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
                           chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                           ,msgErro);
@@ -2473,10 +2406,6 @@ begin
       except
         on E: Exception do
         begin
-          {
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 0'
-          ),'Atenção',mb_Ok + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-25}
           MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 0',msgErro);
         end;
       end;
@@ -2523,26 +2452,13 @@ begin
   end;
 
   try
-    {Sandro Silva 2023-05-15 inicio
-    if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
-    if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
-    }
-    {Mauricio Parizotto 2024-05-03
-    if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then
-      Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
-    }
     if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then
       Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
-    {Sandro Silva 2023-05-15 fim}
+
     Form7.spdNFeDataSets.SalvarItem;
   except
     on E: Exception do
     begin
-      {
-      Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
-      chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
-      ),'Atenção',mb_Ok + MB_ICONWARNING);
-      Mauricio Parizotto 2023-10-25}
       MensagemSistema(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
                       chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                       ,msgErro);
@@ -2869,12 +2785,6 @@ begin
     except
       on E: Exception do
       begin
-        {
-        Application.MessageBox(pChar(E.Message+chr(10)+
-        chr(10)+'Ao informar serviços.'+
-        chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
-        ),'Atenção',mb_Ok + MB_ICONWARNING);
-        Mauricio Parizotto 2023-10-25}
         MensagemSistema(E.Message+chr(10)+
                         chr(10)+'Ao informar serviços.'+
                         chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
@@ -2924,13 +2834,6 @@ begin
 
   if AllTrim(Form7.ibDataSet15TRANSPORTA.AsString)<>'' then
   begin
-    {if (Length(AllTrim(Form7.ibDataSet18.FieldByname('CGC').AsString)) = 0) then
-    begin
-      Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15STATUS.AsString    := 'Erro: CNPJ da transportadora inválido';
-      Abort;
-    end; Ficha 6820}
-
     if (Length(AllTrim(Form7.ibDataSet18.FieldByname('CGC').AsString)) = 18) then
     begin
       if LimpaNumero(Form7.ibDataSet18IE.AsString) <> '' then
@@ -2990,71 +2893,6 @@ begin
     Form7.spdNFeDataSets.Campo('rntc_X21').Value     := ''; // Registro nacional de Trasportador de Cargas (ANTT)
   end;
 
-  {Sandro Silva 2023-06-29 inicio
-  if Form1.sVersaoLayout = '4.00' then
-  begin
-    Form7.spdNFeDataSets.IncluirPart('YA');
-    //
-    // 01=Dinheiro
-    // 02=Cheque
-    // 03=Cartão de Crédito
-    // 04=Cartão de Débito
-    // 05=Crédito Loja
-    // 10=Vale Alimentação
-    // 11=Vale Refeição
-    // 12=Vale Presente
-    // 13=Vale Combustível
-    // * Removida * 14=Duplicata Mercantil *
-    // 15=Boleto Bancário
-    // 90= Sem pagamento
-    // 99=Outros
-    //
-
-
-    if (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4') or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '3') or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '2') then // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
-    begin
-//                  Form7.spdNFeDataSets.campo('indPag_YA01b').Value    := '0';   // Pagamento a vista
-      Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '90';  // Sem Pagamento
-    end else
-    begin
-      Form7.ibDataSet14.Locate('NOME',Form7.ibDataSet15OPERACAO.AsString,[]);
-
-      if Copy(Uppercase(Form7.ibDataSet14.FieldByname('INTEGRACAO').AsString)+'       ',1,7) = 'RECEBER' then
-      begin
-//                    Form7.spdNFeDataSets.campo('indPag_YA01b').Value    := '1';   // Pagamento a prazo
-//                  Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '05';  // Forma de pagamento
-        // Sandro Silva 2023-06-20 Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '14';  // Duplicata Mercantil
-        Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '14';  // 14-Duplicata Mercantil
-      end else
-      begin
-//                    Form7.spdNFeDataSets.campo('indPag_YA01b').Value    := '0';   // Pagamento a vista
-        Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '01';  // Forma de pagamento
-      end;
-    end;
-    //
-    if Form7.spdNFeDataSets.campo('tPag_YA02').Value = '90' then
-    begin
-      // Sem Pagamento
-      Form7.spdNFeDataSets.campo('vPag_YA03').Value       := '0.00';
-//                  Form7.spdNFeDataSets.campo('vTroco_YA09').Value     := '0.00';  // valor do troco
-    end else
-    begin
-      Form7.spdNFeDataSets.campo('vPag_YA03').Value       :=  Form7.spdNFeDataSets.Campo('vNF_W16').Value;
-      Form7.spdNFeDataSets.campo('vTroco_YA09').Value     := '0.00';  // valor do troco
-    end;
-
-    if False then
-    begin
-      // Se for Cartão
-      Form7.spdNFeDataSets.campo('tpIntegra_YA04a').Value := '2';  // Tipo de Integração para pagamento
-      Form7.spdNFeDataSets.campo('CNPJ_YA05').Value       := '';  // CNPJ da Credenciadora de cartão de crédito e/ou débito
-      Form7.spdNFeDataSets.campo('tBand_YA06').Value      := '';  // Bandeira da operadora de cartão de crédito e/ou débito
-      Form7.spdNFeDataSets.campo('cAut_YA07').Value       := '';  // Número de autorização da operação cartão de crédito e/ou débito
-    end;
-
-    Form7.spdNFeDataSets.SalvarPart('YA');
-  end;
-  }
   if ((Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '2') and (Trim(Copy(Uppercase(Form7.ibDataSet14.FieldByname('INTEGRACAO').AsString)+'       ',1,7)) = EmptyStr))
       or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '3')
       or (Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4') then // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
@@ -3062,7 +2900,6 @@ begin
     Form7.spdNFeDataSets.IncluirPart('YA');
     Form7.spdNFeDataSets.campo('tPag_YA02').Value       := '90';  // Sem Pagamento
     Form7.spdNFeDataSets.campo('vPag_YA03').Value       := '0.00';
-    //                  Form7.spdNFeDataSets.campo('vTroco_YA09').Value     := '0.00';  // valor do troco
 
     Form7.spdNFeDataSets.SalvarPart('YA');
   end
@@ -3090,8 +2927,6 @@ begin
       // 15=Boleto Bancário
       // 90= Sem pagamento
       // 99=Outros
-      //
-
       if Trim(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) = '' then
         stPag_YA02 := ''
       else
@@ -3163,7 +2998,6 @@ begin
         end;
       end;
 
-
       Form7.spdNFeDataSets.SalvarPart('YA');
 
       Form7.ibDataSet7.Next;
@@ -3192,65 +3026,12 @@ begin
       Form7.spdNFeDataSets.Campo('pesoL_X31').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDataSet15.FieldByname('PESOLIQUI').AsFloat)),',','.'); // Peso Líquido
       Form7.spdNFeDataSets.Campo('pesoB_X32').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDataSet15.FieldByname('PESOBRUTO').AsFloat)),',','.'); // Peso Bruto
     end;
-    {
-    // Dados De Cobrança
-    // 1 Fatura  - 3 Duplicatas //
-    Form7.spdNFeDataSets.Y.Append; // Inclui somente nessa Parte "Y" da NFe
-    Form7.spdNFeDataSets.Campo('nFat_Y03').Value  := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9); // Número da Farura
-    Form7.spdNFeDataSets.Campo('vOrig_Y04').Value := Form7.spdNFeDataSets.Campo('vNF_W16').Value; // Valor Original da Fatura
-
-    if Form1.sVersaoLayout = '4.00' then
-    begin
-//                  if Form7.spdNFe.Ambiente = spdNFeType.akHomologacao then
-      begin
-        Form7.spdNFeDataSets.Campo('vDesc_Y05').Value := '0.00'; // Valor do Desconto
-      end;
-    end;
-
-    //Form7.spdNFeDataSets.Campo('vLiq_Y06').Value  := Form7.spdNFeDataSets.Campo('vNF_W16').Value; // Valor Líquido da Fatura
-    }
+    
     // Dados De Cobrança
     J := 0;
     fTotalDupl := 0;
 
-    Form7.ibDataSet7.First;
-    {Sandro Silva 2023-06-29 inicio
-    while not Form7.ibDataSet7.Eof do
-    begin
-      // Note que Os dados da Fatura se encontram no Parte "Y" da NFe que vamos
-      // fazer várias inserções para a Mesma NFe como demonstracao
-      // Dados da Fatura
-      //
-      // Duplicatas
-      //
-      J := J + 1;
-
-      Form7.spdNFeDataSets.IncluirCobranca;
-      Form7.spdNFeDataSets.Campo('nDup_Y08').Value  := StrZero(J,3,0); // Número da parcela
-//                  Form7.spdNFeDataSets.Campo('nDup_Y08').Value  := Form7.ibDataSet7DOCUMENTO.AsString; // Número da Duplicata
-      Form7.spdNFeDataSets.Campo('dVenc_Y09').Value := StrTran(DateToStrInvertida(Form7.ibDataSet7VENCIMENTO.AsDateTime),'/','-');; // Data de Vencimento da Duplicata
-      Form7.spdNFeDataSets.Campo('vDup_Y10').Value  := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat); // Valor da Duplicata
-
-      // Soma o total das parcelas
-      try
-        fTotalDupl := fTotalDupl + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vDup_Y10').AsString,',',''),'.',','));
-
-        Form7.ibDataSet7.Next;
-
-        if Form7.ibDataSet7.Eof then
-        begin
-          if fTotalDupl <> StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vNF_W16').AsString,',',''),'.',',')) then
-          begin
-            // Soma a diferença na última
-            Form7.spdNFeDataSets.Campo('vDup_Y10').Value := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat +  (StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vNF_W16').AsString,',',''),'.',',')) - fTotalDupl)  );
-          end;
-        end;
-      except
-      end;
-
-      Form7.spdNFeDataSets.SalvarCobranca;
-    end;
-    }
+    Form7.ibDataSet7.First; 
 
     while not Form7.ibDataSet7.Eof do
     begin
@@ -3259,9 +3040,7 @@ begin
         // Note que Os dados da Fatura se encontram no Parte "Y" da NFe que vamos
         // fazer várias inserções para a Mesma NFe como demonstracao
         // Dados da Fatura
-        //
         // Duplicatas
-        //
         J := J + 1;
 
         if J = 1 then
@@ -3279,24 +3058,6 @@ begin
 
       Form7.ibDataSet7.Next;
 
-      {
-      if fTotalDupl > 0 then
-      begin
-        try
-          if Form7.ibDataSet7.Eof then
-          begin
-            if fTotalDupl <> StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vNF_W16').AsString,',',''),'.',',')) then
-            begin
-              // Soma a diferença na última
-              Form7.spdNFeDataSets.Campo('vDup_Y10').Value := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat +  (StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vNF_W16').AsString,',',''),'.',',')) - fTotalDupl)  );
-            end;
-          end;
-        except
-        end;
-
-        Form7.spdNFeDataSets.SalvarCobranca;
-      end;
-      }
       if fTotalDupl > 0 then
       begin
         Form7.spdNFeDataSets.Campo('nFat_Y03').Value  := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9); // Número da Farura
@@ -3341,6 +3102,8 @@ begin
 
   // Form7.spdNFeDataSets.Campo('xPed_ZB03').Value      := Form7.ibDataSet16NUMEROOS.AsString; // Informar o pedido no caso a OS
   // SAIDA
+
+  Result := True;
 end;
 
 procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);

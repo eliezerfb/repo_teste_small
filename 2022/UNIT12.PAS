@@ -618,7 +618,8 @@ begin
 
       Form7.ibDataSet16.Locate('REGISTRO',sReg16,[]);
     end;
-  except end;
+  except
+  end;
 
   Form7.ibDataSet16.Edit;
 
