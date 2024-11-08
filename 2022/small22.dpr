@@ -264,6 +264,7 @@ uses
   uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas',
   ufrmInformarDrawback in 'ufrmInformarDrawback.pas' {frmInformarDrawback},
   ufrmInformacoesExportacaoNFe in 'ufrmInformacoesExportacaoNFe.pas' {frmInformacoesExportacaoNFe},
+  ufrmInformacoesImportacaoNFe in 'ufrmInformacoesImportacaoNFe.pas' {frmInformacoesImportacaoNFe},
   uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas',
   ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo},
   uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',

@@ -42,14 +42,15 @@ var
   dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-09-04
   vTotalFCP, vTotalFCPST : Real; // Dailon Parisotto 2024-07-01
 
-  procedure GeraXmlNFeEntrada;
+  function GeraXmlNFeEntrada : Boolean;
   procedure GeraXmlNFeEntradaTags;
 
 implementation
 
-uses uDialogs, ufrmOrigemCombustivel;
+uses uDialogs, ufrmOrigemCombustivel, ufrmInformacoesImportacaoNFe;
 
-procedure GeraXmlNFeEntrada;
+//procedure GeraXmlNFeEntrada; // Mauricio Parizotto 2024-10-29
+function GeraXmlNFeEntrada : Boolean;
 var
   fNFe: String; // Sandro Silva 2022-09-12
 
@@ -104,6 +105,8 @@ var
   IBQUERY99: TIBQuery; // Sandro Silva 2022-11-10 Para Substituir Form7.IBDATASET99 que é usado em eventos disparados em cascata
   bAjusteICMS: Boolean; // Sandro Silva 2023-12-14
 begin
+  Result := False;
+
   bAjusteICMS := False;
   
   vTotalFCP := 0;
@@ -226,10 +229,6 @@ begin
     except
       on E: Exception do
       begin
-        {
-        Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 1'
-        ),'Atenção', mb_Ok + MB_ICONWARNING);
-        Mauricio Parizotto 2023-10-25}
         MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 1',msgAtencao);
       end;
     end;
@@ -238,7 +237,6 @@ begin
       Form7.spdNFeDataSets.Campo('finNFe_B25').Value  := '3'; // Finalidade da NFe (1-Normal, 2-Complementar, 3-de Ajuste, 4-Devolução de mercadoria)
       Form7.spdNFeDataSets.Campo('natOp_B04').Value   := '999 - Estorno de NF-e não cancelada no prazo legal';
     except
-      //ShowMessage('Erro ao gravar natOp_B04'); Mauricio Parizotto 2023-10-25
       MensagemSistema('Erro ao gravar natOp_B04',msgErro);
     end;
   end else
@@ -288,12 +286,6 @@ begin
               Form7.spdNFeDataSets.SalvarPart('NREF');
             end else
             begin
-              {
-              ShowMessage('Informação inválida informe a'+chr(10)+
-                          'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
-                          '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
-                          'cupom fiscal referenciado');
-              Mauricio Parizotto 2023-10-25}
               MensagemSistema('Informação inválida informe a'+chr(10)+
                               'Chave de acesso da NF-e de devolução referenciada'+chr(10)+
                               '(ID da NF-e) ou Número do ECF (3) + COO (6) para'+chr(10)+
@@ -305,10 +297,6 @@ begin
         except
           on E: Exception do
           begin
-            {
-            Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'ao gravar NREF 3'
-            ),'Atenção',mb_Ok + MB_ICONWARNING);
-            Mauricio Parizotto 2023-10-25}
             MensagemSistema(E.Message+chr(10)+chr(10)+'ao gravar NREF 3',msgAtencao);
 
             Abort;
@@ -723,6 +711,9 @@ begin
     end else
     begin
       // Importação
+
+      {Mauricio Parizotto 2024-10-28 SMAL-707 Inicio
+
       sEx3 := '';
       Mais1ini := TIniFile.Create(Form1.sAtual+'\importac.ini');
       //
@@ -792,21 +783,7 @@ begin
       sEx6      := Form29.Edit_08.Text;
       sEx7      := Form29.Edit_09.Text;
       sEx15     := Form29.Edit_10.Text;
-      //
-{
-      sPais    := Form1.Small_InputForm('NFe', 'País destino', 'Estados Unidos');
-      sCodPais := Form1.Small_InputForm('NFe', 'Código do País destino', '2496');
-      sEx1     := Form1.Small_InputForm('NF-e importação', 'Número do Documento de Importação (DI/DSI/DA):',sEx1);
-      sEx2     := Form1.Small_InputForm('NF-e importação', 'Data de Registro da DI/DSI/DA no formato AAAA-MM-DD:',sEx2);
-      sEx3     := Form1.Small_InputForm('NF-e importação', 'Local de desembaraço:',sEx3);
-      sEx4     := Form1.Small_InputForm('NF-e importação', 'Sigla da UF onde ocorreu o Desembaraço Aduaneiro:',sEx4);
-      sEx5     := Form1.Small_InputForm('NF-e importação', 'Data do Desembaraço Aduaneiro Formato AAAA-MM-DD:',sEx5);
-      sEx6     := Form1.Small_InputForm('NF-e importação', 'Código do exportador:',sEx6);
-      sEx7     := Form1.Small_InputForm('NF-e importação', 'Número da adição:',sEx7);
-      sEx15    := Form1.Small_InputForm('NF-e importação', 'Identificação do destinatário no caso de comprador estrangeiro:',sEx15);
-}
 
-      //
       // http://www.tecno-services.com/, acesse o painel administrador
       // suporte@smallsoft.com.br
       // genesis
@@ -821,6 +798,39 @@ begin
       Mais1Ini.WriteString('DI','Ex15',sEx15);
 
       Mais1ini.Free;
+
+      }
+
+
+      frmInformacoesImportacaoNFe := TfrmInformacoesImportacaoNFe.Create(nil);
+      try
+        frmInformacoesImportacaoNFe.NumeroNF    := Form7.ibDataSet15.FieldByname('NUMERONF').AsString;
+        frmInformacoesImportacaoNFe.ShowModal;
+
+        if frmInformacoesImportacaoNFe.ClicouOK then
+        begin
+          sPais     := frmInformacoesImportacaoNFe.Pais;
+          sCodPais  := frmInformacoesImportacaoNFe.CodPais;
+
+          sEx1      := frmInformacoesImportacaoNFe.NumRegistroDI;
+          sEx2      := frmInformacoesImportacaoNFe.DataRegistroDI;
+          sEx3      := frmInformacoesImportacaoNFe.LocalDesembaraco;
+          sEx4      := frmInformacoesImportacaoNFe.UFDesembaraco;
+          sEx5      := frmInformacoesImportacaoNFe.DataDesembaraco;
+          sEx6      := frmInformacoesImportacaoNFe.CodExportador;
+          sEx7      := frmInformacoesImportacaoNFe.NumAdicao;
+          sEx15     := frmInformacoesImportacaoNFe.IdentCompradorExterior;
+        end else
+        begin
+          Form7.SetTextoCampoSTATUSNFe('Processo cancelado pelo usuário (informações de importação)');
+          MensagemSistema('Processo cancelado pelo usuário (informações de importação).', msgInformacao);
+          Exit;
+        end;
+      finally
+        FreeAndNil(frmInformacoesImportacaoNFe);
+      end;
+
+      {Mauricio Parizotto 2024-10-28 SMAL-707 Fim}
 
       Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(ExtraiEnderecoSemONumero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do  // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('xLgr_E06').Value    := ConverteAcentos2(Endereco_Sem_Numero(Form7.ibDAtaset2.FieldByname('ENDERE').AsString)); // Logradouro do Emitente
       Form7.spdNFeDataSets.Campo('nro_E07').Value     := ExtraiNumeroSemOEndereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente // Sandro Silva 2023-10-16 Form7.spdNFeDataSets.Campo('nro_E07').Value     := Numero_Sem_Endereco(Form7.ibDAtaset2.FieldByname('ENDERE').AsString); // Numero do Logradouro do Emitente
@@ -848,10 +858,6 @@ begin
       except
         on E: Exception do
         begin
-          {
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'Identificação do destinatário no caso de comprador estrangeiro'
-          ),'Atenção',mb_Ok + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-25}
           MensagemSistema(E.Message+chr(10)+chr(10)+ 'Identificação do destinatário no caso de comprador estrangeiro',msgAtencao);
         end;
       end;
@@ -978,18 +984,12 @@ begin
       I := I + 1;
 
       try
-        //if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := ''; // Form7.spdNFeDataSets.Campo('IE_E17').GeraTagVazia := True; Mauricio Parizotto 2024-05-06
         if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
 
         Form7.spdNFeDataSets.SalvarItem;
       except
         on E: Exception do
         begin
-          {
-          Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
-          chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
-          ),'Atenção',mb_Ok + MB_ICONWARNING);
-          Mauricio Parizotto 2023-10-25}
           MensagemSistema(E.Message+chr(10)+chr(10)+'Ao salvar item código: '+Form7.spdNFeDataSets.Campo('cProd_I02').Value+chr(10)+Form7.spdNFeDataSets.Campo('xProd_I04').Value+chr(10)+
                           chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NF-e.'
                           ,msgAtencao);
@@ -1002,14 +1002,12 @@ begin
       Form7.spdNFeDataSets.Campo('nItem_H02').Value := IntToStr(I); // Número do Item da NFe (1 até 990)
       //
       // Dados do Produto Comprado
-      //
       if (RetornaValorDaTagNoCampo('cProd', Form7.ibDataSet4.FieldByname('TAGS_').AsString) <> '') then //
         Form7.spdNFeDataSets.Campo('cProd_I02').Value    := Copy(RetornaValorDaTagNoCampo('cProd', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 1, 60)
       else
         if Form7._ecf65_ValidaGtinNFCe(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString) then
           Form7.spdNFeDataSets.Campo('cProd_I02').Value    := Form7.ibDataSet4.FieldByname('CODIGO').AsString //Código do PRoduto ou Serviço
         else
-          //Form7.spdNFeDataSets.Campo('cProd_I02').Value   := LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString); // Código de BARRAS
           if Length(Alltrim(LimpaNumero(Form7.ibDataSet4.FieldByname('REFERENCIA').AsString))) < 6 then
             Form7.spdNFeDataSets.Campo('cProd_I02').Value    := Form7.ibDataSet4.FieldByname('CODIGO').AsString //Código do PRoduto ou Serviço
           else
@@ -1137,7 +1135,6 @@ begin
             begin
               if (RetornaValorDaTagNoCampo('descANP', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') then
               begin
-                //ShowMessage('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP'); Mauricio Parizotto 2023-10-25}
                 MensagemSistema('Incluir no controle de estoque na aba Tags: descANP: Descrição do produto conforme ANP',msgAtencao);
               end else
               begin
@@ -1150,15 +1147,6 @@ begin
                    (RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') or
                    (RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString) = '') then
                 begin
-                  {
-                  ShowMessage('Incluir no controle de estoque na aba Tags:'+
-                              Chr(10)+
-                              Chr(10)+'pGLP: 0,0000'+
-                              Chr(10)+'pGNn: 0,0000'+
-                              Chr(10)+'pGNi: 0,0000'+
-                              Chr(10)+'vPart: 0,00'
-                              );
-                  Mauricio Parizotto 2023-10-25}
                   MensagemSistema('Incluir no controle de estoque na aba Tags:'+
                                   Chr(10)+
                                   Chr(10)+'pGLP: 0,0000'+
@@ -1174,14 +1162,6 @@ begin
                   + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                   + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) <> 100 then
                   begin
-                    {
-                    ShowMessage('Erro: LA01 grupo LA Combustível (pGLP + pGNn + pGNi) = '
-                    + FormatFloat('#,##0.0000', StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
-                    + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
-                    + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)) + '%' + Chr(10)
-                    + 'Rejeição: Somatório percentuais de GLP derivado do petróleo, pGLP(id:LA03a) e pGNn(id:LA03b) e pGNi(id:LA03c) diferente de 100. Verifique no cadastro do produto '
-                                              + Chr(10) + Form7.spdNFeDataSets.Campo('cProd_I02').Value + ' ' + Form7.spdNFeDataSets.Campo('xProd_I04').Value);
-                    Mauricio Parizotto 2023-10-25}
                     MensagemSistema('Erro: LA01 grupo LA Combustível (pGLP + pGNn + pGNi) = '
                                     + FormatFloat('#,##0.0000', StrToFloatDef(RetornaValorDaTagNoCampo('pGLP', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
                                     + StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0)
@@ -1937,6 +1917,8 @@ begin
   end;
 
   FreeAndNil(IBQUERY99);
+
+  Result := True;
 end;
 
 procedure GeraXmlNFeEntradaTags;

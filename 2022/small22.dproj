@@ -587,6 +587,9 @@
         <DCCReference Include="ufrmInformacoesExportacaoNFe.pas">
             <Form>frmInformacoesExportacaoNFe</Form>
         </DCCReference>
+        <DCCReference Include="ufrmInformacoesImportacaoNFe.pas">
+            <Form>frmInformacoesImportacaoNFe</Form>
+        </DCCReference>
         <DCCReference Include="units\uEstruturaRelRankingProdutosVendidos.pas"/>
         <DCCReference Include="units\ufrmRelatorioMovItensPeriodo.pas">
             <Form>frmRelatorioMovItensPeriodo</Form>
