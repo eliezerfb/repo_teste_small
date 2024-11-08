@@ -194,6 +194,7 @@ inherited FrmPlanoContas: TFrmPlanoContas
           TabOrder = 1
           OnEnter = edtNroContaEnter
           OnKeyDown = PadraoKeyDown
+          OnKeyPress = edtNroContaKeyPress
           OnKeyUp = edtNroContaKeyUp
         end
         object edtNomeConta: TSMALL_DBEdit

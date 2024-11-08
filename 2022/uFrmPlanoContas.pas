@@ -39,6 +39,7 @@ type
     procedure edtNroContaKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edtNroContaEnter(Sender: TObject);
+    procedure edtNroContaKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -99,6 +100,13 @@ begin
   inherited;
   if Length(edtNroConta.Text) = 1 then
     edtNroConta.SelStart := Length(edtNroConta.Text);
+end;
+
+procedure TFrmPlanoContas.edtNroContaKeyPress(Sender: TObject; var Key: Char);
+begin
+  inherited;
+  if not (Key in ['0'..'9', #8, #13, #127]) then
+    Key := #0;
 end;
 
 procedure TFrmPlanoContas.edtNroContaKeyUp(Sender: TObject; var Key: Word;
