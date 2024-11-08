@@ -145,6 +145,8 @@ uses
                                   '   Cast('''' as BLOB SUB_TYPE TEXT) FORMAPAGAMENTO, '+
                                   '   Cast('''' as Varchar(60) ) CLIFOR '+
                                   ' From NFCE N ';
+  {Sandro Silva 2024-10-15
+  //Movido para ufuncoes_frente.pas
   const SQL_FORMAPAGAMENTO_LIST = ' (Select list(DISTINCT trim(substring(P.FORMA from 3 for char_length(P.FORMA))), ''; '') '+
                                   '  From PAGAMENT P'+
                                   '  Where P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA '+
@@ -155,6 +157,7 @@ uses
                                   '  Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
                                   '    and coalesce(A.CLIFOR, '''') <> '''' '+
                                   ' ) CLIFOR';
+  }
   {Mauricio Parizotto 2024-08-23 Fim}
 
   procedure ExibeScrollCupom(bVisible: Boolean); // Sandro Silva 2016-08-03
@@ -873,7 +876,7 @@ type
     IBDSAssinaRegistro: TIBDataSet;
     ArquivocomInformaesdaReduoZdoPAFECF1: TMenuItem;
     EnvioaoFISCOESTOQUE: TMenuItem;
-    IBQDadosRequisitoXXIV____: TIBQuery;
+    //IBQDadosRequisitoXXIV____: TIBQuery;
     ibDataSet27SERIE: TIBStringField;
     ibDataSet27SUBSERIE: TIBStringField;
     EnviarDANFCEeXMLcompactado1: TMenuItem;
