@@ -13,7 +13,6 @@ uses
   , smallfunc_xe
   , IniFiles
   , Unit22
-  //, Unit3
   , Mais
   , Controls
   {$IFDEF VER150}
@@ -30,11 +29,10 @@ uses
   , DB
   , Variants
   , Grids
-  , Graphics
-  ;
+  , Graphics;
 
-  //type
-  //  TmensagemSis = (msgInformacao,msgAtencao,msgErro);
+type
+  TTipoPlanoConta = (tpcReceita, tpcDespesa, tpcBanco, tpcRetirada, tpcNenhum);
 
   function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
@@ -79,6 +77,12 @@ uses
   function GetFatorConversaoItemCompra(CodRegItem:string; valPadrao: Double; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-02-19
   function GetIVAProduto(IDESTOQUE : integer; UF : string; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-09-11
   function ExtrairConfiguracao(sTexto: String; sSigla: String): String; // Mauricio Parizotto 2024-10-01
+  function CodigoPlanoContaToTipo(AConta: String): TTipoPlanoConta;
+  function TipoPlanoContaToText(ATipoPlanoConta: TTipoPlanoConta): String;
+  function TipoPlanoContaToStr(ATipoPlanoConta: TTipoPlanoConta): String;
+  function RecordExists(AConnection: TIBDatabase; ATableName,
+    AFieldName: String; AKeyField: TField; AValue: String): Boolean;
+
 
 
 implementation
@@ -87,6 +91,7 @@ uses uFuncoesBancoDados, uSmallConsts, Mais3;
 
 type
   TModulosSmall = (tmNenhum, tmNao, tmEstoque, tmICM, tmReceber);
+
 
 function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String; //Ficha 6237
 begin
@@ -1255,6 +1260,94 @@ begin
     Free;
   end;
 end;
+
+function CodigoPlanoContaToTipo(AConta: String): TTipoPlanoConta;
+begin
+  AConta := Trim(AConta);
+
+  var PrefixoConta := Copy(AConta, 1, 1);
+
+  if PrefixoConta = '1' then
+    Exit(tpcReceita);
+
+  if PrefixoConta = '3' then
+    Exit(tpcDespesa);
+
+  if PrefixoConta = '5' then
+    Exit(tpcBanco);
+
+  if PrefixoConta = '7' then
+    Exit(tpcRetirada);
+
+  Exit(tpcNenhum);
+end;
+
+function TipoPlanoContaToText(ATipoPlanoConta: TTipoPlanoConta): String;
+begin
+  Result := '';
+
+  if ATipoPlanoConta = tpcNenhum then
+    Exit('');
+
+  if ATipoPlanoConta = tpcReceita then
+    Exit('Receita');
+
+  if ATipoPlanoConta = tpcDespesa then
+    Exit('Despesa');
+
+  if ATipoPlanoConta = tpcBanco then
+    Exit('Banco');
+
+  if ATipoPlanoConta = tpcRetirada then
+    Exit('Retiradas');
+end;
+
+function TipoPlanoContaToStr(ATipoPlanoConta: TTipoPlanoConta): String;
+begin
+  Result := '';
+
+  if ATipoPlanoConta = tpcNenhum then
+    Exit('');
+
+  if ATipoPlanoConta = tpcReceita then
+    Exit('1');
+
+  if ATipoPlanoConta = tpcDespesa then
+    Exit('3');
+
+  if ATipoPlanoConta = tpcBanco then
+    Exit('5');
+
+  if ATipoPlanoConta = tpcRetirada then
+    Exit('7');
+end;
+
+function RecordExists(AConnection: TIBDatabase; ATableName, AFieldName: String;
+  AKeyField: TField; AValue: String): Boolean;
+begin
+  const SQL = 'SELECT 1 AS RecordExists '+
+    'FROM RDB$DATABASE WHERE EXISTS '+
+    '('+
+        'SELECT 1 FROM %s WHERE not(%s = :key) and Trim(Upper(%s)) = Trim(Upper(:value))'+
+    ') ';
+
+  var Query := TIBQuery.Create(nil);
+  try
+    Query.Database := AConnection;
+    Query.SQL.Text :=
+      Format(SQL, [ATableName, AKeyField.FieldName, AFieldName]);
+
+    Query.ParamByName('key').AsString := AKeyField.AsString;
+    Query.ParamByName('value').Value := AValue;
+
+    Query.Open();
+
+    Result := Query.FieldByName('RecordExists').AsInteger = 1;
+  finally
+    Query.Free;
+  end;
+end;
+
 
 
 end.

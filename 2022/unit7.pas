@@ -2478,6 +2478,7 @@ type
     procedure Resumodasvendas1Click(Sender: TObject);
     procedure Rankingdeprodutosvendidos1Click(Sender: TObject);
     procedure ExportarNFesfiltradasemarquivoPDF1Click(Sender: TObject);
+    procedure ibDataSetPlanoContasSetText(Sender: TField; const Text: string);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -15103,6 +15104,28 @@ procedure TForm7.ibDataSet9NOMESetText(Sender: TField; const Text: String);
 begin
   if Valida_Campo('VENDEDOR',Text,'NOME','Este vendedor já foi cadastrado') then
   ibDataSet9NOME.AsString := Text;
+end;
+
+procedure TForm7.ibDataSetPlanoContasSetText(Sender: TField;
+  const Text: string);
+begin
+  var CurrentField := TField(Sender).FieldName;
+  var FriendlyName := 'número';
+  if LowerCase(CurrentField) = 'nome' then
+    FriendlyName := 'nome';
+
+  if RecordExists(
+    Form7.IBDatabase1,
+    'Contas',
+    TField(Sender).FieldName,
+    ibDataSet12.FieldByName('registro'),
+    Text) then
+  begin
+    const MSG = 'Já existe um plano de contas cadastrado com este %s.';
+    ShowMessage(Format(MSG, [FriendlyName]));
+    Exit();
+  end;
+  TField(Sender).AsString := Text;
 end;
 
 procedure TForm7.ibDataSet4PRECOChange(Sender: TField);

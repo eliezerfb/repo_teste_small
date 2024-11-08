@@ -2,20 +2,35 @@ inherited FrmPlanoContas: TFrmPlanoContas
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
+    inherited pnlBotoesSuperior: TPanel
+      ExplicitWidth = 842
+    end
+    inherited pnlBotoesPosterior: TPanel
+      inherited btnOK: TBitBtn
+        ExplicitLeft = 723
+      end
+    end
+    inherited Panel1: TPanel
+      ExplicitHeight = 453
+    end
+    inherited Panel8: TPanel
+      ExplicitLeft = 822
+      ExplicitHeight = 453
+    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
-      ExplicitLeft = 10
-      ExplicitTop = 105
+      ExplicitWidth = 802
+      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
-        object Label129: TLabel
-          Left = 10
-          Top = 26
+        object LabelNroConta: TLabel
+          Left = 11
+          Top = 41
           Width = 95
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'Conta:'
+          Caption = 'N'#250'mero da conta:'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -24,8 +39,8 @@ inherited FrmPlanoContas: TFrmPlanoContas
           ParentFont = False
         end
         object Label1: TLabel
-          Left = 10
-          Top = 52
+          Left = 11
+          Top = 67
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -39,8 +54,8 @@ inherited FrmPlanoContas: TFrmPlanoContas
           ParentFont = False
         end
         object Label2: TLabel
-          Left = 10
-          Top = 78
+          Left = 11
+          Top = 93
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -54,8 +69,8 @@ inherited FrmPlanoContas: TFrmPlanoContas
           ParentFont = False
         end
         object Label3: TLabel
-          Left = 10
-          Top = 104
+          Left = 11
+          Top = 119
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -69,8 +84,8 @@ inherited FrmPlanoContas: TFrmPlanoContas
           ParentFont = False
         end
         object Label4: TLabel
-          Left = 10
-          Top = 130
+          Left = 11
+          Top = 146
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -84,8 +99,8 @@ inherited FrmPlanoContas: TFrmPlanoContas
           ParentFont = False
         end
         object Label5: TLabel
-          Left = 10
-          Top = 156
+          Left = 11
+          Top = 172
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -99,8 +114,8 @@ inherited FrmPlanoContas: TFrmPlanoContas
           ParentFont = False
         end
         object Label6: TLabel
-          Left = 10
-          Top = 182
+          Left = 11
+          Top = 198
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -114,8 +129,8 @@ inherited FrmPlanoContas: TFrmPlanoContas
           ParentFont = False
         end
         object Label7: TLabel
-          Left = 10
-          Top = 208
+          Left = 11
+          Top = 224
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -129,8 +144,8 @@ inherited FrmPlanoContas: TFrmPlanoContas
           ParentFont = False
         end
         object Label8: TLabel
-          Left = 10
-          Top = 234
+          Left = 11
+          Top = 251
           Width = 95
           Height = 13
           Alignment = taRightJustify
@@ -143,9 +158,24 @@ inherited FrmPlanoContas: TFrmPlanoContas
           Font.Style = []
           ParentFont = False
         end
-        object edtConta: TSMALL_DBEdit
-          Left = 110
-          Top = 25
+        object LabelTipoConta: TLabel
+          Left = 11
+          Top = 16
+          Width = 95
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Tipo da conta:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object edtNroConta: TSMALL_DBEdit
+          Left = 112
+          Top = 37
           Width = 150
           Height = 20
           AutoSize = False
@@ -161,12 +191,14 @@ inherited FrmPlanoContas: TFrmPlanoContas
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 0
+          TabOrder = 1
+          OnEnter = edtNroContaEnter
           OnKeyDown = PadraoKeyDown
+          OnKeyUp = edtNroContaKeyUp
         end
         object edtNomeConta: TSMALL_DBEdit
-          Left = 110
-          Top = 51
+          Left = 112
+          Top = 63
           Width = 350
           Height = 20
           AutoSize = False
@@ -182,12 +214,12 @@ inherited FrmPlanoContas: TFrmPlanoContas
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 1
+          TabOrder = 2
           OnKeyDown = PadraoKeyDown
         end
         object edtDia: TSMALL_DBEdit
-          Left = 110
-          Top = 77
+          Left = 112
+          Top = 89
           Width = 150
           Height = 20
           AutoSize = False
@@ -203,12 +235,12 @@ inherited FrmPlanoContas: TFrmPlanoContas
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 2
+          TabOrder = 3
           OnKeyDown = PadraoKeyDown
         end
         object edtMes: TSMALL_DBEdit
-          Left = 110
-          Top = 103
+          Left = 112
+          Top = 115
           Width = 150
           Height = 20
           AutoSize = False
@@ -224,12 +256,12 @@ inherited FrmPlanoContas: TFrmPlanoContas
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 3
+          TabOrder = 4
           OnKeyDown = PadraoKeyDown
         end
         object edtAno: TSMALL_DBEdit
-          Left = 110
-          Top = 129
+          Left = 112
+          Top = 142
           Width = 150
           Height = 20
           AutoSize = False
@@ -245,12 +277,12 @@ inherited FrmPlanoContas: TFrmPlanoContas
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 4
+          TabOrder = 5
           OnKeyDown = PadraoKeyDown
         end
         object edtSaldo: TSMALL_DBEdit
-          Left = 110
-          Top = 155
+          Left = 112
+          Top = 168
           Width = 150
           Height = 20
           AutoSize = False
@@ -266,12 +298,12 @@ inherited FrmPlanoContas: TFrmPlanoContas
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 5
+          TabOrder = 6
           OnKeyDown = PadraoKeyDown
         end
         object edtDescContabil: TSMALL_DBEdit
-          Left = 110
-          Top = 181
+          Left = 112
+          Top = 194
           Width = 350
           Height = 20
           AutoSize = False
@@ -287,12 +319,12 @@ inherited FrmPlanoContas: TFrmPlanoContas
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 6
+          TabOrder = 7
           OnKeyDown = PadraoKeyDown
         end
         object edtCodContabil: TSMALL_DBEdit
-          Left = 110
-          Top = 207
+          Left = 112
+          Top = 220
           Width = 150
           Height = 20
           AutoSize = False
@@ -308,12 +340,12 @@ inherited FrmPlanoContas: TFrmPlanoContas
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 7
+          TabOrder = 8
           OnKeyDown = PadraoKeyDown
         end
         object edtIdentificador: TSMALL_DBEdit
-          Left = 110
-          Top = 233
+          Left = 112
+          Top = 247
           Width = 150
           Height = 20
           AutoSize = False
@@ -329,7 +361,17 @@ inherited FrmPlanoContas: TFrmPlanoContas
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 8
+          TabOrder = 9
+          OnKeyDown = PadraoKeyDown
+        end
+        object cbxTipoConta: TComboBox
+          Left = 112
+          Top = 11
+          Width = 150
+          Height = 22
+          Style = csOwnerDrawFixed
+          TabOrder = 0
+          OnClick = cbxTipoContaClick
           OnKeyDown = PadraoKeyDown
         end
       end
