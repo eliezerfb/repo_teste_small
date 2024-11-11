@@ -2476,6 +2476,7 @@ type
     procedure ExportarNFesfiltradasemarquivoPDF1Click(Sender: TObject);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
+    FFilterOcultaUsoConsumoVenda: String;
     FbDuplicandoProd: Boolean;
     FbDuplicandoNFe: Boolean;
     FbDuplicandoNFSe: Boolean;
@@ -2691,6 +2692,7 @@ type
     procedure AtualizaVariaveisAnteriorNatOper;
     function RetornaCustoMedio(AcCodigo: String): Double;
     procedure DefineObservacaoAnt(AcObs: String);
+    procedure SetFilterOcultaUsoConsumoVenda();
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -19345,7 +19347,10 @@ begin
   begin
     Form7.ibDataSet4.Close;
     Form7.ibDataSet4.SelectSQL.Clear;
-    Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 and  upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Text)+'%')+' order by upper(DESCRICAO)');
+    Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where '+
+      'Coalesce(Ativo,0)=0 and upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Text)+'%')+
+      FFilterOcultaUsoConsumoVenda+
+      ' order by upper(DESCRICAO)');
     Form7.ibDataSet4.Open;
     Form7.ibDataSet4.First;
     Form7.ibDataSet4.EnableControls;
@@ -33634,6 +33639,14 @@ begin
   sOrderBy  := 'order by '+ Ini.ReadString(sModulo,'ORDEM','NOME');
   Form7.iCampos   := 27;
   Ini.Free;
+end;
+
+procedure TForm7.SetFilterOcultaUsoConsumoVenda();
+begin
+  FFilterOcultaUsoConsumoVenda := '';
+  if oArqConfiguracao.BD.Outras.OcultaUsoConsumoVenda then
+    FFilterOcultaUsoConsumoVenda := ' and not(coalesce(TIPO_ITEM, '''+'00'+''') = '+
+      QuotedStr('07')+')';
 end;
 
 procedure TForm7.ibDataSet18MUNICIPIOSetText(Sender: TField; const Text: String);
