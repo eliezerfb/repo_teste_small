@@ -335,6 +335,7 @@ begin
           ' Where Coalesce(ATIVO,0) = 0 '+
           '   and Coalesce(TIPO_ITEM,'''') <> ''09'' '+//Serviço
           '   and Coalesce(CONSULTA_TRIBUTACAO,''N'') = ''S'' '+//Marcado
+          '   and COALESCE(DESCRICAO,'''') <> ''''  '+
           sFiltro+
           ' Order By IDESTOQUE';
 
@@ -427,6 +428,7 @@ begin
                    ' Where Coalesce(ATIVO,0) = 0 '+
                    '   and Coalesce(TIPO_ITEM,'''') <> ''09'' '+//Serviço
                    '   and Coalesce(CONSULTA_TRIBUTACAO,''N'') = ''S'' '+//Marcado
+                   '   and COALESCE(DESCRICAO,'''') <> ''''  '+
                    '   and STATUS_TRIBUTACAO <> '+QuotedStr(_cStatusImendesConsultado)+
                    sFiltro,
                    ibdEstoque.Transaction);

@@ -455,6 +455,8 @@ procedure TFrmNaturezaOperacao.FormClose(Sender: TObject;
 begin
   Form7.FbClicouModulo := False;
   inherited;
+
+  FreeAndNil(FrmNaturezaOperacao); //Mauricio Parizotto 2024-11-11
 end;
 
 procedure TFrmNaturezaOperacao.FormCreate(Sender: TObject);
