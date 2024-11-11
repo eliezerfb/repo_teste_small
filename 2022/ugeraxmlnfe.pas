@@ -25,6 +25,7 @@ uses
   , ShellApi
   , SpdNFeDataSets
   , spdNFe
+  , spdNFeType
   , smallfunc_xe
   , unit7
   , unit11
@@ -32,7 +33,7 @@ uses
   , unit12
   , Mais
   , ucalculaimpostos
-;
+  , uconstantes_chaves_privadas;
 
 {Sandro Silva 2024-10-17 movido para ucalculaimpostos
 type
@@ -52,12 +53,14 @@ type
 
   //function GeraXmlNFe: String; Mauricio Parizotto 2024-11-04
   function GeraXmlNFe(out sNFeRetorno : Widestring): Boolean;
+  procedure SetCSRT();
 {Sandro Silva 2024-10-17 movido para ucalculaimpostos
   procedure CstComOrigemdoProdutoNaOperacao(sCodigo: String;
     sOperacao: String; ItemNF: TItemNFe);
   procedure CsosnComOrigemdoProdutoNaOperacao(sCodigo: String;
     sOperacao: String; ItemNF: TItemNFe);
 }
+
 
 implementation
 
@@ -130,12 +133,14 @@ begin
       end;
     end;
 
+    SetCSRT();
+
     //Responsável Técnico
     Form7.spdNFeDataSets.Campo('CNPJ_ZD02').Value       := _RespTecCNPJ;
     Form7.spdNFeDataSets.Campo('xContato_ZD04').Value   := _RespTecContato;
     Form7.spdNFeDataSets.Campo('email_ZD05').Value      := _RespTecEmail;
     Form7.spdNFeDataSets.Campo('fone_ZD06').Value       := _RespTecFone;
-    
+
     if Form1.bModoSVC then
     begin
       sJustificativa := ConverteAcentos2(Form1.Small_InputForm('Atenção',chr(10)+'Para imprimir a nf-e em modo de SVC informe uma justificativa (min. 15 caracteres)'+chr(10)+chr(10), ''));
@@ -272,6 +277,23 @@ begin
     Form7.ibDataSet23.EnableControls;
   end;
 end;
+
+procedure SetCSRT();
+begin
+  if not(Form7.ibDataSet13ESTADO.AsString = 'PR') then
+    Exit;
+
+  Form7.spdNFe.IdCSRT := '01';
+
+  if Form7.spdNFe.Ambiente = spdNFeType.akHomologacao then
+  begin
+    Form7.spdNFe.CSRT := TCSRT_HOMOLOG.PR;
+    Exit;
+  end;
+
+  Form7.spdNFe.CSRT := TCSRT_PROD.PR;
+end;
+
 
 (* Sandro Silva 2024-10-17 movido para ucalculaimpostos
 procedure CstComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
@@ -411,5 +433,6 @@ begin
   end;
 end;
 *)
+
 
 end.
