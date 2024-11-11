@@ -250,6 +250,8 @@ uses
   procedure _ecf65_GravaCSC(sCSC: String);
   function _ecf65_GerarcProdANVISA(sTAGS_: String; sNCM: String): Boolean;
   procedure _ecf65_DisponibilizarDANFCe(sStatus: String; sLote: String; fNFE: String);
+  procedure SetCSRT();
+
 
   type
     TMobile = class(TComponent)
@@ -288,6 +290,7 @@ uses
   , urecuperaxmlnfce
   , uSmallConsts
   , umfe
+  , uconstantes_chaves_privadas
 //  , _Small_IntegradorFiscal // Sandro Silva 2018-07-03
   ,  ufuncoesfrente // Sandro Silva 2018-07-03
   , uValidaRecursosDelphi7, uEmail;
@@ -9452,6 +9455,7 @@ begin
   spdNFCeDataSets.Campo('email_ZD05').Value    := 'smallsoft@smallsoft.com.br';   //	Informar o e-mail da pessoa a ser contatada na empresa desenvolvedora do sistema.
   spdNFCeDataSets.Campo('fone_ZD06').Value     := '04934255800'; 	// Informar o telefone da pessoa a ser contatada na empresa desenvolvedora do sistema. Preencher com o Código DDD + número do telefone
   }
+  SetCSRT();
   spdNFCeDataSets.Campo('CNPJ_ZD02').Value     := _RespTecCNPJ; 	// Informar o CNPJ da pessoa jurídica responsável pelo sistema utilizado na emissão do documento fiscal eletrônico.
   spdNFCeDataSets.Campo('xContato_ZD04').Value := _RespTecContato; // 	Informar o nome da pessoa a ser contatada na empresa desenvolvedora do sistema utilizado na emissão do documento fiscal eletrônico.
   spdNFCeDataSets.Campo('email_ZD05').Value    := _RespTecEmail; //	Informar o e-mail da pessoa a ser contatada na empresa desenvolvedora do sistema.
@@ -11697,6 +11701,22 @@ end;
 procedure TMobile.SetVendaImportando(const Value: String);
 begin
   FVendaImportando := Value;
+end;
+
+procedure SetCSRT();
+begin
+  if not(Form1.ibDataSet13ESTADO.AsString = 'PR') then
+    Exit;
+
+  Form1.spdNFCe1.IdCSRT := '01';
+
+  if Form1.spdNFCe1.Ambiente = akHomologacao then
+  begin
+    Form1.spdNFCe1.CSRT := TCSRT_HOMOLOG.PR;
+    Exit;
+  end;
+
+  Form1.spdNFCe1.CSRT := TCSRT_PROD.PR;
 end;
 
 end.
