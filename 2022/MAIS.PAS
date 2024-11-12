@@ -38,7 +38,7 @@ uses
   function AvisoVencimentoSerial:Boolean; // Mauricio Parizotto 2024-08-16
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024032'; //Sandro Silva 2024-10-03 const BUILD_DO_BANCO = '2024030'; //Sandro Silva 2024-09-19 const BUILD_DO_BANCO = '2024028'; //Sandro Silva 2024-08-29 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
+const BUILD_DO_BANCO = '2024034'; //Sandro Silva 2024-11-08 const BUILD_DO_BANCO = '2024032'; //Sandro Silva 2024-10-03 const BUILD_DO_BANCO = '2024030'; //Sandro Silva 2024-09-19 const BUILD_DO_BANCO = '2024028'; //Sandro Silva 2024-08-29 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -2257,18 +2257,23 @@ begin
     iLeft            := iLeft + iFixL;
     MostraLabels(imgVendas,Label201);
 
+    //Avisos
+    //Primeiro aplica a imagem
+    Image_bola_vendas.Picture := ImageBola.Picture; // Sandro Silva 2024-11-01
+
     {Mauricio Parizotto 2023-07-13 Inicio}
     Image_bola_vendas.Top     := imgVendas.Top -6+1-1;
     Image_bola_vendas.Left    := imgVendas.Left + imgVendas.Width - 20;
 
-    Label_Bola_vendas.Caption := AllTrim(IntToStr(1));
-    Label_Bola_vendas.Width   := Image_Bola_NFe.Width;
+    Label_Bola_vendas.Caption := IntToStr(1); // Sandro Silva 2024-11-01 Label_Bola_vendas.Caption := AllTrim(IntToStr(1));
+    Label_Bola_vendas.Width   := Image_bola_vendas.Width; // Sandro Silva 2024-11-01 Label_Bola_vendas.Width   := Image_Bola_NFe.Width;
     Label_Bola_vendas.Left    := Image_bola_vendas.Left;
     Label_Bola_vendas.Top     := Image_bola_vendas.Top +1-1;
 
+    {Sandro Silva 2024-11-01
     //Avisos
     Image_bola_vendas.Picture := ImageBola.Picture;
-
+    }
     if Form7.GetMensagemCertificado <> '' then
     begin
       Image_bola_vendas.visible  := True;

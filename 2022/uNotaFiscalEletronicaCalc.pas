@@ -494,7 +494,10 @@ begin
                   oItem.Vicms         := oItem.Vicms + vlICMSItem;
                 end;
 
-                if CSTCalculaST(sCSTIcms) then // Irá calcular ST somente para os CST que permitem ST (f-21199) Sandro Silva 2024-10-23
+                //Sandro Silva 2024-11-07 if CSTCalculaST(sCSTIcms) then // Irá calcular ST somente para os CST que permitem ST (f-21199) Sandro Silva 2024-10-23
+                if CSTCalculaST(sCSTIcms) // Irá calcular ST somente para os CST que permitem ST (f-21199) Sandro Silva 2024-10-23
+                              or (StrToIntDef(Form7.ibDataSet13.FieldByname('CRT').AsString, 0) in [1,4])
+                then
                 begin
                   // CALCULO DO IVA
                   if AliqICMdoCliente(oItem) <= IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
@@ -673,7 +676,10 @@ begin
           if rIVAProd > 0 then
           begin
 
-            if CSTCalculaST(sCSTIcms) then // Irá calcular ST somente para os CST que permitem ST (f-21199) Sandro Silva 2024-10-23
+            //2024-11-07 if CSTCalculaST(sCSTIcms) then // Irá calcular ST somente para os CST que permitem ST (f-21199) Sandro Silva 2024-10-23
+            if CSTCalculaST(sCSTIcms) // Irá calcular ST somente para os CST que permitem ST (f-21199) Sandro Silva 2024-10-23
+              or (StrToIntDef(Form7.ibDataSet13.FieldByname('CRT').AsString, 0) in [1,4])
+            then
             begin
 
               // IPI Por Unidade

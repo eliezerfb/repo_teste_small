@@ -5,8 +5,8 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1290
-  ClientWidth = 1560
+  ClientHeight = 1224
+  ClientWidth = 1556
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -7636,8 +7636,8 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1250
-    Width = 1560
+    Top = 1184
+    Width = 1556
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -7709,7 +7709,7 @@ object Form7: TForm7
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 1560
+    Width = 1556
     Height = 5
     Align = alTop
     BevelOuter = bvNone

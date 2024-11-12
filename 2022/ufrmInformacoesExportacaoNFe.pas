@@ -121,25 +121,25 @@ begin
 
   if (AllTrim(fraPais.txtCampo.Text) = EmptyStr) then
   begin
-    MensagemSistema('Selecione o país de destino.');
+    MensagemSistema('Selecione o país de destino.',msgAtencao);
     fraPais.txtCampo.SetFocus;
     Exit;
   end;
   if (AllTrim(fraUFEmbarque.txtCampo.Text) = EmptyStr) then
   begin
-    MensagemSistema('Selecione a UF de embarque.');
+    MensagemSistema('Selecione a UF de embarque.',msgAtencao);
     fraUFEmbarque.txtCampo.SetFocus;
     Exit;
   end;
   if (AllTrim(edtLocalEmbarque.Text) = EmptyStr) then
   begin
-    MensagemSistema('Informe o local do embarque.');
+    MensagemSistema('Informe o local do embarque.',msgAtencao);
     edtLocalEmbarque.SetFocus;
     Exit;
   end;
   if (AllTrim(edtRecintoAlfandegado.Text) = EmptyStr) then
   begin
-    MensagemSistema('Informe o recinto alfandegado.');
+    MensagemSistema('Informe o recinto alfandegado.',msgAtencao);
     edtRecintoAlfandegado.SetFocus;
     Exit;
   end;
