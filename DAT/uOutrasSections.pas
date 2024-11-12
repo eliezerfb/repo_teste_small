@@ -25,6 +25,8 @@ type
     procedure setPermiteImportarMesmoOrc(const Value: Boolean);
     function getRecalculaCustoMedioRetroativo: Boolean;
     procedure setRecalculaCustoMedioRetroativo(const Value: Boolean);
+    function getOcultaUsoConsumoVenda: Boolean;
+    procedure setOcultaUsoConsumoVenda(const Value: Boolean);
   public
     property LogSistema: Boolean read getLogSistema write setLogSistema;
     property FabricaProdutoSemQtd: Boolean read getFabricaProdutoSemQtd write setFabricaProdutoSemQtd;
@@ -34,6 +36,7 @@ type
     property CalculaLucroAltVenda: Boolean read getCalculaLucroAltVenda write setCalculaLucroAltVenda;
     property PermiteImportarMesmoOrc: Boolean read getPermiteImportarMesmoOrc write setPermiteImportarMesmoOrc; //Mauricio Parizotto 2024-08-26
     property RecalculaCustoMedioRetroativo: Boolean read getRecalculaCustoMedioRetroativo write setRecalculaCustoMedioRetroativo; //Dailon Parisotto 2024-09-02
+    property OcultaUsoConsumoVenda: Boolean read getOcultaUsoConsumoVenda write setOcultaUsoConsumoVenda;
   protected
   end;
 
@@ -62,6 +65,11 @@ end;
 function TSectionOutras.getLogSistema: Boolean;
 begin
   Result := getValorBD(_cOutrasLog) = '1';
+end;
+
+function TSectionOutras.getOcultaUsoConsumoVenda: Boolean;
+begin
+  Result := getValorBD(_OcultaUsoConsumoVenda) = '1';
 end;
 
 function TSectionOutras.getPermiteImportarMesmoOrc: Boolean;
@@ -135,6 +143,15 @@ begin
   setValorBD(_cOutrasLog,
              'Ativa a geração de logs no sistema',
              valorBD);
+end;
+
+procedure TSectionOutras.setOcultaUsoConsumoVenda(const Value: Boolean);
+begin
+  setValorBD(
+    _OcultaUsoConsumoVenda,
+    'Recalcular custo médio retroativo',
+    Value.ToInteger.ToString
+  );
 end;
 
 procedure TSectionOutras.setPermiteImportarMesmoOrc(const Value: Boolean);
