@@ -3,7 +3,7 @@
         <ProjectGuid>{376CE32D-BC53-40E7-BD4E-12B5F2B54C24}</ProjectGuid>
         <MainSource>FRENTE.DPR</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -95,9 +95,9 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Frente de Caixa;FileVersion=2024.38.0.42;InternalName=frente.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=frente.exe;ProductName=Frente de Caixa;ProductVersion=2024.38.0.42;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
-        <VerInfo_MinorVer>38</VerInfo_MinorVer>
-        <VerInfo_Build>42</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Frente de Caixa;FileVersion=2024.40.0.44;InternalName=frente.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=frente.exe;ProductName=Frente de Caixa;ProductVersion=2024.40.0.44;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_MinorVer>40</VerInfo_MinorVer>
+        <VerInfo_Build>44</VerInfo_Build>
         <DCC_ExeOutput>\Desenvolvimento\Executaveis\Small Commerce\</DCC_ExeOutput>
         <Manifest_File>xp.manifest</Manifest_File>
     </PropertyGroup>
@@ -294,7 +294,7 @@
         <DCCReference Include="..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas"/>
         <DCCReference Include="..\unit_compartilhada\Itau\uClassesItau.pas"/>
         <DCCReference Include="..\unit_compartilhada\Sicoob\uClassesSicoob.pas"/>
-        <DCCReference Include="..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas"/>        
+        <DCCReference Include="..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas"/>
         <DCCReference Include="..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
         <DCCReference Include="..\unit_compartilhada\DAT\uIMendesSections.pas"/>
         <DCCReference Include="ufrmSobre.pas">
@@ -1145,9 +1145,8 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
