@@ -372,14 +372,8 @@ var
     FlsImpressaoPg[iPg].Add('');
     FlsImpressaoPg[iPg].Add('                                                                      SUB TOTAL R$   '+Format('%10.2n',[nTotal]));
     FlsImpressaoPg[iPg].Add('                                                                      DESCONTO  R$   '+Format('%10.2n',[nDesconto]));
-    FlsImpressaoPg[iPg].Add('                                                                                     ----------');
-    FlsImpressaoPg[iPg].Add('                                                                      TOTAL     R$   '+Format('%10.2n',[nTotal-nDesconto]));
-
-    FlsImpressaoPg[iPg].Add('');
-    FlsImpressaoPg[iPg].Add('');
-    FlsImpressaoPg[iPg].Add('');
-    FlsImpressaoPg[iPg].Add('                  -------------------------              ------------------------               ');
-    FlsImpressaoPg[iPg].Add('                     Assinatura vendedor                    Assinatura cliente                  ');
+    FlsImpressaoPg[iPg].Add('    -------------------------         ------------------------                       ----------');
+    FlsImpressaoPg[iPg].Add('       Assinatura vendedor               Assinatura cliente           TOTAL     R$   '+Format('%10.2n',[nTotal-nDesconto]));
   end;
 begin
   Result := Self;
@@ -399,7 +393,7 @@ begin
   FQryItens.First;
 
   //Controle de paginação
-  iCap2  := 35;
+  iCap2  := 40;
   iAtual := 14;
   iResto := FQryItens.RecordCount;
 
@@ -448,7 +442,7 @@ begin
   end;
 
   //Completa com linhas em branco
-  if iAtual + 9 > iCap2 then
+  if iAtual + 4 > iCap2 then
   begin
     for I := iAtual to iCap2 do
       FlsImpressaoPg[iPg].Add('');
@@ -461,7 +455,7 @@ begin
     iAtual := 1;
   end;
 
-  for I := iAtual to iCap2 -10 do
+  for I := iAtual to iCap2 -5 do
     FlsImpressaoPg[iPg].Add('');
 
   //Rodapé
