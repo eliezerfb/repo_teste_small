@@ -52,7 +52,8 @@ type
     procedure btnSincronizarClick(Sender: TObject);
   private
     function GetArquivoSimulacao(out ProdsSemICMS : string): string;
-    procedure RelatoioSaneamento(sFiltro: string);
+    procedure RelatorioSaneamento(sFiltro: string);
+    procedure RelatorioAlterados(sFiltro: string);
     { Private declarations }
   public
     { Public declarations }
@@ -205,11 +206,11 @@ begin
           AbreArquivos(False);
 
           //Relatório
-          RelatoioSaneamento(' Where DATA_STATUS_TRIBUTACAO between '+
-                             QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataIni))+
-                             '   and '+
-                             QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataFim))
-                             );
+          RelatorioSaneamento(' Where DATA_STATUS_TRIBUTACAO between '+
+                              QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataIni))+
+                              '   and '+
+                              QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataFim))
+                              );
         end else
         begin
           MensagemSistema(sMensgem,msgAtencao);
@@ -240,8 +241,10 @@ begin
   var
     bRealizada : boolean;
     sFiltro, sMensagem, sEstoqueIDs : string;
+    DataIni, DataFim : TDateTime;
   begin
     bRealizada := False;
+    DataIni    := now;
 
     //Devolvidos
     if GetProdutosDevolvidos(LimpaNumero(Form7.ibDataSet13CGC.AsString),
@@ -275,7 +278,17 @@ begin
       if bRealizada then
       begin
         MensagemSistema('Saneamento realizado com sucesso!');
-        AgendaCommit(true);
+        Commitatudo(True);
+        AgendaCommit(False);
+        AbreArquivos(False);
+
+        //Relatório
+        DataFim := now;
+        RelatorioAlterados(' Where DATA_STATUS_TRIBUTACAO between '+
+                           QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataIni))+
+                           '   and '+
+                           QuotedStr(FormatDateTime('yyyy-mm-dd HH:mm:ss',DataFim))
+                           );
       end else
       begin
         MensagemSistema(sMensagem,msgAtencao);
@@ -433,7 +446,7 @@ begin
   end;
 end;
 
-procedure TFrmIntegracaoIMendes.RelatoioSaneamento(sFiltro:string);
+procedure TFrmIntegracaoIMendes.RelatorioSaneamento(sFiltro:string);
 var
   sSql, sSql2, sSql3 : string;
 begin
@@ -472,5 +485,46 @@ begin
                        .Imprimir;
 
 end;
+
+procedure TFrmIntegracaoIMendes.RelatorioAlterados(sFiltro:string);
+var
+  sSql, sSql2, sSql3 : string;
+begin
+  sSql := ' Select '+
+          '  	STATUS_TRIBUTACAO "Status",'+
+          '  	Count(*)  "Quantidade"	'+
+          ' From ESTOQUE'+
+          sFiltro+
+          ' and STATUS_TRIBUTACAO in ('+QuotedStr(_cStatusImendesRejeitado)+','+QuotedStr(_cStatusImendesConsultado)+') '+
+          ' Group By STATUS_TRIBUTACAO';
+
+  sSql2 :=' Select '+
+          ' 	CODIGO "Código",'+
+          ' 	REFERENCIA "Código Barras",'+
+          ' 	DESCRICAO "Descrição" 	'+
+          ' From ESTOQUE'+
+          sFiltro+
+          ' and STATUS_TRIBUTACAO = '+QuotedStr(_cStatusImendesConsultado);
+
+  sSql3 :=' Select '+
+          ' 	CODIGO "Código",'+
+          ' 	REFERENCIA "Código Barras",'+
+          ' 	DESCRICAO "Descrição" 	'+
+          ' From ESTOQUE'+
+          sFiltro+
+          ' and STATUS_TRIBUTACAO = '+QuotedStr(_cStatusImendesRejeitado);
+
+  TEstruturaRelGenerico.New
+                       .setUsuario(Usuario)
+                       .SetDataBase(Form7.IBDatabase1)
+                       .Estrutura
+                       .GerarImpressaoTitCabecalho('Relatório de alterações')
+                       .ImprimeQuery(sSql,'Totalizadores')
+                       .ImprimeQuery(sSql2,'Produtos Consultados')
+                       .ImprimeQuery(sSql3,'Produtos com Informações Insuficientes')
+                       .Imprimir;
+
+end;
+
 
 end.

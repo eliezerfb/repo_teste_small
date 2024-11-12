@@ -13,7 +13,8 @@ type TPesquisaImendes = (tpCodigo, tpEAN);
   function GetCodImendes(sCNPJ, sDescricao: string): integer;
   function GetTributacaoProd(ibdEstoque : TibDataSet; TipoPesquisa: TPesquisaImendes): boolean;
   function GetTributacaoEstoque(ibdEstoque : TibDataSet; sFiltro : string; out sMensagem : string): boolean;
-  procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo; PreencheIPI : Boolean; UF : string; out sErro : string);
+  procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo; PreencheIPI : Boolean;
+    UF : string; bSimplesNac : boolean; out sErro : string);
   procedure GetDadosCabecalho(Cabecalho: TCabecalhoTrib; Transaction : TIBTransaction);
   function GetCitTribIMendes(AliqICMS, BcIcms : double; CFOP, UF : string; Transaction : TIBTransaction):string;
   function GetSeqCitIMendes(Transaction : TIBTransaction):string;
@@ -54,7 +55,8 @@ begin
       end;
     end else
     begin
-      MensagemSistema('Falha ao consultar informações.',msgErro);
+      //MensagemSistema('Falha ao consultar informações.',msgErro);
+      Sleep(1000);
     end;
   finally
     FreeAndNil(ConsultaProdDesc);
@@ -107,7 +109,7 @@ var
   ProdutoArray : TArray<TProdutoTrib>;
   sJson, sJsonRet : string;
   sUF : TArray<string>;
-  bEncontrado : boolean;
+  bEncontrado, bSimplesNac : boolean;
   sErro : string;
 begin
   Result := False;
@@ -159,11 +161,14 @@ begin
 
           if bEncontrado then
           begin
+            bSimplesNac := TributacaoIMendesDTO.Cabecalho.Crt = '1';
+
             //Atribui tributação ao produto
             SetTribProd(ibdEstoque,
                         RetTributacaoIMendesDTO.Grupo[0],
                         TSistema.GetInstance.ConsultarIPIImendes,
                         TributacaoIMendesDTO.Uf[0],
+                        bSimplesNac,
                         sErro);
 
             //Auditoria
@@ -205,12 +210,12 @@ function GetTributacaoEstoque(ibdEstoque : TibDataSet; sFiltro : string; out sMe
 var
   TributacaoIMendesDTO : TTributacaoIMendesDTO;
   ProdutoArray : TArray<TProdutoTrib>;
-  sSQL, sCodigo, sCodEan, sCodEan2 : string;
+  sSQL, sCodigo, sCodEan : string;
   sUF : TArray<string>;
 
   qryProduto: TIBQuery;
   iProd : integer;
-  bEanValido : boolean;
+  bEanValido, bSimplesNac : boolean;
 
   {$Region'//// EnviaPacoteRequest ////'}
   procedure EnviaPacoteRequest(sProgresso : string);
@@ -265,6 +270,7 @@ var
                             RetTributacaoIMendesDTO.Grupo[iGrupo],
                             TSistema.GetInstance.ConsultarIPIImendes,
                             TributacaoIMendesDTO.Uf[0],
+                            bSimplesNac,
                             sErro);
 
                 ibdEstoque.Post;
@@ -286,6 +292,7 @@ var
                               RetTributacaoIMendesDTO.Grupo[iGrupo],
                               TSistema.GetInstance.ConsultarIPIImendes,
                               TributacaoIMendesDTO.Uf[0],
+                              bSimplesNac,
                               sErro);
 
                   ibdEstoque.Post;
@@ -295,23 +302,30 @@ var
               begin
                 //Código de barras
                 sCodEan   := RetTributacaoIMendesDTO.Grupo[iGrupo].Produto[iProduto];
-                sCodEan2  := RetTributacaoIMendesDTO.Grupo[iGrupo].Produto[iProduto];
 
-                if Copy(sCodEan2,1,1) = '0' then
-                  Delete(sCodEan2,1,1);
+                ibdEstoque.Close;
+                ibdEstoque.SelectSQL.Text := ' Select *'+
+                                             ' From ESTOQUE'+
+                                             ' Where lpad(REFERENCIA, 14, ''0'') ='+QuotedStr(sCodEan);
+                ibdEstoque.Open;
 
-                if (ibdEstoque.Locate('REFERENCIA',sCodEan,[]))
-                  or (ibdEstoque.Locate('REFERENCIA',sCodEan2,[])) then
+                if not(ibdEstoque.IsEmpty) then
                 begin
                   //Atribui tributação ao produto
                   SetTribProd(ibdEstoque,
                               RetTributacaoIMendesDTO.Grupo[iGrupo],
                               TSistema.GetInstance.ConsultarIPIImendes,
                               TributacaoIMendesDTO.Uf[0],
+                              bSimplesNac,
                               sErro);
 
                   ibdEstoque.Post;
                 end;
+
+                ibdEstoque.Close;
+                ibdEstoque.SelectSQL.Text := sSQL;
+                ibdEstoque.Open;
+
               end;
             end;
           end;
@@ -356,6 +370,7 @@ begin
 
       //Cabeçalho
       GetDadosCabecalho(TributacaoIMendesDTO.Cabecalho,ibdEstoque.Transaction);
+      bSimplesNac := TributacaoIMendesDTO.Cabecalho.Crt = '1';
 
       //UF
       SetLength(sUF,1);
@@ -480,7 +495,8 @@ begin
   end;
 end;
 
-procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo; PreencheIPI : Boolean; UF : string; out sErro : string);
+procedure SetTribProd(ibdEstoque : TibDataSet; Grupo : TGrupo; PreencheIPI : Boolean; UF : string;
+  bSimplesNac : boolean; out sErro : string);
 begin
   Form7.SaneamentoIMendes := True;
 
@@ -493,7 +509,24 @@ begin
     ibdEstoque.FieldByName('TAGS_').AsString                  := AlteraValorDaTagNoCampo('cProdANP', Grupo.Codanp, ibdEstoque.FieldByName('TAGS_').AsString);
     
     ibdEstoque.FieldByName('CST_PIS_COFINS_ENTRADA').AsString := Grupo.Piscofins.CstEnt;
-    ibdEstoque.FieldByName('CST_PIS_COFINS_SAIDA').AsString   := Grupo.Piscofins.CstSai;
+
+    //Anexo II da documentação
+    if bSimplesNac then
+    begin
+      if (Grupo.Piscofins.CstSai = '01')
+        or ( (Grupo.Piscofins.CstSai = '06') and (Grupo.Piscofins.Nri <> '918')  ) then
+      begin
+        ibdEstoque.FieldByName('CST_PIS_COFINS_SAIDA').AsString   := '49';
+      end else
+      begin
+        ibdEstoque.FieldByName('CST_PIS_COFINS_SAIDA').AsString   := Grupo.Piscofins.CstSai;
+      end;
+    end else
+    begin
+      ibdEstoque.FieldByName('CST_PIS_COFINS_SAIDA').AsString   := Grupo.Piscofins.CstSai;
+    end;
+
+
     ibdEstoque.FieldByName('ALIQ_PIS_SAIDA').AsFloat          := Grupo.Piscofins.AliqPIS;
     ibdEstoque.FieldByName('ALIQ_COFINS_SAIDA').AsFloat       := Grupo.Piscofins.AliqCOFINS;
     ibdEstoque.FieldByName('NATUREZA_RECEITA').AsString       := Grupo.Piscofins.Nri;
@@ -677,7 +710,7 @@ end;
 function LimpaCaracteresEspeciaisIM(sTexto:string):string;
 begin
   sTexto := StringReplace(sTexto,'\',' ',[rfReplaceAll]);
-  sTexto := StringReplace(sTexto,'/',' ',[rfReplaceAll]);
+  //sTexto := StringReplace(sTexto,'/',' ',[rfReplaceAll]);
   sTexto := StringReplace(sTexto,'''',' ',[rfReplaceAll]);
   sTexto := StringReplace(sTexto,':',' ',[rfReplaceAll]);
   sTexto := StringReplace(sTexto,'*',' ',[rfReplaceAll]);
