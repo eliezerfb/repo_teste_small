@@ -57,7 +57,7 @@ implementation
 {$R *.dfm}
 
 uses
-  unit7, uFuncoesRetaguarda;
+  unit7, uFuncoesRetaguarda, uSmallEnumerados;
 
 { TFrmPlanoContas }
 

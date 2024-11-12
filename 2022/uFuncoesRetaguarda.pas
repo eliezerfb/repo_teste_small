@@ -29,10 +29,8 @@ uses
   , DB
   , Variants
   , Grids
-  , Graphics;
-
-type
-  TTipoPlanoConta = (tpcReceita, tpcDespesa, tpcBanco, tpcRetirada, tpcNenhum);
+  , Graphics
+  , uSmallEnumerados;
 
   function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;

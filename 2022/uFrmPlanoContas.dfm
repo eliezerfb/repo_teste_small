@@ -2,10 +2,14 @@ inherited FrmPlanoContas: TFrmPlanoContas
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
+    ExplicitWidth = 840
+    ExplicitHeight = 610
     inherited pnlBotoesSuperior: TPanel
       ExplicitWidth = 842
     end
     inherited pnlBotoesPosterior: TPanel
+      ExplicitTop = 550
+      ExplicitWidth = 840
       inherited btnOK: TBitBtn
         ExplicitLeft = 723
       end
