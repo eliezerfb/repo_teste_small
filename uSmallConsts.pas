@@ -108,6 +108,8 @@ const
   _cCalculaLucroAltVenda  = 'Calcula lucro alt preço venda';
   _PermiteImportaMesmoOrc = 'Importar Mesmo Orc Cupom';
   _RecalculaCustoMedioRetroativo = 'Recalc Custo Medio Retroativo';
+  _OcultaUsoConsumoVenda = 'Ocultar produtos uso consumo';
+
 
   //Impressora
   _cSectionImpressora  = 'Impressora';
