@@ -1258,36 +1258,36 @@ object Form19: TForm19
       Caption = 'Impress'#227'o'
       ImageIndex = 5
       object Label26: TLabel
-        Left = 36
-        Top = 92
-        Width = 86
+        Left = 33
+        Top = 88
+        Width = 89
         Height = 13
         Alignment = taRightJustify
-        Caption = 'Nota fiscal Serie 1'
+        Caption = 'Nota fiscal Serie 1:'
       end
       object Label29: TLabel
-        Left = 36
-        Top = 122
+        Left = 33
+        Top = 115
+        Width = 89
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Nota fiscal Serie 2:'
+      end
+      object Label37: TLabel
+        Left = 65
+        Top = 32
+        Width = 55
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Or'#231'amento:'
+      end
+      object Label39: TLabel
+        Left = 34
+        Top = 60
         Width = 86
         Height = 13
         Alignment = taRightJustify
-        Caption = 'Nota fiscal Serie 2'
-      end
-      object Label37: TLabel
-        Left = 68
-        Top = 32
-        Width = 52
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'Or'#231'amento'
-      end
-      object Label39: TLabel
-        Left = 37
-        Top = 61
-        Width = 83
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'Ordem de servi'#231'o'
+        Caption = 'Ordem de servi'#231'o:'
       end
       object lblFormatoOrc: TLabel
         Left = 343
@@ -1299,14 +1299,14 @@ object Form19: TForm19
       end
       object ComboBoxNF: TComboBox
         Left = 125
-        Top = 90
+        Top = 86
         Width = 200
         Height = 21
         TabOrder = 3
       end
       object ComboBoxNF2: TComboBox
         Left = 125
-        Top = 120
+        Top = 113
         Width = 200
         Height = 21
         TabOrder = 4
@@ -1321,8 +1321,8 @@ object Form19: TForm19
         Visible = False
       end
       object ComboBoxORCA: TComboBox
-        Left = 126
-        Top = 31
+        Left = 125
+        Top = 30
         Width = 200
         Height = 22
         Style = csOwnerDrawFixed
@@ -1331,7 +1331,7 @@ object Form19: TForm19
       end
       object ComboBoxOS: TComboBox
         Left = 125
-        Top = 59
+        Top = 58
         Width = 200
         Height = 22
         Style = csOwnerDrawFixed
