@@ -181,7 +181,7 @@ const
   _cStatusImendesAlterado      = 'Alterado pelo usuário';
   _cStatusImendesConsultado    = 'Consultado';
   _cStatusImendesNaoConsultado = 'Não consultado';
-  _cStatusImendesRejeitado     = 'Não identificado';
+  _cStatusImendesRejeitado     = 'Informações Insuficientes';
 
   //Frente Sections BD
   _cSectionFrenteBD = 'Frente';
