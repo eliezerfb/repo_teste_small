@@ -61,6 +61,8 @@ const CHAVE_INICIAR_COM_WINDOWS       = 'Iniciar com Windows';
 const CHAVE_FORMAS_CONFIGURADAS       = 'Formas Configuradas';
 const CHAVE_IMPRIMIR_CEST             = 'Imprimir CEST';
 const CHAVE_IDENTIFICAR_POS           = 'Identificar POS';
+const CHAVE_HABILITAR_USO_POS         = 'Habilita POS';// Sandro Silva 2024-11-06
+const CHAVE_TEM_TEF                   = 'TEM TEF';// Sandro Silva 2024-11-06
 const CHAVE_IMPRESSORA_PADRAO         = 'Impressora Padrao';
 const CHAVE_CARNE_RESUMIDO            = 'Carne resumido';// Sandro Silva 2018-04-29
 const CHAVE_TEF_CARTEIRA_DIGITAL      = 'TEF Carteira Digital'; // Configura no frente.ini se usa carteira digital com TEF Sandro Silva 2021-08-27
@@ -97,6 +99,15 @@ type
 
 type
   TTipoInfoCombo = (tiInfoComboModeloSAT, tiInfoComboImpressoras, tiInfoComboFusoHorario, tiInfoComboContaClienteOS);
+
+type
+  TTiposTransacao = (tpNone, tpPOS, tpTEF); // Sandro Silva (smal-778) 2024-11-06
+
+type
+  TTipoTransacaoTefPos = class
+    Tipo: TTiposTransacao;
+    Descricao: String;
+  end;
 
 type
   TAliquota = class // Sandro Silva 2019-06-13  TAliquota = record
@@ -220,7 +231,7 @@ type
   private
     FTexto: String;
     FArquivo: TextFile;
-  protected 
+  protected
   public
     property Texto: String read FTexto write FTexto;
     procedure SalvarArquivo(FileName: TFileName);
@@ -359,6 +370,7 @@ function GetAutorizacaoPixRec(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTran
   out CodigoAutorizacao, CNPJinstituicao: string) : boolean;
 function GetCNPJInstituicaoFinanceira(sInstituicaoFinanceira: string; IBTRANSACTION: TIBTransaction) : string;
 function GetIDFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : integer;
+function TestarZPOSLiberado: Boolean;
 function GetDescricaoFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : string;
 
 var
@@ -373,7 +385,9 @@ var
 
 implementation
 
-uses StrUtils, uTypesRecursos, FISCAL;
+uses StrUtils, uTypesRecursos, FISCAL
+, uValidaRecursos
+;
 
 //////////////////////////////
 {$IFDEF VER150}
@@ -2919,6 +2933,13 @@ begin
   finally
     FreeAndNil(IbqForma);
   end;
+end;
+
+function TestarZPOSLiberado: Boolean;
+var
+  dLimiteRecurso : Tdate;
+begin
+  Result := (RecursoLiberado(Form1.IBDatabase1,rcZPOS,dLimiteRecurso));
 end;
 
 function GetDescricaoFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : string; //Mauricio Parizotto 2024-09-12

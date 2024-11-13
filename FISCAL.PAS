@@ -99,7 +99,12 @@ uses
   , usmall_elginpay_pos
   , usincronizamobile
   , uArquivosDAT
-  , uSmallEnumerados, System.Contnrs, spdNFCeDataSets, spdNFCeType, spdNFCe
+  , uSmallEnumerados
+  , System.Contnrs
+  , spdNFCeDataSets
+  , spdNFCeType
+  , spdNFCe
+  , uTransacionaPosOuTef
   ;
 
   const MARGEM_ESQUERDA_OBJ = 14; // Sandro Silva 2021-07-29 // 15
@@ -1054,6 +1059,8 @@ type
     mmTransmitiContingenciaAbertura: TMenuItem;
     ibDataSet7FORMADEPAGAMENTO: TIBStringField;
     ibDataSet7AUTORIZACAOTRANSACAO: TIBStringField;
+    HabilitarusodePOS1: TMenuItem;
+    Cadastrodebandeiras1: TMenuItem;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1427,6 +1434,8 @@ type
     procedure COO1Click(Sender: TObject);
     procedure FunesAdministrativasIntegraoIta1Click(Sender: TObject);
     procedure mmTransmitiContingenciaAberturaClick(Sender: TObject);
+    procedure Cadastrodebandeiras1Click(Sender: TObject);
+    procedure HabilitarusodePOS1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1512,6 +1521,7 @@ type
     procedure CarregaConfiguracoes;
     procedure ChamarTelaSobre;
     procedure DefineTransmiteContingenciaAbertura;
+    procedure DefiniUsoPos;
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -1521,6 +1531,8 @@ type
     TransacoesCartao: TTransacaoFinanceira;
     iiMesa: Integer;
     ContingenciaPendente: TContingencia;
+
+    TransacoesComCartao: TTransacaoComPosOuTef;
 
     spdNFCeDataSets1: TspdNFCeDataSets;
     spdNFCe1: TspdNFCe;
@@ -1563,6 +1575,7 @@ type
     sSenhaDeUsuario, sMotivoContingencia, sTipoDocumento, sTipoDocumento2, sMenuFiscal, sCreditosDF, sPromissoria, sConcomitante, sUF, sPERFIL, sMesaOuConta, sMesasOuContas, sSuperCodigo, sF4Conferencia, sMensagemMesaConferida,
     sHoraMovimento, sDataMovimento, sF, sMesas, sMesasOffLine, sStatusECF, sStatusECF_RES, sMD5DaLista, sTipo, sCPF_CNPJ_Validado,
     sPastaVoltaOffLine, sPasta, sAjuda, sAbreComOLeitor, sAviso, sPlanoDeContas, sOs, sOrcame, sProximo, sProximo27, sProximo150, sProximo027, sProximo28, sProximo38, sGertec, sTipoEtiqueta, sIdentificaConsumidor, sTef, sPastaDoExecutavel, sNumeroDeSerieDaImpressora : String;
+    sHabilitarUsoPOS: String; //Sandro Silva 2024-11-06
     //bUsaPixEstatico : Boolean;//Mauricio Parizotto 2024-04-30
     sDataDoCupom, sHoraDoCupom, sSangria, sModeloECF, sModeloECF_Reserva, sMFD_, sBalanca, sCRLF, sCortaPapel, sTipoImpressora, sCripto, sConveniado, sCaixa, sArquivo, sAtual, sAtualOnLine, OKSim, sVendedor, sGaveta,
     sRGTurbo, sUltimoItem, sPorta, sSeriais, sMensagemPromocional ,sVendedorFixo ,sAliquotas, ConfCusto,
@@ -1825,6 +1838,7 @@ uses
   , uDialogs
   , ufrmSobre
   , uLogSistema
+  //, ufrmOpcoesFechamentoComCartao
   ;
 
 {$R *.DFM}
@@ -9218,7 +9232,21 @@ begin
   //Integração Itaú
   CarregaTipoAmbiente; // Mauricio Parizotto 2024-06-17
 
-  Form1.bEditandoMovimento := False; // Sandro Silva 2023-11-08
+  {Sandro Silva 2024-11-11 inicio}
+  TransacoesComCartao := TTransacaoComPosOuTef.Create(Application);
+  {
+  TransacoesComCartao.sCupomTEF        := Form1.sCupomTEF;
+  TransacoesComCartao.sTransaca        := Form1.sTransaca;
+  TransacoesComCartao.sAutoriza        := Form1.sAutoriza;
+  TransacoesComCartao.sNomeRede        := Form1.sNomeRede;
+  TransacoesComCartao.sTipoParc        := Form1.sTipoParc;
+  TransacoesComCartao.sParcelas        := Form1.sParcelas;
+  TransacoesComCartao.sIdentificaPOS   := Form1.sIdentificaPOS;
+  TransacoesComCartao.fTEFPago         := Form1.fTEFPago;
+  TransacoesComCartao.fDescontoNoTotal := Form1.fDescontoNoTotal;
+  {Sandro Silva 2024-11-11 fim}
+
+  Form1.bEditandoMovimento := False;
   AjustarBufferChuncks(Form1);
   ClienteSmallMobile := TSmallMobileCliente.Create;
 
@@ -9557,6 +9585,7 @@ begin
   Form1.sSAngria         := Mais1Ini.ReadString('Frente de caixa', 'Sangria'                 ,'999.999,99');
   iPeso                  := Mais1Ini.ReadInteger('Frente de caixa', 'Peso'       ,1);
   DefineTemTEF;
+  DefiniUsoPos;
   sGertec                := Mais1Ini.ReadString('Frente de caixa', 'Teclado gertec','Não');
   sPromissoria           := Mais1Ini.ReadString('Frente de caixa', 'Promissória','Não');
   sCreditosDF            := Mais1Ini.ReadString('Frente de caixa', 'Créditos DF','Não');
@@ -10152,6 +10181,7 @@ var
 
   IDFORMA : integer;
   CODIGO_TPAG : string;
+  TipoTransacao: TTipoTransacaoTefPos; // Sandro Silva (smal-778) 2024-11-06
 begin
   Screen.Cursor             := crHourGlass; // Cursor de Aguardo
   bFechado                  := False; // Sandro Silva 2016-04-12
@@ -10332,6 +10362,7 @@ begin
           Form2.bCancela := False;
 
           AtualizarTEMTEF;
+          {Sandro Silva (smal-778) 2024-11-06
           if (Form1.sTef = 'Sim') and (Form1.ClienteSmallMobile.sVendaImportando = '') then
           begin
             if not TEFMultiplosCartoes(True) then
@@ -10341,6 +10372,11 @@ begin
             // Usando POS
             TransacaoComPoS(tcxPosOffLine);// Sandro Silva 2022-02-11
           end;// if (Form1.sTef = 'Sim') and (Form1.ClienteSmallMobile.sVendaImportando = '') then
+          }
+
+          TransacoesComCartao.TransacionaPosOuTef;
+
+          {Sandro Silva (smal-778) 2024-11-06 fim}
 
           if Form1.TransacoesCartao.Transacoes.Count > 0 then // Mostrar mensagem apenas se pagou com cartão  Sandro Silva 2018-09-05
           begin
@@ -10349,7 +10385,6 @@ begin
           end;
           Form1.OcultaPanelMensagem;
         end;
-
 
         if Form2.bCancela then
         begin
@@ -10562,7 +10597,7 @@ begin
             IBQMODELO02 := CriaIBQuery(Form1.ibDataSet27.Transaction);// Tem que estar na mesma transação de IBDATASET27 que lança os dados do cupom
             IBQMODELO02.Close;
             IBQMODELO02.SQL.Clear;
-            IBQMODELO02.SQL.Add('select * from ALTERACA where PEDIDO= '+QuotedStr(FormataNumeroDoCupom(Form1.iCupom))+' and CAIXA='+QuotedStr(sCAIXA)+' '); // Sandro Silva 2020-10-16 IBQMODELO02.SQL.Add('select * from ALTERACA where PEDIDO= '+QuotedStr(StrZero(iCupom,6,0))+' and CAIXA='+QuotedStr(sCAIXA)+' ');
+            IBQMODELO02.SQL.Add('select * from ALTERACA where PEDIDO= '+QuotedStr(FormataNumeroDoCupom(Form1.iCupom))+' and CAIXA='+QuotedStr(sCAIXA)+' ');
             IBQMODELO02.Open;
 
             // 2015-10-08 COO e CCF para DESCONTOS. IBDATASET27 não grava COO e CCF para os descontos do cupom
@@ -13848,6 +13883,20 @@ begin
   Form4.Show;
 end;
 
+procedure TForm1.Cadastrodebandeiras1Click(Sender: TObject);
+begin
+  {Sandro Silva (smal-778) 2024-11-06 inicio}
+  Timer2.Enabled          := False; // Sandro Silva 2016-03-23
+  Form10.pnBotoes.Visible := True;
+  Form10.TipoForm         := tfPOS; // Sandro Silva 2017-05-18
+  Form10.ShowModal;
+  Form10.pnBotoes.Visible := False;
+
+  if Form1.ImportarvendasdoSmallMobile1.Checked then // Sandro Silva 2016-03-23
+    Timer2.Enabled := True;
+  {Sandro Silva (smal-778) 2024-11-06 fim}
+end;
+
 procedure TForm1.Mensagempromocional1Click(Sender: TObject);
 var
   Mais1Ini: TIniFile;
@@ -14884,6 +14933,8 @@ begin
     FecharAplicacao(EXECUTAVEL_PESADO);
 
   ClienteSmallMobile.Free; // Sandro Silva 2022-08-04
+
+  TransacoesComCartao.Free; // Sandro Silva 2024-11-11
 end;
 
 procedure TForm1.ibDataSet25RECEBERChange(Sender: TField);
@@ -16508,6 +16559,29 @@ begin
     oArq.Free;
   end;
 end;
+
+{Sandro Silva (smal-778) 2024-11-06 inicio}
+procedure TForm1.DefiniUsoPos;
+var
+  oArq : TiniFile;
+begin
+  oArq := TIniFile.Create(FRENTE_INI);
+  try
+    if not(oArq.ValueExists(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS)) then
+    begin
+      if oArq.ReadString(SECAO_FRENTE_CAIXA, CHAVE_TEM_TEF, _cNao) = _cNao then
+        oArq.WriteString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cSim)
+      else
+        oArq.WriteString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cNao);
+    end;
+    Form1.sHabilitarUsoPOS := oArq.ReadString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cNao);
+    Form1.HabilitarusodePOS1.Checked := (Form1.sHabilitarUsoPOS = _cSim);
+  finally
+    oArq.Free;
+  end;
+
+end;
+{Sandro Silva (smal-778) 2024-11-06 fim}
 
 
 {Dailon (f-7256) 2023-08-29 inicio}
@@ -25244,22 +25318,16 @@ end;
 
 procedure TForm1.CartesdecreditoedebitoPOS1Click(Sender: TObject);
 begin
+  {Sandro (smal-778) Silva 2024-11-06
   Timer2.Enabled := False; // Sandro Silva 2016-03-23
   Form10.pnBotoes.Visible := True;
   Form10.TipoForm := tfPOS; // Sandro Silva 2017-05-18
   Form10.ShowModal;
   Form10.pnBotoes.Visible := False;
 
-  {Sandro Silva 2023-06-14 inicio
-  if Form1.UsaIntegradorFiscal then
-  begin
-    // Configura as Adquirentes de para transação com cartão
-    Form1.AdquirentesPOS1.Click;
-  end;
-  }
-
   if Form1.ImportarvendasdoSmallMobile1.Checked then // Sandro Silva 2016-03-23
     Timer2.Enabled := True;
+  }
 end;
 
 procedure TForm1.CCF1Click(Sender: TObject);
@@ -25876,6 +25944,15 @@ begin
   N10.Visible                 := Minimizarnabandeja1.Visible;
   Iniciarminimizado1.Visible  := Minimizarnabandeja1.Visible;
   IniciarcomWindows1.Visible  := Iniciarminimizado1.Visible;
+end;
+
+procedure TForm1.HabilitarusodePOS1Click(Sender: TObject);
+begin
+  {Sandro Silva (smal-778) 2024-11-06 inicio}
+  Form1.sHabilitarUsoPOS := IfThen(HabilitarusodePOS1.Checked, _cNao, _cSim);
+  GravarParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, Form1.sHabilitarUsoPOS);
+  HabilitarusodePOS1.Checked := not (HabilitarusodePOS1.Checked);
+  {Sandro Silva (smal-778) 2024-11-06 fim}
 end;
 
 procedure TForm1.IniciarcomWindows1Click(Sender: TObject);

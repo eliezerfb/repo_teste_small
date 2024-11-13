@@ -294,13 +294,18 @@
         <DCCReference Include="..\unit_compartilhada\Sicoob\uIntegracaoSicoob.pas"/>
         <DCCReference Include="..\unit_compartilhada\Itau\uClassesItau.pas"/>
         <DCCReference Include="..\unit_compartilhada\Sicoob\uClassesSicoob.pas"/>
-        <DCCReference Include="..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas"/>        
+        <DCCReference Include="..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas"/>
         <DCCReference Include="..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
         <DCCReference Include="..\unit_compartilhada\DAT\uIMendesSections.pas"/>
         <DCCReference Include="ufrmSobre.pas">
             <Form>frmSobre</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="ufrmOpcoesFechamentoComCartao.pas">
+            <Form>FrmOpcoesFechamentoComCartao</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uTransacionaPosOuTef.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1146,9 +1151,8 @@
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
