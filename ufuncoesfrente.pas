@@ -87,6 +87,18 @@ const PAGAMENTO_EM_CARTAO = 'Pagamento em Cartão';
 
 const NUMERO_FORMAS_EXTRAS = 8;
 
+const SQL_FORMAPAGAMENTO_LIST = ' (Select list(DISTINCT trim(substring(P.FORMA from 3 for char_length(P.FORMA))), ''; '') '+
+                                '  From PAGAMENT P'+
+                                '  Where P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA '+
+                                '    and substring(P.FORMA from 1 for 2) not in (''00'', ''13'')'+
+                                ' ) FORMAPAGAMENTO,';
+
+const SQL_CLIENTE             = ' (Select First 1 A.CLIFOR'+
+                                '  From ALTERACA A'+
+                                '  Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
+                                '    and coalesce(A.CLIFOR, '''') <> '''' '+
+                                ' ) CLIFOR';
+
 type
   TDadosEmitente = class
     Razao: String;
@@ -385,8 +397,9 @@ var
 
 implementation
 
-uses StrUtils, uTypesRecursos, FISCAL
-, uValidaRecursos
+uses StrUtils, uTypesRecursos
+//Sandro Silva Evitar adicionar forms específico aqui , FISCAL
+//, uValidaRecursos
 ;
 
 //////////////////////////////

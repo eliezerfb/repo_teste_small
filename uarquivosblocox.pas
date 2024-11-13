@@ -884,8 +884,13 @@ end;
 procedure TFArquivosBlocoX.Verificarpendncias1Click(Sender: TObject);
 begin
 
+  {2024-10-16
   Blocox.AlertaXmlPendente(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName, FsAtual, 'ESTOQUE', '', True);
   Blocox.AlertaXmlPendente(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName, FsAtual, 'REDUCAO', '', True, True);
+  }
+  Blocox.AlertaXmlPendente(PAnsiChar(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), FsAtual, 'ESTOQUE', '', True);
+  Blocox.AlertaXmlPendente(PAnsiChar(IBDSBLOCOX.Transaction.DefaultDatabase.DatabaseName), FsAtual, 'REDUCAO', '', True, True);
+
 
 end;
 
