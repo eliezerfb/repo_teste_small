@@ -393,7 +393,7 @@ begin
   FQryItens.First;
 
   //Controle de paginação
-  iCap2  := 40;
+  iCap2  := 36;
   iAtual := 14;
   iResto := FQryItens.RecordCount;
 
