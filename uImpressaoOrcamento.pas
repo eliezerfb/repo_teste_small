@@ -123,7 +123,8 @@ begin
   begin
     //FoRetornaTexto.MontarTXT; Mauricio Parizotto 2024-10-28
 
-    if FoArquivoDAT.BD.Impressora.FormatoOrcamento = '80mm' then
+    if (FoArquivoDAT.BD.Impressora.FormatoOrcamento = '80mm')
+      or (FoArquivoDAT.Frente.Orcamento.Porta = ttioTXT) then
       FoRetornaTexto.MontarTXT
     else
       FoRetornaTexto.MontarTXT_A5;
