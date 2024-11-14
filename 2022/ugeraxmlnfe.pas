@@ -283,15 +283,15 @@ begin
   if not(Form7.ibDataSet13ESTADO.AsString = 'PR') then
     Exit;
 
-  Form7.spdNFe.IdCSRT := '01';
-
   if Form7.spdNFe.Ambiente = spdNFeType.akHomologacao then
   begin
     Form7.spdNFe.CSRT := TCSRT_HOMOLOG.PR;
+    Form7.spdNFe.IdCSRT := TCSRT_HOMOLOG.ID_PR;
     Exit;
   end;
 
   Form7.spdNFe.CSRT := TCSRT_PROD.PR;
+  Form7.spdNFe.IdCSRT := TCSRT_PROD.ID_PR;
 end;
 
 
