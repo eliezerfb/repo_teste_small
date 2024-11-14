@@ -1439,6 +1439,7 @@ type
     bGerarXmlReducaoRecuperada: Boolean; // Sandro Silva 2019-09-09 ER 02.06 UnoChapeco
     sUltimoPesoAutonomo: String;//Sandro Silva 2024-07-11
     bPermiteImportarMesmoOrc : Boolean; // Mauricio Parizotto 2024-08-26
+    FFilterOcultaUsoConsumoVenda: String;
     procedure AberturaDoCupom;
     procedure AtualizaBase(IBDATABASE: TIBDatabase);
     procedure HabilitaBotaoF11(bHabilitar: Boolean);
@@ -1515,6 +1516,7 @@ type
     procedure CarregaConfiguracoes;
     procedure ChamarTelaSobre;
     procedure DefineTransmiteContingenciaAbertura;
+    procedure SetFilterOcultaUsoConsumoVenda(AOcultaUsoConsumoVenda: Boolean);
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -16827,7 +16829,9 @@ begin
           ibDataSet4.SelectSQL.Add(' upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Trim(sTexto))+'%'))
         else
           ibDataSet4.SelectSQL.Add(' upper(DESCRICAO) like '+QuotedStr(UpperCase(sTexto)+'%'));
-        ibDataSet4.SelectSQL.Add(' and coalesce(ATIVO,0)=0 order by upper(DESCRICAO)');
+        ibDataSet4.SelectSQL.Add(' and coalesce(ATIVO,0)=0');
+        ibDataSet4.SelectSQL.Add(FFilterOcultaUsoConsumoVenda);
+        ibDataSet4.SelectSQL.Add('order by upper(DESCRICAO)');
         ibDataSet4.Open;
         //
         DBGrid2.DataSource.DataSet := ibDataSet4;
@@ -25787,6 +25791,14 @@ begin
   end;
 end;
 
+procedure TForm1.SetFilterOcultaUsoConsumoVenda(AOcultaUsoConsumoVenda: Boolean);
+begin
+  FFilterOcultaUsoConsumoVenda := '';
+  if AOcultaUsoConsumoVenda then
+    FFilterOcultaUsoConsumoVenda := ' and not(coalesce(TIPO_ITEM, '''+'00'+''') = '+
+      QuotedStr('07')+')';
+end;
+
 procedure TForm1.SetIconSysTrayIcone(FileIcon: String);
 var
   Icon: TIcon;
@@ -34418,6 +34430,7 @@ begin
 
     bPermiteImportarMesmoOrc := ConfSistema.BD.Outras.PermiteImportarMesmoOrc;
     GeraLogSistema           := ConfSistema.BD.Outras.LogSistema; //Mauricio Parizotto 2024-10-02
+    SetFilterOcultaUsoConsumoVenda(ConfSistema.BD.Outras.OcultaUsoConsumoVenda);
   finally
     FreeAndNil(ConfSistema);
   end;
