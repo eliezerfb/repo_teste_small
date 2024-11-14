@@ -11708,15 +11708,15 @@ begin
   if not(Form1.ibDataSet13ESTADO.AsString = 'PR') then
     Exit;
 
-  Form1.spdNFCe1.IdCSRT := '01';
-
   if Form1.spdNFCe1.Ambiente = akHomologacao then
   begin
     Form1.spdNFCe1.CSRT := TCSRT_HOMOLOG.PR;
+    Form1.spdNFCe1.IdCSRT := TCSRT_HOMOLOG.ID_PR;
     Exit;
   end;
 
   Form1.spdNFCe1.CSRT := TCSRT_PROD.PR;
+  Form1.spdNFCe1.IdCSRT := TCSRT_PROD.ID_PR;
 end;
 
 end.
