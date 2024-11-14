@@ -773,6 +773,7 @@ begin
           //Marca rejeitados
           ExecutaComando(' Update ESTOQUE '+
                          '   set STATUS_TRIBUTACAO ='+QuotedStr(_cStatusImendesRejeitado)+
+                         '   , DATA_STATUS_TRIBUTACAO = CURRENT_TIMESTAMP '+
                          ' Where STATUS_TRIBUTACAO = '+QuotedStr(_cStatusImendesPendente)+
                          '   and ( CODIGO IN ('+sFiltroCodigo+')  or REFERENCIA IN ('+sFiltroEan+') )',
                          Transaction);

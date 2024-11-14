@@ -270,6 +270,9 @@ begin
       end;
     end;
 
+    //Tempo para depois rodar relatório com filtro DATA_STATUS_TRIBUTACAO
+    Sleep(2000);
+
     TThread.Synchronize(TThread.CurrentThread,
     procedure()
     begin
