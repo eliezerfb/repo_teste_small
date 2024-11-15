@@ -2538,6 +2538,7 @@ begin
   end;
 
   try
+    {Sandro (f-21649) 2024-11-14 inicio
     // Recalcula o total da nota
     if StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vST_W06').AsString,',',''),'.',',')) <> 0 then
     begin
@@ -2555,6 +2556,24 @@ begin
       + fIPIDevolvido)
       ) ;
 
+    }
+    // Recalcula o total da nota
+    if Form7.spdNFeDataSets.Campo('vST_W06').AsFloat <> 0 then
+    begin
+      Form7.spdNFeDataSets.Campo('vNF_W16').Value := FormatFloatXML(
+        (
+          Form7.spdNFeDataSets.Campo('vProd_W07').AsFloat  // Mercadoria
+        + Form7.spdNFeDataSets.Campo('vFrete_W08').AsFloat // Frete
+        + Form7.spdNFeDataSets.Campo('vSeg_W09').AsFloat // Seguro
+        + Form7.spdNFeDataSets.Campo('vIPI_W12').AsFloat // IPI
+        + Form7.spdNFeDataSets.Campo('vST_W06').AsFloat // Valor do ICMS substituição
+        + Form7.spdNFeDataSets.Campo('vOutro_W15').AsFloat // Despesas
+        + Form7.spdNFeDataSets.Campo('vFCPST_W06a').AsFloat// Valor Total do FCP (Fundo de Combate à Pobreza) retido por substituição tributária
+        - Form7.spdNFeDataSets.Campo('vDesc_W10').AsFloat // Desconto
+        + Form7.ibDataSet15SERVICOS.AsFloat
+        + fIPIDevolvido)
+      ) ;
+    {Sandro (f-21649) 2024-11-14 fim}
       // Valor Total da NFe
       // Ficou fora a retenção
     end else

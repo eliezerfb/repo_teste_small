@@ -520,8 +520,8 @@ begin
                         NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * rIVAProd ),2); // Rateio desconto
                         NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * rIVAProd),2); // Acumula
 
-                        oItem.Vbcst           := Arredonda((oItem.Vbcst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * rIVAProd ),2); // Rateio desconto
-                        oItem.Vicmsst         := Arredonda((oItem.Vicmsst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * rIVAProd),2);
+                        oItem.Vbcst           := Arredonda((oItem.Vbcst + ((oItem.IPI * (oItem.TOTAL - oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * rIVAProd ),2); // Rateio desconto
+                        oItem.Vicmsst         := Arredonda((oItem.Vicmsst + ((oItem.IPI * (oItem.TOTAL - oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100) * rIVAProd), 2);
 
                         {Sandro Silva 2024-10-17}
                       except
