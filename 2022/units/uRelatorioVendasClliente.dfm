@@ -131,7 +131,7 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
       Left = 0
       Top = 15
       Width = 212
-      Height = 20
+      Height = 21
       Date = 35796.000000000000000000
       Time = 0.376154398101789400
       DateFormat = dfLong
@@ -147,7 +147,7 @@ inherited frmRelVendasPorCliente: TfrmRelVendasPorCliente
       Left = 0
       Top = 60
       Width = 212
-      Height = 20
+      Height = 21
       Date = 35796.000000000000000000
       Time = 0.376154398101789400
       DateFormat = dfLong

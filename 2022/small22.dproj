@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -329,6 +329,8 @@
         <DCCReference Include="..\..\unit_compartilhada\uAssinaturaDigital.pas"/>
         <DCCReference Include="interfaces\uIEstruturaRelVendasPorCliente.pas"/>
         <DCCReference Include="units\uEstruturaRelVendasPorCliente.pas"/>
+        <DCCReference Include="interfaces\uIEstruturaRelGenerico.pas"/>
+        <DCCReference Include="units\uEstruturaRelGenerico.pas"/>
         <DCCReference Include="units\uEstruturaRelVendasPorClienteNota.pas"/>
         <DCCReference Include="interfaces\uIDadosVendasPorClienteFactory.pas"/>
         <DCCReference Include="units\uEstruturaRelVendasPorClienteCupom.pas"/>
@@ -590,17 +592,30 @@
         <DCCReference Include="ufrmInformacoesImportacaoNFe.pas">
             <Form>frmInformacoesImportacaoNFe</Form>
         </DCCReference>
+        <DCCReference Include="uFrmIntegracaoIMendes.pas">
+            <Form>FrmIntegracaoIMendes</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="units\uClassesIMendes.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uIMendesSections.pas"/>
+        <DCCReference Include="uFrmSaneamentoIMendes.pas">
+            <Form>FrmSaneamentoIMendes</Form>
+        </DCCReference>
         <DCCReference Include="units\uEstruturaRelRankingProdutosVendidos.pas"/>
         <DCCReference Include="units\ufrmRelatorioMovItensPeriodo.pas">
             <Form>frmRelatorioMovItensPeriodo</Form>
         </DCCReference>
+        <DCCReference Include="units\uWebServiceIMendes.pas"/>
+        <DCCReference Include="uFrmProdutosIMendes.pas">
+            <Form>FrmProdutosIMendes</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
-        <DCCReference Include="..\..\unit_compartilhada\DAT\uIMendesSections.pas"/>
-        <DCCReference Include="uCalculaImpostos.pas"/>
+        <DCCReference Include="units\uImendes.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
-        <BuildConfiguration Include="Release">
+        <BuildConfiguration Include="Release"> 
             <Key>Cfg_1</Key>
             <CfgParent>Base</CfgParent>
         </BuildConfiguration>

@@ -11208,8 +11208,11 @@ object Form7: TForm7
         'RCELA_IMPORTADA_EXTERIO, '
       
         '   CODIGO_FCI, IIA_UF, IIA_MUNI, ENQ_IPI, CEST, CSOSN_NFCE, CST_' +
-        'NFCE, ALIQUOTA_NFCE,  NATUREZA_RECEITA,'
-      '   MARKETPLACE, IDENTIFICADORPLANOCONTAS, IDPERFILTRIBUTACAO)'
+        'NFCE, ALIQUOTA_NFCE,NATUREZA_RECEITA, '
+      '   MARKETPLACE, IDENTIFICADORPLANOCONTAS, IDPERFILTRIBUTACAO,'
+      
+        '  CONSULTA_TRIBUTACAO, STATUS_TRIBUTACAO, DATA_STATUS_TRIBUTACAO' +
+        ', CODIGO_IMENDES)'
       'values'
       
         '  (:IDESTOQUE,:CODIGO, :REFERENCIA, :DESCRICAO, :NOME, :FORNECED' +
@@ -11246,7 +11249,10 @@ object Form7: TForm7
         ', :CST_NFCE,  :NATUREZA_RECEITA,'
       
         '   :ALIQUOTA_NFCE, :MARKETPLACE, :IDENTIFICADORPLANOCONTAS, :IDP' +
-        'ERFILTRIBUTACAO)')
+        'ERFILTRIBUTACAO,'
+      
+        '  :CONSULTA_TRIBUTACAO, :STATUS_TRIBUTACAO, :DATA_STATUS_TRIBUTA' +
+        'CAO, :CODIGO_IMENDES)')
     RefreshSQL.Strings = (
       'Select '
       '  IDESTOQUE,'
@@ -11327,7 +11333,11 @@ object Form7: TForm7
       '  NATUREZA_RECEITA,'
       '  MARKETPLACE,'
       '  IDENTIFICADORPLANOCONTAS,'
-      '  IDPERFILTRIBUTACAO'
+      '  IDPERFILTRIBUTACAO,'
+      '  CONSULTA_TRIBUTACAO,'
+      '  STATUS_TRIBUTACAO,'
+      '  DATA_STATUS_TRIBUTACAO,'
+      '  CODIGO_IMENDES'
       'from ESTOQUE '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -11402,8 +11412,9 @@ object Form7: TForm7
       '  CFOP = :CFOP,'
       '  MEDIDAE = :MEDIDAE,'
       '  FATORC = :FATORC,'
-      '  VALOR_PARCELA_IMPORTADA_EXTERIO = '
-      ':VALOR_PARCELA_IMPORTADA_EXTERIO,'
+      
+        '  VALOR_PARCELA_IMPORTADA_EXTERIO = :VALOR_PARCELA_IMPORTADA_EXT' +
+        'ERIO,'
       '  CODIGO_FCI = :CODIGO_FCI,'
       '  IIA_UF = :IIA_UF,'
       '  IIA_MUNI = :IIA_MUNI,'
@@ -11415,7 +11426,11 @@ object Form7: TForm7
       '  NATUREZA_RECEITA = :NATUREZA_RECEITA,'
       '  MARKETPLACE = :MARKETPLACE,'
       '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
-      '  IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO'
+      '  IDPERFILTRIBUTACAO = :IDPERFILTRIBUTACAO,'
+      '  CONSULTA_TRIBUTACAO =:CONSULTA_TRIBUTACAO,'
+      '  STATUS_TRIBUTACAO =:STATUS_TRIBUTACAO,'
+      '  DATA_STATUS_TRIBUTACAO =:DATA_STATUS_TRIBUTACAO,'
+      '  CODIGO_IMENDES =:CODIGO_IMENDES'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -11791,6 +11806,7 @@ object Form7: TForm7
     object ibDataSet4CEST: TIBStringField
       FieldName = 'CEST'
       Origin = 'ESTOQUE.CEST'
+      OnChange = ibDataSet4CESTChange
       OnSetText = ibDataSet4CESTSetText
       Size = 7
     end
@@ -11825,6 +11841,14 @@ object Form7: TForm7
       EditFormat = '##0.00'
       Precision = 18
       Size = 2
+    end
+    object ibDataSet4STATUS_TRIBUTACAO: TIBStringField
+      DisplayLabel = 'Status Trib.'
+      DisplayWidth = 30
+      FieldName = 'STATUS_TRIBUTACAO'
+      Origin = 'ESTOQUE.STATUS_TRIBUTACAO'
+      ReadOnly = True
+      Size = 30
     end
     object ibDataSet4MARKETPLACE: TIBStringField
       DisplayLabel = 'MKP'
@@ -12010,7 +12034,24 @@ object Form7: TForm7
       FieldName = 'NATUREZA_RECEITA'
       Origin = 'ESTOQUE.NATUREZA_RECEITA'
       Visible = False
+      OnChange = ibDataSet4NATUREZA_RECEITAChange
       Size = 3
+    end
+    object ibDataSet4CONSULTA_TRIBUTACAO: TIBStringField
+      FieldName = 'CONSULTA_TRIBUTACAO'
+      Origin = 'ESTOQUE.CONSULTA_TRIBUTACAO'
+      Visible = False
+      Size = 1
+    end
+    object ibDataSet4DATA_STATUS_TRIBUTACAO: TDateTimeField
+      FieldName = 'DATA_STATUS_TRIBUTACAO'
+      Origin = 'ESTOQUE.DATA_STATUS_TRIBUTACAO'
+      Visible = False
+    end
+    object ibDataSet4CODIGO_IMENDES: TIntegerField
+      FieldName = 'CODIGO_IMENDES'
+      Origin = 'ESTOQUE.CODIGO_IMENDES'
+      Visible = False
     end
   end
   object DataSource4: TDataSource
@@ -12931,6 +12972,13 @@ object Form7: TForm7
         OnClick = Grupos1Click
       end
       object N7: TMenuItem
+        Caption = '-'
+      end
+      object ributaoInteligente1: TMenuItem
+        Caption = 'Tributa'#231#227'o Inteligente'
+        OnClick = ributaoInteligente1Click
+      end
+      object N3: TMenuItem
         Caption = '-'
       end
       object EnvioaoFISCOREDUOZ1: TMenuItem
@@ -14321,6 +14369,7 @@ object Form7: TForm7
     AfterDelete = ibDataSet14AfterDelete
     AfterInsert = ibDataSet14AfterInsert
     AfterPost = ibDataSet14AfterPost
+    AfterScroll = ibDataSet14AfterScroll
     BeforeDelete = ibDataSet14BeforeDelete
     BeforeEdit = ibDataSet14BeforeEdit
     BeforeInsert = ibDataSet14BeforeInsert
@@ -14351,7 +14400,7 @@ object Form7: TForm7
       
         '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
         'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA,'
-      '   IMPOSTOMANUAL, LISTAR)'
+      '   IMPOSTOMANUAL, LISTAR, TRIB_INTELIGENTE)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
@@ -14369,7 +14418,7 @@ object Form7: TForm7
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
         'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
         'A,:REFERENCIANOTA,'
-      '   :IMPOSTOMANUAL, :LISTAR)')
+      '   :IMPOSTOMANUAL, :LISTAR, :TRIB_INTELIGENTE)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
@@ -14426,7 +14475,8 @@ object Form7: TForm7
       '  IPISOBREOUTRA,'
       '  REFERENCIANOTA,'
       '  IMPOSTOMANUAL,'
-      '  LISTAR'
+      '  LISTAR,'
+      '  TRIB_INTELIGENTE'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14489,7 +14539,8 @@ object Form7: TForm7
       '  IPISOBREOUTRA = :IPISOBREOUTRA,'
       '  REFERENCIANOTA = :REFERENCIANOTA,'
       '  IMPOSTOMANUAL = :IMPOSTOMANUAL,'
-      '  LISTAR = :LISTAR'
+      '  LISTAR = :LISTAR,'
+      '  TRIB_INTELIGENTE = :TRIB_INTELIGENTE'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14851,16 +14902,16 @@ object Form7: TForm7
       Precision = 18
       Size = 2
     end
-    object ibDataSet14CSOSN: TIBStringField
-      FieldName = 'CSOSN'
-      Origin = 'ICM.CSOSN'
-      Size = 3
-    end
     object ibDataSet14CBENEF: TIBStringField
       DisplayLabel = 'cBenef'
       FieldName = 'CBENEF'
       Origin = 'ICM.CBENEF'
       Size = 10
+    end
+    object ibDataSet14CSOSN: TIBStringField
+      FieldName = 'CSOSN'
+      Origin = 'ICM.CSOSN'
+      Size = 3
     end
     object ibDataSet14LISTAR: TIBStringField
       DisplayLabel = 'Listar'
@@ -14894,6 +14945,12 @@ object Form7: TForm7
     object ibDataSet14PISCOFINSLUCRO: TIBStringField
       FieldName = 'PISCOFINSLUCRO'
       Origin = 'ICM.PISCOFINSLUCRO'
+      Visible = False
+      Size = 1
+    end
+    object ibDataSet14TRIB_INTELIGENTE: TIBStringField
+      FieldName = 'TRIB_INTELIGENTE'
+      Origin = 'ICM.TRIB_INTELIGENTE'
       Visible = False
       Size = 1
     end
