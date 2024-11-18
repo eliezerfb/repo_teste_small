@@ -127,9 +127,15 @@ begin
     ProdutoArray[0].Descricao  := LimpaCaracteresEspeciaisIM(ibdEstoque.FieldByName('DESCRICAO').AsString);
 
     if TipoPesquisa = tpCodigo then
-      ProdutoArray[0].CodIMendes := ibdEstoque.FieldByName('CODIGO_IMENDES').AsString
-    else
+    begin
+      ProdutoArray[0].CodIMendes := ibdEstoque.FieldByName('CODIGO_IMENDES').AsString;
+      ProdutoArray[0].Codigo     := ibdEstoque.FieldByName('CODIGO_IMENDES').AsString;
+      ProdutoArray[0].TipoCodigo := 2; //Código IMendes
+    end else
+    begin
       ProdutoArray[0].Codigo     := ibdEstoque.FieldByName('REFERENCIA').AsString;
+      ProdutoArray[0].TipoCodigo := 0; //Código EAN (barras)
+    end;
 
     TributacaoIMendesDTO.Produto := ProdutoArray;
 
