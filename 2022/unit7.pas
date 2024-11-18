@@ -1212,6 +1212,7 @@ type
     RelatriodeIPI1: TMenuItem;
     RelatriodePISCOFINS1: TMenuItem;
     ibDataSet14CSTPISCOFINS: TIBStringField;
+    ibDataSet14BCPISCOFINS: TIBBCDField; // Mauricio Parizotto 2024-10-16
     ibDataSet23CST_PIS_COFINS: TIBStringField;
     ibDataSet23ALIQ_PIS: TIBBCDField;
     ibDataSet23ALIQ_COFINS: TIBBCDField;
@@ -1740,6 +1741,13 @@ type
     ExportarNFesfiltradasemarquivoPDF1: TMenuItem;
     ibDataSet4NATUREZA_RECEITA: TIBStringField;
     ibDataSet14LISTAR: TIBStringField;
+    ibDataSet14TRIB_INTELIGENTE: TIBStringField;
+    ibDataSet4CONSULTA_TRIBUTACAO: TIBStringField;
+    ibDataSet4STATUS_TRIBUTACAO: TIBStringField;
+    ibDataSet4DATA_STATUS_TRIBUTACAO: TDateTimeField;
+    ibDataSet4CODIGO_IMENDES: TIntegerField;
+    ributaoInteligente1: TMenuItem;
+    N3: TMenuItem;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -1878,6 +1886,7 @@ type
     procedure Label38Click(Sender: TObject);
     procedure ibDataSet14BeforeEdit(DataSet: TDataSet);
     procedure ibDataSet14AfterPost(DataSet: TDataSet);
+    procedure ibDataSet14AfterScroll(DataSet: TDataSet);
     procedure ibDataSet14BeforeDelete(DataSet: TDataSet);
     procedure ibDataSet28AfterDelete(DataSet: TDataSet);
     procedure ibDataSet11PLANOSetText(Sender: TField; const Text: String);
@@ -2474,6 +2483,9 @@ type
     procedure Resumodasvendas1Click(Sender: TObject);
     procedure Rankingdeprodutosvendidos1Click(Sender: TObject);
     procedure ExportarNFesfiltradasemarquivoPDF1Click(Sender: TObject);
+    procedure ributaoInteligente1Click(Sender: TObject);
+    procedure ibDataSet4CESTChange(Sender: TField);
+    procedure ibDataSet4NATUREZA_RECEITAChange(Sender: TField);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FbDuplicandoProd: Boolean;
@@ -2543,6 +2555,7 @@ type
     function RetornarCasasDecimaisPreco: Integer;
     procedure DesvincularCupomImportado;
     procedure ChamarRelResumoVendas(AenTipoRelatorio: TTipoRelatorioResumoVenda);
+    procedure VerificaAlteracaoIMendes;
     function EnviaNFe: Boolean;
   public
     // Public declarations
@@ -2554,6 +2567,7 @@ type
     fSaldoVetorBanco : array[0..9999999] of real;
 
     StatusTrocaPerfil : String; // Mauricio Parizotto 2023-09-26
+    SaneamentoIMendes : Boolean; // Mauricio Parizotto 2024-10-14
 
     //
     // NFe
@@ -2788,6 +2802,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uVisualizaCadastro
   , ufrmRelatorioMovItensPeriodo
   , ufrmRelatorioNotasFaltantes
+  , uFrmIntegracaoIMendes
   , uFrmTelaProcessamento
   , uCalculaImpostos // Sandro Silva 2024-10-17
   ;
@@ -7035,7 +7050,6 @@ begin
             except
               MensagemSistema('Verifique a impressora.',msgAtencao);
             end;
-
             // Arquivo de nota fiscal NOTA
             Form7.ibDataSet19.First;
             while not Form7.ibDataSet19.Eof do
@@ -7398,10 +7412,8 @@ begin
       //
       while not p1.EOF do
       begin
-        //
         if (AllTrim(p2.AsString) = AllTrim(sDescricao)) and (sReg1 <> p1.FieldByname('REGISTRO').AsString) then
         begin
-          //
           sREg2 := p1.FieldByname('REGISTRO').AsString;
           //
           if p3 then
@@ -8843,51 +8855,22 @@ begin
       Abort;
     end;
 
-    if Pos('STATUS',DBGrid1.SelectedField.Name) <> 0 then
+    //if Pos('STATUS',DBGrid1.SelectedField.Name) <> 0 then Mauricio Parizotto 2024-09-26
+    if (Pos('STATUS',DBGrid1.SelectedField.Name) <> 0)
+      and (sModulo = 'VENDA') then
     begin
       if ValidaLimiteDeEmissaoDeVenda(DBGrid1.DataSource.DataSet.FieldByName('EMISSAO').AsDateTime) then
       begin
         if not DenegadoOuCancelado(True) then
         begin
-
           // Faz todas as etapas de transmissão, impressão, envio de email...
           EnviarConsultaImprimirDANFE;
 
           if Form7.sRPS = 'S' then
           begin
-            {try
-              Screen.Cursor := crHourGlass; // Cursor de Aguardo //
-              if Pos('ChaveDeCancelamento',Form7.ibDataSet15RECIBOXML.AsString) = 0 then
-              begin
-                Sleep(15000);
-
-                  Form1.sConsultaNfse := 'SIM';
-                  EnviarConsultaImprimirDANFE;
-                  Form1.sConsultaNfse := 'NAO';
-              end;
-            except
-            end; Mauricio Parizotto 2023-04-28}
-
             Application.ProcessMessages;
 
             EnviarNFSeporemail1Click(Sender);
-
-            {try
-              {try
-                Form7.ibDAtaSet15.Post;
-              except
-              end;
-
-              Screen.Cursor            := crHourGlass;
-              AgendaCommit(True);
-
-              Form7.Close;
-              Form7.Show;
-
-              Screen.Cursor            := crDefault;
-              Form7.ibDAtaSet15.Edit;
-            except
-            end; Mauricio Parizotto 2023-04-28}
 
             Screen.Cursor            := crDefault;
             Form7.ibDataSet15.EnableControls;
@@ -8906,9 +8889,7 @@ begin
       begin
         Clipboard.SetTextBuf(pchar(Form7.ibDataSet24NFEID.AsString));
       end;
-      //    ShellExecute( 0, 'Open',pChar('http://www.nfe.fazenda.gov.br/PORTAL/consulta.aspx?tipoConsulta=completa&tipoConteudo=XbSeqxE8pl8='),'','', SW_SHOWMAXIMIZED); // Antigo
-      //
-      // ShellExecute( 0, 'Open',pChar('http://www.nfe.fazenda.gov.br/PORTAL/consultaRecaptcha.aspx?tipoConsulta=completa&tipoConteudo=XbSeqxE8pl8='),'','', SW_SHOWMAXIMIZED); // Atualizado em 19/03/18
+
       ShellExecute( 0, 'Open',pChar('http://www.nfe.fazenda.gov.br/portal/consultaRecaptcha.aspx?tipoConsulta=resumo&tipoConteudo=7PhJ+gAVw2g='),'','', SW_SHOWMAXIMIZED); // Atualizado em 10/11/2021
 
       Screen.Cursor            := crDefault;
@@ -9013,19 +8994,7 @@ begin
       Abort;
     end;
 
-  {
-    //
-    // Procura pelo código de barras no no google
-    //
-    if DBGrid1.SelectedField.Name = 'ibDataSet4REFERENCIA' then
-    begin
-  //    ShellExecute( 0, 'Open',pchar('http://www.google.com/products?hl=en&q='+ibDAtaSet4REFERENCIA.AsString+'&ie=UTF-8&sa=N&tab=df'),'', '', SW_SHOWMAXIMIZED)
-      ShellExecute( 0, 'Open',pchar('http://www.google.com/products?q='+ibDAtaSet4REFERENCIA.AsString+''),'', '', SW_SHOWMAXIMIZED)
-    end;
-  }
-    //
     // Duplo CLICK no ativo REC
-    //
     if DBGrid1.SelectedField.Name = 'ibDataSet7ATIVO' then
     begin
       if (Form7.ibDataSet7VALOR_RECE.Asfloat = 0) or (Form7.ibDataSet7ATIVO.AsFloat >= 5) then
@@ -9080,6 +9049,8 @@ begin
       Abort;
     end;
 
+    {$Region'//// Módulo Natureza OP ////'}
+
     // Duplo CLICK no ICM configuração
     if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREIPI' then
     begin
@@ -9088,6 +9059,18 @@ begin
         Form7.ibDataSet14SOBREIPI.AsString := 'N'
       else
         Form7.ibDataSet14SOBREIPI.AsString := 'S';
+      Form7.ibDataSet14.Post;
+      Screen.Cursor            := crDefault;
+      Abort;
+    end;
+
+    if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS' then
+    begin
+      Form7.ibDataSet14.Edit;
+      if (Form7.ibDataSet14SOBREOUTRAS.AsString = 'S') then
+        Form7.ibDataSet14SOBREOUTRAS.AsString := 'N'
+      else
+        Form7.ibDataSet14SOBREOUTRAS.AsString := 'S';
       Form7.ibDataSet14.Post;
       Screen.Cursor            := crDefault;
       Abort;
@@ -9119,17 +9102,62 @@ begin
       Abort;
     end;
 
-    if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREFRETE' then
+
+    //Mauricio Parizotto 2024-10-07
+    if (sModulo = 'ICM')
+      and (Form7.ibDataSet14TRIB_INTELIGENTE.AsString <> 'S') then
     begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14SOBREFRETE.AsString = 'S') then
-        Form7.ibDataSet14SOBREFRETE.AsString := 'N'
-      else
-        Form7.ibDataSet14SOBREFRETE.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
+      if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREFRETE' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14SOBREFRETE.AsString = 'S') then
+          Form7.ibDataSet14SOBREFRETE.AsString := 'N'
+        else
+          Form7.ibDataSet14SOBREFRETE.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
+
+      if DBGrid1.SelectedField.Name = 'ibDataSet14SOBRESEGURO' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14SOBRESEGURO.AsString = 'S') then
+          Form7.ibDataSet14SOBRESEGURO.AsString := 'N'
+        else
+          Form7.ibDataSet14SOBRESEGURO.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
+
+      //Mauricio Parizotto 2024-06-21
+      if DBGrid1.SelectedField.Name = 'ibDataSet14REFERENCIANOTA' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14REFERENCIANOTA.AsString = 'S') then
+          Form7.ibDataSet14REFERENCIANOTA.AsString := 'N'
+        else
+          Form7.ibDataSet14REFERENCIANOTA.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
+
+      //Mauricio Parizotto 2024-06-21
+      if DBGrid1.SelectedField.Name = 'ibDataSet14IMPOSTOMANUAL' then
+      begin
+        Form7.ibDataSet14.Edit;
+        if (Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S') then
+          Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'N'
+        else
+          Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'S';
+        Form7.ibDataSet14.Post;
+        Screen.Cursor            := crDefault;
+        Abort;
+      end;
     end;
+    {$Endregion}
 
     //Mauricio Parizotto 2024-05-27
     if DBGrid1.SelectedField.Name = 'ibDataSet11PIXESTATICO' then
@@ -9145,55 +9173,6 @@ begin
       Abort;
     end;
 
-    if DBGrid1.SelectedField.Name = 'ibDataSet14SOBRESEGURO' then
-    begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14SOBRESEGURO.AsString = 'S') then
-        Form7.ibDataSet14SOBRESEGURO.AsString := 'N'
-      else
-        Form7.ibDataSet14SOBRESEGURO.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
-    end;
-
-    if DBGrid1.SelectedField.Name = 'ibDataSet14SOBREOUTRAS' then
-    begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14SOBREOUTRAS.AsString = 'S') then
-        Form7.ibDataSet14SOBREOUTRAS.AsString := 'N'
-      else
-        Form7.ibDataSet14SOBREOUTRAS.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
-    end;
-
-    //Mauricio Parizotto 2024-06-21
-    if DBGrid1.SelectedField.Name = 'ibDataSet14REFERENCIANOTA' then
-    begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14REFERENCIANOTA.AsString = 'S') then
-        Form7.ibDataSet14REFERENCIANOTA.AsString := 'N'
-      else
-        Form7.ibDataSet14REFERENCIANOTA.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
-    end;
-
-    //Mauricio Parizotto 2024-06-21
-    if DBGrid1.SelectedField.Name = 'ibDataSet14IMPOSTOMANUAL' then
-    begin
-      Form7.ibDataSet14.Edit;
-      if (Form7.ibDataSet14IMPOSTOMANUAL.AsString = 'S') then
-        Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'N'
-      else
-        Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'S';
-      Form7.ibDataSet14.Post;
-      Screen.Cursor            := crDefault;
-      Abort;
-    end;
 
     // --------------------------------------------------------------------------------- //
     // duplo clique no CGC                                                               //
@@ -9551,19 +9530,16 @@ end;
 
 procedure TForm7.Previsodecompra1Click(Sender: TObject);
 begin
-  //
   sModuloAnterior := sModulo;
-  //
+
   Form38.Panel3.Visible  := True;
   Form7.sModulo := 'Previsão de compras';
   Form38.ShowModal; // Ok
-  //
 end;
 
 procedure TForm7.Movimentaodoitem1Click(Sender: TObject);
 begin
   GeraVisualizacaoFichaCadastro;
-  //Form10.Image203Click(Sender);
 end;
 
 procedure TForm7.Movimentaodoitemporperodo1Click(Sender: TObject);
@@ -10380,6 +10356,8 @@ begin
   //Mauricio Parizotto 2023-12-05
   //Marca campo chave da tabela
   ibdSituacaoOSIDSITUACAO.ProviderFlags := [pfInUpdate,pfInWhere,pfInKey];
+
+  SaneamentoIMendes := False;
 end;
 
 procedure TForm7.ibDataSet14INTEGRACAOChange(Sender: TField);
@@ -11233,7 +11211,8 @@ begin
         if not Form7.bSoLeitura then
         begin
           Form7.Image308.Visible   := False;
-          Form7.imgLibBloq.Visible := True; Form7.Label208.Caption  := 'Liberar';
+          Form7.imgLibBloq.Visible := True;
+          Form7.Label208.Caption  := 'Liberar';
           Form7.Label208.Visible   := True;
         end;
         if (sModulo = 'NOTA') or (sModulo = 'CONCILIACAO') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO') then
@@ -11965,6 +11944,12 @@ begin
   end;
 end;
 
+procedure TForm7.ibDataSet4NATUREZA_RECEITAChange(Sender: TField);
+begin
+  //Mauricio Parizotto 2024-10-14
+  VerificaAlteracaoIMendes;
+end;
+
 procedure TForm7.ibDataSet4NewRecord(DataSet: TDataSet);
 var
   sCodigo : String;
@@ -12010,14 +11995,18 @@ begin
     ibDataSet4FATORC.AsFloat        := 1;
     ibDataSet4MEDIDA.AsString       := 'UND';
     ibDataSet4MEDIDAE.AsString      := 'UND';
-    //
+
+    //Mauricio Parizotto 2024-09-26
+    ibDataSet4CONSULTA_TRIBUTACAO.AsString := 'S';
+    ibDataSet4STATUS_TRIBUTACAO.AsString   := _cStatusImendesNaoConsultado;
+
     ibDataSet4CODIGO.ReadOnly       := True;
-    //
+
     ibDataSet4.Post;
     ibDataSet4.Edit;
-    //
+
     AgendaCommit(True);
-    //
+
     Form7.sModulo := 'ESTOQUE';
   end;
 end;
@@ -15304,6 +15293,10 @@ var
   sNomeNovo  : String;
   sNomeVolta : String;
 begin
+  //Mauricio Parizotto 2024-10-23
+  if SaneamentoIMendes then
+    Exit;
+
   // Quando troca o nome do produto
   if (sNomeAnterior <> ibDataSet4DESCRICAO.AsString) and (AllTrim(sNomeAnterior) <> '') and (sNumeroAnterior = ibDataSet4REGISTRO.AsString) then
   begin
@@ -15822,6 +15815,10 @@ begin
   AssinaRegistro('ESTOQUE',DataSet, True);
   //LogRetaguarda('fim assina registro procedure TForm7.ibDataSet4BeforePost(): 15862'); // Sandro Silva 2024-09-26
 
+  //Mauricio Parizotto 2024-10-23
+  if SaneamentoIMendes then
+    Exit;
+
   AuditaAlteracaoEstoqueManual;
 end;
 
@@ -15923,11 +15920,81 @@ begin
   AgendaCommit(True);
 end;
 
+procedure TForm7.ibDataSet14AfterScroll(DataSet: TDataSet);
+var
+  bTribInteligente : boolean;
+  sUFEmit : string;
+begin
+  {Mauricio Parizotto 2024-10-16 Inicio}
+  bTribInteligente := ibDataSet14TRIB_INTELIGENTE.AsString = 'S';
+  sUFEmit          := ibDataSet13ESTADO.AsString;
+
+  ibDataSet14RR_.ReadOnly  := (bTribInteligente) and (sUFEmit='RR');
+  ibDataSet14AP_.ReadOnly  := (bTribInteligente) and (sUFEmit='AP');
+  ibDataSet14AM_.ReadOnly  := (bTribInteligente) and (sUFEmit='AM');
+  ibDataSet14PA_.ReadOnly  := (bTribInteligente) and (sUFEmit='PA');
+  ibDataSet14MA_.ReadOnly  := (bTribInteligente) and (sUFEmit='MA');
+  ibDataSet14AC_.ReadOnly  := (bTribInteligente) and (sUFEmit='AC');
+  ibDataSet14RO_.ReadOnly  := (bTribInteligente) and (sUFEmit='RO');
+  ibDataSet14MT_.ReadOnly  := (bTribInteligente) and (sUFEmit='MT');
+  ibDataSet14TO_.ReadOnly  := (bTribInteligente) and (sUFEmit='TO');
+  ibDataSet14CE_.ReadOnly  := (bTribInteligente) and (sUFEmit='CE');
+  ibDataSet14RN_.ReadOnly  := (bTribInteligente) and (sUFEmit='RN');
+  ibDataSet14PI_.ReadOnly  := (bTribInteligente) and (sUFEmit='PI');
+  ibDataSet14PB_.ReadOnly  := (bTribInteligente) and (sUFEmit='PB');
+  ibDataSet14PB_.ReadOnly  := (bTribInteligente) and (sUFEmit='PB');
+  ibDataSet14PE_.ReadOnly  := (bTribInteligente) and (sUFEmit='PE');
+  ibDataSet14AL_.ReadOnly  := (bTribInteligente) and (sUFEmit='AL');
+  ibDataSet14SE_.ReadOnly  := (bTribInteligente) and (sUFEmit='SE');
+  ibDataSet14BA_.ReadOnly  := (bTribInteligente) and (sUFEmit='BA');
+  ibDataSet14GO_.ReadOnly  := (bTribInteligente) and (sUFEmit='GO');
+  ibDataSet14DF_.ReadOnly  := (bTribInteligente) and (sUFEmit='DF');
+  ibDataSet14MG_.ReadOnly  := (bTribInteligente) and (sUFEmit='MG');
+  ibDataSet14ES_.ReadOnly  := (bTribInteligente) and (sUFEmit='ES');
+  ibDataSet14MS_.ReadOnly  := (bTribInteligente) and (sUFEmit='MS');
+  ibDataSet14SP_.ReadOnly  := (bTribInteligente) and (sUFEmit='SP');
+  ibDataSet14RJ_.ReadOnly  := (bTribInteligente) and (sUFEmit='RJ');
+  ibDataSet14PR_.ReadOnly  := (bTribInteligente) and (sUFEmit='PR');
+  ibDataSet14SC_.ReadOnly  := (bTribInteligente) and (sUFEmit='SC');
+  ibDataSet14RS_.ReadOnly  := (bTribInteligente) and (sUFEmit='RS');
+
+  ibDataSet14CFOP.ReadOnly           := (bTribInteligente);
+  ibDataSet14NOME.ReadOnly           := (bTribInteligente);
+  ibDataSet14INTEGRACAO.ReadOnly     := (bTribInteligente);
+  ibDataSet14CONTA.ReadOnly          := (bTribInteligente);
+  ibDataSet14ST.ReadOnly             := (bTribInteligente);
+  ibDataSet14BASEISS.ReadOnly        := (bTribInteligente);
+  ibDataSet14ISS.ReadOnly            := (bTribInteligente);
+  ibDataSet14BASE.ReadOnly           := (bTribInteligente);
+  ibDataSet14CST.ReadOnly            := (bTribInteligente);
+  ibDataSet14CSTPISCOFINS.ReadOnly   := (bTribInteligente);
+  ibDataSet14BCPISCOFINS.ReadOnly    := (bTribInteligente);
+  ibDataSet14PCOFINS.ReadOnly        := (bTribInteligente);
+  ibDataSet14PPIS.ReadOnly           := (bTribInteligente);
+  ibDataSet14CSOSN.ReadOnly          := (bTribInteligente);
+  ibDataSet14CBENEF.ReadOnly         := (bTribInteligente);
+
+  ibDataSet14SOBREFRETE.ReadOnly     := True;
+  ibDataSet14SOBRESEGURO.ReadOnly    := True;
+  ibDataSet14REFERENCIANOTA.ReadOnly := True;
+  ibDataSet14IMPOSTOMANUAL.ReadOnly  := True;
+  {Mauricio Parizotto 2024-10-16 Fim}
+end;
+
 procedure TForm7.ibDataSet14BeforeDelete(DataSet: TDataSet);
 var
   sApagar : String;
 begin
   sNomeAnterior := Form7.ibDataSet14NOME.AsString;
+
+  //Mauricio Parizotto 2024-10-07
+  if Form7.ibDataSet14TRIB_INTELIGENTE.AsString = 'S' then
+  begin
+    MensagemSistema('Registro criado pela tributação inteligente não pode ser apagado.',
+                    msgAtencao);
+    Abort;
+  end;
+
 
   if AllTrim(Form7.ibDataSet14NOME.AsString) <> '' then
   begin
@@ -15948,10 +16015,8 @@ begin
     end;
     Screen.Cursor := crDefault; // Cursor de Aguardo
     ibDataSet15.EnableControls;
-    //
-    ibDataSet24.DisableControls;
 
-    //LogRetaguarda('ibDataSet24.DisableControls; 16549'); // Sandro Silva 2023-11-27
+    ibDataSet24.DisableControls;
 
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
     // Procura e altera o novo nome no Arquivo de VENDAS//
@@ -15968,7 +16033,6 @@ begin
     Screen.Cursor := crDefault; // Cursor de Aguardo
     ibDataSet24.EnableControls;
 
-    //LogRetaguarda('ibDataSet24.EnableControls; 16567'); // Sandro Silva 2023-11-27
 
     if Length(sApagar) <> 85 then
     begin
@@ -16508,10 +16572,10 @@ begin
       if (Assigned(FrmNaturezaOperacao)) and (FrmNaturezaOperacao.Showing) then
       begin
         // Quando a tela de cadastro estiver aberta
-        FrmNaturezaOperacao.SMALL_DBEdit57.Text := EmptyStr;
+        FrmNaturezaOperacao.edtCIT.Text := EmptyStr;
         Form7.ibDataSet14.Post;
         Form7.ibDataSet14.Edit;
-        FrmNaturezaOperacao.SMALL_DBEdit57.SetFocus;
+        FrmNaturezaOperacao.edtCIT.SetFocus;
       end
       else
       begin
@@ -27262,8 +27326,13 @@ begin
   {Dailon Parisotto 2023-10-09 fim}
 
   //Mauricio Parizotto 2023-09-18
-  if Form7.StatusTrocaPerfil = 'PR' then
+  if StatusTrocaPerfil = 'PR' then
     Exit;
+
+  //Mauricio Parizotto 2024-10-14
+  if SaneamentoIMendes then
+    Exit;
+
 
   I := Application.MessageBox(Pchar('Atribuir o novo valor para todas as compras deste produto?'+ Chr(10)
                     + Chr(10))
@@ -27970,13 +28039,12 @@ end;
 
 procedure TForm7.ibDataSet4CFChange(Sender: TField);
 begin
-  //
+  //Mauricio Parizotto 2024-10-23
+  if SaneamentoIMendes then
+    Exit;
+
   Form7.ibQuery3.Close;
   Form7.ibQuery3.SQL.Clear;
-//  Form7.ibQuery3.SQL.Add('select * from IBPT_ where CODIGO like '+QuotedStr(Form7.ibDataSet4CF.AsString+'%'));
-//
-//  Form7.ibQuery3.SQL.Add('select * from IBPT_ where '+QuotedStr(Form7.ibDataSet4CF.AsString)+' like CODIGO||''%''');
-//  Form7.ibQuery3.SQL.Add('select * from IBPT_ where char_length(CODIGO) >= 8 and '+QuotedStr(Form7.ibDataSet4CF.AsString)+' like CODIGO||''%''');
   Form7.ibQuery3.SQL.Add('select * from IBPT_ where char_length(CODIGO) >= 8 and CODIGO='+QuotedStr(Form7.ibDataSet4CF.AsString));
   Form7.ibQuery3.Open;
   //
@@ -27985,14 +28053,11 @@ begin
     Form7.ibDataSet4.Edit;
     //
     // INDICE DE IMPOSTO APROXIMADO - IIA - ESTADUAL
-    //
     Form7.ibDataSet4IIA_UF.ReadOnly := False;
     Form7.ibDataSet4IIA_UF.AsFloat := Form7.ibQuery3.FieldByname('ESTADUAL').AsFloat;
     Form7.ibDataSet4IIA_UF.ReadOnly := True;
     //
     // INDICE DE IMPOSTO APROXIMADO - IIA - MUNICIPAL
-    //
-    //
     Form7.ibDataSet4IIA_MUNI.ReadOnly := False;
     Form7.ibDataSet4IIA_MUNI.AsFloat := Form7.ibQuery3.FieldByname('MUNICIPAL').AsFloat;
     Form7.ibDataSet4IIA_MUNI.ReadOnly := True;
@@ -28028,12 +28093,16 @@ begin
     Form7.ibDataSet4.Post;
     Form7.ibDataSet4.Edit;
     Form7.ibQuery3.Close;
-    //
   end;
 
   //Mauricio Parizotto 2023-09-20
   if TField(Sender).FieldName = 'CST' then
     VerificaAlteracaoPerfil;
+
+  //Mauricio Parizotto 2024-10-14
+  if (TField(Sender).FieldName = 'CST')
+    or (TField(Sender).FieldName = 'CF') then
+    VerificaAlteracaoIMendes;
 
 end;
 
@@ -30296,6 +30365,12 @@ begin
   end;
 
   Screen.Cursor := crDefault; // Cursor de Aguardo
+end;
+
+procedure TForm7.ibDataSet4CESTChange(Sender: TField);
+begin
+  //Mauricio Parizotto 2024-10-14
+  VerificaAlteracaoIMendes;
 end;
 
 procedure TForm7.ibDataSet4CESTSetText(Sender: TField; const Text: String);
@@ -34656,9 +34731,37 @@ begin
   ibDataSet4IDPERFILTRIBUTACAO.AsString := '';
 end;
 
+procedure TForm7.VerificaAlteracaoIMendes;
+begin
+  if FbDuplicandoProd then
+    Exit;
+
+  if SaneamentoIMendes then
+    Exit;
+
+  if ibDataSet4STATUS_TRIBUTACAO.AsString = _cStatusImendesConsultado then
+  begin
+    ibDataSet4STATUS_TRIBUTACAO.AsString        := _cStatusImendesAlterado;
+    ibDataSet4DATA_STATUS_TRIBUTACAO.AsDateTime := now;
+
+    //Auditoria
+    Audita('ALTEROU', sModulo,
+           Senhas.UsuarioPub,
+           'TRIBUTAÇÃO MANUAL '+ibDataSet4CODIGO.AsString+' - '+ibDataSet4DESCRICAO.AsString,
+           0,0);
+
+    if FrmEstoque <> nil then
+      FrmEstoque.AtualizaStatusIMendes;
+  end;
+end;
+
 procedure TForm7.ibDataSet4TIPO_ITEMChange(Sender: TField);
 begin
   VerificaAlteracaoPerfil;
+
+  //Mauricio Parizotto 2024-10-14 TIPO_ITEM
+  if Sender.FieldName <> 'TIPO_ITEM' then
+    VerificaAlteracaoIMendes;
 end;
 
 procedure TForm7.ibdParametroTributaAfterDelete(DataSet: TDataSet);
@@ -36193,10 +36296,12 @@ begin
     sLinha    := Mais1Ini.ReadString(sModulo,'LINHA','001');
 
     //sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 41)); Mauricio Parizotto 2024-08-12
-    sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 40));
+    //sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 40)); Mauricio Parizotto 2024-09-26
+    sMostra   := Mais1Ini.ReadString(sModulo, 'Mostrar', 'TTTFTTFTFFT'+Replicate('F', 41));
 
     //iCampos   := 50; Mauricio Parizotto 2024-08-12
-    iCampos   := 49;
+    //iCampos   := 49; Mauricio Parizotto 2024-09-26
+    iCampos   := 50;
   end;
   {$Endregion}
 
@@ -36684,6 +36789,24 @@ begin
       Break;
     end;
   end;
+end;
+
+procedure TForm7.ributaoInteligente1Click(Sender: TObject);
+begin
+  {Mauricio Parizotto 2024-10-04 Inicio}
+  if not FechaTudo(true) then
+    Exit;
+
+  Form7.sModulo := 'CONFIG';
+  Form1.Label201MouseLeave(Sender);
+
+  try
+    FrmIntegracaoIMendes := TFrmIntegracaoIMendes.Create(self);
+    FrmIntegracaoIMendes.ShowModal;
+  finally
+    FreeAndNil(FrmIntegracaoIMendes);
+  end;
+  {Mauricio Parizotto 2024-10-04 Fim}
 end;
 
 function TForm7.RetornarHistoricoPorModulo: String;

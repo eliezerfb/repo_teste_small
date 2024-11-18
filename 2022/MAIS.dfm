@@ -6158,12 +6158,12 @@ object Form1: TForm1
   object WebBrowser1: TWebBrowser
     Left = 864
     Top = 488
-    Width = 33
-    Height = 25
+    Width = 41
+    Height = 31
     TabOrder = 4
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C00000069030000950200000000000000000000000000000000000000000000
+      4C00000064030000900200000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E12620A000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -14451,6 +14451,10 @@ object Form1: TForm1
       object IntegraoSicoob1: TMenuItem
         Caption = 'Integra'#231#227'o Sicoob'
         OnClick = IntegraoSicoob1Click
+      end
+      object IntegraoIMendes1: TMenuItem
+        Caption = 'Tributa'#231#227'o Inteligente'
+        OnClick = IntegraoIMendes1Click
       end
     end
     object Calendrio1: TMenuItem

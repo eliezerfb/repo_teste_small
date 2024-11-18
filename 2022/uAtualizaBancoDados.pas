@@ -3222,7 +3222,6 @@ begin
   end;
   {Mauricio Parizotto 2024-09-30 Fim}
 
-
   {Mauricio Parizotto 2024-10-28 Inicio}
   if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRASIMPORTACAO')) then
   begin
@@ -3248,6 +3247,57 @@ begin
     ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2024-10-28 Inicio}
+
+{Mauricio Parizotto 2024-09-27 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'TRIB_INTELIGENTE') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ICM ADD TRIB_INTELIGENTE VARCHAR(1)') then
+      ExecutaComando('commit');
+  end;
+  {Mauricio Parizotto 2024-09-27 Fim}
+
+  
+  {Mauricio Parizotto 2024-09-26 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CONSULTA_TRIBUTACAO') = False then
+  begin
+    if ExecutaComando('Alter table ESTOQUE add CONSULTA_TRIBUTACAO varchar(1);') then
+    begin
+      ExecutaComando('commit');
+      ExecutaComando('Update ESTOQUE set CONSULTA_TRIBUTACAO = ''S'' ');
+      ExecutaComando('commit');
+    end;
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'STATUS_TRIBUTACAO') = False then
+  begin
+    if ExecutaComando('Alter table ESTOQUE add STATUS_TRIBUTACAO varchar(30);') then
+    begin
+      ExecutaComando('commit');	
+      ExecutaComando('Update ESTOQUE set STATUS_TRIBUTACAO = ''Não consultado'' ');
+      ExecutaComando('commit');
+    end;
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'DATA_STATUS_TRIBUTACAO') = False then
+  begin
+    if ExecutaComando('Alter table ESTOQUE add DATA_STATUS_TRIBUTACAO timestamp;') then
+      ExecutaComando('commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CODIGO_IMENDES') = False then
+  begin
+    if ExecutaComando('Alter table ESTOQUE add CODIGO_IMENDES integer;') then
+      ExecutaComando('commit');
+  end;
+  {Mauricio Parizotto 2024-09-26 Fim}
+
+  {Mauricio Parizotto 2024-10-14 Inicio}
+  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase,'G_CIT') = False then
+  begin
+    if ExecutaComando('CREATE SEQUENCE G_CIT') then
+      ExecutaComando('commit');
+  end;
+  {Mauricio Parizotto 2024-10-14 Fim}
 
   Form22.Repaint;
 

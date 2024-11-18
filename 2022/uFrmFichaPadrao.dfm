@@ -27,8 +27,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
     Color = clWhite
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 840
-    ExplicitHeight = 610
     object pnlBotoesSuperior: TPanel
       Left = 0
       Top = 0
@@ -41,7 +39,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 1
-      ExplicitWidth = 840
       object imgNovo: TImage
         Left = 10
         Top = 0
@@ -842,8 +839,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
-      ExplicitTop = 550
-      ExplicitWidth = 840
       DesignSize = (
         842
         60)
@@ -862,7 +857,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
         ParentFont = False
         TabOrder = 0
         OnClick = btnOKClick
-        ExplicitLeft = 721
       end
     end
     object Panel1: TPanel
@@ -877,7 +871,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 3
-      ExplicitHeight = 445
       object Button4: TBitBtn
         Left = 350
         Top = 5
@@ -899,8 +892,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 4
-      ExplicitLeft = 820
-      ExplicitHeight = 445
       object Button19: TBitBtn
         Left = 350
         Top = 5
@@ -923,8 +914,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      ExplicitWidth = 800
-      ExplicitHeight = 445
     end
   end
   object DSCadastro: TDataSource

@@ -38,7 +38,7 @@ uses
   function AvisoVencimentoSerial:Boolean; // Mauricio Parizotto 2024-08-16
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024034'; //Sandro Silva 2024-11-08 const BUILD_DO_BANCO = '2024032'; //Sandro Silva 2024-10-03 const BUILD_DO_BANCO = '2024030'; //Sandro Silva 2024-09-19 const BUILD_DO_BANCO = '2024028'; //Sandro Silva 2024-08-29 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
+const BUILD_DO_BANCO = '2024036'; //Sandro Silva 2024-11-14 const BUILD_DO_BANCO = '2024034'; //Sandro Silva 2024-11-08 const BUILD_DO_BANCO = '2024032'; //Sandro Silva 2024-10-03 const BUILD_DO_BANCO = '2024030'; //Sandro Silva 2024-09-19 const BUILD_DO_BANCO = '2024028'; //Sandro Silva 2024-08-29 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -293,6 +293,7 @@ type
     imgOrcamento: TImage;
     lblModOrcamento: TLabel;
     IntegraoSicoob1: TMenuItem;
+    IntegraoIMendes1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -472,6 +473,7 @@ type
     procedure lblModOrcamentoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure IntegraoSicoob1Click(Sender: TObject);
+    procedure IntegraoIMendes1Click(Sender: TObject);
 
 
   private
@@ -612,7 +614,9 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmCadastro
   , uFrmEstoque
   , uFrmMsgNovoLayout
-  , uFrmIntegracaoSicoob;
+  , uFrmIntegracaoSicoob
+  , uFrmIntegracaoIMendes
+  ;
 
 {$R *.DFM}
 
@@ -1380,6 +1384,7 @@ var
   GeraAviso: boolean;
 
   DiasR : Real;
+  dLimiteRecurso : Tdate;
 begin
   Result := False;
 
@@ -1621,6 +1626,8 @@ begin
                         ,msgAtencao);
       end;
     end;
+
+     TSistema.GetInstance.ModuloImendes := (RecursoLiberado(Form7.IBDatabase1,rcIntegracaoImendes,dLimiteRecurso));
   except
   end;
 end;
@@ -5567,24 +5574,13 @@ begin
   {Sandro Silva 2023-11-06 fim}
 end;
 
-procedure TForm1.IntegraoIta1Click(Sender: TObject);
-var
-  bLiberado : Boolean;
-  dLimiteRecurso : Tdate;
+procedure TForm1.IntegraoIMendes1Click(Sender: TObject);
 begin
-  bLiberado := (RecursoLiberado(Form7.IBDatabase1,rcIntegracaoItau,dLimiteRecurso));
-
-  if not bLiberado then
-  begin
-    MensagemRecursoIndisponivel('Integração Itaú não está disponível para esta licença');
-    Exit;
-  end;
-
   try
-    FrmIntegracaoItau := TFrmIntegracaoItau.Create(self);
-    FrmIntegracaoItau.ShowModal;
+    FrmIntegracaoIMendes := TFrmIntegracaoIMendes.Create(self);
+    FrmIntegracaoIMendes.ShowModal;
   finally
-    FreeAndNil(FrmIntegracaoItau);
+    FreeAndNil(FrmIntegracaoIMendes);
   end;
 end;
 
@@ -5606,6 +5602,27 @@ begin
     FrmIntegracaoSicoob.ShowModal;
   finally
     FreeAndNil(FrmIntegracaoSicoob);
+  end;
+end;
+
+procedure TForm1.IntegraoIta1Click(Sender: TObject);
+var
+  bLiberado : Boolean;
+  dLimiteRecurso : Tdate;
+begin
+  bLiberado := (RecursoLiberado(Form7.IBDatabase1,rcIntegracaoItau,dLimiteRecurso));
+
+  if not bLiberado then
+  begin
+    MensagemRecursoIndisponivel('Integração Itaú não está disponível para esta licença');
+    Exit;
+  end;
+
+  try
+    FrmIntegracaoItau := TFrmIntegracaoItau.Create(self);
+    FrmIntegracaoItau.ShowModal;
+  finally
+    FreeAndNil(FrmIntegracaoItau);
   end;
 end;
 
@@ -5839,7 +5856,6 @@ begin
   except
     on E: Exception do
     begin
-      //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-24
       MensagemSistema(E.Message,msgAtencao);
     end;
   end;
@@ -5847,47 +5863,7 @@ end;
 
 
 procedure TForm1.imgBackupClick(Sender: TObject);
-{
-var
-  Backup: TBackup;
-}
 begin
-(*
-  if not FechaTudo(bFechaTudo) then
-    Exit;
-
-  Form7.sModulo := 'BACKUP';
-  Form1.Label201MouseLeave(Sender);
-
-  Backup := TBackup.Create;
-  {Mauricio parizotto 2023-08-09 Inicio}
-
-  Backup.FMostraDialogs := True;
-  SelectDirectory('Selecione um dispositivo de armazenamento externo que seja seguro para fazer uma cópia do banco de dados.', '', Backup.FDiretorioBKP);
-  Backup.FNomeArquivoBKP := Limpanumero(Form7.ibDataset13CGC.AsString) + '_' + Alltrim(DiaDaSemana(date));
-
-  try
-    Commitatudo(True);
-  except
-  end;
-
-  try
-    FechaTudo(Form1.bFechaTudo);
-    Form7.ibDataSet13.Close;
-  except
-  end;
-
-  {Mauricio parizotto 2023-08-09 Fim}
-
-  if Backup.FazerBackup = IDYES then
-    Form19.Button1Click(Sender);
-
-  FreeAndNil(Backup);
-
-  if Form7.sModulo <> 'INDICADORES' then
-    Form7.sModulo := '';
-Mauricio Parizotto 2023-08-10*)
-
   ppmBackup.Popup(Form1.imgBackup.Left,Form1.imgBackup.Top + Form1.imgBackup.Height + 35);
 end;
 
@@ -6071,9 +6047,7 @@ var
   dContador : TdateTime;
   I, J : Integer;
 begin
-  /////////////////////////
   // C A L E N D A R I O //
-  /////////////////////////
   CriaJpg('logotip.jpg');
   DeleteFile(pChar(Senhas.UsuarioPub+'.HTM'));
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));  // Direciona o arquivo F para EXPORTA.TXT
@@ -6084,13 +6058,12 @@ begin
   WriteLn(F,'<br><font face="verdana" size=1 color=#c0c0c0><b>'+AllTrim(Form7.ibDataSet13NOME.AsString)+'</b></font><br>');
   WriteLn(F,'<br><font face="verdana" size=1 color=#000000><b>CALENDÁRIO</font>');
   WriteLn(F,'<br><font face="verdana" size=7 color=#c0c0c0>'+IntToStr(Year(Date))+'</b></font>');
-  //
+
   WriteLn(F,'<table border=0 bgcolor=#FFFFFF cellspacing=5 cellpadding=5>');
   WriteLn(F,' <tr  align=left>');
-  //
+
   for J := 1 to 12 do
   begin
-    //
     if (J = 4) or (J=7) or (J=10)  then
     begin
       WriteLn(F,' </tr>');
@@ -6098,7 +6071,7 @@ begin
       WriteLn(F,'<table border=0 bgcolor=#FFFFFF cellspacing=5 cellpadding=5>');
       WriteLn(F,' <tr  align=left>');
     end;
-    //
+
     WriteLn(F,'  <td>');
     WriteLn(F,'   <font face="verdana" size=1><center><b>'+MesExtenso(J)+'</b></center><br>'); // Mês e ano
     WriteLn(F,'   <table border=0 bgcolor=#FFFFFF cellspacing=0 cellpadding=0>');
@@ -6111,13 +6084,13 @@ begin
     WriteLn(F,'     <td '+{nowrap}' align=Right width=30><font face="verdana" size=1>Sex</font></td>');
     WriteLn(F,'     <td '+{nowrap}' align=Right width=30><font face="verdana" size=1 color=FF0000>Sab</font></td>');
     WriteLn(F,'    </tr>');
-    //
+
     WriteLn(F,'    <tr bgcolor=#FFFFFF>');
-    //
+
     dContador  := StrToDate('01/'+StrZero(J,2,0)+'/'+StrZero(Year(Date),4,0));
-    //
+
     for I := 1 to DayOfWeek(dContador)-1 do WriteLn(F,'     <td '+{nowrap}' align=left><font face="verdana" size=1></td>');
-    //
+
     for I := 1 to DiasPorMes(Year(Date),J) do
     begin
       if DayOfWeek(dContador) = 1 then WriteLn(F,'    <tr bgcolor=#FFFFFF>');
@@ -6125,46 +6098,36 @@ begin
       if DayOfWeek(dContador) = 7 then WriteLn(F,'    </tr>');
       dContador := SomaDias(dContador, 1);                // Incrementa o contador
     end;
-    //
+
     WriteLn(F,'    </tr>');
     WriteLn(F,'   </table>');
     WriteLn(F,'  </td>');
-    //
   end;
-  //
+
   WriteLn(F,' </tr>');
   WriteLn(F,'</table>');
-  //
+
   WriteLn(F,'<br><font face="verdana" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
   + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
   + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font>');
-  //
+
   WriteLn(F,'<br>');              // Linha em branco
-  //
-  // WWW
-  //
+
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
-    //WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
     WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
   end else
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
   end;
-  //
+
   if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
   WriteLn(F,'</center>');
-  //
+
   WriteLn(F,'</html>');
   CloseFile(F);                                    // Fecha o arquivo
-  //
+
   AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
-  //
-  //
-/////////////////////////
-// C A L E N D A R I O //
-/////////////////////////
-  //
 end;
 
 procedure TForm1.Label201MouseLeave(Sender: TObject);
@@ -13463,6 +13426,9 @@ begin
     begin
       TSistema.GetInstance.Tema := _TemaModerno;
     end;
+
+    TSistema.GetInstance.CodFaixaImendes     := ConfSistema.BD.IMendes.FaixaFaturamento;
+    TSistema.GetInstance.ConsultarIPIImendes := ConfSistema.BD.IMendes.ConsultarIPI;
   finally
     FreeAndNil(ConfSistema);
   end;
