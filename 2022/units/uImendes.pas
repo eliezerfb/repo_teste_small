@@ -129,7 +129,7 @@ begin
     if TipoPesquisa = tpCodigo then
     begin
       ProdutoArray[0].CodIMendes := ibdEstoque.FieldByName('CODIGO_IMENDES').AsString;
-      ProdutoArray[0].Codigo     := ibdEstoque.FieldByName('CODIGO_IMENDES').AsString;
+      ProdutoArray[0].Codigo     := ibdEstoque.FieldByName('CODIGO').AsString;
       ProdutoArray[0].TipoCodigo := 2; //Código IMendes
     end else
     begin
