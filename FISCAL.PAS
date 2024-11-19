@@ -33514,20 +33514,10 @@ var
   Mais1Ini: TIniFile;
   IBQTEMP: TIBQuery;
 begin
+  Button2.Enabled       := False; // Mauricio Parizotto 2024-11-13
   Form1.Label13.Visible := True; // Sandro Silva 2021-07-29
 
   Form1.Minimizarnabandeja1.Enabled := False;
-
-  {Sandro Silva 2023-06-14 inicio
-  if Form1.sModeloECF = '59' then
-  begin
-    if Form1.UsaIntegradorFiscal('') then
-    begin
-      if _ecf59_Tipodaimpressora = 'MFE' then
-        Form1.ExibePanelMensagem('Consultando Integrador Fiscal');
-    end;
-  end;
-  }
 
   if TestaTudo(True) then // Abre cupom
   begin
@@ -33601,20 +33591,8 @@ begin
       if Form1.sModeloECF = '65' then bAbre := _ecf65_AbreNovoCupom(True);
       if Form1.sModeloECF = '99' then bAbre := _ecf99_AbreNovoCupom(True);
 
-      {Sandro Silva 2021-07-22 inicio
-      if Form1.sModeloECF = '04' then bAbre := _ecf04_AbreNovoCupom(True);
-      if Form1.sModeloECF = '05' then bAbre := _ecf05_AbreNovoCupom(True);
-      if Form1.sModeloECF = '06' then bAbre := _ecf06_AbreNovoCupom(True);
-      if Form1.sModeloECF = '07' then bAbre := _ecf07_AbreNovoCupom(True);
-      if Form1.sModeloECF = '08' then bAbre := _ecf08_AbreNovoCupom(True);
-      if Form1.sModeloECF = '09' then bAbre := _ecf09_AbreNovoCupom(True);
-      if Form1.sModeloECF = '10' then bAbre := _ecf10_AbreNovoCupom(True);
-      if Form1.sModeloECF = '11' then bAbre := _ecf11_AbreNovoCupom(True);
-      }
-      //
       if bAbre then
       begin
-
         if (Form1.sModeloECF <> '01') and (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65')  and (Form1.sModeloECF <> '99')then
           GeraEstoqueDia(DateToStr(Date));// Abre cupom Form1.Button2Click()
 
