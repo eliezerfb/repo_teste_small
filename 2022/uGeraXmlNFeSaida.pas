@@ -59,13 +59,6 @@ uses uFrmInformacoesRastreamento, uFuncoesFiscais, uFuncoesRetaguarda,
   uDialogs, ufrmOrigemCombustivel, uFuncoesBancoDados,
   ufrmInformacoesExportacaoNFe;
 
-{
-function SqlSelectDadosItensNotaEntrada(sCodigo: String): String;
-begin
-  Result := 'select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST, ITENS002.PICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(sCodigo)+' order by COMPRAS.EMISSAO desc';
-end;
-}
-
 procedure SelecionaDadosTabelaICM;
 begin
   Form7.ibDataSet14.DisableControls;
@@ -211,7 +204,6 @@ var
 
   bPagouComTEF: Boolean;
 begin
-  //FbAbortar := False;
   Result := False;
   if AllTrim(Form7.ibDataSet15OPERACAO.AsString) = '' then
     Form7.ibDataSet14.Append
@@ -642,13 +634,7 @@ begin
   begin
     IBQUERY99.Close;
     IBQUERY99.SQL.Clear;
-    {Dailon Parisotto (f-18465) 2024-04-30 Inicio
-
-    IBQUERY99.SQL.Add('select * from MUNICIPIOS where NOME='+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+' and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
-
-    }
     IBQUERY99.SQL.Add('select * from MUNICIPIOS where UPPER(NOME)=UPPER('+QuotedStr(Form7.ibDAtaset2CIDADE.AsString)+') and UF='+QuotedStr(Form7.ibDAtaset2ESTADO.AsString)+' ');
-    {Dailon Parisotto (f-18465) 2024-04-30 Fim}
     IBQUERY99.Open;
 
     if Alltrim(ConverteAcentos2(IBQUERY99.FieldByname('NOME').AsString))='' then
@@ -734,26 +720,19 @@ begin
       begin
         Form7.spdNFeDataSets.Campo('IE_E17').Value          := LimpaNumero(Form7.ibDAtaset2.FieldByname('IE').AsString); // Inscrição Estadual do Destinatário
         Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '1';      // Contribuinte ICMS
-        // Form7.spdNFeDataSets.Campo('IE_E17').Value          := ''; // Produtor rural
       end else
       begin
         if (Length(AllTrim(Form7.ibDAtaset2CGC.AsString)) = 18) then
         begin
-          //if allTrim(Form7.ibDAtaset2.FieldByname('IE').AsString) = '' then Mauricio Parizotto 2024-04-15
           if (allTrim(Form7.ibDAtaset2.FieldByname('IE').AsString) = '') or (Form7.ibDAtaset2.FieldByname('CONTRIBUINTE').AsString='9') then
           begin
-            {Mauricio Parizotto 2024-05-03 Inicio
-            Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
-            }
             Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '9';   // 1-Contribuinte; 2-Isento; 9-Não contribuinte
 
-            //Mauricio Parizotto 2024-05-03
             if Form7.ibDAtaset2.FieldByname('CONTRIBUINTE').AsString = '9' then
               Form7.spdNFeDataSets.Campo('IE_E17').Value := trim(Form7.ibDAtaset2.FieldByname('IE').AsString)
             else
               Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
 
-            {Mauricio Parizotto 2024-05-03 Fim}
           end else
           begin
             if (not ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDAtaset2IE.AsString),Form7.ibDAtaset2ESTADO.AsString)) then
@@ -783,7 +762,6 @@ begin
           end;
         end else
         begin
-          // Form7.spdNFeDataSets.Campo('IE_E17').Value := 'ISENTO'; // Inscrição Estadual do Destinatário
           Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '9';   // 1-Contribuinte; 2-Isento; 9-Não contribuinte
           Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
 
@@ -872,11 +850,6 @@ begin
             FreeAndNil(frmInformacoesExportacaoNFe);
           end;
 
-{
-          sPais    := Form1.Small_InputForm('NFe', 'País destino', 'Estados Unidos');
-          sCodPais := Form1.Small_InputForm('NFe', 'Código do País destino', '2496');
-          sEx15  := Form1.Small_InputForm('NF-e importação', 'Identificação do destinatário no caso de comprador estrangeiro:',sEx15);
-}
           Form7.spdNFeDataSets.Campo('cPais_E14').Value       := sCodPais;  // Código do Pais do Destinatário (Tabela do BACEN)
           Form7.spdNFeDataSets.Campo('xPais_E15').Value       := sPais;    // Nome do País do Destinatário
 
@@ -1048,7 +1021,6 @@ begin
       I := I + 1;
 
       try
-        //if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := ''; Mauricio Parizotto 2024-05-03
         if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
         Form7.spdNFeDataSets.SalvarItem;
       except
@@ -1097,7 +1069,6 @@ begin
         fICMSDesonerado := 0;
 
         //cBenef
-        {Mauricio Parizotto 2023-12-12 Inicio}
         cBenefItem := '';
         if cBenef = '' then
         begin
@@ -1117,65 +1088,61 @@ begin
         begin
           cBenefItem := cBenef;
         end;
-        {Mauricio Parizotto 2023-12-12 Fim}
 
-        //if (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') then Mauricio Parizotto 2023-11-03 ficha 7553
+        if (cBenefItem<>'') and (cBenefItem<>'0000000000') then
         begin
-          //if (RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString)<>'') and (RetornaValorDaTagNoCampo('cBenef',Form7.ibDataSet4.FieldByname('TAGS_').AsString)<>'0000000000') then Mauricio Parizotto 2023-12-12
-          if (cBenefItem<>'') and (cBenefItem<>'0000000000') then
+          Form7.spdNFeDataSets.Campo('cBenef_I05f').Value     := cBenefItem;
+
+          if AllTrim(RetornaValorDaTagNoCampo('motDesICMS',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
           begin
-            Form7.spdNFeDataSets.Campo('cBenef_I05f').Value     := cBenefItem;
+            Form7.spdNFeDataSets.Campo('motDesICMS_N28').Value  := RetornaValorDaTagNoCampo('motDesICMS',Form7.ibDataSet4.FieldByname('TAGS_').AsString);  // Motivo da desoneração do ICMS
 
-            if AllTrim(RetornaValorDaTagNoCampo('motDesICMS',Form7.ibDataSet4.FieldByname('TAGS_').AsString)) <> '' then
+            if (Form7.ibDataSet16BASE.Asfloat <> 100) and (Form7.ibDataSet16BASE.Asfloat <> 0) then
             begin
-              Form7.spdNFeDataSets.Campo('motDesICMS_N28').Value  := RetornaValorDaTagNoCampo('motDesICMS',Form7.ibDataSet4.FieldByname('TAGS_').AsString);  // Motivo da desoneração do ICMS
+              Form7.IBQuery14.Close;
+              Form7.IBQuery14.SQL.Clear;
+              Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
+              Form7.IBQuery14.Open;
 
-              if (Form7.ibDataSet16BASE.Asfloat <> 100) and (Form7.ibDataSet16BASE.Asfloat <> 0) then
+              fAliquotaPadrao := (Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat)/100;
+              fPercentualDeReducaoDeBC := (100 - Form7.ibDataSet16.FieldByname('BASE').AsFloat)/100;
+
+              fICMSDesonerado := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat * ( 1 - ( fAliquotaPadrao * ( 1 - fPercentualDeReducaoDeBC))) / ( 1 - fAliquotaPadrao) - Form7.ibDataSet16.FieldByname('TOTAL').AsFloat;
+            end else
+            begin
+              if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
               begin
+                // Nova rotina para posicionar na tabela de CFOP
                 Form7.IBQuery14.Close;
                 Form7.IBQuery14.SQL.Clear;
-                Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
+                Form7.IBQuery14.SQL.Add('select * from ICM where ST='+QuotedStr(Form7.ibDataSet4ST.AsString)+''); // Nova rotina
                 Form7.IBQuery14.Open;
 
-                fAliquotaPadrao := (Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat)/100;
-                fPercentualDeReducaoDeBC := (100 - Form7.ibDataSet16.FieldByname('BASE').AsFloat)/100;
-
-                fICMSDesonerado := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat * ( 1 - ( fAliquotaPadrao * ( 1 - fPercentualDeReducaoDeBC))) / ( 1 - fAliquotaPadrao) - Form7.ibDataSet16.FieldByname('TOTAL').AsFloat;
-              end else
-              begin
-                if AllTrim(Form7.ibDataSet4ST.Value) <> '' then       // Quando alterar esta rotina alterar também retributa Ok 1/ Abril
+                if Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat = 0 then
                 begin
-                  // Nova rotina para posicionar na tabela de CFOP
                   Form7.IBQuery14.Close;
                   Form7.IBQuery14.SQL.Clear;
-                  Form7.IBQuery14.SQL.Add('select * from ICM where ST='+QuotedStr(Form7.ibDataSet4ST.AsString)+''); // Nova rotina
+                  Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
                   Form7.IBQuery14.Open;
 
-                  if Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat = 0 then
-                  begin
-                    Form7.IBQuery14.Close;
-                    Form7.IBQuery14.SQL.Clear;
-                    Form7.IBQuery14.SQL.Add('select * from ICM where NOME='+QuotedStr(Form7.ibDataSet15OPERACAO.AsString)+' ');
-                    Form7.IBQuery14.Open;
+                  fAliquotaPadrao := (Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat)/100;
 
-                    fAliquotaPadrao := (Form7.ibQuery14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat)/100;
-
-                    fICMSDesonerado := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat / (1 - fAliquotaPadrao)* fAliquotaPadrao;
-                  end;
-
-                  Form7.IBQuery14.Close;
-                  Form7.IBQuery14.SQL.Clear;
-                  Form7.IBQuery14.SQL.Add('select * from ICM where ST='+QuotedStr(Form7.ibDataSet4ST.AsString)+''); // Nova rotina
-                  Form7.IBQuery14.Open;
+                  fICMSDesonerado := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat / (1 - fAliquotaPadrao)* fAliquotaPadrao;
                 end;
-              end;
 
-              Form7.spdNFeDataSets.Campo('vICMSDeson_N28a').Value := FormatFloatXML(fICMSDesonerado);  // Valor do ICMS desonerado
-              //
-              vICMSDeson := vICMSDeson + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMSDeson_N28a').AsString,',',''),'.',','));
+                Form7.IBQuery14.Close;
+                Form7.IBQuery14.SQL.Clear;
+                Form7.IBQuery14.SQL.Add('select * from ICM where ST='+QuotedStr(Form7.ibDataSet4ST.AsString)+''); // Nova rotina
+                Form7.IBQuery14.Open;
+              end;
             end;
+
+            Form7.spdNFeDataSets.Campo('vICMSDeson_N28a').Value := FormatFloatXML(fICMSDesonerado);  // Valor do ICMS desonerado
+            //
+            vICMSDeson := vICMSDeson + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMSDeson_N28a').AsString,',',''),'.',','));
           end;
         end;
+
       end else
       begin
         // Serviço
@@ -1229,12 +1196,10 @@ begin
       end;
 
       // Tributos
-      //Sandro Silva 2024-04-11 if bTributa then
       if CalculavTotTrib_M02(Form7.ibDataSet4.FieldByName('CODIGO').AsString, Form7.ibDataSet15OPERACAO.AsString) then
       begin
         if Copy(Form7.ibDataSet14CFOP.AsString,1,1) <> '7' then // Exportação
         begin
-//                    if Form7.ibDAtaset2ESTADO.AsString <> 'EX' then
           if  (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-(fDesconto[I]*Form7.ibDataSet4.FieldByname('IIA').AsFloat/100)) > 0  then
           begin
             Form7.spdNFeDataSets.Campo('vTotTrib_M02').Value  :=  StrTran(Alltrim(FormatFloat('##0.00',
@@ -1714,18 +1679,14 @@ begin
           if bFreteSobreIPI then
             vlFreteRateadoItem := fFrete[I];
 
-          //Mauricio Parizotto 2024-04-22
           if bIPISobreOutras then
             vlOutrasDespRateadoItem := fOutras[I];
 
-          //vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem; //Mauricio Parizotto 2023-03-27 // Mauricio Parizotto 2024-04-22
           vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem + vlOutrasDespRateadoItem;
 
           Form7.spdNFeDataSets.Campo('vBC_O10').Value       := FormatFloatXML(vlBalseIPI); // Valor da BC do IPI
           Form7.spdNFeDataSets.Campo('pIPI_O13').Value      := FormatFloatXML(Form7.ibDataSet16.FieldByname('IPI').AsFloat); // Percentual do IPI
 
-          // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução Não deve mudar
-          // Dailon Parisotto 2024-08-06 if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
           if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
           begin
             Form7.spdNFeDataSets.Campo('vIPI_O14').Value      := FormatFloatXML(Arredonda2(Form7.ibDataSet16.FieldByname('VIPI').AsFloat,2)); // Valor do IPI
@@ -1776,16 +1737,8 @@ begin
       vCOFINS := vCOFINS + Arredonda(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vCOFINS_S11').AsString,',',''),'.',',')),2);
 
       // totalizador da nota complementar
-      // Sandro Silva 2023-05-25 if Form7.ibDataSet15FINNFE.AsString = '2' then // Complementar
       if NFeFinalidadeComplemento(Form7.ibDataSet15FINNFE.AsString) then // Complementar
       begin
-        {Mauricio Parizotto 2023-06-05
-        Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value := '0.00'; // Valor Tributável do Item
-        Form7.spdNFeDataSets.Campo('qCom_I10').Value     := '0.00'; // Quantidade Comercializada do Item
-        Form7.spdNFeDataSets.Campo('vUnCom_I10a').Value  := '0.00'; // Valor Comercializado do Item
-        Form7.spdNFeDataSets.Campo('vProd_I11').Value    := '0.00'; // Valor Total Bruto do Item
-        }
-
         //Só zera valores se não for nota de complemento de valor
         if Form7.spdNFeDataSets.Campo('vUnTrib_I14a').Value = '0.01' then
         begin
@@ -1801,13 +1754,10 @@ begin
 
         if (Form7.ibDataSet15.FieldByname('BASEICM').AsCurrency > 0) and (Form7.ibDataSet15.FieldByname('ICMS').AsCurrency > 0) then
         begin
-          // Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(Arredonda(((Form7.ibDataSet15.FieldByname('ICMS').AsFloat / Form7.ibDataSet15.FieldByname('BASEICM').AsFloat) * 100), 1)) // Alíquota do ICMS em Percentual
-          {Dailon (f-7249) 2023-08-28 inicio}
           if AnsiContainsText(FloatToStr(Arredonda((Form7.ibDataSet15.FieldByname('ICMS').AsFloat / Form7.ibDataSet15.FieldByname('BASEICM').AsFloat) * 100, 1))  ,',5') then
             Form7.spdNFeDataSets.Campo('pICMS_N16').Value := FormatFloatXML(Arredonda((Form7.ibDataSet15.FieldByname('ICMS').AsFloat / Form7.ibDataSet15.FieldByname('BASEICM').AsFloat) * 100, 1))
           else
             Form7.spdNFeDataSets.Campo('pICMS_N16').Value := FormatFloatXML(Arredonda((Form7.ibDataSet15.FieldByname('ICMS').AsFloat / Form7.ibDataSet15.FieldByname('BASEICM').AsFloat) * 100, 0));
-          {Dailon (f-7249) 2023-08-28 fim}
         end
         else
           Form7.spdNFeDataSets.Campo('pICMS_N16').Value     := FormatFloatXML(0); // Alíquota do ICMS em Percentual
@@ -1816,7 +1766,7 @@ begin
 
         Form7.spdNFeDataSets.Campo('vbCST_N21').Value       := FormatFloatXML(Form7.ibDataSet15.FieldByname('BASESUBSTI').AsFloat); // Valor cobrado anteriormente por ST
         Form7.spdNFeDataSets.Campo('vICMSST_N23').Value     := FormatFloatXML(Form7.ibDataSet15.FieldByname('ICMSSUBSTI').AsFloat); // Valor do ICMS ST em Reais
-//                    Form7.spdNFeDataSets.Campo('pICMSST_N22').Value     := StrTran(Alltrim(FormatFloat('##0.00',100)),',','.'); // Alíquota do ICMS em Percentual
+
         if Form7.spdNFeDataSets.Campo('vICMSST_N23').Value <> '0' then // Mudei 11/05/2022
         begin
           Form7.spdNFeDataSets.Campo('pICMSST_N22').Value     := FormatFloatXML(0); // Alíquota do ICMS em Percentual
@@ -1829,9 +1779,7 @@ begin
       end;
 
       // Devolucao
-      // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução
       if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolução
-//      if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolução
       begin
         // Imposto da NF de DEVOLUCAO devolução
         // neste ponto é possível informar os impostos com os valores da nota de entrada
@@ -1853,7 +1801,6 @@ begin
           Form7.spdNFeDataSets.Campo('vICMS_N17').Value     := FormatFloatXML(Form7.ibDataSet16VICMS.AsFloat);     // Valor do ICMS em Reais
         end;
 
-        {Sandro Silva 2023-06-13 inicio}
         if (Pos('|' + Form7.spdNFeDataSets.Campo('CST_N12').AssTring + '|', '|61|') > 0) or
            (Pos('|' + Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString + '|', '|61|') > 0) then
         begin
@@ -1863,22 +1810,12 @@ begin
           Form7.spdNFeDataSets.Campo('CST_N12').AsString    := '61';
 
         end;
-        {Sandro Silva 2023-06-13 fim}
 
-
-        {Sandro Silva 2023-05-25 inicio}
         // Se no código acima pICMS_N16 ficou zerado, descobre o valor a partir de vICMS_N17 dividido por vBC_N15
         if FormatXMLToFloat(Form7.spdNFeDataSets.Campo('pICMS_N16').Value) = 0.00 then
         begin
-          {Dailon Parisotto (f-166) 2024-02-27 Inicio
-          if (FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vICMS_N17').Value) > 0.00) and (FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vBC_N15').Value) > 0.00) then
-            Form7.spdNFeDataSets.Campo('pICMS_N160').Value := FormatFloatXML((FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vICMS_N17').Value) / FormatXMLToFloat(Form7.spdNFeDataSets.Campo('vBC_N15').Value)) * 100); // Descobre o percentual de ICMS
-          }
-
           Form7.spdNFeDataSets.Campo('pICMS_N16').Value := FormatFloatXML(Form7.ibDataSet16.FieldByname('ICM').AsFloat);
-          {Dailon Parisotto (f-166) 2024-02-27 Fim}
         end;
-        {Sandro Silva 2023-05-28 fim}
 
         if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10') then
         begin
@@ -1977,18 +1914,14 @@ begin
             if bFreteSobreIPI then
               vlFreteRateadoItem := fFrete[I];
 
-            //Mauricio Parizotto 2024-04-22
             if bIPISobreOutras then
               vlOutrasDespRateadoItem := fOutras[I];
 
-            //vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem; //Mauricio Parizotto 2023-03-27 Mauricio Parizotto 2024-04-22
             vlBalseIPI := Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + vlFreteRateadoItem + vlOutrasDespRateadoItem;
 
             Form7.spdNFeDataSets.Campo('vBC_O10').Value       := FormatFloatXML(vlBalseIPI); // Valor da BC do IPI
             Form7.spdNFeDataSets.Campo('pIPI_O13').Value      := FormatFloatXML(Form7.ibDataSet16.FieldByname('IPI').AsFloat); // Percentual do IPI
 
-            // Sandro Silva 2023-05-18 if Form7.ibDataSet15FINNFE.AsString = '4' then // Devolucao Devolução Não deve mudar
-            // Dailon Parisotto 2024-08-06 if NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
             if DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString) then // Devolucao Devolução Não deve mudar
             begin
               Form7.spdNFeDataSets.Campo('vIPI_O14').Value      := FormatFloatXML(Arredonda2(Form7.ibDataSet16.FieldByname('VIPI').AsFloat,2)); // Valor do IPI
@@ -2064,7 +1997,6 @@ begin
       sEx14    := Mais1Ini.ReadString('DI','Ex14','');
 
       try
-        //sEx14 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número do ato concessório de Drawback:',sEx14); Mauricio Parizotto 2024-08-08
 
         {Dailon Parisotto (smal-706) 2024-09-19 Inicio
 
@@ -2078,11 +2010,9 @@ begin
         // Nota fiscal de exportação referenciada
         if (Copy(Form7.ibDataSet16CFOP.AsString,2,3) = '503') or (Copy(Form7.ibDataSet16CFOP.AsString,2,3) = '501') then
         begin
-          //sEx16 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número de Registro de Exportação:',sEx16); Mauricio Parizotto 2024-08-08
           sEx16 := Form1.Small_InputForm('NF-e exportação','Item: '+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Número de Registro de Exportação:',sEx16);
           Form7.spdNFeDataSets.Campo('nRE_I53').Value  := sEx16;      // Número de Registro de Exportação
 
-          //sEx15 := Form1.Small_InputForm('NF-e exportação','Item: '+chr(10)+chr(10)+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Chave de Acesso da NF-e recebida para exportação:',sEx15); Mauricio Parizotto 2024-08-08
           sEx15 := Form1.Small_InputForm('NF-e exportação','Item: '+Form7.ibDataSet4.FieldByname('DESCRICAO').AsString+chr(10)+chr(10)+ 'Chave de Acesso da NF-e recebida para exportação:',sEx15);
           Form7.spdNFeDataSets.Campo('chNFe_I54').Value  := sEx15;      // Chave de Acesso da NF-e recebida para exportação
           Form7.spdNFeDataSets.Campo('qExport_I55').Value := StrTran(Alltrim(FormatFloat('##0.0000',Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat)),',','.'); // Quantidade do item realmente exportado
@@ -2125,13 +2055,7 @@ begin
           begin
             Form7.spdNFeDataSets.Campo('vBCUFDest_NA03').Value         := Form7.spdNFeDataSets.Campo('vBC_N15').Value;              // Valor da BC do ICMS na UF de destino
 
-            {Sandro Silva 2023-05-15 inicio
-            if Form1.sVersaoLayout = '4.00' then
-            begin
-              Form7.spdNFeDataSets.campo('vBCFCPUFDest_NA04').Value := Form7.spdNFeDataSets.Campo('vBC_N15').Value; // Valor da BC FCP na UF de destino
-            end;
-            }
-             Form7.spdNFeDataSets.campo('vBCFCPUFDest_NA04').Value := Form7.spdNFeDataSets.Campo('vBC_N15').Value; // Valor da BC FCP na UF de destino
+            Form7.spdNFeDataSets.campo('vBCFCPUFDest_NA04').Value := Form7.spdNFeDataSets.Campo('vBC_N15').Value; // Valor da BC FCP na UF de destino
 
             // fPercentualFCP
             if (Form7.ibDataSet16PFCPUFDEST.AsFloat <> 0) or (Form7.ibDataSet16PICMSUFDEST.AsFloat <> 0) then
@@ -2148,12 +2072,6 @@ begin
             // e Espírito Santo;
             // - 12% para os demais casos
             //
-            {Sandro Silva 2023-05-18 inicio
-            if (Copy(Form7.ibDataSet4CST.AsString,1,1) = '1')
-            or (Copy(Form7.ibDataSet4CST.AsString,1,1) = '2')
-            or (Copy(Form7.ibDataSet4CST.AsString,1,1) = '3')
-            or (Copy(Form7.ibDataSet4CST.AsString,1,1) = '8') then // Produto importado
-            }
             if ProdutoOrigemImportado(Copy(Form7.ibDataSet4CST.AsString, 1, 1)) then
             begin
               Form7.spdNFeDataSets.Campo('pICMSInter_NA09').Value        := '4.00'; // Alíquota interna da UF de destino
@@ -2412,8 +2330,6 @@ begin
     end;
     // Fim Cupom fiscal referenciado
 
-
-    {Sandro Silva 2023-10-31 inicio}
     if (Form7.spdNFeDataSets.Campo('indFinal_B25a').Value <> '1') // não é consumidor final
     and (Trim(Form7.spdNFeDataSets.Campo('cProdANP_LA02').AsString) <> '')
     and ((StrToFloatDef(RetornaValorDaTagNoCampo('pGNn', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0) + StrToFloatDef(RetornaValorDaTagNoCampo('pGNi', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0) > 0)) // regra LA18-20
@@ -2445,8 +2361,6 @@ begin
       except
       end;
     end;
-    {Sandro Silva 2023-10-31 fim}
-
 
     Form7.ibDataSet16.Next;
   end;
@@ -2491,9 +2405,6 @@ begin
   Form7.spdNFeDataSets.Campo('vICMSDeson_W04a').Value    := FormatFloatXML(vICMSDeson); // Desonerado
 
   // No caso de nota fiscal de devolucao
-  // Sandro Silva 2023-05-18 if (Form7.ibDataSet15FINNFE.AsString = '4') and (AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) = '') then
-  //if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (AllTrim(Form7.ibDataSet16.FieldByname('CST_IPI').AsString) = '') then //Mauricio Parizotto 2024-02-02 estava considerando o último item, e esse podia ser uma observação fihca 7876
-  // Dailon Parisotto 2024-08-07 if (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)) and (fIPIDevolvido > 0) then // ficha 7876
   if (DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString)) and (fIPIDevolvido > 0) then // ficha 7876
   begin
     Form7.spdNFeDataSets.campo('vIPIDevol_W12a').Value  := FormatFloatXML(Arredonda2(fIPIDevolvido,2)); // Valor Total do IPI devolvido
@@ -2506,7 +2417,6 @@ begin
 
   Form7.spdNFeDataSets.campo('vFCP_W04h').Value       := FormatFloatXML(fFCP); // Valor Total do FCP (Fundo de Combate à Pobreza)
   Form7.spdNFeDataSets.campo('vFCPST_W06a').Value     := FormatFloatXML(fFCPST); // Valor Total do FCP (Fundo de Combate à Pobreza) retido por substituição tributária
-  // Sandro Silva 2024-03-25 Form7.spdNFeDataSets.campo('vFCPSTRet_W06b').Value  := '0.00'; // Valor Total do FCP retido anteriormente por Substituição Tributária
   Form7.spdNFeDataSets.campo('vFCPSTRet_W06b').Value  := FormatFloatXML(dvFCPSTRet_W06b); // Valor Total do FCP retido anteriormente por Substituição Tributária
 
   // Sandro Silva (f-21199) 2024-10-31 Form7.spdNFeDataSets.Campo('vBCST_W05').Value   := FormatFloatXML(vBCST - vIVA60_B_ICMST); // Valor Total do ICMS Sibst. Tributária
@@ -2514,10 +2424,8 @@ begin
   Form7.spdNFeDataSets.Campo('vBCST_W05').Value   := FormatFloatXML(vBCST); // Valor Total do ICMS Sibst. Tributária
   Form7.spdNFeDataSets.Campo('vST_W06').Value     := FormatFloatXML(vST); // Valor Total do ICMS Sibst. Tributária
 
-  {Sandro Silva 2023-09-04 inicio}
   Form7.spdNFeDataSets.Campo('qBCMonoRet_W06d1').Value  := FormatFloatXML(dqBCMonoRet_N43aTotal); //Valor total da quantidade tributada do ICMS monofásico retido anteriormente
   Form7.spdNFeDataSets.Campo('vICMSMonoRet_W06e').Value := FormatFloatXML(dvICMSMonoRet_N45Total); //Valor total do ICMS monofásico retido anteriormente
-  {Sandro Silva 2023-09-04 fim}
 
   Form7.spdNFeDataSets.Campo('vFrete_W08').Value  := FormatFloatXML(Form7.ibDataSet15.FieldByname('FRETE').AsFloat); // Valor Total do Frete
   Form7.spdNFeDataSets.Campo('vSeg_W09').Value    := FormatFloatXML(Form7.ibDataSet15.FieldByname('SEGURO').AsFloat); // Valor Total do Seguro
@@ -2527,7 +2435,6 @@ begin
   Form7.spdNFeDataSets.Campo('vCOFINS_W14').Value := FormatFloatXML(vCOFINS); // Valor Total do COFINS
   Form7.spdNFeDataSets.Campo('vOutro_W15').Value  := FormatFloatXML(Form7.ibDataSet15.FieldByname('DESPESAS').AsFloat); // OUtras Despesas Acessórias
 
-  //if Form7.ibDataSet15FINNFE.AsString = '2' then // Complemento de ICMS // Mauricio Parizotto 2023-06-05  - Entrou complento de valor
   if (Form7.ibDataSet15FINNFE.AsString = '2')
     and (Form7.ibDataSet15.FieldByname('MERCADORIA').AsFloat = 0.01) then // Complemento de ICMS
   begin
@@ -2558,20 +2465,20 @@ begin
 
     }
     // Recalcula o total da nota
-    if Form7.spdNFeDataSets.Campo('vST_W06').AsFloat <> 0 then
+    if XmlValueToFloat(Form7.spdNFeDataSets.Campo('vST_W06').AsString) <> 0 then
     begin
-      Form7.spdNFeDataSets.Campo('vNF_W16').Value := FormatFloatXML(
-        (
-          Form7.spdNFeDataSets.Campo('vProd_W07').AsFloat  // Mercadoria
-        + Form7.spdNFeDataSets.Campo('vFrete_W08').AsFloat // Frete
-        + Form7.spdNFeDataSets.Campo('vSeg_W09').AsFloat // Seguro
-        + Form7.spdNFeDataSets.Campo('vIPI_W12').AsFloat // IPI
-        + Form7.spdNFeDataSets.Campo('vST_W06').AsFloat // Valor do ICMS substituição
-        + Form7.spdNFeDataSets.Campo('vOutro_W15').AsFloat // Despesas
-        + Form7.spdNFeDataSets.Campo('vFCPST_W06a').AsFloat// Valor Total do FCP (Fundo de Combate à Pobreza) retido por substituição tributária
-        - Form7.spdNFeDataSets.Campo('vDesc_W10').AsFloat // Desconto
-        + Form7.ibDataSet15SERVICOS.AsFloat
-        + fIPIDevolvido)
+      Form7.spdNFeDataSets.Campo('vNF_W16').Value     := FormatFloatXML(
+      (
+        XmlValueToFloat(Form7.spdNFeDataSets.Campo('vProd_W07').AsString)  // Mercadoria
+      + XmlValueToFloat(Form7.spdNFeDataSets.Campo('vFrete_W08').AsString) // Frete
+      + XmlValueToFloat(Form7.spdNFeDataSets.Campo('vSeg_W09').AsString)   // Seguro
+      + XmlValueToFloat(Form7.spdNFeDataSets.Campo('vIPI_W12').AsString)   // IPI
+      + XmlValueToFloat(Form7.spdNFeDataSets.Campo('vST_W06').AsString)    // Valor do ICMS substituição
+      + XmlValueToFloat(Form7.spdNFeDataSets.Campo('vOutro_W15').AsString) // Despesas
+      + XmlValueToFloat(Form7.spdNFeDataSets.Campo('vFCPST_W06a').AsString)// Valor Total do FCP (Fundo de Combate à Pobreza) retido por substituição tributária
+      - XmlValueToFloat(Form7.spdNFeDataSets.Campo('vDesc_W10').AsString)  // Desconto
+      + Form7.ibDataSet15SERVICOS.AsFloat
+      + fIPIDevolvido)
       ) ;
     {Sandro (f-21649) 2024-11-14 fim}
       // Valor Total da NFe
@@ -2667,7 +2574,7 @@ begin
         // Estaduais
         fTotaldeTriubutos_uf := fTotaldeTriubutos_uf +
         Arredonda(((Form7.ibDataSet35.FieldByname('TOTAL').AsFloat)*Form7.ibDataSet4.FieldByname('IIA_UF').AsFloat/100),2);
-            
+
         // Municipais
         fTotaldeTriubutos_muni := fTotaldeTriubutos_muni +
         Arredonda(((Form7.ibDataSet35.FieldByname('TOTAL').AsFloat)*Form7.ibDataSet4.FieldByname('IIA_MUNI').AsFloat/100),2);
@@ -2735,10 +2642,6 @@ begin
           Form7.spdNFeDataSets.Campo('vCOFINS_S11').Value := '0.00'; // Valor do COFINS em Reais
         end;
 
-        {Mauricio Parizotto 2024-05-03
-        if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '9' then
-          Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
-        }
         if Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value = '2' then
           Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
 
@@ -2954,13 +2857,10 @@ begin
         stPag_YA02 := '14'; // 14=Duplicata Mercantil
 
       Form7.spdNFeDataSets.campo('tPag_YA02').Value       := stPag_YA02;  // Forma de pagamento
-      {Sandro Silva 2023-07-20 inicio}
       if stPag_YA02 = '99' then
         Form7.spdNFeDataSets.campo('xPag_YA02a').Value       := 'Outras Formas';
-      {Sandro Silva 2023-07-20 fim}
       Form7.spdNFeDataSets.campo('vPag_YA03').Value       := FormatFloatXML(Form7.ibDataSet7VALOR_DUPL.AsFloat);
 
-      //if (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '03') or (Copy(Form7.ibDataSet7FORMADEPAGAMENTO.AsString, 1, 2) = '04') then
       if FormaDePagamentoEnvolveCartao(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) then
       begin
         IBQCREDENCIADORA.Close;
@@ -2981,17 +2881,16 @@ begin
         Form7.spdNFeDataSets.campo('tBand_YA06').Value      := CodigotBandNF(Form7.ibDataSet7BANDEIRA.AsString);  // Bandeira da operadora de cartão de crédito e/ou débito
         Form7.spdNFeDataSets.campo('cAut_YA07').Value       := Copy(Form7.ibDataSet7AUTORIZACAOTRANSACAO.AsString, 1, 20);  // Número de autorização da operação cartão de crédito e/ou débito
 
-{       Dailon Parisotto (f-225) 2023/03/26 Inicio
+        {Dailon Parisotto (f-225) 2023/03/26 Inicio
         A obrigatóriedade foi postergado, sendo assim não está no schema.
 
         Form7.spdNFeDataSets.campo('CNPJReceb_YA07a').Value := LimpaNumero(Form7.ibDataSet13CGC.AsString);
         Form7.spdNFeDataSets.campo('idTermPag_YA07b').Value := '001';
 
         Dailon Parisotto (f-225) 2023/03/26 Fim
-}
+        }
       end;
 
-      //Mauricio Parizotto 2024-07-10
       if IdFormasDePagamentoNFe(Form7.ibDataSet7FORMADEPAGAMENTO.AsString) = '17' then
       begin
         if bPagouComTEF then
@@ -3030,7 +2929,6 @@ begin
     Form7.spdNFeDataSets.campo('vTroco_YA09').Value     := '0.00';  // valor do troco
 
   end;
-  {Sandro Silva 2023-06-29 fim}
 
   if ((Form7.ibDataSet15FINNFE.AsString <> '2') or ((Form7.ibDataSet15FINNFE.AsString = '2') and (not Form7.ibDataSet7.IsEmpty))) then
   begin
@@ -3045,12 +2943,12 @@ begin
       Form7.spdNFeDataSets.Campo('pesoL_X31').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDataSet15.FieldByname('PESOLIQUI').AsFloat)),',','.'); // Peso Líquido
       Form7.spdNFeDataSets.Campo('pesoB_X32').Value    := StrTran(Alltrim(FormatFloat('##0.000',Form7.ibDataSet15.FieldByname('PESOBRUTO').AsFloat)),',','.'); // Peso Bruto
     end;
-    
+
     // Dados De Cobrança
     J := 0;
     fTotalDupl := 0;
 
-    Form7.ibDataSet7.First; 
+    Form7.ibDataSet7.First;
 
     while not Form7.ibDataSet7.Eof do
     begin
@@ -3086,18 +2984,15 @@ begin
         Form7.spdNFeDataSets.SalvarCobranca;
       end;
     end;
-    {Sandro Silva 2023-06-29 fim}
     Form7.spdNFeDataSets.Y.Post; // Grava a Duplicata em questão.
   end;
 
-  {Dailon Parisotto (small-653) 2024-08-26 Inicio}
   sSINIEF_OBS := EmptyStr;
   if AnsiUpperCase(Form7.ibDataSet14.FieldByname('NOME').AsString) = AnsiUpperCase(_cNaturezaSINIEF) then
   begin
     sSINIEF_OBS := _cObsNFeSINIEF;
     Form7.spdNFeDataSets.Campo('infAdFisco_Z02').Value := AllTrim(Form7.spdNFeDataSets.Campo('infAdFisco_Z02').Value + ' ' + _cObsNFeSINIEF);
   end;
-  {Dailon Parisotto (small-653) 2024-08-26 Fim}
 
   // Dados Adicionais da NFe - Observações
   if RetornaValorDaTagNoCampo('infAdFisco', Form7.ibDataSet14.FieldByname('OBS').AsString) <> '' then
@@ -3111,13 +3006,11 @@ begin
     Form7.spdNFeDataSets.Campo('infCpl_Z03').Value     := Trim(ConverteCaracterEspecialXML(Trim(Form7.ibDataSet15COMPLEMENTO.AsString + ' ' + Trim(sComplemento) + ' ' + sDIFAL_OBS + ' ' + sCupomReferenciado))); // Informacoes Complementares
   end;
 
-  {Sandro Silva 2023-06-07 inicio}
   // Ativar quando Tecnospeed deixar de incluir essa inform. complementar por conta própria na visualização do danfe
   // Sandro Silva 2023-06-16 if dvICMSMonoRet_N45Total > 0.00 then
   // Sandro Silva 2023-06-16Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
   if sMensagemIcmMonofasicoSobreCombustiveis <> '' then
     Form7.spdNFeDataSets.Campo('infCpl_Z03').Value := Form7.spdNFeDataSets.Campo('infCpl_Z03').Value + '|' + sMensagemIcmMonofasicoSobreCombustiveis;
-  {Sandro Silva 2023-06-07 fim}
 
   // Form7.spdNFeDataSets.Campo('xPed_ZB03').Value      := Form7.ibDataSet16NUMEROOS.AsString; // Informar o pedido no caso a OS
   // SAIDA
@@ -3144,13 +3037,10 @@ var
   procedure GeraXmlNFeSaidaTagsRegimeNormal;
   begin
 
-  //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1') then Mauricio Parizotto 2024-08-07
   if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '1')
     and (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) <> '4') then
   begin
     try
-      // Sandro Silva 2023-06-13 if Form7.spdNFeDataSets.Campo('finNFe_B25').Value = '4' then // 4=NFe Devolução
-      // Dailon Parisotto 2024-08-07 if (NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value)) then // Devolução
       if DevolucaoOuImpostoManual(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then // Devolução
       begin
         Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet16.FieldByname('CST_ICMS').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
@@ -3180,7 +3070,6 @@ var
       Form7.spdNFeDataSets.Campo('orig_N11').Value   := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',1,1); //Origemd da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
       Form7.spdNFeDataSets.Campo('CST_N12').Value    := Copy(LimpaNumero(Form7.ibDataSet4.FieldByname('CST').AsString)+'000',2,2); // Tipo da Tributação do ICMS (00 - Integralmente) ver outras formas no Manual
     end;
-    {Sandro Silva 2023-05-15 fim}
     // Tem que voltar ao CFOP original da nota
 
     // Posiciona na tabéla de CFOP
@@ -3279,7 +3168,6 @@ var
         Form7.ibDataSet14.EnableControls;
       end;
 
-      //if Form7.ibDataSet4PIVA.AsFloat > 0 then Mauricio Parizotto 2024-09-11
       if IVAProd > 0 then
       begin
         if Form7.ibDataSet16.FieldByname('BASE').AsFloat > 0 then
@@ -3317,6 +3205,7 @@ var
 
             if Form7.AliqICMdoCliente16() < Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
             begin
+              {Sandro Silva (f-21649) 2024-11-18 inicio
               // Desconta o ICM normal
               if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
               begin
@@ -3351,11 +3240,46 @@ var
                 ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )
                 ,2))),',','.'); // Valor do ICMS ST em Reais
               end;
+              }
+              // Desconta o ICM normal
+              if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
+              begin
+                // VINICULAS
+                try
+                  Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
+                    (((
+                    (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)
+                    + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100)
+                    )
+                    ) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString, pos('<BCST>',Form7.ibDataSet14OBS.AsString) + 6, 5)) / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * IVAProd)
+                    - ((
+                    ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)
+                    + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha
+                    ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )
+                    ), 2)); // Valor do ICMS ST em Reais
+                except
+                end;
+              end else
+              begin
+                Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda(
+                  (((
+                  (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)
+                  + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100)
+                  )
+                  ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 )* IVAProd)
+                  - ((
+                  ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)
+                  + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha
+                  ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )
+                  , 2)); // Valor do ICMS ST em Reais
+              end;
+              {Sandro Silva (f-21649) 2024-11-18 fim}
             end else
             begin
               // Desconta o ICM normal
               if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
               begin
+                {Sandro Silva (f-21649) 2024-11-18 inicio
                 // VINICULAS
                 try
                   // Estava arredondando duas vezes. Arredondava a primeira parte do cálculo, depois subtraia a segunda parte, que não estava arredondada, e arredondava o resultado
@@ -3372,6 +3296,20 @@ var
                     ,',','.'); // Valor do ICMS ST em Reais
                 except
                 end;
+                }
+                // VINICULAS
+                try
+                  // Estava arredondando duas vezes. Arredondava a primeira parte do cálculo, depois subtraia a segunda parte, que não estava arredondada, e arredondava o resultado
+                  // Isso causa diferença entre o cálculo feito para exibir os valores na tela de lançamento de itens
+                  Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   :=
+                    FormatFloatXML(
+                          Arredonda(
+                               ((((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100))) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString, pos('<BCST>', Form7.ibDataSet14OBS.AsString) + 6, 5)) / 100 * Form7.AliqICMdoCliente16() / 100 ) * IVAProd)
+                             - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100)) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat  / 100)
+                          , 2)); // Valor do ICMS ST em Reais
+                except
+                end;
+                {Sandro Silva (f-21649) 2024-11-18 fim}
               end else
               begin
                 {Sandro Silva (f-21367) 2024-10-30 inicio
@@ -3394,7 +3332,7 @@ var
                 Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   :=
                   FormatFloatXML(
                         Arredonda(
-                             (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)+ (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100))) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.AliqICMdoCliente16() / 100 ) * IVAProd
+                             ((((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)+ (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100))) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.AliqICMdoCliente16() / 100 ) * IVAProd)
                              -
                              ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat  / 100 )
                         , 2)
@@ -3405,6 +3343,7 @@ var
             end;
           end else
           begin
+            {Sandro Silva (f-21649) 2024-11-18 inicio
             // CALCULO DO IVA
             if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
             begin
@@ -3420,8 +3359,25 @@ var
               //* Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.ibDataSet4PIVA.AsFloat),2) )),',','.'); // Valor da B ST Mauricio Parizotto 2024-09-11
               * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * IVAProd),2) )),',','.'); // Valor da B ST
             end;
+            }
+            // CALCULO DO IVA
+            if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
+            begin
+              // VINICULAS
+              try
+                Form7.spdNFeDataSets.Campo('vbCST_N21').Value     := FormatFloatXML(Arredonda((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)
+                  * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString) + 6, 5)) / 100 * IVAProd), 2)); // Valor da B ST
+              except
+              end;
+            end else
+            begin
+              Form7.spdNFeDataSets.Campo('vbCST_N21').Value     := FormatFloatXML(Arredonda(( ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)
+                * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * IVAProd), 2)); // Valor da B ST
+            end;
+            {Sandro Silva (f-21649) 2024-11-18 fim}
             if Form7.AliqICMdoCliente16() < Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
             begin
+              {Sandro Silva (f-21649) 2024-11-18 inicio
               if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
               begin
                 // VINICULAS
@@ -3440,8 +3396,27 @@ var
                 - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )
                 ),2) )),',','.'); // Valor do ICMS ST em Reais
               end;
+              }
+              if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
+              begin
+                // VINICULAS
+                try
+                  Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
+                    ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString, pos('<BCST>', Form7.ibDataSet14OBS.AsString) + 6, 5)) / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * IVAProd)
+                    - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100)
+                    ), 2)); // Valor do ICMS ST em Reais
+                except end;
+              end else
+              begin
+                Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
+                  ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * IVAProd)
+                  - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )
+                  ), 2)); // Valor do ICMS ST em Reais
+              end;
+              {Sandro Silva (f-21649) 2024-11-18 fim}
             end else
             begin
+              {Sandro Silva (f-21649) 2024-11-18 inicio
               if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
               begin
                 // VINICULAS
@@ -3459,7 +3434,27 @@ var
                 Arredonda((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)+ fIPIPorUnidade) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.AliqICMdoCliente16() / 100 )* IVAProd,2)
                 - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto)) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )
                 ),2) )),',','.'); // Valor do ICMS ST em Reais
+
               end;
+              }
+              if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
+              begin
+                // VINICULAS
+                try
+                  Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
+                    ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString, pos('<BCST>',Form7.ibDataSet14OBS.AsString) + 6, 5)) / 100 * Form7.AliqICMdoCliente16() / 100 ) * IVAProd)
+                    - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 )
+                    ), 2)); // Valor do ICMS ST em Reais
+                except
+                end;
+              end else
+              begin
+                Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
+                  ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.AliqICMdoCliente16() / 100 ) * IVAProd)
+                  - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 )
+                  ),2)); // Valor do ICMS ST em Reais
+              end;
+              {Sandro Silva (f-21649) 2024-11-18 fim}
             end;
           end;
 
@@ -3538,18 +3533,10 @@ var
             end else
             begin
               // Procura pela última compra deste item
-              {
-              Form7.ibQuery1.Close;
-              Form7.ibQuery1.Sql.Clear;
-              // Sandro Silva 2024-03-25 Form7.ibQuery1.Sql.Add('select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by COMPRAS.EMISSAO desc');
-              Form7.ibQuery1.Sql.Text := SqlSelectDadosItensNotaEntrada(Form7.ibDataSet4CODIGO.AsString);
-              Form7.ibQuery1.Open;
-              }
               SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
 
               if Form7.ibQuery1.FieldByname('VICMSST').AsFloat <> 0 then
               begin
-                //Sandro Silva 2024-03-25 Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
                 // Preencher a tag pST com o que encontrar no campo novo da tabela ITENS002, caso não tenha essa informação, fazer o calculo (como ocorre hoje)
                 if Form7.ibQuery1.FieldByname('PICMSST').AsString <> '' then
                   Form7.spdNFeDataSets.Campo('pST_N26a').Value            := FormatFloatXML(Form7.ibQuery1.FieldByname('PICMSST').AsFloat)  // Aliquota suportada pelo consumidor
@@ -3573,7 +3560,7 @@ var
           end;
 
           Form7.spdNFeDataSets.Campo('vbCST_N21').Value       := FormatFloatXML(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat); // Valor cobrado anteriormente por ST
-          Form7.spdNFeDataSets.Campo('vICMSST_N23').Value     := FormatFloatXML(Arredonda((Form7.AliqICMdoCliente16()*(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat)/100),2) ); // Valor do ICMS ST em Reais
+          Form7.spdNFeDataSets.Campo('vICMSST_N23').Value     := FormatFloatXML(Arredonda((Form7.AliqICMdoCliente16() * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat) / 100), 2)); // Valor do ICMS ST em Reais
         end else
         begin
           if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '60' then
@@ -3585,22 +3572,14 @@ var
               Form7.spdNFeDataSets.campo('pRedBCEfet_N34').Value      := FormatFloatXML(100-Form7.ibDataSet14BASE.AsFloat);// Percentual de redução da base de cálculo efetiva
               Form7.spdNFeDataSets.campo('vBCEfet_N35').Value         := FormatFloatXML(((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase) * Form7.ibDataSet14BASE.AsFloat / 100));  // Valor da base de cálculo efetiva
               Form7.spdNFeDataSets.campo('pICMSEfet_N36').Value       := FormatFloatXML(Form7.AliqICMdoCliente16()); // Alíquota do ICMS efetiva
-              Form7.spdNFeDataSets.campo('vICMSEfet_N37').Value       := FormatFloatXML(Form7.AliqICMdoCliente16()*(((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase) * Form7.ibDataSet14BASE.AsFloat / 100))/100); // Valor do ICMS efetivo
+              Form7.spdNFeDataSets.campo('vICMSEfet_N37').Value       := FormatFloatXML(Form7.AliqICMdoCliente16() * (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase) * Form7.ibDataSet14BASE.AsFloat / 100)) / 100); // Valor do ICMS efetivo
             end else
             begin
               // Procura pela última compra deste item
-              {
-              Form7.ibQuery1.Close;
-              Form7.ibQuery1.Sql.Clear;
-              // Sandro Silva 2024-03-21 Form7.ibQuery1.Sql.Add('select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by COMPRAS.EMISSAO desc');
-              Form7.ibQuery1.Sql.Text := SqlSelectDadosItensNotaEntrada(Form7.ibDataSet4CODIGO.AsString);
-              Form7.ibQuery1.Open;
-              }
               SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
 
               if Form7.ibQuery1.FieldByname('VICMSST').AsFloat <> 0 then
               begin
-                //Sandro Silva 2024-03-21 Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
                 // Preencher a tag pST com o que encontrar no campo novo da tabela ITENS002, caso não tenha essa informação, fazer o calculo (como ocorre hoje)
                 if Form7.ibQuery1.FieldByname('PICMSST').AsString <> '' then
                   Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML(Form7.ibQuery1.FieldByname('PICMSST').AsFloat)  // Aliquota suportada pelo consumidor
@@ -3771,14 +3750,6 @@ var
       end;
     end;
 
-    {Mauricio Parizoto 2024-08-07 - Já tem uma condição que não entra nesse bloco se for = 1
-    if LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1' then
-    begin
-      Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0';  // BC
-      Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0';  // Valor do ICMS em Reais
-    end;
-    }
-
     if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30') or
        (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10') or
        (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '70') or
@@ -3825,14 +3796,6 @@ var
 
       if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '00' then
       begin
-        {
-        if fPercentualFCP <> 0 then
-        begin
-          Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(fPercentualFCP); // Percentual do Fundo de Combate à Pobreza (FCP)
-          Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))*fPercentualFCP/100); // Valor do Fundo de Combate à Pobreza (FCP)
-        end;
-        }
-        // Sandro Silva 2023-05-15 if (Form7.ibDataSet16.FieldByname('PFCP').AsFloat) <> 0 then
         if fPercentualFCP <> 0 then
         begin
           Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(fPercentualFCP); // Percentual do Fundo de Combate à Pobreza (FCP)
@@ -3842,29 +3805,6 @@ var
 
       if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '10' then
       begin
-        {
-        if fPercentualFCP <> 0 then
-        begin
-          Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',',')));// Valor da Base de Cálculo do FCP
-          Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(fPercentualFCP); // Percentual do Fundo de Combate à Pobreza (FCP)
-          Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))*fPercentualFCP/100); // Valor do Fundo de Combate à Pobreza (FCP)
-        end;
-
-        if fPercentualFCPST <> 0 then
-        begin
-          Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,',',''),'.',','))); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
-          Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := FormatFloatXML(fPercentualFCPST); // Percentual do FCP retido por Substituição Tributária
-
-          if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
-          begin
-            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML((StrToFloat(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,'.',','))*fPercentualFCPST/100) -(StrToFloat(StrTran('0'+Form7.spdNFeDataSets.Campo('vFCP_N17c').AsString,'.',','))) ); // Valor do FCP retido por Substituição Tributária
-          end else
-          begin
-            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML((StrToFloat(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,'.',','))*fPercentualFCPST/100) ); // Valor do FCP retido por Substituição Tributária
-          end;
-        end;
-        }
-        // Sandro Silva 2023-05-15 if (Form7.ibDataSet16.FieldByname('PFCP').AsFloat) <> 0 then
         if fPercentualFCP <> 0 then
         begin
           Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCP').AsFloat);// Valor da Base de Cálculo do FCP
@@ -3890,7 +3830,6 @@ var
 
       if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '20' then
       begin
-        // Sandro Silva 2023-05-15 if Form7.ibDataSet16.FieldByname('PFCP').AsFloat <> 0 then
         if fPercentualFCP <> 0 then
         begin
           Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCP').AsFloat); // Valor da Base de Cálculo do FCP
@@ -3901,28 +3840,6 @@ var
 
       if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '30' then
       begin
-        {
-        if fPercentualFCP <> 0 then
-        begin
-          fCalculo := (Form7.ibDataSet16.FieldByname('BASE').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase )/100)*fPercentualFCP/100;
-        end;
-
-        if fPercentualFCPST <> 0 then
-        begin
-          Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,',',''),'.',','))); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
-          Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := FormatFloatXML(fPercentualFCPST); // Percentual do FCP retido por Substituição Tributária
-
-          if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
-          begin
-            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML((StrToFloat(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,'.',','))*fPercentualFCPST/100)-(fCalculo)); // Valor do FCP retido por Substituição Tributária
-          end else
-          begin
-            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML((StrToFloat(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,'.',','))*fPercentualFCPST/100)); // Valor do FCP retido por Substituição Tributária
-          end;
-        end;
-        }
-
-        // Sandro Silva 2023-05-15 if Form7.ibDataSet16.FieldByname('PFCPST').AsFloat <> 0 then
         if fPercentualFCPST <> 0 then
         begin
           Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCPST').AsFloat); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
@@ -3934,7 +3851,6 @@ var
 
       if Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '51' then
       begin
-        // Sandro Silva 2023-05-15 if Form7.ibDataSet16PFCP.AsFloat <> 0 then
         if fPercentualFCP <> 0 then
         begin
           Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCP').AsFloat); // Valor da Base de Cálculo do FCP
@@ -3975,29 +3891,6 @@ var
 
       if (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '70') or (Form7.spdNFeDataSets.Campo('CST_N12').AssTring = '90') then
       begin
-        {
-        if fPercentualFCP <> 0 then
-        begin
-          Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))); // Valor da Base de Cálculo do FCP
-          Form7.spdNFeDataSets.campo('pFCP_N17b').Value     := FormatFloatXML(fPercentualFCP); // Percentual do Fundo de Combate à Pobreza (FCP)
-          Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','))*fPercentualFCP/100); // Valor do Fundo de Combate à Pobreza (FCP)
-        end;
-
-        if fPercentualFCPST <> 0 then
-        begin
-          Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,',',''),'.',','))); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
-          Form7.spdNFeDataSets.campo('pFCPST_N23b').Value    := FormatFloatXML(fPercentualFCPST); // Percentual do FCP retido por Substituição Tributária
-
-          if (UpperCase(Form7.ibDAtaset2ESTADO.AsString) = UpperCase(Form7.ibDataSet13ESTADO.AsString)) and (UpperCase(Form7.ibDataSet13ESTADO.AsString)='RJ') then
-          begin
-            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML((StrToFloat(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,'.',','))*fPercentualFCPST/100)-(StrToFloat(StrTran('0'+Form7.spdNFeDataSets.Campo('vFCP_N17c').AsString,'.',',')))); // Valor do FCP retido por Substituição Tributária
-          end else
-          begin
-            Form7.spdNFeDataSets.campo('vFCPST_N23d').Value    := FormatFloatXML((StrToFloat(StrTran('0'+Form7.spdNFeDataSets.Campo('vbCST_N21').AsString,'.',','))*fPercentualFCPST/100)); // Valor do FCP retido por Substituição Tributária
-          end;
-        end;
-        }
-        // Sandro Silva 2023-05-15 if Form7.ibDataSet16.FieldByname('PFCP').AsFloat <> 0 then
         if fPercentualFCP <> 0 then
         begin
           Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCP').AsFloat); // Valor da Base de Cálculo do FCP
@@ -4005,7 +3898,6 @@ var
           Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCP').AsFloat); // Valor do Fundo de Combate à Pobreza (FCP)
         end;
 
-        // Sandro Silva 2023-05-15 if Form7.ibDataSet16.FieldByname('PFCPST').AsFloat <> 0 then
         if fPercentualFCPST <> 0 then
         begin
           Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCPST').AsFloat); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
@@ -4027,7 +3919,6 @@ var
   procedure GeraXmlNFeSaidaTagsSimplesNacional;
   begin
 
-    //if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') then Mauricio Parizotto 2024-08-07
     if (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '1') or
       (LimpaNumero(Form7.ibDataSet13.FieldByname('CRT').AsString) = '4') then
     begin
@@ -4035,7 +3926,6 @@ var
       // TAGS - Simples NAcional - CSOSN
       // N12a Tem em todas - e eé referencia para classificar as tags
 
-      // Dailon Parisotto 2024-08-07 if (NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value)) then // Devolução
       if DevolucaoOuImpostoManual(Form7.spdNFeDataSets.Campo('finNFe_B25').Value) then // Devolução
       begin
         Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value := Form7.ibDataSet16.FieldByname('CSOSN').AsString;
@@ -4069,12 +3959,8 @@ var
           then
       begin
         Form7.ibDataSet15.Edit;
-        {Dailon Parisotto (f-18465) 2024-04-30 Inicio
-        Form7.ibDataSet15STATUS.AsString    := 'Erro: Informe o CSOSN do produto '+ ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString);
-        }
         Form7.SetTextoCampoSTATUSNFe(Copy('Erro: Informe o CSOSN do produto '+ Form7.ibDataSet4.FieldByname('CODIGO').AsString + ' - ' +
                                                     ConverteAcentos2(Form7.ibDataSet4.FieldByname('DESCRICAO').AsString),1,Form7.ibDataSet15STATUS.Size));
-        {Dailon Parisotto (f-18465) 2024-04-30 Fim}
         Abort;
 
       end;
@@ -4146,7 +4032,6 @@ var
                 fIPIPorUnidade := (Form7.ibDataSet16.FieldByname('QUANTIDADE').AsFloat * StrToFloat(LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',Form7.ibDataSet4.FieldByname('TAGS_').AsString))));
               end;
 
-              //if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
               if (vIPISobreICMS) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
               begin
                 if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
@@ -4185,11 +4070,11 @@ var
                   ),2) )),',','.'); // Valor do ICMS ST em Reais
                   }
                   Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
-                      (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
-                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* IVAProd)
-                    - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
+                      ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha
+                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * IVAProd)
+                    - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha
                       ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )
                       ), 2)); // Valor do ICMS ST em Reais
                   {Sandro Silva (f-21574) 2024-11-07 fim}
@@ -4208,13 +4093,13 @@ var
                   ),2) )),',','.'); // Valor do ICMS ST em Reais
                   }
                   Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
-                      (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      +(Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
-                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )* IVAProd)
-                    - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      +(Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
-                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )
-                      ),2) ); // Valor do ICMS ST em Reais
+                      ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
+                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 ) * IVAProd)
+                    - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
+                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100)
+                      ), 2)); // Valor do ICMS ST em Reais
 
                 end;
               end else
@@ -4286,11 +4171,11 @@ var
                     ),2) )),',','.'); // Valor do ICMS ST em Reais
                     }
                   Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
-                      (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      +(0 * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
+                      ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (0 * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha
                       ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * IVAProd)
-                    - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      +(0 * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
+                    - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (0 * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha
                       ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )
                       ), 2)); // Valor do ICMS ST em Reais
                   {Sandro Silva (f-21574) 2024-11-07 fim}
@@ -4309,11 +4194,11 @@ var
                   }
 
                   Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
-                      (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      + (0 * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha //Sandro Silva 2024-11-07 essa linha é inútil
+                      ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (0 * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha //Sandro Silva 2024-11-07 essa linha é inútil
                       ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 ) * IVAProd)
-                    - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      + (0 * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha //Sandro Silva 2024-11-07 essa linha é inútil
+                    - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (0 * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha //Sandro Silva 2024-11-07 essa linha é inútil
                       ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 )
                       ), 2)); // Valor do ICMS ST em Reais
                   {Sandro Silva (f-21574) 2024-11-07 fim}
@@ -4372,7 +4257,6 @@ var
               end;
 
               // Valor da Base de Calculo de ISMS St do item
-              //if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
               if (vIPISobreICMS) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
               begin
                 if pos('<BCST>',Form7.ibDataSet14OBS.AsString) <> 0 then
@@ -4441,11 +4325,11 @@ var
                     ),2) )),',','.'); // Valor do ICMS ST em Reais
                     }
                   Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
-                      (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste
-                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 )* IVAProd)
-                    - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
+                      ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste
+                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100) * IVAProd)
+                    - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha
                       ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )
                       ), 2)); // Valor do ICMS ST em Reais
                     {Sandro Silva (f-21574) 2024-11-07 fim}
@@ -4463,12 +4347,12 @@ var
                     ),2) )),',','.'); // Valor do ICMS ST em Reais
                     }
                   Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
-                      (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
+                      ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
                       + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
-                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )* IVAProd)
-                    - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
-                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )
+                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 ) * IVAProd)
+                    - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha
+                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100)
                       ), 2)); // Valor do ICMS ST em Reais
                     {Sandro Silva (f-21574) 2024-11-07 fim}
                 end;
@@ -4540,13 +4424,13 @@ var
                     ),2) )),',','.'); // Valor do ICMS ST em Reais
                     }
                   Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
-                      (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      + (0 * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha  //Sandro Silva 2024-11-07 Essa linha é inútil sempre será 0
-                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* IVAProd)
-                    - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      + (0 * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha  //Sandro Silva 2024-11-07 Essa linha é inútil sempre será 0
+                      ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (0 * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha  //Sandro Silva 2024-11-07 Essa linha é inútil sempre será 0
+                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * IVAProd)
+                    - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (0 * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha  //Sandro Silva 2024-11-07 Essa linha é inútil sempre será 0
                       ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )
-                      ), 2)) ; // Valor do ICMS ST em Reais
+                      ), 2)); // Valor do ICMS ST em Reais
                     {Sandro Silva (f-21574) 2024-11-07 fim}
                 end else
                 begin
@@ -4564,10 +4448,10 @@ var
                   Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   :=  FormatFloatXML(Arredonda((
                       ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
                       + (0 * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha
-                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )* IVAProd)
+                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 ) * IVAProd)
                     - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
                       + (0 * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha
-                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )
+                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 )
                       ), 2)) ; // Valor do ICMS ST em Reais
                 end;
               end;
@@ -4579,7 +4463,7 @@ var
           end else
           begin
             Form7.spdNFeDataSets.Campo('vbCST_N21').Value       := FormatFloatXML(Form7.ibDataSet16.FieldByname('TOTAL').AsFloat); // Valor cobrado anteriormente por ST
-            Form7.spdNFeDataSets.Campo('vICMSST_N23').Value     := FormatFloatXML(Arredonda((Form7.AliqICMdoCliente16()*Form7.ibDataSet16.FieldByname('TOTAL').AsFloat/100),2) ); // Valor do ICMS ST em Reais
+            Form7.spdNFeDataSets.Campo('vICMSST_N23').Value     := FormatFloatXML(Arredonda((Form7.AliqICMdoCliente16() * Form7.ibDataSet16.FieldByname('TOTAL').AsFloat / 100), 2)); // Valor do ICMS ST em Reais
           end;
         end;
 
@@ -4601,8 +4485,6 @@ var
       end;
 
       // CSOSN 500
-      // Sandro Silva 2023-05-25 if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '500') then
-      // Dailon Parisotto 2024-08-07 ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '500') and (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)))
       if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '500') or
         ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '500') and (DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString)))
       then
@@ -4616,18 +4498,10 @@ var
         end else
         begin
           // Procura pela última compra deste item
-          {
-          Form7.ibQuery1.Close;
-          Form7.ibQuery1.Sql.Clear;
-          //Sandro Silva 2024-03-21 Form7.ibQuery1.Sql.Add('select first 1 ITENS002.CODIGO, ITENS002.QUANTIDADE, ITENS002.VBCST, ITENS002.VICMSST from ITENS002, COMPRAS where ITENS002.NUMERONF = COMPRAS.NUMERONF and Coalesce(ITENS002.VICMSST,0)<>0 and ITENS002.CODIGO='+QuotedStr(Form7.ibDataSet4CODIGO.AsString)+' order by COMPRAS.EMISSAO desc');
-          Form7.ibQuery1.Sql.Text := SqlSelectDadosItensNotaEntrada(Form7.ibDataSet4CODIGO.AsString);
-          Form7.ibQuery1.Open;
-          }
           SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
 
           if Form7.ibQuery1.FieldByname('VICMSST').AsFloat <> 0 then
           begin
-            //Sandro Silva 2024-03-21 Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML((Form7.ibQuery1.FieldByname('VICMSST').AsFloat / Form7.ibQuery1.FieldByname('VBCST').AsFloat)*100);  // Aliquota suportada pelo consumidor
             // Preencher a tag pST com o que encontrar no campo novo da tabela ITENS002, caso não tenha essa informação, fazer o calculo (como ocorre hoje)
             if Form7.ibQuery1.FieldByname('PICMSST').AsString <> '' then
               Form7.spdNFeDataSets.Campo('pST_N26a').Value              := FormatFloatXML(Form7.ibQuery1.FieldByname('PICMSST').AsFloat)  // Aliquota suportada pelo consumidor
@@ -4649,8 +4523,6 @@ var
 
       // CSOSN 900
       // NOTA DEVOLUCAO D E V
-      // Sandro Silva 2023-05-25 if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900') or (Form7.ibDataSet14.FieldByname('CSOSN').AsString = '900') then
-      // Dailon Parisotto 2024-08-07 or ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '900') and (NFeFinalidadeDevolucao(Form7.ibDataSet15FINNFE.AsString)))
       if (Form7.ibDataSet4.FieldByname('CSOSN').AsString = '900')
         or ((Form7.ibDataSet16.FieldByname('CSOSN').AsString = '900') and (DevolucaoOuImpostoManual(Form7.ibDataSet15FINNFE.AsString)))
       then
@@ -4741,7 +4613,6 @@ var
                 Form7.ibDataSet14.EnableControls;
               end;
 
-              //if ((Form7.ibDataSet14SOBREIPI.AsString = 'S')) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
               if (vIPISobreICMS) and (Form7.ibDataSet16.FieldByname('IPI').AsFloat>0) then
               begin
                 // IPI Por Unidade
@@ -4759,6 +4630,7 @@ var
                   // * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.ibDataSet4PIVA.AsFloat) )),',','.'); // Valor da B ST Mauricio Parizotto 2024-09-11
                    * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * IVAProd) )),',','.'); // Valor da B ST
 
+                {Sandro Silva (f-21649) 2024-11-18 inicio
                 // Desconta o ICM sobre IPI normal do ST   CALCULO DO IVA
                 if Form7.AliqICMdoCliente16() < Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
                 begin
@@ -4780,6 +4652,27 @@ var
                      ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) // Desconta o ICMS Normal
                     ),2))),',','.'); // Valor do ICMS ST em Reais
                 end;
+                }
+                // Desconta o ICM sobre IPI normal do ST   CALCULO DO IVA
+                if Form7.AliqICMdoCliente16() < Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat then
+                begin
+                  Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
+                    (((
+                    ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100))
+                     * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * IVAProd))
+                     - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100)) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100) // Desconta o ICMS Normal
+                     ), 2)); // Valor do ICMS ST em Reais
+                end else
+                begin
+                  Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
+                    (((
+                    ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100))
+                     * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * IVAProd))
+                     - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100)
+                     ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100) // Desconta o ICMS Normal
+                    ), 2)); // Valor do ICMS ST em Reais
+                end;
+                {Sandro Silva (f-21649) 2024-11-18 fim}
               end else
               begin
                 // IPI Por Unidade
@@ -4868,17 +4761,13 @@ var
                         ((
                         (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)
                         + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100)
-                        )) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString, pos('<BCST>', Form7.ibDataSet14OBS.AsString) + 6, 5)) / 100 *
-                        Form7.AliqICMdoCliente16()
-                         / 100 ) * IVAProd)
+                        )) * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString, pos('<BCST>', Form7.ibDataSet14OBS.AsString) + 6, 5)) / 100 * Form7.AliqICMdoCliente16() / 100) * IVAProd)
                       -
                         (
                         ((
                         (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) + fIPIPorUnidade)
                         + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100)
-                        )) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *
-                        Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat
-                         / 100 ))
+                        )) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100))
                       , 2)
                       ); // Valor do ICMS ST em Reais
                     {Sandro Silva (f-21574) 2024-11-07 fim}
@@ -4899,11 +4788,11 @@ var
                       ),2) )),',','.'); // Valor do ICMS ST em Reais
                     }
                     Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
-                      (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      + (0 * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha // Sandro Silva 2024-11-07 Essa linha é inútil
+                      ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (0 * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha // Sandro Silva 2024-11-07 Essa linha é inútil
                       ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * IVAProd)
-                      - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                      + (0 * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha // Sandro Silva 2024-11-07 Essa linha é inútil
+                      - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                      + (0 * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha // Sandro Silva 2024-11-07 Essa linha é inútil
                       ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 )
                       ), 2)); // Valor do ICMS ST em Reais
                     {Sandro Silva (f-21574) 2024-11-07 fim}
@@ -4921,12 +4810,12 @@ var
                       ),2) )),',','.'); // Valor do ICMS ST em Reais
                     }
                     Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Arredonda((
-                        (((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
+                        ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
+                        + (0 * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100) // Teste inclui esta linha
+                        ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100) * IVAProd)
+                      - (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)
                         + (0 * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
-                        ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.AliqICMdoCliente16() / 100 ) * IVAProd)
-                      - ((((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto))
-                        + (0 * ((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)) / 100) // Teste inclui esta linha
-                        ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 )
+                        ) * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 *  Form7.ibDataSet14.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100)
                         ), 2)); // Valor do ICMS ST em Reais
                     {Sandro Silva (f-21574) 2024-11-07 fim}
                   end;
@@ -4973,7 +4862,6 @@ var
           end;
 
           try
-            // Sandro Silva 2023-05-15 if Form7.ibDataSet16.FieldByname('PFCP').AsFloat <> 0 then
             if fPercentualFCP <> 0 then
             begin
               Form7.spdNFeDataSets.campo('vBCFCP_N17a').Value   := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCP').AsFloat); // Valor da Base de Cálculo do FCP
@@ -4981,7 +4869,6 @@ var
               Form7.spdNFeDataSets.campo('vFCP_N17c').Value     := FormatFloatXML(Form7.ibDataSet16.FieldByname('VFCP').AsFloat); // Valor do Fundo de Combate à Pobreza (FCP)
             end;
 
-            // Sandro Silva 2023-05-15 if Form7.ibDataSet16.FieldByname('PFCPST').AsFloat <> 0 then
             if fPercentualFCPST <> 0 then
             begin
               Form7.spdNFeDataSets.campo('vBCFCPST_N23a').Value  := FormatFloatXML(Form7.ibDataSet16.FieldByname('VBCFCPST').AsFloat); // Valor da Base de Cálculo do FCP retido por Substituição Tributária
@@ -5001,7 +4888,6 @@ var
         except
           on E: Exception do
           begin
-            //Application.MessageBox(pChar(E.Message+chr(10)+chr(10)+ 'ao calcular FCP.'),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-25
             MensagemSistema(E.Message+chr(10)+chr(10)+ 'ao calcular FCP.',msgErro);
           end;
         end;
@@ -5010,8 +4896,6 @@ var
       if Form1.sVersaoLayout = '4.00' then
       begin
         try
-          // Sandro Silva 2023-05-04 fCalculo := (Form7.ibDataSet16.FieldByname('BASE').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat + fSomaNaBase ) / 100) * Form7.ibDataSet16PFCP.AsFloat / 100;
-
           if Form7.spdNFeDataSets.Campo('CSOSN_N12a').Value = '201' then
           begin
             // fPercentualFCPST
@@ -5040,13 +4924,11 @@ var
             //                            Form7.spdNFeDataSets.campo('vBCFCPSTRet_N27a').Value := '0.00'; // Valor da Base de Cálculo do FCP retido anteriormente por ST
             //                            Form7.spdNFeDataSets.campo('pFCPSTRet_N27b').Value   := '0.00'; // Percentual do FCP retido anteriormente por Substituição Tributária
             //                            Form7.spdNFeDataSets.campo('vFCPSTRet_N27d').Value   := '0.00'; // Valor do FCP retido por Substituição Tributária
-            // Dailon Parisotto 2024-08-07 and (not (NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))) then
             if (not NFeIndicadorFinalidadeConsumidorFinal(Form7.spdNFeDataSets.Campo('indFinal_B25a').Value))
               and (not NFeFinalidadeComplemento(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
               and (not (DevolucaoOuImpostoManual(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))) then
             begin
               SelectDadosItensNotaEntrada(Form7.ibQuery1, Form7.ibDataSet4CODIGO.AsString);
-              // Sandro Silva 2024-03-27
               // Ajustar para que valide o campo PFCPST na tabela ITENS002. Se ele estiver em branco ou zerado, não gerar nenhuma das tags abaixo:
               if Form7.ibQuery1.FieldByName('PFCPST').AsFloat > 0 then
               begin
@@ -5094,10 +4976,8 @@ var
       begin
         // Ficha 6907
         // Simples nacional usa CST 61 no lugar do CSOSN
-        // Dailon Parisotto 2024-08-07 or (not NFeFinalidadeDevolucao(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
         if ( (Form7.ibDataSet13.FieldByname('CRT').AsString <> '1') and (Form7.ibDataSet13.FieldByname('CRT').AsString <> '4') )
           or (not DevolucaoOuImpostoManual(Form7.spdNFeDataSets.Campo('finNFe_B25').Value))
-        //if Form7.spdNFeDataSets.Campo('CSOSN_N12a').AsString = '61'
         then
         begin
           Form7.spdNFeDataSets.Campo('CSOSN_N12a').Clear;
@@ -5108,7 +4988,7 @@ var
 
   end;
 begin
-  //Mauricio Parizotto 2023-04-03
+
   fTotalMercadoria := RetornaValorSQL(' Select coalesce(sum(TOTAL),0) '+
                                       ' From ITENS001 '+
                                       ' Where NUMERONF='+QuotedStr(Form7.ibDAtaSet15NUMERONF.AsString),Form7.ibDAtaSet15.Transaction);
@@ -5136,18 +5016,10 @@ begin
 
     Form7.spdNFeDataSets.Campo('vBC_N15').Value     := '0.00';  // BC
     Form7.spdNFeDataSets.Campo('vICMS_N17').Value   := '0.00';  // Valor do ICMS em Reais
-    {Dailon Parisotto (f-19905) 2024-07-17 Inicio
-
-    Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').Value  := Form7.spdNFeDataSets.Campo('qCom_I10').Value;
-    dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + XmlValueToFloat(Form7.spdNFeDataSets.Campo('qCom_I10').Value); // Sandro Silva 2023-09-04
-
-    }
     Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').Value  := Form7.spdNFeDataSets.Campo('qTrib_I14').Value;
     dqBCMonoRet_N43aTotal := dqBCMonoRet_N43aTotal + XmlValueToFloat(Form7.spdNFeDataSets.Campo('qTrib_I14').Value); // Sandro Silva 2023-09-04
-    {Dailon Parisotto (f-19905) 2024-07-17 Fim}
     Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').Value := FormatFloatXML(StrToFloatDef(RetornaValorDaTagNoCampo('adRemICMSRet', Form7.ibDataSet4.FieldByname('TAGS_').AsString), 0.00), 4);
     dvICMSMonoRet_N45       := XmlValueToFloat(Form7.spdNFeDataSets.Campo('qBCMonoRet_N43a').AsString) * XmlValueToFloat(Form7.spdNFeDataSets.Campo('adRemICMSRet_N44').AsString);
-    // Sandro Silva 2023-09-04 dvICMSMonoRet_N45Total := dvICMSMonoRet_N45Total + dvICMSMonoRet_N45;
 
     Form7.spdNFeDataSets.Campo('vICMSMonoRet_N45').Value := FormatFloatXML(dvICMSMonoRet_N45);
 
