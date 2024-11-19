@@ -13,6 +13,7 @@ uses
   , StrUtils
   , DB
   , IniFiles
+  , IBX.IBDatabase
   ;
 
 procedure ValidaDiretorioTEF(sDirTef: String; sDirReq: String; sDirResp: String); // Sandro Silva 2020-08-20
@@ -32,7 +33,8 @@ function TEFContaArquivos(sTipoComCaminho: String): Integer;
 function TEFValorTotalAutorizado(): Currency;
 function TEFValorTransacao(sArquivoTEF: String): Currency;
 procedure TEFDeletarCopiasArquivos(FsDiretorio: String);
-function TestarZPOSLiberado: Boolean;
+//Sandro Silva 2024-11-19 function TestarZPOSLiberado: Boolean;
+function TestarZPOSLiberado(IBDataBase: TIBDataBase): Boolean;
 
 implementation
 
@@ -705,7 +707,7 @@ begin
 
                   bTEFZPOS := (RetornoDoZPOS('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.001'));
 
-                  if (not bTEFZPOS) or (TestarZPOSLiberado) then
+                  if (not bTEFZPOS) or (TestarZPOSLiberado(Form1.IBDatabase1)) then // Sandro Silva (smal-778) 2024-11-19 if (not bTEFZPOS) or (TestarZPOSLiberado) then
                   begin
                     while not Eof(f) Do
                     begin
@@ -2635,11 +2637,20 @@ begin
   ChDir(sDirAtual);
 end;
 
+{Sandro Silva (smal-778) 2024-11-19 inicio
 function TestarZPOSLiberado: Boolean;
 var
   dLimiteRecurso : Tdate;
 begin
   Result := (RecursoLiberado(Form1.IBDatabase1,rcZPOS,dLimiteRecurso));
 end;
+}
+function TestarZPOSLiberado(IBDataBase: TIBDataBase): Boolean;
+var
+  dLimiteRecurso : Tdate;
+begin
+  Result := (RecursoLiberado(IBDatabase, rcZPOS, dLimiteRecurso));
+end;
+{Sandro Silva (smal-778) 2024-11-19 fim}
 
 end.

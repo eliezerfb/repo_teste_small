@@ -382,7 +382,7 @@ function GetAutorizacaoPixRec(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTran
   out CodigoAutorizacao, CNPJinstituicao: string) : boolean;
 function GetCNPJInstituicaoFinanceira(sInstituicaoFinanceira: string; IBTRANSACTION: TIBTransaction) : string;
 function GetIDFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : integer;
-function TestarZPOSLiberado: Boolean;
+//Sandro Silva 2024-11-19 function TestarZPOSLiberado: Boolean;
 function GetDescricaoFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : string;
 
 var
@@ -2948,13 +2948,14 @@ begin
   end;
 end;
 
+{Sandro Silva 2024-11-19
 function TestarZPOSLiberado: Boolean;
 var
   dLimiteRecurso : Tdate;
 begin
   Result := (RecursoLiberado(Form1.IBDatabase1,rcZPOS,dLimiteRecurso));
 end;
-
+}
 function GetDescricaoFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : string; //Mauricio Parizotto 2024-09-12
 var
   IbqForma: TIBQuery;

@@ -639,7 +639,7 @@ var
 
                 bTEFZPOS := (RetornoDoZPOS('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.001'));
 
-                if (not bTEFZPOS) or (TestarZPOSLiberado) then
+                if (not bTEFZPOS) or (TestarZPOSLiberado(Form1.IBDatabase1)) then // Sandro Silva (smal-778) 2024-11-19 if (not bTEFZPOS) or (TestarZPOSLiberado) then
                 begin
                   while not Eof(f) Do
                   begin

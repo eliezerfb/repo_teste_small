@@ -61,6 +61,7 @@ uses fiscal
 , ufuncoesfrente, uajustaresolucao
 // Sandro Silva (smal-778) 2024-11-06, uValidaRecursos, uTypesRecursos
 , uFuncoesPos
+, ufuncoestef // Sandro Silva 2024-11-19
 , uTransacionaPosOuTef
 ;
 
@@ -684,7 +685,7 @@ begin
       ListBox1.Clear;
       for I := 0 to (sSecoes.Count - 1) do
       begin
-        if (Pos('ZPOS', AnsiUpperCase(sSecoes[I])) <= 0) or (TestarZPOSLiberado) then
+        if (Pos('ZPOS', AnsiUpperCase(sSecoes[I])) <= 0) or (TestarZPOSLiberado(Form1.IBDatabase1)) then // Sandro Silva (smal-778) 2024-11-19 if (Pos('ZPOS', AnsiUpperCase(sSecoes[I])) <= 0) or (TestarZPOSLiberado) then
         begin
           if Mais1Ini.ReadString(sSecoes[I],'bAtivo','Não') = 'Sim' then
           begin
