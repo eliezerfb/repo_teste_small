@@ -3253,6 +3253,7 @@ var
 begin
   Mensagem22('Ajustando arquivos '+sP0);
 
+  {Sandro Silva (f-21659) 2024-11-21 inicio
   try
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
@@ -3276,7 +3277,56 @@ begin
     Form1.ibDataset200.Open;
   except
   end;
+  }
+  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'G_'+sP1) = False then
+  begin
+    try
+      Form1.ibDataset200.Close;
+      Form1.ibDataset200.SelectSql.Clear;
+      Form1.ibDataset200.SelectSql.Add('create generator G_'+sP1+' ');
+      Form1.ibDataset200.Open;
+    except
+    end;
 
+    try
+      if Form1.ibDataset200.Transaction.Active then
+        Form1.ibDataset200.Transaction.Commit;
+    except
+    end;
+
+  end;
+
+  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'G_HASH_'+sP1) = False then
+  begin
+    try
+      Form1.ibDataset200.Close;
+      Form1.ibDataset200.SelectSql.Clear;
+      Form1.ibDataset200.SelectSql.Add('create generator G_HASH_'+sP1+' ');
+      Form1.ibDataset200.Open;
+    except
+    end;
+
+    try
+      if Form1.ibDataset200.Transaction.Active then
+        Form1.ibDataset200.Transaction.Commit;
+    except
+    end;
+
+  end;
+
+  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'G_'+sP1) then
+  begin
+    try
+      Form1.ibDataset200.Close;
+      Form1.ibDataset200.SelectSql.Clear;
+      Form1.ibDataset200.SelectSql.Add('set generator G_' + sP1 + ' to 0');
+      Form1.ibDataset200.Open;
+    except
+    end;
+  end;
+  {Sandro Silva (f-21659) 2024-11-21 fim}
+
+  {Sandro Silva 2024-11-22 inicio
   try
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
@@ -3308,7 +3358,6 @@ begin
       //ShowMessage('Erro ao criar REGISTRO em: '+sP1);Mauricio Parizotto 2023-10-25
       MensagemSistema('Erro ao criar REGISTRO em: '+sP1,msgErro);
     end;
-
     // chaves primárias
     try
       try
@@ -3352,6 +3401,102 @@ begin
     end;
   end;
 
+  }
+  try
+    if CampoExisteFB(Form1.ibDataset200.Transaction.DefaultDatabase, sp1, 'REGISTRO') then
+    begin
+      Form1.ibDataset200.Close;
+      Form1.ibDataset200.SelectSql.Clear;
+      Form1.ibDataset200.SelectSql.Add('update ' + sP1 + ' set REGISTRO= substring(10000000000 +  Cast(gen_id(G_' + sP1 + ',1) as decimal) from 2 for 10) order by REGISTRO');
+      Form1.ibDataset200.Open;
+    end;
+
+    try
+      Form1.ibDataSet200.Close;
+      Form1.ibDataSet200.SelectSQL.Clear;
+      Form1.ibDataSet200.SelectSQL.Add('select gen_id(G_'+sP1+',0) as TOTALREG from rdb$database');
+      Form1.ibDataSet200.Open;
+
+      sReg := Form1.ibDataSet200.FieldByname('TOTALREG').AsString;
+    except
+    end;
+
+    try
+      Form1.ibDataset200.Close;
+      Form1.ibDataset200.SelectSql.Clear;
+      Form1.ibDataset200.SelectSql.Add('set generator G_HASH_'+sP1+' to '+sReg+' ');
+      Form1.ibDataset200.Open;
+    except
+    end;
+
+    try
+      if Form7.IBTransaction1.Active then
+        Form7.IBTransaction1.Commit;
+    except
+      MensagemSistema('Erro ao criar REGISTRO em: '+sP1,msgErro);
+    end;
+
+    // chaves primárias
+    if CampoExisteFB(Form1.ibDataset200.Transaction.DefaultDatabase, sp1, 'REGISTRO') then
+    begin
+
+      try
+        try
+          Form1.ibDataset200.Close;
+          Form1.ibDataset200.SelectSql.Clear;
+          Form1.ibDataset200.SelectSql.Add('update rdb$relation_fields set rdb$null_flag = 1 where (rdb$field_name = '+QuotedStr('REGISTRO')+') and (rdb$relation_name = '+QuotedStr(sP1)+')');
+          Form1.ibDataset200.Open;
+        except
+        end;
+
+        if IndiceExiste(Form1.ibDataset200.Transaction.DefaultDatabase, sp1, 'PK_' + sP1) = False then
+        begin
+          try
+            Form1.ibDataset200.Close;
+            Form1.ibDataset200.SelectSql.Clear;
+            Form1.ibDataset200.SelectSql.Add('alter table '+sP1+' add constraint PK_'+sP1+' primary key (REGISTRO)');
+            Form1.ibDataset200.Open;
+          except
+          end;
+        end;
+
+        try
+          if Form7.IBTransaction1.Active then
+            Form7.IBTransaction1.Commit;
+        except
+          MensagemSistema('Erro ao criar Chave Primaria em: '+sP1,msgErro);
+        end;
+      except
+      end;
+    end;
+
+  except
+    // Está sendo usado volta o GENERATOR
+    if CampoExisteFB(Form1.ibDataset200.Transaction.DefaultDatabase, sp1, 'REGISTRO') then
+    begin
+      try
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSQL.Clear;
+        Form1.ibDataset200.SelectSQL.Add('select max(REGISTRO) from '+Sp1+' ');
+        Form1.ibDataset200.Open;
+        sMax := Form1.IBDataSet200.fieldByname('MAX').AsString;
+        Form1.ibDataset200.Close;
+        Form1.ibDataset200.SelectSql.Clear;
+        Form1.ibDataset200.SelectSql.Add('set generator G_'+sP1+' to '+sMax);
+        Form1.ibDataset200.Open;
+      except
+      end;
+
+      try
+        if Form7.IBTransaction1.Active then
+          Form7.IBTransaction1.Commit;
+      except
+      end;
+    end;
+  end;
+  {Sandro Silva (f-21659) 2024-11-22 fim}
+
+  {Sandro Silva (f-21659) 2024-11-22 inicio
   try
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
@@ -3359,6 +3504,19 @@ begin
     Form1.ibDataset200.Open;
   except
   end;
+  }
+  if (IndiceExiste(Form1.ibDataset200.Transaction.DefaultDatabase, sp1, sp1 + 'REGISTRO' ) = False)
+    and CampoExisteFB(Form1.ibDataset200.Transaction.DefaultDatabase, sp1, 'REGISTRO') then
+  begin
+    try
+      Form1.ibDataset200.Close;
+      Form1.ibDataset200.SelectSql.Clear;
+      Form1.ibDataset200.SelectSql.Add('create index ' + sp1 + 'REGISTRO on ' + sp1 + '(REGISTRO)');
+      Form1.ibDataset200.Open;
+    except
+    end;
+  end;
+  {Sandro Silva (f-21659) 2024-11-22 fim}
 
   Result := True;
 end;
