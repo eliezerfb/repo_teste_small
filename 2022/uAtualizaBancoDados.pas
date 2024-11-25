@@ -335,6 +335,7 @@ begin
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'EAN_ORIGINAL') = False then
     ExecutaComando('alter table ITENS002 add EAN_ORIGINAL CHAR(15)');
 
+  {Sandro Silva (f-21659) 2024-11-19 inicio
   // Fator de conversão
   try
     // Cria UNITARIO_O_ double precision temporario
@@ -342,7 +343,7 @@ begin
     Form1.ibDataset200.SelectSql.Clear;
     Form1.ibDataset200.SelectSql.Add('alter table ITENS002 add UNITARIO_O_ double precision');
     Form1.ibDataset200.Open;
-    
+
     // Cria QTD_ORIGINAL_ double precision temporario
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
@@ -373,7 +374,6 @@ begin
       II := 99;
     end;
 
-
     // Apaga o campo original UNITARIO_O
     //
     Form1.ibDataset200.Close;
@@ -393,7 +393,8 @@ begin
     // Grava
     ExecutaComando('commit');
 
-    // Cria o UNITARIO_ mas agora com double precision
+
+    // Cria o UNITARIO_O mas agora com double precision
     ExecutaComando('alter table ITENS002 add UNITARIO_O double precision');
 
     // Cria o QTD_ORIGINAL mas agora com double precision
@@ -418,19 +419,112 @@ begin
     end;
   except
   end;
+  }
 
-  // Apaga o campo temporario UNITARIO_O_
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'UNITARIO_O_') then
-    ExecutaComando('alter table ITENS002 drop UNITARIO_O_');
+  if (AnsiUpperCase(TipoCampoFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'UNITARIO_O')) <> 'DOUBLE')
+    or (AnsiUpperCase(TipoCampoFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'QTD_ORIGINAL')) <> 'DOUBLE')
+  then
+  begin
 
-  // Apaga o campo temporario QTD_ORIGINAL
-  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'QTD_ORIGINAL_') then
-    ExecutaComando('alter table ITENS002 drop QTD_ORIGINAL_');
+    // Fator de conversão
+    try
+      // Cria UNITARIO_O_ double precision temporario
+      if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'UNITARIO_O_') = False then
+        ExecutaComando('alter table ITENS002 add UNITARIO_O_ double precision');
 
-  // Grava
-  ExecutaComando('commit');
+      // Cria QTD_ORIGINAL_ double precision temporario
+      if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'QTD_ORIGINAL_') = False then
+        ExecutaComando('alter table ITENS002 add QTD_ORIGINAL_ double precision');
 
-  {Sandro Silva 2023-04-19 inicio 
+      // Grava
+      ExecutaComando('commit');
+
+      II := 99;
+      try
+        // Guarda UNITARIO_O e QTD_ORIGINAL nos campos temp
+        //ExecutaComando('update ITENS002 set UNITARIO_O_=UNITARIO_O, QTD_ORIGINAL_=QTD_ORIGINAL');
+
+        if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'UNITARIO_O')
+          and CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'QTD_ORIGINAL') then
+        begin
+
+          // Guarda UNITARIO_O e QTD_ORIGINAL nos campos temp
+          if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'UNITARIO_O') then
+            ExecutaComando('update ITENS002 set UNITARIO_O_=UNITARIO_O');
+          if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'QTD_ORIGINAL') then
+            ExecutaComando('update ITENS002 set QTD_ORIGINAL_=QTD_ORIGINAL');
+
+          // Grava
+          ExecutaComando('commit');
+
+          // Campos UNITARIO_O e QTD_ORIGINAL não estejam null
+          if (ExecutaComandoEscalar(Form1.ibDataSet200.Transaction, 'select min(coalesce(UNITARIO_O, -999999)) from ITENS002') >= 0)
+            and (ExecutaComandoEscalar(Form1.ibDataSet200.Transaction, 'select min(coalesce(QTD_ORIGINAL, -999999)) from ITENS002') >= 0) then
+            II := 0;
+
+        end;
+
+      except
+      end;
+
+      // Apaga o campo original UNITARIO_O
+      if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'UNITARIO_O') then
+        ExecutaComando('alter table ITENS002 drop UNITARIO_O');
+
+      // Apaga o campo original QTD_ORIGINAL
+      if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'QTD_ORIGINAL') then
+        ExecutaComando('alter table ITENS002 drop QTD_ORIGINAL');
+
+      // Grava
+      ExecutaComando('commit');
+
+      // Cria o UNITARIO_O mas agora com double precision
+      if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'UNITARIO_O') = False then
+      begin
+        ExecutaComando('alter table ITENS002 add UNITARIO_O double precision');
+        ExecutaComando('commit');
+      end;
+
+      // Cria o QTD_ORIGINAL mas agora com double precision
+      if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'QTD_ORIGINAL') = False then
+      begin
+        ExecutaComando('alter table ITENS002 add QTD_ORIGINAL double precision');
+        ExecutaComando('commit');
+      end;
+
+      // Passa o valor guardado no campo tmp para o campo original UNITARIO_O e QTD_ORIGINAL
+      try
+        if II = 0 then
+        begin
+          ExecutaComando('update ITENS002 set UNITARIO_O=UNITARIO_O_, QTD_ORIGINAL=QTD_ORIGINAL_');
+        end else
+        begin
+          ExecutaComando('update ITENS002 set UNITARIO_O=UNITARIO, QTD_ORIGINAL=QUANTIDADE');
+        end;
+
+        // Grava
+        ExecutaComando('commit');
+      except
+      end;
+    except
+    end;
+    {Sandro Silva (f-21659) 2024-11-19 fim}
+
+    // Apaga o campo temporario UNITARIO_O_
+    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'UNITARIO_O_') then
+      ExecutaComando('alter table ITENS002 drop UNITARIO_O_');
+
+    // Apaga o campo temporario QTD_ORIGINAL
+    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'QTD_ORIGINAL_') then
+      ExecutaComando('alter table ITENS002 drop QTD_ORIGINAL_');
+
+    // Grava
+    ExecutaComando('commit');
+
+  end;
+
+
+  {Sandro Silva 2023-04-19 inicio
   try
     Form1.ibDataset200.Close;
     Form1.ibDataset200.SelectSql.Clear;
@@ -456,22 +550,19 @@ begin
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'QTD_ORIGINAL') = False then
   begin
     // tenta criar os campos
-    if ExecutaComando('alter table ITENS002 add QTD_ORIGINAL NUMERIC(18,9)') then
+    if ExecutaComando('alter table ITENS002 add QTD_ORIGINAL NUMERIC(18,9)')
+      and ExecutaComando('alter table ITENS002 add UNITARIO_O NUMERIC(18,9)') then
     begin
-      if ExecutaComando('alter table ITENS002 add QTD_ORIGINAL NUMERIC(18,9)') then
-      begin
-        // Se conseguiu criar os 2 campos faz update
-        ExecutaComando('commit');
-        ExecutaComando('update ITENS002 set UNITARIO_O=UNITARIO, QTD_ORIGINAL=QUANTIDADE');
-        ExecutaComando('commit');
-      end;
+      // Se conseguiu criar os 2 campos faz update
+      ExecutaComando('commit');
+      ExecutaComando('update ITENS002 set UNITARIO_O=UNITARIO, QTD_ORIGINAL=QUANTIDADE');
+      ExecutaComando('commit');
     end;
   end;
 
   //  ITENS002 CST ICMS
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'CST_ICMS') = False then
     ExecutaComando('alter table ITENS002 add CST_ICMS VARCHAR(3)');
-
 
   //  ITENS002 PIS COFINS
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'CST_PIS_COFINS') = False then
@@ -483,26 +574,36 @@ begin
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'ALIQ_COFINS') = False then
     ExecutaComando('alter table ITENS002 add ALIQ_COFINS NUMERIC(18,4)');
 
-  {Sandro Silva 2024-03-21 inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'PICMSST') = False then
     ExecutaComando('alter table ITENS002 add PICMSST NUMERIC(18, 4)');
-  {Sandro Silva 2024-03-21 fim}
 
   // GRAVAR? O HISTORICO DO CSOSN
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CSOSN') = False then
     ExecutaComando('ALTER TABLE ALTERACA ADD CSOSN VARCHAR(3)');
 
-  // ALTERACA NF de venda a consumidor (modelo 02)
+  {Sandro Silva (f-21659) 2024-11-19 inicio
   ExecutaComando('alter table ALTERACA add SERIE CHAR(4)');
 
   ExecutaComando('alter table ALTERACA add SUBSERIE CHAR(3)');
 
   ExecutaComando('alter table ALTERACA add CFOP CHAR(4)');
+  }
+  // ALTERACA NF de venda a consumidor (modelo 02)
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'SERIE') = False then
+    ExecutaComando('alter table ALTERACA add SERIE CHAR(4)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'SUBSERIE') = False then
+    ExecutaComando('alter table ALTERACA add SUBSERIE CHAR(3)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CFOP') = False then
+    ExecutaComando('alter table ALTERACA add CFOP CHAR(4)');
+  {Sandro Silva (f-21659) 2024-11-19 fim}
 
   // ALTERACA PIS COFINS
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CST_ICMS') = False then
     ExecutaComando('alter table ALTERACA add CST_ICMS CHAR(3)');
 
+  {Sandro Silva (f-21659) inicio
   ExecutaComando('alter table ALTERACA add CST_PIS_COFINS VARCHAR(2)');
 
   ExecutaComando('alter table ALTERACA add ALIQ_PIS NUMERIC(18,4)');
@@ -514,6 +615,25 @@ begin
   ExecutaComando('alter table ALTERACA add STATUS VARCHAR(1)');
 
   ExecutaComando('alter table REDUCOES add CODIGOECF varchar(6)');
+  }
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'CST_PIS_COFINS') = False then
+    ExecutaComando('alter table ALTERACA add CST_PIS_COFINS VARCHAR(2)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'ALIQ_PIS') = False then
+    ExecutaComando('alter table ALTERACA add ALIQ_PIS NUMERIC(18,4)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'ALIQ_COFINS') = False then
+    ExecutaComando('alter table ALTERACA add ALIQ_COFINS NUMERIC(18,4)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'OBS') = False then
+    ExecutaComando('alter table ALTERACA add OBS VARCHAR(40)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'STATUS') = False then
+    ExecutaComando('alter table ALTERACA add STATUS VARCHAR(1)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'CODIGOECF') = False then
+    ExecutaComando('alter table REDUCOES add CODIGOECF varchar(6)');
+  {Sandro Silva (f-21659) 2024-11-19 fim}
 
   // Cancelamento extemporaneo
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'DATA_CANCEL') = False then
@@ -614,6 +734,7 @@ begin
   Form22.Repaint;
   Mensagem22('Alterando estrutura do banco de dados... (IVA)');
 
+  {Sandro Silva (f-21659) 2024-11-19 inicio
   try
     Mensagem22('Atualizando o campo IVA');
     Form1.ibDataset200.Close;
@@ -647,8 +768,31 @@ begin
     ExecutaComando('commit');
   except
   end;
+  }
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'PIVA') = False then
+  begin
+    try
+      Mensagem22('Atualizando o campo IVA');
+      ExecutaComando('alter table ESTOQUE add PIVA double precision');
 
-  {Sandro Silva 2023-07-17 inicio}
+      ExecutaComando('commit');
+
+      ExecutaComando('select * from ESTOQUE where SubString(LIVRE4 from 1 for 5)='+QuotedStr('<pIVA')+' ');
+
+      while not Form1.ibDataSet200.Eof do
+      begin
+        ExecutaComando('update ESTOQUE set PIVA='+  QuotedStr( StrTran(LimpaNumeroDeixandoAvirgula(Form1.ibDataSet200.FieldByname('LIVRE4').AsString),',','.')) +' where CODIGO='+QuotedStr(Form1.ibDataset200.FieldByname('CODIGO').AsString)+' ');
+
+        Form1.ibDataset200.Moveby(1);
+      end;
+
+      ExecutaComando('update ESTOQUE set LIVRE4='+QuotedStr('')+' where substring(LIVRE4 from 1 for 5)='+QuotedStr('<pIVA')+' ');
+      ExecutaComando('commit');
+    except
+    end;
+  end;
+  {Sandro Silva (f-21659) 2024-11-19 fim}
+
   if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ECFS') = False then
   begin
     //Criando campo
@@ -776,8 +920,6 @@ begin
     if ExecutaComando('CREATE INDEX IDX_BLOCOX_DATAHORA ON BLOCOX (DATAHORA)') then
       ExecutaComando('commit');
   end;
-
-  {Sandro Silva 2023-07-17 fim}
 
   // NFC-e
   Form22.Repaint;
@@ -1789,6 +1931,7 @@ begin
 
   ExecutaComando('commit');
 
+  {Sandro Silva (f-21659) 2024-11-19 inicio
   ExecutaComando('alter table OS alter PROBLEMA type varchar(128)');
 
   ExecutaComando('alter table ALTERACA add HORA varchar(8)');
@@ -1798,6 +1941,22 @@ begin
   ExecutaComando('alter table ALTERACA add DAV varchar(10)');
 
   ExecutaComando('alter table ALTERACA add TIPODAV varchar(10)');
+  }
+  if TamanhoCampoFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'OS', 'PROBLEMA') < 128 then
+    ExecutaComando('alter table OS alter PROBLEMA type varchar(128)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'HORA') = False then
+    ExecutaComando('alter table ALTERACA add HORA varchar(8)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'REDUCOES', 'HORA') = False then
+    ExecutaComando('alter table REDUCOES add HORA varchar(8)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'DAV') = False then
+    ExecutaComando('alter table ALTERACA add DAV varchar(10)');
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'TIPODAV') = False then
+    ExecutaComando('alter table ALTERACA add TIPODAV varchar(10)');
+  {Sandro Silva (f-21659) 2024-11-19 fim}
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RESUMO', 'VALOR') = False then
     ExecutaComando('alter table RESUMO add VALOR numeric(18,2)');
@@ -1828,11 +1987,11 @@ begin
                   'VERSAO varchar(10),'+
                   'FONTE varchar(10),'+
                   'REGISTRO varchar(10))');
-    ExecutaComando('commit');                  
+    ExecutaComando('commit');
   end;
 
+  {Sandro Silva (f-21659) 2024-11-21
   ExecutaComando('alter table IBPT_ alter FONTE type varchar(30)');
-
   ExecutaComando('alter table IBPT_ alter FONTE type varchar(20)');
 
   ExecutaComando('alter table VENDEDOR alter NOME type varchar(35)');
@@ -1843,14 +2002,25 @@ begin
 
   ExecutaComando('alter table ORCAMENT alter VENDEDOR type varchar(35)');
 
+  }
+  if TamanhoCampoFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'IBPT_', 'FONTE') < 30 then
+    ExecutaComando('alter table IBPT_ alter FONTE type varchar(30)');
+
+  if TamanhoCampoFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDEDOR', 'NOME') < 35 then
+    ExecutaComando('alter table VENDEDOR alter NOME type varchar(35)');
+  if TamanhoCampoFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'VENDEDOR') < 35 then
+    ExecutaComando('alter table ALTERACA alter VENDEDOR type varchar(35)');
+  if TamanhoCampoFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'VENDEDOR') < 35 then
+    ExecutaComando('alter table VENDAS alter VENDEDOR type varchar(35)');
+  if TamanhoCampoFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ORCAMENT', 'VENDEDOR') < 35 then
+    ExecutaComando('alter table ORCAMENT alter VENDEDOR type varchar(35)');
+
   ExecutaComando('commit');
-  
+
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'CSOSN') = False then
   begin
-    {Sandro Silva 2022-10-04 inicio}
     if ExecutaComando('ALTER TABLE ITENS001 ADD CSOSN VARCHAR(3)') then
       ExecutaComando('commit');
-    {Sandro Silva 2022-10-04 fim}
   end;
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS001', 'VBC_PIS_COFINS') = False then
@@ -1865,7 +2035,6 @@ begin
       ExecutaComando('commit');
   end;
 
-  {Sandro Silva 2022-12-16 inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'MOVIMENTO') = False then
   begin
     if ExecutaComando('ALTER TABLE RECEBER ADD MOVIMENTO DATE') then // Armazena a data que o valor foi creditado na conta banco
@@ -1875,11 +2044,26 @@ begin
   if ExecutaComando('alter table RECEBER alter DOCUMENTO type varchar(11)') then // Para poder marcar as parcelas migradas da Smallsoft para Zucchetti durante a incorporação
     ExecutaComando('commit');
 
+  {Sandro Silva (f-21659) 2024-11-21 inicio
   if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONTAS') then
   begin
     if ExecutaComando('ALTER TABLE CONTAS ADD DESCRICAOCONTABIL VARCHAR(60), ADD IDENTIFICADOR VARCHAR(10), ADD CONTACONTABILIDADE VARCHAR(20)') then // Para gerar relatórios contábeis
       ExecutaComando('commit');
   end;
+  }
+  if TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONTAS') then
+  begin
+    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONTAS', 'DESCRICAOCONTABIL') = False then
+      if ExecutaComando('ALTER TABLE CONTAS ADD DESCRICAOCONTABIL VARCHAR(60)') then // Para gerar relatórios contábeis
+        ExecutaComando('commit');
+    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONTAS', 'IDENTIFICADOR') = False then
+      if ExecutaComando('ALTER TABLE CONTAS ADD IDENTIFICADOR VARCHAR(10)') then // Para gerar relatórios contábeis
+        ExecutaComando('commit');
+    if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONTAS', 'CONTACONTABILIDADE') = False then
+      if ExecutaComando('ALTER TABLE CONTAS ADD CONTACONTABILIDADE VARCHAR(20)') then // Para gerar relatórios contábeis
+        ExecutaComando('commit');
+  end;
+  {Sandro Silva (f-21659) 2024-11-21 fim}
 
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'IDENTIFICADORPLANOCONTAS') = False then
   begin
@@ -1904,11 +2088,7 @@ begin
     if ExecutaComando('ALTER TABLE ITENS003 ADD IDENTIFICADORPLANOCONTAS VARCHAR(10)')then // Para gerar relatórios contábeis
       ExecutaComando('commit');
   end;
-  {Sandro Silva 2022-12-16 fim}
 
-  {Sandro Silva 2023-04-10 inicio
-  ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)');
-  }
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'FRETESOBREIPI') = False then
   begin
     if ExecutaComando('alter table ICM add FRETESOBREIPI varchar(1)') then // Mauricio Parizotto 2023-03-28
@@ -1942,14 +2122,12 @@ begin
                                            'add VFCPST numeric(18, 2)') then
       ExecutaComando('Commit');
   end;
-  {Sandro Silva 2023-04-10 fim}
-  {Sandro Silva 2023-04-11 inicio}
+
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'VFCPST') = False then
   begin
     if ExecutaComando('alter table COMPRAS add VFCPST numeric(18, 2)') then
       ExecutaComando('Commit');
   end;
-  {Sandro Silva 2023-04-11 fim}
 
   if ExecutaComando('Update EMITENTE set CNAE = ''0''||trim(CNAE) Where char_length(trim(CNAE)) = 6') then // Mauricio Parizotto 2023-04-06
     ExecutaComando('commit');
@@ -1962,13 +2140,11 @@ begin
       ExecutaComando('Commit');
   end;
 
-  {Sandro Silva 2023-04-12 inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'VFCPST') = False then
   begin
     if ExecutaComando('alter table VENDAS add VFCPST numeric(18, 2)') then
       ExecutaComando('Commit');
   end;
-  {Sandro Silva 2023-04-12 fim}
 
   //Mauricio Parizotto 2023-06-16
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'BANCOS', 'INSTITUICAOFINANCEIRA') = False then
@@ -1983,7 +2159,6 @@ begin
       ExecutaComando('Commit');
   end;
   
-{Sandro Silva 2023-06-22 inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'AUTORIZACAOTRANSACAO') = False then
   begin
     if ExecutaComando('alter table RECEBER add AUTORIZACAOTRANSACAO varchar(20)') then
@@ -1994,7 +2169,6 @@ begin
     if ExecutaComando('alter table RECEBER add BANDEIRA varchar(20)') then
       ExecutaComando('Commit');
   end;
-  {Sandro Silva 2023-06-22 fim}
 
   (* // Sandro Silva 2023-06-26
   No frente.exe paf não foi alterado porque necessita novo credenciamento
@@ -2117,7 +2291,7 @@ begin
     if ExecutaComando('CREATE INDEX IDX_RECEBER_HISTORICO ON RECEBER (HISTORICO)') then
       ExecutaComando('Commit');
   end;
-  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'IDX_CONTAS_UPPER_NOME') = False then
+  if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONTAS', 'IDX_CONTAS_UPPER_NOME') = False then // Sandro Silva (f21659) 20240-11-21 if IndiceExiste(Form1.ibDataSet200.Transaction.DefaultDatabase, 'RECEBER', 'IDX_CONTAS_UPPER_NOME') = False then
   begin
     if ExecutaComando('CREATE INDEX IDX_CONTAS_UPPER_NOME ON CONTAS COMPUTED BY (upper(NOME))') then
       ExecutaComando('Commit');
@@ -3222,7 +3396,6 @@ begin
   end;
   {Mauricio Parizotto 2024-09-30 Fim}
 
-
   {Mauricio Parizotto 2024-10-28 Inicio}
   if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRASIMPORTACAO')) then
   begin
@@ -3248,6 +3421,57 @@ begin
     ExecutaComando('Commit');
   end;
   {Mauricio Parizotto 2024-10-28 Inicio}
+
+{Mauricio Parizotto 2024-09-27 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'TRIB_INTELIGENTE') = False then
+  begin
+    if ExecutaComando('ALTER TABLE ICM ADD TRIB_INTELIGENTE VARCHAR(1)') then
+      ExecutaComando('commit');
+  end;
+  {Mauricio Parizotto 2024-09-27 Fim}
+
+  
+  {Mauricio Parizotto 2024-09-26 Inicio}
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CONSULTA_TRIBUTACAO') = False then
+  begin
+    if ExecutaComando('Alter table ESTOQUE add CONSULTA_TRIBUTACAO varchar(1);') then
+    begin
+      ExecutaComando('commit');
+      ExecutaComando('Update ESTOQUE set CONSULTA_TRIBUTACAO = ''S'' ');
+      ExecutaComando('commit');
+    end;
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'STATUS_TRIBUTACAO') = False then
+  begin
+    if ExecutaComando('Alter table ESTOQUE add STATUS_TRIBUTACAO varchar(30);') then
+    begin
+      ExecutaComando('commit');	
+      ExecutaComando('Update ESTOQUE set STATUS_TRIBUTACAO = ''Não consultado'' ');
+      ExecutaComando('commit');
+    end;
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'DATA_STATUS_TRIBUTACAO') = False then
+  begin
+    if ExecutaComando('Alter table ESTOQUE add DATA_STATUS_TRIBUTACAO timestamp;') then
+      ExecutaComando('commit');
+  end;
+
+  if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ESTOQUE', 'CODIGO_IMENDES') = False then
+  begin
+    if ExecutaComando('Alter table ESTOQUE add CODIGO_IMENDES integer;') then
+      ExecutaComando('commit');
+  end;
+  {Mauricio Parizotto 2024-09-26 Fim}
+
+  {Mauricio Parizotto 2024-10-14 Inicio}
+  if GeneratorExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase,'G_CIT') = False then
+  begin
+    if ExecutaComando('CREATE SEQUENCE G_CIT') then
+      ExecutaComando('commit');
+  end;
+  {Mauricio Parizotto 2024-10-14 Fim}
 
   Form22.Repaint;
 
