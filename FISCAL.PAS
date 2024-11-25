@@ -1517,6 +1517,7 @@ type
     procedure ChamarTelaSobre;
     procedure DefineTransmiteContingenciaAbertura;
     function AbandonaVenda: boolean;
+    procedure LimpaOS_Orcamento(sDav, sTipoDav: string; Transaction:TIBTransaction);
   protected
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -33165,7 +33166,7 @@ end;
 function TForm1.AbandonaVenda : boolean;
 var
   sITEM, sRegistro : string;
-  sGenerator : string;
+  sGenerator, sProdutosBloq, sDav, sTipoDav : string;
 
   procedure ApagaCupom;
   begin
@@ -33180,6 +33181,8 @@ var
 begin
   Result := False;
 
+  Commitatudo(True);//AbandonaVenda
+
   try
     ibDataSet4.DisableControls;
 
@@ -33190,12 +33193,39 @@ begin
                                   '   and PEDIDO='+QuotedStr(FormataNumeroDoCupom(icupom));
     ibDataSet27.Open;
 
+    {$Region'//// Bloqueia edição itens ////'}
+    ibDataSet27.First;
+    sProdutosBloq := '';
+    while not ibDataSet27.Eof do
+    begin
+      if not ExecutaComando(ibDataSet27.Transaction,
+                            ' Update ESTOQUE set CODIGO = CODIGO '+
+                            ' Where CODIGO = '+ibDataSet27CODIGO.AsString) then
+      begin
+        sProdutosBloq := sProdutosBloq + ibDataSet27CODIGO.AsString+' - '+ibDataSet27DESCRICAO.AsString+sLineBreak;
+      end;
+
+      ibDataSet27.Next;
+    end;
+
+    if sProdutosBloq <> '' then
+    begin
+      SmallMsgBox(PChar('Não é possível abandonar a venda. Há produtos sendo movimentados por outro usuário:'+sLineBreak+sLineBreak+
+                        sProdutosBloq),
+                  'Atenção', MB_ICONWARNING + MB_OK);
+        Exit;
+    end;
+
+    {$Endregion}
+
     {$Region'//// Cancela intes para voltar estoque ////'}
     ibDataSet27.First;
     while not ibDataSet27.Eof do
     begin
       sITEM     := ibDataSet27.FieldByName('ITEM').AsString;
       sRegistro := ibDataSet27.FieldByName('REGISTRO').AsString;
+      sDav      := ibDataSet27.FieldByName('DAV').AsString;
+      sTipoDav  := ibDataSet27.FieldByName('TIPODAV').AsString;
 
       if sITEM <> '' then
       begin
@@ -33225,6 +33255,10 @@ begin
   end;
 
   Memo1.Clear;
+
+  //Limpa OS/Orçamento
+  LimpaOS_Orcamento(sDav, sTipoDav,
+                    ibDataSet27.Transaction);
 
   //Auditoria
   Audita('ABANDONOU','FRENTE', '', 'Abandonou a venda: '+FormataNumeroDoCupom(iCupom)+' Caixa: '+sCaixa,0,0);
@@ -33267,6 +33301,27 @@ begin
   {$Endregion}
 
   Result := True;
+end;
+
+procedure TForm1.LimpaOS_Orcamento(sDav, sTipoDav : string; Transaction:TIBTransaction);
+begin
+  if sTipoDav = 'ORÇAMENTO' then
+  begin
+    ExecutaComando(Transaction,
+                   ' Update ORCAMENT'+
+                   '   set COO = null,'+
+                   '   NUMERONF = null'+
+                   ' Where PEDIDO = '+QuotedStr(sDav));
+  end;
+
+  if sTipoDav = 'OS' then
+  begin
+    ExecutaComando(Transaction,
+                   ' Update OS'+
+                   '   set NF = null,'+
+                   '   SITUACAO = ''Aberta'' '+
+                   ' Where NUMERO =  '+QuotedStr(sDav));
+  end;
 end;
 
 
