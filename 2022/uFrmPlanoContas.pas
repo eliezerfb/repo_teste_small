@@ -40,6 +40,8 @@ type
       Shift: TShiftState);
     procedure edtNroContaEnter(Sender: TObject);
     procedure edtNroContaKeyPress(Sender: TObject; var Key: Char);
+    procedure cbxTipoContaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
@@ -78,10 +80,16 @@ begin
 
   DSCadastro.DataSet.FieldByName('conta').AsString :=
     TipoPlanoContaToStr(PrefixoConta)+NroConta;
-
-  edtNroConta.SetFocus();
 end;
 
+
+procedure TFrmPlanoContas.cbxTipoContaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if Key = VK_RETURN then
+    edtNroConta.SetFocus;
+end;
 
 procedure TFrmPlanoContas.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
