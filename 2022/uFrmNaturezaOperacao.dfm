@@ -6,13 +6,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
-    inherited Panel8: TPanel
-      ExplicitLeft = 822
-    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsNatureza
-      ExplicitWidth = 802
-      ExplicitHeight = 453
       object tbsNatureza: TTabSheet
         Caption = 'Natureza da opera'#231#227'o '
         Font.Charset = ANSI_CHARSET
@@ -279,7 +274,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnExit = dbeIcmCFOPExit
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit54: TSMALL_DBEdit
+        object edtDescricao: TSMALL_DBEdit
           Left = 150
           Top = 48
           Width = 313
@@ -300,7 +295,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           TabOrder = 1
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit55: TSMALL_DBEdit
+        object edtIntegracao: TSMALL_DBEdit
           Left = 150
           Top = 74
           Width = 313
@@ -322,7 +317,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Visible = False
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit57: TSMALL_DBEdit
+        object edtCIT: TSMALL_DBEdit
           Left = 150
           Top = 150
           Width = 78
@@ -343,7 +338,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           TabOrder = 6
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit58: TSMALL_DBEdit
+        object edtBase: TSMALL_DBEdit
           Left = 150
           Top = 175
           Width = 78
@@ -364,7 +359,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           TabOrder = 7
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit59: TSMALL_DBEdit
+        object edtBaseICMS: TSMALL_DBEdit
           Left = 150
           Top = 225
           Width = 78
@@ -385,7 +380,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           TabOrder = 9
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit60: TSMALL_DBEdit
+        object edtCST: TSMALL_DBEdit
           Left = 150
           Top = 250
           Width = 78
@@ -406,7 +401,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           TabOrder = 10
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit44: TSMALL_DBEdit
+        object edtISS: TSMALL_DBEdit
           Left = 150
           Top = 200
           Width = 78
@@ -427,7 +422,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           TabOrder = 8
           OnKeyDown = PadraoKeyDown
         end
-        object SMALL_DBEdit47: TSMALL_DBEdit
+        object edtCSOSN: TSMALL_DBEdit
           Left = 150
           Top = 275
           Width = 78
@@ -448,7 +443,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           TabOrder = 11
           OnKeyDown = PadraoKeyDown
         end
-        object DBCheckSobreIPI: TDBCheckBox
+        object chkICMS_IPI: TDBCheckBox
           Left = 293
           Top = 210
           Width = 92
@@ -465,7 +460,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
-        object DBCheckSobreOutras: TDBCheckBox
+        object chkICMS_Outras: TDBCheckBox
           Left = 293
           Top = 229
           Width = 109
@@ -482,7 +477,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
-        object DBCheckFRETESOBREIPI: TDBCheckBox
+        object chkIPI_Frete: TDBCheckBox
           Left = 293
           Top = 248
           Width = 89
@@ -557,9 +552,15 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Height = 20
           Color = clWhite
           Ctl3D = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
           ParentBackground = False
           ParentColor = False
           ParentCtl3D = False
+          ParentFont = False
           TabOrder = 5
           ExplicitLeft = 150
           ExplicitTop = 125
@@ -585,7 +586,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
               end>
           end
         end
-        object SMALL_DBEdit1: TSMALL_DBEdit
+        object edtCBenef: TSMALL_DBEdit
           Left = 150
           Top = 300
           Width = 78
@@ -606,7 +607,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           TabOrder = 12
           OnKeyDown = PadraoKeyDown
         end
-        object DBCheckBox1: TDBCheckBox
+        object chkIPI_Outras: TDBCheckBox
           Left = 293
           Top = 267
           Width = 93
@@ -640,7 +641,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
-        object DBCheckBox2: TDBCheckBox
+        object chkLancaManual: TDBCheckBox
           Left = 293
           Top = 305
           Width = 173
@@ -1506,7 +1507,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
             OnKeyDown = PadraoKeyDown
           end
         end
-        object DBCheckBox3: TDBCheckBox
+        object chkListaNF: TDBCheckBox
           Left = 293
           Top = 191
           Width = 124
@@ -1606,7 +1607,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
             ParentFont = False
             Transparent = True
           end
-          object ComboBox7: TComboBox
+          object cboCST_PISCOFINS: TComboBox
             Left = 100
             Top = 20
             Width = 646
@@ -1619,7 +1620,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
             Font.Style = []
             ParentFont = False
             TabOrder = 0
-            OnChange = ComboBox7Change
+            OnChange = cboCST_PISCOFINSChange
             OnKeyDown = PadraoKeyDown
             Items.Strings = (
               ''

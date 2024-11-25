@@ -43,9 +43,12 @@ type
     destructor Destroy; override;
     class function New: IEstruturaTipoRelatorioPadrao;
     function setUsuario(AcUsuario: String): IEstruturaTipoRelatorioPadrao;
+    function setDataBase(AoDataBase: TIBDatabase): IEstruturaTipoRelatorioPadrao;
     function GerarImpressao(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
     function GerarImpressaoAgrupado(AoEstruturaRel: IEstruturaRelatorioPadrao; AcTitulo: String): IEstruturaTipoRelatorioPadrao;
     function GerarImpressaoCabecalho(AoEstruturaRel: IEstruturaRelatorioPadrao): IEstruturaTipoRelatorioPadrao;
+    function GerarImpressaoTitCabecalho(sTitulo : string) : IEstruturaTipoRelatorioPadrao;
+    function ImprimeQuery(sConsulta, sTitulo : string): IEstruturaTipoRelatorioPadrao;
     function AdicionarTitulo(AcTitulo: String; AbQuebraLinhaIni: Boolean = True; AbQuebraLinhaFim: Boolean = True): IEstruturaTipoRelatorioPadrao;
     function AdicionarRodape(AoFiltros: IFiltrosRodapeRelatorio): IEstruturaTipoRelatorioPadrao;
     function Imprimir: IEstruturaTipoRelatorioPadrao;
@@ -63,11 +66,32 @@ const
 
 { TEstruturaTipoRelatorioPadrao }
 
+function TEstruturaTipoRelatorioPadrao.ImprimeQuery(sConsulta, sTitulo: string): IEstruturaTipoRelatorioPadrao;
+var
+  i: Integer;
+  oQry: TIBQuery;
+begin
+  Result := Self;
+
+  oQry := TIBQuery.Create(nil);
+  try
+    oQry.Close;
+    oQry.Database := FoDataBase;
+    oQry.SQL.Text := sConsulta;
+    oQry.Open;
+
+    FDataSetDados := oQry;
+    FcTitulo      := sTitulo;
+    MontarDados;
+  finally
+    FreeAndNil(oQry);
+  end;
+end;
+
 function TEstruturaTipoRelatorioPadrao.Imprimir: IEstruturaTipoRelatorioPadrao;
 begin
   if Trim(FlsImpressao.Text) = EmptyStr then
   begin
-    //ShowMessage(_cSemDadosParaImprimir); Mauricio Parizotto 2023-10-25
     MensagemSistema(_cSemDadosParaImprimir,msgAtencao);
     Exit;
   end;
@@ -187,7 +211,9 @@ var
 begin
   bTemColunaValor := False;
 
-  FoEstruturaRel.getColunasNaoTotalizar(cCamposNaoTot);
+  if FoEstruturaRel <> nil then
+    FoEstruturaRel.getColunasNaoTotalizar(cCamposNaoTot);
+
   MontarCabecalhoHTML;
 
   //Colunas
@@ -235,7 +261,8 @@ begin
     for i := 0 to Pred(FDataSetDados.Fields.Count) do
     begin
       if not FDataSetDados.Fields[i].Visible then
-        Continue;    
+        Continue;
+
       if (TestarFieldValor(FDataSetDados.Fields[i])) and (Pos(';' + FDataSetDados.Fields[i].FieldName + ';',cCamposNaoTot) <= 0) then
       begin
         if FDataSetDados.Fields[i].DataType in [ftBCD, ftFMTBcd] then
@@ -260,27 +287,8 @@ begin
 
   FlsImpressao.Add('</table>');
 
-  AdicionarRodape(FoEstruturaRel.FiltrosRodape);
-{  if Assigned(FoEstruturaRel.FiltrosRodape) then
-  begin
-    if FoEstruturaRel.FiltrosRodape.getItens.Count > 0 then
-    begin
-      FlsImpressao.Add('   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-      FlsImpressao.Add('    <tr bgcolor=#FFFFFF align=left>');
-      FlsImpressao.Add('     <td><P><font face="Microsoft Sans Serif" size=1><b>'+FoEstruturaRel.FiltrosRodape.getTitulo+'</b><br>');
-
-
-      for I := 0 to Pred(FoEstruturaRel.FiltrosRodape.getItens.Count) do
-        FlsImpressao.Add('     <br><font face="Microsoft Sans Serif" size=1>'+AllTrim(FoEstruturaRel.FiltrosRodape.getItens[I]));
-
-      FlsImpressao.Add('');
-      FlsImpressao.Add('      </td><br>');
-      FlsImpressao.Add('     </td>');
-      FlsImpressao.Add('    </table>');
-    end;
-    if (FoEstruturaRel.FiltrosRodape.getFiltroData <> EmptyStr) then
-      FlsImpressao.Add('<br><font face="Microsoft Sans Serif" size=1>'+FoEstruturaRel.FiltrosRodape.getFiltroData+'</font>');
-  end;}
+  if FoEstruturaRel <> nil then
+    AdicionarRodape(FoEstruturaRel.FiltrosRodape);
 end;
 
 procedure TEstruturaTipoRelatorioPadrao.MontarCabecalhoTXT;
@@ -313,7 +321,8 @@ begin
   if FileExists(FcNomeArquivo+'.txt') then
     DeleteFile(FcNomeArquivo+'.txt');
 
-  FoEstruturaRel.getColunasNaoTotalizar(cCamposNaoTot);
+  if FoEstruturaRel <> nil then
+    FoEstruturaRel.getColunasNaoTotalizar(cCamposNaoTot);
 
   for i := 0 to Pred(FDataSetDados.Fields.Count) do
   begin
@@ -391,22 +400,8 @@ begin
     FlsImpressao.Add(cLinhaTotal);
   end;
 
-
-  AdicionarRodape(FoEstruturaRel.FiltrosRodape);
-{  if Assigned(FoEstruturaRel.FiltrosRodape) then
-  begin
-    if FoEstruturaRel.FiltrosRodape.getItens.Count > 0 then
-    begin
-      FlsImpressao.Add(EmptyStr);
-      if FoEstruturaRel.FiltrosRodape.getTitulo <> EmptyStr then
-        FlsImpressao.Add(FoEstruturaRel.FiltrosRodape.getTitulo);
-
-      for I := 0 to Pred(FoEstruturaRel.FiltrosRodape.getItens.Count) do
-        FlsImpressao.Add(AllTrim(FoEstruturaRel.FiltrosRodape.getItens[I]));
-    end;
-    if (FoEstruturaRel.FiltrosRodape.getFiltroData <> EmptyStr) then
-      FlsImpressao.Add(FoEstruturaRel.FiltrosRodape.getFiltroData);
-  end;      }
+  if FoEstruturaRel <> nil then
+    AdicionarRodape(FoEstruturaRel.FiltrosRodape);
 end;
 
 function TEstruturaTipoRelatorioPadrao.SomarValor(AoField: TField) : Currency;
@@ -646,6 +641,13 @@ begin
   end;
 end;
 
+function TEstruturaTipoRelatorioPadrao.setDataBase(AoDataBase: TIBDatabase): IEstruturaTipoRelatorioPadrao;
+begin
+  Result := Self;
+
+  FoDataBase := AoDataBase;
+end;
+
 function TEstruturaTipoRelatorioPadrao.setUsuario(AcUsuario: String): IEstruturaTipoRelatorioPadrao;
 begin
   Result := Self;
@@ -700,6 +702,16 @@ begin
   AoEstruturaRel.getTitulo(FcTitulo);
 
   FoDataBase := AoEstruturaRel.getDAO.getDataBase;
+
+  MontarCabecalho;
+end;
+
+
+function TEstruturaTipoRelatorioPadrao.GerarImpressaoTitCabecalho(sTitulo : string) : IEstruturaTipoRelatorioPadrao;
+begin
+  Result := Self;
+
+  FcTitulo := sTitulo;
 
   MontarCabecalho;
 end;

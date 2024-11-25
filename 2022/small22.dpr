@@ -98,7 +98,6 @@ uses
   uTestaClienteDevendo in 'units\uTestaClienteDevendo.pas',
   uIRetornaLimiteDisponivel in 'interfaces\uIRetornaLimiteDisponivel.pas',
   uRetornaLimiteDisponivel in 'units\uRetornaLimiteDisponivel.pas',
-  //uValidaRecursosDelphi7 in '..\..\unit_compartilhada\uValidaRecursosDelphi7.pas',
   uRecursosSistema in '..\..\unit_compartilhada\uRecursosSistema.pas',
   uTypesRecursos in '..\..\unit_compartilhada\uTypesRecursos.pas',
   uConectaBancoCommerce in 'uConectaBancoCommerce.pas',
@@ -113,6 +112,8 @@ uses
   uAssinaturaDigital in '..\..\unit_compartilhada\uAssinaturaDigital.pas',
   uIEstruturaRelVendasPorCliente in 'interfaces\uIEstruturaRelVendasPorCliente.pas',
   uEstruturaRelVendasPorCliente in 'units\uEstruturaRelVendasPorCliente.pas',
+  uIEstruturaRelGenerico in 'interfaces\uIEstruturaRelGenerico.pas',
+  uEstruturaRelGenerico in 'units\uEstruturaRelGenerico.pas',
   uEstruturaRelVendasPorClienteNota in 'units\uEstruturaRelVendasPorClienteNota.pas',
   uIDadosVendasPorClienteFactory in 'interfaces\uIDadosVendasPorClienteFactory.pas',
   uEstruturaRelVendasPorClienteCupom in 'units\uEstruturaRelVendasPorClienteCupom.pas',
@@ -120,8 +121,6 @@ uses
   uRetornaOperacoesRelatorio in 'units\uRetornaOperacoesRelatorio.pas',
   uFiltrosRodapeRelatorioVendasClienteNota in 'units\uFiltrosRodapeRelatorioVendasClienteNota.pas',
   uFiltrosRodapeRelatorioVendasClienteCupom in 'units\uFiltrosRodapeRelatorioVendasClienteCupom.pas',
-  //uNFeINI in '..\..\unit_compartilhada\uNFeINI.pas',
-  //uNFSeINI in '..\..\unit_compartilhada\uNFSeINI.pas',
   uRelatorioCatalogoProdudos in 'units\uRelatorioCatalogoProdudos.pas' {frmRelatorioCatalogoProduto},
   uEstruturaRelCatalogoProdutos in 'units\uEstruturaRelCatalogoProdutos.pas',
   uFiltrosRodapeRelatorioCatalogoProdutos in 'units\uFiltrosRodapeRelatorioCatalogoProdutos.pas',
@@ -193,13 +192,10 @@ uses
   uRaterioDiferencaEntreParcelasReceber in 'uRaterioDiferencaEntreParcelasReceber.pas',
   uFrmPerfilTributacao in 'uFrmPerfilTributacao.pas' {FrmPerfilTributacao},
   uFrmNaturezaOperacao in 'uFrmNaturezaOperacao.pas' {FrmNaturezaOperacao},
-  //uConfSisBD in '..\..\unit_compartilhada\uConfSisBD.pas',
-  //uOSSections in '..\..\unit_compartilhada\uOSSections.pas',
   uFrmSituacaoOS in 'uFrmSituacaoOS.pas' {FrmSituacaoOS},
   uOrdemServico in 'units\uOrdemServico.pas',
   uFuncaoMD5 in '..\..\unit_compartilhada\uFuncaoMD5.pas',
   uFrmAnexosOS in 'uFrmAnexosOS.pas' {FrmAnexosOS},
-  //uOutrasSections in '..\..\unit_compartilhada\uOutrasSections.pas',
   uRelatorioTotalGeralVenda in 'units\uRelatorioTotalGeralVenda.pas' {frmRelTotalizadorGeralVenda},
   uIGeraRelatorioTotalizadorGeralVenda in 'interfaces\uIGeraRelatorioTotalizadorGeralVenda.pas',
   uGeraRelatorioTotalizadorGeralVenda in 'units\uGeraRelatorioTotalizadorGeralVenda.pas',
@@ -243,7 +239,6 @@ uses
   uFrmPlanoContas in 'uFrmPlanoContas.pas' {FrmPlanoContas},
   uFrmBanco in 'uFrmBanco.pas' {FrmBanco},
   uFrmContaBancaria in 'uFrmContaBancaria.pas' {FrmContaBancaria},
-  //uImpressoraSections in '..\..\unit_compartilhada\uImpressoraSections.pas',
   uFrmContaReceber in 'uFrmContaReceber.pas' {FrmContaReceber},
   uFrmContaPagar in 'uFrmContaPagar.pas' {FrmContaPagar},
   uFrmIntegracaoItau in 'uFrmIntegracaoItau.pas' {FrmIntegracaoItau},
@@ -253,7 +248,6 @@ uses
   uFrmCadastro in 'uFrmCadastro.pas' {FrmCadastro},
   uImprimeNaImpressoraDoWindows in '..\..\unit_compartilhada\uImprimeNaImpressoraDoWindows.pas',
   uFrmTecnico in 'uFrmTecnico.pas' {FrmTecnico},
-  //uCarneSections in '..\..\unit_compartilhada\uCarneSections.pas',
   uTypesImpressao in '..\..\unit_compartilhada\uTypesImpressao.pas',
   uIntegracaoItau in '..\..\unit_compartilhada\Itau\uIntegracaoItau.pas',
   uClassesItau in '..\..\unit_compartilhada\Itau\uClassesItau.pas',
@@ -272,10 +266,18 @@ uses
   uRetornaCustoMedio in 'units\uRetornaCustoMedio.pas',
   ufrmInformarDrawback in 'ufrmInformarDrawback.pas' {frmInformarDrawback},
   ufrmInformacoesExportacaoNFe in 'ufrmInformacoesExportacaoNFe.pas' {frmInformacoesExportacaoNFe},
+  ufrmInformacoesImportacaoNFe in 'ufrmInformacoesImportacaoNFe.pas' {frmInformacoesImportacaoNFe},
+  uFrmIntegracaoIMendes in 'uFrmIntegracaoIMendes.pas' {FrmIntegracaoIMendes},
+  uClassesIMendes in 'units\uClassesIMendes.pas',
+  uIMendesSections in '..\..\unit_compartilhada\DAT\uIMendesSections.pas',
+  uFrmSaneamentoIMendes in 'uFrmSaneamentoIMendes.pas' {FrmSaneamentoIMendes},
   uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas',
   ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo},
+  uWebServiceIMendes in 'units\uWebServiceIMendes.pas',
+  uFrmProdutosIMendes in 'uFrmProdutosIMendes.pas' {FrmProdutosIMendes},
   uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
-  uIMendesSections in '..\..\unit_compartilhada\DAT\uIMendesSections.pas';
+  uImendes in 'units\uImendes.pas',
+  uCalculaImpostos in 'uCalculaImpostos.pas';
 
 {$R *.RES}
 
@@ -339,44 +341,42 @@ begin
 
       Application.Title := 'Small Commerce';
       Application.CreateForm(TForm1, Form1);
-  	  Application.CreateForm(TForm2, Form2);
-      Application.CreateForm(TSenhas, Senhas);
-      //Application.CreateForm(TSenhas2, Senhas2);
-      Application.CreateForm(TForm24, Form24);
-      Application.CreateForm(TForm30, Form30);
-      Application.CreateForm(TForm7, Form7);
-      Application.CreateForm(TForm9, Form9);
-      Application.CreateForm(TForm14, Form14);
-      Application.CreateForm(TForm19, Form19);
-      Application.CreateForm(TForm12, Form12);
-      Application.CreateForm(TForm48, Form48);
-      Application.CreateForm(TForm16, Form16);
-      Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
-      Application.CreateForm(TForm21, Form21);
-      Application.CreateForm(TForm25, Form25);
-      Application.CreateForm(TForm26, Form26);
-      Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
-      Application.CreateForm(TForm31, Form31);
-      Application.CreateForm(TForm38, Form38);
-      Application.CreateForm(TForm39, Form39);
-      Application.CreateForm(TForm41, Form41);
-      Application.CreateForm(TForm43, Form43);
-      Application.CreateForm(TForm4, Form4);
-      Application.CreateForm(TForm13, Form13);
-      Application.CreateForm(TForm40, Form40);
-      Application.CreateForm(TForm15, Form15);
-      Application.CreateForm(TForm35, Form35);
-      Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
-      Application.CreateForm(TForm6, Form6);
-      Application.CreateForm(TForm11, Form11);
-      Application.CreateForm(TForm36, Form36);
-      Application.CreateForm(TForm5, Form5);
-      Application.CreateForm(TForm29, Form29);
-      Application.CreateForm(TForm45, Form45);
-      Application.CreateForm(TForm37, Form37);
-      Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
-      Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
-      Application.Run;
+  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TSenhas, Senhas);
+  Application.CreateForm(TForm24, Form24);
+  Application.CreateForm(TForm30, Form30);
+  Application.CreateForm(TForm7, Form7);
+  Application.CreateForm(TForm9, Form9);
+  Application.CreateForm(TForm14, Form14);
+  Application.CreateForm(TForm19, Form19);
+  Application.CreateForm(TForm12, Form12);
+  Application.CreateForm(TForm48, Form48);
+  Application.CreateForm(TForm16, Form16);
+  Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
+  Application.CreateForm(TForm21, Form21);
+  Application.CreateForm(TForm25, Form25);
+  Application.CreateForm(TForm26, Form26);
+  Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
+  Application.CreateForm(TForm31, Form31);
+  Application.CreateForm(TForm38, Form38);
+  Application.CreateForm(TForm39, Form39);
+  Application.CreateForm(TForm41, Form41);
+  Application.CreateForm(TForm43, Form43);
+  Application.CreateForm(TForm4, Form4);
+  Application.CreateForm(TForm13, Form13);
+  Application.CreateForm(TForm40, Form40);
+  Application.CreateForm(TForm15, Form15);
+  Application.CreateForm(TForm35, Form35);
+  Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
+  Application.CreateForm(TForm6, Form6);
+  Application.CreateForm(TForm11, Form11);
+  Application.CreateForm(TForm36, Form36);
+  Application.CreateForm(TForm5, Form5);
+  Application.CreateForm(TForm29, Form29);
+  Application.CreateForm(TForm45, Form45);
+  Application.CreateForm(TForm37, Form37);
+  Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
+  Application.Run;
     end else
     begin
       if not IsWindowVisible(oHwnd) then PostMessage(oHwnd, wm_User,0,0);

@@ -118,8 +118,6 @@ type
     Label29: TLabel;
     ComboBoxNF2: TComboBox;
     ComboBoxImpressora: TComboBox;
-    Label27: TLabel;
-    ComboBoxBloqueto: TComboBox;
     ComboBox11: TComboBox;
     Label34: TLabel;
     Label35: TLabel;
@@ -150,6 +148,8 @@ type
     rbModerno: TRadioButton;
     chkImportaMesmoOrc: TCheckBox;
     chkRecalculaCustoMedioRetroativo: TCheckBox;
+    cboFormatoOrc: TComboBox;
+    lblFormatoOrc: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
@@ -198,6 +198,7 @@ type
     procedure edtVlMultaExit(Sender: TObject);
     procedure rbMultaPercentualClick(Sender: TObject);
     procedure rbClassicoClick(Sender: TObject);
+    procedure ComboBoxORCAChange(Sender: TObject);
   private
     { Private declarations }
     procedure SetTipoMulta;
@@ -258,12 +259,12 @@ begin
       begin
         Form19.ComboBoxNF.Items.Add(Form19.ComboBoxImpressora.Items[i]);
         Form19.ComboBoxNF2.Items.Add(Form19.ComboBoxImpressora.Items[i]);
-        Form19.ComboBoxBloqueto.Items.Add(Form19.ComboBoxImpressora.Items[i]);
+        //Form19.ComboBoxBloqueto.Items.Add(Form19.ComboBoxImpressora.Items[i]);
       end else
       begin
         Form19.comboBoxNF.Items.Add(sPort);
         Form19.comboBoxNF2.Items.Add(sPort);
-        Form19.comboBoxBloqueto.Items.Add(sPort);
+        //Form19.comboBoxBloqueto.Items.Add(sPort);
       end;
     end;
   end;
@@ -387,7 +388,7 @@ begin
 
   ComboBoxNF.Text        := Mais3Ini.ReadString('Nota Fiscal','Porta','LPT1');
   ComboBoxNF2.Text        := Mais3Ini.ReadString('Nota Fiscal 2','Porta','LPT1');
-  ComboBoxBloqueto.Text    := Mais3Ini.ReadString('Bloqueto','Porta','LPT1');
+  //ComboBoxBloqueto.Text    := Mais3Ini.ReadString('Bloqueto','Porta','LPT1');
 
   if Mais1Ini.ReadString('Permitir','Vendas abaixo do custo','Sim') = 'Não' then chkVendasAbaixoCusto.Checked  := False else chkVendasAbaixoCusto.Checked := True;
   if Mais1Ini.ReadString('Permitir','Estoque negativo','Sim')       = 'Não' then chkEstoqueNegativoNF.Checked  := False else chkEstoqueNegativoNF.Checked := True;
@@ -401,6 +402,7 @@ begin
     chkImportaMesmoOrc.Checked               := ConfSistema.BD.Outras.PermiteImportarMesmoOrc; // Mauricio Parizotto 2024-08-26
     chkRecalculaCustoMedioRetroativo.Checked := ConfSistema.BD.Outras.RecalculaCustoMedioRetroativo; // Dailon Parisotto 2024-09-02
     ComboBoxOS.ItemIndex                     := ComboBoxOS.Items.IndexOf(ConfSistema.BD.Impressora.ImpressoraOS); // Mauricio Parizotto 2024-05-10
+    cboFormatoOrc.ItemIndex                  := cboFormatoOrc.Items.IndexOf(ConfSistema.BD.Impressora.FormatoOrcamento); // Mauricio Parizotto 2024-10-24
 	{Mauricio Parizotto 2024-04-23 Inicio}
     if ConfSistema.BD.Outras.TipoPrazo = 'dias' then
       rbPrazoDias.Checked := True
@@ -481,7 +483,6 @@ begin
   Edit4.Text         := Mais4Ini.ReadString('mail','From','');
   Edit5.Text         := Mais4Ini.ReadString('mail','Name','');
   Edit6.Text         := Mais4Ini.ReadString('mail','Password','');
-  //ComboBoxORCA.Text  := Mais4Ini.ReadString('Orçamento','Porta','Impressora padrão do windows');
   ComboBoxORCA.ItemIndex := ComboBoxORCA.Items.IndexOf( Mais4Ini.ReadString('Orçamento','Porta','HTML') );
 
   if Mais4Ini.ReadString('mail','UseSSL','0') = '1' then
@@ -498,6 +499,8 @@ begin
   Mais2Ini.Free;
 
   bChave := False;
+
+  ComboBoxORCAChange(nil);
 end;
 
 procedure TForm19.btnOKClick(Sender: TObject);
@@ -528,7 +531,7 @@ begin
 
   Mais3Ini.WriteString('Nota Fiscal','Porta',AllTrim(ComboBoxNF.Text));
   Mais3Ini.WriteString('Nota Fiscal 2','Porta',AllTrim(ComboBoxNF2.Text));
-  Mais3Ini.WriteString('Bloqueto','Porta',AllTrim(ComboBoxBloqueto.Text));
+  //Mais3Ini.WriteString('Bloqueto','Porta',AllTrim(ComboBoxBloqueto.Text));
 
   if chkVendasAbaixoCusto.Checked = True then Mais1Ini.WriteString('Permitir','Vendas abaixo do custo','Sim') else Mais1Ini.WriteString('Permitir','Vendas abaixo do custo','Não');
   if chkEstoqueNegativoNF.Checked = True then Mais1Ini.WriteString('Permitir','Estoque negativo','Sim') else Mais1Ini.WriteString('Permitir','Estoque negativo','Não');
@@ -542,6 +545,7 @@ begin
     ConfSistema.BD.Outras.PermiteImportarMesmoOrc := chkImportaMesmoOrc.Checked; //Mauricio Parizotto 2024-08-26
     ConfSistema.BD.Outras.RecalculaCustoMedioRetroativo := chkRecalculaCustoMedioRetroativo.Checked; // Dailon Parisotto 2024-09-02
     ConfSistema.BD.Impressora.ImpressoraOS        := ComboBoxOS.Text; // Mauricio Parizotto 2024-05-10
+    ConfSistema.BD.Impressora.FormatoOrcamento    := cboFormatoOrc.Text; //Mauricio Parizotto 2024-10-24
     {Mauricio Parizotto 2024-04-23 Inicio}
     if rbPrazoFixo.Checked then
       ConfSistema.BD.Outras.TipoPrazo := 'fixo'
@@ -1452,7 +1456,7 @@ begin
   ComboBoxImpressora.Items.Clear;
   comboBoxNF.Items.clear;
   comboBoxNF2.Items.clear;
-  comboBoxBloqueto.Items.clear;
+  //comboBoxBloqueto.Items.clear;
 
   comboBoxORCA.Items.clear;
   ComboBoxORCA.Items.Add(_cImpressoraPadrao);
@@ -1513,6 +1517,12 @@ begin
   try
     if StrToInt(AllTrim(ComboBox9.Text)) < 3 then ComboBox9.Text := '3';
   except ComboBox9.Text := '5' end;
+end;
+
+procedure TForm19.ComboBoxORCAChange(Sender: TObject);
+begin
+  cboFormatoOrc.Visible := ComboBoxORCA.ItemIndex = 0;
+  lblFormatoOrc.Visible := ComboBoxORCA.ItemIndex = 0;
 end;
 
 procedure TForm19.ComboBox10Exit(Sender: TObject);

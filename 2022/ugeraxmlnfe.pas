@@ -31,8 +31,10 @@ uses
   , unit29
   , unit12
   , Mais
+  , ucalculaimpostos
 ;
 
+{Sandro Silva 2024-10-17 movido para ucalculaimpostos
 type
   TItemNFe = class
   private
@@ -46,18 +48,24 @@ type
     property Origem: String read FOrigem write FOrigem;
     property CST: String read FCST write FCST;
   end;
+}
 
-
-  function GeraXmlNFe: String;
-  procedure CsosnComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String; ItemNF: TItemNFe);
+  //function GeraXmlNFe: String; Mauricio Parizotto 2024-11-04
+  function GeraXmlNFe(out sNFeRetorno : Widestring): Boolean;
+{Sandro Silva 2024-10-17 movido para ucalculaimpostos
+  procedure CstComOrigemdoProdutoNaOperacao(sCodigo: String;
+    sOperacao: String; ItemNF: TItemNFe);
+  procedure CsosnComOrigemdoProdutoNaOperacao(sCodigo: String;
+    sOperacao: String; ItemNF: TItemNFe);
+}
 
 implementation
 
 uses uGeraXmlNFeEntrada, uGeraXmlNFeSaida, uDialogs, uFuncoesRetaguarda,
   uSmallConsts;
 
-
-function GeraXmlNFe: String;
+//function GeraXmlNFe: String; Mauricio Parizotto 2024-11-04
+function GeraXmlNFe(out sNFeRetorno : Widestring): Boolean;
 var
   sJustificativa : String;
   fNFe: String; // Sandro Silva 2022-09-12
@@ -65,6 +73,8 @@ var
   F: TextFile;
   _file : TStringList;
 begin
+  Result := False;
+
   try
     Form7.ibDataSet16.DisableControls; // Sandro Silva 2023-05-09
     Form7.ibDataSet23.DisableControls; // Sandro Silva 2023-05-09
@@ -95,9 +105,12 @@ begin
     if Form7.ibDataSet15EMITIDA.AsString = 'E' then
     begin
       //Entrada
-      GeraXmlNFeEntrada;
+      //GeraXmlNFeEntrada; Mauricio Parizotto 2024-10-29
+      if not GeraXmlNFeEntrada then
+        Exit;
     end else
     begin
+      (*Mauricio Parizotto 2024-10-29 Inicio
       //Saida
       GeraXmlNFeSaida;
       {Dailon Parisotto (smal-706) 2024-09-23 Inicio}
@@ -108,18 +121,15 @@ begin
         Abort;
       end;
       {Dailon Parisotto (smal-706) 2024-09-23 Fim}
+      *)
+      if not GeraXmlNFeSaida then
+      begin
+        // Limpa para não validar o XML
+        Form7.ibDataSet15NFEXML.AsString := EmptyStr;
+        Exit;
+      end;
     end;
 
-    {Mauricio Parizotto 2024-07-15
-    // Grupo ZD. Informações do Responsável Técnico
-//  if Form1.bHomologacao then
-    begin
-      Form7.spdNFeDataSets.Campo('CNPJ_ZD02').Value                         := LimpaNumero(CNPJ_SMALLSOFT); //'07426598000124';
-      Form7.spdNFeDataSets.Campo('xContato_ZD04').Value                     := 'Alessio Mainardi';
-      Form7.spdNFeDataSets.Campo('email_ZD05').Value                        := 'smallsoft@smallsoft.com.br';
-      Form7.spdNFeDataSets.Campo('fone_ZD06').Value                         := '4934255800';
-    end;
-    }
     //Responsável Técnico
     Form7.spdNFeDataSets.Campo('CNPJ_ZD02').Value       := _RespTecCNPJ;
     Form7.spdNFeDataSets.Campo('xContato_ZD04').Value   := _RespTecContato;
@@ -250,19 +260,75 @@ begin
       end;
     end;
 
-    Result := fNFe;
+    //Result := fNFe; Mauricio Parizotto 2024-11-04
+    sNFeRetorno := fNFe;
+    Result := True;
   finally
     if Form7.ibDataSet16.Active then
       Form7.ibDataSet16.First;
-    Form7.ibDataSet16.EnableControls; // Sandro Silva 2023-05-09
+    Form7.ibDataSet16.EnableControls;
     if Form7.ibDataSet23.Active then
       Form7.ibDataSet23.First;
-    Form7.ibDataSet23.EnableControls; // Sandro Silva 2023-05-09
-    //LogRetaguarda('ugeraxmlnfe ibDataSet23.EnableControls 256'); // Sandro Silva 2023-12-04
+    Form7.ibDataSet23.EnableControls;
   end;
 end;
 
+(* Sandro Silva 2024-10-17 movido para ucalculaimpostos
+procedure CstComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
+  ItemNF: TItemNFe);
+var
+  IBQESTOQUE: TIBQuery;
+  IBQICM: TIBQuery;
+//  sReg: String;
+begin
+  {
+  Combinado com Gian e Fernanda que a ordem para selecionar o CST ficará:
+  Se o produto tiver CIT configurado, busca o CST do CIT
+  Se não tiver CIT ou se o CIT configurado não tiver CST, busca o CST do estoque
+  Se no estoque não tiver CST configurado usará por padrão “000”
+  }
 
+  if (Trim(sCodigo) <> '') and (Trim(sOperacao) <> '') then
+  begin
+    IBQESTOQUE := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
+    IBQICM     := Form7.CriaIBQuery(Form7.ibDataSet4.Transaction);
+
+    IBQESTOQUE.Close;
+    IBQESTOQUE.SQL.Text :=
+      'select ST, CST ' +
+      'from ESTOQUE ' +
+      'where CODIGO = :CODIGO';
+    IBQESTOQUE.ParamByName('CODIGO').AsString := sCodigo;
+    IBQESTOQUE.Open;
+
+    IBQICM.DisableControls;
+    IBQICM.Close;
+    IBQICM.SQL.Clear;
+    IBQICM.SQL.Text :=
+      'select first 1 * from ICM ' +
+      'where (SubString(CFOP from 1 for 1) in (''5'', ''6'', ''7'')  or Coalesce(CFOP,''XXX'') = ''XXX'') ' +
+      ' and coalesce(ST, '''') = :ST ' +
+      'order by upper(NOME)';
+    IBQICM.ParamByName('ST').AsString := IBQESTOQUE.FieldByName('ST').AsString;
+    IBQICM.Open;
+
+    ItemNF.Codigo := sCodigo;
+
+    if Trim(IBQICM.FieldByName('CST').AsString) <> '' then
+    begin
+      ItemNF.Origem := Copy(LimpaNumero(IBQICM.FieldByname('CST').AsString) + '000', 1, 1); // Origem da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
+      ItemNF.CST    := Right('00' + Trim(IBQICM.FieldByname('CST').AsString), 2);
+    end
+    else
+    begin
+      ItemNF.Origem := Copy(LimpaNumero(IBQESTOQUE.FieldByname('CST').AsString) + '000', 1, 1); // Origem da Mercadoria (0-Nacional, 1-Estrangeira, 2-Estrangeira adiquirida no Merc. Interno)
+      ItemNF.CST    := Right('00' + Trim(IBQESTOQUE.FieldByname('CST').AsString), 2);
+    end;
+
+    FreeAndNil(IBQESTOQUE);
+    FreeAndNil(IBQICM);
+  end;
+end;
 
 procedure CsosnComOrigemdoProdutoNaOperacao(sCodigo: String; sOperacao: String;
   ItemNF: TItemNFe);
@@ -344,6 +410,6 @@ begin
     FreeAndNil(IBQICM);
   end;
 end;
-
+*)
 
 end.
