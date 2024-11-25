@@ -15063,6 +15063,17 @@ begin
     ShowMessage(Format(MSG, [FriendlyName]));
     Exit();
   end;
+
+  if LowerCase(CurrentField) = 'conta' then
+  begin
+    if not(LimpaNumero(Text) = Text) then
+    begin
+      ShowMessage('Não é permitido letras no campo número da conta.');
+      Exit();
+    end;
+  end;
+
+
   TField(Sender).AsString := Text;
 end;
 
