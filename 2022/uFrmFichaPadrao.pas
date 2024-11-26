@@ -276,6 +276,7 @@ begin
       DSCadastro.DataSet.DisableControls;
       DSCadastro.DataSet.Edit;
       DSCadastro.DataSet.Post;
+      DSCadastro.DataSet.Edit; // Quando movimenta para o próximo/anterior com as setas ficava dsbrowse  Sandro Silva (f-21728) 2024-11-26
       bEstaSendoUsado := False;
     except
       bEstaSendoUsado := True;
@@ -299,6 +300,7 @@ begin
         DSCadastro.DataSet.DisableControls;
         DSCadastro.DataSet.Edit;
         DSCadastro.DataSet.Post;
+        DSCadastro.DataSet.Edit; // Quando movimenta para o próximo/anterior com as setas ficava dsbrowse  Sandro Silva (f-21728) 2024-11-26
         bEstaSendoUsado := False;
       except
         bEstaSendoUsado := True;
