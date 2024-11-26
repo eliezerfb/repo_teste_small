@@ -112,6 +112,8 @@ uses
   uAssinaturaDigital in '..\..\unit_compartilhada\uAssinaturaDigital.pas',
   uIEstruturaRelVendasPorCliente in 'interfaces\uIEstruturaRelVendasPorCliente.pas',
   uEstruturaRelVendasPorCliente in 'units\uEstruturaRelVendasPorCliente.pas',
+  uIEstruturaRelGenerico in 'interfaces\uIEstruturaRelGenerico.pas',
+  uEstruturaRelGenerico in 'units\uEstruturaRelGenerico.pas',
   uEstruturaRelVendasPorClienteNota in 'units\uEstruturaRelVendasPorClienteNota.pas',
   uIDadosVendasPorClienteFactory in 'interfaces\uIDadosVendasPorClienteFactory.pas',
   uEstruturaRelVendasPorClienteCupom in 'units\uEstruturaRelVendasPorClienteCupom.pas',
@@ -265,10 +267,16 @@ uses
   ufrmInformarDrawback in 'ufrmInformarDrawback.pas' {frmInformarDrawback},
   ufrmInformacoesExportacaoNFe in 'ufrmInformacoesExportacaoNFe.pas' {frmInformacoesExportacaoNFe},
   ufrmInformacoesImportacaoNFe in 'ufrmInformacoesImportacaoNFe.pas' {frmInformacoesImportacaoNFe},
+  uFrmIntegracaoIMendes in 'uFrmIntegracaoIMendes.pas' {FrmIntegracaoIMendes},
+  uClassesIMendes in 'units\uClassesIMendes.pas',
+  uIMendesSections in '..\..\unit_compartilhada\DAT\uIMendesSections.pas',
+  uFrmSaneamentoIMendes in 'uFrmSaneamentoIMendes.pas' {FrmSaneamentoIMendes},
   uEstruturaRelRankingProdutosVendidos in 'units\uEstruturaRelRankingProdutosVendidos.pas',
   ufrmRelatorioMovItensPeriodo in 'units\ufrmRelatorioMovItensPeriodo.pas' {frmRelatorioMovItensPeriodo},
+  uWebServiceIMendes in 'units\uWebServiceIMendes.pas',
+  uFrmProdutosIMendes in 'uFrmProdutosIMendes.pas' {FrmProdutosIMendes},
   uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
-  uIMendesSections in '..\..\unit_compartilhada\DAT\uIMendesSections.pas',
+  uImendes in 'units\uImendes.pas',
   uCalculaImpostos in 'uCalculaImpostos.pas';
 
 {$R *.RES}
@@ -335,42 +343,40 @@ begin
       Application.CreateForm(TForm1, Form1);
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TSenhas, Senhas);
-  //Application.CreateForm(TSenhas2, Senhas2);
-      Application.CreateForm(TForm24, Form24);
-      Application.CreateForm(TForm30, Form30);
-      Application.CreateForm(TForm7, Form7);
-      Application.CreateForm(TForm9, Form9);
-      Application.CreateForm(TForm14, Form14);
-      Application.CreateForm(TForm19, Form19);
-      Application.CreateForm(TForm12, Form12);
-      Application.CreateForm(TForm48, Form48);
-      Application.CreateForm(TForm16, Form16);
-      Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
-      Application.CreateForm(TForm21, Form21);
-      Application.CreateForm(TForm25, Form25);
-      Application.CreateForm(TForm26, Form26);
-      Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
-      Application.CreateForm(TForm31, Form31);
-      Application.CreateForm(TForm38, Form38);
-      Application.CreateForm(TForm39, Form39);
-      Application.CreateForm(TForm41, Form41);
-      Application.CreateForm(TForm43, Form43);
-      Application.CreateForm(TForm4, Form4);
-      Application.CreateForm(TForm13, Form13);
-      Application.CreateForm(TForm40, Form40);
-      Application.CreateForm(TForm15, Form15);
-      Application.CreateForm(TForm35, Form35);
-      Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
-      Application.CreateForm(TForm6, Form6);
-      Application.CreateForm(TForm11, Form11);
-      Application.CreateForm(TForm36, Form36);
-      Application.CreateForm(TForm5, Form5);
-      Application.CreateForm(TForm29, Form29);
-      Application.CreateForm(TForm45, Form45);
-      Application.CreateForm(TForm37, Form37);
-      Application.CreateForm(TFrmPesquisaOrdemServico, FrmPesquisaOrdemServico);
-      Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
-      Application.Run;
+  Application.CreateForm(TForm24, Form24);
+  Application.CreateForm(TForm30, Form30);
+  Application.CreateForm(TForm7, Form7);
+  Application.CreateForm(TForm9, Form9);
+  Application.CreateForm(TForm14, Form14);
+  Application.CreateForm(TForm19, Form19);
+  Application.CreateForm(TForm12, Form12);
+  Application.CreateForm(TForm48, Form48);
+  Application.CreateForm(TForm16, Form16);
+  Application.CreateForm(TFrmAssistenteProcura, FrmAssistenteProcura);
+  Application.CreateForm(TForm21, Form21);
+  Application.CreateForm(TForm25, Form25);
+  Application.CreateForm(TForm26, Form26);
+  Application.CreateForm(TFrmRelatorioFluxoCaixa, FrmRelatorioFluxoCaixa);
+  Application.CreateForm(TForm31, Form31);
+  Application.CreateForm(TForm38, Form38);
+  Application.CreateForm(TForm39, Form39);
+  Application.CreateForm(TForm41, Form41);
+  Application.CreateForm(TForm43, Form43);
+  Application.CreateForm(TForm4, Form4);
+  Application.CreateForm(TForm13, Form13);
+  Application.CreateForm(TForm40, Form40);
+  Application.CreateForm(TForm15, Form15);
+  Application.CreateForm(TForm35, Form35);
+  Application.CreateForm(TfrmSelectCertificate, frmSelectCertificate);
+  Application.CreateForm(TForm6, Form6);
+  Application.CreateForm(TForm11, Form11);
+  Application.CreateForm(TForm36, Form36);
+  Application.CreateForm(TForm5, Form5);
+  Application.CreateForm(TForm29, Form29);
+  Application.CreateForm(TForm45, Form45);
+  Application.CreateForm(TForm37, Form37);
+  Application.CreateForm(TFrmOrigemCombustivel, FrmOrigemCombustivel);
+  Application.Run;
     end else
     begin
       if not IsWindowVisible(oHwnd) then PostMessage(oHwnd, wm_User,0,0);
