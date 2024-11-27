@@ -378,6 +378,29 @@ begin
                       end;
                     end;
 
+                    if (NodeTmp.ChildNodes['cEAN'].Text = '') or
+                    (NodeTmp.ChildNodes['cEAN'].Text = 'SEM GTIN')  then
+                    begin
+                      Form7.ibDataSet4.Close;
+
+                      var xProd := Trim(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd'))));
+                      Form7.ibDataSet4.SelectSQL.Text :=
+                        'select * from ESTOQUE where DESCRICAO='+QuotedStr(xProd)+
+                        ' and ( '+
+                          ' coalesce(REFERENCIA, '+QuotedStr('')+') = '+QuotedStr('')+
+                          ' or '+
+                          ' REFERENCIA = '+QuotedStr('SEM GTIN')+
+                        ' ) ';
+
+                      Form7.ibDataSet4.Open;
+                      if not(Trim(Form7.ibDataSet4CODIGO.AsString) = '') then
+                      begin
+                        bProdutoCadastrado := True;
+                        sItens := sItens + RetornarCodProdInativo;
+                      end;
+                    end;
+
+
                     //Mauricio Parizotto 2023-10-04
                     sICMSTag := GetICMSTag(NodeSec);
 
