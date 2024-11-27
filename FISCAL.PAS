@@ -33216,7 +33216,10 @@ begin
       SmallMsgBox(PChar('Não é possível abandonar a venda. Há produtos sendo movimentados por outro usuário:'+sLineBreak+sLineBreak+
                         sProdutosBloq),
                   'Atenção', MB_ICONWARNING + MB_OK);
-        Exit;
+
+      //Libera produtos bloqueados
+      Commitatudo(True);//AbandonaVenda
+      Exit;
     end;
 
     {$Endregion}
