@@ -33198,11 +33198,14 @@ begin
     sProdutosBloq := '';
     while not ibDataSet27.Eof do
     begin
-      if not ExecutaComando(ibDataSet27.Transaction,
-                            ' Update ESTOQUE set CODIGO = CODIGO '+
-                            ' Where CODIGO = '+ibDataSet27CODIGO.AsString) then
+      if ibDataSet27CODIGO.AsString <> '' then
       begin
-        sProdutosBloq := sProdutosBloq + ibDataSet27CODIGO.AsString+' - '+ibDataSet27DESCRICAO.AsString+sLineBreak;
+        if not ExecutaComando(ibDataSet27.Transaction,
+                              ' Update ESTOQUE set CODIGO = CODIGO '+
+                              ' Where CODIGO = '+ibDataSet27CODIGO.AsString) then
+        begin
+          sProdutosBloq := sProdutosBloq + ibDataSet27CODIGO.AsString+' - '+ibDataSet27DESCRICAO.AsString+sLineBreak;
+        end;
       end;
 
       ibDataSet27.Next;
