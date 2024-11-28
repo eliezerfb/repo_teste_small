@@ -33256,6 +33256,14 @@ begin
     end;
     {$Endregion}
 
+    {$Region'//// Exclui Conta Receber ////'}
+    ibDataSet7.First;
+    while not ibDataSet7.Eof do
+    begin
+      ibDataSet7.Delete;
+    end;
+    {$Endregion}
+
   finally
     ibDataSet4.EnableControls;
   end;
