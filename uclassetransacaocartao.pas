@@ -16,7 +16,17 @@ uses
   ;
 
 type
-  TTipoModalidadeTransacao = (tModalidadeNenhum, tModalidadeCartao, tModalidadeCarteiraDigital, tModalidadePix, tModalidadeOutros);
+  //Sandro Silva 2024-11-27 TTipoModalidadeTransacao = (tModalidadeNenhum, tModalidadeCartao, tModalidadeCarteiraDigital, tModalidadePix, tModalidadeOutros);
+  TTipoModalidadeTransacao = (tModalidadeNenhum, tModalidadeCartaoNaoIdentificado, tModalidadeCartaoPOS, tModalidadeCartaoTEF, tModalidadeCarteiraDigital, tModalidadePix, tModalidadeOutros);
+
+type
+  TTiposTransacao = (tpNone, tpPOS, tpTEF); // Sandro Silva (smal-778) 2024-11-06
+
+type
+  TTipoTransacaoTefPos = class
+    Tipo: TTiposTransacao;
+    Descricao: String;
+  end;
 
   TTransacaoCartaoList = class;
 
@@ -29,7 +39,6 @@ type
     FNomeRede: String;
     FAutorizacao: String;
     FBandeira: String;
-    //FCarteiraDigital: Boolean;
     FModalidade: TTipoModalidadeTransacao;
   public
     property NomeDoTEF: String read FNomeDoTEF write FNomeDoTEF;
@@ -39,7 +48,6 @@ type
     property Transaca: String read FTransaca write FTransaca;
     property Autorizacao: String read FAutorizacao write FAutorizacao;
     property Bandeira: String read FBandeira write FBandeira;
-    //property CarteiraDigital: Boolean read FCarteiraDigital write FCarteiraDigital;
     property Modalidade: TTipoModalidadeTransacao read FModalidade write FModalidade;
   end;
 
@@ -51,7 +59,6 @@ type
     function Adicionar(sNomeDoTEF: String; sDebitoOuCredito: String;
       dValorPago: Double; sNomeRede: String; sTransaca: String;
       sAutorizacao: String; sBandeira: String;
-      //bCarteiraDigital: Boolean
       Modalidade: TTipoModalidadeTransacao
       ): TTransacaoCartao;
     property Items[Index: Integer]: TTransacaoCartao read GetItem write SetItem;
@@ -99,7 +106,6 @@ function TTransacaoCartaoList.Adicionar(sNomeDoTEF,
   sDebitoOuCredito: String; dValorPago: Double; sNomeRede,
   sTransaca: String; sAutorizacao: String;
   sBandeira: String;
-  //bCarteiraDigital: Boolean
   Modalidade: TTipoModalidadeTransacao
   ): TTransacaoCartao;
 begin
@@ -111,7 +117,6 @@ begin
   Result.Transaca        := sTransaca;
   Result.Autorizacao     := sAutorizacao;
   Result.Bandeira        := sBandeira;
-  //Result.CarteiraDigital := bCarteiraDigital;
   Result.Modalidade      := Modalidade;
 
   if Trim(Result.NomeRede) = '' then // Sandro Silva 2023-04-25 f-6859

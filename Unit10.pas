@@ -31,9 +31,9 @@ type
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
+    { Private declarations }
     FTipoForm: TTipoForm;
     FbFuncoesADM: Boolean;
-    { Private declarations }
     procedure AjustaFormCartoes;
     procedure SelecionarAdministradora;
     procedure SelecionarAdquirente;
@@ -57,7 +57,6 @@ var
 implementation
 
 uses fiscal
-//, _Small_IntegradorFiscal
 , ufuncoesfrente, uajustaresolucao
 // Sandro Silva (smal-778) 2024-11-06, uValidaRecursos, uTypesRecursos
 , uFuncoesPos

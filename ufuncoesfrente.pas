@@ -79,6 +79,8 @@ const NUMERO_LAUDO_PAF_ECF            = 'UNO3972022';// Sandro Silva 2022-12-12 
 const DATA_EMISSAO_LAUDO_PAF_ECF      = '12/12/2022'; // Sandro Silva 2022-12-02 Unochapeco
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
 
+const PREFIXO_HISTORICO_TRANSACAO_POS = 'VENDA NO CARTAO'; // Sandro Silva (smal-778) 2024-11-25
+
 const NFCE_CSTAT_AUTORIZADO_100               = '100';
 const NFCE_CSTAT_AUTORIZADO_FORA_DE_PRAZO_150 = '150';
 const NFCE_CSTAT_CANCELADA_135                = '135';
@@ -112,6 +114,7 @@ type
 type
   TTipoInfoCombo = (tiInfoComboModeloSAT, tiInfoComboImpressoras, tiInfoComboFusoHorario, tiInfoComboContaClienteOS);
 
+{Sandro Silva (smal-778) 2024-11-26
 type
   TTiposTransacao = (tpNone, tpPOS, tpTEF); // Sandro Silva (smal-778) 2024-11-06
 
@@ -120,7 +123,7 @@ type
     Tipo: TTiposTransacao;
     Descricao: String;
   end;
-
+}
 type
   TAliquota = class // Sandro Silva 2019-06-13  TAliquota = record
     Aliquota: String;
@@ -290,7 +293,6 @@ procedure GravaPendenciaAlteraca(IBDatabase: TIBDatabase; bOffLine: Boolean;
 procedure AtualizaNumeroPedidoTabelaPendencia(IBTransaction: TIBTransaction;
   sCaixaOld: String; sPedidoOld: String; sPedidoNew: String; sCaixaNew: String);
 procedure AtualizaDadosPagament(FIBDataSet28: TIBDataSet;
-//  FIBTransaction: TIBTransaction;
   FModeloDocumento: String;
   sCaixaOld: String; sPedidoOld: String;
   sCaixaNovo: String; sNovoNumero: String;
@@ -901,9 +903,8 @@ begin
     FreeAndNil(IBTPENDENCIA);
   end;
 end;
-{Sandro Silva 2023-08-25 inicio}
+
 procedure AtualizaDadosPagament(FIBDataSet28: TIBDataSet;
-//  FIBTransaction: TIBTransaction;
   FModeloDocumento: String;
   sCaixaOld: String; sPedidoOld: String;
   sCaixaNovo: String; sNovoNumero: String;
@@ -920,7 +921,7 @@ var
   sFormaOld: String;
 begin
   //Pagament
-  IBQTRANSACAOELETRONICA := CriaIBQuery(FIBDataSet28.Transaction{ FIBTransaction});
+  IBQTRANSACAOELETRONICA := CriaIBQuery(FIBDataSet28.Transaction);
 
   FIBDataSet28.Close;
   FIBDataSet28.SelectSQL.Text :=
@@ -929,8 +930,8 @@ begin
   FIBDataSet28.First;
   while FIBDataSet28.Eof = False do
   begin
-    sGnfOld := FIBDataSet28.FieldByName('GNF').AsString; // Sandro Silva 2023-08-28
-    sFormaOld := FIBDataSet28.FieldByName('FORMA').AsString; // Sandro Silva 2023-08-28
+    sGnfOld := FIBDataSet28.FieldByName('GNF').AsString;
+    sFormaOld := FIBDataSet28.FieldByName('FORMA').AsString;
 
     if (FIBDataSet28.FieldByName('CAIXA').AsString = sCaixaOld)
       and (FIBDataSet28.FieldByName('PEDIDO').AsString = sPedidoOld) then
@@ -1010,7 +1011,7 @@ begin
         FValorTotalTEFPago := FValorTotalTEFPago + IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
         FormasPagamento.Cartao := FormasPagamento.Cartao + IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
 
-        ModalidadeTransacao := tModalidadeCartao;
+        ModalidadeTransacao := tModalidadeCartaoNaoIdentificado; // Sandro Silva 2024-11-27 tModalidadeCartao;
         if Copy(IBQTRANSACAOELETRONICA.FieldByName('FORMA').AsString, 1, 2) = '17' then
           ModalidadeTransacao := tModalidadePix;
         if Copy(IBQTRANSACAOELETRONICA.FieldByName('FORMA').AsString, 1, 2) = '18' then
@@ -1026,6 +1027,7 @@ begin
           IBQTRANSACAOELETRONICA.FieldByName('AUTORIZACAO').AsString,
           IBQTRANSACAOELETRONICA.FieldByName('BANDEIRA').AsString,
           ModalidadeTransacao
+
         );
 
         AtualizaDadosTransacaoEletronica(

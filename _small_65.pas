@@ -4176,7 +4176,8 @@ begin
             end;
 
             {Sandro Silva 2021-07-07 inicio}
-            if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade <> tModalidadeCartao then
+            //Sandro Silva 2024-11-27 if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade <> tModalidadeCartao then
+            if not (Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade in [tModalidadeCartaoPOS, tModalidadeCartaoTEF, tModalidadeCartaoNaoIdentificado]) then
             begin
               if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade = tModalidadeCarteiraDigital then
                 Form1.spdNFCeDataSets1.Campo('tPag_YA02').Value := NFCE_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL
@@ -4244,7 +4245,8 @@ begin
             end;
 
             {Sandro Silva 2021-07-07 inicio}
-            if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade <> tModalidadeCartao then
+            // Sandro Silva 2024-11-27 if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade <> tModalidadeCartao then
+            if not (Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade in [tModalidadeCartaoPOS, tModalidadeCartaoTEF, tModalidadeCartaoNaoIdentificado]) then
             begin
               if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade = tModalidadeCarteiraDigital then
                 Form1.spdNFCeDataSets1.Campo('tPag_YA02').Value := NFCE_FORMA_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL

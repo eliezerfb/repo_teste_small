@@ -76,7 +76,7 @@ begin
   Form1.TransacoesCartao.Transacoes.Clear;
   iTotalParcelas := 0;
 
-  ModalidadeTransacao := tModalidadeCartao;
+  ModalidadeTransacao := tModalidadeCartaoPOS; // Sandro Silva 2024-11-27 tModalidadeCartao;
 
   while dTotalTransacionado < dTotalEmCartao do // Enquanto não totalizar transações com valor devido
   begin
@@ -259,7 +259,7 @@ begin
                   if Form1.ClienteSmallMobile.ImportandoMobile then
                     Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' Aut.' + Form1.sTransaca
                   else
-                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'VENDA NO CARTAO: ' + IntToStr(iContaCartao + 1) + 'º CARTAO';
+                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := PREFIXO_HISTORICO_TRANSACAO_POS + ': ' + IntToStr(iContaCartao + 1) + 'º CARTAO'; // Sandro Silva (smal-778) 2024-11-25 Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'VENDA NO CARTAO: ' + IntToStr(iContaCartao + 1) + 'º CARTAO';
                   Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(iTotalParcelas); // documento
                   Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat    := StrToFloat(FormatFloat('0.00', (Int((dValorPagarCartao / StrToIntDef(Form1.sParcelas, 1)) * 100) / 100)));// Truncando 2 casas decimais
                   Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime    := StrToDate(Form1.sDataDoCupom);

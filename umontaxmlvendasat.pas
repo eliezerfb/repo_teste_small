@@ -1148,7 +1148,8 @@ begin
 
             {Sandro Silva 2021-07-07 inicio}
             //if FPagamentos.TransacoesCartao.Transacoes.Items[iTransacaoCartao].CarteiraDigital then
-            if FPagamentos.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade <> tModalidadeCartao then
+            //Sandro Silva 2024-11-27 if FPagamentos.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade <> tModalidadeCartao then
+            if not (FPagamentos.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade in [tModalidadeCartaoPOS, tModalidadeCartaoTEF, tModalidadeCartaoNaoIdentificado]) then
             begin
               sTipoCartao := SAT_CODIGO_MEIO_PAGAMENTO_99_OUTROS  ;// Mudar quando entrar em vigor as novas formas SAT_CODIGO_MEIO_PAGAMENTO_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL;
             end;

@@ -10,6 +10,7 @@ uses
   , System.IniFiles
   , uajustaresolucao
   , ufuncoesfrente
+  , uclassetransacaocartao
   , uSmallConsts
   ;
 
@@ -44,7 +45,9 @@ implementation
 {$R *.dfm}
 
 uses Unit10
-  , uTransacionaPosOuTef;
+  , fiscal
+  , uTransacionaPosOuTef
+  , smallfunc_xe;
 
 procedure TFrmOpcoesFechamentoComCartao.AddOpcao(sTipo, sOpcao: String);
 begin
@@ -86,7 +89,6 @@ begin
     if AnsiUpperCase(Ini.ReadString(sSecoes[I], 'CARTAO ACEITO', _cNao)) = AnsiUpperCase(_cSim) then
     begin
       AddOpcao(TIPO_POS, sSecoes[I]);
-      //J := J + 1;
     end;
   end;
 
@@ -100,23 +102,35 @@ begin
    Application.CreateForm(TFrmOpcoesFechamentoComCartao, FrmOpcoesFechamentoComCartao);
    FrmOpcoesFechamentoComCartao.ShowModal;
    Result := FrmOpcoesFechamentoComCartao.ModalResult;
+
    if Result = mrOk then
    begin
+     Form10.sNomeDoTEF := FrmOpcoesFechamentoComCartao.CDSOPCOES.FieldByName('OPCAO').AsString;
+
      TipoTransacao.Tipo := tpTEF;
      if FrmOpcoesFechamentoComCartao.CDSOPCOES.FieldByName('TIPO').AsString = TIPO_POS then
        TipoTransacao.Tipo := tpPOS;
 
      if TipoTransacao.Tipo = tpTEF then
      begin
-       Form10.sNomeDoTEF := FrmOpcoesFechamentoComCartao.CDSOPCOES.FieldByName('OPCAO').AsString;
-       AcionaTEF(Form10.sNomeDoTEF); // Form10.Acionatef;
+       AcionaTEF(Form10.sNomeDoTEF);
      end;
 
-//     if TipoTransacao.Tipo = tpPOS then
-//       AplicaOpcaoPosEscolhida(FrmOpcoesFechamentoComCartao.CDSOPCOES.FieldByName('OPCAO').AsString);
+     if TipoTransacao.Tipo = tpPOS then
+     begin
+       Form1.sNomeRede := Trim(StringReplace(StringReplace(AnsiUpperCase(ConverteAcentos(FrmOpcoesFechamentoComCartao.CDSOPCOES.FieldByName('OPCAO').AsString)), 'CREDITO', '', [rfReplaceAll]), 'DEBITO', '', [rfReplaceAll]));
+     end;
 
      TipoTransacao.Descricao := FrmOpcoesFechamentoComCartao.CDSOPCOES.FieldByName('OPCAO').AsString;
+   end
+   else
+   begin
+
+   se passar aqui result false, como fica o restante
+
+     TipoTransacao.Tipo := tpNone;
    end;
+
    FreeAndNil(FrmOpcoesFechamentoComCartao);
 end;
 

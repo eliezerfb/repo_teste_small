@@ -19,7 +19,7 @@ object frameCampoCaixasRel: TframeCampoCaixasRel
     Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
-    ItemHeight = 20
+    ItemHeight = 13
     Items.Strings = (
       '001'
       '002'

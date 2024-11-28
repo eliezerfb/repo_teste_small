@@ -2317,24 +2317,20 @@ begin
           FormasPagamento59 := TPagamentoPDV.Create;
           TransacoesCartao59 := TTransacaoFinanceira.Create(nil); 
 
-          AtualizaDadosPagament(Form1.ibDataSet28, {Form1.ibDataSet28.Transaction,} Form1.sModeloECF, Form1.sCaixa,
+          AtualizaDadosPagament(Form1.ibDataSet28, Form1.sModeloECF, Form1.sCaixa,
             FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, FormataNumeroDoCupom(StrToInt(sCFe)), _59.CFedEmi,
             Form1.sConveniado, Form1.sVendedor, FormasPagamento59, Form1.fTEFPago, TransacoesCartao59, ModalidadeTransacao59);
           FreeAndNil(FormasPagamento59);
           FreeAndNil(TransacoesCartao59);
-          {Sandro Silva 2023-08-25 fim}
-
 
           // Por último atualiza a variável com o número do cupom SAT
           Form1.icupom := StrToInt(sCFe);
           Form1.iGNF   := StrToInt(sCFe);
 
-          //
         except end;
-        //
+
         Form1.Label_7.Hint := 'Tempo de envio e impressão: '+' '+FormatDateTime('HH:nn:ss', Now - TInicio)+' ';
 
-        // 2015-07-09 if Form1.bImportando = False then
         if (Form1.ClienteSmallMobile.sVendaImportando = '') then
         begin
           if _59.VisualizarExtrato then
@@ -2348,10 +2344,8 @@ begin
           if Form1.EnviaremailcomXMLePDFacadavenda1.Checked then // Ficha 4736 Sandro Silva 2019-08-02
             _ecf59_Email_DANFECE(sCFe, _59.CFeXML);
 
-          {Sandro Silva 2022-02-10 inicio}
           if Form1.PosElginPay.Transacao.ImprimirComprovanteVenda then
             Form1.PosElginPay.ImpressaoComprovanteVenda(_59.CFeXML);
-          {Sandro Silva 2022-02-10 fim}
 
         end
         else
