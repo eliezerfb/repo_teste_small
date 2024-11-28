@@ -2032,8 +2032,8 @@ object Form7: TForm7
     Visible = False
   end
   object ImgProduto: TImage
-    Left = 1290
-    Top = 352
+    Left = 1203
+    Top = 180
     Width = 238
     Height = 168
     Center = True
@@ -10521,8 +10521,8 @@ object Form7: TForm7
     end
   end
   object Panel2: TPanel
-    Left = 1192
-    Top = 131
+    Left = 952
+    Top = -5
     Width = 395
     Height = 215
     BevelOuter = bvNone
@@ -13975,11 +13975,13 @@ object Form7: TForm7
       DisplayLabel = 'Conta'
       DisplayWidth = 6
       FieldName = 'CONTA'
+      OnSetText = ibDataSetPlanoContasSetText
       Size = 5
     end
     object ibDataSet12NOME: TIBStringField
       DisplayLabel = 'Nome da Conta'
       FieldName = 'NOME'
+      OnSetText = ibDataSetPlanoContasSetText
       Size = 25
     end
     object ibDataSet12DIA: TFloatField

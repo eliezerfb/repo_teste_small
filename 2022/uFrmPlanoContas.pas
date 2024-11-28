@@ -5,13 +5,14 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFrmFichaPadrao, Data.DB, Vcl.ComCtrls,
-  Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask, Vcl.DBCtrls, SMALL_DBEdit;
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask, Vcl.DBCtrls, SMALL_DBEdit,
+  IBX.IBCustomDataSet;
 
 type
   TFrmPlanoContas = class(TFrmFichaPadrao)
     tbsCadastro: TTabSheet;
-    Label129: TLabel;
-    edtConta: TSMALL_DBEdit;
+    LabelNroConta: TLabel;
+    edtNroConta: TSMALL_DBEdit;
     edtNomeConta: TSMALL_DBEdit;
     Label1: TLabel;
     edtDia: TSMALL_DBEdit;
@@ -28,13 +29,24 @@ type
     edtCodContabil: TSMALL_DBEdit;
     Label8: TLabel;
     edtIdentificador: TSMALL_DBEdit;
+    cbxTipoConta: TComboBox;
+    LabelTipoConta: TLabel;
     procedure DSCadastroDataChange(Sender: TObject; Field: TField);
     procedure lblNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure cbxTipoContaClick(Sender: TObject);
+    procedure edtNroContaKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edtNroContaEnter(Sender: TObject);
+    procedure edtNroContaKeyPress(Sender: TObject; var Key: Char);
+    procedure cbxTipoContaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
     function GetPaginaAjuda:string; override;
+    procedure SetTipoConta();
   public
     { Public declarations }
   end;
@@ -46,9 +58,38 @@ implementation
 
 {$R *.dfm}
 
-uses unit7;
+uses
+  unit7, uFuncoesRetaguarda, uSmallEnumerados;
 
 { TFrmPlanoContas }
+
+procedure TFrmPlanoContas.cbxTipoContaClick(Sender: TObject);
+begin
+  inherited;
+  var PrefixoConta := TTipoPlanoConta(cbxTipoConta.ItemIndex);
+
+  if (PrefixoConta = CodigoPlanoContaToTipo(edtNroConta.Text)) or
+    (PrefixoConta = tpcNenhum) then
+    Exit;
+
+  var NroConta := edtNroConta.Text;
+  Delete(NroConta, 1, 1);
+
+  if not(DSCadastro.DataSet.State in [dsEdit, dsInsert]) then
+    DSCadastro.DataSet.Edit;
+
+  DSCadastro.DataSet.FieldByName('conta').AsString :=
+    TipoPlanoContaToStr(PrefixoConta)+NroConta;
+end;
+
+
+procedure TFrmPlanoContas.cbxTipoContaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if Key = VK_RETURN then
+    edtNroConta.SetFocus;
+end;
 
 procedure TFrmPlanoContas.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
@@ -57,16 +98,45 @@ begin
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
 
-  //Contador
   tbsCadastro.Caption := GetDescritivoNavegacao;
+
+  SetTipoConta();
+end;
+
+procedure TFrmPlanoContas.edtNroContaEnter(Sender: TObject);
+begin
+  inherited;
+  if Length(edtNroConta.Text) = 1 then
+    edtNroConta.SelStart := Length(edtNroConta.Text);
+end;
+
+procedure TFrmPlanoContas.edtNroContaKeyPress(Sender: TObject; var Key: Char);
+begin
+  inherited;
+  if not (Key in ['0'..'9', #8, #13, #127]) then
+    Key := #0;
+end;
+
+procedure TFrmPlanoContas.edtNroContaKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  SetTipoConta();
+end;
+
+procedure TFrmPlanoContas.FormCreate(Sender: TObject);
+begin
+  inherited;
+  for var t := Low(TTipoPlanoConta) to High(TTipoPlanoConta) do
+    cbxTipoConta.Items.Add(TipoPlanoContaToText(t));
 end;
 
 procedure TFrmPlanoContas.FormShow(Sender: TObject);
 begin
   inherited;
 
-  if edtConta.CanFocus then
-    edtConta.SetFocus;
+  if cbxTipoConta.CanFocus then
+    cbxTipoConta.SetFocus;
 end;
 
 function TFrmPlanoContas.GetPaginaAjuda: string;
@@ -77,8 +147,6 @@ end;
 procedure TFrmPlanoContas.lblNovoClick(Sender: TObject);
 begin
   inherited;
-
-  //Contador
   tbsCadastro.Caption := GetDescritivoNavegacao;
 end;
 
@@ -86,7 +154,8 @@ procedure TFrmPlanoContas.SetaStatusUso;
 begin
   inherited;
 
-  edtConta.Enabled         := not(bEstaSendoUsado);
+  cbxTipoConta.Enabled := not(bEstaSendoUsado);
+  edtNroConta.Enabled := not(bEstaSendoUsado);
   edtNomeConta.Enabled     := not(bEstaSendoUsado);
   edtDia.Enabled           := not(bEstaSendoUsado);
   edtMes.Enabled           := not(bEstaSendoUsado);
@@ -95,6 +164,14 @@ begin
   edtDescContabil.Enabled  := not(bEstaSendoUsado);
   edtCodContabil.Enabled   := not(bEstaSendoUsado);
   edtIdentificador.Enabled := not(bEstaSendoUsado);
+end;
+
+
+procedure TFrmPlanoContas.SetTipoConta;
+begin
+  cbxTipoConta.ItemIndex := cbxTipoConta.Items.IndexOf(
+    TipoPlanoContaToText(CodigoPlanoContaToTipo(edtNroConta.Text))
+  );
 end;
 
 end.
