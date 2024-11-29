@@ -47,6 +47,7 @@ type
     procedure SetaStatusUso; override;
     function GetPaginaAjuda:string; override;
     procedure SetTipoConta();
+    procedure SetPlanoContaItensCombo();
   public
     { Public declarations }
   end;
@@ -127,8 +128,7 @@ end;
 procedure TFrmPlanoContas.FormCreate(Sender: TObject);
 begin
   inherited;
-  for var t := Low(TTipoPlanoConta) to High(TTipoPlanoConta) do
-    cbxTipoConta.Items.Add(TipoPlanoContaToText(t));
+  SetPlanoContaItensCombo();
 end;
 
 procedure TFrmPlanoContas.FormShow(Sender: TObject);
@@ -166,9 +166,17 @@ begin
   edtIdentificador.Enabled := not(bEstaSendoUsado);
 end;
 
+procedure TFrmPlanoContas.SetPlanoContaItensCombo();
+begin
+  if cbxTipoConta.Items.Count = 0 then
+    for var t := Low(TTipoPlanoConta) to High(TTipoPlanoConta) do
+      cbxTipoConta.Items.Add(TipoPlanoContaToText(t));
+end;
 
 procedure TFrmPlanoContas.SetTipoConta;
 begin
+  SetPlanoContaItensCombo();
+
   cbxTipoConta.ItemIndex := cbxTipoConta.Items.IndexOf(
     TipoPlanoContaToText(CodigoPlanoContaToTipo(edtNroConta.Text))
   );
