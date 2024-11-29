@@ -130,7 +130,7 @@ type
   public
     { Public declarations }
     iXPublic, iYPublic, iTabOrder : Integer;
-    fMutado : Real;
+    //fMutado : Real;
 
   end;
 
@@ -312,11 +312,9 @@ end;
 
 function PosicionatodosOsIndicadores(Sender: tPanel): boolean;
 begin
-  //
   try
-    //
     Form5.ScrollBox1.VertScrollBar.Position := 0;
-    //
+
     PosicionaIndicador(Form5.Panel1);
     PosicionaIndicador(Form5.Panel2);
     PosicionaIndicador(Form5.Panel3);
@@ -2364,7 +2362,6 @@ end;
 
 procedure TForm5.FormShow(Sender: TObject);
 begin
-  //
   if Form5.Caption <> '' then
   begin
     try
@@ -2372,9 +2369,8 @@ begin
       Form1.IBTransaction2.Commit;
     except end;
   end;
-  //
+
   try
-    //
     if Form5.Caption = 'VENDAS POR VENDEDOR' then
     begin
       GraficoVendasPorVendedor('VendasPorVendedorG',400,800,(8 * 800 div 300),(5 * 800 div 300));
@@ -3839,7 +3835,7 @@ end;
 
 procedure TForm5.FormCreate(Sender: TObject);
 begin
-  Form5.fMutado := 0;
+  //Form5.fMutado := 0;
 end;
 
 procedure TForm5.FormKeyDown(Sender: TObject; var Key: Word;

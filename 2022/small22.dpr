@@ -277,7 +277,11 @@ uses
   uFrmProdutosIMendes in 'uFrmProdutosIMendes.pas' {FrmProdutosIMendes},
   uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
   uImendes in 'units\uImendes.pas',
-  uCalculaImpostos in 'uCalculaImpostos.pas';
+  uCalculaImpostos in 'uCalculaImpostos.pas',
+  uListaToJson in '..\..\unit_compartilhada\DAT\uListaToJson.pas',
+  uDashboardSections in '..\..\unit_compartilhada\DAT\uDashboardSections.pas',
+  uDashboard in 'units\uDashboard.pas',
+  uClassesDashboard in 'units\uClassesDashboard.pas';
 
 {$R *.RES}
 

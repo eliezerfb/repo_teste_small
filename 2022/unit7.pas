@@ -27688,11 +27688,7 @@ var
   F: TextFile;
   Mais1Ini : tInifile;
 begin
-  {$IFDEF VER150}
-  ShortDateFormat := 'dd/mm/yyyy';
-  {$ELSE}
   FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
-  {$ENDIF}
 
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
@@ -27720,24 +27716,22 @@ begin
   WriteLn(F,'   <th   bgcolor=#'+Form1.sHtmlCor+'><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">Clientes<br>em atraso</th>');
   WriteLn(F,'  </tr>');
   WriteLn(F,'  <tr>');
-  //
+
   WriteLn(F,'   <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">Últimos três meses</td>');
-  //
+
   // ùltimos três meses
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE from RECEBER where (VENCIMENTO>=(CURRENT_DATE-90)) and VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'   <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[(100-(Form7.ibDataSet99.FieldByname('RECE').AsFloat/Form7.ibDataSet99.FieldByname('VALOR').AsFloat)*100)])+'</td>'); // Percentual de inadimpléncia
   WriteLn(F,'   <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[Form7.ibDataSet99.FieldByname('VALOR').AsFloat-Form7.ibDataSet99.FieldByname('RECE').AsFloat])+'</td>'); // Valor atrasado  //
-  //                                          //
+                                            //
   // Gráfico de fluxo de caixa inadimplencia //
-  //                                        //
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_mes.gra'));
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_mes.png'));
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\inadimplencia_mes.gra');
   Mais1Ini.WriteString('DADOS','3D','1');
   Mais1Ini.WriteString('DADOS','MarcasS1','0');
@@ -27750,9 +27744,8 @@ begin
   Mais1Ini.WriteString('DADOS','NomeBmp','inadimplencia_mes.png');
   Mais1Ini.WriteString('DADOS','FontSize','8'); //'11577023' // '15381040'
   Mais1Ini.WriteString('DADOS','FontSizeLabel','8');
-  //
+
   // Acumula os valores
-  //
   I := 1;
 
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
@@ -27769,46 +27762,41 @@ begin
 
 
   Mais1Ini.Free;
-  //
+
   ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_mes.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
   while not FileExists(Form1.sAtual+'\inadimplencia_mes.png') do
     Sleep(100);
-  //
+
   // Média de dias de atraso ùltimos três meses
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select avg(coalesce(RECEBIMENT,CURRENT_DATE)-coalesce(VENCIMENTO,CURRENT_DATE)) as DIAS from RECEBER where (VENCIMENTO>=(CURRENT_DATE-90)) and VENCIMENTO<CURRENT_DATE and coalesce(RECEBIMENT,CURRENT_DATE)<>CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'   <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('DIAS').AsFloat])+'</td>');
-  //
+
   // Clientes em atraso  três meses
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select count(distinct(NOME))as CLIENTES from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(VALOR_RECE,0)=0 and (VENCIMENTO>=(CURRENT_DATE-90)) and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'   <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('CLIENTES').AsFloat])+'</td>');
   WriteLn(F,' </tr>');
-  //
+
   // ùltimos doze meses
-  //
   WriteLn(F,' <tr>');
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">Últimos doze meses</td>');
-  //
+
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE from RECEBER where (VENCIMENTO>=(CURRENT_DATE-360)) and VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
-  //                                          //
+
   // Gráfico de fluxo de caixa inadimplencia //
-  //                                        //
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_ano.gra'));
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_ano.png'));
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\inadimplencia_ano.gra');
   Mais1Ini.WriteString('DADOS','3D','1');
   Mais1Ini.WriteString('DADOS','MarcasS1','0');
@@ -27821,9 +27809,8 @@ begin
   Mais1Ini.WriteString('DADOS','NomeBmp','inadimplencia_ano.png');
   Mais1Ini.WriteString('DADOS','FontSize','8'); //'11577023' // '15381040'
   Mais1Ini.WriteString('DADOS','FontSizeLabel','8');
-  //
+
   // Acumula os valores
-  //
   I := 1;
 
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
@@ -27840,51 +27827,45 @@ begin
 
 
   Mais1Ini.Free;
-  //
+
   ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_ano.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
   while not FileExists(Form1.sAtual+'\inadimplencia_ano.png') do
     Sleep(100);
-  //
+
   // Fim grafico
-  //
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[(100-(Form7.ibDataSet99.FieldByname('RECE').AsFloat/Form7.ibDataSet99.FieldByname('VALOR').AsFloat)*100)])+'</td>'); // Percentual de inadimpléncia
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[Form7.ibDataSet99.FieldByname('VALOR').AsFloat-Form7.ibDataSet99.FieldByname('RECE').AsFloat])+'</td>'); // Valor atrasado
-  //
+
   // Média de dias de atraso ùltimos doze meses
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select avg(coalesce(RECEBIMENT,CURRENT_DATE)-coalesce(VENCIMENTO,CURRENT_DATE)) as DIAS from RECEBER where (VENCIMENTO>=(CURRENT_DATE-360)) and VENCIMENTO<CURRENT_DATE and coalesce(RECEBIMENT,CURRENT_DATE)<>CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('DIAS').AsFloat])+'</td>');
-  //
+
   // Clientes em atraso doze meses
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select count(distinct(NOME))as CLIENTES from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(VALOR_RECE,0)=0 and (VENCIMENTO>=(CURRENT_DATE-360)) and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('CLIENTES').AsFloat])+'</td>');
   WriteLn(F,' </tr>');
-  //
+
   // Total
-  //
   WriteLn(F,' <tr>');
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">Total registrado</td>');
-  //
+
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select  cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE  from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
-  //                                          //
+
   // Gráfico de fluxo de caixa inadimplencia //
-  //                                        //
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_tot.gra'));
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_tot.png'));
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\inadimplencia_tot.gra');
   Mais1Ini.WriteString('DADOS','3D','1');
   Mais1Ini.WriteString('DADOS','MarcasS1','0');
@@ -27897,9 +27878,8 @@ begin
   Mais1Ini.WriteString('DADOS','NomeBmp','inadimplencia_tot.png');
   Mais1Ini.WriteString('DADOS','FontSize','8'); //'11577023' // '15381040'
   Mais1Ini.WriteString('DADOS','FontSizeLabel','8');
-  //
+
   // Acumula os valores
-  //
   I := 1;
 
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
@@ -27916,48 +27896,43 @@ begin
 
 
   Mais1Ini.Free;
-  //
+
   ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_tot.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
   while not FileExists(Form1.sAtual+'\inadimplencia_tot.png') do
     Sleep(100);
-  //
+
   // Fim grafico
-  //
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[(100-(Form7.ibDataSet99.FieldByname('RECE').AsFloat/Form7.ibDataSet99.FieldByname('VALOR').AsFloat)*100)])+'</td>'); // Percentual de inadimpléncia
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[Form7.ibDataSet99.FieldByname('VALOR').AsFloat-Form7.ibDataSet99.FieldByname('RECE').AsFloat])+'</td>'); // Valor atrasado
-  //
+
   // Média de dias de atraso TOTAL
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select avg(coalesce(RECEBIMENT,CURRENT_DATE)-coalesce(VENCIMENTO,CURRENT_DATE)) as DIAS from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(RECEBIMENT,CURRENT_DATE)<>CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('DIAS').AsFloat])+'</td>');
-  //
+
   // Clientes em atraso TOTAL
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select count(distinct(NOME))as CLIENTES from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(VALOR_RECE,0)=0 and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('CLIENTES').AsFloat])+'</td>');
   WriteLn(F,' </tr>');
-  //
+
   WriteLn(F,'</table>');
   WriteLn(F,'</center>');
-  //
+
   WriteLn(F,'<br>');              // Linha em branco
-  //
+
   WriteLn(F,'<center><br><font face="verdana" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
   + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
   + Copy(DateTimeToStr(Date),7,4) +', '+ LowerCase(DiaDaSemana(Date)) + ' às ' + TimeToStr(Time)+'</font></center>');
-  //
+
   WriteLn(F,'<br>');              // Linha em branco
-  //
-  // WWW
-  //
+
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
     WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -27965,16 +27940,15 @@ begin
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
   end;
-  //
+
   if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
   WriteLn(F,'</html>');
-  //
+
   CloseFile(F);                                    // Fecha o arquivo
-  //
+
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
+
   AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
-  //
 end;
 
 procedure TForm7.Manifestaododestinatrio1Click(Sender: TObject);

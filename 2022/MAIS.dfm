@@ -8,8 +8,8 @@ object Form1: TForm1
   AlphaBlendValue = 250
   BorderStyle = bsSingle
   Caption = 'form'
-  ClientHeight = 935
-  ClientWidth = 1309
+  ClientHeight = 943
+  ClientWidth = 1311
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -6158,12 +6158,12 @@ object Form1: TForm1
   object WebBrowser1: TWebBrowser
     Left = 864
     Top = 488
-    Width = 41
-    Height = 31
+    Width = 33
+    Height = 25
     TabOrder = 4
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C00000064030000900200000000000000000000000000000000000000000000
+      4C00000069030000950200000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E12620A000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -14109,6 +14109,16 @@ object Form1: TForm1
     OnKeyDown = Edit200KeyDown
     OnKeyPress = DBGrid200KeyPress
   end
+  object pnlContainer: TPanel
+    Left = 1033
+    Top = 338
+    Width = 152
+    Height = 95
+    BevelKind = bkFlat
+    BevelOuter = bvNone
+    TabOrder = 13
+    Visible = False
+  end
   object PopupMenu1: TPopupMenu
     OnChange = PopupMenu1Change
     OnPopup = PopupMenu1Popup
@@ -14846,6 +14856,12 @@ object Form1: TForm1
     Interval = 300000
     OnTimer = timerLegalTimer
     Left = 1088
+    Top = 200
+  end
+  object TimerDashboard: TTimer
+    Enabled = False
+    OnTimer = TimerDashboardTimer
+    Left = 1144
     Top = 200
   end
 end

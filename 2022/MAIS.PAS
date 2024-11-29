@@ -294,6 +294,8 @@ type
     lblModOrcamento: TLabel;
     IntegraoSicoob1: TMenuItem;
     IntegraoIMendes1: TMenuItem;
+    pnlContainer: TPanel;
+    TimerDashboard: TTimer;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -474,6 +476,7 @@ type
       Y: Integer);
     procedure IntegraoSicoob1Click(Sender: TObject);
     procedure IntegraoIMendes1Click(Sender: TObject);
+    procedure TimerDashboardTimer(Sender: TObject);
 
 
   private
@@ -486,6 +489,8 @@ type
     procedure CarregaConfiguracoes;
     procedure CarregaPermissaoModulos;
     function GetDiasRestanteLicenca: Real;
+    procedure FechaDashboard;
+    procedure AbreDashboard;
     //Sandro Silva 2024-04-08 procedure AjustarDataSetCamposProduto;
 
   public
@@ -616,7 +621,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmMsgNovoLayout
   , uFrmIntegracaoSicoob
   , uFrmIntegracaoIMendes
-  ;
+  , uDashboard;
 
 {$R *.DFM}
 
@@ -2679,6 +2684,11 @@ begin
     MostraLabels(imgIndicadores,Label200);
 
     // Avisos no Indicadores
+    {Mauricio Parizotto 2024-11-28 Inicio}
+    Image_Bola_Indicadores.visible  := False;
+    Label_Bola_Indicadores.Visible  := False;
+
+    {
     if iAvisosIndicadores >= 100 then
     begin
       Image_Bola_Indicadores.Picture := ImageBola3.Picture;
@@ -2710,6 +2720,8 @@ begin
       Image_Bola_Indicadores.visible  := False;
       Label_Bola_Indicadores.Visible  := False;
     end;
+    }
+    {Mauricio Parizotto 2024-11-28 Fim}
   end;
   {$Endregion}
 
@@ -3689,6 +3701,8 @@ end;
 
 procedure TForm1.imgCaixaClick(Sender: TObject);
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   if not Legal(True) then
     Exit;
 
@@ -4471,6 +4485,9 @@ begin
 
   Winexec('TASKKILL /F /IM "mobile.exe"' , SW_HIDE ); // // Form1Close
   Winexec('TASKKILL /F /IM "mkp.exe"' , SW_HIDE ); // Timer2Timer
+
+  //Mauricio Parizotto 2024-11-22
+  FechaDashboard;
 
   ValidaRecursos.Free; // Sandro Silva 2023-05-31
 
@@ -5651,6 +5668,8 @@ end;
 
 procedure TForm1.imgCliForClick(Sender: TObject);
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   if not Legal(True) then
     Exit;
 
@@ -5685,6 +5704,8 @@ procedure TForm1.imgEstoqueClick(Sender: TObject);
 var
   I : Integer;
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   if not (Form13.Tag = 99) then
   begin
     if not Legal(True) then
@@ -5715,6 +5736,8 @@ end;
 
 procedure TForm1.imgBancosClick(Sender: TObject);
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   if not Legal(True) then
     Exit;
 
@@ -5740,6 +5763,8 @@ procedure TForm1.imgVendasClick(Sender: TObject);
 var
   Mais1ini : tIniFile;
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   try
     if not Legal(True) then
       Exit;
@@ -5864,6 +5889,8 @@ end;
 
 procedure TForm1.imgBackupClick(Sender: TObject);
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   ppmBackup.Popup(Form1.imgBackup.Left,Form1.imgBackup.Top + Form1.imgBackup.Height + 35);
 end;
 
@@ -5871,6 +5898,8 @@ procedure TForm1.imgConfiguracoesClick(Sender: TObject);
 var
   Mais1Ini: TIniFile;
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   if not FechaTudo(bFechaTudo) then
     Exit;
 
@@ -5947,6 +5976,8 @@ end;
 
 procedure TForm1.imgContaReceberClick(Sender: TObject);
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   if not Legal(True) then
     Exit;
 
@@ -5970,6 +6001,8 @@ end;
 
 procedure TForm1.imgContaPagarClick(Sender: TObject);
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   if not Legal(True) then
     Exit;
 
@@ -5993,6 +6026,8 @@ end;
 
 procedure TForm1.imgOrcamentoClick(Sender: TObject);
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   if not Legal(True) then
     Exit;
 
@@ -6012,6 +6047,8 @@ end;
 
 procedure TForm1.imgOrdemServicoClick(Sender: TObject);
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   if not Legal(True) then
     Exit;
 
@@ -8650,6 +8687,9 @@ begin
   finally
     FreeAndNil(frmConfiguracaoTEFCommerce);
   end;
+
+  if TSistema.GetInstance.DashboardAbertura then
+    TimerDashboard.Enabled := True;
 end;
 
 procedure TForm1.DBGrid200KeyDown(Sender: TObject; var Key: Word;
@@ -10866,6 +10906,12 @@ begin
 end;
 
 
+procedure TForm1.TimerDashboardTimer(Sender: TObject);
+begin
+  TimerDashboard.Enabled := False;
+  AbreDashboard;
+end;
+
 procedure TForm1.timerLegalTimer(Sender: TObject);
 begin
   try
@@ -11634,41 +11680,41 @@ end;
 
 procedure TForm1.imgIndicadoresClick(Sender: TObject);
 begin
-  if not FechaTudo(bFechaTudo) then
-    Exit;
+  AbreDashboard;
+
+  (*
 
   if ValidaRecursoExibeMensagemIndisponivel then
   begin
     Form7.sModulo := 'INDICADORES';
     Form1.Label201MouseLeave(Sender);
-    //
+
     try
-      Screen.Cursor := crHourGlass; // Cursor de Aguardo
-      //
       if not FechaTudo(bFechaTudo) then
         Exit;
       try
         if form7.Visible then Form7.Close;
-//        if form10.Visible then Form10.Close;
-      except end;
-    except end;
+      except
+      end;
+    except
+    end;
 
     try
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
-      //
+
       if Form24.Visible then Form24.Close;
       if Form12.Visible then Form12.Close;
       if Form7.Visible then Form7.Close;
       if Form30.Visible then Form30.Close;
       if Form48.Visible then Form48.Close;
-      //
+
       Form1.Enabled := False;
       Form5.Enabled := False;
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
       Form5.Show;
       Form5.Repaint;
       Screen.Cursor := crHourGlass; // Cursor de Aguardo
-      //
+
       try
         // Só se for necessário
         Form7.ibDataSet101.Close;
@@ -11696,11 +11742,13 @@ begin
       Screen.Cursor := crDefault; // Cursor de Aguardo
       Form5.Enabled := True;
       Form1.Enabled := True;
+
     except
     end;
 
     Screen.Cursor := crDefault; // Cursor de Aguardo
   end;
+  Mauricio Parizotto 2024-11-22 Fim  *)
 end;
 
 procedure TForm1.CNPJdacontabilidade1Click(Sender: TObject);
@@ -12316,6 +12364,8 @@ end;
 
 procedure TForm1.imgComprasClick(Sender: TObject);
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   if not FechaTudo(bFechaTudo) then
     Exit;
 
@@ -12429,6 +12479,8 @@ end;
 
 procedure TForm1.imgServicosClick(Sender: TObject);
 begin
+  FechaDashboard; //Mauricio Parizotto 2024-11-25
+
   try
     if Form1.ValidaRecursos.PermiteRecursoParaProduto then
     begin
@@ -13429,6 +13481,7 @@ begin
 
     TSistema.GetInstance.CodFaixaImendes     := ConfSistema.BD.IMendes.FaixaFaturamento;
     TSistema.GetInstance.ConsultarIPIImendes := ConfSistema.BD.IMendes.ConsultarIPI;
+    TSistema.GetInstance.DashboardAbertura   := ConfSistema.BD.Dashboard.AberturaSistema;//Mauricio Parizotto 2024-11-25
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -13788,6 +13841,88 @@ begin
     Result := -1;
   end;
 
+end;
+
+procedure TForm1.AbreDashboard;
+var
+  oHwnd: HWND;
+  sDirExe, sJson : string;
+begin
+  if not FechaTudo(bFechaTudo) then
+    Exit;
+
+  {Mauricio Parizotto 2024-11-22 Inicio}
+
+  if not ValidaRecursoExibeMensagemIndisponivel then
+    Exit;
+
+  Form7.sModulo := 'INDICADORES';
+  Form1.Label201MouseLeave(Label201);
+
+  try
+    if not FechaTudo(bFechaTudo) then
+      Exit;
+    try
+      if Form7.Visible then
+        Form7.Close;
+    except
+    end;
+  except
+  end;
+
+  try
+    Screen.Cursor := crHourGlass;
+    if Form24.Visible then Form24.Close;
+    if Form12.Visible then Form12.Close;
+    if Form7.Visible then Form7.Close;
+    if Form30.Visible then Form30.Close;
+    if Form48.Visible then Form48.Close;
+
+    pnlContainer.BevelKind := bkNone;
+    pnlContainer.Visible   := True;
+    pnlContainer.Left      := 0;
+    pnlContainer.Top       := 90;
+    pnlContainer.Width     := Form1.Width - 16;
+    pnlContainer.Height    := Form1.Height - pnlContainer.Top - 39;
+
+    FecharAplicacao('Dashboard.exe');
+
+    //Carrega Dados
+    if GetdDadosDashboard(sJson, Form7.IBTransaction1) then
+    begin
+      var jsonString : TStringList;
+
+      try
+        jsonString := TStringList.Create;
+        jsonString.Text := sJson;
+        jsonString.SaveToFile( ExtractFilePath(Application.ExeName) +'DadosDash.json');
+      finally
+        FreeAndNil(jsonString);
+      end;
+    end;
+
+    //Abre Dashboard
+    Sleep(100);
+    sDirExe := ExtractFilePath(Application.ExeName)+'Dashboard.exe';
+    ShellExecute( 0, 'Open', pChar(sDirExe), pChar(pnlContainer.Width.ToString+' '+pnlContainer.Height.ToString), '', SW_SHOW);
+
+    //Coloca a aplicação dentro do Panel
+    oHwnd := FindWindow( nil, 'Dashboard' ) ;
+    while oHwnd = 0 do begin
+      Sleep(300);
+      oHwnd := FindWindow(nil,'Dashboard');
+    end;
+    Windows.SetParent(oHwnd,pnlContainer.handle) ;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+
+end;
+
+procedure TForm1.FechaDashboard;
+begin
+  FecharAplicacao('Dashboard.exe');
+  pnlContainer.Visible   := False;
 end;
 
 end.
