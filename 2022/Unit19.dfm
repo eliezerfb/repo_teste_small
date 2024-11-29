@@ -26,8 +26,8 @@ object Form19: TForm19
   object Orelhas: TPageControl
     Left = 20
     Top = 20
-    Width = 773
-    Height = 546
+    Width = 584
+    Height = 403
     ActivePage = Orelha_permitir
     Align = alClient
     TabOrder = 0
@@ -426,9 +426,6 @@ object Form19: TForm19
         Top = 222
         Width = 346
         Height = 17
-        Hint = 
-          'Recalcular custo m'#233'dio retroativo do item baseado em todas as no' +
-          'tas de entrada'
         Caption = 'Ocultar produtos de uso e consumo nas vendas'
         ParentShowHint = False
         ShowHint = True
