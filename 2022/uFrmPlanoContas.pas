@@ -95,13 +95,12 @@ end;
 procedure TFrmPlanoContas.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
   inherited;
+  SetTipoConta();
 
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
 
   tbsCadastro.Caption := GetDescritivoNavegacao;
-
-  SetTipoConta();
 end;
 
 procedure TFrmPlanoContas.edtNroContaEnter(Sender: TObject);
