@@ -18,7 +18,7 @@ type
   //tCRTEmitente = (tcrteSimplesNacional = 1, tcrteSimplesNacionalExcessoSublimite = 2, tcrteRegimeNormal = 3); Mauricio Parizotto 2024-08-07
   tCRTEmitente = (tcrteSimplesNacional = 1, tcrteSimplesNacionalExcessoSublimite = 2, tcrteRegimeNormal = 3, tcrteRegimeSimplesMEI = 4);
   TDocsImprimirNotasFaltantes = (dinfNFe, dinfNFCe);
-  TTipoPlanoConta = (tpcReceita, tpcDespesa, tpcBanco, tpcRetirada, tpcNenhum);
+  TTipoPlanoConta = (tpcNenhum, tpcReceita, tpcDespesa, tpcBanco, tpcRetirada); // Manter padrão, primeiro vazio Sandro Silva 2024-12-02 TTipoPlanoConta = (tpcReceita, tpcDespesa, tpcBanco, tpcRetirada, tpcNenhum);
 
 implementation
 
