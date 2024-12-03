@@ -13,6 +13,7 @@ uses
   , uCarneSections
   , uIMendesSections
   , uFrenteSectionsBD
+  , uDashboardSections
   ;
 
 type
@@ -25,6 +26,7 @@ type
     FoCarne: TSectionCarne;
     FoIMendes: TSectionIMendes;
     FoFrente: TSectionFrenteBD;
+    FoDashboard: TSectionDashboar;
     function getOS: TSectionOS;
     function getOutras: TSectionOutras;
     function getNFSE: TSectionNFSE_BD;
@@ -32,6 +34,7 @@ type
     function getCarne: TSectionCarne;
     function getIMendes: TSectionIMendes;
     function getFrente: TSectionFrenteBD;
+    function getDashboard : TSectionDashboar;
   public
     destructor Destroy; override;
     property OS: TSectionOS read getOS;
@@ -41,6 +44,7 @@ type
     property Carne: TSectionCarne read getCarne;
     property IMendes: TSectionIMendes read getIMendes;
     property Frente: TSectionFrenteBD read getFrente;
+    property Dashboard : TSectionDashboar read getDashboard;
   protected
   end;
 
@@ -79,6 +83,14 @@ begin
     FoCarne := TSectionCarne.Create(Transaction,_cSectionCarne);
 
   Result := FoCarne;
+end;
+
+function TConfBD.getDashboard: TSectionDashboar;
+begin
+  if not Assigned(FoDashboard) then
+    FoDashboard := TSectionDashboar.Create(Transaction,_cSectionDashboard);
+
+  Result := FoDashboard;
 end;
 
 function TConfBD.getFrente: TSectionFrenteBD;
