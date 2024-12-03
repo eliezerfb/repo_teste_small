@@ -997,6 +997,12 @@ begin
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ALTERACA', 'DESCONTO') = False then
     ExecutaComando('alter table ALTERACA add DESCONTO numeric(18,2)');
 
+  if not(CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ITENS002', 'ImpostoImportacao')) then
+    ExecutaComando('alter table ITENS002 add ImpostoImportacao NUMERIC(18,2)');
+
+  if not(CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'COMPRAS', 'ImpostoImportacao')) then
+    ExecutaComando('alter table COMPRAS add ImpostoImportacao NUMERIC(18,2)');
+
   ExecutaComando('commit');
 
   Form22.Repaint;

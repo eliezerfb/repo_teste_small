@@ -1879,6 +1879,13 @@ begin
   //
 
   //LogRetaguarda('fim procedure TForm24.SMALL_DBEdit40Exit(): 1848'); // Sandro Silva 2024-09-26
+
+  if copy(Form7.ibDataSet14CFOP.Text, 1, 1) = '3' then
+  begin
+    Form7.ibDataSet23EAN_ORIGINAL.Visible := False;
+    Form7.ibDataSet23ImpostoImportacao.Visible := True;
+  end;
+
 end;
 
 
