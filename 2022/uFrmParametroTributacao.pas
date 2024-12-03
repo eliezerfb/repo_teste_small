@@ -106,11 +106,15 @@ type
       var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnOKClick(Sender: TObject);
+    procedure lblProximoClick(Sender: TObject);
+    procedure lblAnteriorClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     { Private declarations }
     procedure SetaStatusUso; override;
     function GetPaginaAjuda:string; override;
     function CadastroDuplicado: Boolean;
+    function IdPerfilTributacaoPreenchidoVazio: Boolean;
   public
     { Public declarations }
   end;
@@ -190,12 +194,28 @@ begin
   fraPerfilTrib.Enabled := not(bEstaSendoUsado);
 end;
 
+procedure TFrmParametroTributacao.lblAnteriorClick(Sender: TObject);
+begin
+  if IdPerfilTributacaoPreenchidoVazio then
+    Exit;
+  inherited;
+end;
+
 procedure TFrmParametroTributacao.lblNovoClick(Sender: TObject);
 begin
   inherited;
 
   if (edtCFOP.CanFocus) and (Self.Visible) then
     edtCFOP.SetFocus;
+end;
+
+procedure TFrmParametroTributacao.lblProximoClick(Sender: TObject);
+begin
+  if IdPerfilTributacaoPreenchidoVazio then
+    Exit;
+
+  inherited;
+
 end;
 
 procedure TFrmParametroTributacao.DSCadastroDataChange(Sender: TObject;
@@ -322,6 +342,27 @@ begin
   FrmParametroTributacao := nil;
 end;
 
+procedure TFrmParametroTributacao.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  if IdPerfilTributacaoPreenchidoVazio then
+    CanClose := False;
+
+  inherited;
+
+end;
+
+function TFrmParametroTributacao.IdPerfilTributacaoPreenchidoVazio: Boolean;
+begin
+  Result := False;
+  if (DSCadastro.DataSet.FieldByName('IDPERFILTRIBUTACAO').AsString = '') then
+  begin
+    Result := True;
+    MensagemSistema('Campo Perfil de tributação deve ser preenchido!', msgAtencao);
+    if fraPerfilTrib.txtCampo.CanFocus then
+      fraPerfilTrib.txtCampo.SetFocus;
+  end;
+end;
+
 procedure TFrmParametroTributacao.btnOKClick(Sender: TObject);
 begin
   //Validações
@@ -337,6 +378,7 @@ begin
     DSCadastro.DataSet.Cancel;
   end else
   begin
+    {Sandro Silva (f-21728) 2024-11-28 inicio
     if (DSCadastro.DataSet.FieldByName('IDPERFILTRIBUTACAO').AsString = '') then
     begin
       MensagemSistema('Campo Perfil de tributação deve ser preenchido!',msgAtencao);
@@ -345,11 +387,15 @@ begin
 
       Exit;
     end;
+    }
+    if IdPerfilTributacaoPreenchidoVazio then
+      Exit;
+    {Sandro Silva (f-21728) 2024-11-28 fim}
 
     if CadastroDuplicado then
     begin
       MensagemSistema('Parâmetros informados já utilizados em outro cadastro!',msgAtencao);
-      
+
       Exit;
     end;
   end;

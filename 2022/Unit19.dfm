@@ -26,8 +26,8 @@ object Form19: TForm19
   object Orelhas: TPageControl
     Left = 20
     Top = 20
-    Width = 773
-    Height = 546
+    Width = 584
+    Height = 403
     ActivePage = Orelha_permitir
     Align = alClient
     TabOrder = 0
@@ -326,21 +326,21 @@ object Form19: TForm19
       ImageIndex = 1
       object Label35: TLabel
         Left = 92
-        Top = 231
+        Top = 263
         Width = 213
         Height = 13
         Caption = '% m'#225'ximo de desconto no item do or'#231'amento'
       end
       object Label36: TLabel
         Left = 92
-        Top = 259
+        Top = 291
         Width = 214
         Height = 13
         Caption = '% m'#225'ximo de desconto no total do or'#231'amento'
       end
       object chkItensDuplicadosNF: TCheckBox
         Left = 15
-        Top = 104
+        Top = 103
         Width = 194
         Height = 17
         Caption = 'Itens duplos na Nota Fiscal'
@@ -348,7 +348,7 @@ object Form19: TForm19
       end
       object chkEstoqueNegativoNF: TCheckBox
         Left = 15
-        Top = 45
+        Top = 44
         Width = 306
         Height = 17
         Caption = 'Vendas com estoque negativo ou zerado'
@@ -364,7 +364,7 @@ object Form19: TForm19
       end
       object SMALL_DBEdit4: TSMALL_DBEdit
         Left = 15
-        Top = 223
+        Top = 255
         Width = 66
         Height = 19
         DataField = 'DIFERENCA_'
@@ -374,7 +374,7 @@ object Form19: TForm19
       end
       object SMALL_DBEdit5: TSMALL_DBEdit
         Left = 15
-        Top = 251
+        Top = 287
         Width = 66
         Height = 19
         DataField = 'PAGAR'
@@ -394,7 +394,7 @@ object Form19: TForm19
       end
       object chkCalcLucroEstoque: TCheckBox
         Left = 15
-        Top = 134
+        Top = 133
         Width = 290
         Height = 17
         Caption = 'C'#225'lculo do Lucro ao alterar Pre'#231'o de venda no estoque'
@@ -402,7 +402,7 @@ object Form19: TForm19
       end
       object chkImportaMesmoOrc: TCheckBox
         Left = 15
-        Top = 164
+        Top = 162
         Width = 290
         Height = 17
         Caption = 'Importar mesmo or'#231'amento m'#250'ltiplas vezes no cupom'
@@ -410,7 +410,7 @@ object Form19: TForm19
       end
       object chkRecalculaCustoMedioRetroativo: TCheckBox
         Left = 15
-        Top = 193
+        Top = 192
         Width = 194
         Height = 17
         Hint = 
@@ -420,6 +420,16 @@ object Form19: TForm19
         ParentShowHint = False
         ShowHint = True
         TabOrder = 6
+      end
+      object chkOcultaUsoConsumoVenda: TCheckBox
+        Left = 15
+        Top = 222
+        Width = 346
+        Height = 17
+        Caption = 'Ocultar produtos de uso e consumo nas vendas'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 9
       end
     end
     object Orelha_juros: TTabSheet

@@ -2,17 +2,12 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
   Left = 467
   Top = 213
   OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
-    inherited Panel8: TPanel
-      ExplicitLeft = 822
-    end
     inherited pgcFicha: TPageControl
       ActivePage = tbsCadastro
-      ExplicitLeft = 20
-      ExplicitWidth = 802
-      ExplicitHeight = 453
       object tbsCadastro: TTabSheet
         Caption = 'Cadastro'
         object Label1: TLabel
@@ -827,15 +822,20 @@ inherited FrmParametroTributacao: TFrmParametroTributacao
             Height = 20
             Color = clWhite
             Ctl3D = False
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -12
+            Font.Name = 'Microsoft Sans Serif'
+            Font.Style = []
             ParentBackground = False
             ParentColor = False
             ParentCtl3D = False
+            ParentFont = False
             TabOrder = 0
             OnExit = fraPerfilTribExit
             ExplicitLeft = 104
             ExplicitTop = 19
             ExplicitWidth = 390
-            ExplicitHeight = 22
             inherited txtCampo: TEdit
               Width = 390
               ExplicitWidth = 390
