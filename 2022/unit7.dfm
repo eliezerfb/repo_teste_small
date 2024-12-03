@@ -16496,7 +16496,8 @@ object Form7: TForm7
         'EAN_ORIGINAL, '
       
         '   VBCFCP, PFCP, VFCP, VBCFCPST, PFCPST, VFCPST, ICMS_DESONERADO' +
-        ', PICMSST)'
+        ', PICMSST, '
+      '   IMPOSTOIMPORTACAO)'
       'values'
       
         '  (:NUMERONF, :CODIGO, :DESCRICAO, :ST, :IPI, :ICM, :BASE, :MEDI' +
@@ -16512,7 +16513,8 @@ object Form7: TForm7
         ' :UNITARIO_O, '
       
         '   :ANVISA, :EAN_ORIGINAL, :VBCFCP, :PFCP, :VFCP, :VBCFCPST, :PF' +
-        'CPST, :VFCPST, :ICMS_DESONERADO, :PICMSST)')
+        'CPST, :VFCPST, :ICMS_DESONERADO, :PICMSST,'
+      '   :IMPOSTOIMPORTACAO)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -16555,7 +16557,8 @@ object Form7: TForm7
       '  PFCPST,'
       '  VFCPST,'
       '  ICMS_DESONERADO,'
-      '  PICMSST'
+      '  PICMSST,'
+      '  IMPOSTOIMPORTACAO'
       'from ITENS002 '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -16604,7 +16607,8 @@ object Form7: TForm7
       '  PFCPST = :PFCPST,'
       '  VFCPST = :VFCPST,'
       '  ICMS_DESONERADO = :ICMS_DESONERADO,'
-      '  PICMSST = :PICMSST'
+      '  PICMSST = :PICMSST,'
+      '  IMPOSTOIMPORTACAO = :IMPOSTOIMPORTACAO'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -16939,6 +16943,16 @@ object Form7: TForm7
       Precision = 18
       Size = 2
     end
+    object ibDataSet23IMPOSTOIMPORTACAO: TIBBCDField
+      DisplayLabel = 'II'
+      FieldName = 'IMPOSTOIMPORTACAO'
+      Origin = 'ITENS002.IMPOSTOIMPORTACAO'
+      Visible = False
+      DisplayFormat = '#,##0.00'
+      EditFormat = '##0.00'
+      Precision = 18
+      Size = 2
+    end
   end
   object DataSource23: TDataSource
     DataSet = ibDataSet23
@@ -16983,7 +16997,7 @@ object Form7: TForm7
       
         '   NVOL, NFEXML, MDESTINXML, FINNFE, INDFINAL, INDPRES, IDENTIFI' +
         'CADORPLANOCONTAS,'
-      '   VFCPST,ICMS_DESONERADO)'
+      '   VFCPST,ICMS_DESONERADO, ImpostoImportacao)'
       'values'
       
         '  (:NUMERONF, :MODELO, :VENDEDOR, :FORNECEDOR, :OPERACAO, :EMISS' +
@@ -17003,9 +17017,8 @@ object Form7: TForm7
       
         '   :COMPLEMENTO, :NFEID, :ANVISA, :NVOL, :NFEXML, :MDESTINXML, :' +
         'FINNFE, '
-      
-        '   :INDFINAL, :INDPRES, :IDENTIFICADORPLANOCONTAS, :VFCPST, :ICM' +
-        'S_DESONERADO)')
+      '   :INDFINAL, :INDPRES, :IDENTIFICADORPLANOCONTAS, '
+      '   :VFCPST, :ICMS_DESONERADO, :ImpostoImportacao)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -17054,7 +17067,8 @@ object Form7: TForm7
       '  INDPRES,'
       '  IDENTIFICADORPLANOCONTAS,'
       '  VFCPST,'
-      '  ICMS_DESONERADO'
+      '  ICMS_DESONERADO,'
+      '  ImpostoImportacao'
       'from COMPRAS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -17109,7 +17123,8 @@ object Form7: TForm7
       '  INDPRES = :INDPRES,'
       '  IDENTIFICADORPLANOCONTAS = :IDENTIFICADORPLANOCONTAS,'
       '  VFCPST = :VFCPST,'
-      '  ICMS_DESONERADO = :ICMS_DESONERADO'
+      '  ICMS_DESONERADO = :ICMS_DESONERADO,'
+      '  ImpostoImportacao = :ImpostoImportacao'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -17409,6 +17424,14 @@ object Form7: TForm7
     object ibDataSet24ICMS_DESONERADO: TIBBCDField
       FieldName = 'ICMS_DESONERADO'
       Origin = 'COMPRAS.ICMS_DESONERADO'
+      Visible = False
+      Precision = 18
+      Size = 2
+    end
+    object ibDataSet24IMPOSTOIMPORTACAO: TIBBCDField
+      DisplayLabel = 'II'
+      FieldName = 'IMPOSTOIMPORTACAO'
+      Origin = 'COMPRAS.IMPOSTOIMPORTACAO'
       Visible = False
       Precision = 18
       Size = 2

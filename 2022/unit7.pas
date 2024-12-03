@@ -1748,6 +1748,8 @@ type
     ibDataSet4CODIGO_IMENDES: TIntegerField;
     ributaoInteligente1: TMenuItem;
     N3: TMenuItem;
+    ibDataSet23IMPOSTOIMPORTACAO: TIBBCDField;
+    ibDataSet24IMPOSTOIMPORTACAO: TIBBCDField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -34020,6 +34022,7 @@ begin
                                   '+ ICMS Substituição: '+FloatToStr(Form7.ibDataSet24ICMSSUBSTI.Value)+CHR(10)+
                                   '+ FCP ST: '+FloatToStr(Form7.ibDataSet24VFCPST.Value)+CHR(10)+
                                   '+ Despesas: '+FloatToStr(Form7.ibDataSet24DESPESAS.Value)+CHR(10)+
+                                  '+ II: '+FloatToStr(ibDataSet24IMPOSTOIMPORTACAO.Value)+CHR(10)+
                                   '- Desconto: '+FloatToStr(Form7.ibDataSet24DESCONTO.Value)+CHR(10)+
                                   '- ICMS Desonerado: '+FloatToStr(Form7.ibDataSet24ICMS_DESONERADO.Value)+CHR(10);
 end;
@@ -34329,6 +34332,9 @@ begin
                                        - Form7.ibDataSet24ICMS_DESONERADO.AsFloat
                                        ;
   end;
+
+  ibDataSet24TOTAL.AsFloat := ibDataSet24TOTAL.AsFloat +
+    ibDataSet24IMPOSTOIMPORTACAO.AsFloat;
 
   if Copy(Form7.ibDataSet14CFOP.AsString,1,1) = '3' then
     Form7.ibDataSet24TOTAL.AsFloat := Form7.ibDataSet24TOTAL.AsFloat + Form7.ibDataSet24ICMS.AsFloat;
@@ -36725,7 +36731,6 @@ end;
 procedure TForm7.TotalizaItensCompra;
 begin
   //LogRetaguarda('procedure TForm7.TotalizaItensCompra: 36278'); // Sandro Silva 2024-09-26
-
   try
     Form7.ibDataSet24.Edit;
     Form7.ibDataSet24MERCADORIA.AsFloat      := 0;
@@ -36739,6 +36744,7 @@ begin
     Form7.ibDataSet24IPI.AsFloat             := 0;
     Form7.ibDataSet24VFCPST.AsFloat          := 0.00; // Sandro Silva 2023-04-11
     Form7.ibDataSet24ICMS_DESONERADO.AsFloat := 0; //Mauricio Parizotto 2023-07-18
+    ibDataSet24ImpostoImportacao.AsFloat := 0;
 
     Form7.ibDataSet101.DisableControls;
     Form7.ibDataSet101.Close;
@@ -36754,7 +36760,8 @@ begin
       'sum(cast(coalesce(VBCST, 0) as numeric(18, 2))) as VBCST, ' +
       'sum(cast(coalesce(VICMSST, 0) as numeric(18, 2))) as VICMSST, ' +
       'sum(cast(coalesce(VFCPST, 0) as numeric(18, 2))) as VFCPST, ' +
-      'sum(cast(coalesce(ICMS_DESONERADO, 0) as numeric(18, 2))) as ICMS_DESONERADO ' +
+      'sum(cast(coalesce(ICMS_DESONERADO, 0) as numeric(18, 2))) as ICMS_DESONERADO, ' +
+      'sum(cast(coalesce(IMPOSTOIMPORTACAO, 0) as numeric(18, 2))) as IMPOSTOIMPORTACAO ' +
       'from ITENS002 '+
       ' Where NUMERONF='+QuotedStr(Form7.ibDAtaSet24NUMERONF.AsString)+
       '   and FORNECEDOR='+QuotedStr(Form7.ibDataSet24FORNECEDOR.AsString)+' ');
@@ -36773,6 +36780,11 @@ begin
         Form7.ibDataSet24BASESUBSTI.AsFloat      := Form7.ibDataSet24BASESUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VBCST').AsFloat,2);
         Form7.ibDataSet24ICMSSUBSTI.AsFloat      := Form7.ibDataSet24ICMSSUBSTI.AsFloat +  Arredonda(Form7.ibDataSet101.FieldByname('VICMSST').AsFloat,2);
         Form7.ibDataSet24VFCPST.AsFloat          := Form7.ibDataSet24VFCPST.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('VFCPST').AsFloat,2); // Sandro Silva 2023-04-11
+
+        ibDataSet24IMPOSTOIMPORTACAO.AsFloat :=
+          ibDataSet24ImpostoImportacao.AsFloat +
+          Arredonda(ibDataSet101.FieldByname('IMPOSTOIMPORTACAO').AsFloat, 2);
+
         if bDescontaICMSDeso then
           Form7.ibDataSet24ICMS_DESONERADO.AsFloat := Form7.ibDataSet24ICMS_DESONERADO.AsFloat + Arredonda(Form7.ibDataSet101.FieldByname('ICMS_DESONERADO').AsFloat,2); // Mauricio Parizotto 2023-07-18
       except
