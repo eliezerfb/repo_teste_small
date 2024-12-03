@@ -56,11 +56,11 @@ const SELECT_TABELA_VIRTUAL_FORMAS_DE_PAGAMENTO =
   ') q ';
   //'order by NOME';
 
-
 function TabelaExisteFB(Banco: TIBDatabase; sTabela: String): Boolean;
 function CampoExisteFB(Banco: TIBDatabase; sTabela: String;
   sCampo: String): Boolean;
 function TamanhoCampoFB(Banco: TIBDatabase; sTabela: String; sCampo: String): integer;
+function TipoCampoFB(Banco: TIBDatabase; sTabela: String; sCampo: String): String;
 function CriaIBTransaction(IBDATABASE: TIBDatabase): TIBTransaction;
 function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery;
 function CriaIDataSet(IBTRANSACTION: TIBTransaction): TIBDataSet; // Mauricio Parizotto 2023-09-12
@@ -150,6 +150,7 @@ var
   IBQUERY: TIBQuery;
   IBTRANSACTION: TIBTransaction;
 begin
+  Result := 0;
   IBTRANSACTION := CriaIBTransaction(Banco);
   IBQUERY := CriaIBQuery(IBTRANSACTION);
   try
@@ -168,6 +169,111 @@ begin
     FreeAndNil(IBTRANSACTION);
   end;
 end;
+
+{Sandro Silva 2024-11-24 inicio}
+function TipoCampoFB(Banco: TIBDatabase; sTabela: String; sCampo: String): String;
+var
+  IBQUERY: TIBQuery;
+  IBTRANSACTION: TIBTransaction;
+begin
+  Result := '';
+  IBTRANSACTION := CriaIBTransaction(Banco);
+  IBQUERY := CriaIBQuery(IBTRANSACTION);
+  try
+    {
+    IBQUERY.DisableControls;
+    IBQUERY.UniDirectional := True;
+    IBQUERY.Close;
+    IBQUERY.SQL.Text :=
+      'select ' +
+      'upper(trim(T.RDB$TYPE_NAME)) as TIPO ' +
+      ', B.RDB$FIELD_LENGTH as TAMANHO ' +
+      ', B.RDB$FIELD_SCALE as ESCALA ' +
+      'from RDB$RELATION_FIELDS A ' +
+      'join RDB$FIELDS B ' +
+      '    on (A.RDB$FIELD_SOURCE = B.RDB$FIELD_NAME) ' +
+      'join RDB$TYPES T on T.RDB$TYPE = B.RDB$FIELD_TYPE and T.RDB$FIELD_NAME = ''RDB$FIELD_TYPE'' ' +
+      'where (upper(A.RDB$RELATION_NAME) = uppet(:TABELA)) ' +
+      'and (upper(A.RDB$FIELD_NAME) = upper(:CAMPO))';
+    IBQUERY.ParamByName('TABELA').AsString := sTabela;
+    IBQUERY.ParamByName('CAMPO').AsString  := sCampo;
+    IBQUERY.Open;
+    Result := IBQUERY.FieldByName('TIPO').AsString;
+    if IBQUERY.FieldByName('TIPO').AsString = 'INT64' then
+    begin
+      if IBQUERY.FieldByName('ESCALA').AsInteger <> 0 then
+        Result := 'NUMERIC';
+    end;
+    }
+    IBQUERY.DisableControls;
+    IBQUERY.UniDirectional := True;
+    IBQUERY.Close;
+    IBQUERY.SQL.Text :=
+      'SELECT ' +
+      '  RF.RDB$RELATION_NAME, ' +
+      '  RF.RDB$FIELD_NAME FIELD_NAME, ' +
+      '  RF.RDB$FIELD_POSITION FIELD_POSITION, ' +
+      '  CASE F.RDB$FIELD_TYPE ' +
+      '    WHEN 7 THEN ' +
+      '      CASE F.RDB$FIELD_SUB_TYPE ' +
+      '        WHEN 0 THEN ''SMALLINT'' ' +
+      '        WHEN 1 THEN ''NUMERIC('' || F.RDB$FIELD_PRECISION || '', '' || (-F.RDB$FIELD_SCALE) || '')'' ' +
+      '        WHEN 2 THEN ''DECIMAL'' ' +
+      '      END ' +
+      '    WHEN 8 THEN ' +
+      '      CASE F.RDB$FIELD_SUB_TYPE ' +
+      '        WHEN 0 THEN ''INTEGER'' ' +
+      '        WHEN 1 THEN ''NUMERIC(''  || F.RDB$FIELD_PRECISION || '', '' || (-F.RDB$FIELD_SCALE) || '')'' ' +
+      '        WHEN 2 THEN ''DECIMAL'' ' +
+      '      END ' +
+      '    WHEN 9 THEN ''QUAD'' ' +
+      '    WHEN 10 THEN ''FLOAT'' ' +
+      '    WHEN 12 THEN ''DATE'' ' +
+      '    WHEN 13 THEN ''TIME'' ' +
+      '    WHEN 14 THEN ''CHAR('' || (TRUNC(F.RDB$FIELD_LENGTH / CH.RDB$BYTES_PER_CHARACTER)) || '')''  ' +
+      '    WHEN 16 THEN ' +
+      '      CASE F.RDB$FIELD_SUB_TYPE ' +
+      '        WHEN 0 THEN ''BIGINT'' ' +
+      '        WHEN 1 THEN ''NUMERIC('' || F.RDB$FIELD_PRECISION || '', '' || (-F.RDB$FIELD_SCALE) || '')'' ' +
+      '        WHEN 2 THEN ''DECIMAL'' ' +
+      '      END ' +
+      '    WHEN 27 THEN ''DOUBLE'' ' +
+      '    WHEN 35 THEN ''TIMESTAMP'' ' +
+      '    WHEN 37 THEN ' +
+      '     IIF (COALESCE(f.RDB$COMPUTED_SOURCE, '''') <> '''', ' +
+      '      ''COMPUTED BY '' || CAST(f.RDB$COMPUTED_SOURCE AS VARCHAR(250)), ' +
+      '      ''VARCHAR('' || (TRUNC(F.RDB$FIELD_LENGTH / CH.RDB$BYTES_PER_CHARACTER)) || '')'') ' +
+      '    WHEN 40 THEN ''CSTRING'' || (TRUNC(F.RDB$FIELD_LENGTH / CH.RDB$BYTES_PER_CHARACTER)) || '')'' ' +
+      '    WHEN 45 THEN ''BLOB_ID'' ' +
+      '    WHEN 261 THEN ''BLOB SUB_TYPE '' || F.RDB$FIELD_SUB_TYPE ' +
+      '    ELSE ''RDB$FIELD_TYPE: '' || F.RDB$FIELD_TYPE || ''?'' ' +
+      '  END FIELD_TYPE, ' +
+      '  IIF(COALESCE(RF.RDB$NULL_FLAG, 0) = 0, NULL, ''NOT NULL'') FIELD_NULL, ' +
+      '  CH.RDB$CHARACTER_SET_NAME FIELD_CHARSET, ' +
+      '  DCO.RDB$COLLATION_NAME FIELD_COLLATION, ' +
+      '  COALESCE(RF.RDB$DEFAULT_SOURCE, F.RDB$DEFAULT_SOURCE) FIELD_DEFAULT, ' +
+      '  F.RDB$VALIDATION_SOURCE FIELD_CHECK, ' +
+      '  RF.RDB$DESCRIPTION FIELD_DESCRIPTION ' +
+      'FROM RDB$RELATION_FIELDS RF ' +
+      'JOIN RDB$FIELDS F ON (F.RDB$FIELD_NAME = RF.RDB$FIELD_SOURCE) ' +
+      'LEFT OUTER JOIN RDB$CHARACTER_SETS CH ON (CH.RDB$CHARACTER_SET_ID = F.RDB$CHARACTER_SET_ID) ' +
+      'LEFT OUTER JOIN RDB$COLLATIONS DCO ON ((DCO.RDB$COLLATION_ID = F.RDB$COLLATION_ID) AND (DCO.RDB$CHARACTER_SET_ID = F.RDB$CHARACTER_SET_ID)) ' +
+      'WHERE (COALESCE(RF.RDB$SYSTEM_FLAG, 0) = 0) ' +
+      'and (upper(RF.RDB$RELATION_NAME) = upper(:TABELA)) ' +
+      'and (upper(RF.RDB$FIELD_NAME ) = upper(:CAMPO)) ' +
+      'ORDER BY RF.RDB$FIELD_POSITION';
+    IBQUERY.ParamByName('TABELA').AsString := sTabela;
+    IBQUERY.ParamByName('CAMPO').AsString  := sCampo;
+    IBQUERY.Open;
+    Result := AnsiUpperCase(IBQUERY.FieldByName('FIELD_TYPE').AsString);
+  finally
+    IBTRANSACTION.Rollback;
+    FreeAndNil(IBQUERY);
+    FreeAndNil(IBTRANSACTION);
+  end;
+
+end;
+{Sandro Silva 2024-11-24 fim}
 
 function CriaIBTransaction(IBDATABASE: TIBDatabase): TIBTransaction;
 {Sandro Silva 2011-04-12 inicio
@@ -273,6 +379,7 @@ function TamanhoCampo(IBTransaction: TIBTransaction; Tabela: String;
 var
   IBQTABELA: TIBQuery;
 begin
+  {Sandro Silva 2024-11-19 inicio
   Result := 0;
   IBQTABELA := CriaIBQuery(IBTransaction);
   try
@@ -287,6 +394,9 @@ begin
 
   end;
   FreeAndNil(IBQTABELA);
+  }
+  TamanhoCampoFB(IBTransaction.DefaultDatabase, Tabela, campo);
+  {Sandro Silva 2024-11-19 fim}
 end;
 
 function IndiceExiste(Banco: TIBDatabase; sTabela: String;
