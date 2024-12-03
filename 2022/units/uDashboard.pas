@@ -64,6 +64,8 @@ begin
     if Trim(sJsonFiltro) <> '' then
     begin
       try
+        sOperacoes := QuotedStr('XXXXX');
+
         Parametros := TParametros.Create(sJsonFiltro);
         for I := Low(Parametros.Itens) to High(Parametros.Itens) do
         begin
@@ -72,8 +74,6 @@ begin
       finally
         FreeAndNil(Parametros);
       end;
-
-      Delete(sOperacoes,1,1);
 
       Result := ' and OPERACAO in ('+sOperacoes+')';
     end else

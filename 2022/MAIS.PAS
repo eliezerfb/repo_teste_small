@@ -8688,8 +8688,8 @@ begin
     FreeAndNil(frmConfiguracaoTEFCommerce);
   end;
 
-  if TSistema.GetInstance.DashboardAbertura then
-    TimerDashboard.Enabled := True;
+//  if TSistema.GetInstance.DashboardAbertura then
+//    TimerDashboard.Enabled := True;
 end;
 
 procedure TForm1.DBGrid200KeyDown(Sender: TObject; var Key: Word;
