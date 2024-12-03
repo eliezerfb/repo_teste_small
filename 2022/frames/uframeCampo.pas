@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Grids, DBGrids, IBDatabase, DB,
-  IBCustomDataSet, IBQuery;
+  IBCustomDataSet, IBQuery, Vcl.ExtCtrls;
 
 const ALIAS_CAMPO_PESQUISADO = 'NOME';
 
@@ -18,6 +18,7 @@ type
     gdRegistros: TDBGrid;
     DataSource: TDataSource;
     Query: TIBQuery;
+    TimerEnabled: TTimer;
     procedure txtCampoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure gdRegistrosDblClick(Sender: TObject);
@@ -27,6 +28,7 @@ type
     procedure txtCampoClick(Sender: TObject);
     procedure FrameExit(Sender: TObject);
     procedure txtCampoEnter(Sender: TObject);
+    procedure TimerEnabledTimer(Sender: TObject);
   private
     FGravarSomenteTextoEncontrato: Boolean;
     FOnShow: TNotifyEvent;
@@ -151,7 +153,7 @@ begin
   end;
 
   //Para controle de somente leitura
-  txtCampo.Enabled := Self.Enabled; //Mauricio Parizotto 2024-04-17
+  //Sandro Silva (f-21728) 2024-11-26 txtCampo.Enabled := Self.Enabled; //Mauricio Parizotto 2024-04-17
 
   //Mauricio Parizotto 2023-11-20
   //sNomeCampoChave := CampoCodigo.FieldName;
@@ -178,11 +180,7 @@ begin
   end;
   Query.Open;
 
-  {Sandro Silva 2024-05-10 inicio
-  txtCampo.MaxLength := Query.FieldByName(sCampoDescricao).Size; // Dailon 2024-04-24
-  }
   txtCampo.MaxLength := Query.FieldByName(ALIAS_CAMPO_PESQUISADO).Size; // Dailon 2024-04-24
-  {Sandro Silva 2024-05-10 fim}
 
   //if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive, loPartialKey]) then Mauricio Parizotto 2024-01-16
   if Query.Locate(sNomeCampoChave, Trim(CampoCodigo.AsString), [loCaseInsensitive]) then
@@ -204,7 +202,7 @@ var
   sCodigo : string;
 begin
   //Para controle de somente leitura
-  txtCampo.Enabled := Self.Enabled; //Mauricio Parizotto 2024-04-17
+  //Sandro Silva (f-21728) 2024-11-26 Migrado para timer txtCampo.Enabled := Self.Enabled; //Mauricio Parizotto 2024-04-17
 
   sNomeCampoChave := CampoCodigoPesquisa;
   if sNomeCampoChave = '' then
@@ -245,7 +243,6 @@ end;
 
 procedure TfFrameCampo.txtCampoChange(Sender: TObject);
 begin
-  // Sandro Silva 2023-09-29 if (txtCampo.Text <> '') and (txtCampo.Focused) then
   if (txtCampo.Focused) then
   begin
     Pesquisar;
@@ -360,6 +357,12 @@ begin
             ' Order by upper(' + sCampoDescricao + ') ';
 end;
 
+
+procedure TfFrameCampo.TimerEnabledTimer(Sender: TObject);
+begin
+  // Para manter habilitado ou não conforme a situação do frame
+  txtCampo.Enabled := Self.Enabled; //2024-11-26
+end;
 
 end.
 

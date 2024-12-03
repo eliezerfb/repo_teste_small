@@ -177,7 +177,17 @@ begin
                   end;
                 end;
               end;
-              
+
+              if (Form7.TabelaAberta = Form7.ibDataSet12) and
+                (UpperCase(Form7.TabelaAberta.Fields[I-1].FieldName) = 'CONTA') then
+              begin
+                WriteLn(F,' <tr>');
+                Writeln(F,'  <td width=120 align=Right bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>'+'Tipo Conta'+':</td>');
+                var TipoContaDescription := TipoPlanoContaToText(CodigoPlanoContaToTipo(sA));
+                Writeln(F,'  <td width=300 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+TipoContaDescription+'</td>');
+                Writeln(F,' </tr>');
+              end;
+
               WriteLn(F,' <tr>');
               Writeln(F,'  <td width=120 align=Right bgcolor=#'+Form1.sHtmlCor+'><font face="Microsoft Sans Serif" size=1>'+AllTrim(Form7.TabelaAberta.Fields[I-1].DisplayLabel)+':</td>');
               Writeln(F,'  <td width=300 bgcolor=#FFFFFFFF><font face="Microsoft Sans Serif" size=1>'+sA+'</td>');

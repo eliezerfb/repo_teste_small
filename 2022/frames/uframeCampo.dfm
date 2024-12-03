@@ -84,4 +84,10 @@ object fFrameCampo: TfFrameCampo
     Left = 100
     Top = 65535
   end
+  object TimerEnabled: TTimer
+    Interval = 100
+    OnTimer = TimerEnabledTimer
+    Left = 184
+    Top = 1
+  end
 end

@@ -1179,6 +1179,7 @@ begin
     dbgComposicao.Options := dbgComposicao.Options - [dgEditing]
   else
     dbgComposicao.Options := dbgComposicao.Options + [dgEditing];
+
 end;
 
 
