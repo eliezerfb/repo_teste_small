@@ -28,7 +28,7 @@ object Form19: TForm19
     Top = 20
     Width = 586
     Height = 411
-    ActivePage = tbsDashboard
+    ActivePage = Orelha_relatorios
     Align = alClient
     TabOrder = 0
     object Orelha_relatorios: TTabSheet

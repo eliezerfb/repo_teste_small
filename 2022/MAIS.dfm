@@ -8,7 +8,7 @@ object Form1: TForm1
   AlphaBlendValue = 250
   BorderStyle = bsSingle
   Caption = 'form'
-  ClientHeight = 943
+  ClientHeight = 881
   ClientWidth = 1311
   Color = clWhite
   Ctl3D = False
@@ -27,30 +27,6 @@ object Form1: TForm1
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
-  object Botao_titulo: TImage
-    Left = 1104
-    Top = 126
-    Width = 5
-    Height = 24
-    AutoSize = True
-    Picture.Data = {
-      07544269746D6170B6010000424DB60100000000000036000000280000000500
-      0000180000000100180000000000800100000000000000000000000000000000
-      0000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0F000F0F0F0F0F0F0F0F0F0F0F0F0F0F0
-      F000}
-    Visible = False
-  end
   object Image1: TImage
     Left = 932
     Top = 452
@@ -5719,30 +5695,6 @@ object Form1: TForm1
     Transparent = True
     Visible = False
   end
-  object Image_raio_2: TImage
-    Left = 1212
-    Top = 228
-    Width = 95
-    Height = 95
-    Hint = 'Backup'
-    ParentShowHint = False
-    ShowHint = True
-    Stretch = True
-    Transparent = True
-    Visible = False
-  end
-  object Image_raio_1: TImage
-    Left = 1212
-    Top = 338
-    Width = 95
-    Height = 95
-    Hint = 'Backup'
-    ParentShowHint = False
-    ShowHint = True
-    Stretch = True
-    Transparent = True
-    Visible = False
-  end
   object Image2: TImage
     Left = 184
     Top = 0
@@ -6216,48 +6168,6 @@ object Form1: TForm1
     TitleFont.Style = []
     Visible = False
     OnKeyDown = DBGrid1KeyDown
-  end
-  object Panel1: TPanel
-    Left = 112
-    Top = 688
-    Width = 625
-    Height = 241
-    Color = clWhite
-    TabOrder = 12
-    Visible = False
-    object Panel5: TPanel
-      Left = 8
-      Top = 16
-      Width = 273
-      Height = 41
-      BevelOuter = bvNone
-      BorderStyle = bsSingle
-      Caption = #39'$007D7AEA'#39'; // Vermelho 60%'
-      Color = 8223466
-      TabOrder = 0
-    end
-    object Panel6: TPanel
-      Left = 288
-      Top = 16
-      Width = 273
-      Height = 41
-      BevelOuter = bvNone
-      BorderStyle = bsSingle
-      Caption = #39'$004B59F1'#39'; // Vermelho 80%'
-      Color = 4938225
-      TabOrder = 1
-    end
-    object Panel7: TPanel
-      Left = 288
-      Top = 72
-      Width = 273
-      Height = 41
-      BevelOuter = bvNone
-      BorderStyle = bsSingle
-      Caption = #39'$0058F3FF'#39'; // Amarelo 80%'
-      Color = 5829631
-      TabOrder = 2
-    end
   end
   object Panel_00: TPanel
     Left = 52
@@ -14116,7 +14026,7 @@ object Form1: TForm1
     Height = 95
     BevelKind = bkFlat
     BevelOuter = bvNone
-    TabOrder = 13
+    TabOrder = 12
     Visible = False
   end
   object PopupMenu1: TPopupMenu

@@ -8,12 +8,7 @@ uses
   Mais3, unit2, IniFiles, Unit4, Registry,
   DBGrids, Grids, OleCtrls, SHDocVw, IBCustomDataSet, IBDatabase, Winsock,
   IBQuery, jpeg, Gauges, SpdNFeDataSets, IBServices, FileCtrl, xmldom, XMLIntf,
-  {$IFDEF VER150}
-  oxmldom,
-  SmallFunc,
-  {$ELSE}
   smallfunc_xe,
-  {$ENDIF}
   XMLDoc, URLMON, pngimage, ComCtrls, clipbrd, DB, DateUtils,
   WinTypes, WinProcs, uFuncoesBancoDados,
   LbCipher, LbClass, Tlhelp32, Psapi, strutils, ShlObj, ComObj, ActiveX
@@ -31,7 +26,6 @@ uses
   function FechaTudo(bP1: Boolean): Boolean;
   function DownloadDoArquivo(pP1: String; pP2: String): Boolean;
   function mensagem22(sP1 : String) : Boolean;
-//  procedure DropViewProcedure;
 
   function ExecutaComando(comando:string):Boolean;  overload;
   procedure VencimentoCertificadoDigital;
@@ -80,7 +74,6 @@ type
     Calendrio1: TMenuItem;
     wwwsmallsoftcombr1: TMenuItem;
     SobreoPrograma1: TMenuItem;
-    Botao_titulo: TImage;
     Image1: TImage;
     estarservidorNFE1: TMenuItem;
     ConfiguraodaNFe2: TMenuItem;
@@ -191,8 +184,6 @@ type
     Image200_R: TImage;
     Image200_X: TImage;
     ppmBackup: TPopupMenu;
-    Image_raio_2: TImage;
-    Image_raio_1: TImage;
     CNPJdacontabilidade1: TMenuItem;
     Instalarpackcomasltimasalteraes1: TMenuItem;
     FileListBox1: TFileListBox;
@@ -243,10 +234,6 @@ type
     Modoinventrio1: TMenuItem;
     lblTitulo: TLabel;
     Label3: TLabel;
-    Panel1: TPanel;
-    Panel5: TPanel;
-    Panel6: TPanel;
-    Panel7: TPanel;
     ConfiguraesdaNFSe1: TMenuItem;
     Marketplace1: TMenuItem;
     AutoMarketplace1: TMenuItem;
@@ -491,8 +478,6 @@ type
     function GetDiasRestanteLicenca: Real;
     procedure FechaDashboard;
     procedure AbreDashboard;
-    //Sandro Silva 2024-04-08 procedure AjustarDataSetCamposProduto;
-
   public
     { Public declarations }
     fDias : Real;
@@ -572,6 +557,7 @@ type
     property sPropaganda: String read getPropaganda;
     function MontaTela(sP1: Boolean): Boolean;
     procedure ValidaBuildNFe_Setup;
+    procedure CarregaInformacoes(PrimeiraAbertura:Boolean);
   end;
   //
   function UploadMobile(sFile: TFileName): boolean;
@@ -2855,7 +2841,6 @@ begin
 
             Screen.Cursor        := crDefault;
           except
-            //ShowMessage('Erro de sintaxe no comando IMPORT FROM.'); Mauricio Parizotto 2023-10-25
             MensagemSistema('Erro de sintaxe no comando IMPORT FROM.',msgAtencao);
           end;
 
@@ -2957,14 +2942,12 @@ begin
 
             CloseFile(F);
           except
-            //ShowMessage(sArquivo+' não é uma tabéla válida.'); Mauricio Parizotto 2023-10-25
             MensagemSistema(sArquivo+' não é uma tabéla válida.',msgAtencao);
           end;
 
           Screen.Cursor := crDefault;
         end else
         begin
-          //ShowMessage('Erro de sintaxe no comando EXPORT FROM.'); Mauricio Parizotto 2023-10-25
           MensagemSistema(sArquivo+' não é uma tabéla válida.',msgAtencao);
         end;
 
@@ -3047,7 +3030,6 @@ begin
         ibDataSet200.SelectSQL.Add(sSelectSql);
         ibDataSet200.Open;
 
-        //ShowMessage('Erro no comando SQL: '+Edit200.Text); Mauricio Parizotto 2023-10-25
         MensagemSistema('Erro no comando SQL: '+Edit200.Text,msgErro);
       end;
     end;
@@ -3075,10 +3057,8 @@ begin
         Form1.IBDatabase1.Params.Add('PASSWORD=masterkey');
         Form1.IbDatabase1.Open;
         Form1.IBTransaction1.Active := True;
-        //ShowMessage('Conectado'); Mauricio Parizotto 2023-10-25
         MensagemSistema('Conectado');
       except
-        //ShowMessage('Não foi possível conectar'); Mauricio Parizotto 2023-10-25
         MensagemSistema('Não foi possível conectar',msgAtencao);
       end;
 
@@ -3116,7 +3096,6 @@ begin
       ibDataSet1.SelectSQL.Add(sSelectSql);
       ibDataSet1.Open;
 
-      //ShowMessage('Erro no comando SQL: '+Edit1.Text); Mauricio Parizotto 2023-10-25
       MensagemSistema('Erro no comando SQL: '+Edit1.Text,msgErro);
     end;
   end;
@@ -3317,7 +3296,6 @@ begin
       if Form7.IBTransaction1.Active then
         Form7.IBTransaction1.Commit;
     except
-      //ShowMessage('Erro ao criar REGISTRO em: '+sP1);Mauricio Parizotto 2023-10-25
       MensagemSistema('Erro ao criar REGISTRO em: '+sP1,msgErro);
     end;
 
@@ -3343,7 +3321,6 @@ begin
         if Form7.IBTransaction1.Active then
           Form7.IBTransaction1.Commit;
       except
-        //ShowMessage('Erro ao criar Chave Primaria em: '+sP1); Mauricio Parizotto 2023-10-25
         MensagemSistema('Erro ao criar Chave Primaria em: '+sP1,msgErro);
       end;
     except
@@ -3854,21 +3831,13 @@ begin
   sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.Show;
 
-  //Form25.btnCNAB400.Click; Mauricio Parizotto 2023-10-03 uGeraCNAB400 // Sandro Silva 2022-12-23 Form25.Button9.Click;
   GeraCNAB400;
   Form25.Close;
 
   if Form1.sArquivoRemessa <> '' then
   begin
-    {
-    ShowMessage('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 400 para o BANCO '+
-    Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+ '.'+
-    Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+
-    chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10));
-    Mauricio Parizotto 2023-10-25}
     MensagemSistema('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 400 para o BANCO '+
                     Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+ '.'+
-                    //Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+ Mauricio Parizotto 2023-11-07
                     Chr(10)+'Este arquivo deverá ser transmitido conforme orientação específica do banco.'+
                     chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10)
                     ,msgAtencao);
@@ -3886,21 +3855,13 @@ begin
   sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.Show;
 
-  //Form25.btnCNAB240.Click; Mauricio Parizotto 2023-10-03 // Sandro Silva 2022-12-23 Form25.Button10.Click;
   GeraCNAB240;
   Form25.Close;
 
   if Form1.sArquivoRemessa <> '' then
   begin
-    {
-    ShowMessage('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 240 para o BANCO '+
-    Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+ '.'+
-    Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+
-    chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10));
-    Mauricio Parizotto 2023-10-25}
     MensagemSistema('Atenção'+chr(10)+chr(10)+'O arquivo abaixo foi gerado no padrão CNAB 240 para o BANCO '+
                     Copy(AllTrim(Form26.MaskEdit42.Text),1,3)+ '.'+
-                    //Chr(10)+'Este arquivo devera ser transmitido conforme orientação específica do banco.'+ Mauricio Parizotto 2023-11-07
                     Chr(10)+'Este arquivo deverá ser transmitido conforme orientação específica do banco.'+
                     chr(10)+chr(10)+Form1.sAtual+'\remessa\'+Form1.sArquivoRemessa+chr(10)+chr(10)+chr(10)
                     ,msgAtencao);
@@ -4173,7 +4134,6 @@ begin
           ShellExecute(Application.Handle, 'runas', 'cmd.exe', PChar('/C xcopy "' + sPastaDoPaf + '\BlocoX" BlocoX/S/Y'), nil, SW_HIDE); // Sandro Silva 2022-12-28 ShellExecute(Application.Handle, 'runas', 'cmd.exe', PChar('/C xcopy "PAF2020\BlocoX" BlocoX/S/Y'), nil, SW_HIDE);
         end;
 
-        //ShowMessage('Software PAF-ECF para modelo do ECF '+sNomePAF+' configurado com sucesso.'+chr(10)+'Imprima uma identificação do PAF-ECF e confira o MD5 credenciado no seu estado.');Mauricio Parizotto 2023-10-25
         MensagemSistema('Software PAF-ECF para modelo do ECF '+sNomePAF+' configurado com sucesso.'+chr(10)+'Imprima uma identificação do PAF-ECF e confira o MD5 credenciado no seu estado.');
 
         DeleteFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\paf.txt'));
@@ -4706,14 +4666,6 @@ begin
     FecharAplicacao(ExtractFileName(Application.ExeName));
   end;
 
-  {Sandro Silva 2024-01-12 inicio
-  if (StrToFloat(LimpaNumero(Mais1Ini.ReadString('Geral','Build 2023','2023.0.0.0'))) > StrToFloat(LimpaNumero(StrTran(Form22.sBuild,'Versão e Build:','')))) then
-  begin
-    //ShowMessage('A build: '+Mais1Ini.ReadString('Geral','Build 2023','2023.0.0.0')+' já foi instalada na pasta: '+ sAtual+' você esta tentando'+Chr(10)+' rodar a build: '+StrTran(Form22.sBuild,'Versão e Build:','')+', este programa vai ser fechado.'); Mauricio Parizotto 2023-10-25
-    MensagemSistema('A build: '+Mais1Ini.ReadString('Geral','Build 2023','2023.0.0.0')+' já foi instalada na pasta: '+ sAtual+' você esta tentando'+Chr(10)+' rodar a build: '+
-                    StrTran(Form22.sBuild,'Versão e Build:','')+', este programa vai ser fechado.'
-                    ,msgAtencao);
-  }
   if (StrToFloat(LimpaNumero(Mais1Ini.ReadString('Geral','Build 2024','2024.0.0.0'))) > StrToFloat(LimpaNumero(StrTran(Form22.sBuild,'Versão e Build:','')))) then
   begin
     MensagemSistema('A build: '+Mais1Ini.ReadString('Geral','Build 2024','2024.0.0.0')+' já foi instalada na pasta: '+ sAtual+' você esta tentando'+Chr(10)+' rodar a build: '+
@@ -5239,7 +5191,6 @@ begin
         Commitatudo(True); // SQL - Commando
         AbreArquivos(False);
       except
-        //ShowMessage('Provável falha no Banco de Dados. Erro 4412');  Mauricio Parizotto 2023-10-25
         MensagemSistema('Provável falha no Banco de Dados. Erro 4412',msgErro);
         Application.Terminate;
         Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
@@ -5463,7 +5414,6 @@ begin
         Mais1Ini.WriteString('LICENCA','Ser',sSerial); // 2019 - Cadastro Licença de uso de 2019
         Mais1Ini.Free;
 
-        //ShowMessage('Licença de uso cadastrada com sucesso. Este programa vai ser fechado.'); Mauricio Parizotto 2023-10-25}
         MensagemSistema('Licença de uso cadastrada com sucesso. Este programa vai ser fechado.');
 
         Application.Terminate;
@@ -5474,7 +5424,6 @@ begin
         FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
       end else
       begin
-        //ShowMessage('Este número de licença não foi liberado para este serial.'); Mauricio Parizotto 2023-10-25}
         MensagemSistema('Este número de licença não foi liberado para este serial.', msgAtencao);
       end;
     end;
@@ -5488,7 +5437,6 @@ begin
         Mais1ini := TIniFile.Create('WIND0WS.L0G');
         Mais1Ini.WriteString('SC','Mob',sSerial); // Small Mobile
         Mais1Ini.Free;
-        //ShowMessage('Licença de uso cadastrada com sucesso. Este programa vai ser fechado.'); Mauricio Parizotto 2023-10-25
         MensagemSistema('Licença de uso cadastrada com sucesso. Este programa vai ser fechado.');
 
         Application.Terminate;
@@ -7365,7 +7313,6 @@ begin
 
     if AllTrim(sMensagem2)<>'' then
     begin
-      //ShowMessage('Não foi possível ativar os seguintes indices: '+chr(10)+chr(10)+sMensagem2+chr(10)+chr(10)+'Feche o sistema nas outras máquinas e tente novamente.' ); Mauricio Parizotto 2023-10-25
       MensagemSistema('Não foi possível ativar os seguintes indices: '+chr(10)+chr(10)+sMensagem2+chr(10)+chr(10)+'Feche o sistema nas outras máquinas e tente novamente.' ,msgAtencao);
     end else
     begin
@@ -7448,7 +7395,6 @@ begin
   except
     on E: Exception do
     begin
-      //ShowMessage(Form1.IBQuery1.SQL.Text + #13 + E.Message); Mauricio Parizotto 2023-10-25
       MensagemSistema(Form1.IBQuery1.SQL.Text + #13 + E.Message,msgErro);
     end;
   end;
@@ -7480,7 +7426,6 @@ begin
   except
     on E: Exception do
     begin
-      //ShowMessage(Form1.IBQuery1.SQL.Text + #13 + E.Message); Mauricio Parizotto 2023-10-25
       MensagemSistema(Form1.IBQuery1.SQL.Text + #13 + E.Message,msgErro);
     end;
   end;
@@ -7511,7 +7456,6 @@ begin
   except
     on E: Exception do
     begin
-      //ShowMessage(Form1.IBQuery1.SQL.Text + #13 + E.Message); Mauricio Parizotto 2023-10-25
       MensagemSistema(Form1.IBQuery1.SQL.Text + #13 + E.Message,msgErro);
     end;
   end;
@@ -7542,7 +7486,6 @@ begin
   except
     on E: Exception do
     begin
-      //ShowMessage(Form1.IBQuery1.SQL.Text + #13 + E.Message); Mauricio Parizotto 2023-10-25
       MensagemSistema(Form1.IBQuery1.SQL.Text + #13 + E.Message,msgErro);
     end;
   end;
@@ -7855,52 +7798,12 @@ begin
 end;
 
 procedure TForm1.Liberarosmdulosparaesteusurio1Click(Sender: TObject);
-{Sandro Silva 2024-09-26
-var
-  Mais1Ini: TIniFile;
-  sSenha  : String;
-  sSenhaX : String;
-  I : Integer;
-  }
 begin
-  {Mauricio Parizotto 2024-07-06
-  Form22.Show;
-  Mensagem22('');
-  Senhas2.ShowModal;
-  Form22.Close;
-
-  Senha2:=Senhas2.SenhaPub2;
-  Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
-  sSenhaX := Mais1Ini.ReadString('Administrador','Chave','15706143431572013809150491382314104');
-  sSenha := '';
-  // ----------------------------- //
-  // Fórmula para ler a nova senha //
-  // ----------------------------- //
-  for I := 1 to (Length(sSenhaX) div 5) do
-    sSenha := Chr((StrToInt(
-                  Copy(sSenhaX,(I*5)-4,5)
-                  )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
-  // ----------------------------- //
-  if AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2) then
-  begin
-    Form1.Label207.Tag     := 0;
-    Form2.ShowModal;
-  end else
-  begin
-    MensagemSistema('Senha do administrador inválida.',msgAtencao);
-  end;
-
-  Form1.FormShow(Sender);
-  Form1.Activate;
-  Mais1Ini.Free;
-  }
-
   if GetSenhaAdmin then
   begin
     Form1.Label207.Tag     := 0;
     Form2.ShowModal;
   end;
-
 end;
 
 procedure TForm1.RegistrodoProgramaonline1Click(Sender: TObject);
@@ -7909,6 +7812,7 @@ begin
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
+{Mauricio Parizotto 2024-12-03
 var
   sTag, sValor : String;
   I, J, iSenha : Integer;
@@ -7919,7 +7823,12 @@ var
   wndClass  : array[0..50] of char;
   InfTermo : Boolean;
   sImgFundo : string;
+}
 begin
+  //Mauricio Parizotto 2024-12-03
+  CarregaInformacoes(True);
+
+  (*Mauricio Parizotto 2024-12-03
   //Termos de Uso - Deve ficar no inicio antes de criar o arquivo smallcom.inf
   InfTermo := GetTermoUso;
 
@@ -7929,7 +7838,6 @@ begin
     sNomePAF        := Mais1Ini.ReadString('Frente de caixa','Nome do ECF','02');
     Mais1ini.Free;
 
-    //if (not FileExists(Form1.sAtual+'\graficos.exe')) or (not FileExists(Form1.sAtual+'\retaguarda.chm') or (not FileExists(Form1.sAtual+'\inicial\small_22_.bmp')) ) then
     if (not FileExists(Form1.sAtual+'\graficos.exe')) or (not FileExists(Form1.sAtual+'\retaguarda.chm') ) then
     begin
       MensagemSistema('Não foi possível iniciar o sistema'+chr(10)+
@@ -8092,11 +8000,6 @@ begin
 
       while iSenha < 6 do
       begin
-        {Mauricio Parizotto 2024-07-29 - Faz o show no create já
-        Form22.Close;
-        Form22.Show;
-        }
-
         Mensagem22('');
         Application.ProcessMessages;
 
@@ -8160,211 +8063,9 @@ begin
                       Copy(sSenhaX,(I*5)-4,5)
                       )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
       // ----------------------------- //
-
-
       if (AnsiUpperCase(sSenha) = AnsiUpperCase(Senha)) then
       begin
-        {Mauricio Parizotto 2024-07-31 Inicio}
-
-        (*
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B3','0'))  > 0 then
-        begin
-          if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B9','9')) = 9 then
-          begin
-            Mais1Ini.WriteString(Senhas.UsuarioPub,'B9','1');
-          end;
-        end;
-
-        if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1','0'))   > 0) then imgVendas.Visible   := True else imgVendas.Visible   := False;
-        if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_E','0')) > 0) then imgCompras.Visible  := True else imgCompras.Visible  := False;
-        if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_S','0')) > 0) then imgServicos.Visible  := True else imgServicos.Visible  := False;
-
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B_','0'))  > 0 then imgOrdemServico.Visible := True else imgOrdemServico.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B2','0'))  > 0 then imgEstoque.Visible  := True else imgEstoque.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B3','0'))  > 0 then imgCliFor.Visible  := True else imgCliFor.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B4','0'))  > 0 then imgContaReceber.Visible  := True else imgContaReceber.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B5','0'))  > 0 then imgCaixa.Visible  := True else imgCaixa.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B6','0'))  > 0 then imgBancos.Visible  := True else imgBancos.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B7','0'))  > 0 then imgConfiguracoes.Visible  := True else imgConfiguracoes.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B8','0'))  > 0 then imgBackup.Visible  := True else imgBackup.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B10','0')) > 0 then imgContaPagar.Visible  := True else imgContaPagar.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B11','0')) > 0 then imgIndicadores.Visible  := True else imgIndicadores.Visible := False;
-
-        if (StrToInt('0'+Mais1Ini.ReadString(Usuario,'BOR', Mais1Ini.ReadString(Usuario,'B2','0')  )) > 0)
-          and (TSistema.GetInstance.Tema = _TemaModerno) then
-          imgOrcamento.Visible  := True
-        else
-          imgOrcamento.Visible := False; //Mauricio Parizotto 2024-07-30
-
-        // Indicadores
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I01','0')) > 0 then Form5.Panel1.Visible  := True else Form5.Panel1.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I02','0')) > 0 then Form5.Panel2.Visible  := True else Form5.Panel2.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I03','0')) > 0 then Form5.Panel3.Visible  := True else Form5.Panel3.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I04','0')) > 0 then Form5.Panel4.Visible  := True else Form5.Panel4.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I05','0')) > 0 then Form5.Panel5.Visible  := True else Form5.Panel5.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I06','0')) > 0 then Form5.Panel6.Visible  := True else Form5.Panel6.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I07','0')) > 0 then Form5.Panel7.Visible  := True else Form5.Panel7.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I08','0')) > 0 then Form5.Panel8.Visible  := True else Form5.Panel8.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I09','0')) > 0 then Form5.Panel9.Visible  := True else Form5.Panel9.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I10','0')) > 0 then Form5.Panel10.Visible  := True else Form5.Panel10.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I11','0')) > 0 then Form5.Panel11.Visible  := True else Form5.Panel11.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I12','0')) > 0 then Form5.Panel12.Visible  := True else Form5.Panel12.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I13','0')) > 0 then Form5.Panel13.Visible  := True else Form5.Panel13.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I14','0')) > 0 then Form5.Panel14.Visible  := True else Form5.Panel14.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I15','0')) > 0 then Form5.Panel15.Visible  := True else Form5.Panel15.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I16','0')) > 0 then Form5.Panel16.Visible  := True else Form5.Panel16.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I17','0')) > 0 then Form5.Panel17.Visible  := True else Form5.Panel17.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I18','0')) > 0 then Form5.Panel18.Visible  := True else Form5.Panel18.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I19','0')) > 0 then Form5.Panel19.Visible  := True else Form5.Panel19.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I20','0')) > 0 then Form5.Panel20.Visible  := True else Form5.Panel20.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I21','0')) > 0 then Form5.Panel21.Visible  := True else Form5.Panel21.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I22','0')) > 0 then Form5.Panel22.Visible  := True else Form5.Panel22.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I23','0')) > 0 then Form5.Panel23.Visible  := True else Form5.Panel23.Visible := False;
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'I24','0')) > 0 then Form5.Panel24.Visible  := True else Form5.Panel24.Visible := False;
-
-        // Ordem de apresentaçao dos indicadores
-        Form5.Panel1.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I01ORDEM','0'));
-        Form5.Panel2.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I02ORDEM','0'));
-        Form5.Panel3.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I03ORDEM','0'));
-        Form5.Panel4.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I04ORDEM','0'));
-        Form5.Panel5.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I05ORDEM','0'));
-        Form5.Panel6.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I06ORDEM','0'));
-        Form5.Panel7.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I07ORDEM','0'));
-        Form5.Panel8.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I08ORDEM','0'));
-        Form5.Panel9.Tag   := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I09ORDEM','0'));
-        Form5.Panel10.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I10ORDEM','0'));
-        Form5.Panel11.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I11ORDEM','0'));
-        Form5.Panel12.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I12ORDEM','0'));
-        Form5.Panel13.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I13ORDEM','0'));
-        Form5.Panel14.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I14ORDEM','0'));
-        Form5.Panel15.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I15ORDEM','0'));
-        Form5.Panel16.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I16ORDEM','0'));
-        Form5.Panel17.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I17ORDEM','0'));
-        Form5.Panel18.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I18ORDEM','0'));
-        Form5.Panel19.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I19ORDEM','0'));
-        Form5.Panel20.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I20ORDEM','0'));
-        Form5.Panel21.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I21ORDEM','0'));
-        Form5.Panel22.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I22ORDEM','0'));
-        Form5.Panel23.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I23ORDEM','0'));
-        Form5.Panel24.Tag  := StrToInt(Mais1Ini.ReadString(Senhas.UsuarioPub,'I24ORDEM','0'));
-
-        // E Importante fazer na ordem certa ai o taborder acerta
-        J := 0;
-
-        for I := 23 downto 0 do
-        begin
-          if Form5.Panel1.Tag  = I then if Form5.Panel1.Visible  then Form5.Panel1.TabOrder  := 0;
-          if Form5.Panel2.Tag  = I then if Form5.Panel2.Visible  then Form5.Panel2.TabOrder  := 0;
-          if Form5.Panel3.Tag  = I then if Form5.Panel3.Visible  then Form5.Panel3.TabOrder  := 0;
-          if Form5.Panel4.Tag  = I then if Form5.Panel4.Visible  then Form5.Panel4.TabOrder  := 0;
-          if Form5.Panel5.Tag  = I then if Form5.Panel5.Visible  then Form5.Panel5.TabOrder  := 0;
-          if Form5.Panel6.Tag  = I then if Form5.Panel6.Visible  then Form5.Panel6.TabOrder  := 0;
-          if Form5.Panel7.Tag  = I then if Form5.Panel7.Visible  then Form5.Panel7.TabOrder  := 0;
-          if Form5.Panel8.Tag  = I then if Form5.Panel8.Visible  then Form5.Panel8.TabOrder  := 0;
-          if Form5.Panel9.Tag  = I then if Form5.Panel9.Visible  then Form5.Panel9.TabOrder  := 0;
-          if Form5.Panel10.Tag = I then if Form5.Panel10.Visible then Form5.Panel10.TabOrder := 0;
-          if Form5.Panel11.Tag = I then if Form5.Panel11.Visible then Form5.Panel11.TabOrder := 0;
-          if Form5.Panel12.Tag = I then if Form5.Panel12.Visible then Form5.Panel12.TabOrder := 0;
-          if Form5.Panel13.Tag = I then if Form5.Panel13.Visible then Form5.Panel13.TabOrder := 0;
-          if Form5.Panel14.Tag = I then if Form5.Panel14.Visible then Form5.Panel14.TabOrder := 0;
-          if Form5.Panel15.Tag = I then if Form5.Panel15.Visible then Form5.Panel15.TabOrder := 0;
-          if Form5.Panel16.Tag = I then if Form5.Panel16.Visible then Form5.Panel16.TabOrder := 0;
-          if Form5.Panel17.Tag = I then if Form5.Panel17.Visible then Form5.Panel17.TabOrder := 0;
-          if Form5.Panel18.Tag = I then if Form5.Panel18.Visible then Form5.Panel18.TabOrder := 0;
-          if Form5.Panel19.Tag = I then if Form5.Panel19.Visible then Form5.Panel19.TabOrder := 0;
-          if Form5.Panel20.Tag = I then if Form5.Panel20.Visible then Form5.Panel20.TabOrder := 0;
-          if Form5.Panel21.Tag = I then if Form5.Panel21.Visible then Form5.Panel21.TabOrder := 0;
-          if Form5.Panel22.Tag = I then if Form5.Panel22.Visible then Form5.Panel22.TabOrder := 0;
-          if Form5.Panel23.Tag = I then if Form5.Panel23.Visible then Form5.Panel23.TabOrder := 0;
-          if Form5.Panel24.Tag = I then if Form5.Panel24.Visible then Form5.Panel24.TabOrder := 0;
-        end;
-        // ---------- //
-        // Configura //
-        // -------- //
-        if (not Form1.imgConfiguracoes.Visible) or (Form1.Label207.Tag = 1) then
-        begin
-          Form1.imgConfiguracoes.OnClick          := Form1.Liberarosmdulosparaesteusurio1Click;
-          Form1.Label207.OnClick          := Form1.Liberarosmdulosparaesteusurio1Click;
-          Form1.Label_bola_config.OnClick := Form1.imgConfiguracoesClick;
-          Form1.Label207.Tag              := 1;
-          Form1.imgConfiguracoes.Visible          := True;
-        end else
-        begin
-          Form1.imgConfiguracoes.OnClick          := Form1.imgConfiguracoesClick;
-          Form1.Label207.OnClick          := Form1.imgConfiguracoesClick;
-          Form1.Label_bola_config.OnClick := Form1.Label_Bola_ConfigClick;
-        end;
-
-        Form7.Label208.Caption  := 'Liberar';
-
-        if Pos('Ordem de Serviço',Form22.sTitulo) = 0 then
-        begin
-          imgOrdemServico.Visible := False;
-        end;
-
-        if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99')  then
-        begin
-          if (Form7.ibDataSet13ESTADO.AsString = 'TO') then // or (Form7.ibDataSet13ESTADO.AsString = 'SC') then
-          begin
-            imgOrdemServico.Visible := False; // Sem OS
-          end;
-        end;
-
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1','0'))   > 0  then bNotaVendaLiberada   := True  else bNotaVendaLiberada  := False; // Venda
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_E','0')) > 0  then bNotaCompraLiberada  := True else bNotaCompraLiberada  := False; // compra
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B1_S','0')) > 0  then bNotaServicoLiberada := True else bNotaServicoLiberada := False; // compra
-
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B3','0')) > 0  then bClientesLiberados := True else bClientesLiberados := False; // Clientes
-        if StrToInt('0'+Mais1Ini.ReadString(Usuario,'B9','0')) > 0  then bFornecedoresLiberados := True else bFornecedoresLiberados := False; // Fornecedores
-
-        Form7.Exibir1.Visible := True;
-        //2024-01-10 Form7.Mostrartodososclientesefornecedores1.Visible := True;
-        Form7.N10.Visible := True;
-
-        Label200.Visible   := False;
-        Label201.Visible   := False;
-        Label201C.Visible  := False;
-        Label201S.Visible  := False;
-        Label201_.Visible  := False;
-        Label202.Visible   := False;
-        Label203.Visible   := False;
-        Label204.Visible   := False;
-        Label205.Visible   := False;
-        Label206.Visible   := False;
-        Label207.Visible   := False;
-        Label208.Visible   := False;
-        Label210.Visible   := False;
-        lblModOrcamento.Visible := False;
-
-        if Form5.Panel1.Visible
-        or Form5.Panel2.Visible
-        or Form5.Panel3.Visible
-        or Form5.Panel4.Visible
-        or Form5.Panel5.Visible
-        or Form5.Panel6.Visible
-        or Form5.Panel7.Visible
-        or Form5.Panel8.Visible
-        or Form5.Panel9.Visible
-        or Form5.Panel10.Visible
-        or Form5.Panel11.Visible
-        or Form5.Panel12.Visible
-        or Form5.Panel13.Visible
-        or Form5.Panel14.Visible
-        or Form5.Panel15.Visible
-        or Form5.Panel16.Visible then Form5.Tag := 1 else Form5.Tag := 0;
-
-        if not Form1.bNotaVendaLiberada then
-        begin
-          Form7.Gerarnotafiscalsrie11.Enabled := False;
-          Form7.Gerarnotafiscalsrie21.Enabled := False;
-        end else
-        begin
-          Form7.Gerarnotafiscalsrie11.Enabled := True;
-          Form7.Gerarnotafiscalsrie21.Enabled := True;
-        end;
-        *)
-
-        {Mauricio Parizotto 2024-07-31 Fim}
+       //
       end else
       begin
         if Senha = '#####' then
@@ -8446,13 +8147,6 @@ begin
       VencimentoCertificadoDigital;
 
     MontaTela(True);
-
-    {
-    Form8.Width          := 310;
-    Form8.Top            := Form1.Top + Form1.Height + 1 + (iVista*2);
-    Form8.Left           := Screen.Width - 310 - (iVista);
-    Form8.Height         := 120;
-    }
 
     // Para atender o PAF
     if ParamCount > 0 then
@@ -8625,19 +8319,6 @@ begin
           end;
         end;
 
-        {Sandro Silva 2023-11-20 inicio
-        // cProdANP
-        if (Length(LimpaNumero(Form7.ibDataset4LIVRE1.AsString)) = 9) and (Length(AllTrim(Form7.ibDataset4LIVRE1.AsString)) = 9) then
-        begin
-          try
-            Form7.ibDataset4.Edit;
-            Form7.ibDataset4TAGS_.AsString := Form7.ibDataset4TAGS_.AsString + '<cProdANP>' + Form7.ibDataset4LIVRE1.AsString +  '</cProdANP>' + chr(10);
-            Form7.ibDataSet4LIVRE1.AsString := '';
-            Form7.ibDataset4.Post;
-          except end;
-        end;
-        }
-
         // vUnid
         if (Copy(Form7.ibDataSet4LIVRE3.AsString,1,7) = '<vUnid=') then // Pereti trib ipi por valor unitário engarafados bebidas
         begin
@@ -8688,8 +8369,7 @@ begin
     FreeAndNil(frmConfiguracaoTEFCommerce);
   end;
 
-//  if TSistema.GetInstance.DashboardAbertura then
-//    TimerDashboard.Enabled := True;
+  *)
 end;
 
 procedure TForm1.DBGrid200KeyDown(Sender: TObject; var Key: Word;
@@ -8755,8 +8435,6 @@ begin
                                     'Continuar sem certificado digital?')
                                     ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING) <> IDYES then
     begin
-      //Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
-      //Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       FecharAplicacao(ExtractFileName(Application.ExeName));
     end;
   end;
@@ -8784,52 +8462,12 @@ end;
 
 procedure TForm1.ConfigurarNFEINI1Click(Sender: TObject);
 var
-{Sandro Silva 2024-09-26
-  sSenha  : String;
-  sSenhaX : String;
-  I : Integer;
-  }
   Mais1Ini : tIniFile;
 begin
-  {Mauricio Parizotto 2024-07-26
-  Form22.Show;
-  Mensagem22('');
-  Senhas2.ShowModal;
-  Form22.Close;
-  Senha2:=Senhas2.SenhaPub2;
-  Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
-  sSenhaX := Mais1Ini.ReadString('Administrador','Chave','15706143431572013809150491382314104');
-  sSenha := '';
-  // ----------------------------- //
-  // Fórmula para ler a nova senha //
-  // ----------------------------- //
-  for I := 1 to (Length(sSenhaX) div 5) do
-    sSenha := Chr((StrToInt(
-                  Copy(sSenhaX,(I*5)-4,5)
-                  )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
-  // ----------------------------- //
-  if AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2) then
-  begin
-    Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-    //
-    if Alltrim(Mais1Ini.ReadString('NFE','Certificado',''))                 = '' then
-      Mais1Ini.WriteString('NFE','Certificado','');
-    if Alltrim(Mais1Ini.ReadString('NFE','Ambiente',''))                    = '' then
-      DefineAmbienteNFe(_cAmbienteHomologacao, 'Mais.ConfigurarNFEINI1Click');
-    if Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','XXXXX'))     = 'XXXXX' then
-      Mais1Ini.WriteString('DANFE','Formato do DANFE','Retrato');
-    if Alltrim(Mais1Ini.ReadString('XML','Pasta da contabilidade','XXXXX')) = 'XXXXX' then
-      Mais1Ini.WriteString('XML','Pasta da contabilidade','');
-
-    Mais1ini.Free;
-    ShellExecute( 0, 'Open',Pchar(sAtual+'\nfe.ini'),'', '', SW_SHOW);
-  end else
-    MensagemSistema('Senha do administrador inválida.');
-  }
   if GetSenhaAdmin then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-    //
+
     if Alltrim(Mais1Ini.ReadString('NFE','Certificado',''))                 = '' then
       Mais1Ini.WriteString('NFE','Certificado','');
     if Alltrim(Mais1Ini.ReadString('NFE','Ambiente',''))                    = '' then
@@ -9015,13 +8653,8 @@ begin
         MensagemSistema('Não foi possível inutilizar as Notas Fiscais Eletrônicas: '+cRetorno,msgAtencao);
       end;
 
-      {$IFDEF VER150}
-      DecimalSeparator := ',';
-      DateSeparator    := '/';
-      {$ELSE}
       FormatSettings.DecimalSeparator := ',';
       FormatSettings.DateSeparator    := '/';
-      {$ENDIF}
     finally
       Screen.Cursor := crDefault;
     end;
@@ -9506,7 +9139,6 @@ begin
           AbreArquivos(False);
         end;
       end;
-      //
     end;
   except end;
   //
@@ -9523,12 +9155,10 @@ begin
   if Alltrim(Mais1Ini.ReadString('DANFE','Formato do DANFE','XXXXX')) <> 'Retrato' then
   begin
     Mais1Ini.WriteString('DANFE','Formato do DANFE','Retrato');
-    //ShowMessage('Formato do DANFE definido como: Retrato'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Formato do DANFE definido como: Retrato');
   end else
   begin
     Mais1Ini.WriteString('DANFE','Formato do DANFE','Paisagem');
-    //ShowMessage('Formato do DANFE definido como: Paisagem'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Formato do DANFE definido como: Paisagem');
   end;
 
@@ -9537,68 +9167,13 @@ end;
 
 procedure TForm1.Ambiente1Click(Sender: TObject);
 var
-{Sandro Silva 2024-09-26
-  sSenha  : String;
-  sSenhaX : String;
-  }
   I : Integer;
   Mais1Ini : tIniFile;
 begin
-  {Mauricio Parizotto 2024-07-26
-  Form22.Show;
-  Mensagem22('');
-  Senhas2.ShowModal;
-  Form22.Close;
-  Senha2:=Senhas2.SenhaPub2;
-  Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
-  sSenhaX := Mais1Ini.ReadString('Administrador','Chave','15706143431572013809150491382314104');
-  sSenha := '';
-  // ----------------------------- //
-  // Fórmula para ler a nova senha //
-  // ----------------------------- //
-  for I := 1 to (Length(sSenhaX) div 5) do
-    sSenha := Chr((StrToInt(
-                  Copy(sSenhaX,(I*5)-4,5)
-                  )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
-  // ----------------------------- //
-  if AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2) then
-  begin
-    Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-    //
-    if Alltrim(Mais1Ini.ReadString('NFE','Ambiente','')) = _cAmbienteProducao then
-    begin
-      I := Application.MessageBox(Pchar('Tem certeza que quer mudar para o ambiente de HOMOLOGAÇÃO?'
-                              + chr(10)
-                              +' Se estiver em dúvida clique no botão <Não>'
-                              + Chr(10))
-                              ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
-      if I = IDYES then
-      begin
-        DefineAmbienteNFe(_cAmbienteHomologacao, 'Mais.Ambiente1Click1');
-        MensagemSistema('Definido ambiente: Homologação');
-      end;
-    end else
-    begin
-      I := Application.MessageBox(Pchar('Tem certeza que quer mudar para o ambiente de PRODUÇÃO?'
-                              + chr(10)
-                              +' Se estiver em dúvida clique no botão <Não>'
-                              + Chr(10))
-                              ,'Atenção',mb_YesNo + mb_DefButton2 + MB_ICONWARNING);
-      if I = IDYES then
-      begin
-        DefineAmbienteNFe(_cAmbienteProducao, 'Mais.Ambiente1Click2');
-        MensagemSistema('Definido ambiente: Produção');
-      end;
-    end;
-  end else
-    MensagemSistema('Senha do administrador inválida.',msgAtencao);
-
-  Mais1ini.Free;
-  }
   if GetSenhaAdmin then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-    //
+
     if Alltrim(Mais1Ini.ReadString('NFE','Ambiente','')) = _cAmbienteProducao then
     begin
       I := Application.MessageBox(Pchar('Tem certeza que quer mudar para o ambiente de HOMOLOGAÇÃO?'
@@ -9625,7 +9200,6 @@ begin
       end;
     end;
   end;
-
 end;
 
 procedure TForm1.DefineAmbienteNFe(AcAmbiente, AcRotina: String);
@@ -9689,7 +9263,6 @@ begin
       end;
     end;
   except
-    //ShowMessage('Falha ao configurar o DANFE. Para configurar o DANFE é necessário ter uma NF-e transmitida.'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Falha ao configurar o DANFE. Para configurar o DANFE é necessário ter uma NF-e transmitida.',msgAtencao);
   end;
   Screen.Cursor            := crDefault;
@@ -9835,10 +9408,8 @@ var
   F : TextFile;
   vTotal: array [0..200] of Double;  // Cria uma matriz com 100 elementos
 begin
-  //
   if Key = chr(16) then
   begin
-    //
     if Form1.bHtml1 then
     begin
       AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));
@@ -9848,48 +9419,44 @@ begin
       WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center>');
       WriteLn(F,'<img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
       WriteLn(F,'<br><font size=3 color=#000000><b>'+AllTrim(Form7.ibDataSet13NOME.AsString)+'</b></font><br><br>');
-      //
+
       WriteLn(F,'<table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
       WriteLn(F,' <tr bgcolor=#'+Form1.sHtmlCor+' align=left>');
-      //
+
       for I := 0 to dbGrid1.FieldCount -1 do
       begin
         WriteLn(F,'  <th '+{nowrap}'><font face="Microsoft Sans Serif" size=1>'+dbGrid1.Fields[I].DisplayName+'</font></th>');
       end;
       WriteLn(F,' </tr>');
-      //
     end else
     begin
-      //
       AssignFile(F,pChar(Senhas.UsuarioPub+'.txt'));
       Rewrite(F);
       WriteLn(F,AllTrim(Form7.ibDataSet13NOME.AsString));
       WriteLn(F,'');
-      //
+
       for I := 0 to dbGrid1.FieldCount -1 do
       begin
         Write(F,Copy(dbGrid1.Fields[I].DisplayName+Replicate(' ',dbGrid1.Fields[I].DisplayWidth),1,dbGrid1.Fields[I].DisplayWidth)+' ');
       end;
       WriteLn(F,'');
-      //
+
       for I := 0 to dbGrid1.FieldCount -1 do
       begin
         Write(F,Replicate('-',dbGrid1.Fields[I].DisplayWidth)+' ');
       end;
       WriteLn(F,'');
-      //
     end;
-    //
+
     J := 0;
     for I := 1 to 200 do vTotal[I] := 0;
-    //
+
     ibDataSet1.DisableControls;
     ibDataSet1.First;
     while not Form1.ibDataSet1.Eof do
     begin
-      //
       J := J + 1;
-      //
+
       if Form1.bHtml1 then
       begin
         WriteLn(F,' <tr>');
@@ -9930,16 +9497,15 @@ begin
             end;
           end;
         end;
-        //
+
         WriteLn(F,'');
-        //
       end;
-      //
+
       Form1.ibDataSet1.Next;
-      //
     end;
+
     ibDataSet1.EnableControls;
-    //
+
     if Form1.bHtml1 then
     begin
       for I := 0 to dbGrid1.FieldCount -1 do
@@ -9952,15 +9518,13 @@ begin
           WriteLn(F,'  <td '+{nowrap}'></td>');
         end;
       end;
-      //
+
       WriteLn(F,' </table');
-      //
+
       WriteLn(F,'<center><br><font face="Microsoft Sans Serif" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
       + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
       + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br>');
-      //
-      // WWW
-      //
+
       if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
       begin
         WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -9968,7 +9532,7 @@ begin
       begin
         WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
       end;
-      //
+
       WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>Através do seguinte comando SQL digitado pelo operador: <br>'+Form1.ibDataSet1.SelectSQL.Text+'</center>');
       WriteLn(F,'<font size=1><center>Número de registros: '+IntToStr(J)+'</font></center>');
       if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
@@ -9976,10 +9540,8 @@ begin
       CloseFile(F);                                    // Fecha o arquivo
       Screen.Cursor  := crDefault; // Cursor de Aguardo
       if FileExists(Senhas.UsuarioPub+'.HTM') then AbreArquivoNoFormatoCerto(Senhas.UsuarioPub);
-      //
     end else
     begin
-      //
       for I := 0 to dbGrid1.FieldCount -1 do
       begin
         if TipoCampoFloat(dbGrid1.Fields[I]) then // Sandro Silva 2024-04-29 if dbGrid1.Fields[I].DataType = ftFloat then
@@ -9991,7 +9553,7 @@ begin
         end;
       end;
       WriteLn(F,'');
-      //
+
       for I := 0 to dbGrid1.FieldCount -1 do
       begin
         if TipoCampoFloat(dbGrid1.Fields[I]) then // Sandro Silva 2024-04-29 if dbGrid1.Fields[I].DataType = ftFloat then
@@ -10003,24 +9565,19 @@ begin
         end;
       end;
       WriteLn(F,'');
-      //
-      //
+
       WriteLn(F,'Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
       + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
       + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'');
-      //
-      // WWW
-      //
+
       WriteLn(F,'Relatório gerado pelo sistema Small, www.smallsoft.com.br'); // Ok
       WriteLn(F,'Através do seguinte comando SQL CONNECT digitado pelo operador: '+Form1.ibDataSet1.SelectSQL.Text+' ');
       WriteLn(F,'Número de registros: '+IntToStr(J)+'');
       CloseFile(F);                                    // Fecha o arquivo
-      if FileExists(Senhas.UsuarioPub+'.txt') then ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOW);
-      //
+      if FileExists(Senhas.UsuarioPub+'.txt') then
+        ShellExecute( 0, 'Open',pChar(Senhas.UsuarioPub+'.txt'),'', '', SW_SHOW);
     end;
-    //
   end;
-  //
 end;
 
 procedure TForm1.SQLCommandoexterno1Click(Sender: TObject);
@@ -10130,34 +9687,31 @@ begin
     Form29.Panel1.Visible  := True;
     Aviso2('Atualizando tabela IBPT (Instituto Brasileiro de'+chr(10)+
            'Planejamento Tributário) para o estado de '+Form7.ibDataSet13ESTADO.AsString);
-    //
+
     Screen.Cursor := crHourGlass; // Cursor de Aguardo
-    //
+
     if FileExists(pChar(Form1.sAtual+'\ibpt_'+Form7.ibDataSet13ESTADO.AsString+'.imp')) then
     begin
-      //
       AssignFile(f,pChar(Form1.sAtual+'\ibpt_'+Form7.ibDataSet13ESTADO.AsString+'.imp'));
       Reset(f);
-      //
+
       I := 0;
-      //
+
       Form1.ibQuery1.Close;
       Form1.ibQuery1.SQL.Clear;
       Form1.ibQuery1.SQL.Add('delete from IBPT_');
       Form1.ibQuery1.Open;
-      //
+
       while not eof(f) do
       begin
-         //
          ReadLn(f,sLinha);
-         //
+
          try
            if Copy(sLinha,1,3)<>'cod' then
            begin
-              //
               sLinha := ConverteAcentosIBPT(StrTran(sLinha,Chr(39),' '));
               sLinha := StrTran(sLinha,';',Chr(39)+','+chr(39));
-              //
+
               try
                 Form1.ibQuery1.Close;
                 Form1.ibQuery1.SQL.Clear;
@@ -10165,7 +9719,6 @@ begin
                 Form1.ibQuery1.Open;
               except
                 on E: Exception do
-                  //ShowMEssage('Erro (' + E.Message + ') ao atualizar a tabela do IBPT. '+chr(10)+chr(10)+Form1.ibQuery1.SQL.Text); Mauricio Parizotto 2023-10-25
                   MensagemSistema('Erro (' + E.Message + ') ao atualizar a tabela do IBPT. '+chr(10)+chr(10)+Form1.ibQuery1.SQL.Text,msgErro);
               end;
            end;
@@ -10252,7 +9805,6 @@ begin
                     ' where CF='+QuotedStr(Form7.ibQuery99.FieldByname('CF').AsString)+' and ((SubString(CST from 1 for 1) = ''0'') or (SubString(CST from 1 for 1) = ''3'') or (SubString(CST from 1 for 1) = ''4'')  or (SubString(CST from 1 for 1) = ''5''))');
                     Form7.ibQuery2.Open;
                   except
-                    //ShowMessage(Form7.ibQuery2.SQL.Text); Mauricio Parizotto 2023-10-25
                     MensagemSistema(Form7.ibQuery2.SQL.Text,msgErro);
                   end;
                 end;
@@ -10285,25 +9837,23 @@ var
 begin
   // ESTATISTICAS
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
-  //
+
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
   Rewrite(F);                           // Abre para gravação
   Writeln(F,'<html><head><title>'+AnsiUpperCase(AllTrim(Form7.ibDataSet13NOME.AsString)+' - INADIMPLÊNCIA')+'</title></head>');
   WriteLn(F,'<body bgcolor="#FFFFFF" vlink="#FF0000" leftmargin="0"><center>');
   WriteLn(F,'<img src="logotip.jpg" alt="'+AllTrim(Form7.ibDataSet13NOME.AsString)+'">');
   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=3 color=#c0c0c0><b>'+AllTrim(Form7.ibDataSet13NOME.AsString)+'</b></font>');
-  //
+
   // Estatisticas
-  //
   WriteLn(F,'<br>');              // Linha em branco
   WriteLn(F,'<br>');              // Linha em branco
   WriteLn(F,'<br><font face="Microsoft Sans Serif" size=3 color=#000000><b>Estatísticas</b></font>');
   WriteLn(F,'<br><br>');              // Linha em branco
-  //
+
   WriteLn(F,' <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=3 width=500>');
-  //
+
   // ùltimos três meses
-  //
   WriteLn(F,Estatistica('CLIFOR','Clientes e fornecedores'));
   WriteLn(F,Estatistica('ESTOQUE','Itens no estoque'));
   WriteLn(F,Estatistica('RECEBER','Contas a receber'));
@@ -10319,19 +9869,15 @@ begin
   WriteLn(F,Estatistica('MOVIMENT','Registros no movimento bancário'));
   WriteLn(F,Estatistica('GRADE','Ítens na grade de produtos'));
 
-  //
   WriteLn(F,'</table>');              // Linha em branco
   WriteLn(F,'<br>');              // Linha em branco
-  //
+
   WriteLn(F,'<center><br><font face="verdana" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
   + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
   + Copy(DateTimeToStr(Date),7,4) +', '+ LowerCase(DiaDaSemana(Date)) + ' às ' + TimeToStr(Time)+'</font></center>');
-  //
+
   WriteLn(F,'<br>');              // Linha em branco
 
-  //
-  // WWW
-  //
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
     WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Small, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -10339,14 +9885,14 @@ begin
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
   end;
-  //
+
   if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
   WriteLn(F,'</html>');
-  //
+
   CloseFile(F);                                    // Fecha o arquivo
-  //
+
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
+
   AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
 end;
 
@@ -10394,8 +9940,7 @@ begin
         sTLista := TStringList.Create();
         sTLista.Clear;
         Form1.DownloadSmallMobile1Click(DownloadSmallMobile1);
-        //
-//        if (not Form10.visible) and (not Form12.visible) and (not Form24.visible) and (not Form30.visible) then
+
         begin
           DownloadMobile(LimpaNumero(Form7.ibDataSet13.fieldByName('CGC').AsString), '*.mob', sTLista);
           //
@@ -10959,16 +10504,10 @@ procedure TForm1.imgCaixaMouseMove(Sender: TObject; Shift: TShiftState; X,
 var
   sImgFundo : string;
 begin
-  {Mauricio Parizotto 2024-07-30 Inicio
-  if FileExists(Form1.sAtual+'\inicial\fundo\_small_4.bmp') then
-    Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ;
-  }
   sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'4');
 
   if FileExists(sImgFundo) then
     Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
-
-  {Mauricio Parizotto 2024-07-30 Fim}
 end;
 
 
@@ -11091,27 +10630,11 @@ begin
     Label202.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_8.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_8.bmp') ;
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'8');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-
-      {Mauricio Parizotto 2024-08-02
-      Titulo('CONTROLE O '+chr(10)+
-             'ESTOQUE'
-             ,
-             'O controle de estoque bem'+chr(10)+
-             'organizado evita prejuízos'+chr(10)+
-             'e garante uma maior'+chr(10)+
-             'margem de lucro'
-            );
-      }
       Titulo('Controle seu Estoque',
              'O controle correto do estoque evita perdas'+chr(10)+
              'e maximiza os lucros da sua empresa.'
@@ -11132,29 +10655,11 @@ begin
     Label201_.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_9.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_9.bmp') ;
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'9');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-
-      {Mauricio Parizotto 2024-08-02
-      Titulo(
-            'UTILIZE A ORDEM '+chr(10)+
-            'DE SERVIÇOS'
-            ,
-            'A Ordem de Serviços facilita'+chr(10)+
-            'o atendimento ao cliente'+chr(10)+
-            'e organiza e mantém todo'+chr(10)+
-            'o trabalho documentado'
-            , 'SERVIÇO'
-            );
-      }
       Titulo('Gerencie as Ordens de Serviços',
             'A Ordem de Serviço facilita e controla o atendimento'+chr(10)+
             'ao cliente garantindo um serviço eficiente.'
@@ -11176,27 +10681,11 @@ begin
     Label203.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_1.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_1.bmp') ;
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'1');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-
-      {Mauricio Parizotto 2024-08-02
-      Titulo('MANTENHA O CADASTRO'+chr(10)+'ATUALIZADO',
-             'O cadastro com as informações'+chr(10)+
-             'corretamente registradas'+chr(10)+
-             'conserva seus canais de'+chr(10)+
-             'comunicação com clientes,'+chr(10)+
-             'fornecedores, funcionários,'+chr(10)+
-             'entre outros'
-             );
-      }
       Titulo('Mantenha o Cadastro atualizado',
              'O cadastro atualizado assegura uma'+chr(10)+
              'comunicação eficiente e personalizada'+chr(10)+
@@ -11218,28 +10707,11 @@ begin
     Label204.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_2.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_2.bmp') ;
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'2');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-
-      {Mauricio Parizotto 2024-08-02
-      Titulo(
-             'MONITORE AS CONTAS'+chr(10)+
-             'A RECEBER'
-             ,
-             'As contas a receber bem controladas'+chr(10)+
-             'diminuem o impacto que a inadimplência'+chr(10)+
-             'pode ter em seu negócio'
-             , 'RECEBER'
-             );
-      }
       Titulo('Monitore as Contas a Receber',
              'O controle eficiente das contas a receber'+chr(10)+
              'reduz a inadimplência e garante'+chr(10)+
@@ -11262,36 +10734,16 @@ begin
     Label205.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_4.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_4.bmp') ;
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'4');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-
-      {Mauricio Parizotto 2024-08-02
-      Titulo(
-            'CONTROLE O '+chr(10)+
-            'CAIXA'
-            ,
-            'O fechamento exato do caixa permite'+chr(10)+
-            'total controle financeiro'+chr(10)+
-            'auxiliando na tomadas de'+chr(10)+
-            'decisões através da'+chr(10)+
-            'análise das contas'
-            , 'CAIXA'
-            );
-      }
       Titulo('Controle o seu Caixa',
             'O fechamento do caixa garante o controle'+chr(10)+
             'financeiro e suporte na tomada de decisões.'
             , 'CAIXA'
             );
-
     end;
   end;
 end;
@@ -11308,29 +10760,11 @@ begin
     Label206.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_5.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_5.bmp') ;
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'5');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-      {Mauricio Parizotto 2024-08-02
-      Titulo(
-            'FIQUE DE OLHO NOS '+chr(10)+
-            'BANCOS'
-            ,
-            'O controle rigoroso das contas'+chr(10)+
-            'bancárias previne o pagamento'+chr(10)+
-            'de juros e permite um'+chr(10)+
-            'planejamento dos'+chr(10)+
-            'investimentos'
-            , 'BANCOS'
-            );
-      }
       Titulo('Monitore suas Contas Bancárias',
             'O controle das contas bancárias permite'+chr(10)+
             'melhor planejamento dos seus investimentos.'
@@ -11352,28 +10786,11 @@ begin
     Label207.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_6.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_6.bmp') ;
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'6');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-
-      {Mauricio Parizotto 2024-08-02
-      Titulo(
-            'CONFIGURE'+chr(10)+
-            'O SISTEMA'
-            ,
-            'A configuração correta, ajusta'+chr(10)+
-            'o sistema de acordo com as'+chr(10)+
-            'particularidades da'+chr(10)+
-            'sua empresa'
-            );
-      }
       Titulo('Configure o seu sistema',
             'A configuração correta ajusta o sistema'+chr(10)+
             'de acordo com as particularidades da'+chr(10)+
@@ -11395,29 +10812,11 @@ begin
     Label208.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_7.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_7.bmp') ;
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'7');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-
-      {Mauricio Parizotto 2024-08-02
-      Titulo(
-            'FAÇA BACKUP'+chr(10)+
-            'TODOS OS'+chr(10)+
-            'DIAS'
-            ,
-            'O Backup é a única forma de'+chr(10)+
-            'manter seus dados'+chr(10)+
-            'seguros'+chr(10)+chr(10)+
-            Form1.imgBackup.Hint
-            );
-      }
       Titulo('Faça o Backup todos os dias',
             'O Backup garante a segurança e a'+chr(10)+
             'integridade dos dados da sua empresa.'
@@ -11438,30 +10837,11 @@ begin
     Label210.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_3.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_3.bmp') ;
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'3');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-
-      {Mauricio Parizotto 2024-08-02
-      Titulo(
-            'ORGANIZE AS CONTAS'+chr(10)+
-            'A PAGAR'
-            ,
-            'As contas a pagar bem organizadas geram'+chr(10)+
-            'uma previsão dos compromissos'+chr(10)+
-            'financeiros facilitando o'+chr(10)+
-            'controle do fluxo'+chr(10)+
-            'de caixa'
-            , 'PAGAR'
-            );
-      }
       Titulo('Organize as Contas a Pagar',
             'As contas a pagar geram uma previsão dos'+chr(10)+
             'seus compromissos financeiros, garantindo'+chr(10)+
@@ -11493,18 +10873,6 @@ begin
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
-
-      {Mauricio Parizotto 2024-08-02
-      Titulo(
-            'UTILIZE O ORÇAMENTO'
-            ,
-            'O orçamento facilita'+chr(10)+
-            'o atendimento ao cliente'+chr(10)+
-            'e organiza e mantém todo'+chr(10)+
-            'o trabalho documentado'
-            , 'SERVIÇO'
-            );
-      }
 
       Titulo('Crie Orçamentos detalhados',
             'O Orçamento facilita a negociação'+chr(10)+
@@ -11596,11 +10964,9 @@ begin
     Mais1Ini.WriteString('NFE','FUSO',Form7.sFuso);
     Mais1Ini.Free;
 
-    //ShowMessage('Novo fuso horário gravado: '+Form7.sFuso); Mauricio Parizotto 2023-10-25
     MensagemSistema('Novo fuso horário gravado: '+Form7.sFuso);
   end else
   begin
-    //ShowMessage('Fuso horário inválido: '+chr(10)+chr(10)+chr(10)+sMensagem); Mauricio Parizotto 2023-10-25
     MensagemSistema('Novo fuso horário gravado: '+Form7.sFuso,msgAtencao);
   end;
 end;
@@ -11617,29 +10983,11 @@ begin
     Label200.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_0.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_0.bmp') ;
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'0');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-
-      {Mauricio Parizotto 2024-08-02
-      Titulo(
-            'ACOMPANHE OS'+chr(10)+
-            'INDICADORES'
-            ,
-            'Configure um painel de indicadores'+chr(10)+
-            'personalizado por usuário de'+chr(10)+
-            'acordo com as necessidades'+chr(10)+
-            'gerenciais da sua empresa'+chr(10)
-            , 'INDICADORES'
-            );
-      }
       Titulo('Acompanhe os seus Indicadores',
             'O painel de indicadores mostra o desempenho'+chr(10)+
             'da sua empresa com dados atualizados.'
@@ -11654,7 +11002,7 @@ var
   Mais1Ini : TiniFile;
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-  //
+
   if AutoSmallMobile1.Checked then
   begin
     Mais1Ini.WriteString('GERAL','MOBILE ATIVO','Não');
@@ -11764,7 +11112,6 @@ begin
     Mais1Ini.WriteString('XML','CNPJ da Contabilidade',Form7.sCNPJContabilidade);
   end else
   begin
-    //ShowMessage('CNPJ/CPF inválido'); Mauricio Parizotto 2023-10-25
     MensagemSistema('CNPJ/CPF inválido',msgAtencao);
   end;
 
@@ -11940,14 +11287,6 @@ begin
     Exit;
   end;
 
-  {Mauricio Parizotto 2024-07-17
-  if Form7.Visible and Form10.Visible then
-  begin
-    Form10.BringToFront;
-    Exit;
-  end;
-  }
-
   if Form12.Visible then
   begin
     Form12.BringToFront;
@@ -11984,10 +11323,6 @@ end;
 
 function TForm1.RetornarWhereNotasManifestar: String;
 begin
-  {Sandro Silva 2023-06-15 inicio
-  Result := '((Coalesce(MDESTINXML,''~'') like ''%<tpEvento>210210%'') and (MERCADORIA=0))' + sLineBreak +
-            'OR ((Coalesce(MDESTINXML,'''')='''') AND (COALESCE(REPLACE(NFEID, ''0'', ''''),'''')<>''''))';
-  }
   Result :=
     'EMISSAO >= (current_date - ' + PRAZO_MANIFESTAR + ') and ' + // emitida dentro de limite de tempo para fazer o manifesto
     'substring(NFEID from 21 for 2) = ''55'' and ' +  // listar apenas 55=NF-e
@@ -12013,18 +11348,15 @@ begin
 
     Form7.ibDataSet24.DisableControls;
 
-    //LogRetaguarda('Form7.ibDataSet24.DisableControls 11712'); // Sandro Silva 2023-11-27
-
     try
       Form7.ibDataSet24.Close;
       Form7.ibDataSet24.SelectSQL.Clear;
-      // Sandro Silva 2023-06-15 Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where ' + RetornarWhereNotasManifestar);
       Form7.ibDataSet24.SelectSQL.Add('select * from COMPRAS where ' + RetornarWhereNotasManifestar + ' order by EMISSAO, FORNECEDOR');
       Form7.ibDataSet24.Open;
-    except end;
+    except
+    end;
 
     Form7.ibDataSet24.EnableControls;
-    //LogRetaguarda('Form7.ibDataSet24.EnableControls; 11723'); // Sandro Silva 2023-11-27
   end;
 
   Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML nos últimos ' + PRAZO_MANIFESTAR + ' dias.'); // Sandro Silva 2023-06-20 Aviso('Temos '+InttoStr(Form1.iAvisosNFECompra)+' NF-e´s de entrada para manifestar ciência'+chr(10)+'e importar o XML.');
@@ -12267,36 +11599,6 @@ var
 begin
   if not Modoinventrio1.Checked then
   begin
-    {Mauricio Parizotto 2024-07-06
-    try
-      Form22.Show;
-      Mensagem22('');
-      Senhas2.ShowModal;
-      Form22.Close;
-
-      Senha2:=Senhas2.SenhaPub2;
-      Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
-      sSenhaX := Mais1Ini.ReadString('Administrador','Chave','15706143431572013809150491382314104');
-      sSenha := '';
-
-      // Fórmula para ler a nova senha //
-      for I := 1 to (Length(sSenhaX) div 5) do
-        sSenha := Chr((StrToInt(
-                      Copy(sSenhaX,(I*5)-4,5)
-                      )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
-
-      if AnsiUpperCase(sSenha) = AnsiUpperCase(Senha2) then
-      begin
-        Modoinventrio1.Checked := True;
-        MensagemSistema('Liberado a alteração na quantidade dos itens do estoque.');
-      end else
-      begin
-        MensagemSistema('Senha inválida.',msgAtencao);
-      end;
-    finally
-      FreeAndNil(Mais1Ini);
-    end;
-    }
     if GetSenhaAdmin then
     begin
       Modoinventrio1.Checked := True;
@@ -12406,26 +11708,11 @@ begin
     Label201C.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_11.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_11.bmp') ;
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'11');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-
-      {Mauricio Parizotto
-      Titulo(
-            'CONTROLE AS NOTAS'+Chr(10)+'DE COMPRAS',
-            'Controle as entradas de '+chr(10)+
-            'mercadoria da sua'+chr(10)+
-            'empresa de forma'+chr(10)+
-            'automática'
-            );
-      }
       Titulo('Controle as Notas de Compra',
             'O registro das notas de compra'+chr(10)+
             'garante o gerenciamento das'+chr(10)+
@@ -12447,27 +11734,11 @@ begin
     Label201S.Font.Style := [fsBold];
     if AllTrim(Form7.sModulo) = '' then
     begin
-      {Mauricio Parizotto 2024-07-30 Inicio
-      if FileExists(Form1.sAtual+'\inicial\fundo\_small_12.bmp') then
-        Form1.Image4.Picture.LoadFromFile(Form1.sAtual+'\inicial\fundo\_small_12.bmp');
-      }
       sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'12');
 
       if FileExists(sImgFundo) then
         Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
 
-      {Mauricio Parizotto 2024-07-30 Fim}
-
-      {Mauricio Parizotto 2024-08-02
-      Titulo(
-            'EMITA A NFS-e DE'+chr(10)+'SERVIÇOS',
-            'A Nota Fiscal Eletrônica de Serviços além'+chr(10)+
-            'de atender a legislação controla os'+chr(10)+
-            'serviços prestados pela sua'+chr(10)+
-            'empresa'
-            , 'SERVIÇO'
-            );
-      }
       Titulo('Emita a NFS-e de Serviços',
             'A Nota Fiscal Eletrônica de Serviços formaliza'+chr(10)+
             'os serviços prestados pela sua empresa.'
@@ -12517,7 +11788,6 @@ begin
   except
     on E: Exception do
     begin
-      //Application.MessageBox(pChar(E.Message),'Atenção',mb_Ok + MB_ICONWARNING); Mauricio Parizotto 2023-10-24
       MensagemSistema(E.Message,msgErro);
     end;
   end;
@@ -12529,7 +11799,6 @@ var
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   Mais1Ini.WriteString('NFE','Preenchimento','Simples');
-  //ShowMessage('Layoute de preenchimento definido como simples. Este programa vai ser fechado.'); Mauricio Parizotto 2023-10-25
   MensagemSistema('Layoute de preenchimento definido como simples. Este programa vai ser fechado.');
   Mais1ini.Free;
 
@@ -12546,7 +11815,6 @@ var
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
   Mais1Ini.WriteString('NFE','Preenchimento','Comleto');
-  //ShowMessage('Layoute de preenchimento definido como completo. Este programa vai ser fechado.');Mauricio Parizotto 2023-10-25
   MensagemSistema('Layoute de preenchimento definido como completo. Este programa vai ser fechado.');
   Mais1ini.Free;
 
@@ -12598,7 +11866,7 @@ begin
       begin
         Sleep(1000);
       end;
-      //
+
       ShellExecute( 0, 'Open',pChar('NFSE.EXE'),'', '', SW_SHOW);
       while processExists('NFSE.EXE') do
       begin
@@ -12625,13 +11893,13 @@ begin
   if FileExists(pChar(Form1.sAtual+'\NFSE\CidadesHomologadas.XML')) then
   begin
     Mais1ini := TIniFile.Create(Form1.sAtual+'\nfseConfig.ini');
-    //
+
     try
       _file := TStringList.Create;
       _file.LoadFromFile(pChar(Form1.sAtual+'\NFSE\CidadesHomologadas.XML'));
-      //
+
       sPadraoCidade        := RetornaValorDaTagNoCampo(UpperCase(StrTran(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString),' ',''))+UpperCase(Form7.ibDAtaset13ESTADO.AsString),_File.Text);
-      //
+
       if pos('<Multiservicos>False</Multiservicos>',sPadraoCidade) <> 0 then
       begin
         Mais1Ini.WriteString('Informacoes obtidas na prefeitura','MultiplosServicos','NAO');
@@ -12639,7 +11907,7 @@ begin
       begin
         Mais1Ini.WriteString('Informacoes obtidas na prefeitura','MultiplosServicos','SIM');
       end;
-      //
+
       Mais1Ini.WriteString('Informacoes obtidas na prefeitura','Padrao',RetornaValorDaTagNoCampo('Padrao',sPadraoCidade));
     except
       Mais1Ini.WriteString('Informacoes obtidas na prefeitura','MultiplosServicos','NAO');
@@ -12754,7 +12022,6 @@ begin
   IBQMUNICIPIO := TIBQuery.Create(nil);
   IBQMUNICIPIO.Transaction := Form7.ibDataSet13.Transaction;
   try
-    //
     IBQMUNICIPIO.Close;
     IBQMUNICIPIO.SQL.Text :=
       'select M.NOME ' +
@@ -12766,7 +12033,6 @@ begin
     IBQMUNICIPIO.Open;
     if IBQMUNICIPIO.FieldByName('NOME').AsString = '' then
       Result := False;
-    //
   except
   end;
   FreeAndNil(IBQMUNICIPIO);
@@ -12865,7 +12131,6 @@ begin
   if not FileExists(pChar(sDiretorio + '\NFSE.EXE')) then
   begin
     Result := False;
-    //ShowMessage('Módulo de transmissão de NFS-e não instalado'); Mauricio Parizotto 2023-10-25
     MensagemSistema('Módulo de transmissão de NFS-e não instalado',msgAtencao);
   end;
 end;
@@ -12931,32 +12196,6 @@ begin
       begin
         sTermoUso := '&termo_uso=' +  FormatDateTime('yyyy-MM-dd hh:mm:ss',now);
       end;
-
-      {Mauricio Parizotto 2024-02-23 Inicio
-      Form1.WebBrowser1.Navigate(pChar('http://www.smallsoft.com.br/legal.php?'+
-                                    'serial='    + AllTrim(Copy(Form22.sSerie+Replicate(' ',50),18,20))+
-                                    '&cnpj='      + LimpaNumero(Form7.ibDataSet13.FieldByname('CGC').AsString)+
-                                    '&telefone='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('TELEFO').AsString))+
-                                    '&nome='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('NOME').AsString))+
-                                    '&contato='   + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CONTATO').AsString))+
-                                    '&endereco='  + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('ENDERECO').AsString))+
-                                    '&municipio=' + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('MUNICIPIO').AsString))+
-                                    '&bairro='    + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('COMPLE').AsString))+
-                                    '&cep='       + AllTrim(Form7.ibDataSet13.FieldByname('CEP').AsString)+
-                                    '&estado='    + AllTrim(Uppercase(Form7.ibDataSet13.FieldByname('ESTADO').AsString))+
-                                    '&email='     + AllTrim(Form7.ibDataSet13.FieldByname('EMAIL').AsString)+
-                                    '&nfce='      + sNFCE +
-                                    '&crt='       + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CRT').AsString)) +
-                                    '&cnae='      + ConverteAcentosIBPT(AllTrim(Form7.ibDataSet13.FieldByname('CNAE').AsString)) +
-                                    '&conve='     + sConve  +
-                                    '&origem='    + sOrigem +
-                                    '&Check='     + Form1.sPublicCheck +
-                                    '&build='     + AllTrim(Copy(Form22.sBuild+Replicate(' ',10),16,20)))+
-                                    sTermoUso
-                                    //+ '&retorno=json' // opção para quando tiver mudado o componente e usar recurso de API propriamente dito. Retornará somente o JSON
-                                    );
-
-      }
 
       //Mauricio Parizotto 2024-02-29
       if TSistema.GetInstance.CertificadoTipo <> '' then
@@ -13346,13 +12585,7 @@ procedure TForm1.Perfisdetribitao1Click(Sender: TObject);
 begin
   Form7.sModulo := 'PERFILTRIBUTACAO';
   Form7.sTitulo := 'Perfil de tributação';
-
-  {$IFDEF VER150}
-  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
-  {$ELSE}
   Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
-  {$ENDIF}
-
   Form7.Show;
 end;
 
@@ -13361,13 +12594,7 @@ begin
   //Form7.Close; Mauricio Parizotto 2023-06-27 causa erro invalid transaction handle
   Form7.sModulo := 'ICM';
   Form7.sTitulo := 'Operações de venda e tabela de ICMS dos estados';
-
-  {$IFDEF VER150}
-  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
-  {$ELSE}
   Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
-  {$ENDIF}
-
   Form7.Show;
 end;
 
@@ -13375,13 +12602,7 @@ procedure TForm1.ConversodeCFOP1Click(Sender: TObject);
 begin
   Form7.sModulo := 'CONVERSAOCFOP';
   Form7.sTitulo := 'Conversão de CFOP';
-  
-  {$IFDEF VER150}
-  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
-  {$ELSE}
   Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
-  {$ENDIF}
-  
   Form7.Show;
 end;
 
@@ -13389,13 +12610,7 @@ procedure TForm1.Parmetrosdetributao1Click(Sender: TObject);
 begin
   Form7.sModulo := 'PARAMETROTRIBUTACAO';
   Form7.sTitulo := 'Parâmetros de tributação';
-
-  {$IFDEF VER150}
-  Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs];
-  {$ELSE}
   Form7.DBGrid1.Options := [dgEditing,dgTitles,dgColLines,dgRowLines,dgTabs,dgTitleClick];
-  {$ENDIF}
-
   Form7.Show;
 end;
 
@@ -13916,7 +13131,6 @@ begin
   finally
     Screen.Cursor := crDefault;
   end;
-
 end;
 
 procedure TForm1.FechaDashboard;
@@ -13924,6 +13138,557 @@ begin
   FecharAplicacao('Dashboard.exe');
   pnlContainer.Visible   := False;
 end;
+
+
+procedure TForm1.CarregaInformacoes(PrimeiraAbertura:Boolean);
+var
+  sTag, sValor : String;
+  I, J, iSenha : Integer;
+  Mais1Ini: TIniFile;
+  sSenha, sSenhaX: String;
+  Retangulo : tRect;
+  wndHandle : THandle;
+  wndClass  : array[0..50] of char;
+  InfTermo : Boolean;
+  sImgFundo : string;
+begin
+  //Termos de Uso - Deve ficar no inicio antes de criar o arquivo smallcom.inf
+  InfTermo := GetTermoUso;
+
+  try
+    Mais1ini        := TIniFile.Create('FRENTE.INI');
+    sModeloPAF      := Mais1Ini.ReadString('Frente de caixa','Modelo do ECF','02');
+    sNomePAF        := Mais1Ini.ReadString('Frente de caixa','Nome do ECF','02');
+    Mais1ini.Free;
+
+    if (not FileExists(Form1.sAtual+'\graficos.exe')) or (not FileExists(Form1.sAtual+'\retaguarda.chm') ) then
+    begin
+      MensagemSistema('Não foi possível iniciar o sistema'+chr(10)+
+                      chr(10)+
+                      chr(10)+'Verifique:'+
+                      chr(10)+
+                      chr(10)+'1 - Se o servidor está ligado.'+
+                      chr(10)+'2 - Se a rede está acessível.'+
+                      chr(10)+'3 - Se o sistema foi instalado na pasta:'+
+                      chr(10)+
+                      chr(10)+'       '+sAtual+
+                      chr(10)
+                      ,msgAtencao);
+
+      if (not FileExists(Form1.sAtual+'\graficos.exe')) then
+        MensagemSistema('O arquivo GRAFICOS.EXE não foi encontrado na pasta.',msgAtencao);
+      if (not FileExists(Form1.sAtual+'\retaguarda.chm')) then
+        MensagemSistema('O arquivo RETAGUARDA.CHM não foi encontrado na pasta.',msgAtencao);
+
+      Form1.Instalarpackcomasltimasalteraes1Click(Instalarpackcomasltimasalteraes1);
+
+      Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+      Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+      Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
+    end;
+
+    try
+      if StrToInt(Copy(WinVersion,1,3))>=6 then iVista := 5 else iVista := 0;
+      StrPCopy(@wndClass[0], 'Shell_TrayWnd');
+      wndHandle:=FindWindow(@wndClass[0],nil);
+      GetWindowRect(wndHandle,Retangulo);
+    except
+    end;
+
+    // cópia Automatica
+    try
+      Mais1ini                     := TIniFile.Create('FRENTE.INI');
+      Form1.sModeloDocumentoFiscal := Mais1Ini.ReadString('Frente de caixa'  , 'Modelo do ECF'           ,'01');
+      Mais1ini.Free;
+
+      Mais1ini           := TIniFile.Create(sAtual+'\smallcom.inf');
+      if Mais1Ini.ReadString('Outros','CFOP Que Nao Soma Mercadoria','XXXX') = 'XXXX' then Mais1Ini.WriteString('Outros','CFOP Que Nao Soma Mercadoria','(CFOP='+QuotedStr('5124')+' or CFOP='+QuotedStr('6124')+' or CFOP='+QuotedStr('6125')+' or CFOP='+QuotedStr('5125')+')');
+      CFOP5124           := Mais1Ini.ReadString('Outros','CFOP Que Nao Soma Mercadoria','');
+
+      //    CFOP5124           := '';
+      Form1.fAliqICMdoCliente := Mais1Ini.ReadFloat('Outros','ICMSSTInterno',0);
+
+      CopiaSair          := Mais1Ini.ReadString('Cópia','Sair','9');
+      ConfAceitaCGCDuplo := Mais1Ini.ReadString('Outros','Aceita CGC','Não');
+      ConfCFOP           := Mais1Ini.ReadString('Outros','CFOP','5102');
+
+      ConfItens      := 16;
+      ConfSvc        := 16;
+
+      ConfDupl1      := Mais1Ini.ReadString('Nota Fiscal','Intervalo1','7');
+      ConfDupl2      := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','14');
+      ConfDupl3      := Mais1Ini.ReadString('Nota Fiscal','Intervalo2','21');
+      ConfEspecie    := Mais1Ini.ReadString('Nota Fiscal','Especie','Caixas');
+      ConfMarca      := Mais1Ini.ReadString('Nota Fiscal','Marca','Varias');
+      SSerieEspecial := Mais1Ini.ReadString('Nota Fiscal','Serie','XXX');
+      ConfCusto      := Mais1Ini.ReadString('Permitir','Vendas abaixo do custo','Sim');
+      ConfDuplo      := Mais1Ini.ReadString('Permitir','Duplos','Não');
+      ConfNegat      := Mais1Ini.ReadString('Permitir','Estoque negativo','Sim');
+
+      ConfFoto    := Mais1Ini.ReadString('Mobile','Fotos','Sim');
+
+      ConfLimite  := StrTofloat(StrTran(StrTran(StrTran(StrTran(Mais1Ini.ReadString('Outros','Teto limite para tributação de IR sobre serviços','R$ 1.000,00'),'R$ ',''),'.',''),'.',''),'.',''));
+      ConfIR      := StrTofloat(StrTran(StrTran(StrTran(StrTran(Mais1Ini.ReadString('Outros','Aliquota de IR','1,50 %'),' %',''),'.',''),'.',''),'.',''));
+
+      if ConfItens < 3 then Form1.ConfItens := 3;
+      if ConfLimite < 0 then ConfLimite := 10.000;
+      fTaxa := StrToFloat(LimpaNumeroDeixandoAVirgula(Mais1Ini.ReadString('Outros','Taxa de juros','0')));
+
+      // Casas Decimais
+      ConfPreco := Mais1Ini.ReadString('Outros','Casas decimais no preço','2');
+      if ConfPreco = '0' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0';
+      if ConfPreco = '1' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.0';
+      if ConfPreco = '2' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.00';
+      if ConfPreco = '3' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.000';
+      if ConfPreco = '4' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.0000';
+      if ConfPreco = '5' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.00000';
+      if ConfPreco = '6' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.000000';
+      if ConfPreco = '7' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.0000000';
+      if ConfPreco = '8' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.00000000';
+      if ConfPreco = '9' then Form7.ibDataSet4PRECO.DisplayFormat := '#,##0.000000000';
+
+      ConfCasas      := Mais1Ini.ReadString('Outros','Casas decimais na quantidade','2');
+      ConfCasasServ  := Mais1Ini.ReadString('Outros','Casas decimais na quantidade de serviços','0');
+
+      if ConfCasas = '0' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0';
+      if ConfCasas = '1' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.0';
+      if ConfCasas = '2' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.00';
+      if ConfCasas = '3' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.000';
+      if ConfCasas = '4' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.0000';
+      if ConfCasas = '5' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.00000';
+      if ConfCasas = '6' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.000000';
+      if ConfCasas = '7' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.0000000';
+      if ConfCasas = '8' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.00000000';
+      if ConfCasas = '9' then Form7.ibDataSet4QTD_ATUAL.DisplayFormat := '#,##0.000000000';
+
+      Form7.ibDataSet4QTD_ATUAL.EditFormat      := copy(Form7.ibDataSet4QTD_ATUAL.DisplayFormat,3,10);
+      Form7.ibDataSet4PRECO.EditFormat          := copy(Form7.ibDataSet4PRECO.DisplayFormat,3,10);
+      Form7.ibDataSet16QUANTIDADE.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
+      Form7.ibDataSet16QUANTIDADE.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
+      Form7.ibDataSet16UNITARIO.EditFormat      := Form7.ibDataSet4PRECO.EditFormat;
+      Form7.ibDataSet16UNITARIO.DisplayFormat   := Form7.ibDataSet4PRECO.DisplayFormat;
+      Form7.ibDataSet16TOTAL.EditFormat         := Form7.ibDataSet4PRECO.EditFormat;
+      Form7.ibDataSet16TOTAL.DisplayFormat      := Form7.ibDataSet4PRECO.DisplayFormat;
+
+      Form7.ibDataSet4CUSTOCOMPR.DisplayFormat  := Form7.ibDataSet4PRECO.DisplayFormat;
+      Form7.ibDataSet4CUSTOCOMPR.EditFormat     := Form7.ibDataSet4PRECO.EditFormat;
+
+      Form7.ibDataSet4CUSTOMEDIO.DisplayFormat  := Form7.ibDataSet4PRECO.DisplayFormat;
+      Form7.ibDataSet4CUSTOMEDIO.EditFormat     := Form7.ibDataSet4PRECO.EditFormat;
+
+      // Compra
+      Form7.ibDataSet23QUANTIDADE.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
+      Form7.ibDataSet23QUANTIDADE.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
+      Form7.ibDataSet23UNITARIO.EditFormat      := Form7.ibDataSet4PRECO.EditFormat;
+      Form7.ibDataSet23UNITARIO.DisplayFormat   := Form7.ibDataSet4PRECO.DisplayFormat;
+      Form7.ibDataSet23TOTAL.EditFormat         := Form7.ibDataSet4PRECO.EditFormat;
+      Form7.ibDataSet23TOTAL.DisplayFormat      := Form7.ibDataSet4PRECO.DisplayFormat;
+
+      Form7.ibDataSet23UNITARIO_O.EditFormat      := Form7.ibDataSet4PRECO.EditFormat;
+      Form7.ibDataSet23UNITARIO_O.DisplayFormat   := Form7.ibDataSet4PRECO.DisplayFormat;
+
+      Form7.ibDataSet23QTD_ORIGINAL.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
+      Form7.ibDataSet23QTD_ORIGINAL.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
+
+      Form7.ibDataSet28QUANTIDADE.EditFormat    := Form7.ibDataSet4QTD_ATUAL.EditFormat;
+      Form7.ibDataSet28QUANTIDADE.DisplayFormat := Form7.ibDataSet4QTD_ATUAL.DisplayFormat;
+
+      // Servicos OS
+      Form7.ibDataSet35UNITARIO.EditFormat := Form7.ibDataSet4PRECO.EditFormat;
+      Form7.ibDataSet35TOTAL.DisplayFormat := Form7.ibDataSet4PRECO.EditFormat;
+    except
+      MensagemSistema('Para solucionar o problema siga os seguintes passos:'+chr(10)
+                      +chr(10)+'1 - Desative controle de conta do usuario (Windows Vista)'
+                      +chr(10)+'2 - Execute este programa como administrador. Altere o atalho na aba compatibilidade (Windows 8)'
+                      +chr(10)+'3 - Arquivo "smallcom.inf" pode estar danificado (O arquivo deve ser excluido)'
+                      +chr(10)+'4 - Reinstale o programa'
+                      ,msgAtencao);
+
+      Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+      Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+      Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
+    end;
+
+    FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
+
+    Screen.Cursor := crHourGlass; // Cursor de Aguardo
+
+    if Senha = '' then
+    begin
+      iSenha := 0;
+
+      while iSenha < 6 do
+      begin
+        Mensagem22('');
+        Application.ProcessMessages;
+
+        Senhas.Position := poScreenCenter;
+        Senhas.ShowModal;
+
+        Form22.pnlCarregamento.Left    := (Form22.Width div 2) - (Form22.pnlCarregamento.Width div 2) ;
+        Form22.pnlCarregamento.Top     := (Form22.Height div 2) - (Form22.pnlCarregamento.Height div 2) ;
+        Form22.pnlCarregamento.Visible := True;
+        Application.ProcessMessages;
+        Update;
+
+        if not Form2.bFlag then
+          Form1.Ajustararquivos1Click(Form1);
+
+        Audita('ACESSOU','SMALL', Senhas.UsuarioPub,
+               'ACESSOU O SISTEMA - BUILD: ' + TRetornarBuildEXE.New
+                                                                .Retornar(True),
+               0,0); // Ato, Modulo, Usuário, Histórico, Valor
+
+        Senha   := Senhas.SenhaPub;
+        Usuario := Senhas.UsuarioPub;
+
+        Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
+        Mais1Ini.UpdateFile;
+        sSenhaX := Mais1Ini.ReadString(Usuario,'Chave','15706143431572013809150491382314104');
+
+        sSenha := '';
+        // ----------------------------- //
+        // Fórmula para ler a nova senha //
+        // ----------------------------- //
+        for I := 1 to (Length(sSenhaX) div 5) do
+          sSenha := Chr((StrToInt(
+                        Copy(sSenhaX,(I*5)-4,5)
+                        )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
+        // ----------------------------- //
+        if (AnsiUpperCase(sSenha) = AnsiUpperCase(Senha)) then
+        begin
+          iSenha := 6;
+        end else
+        begin
+          iSenha := iSenha + 1;
+        end;
+      end;
+    end;
+
+    try
+      Senha   := Senhas.SenhaPub;
+      Usuario := Senhas.UsuarioPub;
+
+      Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
+      Mais1Ini.UpdateFile;
+      sSenhaX := Mais1Ini.ReadString(Usuario,'Chave','15706143431572013809150491382314104');
+
+      sSenha := '';
+      // ----------------------------- //
+      // Fórmula para ler a nova senha //
+      // ----------------------------- //
+      for I := 1 to (Length(sSenhaX) div 5) do
+        sSenha := Chr((StrToInt(
+                      Copy(sSenhaX,(I*5)-4,5)
+                      )+((Length(sSenhaX) div 5)-I+1)*7) div 137) + sSenha;
+
+      if not((AnsiUpperCase(sSenha) = AnsiUpperCase(Senha)) ) then
+      begin
+        if Senha = '#####' then
+        begin
+          Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE ); Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );  Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+          FecharAplicacao(ExtractFileName(Application.ExeName));
+        end else
+        begin
+          { Quando a senha não é válida }
+          Audita('SENHA','SMALL', Senhas.UsuarioPub,'SENHA INVÁLIDA: '+Senha,0,0); // Ato, Modulo, Usuário, Histórico, Valor
+
+          Form1.ShowHint := True;
+          Form1.Hint := chr(10)+
+                         ' '+Usuario+chr(10)+chr(10)+
+                         ' Sua senha não é válida, portanto os' + chr(10)+
+                         ' módulos não podem ser liberados.'+ chr(10)+
+                         ' Entre novamente no programa digitando '+ chr(10)+
+                         ' a sua senha correta.'+ chr(10);
+
+          MensagemSistema(' '+Usuario+chr(10)+chr(10)+
+                          ' Sua senha não é válida, portanto os' + chr(10)+
+                          ' módulos não podem ser liberados.'+ chr(10)+
+                          ' Entre novamente no programa digitando'+ chr(10)+
+                          ' a sua senha correta.'+ chr(10)
+                          ,msgAtencao);
+
+          Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+          Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+          Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+          FecharAplicacao(ExtractFileName(Application.ExeName));
+        end;
+      end;
+
+      Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
+      Mais1Ini.WriteString(AllTrim(Usuario),'Ativo','Sim');
+      Mais1Ini.UpdateFile;
+      Mais1Ini.Free;
+    except
+      MensagemSistema('Para solucionar o problema siga os seguintes passos:'+chr(10)
+                      +chr(10)+'1 - Desative controle de conta do usuario (Windows Vista)'
+                      +chr(10)+'2 - Execute este programa como administrador. Altere o atalho na aba compatibilidade (Windows 8)'
+                      +chr(10)+'3 - Arquivo EST0QUE.DAT pode estar danificado (O arquivo deve ser excluido)'
+                      +chr(10)+'4 - Reinstale o programa'
+                      ,msgAtencao);
+
+      Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
+      Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
+      Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
+      FecharAplicacao(ExtractFileName(Application.ExeName));
+    end;
+
+    try
+      CarregaConfiguracoes;
+      ConfiguraNFE;
+
+      Form19.CarregaIconesSistema;
+      CarregaIconesSistema;
+
+      //Novo método - ir migrando de Form19.CarregaIconesSistema
+      imgOrcamento.Picture    := IconesSistema.GetIconOrcamento(False).Picture;
+
+      //Define fundo inicial
+      sImgFundo := Form1.sAtual+ImagemFundoSmall(TSistema.GetInstance.Tema,'6');
+
+      if FileExists(sImgFundo) then
+        Form1.Image4.Picture.LoadFromFile(sImgFundo) ;
+
+      CarregaPermissaoModulos;
+    except
+    end;
+
+    //Verifica Certificado Digital
+    if bPrimeiraAberturaDia then
+      VencimentoCertificadoDigital;
+
+    MontaTela(True);
+
+    // Para atender o PAF
+    if ParamCount > 0 then
+    begin
+      if AllTrim(Copy(UpperCase(ParamStr(1)),1,3)) = 'URB' then
+      begin
+        Form1.imgVendasClick(Form1.imgVendas);
+        Form7.Image101Click(Form7.imgNovo);
+      end;
+    end;
+
+    if (Copy(Form7.ibDataSet13CNAE.AsString,1,2) = '56') or // Restaurantes e similares
+       (Form7.ibDataSet13CNAE.AsString = '4721101') or      // Padarias
+       (Form7.ibDataSet13CNAE.AsString = '4721102') then
+    begin
+      Form7.ibDataSet4OBS.DisplayLabel := 'Receita';
+      Form7.Cardpio1.Visible           := True;
+      Form7.Livrodereceitas1.Visible   := True;
+    end else
+    begin
+      Form7.ibDataSet4OBS.DisplayLabel    := 'Observação';
+      Form7.Cardpio1.Visible              := False;
+      Form7.Livrodereceitas1.Visible      := True;
+      Form7.Livrodereceitas1.Caption      := 'Relatório de composição';
+    end;
+
+    // LEGAL
+    try
+      if Form7.ibDataSet39.Active then
+      begin
+        if FileExists(Form1.sAtual+'\leia-me.txt') then
+        begin
+          RegistrodoPrograma(InfTermo);
+          ValidaRazaoSmall; // Corrige o nome da small no arquio arquivoauxiliarcriptografadopafecfsmallsoft.ini de LTDA para EIRELI
+        end;
+      end;
+    except end;
+
+    // LEGAL
+    try
+      if Form7.ibDataSet39.Active then
+      begin
+        // Verificar se é mei aqui
+        begin
+          RegistrodoPrograma(InfTermo);
+        end;
+      end;
+    except end;
+
+    // NF-e
+    if imgVendas.Visible  then
+    begin
+      if not form2.Visible then
+      begin
+        ConfiguraNFE;
+
+        if Form1.bConsultarNFesEmitidas then
+        begin
+          if Form1.ValidaRecursos.PermiteRecursoParaProduto then // Sandro Silva 2023-05-31
+          begin
+            Mensagem22('Consultando NF-e´s emitidas para o CNPJ: '+Form7.ibDataSet13CGC.AsString+
+                       Form7.GetMensagemCertificado('ABERTURA'));
+
+            Form7.ConsultarNFesemitidasparameuCNPJ1Click(Form7.MenuItem1);
+            AvisoNFECompra(True);
+            Sleep(1000*2);
+            Mensagem22('');
+          end;
+        end;
+      end;
+    end;
+
+    // OS
+    if imgOrdemServico.Visible  then
+    begin
+      Mensagem22('Consultando OS agendadas para hoje');
+      AvisoOS(True);
+      Mensagem22('');
+    end;
+
+    // CLIFOR
+    if imgCliFor.Visible  then
+    begin
+      Mensagem22('Consultando agendamentos no cadastro');
+      AvisoClifor(True);
+      Mensagem22('');
+    end;
+
+    // CAIXA
+    if imgCaixa.Visible  then
+    begin
+      Mensagem22('Consultando pendências no caixa');
+      AvisoCaixa(True);
+      Mensagem22('');
+    end;
+
+    // BANCO
+    if imgBancos.Visible  then
+    begin
+      Mensagem22('Consultando pendências no banco');
+      AvisoBanco(True);
+      Mensagem22('');
+    end;
+
+    // Receber
+    if imgContaReceber.Visible  then
+    begin
+      Mensagem22('Consultando contas a receber para hoje');
+      AvisoReceber(True);
+      Mensagem22('');
+    end;
+
+    // Estoque
+    if imgEstoque.Visible  then
+    begin
+      Mensagem22('Consultando produtos com quantidade minima no estoque');
+      AvisoEstoque(True);
+      Mensagem22('');
+    end;
+
+    // PAGAR
+    if imgContaPagar.Visible  then
+    begin
+      Mensagem22('Consultando contas a pagar para hoje');
+      AvisoPagar(True);
+      Mensagem22('');
+    end;
+
+    // INDICADORES
+    if imgIndicadores.Visible  then
+    begin
+      Mensagem22('Consultando indicadores');
+      AvisoIndicadores(True);
+      Mensagem22('');
+    end;
+
+    // CONFIG
+    if imgContaPagar.Visible  then
+    begin
+      Mensagem22('Consultando suas configurações');
+      AvisoConfig(True);
+      Mensagem22('');
+    end;
+
+    if Form7.ibDataSet4.Tag = IDENTIFICADOR_CAMPO_ESTOQUE_TAGS_CRIADO then
+    begin
+      Form7.ibDataset4.Close;
+      Form7.ibDataset4.SelectSql.Clear;
+      Form7.ibDataset4.SelectSql.Add('select * from ESTOQUE');
+      Form7.ibDataset4.Open;
+
+      Form7.ibDataSet4.DisableControls;
+
+      while not Form7.ibDataset4.Eof do
+      begin
+        for I := 1 to 30 do
+        begin
+          if pos('<',Form7.ibDataset4OBS.AsString) <> 0 then
+          begin
+            try
+              sTag   := Copy(Form7.ibDataset4OBS.AsString,(pos('<',Form7.ibDataset4OBS.AsString)+1), (pos('>',Form7.ibDataset4OBS.AsString)-(pos('<',Form7.ibDataset4OBS.AsString)+1)));
+              sValor := Copy(Form7.ibDataset4OBS.AsString,Pos('<' + sTag + '>', Form7.ibDataset4OBS.AsString) + Length('<' + sTag + '>'),(Pos('</', Form7.ibDataset4OBS.AsString)-(Pos('<' + sTag + '>', Form7.ibDataset4OBS.AsString)+Length('<' + sTag + '>'))));
+              Form7.ibDataset4.Edit;
+              Form7.ibDataset4TAGS_.AsString := Form7.ibDataset4TAGS_.AsString + '<' + sTag + '>' + sValor +  '</' + sTag + '>' + chr(10);
+              Form7.ibDataset4OBS.AsString := StrTran(Form7.ibDataset4OBS.AsString,('<' + sTag + '>' + sValor +  '</' + sTag + '>'),'');
+              Form7.ibDataset4.Post;
+            except end;
+          end;
+        end;
+
+        // vUnid
+        if (Copy(Form7.ibDataSet4LIVRE3.AsString,1,7) = '<vUnid=') then // Pereti trib ipi por valor unitário engarafados bebidas
+        begin
+          try
+            Form7.ibDataset4.Edit;
+            Form7.ibDataset4TAGS_.AsString  := Form7.ibDataset4TAGS_.AsString + '<vUnid>' + LimpaNumeroDeixandoAvirgula(Form7.ibDataSet4LIVRE3.AsString) +  '</vUnid>' + chr(10);
+            Form7.ibDataSet4LIVRE3.AsString := '';
+            Form7.ibDataset4.Post;
+          except end;
+        end;
+
+        if Pos('VAL',Form7.ibDataSet4OBS.AsString) <> 0 then
+        begin
+          if LimpaNumero(Copy(Form7.ibDataSet4OBS.AsString,Pos('VAL',Form7.ibDataSet4OBS.AsString)+3,3)) <> '' then
+          begin
+            try
+              Form7.ibDataset4.Edit;
+              Form7.ibDataset4TAGS_.AsString  := Form7.ibDataset4TAGS_.AsString + '<VAL>' + Copy(Form7.ibDataSet4OBS.AsString,Pos('VAL',Form7.ibDataSet4OBS.AsString)+3,3) +  '</VAL>' + chr(10);
+              Form7.ibDataSet4OBS.AsString    := sTrTran(Form7.ibDataSet4OBS.AsString,'VAL'+Copy(Form7.ibDataSet4OBS.AsString,Pos('VAL',Form7.ibDataSet4OBS.AsString)+3,3),'');
+              Form7.ibDataset4.Post;
+            except end;
+          end;
+        end;
+
+        Form7.ibDataset4.Next;
+      end;
+
+      Form7.ibDataSet4.EnableControls;
+    end;
+
+    Screen.Cursor := crDefault; // Cursor
+    Form22.Close;
+  except
+  end;
+
+  if Form1.Tag = 99 then
+  begin
+    Form7.EnvioaoFISCOREDUOZ1Click(Form1);
+    Form1.Tag := 0;
+  end;
+
+  frmConfiguracaoTEFCommerce := TfrmConfiguracaoTEFCommerce.Create(nil);
+  try
+    frmConfiguracaoTEFCommerce.IBDataBase := Form7.IBDatabase1;
+    // No Create vai atualizar TEM TEF
+    frmConfiguracaoTEFCommerce.AtualizaTEMTEF;
+  finally
+    FreeAndNil(frmConfiguracaoTEFCommerce);
+  end;
+
+  //Mauricio Parizotto 2024-12-03
+  if (PrimeiraAbertura)
+    and (imgIndicadores.Visible)
+    and (TSistema.GetInstance.DashboardAbertura) then
+  begin
+    TimerDashboard.Enabled := True;
+  end;
+end;
+
 
 end.
 

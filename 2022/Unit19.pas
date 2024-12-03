@@ -864,7 +864,8 @@ begin
   end;
   
   Form2.bFlag := True;
-  Form1.FormShow(Sender);
+  //Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
+  Form1.CarregaInformacoes(False);
 end;
 
 procedure TForm19.edtDiasPrazoAExit(Sender: TObject);
@@ -1154,10 +1155,10 @@ begin
       r1.Left    := 10 + (70 * 3);
       r1.Right   := 10 + (70 * 4);
 
-      Form1.Image_Raio_1.Picture     := Form1.imgIndicadores.Picture;
+      //Form1.Image_Raio_1.Picture     := Form1.imgIndicadores.Picture;
 
-      Form1.Image_Raio_1.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
-      Form1.Image_Raio_1.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
+      //Form1.Image_Raio_1.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,70,70),Form19.Image9.Picture.Bitmap.Canvas,R1);
+      //Form1.Image_Raio_1.Picture.Bitmap.TransParentColor := Form1.imgVendas.Picture.BitMap.canvas.pixels[1,1];
 
       // PERIGO BACKUP
       r1.Left    := 10 + (70 * 9);
@@ -1170,7 +1171,7 @@ begin
 
       Form1.Image_Perigo_2.Picture   := Form1.imgBackup.Picture;
 
-      Form1.Image_Raio_2.Picture     := Form1.imgIndicadores.Picture;
+      //Form1.Image_Raio_2.Picture     := Form1.imgIndicadores.Picture;
 
       // BOTOES PRINCIPAIS DESTACADOS
       Form1.Image203_X.Picture.Bitmap  := Form1.imgCliFor.Picture.Bitmap;

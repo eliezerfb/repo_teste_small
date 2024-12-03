@@ -56,7 +56,6 @@ type
     Label4: TLabel;
     CheckBox11: TCheckBox;
     Panel5: TPanel;
-    Panel6: TPanel;
     Label9: TLabel;
     CheckBox12: TCheckBox;
     CheckBox13: TCheckBox;
@@ -189,7 +188,7 @@ begin
     if CheckBox1.State = cbChecked then Label_1.Caption := 'Leitura e gravação';
     if CheckBox1.State = cbGrayed then Label_1.Caption := 'Somente leitura';
 
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
     Mais1Ini.Free;
   end;
 end;
@@ -213,7 +212,7 @@ begin
       if State = cbChecked then Label_3.Caption := 'Leitura e gravação';
       if State = cbGrayed then Label_3.Caption := 'Somente leitura';
     end;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
     Mais1Ini.Free;
   end;
 end;
@@ -238,7 +237,7 @@ begin
     end;
 
     Mais1Ini.Free;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;
 end;
 
@@ -262,7 +261,7 @@ begin
     end;
 
     Mais1Ini.Free;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;  
 end;
 
@@ -286,7 +285,7 @@ begin
     end;
 
     Mais1Ini.Free;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;  
 end;
 
@@ -308,7 +307,7 @@ begin
     end;
 
     Mais1Ini.Free;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;
 end;
 
@@ -332,7 +331,7 @@ begin
     end;
 
     Mais1Ini.Free;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;  
   // Nova senha
 end;
@@ -357,7 +356,7 @@ begin
     end;
 
     Mais1Ini.Free;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;
 end;
 
@@ -497,7 +496,7 @@ begin
   end;
 
   if Form2.Tag <> 99 then
-    Form1.FormShow(Sender);
+    Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
 
   Mais1ini := TIniFile.Create(Form1.sAtual+'\EST0QUE.DAT');
   Mais1Ini.WriteString(AllTrim(Senhas.UsuarioPub),'Ativo','Sim');
@@ -542,7 +541,7 @@ begin
     end;
 
     Mais1Ini.Free;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;  
 end;
 
@@ -564,7 +563,7 @@ begin
     end;
     
     Mais1Ini.Free;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;
 end;
 
@@ -612,7 +611,7 @@ begin
     end;
 
     Mais1Ini.Free;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;
 end;
 
@@ -646,7 +645,7 @@ begin
     end;
 
     Mais1Ini.Free;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;
 end;
 
@@ -669,7 +668,7 @@ begin
     end;
 
     Mais1Ini.Free;
-    if Form2.Tag <> 99 then Form1.FormShow(Sender);
+    if Form2.Tag <> 99 then Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;
 end;
 
@@ -874,7 +873,7 @@ begin
 
   Form2.bFlag := True;
   Form2.Tag := 0;
-  Form1.FormShow(Sender);
+  Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
 
   //Mauricio Parizotto 2024-07-31
   Image1.Picture       :=  Form1.imgVendas.Picture;
@@ -1216,7 +1215,7 @@ begin
 
     Mais1Ini.Free;
     if Form2.Tag <> 99 then
-      Form1.FormShow(Sender);
+      Form1.CarregaInformacoes(False);//  Form1.FormShow(Sender); Mauricio Parizotto 2024-12-03
   end;
 end;
 
