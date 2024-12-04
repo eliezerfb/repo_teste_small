@@ -1495,6 +1495,7 @@ type
       sCaixa: String; sCupom: String; dValor: Double; dtEmissao: TDate;
       dtVencimento: TDate; sInstituicaoFinanceira : string = ''; sAutorizacao : string = ''; sFormaPgto : string = '');
     procedure FechaVendaRapidaFormaPagamentoCartao;
+    procedure FechaVendaRapidaFormaExtra;
     procedure TransmiteContingenciaAutomatico(data: TDate; Caixa: String);
     procedure LeConfiguracaoTipoEtiquetaBalanca;
     procedure VincularAssinaturaAC(bForcarObterNovaAssinaturaAC: Boolean = False);
@@ -1558,7 +1559,9 @@ type
     sCNPJInstituicaoPIX, sTipoPIX, sCodigoAutorizacaoPIX : string;
     sTamanhoPapel: String;
     bFechaRapidoCartao: Boolean; // Sandro Silva 2021-09-08
-    //
+    bFechaRapidoF6: Boolean; // Mauricio Parizotto 2024-12-04
+    sFormaAtalhoF6: string;
+
     Senha, Usuario: String;
     sEnderecoClifor: String;
     sCidadeClifor: String;
@@ -3513,8 +3516,9 @@ begin
   Form1.sSubSerieReferenteNFModelo2 := '';
   Form1.sReferenteNFModelo2         := '';
 
-  Form2.chkDelivery.Checked := False; // Sandro Silva 2020-06-01
-  Form1.bFechaRapidoCartao := False; // Sandro Silva 2021-09-08
+  Form2.chkDelivery.Checked := False;
+  Form1.bFechaRapidoCartao  := False;
+  Form1.bFechaRapidoF6      := False; //Mauricio Parizotto 2024-12-04
 end;
 
 function ImprimeNoVideo(P1: String) : boolean;
@@ -10103,6 +10107,7 @@ begin
   ConverteConfPix;
 
   CarregaConfiguracoes; //Mauricio Parizotto 2024-08-26
+  sFormaAtalhoF6 := GetFormaAtalhoF6; //Mauricio Parizotto 2024-12-04
 
   {Dailon Parisotto (smal-741) 2024-10-02 Inicio}
   FoArquivoDAT := TArquivosDAT.Create(EmptyStr, IBTransaction1);
@@ -10259,7 +10264,6 @@ begin
               // Implementado formas extras no smallmobile.com.br
               ClienteSmallMobile.PagamentoComFormaExtra(sFormaPag, Form1.fTotal);
               {Sandro Silva 2022-08-04 fim}
-
             end; // if Form1.bImportando then
 
             Form2.Button1Enter(Sender); // //LogFrente('Teste 01 ButtomEnter 9306');
@@ -10277,6 +10281,19 @@ begin
                 Form1.ibDataSet25.Edit;
                 Form1.ibDataSet25.FieldByName('RECEBER').AsFloat := Form1.fTotal;
                 Form1.ibDataSet25.FieldByName('PAGAR').AsFloat   := Form1.fTotal;
+                Form1.ibDataSet25.Post;
+              end;
+
+              //Mauricio Parizotto 2024-12-04
+              if bFechaRapidoF6 then
+              begin
+                var sCampoForma : string;
+                sCampoForma := GetCampoValorFormaExtra(StrToIntDef( copy(sFormaAtalhoF6,13,1) ,0));
+
+                Form1.bFechaRapidoF6 := False;
+                Form1.ibDataSet25.Edit;
+                Form1.ibDataSet25.FieldByName('RECEBER').AsFloat     := Form1.fTotal;
+                Form1.ibDataSet25.FieldByName(sCampoForma).AsFloat   := Form1.fTotal;
                 Form1.ibDataSet25.Post;
               end;
             end;
@@ -12009,7 +12026,7 @@ begin
             for I:= 1 to iVias do
             begin
               bRetornoComando := PDV_ImpressaoNaoSujeitoaoICMS(sCupomfiscalVinculado);
-              //
+
               if bRetornoComando then
                 Demais('RG'); //2015-10-06 Inserir em DEMAIS 1 RG para cada via do vinculado impressa
             end;
@@ -19039,22 +19056,12 @@ begin
         if Button4.Enabled then
         begin
           Button4Click(Sender)
-        end
-        else
+        end else
         begin
-          //Sandro Silva 2021-08-06  SmallMsg('Não é possível cancelar o último cupom.');
+          if sFormaAtalhoF6 <> '' then
+            FechaVendaRapidaFormaExtra;
 
-          {Sandro Silva 2022-01-11 inicio
-          if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
-          begin
-            GerenciadordeNFCe1Click(GerenciadordeNFCe1);
-          end
-          else
-            SmallMsg('Não é possível cancelar o último cupom.');
-          }
-          {Sandro Silva 2023-08-15 inicio
-          SmallMsg('Não é possível cancelar o último cupom.');
-          }
+          {Mauricio Parizotto 2024-12-04
           if (Form1.sModeloECF = '59')  then
             SmallMsg('Não é possível cancelar o último ' + Form1.sTipoDocumento2 + '.')
           else if (Form1.sModeloECF = '65') then
@@ -19063,16 +19070,12 @@ begin
             SmallMsg('Não é possível cancelar o último ' + Form1.sTipoDocumento2 + '.')
           else
             SmallMsg('Não é possível cancelar o último cupom.');
-          {Sandro Silva 2023-08-15 fim}
-          {Sandro Silva 2022-01-11 fim}
+          }
         end;
       end;
 
       if Key = VK_F9 then
       begin
-        {Sandro Silva 2021-09-08 inicio
-        Button13Click(Sender);
-        }
         if (not Form1.Memo1.Visible) then // Quando tem cupom aberto não
         begin
           Button13Click(Sender);
@@ -19081,7 +19084,6 @@ begin
         begin
           FechaVendaRapidaFormaPagamentoCartao;
         end;
-        {Sandro Silva 2021-09-08 fim}
       end;
       if Key = VK_F8 then
         if Button18.Enabled then
@@ -32218,13 +32220,24 @@ end;
 procedure TForm1.FechaVendaRapidaFormaPagamentoCartao;
 begin
   // Fecha a venda como forma de pagamento Cartão
-//  ActiveControl := Edit1;
-
-  Form1.bFechaRapidoCartao := True; // Sandro Silva 2021-09-08
+  bFechaRapidoCartao := True;
   if Button18.Enabled then
   begin
     bF12 := True;
     bFechandoCupom := True; // Sandro Silva 2016-02-10 Controlar que pressione F7 durante o fechamento do cupom e cancela a venda na impressora
+    Button18Click(Button18);
+  end;
+end;
+
+
+procedure TForm1.FechaVendaRapidaFormaExtra; //Mauricio Parizotto 2024-12-04
+begin
+  bFechaRapidoF6 := True;
+
+  if Button18.Enabled then
+  begin
+    bF12 := True;
+    bFechandoCupom := True;
     Button18Click(Button18);
   end;
 end;
@@ -33476,7 +33489,8 @@ begin
     iItem          := 0;
     Form1.bf12     := False;
     
-    Form1.bFechaRapidoCartao := False; // Sandro Silva 2021-09-08
+    bFechaRapidoCartao := False;
+    bFechaRapidoF6     := False; // Mauricio Parizotto 2024-12-04
 
     try
       // --------------------------------- //

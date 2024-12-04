@@ -667,4 +667,84 @@ object FormasP: TFormasP
       'PIX Est'#225'tico'
       'PIX Din'#226'mico')
   end
+  object chkAtalhoF6_1: TCheckBox
+    Left = 920
+    Top = 133
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 45
+    Visible = False
+    OnClick = chkAtalhoF6_1Click
+  end
+  object chkAtalhoF6_2: TCheckBox
+    Left = 920
+    Top = 158
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 46
+    Visible = False
+    OnClick = chkAtalhoF6_2Click
+  end
+  object chkAtalhoF6_3: TCheckBox
+    Left = 920
+    Top = 183
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 47
+    Visible = False
+    OnClick = chkAtalhoF6_3Click
+  end
+  object chkAtalhoF6_4: TCheckBox
+    Left = 920
+    Top = 208
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 48
+    Visible = False
+    OnClick = chkAtalhoF6_4Click
+  end
+  object chkAtalhoF6_5: TCheckBox
+    Left = 920
+    Top = 232
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 49
+    Visible = False
+    OnClick = chkAtalhoF6_5Click
+  end
+  object chkAtalhoF6_6: TCheckBox
+    Left = 920
+    Top = 257
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 50
+    Visible = False
+    OnClick = chkAtalhoF6_6Click
+  end
+  object chkAtalhoF6_7: TCheckBox
+    Left = 920
+    Top = 282
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 51
+    Visible = False
+    OnClick = chkAtalhoF6_7Click
+  end
+  object chkAtalhoF6_8: TCheckBox
+    Left = 920
+    Top = 307
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 52
+    Visible = False
+    OnClick = chkAtalhoF6_8Click
+  end
 end
