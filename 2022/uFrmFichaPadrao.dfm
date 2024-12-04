@@ -10,7 +10,6 @@ inherited FrmFichaPadrao: TFrmFichaPadrao
   Constraints.MinHeight = 657
   Constraints.MinWidth = 858
   Ctl3D = True
-  Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
   ExplicitWidth = 858

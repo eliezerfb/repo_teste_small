@@ -1934,6 +1934,8 @@ begin
   Panel2.Top     := Panel1.Top  + dbGrid1.Top  + 100;
   Panel2.Left    := Panel1.Left + dbGrid1.Left + dbGrid1.Width + 20;
   {Dailon Parisotto (smal-593) 2024-08-06 Fim}
+
+  Form7.SetFilterOcultaUsoConsumoVenda();
 end;
 
 procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);

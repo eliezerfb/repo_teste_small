@@ -2483,11 +2483,13 @@ type
     procedure Resumodasvendas1Click(Sender: TObject);
     procedure Rankingdeprodutosvendidos1Click(Sender: TObject);
     procedure ExportarNFesfiltradasemarquivoPDF1Click(Sender: TObject);
+    procedure ibDataSetPlanoContasSetText(Sender: TField; const Text: string);
     procedure ributaoInteligente1Click(Sender: TObject);
     procedure ibDataSet4CESTChange(Sender: TField);
     procedure ibDataSet4NATUREZA_RECEITAChange(Sender: TField);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
+    FFilterOcultaUsoConsumoVenda: String;
     FbDuplicandoProd: Boolean;
     FbDuplicandoNFe: Boolean;
     FbDuplicandoNFSe: Boolean;
@@ -2705,6 +2707,7 @@ type
     procedure AtualizaVariaveisAnteriorNatOper;
     function RetornaCustoMedio(AcCodigo: String): Double;
     procedure DefineObservacaoAnt(AcObs: String);
+    procedure SetFilterOcultaUsoConsumoVenda();
   end;
 
   function TestarNatOperacaoMovEstoque: Boolean;
@@ -15032,6 +15035,39 @@ begin
   ibDataSet9NOME.AsString := Text;
 end;
 
+procedure TForm7.ibDataSetPlanoContasSetText(Sender: TField;
+  const Text: string);
+begin
+  var CurrentField := TField(Sender).FieldName;
+  var FriendlyName := 'número';
+  if LowerCase(CurrentField) = 'nome' then
+    FriendlyName := 'nome';
+
+  if RecordExists(
+    Form7.IBDatabase1,
+    'Contas',
+    TField(Sender).FieldName,
+    ibDataSet12.FieldByName('registro'),
+    Text) then
+  begin
+    const MSG = 'Já existe um plano de contas cadastrado com este %s.';
+    ShowMessage(Format(MSG, [FriendlyName]));
+    Exit();
+  end;
+
+  if LowerCase(CurrentField) = 'conta' then
+  begin
+    if not(LimpaNumero(Text) = Text) then
+    begin
+      ShowMessage('Não é permitido letras no campo número da conta.');
+      Exit();
+    end;
+  end;
+
+
+  TField(Sender).AsString := Text;
+end;
+
 procedure TForm7.ibDataSet4PRECOChange(Sender: TField);
 var
   nMargem: Currency;
@@ -19409,7 +19445,10 @@ begin
   begin
     Form7.ibDataSet4.Close;
     Form7.ibDataSet4.SelectSQL.Clear;
-    Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where Coalesce(Ativo,0)=0 and  upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Text)+'%')+' order by upper(DESCRICAO)');
+    Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where '+
+      'Coalesce(Ativo,0)=0 and upper(DESCRICAO) like '+QuotedStr('%'+UpperCase(Text)+'%')+
+      FFilterOcultaUsoConsumoVenda+
+      ' order by upper(DESCRICAO)');
     Form7.ibDataSet4.Open;
     Form7.ibDataSet4.First;
     Form7.ibDataSet4.EnableControls;
@@ -33683,6 +33722,14 @@ begin
   sOrderBy  := 'order by '+ Ini.ReadString(sModulo,'ORDEM','NOME');
   Form7.iCampos   := 27;
   Ini.Free;
+end;
+
+procedure TForm7.SetFilterOcultaUsoConsumoVenda();
+begin
+  FFilterOcultaUsoConsumoVenda := '';
+  if oArqConfiguracao.BD.Outras.OcultaUsoConsumoVenda then
+    FFilterOcultaUsoConsumoVenda := ' and not(coalesce(TIPO_ITEM, '''+'00'+''') = '+
+      QuotedStr('07')+')';
 end;
 
 procedure TForm7.ibDataSet18MUNICIPIOSetText(Sender: TField; const Text: String);

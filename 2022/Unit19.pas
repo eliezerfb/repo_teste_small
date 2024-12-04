@@ -149,6 +149,7 @@ type
     rbModerno: TRadioButton;
     chkImportaMesmoOrc: TCheckBox;
     chkRecalculaCustoMedioRetroativo: TCheckBox;
+    chkOcultaUsoConsumoVenda: TCheckBox;
     cboFormatoOrc: TComboBox;
     lblFormatoOrc: TLabel;
     tbsDashboard: TTabSheet;
@@ -421,6 +422,7 @@ begin
     chkCalcLucroEstoque.Checked              := ConfSistema.BD.Outras.CalculaLucroAltVenda;
     chkImportaMesmoOrc.Checked               := ConfSistema.BD.Outras.PermiteImportarMesmoOrc; // Mauricio Parizotto 2024-08-26
     chkRecalculaCustoMedioRetroativo.Checked := ConfSistema.BD.Outras.RecalculaCustoMedioRetroativo; // Dailon Parisotto 2024-09-02
+    chkOcultaUsoConsumoVenda.Checked := ConfSistema.BD.Outras.OcultaUsoConsumoVenda;
     ComboBoxOS.ItemIndex                     := ComboBoxOS.Items.IndexOf(ConfSistema.BD.Impressora.ImpressoraOS); // Mauricio Parizotto 2024-05-10
     cboFormatoOrc.ItemIndex                  := cboFormatoOrc.Items.IndexOf(ConfSistema.BD.Impressora.FormatoOrcamento); // Mauricio Parizotto 2024-10-24
 	{Mauricio Parizotto 2024-04-23 Inicio}
@@ -566,6 +568,7 @@ begin
     ConfSistema.BD.Outras.CalculaLucroAltVenda    := chkCalcLucroEstoque.Checked;
     ConfSistema.BD.Outras.PermiteImportarMesmoOrc := chkImportaMesmoOrc.Checked; //Mauricio Parizotto 2024-08-26
     ConfSistema.BD.Outras.RecalculaCustoMedioRetroativo := chkRecalculaCustoMedioRetroativo.Checked; // Dailon Parisotto 2024-09-02
+    ConfSistema.BD.Outras.OcultaUsoConsumoVenda := chkOcultaUsoConsumoVenda.Checked;
     ConfSistema.BD.Impressora.ImpressoraOS        := ComboBoxOS.Text; // Mauricio Parizotto 2024-05-10
     ConfSistema.BD.Impressora.FormatoOrcamento    := cboFormatoOrc.Text; //Mauricio Parizotto 2024-10-24
     {Mauricio Parizotto 2024-04-23 Inicio}
