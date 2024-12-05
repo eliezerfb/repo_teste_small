@@ -66,7 +66,7 @@ object Form12: TForm12
     Left = 20
     Top = 70
     Width = 981
-    Height = 19
+    Height = 39
     Color = clWhite
     Ctl3D = False
     Font.Charset = ANSI_CHARSET
