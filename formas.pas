@@ -895,6 +895,8 @@ begin
 end;
 
 procedure TFormasP.FormCreate(Sender: TObject);
+var
+  iPosLeft : integer;
 begin
   FormasP.BorderStyle := bsNone; // Sandro Silva 2021-08-09
   AjustaResolucao(FormasP); // Sandro Silva 2018-08-28
@@ -916,6 +918,7 @@ begin
   //Sandro Silva 2024.01.22 FormasP.Left   := Screen.Width - FormasP.Width div 2;
 
   //Mauricio Parizotto 2024-06-14
+  {Mauricio Parizotto 2024-12-04 Início
   cboPixExtra1.Left := chkReceberExtra1.Left + 180;
   cboPixExtra2.Left := chkReceberExtra2.Left + 180;
   cboPixExtra3.Left := chkReceberExtra3.Left + 180;
@@ -924,8 +927,22 @@ begin
   cboPixExtra6.Left := chkReceberExtra6.Left + 180;
   cboPixExtra7.Left := chkReceberExtra7.Left + 180;
   cboPixExtra8.Left := chkReceberExtra8.Left + 180;
+  }
 
-  //Mauricio Parizotto 2024-12-04
+  if Screen.Width > 1900 then
+    iPosLeft := chkReceberExtra1.Left + 180
+  else
+    iPosLeft := chkReceberExtra1.Left + 150;
+
+  cboPixExtra1.Left := iPosLeft;
+  cboPixExtra2.Left := iPosLeft;
+  cboPixExtra3.Left := iPosLeft;
+  cboPixExtra4.Left := iPosLeft;
+  cboPixExtra5.Left := iPosLeft;
+  cboPixExtra6.Left := iPosLeft;
+  cboPixExtra7.Left := iPosLeft;
+  cboPixExtra8.Left := iPosLeft;
+
   chkAtalhoF6_1.Left := cboPixExtra1.Left + cboPixExtra1.Width + 10;
   chkAtalhoF6_2.Left := cboPixExtra2.Left + cboPixExtra2.Width + 10;
   chkAtalhoF6_3.Left := cboPixExtra3.Left + cboPixExtra3.Width + 10;

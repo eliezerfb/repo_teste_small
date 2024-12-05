@@ -574,7 +574,7 @@ object FormasP: TFormasP
   object cboPixExtra1: TComboBox
     Left = 821
     Top = 131
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 37
     Visible = False
@@ -586,7 +586,7 @@ object FormasP: TFormasP
   object cboPixExtra2: TComboBox
     Left = 821
     Top = 156
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 38
     Visible = False
@@ -598,7 +598,7 @@ object FormasP: TFormasP
   object cboPixExtra3: TComboBox
     Left = 821
     Top = 181
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 39
     Visible = False
@@ -610,7 +610,7 @@ object FormasP: TFormasP
   object cboPixExtra4: TComboBox
     Left = 821
     Top = 206
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 40
     Visible = False
@@ -622,7 +622,7 @@ object FormasP: TFormasP
   object cboPixExtra5: TComboBox
     Left = 821
     Top = 230
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 41
     Visible = False
@@ -634,8 +634,9 @@ object FormasP: TFormasP
   object cboPixExtra6: TComboBox
     Left = 821
     Top = 255
-    Width = 91
+    Width = 79
     Height = 21
+    ItemIndex = 2
     TabOrder = 42
     Visible = False
     Items.Strings = (
@@ -646,7 +647,7 @@ object FormasP: TFormasP
   object cboPixExtra7: TComboBox
     Left = 821
     Top = 280
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 43
     Visible = False
@@ -658,7 +659,7 @@ object FormasP: TFormasP
   object cboPixExtra8: TComboBox
     Left = 821
     Top = 305
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 44
     Visible = False
