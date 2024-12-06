@@ -798,7 +798,7 @@ begin
     begin
       while True do
       begin
-        Result := FormataNumeroDoCupom(IncrementaGenerator('G_NUMEROCUPOMMEI', 1)); // Sandro Silva 2021-12-02 Result := StrZero(IncrementaGenerator('G_NUMEROCUPOMMEI', 1), 6, 0);
+        Result := FormataNumeroDoCupom(IncrementaGenerator('G_NUMEROCUPOMMEI', 1));
         Form1.ibQuery65.Close;
         Form1.ibQuery65.SQL.Text :=
           'select CAIXA, MODELO, REGISTRO, NUMERONF ' +
