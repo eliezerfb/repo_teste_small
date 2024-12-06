@@ -3,10 +3,9 @@ object FrmOpcoesFechamentoComCartao: TFrmOpcoesFechamentoComCartao
   Top = 0
   BorderStyle = bsNone
   Caption = 'FrmOpcoesFechamentoComCartao'
-  ClientHeight = 307
-  ClientWidth = 434
-  Color = clWindow
-  Ctl3D = False
+  ClientHeight = 184
+  ClientWidth = 220
+  Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -16,27 +15,32 @@ object FrmOpcoesFechamentoComCartao: TFrmOpcoesFechamentoComCartao
   Position = poScreenCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
-  DesignSize = (
-    434
-    307)
   TextHeight = 15
-  object DBGOPCOES: TDBGrid
-    Left = 2
+  object Bevel1: TBevel
+    Left = 1
     Top = 1
-    Width = 431
-    Height = 303
-    Anchors = [akLeft, akTop, akRight, akBottom]
+    Width = 216
+    Height = 182
+    Shape = bsFrame
+    Style = bsRaised
+  end
+  object DBGOPCOES: TDBGrid
+    Left = 4
+    Top = 6
+    Width = 212
+    Height = 176
     BorderStyle = bsNone
-    Ctl3D = True
+    Color = clWhite
     DataSource = DSOPCOES
+    DrawingStyle = gdsClassic
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = [fsBold]
-    Options = [dgColumnResize, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
-    ParentCtl3D = False
+    Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
     ParentFont = False
     ReadOnly = True
     TabOrder = 0
@@ -45,31 +49,20 @@ object FrmOpcoesFechamentoComCartao: TFrmOpcoesFechamentoComCartao
     TitleFont.Height = -12
     TitleFont.Name = 'Microsoft Sans Serif'
     TitleFont.Style = []
+    OnDrawDataCell = DBGOPCOESDrawDataCell
     OnDblClick = DBGOPCOESDblClick
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'TIPO'
-        Width = 50
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'OPCAO'
-        Width = 375
-        Visible = True
-      end>
   end
   object DSOPCOES: TDataSource
     DataSet = CDSOPCOES
-    Left = 224
-    Top = 88
+    Left = 112
+    Top = 96
   end
   object CDSOPCOES: TClientDataSet
     Aggregates = <>
     Params = <>
-    Left = 384
-    Top = 88
+    AfterScroll = CDSOPCOESAfterScroll
+    Left = 114
+    Top = 46
     object CDSOPCOESTIPO: TStringField
       FieldName = 'TIPO'
       Size = 3

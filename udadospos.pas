@@ -36,7 +36,6 @@ type
       Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -123,35 +122,6 @@ end;
 procedure TFDadosPOS.BitBtn1Click(Sender: TObject);
 begin
   Close;
-end;
-
-procedure TFDadosPOS.FormShow(Sender: TObject);
-begin
-  {Sandro Silva 2023-06-14 inicio
-  if (Form1.UsaIntegradorFiscal()) then
-  begin
-
-    Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.idFila := Form1.IntegradorCE.UltimoidPagamento;
-    if LimpaNumero(Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.CodigoAutorizacao) <> Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.CodigoAutorizacao then
-      Edit1.Clear
-    else
-      Edit1.Text := Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.CodigoAutorizacao;
-    if Trim(Edit1.Text) = '' then
-      Edit1.Text := Form1.sAutoriza;
-    Edit2.Text := Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.Nsu;
-    if LimpaNumero(Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.NumerodeAprovacao) <> Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.NumerodeAprovacao then
-      Edit3.Clear
-    else
-      Edit3.Text := Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.NumerodeAprovacao;
-    Edit4.Text := Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.Bandeira;
-    if Trim(Edit4.Text) = '' then
-      Edit4.Text := Form1.sNomerede;
-    Edit5.Text := Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.Adquirente;
-    if Trim(Edit5.Text) = '' then
-      Edit5.Text := Form1.sUltimaAdquirenteUsada;
-
-  end;
-  }
 end;
 
 end.

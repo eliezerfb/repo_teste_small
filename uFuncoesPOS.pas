@@ -177,9 +177,15 @@ begin
                     Form10.sNomeDoTEF := Form1.PosElginPay.Transacao.Rede + ' DEBITO'
                   else
                     Form10.sNomeDoTEF := Form1.PosElginPay.Transacao.Rede + ' CREDITO';
+                  {Sandro Silva 2024-12-05
                   Form1.sTransaca   := Form1.PosElginPay.Transacao.Transacao;
                   Form1.sAutoriza   := IfThen(Form1.UsaIntegradorFiscal(), Form1.sTransaca, '');
-                  Form1.sNomeRede   := Form1.PosElginPay.Transacao.Rede;
+                  }
+                  Form1.sTransacaPOS := Form1.PosElginPay.Transacao.Transacao;
+                  Form1.sAutoriza    := IfThen(Form1.UsaIntegradorFiscal(), Form1.sTransacaPOS, '');
+                  // Sandro Silva 2024-12-05 Form1.sNomeRede   := Form1.PosElginPay.Transacao.Rede;
+                  Form1.sNomeRedeTransacionada     := Form1.PosElginPay.Transacao.Rede;
+                  Form1.sNomeRedeParaTransacoesTEF := Form1.PosElginPay.Transacao.Rede;
 
                   Form1.sTipoParc   := '0';// Considera sempre parcelado pelo estabelecimento poderia validar com AnsiContainsText(ValorElementoElginPayFromJson(sResposta, '"tipoFinanciamento":'), 'ESTABELECIMENTO')
                   Form1.sParcelas   := Form1.PosElginPay.Transacao.Parcelas;
@@ -204,7 +210,7 @@ begin
 
                 if Form1.sIdentificaPOS = 'Sim' then
                 begin
-                  if Trim(Form1.sNomeRede) = '' then
+                  if Trim(Form1.sNomeRedeTransacionada) = '' then // Sandro Silva 2024-12-05 if Trim(Form1.sNomeRede) = '' then
                   begin
                     bPoSok := False;
                     SmallMessageBox(PChar('Acesse F10-Menu/Configurações/Cartões de débito e crédtio (POS)' + #13 + #13 +
@@ -257,7 +263,7 @@ begin
                   Form1.ibDataSet7.Append;
                   Form1.ibDataSet7.FieldByName('NOME').AsString         := StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO','');
                   if Form1.ClienteSmallMobile.ImportandoMobile then
-                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' Aut.' + Form1.sTransaca
+                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' Aut.' + Form1.sTransacaPOS // Sandro Silva 2024-12-05 Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' Aut.' + Form1.sTransaca
                   else
                     Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := PREFIXO_HISTORICO_TRANSACAO_POS + ': ' + IntToStr(iContaCartao + 1) + 'º CARTAO'; // Sandro Silva (smal-778) 2024-11-25 Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'VENDA NO CARTAO: ' + IntToStr(iContaCartao + 1) + 'º CARTAO';
                   Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(iTotalParcelas); // documento
@@ -291,7 +297,9 @@ begin
         //
         if bPoSok then
         begin
-          Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRede, IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0, 'DEBITO', 'CREDITO'), dValorPagarCartao, Form10.sNomeAdquirente, Form1.sTransaca, Form1.sAutoriza, StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO',''), ModalidadeTransacao);
+          //Sandro Silva 2024-12-05 Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRede, IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0, 'DEBITO', 'CREDITO'), dValorPagarCartao, Form10.sNomeAdquirente, Form1.sTransaca, Form1.sAutoriza, StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO',''), ModalidadeTransacao);
+          //Sandro Silva 2024-12-05 Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRedeTransacionada, IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0, 'DEBITO', 'CREDITO'), dValorPagarCartao, Form10.sNomeAdquirente, Form1.sTransaca, Form1.sAutoriza, StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO',''), ModalidadeTransacao);
+          Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRedeTransacionada, IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0, 'DEBITO', 'CREDITO'), dValorPagarCartao, Form10.sNomeAdquirente, Form1.sTransacaPOS, Form1.sAutoriza, StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO',''), ModalidadeTransacao);
 
           dTotalTransacionado := dTotalTransacionado + dValorPagarCartao;
           Form1.fTEFPago      := Form1.fTEFPago + dValorPagarCartao;

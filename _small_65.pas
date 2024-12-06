@@ -313,8 +313,13 @@ procedure LogErroCredenciadoraCartao(sNomeRede: String;
 begin
   if (sNomeRede <> '') and (sCNPJ_YA05 = '') then
   begin
+    {Sandro Silva 2024-12-05
     if AnsiContainsText(sLogErro, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
       sLogErro := sLogErro + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
+    }
+    if AnsiContainsText(sLogErro, AlertaCredenciadoraCartao(Form1.sNomeRedeTransacionada)) = False then
+      sLogErro := sLogErro + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRedeTransacionada) + Chr(10);
+    {Sandro Silva 2024-12-05}
   end;
 end;
 
@@ -973,7 +978,7 @@ begin
       try
 
         sCNPJ_YA05 := '';
-        Form1.sNomeRede := '';
+        Form1.sNomeRedeTransacionada := '';// Sandro Silva 2024-12-05 Form1.sNomeRede := '';
         //Identifica o nome da rede, quando pagamento com cartão
         if XMLNFE.selectNodes('//detPag[tPag=''03'' or tPag=''04'']/card/CNPJ').length > 0 then
         begin
@@ -989,7 +994,7 @@ begin
               ' order by REGISTRO desc');
             Form1.ibDataset99.Open;
 
-            Form1.sNomeRede := Form1.ibDataset99.FieldByName('NOME').AsString;
+            Form1.sNomeRedeTransacionada := Form1.ibDataset99.FieldByName('NOME').AsString;// Sandro Silva 2024-12-05 Form1.sNomeRede := Form1.ibDataset99.FieldByName('NOME').AsString;
             sCNPJ_YA05      := LimpaNumero(_ecf65_CNPJAdministradoraCartao(XMLNFE.selectNodes('//detPag[tPag=''03'' or tPag=''04'']/card/CNPJ').item[0].xml));
           end;
 
@@ -1621,7 +1626,7 @@ begin
                 on E: Exception do
                 begin
                   sLogErro := 'Erro: 44' + Chr(10) + E.Message+chr(10)+chr(10)+'Ao calcular tributos';
-                  LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
+                  LogErroCredenciadoraCartao(Form1.sNomeRedeTransacionada, sCNPJ_YA05, sLogErro);// Sandro Silva 2024-12-05 LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
                   Exit;
                 end;
               end;
@@ -1757,7 +1762,7 @@ begin
                   begin
                     sStatus := 'Configure no Estoque, o CSOSN para o produto: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+' '+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value;// Sandro Silva 2018-04-11  sStatus := 'CSOSN não configurado para o produto: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+' '+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value;
                     sLogErro := 'Erro:22' + Chr(10) + sStatus +chr(10);  // Sandro Silva 2017-08-16  +chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema.'+chr(10)+'Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.';
-                    LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
+                    LogErroCredenciadoraCartao(Form1.sNomeRedeTransacionada, sCNPJ_YA05, sLogErro); // Sandro Silva 2024-12-05 LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
                     ConcatenaLog(sLogErroItens, sLogErro); // Sandro Silva 2018-07-20 sLogErroItens := sLogErroItens + Chr(10) + sLogErro;
                   end;
                 end;
@@ -2124,7 +2129,7 @@ begin
               begin
                 sLogErro := 'Erro:22' + Chr(10) + 'Configure no Estoque, o NCM para o produto: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+' '+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value+chr(10);  // Sandro Silva 2018-04-11  sLogErro := 'Erro:22' + Chr(10) + 'NCM não preenchido' + Chr(10) + Chr(10)+'Ao salvar item código: '+Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+chr(10)+Form1.spdNFCeDataSets1.Campo('xProd_I04').Value+chr(10);
                 sStatus := 'NCM não preenchido' + ' ' + Form1.spdNFCeDataSets1.Campo('cProd_I02').Value+ ' ' +Form1.spdNFCeDataSets1.Campo('xProd_I04').Value;
-                LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
+                LogErroCredenciadoraCartao(Form1.sNomeRedeTransacionada, sCNPJ_YA05, sLogErro); // Sandro Silva 2024-12-05 LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
                 ConcatenaLog(sLogErroItens, sLogErro); // Sandro Silva 2018-07-20 sLogErroItens := sLogErroItens + Chr(10) + sLogErro;
               end;
             end; // if (Alltrim(Form1.ibDataSet4.FieldByName('CODIGO').AsString) = Alltrim(Form1.ibDAtaSet27.FieldByName('CODIGO').AsString)) and (Alltrim(Form1.ibDataSet4.FieldByName('CODIGO').AsString) <> '') then
@@ -2135,7 +2140,7 @@ begin
           except
             on E: Exception do
             begin
-              LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErroItens);
+              LogErroCredenciadoraCartao(Form1.sNomeRedeTransacionada, sCNPJ_YA05, sLogErroItens); // Sandro Silva 2024-12-05 LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErroItens);
               if AnsiContainsText(sLogErroItens, E.Message) = False then
                 sLogErroItens := sLogErroItens + Chr(10) + 'Erro:22' + Chr(10) + E.Message + Chr(10)+ chr(10) + 'Ao incluir item:';
               sLogErroItens := sLogErroItens + chr(10) + Form1.spdNFCeDataSets1.Campo('cProd_I02').Value + ' - ' + Form1.spdNFCeDataSets1.Campo('xProd_I04').Value + chr(10);
@@ -2337,7 +2342,7 @@ begin
           begin
             sLogErro := 'Erro: 21' + Chr(10) + E.Message+chr(10)+
               chr(10)+'Leia atentamente a mensagem acima e tente resolver o problema. Considere pedir ajuda ao seu contador para o preenchimento correto da NFC-e.';
-            LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
+            LogErroCredenciadoraCartao(Form1.sNomeRedeTransacionada, sCNPJ_YA05, sLogErro); // Sandro Silva 2024-12-05 LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
             sStatus := E.Message;
             Exit;
           end;
@@ -2348,7 +2353,7 @@ begin
           fNFe := Form1.spdNFCeDataSets1.LoteNFCe.GetText;  //Copia XML que está Componente p/ Field fNFe
         except
           sLogErro := 'Erro ao gravar NFC-e';
-          LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
+          LogErroCredenciadoraCartao(Form1.sNomeRedeTransacionada, sCNPJ_YA05, sLogErro); // Sandro Silva 2024-12-05 LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
 
           sStatus := sLogErro;
           Exit;
@@ -2361,9 +2366,9 @@ begin
           sResultado := wsNFCeAssinada;
         except
           sLogErro := 'Erro ao assinar NFC-e';
-          LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
+          LogErroCredenciadoraCartao(Form1.sNomeRedeTransacionada, sCNPJ_YA05, sLogErro); // Sandro Silva 2024-12-05 LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
           sStatus := sLogErro;
-          sResultado := ''; // Sandro Silva 2020-02-13 
+          sResultado := ''; // Sandro Silva 2020-02-13
           Exit;
         end;
 
@@ -2398,7 +2403,7 @@ begin
           if E.Message <> 'Operation aborted' then // 2015-07-06
             sLogErro := sLogErro + 'Erro! '+E.Message;
           sResultado := '';
-          LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
+          LogErroCredenciadoraCartao(Form1.sNomeRedeTransacionada, sCNPJ_YA05, sLogErro); // Sandro Silva 2024-12-05 LogErroCredenciadoraCartao(Form1.sNomeRede, sCNPJ_YA05, sLogErro);
           Exit;
         end;
         // aqui volta na venda
@@ -2663,11 +2668,11 @@ begin
 
       // Sandro Silva 2020-10-21  sCNPJ_YA05 := '';
 
-      if Form1.sNomeRede = '' then
+      if Form1.sNomeRedeTransacionada = '' then // Sandro Silva 2024-12-05 if Form1.sNomeRede = '' then
       begin
         if Form1.TransacoesCartao.Transacoes.Count > 0 then
         begin
-          Form1.sNomeRede := Form1.TransacoesCartao.Transacoes.Items[Form1.TransacoesCartao.Transacoes.Count -1].NomeRede;
+          Form1.sNomeRedeTransacionada := Form1.TransacoesCartao.Transacoes.Items[Form1.TransacoesCartao.Transacoes.Count -1].NomeRede; // Sandro Silva 2024-12-05 Form1.sNomeRede := Form1.TransacoesCartao.Transacoes.Items[Form1.TransacoesCartao.Transacoes.Count -1].NomeRede;
         end;
       end;
 
@@ -4136,28 +4141,32 @@ begin
           for iTransacaoCartao := 0 to Form1.TransacoesCartao.Transacoes.Count -1 do
           begin
 
-            Form1.sNomeRede := Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede;
+            Form1.sNomeRedeTransacionada := Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede; // Sandro Silva 2024-12-05 Form1.sNomeRede := Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede;
             //Localiza todos cadastros com OBS contendo o nome da rede ou que o relacionamento = credenciadora de cartão
             Form1.ibDataSet2.Close;
             Form1.ibDataSet2.SelectSQL.Clear;
             Form1.ibDataSet2.SelectSQL.Text :=
               'select * ' +
               'from CLIFOR ' +
-              'where (OBS containing ' + QuotedStr(BandeiraSemCreditoDebito(Form1.sNomeRede)) + ' and coalesce(CLIFOR, '''') = ''Credenciadora de cartão'') or coalesce(CLIFOR, '''') = ''Credenciadora de cartão'' ';
+              // Sandro Silva 2024-12-05 'where (OBS containing ' + QuotedStr(BandeiraSemCreditoDebito(Form1.sNomeRede)) + ' and coalesce(CLIFOR, '''') = ''Credenciadora de cartão'') or coalesce(CLIFOR, '''') = ''Credenciadora de cartão'' ';
+              'where (OBS containing ' + QuotedStr(BandeiraSemCreditoDebito(Form1.sNomeRedeTransacionada)) + ' and coalesce(CLIFOR, '''') = ''Credenciadora de cartão'') or coalesce(CLIFOR, '''') = ''Credenciadora de cartão'' ';
             Form1.ibDataSet2.Open;
 
-            sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRede));
+            sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRedeTransacionada)); // Sandro Silva 2024-12-05 sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRede));
 
-            {Sandro Silva 2023-10-26 inicio
-            if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
-              sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
-            }
+            {Sandro Silva 2025-12-05 inicio
             if Trim(sCNPJ_YA05) = '' then
             begin
               if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
                 sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
             end;
-            {Sandro Silva 2023-10-26 fim}
+            }
+            if Trim(sCNPJ_YA05) = '' then
+            begin
+              if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRedeTransacionada)) = False then
+                sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRedeTransacionada) + Chr(10);
+            end;
+            {Sandro Silva 2024-12-05 fim}
 
             Form1.spdNFCeDataSets1.IncluirPart('YA');
             if Pos('CREDITO', Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito) <> 0 then
@@ -4210,27 +4219,31 @@ begin
           for iTransacaoCartao := 0 to Form1.TransacoesCartao.Transacoes.Count -1 do
           begin
 
-            Form1.sNomeRede := Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede;
+            Form1.sNomeRedeTransacionada := Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede; // Sandro Silva 2024-12-05 Form1.sNomeRede := Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede;
             //Localiza todos cadastros com OBS contendo o nome da rede ou que o relacionamento = credenciadora de cartão
             Form1.ibDataSet2.Close;
             Form1.ibDataSet2.SelectSQL.Text :=
               'select * ' +
               'from CLIFOR ' +
-              'where (OBS containing ' + QuotedStr(BandeiraSemCreditoDebito(Form1.sNomeRede)) + ' and coalesce(CLIFOR, '''') = ''Credenciadora de cartão'') or coalesce(CLIFOR, '''') = ''Credenciadora de cartão'' ';
+              //Sandro Silva 2024-12-05 'where (OBS containing ' + QuotedStr(BandeiraSemCreditoDebito(Form1.sNomeRede)) + ' and coalesce(CLIFOR, '''') = ''Credenciadora de cartão'') or coalesce(CLIFOR, '''') = ''Credenciadora de cartão'' ';
+              'where (OBS containing ' + QuotedStr(BandeiraSemCreditoDebito(Form1.sNomeRedeTransacionada)) + ' and coalesce(CLIFOR, '''') = ''Credenciadora de cartão'') or coalesce(CLIFOR, '''') = ''Credenciadora de cartão'' ';
             Form1.ibDataSet2.Open;
 
-            sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRede));
+            sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRedeTransacionada));// Sandro Silva 2024-12-05 sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRede));
 
-            {Sandro Silva 2023-10-26 inicio
-            if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
-              sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
-            }
+            {Sandro Silva 2024-12-05 inicio
             if Trim(sCNPJ_YA05) = '' then
             begin
               if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
                 sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + Chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
             end;
-            {Sandro Silva 2023-10-26 fim}
+            }
+            if Trim(sCNPJ_YA05) = '' then
+            begin
+              if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRedeTransacionada)) = False then
+                sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + Chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRedeTransacionada) + Chr(10);
+            end;
+            {Sandro Silva 2024-12-05 fim}
 
             Form1.spdNFCeDataSets1.IncluirPart('YA');
             Form1.sDebitoOuCredito := Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito;

@@ -92,7 +92,7 @@ var
 implementation
 
 uses fiscal, _Small_59, StrUtils
-, _Small_IntegradorFiscal
+// Sandro Silva 2024-12-05 , _Small_IntegradorFiscal
 , ufuncoesfrente;
 
 {$R *.dfm}

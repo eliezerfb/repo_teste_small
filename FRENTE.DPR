@@ -33,7 +33,6 @@ uses
   Unit27 in 'Unit27.pas' {Form27},
   uimpressaopdf in 'uimpressaopdf.pas',
   AJBarcode in 'AJBarcode.pas',
-  _Small_IntegradorFiscal in '_Small_IntegradorFiscal.pas',
   ufuncoesfrente in 'ufuncoesfrente.pas',
   upesquisaparaimportar in 'upesquisaparaimportar.pas' {FPesquisaParaImportar},
   uatualizaestruturadb in 'uatualizaestruturadb.pas',

@@ -11,7 +11,7 @@ uses
   , uajustaresolucao
   , ufuncoesfrente
   , uclassetransacaocartao
-  , uSmallConsts
+  , uSmallConsts, Vcl.ExtCtrls
   ;
 
 const TIPO_TEF = 'TEF';
@@ -24,9 +24,13 @@ type
     CDSOPCOES: TClientDataSet;
     CDSOPCOESTIPO: TStringField;
     CDSOPCOESOPCAO: TStringField;
+    Bevel1: TBevel;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure DBGOPCOESDblClick(Sender: TObject);
+    procedure DBGOPCOESDrawDataCell(Sender: TObject; const Rect: TRect; Field: TField; State: TGridDrawState);
+    procedure CDSOPCOESAfterScroll(DataSet: TDataSet);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     procedure CarregaOpcoes;
@@ -65,7 +69,6 @@ procedure TFrmOpcoesFechamentoComCartao.CarregaOpcoes;
 var
   sSecoes: TStringList;
   Ini: TIniFile;
-  //J: Integer;
   I: Integer;
 begin
   sSecoes := TStringList.Create;
@@ -73,14 +76,11 @@ begin
 
   Ini.ReadSections(sSecoes);
 
-  //J := 0;
-
   for I := 0 to (sSecoes.Count - 1) do
   begin
     if AnsiUpperCase(Ini.ReadString(sSecoes[I], 'bAtivo', _cNao)) = AnsiUpperCase(_cSim) then
     begin
       AddOpcao(TIPO_TEF, sSecoes[I]);
-      //J := J + 1;
     end;
   end;
 
@@ -94,6 +94,11 @@ begin
 
   FreeAndNil(sSecoes);
   Ini.Free;
+end;
+
+procedure TFrmOpcoesFechamentoComCartao.CDSOPCOESAfterScroll(DataSet: TDataSet);
+begin
+  ShowScrollBar(DBGOPCOES.Handle, SB_HORZ, False);
 end;
 
 class function TFrmOpcoesFechamentoComCartao.CriaForm(var TipoTransacao: TTipoTransacaoTefPos): Integer;
@@ -118,7 +123,8 @@ begin
 
      if TipoTransacao.Tipo = tpPOS then
      begin
-       Form1.sNomeRede := Trim(StringReplace(StringReplace(AnsiUpperCase(ConverteAcentos(FrmOpcoesFechamentoComCartao.CDSOPCOES.FieldByName('OPCAO').AsString)), 'CREDITO', '', [rfReplaceAll]), 'DEBITO', '', [rfReplaceAll]));
+       //Sandro Silva 2024-12-05 Form1.sNomeRede := Trim(StringReplace(StringReplace(AnsiUpperCase(ConverteAcentos(FrmOpcoesFechamentoComCartao.CDSOPCOES.FieldByName('OPCAO').AsString)), 'CREDITO', '', [rfReplaceAll]), 'DEBITO', '', [rfReplaceAll]));
+       Form1.sNomeRedeTransacionada := Trim(StringReplace(StringReplace(AnsiUpperCase(ConverteAcentos(FrmOpcoesFechamentoComCartao.CDSOPCOES.FieldByName('OPCAO').AsString)), 'CREDITO', '', [rfReplaceAll]), 'DEBITO', '', [rfReplaceAll]));
      end;
 
      TipoTransacao.Descricao := FrmOpcoesFechamentoComCartao.CDSOPCOES.FieldByName('OPCAO').AsString;
@@ -126,7 +132,7 @@ begin
    else
    begin
 
-   se passar aqui result false, como fica o restante
+   //se passar aqui result false, como fica o restante
 
      TipoTransacao.Tipo := tpNone;
    end;
@@ -139,15 +145,44 @@ begin
   SelecionaOpcao;
 end;
 
+procedure TFrmOpcoesFechamentoComCartao.DBGOPCOESDrawDataCell(Sender: TObject; const Rect: TRect; Field: TField; State: TGridDrawState);
+var
+  xRect: TRect;
+begin
+{
+  ShowScrollBar(TDBGrid(Sender).Handle, SB_HORZ, False);
+
+  if (gdSelected in State) then
+    TDBGrid(Sender).Canvas.Brush.Color := $00D77800;// $00F4C84D; // Azul Small
+
+  TDBGrid(Sender).Canvas.FillRect(Rect);
+
+  xRect.Left   := Rect.Left + AjustaAltura(5);
+  xRect.Top    := Rect.Top  + AjustaAltura(5);
+  xRect.Right  := Rect.Left + AjustaAltura(5);
+  xRect.Bottom := Rect.Bottom - AjustaAltura(6);
+
+  TDBGrid(Sender).Canvas.Font.Size  := AjustaAltura(9);
+  TDBGrid(Sender).Canvas.Font.Color := clBlack;
+  TDBGrid(Sender).Canvas.TextOut(AjustaLargura(2), Rect.Top, TDBGrid(Sender).DataSource.DataSet.FieldByName('TIPO').AsString);
+  TDBGrid(Sender).Canvas.TextOut(AjustaLargura(30), Rect.Top, TDBGrid(Sender).DataSource.DataSet.FieldByName('OPCAO').AsString);
+}
+end;
+
 procedure TFrmOpcoesFechamentoComCartao.FormCreate(Sender: TObject);
 begin
+  DBGOPCOES.Options := DBGOPCOES.Options - [dgTitles, dgColLines, dgRowLines, dgColumnResize];
   ModalResult := mrNone;
-  AjustaResolucao(FrmOpcoesFechamentoComCartao);
   CDSOPCOES.CreateDataSet;
   CDSOPCOES.Open;
   CarregaOpcoes;
   CDSOPCOES.First;
-
+  AjustaResolucao(FrmOpcoesFechamentoComCartao);
+  Self.Height := AjustaAltura(Self.Height);
+  Self.Width  := AjustaLargura(Self.Width);
+  DBGOPCOES.Columns[0].Width := AjustaLargura(25);
+  DBGOPCOES.Columns[1].Width := AjustaLargura(DBGOPCOES.Columns[1].Width);
+  ShowScrollBar(DBGOPCOES.Handle, SB_HORZ, False);
 end;
 
 procedure TFrmOpcoesFechamentoComCartao.FormKeyDown(Sender: TObject;
@@ -159,6 +194,12 @@ begin
   end;
   if Key = VK_RETURN then
     SelecionaOpcao;
+end;
+
+procedure TFrmOpcoesFechamentoComCartao.FormShow(Sender: TObject);
+begin
+  ShowScrollBar(DBGOPCOES.Handle, SB_HORZ, False);
+  BringToFront;
 end;
 
 procedure TFrmOpcoesFechamentoComCartao.SelecionaOpcao;

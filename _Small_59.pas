@@ -204,7 +204,7 @@ uses
   , Unit2
   , Unit22
   , ufuncoesfrente
-  , _Small_IntegradorFiscal
+// Sandro Silva 2024-12-05  , _Small_IntegradorFiscal
   , Unit10
   , umfe // Sandro Silva 2022-05-17 Após o prazo de 07/11/2022, tirar essa uses e eliminar as dependências relacionadas ao Integrador e Validador Fiscal das demais unit do projeto
   , ucadadquirentes
@@ -421,7 +421,7 @@ begin
     XmlVendaSat.DestinatarioInformadoNaTela.CnpjCPF := Form2.Edit2.Text;
     XmlVendaSat.DestinatarioInformadoNaTela.Nome    := Form2.Edit8.Text;
     XmlVendaSat.Pagamentos.TEFPago                := Form1.fTEFPago;
-    XmlVendaSat.Pagamentos.NomeRede               := Form1.sNomeRede;
+    XmlVendaSat.Pagamentos.NomeRede               := Form1.sNomeRedeTransacionada; // Sandro Silva 2024-12-05 Form1.sNomeRede;
     XmlVendaSat.Pagamentos.TransacoesCartao       := Form1.TransacoesCartao;
     XmlVendaSat.Pagamentos.OrdemExtra1            := Form1.sOrdemExtraNFCe1;
     XmlVendaSat.Pagamentos.OrdemExtra2            := Form1.sOrdemExtraNFCe2;
@@ -433,8 +433,13 @@ begin
     XmlVendaSat.Pagamentos.OrdemExtra8            := Form1.sOrdemExtraNFCe8;
     XmlVendaSat.Pagamentos.DataSetFormasPagamento := Form1.ibDataSet25;
     Result := XmlVendaSat.GeraXMLVenda(_59, sCaixa, dtData, sCupom, sLog);
+    {Sandro Silva 2024-12-05 inicio
     if XmlVendaSat.Pagamentos.NomeRede <> Form1.sNomeRede then
       Form1.sNomeRede := XmlVendaSat.Pagamentos.NomeRede;
+    }
+    if XmlVendaSat.Pagamentos.NomeRede <> Form1.sNomeRedeTransacionada then
+      Form1.sNomeRedeTransacionada := XmlVendaSat.Pagamentos.NomeRede;
+    {Sandro Silva 2024-12-05 fim}
   finally
   end;
   FreeAndNil(XmlVendaSat);
@@ -2050,11 +2055,13 @@ begin
 
         sCFe := FormataNumeroDoCupom(StrToIntDef(_59.nCFe, 0)); // Sandro Silva 2021-12-01 sCFe := _59.nCFe;
 
+        {Sandro Silva 2024-12-05
         if (_ecf59_Tipodaimpressora = 'MFE') then
         begin
           //Repassar idRespostaFiscal para todos as formasde pagto usadas
           EnviarRespostaFiscalValidadorFiscal(_59.CFeID); // Sandro Silva 2018-07-03 _ecf59_EnviarRespostaFiscalValidadorFiscal(_59.CFeID);
         end;
+        }
 
         {Sandro Silva 2023-09-20 inicio
         // Neste ponto já o sat autorizou a venda, não tem porque mudar os valores nas formas de pagamento gravadas em PAGAMENT

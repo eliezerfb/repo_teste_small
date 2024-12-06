@@ -79,6 +79,8 @@ const NUMERO_LAUDO_PAF_ECF            = 'UNO3972022';// Sandro Silva 2022-12-12 
 const DATA_EMISSAO_LAUDO_PAF_ECF      = '12/12/2022'; // Sandro Silva 2022-12-02 Unochapeco
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
 
+const CHAVE_VENDA_NO_CARTAO              = 'Venda no Cartao';
+
 const PREFIXO_HISTORICO_TRANSACAO_POS = 'VENDA NO CARTAO'; // Sandro Silva (smal-778) 2024-11-25
 
 const NFCE_CSTAT_AUTORIZADO_100               = '100';
@@ -378,6 +380,7 @@ function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
 procedure SleepWithoutFreeze(msec: int64);
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
 procedure ResizeBitmap(var Bitmap: TBitmap; Width, Height: Integer; Background: TColor); // Mauricio Parizotto 2024-05-03
+function QtdAdquirentes: Integer;
 function GetAutorizacaoItau(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction;
   out CodigoAutorizacao, CNPJinstituicao : string) : boolean;
 function GetAutorizacaoPixRec(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction;
@@ -2848,6 +2851,37 @@ begin
       B.Free;
     end;
   end;
+end;
+
+function QtdAdquirentes: Integer;
+var
+  iSecao: Integer;
+  iQtd: Integer;
+  sl : TStringList;
+  ini: TIniFile;
+  sNomeSecao: String;
+begin
+
+  ini := TIniFile.Create(FRENTE_INI);
+  sl := TStringList.Create;
+
+  sl.Clear;
+  ini.ReadSections(sl); //Conta o número de itens
+
+  iQtd := 0;
+  for iSecao := 0 to sl.Count - 1 do
+  begin
+    if AnsiContainsText(sl.Strings[iSecao], 'ADQUIRENTE') then
+    begin
+      sNomeSecao := sl.Strings[iSecao];
+      Inc(iQtd);
+    end;
+  end;
+  Result := iQtd;
+
+  sl.Free;
+  ini.Free;
+
 end;
 
 function GetAutorizacaoItau(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction; out CodigoAutorizacao, CNPJinstituicao: string) : boolean;
