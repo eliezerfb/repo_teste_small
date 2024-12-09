@@ -6122,10 +6122,10 @@ object Form1: TForm1
       00000000000000000100000000000000000000000000000000000000}
   end
   object FileListBox1: TFileListBox
-    Left = 1176
-    Top = 48
-    Width = 153
-    Height = 89
+    Left = 1191
+    Top = 338
+    Width = 102
+    Height = 95
     Mask = 'small??.exe'
     TabOrder = 10
     Visible = False
@@ -6140,8 +6140,8 @@ object Form1: TForm1
     OnClick = Button1Click
   end
   object DBGrid1: TDBGrid
-    Left = 981
-    Top = 151
+    Left = 1165
+    Top = 309
     Width = 100
     Height = 21
     BiDiMode = bdLeftToRight
@@ -11636,7 +11636,7 @@ object Form1: TForm1
       Transparent = True
       OnClick = imgBackupClick
     end
-    object Label201: TLabel
+    object lblVendas: TLabel
       Left = 105
       Top = 25
       Width = 70
@@ -11656,10 +11656,10 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgVendasClick
-      OnMouseMove = Label201MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblVendasMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
-    object Label201_: TLabel
+    object lblOS: TLabel
       Left = 200
       Top = 25
       Width = 70
@@ -11679,10 +11679,10 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgOrdemServicoClick
-      OnMouseMove = Label201_MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblOSMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
-    object Label202: TLabel
+    object lblEstoque: TLabel
       Left = 295
       Top = 25
       Width = 70
@@ -11702,10 +11702,10 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgEstoqueClick
-      OnMouseMove = Label202MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblEstoqueMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
-    object Label203: TLabel
+    object lblCliFor: TLabel
       Left = 390
       Top = 25
       Width = 70
@@ -11725,10 +11725,10 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgCliForClick
-      OnMouseMove = Label203MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblCliForMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
-    object Label204: TLabel
+    object lblContaReceber: TLabel
       Left = 485
       Top = 25
       Width = 70
@@ -11748,10 +11748,10 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgContaReceberClick
-      OnMouseMove = Label204MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblContaReceberMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
-    object Label210: TLabel
+    object lblContaPagar: TLabel
       Left = 580
       Top = 25
       Width = 70
@@ -11771,10 +11771,10 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgContaPagarClick
-      OnMouseMove = Label210MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblContaPagarMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
-    object Label205: TLabel
+    object lblCaixa: TLabel
       Left = 675
       Top = 25
       Width = 70
@@ -11794,10 +11794,10 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgCaixaClick
-      OnMouseMove = Label205MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblCaixaMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
-    object Label206: TLabel
+    object lblBancos: TLabel
       Left = 770
       Top = 25
       Width = 70
@@ -11817,10 +11817,10 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgBancosClick
-      OnMouseMove = Label206MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblBancosMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
-    object Label207: TLabel
+    object lblConfiguracoes: TLabel
       Left = 865
       Top = 25
       Width = 70
@@ -11840,10 +11840,10 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgConfiguracoesClick
-      OnMouseMove = Label207MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblConfiguracoesMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
-    object Label208: TLabel
+    object lblBackup: TLabel
       Left = 960
       Top = 25
       Width = 70
@@ -11863,8 +11863,8 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgBackupClick
-      OnMouseMove = Label208MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblBackupMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
     object imgIndicadores: TImage
       Left = 10
@@ -12346,14 +12346,14 @@ object Form1: TForm1
       Visible = False
       OnClick = imgIndicadoresClick
     end
-    object Label200: TLabel
+    object lblDashboard: TLabel
       Left = 10
       Top = 25
       Width = 70
       Height = 80
       Alignment = taCenter
       AutoSize = False
-      Caption = 'Indicadores'
+      Caption = 'Dashboard'
       Color = 16108376
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
@@ -12366,8 +12366,8 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgIndicadoresClick
-      OnMouseMove = Label200MouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblDashboardMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
     object Image_bola_caixa: TImage
       Left = 752
@@ -13632,7 +13632,7 @@ object Form1: TForm1
       Visible = False
       OnClick = imgServicosClick
     end
-    object LAbel201C: TLabel
+    object lblCompras: TLabel
       Left = 1045
       Top = 25
       Width = 70
@@ -13652,10 +13652,10 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgComprasClick
-      OnMouseMove = LAbel201CMouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblComprasMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
-    object Label201S: TLabel
+    object lblServico: TLabel
       Left = 1135
       Top = 25
       Width = 70
@@ -13675,8 +13675,8 @@ object Form1: TForm1
       Layout = tlBottom
       Visible = False
       OnClick = imgVendasClick
-      OnMouseMove = Label201SMouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseMove = lblServicoMouseMove
+      OnMouseLeave = lblVendasMouseLeave
     end
     object Label_bola_indicadores: TLabel
       Left = 80
@@ -13967,12 +13967,12 @@ object Form1: TForm1
       Visible = False
       OnClick = imgOrcamentoClick
       OnMouseMove = lblModOrcamentoMouseMove
-      OnMouseLeave = Label201MouseLeave
+      OnMouseLeave = lblVendasMouseLeave
     end
   end
   object DBGrid200: TDBGrid
-    Left = 981
-    Top = 127
+    Left = 1165
+    Top = 279
     Width = 100
     Height = 21
     BiDiMode = bdLeftToRight
@@ -14663,8 +14663,8 @@ object Form1: TForm1
   end
   object Timer1: TTimer
     OnTimer = Timer1Timer
-    Left = 864
-    Top = 372
+    Left = 560
+    Top = 212
   end
   object IBQuery2: TIBQuery
     Database = Form7.IBDatabase1
@@ -14693,8 +14693,8 @@ object Form1: TForm1
   object Timer2: TTimer
     Interval = 10000
     OnTimer = Timer2Timer
-    Left = 864
-    Top = 340
+    Left = 516
+    Top = 212
   end
   object ppmBackup: TPopupMenu
     Left = 864
@@ -14713,65 +14713,17 @@ object Form1: TForm1
     Left = 944
     Top = 144
   end
-  object IBQueryGrafico: TIBQuery
-    Database = Form7.IBDatabase1
-    Transaction = IBTransaction2
-    BufferChunks = 1000
-    CachedUpdates = False
-    ParamCheck = True
-    PrecommittedReads = False
-    Left = 832
-    Top = 628
-  end
-  object IBTransaction2: TIBTransaction
-    DefaultDatabase = Form7.IBDatabase1
-    Params.Strings = (
-      'isc_tpb_concurrency'
-      'isc_tpb_nowait')
-    Left = 872
-    Top = 627
-  end
-  object IBDataSetGrafico1: TIBDataSet
-    Database = Form7.IBDatabase1
-    Transaction = IBTransaction2
-    BufferChunks = 1000
-    CachedUpdates = False
-    ParamCheck = True
-    UniDirectional = False
-    Left = 832
-    Top = 659
-  end
-  object IBDataSetGrafico2: TIBDataSet
-    Database = Form7.IBDatabase1
-    Transaction = IBTransaction2
-    BufferChunks = 1000
-    CachedUpdates = False
-    ParamCheck = True
-    UniDirectional = False
-    Left = 832
-    Top = 691
-  end
-  object IBDataSetGrafico3: TIBDataSet
-    Database = Form7.IBDatabase1
-    Transaction = IBTransaction2
-    BufferChunks = 1000
-    CachedUpdates = False
-    ParamCheck = True
-    UniDirectional = False
-    Left = 832
-    Top = 723
-  end
   object timerLegal: TTimer
     Enabled = False
     Interval = 300000
     OnTimer = timerLegalTimer
-    Left = 1088
-    Top = 200
+    Left = 615
+    Top = 212
   end
   object TimerDashboard: TTimer
     Enabled = False
     OnTimer = TimerDashboardTimer
-    Left = 1144
-    Top = 200
+    Left = 695
+    Top = 212
   end
 end

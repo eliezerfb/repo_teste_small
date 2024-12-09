@@ -50,7 +50,6 @@ object Form2: TForm2
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 1
-    ExplicitWidth = 784
     DesignSize = (
       684
       598)
@@ -281,9 +280,9 @@ object Form2: TForm2
       Tag = 1
       Left = 338
       Top = 555
-      Width = 97
+      Width = 79
       Height = 16
-      Caption = 'Somente Leitura'
+      Caption = 'N'#227'o liberado'
       Color = clWhite
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
@@ -375,9 +374,9 @@ object Form2: TForm2
       Tag = 1
       Left = 338
       Top = 485
-      Width = 97
+      Width = 79
       Height = 16
-      Caption = 'Somente Leitura'
+      Caption = 'N'#227'o liberado'
       Color = clWhite
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
@@ -727,7 +726,7 @@ object Form2: TForm2
       Top = 485
       Width = 120
       Height = 17
-      Caption = 'Indicadores'
+      Caption = 'Dashboard'
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
       Font.Height = -11

@@ -351,8 +351,12 @@ begin
     with Sender as TCheckBox do
     begin
       if State = cbUnchecked then Label_16.Caption := 'Não liberado';
+      {Mauricio Parizotto 2024-12-09
       if State = cbChecked then Label_16.Caption := 'Leitura e gravação';
       if State = cbGrayed then Label_16.Caption := 'Somente leitura';
+      }
+      if State = cbChecked then Label_16.Caption := 'Liberado';
+      if State = cbGrayed then Label_16.Caption := 'Liberado';
     end;
 
     Mais1Ini.Free;
@@ -362,9 +366,9 @@ end;
 
 procedure TForm2.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  Form1.Label207.Tag     := 0;
+  Form1.lblConfiguracoes.Tag     := 0;
   Form1.imgConfiguracoes.OnClick          := Form1.imgConfiguracoesClick;
-  Form1.Label207.OnClick          := Form1.imgConfiguracoesClick;
+  Form1.lblConfiguracoes.OnClick          := Form1.imgConfiguracoesClick;
   Form1.Label_bola_config.OnClick := Form1.Label_Bola_ConfigClick;
 
   close;

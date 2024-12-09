@@ -687,7 +687,8 @@ begin
     qryAux.SQL.Text :=  ' Select '+
                         ' 	NOME,'+
                         ' 	Coalesce(SALDO3,0) SALDO '+
-                        ' From BANCOS';
+                        ' From BANCOS'+
+                        ' Order By Coalesce(SALDO3,0) Desc';
     qryAux.Open;
 
     i := 0;

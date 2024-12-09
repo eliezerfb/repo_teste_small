@@ -5,8 +5,8 @@ object Form19: TForm19
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Configura'#231#245'es e ajustes do sistema'
-  ClientHeight = 494
-  ClientWidth = 626
+  ClientHeight = 441
+  ClientWidth = 624
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -26,11 +26,13 @@ object Form19: TForm19
   object Orelhas: TPageControl
     Left = 20
     Top = 20
-    Width = 586
-    Height = 403
-    ActivePage = Orelha_relatorios
+    Width = 584
+    Height = 358
+    ActivePage = tbsDashboard
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 586
+    ExplicitHeight = 411
     object Orelha_relatorios: TTabSheet
       Caption = 'Relat'#243'rios'
       object GroupBox3: TGroupBox
@@ -1548,8 +1550,8 @@ object Form19: TForm19
       Caption = 'Dashboard'
       ImageIndex = 11
       DesignSize = (
-        578
-        383)
+        576
+        330)
       object imgCheck: TImage
         Left = 446
         Top = 3
@@ -1642,7 +1644,7 @@ object Form19: TForm19
       end
       object Label27: TLabel
         Left = 18
-        Top = 44
+        Top = 42
         Width = 180
         Height = 13
         Alignment = taRightJustify
@@ -1657,11 +1659,11 @@ object Form19: TForm19
         TabOrder = 0
       end
       object dbgPrincipal: TDBGrid
-        Left = 17
-        Top = 64
-        Width = 542
-        Height = 301
-        Anchors = [akLeft, akTop, akRight, akBottom]
+        Left = 18
+        Top = 61
+        Width = 540
+        Height = 215
+        Anchors = [akLeft, akTop, akRight]
         BiDiMode = bdLeftToRight
         Color = clWhite
         Ctl3D = False
@@ -1710,19 +1712,50 @@ object Form19: TForm19
             Visible = True
           end>
       end
+      object btnMarcarTodosOper: TBitBtn
+        Left = 16
+        Top = 291
+        Width = 100
+        Height = 25
+        Caption = 'Marcar todas'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 2
+        OnClick = btnMarcarTodosOperClick
+      end
+      object btnDesmarcarTodosOper: TBitBtn
+        Left = 120
+        Top = 291
+        Width = 100
+        Height = 25
+        Caption = 'Desmarcar todas'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 3
+        OnClick = btnDesmarcarTodosOperClick
+      end
     end
   end
   object Panel2: TPanel
     Left = 0
     Top = 20
     Width = 20
-    Height = 411
+    Height = 358
     Align = alLeft
     BevelOuter = bvNone
     Color = clWhite
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
+    ExplicitHeight = 411
     object Button2: TButton
       Left = 350
       Top = 5
@@ -1734,16 +1767,18 @@ object Form19: TForm19
     end
   end
   object Panel4: TPanel
-    Left = 606
+    Left = 604
     Top = 20
     Width = 20
-    Height = 411
+    Height = 358
     Align = alRight
     BevelOuter = bvNone
     Color = clWhite
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 2
+    ExplicitLeft = 606
+    ExplicitHeight = 411
     object Button6: TButton
       Left = 350
       Top = 5
@@ -1756,8 +1791,8 @@ object Form19: TForm19
   end
   object Panel3: TPanel
     Left = 0
-    Top = 431
-    Width = 626
+    Top = 378
+    Width = 624
     Height = 63
     Align = alBottom
     BevelOuter = bvNone
@@ -1765,6 +1800,8 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 3
+    ExplicitTop = 431
+    ExplicitWidth = 626
     object btnCancelar: TButton
       Left = 400
       Top = 19
@@ -1801,7 +1838,7 @@ object Form19: TForm19
   object Panel5: TPanel
     Left = 0
     Top = 0
-    Width = 626
+    Width = 624
     Height = 20
     Align = alTop
     BevelOuter = bvNone
@@ -1809,24 +1846,25 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 4
+    ExplicitWidth = 626
   end
   object ColorDialog1: TColorDialog
     Color = clGreen
     CustomColors.Strings = (
       'c0c0c0c0')
     Options = [cdFullOpen, cdPreventFullOpen, cdSolidColor]
-    Left = 218
-    Top = 340
+    Left = 368
+    Top = 160
   end
   object OpenDialog4: TOpenDialog
     InitialDir = 'c:\'
-    Left = 304
-    Top = 336
+    Left = 440
+    Top = 160
   end
   object OpenDialog3: TOpenDialog
     InitialDir = 'c:\'
-    Left = 376
-    Top = 336
+    Left = 512
+    Top = 160
   end
   object DSNaturezaDash: TDataSource
     DataSet = cdsNaturezaDash

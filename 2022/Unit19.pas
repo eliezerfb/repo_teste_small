@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Mask, IniFiles, ComCtrls, Shellapi, DBCtrls, SMALL_DBEdit, smallfunc_xe,
   ExtCtrls, Data.DB, Vcl.Grids, Vcl.DBGrids, Datasnap.DBClient, IBX.IBQuery,
-  System.StrUtils
+  System.StrUtils, Vcl.Buttons
   ;
 
 type
@@ -164,6 +164,8 @@ type
     Label27: TLabel;
     cdsNaturezaDashCFOP: TStringField;
     cdsNaturezaDashINTEGRACAO: TStringField;
+    btnMarcarTodosOper: TBitBtn;
+    btnDesmarcarTodosOper: TBitBtn;
     procedure FormActivate(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
@@ -215,6 +217,8 @@ type
     procedure ComboBoxORCAChange(Sender: TObject);
     procedure dbgPrincipalDrawColumnCell(Sender: TObject; const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure dbgPrincipalCellClick(Column: TColumn);
+    procedure btnMarcarTodosOperClick(Sender: TObject);
+    procedure btnDesmarcarTodosOperClick(Sender: TObject);
   private
     { Private declarations }
     procedure SetTipoMulta;
@@ -222,6 +226,7 @@ type
     procedure ListaNaturezaDashboard;
     function NaturezaDashToJson: string;
     procedure JsonToNaturezaDashTo(json: string);
+    procedure MarcaTodasNaturezasDash(sTipo: string);
   public
     { Public declarations }
     bChave : Boolean;
@@ -525,6 +530,16 @@ begin
   bChave := False;
 
   ComboBoxORCAChange(nil);
+end;
+
+procedure TForm19.btnDesmarcarTodosOperClick(Sender: TObject);
+begin
+  MarcaTodasNaturezasDash('N');
+end;
+
+procedure TForm19.btnMarcarTodosOperClick(Sender: TObject);
+begin
+  MarcaTodasNaturezasDash('S');
 end;
 
 procedure TForm19.btnOKClick(Sender: TObject);
@@ -1583,6 +1598,7 @@ begin
   cdsNaturezaDash.Close;
   cdsNaturezaDash.CreateDataSet;
   cdsNaturezaDash.Open;
+  cdsNaturezaDash.FetchOnDemand := False;
 
   while not cdsNaturezaDash.Eof do
   begin
@@ -1598,6 +1614,7 @@ begin
                        ' From ICM'+
                        ' Where LISTAR = ''S'' '+
                        '   and SUBSTRING(CFOP from 1 for 1) in (''5'',''6'',''7'')  '+
+                       '   and COALESCE(NOME,'''') <> '''' '+
                        ' Order by UPPER(NOME) ';
     qryAux.Open;
 
@@ -1697,6 +1714,26 @@ begin
       cdsNaturezaDash.First;
       cdsNaturezaDash.EnableControls;
     end;
+  end;
+end;
+
+procedure TForm19.MarcaTodasNaturezasDash(sTipo:string);
+begin
+  try
+    cdsNaturezaDash.DisableControls;
+    cdsNaturezaDash.First;
+
+    while not cdsNaturezaDash.Eof do
+    begin
+      cdsNaturezaDash.Edit;
+      cdsNaturezaDashMARCADO.AsString := sTipo;
+      cdsNaturezaDash.Post;
+
+      cdsNaturezaDash.Next;
+    end;
+  finally
+    cdsNaturezaDash.First;
+    cdsNaturezaDash.EnableControls;
   end;
 end;
 

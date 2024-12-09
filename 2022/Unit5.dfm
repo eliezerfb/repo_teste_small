@@ -573,4 +573,52 @@ object Form5: TForm5
       end
     end
   end
+  object IBDataSetGrafico3: TIBDataSet
+    Database = Form7.IBDatabase1
+    Transaction = IBTransaction2
+    BufferChunks = 1000
+    CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
+    Left = 680
+    Top = 51
+  end
+  object IBDataSetGrafico2: TIBDataSet
+    Database = Form7.IBDatabase1
+    Transaction = IBTransaction2
+    BufferChunks = 1000
+    CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
+    Left = 576
+    Top = 51
+  end
+  object IBDataSetGrafico1: TIBDataSet
+    Database = Form7.IBDatabase1
+    Transaction = IBTransaction2
+    BufferChunks = 1000
+    CachedUpdates = False
+    ParamCheck = True
+    UniDirectional = False
+    Left = 472
+    Top = 51
+  end
+  object IBQueryGrafico: TIBQuery
+    Database = Form7.IBDatabase1
+    Transaction = IBTransaction2
+    BufferChunks = 1000
+    CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
+    Left = 368
+    Top = 52
+  end
+  object IBTransaction2: TIBTransaction
+    DefaultDatabase = Form7.IBDatabase1
+    Params.Strings = (
+      'isc_tpb_concurrency'
+      'isc_tpb_nowait')
+    Left = 278
+    Top = 53
+  end
 end

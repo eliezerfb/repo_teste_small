@@ -27,7 +27,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, StdCtrls, OleCtrls, SHDocVw, smallfunc_xe, Grids,
-  inifiles, shellapi, DBCtrls, DBGrids, Mask, SMALL_DBEdit;
+  inifiles, shellapi, DBCtrls, DBGrids, Mask, SMALL_DBEdit, Data.DB, IBX.IBCustomDataSet, IBX.IBQuery, IBX.IBDatabase;
 
 const FONT_SIZE_LABEL_PADRAO = 6;  
 type
@@ -81,6 +81,11 @@ type
     Image23: TImage;
     Panel24: TPanel;
     Image24: TImage;
+    IBDataSetGrafico3: TIBDataSet;
+    IBDataSetGrafico2: TIBDataSet;
+    IBDataSetGrafico1: TIBDataSet;
+    IBQueryGrafico: TIBQuery;
+    IBTransaction2: TIBTransaction;
     procedure FormShow(Sender: TObject);
     procedure Image16MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -443,20 +448,20 @@ begin
     //
     // ITENS001 e ALTERACA
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select count(REGISTRO)as QTD, Coalesce(CLIFOR,''Cliente'')as RELACAO from CLIFOR group by RELACAO');
-    Form1.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select count(REGISTRO)as QTD, Coalesce(CLIFOR,''Cliente'')as RELACAO from CLIFOR group by RELACAO');
+    Form5.ibQueryGrafico.Open;
     //
     I := 0;
     //
-    while not Form1.ibQueryGrafico.Eof do
+    while not Form5.ibQueryGrafico.Eof do
     begin
       I := I + 1;
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),
-                                   'S1<'+StrTran(Format('%15.2n',[ Form1.ibQueryGrafico.FieldByName('QTD').AsFloat ]),'.','')+'>'+
-                                   'S2<'+StrTran(Format('%15.2n',[ Form1.ibQueryGrafico.FieldByName('QTD').AsFloat ]),'.','')+'>'+
-                                   'VX<'+StrZero(I,2,0)+'>LX<'+AllTrim(StrTran(Format('%10.0n',[ Form1.ibQueryGrafico.FieldByName('QTD').AsFloat ]),'.',''))+' '+
+                                   'S1<'+StrTran(Format('%15.2n',[ Form5.ibQueryGrafico.FieldByName('QTD').AsFloat ]),'.','')+'>'+
+                                   'S2<'+StrTran(Format('%15.2n',[ Form5.ibQueryGrafico.FieldByName('QTD').AsFloat ]),'.','')+'>'+
+                                   'VX<'+StrZero(I,2,0)+'>LX<'+AllTrim(StrTran(Format('%10.0n',[ Form5.ibQueryGrafico.FieldByName('QTD').AsFloat ]),'.',''))+' '+
                                    StrTran(
                                    StrTran(
                                    StrTran(
@@ -466,7 +471,7 @@ begin
                                    StrTran(
                                    StrTran(
 
-                                   Uppercase(Form1.ibQueryGrafico.FieldByName('RELACAO').AsString)
+                                   Uppercase(Form5.ibQueryGrafico.FieldByName('RELACAO').AsString)
                                     ,Uppercase('Cliente/Fornecedor')     ,'Clientes/Fornecedores' )
                                     ,Uppercase('Funcionário'       )     ,'Funcionários'          )
                                     ,Uppercase('Revenda'           )     ,'Revendas'              )
@@ -477,7 +482,7 @@ begin
                                     ,Uppercase('Fornecedor'        )     ,'Fornecedores'          )
                                    +
                                    '>');
-      Form1.ibQueryGrafico.Next;
+      Form5.ibQueryGrafico.Next;
     end;
     //
     Mais1Ini.Free;
@@ -547,34 +552,34 @@ begin
     //
     // Vendas NFe
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select sum(VENDAS.MERCADORIA+VENDAS.SERVICOS-VENDAS.DESCONTO)as VTOT, extract(month from VENDAS.EMISSAO)'+
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select sum(VENDAS.MERCADORIA+VENDAS.SERVICOS-VENDAS.DESCONTO)as VTOT, extract(month from VENDAS.EMISSAO)'+
                            ' as VMES from VENDAS, ICM where VENDAS.EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+
                            ' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' group by VMES order by VMES');
-    Form1.ibQueryGrafico.Open;
-    Form1.ibQueryGrafico.First;
+    Form5.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.First;
     //
-    while not Form1.ibQueryGrafico.Eof do
+    while not Form5.ibQueryGrafico.Eof do
     begin
-      vTotalDoMes[StrToInt(Form1.ibQueryGrafico.FieldByName('VMES').AsString)] := Form1.ibQueryGrafico.FieldByName('vTOT').AsFloat;
-      Form1.ibQueryGrafico.Next;
+      vTotalDoMes[StrToInt(Form5.ibQueryGrafico.FieldByName('VMES').AsString)] := Form5.ibQueryGrafico.FieldByName('vTOT').AsFloat;
+      Form5.ibQueryGrafico.Next;
     end;
     //
     // Vendas NCe
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select sum(ALTERACA.TOTAL)as VTOT, extract(month from ALTERACA.DATA) as VMES from ALTERACA where ALTERACA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and ALTERACA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') '+
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select sum(ALTERACA.TOTAL)as VTOT, extract(month from ALTERACA.DATA) as VMES from ALTERACA where ALTERACA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and ALTERACA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') '+
                                  'and (ALTERACA.VALORICM is null  or (ALTERACA.TIPO=''VENDA'' and ALTERACA.VALORICM is not null)) ' + // Para não selecionar as vendas importadas para NF-e Sandro Silva 2023-02-14
                                  ' group by VMES order by VMES');
-    Form1.ibQueryGrafico.Open;
-    Form1.ibQueryGrafico.First;
+    Form5.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.First;
     //
-    while not Form1.ibQueryGrafico.Eof do
+    while not Form5.ibQueryGrafico.Eof do
     begin
-      vTotalDoMes[StrToInt(Form1.ibQueryGrafico.FieldByName('VMES').AsString)] := vTotalDoMes[StrToInt(Form1.ibQueryGrafico.FieldByName('VMES').AsString)] + Form1.ibQueryGrafico.FieldByName('vTOT').AsFloat;
-      Form1.ibQueryGrafico.Next;
+      vTotalDoMes[StrToInt(Form5.ibQueryGrafico.FieldByName('VMES').AsString)] := vTotalDoMes[StrToInt(Form5.ibQueryGrafico.FieldByName('VMES').AsString)] + Form5.ibQueryGrafico.FieldByName('vTOT').AsFloat;
+      Form5.ibQueryGrafico.Next;
     end;
     //
     for I := 1 to 12 do
@@ -645,35 +650,35 @@ begin
     //
     // Vendas NFe
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select sum(VENDAS.MERCADORIA+VENDAS.SERVICOS-VENDAS.DESCONTO)as VTOT, extract(year from VENDAS.EMISSAO) as VANO from VENDAS, ICM where VENDAS.EMITIDA=''S'' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' group by VANO order by VANO');
-    Form1.ibQueryGrafico.Open;
-    Form1.ibQueryGrafico.First;
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select sum(VENDAS.MERCADORIA+VENDAS.SERVICOS-VENDAS.DESCONTO)as VTOT, extract(year from VENDAS.EMISSAO) as VANO from VENDAS, ICM where VENDAS.EMITIDA=''S'' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' group by VANO order by VANO');
+    Form5.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.First;
     //
-    while not Form1.ibQueryGrafico.Eof do
+    while not Form5.ibQueryGrafico.Eof do
     begin
-      if LimpaNumero(Form1.ibQueryGrafico.FieldByName('VANO').AsString) <> '' then
+      if LimpaNumero(Form5.ibQueryGrafico.FieldByName('VANO').AsString) <> '' then
       begin
-        vTotalDoAno[StrToInt(Form1.ibQueryGrafico.FieldByName('VANO').AsString)] := Form1.ibQueryGrafico.FieldByName('vTOT').AsFloat;
+        vTotalDoAno[StrToInt(Form5.ibQueryGrafico.FieldByName('VANO').AsString)] := Form5.ibQueryGrafico.FieldByName('vTOT').AsFloat;
       end;
-      Form1.ibQueryGrafico.Next;
+      Form5.ibQueryGrafico.Next;
     end;
     //
     // Vendas NCe
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select sum(ALTERACA.TOTAL)as VTOT, extract(Year from ALTERACA.DATA) as VANO from ALTERACA where (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') '+
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select sum(ALTERACA.TOTAL)as VTOT, extract(Year from ALTERACA.DATA) as VANO from ALTERACA where (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') '+
                                  'and (ALTERACA.VALORICM is null  or (ALTERACA.TIPO=''VENDA'' and ALTERACA.VALORICM is not null)) ' + // Para não selecionar as vendas importadas para NF-e Sandro Silva 2023-02-14
                                  ' group by VANO order by VANO');
-    Form1.ibQueryGrafico.Open;
-    Form1.ibQueryGrafico.First;
+    Form5.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.First;
     //
-    while not Form1.ibQueryGrafico.Eof do
+    while not Form5.ibQueryGrafico.Eof do
     begin
-      vTotalDoAno[StrToInt(Form1.ibQueryGrafico.FieldByName('VANO').AsString)] := vTotalDoAno[StrToInt(Form1.ibQueryGrafico.FieldByName('VANO').AsString)] + Form1.ibQueryGrafico.FieldByName('vTOT').AsFloat;
-      Form1.ibQueryGrafico.Next;
+      vTotalDoAno[StrToInt(Form5.ibQueryGrafico.FieldByName('VANO').AsString)] := vTotalDoAno[StrToInt(Form5.ibQueryGrafico.FieldByName('VANO').AsString)] + Form5.ibQueryGrafico.FieldByName('vTOT').AsFloat;
+      Form5.ibQueryGrafico.Next;
     end;
     //
     I := 0;
@@ -917,24 +922,24 @@ begin
     //
     // CAIXA
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=''3'' and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS');
-    Form1.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=''3'' and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS');
+    Form5.ibQueryGrafico.Open;
     //
     I := 0;
     //
-    while not Form1.ibQueryGrafico.Eof do
+    while not Form5.ibQueryGrafico.Eof do
     begin
       //
       I := I + 1;
       //
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),
-                                   'S1<'+StrTran(Format('%15.2n',[ Form1.ibQueryGrafico.FieldByName('VS').AsFloat * -1]),'.','')+'>'+
-                                   'S2<'+StrTran(Format('%15.2n',[ Form1.ibQueryGrafico.FieldByName('VS').AsFloat * -1]),'.','')+'>'+
-                                   'VX<'+StrZero(I,2,0)+'>LX<'+ AllTrim(Copy(Form1.ibQueryGrafico.FieldByname('NOME').AsString+'            ',1,12))+' '+ AllTrim(Format('%12.0n',[ (Form1.ibQueryGrafico.FieldByName('VS').AsFloat * -1) / 1000]))  +' mil >');
+                                   'S1<'+StrTran(Format('%15.2n',[ Form5.ibQueryGrafico.FieldByName('VS').AsFloat * -1]),'.','')+'>'+
+                                   'S2<'+StrTran(Format('%15.2n',[ Form5.ibQueryGrafico.FieldByName('VS').AsFloat * -1]),'.','')+'>'+
+                                   'VX<'+StrZero(I,2,0)+'>LX<'+ AllTrim(Copy(Form5.ibQueryGrafico.FieldByname('NOME').AsString+'            ',1,12))+' '+ AllTrim(Format('%12.0n',[ (Form5.ibQueryGrafico.FieldByName('VS').AsFloat * -1) / 1000]))  +' mil >');
       //
-      Form1.ibQueryGrafico.Next;
+      Form5.ibQueryGrafico.Next;
       //
     end;
     //
@@ -988,22 +993,22 @@ begin
     //
     // CAIXA
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add( 'select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=''3'' and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS');
-    Form1.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add( 'select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=''3'' and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS');
+    Form5.ibQueryGrafico.Open;
     //
     I := 0;
     //
-    while not Form1.ibQueryGrafico.Eof do
+    while not Form5.ibQueryGrafico.Eof do
     begin
       I := I + 1;
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),
-                                   'S1<'+StrTran(Format('%15.2n',[ Form1.ibQueryGrafico.FieldByName('VS').AsFloat * -1]),'.','')+'>'+
-                                   'S2<'+StrTran(Format('%15.2n',[ Form1.ibQueryGrafico.FieldByName('VS').AsFloat * -1]),'.','')+'>'+
-                                   'VX<'+StrZero(I,2,0)+'>LX<'+ AllTrim(Copy(Form1.ibQueryGrafico.FieldByname('NOME').AsString+'            ',1,12))+' '+ AllTrim(Format('%12.0n',[ (Form1.ibQueryGrafico.FieldByName('VS').AsFloat * -1) / 1000]))  +' mil >');
+                                   'S1<'+StrTran(Format('%15.2n',[ Form5.ibQueryGrafico.FieldByName('VS').AsFloat * -1]),'.','')+'>'+
+                                   'S2<'+StrTran(Format('%15.2n',[ Form5.ibQueryGrafico.FieldByName('VS').AsFloat * -1]),'.','')+'>'+
+                                   'VX<'+StrZero(I,2,0)+'>LX<'+ AllTrim(Copy(Form5.ibQueryGrafico.FieldByname('NOME').AsString+'            ',1,12))+' '+ AllTrim(Format('%12.0n',[ (Form5.ibQueryGrafico.FieldByName('VS').AsFloat * -1) / 1000]))  +' mil >');
 
-      Form1.ibQueryGrafico.Next;
+      Form5.ibQueryGrafico.Next;
     end;
     //
     Mais1Ini.Free;
@@ -1057,22 +1062,22 @@ begin
     //
     // CAIXA
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add( 'select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=''1'' and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS desc');
-    Form1.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add( 'select CAIXA.NOME as NOME, sum((CAIXA.ENTRADA-CAIXA.SAIDA))as vS from CAIXA, CONTAS where CAIXA.NOME=CONTAS.NOME and substring(CONTAS.CONTA||''0'' from 1 for 1)=''1'' and CAIXA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and CAIXA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' group by CAIXA.NOME order by VS desc');
+    Form5.ibQueryGrafico.Open;
     //
     I := 0;
     //
-    while not Form1.ibQueryGrafico.Eof do
+    while not Form5.ibQueryGrafico.Eof do
     begin
       I := I + 1;
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),
-                                   'S1<'+StrTran(Format('%15.2n',[ Form1.ibQueryGrafico.FieldByName('VS').AsFloat ]),'.','')+'>'+
-                                   'S2<'+StrTran(Format('%15.2n',[ Form1.ibQueryGrafico.FieldByName('VS').AsFloat ]),'.','')+'>'+
-                                   'VX<'+StrZero(I,2,0)+'>LX<'+ Copy(Form1.ibQueryGrafico.FieldByname('NOME').AsString+'        ',1,10) + ' '+ AllTrim(Format('%15.0n',[Form1.ibQueryGrafico.FieldByName('VS').AsFloat / 1000]))  +' mil >');
+                                   'S1<'+StrTran(Format('%15.2n',[ Form5.ibQueryGrafico.FieldByName('VS').AsFloat ]),'.','')+'>'+
+                                   'S2<'+StrTran(Format('%15.2n',[ Form5.ibQueryGrafico.FieldByName('VS').AsFloat ]),'.','')+'>'+
+                                   'VX<'+StrZero(I,2,0)+'>LX<'+ Copy(Form5.ibQueryGrafico.FieldByname('NOME').AsString+'        ',1,10) + ' '+ AllTrim(Format('%15.0n',[Form5.ibQueryGrafico.FieldByName('VS').AsFloat / 1000]))  +' mil >');
 
-      Form1.ibQueryGrafico.Next;
+      Form5.ibQueryGrafico.Next;
     end;
     //
     Mais1Ini.Free;
@@ -1131,10 +1136,10 @@ begin
     //
     // ITENS001 e ALTERACA
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
     {Sandro Silva 2022-09-16 inicio Ficha 6237
-    Form1.ibQueryGrafico.SQL.Add( 'select CODIGO, SUM(vTOTAL) as TOTAL'+
+    Form5.ibQueryGrafico.SQL.Add( 'select CODIGO, SUM(vTOTAL) as TOTAL'+
                                   ' from'+
                                   ' (select ITENS001.CODIGO, sum(ITENS001.TOTAL)as vTOTAL '+
                                   ' from ITENS001, VENDAS'+
@@ -1146,37 +1151,37 @@ begin
                                   ' group by CODIGO)'+
                                   ' group by CODIGO order by TOTAL desc');
     }
-    Form1.ibQueryGrafico.SQL.Add(SqlSelectCurvaAbcEstoque(dInicio, dFinal));
+    Form5.ibQueryGrafico.SQL.Add(SqlSelectCurvaAbcEstoque(dInicio, dFinal));
     {Sandro Silva 2022-09-16 fim}
-    Form1.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.Open;
     //
     fTotal4 := 0;
     fTotal5 := 0;
     //
-    Form1.ibQueryGrafico.First;
-    while not Form1.ibQueryGrafico.EOF do
+    Form5.ibQueryGrafico.First;
+    while not Form5.ibQueryGrafico.EOF do
     begin
-      if AllTrim(Form1.IBQueryGrafico.FieldByName('CODIGO').AsString) <> '' then
+      if AllTrim(Form5.ibQueryGrafico.FieldByName('CODIGO').AsString) <> '' then
       begin
-        fTotal5 := fTotal5 + (Form1.IBQueryGrafico.FieldByName('TOTAL').AsFloat);
+        fTotal5 := fTotal5 + (Form5.ibQueryGrafico.FieldByName('TOTAL').AsFloat);
       end;
-      Form1.ibQueryGrafico.Next;
+      Form5.ibQueryGrafico.Next;
     end;
     //
     iA := 0;
     iB := 0;
     iC := 0;
     //
-    Form1.ibQueryGrafico.First;
+    Form5.ibQueryGrafico.First;
     //
-    while not Form1.ibQueryGrafico.EOF do
+    while not Form5.ibQueryGrafico.EOF do
     begin
       //
-      if AllTrim(Form1.IBQueryGrafico.FieldByName('CODIGO').AsString) <> '' then
+      if AllTrim(Form5.ibQueryGrafico.FieldByName('CODIGO').AsString) <> '' then
       begin
         //
         //
-        fTotal4 := fTotal4 + (Form1.IBQueryGrafico.FieldByName('TOTAL').AsFloat/fTotal5*100);
+        fTotal4 := fTotal4 + (Form5.ibQueryGrafico.FieldByName('TOTAL').AsFloat/fTotal5*100);
         //
         if fTotal4 < 70 then
         begin
@@ -1193,7 +1198,7 @@ begin
         end;
       end;
       //
-      Form1.ibQueryGrafico.Next;
+      Form5.ibQueryGrafico.Next;
     end;
 
     Mais1Ini.WriteString('DADOS','XY01','S1<'+IntToStr(iA)+'>S2<0,00>VX<01>LX<'+IntToStr(iA)+' Produtos A>');
@@ -1256,21 +1261,21 @@ begin
     //
     // Vendas com NF
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
     {Sandro Silva 2022-09-16 inicio Ficha 6235
-    Form1.ibQueryGrafico.SQL.Add('select VENDAS.CLIENTE, sum(VENDAS.TOTAL)as VTOTAL from VENDAS where EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and EMITIDA=''S'' group by VENDAS.CLIENTE order by VTOTAL desc');
+    Form5.ibQueryGrafico.SQL.Add('select VENDAS.CLIENTE, sum(VENDAS.TOTAL)as VTOTAL from VENDAS where EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and EMITIDA=''S'' group by VENDAS.CLIENTE order by VTOTAL desc');
     }
-    Form1.ibQueryGrafico.SQL.Add(SqlSelectCurvaAbcClientes(dinicio, dfinal));
+    Form5.ibQueryGrafico.SQL.Add(SqlSelectCurvaAbcClientes(dinicio, dfinal));
     {Sandro Silva 2022-09-16 fim}
-    Form1.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.Open;
     //
-    Form1.ibQueryGrafico.First;
-    while (not Form1.ibQueryGrafico.EOF) do
+    Form5.ibQueryGrafico.First;
+    while (not Form5.ibQueryGrafico.EOF) do
     begin
       //
-      fTotal3 := fTotal3 + Form1.ibQueryGrafico.FieldByname('VTOTAL').asFloat;
-      Form1.ibQueryGrafico.Next;
+      fTotal3 := fTotal3 + Form5.ibQueryGrafico.FieldByname('VTOTAL').asFloat;
+      Form5.ibQueryGrafico.Next;
       //
     end;
     //
@@ -1278,24 +1283,24 @@ begin
     iB := 0;
     iC := 0;
     //
-    Form1.ibQueryGrafico.First;
-    while not Form1.ibQueryGrafico.EOF do
+    Form5.ibQueryGrafico.First;
+    while not Form5.ibQueryGrafico.EOF do
     begin
       //
-      if Form1.ibQueryGrafico.FieldByName('VTOTAL').AsFloat <> 0 then
+      if Form5.ibQueryGrafico.FieldByName('VTOTAL').AsFloat <> 0 then
       begin
         //
-        fTotal4 := fTotal4 + (( Form1.ibQueryGrafico.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
+        fTotal4 := fTotal4 + (( Form5.ibQueryGrafico.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
         //
         if fTotal4 < 70 then iA := iA +1 else if fTotal4 < 90 then  iB := iB +1 else iC := iC + 1;
         //
       end;
       //
-      Form1.ibQueryGrafico.Next;
+      Form5.ibQueryGrafico.Next;
       //
     end;
     //
-    Form1.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.Close;
     //
     Mais1Ini.WriteString('DADOS','XY01','S1<'+IntToStr(iA)+'>S2<0,00>VX<01>LX<'+IntToStr(iA)+' Clientes A>');
     Mais1Ini.WriteString('DADOS','XY02','S1<'+IntToStr(iB)+'>S2<0,00>VX<02>LX<'+IntToStr(iB)+' Clientes B>');
@@ -1356,17 +1361,17 @@ begin
     //
     // Vendas com NF
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select COMPRAS.FORNECEDOR, sum(COMPRAS.TOTAL)as VTOTAL from COMPRAS where EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' group by COMPRAS.FORNECEDOR order by VTOTAL desc');
-    Form1.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select COMPRAS.FORNECEDOR, sum(COMPRAS.TOTAL)as VTOTAL from COMPRAS where EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' group by COMPRAS.FORNECEDOR order by VTOTAL desc');
+    Form5.ibQueryGrafico.Open;
     //
-    Form1.ibQueryGrafico.First;
-    while (not Form1.ibQueryGrafico.EOF) do
+    Form5.ibQueryGrafico.First;
+    while (not Form5.ibQueryGrafico.EOF) do
     begin
       //
-      fTotal3 := fTotal3 + Form1.ibQueryGrafico.FieldByname('VTOTAL').asFloat;
-      Form1.ibQueryGrafico.Next;
+      fTotal3 := fTotal3 + Form5.ibQueryGrafico.FieldByname('VTOTAL').asFloat;
+      Form5.ibQueryGrafico.Next;
       //
     end;
     //
@@ -1374,24 +1379,24 @@ begin
     iB := 0;
     iC := 0;
     //
-    Form1.ibQueryGrafico.First;
-    while not Form1.ibQueryGrafico.EOF do
+    Form5.ibQueryGrafico.First;
+    while not Form5.ibQueryGrafico.EOF do
     begin
       //
-      if Form1.ibQueryGrafico.FieldByName('VTOTAL').AsFloat <> 0 then
+      if Form5.ibQueryGrafico.FieldByName('VTOTAL').AsFloat <> 0 then
       begin
         //
-        fTotal4 := fTotal4 + (( Form1.ibQueryGrafico.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
+        fTotal4 := fTotal4 + (( Form5.ibQueryGrafico.FieldByName('VTOTAL').AsFloat )/fTotal3*100);
         //
         if fTotal4 < 70 then iA := iA +1 else if fTotal4 < 90 then  iB := iB +1 else iC := iC + 1;
         //
       end;
       //
-      Form1.ibQueryGrafico.Next;
+      Form5.ibQueryGrafico.Next;
       //
     end;
     //
-    Form1.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.Close;
     //
     Mais1Ini.WriteString('DADOS','XY01','S1<'+IntToStr(iA)+'>S2<0,00>VX<01>LX<'+IntToStr(iA)+' Fornecedores A>');
     Mais1Ini.WriteString('DADOS','XY02','S1<'+IntToStr(iB)+'>S2<0,00>VX<02>LX<'+IntToStr(iB)+' Fornecedores B>');
@@ -1865,50 +1870,50 @@ begin
     Mais1Ini.WriteString('DADOS','FontSize',IntToStr(iFont)); //'$00EAB231' // '$00EAB231'
     Mais1Ini.WriteString('DADOS','FontSizeLabel',IntToStr(iFontYX));
     //
-    Form1.IBDataSetGrafico1.Close;
-    Form1.IBDataSetGrafico1.SelectSQL.Clear;
-    Form1.IBDataSetGrafico1.SelectSQL.Add('select VENDEDOR, sum(MERCADORIA+SERVICOS-DESCONTO) from VENDAS, ICM where  EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' group by VENDEDOR');
-    Form1.IBDataSetGrafico1.Open;
-    Form1.IBDataSetGrafico1.First;
+    Form5.IBDataSetGrafico1.Close;
+    Form5.IBDataSetGrafico1.SelectSQL.Clear;
+    Form5.IBDataSetGrafico1.SelectSQL.Add('select VENDEDOR, sum(MERCADORIA+SERVICOS-DESCONTO) from VENDAS, ICM where  EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' group by VENDEDOR');
+    Form5.IBDataSetGrafico1.Open;
+    Form5.IBDataSetGrafico1.First;
     //
-    Form1.IBDataSetGrafico2.Close;
-    Form1.IBDataSetGrafico2.SelectSQL.Clear;
-    Form1.IBDataSetGrafico2.SelectSQL.Add('select VENDEDOR, sum(TOTAL) from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') ' +
+    Form5.IBDataSetGrafico2.Close;
+    Form5.IBDataSetGrafico2.SelectSQL.Clear;
+    Form5.IBDataSetGrafico2.SelectSQL.Add('select VENDEDOR, sum(TOTAL) from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') ' +
                                           'and (VALORICM is null  or (TIPO=''VENDA'' and VALORICM is not null)) ' + // Para não selecionar as vendas importadas para NF-e Sandro Silva 2023-02-14
                                           'group by VENDEDOR');
-    Form1.IBDataSetGrafico2.Open;
-    Form1.IBDataSetGrafico2.First;
+    Form5.IBDataSetGrafico2.Open;
+    Form5.IBDataSetGrafico2.First;
     //
     I := 0;
     //
-    Form1.ibDataSetGrafico3.Close;
-    Form1.ibDataSetGrafico3.SelectSQL.Clear;
-    Form1.ibDataSetGrafico3.SelectSQL.Add('select * FROM VENDEDOR where FUNCAO like '+QuotedStr('%VENDEDOR%')+' order by upper(NOME)');
-    Form1.ibDataSetGrafico3.Open;
-    Form1.ibDataSetGrafico3.First;
-    Form1.ibDataSetGrafico3.DataSource := Nil;
+    Form5.ibDataSetGrafico3.Close;
+    Form5.ibDataSetGrafico3.SelectSQL.Clear;
+    Form5.ibDataSetGrafico3.SelectSQL.Add('select * FROM VENDEDOR where FUNCAO like '+QuotedStr('%VENDEDOR%')+' order by upper(NOME)');
+    Form5.ibDataSetGrafico3.Open;
+    Form5.ibDataSetGrafico3.First;
+    Form5.ibDataSetGrafico3.DataSource := Nil;
     //
-    Form1.ibDataSetGrafico3.First;
-    while not Form1.ibDataSetGrafico3.EOF do
+    Form5.ibDataSetGrafico3.First;
+    while not Form5.ibDataSetGrafico3.EOF do
     begin
       //
-      Form1.IBDataSetGrafico1.Locate('VENDEDOR',Form1.ibDataSetGrafico3.FieldByname('NOME').AsString,[]);
-      Form1.IBDataSetGrafico2.Locate('VENDEDOR',Form1.ibDataSetGrafico3.FieldByname('NOME').AsString,[]);
+      Form5.IBDataSetGrafico1.Locate('VENDEDOR',Form5.ibDataSetGrafico3.FieldByname('NOME').AsString,[]);
+      Form5.IBDataSetGrafico2.Locate('VENDEDOR',Form5.ibDataSetGrafico3.FieldByname('NOME').AsString,[]);
       //
       fTotal1 := 0;
       fTotal2 := 0;
       //
-      if AllTrim(Form1.ibDataSetGrafico3.FieldByName('NOME').AsString) = AllTrim(Form1.IBDataSetGrafico1.FieldByName('VENDEDOR').AsString) then fTotal1 := fTotal1 + Form1.IBDataSetGrafico1.FieldByname('SUM').AsFloat;
-      if AllTrim(Form1.ibDataSetGrafico3.FieldByName('NOME').AsString) = AllTrim(Form1.IBDataSetGrafico2.FieldByName('VENDEDOR').AsString) then fTotal2 := fTotal2 + Form1.IBDataSetGrafico2.FieldByname('SUM').AsFloat;
+      if AllTrim(Form5.ibDataSetGrafico3.FieldByName('NOME').AsString) = AllTrim(Form5.IBDataSetGrafico1.FieldByName('VENDEDOR').AsString) then fTotal1 := fTotal1 + Form5.IBDataSetGrafico1.FieldByname('SUM').AsFloat;
+      if AllTrim(Form5.ibDataSetGrafico3.FieldByName('NOME').AsString) = AllTrim(Form5.IBDataSetGrafico2.FieldByName('VENDEDOR').AsString) then fTotal2 := fTotal2 + Form5.IBDataSetGrafico2.FieldByname('SUM').AsFloat;
       //
       I := I + 1;
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
       StrTran(Format('%15.2n',[fTotal1+fTotal2]),'.','')
         +'>S2<'+'0,00'
-        +'>VX<'+StrZero(I,2,0)+'>LX<'+ Copy(Form1.ibDataSetGrafico3.FieldByname('NOME').AsString+'        ',1,10) + ' '+ AllTrim(Format('%15.0n',[(fTotal1+fTotal2)/1000]))  +' mil >');
+        +'>VX<'+StrZero(I,2,0)+'>LX<'+ Copy(Form5.ibDataSetGrafico3.FieldByname('NOME').AsString+'        ',1,10) + ' '+ AllTrim(Format('%15.0n',[(fTotal1+fTotal2)/1000]))  +' mil >');
       //
       fTotal  := fTotal + fTotal1+fTotal2;
-      Form1.ibDataSetGrafico3.Next;
+      Form5.ibDataSetGrafico3.Next;
       //
     end;
     //
@@ -1975,50 +1980,50 @@ begin
     Mais1Ini.WriteString('DADOS','FontSize',IntToStr(iFont)); //'$00EAB231' // '$00EAB231'
     Mais1Ini.WriteString('DADOS','FontSizeLabel',IntToStr(iFontYX));
     //
-    Form1.IBDataSetGrafico1.Close;
-    Form1.IBDataSetGrafico1.SelectSQL.Clear;
-    Form1.IBDataSetGrafico1.SelectSQL.Add('select VENDEDOR, sum(MERCADORIA+SERVICOS-DESCONTO) from VENDAS, ICM where EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' group by VENDEDOR');
-    Form1.IBDataSetGrafico1.Open;
-    Form1.IBDataSetGrafico1.First;
+    Form5.IBDataSetGrafico1.Close;
+    Form5.IBDataSetGrafico1.SelectSQL.Clear;
+    Form5.IBDataSetGrafico1.SelectSQL.Add('select VENDEDOR, sum(MERCADORIA+SERVICOS-DESCONTO) from VENDAS, ICM where EMITIDA=''S'' and EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+' and EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+' and ICM.NOME=VENDAS.OPERACAO and ICM.INTEGRACAO<>'''' group by VENDEDOR');
+    Form5.IBDataSetGrafico1.Open;
+    Form5.IBDataSetGrafico1.First;
     //
-    Form1.IBDataSetGrafico2.Close;
-    Form1.IBDataSetGrafico2.SelectSQL.Clear;
-    Form1.IBDataSetGrafico2.SelectSQL.Add('select VENDEDOR, sum(TOTAL) from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') ' +
+    Form5.IBDataSetGrafico2.Close;
+    Form5.IBDataSetGrafico2.SelectSQL.Clear;
+    Form5.IBDataSetGrafico2.SelectSQL.Add('select VENDEDOR, sum(TOTAL) from ALTERACA where DATA<='+QuotedStr(DateToStrInvertida(dFinal))+' and DATA>='+QuotedStr(DateToStrInvertida(dInicio))+' and (TIPO='+QuotedStr('BALCAO')+' or TIPO='+QuotedStr('VENDA')+') ' +
                                           'and (VALORICM is null  or (TIPO=''VENDA'' and VALORICM is not null)) ' + // Para não selecionar as vendas importadas para NF-e Sandro Silva 2023-02-14
                                           'group by VENDEDOR');
-    Form1.IBDataSetGrafico2.Open;
-    Form1.IBDataSetGrafico2.First;
+    Form5.IBDataSetGrafico2.Open;
+    Form5.IBDataSetGrafico2.First;
     //
     I := 0;
     //
-    Form1.ibDataSetGrafico3.Close;
-    Form1.ibDataSetGrafico3.SelectSQL.Clear;
-    Form1.ibDataSetGrafico3.SelectSQL.Add('select * FROM VENDEDOR where FUNCAO like '+QuotedStr('%VENDEDOR%')+' order by upper(NOME)');
-    Form1.ibDataSetGrafico3.Open;
-    Form1.ibDataSetGrafico3.First;
-    Form1.ibDataSetGrafico3.DataSource := Nil;
+    Form5.ibDataSetGrafico3.Close;
+    Form5.ibDataSetGrafico3.SelectSQL.Clear;
+    Form5.ibDataSetGrafico3.SelectSQL.Add('select * FROM VENDEDOR where FUNCAO like '+QuotedStr('%VENDEDOR%')+' order by upper(NOME)');
+    Form5.ibDataSetGrafico3.Open;
+    Form5.ibDataSetGrafico3.First;
+    Form5.ibDataSetGrafico3.DataSource := Nil;
     //
-    Form1.ibDataSetGrafico3.First;
-    while not Form1.ibDataSetGrafico3.EOF do
+    Form5.ibDataSetGrafico3.First;
+    while not Form5.ibDataSetGrafico3.EOF do
     begin
       //
-      Form1.IBDataSetGrafico1.Locate('VENDEDOR',Form1.ibDataSetGrafico3.FieldByname('NOME').AsString,[]);
-      Form1.IBDataSetGrafico2.Locate('VENDEDOR',Form1.ibDataSetGrafico3.FieldByname('NOME').AsString,[]);
+      Form5.IBDataSetGrafico1.Locate('VENDEDOR',Form5.ibDataSetGrafico3.FieldByname('NOME').AsString,[]);
+      Form5.IBDataSetGrafico2.Locate('VENDEDOR',Form5.ibDataSetGrafico3.FieldByname('NOME').AsString,[]);
       //
       fTotal1 := 0;
       fTotal2 := 0;
       //
-      if AllTrim(Form1.ibDataSetGrafico3.FieldByName('NOME').AsString) = AllTrim(Form1.IBDataSetGrafico1.FieldByName('VENDEDOR').AsString) then fTotal1 := fTotal1 + Form1.IBDataSetGrafico1.FieldByname('SUM').AsFloat;
-      if AllTrim(Form1.ibDataSetGrafico3.FieldByName('NOME').AsString) = AllTrim(Form1.IBDataSetGrafico2.FieldByName('VENDEDOR').AsString) then fTotal2 := fTotal2 + Form1.IBDataSetGrafico2.FieldByname('SUM').AsFloat;
+      if AllTrim(Form5.ibDataSetGrafico3.FieldByName('NOME').AsString) = AllTrim(Form5.IBDataSetGrafico1.FieldByName('VENDEDOR').AsString) then fTotal1 := fTotal1 + Form5.IBDataSetGrafico1.FieldByname('SUM').AsFloat;
+      if AllTrim(Form5.ibDataSetGrafico3.FieldByName('NOME').AsString) = AllTrim(Form5.IBDataSetGrafico2.FieldByName('VENDEDOR').AsString) then fTotal2 := fTotal2 + Form5.IBDataSetGrafico2.FieldByname('SUM').AsFloat;
       //
       I := I + 1;
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
       StrTran(Format('%15.2n',[fTotal1+fTotal2]),'.','')
         +'>S2<'+'0,00'
-        +'>VX<'+StrZero(I,2,0)+'>LX<'+ Copy(Form1.ibDataSetGrafico3.FieldByname('NOME').AsString+'        ',1,10) + ' '+ AllTrim(Format('%15.0n',[(fTotal1+fTotal2)/1000]))  +' mil >');
+        +'>VX<'+StrZero(I,2,0)+'>LX<'+ Copy(Form5.ibDataSetGrafico3.FieldByname('NOME').AsString+'        ',1,10) + ' '+ AllTrim(Format('%15.0n',[(fTotal1+fTotal2)/1000]))  +' mil >');
       //
       fTotal  := fTotal + fTotal1+fTotal2;
-      Form1.ibDataSetGrafico3.Next;
+      Form5.ibDataSetGrafico3.Next;
       //
     end;
     //
@@ -2041,10 +2046,10 @@ begin
   //
   try
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE  from RECEBER where (VENCIMENTO>=(CURRENT_DATE-90)) and VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
-    Form1.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE  from RECEBER where (VENCIMENTO>=(CURRENT_DATE-90)) and VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
+    Form5.ibQueryGrafico.Open;
     //                                          //
     // Gráfico de fluxo de caixa inadimplencia //
     //                                        //
@@ -2058,7 +2063,7 @@ begin
     Mais1Ini.WriteString('DADOS','TipoS1','4');
     Mais1Ini.WriteString('DADOS','AlturaBmp',intToStr(iY));
     Mais1Ini.WriteString('DADOS','LarguraBmp',intToStr(iX));
-    Mais1Ini.WriteString('DADOS','Titulo','Inadimplência 90 dias: '+AllTrim(Format('%12.2n',[(100-(Form1.ibQueryGrafico.FieldByname('RECE').AsFloat/Form1.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]))+'%');
+    Mais1Ini.WriteString('DADOS','Titulo','Inadimplência 90 dias: '+AllTrim(Format('%12.2n',[(100-(Form5.ibQueryGrafico.FieldByname('RECE').AsFloat/Form5.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]))+'%');
     Mais1Ini.WriteString('DADOS','NomeBmp',sNome+'.png');
     Mais1Ini.WriteString('DADOS','FontSize',IntToStr(iFont));
     Mais1Ini.WriteString('DADOS','FontSizeLabel',IntToStr(iFontYX));
@@ -2068,19 +2073,19 @@ begin
     I := 1;
 
         Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
-        StrTran(Format('%15.2n',[(100-(Form1.ibQueryGrafico.FieldByname('RECE').AsFloat/Form1.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
+        StrTran(Format('%15.2n',[(100-(Form5.ibQueryGrafico.FieldByname('RECE').AsFloat/Form5.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
           +'>S2<'+'0,00'
                           +'>VX<'+StrZero(I,2,0)+'>LX<Inadimplência>');
 
     I := 2;
 
         Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
-        StrTran(Format('%15.2n',[100-(100-(Form1.ibQueryGrafico.FieldByname('RECE').AsFloat/Form1.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
+        StrTran(Format('%15.2n',[100-(100-(Form5.ibQueryGrafico.FieldByname('RECE').AsFloat/Form5.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
           +'>S2<'+'0,00'
                           +'>VX<'+StrZero(I,2,0)+'>LX<Adimplência>');
 
 
-    Form1.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.Close;
     //
     Mais1Ini.Free;
     GeraGrafico(sNome);
@@ -2102,10 +2107,10 @@ begin
   //
   try
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE  from RECEBER where (VENCIMENTO>=(CURRENT_DATE-360)) and VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
-    Form1.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE  from RECEBER where (VENCIMENTO>=(CURRENT_DATE-360)) and VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
+    Form5.ibQueryGrafico.Open;
     //                                          //
     // Gráfico de fluxo de caixa inadimplencia //
     //                                        //
@@ -2119,7 +2124,7 @@ begin
     Mais1Ini.WriteString('DADOS','TipoS1','4');
     Mais1Ini.WriteString('DADOS','AlturaBmp',intToStr(iY));
     Mais1Ini.WriteString('DADOS','LarguraBmp',intToStr(iX));
-    Mais1Ini.WriteString('DADOS','Titulo','Inadimplência 360 dias: '+AllTrim(Format('%12.2n',[(100-(Form1.ibQueryGrafico.FieldByname('RECE').AsFloat/Form1.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]))+'%');
+    Mais1Ini.WriteString('DADOS','Titulo','Inadimplência 360 dias: '+AllTrim(Format('%12.2n',[(100-(Form5.ibQueryGrafico.FieldByname('RECE').AsFloat/Form5.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]))+'%');
     Mais1Ini.WriteString('DADOS','NomeBmp',sNome+'.png');
     Mais1Ini.WriteString('DADOS','FontSize',IntToStr(iFont)); //'$00EAB231' // '$00EAB231'
     Mais1Ini.WriteString('DADOS','FontSizeLabel',IntToStr(iFontYX));
@@ -2129,20 +2134,20 @@ begin
     I := 1;
 
         Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
-        StrTran(Format('%15.2n',[(100-(Form1.ibQueryGrafico.FieldByname('RECE').AsFloat/Form1.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
+        StrTran(Format('%15.2n',[(100-(Form5.ibQueryGrafico.FieldByname('RECE').AsFloat/Form5.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
           +'>S2<'+'0,00'
                           +'>VX<'+StrZero(I,2,0)+'>LX<Inadimplência>');
 
     I := 2;
 
         Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
-        StrTran(Format('%15.2n',[100-(100-(Form1.ibQueryGrafico.FieldByname('RECE').AsFloat/Form1.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
+        StrTran(Format('%15.2n',[100-(100-(Form5.ibQueryGrafico.FieldByname('RECE').AsFloat/Form5.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
           +'>S2<'+'0,00'
                           +'>VX<'+StrZero(I,2,0)+'>LX<Adimplência>');
 
 
     Mais1Ini.Free;
-    Form1.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.Close;
     //
     GeraGrafico(sNome);
     //
@@ -2162,10 +2167,10 @@ begin
   //
   try
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE  from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
-    Form1.ibQueryGrafico.Open;
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE  from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
+    Form5.ibQueryGrafico.Open;
     //                                          //
     // Gráfico de fluxo de caixa inadimplencia //
     //                                        //
@@ -2179,7 +2184,7 @@ begin
     Mais1Ini.WriteString('DADOS','TipoS1','4');
     Mais1Ini.WriteString('DADOS','AlturaBmp',intToStr(iY));
     Mais1Ini.WriteString('DADOS','LarguraBmp',intToStr(iX));
-    Mais1Ini.WriteString('DADOS','Titulo','Inadimplência total: '+AllTrim(Format('%12.2n',[(100-(Form1.ibQueryGrafico.FieldByname('RECE').AsFloat/Form1.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]))+'%');
+    Mais1Ini.WriteString('DADOS','Titulo','Inadimplência total: '+AllTrim(Format('%12.2n',[(100-(Form5.ibQueryGrafico.FieldByname('RECE').AsFloat/Form5.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]))+'%');
     Mais1Ini.WriteString('DADOS','NomeBmp',sNome+'.png');
     Mais1Ini.WriteString('DADOS','FontSize',IntToStr(iFont)); //'$00EAB231' // '$00EAB231'
     Mais1Ini.WriteString('DADOS','FontSizeLabel',IntToStr(iFontYX));
@@ -2189,20 +2194,20 @@ begin
     I := 1;
 
         Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
-        StrTran(Format('%15.2n',[(100-(Form1.ibQueryGrafico.FieldByname('RECE').AsFloat/Form1.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
+        StrTran(Format('%15.2n',[(100-(Form5.ibQueryGrafico.FieldByname('RECE').AsFloat/Form5.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
           +'>S2<'+'0,00'
                           +'>VX<'+StrZero(I,2,0)+'>LX<Inadimplência>');
 
     I := 2;
 
         Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
-        StrTran(Format('%15.2n',[100-(100-(Form1.ibQueryGrafico.FieldByname('RECE').AsFloat/Form1.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
+        StrTran(Format('%15.2n',[100-(100-(Form5.ibQueryGrafico.FieldByname('RECE').AsFloat/Form5.ibQueryGrafico.FieldByname('VALOR').AsFloat)*100)]),'.','')
           +'>S2<'+'0,00'
                           +'>VX<'+StrZero(I,2,0)+'>LX<Adimplência>');
 
 
     Mais1Ini.Free;
-    Form1.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.Close;
     //
     GeraGrafico(sNome);
     //
@@ -2239,17 +2244,17 @@ begin
     //
     // Saldo do Caixa
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select sum(ENTRADA)as ENTRADA, sum(SAIDA)as SAIDA from CAIXA');
-    Form1.ibQueryGrafico.Open;
-    fTotal := fTotal + Form1.IBQueryGrafico.FieldByname('ENTRADA').AsFloat - Form1.IBQueryGrafico.FieldByname('SAIDA').AsFloat;          // Soma ao total
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select sum(ENTRADA)as ENTRADA, sum(SAIDA)as SAIDA from CAIXA');
+    Form5.ibQueryGrafico.Open;
+    fTotal := fTotal + Form5.ibQueryGrafico.FieldByname('ENTRADA').AsFloat - Form5.ibQueryGrafico.FieldByname('SAIDA').AsFloat;          // Soma ao total
     //
-    Form1.ibQueryGrafico.Close;
-    Form1.ibQueryGrafico.SQL.Clear;
-    Form1.ibQueryGrafico.SQL.Add('select sum(SALDO3)as SALDO from BANCOS');
-    Form1.ibQueryGrafico.Open;
-    fTotal := fTotal + Form1.IBQueryGrafico.FieldByname('SALDO').AsFloat;          // Soma ao total
+    Form5.ibQueryGrafico.Close;
+    Form5.ibQueryGrafico.SQL.Clear;
+    Form5.ibQueryGrafico.SQL.Add('select sum(SALDO3)as SALDO from BANCOS');
+    Form5.ibQueryGrafico.Open;
+    fTotal := fTotal + Form5.ibQueryGrafico.FieldByname('SALDO').AsFloat;          // Soma ao total
     //
     try
       Form7.ibDataSet25.DisableControls;
@@ -2295,30 +2300,30 @@ begin
       //
       // Receber
       //
-      Form1.ibQueryGrafico.Close;
-      Form1.ibQueryGrafico.SQL.Clear;
-      Form1.ibQueryGrafico.SQL.Add('select sum(VALOR_DUPL)as REC from RECEBER where Coalesce(VALOR_RECE,0)=0 and coalesce(HISTORICO,''XXX'')<>''NFE NAO AUTORIZADA'' and VENCIMENTO='+QuotedStr(DateToStrInvertida(dContador))+' and coalesce(ATIVO,9)<>1');
-      Form1.ibQueryGrafico.Open;
+      Form5.ibQueryGrafico.Close;
+      Form5.ibQueryGrafico.SQL.Clear;
+      Form5.ibQueryGrafico.SQL.Add('select sum(VALOR_DUPL)as REC from RECEBER where Coalesce(VALOR_RECE,0)=0 and coalesce(HISTORICO,''XXX'')<>''NFE NAO AUTORIZADA'' and VENCIMENTO='+QuotedStr(DateToStrInvertida(dContador))+' and coalesce(ATIVO,9)<>1');
+      Form5.ibQueryGrafico.Open;
       //
-      fReceber := Form1.IBQueryGrafico.FieldByname('REC').AsFloat;          // Soma ao total
+      fReceber := Form5.ibQueryGrafico.FieldByname('REC').AsFloat;          // Soma ao total
       //
       // Pagar
       //
-      Form1.ibQueryGrafico.Close;
-      Form1.ibQueryGrafico.SQL.Clear;
-      Form1.ibQueryGrafico.SQL.Add('select sum(VALOR_DUPL)as PAG from PAGAR where VALOR_PAGO=0 and VENCIMENTO='+QuotedStr(DateToStrInvertida(dContador)));
-      Form1.ibQueryGrafico.Open;
+      Form5.ibQueryGrafico.Close;
+      Form5.ibQueryGrafico.SQL.Clear;
+      Form5.ibQueryGrafico.SQL.Add('select sum(VALOR_DUPL)as PAG from PAGAR where VALOR_PAGO=0 and VENCIMENTO='+QuotedStr(DateToStrInvertida(dContador)));
+      Form5.ibQueryGrafico.Open;
       //
-      fPagar := Form1.IBQueryGrafico.FieldByname('PAG').AsFloat;          // Soma ao total
+      fPagar := Form5.ibQueryGrafico.FieldByname('PAG').AsFloat;          // Soma ao total
       //
       // Não Consiliados
       //
-      Form1.ibQueryGrafico.Close;
-      Form1.ibQueryGrafico.SQL.Clear;
-      Form1.ibQueryGrafico.SQL.Add('select sum(ENTRADA_)as ENTRADA, sum(SAIDA_)as SAIDA from MOVIMENT where (coalesce(COMPENS,'+QuotedStr('1899/12/30')+')='+QuotedStr('1899/12/30')+') and PREDATA='+QuotedStr(DateToStrInvertida(dContador)));
-      Form1.ibQueryGrafico.Open;
+      Form5.ibQueryGrafico.Close;
+      Form5.ibQueryGrafico.SQL.Clear;
+      Form5.ibQueryGrafico.SQL.Add('select sum(ENTRADA_)as ENTRADA, sum(SAIDA_)as SAIDA from MOVIMENT where (coalesce(COMPENS,'+QuotedStr('1899/12/30')+')='+QuotedStr('1899/12/30')+') and PREDATA='+QuotedStr(DateToStrInvertida(dContador)));
+      Form5.ibQueryGrafico.Open;
       //
-      fNConsiliados := (Form1.IBQueryGrafico.FieldByname('ENTRADA').AsFloat - Form1.IBQueryGrafico.FieldByname('SAIDA').AsFloat); // Soma o valor da dupl
+      fNConsiliados := (Form5.ibQueryGrafico.FieldByname('ENTRADA').AsFloat - Form5.ibQueryGrafico.FieldByname('SAIDA').AsFloat); // Soma o valor da dupl
       //
       // Soma ou desconta os não consiliados
       //
@@ -2365,8 +2370,8 @@ begin
   if Form5.Caption <> '' then
   begin
     try
-      if not Form1.IBTransaction2.Active then Form1.IBTransaction2.Active := True;
-      Form1.IBTransaction2.Commit;
+      if not Form5.IBTransaction2.Active then Form5.IBTransaction2.Active := True;
+      Form5.IBTransaction2.Commit;
     except end;
   end;
 
@@ -3672,9 +3677,8 @@ begin
     Mais1Ini.Free;
     //
   except end;
-  //
-  Form1.AvisoIndicadores(True);
-  //
+
+  //Form1.AvisoIndicadores(True); Mauricio Parizotto 2024-12-09
 end;
 
 procedure TForm5.ScrollBox1DblClick(Sender: TObject);

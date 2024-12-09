@@ -12203,7 +12203,7 @@ begin
       Form1.AvisoCliFor(True);
     end;
 
-    Form1.AvisoIndicadores(True);
+    //Form1.AvisoIndicadores(True); Mauricio Parizotto 2024-12-09
   except
   end;
 
@@ -36819,7 +36819,7 @@ begin
     Exit;
 
   Form7.sModulo := 'CONFIG';
-  Form1.Label201MouseLeave(Sender);
+  Form1.lblVendasMouseLeave(Sender);
 
   try
     FrmIntegracaoIMendes := TFrmIntegracaoIMendes.Create(self);
