@@ -18242,8 +18242,22 @@ begin
           Button4Click(Sender)
         end else
         begin
-          if sFormaAtalhoF6 <> '' then
-            FechaVendaRapidaFormaExtra;
+          {Mauricio Parizotto 2024-12-10 Inicio }
+          if not(Button2.Enabled) then //verifica se esta em venda
+          begin
+            if sFormaAtalhoF6 <> '' then
+              FechaVendaRapidaFormaExtra;
+          end else
+          begin
+            if (Form1.sModeloECF = '59')  then
+              SmallMsg('Não é possível cancelar o último ' + Form1.sTipoDocumento2 + '.')
+            else if (Form1.sModeloECF = '65') then
+              SmallMsg('Não é possível cancelar a última ' + Form1.sTipoDocumento2 + '.')
+            else if (Form1.sModeloECF = '99') then
+              SmallMsg('Não é possível cancelar o último ' + Form1.sTipoDocumento2 + '.')
+            else
+              SmallMsg('Não é possível cancelar o último cupom.');
+          end;
 
           {Mauricio Parizotto 2024-12-04
           if (Form1.sModeloECF = '59')  then

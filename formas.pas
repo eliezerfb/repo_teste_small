@@ -680,6 +680,8 @@ begin
   else
     if sFormaAtalhoF6 = 'Forma extra 7' then
       sFormaAtalhoF6 := '';
+
+  SetCheckAtalhoF6;
 end;
 
 procedure TFormasP.chkAtalhoF6_8Click(Sender: TObject);

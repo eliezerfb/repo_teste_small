@@ -638,6 +638,7 @@ object FormasP: TFormasP
     Height = 21
     ItemIndex = 2
     TabOrder = 42
+    Text = 'PIX Din'#226'mico'
     Visible = False
     Items.Strings = (
       'PIX Manual'
