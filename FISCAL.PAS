@@ -29275,7 +29275,8 @@ begin
           }
           ' Select'+
           '   N.*,'+
-          SQL_FORMAPAGAMENTO_LIST+ ' FORMAPAGAMENTO '+
+          SQL_FORMAPAGAMENTO_LIST + ', ' + // Sandro Silva (f-21891) 2024-12-10 SQL_FORMAPAGAMENTO_LIST+ ' FORMAPAGAMENTO '+
+          SQL_CLIENTE + // Sandro Silva (f-21891) 2024-12-10
           ' From NFCE N '+
           ' Where ' +
           '  ( ' +
@@ -29309,7 +29310,7 @@ begin
         }
         Form1.ibDataset150.SelectSQL.Text := ' Select'+
                                              '   N.*,'+
-                                             SQL_FORMAPAGAMENTO_LIST+
+                                             SQL_FORMAPAGAMENTO_LIST + ', ' + // Sandro Silva (f-21891) 2024-12-10 SQL_FORMAPAGAMENTO_LIST+
                                              SQL_CLIENTE+
                                              ' Where N.MODELO = ' + QuotedStr(Form1.sModeloECF) +
                                              '   and EXISTS (Select 1 From ALTERACA A'+
@@ -29334,6 +29335,7 @@ var
 begin
   sPesquisa := Small_InputBox('Pesquisa no XML', 'Informe o nome do cliente', '');
   try
+    (*Sandro Silva (f-21891) 2024-12-10 inicio
     Form1.ibDataset150.Close;
     if Form1.sModeloECF <> '99' then
     begin
@@ -29392,6 +29394,26 @@ begin
     end;
     Form1.ibDataset150.Open;
     { Mauricio Parizotto 2023-07-04 Fim}
+    *)
+    Form1.ibDataset150.Close;
+    Form1.ibDataset150.SelectSQL.Text :=
+        ' Select'+
+        '   N.*,'+
+        SQL_FORMAPAGAMENTO_LIST + ', ' +
+        SQL_CLIENTE+
+        ' From NFCE N '+
+        ' Where exists (select 1 ' +
+        '               from ALTERACA A ' +
+        '               where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA ' +
+        '               and coalesce(A.VALORICM, 0) = 0 ' + // Não listar as importações para NF-e
+        '               and coalesce(A.CODIGO, '''') <> '''' ' + // Para os gerenciais importados para NF-e, os registros de desconto/acrécimo não tem o campo ALTERACA.VALORICM preenchido
+        '               and coalesce(A.CLIFOR, '''') containing ' + QuotedStr(sPesquisa) +
+        '              )' +
+        ifThen(Form1.sModeloECF = '99', ' and N.MODELO = ' + QuotedStr(Form1.sModeloECF),
+          ' and ((N.MODELO <> ''99'' and (N.STATUS containing ''Autorizad'' or N.STATUS containing ''CF-e-SAT Emitido com sucesso'')) or (N.MODELO = ''99'' and N.STATUS = ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + '))') +
+        ' order by N.DATA, N.NUMERONF ';
+    Form1.ibDataset150.Open;
+    (*Sandro Silva (f-21891) 2024-12-10 fim*)
   except
 
   end;
@@ -31002,7 +31024,7 @@ var
   IBQPESQUISA: TIBQuery;
   sCondicaoSelectSql: String;
 begin
-  // Rotina seleciona todas as datas que possuem pendência de transmissão de contingência ou cancelamento por substituição 
+  // Rotina seleciona todas as datas que possuem pendência de transmissão de contingência ou cancelamento por substituição
 
   dtDataOld := DateTimePicker1.Date;
 
@@ -31027,7 +31049,7 @@ begin
     }
     ' Select'+
     '   N.*,'+
-    SQL_FORMAPAGAMENTO_LIST+
+    SQL_FORMAPAGAMENTO_LIST + ', ' + // Sandro Silva (f-21891) 2024-12-10 SQL_FORMAPAGAMENTO_LIST+
     SQL_CLIENTE+
     ' From NFCE N '+
     sCondicaoSelectSql;
