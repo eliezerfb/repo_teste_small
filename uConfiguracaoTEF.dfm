@@ -94,7 +94,7 @@ object FConfiguracaoTEF: TFConfiguracaoTEF
     Left = 8
     Top = 58
     Width = 975
-    Height = 213
+    Height = 220
     Ctl3D = False
     DataSource = dsTEFs
     Options = [dgEditing, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]

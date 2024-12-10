@@ -1584,7 +1584,9 @@ type
     //bUsaPixEstatico : Boolean;//Mauricio Parizotto 2024-04-30
     sDataDoCupom, sHoraDoCupom, sSangria, sModeloECF, sModeloECF_Reserva, sMFD_, sBalanca, sCRLF, sCortaPapel, sTipoImpressora, sCripto, sConveniado, sCaixa, sArquivo, sAtual, sAtualOnLine, OKSim, sVendedor, sGaveta,
     sRGTurbo, sUltimoItem, sPorta, sSeriais, sMensagemPromocional ,sVendedorFixo ,sAliquotas, ConfCusto,
-    ConfNegat, sPrazo, ConfCasas, ConfPreco, ModoMercado, sDiretorioTEF, sCupomTEF, sCupomTEFReduzido, sCupomTEFCancelado,
+    ConfNegat, sPrazo, ConfCasas, ConfPreco, ModoMercado,
+    //sDiretorioTEF, sCupomTEF,
+    sCupomTEFReduzido, sCupomTEFCancelado,
     sMensagemNFMod02, sMensagemParaibaLegal,
     sPropaganda,
     sLiberacao, sLinha, sTipoParc, sParcelas, sValorTot, sValorSaque,
@@ -1595,17 +1597,18 @@ type
     sIdentificaPOS,
     sDebitoOuCredito,
     sNomeRedeTransacionada, // Sandro Silva 2024-12-05 sNomeRede,
-    sNomeRedeParaTransacoesTEF,
-    sTransacaTEF, // Sandro Silva 2024-12-05 sTransaca,
+    //sNomeRedeParaTransacoesTEF,
+    //sTransacaTEF, // Sandro Silva 2024-12-05 sTransaca,
     sTransacaPOS, // Sandro Silva 2024-12-05
     sAutoriza,
     sFinaliza,
     sIdentifi,
     sBonecoEscolhido,
     sReferenteNFModelo2, sSerieReferenteNFModelo2, sSubSerieReferenteNFModelo2,
-    sQuantidade, sValor, sFormas, sFuso,  sVersaoLayoutNFCe: String;
+    sQuantidade, sValor, sFormas, sFuso, sVersaoLayoutNFCe: String;
     bHorarioDeVerao: Boolean;
     sReqTef, sRespTef, sExec: String;
+    TransacaoTEF: TDadosTransacaoTEF;// Sandro Silva 2024-12-09
     bMonitorMobile: Boolean;
     fTotalPago, fTEFPago, fQuantidadeVendida : Real;  // Produto pesado
     iMinutosSoneca, iPagina, iCaixa, iI, iII, iIz,iIw, iIj: Integer;
@@ -9236,6 +9239,7 @@ var
   Mais1Ini: TIniFile;
   bInicializa: Boolean;// Sandro Silva 2017-07-05
 begin
+  TransacaoTEF := TDadosTransacaoTEF.Create;
   //Integração Itaú
   CarregaTipoAmbiente; // Mauricio Parizotto 2024-06-17
 
@@ -10234,10 +10238,10 @@ begin
       Form1.fDescontoNoTotal  := 0;
       Form1.fTEFPago          := 0;
       Form1.fTotalPago        := 0;
-      Form1.sCupomTEF         := '';
+      Form1.TransacaoTEF.TextoImpressao         := '';
       Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
 
-      Form1.sCupomTEF          := Form1.sCupomTEF + Form1.sCupomTEFCancelado;// Sandro Silva 2017-06-28
+      Form1.TransacaoTEF.TextoImpressao          := Form1.TransacaoTEF.TextoImpressao + Form1.sCupomTEFCancelado;// Sandro Silva 2017-06-28
 
       while (Form1.fTotal - Form1.fTotalPago) > 0.001 do
       begin
@@ -10395,10 +10399,10 @@ begin
 
         if Form2.bCancela then
         begin
-          DeleteFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sRespTEF+'\INTPOS.001');
-          DeleteFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sRespTEF+'\INTPOS.STS');
-          DeleteFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\INTPOS.001');
-          DeleteFile(('c:\'+Form1.sDiretorioTEF+'.res'));
+          DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTEF+'\INTPOS.001');
+          DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTEF+'\INTPOS.STS');
+          DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\INTPOS.001');
+          DeleteFile(('c:\'+Form1.TransacaoTEF.DiretorioCliente+'.res'));
 
           Display('OPERACAO NAO CONFIRMADA','Use outra forma de pagamento');
 
@@ -10961,7 +10965,7 @@ begin
           if (Form1.sModeloECF = '65') then
             Form1.sMensagemPromocional := Form1.sMensagemPromocional + chr(10) + '|' +  'Caixa: ' + Form1.sCaixa;
 
-          if sCupomTEF <> '' then
+          if Form1.TransacaoTEF.TextoImpressao <> '' then
           begin
             if AnsiContainsText(Form10.sNomeDoTEF, 'ZPOS') then
             begin
@@ -10981,15 +10985,15 @@ begin
           bChaveTeste := True;
           bNaoAbriu   := True;
 
-          if sCupomTEF <> '' then // Cartão e cheque
+          if Form1.TransacaoTEF.TextoImpressao <> '' then // Cartão e cheque
           begin
 
           // Ajuste para situação do TEF Elgin que pode ficar uma quebra linha no inicio.
           // Neste caso irá remover a quebra linha do inicio do arquivo caso exista.
           // Estava na rotina que concatena as resposta do TEF, acabava excluindo a quebra de linha que separa os múltiplos cartões
           {Dailon Parisotto (f-19886) 2024-07-25 Inicio}
-          if Pos(chr(10), Form1.sCupomTEF) = 1 then
-            Form1.sCupomTEF := Copy(Form1.sCupomTEF, 2, Length(Form1.sCupomTEF));
+          if Pos(chr(10), Form1.TransacaoTEF.TextoImpressao) = 1 then
+            Form1.TransacaoTEF.TextoImpressao := Copy(Form1.TransacaoTEF.TextoImpressao, 2, Length(Form1.TransacaoTEF.TextoImpressao));
           {Dailon Parisotto (f-19886) 2024-07-25 Fim}
 
 
@@ -11063,26 +11067,24 @@ begin
                                        // Chr(10)+'Rede: '+Form1.sNomeRede+
                                        Chr(10)+'NSU: '+Form1.sTransaca),'Atenção!',mb_Ok + MB_ICONERROR);
                     }
-                    AssignFile(F, ('c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\IntPos.tmp'));
+                    AssignFile(F, ('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\IntPos.tmp'));
                     Rewrite(F);
                     //NCN Não confirmação da venda e/ou da impressão.
                     WriteLn(F,'000-000 = NCN');                               // Header: Cartão 3c
                     WriteLn(F,'001-000 = '+StrTran(TimeToStr(Time),':',''));  // Identificação: Eu uso a hora
-                    // WriteLn(F,'003-000 = '+ Form1.sValorTot);              // Identificação: Eu uso o número do cupom 10c
-                    WriteLn(F,'010-000 = '+ Form1.sNomeRedeParaTransacoesTEF);                 // Nome da rede:
-                    WriteLn(F,'012-000 = '+ Form1.sTransacaTEF);                 // Número da transação NSU:
+                    WriteLn(F,'010-000 = '+ Form1.TransacaoTEF.NomeRede);                 // Nome da rede:
+                    WriteLn(F,'012-000 = '+ Form1.TransacaoTEF.Transacao);                 // Número da transação NSU:
                     WriteLn(F,'027-000 = '+ Form1.sFinaliza);                 // Finalização:
                     AdicionaCNPJRequisicaoTEF(F, Form1.ibDataSet13); // ENVIO DE INFORMAÇÕES LIVRES 1-CNPJ do Estabelecimento Comercial; 2-CNPJ da Empresa de Automação Comercial // Sandro Silva 2019-08-13
                     WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
                     CloseFile(F);
                     Sleep(100);
-                    RenameFile('c:\' + Form1.sDiretorioTEF + '\' + Form1.sReqTEF + '\IntPos.tmp', 'c:\' + Form1.sDiretorioTEF + '\' + Form1.sReqTEF + '\INTPOS.001');
+                    RenameFile('c:\' + Form1.TransacaoTEF.DiretorioCliente + '\' + Form1.sReqTEF + '\IntPos.tmp', 'c:\' + Form1.TransacaoTEF.DiretorioCliente + '\' + Form1.sReqTEF + '\INTPOS.001');
                     Sleep(2000);
 
                     SmallMsgBox(pChar('Última transação TEF não foi efetuada. Favor reter o cupom.'+
                                        Chr(10)+
-                                       // Chr(10)+'Rede: '+Form1.sNomeRede+
-                                       Chr(10)+'NSU: '+Form1.sTransacaTEF),'Atenção!',mb_Ok + MB_ICONERROR);
+                                       Chr(10)+'NSU: '+Form1.TransacaoTEF.Transacao),'Atenção!',mb_Ok + MB_ICONERROR);
                     {Sandro Silva 2024-12-06}
                   end;
                 end else
@@ -12077,7 +12079,7 @@ begin
         Button4.Enabled  := True;
         Button9.Enabled  := True;
 
-        if (AllTrim(sCupomTef) <> '') then
+        if (AllTrim(Form1.TransacaoTEF.TextoImpressao) <> '') then
           Display('Finalizando a transação com TEF', 'Finalizando a transação com TEF')
         else
           Display(Form1.sStatusECF, Form1.sF);
@@ -12114,7 +12116,7 @@ begin
 
             Sleep(10000);
             }
-            AssignFile(F, ('c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\IntPos.tmp'));
+            AssignFile(F, ('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\IntPos.tmp'));
             Rewrite(F);
             sIdentificaTransacaoTEF := StrTran(TimeToStr(Time),':','');
             //NCN Não confirmação da venda e/ou da impressão.
@@ -12123,16 +12125,16 @@ begin
             //
             // WriteLn(F,'003-000 = '+ Form1.sValorTot);              // Identificação: Eu uso o número do cupom 10c
             //
-            WriteLn(F,'010-000 = '+ Form1.sNomeRedeParaTransacoesTEF);                 // Nome da rede:
-            WriteLn(F,'012-000 = '+ Form1.sTransacaTEF);                 // Número da transação NSU:
+            WriteLn(F,'010-000 = '+ Form1.TransacaoTEF.NomeRede);                 // Nome da rede:
+            WriteLn(F,'012-000 = '+ Form1.TransacaoTEF.Transacao);                 // Número da transação NSU:
             WriteLn(F,'027-000 = '+ Form1.sFinaliza);                 // Finalização:
             AdicionaCNPJRequisicaoTEF(F, Form1.ibDataSet13); // ENVIO DE INFORMAÇÕES LIVRES 1-CNPJ do Estabelecimento Comercial; 2-CNPJ da Empresa de Automação Comercial // Sandro Silva 2019-08-13
             WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
             CloseFile(F);
             Sleep(100); // Sandro Silva 2017-06-14
-            RenameFile('c:\' + Form1.sDiretorioTEF + '\' + Form1.sReqTEF + '\IntPos.tmp', 'c:\' + Form1.sDiretorioTEF + '\' + Form1.sReqTEF + '\INTPOS.001');
+            RenameFile('c:\' + Form1.TransacaoTEF.DiretorioCliente + '\' + Form1.sReqTEF + '\IntPos.tmp', 'c:\' + Form1.TransacaoTEF.DiretorioCliente + '\' + Form1.sReqTEF + '\INTPOS.001');
             Sleep(1000); // Sandro Silva 2017-06-23
-            TEFAguardarRetornoStatus('c:\'+Form1.sDiretorioTEF+'\'+Form1.sRespTEF, sIdentificaTransacaoTEF);
+            TEFAguardarRetornoStatus('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTEF, sIdentificaTransacaoTEF);
 
             Sleep(10000);
 
@@ -12140,10 +12142,10 @@ begin
           //quando excluir se deu tudo certo?
         end;
 
-        DeleteFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sRespTEF+'\INTPOS.001');
-        DeleteFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sRespTEF+'\INTPOS.STS');
-        DeleteFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\INTPOS.001');
-        DeleteFile( ('c:\'+Form1.sDiretorioTEF+'.res'));
+        DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTEF+'\INTPOS.001');
+        DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTEF+'\INTPOS.STS');
+        DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\INTPOS.001');
+        DeleteFile( ('c:\'+Form1.TransacaoTEF.DiretorioCliente+'.res'));
         // Sandro Silva 2017-06-22 Deve excluir apenas se conseguir cancelar  TEFDeletarCopiasArquivos(Form1.sDiretorioTEF); // Sandro Silva 2017-06-13
 
         Display('OPERACAO NAO CONFIRMADA','Use outra forma de pagamento');
@@ -12184,7 +12186,7 @@ begin
       end;
 
       {$Region'//// TEF ////'}
-      if (AllTrim(sCupomTef) <> '') then
+      if (AllTrim(Form1.TransacaoTEF.TextoImpressao) <> '') then
       begin
         Form1.Top    := 0;
         Form1.Left   := 0;
@@ -12210,10 +12212,10 @@ begin
           if bInicializa then
           begin
 
-            if (Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat <> 0) and (UpperCase(Form1.sDiretorioTEF) = 'TEF_DIAL') then
+            if (Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat <> 0) and (UpperCase(Form1.TransacaoTEF.DiretorioCliente) = 'TEF_DIAL') then
             begin
               // Quando é CHEQUE / TEF não é comprovante fiscal vinculado e GERENCIAL
-              bChave := PDV_ImpressaoNaoSujeitoaoICMS(sCupomTef);
+              bChave := PDV_ImpressaoNaoSujeitoaoICMS(Form1.TransacaoTEF.TextoImpressao);
               Sleep(100);
               if bChave then // 2015-10-21
                 Demais('RG');
@@ -12288,28 +12290,28 @@ begin
                 Mais1Ini.WriteString('Frente de caixa','Queda','Não');
                 Mais1ini.Free;
 
-                if Form1.sModeloECF = '01' then bChave := _ecf01_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '02' then bChave := _ecf02_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '03' then bChave := _ecf03_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '12' then bChave := _ecf12_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '14' then bChave := _ecf14_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '15' then bChave := _ecf15_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '17' then bChave := _ecf17_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
-                if Form1.sModeloECF = '59' then bChave := _ecf59_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
+                if Form1.sModeloECF = '01' then bChave := _ecf01_CupomNaoFiscalVinculado(Form1.TransacaoTEF.TextoImpressao,Form1.iCupom);
+                if Form1.sModeloECF = '02' then bChave := _ecf02_CupomNaoFiscalVinculado(Form1.TransacaoTEF.TextoImpressao,Form1.iCupom);
+                if Form1.sModeloECF = '03' then bChave := _ecf03_CupomNaoFiscalVinculado(Form1.TransacaoTEF.TextoImpressao,Form1.iCupom);
+                if Form1.sModeloECF = '12' then bChave := _ecf12_CupomNaoFiscalVinculado(Form1.TransacaoTEF.TextoImpressao,Form1.iCupom);
+                if Form1.sModeloECF = '14' then bChave := _ecf14_CupomNaoFiscalVinculado(Form1.TransacaoTEF.TextoImpressao,Form1.iCupom);
+                if Form1.sModeloECF = '15' then bChave := _ecf15_CupomNaoFiscalVinculado(Form1.TransacaoTEF.TextoImpressao,Form1.iCupom);
+                if Form1.sModeloECF = '17' then bChave := _ecf17_CupomNaoFiscalVinculado(Form1.TransacaoTEF.TextoImpressao,Form1.iCupom);
+                if Form1.sModeloECF = '59' then bChave := _ecf59_CupomNaoFiscalVinculado(Form1.TransacaoTEF.TextoImpressao,Form1.iCupom);
                 if AnsiContainsText(Form10.sNomeDoTEF, 'ZPOS') = False then
                 begin
 
                   LogFrente('12895 vai imprimir comprovante tef ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
                   if Form1.sModeloECF = '65' then
-                    bChave := _ecf65_CupomNaoFiscalVinculado(sCupomTef, Form1.iCupom);
+                    bChave := _ecf65_CupomNaoFiscalVinculado(Form1.TransacaoTEF.TextoImpressao, Form1.iCupom);
 
                   LogFrente('12091 depois impressão comprovante tef ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
                 end;
 
                 if Form1.sModeloECF = '99' then
-                  bChave := _ecf99_CupomNaoFiscalVinculado(sCupomTef,Form1.iCupom);
+                  bChave := _ecf99_CupomNaoFiscalVinculado(Form1.TransacaoTEF.TextoImpressao,Form1.iCupom);
 
                 if bChave then
                 begin
@@ -12321,7 +12323,7 @@ begin
 
                     Sleep(100);
 
-                    bChave := PDV_ImpressaoNaoSujeitoaoICMS(sCupomTef);
+                    bChave := PDV_ImpressaoNaoSujeitoaoICMS(Form1.TransacaoTEF.TextoImpressao);
                     Sleep(100);
 
                     if bChave then // 2015-10-21
@@ -12331,7 +12333,7 @@ begin
 
                 end;
 
-                if (AllTrim(sCupomTef) <> '') then
+                if (AllTrim(Form1.TransacaoTEF.TextoImpressao) <> '') then
                   Display('Finalizando a transação com TEF', 'Finalizando a transação com TEF')
                 else
                   Display(Form1.sStatusECF, Form1.sF);
@@ -12364,7 +12366,7 @@ begin
                   Sleep(3000);
                   Form1.PDV_FechaCupom2(True);
                   Sleep(100);
-                  bChave := PDV_ImpressaoNaoSujeitoaoICMS(sCupomTef);
+                  bChave := PDV_ImpressaoNaoSujeitoaoICMS(Form1.TransacaoTEF.TextoImpressao);
                   Sleep(100);
                   if bChave then // 2015-10-21
                     Demais('RG');
@@ -12387,12 +12389,12 @@ begin
 
         //chega aqui Form1.Form1.sDiretorioTEF vazio
 
-        AtivaGeranciadorPadrao(Form1.sDiretorioTEF, Form1.sReqTEF, Form1.sRespTEF, Form1.sExec, '');
+        AtivaGeranciadorPadrao(Form1.TransacaoTEF.DiretorioCliente, Form1.sReqTEF, Form1.sRespTEF, Form1.sExec, '');
 
-        if Trim(Form1.sDiretorioTEF) <> '' then // Pode ter fechado tela de opções de cartão com ALT+F4 estando posicionado em um POS Sandro Silva (smal-778) 2024-11-26
+        if Trim(Form1.TransacaoTEF.DiretorioCliente) <> '' then // Pode ter fechado tela de opções de cartão com ALT+F4 estando posicionado em um POS Sandro Silva (smal-778) 2024-11-26
         begin
 
-          if FileExists('c:\'+Form1.sDiretorioTEF+'\'+Form1.sRespTEF+'\INTPOS.STS') then
+          if FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTEF+'\INTPOS.STS') then
           begin
             // bFechado := False;
             if (bChave = True)   then
@@ -12415,26 +12417,25 @@ begin
               Sleep(6000);
               }
               // Confirmando a transação TEF
-              AssignFile(F, ('c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\IntPos.tmp'));
+              AssignFile(F, ('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\IntPos.tmp'));
               Rewrite(F);
               WriteLn(F,'000-000 = CNF');                               // Header: Cartão 3c
               WriteLn(F,'001-000 = '+StrTran(TimeToStr(Time),':',''));  // Identificação: Eu uso a hora
-              // WriteLn(F,'003-000 = '+ Form1.sValorTot);              // Identificação: Eu uso o número do cupom 10c
-              WriteLn(F,'010-000 = '+ Form1.sNomeRedeParaTransacoesTEF);// Nome da rede:
-              WriteLn(F,'012-000 = '+ Form1.sTransacaTEF);                 // Número da transação NSU:
+              WriteLn(F,'010-000 = '+ Form1.TransacaoTEF.NomeRede);// Nome da rede:
+              WriteLn(F,'012-000 = '+ Form1.TransacaoTEF.Transacao);                 // Número da transação NSU:
               WriteLn(F,'027-000 = '+ Form1.sFinaliza);                 // Finalização:
               AdicionaCNPJRequisicaoTEF(F, Form1.ibDataSet13); // ENVIO DE INFORMAÇÕES LIVRES 1-CNPJ do Estabelecimento Comercial; 2-CNPJ da Empresa de Automação Comercial // Sandro Silva 2019-08-13
               WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
               CloseFile(F);
               Sleep(1000);
-              RenameFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\IntPos.tmp', 'c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\INTPOS.001');
+              RenameFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\IntPos.tmp', 'c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\INTPOS.001');
               Sleep(2000);
               {Sandro Silva 2024-12-06 fim}
 
               // 2015-10-08 Sleep deixa muito tempo de intervalo entre a hora impressa e a DEMAIS.HORA Demais('CC');
 
               //Precisa? Form1.TEFAguardarRetornoStatus();
-              if FileExists('c:\'+Form1.sDiretorioTEF+'\'+Form1.sRespTEF+'\INTPOS.STS') then // Sandro Silva 2017-06-22
+              if FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTEF+'\INTPOS.STS') then // Sandro Silva 2017-06-22
                 TEFDeletarCopiasArquivos(DIRETORIO_BKP_TEF); // Sandro Silva 2017-06-30
 
               Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31  Form1.Panel3.Visible := False; // Sandro Silva 2018-07-03
@@ -12462,26 +12463,26 @@ begin
                 }
                 Form1.ExibePanelMensagem('Desfazendo a transação do último cartão'); // Sandro Silva 2017-09-15
 
-                AssignFile(F, ('c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\IntPos.tmp'));
+                AssignFile(F, ('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\IntPos.tmp'));
                 Rewrite(F);
                 WriteLn(F,'000-000 = NCN');                                      // Header: Cartão 3c
                 WriteLn(F,'001-000 = '+StrTran(TimeToStr(Time),':',''));  // Identificação: Eu uso a hora
-                WriteLn(F,'010-000 = '+ Form1.sNomeRedeParaTransacoesTEF);        // Nome da rede:
-                WriteLn(F,'012-000 = '+ Form1.sTransacaTEF);        // Número da transação NSU:
+                WriteLn(F,'010-000 = '+ Form1.TransacaoTEF.NomeRede);        // Nome da rede:
+                WriteLn(F,'012-000 = '+ Form1.TransacaoTEF.Transacao);        // Número da transação NSU:
                 WriteLn(F,'027-000 = '+ Form1.sFinaliza);        // Finalização:
                 AdicionaCNPJRequisicaoTEF(F, Form1.ibDataSet13); // ENVIO DE INFORMAÇÕES LIVRES 1-CNPJ do Estabelecimento Comercial; 2-CNPJ da Empresa de Automação Comercial // Sandro Silva 2019-08-13
                 WriteLn(F,'999-999 = 0');                                                       // Trailer - REgistro Final, constante '0' .
                 CloseFile(F);
                 Sleep(1000); // Sandro Silva 2017-06-13
-                RenameFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\IntPos.tmp','c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\INTPOS.001');
+                RenameFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\IntPos.tmp','c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\INTPOS.001');
                 Sleep(2000);
                 {Sandro Silva 2024-12-06 fim}
 
 
                 Form1.OcultaPanelMensagem;
 
-                if FileExists('c:\'+Form1.sDiretorioTEF+'\'+Form1.sRespTEF+'\INTPOS.STS') then // Sandro Silva 2017-06-22
-                  TEFCancelarTransacoesDemaisCartoes(Form1.sDiretorioTEF, Form1.sReqTEF, Form1.sRespTEF); // Sandro Silva 2017-06-14
+                if FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTEF+'\INTPOS.STS') then // Sandro Silva 2017-06-22
+                  TEFCancelarTransacoesDemaisCartoes(Form1.TransacaoTEF.DiretorioCliente, Form1.sReqTEF, Form1.sRespTEF); // Sandro Silva 2017-06-14
 
                 Sleep(1000);
 
@@ -12561,17 +12562,19 @@ begin
                 }
                 SmallMsgBox(pChar('Última transação TEF não foi efetuada. Favor reter o cupom.'+
                                    Chr(10)+
-                                   // Chr(10)+'Rede: '+Form1.sNomeRede+
-                                   Chr(10)+'NSU: '+Form1.sTransacaTEF),'Atenção!',mb_Ok + MB_ICONERROR);
+                                   Chr(10)+'NSU: '+Form1.TransacaoTEF.Transacao),'Atenção!',mb_Ok + MB_ICONERROR);
                 {Sandro Silva 2024-12-06 fim}
               end;
             end;
 
-            DeleteFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sRespTEF+'\INTPOS.001');
-            DeleteFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sRespTEF+'\INTPOS.STS');
-            DeleteFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\IntPos.tmp');
-            DeleteFile('c:\'+Form1.sDiretorioTEF+'\'+Form1.sReqTEF+'\INTPOS.001');
-            DeleteFile(('c:\'+Form1.sDiretorioTEF+'.res'));
+            DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTEF+'\INTPOS.001');
+            DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTEF+'\INTPOS.STS');
+            DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\IntPos.tmp');
+            DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTEF+'\INTPOS.001');
+            DeleteFile(('c:\'+Form1.TransacaoTEF.DiretorioCliente+'.res'));
+
+            TransacoesComCartao.ConfirmaTransacao := False; //2024-12-09
+
           end else
           begin
             SmallMsgBox('O gerenciador padrão não está ativo. Cod: 999','Operador',mb_Ok + MB_ICONEXCLAMATION);
@@ -24593,7 +24596,7 @@ begin
                     iParcela           := 0;
                     dTotalParcelas     := 0;
                     Form1.sParcelas    := '';
-                    Form1.sTransacaTEF := ''; // Sandro Silva 2024-12-06 Form1.sTransaca    := '';
+                    Form1.TransacaoTEF.Transacao := ''; // Sandro Silva 2024-12-06 Form1.sTransaca    := '';
                     Form1.sTransacaPOS := '';
                     Form1.sAutoriza    := ''; // Sandro Silva 2018-07-03
 
@@ -28487,6 +28490,7 @@ begin
 
 
   FreeAndNil(FoArquivoDAT);
+  FreeAndNil(TransacaoTEF);
 end;
 
 procedure TForm1.SATInicializaoAlternativa1Click(Sender: TObject);
@@ -32938,15 +32942,15 @@ begin
           Form1.fDescontoNoTotal  := 0;
           Form1.fTEFPago          := 0;
           Form1.fTotalPago        := 0;
-          Form1.sCupomTEF         := '';
+          Form1.TransacaoTEF.TextoImpressao         := '';
           Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
 
           Form1.sParcelas   := '0'; // Sandro Silva 2016-07-26 SITEF não retorna quando Débito. Estava ficando as parcelas da transação anterior
           Form1.sValorTot   := '';
           Form1.sValorSaque := '';
           Form1.sNomeRedeTransacionada     := ''; // Sandro Silva 2024-12-05 Form1.sNomeRede   := '';
-          Form1.sNomeRedeParaTransacoesTEF := '';
-          Form1.sTransacaTEF := '';// Sandro Silva 2024-12-06 Form1.sTransaca   := '';
+          Form1.TransacaoTEF.NomeRede := '';
+          Form1.TransacaoTEF.Transacao := '';// Sandro Silva 2024-12-06 Form1.sTransaca   := '';
           Form1.sTransacaPOS := '';
           Form1.sAutoriza   := '';
           Form1.sFinaliza   := '';
@@ -33528,15 +33532,15 @@ begin
         Form1.fDescontoNoTotal  := 0;
         Form1.fTEFPago          := 0;
         Form1.fTotalPago        := 0;
-        Form1.sCupomTEF         := '';
+        Form1.TransacaoTEF.TextoImpressao         := '';
         Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
 
         Form1.sParcelas   := '0'; // Sandro Silva 2016-07-26 SITEF não retorna quando Débito. Estava ficando as parcelas da transação anterior
         Form1.sValorTot   := '';
         Form1.sValorSaque := '';
         Form1.sNomeRedeTransacionada     := ''; // Sandro Silva 204-12-05 Form1.sNomeRede   := '';
-        Form1.sNomeRedeParaTransacoesTEF := '';
-        Form1.sTransacaTEF   := ''; //Sandro Silva 2024-12-06 Form1.sTransaca   := '';
+        Form1.TransacaoTEF.NomeRede := '';
+        Form1.TransacaoTEF.Transacao   := ''; //Sandro Silva 2024-12-06 Form1.sTransaca   := '';
         Form1.sTransacaPOS   := '';
         Form1.sAutoriza   := '';
         Form1.sFinaliza   := '';

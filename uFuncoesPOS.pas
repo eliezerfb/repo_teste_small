@@ -185,7 +185,7 @@ begin
                   Form1.sAutoriza    := IfThen(Form1.UsaIntegradorFiscal(), Form1.sTransacaPOS, '');
                   // Sandro Silva 2024-12-05 Form1.sNomeRede   := Form1.PosElginPay.Transacao.Rede;
                   Form1.sNomeRedeTransacionada     := Form1.PosElginPay.Transacao.Rede;
-                  Form1.sNomeRedeParaTransacoesTEF := Form1.PosElginPay.Transacao.Rede;
+                  Form1.TransacaoTEF.NomeRede := Form1.PosElginPay.Transacao.Rede;
 
                   Form1.sTipoParc   := '0';// Considera sempre parcelado pelo estabelecimento poderia validar com AnsiContainsText(ValorElementoElginPayFromJson(sResposta, '"tipoFinanciamento":'), 'ESTABELECIMENTO')
                   Form1.sParcelas   := Form1.PosElginPay.Transacao.Parcelas;
