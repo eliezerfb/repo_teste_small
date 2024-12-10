@@ -2961,7 +2961,9 @@ begin
 
     //Se só tiver uma fica como padrão
     if QtdFormaPix = 1 then
-      Result := sFormaPixPadrao;
+      Result := sFormaPixPadrao
+    else
+      Result := '';
   end;
 
   Mais1ini.Free;
