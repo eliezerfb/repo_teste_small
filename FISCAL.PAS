@@ -12521,7 +12521,7 @@ begin
             DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF+'\INTPOS.STS');
             DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTEF+'\IntPos.tmp');
             DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTEF+'\INTPOS.001');
-            DeleteFile(('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'.res'));
+            DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'.res');     onde está salvando e lendo depois quando usa tefs diferentes no mesmo cupom
 
             TransacoesComCartao.ConfirmaTransacao := False; //2024-12-09
 
