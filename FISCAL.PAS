@@ -103,8 +103,9 @@ uses
   , System.Contnrs
   , spdNFCeDataSets
   , spdNFCeType
+  , spdNFCe
   , uTransacionaPosOuTef
-  , Vcl.Imaging.pngimagespdNFCe  
+  , Vcl.Imaging.pngimage
   ;
 
   const MARGEM_ESQUERDA_OBJ = 14; // Sandro Silva 2021-07-29 // 15
