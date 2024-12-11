@@ -20,23 +20,28 @@ procedure AcionaTEF(NomeDoTEF: String);
 
 type
   TDiretorioTEF = class
-    Cliente: String;
+    Pasta: String;
     REQ: String;
     RESP: String;
+    Exec: String;
   end;
 
   TDadosTransacaoTEF = class
     NomeRede: String;
     Transacao: String;
     //DiretorioCliente: String;
-    DiretorioClienteAnterior: String;
-    DiretorioCliente: TDiretorioTEF;
+    //DiretorioClienteAnterior: String;
+    Cliente: TDiretorioTEF;
+    ClienteAnterior: TDiretorioTEF;
     TextoImpressao: String;
+  private
+  public
+    constructor Create;
+    destructor Destroy;
   end;
 
 type
   TTransacaoComPosOuTef = class
-
   private
     FdTotalEmCartao: Currency; //Double;
     FFormasExtras: TPagamentoPDV;
@@ -75,11 +80,17 @@ begin
   Mais1ini := TIniFile.Create('FRENTE.INI');
   Mais1Ini.WriteString('Frente de caixa', 'TEF USADO', NomeDoTEF);
 
-  Form1.TransacaoTEF.DiretorioClienteAnterior := Form1.TransacaoTEF.DiretorioCliente; //2024-12-09
-  Form1.TransacaoTEF.DiretorioCliente := AllTrim(Mais1Ini.ReadString(NomeDoTEF, 'Pasta', 'XXXXXXXX'));
-  Form1.sReqTef       := AllTrim(Mais1Ini.ReadString(NomeDoTEF, 'Req', 'REQ'));
-  Form1.sRespTef      := AllTrim(Mais1Ini.ReadString(NomeDoTEF, 'Resp', 'RESP'));
+  Form1.TransacaoTEF.ClienteAnterior.Pasta := Form1.TransacaoTEF.Cliente.Pasta; //2024-12-09
+  Form1.TransacaoTEF.Cliente.Pasta := AllTrim(Mais1Ini.ReadString(NomeDoTEF, 'Pasta', 'XXXXXXXX'));
+
+  Form1.sReqTef    := AllTrim(Mais1Ini.ReadString(NomeDoTEF, 'Req', 'REQ'));
+  Form1.sRespTef   := AllTrim(Mais1Ini.ReadString(NomeDoTEF, 'Resp', 'RESP'));
   Form1.sExec      := AllTrim(Mais1Ini.ReadString(NomeDoTEF, 'Exec', 'XXX.XXX'));
+
+  Form1.TransacaoTEF.Cliente.Req       := AllTrim(Mais1Ini.ReadString(NomeDoTEF, 'Req', 'REQ'));
+  Form1.TransacaoTEF.Cliente.Resp      := AllTrim(Mais1Ini.ReadString(NomeDoTEF, 'Resp', 'RESP'));
+  Form1.TransacaoTEF.Cliente.Exec      := AllTrim(Mais1Ini.ReadString(NomeDoTEF, 'Exec', 'XXX.XXX'));
+
   Mais1Ini.Free;
 end;
 
@@ -249,6 +260,7 @@ var
   {Dailon Parisotto (f-17976) 2024-04-04 Fim}
 
   procedure ConfirmaTransacaoTefAnterior(DiretorioTEF: String);
+  //procedure ConfirmaTransacaoTefAnterior(DiretorioTEF: TDiretorioTEF);
   var
     F: TextFile;
   begin
@@ -277,25 +289,25 @@ var
       Sleep(6000);
       }
       // Confirmando a transação TEF
-      AssignFile(F,Pchar('c:\'+DiretorioTEF+'\'+Form1.sReqTef+'\IntPos.tmp'));
+      AssignFile(F,Pchar('c:\'+DiretorioTEF+'\'+Form1.TransacaoTEF.Cliente.REQ+'\IntPos.tmp'));
       Rewrite(F);
       WriteLn(F,'000-000 = CNF');                               // Header: Cartão 3c
-      WriteLn(F,'001-000 = '+StrTran(TimeToStr(Time),':',''));  // Identificação: Eu uso a hora
-      WriteLn(F,'010-000 = '+ Form1.TransacaoTEF.NomeRede);// Nome da rede:
-      WriteLn(F,'012-000 = '+ Form1.TransacaoTEF.Transacao);                 // Número da transação NSU:
-      WriteLn(F,'027-000 = '+ Form1.sFinaliza);                 // Finalização:
+      WriteLn(F,'001-000 = ' + StrTran(TimeToStr(Time),':',''));  // Identificação: Eu uso a hora
+      WriteLn(F,'010-000 = ' + Form1.TransacaoTEF.NomeRede);     // Nome da rede:
+      WriteLn(F,'012-000 = ' + Form1.TransacaoTEF.Transacao);    // Número da transação NSU:
+      WriteLn(F,'027-000 = ' + Form1.sFinaliza);                 // Finalização:
       AdicionaCNPJRequisicaoTEF(F, Form1.ibDataSet13);          // ENVIO DE INFORMAÇÕES LIVRES 1-CNPJ do Estabelecimento Comercial; 2-CNPJ da Empresa de Automação Comercial // Sandro Silva 2019-08-13
       WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
       CloseFile(F);
       Sleep(1000);
-      RenameFile(Pchar('c:\'+DiretorioTEF+'\'+Form1.sReqTef+'\IntPos.tmp'),'c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\INTPOS.001');
-      Sleep(2000);
+      RenameFile(Pchar('c:\'+DiretorioTEF+'\'+Form1.TransacaoTEF.Cliente.REQ+'\IntPos.tmp'),'c:\'+DiretorioTEF+'\'+Form1.TransacaoTEF.Cliente.REQ+'\INTPOS.001');
+      Sleep(6000); // Não diminuir, afeta confirmação da transação
       {Sandro Silva 2024-12-06 fim}
 
       Form1.OcultaPanelMensagem;
 
       //Precisa? TEFAguardarRetornoStatus() e validar .STS
-      if FileExists('c:\'+DiretorioTEF+'\'+Form1.sRespTef+'\INTPOS.STS') then // Sandro Silva 2017-06-22
+      if FileExists('c:\'+DiretorioTEF+'\'+Form1.TransacaoTEF.Cliente.RESP+'\INTPOS.STS') then // Sandro Silva 2017-06-22
         TEFDeletarCopiasArquivos(DIRETORIO_BKP_TEF); // Sandro Silva 2017-06-30
 
     // 2024-11-28 end;
@@ -303,7 +315,7 @@ var
 
       FfDescontoNoPremio := 0;
 
-      Form1.OcultaPanelMensagem; // Sandro Silva 2021-11-05
+      Form1.ExibePanelMensagem('', True); // Sandro Silva 2021-11-05
 
       //Sandro Silva 2024-12-05 Form1.sDIRETORIO := '';
     end;
@@ -426,7 +438,7 @@ var
       begin
         // 2024-12-05 FbConfirmarTransacao := False;
         if FbConfirmarTransacao then
-          ConfirmaTransacaoTefAnterior(Form1.TransacaoTEF.DiretorioClienteAnterior);
+          ConfirmaTransacaoTefAnterior(Form1.TransacaoTEF.ClienteAnterior.Pasta);
 
         FfDescontoNoPremio := 0;
 
@@ -438,11 +450,11 @@ var
             Form1.Edit1.SetFocus;
 
           // Ativa o gerenciador padão
-          AtivaGeranciadorPadrao(Form1.TransacaoTEF.DiretorioCliente, Form1.sReqTef, Form1.sRespTef, Form1.sExec, '');
+          AtivaGeranciadorPadrao(Form1.TransacaoTEF.Cliente.Pasta, Form1.sReqTef, Form1.sRespTef, Form1.sExec, '');
 
           // Se não existe o arquivo INTPOS.STS na pasta RESP o gerenciador
           // não ativou atumaticamente e não esta ativo
-          if not FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.STS') then
+          if not FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.STS') then
           begin
 
             if Form1.ClienteSmallMobile.ImportandoMobile then
@@ -458,9 +470,9 @@ var
               Application.MessageBox('O gerenciador padrão do TEF não está ativo.','Operador',mb_Ok + MB_ICONEXCLAMATION);
             end;
 
-            TEFLimparPastaRetorno('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef);
-            DeleteFile(PChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\INTPOS.001'));
-            DeleteFile(PChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.STS'));
+            TEFLimparPastaRetorno('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef);
+            DeleteFile(PChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\INTPOS.001'));
+            DeleteFile(PChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.STS'));
 
             Result := False;
 
@@ -468,13 +480,13 @@ var
           begin
 
             //deletando quando reenviar nfce rejeitada
-            TEFLimparPastaRetorno('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef);
-            DeleteFile(PChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\INTPOS.001'));
+            TEFLimparPastaRetorno('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef);
+            DeleteFile(PChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\INTPOS.001'));
             Sleep(100);
             // --------------------------------------------------------- //
             // CRT - Autorização para operação com cartão de crédito     //
             // --------------------------------------------------------- //
-            AssignFile(F,'c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\IntPos.TMP');
+            AssignFile(F,'c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\IntPos.TMP');
             Rewrite(F);
 
             if (Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat <> 0) then
@@ -522,7 +534,7 @@ var
 
             WriteLn(F,'999-999 = 0');                                                       // Trailer - REgistro Final, constante '0' .
             CloseFile(F);
-            RenameFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\IntPos.TMP','c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\INTPOS.001');
+            RenameFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\IntPos.TMP','c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\INTPOS.001');
             // ---------------------------------------- //
             {Sandro Silva (smal-778) 2024-11-28 inicio
             for I := 1 to 12000 do
@@ -535,7 +547,7 @@ var
             for I := 1 to 12000 do
             begin
               Application.ProcessMessages;
-              if not FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.STS') then
+              if not FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.STS') then
                 Sleep(10)
               else
                 Break;
@@ -550,10 +562,10 @@ var
 
             ModalidadeTransacao := tModalidadeCartaoTEF; // Sandro Silva 2024-11-27 tModalidadeCartao;
 
-            if FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.STS')  then
+            if FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.STS')  then
             begin
 
-              while not FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001') do
+              while not FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001') do
               begin
 
                 bOk := True;
@@ -564,10 +576,10 @@ var
                   // ----------------------------- //
                   // Verifica se é o arquivo certo //
                   // ----------------------------- //
-                  if FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001') then
+                  if FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001') then
                   begin
 
-                    AssignFile(F,'c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001');
+                    AssignFile(F,'c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001');
                     Reset(F);
 
                     while not eof(F) Do
@@ -586,7 +598,7 @@ var
 
                     if sCerto <> sCerto1 then // Valida se está processando o arquivo de retorno esperado
                     begin
-                      DeleteFile(PChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001'));
+                      DeleteFile(PChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001'));
                       bOk := True;
                       Sleep(1000);
                     end;
@@ -603,7 +615,7 @@ var
 
               sMensagem := '';
 
-              if FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001') then
+              if FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001') then
               begin
 
                 Form1.Top    := 0;
@@ -612,9 +624,9 @@ var
                 Form1.Height := Screen.Height;
 
                 // Backup do intpos.001
-                CopyFile(pChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001'),pChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'.RES'), False); // bFailIfExists deve ser False para sobrescrever se existe
+                CopyFile(pChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001'),pChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'.RES'), False); // bFailIfExists deve ser False para sobrescrever se existe
 
-                AssignFile(F,'c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001');
+                AssignFile(F,'c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001');
                 Reset(F);
 
                 Form1.sParcelas   := '0';
@@ -639,7 +651,7 @@ var
 
                 sRespostaTef := ''; // Inicia vazia para capturar linhas da resposta do tef
 
-                bTEFZPOS := (RetornoDoZPOS('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001'));
+                bTEFZPOS := (RetornoDoZPOS('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001'));
 
                 if (not bTEFZPOS) or (TestarZPOSLiberado(Form1.IBDatabase1)) then // Sandro Silva (smal-778) 2024-11-19 if (not bTEFZPOS) or (TestarZPOSLiberado) then
                 begin
@@ -805,7 +817,7 @@ var
 
                 if (sMensagem = 'Cancelada pelo operador') and (Form1.OkSim='FF') then
                 begin
-                  DeleteFile(PChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\INTPOS.001'));
+                  DeleteFile(PChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\INTPOS.001'));
                 end;
 
                 if allTrim(sMensagem) <> ''  then
@@ -955,14 +967,14 @@ var
             begin
               // Transação Não feita
               Result := False;
-              DeleteFile(pChar(DIRETORIO_BKP_TEF+'\'+Form1.TransacaoTEF.DiretorioCliente+IntToStr(FiContaCartao + 1)+'.BKP'));
+              DeleteFile(pChar(DIRETORIO_BKP_TEF+'\'+Form1.TransacaoTEF.Cliente.Pasta+IntToStr(FiContaCartao + 1)+'.BKP'));
               // Apaga arquivo de bkp não autorizados quando 2 gerenciadores diferentes
               // Evitar que tente cancelar transação não confirmada. Ex.:  030-000 = Sitef fora do ar
-              DeleteFile(PChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001'));
-              DeleteFile(PChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.STS'));
-              DeleteFile(PChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\IntPos.tmp'));
-              DeleteFile(PChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\INTPOS.001'));
-              DeleteFile(PChar('c:\'+Form1.TransacaoTEF.DiretorioCliente+'.res'));
+              DeleteFile(PChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001'));
+              DeleteFile(PChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.STS'));
+              DeleteFile(PChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\IntPos.tmp'));
+              DeleteFile(PChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\INTPOS.001'));
+              DeleteFile(PChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'.res'));
             end; // if (Form1.sNomeRede <> '') and (sCupom <> '') then
 
             if Result then
@@ -1425,6 +1437,20 @@ begin
   begin
     Result := True;
   end;
+end;
+
+{ TDadosTransacaoTEF }
+
+constructor TDadosTransacaoTEF.Create;
+begin
+  Cliente := TDiretorioTEF.Create;
+  ClienteAnterior := TDiretorioTEF.Create;
+end;
+
+destructor TDadosTransacaoTEF.Destroy;
+begin
+  Cliente.Free;
+  ClienteAnterior.Free;
 end;
 
 end.

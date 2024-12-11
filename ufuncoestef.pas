@@ -1527,8 +1527,8 @@ begin
 
   Form1.bNaoSaiComESC := True;
 
-  Form1.TransacaoTEF.DiretorioCliente := '';
-  Form1.TransacaoTEF.DiretorioClienteAnterior := '';
+  Form1.TransacaoTEF.Cliente.Pasta := '';
+  Form1.TransacaoTEF.ClienteAnterior.Pasta := '';
   Form10.TipoForm  := tfTEF;
   if Form1.touch_F9.Visible then
   begin
@@ -1541,7 +1541,7 @@ begin
     Form10.Button3.Left     := AjustaLargura(207) - AjustaLargura(45); // Sandro Silva 2021-09-21 Form10.Button3.Left    := 207 - 45; // Sandro Silva 2017-11-07 Polimig
   end;
 
-  while AllTrim(Form1.TransacaoTEF.DiretorioCliente) = '' do
+  while AllTrim(Form1.TransacaoTEF.Cliente.Pasta) = '' do
   begin
     if Form10.ListarTEFAtivos(True) = False then
     begin
@@ -1567,15 +1567,15 @@ begin
     //with Form1 do
     //begin
 
-    DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.STS');
-    DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001');
-    DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.STS');
-    DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\INTPOS.STS');
-    AtivaGeranciadorPadrao(Form1.TransacaoTEF.DiretorioCliente, Form1.sReqTef, Form1.sRespTef, Form1.sExec, '');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.STS');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.STS');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\INTPOS.STS');
+    AtivaGeranciadorPadrao(Form1.TransacaoTEF.Cliente.Pasta, Form1.sReqTef, Form1.sRespTef, Form1.sExec, '');
     //
     try
       //
-      AssignFile(F,'c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\IntPos.TMP');
+      AssignFile(F,'c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\IntPos.TMP');
       Rewrite(F);
       // ADM Permite o acionamento do Cliente para execução das funções administrativas.
       WriteLn(F,'000-000 = ADM');                               // Header: Funcoes Administrativas
@@ -1596,11 +1596,11 @@ begin
       Sleep(100);// Sandro Silva 2024-12-06
       //
     except
-      SmallMsg('O '+Form1.TransacaoTEF.DiretorioCliente+ ' não está instalado.');
+      SmallMsg('O '+Form1.TransacaoTEF.Cliente.Pasta+ ' não está instalado.');
       Abort;
     end;
     //
-    RenameFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\IntPos.TMP','c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\INTPOS.001');
+    RenameFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\IntPos.TMP','c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\INTPOS.001');
     //
     Form1.Top    := 0;
     Form1.Left   := 0;
@@ -1610,21 +1610,21 @@ begin
     //
     for I := 0 to 4 do
     begin
-      if not FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001') then
+      if not FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001') then
         Sleep(1000);
     end;
     //
-    while not FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001') do
+    while not FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001') do
     begin
       Sleep(10);
       Application.ProcessMessages;
       // ----------------------------- //
       // Verifica se é o arquivo certo //
       // ----------------------------- //
-      if FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001') then
+      if FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001') then
       begin
         Sleep(1000);
-        AssignFile(F,'c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001');
+        AssignFile(F,'c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001');
         Reset(F);
         for I := 1 to 5 do
         begin
@@ -1634,7 +1634,7 @@ begin
           begin
             if AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)) <> sCerto1 then
             begin
-              DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001');
+              DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001');
               Sleep(1000);
             end;
           end;
@@ -1661,12 +1661,12 @@ begin
     sMensagem       := '';
     Form1.OkSim     := '';
     //
-    if FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001') then
+    if FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001') then
     begin
       //
       // ShellExecute( 0, 'Open', 'NOTEPAD.EXE', pChar('\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.001'), '', SW_SHOW);
       //
-      AssignFile(F,'c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001');
+      AssignFile(F,'c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001');
       Reset(F);
       //
       for I := 1 to 500 do
@@ -1693,7 +1693,7 @@ begin
 
       if (sMensagem = 'Cancelada pelo operador') and (AllTrim(Form1.OkSim)='FF') then
       begin
-        DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\INTPOS.001');
+        DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\INTPOS.001');
 
         // Cancelado pelo operador
         Form1.sValorTot := '';
@@ -1825,15 +1825,15 @@ begin
           end;
 
           //
-          AtivaGeranciadorPadrao(Form1.TransacaoTEF.DiretorioCliente, Form1.sReqTef, Form1.sRespTef, Form1.sExec, '');
+          AtivaGeranciadorPadrao(Form1.TransacaoTEF.Cliente.Pasta, Form1.sReqTef, Form1.sRespTef, Form1.sExec, '');
           //
-          if FileExists('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.STS') then
+          if FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.STS') then
           begin
             //
             if AllTrim(Form1.OkSim) = '0' then // Ronei Mudei aqui
             begin
               //
-              AssignFile(F,'c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\IntPos.TMP');
+              AssignFile(F,'c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\IntPos.TMP');
               Rewrite(F);
               //
               if Form1.bChave = True then
@@ -1879,7 +1879,7 @@ begin
               WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
               CloseFile(F);
               Sleep(100);
-              RenameFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\IntPos.TMP','c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\INTPOS.001');
+              RenameFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\IntPos.TMP','c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\INTPOS.001');
               Sleep(1000);
 
               if Form1.bChave = False then
@@ -1905,10 +1905,10 @@ begin
     end; // if FileExists('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.001') then
     //
     Sleep(300);
-    DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.STS');
-    DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.001');
-    DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sRespTef+'\INTPOS.STS');
-    DeleteFile('c:\'+Form1.TransacaoTEF.DiretorioCliente+'\'+Form1.sReqTef+'\IntPos.tmp');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.STS');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.001');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTef+'\INTPOS.STS');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\IntPos.tmp');
 
     Form1.Panel3.Visible  := False;
     Form1.Panel3.Caption  := '';
