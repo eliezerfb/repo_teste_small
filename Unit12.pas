@@ -10,8 +10,6 @@ uses
   , uajustaresolucao
   ;
 
-//const PAGAMENTO_EM_CARTAO = 'Pagamento em Cartão';
-
 type
   TForm12 = class(TForm)
     Label2: TLabel;
@@ -54,16 +52,14 @@ var
   I : Integer;
   sAtual : String;
 begin
-  //
   if (Copy(Form12.Label1.Caption, 1, 5) = 'Senha') // PAF-NFC-e tem mensagem de menu fiscal indisponível Sandro Silva 2020-12-09
     and (AnsiContainsText(Form12.Label1.Caption, 'Senha do usuário') = False) // Não é senha de usuário
    then
   begin
-    //
     Getdir(0,sAtual);
     Mais1ini := TIniFile.Create(sAtual+'\EST0QUE.DAT');
     sSenhaX := Mais1Ini.ReadString('Administrador','Chave','15706143431572013809150491382314104');
-    Mais1Ini.Free; // Sandro Silva 2018-11-21 Memória
+    Mais1Ini.Free;
     sSenha := '';
     // ----------------------------- //
     // Fórmula para ler a nova senha //
@@ -81,18 +77,14 @@ begin
       Form12.Caption := '';
       SmallMsg('Senha do Administrador inválida.');
     end;
-    //
+
     Edit1.Text    := '';
-    //
-  end;
-  //
-  if Form12.Label1.Caption = 'Senha do usuário' then
-  begin
-    //
-    Form15.edtSenha.Text := Edit1.Text;
-    //
   end;
 
+  if Form12.Label1.Caption = 'Senha do usuário' then
+  begin
+    Form15.edtSenha.Text := Edit1.Text;
+  end;
 
   //Ficha depuraçaõ 3026
   if Form12.Label2.Caption = INFORME_CPF_OU_CNPJ then
@@ -109,9 +101,7 @@ begin
     end;
   end;
 
-  //
   Close;
-  //
 end;
 
 procedure TForm12.Image6Click(Sender: TObject);
@@ -121,29 +111,26 @@ end;
 
 procedure TForm12.FormActivate(Sender: TObject);
 begin
-  //
-  //
   Form12.Frame_teclado1.Led_FISCAL.Picture := Form1.Frame_teclado1.Led_FISCAL.Picture;
   Form12.Frame_teclado1.Led_FISCAL.Hint    := Form1.Frame_teclado1.Led_FISCAL.Hint;
-  //
+
   Form12.Frame_teclado1.Led_ECF.Picture := Form1.Frame_teclado1.Led_ECF.Picture;
   Form12.Frame_teclado1.Led_ECF.Hint    := Form1.Frame_teclado1.Led_ECF.Hint;
-  //
+
   Form12.Frame_teclado1.Led_REDE.Picture := Form1.Frame_teclado1.Led_REDE.Picture;
   Form12.Frame_teclado1.Led_REDE.Hint    := Form1.Frame_teclado1.Led_REDE.Hint;
-  //
+
   Edit1.Visible := True;
-  ActiveControl := Edit1; // Sandro Silva 2018-10-24
+  ActiveControl := Edit1;
   if Pos('Alerta', Label1.Caption) > 0 then
   begin
-    ActiveControl := BitBtn1; // Sandro Silva 2018-10-24 nil;
+    ActiveControl := BitBtn1;
     Edit1.Visible := False;
   end;
   if Edit1.CanFocus then
   begin
     Edit1.SetFocus;
   end;
-  //
 end;
 
 procedure TForm12.Edit1KeyDown(Sender: TObject; var Key: Word;
@@ -175,37 +162,33 @@ begin
 
   AjustaResolucao(Form12);
   AjustaResolucao(Form12.Frame_teclado1);
-  Form1.Image7Click(Sender); // Sandro Silva 2016-08-18
+  Form1.Image7Click(Sender);
 end;
 
 procedure TForm12.FormShow(Sender: TObject);
 begin
   if (Form12.Label1.Caption = PAGAMENTO_EM_CARTAO) or (Form12.Label1.Caption = PARCELAS_EM_CARTAO) then
   begin
-    if Edit1.CanFocus then // Sandro Silva 2020-10-16
+    if Edit1.CanFocus then
     begin
       Edit1.SetFocus;
       Edit1.SelectAll;
     end;
   end;
 
-  {Sandro Silva 2021-07-30 inicio}
   Label3.Visible := False;
   Label3.Caption := '';
-  //if PAFNFCe and (Form1.sModeloECF_Reserva <> '99') then // Sandro Silva 2023-06-27 if PAFNFCe then
+
   if PAFNFCe then
   begin
     Label3.Visible := True;
     Label3.Caption := MSG_ALERTA_MENU_FISCAL_INACESSIVEL;
   end;
-  {Sandro Silva 2021-07-30 fim}
-
 end;
 
 procedure TForm12.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  {Sandro Silva 2018-03-19 inicio}
   if Key = VK_ESCAPE then
   begin
     // Sandro Silva 2023-06-23 if (Pos('Alerta', Form12.Label1.Caption) > 0) and (AnsiContainsText(Form12.Label2.Caption, 'Não é possível efetuar a venda') or AnsiContainsText(Form12.Label2.Caption, 'Não foi possível importar')) then // Usar na venda direta e importações
@@ -214,7 +197,6 @@ begin
       Button1Click(Sender);
     end;
   end;
-  {Sandro Silva 2018-03-19 fim}
 end;
 
 end.
