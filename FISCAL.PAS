@@ -29280,7 +29280,7 @@ begin
           ' From NFCE N '+
           ' Where ' +
           '  ( ' +
-          '  N.MODELO = ' + QuotedStr(Form1.sModeloECF) +
+          '  (N.MODELO = ''59'' or N.MODELO = ''65'')' + /// Sandro (f-21891) Silva 2024-12-11 '  N.MODELO = ' + QuotedStr(Form1.sModeloECF) +
           '   and N.NFEXML containing ' + QuotedStr(sPesquisa) +
           '  ) ' +
           '  or ' +
@@ -29312,6 +29312,7 @@ begin
                                              '   N.*,'+
                                              SQL_FORMAPAGAMENTO_LIST + ', ' + // Sandro Silva (f-21891) 2024-12-10 SQL_FORMAPAGAMENTO_LIST+
                                              SQL_CLIENTE+
+                                             ' From NFCE N '+
                                              ' Where N.MODELO = ' + QuotedStr(Form1.sModeloECF) +
                                              '   and EXISTS (Select 1 From ALTERACA A'+
                                              '               Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
