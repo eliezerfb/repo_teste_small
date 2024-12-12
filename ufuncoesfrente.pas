@@ -91,17 +91,25 @@ const PAGAMENTO_EM_CARTAO = 'Pagamento em Cartão';
 
 const NUMERO_FORMAS_EXTRAS = 8;
 
+{Sandro Silva (f-21891) 2024-12-10 inicio
 const SQL_FORMAPAGAMENTO_LIST = ' (Select list(DISTINCT trim(substring(P.FORMA from 3 for char_length(P.FORMA))), ''; '') '+
                                 '  From PAGAMENT P'+
                                 '  Where P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA '+
                                 '    and substring(P.FORMA from 1 for 2) not in (''00'', ''13'')'+
                                 ' ) FORMAPAGAMENTO,';
+}
+const SQL_FORMAPAGAMENTO_LIST = ' (Select list(DISTINCT trim(substring(P.FORMA from 3 for char_length(P.FORMA))), ''; '') '+
+                                '  From PAGAMENT P'+
+                                '  Where P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA '+
+                                '    and substring(P.FORMA from 1 for 2) not in (''00'', ''13'')'+
+                                ' ) FORMAPAGAMENTO ';
+{Sandro Silva (f-21891) 2024-12-10 fim}
 
 const SQL_CLIENTE             = ' (Select First 1 A.CLIFOR'+
                                 '  From ALTERACA A'+
                                 '  Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
                                 '    and coalesce(A.CLIFOR, '''') <> '''' '+
-                                ' ) CLIFOR';
+                                ' ) CLIFOR ';
 
 type
   TDadosEmitente = class
@@ -2428,7 +2436,7 @@ begin
             //'select N.* from NFCE N where N.DATA = ' + QuotedStr(DateToStrInvertida(Data)) + Mauricio Parizotto 2024-08-23
             ' Select'+
             '   N.*,'+
-            SQL_FORMAPAGAMENTO_LIST+
+            SQL_FORMAPAGAMENTO_LIST + ', ' + // Sandro Silva (f-21891) 2024-12-10 SQL_FORMAPAGAMENTO_LIST+
             SQL_CLIENTE+
             ' From NFCE N '+
             ' Where N.DATA = ' + QuotedStr(DateToStrInvertida(Data)) +
