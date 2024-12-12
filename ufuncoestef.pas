@@ -22,6 +22,7 @@ uses
 procedure ValidaDiretorioTEF(sDirTef: String; sDirReq: String; sDirResp: String);
 function AtivaGeranciadorPadrao(p_diretorio, p_Req, p_Resp, p_Exec, NometefIni: String): Boolean;
 //2024-11-27 function TEFMultiplosCartoes(bP1:Boolean): Boolean;
+procedure LimpaPastasTEFs;
 function CancelaTEFPendente(pP1, pP2, pP3, pP4, NomeTefIni: String): Boolean;
 function FuncoesAdministrativas(pP1: Boolean): Boolean;
 procedure TEFLimparPastaRetorno(sDiretorioResposta: String);
@@ -238,6 +239,45 @@ begin
   SetForegroundWindow(Hwnd);
 
   Result := True;
+end;
+
+procedure LimpaPastasTEFs;
+// Limpas as pastas dos TEFs. Usar quando tiver finalizado corretamente as transações TEF e a venda.
+var
+  I: Integer;
+  sSecoes:  TStrings;
+  Ini: TIniFile;
+  sPasta: String;
+  sReq: String;
+  sResp: String;
+begin
+  sSecoes := TStringList.Create;
+  Ini     := TIniFile.Create('FRENTE.INI');
+  try
+    Ini.ReadSections(sSecoes);
+
+    for I := 0 to (sSecoes.Count - 1) do
+    begin
+      if Ini.ReadString(sSecoes[I], 'bAtivo', 'Não') = 'Sim' then
+      begin
+        try
+          sPasta := Ini.ReadString(sSecoes[I], 'Pasta', 'XXXXXXXX');
+          sReq   := Ini.ReadString(sSecoes[I], 'Req', 'Req');
+          sResp  := Ini.ReadString(sSecoes[I], 'Resp', 'Resp');
+          DeleteFile('c:\' + sPasta + '\' + sResp + '\INTPOS.001');
+          DeleteFile('c:\' + sPasta + '\' + sResp + '\INTPOS.STS');
+          DeleteFile('c:\' + sPasta + '\' + sReq + '\IntPos.tmp');
+          DeleteFile('c:\' + sPasta + '\' + sReq + '\INTPOS.001');
+          DeleteFile('c:\' + sPasta + '.res');
+        except
+
+        end;
+      end;
+    end;
+  finally
+    sSecoes.Free;
+    Ini.Free;
+  end;
 end;
 
 (*
