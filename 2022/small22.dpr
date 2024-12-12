@@ -277,7 +277,8 @@ uses
   uFrmProdutosIMendes in 'uFrmProdutosIMendes.pas' {FrmProdutosIMendes},
   uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
   uImendes in 'units\uImendes.pas',
-  uCalculaImpostos in 'uCalculaImpostos.pas';
+  uCalculaImpostos in 'uCalculaImpostos.pas',
+  uAtorInteressado in 'uAtorInteressado.pas' {fmAtorInteressado};
 
 {$R *.RES}
 

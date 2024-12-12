@@ -3473,6 +3473,22 @@ begin
   end;
   {Mauricio Parizotto 2024-10-14 Fim}
 
+  if not(TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ATORINTERESSADO')) then
+  begin
+    ExecutaComando(
+      'create table ATORINTERESSADO ('+
+        'ID INTEGER, '+
+        'NUMERONF VARCHAR(12), '+
+        'MODELO VARCHAR(2), '+
+        'CPFCNPJ VARCHAR(14), '+
+        'IS_PROTECTED SMALLINT '+
+      ')'
+    );
+    ExecutaComando('CREATE SEQUENCE G_ATORINTERESSADO');
+    ExecutaComando('commit');
+  end;
+
+
   Form22.Repaint;
 
   try
