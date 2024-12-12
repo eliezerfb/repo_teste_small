@@ -29253,6 +29253,7 @@ var
 begin
   sPesquisa := LimpaNumero(Small_InputBox('Pesquisa', 'Informe o CPF ou CNPJ do cliente', ''));
   try
+    (* Sandro Silva (f-21891) 2024-12-11 inicio
     if (Length(sPesquisa) = 11) or (Length(sPesquisa) = 14) then
     begin
       if Form1.sModeloECF <> '99' then
@@ -29325,6 +29326,32 @@ begin
       {Mauricio Parizotto 2023-07-24 Fim}
 
     end;
+    *)
+    if (Length(sPesquisa) = 11) or (Length(sPesquisa) = 14) then
+    begin
+      sPesquisa := FormataCpfCgc(sPesquisa);
+    end;
+
+    Form1.ibDataset150.Close;
+    Form1.ibDataset150.SelectSQL.Text :=
+        ' Select'+
+        '   N.*,'+
+        SQL_FORMAPAGAMENTO_LIST + ', ' +
+        SQL_CLIENTE+
+        ' From NFCE N '+
+        ' Where exists (select 1 ' +
+        '               from ALTERACA A ' +
+        '               where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA ' +
+        '               and coalesce(A.VALORICM, 0) = 0 ' + // Não listar as importações para NF-e
+        '               and coalesce(A.CODIGO, '''') <> '''' ' + // Para os gerenciais importados para NF-e, os registros de desconto/acrécimo não tem o campo ALTERACA.VALORICM preenchido
+        '               and coalesce(A.CNPJ, '''') containing ' + QuotedStr(sPesquisa) +
+        '              )' +
+        ifThen(Form1.sModeloECF = '99', ' and N.MODELO = ' + QuotedStr(Form1.sModeloECF),
+          ' and ((N.MODELO <> ''99'' and (N.STATUS containing ''Autorizad'' or N.STATUS containing ''CF-e-SAT Emitido com sucesso'')) or (N.MODELO = ''99'' and N.STATUS = ' + QuotedStr(VENDA_GERENCIAL_FINALIZADA) + '))') +
+        ' order by N.DATA, N.NUMERONF ';
+    Form1.ibDataset150.Open;
+    (*Sandro Silva (f-21891) 2024-12-10 fim*)
+
   except
 
   end;
