@@ -16376,20 +16376,17 @@ begin
                     end;
                   end else
                   begin
-                    // Cancela Item N
-                    if (Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = '<CANCELADO>') or (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'KOLNAC') then // Sandro Silva 2019-03-26 if Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = '<CANCELADO>' then
+                    if (Form1.ibDataSet27.FieldByName('CAIXA').AsString=sCaixa)
+                      and (Form1.ibDataSet27.FieldByName('PEDIDO').AsString=FormataNumeroDoCupom(Form1.icupom))
+                      //and (Form1.ibDataSet27.FieldByName('ITEM').AsString = StrZero(StrToInt(AllTrim(sTexto))*-1,6,0)) then Mauricio Parizotto 2024-07-08 SMAL-511
+                      and (
+                            (Form1.ibDataSet27.FieldByName('ITEM').AsString = StrZero(StrToIntDef(AllTrim(sTexto),0)*-1,6,0))
+                            or
+                            (Copy(AllTrim(sTexto),2,1) = '*') //Cancela todos os itens
+                          ) then
                     begin
-                      if Copy(AllTrim(sTexto),2,1) <> '*' then //Mauricio Parizotto 2024-07-23
-                        SmallMsg(ibDataSet27.FieldByName('ITEM').AsString+#13#10+
-                                'Este item já foi cancelado!');
-                    end
-                    else
-                    begin
-                      //Form1.Button11Click(Sender); // CalcelaItenN Mauricio Parizotto 2024-07-08
-                      sITEM     := ibDataSet27.FieldByName('ITEM').AsString;
-                      sRegistro := ibDataSet27.FieldByName('REGISTRO').AsString;
-
-                      if sITEM <> '' then
+                      // Cancela Item N
+                      if (Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = '<CANCELADO>') or (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'KOLNAC') then // Sandro Silva 2019-03-26 if Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = '<CANCELADO>' then
                       begin
                         if Copy(AllTrim(sTexto),2,1) <> '*' then //Mauricio Parizotto 2024-07-23
                           SmallMsg(ibDataSet27.FieldByName('ITEM').AsString+#13#10+
