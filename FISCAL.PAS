@@ -1351,7 +1351,6 @@ type
     procedure Modopagamentocommltiploscartes1Click(Sender: TObject);
     procedure ConfigurarFabricanteeModeloSAT1Click(Sender: TObject);
     procedure ECFConvnio09091Click(Sender: TObject);
-    procedure ransmitirRespostaFiscalPendente1Click(Sender: TObject);
     procedure Impressorapadro1Click(Sender: TObject);
     procedure N4001Click(Sender: TObject);
     procedure NFCeVersaoManualvm601Click(Sender: TObject);
@@ -13477,7 +13476,7 @@ begin
                   dQuantidade := Form1.ibDataSet27.FieldByName('QUANTIDADE').AsFloat;
                   if (Form1.ClienteSmallMobile.sVendaImportando = '') then
                     Edit1.SetFocus;
-                    
+
                 end
                 else
                   dQuantidade := StrToFloat(Text);
@@ -13525,7 +13524,7 @@ begin
               end;
 
             except
-              Commitatudo(True);
+              Commitatudo(True); // TForm1.ibDataSet27QUANTIDADESetText(
 
               Form1.ibDataSet27.Close;
               Form1.ibDataSet27.SelectSQL.Text := FEditaMovimento.SelectSqlAlteracaEdicao;
@@ -29058,45 +29057,6 @@ begin
 
 end;
 
-procedure TForm1.ransmitirRespostaFiscalPendente1Click(Sender: TObject);
-//var
-//  iPendentes: Integer;
-begin
-  {Sandro Silva 2023-06-14 inicio
-  try
-    if (Form1.UsaIntegradorFiscal()) then // Sandro Silva 2018-07-03 if (Form1.sModeloECF = '59') and (_ecf59_Tipodaimpressora = 'MFE') then
-    begin
-      if SmallMsgBox(PAnsiChar('Serão enviados os dados pendentes dos pagamentos com cartão ao Integrador Fiscal' + #13 + #13 + 'Confirma?'), 'Atenção! Enviando dados ao Integrador Fiscal', MB_ICONQUESTION + MB_YESNO + MB_DEFBUTTON1) = ID_YES then
-      begin
-
-        Form1.Display('Aguarde! Enviando Dados ao Integrador Fiscal', 'Enviando resposta fiscal pendente ao Integrador Fiscal'); // Sandro Silva 2017-09-04  Form1.ExibePanelMensagem('Enviando resposta fiscal pendente ao Integrador Fiscal');
-        Screen.Cursor := crHourGlass;
-
-        Commitatudo(True); // Antes ransmitirRespostaFiscalPendente1Click()
-
-        iPendentes := EnviarRespostaFiscalPendente(Form1.ibDataSet27.Transaction, Form1.sModeloECF, Form22.Label6); // Sandro Silva 2017-09-04
-
-        if (iPendentes > 0) and (iPendentes <= 10)  then// Tentar repetir o processo se alguma transmissão falhar // Sandro Silva 2020-09-18 if iPendentes > 0 then// Tentar repetir o processo se alguma transmissão falhar
-        begin
-          // Repete a tentativa de envio se existir atá 10 pendências
-          Sleep(3000);
-          iPendentes := EnviarRespostaFiscalPendente(Form1.ibDataSet27.Transaction, Form1.sModeloECF, Form22.Label6); //  Sandro Silva 2017-09-04
-        end;
-
-        Commitatudo(True); // Depois ransmitirRespostaFiscalPendente1Click()
-
-        Screen.Cursor := crDefault;
-        Form1.Display(Form1.sStatusECF,Form1.sF);
-        if iPendentes > 0 then
-          SmallMsgBox(PAnsiChar('Alguns dados não foram enviados aos Integrador Fiscal' + #13 + #13 + 'Repita o envio dentro de alguns instantes'), 'Atenção', MB_OK + MB_ICONWARNING);
-      end;
-    end;
-  except
-
-  end;
-  }
-end;
-
 procedure TForm1.AjustarDiferencaParcelasCartao(dTotalTransacaoCartao: Currency;
   dValorFormaPagtoCartao: Currency; iTotalParcelasVenda: Integer;
   iParcelasTransacao: Integer);
@@ -32854,16 +32814,6 @@ begin
 
     Commitatudo(True); // Form1.AbreEdicaoMovimento
 
-    { Sandro Silva 2024-03-08
-    IBQTEMP.Close;
-    IBQTEMP.SQL.Text :=
-      'select first 1 distinct PEDIDO ' +
-      'from ALTERACA ' +
-      'where PEDIDO = ' + QuotedStr(FormataNumeroDoCupom(Form1.icupom)) +
-      ' and CAIXA = ' + QuotedStr(Form1.sCaixa);
-    IBQTEMP.Open;
-    }
-
     if Form1.sModeloECF = '01' then // Quando é mesa/conta
       sSelectItens :=
         'select first 1 distinct PEDIDO ' +
@@ -32903,7 +32853,7 @@ begin
       FreeAndNil(FEditaMovimento);
   end;
 
-  Commitatudo(True);
+  Commitatudo(True); // Form1.AbreEdicaoMovimento
 
   Memo1.Clear;
   try
@@ -33227,7 +33177,7 @@ end;
 
 
 
-function TForm1.AbandonaVenda : boolean;
+function TForm1.AbandonaVenda: boolean;
 var
   sITEM, sRegistro : string;
   sGenerator, sProdutosBloq, sDav, sTipoDav : string;
@@ -33355,7 +33305,7 @@ begin
     begin
       ApagaCupom;
 
-      if Commitatudo(True) then
+      if Commitatudo(True) then // TForm1.AbandonaVenda
       begin
         //Volta Generator
         IncrementaGenerator(sGenerator, -1);
@@ -33372,7 +33322,7 @@ begin
   if sModeloECF = '59' then
   begin
     ApagaCupom;
-    Commitatudo(True);
+    Commitatudo(True); // TForm1.AbandonaVenda
     Button8Click(Button8); //Finaliza Cupom
   end;
 
