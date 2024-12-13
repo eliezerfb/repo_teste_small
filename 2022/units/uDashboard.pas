@@ -11,7 +11,7 @@ uses
   , IBX.IBQuery
   ;
 
-  function GetdDadosDashboard(out sJson : string; Transaction : TIBTransaction):boolean;
+  function GetdDadosDashboard(out sJson : string; IBDatabase: TIBDatabase):boolean;
   function getFiltroVendas(Transaction : TIBTransaction):string;
 
 implementation
@@ -21,15 +21,30 @@ uses uFuncoesBancoDados
   , uListaToJson;
 
 
-function GetdDadosDashboard(out sJson : string; Transaction : TIBTransaction):boolean;
+function GetdDadosDashboard(out sJson : string; IBDatabase: TIBDatabase):boolean;
 var
   DadosDTO : TRootDadosDTO;
+  Transaction: TIBTransaction;
+  IBDatabaseDash: TIBDatabase;
 begin
   Result := False;
   sJson  := '';
 
   try
     try
+      //Cria Conexão para thread clonando da principal
+      IBDatabaseDash := TIBDatabase.Create(nil);
+      IBDatabaseDash.Params       := IBDatabase.Params;
+      IBDatabaseDash.DatabaseName := IBDatabase.DatabaseName;
+      IBDatabaseDash.ServerType   := IBDatabase.ServerType;
+      IBDatabaseDash.LoginPrompt  := False;
+
+      Transaction := TIBTransaction.Create(nil);
+      Transaction.DefaultDatabase := IBDatabaseDash;
+      IBDatabaseDash.DefaultTransaction := Transaction;
+
+      IBDatabaseDash.Connected := True;
+
       DadosDTO := TRootDadosDTO.Create;
       DadosDTO.setTransaction(Transaction);
       DadosDTO.FiltroNatVendas := getFiltroVendas(Transaction);
@@ -37,6 +52,8 @@ begin
       sJson := TJson.ObjectToJsonString(DadosDTO);
       Result := True;
     finally
+      FreeAndNil(Transaction);
+      FreeAndNil(IBDatabaseDash);
       FreeAndNil(DadosDTO);
     end;
   except

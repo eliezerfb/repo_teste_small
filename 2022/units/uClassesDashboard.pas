@@ -17,6 +17,15 @@ uses
 {$M+}
 
 type
+  TAnaliseIA = class
+  private
+    FAnalise: string;
+    FPeriodo: TDate;
+  published
+    property Analise: string read FAnalise write FAnalise;
+    property Periodo: TDate read FPeriodo write FPeriodo;
+  end;
+
   TContasBancarias = class
   private
     FDescricao: string;
@@ -129,6 +138,8 @@ type
     FContasPagar: TContasPagar;
     [JSONName('ContasBancarias')]
     FContasBancarias: TArray<TContasBancarias>;
+    [JSONName('AnaliseIA')]
+    FAnaliseIA : TArray<TAnaliseIA>;
     [JSONMarshalled(False)]
     FTransaction : TIBTransaction;
     [JSONMarshalled(False)]
@@ -143,6 +154,7 @@ type
     procedure GetContasReceber;
     procedure GetContasPagar;
     procedure GetContasBancarias;
+    procedure GetDiagnosticoIA;
   published
     property VendasDia: Double read FVendasDia write FVendasDia;
     property VendasPeriodo: TArray<TVendasPeriodo> read FVendasPeriodo write FVendasPeriodo;
@@ -151,6 +163,7 @@ type
     property ContasReceber: TContasReceber read FContasReceber;
     property ContasPagar: TContasPagar read FContasPagar;
     property ContasBancarias: TArray<TContasBancarias> read FContasBancarias write FContasBancarias;
+    property AnaliseIA : TArray<TAnaliseIA> read FAnaliseIA write FAnaliseIA;
     property FiltroNatVendas : string read FFiltroNatVendas write FFiltroNatVendas;
   public
     procedure setTransaction(Transaction : TIBTransaction);
@@ -496,45 +509,62 @@ var
   qryAux: TIBQuery;
 begin
   try
+    Inadimplencia.Trimestre := 0;
+    FInadimplencia.Ano      := 0;
+    FInadimplencia.Total    := 0;
+
+
     qryAux := CriaIBQuery(FTransaction);
 
     //3 Meses
     qryAux.Close;
     qryAux.SQL.Text :=  ' Select '+
-                        ' 	cast(sum(VALOR_DUPL) as numeric(18,2))as VALOR, '+
-                        ' 	cast(sum(VALOR_RECE) as numeric(18,2))as RECE '+
+                        ' 	Coalesce(cast(sum(VALOR_DUPL) as numeric(18,2)) ,0) as VALOR, '+
+                        ' 	Coalesce(cast(sum(VALOR_RECE) as numeric(18,2)) ,0) as RECE '+
                         ' From RECEBER '+
                         ' Where (VENCIMENTO>=(CURRENT_DATE-90)) and VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1';
     qryAux.Open;
-    try
-      FInadimplencia.Trimestre := 100-(qryAux.FieldByname('RECE').AsFloat/qryAux.FieldByname('VALOR').AsFloat)*100;
-    except
+
+    if qryAux.FieldByname('VALOR').AsFloat > 0 then
+    begin
+      try
+        FInadimplencia.Trimestre := 100-(qryAux.FieldByname('RECE').AsFloat/qryAux.FieldByname('VALOR').AsFloat)*100;
+      except
+      end;
     end;
 
     //12 Meses
     qryAux.Close;
     qryAux.SQL.Text :=  ' Select '+
-                        ' 	cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, '+
-                        ' 	cast(sum(VALOR_RECE)as numeric(18,2))as RECE '+
+                        ' 	Coalesce(cast(sum(VALOR_DUPL)as numeric(18,2)) ,0) as VALOR, '+
+                        ' 	Coalesce(cast(sum(VALOR_RECE)as numeric(18,2)) ,0) as RECE '+
                         ' From RECEBER '+
                         ' Where (VENCIMENTO>=(CURRENT_DATE-360)) and VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1';
     qryAux.Open;
-    try
-      FInadimplencia.Ano := 100-(qryAux.FieldByname('RECE').AsFloat/qryAux.FieldByname('VALOR').AsFloat)*100;
-    except
+
+    if qryAux.FieldByname('VALOR').AsFloat > 0 then
+    begin
+      try
+        FInadimplencia.Ano := 100-(qryAux.FieldByname('RECE').AsFloat/qryAux.FieldByname('VALOR').AsFloat)*100;
+      except
+      end;
     end;
 
     //Total
     qryAux.Close;
     qryAux.SQL.Text :=  ' Select  '+
-                        ' 	cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, '+
-                        ' 	cast(sum(VALOR_RECE)as numeric(18,2))as RECE  '+
+                        ' 	Coalesce(cast(sum(VALOR_DUPL)as numeric(18,2)) ,0) as VALOR, '+
+                        ' 	Coalesce(cast(sum(VALOR_RECE)as numeric(18,2)) ,0) as RECE  '+
                         ' From RECEBER '+
                         ' Where VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1';
     qryAux.Open;
-    try
-      FInadimplencia.Total := 100-(qryAux.FieldByname('RECE').AsFloat/qryAux.FieldByname('VALOR').AsFloat)*100;
-    except
+
+    if qryAux.FieldByname('VALOR').AsFloat > 0 then
+    begin
+      try
+        FInadimplencia.Total := 100-(qryAux.FieldByname('RECE').AsFloat/qryAux.FieldByname('VALOR').AsFloat)*100;
+      except
+      end;
     end;
 
   finally
@@ -605,6 +635,7 @@ begin
   GetContasReceber;
   GetContasPagar;
   GetContasBancarias;
+  GetDiagnosticoIA;
 
   //Mês Atual
   FVendasPeriodo[0].Periodo := Trim(MesExtenso( Month(now)));
@@ -619,6 +650,42 @@ begin
   GetVendasDiarias(1);
   GetVendasVendedor(1);
   GetVendasFormaPgto(1);
+end;
+
+procedure TRootDadosDTO.GetDiagnosticoIA;
+var
+  qryAux: TIBQuery;
+  AnaliseIAAr : TArray<TAnaliseIA>;
+  i : integer;
+begin
+  try
+    qryAux := CriaIBQuery(FTransaction);
+    qryAux.SQL.Text :=  ' Select first 5'+
+                        '   DATA,'+
+                        '   DADOSRETORNADOS '+
+                        ' From DIAGNOSTICOIA'+
+                        ' Order By DATA Desc';
+    qryAux.Open;
+
+    i := 0;
+
+    while not qryAux.Eof do
+    begin
+      SetLength(AnaliseIAAr,i+1);
+
+      AnaliseIAAr[i] := TAnaliseIA.Create;
+      AnaliseIAAr[i].Periodo := qryAux.FieldByName('DATA').AsDateTime;
+      AnaliseIAAr[i].Analise := qryAux.FieldByName('DADOSRETORNADOS').AsString;
+
+      inc(i);
+      qryAux.Next;
+    end;
+
+    FAnaliseIA := AnaliseIAAr;
+  finally
+    FreeAndNil(qryAux);
+  end;
+
 end;
 
 procedure TRootDadosDTO.GetContasPagar;

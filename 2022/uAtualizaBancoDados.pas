@@ -3473,6 +3473,27 @@ begin
   end;
   {Mauricio Parizotto 2024-10-14 Fim}
 
+
+  {Mauricio Parizotto 2024-12-12 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'DIAGNOSTICOIA')) then
+  begin
+    ExecutaComando(' CREATE TABLE DIAGNOSTICOIA ('+
+                   '   IDDIAGNOSTICO INTEGER NOT NULL,'+
+                   '   DATA DATE NOT NULL,'+
+                   '   DADOSENVIADOS VARCHAR(1000),'+
+                   '   DADOSRETORNADOS VARCHAR(1000),'+
+                   '   CONSTRAINT PK_DIAGNOSTICOIA PRIMARY KEY (IDDIAGNOSTICO)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando('CREATE SEQUENCE G_DIAGNOSTICOIA');
+
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-12-12 Inicio}
+
+
   Form22.Repaint;
 
   try

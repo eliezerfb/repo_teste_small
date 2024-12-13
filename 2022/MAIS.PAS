@@ -19,6 +19,8 @@ uses
   , uLogSistema
   , uSmallEnumerados
   , Vcl.Imaging.GIFImg
+  , System.Threading
+  , uFrmDashboard // Pakege Dashboard Mauricio Parizotto 2024-12-09
   ;
 
   function LeLabels(sP1: Boolean): Boolean;
@@ -462,6 +464,7 @@ type
 
 
   private
+    FrmDashboard : TFrmDashboard;
     procedure ExibeRazaoSocialNoCaptionDoForm;
     function getPropaganda: String;
     function RetornarWhereNotasManifestar: String;
@@ -13193,7 +13196,6 @@ end;
 procedure TForm1.AbreDashboard;
 var
   oHwnd: HWND;
-  sDirExe, sJson : string;
 begin
   if not FechaTudo(bFechaTudo) then
     Exit;
@@ -13232,37 +13234,40 @@ begin
     pnlContainer.Width     := Form1.Width - 16;
     pnlContainer.Height    := Form1.Height - pnlContainer.Top - 39;
 
-    FecharAplicacao('Dashboard.exe');
+    try
+      if FrmDashboard <> nil then
+        FreeAndNil(FrmDashboard);
 
-    //Carrega Dados
-    if GetdDadosDashboard(sJson, Form7.IBTransaction1) then
+      FrmDashboard := TFrmDashboard.Create(pnlContainer);
+      FrmDashboard.Width  := pnlContainer.Width;
+      FrmDashboard.Height := pnlContainer.Height;
+      //FrmDashboard.sJsonDados := '';
+      FrmDashboard.Show;
+      oHwnd := FindWindow( nil, 'Dashboard' ) ;
+      Windows.SetParent(oHwnd,pnlContainer.handle) ;
+    except
+    end;
+
+    //Carrega dados
+    TTask.Run(
+    procedure()
+    var
+      sJson : string;
     begin
-      var jsonString : TStringList;
-
       try
-        jsonString := TStringList.Create;
-        jsonString.Text := sJson;
-        jsonString.SaveToFile( ExtractFilePath(Application.ExeName) +'DadosDash.json');
-      finally
-        FreeAndNil(jsonString);
+        GetdDadosDashboard(sJson, Form7.IBDatabase1);
+      except
       end;
-    end;
 
-    //Abre Dashboard
-    Sleep(100);
-    sDirExe := ExtractFilePath(Application.ExeName)+'Dashboard.exe';
-    ShellExecute( 0, 'Open', pChar(sDirExe), pChar(pnlContainer.Width.ToString+' '+pnlContainer.Height.ToString), '', SW_SHOW);
-
-    //Coloca a aplicação dentro do Panel
-    Sleep(500);//Não diminuir
-    oHwnd := FindWindow( nil, 'Dashboard' ) ;
-    while oHwnd = 0 do begin
-      Sleep(300);
-      oHwnd := FindWindow(nil,'Dashboard');
-    end;
-    Windows.SetParent(oHwnd,pnlContainer.handle) ;
-
-    //if not Windows.GetParent(oHwnd) = pnlContainer.handle then
+      TThread.Synchronize(TThread.CurrentThread,
+      procedure()
+      begin
+        if FrmDashboard <> nil then
+        begin
+          FrmDashboard.AtualizaDados(sJson);
+        end;
+      end);
+    end);
   finally
     Screen.Cursor := crDefault;
   end;
@@ -13270,7 +13275,9 @@ end;
 
 procedure TForm1.FechaDashboard;
 begin
-  FecharAplicacao('Dashboard.exe');
+  if FrmDashboard <> nil then
+    FreeAndNil(FrmDashboard);
+
   pnlContainer.Visible   := False;
 end;
 
