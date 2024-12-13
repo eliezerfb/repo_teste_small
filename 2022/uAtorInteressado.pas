@@ -30,7 +30,6 @@ type
     BitBtn1: TBitBtn;
     FDMemTableMain: TFDMemTable;
     FDMemTableMainCPFCNPJ: TStringField;
-    FDMemTableMainID: TIntegerField;
     FDMemTableMainIS_PROTECTED: TSmallintField;
     dsMain: TDataSource;
     FDMemTableMainDELETED: TIntegerField;
@@ -38,6 +37,7 @@ type
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     FDMemTableMainUUID: TStringField;
     ImageList1: TImageList;
+    FDMemTableMainIDATORINTERESSADO: TIntegerField;
     procedure FormCreate(Sender: TObject);
     procedure FDMemTableMainBeforeDelete(DataSet: TDataSet);
     procedure DBGridActorsDrawColumnCell(Sender: TObject;
@@ -95,7 +95,7 @@ procedure TfmAtorInteressado.AddActor(AID: Integer; AIdentification: String;
 begin
   AIdentification := RemoveMask(AIdentification);
   FDMemTableMain.Append;
-  FDMemTableMainID.AsInteger := AID;
+  FDMemTableMainIDATORINTERESSADO.AsInteger := AID;
   FDMemTableMainCPFCNPJ.AsString := ConverteCpfCgc(AIdentification);
   FDMemTableMainIS_PROTECTED.AsInteger := Integer(AIsProtected);
   FDMemTableMain.Post;
@@ -425,10 +425,10 @@ begin
   try
     Qry.Database := FConnection;
     Qry.Transaction := FTransaction;
-    Qry.SQL.Text := 'select id, cpfcnpj, is_protected '+
+    Qry.SQL.Text := 'select idatorinteressado, cpfcnpj, is_protected '+
       ' from atorinteressado '+
       ' where numeronf = :numeronf and modelo = :modelo'+
-      ' order by id';
+      ' order by idatorinteressado';
     Qry.Prepare;
     Qry.ParamByName('numeronf').AsString := FNumeroNF;
     Qry.ParamByName('modelo').AsString := FModelo;
@@ -436,7 +436,7 @@ begin
     while not(Qry.Eof) do
     begin
       AddActor(
-        Qry.FieldByName('id').AsInteger,
+        Qry.FieldByName('idatorinteressado').AsInteger,
         Qry.FieldByName('cpfcnpj').AsString,
         Boolean(Qry.FieldByName('is_protected').AsInteger)
       );
@@ -476,8 +476,8 @@ begin
     Qry.ExecSQL;
 
     Qry.SQL.Text := 'INSERT INTO atorinteressado '+
-      '(ID, NUMERONF, MODELO, CPFCNPJ, IS_PROTECTED) VALUES ( '+
-      '  NEXT VALUE FOR g_atorinteressado, '+
+      '(IDATORINTERESSADO, NUMERONF, MODELO, CPFCNPJ, IS_PROTECTED) '+
+      ' VALUES (NEXT VALUE FOR g_atorinteressado, '+
       '  :NUMERONF, :MODELO, :CPFCNPJ, :IS_PROTECTED '+
       ');';
 

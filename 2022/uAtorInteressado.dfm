@@ -110,13 +110,11 @@ inherited fmAtorInteressado: TfmAtorInteressado
     object LabelInfo: TLabel
       Left = 10
       Top = 10
-      Width = 238
-      Height = 190
+      Width = 55
+      Height = 16
       Align = alClient
       Caption = 'LabelInfo'
       Layout = tlCenter
-      ExplicitWidth = 55
-      ExplicitHeight = 16
     end
   end
   object FDMemTableMain: TFDMemTable
@@ -131,9 +129,8 @@ inherited fmAtorInteressado: TfmAtorInteressado
     UpdateOptions.AutoCommitUpdates = True
     Left = 320
     Top = 32
-    object FDMemTableMainID: TIntegerField
-      FieldName = 'ID'
-      Visible = False
+    object FDMemTableMainIDATORINTERESSADO: TIntegerField
+      FieldName = 'IDATORINTERESSADO'
     end
     object FDMemTableMainCPFCNPJ: TStringField
       FieldName = 'CPFCNPJ'

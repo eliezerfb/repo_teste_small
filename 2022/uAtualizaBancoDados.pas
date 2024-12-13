@@ -3477,11 +3477,12 @@ begin
   begin
     ExecutaComando(
       'create table ATORINTERESSADO ('+
-        'ID INTEGER, '+
+        'IDATORINTERESSADO INTEGER, '+
         'NUMERONF VARCHAR(12), '+
         'MODELO VARCHAR(2), '+
         'CPFCNPJ VARCHAR(14), '+
-        'IS_PROTECTED SMALLINT '+
+        'IS_PROTECTED SMALLINT, '+
+        'CONSTRAINT PK_ATORINTERESSADO PRIMARY KEY (IDATORINTERESSADO) '+
       ')'
     );
     ExecutaComando('CREATE SEQUENCE G_ATORINTERESSADO');
