@@ -147,7 +147,9 @@ begin
   //
   if Form7.sModulo = 'RECEBER' then
   begin
-    if Form40.Tag = 9 then
+    if Tag = ID_TIPO_COBRANCA_ATUALIZA_BOLETOS then
+      Form40.Memo1.Lines.SaveToFile(LimpaNome(Senhas.UsuarioPub)+'_cobranca3.txt')
+    else if Form40.Tag = 9 then
     begin
       Form40.Memo1.Lines.SaveToFile(LimpaNome(Senhas.UsuarioPub)+'_cobranca2.txt')
     end else

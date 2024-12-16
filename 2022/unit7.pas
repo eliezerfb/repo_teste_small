@@ -21804,7 +21804,7 @@ begin
           Mais1Ini.WriteString('mail','Registro',pchar(Form7.ibDataSet2.FieldByName('REGISTRO').AsString));
           Mais1Ini.Free;
           //
-          Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mail큦 enviados.';
+          Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mails enviados.';
           Form7.Panel1.Repaint;
           //
         end;
@@ -22115,7 +22115,7 @@ begin
                 Form7.Panel1.Left := (Form7.Width - Panel1.Width) div 2;
                 Form7.Panel1.Visible := True;
                 //
-                Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mail큦 enviados.';
+                Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mails enviados.';
                 Form7.Panel1.Repaint;
               end;
             end;
@@ -22723,7 +22723,6 @@ var
   GeraEnvioItem1: TmenuItem;
   bI: Boolean;
 begin
-  Gerarboletoeenviodeemaildecobranatotalizadoporcliente1.Visible := Form1.DisponivelSomenteParaNos; // Sandro Silva 2022-12-26
   GerCNAB400.Visible := True;
   GerCNAB240.Visible := True;
 
@@ -29856,7 +29855,7 @@ begin
                 Form7.Panel1.Left := (Form7.Width - Panel1.Width) div 2;
                 Form7.Panel1.Visible := True;
 
-                Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mail큦 enviados.';
+                Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mails enviados.';
                 Form7.Panel1.Repaint;
               end;
 
@@ -33544,7 +33543,7 @@ begin
                 Form7.Panel1.Left := (Form7.Width - Panel1.Width) div 2;
                 Form7.Panel1.Visible := True;
 
-                Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mail큦 enviados.';
+                Form7.Panel1.Caption := AllTrim(IntToStr(I))+' e-mails enviados.';
                 Form7.Panel1.Repaint;
               end;
 

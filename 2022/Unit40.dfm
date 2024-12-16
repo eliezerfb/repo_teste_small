@@ -51,9 +51,9 @@ object Form40: TForm40
   object Label4: TLabel
     Left = 680
     Top = 30
-    Width = 77
+    Width = 74
     Height = 13
-    Caption = 'e-mail'#180's por hora'
+    Caption = 'e-mails por hora'
   end
   object Memo1: TMemo
     Left = 100
@@ -87,8 +87,8 @@ object Form40: TForm40
     OnClick = Button1Click
   end
   object MaskEdit1: TMaskEdit
-    Left = 624
-    Top = 30
+    Left = 625
+    Top = 28
     Width = 49
     Height = 19
     Ctl3D = False
