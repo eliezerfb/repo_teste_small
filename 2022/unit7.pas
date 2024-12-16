@@ -30590,13 +30590,13 @@ begin
               sMensagem := sMensagem + 'Número documento: ' + Copy(sLinha,117,010) + ' Valor: R$ '+  FloatToStr(StrToFloat(Copy(sLinha,254,013))/100);
 
               sDocumento := AllTrim(Copy(sLinha,117,010)); // Sandro Silva 2022-12-21 Número do documento
-              //
+
               Form7.ibDataSet7.Close;
               Form7.ibDataSet7.Selectsql.Clear;
-              Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where DOCUMENTO='+QuotedStr(sDocumento)+' '); // Sandro Silva 2022-12-21 Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where DOCUMENTO='+QuotedStr(AllTrim(Copy(sLinha,117,010)))+' ');
+              Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where DOCUMENTO='+QuotedStr(sDocumento)+' ');
               Form7.ibDataSet7.Open;
-              //
-              if Form7.ibDataSet7DOCUMENTO.AsString = sDocumento then // Sandro Silva 2022-12-21if Form7.ibDataSet7DOCUMENTO.AsString = AllTrim(Copy(sLinha,117,010)) then
+
+              if Form7.ibDataSet7DOCUMENTO.AsString = sDocumento then
               begin
                 if Form7.ibDataSet7ATIVO.AsFloat < 5 then
                 begin
