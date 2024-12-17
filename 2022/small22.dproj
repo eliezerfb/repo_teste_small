@@ -617,6 +617,10 @@
         <DCCReference Include="..\..\unit_compartilhada\DAT\uListaToJson.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\DAT\uDashboardSections.pas"/>
         <DCCReference Include="units\uDashboard.pas"/>
+        <DCCReference Include="uFrmDashboard.pas">
+            <Form>FrmDashboard</Form>
+        </DCCReference>
+        <DCCReference Include="units\uClassesDadosDash.pas"/>
         <DCCReference Include="units\uClassesDashboard.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

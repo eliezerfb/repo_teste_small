@@ -281,6 +281,8 @@ uses
   uListaToJson in '..\..\unit_compartilhada\DAT\uListaToJson.pas',
   uDashboardSections in '..\..\unit_compartilhada\DAT\uDashboardSections.pas',
   uDashboard in 'units\uDashboard.pas',
+  uFrmDashboard in 'uFrmDashboard.pas' {FrmDashboard},
+  uClassesDadosDash in 'units\uClassesDadosDash.pas',
   uClassesDashboard in 'units\uClassesDashboard.pas';
 
 {$R *.RES}

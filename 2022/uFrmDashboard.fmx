@@ -1,0 +1,3179 @@
+object FrmDashboard: TFrmDashboard
+  Left = 0
+  Top = 0
+  BorderStyle = None
+  Caption = 'Dashboard'
+  ClientHeight = 744
+  ClientWidth = 1459
+  Fill.Color = xFFF3FBFF
+  Fill.Kind = Solid
+  Position = Designed
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  OnResize = FormResize
+  OnShow = FormShow
+  DesignerMasterStyle = 0
+  object GridPanelPrincipal: TGridPanelLayout
+    Align = Client
+    Size.Width = 1459.000000000000000000
+    Size.Height = 744.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    ColumnCollection = <
+      item
+        Value = 100.000000000000000000
+      end>
+    ControlCollection = <
+      item
+        Column = -1
+        Row = -1
+      end
+      item
+        Column = 0
+        Control = GridPanelLinha1
+        Row = 0
+      end
+      item
+        Column = 0
+        Control = GridPanelLinha2
+        Row = 1
+      end
+      item
+        Column = 0
+        Control = GridPanelLinha3
+        Row = 2
+      end>
+    RowCollection = <
+      item
+        Value = 16.655677868565530000
+      end
+      item
+        Value = 41.186635072995360000
+      end
+      item
+        Value = 42.157687058439110000
+      end>
+    object GridPanelLinha1: TGridPanelLayout
+      Align = Client
+      Size.Width = 1459.000000000000000000
+      Size.Height = 123.918243408203100000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      ColumnCollection = <
+        item
+          Value = 25.000000000000000000
+        end
+        item
+          Value = 25.000000000000000000
+        end
+        item
+          Value = 25.000000000000000000
+        end
+        item
+          Value = 25.000000000000000000
+        end>
+      ControlCollection = <
+        item
+          Column = 0
+          Control = Rec01
+          Row = 0
+        end
+        item
+          Column = 1
+          Control = Rectangle1
+          Row = 0
+        end
+        item
+          Column = 2
+          Control = Rectangle2
+          Row = 0
+        end
+        item
+          Column = 3
+          Control = Rectangle3
+          Row = 0
+        end>
+      RowCollection = <
+        item
+          Value = 100.000000000000000000
+        end>
+      object Rec01: TRectangle
+        Align = Client
+        Fill.Color = xFFF0F9F4
+        Margins.Left = 10.000000000000000000
+        Margins.Top = 10.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Size.Width = 349.750000000000000000
+        Size.Height = 108.918243408203100000
+        Size.PlatformDefault = False
+        Stroke.Thickness = 0.000000000000000000
+        XRadius = 10.000000000000000000
+        YRadius = 10.000000000000000000
+        object lblVendasDia: TLabel
+          Align = Client
+          StyledSettings = [Style]
+          Size.Width = 349.750000000000000000
+          Size.Height = 70.918243408203130000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 36.000000000000000000
+          TextSettings.FontColor = xFF6BC18E
+          TextSettings.HorzAlign = Center
+          Text = 'R$ 0,00'
+          TabOrder = 0
+          object TimerRepaint: TTimer
+            Enabled = False
+            Interval = 10
+            OnTimer = TimerRepaintTimer
+            Left = 34
+            Top = 66
+          end
+        end
+        object layVendasDia: TLayout
+          Align = Top
+          Margins.Left = 10.000000000000000000
+          Margins.Top = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 329.750000000000000000
+          Size.Height = 28.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          object ImgVendasDia: TImage
+            MultiResBitmap = <
+              item
+                Width = 28
+                Height = 28
+                PNG = {
+                  89504E470D0A1A0A0000000D494844520000001C0000001C0806000000720DDF
+                  94000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                  02EE49444154484BBD964D4C134114C7DF4EB7B45502A6043401638D1F074DF8
+                  F0229EDA3D9970510EDE4C8413893531183878329E3C4034266282273D9BF875
+                  F0BA6D3CA81728247251624D8A3120060D6AA9BB33CE9BCE946E77D97611FC25
+                  9BDD79AFDD7FE7F57D8C060D30624EA448483B4718A42CF893D021B20FED166C
+                  AC1168CA81C672D466CFA78DF18CF8820FBE8297CDC9218DB01B00A18434D5C1
+                  CE33AADDBC6F8C3D9406179E8223E6AD844EC24F0148AF3405C4CE5BD432A68D
+                  EB7969A840E4BD42FAD5ED4BDC3ABB7D31844784BFE38A39795E1A2A3876881F
+                  6084F09DED284353C96B8FE4F3A62086117F954A889D02130B28F4A9F05642AA
+                  13DDDC4AACFFC009E86E3B22576EFCFCF8CE723E941182988D7E99188FB4C01E
+                  3D22576EEAF9311FCA1A32A4E9ECC4C75AC1B6680BA43A4FC1CB4FAFC1E8EC83
+                  63AD07E15BF1BBF43AE96CEE80DFD686F0FFB24B9029CCC0EAC60FE955D8F9A9
+                  E4F8610D8B5A2721535A2B5CEDBE00E6E71998FFBA080387FA21A647617EF583
+                  F43A39BDFFA410447FD7DE761EDEA37077FEB1F456416D838480B8521789C75A
+                  849862697D19DEAF153C2FDC99F29B4BB310E7D1F182712DC208F4C8F596A070
+                  617D45AEDCD4F32B78D74A120AA5BA055EF8B9222E04FF5B0C775773BB5823D5
+                  7E3FB00F93207517E39978F1F8599E1845F11C14D472B5363F30311E2CBC10F7
+                  ED42442708C0BF888971A643D8D5D1770BC29A7284CFAFAC5C3704264B5BA495
+                  D75B07BF7BA7FF56680CE68806F4995C3704D6D89BE5772271A2011307B5C894
+                  3816D80D87156BEEED9705712D35500A9BF0D6C6B54496E2B140D86A081A3204
+                  EBD42BB19446651EA6B3938E298FE3662071665BF5F664310373556D51356E7C
+                  AA1AC077F8002EEED2008EF2013CEA1CC06808D1F0A85CEE18611A1E566288A3
+                  D3E0F14EA374306833F002DFC1281DBE678C39AAC071885260787562F119D9E8
+                  79B4169AB36868B07A670A4F41C57F3B08D792E6A7021C9E4C831EAA957A5562
+                  61D87416CE33A665B1A8CB35ED07C05F580347A42B86E37B0000000049454E44
+                  AE426082}
+                FileName = 'C:\Users\Desenvolvimento\Downloads\Group 1000002833.png'
+              end>
+            Align = Left
+            Size.Width = 28.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+          end
+          object lblTitVendasDia: TLabel
+            Align = Left
+            StyledSettings = [Style]
+            Margins.Left = 10.000000000000000000
+            Position.X = 38.000000000000000000
+            Size.Width = 120.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFF495465
+            Text = 'Vendas do dia'
+            TabOrder = 1
+          end
+        end
+      end
+      object Rectangle1: TRectangle
+        Align = Client
+        Fill.Color = xFFF0F9F4
+        Margins.Left = 5.000000000000000000
+        Margins.Top = 10.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Size.Width = 354.750000000000000000
+        Size.Height = 108.918243408203100000
+        Size.PlatformDefault = False
+        Stroke.Thickness = 0.000000000000000000
+        XRadius = 10.000000000000000000
+        YRadius = 10.000000000000000000
+        object lblVendasMes: TLabel
+          Align = Client
+          StyledSettings = [Style]
+          Size.Width = 354.750000000000000000
+          Size.Height = 70.918243408203130000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 36.000000000000000000
+          TextSettings.FontColor = xFF6BC18E
+          TextSettings.HorzAlign = Center
+          Text = 'R$ 0,00'
+          TabOrder = 0
+        end
+        object layVendasMes: TLayout
+          Align = Top
+          Margins.Left = 10.000000000000000000
+          Margins.Top = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 334.750000000000000000
+          Size.Height = 28.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          object imgVendasMes: TImage
+            MultiResBitmap = <
+              item
+                Width = 28
+                Height = 28
+                PNG = {
+                  89504E470D0A1A0A0000000D494844520000001C0000001C0806000000720DDF
+                  94000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                  036149444154484BBD964D4C134114C7DF4EB77C280102414C5A438DA009267C
+                  5D8413DD139183CA811B463818126B423070F0643C79806848C4044F1A8F247E
+                  1D483C2D8D07E102A5060E02B19A6240850041A1D09D75DE74A674DBB26D0DFA
+                  4BC876DE5BF6BFF3F67D8C0259D0AB0F798943B94A4CF046E1C0A3427E29DAA3
+                  10D924901700C50C50C37C33A60D4EF27FB0C156F0963EDCAD10F31E80C3234C
+                  1930422655EE3FD1069E09430A69057BF5071E95385F01900661CA112314A551
+                  6D4CBB1B128638445CE3F8DE3FBCC1ACB37F2F86B088B067DCD687AF09431CCB
+                  0EF1069310B6B363A57BB4F5CE73F1FB5010C3886F2513E2B8C0C4020A8D32BC
+                  F190AA44D58F126B3E5D0B75E5E7C42A153B3F3E33960F31B82066A35D2696E5
+                  17C309355FAC52C9E4C77C88698890FAFC439F9305CB0B8AC1EB6A82892F1F40
+                  7335424DC919D8D8DB125E2BAEA253B01B8D70FF6F631F26C333B01ED9165E89
+                  111A6D1D3CAB6051ABC4A10B6B9CBEBA4ED0BFCD40F0E732B4573543A15A00C1
+                  F525E1B572A9F2221744BFFB64050B6F358C04C78537016A68C40124257591B2
+                  C2622E2659D9F90E8B9BE1B47FB833E9D75766A18C45271D26D32226817AB13E
+                  12140EEFFC10AB5432F925AC6BB5120AFB190BFC72550BB47B5AE066ED1516DA
+                  5872745D6883BEFA4EE83ADFC6C319FE955910FB30C9547735256EF8C8BECDD3
+                  F9B710DC5882E6CA5A5E0618C291B971985E9B07AFBB49DC6D0F6AA5B4B66416
+                  B7C230B5B6C0B31633758E85AF9ABD04DAA51F5F2A5B08EF04595053EA86F284
+                  7ADB3D88F06B2EF071A68233A5A32782698EDF6D6A750126BEC66A12BF99ABA8
+                  82FB71E7BB4676E2C4CC0B1036BFFC629D1614BBCE12037788F58621C4D4D758
+                  53401B3687E9D57971B73D8A09734401FA5AACD3C2055803C09D6282E0F7DCD8
+                  DB86179FDEF17AC362475B36A01619E5C702C336ACB2A0F12A41D16916E6449B
+                  3DACB5312D9EA5782CE0B624304972857F53F68D93911AF179E8F30F5BA63C8E
+                  1B2C7659E8B9F072799297CF21B1C68DBF1206F0233680F7FED1002E6003B8DF
+                  3A80D1E0A0CE7EB13C369CD4D923C5104BA7C1E39D426947B6CDC00E7C864969
+                  CF636DC0520596439404C3AB92289B91D99E4793A18128757424EE4C925650F2
+                  DF0EC2C9F8D8A90087A7A9403D55F61B646261D854D319324DC58F451DAB693B
+                  00FE00EE8B83A4C8D66DCE0000000049454E44AE426082}
+                FileName = 'C:\Users\Desenvolvimento\Downloads\Group 1000002845 (1).png'
+              end>
+            Align = Left
+            Size.Width = 28.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+          end
+          object lblTitVendasMes: TLabel
+            Align = Left
+            StyledSettings = [Style]
+            Margins.Left = 10.000000000000000000
+            Position.X = 38.000000000000000000
+            Size.Width = 107.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFF495465
+            Text = 'Vendas do m'#234's'
+            TabOrder = 1
+          end
+          object recSelecaoPeriodo: TRectangle
+            Align = Right
+            Cursor = crHandPoint
+            Fill.Color = xFFF0F9F4
+            Margins.Top = 5.000000000000000000
+            Margins.Right = 1.000000000000000000
+            Margins.Bottom = 5.000000000000000000
+            Position.X = 202.750000000000000000
+            Position.Y = 5.000000000000000000
+            Size.Width = 131.000000000000000000
+            Size.Height = 18.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Color = xFFF0F9F4
+            OnClick = lblPeriodoClick
+            OnMouseEnter = recSelecaoPeriodoMouseEnter
+            OnMouseLeave = recSelecaoPeriodoMouseLeave
+            object lblPeriodo: TLabel
+              Align = Center
+              Cursor = crHandPoint
+              StyledSettings = []
+              Size.Width = 123.000000000000000000
+              Size.Height = 17.000000000000000000
+              Size.PlatformDefault = False
+              TextSettings.Font.Family = 'Roboto'
+              TextSettings.Font.Size = 14.000000000000000000
+              TextSettings.FontColor = xFF495465
+              TextSettings.HorzAlign = Center
+              Text = '---'
+              TabOrder = 1
+              OnClick = lblPeriodoClick
+            end
+          end
+        end
+      end
+      object Rectangle2: TRectangle
+        Align = Client
+        Fill.Color = xFFFDF6E7
+        Margins.Left = 5.000000000000000000
+        Margins.Top = 10.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Size.Width = 354.750000000000000000
+        Size.Height = 108.918243408203100000
+        Size.PlatformDefault = False
+        Stroke.Thickness = 0.000000000000000000
+        XRadius = 10.000000000000000000
+        YRadius = 10.000000000000000000
+        object lblSaldoCaixa: TLabel
+          Align = Client
+          StyledSettings = [Style]
+          Size.Width = 354.750000000000000000
+          Size.Height = 70.918243408203130000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 36.000000000000000000
+          TextSettings.FontColor = xFF6BC18E
+          TextSettings.HorzAlign = Center
+          Text = 'R$ 0,00'
+          TabOrder = 0
+        end
+        object laySaldoCaixa: TLayout
+          Align = Top
+          Margins.Left = 10.000000000000000000
+          Margins.Top = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 334.750000000000000000
+          Size.Height = 28.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          object imgSaldoCx: TImage
+            MultiResBitmap = <
+              item
+                Width = 28
+                Height = 28
+                PNG = {
+                  89504E470D0A1A0A0000000D494844520000001C0000001C0806000000720DDF
+                  94000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                  02E549444154484BBD96CF4F135110C7E7BD76DB22BF8448C44BC5E0414D04BC
+                  7851225C342126CA550EB037E5E64939114FFA17186FB507BC821712BDA0C178
+                  30269470F022B17A5102E17795B6DBF79CD9CE2EDB1F5976B1F193347DF3EDEE
+                  4EDFBC99D9111080F554F3908C883B5A8BA122147A62103B497A010ADBB8CE80
+                  D01955D2AFBBCCDC3BFB061F7C1D6EA45A27B454D312640F4BBE285059A1E493
+                  53E6DE4B966AA8EBF067AABDC7906A167F1C602914E4D852D6F019339F65C945
+                  F2B7CB66BA751CE4C1D2719D117644242CADA75AEEB2E452B143BA404A31CB66
+                  434007139DE37B69360F1D521869674E42340A4A2C8CF11527BC6E48A3D25A68
+                  B433829E69C8981B357B87948D4242CA5618D972163F49B6C2A1F6BE83CAFD60
+                  AB8C566052F6DA0ED7D3CDDFBCA9DFD43F0546F72094F62B6F0A4AB4E332E457
+                  67E0E0CB7356CA99DB359E3B27ECA2967281759BB69BF390FBFC084A9B2BAC84
+                  8322D372ED05ECBE1961A58C526A18CF50D4A42EA10B3BBCAA25D2D907898B93
+                  6C85400AAC0229FAD9AC4BAC770CDA6ECDB385F734272171E101C47BEFD9EB30
+                  08103724A6AD6F8117F02CBCA1899F1FB3532DBFFA0A4E5C7DC66A30A80FCBB0
+                  A560FD5A04E3F4A01DF2DF9F1E97C58090AF9AD676141626D2EEDB1188765F87
+                  58F236ABC1A1906EF33A10894B93D0D43705D6DA073C470C6F08C89734C0A8E9
+                  E87E506DE9E28E9D38FB1FEFB35A2EA5A3FE00FACA48EC00EFD90E049D5DFEEB
+                  8C9D34DE3AA53053B1FBA10196F10CF51CDB81296DAD5474916A84D1CEAB2A94
+                  9EABDBDAE258D4090C0F25C8718860A729AE2DC29FE5A7AC785A1B19F59B7712
+                  22210BDB817AB06FF32636D2ADFFF496F7C3D91DADDD3A8C28391AB6448240CF
+                  8CE27CC3E6A1C30E73276BA8D843361B46541966876798AAE8341463A5744376
+                  4ACFB0F0DCBACCFD8A2A70CFD0CB16CE37168E1C41E7D16AB0DE32115518F5EE
+                  CCA1AE4387FF360857435301BD3C8586FEA2280E386F180A9BA18DAC16D8ADB0
+                  A88F1EF501FE0226162DEFA11AC15D0000000049454E44AE426082}
+                FileName = 'C:\Users\Desenvolvimento\Downloads\Group 1000002846 (2).png'
+              end>
+            Align = Left
+            Size.Width = 28.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+          end
+          object lblTitSaldoCaixa: TLabel
+            Align = Left
+            StyledSettings = [Style]
+            Margins.Left = 10.000000000000000000
+            Position.X = 38.000000000000000000
+            Size.Width = 120.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFF495465
+            Text = 'Saldo do Caixa'
+            TabOrder = 1
+          end
+        end
+      end
+      object Rectangle3: TRectangle
+        Align = Client
+        Fill.Color = xFFFEEDF0
+        Margins.Left = 5.000000000000000000
+        Margins.Top = 10.000000000000000000
+        Margins.Right = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Size.Width = 349.750000000000000000
+        Size.Height = 108.918243408203100000
+        Size.PlatformDefault = False
+        Stroke.Thickness = 0.000000000000000000
+        XRadius = 10.000000000000000000
+        YRadius = 10.000000000000000000
+        object layInadimplencia: TLayout
+          Align = Top
+          Margins.Left = 10.000000000000000000
+          Margins.Top = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 329.750000000000000000
+          Size.Height = 28.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          object imgInadimplencia: TImage
+            MultiResBitmap = <
+              item
+                Width = 28
+                Height = 28
+                PNG = {
+                  89504E470D0A1A0A0000000D494844520000001C0000001C0806000000720DDF
+                  94000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                  034549444154484BAD963D4C144114C7DFCCDE717C29228914521C464A501B95
+                  4A28CC052C845082110A251162C0061B831F8D3616064C0C8598680D36228909
+                  5AA98511B1B0F08B420B4CF03C84C370B733BEF76E6ED9BB5BEE63C32F21BBF3
+                  766FFEEC9BFF9B79028AE06F64A84D4B71562B68139008830CEEE3072AF147CB
+                  E0224EB228947EBA677EF225C7F39057301619EE17528FE36B61132A805ED64A
+                  DFA899BF3F6D0239780A4623836109C11921E1A80995885EB655B2BD76FEC1B2
+                  0938487375583F3374DE0278EF5F8C10619A23DA31DC65020E195FB8967A6126
+                  35DA1DA4D6FDD5CF271F99E1B620A591FE2BC7102550D6DBC1D7AD27737CCD00
+                  8D65031C4BA7D749A925030B7EC444552558871A40D6D7F17D0E3827F9C18C52
+                  82E446CA3B474A8044AAA6AF83DED804515D01951363285A619E6E437E88452E
+                  A186114C59DF0738B95EF90DFFEE3E86CD9B53607FFCCCC25E0829584398A25E
+                  E0A80F42177B20D0DA82EBF70C122FDE9AA837B6D2EDD658D3891121E0A48995
+                  8CFDEE1300A634D4D709F2401D2469BC23222651EC8819950CAD61F9953EFEB2
+                  F5FE71902D4D68A083E6692E42C3292954C27781EBF5380450A4E2DA051696F5
+                  FBD9403B41FBB0C062D766EC40F60E9C3EEE384E7DFD09C9374B7C9F0D8994F5
+                  76F2BB649E7C8284A7201572A0B90992E83A4A9B85F7640A3734B1BDF405AFF1
+                  FC859F85588B0C46B30BDE3D81D57218CA47CFB1E5DD90FD6563036CDE9A02F5
+                  ED87891600771DA92198B3A367A37FAD72BADC7F5477245679E7B267B17B4167
+                  A7D4025E9971D1500638EDADCD3C0E0DF638315A829DD01A3EE066AE67CDD817
+                  5BB30BA05656F99ECC465F4C6BEE0569F16911EB18FA2E5C7B69F61A86D085F1
+                  B17B1C2B048985F0F7F1AB99EF6B3C946BE6261B5382DC4AC0437E82A4534305
+                  2DB1904930F9DABB2CB2A1F5A4DF6E0CDF3691145AA9016A3D9CF310459D539E
+                  6A8B0A394D92EC6FD2560CE468859B7A9AF4D7D1FDAE1CC0F9D0580ACAEB00A6
+                  800DD6A819EE1A420607DCCD544613558B39C676A09B0AD4847C435F46EBB677
+                  6E22A30A9C94BAE136115B0EB7734B011BE64505896EAF36D153300DB71ED80D
+                  142B4CE6003F8D703651EC0A84105D7C76E27186EBC2C6A2B4016E8DB45B5151
+                  D7166CF501FE0357895B10F5D092E10000000049454E44AE426082}
+                FileName = 'C:\Users\Desenvolvimento\Downloads\Inadimpl'#234'ncia.png'
+              end>
+            Align = Left
+            Size.Width = 28.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+          end
+          object lblTitInadimplencia: TLabel
+            Align = Left
+            StyledSettings = [Style]
+            Margins.Left = 10.000000000000000000
+            Position.X = 38.000000000000000000
+            Size.Width = 120.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFF495465
+            Text = 'Inadimpl'#234'ncia'
+            TabOrder = 1
+          end
+        end
+        object GridPanInad: TGridPanelLayout
+          Align = Bottom
+          Padding.Left = 20.000000000000000000
+          Padding.Right = 20.000000000000000000
+          Position.Y = 33.918243408203130000
+          Size.Width = 349.750000000000000000
+          Size.Height = 75.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 2
+          ColumnCollection = <
+            item
+              Value = 33.333333333333340000
+            end
+            item
+              Value = 33.333333333333340000
+            end
+            item
+              Value = 33.333333333333340000
+            end>
+          ControlCollection = <
+            item
+              Column = 0
+              Control = lblInad3
+              Row = 0
+            end
+            item
+              Column = 1
+              Control = lblInad12
+              Row = 0
+            end
+            item
+              Column = 2
+              Control = lblInadTot
+              Row = 0
+            end
+            item
+              Column = 0
+              Control = lblLegInad3
+              Row = 1
+            end
+            item
+              Column = 1
+              Control = lblLegInad12
+              Row = 1
+            end
+            item
+              Column = 2
+              Control = lblLegInadTot
+              Row = 1
+            end>
+          RowCollection = <
+            item
+              Value = 55.000000000000000000
+            end
+            item
+              Value = 45.000000000000000000
+            end>
+          object lblInad3: TLabel
+            Align = Center
+            StyledSettings = [Style]
+            Size.Width = 105.000000000000000000
+            Size.Height = 34.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 28.000000000000000000
+            TextSettings.FontColor = xFF495465
+            TextSettings.HorzAlign = Center
+            TextSettings.VertAlign = Leading
+            Text = '0,00%'
+            TabOrder = 2
+          end
+          object lblInad12: TLabel
+            Align = Center
+            StyledSettings = [Style]
+            Size.Width = 105.000000000000000000
+            Size.Height = 34.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 28.000000000000000000
+            TextSettings.FontColor = xFF495465
+            TextSettings.HorzAlign = Center
+            TextSettings.VertAlign = Leading
+            Text = '0,00%'
+            TabOrder = 1
+          end
+          object lblInadTot: TLabel
+            Align = Center
+            StyledSettings = [Style]
+            Size.Width = 105.000000000000000000
+            Size.Height = 33.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 28.000000000000000000
+            TextSettings.FontColor = xFF495465
+            TextSettings.HorzAlign = Center
+            TextSettings.VertAlign = Leading
+            Text = '0,00%'
+            TabOrder = 0
+          end
+          object lblLegInad3: TLabel
+            Align = Center
+            StyledSettings = [Style]
+            Margins.Bottom = 3.000000000000000000
+            Size.Width = 77.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 16.000000000000000000
+            TextSettings.FontColor = xFF495465
+            TextSettings.HorzAlign = Center
+            Text = '3 meses'
+            TabOrder = 5
+            object Line1: TLine
+              Align = Top
+              LineType = Diagonal
+              Size.Width = 77.000000000000000000
+              Size.Height = 1.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Color = xFFE2EBF3
+            end
+          end
+          object lblLegInad12: TLabel
+            Align = Center
+            StyledSettings = [Style]
+            Margins.Bottom = 3.000000000000000000
+            Size.Width = 77.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 16.000000000000000000
+            TextSettings.FontColor = xFF495465
+            TextSettings.HorzAlign = Center
+            Text = '12 meses'
+            TabOrder = 4
+            object Line2: TLine
+              Align = Top
+              LineType = Diagonal
+              Size.Width = 77.000000000000000000
+              Size.Height = 1.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Color = xFFE2EBF3
+            end
+          end
+          object lblLegInadTot: TLabel
+            Align = Center
+            StyledSettings = [Style]
+            Margins.Bottom = 3.000000000000000000
+            Size.Width = 76.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 16.000000000000000000
+            TextSettings.FontColor = xFF495465
+            TextSettings.HorzAlign = Center
+            Text = 'Total'
+            TabOrder = 3
+            object Line3: TLine
+              Align = Top
+              LineType = Diagonal
+              Size.Width = 76.000000000000000000
+              Size.Height = 1.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Color = xFFE2EBF3
+            end
+          end
+        end
+      end
+    end
+    object GridPanelLinha2: TGridPanelLayout
+      Align = Client
+      Size.Width = 1459.000000000000000000
+      Size.Height = 306.428558349609400000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      ColumnCollection = <
+        item
+          Value = 50.000000000000000000
+        end
+        item
+          Value = 25.000000000000000000
+        end
+        item
+          Value = 25.000000000000000000
+        end>
+      ControlCollection = <
+        item
+          Column = 0
+          Control = Rectangle4
+          Row = 0
+        end
+        item
+          Column = 1
+          Control = Rectangle5
+          Row = 0
+        end
+        item
+          Column = 2
+          Control = Rectangle6
+          Row = 0
+        end>
+      RowCollection = <
+        item
+          Value = 100.000000000000000000
+        end>
+      object Rectangle4: TRectangle
+        Align = Client
+        Fill.Color = claWhite
+        Margins.Left = 10.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Size.Width = 714.500000000000000000
+        Size.Height = 296.428558349609400000
+        Size.PlatformDefault = False
+        Stroke.Thickness = 0.000000000000000000
+        XRadius = 10.000000000000000000
+        YRadius = 10.000000000000000000
+        object layVendasDiarias: TLayout
+          Align = Top
+          Margins.Left = 10.000000000000000000
+          Margins.Top = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 694.500000000000000000
+          Size.Height = 28.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object imgVendasDiarias: TImage
+            MultiResBitmap.Height = 29
+            MultiResBitmap.Width = 29
+            MultiResBitmap = <
+              item
+                Width = 29
+                Height = 29
+                PNG = {
+                  89504E470D0A1A0A0000000D494844520000001D0000001D0806000000569367
+                  0F000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                  02CC49444154484BB5973B6C1341108667D7673B3C948484200A174180902211
+                  253450115F450B051D48A48A840BDB902052915414268A5CD82855125152040A
+                  2868CE54A4023B450A02C2A044020990414860B8DB65773D3EFBECF3FBF24927
+                  7BC6B2FF9D9D9D9935810E9831EE8FFAC01FE64046D1051CA0C08165FBE05736
+                  A92F16D0DD9496A251E3DEE03FDF40D4E2C59806C14174BBC2806708E3EB697D
+                  760D5DAE3414ED44AC1E2B6F32535FD1E7F3E870E02A2AB751A3FE0D003A81AE
+                  AEE00416D2176F2DA26953275A12D40C009F9DB75E701376887A2D58A65698E2
+                  AB82D2C0AAD78212C261216224C26856446F1A0F6E5020F6079E4361356A2CAB
+                  03696F6FE465E2436D9407B5209C3D7A12ADF6F96D1661EBEB7BB42A30C6171F
+                  EAB71794A88C92502AB6D6C9DD73D760EBDB3BB4DA27746804767EEC82B1F706
+                  3D65583635353B5912CD2C6D10422E2B3F32D4D70FD7CF5C8264EE317ADAE7F4
+                  60082E1C1B83476F5FA0A74291914995538BFCDDBF5CD6A0010B931963599409
+                  17F97422238D8D5F85679F5EA1A77D8683FDEA718B5434EB3511A9D9B444CA3F
+                  D0C933D43780DFAEC7E2EC88883411D6A84F340427FB9553C67986FA80B7358E
+                  BC845AE0EF59745CD4F2F9E3632AC256100E39BAA2C7F326147B12964DA49CCF
+                  563080BC2A19CAFC4F95A74B363F6FC3F38F9BB0F9651B3D8D318166547350CD
+                  D8E530CD8B8E94EBA2238D0F9F82CCDE6B9745547524895BEF9527387478040E
+                  88EDEB84EF7F7EC24E6117AD0A9CB1697995B1451BF55FEFB0F2A9A9B913F29D
+                  3DDAE40AE4C50A4DCF3199A6E35BE7100F307A45AE084DEF10234D56095A4ED1
+                  A41E2F9456E4A1B0104C89198A96C2212A5175AB8459165D5DA16A9FF178ADA0
+                  C43E486E448CA59828E268A7F726D95F19A7D3D55B5A4D5351891C7D3EB0C284
+                  401448E37BB08C4CE38127A22ED653FA5CD303D952B41A79B132C19C90FF654A
+                  0F14A81A182C9BD6EFB4990E80FF9E04168650DE3B690000000049454E44AE42
+                  6082}
+                FileName = 'C:\Users\Desenvolvimento\Downloads\Group 1000002843.png'
+              end>
+            Align = Left
+            Size.Width = 28.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+          end
+          object lblTitVendasDiarias: TLabel
+            Align = Left
+            StyledSettings = [Style]
+            Margins.Left = 10.000000000000000000
+            Position.X = 38.000000000000000000
+            Size.Width = 163.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFF495465
+            Text = 'Vendas di'#225'rias do m'#234's'
+            TabOrder = 1
+          end
+        end
+        object ChartVendasMes: TChart
+          AllowPanning = pmNone
+          BackWall.Visible = False
+          Border.Color = claWhite
+          Border.Style = psClear
+          Border.Fill.Color = claWhite
+          Border.SmallDots = True
+          BottomWall.Visible = False
+          Foot.Font.StyleExt = {00040000000200000004000000}
+          LeftWall.Dark3D = False
+          LeftWall.Visible = False
+          Legend.Title.Font.StyleExt = {00070000000000000004000000}
+          Legend.Visible = False
+          MarginBottom = 1
+          MarginTop = 23
+          MarginUnits = muPixels
+          SubFoot.Font.StyleExt = {00040000000200000004000000}
+          Title.Text.Strings = (
+            ' ')
+          Title.Visible = False
+          BottomAxis.Axis.Visible = False
+          BottomAxis.Grid.Visible = False
+          BottomAxis.MinorTicks.Visible = False
+          BottomAxis.Ticks.Visible = False
+          BottomAxis.TicksInner.Visible = False
+          ClipPoints = False
+          LeftAxis.Visible = False
+          Panning.MouseWheel = pmwNone
+          Shadow.Visible = False
+          View3D = False
+          View3DWalls = False
+          Zoom.Allow = False
+          Zoom.Brush.Kind = None
+          Zoom.Pen.Fill.Color = claSilver
+          Zoom.Pen.Visible = False
+          Align = Client
+          BevelOuter = bvNone
+          Color = claWhite
+          TabOrder = 1
+          Margins.Bottom = 10.000000000000000000
+          Size.Width = 714.500000000000000000
+          Size.Height = 248.428558349609400000
+          Size.PlatformDefault = False
+          ColorPaletteIndex = 13
+          object Series1: TBarSeries
+            HoverElement = []
+            BarPen.Visible = False
+            Marks.Shadow.Visible = False
+            Marks.Transparent = True
+            Marks.Margins.Left = 29
+            Marks.Margins.Top = 19
+            Marks.Margins.Right = 29
+            Marks.Margins.Bottom = 15
+            Marks.Margins.Units = maPixels
+            Marks.Style = smsValue
+            Marks.Angle = 90
+            Marks.Arrow.Visible = False
+            Marks.BackColor = claWhite
+            Marks.Callout.Arrow.Visible = False
+            Marks.Callout.ArrowHead = ahLine
+            Marks.Color = claWhite
+            SeriesColor = xFF85D3FF
+            XValues.Name = 'X'
+            XValues.Order = loAscending
+            YValues.Name = 'Bar'
+            YValues.Order = loNone
+          end
+        end
+      end
+      object Rectangle5: TRectangle
+        Align = Client
+        Fill.Color = claWhite
+        Margins.Left = 5.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Size.Width = 354.750000000000000000
+        Size.Height = 296.428558349609400000
+        Size.PlatformDefault = False
+        Stroke.Thickness = 0.000000000000000000
+        XRadius = 10.000000000000000000
+        YRadius = 10.000000000000000000
+        object layContasReceber: TLayout
+          Align = Top
+          Margins.Left = 10.000000000000000000
+          Margins.Top = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 334.750000000000000000
+          Size.Height = 28.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object imgContasReceber: TImage
+            MultiResBitmap = <
+              item
+                Width = 28
+                Height = 28
+                PNG = {
+                  89504E470D0A1A0A0000000D494844520000001C0000001C0806000000720DDF
+                  94000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                  030449444154484BBD96416813411486DF4E364D7BB1253D7868A111AD420F36
+                  EDA99E923D157B508B470BD68B01E34569414FE2A98706BD18217A50F12AA888
+                  0A5ED6E0C1F462A3D21E9A8811A35834A1A98869BB9971DE64769B9864B389C1
+                  0F96ECBCDDCCBFF3E67F33A3800342FA6290B894E38441D0801D9F0A9E3E8C1B
+                  B0B541A02B090A4BD2127B1CD3E65F8A3FD8602B784E8FCC2A845D0170F964A8
+                  09A50CA3CAD59BDADC5D19A8A1AE60485FF0A9C4FD1080F865A8454A19831A5A
+                  4CBB9C91010B227F2DC2AFAE9DE6D1E5F6C5109E11DEC7793D7242062CAA4688
+                  2F3042F8C83ACA6C3470F19EBCDF15C434E2579986E814682CA03066A6D74AA9
+                  4A54BDD36208F659F6431921886EB473E2D4D084BC0318EE1B1497C9C9FD41E8
+                  F7EC91AD46107F59430A96ADDF3AF821A9C2672E1A801ED523A3F531350816B5
+                  F33AABE6B7B12546777FED85B8B7C7E50B8B0504488D759DA27F5986ECAFEF70
+                  76E458D311228C6B11466054B65B66E6D0A418596E6B5346ECE1690D100ADB6D
+                  17F8B34FAFE1289FC7A5F5150729C512D9F1917F29857C71136EAF3C81D44656
+                  46EC41AD9AA5AD12B43C3AD1FCFAE1DE412172B8FF807836B177445CAD40C44A
+                  D0807CB100EF7E7C80C4FAAA109E1A3A025EEECAE73C95E8CE353E326F77B31A
+                  DC456C672AB86B5674137421163976BEC445D191789D3A3809FAD73790776816
+                  13C2BA9284EF5F71D9AE8B29DAE3F20893680363F03E9F964F5B4361F0962840
+                  1FC976434C514C69E2DB2AE4F83CB6036A89DD221C5FFCE864B5C1E2BE343E03
+                  69BE9C3DCD24444AD148DAC0B8F8FC5BDCB18D2965A281F97DC2A5782C10B126
+                  A05BD130B9E24F6BFE5285AC28FC0769DB99B134ACFD301C8F38DEE5B114BCDD
+                  BD624ED1BD98667B0395478777561D1AD4356D572295609960C9E01ADA4C0CFB
+                  34A8AAC966F511A37C4A237764B32328944EDFD0E62C6356AD3478BCC3179C8E
+                  D40EEC83517AA6520CA91AA14948BFCE8F8986DEEE3E094093384531ED42CDA2
+                  5257D0E4BF1D84FF06776ADC3C9902A354D9F69B3B0CA64D65EE0C634A1C8B3A
+                  DAF4A80FF007403E5282561B4F160000000049454E44AE426082}
+                FileName = 'C:\Users\Desenvolvimento\Downloads\'#237'cone a receber.png'
+              end>
+            Align = Left
+            Size.Width = 28.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+          end
+          object lblTitContasReceber: TLabel
+            Align = Left
+            StyledSettings = [Style]
+            Margins.Left = 10.000000000000000000
+            Position.X = 38.000000000000000000
+            Size.Width = 120.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFF495465
+            Text = 'Contas a Receber'
+            TabOrder = 1
+          end
+        end
+        object GridPanelLayout2: TGridPanelLayout
+          Align = Client
+          Size.Width = 354.750000000000000000
+          Size.Height = 258.428558349609400000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          ColumnCollection = <
+            item
+              Value = 100.000000000000000000
+            end>
+          ControlCollection = <
+            item
+              Column = 0
+              Control = Layout11
+              Row = 0
+            end
+            item
+              Column = 0
+              Control = Layout13
+              Row = 2
+            end
+            item
+              Column = 0
+              Control = Layout12
+              Row = 1
+            end>
+          RowCollection = <
+            item
+              Value = 33.333333333333340000
+            end
+            item
+              Value = 33.333333333333340000
+            end
+            item
+              Value = 33.333333333333340000
+            end
+            item
+              SizeStyle = Auto
+            end>
+          object Layout11: TLayout
+            Align = Client
+            Margins.Left = 10.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Size.Width = 334.750000000000000000
+            Size.Height = 86.142852783203130000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            object Layout17: TLayout
+              Align = Bottom
+              Position.Y = 38.142852783203130000
+              Size.Width = 334.750000000000000000
+              Size.Height = 24.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 2
+              object recTotalRecDia: TRectangle
+                Align = Center
+                Anchors = [akLeft, akRight]
+                Fill.Color = xFFE2EBF3
+                Size.Width = 334.750000000000000000
+                Size.Height = 13.000000000000000000
+                Size.PlatformDefault = False
+                Stroke.Color = xFFE2EBF3
+                object recPercRecDia: TRectangle
+                  Fill.Color = xFF6BC18E
+                  Size.Width = 20.000000000000000000
+                  Size.Height = 13.000000000000000000
+                  Size.PlatformDefault = False
+                  Stroke.Color = xFF6BC18E
+                end
+              end
+            end
+            object Layout18: TLayout
+              Align = Bottom
+              Position.Y = 62.142852783203130000
+              Size.Width = 334.750000000000000000
+              Size.Height = 23.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 3
+              object lblRecebidasDia: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Size.Width = 66.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'Recebidas'
+                TabOrder = 5
+              end
+              object lblContaRecebidasDia: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 66.000000000000000000
+                Size.Width = 102.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF6BC18E
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 3
+              end
+              object lblContaARecDia: TLabel
+                Align = Right
+                AutoSize = True
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 234.750000000000000000
+                Size.Width = 100.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF495465
+                TextSettings.HorzAlign = Trailing
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 2
+              end
+              object lblAreceberDia: TLabel
+                Align = Right
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 179.750000000000000000
+                Size.Width = 55.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'A receber'
+                TabOrder = 4
+              end
+            end
+            object Layout14: TLayout
+              Align = Bottom
+              Position.Y = 14.142852783203130000
+              Size.Width = 334.750000000000000000
+              Size.Height = 24.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 1
+              object lblTotContaRecDia: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Size.Width = 183.000000000000000000
+                Size.Height = 24.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'Total Contas a Receber no dia'
+                TabOrder = 2
+              end
+              object lblContaRecDia: TLabel
+                Align = Right
+                StyledSettings = [Style]
+                Margins.Left = 10.000000000000000000
+                Position.X = 175.750000000000000000
+                Size.Width = 159.000000000000000000
+                Size.Height = 24.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF495465
+                TextSettings.HorzAlign = Trailing
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 1
+              end
+            end
+            object Line4: TLine
+              Align = MostBottom
+              LineType = Diagonal
+              Position.Y = 85.142852783203130000
+              Size.Width = 334.750000000000000000
+              Size.Height = 1.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Color = xFFE2EBF3
+            end
+          end
+          object Layout13: TLayout
+            Align = Client
+            Margins.Left = 10.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Size.Width = 334.750000000000000000
+            Size.Height = 86.142852783203130000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object Layout1: TLayout
+              Align = Center
+              Anchors = [akLeft, akRight]
+              Size.Width = 334.750000000000000000
+              Size.Height = 27.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 0
+              object lblVlrRecVencidas: TLabel
+                Align = Right
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 223.750000000000000000
+                Size.Width = 111.000000000000000000
+                Size.Height = 24.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF495465
+                TextSettings.HorzAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 2
+              end
+              object layQtdContaRecVenc: TLayout
+                Align = Left
+                Size.Width = 23.000000000000000000
+                Size.Height = 27.000000000000000000
+                Size.PlatformDefault = False
+                TabOrder = 5
+                object CircQtdRecVencidas: TCircle
+                  Align = Client
+                  Fill.Color = xFF495465
+                  Size.Width = 23.000000000000000000
+                  Size.Height = 27.000000000000000000
+                  Size.PlatformDefault = False
+                  Stroke.Kind = None
+                  object lblQtdRecVencidas: TLabel
+                    Align = Contents
+                    StyledSettings = []
+                    Size.Width = 23.000000000000000000
+                    Size.Height = 27.000000000000000000
+                    Size.PlatformDefault = False
+                    TextSettings.Font.Family = 'Roboto'
+                    TextSettings.FontColor = claWhite
+                    TextSettings.HorzAlign = Center
+                    Text = '0'
+                    TabOrder = 0
+                  end
+                end
+              end
+              object lblRecVencidas: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Margins.Left = 5.000000000000000000
+                Position.X = 28.000000000000000000
+                Size.Width = 214.000000000000000000
+                Size.Height = 27.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                Text = 'Contas a Receber vencidas no m'#234's'
+                TabOrder = 1
+              end
+            end
+          end
+          object Layout12: TLayout
+            Align = Client
+            Margins.Left = 10.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Size.Width = 334.750000000000000000
+            Size.Height = 86.142852783203130000
+            Size.PlatformDefault = False
+            TabOrder = 2
+            object Line5: TLine
+              Align = MostBottom
+              LineType = Diagonal
+              Position.Y = 85.142852783203130000
+              Size.Width = 334.750000000000000000
+              Size.Height = 1.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Color = xFFE2EBF3
+            end
+            object Layout29: TLayout
+              Align = Bottom
+              Position.Y = 38.142852783203130000
+              Size.Width = 334.750000000000000000
+              Size.Height = 24.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 2
+              object recTotalRecMes: TRectangle
+                Align = Center
+                Anchors = [akLeft, akRight]
+                Fill.Color = xFFE2EBF3
+                Size.Width = 334.750000000000000000
+                Size.Height = 13.000000000000000000
+                Size.PlatformDefault = False
+                Stroke.Color = xFFE2EBF3
+                object recPercRecMes: TRectangle
+                  Fill.Color = xFF6BC18E
+                  Size.Width = 20.000000000000000000
+                  Size.Height = 13.000000000000000000
+                  Size.PlatformDefault = False
+                  Stroke.Color = xFF6BC18E
+                end
+              end
+            end
+            object Layout30: TLayout
+              Align = Bottom
+              Position.Y = 62.142852783203130000
+              Size.Width = 334.750000000000000000
+              Size.Height = 23.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 3
+              object lblRecebidasMes: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Size.Width = 66.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'Recebidas'
+                TabOrder = 5
+              end
+              object lblContaRecebidasMes: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 66.000000000000000000
+                Size.Width = 102.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF6BC18E
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 3
+              end
+              object lblContaARecMes: TLabel
+                Align = Right
+                AutoSize = True
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 234.750000000000000000
+                Size.Width = 100.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF495465
+                TextSettings.HorzAlign = Trailing
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 2
+              end
+              object lblAreceberMes: TLabel
+                Align = Right
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 179.750000000000000000
+                Size.Width = 55.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'A receber'
+                TabOrder = 4
+              end
+            end
+            object Layout31: TLayout
+              Align = Bottom
+              Position.Y = 14.142852783203130000
+              Size.Width = 334.750000000000000000
+              Size.Height = 24.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 1
+              object lblTotContaRecMes: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Size.Width = 183.000000000000000000
+                Size.Height = 24.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'Total Contas a Receber no m'#234's'
+                TabOrder = 2
+              end
+              object lblContaRecMes: TLabel
+                Align = Right
+                StyledSettings = [Style]
+                Margins.Left = 10.000000000000000000
+                Position.X = 175.750000000000000000
+                Size.Width = 159.000000000000000000
+                Size.Height = 24.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF495465
+                TextSettings.HorzAlign = Trailing
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 1
+              end
+            end
+          end
+        end
+      end
+      object Rectangle6: TRectangle
+        Align = Client
+        Fill.Color = claWhite
+        Margins.Left = 5.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Margins.Right = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Size.Width = 349.750000000000000000
+        Size.Height = 296.428558349609400000
+        Size.PlatformDefault = False
+        Stroke.Thickness = 0.000000000000000000
+        XRadius = 10.000000000000000000
+        YRadius = 10.000000000000000000
+        object layContasPagar: TLayout
+          Align = Top
+          Margins.Left = 10.000000000000000000
+          Margins.Top = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 329.750000000000000000
+          Size.Height = 28.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object imgContasPagar: TImage
+            MultiResBitmap = <
+              item
+                Width = 28
+                Height = 28
+                PNG = {
+                  89504E470D0A1A0A0000000D494844520000001C0000001C0806000000720DDF
+                  94000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                  02F949444154484BB596BF4F145110C767DEDE8A2882878585161722769C5A01
+                  9547A2B9181381F80708266A22145A511942EC2D0C98181B4CB4061BF0121231
+                  B1C04A844E1372851698E8893FC0B8B7EF3933F77615D9DBBB3DF193706F676E
+                  79DF7BEFCDCC1B843AF89A1FC91985FD46430EC1CB80720FCA17DAFB6C94BB4C
+                  932CA3364F0E14A616C51F43ACE0467E74089519A7D732D655035334DA4CB415
+                  EE4D5BC70E22054BF96B1905EE0C2A38695D0931455F97FBD285FB45EB085176
+                  0CF9767EE49203F0AA713106333C47E9DCE88075846C5BE197CA0B33156B7750
+                  C60CB53C9D7A68CDDF82BC8DFCABC280D82D28B07C8053C1F6865BEAA8D4B35A
+                  62EE996E68BE7505D4E143D653073427C783B52A821C8DB52291C59084B66E3F
+                  80143D2711E578D8C85F270D2B5809FDEA04623F1FCF89CD637251140DC5495D
+                  6B757B06FA68F276C0FDCD623B5D9DF469C0EDCF916F9FF86A8399126939639D
+                  DD3710A1C77A23F1E65E80F9BE09986E03F3E113B867BB6995F3A0D2ADD074F9
+                  82BCA3D7DECB180F6E28123B61AD4404DBBC39765746B66B81064E2BD45EE204
+                  E76D6491F2C2926CB537BB589728D7619534EF523D59DADE2D091CA7372BC193
+                  EAED129B4555C751FB6604A485545D8C35630926723A8ED0C4ED12A13FEE3C12
+                  1FD374F5A29C33AF2388E628145702FB1C8B5E7B277FDEC24B0918BDFED17E53
+                  81C5D81F27C65A8A827B47458F82B76D2FADE25FE0BB531984E7D6AE8A933D06
+                  A9AEE3E0D3AA52746E8D620CBCA6626E66AD5D15B35E026869067F6915FC95B7
+                  D69B1CD652696A0B0C5D98D617099F179F0D571627CB552639ACC15A95DB42E3
+                  848C55E054E072E6AFBE09CB5B62A8F5E04104DB0A93D3D4202DF37314E5A515
+                  4905875283A33429BCBAA0CFF9EF17B0A154D05117303B7C706E5A73D740E50E
+                  FFD94C85824C9A964DEDC060BDC5200E5E99D17AB8757E725B16546F13A9E5C0
+                  BAFBD1ED703C68F006A3DAC448C100693DA81BA85758D2AB9146F86FF8A646C4
+                  01B93BE93AA37391C0E26DA39BB1C8D58A939AF34CFEA12A00BF003CAC2EFC0B
+                  B211A20000000049454E44AE426082}
+                FileName = 'C:\Users\Desenvolvimento\Downloads\'#237'cone contas a pagar.png'
+              end>
+            Align = Left
+            Size.Width = 28.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+          end
+          object lblTitContasPagar: TLabel
+            Align = Left
+            StyledSettings = [Style]
+            Margins.Left = 10.000000000000000000
+            Position.X = 38.000000000000000000
+            Size.Width = 120.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFF495465
+            Text = 'Contas a Pagar'
+            TabOrder = 1
+          end
+        end
+        object GridPanelLayout1: TGridPanelLayout
+          Align = Client
+          Size.Width = 349.750000000000000000
+          Size.Height = 258.428558349609400000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          ColumnCollection = <
+            item
+              Value = 100.000000000000000000
+            end>
+          ControlCollection = <
+            item
+              Column = 0
+              Control = Layout32
+              Row = 0
+            end
+            item
+              Column = 0
+              Control = Layout36
+              Row = 2
+            end
+            item
+              Column = 0
+              Control = Layout37
+              Row = 1
+            end>
+          RowCollection = <
+            item
+              Value = 33.333333333333340000
+            end
+            item
+              Value = 33.333333333333340000
+            end
+            item
+              Value = 33.333333333333340000
+            end
+            item
+              SizeStyle = Auto
+            end>
+          object Layout32: TLayout
+            Align = Client
+            Margins.Left = 10.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Size.Width = 329.750000000000000000
+            Size.Height = 86.142852783203130000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            object Line6: TLine
+              Align = MostBottom
+              LineType = Diagonal
+              Position.Y = 85.142852783203130000
+              Size.Width = 329.750000000000000000
+              Size.Height = 1.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Color = xFFE2EBF3
+            end
+            object Layout33: TLayout
+              Align = Bottom
+              Position.Y = 38.142852783203130000
+              Size.Width = 329.750000000000000000
+              Size.Height = 24.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 2
+              object recTotalPagDia: TRectangle
+                Align = Center
+                Anchors = [akLeft, akRight]
+                Fill.Color = xFFF2496C
+                Size.Width = 329.750000000000000000
+                Size.Height = 13.000000000000000000
+                Size.PlatformDefault = False
+                Stroke.Color = xFFF2496C
+                object recPercPagDia: TRectangle
+                  Fill.Color = xFF6BC18E
+                  Size.Width = 20.000000000000000000
+                  Size.Height = 13.000000000000000000
+                  Size.PlatformDefault = False
+                  Stroke.Color = xFF6BC18E
+                end
+              end
+            end
+            object Layout34: TLayout
+              Align = Bottom
+              Position.Y = 62.142852783203130000
+              Size.Width = 329.750000000000000000
+              Size.Height = 23.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 3
+              object lblPagasDia: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Size.Width = 66.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'Pagas'
+                TabOrder = 5
+              end
+              object lblContaPagasDia: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 66.000000000000000000
+                Size.Width = 102.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF6BC18E
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 3
+              end
+              object lblContaAPagDia: TLabel
+                Align = Right
+                AutoSize = True
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 229.750000000000000000
+                Size.Width = 100.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF495465
+                TextSettings.HorzAlign = Trailing
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 2
+              end
+              object lblApagarDia: TLabel
+                Align = Right
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 174.750000000000000000
+                Size.Width = 55.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'A pagar'
+                TabOrder = 4
+              end
+            end
+            object Layout35: TLayout
+              Align = Bottom
+              Position.Y = 14.142852783203130000
+              Size.Width = 329.750000000000000000
+              Size.Height = 24.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 1
+              object lblTotContaPagDia: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Size.Width = 183.000000000000000000
+                Size.Height = 24.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'Total Contas a Pagar no dia'
+                TabOrder = 2
+              end
+              object lblContaPagDia: TLabel
+                Align = Right
+                StyledSettings = [Style]
+                Margins.Left = 10.000000000000000000
+                Position.X = 170.750000000000000000
+                Size.Width = 159.000000000000000000
+                Size.Height = 24.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF495465
+                TextSettings.HorzAlign = Trailing
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 1
+              end
+            end
+          end
+          object Layout36: TLayout
+            Align = Client
+            Margins.Left = 10.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Size.Width = 329.750000000000000000
+            Size.Height = 86.142852783203130000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object Layout2: TLayout
+              Align = Center
+              Anchors = [akLeft, akRight]
+              Size.Width = 329.750000000000000000
+              Size.Height = 27.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 0
+              object layQtdContaPadVenc: TLayout
+                Align = Left
+                Size.Width = 23.000000000000000000
+                Size.Height = 27.000000000000000000
+                Size.PlatformDefault = False
+                TabOrder = 4
+                object CircQtdPagVencidas: TCircle
+                  Align = Client
+                  Fill.Color = xFF495465
+                  Size.Width = 23.000000000000000000
+                  Size.Height = 27.000000000000000000
+                  Size.PlatformDefault = False
+                  Stroke.Kind = None
+                  object lblQtdPagVencidas: TLabel
+                    Align = Contents
+                    StyledSettings = []
+                    Size.Width = 23.000000000000000000
+                    Size.Height = 27.000000000000000000
+                    Size.PlatformDefault = False
+                    TextSettings.Font.Family = 'Roboto'
+                    TextSettings.FontColor = claWhite
+                    TextSettings.HorzAlign = Center
+                    Text = '0'
+                    TabOrder = 0
+                  end
+                end
+              end
+              object lblVlrPagVencidas: TLabel
+                Align = Right
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 218.750000000000000000
+                Size.Width = 111.000000000000000000
+                Size.Height = 24.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF495465
+                TextSettings.HorzAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 2
+              end
+              object lblPagVencidas: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Margins.Left = 5.000000000000000000
+                Position.X = 28.000000000000000000
+                Size.Width = 214.000000000000000000
+                Size.Height = 27.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                Text = 'Contas a Pagar vencidas no m'#234's'
+                TabOrder = 1
+              end
+            end
+          end
+          object Layout37: TLayout
+            Align = Client
+            Margins.Left = 10.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Size.Width = 329.750000000000000000
+            Size.Height = 86.142852783203130000
+            Size.PlatformDefault = False
+            TabOrder = 2
+            object Line7: TLine
+              Align = MostBottom
+              LineType = Diagonal
+              Position.Y = 85.142852783203130000
+              Size.Width = 329.750000000000000000
+              Size.Height = 1.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Color = xFFE2EBF3
+            end
+            object Layout38: TLayout
+              Align = Bottom
+              Position.Y = 38.142852783203130000
+              Size.Width = 329.750000000000000000
+              Size.Height = 24.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 2
+              object recTotalPagMes: TRectangle
+                Align = Center
+                Anchors = [akLeft, akRight]
+                Fill.Color = xFFF2496C
+                Size.Width = 329.750000000000000000
+                Size.Height = 13.000000000000000000
+                Size.PlatformDefault = False
+                Stroke.Color = xFFF2496C
+                object recPercPagMes: TRectangle
+                  Fill.Color = xFF6BC18E
+                  Size.Width = 20.000000000000000000
+                  Size.Height = 13.000000000000000000
+                  Size.PlatformDefault = False
+                  Stroke.Color = xFF6BC18E
+                end
+              end
+            end
+            object Layout39: TLayout
+              Align = Bottom
+              Position.Y = 62.142852783203130000
+              Size.Width = 329.750000000000000000
+              Size.Height = 23.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 3
+              object lblPagasMes: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Size.Width = 66.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'Pagas'
+                TabOrder = 5
+              end
+              object lblContaPagasMes: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 66.000000000000000000
+                Size.Width = 102.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF6BC18E
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 3
+              end
+              object lblContaAPagMes: TLabel
+                Align = Right
+                AutoSize = True
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 229.750000000000000000
+                Size.Width = 100.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF495465
+                TextSettings.HorzAlign = Trailing
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 2
+              end
+              object lblApagarMes: TLabel
+                Align = Right
+                StyledSettings = [Style]
+                Margins.Bottom = 3.000000000000000000
+                Position.X = 174.750000000000000000
+                Size.Width = 55.000000000000000000
+                Size.Height = 20.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'A pagar'
+                TabOrder = 4
+              end
+            end
+            object Layout40: TLayout
+              Align = Bottom
+              Position.Y = 14.142852783203130000
+              Size.Width = 329.750000000000000000
+              Size.Height = 24.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 1
+              object lblTotContaPagMes: TLabel
+                Align = Left
+                StyledSettings = [Style]
+                Size.Width = 183.000000000000000000
+                Size.Height = 24.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.FontColor = xFF495465
+                TextSettings.VertAlign = Trailing
+                Text = 'Total Contas a Pagar no m'#234's'
+                TabOrder = 2
+              end
+              object lblContaPagMes: TLabel
+                Align = Right
+                StyledSettings = [Style]
+                Margins.Left = 10.000000000000000000
+                Position.X = 170.750000000000000000
+                Size.Width = 159.000000000000000000
+                Size.Height = 24.000000000000000000
+                Size.PlatformDefault = False
+                TextSettings.Font.Family = 'Roboto'
+                TextSettings.Font.Size = 16.000000000000000000
+                TextSettings.FontColor = xFF495465
+                TextSettings.HorzAlign = Trailing
+                TextSettings.VertAlign = Trailing
+                Text = 'R$ 0,00'
+                TabOrder = 1
+              end
+            end
+          end
+        end
+      end
+    end
+    object GridPanelLinha3: TGridPanelLayout
+      Align = Client
+      Size.Width = 1459.000000000000000000
+      Size.Height = 313.653198242187500000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      ColumnCollection = <
+        item
+          Value = 25.000000000000000000
+        end
+        item
+          Value = 50.000000000000000000
+        end
+        item
+          Value = 25.000000000000000000
+        end>
+      ControlCollection = <
+        item
+          Column = 0
+          Control = Rectangle7
+          Row = 0
+        end
+        item
+          Column = 1
+          Control = Rectangle8
+          Row = 0
+        end
+        item
+          Column = 2
+          Control = gridContasDiagnostico
+          Row = 0
+        end>
+      RowCollection = <
+        item
+          Value = 100.000000000000000000
+        end>
+      object Rectangle7: TRectangle
+        Align = Client
+        Fill.Color = claWhite
+        Margins.Left = 10.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Margins.Bottom = 10.000000000000000000
+        Size.Width = 349.750000000000000000
+        Size.Height = 298.653198242187500000
+        Size.PlatformDefault = False
+        Stroke.Thickness = 0.000000000000000000
+        XRadius = 10.000000000000000000
+        YRadius = 10.000000000000000000
+        object layVendasVendedor: TLayout
+          Align = Top
+          Margins.Left = 10.000000000000000000
+          Margins.Top = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 329.750000000000000000
+          Size.Height = 28.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object imgVendasVendedor: TImage
+            MultiResBitmap.Height = 29
+            MultiResBitmap.Width = 29
+            MultiResBitmap = <
+              item
+                Width = 29
+                Height = 29
+                PNG = {
+                  89504E470D0A1A0A0000000D494844520000001D0000001D0806000000569367
+                  0F000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                  03CC49444154484BB5974F6854471CC7BF33EF99CD56EBC6A4C6822B2E462D18
+                  AA6D0FB19EB2EFA2E041905C2BA688049A434CB5454F694E2DA8240B2A2A8859
+                  F4564AD543442F1BBD2429B4AE42736894AEFF40DB265D536B76D37D339DDFEC
+                  B8E66DDE266FA37E203B33BF59DE77E737BF3F2F0C55D291FA3606D8310B2C26
+                  81AC80CCD6E2793AE1F466CD571624906847EA68DC62BCCB6533711BA13A632E
+                  43A425E3975C379F3CE31CC918A32FF38A9298CD711EB0D4E9AA80C981823BD3
+                  5B49DC57B42BD55357B0227D906837A645E0669860DD279C43978CA1C41C51BA
+                  339B2FF911E01F19D36BE10AD97DDA39D86F961A8FA83E217F37F5A60467D17E
+                  B2F5CBA499839B513363457ADE82200AC8F717A3BE4849F48BD4B1762E71C02C
+                  DF2814F19CD7A8802C52726FE78DA3BF0789D2E8D295686B8AA33EBC1C2AD030
+                  FA740C83F787CDEE0208D739E97C35A44F4AA91144B0A176B9161C7C308C9ED1
+                  73E8F9E91CC2760D76AEDD66BE313F8273757DE6A49D378F9F8764BEE9F18E1D
+                  42BD120BAB7173C37A6DBB3371578F04D9F76CDC81B36357F47A727A0A13F929
+                  3DF7C3166C4551B4826BC995FB9B77E1EEB387FAE1D1A58D1857F372EA4311ED
+                  05DAABAF8DE0D1F33FF1C3BD21B3EB450AF139EB4AF5A934917F1B9B87DE967D
+                  48DCFE1E93EA97D369F77CB043AF09F240D80AE9536DA88BE2D3C64DB8F0DB75
+                  BDD7D6D48AC9DC14528F6FE9F56CA490099E43C137454884C4E8CF8F0FDF6BC2
+                  D6F737999597F1EC23ED253F54838879F23428CEEA8F75F06C5DD5ACE7E54CBB
+                  79339B0B632CB228D1D5CB56E26A6618DFFD72D158AA4389DAF3B6213F06EF8F
+                  28D736A36D5D1C77FEBA67ACC1E060197EC6E9CEA83215B801131B55E09CFDF5
+                  0A1EFFFB07DAD6B71A6B305C296F6BF772D4A4B5252014B5873FF94CDFE944EE
+                  1F630D86A59ABD16950297B52520940A5495A84854CA477FDC4CA90C86C007CA
+                  5D3C5DC8A321A4EA6B05282D469E8C9995172A142FDC19B37A852B7882468B3E
+                  4693D7722D7B77865538AB1A5CA4205C3D6E5FD302DBB274DE35AF88A987E511
+                  55D14B0F6E50459FE6B4175DD6A88BEA16552AC9EDE4016FEAB81921AD233F27
+                  AF653D4DBCF3C6315542BCFD74B32A029512DD0FF2D088EA3C34CE86CADF29E7
+                  D000CD3DA21DA9BE1878EE56E537BEC5C154E93BE11C2CF56A4F71A0F4B184E5
+                  549B42F3A14E989C2D4878448953CED76912A63B30A6454327542E9DD332E788
+                  12245C10B643BFD298AA845E3FC5EEF213BEC473A77ED03D5B70BF619CEF35A6
+                  CA4891562F03976DF0FE84D35DF18A16147D89EEBBAA0D0AF03867586BCC9012
+                  CFD467DAC57F430BFD3B5104F81F4819697C1F3820390000000049454E44AE42
+                  6082}
+                FileName = 'C:\Users\Desenvolvimento\Downloads\Group.png'
+              end>
+            Align = Left
+            Size.Width = 28.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+          end
+          object lblTitVendasVendedor: TLabel
+            Align = Left
+            StyledSettings = [Style]
+            Margins.Left = 10.000000000000000000
+            Position.X = 38.000000000000000000
+            Size.Width = 163.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFF495465
+            Text = 'Vendas por vendedor'
+            TabOrder = 1
+          end
+        end
+        object ChartVendasVendedor: TChart
+          AllowPanning = pmNone
+          BackWall.Visible = False
+          Border.Color = claWhite
+          Border.Style = psClear
+          Border.Fill.Color = claWhite
+          Border.SmallDots = True
+          BottomWall.Visible = False
+          Foot.Font.StyleExt = {00040000000200000004000000}
+          LeftWall.Dark3D = False
+          LeftWall.Visible = False
+          Legend.Title.Font.StyleExt = {00070000000000000004000000}
+          Legend.Visible = False
+          MarginBottom = 3
+          MarginLeft = 8
+          MarginRight = 8
+          MarginTop = 3
+          MarginUnits = muPixels
+          SubFoot.Font.StyleExt = {00040000000200000004000000}
+          Title.Text.Strings = (
+            ' ')
+          Title.Visible = False
+          BottomAxis.Axis.Visible = False
+          BottomAxis.Grid.Visible = False
+          BottomAxis.MinorTicks.Visible = False
+          BottomAxis.Ticks.Visible = False
+          BottomAxis.TicksInner.Visible = False
+          BottomAxis.Visible = False
+          ClipPoints = False
+          LeftAxis.Axis.Visible = False
+          LeftAxis.Grid.Visible = False
+          LeftAxis.LabelsFormat.Font.Family = 'Roboto'
+          LeftAxis.MinorTicks.Visible = False
+          LeftAxis.Ticks.Visible = False
+          LeftAxis.TicksInner.Visible = False
+          Panning.MouseWheel = pmwNone
+          Shadow.Visible = False
+          View3D = False
+          View3DWalls = False
+          Zoom.Allow = False
+          Zoom.Brush.Kind = None
+          Zoom.Pen.Fill.Color = claSilver
+          Zoom.Pen.Visible = False
+          Align = Client
+          BevelOuter = bvNone
+          Color = claWhite
+          TabOrder = 1
+          Margins.Bottom = 10.000000000000000000
+          Size.Width = 349.750000000000000000
+          Size.Height = 250.653198242187500000
+          Size.PlatformDefault = False
+          ColorPaletteIndex = 13
+          object BarSeries1: THorizBarSeries
+            HoverElement = []
+            BarBrush.Gradient.Direction = gdLeftRight
+            BarPen.Visible = False
+            Marks.Shadow.Visible = False
+            Marks.Transparent = True
+            Marks.Margins.Left = 26
+            Marks.Margins.Top = 14
+            Marks.Margins.Right = 27
+            Marks.Margins.Bottom = 12
+            Marks.Margins.Units = maPixels
+            Marks.Style = smsValue
+            Marks.Arrow.Visible = False
+            Marks.BackColor = claWhite
+            Marks.Callout.Arrow.Visible = False
+            Marks.Tail.Height = 20
+            Marks.Color = claWhite
+            SeriesColor = xFF85D3FF
+            Gradient.Direction = gdLeftRight
+            XValues.Name = 'Bar'
+            XValues.Order = loNone
+            YValues.Name = 'Y'
+            YValues.Order = loAscending
+            Data = {
+              000600000000000000002062400000000000806B400000000000005E40000000
+              000070624000000000007067400000000000706740}
+          end
+        end
+      end
+      object Rectangle8: TRectangle
+        Align = Client
+        Fill.Color = claWhite
+        Margins.Left = 5.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Margins.Bottom = 10.000000000000000000
+        Size.Width = 719.500000000000000000
+        Size.Height = 298.653198242187500000
+        Size.PlatformDefault = False
+        Stroke.Thickness = 0.000000000000000000
+        XRadius = 10.000000000000000000
+        YRadius = 10.000000000000000000
+        object layVendasFormaPgto: TLayout
+          Align = Top
+          Margins.Left = 10.000000000000000000
+          Margins.Top = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 699.500000000000000000
+          Size.Height = 28.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object imgVendasForma: TImage
+            MultiResBitmap.Height = 29
+            MultiResBitmap.Width = 29
+            MultiResBitmap = <
+              item
+                Width = 29
+                Height = 29
+                PNG = {
+                  89504E470D0A1A0A0000000D494844520000001D0000001D0806000000569367
+                  0F000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                  02CC49444154484BB5973B6C1341108667D7673B3C948484200A174180902211
+                  253450115F450B051D48A48A840BDB902052915414268A5CD82855125152040A
+                  2868CE54A4023B450A02C2A044020990414860B8DB65773D3EFBECF3FBF24927
+                  7BC6B2FF9D9D9D9935810E9831EE8FFAC01FE64046D1051CA0C08165FBE05736
+                  A92F16D0DD9496A251E3DEE03FDF40D4E2C59806C14174BBC2806708E3EB697D
+                  760D5DAE3414ED44AC1E2B6F32535FD1E7F3E870E02A2AB751A3FE0D003A81AE
+                  AEE00416D2176F2DA26953275A12D40C009F9DB75E701376887A2D58A65698E2
+                  AB82D2C0AAD78212C261216224C26856446F1A0F6E5020F6079E4361356A2CAB
+                  03696F6FE465E2436D9407B5209C3D7A12ADF6F96D1661EBEB7BB42A30C6171F
+                  EAB71794A88C92502AB6D6C9DD73D760EBDB3BB4DA27746804767EEC82B1F706
+                  3D65583635353B5912CD2C6D10422E2B3F32D4D70FD7CF5C8264EE317ADAE7F4
+                  60082E1C1B83476F5FA0A74291914995538BFCDDBF5CD6A0010B931963599409
+                  17F97422238D8D5F85679F5EA1A77D8683FDEA718B5434EB3511A9D9B444CA3F
+                  D0C933D43780DFAEC7E2EC88883411D6A84F340427FB9553C67986FA80B7358E
+                  BC845AE0EF59745CD4F2F9E3632AC256100E39BAA2C7F326147B12964DA49CCF
+                  563080BC2A19CAFC4F95A74B363F6FC3F38F9BB0F9651B3D8D318166547350CD
+                  D8E530CD8B8E94EBA2238D0F9F82CCDE6B9745547524895BEF9527387478040E
+                  88EDEB84EF7F7EC24E6117AD0A9CB1697995B1451BF55FEFB0F2A9A9B913F29D
+                  3DDAE40AE4C50A4DCF3199A6E35BE7100F307A45AE084DEF10234D56095A4ED1
+                  A41E2F9456E4A1B0104C89198A96C2212A5175AB8459165D5DA16A9FF178ADA0
+                  C43E486E448CA59828E268A7F726D95F19A7D3D55B5A4D5351891C7D3EB0C284
+                  401448E37BB08C4CE38127A22ED653FA5CD303D952B41A79B132C19C90FF654A
+                  0F14A81A182C9BD6EFB4990E80FF9E04168650DE3B690000000049454E44AE42
+                  6082}
+                FileName = 'C:\Users\Desenvolvimento\Downloads\Group 1000002843.png'
+              end>
+            Align = Left
+            Size.Width = 28.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+          end
+          object lblTitVendasFormaPgto: TLabel
+            Align = Left
+            StyledSettings = [Style]
+            Margins.Left = 10.000000000000000000
+            Position.X = 38.000000000000000000
+            Size.Width = 227.000000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFF495465
+            Text = 'Vendas por formas de pagamento'
+            TabOrder = 1
+          end
+        end
+        object GridPanelLayout3: TGridPanelLayout
+          Align = Client
+          Size.Width = 719.500000000000000000
+          Size.Height = 260.653198242187500000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          ColumnCollection = <
+            item
+              Value = 50.000000000000000000
+            end
+            item
+              Value = 50.000000000000000000
+            end>
+          ControlCollection = <
+            item
+              Column = 0
+              Control = layFormasPgto
+              Row = 0
+            end
+            item
+              Column = 1
+              Control = Layout16
+              Row = 0
+            end>
+          RowCollection = <
+            item
+              Value = 100.000000000000000000
+            end>
+          object layFormasPgto: TLayout
+            Align = Client
+            Margins.Left = 10.000000000000000000
+            Margins.Top = 20.000000000000000000
+            Margins.Bottom = 20.000000000000000000
+            Size.Width = 349.750000000000000000
+            Size.Height = 220.653198242187500000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object GridPanelFormas: TGridPanelLayout
+              Align = Client
+              Size.Width = 349.750000000000000000
+              Size.Height = 220.653198242187500000
+              Size.PlatformDefault = False
+              TabOrder = 0
+              ColumnCollection = <
+                item
+                  Value = 100.000000000000000000
+                end>
+              ControlCollection = <
+                item
+                  Column = 0
+                  Control = Layout19
+                  Row = 0
+                end>
+              RowCollection = <
+                item
+                  Value = 100.000000000000000000
+                end>
+              object Layout19: TLayout
+                Align = Client
+                Size.Width = 349.750000000000000000
+                Size.Height = 220.653198242187500000
+                Size.PlatformDefault = False
+                TabOrder = 3
+                object Layout20: TLayout
+                  Align = Left
+                  Size.Width = 39.000000000000000000
+                  Size.Height = 220.653198242187500000
+                  Size.PlatformDefault = False
+                  TabOrder = 0
+                  object recFormaPgto1: TRectangle
+                    Align = Center
+                    Fill.Color = claDarkgray
+                    Size.Width = 27.000000000000000000
+                    Size.Height = 26.000000000000000000
+                    Size.PlatformDefault = False
+                    Stroke.Color = claWhite
+                  end
+                end
+                object lblDescForma1: TLabel
+                  Align = Left
+                  StyledSettings = [Style]
+                  Position.X = 39.000000000000000000
+                  Size.Width = 129.000000000000000000
+                  Size.Height = 220.653198242187500000
+                  Size.PlatformDefault = False
+                  TextSettings.Font.Family = 'Roboto'
+                  TextSettings.FontColor = xFF495465
+                  Text = '---'
+                  TabOrder = 2
+                end
+                object lblValForma1: TLabel
+                  Align = Right
+                  StyledSettings = [Style]
+                  Margins.Left = 10.000000000000000000
+                  Position.X = 182.750000000000000000
+                  Size.Width = 167.000000000000000000
+                  Size.Height = 220.653198242187500000
+                  Size.PlatformDefault = False
+                  TextSettings.Font.Family = 'Roboto'
+                  TextSettings.Font.Size = 14.000000000000000000
+                  TextSettings.FontColor = xFF495465
+                  Text = '0% = R$ 0,00'
+                  TabOrder = 1
+                end
+              end
+            end
+          end
+          object Layout16: TLayout
+            Align = Client
+            Margins.Bottom = 10.000000000000000000
+            Size.Width = 359.750000000000000000
+            Size.Height = 250.653198242187500000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            object ChartFormasPgto: TChart
+              AllowPanning = pmNone
+              BackWall.Visible = False
+              Border.Color = claWhite
+              Border.Style = psClear
+              Border.Fill.Color = claWhite
+              Border.SmallDots = True
+              BottomWall.Visible = False
+              Foot.Font.StyleExt = {00040000000200000004000000}
+              LeftWall.Dark3D = False
+              LeftWall.Visible = False
+              Legend.Title.Font.StyleExt = {00070000000000000004000000}
+              Legend.Visible = False
+              MarginBottom = 0
+              MarginLeft = 0
+              MarginRight = 0
+              MarginTop = 0
+              SubFoot.Font.StyleExt = {00040000000200000004000000}
+              Title.Text.Strings = (
+                ' ')
+              Title.Visible = False
+              BottomAxis.Axis.Visible = False
+              BottomAxis.Grid.Visible = False
+              BottomAxis.MinorTicks.Visible = False
+              BottomAxis.Ticks.Visible = False
+              BottomAxis.TicksInner.Visible = False
+              BottomAxis.Visible = False
+              ClipPoints = False
+              LeftAxis.Axis.Visible = False
+              LeftAxis.Grid.Visible = False
+              LeftAxis.MinorTicks.Visible = False
+              LeftAxis.Ticks.Visible = False
+              LeftAxis.TicksInner.Visible = False
+              Panning.MouseWheel = pmwNone
+              Shadow.Visible = False
+              View3D = False
+              View3DOptions.Elevation = 315
+              View3DOptions.Orthogonal = False
+              View3DOptions.Perspective = 0
+              View3DOptions.Rotation = 360
+              View3DWalls = False
+              Zoom.Allow = False
+              Zoom.Brush.Kind = None
+              Zoom.Pen.Fill.Color = claSilver
+              Zoom.Pen.Visible = False
+              Align = Client
+              BevelOuter = bvNone
+              Color = claWhite
+              TabOrder = 1
+              Size.Width = 359.750000000000000000
+              Size.Height = 250.653198242187500000
+              Size.PlatformDefault = False
+              ColorPaletteIndex = 13
+              object CircleFormaPgto: TCircle
+                Anchors = [akLeft, akTop, akRight, akBottom]
+                Fill.Color = claWhite
+                Locked = True
+                Margins.Bottom = 10.000000000000000000
+                Position.X = 66.000000000000000000
+                Position.Y = 76.000000000000000000
+                Size.Width = 227.750000000000000000
+                Size.Height = 99.195861816406250000
+                Size.PlatformDefault = False
+                Stroke.Color = claWhite
+              end
+              object p: TRectangle
+                Align = Client
+                Opacity = 0.000000000000000000
+                Size.Width = 359.750000000000000000
+                Size.Height = 250.653198242187500000
+                Size.PlatformDefault = False
+              end
+              object PieSeries1: TPieSeries
+                HoverElement = []
+                Marks.Font.Family = 'Roboto'
+                Marks.Font.Size = 17.698795318603520000
+                Marks.Shadow.Visible = False
+                Marks.Transparent = True
+                Marks.Margins.Left = 26
+                Marks.Margins.Top = 15
+                Marks.Margins.Right = 27
+                Marks.Margins.Bottom = 12
+                Marks.Margins.Units = maPixels
+                Marks.Style = smsPercent
+                Marks.Arrow.Visible = False
+                Marks.BackColor = claWhite
+                Marks.Callout.Arrow.Visible = False
+                Marks.Callout.Length = 20
+                Marks.Tail.Margin = 2
+                Marks.TextAlign = taLeftJustify
+                Marks.Color = claWhite
+                SeriesColor = xFF85D3FF
+                XValues.Order = loAscending
+                YValues.Name = 'Pie'
+                YValues.Order = loNone
+                Frame.InnerBrush.Kind = Gradient
+                Frame.InnerBrush.Gradient.EndColor = claGray
+                Frame.InnerBrush.Gradient.MidColor = claWhite
+                Frame.InnerBrush.Gradient.StartColor = xFF404040
+                Frame.InnerBrush.Gradient.Visible = True
+                Frame.InnerBrush.BackColor = claRed
+                Frame.MiddleBrush.Kind = Gradient
+                Frame.MiddleBrush.Gradient.EndColor = xFF828282
+                Frame.MiddleBrush.Gradient.MidColor = claWhite
+                Frame.MiddleBrush.Gradient.StartColor = claGray
+                Frame.MiddleBrush.Gradient.Visible = True
+                Frame.MiddleBrush.BackColor = claYellow
+                Frame.OuterBrush.Kind = Gradient
+                Frame.OuterBrush.Gradient.EndColor = xFF404040
+                Frame.OuterBrush.Gradient.MidColor = claWhite
+                Frame.OuterBrush.Gradient.StartColor = claSilver
+                Frame.OuterBrush.Gradient.Visible = True
+                Frame.OuterBrush.BackColor = claGreen
+                Frame.Width = 4
+                OtherSlice.Legend.Title.Font.StyleExt = {00070000000000000004000000}
+                OtherSlice.Legend.Visible = False
+                PiePen.Visible = False
+                Data = {
+                  000600000000000000002062400000000000806B400000000000005E40000000
+                  000070624000000000007067400000000000706740}
+              end
+            end
+          end
+        end
+      end
+      object gridContasDiagnostico: TGridPanelLayout
+        Align = Client
+        Size.Width = 364.750000000000000000
+        Size.Height = 313.653198242187500000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        ColumnCollection = <
+          item
+            Value = 100.000000000000000000
+          end>
+        ControlCollection = <
+          item
+            Column = 0
+            Control = Rectangle16
+            Row = 0
+          end
+          item
+            Column = 0
+            Control = recDiagnosticoIA
+            Row = 1
+          end>
+        RowCollection = <
+          item
+            Value = 50.000000000000000000
+          end
+          item
+            Value = 50.000000000000000000
+          end>
+        object Rectangle16: TRectangle
+          Align = Client
+          Fill.Color = claWhite
+          Margins.Left = 5.000000000000000000
+          Margins.Top = 5.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Margins.Bottom = 5.000000000000000000
+          Size.Width = 349.750000000000000000
+          Size.Height = 146.826599121093800000
+          Size.PlatformDefault = False
+          Stroke.Thickness = 0.000000000000000000
+          XRadius = 10.000000000000000000
+          YRadius = 10.000000000000000000
+          object layContasBancarias: TLayout
+            Align = Top
+            Margins.Left = 10.000000000000000000
+            Margins.Top = 10.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Position.X = 10.000000000000000000
+            Position.Y = 10.000000000000000000
+            Size.Width = 329.750000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object imgContasBancarias: TImage
+              MultiResBitmap = <
+                item
+                  Width = 28
+                  Height = 28
+                  PNG = {
+                    89504E470D0A1A0A0000000D494844520000001C0000001C0806000000720DDF
+                    94000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                    02E549444154484BC596CF6B134114C7BF339BC4A8602B8A4594D28AB6179B5A
+                    D0DE94F6E04DB1056F166CC15B4F1E155BA935FA17781414F4DC8ADE14AA78F4
+                    D0A6F554C416514451BA0AD225D99DF1BDDDC966DB6C7E95443F1076E665D8EF
+                    CE9BEFBC19813A985DD1435AA84B96A787200B5D40BA3DF8C7B1A1524B9E8525
+                    5190CFA606C4EB205E99AA8277737A5C4BF7B64482446AA3E0AE0B9598B9D52F
+                    1E995019B182F717759792DE1CA475CA841A82855D37313C3320D64D28449A67
+                    C8BDF7EAAA4A388B3B15633823297AC79D653D6242215B66C8032C8139D36D0A
+                    42E8F19B27E563D32D09FA69E499858668168E9D77D303C5F486297513EE423D
+                    626D49E0722770E168D0AE4DBA3DC57E30F882ECC67A9C387800B8761CF8E600
+                    BFF2C0583790A9271FE407D6E0A69FD2D995C25A35419E09CF88073FFF4C6285
+                    527CEC186093F88B483C0E76EE545FB25BF0A6A669523AE3E1599D3E08BCFB41
+                    BF9F26B88DB387803334EEEDF7CA6318E56258C25565D665F8EBAF50CA7AF601
+                    4F3F567F110B3DFC108C9DECA9B2B6961A11D99CB70029874C2884D76A8352C4
+                    336B8441CA46C72EE0C1AA094451DE92C8AE6C6EC4B993D3D44B5FDC9622936C
+                    D208ABD4E627C3C689B63BD2C13AE6E88DF119716C12D4DAF4CAE8DC0B9C23E1
+                    276BE4C6FDD4DF43E6F8127C0CC3A964337DFA032C93082F01C7B85F89B2D2D6
+                    6A48908E987F86634BA86459456F159ACE4EA9947863FA2D470BE42A6EFCF387
+                    8113E4D276DA5336396FB759ED4D55BB9DA3457AF5356847E18D1F94B6652A6D
+                    626B699BEC35658CECDE08BC4D2E1E29DF874A5369CB24BBFD6F123A31E3475B
+                    4851233C0FB33977CB29CF29E552B513567F032F23292DCE8EDBFFEF00BE4101
+                    ADD2D74DB769783A3D11BD4C85820C5FEF3C8DD1E61403C7D60A13D319316F02
+                    3E614AA3707A5DCB5DD8EEDCBAA15321AFACD1B86B62AC6011FF222CE8225CA7
+                    309B83DDD8F045783B5C1CA82E8D088D7E21F3E4E4D255DFA3D22804552B21E7
+                    A7FA6A5DF581BF18D22FEE9EBF303F0000000049454E44AE426082}
+                  FileName = 'C:\Users\Desenvolvimento\Downloads\contas banc'#225'rias.png'
+                end>
+              Align = Left
+              Size.Width = 28.000000000000000000
+              Size.Height = 28.000000000000000000
+              Size.PlatformDefault = False
+            end
+            object lblTitContasBancarias: TLabel
+              Align = Left
+              StyledSettings = [Style]
+              Margins.Left = 10.000000000000000000
+              Position.X = 38.000000000000000000
+              Size.Width = 120.000000000000000000
+              Size.Height = 28.000000000000000000
+              Size.PlatformDefault = False
+              TextSettings.Font.Family = 'Roboto'
+              TextSettings.Font.Size = 14.000000000000000000
+              TextSettings.FontColor = xFF495465
+              Text = 'Contas banc'#225'rias'
+              TabOrder = 1
+            end
+          end
+          object layContasBancarias3: TLayout
+            Align = Top
+            Margins.Left = 10.000000000000000000
+            Margins.Top = 10.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Margins.Bottom = 10.000000000000000000
+            Position.X = 10.000000000000000000
+            Position.Y = 48.000000000000000000
+            Size.Width = 329.750000000000000000
+            Size.Height = 83.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            object Line11: TLine
+              Align = Top
+              LineType = Diagonal
+              Size.Width = 329.750000000000000000
+              Size.Height = 3.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Color = xFFE2EBF3
+            end
+            object gridLayContasBancarias3: TGridPanelLayout
+              Align = Client
+              Size.Width = 329.750000000000000000
+              Size.Height = 80.000000000000000000
+              Size.PlatformDefault = False
+              TabOrder = 3
+              ColumnCollection = <
+                item
+                  Value = 100.000000000000000000
+                end>
+              ControlCollection = <
+                item
+                  Column = 0
+                  Control = layContaBancaria3_1
+                  Row = 0
+                end>
+              RowCollection = <
+                item
+                  Value = 100.000000000000000000
+                end>
+              object layContaBancaria3_1: TLayout
+                Align = Client
+                Size.Width = 329.750000000000000000
+                Size.Height = 80.000000000000000000
+                Size.PlatformDefault = False
+                TabOrder = 3
+                object lblVlContaBancaria3_1: TLabel
+                  Align = Right
+                  StyledSettings = [Style]
+                  Margins.Bottom = 3.000000000000000000
+                  Position.X = 183.750000000000000000
+                  Size.Width = 146.000000000000000000
+                  Size.Height = 76.000000000000000000
+                  Size.PlatformDefault = False
+                  TextSettings.Font.Family = 'Roboto'
+                  TextSettings.Font.Size = 20.000000000000000000
+                  TextSettings.FontColor = xFF6BC18E
+                  TextSettings.HorzAlign = Trailing
+                  Text = 'R$ 0,00'
+                  TabOrder = 3
+                end
+                object Line12: TLine
+                  Align = Bottom
+                  LineType = Diagonal
+                  Position.Y = 79.000000000000000000
+                  Size.Width = 329.750000000000000000
+                  Size.Height = 1.000000000000000000
+                  Size.PlatformDefault = False
+                  Stroke.Color = xFFE2EBF3
+                end
+                object lblNomeContaBancaria3_1: TLabel
+                  Align = Left
+                  Anchors = [akLeft, akTop, akRight, akBottom]
+                  StyledSettings = [Style]
+                  Size.Width = 184.000000000000000000
+                  Size.Height = 79.000000000000000000
+                  Size.PlatformDefault = False
+                  TextSettings.Font.Family = 'Roboto'
+                  TextSettings.Font.Size = 14.000000000000000000
+                  TextSettings.FontColor = xFF495465
+                  Text = '---'
+                  TabOrder = 1
+                end
+              end
+            end
+          end
+        end
+        object recDiagnosticoIA: TRectangle
+          Align = Client
+          Fill.Color = claWhite
+          Margins.Left = 5.000000000000000000
+          Margins.Top = 5.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Margins.Bottom = 10.000000000000000000
+          Size.Width = 349.750000000000000000
+          Size.Height = 141.826599121093800000
+          Size.PlatformDefault = False
+          Stroke.Thickness = 0.000000000000000000
+          XRadius = 10.000000000000000000
+          YRadius = 10.000000000000000000
+          object layDiagnosticoIA: TLayout
+            Align = Top
+            Margins.Left = -5.000000000000000000
+            Margins.Top = 10.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Position.X = 10.000000000000000000
+            Position.Y = 10.000000000000000000
+            Size.Width = 314.750000000000000000
+            Size.Height = 28.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 2
+            object imgDiagnosticoIA: TImage
+              MultiResBitmap = <
+                item
+                  Width = 28
+                  Height = 28
+                  PNG = {
+                    89504E470D0A1A0A0000000D494844520000001C0000001C0806000000720DDF
+                    94000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                    03AE49444154484BAD964D4F14411086AB7B970F35EA1A0DF81544A37091450E
+                    78C3C0811B8990E0498D9870E31FA86810D15FE0CD444DBC83E1C801941B1E60
+                    592FE80162FC0846E3AA312C30D36DBD333DC3CC6C2F2E86271986AE9DEEEAAA
+                    7EABBB0555C0685E776AA12EA75CDD4972B391A836E3FF522C90AA5E7053B420
+                    36E5CBE13631E3DBCBB3ADC307393DA0A5734F529A9DFC1B45CE8A50E9913BAD
+                    E29931956075F8685E372AE98E934C5D30A61D01C78E93EE1A69132BC61422CD
+                    3BE4E15B7543A58BF3FFEB0C2023D53CC6FD45DD6B4C21B108F1414AD0B869EE
+                    0A42E8815BE7E573D3DC72E8A511918582B073B08AA8A38EDFD5C660E1DD2FA2
+                    37DF4D8385B5E1D4B605E90D1D8EE637972B11C750130FF89B6889072D47F731
+                    DFE9EC576350EEC2EDD6741BFEF5D6106AACC419A24364535F887E6ED89FD535
+                    DF517DADE904580FF0E1FD8B3F903EDE0118B8E70451FB6163B070E514D1B533
+                    A54FFB114EA2CB0B93321F1A021F0245CD5EA73DABA1E7A4FFC62C11CD873F7E
+                    1B13196A8692896AB85372500067F57B882EF13ABF5836468372A84B92A34AA4
+                    8BD464D23C200F8A016C5CB7441744982927A894EA156339779AA4EC34A690C1
+                    B3BE30B01E88ACF90051C33EA2267E23C2EDB8C84B81EF9211423C622CBFF6C3
+                    560A574F13E50B7E941DF5448BFC15C0BA3E5EF22750634929D2DCB49FE8354F
+                    14FDE3140B5889B27587C890A227EFFDB59CFBE6DB07CFF96A4D82C8D067F293
+                    CD19A8CD70845A9B56080481F54067A474AB88FD0811EDBA328608A8BF3A165A
+                    9E7F5FE25A5DB7AC3F64513297EEE35C4F4516CF667C60AC0B9CC76C9CBE00F4
+                    F152CADF41A5A520A5AAAA6447476488020304C0D6DF601A11FAB91EF15B000A
+                    7F8E27152B7C83E6B3532A255E99F6B620AAC98FA61101294726A2D8EA136841
+                    39DED1E484698760F0EC219E794418A8470801336FE1DFF0046B1C057D90D242
+                    62121EAE9C90C32D6246692796D6A9CFFE82A32420A02870D2B8D77F9269C3F7
+                    880E7D67578DD1001FB88278C3099D1EF1AC06A408658007528FD61B4E0AC81E
+                    0FFE0FC044A0E0A05F32CD818FF0781ACB39D6531E675F962B15A9B3A68939CA
+                    917AE5C2294FA61878D165AB782B8938DCEE006E610B76967262C0DE9B6367C1
+                    261FA7CC010C706609494F4D73577035F5DDCD8A50983149E07A870F6C9BC1CE
+                    2916B4A29B516720166100D2EBA49C69292ABB8F96C0A7C2864AF5D9AE895687
+                    01DE4558F045B842C71007D4B8E38B7012DC0A785FEA159A5A85DC60256F5DF5
+                    5DDE1A85E0DD4AC809D4B46F2F07D15FCAC582F6051EB23F0000000049454E44
+                    AE426082}
+                  FileName = 'C:\Users\Desenvolvimento\Downloads\contas banc'#225'rias.png'
+                end>
+              Align = Left
+              Size.Width = 28.000000000000000000
+              Size.Height = 28.000000000000000000
+              Size.PlatformDefault = False
+            end
+            object lblTitDiagnosticoIA: TLabel
+              Align = Left
+              Cursor = crHandPoint
+              StyledSettings = [Style]
+              Margins.Left = 10.000000000000000000
+              Position.X = 38.000000000000000000
+              Size.Width = 120.000000000000000000
+              Size.Height = 28.000000000000000000
+              Size.PlatformDefault = False
+              TextSettings.Font.Family = 'Roboto'
+              TextSettings.Font.Size = 14.000000000000000000
+              TextSettings.FontColor = xFF495465
+              Text = 'Diagn'#243'stico por IA'
+              TabOrder = 1
+            end
+            object imgExpContrai: TImage
+              MultiResBitmap.Height = 13
+              MultiResBitmap = <
+                item
+                  Width = 20
+                  Height = 13
+                  PNG = {
+                    89504E470D0A1A0A0000000D49484452000000140000000D0806000000A9504E
+                    5E000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                    013B49444154384FBD91CB51C330108677A51C72A4041A208E4B480954405201
+                    3E9364620F4E724CA820A6024A800EF2A2004AE0E809F62E5A47F6F83530E4C0
+                    77F1FE2BCDE79584F343BA02541E32FB0F3D15C0052CDE69C68C3E20AD717E64
+                    B67DB8445AC82C8A000A0123FA8B03CD6CFC95BA8C080294E2F1C8BE02288928
+                    1ADFE8910DAD2C8F744F806B1B33D9D4413F130A7F919AC9EECC64918D404C4F
+                    D39EF6A42E8442B8270F15AE6C94DFBE9D48DD062E7EDA4E43665EE079D2C3A1
+                    8D55A110EE79880A36361A69BA3B911E8834DC721F3BB0B52B0D99D0100A6DD2
+                    1475A03136BDEE55DE1B3B1D37AB4B986B6B327130E204CCE6F87C54A5FB1AE1
+                    A52C93A9B3BA46EB8439E723C6AF8548285D81ED54689D3067E2E28E93EE8038
+                    F9902C5F23AB3C529D1F27CC596EF93A55B4F9223532B24CFE4F007C03BBD2A5
+                    BD6426F0060000000049454E44AE426082}
+                  FileName = 'C:\Users\Desenvolvimento\Downloads\Vector 660 (1).png'
+                end>
+              Align = Right
+              Cursor = crHandPoint
+              Position.X = 294.750000000000000000
+              RotationAngle = 180.000000000000000000
+              Size.Width = 20.000000000000000000
+              Size.Height = 28.000000000000000000
+              Size.PlatformDefault = False
+              OnClick = imgExpContraiClick
+            end
+            object imfInfoIA: TImage
+              MultiResBitmap.Height = 16
+              MultiResBitmap = <
+                item
+                  Width = 16
+                  Height = 16
+                  PNG = {
+                    89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+                    61000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                    01C549444154384F9D93BF4BC35010C7EF5D6211757077D0A948FD1510C4AD3A
+                    D57649B5385751115CECE866FD0BB493088A7616C18CC541BBE956C76EF53FD0
+                    45A36DDEF3EEF9126215297E8647EE472EB9BBEF13D045A6B0B180802E80CC83
+                    C031F649090D14D0909D8F839A576DE944435420ED168707ECC4BE14B0064A56
+                    A0635FD4BC139D9C5BDD74020007A5DA07C0EB572A54F7AACF1CD305F8E57E2B
+                    710B4A3DFA72B054F72A3AD88D4B79EFB65D560AD37EF0B11816816C61EB70A9
+                    B071A48D185C38B75A748C19915DDEBCE077F819336E91FA94F9B7CE50594763
+                    0CEBB34F9F7112B25DE256F5BC90FB56827AFAF9DB5F8EB63EE378FCEB3427EA
+                    3F4F7301475AD030B16FF4DBB6236562D798DFA12153011711C1B9B93CFDB5C0
+                    5FE80DD19AD1D8FF06A997566E6567D4D83DC3DAD00253349340B4D78DBF6758
+                    5882D4C905AE494EBBBC73138BB050D022E48B3123389755A93A78A01D2C2212
+                    C6B9367A202E3C8B8F89E4F47D5B587BC9D4ECF84872EAE1A9F9E8B3BF1BFE72
+                    6A72EE987433EF0783EB4FCD073FBA4CA1CE79B72C2CD646B8DE8CBB3D66F5A9
+                    6200B22494AAB26A43E14505423819302883903388D6D73DA04DF1B0795EB5AB
+                    B33BEDD3007C027B34BD9C1B3A25780000000049454E44AE426082}
+                  FileName = 'C:\Users\Desenvolvimento\Downloads\Informa'#231#227'o.png'
+                end>
+              Align = Left
+              Margins.Left = 10.000000000000000000
+              Position.X = 168.000000000000000000
+              Size.Width = 16.000000000000000000
+              Size.Height = 28.000000000000000000
+              Size.PlatformDefault = False
+              ParentShowHint = False
+              ShowHint = True
+            end
+          end
+          object txtDiagnosticoIA: TText
+            Align = Client
+            Margins.Left = 10.000000000000000000
+            Margins.Top = 20.000000000000000000
+            Margins.Right = 5.000000000000000000
+            Margins.Bottom = 10.000000000000000000
+            Size.Width = 304.750000000000000000
+            Size.Height = 73.826599121093750000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 11.000000000000000000
+            TextSettings.FontColor = xFF495465
+            TextSettings.Trimming = Character
+            TextSettings.HorzAlign = Leading
+            TextSettings.VertAlign = Leading
+          end
+          object Layout3: TLayout
+            Align = MostLeft
+            Margins.Top = 50.000000000000000000
+            Margins.Bottom = 10.000000000000000000
+            Position.Y = 50.000000000000000000
+            Size.Width = 15.000000000000000000
+            Size.Height = 81.826599121093750000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            object imgDiagnosticoPrior: TImage
+              MultiResBitmap.Height = 13
+              MultiResBitmap = <
+                item
+                  Width = 20
+                  Height = 13
+                  PNG = {
+                    89504E470D0A1A0A0000000D49484452000000140000000D0806000000A9504E
+                    5E000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                    013B49444154384FBD91CB51C330108677A51C72A4041A208E4B480954405201
+                    3E9364620F4E724CA820A6024A800EF2A2004AE0E809F62E5A47F6F83530E4C0
+                    77F1FE2BCDE79584F343BA02541E32FB0F3D15C0052CDE69C68C3E20AD717E64
+                    B67DB8445AC82C8A000A0123FA8B03CD6CFC95BA8C080294E2F1C8BE02288928
+                    1ADFE8910DAD2C8F744F806B1B33D9D4413F130A7F919AC9EECC64918D404C4F
+                    D39EF6A42E8442B8270F15AE6C94DFBE9D48DD062E7EDA4E43665EE079D2C3A1
+                    8D55A110EE79880A36361A69BA3B911E8834DC721F3BB0B52B0D99D0100A6DD2
+                    1475A03136BDEE55DE1B3B1D37AB4B986B6B327130E204CCE6F87C54A5FB1AE1
+                    A52C93A9B3BA46EB8439E723C6AF8548285D81ED54689D3067E2E28E93EE8038
+                    F9902C5F23AB3C529D1F27CC596EF93A55B4F9223532B24CFE4F007C03BBD2A5
+                    BD6426F0060000000049454E44AE426082}
+                  FileName = 'C:\Users\Desenvolvimento\Downloads\Vector 660 (1).png'
+                end>
+              Align = Center
+              Cursor = crHandPoint
+              RotationAngle = 90.000000000000000000
+              Size.Width = 20.000000000000000000
+              Size.Height = 20.000000000000000000
+              Size.PlatformDefault = False
+              OnClick = imgDiagnosticoPriorClick
+            end
+          end
+          object Layout4: TLayout
+            Align = MostRight
+            Margins.Top = 50.000000000000000000
+            Margins.Bottom = 10.000000000000000000
+            Position.X = 334.750000000000000000
+            Position.Y = 50.000000000000000000
+            Size.Width = 15.000000000000000000
+            Size.Height = 81.826599121093750000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object imgDiagnosticoNext: TImage
+              MultiResBitmap.Height = 13
+              MultiResBitmap = <
+                item
+                  Width = 20
+                  Height = 13
+                  PNG = {
+                    89504E470D0A1A0A0000000D49484452000000140000000D0806000000A9504E
+                    5E000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+                    013B49444154384FBD91CB51C330108677A51C72A4041A208E4B480954405201
+                    3E9364620F4E724CA820A6024A800EF2A2004AE0E809F62E5A47F6F83530E4C0
+                    77F1FE2BCDE79584F343BA02541E32FB0F3D15C0052CDE69C68C3E20AD717E64
+                    B67DB8445AC82C8A000A0123FA8B03CD6CFC95BA8C080294E2F1C8BE02288928
+                    1ADFE8910DAD2C8F744F806B1B33D9D4413F130A7F919AC9EECC64918D404C4F
+                    D39EF6A42E8442B8270F15AE6C94DFBE9D48DD062E7EDA4E43665EE079D2C3A1
+                    8D55A110EE79880A36361A69BA3B911E8834DC721F3BB0B52B0D99D0100A6DD2
+                    1475A03136BDEE55DE1B3B1D37AB4B986B6B327130E204CCE6F87C54A5FB1AE1
+                    A52C93A9B3BA46EB8439E723C6AF8548285D81ED54689D3067E2E28E93EE8038
+                    F9902C5F23AB3C529D1F27CC596EF93A55B4F9223532B24CFE4F007C03BBD2A5
+                    BD6426F0060000000049454E44AE426082}
+                  FileName = 'C:\Users\Desenvolvimento\Downloads\Vector 660 (1).png'
+                end>
+              Align = Center
+              Cursor = crHandPoint
+              RotationAngle = 270.000000000000000000
+              Size.Width = 20.000000000000000000
+              Size.Height = 20.000000000000000000
+              Size.PlatformDefault = False
+              OnClick = imgDiagnosticoNextClick
+            end
+          end
+        end
+      end
+    end
+  end
+  object pnlLoading: TRectangle
+    Fill.Color = claWhite
+    Opacity = 0.699999988079071000
+    Position.X = 58.000000000000000000
+    Position.Y = 229.000000000000000000
+    Size.Width = 238.000000000000000000
+    Size.Height = 144.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Kind = None
+  end
+  object layLoading: TLayout
+    Align = Center
+    Size.Width = 300.000000000000000000
+    Size.Height = 130.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object lblCarregando: TLabel
+      Align = MostBottom
+      StyledSettings = [Style]
+      Margins.Left = 10.000000000000000000
+      Position.X = 10.000000000000000000
+      Position.Y = 100.000000000000000000
+      Size.Width = 290.000000000000000000
+      Size.Height = 30.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 14.000000000000000000
+      TextSettings.FontColor = xFF495465
+      TextSettings.HorzAlign = Center
+      Text = 'Preparando seu dashboard...'
+      TabOrder = 0
+    end
+    object Rectangle10: TRectangle
+      Align = Center
+      Fill.Bitmap.WrapMode = Tile
+      Fill.Kind = Bitmap
+      Size.Width = 64.000000000000000000
+      Size.Height = 64.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      object BitmapListAnimation1: TBitmapListAnimation
+        AnimationBitmap.PNG = {
+          89504E470D0A1A0A0000000D49484452000002000000004008060000006CBFCF
+          BF000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+          29DE49444154785EED9D0B7C24559DEFCF395595CC8C04998445EE485CD45D1F
+          389364C0F5B5F21091870F4084C5C7554496551C90D722779C64F2C92491452E
+          222F5961792DD7F5E2AE0A080AC8A2035E118421E91911F9A08E649C0F229D19
+          67702649559D73FFBF53A743BAD3D555D5DDE9547AEA3B9FFAE4FFFF9F7332A9
+          EEAAF33FCFFFE12CA3A1AC1B758F179C9FCBD8D8618C75DA8175CC23F921A9D4
+          956BBB9DBB025BF3D2AF947072EEDB38177F035D29F9ACDBE53C36C0B9D41932
+          32323232E69CAC01D020FA9F917B3B13F236128F0F2CA1DCE52E129F1C7883D8
+          61F4A6413BFE8DFEE799EFAF6196B5BF3107F8FEF3641B7657585F6FF686C0D0
+          A6C91EE68B53E9F57B436051CF304BDEDEBBBC7524D0F70CFA37A9BDF0736039
+          7F491B3232321A4AD6006800FDBF538BC44E7FBDC5D8DB8CA9223E638FC936EB
+          F081D7F209635AF0E0337076FAB79318DD0012D629E414A68CDE34E033B07778
+          D772CE3F634C4528A56EF2F6B65735D3F75E4AFFE36A89EDF81730AECEE08C1F
+          089B626A3353FC46CFB5BE3AF056BE4B676C62FA7FAC6C7BA97714E3FC606D50
+          6A83B7CD7E60E03DDCD37A464683C81A000D6068D4BD9C5EF60B8C1A0FA5BEDA
+          DBED5C68B405CFE0A87B6398E32B4549757D5F8FF359A33605A8F49D76FF1E7A
+          E38E36A6F22876BF3B6E7DA0199D41FF26D96E49F923C158E0F84A908C6DF085
+          78DFC072316E4C4DC7F0267990EFFBFF29383FC8983452A9A72CCB3A65CD72F1
+          9431353543A353EF504C1C059933F9406F77CBCF7542464399B70640FF26D562
+          49EFFD907D61FFA0197B7C80EE737FE74F2FFC9E7574B418533CF2F929F7AFF6
+          FB6BFA5C9E379605CBD093536F639678D4A8F1F0E5DB7B57B63C66B405CFD0A8
+          F7797ADBAE356A14E7F476D9D718B969A0CFE0FBF4197CD0A8E551ECEEDE6EFB
+          43466B2AFA9F90CB1CE13E316BFA6B1AFF05D775560E1C22B61A43D38169407B
+          A3772367FCD3C6A4514CDDE2ADB0CFD853D601ADDBE89EC4A53A15B212FCF6B5
+          2B9CEFEA8406438DF1C603E72FA4BF5E30FE3D7D910C9B496E2A1CDF3F29B1F3
+          075446976D0294C5CF34626CAA29935650E929252F366A244ACA8B50C6A84D81
+          6E0446397F407974DE26C4B6FDBE70E70FACFD749E26C6DEE87FB1D4F903D890
+          66D4A66670D4EB158A7F8773F10FB820C366921B4AEC4A66786472F9BA51F7CA
+          7539F7D7438FBEB4131764D89066B2C5C2F2BDE32DC6DE6154061936A3A61A2C
+          5C1ACEA937E1826CCCA150CBF6102326A696B26942313EFD5DC725AA0C1CE4E0
+          E8D461433977783037F54D5C5A265BDA9CE7A211F61A2EC46B8C1A09F2A28C51
+          9B022582E1DE3850DECAD3240B14EADC4636E8B994271AB129E14CAE32E22C2A
+          A5350BFD4FAA7DF8787E56230F36A419B561445694E8990F8EBAD7A96D5B4705
+          E75FA01EFB1BD8E2457BE1820C1BD29027762F5E60BAAF8472B6143138E21E39
+          34EADDE7C8CDDB14F37F850BF2D088F723A4996CB3A0966DD55F6A2D65E7022C
+          625BB7D1FD207D0EE7E1820C9B490E85BEDA7623C6A65219CC1F5A1BFD5F50EB
+          793D7D4A5FE24C7C1C9796C98634E431D9E71DDF72F735626CA2CA60311DA615
+          F04C0E6E707F830B326C4833D9D20357AF3652345CFD0F2345A21BE4D401C115
+          A7413E5F600D087AF8460DC7B2F60FF2361FC17D89038C5A067140B3DE7B0147
+          4CBDAEEC8830467C91D6602AAE014045E2B4F83F24F1B0C012C943EE94755CD4
+          4A5E380D6B87FF88E0AC07BA546CC4DFDB7A671A573FE381B43BBCEBC819FFA3
+          3195857AEBFFE6E5EDB34A176F2559FC560A5685F7753B671875DE408FDAC9F9
+          5F606C7280F1D6BD8D39404DEE60ACB5DFEDB2AE0A9BBF5B97F336524B33D128
+          11FDA24D6BBBEC15469D6678D4FBB81ACFDF1C39AD92CF4FF1F68ED3D774DBFF
+          612C35333832F56E26F86992717D2F82A94DF4F0DEDAD7D3F2539D21844B9E54
+          07FA96FF3BA3C6C2F2ADD7AE5EC9371BB588C18D53EFE28ADD1E5E99CA2D8AB3
+          53FB56B4FCCC18EA069CAC23DD37417685F374DC2D7C18E2E49C0D1AB5224AB1
+          BEBE6E7BC8A865C1089C52FE30E363C717C5D3509D77716EAD59D3C59F0E6CE9
+          612837F9C7E84680FF426F57EBAB8C5211F4181DEE1F4F0DA66E6D507CD455D6
+          5D032BF976ADA790A1DCD458A5E7B6B7ABA5D3284D89FECEB6BFF0C759F517D6
+          7CEDB3DFAB1AFDDD551C01B06DEF0AFA11D7F983C34C998AC0D1C3E14BA54EC0
+          9556E70FECA5DEB551CE1F200F3514AE34EA34647FC28889A9A56CBD80F3C7A2
+          1DFA63AE98E5FC016C94863C6143EF9CA9C42B7CCB95810356E363B7453A7F40
+          7990573BED1A4183753037752B17E2617CCF7ACA8A2EC8B021ADD248C8440F7B
+          4E49F99C5123415E94316A1198E2E02F6EFB7178250AC401C883868231D40CEE
+          6F28E75EEAFCE9853CFDFE5FE0820C5B9C51202EE5FD468C242AEFBA9CFB7EC5
+          763E410FC9492F3B7F4032D99086D12963AC2B78C6A7A700134E3551F6C8855E
+          71F280E19CF70F8E9CF80DD5E0B7EA1D46B848860D69265BEAA0FBBBDA88B350
+          4CC45D24AB191EF13E3A90F31E19CAFDCEC5051936939C4AE0E0557BC7AC8630
+          D906E6A3E1163A028021350CEDB38ECE440F39CB8F49BE7459F79A9ED64DC632
+          E77C7944EA802A5FEA11CF68439DC0D03E17FCBF8D1A0B25D57BFB7A9C078D8A
+          1ED382DE053094F3A8E7CF66356C4238B7B7CBBECAC8D30C8D4E1ECCB895AC31
+          A3FC437ABB5B37184D57BCD6467FB49A91047F85D55DCBEA62EDFC99F89451CB
+          A298FCF7BEAE96D38C3A0B0CCDD3DB16AF82536C556FB7FD75A34D637ADFBF26
+          E7BBCC9822905BA997FEC6B8BDF43010C4CAFA8B7C5858ACCB988A903ECBF9AF
+          10874605AFA267E94EFA111907829EA1138C3C0BDDF387F3674B22A63976EDE2
+          ACED907A8E04C0B928212F7FF9F3975BB91417AEE9B1FF6FA05726721780EF3F
+          EF4AE790A85D0070F08A6104281CAAD84F5DD3657FDBA875433F0B13BE6E54FB
+          8BAC9F260D5856E85050E3B9A65D00587B86E967A3164175F03554079F63D454
+          528F5D00DA470BEB32C6C6CCFA9ACE07B8F42F4AE27B439DBB64E29CC4CE1F50
+          195DB6016068755DCE7B420AF96B5C906133C935C3394FBC22B7B48C76E0EDED
+          C9B774519938CE1F0D8CC151EF8BB8201B735DD073C9AEDB6FD468286FB9DE20
+          1C39A6488C1A09E200CC74FE802A8D23933A7F8032286BD4C4E81E7784F307C8
+          83BC469D853B6E5D4FB55C742F38880370BDD18A70A4FF99F8CE1F88654199DA
+          B077F99785397F8034E4316A28AE10A7FB923D6ED459200D798C5A16C57CEA3D
+          45397FB0644990B73E04CE9F7DABF8F317CB608BDBEB8463E78EF35E344A8D69
+          1AC401405A94F3870356AE7B9D5143411EE4356A5D18CCB947391393BF178CDF
+          830B326C26391670F07D5DCEE9D8E6AB145B830B326C719D3F1A4061CE1F50A7
+          EDECB91A05416786EEF9665CBA63532570F87DDD2DA7E2AADAF94FBA8F90786C
+          300AA647C28E850D693A530C421D3C3DD847183131B5944D826BF9DFA11B98FE
+          1220C366D49A406F8B8D235E7F42A88C2E3B03D7B257D38F8AF3C44548F63353
+          A622FFB249BDC69153A39CB34B714186CD24D78CD54A8ED371E22FE0A3BCF69F
+          BDB2DFBDD766A35118E79C83BB3C5BE72D827A34EF3362626A294B85E3AFC1A8
+          90176B43DCBDAD132A358490863CA14180244BBE3FBE9A3233C0B3CCB78DCFDA
+          B6550AF244391C04F891AFB40ED515BF54CF1A331A7CCFC286B44A418082F76A
+          2CC12AF9B1134BDFC56A40AF35E8F997076971A70310E8C7CF5B2BE99E8F2B38
+          40C8FEB8DD1D270890B35B9E14EB9DA43CCE843CD96835A357AFBBDEEDF48B67
+          2C4C76B4AD9AD5EB88F1D1D76D7F1957D2781FF4729C6FC450E2E4498A76F8E3
+          DB1FC1E8851EC120B99646402DE89E3F16E39742B66054201EA10FADC88F57DD
+          93AEA56C5C30EC3FD3F91780AD3025500B2D12AB35AB1B01D16567403DF92977
+          91F80055C67718533894C75D228E43196309C5953E55CC33171559FB05B6FA40
+          0FB95EEC95082B5820570AD678B82BAC0F93975BA5E3FE97021BA5214FB97B57
+          AAFA919D5ACA4A298A22B655222A2F3E03EAE99CC9A5BF82FEA87F21D37FE98B
+          64D89056692D8C62C99FEB6ACACCC471DD83E2AEB970767B919F95FE0C50F1F7
+          387FEB0AAB0D1764D8A2D601396CEA6F8AE7FCA3E8B48332B5D13AAAE877541A
+          7911CB823CF140038FEEF9DE8203841C3FF2A37A8B11A251EACD46AA19CBF6DE
+          5DB6E141369DD620F454201B7BAB5143B1F2F983E336CAE2A2985855F42E609D
+          116C0D46DF573E1F3EAA496971EFBDAE1F505321E95FB594298BB9B2DE1EFBC3
+          92AB0F51EA03C109800548261B1644224F331E040430C487B96DB7A7E5D5D4ED
+          7B2757EC13B820C386B45AE6EA170A98A3EBED7656F776D9A7E88BE446AE9999
+          3312BE33D4D07B099751336220398BDD004A92371259C157544A9B2F3A7665BE
+          2D06A11F92EC682FBB05290EB5948D0B16FC959B4F84AD1E8B01A7EC16BA8799
+          4E3A2E635E50B63C6B57387793937F9FDB76609BC5ACD7E3820C5BD2A3803D61
+          5D5FD49B2659DBEA84622AF9022A5F453AB2A021D0F2736CD1C30539CAF173C6
+          7F6BC4C4D4525608193B367B92BCD5C059F2E7BA9A3233711DE7292C48356A38
+          58B48ABC7388CB5A9E4DF64E8E794199DA98ECE6F43B6485B979B935C833F708
+          C5478D184992BC51F88BAD9F30D79D3D3D43369DD620504FF8AC33741D4901E4
+          A97767825BF2EAA27781646D6B30FABE3A3AA6179ACF82D2E2DE7B6803808A57
+          FDA5D65236092DCA3A85EE727AB11864D88C5A1341CFA4F321A326A0F3A138BD
+          1A0C77AEEEE2BFC51535F41906FD3FCFBB4ECB4AA5D8C5B820C366926BC69FB4
+          1F2CFBD2874179BD57DA73F2DD2BCE12EDC698492D65A91574A391A24992B71A
+          04C32AFA64545366067896557BFB4D460D0579E23CF7B510FCFECEE869B4693A
+          EFA8C7DF84CA14ABFD8D3A0BA4D5DBD984E12E16DF8DF54E521E9DB74E605452
+          59F62945FF37C9CAB14F6DF488A5CD58E456F3387992A28FEBDE67E9A188CF82
+          0BF27C1DE18DD5FE6CF7C4EC679B6C3A2D26CDB10D7093D4F36F5F5A2EEADA0A
+          1F1C718FE5822310526CB0A007737A465DF00CE5BCB3E947DC56EE9C1D62A3E7
+          FE16F036C07A1004E6D2DB002BC4009889DCE24E396FACF5885DBDF56BB75C5F
+          08DC554ADC6D80F5406F03F4B73FC9ACB6CAB107FC9D13DCDA67655DB701EAED
+          77921CCB8C6D804C9C3F17DBED2AB190B701D68B4ADB00A55257ADED76CE356A
+          D3A27D34B32E65622C089D2D3BEFE7CCBF3889EF0D6D0080C19C8B20389F376A
+          2C14535FEFEB729A26A6333502BE418D807F326A459AEDDE011C6FB97DBBA5D0
+          BDCFF9695E3ABCEFF8B6F5450B712A81E1BAF6A587D77AD428B636DA3B7534C8
+          B29F81BEF736FBAC6A477292A0B7258E6FFB51E46740F7AEF65DFA9E7A4503C4
+          67E0ECF0FA997CE9BC69E74B4E9689BDBEE6EE6D0F34E2DE0B20109060BBFF33
+          7C3BE0AE5D922D3E656D97F30363A81B781F0A0BFE30ECDFA89E7F29E4004F16
+          DCBF8EFABA2521A3BD17A5B2CE22078805A64D0D1A4258ED5F581488617F5BB2
+          2BE3C665C8886800F46F523891EE3ECA156F5B9F623F712DEB9881263ADA5787
+          024634C0884600F5FCAFF7B6D9ABE2AFE65D38A0D27336FA6733C404285D098C
+          2141C719705758D734A232D4BD9F7C3E3A1A20E6E796769C56CFCAA0DA50C0F5
+          4647F8F3D9B7C20E18D251072DF6B13909058C5108672A0805ECB63C5DEBE842
+          B560A78F147298E96D81859D01581FD0798790624DBD8382A511F4C65B26E4F1
+          4A05A18039E7A3538BC45DCDBA8838A3FE546C000034026CDFBB928F6FF9A7D0
+          E980FC9854ED075CEF59F6B9CDE4FC6732B8D13D824BBE9AF1B1238B2A1CD9F9
+          1365A9E1BE154EC316C2CC17E8055A3BBD2385E27A6B99E4EA19BFCD7EB091BD
+          3F809100C9C5B5F43096DD834BAD900D42C955B5F6FCD38CEE91EFF43F4D8DEE
+          0F9303D0DB4EC901FC96DEE8EFB96DD62D8DFE4EE60BECF36F6141EC8B29C69F
+          9BEB75081919CD446403A000E61B7C21CEA00AE7683131A95F38B9A8F539FA0D
+          F75B52DED814DB9862800AA7D5537A0E70D2E65BB30A677ED05313A3EEBBB8E0
+          C714F6F99303DCACA4BACFEB767E365F43B31919191919191919191919191919
+          19191919190B05ACFFC265D4A624740A40CFAD49A6B71B4D09B6251BEACEC848
+          3F7A6A24E7BE9B737E8C62666A84F1CD4AA9FBBC2EE7A7D9D448464638C1425F
+          762639C6A3666EF7548A3DC814FB46A317FCCE35B31A00FA085CCE2F2EBBD88D
+          A94BFA661C75DBACE8C56E2F794709C9F5761F29D4B3FE5EF6037BCAC2AA8C85
+          49B63892DE5DBD4B419F877182F283ED7ADCD251FAEE745DEB96F9DAB5D06874
+          07CE9BD20D404426CD3A7095C1E765FBEE8D9C8B8AA7082A25BFED59CE19CDF2
+          794E3700F476B70EBDD7F91F8DA92CD408F8372F6F9FD5B4DBDD72FE17189B1C
+          60BCB5F8643335B983B1D67EB7CBBAAAD97B5169D9EE369FA04270A41B6C7713
+          CED3697FE18747BD8FABF1FCCDB1B647B6779C8E10CCC6D234607B2457089013
+          1628496E519C9D3A17DB23D3820E94A4FC61EAC01D5FD481539D77716EADA967
+          60A4B482D3091DEE1FCF78B03D92293EEA2AEBAE81957CBBD64BC0BB6EF9FEC3
+          6181AE4A918A8DF8164EAE5CF88D80E9064016F0263D016FE68B20E00D3D0721
+          51EF10EDCE6B733EDBCC2321C1F63A6F80E5C7CF9B76A60828D4D1FE35B7CDEE
+          4FE3BDA3C1C6B7FD617DECA89DD8B6BBF4D587576AD0E17D68D9C8F476CFA915
+          EC99B43FEFF31520294DC40A90C417E3FCF9BB8DA1E9D071425CF7BA72F14AB8
+          E39C552E3A223D3BB747F5FC4BC14800CEF2376AAA181EF13EEA09766E9C0049
+          BA01A087FD054F142F5D49F5DEB44E07E04C7C4FFA97B3DD13C76AC3E245F7DA
+          C2BAF07F2DE7CF69BD0C43390F6125AF0CB448CEEDEDB2AF32726A291C8B1C37
+          284A5A42DECE173ACCE95FE4C3C2625DC654442343DEC6058EBADE2192518104
+          E7DFCF08792BC585698DB066466B1022B9C291BD33915B5DE1BCB1520F2E2D21
+          6FE3A27BFE6CE713E1CEBFC0AE5D9CB51DD28C2301D58448D68D67211E366A22
+          949487A66D54B4528864F2D9D790CF3EC7A81ADD63E09CF7692D01D594690470
+          7ADEE4C493249E4C8E7F2F7D910C5BC121968279431DE52E2E94173D45A3A58E
+          4B9E5407AECB794F48217F8D0B326C26B92CBA0715E1FC01F220AF51530B3985
+          FD0747BD2FE2826CCC15B177F99785397F8034E4316A2AB0377A472675FE0065
+          50D6A8D304CE9F7DABD8998A65B021CD18528523FDCF14FFBD5188654199F20C
+          E6DCA39C89C9DF0BC6EFC1051936939C4A14F307A39D3F58B224C85B99A1D1C9
+          83E99E6FC605D998530B1A6CBAE71F01F220AF51F122543F925D4BD939000DA0
+          30E70FA8937F36F2185523D07A66E363C92B742AA3CBA60CC9E4A5B3867F00D9
+          745A19AC56AA08CB950983F2DA7FF6E285479E075CCBFF0E55F0D32F2D64D88C
+          5A1ECECE30523449F2CE03180172E4D428E7EC525C906133C965C1B3CCB78D57
+          9CFE01C8535481CC33D4A3799F1113535A16A30941CFBF3C48431EA3A607C93E
+          64A4F88494C1FC31773DEA453AFB1813E1681BD28C215504F5304222C765ECC4
+          4A75B776F8E3DB1FC174A89E122539ED8D0067B73C29561D4E799C0979B2D1E8
+          1D50B31AC171E14CA6AA518873118C184A691ED122A75E97F8C43F406574D9B4
+          2176052723956372A2EC17460FB95EEC95082B5820973630CA31D3F917802D6C
+          040448290E32622449F2CE07AEC42A706B3FA312D67E812D1CC7750F8A9C3F06
+          94C7D9EDA5E6FE0B5110ABA1B46C70C84DA59EB458563808274D2816FE5C8711
+          56C6B2BD7797752464D36929C46153F49D1416FCC5A1D30ECA944731B1AAE85D
+          2059DB528D7A8B11A251EACD462266D61349B1F7D5A3C729404F059A39FF4A58
+          F9FCC1331BF1025D662327A796B2F3C1A26C0F74461D5868CF7D467C24DACA21
+          544ACB98572467B11B4049F2361D1DBB8A9E61813DA27A9B4862C6BCA06CCA90
+          4BEE3752195A1F3042118AA9E40B627C95CAB30FB0E0CF97EC71A34E035BA5C5
+          8042C8A78C184992BCF38127ACEB99EF3F6F54BA79FF796DAB80EB384FE9D5FE
+          51501E9D372570C67F6BC4C49496C5F1B6F4026D356A19E4D6204FBAE02CF9C9
+          7F6165FCC5D64FF40997A5904DA7A51097B5D07792A40E1FF38232E5E196BCBA
+          E85D2059DB528C507CD4889114E7F55F304215F82FA425AE0416F362B5BF5143
+          419E990B7F45B012B6F321A327A0F3A134EE83144C5C1CF6020B25561BAD087F
+          D27EB06C993028AFF74A3BB5A7FFB528EB14FA86371815DDD50DB019B53C8ADD
+          68A46892E49D07E8B97CDE755A562AC52EC6051936935C163CCBAABDFD26A386
+          823C697AEE15678976EFCCA4B42C2A06ACF637EA2C9096CAED8082DD69A4F884
+          94C16A7F65D9A714D507242BC73E35AD3B0182E7B1F30EA3C6A0F38E4ACF70EF
+          F2D611B6CFD243955237E182AC6D29C65D2CBE1BAB0EA73C3AAF41315EF54EB6
+          5ACACE05366357183194D23C856D80C772C17FA82D3151521DD7D7E3DC6BD454
+          51E536C0B3E947DC56EE39BD5DF635464E2D5FDE24F53CDF97968B58BDB66C1B
+          A0DCDBDA2DD7870504D963B601EAED54922A8A19DB009938BFDC1EEA34A0A3FF
+          B5E86D802101804A915BDC29E78D957A6F0B721BA0BFFD4966B555DE9DE4EF9C
+          E0D63E2BB36D80017BD23640A9D4556BBB9D738DAAD10D00900502CA02010581
+          807434C8B29F81BEF736FBACA60F04B4C3EB67F2A5F3A62B53AA3499D8EB6BEE
+          DEF6401AEF1D2180D9F8B6F5B11631020CEFB62F3DBC524860BC0F85057F18F6
+          4FFBF39E05028A1908882D3E656D97F30363683AC8019E2CB87F1D16E81993C1
+          7B512AEB2C7280FF650CD3345D20206A0861B57FEC40404087025EEA5D1BD508
+          A09EFFF5DE367B55D38602DEE89FCD1013A074253086971C67C05D615DD38CCE
+          7F265928607A16744CF9A92014B0DBF274DA63C8EBDE4F3E7F5B1C07C897769C
+          96D6A03EB58050C054DB7D8B7A7465B77C528FED3966B18F35732860ECF49142
+          0E63AB1F56FB0756AC0FE8BC4348B1266E50B0850C466F5A26E4F14A05A18039
+          E7A3538BC45D61A338D8DE6959FE7F8B9033344AA1CA7F83EF5BEF0D0B2DBC90
+          986E001418DCE81EC1255F5DF630204B0DF7AD70523BF75D2FD00BB4767A470A
+          C5F55621C9D5337E9BFD60761850469AC90E030ADE5D67A7FF69A6D887C901E8
+          6DCAE4007E4B35DDF7DC36EB963DE51DC63EFF1616C4BE9862FCB934AD5B4923
+          F8BCF6E8C3804AC107D2EA293D073869F3ADD9039491917EF454D6A8FB2E2EF8
+          31857DFEE400372BA9EEF3BA9D9F35FBE85546462D04A39F380E581DFB728C00
+          FF05C5F8BDD482BE614F1A05CDC8C8C8C8C8D823A14E700B2EA3666464646464
+          64643407A1530019191919692658B4EB1E2C15D7531D82ABCDEE0A674336CD51
+          7FB0A5584AFF4CC9F85182797A6D8164F67382A90784B06E88BBD578A1831181
+          452ED353E3130EC3D47874F0B01493A801A05FB811F7ADDC127A719CF2E5336E
+          8F53145928232323632ED1DB5577F81770E99FC32CABF8A447DF7F5E09EB6A6F
+          6FEBABCDBEE04F3B655F7E5031F546E89CF15F0B4BDC5D4F678CDD614EBB7709
+          E35BCE7B79517829631E53077CCD1DB75737E3EE30801D265C898B593E7FECF4
+          4E1B6CA7EDE8B8577179E942DD5912BB0180FD959CB3CBE8212B3A40841EBECD
+          4AB18BCAEDAF6C368673935DD4063A8D711E1C06A3D453D4F6B9754D576B4EEB
+          7B00A8105AFF2A585C3619AC2E5ED02DE08C8545FF88DC4F0879A7C5D83B8CA9
+          2C3E633F97529C30D0236A08F59A4EB06DCDB6BC2B787ECBA7661DE4961F93AA
+          E3807FF77CFBFC5AB7A969E7BFD4BF9309F67E63AA8C643F70B7592734A211A0
+          FFB60E7DA4F327182B1CCE652344F737DDBC7553BDFE06DDE9CD7997529DFFCF
+          C6541EA5FEB7DB655FDCE8CEF02539F53A57797AD78F6D5923491B7FB11A0043
+          397790B2F61A350435D4DBE5F419A521E8887FBE770EFD6DE61424F5B86DD957
+          578AF8570D7808AC8DDEE522BFE50BE55E38D64EADDF2EFBA2661E0909B65779
+          7DCCF53E371D23414DEE60BCE51AB7CD1EDC93B648C209E167333A9734836750
+          ECF47F1CE5FC0BE846409BF59E667A36B13BCB92FEFAA83DEB54116DF0857578
+          2DBBB78646DDCBC9F15D60D47828F5D5DE6E27349C743D308DC0EFD373F03663
+          2A82BEF7C7A4A0864844F8EF38D0677059A4F32F408D00BAF78B8C36A7D073B0
+          BFE3FBD792073FC9980A3C6831EBCCD55DF1CE08896C00C409AF5880DCDFC71A
+          1560243CEA55FDA35DC57A111AF0E097A29DF20E6FB5CFB90E796C2975AFBBB7
+          7D49BD2B3CB3B7FA3E120F0B2CB378C86DB38E99AF8A16BD01FC9CEB9E079E39
+          AA5D2E1756707CB4F4D5D3CC6217367364B552F4F0FBCEE0585CAFCDFE6923BF
+          F3C18DDE3F73C52E336A2C94627D7DDDF69051173C83A3D8ABCED1F38D0471FC
+          FBBA9D338C9A081D5A38BFF997898F8AA70E11EF38F02D73156A1873F042FA0F
+          8739FF02A61170682D23943ABA2417EB8D1A0BA5E4E17DDD2D559CAD131FF4FA
+          7D36F548F851C6DE8B166B7D7B9C4640C52F173D5FC9D4A5468D440A7509CA18
+          75CE40CF5FEC9EA44649B990974B96A061803CC6501318F68FD50AA63C3A6F83
+          D0B1CAB7FB8FD2FFBB162F837E2120930D69265B5DD03DFF70E70F0E33791A0A
+          EE13E71738FB6CDF890B72BDEFBD00CECB10F92DDF2F387F001936A41953C341
+          C4C2E151EFE3B8E6FA6CF2A1DCD45BED6DDE2F39E33FC2051936933CA7A0E2E7
+          CABBD8A8B1E1DC3B17658D5A33439B267BA82178052EC8C6DC1030E7CFC7B754
+          0C553E13E42D9C0792145F79672576FE80CAE8B2738423FD4F47397F803CD443
+          AE78AE4914E4FCCB1E1E57896ACA24C597FE37C29D3FB0F7F5997F83512A52F1
+          0B7672EEDB4AE7FC2B81BC2863D439430FFB2F5EB49751CBB064493035503B3E
+          13A71B319224796BC599F02F12169BD5E0800D6946AD195D7962D83F0ACA53CF
+          8A360EF66EEF067D781162F6D3051936935C57A8277945D90A916C3A6D1ED08D
+          40CB7B4271F64D5C90E7AA01849E3FFDB893DB5C47D70346BED3A4CD298EEB92
+          B32D8DEF1E077BDFA06CED6887FFA7ED8F0AC6CFC30539692300A3551849C2A1
+          2D4323DEF7704186AD30921586AFE489899CB276C654A62A78A5067F04B5948D
+          40B2F8079171F6492325463FD3F9FC91468D0F9599CBF701BD7FF2DA4719B512
+          476214C7C8A1443C4C22F217CCA69A3209E13CBA91C179AC79C228840CE2E1C7
+          2149DE5AF1193FDA88B3A8949694564F1D38EB5C8472501E9DB741E025E3FC0F
+          A5F35FF4B5FFE1A47ABF80D4B0D97F66CFBF14A4218F511B86B35B9E543A22E1
+          4CC8938D5A57EC973C7A9F0AA703CE442C0BD2E6162E44553D59504BD9992829
+          CE2C3A6B81646D8BC9E046F768ABC3FB25351EEED127B60976222EC8B0210D79
+          4CF6D948F56623C5A79A32846093D30DBDA4542A8B058C83A3DE970672DE2343
+          B9893FE1820C1BD24CB670846B16FCC540553F42D3FA177540E4B91AE5A032AD
+          7F8E1E7DEE7F5CED8BD0DDB8201B732485057F71F09517E98F920FF1D4017CD1
+          D4F2FD14E6D6F54572AC2F3F19D9D6C466275FE6F92D67DB935073F4DC4B15FE
+          7B2BA5D58BB9BAAF063194F33EC75FDCF24372F47A0B753990863CC86B4C4D05
+          46391C39F11BCED9B0A517726244C7DE17326C48431E937DE162873FAB43A393
+          070F8D7AF7393B37FF915AA68FE0820C1BD24CB6502CCE63D76F96E215479440
+          C42F93552CE4A85C068B0AF145D3FF7C2B75D72ED017C9B021CD64AB8C528F19
+          299C3879E2C0D58891A2899917F3B50323DE2FE84557B820C3669263613175BF
+          116751292D299336DF8C452546AD80F76290B73160F1996A7FF5ACADA7B0D57B
+          611A5613EB057F2120AD1E2B8E93E22E16DF954A61EB9306326C46AD2BDEDE0E
+          BD4F72AB516720B70669738B5232D6AAE6722829EBB22F9E0B79833E1ABA00CE
+          D6872D02DDABCF8F5D1B6BF81E79286FD99100C17F65A4F854538690ACB5EACF
+          BB5C593876AC97A9389A4869C853B111209DE9E73D12DE1ABFEE2E61F2157C8B
+          DEE79F142AA3CB9641D7F1E3DBC9E9B3A38B9E05C8B0515A941F10CC7ADC8891
+          7026361831948A0FA4DBE53C867DFE468D047951C6A8B398DE5150EE21201BD2
+          E23402B0D58FED9E08DFDE42693A4F1DE05CDE462F6474EF03AB5F913782C151
+          F73A3D5F2BD8F4E229C8B021CD982271175997499FCD8A3F001BD28C5A33C12A
+          5AEB7AA356C0BA3EEE8A5BCC9BEA166FEE77AEBE2057B1A0CA5B6C9F49CFDC2D
+          BA52A60B326C26B9AE500FE5FCB2CF81FEDE29AD0A8637C9837019353138DED4
+          77EDBFE38A7D0217E4B0234F6BC534AA4E509E9AAEDC8D7C42237602B88E4395
+          799C866829DE8B41D9DAE95D4E0EC559F24EC9D4D77041D6B60A605D8C52ECEA
+          58CEBF00E54599D23535161777C4AA8B0A505E5DA61AB8AAFED4D792B2FD9B64
+          BB70BDDB627D0694077951C6588AE1EC662345A358647D1C867EA63B3A1E346A
+          7CA84CB9F701BD7B359EBFB9E2B402A694284FA59100BDB25FB2078C1A0EE589
+          73F4737DB7013276EA9A2EFBDB462D028B939C9D93BFABD80204AE3BEEB6B5BE
+          36AA22C3CA6B2E767FA7DC364025177FA4AFC7B9D7186AA65EDB00E9B3FC9FF4
+          59567C28E933FC247D86FFC7A815C15CB7BDD3FF22D5081F804E6FD73D5E9BF5
+          957A57C8F87FEAB50D500753DAEDFEBF598B38A9D1C6173B7F5F4D50A5466D03
+          C433470DB5CB850904851E3739DE0B933E6B5899EDB9F23B85459C68B4D98EF8
+          C84208A7AA9FB93F7BEF82ECBDD2FE59B5CF9A8EE1213DDD587395F58D816E51
+          B6D7349385B80D907AB32752F7EE7B464D0435323EBCB6CB2972E00B711B20E6
+          F731C46FD458D0F7B686BEB72F1B751A348A16E236C0A19CF743FA1177B7D0BD
+          BD5DF671469EC5254FAA037D6BEA516A1286EC04F05FB0FC96B7AF5E193D22DB
+          B04040D4CBFB7482D6DB19F401DC64E4504C25B28A29B32890ABC76C615F3B17
+          81809C9C77191BDF72DEAC17022DF298818030D43FB3E75F0E5FB2C7FB7BECBF
+          336A6A081A01DE1AE67A9F9F6EC455110808BD7D7A0ECA2F7452ECFEDE6EFB18
+          A3A5965A0201E9A05223FE93A53B38D008F07BAC957B42586D5D81C98927A69F
+          236AF45B62D121511596A9FCD707F3C7D1E8404041309CAA9D40AD0CE6DC6B39
+          E39F376A2214535FEFEB72561955439F41230301C50F8253A04C309C819CF768
+          94C32E050EBCBFCB7EBB518B686820A09C7B2939962F1A3502F515F281B3B6AA
+          62919F9EF38FDB98229FE2B61DF8AA81B7F2D0112FFD0E71FF06EAF515EF08A0
+          9EBFA5AC33E3387F10EB0F8263A7DECE293387FF0AC086B4E82880EA2D468846
+          C55BB90A478F0F9C9CC67BF44572BD9D3F40A58CDE3D5FBAAC1B0F3899D0E3BB
+          17326C488BAAB875C5BF6D2C7A9107E569442C85A4C0C1E33B76772C7A95C5AC
+          D7E372C79774906D4D5CE7AFEF6B3C7F845167436969BCF752E0F8AB8D02D8B2
+          91BD216CFB26D28CDAD4F8C23BBD682490646D8B008E1CE17DE1D88D2914EDFC
+          110A781E9D3FE032FE36EA52CA958543876347EF1E8EC2985F866C48ABD5F903
+          C4F6A756C8DD468D86F2EA3225586A32F1CEB04A65F0EEC9BCF5F7F4FF610489
+          7ADB981AD2D3430FC186B47A387FE0AEC0FDA8AF18B502EA2B41DED9D8B6FBA6
+          442329945797A9001C7C6F8FFD3ED4C392AB8FE01242FC2D6C719D3F88350230
+          1304FEE0CA1C06C4E533BD5D2DB11625ACCBB95708EC9D8D01E6D7D6763955CD
+          ABA6153836E7279BDDC80701ADBF230E749AB127187C062FEC0E9D07CBE7A7DC
+          23F65BDCCCBD603DB4CAFCB20BB338B3DE3C5711D4D204F52C07A867B9D6A801
+          4AADA38674BFD12AA2A72116C861404323DE3DD4CDAA6E65BB643FA00A5D4FEF
+          95238808E77F901CBEEE3071CE7F450EE1EEB86160E310C4DCF78619DB7241C5
+          C380D8015F75F3F69A72D37043A37FF933E3ADC9E253A8C91DBDDDAF78A5D1E6
+          1D6CD763380C48ED3C56C71D01587BC4DBEEA596DAA5BDDD2DA18DD2C191A977
+          73211E366A2C949487F6F5B4FCD4A87346E20640B5249A0250EC74EAD1DF62B4
+          A661214F01D48B669802A8053482B22980EAA6004AD10DCADC548F1442F79485
+          949BDDAE9691347D86F59E02982F829307FD337CC58FB284A73F6F5FDA9B2DAE
+          1E10967563A5F52BD8E71F77DAA6004670FABBEC771A3535601A2AE971C07331
+          05502F1AD600A8F722C085C8F088F75125D8B78C5A16ACE65ED36DFF87519B8E
+          B95804B8D058C88B00EB45FF13729963FB9F85EC7AD637060E1165B6182E7CEA
+          BD08702152CF45800B957A2E02AC270D6B0080383B0AE80F0ADD49D00C54EA11
+          A4A9C53F9704C72A5B97313E1684DA549D0F72EE5FB4271DAB0C0A5B00D72C17
+          F1F736672C28D063B4A4B711417E8C2916E4FC9FF185BD62BED730D4030479D3
+          B15FA23A7F05D009148B5E5FEB71C669426FED430C80A8E882883DD0BECF3B7B
+          BB5B23F7F0D783863600C0BA51F764C1FDEB82285033F15E94CA3A6B6DB7332B
+          B84BB38191004FB0F3F52AD6FC98F43B3A1FB725BBA2512729666464340E04F5
+          4184BF2443C06ADF038EEB5BE1D42DA0D77CA3B76D6FDB724F9C35506AE9011F
+          A8E736EEB4A04780B7E56FADB4068A2FED38AD917EA0E10D0080E980960979BC
+          52AA1B3AE77C746A91B8AB1987FD333232327478DF38D100C901529E55BD5DF6
+          BF1A4BD310C46EF16F9BDDF93350CF5F59F6279AD1F9170882FC5897B0F1B1A3
+          A69F057CE7ED9D0F30E6AF6E54CFBFC0BC340032323232F634301280087F61D3
+          0118F6E79C9DD34C3DFF52301D605BFEE7B8641F62C2D39F83CFEC67C913DEE9
+          F9D6BF36D3B07F25F4B48808B6FAB9D2797ABEEE3B6B006464646434086CABB3
+          3ABCA39962C708C5F5A97192ABE7A826BECFCFDBF7CF7534CB8C8C9761ECFF03
+          CB1F923E3EDD60E80000000049454E44AE426082}
+        AnimationCount = 8
+        Enabled = True
+        Duration = 0.800000011920929000
+        Loop = True
+        PropertyName = 'Fill.Bitmap.Bitmap'
+      end
+    end
+  end
+end
