@@ -11164,6 +11164,11 @@ end;
 
 procedure TForm1.imgIndicadoresClick(Sender: TObject);
 begin
+  //Mauricio Parizotto 2024-12-17 Inicio
+
+  Commitatudo(True);
+  AbreArquivos(False);
+
   AbreDashboard;
 
   (*

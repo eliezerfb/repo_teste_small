@@ -2792,9 +2792,9 @@ object FrmDashboard: TFrmDashboard
     Fill.Color = claWhite
     Opacity = 0.699999988079071000
     Position.X = 58.000000000000000000
-    Position.Y = 229.000000000000000000
-    Size.Width = 238.000000000000000000
-    Size.Height = 144.000000000000000000
+    Position.Y = 267.000000000000000000
+    Size.Width = 163.000000000000000000
+    Size.Height = 80.000000000000000000
     Size.PlatformDefault = False
     Stroke.Kind = None
   end

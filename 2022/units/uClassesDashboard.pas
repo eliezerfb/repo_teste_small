@@ -176,7 +176,7 @@ implementation
 
 { TRootDadosDTO }
 
-uses uFuncoesBancoDados, smallfunc_xe;
+uses uFuncoesBancoDados, smallfunc_xe, uFuncoesRetaguarda;
 
 constructor TRootDadosDTO.Create;
 begin
@@ -215,10 +215,12 @@ begin
                        ' 	 Coalesce(SUM(TOTAL),0) TOTAL'+
                        ' From	'+
                        ' 	 (Select '+
-                       ' 	 	 TOTAL'+
-                       ' 	 From ALTERACA'+
-                       ' 	 Where (TIPO=''BALCAO'' or TIPO=''VENDA'')'+
-                       ' 	 	 and DATA = CURRENT_DATE		'+
+                       ' 	 	 A.TOTAL'+
+                       ' 	 From ALTERACA A'+
+                       '     left join NFCE N on (N.NUMERONF = A.PEDIDO) and (N.CAIXA = A.CAIXA)'+
+                       ' 	 Where (A.TIPO=''BALCAO'' or A.TIPO=''VENDA'')'+
+                       ' 	 	 and A.DATA = CURRENT_DATE		'+
+                       SqlFiltroNFCEAutorizado('N')+
                        ' 	 Union All			'+
                        ' 	 Select '+
                        ' 	 	 MERCADORIA+SERVICOS-DESCONTO TOTAL '+
@@ -249,11 +251,13 @@ begin
                        ' 	 Coalesce(SUM(TOTAL),0) TOTAL'+
                        ' From	'+
                        ' 	 (Select '+
-                       ' 		 TOTAL'+
-                       ' 	 From ALTERACA'+
+                       ' 		 A.TOTAL'+
+                       ' 	 From ALTERACA A'+
+                       '     left join NFCE N on (N.NUMERONF = A.PEDIDO) and (N.CAIXA = A.CAIXA)'+
                        ' 	 Where (TIPO=''BALCAO'' or TIPO=''VENDA'')'+
-                       ' 		 and EXTRACT(MONTH from DATA) = EXTRACT(MONTH from '+sData+' )'+
-                       ' 		 and EXTRACT(YEAR from DATA) = EXTRACT(YEAR from '+sData+')'+
+                       ' 		 and EXTRACT(MONTH from A.DATA) = EXTRACT(MONTH from '+sData+' )'+
+                       ' 		 and EXTRACT(YEAR from A.DATA) = EXTRACT(YEAR from '+sData+')'+
+                       SqlFiltroNFCEAutorizado('N')+
                        ' 	 Union All			'+
                        ' 	 Select '+
                        ' 		 MERCADORIA+SERVICOS-DESCONTO TOTAL '+
@@ -325,12 +329,14 @@ begin
                         ' 					Coalesce(SUM( Cast( TOTAL as decimal(18,2)) ),0) TOTAL	'+
                         ' 				From	'+
                         ' 					(Select '+
-                        ' 						 DATA,'+
-                        ' 						 TOTAL		'+
-                        ' 					From ALTERACA'+
-                        ' 					Where (TIPO=''BALCAO'' or TIPO=''VENDA'')'+
-                        ' 						 and EXTRACT(MONTH from DATA) = EXTRACT(MONTH from '+sData+')'+
-                        ' 						 and EXTRACT(YEAR from DATA) = EXTRACT(YEAR from '+sData+')'+
+                        ' 						 A.DATA,'+
+                        ' 						 A.TOTAL		'+
+                        ' 					From ALTERACA A'+
+                        '             left join NFCE N on (N.NUMERONF = A.PEDIDO) and (N.CAIXA = A.CAIXA)'+
+                        ' 					Where (A.TIPO=''BALCAO'' or A.TIPO=''VENDA'')'+
+                        ' 						 and EXTRACT(MONTH from A. DATA) = EXTRACT(MONTH from '+sData+')'+
+                        ' 						 and EXTRACT(YEAR from A.DATA) = EXTRACT(YEAR from '+sData+')'+
+                        SqlFiltroNFCEAutorizado('N')+
                         ' 					Union All			'+
                         ' 					Select '+
                         ' 						 EMISSAO DATA,'+
@@ -381,12 +387,14 @@ begin
                         ' 	Coalesce(SUM( Cast( TOTAL as decimal(18,2) ) ),0)  TOTAL'+
                         ' From	'+
                         ' 	(Select '+
-                        ' 		Coalesce(VENDEDOR,''Não Informado'') VENDEDOR,'+
-                        ' 		TOTAL'+
-                        ' 	From ALTERACA'+
-                        ' 	Where (TIPO=''BALCAO'' or TIPO=''VENDA'')'+
-                        ' 		and EXTRACT(MONTH from DATA) = EXTRACT(MONTH from '+sData+')  '+
-                        ' 		and EXTRACT(YEAR from DATA) = EXTRACT(YEAR from '+sData+')'+
+                        ' 		Coalesce(A.VENDEDOR,''Não Informado'') VENDEDOR,'+
+                        ' 		A.TOTAL'+
+                        ' 	From ALTERACA A'+
+                        '     left join NFCE N on (N.NUMERONF = A.PEDIDO) and (N.CAIXA = A.CAIXA)'+
+                        ' 	Where (A.TIPO=''BALCAO'' or A.TIPO=''VENDA'')'+
+                        ' 		and EXTRACT(MONTH from A.DATA) = EXTRACT(MONTH from '+sData+')  '+
+                        ' 		and EXTRACT(YEAR from A.DATA) = EXTRACT(YEAR from '+sData+')'+
+                        SqlFiltroNFCEAutorizado('N')+
                         ' 	Union All			'+
                         ' 	Select '+
                         ' 		Coalesce(VENDEDOR,''Não Informado'') VENDEDOR, '+
@@ -451,15 +459,10 @@ begin
                         '       and (P.CAIXA = N.CAIXA) and (P.DATA = N.DATA) '+
                         '       and (substring(FORMA from 1 for 2) <> ''00'')'+
                         ' 		Inner Join FORMAPAGAMENTO F on F.IDFORMA = Coalesce(P.IDFORMA,17) '+
-                        ' 	Where (N.STATUS containing ''Autoriza'' '+
-                        ' 			or N.STATUS containing ''Emitido com sucesso'' '+
-                        ' 			or N.STATUS containing ''NFC-e emitida em modo de contingência'' '+
-                        ' 			or N.STATUS containing ''Finalizada - Aguardando Documento Fiscal'' '+
-                        ' 			or N.STATUS containing ''Finalizada'' )'+
-                        ' 		and (N.STATUS not containing ''Rejei'')'+
-                        ' 		and coalesce(P.VALOR, 0) > 0'+
+                        ' 	Where coalesce(P.VALOR, 0) > 0'+
                         ' 		and EXTRACT(MONTH from N.DATA) = EXTRACT(MONTH from '+sData+')  '+
                         ' 		and EXTRACT(YEAR from N.DATA) = EXTRACT(YEAR from '+sData+')'+
+                        SqlFiltroNFCEAutorizado('N')+
                         ' 	Union All			'+
                         ' 	Select '+
                         ' 		Coalesce(F.DESCRICAO,''Outros'') DESCRICAO,'+
