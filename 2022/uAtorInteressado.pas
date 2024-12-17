@@ -48,6 +48,8 @@ type
     procedure DBGridActorsKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DBGridActorsCellClick(Column: TColumn);
+    procedure FormShow(Sender: TObject);
+    procedure FDMemTableMainAfterInsert(DataSet: TDataSet);
   private
     { Private declarations }
     FConnection: TIBDataBase;
@@ -61,6 +63,7 @@ type
     procedure DeleteRecord();
     procedure LoadDataset();
     procedure PersistDataset();
+    function CancelBlankRecord(): Boolean;
   public
     { Public declarations }
     class function Execute(AConnection: TIBDatabase;
@@ -84,7 +87,8 @@ const
   MSG_ALREADY_INFORMED = 'O %s d%s %s não precisa ser informado pois '+
     'já é ator interessado.';
   MSG_DUPLICATE_RECORD = '%s já informado.';
-  MSG_LIMIT_OF_RECORDS = ' É permitido informar até 10 atores interessados '+
+  LIMIT_OF_ACTORS = 10;
+  MSG_LIMIT_OF_RECORDS = ' É permitido informar até %d atores interessados '+
     'por Nota Fiscal.';
   ACCOUNTING_REFERENCE = 'Contabilidade';
 
@@ -94,6 +98,8 @@ procedure TfmAtorInteressado.AddActor(AID: Integer; AIdentification: String;
   AIsProtected: Boolean);
 begin
   AIdentification := RemoveMask(AIdentification);
+  if trim(AIdentification) = '' then
+    Exit();
   FDMemTableMain.Append;
   FDMemTableMainIDATORINTERESSADO.AsInteger := AID;
   FDMemTableMainCPFCNPJ.AsString := ConverteCpfCgc(AIdentification);
@@ -101,11 +107,24 @@ begin
   FDMemTableMain.Post;
 end;
 
+function TfmAtorInteressado.CancelBlankRecord(): Boolean;
+begin
+  Result := False;
+  if RemoveMask(FDMemTableMainCPFCNPJ.AsString) = '' then
+  begin
+    FDMemTableMain.Cancel;
+    Result := True;
+  end;
+end;
+
 procedure TfmAtorInteressado.DBGridActorsCellClick(Column: TColumn);
 begin
   inherited;
   if not(Column.Index = 1) then
+  begin
+    CancelBlankRecord();
     Exit;
+  end;
 
   DeleteRecord();
 end;
@@ -182,6 +201,17 @@ begin
 
   if (Key = VK_DELETE) and (FDMemTableMain.State = dsBrowse) then
     DeleteRecord();
+
+  if Key = VK_UP then
+  begin
+    if CancelBlankRecord() then
+      Abort();
+  end;
+
+  if (Key in [VK_BACK, VK_F2]) and (FDMemTableMain.State = dsBrowse) and
+    not(FDMemTableMain.IsEmpty) and
+    not(Boolean(FDMemTableMainIS_PROTECTED.AsInteger)) then
+    FDMemTableMain.Edit;
 end;
 
 procedure TfmAtorInteressado.DBGridActorsKeyPress(Sender: TObject;
@@ -286,10 +316,13 @@ begin
 
       FIdentificationsNotAllowed := AIdentificationsNotAllowed;
 
-      var AccountingIdentification: TIdentification;
-      AccountingIdentification.Identification :=
-        RemoveMask(AAccountingIdentification);
-      AccountingIdentification.Reference := ACCOUNTING_REFERENCE;
+      if not(AAccountingIdentification = '') then
+      begin
+        var AccountingIdentification: TIdentification;
+        AccountingIdentification.Identification :=
+          RemoveMask(AAccountingIdentification);
+        AccountingIdentification.Reference := ACCOUNTING_REFERENCE;
+      end;
 
       for var i := 0 to FIdentificationsNotAllowed.Count - 1 do
       begin
@@ -303,6 +336,10 @@ begin
       if FDMemTableMain.IsEmpty then
         AddActor(0, AAccountingIdentification, True);
 
+      if not(FDMemTableMain.IsEmpty) and
+      (FDMemTableMain.RecordCount < LIMIT_OF_ACTORS) then
+        FDMemTableMain.Append();
+
       Result := ShowModal = mrOk;
 
       if Result then
@@ -312,6 +349,13 @@ begin
       Free;
     end;
   end;
+end;
+
+procedure TfmAtorInteressado.FDMemTableMainAfterInsert(DataSet: TDataSet);
+begin
+  inherited;
+  if FDMemTableMainUUID.AsString = '' then
+    FDMemTableMainUUID.AsString := TGUID.NewGuid.ToString();
 end;
 
 procedure TfmAtorInteressado.FDMemTableMainBeforeDelete(DataSet: TDataSet);
@@ -345,10 +389,10 @@ begin
   if Trim(RemoveMask(CNPJCPF)).Length = 0 then
     Abort;
 
-  if FDMemTableMain.RecordCount = 10 then
+  if FDMemTableMain.RecordCount = LIMIT_OF_ACTORS then
   begin
     FDMemTableMain.Cancel;
-    raise Exception.Create(MSG_LIMIT_OF_RECORDS);
+    raise Exception.Create(Format(MSG_LIMIT_OF_RECORDS, [LIMIT_OF_ACTORS]));
   end;
 
   try
@@ -375,9 +419,6 @@ begin
       )
     );
   end;
-
-  if FDMemTableMainUUID.AsString = '' then
-    FDMemTableMainUUID.AsString := TGUID.NewGuid.ToString();
 
   var CurrentUIID := FDMemTableMainUUID.AsString;
   var IsDuplicate := False;
@@ -416,6 +457,12 @@ begin
     'pessoa ou empresa autorizada '+#13+
     'a acessar o XML desta NF-e.';
   Font.Name := 'Microsoft Sans Serif';
+end;
+
+procedure TfmAtorInteressado.FormShow(Sender: TObject);
+begin
+  inherited;
+  DBGridActors.SetFocus();
 end;
 
 procedure TfmAtorInteressado.LoadDataset;
@@ -459,8 +506,12 @@ begin
   if FDMemTableMain.State in ([dsInsert, dsEdit]) then
   begin
     if Trim(FDMemTableMainCPFCNPJ.AsString) = '' then
-      FDMemTableMain.Cancel
-    else
+    begin
+      if FDMemTableMain.State = dsInsert then
+        FDMemTableMain.Cancel
+      else
+        FDMemTableMain.Delete;
+    end else
       FDMemTableMain.Post;
   end;
 
@@ -487,11 +538,14 @@ begin
     while not(FDMemTableMain.Eof) do
     begin
       SetKeyParam(Qry);
-      Qry.ParamByName('CPFCNPJ').AsString :=
-        RemoveMask(FDMemTableMainCPFCNPJ.AsString);
-      Qry.ParamByName('IS_PROTECTED').AsInteger :=
-        FDMemTableMainIS_PROTECTED.AsInteger;
-      Qry.ExecSQL;
+      var Identification := RemoveMask(FDMemTableMainCPFCNPJ.AsString);
+      if not(Identification = '') then
+      begin
+        Qry.ParamByName('CPFCNPJ').AsString := Identification;
+        Qry.ParamByName('IS_PROTECTED').AsInteger :=
+          FDMemTableMainIS_PROTECTED.AsInteger;
+        Qry.ExecSQL;
+      end;
       FDMemTableMain.Next;
     end;
   finally

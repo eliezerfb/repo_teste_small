@@ -6,6 +6,7 @@ inherited fmAtorInteressado: TfmAtorInteressado
   Font.Name = 'Microsoft Sans Serif'
   Position = poMainFormCenter
   OnCreate = FormCreate
+  OnShow = FormShow
   ExplicitWidth = 520
   ExplicitHeight = 298
   PixelsPerInch = 96
@@ -110,14 +111,17 @@ inherited fmAtorInteressado: TfmAtorInteressado
     object LabelInfo: TLabel
       Left = 10
       Top = 10
-      Width = 55
-      Height = 16
+      Width = 238
+      Height = 190
       Align = alClient
       Caption = 'LabelInfo'
       Layout = tlCenter
+      ExplicitWidth = 55
+      ExplicitHeight = 16
     end
   end
   object FDMemTableMain: TFDMemTable
+    AfterInsert = FDMemTableMainAfterInsert
     BeforePost = FDMemTableMainBeforePost
     BeforeDelete = FDMemTableMainBeforeDelete
     FetchOptions.AssignedValues = [evMode]
