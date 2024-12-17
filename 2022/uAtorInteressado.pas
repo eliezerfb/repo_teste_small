@@ -50,6 +50,8 @@ type
     procedure DBGridActorsCellClick(Column: TColumn);
     procedure FormShow(Sender: TObject);
     procedure FDMemTableMainAfterInsert(DataSet: TDataSet);
+    procedure FDMemTableMainBeforeEdit(DataSet: TDataSet);
+    procedure FDMemTableMainBeforeInsert(DataSet: TDataSet);
   private
     { Private declarations }
     FConnection: TIBDataBase;
@@ -236,7 +238,8 @@ begin
       if not DataSource.DataSet.Eof then
         DataSource.DataSet.Next;
 
-      if DataSource.DataSet.Eof then
+      if (DataSource.DataSet.Eof) and
+        (DataSource.DataSet.RecordCount < LIMIT_OF_ACTORS) then
         DataSource.DataSet.Append;
     end;
     Exit();
@@ -363,6 +366,20 @@ begin
   inherited;
   if Boolean(Dataset.FieldByName('IS_PROTECTED').AsInteger) then
     Abort;
+end;
+
+procedure TfmAtorInteressado.FDMemTableMainBeforeEdit(DataSet: TDataSet);
+begin
+  inherited;
+  if Boolean(Dataset.FieldByName('IS_PROTECTED').AsInteger) then
+    raise Exception.Create('Não é possível alterar este registro.');
+end;
+
+procedure TfmAtorInteressado.FDMemTableMainBeforeInsert(DataSet: TDataSet);
+begin
+  inherited;
+  if DataSet.RecordCount = LIMIT_OF_ACTORS then
+    Abort
 end;
 
 procedure TfmAtorInteressado.FDMemTableMainBeforePost(DataSet: TDataSet);

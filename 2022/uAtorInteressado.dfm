@@ -121,7 +121,9 @@ inherited fmAtorInteressado: TfmAtorInteressado
     end
   end
   object FDMemTableMain: TFDMemTable
+    BeforeInsert = FDMemTableMainBeforeInsert
     AfterInsert = FDMemTableMainAfterInsert
+    BeforeEdit = FDMemTableMainBeforeEdit
     BeforePost = FDMemTableMainBeforePost
     BeforeDelete = FDMemTableMainBeforeDelete
     FetchOptions.AssignedValues = [evMode]
