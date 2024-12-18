@@ -51,7 +51,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure FDMemTableMainAfterInsert(DataSet: TDataSet);
     procedure FDMemTableMainBeforeEdit(DataSet: TDataSet);
-    procedure FDMemTableMainBeforeInsert(DataSet: TDataSet);
   private
     { Private declarations }
     FConnection: TIBDataBase;
@@ -238,8 +237,7 @@ begin
       if not DataSource.DataSet.Eof then
         DataSource.DataSet.Next;
 
-      if (DataSource.DataSet.Eof) and
-        (DataSource.DataSet.RecordCount < LIMIT_OF_ACTORS) then
+      if DataSource.DataSet.Eof then
         DataSource.DataSet.Append;
     end;
     Exit();
@@ -343,6 +341,10 @@ begin
       (FDMemTableMain.RecordCount < LIMIT_OF_ACTORS) then
         FDMemTableMain.Append();
 
+      if FDMemTableMain.RecordCount >= LIMIT_OF_ACTORS then
+        FDMemTableMain.First;
+
+
       Result := ShowModal = mrOk;
 
       if Result then
@@ -373,13 +375,6 @@ begin
   inherited;
   if Boolean(Dataset.FieldByName('IS_PROTECTED').AsInteger) then
     raise Exception.Create('Não é possível alterar este registro.');
-end;
-
-procedure TfmAtorInteressado.FDMemTableMainBeforeInsert(DataSet: TDataSet);
-begin
-  inherited;
-  if DataSet.RecordCount = LIMIT_OF_ACTORS then
-    Abort
 end;
 
 procedure TfmAtorInteressado.FDMemTableMainBeforePost(DataSet: TDataSet);
@@ -469,6 +464,7 @@ begin
 
   DBGridActors.Columns[0].Width := 170;
   DBGridActors.Columns[1].Width := 25;
+  ShowScrollBar(DBGridActors.Handle, SB_HORZ, FALSE);
 
   LabelInfo.Caption := 'Informe o CPF ou CNPJ da '+#13+
     'pessoa ou empresa autorizada '+#13+
@@ -508,7 +504,7 @@ begin
     end;
   finally
     Qry.Free;
-    FDMemTableMain.EnableControls
+    FDMemTableMain.EnableControls;
   end;
 
 end;
