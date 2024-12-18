@@ -4826,14 +4826,11 @@ begin
       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27PEDIDO.AsString+'<br></font></td>');
       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CODIGO.AsString+'<br></font></td>');
       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+StrTran(StrTran(Form7.ibDataSet27DESCRICAO.AsString,'<',''),'>','')+'<br></font></td>');
-      // Sandro Silva 2022-10-17 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.2n',[Form7.ibDataSet27TOTAL.AsFloat])+'<br></font></td>');
       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%11.2n',[Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem])+'<br></font></td>');
       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CST_PIS_COFINS.AsString+'<br></font></td>');
       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibDataSet27ALIQ_PIS.AsFloat])+'<br></font></td>');
-      // Sandro Silva 2022-10-17 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_PIS.AsFloat / 100 * Form7.ibDataSet27TOTAL.AsFloat ])+'<br></font></td>');
       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_PIS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) ])+'<br></font></td>');
       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibDataSet27ALIQ_COFINS.AsFloat])+'<br></font></td>');
-      // Sandro Silva 2022-10-17 WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_COFINS.AsFloat / 100 * Form7.ibDataSet27TOTAL.AsFloat ])+'<br></font></td>');
       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibDataSet27ALIQ_COFINS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) ])+'<br></font></td>');
       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet27CFOP.AsString+'<br></font></td>');
       WriteLn(F,'    <td '+{nowrap}' valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>'+Form7.ibDataSet4CF.AsString+'<br></font></td>');
@@ -4848,14 +4845,6 @@ begin
       Write(F,Copy(Form7.ibDataSet27PEDIDO.AsString+Replicate(' ',6),1,6)+' ');
       Write(F,Copy(Form7.ibDataSet27CODIGO.AsString+Replicate(' ',6),1,6)+' ');
       Write(F,Copy(Form7.ibDataSet27DESCRICAO.AsString+Replicate(' ',35),1,35)+' ');
-      {
-      Write(F,Format('%14.'+Form1.ConfPreco+'n',[ibDataSet27TOTAL.AsFloat])+' ');
-      Write(F,Copy(ibDataSet27CST_PIS_COFINS.AsString+Replicate(' ',6),1,6)+' ');
-      Write(F,Format('%8.'+Form1.ConfPreco+'n',[ibDataSet27ALIQ_PIS.AsFloat])+' ');
-      Write(F,Format('%14.'+Form1.ConfPreco+'n',[ibDataSet27ALIQ_PIS.AsFloat/100*ibDataSet27TOTAL.AsFloat])+' ');
-      Write(F,Format('%8.'+Form1.ConfPreco+'n',[ibDataSet27ALIQ_COFINS.AsFloat])+' ');
-      Write(F,Format('%14.'+Form1.ConfPreco+'n',[ibDataSet27ALIQ_COFINS.AsFloat/100*ibDataSet27TOTAL.AsFloat])+' ');
-      }
       Write(F,Format('%14.2n',[(Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem)]) + ' ');
       Write(F,Copy(Form7.ibDataSet27CST_PIS_COFINS.AsString+Replicate(' ',6),1,6)+' ');
       Write(F,Format('%8.4n',[Form7.ibDataSet27ALIQ_PIS.AsFloat])+' ');
@@ -4863,9 +4852,6 @@ begin
       Write(F,Format('%8.4n',[Form7.ibDataSet27ALIQ_COFINS.AsFloat])+' ');
       Write(F,Format('%14.2n',[Form7.ibDataSet27ALIQ_COFINS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem)]) + ' ');
       Write(F,Copy(Form7.ibDataSet27CFOP.AsString+Replicate(' ',4),1,4)+' ');
-      {Sandro Silva 2022-09-30 inicio
-      Write(F,Copy(ibDataSet4CF.AsString+Replicate(' ',13),1,13)+' ');
-      }
       Write(F,Copy(Form7.ibDataSet4CF.AsString+Replicate(' ', 9), 1, 9)+' ');
       if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
         WriteLn(F, Copy(sCSTCSOSN + Replicate(' ', 9), 1, 9) + ' ')
@@ -4874,22 +4860,9 @@ begin
       {Sandro Silva 2022-09-30 fim}
     end;
 
-    {Sandro Silva 2022-10-11 inicio
-    fTotal  := fTotal  + ibDataSet27TOTAL.AsFloat;
-    fTotal1 := fTotal1 + ibDataSet27ALIQ_PIS.AsFloat/100*ibDataSet27TOTAL.AsFloat;
-    fTotal2 := fTotal2 + ibDataSet27ALIQ_COFINS.AsFloat/100*ibDataSet27TOTAL.AsFloat;
-    }
-    {Sandro Silva 2022-12-15 inicio
-    fTotal  := fTotal  + StrToFloat(Format('%14.2n', [(Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem)]));
-    fTotal1 := fTotal1 + StrToFloat(Format('%14.2n', [ibDataSet27ALIQ_PIS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem)]));
-    fTotal2 := fTotal2 + StrToFloat(Format('%14.2n', [ibDataSet27ALIQ_COFINS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem)]));
-    }
     fTotal  := fTotal  + StrToFloatFormat('%14.2n', (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem));
     fTotal1 := fTotal1 + StrToFloatFormat('%14.2n', Form7.ibDataSet27ALIQ_PIS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem));
     fTotal2 := fTotal2 + StrToFloatFormat('%14.2n', Form7.ibDataSet27ALIQ_COFINS.AsFloat / 100 * (Form7.ibDataSet27.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem));
-    {Sandro Silva 2022-12-15 fim}
-
-    {Sandro Silva 2022-10-11 fim}
 
     Form7.ibDataSet27.Next;
   end;
@@ -4980,11 +4953,6 @@ begin
     WriteLn(F,'</center>');
   end else
   begin
-    {Sandro Silva 2022-09-30 inicio
-    WriteLn(F,'---------- ------ ------ ----------------------------------- -------------- ------ -------- -------------- -------- -------------- ');
-    WriteLn(F,'                                                             '+Format('%14.'+Form1.ConfPreco+'n',[fTotal])+'                 '+Format('%14.'+Form1.ConfPreco+'n',[fTotal1])+'          '+Format('%14.'+Form1.ConfPreco+'n',[fTotal2])+'');
-    WriteLn(F,'');
-    }
     if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
       WriteLn(F,'---------- ----- ------ ------ ----------------------------------- -------------- ------ -------- -------------- -------- -------------- ---- --------- ---------')
     else

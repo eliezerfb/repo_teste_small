@@ -453,12 +453,12 @@ begin
                         ' 	(Select'+
                         ' 		F.DESCRICAO,'+
                         ' 		F.IDFORMA,'+
-                        ' 		Coalesce(P.VALOR,0) VALOR'+
+                        ' 		COALESCE(CASE WHEN SUBSTRING(P.FORMA FROM 1 FOR 2) = ''13'' THEN (P.VALOR * -1) ELSE P.VALOR END,0) VALOR'+
                         ' 	From NFCE N'+
-                        ' 		Inner Join PAGAMENT P on (P.PEDIDO = N.NUMERONF) '+
+                        ' 		Left Join PAGAMENT P on (P.PEDIDO = N.NUMERONF) '+
                         '       and (P.CAIXA = N.CAIXA) and (P.DATA = N.DATA) '+
                         '       and (substring(FORMA from 1 for 2) <> ''00'')'+
-                        ' 		Inner Join FORMAPAGAMENTO F on F.IDFORMA = Coalesce(P.IDFORMA,17) '+
+                        ' 		Inner Join FORMAPAGAMENTO F on F.IDFORMA = Coalesce(CASE WHEN SUBSTRING(P.FORMA FROM 1 FOR 2) = ''13'' THEN 1 ELSE P.IDFORMA END ,17) '+
                         ' 	Where coalesce(P.VALOR, 0) > 0'+
                         ' 		and EXTRACT(MONTH from N.DATA) = EXTRACT(MONTH from '+sData+')  '+
                         ' 		and EXTRACT(YEAR from N.DATA) = EXTRACT(YEAR from '+sData+')'+
