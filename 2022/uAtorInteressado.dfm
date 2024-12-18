@@ -1,19 +1,19 @@
 inherited fmAtorInteressado: TfmAtorInteressado
   BorderStyle = bsDialog
   Caption = 'Ator interessado'
-  ClientHeight = 271
+  ClientHeight = 259
   ClientWidth = 504
   Font.Name = 'Microsoft Sans Serif'
   Position = poMainFormCenter
   OnCreate = FormCreate
   OnShow = FormShow
   ExplicitWidth = 520
-  ExplicitHeight = 310
+  ExplicitHeight = 298
   PixelsPerInch = 96
   TextHeight = 16
   object PanelBotton: TPanel
     Left = 0
-    Top = 222
+    Top = 210
     Width = 504
     Height = 49
     Align = alBottom
@@ -22,7 +22,6 @@ inherited fmAtorInteressado: TfmAtorInteressado
     Padding.Right = 10
     Padding.Bottom = 12
     TabOrder = 0
-    ExplicitTop = 210
     object Bevel1: TBevel
       Left = 384
       Top = 12
@@ -57,7 +56,7 @@ inherited fmAtorInteressado: TfmAtorInteressado
     Left = 258
     Top = 0
     Width = 246
-    Height = 222
+    Height = 210
     Align = alRight
     BevelOuter = bvNone
     Padding.Left = 10
@@ -65,12 +64,11 @@ inherited fmAtorInteressado: TfmAtorInteressado
     Padding.Right = 10
     Padding.Bottom = 10
     TabOrder = 1
-    ExplicitHeight = 210
     object DBGridActors: TDBGrid
       Left = 10
       Top = 10
       Width = 226
-      Height = 202
+      Height = 190
       Align = alClient
       DataSource = dsMain
       Options = [dgEditing, dgColumnResize, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -102,7 +100,7 @@ inherited fmAtorInteressado: TfmAtorInteressado
     Left = 0
     Top = 0
     Width = 258
-    Height = 222
+    Height = 210
     Align = alClient
     BevelOuter = bvNone
     Padding.Left = 10
@@ -110,12 +108,11 @@ inherited fmAtorInteressado: TfmAtorInteressado
     Padding.Right = 10
     Padding.Bottom = 10
     TabOrder = 2
-    ExplicitHeight = 210
     object LabelInfo: TLabel
       Left = 10
       Top = 10
       Width = 238
-      Height = 202
+      Height = 190
       Align = alClient
       Caption = 'LabelInfo'
       Layout = tlCenter

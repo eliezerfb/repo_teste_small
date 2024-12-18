@@ -154,6 +154,7 @@ procedure TfmAtorInteressado.DBGridActorsKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   inherited;
+
   if key in ([VK_LEFT, VK_RIGHT]) then
     Key := 0;
 
@@ -201,7 +202,12 @@ begin
   end;
 
   if (Key = VK_DELETE) and (FDMemTableMain.State = dsBrowse) then
+  begin
     DeleteRecord();
+    if (Shift = [SsCtrl]) and (key = VK_DELETE) then
+      key := 0;
+    Exit;
+  end;
 
   if Key = VK_UP then
   begin
