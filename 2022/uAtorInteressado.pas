@@ -54,6 +54,7 @@ type
     procedure FDMemTableMainBeforeEdit(DataSet: TDataSet);
     procedure DBGridActorsColEnter(Sender: TObject);
     procedure BitBtnOkClick(Sender: TObject);
+    procedure FDMemTableMainAfterDelete(DataSet: TDataSet);
   private
     { Private declarations }
     FConnection: TIBDataBase;
@@ -121,16 +122,24 @@ end;
 procedure TfmAtorInteressado.BitBtnOkClick(Sender: TObject);
 begin
   inherited;
-  if FDMemTableMain.State in ([dsInsert, dsEdit]) then
-  begin
-    if Trim(FDMemTableMainCPFCNPJ.AsString) = '' then
+  try
+    if FDMemTableMain.State in ([dsInsert, dsEdit]) then
     begin
-      if FDMemTableMain.State = dsInsert then
-        FDMemTableMain.Cancel
-      else
-        FDMemTableMain.Delete;
-    end else
-      FDMemTableMain.Post;
+      if Trim(FDMemTableMainCPFCNPJ.AsString) = '' then
+      begin
+        if FDMemTableMain.State = dsInsert then
+          FDMemTableMain.Cancel
+        else
+          FDMemTableMain.Delete;
+      end else
+        FDMemTableMain.Post;
+    end;
+  except
+    on E: Exception do
+    begin
+      ModalResult := mrNone;
+      raise Exception.Create(E.Message);
+    end;
   end;
 
 
@@ -427,6 +436,16 @@ begin
     finally
       Free;
     end;
+  end;
+end;
+
+procedure TfmAtorInteressado.FDMemTableMainAfterDelete(DataSet: TDataSet);
+begin
+  inherited;
+  if FDMemTableMain.IsEmpty then
+  begin
+    FDMemTableMain.Append;
+    DBGridActors.SelectedIndex := 0;
   end;
 end;
 

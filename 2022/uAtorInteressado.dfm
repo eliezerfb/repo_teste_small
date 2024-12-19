@@ -128,6 +128,7 @@ inherited fmAtorInteressado: TfmAtorInteressado
     BeforeEdit = FDMemTableMainBeforeEdit
     BeforePost = FDMemTableMainBeforePost
     BeforeDelete = FDMemTableMainBeforeDelete
+    AfterDelete = FDMemTableMainAfterDelete
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
