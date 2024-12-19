@@ -40,6 +40,7 @@ inherited fmAtorInteressado: TfmAtorInteressado
       Caption = 'OK'
       ModalResult = 1
       TabOrder = 0
+      OnClick = BitBtnOkClick
     end
     object BitBtn1: TBitBtn
       Left = 284
@@ -79,6 +80,7 @@ inherited fmAtorInteressado: TfmAtorInteressado
       TitleFont.Name = 'Microsoft Sans Serif'
       TitleFont.Style = []
       OnCellClick = DBGridActorsCellClick
+      OnColEnter = DBGridActorsColEnter
       OnDrawColumnCell = DBGridActorsDrawColumnCell
       OnKeyDown = DBGridActorsKeyDown
       OnKeyPress = DBGridActorsKeyPress
@@ -91,6 +93,7 @@ inherited fmAtorInteressado: TfmAtorInteressado
         end
         item
           Expanded = False
+          ReadOnly = True
           Width = 50
           Visible = True
         end>
@@ -151,6 +154,9 @@ inherited fmAtorInteressado: TfmAtorInteressado
     object FDMemTableMainUUID: TStringField
       FieldName = 'UUID'
       Size = 38
+    end
+    object FDMemTableMainERROR: TSmallintField
+      FieldName = 'ERROR'
     end
   end
   object dsMain: TDataSource

@@ -38,6 +38,7 @@ type
     FDMemTableMainUUID: TStringField;
     ImageList1: TImageList;
     FDMemTableMainIDATORINTERESSADO: TIntegerField;
+    FDMemTableMainERROR: TSmallintField;
     procedure FormCreate(Sender: TObject);
     procedure FDMemTableMainBeforeDelete(DataSet: TDataSet);
     procedure DBGridActorsDrawColumnCell(Sender: TObject;
@@ -51,6 +52,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure FDMemTableMainAfterInsert(DataSet: TDataSet);
     procedure FDMemTableMainBeforeEdit(DataSet: TDataSet);
+    procedure DBGridActorsColEnter(Sender: TObject);
+    procedure BitBtnOkClick(Sender: TObject);
   private
     { Private declarations }
     FConnection: TIBDataBase;
@@ -58,6 +61,7 @@ type
     FTransaction: TIBTransaction;
     FNumeroNF: String;
     FModelo: String;
+    FSilentMode: Boolean;
     procedure AddActor(AID: Integer; AIdentification: String;
       AIsProtected: Boolean);
     function RemoveMask(AValue: String): String;
@@ -65,6 +69,7 @@ type
     procedure LoadDataset();
     procedure PersistDataset();
     function CancelBlankRecord(): Boolean;
+    function CheckErrors(): Boolean;
   public
     { Public declarations }
     class function Execute(AConnection: TIBDatabase;
@@ -92,7 +97,11 @@ const
   MSG_LIMIT_OF_RECORDS = ' É permitido informar até %d atores interessados '+
     'por Nota Fiscal.';
   ACCOUNTING_REFERENCE = 'Contabilidade';
-
+  MSG_ERROR_NEED_DELETE = 'Existe CNPJ ou CPF inválidos para esta nota, '+
+    'pois já são atores interessados.'+#13+
+    'É necessário excluí-los para continuar.';
+  LABEL_INFO_CAPTION = 'Informe o CPF ou CNPJ da'+#13+'pessoa ou empresa '+
+    'autorizada'+#13+'a acessar o XML desta NF-e.';
 
 
 procedure TfmAtorInteressado.AddActor(AID: Integer; AIdentification: String;
@@ -102,10 +111,36 @@ begin
   if trim(AIdentification) = '' then
     Exit();
   FDMemTableMain.Append;
+  FDMemTableMainERROR.AsInteger := Integer(False);
   FDMemTableMainIDATORINTERESSADO.AsInteger := AID;
   FDMemTableMainCPFCNPJ.AsString := ConverteCpfCgc(AIdentification);
   FDMemTableMainIS_PROTECTED.AsInteger := Integer(AIsProtected);
   FDMemTableMain.Post;
+end;
+
+procedure TfmAtorInteressado.BitBtnOkClick(Sender: TObject);
+begin
+  inherited;
+  if FDMemTableMain.State in ([dsInsert, dsEdit]) then
+  begin
+    if Trim(FDMemTableMainCPFCNPJ.AsString) = '' then
+    begin
+      if FDMemTableMain.State = dsInsert then
+        FDMemTableMain.Cancel
+      else
+        FDMemTableMain.Delete;
+    end else
+      FDMemTableMain.Post;
+  end;
+
+
+  if CheckErrors() then
+  begin
+    ModalResult := mrNone;
+    DBGridActors.SetFocus();
+    raise Exception.Create(MSG_ERROR_NEED_DELETE);
+  end;
+
 end;
 
 function TfmAtorInteressado.CancelBlankRecord(): Boolean;
@@ -115,6 +150,16 @@ begin
   begin
     FDMemTableMain.Cancel;
     Result := True;
+  end;
+end;
+
+function TfmAtorInteressado.CheckErrors(): Boolean;
+begin
+  FDMemTableMain.DisableControls;
+  try
+    Exit(FDMemTableMain.Locate('ERROR', Integer(True), []));
+  finally
+    FDMemTableMain.EnableControls;
   end;
 end;
 
@@ -130,6 +175,17 @@ begin
   DeleteRecord();
 end;
 
+procedure TfmAtorInteressado.DBGridActorsColEnter(Sender: TObject);
+begin
+  inherited;
+  if DBGridActors.SelectedIndex = 1 then
+  begin
+    DBGridActors.Options := DBGridActors.Options - [dgEditing];
+    Exit;
+  end;
+  DBGridActors.Options := DBGridActors.Options + [dgEditing];
+end;
+
 procedure TfmAtorInteressado.DBGridActorsDrawColumnCell(
   Sender: TObject; const Rect: TRect; DataCol: Integer; Column: TColumn;
   State: TGridDrawState);
@@ -137,8 +193,12 @@ procedure TfmAtorInteressado.DBGridActorsDrawColumnCell(
 function GetColor(): TColor;
 begin
   Result := clWhite;
+
+  if Boolean(FDMemTableMainERROR.AsInteger) then
+    Exit($00D9D9FF);
+
   if Boolean(FDMemTableMainIS_PROTECTED.AsInteger) then
-    Result := clGradientInactiveCaption;
+    Exit(clGradientInactiveCaption);
 end;
 
 begin
@@ -167,6 +227,8 @@ begin
       Key := 0;
       if not(Boolean(FDMemTableMainIS_PROTECTED.AsInteger)) then
       begin
+        if not(FDMemTableMain.State = dsBrowse) and not(FDMemTableMain.IsEmpty) then
+          FDMemTableMain.Edit;
         var NewValue := RemoveMask(Field.AsString);
         Delete(NewValue, NewValue.Length, 1);
         Field.AsString := NewValue;
@@ -191,6 +253,10 @@ begin
       except
         raise Exception.Create(MSG_INVALID_IDENTIFICATION);
       end;
+
+      if FDMemTableMain.State = dsBrowse then
+        FDMemTableMain.Insert;
+
       Field.AsString := ConverteCpfCgc(RemoveMask(Clipboard.AsText));
       Key := 0;
       Exit;
@@ -338,18 +404,20 @@ begin
         FIdentificationsNotAllowed[i] := Temp;
       end;
 
-      LoadDataset();
+      FSilentMode := True;
+      try
+        LoadDataset();
+        if FDMemTableMain.IsEmpty then
+          AddActor(0, AAccountingIdentification, True);
+      finally
+        FSilentMode := False;
+      end;
 
-      if FDMemTableMain.IsEmpty then
-        AddActor(0, AAccountingIdentification, True);
-
-      if not(FDMemTableMain.IsEmpty) and
-      (FDMemTableMain.RecordCount < LIMIT_OF_ACTORS) then
+      if FDMemTableMain.RecordCount < LIMIT_OF_ACTORS then
         FDMemTableMain.Append();
 
       if FDMemTableMain.RecordCount >= LIMIT_OF_ACTORS then
         FDMemTableMain.First;
-
 
       Result := ShowModal = mrOk;
 
@@ -426,6 +494,18 @@ begin
     if not(Identification.Identification = CNPJCPF) then
       Continue;
 
+    if FSilentMode then
+    begin
+      FDMemTableMain.DisableControls;
+      try
+        FDMemTableMainERROR.AsInteger := Integer(True);
+        FDMemTableMainIS_PROTECTED.AsInteger := Integer(False);
+      finally
+        FDMemTableMain.EnableControls;
+      end;
+      Break;
+    end;
+
     raise Exception.Create(
       Format(
         MSG_ALREADY_INFORMED,
@@ -449,6 +529,18 @@ begin
       if (FDMemTableMainCPFCNPJ.AsString = TempMemTable.FieldByName('CPFCNPJ').AsString) and
         not(FDMemTableMainUUID.AsString = TempMemTable.FieldByName('UUID').AsString) then
       begin
+        if FSilentMode then
+        begin
+          FDMemTableMain.DisableControls;
+          try
+            FDMemTableMainERROR.AsInteger := Integer(True);
+            FDMemTableMainIS_PROTECTED.AsInteger := Integer(False);
+          finally
+            FDMemTableMain.EnableControls;
+          end;
+          Break;
+        end;
+
         FDMemTableMain.Cancel;
         raise Exception.Create(
           Format(MSG_DUPLICATE_RECORD, [GetTypeOfIdentification(CNPJCPF)])
@@ -472,9 +564,7 @@ begin
   DBGridActors.Columns[1].Width := 25;
   ShowScrollBar(DBGridActors.Handle, SB_HORZ, FALSE);
 
-  LabelInfo.Caption := 'Informe o CPF ou CNPJ da '+#13+
-    'pessoa ou empresa autorizada '+#13+
-    'a acessar o XML desta NF-e.';
+  LabelInfo.Caption := LABEL_INFO_CAPTION;
   Font.Name := 'Microsoft Sans Serif';
 end;
 
@@ -522,18 +612,6 @@ procedure TfmAtorInteressado.PersistDataset;
     Qry.ParamByName('MODELO').AsString := FModelo;
   end;
 begin
-  if FDMemTableMain.State in ([dsInsert, dsEdit]) then
-  begin
-    if Trim(FDMemTableMainCPFCNPJ.AsString) = '' then
-    begin
-      if FDMemTableMain.State = dsInsert then
-        FDMemTableMain.Cancel
-      else
-        FDMemTableMain.Delete;
-    end else
-      FDMemTableMain.Post;
-  end;
-
   FDMemTableMain.DisableControls;
   var Qry := TIBQuery.Create(Self);
   try
