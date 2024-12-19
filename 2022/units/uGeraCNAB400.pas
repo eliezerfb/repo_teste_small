@@ -6,6 +6,7 @@ uses
   Windows, Messages, SysUtils, Forms, Dialogs, smallfunc_xe, IniFiles;
 
   procedure GeraCNAB400;
+  procedure ImportaRetCNAB400;
 
 implementation
 
@@ -13,7 +14,7 @@ uses Unit26
   , Mais
   , Unit7
   , Unit25
-  , uDialogs;
+  , uDialogs, uFuncoesBancoDados;
 
 procedure GeraCNAB400;
 var
@@ -1078,5 +1079,158 @@ begin
 
   Form7.ibDataSet7.EnableControls;
 end;
+
+procedure ImportaRetCNAB400;
+var
+  I: Integer;
+  f: TextFile;
+  sBanco, sMensagem, sLinha: String;
+  sDocumento, sMovimento, sValorRecebido: String;
+  sDataDoCredito: String;
+  ValorReceber : double;
+begin
+  sBanco := '000';
+
+  if not Form7.OpenDialog4.Execute then
+    Exit;
+
+  CHDir(Form1.sAtual); // Apontar devolta para a pasta do sistema
+
+  if FileExists(Form7.OpenDialog4.FileName) then
+  begin
+    AssignFile(f,Form7.OpenDialog4.FileName);
+    Reset(f);
+
+    Form7.ibDataSet25DIFERENCA_.AsFloat := 0;
+    sMensagem := '';
+    I := 0;
+
+    while not eof(f) Do
+    begin
+      ReadLn(f,sLinha);
+
+      if Length(sLinha) = 400 then
+      begin
+        if (Copy(sLinha,1,1) = '0') and (Copy(sLinha,3,7) = 'RETORNO') then // Identificação Tipo de Operação “RETORNO”
+        begin
+          sBanco := Copy(sLinha,77,3);
+          sMensagem := sMensagem + 'Arquivo processado com sucesso.' + chr(10)+chr(10);
+        end;
+
+        if (Copy(sLinha,001,001) = '1') or (Copy(sLinha,1,1) = '7') then // and (Copy(sLinha,004,014) = cnpj do emitente) then // 03 Número do CPF/CNPJ do Beneficiário
+        begin
+          if sBanco = '077' then
+            sMovimento := Copy(sLinha,90,2)
+          else
+            sMovimento := Copy(sLinha,109,2);
+
+          if (sMovimento = '06') or (sMovimento = '21' ) then // 24 Comando/Movimento: 06 = Liquidação Normal
+          begin
+            if sBanco = '077' then
+              sValorRecebido := Copy(sLinha,160,13)
+            else
+              sValorRecebido := Copy(sLinha,254,13);
+
+            if sValorRecebido <> '0000000000000' then // 41 Valor recebido (valor recebido parcial)
+            begin
+              if sBanco = '077' then
+                sDocumento := AllTrim(Copy(sLinha,98,10))
+              else
+                sDocumento := AllTrim(Copy(sLinha,117,10));
+
+
+              sMensagem := sMensagem + 'Número documento: ' + sDocumento + ' Valor: R$ '+  FloatToStr(StrToFloat(sValorRecebido)/100);
+
+              Form7.ibDataSet7.Close;
+              Form7.ibDataSet7.Selectsql.Clear;
+              Form7.ibDataSet7.Selectsql.Add('select * from RECEBER where DOCUMENTO='+QuotedStr(sDocumento));
+              Form7.ibDataSet7.Open;
+
+              if Form7.ibDataSet7DOCUMENTO.AsString = sDocumento then
+              begin
+                if Form7.ibDataSet7ATIVO.AsFloat < 5 then
+                begin
+                  if Form7.ibDataSet7VALOR_RECE.AsFloat = 0 then
+                  begin
+                    Form7.SMALL_DBEdit1.Visible := True;
+                    Form7.Edit2.Text            := Form7.SMALL_DBEdit2.Text;
+
+                    Form7.ibDataSet7.Edit;
+                    Form7.ibDataSet7ATIVO.AsFloat := Form7.ibDataSet7ATIVO.AsFloat + 5;
+
+                    if (sBanco = '033') or (sBanco = '353') then // Santander so 11 posicoes
+                    begin
+                      Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(Copy(sLinha,254,11))/100;
+                    end else
+                    begin
+                      Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(sValorRecebido)/100;
+                    end;
+
+                    Form7.ibDataSet7PORTADOR.AsString := Copy(Form7.ibDataSet7PORTADOR.AsString+'(000)',1,11)+'RECEBIDO';
+
+                    if sBanco = '077' then
+                      sDataDoCredito := Copy(sLinha, 92, 6)
+                    else
+                      sDataDoCredito := Copy(sLinha, 176, 6);
+
+                    sDataDoCredito := Copy(sDataDoCredito, 1, 2) + '/' + Copy(sDataDoCredito, 3, 2) + '/' + Copy(sDataDoCredito, 5, 2);
+                    if StrToDateDef(sDataDoCredito, StrToDate('30/12/1899')) <> StrToDate('30/12/1899') then
+                    begin
+                      Form7.ibDataSet7MOVIMENTO.AsDateTime := StrToDate(sDataDoCredito);
+                    end;
+
+                    Form7.ibDataSet7.Post;
+
+                    Form1.IBDataSet200.Close;
+                    Form1.IBDataSet200.Open;
+
+                    ValorReceber := ExecutaComandoEscalar(Form7.IBTransaction1,
+                                                          ' Select Coalesce(sum(VALOR_RECE),0) '+
+                                                          ' From RECEBER'+
+                                                          ' Where ATIVO >= 5');
+
+                    Form7.Panel10.Caption := 'R$'+Format('%14.2n',[ValorReceber]);
+                    Form7.Panel10.Repaint;
+
+                    Form7.ibDataSet25DIFERENCA_.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat +  StrToFloat(sValorRecebido)/100;
+                    Form7.ibDataSet25DIFERENCA_.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat));
+
+                    Form7.SMALL_DBEdit1.SetFocus;
+                    I := I + 1;
+                  end else
+                  begin
+                    sMensagem := sMensagem + ' documento já estava quitado. ';
+                  end;
+                end else
+                begin
+                  sMensagem := sMensagem + ' documento já estava marcado. ';
+                end;
+
+                sMensagem := sMensagem + chr(10);
+              end else
+              begin
+                sMensagem := sMensagem + ' documento não encontrado '+chr(10);
+              end;
+            end;
+          end;
+        end;
+      end else
+      begin
+        MensagemSistema('Aquivo fora do padrão CNAB 400',msgAtencao);
+        Exit;
+      end;
+    end;
+
+    CloseFile(F);
+
+    sMensagem := sMensagem + chr(10) + chr(10) +
+                'Duplicatas recebidos: '+ IntToStr(I )+chr(10)+chr(10) +
+                'Total recebido R$: '+Form7.ibDataSet25DIFERENCA_.AsString+chr(10)+chr(10);
+    MensagemSistema(sMensagem);
+
+    Form7.SMALL_DBEdit6.SetFocus;
+  end;
+end;
+
 
 end.

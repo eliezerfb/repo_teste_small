@@ -655,6 +655,8 @@ begin
 end;
 
 procedure TFrmCadastro.AtualizaObjComValorDoBanco;
+var
+  ValorPagar : double;
 begin
   //Se não estiver ativo não carrega informações
   if not FormularioAtivo(Self) then
@@ -714,15 +716,14 @@ begin
   
   if Trim(Form7.IBDataSet2NOME.AsString) <> '' then
   begin
-    Form7.ibQuery1.Close;
-    Form7.IBQuery1.SQL.Text := ' Select sum(VALOR_DUPL) as TOTAL '+
-                               ' From RECEBER '+
-                               ' Where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
-                               '   and coalesce(ATIVO,9)<>1 '+
-                               '   and Coalesce(VALOR_RECE,999999999)=0';
-    Form7.IBQuery1.Open;
+    ValorPagar := ExecutaComandoEscalar(Form7.IBTransaction1,
+                                        ' Select Coalesce(sum(VALOR_DUPL),0) as TOTAL '+
+                                       ' From RECEBER '+
+                                       ' Where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
+                                       '   and coalesce(ATIVO,9)<>1 '+
+                                       '   and Coalesce(VALOR_RECE,999999999)=0');
 
-    if Form7.IBQuery1.FieldByname('TOTAL').AsFloat <> 0 then
+    if ValorPagar <> 0 then
     begin
       if Form1.imgVendas.Visible then
       begin
@@ -776,12 +777,10 @@ begin
     // Abre uma negociação já existente
     sNumeroNF := LimpaNumero(Form7.ibDataSet7HISTORICO.AsString);
 
-    Form7.ibQuery1.Close;
-    Form7.IBQuery1.SQL.Clear;
-    Form7.IBQuery1.SQL.Add(' Update RECEBER set PORTADOR='''', ATIVO=0 '+
-                           ' Where PORTADOR=' + QuotedStr('ACORDO '+sNumeroNF) +
-                           '   and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString));
-    Form7.IBQuery1.ExecSQL;
+    ExecutaComando(' Update RECEBER set PORTADOR='''', ATIVO=0 '+
+                   ' Where PORTADOR=' + QuotedStr('ACORDO '+sNumeroNF) +
+                   '   and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString),
+                   Form7.IBTransaction1);
 
     Form7.IBDataSet2.Edit;
     Form7.IBDataSet2MOSTRAR.AsFloat := 1;
