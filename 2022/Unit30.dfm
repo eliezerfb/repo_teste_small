@@ -1043,7 +1043,6 @@ object Form30: TForm30
         ParentFont = False
         TabOrder = 23
         Visible = False
-        OnClick = ListBox2Click
       end
       inline framePesquisaServOS: TframePesquisaServico
         Left = 15
@@ -1074,17 +1073,23 @@ object Form30: TForm30
         Left = 440
         Top = 179
         Width = 175
-        Height = 22
+        Height = 21
         Color = clWhite
         Ctl3D = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
         ParentBackground = False
         ParentColor = False
         ParentCtl3D = False
+        ParentFont = False
         TabOrder = 9
         ExplicitLeft = 440
         ExplicitTop = 179
         ExplicitWidth = 175
-        ExplicitHeight = 22
+        ExplicitHeight = 21
         inherited txtCampo: TEdit
           Width = 175
           Font.Charset = ANSI_CHARSET
@@ -1105,9 +1110,15 @@ object Form30: TForm30
         Height = 25
         Color = clWhite
         Ctl3D = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
         ParentBackground = False
         ParentColor = False
         ParentCtl3D = False
+        ParentFont = False
         TabOrder = 8
         ExplicitLeft = 15
         ExplicitTop = 179
@@ -1122,7 +1133,6 @@ object Form30: TForm30
           Top = 21
           Width = 420
           Font.Height = -11
-          OnDblClick = fFrameDescricaogdRegistrosDblClick
           Columns = <
             item
               Expanded = False
@@ -1139,9 +1149,15 @@ object Form30: TForm30
         Height = 24
         Color = clWhite
         Ctl3D = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
         ParentBackground = False
         ParentColor = False
         ParentCtl3D = False
+        ParentFont = False
         TabOrder = 10
         ExplicitLeft = 15
         ExplicitTop = 219
@@ -1165,9 +1181,15 @@ object Form30: TForm30
         Height = 25
         Color = clWhite
         Ctl3D = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
         ParentBackground = False
         ParentColor = False
         ParentCtl3D = False
+        ParentFont = False
         TabOrder = 11
         ExplicitLeft = 190
         ExplicitTop = 219
@@ -1191,9 +1213,15 @@ object Form30: TForm30
         Height = 22
         Color = clWhite
         Ctl3D = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
         ParentBackground = False
         ParentColor = False
         ParentCtl3D = False
+        ParentFont = False
         TabOrder = 12
         ExplicitLeft = 365
         ExplicitTop = 219
