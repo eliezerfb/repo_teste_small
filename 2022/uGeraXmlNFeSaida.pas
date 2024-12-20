@@ -38,17 +38,12 @@ var
   // Rateio
   fCalculo, vFRETE, vOUTRAS, vDESCONTO, vSEGURO: Real;
   fDesconto, fFrete, fOutras, fSeguro: array[0..999] of double;
-
   fRateioDoDesconto {fPercentualFCPST, fPercentualFCP, }: Real;
-  // Sandro Silva (f-21199) 2024-10-31 vIVA60_B_ICMST: Real;
-
   dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-06-07
   dqBCMonoRet_N43aTotal: real; // Sandro Silva 2023-09-04
   dvFCPSTRet_W06b: Double; // Sandro Silva 2024-03-25
   sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-06-16
-  //FbAbortar: Boolean; // Dailon Parisotto 2024-09-23 Mauricio Parizotto 2024-10-29
 
-  //procedure GeraXmlNFeSaida; Mauricio Parizotto 2024-10-29
   function GeraXmlNFeSaida : boolean;
   procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
   function CalculavTotTrib_M02(sCodigo: String; sOperacaoDoTopo: String): Boolean;
@@ -1599,6 +1594,18 @@ begin
       //Gera Tas
       GeraXmlNFeSaidaTags(bIPISobreICMS, fSomaNaBase);
 
+      //Mostra diferenças - remover depois
+      if Form7.spdNFeDataSets.Campo('vbCST_N21').Value <> FormatFloatXML(Form7.ibDataSet16VBCST.AsFloat) then
+        ShowMessage('Valor divergente para BC: '+Form7.spdNFeDataSets.Campo('vbCST_N21').Value + ' '+FormatFloatXML(Form7.ibDataSet16VBCST.AsFloat));
+
+      if Form7.spdNFeDataSets.Campo('vICMSST_N23').Value <> FormatFloatXML(Form7.ibDataSet16VICMSST.AsFloat) then
+        ShowMessage('Valor divergente para ICMS ST: '+Form7.spdNFeDataSets.Campo('vICMSST_N23').Value + ' '+FormatFloatXML(Form7.ibDataSet16VICMSST.AsFloat));
+
+
+      //Mauricio Parizotto 2024-12-20
+      Form7.spdNFeDataSets.Campo('vbCST_N21').Value     := FormatFloatXML(Form7.ibDataSet16VBCST.AsFloat);    // Valor da BC do ICMS ST
+      Form7.spdNFeDataSets.Campo('vICMSST_N23').Value   := FormatFloatXML(Form7.ibDataSet16VICMSST.AsFloat);  // VAlor do ICMS ST
+
       // FCP
       if Form1.sVersaoLayout = '4.00' then
       begin
@@ -1964,7 +1971,6 @@ begin
         vICMS          := vICMS + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMS_N17').AsString,',',''),'.',','));
         vBC            := vBC   + StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vBC_N15').AsString,',',''),'.',','));
         vST            := vST   + Arredonda(StrToFloat(StrTran(StrTran('0'+Form7.spdNFeDataSets.Campo('vICMSST_N23').AsString,',',''),'.',',')),2);
-        //vST            := vST   + Arredonda(Form7.ibDataSet16VICMSST.AsFloat,2); usar do bd no futuro Mauricio Parizotto 2024-12-16
 
         if Form7.spdNFeDataSets.Campo('CST_N12').AssTring <> '60' then
         begin
@@ -3190,7 +3196,6 @@ var
                   (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) + fIPIPorUnidade)
                   + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100)
                   )
-                  //* StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * Form7.ibDataSet4PIVA.AsFloat),2))),',','.'); // Valor da BST Mauricio Parizotto 2024-09-11
                   * StrToFloat(Copy(Form7.ibDataSet14OBS.AsString,pos('<BCST>',Form7.ibDataSet14OBS.AsString)+6,5)) / 100 * IVAProd),2))),',','.'); // Valor da BST
               except end;
             end else
@@ -3199,7 +3204,6 @@ var
               (((Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) + fIPIPorUnidade)
               + (Form7.ibDataSet16.FieldByname('IPI').AsFloat * (Form7.ibDataSet16.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100)
               )
-              //* Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * Form7.ibDataSet4PIVA.AsFloat),2))),',','.'); // Valor da BST Mauricio Parizotto 2024-09-11
               * Form7.ibDataSet16.FieldByname('BASE').AsFloat / 100 * IVAProd),2))),',','.'); // Valor da BST
             end;
 
