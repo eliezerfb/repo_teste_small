@@ -214,8 +214,8 @@ begin
     NotaFiscal.Icms       := 0;
     NotaFiscal.Ipi        := 0;
     NotaFiscal.Iss        := 0;
-    NotaFiscal.Basesubsti := 0;
-    NotaFiscal.Icmssubsti := 0;
+    //NotaFiscal.Basesubsti := 0; Mauricio Parizotto 2024-12-18
+    //NotaFiscal.Icmssubsti := 0; Mauricio Parizotto 2024-12-18
     NotaFiscal.VFCPST     := 0;
   end;
 
@@ -253,8 +253,8 @@ begin
         NotaFiscal.Baseicm    := NotaFiscal.Baseicm    + Arredonda(oItem.Vbc,2);
         NotaFiscal.Icms       := NotaFiscal.Icms       + Arredonda(oItem.Vicms,2);
         NotaFiscal.Ipi        := NotaFiscal.Ipi        + Arredonda(oItem.Vipi,2);
-        NotaFiscal.Icmssubsti := NotaFiscal.Icmssubsti + Arredonda(oItem.Vicmsst,2);
-        NotaFiscal.Basesubsti := NotaFiscal.Basesubsti + Arredonda(oItem.Vbcst,2);
+        //NotaFiscal.Icmssubsti := NotaFiscal.Icmssubsti + Arredonda(oItem.Vicmsst,2); Mauricio Parizotto 2024-12-18
+        //NotaFiscal.Basesubsti := NotaFiscal.Basesubsti + Arredonda(oItem.Vbcst,2); Mauricio Parizotto 2024-12-18
 
         { Dailon (f-7194) 2023-08-01 Inicio}
         if AbCalcPesoLiq then
@@ -484,8 +484,8 @@ begin
                     begin
                       // VINICULAS
                       try
-                        NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI          * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * rIVAProd ),2); // Rateio desconto
-                        NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * rIVAProd),2); // Acumula
+                        //NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI          * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * rIVAProd ),2); // Rateio desconto Mauricio Parizotto 2024-12-18
+                        //NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100) * rIVAProd),2); // Acumula Mauricio Parizotto 2024-12-18
 
                         oItem.Vbcst           := Arredonda((oItem.Vbcst + ((oItem.IPI * (oItem.TOTAL - oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * rIVAProd ),2); // Rateio desconto
                         //Sandro SIlva (f-21933) 2024-12-11 oItem.Vicmsst         := Arredonda((oItem.Vicmsst + ((oItem.IPI * (oItem.TOTAL - oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100) * rIVAProd), 2);
@@ -499,23 +499,22 @@ begin
                       oItem.Vbcst           := (oItem.Vbcst   + ((oItem.IPI * (oItem.TOTAL - oItem.DescontoRateado) / 100) * oItem.BASE / 100) * rIVAProd);
                       oItem.Vicmsst         := (((oItem.IPI * (oItem.TOTAL - oItem.DescontoRateado) / 100) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100) * rIVAProd);
 
-                      NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + oItem.Vbcst, 2);
-                      NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + oItem.Vicmsst, 2); // Acumula
+                      //NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + oItem.Vbcst, 2); Mauricio Parizotto 2024-12-18
+                      //NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + oItem.Vicmsst, 2); // Acumula Mauricio Parizotto 2024-12-18
                     end;
 
                     // Desconta do ICMS substituido o ICMS normal
                     // Arredonda antes de subtrair
-                    NotaFiscal.Icmssubsti := NotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ); // Acumula
+                    //NotaFiscal.Icmssubsti := NotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 ); // Acumula Mauricio Parizotto 2024-12-18
                     oItem.Vicmsst         := oItem.Vicmsst         - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100 );
-
                   end else
                   begin
                     if pos('<BCST>',IBQIcm.FieldByName('OBS').AsString) <> 0 then
                     begin
                       // VINICULAS
                       try
-                        NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * rIVAProd ),2);
-                        NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * AliqICMdoCliente(oItem) / 100) * rIVAProd),2); // Acumula
+                        //NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * rIVAProd ),2);Mauricio Parizotto 2024-12-18
+                        //NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * AliqICMdoCliente(oItem) / 100) * rIVAProd),2); // Acumula Mauricio Parizotto 2024-12-18
 
                         //oItem.Vbcst           := Arredonda((oItem.Vbcst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * IBQProduto.fieldByName('PIVA').AsFloat ),2); Mauricio Parizotto 2024-09-11
                         oItem.Vbcst           := Arredonda((oItem.Vbcst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100) * rIVAProd ),2);
@@ -525,8 +524,8 @@ begin
                       except end;
                     end else
                     begin
-                      NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100) * rIVAProd ),2);
-                      NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100) * rIVAProd),2); // Acumula
+                      //NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100) * rIVAProd ),2); Mauricio Parizotto 2024-12-18
+                      //NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + ( ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100) * rIVAProd),2); // Acumula Mauricio Parizotto 2024-12-18
 
                       //oItem.Vbcst           := Arredonda((oItem.Vbcst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100) * IBQProduto.fieldByName('PIVA').AsFloat ),2); Mauricio Parizotto 2024-09-11
                       oItem.Vbcst           := Arredonda((oItem.Vbcst+ ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100) * rIVAProd),2);
@@ -536,7 +535,7 @@ begin
                     end;
 
                     // Desconta do ICMS substituido o ICMS normal
-                    NotaFiscal.Icmssubsti := NotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ); // Acumula
+                    //NotaFiscal.Icmssubsti := NotaFiscal.Icmssubsti - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ); // Acumula Mauricio Parizotto 2024-12-18
                     oItem.Vicmsst         := oItem.Vicmsst - ((oItem.IPI * (oItem.TOTAL-oItem.DescontoRateado) / 100) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 );
                     {Sandro Silva (f-21952) 2024-12-13 fim}
                   end;
@@ -593,7 +592,6 @@ begin
               or (StrToIntDef(Form7.ibDataSet13.FieldByname('CRT').AsString, 0) in [1,4])
             then
             begin
-
               // IPI Por Unidade
               fIPIPorUnidade := 0;
               if LimpaNumeroDeixandoAvirgula(RetornaValorDaTagNoCampo('vUnid',IBQProduto.FieldByname('TAGS_').AsString)) <> '' then
@@ -604,23 +602,25 @@ begin
               // CALCULO DO IVA
               if AliqICMdoCliente(oItem) <= IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat then
               begin
-
                 if pos('<BCST>',IBQIcm.FieldByName('OBS').AsString) <> 0 then
                 begin
-
                   // VINICULAS
                   try
+                    {
                     NotaFiscal.Basesubsti := NotaFiscal.Basesubsti + Arredonda((
                         (oItem.TOTAL-oItem.DescontoRateado + fIPIPorUnidade)
                          //* StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * IBQProduto.FieldByname('PIVA').AsFloat),2); Mauricio Parizotto 2024-09-11
                          * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * rIVAProd),2);
+                    Mauricio Parizotto 2024-12-18}
 
+                    {
                     NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti +
                           (((
                           (oItem.TOTAL-oItem.DescontoRateado + fIPIPorUnidade)
                           ) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100
                           // *  IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* IBQProduto.FieldByname('PIVA').AsFloat ),2); Mauricio Parizotto 2024-09-11
                            *  IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 )* rIVAProd ),2);
+                    Mauricio Parizotto 2024-12-18}
 
                     oItem.Vbcst := oItem.Vbcst + Arredonda((
                         (oItem.TOTAL-oItem.DescontoRateado + fIPIPorUnidade)
@@ -649,17 +649,20 @@ begin
                   end;
                 end else
                 begin
-                  NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + Arredonda(((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd), 2), 2);
+                  //NotaFiscal.Basesubsti := Arredonda(NotaFiscal.Basesubsti + Arredonda(((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd), 2), 2); Mauricio Parizotto 2024-12-18
                   //2024-10-31 oItem.Vbcst := Arredonda(oItem.Vbcst +                     Arredonda(((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd), 2), 2);
                   oItem.Vbcst := oItem.Vbcst +                     ((oItem.TOTAL - oItem.DescontoRateado + fIPIPorUnidade) * oItem.BASE / 100 * rIVAProd);
 
                   // Estava faltando aplicar a mesma lógia de oItem.Vicmsst com NotaFiscal.Icmssubsti
+                  {
                   NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti +
                     Arredonda(((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd), 2), 2); // Não pode arredondar aqui
+                  Mauricio Parizotto 2024-12-18}
 
                   //2024-10-31 oItem.Vicmsst := Arredonda(oItem.Vicmsst + Arredonda(((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd), 2), 2); // Não pode arredondar aqui
 
-                  oItem.Vicmsst := ((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd); // Não pode arredondar aqui
+                  //oItem.Vicmsst := ((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd); // Não pode arredondar aqui Mauricio Parizotto 2024-12-18**
+                  oItem.Vicmsst := oItem.Vicmsst + ((((oItem.TOTAL - oItem.DescontoRateado) + fIPIPorUnidade) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString) + '_').AsFloat / 100 ) * rIVAProd); // Não pode arredondar aqui
 
                   {Sandro Silva (f-21367) 2024-10-30 fim}
                 end;
@@ -670,8 +673,7 @@ begin
                 oItem.Vbcst         := Arredonda(oItem.Vbcst, 2); // Sandro Silva 2024-10-31
 
                 //2024-10-30 NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti + oItem.Vicmsst, 2); // Acumula
-                NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - Arredonda((((oItem.TOTAL - oItem.DescontoRateado)) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100), 2), 2); // Acumula
-
+                //NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - Arredonda((((oItem.TOTAL - oItem.DescontoRateado)) * oItem.BASE / 100 * AliqICMdoCliente(oItem) / 100), 2), 2); // Acumula Mauricio Parizotto 2024-12-18
               end else
               begin
                 //Aqui precisa manter arrendondamento como está
@@ -679,15 +681,19 @@ begin
                 begin
                   // VINICULAS
                   try
+                    {
                     NotaFiscal.Basesubsti := NotaFiscal.Basesubsti + Arredonda((
                         (oItem.TOTAL-oItem.DescontoRateado + fIPIPorUnidade) *
                         StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100 * rIVAProd),2);
+                    Mauricio Parizotto 2024-12-18}
 
+                    {
                     NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti +
                         (((
                         (oItem.TOTAL-oItem.DescontoRateado + fIPIPorUnidade)
                         ) * StrToFloat(Copy(IBQIcm.FieldByName('OBS').AsString,pos('<BCST>',IBQIcm.FieldByName('OBS').AsString)+6,5)) / 100
                          * AliqICMdoCliente(oItem) / 100 )* rIVAProd ),2);
+                    Mauricio Parizotto 2024-12-18}
 
                     oItem.Vbcst := Arredonda((oItem.Vbcst+
                         (oItem.TOTAL-oItem.DescontoRateado + fIPIPorUnidade) *
@@ -713,22 +719,27 @@ begin
                       ) * oItem.BASE / 100
                        * AliqICMdoCliente(oItem) / 100 )* rIVAProd ),2);
 
-
+                  {
                   NotaFiscal.Basesubsti := NotaFiscal.Basesubsti + Arredonda((
                       (oItem.TOTAL-oItem.DescontoRateado + fIPIPorUnidade) *
                       oItem.BASE / 100 * rIVAProd),2);
+                  Mauricio Parizotto 2024-12-18}
 
+                  {
                   NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti +
                       (((
                       (oItem.TOTAL-oItem.DescontoRateado + fIPIPorUnidade)
                       ) * oItem.BASE / 100
                        * AliqICMdoCliente(oItem) / 100 )* rIVAProd ),2);
+                  Mauricio Parizotto 2024-12-18}
                 end;
 
                 // Desconta do ICMS substituido o ICMS normal
+                {
                 NotaFiscal.Icmssubsti := Arredonda(NotaFiscal.Icmssubsti - ((
                     ((oItem.TOTAL-oItem.DescontoRateado)
                     )) * oItem.BASE / 100 *   IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ),2); // Acumula
+                Mauricio Parizotto 2024-12-18}
 
                 oItem.Vicmsst := Arredonda(oItem.Vicmsst - ((
                     ((oItem.TOTAL-oItem.DescontoRateado))) * oItem.BASE / 100 * IBQIcmItem.FieldByname(UpperCase(Form7.ibDataSet13ESTADO.AsString)+'_').AsFloat / 100 ),2); // Acumula
