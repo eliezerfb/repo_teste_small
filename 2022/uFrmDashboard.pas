@@ -175,11 +175,11 @@ type
     lblCarregando: TLabel;
     Rectangle10: TRectangle;
     BitmapListAnimation1: TBitmapListAnimation;
-    imfInfoIA: TImage;
     Layout3: TLayout;
     Layout4: TLayout;
     imgDiagnosticoNext: TImage;
     imgDiagnosticoPrior: TImage;
+    lblBeta: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -248,7 +248,7 @@ begin
   imgDiagnosticoNext.Visible  := False;
   imgExpContrai.Visible       := False;
 
-  imfInfoIA.Hint := 'Seu diagnóstico por IA é '+sLineBreak+
+  layDiagnosticoIA.Hint := 'Seu diagnóstico por IA é '+sLineBreak+
                     'atualizado periodicamente.'+sLineBreak+
                     'Acompanhe os indicadores e'+sLineBreak+
                     'aproveite as dicas para melhorar'+sLineBreak+
@@ -278,6 +278,7 @@ begin
     lblTitVendasFormaPgto.Font.Size := 12;
     lblTitContasBancarias.Font.Size := 12;
     lblTitDiagnosticoIA.Font.Size   := 12;
+    lblTitDiagnosticoIA.Width       := 200;
 
     txtDiagnosticoIA.Font.Size      := 11;
 
@@ -375,6 +376,7 @@ begin
     lblTitVendasFormaPgto.Font.Size := 14;
     lblTitContasBancarias.Font.Size := 14;
     lblTitDiagnosticoIA.Font.Size   := 14;
+    lblTitDiagnosticoIA.Width       := 233;
 
     txtDiagnosticoIA.Font.Size      := 13;
 
@@ -1063,3 +1065,50 @@ begin
 end;
 
 end.
+
+
+
+
+
+
+
+
+
+
+
+
+object imfInfoIA: TImage
+  MultiResBitmap.Height = 16
+  MultiResBitmap = <
+    item
+      Width = 16
+      Height = 16
+      PNG = {
+        89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+        61000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+        01C549444154384F9D93BF4BC35010C7EF5D6211757077D0A948FD1510C4AD3A
+        D57649B5385751115CECE866FD0BB493088A7616C18CC541BBE956C76EF53FD0
+        45A36DDEF3EEF9126215297E8647EE472EB9BBEF13D045A6B0B180802E80CC83
+        C031F649090D14D0909D8F839A576DE944435420ED168707ECC4BE14B0064A56
+        A0635FD4BC139D9C5BDD74020007A5DA07C0EB572A54F7AACF1CD305F8E57E2B
+        710B4A3DFA72B054F72A3AD88D4B79EFB65D560AD37EF0B11816816C61EB70A9
+        B071A48D185C38B75A748C19915DDEBCE077F819336E91FA94F9B7CE50594763
+        0CEBB34F9F7112B25DE256F5BC90FB56827AFAF9DB5F8EB63EE378FCEB3427EA
+        3F4F7301475AD030B16FF4DBB6236562D798DFA12153011711C1B9B93CFDB5C0
+        5FE80DD19AD1D8FF06A997566E6567D4D83DC3DAD00253349340B4D78DBF6758
+        5882D4C905AE494EBBBC73138BB050D022E48B3123389755A93A78A01D2C2212
+        C6B9367A202E3C8B8F89E4F47D5B587BC9D4ECF84872EAE1A9F9E8B3BF1BFE72
+        6A72EE987433EF0783EB4FCD073FBA4CA1CE79B72C2CD646B8DE8CBB3D66F5A9
+        6200B22494AAB26A43E14505423819302883903388D6D73DA04DF1B0795EB5AB
+        B33BEDD3007C027B34BD9C1B3A25780000000049454E44AE426082}
+      FileName = 'C:\Users\Desenvolvimento\Downloads\Informa'#231#227'o.png'
+    end>
+  Align = Left
+  Margins.Left = 10.000000000000000000
+  Position.X = 281.000000000000000000
+  Size.Width = 16.000000000000000000
+  Size.Height = 28.000000000000000000
+  Size.PlatformDefault = False
+  ParentShowHint = False
+  ShowHint = True
+end

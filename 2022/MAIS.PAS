@@ -13205,7 +13205,8 @@ begin
   if not FechaTudo(bFechaTudo) then
     Exit;
 
-  {Mauricio Parizotto 2024-11-22 Inicio}
+
+  //GerarDiagnosticoIA(Form7.IBTransaction1);
 
   if not ValidaRecursoExibeMensagemIndisponivel then
     Exit;

@@ -3482,6 +3482,7 @@ begin
                    '   DATA DATE NOT NULL,'+
                    '   DADOSENVIADOS VARCHAR(1000),'+
                    '   DADOSRETORNADOS VARCHAR(2000),'+
+                   '   PERIODO INTEGER,'+
                    '   CONSTRAINT PK_DIAGNOSTICOIA PRIMARY KEY (IDDIAGNOSTICO)'+
                    ' );');
 

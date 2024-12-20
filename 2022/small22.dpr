@@ -283,7 +283,8 @@ uses
   uDashboard in 'units\uDashboard.pas',
   uFrmDashboard in 'uFrmDashboard.pas' {FrmDashboard},
   uClassesDadosDash in 'units\uClassesDadosDash.pas',
-  uClassesDashboard in 'units\uClassesDashboard.pas';
+  uClassesDashboard in 'units\uClassesDashboard.pas',
+  uDiagnosticoIA in 'units\uDiagnosticoIA.pas';
 
 {$R *.RES}
 

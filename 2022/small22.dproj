@@ -622,6 +622,7 @@
         </DCCReference>
         <DCCReference Include="units\uClassesDadosDash.pas"/>
         <DCCReference Include="units\uClassesDashboard.pas"/>
+        <DCCReference Include="units\uDiagnosticoIA.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
