@@ -1169,7 +1169,7 @@ begin
                     Form7.ibDataSet7PORTADOR.AsString := Copy(Form7.ibDataSet7PORTADOR.AsString+'(000)',1,11)+'RECEBIDO';
 
                     if sBanco = '077' then
-                      sDataDoCredito := Copy(sLinha, 92, 6)
+                      sDataDoCredito := Copy(sLinha, 173, 6)
                     else
                       sDataDoCredito := Copy(sLinha, 176, 6);
 
