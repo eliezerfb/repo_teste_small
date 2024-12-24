@@ -5765,8 +5765,8 @@ object Form1: TForm1
     Visible = False
   end
   object Panel_3: TPanel
-    Left = 1
-    Top = 200
+    Left = -4
+    Top = 201
     Width = 800
     Height = 669
     BevelOuter = bvNone
