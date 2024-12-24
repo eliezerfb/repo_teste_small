@@ -1596,10 +1596,10 @@ begin
 
       //Mostra diferenças - remover depois
       if Form7.spdNFeDataSets.Campo('vbCST_N21').Value <> FormatFloatXML(Form7.ibDataSet16VBCST.AsFloat) then
-        ShowMessage('Valor divergente para BC: '+Form7.spdNFeDataSets.Campo('vbCST_N21').Value + ' '+FormatFloatXML(Form7.ibDataSet16VBCST.AsFloat));
+        ShowMessage('Valor divergente para BC '+ Form7.ibDataSet16DESCRICAO.AsString + ': ' + Form7.spdNFeDataSets.Campo('vbCST_N21').Value + ' '+FormatFloatXML(Form7.ibDataSet16VBCST.AsFloat));
 
       if Form7.spdNFeDataSets.Campo('vICMSST_N23').Value <> FormatFloatXML(Form7.ibDataSet16VICMSST.AsFloat) then
-        ShowMessage('Valor divergente para ICMS ST: '+Form7.spdNFeDataSets.Campo('vICMSST_N23').Value + ' '+FormatFloatXML(Form7.ibDataSet16VICMSST.AsFloat));
+        ShowMessage('Valor divergente para ICMS ST '+ Form7.ibDataSet16DESCRICAO.AsString + ': ' +Form7.spdNFeDataSets.Campo('vICMSST_N23').Value + ' '+FormatFloatXML(Form7.ibDataSet16VICMSST.AsFloat));
 
 
       //Mauricio Parizotto 2024-12-20
