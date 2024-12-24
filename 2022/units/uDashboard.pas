@@ -34,16 +34,11 @@ begin
   try
     try
       //Cria Conexão para thread clonando da principal
-      IBDatabaseDash := TIBDatabase.Create(nil);
-      IBDatabaseDash.Params       := IBDatabase.Params;
-      IBDatabaseDash.DatabaseName := IBDatabase.DatabaseName;
-      IBDatabaseDash.ServerType   := IBDatabase.ServerType;
-      IBDatabaseDash.LoginPrompt  := False;
+      IBDatabaseDash := CriaConexaoClone(IBDatabase);
 
       Transaction := TIBTransaction.Create(nil);
       Transaction.DefaultDatabase := IBDatabaseDash;
       IBDatabaseDash.DefaultTransaction := Transaction;
-
       IBDatabaseDash.Connected := True;
 
       DadosDTO := TRootDadosDTO.Create;

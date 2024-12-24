@@ -6110,12 +6110,12 @@ object Form1: TForm1
   object WebBrowser1: TWebBrowser
     Left = 864
     Top = 488
-    Width = 33
-    Height = 25
+    Width = 41
+    Height = 31
     TabOrder = 4
     OnDocumentComplete = WebBrowser1DocumentComplete
     ControlData = {
-      4C00000069030000950200000000000000000000000000000000000000000000
+      4C00000064030000900200000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
       2B2E12620A000000000000004C0000000114020000000000C000000000000046
       8000000000000000000000000000000000000000000000000000000000000000
@@ -14723,7 +14723,13 @@ object Form1: TForm1
   object TimerDashboard: TTimer
     Enabled = False
     OnTimer = TimerDashboardTimer
-    Left = 695
-    Top = 212
+    Left = 621
+    Top = 280
+  end
+  object TimerDiagIA: TTimer
+    Enabled = False
+    OnTimer = TimerDiagIATimer
+    Left = 517
+    Top = 280
   end
 end

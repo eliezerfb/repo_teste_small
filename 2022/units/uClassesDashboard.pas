@@ -168,6 +168,10 @@ type
   public
     procedure setTransaction(Transaction : TIBTransaction);
     procedure GetDados;
+    procedure GetDadosP1;
+    procedure GetDadosP2;
+    procedure GetDadosP3;
+    procedure GetDadosP4;
     destructor Destroy; override;
     constructor Create;
   end;
@@ -180,9 +184,10 @@ uses uFuncoesBancoDados, smallfunc_xe, uFuncoesRetaguarda;
 
 constructor TRootDadosDTO.Create;
 begin
-  SetLength(FVendasPeriodo,2);
+  SetLength(FVendasPeriodo,3);
   FVendasPeriodo[0] := TVendasPeriodo.Create;
   FVendasPeriodo[1] := TVendasPeriodo.Create;
+  FVendasPeriodo[2] := TVendasPeriodo.Create;
 
   FInadimplencia := TInadimplencia.Create;
   FContasReceber := TContasReceber.Create;
@@ -198,6 +203,7 @@ begin
   try
     FVendasPeriodo[0].Free;
     FVendasPeriodo[1].Free;
+    FVendasPeriodo[2].Free;
   except
   end;
 
@@ -654,6 +660,34 @@ begin
   GetVendasVendedor(1);
   GetVendasFormaPgto(1);
 end;
+
+procedure TRootDadosDTO.GetDadosP1;
+begin
+  GetVendasMes(1);
+  GetVendasMes(2);
+end;
+
+procedure TRootDadosDTO.GetDadosP2;
+begin
+  GetVendasDiarias(0);
+end;
+
+procedure TRootDadosDTO.GetDadosP3;
+begin
+  GetInadimplencia;
+  GetContasReceber;
+end;
+
+procedure TRootDadosDTO.GetDadosP4;
+begin
+  GetVendasMes(0);
+  GetVendasMes(1);
+  GetVendasDiarias(0);
+  GetContasReceber;
+  GetContasPagar;
+  GetSaldoCaixa;
+end;
+
 
 procedure TRootDadosDTO.GetDiagnosticoIA;
 var

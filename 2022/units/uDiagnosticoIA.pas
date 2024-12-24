@@ -11,54 +11,85 @@ uses
   , DateUtils
   ;
 
-  function GeraDiagnosticoIA(iPeriodo : integer; Transaction : TIBTransaction):boolean;
+  function GeraDiagnosticoIA(iPeriodo : integer; IBDatabase: TIBDatabase):boolean;
   procedure GravaDiagnosticoIA(sDadosEnviados, sDadosRetornados : string; Data : TDateTime; iPeriodo : integer; Transaction : TIBTransaction);
   function GeraPromptEnvio(sDadosEnviados:string):string;
-  function DeveGerarDiagnosticoIA(out iPeriodo : integer; Transaction : TIBTransaction):boolean;
+  function DeveGerarDiagnosticoIA(out iPeriodo : integer; IBDatabase: TIBDatabase):boolean;
+  function GetDadosEnvio(iPeriodo : integer; out bDadosInsuf : boolean; Transaction : TIBTransaction):string;
 
 implementation
 
 uses uFuncoesBancoDados
   , uInteligenciaArtificial
-  , smallfunc_xe;
+  , smallfunc_xe, uDashboard;
 
-function GeraDiagnosticoIA(iPeriodo : integer; Transaction : TIBTransaction):boolean;
+function GeraDiagnosticoIA(iPeriodo : integer; IBDatabase: TIBDatabase):boolean;
 var
-  sDadosEnvio, sPromptEnvio, sDiagnostico, sAPIKey : string;
+  sDadosEnvio, sPromptEnvio, sDiagnostico, sAPIKey, sPergunta : string;
+  Transaction: TIBTransaction;
+  IBDatabaseDash: TIBDatabase;
+  DataRef : TDate;
+  bDadosInsuf : boolean;
 begin
-  //Gera dados a serem analisados
-  sDadosEnvio  := ' -Vendas mês atual: 234249,64 '+sLineBreak+
-                  ' -Vendas mês anterior: 266588,06 '+sLineBreak+
-                  ' -Contas a receber no mês: 117718,51'+sLineBreak+
-                  ' -Contas recebidas no mês: 1916,00'+sLineBreak+
-                  ' -Contas a receber vencidas no mês: 113062,54 '+sLineBreak+
-                  ' -Contas a pagar no mês: 206367,89'+sLineBreak+
-                  ' -Contas pagas no mês: 7688,29 '+sLineBreak+
-                  ' -Contas a pagar vencidas no mês: 187804.94'+sLineBreak+
-                  ' -Inadimplência no trimestre: 99,60%';
+  Result := False;
 
-  sPromptEnvio := GeraPromptEnvio(sDadosEnvio);
+  try
+    IBDatabaseDash := CriaConexaoClone(IBDatabase);
+    Transaction := TIBTransaction.Create(nil);
+    Transaction.DefaultDatabase := IBDatabaseDash;
+    IBDatabaseDash.DefaultTransaction := Transaction;
+    IBDatabaseDash.Connected := True;
 
-  //Busca API Key a ser utilizada
-  sAPIKey      := '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';
+    sDadosEnvio  := GetDadosEnvio(iPeriodo, bDadosInsuf, Transaction);
 
-  //Gera diaginostico pela IA
-  TInteligenciaArtificial.New
-                         .setAPIKey(sAPIKey)
-                         .setPrompt(sPromptEnvio)
-                         .Perguntar('Qual sua opnião e anlálise?')
-                         .Resposta(sDiagnostico);
+    if bDadosInsuf then
+    begin
+      Result := True;
+      Exit;
+    end;
+    
+    sPromptEnvio := GeraPromptEnvio(sDadosEnvio);
+
+    //Busca API Key a ser utilizada
+    sAPIKey      := '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';
+
+    if iPeriodo = 4 then
+      sPergunta := 'Analise os dados, diga como está a saúde da minha empesa e o que eu posso melhorar'
+    else
+      sPergunta := 'Analise os dados e me diga o que eu posso melhorar';
+
+    //Gera diaginostico pela IA
+    TInteligenciaArtificial.New
+                           .setAPIKey(sAPIKey)
+                           .setPrompt(sPromptEnvio)
+                           .Perguntar(sPergunta)
+                           .Resposta(sDiagnostico);
 
 
+    //Grava dados no banco de dados
+    DataRef := now;
 
-  //Grava dados no banco de dados
-  if sDiagnostico <> '' then
-  begin
-    GravaDiagnosticoIA(sDadosEnvio,
-                      sDiagnostico,
-                      now,
-                      iPeriodo,
-                      Transaction);
+    if iPeriodo = 1 then
+    begin
+      var iDia : integer;
+
+      iDia    := DayOf(now);
+      DataRef := IncDay(Now,iDia*-1);
+    end;
+
+    if sDiagnostico <> '' then
+    begin
+      GravaDiagnosticoIA(sDadosEnvio,
+                        sDiagnostico,
+                        DataRef,
+                        iPeriodo,
+                        Transaction);
+    end;
+    
+    Result := True;
+  finally
+    FreeAndNil(Transaction);
+    FreeAndNil(IBDatabaseDash);
   end;
 end;
 
@@ -100,10 +131,13 @@ begin
 end;
 
 
-function DeveGerarDiagnosticoIA(out iPeriodo : integer; Transaction : TIBTransaction):boolean;
+function DeveGerarDiagnosticoIA(out iPeriodo : integer; IBDatabase: TIBDatabase):boolean;
 var
   iDia, iMes, iAno : Integer;
   sFiltro, sDataIni, sDataFim : string;
+
+  Transaction: TIBTransaction;
+  IBDatabaseDash: TIBDatabase;
 begin
   Result := False;
 
@@ -143,24 +177,127 @@ begin
   begin
     iPeriodo := 4;
     sDataIni := iAno.ToString + '-'+ StrZero(iMes,2,0) + '-22';
-    sFiltro  := ' Where DATA > = '+QuotedStr(sDataIni)+
+    sFiltro  := ' Where DATA >= '+QuotedStr(sDataIni)+
                 '  and PERIODO = '+iPeriodo.ToString;
   end;
 
-  Result := ExecutaComandoEscalar(Transaction,
-                                  ' Select Count(*)'+
-                                  ' From DIAGNOSTICOIA'+
-                                  sFiltro
-                                  ) = 0;
+  try
+    IBDatabaseDash := CriaConexaoClone(IBDatabase);
+    Transaction := TIBTransaction.Create(nil);
+    Transaction.DefaultDatabase := IBDatabaseDash;
+    IBDatabaseDash.DefaultTransaction := Transaction;
+    IBDatabaseDash.Connected := True;
 
+    Result := ExecutaComandoEscalar(Transaction,
+                                    ' Select Count(*)'+
+                                    ' From DIAGNOSTICOIA'+
+                                    sFiltro
+                                    ) = 0;
+  finally
+    FreeAndNil(Transaction);
+    FreeAndNil(IBDatabaseDash);
+  end;
+end;
 
-  //Verifica movimento
-  if Result then
+function GetDadosEnvio(iPeriodo : integer; out bDadosInsuf : boolean; Transaction : TIBTransaction):string;
+var
+  DadosDTO : TRootDadosDTO;
+
+  function GetDadosPeriodo01:string;
+  var
+    Data1, Data2 : TDate;  
+    iDia : integer;
   begin
-    //1 - Movimento 2 últimos meses
-    //2 - Movimento mês
-    //3 - Contas a receber no mês
-    //4 - Movimento no último mês
+    Result := '';
+    DadosDTO.GetDadosP1;
+
+    iDia  := DayOf(now);
+    Data1 := IncDay(Now,iDia*-1);
+
+    iDia  := DayOf(Data1);
+    Data2 := IncDay(Data1,iDia*-1);
+
+    Result := '-Vendas '+FormatDateTime('dd/mm', Data1) + ': ' + Formatfloat('#,##0.00', DadosDTO.VendasPeriodo[1].VendasMes)+sLineBreak+
+              '-Vendas '+FormatDateTime('dd/mm', Data2) + ': ' + Formatfloat('#,##0.00', DadosDTO.VendasPeriodo[2].VendasMes)+sLineBreak;
+
+    if (DadosDTO.VendasPeriodo[1].VendasMes = 1)
+      or (DadosDTO.VendasPeriodo[1].VendasMes = 2) then
+      bDadosInsuf := True;
+  end;
+
+  function GetDadosPeriodo02:string;
+  var
+    i : integer;
+    dAcumulado : Double;
+  begin
+    Result := '';
+    DadosDTO.GetDadosP2;
+
+    dAcumulado := 0;
+    
+    for I := Low(DadosDTO.VendasPeriodo[0].VendasDiarias) to High(DadosDTO.VendasPeriodo[0].VendasDiarias) do
+    begin
+      if DadosDTO.VendasPeriodo[0].VendasDiarias[i].Valor > 0 then
+      begin
+        Result := Result + '-Vendas dia '+DadosDTO.VendasPeriodo[0].VendasDiarias[i].Dia+': '+
+                            Formatfloat('#,##0.00',DadosDTO.VendasPeriodo[0].VendasDiarias[i].Valor )+sLineBreak;
+
+        dAcumulado := dAcumulado + DadosDTO.VendasPeriodo[0].VendasDiarias[i].Valor;
+      end;
+    end;
+
+    if dAcumulado = 0 then
+      bDadosInsuf := True;
+  end;
+
+  function GetDadosPeriodo03:string;
+  begin
+    Result := '';
+    DadosDTO.GetDadosP3;
+
+    Result := '-Contas a receber no mês: '+Formatfloat('#,##0.00',DadosDTO.ContasReceber.ReceberMes)+sLineBreak+
+              '-Contas recebidas no mês até o momento: '+Formatfloat('#,##0.00',DadosDTO.ContasReceber.RecebidasMes)+sLineBreak+
+              '-Contas a receber vencidas no mês: '+Formatfloat('#,##0.00',DadosDTO.ContasReceber.ValorVencidasMes)+sLineBreak+
+              '-Inadimplência no trimestre: '+Formatfloat('#,##0.00',DadosDTO.Inadimplencia.Trimestre)+sLineBreak;
+
+    if DadosDTO.ContasReceber.ReceberMes = 0 then
+      bDadosInsuf := True;
+  end;
+
+  function GetDadosPeriodo04:string;
+  begin
+    Result := '';
+    DadosDTO.GetDadosP4;
+
+    Result := '-Vendas até o momento: '+ Formatfloat('#,##0.00',DadosDTO.VendasPeriodo[0].VendasMes)+sLineBreak+
+              //'-Média de venda diaria: '+
+              '-Contas a receber no mês: '+Formatfloat('#,##0.00',DadosDTO.ContasReceber.ReceberMes)+sLineBreak+
+              '-Contas recebidas no mês até o momento: '+Formatfloat('#,##0.00',DadosDTO.ContasReceber.RecebidasMes)+sLineBreak+
+              '-Contas a receber vencidas no mês: '+Formatfloat('#,##0.00',DadosDTO.ContasReceber.ValorVencidasMes)+sLineBreak+
+              '-Contas a pagar no mês: '+Formatfloat('#,##0.00',DadosDTO.ContasPagar.PagarMes)+sLineBreak+
+              '-Contas pagas no mês até o momento: '+Formatfloat('#,##0.00',DadosDTO.ContasPagar.PagasMes)+sLineBreak+
+              '-Contas a pagar vencidas no mês: '+Formatfloat('#,##0.00',DadosDTO.ContasPagar.ValorVencidasMes)+sLineBreak+
+              '-Saldo do caixa: '+Formatfloat('#,##0.00',DadosDTO.SaldoCaixa)+sLineBreak;
+
+    if DadosDTO.VendasPeriodo[1].VendasMes = 0 then
+      bDadosInsuf := True;
+  end;
+begin
+  try
+    bDadosInsuf := False;
+  
+    DadosDTO := TRootDadosDTO.Create;
+    DadosDTO.setTransaction(Transaction);
+    DadosDTO.FiltroNatVendas := getFiltroVendas(Transaction);
+
+    case iPeriodo of
+      1 : Result := GetDadosPeriodo01;
+      2 : Result := GetDadosPeriodo02;
+      3 : Result := GetDadosPeriodo03;
+      4 : Result := GetDadosPeriodo04;
+    end;
+  finally
+    FreeAndNil(DadosDTO);
   end;
 end;
 

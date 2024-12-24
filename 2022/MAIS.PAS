@@ -280,6 +280,7 @@ type
     IntegraoIMendes1: TMenuItem;
     pnlContainer: TPanel;
     TimerDashboard: TTimer;
+    TimerDiagIA: TTimer;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -461,6 +462,7 @@ type
     procedure IntegraoSicoob1Click(Sender: TObject);
     procedure IntegraoIMendes1Click(Sender: TObject);
     procedure TimerDashboardTimer(Sender: TObject);
+    procedure TimerDiagIATimer(Sender: TObject);
 
 
   private
@@ -605,7 +607,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmMsgNovoLayout
   , uFrmIntegracaoSicoob
   , uFrmIntegracaoIMendes
-  , uDashboard;
+  , uDashboard, uDiagnosticoIA;
 
 {$R *.DFM}
 
@@ -10592,6 +10594,49 @@ begin
   AbreDashboard;
 end;
 
+procedure TForm1.TimerDiagIATimer(Sender: TObject);
+begin
+  TimerDiagIA.Enabled := False;
+
+  try
+    TTask.Run(
+    procedure()
+      var
+        bGerado : boolean;
+        iPeriodo : integer;
+    begin
+      try
+        bGerado := False;
+
+        if DeveGerarDiagnosticoIA(iPeriodo, Form7.IBDatabase1) then
+        if True then
+        begin
+          bGerado := GeraDiagnosticoIA(iPeriodo, Form7.IBDatabase1);
+        end else
+        begin
+          bGerado := True;
+        end;
+      except
+      end;
+
+      TThread.Synchronize(TThread.CurrentThread,
+      procedure()
+      begin
+        if not(bGerado) then
+        begin
+          // Tenta novamente depois de 30 min
+          if TimerDiagIA.Interval = 1000 then
+          begin
+            TimerDiagIA.Interval := 1800000;
+            TimerDiagIA.Enabled  := True;
+          end;
+        end;
+      end);
+    end);
+  except
+  end;
+end;
+
 procedure TForm1.timerLegalTimer(Sender: TObject);
 begin
   try
@@ -13205,9 +13250,6 @@ begin
   if not FechaTudo(bFechaTudo) then
     Exit;
 
-
-  //GerarDiagnosticoIA(Form7.IBTransaction1);
-
   if not ValidaRecursoExibeMensagemIndisponivel then
     Exit;
 
@@ -13247,7 +13289,6 @@ begin
       FrmDashboard := TFrmDashboard.Create(pnlContainer);
       FrmDashboard.Width  := pnlContainer.Width;
       FrmDashboard.Height := pnlContainer.Height;
-      //FrmDashboard.sJsonDados := '';
       FrmDashboard.Show;
       oHwnd := FindWindow( nil, 'Dashboard' ) ;
       Windows.SetParent(oHwnd,pnlContainer.handle) ;
@@ -13271,6 +13312,10 @@ begin
         if FrmDashboard <> nil then
         begin
           FrmDashboard.AtualizaDados(sJson);
+
+          //Ativa diagnostico IA
+          TimerDiagIA.Interval := 1000;
+          TimerDiagIA.Enabled  := True;
         end;
       end);
     end);
