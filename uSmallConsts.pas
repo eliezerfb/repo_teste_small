@@ -194,6 +194,8 @@ const
   _cSectionFrenteBD = 'Frente';
   _cTransmiteContingenciaAbertura = 'Trans Contingência Abertura';
 
+  CNPJ_SEFAZ_BAHIA = '13.937.073/0001-56';
+
 implementation
 
 end.
