@@ -80,6 +80,7 @@ function IncGenerator(IBDataBase: TIBDatabase; sGenerator: String;
 function GetCampoPKTabela(Banco: TIBDatabase; vTabela : string): String;
 function FloatToBD(valor:Double):string;
 function DateToBD(data:TDateTime):string;
+function CriaConexaoClone(IBDatabase: TIBDatabase) : TIBDatabase; //Mauricio Parizotto 2014-12-23
 
 implementation
 
@@ -537,5 +538,15 @@ function DateToBD(data:TDateTime):string;
 begin
   Result := FormatDateTime('YYYY-MM-DD',data);
 end;
+
+function CriaConexaoClone(IBDatabase: TIBDatabase) : TIBDatabase;
+begin
+  Result := TIBDatabase.Create(nil);
+  Result.Params       := IBDatabase.Params;
+  Result.DatabaseName := IBDatabase.DatabaseName;
+  Result.ServerType   := IBDatabase.ServerType;
+  Result.LoginPrompt  := False;
+end;
+
 
 end.
