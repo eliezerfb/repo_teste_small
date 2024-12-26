@@ -319,7 +319,19 @@ begin
         DataSource.DataSet.Next;
 
       if DataSource.DataSet.Eof then
+      begin
+        if (DataSource.DataSet.State = dsInsert) and
+          (FDMemTableMainCPFCNPJ.AsString = '') then
+        begin
+          DataSource.DataSet.Cancel;
+          BitBtnOk.SetFocus;
+          Exit;
+        end;
+
         DataSource.DataSet.Append;
+      end;
+
+
     end;
     Exit();
   end;
