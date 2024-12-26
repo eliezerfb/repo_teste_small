@@ -6,8 +6,8 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, DB, Grids, DBGrids, StdCtrls, ExtCtrls, Mask,
-  DBCtrls, SMALL_DBEdit, smallfunc_xe, Menus, IniFiles, shellapi, Buttons
-  , jpeg,
+  DBCtrls, SMALL_DBEdit, smallfunc_xe, Menus, IniFiles, shellapi, Buttons,
+  System.Generics.Collections, jpeg,
   uNotaFiscalEletronicaCalc;
 
 function Retributa(pP1:Boolean):Boolean;
@@ -153,6 +153,7 @@ type
     ComboBox1: TComboBox;
     Label7: TLabel;
     lblHomologacao: TLabel;
+    BitBtnAtorInteressado: TBitBtn;
     procedure DBGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure DBLookupComboBox2Exit(Sender: TObject);
     procedure imgLogoNFeClick(Sender: TObject);
@@ -269,6 +270,7 @@ type
     procedure SMALL_DBEdit39Click(Sender: TObject);
     procedure SMALL_DBEdit41Click(Sender: TObject);
     procedure edtTotalNotaChange(Sender: TObject);
+    procedure BitBtnAtorInteressadoClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -310,7 +312,7 @@ uses Unit7
   , Mais, uFrmParcelas, Unit41, Unit43, Unit19,
   Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
   uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
-  ufrmPesquisaOrdemServico, uDialogs;
+  ufrmPesquisaOrdemServico, uDialogs, uAtorInteressado, uSmallConsts;
 
 function mkp(P1:Boolean): Boolean;
 begin
@@ -1638,6 +1640,34 @@ end;
 procedure TForm12.Button1Enter(Sender: TObject);
 begin
   ScrollBox1.VertScrollBar.Position := 200;
+end;
+
+procedure TForm12.BitBtnAtorInteressadoClick(Sender: TObject);
+begin
+  var IdentificationsNotAllowed := TList<TIdentification>.Create;
+
+  IdentificationsNotAllowed.AddRange([
+    TIdentification.Create(
+      Form7.ibDataSet13.FieldByname('CGC').AsString, 'Emitente'),
+    TIdentification.Create(
+      Form7.ibDAtaset2.FieldByname('CGC').AsString, 'Cliente'),
+    TIdentification.Create(
+      Form7.ibDAtaset18.FieldByname('CGC').AsString, 'Transportadora')
+  ]);
+
+  var CNPJContabilidade := form7.sCNPJContabilidade;
+  if (Form7.ibDataSet13ESTADO.AsString = 'BA') and
+    (Trim(LimpaNumero(Form7.sCNPJContabilidade)) = '') then
+    CNPJContabilidade := CNPJ_SEFAZ_BAHIA;
+
+  TfmAtorInteressado.Execute(
+    Form7.IBDatabase1,
+    Form7.IBTransaction1,
+    Form7.ibDataSet15NUMERONF.AsString,
+    Form7.ibDataSet15MODELO.AsString,
+    form7.sCNPJContabilidade,
+    IdentificationsNotAllowed
+  );
 end;
 
 procedure TForm12.Button1Click(Sender: TObject);
