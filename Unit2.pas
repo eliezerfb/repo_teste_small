@@ -2024,19 +2024,15 @@ begin
 
   end;
 
-  //
   if SMALL_DBEdit5.Focused then
     Button1.SetFocus;
-  //
+
   if Panel5.Visible then
   begin
-    //
     Form1.sConveniado := Edit8.Text;
     Form1.sVendedor   := Edit9.Text;
-    //
+
     // Desconto pelo convênio
-    //
-    //
     fTotal1 := Form1.PDV_SubTotal(True);
     //
     if (Form1.ClienteSmallMobile.sVendaImportando = '')
@@ -2071,15 +2067,13 @@ begin
       Form1.ibDataSet25.FieldByName('VALOR_4').AsFloat    := 0;
     end;
 
-    //
     Panel4.Visible := True;
 
     Panel5.Visible := False; // Sandro Silva 2021-07-05
 
     Button1.Caption := 'F3 Finalizar >>'; // Sandro Silva 2021-07-02 Button1.Caption := '&Finalizar >>';
-    //
+
     // Identificação do cliente
-    //
     if SMALL_DBEdit5.CanFocus then
     begin
       SMALL_DBEdit5.SelectAll;
@@ -2097,16 +2091,10 @@ begin
       //////////////////////////
       SMALL_DBEdit2.SetFocus;
     end;
-    //
-    // Sandro Silva 2021-07-05 Panel5.Visible := False;
-    //
-    //
   end else
   begin
-    //
     if Panel4.Visible then
     begin
-      //
       if Form1.ibDataSet25.FieldByname('DIFERENCA_').AsFloat <> 0 then
       begin
         Panel4.Visible := False;
@@ -2119,10 +2107,8 @@ begin
       begin
         Button2Click(Sender);
       end;
-      //
     end else
     begin
-      //
       if Panel3.Visible then
       begin
         if (StrToIntDef(LimpaNumero(MaskEdit1.Text), 0) = 0) and (Form1.ClienteSmallMobile.sVendaImportando = '') then
@@ -2133,9 +2119,7 @@ begin
         else
           Button2Click(Sender);
       end;
-      //
     end;
-    //
   end;
 
   // Se finalizando em dinheiro deve excluir parcelas a receber do documento
@@ -2158,7 +2142,6 @@ begin
 
     end;
   end;
-  //
 end;
 
 procedure TForm2.SMALL_DBEdit2Enter(Sender: TObject);

@@ -8382,7 +8382,7 @@ begin
                     end;
                   end;
                 end;
-                Commitatudo2(True);
+                Commitatudo2(True); // _ecf65_EnviarNFCeContingencia()
 
                 ///////////////////////////////////////////////////////////////////////////
               end;

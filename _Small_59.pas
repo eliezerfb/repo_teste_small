@@ -1047,7 +1047,7 @@ begin
             _ecf59_CriaSequencialCaixa(_59.Caixa);
             SalvarConfiguracao(FRENTE_INI, SECAO_FRENTE_CAIXA, 'Caixa', _59.Caixa);
 
-            Commitatudo(True);
+            Commitatudo(True); // _ecf59_Inicializa(
 
             Application.MessageBox(PChar('Essa aplicação será fechada' + #10 + #10 +
               'Reinicie a aplicação para usar o novo número do caixa configurado'),'Atenção', MB_ICONINFORMATION + MB_OK);
@@ -1931,7 +1931,7 @@ begin
 
   Form1.ExibePanelMensagem('Aguarde, enviando ' + NomeModeloDocumento('59') + '...', True);
 
-  Commitatudo2(False);
+  Commitatudo2(False);// _ecf59_FinalizaVendaSAT
 
   FIBQuery65 := CriaIBQuery(Form1.ibDataSet27.Transaction);
 
