@@ -166,7 +166,7 @@ begin
         on e:exception do
         begin
           MensagemSistema('Erro ao gravar sangria!',msgErro);
-          LogFrente('Erro ao gravar sangria no livro caixa. '+e.Message);
+          //LogFrente('Erro ao gravar sangria no livro caixa. '+e.Message);
         end;
       end;
 
@@ -207,7 +207,7 @@ begin
         on e:exception do
         begin
           MensagemSistema('Erro ao gravar sangria!',msgErro);
-          LogFrente('Erro ao gravar sangria no pagamento. '+e.Message);
+          //LogFrente('Erro ao gravar sangria no pagamento. '+e.Message);
         end;
       end;
 
@@ -278,7 +278,7 @@ begin
           on e:exception do
           begin
             MensagemSistema('Erro ao gravar suprimento!',msgErro);
-            LogFrente('Erro ao gravar suprimento no livro caixa. '+e.Message);
+            //LogFrente('Erro ao gravar suprimento no livro caixa. '+e.Message);
           end;
         end;
 
@@ -318,7 +318,7 @@ begin
           on e:exception do
           begin
             MensagemSistema('Erro ao gravar suprimento!',msgErro);
-            LogFrente('Erro ao gravar suprimento no pagamento. '+e.Message);
+            //LogFrente('Erro ao gravar suprimento no pagamento. '+e.Message);
           end;
         end;
 
