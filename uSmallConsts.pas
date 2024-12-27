@@ -196,6 +196,24 @@ const
 
   CNPJ_SEFAZ_BAHIA = '13.937.073/0001-56';
 
+  UF_NAMES: array[0..27] of String =
+    ('Acre', 'Alagoas', 'Amapá', 'Amazonas', 'Bahia', 'Ceará', 'Distrito Federal',
+     'Espírito Santo', 'Goiás', 'Maranhão', 'Mato Grosso', 'Mato Grosso do Sul',
+     'Minas Gerais', 'Pará', 'Paraíba', 'Paraná', 'Pernambuco', 'Piauí',
+     'Rio de Janeiro', 'Rio Grande do Norte', 'Rio Grande do Sul', 'Rondônia',
+     'Roraima', 'Santa Catarina', 'São Paulo', 'Sergipe', 'Tocantins',
+     'Exterior');
+
+  UF_ACRONYM: array[0..27] of String =
+    ('AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
+     'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC',
+     'SP', 'SE', 'TO', 'EX');
+
+  UF_CODE: array[0..27] of Integer =
+    (12, 27, 16, 13, 29, 23, 53, 32, 52, 21, 51, 50, 31, 15, 25, 41, 26, 22, 33,
+     24, 43, 11, 14, 42, 35, 28, 17, 99);
+
+
 implementation
 
 end.

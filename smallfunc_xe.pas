@@ -223,6 +223,9 @@ procedure ExcluirPasta(AcPasta: String);
 procedure AjustaVisualGrid(dbgGrid: TDBGrid; Rect: TRect; Column: TColumn); // Mauricio Parizotto 2024-10-09
 function RemoveUltimoTexto(sTexto:string):string;
 procedure SetConfiguracaoA5PaginaMatricial;
+function EnumeradoToStr(const t: variant; const AString:
+  array of string; const AEnumerados: array of variant): variant;
+
 
 var
   IMG: TImage;
@@ -2849,5 +2852,20 @@ begin
     end;
   end;
 end;
+
+
+(*TODO -> Função do ACBr, remover daqui e passar a usar direto da lib do acbr
+quando o mesmo estiver adicionado no projeto. *)
+function EnumeradoToStr(const t: variant; const AString:
+  array of string; const AEnumerados: array of variant): variant;
+var
+  i: integer;
+begin
+  result := '';
+  for i := Low(AEnumerados) to High(AEnumerados) do
+    if t = AEnumerados[i] then
+      result := AString[i];
+end;
+
 
 end.
