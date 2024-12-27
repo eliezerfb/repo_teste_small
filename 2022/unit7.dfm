@@ -7646,8 +7646,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
-    ExplicitTop = 1184
-    ExplicitWidth = 1556
     object Button2: TButton
       Left = 260
       Top = 10
@@ -7721,7 +7719,6 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 11
     OnMouseMove = Panel4MouseMove
-    ExplicitWidth = 1556
   end
   object Panel_0: TPanel
     Left = 0
@@ -20249,8 +20246,8 @@ object Form7: TForm7
     InsertSQL.Strings = (
       'insert into CLIFOR'
       
-        '  (NOME, CONTATO, IE, CGC, ENDERE, COMPLE, CIDADE, ESTADO, CEP, ' +
-        'FONE, FAX, '
+        '  (IDCLIFOR, NOME, CONTATO, IE, CGC, ENDERE, COMPLE, CIDADE, EST' +
+        'ADO, CEP, FONE, FAX,'
       
         '   EMAIL, OBS, CELULAR, CREDITO, CONVENIO, IDENTIFICADOR1, IDENT' +
         'IFICADOR2, '
@@ -20263,8 +20260,8 @@ object Form7: TForm7
       '   FOTO, WHATSAPP, CONTRIBUINTE, PRODUTORRURAL)'
       'values'
       
-        '  (:NOME, :CONTATO, :IE, :CGC, :ENDERE, :COMPLE, :CIDADE, :ESTAD' +
-        'O, :CEP, '
+        '  (:IDCLIFOR, :NOME, :CONTATO, :IE, :CGC, :ENDERE, :COMPLE, :CID' +
+        'ADE, :ESTADO, :CEP,'
       
         '   :FONE, :FAX, :EMAIL, :OBS, :CELULAR, :CREDITO, :CONVENIO, :ID' +
         'ENTIFICADOR1, '
@@ -20279,6 +20276,7 @@ object Form7: TForm7
         'ONTRIBUINTE, :PRODUTORRURAL)')
     RefreshSQL.Strings = (
       'Select '
+      '  IDCLIFOR,'
       '  NOME,'
       '  CONTATO,'
       '  IE,'
@@ -20323,6 +20321,7 @@ object Form7: TForm7
     ModifySQL.Strings = (
       'update CLIFOR'
       'set'
+      '  IDCLIFOR = :IDCLIFOR,'
       '  NOME = :NOME,'
       '  CONTATO = :CONTATO,'
       '  IE = :IE,'
@@ -20617,6 +20616,10 @@ object Form7: TForm7
       Origin = 'CLIFOR.PRODUTORRURAL'
       Visible = False
       Size = 1
+    end
+    object IBDataSet2IDCLIFOR: TIntegerField
+      FieldName = 'IDCLIFOR'
+      Visible = False
     end
   end
   object IBDataSet99: TIBDataSet

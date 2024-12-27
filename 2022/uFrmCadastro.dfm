@@ -1,6 +1,7 @@
 inherited FrmCadastro: TFrmCadastro
   OnActivate = FormActivate
   OnClose = FormClose
+  OnDeactivate = FormDeactivate
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
@@ -24,7 +25,7 @@ inherited FrmCadastro: TFrmCadastro
       end
     end
     inherited pgcFicha: TPageControl
-      ActivePage = tbsCadastro
+      ActivePage = tbsAddress
       object tbsCadastro: TTabSheet
         Caption = 'Ficha'
         object Label2: TLabel
@@ -621,8 +622,8 @@ inherited FrmCadastro: TFrmCadastro
           ParentFont = False
         end
         object edtCPFCNPJ: TSMALL_DBEdit
-          Left = 100
-          Top = 12
+          Left = 101
+          Top = 9
           Width = 199
           Height = 20
           AutoSize = False
@@ -1158,9 +1159,15 @@ inherited FrmCadastro: TFrmCadastro
           Height = 20
           Color = clWhite
           Ctl3D = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
           ParentBackground = False
           ParentColor = False
           ParentCtl3D = False
+          ParentFont = False
           TabOrder = 19
           ExplicitLeft = 530
           ExplicitTop = 12
@@ -1187,9 +1194,15 @@ inherited FrmCadastro: TFrmCadastro
           Height = 20
           Color = clWhite
           Ctl3D = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
           ParentBackground = False
           ParentColor = False
           ParentCtl3D = False
+          ParentFont = False
           TabOrder = 6
           ExplicitLeft = 100
           ExplicitTop = 153
@@ -1764,15 +1777,200 @@ inherited FrmCadastro: TFrmCadastro
           OnKeyDown = PadraoKeyDown
         end
       end
+      object tbsAddress: TTabSheet
+        Caption = 'Endere'#231'os adicionais'
+        ImageIndex = 3
+        OnShow = tbsAddressShow
+        object PanelAddress: TPanel
+          Left = 0
+          Top = 0
+          Width = 794
+          Height = 425
+          Align = alClient
+          BevelOuter = bvNone
+          Padding.Left = 20
+          Padding.Top = 20
+          Padding.Right = 20
+          Padding.Bottom = 20
+          TabOrder = 0
+          object DBGridAddress: TDBGrid
+            Left = 20
+            Top = 20
+            Width = 754
+            Height = 385
+            Align = alClient
+            DataSource = DataSourceAddress
+            Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+            TabOrder = 0
+            TitleFont.Charset = ANSI_CHARSET
+            TitleFont.Color = clWindowText
+            TitleFont.Height = -11
+            TitleFont.Name = 'Microsoft Sans Serif'
+            TitleFont.Style = []
+            OnCellClick = DBGridAddressCellClick
+            OnColEnter = DBGridAddressColEnter
+            OnColExit = DBGridAddressColExit
+            OnDrawColumnCell = DBGridAddressDrawColumnCell
+            OnKeyDown = DBGridAddressKeyDown
+            OnKeyPress = DBGridAddressKeyPress
+            Columns = <
+              item
+                Expanded = False
+                FieldName = 'TIPO'
+                Width = 51
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'CEP'
+                Width = 73
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'ENDERECO'
+                Width = 155
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'NUMERO'
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'BAIRRO'
+                Width = 131
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'ESTADO'
+                Width = 41
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'CIDADE'
+                Width = 117
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'CIDADE_NOME'
+                Title.Caption = 'Munic'#237'pio'
+                Visible = False
+              end
+              item
+                Expanded = False
+                FieldName = 'TELEFONE'
+                Width = 88
+                Visible = True
+              end>
+          end
+        end
+      end
     end
   end
   inherited DSCadastro: TDataSource
     DataSet = Form7.IBDataSet2
     OnDataChange = DSCadastroDataChange
+    Left = 777
+    Top = 31
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Filter = 'JPEG Image File (*.jpg)|*.jpg|| | | | | | | | | '
     Left = 502
     Top = 465
+  end
+  object FDMemTableAddress: TFDMemTable
+    BeforeInsert = FDMemTableAddressBeforeInsert
+    AfterInsert = FDMemTableAddressAfterInsert
+    BeforePost = FDMemTableAddressBeforePost
+    AfterDelete = FDMemTableAddressAfterDelete
+    AfterScroll = FDMemTableAddressAfterScroll
+    CachedUpdates = True
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 480
+    Top = 16
+    object FDMemTableAddressIDENDERECO: TIntegerField
+      FieldName = 'IDENDERECO'
+    end
+    object FDMemTableAddressCEP: TStringField
+      FieldName = 'CEP'
+      EditMask = '99999-999;1;_'
+      Size = 9
+    end
+    object FDMemTableAddressIDCLIFOR: TIntegerField
+      FieldName = 'IDCLIFOR'
+    end
+    object FDMemTableAddressENDERECO: TStringField
+      DisplayLabel = 'Endere'#231'o'
+      FieldName = 'ENDERECO'
+      Size = 60
+    end
+    object FDMemTableAddressTIPO: TStringField
+      DisplayLabel = 'Tipo'
+      FieldName = 'TIPO'
+      OnGetText = FDMemTableAddressTIPOGetText
+      OnSetText = FDMemTableAddressTIPOSetText
+      Size = 1
+    end
+    object FDMemTableAddressNUMERO: TStringField
+      DisplayLabel = 'N'#250'mero'
+      FieldName = 'NUMERO'
+      Size = 10
+    end
+    object FDMemTableAddressBAIRRO: TStringField
+      DisplayLabel = 'Bairro'
+      FieldName = 'BAIRRO'
+      Size = 60
+    end
+    object FDMemTableAddressCIDADE: TStringField
+      DisplayLabel = 'Munic'#237'pio'
+      FieldName = 'CIDADE'
+      Size = 60
+    end
+    object FDMemTableAddressTELEFONE: TStringField
+      DisplayLabel = 'Telefone'
+      FieldName = 'TELEFONE'
+      Size = 15
+    end
+    object FDMemTableAddressESTADO: TStringField
+      DisplayLabel = 'Estado'
+      FieldName = 'ESTADO'
+      OnChange = FDMemTableAddressESTADOChange
+      OnSetText = FDMemTableAddressESTADOSetText
+      Size = 2
+    end
+    object FDMemTableAddressINVALID: TSmallintField
+      FieldName = 'INVALID'
+    end
+  end
+  object DataSourceAddress: TDataSource
+    DataSet = FDMemTableAddress
+    OnDataChange = DataSourceAddressDataChange
+    Left = 480
+    Top = 72
+  end
+  object IBQueryCidades: TIBQuery
+    Database = Form7.IBDatabase1
+    BufferChunks = 1000
+    CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
+    Left = 624
+    Top = 17
+  end
+  object DataSourceCidades: TDataSource
+    DataSet = IBQueryCidades
+    Left = 624
+    Top = 80
   end
 end

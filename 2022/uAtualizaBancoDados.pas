@@ -3473,6 +3473,52 @@ begin
   end;
   {Mauricio Parizotto 2024-10-14 Fim}
 
+  if not(CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CLIFOR', 'IDCLIFOR')) then
+  begin
+    ShowMessage('IDCLIFOR');
+    if ExecutaComando('ALTER TABLE CLIFOR ADD IDCLIFOR INTEGER NOT NULL') then
+    begin
+      ExecutaComando('Commit');
+
+      ExecutaComando('CREATE SEQUENCE G_CLIFORIDCLIFOR');
+
+      ExecutaComando('UPDATE CLIFOR SET IDCLIFOR = GEN_ID(G_CLIFORIDCLIFOR, 1)');
+
+      ExecutaComando('Commit');
+
+      ExecutaComando('CREATE UNIQUE INDEX IDX_CLIFOR_IDCLIFOR ON CLIFOR(IDCLIFOR)');
+
+      ExecutaComando('Commit');
+    end;
+  end;
+
+  if not(TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase,
+    'CLIFORENDERECOS')) then
+  begin
+    ExecutaComando(
+      'CREATE TABLE CLIFORENDERECOS ( '+
+      ' IDENDERECO INTEGER NOT NULL, '+
+      ' IDCLIFOR INTEGER NOT NULL, '+
+      ' TIPO CHAR(1), '+
+      ' CEP VARCHAR(9), '+
+      ' ENDERECO VARCHAR(60), '+
+      ' NUMERO VARCHAR(10), '+
+      ' BAIRRO VARCHAR(60), '+
+      ' ESTADO CHAR(2), '+
+      ' CIDADE VARCHAR(60), '+
+      ' TELEFONE VARCHAR(14), '+
+      ' CONSTRAINT PK_CLIFORENDERECOS PRIMARY KEY (IDENDERECO) '+
+      ')'
+    );
+    ExecutaComando('Commit');
+    ExecutaComando('CREATE SEQUENCE G_CLIFORENDERECOS');
+    ExecutaComando('Commit');
+    ExecutaComando(
+      'CREATE INDEX IDX_CLIFORENDERECOS_IDCLIFOR ON CLIFORENDERECOS (IDCLIFOR)'
+    );
+    ExecutaComando('Commit');
+  end;
+
   Form22.Repaint;
 
   try

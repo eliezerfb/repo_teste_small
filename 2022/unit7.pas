@@ -1748,6 +1748,7 @@ type
     ibDataSet4CODIGO_IMENDES: TIntegerField;
     ributaoInteligente1: TMenuItem;
     N3: TMenuItem;
+    IBDataSet2IDCLIFOR: TIntegerField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -22183,6 +22184,19 @@ begin
   ibDataSet2REGISTRO.AsString      := sProximo;
   ibDataSet2CADASTRO.AsDateTime    := Date;
   IBDataSet2PRODUTORRURAL.AsString := 'N'; //Mauricio Parizotto 2024-06-27
+
+  with TIBQuery.Create(nil) do
+  begin
+    try
+      Database := IBDatabase1;
+      SQL.Text := 'select next value for G_CLIFORIDCLIFOR from rdb$database';
+      Open();
+      IBDataSet2IDCLIFOR.AsInteger := Fields[0].AsInteger;
+    finally
+      Free;
+    end;
+  end;
+
 end;
 
 procedure TForm7.DBGrid1ColEnter(Sender: TObject);

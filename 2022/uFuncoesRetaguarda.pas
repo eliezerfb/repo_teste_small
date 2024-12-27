@@ -80,8 +80,20 @@ uses
   function TipoPlanoContaToStr(ATipoPlanoConta: TTipoPlanoConta): String;
   function RecordExists(AConnection: TIBDatabase; ATableName,
     AFieldName: String; AKeyField: TField; AValue: String): Boolean;
+  function TipoEnderecoToString(const t: TTipoEndereco): string;
+  function TipoEnderecoToStrText(const t: TTipoEndereco): string;
+  function StrToTipoEndereco(out ok: boolean; const s: string): TTipoEndereco;
+  function StrTextTipoEndereco(out ok: boolean; const s: string): TTipoEndereco;
+  function GetTmpCharacterSet(AFieldName: String): String;
 
-
+  (*
+    TODO: retirado do ACBr, ao utilizar o componente essas duas funções
+    (StrToEnumerado e EnumeradoToStr) devem ser removidas daqui
+  *)
+  function StrToEnumerado(out ok: boolean; const s: string; const AString:
+    array of string; const AEnumerados: array of variant): variant;
+  function EnumeradoToStr(const t: variant; const AString:
+    array of string; const AEnumerados: array of variant): variant;
 
 implementation
 
@@ -1061,6 +1073,9 @@ begin
   if sCodigo = '51' then Result := 'Mato Grosso';
   if sCodigo = '52' then Result := 'Goiás';
   if sCodigo = '53' then Result := 'Distrito Federal';
+
+  if sCodigo = '99' then
+    Result := 'Exterior';
 end;
 
 function UFSigla(sCodigo: String): String;
@@ -1102,6 +1117,9 @@ begin
   if sCodigo = '51' then Result := 'MT';
   if sCodigo = '52' then Result := 'GO';
   if sCodigo = '53' then Result := 'DF';
+
+  if sCodigo = '99' then
+    Exit('EX');
 end;
 
 function UFCodigo(sUF: String): String;
@@ -1143,6 +1161,9 @@ begin
   if sUF = 'MT' then Result := '51';
   if sUF = 'GO' then Result := '52';
   if sUF = 'DF' then Result := '53';
+
+  if sUF = 'EX' then
+    Result := '99';
 end;
 
 procedure DBGridDrawColumnCell(Sender: TObject; const Rect: TRect;
@@ -1320,6 +1341,7 @@ begin
     Exit('7');
 end;
 
+
 function RecordExists(AConnection: TIBDatabase; ATableName, AFieldName: String;
   AKeyField: TField; AValue: String): Boolean;
 begin
@@ -1346,7 +1368,60 @@ begin
   end;
 end;
 
+function TipoEnderecoToString(const t: TTipoEndereco): string;
+begin
+  result := EnumeradoToStr(t, ['0', '1', '2', '3'],
+                              [tePrincipal, teEntrega, teRetirada, teCobranca]);
+end;
 
+function TipoEnderecoToStrText(const t: TTipoEndereco): string;
+begin
+  result := EnumeradoToStr(t, ['Principal', 'Entrega', 'Retirada', 'Cobrança'],
+                              [tePrincipal, teEntrega, teRetirada, teCobranca]);
+end;
+
+function StrTextTipoEndereco(out ok: boolean; const s: string): TTipoEndereco;
+begin
+  result := StrToEnumerado(ok, s, ['Principal', 'Entrega', 'Retirada', 'Cobrança'],
+                                  [tePrincipal, teEntrega, teRetirada, teCobranca]);
+end;
+
+function StrToTipoEndereco(out ok: boolean; const s: string): TTipoEndereco;
+begin
+  result := StrToEnumerado(ok, s, ['0', '1', '2', '3'],
+                                  [tePrincipal, teEntrega, teRetirada, teCobranca]);
+end;
+
+
+function StrToEnumerado(out ok: boolean; const s: string; const AString:
+  array of string; const AEnumerados: array of variant): variant;
+var
+  i: integer;
+begin
+  result := -1;
+  for i := Low(AString) to High(AString) do
+    if AnsiSameText(s, AString[i]) then
+      result := AEnumerados[i];
+  ok := result <> -1;
+  if not ok then
+    result := AEnumerados[0];
+end;
+
+function EnumeradoToStr(const t: variant; const AString:
+  array of string; const AEnumerados: array of variant): variant;
+var
+  i: integer;
+begin
+  result := '';
+  for i := Low(AEnumerados) to High(AEnumerados) do
+    if t = AEnumerados[i] then
+      result := AString[i];
+end;
+
+function GetTmpCharacterSet(AFieldName: String): String;
+begin
+  Exit(Format('cast(%s as VARCHAR(60) CHARACTER SET WIN1252)', [AFieldName]));
+end;
 
 end.
 
