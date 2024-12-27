@@ -2817,13 +2817,13 @@ begin
         if AllTrim(Form7.ibDataSet24INDPRES.AsString) = '' then
         begin
           try
-            Form7.ibQuery1.Close;
-            Form7.ibQuery1.SQL.Clear;
-            Form7.ibQuery1.SQL.Add('select first 1 INDPRES from VENDAS where coalesce(INDPRES,''X'')<>''X'' order by NUMERONF desc');
-            Form7.ibQuery1.Open;
-
-            cIndPres := Form7.ibQuery1.FieldByName('INDPRES').AsString;
-          except end;
+            cIndPres := ExecutaComandoEscalar(Form7.IBTransaction1,
+                                              ' Select first 1 INDPRES '+
+                                              ' From VENDAS '+
+                                              ' Where coalesce(INDPRES,''X'')<>''X'' '+
+                                              ' Order by NUMERONF desc');
+          except
+          end;
         end
         else
           cIndPres := Form7.ibDataSet24INDPRES.AsString;

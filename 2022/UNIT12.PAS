@@ -1060,48 +1060,7 @@ begin
   // Joga p/obs a obs na tabela de icm  Limpando o que tinha
   Form7.ibDataSet14.Locate('NOME',AllTrim(SMALL_DBEdit40.Text),[]);
 
-(*     Dailon Parisotto (f-20023) 2024-07-26 inicio
-
   if AllTrim(sOperacaoAntiga) <> AllTrim(Form7.ibDataSet14NOME.AsString) then
-  begin
-    Form7.ibQuery1.Close;
-    Form7.ibQuery1.SQL.Clear;
-    Form7.ibQuery1.SQL.Add('select * from ICM where NOME='+QuotedStr(sOperacaoAntiga)+' ');
-    Form7.ibQuery1.Open;
-    
-    Form7.ibDataSet16.DisableControls;
-    Form7.ibDataSet16.First;
-    while not Form7.ibDataSet16.EOF do // Disable
-    begin
-      if Form7.ibDataSet16TOTAL.AsString <> '' then
-      begin
-        if Form7.ibDataSet16CFOP.AsString = Form7.ibQuery1.FieldByName('CFOP').AsString then
-        begin
-          Form7.ibDataSet16.Edit;
-          Form7.ibDataSet16CFOP.AsString := '';
-        end;
-      end;
-
-      Form7.ibDataSet16.Next;
-    end;
-
-    {Dailon Parisotto (f-19945) 2024-07-17 inicio
-
-    Retributa(True);
-
-    }
-    Form7.bPesqProdNFPorConsulta := True;
-    try
-      Retributa(True);
-    finally
-      Form7.bPesqProdNFPorConsulta := False;
-    end;
-    {Dailon Parisotto (f-19945) 2024-07-17 Fim}
-    if Form7.ibDataSet16.Modified then
-      Form7.ibDataSet16.Post;
-  end;         *)
-
-    if AllTrim(sOperacaoAntiga) <> AllTrim(Form7.ibDataSet14NOME.AsString) then
   begin
     Form7.ibQuery1.Close;
     Form7.ibQuery1.SQL.Clear;
