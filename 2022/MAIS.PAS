@@ -3445,7 +3445,8 @@ begin
         try
           Form1.ibDataset200.Close;
           Form1.ibDataset200.SelectSql.Clear;
-          Form1.ibDataset200.SelectSql.Add('update rdb$relation_fields set rdb$null_flag = 1 where (rdb$field_name = '+QuotedStr('REGISTRO')+') and (rdb$relation_name = '+QuotedStr(sP1)+')');
+          Form1.ibDataset200.SelectSql.Add(
+          'update rdb$relation_fields set rdb$null_flag = 1 where (rdb$field_name = '+QuotedStr('REGISTRO')+') and (rdb$relation_name = '+QuotedStr(sP1)+')');
           Form1.ibDataset200.Open;
         except
         end;
@@ -7025,6 +7026,33 @@ begin
     Form1.ibQuery1.SQL.Add('set generator G_CODIGO to 0'+sMax+' ');
     Form1.ibQuery1.ExecSQL;
   except end;
+
+  if CampoExisteFB(Form7.IBDatabase1, 'ESTOQUE', 'IDESTOQUE') then
+  begin
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text := 'select max(IDESTOQUE)max_id from ESTOQUE';
+    Form1.ibQuery1.Open();
+    Form1.ibQuery1.SQL.Text :=
+      Format(
+        'set generator G_ESTOQUEIDESTOQUE to %d',
+        [Form1.ibQuery1.FieldByName('max_id').AsInteger]
+      );
+    Form1.ibQuery1.ExecSQL;
+  end;
+
+  if CampoExisteFB(Form7.IBDatabase1, 'CLIFOR', 'IDCLIFOR') then
+  begin
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text := 'select max(IDCLIFOR)max_id from CLIFOR';
+    Form1.ibQuery1.Open();
+    Form1.ibQuery1.SQL.Text :=
+      Format(
+        'set generator G_CLIFORIDCLIFOR to %d',
+        [Form1.ibQuery1.FieldByName('max_id').AsInteger]
+      );
+    Form1.ibQuery1.ExecSQL;
+  end;
+
 
   // Indices
   Mensagem22('Ajustando arquivos ' + NumeroArquivo());
