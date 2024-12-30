@@ -34,7 +34,7 @@ uses
   , uSmallEnumerados
   , synPDF, System.MaskUtils
   , uRetornaCustoMedio
-  , uRelatorioResumoVendas
+  , uRelatorioResumoVendas, IBX.IBSQL
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -17332,6 +17332,31 @@ begin
       if Form7.ibDataSet9.RecordCount > 0  then // Se ambos estiverem vazios, Form7.ibDataSet9NOME.AsString e Form7.ibDataset2NOME.AsString ocorre erro
         Form7.ibDataSet9.Delete;
     except end;
+  end;
+
+  var QryDeleteCascate := TIBSQL.Create(nil);
+  try
+    try
+      QryDeleteCascate.Database := IBDatabase1;
+      QryDeleteCascate.Transaction := IBTransaction1;
+      QryDeleteCascate.SQL.Text := 'delete from cliforenderecos '+
+        ' where idclifor = :idclifor';
+      QryDeleteCascate.ParamByName('idclifor').AsInteger :=
+        DataSet.FieldByName('idclifor').AsInteger;
+      QryDeleteCascate.ExecQuery;
+    except
+      on E:Exception do
+      begin
+        MensagemSistema(
+          'Não foi possível excluir os endereços do cliente/fornecedor.'+
+          #13+#13+'Mensagem do sistema:'+#13+E.Message,
+          msgAtencao
+        );
+        Abort;
+      end;
+    end;
+  finally
+    QryDeleteCascate.Free;
   end;
 
   RegistraExclusaoRegistro(IBDataSet2);
