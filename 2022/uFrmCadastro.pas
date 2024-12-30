@@ -235,6 +235,9 @@ end;
 procedure TFrmCadastro.FDMemTableAddressAfterInsert(DataSet: TDataSet);
 begin
   inherited;
+  if not(FDMemTableAddress.CachedUpdates) then
+    Exit;
+
   FDMemTableAddressIDENDERECO.AsInteger :=
     IncGenerator(Form7.IBDatabase1, 'G_CLIFORENDERECOS').ToInteger;
   FDMemTableAddressTIPO.AsString := TipoEnderecoToString(teEntrega);
