@@ -752,6 +752,12 @@ var
                 else
                   sMensagem := 'Serial sem acesso à esse recurso. Entre em contato com sua revenda.';
 
+                {Sandro Silva (smal-778) 2024-12-30 inicio}
+                // TEF Elgin retorna texto em UTF8 "CRÃ‰DITO - MASTERCARD"
+                if Utf8ToAnsi(sMensagem) <> '' then
+                  sMensagem := Utf8ToAnsi(sMensagem);
+                {Sandro Silva (smal-778) 2024-12-30 fim}
+
                 CloseFile(F);
 
                 if Pos('PIX', AnsiUpperCase(sRespostaTef)) > 0 then
@@ -999,6 +1005,13 @@ var
     if Result = True then
     begin
       Form1.TransacaoTEF.TextoImpressao := FsCupomReduzidoAutorizado + Form1.sCupomTEFReduzido + FsCupomAutorizado + Form1.TransacaoTEF.TextoImpressao;
+
+      {Sandro Silva (smal-778) 2024-12-30 inicio}
+      // TEF Elgin retorna texto em UTF8 "CRÃ‰DITO - MASTERCARD"
+      if Utf8ToAnsi(Form1.TransacaoTEF.TextoImpressao) <> '' then
+        Form1.TransacaoTEF.TextoImpressao := Utf8ToAnsi(Form1.TransacaoTEF.TextoImpressao);
+      {Sandro Silva (smal-778) 2024-12-30 fim}
+
       (*Sandro Silva 2024-12-06
       // Ajuste para situação do TEF Elgin que pode ficar uma quebra linha no inicio.
       // Neste caso irá remover a quebra linha do inicio do arquivo caso exista.

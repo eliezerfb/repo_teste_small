@@ -84,11 +84,14 @@ begin
     end;
   end;
 
-  for I := 0 to (sSecoes.Count - 1) do
+  if Ini.ReadString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cNao) = _cSim then
   begin
-    if AnsiUpperCase(Ini.ReadString(sSecoes[I], 'CARTAO ACEITO', _cNao)) = AnsiUpperCase(_cSim) then
+    for I := 0 to (sSecoes.Count - 1) do
     begin
-      AddOpcao(TIPO_POS, sSecoes[I]);
+      if AnsiUpperCase(Ini.ReadString(sSecoes[I], 'CARTAO ACEITO', _cNao)) = AnsiUpperCase(_cSim) then
+      begin
+        AddOpcao(TIPO_POS, sSecoes[I]);
+      end;
     end;
   end;
 
@@ -105,8 +108,21 @@ class function TFrmOpcoesFechamentoComCartao.CriaForm(var TipoTransacao: TTipoTr
 begin
    TipoTransacao.Tipo := tpNone;
    Application.CreateForm(TFrmOpcoesFechamentoComCartao, FrmOpcoesFechamentoComCartao);
+
+   {
    FrmOpcoesFechamentoComCartao.ShowModal;
    Result := FrmOpcoesFechamentoComCartao.ModalResult;
+   }
+
+   if FrmOpcoesFechamentoComCartao.CDSOPCOES.RecordCount = 1  then
+   begin
+     Result := mrOk;
+   end
+   else
+   begin
+     FrmOpcoesFechamentoComCartao.ShowModal;
+     Result := FrmOpcoesFechamentoComCartao.ModalResult;
+   end;
 
    if Result = mrOk then
    begin

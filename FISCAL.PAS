@@ -12123,10 +12123,10 @@ begin
             CloseFile(F);
             Sleep(100); // Sandro Silva 2017-06-14
             RenameFile('c:\' + Form1.TransacaoTEF.Cliente.Pasta + '\' + Form1.sReqTEF + '\IntPos.tmp', 'c:\' + Form1.TransacaoTEF.Cliente.Pasta + '\' + Form1.sReqTEF + '\INTPOS.001');
-            Sleep(1000); // Sandro Silva 2017-06-23
+            Sleep(100); // Sandro Silva 2024-12-30 Sleep(1000);
             TEFAguardarRetornoStatus('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF, sIdentificaTransacaoTEF);
 
-            Sleep(10000);
+            Sleep(5000); // Sandro Silva 2024-12-30 Sleep(10000);
 
           end;
           //quando excluir se deu tudo certo?
@@ -17263,7 +17263,10 @@ begin
             Form1.ibDataSet4.SelectSQL.Clear;
             Form1.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where REFERENCIA='+QuotedStr(Alltrim(Edit1.Text))+' and coalesce(ATIVO,0)=0');
             Form1.ibDataSet4.Open;
-            if Form1.ibDataSet4.FieldByName('REFERENCIA').AsString = Edit1.Text then bFind := True else
+            if Form1.ibDataSet4.FieldByName('REFERENCIA').AsString = Edit1.Text then
+            begin
+             bFind := True
+            end else
             begin
               if Limpanumero(Edit1.Text) = Edit1.Text then
               begin
