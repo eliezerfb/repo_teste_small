@@ -13706,12 +13706,13 @@ begin
               if Field.FieldName = 'REFERENCIA' then
               begin
                 try
-                  //if not ValidaEAN13(Form7.ibDataSet4REFERENCIA.AsString) then Mauricio Parizotto 2023-07-05
-                  if not ValidaEAN(Form7.ibDataSet4REFERENCIA.AsString) then
+                  DBGrid1.Canvas.Font.Color := clBlack;
+                  if not(ValidaEAN(Form7.ibDataSet4REFERENCIA.AsString)) and
+                  not(Form7.ibDataSet4REFERENCIA.AsString = 'SEM GTIN') then
                   begin
                     DBGrid1.Canvas.Font.Color := clRed;
                     DBGrid1.Canvas.Font.Style := [fsUnderline];
-                  end else DBGrid1.Canvas.Font.Color := clBlack;
+                  end;
                 except
                   DBGrid1.Canvas.Font.Color := clRed;
                   DBGrid1.Canvas.Font.Style := [fsUnderline];
