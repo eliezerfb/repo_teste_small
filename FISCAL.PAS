@@ -17103,6 +17103,8 @@ begin
                 Edit1.Enabled        := False;
                 lbDisplayPDV.Enabled := False;
 
+                {Sandro Silva (smal-778) 2024-12-30 inicio
+                Ficou diferente depois do merge que puxou as branch main para cima da branch smal-778
                 Form1.ibDataSet27.First;
                 while not Form1.ibDataSet27.Eof do
                 begin
@@ -17180,6 +17182,82 @@ begin
 
                   Form1.ibDataSet27.Next;
                 end;
+                }
+                Form1.ibDataSet27.First;
+                while not Form1.ibDataSet27.Eof do
+                begin
+                  if (Form1.iMesaAberta <> 0) and (Form1.sModeloECF = '01') then
+                  begin
+                    // Cancelando item da mesa
+                    //if Form1.ibDataSet27.FieldByname('ITEM').AsString = StrZero(StrToInt(AllTrim(sTexto))*-1,6,0) then  // Mauricio Parizotto 2024-07-08
+                    if (Form1.ibDataSet27.FieldByName('ITEM').AsString = StrZero(StrToIntDef(AllTrim(sTexto),0)*-1,6,0))
+                       or
+                       (Copy(AllTrim(sTexto),2,1) = '*') then //Cancela todos os itens
+                    begin
+                      // Cancela Item N
+                      try // Sandro Silva 2020-06-19
+                        Form1.ibDataSet27.Edit;
+                        Form1.ibDataSet27.FieldByname('VENDEDOR').AsString := '<cancelado>';
+                        Form1.ibDataSet27.Post;
+                      except
+                      end;
+
+                      if (Copy(AllTrim(sTexto),2,1) <> '*') then
+                      begin
+                        CommitaTudo(False); // Cancelamento de item na mesa
+
+                        iMesaAbertaRes := Form1.iMesaAberta;
+                        Form1.Button8Click(Sender);
+                        Form1.iMesaAberta := iMesaAbertaRes;
+                        Form1.sModeloECF := '01';
+
+                        bPedeDadosOs := False;
+                        AberturaDoCupom;
+                        bPedeDadosOs := True;
+                      end;
+                    end;
+                  end else
+                  begin
+                    if (Form1.ibDataSet27.FieldByName('CAIXA').AsString=sCaixa)
+                      and (Form1.ibDataSet27.FieldByName('PEDIDO').AsString=FormataNumeroDoCupom(Form1.icupom))
+                      //and (Form1.ibDataSet27.FieldByName('ITEM').AsString = StrZero(StrToInt(AllTrim(sTexto))*-1,6,0)) then Mauricio Parizotto 2024-07-08 SMAL-511
+                      and (
+                            (Form1.ibDataSet27.FieldByName('ITEM').AsString = StrZero(StrToIntDef(AllTrim(sTexto),0)*-1,6,0))
+                            or
+                            (Copy(AllTrim(sTexto),2,1) = '*') //Cancela todos os itens
+                          ) then
+                    begin
+                      // Cancela Item N
+                      if (Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = '<CANCELADO>') or (Form1.ibDataSet27.FieldByName('TIPO').AsString = 'KOLNAC') then // Sandro Silva 2019-03-26 if Form1.ibDataSet27.FieldByName('DESCRICAO').AsString = '<CANCELADO>' then
+                      begin
+                        if Copy(AllTrim(sTexto),2,1) <> '*' then //Mauricio Parizotto 2024-07-23
+                          SmallMsg(ibDataSet27.FieldByName('ITEM').AsString+#13#10+
+                                  'Este item já foi cancelado!');
+                      end
+                      else
+                      begin
+                        //Form1.Button11Click(Sender); // CalcelaItenN Mauricio Parizotto 2024-07-08
+                        sITEM     := ibDataSet27.FieldByName('ITEM').AsString;
+                        sRegistro := ibDataSet27.FieldByName('REGISTRO').AsString;
+
+                        if sITEM <> '' then
+                        begin
+                          CancelaItem(sITEM);
+                        end else
+                        begin
+                          CancelaDescontoAcrescimo; //Mauricio Parizotto 2024-07-24
+                        end;
+
+                        //Volta ao registro que estava para continuar o cancelamento
+                        if (Copy(AllTrim(sTexto),2,1) = '*') then
+                          Form1.ibDataSet27.Locate('REGISTRO',sRegistro,[]);
+                      end;
+                    end;
+                  end;
+
+                  Form1.ibDataSet27.Next;
+                end;
+                {Sandro Silva (smal-778) 2024-12-30 fim}
 
               finally
                 Panel1.Enabled       := True;
