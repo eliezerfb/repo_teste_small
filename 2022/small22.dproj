@@ -93,11 +93,11 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_MajorVer>2024</VerInfo_MajorVer>
-        <VerInfo_Build>108</VerInfo_Build>
+        <VerInfo_Build>114</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.43.0.108;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.43.0.108;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.46.0.114;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.46.0.114;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
         <Manifest_File>xp.manifest</Manifest_File>
-        <VerInfo_MinorVer>43</VerInfo_MinorVer>
+        <VerInfo_MinorVer>46</VerInfo_MinorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -114,7 +114,6 @@
         <Manifest_File>xp.manifest</Manifest_File>
         <VerInfo_MajorVer>2024</VerInfo_MajorVer>
         <VerInfo_Build>106</VerInfo_Build>
-        <DCC_ExeOutput>\desenvolvimento\executaveis\Small Commerce</DCC_ExeOutput>
         <VerInfo_MinorVer>42</VerInfo_MinorVer>
     </PropertyGroup>
     <ItemGroup>
@@ -613,6 +612,10 @@
         <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
         <DCCReference Include="units\uImendes.pas"/>
         <DCCReference Include="uCalculaImpostos.pas"/>
+        <DCCReference Include="uAtorInteressado.pas">
+            <Form>fmAtorInteressado</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -634,10 +637,6 @@
                     <Source Name="MainSource">small22.dpr</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfrxPDF28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfrxPDF28.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsADO28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsADO28.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsIBX28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsIBX28.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
@@ -647,7 +646,7 @@
                 <Platform value="Win64">False</Platform>
             </Platforms>
             <Deployment Version="3">
-                <DeployFile LocalName="..\..\..\..\..\executaveis\Small Commerce\small22.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="D:\Desenvolvimento\Executaveis\Small Commerce\small22.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>small22.exe</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -1471,7 +1470,7 @@
                 <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Deployment Version="3">
-                <DeployFile LocalName="..\..\..\..\..\executaveis\Small Commerce\small22.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="D:\Desenvolvimento\Executaveis\Small Commerce\small22.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>small22.exe</RemoteName>
                         <Overwrite>true</Overwrite>

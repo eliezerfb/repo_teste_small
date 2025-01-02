@@ -3519,6 +3519,22 @@ begin
     ExecutaComando('Commit');
   end;
 
+  if not(TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ATORINTERESSADO')) then
+  begin
+    ExecutaComando(
+      'create table ATORINTERESSADO ('+
+        'IDATORINTERESSADO INTEGER, '+
+        'NUMERONF VARCHAR(12), '+
+        'MODELO VARCHAR(2), '+
+        'CPFCNPJ VARCHAR(14), '+
+        'IS_PROTECTED SMALLINT, '+
+        'CONSTRAINT PK_ATORINTERESSADO PRIMARY KEY (IDATORINTERESSADO) '+
+      ')'
+    );
+    ExecutaComando('CREATE SEQUENCE G_ATORINTERESSADO');
+    ExecutaComando('commit');
+  end;
+
   Form22.Repaint;
 
   try

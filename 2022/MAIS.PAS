@@ -38,7 +38,8 @@ uses
   function AvisoVencimentoSerial:Boolean; // Mauricio Parizotto 2024-08-16
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
-const BUILD_DO_BANCO = '2024037'; //Sandro Silva 2024-11-14 const BUILD_DO_BANCO = '2024034'; //Sandro Silva 2024-11-08 const BUILD_DO_BANCO = '2024032'; //Sandro Silva 2024-10-03 const BUILD_DO_BANCO = '2024030'; //Sandro Silva 2024-09-19 const BUILD_DO_BANCO = '2024028'; //Sandro Silva 2024-08-29 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
+// Build do banco incrementa sempre par
+const BUILD_DO_BANCO = '2024038'; //Sandro Silva 2024-12-27 const BUILD_DO_BANCO = '2024037'; //Sandro Silva 2024-11-14 const BUILD_DO_BANCO = '2024034'; //Sandro Silva 2024-11-08 const BUILD_DO_BANCO = '2024032'; //Sandro Silva 2024-10-03 const BUILD_DO_BANCO = '2024030'; //Sandro Silva 2024-09-19 const BUILD_DO_BANCO = '2024028'; //Sandro Silva 2024-08-29 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -3444,7 +3445,8 @@ begin
         try
           Form1.ibDataset200.Close;
           Form1.ibDataset200.SelectSql.Clear;
-          Form1.ibDataset200.SelectSql.Add('update rdb$relation_fields set rdb$null_flag = 1 where (rdb$field_name = '+QuotedStr('REGISTRO')+') and (rdb$relation_name = '+QuotedStr(sP1)+')');
+          Form1.ibDataset200.SelectSql.Add(
+          'update rdb$relation_fields set rdb$null_flag = 1 where (rdb$field_name = '+QuotedStr('REGISTRO')+') and (rdb$relation_name = '+QuotedStr(sP1)+')');
           Form1.ibDataset200.Open;
         except
         end;
@@ -7024,6 +7026,33 @@ begin
     Form1.ibQuery1.SQL.Add('set generator G_CODIGO to 0'+sMax+' ');
     Form1.ibQuery1.ExecSQL;
   except end;
+
+  if CampoExisteFB(Form7.IBDatabase1, 'ESTOQUE', 'IDESTOQUE') then
+  begin
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text := 'select max(IDESTOQUE)max_id from ESTOQUE';
+    Form1.ibQuery1.Open();
+    Form1.ibQuery1.SQL.Text :=
+      Format(
+        'set generator G_ESTOQUEIDESTOQUE to %d',
+        [Form1.ibQuery1.FieldByName('max_id').AsInteger]
+      );
+    Form1.ibQuery1.ExecSQL;
+  end;
+
+  if CampoExisteFB(Form7.IBDatabase1, 'CLIFOR', 'IDCLIFOR') then
+  begin
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text := 'select max(IDCLIFOR)max_id from CLIFOR';
+    Form1.ibQuery1.Open();
+    Form1.ibQuery1.SQL.Text :=
+      Format(
+        'set generator G_CLIFORIDCLIFOR to %d',
+        [Form1.ibQuery1.FieldByName('max_id').AsInteger]
+      );
+    Form1.ibQuery1.ExecSQL;
+  end;
+
 
   // Indices
   Mensagem22('Ajustando arquivos ' + NumeroArquivo());

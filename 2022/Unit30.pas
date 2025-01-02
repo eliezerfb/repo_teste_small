@@ -129,7 +129,6 @@ type
     procedure DBGrid2ColExit(Sender: TObject);
     procedure DBGrid1KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure ListBox2Click(Sender: TObject);
     procedure DBGrid1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DBGrid3DblClick(Sender: TObject);
@@ -161,7 +160,6 @@ type
     procedure fFrameIdentifi2txtCampoEnter(Sender: TObject);
     procedure fFrameIdentifi3txtCampoEnter(Sender: TObject);
     procedure fFrameIdentifi4txtCampoEnter(Sender: TObject);
-    procedure fFrameDescricaogdRegistrosDblClick(Sender: TObject);
     procedure SMALL_DBEdit7Exit(Sender: TObject);
     procedure SMALL_DBEdit7Click(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
@@ -1078,51 +1076,6 @@ begin
   {Mauricio Parizotto 2023-11-15 Fim}
 end;
 
-procedure TForm30.ListBox2Click(Sender: TObject);
-begin
-  //
-  (*// Sandro Silva 2023-09-28
-  if ListBox22.Top < DBGrid1.Top then
-  begin
-    {Sandro Silva 2023-09-28 inicio
-    try
-      if ListBox22.Items.Count >= 1 then
-      begin
-        Form7.ibDataSet3.Edit;
-        Form7.ibDataSet3.FieldByName(sDataField).AsString := ListBox22.Items[ListBox22.ItemIndex];
-     end;
-    except end;
-    //
-    Perform(Wm_NextDlgCtl,0,0);
-    //
-    }
-  end else
-  begin
-    {Sandro Silva 2023-09-28 inicio
-    try
-      if ListBox22.Items.Count >= 1 then
-      begin
-        Form7.ibDataSet35.Edit;
-        Form7.ibDataSet35DESCRICAO.AsString := ListBox22.Items[ListBox22.ItemIndex];
-        Form7.ibDataSet35TOTAL.AsFloat      := fPrecoDoServico[ListBox22.ItemIndex];
-        Form7.ibDataSet35UNITARIO.AsFloat   := fPrecoDoServico[ListBox22.ItemIndex];
-        Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
-      end;
-    except
-    end;
-    }
-    {Sandro Silva 2023-09-28 inicio
-    //
-    ListBox22.Visible      := False;
-    dbGrid2.SetFocus;
-//    DbGrid1.SelectedIndex := DbGrid1.SelectedIndex + 1;
-    //
-    }
-  end;
-  //
-  *)
-end;
-
 procedure TForm30.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
@@ -1583,16 +1536,6 @@ procedure TForm30.fFrameIdentifi4txtCampoEnter(Sender: TObject);
 begin
   fFrameIdentifi4.txtCampoEnter(Sender);
   OcultaListaDePesquisa;
-end;
-
-procedure TForm30.fFrameDescricaogdRegistrosDblClick(Sender: TObject);
-begin
-  fFrameDescricao.gdRegistrosDblClick(Sender);
-  Form7.ibDataSet35.Edit;
-  Form7.ibDataSet35TOTAL.AsFloat      := TDBGrid(Sender).DataSource.DataSet.FieldByName('TOTAL').AsFloat;//( fPrecoDoServico[ListBox22.ItemIndex];
-  Form7.ibDataSet35UNITARIO.AsFloat   := TDBGrid(Sender).DataSource.DataSet.FieldByName('UNITARIO').AsFloat;//fPrecoDoServico[ListBox22.ItemIndex];
-  Form7.ibDataSet35QUANTIDADE.AsFloat := 1;
-
 end;
 
 procedure TForm30.SMALL_DBEdit7Exit(Sender: TObject);
