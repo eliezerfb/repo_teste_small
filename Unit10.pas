@@ -62,6 +62,7 @@ uses fiscal
 , uFuncoesPos
 , ufuncoestef // Sandro Silva 2024-11-19
 , uTransacionaPosOuTef
+, uSmallConsts
 ;
 
 {$R *.DFM}
@@ -226,7 +227,7 @@ begin
         SelecionarAdministradora;
 
         if FTipoForm = tfPOS then
-          ModalResult := mrOk; // Sandro Silva 2023-06-05
+          ModalResult := mrOk;
         if FTipoForm = tfTEF then
           Close;
 
@@ -237,7 +238,7 @@ begin
         Close;
       end;
   end;
-  // Sandro Silva 2023-06-05 Close;
+
 end;
 
 procedure TForm10.FormShow(Sender: TObject);
@@ -246,22 +247,18 @@ var
   sSecoes :  TStrings;
   I, J : Integer;
 begin
-  {Sandro Silva 2021-09-21 inicio}
   btnMais.Top  := AjustaAltura(8);
   btnMenos.Top  := btnMais.Top;
   Button3.Top  := btnMais.Top;
   btnMais.Left := AjustaLargura(15);
   Button3.Left := Form10.Width - Button3.Width - btnMais.Left;
   btnMenos.Left := btnMais.Left + btnMais.Width + AjustaLargura(15) + (Form10.Width - btnMais.Width - btnMenos.Width - Button3.Width - AjustaLargura(30)) div 3;
-  {Sandro Silva 2021-09-21 fim}
 
-  {Sandro Silva 2023-06-06 inicio}
-  ModalResult := mrNone; // Sandro Silva 2023-06-05
+  ModalResult := mrNone;
 
   KeyPreview := False;
   if FTipoForm = tfPOS then
     KeyPreview := True;
-  {Sandro Silva 2023-06-06 fim}
   //
   sSecoes := TStringList.Create;
   Mais1ini := TIniFile.Create('FRENTE.INI');
@@ -293,7 +290,13 @@ begin
           begin
             Mais1Ini.WriteString('VISA DEBITO','CARTAO ACEITO','SIM');
           end;
+
+          // Após criar as opções de POS cria chave para habilitar uso de POS
+          Form1.sHabilitarUsoPOS := _cSim;
+          GravarParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, Form1.sHabilitarUsoPOS);
+          Form1.HabilitarusodePOS1.Checked := True;
         end;
+
       end;
     tfTEF:
       begin
