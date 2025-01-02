@@ -576,6 +576,9 @@ end;
 
 procedure TFrmCadastro.SelectCity;
 begin
+  if not(IBQueryCidades.Active) then
+    Exit;
+
   if FDMemTableAddress.State = dsBrowse then
     FDMemTableAddress.Edit;
 
@@ -1123,10 +1126,10 @@ begin
   end;
 
   if (Key in [VK_DOWN, VK_RETURN]) and
-    (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE'))
-    and (DBGridAddress.Visible) then
+    (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE')) then
   begin
-    FDBGRidCities.SetFocus;
+    if (FPanelCities.Visible) and (DBGridAddress.CanFocus) then
+      FDBGRidCities.SetFocus;
     Key := 0;
     Abort;
   end;
@@ -1503,11 +1506,23 @@ begin
   if not(DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE')) then
     Exit();
 
-  if not(FDMemTableAddressCIDADE.AsString = '') then
+  if not(Trim(FDMemTableAddressCIDADE.AsString) = '') then
     FilterCity(
       FDMemTableAddressESTADO.AsString,
       FDMemTableAddressCIDADE.AsString
-    );
+    )
+  else if (Trim(FDMemTableAddressESTADO.AsString) = '') then
+  begin
+    if FDMemTableAddress.State in ([dsInsert, dsEdit]) then
+    begin
+      if IBQueryCidades.Active and not(IBQueryCidades.FieldByName('UF').AsString = '') then
+        FDMemTableAddressESTADO.AsString := IBQueryCidades.FieldByName('UF').AsString
+      else if not(DSCadastro.DataSet.FieldByName('ESTADO').AsString = '') then
+        FDMemTableAddressESTADO.AsString := DSCadastro.DataSet.FieldByName('ESTADO').AsString;
+      FilterCity(FDMemTableAddressESTADO.AsString);
+    end;
+  end;
+
 
   var Col := DBGridAddress.SelectedIndex;
   var Row := THackDBGrid(DBGridAddress).Row;

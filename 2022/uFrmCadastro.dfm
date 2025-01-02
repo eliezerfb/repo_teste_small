@@ -25,7 +25,7 @@ inherited FrmCadastro: TFrmCadastro
       end
     end
     inherited pgcFicha: TPageControl
-      ActivePage = tbsAddress
+      ActivePage = tbsCadastro
       object tbsCadastro: TTabSheet
         Caption = 'Ficha'
         object Label2: TLabel
