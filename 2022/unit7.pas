@@ -1709,7 +1709,7 @@ type
     ibDataSet11PIXTITULAR: TIBStringField;
     ibDataSet11PIXCHAVE: TIBStringField;
     ibDataSet11IDBANCO: TIntegerField;
-	ibDataSet14REFERENCIANOTA: TIBStringField;
+  	ibDataSet14REFERENCIANOTA: TIBStringField;
     S1: TMenuItem;
     SFornecedor1: TMenuItem;
     SClienteFornecedor1: TMenuItem;
@@ -16012,8 +16012,6 @@ begin
 
   ibDataSet14SOBREFRETE.ReadOnly     := True;
   ibDataSet14SOBRESEGURO.ReadOnly    := True;
-  ibDataSet14REFERENCIANOTA.ReadOnly := True;
-  ibDataSet14IMPOSTOMANUAL.ReadOnly  := True;
   {Mauricio Parizotto 2024-10-16 Fim}
 end;
 
