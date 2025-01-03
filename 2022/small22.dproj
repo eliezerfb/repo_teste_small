@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -615,6 +615,9 @@
         <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
         <DCCReference Include="units\uImendes.pas"/>
         <DCCReference Include="uCalculaImpostos.pas"/>
+        <DCCReference Include="uAtorInteressado.pas">
+            <Form>fmAtorInteressado</Form>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
