@@ -173,6 +173,7 @@ type
     procedure FDMemTableAddressBeforePost(DataSet: TDataSet);
     procedure DBGridAddressDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure tbsAddressHide(Sender: TObject);
   private
     { Private declarations }
     FOldCEPEnderecoAdicional: String;
@@ -406,7 +407,7 @@ begin
     if not(APartialName = '') then
       IBQueryCidades.ParamByName('nome').AsString := '%'+APartialName+'%';
     IBQueryCidades.ParamByName('uf').AsString := AUf;
-    IBQueryCidades.Open;
+    IBQueryCidades.Open();
   finally
     IBQueryCidades.EnableControls;
   end;
@@ -747,6 +748,13 @@ begin
   end;
 end;
 
+procedure TFrmCadastro.tbsAddressHide(Sender: TObject);
+begin
+  inherited;
+  if not(FPanelCities = nil) and (FPanelCities.Visible) then
+    FPanelCities.Visible := False;
+end;
+
 procedure TFrmCadastro.tbsAddressShow(Sender: TObject);
 begin
   inherited;
@@ -1023,6 +1031,7 @@ end;
 procedure TFrmCadastro.DBGridAddressColEnter(Sender: TObject);
 begin
   inherited;
+
   if DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CEP') then
   begin
     FOldCEPEnderecoAdicional := FDMemTableAddressCEP.AsString;
@@ -1074,7 +1083,7 @@ begin
       on e:exception do
       begin
         DBGridAddress.SelectedIndex := CEPIndex;
-        raise Exception.Create(e.Message);
+        MensagemSistema(e.Message);
       end;
     end;
   end;
@@ -1119,7 +1128,8 @@ begin
 
   if (Key = VK_DELETE) and not(DBGridAddress.EditorMode) then
   begin
-    FDMemTableAddress.Delete();
+    if not(FDMemTableAddress.IsEmpty) then
+      FDMemTableAddress.Delete();
     if (Shift = [SsCtrl]) and (key = VK_DELETE) then
       key := 0;
     Exit;
@@ -1140,6 +1150,7 @@ var
   Input: String;
 begin
   inherited;
+
   if (Key = #13) then
   begin
     if FPanelCities.Visible then

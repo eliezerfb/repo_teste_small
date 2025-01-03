@@ -25,7 +25,7 @@ inherited FrmCadastro: TFrmCadastro
       end
     end
     inherited pgcFicha: TPageControl
-      ActivePage = tbsCadastro
+      ActivePage = tbsAddress
       object tbsCadastro: TTabSheet
         Caption = 'Ficha'
         object Label2: TLabel
@@ -1780,6 +1780,7 @@ inherited FrmCadastro: TFrmCadastro
       object tbsAddress: TTabSheet
         Caption = 'Endere'#231'os adicionais'
         ImageIndex = 3
+        OnHide = tbsAddressHide
         OnShow = tbsAddressShow
         object PanelAddress: TPanel
           Left = 0
@@ -1800,7 +1801,7 @@ inherited FrmCadastro: TFrmCadastro
             Height = 385
             Align = alClient
             DataSource = DataSourceAddress
-            Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+            Options = [dgEditing, dgTitles, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
             TabOrder = 0
             TitleFont.Charset = ANSI_CHARSET
             TitleFont.Color = clWindowText
@@ -1817,6 +1818,7 @@ inherited FrmCadastro: TFrmCadastro
               item
                 Expanded = False
                 FieldName = 'TIPO'
+                ReadOnly = True
                 Width = 51
                 Visible = True
               end
