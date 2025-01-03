@@ -1709,7 +1709,7 @@ type
     ibDataSet11PIXTITULAR: TIBStringField;
     ibDataSet11PIXCHAVE: TIBStringField;
     ibDataSet11IDBANCO: TIntegerField;
-	ibDataSet14REFERENCIANOTA: TIBStringField;
+  	ibDataSet14REFERENCIANOTA: TIBStringField;
     S1: TMenuItem;
     SFornecedor1: TMenuItem;
     SClienteFornecedor1: TMenuItem;
@@ -9349,6 +9349,7 @@ begin
     (DBGrid1.SelectedField.Name = 'ibDataSet14IPISOBREOUTRA') or //Mauricio Parizotto 2024-04-22
     (DBGrid1.SelectedField.Name = 'ibDataSet11PIXESTATICO') or //Mauricio Parizotto 2024-05-27
     (DBGrid1.SelectedField.Name = 'ibDataSet14REFERENCIANOTA') or //Mauricio Parizotto 2024-06-21
+    (DBGrid1.SelectedField.Name = 'ibDataSet14IMPOSTOMANUAL') or
     (DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI')  then
  begin
    if Key <> chr(13) then
@@ -15969,8 +15970,8 @@ begin
 
   ibDataSet14SOBREFRETE.ReadOnly     := True;
   ibDataSet14SOBRESEGURO.ReadOnly    := True;
-  ibDataSet14REFERENCIANOTA.ReadOnly := True;
-  ibDataSet14IMPOSTOMANUAL.ReadOnly  := True;
+  ibDataSet14REFERENCIANOTA.ReadOnly := bTribInteligente;
+  ibDataSet14IMPOSTOMANUAL.ReadOnly  := bTribInteligente;
   {Mauricio Parizotto 2024-10-16 Fim}
 end;
 
