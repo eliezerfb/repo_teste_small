@@ -599,16 +599,14 @@ begin
   if not Self.Visible then
     Exit;
 
+  AtualizaObjComValorDoBanco;
+  tbsCadastro.Caption := GetDescritivoNavegacao;
+
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
 
   if bGravandoRegistro then
     Exit;
-
-  AtualizaObjComValorDoBanco;
-
-  //Contador
-  tbsCadastro.Caption := GetDescritivoNavegacao;
 end;
 
 procedure TFrmCadastro.edtCPFCNPJChange(Sender: TObject);
