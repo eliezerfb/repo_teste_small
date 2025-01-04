@@ -55,6 +55,7 @@ const SECAO_FRENTE_CAIXA              = 'Frente de Caixa';
 const SECAO_65                        = 'NFCE';
 const SECAO_59                        = 'SAT-CFe';
 const SECAO_MFE                       = 'MFE'; // Sandro Silva 2017-05-10
+const SECAO_CARTAO_ACEITO             = 'CARTAO ACEITO'; // Sandro Silva 2025-01-02
 const CHAVE_MODELO_DO_ECF             = 'Modelo do ECF'; // Sandro Silva 2023-10-24
 const CHAVE_INICIAR_MINIMIZADO        = 'Iniciar minimizado';
 const CHAVE_INICIAR_COM_WINDOWS       = 'Iniciar com Windows';

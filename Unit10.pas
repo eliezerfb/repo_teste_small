@@ -188,7 +188,7 @@ begin
   //
   AjustaFormCartoes;
 
-  sSecoes.Free; // Sandro Silva 2017-05-19
+  sSecoes.Free;
   Mais1Ini.Free;
   //
   // LogFrente('Teste 01: Saindo do form10.activate');

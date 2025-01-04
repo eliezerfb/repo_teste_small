@@ -16478,13 +16478,30 @@ end;
 procedure TForm1.DefiniUsoPos;
 var
   oArq : TiniFile;
+  i: Integer;
+  sSecoes :  TStrings;
 begin
   oArq := TIniFile.Create(FRENTE_INI);
+
+  sSecoes  := TStringList.Create;
+  oArq.ReadSections(sSecoes);
+
   try
     if not(oArq.ValueExists(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS)) then
     begin
+
       if oArq.ReadString(SECAO_FRENTE_CAIXA, CHAVE_TEM_TEF, _cNao) = _cNao then
-        oArq.WriteString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cSim)
+      begin
+
+        for I := 0 to (sSecoes.Count - 1) do
+        begin
+          if AnsiUpperCase(oArq.ReadString(sSecoes[I], SECAO_CARTAO_ACEITO, _cNao)) = AnsiUpperCase(_cSim) then
+          begin
+            oArq.WriteString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cSim);
+            Break;
+          end;
+        end;
+      end
       else
         oArq.WriteString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cNao);
     end;
@@ -16492,6 +16509,7 @@ begin
     Form1.HabilitarusodePOS1.Checked := (Form1.sHabilitarUsoPOS = _cSim);
   finally
     oArq.Free;
+    sSecoes.Free;
   end;
 
 end;
