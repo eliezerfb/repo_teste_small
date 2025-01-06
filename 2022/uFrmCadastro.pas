@@ -88,6 +88,7 @@ type
     SMALL_DBEdit62: TSMALL_DBEdit;
     pnl_IE_PR: TPanel;
     chkProdRural: TDBCheckBox;
+    edtRegistro: TSMALL_DBEdit;
     procedure FormShow(Sender: TObject);
     procedure edtCEPExit(Sender: TObject);
     procedure edtCEPEnter(Sender: TObject);
@@ -128,6 +129,7 @@ type
     procedure chkProdRuralClick(Sender: TObject);
     procedure memObsEnter(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure edtRegistroChange(Sender: TObject);
   private
     { Private declarations }
     FcCEPAnterior: String;
@@ -169,6 +171,7 @@ procedure TFrmCadastro.FormActivate(Sender: TObject);
 begin
   inherited;
   AtualizaObjComValorDoBanco;
+  tbsCadastro.Caption := GetDescritivoNavegacao;
 end;
 
 procedure TFrmCadastro.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -283,8 +286,6 @@ begin
   inherited;
 
   AtualizaObjComValorDoBanco;
-
-  //Contador
   tbsCadastro.Caption := GetDescritivoNavegacao;
 
   try
@@ -355,6 +356,19 @@ end;
 procedure TFrmCadastro.edtLimiteCreditoExit(Sender: TObject);
 begin
   DefinirLimiteDisponivel;
+end;
+
+procedure TFrmCadastro.edtRegistroChange(Sender: TObject);
+begin
+  //Mauricio Parizotto 2025-01-06
+  if not Self.Visible then
+    Exit;
+
+  if bGravandoRegistro then
+    Exit;
+
+  AtualizaObjComValorDoBanco;
+  tbsCadastro.Caption := GetDescritivoNavegacao;
 end;
 
 procedure TFrmCadastro.edtCEPEnter(Sender: TObject);
@@ -595,6 +609,8 @@ procedure TFrmCadastro.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
   inherited;
 
+  {Mauricio Parizotto 2025-01-06
+
   //Mauricio Parizotto 2024-08-29
   if not Self.Visible then
     Exit;
@@ -607,6 +623,8 @@ begin
 
   if bGravandoRegistro then
     Exit;
+
+  }
 end;
 
 procedure TFrmCadastro.edtCPFCNPJChange(Sender: TObject);
