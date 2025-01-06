@@ -396,6 +396,7 @@ function GetIDFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : integer;
 //Sandro Silva 2024-11-19 function TestarZPOSLiberado: Boolean;
 function GetDescricaoFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : string;
 function GetFormaAtalhoF6 : string;
+function TemPOSHabilitado: Boolean;
 function GetCampoValorFormaExtra(Forma : integer):string;
 
 var
@@ -3033,6 +3034,34 @@ begin
   end;
 
   Mais1ini.Free;
+end;
+
+function TemPOSHabilitado: Boolean;
+var
+  oArq : TiniFile;
+  i: Integer;
+  sSecoes :  TStrings;
+begin
+  Result := False;
+  oArq := TIniFile.Create(FRENTE_INI);
+
+  sSecoes  := TStringList.Create;
+  oArq.ReadSections(sSecoes);
+
+  try
+    for I := 0 to (sSecoes.Count - 1) do
+    begin
+      if AnsiUpperCase(oArq.ReadString(sSecoes[I], SECAO_CARTAO_ACEITO, _cNao)) = AnsiUpperCase(_cSim) then
+      begin
+        // Tem POS configurado
+        Result := True;
+        Break;
+      end;
+    end;
+  finally
+    oArq.Free;
+    sSecoes.Free;
+  end;
 end;
 
 function GetCampoValorFormaExtra(Forma : integer):string;

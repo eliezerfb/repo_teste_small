@@ -16479,37 +16479,37 @@ procedure TForm1.DefiniUsoPos;
 var
   oArq : TiniFile;
   i: Integer;
-  sSecoes :  TStrings;
+//  sSecoes :  TStrings;
 begin
   oArq := TIniFile.Create(FRENTE_INI);
 
-  sSecoes  := TStringList.Create;
-  oArq.ReadSections(sSecoes);
+//  sSecoes  := TStringList.Create;
+//  oArq.ReadSections(sSecoes);
 
   try
     if not(oArq.ValueExists(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS)) then
     begin
 
-      if oArq.ReadString(SECAO_FRENTE_CAIXA, CHAVE_TEM_TEF, _cNao) = _cNao then
+      oArq.WriteString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cNao);
+      {
+      for I := 0 to (sSecoes.Count - 1) do
       begin
-
-        for I := 0 to (sSecoes.Count - 1) do
+        if AnsiUpperCase(oArq.ReadString(sSecoes[I], SECAO_CARTAO_ACEITO, _cNao)) = AnsiUpperCase(_cSim) then
         begin
-          if AnsiUpperCase(oArq.ReadString(sSecoes[I], SECAO_CARTAO_ACEITO, _cNao)) = AnsiUpperCase(_cSim) then
-          begin
-            oArq.WriteString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cSim);
-            Break;
-          end;
+          // Tem POS configurado
+          oArq.WriteString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cSim);
+          Break;
         end;
-      end
-      else
-        oArq.WriteString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cNao);
+      end;
+      }
+      if TemPOSHabilitado then
+        oArq.WriteString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cSim);
     end;
     Form1.sHabilitarUsoPOS := oArq.ReadString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cNao);
     Form1.HabilitarusodePOS1.Checked := (Form1.sHabilitarUsoPOS = _cSim);
   finally
     oArq.Free;
-    sSecoes.Free;
+//    sSecoes.Free;
   end;
 
 end;
@@ -25608,6 +25608,8 @@ begin
   Form1.sHabilitarUsoPOS := IfThen(HabilitarusodePOS1.Checked, _cNao, _cSim);
   GravarParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, Form1.sHabilitarUsoPOS);
   HabilitarusodePOS1.Checked := not (HabilitarusodePOS1.Checked);
+  if HabilitarusodePOS1.Checked and (not(TemPOSHabilitado)) then
+    Cadastrodebandeiras1Click(Cadastrodebandeiras1);
   {Sandro Silva (smal-778) 2024-11-06 fim}
 end;
 

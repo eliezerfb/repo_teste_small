@@ -1399,6 +1399,8 @@ begin
           FsCupomReduzidoAutorizado := ''; //2024-11-29
           Form1.sCupomTEFReduzido := '';// 2024-12-06
           Result := TransacionaComTEF;
+          if Result = False then//2025-01-06
+            Break;
         end;
 
         tpPOS:
