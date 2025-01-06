@@ -1300,6 +1300,7 @@ inherited FrmCadastro: TFrmCadastro
             Top = 0
             Width = 97
             Height = 17
+            TabStop = False
             Caption = 'Produtor Rural'
             DataField = 'PRODUTORRURAL'
             DataSource = DSCadastro
