@@ -176,17 +176,6 @@ begin
   Form7.sModulo := 'RETRIBUTA';
   
   try
-{
-    Form7.ibQuery1.Close;
-    Form7.ibQuery1.SQL.Clear;
-    Form7.ibQuery1.SQL.Add('select sum(TOTAL) from ITENS001 where NUMERONF='+QuotedStr(Form7.IbDAtaSet15NUMERONF.AsString)+' ');
-    Form7.ibQuery1.Open;
-    //
-    if Form7.IBQuery1.FieldByName('SUM').AsFloat <> Form7.IbDAtaSet15MERCADORIA.AsFloat then
-    //
-    // Desempenho nota
-    //
-}
     begin
       sReg16 := Form7.ibDataSet16REGISTRO.AsString;
       Form7.ibDataSet16.DisableControls;

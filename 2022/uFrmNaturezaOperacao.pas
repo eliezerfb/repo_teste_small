@@ -226,6 +226,10 @@ begin
         Form7.ibDataSet14FRETESOBREIPI.AsString := 'N';
       if Form7.ibDataSet14IPISOBREOUTRA.AsString <> 'S' then
         Form7.ibDataSet14IPISOBREOUTRA.AsString := 'N';
+      if Form7.ibDataSet14IMPOSTOMANUAL.AsString <> 'S' then
+        Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'N';
+      if Form7.ibDataSet14REFERENCIANOTA.AsString <> 'S' then
+        Form7.ibDataSet14REFERENCIANOTA.AsString := 'N';
 
       cbIntegracaoFinanceira.ItemIndex := 0;
       cbMovimentacaoEstoque.ItemIndex  := 0;
