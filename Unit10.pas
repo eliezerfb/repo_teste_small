@@ -278,7 +278,8 @@ begin
           end;
         end;
 
-        if J=0 then
+        // Se não tiver cartões cadastrados e tiver habilitado o uso do POS fará cadastro dos cartões padrões
+        if (J = 0) and (Mais1Ini.ReadString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cNao) = _cSim) then // if J=0 then
         begin
 
           if Mais1Ini.ReadString('VISA CREDITO','CARTAO ACEITO','XXX') = 'XXX' then
@@ -295,6 +296,7 @@ begin
           Form1.sHabilitarUsoPOS := _cSim;
           GravarParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, Form1.sHabilitarUsoPOS);
           Form1.HabilitarusodePOS1.Checked := True;
+
         end;
 
       end;

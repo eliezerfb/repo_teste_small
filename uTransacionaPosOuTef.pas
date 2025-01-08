@@ -405,8 +405,14 @@ var
         begin
           if Form1.bModoMultiplosCartoes then
           begin
-            if dValorPagarCartao >= 0 then
-              Break;
+            if (FdTotalEmCartao - (FdTotalTransacionado + dValorPagarCartao)) < 0 then
+            begin
+              dValorPagarCartao := FdTotalEmCartao - FdTotalTransacionado;
+              Application.MessageBox('Valor total da transação maior que o valor definido para a forma de pagamento cartão', 'Atenção', MB_ICONWARNING + MB_OK);
+            end
+            else
+              if dValorPagarCartao >= 0 then
+                Break;
           end
           else
           begin
@@ -1383,10 +1389,10 @@ begin
 
       Form1.ExibePanelMensagem('', True);
 
-      {
-      if TFrmOpcoesFechamentoComCartao.CriaForm(TipoTransacao) = mrCancel then
-       Break;
-      }
+      if FdTotalEmCartao <> dValorPagarCartao then
+        Sleep(2000);
+      Form1.OcultaPanelMensagem;
+
       if TFrmOpcoesFechamentoComCartao.CriaForm(TipoTransacao) = mrCancel then
       begin
         Result := False;
@@ -1425,9 +1431,6 @@ begin
           Result := False;
         end;
       end;
-
-      //if FdTotalTransacionado = FdTotalEmCartao then
-      //  Result := True;
 
       if Form1.bModoMultiplosCartoes = False then
       begin
