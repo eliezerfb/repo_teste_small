@@ -139,6 +139,9 @@ begin
   Form22.Repaint;
   Mensagem22('Alterando estrutura do banco de dados');
 
+  // Para usar onde faz repetição com execução de comandos em cada repetição
+  QryAuxiliar := CriaIBQuery(Form1.ibDataset200.Transaction);
+
   DropViewProcedure;
 
   // MArketplace
@@ -1456,6 +1459,7 @@ begin
   end
   else
   begin
+    {Sandro Silva (f-22115) 2025-01-03 inicio
     try
       Form1.ibDataSet200.Close;
       Form1.ibDataSet200.SelectSQL.Text :=
@@ -1480,6 +1484,32 @@ begin
 
     except
     end;
+    }
+    try
+      QryAuxiliar.Close;
+      QryAuxiliar.SQL.Text :=
+        'select PEDIDO, max(SEQUENCIALCONTACLIENTEOS) as SEQUENCIALCONTACLIENTEOS from ALTERACA where (TIPO = ''MESA'' or TIPO = ''DEKOL'') group by PEDIDO ';
+      QryAuxiliar.Open;
+
+      while QryAuxiliar.Eof = False do
+      begin
+        if QryAuxiliar.FieldByName('SEQUENCIALCONTACLIENTEOS').AsString = '' then
+        begin
+          try
+            ExecutaComando(
+              'update ALTERACA set ' +
+              'SEQUENCIALCONTACLIENTEOS = ' + QuotedStr(Right(DupeString('0', 10) + IncGenerator(Form1.ibDataSet200.Transaction.DefaultDatabase, 'G_SEQUENCIALCONTACLIENTEOS', 1), 10)) +
+              ' where (TIPO = ''MESA'' or TIPO = ''DEKOL'') ' +
+              ' and PEDIDO = ' + QuotedStr(QryAuxiliar.FieldByName('PEDIDO').AsString));
+          except
+          end;
+        end;
+        QryAuxiliar.Next;
+      end;
+
+    except
+    end;
+    {Sandro Silva (f-22115) 2025-01-03 fim}
 
   end;
 
@@ -3472,6 +3502,23 @@ begin
       ExecutaComando('commit');
   end;
   {Mauricio Parizotto 2024-10-14 Fim}
+
+  if not(TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ATORINTERESSADO')) then
+  begin
+    ExecutaComando(
+      'create table ATORINTERESSADO ('+
+        'IDATORINTERESSADO INTEGER, '+
+        'NUMERONF VARCHAR(12), '+
+        'MODELO VARCHAR(2), '+
+        'CPFCNPJ VARCHAR(14), '+
+        'IS_PROTECTED SMALLINT, '+
+        'CONSTRAINT PK_ATORINTERESSADO PRIMARY KEY (IDATORINTERESSADO) '+
+      ')'
+    );
+    ExecutaComando('CREATE SEQUENCE G_ATORINTERESSADO');
+    ExecutaComando('commit');
+  end;
+
 
   Form22.Repaint;
 
