@@ -277,7 +277,7 @@ uses
   uFrmProdutosIMendes in 'uFrmProdutosIMendes.pas' {FrmProdutosIMendes},
   uFrenteSectionsBD in '..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
   uImendes in 'units\uImendes.pas',
-  uCalculaImpostos in 'uCalculaImpostos.pas',  
+  uCalculaImpostos in 'uCalculaImpostos.pas',
   uListaToJson in '..\..\unit_compartilhada\DAT\uListaToJson.pas',
   uDashboardSections in '..\..\unit_compartilhada\DAT\uDashboardSections.pas',
   uDashboard in 'units\uDashboard.pas',
@@ -285,7 +285,8 @@ uses
   uClassesDadosDash in 'units\uClassesDadosDash.pas',
   uClassesDashboard in 'units\uClassesDashboard.pas',
   uDiagnosticoIA in 'units\uDiagnosticoIA.pas',
-  uAtorInteressado in 'uAtorInteressado.pas' {fmAtorInteressado};
+  uAtorInteressado in 'uAtorInteressado.pas' {fmAtorInteressado},
+  uWebServiceSmall in 'units\uWebServiceSmall.pas';
 
 {$R *.RES}
 

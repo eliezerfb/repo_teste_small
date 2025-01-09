@@ -624,6 +624,10 @@
         <DCCReference Include="units\uClassesDadosDash.pas"/>
         <DCCReference Include="units\uClassesDashboard.pas"/>
         <DCCReference Include="units\uDiagnosticoIA.pas"/>
+        <DCCReference Include="uAtorInteressado.pas">
+            <Form>fmAtorInteressado</Form>
+        </DCCReference>
+        <DCCReference Include="units\uWebServiceSmall.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

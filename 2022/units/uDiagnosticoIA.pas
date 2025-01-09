@@ -9,19 +9,35 @@ uses
   , uClassesDashboard
   , IBX.IBQuery
   , DateUtils
+  , REST.Types
+  , Rest.JSON
+  , REST.Json.Types
   ;
+
+type
+  TRetChaveIA = class
+  private
+    [JSONName('token_ia')]
+    FTokenIa: string;
+  published
+    property TokenIa: string read FTokenIa write FTokenIa;
+  end;
 
   function GeraDiagnosticoIA(iPeriodo : integer; IBDatabase: TIBDatabase):boolean;
   procedure GravaDiagnosticoIA(sDadosEnviados, sDadosRetornados : string; Data : TDateTime; iPeriodo : integer; Transaction : TIBTransaction);
   function GeraPromptEnvio(sDadosEnviados:string):string;
   function DeveGerarDiagnosticoIA(out iPeriodo : integer; IBDatabase: TIBDatabase):boolean;
   function GetDadosEnvio(iPeriodo : integer; out bDadosInsuf : boolean; Transaction : TIBTransaction):string;
+  function GetApiKeyIA : string;
 
 implementation
 
 uses uFuncoesBancoDados
   , uInteligenciaArtificial
-  , smallfunc_xe, uDashboard;
+  , smallfunc_xe
+  , uDashboard
+  , uWebServiceSmall
+  , uconstantes_chaves_privadas;
 
 function GeraDiagnosticoIA(iPeriodo : integer; IBDatabase: TIBDatabase):boolean;
 var
@@ -51,7 +67,7 @@ begin
     sPromptEnvio := GeraPromptEnvio(sDadosEnvio);
 
     //Busca API Key a ser utilizada
-    sAPIKey      := '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';
+    sAPIKey      := GetApiKeyIA;
 
     if iPeriodo = 4 then
       sPergunta := 'Analise os dados, diga como está a saúde da minha empesa e o que eu posso melhorar'
@@ -148,7 +164,7 @@ begin
   if iDia <= 7 then
   begin
     iPeriodo := 1;
-    sDataIni := DateToStr( IncDay(Now,iDia*-1) );
+    sDataIni := FormatDateTime('YYYY-MM-DD',IncDay(Now,iDia*-1) );
     sFiltro  := ' Where DATA = '+QuotedStr(sDataIni)+
                 '  and PERIODO = '+iPeriodo.ToString;
   end;
@@ -298,6 +314,33 @@ begin
     end;
   finally
     FreeAndNil(DadosDTO);
+  end;
+end;
+
+function GetApiKeyIA : string;
+var
+  jsonRet : string;
+  StatusCode : integer;
+  RetChaveIA : TRetChaveIA;
+begin
+  //Padrão
+  Result := SMALL_TOKEN_IA_DEF;
+
+  try
+    if RequisicaoSmall(rmPOST,
+                      'https://smallsoft.com.br/token-ia',
+                      '{"hashIa": "'+SMALL_HAS_API+'"}',
+                      jsonRet,
+                      StatusCode) then
+    begin
+      try
+        RetChaveIA := TJson.JsonToObject<TRetChaveIA>(jsonRet);
+        Result := RetChaveIA.TokenIa;
+      finally
+        FreeAndNil(RetChaveIA);
+      end;
+    end;
+  except
   end;
 end;
 

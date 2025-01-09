@@ -359,7 +359,7 @@ begin
     recFormaPgto1.Width               := 22;
     recFormaPgto1.Height              := 22;
     lblDescForma1.Font.Size           := 10;
-    lblDescForma1.Width               := 129;
+    lblDescForma1.Width               := 124;
     lblValForma1.Font.Size            := 12;
     {$Endregion}
   end else
