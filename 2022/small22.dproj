@@ -55,7 +55,7 @@
         <DCC_DebugInformation>1</DCC_DebugInformation>
         <DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
         <DCC_ExeOutput>D:\Desenvolvimento\Executaveis\Small Commerce</DCC_ExeOutput>
-        <DCC_UsePackage>vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;dsnapcon;vcldb;soaprtl;VclSmp;dbexpress;dbxcds;bdertl;webdsnap;websnap;adortl;ibxpress;teeui;teedb;tee;vcldbx;dss;visualclx;visualdbclx;vclactnband;vclshlctrls;IntrawebDB_50_70;Intraweb_50_70;Rave50CLX;Rave50VCL;dclOfficeXP;spdNFE_D7;spdEmailX_D7;spdGov_D7;spdLicenseX_D7;TPNGButton;inetdb;spdNFCe_D7;spdGov16_D7;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>vcl;rtl;vclx;inet;xmlrtl;vclie;inetdbxpress;dbrtl;dsnap;dsnapcon;vcldb;soaprtl;VclSmp;dbexpress;dbxcds;adortl;ibxpress;teeui;teedb;tee;vclactnband;vclshlctrls;dclOfficeXP;inetdb;$(DCC_UsePackage)</DCC_UsePackage>
         <DCC_SYMBOL_DEPRECATED>false</DCC_SYMBOL_DEPRECATED>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
         <SanitizedProjectName>small22</SanitizedProjectName>
@@ -111,13 +111,13 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2025.2.2.0;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2025.2.2.0;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Small Commerce.exe;FileVersion=2024.41.0.104;InternalName=Small Commerce.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=Small Commerce.exe;ProductName=Small;ProductVersion=2024.41.0.104;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
         <Manifest_File>xp.manifest</Manifest_File>
-        <VerInfo_MajorVer>2025</VerInfo_MajorVer>
-        <VerInfo_Build>0</VerInfo_Build>
+        <VerInfo_MajorVer>2024</VerInfo_MajorVer>
+        <VerInfo_Build>104</VerInfo_Build>
         <DCC_ExeOutput>\desenvolvimento\executaveis\Small Commerce</DCC_ExeOutput>
-        <VerInfo_MinorVer>2</VerInfo_MinorVer>
-        <VerInfo_Release>2</VerInfo_Release>
+        <VerInfo_MinorVer>41</VerInfo_MinorVer>
+        <DCC_UsePackage>pkgDashboard;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -615,9 +615,19 @@
         <DCCReference Include="..\..\unit_compartilhada\DAT\uFrenteSectionsBD.pas"/>
         <DCCReference Include="units\uImendes.pas"/>
         <DCCReference Include="uCalculaImpostos.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uListaToJson.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\DAT\uDashboardSections.pas"/>
+        <DCCReference Include="units\uDashboard.pas"/>
+        <DCCReference Include="uFrmDashboard.pas">
+            <Form>FrmDashboard</Form>
+        </DCCReference>
+        <DCCReference Include="units\uClassesDadosDash.pas"/>
+        <DCCReference Include="units\uClassesDashboard.pas"/>
+        <DCCReference Include="units\uDiagnosticoIA.pas"/>
         <DCCReference Include="uAtorInteressado.pas">
             <Form>fmAtorInteressado</Form>
         </DCCReference>
+        <DCCReference Include="units\uWebServiceSmall.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -3452,7 +3452,7 @@ begin
   end;
   {Mauricio Parizotto 2024-10-28 Inicio}
 
-{Mauricio Parizotto 2024-09-27 Inicio}
+  {Mauricio Parizotto 2024-09-27 Inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'TRIB_INTELIGENTE') = False then
   begin
     if ExecutaComando('ALTER TABLE ICM ADD TRIB_INTELIGENTE VARCHAR(1)') then
@@ -3518,6 +3518,26 @@ begin
     ExecutaComando('CREATE SEQUENCE G_ATORINTERESSADO');
     ExecutaComando('commit');
   end;
+
+  {Mauricio Parizotto 2024-12-12 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'DIAGNOSTICOIA')) then
+  begin
+    ExecutaComando(' CREATE TABLE DIAGNOSTICOIA ('+
+                   '   IDDIAGNOSTICO INTEGER NOT NULL,'+
+                   '   DATA DATE NOT NULL,'+
+                   '   DADOSENVIADOS VARCHAR(1000),'+
+                   '   DADOSRETORNADOS VARCHAR(2000),'+
+                   '   PERIODO INTEGER,'+
+                   '   CONSTRAINT PK_DIAGNOSTICOIA PRIMARY KEY (IDDIAGNOSTICO)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando('CREATE SEQUENCE G_DIAGNOSTICOIA');
+
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-12-12 Inicio}
 
 
   Form22.Repaint;
