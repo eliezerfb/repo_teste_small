@@ -361,6 +361,11 @@ begin
     lblDescForma1.Font.Size           := 10;
     lblDescForma1.Width               := 124;
     lblValForma1.Font.Size            := 12;
+
+    CircleFormaPgto.Position.X  := CircleFormaPgto.Position.X -5;
+    CircleFormaPgto.Position.Y  := CircleFormaPgto.Position.Y -5;
+    CircleFormaPgto.Size.Width  := CircleFormaPgto.Size.Width + 10;
+    CircleFormaPgto.Size.Height := CircleFormaPgto.Size.Height + 10;
     {$Endregion}
   end else
   begin

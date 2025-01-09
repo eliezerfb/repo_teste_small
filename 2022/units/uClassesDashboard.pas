@@ -229,7 +229,7 @@ begin
                        SqlFiltroNFCEAutorizado('N')+
                        ' 	 Union All			'+
                        ' 	 Select '+
-                       ' 	 	 MERCADORIA+SERVICOS-DESCONTO TOTAL '+
+                       ' 	 	 TOTAL '+
                        ' 	 From VENDAS '+
                        ' 	 Where EMITIDA=''S'' '+
                        ' 	 	 and EMISSAO = CURRENT_DATE'+
@@ -266,7 +266,7 @@ begin
                        SqlFiltroNFCEAutorizado('N')+
                        ' 	 Union All			'+
                        ' 	 Select '+
-                       ' 		 MERCADORIA+SERVICOS-DESCONTO TOTAL '+
+                       ' 		 TOTAL '+
                        ' 	 From VENDAS '+
                        ' 	 Where EMITIDA=''S'' '+
                        ' 		 and EXTRACT(MONTH from EMISSAO) = EXTRACT(MONTH from '+sData+')'+
@@ -346,7 +346,7 @@ begin
                         ' 					Union All			'+
                         ' 					Select '+
                         ' 						 EMISSAO DATA,'+
-                        ' 						 MERCADORIA+SERVICOS-DESCONTO TOTAL '+
+                        ' 						 TOTAL '+
                         ' 					From VENDAS '+
                         ' 					Where EMITIDA=''S'' '+
                         ' 						 and EXTRACT(MONTH from EMISSAO) = EXTRACT(MONTH from '+sData+')'+
@@ -404,7 +404,7 @@ begin
                         ' 	Union All			'+
                         ' 	Select '+
                         ' 		Coalesce(VENDEDOR,''Não Informado'') VENDEDOR, '+
-                        ' 		MERCADORIA+SERVICOS-DESCONTO TOTAL '+
+                        ' 		TOTAL '+
                         ' 	From VENDAS '+
                         ' 	Where EMITIDA=''S'' '+
                         ' 		and EXTRACT(MONTH from EMISSAO) = EXTRACT(MONTH from '+sData+')  '+
