@@ -3539,6 +3539,18 @@ begin
   end;
   {Mauricio Parizotto 2024-12-12 Inicio}
 
+  {Mauricio Parizotto 2025-01-10 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'MINHASNOTAS')) then
+  begin
+    ExecutaComando(' CREATE TABLE MINHASNOTAS ('+
+                   '   CHAVE VARCHAR(44) NOT NULL,'+
+                   '   CONSTRAINT PK_MINHASNOTAS PRIMARY KEY (CHAVE)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2025-01-10 Inicio}
+
 
   Form22.Repaint;
 
