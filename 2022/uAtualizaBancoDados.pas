@@ -3540,6 +3540,53 @@ begin
   {Mauricio Parizotto 2024-12-12 Inicio}
 
 
+
+  {Mauricio Parizotto 2025-01-10 Inicio}
+  if not CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'TRANSACAOELETRONICA', 'BIN')  then
+  begin
+    ExecutaComando(' Alter table TRANSACAOELETRONICA add BIN Varchar(8);');
+
+    ExecutaComando('Commit');
+  end;
+
+  if not CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'TRANSACAOELETRONICA', 'ULTIMOSDIGITIOS')  then
+  begin
+    ExecutaComando(' Alter table TRANSACAOELETRONICA add ULTIMOSDIGITIOS Varchar(4);');
+
+    ExecutaComando('Commit');
+  end;
+
+  if not CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'FORMAPAGAMENTO', 'CODSCANNTECH')  then
+  begin
+    ExecutaComando(' Alter table FORMAPAGAMENTO add CODSCANNTECH INTEGER; ');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=9 WHERE IDFORMA=1;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=11 WHERE IDFORMA=2;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=10 WHERE IDFORMA=3;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=13 WHERE IDFORMA=4;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=9 WHERE IDFORMA=5;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=12 WHERE IDFORMA=6;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=12 WHERE IDFORMA=7;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=12 WHERE IDFORMA=8;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=12 WHERE IDFORMA=9;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=9 WHERE IDFORMA=10;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=9 WHERE IDFORMA=11;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=9 WHERE IDFORMA=12;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=14 WHERE IDFORMA=13;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=9 WHERE IDFORMA=14;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=9 WHERE IDFORMA=15;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=14 WHERE IDFORMA=16;');
+    ExecutaComando('UPDATE FORMAPAGAMENTO SET CODSCANNTECH=9 WHERE IDFORMA=17;');
+
+    ExecutaComando('Commit');
+  end;
+
+
+  {Mauricio Parizotto 2025-01-10 Inicio}
+
+
   Form22.Repaint;
 
   try
