@@ -1969,9 +1969,11 @@ begin
 
       if (IBQALTERACA.FieldByName('CLIFOR').AsString = IBQCLIFOR.FieldByName('NOME').AsString) and (Trim(IBQALTERACA.FieldByName('CLIFOR').AsString) <> '') then
       begin
-        if (AllTrim(LimpaNumero(IBQCLIFOR.FieldByName('CGC').AsString)) <> '') then
+        //if (AllTrim(LimpaNumero(IBQCLIFOR.FieldByName('CGC').AsString)) <> '') then
         begin
           sCNPJCliente     := IBQCLIFOR.FieldByName('CGC').AsString; // CNPJ do Destinatário
+          if LimpaNumero(sCNPJCliente) = '' then
+            sCNPJCliente     := '';
           sNomeCliente     := Trim(ConverteAcentos2(IBQCLIFOR.FieldByName('NOME').AsString));
           sEmailCliente    := IBQCLIFOR.FieldByname('EMAIL').AsString;
           sEnderecoCliente := IBQCLIFOR.FieldByname('ENDERE').AsString;
