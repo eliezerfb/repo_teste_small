@@ -2420,7 +2420,6 @@ function _ecf65_EnviarNFCe(pp1: Boolean): Boolean;
 var
   Mais1Ini : tIniFile;
   bButton: Integer;
-  //{Sandro Silva 2019-07-24 inicio
   I : Integer;
   fTotalTributos, fValorProdutos, fTotalSemDesconto, fDescontoDoItem, fDescontoTotalRateado, fDesconto, rBaseICMS, rValorICMS : Real;
   dvBC_U02: Double; // 2015-12-09
@@ -2435,8 +2434,6 @@ var
   dRateioAcrescimoItem: Double; // 2015-12-10
   dDescontoTotalCupom: Double; // 2015-12-10
   dvOutro_W15: Double; // 2015-12-10
-  //}
-  //{Sandro Silva 2019-07-24 fim}
   sNovoNumero, sStatus, sID, sRetorno, sLote: String;
   Hora, Min, Seg, cent : Word;
   tInicio : tTime;
@@ -2466,7 +2463,7 @@ var
   dvICMSMonoRet_N45: Real; // Sandro Silva 2023-05-19
   dvICMSMonoRet_N45Total: Real; // Sandro Silva 2023-05-19
   dqBCMonoRet_N43aTotal: Real; // Sandro Silva 2023-09-04
-  sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-09-05  
+  sMensagemIcmMonofasicoSobreCombustiveis: String; // Sandro Silva 2023-09-05
   //
   bOk: Boolean; // Sandro Silva 2015-06-02
   sLogErro: String; // Sandro Silva 2015-06-02
@@ -2549,11 +2546,23 @@ var
 
   end;
 
-  procedure AddDadosTransacaoEletronicaNoComplemento(Bandeira: String; CodigoAutorizacao: String; Valor: Double);
+  procedure AddDadosTransacaoEletronicaNoComplemento(NomeTEF: String; Bandeira: String; CodigoAutorizacao: String; Valor: Double);
+  var
+    sDados: String;
   begin
+    {
     if sDadosTransacaoEletronicaNoComplemento <> '' then
       sDadosTransacaoEletronicaNoComplemento := sDadosTransacaoEletronicaNoComplemento + '|';
     sDadosTransacaoEletronicaNoComplemento := sDadosTransacaoEletronicaNoComplemento + Trim(Bandeira) + ' - ' + Trim(CodigoAutorizacao) + ' - R$' + FormatFloat('0.00', Valor);
+    }
+    sDados := Trim(Bandeira) + ' - ' + Trim(CodigoAutorizacao) + ' - R$' + FormatFloat('0.00', Valor);
+    if AnsiContainsText(NomeTEF, 'ZPOS') then
+      if not(AnsiContainsText(sDados, 'ZPOS')) then
+        sDados := 'ZPOS - ' + sDados;
+
+    if sDadosTransacaoEletronicaNoComplemento <> '' then
+      sDadosTransacaoEletronicaNoComplemento := sDadosTransacaoEletronicaNoComplemento + '|';
+    sDadosTransacaoEletronicaNoComplemento := sDadosTransacaoEletronicaNoComplemento + sDados;
   end;
 begin
 //configuração quando marcada e informado destinatário cadastrado, troca indPres para 04
@@ -4209,7 +4218,7 @@ begin
             Form1.spdNFCeDataSets1.SalvarPart('YA');
 
             // Para adicionar nas informações complementares
-            AddDadosTransacaoEletronicaNoComplemento(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago);
+            AddDadosTransacaoEletronicaNoComplemento(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeDoTEF, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago);
 
           end;
         end
@@ -4284,7 +4293,7 @@ begin
             Form1.spdNFCeDataSets1.SalvarPart('YA');
 
             // Para adicionar nas informações complementares
-            AddDadosTransacaoEletronicaNoComplemento(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Bandeira, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago)
+            AddDadosTransacaoEletronicaNoComplemento(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeDoTEF, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Bandeira, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago)
           end;
 
         end;
@@ -4428,21 +4437,11 @@ begin
       if Form1.ibDataSet25DIFERENCA_.AsFloat <> 0 then
         Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + _ecf65_DadosCarneNoXML();// Pipe "|" faz quebra de linha Sandro Silva 2017-10-05  Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := svNF_W16 + ' ' + sValorRecebido + ' ' + sValorTroco + ' ' + Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value;
 
-      {Sandro Silva 2023-05-19 inicio
-      Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + sDadosTransacaoEletronicaNoComplemento; // Sandro Silva 2023-03-28
-      }
       if Trim(sDadosTransacaoEletronicaNoComplemento) <> '' then
         Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + sDadosTransacaoEletronicaNoComplemento; // Sandro Silva 2023-03-28
 
-      {Sandro Silva 2023-09-05 inicio
-      if dvICMSMonoRet_N45Total > 0.00 then
-        Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + 'ICMS monofásico sobre combustíveis cobrado anteriormente conforme Convênio ICMS 199/2022;';
-      }
       if (sMensagemIcmMonofasicoSobreCombustiveis <> '') and (AnsiContainsText(Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value, sMensagemIcmMonofasicoSobreCombustiveis) = False) then
         Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value := Form1.spdNFCeDataSets1.Campo('infCpl_Z03').Value + '|' + sMensagemIcmMonofasicoSobreCombustiveis;
-      {Sandro Silva 2023-09-05 fim}
-
-      {Sandro Silva 2023-05-19 fim}
 
       // SAIDA
       if LimpaNumero(Form1.ibDataSet13.FieldByname('CRT').AsString) <> '' then
@@ -5733,9 +5732,6 @@ begin
       else
         Form1.spdNFCe1.DanfceSettings.ExibirDetalhamento := False;
       //
-      {Sandro Silva 2023-10-10 inicio
-      Form1.spdNFCe1.ImprimirDanfce(psLote, pfNFe, _ecf65_ArquivoRTM, Device);
-      }
 
       if Pos('ZPOS', String(pfNFe)) > 0 then
       begin
@@ -5778,9 +5774,7 @@ begin
       end
       else
         Form1.spdNFCe1.ImprimirDanfce(psLote, pfNFe, _ecf65_ArquivoRTM, Device);
-      {Sandro Silva 2023-10-10 fim}
-      //        sLeep(5000);
-      //        sleep(I*400);
+
     except
       on E: Exception do
       begin

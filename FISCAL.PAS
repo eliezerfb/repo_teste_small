@@ -12469,7 +12469,6 @@ begin
                 Sleep(6000); // Não diminuir, afeta confirmação da transação
                 {Sandro Silva 2024-12-06 fim}
 
-
                 Form1.OcultaPanelMensagem;
 
                 if FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF+'\INTPOS.STS') then // Sandro Silva 2017-06-22

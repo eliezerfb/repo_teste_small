@@ -29,8 +29,6 @@ type
   TDadosTransacaoTEF = class
     NomeRede: String;
     Transacao: String;
-    //DiretorioCliente: String;
-    //DiretorioClienteAnterior: String;
     Cliente: TDiretorioTEF;
     ClienteAnterior: TDiretorioTEF;
     TextoImpressao: String;
