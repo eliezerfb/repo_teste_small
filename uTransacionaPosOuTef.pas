@@ -1311,6 +1311,12 @@ begin
           FsCupomReduzidoAutorizado := ''; //2024-11-29
           Form1.sCupomTEFReduzido := '';// 2024-12-06
           Result := TransacionaComTEF;
+
+          if (Result = False) and (TFrmOpcoesFechamentoComCartao.QtdOpcoesTefPOSDisponiveis = 1) then
+          begin
+
+            Break;
+          end;
         end;
 
         tpPOS:

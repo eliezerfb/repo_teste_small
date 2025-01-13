@@ -49,7 +49,6 @@ object FrmOpcoesFechamentoComCartao: TFrmOpcoesFechamentoComCartao
     TitleFont.Height = -12
     TitleFont.Name = 'Microsoft Sans Serif'
     TitleFont.Style = []
-    OnDrawDataCell = DBGOPCOESDrawDataCell
     OnDblClick = DBGOPCOESDblClick
   end
   object DSOPCOES: TDataSource
