@@ -33,6 +33,8 @@ function TEFValorTotalAutorizado(): Currency;
 function TEFValorTransacao(sArquivoTEF: String): Currency;
 procedure TEFDeletarCopiasArquivos(FsDiretorio: String);
 function TestarZPOSLiberado: Boolean;
+function GetBinCartao(sArquivoTEF: String) : string;
+function GetUltimosDigitosCartao(sArquivoTEF: String) : string;
 
 implementation
 
@@ -804,10 +806,9 @@ begin
                       if Copy(Form1.sLinha,1,7) = '028-000' then sBotaoOk          := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
                       if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + DesconsideraLinhasEmBranco(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10)); // Sandro Silva 2023-10-24 if Copy(Form1.sLinha,1,4) = '029-'    then sCupom029         := sCupom029 + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10);
                       if Copy(Form1.sLinha,1,4) = '030-'    then sMensagem         := sMensagem + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','');
-                      //
+
                       if Copy(Form1.sLinha,1,7) = '709-000' then
                       begin
-                        //
                         fDescontoNoPremio := StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9))) / 100;
                         Form1.ibDataSet25.FieldByName('RECEBER').AsFloat    := Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - fDescontoNoPremio;
                         Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := dValorPagarCartao - Form1.fDescontoNoTotal - fDescontoNoPremio;// Sandro Silva 2017-06-12  Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := Form1.ibDataSet25.FieldByName('PAGAR').AsFloat - Form1.fDescontoNoTotal - fDescontoNoPremio;
@@ -829,16 +830,11 @@ begin
                         Form1.ibDataSet27.FieldByName('CAIXA').AsString     := Form1.sCaixa;
                         Form1.ibDataSet27.Post;
 
-                        //
                         Form1.Memo1.Lines.Add('DESCONTO R$  '+Format('%10.2n',[Form1.fTotal - Form1.ibDataSet25.FieldByName('RECEBER').AsFloat]));
-                        //
                       end;
                       //
                       if Copy(Form1.sLinha,1,7) = '210-081' then
                       begin
-                        //
-                        //            SmallMsg('Teste Desconto 2: '+AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)));
-                        //
                         fDescontoNoPremio := Form1.ibDataSet25.FieldByName('RECEBER').AsFloat - StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9)));
                         Form1.ibDataSet25.FieldByName('RECEBER').AsFloat    := Form1.fTotal - fDescontoNoPremio;
                         Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := dTotalTransacionado; // Sandro Silva 2017-06-12  StrToFloat(AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9))); // acertar aqui quando puder lançar cartões diferentes
@@ -918,20 +914,9 @@ begin
                   end;
                   {Sandro Silva 2021-09-03 fim}
 
-                  {Sandro Silva 2023-06-14 inicio
-                  if Form1.UsaIntegradorFiscal() then
-                  begin
-                    EnviarStatusPagamentoValidadorFiscal;
-                  end;
-                  }
-
-                  //
                   // Quais vias serão impressas conforme fluxo
-                  //
 
-                  //
                   // sCupom é o que vai ser impresso
-                  //
                   if AllTrim(sCupom710) <> '' then
                   begin
                     Form1.sCupomTEFReduzido := Form1.sCupomTEFReduzido + Chr(10) + sCupom711 + DupeString('-', 40); // Sandro Silva 2023-10-24 Form1.sCupomTEFReduzido := Form1.sCupomTEFReduzido + Chr(10) + sCupom711 + '     ' + DupeString('-', 40); // Sandro Silva 2017-06-14
@@ -951,14 +936,10 @@ begin
                   //
                   if AllTrim(StrTran(sCupom,chr(10),'')) = '' then
                     sCupom := '';
-                  //
-                  //  SmallMsg(sCupom);
-                  //
+
                   if Form1.sValorSaque <> '' then
                   begin
-                    //
                     // Saque e troco no cartão
-                    //
                     Form1.ibDataSet25.Edit;
                     Form1.bFlag2 := True; // TEFMultiplosCartoes(
                     Form1.ibDataSet25.FieldByName('ACUMULADO3').ReadOnly := False;
@@ -968,7 +949,6 @@ begin
                     Form1.ibDataSet25.Post;
                     Form1.ibDataSet25.FieldByName('ACUMULADO3').ReadOnly := True;
                     Form1.bFlag2 := False; // TEFMultiplosCartoes(
-                    //
                   end;
                   //
                   if (sMensagem = 'Cancelada pelo operador') and (Form1.OkSim='FF') then
@@ -978,10 +958,8 @@ begin
                   //
                   if allTrim(sMensagem) <> ''  then
                   begin
-                    //
                     if AllTrim(sCupom) <> '' then
                     begin
-                      //
                       if sBotaoOk = '0' then
                       begin
                         SmallMsgBox(pChar(sMensagem),'Operador',mb_Ok + MB_ICONEXCLAMATION);
@@ -995,12 +973,9 @@ begin
                           Application.ProcessMessages;
                           Sleep(10); //Sleep(1);
                         end;
-                        //
                       end;
-                      //
                     end else
                     begin
-                      //
                       for I := 1 to 200 do
                       begin
                         Application.ProcessMessages;
@@ -1011,17 +986,13 @@ begin
                         SmallMsgBox(pChar(sMensagem),'Operador',mb_Ok + MB_ICONEXCLAMATION);
                       //
                     end;
-                    //
                   end;
-                  //
                 end;
               end; // if FileExists('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.STS')  then
               //
               if (Form1.sNomeRede <> '') and (sCupom <> '') then
               begin
                 // Transação feita
-                //
-                //
                 Inc(iContaCartao); // Sandro Silva 2017-07-24
 
                 {Dailon Parisotto (f-19886) 2024-07-25 Inicio}
@@ -1032,24 +1003,19 @@ begin
                 {Dailon Parisotto (f-19886) 2024-07-25 Fim}
                 Form1.sCupomTEF := Form1.sCupomTEF + sCupom + DupeString('-', 40); // Sandro Silva 2023-10-24 Form1.sCupomTEF := Form1.sCupomTEF + sCupom + '     ' + DupeString('-', 40); // Sandro Silva 2017-06-14
 
-                //
                 if (dValorPagarCartao <> 0)  then // Cartão sim - cheque não
                 begin
                   if (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) = 0) then // Sandro Silva 2016-04-29
                   begin
                     if iContaCartao = 1 then // Quando for o primeiro cartão apaga todas as parcelas do cupom
                     begin
-                      //
                       // Apaga as duplicatas anteriores
-                      //
                       try
-                        //
                         Form1.ibDataSet99.Close;
                         Form1.ibDataSet99.SelectSQL.Clear;
                         //
                         Form1.ibDataSet99.SelectSQL.Add('delete from RECEBER where NUMERONF='+QuotedStr(CupomComCaixaFormatado)+ ' and EMISSAO='+ QuotedStr(DateToStrInvertida(Date)) + ' ');
                         Form1.ibDataSet99.Open;
-                        //
                       except
                         on E: Exception do
                         begin
@@ -1057,17 +1023,23 @@ begin
                         end;
                       end;
                     end;
-                    //
 
-                    Form1.TransacoesCartao.Transacoes.Adicionar(Form10.sNomeDoTEF, Form1.sDebitoOuCredito, dValorPagarCartao, Form1.sNomeRede, Form1.sTransaca, Form1.sAutoriza, Form1.IntegradorCE.TransacaoFinanceira.Tipo, ModalidadeTransacao);
+                    Form1.TransacoesCartao.Transacoes.Adicionar(Form10.sNomeDoTEF,
+                                                                Form1.sDebitoOuCredito,
+                                                                dValorPagarCartao,
+                                                                Form1.sNomeRede,
+                                                                Form1.sTransaca,
+                                                                Form1.sAutoriza,
+                                                                '',
+                                                                '',
+                                                                Form1.IntegradorCE.TransacaoFinanceira.Tipo,
+                                                                ModalidadeTransacao);
 
                     Form1.iParcelas := 1;
-                    //if (StrToInt('0'+AllTrim(Form1.sTipoParc)) = 0) and (StrToInt('0'+AllTrim(Form1.sParcelas)) > 1) then
-                    //  Form1.iParcelas := StrtoInt('0'+AllTrim(Form1.sParcelas)); // Se parcelado pelo estabecimento cria
 
                     if (StrToIntDef(Trim(Form1.sTipoParc), 0) = 0) and (StrToIntDef(Trim(Form1.sParcelas), 0) > 1) then
                       Form1.iParcelas := StrtoIntDef(Trim(Form1.sParcelas), 0); // Se parcelado pelo estabecimento cria mais de uma parcela no CONTAS a RECEBER
-                    //
+
                     dTotalTransacaoTEF := 0.00;
                     for I := 1 to Form1.iParcelas do
                     begin
@@ -1196,23 +1168,18 @@ var
   Mais1Ini: TIniFile;
   Y: Integer;
 begin
-  //
-  //
   if Form1.sTef = 'Sim' then
   begin
-    //
     Result := True;
     //
     with Form1 do
     begin
-      //
       sREQ  := pP2;
       sRESP := pP3;
       //
       AtivaGeranciadorPadrao(pP1, pP2, pP3, pP4, NomeTefIni);
       //
       // backup do intpos.001
-      //
       if (FileExists(pChar('c:\'+pP1+'.res'))) and (not FileExists('c:\'+pP1+'\'+sRESP+'\INTPOS.001')) then
         CopyFile(pChar('c:\'+pP1+'.res'),pChar('c:\'+pP1+'\'+sRESP+'\INTPOS.001'), False);
 
@@ -1245,7 +1212,6 @@ begin
         end;
         //
         CloseFile(F);
-        //
 
         if (AllTrim(Form1.OkSim)='FF') then
         begin
@@ -1253,7 +1219,6 @@ begin
           DeleteFile('c:\'+pP1+'\'+sREQ+'\INTPOS.001');
           //
           // Cancelado pelo operador
-          //
           Form1.sValorTot := '';
           Form1.OkSim     := '';
           Form1.sNomeRede := '';
@@ -1262,25 +1227,16 @@ begin
           Form1.sFinaliza := '';
           Form1.sTipoParc := '';
           Form1.sParcelas := '';
-          //          Form1.sCupomTef := '';
-          //
         end else
         begin
-          //
-          //    ShellExecute( 0, 'Open', 'NOTEPAD.EXE',Pchar('\'+pP1+'\'+sREQ+'\IntPos.n'+StrZero(I,1,0)), '', SW_SHOW);
-          //
           if (Form1.sNomeRede <> '') and (Form1.sTransaca <> '') then // Sandro Silva 2017-07-28
           begin
             if pP1 = 'CLIENT' then
             begin
-              //
               Mais1ini               := TIniFile.Create('FRENTE.INI');
               //
               if (Mais1Ini.ReadString('Frente de caixa','Queda','Sim') = 'Sim') then
               begin
-                //
-                // Ronei TEF2011
-                //
                 AssignFile(F,'c:\'+pP1+'\'+sREQ+'\IntPos.tmp');
                 Rewrite(F);
                 //NCN Não confirmação da venda e/ou da impressão.                
@@ -1297,14 +1253,9 @@ begin
                 CloseFile(F);
                 RenameFile('c:\'+pP1+'\'+sREQ+'\IntPos.tmp','c:\'+pP1+'\'+sREQ+'\INTPOS.001');
                 Sleep(10000);
-                //
-                // Ronei TEF2011
-                //
+
                 if AllTrim(Form1.sValorTot) = '' then
                 begin
-                  //
-                  // SmallMsg(Form1.OkSim);
-                  //
                   SmallMsgBox(pChar('Última transação TEF não foi efetuada. Favor reter o cupom.'+
                                      Chr(10)+
                                      // Chr(10)+'Rede: '+Form1.sNomeRede+
@@ -1316,21 +1267,15 @@ begin
                                      // Chr(10)+'Rede: '+Form1.sNomeRede+
                                      Chr(10)+'NSU: '+Form1.sTransaca),'Atenção!',mb_Ok + MB_ICONERROR);
                 end;
-                //
-                // Ronei TEF2011
-                //
-                //            Application.MessageBox(pChar('Erro na impressão do cupom TEF.'+Chr(10)+'A transação TEF não foi concluída. '),'Atenção',mb_Ok + MB_ICONERROR);
-                //
+
                 DeleteFile('c:\'+pP1+'\'+sRESP+'\INTPOS.001');
                 DeleteFile('c:\'+pP1+'\'+sRESP+'\INTPOS.STS');
                 DeleteFile('c:\'+pP1+'\'+sREQ+'\IntPos.tmp');
                 DeleteFile('c:\'+pP1+'\'+sREQ+'\INTPOS.001');
-                //
               end else
               begin
                 if Form1.sFinaliza <> '' then
                 begin
-                  //
                   DeleteFile('c:\'+pP1+'\'+sRESP+'\INTPOS.001');
                   DeleteFile('c:\'+pP1+'\'+sRESP+'\INTPOS.STS');
                   DeleteFile('c:\'+pP1+'\'+sREQ+'\IntPos.tmp');
@@ -1645,9 +1590,6 @@ begin
       //
       if FileExists('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.001') then
       begin
-        //
-        // ShellExecute( 0, 'Open', 'NOTEPAD.EXE', pChar('\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.001'), '', SW_SHOW);
-        //
         AssignFile(F,'c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.001');
         Reset(F);
         //
@@ -1674,14 +1616,12 @@ begin
         end;
         //
         CloseFile(F);
-        //
 
         if (sMensagem = 'Cancelada pelo operador') and (AllTrim(Form1.OkSim)='FF') then
         begin
           DeleteFile('c:\'+Form1.sDiretorio+'\'+Form1.sREQ+'\INTPOS.001');
-          //
+
           // Cancelado pelo operador
-          //
           Form1.sValorTot := '';
           Form1.OkSim     := '';
           Form1.sNomeRede := '';
@@ -1693,10 +1633,8 @@ begin
           Form1.sCupomTEF := ''; // ADM
           Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
           sMensagem       := '';
-          //
         end else
         begin
-          //
           Form1.Top    := 0;
           Form1.Left   := 0;
           Form1.Width  := Screen.Width;
@@ -1705,7 +1643,6 @@ begin
           //
           if AllTrim(Form1.sCupomTef) <> '' then
           begin
-            //
             Panel3.Font.Size := 10;
             //
             if Length(sMensagem) > 20 then
@@ -1717,8 +1654,7 @@ begin
             end;
             //
             Form1.ExibePanelMensagem(sMensagem);
-            //
-            //
+
             for I := 1 to 100 do
             begin
               Application.ProcessMessages;
@@ -1727,9 +1663,6 @@ begin
             //
           end else
           begin
-            //
-            // Ok
-            //
             for I := 1 to 200 do
             begin
               if (I = 15) then
@@ -1742,7 +1675,6 @@ begin
               end;
               Application.ProcessMessages;
               sleep(1);
-              //
             end;
           end;
           //
@@ -1756,23 +1688,16 @@ begin
             bChave := False;
             bSair  := False;
             try
-              //
               while (not bChave) and (not bSair) do
               begin
-
-                //
-                // 2015-09-08 if FunctionDetect('USER32.DLL','BlockInput',@xBlockInput) then xBlockInput(True);   // Disable Keyboard & mouse Trava teclado e mause
-                //
                 Panel3.Repaint;
                 Application.ProcessMessages;
-                //
+
                 Sleep(100);
                 //
                 Form1.PDV_FechaCupom2(True);
-                //
-                //                         //
+
                 // Funcões Administrativas //
-                //                         //
                 // if FunctionDetect('USER32.DLL','BlockInput',@xBlockInput) then xBlockInput(True);   // Disable Keyboard & mouse
                 //
                 bChave := PDV_ImpressaoNaoSujeitoaoICMS(sCupomTef);
@@ -1793,33 +1718,25 @@ begin
                                                  ),'Atenção (Funções Administrativas)', mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
                   if bButton = IDYES then
                   begin
-                    //
-                    // 2015-09-08 if FunctionDetect('USER32.DLL','BlockInput',@xBlockInput) then xBlockInput(True);   // Disable Keyboard & mouse
                     sleep(5000);
                     //
                     Form1.PDV_FechaCupom2(True);
                     //
                     Sleep(2000);
-                    //
                   end;
                   if bButton <> IDYES then
                     bSair := True;
                 end;
               end; // while (not bChave) and (not bSair) do
             finally
-              //
-              // 2015-09-08 if FunctionDetect('USER32.DLL','BlockInput',@xBlockInput) then xBlockInput(False);  // Enable  Keyboard & mouse
             end;
 
-            //
             AtivaGeranciadorPadrao(Form1.sDiretorio, Form1.sReq, Form1.sResp, Form1.sExec, '');
             //
             if FileExists('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.STS') then
             begin
-              //
               if AllTrim(Form1.OkSim) = '0' then // Ronei Mudei aqui
               begin
-                //
                 AssignFile(F,'c:\'+Form1.sDiretorio+'\'+Form1.sREQ+'\IntPos.TMP');
                 Rewrite(F);
                 //
@@ -1888,7 +1805,6 @@ begin
     Form1.Width  := Screen.Width;
     Form1.Height := Screen.Height;
     Form1.Repaint;
-    //
   end;
 end;
 
@@ -1946,8 +1862,6 @@ begin
     begin
       ListaDeArquivos(slArquivos, DIRETORIO_BKP_TEF, sPastaTEF + '*.BKP');
 
-      // Sandro Silva 2017-06-28  Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
-      // Sandro Silva 2017-06-28  Form1.sCupomTEF         := ''; // ADM
       if slArquivos.Count < 1 then // Sandro Silva 2017-06-28
         Break;
 
@@ -1966,7 +1880,6 @@ begin
             Sleep(1000);// Sandro Silva 2017-06-23  Sleep(2000);
             DeleteFile('c:\'+sPastaTEF+'\'+sPastaRESP+'\INTPOS.STS');
 
-            //
             sValorTot1 := '';
             sNomeRede1 := '';
             sTransaca1 := '';
@@ -1991,7 +1904,6 @@ begin
             AssignFile(F,Pchar(sArquivoTEF));
             Reset(F);
 
-            //
             for Y := 1 to 500 do
             begin
               ReadLn(F,sLinha1);
@@ -2017,9 +1929,7 @@ begin
 
             bBkpProcessado := False;
 
-            //
             // Identifica se tem retorno na pasta do tef e se é da transação que está tentando cancelar
-            //
             if FileExists('c:\'+sPastaTEF+'\'+sPastaRESP+'\INTPOS.001') then
             begin
               bBkpProcessado := (CampoTEF('c:\'+sPastaTEF+'\'+sPastaRESP+'\INTPOS.001', '000-000') = 'CNC')
@@ -2028,13 +1938,10 @@ begin
                             and (CampoTEF(sArquivoTEF, '015-000') = CampoTEF('c:\'+sPastaTEF+'\'+sPastaRESP+'\INTPOS.001', '026-000'))// Data hora venda = data hora original cancelado
                             ;
             end;
-            //
-            //
-            //
+
 
             if bBkpProcessado = False then
             begin
-
               Form1.ExibePanelMensagem('Cancelando NSU: ' + sNSU012_000); // Sandro Silva 2017-06-23
 
               //tratar a impressão quando finaliza o cupom, se aberto ou imprimir em funcoes adm
@@ -2136,14 +2043,11 @@ begin
             //
             if FileExists('c:\'+sPastaTEF+'\'+sPastaRESP+'\INTPOS.001') then
             begin
-              //
-              //
               AssignFile(F,'c:\'+sPastaTEF+'\'+sPastaRESP+'\INTPOS.001');
               Reset(F);
               //
               for Y := 1 to 500 do
               begin
-                //
                 sLinha1 := '';
                 ReadLn(F,sLinha1);
                 sLinha1 := StrTran(sLinha1,chr(0),' ');
@@ -2163,7 +2067,6 @@ begin
               end;
               //
               CloseFile(F);
-
             end;
 
             if sMensagem <> '' then
@@ -2195,7 +2098,6 @@ begin
                   Rewrite(F);
                   sIdentificaTransacaoTEF := StrTran(TimeToStr(Time),':','');
                   //
-                  //
                   Form1.Repaint;
                   //
                   //Confirmando a transação TEF
@@ -2219,7 +2121,6 @@ begin
                   DeleteFile(sArquivoTEF); // Sandro Silva 2017-07-04
                   DeleteFile(sArquivoTEFCancelado); // Sandro Silva 2017-07-04
 
-                  // Sandro Silva 2017-07-04  SmallMsgBox(pChar(Chr(10) + 'NSU: ' + sTransaca1 + Chr(10) + ' Cancelada' + #13 + #13 + CampoTEF(sArquivoTEFCancelado, '029-')),'Atenção',mb_Ok + MB_ICONERROR); // Sandro Silva 2017-07-03  SmallMsgBox(pChar(Chr(10) + 'NSU: ' + sTransaca1 + Chr(10) + ' Cancelada'),'Atenção',mb_Ok + MB_ICONERROR);
                   SmallMsgBox(pChar('Nome da Rede: ' + sNomeRede1 + Chr(10) +
                                     'NSU: ' + sTransaca1 + Chr(10) +
                                     'Valor: ' + FormatFloat('0.00', StrToIntDef(sValorTot1, 0) / 100) + Chr(10) +
@@ -2308,7 +2209,6 @@ begin
 
     if sCupom = '' then
     begin
-
       // Não cancelou arquivos no loop acima
       // Carrega a impressão dos cancelamentos com impressão pendentes
       ListaDeArquivos(slArquivos, DIRETORIO_BKP_TEF, sPastaTEF + '*.BKC');
@@ -2320,30 +2220,21 @@ begin
         OKSim1 := '';
         if FileExists(sArquivoTEFCancelado) then
         begin
-          //
-          // ShellExecute( 0, 'Open', 'NOTEPAD.EXE', pChar('\'+sPastaTEF+'\'+sPastaRESP+'\INTPOS.001'), '', SW_SHOW);
-          //
           OKSim1 := CampoTEF(sArquivoTEFCancelado, '009-000');
-
         end;
 
         if AllTrim(OKSim1) = '0' then // Ronei Mudei aqui
         begin
-
           if (AnsiUpperCase(CampoTEF(sArquivoTEFCancelado, '000-000')) = 'CNC') then
           begin
               sCupom := sCupom + CampoTEF(sArquivoTEFCancelado, '029-');
               Form1.sCupomTEFCancelado := Form1.sCupomTEFCancelado + sCupom;
           end;
+        end;
 
-        end; // if AllTrim(OKSim1) = '0' then // Ronei Mudei aqui
-
-        Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible := False; // Sandro Silva 2017-06-22
-
-      end;// for I := 0 to slArquivos.Count -1 do
-
-
-    end; // if slArquivos.Count = 0 then
+        Form1.OcultaPanelMensagem;
+      end;
+    end;
 
     if Form1.sCupomTEFCancelado <> '' then
     begin
@@ -2360,8 +2251,7 @@ begin
 
   ChDir(sDirAtual);
 
-  Form1.OcultaPanelMensagem; // Sandro Silva 2018-08-31 Form1.Panel3.Visible := False;
-
+  Form1.OcultaPanelMensagem;
 end;
 
 function CampoTEF(sArquivoTEF: String; sCampo: String): String;
@@ -2376,7 +2266,7 @@ begin
     try
       AssignFile(F,Pchar(sArquivoTEF));
       Reset(F);
-      //
+
       for Y := 1 to 500 do
       begin
         ReadLn(F,sLinha1);
@@ -2388,7 +2278,7 @@ begin
           Result := Result + StringReplace(Trim(Copy(sLinha1, 10, Length(sLinha1)-9)), '"', '', [rfReplaceAll]);
         end;
       end;
-      //
+
       CloseFile(F);
     except
     end;
@@ -2407,21 +2297,14 @@ begin
     if AllTrim(sCupom) <> '' then
     begin
       // Imprimir se cupom estiver fechado
-
-      bChave := False; // Sandro Silva 2017-08-16
+      bChave := False;
 
       if Form1.PDV_CupomAberto = False then
       begin
-        // Sandro Silva 2017-08-16  bChave := False;
         bSair  := False;
         try
-          //
           while (not bChave) and (not bSair) do
           begin
-
-            //
-            // 2015-09-08 if FunctionDetect('USER32.DLL','BlockInput',@xBlockInput) then xBlockInput(True);   // Disable Keyboard & mouse Trava teclado e mause
-            //
             Form1.Panel3.Repaint;
             Application.ProcessMessages;
             //
@@ -2520,7 +2403,7 @@ begin
             Sleep(1000);
           end;
         end;
-        iTimeOut := Y; // Sandro Silva 2017-06-28
+        iTimeOut := Y;
       end;
       CloseFile(F);
     end;
@@ -2558,10 +2441,6 @@ begin
       begin // Apenas arquivos dos primeiros cartões, não do último
         if AnsiUpperCase(CampoTEF(sArquivoTEF, '000-000')) = 'CRT' then
         begin
-          {Sandro Silva 2023-10-24 inicio
-          if CampoTEF(sArquivoTEF, '009-000') = '0' then
-            Result := Result + Trim(CampoTEF(sArquivoTEF, sCampo));
-          }
           if CampoTEF(sArquivoTEF, '009-000') = '0' then
           begin
             if SuprimirLinhasEmBrancoDoComprovanteTEF then
@@ -2572,10 +2451,9 @@ begin
             else
               Result := Result + Trim(CampoTEF(sArquivoTEF, sCampo));
           end;
-          {Sandro Silva 2023-10-24 fim}
         end;
       end;
-    end; // for I := 0 to slDownload.Count -1 do
+    end;
   finally
     FreeAndNil(slArquivos);
   end;
@@ -2592,15 +2470,14 @@ begin
   GetDir(0, sDirAtual);
   Result := 0;
   try
-    //
     I := FindFirst( sTipoComCaminho, faAnyFile, S);
-    //
+
     while I = 0 do
     begin
       I := FindNext(S);
       Inc(Result);
     end;
-    //
+
     FindClose(S);
   except
   end;
@@ -2608,7 +2485,7 @@ begin
   ChDir(sDirAtual);
 end;
 
-function TEFValorTotalAutorizado(): Currency; // Sandro Silva 2017-06-14
+function TEFValorTotalAutorizado(): Currency;
 var
   slArquivos: TStringList;
   sDirAtual: String;
@@ -2617,8 +2494,8 @@ var
   sNomeArquivo: String;
   sNomeTEFAutorizacao: String;
   sDebitoOuCreditoAutorizado: String;
-  bRespostaValidadosFiscal: Boolean; // Sandro Silva 2018-07-03
-  ModalidadeTransacao: TTipoModalidadeTransacao; // Sandro Silva 2021-07-05
+  bRespostaValidadosFiscal: Boolean;
+  ModalidadeTransacao: TTipoModalidadeTransacao;
 begin
   GetDir(0, sDirAtual);
   slArquivos := TStringList.Create;
@@ -2630,7 +2507,7 @@ begin
     for I := 0 to slArquivos.Count -1 do
     begin
       sArquivoTEF := DIRETORIO_BKP_TEF + '\' + AllTrim(slArquivos[I]);
-      //
+
       // Exemplo de nome de arquivo TEF_DIAL1.BKP, TEF_DIAL2.BKP
       // Último caractere do nome deve ser número maior ou igual a zero
       sNomeArquivo := StringReplace(AnsiUpperCase(ExtractFileName(sArquivoTEF)), '.BKP', '', [rfReplaceAll]);
@@ -2667,30 +2544,26 @@ begin
         begin
           if CampoTEF(sArquivoTEF, '009-000') = '0' then
           begin
-
-            {Sandro Silva 2023-06-14 inicio
-            if Form1.UsaIntegradorFiscal() then
-            begin
-
-              Form1.IntegradorCE.SelecionarDadosAdquirente('FRENTE.INI', sNomeTEFAutorizacao, Form1.sUltimaAdquirenteUsada);
-              bRespostaValidadosFiscal := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(TEFValorTransacao(sArquivoTEF)), FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, False); // Sandro Silva 2021-11-29 bRespostaValidadosFiscal := EnviarPagamentoValidadorFiscal('CARTAO TEF', Abs(Form1.TEFValorTransacao(sArquivoTEF)), StrZero(Form1.icupom, 6, 0), Form1.sCaixa, False);
-
-            end
-            else
-            }
-              bRespostaValidadosFiscal := True;
+            bRespostaValidadosFiscal := True;
 
             if bRespostaValidadosFiscal then
             begin
-
               Result := Result + TEFValorTransacao(sArquivoTEF);
-              Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'), ModalidadeTransacao); // Sandro Silva 2021-07-05 Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, Form1.TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'));
+              Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao,
+                                                          Form1.sDebitoOuCredito,
+                                                          TEFValorTransacao(sArquivoTEF),
+                                                          CampoTEF(sArquivoTEF, '010-000'),
+                                                          CampoTEF(sArquivoTEF, '012-000'),
+                                                          CampoTEF(sArquivoTEF, '013-000'),
+                                                          CampoTEF(sArquivoTEF, '010-000'),
+                                                          '',
+                                                          '',
+                                                          ModalidadeTransacao);
             end;
-
           end;
         end;
-      end; //if StrToIntDef(Right(sNomeArquivo, Length(IntToStr(I))), -1) >= 0 then
-    end; // for I := 0 to slDownload.Count -1 do
+      end;
+    end;
   finally
     FreeAndNil(slArquivos);
   end;
@@ -2723,14 +2596,9 @@ begin
       for I := 0 to slArquivos.Count -1 do
       begin
         sArquivo := diretorio_bkp_tef + '\' + AllTrim(slArquivos[I]);
-        //
-        //if AnsiContainsText(ExtractFileName(sArquivo), FsDiretorio) then
-        //begin
-          //
-          DeleteFile(PChar(sArquivo));
-          //
-        //end;
-      end; // for I := 0 to slDownload.Count -1 do
+        DeleteFile(PChar(sArquivo));
+      end;
+
       if sTipo = '*.BKP' then
         sTipo := '*.BKC'
       else
@@ -2748,6 +2616,17 @@ var
   dLimiteRecurso : Tdate;
 begin
   Result := (RecursoLiberado(Form1.IBDatabase1,rcZPOS,dLimiteRecurso));
+end;
+
+function GetBinCartao(sArquivoTEF: String) : string;
+begin
+  Result := '';
+end;
+
+
+function GetUltimosDigitosCartao(sArquivoTEF: String) : string;
+begin
+  Result := '';
 end;
 
 end.

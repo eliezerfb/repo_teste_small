@@ -29,6 +29,8 @@ type
     FNomeRede: String;
     FAutorizacao: String;
     FBandeira: String;
+    FBIN: String;
+    FUltimosDigitos: String;
     //FCarteiraDigital: Boolean;
     FModalidade: TTipoModalidadeTransacao;
   public
@@ -39,6 +41,8 @@ type
     property Transaca: String read FTransaca write FTransaca;
     property Autorizacao: String read FAutorizacao write FAutorizacao;
     property Bandeira: String read FBandeira write FBandeira;
+    property BIN: String read FBIN write FBIN;
+    property UltimosDigitos: String read FUltimosDigitos write FUltimosDigitos;
     //property CarteiraDigital: Boolean read FCarteiraDigital write FCarteiraDigital;
     property Modalidade: TTipoModalidadeTransacao read FModalidade write FModalidade;
   end;
@@ -50,7 +54,7 @@ type
   public
     function Adicionar(sNomeDoTEF: String; sDebitoOuCredito: String;
       dValorPago: Double; sNomeRede: String; sTransaca: String;
-      sAutorizacao: String; sBandeira: String;
+      sAutorizacao, sBandeira, sBIN, sUltimosDigitos: String;
       //bCarteiraDigital: Boolean
       Modalidade: TTipoModalidadeTransacao
       ): TTransacaoCartao;
@@ -97,8 +101,7 @@ end;
 
 function TTransacaoCartaoList.Adicionar(sNomeDoTEF,
   sDebitoOuCredito: String; dValorPago: Double; sNomeRede,
-  sTransaca: String; sAutorizacao: String;
-  sBandeira: String;
+  sTransaca, sAutorizacao, sBandeira, sBIN, sUltimosDigitos: String;
   //bCarteiraDigital: Boolean
   Modalidade: TTipoModalidadeTransacao
   ): TTransacaoCartao;

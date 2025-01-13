@@ -10554,7 +10554,7 @@ begin
                 if (Form1.ibDataSet25.FieldByName('PAGAR').AsFloat <> 0) then // Cartao
                 begin
                   try
-                    for iTransacaoCartao := 0 to Form1.TransacoesCartao.Transacoes.Count -1 do  // Um registro para cada transação com cartão
+                    for iTransacaoCartao := 0 to TransacoesCartao.Transacoes.Count -1 do  // Um registro para cada transação com cartão
                     begin
                       try
                         {Mauricio Parizotto 2024-08-21 Inicio}
@@ -10612,19 +10612,21 @@ begin
                         Form1.ibDataSet28.FieldByName('HORA').AsString      := Form1.ibDataSet27.FieldByName('HORA').AsString; // Sandro Silva 2018-11-30
 
                         {Sandro Silva 2023-07-24 inicio}
-                        GravaDadosTransacaoEletronica(Form1.IBDataSet28.Transaction,
-                          Form1.ibDataSet28.FieldByName('DATA').AsDateTime,
-                          Form1.ibDataSet28.FieldByName('PEDIDO').AsString,
-                          Form1.ibDataSet28.FieldByName('CAIXA').AsString,
-                          Form1.sModeloECF,
-                          Form1.ibDataSet28.FieldByName('GNF').AsString,
-                          Form1.ibDataSet28.FieldByName('FORMA').AsString,
-                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago,
-                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca,
-                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede,
-                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Autorizacao, // Sandro Silva 2018-07-03
-                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Bandeira // Sandro Silva 2018-07-03
-                          );
+                        GravaDadosTransacaoEletronica(IBDataSet28.Transaction,
+                                                      ibDataSet28.FieldByName('DATA').AsDateTime,
+                                                      ibDataSet28.FieldByName('PEDIDO').AsString,
+                                                      ibDataSet28.FieldByName('CAIXA').AsString,
+                                                      sModeloECF,
+                                                      ibDataSet28.FieldByName('GNF').AsString,
+                                                      ibDataSet28.FieldByName('FORMA').AsString,
+                                                      TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago,
+                                                      TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca,
+                                                      TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede,
+                                                      TransacoesCartao.Transacoes.Items[iTransacaoCartao].Autorizacao,
+                                                      TransacoesCartao.Transacoes.Items[iTransacaoCartao].Bandeira,
+                                                      TransacoesCartao.Transacoes.Items[iTransacaoCartao].BIN, //Mauricio Parizotto 2025-01-10
+                                                      TransacoesCartao.Transacoes.Items[iTransacaoCartao].UltimosDigitos  //Mauricio Parizotto 2025-01-10
+                                                      );
 
                         //Mauricio Parizotto 2024-08-21
                         IDFORMA     := GetIDFORMA(CODIGO_TPAG,Form1.ibDataSet28.Transaction);
@@ -10635,14 +10637,6 @@ begin
                       except
                       end;
                     end;
-
-                    {Sandro Silva 2023-06-14 inicio
-                    if Form1.UsaIntegradorFiscal() then
-                    begin
-                      Form1.IntegradorCE.EnviarFormaPagamento.Formas.Clear; // Sandro Silva 2018-07-03
-                      Form1.IntegradorCE.UltimoidPagamento := '';
-                    end;
-                    }
                   except
                         on E: Exception do
                         begin

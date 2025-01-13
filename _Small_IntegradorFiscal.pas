@@ -425,7 +425,7 @@ begin
                                             Form1.IntegradorCE.TransacaoFinanceira.Bin, // IfThen(LimpaNumero(Form1.IntegradorCE.TransacaoFinanceira.GetLinha('010-004')) = '',  '0000',  Form1.IntegradorCE.TransacaoFinanceira.GetLinha('010-004')), //Bin,   // Sandro Silva 2017-05-22  '****',
                                             Form1.IntegradorCE.TransacaoFinanceira.DonoCartao, // IfThen(Form1.IntegradorCE.TransacaoFinanceira.GetLinha('210-027') = '',  '****',  Form1.IntegradorCE.TransacaoFinanceira.GetLinha('210-027')),          //DonoCartao,
                                             Form1.IntegradorCE.TransacaoFinanceira.DataExpiracao, // IfThen(LimpaNumero(Form1.IntegradorCE.TransacaoFinanceira.GetLinha('300-001')) = '',  '0000',  Form1.IntegradorCE.TransacaoFinanceira.GetLinha('741-000')),  //DataExpiracao,
-                                            Form1.IntegradorCE.TransacaoFinanceira.InstituicaoFinanceira, // Form1.IntegradorCE.TransacaoFinanceira.GetLinha('010-000'),                                                                            //InstituicaoFinanceira,
+                                            Form1.IntegradorCE.TransacaoFinanceira.InstituicaoFinanceira,
                                             Form1.IntegradorCE.TransacaoFinanceira.Parcelas, // IfThen(StrToIntDef(Form1.IntegradorCE.TransacaoFinanceira.GetLinha('018-000'), 0) = 0, '1', Form1.IntegradorCE.TransacaoFinanceira.GetLinha('018-000')),//Parcelas,
                                             Form1.IntegradorCE.TransacaoFinanceira.CodigoPagamento, // Form1.IntegradorCE.TransacaoFinanceira.GetLinha('012-000'),                                                                            //CodigoPagamento,
                                             Form1.IntegradorCE.TransacaoFinanceira.ValorPagamento, // FloatToStr(StrToIntDef(Form1.IntegradorCE.TransacaoFinanceira.GetLinha('003-000'), 0) / 100),                                          //ValorPagamento,
@@ -441,7 +441,7 @@ begin
   Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.Nsu               := Form1.IntegradorCE.TransacaoFinanceira.CodigoPagamento;       //Form1.IntegradorCE.TransacaoFinanceira.GetLinha('012-000');
   Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.NumerodeAprovacao := Form1.IntegradorCE.TransacaoFinanceira.CodigoAutorizacao;     //Form1.IntegradorCE.TransacaoFinanceira.GetLinha('013-000');
   Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.Bandeira          := Form1.IntegradorCE.TransacaoFinanceira.Tipo;                  //Form1.IntegradorCE.TransacaoFinanceira.GetLinha('040-000');
-  Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.Adquirente        := Form1.IntegradorCE.TransacaoFinanceira.InstituicaoFinanceira; //Form1.IntegradorCE.TransacaoFinanceira.GetLinha('010-000');
+  Form1.IntegradorCE.EnviarFormaPagamento.Formas.Items[Form1.IntegradorCE.EnviarFormaPagamento.Formas.Count -1].RespostaFiscal.Adquirente        := Form1.IntegradorCE.TransacaoFinanceira.InstituicaoFinanceira;
 
   Form1.OcultaPanelMensagem; 
 end;

@@ -349,8 +349,8 @@ function RetornaTextoEmVenda(sModelo: String): String;
 procedure ValidaValorAutorizadoCartao(ibDataSet25: TIBDataSet; TEFValorTotalAutorizado: Double);
 function GravaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
   dtData: TDate; sPedido: String; sCaixa: String; sModelo: String;
-  sGNF: String; sForma: String; dValor: Double; sTransacao: String;
-  sNomeRede: String; sAutorizacao: String; sBandeira: String): Boolean;
+  sGNF: String; sForma: String; dValor: Double;
+  sTransacao, sNomeRede, sAutorizacao, sBandeira, sBIN, sUltimosDigitos: String): Boolean;
 function AtualizaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
   sPedidoOld: String; sCaixaOld: String; sModeloOld: String;
   sGnfOld: String;
@@ -991,16 +991,17 @@ begin
           ModalidadeTransacao := tModalidadeCarteiraDigital;
 
         FTransacoesCartao.Transacoes.Adicionar(IBQTRANSACAOELETRONICA.FieldByName('NOMEREDE').AsString,
-          ifThen(AnsiContainsText(ConverteAcentosXML(IBQTRANSACAOELETRONICA.FieldByName('FORMA').AsString), 'Cartao DEBITO')
-            , 'DEBITO'
-            , 'CREDITO'),
-          IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat,
-          IBQTRANSACAOELETRONICA.FieldByName('NOMEREDE').AsString,
-          IBQTRANSACAOELETRONICA.FieldByName('TRANSACAO').AsString,
-          IBQTRANSACAOELETRONICA.FieldByName('AUTORIZACAO').AsString,
-          IBQTRANSACAOELETRONICA.FieldByName('BANDEIRA').AsString,
-          ModalidadeTransacao
-        );
+                                               ifThen(AnsiContainsText(ConverteAcentosXML(IBQTRANSACAOELETRONICA.FieldByName('FORMA').AsString), 'Cartao DEBITO')
+                                                 , 'DEBITO', 'CREDITO'),
+                                               IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat,
+                                               IBQTRANSACAOELETRONICA.FieldByName('NOMEREDE').AsString,
+                                               IBQTRANSACAOELETRONICA.FieldByName('TRANSACAO').AsString,
+                                               IBQTRANSACAOELETRONICA.FieldByName('AUTORIZACAO').AsString,
+                                               IBQTRANSACAOELETRONICA.FieldByName('BANDEIRA').AsString,
+                                               '',
+                                               '',
+                                               ModalidadeTransacao
+                                               );
 
         AtualizaDadosTransacaoEletronica(
           IBQTRANSACAOELETRONICA.Transaction,
@@ -1058,12 +1059,10 @@ begin
     begin
       FormasPagamento.Troco := FIBDataSet28.FieldByName('VALOR').AsFloat;
     end;
-/////////////////////////////////////////////////////////////////////////////////////
     FIBDataSet28.Next;
   end;
 
   FreeAndNil(IBQTRANSACAOELETRONICA);
-
 end;
 {Sandro Silva 2023-08-25 fim}
 
@@ -2426,8 +2425,8 @@ end;
 
 function GravaDadosTransacaoEletronica(IBTransaction: TIBTransaction;
   dtData: TDate; sPedido: String; sCaixa: String; sModelo: String;
-  sGNF: String; sForma: String; dValor: Double; sTransacao: String;
-  sNomeRede: String; sAutorizacao: String; sBandeira: String): Boolean;
+  sGNF: String; sForma: String; dValor: Double;
+  sTransacao, sNomeRede, sAutorizacao, sBandeira, sBIN, sUltimosDigitos: String): Boolean;
 var
   IBQTRANSACAO: TIBQuery;
   sRegistro: String;
@@ -2440,8 +2439,12 @@ begin
   try
     IBQTRANSACAO.Close;
     IBQTRANSACAO.SQL.Text :=
-      'insert into TRANSACAOELETRONICA (REGISTRO, DATA, PEDIDO, CAIXA, MODELO, GNF, FORMA, VALOR, TRANSACAO, NOMEREDE, AUTORIZACAO, BANDEIRA) ' +
-      ' values (:REGISTRO, :DATA, :PEDIDO, :CAIXA, :MODELO, :GNF, :FORMA, :VALOR, :TRANSACAO, :NOMEREDE, :AUTORIZACAO, :BANDEIRA)';
+      //'insert into TRANSACAOELETRONICA (REGISTRO, DATA, PEDIDO, CAIXA, MODELO, GNF, FORMA, VALOR, TRANSACAO, NOMEREDE, AUTORIZACAO, BANDEIRA) ' +Mauricio Parzitto 2025-01-10
+      'insert into TRANSACAOELETRONICA (REGISTRO, DATA, PEDIDO, CAIXA, MODELO, GNF, FORMA, VALOR, TRANSACAO, NOMEREDE, AUTORIZACAO, BANDEIRA,'+
+      '                                 BIN, ULTIMOSDIGITOS) ' +
+      //' values (:REGISTRO, :DATA, :PEDIDO, :CAIXA, :MODELO, :GNF, :FORMA, :VALOR, :TRANSACAO, :NOMEREDE, :AUTORIZACAO, :BANDEIRA)'; Mauricio Parzitto 2025-01-10
+      ' values (:REGISTRO, :DATA, :PEDIDO, :CAIXA, :MODELO, :GNF, :FORMA, :VALOR, :TRANSACAO, :NOMEREDE, :AUTORIZACAO, :BANDEIRA, '+
+      '         :BIN, :ULTIMOSDIGITOS)';
     sRegistro := FormatFloat('0000000000', IncGeneratorToInt(IBTransaction.DefaultDatabase, 'G_VFPE', 1));
     IBQTRANSACAO.ParamByName('REGISTRO').AsString         := sRegistro;
     IBQTRANSACAO.ParamByName('DATA').AsDate               := dtData;
@@ -2455,6 +2458,8 @@ begin
     IBQTRANSACAO.ParamByName('NOMEREDE').AsString         := Copy(sNomeRede, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'NOMEREDE'));
     IBQTRANSACAO.ParamByName('AUTORIZACAO').AsString      := Copy(sAutorizacao, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'AUTORIZACAO'));
     IBQTRANSACAO.ParamByName('BANDEIRA').AsString         := Copy(sBandeira, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'BANDEIRA'));
+    IBQTRANSACAO.ParamByName('BIN').AsString              := sForma;
+    IBQTRANSACAO.ParamByName('ULTIMOSDIGITOS').AsString   := sForma;
     IBQTRANSACAO.ExecSQL;
   except
     Result := False;
