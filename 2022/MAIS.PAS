@@ -9578,7 +9578,7 @@ begin
         IBQuery1.Close;
         IBQuery1.SQL.Clear;
         IBQuery1.SQL.Add('insert into CLIFOR ('
-        +'IDCLIENTE '
+        +'IDCLIFOR '
         +',NOME'
         +',CGC'
         +',IE'
