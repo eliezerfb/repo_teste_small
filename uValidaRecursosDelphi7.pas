@@ -529,7 +529,6 @@ begin
 
   LeRecursos;
     
-  //if (Copy(FrsRecursoSistema.Serial, 4, 1) = 'T') or (FrsRecursoSistema.CNPJ = '') then // Sandro Silva 2023-06-01 if (Copy(FrsRecursoSistema.Serial, 4, 1) = 'T') then
   if (Trim(FrsRecursoSistema.Produto) = '')
    or (AnsiContainsText(Trim(FrsRecursoSistema.Produto), ' Go'))
    or (Trim(FrsRecursoSistema.CNPJ) = '') then 
@@ -539,19 +538,16 @@ end;
 function TValidaRecurso.ValidaQtdDocumentoFrente(dtBaseVerificar: TDate; TipoMomento: TipoMomentoDocumento): Boolean;
 const SituacaoSatEmitidoOuCancelado  = ' (MODELO = ''59'' and coalesce(NFEXML, '''') containing ''Id="'' and coalesce(NFEXML, '''') containing ''versao="'' and coalesce(NFEXML, '''') containing ''<SignatureValue>'' and coalesce(NFEXML, '''') containing ''<DigestValue>'') ' ;
 
-// const SituacaoNFCeEmitidoOuCancelado = ' (MODELO = ''65'' and ((coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''') or (coalesce(NFEXML, '''') containing ''<tpEmis>9'') or (coalesce(STATUS, '''') containing ''NFC-e emitida em modo de contingência'') )) ';
 const SituacaoNFCeAutorizadaCanceladoNormal = '(coalesce(NFEXML, '''') containing ''<tpEmis>1'' and coalesce(NFEXML, '''') containing ''<xMotivo>'' and coalesce(NFEIDSUBSTITUTO, '''') = '''') ';// -- emissão normal autorizada
 const SituacaoNFCeAutorizadaContingencia = '(coalesce(NFEXML, '''') containing ''<tpEmis>9'' and coalesce(NFEXML, '''') containing ''<xMotivo>'') ';// -- emissão contingência autorizada
 const SituacaoNFCeNaoTransmitidaContingencia = '(coalesce(NFEXML, '''') containing ''<tpEmis>9'' and coalesce(NFEXML, '''') not containing ''<xMotivo>'') ';// -- emissão contingência não autorizada
 const SituacaoNFCeCancelada = '(coalesce(NFEXML, '''') containing ''<tpEvento>110111'') ';// -- canceladas
-//const SituacaoNFCe = ' or (MODELO = ''65'' and (' + SituacaoNFCeAutorizadaCanceladoNormal + ' or ' + SituacaoNFCeAutorizadaContingencia + ' or ' + SituacaoNFCeNaoAutorizaContingencia + ' or ' + SituacaoNFCeCancelada + '))';
 
 const SituacaoMEIEmitidoOuCancelado  = ' (MODELO = ''99'' and (coalesce(STATUS, '''') containing ''Finalizada'' or coalesce(STATUS, '''') containing ''Cancelada'')) ';
 var
   iQtdEmitido: Integer;
   iQtdPermitido: Integer;
   IBQDOC: TIBQuery;
-//  dtDataServidor: TDate;
   IBTRANSACTION: TIBTransaction;
   function SituacaoNFCe(TipoMomento: TipoMomentoDocumento): String;
   // TipoMomento define se está lançando ou transmitindo
@@ -569,8 +565,6 @@ begin
 
   iQtdPermitido := FrsRecursoSistema.Recursos.QtdNFCE;
 
-//  Result := False;
-
   if iQtdPermitido = -1 then
   begin
     Result := True;
@@ -580,21 +574,13 @@ begin
     IBTRANSACTION := CriaIBTransaction(FIBDatabase);
 
     IBQDOC := CriaIBQuery(IBTRANSACTION);
-    {
-    IBQDOC.Close;
-    IBQDOC.SQL.Text := 'select current_date as DATAATUAL from RDB$DATABASE';
-    IBQDOC.Open;
-    dtDataServidor := IBQDOC.FieldByName('DATAATUAL').AsDateTime;
-    }
 
     IBQDOC.Close;
     IBQDOC.SQL.Text :=
-      'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
-      'from NFCE ' +
-      //'where DATA >= :INI  ' +
-      'where (extract(month from DATA) = :MES and extract(year from DATA) = :ANO) ' +
-      'and ( ' + SituacaoSatEmitidoOuCancelado + '  or ' + SituacaoNFCe(TipoMomento) + '  or ' + SituacaoMEIEmitidoOuCancelado + ' )';
-    //IBQDOC.ParamByName('INI').AsString := '01' + FormatDateTime('/mm/yyyy', dtDataServidor);
+                      'select count(NUMERONF) as DOCUMENTOSEMITIDOS ' +
+                      'from NFCE ' +
+                      'where (extract(month from DATA) = :MES and extract(year from DATA) = :ANO) ' +
+                      'and ( ' + SituacaoSatEmitidoOuCancelado + '  or ' + SituacaoNFCe(TipoMomento) + '  or ' + SituacaoMEIEmitidoOuCancelado + ' )';
     IBQDOC.ParamByName('MES').AsInteger := MonthOf(dtBaseVerificar);
     IBQDOC.ParamByName('ANO').AsInteger := YearOf(dtBaseVerificar);
     IBQDOC.Open;
@@ -665,10 +651,7 @@ begin
 
     if (iQtdPermitido - iQtdEmitido) > 0 then
       Result := True;
-
   end;
-
-
 end;
 
 function TValidaRecurso.LerSerialWindowsLog: String;
