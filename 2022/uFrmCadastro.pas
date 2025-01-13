@@ -632,6 +632,7 @@ begin
   cboRelacaoCom.Enabled         := not(bEstaSendoUsado) and not (bSomenteLeitura);
   btnWebCam.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
   btnSelecionarArquivo.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  DBGridAddress.ReadOnly := not(not(bEstaSendoUsado) and not (bSomenteLeitura));
 
 
   if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
@@ -1054,7 +1055,7 @@ begin
     Exit();
   end;
 
-  ShowGridCidade;
+  ShowGridCidade();
 end;
 
 procedure TFrmCadastro.DBGridAddressColExit(Sender: TObject);
@@ -1196,7 +1197,7 @@ begin
 
   if Field.FieldName = 'TELEFONE' then
   begin
-    if not(Key in ['0'..'9', #8]) then
+    if (not(Key in ['0'..'9', #8])) or DBGridAddress.ReadOnly then
       Abort;
 
     if (FDMemTableAddress.State = dsBrowse) and not(FDMemTableAddress.IsEmpty) then
@@ -1518,7 +1519,8 @@ end;
 
 procedure TFrmCadastro.ShowGridCidade();
 begin
-  if not(DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE')) then
+  if (not(DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE'))) or
+    DBGridAddress.ReadOnly then
     Exit();
 
   if not(Trim(FDMemTableAddressCIDADE.AsString) = '') then
