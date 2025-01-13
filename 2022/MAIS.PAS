@@ -39,7 +39,7 @@ uses
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
 // Build do banco incrementa sempre par
-const BUILD_DO_BANCO = '2024038'; //Sandro Silva 2024-12-27 const BUILD_DO_BANCO = '2024037'; //Sandro Silva 2024-11-14 const BUILD_DO_BANCO = '2024034'; //Sandro Silva 2024-11-08 const BUILD_DO_BANCO = '2024032'; //Sandro Silva 2024-10-03 const BUILD_DO_BANCO = '2024030'; //Sandro Silva 2024-09-19 const BUILD_DO_BANCO = '2024028'; //Sandro Silva 2024-08-29 const BUILD_DO_BANCO = '2024026'; //Sandro Silva 2024-07-19 const BUILD_DO_BANCO = '2024024'; //Mauricio Parizotto 2024-07-15 const BUILD_DO_BANCO = '2024022'; // Sandro Silva 2024-07-05 const BUILD_DO_BANCO = '2024020'; // Sandro Silva 2024-06-28 const BUILD_DO_BANCO = '2024018'; // Sandro Silva 2024-05-29 const BUILD_DO_BANCO = '2024016'; // Sandro Silva 2024-05-09 const BUILD_DO_BANCO = '2024014';
+const BUILD_DO_BANCO = '2025002';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -9578,7 +9578,7 @@ begin
         IBQuery1.Close;
         IBQuery1.SQL.Clear;
         IBQuery1.SQL.Add('insert into CLIFOR ('
-        +'IDCLIENTE '
+        +'IDCLIFOR '
         +',NOME'
         +',CGC'
         +',IE'

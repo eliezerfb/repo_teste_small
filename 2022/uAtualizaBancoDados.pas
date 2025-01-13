@@ -3475,7 +3475,6 @@ begin
 
   if not(CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CLIFOR', 'IDCLIFOR')) then
   begin
-    ShowMessage('IDCLIFOR');
     if ExecutaComando('ALTER TABLE CLIFOR ADD IDCLIFOR INTEGER NOT NULL') then
     begin
       ExecutaComando('Commit');

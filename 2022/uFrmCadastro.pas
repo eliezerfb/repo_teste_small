@@ -173,6 +173,7 @@ type
     procedure FDMemTableAddressBeforePost(DataSet: TDataSet);
     procedure DBGridAddressDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure tbsAddressHide(Sender: TObject);
   private
     { Private declarations }
     FOldCEPEnderecoAdicional: String;
@@ -202,7 +203,7 @@ type
     procedure DBGridCidadesCellClick(Column: TColumn);
     procedure DBGridCidadesKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    function ValidateCurrentAddress(SilentMode: Boolean = False): Boolean;
+    function ValidateCurrentAddress(): Boolean;
   public
     { Public declarations }
   end;
@@ -241,6 +242,8 @@ begin
   FDMemTableAddressIDENDERECO.AsInteger :=
     IncGenerator(Form7.IBDatabase1, 'G_CLIFORENDERECOS').ToInteger;
   FDMemTableAddressTIPO.AsString := TipoEnderecoToString(teEntrega);
+  FDMemTableAddressINVALID.AsInteger := Integer(False);
+
   DBGridAddress.SelectedIndex := 1;
 end;
 
@@ -406,7 +409,7 @@ begin
     if not(APartialName = '') then
       IBQueryCidades.ParamByName('nome').AsString := '%'+APartialName+'%';
     IBQueryCidades.ParamByName('uf').AsString := AUf;
-    IBQueryCidades.Open;
+    IBQueryCidades.Open();
   finally
     IBQueryCidades.EnableControls;
   end;
@@ -629,6 +632,7 @@ begin
   cboRelacaoCom.Enabled         := not(bEstaSendoUsado) and not (bSomenteLeitura);
   btnWebCam.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
   btnSelecionarArquivo.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  DBGridAddress.ReadOnly := not(not(bEstaSendoUsado) and not (bSomenteLeitura));
 
 
   if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
@@ -747,15 +751,26 @@ begin
   end;
 end;
 
+procedure TFrmCadastro.tbsAddressHide(Sender: TObject);
+begin
+  inherited;
+  if not(FPanelCities = nil) and (FPanelCities.Visible) then
+    FPanelCities.Visible := False;
+end;
+
 procedure TFrmCadastro.tbsAddressShow(Sender: TObject);
 begin
   inherited;
   DBGridAddress.SelectedIndex := GetColumnIdByFieldName('CEP');
+
+  if DSCadastro.DataSet.State = dsInsert then
+    LoadAddress();
+
   if FDMemTableAddress.Active then
   begin
     if FDMemTableAddress.IsEmpty then
       FDMemTableAddress.Insert
-    else
+    else if FDMemTableAddress.State = dsBrowse then
       FDMemTableAddress.First;
   end;
 end;
@@ -782,7 +797,7 @@ begin
   AtualizaTela;
 end;
 
-function TFrmCadastro.ValidateCurrentAddress(SilentMode: Boolean): Boolean;
+function TFrmCadastro.ValidateCurrentAddress(): Boolean;
 begin
   var ListOfFields := TList<String>.Create;
   var FieldLimits := TDictionary<String, Integer>.Create;
@@ -799,8 +814,7 @@ begin
 
       if Trim(FDMemTableAddress.FieldByName(Field).AsString).Length < Limit then
       begin
-        if not(SilentMode) then
-          DBGridAddress.SelectedIndex := GetColumnIdByFieldName(Field);
+        DBGridAddress.SelectedIndex := GetColumnIdByFieldName(Field);
         Exit(False);
       end;
     end;
@@ -1023,6 +1037,7 @@ end;
 procedure TFrmCadastro.DBGridAddressColEnter(Sender: TObject);
 begin
   inherited;
+
   if DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CEP') then
   begin
     FOldCEPEnderecoAdicional := FDMemTableAddressCEP.AsString;
@@ -1040,7 +1055,7 @@ begin
     Exit();
   end;
 
-  ShowGridCidade;
+  ShowGridCidade();
 end;
 
 procedure TFrmCadastro.DBGridAddressColExit(Sender: TObject);
@@ -1074,12 +1089,12 @@ begin
       on e:exception do
       begin
         DBGridAddress.SelectedIndex := CEPIndex;
-        raise Exception.Create(e.Message);
+        MensagemSistema(e.Message);
       end;
     end;
   end;
 
-  if (FDMemTableAddress.State = dsEdit) then
+  if FDMemTableAddress.State = dsEdit then
     FDMemTableAddressINVALID.AsInteger := Integer(not(ValidateCurrentAddress()))
 end;
 
@@ -1105,6 +1120,9 @@ procedure TFrmCadastro.DBGridAddressKeyDown(Sender: TObject; var Key: Word;
 begin
   inherited;
 
+  if (Key = VK_DELETE) and DBGridAddress.ReadOnly then
+    Abort;
+
   if (Key = VK_DELETE) and
   (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE')) and
   not(FDMemTableAddressCIDADE.AsString = '') then
@@ -1119,7 +1137,8 @@ begin
 
   if (Key = VK_DELETE) and not(DBGridAddress.EditorMode) then
   begin
-    FDMemTableAddress.Delete();
+    if not(FDMemTableAddress.IsEmpty) then
+      FDMemTableAddress.Delete();
     if (Shift = [SsCtrl]) and (key = VK_DELETE) then
       key := 0;
     Exit;
@@ -1140,6 +1159,10 @@ var
   Input: String;
 begin
   inherited;
+
+  if DBGridAddress.ReadOnly then
+    Abort;
+
   if (Key = #13) then
   begin
     if FPanelCities.Visible then
@@ -1158,8 +1181,7 @@ begin
         if not DataSource.DataSet.Eof then
           DataSource.DataSet.Next;
 
-        if (DataSource.DataSet.Eof) and
-          not(trim(FDMemTableAddressENDERECO.Text) = '') then
+        if (DataSource.DataSet.Eof) then
           DataSource.DataSet.Append;
 
         SelectedIndex := 1;
@@ -1503,7 +1525,8 @@ end;
 
 procedure TFrmCadastro.ShowGridCidade();
 begin
-  if not(DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE')) then
+  if (not(DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE'))) or
+    DBGridAddress.ReadOnly then
     Exit();
 
   if not(Trim(FDMemTableAddressCIDADE.AsString) = '') then
