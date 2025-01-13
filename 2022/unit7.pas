@@ -22168,18 +22168,8 @@ begin
   ibDataSet2CADASTRO.AsDateTime    := Date;
   IBDataSet2PRODUTORRURAL.AsString := 'N'; //Mauricio Parizotto 2024-06-27
 
-  with TIBQuery.Create(nil) do
-  begin
-    try
-      Database := IBDatabase1;
-      SQL.Text := 'select next value for G_CLIFORIDCLIFOR from rdb$database';
-      Open();
-      IBDataSet2IDCLIFOR.AsInteger := Fields[0].AsInteger;
-    finally
-      Free;
-    end;
-  end;
-
+  IBDataSet2IDCLIFOR.AsInteger :=
+    IncGenerator(IBDatabase1, 'G_CLIFORIDCLIFOR').ToInteger;
 end;
 
 procedure TForm7.DBGrid1ColEnter(Sender: TObject);

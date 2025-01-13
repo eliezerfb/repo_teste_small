@@ -242,6 +242,8 @@ begin
   FDMemTableAddressIDENDERECO.AsInteger :=
     IncGenerator(Form7.IBDatabase1, 'G_CLIFORENDERECOS').ToInteger;
   FDMemTableAddressTIPO.AsString := TipoEnderecoToString(teEntrega);
+  FDMemTableAddressINVALID.AsInteger := Integer(False);
+
   DBGridAddress.SelectedIndex := 1;
 end;
 
@@ -759,11 +761,15 @@ procedure TFrmCadastro.tbsAddressShow(Sender: TObject);
 begin
   inherited;
   DBGridAddress.SelectedIndex := GetColumnIdByFieldName('CEP');
+
+  if DSCadastro.DataSet.State = dsInsert then
+    LoadAddress();
+
   if FDMemTableAddress.Active then
   begin
     if FDMemTableAddress.IsEmpty then
       FDMemTableAddress.Insert
-    else
+    else if FDMemTableAddress.State = dsBrowse then
       FDMemTableAddress.First;
   end;
 end;
