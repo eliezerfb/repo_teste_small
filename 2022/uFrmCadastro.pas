@@ -1120,6 +1120,9 @@ procedure TFrmCadastro.DBGridAddressKeyDown(Sender: TObject; var Key: Word;
 begin
   inherited;
 
+  if (Key = VK_DELETE) and DBGridAddress.ReadOnly then
+    Abort;
+
   if (Key = VK_DELETE) and
   (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE')) and
   not(FDMemTableAddressCIDADE.AsString = '') then
@@ -1156,6 +1159,9 @@ var
   Input: String;
 begin
   inherited;
+
+  if DBGridAddress.ReadOnly then
+    Abort;
 
   if (Key = #13) then
   begin
@@ -1197,7 +1203,7 @@ begin
 
   if Field.FieldName = 'TELEFONE' then
   begin
-    if (not(Key in ['0'..'9', #8])) or DBGridAddress.ReadOnly then
+    if not(Key in ['0'..'9', #8]) then
       Abort;
 
     if (FDMemTableAddress.State = dsBrowse) and not(FDMemTableAddress.IsEmpty) then
