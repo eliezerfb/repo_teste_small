@@ -203,7 +203,7 @@ type
     procedure DBGridCidadesCellClick(Column: TColumn);
     procedure DBGridCidadesKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    function ValidateCurrentAddress(SilentMode: Boolean = False): Boolean;
+    function ValidateCurrentAddress(): Boolean;
   public
     { Public declarations }
   end;
@@ -790,7 +790,7 @@ begin
   AtualizaTela;
 end;
 
-function TFrmCadastro.ValidateCurrentAddress(SilentMode: Boolean): Boolean;
+function TFrmCadastro.ValidateCurrentAddress(): Boolean;
 begin
   var ListOfFields := TList<String>.Create;
   var FieldLimits := TDictionary<String, Integer>.Create;
@@ -807,8 +807,7 @@ begin
 
       if Trim(FDMemTableAddress.FieldByName(Field).AsString).Length < Limit then
       begin
-        if not(SilentMode) then
-          DBGridAddress.SelectedIndex := GetColumnIdByFieldName(Field);
+        DBGridAddress.SelectedIndex := GetColumnIdByFieldName(Field);
         Exit(False);
       end;
     end;
@@ -1088,7 +1087,7 @@ begin
     end;
   end;
 
-  if (FDMemTableAddress.State = dsEdit) then
+  if FDMemTableAddress.State = dsEdit then
     FDMemTableAddressINVALID.AsInteger := Integer(not(ValidateCurrentAddress()))
 end;
 
@@ -1169,8 +1168,7 @@ begin
         if not DataSource.DataSet.Eof then
           DataSource.DataSet.Next;
 
-        if (DataSource.DataSet.Eof) and
-          not(trim(FDMemTableAddressENDERECO.Text) = '') then
+        if (DataSource.DataSet.Eof) then
           DataSource.DataSet.Append;
 
         SelectedIndex := 1;
