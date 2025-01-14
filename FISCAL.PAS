@@ -27763,6 +27763,9 @@ begin
     Form1.touch_F10.Picture.Bitmap := CortarImagem(Form1.touch_F10.Picture.Graphic, Bounds(0,0,Form1.touch_F10.Width,Form1.touch_F10.Height));
     Form1.touch_F10.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,Form1.touch_F10.Width,Form1.touch_F10.Height),Form1.Image7.Picture.Bitmap.Canvas,R1);
     Form1.touch_F9.Picture := Form1.touch_F10.Picture; // Sandro Silva 2016-08-18
+    if (Form1.Memo1.Visible) and Form1.bStatusECF and Form1.bStatusFiscal then
+      Form1.touch_F9.Picture.Bitmap := Form1.touch_F7.Picture.Bitmap;
+
     //
     Form1.touch_F2.Picture  := Form1.touch_F1.Picture;
     Form1.touch_F3.Picture  := Form1.touch_F1.Picture;
