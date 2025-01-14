@@ -2619,14 +2619,33 @@ begin
 end;
 
 function GetBinCartao(sArquivoTEF: String) : string;
+var
+  iPos : integer;
 begin
   Result := '';
+
+  iPos := Pos('740-000',sArquivoTEF);
+
+  if iPos > 0 then
+  begin
+    Result := Copy(sArquivoTEF,iPos+10,6);
+    Result := StringReplace(Result,'*','',[rfReplaceAll]);
+  end;
 end;
 
-
 function GetUltimosDigitosCartao(sArquivoTEF: String) : string;
+var
+  iPos : integer;
 begin
   Result := '';
+
+  iPos := Pos('740-000',sArquivoTEF);
+
+  if iPos > 0 then
+  begin
+    Result := Copy(sArquivoTEF,iPos+22,4);
+    Result := StringReplace(Result,'*','',[rfReplaceAll]);
+  end;
 end;
 
 end.
