@@ -23311,7 +23311,8 @@ begin
                   IBQuery1.Close;
                   IBQuery1.SQL.Clear;
                   IBQuery1.SQL.Add('insert into CLIFOR ('
-                  +'NOME'
+                  +'IDCLIFOR'
+                  +',NOME'
                   +',CGC'
                   +',IE'
                   +',CEP'
@@ -23325,7 +23326,8 @@ begin
                   +',CADASTRO'
                   +',REGISTRO'
                   +') values ('
-                  +':NOME'
+                  +'(gen_id(G_CLIFORIDCLIFOR, 1)) '
+                  +',:NOME'
                   +',:CGC'
                   +',:IE'
                   +',:CEP'
