@@ -3,7 +3,7 @@
         <ProjectGuid>{376CE32D-BC53-40E7-BD4E-12B5F2B54C24}</ProjectGuid>
         <MainSource>FRENTE.DPR</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -197,7 +197,6 @@
         </DCCReference>
         <DCCReference Include="uimpressaopdf.pas"/>
         <DCCReference Include="AJBarcode.pas"/>
-        <DCCReference Include="_Small_IntegradorFiscal.pas"/>
         <DCCReference Include="ufuncoesfrente.pas"/>
         <DCCReference Include="upesquisaparaimportar.pas">
             <Form>FPesquisaParaImportar</Form>
@@ -305,6 +304,10 @@
             <Form>frmSobre</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="ufrmOpcoesFechamentoComCartao.pas">
+            <Form>FrmOpcoesFechamentoComCartao</Form>
+        </DCCReference>
+        <DCCReference Include="uTransacionaPosOuTef.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

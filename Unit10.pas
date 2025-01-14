@@ -31,19 +31,20 @@ type
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
+    { Private declarations }
     FTipoForm: TTipoForm;
     FbFuncoesADM: Boolean;
-    { Private declarations }
     procedure AjustaFormCartoes;
     procedure SelecionarAdministradora;
     procedure SelecionarAdquirente;
-    procedure AcionaTEF;
-    function TestarZPOSLiberado: Boolean;
+    //Sandro Silva (smal-778) 2024-11-08 tornado publico procedure AcionaTEF;
+    //Sandro Silva (smal-778) 2024-11-06 Movido para ufuncoesfrente function TestarZPOSLiberado: Boolean;
   public
     { Public declarations }
     sNomedoTef : String;
     sNomeAdquirente: String;
     bMenuFiscal: Boolean;
+    //procedure AcionaTEF;
     function ListarAdquirentes(SelecionarUnicaCadastrada: Boolean): Boolean;
     function ListarTEFAtivos(SelecionarUnicoCadastrado: Boolean): Boolean;
     property TipoForm: TTipoForm read FTipoForm write FTipoForm;
@@ -56,12 +57,16 @@ var
 implementation
 
 uses fiscal
-//, _Small_IntegradorFiscal
-, ufuncoesfrente, uajustaresolucao, uValidaRecursos,
-  uTypesRecursos;
+, ufuncoesfrente, uajustaresolucao
+// Sandro Silva (smal-778) 2024-11-06, uValidaRecursos, uTypesRecursos
+, uFuncoesPos
+, ufuncoestef // Sandro Silva 2024-11-19
+, uTransacionaPosOuTef
+, uSmallConsts
+;
 
 {$R *.DFM}
-
+{2024-11-13
 procedure TForm10.AcionaTEF;
 var
   Mais1Ini : TiniFile;
@@ -79,19 +84,14 @@ begin
   Form1.sExec      := AllTrim(Mais1Ini.ReadString(Form10.sNomeDoTEF,'Exec','XXX.XXX'));
   Mais1Ini.Free;
 end;
+}
 
 procedure TForm10.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   case FTipoForm of
     tfTEF:
       begin
-
-        AcionaTEF;
-
-        {
-        if ModalResult = mrOk then
-          AcionaTEF;
-        {Sandro Silva 2023-06-05 fim}
+        AcionaTEF(Form10.sNomeDoTEF); // AcionaTEF;
       end;
     tfPOS:
       begin
@@ -188,18 +188,10 @@ begin
   //
   AjustaFormCartoes;
 
-  sSecoes.Free; // Sandro Silva 2017-05-19
+  sSecoes.Free;
   Mais1Ini.Free;
   //
   // LogFrente('Teste 01: Saindo do form10.activate');
-
-  {Sandro Silva 2023-06-14 inicio
-  if FTipoForm = tfPOS then
-  begin
-    if Form1.UsaIntegradorFiscal then
-      Form1.sNomeRede := ''; // Precisa selecionar a Rede do cartão
-  end;
-  }
 
 end;
 
@@ -235,7 +227,7 @@ begin
         SelecionarAdministradora;
 
         if FTipoForm = tfPOS then
-          ModalResult := mrOk; // Sandro Silva 2023-06-05
+          ModalResult := mrOk;
         if FTipoForm = tfTEF then
           Close;
 
@@ -246,7 +238,7 @@ begin
         Close;
       end;
   end;
-  // Sandro Silva 2023-06-05 Close;
+
 end;
 
 procedure TForm10.FormShow(Sender: TObject);
@@ -255,22 +247,18 @@ var
   sSecoes :  TStrings;
   I, J : Integer;
 begin
-  {Sandro Silva 2021-09-21 inicio}
   btnMais.Top  := AjustaAltura(8);
   btnMenos.Top  := btnMais.Top;
   Button3.Top  := btnMais.Top;
   btnMais.Left := AjustaLargura(15);
   Button3.Left := Form10.Width - Button3.Width - btnMais.Left;
   btnMenos.Left := btnMais.Left + btnMais.Width + AjustaLargura(15) + (Form10.Width - btnMais.Width - btnMenos.Width - Button3.Width - AjustaLargura(30)) div 3;
-  {Sandro Silva 2021-09-21 fim}
 
-  {Sandro Silva 2023-06-06 inicio}
-  ModalResult := mrNone; // Sandro Silva 2023-06-05
+  ModalResult := mrNone;
 
   KeyPreview := False;
   if FTipoForm = tfPOS then
     KeyPreview := True;
-  {Sandro Silva 2023-06-06 fim}
   //
   sSecoes := TStringList.Create;
   Mais1ini := TIniFile.Create('FRENTE.INI');
@@ -290,7 +278,8 @@ begin
           end;
         end;
 
-        if J=0 then
+        // Se não tiver cartões cadastrados e tiver habilitado o uso do POS fará cadastro dos cartões padrões
+        if (J = 0) and (Mais1Ini.ReadString(SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, _cNao) = _cSim) then // if J=0 then
         begin
 
           if Mais1Ini.ReadString('VISA CREDITO','CARTAO ACEITO','XXX') = 'XXX' then
@@ -302,7 +291,14 @@ begin
           begin
             Mais1Ini.WriteString('VISA DEBITO','CARTAO ACEITO','SIM');
           end;
+
+          // Após criar as opções de POS cria chave para habilitar uso de POS
+          Form1.sHabilitarUsoPOS := _cSim;
+          GravarParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_HABILITAR_USO_POS, Form1.sHabilitarUsoPOS);
+          Form1.HabilitarusodePOS1.Checked := True;
+
         end;
+
       end;
     tfTEF:
       begin
@@ -472,6 +468,7 @@ begin
       Form10.sNomeDoTEF := ListBox1.Items[ListBox1.ItemIndex];
       if (Form10.pnBotoes.Visible = False) and (Form1.sTef <> 'Sim') then
       begin
+        (*Sandro Silva (smal-778) 2024-11-06 inicio
         {Sandro Silva 2022-06-15 inicio}
         Form1.sTransaca := '';
         Form1.sAutoriza := ''; // Sandro Silva 2018-07-03
@@ -490,12 +487,7 @@ begin
 
             while (Trim(Form1.sTransaca) = '') do
             begin
-              {Sandro Silva 2023-06-14 inicio
-              if Form1.UsaIntegradorFiscal() then
-                Form1.sTransaca := Form1.Small_InputBox('AUTORIZAÇÃO','Insira agora o cartão no terminal POS e realize a transação' + #13 + 'Informe o número da AUTORIZAÇÃO para operação com POS ' + Form1.IntegradorCE.SerialPOS + ':', Form1.sTransaca)
-              else
-              }
-                Form1.sTransaca := Form1.Small_InputBox('AUTORIZAÇÃO','Informe o número da AUTORIZAÇÃO para operação com POS:', Form1.sTransaca);
+               Form1.sTransaca := Form1.Small_InputBox('AUTORIZAÇÃO','Informe o número da AUTORIZAÇÃO para operação com POS:', Form1.sTransaca);
 
               if (Trim(Form1.sTransaca) <> '') or (AnsiUpperCase(Form1.ibDataSet13.FieldByName('ESTADO').AsString) <> 'CE') then
               begin
@@ -560,6 +552,8 @@ begin
             end;
           end;
         end;
+        *)
+        //Form1.TransacoesComCartao.AplicaOpcaoPosEscolhida(ListBox1.Items[ListBox1.ItemIndex]);
       end;
     end;
   except
@@ -659,12 +653,15 @@ begin
   end;
 end;
 
+{Sandro Silva (smal-778) 2024-11-06
+// Movido para ufuncoesfrente
 function TForm10.TestarZPOSLiberado: Boolean;
 var
   dLimiteRecurso : Tdate;
 begin
   Result := (RecursoLiberado(Form1.IBDatabase1,rcZPOS,dLimiteRecurso));
 end;
+}
 
 function TForm10.ListarTEFAtivos(
   SelecionarUnicoCadastrado: Boolean): Boolean;
@@ -692,7 +689,7 @@ begin
       ListBox1.Clear;
       for I := 0 to (sSecoes.Count - 1) do
       begin
-        if (Pos('ZPOS', AnsiUpperCase(sSecoes[I])) <= 0) or (TestarZPOSLiberado) then
+        if (Pos('ZPOS', AnsiUpperCase(sSecoes[I])) <= 0) or (TestarZPOSLiberado(Form1.IBDatabase1)) then // Sandro Silva (smal-778) 2024-11-19 if (Pos('ZPOS', AnsiUpperCase(sSecoes[I])) <= 0) or (TestarZPOSLiberado) then
         begin
           if Mais1Ini.ReadString(sSecoes[I],'bAtivo','Não') = 'Sim' then
           begin
@@ -710,7 +707,7 @@ begin
         begin
           ListBox1.ItemIndex := 0;
           SelecionarAdministradora;
-          AcionaTEF;
+          AcionaTEF(Form10.sNomeDoTEF); // AcionaTEF;
           Result := True;
         end;
       end;

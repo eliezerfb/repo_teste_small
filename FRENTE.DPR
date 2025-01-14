@@ -33,7 +33,6 @@ uses
   Unit27 in 'Unit27.pas' {Form27},
   uimpressaopdf in 'uimpressaopdf.pas',
   AJBarcode in 'AJBarcode.pas',
-  _Small_IntegradorFiscal in '_Small_IntegradorFiscal.pas',
   ufuncoesfrente in 'ufuncoesfrente.pas',
   upesquisaparaimportar in 'upesquisaparaimportar.pas' {FPesquisaParaImportar},
   uatualizaestruturadb in 'uatualizaestruturadb.pas',
@@ -120,7 +119,9 @@ uses
   uWebServiceSicoob in '..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas',
   uFrenteSectionsBD in '..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
   uIMendesSections in '..\unit_compartilhada\DAT\uIMendesSections.pas',
-  ufrmSobre in 'ufrmSobre.pas' {frmSobre};
+  ufrmSobre in 'ufrmSobre.pas' {frmSobre},
+  ufrmOpcoesFechamentoComCartao in 'ufrmOpcoesFechamentoComCartao.pas' {FrmOpcoesFechamentoComCartao},
+  uTransacionaPosOuTef in 'uTransacionaPosOuTef.pas';
 
 {$R *.RES}
 

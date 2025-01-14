@@ -1100,44 +1100,7 @@ begin
 
         if FPagamentos.FTEFPago > 0 then // Sandro Silva 2021-11-26 if Form1.fTEFPago                      > 0 then
         begin
-          //
           // SmallMsg('Cartão TEF');
-          //
-          (*{Sandro Silva 2021-11-26 inicio
-          for iTransacaoCartao := 0 to Form1.TransacoesCartao.Transacoes.Count -1 do
-          begin
-
-            if Pos('CREDITO', Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito) <> 0 then
-              sTipoCartao := SAT_CODIGO_MEIO_PAGAMENTO_03_CARTAO_CREDITO // '03'
-            else
-              sTipoCartao := SAT_CODIGO_MEIO_PAGAMENTO_04_CARTAO_DEBITO; // '04';
-
-            {Sandro Silva 2021-07-07 inicio}
-            //if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].CarteiraDigital then
-            if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade <> tModalidadeCartao then
-            begin
-              sTipoCartao := SAT_CODIGO_MEIO_PAGAMENTO_99_OUTROS  ;// Mudar quando entrar em vigor as novas formas SAT_CODIGO_MEIO_PAGAMENTO_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL;
-            end;
-            {Sandro Silva 2021-07-07 fim}
-
-            if Trim(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede) <> '' then // Somente se informou o nome da rede Sandro Silva 2020-07-16
-              Form1.sNomeRede := Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede;
-            //Localiza todos cadastros com OBS contendo o nome da rede ou que o relacionamento = credenciadora de cartão
-            IBQCLIFOR.Close;
-            IBQCLIFOR.SQL.Text :=
-              'select * ' +
-              'from CLIFOR ' +
-              'where (OBS containing ' + QuotedStr(BandeiraSemCreditoDebito(Form1.sNomeRede)) + ' and coalesce(CLIFOR, '''') = ''Credenciadora de cartão'') or coalesce(CLIFOR, '''') = ''Credenciadora de cartão'' ';
-            IBQCLIFOR.Open;
-
-            sWA05 := CodigoCredenciadora(Trim(LimpaNumero(SelecionaCNPJCredenciadora(IBQCLIFOR, BandeiraSemCreditoDebito(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede)))));
-
-            sDadosPagamento := sDadosPagamento + DadosPagamento(sTipoCartao, Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago);
-
-            sWA05 := ''; // Para não interfertir nas demais formas de pagamento usadas na venda Sandro Silva 2020-08-03
-
-          end;
-          *)
           for iTransacaoCartao := 0 to FPagamentos.TransacoesCartao.Transacoes.Count -1 do
           begin
 
@@ -1146,13 +1109,11 @@ begin
             else
               sTipoCartao := SAT_CODIGO_MEIO_PAGAMENTO_04_CARTAO_DEBITO; // '04';
 
-            {Sandro Silva 2021-07-07 inicio}
-            //if FPagamentos.TransacoesCartao.Transacoes.Items[iTransacaoCartao].CarteiraDigital then
-            if FPagamentos.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade <> tModalidadeCartao then
+            //Sandro Silva 2024-11-27 if FPagamentos.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade <> tModalidadeCartao then
+            if not (FPagamentos.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade in [tModalidadeCartaoPOS, tModalidadeCartaoTEF, tModalidadeCartaoNaoIdentificado]) then
             begin
               sTipoCartao := SAT_CODIGO_MEIO_PAGAMENTO_99_OUTROS  ;// Mudar quando entrar em vigor as novas formas SAT_CODIGO_MEIO_PAGAMENTO_18_TRANSFERENCIA_BANCARIA_CARTEIRA_DIGITAL;
             end;
-            {Sandro Silva 2021-07-07 fim}
 
             if Trim(FPagamentos.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede) <> '' then // Somente se informou o nome da rede Sandro Silva 2020-07-16
               FPagamentos.NomeRede := FPagamentos.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede;

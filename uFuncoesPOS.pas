@@ -56,9 +56,8 @@ var
 begin
   // Usando PoS para transação com cartão
   Result := False;
-
-  {Sandro Silva 2023-08-21 inicio}
-  FormasExtras := TPagamentoPDV.Create; // Sandro Silva 2023-09-05 FormasExtras := TFormasExtras.Create;// Sandro Silva 2023-08-21
+  
+  FormasExtras := TPagamentoPDV.Create; 
 
   FormasExtras.Extra1 := Form1.ibDataSet25.FieldByName('VALOR01').AsFloat;
   FormasExtras.Extra2 := Form1.ibDataSet25.FieldByName('VALOR02').AsFloat;
@@ -68,8 +67,6 @@ begin
   FormasExtras.Extra6 := Form1.ibDataSet25.FieldByName('VALOR06').AsFloat;
   FormasExtras.Extra7 := Form1.ibDataSet25.FieldByName('VALOR07').AsFloat;
   FormasExtras.Extra8 := Form1.ibDataSet25.FieldByName('VALOR08').AsFloat;
-  {Sandro Silva 2023-08-21 fim}
-
 
   dTotalEmCartao      := Form1.ibDataSet25.FieldByName('PAGAR').AsFloat;
   dTotalTransacionado := 0.00;
@@ -77,11 +74,11 @@ begin
   Form1.TransacoesCartao.Transacoes.Clear;
   iTotalParcelas := 0;
   
-  ModalidadeTransacao := tModalidadeCartao;
+  ModalidadeTransacao := tModalidadeCartaoPOS; // Sandro Silva 2024-11-27 tModalidadeCartao;
 
   while dTotalTransacionado < dTotalEmCartao do // Enquanto não totalizar transações com valor devido
   begin
-    if (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) = 0) then // Sandro Silva 2016-04-29
+    if (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) = 0) then 
     begin
       dValorPagarCartao := dTotalEmCartao - dTotalTransacionado;
 
@@ -169,9 +166,15 @@ begin
                     Form10.sNomeDoTEF := Form1.PosElginPay.Transacao.Rede + ' DEBITO'
                   else
                     Form10.sNomeDoTEF := Form1.PosElginPay.Transacao.Rede + ' CREDITO';
+                  {Sandro Silva 2024-12-05
                   Form1.sTransaca   := Form1.PosElginPay.Transacao.Transacao;
                   Form1.sAutoriza   := IfThen(Form1.UsaIntegradorFiscal(), Form1.sTransaca, '');
-                  Form1.sNomeRede   := Form1.PosElginPay.Transacao.Rede;
+                  }
+                  Form1.sTransacaPOS := Form1.PosElginPay.Transacao.Transacao;
+                  Form1.sAutoriza    := IfThen(Form1.UsaIntegradorFiscal(), Form1.sTransacaPOS, '');
+                  // Sandro Silva 2024-12-05 Form1.sNomeRede   := Form1.PosElginPay.Transacao.Rede;
+                  Form1.sNomeRedeTransacionada     := Form1.PosElginPay.Transacao.Rede;
+                  Form1.TransacaoTEF.NomeRede := Form1.PosElginPay.Transacao.Rede;
 
                   Form1.sTipoParc   := '0';// Considera sempre parcelado pelo estabelecimento poderia validar com AnsiContainsText(ValorElementoElginPayFromJson(sResposta, '"tipoFinanciamento":'), 'ESTABELECIMENTO')
                   Form1.sParcelas   := Form1.PosElginPay.Transacao.Parcelas;
@@ -188,14 +191,12 @@ begin
                 Form1.ExibePanelMensagem('Selecionando Bandeira do cartão', True);
 
                 Form10.ShowModal;
-                {Sandro Silva 2023-06-14 inicio}
                 if Form10.ModalResult <> mrOk then
                   bPosOk := False;
-                {Sandro Silva 2023-06-14 fim}
 
                 if Form1.sIdentificaPOS = 'Sim' then
                 begin
-                  if Trim(Form1.sNomeRede) = '' then
+                  if Trim(Form1.sNomeRedeTransacionada) = '' then // Sandro Silva 2024-12-05 if Trim(Form1.sNomeRede) = '' then
                   begin
                     bPoSok := False;
                     SmallMessageBox(PChar('Acesse F10-Menu/Configurações/Cartões de débito e crédtio (POS)' + #13 + #13 +
@@ -208,14 +209,14 @@ begin
                       , 'Atenção', MB_OK + MB_ICONWARNING);
                   end;
                 end;
-                
+
               end;
             end;
           end;// if bPoSOk then // Sandro Silva 2018-07-03
 
           if bPoSok then
           begin
-            if (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) = 0) then // Sandro Silva 2016-04-29
+            if (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) = 0) then
             begin
               if (iContaCartao + 1) = 1 then // Quando for o primeiro cartão apaga todas as parcelas do cupom
               begin
@@ -232,7 +233,7 @@ begin
                     SmallMsg('Erro! '+E.Message);
                   end;
                 end;
-              end; 
+              end;
 
               //Ficha 3403
               dTotalTransacaoPOS := 0;
@@ -242,22 +243,22 @@ begin
                   iTotalParcelas := iTotalParcelas + 1;// Sandro Silva 2017-08-28 Acumula as parcelas entre os diferentes cartões usados para gerar as parcelas na sequência
                   Form1.ibDataSet7.Append;
                   Form1.ibDataSet7.FieldByName('NOME').AsString         := StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO','');
-                  if Form1.ClienteSmallMobile.ImportandoMobile then // Sandro Silva 2022-08-08 if ImportandoMobile then
-                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' Aut.' + Form1.sTransaca
+                  if Form1.ClienteSmallMobile.ImportandoMobile then
+                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' Aut.' + Form1.sTransacaPOS // Sandro Silva 2024-12-05 Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' Aut.' + Form1.sTransaca
                   else
-                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'VENDA NO CARTAO: ' + IntToStr(iContaCartao + 1) + 'º CARTAO';
+                    Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := PREFIXO_HISTORICO_TRANSACAO_POS + ': ' + IntToStr(iContaCartao + 1) + 'º CARTAO'; // Sandro Silva (smal-778) 2024-11-25 Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'VENDA NO CARTAO: ' + IntToStr(iContaCartao + 1) + 'º CARTAO';
                   Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(iTotalParcelas); // documento
                   Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat    := StrToFloat(FormatFloat('0.00', (Int((dValorPagarCartao / StrToIntDef(Form1.sParcelas, 1)) * 100) / 100)));// Truncando 2 casas decimais
-                  Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime    := StrToDate(Form1.sDataDoCupom); 
+                  Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime    := StrToDate(Form1.sDataDoCupom);
                   if AnsiContainsText(Form10.sNomedoTef, 'CREDITO') then
-                    Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := Date + (Form1.iDiasCartaoCredito * iParcelas) // Ficha 5659 Sandro Silva 2022-02-04 Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := Date + Form1.iDiasCartaoCredito
+                    Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := Date + (Form1.iDiasCartaoCredito * iParcelas)
                   else
-                    Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := Date + (Form1.iDiasCartaoDebito * iParcelas); // Ficha 5659 Sandro Silva 2022-02-04 Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := Date + Form1.iDiasCartaoDebito;
+                    Form1.ibDataSet7.FieldByName('VENCIMENTO').AsDateTime := Date + (Form1.iDiasCartaoDebito * iParcelas);
                   Form1.ibDataSet7.FieldByName('PORTADOR').AsString     := Form10.sNomeDoTEF;
-                  Form1.ibDataSet7.FieldByName('VALOR_RECE').AsFloat    := 0; // Sandro Silva 2016-06-21 Deixar nulo não exibe as contas em "Exibir> A vencer"
-                  Form1.ibDataSet7.FieldByName('VALOR_JURO').AsFloat    := 0; // Sandro Silva 2016-06-21 Deixar nulo não exibe as contas em "Exibir> A vencer"
+                  Form1.ibDataSet7.FieldByName('VALOR_RECE').AsFloat    := 0.00; // Deixar nulo não exibe as contas em "Exibir> A vencer"
+                  Form1.ibDataSet7.FieldByName('VALOR_JURO').AsFloat    := 0.00; // Deixar nulo não exibe as contas em "Exibir> A vencer"
                   Form1.ibDataSet7.Post;
-                  dTotalTransacaoPOS := dTotalTransacaoPOS + Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat; // Sandro Silva 2017-08-28
+                  dTotalTransacaoPOS := dTotalTransacaoPOS + Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat;
                 except
                 end;
               end;
@@ -277,19 +278,19 @@ begin
                                                       IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0, 'DEBITO', 'CREDITO'),
                                                       dValorPagarCartao,
                                                       Form10.sNomeAdquirente,
-                                                      Form1.sTransaca,
+                                                      Form1.sTransacaPOS,
                                                       Form1.sAutoriza,
                                                       StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO',''),
                                                       '',
                                                       '',
                                                       ModalidadeTransacao);
 
-          dTotalTransacionado := dTotalTransacionado + dValorPagarCartao; // Sandro Silva 2017-06-16
+          dTotalTransacionado := dTotalTransacionado + dValorPagarCartao;
           Form1.fTEFPago      := Form1.fTEFPago + dValorPagarCartao;
           if Form1.ibDataSet25.State in [dsEdit, dsInsert] = False then
             Form1.ibDataSet25.Edit;
-          Form1.ibDataSet25.FieldByName('PAGAR').AsFloat := dTotalTransacionado; // Sandro Silva 2017-06-16
-          RecuperaValoresFormasExtras; // Sandro Silva 2023-09-05
+          Form1.ibDataSet25.FieldByName('PAGAR').AsFloat := dTotalTransacionado;
+          RecuperaValoresFormasExtras;
         end;
       end;
     end;

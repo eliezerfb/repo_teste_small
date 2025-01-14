@@ -9,6 +9,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, frame_teclado_1, StdCtrls, IniFiles, ComCtrls, Buttons,
   SmallFunc_xe, Grids, DB, DBGrids, DBClient, ufuncaoMD5, uajustaresolucao,
+  IBX.IBDatabase,
   uDialogs;
 
 const
@@ -78,7 +79,9 @@ type
     function TestarConfiguracoes: Boolean;
     procedure DefineTemTEFINI;
     function GetNumScrollLines: Integer;
-    function TestarZPOSLiberado: Boolean;
+    //Sandro Silva 2024-11-19 function TestarZPOSLiberado: Boolean;
+    function TestarZPOSLiberado(sNomeTEF: String;
+      IBDataBase: TIBDataBase): Boolean;
   public
     procedure AtualizaTEMTEF;
   end;
@@ -326,7 +329,7 @@ begin
     begin
       if cdsTEFsATIVO.AsString = _cSim then
       begin
-        if TestarZPOSLiberado then
+        if TestarZPOSLiberado(cdsTEFsNOME.AsString, Form1.IBDatabase1) then
         begin
           FoIni.WriteString('Frente de caixa', 'TEM TEF', _cSim);
           Break;
@@ -485,6 +488,7 @@ begin
     TDBGrid(Sender).Options := TDBGrid(Sender).Options + [dgEditing];
 end;
 
+{Sandro Silva (smal-778) 2024-11-19 inicio
 function TFConfiguracaoTEF.TestarZPOSLiberado: Boolean;
 var
   dLimiteRecurso : Tdate;
@@ -493,6 +497,17 @@ begin
   if (Pos('ZPOS', AnsiUpperCase(cdsTEFsNOME.AsString)) > 0) then
     Result := (RecursoLiberado(Form1.IBDatabase1,rcZPOS,dLimiteRecurso));
 end;
+}
+function TFConfiguracaoTEF.TestarZPOSLiberado(sNomeTEF: String;
+  IBDataBase: TIBDataBase): Boolean;
+var
+  dLimiteRecurso: TDate;
+begin
+  Result := True;
+  if (Pos('ZPOS', AnsiUpperCase(sNomeTEF)) > 0) then
+    Result := (RecursoLiberado(IBDatabase, rcZPOS, dLimiteRecurso));
+end;
+{Sandro Silva (smal-778) 2024-11-19 fim}
 
 procedure TFConfiguracaoTEF.DeletarRecord(Sender: TObject);
 begin
@@ -554,7 +569,7 @@ end;
 
 procedure TFConfiguracaoTEF.dbgTEFsCellClick(Column: TColumn);
 begin
-  if not TestarZPOSLiberado then
+  if not TestarZPOSLiberado(cdsTEFsNOME.AsString, Form1.IBDatabase1) then
   begin
     cdsTEFs.Edit;
     cdsTEFsATIVO.AsString := _cNao;

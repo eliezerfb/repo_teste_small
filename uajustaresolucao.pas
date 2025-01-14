@@ -102,6 +102,12 @@ begin
         Dimensao(Components[I]);
         //
       end;
+      {Sandro Silva (smal-778) 2024-12-03 inicio}
+      if Components[ I ] is TBevel then
+      begin
+        Dimensao(Components[I]);
+      end;
+      {Sandro Silva (smal-778) 2024-12-03 fim}
       //
       if Components[ I ] is TPanel then
       begin

@@ -55,12 +55,15 @@ const SECAO_FRENTE_CAIXA              = 'Frente de Caixa';
 const SECAO_65                        = 'NFCE';
 const SECAO_59                        = 'SAT-CFe';
 const SECAO_MFE                       = 'MFE'; // Sandro Silva 2017-05-10
+const SECAO_CARTAO_ACEITO             = 'CARTAO ACEITO'; // Sandro Silva 2025-01-02
 const CHAVE_MODELO_DO_ECF             = 'Modelo do ECF'; // Sandro Silva 2023-10-24
 const CHAVE_INICIAR_MINIMIZADO        = 'Iniciar minimizado';
 const CHAVE_INICIAR_COM_WINDOWS       = 'Iniciar com Windows';
 const CHAVE_FORMAS_CONFIGURADAS       = 'Formas Configuradas';
 const CHAVE_IMPRIMIR_CEST             = 'Imprimir CEST';
 const CHAVE_IDENTIFICAR_POS           = 'Identificar POS';
+const CHAVE_HABILITAR_USO_POS         = 'Habilita POS';// Sandro Silva 2024-11-06
+const CHAVE_TEM_TEF                   = 'TEM TEF';// Sandro Silva 2024-11-06
 const CHAVE_IMPRESSORA_PADRAO         = 'Impressora Padrao';
 const CHAVE_CARNE_RESUMIDO            = 'Carne resumido';// Sandro Silva 2018-04-29
 const CHAVE_TEF_CARTEIRA_DIGITAL      = 'TEF Carteira Digital'; // Configura no frente.ini se usa carteira digital com TEF Sandro Silva 2021-08-27
@@ -76,6 +79,10 @@ const VERSAO_ER_PAF_ECF               = '02.06'; // ER 02.06 Sandro Silva 2019-0
 const NUMERO_LAUDO_PAF_ECF            = 'UNO3972022';// Sandro Silva 2022-12-12 Unochapeco 'UNO3302019';
 const DATA_EMISSAO_LAUDO_PAF_ECF      = '12/12/2022'; // Sandro Silva 2022-12-02 Unochapeco
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
+
+const CHAVE_VENDA_NO_CARTAO              = 'Venda no Cartao';
+
+const PREFIXO_HISTORICO_TRANSACAO_POS = 'VENDA NO CARTAO'; // Sandro Silva (smal-778) 2024-11-25
 
 const NFCE_CSTAT_AUTORIZADO_100               = '100';
 const NFCE_CSTAT_AUTORIZADO_FORA_DE_PRAZO_150 = '150';
@@ -118,6 +125,16 @@ type
 type
   TTipoInfoCombo = (tiInfoComboModeloSAT, tiInfoComboImpressoras, tiInfoComboFusoHorario, tiInfoComboContaClienteOS);
 
+{Sandro Silva (smal-778) 2024-11-26
+type
+  TTiposTransacao = (tpNone, tpPOS, tpTEF); // Sandro Silva (smal-778) 2024-11-06
+
+type
+  TTipoTransacaoTefPos = class
+    Tipo: TTiposTransacao;
+    Descricao: String;
+  end;
+}
 type
   TAliquota = class // Sandro Silva 2019-06-13  TAliquota = record
     Aliquota: String;
@@ -240,7 +257,7 @@ type
   private
     FTexto: String;
     FArquivo: TextFile;
-  protected 
+  protected
   public
     property Texto: String read FTexto write FTexto;
     procedure SalvarArquivo(FileName: TFileName);
@@ -284,7 +301,6 @@ procedure GravaPendenciaAlteraca(IBDatabase: TIBDatabase; bOffLine: Boolean;
 procedure AtualizaNumeroPedidoTabelaPendencia(IBTransaction: TIBTransaction;
   sCaixaOld: String; sPedidoOld: String; sPedidoNew: String; sCaixaNew: String);
 procedure AtualizaDadosPagament(FIBDataSet28: TIBDataSet;
-//  FIBTransaction: TIBTransaction;
   FModeloDocumento: String;
   sCaixaOld: String; sPedidoOld: String;
   sCaixaNovo: String; sNovoNumero: String;
@@ -370,14 +386,17 @@ function MensagemComTributosAproximados(IBTransaction: TIBTransaction;
 procedure SleepWithoutFreeze(msec: int64);
 function SuprimirLinhasEmBrancoDoComprovanteTEF: Boolean; // Sandro Silva 2023-10-24
 procedure ResizeBitmap(var Bitmap: TBitmap; Width, Height: Integer; Background: TColor); // Mauricio Parizotto 2024-05-03
+function QtdAdquirentes: Integer;
 function GetAutorizacaoItau(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction;
   out CodigoAutorizacao, CNPJinstituicao : string) : boolean;
 function GetAutorizacaoPixRec(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction;
   out CodigoAutorizacao, CNPJinstituicao: string) : boolean;
 function GetCNPJInstituicaoFinanceira(sInstituicaoFinanceira: string; IBTRANSACTION: TIBTransaction) : string;
 function GetIDFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : integer;
+//Sandro Silva 2024-11-19 function TestarZPOSLiberado: Boolean;
 function GetDescricaoFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : string;
 function GetFormaAtalhoF6 : string;
+function TemPOSHabilitado: Boolean;
 function GetCampoValorFormaExtra(Forma : integer):string;
 
 var
@@ -394,6 +413,7 @@ implementation
 
 uses StrUtils, uTypesRecursos
 //Sandro Silva Evitar adicionar forms específico aqui , FISCAL
+//, uValidaRecursos
 ;
 
 
@@ -875,9 +895,8 @@ begin
     FreeAndNil(IBTPENDENCIA);
   end;
 end;
-{Sandro Silva 2023-08-25 inicio}
+
 procedure AtualizaDadosPagament(FIBDataSet28: TIBDataSet;
-//  FIBTransaction: TIBTransaction;
   FModeloDocumento: String;
   sCaixaOld: String; sPedidoOld: String;
   sCaixaNovo: String; sNovoNumero: String;
@@ -894,7 +913,7 @@ var
   sFormaOld: String;
 begin
   //Pagament
-  IBQTRANSACAOELETRONICA := CriaIBQuery(FIBDataSet28.Transaction{ FIBTransaction});
+  IBQTRANSACAOELETRONICA := CriaIBQuery(FIBDataSet28.Transaction);
 
   FIBDataSet28.Close;
   FIBDataSet28.SelectSQL.Text :=
@@ -903,8 +922,8 @@ begin
   FIBDataSet28.First;
   while FIBDataSet28.Eof = False do
   begin
-    sGnfOld := FIBDataSet28.FieldByName('GNF').AsString; // Sandro Silva 2023-08-28
-    sFormaOld := FIBDataSet28.FieldByName('FORMA').AsString; // Sandro Silva 2023-08-28
+    sGnfOld := FIBDataSet28.FieldByName('GNF').AsString;
+    sFormaOld := FIBDataSet28.FieldByName('FORMA').AsString;
 
     if (FIBDataSet28.FieldByName('CAIXA').AsString = sCaixaOld)
       and (FIBDataSet28.FieldByName('PEDIDO').AsString = sPedidoOld) then
@@ -984,7 +1003,7 @@ begin
         FValorTotalTEFPago := FValorTotalTEFPago + IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
         FormasPagamento.Cartao := FormasPagamento.Cartao + IBQTRANSACAOELETRONICA.FieldByName('VALOR').AsFloat;
 
-        ModalidadeTransacao := tModalidadeCartao;
+        ModalidadeTransacao := tModalidadeCartaoNaoIdentificado; // Sandro Silva 2024-11-27 tModalidadeCartao;
         if Copy(IBQTRANSACAOELETRONICA.FieldByName('FORMA').AsString, 1, 2) = '17' then
           ModalidadeTransacao := tModalidadePix;
         if Copy(IBQTRANSACAOELETRONICA.FieldByName('FORMA').AsString, 1, 2) = '18' then
@@ -2827,6 +2846,37 @@ begin
   end;
 end;
 
+function QtdAdquirentes: Integer;
+var
+  iSecao: Integer;
+  iQtd: Integer;
+  sl : TStringList;
+  ini: TIniFile;
+  sNomeSecao: String;
+begin
+
+  ini := TIniFile.Create(FRENTE_INI);
+  sl := TStringList.Create;
+
+  sl.Clear;
+  ini.ReadSections(sl); //Conta o número de itens
+
+  iQtd := 0;
+  for iSecao := 0 to sl.Count - 1 do
+  begin
+    if AnsiContainsText(sl.Strings[iSecao], 'ADQUIRENTE') then
+    begin
+      sNomeSecao := sl.Strings[iSecao];
+      Inc(iQtd);
+    end;
+  end;
+  Result := iQtd;
+
+  sl.Free;
+  ini.Free;
+
+end;
+
 function GetAutorizacaoItau(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTransaction; out CodigoAutorizacao, CNPJinstituicao: string) : boolean;
 var
   IbqTransacao: TIBQuery;
@@ -2927,6 +2977,14 @@ begin
   end;
 end;
 
+{Sandro Silva 2024-11-19
+function TestarZPOSLiberado: Boolean;
+var
+  dLimiteRecurso : Tdate;
+begin
+  Result := (RecursoLiberado(Form1.IBDatabase1,rcZPOS,dLimiteRecurso));
+end;
+}
 function GetDescricaoFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : string; //Mauricio Parizotto 2024-09-12
 var
   IbqForma: TIBQuery;
@@ -2980,6 +3038,34 @@ begin
   end;
 
   Mais1ini.Free;
+end;
+
+function TemPOSHabilitado: Boolean;
+var
+  oArq : TiniFile;
+  i: Integer;
+  sSecoes :  TStrings;
+begin
+  Result := False;
+  oArq := TIniFile.Create(FRENTE_INI);
+
+  sSecoes  := TStringList.Create;
+  oArq.ReadSections(sSecoes);
+
+  try
+    for I := 0 to (sSecoes.Count - 1) do
+    begin
+      if AnsiUpperCase(oArq.ReadString(sSecoes[I], SECAO_CARTAO_ACEITO, _cNao)) = AnsiUpperCase(_cSim) then
+      begin
+        // Tem POS configurado
+        Result := True;
+        Break;
+      end;
+    end;
+  finally
+    oArq.Free;
+    sSecoes.Free;
+  end;
 end;
 
 function GetCampoValorFormaExtra(Forma : integer):string;
