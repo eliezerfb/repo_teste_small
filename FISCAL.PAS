@@ -14486,7 +14486,7 @@ begin
 
   Selecionarcertificadodigital2.Visible := ((Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99'));
 
-  if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') then
+  if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
   begin
 
     Form1.IdentificarCredenciadoraPoS1.Visible := True; // Sandro Silva 2018-11-20

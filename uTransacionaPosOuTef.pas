@@ -99,7 +99,7 @@ var
   bAutorizacao: Boolean;
 begin
 
-  bAutorizacao := False;
+  bAutorizacao := True;
   Form1.sTransacaPOS := ''; // Sandro Silva 2024-12-05 Form1.sTransaca := '';
   Form1.sAutoriza := '';
 
@@ -109,6 +109,9 @@ begin
 
   if (Form1.sIdentificaPOS = 'Sim') then
   begin
+
+    bAutorizacao := False;
+
     Form1.sTransacaPOS := ''; // Sandro Silva 2025-12-05 Form1.sTransaca := '';
     if (Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '99')// NFC-e/SAT/MEI
       then // Número de autorização apenas quando NFC-e
