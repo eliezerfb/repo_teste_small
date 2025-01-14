@@ -8,7 +8,7 @@ object Form1: TForm1
   AlphaBlendValue = 250
   BorderStyle = bsSingle
   Caption = 'form'
-  ClientHeight = 951
+  ClientHeight = 875
   ClientWidth = 1311
   Color = clWhite
   Ctl3D = False
@@ -14731,5 +14731,12 @@ object Form1: TForm1
     OnTimer = TimerDiagIATimer
     Left = 517
     Top = 280
+  end
+  object TimerMinhasNotas: TTimer
+    Enabled = False
+    Interval = 120000
+    OnTimer = TimerMinhasNotasTimer
+    Left = 516
+    Top = 337
   end
 end

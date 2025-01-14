@@ -286,7 +286,8 @@ uses
   uClassesDashboard in 'units\uClassesDashboard.pas',
   uDiagnosticoIA in 'units\uDiagnosticoIA.pas',
   uAtorInteressado in 'uAtorInteressado.pas' {fmAtorInteressado},
-  uWebServiceSmall in 'units\uWebServiceSmall.pas';
+  uWebServiceSmall in 'units\uWebServiceSmall.pas',
+  uMinhasNotas in 'units\uMinhasNotas.pas';
 
 {$R *.RES}
 
