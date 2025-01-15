@@ -70,12 +70,14 @@ type
   private
     {Private Declarations}
     FTransacoes: TTransacaoCartaoList;
+    function GetTemTransacaoTef: Boolean;
   protected
     {Protected Declarations}
   public
     {Public Declarations}
     constructor Create(AOWner: TComponent); override;
     destructor Destroy; override;
+    property TemTransacaoTef: Boolean read GetTemTransacaoTef;
     property Transacoes: TTransacaoCartaoList read FTransacoes write FTransacoes;
   published
     {Published Declarations}
@@ -87,12 +89,27 @@ implementation
 constructor TTransacaoFinanceira.Create(AOWner: TComponent);
 begin
   inherited Create(AOWner);
-  FTransacoes := TTransacaoCartaoList.Create;   
+  FTransacoes := TTransacaoCartaoList.Create;
 end;
 
 destructor TTransacaoFinanceira.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TTransacaoFinanceira.GetTemTransacaoTef: Boolean;
+var
+  iTransacao: Integer;
+begin
+  Result := False;
+  for iTransacao := 0 to FTransacoes.Count -1 do
+  begin
+    if FTransacoes.Items[iTransacao].FModalidade = tModalidadeCartaoTEF then
+    begin
+      Result := True;
+      Break;
+    end
+  end;
 end;
 
 { TTransacaoCartaoList }

@@ -10363,7 +10363,8 @@ begin
 
           if not (TransacoesComCartao.TransacionaPosOuTef) then
           begin
-            Form2.bCancela := True;
+            if Form1.TransacoesCartao.TemTransacaoTef then
+              Form2.bCancela := True;
           end
           else
           begin
