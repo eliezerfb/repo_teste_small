@@ -542,10 +542,10 @@ begin
                          //'07426598000124', 'Fernanda Gottschalk teste de aumento do campo da razao socia', '01046256947', '123152', '89700-000', '',
                          //'Concordia', 'centro', 'Rua tupis, 390', 'SC', '(0xx49)3444-4242','15' );
                 WriteLN(F,
-                  'insert into clifor (IDCLIFOR, EMITENTE, NOME, CGC, IE, CEP, '+
+                  'insert into clifor (EMITENTE, NOME, CGC, IE, CEP, '+
                   'EMAIL, CIDADE, COMPLE, ENDERE, ESTADO, FONE, '+
                   'DESCONTO_CONVENIO) '+
-                  'values ((gen_id(G_CLIFORIDCLIFOR, 1)), '
+                  'values ( '
                   +QuotedStr(sCNPJ)+', '
                   +QuotedStr(ConverteAcentosPHP(Form1.ibQuery1.FieldByName('NOME').AsString))+', '
                   +QuotedStr(LimpaNumero(Form1.ibQuery1.FieldByName('CGC').AsString))+', '
