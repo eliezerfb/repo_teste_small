@@ -2470,15 +2470,15 @@ begin
     IBQTRANSACAO.ParamByName('PEDIDO').AsString           := sPedido;
     IBQTRANSACAO.ParamByName('CAIXA').AsString            := sCaixa;
     IBQTRANSACAO.ParamByName('MODELO').AsString           := sModelo;
-    IBQTRANSACAO.ParamByName('GNF').AsString              := sGNF;    
+    IBQTRANSACAO.ParamByName('GNF').AsString              := sGNF;
     IBQTRANSACAO.ParamByName('FORMA').AsString            := sForma;
     IBQTRANSACAO.ParamByName('VALOR').AsFloat             := dValor;
     IBQTRANSACAO.ParamByName('TRANSACAO').AsString        := Copy(sTransacao, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'TRANSACAO'));
     IBQTRANSACAO.ParamByName('NOMEREDE').AsString         := Copy(sNomeRede, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'NOMEREDE'));
     IBQTRANSACAO.ParamByName('AUTORIZACAO').AsString      := Copy(sAutorizacao, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'AUTORIZACAO'));
     IBQTRANSACAO.ParamByName('BANDEIRA').AsString         := Copy(sBandeira, 1, TamanhoCampo(IBQTRANSACAO.Transaction, 'VFPE', 'BANDEIRA'));
-    IBQTRANSACAO.ParamByName('BIN').AsString              := sForma;
-    IBQTRANSACAO.ParamByName('ULTIMOSDIGITOS').AsString   := sForma;
+    IBQTRANSACAO.ParamByName('BIN').AsString              := sBIN;
+    IBQTRANSACAO.ParamByName('ULTIMOSDIGITOS').AsString   := sUltimosDigitos;
     IBQTRANSACAO.ExecSQL;
   except
     Result := False;

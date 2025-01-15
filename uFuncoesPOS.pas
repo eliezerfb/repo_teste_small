@@ -274,7 +274,7 @@ begin
         
         if bPoSok then
         begin
-          Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRede,
+          Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRedeTransacionada,
                                                       IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0, 'DEBITO', 'CREDITO'),
                                                       dValorPagarCartao,
                                                       Form10.sNomeAdquirente,

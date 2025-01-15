@@ -888,7 +888,16 @@ var
                   end;
 
                   //Sandro Silva 2024-12-05 Form1.TransacoesCartao.Transacoes.Adicionar(Form10.sNomeDoTEF, Form1.sDebitoOuCredito, dValorPagarCartao, Form1.sNomeRede, Form1.sTransaca, Form1.sAutoriza, Form1.IntegradorCE.TransacaoFinanceira.Tipo, ModalidadeTransacao);
-                  Form1.TransacoesCartao.Transacoes.Adicionar(Form10.sNomeDoTEF, Form1.sDebitoOuCredito, dValorPagarCartao, Form1.TransacaoTEF.NomeRede, Form1.TransacaoTEF.Transacao, Form1.sAutoriza, Form1.IntegradorCE.TransacaoFinanceira.Tipo, ModalidadeTransacao);
+                  Form1.TransacoesCartao.Transacoes.Adicionar(Form10.sNomeDoTEF,
+                                                              Form1.sDebitoOuCredito,
+                                                              dValorPagarCartao,
+                                                              Form1.TransacaoTEF.NomeRede,
+                                                              Form1.TransacaoTEF.Transacao,
+                                                              Form1.sAutoriza,
+                                                              Form1.IntegradorCE.TransacaoFinanceira.Tipo,
+                                                              '',
+                                                              '',
+                                                              ModalidadeTransacao);
 
                   iParcelas := 1;
 
@@ -1214,7 +1223,16 @@ var
 
         if bPoSok then
         begin
-          Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRedeTransacionada, IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0, 'DEBITO', 'CREDITO'), dValorPagarCartao, Form10.sNomeAdquirente, Form1.sTransacaPOS, Form1.sAutoriza, StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO',''), ModalidadeTransacao);
+          Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRedeTransacionada,
+                                                      IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0,'DEBITO','CREDITO'),
+                                                      dValorPagarCartao,
+                                                      Form10.sNomeAdquirente,
+                                                      Form1.sTransacaPOS,
+                                                      Form1.sAutoriza,
+                                                      StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO',''),
+                                                      '',
+                                                      '',
+                                                      ModalidadeTransacao);
 
           FdTotalTransacionado := FdTotalTransacionado + dValorPagarCartao;
           Form1.fTEFPago      := Form1.fTEFPago + dValorPagarCartao;
@@ -1223,10 +1241,8 @@ var
           Form1.ibDataSet25.FieldByName('PAGAR').AsFloat := FdTotalTransacionado;
           RecuperaValoresFormasExtras;
         end;
-
-      end;// if dValorPagarCartao = 0 then
-    end; // if (FdTotalEmCartao - (FdTotalTransacionado + dValorPagarCartao)) < 0 then
-
+      end;
+    end;
   end;
 
   procedure DeletaTrasacaoPosDoReceber;
