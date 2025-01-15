@@ -1841,7 +1841,7 @@ uses
   , uValidaRecursosDelphi7
   , uTypesRecursos
   , uValidaRecursos
-  , uFuncoesPOS
+//  , uFuncoesPOS
   , uConverteDocumentoParaDocFiscal
   , uConfiguracaoTEF
   , uSmallConsts

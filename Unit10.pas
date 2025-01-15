@@ -59,7 +59,7 @@ implementation
 uses fiscal
 , ufuncoesfrente, uajustaresolucao
 // Sandro Silva (smal-778) 2024-11-06, uValidaRecursos, uTypesRecursos
-, uFuncoesPos
+//, uFuncoesPos
 , ufuncoestef // Sandro Silva 2024-11-19
 , uTransacionaPosOuTef
 , uSmallConsts

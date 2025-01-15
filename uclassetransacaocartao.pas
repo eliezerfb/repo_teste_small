@@ -138,6 +138,8 @@ begin
   Result.Autorizacao     := sAutorizacao;
   Result.Bandeira        := sBandeira;
   Result.Modalidade      := Modalidade;
+  Result.BIN             := sBIN;
+  Result.UltimosDigitos  := sUltimosDigitos;
 
   if Trim(Result.NomeRede) = '' then // Sandro Silva 2023-04-25 f-6859
     Result.NomeRede := Result.NomeDoTEF;

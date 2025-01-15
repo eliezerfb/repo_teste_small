@@ -66,7 +66,7 @@ uses
   , ufuncoesTef
   , unit10
   , uDialogs
-  , uFuncoesPOS
+//  , uFuncoesPOS
   , ufrmOpcoesFechamentoComCartao
   , fiscal
   , usmall_elginpay_pos
@@ -893,8 +893,8 @@ var
                                                               Form1.TransacaoTEF.Transacao,
                                                               Form1.sAutoriza,
                                                               Form1.IntegradorCE.TransacaoFinanceira.Tipo,
-                                                              '',
-                                                              '',
+                                                              GetBinCartao(sRespostaTef),
+                                                              GetUltimosDigitosCartao(sRespostaTef),
                                                               ModalidadeTransacao);
 
                   iParcelas := 1;
