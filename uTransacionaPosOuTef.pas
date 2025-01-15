@@ -16,6 +16,9 @@ uses
   , uclassetransacaocartao
   ;
 
+type
+  TTipoConexaoPOS = (tcxPosOffLine, tcxPosOnlineElginPay);
+
 procedure AcionaTEF(NomeDoTEF: String);
 
 type
@@ -99,7 +102,7 @@ var
   bAutorizacao: Boolean;
 begin
 
-  bAutorizacao := False;
+  bAutorizacao := True;
   Form1.sTransacaPOS := ''; // Sandro Silva 2024-12-05 Form1.sTransaca := '';
   Form1.sAutoriza := '';
 
@@ -109,6 +112,9 @@ begin
 
   if (Form1.sIdentificaPOS = 'Sim') then
   begin
+
+    bAutorizacao := False;
+
     Form1.sTransacaPOS := ''; // Sandro Silva 2025-12-05 Form1.sTransaca := '';
     if (Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') or (Form1.sModeloECF = '99')// NFC-e/SAT/MEI
       then // Número de autorização apenas quando NFC-e
@@ -287,10 +293,11 @@ var
 
       Form1.OcultaPanelMensagem;
 
+{2025-01-14
       //Precisa? TEFAguardarRetornoStatus() e validar .STS
       if FileExists('c:\'+DiretorioTEF+'\'+Form1.TransacaoTEF.Cliente.RESP+'\INTPOS.STS') then // Sandro Silva 2017-06-22
         TEFDeletarCopiasArquivos(DIRETORIO_BKP_TEF); // Sandro Silva 2017-06-30
-
+}
       FbConfirmarTransacao := False;
 
       FfDescontoNoPremio := 0;
@@ -519,14 +526,6 @@ var
             CloseFile(F);
             RenameFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\IntPos.TMP','c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTef+'\INTPOS.001');
             // ---------------------------------------- //
-            {Sandro Silva (smal-778) 2024-11-28 inicio
-            for I := 1 to 12000 do
-            begin
-              Application.ProcessMessages;
-              if not FileExists('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.STS') then
-                Sleep(10);
-            end;
-            }
             for I := 1 to 12000 do
             begin
               Application.ProcessMessages;
@@ -535,7 +534,6 @@ var
               else
                 Break;
             end;
-            {Sandro Silva (smal-778) 2024-11-28 fim}
 
             // teste anderson Center System
             Form1.Top    := 0;
@@ -1027,8 +1025,6 @@ var
 
     Result := False;
 
-    //FiContaCartao        := 0;
-
     ModalidadeTransacao := tModalidadeCartaoPOS; // Sandro Silva 2024-11-27 tModalidadeCartao;
 
     if (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) = 0) then
@@ -1056,10 +1052,20 @@ var
           begin
             if Form1.bModoMultiplosCartoes then
             begin
+              {
               if dValorPagarCartao >= 0 then
               begin
                 Break;
               end;
+              }
+              if (FdTotalEmCartao - (FdTotalTransacionado + dValorPagarCartao)) < 0 then
+              begin
+                dValorPagarCartao := FdTotalEmCartao - FdTotalTransacionado;
+                Application.MessageBox('Valor total da transação maior que o valor definido para a forma de pagamento cartão', 'Atenção', MB_ICONWARNING + MB_OK);
+              end
+              else
+                if dValorPagarCartao >= 0 then
+                  Break;
             end
             else
             begin
@@ -1139,10 +1145,11 @@ var
                     Form1.sParcelas := '1';
                   {Sandro Silva 2024-12-06 fim}
 
-
                 end
                 else
+                begin
                   SmallMessageBox(Form1.PosElginPay.Transacao.MensagemOperador, 'Atenção', MB_OK + MB_ICONWARNING);
+                end;
 
                 Form1.ExibePanelMensagem(Form1.PosElginPay.Transacao.MensagemOperador, True);
 
@@ -1223,6 +1230,7 @@ var
 
         if bPoSok then
         begin
+          Result := True; //2025-01-14	
           Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRedeTransacionada,
                                                       IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0,'DEBITO','CREDITO'),
                                                       dValorPagarCartao,
@@ -1315,7 +1323,8 @@ begin
 
         if (idMessageResponse = ID_YES) or (FdTotalTransacionado = 0) then
         begin
-          Result := False;
+          if FdTotalTransacionado > 0 then
+            Result := False;
           Break;
         end;
 
@@ -1330,7 +1339,6 @@ begin
 
           if (Result = False) and (TFrmOpcoesFechamentoComCartao.QtdOpcoesTefPOSDisponiveis = 1) then
           begin
-
             Break;
           end;
         end;
@@ -1350,7 +1358,15 @@ begin
               , 'Atenção', MB_OK + MB_ICONWARNING);
           end
           else
+          begin
             Result := TransacaoComPoS(tcxPosOffLine);
+
+            if (Result = False) and (TFrmOpcoesFechamentoComCartao.QtdOpcoesTefPOSDisponiveis = 1) then
+            begin
+              Break;
+            end;
+
+          end;
         end;
         tpNone:
         begin

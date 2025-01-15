@@ -220,7 +220,6 @@
         <DCCReference Include="..\unit_compartilhada\uCriptografia.pas"/>
         <DCCReference Include="..\unit_compartilhada\DAT\uArquivosDAT.pas"/>
         <DCCReference Include="..\unit_compartilhada\uFuncoesBancoDados.pas"/>
-        <DCCReference Include="uFuncoesPOS.pas"/>
         <DCCReference Include="uConverteDocumentoParaDocFiscal.pas"/>
         <DCCReference Include="_Small_2.pas"/>
         <DCCReference Include="_Small_3.pas"/>
@@ -1153,8 +1152,8 @@
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

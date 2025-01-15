@@ -10363,7 +10363,8 @@ begin
 
           if not (TransacoesComCartao.TransacionaPosOuTef) then
           begin
-            Form2.bCancela := True;
+            if Form1.TransacoesCartao.TemTransacaoTef then
+              Form2.bCancela := True;
           end
           else
           begin
@@ -12568,10 +12569,15 @@ begin
             SmallMsgBox('O gerenciador padrão não está ativo. Cod: 999','Operador',mb_Ok + MB_ICONEXCLAMATION);
           end;
         end;
+      end
+      else
+      begin
+        // Não tem impressão comprovante tef
+        TEFDeletarCopiasArquivos(DIRETORIO_BKP_TEF);
       end;
       {$Endregion}
 
-    end;
+    end;// if bVolta = False then
 
     // if not bVolta then
     begin
@@ -14487,7 +14493,7 @@ begin
 
   Selecionarcertificadodigital2.Visible := ((Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99'));
 
-  if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') then
+  if (Form1.sModeloECF = '59') or (Form1.sModeloECF = '65') or (Form1.sModeloECF = '99') then
   begin
 
     Form1.IdentificarCredenciadoraPoS1.Visible := True; // Sandro Silva 2018-11-20
@@ -27764,6 +27770,9 @@ begin
     Form1.touch_F10.Picture.Bitmap := CortarImagem(Form1.touch_F10.Picture.Graphic, Bounds(0,0,Form1.touch_F10.Width,Form1.touch_F10.Height));
     Form1.touch_F10.Picture.Bitmap.Canvas.CopyRect(Rect(0,0,Form1.touch_F10.Width,Form1.touch_F10.Height),Form1.Image7.Picture.Bitmap.Canvas,R1);
     Form1.touch_F9.Picture := Form1.touch_F10.Picture; // Sandro Silva 2016-08-18
+    if (Form1.Memo1.Visible) and Form1.bStatusECF and Form1.bStatusFiscal then
+      Form1.touch_F9.Picture.Bitmap := Form1.touch_F7.Picture.Bitmap;
+
     //
     Form1.touch_F2.Picture  := Form1.touch_F1.Picture;
     Form1.touch_F3.Picture  := Form1.touch_F1.Picture;

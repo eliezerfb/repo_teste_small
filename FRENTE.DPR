@@ -54,7 +54,6 @@ uses
   uCriptografia in '..\unit_compartilhada\uCriptografia.pas',
   uArquivosDAT in '..\unit_compartilhada\DAT\uArquivosDAT.pas',
   uFuncoesBancoDados in '..\unit_compartilhada\uFuncoesBancoDados.pas',
-  uFuncoesPOS in 'uFuncoesPOS.pas',
   uConverteDocumentoParaDocFiscal in 'uConverteDocumentoParaDocFiscal.pas',
   _Small_2 in '_Small_2.pas',
   _Small_3 in '_Small_3.pas',
