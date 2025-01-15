@@ -16,6 +16,9 @@ uses
   , uclassetransacaocartao
   ;
 
+type
+  TTipoConexaoPOS = (tcxPosOffLine, tcxPosOnlineElginPay);
+
 procedure AcionaTEF(NomeDoTEF: String);
 
 type
