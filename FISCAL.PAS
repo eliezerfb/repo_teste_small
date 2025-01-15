@@ -10160,6 +10160,20 @@ var
 
   IDFORMA : integer;
   CODIGO_TPAG : string;
+  procedure LimpaVariaveisDoTef;
+  begin
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF+'\INTPOS.001');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF+'\INTPOS.STS');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTEF+'\IntPos.tmp');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTEF+'\INTPOS.001');
+    DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'.res');
+
+    {Sandro Silva (smal-778) 2024-12-12 inicio}
+    LimpaPastasTEFs;
+    {Sandro Silva (smal-778) 2024-12-12 fim}
+
+    TransacoesComCartao.ConfirmaTransacao := False; //2024-12-09
+  end;
 begin
   Screen.Cursor             := crHourGlass; // Cursor de Aguardo
   bFechado                  := False; // Sandro Silva 2016-04-12
@@ -12551,17 +12565,18 @@ begin
               end;
             end;
 
+            {2025-01-15
             DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF+'\INTPOS.001');
             DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF+'\INTPOS.STS');
             DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTEF+'\IntPos.tmp');
             DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTEF+'\INTPOS.001');
             DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'.res');
 
-            {Sandro Silva (smal-778) 2024-12-12 inicio}
             LimpaPastasTEFs;
-            {Sandro Silva (smal-778) 2024-12-12 fim}
 
             TransacoesComCartao.ConfirmaTransacao := False; //2024-12-09
+            }
+            LimpaVariaveisDoTef;
 
           end else
           begin
@@ -12573,6 +12588,9 @@ begin
       begin
         // Não tem impressão comprovante tef
         TEFDeletarCopiasArquivos(DIRETORIO_BKP_TEF);
+
+        LimpaVariaveisDoTef;
+
       end;
       {$Endregion}
 
@@ -34068,8 +34086,6 @@ begin
     FreeAndNil(ConfSistema);
   end;
 end;
-
-
 
 function TForm1.AbandonaVenda: boolean;
 var

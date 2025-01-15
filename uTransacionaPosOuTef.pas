@@ -52,6 +52,7 @@ type
     FbConfirmarTransacao: Boolean;
     FsCupomReduzidoAutorizado: String;
     FfDescontoNoPremio: real;
+    FiTotalParcelas: Integer;
     function AplicaOpcaoPosEscolhida(NomePOS: String): Boolean;
   public
     constructor Create(AOwner: TComponent);
@@ -190,8 +191,9 @@ constructor TTransacaoComPosOuTef.Create(AOwner: TComponent);
 begin
   FdTotalTransacionado := 0.00;
   FdTotalEmCartao      := 0.00;
-  FiContaCartao := 0;
+  FiContaCartao        := 0;
   FbConfirmarTransacao := False;
+  FiTotalParcelas      := 0;
 
   FsCupomReduzidoAutorizado := '';
   FsCupomAutorizado         := '';
@@ -330,7 +332,7 @@ var
     dTotalTransacaoTEF: Currency; //Double;
     dValorDuplReceber: Currency;
     bTEFZPOS: Boolean;
-    iTotalParcelas: Integer;
+    //2025-01-15 iTotalParcelas: Integer;
   begin
     Result := False;
     bTEFZPOS := False;
@@ -898,12 +900,12 @@ var
                   begin
                     try
                       dValorDuplReceber := StrToFloat(FormatFloat('0.00', (Int(((StrtoInt(Form1.sValorTot) / 100) /iParcelas) * 100) / 100))); // Sandro Silva 2018-04-25
-                      iTotalParcelas := iTotalParcelas + 1;
+                      FiTotalParcelas := FiTotalParcelas + 1;
 
                       Form1.ibDataSet7.Append;
                       Form1.ibDataSet7.FieldByName('NOME').AsString         := Form1.TransacaoTEF.NomeRede; // Sandro Silva 2024-12-05 Form1.ibDataSet7.FieldByName('NOME').AsString         := Form1.sNomeRede;
                       Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' tran.' + Form1.TransacaoTEF.Transacao; // Sandro Silva 2024-12-06 Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' tran.' + Form1.sTransaca;
-                      Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(iTotalParcelas);
+                      Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(FiTotalParcelas);
                       Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat    := dValorDuplReceber;
                       Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime    := Date;
                       if AnsiContainsText(Form1.sDebitoOuCredito, 'CREDITO') then
@@ -927,7 +929,7 @@ var
                     end;
                   end; // for I := 1 to iParcelas do
 
-                  Form1.AjustarDiferencaParcelasCartao(dTotalTransacaoTEF, dValorPagarCartao, iTotalParcelas, iParcelas);
+                  Form1.AjustarDiferencaParcelasCartao(dTotalTransacaoTEF, dValorPagarCartao, FiTotalParcelas, iParcelas);
 
                 end; //
               end;
@@ -1009,7 +1011,7 @@ var
     bPoSok: Boolean;
     iParcelas: Integer;
     dTotalTransacaoPOS: Currency;
-    iTotalParcelas: Integer;
+    //2025-01-15 iTotalParcelas: Integer;
     ModalidadeTransacao: TTipoModalidadeTransacao;
   begin
     // Usando PoS para transação com cartão
@@ -1184,14 +1186,14 @@ var
               begin
 
                 try
-                  iTotalParcelas := iTotalParcelas + 1;// Sandro Silva 2017-08-28 Acumula as parcelas entre os diferentes cartões usados para gerar as parcelas na sequência
+                  FiTotalParcelas := FiTotalParcelas + 1;// Sandro Silva 2017-08-28 Acumula as parcelas entre os diferentes cartões usados para gerar as parcelas na sequência
                   Form1.ibDataSet7.Append;
                   Form1.ibDataSet7.FieldByName('NOME').AsString         := StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO','');
                   if Form1.ClienteSmallMobile.ImportandoMobile then
                     Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'Cartão, Caixa: ' + Form1.sCaixa + ' Aut.' + Form1.sTransacaPOS
                   else
                     Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := PREFIXO_HISTORICO_TRANSACAO_POS + ': ' + IntToStr(FiContaCartao + 1) + 'º CARTAO'; // Sandro Silva (smal-778) 2024-11-25 Form1.ibDataSet7.FieldByName('HISTORICO').AsString    := 'VENDA NO CARTAO: ' + IntToStr(FiContaCartao + 1) + 'º CARTAO';
-                  Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(iTotalParcelas); // documento
+                  Form1.ibDataSet7.FieldByName('DOCUMENTO').AsString    := FormataReceberDocumento(FiTotalParcelas); // documento
                   Form1.ibDataSet7.FieldByName('VALOR_DUPL').AsFloat    := StrToFloat(FormatFloat('0.00', (Int((dValorPagarCartao / StrToIntDef(Form1.sParcelas, 1)) * 100) / 100)));// Truncando 2 casas decimais
                   Form1.ibDataSet7.FieldByName('EMISSAO').AsDateTime    := StrToDate(Form1.sDataDoCupom);
                   if AnsiContainsText(Form10.sNomedoTef, 'CREDITO') then
@@ -1208,7 +1210,7 @@ var
 
               end;// for iParcelas := 1 to StrToIntDef(Form1.sParcelas, 1) do
 
-              Form1.AjustarDiferencaParcelasCartao(dTotalTransacaoPOS, dValorPagarCartao, iTotalParcelas, StrToIntDef(Form1.sParcelas, 1));
+              Form1.AjustarDiferencaParcelasCartao(dTotalTransacaoPOS, dValorPagarCartao, FiTotalParcelas, StrToIntDef(Form1.sParcelas, 1));
 
             end; // if (Pos(TIPOCONTINGENCIA, Form1.ClienteSmallMobile.sVendaImportando) = 0) then // Sandro Silva 2016-04-29
             Inc(FiContaCartao);
