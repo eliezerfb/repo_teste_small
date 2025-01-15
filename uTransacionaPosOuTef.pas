@@ -290,10 +290,11 @@ var
 
       Form1.OcultaPanelMensagem;
 
+{2025-01-14
       //Precisa? TEFAguardarRetornoStatus() e validar .STS
       if FileExists('c:\'+DiretorioTEF+'\'+Form1.TransacaoTEF.Cliente.RESP+'\INTPOS.STS') then // Sandro Silva 2017-06-22
         TEFDeletarCopiasArquivos(DIRETORIO_BKP_TEF); // Sandro Silva 2017-06-30
-
+}
       FbConfirmarTransacao := False;
 
       FfDescontoNoPremio := 0;

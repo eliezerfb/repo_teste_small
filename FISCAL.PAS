@@ -12568,10 +12568,15 @@ begin
             SmallMsgBox('O gerenciador padrão não está ativo. Cod: 999','Operador',mb_Ok + MB_ICONEXCLAMATION);
           end;
         end;
+      end
+      else
+      begin
+        // Não tem impressão comprovante tef
+        TEFDeletarCopiasArquivos(DIRETORIO_BKP_TEF);
       end;
       {$Endregion}
 
-    end;
+    end;// if bVolta = False then
 
     // if not bVolta then
     begin
