@@ -2047,7 +2047,37 @@ begin
       if TEFValorTotalAutorizado > 0 then
       begin
         Form1.ibDataSet25.FieldByName('PAGAR').AsFloat := TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
-        Form1.TransacoesComCartao.iTotalParcelas       := TEFQtdParcelasAutorizado;
+        Form1.TransacoesComCartao.iTotalParcelas       := TEFQtdParcelasAutorizado;// Recupera as parcelas das transações com cartão já realizadas
+
+        if (Form1.TransacaoTEF.TextoImpressao = '')  and (Form1.ibDataSet25.FieldByName('PAGAR').AsFloat < Form1.ibDataSet25.FieldByName('RECEBER').AsFloat) then
+        begin
+          // Recupera as linhas de impressão
+
+          if TEFTextoImpressaoCupomAutorizado('710-') <> '' then
+            Form1.TransacaoTEF.TextoImpressao              := TEFTextoImpressaoCupomAutorizado('711-');
+          if TEFTextoImpressaoCupomAutorizado('712-') <> '' then
+            Form1.TransacaoTEF.TextoImpressao              := Form1.TransacaoTEF.TextoImpressao  + Chr(10) + TEFTextoImpressaoCupomAutorizado('713-');
+          if TEFTextoImpressaoCupomAutorizado('714-') <> '' then
+          begin
+            Form1.TransacaoTEF.TextoImpressao              := Form1.TransacaoTEF.TextoImpressao  + Chr(10) + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('715-'); // Texto via estabelecimento
+          end else
+          begin
+            Form1.TransacaoTEF.TextoImpressao              := Form1.TransacaoTEF.TextoImpressao  + Chr(10) + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('029-'); // Indica o status da confirmação da transação
+          end;
+
+          if AllTrim(StrTran(Form1.TransacaoTEF.TextoImpressao, Chr(10), '')) = '' then
+            Form1.TransacaoTEF.TextoImpressao              := '';
+
+          if SuprimirLinhasEmBrancoDoComprovanteTEF then
+          begin
+            while AnsiContainsText(Form1.TransacaoTEF.TextoImpressao, chr(10) + chr(10)) do
+              Form1.TransacaoTEF.TextoImpressao := StringReplace(Form1.TransacaoTEF.TextoImpressao, chr(10) + chr(10), chr(10), [rfReplaceAll]);
+          end;
+
+          if Form1.TransacaoTEF.TextoImpressao <> '' then
+             Form1.TransacaoTEF.TextoImpressao := Form1.TransacaoTEF.TextoImpressao + Chr(10);
+        end;
+
       end;
 
       Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0;

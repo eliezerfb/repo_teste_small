@@ -2830,13 +2830,7 @@ begin
       for I := 0 to slArquivos.Count -1 do
       begin
         sArquivo := diretorio_bkp_tef + '\' + AllTrim(slArquivos[I]);
-        //
-        //if AnsiContainsText(ExtractFileName(sArquivo), FsDiretorio) then
-        //begin
-          //
-          DeleteFile(PChar(sArquivo));
-          //
-        //end;
+        DeleteFile(PChar(sArquivo));
       end; // for I := 0 to slDownload.Count -1 do
       if sTipo = '*.BKP' then
         sTipo := '*.BKC'

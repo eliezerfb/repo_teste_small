@@ -10174,6 +10174,8 @@ var
 
     TransacoesComCartao.ConfirmaTransacao := False; //2024-12-09
     Form1.TransacoesComCartao.iTotalParcelas := 0;
+    Form1.TransacaoTEF.TextoImpressao := '';
+
   end;
 begin
   Screen.Cursor             := crHourGlass; // Cursor de Aguardo
@@ -12591,6 +12593,7 @@ begin
 
             TransacoesComCartao.ConfirmaTransacao := False; //2024-12-09
             }
+
             LimpaVariaveisDoTef;
 
           end else
@@ -12686,6 +12689,9 @@ begin
       sEmailCliente := Form2.Edit10.Text; //Sandro Silva 2024-05-07 reserva email do cliente para disponibilizar o comprovante (xml) Form1.Button8Click() limpa campo do email
 
       Form1.Button8Click(Sender); // Corta o papel, commita, etc e tal, fecha a tela da mesa do cupom status das mesas, zeresima
+
+      TEFDeletarCopiasArquivos(DIRETORIO_BKP_TEF);
+      Sleep(500);
 
       //LogFrente('13246 Form1.Button8Click() ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
