@@ -287,7 +287,8 @@ uses
   uDiagnosticoIA in 'units\uDiagnosticoIA.pas',
   uAtorInteressado in 'uAtorInteressado.pas' {fmAtorInteressado},
   uWebServiceSmall in 'units\uWebServiceSmall.pas',
-  uMinhasNotas in 'units\uMinhasNotas.pas';
+  uMinhasNotas in '..\..\unit_compartilhada\MinhasNotas\uMinhasNotas.pas',
+  uWebServiceMinhasNotas in '..\..\unit_compartilhada\MinhasNotas\uWebServiceMinhasNotas.pas';
 
 {$R *.RES}
 

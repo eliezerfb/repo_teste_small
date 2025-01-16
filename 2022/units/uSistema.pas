@@ -19,25 +19,27 @@ type
     FConsultarIPIImendes : boolean;
     FDashboardAbertura : boolean;
 
+    FCNPJEmitente : string;
+
     function GetCertificadoDtVal: TDate;
     procedure SetCertificadoDtVal(const Value: TDate);
     function GetCertificadoTipo: string;
     procedure SetCertificadoTipo(const Value: string);
     function GetTema: string;
     procedure SetTema(const Value: string);
-
     function GetModuloImendes: boolean;
     procedure SetModuloImendes(const Value: boolean);
     function GetSerial: string;
     procedure SetSerial(const Value: string);
-
     function GetCodFaixaImendes: string;
     procedure SetCodFaixaImendes(const Value: string);
     function GetConsultarIPIImendes: Boolean;
     procedure SetConsultarIPIImendes(const Value: Boolean);
-
     function GetDashboardAbertura: Boolean;
     procedure SetDashboardAbertura(const Value: Boolean);
+
+    function GetCNPJEmitente: string;
+    procedure SetCNPJEmitente(const Value: string);
   published
     property CertificadoDtVal: TDate read GetCertificadoDtVal write SetCertificadoDtVal;
     property CertificadoTipo: string read GetCertificadoTipo write SetCertificadoTipo;
@@ -47,6 +49,7 @@ type
     property CodFaixaImendes: string read GetCodFaixaImendes write SetCodFaixaImendes;
     property ConsultarIPIImendes : Boolean  read GetConsultarIPIImendes write SetConsultarIPIImendes;
     property DashboardAbertura : Boolean read GetDashboardAbertura write SetDashboardAbertura;
+    property CNPJEmitente: string read GetCNPJEmitente write SetCNPJEmitente;
   public
     class function GetInstance: TSistema;
     class procedure Destroy;
@@ -120,6 +123,11 @@ begin
   Result := FCertificadoTipo;
 end;
 
+function TSistema.GetCNPJEmitente: string;
+begin
+  Result := FCNPJEmitente;
+end;
+
 function TSistema.GetCodFaixaImendes: string;
 begin
   Result := FCodFaixaImendes;
@@ -138,6 +146,11 @@ end;
 procedure TSistema.SetCertificadoTipo(const Value: string);
 begin
   FCertificadoTipo := Value;
+end;
+
+procedure TSistema.SetCNPJEmitente(const Value: string);
+begin
+  FCNPJEmitente := Value;
 end;
 
 procedure TSistema.SetCodFaixaImendes(const Value: string);

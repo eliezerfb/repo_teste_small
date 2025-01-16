@@ -610,7 +610,9 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmMsgNovoLayout
   , uFrmIntegracaoSicoob
   , uFrmIntegracaoIMendes
-  , uDashboard, uDiagnosticoIA, uMinhasNotas;
+  , uDashboard
+  , uDiagnosticoIA
+  , uMinhasNotas;
 
 {$R *.DFM}
 
@@ -10474,8 +10476,6 @@ procedure TForm1.TimerMinhasNotasTimer(Sender: TObject);
 begin
   TimerMinhasNotas.Enabled := False;
 
-   //ExecutaComando(' insert into MINHASNOTAS	values(''LOCK'')  ',Form7.IBTransaction1);
-
   try
     TTask.Run(
     procedure()
@@ -12687,6 +12687,8 @@ begin
     TSistema.GetInstance.CodFaixaImendes     := ConfSistema.BD.IMendes.FaixaFaturamento;
     TSistema.GetInstance.ConsultarIPIImendes := ConfSistema.BD.IMendes.ConsultarIPI;
     TSistema.GetInstance.DashboardAbertura   := ConfSistema.BD.Dashboard.AberturaSistema;//Mauricio Parizotto 2024-11-25
+
+    TSistema.GetInstance.CNPJEmitente        := Form7.ibDataSet13CGC.AsString;
   finally
     FreeAndNil(ConfSistema);
   end;

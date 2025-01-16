@@ -629,7 +629,8 @@
             <Form>fmAtorInteressado</Form>
         </DCCReference>
         <DCCReference Include="units\uWebServiceSmall.pas"/>
-        <DCCReference Include="units\uMinhasNotas.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\MinhasNotas\uMinhasNotas.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\MinhasNotas\uWebServiceMinhasNotas.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
