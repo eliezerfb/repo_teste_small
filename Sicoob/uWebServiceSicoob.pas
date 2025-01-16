@@ -14,8 +14,6 @@ uses
 
 implementation
 
-uses uClassesItau, uIntegracaoItau;
-
 function RequisicaoSicoob(vMethod : TRESTRequestMethod; EndPoint:string; sBody, sToken, sCertFile : string; Campos : TCamposApi; out Resposta : string; out StatusCode : integer) : Boolean;
 var
   FRESTClient: TRESTClient;
