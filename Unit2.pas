@@ -555,7 +555,7 @@ begin
   if (TEFValorTotalAutorizado > 0)
     and (Form1.ibDataSet25.FieldByName('PAGAR').AsFloat < TEFValorTotalAutorizado) then
   begin
-    Form1.ibDataSet25.FieldByName('PAGAR').AsFloat   := TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
+    Form1.ibDataSet25.FieldByName('PAGAR').AsFloat := TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
   end;
 
 end;
@@ -2046,7 +2046,8 @@ begin
       Form1.ibDataSet25.FieldByName('PAGAR').AsFloat      := 0;
       if TEFValorTotalAutorizado > 0 then
       begin
-        Form1.ibDataSet25.FieldByName('PAGAR').AsFloat   := TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
+        Form1.ibDataSet25.FieldByName('PAGAR').AsFloat := TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
+        Form1.TransacoesComCartao.iTotalParcelas       := TEFQtdParcelasAutorizado;
       end;
 
       Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0;

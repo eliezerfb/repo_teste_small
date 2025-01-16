@@ -10173,6 +10173,7 @@ var
     {Sandro Silva (smal-778) 2024-12-12 fim}
 
     TransacoesComCartao.ConfirmaTransacao := False; //2024-12-09
+    Form1.TransacoesComCartao.iTotalParcelas := 0;
   end;
 begin
   Screen.Cursor             := crHourGlass; // Cursor de Aguardo
@@ -12137,10 +12138,24 @@ begin
             AdicionaCNPJRequisicaoTEF(F, Form1.ibDataSet13); // ENVIO DE INFORMAÇÕES LIVRES 1-CNPJ do Estabelecimento Comercial; 2-CNPJ da Empresa de Automação Comercial // Sandro Silva 2019-08-13
             WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
             CloseFile(F);
-            Sleep(100); // Sandro Silva 2017-06-14
+            Sleep(100);
             RenameFile('c:\' + Form1.TransacaoTEF.Cliente.Pasta + '\' + Form1.sReqTEF + '\IntPos.tmp', 'c:\' + Form1.TransacaoTEF.Cliente.Pasta + '\' + Form1.sReqTEF + '\INTPOS.001');
             Sleep(100); // Sandro Silva 2024-12-30 Sleep(1000);
             TEFAguardarRetornoStatus('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF, sIdentificaTransacaoTEF);
+
+            //Exclui do receber a transação não confirmada
+            Form1.ibDataSet7.First;
+            while not Form1.ibDataSet7.Eof do
+            begin
+              if AnsiContainsText(Form1.ibDataSet7.FieldByName('HISTORICO').AsString, Form1.TransacaoTEF.Transacao) and
+                AnsiContainsText(Form1.ibDataSet7.FieldByName('NOME').AsString, Form1.TransacaoTEF.NomeRede) then
+              begin
+                Form1.ibDataSet7.Delete;
+                TransacoesComCartao.iTotalParcelas := TransacoesComCartao.iTotalParcelas - 1;
+              end
+              else
+                Form1.ibDataSet7.Next;
+            end;
 
             Sleep(5000); // Sandro Silva 2024-12-30 Sleep(10000);
 
@@ -12151,7 +12166,7 @@ begin
         DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF+'\INTPOS.001');
         DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF+'\INTPOS.STS');
         DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sReqTEF+'\INTPOS.001');
-        DeleteFile( ('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'.res'));
+        DeleteFile('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'.res');
         // Sandro Silva 2017-06-22 Deve excluir apenas se conseguir cancelar  TEFDeletarCopiasArquivos(Form1.sDiretorioTEF); // Sandro Silva 2017-06-13
 
         Display('OPERACAO NAO CONFIRMADA','Use outra forma de pagamento');

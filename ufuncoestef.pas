@@ -35,6 +35,7 @@ procedure TEFAguardarRetornoStatus(sDiretorioResposta,
 function TEFTextoImpressaoCupomAutorizado(sCampo: String): String;
 function TEFContaArquivos(sTipoComCaminho: String): Integer;
 function TEFValorTotalAutorizado(): Currency;
+function TEFQtdParcelasAutorizado(): Integer;
 function TEFValorTransacao(sArquivoTEF: String): Currency;
 procedure TEFDeletarCopiasArquivos(FsDiretorio: String);
 //Sandro Silva 2024-11-19 function TestarZPOSLiberado: Boolean;
@@ -2305,7 +2306,7 @@ begin
 
                   AssignFile(F,'c:\'+sPastaTEF+'\'+sPastaREQ+'\IntPos.tmp');
                   Rewrite(F);
-                  //NCN Não confirmação da venda e/ou da impressão.                  
+                  //NCN Não confirmação da venda e/ou da impressão.
                   WriteLn(F,'000-000 = NCN');                              // Header: Cartão 3c
                   WriteLn(F,'001-000 = '+StrTran(TimeToStr(Time),':','')); // Identificação: Eu uso a hora
                   //
@@ -2331,7 +2332,7 @@ begin
                     end;
 
                   end;
-                  
+
                 end;
               end;
             end
@@ -2691,7 +2692,6 @@ var
   sNomeArquivo: String;
   sNomeTEFAutorizacao: String;
   sDebitoOuCreditoAutorizado: String;
-  bRespostaValidadosFiscal: Boolean; // Sandro Silva 2018-07-03
   ModalidadeTransacao: TTipoModalidadeTransacao; // Sandro Silva 2021-07-05
 begin
   GetDir(0, sDirAtual);
@@ -2742,14 +2742,8 @@ begin
           if CampoTEF(sArquivoTEF, '009-000') = '0' then
           begin
 
-            bRespostaValidadosFiscal := True;
-
-            if bRespostaValidadosFiscal then
-            begin
-
-              Result := Result + TEFValorTransacao(sArquivoTEF);
-              Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'), ModalidadeTransacao); // Sandro Silva 2021-07-05 Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, Form1.TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'));
-            end;
+            Result := Result + TEFValorTransacao(sArquivoTEF);
+            Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'), ModalidadeTransacao); // Sandro Silva 2021-07-05 Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, Form1.TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'));
 
           end;
         end;
@@ -2761,6 +2755,55 @@ begin
 
   ChDir(sDirAtual);
 end;
+
+function TEFQtdParcelasAutorizado(): Integer;
+var
+  slArquivos: TStringList;
+  sDirAtual: String;
+  i: Integer;
+  sArquivoTEF: String;
+  sNomeArquivo: String;
+  sNomeTEFAutorizacao: String;
+begin
+  GetDir(0, sDirAtual);
+  slArquivos := TStringList.Create;
+  Result := 0;
+
+  try
+    ListaDeArquivos(slArquivos, DIRETORIO_BKP_TEF, '*.BKP');
+
+    for I := 0 to slArquivos.Count -1 do
+    begin
+
+      sArquivoTEF := DIRETORIO_BKP_TEF + '\' + AllTrim(slArquivos[I]);
+
+      // Exemplo de nome de arquivo TEF_DIAL1.BKP, TEF_DIAL2.BKP
+      // Último caractere do nome deve ser número maior ou igual a zero
+      sNomeArquivo := StringReplace(AnsiUpperCase(ExtractFileName(sArquivoTEF)), '.BKP', '', [rfReplaceAll]);
+
+      sNomeTEFAutorizacao := Copy(sNomeArquivo, 1, Length(sNomeArquivo) - Length(IntToStr(I)));
+
+      if StrToIntDef(Right(sNomeArquivo, Length(IntToStr(I))), -1) >= 0 then
+      begin // Apenas arquivos dos primeiros cartões, não do último
+        if AnsiUpperCase(CampoTEF(sArquivoTEF, '000-000')) = 'CRT' then
+        begin
+          if CampoTEF(sArquivoTEF, '009-000') = '0' then
+          begin
+            if CampoTEF(sArquivoTEF, '012-000') <> '' then
+              Result := Result + StrToIntDef(CampoTEF(sArquivoTEF, '018-000'), 1);
+          end;
+        end;
+      end; //if StrToIntDef(Right(sNomeArquivo, Length(IntToStr(I))), -1) >= 0 then
+
+    end; // for I := 0 to slDownload.Count -1 do
+
+  finally
+    FreeAndNil(slArquivos);
+  end;
+
+  ChDir(sDirAtual);
+end;
+
 
 function TEFValorTransacao(sArquivoTEF: String): Currency;
 begin
