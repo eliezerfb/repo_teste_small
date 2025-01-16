@@ -303,24 +303,7 @@ begin
   if DBGridAddress.CanFocus then
     DBGridAddress.SetFocus();
 
-  if (trim(FDMemTableAddressENDERECO.AsString) = '') and
-    (trim(FDMemTableAddressNUMERO.AsString) = '') and
-    (trim(FDMemTableAddressBAIRRO.AsString) = '') and
-    (trim(FDMemTableAddressCEP.AsString) = '') and
-    (trim(FDMemTableAddressCIDADE.AsString) = '') and
-    (trim(FDMemTableAddressESTADO.AsString) = '') then
-  begin
-    if FDMemTableAddress.State = dsInsert then
-    begin
-      FDMemTableAddress.Cancel;
-      Abort;
-    end;
-    FDMemTableAddress.Delete;
-    Abort;
-  end;
-
-
-  raise Exception.Create('Endereço incompleto');
+  ShowMessage('Endereço incompleto.');
 end;
 
 procedure TFrmCadastro.FDMemTableAddressESTADOChange(Sender: TField);
@@ -947,19 +930,42 @@ begin
 end;
 
 procedure TFrmCadastro.PersistAddress();
+
+function IsBlankAddress: Boolean;
+begin
+  Result := True;
+
+  var Uf := FDMemTableAddressESTADO.AsString;
+  if Trim(FDMemTableAddressCIDADE.AsString) = '' then
+    Uf := '';
+
+  var ListOfValues := TList<string>.Create;
+  ListOfValues.AddRange(
+    [
+      FDMemTableAddressENDERECO.AsString,
+      FDMemTableAddressNUMERO.AsString,
+      FDMemTableAddressBAIRRO.AsString,
+      FDMemTableAddressCIDADE.AsString,
+      Uf,
+      FDMemTableAddressTELEFONE.AsString
+    ]
+  );
+  for var Value in ListOfValues do
+  begin
+    if not(Trim(Value) = '') then
+      Exit(False);
+  end;
+
+  if Trim(FDMemTableAddressCEP.AsString).Length = 9 then
+    Exit(False);
+end;
+
 begin
   if not(FDMemTableAddress.Active) then
     Exit;
 
   if FDMemTableAddress.State in ([dsEdit, dsInsert]) then
-  begin
-    if (FDMemTableAddressENDERECO.Text = '') and
-      (FDMemTableAddressESTADO.Text = '') and
-      (FDMemTableAddressCIDADE.Text = '') then
-      FDMemTableAddress.Cancel
-    else
-      FDMemTableAddress.Post;
-  end;
+    FDMemTableAddress.Post;
 
   if FDMemTableAddress.ChangeCount = 0 then
     Exit;
@@ -980,6 +986,12 @@ begin
       case FDMemTableAddress.UpdateStatus of
         usInserted, usModified:
           begin
+            if IsBlankAddress() then
+            begin
+              FDMemTableAddress.Next;
+              continue;
+            end;
+
             Qry.SQL.Text := 'UPDATE OR INSERT INTO CLIFORENDERECOS '+
              ' (IDENDERECO, IDCLIFOR, TIPO, ENDERECO, NUMERO, BAIRRO, '+
              '  CEP, CIDADE, ESTADO, TELEFONE) '+
@@ -1359,6 +1371,14 @@ begin
 end;
 
 procedure TFrmCadastro.LoadAddress();
+  function getPhoneMask(APhone: String): String;
+  begin
+    if APhone.Length = 11 then
+      Exit('!(99) 99999-9999;0;');
+    if APhone.Length = 10 then
+      Exit('!(99) 9999-9999;0;');
+    Result := '';
+  end;
 begin
 
   var CurrentIdCliFor := DSCadastro.DataSet.FieldByName('IDCLIFOR').AsInteger;
@@ -1394,14 +1414,10 @@ begin
       FDMemTableAddressCIDADE.AsString := qryAddress.FieldByName('CIDADE').AsString;
       FDMemTableAddressESTADO.AsString := qryAddress.FieldByName('ESTADO').AsString;
       var PhoneNumber := LimpaNumero(qryAddress.FieldByName('TELEFONE').AsString);
-      if not(PhoneNumber = '') then
-      begin
-        var PhoneMask := '!(99) 9999-9999;0;';
-        if qryAddress.FieldByName('TELEFONE').AsString.Length = 11 then
-          PhoneMask := '!(99) 99999-9999;0;';
-        FDMemTableAddressTELEFONE.AsString :=
-          FormatMaskText(PhoneMask, PhoneNumber);
-      end;
+      var PhoneMask := getPhoneMask(PhoneNumber);
+      FDMemTableAddressTELEFONE.AsString := PhoneNumber;
+      if not(PhoneNumber = '') and not(PhoneMask = '') then
+        FDMemTableAddressTELEFONE.AsString := FormatMaskText(PhoneMask, PhoneNumber);
       FDMemTableAddress.Post;
       qryAddress.Next;
     end;
