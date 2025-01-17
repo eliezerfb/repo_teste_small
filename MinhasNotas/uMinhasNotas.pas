@@ -26,7 +26,6 @@ implementation
 
 uses uFuncoesBancoDados
   , smallfunc_xe
-  , uFuncoesRetaguarda
   , uLogSistema
   , uWebServiceMinhasNotas
   , uconstantes_chaves_privadas

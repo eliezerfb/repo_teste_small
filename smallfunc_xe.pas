@@ -15,26 +15,17 @@ unit smallfunc_xe;
 interface
 
 uses
-  (*
-  {$IFDEF VER150}
-  Classes, SysUtils, StrUtils, Dialogs, IniFiles, Forms, Printers
-  , ExtCtrls, IBDatabase, IBQuery, Controls, DBCtrls, StdCtrls
-  , Mask, TLHelp32
-  {$ELSE}
-  *)
   System.Classes, System.SysUtils, System.StrUtils, Vcl.Dialogs
   , System.IniFiles, Winapi.WinSock, Vcl.Forms, Soap.EncdDecd
   , Vcl.Printers, Vcl.ExtCtrls, IBX.IBDatabase, IBX.IBQuery
   , Vcl.Controls, Vcl.DBCtrls , Vcl.StdCtrls, Vcl.Mask
   , Winapi.TlHelp32
-//  {$ENDIF}
   , Windows
   , IdBaseComponent, IdCoder, IdCoder3to4, IdCoderMIME
   , LbCipher, LbClass // 2020-07-21
   , MidasLib // Mauricio Parizotto 2024-01-23
   , JPeg, Menus
   , DateUtils
-  //  , ShellApi
   , msxmldom
   , XMLDoc
   , xmldom
@@ -44,13 +35,8 @@ uses
   , ClipBrd
   , uConectaBancoSmall
   , uconstantes_chaves_privadas
-//  {$IFDEF VER150}
-//  , Grids
-//  , DB
-//  {$ELSE}
   , Vcl.Grids
   , Data.DB
-//  {$ENDIF}
   , uSmallConsts
   , uDialogs
   , System.Variants
@@ -61,7 +47,6 @@ uses
 const CORPADRAOCARREGAMENTO = $008FC26C;
 const CORTITULOGRID         = $00F0F0F0;
 const COR_CAMPO_OBRIGATORIO = $0080FFFF; //Mauricio Parizotto 2022-09-14
-//Sandro Silva 2021-07-05 migrado para function const IMAGEMICONESSMALL     = 'inicial\Small_21_.bmp';
 
 type
   TConsisteInscricaoEstadual  = function (const Insc, UF: AnsiString): Integer; stdcall; // Usar dinamicamente a dll para validar IE obtida em http://www.sintegra.gov.br/
@@ -75,8 +60,6 @@ function FusoHorarioPadrao(UF: String): String;
 function CpfCgc(pP1: String): Boolean;
 function FormataCpfCgc(pP1:String):String;
 function LimpaNumero(pP1:String):String;
-//2020-10-29 function ConsisteInscricaoEstadual(sIE, sUF: String): Boolean; StdCall; External 'DllInscE32.Dll';
-//function ConsisteInscricaoEstadual(sIE: String; sUF: String): Boolean; Comentado para não dar conflito com usada na unit7 talvez necessário trocar para AnsiString
 function DecodeBase64(Value: String): String;
 function EncodeBase64(Value: String): String;
 {$IFNDEF VER150}
@@ -131,8 +114,6 @@ procedure MostraImagemCoordenada(ImgOri: TImage; ImgDest: TImage; Linha:integer;
 function WindowsDir: String;
 function base64encode(const Text : AnsiString): AnsiString;
 function base64Decode(const Text : ansiString): ansiString;
-//function CriaIBTransaction(IBDatabase: TIBDatabase): TIBTransaction; Movido para uConectaBancoSmall
-//function CriaIBQuery(IBTRANSACTION: TIBTransaction): TIBQuery; Movido para uConectaBancoSmall
 function IntToBin(pP1:Integer ):String;
 function DiretorioAplicacao: String;
 function MesExtenso(pP1:Integer):String;
@@ -166,7 +147,6 @@ function Extenso(pP1:double):String;
 function DiasParaExpirar(IBDATABASE: TIBDatabase; bValidacaoNova: Boolean = True): Integer;
 function ProdutoDeUsoConsumo(IBTransaction: TIBTransaction; sCodigo: String): Boolean;
 function BuscaSerialSmall: String;
-// Sandro Silva 2023-09-22 function HtmlToPDF(AcArquivo: String): Boolean;
 function DescricaoComQuebraLinha(Descricao:string;EspacamentoEsquerdo:string;Tamanho:integer):string;
 procedure DBGridCopiarCampo(DBGrid: TDBGrid); overload;
 procedure DBGridCopiarCampo(DBGrid: TDBGrid; var Key: Word;  Shift: TShiftState); overload;
@@ -199,7 +179,6 @@ function Modulo_11_Febraban(pP1:String):String;
 {$IFDEF VER150}
 {$ELSE}
 function HH(hWndCaller: HWND; pszFile: LPCWSTR; uCommand: UINT; dwData: DWORD_PTR): HWND;
-//function ValidaEmail(email: String): Boolean;
 {$ENDIF}
 function TruncaDecimal(pP1: Real; pP2: Integer): Real;
 function Potencia(pP1,pP2:Integer):Integer;
@@ -225,6 +204,7 @@ function RemoveUltimoTexto(sTexto:string):string;
 procedure SetConfiguracaoA5PaginaMatricial;
 function EnumeradoToStr(const t: variant; const AString:
   array of string; const AEnumerados: array of variant): variant;
+function SqlFiltroNFCEAutorizado(AliasTabela:string): String; //Mauricio Parizotto 2025-01-17
 
 
 var
@@ -2867,5 +2847,16 @@ begin
       result := AString[i];
 end;
 
+
+function SqlFiltroNFCEAutorizado(AliasTabela:string): String; //Mauricio Parizotto 2025-01-17
+begin
+  Result := ' and ('+
+            '      ('+AliasTabela+'.STATUS containing ''Autorizad'') '+
+            '      or ('+AliasTabela+'.STATUS containing ''Emitido com sucesso'')'+
+            '      or ('+AliasTabela+'.STATUS containing ' + QuotedStr(_cNFCE_EMITIDA_EM_CONTINGENCIA) + ')'+
+            '      or ('+AliasTabela+'.STATUS containing ' + QuotedStr(_cVENDA_GERENCIAL_FINALIZADA) + ')'+
+            '      or ('+AliasTabela+'.STATUS containing ' + QuotedStr(_cVENDA_MEI_ANTIGA_FINALIZADA) + ')'+
+            '    )';
+end;
 
 end.
