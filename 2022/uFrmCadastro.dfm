@@ -1941,6 +1941,7 @@ inherited FrmCadastro: TFrmCadastro
     end
     object FDMemTableAddressTELEFONE: TStringField
       DisplayLabel = 'Telefone'
+      DisplayWidth = 15
       FieldName = 'TELEFONE'
       Size = 15
     end

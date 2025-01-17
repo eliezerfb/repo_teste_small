@@ -204,6 +204,7 @@ type
     procedure DBGridCidadesKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     function ValidateCurrentAddress(): Boolean;
+    function IsBlankAddress(): Boolean;
   public
     { Public declarations }
   end;
@@ -303,7 +304,8 @@ begin
   if DBGridAddress.CanFocus then
     DBGridAddress.SetFocus();
 
-  ShowMessage('Endereço incompleto.');
+  if not(IsBlankAddress) then
+    ShowMessage('Endereço incompleto.');
 end;
 
 procedure TFrmCadastro.FDMemTableAddressESTADOChange(Sender: TField);
@@ -508,6 +510,35 @@ begin
                 Trim(ConverteAcentosPHP(Form7.ibDataSet2CIDADE.AsString))+' - '+
                 Trim(ConverteAcentosPHP(Form7.ibDataSet2ESTADO.AsString))+' '
                 ),'', '', SW_SHOWMAXIMIZED);
+end;
+
+function TFrmCadastro.IsBlankAddress(): Boolean;
+begin
+  Result := True;
+
+  var Uf := FDMemTableAddressESTADO.AsString;
+  if Trim(FDMemTableAddressCIDADE.AsString) = '' then
+    Uf := '';
+
+  var ListOfValues := TList<string>.Create;
+  ListOfValues.AddRange(
+    [
+      FDMemTableAddressENDERECO.AsString,
+      FDMemTableAddressNUMERO.AsString,
+      FDMemTableAddressBAIRRO.AsString,
+      FDMemTableAddressCIDADE.AsString,
+      Uf,
+      FDMemTableAddressTELEFONE.AsString
+    ]
+  );
+  for var Value in ListOfValues do
+  begin
+    if not(Trim(Value) = '') then
+      Exit(False);
+  end;
+
+  if Trim(FDMemTableAddressCEP.AsString).Length = 9 then
+    Exit(False);
 end;
 
 procedure TFrmCadastro.Label19Click(Sender: TObject);
@@ -930,36 +961,6 @@ begin
 end;
 
 procedure TFrmCadastro.PersistAddress();
-
-function IsBlankAddress: Boolean;
-begin
-  Result := True;
-
-  var Uf := FDMemTableAddressESTADO.AsString;
-  if Trim(FDMemTableAddressCIDADE.AsString) = '' then
-    Uf := '';
-
-  var ListOfValues := TList<string>.Create;
-  ListOfValues.AddRange(
-    [
-      FDMemTableAddressENDERECO.AsString,
-      FDMemTableAddressNUMERO.AsString,
-      FDMemTableAddressBAIRRO.AsString,
-      FDMemTableAddressCIDADE.AsString,
-      Uf,
-      FDMemTableAddressTELEFONE.AsString
-    ]
-  );
-  for var Value in ListOfValues do
-  begin
-    if not(Trim(Value) = '') then
-      Exit(False);
-  end;
-
-  if Trim(FDMemTableAddressCEP.AsString).Length = 9 then
-    Exit(False);
-end;
-
 begin
   if not(FDMemTableAddress.Active) then
     Exit;
@@ -1075,7 +1076,8 @@ begin
   inherited;
   FPanelCities.Visible := False;
   var CEPIndex := GetColumnIdByFieldName('CEP');
-  if DBGridAddress.SelectedIndex = CEPIndex then
+  if (DBGridAddress.SelectedIndex = CEPIndex) and
+    FDMemTableAddress.CachedUpdates then
   begin
     if FOldCEPEnderecoAdicional = FDMemTableAddressCEP.AsString then
       Exit;
@@ -1107,7 +1109,14 @@ begin
   end;
 
   if FDMemTableAddress.State = dsEdit then
-    FDMemTableAddressINVALID.AsInteger := Integer(not(ValidateCurrentAddress()))
+    FDMemTableAddressINVALID.AsInteger := Integer(not(ValidateCurrentAddress()));
+
+  if (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('ENDERECO')) and
+    IsBlankAddress() and (FDMemTableAddress.State = dsInsert) then
+  begin
+    FDMemTableAddress.Cancel;
+    btnOK.SetFocus();
+  end;
 end;
 
 procedure TFrmCadastro.DBGridAddressDrawColumnCell(Sender: TObject;
@@ -1229,6 +1238,13 @@ begin
       Delete(Input, Length(Input), 1);
 
     var Formatted := '';
+    if Input.Length > 11 then
+    begin
+      Field.AsString := Copy(Input, 1, 14);
+      Key := #0;
+      Exit;
+    end;
+
     for var i := 1 to Input.Length do
     begin
       Formatted := Formatted + Input[i];
