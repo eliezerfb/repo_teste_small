@@ -63,7 +63,7 @@ type
     procedure SalvaArquivoBD(dirAnexo: string);
     procedure CarregaValorObjeto;
     procedure ValidaDados;
-    procedure ExtraiCertificado;
+    //procedure ExtraiCertificado;
     { Private declarations }
   public
     { Public declarations }
@@ -94,7 +94,7 @@ var
   qryAux: TIBQuery;
 begin
   ValidaDados;
-  ExtraiCertificado;
+  //ExtraiCertificado;
 
   ibdIntegracaoSicoob.Post;
   ibdIntegracaoSicoob.Edit;
@@ -118,7 +118,7 @@ begin
   end;
 
   token := TSistema.GetInstance.Serial;
-  apiPixCertificate := GetCertificateSicoobPem(Form7.IBTransaction1);
+  apiPixCertificate := GetCertificateSicoob(Form7.IBTransaction1);
 
   if RegistraContaSicoob(name,
                          identifier,
@@ -156,8 +156,7 @@ begin
   ibdIntegracaoSicoobCERTIFICADOSENHA.AsString := SmallEncrypt(CHAVE_CIFRAR_NOVA,edtSenhaCertificado.Text);
 
   ValidaDados;
-
-  ExtraiCertificado;
+  //ExtraiCertificado;
 
   if chkAtivo.Checked then
   begin
@@ -346,6 +345,7 @@ begin
   end;
 end;
 
+{
 procedure TFrmIntegracaoSicoob.ExtraiCertificado;
 var
   sDirArquivo, mErro : string;
@@ -374,5 +374,6 @@ begin
     end;
   end;
 end;
+}
 
 end.
