@@ -176,6 +176,7 @@ type
     procedure tbsAddressHide(Sender: TObject);
   private
     { Private declarations }
+    FInsertOnShowTabSheet: Boolean;
     FOldCEPEnderecoAdicional: String;
     FPanelCities: TPanel;
     FDBGRidCities: TDBGrid;
@@ -783,8 +784,14 @@ begin
   if FDMemTableAddress.Active then
   begin
     if FDMemTableAddress.IsEmpty then
-      FDMemTableAddress.Insert
-    else if FDMemTableAddress.State = dsBrowse then
+    begin
+      FInsertOnShowTabSheet := True;
+      try
+        FDMemTableAddress.Insert;
+      finally
+        FInsertOnShowTabSheet := False;
+      end;
+    end else if FDMemTableAddress.State = dsBrowse then
       FDMemTableAddress.First;
   end;
 end;
@@ -1112,7 +1119,8 @@ begin
     FDMemTableAddressINVALID.AsInteger := Integer(not(ValidateCurrentAddress()));
 
   if (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('ENDERECO')) and
-    IsBlankAddress() and (FDMemTableAddress.State = dsInsert) then
+    IsBlankAddress() and (FDMemTableAddress.State = dsInsert) and
+    not(FInsertOnShowTabSheet) then
   begin
     FDMemTableAddress.Cancel;
     btnOK.SetFocus();
