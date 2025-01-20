@@ -95,6 +95,7 @@ var
 begin
   ValidaDados;
   //ExtraiCertificado;
+  SalvaArquivoBD(edtCertificado.Text);
 
   ibdIntegracaoSicoob.Post;
   ibdIntegracaoSicoob.Edit;
@@ -157,6 +158,7 @@ begin
 
   ValidaDados;
   //ExtraiCertificado;
+  SalvaArquivoBD(edtCertificado.Text);
 
   if chkAtivo.Checked then
   begin
