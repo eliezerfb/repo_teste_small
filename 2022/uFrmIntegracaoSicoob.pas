@@ -63,7 +63,7 @@ type
     procedure SalvaArquivoBD(dirAnexo: string);
     procedure CarregaValorObjeto;
     procedure ValidaDados;
-    //procedure ExtraiCertificado;
+    procedure ExtraiCertificado;
     { Private declarations }
   public
     { Public declarations }
@@ -94,8 +94,7 @@ var
   qryAux: TIBQuery;
 begin
   ValidaDados;
-  //ExtraiCertificado;
-  SalvaArquivoBD(edtCertificado.Text);
+  ExtraiCertificado;
 
   ibdIntegracaoSicoob.Post;
   ibdIntegracaoSicoob.Edit;
@@ -119,7 +118,7 @@ begin
   end;
 
   token := TSistema.GetInstance.Serial;
-  apiPixCertificate := GetCertificateSicoob(Form7.IBTransaction1);
+  apiPixCertificate := edtCertificado.Text;
 
   if RegistraContaSicoob(name,
                          identifier,
@@ -157,8 +156,6 @@ begin
   ibdIntegracaoSicoobCERTIFICADOSENHA.AsString := SmallEncrypt(CHAVE_CIFRAR_NOVA,edtSenhaCertificado.Text);
 
   ValidaDados;
-  //ExtraiCertificado;
-  SalvaArquivoBD(edtCertificado.Text);
 
   if chkAtivo.Checked then
   begin
@@ -290,6 +287,10 @@ procedure TFrmIntegracaoSicoob.lblExcluirCadClick(Sender: TObject);
 begin
   ibdIntegracaoSicoobIDAPIPIX.Clear;
   ibdIntegracaoSicoobCLIENTIDPIX.Clear;
+  ibdIntegracaoSicoobCERTIFICADONOME.Clear;
+  ibdIntegracaoSicoobCERTIFICADOSENHA.Clear;
+  ibdIntegracaoSicoobCERTIFICADO.Clear;
+  edtCertificado.Clear;
 
   CarregaValorObjeto;
 end;
@@ -297,8 +298,7 @@ end;
 procedure TFrmIntegracaoSicoob.SalvaArquivoBD(dirAnexo:string);
 begin
   try
-    TBlobField(ibdIntegracaoSicoobCERTIFICADO).LoadFromFile(dirAnexo);
-
+    //TBlobField(ibdIntegracaoSicoobCERTIFICADO).LoadFromFile(dirAnexo);
     ibdIntegracaoSicoobCERTIFICADONOME.AsString := ExtractFileName(dirAnexo);
   except
     MensagemSistema('Erro ao gravar certificado!',msgErro);
@@ -322,7 +322,7 @@ begin
     Abort;
   end;
 
-  if (Trim(edtCertificado.Text) = '') and (VarIsNull(ibdIntegracaoSicoobCERTIFICADO.AsVariant)) then
+  if Trim(edtCertificado.Text) = '' then
   begin
     MensagemSistema('O campo Certificado Digital deve ser preenchido!',msgAtencao);
     edtCertificado.SetFocus;
@@ -347,11 +347,18 @@ begin
   end;
 end;
 
-{
+
 procedure TFrmIntegracaoSicoob.ExtraiCertificado;
 var
   sDirArquivo, mErro : string;
 begin
+  if not FileExists(edtCertificado.Text) then
+  begin
+    MensagemSistema('O arquivo do certificado digital não encontrado!',msgAtencao);
+    edtSenhaCertificado.SetFocus;
+    Abort;
+  end;
+
   if Trim(edtCertificado.Text) <> '' then
   begin
     if FileExists(edtCertificado.Text) then
@@ -376,6 +383,6 @@ begin
     end;
   end;
 end;
-}
+
 
 end.
