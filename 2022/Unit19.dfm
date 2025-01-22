@@ -5,7 +5,7 @@ object Form19: TForm19
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Configura'#231#245'es e ajustes do sistema'
-  ClientHeight = 486
+  ClientHeight = 441
   ClientWidth = 624
   Color = clWhite
   Ctl3D = False
@@ -27,10 +27,12 @@ object Form19: TForm19
     Left = 20
     Top = 20
     Width = 584
-    Height = 403
-    ActivePage = Orelha_permitir
+    Height = 358
+    ActivePage = tbsDashboard
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 586
+    ExplicitHeight = 411
     object Orelha_relatorios: TTabSheet
       Caption = 'Relat'#243'rios'
       object GroupBox3: TGroupBox
@@ -791,7 +793,7 @@ object Form19: TForm19
       ImageIndex = 4
       object Label23: TLabel
         Left = 80
-        Top = 15
+        Top = 18
         Width = 118
         Height = 13
         Alignment = taRightJustify
@@ -1544,18 +1546,216 @@ object Form19: TForm19
         TabOrder = 6
       end
     end
+    object tbsDashboard: TTabSheet
+      Caption = 'Dashboard'
+      ImageIndex = 11
+      DesignSize = (
+        576
+        330)
+      object imgCheck: TImage
+        Left = 446
+        Top = 3
+        Width = 20
+        Height = 18
+        AutoSize = True
+        Picture.Data = {
+          07544269746D61706E040000424D6E0400000000000036000000280000001400
+          0000120000000100180000000000380400000000000000000000000000000000
+          0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D81521D81
+          521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFFFFFFFFFF
+          81521DEFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFD
+          FDFEFEFEFFFFFFFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DED
+          F0F0EFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFD
+          FEFEFEFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DEBEEEEEDF0
+          F0EFF2F2F1F3F3F3F5F522A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFDFE
+          FEFEFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE8ECECEBEEEEEDF0F0
+          EFF2F222A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFDFEFE
+          FE81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE6EAEAE8ECECEBEEEE22A12222
+          A12222A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFD81521D
+          FFFFFFFFFFFFFFFFFFFFFFFF81521DE4E8E8E6EAEA22A12222A12222A12222A1
+          2222A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFD81521DFFFFFFFF
+          FFFFFFFFFFFFFFFF81521DE2E6E6E4E8E822A12222A12222A122EDF0F022A122
+          22A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFB81521DFFFFFFFFFFFFFFFF
+          FFFFFFFF81521DE0E4E4E2E6E622A12222A122E8ECECEBEEEEEDF0F022A12222
+          A12222A12222A122F6F8F8F8F9F9F9FAFA81521DFFFFFFFFFFFFFFFFFFFFFFFF
+          81521DDEE3E3E0E4E422A122E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A12222A1
+          2222A12222A122F6F8F8F8F9F981521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDD
+          E2E2DEE3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A12222A122
+          22A122F5F6F6F6F8F881521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2
+          E2DEE3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A12222A122F3
+          F5F5F5F6F681521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2
+          DEE3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A122F1F3F3F3F5
+          F581521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2DDE2E2DE
+          E3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F0EFF2F2F1F3F381521D
+          FFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2DDE2E2DDE2E2DEE3
+          E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F0EFF2F281521DFFFFFFFF
+          FFFFFFFFFFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D
+          81521D81521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+        Visible = False
+      end
+      object imgUnCheck: TImage
+        Left = 482
+        Top = 3
+        Width = 20
+        Height = 18
+        AutoSize = True
+        Picture.Data = {
+          07544269746D61706E040000424D6E0400000000000036000000280000001400
+          0000120000000100180000000000380400000000000000000000000000000000
+          0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D81521D81
+          521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFFFFFFFFFF
+          81521DEFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFD
+          FDFEFEFEFFFFFFFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DED
+          F0F0EFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFD
+          FEFEFEFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DEBEEEEEFF1
+          F1F1F3F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFFFFFFFFFFFFFFFFFFFE
+          FEFEFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE8ECECECEFEFEFF1F1
+          F1F3F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFFFFFFFFFFFFFDFDFDFEFE
+          FE81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE6EAEAE9ECECECEFEFEFF1F1F1
+          F3F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFFFFFFFCFDFDFDFDFD81521D
+          FFFFFFFFFFFFFFFFFFFFFFFF81521DE4E8E8E5E8E8E9ECECECEFEFEFF1F1F1F3
+          F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFBFBFBFCFDFD81521DFFFFFFFF
+          FFFFFFFFFFFFFFFF81521DE2E6E6E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3
+          F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDF9FAFAFBFBFB81521DFFFFFFFFFFFFFFFF
+          FFFFFFFF81521DE0E4E4DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4
+          F5F5F6F7F7F8F9F9FAFBFBF8F9F9F9FAFA81521DFFFFFFFFFFFFFFFFFFFFFFFF
+          81521DDEE3E3DBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4F5
+          F5F6F7F7F8F9F9F6F8F8F8F9F981521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDD
+          E2E2D9DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4F5F5
+          F6F7F7F5F6F6F6F8F881521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2D7DC
+          DCD9DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4F5F5F3
+          F5F5F5F6F681521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2D7DCDCD7DCDC
+          D9DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F1F3F3F3F5
+          F581521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2D7DCDCD7DCDCD7DCDCD9
+          DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1EFF2F2F1F3F381521D
+          FFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2DDE2E2DDE2E2DEE3
+          E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F0EFF2F281521DFFFFFFFF
+          FFFFFFFFFFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D
+          81521D81521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+        Visible = False
+      end
+      object Label27: TLabel
+        Left = 18
+        Top = 42
+        Width = 180
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Opera'#231#245'es consideradas como venda'
+      end
+      object chkDashboardAbertura: TCheckBox
+        Left = 17
+        Top = 15
+        Width = 218
+        Height = 17
+        Caption = 'Exibir dashboard na abertura do sistema'
+        TabOrder = 0
+      end
+      object dbgPrincipal: TDBGrid
+        Left = 18
+        Top = 61
+        Width = 540
+        Height = 215
+        Anchors = [akLeft, akTop, akRight]
+        BiDiMode = bdLeftToRight
+        Color = clWhite
+        Ctl3D = False
+        DataSource = DSNaturezaDash
+        DrawingStyle = gdsClassic
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        Options = [dgTitles, dgColLines, dgTabs]
+        ParentBiDiMode = False
+        ParentCtl3D = False
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = False
+        TabOrder = 1
+        TitleFont.Charset = ANSI_CHARSET
+        TitleFont.Color = clBlack
+        TitleFont.Height = -12
+        TitleFont.Name = 'Microsoft Sans Serif'
+        TitleFont.Pitch = fpFixed
+        TitleFont.Style = []
+        OnCellClick = dbgPrincipalCellClick
+        OnDrawColumnCell = dbgPrincipalDrawColumnCell
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'MARCADO'
+            ReadOnly = True
+            Width = 21
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'DESCRICAO'
+            ReadOnly = True
+            Width = 431
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CFOP'
+            ReadOnly = True
+            Width = 67
+            Visible = True
+          end>
+      end
+      object btnMarcarTodosOper: TBitBtn
+        Left = 16
+        Top = 291
+        Width = 100
+        Height = 25
+        Caption = 'Marcar todas'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 2
+        OnClick = btnMarcarTodosOperClick
+      end
+      object btnDesmarcarTodosOper: TBitBtn
+        Left = 120
+        Top = 291
+        Width = 100
+        Height = 25
+        Caption = 'Desmarcar todas'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 3
+        OnClick = btnDesmarcarTodosOperClick
+      end
+    end
   end
   object Panel2: TPanel
     Left = 0
     Top = 20
     Width = 20
-    Height = 403
+    Height = 358
     Align = alLeft
     BevelOuter = bvNone
     Color = clWhite
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
+    ExplicitHeight = 411
     object Button2: TButton
       Left = 350
       Top = 5
@@ -1570,13 +1770,15 @@ object Form19: TForm19
     Left = 604
     Top = 20
     Width = 20
-    Height = 403
+    Height = 358
     Align = alRight
     BevelOuter = bvNone
     Color = clWhite
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 2
+    ExplicitLeft = 606
+    ExplicitHeight = 411
     object Button6: TButton
       Left = 350
       Top = 5
@@ -1589,7 +1791,7 @@ object Form19: TForm19
   end
   object Panel3: TPanel
     Left = 0
-    Top = 423
+    Top = 378
     Width = 624
     Height = 63
     Align = alBottom
@@ -1598,6 +1800,8 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 3
+    ExplicitTop = 431
+    ExplicitWidth = 626
     object btnCancelar: TButton
       Left = 400
       Top = 19
@@ -1642,23 +1846,56 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 4
+    ExplicitWidth = 626
   end
   object ColorDialog1: TColorDialog
     Color = clGreen
     CustomColors.Strings = (
       'c0c0c0c0')
     Options = [cdFullOpen, cdPreventFullOpen, cdSolidColor]
-    Left = 218
-    Top = 340
+    Left = 368
+    Top = 160
   end
   object OpenDialog4: TOpenDialog
     InitialDir = 'c:\'
-    Left = 304
-    Top = 336
+    Left = 440
+    Top = 160
   end
   object OpenDialog3: TOpenDialog
     InitialDir = 'c:\'
-    Left = 376
-    Top = 336
+    Left = 512
+    Top = 160
+  end
+  object DSNaturezaDash: TDataSource
+    DataSet = cdsNaturezaDash
+    Left = 120
+    Top = 152
+  end
+  object cdsNaturezaDash: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    ProviderName = 'dspProdutosNota'
+    Left = 208
+    Top = 152
+    object cdsNaturezaDashMARCADO: TWideStringField
+      DisplayLabel = ' '
+      FieldName = 'MARCADO'
+      Required = True
+      FixedChar = True
+      Size = 1
+    end
+    object cdsNaturezaDashDESCRICAO: TWideStringField
+      DisplayLabel = 'Natureza da opera'#231#227'o'
+      FieldName = 'DESCRICAO'
+      Size = 45
+    end
+    object cdsNaturezaDashCFOP: TStringField
+      FieldName = 'CFOP'
+      Size = 5
+    end
+    object cdsNaturezaDashINTEGRACAO: TStringField
+      FieldName = 'INTEGRACAO'
+      Size = 8
+    end
   end
 end
