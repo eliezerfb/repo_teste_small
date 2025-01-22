@@ -1709,7 +1709,7 @@ type
     ibDataSet11PIXTITULAR: TIBStringField;
     ibDataSet11PIXCHAVE: TIBStringField;
     ibDataSet11IDBANCO: TIntegerField;
-	ibDataSet14REFERENCIANOTA: TIBStringField;
+  	ibDataSet14REFERENCIANOTA: TIBStringField;
     S1: TMenuItem;
     SFornecedor1: TMenuItem;
     SClienteFornecedor1: TMenuItem;
@@ -2808,6 +2808,7 @@ uses Unit17, Unit12, uFrmAssistenteProcura, Unit21, Unit22, Unit23, Unit25, Mais
   , uFrmIntegracaoIMendes
   , uFrmTelaProcessamento
   , uCalculaImpostos // Sandro Silva 2024-10-17
+  , uGeraCNAB400
   ;
 
 {$R *.DFM}
@@ -3587,7 +3588,6 @@ var
   IBQHASH: TIBQuery;
   IBTHASH: TIBTransaction;
 begin
-  //
   if bP2 then
   begin
     Form7.ibQuery1.Close;
@@ -3596,8 +3596,6 @@ begin
     Form7.ibQuery1.Open;
 
     try
-
-
       IBTHASH := CriaIBTransaction(Form7.ibQuery1.Transaction.DefaultDatabase);
       IBQHASH := Form7.CriaIBQuery(IBTHASH);
 
@@ -3605,16 +3603,13 @@ begin
 
       IBQHASH.Close;
       IBQHASH.SQL.Clear;
-      //IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString))))+' where TABELA='+QuotedStr(sP1)+' ');
       IBQHASH.SQL.Add('update HASHS set ENCRYPTHASH='+QuotedStr(Form7.LbBlowfish1.EncryptString(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString)))+' where TABELA='+QuotedStr(sP1)+' ');
       IBQHASH.ExecSQL;
 
       if IBQHASH.RowsAffected = 0 then
       begin
-        //2015-11-26 Não existe ainda controle de hash da tabela
         IBQHASH.Close;
         IBQHASH.SQL.Clear;
-        //IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form7.LbBlowfish1.EncryptString(MD5Print(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString)))) + ')');
         IBQHASH.SQL.Add('insert into HASHS(TABELA, ENCRYPTHASH) values(' + QuotedStr(sP1) + ',' + QuotedStr(Form7.LbBlowfish1.EncryptString(MD5String(Form7.ibQuery1.FieldByName('TOTALREG').AsString))) + ')');
         IBQHASH.ExecSQL;
       end;
@@ -3658,8 +3653,6 @@ begin
   end;
 end;
 
-
-/////////////////////////////////
 function AssinaRegistro(pNome: String; DataSet: TDataSet; bAssina: Boolean): Boolean;
 var
   s, sAntigo, sAntigoOrcamentSemCodigo : String;
@@ -4628,8 +4621,6 @@ var
   iNode: Integer;
   xNodes: IXMLDOMNodeList;
 begin
-
-
   XMLDOM := CoDOMDocument.Create;
   XMLDOM.loadXML(sXML);
 
@@ -4640,7 +4631,6 @@ begin
     Result := xNodes.item[iNode].text;
   end;
 
-//  Result := Utf8ToAnsi(Result);
   Result := Utf8Fix(Result);
   XMLDOM := nil;
 
@@ -4678,91 +4668,79 @@ Movido para SmallFunc}
 
 function CalculaTotalRecebido(pP1: Boolean): Currency; // Sandro Silva 2023-10-30 Boolean;
 begin
-  //
   if Form7.sModulo = 'RECEBER' then
   begin
-    //
     Form7.ibQuery1.Close;
     Form7.iBQuery1.SQL.Clear;
     Form7.iBQuery1.SQL.Add('select sum(VALOR_RECE) from RECEBER where ATIVO >= 5');
     Form7.iBQuery1.Open;
-    //
+
     Form7.Panel10.Caption := 'R$'+Format('%14.2n',[Form7.iBQuery1.FieldByName('SUM').AsFloat]);
     Form7.Label49.Caption := 'R$'+Format('%14.2n',[Form7.iBQuery1.FieldByName('SUM').AsFloat]);
     Form7.Panel10.Repaint;
-    //
   end else
   begin
-    //
     Form7.ibQuery1.Close;
     Form7.iBQuery1.SQL.Clear;
     Form7.iBQuery1.SQL.Add('select sum(VALOR_PAGO) from PAGAR where ATIVO >= 5');
     Form7.iBQuery1.Open;
-    //
+
     Form7.Panel10.Caption := 'R$'+Format('%14.2n',[Form7.iBQuery1.FieldByName('SUM').AsFloat]);
     Form7.Label49.CAption := 'R$'+Format('%14.2n',[Form7.iBQuery1.FieldByName('SUM').AsFloat]);
     Form7.Panel10.Repaint;
-    //
   end;
-  //
+
   Result := Form7.iBQuery1.FieldByName('SUM').AsFloat; // Sandro Silva 2023-10-30 Result := True;
-  //
 end;
 
 function HtmlParaPdf(sP1:String): boolean;
 begin
-  //
   try
-    //
     while FileExists(pChar(sP1+'.pdf')) do
     begin
-      //
       try
         DeleteFile(pChar(sP1+'.pdf'));
         DeleteFile(pChar(sP1+'_.pdf'));
       except end;
-      //
+
       Sleep(10);
-      //
     end;
-    //
+
     chdir(pChar(Form1.sAtual+'\HTMLtoPDF'));
-    //
+
     while FileExists(pChar('tempo_ok.pdf')) do
     begin
       DeleteFile(pChar('tempo_ok.pdf'));
       Sleep(10);
     end;
-    //
+
     while FileExists(pChar('tempo.pdf')) do
     begin
       DeleteFile(pChar('tempo.pdf'));
       Sleep(10);
     end;
-    //
+
     ShellExecute( 0, 'runas', pChar('html2pdf'),pchar('"'+Form1.sAtual+'\'+sP1+'.htm" "tempo.pdf"'), '', SW_HIDE);
     Sleep(10);
-    //
+
     while not FileExists(pChar(Form1.sAtual+'\HTMLtoPDF\tempo_ok.pdf')) do
     begin
       RenameFile(pChar(Form1.sAtual+'\HTMLtoPDF\tempo.pdf'),pChar(Form1.sAtual+'\HTMLtoPDF\tempo_ok.pdf'));
       Sleep(10);
     end;
-    //
+
     chdir(pChar(Form1.sAtual));
-    //
+
     CopyFile(pChar(Form1.sAtual+'\HTMLtoPDF\tempo_ok.pdf'), pChar(sP1+'_.pdf'),False);
-    //
+
     while not FileExists(pChar(sP1+'.pdf')) do
     begin
       RenameFile(pChar(sP1+'_.pdf'), pChar(sP1+'.pdf'));
       Sleep(10);
     end;
-    //
   except end;
-  //
+
   Result := True;
-  //
 end;
 
 function AbreArquivoNoFormatoCerto(sP1:String): boolean;
@@ -4770,21 +4748,6 @@ begin
   if Copy(sP1,1,3) <> 'OS_' then
     sP1 := Senhas.UsuarioPub;
 
-{Sandro Silva 2023-10-02 inicio
-  if Form1.bPDF then
-  begin
-    Screen.Cursor            := crHourGlass;
-    HtmlParaPdf(sP1);
-    ShellExecute( 0, 'Open',pChar(sP1+'.pdf'),'', '', SW_SHOWMAXIMIZED);
-    Screen.Cursor            := crDefault;
-  //end else
-  end;
-
-  if Form1.bHtml1 then
-  begin
-    ShellExecute( 0, 'Open',pChar(sP1+'.HTM'),'', '', SW_SHOWMAXIMIZED);
-  end;
-}
   if Form1.bPDF then
   begin
     Screen.Cursor            := crHourGlass;
@@ -4796,7 +4759,6 @@ begin
   begin
     ShellExecute( 0, 'Open',pChar(sP1+'.HTM'),'', '', SW_SHOWMAXIMIZED);
   end;
-
 
   Result := True;
 end;
@@ -4818,7 +4780,6 @@ function LoadXmlDestinatarioSaida(aChaveNFe: String): WideString;
 Var
  _file : TStringList;
 begin
-  //
   _file := TStringList.Create;
   //
   try
@@ -4850,14 +4811,12 @@ begin
           end;
         end;
       end;
-      //
     end;
   except
     Result := Form7.ibDataSet15NFEXML.AsString;
   end;
-  //
+
   _file.Free;
-  //
 end;
 
 
@@ -4865,7 +4824,6 @@ function LoadXmlDestinatarioEntrada(aChaveNFe: String): WideString;
 Var
  _file : TStringList;
 begin
-  //
   _file := TStringList.Create;
   //
   try
@@ -4904,7 +4862,6 @@ begin
   end;
   //
   _file.Free;
-  //
 end;
 
 function TForm7.getEnviarDanfePorEmail: String;
@@ -9392,6 +9349,7 @@ begin
     (DBGrid1.SelectedField.Name = 'ibDataSet14IPISOBREOUTRA') or //Mauricio Parizotto 2024-04-22
     (DBGrid1.SelectedField.Name = 'ibDataSet11PIXESTATICO') or //Mauricio Parizotto 2024-05-27
     (DBGrid1.SelectedField.Name = 'ibDataSet14REFERENCIANOTA') or //Mauricio Parizotto 2024-06-21
+    (DBGrid1.SelectedField.Name = 'ibDataSet14IMPOSTOMANUAL') or
     (DBGrid1.SelectedField.Name = 'ibDataSet14FRETESOBREIPI')  then
  begin
    if Key <> chr(13) then
@@ -12203,7 +12161,7 @@ begin
       Form1.AvisoCliFor(True);
     end;
 
-    Form1.AvisoIndicadores(True);
+    //Form1.AvisoIndicadores(True); Mauricio Parizotto 2024-12-09
   except
   end;
 
@@ -13749,12 +13707,13 @@ begin
               if Field.FieldName = 'REFERENCIA' then
               begin
                 try
-                  //if not ValidaEAN13(Form7.ibDataSet4REFERENCIA.AsString) then Mauricio Parizotto 2023-07-05
-                  if not ValidaEAN(Form7.ibDataSet4REFERENCIA.AsString) then
+                  DBGrid1.Canvas.Font.Color := clBlack;
+                  if not(ValidaEAN(Form7.ibDataSet4REFERENCIA.AsString)) and
+                  not(Form7.ibDataSet4REFERENCIA.AsString = 'SEM GTIN') then
                   begin
                     DBGrid1.Canvas.Font.Color := clRed;
                     DBGrid1.Canvas.Font.Style := [fsUnderline];
-                  end else DBGrid1.Canvas.Font.Color := clBlack;
+                  end;
                 except
                   DBGrid1.Canvas.Font.Color := clRed;
                   DBGrid1.Canvas.Font.Style := [fsUnderline];
@@ -16012,8 +15971,8 @@ begin
 
   ibDataSet14SOBREFRETE.ReadOnly     := True;
   ibDataSet14SOBRESEGURO.ReadOnly    := True;
-  ibDataSet14REFERENCIANOTA.ReadOnly := True;
-  ibDataSet14IMPOSTOMANUAL.ReadOnly  := True;
+  ibDataSet14REFERENCIANOTA.ReadOnly := bTribInteligente;
+  ibDataSet14IMPOSTOMANUAL.ReadOnly  := bTribInteligente;
   {Mauricio Parizotto 2024-10-16 Fim}
 end;
 
@@ -27727,11 +27686,7 @@ var
   F: TextFile;
   Mais1Ini : tInifile;
 begin
-  {$IFDEF VER150}
-  ShortDateFormat := 'dd/mm/yyyy';
-  {$ELSE}
   FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
-  {$ENDIF}
 
   Screen.Cursor := crHourGlass; // Cursor de Aguardo
   AssignFile(F,pChar(Senhas.UsuarioPub+'.HTM'));         // Direciona o arquivo F para RELATO.TXT
@@ -27759,24 +27714,22 @@ begin
   WriteLn(F,'   <th   bgcolor=#'+Form1.sHtmlCor+'><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">Clientes<br>em atraso</th>');
   WriteLn(F,'  </tr>');
   WriteLn(F,'  <tr>');
-  //
+
   WriteLn(F,'   <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">Últimos três meses</td>');
-  //
+
   // ùltimos três meses
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE from RECEBER where (VENCIMENTO>=(CURRENT_DATE-90)) and VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'   <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[(100-(Form7.ibDataSet99.FieldByname('RECE').AsFloat/Form7.ibDataSet99.FieldByname('VALOR').AsFloat)*100)])+'</td>'); // Percentual de inadimpléncia
   WriteLn(F,'   <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[Form7.ibDataSet99.FieldByname('VALOR').AsFloat-Form7.ibDataSet99.FieldByname('RECE').AsFloat])+'</td>'); // Valor atrasado  //
-  //                                          //
+                                            //
   // Gráfico de fluxo de caixa inadimplencia //
-  //                                        //
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_mes.gra'));
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_mes.png'));
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\inadimplencia_mes.gra');
   Mais1Ini.WriteString('DADOS','3D','1');
   Mais1Ini.WriteString('DADOS','MarcasS1','0');
@@ -27789,9 +27742,8 @@ begin
   Mais1Ini.WriteString('DADOS','NomeBmp','inadimplencia_mes.png');
   Mais1Ini.WriteString('DADOS','FontSize','8'); //'11577023' // '15381040'
   Mais1Ini.WriteString('DADOS','FontSizeLabel','8');
-  //
+
   // Acumula os valores
-  //
   I := 1;
 
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
@@ -27808,46 +27760,41 @@ begin
 
 
   Mais1Ini.Free;
-  //
+
   ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_mes.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
   while not FileExists(Form1.sAtual+'\inadimplencia_mes.png') do
     Sleep(100);
-  //
+
   // Média de dias de atraso ùltimos três meses
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select avg(coalesce(RECEBIMENT,CURRENT_DATE)-coalesce(VENCIMENTO,CURRENT_DATE)) as DIAS from RECEBER where (VENCIMENTO>=(CURRENT_DATE-90)) and VENCIMENTO<CURRENT_DATE and coalesce(RECEBIMENT,CURRENT_DATE)<>CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'   <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('DIAS').AsFloat])+'</td>');
-  //
+
   // Clientes em atraso  três meses
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select count(distinct(NOME))as CLIENTES from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(VALOR_RECE,0)=0 and (VENCIMENTO>=(CURRENT_DATE-90)) and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'   <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('CLIENTES').AsFloat])+'</td>');
   WriteLn(F,' </tr>');
-  //
+
   // ùltimos doze meses
-  //
   WriteLn(F,' <tr>');
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">Últimos doze meses</td>');
-  //
+
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE from RECEBER where (VENCIMENTO>=(CURRENT_DATE-360)) and VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
-  //                                          //
+
   // Gráfico de fluxo de caixa inadimplencia //
-  //                                        //
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_ano.gra'));
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_ano.png'));
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\inadimplencia_ano.gra');
   Mais1Ini.WriteString('DADOS','3D','1');
   Mais1Ini.WriteString('DADOS','MarcasS1','0');
@@ -27860,9 +27807,8 @@ begin
   Mais1Ini.WriteString('DADOS','NomeBmp','inadimplencia_ano.png');
   Mais1Ini.WriteString('DADOS','FontSize','8'); //'11577023' // '15381040'
   Mais1Ini.WriteString('DADOS','FontSizeLabel','8');
-  //
+
   // Acumula os valores
-  //
   I := 1;
 
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
@@ -27879,51 +27825,45 @@ begin
 
 
   Mais1Ini.Free;
-  //
+
   ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_ano.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
   while not FileExists(Form1.sAtual+'\inadimplencia_ano.png') do
     Sleep(100);
-  //
+
   // Fim grafico
-  //
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[(100-(Form7.ibDataSet99.FieldByname('RECE').AsFloat/Form7.ibDataSet99.FieldByname('VALOR').AsFloat)*100)])+'</td>'); // Percentual de inadimpléncia
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[Form7.ibDataSet99.FieldByname('VALOR').AsFloat-Form7.ibDataSet99.FieldByname('RECE').AsFloat])+'</td>'); // Valor atrasado
-  //
+
   // Média de dias de atraso ùltimos doze meses
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select avg(coalesce(RECEBIMENT,CURRENT_DATE)-coalesce(VENCIMENTO,CURRENT_DATE)) as DIAS from RECEBER where (VENCIMENTO>=(CURRENT_DATE-360)) and VENCIMENTO<CURRENT_DATE and coalesce(RECEBIMENT,CURRENT_DATE)<>CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('DIAS').AsFloat])+'</td>');
-  //
+
   // Clientes em atraso doze meses
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select count(distinct(NOME))as CLIENTES from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(VALOR_RECE,0)=0 and (VENCIMENTO>=(CURRENT_DATE-360)) and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('CLIENTES').AsFloat])+'</td>');
   WriteLn(F,' </tr>');
-  //
+
   // Total
-  //
   WriteLn(F,' <tr>');
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">Total registrado</td>');
-  //
+
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select  cast(sum(VALOR_DUPL)as numeric(18,2))as VALOR, cast(sum(VALOR_RECE)as numeric(18,2))as RECE  from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
-  //                                          //
+
   // Gráfico de fluxo de caixa inadimplencia //
-  //                                        //
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_tot.gra'));
   DeleteFile(pChar(Form1.sAtual+'\inadimplencia_tot.png'));
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\inadimplencia_tot.gra');
   Mais1Ini.WriteString('DADOS','3D','1');
   Mais1Ini.WriteString('DADOS','MarcasS1','0');
@@ -27936,9 +27876,8 @@ begin
   Mais1Ini.WriteString('DADOS','NomeBmp','inadimplencia_tot.png');
   Mais1Ini.WriteString('DADOS','FontSize','8'); //'11577023' // '15381040'
   Mais1Ini.WriteString('DADOS','FontSizeLabel','8');
-  //
+
   // Acumula os valores
-  //
   I := 1;
 
       Mais1Ini.WriteString('DADOS','XY'+StrZero(I,2,0),'S1<'+
@@ -27955,48 +27894,43 @@ begin
 
 
   Mais1Ini.Free;
-  //
+
   ShellExecute( 0, 'Open', 'graficos.exe', 'inadimplencia_tot.gra SMALLSOFT', '', SW_SHOWMINNOACTIVE);
   while not FileExists(Form1.sAtual+'\inadimplencia_tot.png') do
     Sleep(100);
-  //
+
   // Fim grafico
-  //
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[(100-(Form7.ibDataSet99.FieldByname('RECE').AsFloat/Form7.ibDataSet99.FieldByname('VALOR').AsFloat)*100)])+'</td>'); // Percentual de inadimpléncia
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Format('%12.2n',[Form7.ibDataSet99.FieldByname('VALOR').AsFloat-Form7.ibDataSet99.FieldByname('RECE').AsFloat])+'</td>'); // Valor atrasado
-  //
+
   // Média de dias de atraso TOTAL
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select avg(coalesce(RECEBIMENT,CURRENT_DATE)-coalesce(VENCIMENTO,CURRENT_DATE)) as DIAS from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(RECEBIMENT,CURRENT_DATE)<>CURRENT_DATE and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('DIAS').AsFloat])+'</td>');
-  //
+
   // Clientes em atraso TOTAL
-  //
   Form7.IBDataSet99.Close;
   Form7.IBDataSet99.SelectSQL.Clear;
   Form7.IBDataSet99.SelectSQL.Add('select count(distinct(NOME))as CLIENTES from RECEBER where VENCIMENTO<CURRENT_DATE and coalesce(VALOR_RECE,0)=0 and coalesce(ATIVO,9)<>1');
   Form7.IBDataSet99.Open;
-  //
+
   WriteLn(F,'  <td  vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+ Format('%5.0n',[Form7.ibDataSet99.FieldByname('CLIENTES').AsFloat])+'</td>');
   WriteLn(F,' </tr>');
-  //
+
   WriteLn(F,'</table>');
   WriteLn(F,'</center>');
-  //
+
   WriteLn(F,'<br>');              // Linha em branco
-  //
+
   WriteLn(F,'<center><br><font face="verdana" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
   + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
   + Copy(DateTimeToStr(Date),7,4) +', '+ LowerCase(DiaDaSemana(Date)) + ' às ' + TimeToStr(Time)+'</font></center>');
-  //
+
   WriteLn(F,'<br>');              // Linha em branco
-  //
-  // WWW
-  //
+
   if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
   begin
     WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
@@ -28004,16 +27938,15 @@ begin
   begin
     WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
   end;
-  //
+
   if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
   WriteLn(F,'</html>');
-  //
+
   CloseFile(F);                                    // Fecha o arquivo
-  //
+
   Screen.Cursor := crDefault; // Cursor de Aguardo
-  //
+
   AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
-  //
 end;
 
 procedure TForm7.Manifestaododestinatrio1Click(Sender: TObject);
@@ -30462,16 +30395,20 @@ begin
 end;
 
 procedure TForm7.btnRetornoCNAB400Click(Sender: TObject);
+(*
 var
   I: Integer;
   f: TextFile;
   sBanco, sMensagem, sLinha: String;
   sDocumento: String;
   sDataDoCredito: String;
+*)
 begin
-  //
+  ImportaRetCNAB400;
+
+  (* Mauricio Parizotto 2024-12-18
   sBanco := '000';
-  //
+
   if not Form7.OpenDialog4.Execute then
     Exit;
 
@@ -30479,27 +30416,22 @@ begin
 
   if FileExists(Form7.OpenDialog4.FileName) then
   begin
-    //
     AssignFile(f,Form7.OpenDialog4.FileName);
     Reset(f);
-    //
+
     Form7.ibDataSet25DIFERENCA_.AsFloat := 0;
     sMensagem := '';
     I := 0;
-    //
+
     while not eof(f) Do
     begin
-      //
       ReadLn(f,sLinha);
-      //
+
       if Length(sLinha) = 400 then
       begin
-        //
         if (Copy(sLinha,001,001) = '0') and (Copy(sLinha,003,007) = 'RETORNO') then // 03 Identificação Tipo de Operação “RETORNO”
         begin
-          //
           // HEADER
-          //
           //   Copy(sLinha,001,001); // 01 Identificação do Registro Header: “0”
           //   Copy(sLinha,002,001); // 02 Tipo de Operação: “2”
           //   Copy(sLinha,003,007); // 03 Identificação Tipo de Operação “RETORNO”
@@ -30517,16 +30449,13 @@ begin
           //   Copy(sLinha,101,007); // 15 Seqüencial do Retorno: número seqüencial atribuído pelo Sicoob, acrescido de 1 a cada retorno. Inicia com "0000001"
           //   Copy(sLinha,108,287); // 16 Complemento do Registro: Brancos
           //   Copy(sLinha,395,006); // 17 Seqüencial do Registro:”000001”
-          //
           sBanco := Copy(sLinha,77,3);
-          //
+
           sMensagem := sMensagem + 'Arquivo processado com sucesso.' + chr(10)+chr(10);
-          //
         end;
-        //
+
         if (Copy(sLinha,001,001) = '1') or (Copy(sLinha,001,001) = '7') then // and (Copy(sLinha,004,014) = cnpj do emitente) then // 03 Número do CPF/CNPJ do Beneficiário
         begin
-          //
           // Copy(sLinha,001,001); // 01 Identificação do Registro Detalhe: 1 (um)
           // Copy(sLinha,002,002); // 02 "Tipo de Inscrição do Beneficiário: ""01"" = CPF ""02"" = CNPJ  "
           // Copy(sLinha,004,014); // 03 Número do CPF/CNPJ do Beneficiário
@@ -30579,12 +30508,9 @@ begin
           // Copy(sLinha,343,014); // 50 CPF/CNPJ do Pagador
           // Copy(sLinha,358,038); // 51 Complemento do Registro: Brancos
           // Copy(sLinha,395,006); // 52 Seqüencial do Registro: Incrementado em 1 a cada registro
-          //
           // Copy(sLinha,111,006); // 25 Data da Entrada/Liquidação: formato ddmmaa
-          //
           if (Copy(sLinha,109,002) = '06') or (Copy(sLinha,109,002) = '21') then // 24 Comando/Movimento: 06 = Liquidação Normal
           begin
-            //
             if Copy(sLinha,254,013) <> '0000000000000' then // 41 Valor recebido (valor recebido parcial)
             begin
               sMensagem := sMensagem + 'Número documento: ' + Copy(sLinha,117,010) + ' Valor: R$ '+  FloatToStr(StrToFloat(Copy(sLinha,254,013))/100);
@@ -30604,47 +30530,45 @@ begin
                   begin
                     Form7.SMALL_DBEdit1.Visible := True;
                     Form7.Edit2.Text            := Form7.SMALL_DBEdit2.Text;
-                    //
+
                     Form7.ibDataSet7.Edit;
                     Form7.ibDataSet7ATIVO.AsFloat := Form7.ibDataSet7ATIVO.AsFloat + 5;
-                    //
+
                     if (sBanco = '033') or (sBanco = '353') then // Santander so 11 posicoes
-                    begin
+                    begin                                                          Panel10
                       Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(Copy(sLinha,254,011))/100;
                     end else
                     begin
                       Form7.ibDataSet7VALOR_RECE.AsFloat := StrToFloat(Copy(sLinha,254,013))/100;
                     end;
-                    //
+
                     Form7.ibDataSet7PORTADOR.AsString := Copy(Form7.ibDataSet7PORTADOR.AsString+'(000)',1,11)+'RECEBIDO';
-                    {Sandro Silva 2022-12-21 inicio}
+
                     sDataDoCredito := Copy(sLinha, 176, 6); // Data do crédito: formato ddmmaa
                     sDataDoCredito := Copy(sDataDoCredito, 1, 2) + '/' + Copy(sDataDoCredito, 3, 2) + '/' + Copy(sDataDoCredito, 5, 2);
                     if StrToDateDef(sDataDoCredito, StrToDate('30/12/1899')) <> StrToDate('30/12/1899') then
                     begin
                       Form7.ibDataSet7MOVIMENTO.AsDateTime := StrToDate(sDataDoCredito);
                     end;
-                    {Sandro Silva 2022-12-21 fim}
-                    //
+
                     Form7.ibDataSet7.Post;
-                    //
+
                     Form1.IBDataSet200.Close;
                     Form1.IBDataSet200.Open;
-                    //
+
                     Form7.ibQuery1.Close;
                     Form7.IBQuery1.SQL.Clear;
                     Form7.IBQuery1.SQL.Add('select sum(VALOR_RECE) from RECEBER where ATIVO >= 5');
                     Form7.IBQuery1.Open;
-                    //
+
                     Form7.Panel10.Caption := 'R$'+Format('%14.2n',[Form7.IBQuery1.FieldByName('SUM').AsFloat]);
                     Form7.Panel10.Repaint;
-                    //
+
                     Form7.ibDataSet25DIFERENCA_.AsFloat := Form7.ibDataSet25DIFERENCA_.AsFloat +  StrToFloat(Copy(sLinha,254,013))/100;
                     Form7.ibDataSet25DIFERENCA_.AsFloat := StrToFloat(FormatFloat('0.00', Form7.ibDataSet25DIFERENCA_.AsFloat)); // Sandro Silva 2023-10-30
-                    //
+
                     SMALL_DBEdit1.SetFocus;
                     I := I + 1;
-                    //
                   end else
                   begin
                     sMensagem := sMensagem + ' documento já estava quitado. ';
@@ -30653,7 +30577,7 @@ begin
                 begin
                   sMensagem := sMensagem + ' documento já estava marcado. ';
                 end;
-                //
+
                 sMensagem := sMensagem + chr(10);
               end else
               begin
@@ -30679,6 +30603,8 @@ begin
 
     Form7.SMALL_DBEdit6.SetFocus;
   end;
+
+  *)
 end;
 
 procedure TForm7.Baixaestacontanobanco1Click(Sender: TObject);
@@ -36845,7 +36771,7 @@ begin
     Exit;
 
   Form7.sModulo := 'CONFIG';
-  Form1.Label201MouseLeave(Sender);
+  Form1.lblVendasMouseLeave(Sender);
 
   try
     FrmIntegracaoIMendes := TFrmIntegracaoIMendes.Create(self);

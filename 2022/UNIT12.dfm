@@ -56,8 +56,6 @@ object Form12: TForm12
     ParentColor = False
     ParentFont = False
     TabOrder = 0
-    ExplicitWidth = 1022
-    ExplicitHeight = 906
     object Panel1: TPanel
       Left = 10
       Top = 10
@@ -2108,6 +2106,22 @@ object Form12: TForm12
         ParentFont = False
         TabOrder = 0
         OnClick = Button2Click
+        OnEnter = Button2Enter
+      end
+      object BitBtnAtorInteressado: TBitBtn
+        Left = 336
+        Top = 5
+        Width = 120
+        Height = 30
+        Caption = 'Ator interessado'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 2
+        OnClick = BitBtnAtorInteressadoClick
         OnEnter = Button2Enter
       end
     end

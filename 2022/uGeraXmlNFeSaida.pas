@@ -47,6 +47,7 @@ var
   function GeraXmlNFeSaida : boolean;
   procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
   function CalculavTotTrib_M02(sCodigo: String; sOperacaoDoTopo: String): Boolean;
+  procedure SetAutXML();
 
 implementation
 
@@ -266,29 +267,8 @@ begin
   Form7.spdNFeDataSets.LoteNFe.Clear;
   Form7.spdNFeDataSets.Incluir; // Inicia a insercao de dados na NFe
 
-  // Autorização para obter XML
-  if Form7.ibDataSet13ESTADO.AsString = 'BA' then
-  begin
-    if Length(LimpaNumero(Form7.sCNPJContabilidade)) = 0 then
-    begin
-      Form7.sCNPJContabilidade := LimpaNumero('13.937.073/0001-56');
-    end;
-  end;
+  SetAutXML();
 
-  if Length(LimpaNumero(Form7.sCNPJContabilidade)) <> 0 then
-  begin
-    Form7.spdNFeDataSets.IncluirPart('AUTXML');
-    if Length(LimpaNumero(Form7.sCNPJContabilidade)) = 11 then
-    begin
-      Form7.spdNFeDataSets.Campo('CPF_GA03').Value  := LimpaNumero(Form7.sCNPJContabilidade);
-    end else
-    begin
-      Form7.spdNFeDataSets.Campo('CNPJ_GA02').Value := LimpaNumero(Form7.sCNPJContabilidade);
-    end;
-    Form7.spdNFeDataSets.SalvarPart('AUTXML');
-  end;
-
-  // Then end Autorização para obter XML
   Form7.spdNFeDataSets.Campo('Id_A03').Value      := ''; // Calcula Automático. Essa linha é desnecessária
 
   if Form1.sVersaoLayout = '4.00' then
@@ -5036,5 +5016,61 @@ begin
   end;
 
 end;
+
+procedure SetAutXML();
+begin
+  var QryAutorizado := TIBQuery.Create(nil);
+  try
+    QryAutorizado.Database := Form7.IBDatabase1;
+    QryAutorizado.Transaction := Form7.IBTransaction1;
+    QryAutorizado.SQL.Text := 'select cpfcnpj from atorinteressado '+
+      'where numeronf = :numeronf and modelo = :modelo';
+    QryAutorizado.Prepare;
+    QryAutorizado.ParamByName('numeronf').AsString :=
+      Form7.ibDataSet15.FieldByname('NUMERONF').AsString;
+    QryAutorizado.ParamByName('modelo').AsString := '55';
+    QryAutorizado.Open;
+    if not(QryAutorizado.IsEmpty) then
+    begin
+      var AtorAutorizado: String;
+      while not(QryAutorizado.Eof) do
+      begin
+        Form7.spdNFeDataSets.IncluirPart('AUTXML');
+        AtorAutorizado := QryAutorizado.FieldByName('cpfcnpj').AsString;
+        if AtorAutorizado.Length = 11 then
+          Form7.spdNFeDataSets.Campo('CPF_GA03').Value  := AtorAutorizado
+        else
+          Form7.spdNFeDataSets.Campo('CNPJ_GA02').Value  := AtorAutorizado;
+        Form7.spdNFeDataSets.SalvarPart('AUTXML');
+        QryAutorizado.Next;
+      end;
+      Exit();
+    end;
+  finally
+    QryAutorizado.Free;
+  end;
+
+  if Form7.ibDataSet13ESTADO.AsString = 'BA' then
+  begin
+    if Length(LimpaNumero(Form7.sCNPJContabilidade)) = 0 then
+    begin
+      Form7.sCNPJContabilidade := LimpaNumero(CNPJ_SEFAZ_BAHIA);
+    end;
+  end;
+
+  if Length(LimpaNumero(Form7.sCNPJContabilidade)) <> 0 then
+  begin
+    Form7.spdNFeDataSets.IncluirPart('AUTXML');
+    if Length(LimpaNumero(Form7.sCNPJContabilidade)) = 11 then
+    begin
+      Form7.spdNFeDataSets.Campo('CPF_GA03').Value  := LimpaNumero(Form7.sCNPJContabilidade);
+    end else
+    begin
+      Form7.spdNFeDataSets.Campo('CNPJ_GA02').Value := LimpaNumero(Form7.sCNPJContabilidade);
+    end;
+    Form7.spdNFeDataSets.SalvarPart('AUTXML');
+  end;
+end;
+
 
 end.

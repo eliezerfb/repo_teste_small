@@ -1158,9 +1158,15 @@ inherited FrmCadastro: TFrmCadastro
           Height = 20
           Color = clWhite
           Ctl3D = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
           ParentBackground = False
           ParentColor = False
           ParentCtl3D = False
+          ParentFont = False
           TabOrder = 19
           ExplicitLeft = 530
           ExplicitTop = 12
@@ -1187,9 +1193,15 @@ inherited FrmCadastro: TFrmCadastro
           Height = 20
           Color = clWhite
           Ctl3D = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
           ParentBackground = False
           ParentColor = False
           ParentCtl3D = False
+          ParentFont = False
           TabOrder = 6
           ExplicitLeft = 100
           ExplicitTop = 153
@@ -1288,6 +1300,7 @@ inherited FrmCadastro: TFrmCadastro
             Top = 0
             Width = 97
             Height = 17
+            TabStop = False
             Caption = 'Produtor Rural'
             DataField = 'PRODUTORRURAL'
             DataSource = DSCadastro
@@ -1296,6 +1309,28 @@ inherited FrmCadastro: TFrmCadastro
             ValueUnchecked = 'N'
             OnClick = chkProdRuralClick
           end
+        end
+        object edtRegistro: TSMALL_DBEdit
+          Left = 368
+          Top = 12
+          Width = 57
+          Height = 20
+          AutoSize = False
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          Ctl3D = True
+          DataField = 'REGISTRO'
+          DataSource = DSCadastro
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 30
+          Visible = False
+          OnChange = edtRegistroChange
         end
       end
       object tbsFoto: TTabSheet

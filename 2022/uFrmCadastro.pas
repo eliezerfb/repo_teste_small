@@ -88,6 +88,7 @@ type
     SMALL_DBEdit62: TSMALL_DBEdit;
     pnl_IE_PR: TPanel;
     chkProdRural: TDBCheckBox;
+    edtRegistro: TSMALL_DBEdit;
     procedure FormShow(Sender: TObject);
     procedure edtCEPExit(Sender: TObject);
     procedure edtCEPEnter(Sender: TObject);
@@ -128,6 +129,7 @@ type
     procedure chkProdRuralClick(Sender: TObject);
     procedure memObsEnter(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure edtRegistroChange(Sender: TObject);
   private
     { Private declarations }
     FcCEPAnterior: String;
@@ -169,6 +171,7 @@ procedure TFrmCadastro.FormActivate(Sender: TObject);
 begin
   inherited;
   AtualizaObjComValorDoBanco;
+  tbsCadastro.Caption := GetDescritivoNavegacao;
 end;
 
 procedure TFrmCadastro.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -283,8 +286,6 @@ begin
   inherited;
 
   AtualizaObjComValorDoBanco;
-
-  //Contador
   tbsCadastro.Caption := GetDescritivoNavegacao;
 
   try
@@ -355,6 +356,19 @@ end;
 procedure TFrmCadastro.edtLimiteCreditoExit(Sender: TObject);
 begin
   DefinirLimiteDisponivel;
+end;
+
+procedure TFrmCadastro.edtRegistroChange(Sender: TObject);
+begin
+  //Mauricio Parizotto 2025-01-06
+  if not Self.Visible then
+    Exit;
+
+  if bGravandoRegistro then
+    Exit;
+
+  AtualizaObjComValorDoBanco;
+  tbsCadastro.Caption := GetDescritivoNavegacao;
 end;
 
 procedure TFrmCadastro.edtCEPEnter(Sender: TObject);
@@ -595,9 +609,14 @@ procedure TFrmCadastro.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
   inherited;
 
+  {Mauricio Parizotto 2025-01-06
+
   //Mauricio Parizotto 2024-08-29
   if not Self.Visible then
     Exit;
+
+  AtualizaObjComValorDoBanco;
+  tbsCadastro.Caption := GetDescritivoNavegacao;
 
   if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
     Exit;
@@ -605,10 +624,7 @@ begin
   if bGravandoRegistro then
     Exit;
 
-  AtualizaObjComValorDoBanco;
-
-  //Contador
-  tbsCadastro.Caption := GetDescritivoNavegacao;
+  }
 end;
 
 procedure TFrmCadastro.edtCPFCNPJChange(Sender: TObject);
@@ -655,6 +671,8 @@ begin
 end;
 
 procedure TFrmCadastro.AtualizaObjComValorDoBanco;
+var
+  ValorPagar : double;
 begin
   //Se não estiver ativo não carrega informações
   if not FormularioAtivo(Self) then
@@ -714,15 +732,14 @@ begin
   
   if Trim(Form7.IBDataSet2NOME.AsString) <> '' then
   begin
-    Form7.ibQuery1.Close;
-    Form7.IBQuery1.SQL.Text := ' Select sum(VALOR_DUPL) as TOTAL '+
-                               ' From RECEBER '+
-                               ' Where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
-                               '   and coalesce(ATIVO,9)<>1 '+
-                               '   and Coalesce(VALOR_RECE,999999999)=0';
-    Form7.IBQuery1.Open;
+    ValorPagar := ExecutaComandoEscalar(Form7.IBTransaction1,
+                                        ' Select Coalesce(sum(VALOR_DUPL),0) as TOTAL '+
+                                       ' From RECEBER '+
+                                       ' Where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
+                                       '   and coalesce(ATIVO,9)<>1 '+
+                                       '   and Coalesce(VALOR_RECE,999999999)=0');
 
-    if Form7.IBQuery1.FieldByname('TOTAL').AsFloat <> 0 then
+    if ValorPagar <> 0 then
     begin
       if Form1.imgVendas.Visible then
       begin
@@ -776,12 +793,10 @@ begin
     // Abre uma negociação já existente
     sNumeroNF := LimpaNumero(Form7.ibDataSet7HISTORICO.AsString);
 
-    Form7.ibQuery1.Close;
-    Form7.IBQuery1.SQL.Clear;
-    Form7.IBQuery1.SQL.Add(' Update RECEBER set PORTADOR='''', ATIVO=0 '+
-                           ' Where PORTADOR=' + QuotedStr('ACORDO '+sNumeroNF) +
-                           '   and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString));
-    Form7.IBQuery1.ExecSQL;
+    ExecutaComando(' Update RECEBER set PORTADOR='''', ATIVO=0 '+
+                   ' Where PORTADOR=' + QuotedStr('ACORDO '+sNumeroNF) +
+                   '   and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString),
+                   Form7.IBTransaction1);
 
     Form7.IBDataSet2.Edit;
     Form7.IBDataSet2MOSTRAR.AsFloat := 1;
