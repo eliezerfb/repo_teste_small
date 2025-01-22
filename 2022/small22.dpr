@@ -288,7 +288,8 @@ uses
   uAtorInteressado in 'uAtorInteressado.pas' {fmAtorInteressado},
   uWebServiceSmall in 'units\uWebServiceSmall.pas',
   uMinhasNotas in '..\..\unit_compartilhada\MinhasNotas\uMinhasNotas.pas',
-  uWebServiceMinhasNotas in '..\..\unit_compartilhada\MinhasNotas\uWebServiceMinhasNotas.pas';
+  uWebServiceMinhasNotas in '..\..\unit_compartilhada\MinhasNotas\uWebServiceMinhasNotas.pas',
+  uSmallZip in '..\..\unit_compartilhada\uSmallZip.pas';
 
 {$R *.RES}
 

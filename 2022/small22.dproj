@@ -631,6 +631,7 @@
         <DCCReference Include="units\uWebServiceSmall.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\MinhasNotas\uMinhasNotas.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\MinhasNotas\uWebServiceMinhasNotas.pas"/>
+        <DCCReference Include="..\..\unit_compartilhada\uSmallZip.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

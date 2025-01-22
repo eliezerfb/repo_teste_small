@@ -118,7 +118,7 @@ begin
   end;
 
   token := TSistema.GetInstance.Serial;
-  apiPixCertificate := GetCertificateSicoobPem(Form7.IBTransaction1);
+  apiPixCertificate := edtCertificado.Text;
 
   if RegistraContaSicoob(name,
                          identifier,
