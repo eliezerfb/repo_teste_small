@@ -16,7 +16,7 @@ uses
   ;
 
   procedure GeraEnvioMinhasNotas(IBDatabase: TIBDatabase; out bCompletado : boolean);
-  function GeraXmlMinhasNotas(Transaction: TIBTransaction; out sDir : string; out bCompletado : boolean):boolean;
+  function GeraXmlMinhasNotas(Transaction: TIBTransaction; out sDir : string; out bCompletado : boolean; out QtdEnviados : integer):boolean;
   procedure SalvaXML(sDir, sChave, sXML : string);
   procedure CompactaXMLs(sDir:string);
   procedure ApagarArquivosXML(sDir:string);
@@ -30,13 +30,14 @@ uses uFuncoesBancoDados
   , uWebServiceMinhasNotas
   , uconstantes_chaves_privadas
   , uSistema
-  ;
+  , uSmallZip;
 
 procedure GeraEnvioMinhasNotas(IBDatabase: TIBDatabase; out bCompletado : boolean);
 var
   Transaction: TIBTransaction;
   IBDatabaseNotas: TIBDatabase;
   bEnviado : boolean;
+  QtdEnviados : integer;
   sDir : string;
 begin
   bCompletado := False;
@@ -60,7 +61,7 @@ begin
         Exit;
 
       //Gera XMLs
-      if not GeraXmlMinhasNotas(Transaction, sDir, bCompletado) then
+      if not GeraXmlMinhasNotas(Transaction, sDir, bCompletado,QtdEnviados) then
         Exit;
 
       //Zipa Arquivos
@@ -81,7 +82,7 @@ begin
 
         Transaction.Commit;
 
-        LogSistema('Envio realizado Minhas Notas '+ExtractFileName(sDir),lgInformacao);
+        LogSistema('Envio realizado Minhas Notas '+ExtractFileName(sDir)+ ' - Qtd. XMLs: '+QtdEnviados.ToString,lgInformacao);
       end else
       begin
         LogSistema('Erro ao enviar Minhas Notas '+ExtractFileName(sDir),lgErro);
@@ -100,7 +101,7 @@ begin
   end;
 end;
 
-function GeraXmlMinhasNotas(Transaction: TIBTransaction; out sDir : string; out bCompletado : boolean):boolean;
+function GeraXmlMinhasNotas(Transaction: TIBTransaction; out sDir : string; out bCompletado : boolean; out QtdEnviados : integer):boolean;
 var
   sChave, sXML, sDataRef  : string;
   qryAux: TIBQuery;
@@ -108,6 +109,7 @@ var
 begin
   Result      := False;
   bCompletado := False;
+  QtdEnviados := 0;
   DataRef     := Now;
   DataRef     := IncMonth(DataRef,-3);
   sDataRef    := FormatDateTime('YYYY-MM',DataRef) + '-01';
@@ -177,6 +179,7 @@ begin
 
     Result      := True;
     bCompletado := qryAux.RecordCount < 1000;
+    QtdEnviados := qryAux.RecordCount;
   finally
     FreeAndNil(qryAux);
   end;
@@ -197,21 +200,7 @@ end;
 
 procedure CompactaXMLs(sDir:string);
 begin
-  try
-    ShellExecute( 0, 'Open','szip.exe',pChar('backup "'+Trim(sDir + '\*.xml')+'" "'+Trim(sDir+'.zip')+'"'), '', SW_SHOWMAXIMIZED);
-
-    while ConsultaProcesso('szip.exe') do
-    begin
-      Application.ProcessMessages;
-      sleep(100);
-    end;
-
-    while not FileExists(pChar(sDir+'.zip')) do
-    begin
-      sleep(100);
-    end;
-  except
-  end;
+  CompactaArquivos(Trim(sDir + '\*.xml'),Trim(sDir+'.zip'));
 end;
 
 procedure ApagarArquivosXML(sDir:string);

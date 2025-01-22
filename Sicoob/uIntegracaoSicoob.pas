@@ -14,7 +14,6 @@ uses
                                apiPixClientId, apiPixCertificate, apiPixPwdCertificate: string;
                                out id_api_pix : integer;
                                out Mensagem:string):boolean;
-  function GetCertificateSicoob(IBTRANSACTION: TIBTransaction) : string;
   function GeraChavePixISicoob(idBankAccount : integer; description : string;
                              Valor : double; out ChaveQRCode, order_id, Mensagem : string):boolean;
   function GetStatusPixSicoob(txId:string; IdBankAccount : integer; out CodigoAutorizacao:string):string;
@@ -113,62 +112,6 @@ begin
     end;
   finally
     FreeAndNil(Campos);
-  end;
-end;
-
-function GetCertificateSicoob(IBTRANSACTION: TIBTransaction) : string;
-var
-  sDir : string;
-  ibqSicoob: TIBQuery;
-  sDirArquivo, sDirCertificado : string;
-  mErro : string;
-begin
-  Result := '';
-
-  //sDir := ExtractFilePath(Application.ExeName)+'Certificado\SicoobCertificado.pem';
-  sDir := ExtractFilePath(Application.ExeName)+'Certificado\SicoobCertificado.pfx';
-
-  if FileExists(sDir) then
-  begin
-    Result := sDir;
-  end else
-  begin
-    //Refaz arquivos com informações do bando de dados
-    try
-      ibqSicoob := CriaIBQuery(IBTRANSACTION);
-      ibqSicoob.SQL.Text :=  ' Select'+
-                             '   CERTIFICADO,'+
-                             '   CERTIFICADOSENHA'+
-                             ' From CONFIGURACAOSICOOB';
-      ibqSicoob.Open;
-
-      if VarIsNull(ibqSicoob.FieldByName('CERTIFICADO').AsVariant) then
-        Exit;
-
-      sDirCertificado := SalvaArquivoTemp(ibqSicoob.FieldByName('CERTIFICADO') ,'SicoobCertificado.pfx');
-
-      {Mauricio Parizotto 2025-01-20
-
-      //Extrai arquivos
-      sDirArquivo := ExtractFilePath(Application.ExeName)+'Certificado\';
-      if not DirectoryExists(sDirArquivo) then
-        CreateDir(sDirArquivo);
-
-
-      if ExtraiChavesCertificado(sDirCertificado,
-                                 ibqSicoob.FieldByName('CERTIFICADOSENHA').AsString,
-                                 sDirArquivo+'SicoobChavePrivada.key',
-                                 sDirArquivo+'SicoobCertificado.pem',
-                                 mErro) then
-      begin
-        Result := sDirArquivo+'SicoobCertificado.pem';
-      end;
-      }
-
-      Result := sDirCertificado;
-    finally
-      FreeAndNil(ibqSicoob);
-    end;
   end;
 end;
 

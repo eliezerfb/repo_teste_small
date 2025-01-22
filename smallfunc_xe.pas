@@ -2712,7 +2712,7 @@ end;
 
 function SalvaArquivoTemp(Campo : Tfield; Nome : string) : string;
 var
-  Stream : TMemoryStream;
+  //Stream : TMemoryStream;
   DirArquivo, NomeArquivo : string;
 
   DiretorioTemp : PChar;
@@ -2721,9 +2721,11 @@ begin
   Result := '';
   try
     try
+      {
       Stream := TMemoryStream.Create;
       TBlobField(Campo).SaveToStream(Stream);
       Stream.Position := 0;
+      }
       NomeArquivo := Nome;
 
       //Salva na pasta temporaria do windows
@@ -2735,11 +2737,12 @@ begin
       if FileExists(DirArquivo+NomeArquivo) then
         DeleteFile(pchar(DirArquivo+NomeArquivo));
 
-      Stream.SaveToFile(DirArquivo+NomeArquivo);
+      //Stream.SaveToFile(DirArquivo+NomeArquivo);
+      TBlobField(Campo).SaveToFile(DirArquivo+NomeArquivo);
 
       Result := DirArquivo+NomeArquivo;
     finally
-      FreeAndNil(Stream);
+      //FreeAndNil(Stream);
       FreeMem(diretoriotemp);
     end;
   except
