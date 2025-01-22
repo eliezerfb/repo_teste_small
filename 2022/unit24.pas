@@ -2715,8 +2715,6 @@ begin
             else
               edFretePorConta.Text := '';
 
-  Form12.Edit4.Visible := True;
-
   {Sandro Silva 2023-12-04 inicio}
   Grid_Compra(True);
 

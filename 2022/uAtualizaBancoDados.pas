@@ -3534,6 +3534,22 @@ begin
     ExecutaComando('commit');
   end;
 
+  if not(CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'IDRECEBEDOR')) then
+  begin
+    if ExecutaComando('alter table VENDAS add IDRECEBEDOR integer') then
+      ExecutaComando('commit');
+  end;
+
+  if not(CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'VENDAS', 'IDLOCALENTREGA ')) then
+  begin
+    if ExecutaComando(
+      'alter table VENDAS '+
+      ' add IDLOCALENTREGA integer, '+
+      ' add LOCALENTREGA_END_PRINCIPAL smallint'
+    ) then
+      ExecutaComando('commit');
+  end;
+
   Form22.Repaint;
 
   try

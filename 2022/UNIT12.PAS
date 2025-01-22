@@ -5,9 +5,10 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, DB, Grids, DBGrids, StdCtrls, ExtCtrls, Mask,
+  Forms, Dialogs, DB, Grids, DBGrids, StdCtrls, ExtCtrls, Mask, variants,
   DBCtrls, SMALL_DBEdit, smallfunc_xe, Menus, IniFiles, shellapi, Buttons,
-  System.Generics.Collections, jpeg,
+  System.Generics.Collections, jpeg, Vcl.ComCtrls, IBX.IBCustomDataSet, IBX.IBQuery,
+
   uNotaFiscalEletronicaCalc;
 
 function Retributa(pP1:Boolean):Boolean;
@@ -19,11 +20,6 @@ type
     Label55: TLabel;
     ScrollBox1: TScrollBox;
     Panel1: TPanel;
-    Label65: TLabel;
-    Edit4: TEdit;
-    Label66: TLabel;
-    Edit5: TEdit;
-    Label67: TLabel;
     Label64: TLabel;
     Label9: TLabel;
     SMALL_DBEdit43: TSMALL_DBEdit;
@@ -35,22 +31,8 @@ type
     SMALL_DBEdit39: TSMALL_DBEdit;
     SMALL_DBEdit4: TSMALL_DBEdit;
     SMALL_DBEdit5: TSMALL_DBEdit;
-    Label15: TLabel;
-    Label16: TLabel;
-    Label17: TLabel;
     Label13: TLabel;
     SMALL_DBEdit9: TSMALL_DBEdit;
-    SMALL_DBEdit8: TSMALL_DBEdit;
-    SMALL_DBEdit7: TSMALL_DBEdit;
-    SMALL_DBEdit6: TSMALL_DBEdit;
-    Label18: TLabel;
-    SMALL_DBEdit10: TSMALL_DBEdit;
-    SMALL_DBEdit11: TSMALL_DBEdit;
-    Label20: TLabel;
-    Label19: TLabel;
-    SMALL_DBEdit12: TSMALL_DBEdit;
-    Label21: TLabel;
-    SMALL_DBEdit13: TSMALL_DBEdit;
     Label14: TLabel;
     SMALL_DBEdit14: TSMALL_DBEdit;
     DBGrid1: TDBGrid;
@@ -150,14 +132,47 @@ type
     Panel2: TPanel;
     Image1: TImage;
     Label2: TLabel;
-    ComboBox1: TComboBox;
-    Label7: TLabel;
     lblHomologacao: TLabel;
     BitBtnAtorInteressado: TBitBtn;
+    PageControlAddressMktp: TPageControl;
+    TabSheetEnderecoCliente: TTabSheet;
+    tbsLocalEntrega: TTabSheet;
+    TabSheetMktplace: TTabSheet;
+    IBQuery1: TIBQuery;
+    DataSource1: TDataSource;
+    IBQueryRecebedor: TIBQuery;
+    dsRecebedor: TDataSource;
+    IBQueryAddress: TIBQuery;
+    dsAddress: TDataSource;
+    LabelNFVendaTitulo: TLabel;
+    PanelRecebedor: TPanel;
+    LabelRecebedor: TLabel;
+    LabelEnderecoRecebedor: TLabel;
+    DBLookupComboBoxEnderReceb: TDBLookupComboBox;
+    PanelMtplace: TPanel;
+    ComboBoxMarktplace: TComboBox;
+    LabelMktplace: TLabel;
+    PanelEnderecoCliente: TPanel;
+    LabelEnderecoCliente: TLabel;
+    Label16: TLabel;
+    Label17: TLabel;
+    Label18: TLabel;
+    Label20: TLabel;
+    Label19: TLabel;
+    Label21: TLabel;
+    SMALL_DBEditRua: TSMALL_DBEdit;
+    SMALL_DBEditBairro: TSMALL_DBEdit;
+    SMALL_DBEditCEP: TSMALL_DBEdit;
+    SMALL_DBEditMunicipio: TSMALL_DBEdit;
+    SMALL_DBEditUF: TSMALL_DBEdit;
+    SMALL_DBEditTelefone: TSMALL_DBEdit;
+    SMALL_DBEditIE: TSMALL_DBEdit;
+    EditRecebedorNome: TEdit;
+    DBGridRecebedor: TDBGrid;
     procedure DBGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure DBLookupComboBox2Exit(Sender: TObject);
     procedure imgLogoNFeClick(Sender: TObject);
-    procedure SMALL_DBEdit11Exit(Sender: TObject);
+    procedure SMALL_DBEditUFExit(Sender: TObject);
     procedure SMALL_DBEdit39Exit(Sender: TObject);
     procedure SMALL_DBEdit39Change(Sender: TObject);
     procedure SMALL_DBEdit39Enter(Sender: TObject);
@@ -188,7 +203,7 @@ type
       Shift: TShiftState);
     procedure SMALL_DBEdit17Exit(Sender: TObject);
     procedure SMALL_DBEdit22Exit(Sender: TObject);
-    procedure SMALL_DBEdit7Enter(Sender: TObject);
+    procedure SMALL_DBEditBairroEnter(Sender: TObject);
     procedure SMALL_DBEdit52KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure SMALL_DBEdit41KeyDown(Sender: TObject; var Key: Word;
@@ -204,7 +219,7 @@ type
     procedure DBGrid3CellClick(Column: TColumn);
     procedure DBGrid1ColExit(Sender: TObject);
     procedure SMALL_DBEdit4Exit(Sender: TObject);
-    procedure SMALL_DBEdit13Exit(Sender: TObject);
+    procedure SMALL_DBEditIEExit(Sender: TObject);
     procedure SMALL_DBEdit39KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
@@ -222,7 +237,6 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure DBGrid1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure Edit5Click(Sender: TObject);
     procedure DBGrid4KeyPress(Sender: TObject; var Key: Char);
     procedure DBGrid4KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -262,7 +276,7 @@ type
     procedure PopupMenu3Change(Sender: TObject; Source: TMenuItem;
       Rebuild: Boolean);
     procedure Button3Click(Sender: TObject);
-    procedure ComboBox1Exit(Sender: TObject);
+    procedure ComboBoxMarktplaceExit(Sender: TObject);
     procedure SMALL_DBEdit40KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure SMALL_DBEdit40Click(Sender: TObject);
@@ -271,9 +285,26 @@ type
     procedure SMALL_DBEdit41Click(Sender: TObject);
     procedure edtTotalNotaChange(Sender: TObject);
     procedure BitBtnAtorInteressadoClick(Sender: TObject);
+    procedure tbsLocalEntregaShow(Sender: TObject);
+    procedure PageControlAddressMktpDrawTab(Control: TCustomTabControl;
+      TabIndex: Integer; const Rect: TRect; Active: Boolean);
+    procedure FormCreate(Sender: TObject);
+    procedure EditRecebedorNomeEnter(Sender: TObject);
+    procedure DBGridRecebedorCellClick(Column: TColumn);
+    procedure EditRecebedorNomeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure DBGridRecebedorKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure EditRecebedorNomeKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure PageControlAddressMktpChange(Sender: TObject);
 
   private
     { Private declarations }
+    procedure LoadRecebedor(AFilterByNome: String = '');
+    procedure SetRecebedor();
+    procedure LoadAddress();
+    procedure ShowMarketplaceTab();
     procedure AtivaPesquisaNaturezaOP;
     procedure AtivaPesquisaVendedor;
     procedure AtivaPesquisaCliente;
@@ -287,7 +318,7 @@ type
     procedure CarregaTipoConsumidor(sTipo : string);
     function IsConsumidorFinal: boolean;
   public
-    { Public declarations }  
+    { Public declarations }
     vNotaFiscal : TNotaFiscalEletronicaCalc;
     fVelho      : Real;
     sOperacaoAntiga, sObservacaoAntiga, sSistema, sNovoNumero : String;
@@ -307,62 +338,61 @@ var
 
 implementation
 
-uses Unit7
-//  , Unit10
-  , Mais, uFrmParcelas, Unit41, Unit43, Unit19,
+uses
+  Unit7, Mais, uFrmParcelas, Unit41, Unit43, Unit19,
   Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
   uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
   ufrmPesquisaOrdemServico, uDialogs, uAtorInteressado, uSmallConsts;
 
-function mkp(P1:Boolean): Boolean;
+procedure TForm12.SetRecebedor;
 begin
-  //
-  // Tem que informar o MKP
-  //
+  EditRecebedorNome.Text := IBQueryRecebedor.FieldByName('NOME').AsString;
+
+  if not(Form7.DataSource15.DataSet.FieldByName('IDRECEBEDOR').Value =
+    IBQueryRecebedor.FieldByName('IDCLIFOR').Value) then
+  begin
+    Form7.DataSource15.DataSet.FieldByName('IDLOCALENTREGA').Value := Null;
+    Form7.DataSource15.DataSet.FieldByName('LOCALENTREGA_END_PRINCIPAL').Value := Null;
+  end;
+
+  Form7.DataSource15.DataSet.FieldByName('IDRECEBEDOR').Value :=
+    IBQueryRecebedor.FieldByName('IDCLIFOR').Value;
+
+  DBGridRecebedor.Visible := False;
+  LoadAddress();
+end;
+
+procedure TForm12.ShowMarketplaceTab();
+begin
+  TabSheetMktplace.TabVisible := False;
+
   if (Form7.ibDataSet15INDPRES.AsString = '2')
   or (Form7.ibDataSet15INDPRES.AsString = '3')
   or (Form7.ibDataSet15INDPRES.AsString = '4')
   or (Form7.ibDataSet15INDPRES.AsString = '9') then
   begin
-    //
-    // MKP
-    //
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
-    Form7.IBDataSet99.SelectSQL.Add('select NOME from CLIFOR where CLIFOR='+QuotedStr('Marketplace')+' order by NOME'); // Ok
+    Form7.IBDataSet99.SelectSQL.Add(
+      'select NOME from CLIFOR where CLIFOR='+QuotedStr('Marketplace')+
+      ' order by NOME'
+    );
     Form7.ibDataSet99.Open;
-    //
+
     if Form7.ibDataSet99.FieldByname('NOME').AsString <> '' then
     begin
-      //
-      Form12.ComboBox1.Text := AllTrim(Form7.ibDataSet15.FieldByname('MARKETPLACE').AsString);
-      //
-      Form12.ComboBox1.Items.Clear;
-      Form12.ComboBox1.Items.Add('');
-      //
+
+      ComboBoxMarktplace.Text := AllTrim(Form7.ibDataSet15.FieldByname('MARKETPLACE').AsString);
+      ComboBoxMarktplace.Items.Clear;
+      ComboBoxMarktplace.Items.Add('');
+
       while not Form7.ibDataSet99.Eof do
       begin
-        //
-        Form12.ComboBox1.Items.Add(AllTrim(Form7.ibDataSet99.FieldByname('NOME').AsString));
+        ComboBoxMarktplace.Items.Add(AllTrim(Form7.ibDataSet99.FieldByname('NOME').AsString));
         Form7.ibDataSet99.Next;
-        //
       end;
-      //
     end;
-    //
-    Form12.ComboBox1.Visible := True;
-    Form12.Label7.Visible    := True;
-    //
-    Result := True;
-    //
-  end else
-  begin
-    //
-    Form12.ComboBox1.Visible := False;
-    Form12.Label7.Visible    := False;
-    //
-    Result := False;
-    //
+    TabSheetMktplace.TabVisible := True;
   end;
 end;
 
@@ -672,7 +702,7 @@ begin
   ResizeLogoDanfe(True);
 end;
 
-procedure TForm12.SMALL_DBEdit11Exit(Sender: TObject);
+procedure TForm12.SMALL_DBEditUFExit(Sender: TObject);
 begin
   Retributa(True);
   if form7.ibDataSet16.Modified then
@@ -922,7 +952,7 @@ var
   nRecNo: Integer;
   cObsAnt: String;
 begin
-  mkp(True);
+  ShowMarketplaceTab();
   {Dailon Parisotto (smal-593) 2024-07-31 Inicio
 
   if (LimpaNumero(Edit2.Text) = '4') then
@@ -1388,7 +1418,7 @@ begin
   SMALL_DBEdit41.SetFocus;
 end;
 
-procedure TForm12.SMALL_DBEdit7Enter(Sender: TObject);
+procedure TForm12.SMALL_DBEditBairroEnter(Sender: TObject);
 begin
   dBGrid2.Visible    := False;
   dBGrid3.Visible    := False;
@@ -1535,7 +1565,7 @@ begin
   dbGrid1.SetFocus;
 end;
 
-procedure TForm12.SMALL_DBEdit13Exit(Sender: TObject);
+procedure TForm12.SMALL_DBEditIEExit(Sender: TObject);
 begin
   Retributa(True);
   if form7.ibDataSet16.Modified then Form7.ibDataSet16.Post;
@@ -1669,6 +1699,8 @@ var
   Mais1Ini: TIniFile;
 begin
   Form12.Tag := 1;
+  DBGridRecebedor.Visible := False;
+  PageControlAddressMktp.ActivePage := TabSheetEnderecoCliente;
 
   Form12.ActiveControl := Nil;
 
@@ -1692,8 +1724,6 @@ begin
   Form7.ibDataSet2.EnableControls;
 
   bOk := False;
-  // Se nota de compra ta liberada
-  if Form1.bNotaCompraLiberada then Edit5.Enabled := True else Edit5.Enabled := False;
 
   if not FileExists(Form1.sAtual+'\LOGONFE.BMP') then
   begin
@@ -1712,7 +1742,7 @@ begin
   {$IFDEF VER150}
   ShortDateFormat := 'dd/mm/yyyy';
   {$ELSE}
-  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';   
+  FormatSettings.ShortDateFormat := 'dd/mm/yyyy';
   {$ENDIF}
 
   Label71.Caption := Copy(Form7.ibDataSet15NUMERONF.AsString,1,9)+'/'+Copy(Form7.ibDataSet15NUMERONF.AsString,10,3);
@@ -1727,23 +1757,23 @@ begin
       if AllTrim(Mais1Ini.ReadString(Usuario,'B3','0')) <> '1' then
       begin
         SMALL_DBEdit4.Enabled := False;
-        SMALL_DBEdit6.Enabled := False;
-        SMALL_DBEdit7.Enabled := False;
-        SMALL_DBEdit8.Enabled := False;
-        SMALL_DBEdit10.Enabled := False;
-        SMALL_DBEdit11.Enabled := False;
-        SMALL_DBEdit12.Enabled := False;
-        SMALL_DBEdit13.Enabled := False;
+        SMALL_DBEditRua.Enabled := False;
+        SMALL_DBEditBairro.Enabled := False;
+        SMALL_DBEditCEP.Enabled := False;
+        SMALL_DBEditMunicipio.Enabled := False;
+        SMALL_DBEditUF.Enabled := False;
+        SMALL_DBEditTelefone.Enabled := False;
+        SMALL_DBEditIE.Enabled := False;
       end else
       begin
         SMALL_DBEdit4.Enabled := True;
-        SMALL_DBEdit6.Enabled := True;
-        SMALL_DBEdit7.Enabled := True;
-        SMALL_DBEdit8.Enabled := True;
-        SMALL_DBEdit10.Enabled := True;
-        SMALL_DBEdit11.Enabled := True;
-        SMALL_DBEdit12.Enabled := True;
-        SMALL_DBEdit13.Enabled := True;
+        SMALL_DBEditRua.Enabled := True;
+        SMALL_DBEditBairro.Enabled := True;
+        SMALL_DBEditCEP.Enabled := True;
+        SMALL_DBEditMunicipio.Enabled := True;
+        SMALL_DBEditUF.Enabled := True;
+        SMALL_DBEditTelefone.Enabled := True;
+        SMALL_DBEditIE.Enabled := True;
       end;
     except
       //ShowMessage('Erro 1947') Mauricio Parizotto 2023-10-25
@@ -1925,6 +1955,12 @@ begin
   {Dailon Parisotto (smal-593) 2024-08-06 Fim}
 
   Form7.SetFilterOcultaUsoConsumoVenda();
+
+  if Boolean(Form7.ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger) then
+  begin
+    Form7.ibDataSet15IDLOCALENTREGA.AsInteger := ENDERECO_PRINCIPAL_ENTREGA;
+    Form7.ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger := Integer(False);
+  end;
 end;
 
 procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -2163,6 +2199,24 @@ begin
 end;
 
 
+procedure TForm12.FormCreate(Sender: TObject);
+begin
+  var ListOfPanels := TList<TPanel>.Create;
+  ListOfPanels.AddRange(
+    [PanelRecebedor, PanelMtplace, PanelEnderecoCliente]
+  );
+
+  for var Panel in ListOfPanels do
+  begin
+    Panel.Caption := '';
+    Panel.BorderStyle := bsNone;
+    Panel.Color := Form12.Color;
+    Panel.BevelOuter := bvNone;
+  end;
+
+  PageControlAddressMktp.OwnerDraw := True;
+end;
+
 procedure TForm12.DBGrid1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
@@ -2249,15 +2303,6 @@ begin
     DbGrid1.SelectedIndex := 0;
 end;
 
-procedure TForm12.Edit5Click(Sender: TObject);
-begin
-  if Form1.bNotaCompraLiberada then
-  begin
-    Form12.Close;
-    Form7.Compras_1Click(Sender);
-  end;
-end;
-
 procedure TForm12.DBGrid4KeyPress(Sender: TObject; var Key: Char);
 var
   I : Integer;
@@ -2319,6 +2364,18 @@ begin
 
   if (Key = VK_RETURN) and (AllTrim(Form7.ibDataSet35DESCRICAO.AsString) = '') then
     DbGrid4.SelectedIndex := 0;
+end;
+
+procedure TForm12.DBGridRecebedorCellClick(Column: TColumn);
+begin
+  SetRecebedor();
+end;
+
+procedure TForm12.DBGridRecebedorKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    SetRecebedor();
 end;
 
 procedure TForm12.SMALL_DBEdit38Exit(Sender: TObject);
@@ -2688,7 +2745,7 @@ begin
         end;
       end;
 
-      mkp(True);
+      ShowMarketplaceTab();
     except
     end;
 
@@ -2846,7 +2903,61 @@ begin
   if Key = vK_return then
   begin
     Form12.ListBox2Click(Sender);
-  
+
+  end;
+end;
+
+procedure TForm12.LoadAddress();
+begin
+  IBQueryAddress.DisableControls;
+  try
+    IBQueryAddress.Close();
+    IBQueryAddress.SQL.Text := Format(Get_SQL_CliforAddress(), ['']);
+    IBQueryAddress.ParamByName('IDCLIFOR').AsInteger :=
+      IBQueryRecebedor.FieldByName('IDCLIFOR').AsInteger;
+    IBQueryAddress.Open();
+    IBQueryAddress.FetchAll();
+  finally
+    IBQueryAddress.EnableControls;
+  end;
+end;
+
+procedure TForm12.LoadRecebedor(AFilterByNome: String);
+begin
+  IBQueryRecebedor.Close();
+  var Filter := '';
+  var NullUnion := 'SELECT '+
+    '  NULL AS idclifor, '+
+    '  CAST(NULL AS VARCHAR(100)) AS nome '+
+    ' FROM '+
+    '  RDB$DATABASE '+
+    ' UNION ALL ';
+
+  if not(Trim(AFilterByNome) = '') then
+  begin
+    Filter := Format(
+      'where upper(NOME) LIKE ''%%%s%%''', [UpperCase(Trim(AFilterByNome))]
+    );
+    NullUnion := '';
+  end;
+
+  IBQueryRecebedor.SQL.Text :=
+    NullUnion +
+    ' SELECT '+
+    '  idclifor, '+
+    '  nome '+
+    ' FROM '+
+    '  clifor '+
+    Filter +
+    ' ORDER BY '+
+    '  2;';
+
+  IBQueryRecebedor.DisableControls;
+  try
+    IBQueryRecebedor.Open();
+    IBQueryRecebedor.FetchAll();
+  finally
+    IBQueryRecebedor.EnableControls;
   end;
 end;
 
@@ -2858,6 +2969,21 @@ end;
 procedure TForm12.Button2Enter(Sender: TObject);
 begin
   ScrollBox1.VertScrollBar.Position := 200;
+end;
+
+procedure TForm12.tbsLocalEntregaShow(Sender: TObject);
+begin
+  EditRecebedorNome.Text := '';
+  LoadRecebedor();
+
+  if not(Form7.ibDataSet15IDRECEBEDOR.AsInteger = 0)  then
+  begin
+    if IBQueryRecebedor.Locate('IDCLIFOR', Form7.ibDataSet15IDRECEBEDOR.AsInteger, []) then
+      EditRecebedorNome.Text := Trim(IBQueryRecebedor.FieldByName('NOME').AsString);
+    LoadAddress();
+    Exit;
+  end;
+
 end;
 
 function TForm12.TestarLimiteDisponivel: Boolean;
@@ -3290,7 +3416,7 @@ begin
     end;
   end;
 
-  mkp(True);
+  ShowMarketplaceTab();
 
   if Form7.ibDataSet15INDPRES.AsString  <> LimpaNumero(Edit6.Text) then
     Form7.ibDataSet15INDPRES.AsString  := LimpaNumero(Edit6.Text);
@@ -3301,6 +3427,49 @@ begin
   end;
 
   // Indicador de presença do comprador no estabelecimento comercial no momento da operação
+end;
+
+procedure TForm12.EditRecebedorNomeEnter(Sender: TObject);
+begin
+  LoadRecebedor(EditRecebedorNome.Text);
+  DBGridRecebedor.Parent := Panel1;
+  DBGridRecebedor.Width := EditRecebedorNome.Width;
+  DBGridRecebedor.Top := PageControlAddressMktp.Top + EditRecebedorNome.Top
+    + EditRecebedorNome.Height + 25;
+  DBGridRecebedor.Left := PageControlAddressMktp.Left + EditRecebedorNome.Left + 4;
+  DBGridRecebedor.Height := 135;
+  DBGridRecebedor.Visible := True;
+end;
+
+procedure TForm12.EditRecebedorNomeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_DOWN) and (DBGridRecebedor.Visible) then
+    DBGridRecebedor.SetFocus;
+end;
+
+procedure TForm12.EditRecebedorNomeKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  LoadRecebedor(EditRecebedorNome.Text);
+end;
+
+procedure TForm12.PageControlAddressMktpChange(Sender: TObject);
+begin
+  DBGridRecebedor.Visible := False;
+end;
+
+procedure TForm12.PageControlAddressMktpDrawTab(Control: TCustomTabControl;
+  TabIndex: Integer; const Rect: TRect; Active: Boolean);
+begin
+  var LCanvas := PageControlAddressMktp.Canvas;
+  LCanvas.Brush.Color := clWhite;
+  LCanvas.FillRect(Rect);
+  LCanvas.TextOut(
+    Rect.Left + 2,
+    Rect.Top + 2,
+    PageControlAddressMktp.Pages[TabIndex].Caption
+  );
 end;
 
 procedure TForm12.PopupMenu3Change(Sender: TObject; Source: TMenuItem;
@@ -3321,31 +3490,17 @@ end;
 procedure TForm12.Button3Click(Sender: TObject);
 var
   Mais1Ini : tIniFile;
-  iA, I : Integer;
+  I : Integer;
 begin
   Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
 
   if Mais1Ini.ReadString('NFE','Preenchimento','Simples') = 'Simples' then
   begin
-    if dBGrid1.Top <> 225 then
+    if dBGrid1.Top <> PageControlAddressMktp.Top then
     begin
-      Label15.Visible := False;
-      Label16.Visible := False;
-      Label17.Visible := False;
-      Label18.Visible := False;
-      Label19.Visible := False;
-      Label20.Visible := False;
-      Label21.Visible := False;
+      PageControlAddressMktp.Visible := False;
 
-      SMALL_DBEdit6.Visible  := False;
-      SMALL_DBEdit7.Visible  := False;
-      SMALL_DBEdit8.Visible  := False;
-      SMALL_DBEdit10.Visible := False;
-      SMALL_DBEdit11.Visible := False;
-      SMALL_DBEdit12.Visible := False;
-      SMALL_DBEdit13.Visible := False;
-
-      dBGrid1.Top := 225;
+      dBGrid1.Top := PageControlAddressMktp.Top;
 
       Label1.Visible         := False;
       Label6.Visible         := False;
@@ -3429,35 +3584,44 @@ begin
 
       Mais1ini.Free;
 
-      iA := Form12.Height - Panel1.Height - Panel6.Height - 50;
+      var DiffHeight :=  Form12.Height - Panel1.Height - Panel6.Height - 50;
 
-      if iA > 0 then
+      if DiffHeight > 0 then
       begin
-        dBGrid1.Height := dBGrid1.Height + iA;
-        Panel1.Height  := Panel1.Height + iA;
+        dBGrid1.Height := dBGrid1.Height + DiffHeight;
+        Panel1.Height  := Panel1.Height + DiffHeight;
 
         for I := 0 to Form12.ComponentCount-1 do
         begin
-          try
-            if (Copy(TSMALL_DBEdit(Components[I]).Name,1,5) <> 'Popup') and (Copy(TSMALL_DBEdit(Components[I]).Name,1,5) <> 'Image') then
-            begin
-              if TSMALL_DBEdit(Components[I]).Top > dBGrid1.Top then TSMALL_DBEdit(Components[I]).Top := TSMALL_DBEdit(Components[I]).Top + iA;
-            end;
-          except end;
+          if not(
+              (Components[I].ClassType = TEdit) or
+              (Components[I].ClassType = TSMALL_DBEdit) or
+              (Components[I].ClassType = TLabel) or
+              (Components[I].ClassType = TDBMemo)
+            ) then
+            Continue;
+
+          if not((Components[I].GetParentComponent) = Panel1) then
+            Continue;
+
+          if TWinControl(Components[I]).Top > dBGrid1.Top then
+            TWinControl(Components[I]).Top :=
+              TWinControl(Components[I]).Top + DiffHeight - 50;
         end;
       end;
 
       dBGrid3.Top := dBGrid1.Top + dBGrid1.Height;
+      dBGrid3.Left := dBGrid1.Left;
     end;
   end;
 
-  Panel6.Top      := Panel1.Top + Panel1.Height + 5;
+  Panel6.Top := Panel1.Top + Panel1.Height + 5;
 end;
 
-procedure TForm12.ComboBox1Exit(Sender: TObject);
+procedure TForm12.ComboBoxMarktplaceExit(Sender: TObject);
 begin
   try
-    Form7.ibDataSet15MARKETPLACE.AsString := Form12.ComboBox1.Text;
+    Form7.ibDataSet15MARKETPLACE.AsString := ComboBoxMarktplace.Text;
   except
   end;
     

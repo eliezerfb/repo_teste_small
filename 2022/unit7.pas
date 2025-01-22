@@ -1749,6 +1749,9 @@ type
     ributaoInteligente1: TMenuItem;
     N3: TMenuItem;
     IBDataSet2IDCLIFOR: TIntegerField;
+    ibDataSet15IDRECEBEDOR: TIntegerField;
+    ibDataSet15IDLOCALENTREGA: TIntegerField;
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL: TSmallintField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -30977,9 +30980,13 @@ end;
 
 procedure TForm7.ibDataSet15BeforePost(DataSet: TDataSet);
 begin
-  //
+  if ibDataSet15IDLOCALENTREGA.AsInteger = ENDERECO_PRINCIPAL_ENTREGA then
+  begin
+    ibDataSet15IDLOCALENTREGA.AsVariant := Null;
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger := Integer(True);
+  end;
+
   AssinaRegistro('VENDAS',DataSet, True);
-  //
 end;
 
 procedure TForm7.ibDataSet13BeforePost(DataSet: TDataSet);
