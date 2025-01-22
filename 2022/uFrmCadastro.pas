@@ -178,7 +178,7 @@ type
     procedure edtRegistroChange(Sender: TObject);
   private
     { Private declarations }
-    FInsertOnShowTabSheet: Boolean;
+    FInsertAddressAndWait: Boolean;
     FOldCEPEnderecoAdicional: String;
     FPanelCities: TPanel;
     FDBGRidCities: TDBGrid;
@@ -235,6 +235,8 @@ procedure TFrmCadastro.FDMemTableAddressAfterDelete(DataSet: TDataSet);
 begin
   inherited;
   FPanelCities.Visible := False;
+  DBGridAddress.SelectedIndex := GetColumnIdByFieldName('ENDERECO');
+  DBGridAddress.SelectedIndex := GetColumnIdByFieldName('CEP');
 end;
 
 procedure TFrmCadastro.FDMemTableAddressAfterInsert(DataSet: TDataSet);
@@ -799,11 +801,11 @@ begin
   begin
     if FDMemTableAddress.IsEmpty then
     begin
-      FInsertOnShowTabSheet := True;
+      FInsertAddressAndWait := True;
       try
         FDMemTableAddress.Insert;
       finally
-        FInsertOnShowTabSheet := False;
+        FInsertAddressAndWait := False;
       end;
     end else if FDMemTableAddress.State = dsBrowse then
       FDMemTableAddress.First;
@@ -1071,10 +1073,30 @@ end;
 procedure TFrmCadastro.DBGridAddressColEnter(Sender: TObject);
 begin
   inherited;
+  if (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('NUMERO')) and
+    IsBlankAddress() and (FDMemTableAddress.State = dsInsert) and
+    not(FInsertAddressAndWait) then
+  begin
+    FDMemTableAddress.Cancel;
+    btnOK.SetFocus();
+    Exit();
+  end;
 
   if DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CEP') then
   begin
     FOldCEPEnderecoAdicional := FDMemTableAddressCEP.AsString;
+
+    if FDMemTableAddress.Active and FDMemTableAddress.IsEmpty
+      and (FDMemTableAddress.State = dsBrowse) then
+    begin
+      FInsertAddressAndWait := True;
+      try
+        FDMemTableAddress.Insert();
+      finally
+        FInsertAddressAndWait := False;
+      end;
+    end;
+
     Exit();
   end;
 
@@ -1131,14 +1153,6 @@ begin
 
   if FDMemTableAddress.State = dsEdit then
     FDMemTableAddressINVALID.AsInteger := Integer(not(ValidateCurrentAddress()));
-
-  if (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('ENDERECO')) and
-    IsBlankAddress() and (FDMemTableAddress.State = dsInsert) and
-    not(FInsertOnShowTabSheet) then
-  begin
-    FDMemTableAddress.Cancel;
-    btnOK.SetFocus();
-  end;
 end;
 
 procedure TFrmCadastro.DBGridAddressDrawColumnCell(Sender: TObject;
@@ -1182,8 +1196,7 @@ begin
   begin
     if not(FDMemTableAddress.IsEmpty) then
       FDMemTableAddress.Delete();
-    if (Shift = [SsCtrl]) and (key = VK_DELETE) then
-      key := 0;
+    key := 0;
     Exit;
   end;
 
