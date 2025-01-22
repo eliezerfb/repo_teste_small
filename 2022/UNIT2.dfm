@@ -6,7 +6,7 @@ object Form2: TForm2
   BorderStyle = bsDialog
   Caption = 'Liberar os m'#243'dulos:'
   ClientHeight = 598
-  ClientWidth = 784
+  ClientWidth = 684
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -41,7 +41,7 @@ object Form2: TForm2
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 784
+    Width = 684
     Height = 598
     Align = alClient
     BevelOuter = bvNone
@@ -51,10 +51,10 @@ object Form2: TForm2
     ParentCtl3D = False
     TabOrder = 1
     DesignSize = (
-      784
+      684
       598)
     object Label1: TLabel
-      Left = 10
+      Left = 20
       Top = 10
       Width = 39
       Height = 13
@@ -67,7 +67,7 @@ object Form2: TForm2
       ParentFont = False
     end
     object Label3: TLabel
-      Left = 15
+      Left = 20
       Top = 60
       Width = 32
       Height = 13
@@ -80,7 +80,7 @@ object Form2: TForm2
       ParentFont = False
     end
     object Label_8: TLabel
-      Left = 210
+      Left = 338
       Top = 100
       Width = 179
       Height = 16
@@ -96,7 +96,7 @@ object Form2: TForm2
       Transparent = True
     end
     object Label2: TLabel
-      Left = 210
+      Left = 338
       Top = 60
       Width = 110
       Height = 13
@@ -109,7 +109,7 @@ object Form2: TForm2
       ParentFont = False
     end
     object Image1: TImage
-      Left = 10
+      Left = 20
       Top = 90
       Width = 35
       Height = 35
@@ -118,7 +118,7 @@ object Form2: TForm2
     end
     object Image2: TImage
       Tag = 1
-      Left = 10
+      Left = 20
       Top = 265
       Width = 35
       Height = 35
@@ -127,7 +127,7 @@ object Form2: TForm2
     end
     object Image3: TImage
       Tag = 1
-      Left = 10
+      Left = 20
       Top = 300
       Width = 35
       Height = 35
@@ -136,7 +136,7 @@ object Form2: TForm2
     end
     object Image4: TImage
       Tag = 1
-      Left = 10
+      Left = 20
       Top = 335
       Width = 35
       Height = 35
@@ -145,7 +145,7 @@ object Form2: TForm2
     end
     object Image7: TImage
       Tag = 1
-      Left = 10
+      Left = 20
       Top = 510
       Width = 35
       Height = 35
@@ -154,7 +154,7 @@ object Form2: TForm2
     end
     object Image8: TImage
       Tag = 1
-      Left = 10
+      Left = 20
       Top = 545
       Width = 35
       Height = 35
@@ -162,7 +162,7 @@ object Form2: TForm2
       Transparent = True
     end
     object Label8: TLabel
-      Left = 65
+      Left = 75
       Top = 60
       Width = 47
       Height = 13
@@ -176,7 +176,7 @@ object Form2: TForm2
     end
     object Label_3: TLabel
       Tag = 1
-      Left = 210
+      Left = 338
       Top = 275
       Width = 97
       Height = 16
@@ -193,7 +193,7 @@ object Form2: TForm2
     end
     object Label_1: TLabel
       Tag = 1
-      Left = 210
+      Left = 338
       Top = 310
       Width = 93
       Height = 16
@@ -210,7 +210,7 @@ object Form2: TForm2
     end
     object Label_5: TLabel
       Tag = 1
-      Left = 210
+      Left = 338
       Top = 345
       Width = 97
       Height = 16
@@ -227,7 +227,7 @@ object Form2: TForm2
     end
     object Label_4: TLabel
       Tag = 1
-      Left = 210
+      Left = 338
       Top = 415
       Width = 97
       Height = 16
@@ -244,7 +244,7 @@ object Form2: TForm2
     end
     object Label_6: TLabel
       Tag = 1
-      Left = 210
+      Left = 338
       Top = 450
       Width = 97
       Height = 16
@@ -261,7 +261,7 @@ object Form2: TForm2
     end
     object Label_14: TLabel
       Tag = 1
-      Left = 210
+      Left = 338
       Top = 520
       Width = 97
       Height = 16
@@ -278,11 +278,11 @@ object Form2: TForm2
     end
     object Label_16: TLabel
       Tag = 1
-      Left = 210
+      Left = 338
       Top = 555
-      Width = 97
+      Width = 79
       Height = 16
-      Caption = 'Somente Leitura'
+      Caption = 'N'#227'o liberado'
       Color = clWhite
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
@@ -295,7 +295,7 @@ object Form2: TForm2
     end
     object Image10: TImage
       Tag = 1
-      Left = 10
+      Left = 20
       Top = 370
       Width = 35
       Height = 35
@@ -304,7 +304,7 @@ object Form2: TForm2
     end
     object Label_2: TLabel
       Tag = 1
-      Left = 210
+      Left = 338
       Top = 380
       Width = 97
       Height = 16
@@ -320,7 +320,7 @@ object Form2: TForm2
       Transparent = True
     end
     object Image_: TImage
-      Left = 10
+      Left = 20
       Top = 195
       Width = 35
       Height = 35
@@ -328,7 +328,7 @@ object Form2: TForm2
       Transparent = True
     end
     object Label_7: TLabel
-      Left = 210
+      Left = 338
       Top = 205
       Width = 97
       Height = 16
@@ -345,7 +345,7 @@ object Form2: TForm2
     end
     object Image5: TImage
       Tag = 1
-      Left = 10
+      Left = 20
       Top = 405
       Width = 35
       Height = 35
@@ -354,7 +354,7 @@ object Form2: TForm2
     end
     object Image6: TImage
       Tag = 1
-      Left = 10
+      Left = 20
       Top = 440
       Width = 35
       Height = 35
@@ -363,7 +363,7 @@ object Form2: TForm2
     end
     object Image9: TImage
       Tag = 1
-      Left = 10
+      Left = 20
       Top = 475
       Width = 35
       Height = 35
@@ -372,11 +372,11 @@ object Form2: TForm2
     end
     object Label4: TLabel
       Tag = 1
-      Left = 210
+      Left = 338
       Top = 485
-      Width = 97
+      Width = 79
       Height = 16
-      Caption = 'Somente Leitura'
+      Caption = 'N'#227'o liberado'
       Color = clWhite
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
@@ -388,7 +388,7 @@ object Form2: TForm2
       Transparent = True
     end
     object Label9: TLabel
-      Left = 430
+      Left = 646
       Top = 60
       Width = 122
       Height = 13
@@ -399,9 +399,10 @@ object Form2: TForm2
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
+      Visible = False
     end
     object Image1__2: TImage
-      Left = 10
+      Left = 20
       Top = 125
       Width = 35
       Height = 35
@@ -409,7 +410,7 @@ object Form2: TForm2
       Transparent = True
     end
     object Image1__3: TImage
-      Left = 10
+      Left = 20
       Top = 160
       Width = 35
       Height = 35
@@ -417,7 +418,7 @@ object Form2: TForm2
       Transparent = True
     end
     object Label_c: TLabel
-      Left = 210
+      Left = 338
       Top = 135
       Width = 187
       Height = 16
@@ -433,7 +434,7 @@ object Form2: TForm2
       Transparent = True
     end
     object Label_s: TLabel
-      Left = 210
+      Left = 338
       Top = 170
       Width = 188
       Height = 16
@@ -450,7 +451,7 @@ object Form2: TForm2
     end
     object imgOrcamento: TImage
       Tag = 1
-      Left = 10
+      Left = 20
       Top = 230
       Width = 35
       Height = 35
@@ -458,7 +459,7 @@ object Form2: TForm2
       Transparent = True
     end
     object lblOrcamento: TLabel
-      Left = 210
+      Left = 338
       Top = 240
       Width = 79
       Height = 16
@@ -474,7 +475,7 @@ object Form2: TForm2
       Transparent = True
     end
     object Usuario: TComboBox
-      Left = 55
+      Left = 65
       Top = 10
       Width = 290
       Height = 24
@@ -490,7 +491,7 @@ object Form2: TForm2
       OnKeyUp = UsuarioKeyUp
     end
     object CheckBox8: TCheckBox
-      Left = 65
+      Left = 75
       Top = 100
       Width = 88
       Height = 13
@@ -507,7 +508,7 @@ object Form2: TForm2
     end
     object CheckBox3: TCheckBox
       Tag = 1
-      Left = 65
+      Left = 75
       Top = 275
       Width = 120
       Height = 17
@@ -525,7 +526,7 @@ object Form2: TForm2
     end
     object CheckBox1: TCheckBox
       Tag = 1
-      Left = 65
+      Left = 75
       Top = 310
       Width = 120
       Height = 17
@@ -543,7 +544,7 @@ object Form2: TForm2
     end
     object CheckBox5: TCheckBox
       Tag = 1
-      Left = 65
+      Left = 75
       Top = 345
       Width = 120
       Height = 17
@@ -561,7 +562,7 @@ object Form2: TForm2
     end
     object CheckBox4: TCheckBox
       Tag = 1
-      Left = 65
+      Left = 75
       Top = 415
       Width = 120
       Height = 17
@@ -579,7 +580,7 @@ object Form2: TForm2
     end
     object CheckBox6: TCheckBox
       Tag = 1
-      Left = 65
+      Left = 75
       Top = 450
       Width = 120
       Height = 17
@@ -597,7 +598,7 @@ object Form2: TForm2
     end
     object CheckBox14: TCheckBox
       Tag = 1
-      Left = 65
+      Left = 75
       Top = 520
       Width = 120
       Height = 17
@@ -615,7 +616,7 @@ object Form2: TForm2
     end
     object CheckBox16: TCheckBox
       Tag = 1
-      Left = 65
+      Left = 75
       Top = 555
       Width = 120
       Height = 17
@@ -631,10 +632,10 @@ object Form2: TForm2
       OnKeyUp = CheckBox8KeyUp
     end
     object Panel2: TPanel
-      Left = 200
+      Left = 312
       Top = 55
       Width = 1
-      Height = 527
+      Height = 525
       Anchors = [akLeft, akTop, akBottom]
       BevelOuter = bvNone
       Color = clBlack
@@ -644,10 +645,10 @@ object Form2: TForm2
       TabOrder = 32
     end
     object Panel3: TPanel
-      Left = 55
+      Left = 65
       Top = 55
       Width = 1
-      Height = 527
+      Height = 525
       Anchors = [akLeft, akTop, akBottom]
       BevelOuter = bvNone
       BorderStyle = bsSingle
@@ -658,9 +659,9 @@ object Form2: TForm2
       TabOrder = 33
     end
     object Panel4: TPanel
-      Left = 10
+      Left = 20
       Top = 80
-      Width = 420
+      Width = 644
       Height = 1
       BevelOuter = bvNone
       Color = clBlack
@@ -671,7 +672,7 @@ object Form2: TForm2
     end
     object CheckBox2: TCheckBox
       Tag = 1
-      Left = 65
+      Left = 75
       Top = 380
       Width = 120
       Height = 17
@@ -688,7 +689,7 @@ object Form2: TForm2
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox7: TCheckBox
-      Left = 65
+      Left = 75
       Top = 205
       Width = 120
       Height = 17
@@ -704,7 +705,7 @@ object Form2: TForm2
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox9: TCheckBox
-      Left = 65
+      Left = 75
       Top = 135
       Width = 112
       Height = 17
@@ -721,11 +722,11 @@ object Form2: TForm2
     end
     object CheckBox10: TCheckBox
       Tag = 1
-      Left = 65
+      Left = 75
       Top = 485
       Width = 120
       Height = 17
-      Caption = 'Indicadores'
+      Caption = 'Dashboard'
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
       Font.Height = -11
@@ -737,7 +738,7 @@ object Form2: TForm2
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox11: TCheckBox
-      Left = 430
+      Left = 646
       Top = 100
       Width = 140
       Height = 17
@@ -749,14 +750,15 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      Visible = False
       OnClick = CheckBox11Click
       OnKeyUp = CheckBox8KeyUp
     end
     object Panel5: TPanel
-      Left = 420
+      Left = 636
       Top = 55
       Width = 1
-      Height = 527
+      Height = 525
       Anchors = [akLeft, akTop, akBottom]
       BevelOuter = bvNone
       Color = clBlack
@@ -764,21 +766,10 @@ object Form2: TForm2
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 39
-    end
-    object Panel6: TPanel
-      Left = 420
-      Top = 80
-      Width = 350
-      Height = 1
-      BevelOuter = bvNone
-      Color = clBlack
-      Ctl3D = True
-      ParentBackground = False
-      ParentCtl3D = False
-      TabOrder = 40
+      Visible = False
     end
     object CheckBox12: TCheckBox
-      Left = 430
+      Left = 646
       Top = 147
       Width = 140
       Height = 17
@@ -790,11 +781,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 2
+      Visible = False
       OnClick = CheckBox12Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox13: TCheckBox
-      Left = 430
+      Left = 646
       Top = 123
       Width = 140
       Height = 17
@@ -806,11 +798,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 1
+      Visible = False
       OnClick = CheckBox13Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox15: TCheckBox
-      Left = 430
+      Left = 646
       Top = 217
       Width = 140
       Height = 17
@@ -822,11 +815,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 5
+      Visible = False
       OnClick = CheckBox15Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox17: TCheckBox
-      Left = 430
+      Left = 646
       Top = 241
       Width = 140
       Height = 17
@@ -838,11 +832,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 6
+      Visible = False
       OnClick = CheckBox17Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox18: TCheckBox
-      Left = 430
+      Left = 646
       Top = 264
       Width = 140
       Height = 17
@@ -854,11 +849,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 7
+      Visible = False
       OnClick = CheckBox18Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox19: TCheckBox
-      Left = 590
+      Left = 806
       Top = 100
       Width = 170
       Height = 17
@@ -870,11 +866,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 18
+      Visible = False
       OnClick = CheckBox19Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox20: TCheckBox
-      Left = 430
+      Left = 646
       Top = 170
       Width = 140
       Height = 17
@@ -886,11 +883,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 3
+      Visible = False
       OnClick = CheckBox20Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox21: TCheckBox
-      Left = 430
+      Left = 646
       Top = 194
       Width = 140
       Height = 17
@@ -902,11 +900,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 4
+      Visible = False
       OnClick = CheckBox21Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox22: TCheckBox
-      Left = 430
+      Left = 646
       Top = 288
       Width = 140
       Height = 17
@@ -918,11 +917,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 8
+      Visible = False
       OnClick = CheckBox22Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox23: TCheckBox
-      Left = 430
+      Left = 646
       Top = 311
       Width = 140
       Height = 17
@@ -934,11 +934,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 9
+      Visible = False
       OnClick = CheckBox23Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox24: TCheckBox
-      Left = 430
+      Left = 646
       Top = 335
       Width = 140
       Height = 17
@@ -950,11 +951,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 10
+      Visible = False
       OnClick = CheckBox24Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox25: TCheckBox
-      Left = 430
+      Left = 646
       Top = 358
       Width = 140
       Height = 17
@@ -966,11 +968,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 11
+      Visible = False
       OnClick = CheckBox25Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox26: TCheckBox
-      Left = 430
+      Left = 646
       Top = 429
       Width = 180
       Height = 17
@@ -982,11 +985,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 14
+      Visible = False
       OnClick = CheckBox26Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox27: TCheckBox
-      Left = 430
+      Left = 646
       Top = 405
       Width = 180
       Height = 17
@@ -998,11 +1002,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 13
+      Visible = False
       OnClick = CheckBox27Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox28: TCheckBox
-      Left = 430
+      Left = 646
       Top = 382
       Width = 180
       Height = 17
@@ -1014,11 +1019,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 12
+      Visible = False
       OnClick = CheckBox28Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox29: TCheckBox
-      Left = 430
+      Left = 646
       Top = 452
       Width = 180
       Height = 17
@@ -1030,11 +1036,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 15
+      Visible = False
       OnClick = CheckBox29Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox30: TCheckBox
-      Left = 430
+      Left = 646
       Top = 476
       Width = 180
       Height = 17
@@ -1046,11 +1053,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 16
+      Visible = False
       OnClick = CheckBox30Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox31: TCheckBox
-      Left = 590
+      Left = 806
       Top = 123
       Width = 170
       Height = 17
@@ -1062,11 +1070,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 19
+      Visible = False
       OnClick = CheckBox31Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox32: TCheckBox
-      Left = 430
+      Left = 646
       Top = 500
       Width = 180
       Height = 17
@@ -1078,11 +1087,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 17
+      Visible = False
       OnClick = CheckBox32Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox33: TCheckBox
-      Left = 590
+      Left = 806
       Top = 147
       Width = 170
       Height = 17
@@ -1094,11 +1104,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 20
+      Visible = False
       OnClick = CheckBox33Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox34: TCheckBox
-      Left = 590
+      Left = 806
       Top = 170
       Width = 170
       Height = 17
@@ -1110,11 +1121,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 21
+      Visible = False
       OnClick = CheckBox34Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox35: TCheckBox
-      Left = 590
+      Left = 806
       Top = 191
       Width = 170
       Height = 17
@@ -1126,11 +1138,12 @@ object Form2: TForm2
       Font.Style = []
       ParentFont = False
       TabOrder = 22
+      Visible = False
       OnClick = CheckBox35Click
       OnKeyUp = CheckBox8KeyUp
     end
     object CheckBox36: TCheckBox
-      Left = 590
+      Left = 806
       Top = 215
       Width = 170
       Height = 17
@@ -1141,13 +1154,14 @@ object Form2: TForm2
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
-      TabOrder = 41
+      TabOrder = 40
+      Visible = False
       OnClick = CheckBox36Click
       OnKeyUp = CheckBox8KeyUp
     end
     object Button1: TButton
-      Left = 450
-      Top = 10
+      Left = 565
+      Top = 6
       Width = 100
       Height = 24
       Caption = 'Op'#231#245'es'
@@ -1157,11 +1171,11 @@ object Form2: TForm2
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
-      TabOrder = 42
+      TabOrder = 41
       OnClick = Button1Click
     end
     object CheckBox37: TCheckBox
-      Left = 65
+      Left = 75
       Top = 170
       Width = 104
       Height = 17
@@ -1172,12 +1186,12 @@ object Form2: TForm2
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
-      TabOrder = 43
+      TabOrder = 42
       OnClick = CheckBox37Click
       OnKeyUp = CheckBox8KeyUp
     end
     object chkOrcamento: TCheckBox
-      Left = 65
+      Left = 75
       Top = 240
       Width = 120
       Height = 17
@@ -1188,14 +1202,14 @@ object Form2: TForm2
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
-      TabOrder = 44
+      TabOrder = 43
       OnClick = chkOrcamentoClick
       OnKeyUp = CheckBox8KeyUp
     end
   end
   object PopupMenu1: TPopupMenu
-    Left = 656
-    Top = 16
+    Left = 384
+    Top = 8
     object Resetdo1: TMenuItem
       Caption = 'Reset do Usu'#225'rio'
       OnClick = Resetdo1Click

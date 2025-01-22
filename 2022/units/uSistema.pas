@@ -17,6 +17,7 @@ type
     FSerial : string;
     FCodFaixaImendes : string;
     FConsultarIPIImendes : boolean;
+    FDashboardAbertura : boolean;
 
     function GetCertificadoDtVal: TDate;
     procedure SetCertificadoDtVal(const Value: TDate);
@@ -34,6 +35,9 @@ type
     procedure SetCodFaixaImendes(const Value: string);
     function GetConsultarIPIImendes: Boolean;
     procedure SetConsultarIPIImendes(const Value: Boolean);
+
+    function GetDashboardAbertura: Boolean;
+    procedure SetDashboardAbertura(const Value: Boolean);
   published
     property CertificadoDtVal: TDate read GetCertificadoDtVal write SetCertificadoDtVal;
     property CertificadoTipo: string read GetCertificadoTipo write SetCertificadoTipo;
@@ -42,10 +46,12 @@ type
     property Serial: string read GetSerial write SetSerial;
     property CodFaixaImendes: string read GetCodFaixaImendes write SetCodFaixaImendes;
     property ConsultarIPIImendes : Boolean  read GetConsultarIPIImendes write SetConsultarIPIImendes;
+    property DashboardAbertura : Boolean read GetDashboardAbertura write SetDashboardAbertura;
   public
     class function GetInstance: TSistema;
     class procedure Destroy;
   end;
+
 
 implementation
 
@@ -124,6 +130,11 @@ begin
   Result := FConsultarIPIImendes;
 end;
 
+function TSistema.GetDashboardAbertura: Boolean;
+begin
+  Result := FDashboardAbertura;
+end;
+
 procedure TSistema.SetCertificadoTipo(const Value: string);
 begin
   FCertificadoTipo := Value;
@@ -137,6 +148,11 @@ end;
 procedure TSistema.SetConsultarIPIImendes(const Value: Boolean);
 begin
   FConsultarIPIImendes := Value;
+end;
+
+procedure TSistema.SetDashboardAbertura(const Value: Boolean);
+begin
+  FDashboardAbertura := Value;
 end;
 
 procedure TSistema.SetModuloImendes(const Value: boolean);

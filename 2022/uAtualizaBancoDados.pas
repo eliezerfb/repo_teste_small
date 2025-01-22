@@ -139,6 +139,9 @@ begin
   Form22.Repaint;
   Mensagem22('Alterando estrutura do banco de dados');
 
+  // Para usar onde faz repetição com execução de comandos em cada repetição
+  QryAuxiliar := CriaIBQuery(Form1.ibDataset200.Transaction);
+
   DropViewProcedure;
 
   // MArketplace
@@ -1456,6 +1459,7 @@ begin
   end
   else
   begin
+    {Sandro Silva (f-22115) 2025-01-03 inicio
     try
       Form1.ibDataSet200.Close;
       Form1.ibDataSet200.SelectSQL.Text :=
@@ -1480,6 +1484,32 @@ begin
 
     except
     end;
+    }
+    try
+      QryAuxiliar.Close;
+      QryAuxiliar.SQL.Text :=
+        'select PEDIDO, max(SEQUENCIALCONTACLIENTEOS) as SEQUENCIALCONTACLIENTEOS from ALTERACA where (TIPO = ''MESA'' or TIPO = ''DEKOL'') group by PEDIDO ';
+      QryAuxiliar.Open;
+
+      while QryAuxiliar.Eof = False do
+      begin
+        if QryAuxiliar.FieldByName('SEQUENCIALCONTACLIENTEOS').AsString = '' then
+        begin
+          try
+            ExecutaComando(
+              'update ALTERACA set ' +
+              'SEQUENCIALCONTACLIENTEOS = ' + QuotedStr(Right(DupeString('0', 10) + IncGenerator(Form1.ibDataSet200.Transaction.DefaultDatabase, 'G_SEQUENCIALCONTACLIENTEOS', 1), 10)) +
+              ' where (TIPO = ''MESA'' or TIPO = ''DEKOL'') ' +
+              ' and PEDIDO = ' + QuotedStr(QryAuxiliar.FieldByName('PEDIDO').AsString));
+          except
+          end;
+        end;
+        QryAuxiliar.Next;
+      end;
+
+    except
+    end;
+    {Sandro Silva (f-22115) 2025-01-03 fim}
 
   end;
 
@@ -3422,7 +3452,7 @@ begin
   end;
   {Mauricio Parizotto 2024-10-28 Inicio}
 
-{Mauricio Parizotto 2024-09-27 Inicio}
+  {Mauricio Parizotto 2024-09-27 Inicio}
   if CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'TRIB_INTELIGENTE') = False then
   begin
     if ExecutaComando('ALTER TABLE ICM ADD TRIB_INTELIGENTE VARCHAR(1)') then
@@ -3549,6 +3579,38 @@ begin
     ) then
       ExecutaComando('commit');
   end;
+
+  {Mauricio Parizotto 2024-12-12 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'DIAGNOSTICOIA')) then
+  begin
+    ExecutaComando(' CREATE TABLE DIAGNOSTICOIA ('+
+                   '   IDDIAGNOSTICO INTEGER NOT NULL,'+
+                   '   DATA DATE NOT NULL,'+
+                   '   DADOSENVIADOS VARCHAR(1000),'+
+                   '   DADOSRETORNADOS VARCHAR(2000),'+
+                   '   PERIODO INTEGER,'+
+                   '   CONSTRAINT PK_DIAGNOSTICOIA PRIMARY KEY (IDDIAGNOSTICO)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando('CREATE SEQUENCE G_DIAGNOSTICOIA');
+
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2024-12-12 Inicio}
+
+  {Mauricio Parizotto 2025-01-10 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'MINHASNOTAS')) then
+  begin
+    ExecutaComando(' CREATE TABLE MINHASNOTAS ('+
+                   '   CHAVE VARCHAR(44) NOT NULL,'+
+                   '   CONSTRAINT PK_MINHASNOTAS PRIMARY KEY (CHAVE)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+  end;
+  {Mauricio Parizotto 2025-01-10 Inicio}
 
   Form22.Repaint;
 
