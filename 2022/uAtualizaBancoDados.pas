@@ -3537,7 +3537,7 @@ begin
 
     ExecutaComando('Commit');
   end;
-  {Mauricio Parizotto 2024-12-12 Inicio}
+  {Mauricio Parizotto 2024-12-12 Fim}
 
   {Mauricio Parizotto 2025-01-10 Inicio}
   if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'MINHASNOTAS')) then
@@ -3551,6 +3551,77 @@ begin
   end;
   {Mauricio Parizotto 2025-01-10 Inicio}
 
+
+  {Mauricio Parizotto 2025-01-23 Inicio}
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'CONFIGURACAOSCANNTECH')) then
+  begin
+    ExecutaComando(' Create table CONFIGURACAOSCANNTECH('+
+                   '   IDCONFIGURACAOSCANNTECH INTEGER NOT NULL,'+
+                   '   HABILITADO VARCHAR(1),'+
+                   '   USUARIO VARCHAR(50),'+
+                   '   SENHA VARCHAR(50),'+
+                   '   EMPRESA VARCHAR(10),'+
+                   '   FILIAL VARCHAR(10),'+
+                   '   INTERVALO INTEGER NOT NULL,'+
+                   '   DTINICIO DATE,'+
+                   '   URL1 VARCHAR(100),'+
+                   '   URL2 VARCHAR(100),'+
+                   '   URL3 VARCHAR(100),'+
+                   '   NOMECOMPUTADOR VARCHAR(40),'+
+                   '   CONSTRAINT PK_CONFIGURACAOSCANNTECH PRIMARY KEY (IDCONFIGURACAOSCANNTECH)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+  end;
+
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'SCANNTECHVENDA')) then
+  begin
+    ExecutaComando(' Create table SCANNTECHVENDA('+
+                   '   IDVENDA INTEGER NOT NULL,'+
+                   '   MODELO VARCHAR(2),'+
+                   '   NUMERONF VARCHAR(12),'+
+                   '   CAIXA VARCHAR(3),'+
+                   '   STATUSNF VARCHAR(128),'+
+                   '   DTENVIO DATE,'+
+                   '	 STATUS VARCHAR(10),'+
+                   ' 	 DESCRICAOERRO VARCHAR(300),'+
+                   '   LOTE VARCHAR(30),'+
+                   '   CONSTRAINT PK_SCANNTECHVENDA PRIMARY KEY (IDVENDA)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando('CREATE SEQUENCE G_SCANNTECHVENDA');
+
+    ExecutaComando('Commit');
+  end;
+
+
+  if (not TabelaExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'SCANNTECHFECHAMENTO')) then
+  begin
+    ExecutaComando(' Create table SCANNTECHFECHAMENTO('+
+                   '   IDFECHAMENTO INTEGER NOT NULL,'+
+                   '   CAIXA VARCHAR(3),'+
+                   '   VENDALIQUIDA DECIMAL(18,4),'+
+                   '   VENDACANCELAMENTOS DECIMAL(18,4),'+
+                   '   QTDVENDAS INTEGER,'+
+                   '   QTDCANCELAMENTOS INTEGER,'+
+                   '   DTMOVIMENTO DATE,'+
+                   '   DTENVIO DATE,'+
+                   '   STATUS VARCHAR(40),'+
+                   '   DESCRICAOERRO VARCHAR(300),'+
+                   '   CONSTRAINT PK_SCANNTECHFECHAMENTO PRIMARY KEY (IDFECHAMENTO)'+
+                   ' );');
+
+    ExecutaComando('Commit');
+
+    ExecutaComando('CREATE SEQUENCE G_SCANNTECHFECHAMENTO');
+
+    ExecutaComando('Commit');
+  end;
+
+
+  {Mauricio Parizotto 2025-01-23 Fim}
 
   Form22.Repaint;
 

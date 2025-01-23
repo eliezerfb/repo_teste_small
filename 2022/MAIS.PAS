@@ -282,6 +282,7 @@ type
     pnlContainer: TPanel;
     TimerDashboard: TTimer;
     TimerDiagIA: TTimer;
+    ClubedepromoesScanntech1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
     procedure imgCaixaClick(Sender: TObject);
@@ -464,6 +465,7 @@ type
     procedure IntegraoIMendes1Click(Sender: TObject);
     procedure TimerDashboardTimer(Sender: TObject);
     procedure TimerDiagIATimer(Sender: TObject);
+    procedure ClubedepromoesScanntech1Click(Sender: TObject);
 
 
   private
@@ -643,10 +645,7 @@ begin
 
 
   try
-
-    //
     // Emite boletos nos últimos 90 dias?
-    //
     try
       Form7.ibQuery1.Close;
       Form7.ibQuery1.Sql.Clear;
@@ -657,9 +656,8 @@ begin
     except
       sCheck := sCheck + '0';
     end;
-    //
+
     // Usa GRADE?
-    //
     try
       Form7.ibQuery1.Close;
       Form7.ibQuery1.Sql.Clear;
@@ -670,9 +668,8 @@ begin
     except
       sCheck := sCheck + '0';
     end;
-    //
+
     // Usa SERIE no último ANO?
-    //
     try
       Form7.ibQuery1.Close;
       Form7.ibQuery1.Sql.Clear;
@@ -683,10 +680,9 @@ begin
     except
       sCheck := sCheck + '0';
     end;
-    //
+
     // Usa ECF?
     // REDUCOES SMALL <> 65 59 99 DATA no período
-    //
     try
       Form7.ibQuery1.Close;
       Form7.ibQuery1.Sql.Clear;
@@ -815,7 +811,6 @@ begin
     try
       Form7.ibQuery1.Close;
       Form7.ibQuery1.Sql.Clear;
-      //Form7.ibQuery1.Sql.Add('select count(REGISTRO) from OS where coalesce(NF, '''') <> '''' and DATA >= (current_date - 90)'); OS faturadas?
       Form7.ibQuery1.Sql.Add('select count(REGISTRO) from OS where DATA >= (current_date - 90)');
       Form7.ibQuery1.Open;
 
@@ -885,25 +880,6 @@ begin
   end;
   Result := sCheck;
 end;
-
-
-{ Mauricio Parizotto 2023-12-29
-function GetSystemPath(Folder: Integer): string;
-var
-  PIDL: PItemIDList;
-  Path: LPSTR;
-  AMalloc: IMalloc;
-begin
-  Path := StrAlloc(MAX_PATH);
-  SHGetSpecialFolderLocation(Application.Handle, Folder, PIDL);
-
-  if SHGetPathFromIDList(PIDL, Path) then Result := Path;
-
-  SHGetMalloc(AMalloc);
-  AMalloc.Free(PIDL);
-  StrDispose(Path);
-end;
-}
 
 
 function ApagaArquivoNoDeskTop(sP1:String): boolean;
@@ -1159,17 +1135,11 @@ function tForm1.AvisoNFECompra(bP1 : Boolean):Boolean;
 begin
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
-  {Sandro Silva 2023-06-20 inicio
-  Form1.ibQuery2.SQL.Add('select count(NUMERONF)as NN');
-  Form1.ibQuery2.SQL.Add('from COMPRAS');
-  Form1.ibQuery2.SQL.Add('where ' + RetornarWhereNotasManifestar);
-  }
   Form1.ibQuery2.SQL.Text :=
     'select count(NUMERONF)as NN ' +
     'from COMPRAS ' +
     'where ' + RetornarWhereNotasManifestar;
 
-  {Sandro Silva 2023-06-20 fim}
   Form1.ibQuery2.Open;
   Form1.iAvisosNFECompra := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
 
@@ -1202,7 +1172,6 @@ function tForm1.AvisoReceber(bP1 : Boolean):Boolean;
 begin
   Form1.ibQuery2.Close;
   Form1.ibQuery2.SQL.Clear;
-  // Sandro Silva 2023-09-11 Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from RECEBER where VALOR_RECE=0 and VENCIMENTO=CURRENT_DATE');
   Form1.ibQuery2.SQL.Add('select count(REGISTRO)as NN from RECEBER where ' + SQL_CONDICAO_RECEBER_HOJE); // Define zero para VALOR_RECE nulo
   Form1.ibQuery2.Open;
   Form1.iAvisosReceber := StrToInt(Form1.IBQuery2.FieldByName('NN').AsString);
@@ -1455,36 +1424,6 @@ begin
       or (pos('[BLOQUEADO2]',UpperCase(S)) <> 0)
       or (pos('[PARATUDO]',UpperCase(S)) <> 0) then
     begin
-      {
-      if (pos('[PARATUDO]',UpperCase(S)) <> 0) then
-      begin
-        if Legal_ok(True) then
-        begin
-          try
-            Form1.ibDataset200.Close;
-            Form1.ibDataset200.SelectSql.Clear;
-            Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to 19670926');
-            Form1.ibDataset200.Open;
-
-            MensagemSistema('Este sistema foi bloqueado');
-          except
-          end;
-        end;
-      end else
-      begin
-        if Legal_ok(True) then
-        begin
-          try
-            Form1.ibDataset200.Close;
-            Form1.ibDataset200.SelectSql.Clear;
-            Form1.ibDataset200.SelectSql.Add('set generator G_LEGAL to ' + Copy(dateToStr(Date),7,4) + Copy(dateToStr(Date),4,2) + Copy(dateToStr(Date),1,2) );
-            Form1.ibDataset200.Open;
-          except
-          end;
-        end;
-      end;
-      }
-    {Mauricio Parizotto 2024-09-18 Inicio}
       try
         //Estava liberado e vai ser bloqueado
         GeraAviso := Legal_ok(True);
@@ -1524,72 +1463,6 @@ begin
         end;
       end;
       {Mauricio Parizotto 2024-09-18 Fim}
-
-
-      (* Mauricio Parizotto 2024-05-20
-      if (pos('[BUILD]',UpperCase(S)) <> 0) or (pos('[VERSAO]',UpperCase(S)) <> 0) then
-      begin
-        //Verifica se só tem um usuário conectado
-        vQtdConexoes := ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase,
-                                              'Select Count( * ) From MON$ATTACHMENTS');
-        if vQtdConexoes = 1 then
-        begin
-          bButton := Application.MessageBox(Pchar(
-                                            'Uma nova versão do Small Commerce está disponível para download (este procedimento demora apenas alguns minutos).'+
-                                            Chr(10) +
-                                            Chr(10) +
-                                            'Continuar?' +
-                                            Chr(10))
-                                            ,'Atenção',mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
-
-          if bButton = IDYES then
-          begin
-            if FileExists(Form1.sAtual+'\smallcon.exe') then
-            begin
-              {Sandro Silva 2024-01-12 inicio
-              ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20231001.sma '+
-                                                             '20231002.sma '+
-                                                             '20231003.sma '+
-                                                             '20231004.sma '+
-                                                             '20231005.sma '+
-                                                             '20231006.sma '+
-                                                             '20231007.sma '+
-                                                             '20231008.sma '+
-                                                             '20231009.sma '+
-                                                             'nfce2023.sma '+
-                                                             '2023_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
-                                                             , '', SW_SHOW);
-              }
-              ShellExecute( 0, 'Open', 'smallcon.exe', pChar('20241001.sma '+
-                                                             '20241002.sma '+
-                                                             '20241003.sma '+
-                                                             '20241004.sma '+
-                                                             '20241005.sma '+
-                                                             '20241006.sma '+
-                                                             '20241007.sma '+
-                                                             '20241008.sma '+
-                                                             '20241009.sma '+
-                                                             'nfce2024.sma '+
-                                                             '2024_'+LowerCase(Form7.ibDataSet13ESTADO.AsString)+'.sma ')
-                                                             , '', SW_SHOW);
-              {Sandro Silva 2024-01-12 fim}
-
-            end
-            else
-              MensagemSistema('Arquivo smallcon.exe não encontrado.');
-
-            Winexec('TASKKILL /F /IM "smallcdf.exe"', SW_HIDE );
-            Winexec('TASKKILL /F /IM "mobile.exe"', SW_HIDE );
-            Winexec('TASKKILL /F /IM "mkp.exe"', SW_HIDE );
-            Winexec('TASKKILL /F /IM "Small Commerce.exe"', SW_HIDE );
-            Winexec('TASKKILL /F /IM small22.exe', SW_HIDE );
-            Winexec('TASKKILL /F /IM nfe.exe', SW_HIDE );
-            FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
-          end;
-        end;
-      end;
-
-      *)
 
       if pos('[LOJA]',UpperCase(S)) <> 0 then
       begin
@@ -1741,7 +1614,6 @@ begin
   begin
     if AnsiUpperCase(ProcessFileName(FProcessEntry32.th32ProcessID)) = AnsiUpperCase(sNomeExeComCaminho)  then
     begin
-      //WinExec(PChar('taskkill /PID ' + IntToStr(FProcessEntry32.th32ProcessID) + ' /F'), SW_HIDE); Mauricio Parizotto 2023-12-29
       WinExec(PAnsiChar(AnsiString('taskkill /PID ' + IntToStr(FProcessEntry32.th32ProcessID) + ' /F')), SW_HIDE);
     end;
     ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
@@ -1756,7 +1628,6 @@ var
   sRazao: String;
 begin
   try
-    //Mais2ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
     Mais2ini := TIniFile.Create(NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF); // Sandro Silva 2022-12-02 Unochapeco Mais2ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
     Form7.LbBlowfish1.GenerateKey(Form1.sPasta);
     sRazao := Form7.LbBlowfish1.DecryptString(Mais2Ini.ReadString('R01','17',RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF));
@@ -1808,7 +1679,6 @@ begin
       end;
 
       if FileExists(Form1.sAtual+'\'+pP1+'.EXE') then
-        //Winexec(pChar(Form1.sAtual+'\'+pP1+'.exe /verysilent'), SW_HIDE );
         WinExec(PAnsiChar(AnsiString( Form1.sAtual+'\'+pP1+'.exe /verysilent' )), SW_HIDE);
 
       while FileExists(Form1.sAtual+'\'+pP1+'.~~1') do
@@ -1856,29 +1726,18 @@ end;
 
 procedure TForm1.ScrollMouse(var Msg: TMsg; var Handled: Boolean);
 var
-  {$IFDEF VER150}
-  iParam: Smallint;
-  {$ELSE}
   iParam: integer;
-  {$ENDIF}
 begin
   if Msg.message = WM_MOUSEWHEEL then
   begin
     Msg.message := WM_KEYDOWN;
     Msg.lParam  := 0;
-    {$IFDEF VER150}
-    iParam := HiWord(Msg.wParam) ;
-    if iParam > 0 then
-      Msg.wParam := VK_UP
-    else
-      Msg.wParam := VK_DOWN;
-    {$ELSE}
+
     iParam := HiWord(Msg.wParam) ;
     if iParam <= 120 then
       Msg.wParam := VK_UP
     else
       Msg.wParam := VK_DOWN;
-    {$ENDIF}
 
     Handled := False;
   end;
@@ -1899,14 +1758,6 @@ begin
 
   Form1.Label3.Caption      := sP2;
 
-  {Sandro Silva 2023-06-01 inicio
-  if (Form1.iReduzida = 1) and
-    ((sP1 = 'MONITORE AS CONTAS'+chr(10)+'A RECEBER') or
-    (sP1 = 'ORGANIZE AS CONTAS'+chr(10)+'A PAGAR') or
-    (sP1 = 'CONTROLE O '+chr(10)+'CAIXA') or
-    (sP1 = 'FIQUE DE OLHO NOS '+chr(10)+'BANCOS'))
-  then
-  }
   if (Form1.ValidaRecursos.PermiteRecursoParaProduto = False) and
     ((sModulo = 'RECEBER') or
      (sModulo = 'PAGAR') or
@@ -2221,8 +2072,6 @@ function TForm1.MontaTela(sP1 : boolean):Boolean;
 var
   iTop, iFix, iFixL, iLeft : Integer;
 begin
-  //Form1.Align    := alClient; Mauricio Parizotto 2024-08-08 - Tela cortava em baixo na abertura do sistema
-
   Panel_3.Left   := 0; // (Screen.Width - (1000)) div 2;
   Panel_3.Top    := Panel_0.Top + Form1.Panel_0.Height;
   Panel_3.Height := Form1.Height - Form1.Panel_3.Top;
@@ -3128,7 +2977,6 @@ begin
         // Pega os dados do Emitente
         try
           Form7.ibDataSet13.Active := True;
-          // Sandro Silva 2022-10-31 if Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0 then
           if (Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0)
             or (Form1.ValidaEmitenteMunicipio = False) then
           begin
@@ -3514,7 +3362,6 @@ begin
 
   if Form5.Visible then
     Form5.Close;
-//  if Form5.Visible then Form10.Close;
 
   if Form1.bFechaTudo then
   begin
@@ -3554,24 +3401,20 @@ var
   J, I, OldBkMode : Integer;
   dContador : tDateTime;
 begin
-  /////////////////////////
   // C A L E N D A R I O //
-  /////////////////////////
   OldBkMode := SetBkMode(Form1.Canvas.Handle, TRANSPARENT);
   dContador  := StrToDate('01/'+StrZero(Month(dP1),2,0)+'/'+StrZero(Year(dP1),4,0));
-  //
+
   Form1.Canvas.Font.Name  := 'verdana';
-//  Form1.Canvas.Font.Style := [fsBold];
   Form1.Canvas.Font.Style := [];
   Form1.Canvas.Font.Size  := 6;
-  //
+
   if Form1.sContrasteCor <> 'BRANCO' then Form1.Canvas.Font.Color := clSilver else Form1.Canvas.Font.Color := clWhite;
   Form1.Canvas.TextOut((iP2) + 30,iP3,AllTrim(MesExtenso(Month(dP1))));
-  //
+
   J := 0;
   for I := 1 to DiasPorMes(Year(Date),Month(Date)) do
   begin
-//    if (DayOfWeek(dContador) = 7) or (DayOfWeek(dContador) = 1) or (Date = dContador) then Form1.Canvas.Font.Style := [fsBold] else Form1.Canvas.Font.Style := [];
     if (DayOfWeek(dContador) = 7) or (DayOfWeek(dContador) = 1) or (Date = dContador) then Form1.Canvas.Font.Color := clRed else  Form1.Canvas.Font.Color := clBlack;
     Form1.Canvas.TextOut((iP2) + (30 * DayOfWeek(dContador)),iP3+12,Copy(DiaDaSemana(dContador),1,3));                 // Cabeçalho
     if Form1.sContrasteCor <> 'BRANCO' then Form1.Canvas.Font.Color := clSilver else Form1.Canvas.Font.Color := clWhite;
@@ -3580,9 +3423,7 @@ begin
     dContador := dContador + 1;
   end;
   SetBkMode(Form1.Canvas.Handle, OldBkMode);
-  /////////////////////////
   // C A L E N D A R I O //
-  /////////////////////////
   Result := True;
 end;
 
@@ -3591,22 +3432,21 @@ var
   SmallIni : tIniFile;
   I : Integer;
 begin
-  //
   SmallIni := TIniFile.Create(Form1.sAtual+'\LABELS.INI');
-  //
+
   Form7.ibDataSet2IDENTIFICADOR1.DisplayLabel := SmallIni.ReadString('CLIENTES','Label19','Identificador 1');
   Form7.ibDataSet2IDENTIFICADOR2.DisplayLabel := SmallIni.ReadString('CLIENTES','Label20','Identificador 2');
   Form7.ibDataSet2IDENTIFICADOR3.DisplayLabel := SmallIni.ReadString('CLIENTES','Label21','Identificador 3');
   Form7.ibDataSet2IDENTIFICADOR4.DisplayLabel := SmallIni.ReadString('CLIENTES','Label22','Identificador 4');
   Form7.ibDataSet2IDENTIFICADOR5.DisplayLabel := SmallIni.ReadString('CLIENTES','Label23','Identificador 5');
-  //
+
   Form7.ibDataSet15IDENTIFICADOR1.DisplayLabel := SmallIni.ReadString('VENDAS','Label28','Identificador 1');
-  //
+
   Form7.ibDataSet4LIVRE1.DisplayLabel := SmallIni.ReadString('ESTOQUE','Label18','Identificador 1');
   Form7.ibDataSet4LIVRE2.DisplayLabel := SmallIni.ReadString('ESTOQUE','Label19','Identificador 2');
   Form7.ibDataSet4LIVRE3.DisplayLabel := SmallIni.ReadString('ESTOQUE','Label20','Identificador 3');
   Form7.ibDataSet4LIVRE4.DisplayLabel := SmallIni.ReadString('ESTOQUE','Label21','Identificador 4');
-  //
+
   Form30.Label14.Caption := SmallIni.ReadString('OS','Label14','Descrição do objeto');
   Form30.Label15.Caption := SmallIni.ReadString('OS','Label15','Identificador 1');
   Form30.Label16.Caption := SmallIni.ReadString('OS','Label16','Identificador 2');
@@ -3618,9 +3458,9 @@ begin
   Form30.Label34.Caption := SmallIni.ReadString('OS','Label34','Técnico');
 
   Form12.Label28.Caption := SmallIni.ReadString('VENDAS','Label28','Identificador 1');
-  //
+
   Form7.ibDataSet3TOTAL_FRET.DisplayLabel := Form30.Label10.Caption;
-  //
+
   Form7.ibDataSet3DESCRICAO.DisplayLabel := SmallIni.ReadString('OS','Label14','Descrição do objeto');
   Form7.ibDataSet3IDENTIFI1.DisplayLabel := SmallIni.ReadString('OS','Label15','Identificador 1');
   Form7.ibDataSet3IDENTIFI2.DisplayLabel := SmallIni.ReadString('OS','Label16','Identificador 2');
@@ -3628,10 +3468,9 @@ begin
   Form7.ibDataSet3IDENTIFI4.DisplayLabel := SmallIni.ReadString('OS','Label18','Identificador 4');
   Form7.ibDataSet3GARANTIA.DisplayLabel  := SmallIni.ReadString('OS','Label30','Garantia');
   Form7.ibDataSet3PROBLEMA.DisplayLabel  := SmallIni.ReadString('OS','Label19','Problema reclamado');
-  //
+
   with Form7.ibDataSet2 do
   begin
-    //
     for I := 1 to FieldCount do
     begin
       if Pos('$',Fields[I-1].DisplayLabel) <> 0 then
@@ -3643,10 +3482,6 @@ begin
       begin
         Fields[I-1].Displaywidth := 10;
       end;
-//      if Pos('e-mail',LowerCase(Fields[I-1].DisplayLabel)) <> 0 then
-//      begin
-//        Fields[I-1].Displaywidth := 21;
-//      end;
       if (Pos('telefone',LowerCase(Fields[I-1].DisplayLabel)) <> 0)
       or (Pos('celular',LowerCase(Fields[I-1].DisplayLabel)) <> 0)
       or (Pos('fax',LowerCase(Fields[I-1].DisplayLabel)) <> 0) then
@@ -3655,10 +3490,9 @@ begin
       end;
     end;
   end;
-  //
+
   with Form7.ibDataSet3 do
   begin
-    //
     for I := 1 to FieldCount do
     begin
       if Pos('$',Fields[I-1].DisplayLabel) <> 0 then
@@ -3670,16 +3504,11 @@ begin
       begin
         Fields[I-1].Displaywidth := 10;
       end;
-//      if Pos('e-mail',LowerCase(Fields[I-1].DisplayLabel)) <> 0 then
-//      begin
-//        Fields[I-1].Displaywidth := 21;
-//      end;
     end;
   end;
-  //
+
   with Form7.ibDataSet4 do
   begin
-    //
     for I := 1 to FieldCount do
     begin
       if Pos('$',Fields[I-1].DisplayLabel) <> 0 then
@@ -3691,17 +3520,12 @@ begin
       begin
         Fields[I-1].Displaywidth := 10;
       end;
-//      if Pos('e-mail',LowerCase(Fields[I-1].DisplayLabel)) <> 0 then
-//      begin
-//        Fields[I-1].Displaywidth := 21;
-//      end;
     end;
   end;
-  //
+
   SmallIni.Free;
-  //
+
   Result := True;
-  //
 end;
 
 
@@ -3709,17 +3533,13 @@ function MostraLabels(tSp1: tImage; tSp2: TLabel): Boolean;
 var
   Mais1Ini : tIniFile;
 begin
-  //
   with Form1 do
   begin
-    //
     tSp2.OnClick     := tSp1.OnClick;
-    //
     tSp2.Top         := 0; // tSp1.Top + tSp1.Height -20;
     tSp2.Alignment   := taCenter;
     tSP2.Left        := tSp1.Left;
     tSp2.Width       := tSp1.Width;
-    //
     // Não mostrar as legendas
     {Mauricio Parizotto 2024-04-23
     if not Form19.CheckBox8.Checked then
@@ -3875,18 +3695,6 @@ begin
   with Form22.redtSobre do
   begin
     Lines.Clear;
-    {
-    SelAttributes.Name := 'Microsoft Sans Serif';
-    SelAttributes.Style := [fsBold];
-    SelAttributes.Color := clWhite;
-
-    SelAttributes.Height := 30;
-    Lines.Add(Form22.sTitulo);
-
-    SelStart := Length(Text)-1;
-    SelAttributes.Style := [];
-    SelAttributes.Height := 16;
-    }
     SelAttributes.Color := clWhite; // 2024-01-05
 
     Form1.ibDataSet200.Close;
@@ -3968,10 +3776,8 @@ procedure Tform1.EscolheOBloqueto(Sender:TObject);
 begin
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
   with Sender as TMenuItem do
-  //  sEscolhido := Caption;
     sBancoBoleto := Caption;
 
-  //sEscolhido := 'Boleto de cobrança do '+sEscolhido;
   sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.ShowModal;
 end;
@@ -3980,10 +3786,8 @@ procedure Tform1.EscolheCNAB400(Sender:TObject);
 begin
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
   with Sender as TMenuItem do
-  //  sEscolhido := Caption;
     sBancoBoleto := Caption;
 
-  //sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
   sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.Show;
 
@@ -4004,10 +3808,8 @@ procedure Tform1.EscolheCNAB240(Sender:TObject);
 begin
   // Elimina o & que o delphi 6 e 7 colocam automaticamente
   with Sender as TMenuItem do
-  //  sEscolhido := Caption;
       sBancoBoleto := Caption;
 
-  //sEscolhido := 'Boleto de cobrança do '+Form1.sEscolhido;
   sEscolhido := 'Boleto de cobrança do '+sBancoBoleto;
   Form25.Show;
 
@@ -4070,11 +3872,7 @@ begin
 
   CHDir(Form1.sAtual);
 
-  {$IFDEF VER150}
-  if (DecimalSeparator <> ',') or (DateSeparator <> '/') then
-  {$ELSE}
   if (FormatSettings.DecimalSeparator <> ',') or (FormatSettings.DateSeparator <> '/') then
-  {$ENDIF}
   begin
      MensagemSistema('As propriedades das configurações regionais do seu sistema não estão'     + Chr(10) +
                      'de acordo com o padrão utilizado no Brasil.'                              + Chr(10) +
@@ -4097,7 +3895,7 @@ begin
     Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
     FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
   end;
-  //
+
   Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
   if AllTrim(Mais1Ini.ReadString('Html','Html1','1')) = '1' then
     Form1.bHtml1 := True
@@ -4158,12 +3956,11 @@ begin
 
   Form19.Edit7.Color := StrToInt('$'+AllTrim(Mais1Ini.ReadString('Html','Cor','EBEBEB')));
   Form19.Edit8.Color := StrToInt('$'+AllTrim(Mais1Ini.ReadString('Html','Cor','EBEBEB')));
-  //
+
   Form1.sHtmlCor := Copy(Mais1Ini.ReadString('Html','Cor','EBEBEB'),5,2)+
                     Copy(Mais1Ini.ReadString('Html','Cor','EBEBEB'),3,2)+
                     Copy(Mais1Ini.ReadString('Html','Cor','EBEBEB'),1,2);
-  //
-  //
+
   if (Copy(Form22.sTitulo+Replicate(' ',33),1,33) <> 'Small Commerce + Ordem de Serviço') or (Copy(Form22.sTitulo+Replicate(' ',33),1,33) <> 'Small Mei + Ordem de Serviço')  then
   begin
     Cadastrodetcnicos1.Visible           := False;
@@ -4171,7 +3968,7 @@ begin
   begin
     Cadastrodetcnicos1.Visible           := True;
   end;
-  //
+
   Mais.LeLabels(True);
 
   // Ativa o verificador de rede
@@ -4214,6 +4011,13 @@ begin
     RenameFile(pChar(Form1.sAtual+'\backup_.exe'),pChar(Form1.sAtual+'\backup.exe'));
   end;
 
+  //Mauricio Parizotto 2025-01-23
+  if (FileExists(Form1.sAtual+'\scanntech_.exe')) and (FileExists(Form1.sAtual+'\scanntech.exe')) then
+  begin
+    RenameFile(pChar(Form1.sAtual+'\scanntech.exe'),pChar(Form1.sAtual+'\scanntech_o.exe'));
+    RenameFile(pChar(Form1.sAtual+'\scanntech_.exe'),pChar(Form1.sAtual+'\scanntech.exe'));
+  end;
+
   {Sandro Silva 2024-05-02 inicio}
   // Artifício para possíbilitar atualizar o servidorsat.exe via arquivos de atualização
   // Dentro do arquivo de atualização deve existir o servidorsat_exe
@@ -4226,14 +4030,13 @@ begin
 
   if (sModeloPAF <> '65') and (sModeloPAF <> '01') and (sModeloPAF <> '59') and (sModeloPAF <> '99') then
   begin
-    //
     sPastaDoPaf := 'paf2023';
     if Form7.ibDataSet13ESTADO.AsString = 'SC' then
       sPastaDoPaf := 'paf2023';
 
     if not FileExists(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\bematech2\bemafi32.ini')) then
       sPastaDoPaf := 'paf2023'; // Sandro Silva 2022-12-28 sPastaDoPaf := 'paf2021';
-    //
+
     if FileExists(Form1.sAtual+'\'+sPastaDoPaf+'\paf.txt') then
     begin
       try
@@ -4263,8 +4066,6 @@ begin
 
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\APF_DLL2.DLL'),          pChar(Form1.sAtual+'\APF_DLL2.DLL'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\BemaFI32.dll'),          pChar(Form1.sAtual+'\BemaFI32.dll'),false);
-        //CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\blocox.exe'),            pChar(Form1.sAtual+'\blocox.exe'),false);
-        // Sandro Silva 2022-12-02 Unochapeco CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\blocox.exe'),            pChar(Form1.sAtual+'\blocox.exe'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\CONSULTA.exe'),          pChar(Form1.sAtual+'\CONSULTA.exe'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\CONVECF.dll'),           pChar(Form1.sAtual+'\CONVECF.dll'),false);
         CopyFile(pChar(Form1.sAtual+'\'+sPastaDoPaf+'\daruma1'),               pChar(Form1.sAtual+'\daruma1'),false);
@@ -4306,7 +4107,6 @@ begin
   Form1.SetFocus;
 
   try
-    // Sandro Silva 2022-10-31 if Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0 then
     if (Pos('1'+UpperCase(UpperCase(Form7.ibDataSet13ESTADO.AsString))+'2','1AC21AL21AM21AP21BA21CE21DF21ES21GO21MA21MG21MS21MT21PA21PB21PE21PI21PR21RJ21RN21RO21RR21RS21SC21SE21SP21TO21mg2') = 0)
       or (ValidaEmitenteMunicipio = False) then
     begin
@@ -4321,7 +4121,6 @@ begin
         Form1.SetFocus;
     end else
     begin
-      //
       if Form7.ibDataSet39.Active then
       begin
         if FileExists(pChar('ibpt_'+Form7.ibDataSet13ESTADO.AsString+'.txt')) then
@@ -4380,7 +4179,6 @@ begin
   if not FechaTudo(bFechaTudo) then
     Exit;
 
-  //Form7.Close; Mauricio Parizotto 2023-06-27 causa erro invalid transaction handle
   Form7.sModulo := 'TRANSPORT';
   Form7.sTitulo := 'Cadastro de transportadoras';
   Form7.sRPS := 'N';
@@ -8886,6 +8684,11 @@ begin
 
   Form29.btnOKClick(Form29);
 end;
+procedure TForm1.ClubedepromoesScanntech1Click(Sender: TObject);
+begin
+  ShellExecute( 0, 'Open', 'scanntech.exe','A', '', SW_SHOW);
+end;
+
 {Dailon Parisotto (f-7540) 2023-11-06 fim}
 
 procedure TForm1.estarDisponibilidadedeServiosdasSecretariasdeFazenda1Click(
