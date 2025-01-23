@@ -9,7 +9,6 @@ inherited FrmIntegracaoSicoob: TFrmIntegracaoSicoob
   Constraints.MinHeight = 441
   Constraints.MinWidth = 534
   Font.Name = 'Microsoft Sans Serif'
-  Position = poScreenCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
@@ -261,9 +260,15 @@ inherited FrmIntegracaoSicoob: TFrmIntegracaoSicoob
       Height = 20
       Color = clWhite
       Ctl3D = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Microsoft Sans Serif'
+      Font.Style = []
       ParentBackground = False
       ParentColor = False
       ParentCtl3D = False
+      ParentFont = False
       TabOrder = 0
       ExplicitLeft = 20
       ExplicitTop = 28
