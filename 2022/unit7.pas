@@ -14776,12 +14776,12 @@ begin
   begin
     if CpfCgc(LimpaNumero(Text)) then
     begin
-       if UpperCase(Form1.ConfAceitaCGCDuplo) = 'SIM' then
+       if oArqConfiguracao.BD.Outras.PermiteDuplicarCNPJ then
        begin
          ibDataSet2CGC.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)));
        end else
        begin
-         if (Valida_Campo('CLIFOR',ConverteCpfCgc(AllTrim(LimpaNumero(Text))),'CGC','Este CPF/CNPJ já foi cadastrado')) then
+         if (Valida_Campo('CLIFOR', ConverteCpfCgc(AllTrim(LimpaNumero(Text))),'CGC','Este CPF/CNPJ já foi cadastrado')) then
             ibDataSet2CGC.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)));
        end;
     end else
