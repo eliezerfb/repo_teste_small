@@ -14781,9 +14781,7 @@ begin
     Exit();
   end;
 
-  var CnpjCpfMsg := 'CPF';
-  if Identification.Length > 11 then
-    CnpjCpfMsg := 'CNPJ';
+  var CnpjCpfMsg := GetTipoDocumento(Identification);
 
   if not(CpfCgc(Identification)) then
   begin
@@ -14794,13 +14792,15 @@ begin
   var IdentificationFormated := ConverteCpfCgc(Trim(Identification));
   const MSG_ALERTA_CNPJ =
     Format('Já existe cadastro para o %s informado.', [CnpjCpfMsg]);
-  if not(oArqConfiguracao.BD.Outras.PermiteDuplicarCNPJ) then
+
+  var PermiteDuplicarCNPJ := oArqConfiguracao.BD.Outras.PermiteDuplicarCNPJ;
+  if not(PermiteDuplicarCNPJ) then
   begin
     if not(Valida_Campo('CLIFOR', IdentificationFormated, 'CGC', MSG_ALERTA_CNPJ)) then
       Exit;
   end;
 
-  if oArqConfiguracao.BD.Outras.PermiteDuplicarCNPJ then
+  if PermiteDuplicarCNPJ then
   begin
     with TIBQuery.Create(nil) do
     begin
