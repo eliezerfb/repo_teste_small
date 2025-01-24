@@ -27,6 +27,8 @@ type
     procedure setRecalculaCustoMedioRetroativo(const Value: Boolean);
     function getOcultaUsoConsumoVenda: Boolean;
     procedure setOcultaUsoConsumoVenda(const Value: Boolean);
+    function getPermiteDuplicarCNPJ: Boolean;
+    procedure setPermiteDuplicarCNPJ(const Value: Boolean);
   public
     property LogSistema: Boolean read getLogSistema write setLogSistema;
     property FabricaProdutoSemQtd: Boolean read getFabricaProdutoSemQtd write setFabricaProdutoSemQtd;
@@ -37,6 +39,7 @@ type
     property PermiteImportarMesmoOrc: Boolean read getPermiteImportarMesmoOrc write setPermiteImportarMesmoOrc; //Mauricio Parizotto 2024-08-26
     property RecalculaCustoMedioRetroativo: Boolean read getRecalculaCustoMedioRetroativo write setRecalculaCustoMedioRetroativo; //Dailon Parisotto 2024-09-02
     property OcultaUsoConsumoVenda: Boolean read getOcultaUsoConsumoVenda write setOcultaUsoConsumoVenda;
+    property PermiteDuplicarCNPJ: Boolean read getPermiteDuplicarCNPJ write setPermiteDuplicarCNPJ;
   protected
   end;
 
@@ -70,6 +73,11 @@ end;
 function TSectionOutras.getOcultaUsoConsumoVenda: Boolean;
 begin
   Result := getValorBD(_OcultaUsoConsumoVenda) = '1';
+end;
+
+function TSectionOutras.getPermiteDuplicarCNPJ: Boolean;
+begin
+  Result := getValorBD(_PermiteDuplicarCNPJ) = '1';
 end;
 
 function TSectionOutras.getPermiteImportarMesmoOrc: Boolean;
@@ -149,7 +157,16 @@ procedure TSectionOutras.setOcultaUsoConsumoVenda(const Value: Boolean);
 begin
   setValorBD(
     _OcultaUsoConsumoVenda,
-    'Recalcular custo médio retroativo',
+    'Oculta Uso Consumo na Venda',
+    Value.ToInteger.ToString
+  );
+end;
+
+procedure TSectionOutras.setPermiteDuplicarCNPJ(const Value: Boolean);
+begin
+  setValorBD(
+    _PermiteDuplicarCNPJ,
+    'Permite duplicar CNPJ no cadastro',
     Value.ToInteger.ToString
   );
 end;

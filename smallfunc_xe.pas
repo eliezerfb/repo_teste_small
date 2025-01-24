@@ -205,6 +205,7 @@ procedure SetConfiguracaoA5PaginaMatricial;
 function EnumeradoToStr(const t: variant; const AString:
   array of string; const AEnumerados: array of variant): variant;
 function SqlFiltroNFCEAutorizado(AliasTabela:string): String; //Mauricio Parizotto 2025-01-17
+function GetTipoDocumento(ACnpjCpf: String): String;
 
 
 var
@@ -2860,6 +2861,13 @@ begin
             '      or ('+AliasTabela+'.STATUS containing ' + QuotedStr(_cVENDA_GERENCIAL_FINALIZADA) + ')'+
             '      or ('+AliasTabela+'.STATUS containing ' + QuotedStr(_cVENDA_MEI_ANTIGA_FINALIZADA) + ')'+
             '    )';
+end;
+
+function GetTipoDocumento(ACnpjCpf: String): String;
+begin
+  Result := 'CPF';
+  if ACnpjCpf.Length > 11 then
+    Result := 'CNPJ';
 end;
 
 end.

@@ -109,6 +109,7 @@ const
   _PermiteImportaMesmoOrc = 'Importar Mesmo Orc Cupom';
   _RecalculaCustoMedioRetroativo = 'Recalc Custo Medio Retroativo';
   _OcultaUsoConsumoVenda = 'Ocultar produtos uso consumo';
+  _PermiteDuplicarCNPJ = 'PermiteDuplicarCNPJ';
 
 
   //Impressora
