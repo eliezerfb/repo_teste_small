@@ -1,4 +1,4 @@
-unit uSectionDATPadrao;
+﻿unit uSectionDATPadrao;
 
 interface
 
@@ -108,7 +108,7 @@ begin
     end;
   except
     on e:exception do
-      MensagemSistema('N o foi poss vel salvas configra  es. Tente novamente!',msgAtencao);
+      MensagemSistema('Não foi possível salvar as configurações. Tente novamente!',msgAtencao);
   end;
 
   FoQConfiguracoes.Close;
