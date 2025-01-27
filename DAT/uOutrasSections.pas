@@ -77,7 +77,8 @@ end;
 
 function TSectionOutras.getPermiteDuplicarCNPJ: Boolean;
 begin
-  Result := getValorBD(_PermiteDuplicarCNPJ) = '1';
+  var Value := UpperCase(Trim(getValorBD(_PermiteDuplicarCNPJ)));
+  Result := (Value = 'SIM') or (Value = 'S') or (Value = '1');
 end;
 
 function TSectionOutras.getPermiteImportarMesmoOrc: Boolean;
@@ -164,11 +165,11 @@ end;
 
 procedure TSectionOutras.setPermiteDuplicarCNPJ(const Value: Boolean);
 begin
-  setValorBD(
-    _PermiteDuplicarCNPJ,
-    'Permite duplicar CNPJ no cadastro',
-    Value.ToInteger.ToString
-  );
+  var YesNo := 'NAO';
+  if Value then
+    YesNo := 'SIM';
+
+  setValorBD(_PermiteDuplicarCNPJ, 'Permite duplicar CNPJ no cadastro', YesNO);
 end;
 
 procedure TSectionOutras.setPermiteImportarMesmoOrc(const Value: Boolean);
