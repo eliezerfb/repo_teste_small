@@ -35,7 +35,7 @@ uses
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
 // Build do banco incrementa sempre par
-const BUILD_DO_BANCO = '2025003';
+const BUILD_DO_BANCO = '2025004';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -4843,19 +4843,7 @@ begin
 
   ConectaBancoCommerce; // Sandro Silva 2023-05-31
 
-  {Mauricio Parizotto 2023-12-19 Inicio}
-{  SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
-  Form7.ibDataSet4DESCRICAO.Size := SizeDescricaoProd;
-  Form7.ibDataSet16DESCRICAO.Size := SizeDescricaoProd;
-  Form7.ibDataSet23DESCRICAO.Size := SizeDescricaoProd;
-  Form7.ibDataSet27DESCRICAO.Size := SizeDescricaoProd;
-  Form7.ibDataSet28DESCRICAO.Size := SizeDescricaoProd;
-  Form7.ibDataSet35DESCRICAO.Size := SizeDescricaoProd;
-  Form7.ibDataset40DESCRICAO.Size := SizeDescricaoProd;
-  Form7.ibDataSet37DESCRICAO.Size := SizeDescricaoProd;
-  Form24.ibDataSet44DESCRICAO.Size := SizeDescricaoProd;}
   AjustarDataSetCamposProduto;
-  {Mauricio Parizotto 2023-12-19 Fim}
 
   if Form1.sSerial = '' then
   begin
@@ -10590,9 +10578,13 @@ end;
 
 
 procedure TForm1.TimerDashboardTimer(Sender: TObject);
+var
+  dtLimite: TDate;
 begin
   TimerDashboard.Enabled := False;
-  AbreDashboard;
+
+  if ValidaRecursos.PermiteRecursoParaProduto then
+    AbreDashboard;
 end;
 
 procedure TForm1.TimerDiagIATimer(Sender: TObject);
@@ -12605,7 +12597,6 @@ begin
     Exit;
   end;
   FreeAndNil(IBQTEMP);
-  //Sandro Silva 2024-04-08 Comandos120CaracteresProd;
 
   Commitatudo(True); // Grava alterações pendentes
 
@@ -12628,49 +12619,18 @@ begin
     {    Form7.ibDataSet13.Close;
     Form7.ibDataSet13.Open;  }
     try
-      {2024-04-10
-      Form7.ibDataSet4.Close;
-      Form7.ibDataSet16.Close;
-      Form7.ibDataSet23.Close;
-      Form7.ibDataSet27.Close;
-      Form7.ibDataSet28.Close;
-      Form7.ibDataSet35.Close;
-      Form7.ibDataset40.Close;
-      Form7.ibDataSet37.Close;
-      Form24.ibDataSet44.Close;
-      }
-
-      {Sandro Silva 2024-04-08 inicio}
       try
         ConectaBancoCommerce;
       except
-
       end;
-      {Sandro Silva 2024-04-08 fim}
 
       AjustarDataSetCamposProduto;
 
-      {Sandro Silva 2024-04-10 inicio}
       // Para conseguir validar os dados do emitente com o LEGAL
       Form7.ibDataSet13.Close;
       Form7.ibDataSet13.Open;
-      {Sandro Silva 2024-04-10 fim}
-
-      //Commitatudo(True); //2024-04-09
-
     finally
-      {2024-04-10
-      Form7.ibDataSet4.Open;
-      Form7.ibDataSet16.Open;
-      Form7.ibDataSet23.Open;
-      Form7.ibDataSet27.Open;
-      Form7.ibDataSet28.Open;
-      Form7.ibDataSet35.Open;
-      Form7.ibDataset40.Open;
-      Form7.ibDataSet37.Open;
-      Form24.ibDataSet44.Open;
-      }
-      AbreArquivos(False); //2024-04-10
+      AbreArquivos(False);
       Screen.Cursor := crDefault;
     end;
   except

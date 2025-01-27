@@ -712,9 +712,9 @@ begin
               Form7.spdNFeDataSets.Campo('IE_E17').Value := trim(Form7.ibDAtaset2.FieldByname('IE').AsString)
             else
               Form7.spdNFeDataSets.Campo('IE_E17').Value := '';
-
           end else
           begin
+            { smal-885 Mauricio Parizotto 2025-01-23
             if (not ConsisteInscricaoEstadual(LimpaNumero(Form7.ibDAtaset2IE.AsString),Form7.ibDAtaset2ESTADO.AsString)) then
             begin
               if Form7.ibDAtaset2.FieldByname('IE').AsString = 'ISENTO' then
@@ -739,10 +739,20 @@ begin
                 Abort;
               end;
             end;
+            }
+            if Form7.ibDAtaset2.FieldByname('IE').AsString = 'ISENTO' then
+            begin
+              Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '2'; //2-Isento
+              Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
+            end else
+            begin
+              Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '1'; //1-Contribuinte
+              Form7.spdNFeDataSets.Campo('IE_E17').Value          := LimpaNumero(Form7.ibDAtaset2.FieldByname('IE').AsString); // Inscrição Estadual do Destinatário
+            end;
           end;
         end else
         begin
-          Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '9';   // 1-Contribuinte; 2-Isento; 9-Não contribuinte
+          Form7.spdNFeDataSets.Campo('indIEDest_E16a').Value  := '9';  // 9-Não contribuinte
           Form7.spdNFeDataSets.Campo('IE_E17').Value          := '';
 
           // quando é CPF não deve mostrar o IE
