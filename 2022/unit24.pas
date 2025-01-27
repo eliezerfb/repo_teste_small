@@ -1316,7 +1316,6 @@ begin
                   try
                     if (Form7.ibDataSet23UNITARIO.Asfloat <> 0) then
                     begin
-                      //if (AllTrim(Form7.ibDataSet14INTEGRACAO.AsString) <> '') then Mauricio Parizotto 2024-02-27
                       if (AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString),'PAGAR'))
                         or (AnsiContainsText(AnsiUpperCase(Form7.ibDataSet14INTEGRACAO.AsString),'CAIXA')) then
                       begin
@@ -1337,12 +1336,9 @@ begin
                                                                      Form7.ibDataSet24DESPESAS.AsFloat -     // outras   //
                                                                      Form7.ibDataSet24DESCONTO.AsFloat       // desconto //
                                                                   ));
-                          {Sandro Silva 2023-10-16 fim}
 
-                          {Sandro Silva 2023-03-02 inicio}
                           if AnsiContainsText(Form7.ibDataSet4CUSTOCOMPR.AsString, 'INF') then
                             Form7.ibDataSet4CUSTOCOMPR.AsFloat := 0.00;
-                          {Sandro Silva 2023-03-02 fim}
 
                           sCustoCompra := Form7.ibDataSet4CUSTOCOMPR.AsString +
                                           ' = ( ' + Form7.ibDataSet23UNITARIO.AsString + ' + ' +
@@ -1353,7 +1349,6 @@ begin
                                           Form7.ibDataSet24SEGURO.AsString + ' + ' +
                                           Form7.ibDataSet24DESPESAS.AsString + ' - ' +
                                           Form7.ibDataSet24DESCONTO.AsString + ' ))';
-                          {Sandro Silva 2023-10-16 fim}
 
 
                           // Fórmula do custo médio                                                //
@@ -1426,10 +1421,8 @@ begin
                                 begin
                                   Form7.ibDataSet4CUSTOMEDIO.AsFloat := Form7.ibDataSet4CUSTOCOMPR.AsFloat - (Form7.ibDataSet23VICMS.Asfloat/Form7.ibDataSet23QUANTIDADE.Asfloat);
 
-                                  {Sandro Silva 2023-03-01 inicio}
                                   if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
                                     Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
-                                  {Sandro Silva 2023-03-01 fim}
 
                                   Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
                                   Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
@@ -1437,11 +1430,8 @@ begin
                                   Writeln(F,'Custo médio.......: ' + Form7.ibDataSet4CUSTOMEDIO.AsString + ' = '+Form7.ibDataSet4CUSTOMEDIO.AsString);
                                 end else
                                 begin
-
-                                  {Sandro Silva 2023-03-01 inicio}
                                   if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
                                     Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
-                                  {Sandro Silva 2023-03-01 fim}
 
                                   Writeln(F,'Descrição.........: ' + Form7.ibDataset4DESCRICAO.AsString);
                                   Writeln(F,'Código............: ' + Form7.ibDataset4CODIGO.AsString);
@@ -1464,7 +1454,6 @@ begin
                                   if AnsiContainsText(Form7.ibDataSet4CUSTOMEDIO.AsString, 'INF') then
                                     Form7.ibDataSet4CUSTOMEDIO.AsFloat := 0.00;
                                   {Sandro Silva 2023-03-01 fim}
-
                                 end;
 
                                 Writeln(F,Replicate('-',80));
@@ -1490,14 +1479,6 @@ begin
 
                           Form7.ibDataSet4ULT_COMPRA.AsDateTime := Form7.ibDataSet24EMISSAO.AsDateTime;
                           Form7.ibDataSet4ALTERADO.AsString     := '0';
-
-                          {Mauricio Parizotto 2024-03-19
-                          if Form7.ibDataSet23LISTA.AsFloat <> 0 then
-                          begin
-                            Form7.ibDataSet4PRECO.AsFloat      := Form7.ibDataSet23LISTA.AsFloat;
-                            Form7.ibDataSet4ALTERADO.AsString  := '1';
-                          end;
-                          }
                         end;
 
 
@@ -1524,7 +1505,6 @@ begin
                         except
                           Form7.ibDataSet23CUSTO.AsFloat := 0.00;
                         end;
-                        {Sandro Silva 2023-10-17 fim}
 
                         //Sandro Silva 2024-09-27 Form7.ibDataSet4.Post;
                       end;
@@ -1546,7 +1526,6 @@ begin
                     else
                     begin
                       // Quando o Valor Unitário está zerado no xml
-
                       if not (Form7.ibDataset4.State in ([dsEdit, dsInsert])) then // Sandro Silva 2024-09-27
                         Form7.ibDataSet4.Edit;
 
@@ -1566,7 +1545,6 @@ begin
                     end;
                   except
                     on E: Exception do
-                      //ShowMessage('Erro ao calcular custo médio: '+chr(10)+E.Message); Mauricio Parizotto 2023-10-25
                       MensagemSistema('Erro ao calcular custo médio: '+chr(10)+E.Message,msgErro);
                   end;
 
