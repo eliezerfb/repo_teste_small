@@ -1,4 +1,3 @@
-// Unit de nota fiscal
 unit Unit12;
 
 interface
@@ -297,10 +296,12 @@ type
       Shift: TShiftState);
     procedure EditRecebedorNomeKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure PageControlAddressMktpChange(Sender: TObject);
+    procedure DBLookupComboBoxEnderRecebKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
 
   private
     { Private declarations }
+    procedure AppMessage(var Msg: TMsg; var Handled: Boolean);
     procedure LoadRecebedor(AFilterByNome: String = '');
     procedure SetRecebedor();
     procedure LoadAddress();
@@ -351,7 +352,7 @@ begin
   if not(Form7.DataSource15.DataSet.FieldByName('IDRECEBEDOR').Value =
     IBQueryRecebedor.FieldByName('IDCLIFOR').Value) then
   begin
-    Form7.DataSource15.DataSet.FieldByName('IDLOCALENTREGA').Value := Null;
+    Form7.DataSource15.DataSet.FieldByName('IDLOCALENTREGA').Value := -1;
     Form7.DataSource15.DataSet.FieldByName('LOCALENTREGA_END_PRINCIPAL').Value := Null;
   end;
 
@@ -360,6 +361,9 @@ begin
 
   DBGridRecebedor.Visible := False;
   LoadAddress();
+
+  DBLookupComboBoxEnderReceb.DropDown();
+  DBLookupComboBoxEnderReceb.SetFocus();
 end;
 
 procedure TForm12.ShowMarketplaceTab();
@@ -678,6 +682,25 @@ begin
     Form7.ibDataSet15.Post;
     Form7.ibDataSet18.Edit;
   except
+  end;
+end;
+
+procedure TForm12.DBLookupComboBoxEnderRecebKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+  begin
+    DBLookupComboBoxEnderReceb
+      .DataSource
+        .DataSet
+          .FieldByName(DBLookupComboBoxEnderReceb.DataField).Value := Null;
+    Key := 0;
+  end;
+
+  if Key = VK_RETURN then
+  begin
+    DBGrid1.SetFocus;
+    Key := 0;
   end;
 end;
 
@@ -1701,6 +1724,7 @@ begin
   Form12.Tag := 1;
   DBGridRecebedor.Visible := False;
   PageControlAddressMktp.ActivePage := TabSheetEnderecoCliente;
+  Application.OnMessage := AppMessage;
 
   Form12.ActiveControl := Nil;
 
@@ -1968,6 +1992,8 @@ var
   Mais1Ini: TIniFile;
   ConsultaImprimeDanfe : Boolean;
 begin
+  Application.OnMessage := nil;
+
   {Dailon Parisotto (f-21050) 2024-09-26 Inicio}
   if (not bOk) and (Button1.Enabled) then
     Button1.SetFocus;
@@ -2925,7 +2951,6 @@ end;
 procedure TForm12.LoadRecebedor(AFilterByNome: String);
 begin
   IBQueryRecebedor.Close();
-  var Filter := '';
   var NullUnion := 'SELECT '+
     '  NULL AS idclifor, '+
     '  CAST(NULL AS VARCHAR(100)) AS nome '+
@@ -2933,10 +2958,11 @@ begin
     '  RDB$DATABASE '+
     ' UNION ALL ';
 
+  var Filter := 'where coalesce(ATIVO, 0) = 0 and not(NOME = '+QuotedStr('')+')';
   if not(Trim(AFilterByNome) = '') then
   begin
     Filter := Format(
-      'where upper(NOME) LIKE ''%%%s%%''', [UpperCase(Trim(AFilterByNome))]
+      ' where upper(NOME) LIKE ''%%%s%%''', [UpperCase(Trim(AFilterByNome))]
     );
     NullUnion := '';
   end;
@@ -2948,6 +2974,7 @@ begin
     '  nome '+
     ' FROM '+
     '  clifor '+
+    '  '+
     Filter +
     ' ORDER BY '+
     '  2;';
@@ -3446,17 +3473,17 @@ procedure TForm12.EditRecebedorNomeKeyDown(Sender: TObject; var Key: Word;
 begin
   if (Key = VK_DOWN) and (DBGridRecebedor.Visible) then
     DBGridRecebedor.SetFocus;
+
+  if Key = VK_RETURN then
+    DBLookupComboBoxEnderReceb.SetFocus;
 end;
 
 procedure TForm12.EditRecebedorNomeKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   LoadRecebedor(EditRecebedorNome.Text);
-end;
-
-procedure TForm12.PageControlAddressMktpChange(Sender: TObject);
-begin
-  DBGridRecebedor.Visible := False;
+  if not(DBGridRecebedor.Visible) then
+    DBGridRecebedor.Visible := True;
 end;
 
 procedure TForm12.PageControlAddressMktpDrawTab(Control: TCustomTabControl;
@@ -3624,8 +3651,6 @@ begin
     Form7.ibDataSet15MARKETPLACE.AsString := ComboBoxMarktplace.Text;
   except
   end;
-    
-  Form12.SMALL_DBEdit40.SetFocus;
 end;
 
 
@@ -3685,6 +3710,28 @@ begin
 
   dbGrid2.Columns[0].Width   := SMALL_DBEdit43.Width -10;
   dbGrid2.Columns[1].Visible := False;
+end;
+
+procedure TForm12.AppMessage(var Msg: TMsg; var Handled: Boolean);
+var
+  ClickedControl: TControl;
+  FormPoint: TPoint;
+begin
+  if Msg.message = WM_LBUTTONDOWN then
+  begin
+    FormPoint := ScreenToClient(Point(Msg.pt.x, Msg.pt.y));
+
+    ClickedControl := ControlAtPos(FormPoint, True);
+
+    if not(ClickedControl = EditRecebedorNome) and (DBGridRecebedor.Visible) then
+      DBGridRecebedor.Visible := False;
+
+    if not(ClickedControl = SMALL_DBEdit40) and (DBGrid2.Visible) then
+      DBGrid2.Visible := False;
+
+    if not(ClickedControl = DBGrid1) and (DBGrid3.Visible) then
+      DBGrid3.Visible := False;
+  end;
 end;
 
 procedure TForm12.AtivaPesquisaCliente;

@@ -98,7 +98,7 @@ object Form12: TForm12
       end
       object Label8: TLabel
         Left = 7
-        Top = 127
+        Top = 128
         Width = 163
         Height = 13
         Caption = 'Raz'#227'o social do cliente / ou CNPJ'
@@ -112,7 +112,7 @@ object Form12: TForm12
       end
       object Label11: TLabel
         Left = 407
-        Top = 127
+        Top = 128
         Width = 76
         Height = 13
         Caption = 'CNPJ do cliente'
@@ -126,7 +126,7 @@ object Form12: TForm12
       end
       object Label12: TLabel
         Left = 561
-        Top = 45
+        Top = 44
         Width = 39
         Height = 13
         Caption = 'Emiss'#227'o'
@@ -140,7 +140,7 @@ object Form12: TForm12
       end
       object Label13: TLabel
         Left = 561
-        Top = 89
+        Top = 87
         Width = 68
         Height = 13
         Caption = 'Data da sa'#237'da'
@@ -154,7 +154,7 @@ object Form12: TForm12
       end
       object Label14: TLabel
         Left = 561
-        Top = 129
+        Top = 128
         Width = 68
         Height = 13
         Caption = 'Hora da sa'#237'da'
@@ -702,7 +702,7 @@ object Form12: TForm12
       end
       object Label25: TLabel
         Left = 122
-        Top = 43
+        Top = 44
         Width = 86
         Height = 13
         Caption = 'Finalidade da Nf-e'
@@ -715,8 +715,8 @@ object Form12: TForm12
         Transparent = True
       end
       object Label24: TLabel
-        Left = 419
-        Top = 43
+        Left = 308
+        Top = 44
         Width = 55
         Height = 13
         Caption = 'Consumidor'
@@ -729,8 +729,8 @@ object Form12: TForm12
         Transparent = True
       end
       object Label56: TLabel
-        Left = 270
-        Top = 42
+        Left = 426
+        Top = 44
         Width = 106
         Height = 13
         Caption = 'Indicador de presen'#231'a'
@@ -793,7 +793,7 @@ object Form12: TForm12
         Top = 170
         Width = 643
         Height = 118
-        ActivePage = TabSheetMktplace
+        ActivePage = tbsLocalEntrega
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -12
@@ -801,10 +801,9 @@ object Form12: TForm12
         Font.Style = []
         ParentFont = False
         TabOrder = 47
-        OnChange = PageControlAddressMktpChange
         OnDrawTab = PageControlAddressMktpDrawTab
         object TabSheetEnderecoCliente: TTabSheet
-          Caption = 'Endere'#231'o do cliente'
+          Caption = '  Endere'#231'o do cliente'
           object PanelEnderecoCliente: TPanel
             Left = 0
             Top = 0
@@ -913,7 +912,7 @@ object Form12: TForm12
               Transparent = True
             end
             object SMALL_DBEditRua: TSMALL_DBEdit
-              Left = 4
+              Left = 5
               Top = 15
               Width = 412
               Height = 22
@@ -1027,7 +1026,7 @@ object Form12: TForm12
           end
         end
         object tbsLocalEntrega: TTabSheet
-          Caption = 'Local de entrega'
+          Caption = '  Local de entrega'
           ImageIndex = 1
           OnShow = tbsLocalEntregaShow
           object PanelRecebedor: TPanel
@@ -1056,9 +1055,9 @@ object Form12: TForm12
             object LabelEnderecoRecebedor: TLabel
               Left = 5
               Top = 40
-              Width = 103
+              Width = 97
               Height = 13
-              Caption = 'Endeere'#231'o recebedor'
+              Caption = 'Endere'#231'o recebedor'
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clGray
               Font.Height = -11
@@ -1083,14 +1082,15 @@ object Form12: TForm12
               ListField = 'FULL_ADDRESS'
               ListSource = dsAddress
               ParentFont = False
-              TabOrder = 0
+              TabOrder = 1
+              OnKeyDown = DBLookupComboBoxEnderRecebKeyDown
             end
             object EditRecebedorNome: TEdit
               Left = 5
-              Top = 14
+              Top = 15
               Width = 620
               Height = 20
-              TabOrder = 1
+              TabOrder = 0
               Text = 'EditRecebedorNome'
               OnEnter = EditRecebedorNomeEnter
               OnKeyDown = EditRecebedorNomeKeyDown
@@ -1099,7 +1099,7 @@ object Form12: TForm12
           end
         end
         object TabSheetMktplace: TTabSheet
-          Caption = 'Marktplace'
+          Caption = '  Marktplace'
           ImageIndex = 2
           object PanelMtplace: TPanel
             Left = 0
@@ -1129,6 +1129,7 @@ object Form12: TForm12
               Top = 15
               Width = 620
               Height = 24
+              AutoDropDown = True
               BevelInner = bvNone
               BevelOuter = bvNone
               Font.Charset = ANSI_CHARSET
@@ -1943,7 +1944,7 @@ object Form12: TForm12
       object Edit2: TEdit
         Left = 122
         Top = 60
-        Width = 145
+        Width = 180
         Height = 22
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -1958,9 +1959,9 @@ object Form12: TForm12
         OnEnter = Edit2Click
       end
       object Edit3: TEdit
-        Left = 409
+        Left = 308
         Top = 60
-        Width = 147
+        Width = 114
         Height = 22
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -1975,7 +1976,7 @@ object Form12: TForm12
         OnEnter = Edit3Click
       end
       object Edit6: TEdit
-        Left = 270
+        Left = 426
         Top = 60
         Width = 133
         Height = 22

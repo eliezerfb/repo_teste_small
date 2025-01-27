@@ -32,7 +32,8 @@ uses
   , Graphics
   , uSmallEnumerados;
 
-  function Get_SQL_CliforAddress(AOnlyMainAddress: Boolean = False): String;
+  function Get_SQL_CliforAddress(AOnlyMainAddress: Boolean = False;
+    AFilter: String = ''): String;
   function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
   function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
@@ -104,27 +105,10 @@ uses uFuncoesBancoDados, uSmallConsts, Mais3;
 type
   TModulosSmall = (tmNenhum, tmNao, tmEstoque, tmICM, tmReceber);
 
-function Get_SQL_CliforAddress(AOnlyMainAddress: Boolean): String;
+function Get_SQL_CliforAddress(AOnlyMainAddress: Boolean;
+  AFilter: String): String;
 begin
   const SQL_CLIFOR_ADDRESS = 'SELECT * FROM ( '+
-    'SELECT '+
-      'NULL IDENDERECO, '+
-      'NULL IDCLIFOR, '+
-      'NULL FULL_ADDRESS, '+
-      'NULL ENDERECO, '+
-      'NULL NUMERO, '+
-      'NULL BAIRRO, '+
-      'NULL CIDADE, '+
-      'NULL ESTADO, '+
-      'NULL municipios_codigo, '+
-      'NULL CEP, '+
-      'NULL TELEFONE, '+
-      'NULL MAIN_ADDRESS, '+
-      '1 FIRST_NULL_ROW '+
-    'FROM RDB$DATABASE '+
-
-    'UNION ALL '+
-
     'SELECT '+
       ENDERECO_PRINCIPAL_ENTREGA.ToString()+' IDENDERECO, '+
       'IDCLIFOR, '+
@@ -140,8 +124,7 @@ begin
       ' municipios.CODIGO municipios_codigo, '+
       ' CEP, '+
       ' FONE TELEFONE, '+
-      ' 1 MAIN_ADDRESS, '+
-      ' 0 FIRST_NULL_ROW '+
+      ' 1 MAIN_ADDRESS '+
     'FROM CLIFOR '+
     ' left join municipios on Upper(municipios.nome) = Upper(CLIFOR.CIDADE) and '+
         'Upper(municipios.UF) = Upper(CLIFOR.estado) '+
@@ -166,8 +149,7 @@ begin
       ' municipios.CODIGO municipios_codigo, '+
       ' CEP, '+
       ' TELEFONE, '+
-      ' 0 MAIN_ADDRESS, '+
-      ' 0 FIRST_NULL_ROW '+
+      ' 0 MAIN_ADDRESS '+
    ' FROM CLIFORENDERECOS '+
    ' left join municipios on Upper(municipios.nome) = Upper(cliforenderecos.cidade) and '+
         'upper(municipios.UF) = Upper(cliforenderecos.estado) '+
@@ -175,14 +157,16 @@ begin
   ' ) '+
   ' WHERE '+
   ' NOT(COALESCE(FULL_ADDRESS, '+QuotedStr('')+') = '+QuotedStr('')+') '+
-  ' OR FIRST_NULL_ROW = 1 %s ';
+  ' %s %s '+
+  ' order by '+
+  'IDENDERECO';
 
   var SqlOnlyMainAddress := '';
   if AOnlyMainAddress then
     SqlOnlyMainAddress := ' and IDENDERECO = '+
       ENDERECO_PRINCIPAL_ENTREGA.ToString();
 
-  Result := Format(SQL_CLIFOR_ADDRESS, [SqlOnlyMainAddress]);
+  Result := Format(SQL_CLIFOR_ADDRESS, [SqlOnlyMainAddress, AFilter]);
 
 end;
 

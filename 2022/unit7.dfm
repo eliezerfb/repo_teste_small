@@ -15632,12 +15632,15 @@ object Form7: TForm7
     end
     object ibDataSet15IDRECEBEDOR: TIntegerField
       FieldName = 'IDRECEBEDOR'
+      Visible = False
     end
     object ibDataSet15IDLOCALENTREGA: TIntegerField
       FieldName = 'IDLOCALENTREGA'
+      Visible = False
     end
     object ibDataSet15LOCALENTREGA_END_PRINCIPAL: TSmallintField
       FieldName = 'LOCALENTREGA_END_PRINCIPAL'
+      Visible = False
     end
   end
   object DataSource15: TDataSource

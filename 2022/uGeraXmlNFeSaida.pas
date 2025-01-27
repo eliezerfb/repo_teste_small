@@ -5082,24 +5082,19 @@ begin
     QryEntrega.Database := Form7.IBDatabase1;
     QryEntrega.Transaction := Form7.IBTransaction1;
 
-    QryEntrega.SQL.Text := 'select cgc, nome, ie from clifor '+
+    QryEntrega.SQL.Text := 'select cgc, nome from clifor '+
       ' where idclifor = :idclifor';
     QryEntrega.Prepare;
     QryEntrega.ParamByName('idclifor').AsInteger :=
       Form7.ibDataSet15.FieldByname('IDRECEBEDOR').AsInteger;
     QryEntrega.Open;
 
+    Form7.spdNFeDataSets.Campo('IE_G15').AsString := '';
     var CnpjCpf := LimpaNumero(QryEntrega.FieldByname('CGC').AsString);
     if CnpjCpf.Length = 11 then
-    begin
-      Form7.spdNFeDataSets.Campo('CPF_G02a').AsString := CnpjCpf;
-      Form7.spdNFeDataSets.Campo('IE_G15').AsString := '';
-    end else
-    begin
+      Form7.spdNFeDataSets.Campo('CPF_G02a').AsString := CnpjCpf
+    else
       Form7.spdNFeDataSets.Campo('CNPJ_G02').AsString := CnpjCpf;
-      Form7.spdNFeDataSets.Campo('IE_G15').AsString :=
-        QryEntrega.FieldByname('ie').AsString;
-    end;
 
     Form7.spdNFeDataSets.Campo('xNome_G02b').AsString :=
       QryEntrega.FieldByname('nome').AsString;
@@ -5109,10 +5104,18 @@ begin
     var LocalEntregaEnderecoPrincipal := Boolean(
       Form7.ibDataSet15.FieldByname('LOCALENTREGA_END_PRINCIPAL').AsInteger
     );
-    QryEntrega.SQL.Text := Get_SQL_CliforAddress(LocalEntregaEnderecoPrincipal);
+    var Filter := '';
+    if not(LocalEntregaEnderecoPrincipal) then
+      Filter := ' and IDENDERECO = :IDENDERECO';
+
+    QryEntrega.SQL.Text :=
+      Get_SQL_CliforAddress(LocalEntregaEnderecoPrincipal, Filter);
     QryEntrega.Prepare;
     QryEntrega.ParamByName('IDCLIFOR').AsInteger :=
       Form7.ibDataSet15.FieldByname('IDRECEBEDOR').AsInteger;
+    if not(LocalEntregaEnderecoPrincipal) then
+      QryEntrega.ParamByName('IDENDERECO').AsInteger :=
+        Form7.ibDataSet15.FieldByname('IDLOCALENTREGA').AsInteger;
     QryEntrega.Open;
 
     var xLgr := QryEntrega.FieldByName('ENDERECO').AsString;
@@ -5125,7 +5128,6 @@ begin
 
     Form7.spdNFeDataSets.Campo('xLgr_G03').AsString := xLgr;
     Form7.spdNFeDataSets.Campo('nro_G04').AsString := Nro;
-
     Form7.spdNFeDataSets.Campo('xBairro_G06').AsString :=
       QryEntrega.FieldByName('BAIRRO').AsString;
     Form7.spdNFeDataSets.Campo('cMun_G07').AsString :=
