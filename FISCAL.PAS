@@ -29510,16 +29510,16 @@ begin
       except
       end;
 
-      //Se não enviou tudo reabilita o timer
-      if not bCompletado then
+      TThread.Synchronize(TThread.CurrentThread,
+      procedure()
       begin
-        TThread.Synchronize(TThread.CurrentThread,
-        procedure()
-        begin
-          TimerMinhasNotas.Interval := 120000;
-          TimerMinhasNotas.Enabled  := True;
-        end);
-      end;
+        if not bCompletado then
+          TimerMinhasNotas.Interval := 120000
+        else
+          TimerMinhasNotas.Interval := 3600000;
+
+        TimerMinhasNotas.Enabled  := True;
+      end);
     end);
   except
   end;
