@@ -7,14 +7,16 @@ uses
   ExtCtrls, ComObj, Activex, OleCtrls, IBQuery, Forms, DateUtils,
   Rest.Json, Graphics, TLHelp32, StrUtils, Soap.EncdDecd,  REST.Client,
   IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  REST.Types;
+  REST.Types, Vcl.Dialogs;
 
-  function RequisicaoMinhasNotas(vMethod : TRESTRequestMethod; EndPoint:string; sIdentification, sToken, sFile : string;
+  function RequisicaoMinhasNotas(vMethod : TRESTRequestMethod; EndPoint:string; sToken, sFile : string;
                                  out Resposta : string; out StatusCode : integer) : Boolean;
 
 implementation
 
-function RequisicaoMinhasNotas(vMethod : TRESTRequestMethod; EndPoint:string; sIdentification, sToken, sFile : string;
+uses uLogSistema;
+
+function RequisicaoMinhasNotas(vMethod : TRESTRequestMethod; EndPoint:string; sToken, sFile : string;
                                out Resposta : string; out StatusCode : integer) : Boolean;
 var
   FRESTClient: TRESTClient;
@@ -47,8 +49,7 @@ begin
       FRESTRequest.Params.ParameterByName('Authorization').Options := [poDoNotEncode];
     end;
 
-    if sIdentification <> '' then
-      FRESTRequest.Params.AddItem('identification',sIdentification,pkGETorPOST,[],'multipart/form-data');
+    FRESTRequest.Params.AddItem('client','small',pkGETorPOST,[],'multipart/form-data');
 
     if sFile <> '' then
       FRESTRequest.AddFile('file',sFile,'multipart/form-data');
@@ -56,6 +57,8 @@ begin
     try
       FRESTRequest.Execute;
     except
+      on e:exception do
+        LogSistema('Erro ao enviar Minhas Notas '+e.Message,lgErro);
     end;
 
     if FRESTResponse.StatusCode = 201 then

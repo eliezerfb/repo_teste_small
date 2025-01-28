@@ -95,7 +95,7 @@ begin
       FreeAndNil(IBDatabaseNotas);
 
       //Apaga arquivos
-      //DeleteFile(pchar(sDir+'.zip'));
+      DeleteFile(pchar(sDir+'.zip'));
     end;
   except
   end;
@@ -228,13 +228,17 @@ begin
 
   try
     Result := RequisicaoMinhasNotas(rmPOST,
-                                    'https://v2.staging.clippfacil.com.br/producer-document/send-invoice-collection',
-                                    LimpaNumero(TSistema.GetInstance.CNPJEmitente),
+                                    //'https://v2.staging.clippfacil.com.br/producer-document/send-invoice-collection', //Homolog
+                                    'https://invoices.clippfacil.com.br/producer-document/send-invoice-collection',
                                     TOKEN_MINHAS_NOTAS,
                                     sFile,
                                     Resposta,
                                     StatusCode);
   except
+    on e:exception do
+    begin
+      LogSistema('Erro ao enviar Minhas Notas '+e.Message,lgErro);
+    end;
   end;
 end;
 
