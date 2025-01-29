@@ -8,7 +8,6 @@ uses
   , System.SysUtils
   , REST.Json
   , uClassesDashboard
-  , IBX.IBQuery
   , DateUtils
   ;
 

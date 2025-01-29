@@ -157,8 +157,6 @@ begin
 
   ValidaDados;
 
-  ExtraiCertificado;
-
   if chkAtivo.Checked then
   begin
     if VarIsNull(ibdIntegracaoSicoobIDAPIPIX.AsVariant) then
@@ -289,6 +287,10 @@ procedure TFrmIntegracaoSicoob.lblExcluirCadClick(Sender: TObject);
 begin
   ibdIntegracaoSicoobIDAPIPIX.Clear;
   ibdIntegracaoSicoobCLIENTIDPIX.Clear;
+  ibdIntegracaoSicoobCERTIFICADONOME.Clear;
+  ibdIntegracaoSicoobCERTIFICADOSENHA.Clear;
+  ibdIntegracaoSicoobCERTIFICADO.Clear;
+  edtCertificado.Clear;
 
   CarregaValorObjeto;
 end;
@@ -296,8 +298,7 @@ end;
 procedure TFrmIntegracaoSicoob.SalvaArquivoBD(dirAnexo:string);
 begin
   try
-    TBlobField(ibdIntegracaoSicoobCERTIFICADO).LoadFromFile(dirAnexo);
-
+    //TBlobField(ibdIntegracaoSicoobCERTIFICADO).LoadFromFile(dirAnexo);
     ibdIntegracaoSicoobCERTIFICADONOME.AsString := ExtractFileName(dirAnexo);
   except
     MensagemSistema('Erro ao gravar certificado!',msgErro);
@@ -321,7 +322,7 @@ begin
     Abort;
   end;
 
-  if (Trim(edtCertificado.Text) = '') and (VarIsNull(ibdIntegracaoSicoobCERTIFICADO.AsVariant)) then
+  if Trim(edtCertificado.Text) = '' then
   begin
     MensagemSistema('O campo Certificado Digital deve ser preenchido!',msgAtencao);
     edtCertificado.SetFocus;
@@ -346,10 +347,18 @@ begin
   end;
 end;
 
+
 procedure TFrmIntegracaoSicoob.ExtraiCertificado;
 var
   sDirArquivo, mErro : string;
 begin
+  if not FileExists(edtCertificado.Text) then
+  begin
+    MensagemSistema('O arquivo do certificado digital não encontrado!',msgAtencao);
+    edtSenhaCertificado.SetFocus;
+    Abort;
+  end;
+
   if Trim(edtCertificado.Text) <> '' then
   begin
     if FileExists(edtCertificado.Text) then
@@ -374,5 +383,6 @@ begin
     end;
   end;
 end;
+
 
 end.

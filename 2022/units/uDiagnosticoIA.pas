@@ -7,7 +7,6 @@ uses
   , IBX.IBDatabase
   , System.SysUtils
   , uClassesDashboard
-  , IBX.IBQuery
   , DateUtils
   , REST.Types
   , Rest.JSON

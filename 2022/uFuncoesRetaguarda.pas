@@ -38,7 +38,7 @@ uses
   function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectMovimentacaoItem(vProduto : string): String;
   function SqlEstoqueOrcamentos(AliasPadrao:Boolean=True): String; //Mauricio Parizotto 2023-10-16
-  function SqlFiltroNFCEAutorizado(AliasTabela:string): String; //Mauricio Parizotto 2024-12-17
+  //function SqlFiltroNFCEAutorizado(AliasTabela:string): String; //Mauricio Parizotto 2024-12-17 2025-01-17
   function UFDescricao(sCodigo: String): String;
   function UFSigla(sCodigo: String): String;
   function UFCodigo(sUF: String): String;
@@ -1347,17 +1347,6 @@ begin
   end;
 end;
 
-
-function SqlFiltroNFCEAutorizado(AliasTabela:string): String; //Mauricio Parizotto 2024-12-17
-begin
-  Result := 'and ('+
-            '      ('+AliasTabela+'.STATUS containing ''Autorizad'') '+
-            '      or ('+AliasTabela+'.STATUS containing ''Emitido com sucesso'')'+
-            '      or ('+AliasTabela+'.STATUS containing ' + QuotedStr(_cNFCE_EMITIDA_EM_CONTINGENCIA) + ')'+
-            '      or ('+AliasTabela+'.STATUS containing ' + QuotedStr(_cVENDA_GERENCIAL_FINALIZADA) + ')'+
-            '      or ('+AliasTabela+'.STATUS containing ' + QuotedStr(_cVENDA_MEI_ANTIGA_FINALIZADA) + ')'+
-            '    )';
-end;
 
 
 end.

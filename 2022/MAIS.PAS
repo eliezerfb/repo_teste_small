@@ -282,6 +282,7 @@ type
     pnlContainer: TPanel;
     TimerDashboard: TTimer;
     TimerDiagIA: TTimer;
+    TimerMinhasNotas: TTimer;
     ClubedepromoesScanntech1: TMenuItem;
 
     procedure NovoFormExit(Sender:TObject);
@@ -465,6 +466,7 @@ type
     procedure IntegraoIMendes1Click(Sender: TObject);
     procedure TimerDashboardTimer(Sender: TObject);
     procedure TimerDiagIATimer(Sender: TObject);
+    procedure TimerMinhasNotasTimer(Sender: TObject);
     procedure ClubedepromoesScanntech1Click(Sender: TObject);
 
 
@@ -610,7 +612,9 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmMsgNovoLayout
   , uFrmIntegracaoSicoob
   , uFrmIntegracaoIMendes
-  , uDashboard, uDiagnosticoIA;
+  , uDashboard
+  , uDiagnosticoIA
+  , uMinhasNotas;
 
 {$R *.DFM}
 
@@ -1746,14 +1750,12 @@ end;
 function Titulo(sP1, sP2: String; const sModulo: String = ''): Boolean;
 begin
   Form1.Panel4.Visible  := False;
-  //Form1.Panel_3.Visible := False;
 
   Form1.lblTitulo.Top      := 110;
   Form1.lblTitulo.Left     := 99;
   Form1.Label3.Left        := 99;
   Form1.lblTitulo.Caption  := sP1;
 
-  //Form1.Label3.Top := Form1.lblTitulo.Top + Form1.lblTitulo.Height + 35; Mauricio Parizotto 2024-08-02
   Form1.Label3.Top := Form1.lblTitulo.Top + Form1.lblTitulo.Height + 50;
 
   Form1.Label3.Caption      := sP2;
@@ -1885,7 +1887,7 @@ begin
   Form1.ibQuery1.Sql.Clear;
   Form1.ibQuery1.Sql.Add('select count(REGISTRO) from '+sP1+' ');
   Form1.ibQuery1.Open;
-  //
+
   Result := '<tr><td vAlign=Top align=Left><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+sP2+
             '</td><td vAlign=Top align=Right><font face="Verdana, Microsoft Sans Serif, Helvetica" size="1" color="#000000">'+Form1.ibQuery1.FieldByname('COUNT').AsString+'</td></tr>';
   Form1.ibQuery1.Close;
@@ -1925,7 +1927,6 @@ function PegaImpostosDoXML(sP1: String):Boolean;
 var
 //Sandro Silva 2024-09-26  I : Integer;
   NodePrim, NodePai, NodeSec, NodeTmp: IXMLNode; // Node é um nó do XML
-
   sDesc    ,
   sIPI
   : String;
@@ -2091,7 +2092,6 @@ begin
   iFix := 0;
   iFixL := 70;
   iLeft := 5+5;
-
 
   {$Region'//// Vendas //// '}
   if imgVendas.Visible = True then
@@ -2682,7 +2682,6 @@ begin
               end;
 
               CloseFile(f);
-
               Form29.Close;
             end;
 
@@ -4962,52 +4961,22 @@ begin
   try
     try
       CommitaTudo(True);
-
-      (*
-      {Sandro Silva 2024-04-09 inicio}
-      if TamanhoCampo(Form7.ibDataSet4.Transaction, 'ESTOQUE', 'DESCRICAO') = 120 then
-      begin
-        //Fechatudo(True);
-        {
-        try
-          Form7.ibDataSet4.Transaction.DefaultDatabase.Close;
-          Form7.ibDataSet4.Transaction.DefaultDatabase.Open;
-        except
-
-        end;
-        }
-        {Sandro Silva 2024-04-08 inicio}
-        try
-          ConectaBancoCommerce;
-        except
-
-        end;
-        {Sandro Silva 2024-04-08 fim}
-        AjustarDataSetCamposProduto;
-      end;
-      {Sandro Silva 2024-04-09 fim}
-      *)
       AbreArquivos(True);
     except
       Screen.Cursor := crDefault;
-      {
-      Application.MessageBox(Pchar('Não foi possível ativar os arquivos do banco de dados "Client Server" o programa vai ser fechado.'),'Atenção',mb_IconError+mb_Ok);
-      Mauricio Parizotto 2023-10-24}
       MensagemSistema('Não foi possível ativar os arquivos do banco de dados "Client Server" o programa vai ser fechado.', msgErro);
 
       Application.Terminate;
       Winexec('TASKKILL /F /IM "Small Commerce.exe"' , SW_HIDE );
       Winexec('TASKKILL /F /IM small22.exe' , SW_HIDE );
       Winexec('TASKKILL /F /IM nfe.exe' , SW_HIDE );
-      FecharAplicacao(ExtractFileName(Application.ExeName)); // Sandro Silva 2024-01-04
+      FecharAplicacao(ExtractFileName(Application.ExeName));
     end;
 
     Mensagem22('Atualizando promoção');
     AtualizaPromocao(True);
 
-    {Sandro Silva 2022-12-15 inicio}
     ExibeRazaoSocialNoCaptionDoForm;
-    {Sandro Silva 2022-12-15 fim}
 
     Mais1ini := TIniFile.Create(Form1.sAtual+'\smallcom.inf');
     //
@@ -5040,7 +5009,6 @@ begin
               Form7.ibDataSet99.Close;
               Form7.ibDataSet99.SelectSQL.Clear;
               {Mauricio Parizotto 2023-10-04 Inicio}
-              //Form7.ibDataSet99.SelectSQL.Add('update RECEBER set VALOR_JURO=Cast((VALOR_DUPL * (((  Cast((CURRENT_DATE - VENCIMENTO)as decimal(12,2)) ) * '+ StrTran(FloatToStr(Form1.ftaxa),',','.') +'/100)+1.00)) as decimal(12,2)) where VALOR_RECE = 0 and VENCIMENTO < CURRENT_DATE and coalesce(ATIVO,9)<>1');
               Form7.ibDataSet99.SelectSQL.Add(' Update RECEBER '+
                                               '   set VALOR_JURO = Cast((VALOR_DUPL * (((  Cast((CURRENT_DATE - VENCIMENTO)as decimal(12,2)) ) * '+ StrTran(FloatToStr(Form1.ftaxa),',','.') +'/100)+1.00)) as decimal(12,2)) '+
                                               // Soma o valor da multa se tiver
@@ -5162,32 +5130,6 @@ begin
 
   // Licença
   try
-    {Mauricio Parizotto 2024-09-18
-    try
-      Form1.ibQuery2.Close;
-      Form1.ibQuery2.SQL.Clear;
-      Form1.ibQuery2.SQL.Add('select LICENCA from EMITENTE');
-      Form1.ibQuery2.Open;
-
-      Form7.LbBlowfish1.GenerateKey(Form1.sPasta); // Minha chave secreta
-
-      if AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) <> '' then
-      begin
-        // Calcula o número de dias restantes para usar o sistema
-        // Data limite - data atual do PC
-        fDias := (StrToDate(Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),7,2)
-                 +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),5,2)
-                 +'/'+Copy(Form7.LbBlowfish1.DecryptString( AllTrim(Form1.ibQuery2.FieldByname('LICENCA').AsString) ),1,4))
-                 - Date);
-      end else
-      begin
-        fDias := -1;
-      end;
-
-    except
-      fDias := -1;
-    end;
-    }
     fdias := GetDiasRestanteLicenca;
 
     if fdias <= 0 then
@@ -5196,26 +5138,6 @@ begin
       ExecutaComando('set generator G_LEGAL to 19670926');
     end else
     begin
-      {Mauricio Parizotto 2024-08-16 Inicio
-      if fDias <= 20 then
-      begin
-        MensagemSistema('Número de série: ' + Form1.sSerial + ' licenciado para mais ' + FloatToStr(fDias) + ' dias');
-      end;
-
-      if fDias <= 8 then
-      begin
-        if fDias <> 0 then
-        begin
-          // Exibe mensagem de alerta dos dias restantes por 5 segundos
-          for I := 1 to 5 do
-          begin
-            Mensagem22('Número de série: ' + Form1.sSerial +  chr(10) + ' licenciado para mais ' + FloatToStr(fDias) + ' dias');
-             Application.ProcessMessages;
-            Sleep(1000);
-          end;
-        end;
-      end;
-      }
       if fDias <= 20 then
       begin
         if AvisoVencimentoSerial then
@@ -5236,9 +5158,6 @@ begin
           end;
         end;
       end;
-      {Mauricio Parizotto 2024-08-16 Fim}
-
-      {Sandro Silva 2023-03-15 fim}
     end;
   except
   end;
@@ -7736,18 +7655,6 @@ begin
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
-{Mauricio Parizotto 2024-12-03
-var
-  sTag, sValor : String;
-  I, J, iSenha : Integer;
-  Mais1Ini: TIniFile;
-  sSenha, sSenhaX: String;
-  Retangulo : tRect;
-  wndHandle : THandle;
-  wndClass  : array[0..50] of char;
-  InfTermo : Boolean;
-  sImgFundo : string;
-}
 begin
   //Mauricio Parizotto 2024-12-03
   CarregaInformacoes(True);
@@ -9041,19 +8948,18 @@ begin
       IBQuery1.ParamByName('CIDADE').AsString   := ArqIni.ReadString('CLIENTE','CIDADE','');
       IBQuery1.ParamByName('FONE').AsString     := FORMATA_TELEFONE(ArqIni.ReadString('CLIENTE','FONE',''));
       IBQuery1.ParamByName('EMAIL').AsString    := ArqIni.ReadString('CLIENTE','EMAIL','');
-      //
+
       try
         ibQuery1.ExecSQL;
       except  on e:exception do
       end;
-      //
+
       ArqIni.Free; ///Limpa variavel do INI
-      //
+
       // terminado apaga o arquivo local e no FTP
-      //
       DeleteFile(pChar(sTLista[I])); // Apaga local
-      //
-      if {(not Form10.visible) and} (not Form12.visible) and (not Form24.visible) and (not Form30.visible) then
+
+      if (not Form12.visible) and (not Form24.visible) and (not Form30.visible) then
       begin
         //
         if Form7.Visible then
@@ -9070,7 +8976,7 @@ begin
       end;
     end;
   except end;
-  //
+
   sTLista.Free;
   sTSessions.Free;
 end;
@@ -10446,6 +10352,37 @@ begin
   end;
 end;
 
+procedure TForm1.TimerMinhasNotasTimer(Sender: TObject);
+begin
+  TimerMinhasNotas.Enabled := False;
+
+  try
+    TTask.Run(
+    procedure()
+    var
+      bCompletado : boolean;
+    begin
+      try
+        GeraEnvioMinhasNotas(Form7.IBDatabase1,
+                             bCompletado);
+      except
+      end;
+
+      TThread.Synchronize(TThread.CurrentThread,
+      procedure()
+      begin
+        if not bCompletado then
+          TimerMinhasNotas.Interval := 120000
+        else
+          TimerMinhasNotas.Interval := 3600000;
+
+        TimerMinhasNotas.Enabled  := True;
+      end);
+    end);
+  except
+  end;
+end;
+
 procedure TForm1.ConfiguraodaNFemformulrionumerado1Click(Sender: TObject);
 begin
   Form7.sTitulo         := 'Configuração da NF';
@@ -10490,22 +10427,18 @@ end;
 procedure TForm1.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  //Mauricio Parizotto 2023-09-26
   if Form7.sModulo = 'PARAMETROTRIBUTACAO' then
     Exit;
 
-  //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'PERFILTRIBUTACAO' then
     Exit;
 
-  //Mauricio Parizotto 2023-11-17
   if Form7.sModulo = 'ICM' then
     Exit;
 
-  //Mauricio Parizotto 2024-03-21
   if Form7.sModulo = 'CONVERSAOCFOP' then
     Exit;
-  {Mauricio Parizotto 2024-04-05 Inicio}
+
   if Form7.sModulo = 'CONVENIO' then
     Exit;
 
@@ -10526,20 +10459,16 @@ begin
 
   if Form7.sModulo = '2CONTAS' then
     Exit;
-  {Mauricio Parizotto 2024-04-05 Fim}
 
-  {Mauricio Parizotto 2024-04-16 Inicio}
   if Form7.sModulo = 'PAGAR' then
     Exit;
 
   if Form7.sModulo = 'RECEBER' then
     Exit;
-  {Mauricio Parizotto 2024-04-16 Fim}
 
   if Form7.sModulo = 'CLIENTES' then
    Exit; 
 
-  //Mauricio Parizotto 2024-07-17
   if Form7.sModulo = 'ESTOQUE' then
    Exit;
 
@@ -10573,12 +10502,6 @@ begin
           Form7.BringToFront;
       end else
       begin
-        {Mauricio Parizotto 2024-07-17
-        if Form10.Visible then
-        begin
-          Form10.BringToFront;
-        end else}
-        begin
           if (Form7.sModulo = 'NOTA') or (Form7.sModulo = 'CONFOS') or (Form7.sModulo = 'CONFRECIBO') then
           begin
             Form1.Panel_3.Visible := False;
@@ -10588,7 +10511,6 @@ begin
           begin
             Form7.BringToFront;
           end;
-        end;
       end;
     end;
   end;
@@ -11462,7 +11384,6 @@ begin
     Exit;
 
   if Form7.Visible then Form7.Close;
-//  if Form10.Visible then Form10.Close;
 
   try
     sMSG := '';
@@ -12475,7 +12396,6 @@ begin
     Exit;
   
   if Form7.Visible then Form7.Close;
-//  if Form10.Visible then Form10.Close;
 
   sMSG := Form7.GetMensagemCertificado;
 
@@ -12647,6 +12567,8 @@ begin
     TSistema.GetInstance.CodFaixaImendes     := ConfSistema.BD.IMendes.FaixaFaturamento;
     TSistema.GetInstance.ConsultarIPIImendes := ConfSistema.BD.IMendes.ConsultarIPI;
     TSistema.GetInstance.DashboardAbertura   := ConfSistema.BD.Dashboard.AberturaSistema;//Mauricio Parizotto 2024-11-25
+
+    TSistema.GetInstance.CNPJEmitente        := Form7.ibDataSet13CGC.AsString;
   finally
     FreeAndNil(ConfSistema);
   end;
@@ -13646,6 +13568,8 @@ begin
   begin
     TimerDashboard.Enabled := True;
   end;
+
+  TimerMinhasNotas.Enabled := True;
 end;
 
 
