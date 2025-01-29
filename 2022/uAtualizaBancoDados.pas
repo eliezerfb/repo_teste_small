@@ -3582,7 +3582,7 @@ begin
                    '   NUMERONF VARCHAR(12),'+
                    '   CAIXA VARCHAR(3),'+
                    '   STATUSNF VARCHAR(128),'+
-                   '   DTENVIO DATE,'+
+                   '   DTENVIO TIMESTAMP,'+
                    '	 STATUS VARCHAR(10),'+
                    ' 	 DESCRICAOERRO VARCHAR(300),'+
                    '   LOTE VARCHAR(30),'+
@@ -3607,7 +3607,7 @@ begin
                    '   QTDVENDAS INTEGER,'+
                    '   QTDCANCELAMENTOS INTEGER,'+
                    '   DTMOVIMENTO DATE,'+
-                   '   DTENVIO DATE,'+
+                   '   DTENVIO TIMESTAMP,'+
                    '   STATUS VARCHAR(40),'+
                    '   DESCRICAOERRO VARCHAR(300),'+
                    '   CONSTRAINT PK_SCANNTECHFECHAMENTO PRIMARY KEY (IDFECHAMENTO)'+
