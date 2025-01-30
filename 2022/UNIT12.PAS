@@ -303,7 +303,7 @@ type
     { Private declarations }
     procedure AppMessage(var Msg: TMsg; var Handled: Boolean);
     procedure LoadRecebedor(AFilterByNome: String = '');
-    procedure SetRecebedor();
+    procedure SetRecebedor(AClear: Boolean = False);
     procedure LoadAddress();
     procedure ShowMarketplaceTab();
     procedure AtivaPesquisaNaturezaOP;
@@ -345,8 +345,18 @@ uses
   uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
   ufrmPesquisaOrdemServico, uDialogs, uAtorInteressado, uSmallConsts;
 
-procedure TForm12.SetRecebedor;
+procedure TForm12.SetRecebedor(AClear: Boolean);
 begin
+  if AClear then
+  begin
+    EditRecebedorNome.Text := '';
+    Form7.DataSource15.DataSet.FieldByName('IDRECEBEDOR').AsVariant := Null;
+    Form7.DataSource15.DataSet.FieldByName('LOCALENTREGA_END_PRINCIPAL').Value := Null;
+    Form7.DataSource15.DataSet.FieldByName('IDLOCALENTREGA').Value := Null;
+    DBGrid1.SetFocus;
+    Exit;
+  end;
+
   EditRecebedorNome.Text := IBQueryRecebedor.FieldByName('NOME').AsString;
 
   if not(Form7.DataSource15.DataSet.FieldByName('IDRECEBEDOR').Value =
@@ -3159,7 +3169,7 @@ procedure TForm12.SMALL_DBEdit39KeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then
   begin
-    DBGrid2.Visible    := False;
+    DBGrid2.Visible := False;
     Form7.ibDataSet16.First;
     Form7.ibDataSet16.EnableControls;
     DBGrid1.SetFocus;
@@ -3475,7 +3485,11 @@ begin
     DBGridRecebedor.SetFocus;
 
   if Key = VK_RETURN then
+  begin
+    if EditRecebedorNome.Text = '' then
+      SetRecebedor(True);
     DBLookupComboBoxEnderReceb.SetFocus;
+  end;
 end;
 
 procedure TForm12.EditRecebedorNomeKeyUp(Sender: TObject; var Key: Word;
@@ -3717,7 +3731,7 @@ var
   ClickedControl: TControl;
   FormPoint: TPoint;
 begin
-  if Msg.message = WM_LBUTTONDOWN then
+  if (Msg.message = WM_LBUTTONDOWN) or (Msg.wParam = VK_RETURN) then
   begin
     FormPoint := ScreenToClient(Point(Msg.pt.x, Msg.pt.y));
 

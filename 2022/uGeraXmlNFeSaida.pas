@@ -5073,7 +5073,10 @@ end;
 
 procedure PopulaLocalEntrega();
 begin
-  if (Form7.ibDataSet15.FieldByname('IDRECEBEDOR').AsInteger = 0) and
+  if (Form7.ibDataSet15.FieldByname('IDRECEBEDOR').AsInteger = 0) then
+    Exit;
+
+  if (Form7.ibDataSet15.FieldByname('IDLOCALENTREGA').AsInteger = 0) and
     (Form7.ibDataSet15.FieldByname('LOCALENTREGA_END_PRINCIPAL').AsInteger = 0) then
     Exit;
 

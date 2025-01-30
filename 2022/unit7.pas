@@ -30961,7 +30961,14 @@ begin
     ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger := Integer(True);
   end;
 
-  AssinaRegistro('VENDAS',DataSet, True);
+  if ibDataSet15IDRECEBEDOR.AsInteger = 0 then
+  begin
+    ibDataSet15IDRECEBEDOR.AsVariant := Null;
+    ibDataSet15IDLOCALENTREGA.AsVariant := Null;
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsVariant := Null;
+  end;
+
+  AssinaRegistro('VENDAS', DataSet, True);
 end;
 
 procedure TForm7.ibDataSet13BeforePost(DataSet: TDataSet);

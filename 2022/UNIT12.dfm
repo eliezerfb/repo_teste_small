@@ -791,7 +791,7 @@ object Form12: TForm12
       object PageControlAddressMktp: TPageControl
         Left = 7
         Top = 170
-        Width = 643
+        Width = 640
         Height = 118
         ActivePage = tbsLocalEntrega
         Font.Charset = DEFAULT_CHARSET
@@ -807,7 +807,7 @@ object Form12: TForm12
           object PanelEnderecoCliente: TPanel
             Left = 0
             Top = 0
-            Width = 635
+            Width = 632
             Height = 89
             Align = alClient
             Color = clMoneyGreen
@@ -1032,12 +1032,13 @@ object Form12: TForm12
           object PanelRecebedor: TPanel
             Left = 0
             Top = 0
-            Width = 635
+            Width = 632
             Height = 89
             Align = alClient
             Color = clMoneyGreen
             ParentBackground = False
             TabOrder = 0
+            ExplicitWidth = 635
             object LabelRecebedor: TLabel
               Left = 5
               Top = 0
@@ -1104,7 +1105,7 @@ object Form12: TForm12
           object PanelMtplace: TPanel
             Left = 0
             Top = 0
-            Width = 635
+            Width = 632
             Height = 89
             Align = alClient
             Color = clMoneyGreen
@@ -1187,7 +1188,7 @@ object Form12: TForm12
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit39: TSMALL_DBEdit
-        Left = 6
+        Left = 7
         Top = 142
         Width = 395
         Height = 22
