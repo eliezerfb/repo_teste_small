@@ -30955,6 +30955,7 @@ end;
 
 procedure TForm7.ibDataSet15BeforePost(DataSet: TDataSet);
 begin
+  ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger := Integer(False);
   if ibDataSet15IDLOCALENTREGA.AsInteger = ENDERECO_PRINCIPAL_ENTREGA then
   begin
     ibDataSet15IDLOCALENTREGA.AsVariant := Null;
