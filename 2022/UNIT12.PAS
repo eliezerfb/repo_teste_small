@@ -3150,8 +3150,11 @@ begin
   begin
     if AbNatOperManual then
       ExibeColunasFCPST(True);
+
     ExibeColunasFCPST(True);
-    if Form7.ibDataSet13CRT.AsString = '1' then
+    //if Form7.ibDataSet13CRT.AsString = '1' then Mauricio Parizotto 2025-01-29
+    if (Form7.ibDataSet13CRT.AsString = '1')
+      or (Form7.ibDataSet13CRT.AsString = '4') then
     begin
       ExibeColunaCSOSN(True);
       ExibeColunaCSTICMS('4', Form7.ibDataSet13CRT.AsString);
