@@ -14507,33 +14507,71 @@ begin
   Form1.ConfiguraCredencialTecnospeed;
   {Sandro Silva 2022-12-15 fim}
 
-  //
-  if LimpaNumero(Text) <> '' then
+  var Identification := LimpaNumero(Text);
+  if Identification = '' then
   begin
-    if CpfCgc(LimpaNumero(Text)) then
-    begin
-       if UpperCase(Form1.ConfAceitaCGCDuplo) = 'SIM' then
-       begin
-         ibDataSet2CGC.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)));
-       end else
-       begin
-         if (Valida_Campo('CLIFOR',ConverteCpfCgc(AllTrim(LimpaNumero(Text))),'CGC','Este CPF/CNPJ já foi cadastrado')) then
-            ibDataSet2CGC.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)));
-       end;
-    end else
-    begin
-      MensagemSistema('CPF ou CNPJ inválido!',msgAtencao);
-    end;
-  end
-  else
-  begin
-    if (ibDataSet2CGC.OldValue <> '') then
+    if not(ibDataSet2CGC.OldValue = '') then
       ibDataSet2CGC.AsString := ibDataSet2CGC.OldValue
     else
       ibDataSet2CGC.AsString := '';
+    Exit();
   end;
 
-  if (AllTrim(Form7.IBDataSet2NOME.AsString) = '') and (AllTrim(LimpaNumero(Form7.IBDataSet2CGC.AsString))<>'') then
+  var CnpjCpfMsg := GetTipoDocumento(Identification);
+
+  if not(CpfCgc(Identification)) then
+  begin
+    MensagemSistema(CnpjCpfMsg+' inválido!', msgAtencao);
+    Exit;
+  end;
+
+  var IdentificationFormated := ConverteCpfCgc(Trim(Identification));
+  const MSG_ALERTA_CNPJ =
+    Format('Já existe cadastro para o %s informado.', [CnpjCpfMsg]);
+
+  var PermiteDuplicarCNPJ := oArqConfiguracao.BD.Outras.PermiteDuplicarCNPJ;
+  if not(PermiteDuplicarCNPJ) then
+  begin
+    if not(Valida_Campo('CLIFOR', IdentificationFormated, 'CGC', MSG_ALERTA_CNPJ)) then
+      Exit;
+  end;
+
+  if PermiteDuplicarCNPJ then
+  begin
+    with TIBQuery.Create(nil) do
+    begin
+      try
+        Database := Form7.IBDatabase1;
+        SQL.Text := 'select 1 from rdb$database '+
+          'where exists(select cgc from clifor where cgc = :cgc)';
+        Prepare;
+        ParamByName('cgc').AsString := IdentificationFormated;
+        Open;
+        if Boolean(Fields[0].AsInteger) then
+        begin
+          if Application.MessageBox(
+            pChar(MSG_ALERTA_CNPJ+#13+'Deseja prosseguir mesmo assim?'),
+            'Atenção',
+            mb_YesNo + mb_DefButton2 + MB_ICONQUESTION) = IDNO then
+          begin
+            var OldCNPJ := '';
+            if not(ibDataSet2CGC.OldValue = Null) then
+              OldCNPJ := ibDataSet2CGC.OldValue;
+            ibDataSet2CGC.AsString := OldCNPJ;
+            Exit;
+          end;
+        end;
+      finally
+        Free;
+      end;
+    end;
+  end;
+
+  ibDataSet2CGC.AsString := IdentificationFormated;
+
+
+  if (AllTrim(Form7.IBDataSet2NOME.AsString) = '') and
+    (AllTrim(LimpaNumero(Form7.IBDataSet2CGC.AsString))<>'') then
   begin
     Screen.Cursor            := crHourGlass;
     try

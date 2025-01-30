@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -114,7 +114,6 @@
         <Manifest_File>xp.manifest</Manifest_File>
         <VerInfo_MajorVer>2025</VerInfo_MajorVer>
         <VerInfo_Build>0</VerInfo_Build>
-        <DCC_ExeOutput>\desenvolvimento\executaveis\Small Commerce</DCC_ExeOutput>
         <VerInfo_MinorVer>4</VerInfo_MinorVer>
         <DCC_UsePackage>pkgDashboard;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
@@ -664,7 +663,7 @@
                 <Platform value="Win64">False</Platform>
             </Platforms>
             <Deployment Version="3">
-                <DeployFile LocalName="..\..\..\..\..\executaveis\Small Commerce\small22.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="D:\Desenvolvimento\Executaveis\Small Commerce\small22.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>small22.exe</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -1488,7 +1487,7 @@
                 <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Deployment Version="3">
-                <DeployFile LocalName="..\..\..\..\..\executaveis\Small Commerce\small22.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="D:\Desenvolvimento\Executaveis\Small Commerce\small22.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>small22.exe</RemoteName>
                         <Overwrite>true</Overwrite>

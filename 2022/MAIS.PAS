@@ -48,7 +48,7 @@ const NOME_NFE_SETUP = 'nfe_setup.exe';
 const SECAO_INI_NFE = 'NFE';
 const CHAVE_INI_BUILD_NFE_SETUP_EXE = 'BUILD NF-e Setup';
 
-type 
+type
     TForm1 = class(TForm)
     PopupMenu1: TPopupMenu;
     TabeladeICMparatodososestados1: TMenuItem;
@@ -467,7 +467,6 @@ type
     procedure TimerDiagIATimer(Sender: TObject);
     procedure TimerMinhasNotasTimer(Sender: TObject);
 
-
   private
     FrmDashboard : TFrmDashboard;
     procedure ExibeRazaoSocialNoCaptionDoForm;
@@ -481,6 +480,7 @@ type
     function GetDiasRestanteLicenca: Real;
     procedure FechaDashboard;
     procedure AbreDashboard;
+    procedure ConvertIniToDBConf();
   public
     { Public declarations }
     fDias : Real;
@@ -513,7 +513,6 @@ type
     ConfCasas : String;
     ConfCasasServ : String;
     ConfPreco : String;
-    ConfAceitaCGCDuplo: String;
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, Confduplo,ConfNegat, ConfFoto, ConfMArca, ConfEspecie: String;
     ConfPermitFabricarSemQtd : Boolean;
     bNaoDescontarIssQuandoRetido: Boolean; // Sandro Silva 2024-04-24
@@ -578,7 +577,7 @@ implementation
 
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, {Unit8,} Unit38, uExportaXML, Unit43, Unit30, SelecionaCertificado,
-  Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
+  Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48, uTransferConfigIniToDB,
   uconstantes_chaves_privadas
   , ucredencialtecnospeed
   , uAtualizaBancoDados
@@ -4764,7 +4763,7 @@ begin
   DefinirBuildEXEDAT;
 
   ConectaBancoCommerce; // Sandro Silva 2023-05-31
-
+  ConvertIniToDBConf();
   AjustarDataSetCamposProduto;
 
   if Form1.sSerial = '' then
@@ -12596,6 +12595,28 @@ begin
   Form7.Show;
 end;
 
+procedure TForm1.ConvertIniToDBConf;
+begin
+  var IniFile := TIniFile.Create(sAtual+'\smallcom.inf');
+  var TransferConfigIniToDB := TTransferConfigIniToDB.Create(
+    Form7.IBDatabase1,
+    Form7.IBTransaction1
+  );
+
+  try
+    TransferConfigIniToDB.IniFile := IniFile;
+    TransferConfigIniToDB.ConvertBooleanIniToBD(
+      'Outros',
+      'Aceita CGC',
+      'Não',
+      _PermiteDuplicarCNPJ
+    );
+  finally
+    IniFile.Free;
+    TransferConfigIniToDB.Free;
+  end;
+end;
+
 procedure TForm1.Parmetrosdetributao1Click(Sender: TObject);
 begin
   Form7.sModulo := 'PARAMETROTRIBUTACAO';
@@ -13209,7 +13230,7 @@ begin
       Form1.fAliqICMdoCliente := Mais1Ini.ReadFloat('Outros','ICMSSTInterno',0);
 
       CopiaSair          := Mais1Ini.ReadString('Cópia','Sair','9');
-      ConfAceitaCGCDuplo := Mais1Ini.ReadString('Outros','Aceita CGC','Não');
+
       ConfCFOP           := Mais1Ini.ReadString('Outros','CFOP','5102');
 
       ConfItens      := 16;
