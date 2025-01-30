@@ -3582,10 +3582,12 @@ begin
                    '   NUMERONF VARCHAR(12),'+
                    '   CAIXA VARCHAR(3),'+
                    '   STATUSNF VARCHAR(128),'+
+                   '   DTMOVIMENTO DATE,'+
                    '   DTENVIO TIMESTAMP,'+
                    '	 STATUS VARCHAR(10),'+
-                   ' 	 DESCRICAOERRO VARCHAR(300),'+
-                   '   LOTE VARCHAR(30),'+
+                   '   TOTAL DECIMAL(18,4), '+
+                   ' 	 DESCRICAOERRO VARCHAR(500),'+
+                   '   LOTE VARCHAR(50),'+
                    '   CONSTRAINT PK_SCANNTECHVENDA PRIMARY KEY (IDVENDA)'+
                    ' );');
 
@@ -3609,7 +3611,7 @@ begin
                    '   DTMOVIMENTO DATE,'+
                    '   DTENVIO TIMESTAMP,'+
                    '   STATUS VARCHAR(40),'+
-                   '   DESCRICAOERRO VARCHAR(300),'+
+                   '   DESCRICAOERRO VARCHAR(500),'+
                    '   CONSTRAINT PK_SCANNTECHFECHAMENTO PRIMARY KEY (IDFECHAMENTO)'+
                    ' );');
 
