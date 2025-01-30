@@ -14818,7 +14818,10 @@ begin
             'Atenção',
             mb_YesNo + mb_DefButton2 + MB_ICONQUESTION) = IDNO then
           begin
-            ibDataSet2CGC.AsString := ibDataSet2CGC.OldValue;
+            var OldCNPJ := '';
+            if not(ibDataSet2CGC.OldValue = Null) then
+              OldCNPJ := ibDataSet2CGC.OldValue;
+            ibDataSet2CGC.AsString := OldCNPJ;
             Exit;
           end;
         end;
