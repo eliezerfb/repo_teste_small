@@ -8,7 +8,7 @@ uses
   DBCtrls, SMALL_DBEdit, smallfunc_xe, Menus, IniFiles, shellapi, Buttons,
   System.Generics.Collections, jpeg, Vcl.ComCtrls, IBX.IBCustomDataSet, IBX.IBQuery,
 
-  uNotaFiscalEletronicaCalc;
+  uNotaFiscalEletronicaCalc, Vcl.AppEvnts;
 
 function Retributa(pP1:Boolean):Boolean;
 function ApagaIntegracaoComOCaixa(pP1:Boolean):Boolean;
@@ -19,119 +19,21 @@ type
     Label55: TLabel;
     ScrollBox1: TScrollBox;
     Panel1: TPanel;
-    Label64: TLabel;
-    Label9: TLabel;
-    SMALL_DBEdit43: TSMALL_DBEdit;
-    Label4: TLabel;
-    SMALL_DBEdit3: TSMALL_DBEdit;
-    Label8: TLabel;
-    Label11: TLabel;
-    Label12: TLabel;
-    SMALL_DBEdit39: TSMALL_DBEdit;
-    SMALL_DBEdit4: TSMALL_DBEdit;
-    SMALL_DBEdit5: TSMALL_DBEdit;
-    Label13: TLabel;
-    SMALL_DBEdit9: TSMALL_DBEdit;
-    Label14: TLabel;
-    SMALL_DBEdit14: TSMALL_DBEdit;
-    DBGrid1: TDBGrid;
-    DBGrid3: TDBGrid;
-    Label29: TLabel;
-    SMALL_DBEdit17: TSMALL_DBEdit;
-    Label30: TLabel;
-    SMALL_DBEdit18: TSMALL_DBEdit;
-    Label23: TLabel;
-    Label31: TLabel;
-    Label32: TLabel;
-    Label33: TLabel;
-    Label1: TLabel;
-    SMALL_DBEdit19: TSMALL_DBEdit;
-    SMALL_DBEdit45: TSMALL_DBEdit;
-    SMALL_DBEdit44: TSMALL_DBEdit;
-    SMALL_DBEdit21: TSMALL_DBEdit;
-    SMALL_DBEdit20: TSMALL_DBEdit;
-    Label34: TLabel;
-    Label35: TLabel;
-    Label36: TLabel;
-    Label37: TLabel;
-    Label38: TLabel;
-    edtTotalNota: TSMALL_DBEdit;
-    SMALL_DBEdit25: TSMALL_DBEdit;
-    SMALL_DBEdit24: TSMALL_DBEdit;
-    SMALL_DBEdit23: TSMALL_DBEdit;
-    SMALL_DBEdit22: TSMALL_DBEdit;
-    Label39: TLabel;
-    Label40: TLabel;
-    Label41: TLabel;
-    Label42: TLabel;
-    Label43: TLabel;
-    SMALL_DBEdit30: TSMALL_DBEdit;
-    SMALL_DBEdit29: TSMALL_DBEdit;
-    SMALL_DBEdit28: TSMALL_DBEdit;
-    SMALL_DBEdit27: TSMALL_DBEdit;
-    SMALL_DBEdit41: TSMALL_DBEdit;
-    Label45: TLabel;
-    Label46: TLabel;
-    Label47: TLabel;
-    Label48: TLabel;
-    SMALL_DBEdit31: TSMALL_DBEdit;
-    SMALL_DBEdit32: TSMALL_DBEdit;
-    SMALL_DBEdit33: TSMALL_DBEdit;
-    SMALL_DBEdit26: TSMALL_DBEdit;
-    Label49: TLabel;
-    Label50: TLabel;
-    Label51: TLabel;
-    Label52: TLabel;
-    Label53: TLabel;
-    Label54: TLabel;
-    SMALL_DBEdit38: TSMALL_DBEdit;
-    SMALL_DBEdit37: TSMALL_DBEdit;
-    SMALL_DBEdit36: TSMALL_DBEdit;
-    SMALL_DBEdit35: TSMALL_DBEdit;
-    SMALL_DBEdit34: TSMALL_DBEdit;
-    SMALL_DBEdit15: TSMALL_DBEdit;
-    Label5: TLabel;
-    PopupMenu3: TPopupMenu;
+    PopupMenuInsert: TPopupMenu;
     Emitirnotafiscaldevendasnobalco1: TMenuItem;
     Importaroramentos1: TMenuItem;
     ImportarOS2: TMenuItem;
-    Label71: TLabel;
-    imgLogoNFe: TImage;
-    DBGrid4: TDBGrid;
-    Label6: TLabel;
-    Label57: TLabel;
-    Label59: TLabel;
-    Label69: TLabel;
-    SMALL_DBEdit2: TSMALL_DBEdit;
-    Label28: TLabel;
-    SMALL_DBEdit42: TSMALL_DBEdit;
     Panel6: TPanel;
     Button1: TBitBtn;
-    ListBox2: TListBox;
     Button2: TBitBtn;
-    Label62: TLabel;
     N1: TMenuItem;
     Incluirnovoitemnoestoque1: TMenuItem;
     Incluirnovocliente1: TMenuItem;
     Panel9: TPanel;
     Image5: TImage;
-    DBMemo1: TDBMemo;
-    Label10: TLabel;
-    Edit1: TEdit;
-    Label25: TLabel;
-    Edit2: TEdit;
-    Label24: TLabel;
-    Edit3: TEdit;
-    Label56: TLabel;
-    Edit6: TEdit;
-    Label3: TLabel;
-    SMALL_DBEdit40: TSMALL_DBEdit;
-    DBGrid2: TDBGrid;
-    Button3: TBitBtn;
-    Panel2: TPanel;
+    PanelAtencao: TPanel;
     Image1: TImage;
     Label2: TLabel;
-    lblHomologacao: TLabel;
     BitBtnAtorInteressado: TBitBtn;
     PageControlAddressMktp: TPageControl;
     TabSheetEnderecoCliente: TTabSheet;
@@ -143,7 +45,6 @@ type
     dsRecebedor: TDataSource;
     IBQueryAddress: TIBQuery;
     dsAddress: TDataSource;
-    LabelNFVendaTitulo: TLabel;
     PanelRecebedor: TPanel;
     LabelRecebedor: TLabel;
     LabelEnderecoRecebedor: TLabel;
@@ -168,6 +69,111 @@ type
     SMALL_DBEditIE: TSMALL_DBEdit;
     EditRecebedorNome: TEdit;
     DBGridRecebedor: TDBGrid;
+    PanelTop: TPanel;
+    Label64: TLabel;
+    Label4: TLabel;
+    LabelRazao: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label9: TLabel;
+    Label71: TLabel;
+    imgLogoNFe: TImage;
+    Label10: TLabel;
+    Label25: TLabel;
+    Label24: TLabel;
+    Label56: TLabel;
+    Label3: TLabel;
+    lblHomologacao: TLabel;
+    LabelNFVendaTitulo: TLabel;
+    SMALL_DBEdit43: TSMALL_DBEdit;
+    SMALL_DBEdit3: TSMALL_DBEdit;
+    SMALL_DBEdit39: TSMALL_DBEdit;
+    SMALL_DBEdit4: TSMALL_DBEdit;
+    SMALL_DBEdit5: TSMALL_DBEdit;
+    SMALL_DBEdit9: TSMALL_DBEdit;
+    SMALL_DBEdit14: TSMALL_DBEdit;
+    Edit2: TEdit;
+    Edit3: TEdit;
+    Edit6: TEdit;
+    SMALL_DBEdit40: TSMALL_DBEdit;
+    DBGrid2: TDBGrid;
+    PanelProdutos: TPanel;
+    DBGrid1: TDBGrid;
+    DBGrid3: TDBGrid;
+    PanelICMS: TPanel;
+    Label29: TLabel;
+    Label23: TLabel;
+    Label31: TLabel;
+    Label32: TLabel;
+    Label33: TLabel;
+    Label69: TLabel;
+    SMALL_DBEdit17: TSMALL_DBEdit;
+    SMALL_DBEdit45: TSMALL_DBEdit;
+    SMALL_DBEdit44: TSMALL_DBEdit;
+    SMALL_DBEdit21: TSMALL_DBEdit;
+    SMALL_DBEdit20: TSMALL_DBEdit;
+    SMALL_DBEdit2: TSMALL_DBEdit;
+    PanelServico: TPanel;
+    Label30: TLabel;
+    Label1: TLabel;
+    Label6: TLabel;
+    Label57: TLabel;
+    Label59: TLabel;
+    Label62: TLabel;
+    SMALL_DBEdit18: TSMALL_DBEdit;
+    SMALL_DBEdit19: TSMALL_DBEdit;
+    DBGrid4: TDBGrid;
+    PanelIdentificadorTransp: TPanel;
+    SMALL_DBEdit42: TSMALL_DBEdit;
+    SMALL_DBEdit22: TSMALL_DBEdit;
+    SMALL_DBEdit23: TSMALL_DBEdit;
+    SMALL_DBEdit24: TSMALL_DBEdit;
+    SMALL_DBEdit25: TSMALL_DBEdit;
+    edtTotalNota: TSMALL_DBEdit;
+    Label38: TLabel;
+    Label37: TLabel;
+    Label36: TLabel;
+    Label35: TLabel;
+    Label34: TLabel;
+    Label28: TLabel;
+    SMALL_DBEdit41: TSMALL_DBEdit;
+    Edit1: TEdit;
+    SMALL_DBEdit28: TSMALL_DBEdit;
+    SMALL_DBEdit29: TSMALL_DBEdit;
+    SMALL_DBEdit30: TSMALL_DBEdit;
+    Label43: TLabel;
+    Label42: TLabel;
+    Label41: TLabel;
+    Label40: TLabel;
+    Label39: TLabel;
+    PanelEnderecoTransp: TPanel;
+    SMALL_DBEdit31: TSMALL_DBEdit;
+    SMALL_DBEdit32: TSMALL_DBEdit;
+    SMALL_DBEdit33: TSMALL_DBEdit;
+    SMALL_DBEdit26: TSMALL_DBEdit;
+    Label46: TLabel;
+    Label47: TLabel;
+    Label48: TLabel;
+    Label45: TLabel;
+    PanelObs: TPanel;
+    Label49: TLabel;
+    Label50: TLabel;
+    Label51: TLabel;
+    Label52: TLabel;
+    Label53: TLabel;
+    Label54: TLabel;
+    Label5: TLabel;
+    SMALL_DBEdit38: TSMALL_DBEdit;
+    SMALL_DBEdit37: TSMALL_DBEdit;
+    SMALL_DBEdit36: TSMALL_DBEdit;
+    SMALL_DBEdit35: TSMALL_DBEdit;
+    SMALL_DBEdit34: TSMALL_DBEdit;
+    SMALL_DBEdit15: TSMALL_DBEdit;
+    DBMemo1: TDBMemo;
+    SMALL_DBEdit27: TSMALL_DBEdit;
+    ListBox2: TListBox;
     procedure DBGrid1KeyPress(Sender: TObject; var Key: Char);
     procedure DBLookupComboBox2Exit(Sender: TObject);
     procedure imgLogoNFeClick(Sender: TObject);
@@ -272,9 +278,8 @@ type
     procedure Edit2Click(Sender: TObject);
     procedure Edit3Click(Sender: TObject);
     procedure Edit6Click(Sender: TObject);
-    procedure PopupMenu3Change(Sender: TObject; Source: TMenuItem;
+    procedure PopupMenuInsertChange(Sender: TObject; Source: TMenuItem;
       Rebuild: Boolean);
-    procedure Button3Click(Sender: TObject);
     procedure ComboBoxMarktplaceExit(Sender: TObject);
     procedure SMALL_DBEdit40KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -298,7 +303,6 @@ type
       Shift: TShiftState);
     procedure DBLookupComboBoxEnderRecebKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-
   private
     { Private declarations }
     procedure AppMessage(var Msg: TMsg; var Handled: Boolean);
@@ -318,6 +322,8 @@ type
     procedure ControlaColunasGridImpostos(AbNatOperManual: Boolean = False);
     procedure CarregaTipoConsumidor(sTipo : string);
     function IsConsumidorFinal: boolean;
+    procedure AdjustLayout();
+    procedure ShowPopupMenuInsert();
   public
     { Public declarations }
     vNotaFiscal : TNotaFiscalEletronicaCalc;
@@ -410,7 +416,11 @@ begin
   end;
 end;
 
-
+procedure TForm12.ShowPopupMenuInsert();
+begin
+  var lPoint := LabelRazao.ClientToScreen(Point(0,0));
+  PopUpMenuInsert.Popup(lPoint.X, lPoint.Y);
+end;
 
 function MostraFoto(P1:Boolean): Boolean;
 var
@@ -1095,6 +1105,56 @@ begin
   SMALL_DBEdit40.SelectAll;
 end;
 
+procedure TForm12.AdjustLayout();
+const
+  DEFAULT_PANEL1_HEIGHT = 823;
+  DEFAULT_PANELPRODUTOS_HEIGHT = 145;
+begin
+  var LayoutTela: String;
+  with TIniFile.Create(Form1.sAtual+'\nfe.ini') do
+  begin
+    try
+      LayoutTela := ReadString('NFE','Preenchimento','Simples');
+    finally
+      Free;
+    end;
+  end;
+
+  Panel1.Height := PanelTop.Height
+    + PageControlAddressMktp.Height
+    + PanelProdutos.Height
+    + PanelICMS.Height
+    + PanelServico.Height
+    + PanelIdentificadorTransp.Height
+    + PanelEnderecoTransp.Height
+    + PanelObs.Height;
+
+  if LayoutTela = 'Simples' then
+  begin
+    PageControlAddressMktp.Visible := False;
+    PanelServico.Visible := False;
+    PanelEnderecoTransp.Visible := False;
+
+    Panel1.Height := DEFAULT_PANEL1_HEIGHT
+      - PanelEnderecoTransp.Height
+      - PanelServico.Height
+      - PanelEnderecoTransp.Height;
+  end;
+
+  if Panel1.Height < Panel6.Top then
+    Panel1.Height := Panel6.Top;
+
+  PanelProdutos.Height := DEFAULT_PANELPRODUTOS_HEIGHT
+    + Panel6.Top - (PanelObs.Top + PanelObs.Height);
+
+  while (PanelProdutos.Height >= DEFAULT_PANELPRODUTOS_HEIGHT) and
+    ScrollBox1.VertScrollBar.IsScrollBarVisible do
+  begin
+    PanelProdutos.Height := PanelProdutos.Height - 1;
+    Panel1.Height := Panel1.Height - 1;
+  end;
+end;
+
 procedure TForm12.AjustaTamnhoColunasGridProduto;
 var
   i: Integer;
@@ -1215,7 +1275,8 @@ procedure TForm12.SMALL_DBEdit40Change(Sender: TObject);
 begin
   if (Form12.Visible) and (Form7.ibDataSet14.Active) then
   begin
-    dBGrid2.Visible    := True;
+    dBGrid2.Visible := True;
+    DBGridRecebedor.Visible := False;
     Form7.ibDataSet99.Close;
     Form7.ibDataSet99.SelectSQL.Clear;
     Form7.ibDataSet99.SelectSQL.Add('select * FROM ICM where ((CFOP like '+QuotedStr('5%')+') or (CFOP like '+QuotedStr('6%')+') or (CFOP like '+QuotedStr('7%')+')) and Upper(NOME) like '+QuotedStr('%'+UpperCase(SMALL_DBEdit40.Text)+'%')+' order by upper(NOME)');
@@ -1324,13 +1385,16 @@ procedure TForm12.SMALL_DBEdit43Exit(Sender: TObject);
 begin
   if SMALL_DBEdit43.Text <> '' then
   begin
-    if Pos( AnsiUpperCase(SMALL_DBEdit43.Text), AnsiUpperCase(AllTrim(Form7.ibDataSet9NOME.AsString))) <> 0 then
+    if Pos(
+      AnsiUpperCase(SMALL_DBEdit43.Text),
+      AnsiUpperCase(AllTrim(Form7.ibDataSet9NOME.AsString))) <> 0 then
     begin
       Form7.ibDataSet15.Edit;
       Form7.ibDataSet15VENDEDOR.AsString := Form7.ibDataSet9NOME.AsString;
     end else
     begin
-      if SMALL_DBEdit43.CanFocus then SMALL_DBEdit43.SetFocus;
+      if SMALL_DBEdit43.CanFocus then
+        SMALL_DBEdit43.SetFocus;
     end;
   end;
 end;
@@ -1366,14 +1430,12 @@ begin
 
   if DbGrid1.SelectedIndex = 0 then
   begin
-    if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and (Key <> VK_LEFT) and (Key <> VK_RIGHT) then
+    if (Key <> VK_Return) and (Key <> VK_DOWN) and (Key <> VK_UP) and
+    (Key <> VK_LEFT) and (Key <> VK_RIGHT) then
     begin
       if not dBGrid3.Visible then
-      begin
         dBgrid3.Visible := True;
-        dBGrid3.Height  := Form12.Panel1.Height - dbGrid3.Top - 15;
-      end else
-      //
+
       Form1.bFlag := False;
       Form7.ibDataSet16.Edit;
       Form7.ibDataSet16.UpdateRecord;
@@ -1413,14 +1475,34 @@ end;
 procedure TForm12.SMALL_DBEdit17KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1 then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+  if Key = VK_F1 then
+    HH(
+      handle,
+      PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'),
+      HH_Display_Topic, Longint(PChar('nf_venda.htm'))
+    );
+
   if Form7.sModulo <> 'DESCONTO' then
   begin
     try
-      if Key = VK_RETURN then if dBgrid4.Visible = True then dBgrid4.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-      if Key = VK_DOWN   then if dBgrid2.Visible = True then dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
-      if Key = VK_UP     then Perform(Wm_NextDlgCtl,1,0);
-    except end;
+      if Key = VK_RETURN then
+      begin
+        if dBgrid4.CanFocus then
+          dBgrid4.SetFocus
+        else
+          SMALL_DBEdit22.SetFocus;
+      end;
+      if Key = VK_DOWN then
+      begin
+        if dBgrid2.CanFocus then
+          dBgrid2.SetFocus
+        else
+          SMALL_DBEdit22.SetFocus;
+      end;
+      if Key = VK_UP then
+        DBGrid1.SetFocus;
+    except
+    end;
   end else
   begin
     Form7.sModulo := 'DESCONTO1';
@@ -1431,15 +1513,11 @@ procedure TForm12.SMALL_DBEdit17Exit(Sender: TObject);
 begin
   if (Form12.Edit2.Text <> '2-Complementar') then
   begin
-    // Nestas linhas foi Deus quem me ajudou
-//    if Form7.ibDataSet15MERCADORIA.AsFloat <> Form12.fVELHO then
-    begin
-      Form7.ibDataSet15.Edit;
-      Form7.ibDataSet15MERCADORIA.AsFloat := Form12.fVELHO;
-      //
-      Form7.sModulo := 'VENDA';
-      Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
-    end;
+    Form7.ibDataSet15.Edit;
+    Form7.ibDataSet15MERCADORIA.AsFloat := fVELHO;
+
+    Form7.sModulo := 'VENDA';
+    Form7.ibDataSet16AfterPost(Form7.ibDataSet16);
   end;
 end;
 
@@ -1508,24 +1586,33 @@ procedure TForm12.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_F1 then
-    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+    HH(handle,
+       PChar(extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'),
+       HH_Display_Topic,
+       Longint(PChar('nf_venda.htm'))
+    );
 
   if Form7.sModulo <> 'DESCONTO' then
   begin
     if Key = VK_RETURN then
-      Perform(Wm_NextDlgCtl,0,0);
+      Perform(Wm_NextDlgCtl, 0, 0);
 
-    if Key = VK_DOWN   then
+    if Key = VK_DOWN then
     begin
-      if dBgrid2.Visible = True then
-        dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,0,0);
+      if dBgrid2.Visible then
+        dBgrid2.SetFocus
+      else
+        Perform(Wm_NextDlgCtl, 0, 0);
     end;
-    if Key = VK_UP     then
+
+    if Key = VK_UP then
     begin
-      if dBgrid2.Visible = True then
-        dBgrid2.SetFocus else Perform(Wm_NextDlgCtl,1,0);
+      if dBgrid2.Visible then
+        dBgrid2.SetFocus
+      else
+        Perform(Wm_NextDlgCtl, 1, 0);
     end;
-    
+
     Key := VK_SHIFT;
   end else
   begin
@@ -1608,11 +1695,11 @@ end;
 procedure TForm12.SMALL_DBEdit39KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_F1     then HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+  if Key = VK_F1 then
+    HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
+
   if Key = VK_INSERT then
-  begin
-    PopUpMenu3.Popup(SMALL_DBEdit39.Left,SMALL_DBEdit39.Top + 20);
-  end;
+    ShowPopupMenuInsert();
 end;
 
 procedure TForm12.DBGrid1DrawDataCell(Sender: TObject; const Rect: TRect;
@@ -1640,7 +1727,8 @@ procedure TForm12.SMALL_DBEdit40KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_INSERT then
-    PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
+    ShowPopupMenuInsert();
+
   if Key = VK_F1 then
     HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
 end;
@@ -1649,7 +1737,8 @@ procedure TForm12.SMALL_DBEdit43KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_INSERT then
-    PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
+    ShowPopupMenuInsert();
+
   if Key = VK_F1     then
     HH(handle, PChar( extractFilePath(application.exeName) + 'retaguarda.chm' + '>Ajuda Small'), HH_Display_Topic, Longint(PChar('nf_venda.htm')));
 end;
@@ -1975,7 +2064,7 @@ begin
 
   Form12.Edit1.Visible := True;
 
-  Form12.Button3Click(Sender);
+  AdjustLayout();
 
   Form7.AtualizarListaItensAuxiliar;
   
@@ -1983,10 +2072,8 @@ begin
 
   vNotaFiscal := TNotaFiscalEletronicaCalc.create;
 
-  {Dailon Parisotto (smal-593) 2024-08-06 Inicio}
-  Panel2.Top     := Panel1.Top  + dbGrid1.Top  + 100;
-  Panel2.Left    := Panel1.Left + dbGrid1.Left + dbGrid1.Width + 20;
-  {Dailon Parisotto (smal-593) 2024-08-06 Fim}
+  PanelAtencao.Top := Panel1.Top + PanelProdutos.Top + 100;
+  PanelAtencao.Left := Panel1.Left + dbGrid1.Left + dbGrid1.Width + 20;
 
   Form7.SetFilterOcultaUsoConsumoVenda();
 
@@ -1995,6 +2082,15 @@ begin
     Form7.ibDataSet15IDLOCALENTREGA.AsInteger := ENDERECO_PRINCIPAL_ENTREGA;
     Form7.ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger := Integer(False);
   end;
+
+  dBGrid3.Top := PanelProdutos.Top
+    + PanelProdutos.Height
+    - PanelProdutos.Padding.Top
+    - PanelProdutos.Padding.Bottom;
+  dBGrid3.Height := Panel6.Top - PanelICMS.Top;
+  dBGrid3.Left := Panel1.Left + DBGrid1.Left;
+  dBGrid3.Width := DBGrid1.Width;
+
 end;
 
 procedure TForm12.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -2239,7 +2335,9 @@ procedure TForm12.FormCreate(Sender: TObject);
 begin
   var ListOfPanels := TList<TPanel>.Create;
   ListOfPanels.AddRange(
-    [PanelRecebedor, PanelMtplace, PanelEnderecoCliente]
+    [PanelRecebedor, PanelMtplace, PanelEnderecoCliente, PanelTop, PanelICMS,
+     PanelIdentificadorTransp, PanelEnderecoTransp, PanelObs, PanelServico,
+     PanelProdutos]
   );
 
   for var Panel in ListOfPanels do
@@ -2266,7 +2364,7 @@ begin
 
   if Key = VK_INSERT then
   begin
-    PopUpMenu3.Popup(dBGrid1.Left,dBgrid1.Top + 20);
+    ShowPopupMenuInsert();
     Key := VK_SHIFT;
     dbGrid1.SetFocus;
     Abort;
@@ -2877,12 +2975,12 @@ begin
     end;
   end;
 
-  ListBox2.Left     := dbGrid4.Left-1;
-  ListBox2.Top      := dbGrid4.Top + dbGrid4.Height -1;
-  ListBox2.Height   := 200;
-  ListBox2.Width    := dbGrid4.Width+2;
+  ListBox2.Left := PanelServico.Left + DBGrid4.Left + 10;
+  ListBox2.Top := PanelServico.Top + PanelServico.Height + 4;
+  ListBox2.Height := 200;
+  ListBox2.Width := dbGrid4.Width + 2;
 
-  ListBox2.Visible       := False;
+  ListBox2.Visible := False;
 end;
 
 procedure TForm12.DBGrid4KeyDown(Sender: TObject; var Key: Word;
@@ -3309,6 +3407,7 @@ begin
   Form7.ibDataSet16NITEMPED.Visible       := True;
 
   Edit2.Text := TextoIdentificadorFinalidadeNFe(Edit2.Text);
+  PanelAtencao.Visible := False;
   if (LimpaNumero(Edit2.Text) = '4') or (AbNatOperManual) then
   begin
     if AbNatOperManual then
@@ -3332,17 +3431,15 @@ begin
     Form7.ibDataSet16XPED.Visible           := False;
     Form7.ibDataSet16NITEMPED.Visible       := False;
 
-    Panel2.Visible := (not AbNatOperManual);
-    Panel2.Top     := Panel1.Top  + dbGrid1.Top  + 100;
-    Panel2.Left    := Panel1.Left + dbGrid1.Left + dbGrid1.Width + 20;
+    PanelAtencao.Visible := (not AbNatOperManual);
 
-    Form12.Label2.Caption := 'Atenção!'+chr(10)+chr(10)+'Quando não for contribuinte do IPI'+chr(10)+
-                                                        'deixar o campo CST IPI em branco (vai'+chr(10)+
-                                                        'criar grupo IPIDevol).'+chr(10)+chr(10)+
-                                                        'Quando for contribuinte do IPI deve preencher'+chr(10)+
-                                                        'o campo CST IPI (vai criar grupo do IPI normal)'
-  end else
-    Panel2.Visible := False;
+    Label2.Caption := 'Atenção!'+chr(10)+chr(10)+
+      'Quando não for contribuinte do IPI'+chr(10)+
+      'deixar o campo CST IPI em branco (vai'+chr(10)+
+      'criar grupo IPIDevol).'+chr(10)+chr(10)+
+      'Quando for contribuinte do IPI deve preencher'+chr(10)+
+      'o campo CST IPI (vai criar grupo do IPI normal)'
+  end;
 end;
 { Dailon Parisotto (SMAL-593) 2024-07-31 Fim}
 
@@ -3350,7 +3447,7 @@ procedure TForm12.Edit3Click(Sender: TObject);
 begin
   //
   Edit3.Text := LimpaNumero(Form1.Small_InputForm('Indicador de operação com Consumidor Final:','0-Normal'+chr(10)+'1-Consumidor Final',LimpaNumero(Edit3.Text)));
-  
+
   {Mauricio Parizotto 2024-09-19 Inicio}
   CarregaTipoConsumidor(LimpaNumero(Edit3.Text));
 
@@ -3468,12 +3565,14 @@ end;
 
 procedure TForm12.EditRecebedorNomeEnter(Sender: TObject);
 begin
+  DBGrid2.Visible := False;
   LoadRecebedor(EditRecebedorNome.Text);
   DBGridRecebedor.Parent := Panel1;
   DBGridRecebedor.Width := EditRecebedorNome.Width;
   DBGridRecebedor.Top := PageControlAddressMktp.Top + EditRecebedorNome.Top
     + EditRecebedorNome.Height + 25;
-  DBGridRecebedor.Left := PageControlAddressMktp.Left + EditRecebedorNome.Left + 4;
+  DBGridRecebedor.Left := PageControlAddressMktp.Left
+    + EditRecebedorNome.Left + 4;
   DBGridRecebedor.Height := 135;
   DBGridRecebedor.Visible := True;
 end;
@@ -3513,7 +3612,7 @@ begin
   );
 end;
 
-procedure TForm12.PopupMenu3Change(Sender: TObject; Source: TMenuItem;
+procedure TForm12.PopupMenuInsertChange(Sender: TObject; Source: TMenuItem;
   Rebuild: Boolean);
 begin
   {
@@ -3526,137 +3625,6 @@ begin
   end;
   Mauricio Parizotto 2023-07-25 Vai validar depois}
   Emitirnotafiscaldevendasnobalco1.Enabled := True;
-end;
-
-procedure TForm12.Button3Click(Sender: TObject);
-var
-  Mais1Ini : tIniFile;
-  I : Integer;
-begin
-  Mais1ini := TIniFile.Create(Form1.sAtual+'\nfe.ini');
-
-  if Mais1Ini.ReadString('NFE','Preenchimento','Simples') = 'Simples' then
-  begin
-    if dBGrid1.Top <> PageControlAddressMktp.Top then
-    begin
-      PageControlAddressMktp.Visible := False;
-
-      dBGrid1.Top := PageControlAddressMktp.Top;
-
-      Label1.Visible         := False;
-      Label6.Visible         := False;
-      Label57.Visible        := False;
-      Label59.Visible        := False;
-      Label62.Visible        := False;
-      Label30.Visible        := False;
-      SMALL_DBEdit18.Visible := False;
-      SMALL_DBEdit19.Visible := False;
-      dbGrid4.Visible        := False;
-
-      Label45.Visible := False;
-      Label46.Visible := False;
-      Label47.Visible := False;
-      Label48.Visible := False;
-
-      SMALL_DBEdit26.Visible  := False;
-      SMALL_DBEdit31.Visible  := False;
-      SMALL_DBEdit32.Visible  := False;
-      SMALL_DBEdit33.Visible := False;
-
-      Label23.Top := 360;
-      Label31.Top := 360;
-      Label32.Top := 360;
-      Label33.Top := 360;
-      Label69.Top := 360;
-      Label29.Top := 360;
-
-      SMALL_DBEdit20.Top := 375;
-      SMALL_DBEdit21.Top := 375;
-      SMALL_DBEdit44.Top := 375;
-      SMALL_DBEdit45.Top := 375;
-      SMALL_DBEdit2.Top  := 375;
-      SMALL_DBEdit17.Top := 375;
-
-      Label28.Top := 400;
-      Label34.Top := 400;
-      Label35.Top := 400;
-      Label36.Top := 400;
-      Label37.Top := 400;
-      Label38.Top := 400;
-
-      SMALL_DBEdit42.Top := 415;
-      SMALL_DBEdit22.Top := 415;
-      SMALL_DBEdit23.Top := 415;
-      SMALL_DBEdit24.Top := 415;
-      SMALL_DBEdit25.Top := 415;
-      edtTotalNota.Top := 415;
-
-      Label39.Top := 440;
-      Label40.Top := 440;
-      Label41.Top := 440;
-      Label42.Top := 440;
-      Label43.Top := 440;
-
-      SMALL_DBEdit41.Top := 455;
-      SMALL_DBEdit27.Top := 455;
-      Edit1.Top          := 455;
-      SMALL_DBEdit28.Top := 455;
-      SMALL_DBEdit29.Top := 455;
-      SMALL_DBEdit30.Top := 455;
-      
-      Label49.Top := 480;
-      Label50.Top := 480;
-      Label51.Top := 480;
-      Label52.Top := 480;
-      Label53.Top := 480;
-      Label54.Top := 480;
-
-      SMALL_DBEdit15.Top := 495;
-      SMALL_DBEdit34.Top := 495;
-      SMALL_DBEdit35.Top := 495;
-      SMALL_DBEdit36.Top := 495;
-      SMALL_DBEdit37.Top := 495;
-      SMALL_DBEdit38.Top := 495;
-
-      Label5.Top  := 520;
-      DBMemo1.Top := 535;
-
-      Panel1.Height := 625;
-
-      Mais1ini.Free;
-
-      var DiffHeight :=  Form12.Height - Panel1.Height - Panel6.Height - 50;
-
-      if DiffHeight > 0 then
-      begin
-        dBGrid1.Height := dBGrid1.Height + DiffHeight;
-        Panel1.Height  := Panel1.Height + DiffHeight;
-
-        for I := 0 to Form12.ComponentCount-1 do
-        begin
-          if not(
-              (Components[I].ClassType = TEdit) or
-              (Components[I].ClassType = TSMALL_DBEdit) or
-              (Components[I].ClassType = TLabel) or
-              (Components[I].ClassType = TDBMemo)
-            ) then
-            Continue;
-
-          if not((Components[I].GetParentComponent) = Panel1) then
-            Continue;
-
-          if TWinControl(Components[I]).Top > dBGrid1.Top then
-            TWinControl(Components[I]).Top :=
-              TWinControl(Components[I]).Top + DiffHeight - 50;
-        end;
-      end;
-
-      dBGrid3.Top := dBGrid1.Top + dBGrid1.Height;
-      dBGrid3.Left := dBGrid1.Left;
-    end;
-  end;
-
-  Panel6.Top := Panel1.Top + Panel1.Height + 5;
 end;
 
 procedure TForm12.ComboBoxMarktplaceExit(Sender: TObject);
@@ -3716,7 +3684,6 @@ begin
   dBGrid3.Visible := False;
 
   dBGrid2.DataSource         := Form7.DataSource9;
-  //dBGrid2.Visible            := True;
   dBGrid2.Left               := SMALL_DBEdit43.Left;
   dbGrid2.Top                := SMALL_DBEdit43.Top + SMALL_DBEdit43.Height -1;
   dbGrid2.Width              := SMALL_DBEdit43.Width;
@@ -3727,24 +3694,28 @@ begin
 end;
 
 procedure TForm12.AppMessage(var Msg: TMsg; var Handled: Boolean);
-var
-  ClickedControl: TControl;
-  FormPoint: TPoint;
 begin
-  if (Msg.message = WM_LBUTTONDOWN) or (Msg.wParam = VK_RETURN) then
+  if (Msg.message = WM_LBUTTONDOWN) or (Msg.message = WM_RBUTTONDOWN)
+    or (Msg.wParam = VK_RETURN) then
   begin
-    FormPoint := ScreenToClient(Point(Msg.pt.x, Msg.pt.y));
-
-    ClickedControl := ControlAtPos(FormPoint, True);
-
-    if not(ClickedControl = EditRecebedorNome) and (DBGridRecebedor.Visible) then
+    if DBGrid2.Focused or DBGrid3.Focused or ListBox2.Focused then
+    begin
       DBGridRecebedor.Visible := False;
+      Exit();
+    end;
 
-    if not(ClickedControl = SMALL_DBEdit40) and (DBGrid2.Visible) then
+    DBGridRecebedor.Visible := False;
+
+    if not(SMALL_DBEdit40.Focused) and not(SMALL_DBEdit43.Focused) and
+      not(SMALL_DBEdit41.Focused) then
       DBGrid2.Visible := False;
 
-    if not(ClickedControl = DBGrid1) and (DBGrid3.Visible) then
+    if not(DBGrid1.Focused) then
       DBGrid3.Visible := False;
+
+    if not(DBGrid4.Focused) then
+      ListBox2.Visible := False;
+
   end;
 end;
 
@@ -3767,12 +3738,16 @@ end;
 procedure TForm12.AtivaPesquisaTransportadora;
 begin
   ListBox2.Visible := False;
-  dBGrid2.DataSource    := Form7.DataSource18;
-  //dBGrid2.Visible       := True;
-  dBGrid2.Left          := SMALL_DBEdit41.Left;
-  dbGrid2.Top           := SMALL_DBEdit41.Top + SMALL_DBEdit41.Height -1;
-  dbGrid2.Width         := SMALL_DBEdit41.Width;
-  dBGrid2.Height        := Panel1.Height - dbGrid2.Top - 20;
+  dBGrid2.DataSource := Form7.DataSource18;
+  dBGrid2.Left := SMALL_DBEdit41.Left;
+  dbGrid2.Top := PanelIdentificadorTransp.Top
+    + SMALL_DBEdit41.Top
+    + SMALL_DBEdit41.Height
+    - 1;
+  dbGrid2.Width := SMALL_DBEdit41.Width;
+  dBGrid2.Height := Panel1.Height
+    - dbGrid2.Top
+    - 20;
 end;
 
 procedure TForm12.SMALL_DBEdit40KeyDown(Sender: TObject; var Key: Word;
