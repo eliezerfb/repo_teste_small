@@ -24,16 +24,16 @@ uses
   ;
 
 function GetProductDescription(AxProd: String; ASizeDescricaoProd: Integer;
-  ACodigoProduto: String; AQuery: TIBQuery): String;  
-function ImportaNF(pP1: boolean; sP1: String):Boolean;
+  ACodigoProduto: String; AQuery: TIBQuery): String;
+function ImportaNF(AImportaNumeroNF: boolean; sP1: String):Boolean;
 function GetICMSTag(NodeSec:IXMLNode):string;
 
 implementation
 
-uses uFuncoesRetaguarda, uParametroTributacao, uDialogs,
-  uFuncoesBancoDados;
+uses
+  uFuncoesRetaguarda, uParametroTributacao, uDialogs, uFuncoesBancoDados;
 
-function ImportaNF(pP1: boolean; sP1: String):Boolean;
+function ImportaNF(AImportaNumeroNF: boolean; sP1: String):Boolean;
   function RetornarCodProdInativo: String;
   begin
     Result := QuotedStr(Form7.ibDataSet4CODIGO.AsString) + ',';
@@ -307,12 +307,13 @@ begin
 
           Form7.ibDataSet24OPERACAO.AsString    := Form7.ibDataSet14NOME.AsString;
 
-          if pP1 then
+          if AImportaNumeroNF then
           begin
             Form7.ibDataSet24NUMERONF.AsString := Right(StrZero(StrToFloat(NodeSec.ChildNodes['nNF'].Text),9,0),9)+StrZero(StrToInt(LimpaNumero('0'+NodeSec.ChildNodes['serie'].Text)),3,0);// Número da NF
 
             Form24.Edit2.Text := Right(StrZero(StrToFloat(NodeSec.ChildNodes['nNF'].Text),9,0),9)+'/'+StrZero(StrToInt(LimpaNumero('0'+NodeSec.ChildNodes['serie'].Text)),3,0);// Número da NF
             Form24.Edit2.Repaint;
+            Form24.SMALL_DBEdit40.SetFocus;
           end else
           begin
             Form7.ibDataset99.Close;
