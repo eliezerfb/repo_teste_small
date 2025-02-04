@@ -290,8 +290,6 @@ type
     procedure edtTotalNotaChange(Sender: TObject);
     procedure BitBtnAtorInteressadoClick(Sender: TObject);
     procedure tbsLocalEntregaShow(Sender: TObject);
-    procedure PageControlAddressMktpDrawTab(Control: TCustomTabControl;
-      TabIndex: Integer; const Rect: TRect; Active: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure EditRecebedorNomeEnter(Sender: TObject);
     procedure DBGridRecebedorCellClick(Column: TColumn);
@@ -2347,8 +2345,6 @@ begin
     Panel.Color := Form12.Color;
     Panel.BevelOuter := bvNone;
   end;
-
-  PageControlAddressMktp.OwnerDraw := True;
 end;
 
 procedure TForm12.DBGrid1KeyDown(Sender: TObject; var Key: Word;
@@ -3069,11 +3065,14 @@ begin
   var Filter := 'where coalesce(ATIVO, 0) = 0 and not(NOME = '+QuotedStr('')+')';
   if not(Trim(AFilterByNome) = '') then
   begin
-    Filter := Format(
-      ' where upper(NOME) LIKE ''%%%s%%''', [UpperCase(Trim(AFilterByNome))]
+    Filter := Filter + Format(
+      ' and upper(NOME) LIKE ''%%%s%%''', [UpperCase(Trim(AFilterByNome))]
     );
     NullUnion := '';
   end;
+
+  if not(Form7.ibDataSet15IDRECEBEDOR.IsNull) then
+    Filter := Filter + ' or idclifor = '+Form7.ibDataSet15IDRECEBEDOR.AsString;
 
   IBQueryRecebedor.SQL.Text :=
     NullUnion +
@@ -3597,19 +3596,6 @@ begin
   LoadRecebedor(EditRecebedorNome.Text);
   if not(DBGridRecebedor.Visible) then
     DBGridRecebedor.Visible := True;
-end;
-
-procedure TForm12.PageControlAddressMktpDrawTab(Control: TCustomTabControl;
-  TabIndex: Integer; const Rect: TRect; Active: Boolean);
-begin
-  var LCanvas := PageControlAddressMktp.Canvas;
-  LCanvas.Brush.Color := clWhite;
-  LCanvas.FillRect(Rect);
-  LCanvas.TextOut(
-    Rect.Left + 2,
-    Rect.Top + 2,
-    PageControlAddressMktp.Pages[TabIndex].Caption
-  );
 end;
 
 procedure TForm12.PopupMenuInsertChange(Sender: TObject; Source: TMenuItem;

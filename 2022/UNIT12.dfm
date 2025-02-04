@@ -72,7 +72,7 @@ object Form12: TForm12
         Top = 167
         Width = 660
         Height = 118
-        ActivePage = tbsLocalEntrega
+        ActivePage = TabSheetMktplace
         Align = alTop
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -81,7 +81,6 @@ object Form12: TForm12
         Font.Style = []
         ParentFont = False
         TabOrder = 1
-        OnDrawTab = PageControlAddressMktpDrawTab
         object TabSheetEnderecoCliente: TTabSheet
           Caption = '  Endere'#231'o do cliente'
           object PanelEnderecoCliente: TPanel
@@ -379,7 +378,7 @@ object Form12: TForm12
           end
         end
         object TabSheetMktplace: TTabSheet
-          Caption = '  Marktplace'
+          Caption = 'Marketplace'
           ImageIndex = 2
           object PanelMtplace: TPanel
             Left = 0
