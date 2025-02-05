@@ -1973,8 +1973,10 @@ begin
 
       if Venda <> nil then // Prioriza o que informado na tela de fechamento da venda
       begin
-        sEmailCliente    := Venda.EmailCliente;
-        sEnderecoCliente := Venda.EnderecoCliente;
+        if Trim(Venda.EmailCliente) <> '' then
+          sEmailCliente    := Venda.EmailCliente;
+        if Trim(Venda.EnderecoCliente) <> '' then
+          sEnderecoCliente := Venda.EnderecoCliente;
       end;
 
       Canvas := TCanvas.Create;
