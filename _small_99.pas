@@ -170,11 +170,6 @@ type
     sFileExport: String = ''): Boolean;
 
   procedure _ecf99_AcumulaFormaExtraNFCe(sOrdemExtra: String; dValor: Double;
-      {Sandro Silva 2023-08-21 inicio
-      var dvPag_YA03_10: Double; var dvPag_YA03_11: Double;
-      var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
-      var dvPag_YA03_99: Double);
-      }
       var dvPag_YA03_10: Double; var dvPag_YA03_11: Double;
       var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
       var dvPag_YA03_16: Double; var dvPag_YA03_17: Double;
@@ -1796,13 +1791,9 @@ var
     PrinterTexto(iLinha, iMargemEsq, 'Data: ' + FormatDateTime('dd/mm/yyyy', IBQALTERACA.FieldByName('DATA').AsDateTime) + ' ' + Copy(IBQALTERACA.FieldByName('HORA').AsString, 1, 5), poLeft);
     CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
 
-    {Sandro Silva 2023-12-28 inicio
-    PrinterTexto(iLinha, iMargemEsq, 'Status: ' + sStatusVenda, poLeft);
-    CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
-    }
     PrinterTextoMemo(iLinha, iMargemRazaoSocial, iLarguraPapel - iMargemRazaoSocial - 5, 'Status: ' + sStatusVenda, poLeft);
     CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
-    {Sandro Silva 2023-12-28 fim}
+
     PrinterTexto(iLinha, iMargemEsq, 'Controle: ' + IBQALTERACA.FieldByName('PEDIDO').AsString, poLeft);
     PrinterTexto(iLinha, Canvas.PenPos.X + 120, ' Caixa: ' + IBQALTERACA.FieldByName('CAIXA').AsString, poLeft);
     CanvasLinha(iLinha, iAlturaFonte, iPrimeiraLinhaPapel);
@@ -1813,10 +1804,8 @@ begin
   //Screen.Cursor := crHourGlass;
   FTamanhoPapel := Form1.sTamanhoPapel;
 
-  {Sandro Silva 2020-10-13 inicio}
   if Trim(FTamanhoPapel) = '' then
     FTamanhoPapel := '80';
-  {Sandro Silva 2020-10-13 fim}
 
   sCasasDecimaisQuantidade := LerParametroIni(ExtractFilePath(Application.ExeName) + 'smallcom.inf', 'Outros', 'Casas decimais na quantidade', '2');
 
@@ -1982,6 +1971,12 @@ begin
         end;
       end;
 
+      if Venda <> nil then // Prioriza o que informado na tela de fechamento da venda
+      begin
+        sEmailCliente    := Venda.EmailCliente;
+        sEnderecoCliente := Venda.EnderecoCliente;
+      end;
+
       Canvas := TCanvas.Create;
 
       Printer.Title := 'Venda ' + IBQALTERACA.FieldByName('PEDIDO').AsString + ' Caixa: ' + IBQALTERACA.FieldByName('CAIXA').AsString;
@@ -2054,13 +2049,11 @@ begin
 
         iPrimeiraLinhaPapel       := 50 + iAlturaFonte;// Sandro Silva 2017-04-18  40 + iAlturaFonte;
 
-        {Sandro Silva 2020-10-09 inicio}
         if (FTamanhoPapel = '58') or (FTamanhoPapel = '76') or (FTamanhoPapel = '80') then
         begin
           iPrimeiraLinhaPapel := iAlturaFonte;
           iLinha              := iPrimeiraLinhaPapel;
         end;
-        {Sandro Silva 2020-10-10 fim}
 
       end
       else
@@ -2077,17 +2070,12 @@ begin
 
       if (sCNPJCPFDestinatario <> '') or (sNomeCliente <> '') then
       begin
-        {Sandro Silva 2023-08-16 inicio
-        PrinterTraco(iLinha, iMargemEsq, iLarguraPapel);
-        CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
-        }
 
         if (sCNPJCPFDestinatario <> '') then // Ficha 4251 Sandro Silva 2018-10-01
         begin
-          {Sandro Silva 2023-08-16 inicio}
+
           PrinterTraco(iLinha, iMargemEsq, iLarguraPapel);
           CanvasLinha(iLinha, iAlturaFonte div 4, iPrimeiraLinhaPapel);
-          {Sandro Silva 2023-08-16 fim}
 
           sCNPJCPFDestinatario := FormataCpfCgc(sCNPJCPFDestinatario);
           PrinterTextoMemo(iLinha, iMargemEsq, (iLarguraPapel - iMargemEsq) - 5, 'Cliente: ' + sCNPJCPFDestinatario);
@@ -2576,31 +2564,10 @@ begin
 end;
 
 procedure _ecf99_AcumulaFormaExtraNFCe(sOrdemExtra: String; dValor: Double;
-{Sandro Silva 2023-08-21 inicio
-    var dvPag_YA03_10: Double; var dvPag_YA03_11: Double;
-    var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
-    var dvPag_YA03_99: Double);
-begin
-  if sOrdemExtra = '10' then
-    dvPag_YA03_10 := dvPag_YA03_10 + dValor;
-
-  if sOrdemExtra = '11' then
-    dvPag_YA03_11 := dvPag_YA03_11 + dValor;
-
-  if sOrdemExtra = '12' then
-    dvPag_YA03_12 := dvPag_YA03_12 + dValor;
-
-  if sOrdemExtra = '13' then
-    dvPag_YA03_13 := dvPag_YA03_13 + dValor;
-
-  if sOrdemExtra = '99' then
-    dvPag_YA03_99 := dvPag_YA03_99 + dValor;
-}
   var dvPag_YA03_10: Double; var dvPag_YA03_11: Double;
   var dvPag_YA03_12: Double; var dvPag_YA03_13: Double;
   var dvPag_YA03_16: Double; var dvPag_YA03_17: Double;
   var dvPag_YA03_18: Double; var dvPag_YA03_19: Double;
-  //var dvPag_YA03_99: Double); Mauricio Parizotto 2024-07-12
   var dvPag_YA03_20: Double; var dvPag_YA03_99: Double);
 begin
   if sOrdemExtra = GERENCIAL_FORMA_10_VALE_ALIMENTACAO then
@@ -2633,7 +2600,7 @@ begin
 
   if sOrdemExtra = GERENCIAL_FORMA_99_OUTROS then
     dvPag_YA03_99 := dvPag_YA03_99 + dValor;
-{Sandro Silva 2023-08-21 fim}
+
 end;
 
 { TMobile }
