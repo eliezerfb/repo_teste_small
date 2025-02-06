@@ -34,7 +34,7 @@ uses
   , uSmallEnumerados
   , synPDF, System.MaskUtils
   , uRetornaCustoMedio
-  , uRelatorioResumoVendas
+  , uRelatorioResumoVendas, IBX.IBSQL
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -1748,6 +1748,7 @@ type
     ibDataSet4CODIGO_IMENDES: TIntegerField;
     ributaoInteligente1: TMenuItem;
     N3: TMenuItem;
+    IBDataSet2IDCLIFOR: TIntegerField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -17066,6 +17067,31 @@ begin
     except end;
   end;
 
+  var QryDeleteCascate := TIBSQL.Create(nil);
+  try
+    try
+      QryDeleteCascate.Database := IBDatabase1;
+      QryDeleteCascate.Transaction := IBTransaction1;
+      QryDeleteCascate.SQL.Text := 'delete from cliforenderecos '+
+        ' where idclifor = :idclifor';
+      QryDeleteCascate.ParamByName('idclifor').AsInteger :=
+        DataSet.FieldByName('idclifor').AsInteger;
+      QryDeleteCascate.ExecQuery;
+    except
+      on E:Exception do
+      begin
+        MensagemSistema(
+          'Não foi possível excluir os endereços do cliente/fornecedor.'+
+          #13+#13+'Mensagem do sistema:'+#13+E.Message,
+          msgAtencao
+        );
+        Abort;
+      end;
+    end;
+  finally
+    QryDeleteCascate.Free;
+  end;
+
   RegistraExclusaoRegistro(IBDataSet2);
 end;
 
@@ -21916,6 +21942,9 @@ begin
   ibDataSet2REGISTRO.AsString      := sProximo;
   ibDataSet2CADASTRO.AsDateTime    := Date;
   IBDataSet2PRODUTORRURAL.AsString := 'N'; //Mauricio Parizotto 2024-06-27
+
+  IBDataSet2IDCLIFOR.AsInteger :=
+    IncGenerator(IBDatabase1, 'G_CLIFORIDCLIFOR').ToInteger;
 end;
 
 procedure TForm7.DBGrid1ColEnter(Sender: TObject);
