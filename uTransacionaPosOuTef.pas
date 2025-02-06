@@ -34,7 +34,6 @@ type
     Transacao: String;
     Cliente: TDiretorioTEF;
     ClienteAnterior: TDiretorioTEF;
-    TextoImpressao: String;
   private
   public
     constructor Create;
@@ -44,21 +43,26 @@ type
 type
   TTransacaoComPosOuTef = class
   private
-    FdTotalEmCartao: Currency; //Double;
+    FdTotalEmCartao: Currency;
     FFormasExtras: TPagamentoPDV;
-    FdTotalTransacionado: Currency; //Double;
+    FdTotalTransacionado: Currency;
     FiContaCartao: Integer;
-    FsCupomAutorizado: String;
     FbConfirmarTransacao: Boolean;
-    FsCupomReduzidoAutorizado: String;
+    FsCupomTEF: String;
     FfDescontoNoPremio: real;
     FiTotalParcelas: Integer;
+    FComprovanteReduzido: String;
+    FComprovanteDetalhado: String;
     function AplicaOpcaoPosEscolhida(NomePOS: String): Boolean;
+    function GetImpressaoTransacoes: String;
   public
     constructor Create(AOwner: TComponent);
+    procedure Clear;
     function TransacionaPosOuTef: Boolean;
+    property RecuraImpressaoTransacoes: String read GetImpressaoTransacoes;
     property ConfirmaTransacao: Boolean read FbConfirmarTransacao write FbConfirmarTransacao;
     property iTotalParcelas: Integer read FiTotalParcelas write FiTotalParcelas;
+    property CupomTEF: String read FsCupomTEF write FsCupomTEF;
   end;
 
 implementation
@@ -68,7 +72,6 @@ uses
   , ufuncoesTef
   , unit10
   , uDialogs
-  , uFuncoesPOS
   , ufrmOpcoesFechamentoComCartao
   , fiscal
   , usmall_elginpay_pos
@@ -188,6 +191,14 @@ begin
   Result := bAutorizacao;
 end;
 
+procedure TTransacaoComPosOuTef.Clear;
+begin
+  FiTotalParcelas := 0;
+  FsCupomTEF            := '';
+  FComprovanteReduzido  := '';
+  FComprovanteDetalhado := '';
+end;
+
 constructor TTransacaoComPosOuTef.Create(AOwner: TComponent);
 begin
   FdTotalTransacionado := 0.00;
@@ -196,8 +207,43 @@ begin
   FbConfirmarTransacao := False;
   FiTotalParcelas      := 0;
 
-  FsCupomReduzidoAutorizado := '';
-  FsCupomAutorizado         := '';
+  FsCupomTEF                := '';
+end;
+
+function TTransacaoComPosOuTef.GetImpressaoTransacoes: String;
+var
+  sCupom710: String;
+  sCupom712: String;
+  sCupom714: String;
+begin
+  sCupom710 := TEFTextoImpressaoCupomAutorizado('710-'); // Texto cupom reduzido
+  if AllTrim(sCupom710) <> '' then
+  begin
+    FComprovanteReduzido := TEFTextoImpressaoCupomAutorizado('711-');
+  end
+  else
+  begin
+    sCupom712 := TEFTextoImpressaoCupomAutorizado('712-'); // Quantidade linhas via cliente
+    if AllTrim(sCupom712) <> '' then
+    begin
+      FComprovanteDetalhado := TEFTextoImpressaoCupomAutorizado('713'); // Texto via cliente
+    end;
+  end;
+
+  sCupom714 := TEFTextoImpressaoCupomAutorizado('714-'); // Quantidade linhas via estabelecimento
+  if AllTrim(sCupom714) <> '' then
+  begin
+    FComprovanteDetalhado := IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('715-'); // Texto via estabelecimento
+  end else
+  begin
+    FComprovanteDetalhado := IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('029-'); // Indica o status da confirmação da transação
+  end;
+
+  if AllTrim(StrTran(FComprovanteDetalhado, chr(10),'')) = '' then
+    FComprovanteDetalhado := '';
+
+  Result := FComprovanteReduzido + FComprovanteDetalhado;
+
 end;
 
 function TTransacaoComPosOuTef.TransacionaPosOuTef: Boolean;
@@ -210,7 +256,6 @@ var
   var
     oFile: TIniFile;
   begin
-    Result := False;
     oFile := TIniFile.Create('FRENTE.INI');
     try
       Result := (Pos(AnsiUpperCase(AcNome), AnsiUpperCase(oFile.ReadString('Frente de caixa','TEF USADO', EmptyStr))) > 0);
@@ -253,8 +298,6 @@ var
   var
     slArq: TStringList;
   begin
-    Result := False;
-
     slArq := TStringList.Create;
     try
       slArq.LoadFromFile(AcCaminhoArq);
@@ -290,9 +333,13 @@ var
       AdicionaCNPJRequisicaoTEF(F, Form1.ibDataSet13);          // ENVIO DE INFORMAÇÕES LIVRES 1-CNPJ do Estabelecimento Comercial; 2-CNPJ da Empresa de Automação Comercial // Sandro Silva 2019-08-13
       WriteLn(F,'999-999 = 0');                                 // Trailer - REgistro Final, constante '0' .
       CloseFile(F);
-      Sleep(1000);
+      DeleteFile(PChar('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF+'\INTPOS.STS'));
+      Sleep(500); // Sleep(1000);
       RenameFile(Pchar('c:\'+DiretorioTEF+'\'+Form1.TransacaoTEF.Cliente.REQ+'\IntPos.tmp'),'c:\'+DiretorioTEF+'\'+Form1.TransacaoTEF.Cliente.REQ+'\INTPOS.001');
-      Sleep(6000); // Não diminuir, afeta confirmação da transação
+
+      //Sleep(6000); // Não diminuir, afeta confirmação da transação
+
+      AguardaRespostaIntPosSts;
 
       Form1.OcultaPanelMensagem;
 
@@ -300,7 +347,7 @@ var
 
       FfDescontoNoPremio := 0;
 
-      Form1.ExibePanelMensagem('', True); // Sandro Silva 2021-11-05
+      Form1.ExibePanelMensagem('', True);
 
     end;
   end;
@@ -313,7 +360,6 @@ var
     iParcelas: Integer;
     bOk: Boolean;
     sMensagem: String;
-    sCupom: String;
     sCupom029,
     sCupom710,
     sCupom711,
@@ -330,46 +376,18 @@ var
     bTEFZPOS: Boolean;
   begin
     Result := False;
-    bTEFZPOS := False;
 
     if FdTotalTransacionado > 0 then
     begin
-      sCupom710 := TEFTextoImpressaoCupomAutorizado('710-'); // Texto cupom reduzido
-      if AllTrim(sCupom710) <> '' then
-      begin
-        FsCupomReduzidoAutorizado := FsCupomReduzidoAutorizado + Chr(10) + TEFTextoImpressaoCupomAutorizado('711-') + DupeString('-', 40);
-
-      end
-      else
-      begin
-        sCupom712 := TEFTextoImpressaoCupomAutorizado('712-'); // Quantidade linhas via cliente
-        if AllTrim(sCupom712) <> '' then
-          FsCupomAutorizado := TEFTextoImpressaoCupomAutorizado('713'); // Texto via cliente
-      end;
-
-      sCupom714 := TEFTextoImpressaoCupomAutorizado('714-'); // Quantidade linhas via estabelecimento
-      if AllTrim(sCupom714) <> '' then
-      begin
-        FsCupomAutorizado := FsCupomAutorizado + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('715-'); // Texto via estabelecimento
-      end else
-      begin
-        FsCupomAutorizado := FsCupomAutorizado + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('029-'); // Indica o status da confirmação da transação
-      end;
-
-      if AllTrim(StrTran(FsCupomAutorizado,chr(10),'')) = '' then
-        FsCupomAutorizado := '';
-
-      if SuprimirLinhasEmBrancoDoComprovanteTEF then
-      begin
-        while AnsiContainsText(FsCupomAutorizado, chr(10) + chr(10)) do
-          FsCupomAutorizado := StringReplace(FsCupomAutorizado, chr(10) + chr(10), chr(10), [rfReplaceAll]);
-      end;
-
       Form1.fTEFPago := FdTotalTransacionado;
     end;// if dTotalTransacionado > 0 then
 
     if (Form1.iNumeroMaximoDeCartoes > 1) and (Form1.bModoMultiplosCartoes) then
     begin
+
+      if FbConfirmarTransacao then
+        ConfirmaTransacaoTefAnterior(Form1.TransacaoTEF.ClienteAnterior.Pasta);
+
       while True do
       begin
         Application.ProcessMessages;
@@ -421,8 +439,6 @@ var
       end
       else
       begin
-        if FbConfirmarTransacao then
-          ConfirmaTransacaoTefAnterior(Form1.TransacaoTEF.ClienteAnterior.Pasta);
 
         FfDescontoNoPremio := 0;
 
@@ -612,7 +628,6 @@ var
               Form1.sFinaliza   := '';
               Form1.sLinha      := '';
 
-              sCupom          := '';
               sCupom029       := '';
               sCupom710       := '';
               sCupom711       := '';
@@ -627,6 +642,7 @@ var
 
               if (not bTEFZPOS) or (TestarZPOSLiberado(Form1.IBDatabase1)) then // Sandro Silva (smal-778) 2024-11-19 if (not bTEFZPOS) or (TestarZPOSLiberado) then
               begin
+
                 while not Eof(f) Do
                 begin
 
@@ -724,11 +740,9 @@ var
               else
                 sMensagem := 'Serial sem acesso à esse recurso. Entre em contato com sua revenda.';
 
-              {Sandro Silva (smal-778) 2024-12-30 inicio}
               // TEF Elgin retorna texto em UTF8 "CRÃ‰DITO - MASTERCARD"
               if Utf8ToAnsi(sMensagem) <> '' then
                 sMensagem := Utf8ToAnsi(sMensagem);
-              {Sandro Silva (smal-778) 2024-12-30 fim}
 
               CloseFile(F);
 
@@ -759,23 +773,25 @@ var
 
               if AllTrim(sCupom710) <> '' then
               begin
-                Form1.sCupomTEFReduzido := Form1.sCupomTEFReduzido + Chr(10) + sCupom711 + DupeString('-', 40);
+                FComprovanteReduzido := FComprovanteReduzido + Chr(10) + sCupom711 + DupeString('-', 40);
               end else
               begin
                 if AllTrim(sCupom712) <> '' then
-                  sCupom := sCupom713;
+                begin
+                  FComprovanteDetalhado := sCupom713;
+                end;
               end;
 
               if AllTrim(sCupom714) <> '' then
               begin
-                sCupom := sCupom + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + sCupom715;
+                FComprovanteDetalhado := FComprovanteDetalhado + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + sCupom715;
               end else
               begin
-                sCupom := sCupom + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + sCupom029;
+                FComprovanteDetalhado := FComprovanteDetalhado + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + sCupom029;
               end;
 
-              if AllTrim(StrTran(sCupom,chr(10),'')) = '' then
-                sCupom := '';
+              if AllTrim(StrTran(FComprovanteDetalhado,chr(10),'')) = '' then
+                FComprovanteDetalhado := '';
 
               if Form1.sValorSaque <> '' then
               begin
@@ -801,7 +817,7 @@ var
               if allTrim(sMensagem) <> ''  then
               begin
 
-                if AllTrim(sCupom) <> '' then
+                if AllTrim(FComprovanteDetalhado) <> '' then
                 begin
 
                   if sBotaoOk = '0' then
@@ -809,7 +825,7 @@ var
                     SmallMsgBox(pChar(sMensagem),'Operador',mb_Ok + MB_ICONEXCLAMATION);
                   end else
                   begin
-                    Form1.ExibePanelMensagem(sMensagem);
+                    Form1.ExibePanelMensagem(sMensagem, True);
 
                     // Simula 40 milissegundos
                     for I := 1 to 4 do //for I := 1 to 40 do
@@ -839,20 +855,19 @@ var
             end;
           end; // if FileExists('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.STS')  then
 
-          if (Form1.TransacaoTEF.NomeRede <> '') and (sCupom <> '') then // Sandro Silva 2024-12-05 if (Form1.sNomeRede <> '') and (sCupom <> '') then
+          if (Form1.TransacaoTEF.NomeRede <> '') and (FComprovanteDetalhado <> '') then // if (Form1.TransacaoTEF.NomeRede <> '') and (sCupom <> '') then
           begin
             // Transação feita
             Inc(FiContaCartao);
 
             FbConfirmarTransacao := True;
-
-            {Dailon Parisotto (f-19886) 2024-07-25 Inicio}
-            if (bTemElgin) and (Form1.TransacaoTEF.TextoImpressao <> EmptyStr) then
-              Form1.TransacaoTEF.TextoImpressao := Form1.TransacaoTEF.TextoImpressao + chr(10);
-            if (bTemElgin) and (Form1.TransacaoTEF.TextoImpressao = EmptyStr) then
-              Form1.TransacaoTEF.TextoImpressao := chr(10) + Form1.TransacaoTEF.TextoImpressao;
-            {Dailon Parisotto (f-19886) 2024-07-25 Fim}
-            Form1.TransacaoTEF.TextoImpressao := Form1.TransacaoTEF.TextoImpressao + sCupom + DupeString('-', 40);
+            {
+            if (bTemElgin) and (Form1.sCupomTEF <> EmptyStr) then
+              Form1.sCupomTEF := Form1.sCupomTEF + chr(10);
+            if (bTemElgin) and (Form1.sCupomTEF = EmptyStr) then
+              Form1.sCupomTEF := chr(10) + Form1.sCupomTEF;
+            Form1.sCupomTEF := Form1.sCupomTEF + sCupom + Chr(10) + DupeString('-', 40);
+            }
 
             if (dValorPagarCartao <> 0)  then // Cartão sim - cheque não
             begin
@@ -961,29 +976,16 @@ var
 
             end;
           end;
-          //
+
         end; // if not FileExists('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.STS') then
       end; // if dValorPagarCartao = 0 then
     end; // if dTotalEmCartao < dTotalTransacionado then
 
     if Result = True then
     begin
-      Form1.TransacaoTEF.TextoImpressao := FsCupomReduzidoAutorizado + Form1.sCupomTEFReduzido + FsCupomAutorizado + Form1.TransacaoTEF.TextoImpressao;
 
-      {Sandro Silva (smal-778) 2024-12-30 inicio}
-      // TEF Elgin retorna texto em UTF8 "CRÃ‰DITO - MASTERCARD"
-      if Utf8ToAnsi(Form1.TransacaoTEF.TextoImpressao) <> '' then
-        Form1.TransacaoTEF.TextoImpressao := Utf8ToAnsi(Form1.TransacaoTEF.TextoImpressao);
-      {Sandro Silva (smal-778) 2024-12-30 fim}
+      FsCupomTEF := FComprovanteReduzido + FComprovanteDetalhado;
 
-      (*Sandro Silva 2024-12-06
-      // Ajuste para situação do TEF Elgin que pode ficar uma quebra linha no inicio.
-      // Neste caso irá remover a quebra linha do inicio do arquivo caso exista.
-      {Dailon Parisotto (f-19886) 2024-07-25 Inicio}
-      if Pos(chr(10), Form1.sCupomTEF) = 1 then
-        Form1.sCupomTEF := Copy(Form1.sCupomTEF, 2, Length(Form1.sCupomTEF));
-      {Dailon Parisotto (f-19886) 2024-07-25 Fim}
-      *)
     end;
     // ---------------------------------------------- //
     // Transferência Eletrônica de Fundos (TEF)       //
@@ -999,7 +1001,6 @@ var
     bPoSok: Boolean;
     iParcelas: Integer;
     dTotalTransacaoPOS: Currency;
-    //2025-01-15 iTotalParcelas: Integer;
     ModalidadeTransacao: TTipoModalidadeTransacao;
   begin
     // Usando PoS para transação com cartão
@@ -1033,12 +1034,6 @@ var
           begin
             if Form1.bModoMultiplosCartoes then
             begin
-              {
-              if dValorPagarCartao >= 0 then
-              begin
-                Break;
-              end;
-              }
               if (FdTotalEmCartao - (FdTotalTransacionado + dValorPagarCartao)) < 0 then
               begin
                 dValorPagarCartao := FdTotalEmCartao - FdTotalTransacionado;
@@ -1124,7 +1119,6 @@ var
                   Form1.sParcelas   := Form1.PosElginPay.Transacao.Parcelas;
                   if Form1.sParcelas = '0' then
                     Form1.sParcelas := '1';
-                  {Sandro Silva 2024-12-06 fim}
 
                 end
                 else
@@ -1262,8 +1256,6 @@ begin
 
   DeletaTrasacaoPosDoReceber;
 
-  FsCupomAutorizado         := '';
-
   if FdTotalEmCartao = FdTotalTransacionado then
   begin
     Result := True;
@@ -1308,9 +1300,32 @@ begin
       case TipoTransacao.Tipo of
         tpTEF:
         begin
-          FsCupomReduzidoAutorizado := ''; //2024-11-29
-          Form1.sCupomTEFReduzido := '';// 2024-12-06
           Result := TransacionaComTEF;
+
+          if Result then
+          begin
+
+            Form1.sCupomTEF := FComprovanteReduzido + FComprovanteDetalhado;
+            FsCupomTEF := FComprovanteReduzido + FComprovanteDetalhado;
+
+            if SuprimirLinhasEmBrancoDoComprovanteTEF then
+            begin
+              if Pos(Chr(10) + Chr(10), Form1.sCupomTEF) > 0 then
+                Form1.sCupomTEF := StrTran(Form1.sCupomTEF, Chr(10) +Chr(10), Chr(10));
+            end;
+
+            {Sandro Silva (smal-778) 2024-12-30 inicio}
+            // TEF Elgin retorna texto em UTF8 "CRÃ‰DITO - MASTERCARD"
+            if Utf8ToAnsi(Form1.sCupomTEF) <> '' then
+              Form1.sCupomTEF := Utf8ToAnsi(Form1.sCupomTEF);
+            {Sandro Silva (smal-778) 2024-12-30 fim}
+
+            // Ajuste para situação do TEF Elgin que pode ficar uma quebra linha no inicio.
+            // Neste caso irá remover a quebra linha do inicio do arquivo caso exista.
+            if Pos(chr(10), FsCupomTEF) = 1 then
+              FsCupomTEF := Copy(FsCupomTEF, 2, Length(FsCupomTEF));
+
+          end;
 
           if (Result = False) and (TFrmOpcoesFechamentoComCartao.QtdOpcoesTefPOSDisponiveis = 1) then
           begin

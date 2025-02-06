@@ -2047,37 +2047,59 @@ begin
       if TEFValorTotalAutorizado > 0 then
       begin
         Form1.ibDataSet25.FieldByName('PAGAR').AsFloat := TEFValorTotalAutorizado; // Sandro Silva 2017-06-23
-        Form1.TransacoesComCartao.iTotalParcelas       := TEFQtdParcelasAutorizado;// Recupera as parcelas das transações com cartão já realizadas
-
-        if (Form1.TransacaoTEF.TextoImpressao = '')  and (Form1.ibDataSet25.FieldByName('PAGAR').AsFloat < Form1.ibDataSet25.FieldByName('RECEBER').AsFloat) then
+        Form1.TransacoesCartaoPosOuTef.iTotalParcelas       := TEFQtdParcelasAutorizado;// Recupera as parcelas das transações com cartão já realizadas
+        {
+        //if Form1.sCupomTEFReduzido = '' then
         begin
-          // Recupera as linhas de impressão
+          if (Form1.TransacaoTEF.TextoImpressao = '')  and (Form1.ibDataSet25.FieldByName('PAGAR').AsFloat < Form1.ibDataSet25.FieldByName('RECEBER').AsFloat) then
+          begin
+            // Recupera as linhas de impressão
+            var sCupomReduzidoAutorizado: String;
+            sCupomReduzidoAutorizado := '';
+            if Form1.TransacoesComCartao.CupomReduzidoAutorizado = '' then
+            begin
+            if TEFTextoImpressaoCupomAutorizado('710-') <> '' then
+              Form1.TransacoesComCartao.CupomReduzidoAutorizado := TEFTextoImpressaoCupomAutorizado('711-');
+            end;
+            if Form1.TransacoesComCartao.CupomAutorizado = '' then
+            begin
+              if TEFTextoImpressaoCupomAutorizado('712-') <> '' then
+                Form1.TransacoesComCartao.CupomAutorizado := TEFTextoImpressaoCupomAutorizado('713-');
+              if TEFTextoImpressaoCupomAutorizado('714-') <> '' then
+              begin
+                Form1.TransacoesComCartao.CupomAutorizado := Form1.TransacoesComCartao.CupomAutorizado + Chr(10) + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('715-'); // Texto via estabelecimento
+              end else
+              begin
+                Form1.TransacoesComCartao.CupomAutorizado := Form1.TransacoesComCartao.CupomAutorizado + Chr(10) + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('029-'); // Indica o status da confirmação da transação
+              end;
 
-          if TEFTextoImpressaoCupomAutorizado('710-') <> '' then
-            Form1.TransacaoTEF.TextoImpressao              := TEFTextoImpressaoCupomAutorizado('711-');
-          if TEFTextoImpressaoCupomAutorizado('712-') <> '' then
-            Form1.TransacaoTEF.TextoImpressao              := Form1.TransacaoTEF.TextoImpressao  + Chr(10) + TEFTextoImpressaoCupomAutorizado('713-');
-          if TEFTextoImpressaoCupomAutorizado('714-') <> '' then
-          begin
-            Form1.TransacaoTEF.TextoImpressao              := Form1.TransacaoTEF.TextoImpressao  + Chr(10) + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('715-'); // Texto via estabelecimento
-          end else
-          begin
-            Form1.TransacaoTEF.TextoImpressao              := Form1.TransacaoTEF.TextoImpressao  + Chr(10) + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + TEFTextoImpressaoCupomAutorizado('029-'); // Indica o status da confirmação da transação
+              if AllTrim(StrTran(Form1.TransacaoTEF.TextoImpressao, Chr(10), '')) = '' then
+                Form1.TransacoesComCartao.CupomAutorizado :=  '';
+
+              if SuprimirLinhasEmBrancoDoComprovanteTEF then
+              begin
+                while AnsiContainsText(Form1.TransacaoTEF.TextoImpressao, chr(10) + chr(10)) do
+                  Form1.TransacoesComCartao.CupomAutorizado := StringReplace(Form1.TransacoesComCartao.CupomAutorizado, chr(10) + chr(10), chr(10), [rfReplaceAll]);
+              end;
+            end;
+
+            Form1.TransacaoTEF.TextoImpressao := Form1.TransacaoTEF.TextoImpressao + Form1.TransacoesComCartao.CupomAutorizado + DupeString('-', 40);
+
+            Form1.TransacaoTEF.TextoImpressao := Form1.TransacoesComCartao.CupomReduzidoAutorizado + Form1.sCupomTEFReduzido + Form1.TransacoesComCartao.CupomAutorizado + Form1.TransacaoTEF.TextoImpressao;
+
+  //          // TEF Elgin retorna texto em UTF8 "CRÃ‰DITO - MASTERCARD"
+  //          if Utf8ToAnsi(Form1.TransacaoTEF.TextoImpressao) <> '' then
+  //            Form1.TransacaoTEF.TextoImpressao := Utf8ToAnsi(Form1.TransacaoTEF.TextoImpressao);
+
+            Form1.sCupomTEFReduzido := Form1.TransacoesComCartao.CupomReduzidoAutorizado;
+
           end;
-
-          if AllTrim(StrTran(Form1.TransacaoTEF.TextoImpressao, Chr(10), '')) = '' then
-            Form1.TransacaoTEF.TextoImpressao              := '';
-
-          if SuprimirLinhasEmBrancoDoComprovanteTEF then
-          begin
-            while AnsiContainsText(Form1.TransacaoTEF.TextoImpressao, chr(10) + chr(10)) do
-              Form1.TransacaoTEF.TextoImpressao := StringReplace(Form1.TransacaoTEF.TextoImpressao, chr(10) + chr(10), chr(10), [rfReplaceAll]);
-          end;
-
-          if Form1.TransacaoTEF.TextoImpressao <> '' then
-             Form1.TransacaoTEF.TextoImpressao := Form1.TransacaoTEF.TextoImpressao + Chr(10);
+//        end
+//        else
+//        begin
+//          Form1.TransacoesComCartao.CupomReduzidoAutorizado := Form1.sCupomTEFReduzido;
         end;
-
+        }
       end;
 
       Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat := 0;

@@ -40,6 +40,7 @@ function TEFValorTransacao(sArquivoTEF: String): Currency;
 procedure TEFDeletarCopiasArquivos(FsDiretorio: String);
 //Sandro Silva 2024-11-19 function TestarZPOSLiberado: Boolean;
 function TestarZPOSLiberado(IBDataBase: TIBDataBase): Boolean;
+procedure AguardaRespostaIntPosSts;
 
 implementation
 
@@ -1697,8 +1698,9 @@ begin
     Form1.sFinaliza := '';
     Form1.sLinha    := '';
     //
-    Form1.sCupomTEFReduzido := '';
-    Form1.TransacaoTEF.TextoImpressao := ''; // ADM
+    //Form1.sCupomTEFReduzido := '';
+    //Form1.TransacaoTEF.TextoImpressao := ''; // ADM
+    Form1.sCupomTEF := ''; // ADM
     sMensagem       := '';
     Form1.OkSim     := '';
     //
@@ -1725,7 +1727,8 @@ begin
         if Copy(Form1.sLinha,1,7) = '027-000' then Form1.sFinaliza := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
         if Copy(Form1.sLinha,1,7) = '017-000' then Form1.sTipoParc := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
         if Copy(Form1.sLinha,1,7) = '018-000' then Form1.sParcelas := AllTrim(Copy(Form1.sLinha,10,Length(Form1.sLinha)-9));
-        if Copy(Form1.sLinha,1,4) = '029-'    then Form1.TransacaoTEF.TextoImpressao := Form1.TransacaoTEF.TextoImpressao + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10);
+        //if Copy(Form1.sLinha,1,4) = '029-'    then Form1.TransacaoTEF.TextoImpressao := Form1.TransacaoTEF.TextoImpressao + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10);
+        if Copy(Form1.sLinha,1,4) = '029-'    then Form1.sCupomTEF := Form1.sCupomTEF + StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','') + chr(10);
         if Copy(Form1.sLinha,1,4) = '030-'    then sMensagem := StrTran(Copy(Form1.sLinha,11,Length(Form1.sLinha)-10),'"','');
         // Funcões Administrativas //
       end;
@@ -1747,8 +1750,8 @@ begin
         Form1.sFinaliza := '';
         Form1.sTipoParc := '';
         Form1.sParcelas := '';
-        Form1.TransacaoTEF.TextoImpressao := ''; // ADM
-        Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
+        Form1.sCupomTEF := ''; // ADM
+        //Form1.sCupomTEFReduzido := ''; // Sandro Silva 2017-06-14
         sMensagem       := '';
         //
       end else
@@ -1760,7 +1763,7 @@ begin
         Form1.Height := Screen.Height;
         Form1.Repaint;
         //
-        if AllTrim(Form1.TransacaoTEF.TextoImpressao) <> '' then
+        if AllTrim(Form1.sCupomTEF) <> '' then // if AllTrim(Form1.TransacaoTEF.TextoImpressao) <> '' then
         begin
           //
           Form1.Panel3.Font.Size := 10;
@@ -1802,12 +1805,14 @@ begin
           end;
         end;
 
-        if (allTrim(sMensagem) <> '') and (AllTrim(Form1.TransacaoTEF.TextoImpressao) = '')  then
+        //if (allTrim(sMensagem) <> '') and (AllTrim(Form1.TransacaoTEF.TextoImpressao) = '')  then
+        if (allTrim(sMensagem) <> '') and (AllTrim(Form1.sCupomTEF) = '')  then
         begin
           SmallMsgBox(pChar(sMensagem),'Operador',mb_Ok + MB_ICONEXCLAMATION);
         end;
 
-        if AllTrim(Form1.TransacaoTEF.TextoImpressao) <> '' then
+        //if AllTrim(Form1.TransacaoTEF.TextoImpressao) <> '' then
+        if AllTrim(Form1.sCupomTEF) <> '' then
         begin
           Form1.bChave := False;
           bSair  := False;
@@ -1831,7 +1836,7 @@ begin
               //                         //
               // if FunctionDetect('USER32.DLL','BlockInput',@xBlockInput) then xBlockInput(True);   // Disable Keyboard & mouse
               //
-              Form1.bChave := Form1.PDV_ImpressaoNaoSujeitoaoICMS(Form1.TransacaoTEF.TextoImpressao);
+              Form1.bChave := Form1.PDV_ImpressaoNaoSujeitoaoICMS(Form1.sCupomTEF); // Form1.bChave := Form1.PDV_ImpressaoNaoSujeitoaoICMS(Form1.TransacaoTEF.TextoImpressao);
               //
               // sleep(1000);
               //
@@ -2615,6 +2620,7 @@ var
   i: Integer;
   sArquivoTEF: String;
   sNomeArquivo: String;
+  sTextoCampo: String;
 begin
   GetDir(0, sDirAtual);
   slArquivos := TStringList.Create;
@@ -2639,13 +2645,30 @@ begin
           }
           if CampoTEF(sArquivoTEF, '009-000') = '0' then
           begin
+            if Result <> '' then
+              Result := Result + Chr(10);
+
+            sTextoCampo := CampoTEF(sArquivoTEF, sCampo);
+
+            {
             if SuprimirLinhasEmBrancoDoComprovanteTEF then
             begin
               if Trim(CampoTEF(sArquivoTEF, sCampo)) <> '' then
-                Result := Result + Trim(CampoTEF(sArquivoTEF, sCampo));
+                Result := Trim(CampoTEF(sArquivoTEF, sCampo)) + Result;
             end
             else
-              Result := Result + Trim(CampoTEF(sArquivoTEF, sCampo));
+              Result := Trim(CampoTEF(sArquivoTEF, sCampo)) + Result;
+            }
+              if Trim(sTextoCampo) <> '' then
+              begin
+                if AnsiContainsText(sCampo, '711-')  then
+                  Result := Result + Trim(sTextoCampo) + Chr(10) + DupeString('-', 40) // Result := Result + Chr(10) + Trim(sTextoCampo) + Chr(10) + DupeString('-', 40)
+                else
+                  if AnsiContainsText(sCampo, '715-')  then
+                    Result := Result + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + Trim(sTextoCampo)
+                  else
+                    Result := Result + Chr(10) + Trim(sTextoCampo);
+              end;
           end;
           {Sandro Silva 2023-10-24 fim}
         end;
@@ -2844,20 +2867,22 @@ begin
   ChDir(sDirAtual);
 end;
 
-{Sandro Silva (smal-778) 2024-11-19 inicio
-function TestarZPOSLiberado: Boolean;
-var
-  dLimiteRecurso : Tdate;
-begin
-  Result := (RecursoLiberado(Form1.IBDatabase1,rcZPOS,dLimiteRecurso));
-end;
-}
 function TestarZPOSLiberado(IBDataBase: TIBDataBase): Boolean;
 var
   dLimiteRecurso : Tdate;
 begin
   Result := (RecursoLiberado(IBDatabase, rcZPOS, dLimiteRecurso));
 end;
-{Sandro Silva (smal-778) 2024-11-19 fim}
+
+procedure AguardaRespostaIntPosSts;
+begin
+  //Precisa esperar a resposta do TEF
+  for var I := 1 to 6 do
+  begin
+    Sleep(1000);
+    if FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF+'\INTPOS.STS') then
+      Break;
+  end;
+end;
 
 end.
