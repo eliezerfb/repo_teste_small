@@ -301,6 +301,10 @@ type
       Shift: TShiftState);
     procedure DBLookupComboBoxEnderRecebKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure ScrollBox1MouseWheelDown(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
+    procedure ScrollBox1MouseWheelUp(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
   private
     { Private declarations }
     procedure AppMessage(var Msg: TMsg; var Handled: Boolean);
@@ -348,6 +352,26 @@ uses
   Unit24, Unit48, uFuncoesRetaguarda, uFuncoesFiscais, Windows,
   uFrmPesquisaOrcamento, uImportaOrcamento, uImportaOrdemServico,
   ufrmPesquisaOrdemServico, uDialogs, uAtorInteressado, uSmallConsts;
+
+procedure TForm12.ScrollBox1MouseWheelDown(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  if (DBLookupComboBoxEnderReceb.Focused()) then
+  begin
+    DBLookupComboBoxEnderReceb.Perform(WM_KEYDOWN, VK_DOWN, 0);
+    Handled := True;
+  end;
+end;
+
+procedure TForm12.ScrollBox1MouseWheelUp(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  if (DBLookupComboBoxEnderReceb.Focused()) then
+  begin
+    DBLookupComboBoxEnderReceb.Perform(WM_KEYDOWN, VK_UP, 0);
+    Handled := True;
+  end;
+end;
 
 procedure TForm12.SetRecebedor(AClear: Boolean);
 begin
@@ -2439,7 +2463,15 @@ var
 begin
   if DbGrid4.SelectedIndex = 0 then
   begin
-    if not ListBox2.Visible then ListBox2.Visible := True;
+    if not ListBox2.Visible then
+    begin
+      ListBox2.Left := PanelServico.Left + DBGrid4.Left;
+      ListBox2.Top := PanelServico.Top + PanelServico.Height - 4;
+      ListBox2.Height := 200;
+      ListBox2.Width := dbGrid4.Width + 2;
+
+      ListBox2.Visible := True;
+    end;
 
     Form7.ibDataSet35.Edit;
     Form7.ibDataSet35.UpdateRecord;
@@ -2971,11 +3003,6 @@ begin
     end;
   end;
 
-  ListBox2.Left := PanelServico.Left + DBGrid4.Left + 10;
-  ListBox2.Top := PanelServico.Top + PanelServico.Height + 4;
-  ListBox2.Height := 200;
-  ListBox2.Width := dbGrid4.Width + 2;
-
   ListBox2.Visible := False;
 end;
 
@@ -3025,16 +3052,15 @@ begin
     ListBox2.ItemIndex := ListBox2.ItemIndex + 1;
     Abort;
   end;
+
   if Key = VK_UP     then
   begin
     ListBox2.ItemIndex := ListBox2.ItemIndex - 1;
     Abort;
   end;
-  if Key = vK_return then
-  begin
-    Form12.ListBox2Click(Sender);
 
-  end;
+  if Key = vK_return then
+    Form12.ListBox2Click(Sender);
 end;
 
 procedure TForm12.LoadAddress();

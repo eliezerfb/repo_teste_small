@@ -57,6 +57,8 @@ object Form12: TForm12
     ParentColor = False
     ParentFont = False
     TabOrder = 0
+    OnMouseWheelDown = ScrollBox1MouseWheelDown
+    OnMouseWheelUp = ScrollBox1MouseWheelUp
     object Panel1: TPanel
       Left = 0
       Top = 7
@@ -72,7 +74,7 @@ object Form12: TForm12
         Top = 167
         Width = 660
         Height = 118
-        ActivePage = TabSheetMktplace
+        ActivePage = tbsLocalEntrega
         Align = alTop
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -2110,6 +2112,25 @@ object Form12: TForm12
             Visible = True
           end>
       end
+      object ListBox2: TListBox
+        Left = 7
+        Top = 528
+        Width = 513
+        Height = 5
+        BevelInner = bvNone
+        Color = 15790320
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ItemHeight = 13
+        ParentFont = False
+        TabOrder = 9
+        Visible = False
+        OnClick = ListBox2Click
+        OnKeyDown = ListBox2KeyDown
+      end
     end
     object Panel6: TPanel
       Left = 0
@@ -2121,7 +2142,7 @@ object Form12: TForm12
       Color = clWhite
       Ctl3D = True
       ParentCtl3D = False
-      TabOrder = 6
+      TabOrder = 5
       object Button1: TBitBtn
         Left = 568
         Top = 5
@@ -2432,25 +2453,6 @@ object Form12: TForm12
           Width = 75
           Visible = True
         end>
-    end
-    object ListBox2: TListBox
-      Left = 7
-      Top = 528
-      Width = 513
-      Height = 5
-      BevelInner = bvNone
-      Color = 15790320
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlack
-      Font.Height = -11
-      Font.Name = 'Microsoft Sans Serif'
-      Font.Style = []
-      ItemHeight = 13
-      ParentFont = False
-      TabOrder = 5
-      Visible = False
-      OnClick = ListBox2Click
-      OnKeyDown = ListBox2KeyDown
     end
   end
   object PopupMenuInsert: TPopupMenu
