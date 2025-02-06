@@ -15,7 +15,7 @@ uses
                                out id_api_pix : integer;
                                out Mensagem:string):boolean;
   function GeraChavePixISicoob(idBankAccount : integer; description : string;
-                             Valor : double; out ChaveQRCode, order_id, Mensagem : string):boolean;
+                             Valor : double; out ChaveQRCode, order_id, Mensagem, linkQR : string):boolean;
   function GetStatusPixSicoob(txId:string; IdBankAccount : integer; out CodigoAutorizacao:string):string;
 
 
@@ -117,7 +117,7 @@ end;
 
 
 function GeraChavePixISicoob(idBankAccount : integer; description : string;
-                             Valor : double; out ChaveQRCode, order_id, Mensagem : string):boolean;
+                             Valor : double; out ChaveQRCode, order_id, Mensagem, linkQR : string):boolean;
 var
   sJson, sJsonRet : string;
   StatusCode : integer;
@@ -143,6 +143,7 @@ begin
 
         ChaveQRCode := RetPixGenerate.payloadQrCode;
         order_id    := RetPixGenerate.TxId;
+        linkQR      := RetPixGenerate.pixImageUrl;
       finally
         FreeAndNil(RetPixGenerate);
       end;
