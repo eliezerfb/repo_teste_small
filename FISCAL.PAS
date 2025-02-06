@@ -97,6 +97,7 @@ uses
   , uclassetransacaocartao // Sandro Silva 2017-06-14
   , umfe
   , usmall_elginpay_pos
+  , System.Threading
   , usincronizamobile
   , uArquivosDAT
   , uSmallEnumerados
@@ -1066,6 +1067,7 @@ type
     HabilitarusodePOS1: TMenuItem;
     Cadastrodebandeiras1: TMenuItem;
     Abandonarvenda1: TMenuItem;
+    TimerMinhasNotas: TTimer;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1439,6 +1441,7 @@ type
     procedure Cadastrodebandeiras1Click(Sender: TObject);
     procedure HabilitarusodePOS1Click(Sender: TObject);
     procedure Abandonarvenda1Click(Sender: TObject);
+    procedure TimerMinhasNotasTimer(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1855,8 +1858,9 @@ uses
   , uFrmTransacoesItau
   , uDialogs
   , ufrmSobre
-  , uLogSistema
-  //, ufrmOpcoesFechamentoComCartao
+  , uLogSistema  
+  , uMinhasNotas
+  , uSistema;
   ;
 
 {$R *.DFM}
@@ -16215,6 +16219,7 @@ begin
 
   Form22.Hide; // Sandro Silva 2016-07-27 Estava no onActivate, mas ficava errado
 
+  TimerMinhasNotas.Enabled := True;
 end;
 
 procedure TForm1.AtualizarTEMTEF;
@@ -30244,6 +30249,39 @@ begin
   else
     Label_ok.Caption := 'Caixa: '+Right('000'+Form1.sCaixa,3)+' '+DateToStr(Date)+' '+TimeToStr(Time) + ' ';
   Label_ok.Left    := Screen.Width - Label_Ok.Width - AjustaLargura(20);
+end;
+
+procedure TForm1.TimerMinhasNotasTimer(Sender: TObject);
+begin
+  TimerMinhasNotas.Enabled := False;
+
+  try
+    TTask.Run(
+    procedure()
+    var
+      bCompletado : boolean;
+    begin
+      try
+        TSistema.GetInstance.CNPJEmitente := ibDataSet13.FieldByName('CGC').AsString;
+
+        GeraEnvioMinhasNotas(IBDatabase1,
+                             bCompletado);
+      except
+      end;
+
+      TThread.Synchronize(TThread.CurrentThread,
+      procedure()
+      begin
+        if not bCompletado then
+          TimerMinhasNotas.Interval := 120000
+        else
+          TimerMinhasNotas.Interval := 3600000;
+
+        TimerMinhasNotas.Enabled  := True;
+      end);
+    end);
+  except
+  end;
 end;
 
 procedure TForm1.CarnResumido1Click(Sender: TObject);

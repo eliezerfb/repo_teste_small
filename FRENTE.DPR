@@ -120,7 +120,10 @@ uses
   uIMendesSections in '..\unit_compartilhada\DAT\uIMendesSections.pas',
   ufrmSobre in 'ufrmSobre.pas' {frmSobre},
   ufrmOpcoesFechamentoComCartao in 'ufrmOpcoesFechamentoComCartao.pas' {FrmOpcoesFechamentoComCartao},
-  uTransacionaPosOuTef in 'uTransacionaPosOuTef.pas';
+  uTransacionaPosOuTef in 'uTransacionaPosOuTef.pas',
+  uMinhasNotas in '..\unit_compartilhada\MinhasNotas\uMinhasNotas.pas',
+  uWebServiceMinhasNotas in '..\unit_compartilhada\MinhasNotas\uWebServiceMinhasNotas.pas',
+  uSistema in '..\Projeto-2022\2022\units\uSistema.pas';
 
 {$R *.RES}
 
