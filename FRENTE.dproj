@@ -95,9 +95,9 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Frente de Caixa;FileVersion=2025.5.0.1;InternalName=frente.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=frente.exe;ProductName=Frente de Caixa;ProductVersion=2025.5.0.1;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
-        <VerInfo_MinorVer>5</VerInfo_MinorVer>
-        <VerInfo_Build>1</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Frente de Caixa;FileVersion=2025.7.0.0;InternalName=frente.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=frente.exe;ProductName=Frente de Caixa;ProductVersion=2025.7.0.0;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_MinorVer>7</VerInfo_MinorVer>
+        <VerInfo_Build>0</VerInfo_Build>
         <DCC_ExeOutput>\Desenvolvimento\Executaveis\Small Commerce\</DCC_ExeOutput>
         <Manifest_File>xp.manifest</Manifest_File>
         <VerInfo_MajorVer>2025</VerInfo_MajorVer>
@@ -307,7 +307,7 @@
         <DCCReference Include="uTransacionaPosOuTef.pas"/>
         <DCCReference Include="..\unit_compartilhada\MinhasNotas\uMinhasNotas.pas"/>
         <DCCReference Include="..\unit_compartilhada\MinhasNotas\uWebServiceMinhasNotas.pas"/>
-        <DCCReference Include="..\Projeto-2022\2022\units\uSistema.pas"/>
+        <DCCReference Include="..\small-Projeto-2022\2022\units\uSistema.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -329,10 +329,6 @@
                     <Source Name="MainSource">FRENTE.DPR</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfrxPDF28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfrxPDF28.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsADO28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsADO28.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsIBX28.bpl">File D:\Desenvolvimento\Fontes\Delphi\componentes\FastReports\LibD28\dclfsIBX28.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>

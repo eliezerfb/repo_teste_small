@@ -22988,6 +22988,7 @@ begin
     {Sandro Silva 2023-12-27 inicio
     _ecf99_ImprimeVenda(nil, Form1.ibDataSet150.Transaction, Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString, '', '', '', '');
     }
+    {Sandro Silva 2024-01-10 inicio
     IBQALTERACA.Close;
     IBQALTERACA.SQL.Text :=
       'select DISTINCT A.CNPJ, A.CLIFOR, ' +
@@ -22998,6 +22999,17 @@ begin
       ' and A.PEDIDO = ' + QuotedStr(Form1.ibDataSet150.FieldByName('NUMERONF').AsString) +
       ' and CAIXA = ' + QuotedStr(Form1.ibDataSet150.FieldByName('CAIXA').AsString);
     IBQALTERACA.Open;
+    }
+    IBQALTERACA.Close;
+    IBQALTERACA.SQL.Text :=
+      'select DISTINCT A.CNPJ, A.CLIFOR, ' +
+      'C.EMAIL, C.ENDERE, C.COMPLE, C.CIDADE, C.ESTADO, C.CEP ' +
+      'from ALTERACA A ' +
+      'left join CLIFOR C on (C.CGC = A.CNPJ and char_length(C.CGC) >= 11 and char_length(A.CNPJ) >= 11) or (C.NOME = A.CLIFOR)' +
+      'where A.PEDIDO = ' + QuotedStr(Form1.ibDataSet150.FieldByName('NUMERONF').AsString) +
+      ' and CAIXA = ' + QuotedStr(Form1.ibDataSet150.FieldByName('CAIXA').AsString);
+    IBQALTERACA.Open;
+
     _ecf99_ImprimeVenda(nil, Form1.ibDataSet150.Transaction, Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString, IBQALTERACA.FieldByName('CNPJ').AsString, IBQALTERACA.FieldByName('CLIFOR').AsString, IBQALTERACA.FieldByName('EMAIL').AsString, IBQALTERACA.FieldByName('ENDERE').AsString);
     {Sandro Silva 2023-12-27 fim}
   end;
@@ -24077,7 +24089,8 @@ begin
                   IBQuery1.Close;
                   IBQuery1.SQL.Clear;
                   IBQuery1.SQL.Add('insert into CLIFOR ('
-                  +'NOME'
+                  +'IDCLIFOR'
+                  +',NOME'
                   +',CGC'
                   +',IE'
                   +',CEP'
@@ -24091,7 +24104,8 @@ begin
                   +',CADASTRO'
                   +',REGISTRO'
                   +') values ('
-                  +':NOME'
+                  +'(gen_id(G_CLIFORIDCLIFOR, 1)) '
+                  +',:NOME'
                   +',:CGC'
                   +',:IE'
                   +',:CEP'
