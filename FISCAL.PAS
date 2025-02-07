@@ -1860,7 +1860,7 @@ uses
   , ufrmSobre
   , uLogSistema  
   , uMinhasNotas
-  , uSistema;
+  , uSistema
   ;
 
 {$R *.DFM}
