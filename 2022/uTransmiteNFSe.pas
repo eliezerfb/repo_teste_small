@@ -544,19 +544,18 @@ begin
             Writeln(F,'Competencia='+StrTran(DateToStrInvertida(Form7.ibDataSet15.FieldByname('EMISSAO').AsDateTime),'/','-')); // Data da competência do RPS
 
             Writeln(F,'CpfCnpjPrestador='+LimpaNumero(Form7.ibDAtaSet13CGC.AsString)); // CPF / CNPJ do prestador do serviço
-            Writeln(F,'InscricaoMunicipalPrestador='+LimpaNumero(Form7.ibDAtaSet13IM.AsString));  // Inscrição municipal do prestador do serviço
-            Writeln(F,'RazaoSocialPrestador='+ConverteAcentos2(Form7.ibDAtaSet13NOME.AsString));  // Razão Social do prestador do serviço
             {Mauricio Parizotto 2025-02-06 Inicio}
-            //Writeln(F,'InscricaoEstadualPrestador='+LimpaNumero(Form7.ibDAtaSet13IE.AsString));   // Inscrição Estadual do prestador do serviço
+            //Writeln(F,'InscricaoMunicipalPrestador='+LimpaNumero(Form7.ibDAtaSet13IM.AsString));  // Inscrição municipal do prestador do serviço
 
-            // Inscrição Estadual do prestador do serviço
+            // Inscrição municipal do prestador do serviço
             if (GetCidadeUF = 'ITABIRINHAMG') then
-              Writeln(F,'InscricaoEstadualPrestador='+Form7.ibDAtaSet13IE.AsString)
+              Writeln(F,'InscricaoMunicipalPrestador='+Form7.ibDAtaSet13IM.AsString)
             else
-              Writeln(F,'InscricaoEstadualPrestador='+LimpaNumero(Form7.ibDAtaSet13IE.AsString));
+              Writeln(F,'InscricaoMunicipalPrestador='+LimpaNumero(Form7.ibDAtaSet13IM.AsString));
             {Mauricio Parizotto 2025-02-06 Fim}
 
-
+            Writeln(F,'RazaoSocialPrestador='+ConverteAcentos2(Form7.ibDAtaSet13NOME.AsString));  // Razão Social do prestador do serviço
+            Writeln(F,'InscricaoEstadualPrestador='+LimpaNumero(Form7.ibDAtaSet13IE.AsString));   // Inscrição Estadual do prestador do serviço
             Writeln(F,'TipoLogradouroPrestador=Rua');
 
             if (sPadraoSistema = 'JOINVILLESC') then
