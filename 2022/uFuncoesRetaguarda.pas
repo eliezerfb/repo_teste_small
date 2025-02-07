@@ -32,6 +32,8 @@ uses
   , Graphics
   , uSmallEnumerados;
 
+  function Get_SQL_CliforAddress(AOnlyMainAddress: Boolean = False;
+    AFilter: String = ''): String;
   function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
   function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
@@ -103,6 +105,70 @@ uses uFuncoesBancoDados, uSmallConsts, Mais3;
 type
   TModulosSmall = (tmNenhum, tmNao, tmEstoque, tmICM, tmReceber);
 
+function Get_SQL_CliforAddress(AOnlyMainAddress: Boolean;
+  AFilter: String): String;
+begin
+  const SQL_CLIFOR_ADDRESS = 'SELECT * FROM ( '+
+    'SELECT '+
+      ENDERECO_PRINCIPAL_ENTREGA.ToString()+' IDENDERECO, '+
+      'IDCLIFOR, '+
+      '  (COALESCE(NULLIF(ENDERE, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(COMPLE, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(CIDADE, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(ESTADO, '+QuotedStr('')+'), '+QuotedStr('')+')) AS FULL_ADDRESS, '+
+      ' ENDERE ENDERECO, '+
+      ' '+QuotedStr('')+' NUMERO, '+
+      ' COMPLE BAIRRO, '+
+      ' CIDADE, '+
+      ' ESTADO, '+
+      ' municipios.CODIGO municipios_codigo, '+
+      ' CEP, '+
+      ' FONE TELEFONE, '+
+      ' 1 MAIN_ADDRESS '+
+    'FROM CLIFOR '+
+    ' left join municipios on Upper(municipios.nome) = Upper(CLIFOR.CIDADE) and '+
+        'Upper(municipios.UF) = Upper(CLIFOR.estado) '+
+
+    ' where IDCLIFOR = :IDCLIFOR '+
+
+    ' UNION ALL '+
+
+    ' SELECT '+
+      ' IDENDERECO, '+
+      ' IDCLIFOR, '+
+      ' (COALESCE(NULLIF(ENDERECO, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(NUMERO, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(BAIRRO, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(CIDADE, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(ESTADO, '+QuotedStr('')+'), '+QuotedStr('')+')) AS FULL_ADDRESS,  '+
+      ' ENDERECO, '+
+      ' NUMERO, '+
+      ' BAIRRO, '+
+      ' CIDADE, '+
+      ' ESTADO, '+
+      ' municipios.CODIGO municipios_codigo, '+
+      ' CEP, '+
+      ' TELEFONE, '+
+      ' 0 MAIN_ADDRESS '+
+   ' FROM CLIFORENDERECOS '+
+   ' left join municipios on Upper(municipios.nome) = Upper(cliforenderecos.cidade) and '+
+        'upper(municipios.UF) = Upper(cliforenderecos.estado) '+
+   ' where IDCLIFOR = :IDCLIFOR'+
+  ' ) '+
+  ' WHERE '+
+  ' NOT(COALESCE(FULL_ADDRESS, '+QuotedStr('')+') = '+QuotedStr('')+') '+
+  ' %s %s '+
+  ' order by '+
+  'IDENDERECO';
+
+  var SqlOnlyMainAddress := '';
+  if AOnlyMainAddress then
+    SqlOnlyMainAddress := ' and IDENDERECO = '+
+      ENDERECO_PRINCIPAL_ENTREGA.ToString();
+
+  Result := Format(SQL_CLIFOR_ADDRESS, [SqlOnlyMainAddress, AFilter]);
+
+end;
 
 function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String; //Ficha 6237
 begin

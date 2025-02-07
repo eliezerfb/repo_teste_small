@@ -15066,33 +15066,39 @@ object Form7: TForm7
       
         '   RECIBOXML, PLACA, ANVISA, DATA_CANCEL, HORA_CANCEL, COD_SIT, ' +
         'FINNFE, '
-      '   INDFINAL, INDPRES, ENCRYPTHASH, MARKETPLACE, VFCPST)'
+      
+        '   INDFINAL, INDPRES, ENCRYPTHASH, MARKETPLACE, VFCPST, IDLOCALE' +
+        'NTREGA,'
+      '   IDRECEBEDOR, LOCALENTREGA_END_PRINCIPAL)'
       'values'
       
         '  (:NUMERONF, :MODELO, :VENDEDOR, :CLIENTE, :OPERACAO, :EMISSAO,' +
-        ' :FRETE, '
+        ' :FRETE,'
       
         '   :SEGURO, :DESPESAS, :DESCONTO, :VOLUMES, :ESPECIE, :MARCA, :T' +
-        'RANSPORTA, '
+        'RANSPORTA,'
       
         '   :FRETE12, :SAIDAH, :SAIDAD, :DUPLICATAS, :BASEICM, :BASEISS, ' +
-        ':ICMS, '
+        ':ICMS,'
       
         '   :ICMSSUBSTI, :BASESUBSTI, :ALIQUOTA, :ISS, :IPI, :TOTAL, :MER' +
-        'CADORIA, '
+        'CADORIA,'
       
         '   :EMITIDA, :SERVICOS, :PESOBRUTO, :PESOLIQUI, :REGISTRO, :NSUH' +
-        ', :NSU, '
+        ', :NSU,'
       
         '   :NSUD, :IDENTIFICADOR1, :COMPLEMENTO, :NVOL, :LOKED, :NFEPROT' +
-        'OCOLO, '
+        'OCOLO,'
       
         '   :STATUS, :NFEID, :NFERECIBO, :NFEXML, :ICCE, :CCEXML, :RECIBO' +
-        'XML, :PLACA, '
+        'XML, :PLACA,'
       
         '   :ANVISA, :DATA_CANCEL, :HORA_CANCEL, :COD_SIT, :FINNFE, :INDF' +
-        'INAL, :INDPRES, '
-      '   :ENCRYPTHASH, :MARKETPLACE, :VFCPST)')
+        'INAL, :INDPRES,'
+      
+        '   :ENCRYPTHASH, :MARKETPLACE, :VFCPST, :IDLOCALENTREGA, :IDRECE' +
+        'BEDOR,'
+      '   :LOCALENTREGA_END_PRINCIPAL)')
     RefreshSQL.Strings = (
       'Select '
       '  NUMERONF,'
@@ -15153,7 +15159,10 @@ object Form7: TForm7
       '  INDPRES,'
       '  ENCRYPTHASH,'
       '  MARKETPLACE,'
-      '  VFCPST'
+      '  VFCPST,'
+      '  IDRECEBEDOR,'
+      '  IDLOCALENTREGA,'
+      '  LOCALENTREGA_END_PRINCIPAL'
       'from VENDAS '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -15220,7 +15229,10 @@ object Form7: TForm7
       '  INDPRES = :INDPRES,'
       '  ENCRYPTHASH = :ENCRYPTHASH,'
       '  MARKETPLACE = :MARKETPLACE,'
-      '  VFCPST = :VFCPST'
+      '  VFCPST = :VFCPST,'
+      '  IDLOCALENTREGA = :IDLOCALENTREGA,'
+      '  IDRECEBEDOR = :IDRECEBEDOR,'
+      '  LOCALENTREGA_END_PRINCIPAL =:LOCALENTREGA_END_PRINCIPAL'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -15617,6 +15629,18 @@ object Form7: TForm7
       Origin = 'VENDAS.MARKETPLACE'
       Visible = False
       Size = 60
+    end
+    object ibDataSet15IDRECEBEDOR: TIntegerField
+      FieldName = 'IDRECEBEDOR'
+      Visible = False
+    end
+    object ibDataSet15IDLOCALENTREGA: TIntegerField
+      FieldName = 'IDLOCALENTREGA'
+      Visible = False
+    end
+    object ibDataSet15LOCALENTREGA_END_PRINCIPAL: TSmallintField
+      FieldName = 'LOCALENTREGA_END_PRINCIPAL'
+      Visible = False
     end
   end
   object DataSource15: TDataSource

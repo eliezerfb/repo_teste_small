@@ -24,6 +24,7 @@ object Form12: TForm12
   Font.Style = []
   OnActivate = FormActivate
   OnClose = FormClose
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
@@ -57,8 +58,8 @@ object Form12: TForm12
     ParentFont = False
     TabOrder = 0
     object Panel1: TPanel
-      Left = 10
-      Top = 10
+      Left = 0
+      Top = 7
       Width = 662
       Height = 825
       BevelOuter = bvNone
@@ -66,55 +67,9 @@ object Form12: TForm12
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      object Label65: TLabel
-        Left = 215
-        Top = 5
-        Width = 139
-        Height = 24
-        Caption = 'NF DE VENDA'
-        Color = clSilver
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clSilver
-        Font.Height = -19
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-        ParentShowHint = False
-        ShowHint = True
-        Transparent = True
-      end
-      object Label66: TLabel
-        Left = 240
-        Top = 61
-        Width = 29
-        Height = 13
-        Caption = 'Sa'#237'da'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-      end
-      object Label67: TLabel
-        Left = 305
-        Top = 61
-        Width = 37
-        Height = 13
-        Caption = 'Entrada'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-      end
       object Label64: TLabel
-        Left = 450
-        Top = 35
+        Left = 394
+        Top = 18
         Width = 39
         Height = 13
         Caption = 'Mod: 55'
@@ -128,8 +83,8 @@ object Form12: TForm12
         OnClick = Label64Click
       end
       object Label4: TLabel
-        Left = 359
-        Top = 135
+        Left = 356
+        Top = 87
         Width = 28
         Height = 13
         Caption = 'CFOP'
@@ -142,8 +97,8 @@ object Form12: TForm12
         Transparent = True
       end
       object Label8: TLabel
-        Left = 10
-        Top = 175
+        Left = 7
+        Top = 128
         Width = 163
         Height = 13
         Caption = 'Raz'#227'o social do cliente / ou CNPJ'
@@ -156,8 +111,8 @@ object Form12: TForm12
         Transparent = True
       end
       object Label11: TLabel
-        Left = 410
-        Top = 175
+        Left = 407
+        Top = 128
         Width = 76
         Height = 13
         Caption = 'CNPJ do cliente'
@@ -170,8 +125,8 @@ object Form12: TForm12
         Transparent = True
       end
       object Label12: TLabel
-        Left = 564
-        Top = 97
+        Left = 561
+        Top = 44
         Width = 39
         Height = 13
         Caption = 'Emiss'#227'o'
@@ -183,51 +138,9 @@ object Form12: TForm12
         ParentFont = False
         Transparent = True
       end
-      object Label15: TLabel
-        Left = 10
-        Top = 215
-        Width = 95
-        Height = 13
-        Caption = 'Endere'#231'o do cliente'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-      end
-      object Label16: TLabel
-        Left = 437
-        Top = 215
-        Width = 76
-        Height = 13
-        Caption = 'Bairro do cliente'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-      end
-      object Label17: TLabel
-        Left = 572
-        Top = 215
-        Width = 21
-        Height = 13
-        Caption = 'CEP'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-      end
       object Label13: TLabel
-        Left = 564
-        Top = 137
+        Left = 561
+        Top = 87
         Width = 68
         Height = 13
         Caption = 'Data da sa'#237'da'
@@ -239,65 +152,9 @@ object Form12: TForm12
         ParentFont = False
         Transparent = True
       end
-      object Label18: TLabel
-        Left = 10
-        Top = 255
-        Width = 96
-        Height = 13
-        Caption = 'Munic'#237'pio do cliente'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-      end
-      object Label20: TLabel
-        Left = 348
-        Top = 255
-        Width = 14
-        Height = 13
-        Caption = 'UF'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-      end
-      object Label19: TLabel
-        Left = 380
-        Top = 255
-        Width = 91
-        Height = 13
-        Caption = 'Telefone do cliente'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-      end
-      object Label21: TLabel
-        Left = 500
-        Top = 255
-        Width = 59
-        Height = 13
-        Caption = 'IE do cliente'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-      end
       object Label14: TLabel
-        Left = 564
-        Top = 177
+        Left = 561
+        Top = 128
         Width = 68
         Height = 13
         Caption = 'Hora da sa'#237'da'
@@ -702,8 +559,8 @@ object Form12: TForm12
         Transparent = True
       end
       object Label9: TLabel
-        Left = 410
-        Top = 135
+        Left = 407
+        Top = 87
         Width = 106
         Height = 13
         Caption = 'Vendedor                    '
@@ -717,7 +574,7 @@ object Form12: TForm12
       end
       object Label71: TLabel
         Left = 525
-        Top = 10
+        Top = 12
         Width = 60
         Height = 24
         Caption = '000000'
@@ -731,8 +588,8 @@ object Form12: TForm12
       object imgLogoNFe: TImage
         Left = 10
         Top = 5
-        Width = 140
-        Height = 88
+        Width = 104
+        Height = 76
         Center = True
         Proportional = True
         OnClick = imgLogoNFeClick
@@ -830,7 +687,7 @@ object Form12: TForm12
       end
       object Label10: TLabel
         Left = 450
-        Top = 15
+        Top = 18
         Width = 69
         Height = 13
         Caption = 'N'#250'mero/S'#233'rie:'
@@ -844,8 +701,8 @@ object Form12: TForm12
         OnClick = Label64Click
       end
       object Label25: TLabel
-        Left = 10
-        Top = 95
+        Left = 122
+        Top = 44
         Width = 86
         Height = 13
         Caption = 'Finalidade da Nf-e'
@@ -858,8 +715,8 @@ object Form12: TForm12
         Transparent = True
       end
       object Label24: TLabel
-        Left = 215
-        Top = 95
+        Left = 308
+        Top = 44
         Width = 55
         Height = 13
         Caption = 'Consumidor'
@@ -872,8 +729,8 @@ object Form12: TForm12
         Transparent = True
       end
       object Label56: TLabel
-        Left = 360
-        Top = 95
+        Left = 426
+        Top = 44
         Width = 106
         Height = 13
         Caption = 'Indicador de presen'#231'a'
@@ -886,8 +743,8 @@ object Form12: TForm12
         Transparent = True
       end
       object Label3: TLabel
-        Left = 10
-        Top = 135
+        Left = 7
+        Top = 87
         Width = 106
         Height = 13
         Caption = 'Natureza da opera'#231#227'o'
@@ -899,69 +756,399 @@ object Form12: TForm12
         ParentFont = False
         Transparent = True
       end
-      object Label7: TLabel
-        Left = 360
-        Top = 50
-        Width = 59
-        Height = 13
-        Caption = 'Marketplace'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        Transparent = True
-      end
       object lblHomologacao: TLabel
-        Left = 164
-        Top = 29
-        Width = 249
-        Height = 20
+        Left = 122
+        Top = 21
+        Width = 202
+        Height = 15
         Caption = 'Homologa'#231#227'o - sem valor fiscal'
         Font.Charset = ANSI_CHARSET
         Font.Color = clRed
-        Font.Height = -16
+        Font.Height = -12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = [fsBold]
         ParentFont = False
         Visible = False
       end
-      object Edit4: TEdit
-        Left = 215
-        Top = 56
-        Width = 20
-        Height = 22
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'System'
+      object LabelNFVendaTitulo: TLabel
+        Left = 120
+        Top = -1
+        Width = 139
+        Height = 24
+        Caption = 'NF DE VENDA'
+        Color = clSilver
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clSilver
+        Font.Height = -19
+        Font.Name = 'Microsoft Sans Serif'
         Font.Style = [fsBold]
+        ParentColor = False
         ParentFont = False
-        ReadOnly = True
-        TabOrder = 10
-        Text = ' X'
+        ParentShowHint = False
+        ShowHint = True
+        Transparent = True
       end
-      object Edit5: TEdit
-        Left = 280
-        Top = 56
-        Width = 20
-        Height = 22
-        Color = clWhite
+      object PageControlAddressMktp: TPageControl
+        Left = 7
+        Top = 170
+        Width = 640
+        Height = 118
+        ActivePage = tbsLocalEntrega
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'System'
-        Font.Style = [fsBold]
+        Font.Height = -12
+        Font.Name = 'Roboto'
+        Font.Style = []
         ParentFont = False
-        ReadOnly = True
-        TabOrder = 11
-        OnClick = Edit5Click
+        TabOrder = 47
+        OnDrawTab = PageControlAddressMktpDrawTab
+        object TabSheetEnderecoCliente: TTabSheet
+          Caption = '  Endere'#231'o do cliente'
+          object PanelEnderecoCliente: TPanel
+            Left = 0
+            Top = 0
+            Width = 632
+            Height = 89
+            Align = alClient
+            Color = clMoneyGreen
+            ParentBackground = False
+            TabOrder = 0
+            object LabelEnderecoCliente: TLabel
+              Left = 5
+              Top = 0
+              Width = 95
+              Height = 13
+              Caption = 'Endere'#231'o do cliente'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              Transparent = True
+            end
+            object Label16: TLabel
+              Left = 422
+              Top = 0
+              Width = 76
+              Height = 13
+              Caption = 'Bairro do cliente'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              Transparent = True
+            end
+            object Label17: TLabel
+              Left = 555
+              Top = 0
+              Width = 21
+              Height = 13
+              Caption = 'CEP'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              Transparent = True
+            end
+            object Label18: TLabel
+              Left = 5
+              Top = 40
+              Width = 96
+              Height = 13
+              Caption = 'Munic'#237'pio do cliente'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              Transparent = True
+            end
+            object Label20: TLabel
+              Left = 344
+              Top = 40
+              Width = 14
+              Height = 13
+              Caption = 'UF'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              Transparent = True
+            end
+            object Label19: TLabel
+              Left = 377
+              Top = 40
+              Width = 91
+              Height = 13
+              Caption = 'Telefone do cliente'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              Transparent = True
+            end
+            object Label21: TLabel
+              Left = 498
+              Top = 40
+              Width = 59
+              Height = 13
+              Caption = 'IE do cliente'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              Transparent = True
+            end
+            object SMALL_DBEditRua: TSMALL_DBEdit
+              Left = 5
+              Top = 15
+              Width = 412
+              Height = 22
+              Color = clWhite
+              DataField = 'ENDERE'
+              DataSource = Form7.DataSource2
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -13
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 0
+            end
+            object SMALL_DBEditBairro: TSMALL_DBEdit
+              Left = 422
+              Top = 15
+              Width = 130
+              Height = 22
+              Color = clWhite
+              DataField = 'COMPLE'
+              DataSource = Form7.DataSource2
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -13
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 1
+            end
+            object SMALL_DBEditCEP: TSMALL_DBEdit
+              Left = 555
+              Top = 15
+              Width = 75
+              Height = 22
+              Color = clWhite
+              DataField = 'CEP'
+              DataSource = Form7.DataSource2
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -13
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 2
+            end
+            object SMALL_DBEditMunicipio: TSMALL_DBEdit
+              Left = 5
+              Top = 55
+              Width = 333
+              Height = 22
+              Color = clWhite
+              DataField = 'CIDADE'
+              DataSource = Form7.DataSource2
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -13
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 3
+            end
+            object SMALL_DBEditUF: TSMALL_DBEdit
+              Left = 344
+              Top = 55
+              Width = 27
+              Height = 22
+              Color = clWhite
+              DataField = 'ESTADO'
+              DataSource = Form7.DataSource2
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -13
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 4
+            end
+            object SMALL_DBEditTelefone: TSMALL_DBEdit
+              Left = 377
+              Top = 55
+              Width = 115
+              Height = 22
+              Color = clWhite
+              DataField = 'FONE'
+              DataSource = Form7.DataSource2
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -13
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 5
+            end
+            object SMALL_DBEditIE: TSMALL_DBEdit
+              Left = 498
+              Top = 55
+              Width = 135
+              Height = 22
+              Color = clWhite
+              DataField = 'IE'
+              DataSource = Form7.DataSource2
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -13
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 6
+            end
+          end
+        end
+        object tbsLocalEntrega: TTabSheet
+          Caption = '  Local de entrega'
+          ImageIndex = 1
+          OnShow = tbsLocalEntregaShow
+          object PanelRecebedor: TPanel
+            Left = 0
+            Top = 0
+            Width = 632
+            Height = 89
+            Align = alClient
+            Color = clMoneyGreen
+            ParentBackground = False
+            TabOrder = 0
+            ExplicitWidth = 635
+            object LabelRecebedor: TLabel
+              Left = 5
+              Top = 0
+              Width = 53
+              Height = 13
+              Caption = 'Recebedor'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              Transparent = True
+            end
+            object LabelEnderecoRecebedor: TLabel
+              Left = 5
+              Top = 40
+              Width = 97
+              Height = 13
+              Caption = 'Endere'#231'o recebedor'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              Transparent = True
+            end
+            object DBLookupComboBoxEnderReceb: TDBLookupComboBox
+              Left = 5
+              Top = 55
+              Width = 620
+              Height = 22
+              DataField = 'IDLOCALENTREGA'
+              DataSource = Form7.DataSource15
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clBlack
+              Font.Height = -13
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              KeyField = 'IDENDERECO'
+              ListField = 'FULL_ADDRESS'
+              ListSource = dsAddress
+              ParentFont = False
+              TabOrder = 1
+              OnKeyDown = DBLookupComboBoxEnderRecebKeyDown
+            end
+            object EditRecebedorNome: TEdit
+              Left = 5
+              Top = 15
+              Width = 620
+              Height = 20
+              TabOrder = 0
+              Text = 'EditRecebedorNome'
+              OnEnter = EditRecebedorNomeEnter
+              OnKeyDown = EditRecebedorNomeKeyDown
+              OnKeyUp = EditRecebedorNomeKeyUp
+            end
+          end
+        end
+        object TabSheetMktplace: TTabSheet
+          Caption = '  Marktplace'
+          ImageIndex = 2
+          object PanelMtplace: TPanel
+            Left = 0
+            Top = 0
+            Width = 632
+            Height = 89
+            Align = alClient
+            Color = clMoneyGreen
+            ParentBackground = False
+            TabOrder = 0
+            object LabelMktplace: TLabel
+              Left = 5
+              Top = 0
+              Width = 59
+              Height = 13
+              Caption = 'Marketplace'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              Transparent = True
+            end
+            object ComboBoxMarktplace: TComboBox
+              Left = 5
+              Top = 15
+              Width = 620
+              Height = 24
+              AutoDropDown = True
+              BevelInner = bvNone
+              BevelOuter = bvNone
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -13
+              Font.Name = 'Microsoft Sans Serif'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 0
+              OnExit = ComboBoxMarktplaceExit
+              OnKeyDown = FormKeyUp
+            end
+          end
+        end
       end
       object SMALL_DBEdit43: TSMALL_DBEdit
-        Left = 410
-        Top = 150
+        Left = 407
+        Top = 102
         Width = 149
         Height = 22
         Color = clWhite
@@ -982,8 +1169,8 @@ object Form12: TForm12
         OnKeyUp = SMALL_DBEdit43KeyUp
       end
       object SMALL_DBEdit3: TSMALL_DBEdit
-        Left = 359
-        Top = 150
+        Left = 356
+        Top = 102
         Width = 47
         Height = 22
         Color = clWhite
@@ -996,13 +1183,13 @@ object Form12: TForm12
         Font.Style = []
         ParentFont = False
         ReadOnly = True
-        TabOrder = 12
-        OnEnter = SMALL_DBEdit7Enter
+        TabOrder = 10
+        OnEnter = SMALL_DBEditBairroEnter
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit39: TSMALL_DBEdit
-        Left = 10
-        Top = 190
+        Left = 7
+        Top = 142
         Width = 395
         Height = 22
         Color = clWhite
@@ -1023,8 +1210,8 @@ object Form12: TForm12
         OnKeyUp = SMALL_DBEdit39KeyUp
       end
       object SMALL_DBEdit4: TSMALL_DBEdit
-        Left = 410
-        Top = 190
+        Left = 407
+        Top = 142
         Width = 149
         Height = 22
         Color = clWhite
@@ -1036,14 +1223,14 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 13
-        OnEnter = SMALL_DBEdit7Enter
+        TabOrder = 11
+        OnEnter = SMALL_DBEditBairroEnter
         OnExit = SMALL_DBEdit4Exit
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit5: TSMALL_DBEdit
-        Left = 564
-        Top = 112
+        Left = 561
+        Top = 60
         Width = 86
         Height = 22
         Color = clWhite
@@ -1055,13 +1242,13 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 14
-        OnEnter = SMALL_DBEdit7Enter
+        TabOrder = 12
+        OnEnter = SMALL_DBEditBairroEnter
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit9: TSMALL_DBEdit
-        Left = 564
-        Top = 150
+        Left = 561
+        Top = 102
         Width = 86
         Height = 22
         Color = clWhite
@@ -1073,147 +1260,14 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 15
-        OnEnter = SMALL_DBEdit7Enter
+        TabOrder = 13
+        OnEnter = SMALL_DBEditBairroEnter
         OnExit = SMALL_DBEdit9Exit
-        OnKeyUp = FormKeyUp
-      end
-      object SMALL_DBEdit8: TSMALL_DBEdit
-        Left = 572
-        Top = 230
-        Width = 78
-        Height = 22
-        Color = clWhite
-        DataField = 'CEP'
-        DataSource = Form7.DataSource2
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 16
-        OnEnter = SMALL_DBEdit7Enter
-        OnExit = SMALL_DBEdit9Exit
-        OnKeyUp = FormKeyUp
-      end
-      object SMALL_DBEdit7: TSMALL_DBEdit
-        Left = 437
-        Top = 230
-        Width = 130
-        Height = 22
-        Color = clWhite
-        DataField = 'COMPLE'
-        DataSource = Form7.DataSource2
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 17
-        OnEnter = SMALL_DBEdit7Enter
-        OnExit = SMALL_DBEdit9Exit
-        OnKeyUp = FormKeyUp
-      end
-      object SMALL_DBEdit6: TSMALL_DBEdit
-        Left = 10
-        Top = 230
-        Width = 422
-        Height = 22
-        Color = clWhite
-        DataField = 'ENDERE'
-        DataSource = Form7.DataSource2
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 18
-        OnEnter = SMALL_DBEdit7Enter
-        OnExit = SMALL_DBEdit9Exit
-        OnKeyUp = FormKeyUp
-      end
-      object SMALL_DBEdit10: TSMALL_DBEdit
-        Left = 10
-        Top = 270
-        Width = 333
-        Height = 22
-        Color = clWhite
-        DataField = 'CIDADE'
-        DataSource = Form7.DataSource2
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 19
-        OnEnter = SMALL_DBEdit7Enter
-        OnExit = SMALL_DBEdit9Exit
-        OnKeyUp = FormKeyUp
-      end
-      object SMALL_DBEdit11: TSMALL_DBEdit
-        Left = 348
-        Top = 270
-        Width = 27
-        Height = 22
-        Color = clWhite
-        DataField = 'ESTADO'
-        DataSource = Form7.DataSource2
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 20
-        OnEnter = SMALL_DBEdit7Enter
-        OnExit = SMALL_DBEdit11Exit
-        OnKeyUp = FormKeyUp
-      end
-      object SMALL_DBEdit12: TSMALL_DBEdit
-        Left = 380
-        Top = 270
-        Width = 115
-        Height = 22
-        Color = clWhite
-        DataField = 'FONE'
-        DataSource = Form7.DataSource2
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 21
-        OnEnter = SMALL_DBEdit7Enter
-        OnExit = SMALL_DBEdit9Exit
-        OnKeyUp = FormKeyUp
-      end
-      object SMALL_DBEdit13: TSMALL_DBEdit
-        Left = 500
-        Top = 270
-        Width = 150
-        Height = 22
-        Color = clWhite
-        DataField = 'IE'
-        DataSource = Form7.DataSource2
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 22
-        OnEnter = SMALL_DBEdit7Enter
-        OnExit = SMALL_DBEdit13Exit
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit14: TSMALL_DBEdit
-        Left = 564
-        Top = 190
+        Left = 561
+        Top = 142
         Width = 86
         Height = 22
         Color = clWhite
@@ -1225,16 +1279,16 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 23
-        OnEnter = SMALL_DBEdit7Enter
+        TabOrder = 14
+        OnEnter = SMALL_DBEditBairroEnter
         OnExit = SMALL_DBEdit9Exit
         OnKeyUp = FormKeyUp
       end
       object DBGrid1: TDBGrid
-        Left = 10
-        Top = 300
+        Left = 7
+        Top = 294
         Width = 640
-        Height = 126
+        Height = 132
         Color = clWhite
         Ctl3D = False
         DataSource = Form7.DataSource16
@@ -1312,7 +1366,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 25
+        TabOrder = 16
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit45: TSMALL_DBEdit
@@ -1329,7 +1383,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 26
+        TabOrder = 17
         OnExit = SMALL_DBEdit45Exit
         OnKeyUp = FormKeyUp
       end
@@ -1347,7 +1401,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 27
+        TabOrder = 18
         OnExit = SMALL_DBEdit44Exit
         OnKeyUp = FormKeyUp
       end
@@ -1365,7 +1419,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 28
+        TabOrder = 19
         OnKeyUp = FormKeyUp
       end
       object SMALL_DBEdit20: TSMALL_DBEdit
@@ -1382,7 +1436,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 29
+        TabOrder = 20
         OnKeyUp = FormKeyUp
       end
       object edtTotalNota: TSMALL_DBEdit
@@ -1402,7 +1456,7 @@ object Form12: TForm12
         ParentShowHint = False
         ReadOnly = True
         ShowHint = True
-        TabOrder = 30
+        TabOrder = 21
         OnChange = edtTotalNotaChange
         OnKeyUp = FormKeyUp
       end
@@ -1420,7 +1474,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 31
+        TabOrder = 22
         OnEnter = SMALL_DBEdit22Enter
         OnKeyUp = FormKeyUp
       end
@@ -1495,7 +1549,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 34
+        TabOrder = 25
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1514,7 +1568,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 33
+        TabOrder = 24
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1552,7 +1606,7 @@ object Form12: TForm12
         Font.Name = 'System'
         Font.Style = [fsBold]
         ParentFont = False
-        TabOrder = 32
+        TabOrder = 23
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1593,7 +1647,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 38
+        TabOrder = 29
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1612,7 +1666,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 37
+        TabOrder = 28
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1631,7 +1685,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 36
+        TabOrder = 27
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1650,7 +1704,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 35
+        TabOrder = 26
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1669,7 +1723,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 44
+        TabOrder = 35
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1688,7 +1742,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 43
+        TabOrder = 34
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1707,7 +1761,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 42
+        TabOrder = 33
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1726,7 +1780,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 41
+        TabOrder = 32
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1745,7 +1799,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 40
+        TabOrder = 31
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1764,7 +1818,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 39
+        TabOrder = 30
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit38Exit
         OnKeyUp = FormKeyUp
@@ -1787,7 +1841,7 @@ object Form12: TForm12
         Options = [dgEditing, dgColumnResize, dgColLines, dgTabs, dgCancelOnExit]
         ParentCtl3D = False
         ParentFont = False
-        TabOrder = 45
+        TabOrder = 36
         TitleFont.Charset = ANSI_CHARSET
         TitleFont.Color = clBlack
         TitleFont.Height = -11
@@ -1813,7 +1867,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 46
+        TabOrder = 37
         OnEnter = SMALL_DBEdit17Enter
         OnExit = SMALL_DBEdit17Exit
         OnKeyUp = SMALL_DBEdit17KeyUp
@@ -1832,7 +1886,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 47
+        TabOrder = 38
         OnEnter = SMALL_DBEdit22Enter
         OnExit = SMALL_DBEdit22Exit
         OnKeyUp = FormKeyUp
@@ -1851,7 +1905,7 @@ object Form12: TForm12
         Font.Style = []
         MaxLength = 32768
         ParentFont = False
-        TabOrder = 49
+        TabOrder = 40
         OnEnter = DBMemo1Enter
         OnKeyDown = DBMemo1KeyDown
       end
@@ -1866,7 +1920,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 50
+        TabOrder = 41
         OnEnter = Edit1Enter
       end
       object ListBox2: TListBox
@@ -1883,15 +1937,15 @@ object Form12: TForm12
         Font.Style = []
         ItemHeight = 13
         ParentFont = False
-        TabOrder = 48
+        TabOrder = 39
         Visible = False
         OnClick = ListBox2Click
         OnKeyDown = ListBox2KeyDown
       end
       object Edit2: TEdit
-        Left = 10
-        Top = 112
-        Width = 200
+        Left = 122
+        Top = 60
+        Width = 180
         Height = 22
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -1900,15 +1954,15 @@ object Form12: TForm12
         Font.Style = []
         ParentFont = False
         ReadOnly = True
-        TabOrder = 51
+        TabOrder = 42
         Text = '1-Normal'
         OnClick = Edit2Click
         OnEnter = Edit2Click
       end
       object Edit3: TEdit
-        Left = 215
-        Top = 112
-        Width = 140
+        Left = 308
+        Top = 60
+        Width = 114
         Height = 22
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -1917,15 +1971,15 @@ object Form12: TForm12
         Font.Style = []
         ParentFont = False
         ReadOnly = True
-        TabOrder = 52
+        TabOrder = 43
         Text = '1-Consumidor final'
         OnClick = Edit3Click
         OnEnter = Edit3Click
       end
       object Edit6: TEdit
-        Left = 360
-        Top = 112
-        Width = 199
+        Left = 426
+        Top = 60
+        Width = 133
         Height = 22
         Font.Charset = ANSI_CHARSET
         Font.Color = clBlack
@@ -1934,7 +1988,7 @@ object Form12: TForm12
         Font.Style = []
         ParentFont = False
         ReadOnly = True
-        TabOrder = 53
+        TabOrder = 44
         Text = '3-Opera'#231#227'o n'#227'o presencial, Teleatendimento'
         OnClick = Edit6Click
       end
@@ -1953,7 +2007,7 @@ object Form12: TForm12
         Font.Style = []
         Options = [dgColLines, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
         ParentFont = False
-        TabOrder = 24
+        TabOrder = 15
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clBlack
         TitleFont.Height = -12
@@ -1985,8 +2039,8 @@ object Form12: TForm12
           end>
       end
       object SMALL_DBEdit40: TSMALL_DBEdit
-        Left = 10
-        Top = 150
+        Left = 7
+        Top = 102
         Width = 344
         Height = 22
         Color = clWhite
@@ -1998,7 +2052,7 @@ object Form12: TForm12
         Font.Name = 'Microsoft Sans Serif'
         Font.Style = []
         ParentFont = False
-        TabOrder = 54
+        TabOrder = 45
         OnChange = SMALL_DBEdit40Change
         OnClick = SMALL_DBEdit40Click
         OnEnter = SMALL_DBEdit40Enter
@@ -2007,8 +2061,8 @@ object Form12: TForm12
         OnKeyUp = SMALL_DBEdit40KeyUp
       end
       object DBGrid2: TDBGrid
-        Left = 10
-        Top = 170
+        Left = 7
+        Top = 122
         Width = 344
         Height = 5
         Color = 15790320
@@ -2021,7 +2075,7 @@ object Form12: TForm12
         Font.Style = []
         Options = [dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
         ParentFont = False
-        TabOrder = 55
+        TabOrder = 46
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clBlack
         TitleFont.Height = -12
@@ -2046,24 +2100,6 @@ object Form12: TForm12
             FieldName = 'CFOP'
             Visible = True
           end>
-      end
-      object ComboBox1: TComboBox
-        Left = 360
-        Top = 67
-        Width = 292
-        Height = 24
-        BevelInner = bvNone
-        BevelOuter = bvNone
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Microsoft Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 56
-        Visible = False
-        OnExit = ComboBox1Exit
-        OnKeyDown = FormKeyUp
       end
     end
     object Panel6: TPanel
@@ -2162,7 +2198,7 @@ object Form12: TForm12
     end
     object Panel2: TPanel
       Left = 688
-      Top = 312
+      Top = 315
       Width = 433
       Height = 209
       BevelOuter = bvNone
@@ -2328,6 +2364,35 @@ object Form12: TForm12
         ParentFont = False
       end
     end
+    object DBGridRecebedor: TDBGrid
+      Left = 720
+      Top = 517
+      Width = 161
+      Height = 59
+      DataSource = dsRecebedor
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Roboto'
+      Font.Style = []
+      Options = [dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 5
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = 15122040
+      TitleFont.Height = -13
+      TitleFont.Name = 'System'
+      TitleFont.Style = [fsBold]
+      OnCellClick = DBGridRecebedorCellClick
+      OnKeyDown = DBGridRecebedorKeyDown
+      Columns = <
+        item
+          Expanded = False
+          FieldName = 'NOME'
+          Visible = True
+        end>
+    end
   end
   object PopupMenu3: TPopupMenu
     AutoHotkeys = maManual
@@ -2360,5 +2425,48 @@ object Form12: TForm12
       Visible = False
       OnClick = Incluirnovocliente1Click
     end
+  end
+  object IBQuery1: TIBQuery
+    BufferChunks = 1000
+    CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
+    Left = 688
+    Top = 120
+  end
+  object DataSource1: TDataSource
+    DataSet = IBQuery1
+    Left = 688
+    Top = 176
+  end
+  object IBQueryRecebedor: TIBQuery
+    Database = Form7.IBDatabase1
+    Transaction = Form7.IBTransaction1
+    BufferChunks = 1000
+    CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
+    Left = 792
+    Top = 384
+  end
+  object dsRecebedor: TDataSource
+    DataSet = IBQueryRecebedor
+    Left = 792
+    Top = 440
+  end
+  object IBQueryAddress: TIBQuery
+    Database = Form7.IBDatabase1
+    Transaction = Form7.IBTransaction1
+    BufferChunks = 1000
+    CachedUpdates = False
+    ParamCheck = True
+    PrecommittedReads = False
+    Left = 912
+    Top = 384
+  end
+  object dsAddress: TDataSource
+    DataSet = IBQueryAddress
+    Left = 912
+    Top = 440
   end
 end
