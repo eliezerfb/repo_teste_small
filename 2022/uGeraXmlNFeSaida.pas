@@ -5139,7 +5139,7 @@ begin
       xLgr := ExtraiEnderecoSemONumero(QryEntrega.FieldByName('ENDERECO').AsString)
     end;
 
-    Form7.spdNFeDataSets.Campo('xLgr_G03').AsString := xLgr;
+    Form7.spdNFeDataSets.Campo('xLgr_G03').AsString := xLgr+', '+Nro; (*TO DO: Adicionado o nro até resolver o problema de não imprimir no DANFE*)
     Form7.spdNFeDataSets.Campo('nro_G04').AsString := Nro;
     Form7.spdNFeDataSets.Campo('xBairro_G06').AsString :=
       QryEntrega.FieldByName('BAIRRO').AsString;

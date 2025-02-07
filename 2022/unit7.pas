@@ -2491,6 +2491,7 @@ type
     procedure ributaoInteligente1Click(Sender: TObject);
     procedure ibDataSet4CESTChange(Sender: TField);
     procedure ibDataSet4NATUREZA_RECEITAChange(Sender: TField);
+    procedure ibDataSet15AfterEdit(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FFilterOcultaUsoConsumoVenda: String;
@@ -23543,6 +23544,12 @@ begin
   AgendaCommit(True);
 end;
 
+procedure TForm7.ibDataSet15AfterEdit(DataSet: TDataSet);
+begin
+  if Boolean(ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger) then
+    ibDataSet15IDLOCALENTREGA.AsInteger := ENDERECO_PRINCIPAL_ENTREGA;
+end;
+
 procedure TForm7.ibDataSet24AfterDelete(DataSet: TDataSet);
 begin
   AgendaCommit(True);
@@ -30377,7 +30384,9 @@ end;
 
 procedure TForm7.ibDataSet15BeforePost(DataSet: TDataSet);
 begin
-  ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger := Integer(False);
+  if ibDataSet15IDLOCALENTREGA.AsInteger > 0 then
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger := Integer(False);
+
   if ibDataSet15IDLOCALENTREGA.AsInteger = ENDERECO_PRINCIPAL_ENTREGA then
   begin
     ibDataSet15IDLOCALENTREGA.AsVariant := Null;
