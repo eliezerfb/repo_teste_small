@@ -28,11 +28,9 @@ object Form19: TForm19
     Top = 20
     Width = 584
     Height = 358
-    ActivePage = tbsDashboard
+    ActivePage = Orelha_permitir
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 586
-    ExplicitHeight = 411
     object Orelha_relatorios: TTabSheet
       Caption = 'Relat'#243'rios'
       object GroupBox3: TGroupBox
@@ -328,21 +326,21 @@ object Form19: TForm19
       ImageIndex = 1
       object Label35: TLabel
         Left = 92
-        Top = 263
+        Top = 276
         Width = 213
         Height = 13
         Caption = '% m'#225'ximo de desconto no item do or'#231'amento'
       end
       object Label36: TLabel
         Left = 92
-        Top = 291
+        Top = 304
         Width = 214
         Height = 13
         Caption = '% m'#225'ximo de desconto no total do or'#231'amento'
       end
       object chkItensDuplicadosNF: TCheckBox
         Left = 15
-        Top = 103
+        Top = 101
         Width = 194
         Height = 17
         Caption = 'Itens duplos na Nota Fiscal'
@@ -350,7 +348,7 @@ object Form19: TForm19
       end
       object chkEstoqueNegativoNF: TCheckBox
         Left = 15
-        Top = 44
+        Top = 43
         Width = 306
         Height = 17
         Caption = 'Vendas com estoque negativo ou zerado'
@@ -366,7 +364,7 @@ object Form19: TForm19
       end
       object SMALL_DBEdit4: TSMALL_DBEdit
         Left = 15
-        Top = 255
+        Top = 273
         Width = 66
         Height = 19
         DataField = 'DIFERENCA_'
@@ -376,7 +374,7 @@ object Form19: TForm19
       end
       object SMALL_DBEdit5: TSMALL_DBEdit
         Left = 15
-        Top = 287
+        Top = 301
         Width = 66
         Height = 19
         DataField = 'PAGAR'
@@ -386,7 +384,7 @@ object Form19: TForm19
       end
       object chkFabricaProdSemQtd: TCheckBox
         Left = 15
-        Top = 74
+        Top = 72
         Width = 421
         Height = 17
         Caption = 
@@ -396,7 +394,7 @@ object Form19: TForm19
       end
       object chkCalcLucroEstoque: TCheckBox
         Left = 15
-        Top = 133
+        Top = 130
         Width = 290
         Height = 17
         Caption = 'C'#225'lculo do Lucro ao alterar Pre'#231'o de venda no estoque'
@@ -404,7 +402,7 @@ object Form19: TForm19
       end
       object chkImportaMesmoOrc: TCheckBox
         Left = 15
-        Top = 162
+        Top = 158
         Width = 290
         Height = 17
         Caption = 'Importar mesmo or'#231'amento m'#250'ltiplas vezes no cupom'
@@ -412,7 +410,7 @@ object Form19: TForm19
       end
       object chkRecalculaCustoMedioRetroativo: TCheckBox
         Left = 15
-        Top = 192
+        Top = 187
         Width = 194
         Height = 17
         Hint = 
@@ -425,13 +423,23 @@ object Form19: TForm19
       end
       object chkOcultaUsoConsumoVenda: TCheckBox
         Left = 15
-        Top = 222
+        Top = 216
         Width = 346
         Height = 17
         Caption = 'Ocultar produtos de uso e consumo nas vendas'
         ParentShowHint = False
         ShowHint = True
         TabOrder = 9
+      end
+      object chkPermiteDuplicarCNPJ: TCheckBox
+        Left = 15
+        Top = 245
+        Width = 346
+        Height = 17
+        Caption = 'Duplicar CPF/CNPJ no cadastro de clientes'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 10
       end
     end
     object Orelha_juros: TTabSheet
@@ -1755,7 +1763,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
-    ExplicitHeight = 411
     object Button2: TButton
       Left = 350
       Top = 5
@@ -1777,8 +1784,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 2
-    ExplicitLeft = 606
-    ExplicitHeight = 411
     object Button6: TButton
       Left = 350
       Top = 5
@@ -1800,8 +1805,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 3
-    ExplicitTop = 431
-    ExplicitWidth = 626
     object btnCancelar: TButton
       Left = 400
       Top = 19
@@ -1846,7 +1849,6 @@ object Form19: TForm19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 4
-    ExplicitWidth = 626
   end
   object ColorDialog1: TColorDialog
     Color = clGreen

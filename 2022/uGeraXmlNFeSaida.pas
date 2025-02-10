@@ -52,6 +52,7 @@ var
   function GeraXmlNFeSaida : boolean;
   procedure GeraXmlNFeSaidaTags(vIPISobreICMS : Boolean; fSomaNaBase : Real);
   function CalculavTotTrib_M02(sCodigo: String; sOperacaoDoTopo: String): Boolean;
+  procedure PopulaLocalEntrega();
   procedure SetAutXML();
 
 implementation
@@ -870,6 +871,8 @@ begin
       end;
     end;
   end;
+
+  PopulaLocalEntrega();
 
   // Calcular o desconto do Item
   vDESCONTO := 0;
@@ -5075,6 +5078,83 @@ begin
       Form7.spdNFeDataSets.Campo('CNPJ_GA02').Value := LimpaNumero(Form7.sCNPJContabilidade);
     end;
     Form7.spdNFeDataSets.SalvarPart('AUTXML');
+  end;
+end;
+
+procedure PopulaLocalEntrega();
+begin
+  if (Form7.ibDataSet15.FieldByname('IDRECEBEDOR').AsInteger = 0) then
+    Exit;
+
+  if (Form7.ibDataSet15.FieldByname('IDLOCALENTREGA').AsInteger = 0) and
+    (Form7.ibDataSet15.FieldByname('LOCALENTREGA_END_PRINCIPAL').AsInteger = 0) then
+    Exit;
+
+  var QryEntrega := TIBQuery.Create(nil);
+  try
+    QryEntrega.Database := Form7.IBDatabase1;
+    QryEntrega.Transaction := Form7.IBTransaction1;
+
+    QryEntrega.SQL.Text := 'select cgc, nome from clifor '+
+      ' where idclifor = :idclifor';
+    QryEntrega.Prepare;
+    QryEntrega.ParamByName('idclifor').AsInteger :=
+      Form7.ibDataSet15.FieldByname('IDRECEBEDOR').AsInteger;
+    QryEntrega.Open;
+
+    Form7.spdNFeDataSets.Campo('IE_G15').AsString := '';
+    var CnpjCpf := LimpaNumero(QryEntrega.FieldByname('CGC').AsString);
+    if CnpjCpf.Length = 11 then
+      Form7.spdNFeDataSets.Campo('CPF_G02a').AsString := CnpjCpf
+    else
+      Form7.spdNFeDataSets.Campo('CNPJ_G02').AsString := CnpjCpf;
+
+    Form7.spdNFeDataSets.Campo('xNome_G02b').AsString :=
+      QryEntrega.FieldByname('nome').AsString;
+
+    QryEntrega.Close;
+
+    var LocalEntregaEnderecoPrincipal := Boolean(
+      Form7.ibDataSet15.FieldByname('LOCALENTREGA_END_PRINCIPAL').AsInteger
+    );
+    var Filter := '';
+    if not(LocalEntregaEnderecoPrincipal) then
+      Filter := ' and IDENDERECO = :IDENDERECO';
+
+    QryEntrega.SQL.Text :=
+      Get_SQL_CliforAddress(LocalEntregaEnderecoPrincipal, Filter);
+    QryEntrega.Prepare;
+    QryEntrega.ParamByName('IDCLIFOR').AsInteger :=
+      Form7.ibDataSet15.FieldByname('IDRECEBEDOR').AsInteger;
+    if not(LocalEntregaEnderecoPrincipal) then
+      QryEntrega.ParamByName('IDENDERECO').AsInteger :=
+        Form7.ibDataSet15.FieldByname('IDLOCALENTREGA').AsInteger;
+    QryEntrega.Open;
+
+    var xLgr := QryEntrega.FieldByName('ENDERECO').AsString;
+    var Nro := QryEntrega.FieldByName('NUMERO').AsString;
+    if LocalEntregaEnderecoPrincipal then
+    begin
+      Nro := ExtraiNumeroSemOEndereco(QryEntrega.FieldByName('ENDERECO').AsString);
+      xLgr := ExtraiEnderecoSemONumero(QryEntrega.FieldByName('ENDERECO').AsString)
+    end;
+
+    Form7.spdNFeDataSets.Campo('xLgr_G03').AsString := xLgr+', '+Nro; (*TO DO: Adicionado o nro até resolver o problema de não imprimir no DANFE*)
+    Form7.spdNFeDataSets.Campo('nro_G04').AsString := Nro;
+    Form7.spdNFeDataSets.Campo('xBairro_G06').AsString :=
+      QryEntrega.FieldByName('BAIRRO').AsString;
+    Form7.spdNFeDataSets.Campo('cMun_G07').AsString :=
+      QryEntrega.FieldByName('municipios_codigo').AsString;
+    Form7.spdNFeDataSets.Campo('xMun_G08').AsString :=
+      QryEntrega.FieldByName('CIDADE').AsString;
+    Form7.spdNFeDataSets.Campo('UF_G09').AsString :=
+      QryEntrega.FieldByName('ESTADO').AsString;
+    Form7.spdNFeDataSets.Campo('fone_G13').AsString :=
+      LimpaNumero(QryEntrega.FieldByName('TELEFONE').AsString);
+    Form7.spdNFeDataSets.Campo('CEP_G10').AsString :=
+      LimpaNumero(QryEntrega.FieldByName('CEP').AsString);
+  finally
+    QryEntrega.Free;
   end;
 end;
 

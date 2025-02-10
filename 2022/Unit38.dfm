@@ -17,7 +17,6 @@ object Form38: TForm38
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   Position = poScreenCenter
-  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow

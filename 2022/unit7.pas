@@ -34,7 +34,7 @@ uses
   , uSmallEnumerados
   , synPDF, System.MaskUtils
   , uRetornaCustoMedio
-  , uRelatorioResumoVendas
+  , uRelatorioResumoVendas, IBX.IBSQL
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -1748,6 +1748,10 @@ type
     ibDataSet4CODIGO_IMENDES: TIntegerField;
     ributaoInteligente1: TMenuItem;
     N3: TMenuItem;
+    IBDataSet2IDCLIFOR: TIntegerField;
+    ibDataSet15IDRECEBEDOR: TIntegerField;
+    ibDataSet15IDLOCALENTREGA: TIntegerField;
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL: TSmallintField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2487,6 +2491,7 @@ type
     procedure ributaoInteligente1Click(Sender: TObject);
     procedure ibDataSet4CESTChange(Sender: TField);
     procedure ibDataSet4NATUREZA_RECEITAChange(Sender: TField);
+    procedure ibDataSet15AfterEdit(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FFilterOcultaUsoConsumoVenda: String;
@@ -14507,33 +14512,71 @@ begin
   Form1.ConfiguraCredencialTecnospeed;
   {Sandro Silva 2022-12-15 fim}
 
-  //
-  if LimpaNumero(Text) <> '' then
+  var Identification := LimpaNumero(Text);
+  if Identification = '' then
   begin
-    if CpfCgc(LimpaNumero(Text)) then
-    begin
-       if UpperCase(Form1.ConfAceitaCGCDuplo) = 'SIM' then
-       begin
-         ibDataSet2CGC.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)));
-       end else
-       begin
-         if (Valida_Campo('CLIFOR',ConverteCpfCgc(AllTrim(LimpaNumero(Text))),'CGC','Este CPF/CNPJ já foi cadastrado')) then
-            ibDataSet2CGC.AsString := ConverteCpfCgc(AllTrim(LimpaNumero(Text)));
-       end;
-    end else
-    begin
-      MensagemSistema('CPF ou CNPJ inválido!',msgAtencao);
-    end;
-  end
-  else
-  begin
-    if (ibDataSet2CGC.OldValue <> '') then
+    if not(ibDataSet2CGC.OldValue = '') then
       ibDataSet2CGC.AsString := ibDataSet2CGC.OldValue
     else
       ibDataSet2CGC.AsString := '';
+    Exit();
   end;
 
-  if (AllTrim(Form7.IBDataSet2NOME.AsString) = '') and (AllTrim(LimpaNumero(Form7.IBDataSet2CGC.AsString))<>'') then
+  var CnpjCpfMsg := GetTipoDocumento(Identification);
+
+  if not(CpfCgc(Identification)) then
+  begin
+    MensagemSistema(CnpjCpfMsg+' inválido!', msgAtencao);
+    Exit;
+  end;
+
+  var IdentificationFormated := ConverteCpfCgc(Trim(Identification));
+  const MSG_ALERTA_CNPJ =
+    Format('Já existe cadastro para o %s informado.', [CnpjCpfMsg]);
+
+  var PermiteDuplicarCNPJ := oArqConfiguracao.BD.Outras.PermiteDuplicarCNPJ;
+  if not(PermiteDuplicarCNPJ) then
+  begin
+    if not(Valida_Campo('CLIFOR', IdentificationFormated, 'CGC', MSG_ALERTA_CNPJ)) then
+      Exit;
+  end;
+
+  if PermiteDuplicarCNPJ then
+  begin
+    with TIBQuery.Create(nil) do
+    begin
+      try
+        Database := Form7.IBDatabase1;
+        SQL.Text := 'select 1 from rdb$database '+
+          'where exists(select cgc from clifor where cgc = :cgc)';
+        Prepare;
+        ParamByName('cgc').AsString := IdentificationFormated;
+        Open;
+        if Boolean(Fields[0].AsInteger) then
+        begin
+          if Application.MessageBox(
+            pChar(MSG_ALERTA_CNPJ+#13+'Deseja prosseguir mesmo assim?'),
+            'Atenção',
+            mb_YesNo + mb_DefButton2 + MB_ICONQUESTION) = IDNO then
+          begin
+            var OldCNPJ := '';
+            if not(ibDataSet2CGC.OldValue = Null) then
+              OldCNPJ := ibDataSet2CGC.OldValue;
+            ibDataSet2CGC.AsString := OldCNPJ;
+            Exit;
+          end;
+        end;
+      finally
+        Free;
+      end;
+    end;
+  end;
+
+  ibDataSet2CGC.AsString := IdentificationFormated;
+
+
+  if (AllTrim(Form7.IBDataSet2NOME.AsString) = '') and
+    (AllTrim(LimpaNumero(Form7.IBDataSet2CGC.AsString))<>'') then
   begin
     Screen.Cursor            := crHourGlass;
     try
@@ -17026,6 +17069,31 @@ begin
       if Form7.ibDataSet9.RecordCount > 0  then // Se ambos estiverem vazios, Form7.ibDataSet9NOME.AsString e Form7.ibDataset2NOME.AsString ocorre erro
         Form7.ibDataSet9.Delete;
     except end;
+  end;
+
+  var QryDeleteCascate := TIBSQL.Create(nil);
+  try
+    try
+      QryDeleteCascate.Database := IBDatabase1;
+      QryDeleteCascate.Transaction := IBTransaction1;
+      QryDeleteCascate.SQL.Text := 'delete from cliforenderecos '+
+        ' where idclifor = :idclifor';
+      QryDeleteCascate.ParamByName('idclifor').AsInteger :=
+        DataSet.FieldByName('idclifor').AsInteger;
+      QryDeleteCascate.ExecQuery;
+    except
+      on E:Exception do
+      begin
+        MensagemSistema(
+          'Não foi possível excluir os endereços do cliente/fornecedor.'+
+          #13+#13+'Mensagem do sistema:'+#13+E.Message,
+          msgAtencao
+        );
+        Abort;
+      end;
+    end;
+  finally
+    QryDeleteCascate.Free;
   end;
 
   RegistraExclusaoRegistro(IBDataSet2);
@@ -21878,6 +21946,9 @@ begin
   ibDataSet2REGISTRO.AsString      := sProximo;
   ibDataSet2CADASTRO.AsDateTime    := Date;
   IBDataSet2PRODUTORRURAL.AsString := 'N'; //Mauricio Parizotto 2024-06-27
+
+  IBDataSet2IDCLIFOR.AsInteger :=
+    IncGenerator(IBDatabase1, 'G_CLIFORIDCLIFOR').ToInteger;
 end;
 
 procedure TForm7.DBGrid1ColEnter(Sender: TObject);
@@ -23471,6 +23542,12 @@ end;
 procedure TForm7.ibDataSet15AfterDelete(DataSet: TDataSet);
 begin
   AgendaCommit(True);
+end;
+
+procedure TForm7.ibDataSet15AfterEdit(DataSet: TDataSet);
+begin
+  if Boolean(ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger) then
+    ibDataSet15IDLOCALENTREGA.AsInteger := ENDERECO_PRINCIPAL_ENTREGA;
 end;
 
 procedure TForm7.ibDataSet24AfterDelete(DataSet: TDataSet);
@@ -30307,9 +30384,23 @@ end;
 
 procedure TForm7.ibDataSet15BeforePost(DataSet: TDataSet);
 begin
-  //
-  AssinaRegistro('VENDAS',DataSet, True);
-  //
+  if ibDataSet15IDLOCALENTREGA.AsInteger > 0 then
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger := Integer(False);
+
+  if ibDataSet15IDLOCALENTREGA.AsInteger = ENDERECO_PRINCIPAL_ENTREGA then
+  begin
+    ibDataSet15IDLOCALENTREGA.AsVariant := Null;
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger := Integer(True);
+  end;
+
+  if ibDataSet15IDRECEBEDOR.AsInteger = 0 then
+  begin
+    ibDataSet15IDRECEBEDOR.AsVariant := Null;
+    ibDataSet15IDLOCALENTREGA.AsVariant := Null;
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsVariant := Null;
+  end;
+
+  AssinaRegistro('VENDAS', DataSet, True);
 end;
 
 procedure TForm7.ibDataSet13BeforePost(DataSet: TDataSet);

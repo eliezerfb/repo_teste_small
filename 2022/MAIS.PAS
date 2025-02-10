@@ -35,7 +35,7 @@ uses
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
 // Build do banco incrementa sempre par
-const BUILD_DO_BANCO = '2025004';
+const BUILD_DO_BANCO = '2025005';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -48,7 +48,7 @@ const NOME_NFE_SETUP = 'nfe_setup.exe';
 const SECAO_INI_NFE = 'NFE';
 const CHAVE_INI_BUILD_NFE_SETUP_EXE = 'BUILD NF-e Setup';
 
-type 
+type
     TForm1 = class(TForm)
     PopupMenu1: TPopupMenu;
     TabeladeICMparatodososestados1: TMenuItem;
@@ -469,7 +469,6 @@ type
     procedure TimerMinhasNotasTimer(Sender: TObject);
     procedure ClubedepromoesScanntech1Click(Sender: TObject);
 
-
   private
     FrmDashboard : TFrmDashboard;
     procedure ExibeRazaoSocialNoCaptionDoForm;
@@ -483,6 +482,7 @@ type
     function GetDiasRestanteLicenca: Real;
     procedure FechaDashboard;
     procedure AbreDashboard;
+    procedure ConvertIniToDBConf();
   public
     { Public declarations }
     fDias : Real;
@@ -515,7 +515,6 @@ type
     ConfCasas : String;
     ConfCasasServ : String;
     ConfPreco : String;
-    ConfAceitaCGCDuplo: String;
     ConfDupl1, ConfDupl2, ConfDupl3, ConfCusto, Confduplo,ConfNegat, ConfFoto, ConfMArca, ConfEspecie: String;
     ConfPermitFabricarSemQtd : Boolean;
     bNaoDescontarIssQuandoRetido: Boolean; // Sandro Silva 2024-04-24
@@ -580,7 +579,7 @@ implementation
 
 uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   Unit16, {Unit8,} Unit38, uExportaXML, Unit43, Unit30, SelecionaCertificado,
-  Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48,
+  Unit26, Unit5, Unit37, Unit29, Unit44, Unit13, Unit48, uTransferConfigIniToDB,
   uconstantes_chaves_privadas
   , ucredencialtecnospeed
   , uAtualizaBancoDados
@@ -3278,7 +3277,8 @@ begin
         try
           Form1.ibDataset200.Close;
           Form1.ibDataset200.SelectSql.Clear;
-          Form1.ibDataset200.SelectSql.Add('update rdb$relation_fields set rdb$null_flag = 1 where (rdb$field_name = '+QuotedStr('REGISTRO')+') and (rdb$relation_name = '+QuotedStr(sP1)+')');
+          Form1.ibDataset200.SelectSql.Add(
+          'update rdb$relation_fields set rdb$null_flag = 1 where (rdb$field_name = '+QuotedStr('REGISTRO')+') and (rdb$relation_name = '+QuotedStr(sP1)+')');
           Form1.ibDataset200.Open;
         except
         end;
@@ -4639,7 +4639,7 @@ begin
   DefinirBuildEXEDAT;
 
   ConectaBancoCommerce; // Sandro Silva 2023-05-31
-
+  ConvertIniToDBConf();
   AjustarDataSetCamposProduto;
 
   if Form1.sSerial = '' then
@@ -6694,6 +6694,33 @@ begin
     Form1.ibQuery1.SQL.Add('set generator G_CODIGO to 0'+sMax+' ');
     Form1.ibQuery1.ExecSQL;
   except end;
+
+  if CampoExisteFB(Form7.IBDatabase1, 'ESTOQUE', 'IDESTOQUE') then
+  begin
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text := 'select max(IDESTOQUE)max_id from ESTOQUE';
+    Form1.ibQuery1.Open();
+    Form1.ibQuery1.SQL.Text :=
+      Format(
+        'set generator G_ESTOQUEIDESTOQUE to %d',
+        [Form1.ibQuery1.FieldByName('max_id').AsInteger]
+      );
+    Form1.ibQuery1.ExecSQL;
+  end;
+
+  if CampoExisteFB(Form7.IBDatabase1, 'CLIFOR', 'IDCLIFOR') then
+  begin
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text := 'select max(IDCLIFOR)max_id from CLIFOR';
+    Form1.ibQuery1.Open();
+    Form1.ibQuery1.SQL.Text :=
+      Format(
+        'set generator G_CLIFORIDCLIFOR to %d',
+        [Form1.ibQuery1.FieldByName('max_id').AsInteger]
+      );
+    Form1.ibQuery1.ExecSQL;
+  end;
+
 
   // Indices
   Mensagem22('Ajustando arquivos ' + NumeroArquivo());
@@ -8900,7 +8927,8 @@ begin
         IBQuery1.Close;
         IBQuery1.SQL.Clear;
         IBQuery1.SQL.Add('insert into CLIFOR ('
-        +'NOME'
+        +'IDCLIFOR '
+        +',NOME'
         +',CGC'
         +',IE'
         +',CEP'
@@ -8914,7 +8942,8 @@ begin
         +',CADASTRO'
         +',REGISTRO'
         +') values ('
-        +':NOME'
+        +'(gen_id(G_CLIFORIDCLIFOR, 1))'
+        +',:NOME'
         +',:CGC'
         +',:IE'
         +',:CEP'
@@ -12476,6 +12505,28 @@ begin
   Form7.Show;
 end;
 
+procedure TForm1.ConvertIniToDBConf;
+begin
+  var IniFile := TIniFile.Create(sAtual+'\smallcom.inf');
+  var TransferConfigIniToDB := TTransferConfigIniToDB.Create(
+    Form7.IBDatabase1,
+    Form7.IBTransaction1
+  );
+
+  try
+    TransferConfigIniToDB.IniFile := IniFile;
+    TransferConfigIniToDB.ConvertBooleanIniToBD(
+      'Outros',
+      'Aceita CGC',
+      'Não',
+      _PermiteDuplicarCNPJ
+    );
+  finally
+    IniFile.Free;
+    TransferConfigIniToDB.Free;
+  end;
+end;
+
 procedure TForm1.Parmetrosdetributao1Click(Sender: TObject);
 begin
   Form7.sModulo := 'PARAMETROTRIBUTACAO';
@@ -13089,7 +13140,7 @@ begin
       Form1.fAliqICMdoCliente := Mais1Ini.ReadFloat('Outros','ICMSSTInterno',0);
 
       CopiaSair          := Mais1Ini.ReadString('Cópia','Sair','9');
-      ConfAceitaCGCDuplo := Mais1Ini.ReadString('Outros','Aceita CGC','Não');
+
       ConfCFOP           := Mais1Ini.ReadString('Outros','CFOP','5102');
 
       ConfItens      := 16;

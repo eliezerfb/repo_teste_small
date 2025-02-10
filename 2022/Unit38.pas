@@ -64,7 +64,6 @@ type
     rbDataFechada: TRadioButton;
     procedure btnAvancarClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
     procedure btnVoltarClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -485,39 +484,6 @@ begin
           RelatorioVendaEstado(F,dInicio,dFinal);
         end;
 
-        (*
-        if Form1.bHtml1 then
-        begin
-          WriteLn(F,'<center><br><font face="Microsoft Sans Serif" size=1>Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
-          + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
-          + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'</font><br>');
-
-          if (Alltrim(Form7.ibDataSet13HP.AsString) = '') then
-          begin
-            WriteLn(F,'<font face="verdana" size=1><center>Relatório gerado pelo sistema Smallsoft, <a href="http://www.smallsoft.com.br"> www.smallsoft.com.br</a><font>'); // Ok
-          end else
-          begin
-            WriteLn(F,'<font face="verdana" size=1><center><a href="http://'+Form7.ibDataSet13HP.AsString+'">'+Form7.ibDataSet13HP.AsString+'</a><font>');
-          end;
-
-          WriteLn(F,'<font face="Microsoft Sans Serif" size=1><center>Tempo para gerar este relatório: '+TimeToStr(Time - tInicio)+'</center>');
-          if not Form1.bPDF then WriteLn(F,'<a href="http://www.smallsoft.com.br/meio_ambiente.htm"><center><font face="Webdings" size=5 color=#215E21>P<font face="Microsoft Sans Serif" size=1 color=#215E21> Antes de imprimir, pense no meio ambiente.</center></a>');
-          WriteLn(F,'</html>');
-        end else
-        begin
-          WriteLn(F,'Gerado em '+Trim(Form7.ibDataSet13MUNICIPIO.AsString)+', '+Copy(DateTimeToStr(Date),1,2)+' de '
-          + Trim(MesExtenso( StrToInt(Copy(DateTimeToStr(Date),4,2)))) + ' de '
-          + Copy(DateTimeToStr(Date),7,4) + ' às ' + TimeToStr(Time)+'');
-
-          WriteLn(F,'Tempo para gerar este relatório: '+TimeToStr(Time - tInicio)+'');
-
-          if Form7.sModulo =  'Auditoria' then
-          begin
-            WriteLn(F,'Assinatura Digital:');
-          end;
-        end;
-        Mauricio Parizotto 2024-05-31*)
-
         RodapePadrao(F,tInicio);
 
         CloseFile(F);
@@ -578,69 +544,6 @@ begin
   Close;
   {Mauricio Parizotto 2024-03-01 Fim}
 end;
-
-procedure TForm38.FormActivate(Sender: TObject);
-var
-  Mais1Ini : TIniFile;
-begin
-  {Mauricio Parizotto 2024-03-20
-  Image1.Picture := Form7.imgImprimir.Picture;
-
-  if Form7.sModulo = 'Auditoria' then
-  begin
-    Form38.ComboBox1.Items.Clear;
-    try
-      Form7.IBDataSet100.Close;
-      Form7.IBDataSet100.SelectSQL.Clear;
-      Form7.IBDataSet100.SelectSQL.Add('select USUARIO from AUDIT0RIA group by USUARIO');
-      Form7.IBDataSet100.Open;
-      while not Form7.IBDataSet100.Eof do
-      begin
-        Form38.ComboBox1.Items.Add(Form7.IBDataSet100.FieldByname('USUARIO').AsString);
-        Form7.IBDataSet100.Next;
-      end;
-    except
-    end;
-  end;
-
-  Form7.IBDataSet100.Close;
-
-  Form38.ComboBox1.Text := Form2.Usuario.Text;
-  if not Form7.ibDataSet4.Active then
-    Form7.ibDataSet4.Open;
-    
-  Mais1ini := TIniFile.Create(Form1.sAtual+'\'+Usuario+'.inf');
-  DateTimePicker1.Date := StrtoDate(Mais1Ini.ReadString('Outros','Período Inicial',DateToStr(Date-360)));
-  DateTimePicker2.Date := StrtoDate(Mais1Ini.ReadString('Outros','Período Final',DateToStr(Date)));
-  Mais1Ini.Free;
-  if Form7.sModulo = 'Ranking de devedores' then
-  begin
-    Form38.ComboBox1.Items.Clear;
-    Form38.ComboBox1.Items.Add('Últimos três meses');
-    Form38.ComboBox1.Items.Add('Últimos doze meses');
-    Form38.ComboBox1.Items.Add('Todos');
-    Form38.ComboBox1.ItemIndex := 0;
-  end;
-
-  cbListarCodigos.Enabled := False;
-  cbListarCodigos.TabStop := False;
-  if Form7.sModulo = _cRelVendaCupom then
-  begin
-    cbListarCodigos.Top := DateTimePicker2.Top + DateTimePicker2.Height + 5;
-    cbListarCodigos.Left := DateTimePicker2.Left;
-    cbListarCodigos.Enabled := True;
-    cbListarCodigos.TabStop := True;
-  end else
-  begin
-    cbListarCodigos.Top  := rbItemPorITem.Top + rbItemPorITem.Height + 5;
-    cbListarCodigos.Left := rbItemPorITem.Left + 16;
-    DefinirEnabledListarCodigo;
-  end;
-  
-  btnVoltarClick(btnVoltar);
-  }
-end;
-
 
 procedure TForm38.btnVoltarClick(Sender: TObject);
 begin
@@ -1196,16 +1099,6 @@ begin
         WriteLn(F,Copy(sCSTCSOSN+Replicate(' ',13) ,1,13)+' ');
       end;
 
-      {Sandro Silva 2022-10-11 inicio
-      fTotal1  := fTotal1 + (ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100);
-      fTotal2  := fTotal2 + (ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100);
-      fTotal3  := Ftotal3 + ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto;
-      }
-      {Sandro Silva 2022-12-01 inicio
-      fTotal1  := fTotal1 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100)]));
-      fTotal2  := fTotal2 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100)]));
-      fTotal3  := Ftotal3 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)]));
-      }
       fTotal1  := fTotal1 + StrToFloatFormat('%10.2n', Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) / 100);
       fTotal2  := fTotal2 + StrToFloatFormat('%10.2n', Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100);
       fTotal3  := Ftotal3 + StrToFloatFormat('%10.2n', Form7.ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto);
@@ -1566,18 +1459,7 @@ begin
         WriteLn(F, Copy(sCSTCSOSN + Replicate(' ', 6), 1, 6) + ' ');
       {Sandro Silva 2022-10-17 fim}
     end;
-    
-    {Sandro Silva 2022-10-10 inicio
-    fTotal1  := fTotal1 + (ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100);
-    fTotal2  := fTotal2 + (ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100);
-    fTotal3  := Ftotal3 + ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto;
-    }
 
-    {Sandro Silva 2022-12-15 inicio
-    fTotal1  := fTotal1 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100)]));
-    fTotal2  := fTotal2 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100)]));
-    fTotal3  := Ftotal3 + StrToFloat(Format('%10.2n',[(ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto)]));
-    }
     fTotal1  := fTotal1 + StrToFloatFormat('%10.2n', (Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100));
     fTotal2  := fTotal2 + StrToFloatFormat('%10.2n', (Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100));
     fTotal3  := Ftotal3 + StrToFloatFormat('%10.2n', (Form7.ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto));
@@ -2028,17 +1910,7 @@ begin
           WriteLn(F, Copy(sCSTCSOSN + Replicate(' ', 6), 1, 6) + ' ');
         {Sandro Silva 2022-10-17 fim}
       end;
-      
-      {Sandro Silva 2022-10-11 inicio
-      fTotal1  := fTotal1 + (ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100);
-      fTotal2  := fTotal2 + (ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100);
-      fTotal3  := Ftotal3 + Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem;
-      }
-      {Sandro Silva 2022-12-15 inicio
-      fTotal1  := fTotal1 + StrToFloat(Format('%10.2n', [(ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100)]));
-      fTotal2  := fTotal2 + StrToFloat(Format('%10.2n', [(ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100)]));
-      fTotal3  := Ftotal3 + StrToFloat(Format('%10.2n', [(Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem)]));
-      }
+
       fTotal1  := fTotal1 + StrToFloatFormat('%10.2n', (Form7.ibQuery99.FieldByname('ALIQ_PIS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100));
       fTotal2  := fTotal2 + StrToFloatFormat('%10.2n', (Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100));
       fTotal3  := Ftotal3 + StrToFloatFormat('%10.2n', (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem));
@@ -2640,10 +2512,6 @@ begin
                                   '   sum(ITENS003.TOTAL) '+
                                   ' From ITENS003, OS '+
                                   ' Where ITENS003.NUMEROOS=OS.NUMERO '+
-                                  {Mauricio Parizotto 2024-05-14
-                                  '   and OS.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+
-                                  '   and OS.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+
-                                  }
                                   '   and '+sCampoData+' <='+QuotedStr(DateToStrInvertida(dFinal))+
                                   '   and '+sCampoData+' >='+QuotedStr(DateToStrInvertida(dInicio))+
                                   ' Group by TECNICO');
@@ -3871,18 +3739,6 @@ begin
     WriteLn(F,'   </td>');
   end;
 
-  {
-  if Form1.bHtml1 then
-  begin
-    WriteLn(F,'   </table>');
-    Writeln(F,'<font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br>');
-  end else
-  begin
-    WriteLn(F,'');
-    WriteLn(F,'');
-    Writeln(F,'Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'');
-  end;
-  }
   ListaPeiodoSelecionado(F,dInicio, dFinal);
 end;
 
@@ -3899,16 +3755,6 @@ begin
 
   {Mauricio Parizotto 2023-05-24 Inicio}
   sOperacoes := '';
-
-  {
-  for I := 0 to (chkOperacoes.Items.Count -1) do
-  begin
-    if not chkOperacoes.Checked[I] then
-    begin
-      sOperacoes := sOperacoes + ' and VENDAS.OPERACAO<>'+QuotedStr(chkOperacoes.Items[I])+' ';
-    end;
-  end;
-  Mauricio Parizotto 2024-05-31}
 
   sOperacoes := GetFiltroOperacao('VENDAS');
 
@@ -5063,16 +4909,15 @@ begin
 
   Form7.ibDataSet27.Close;
   Form7.ibDataSet27.SelectSQL.Clear;
-  Form7.ibDataSet27.SelectSQL.Add('select ALTERACA.*');
-  Form7.ibDataSet27.SelectSQL.Add('from ALTERACA');
-  Form7.ibDataSet27.SelectSQL.Add('left join NFCE on (ALTERACA.PEDIDO = NFCE.NUMERONF) and (ALTERACA.CAIXA = NFCE.CAIXA)');
-  Form7.ibDataSet27.SelectSQL.Add('where');
-  Form7.ibDataSet27.SelectSQL.Add('(ALTERACA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+')');
-  Form7.ibDataSet27.SelectSQL.Add('and (ALTERACA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+')');
-  Form7.ibDataSet27.SelectSQL.Add('and ((ALTERACA.TIPO='+QuotedStr('BALCAO')+') or (ALTERACA.TIPO='+QuotedStr('VENDA')+'))');
+  Form7.ibDataSet27.SelectSQL.Add(' Select ALTERACA.*'+
+                                  ' From ALTERACA'+
+                                  '   left join NFCE on (ALTERACA.PEDIDO = NFCE.NUMERONF) and (ALTERACA.CAIXA = NFCE.CAIXA)'+
+                                  ' Where (ALTERACA.DATA<='+QuotedStr(DateToStrInvertida(dFinal))+')'+
+                                  '   and (ALTERACA.DATA>='+QuotedStr(DateToStrInvertida(dInicio))+')'+
+                                  '   and ((ALTERACA.TIPO='+QuotedStr('BALCAO')+') or (ALTERACA.TIPO='+QuotedStr('VENDA')+'))'+
   //Form7.ibDataSet27.SelectSQL.Add('and ((coalesce(NFCE.REGISTRO,'''') = '''') or (NFCE.STATUS containing ''Autorizad'') or (NFCE.STATUS containing ''Emitido com sucesso'') or (NFCE.STATUS containing ' + QuotedStr(_cNFCE_EMITIDA_EM_CONTINGENCIA) + ') or (NFCE.STATUS containing ' + QuotedStr(_cVENDA_GERENCIAL_FINALIZADA) + ') or (NFCE.STATUS containing ' + QuotedStr(_cVENDA_MEI_ANTIGA_FINALIZADA) + '))'); Mauricio Parizotto 2024-12-17
-  Form7.ibDataSet27.SelectSQL.Add(SqlFiltroNFCEAutorizado('NFCE'));
-  Form7.ibDataSet27.SelectSQL.Add('order by ALTERACA.DATA, ALTERACA.PEDIDO');
+                                  SqlFiltroNFCEAutorizado('NFCE')+
+                                  ' Order by ALTERACA.DATA, ALTERACA.PEDIDO');
   Form7.ibDataSet27.Open;
   Form7.ibDataSet27.First;
 
@@ -5772,24 +5617,6 @@ begin
     WriteLn(F,'  <td>');
   end;
 
-  {
-  if Form1.bHtml1 then
-  begin
-    WriteLn(F,'<br><font size=4 color=#000000><b>'+Form7.sModulo+'</b></font><br></center><br>');
-    WriteLn(F,'<center>');
-    WriteLn(F,'<table border=0>');
-    WriteLn(F,' <tr>');
-    WriteLn(F,'  <td>');
-  end else
-  begin
-    WriteLn(F,Form7.sModulo);
-    WriteLn(F,'');
-  end;
-  }
-
-
-  {Mauricio Parizotto 2024-05-31 Fim}
-
   if rbItemPorITem.Checked then
   begin
     if Form7.sModulo =  'Relatório de compras' then
@@ -5868,28 +5695,6 @@ begin
 
   if (Form7.sModulo = 'Relatório de vendas') or (Form7.sModulo = 'Relatório de compras') then
   begin
-    {
-    if Form1.bHtml1 then
-    begin
-      WriteLn(F,'   <table border=1 style="border-collapse:Collapse" cellspacing=0 cellpadding=4>');
-      WriteLn(F,'    <tr bgcolor=#FFFFFF align=left>');
-      WriteLn(F,'     <td><P><font face="Microsoft Sans Serif" size=1><b>Operações listadas:</b><br>');
-      for I := 0 to (chkOperacoes.Items.Count -1) do
-        if chkOperacoes.Checked[I] then
-            Writeln(F,'     <br><font face="Microsoft Sans Serif" size=1>'+AllTrim(chkOperacoes.Items[I]));
-      Writeln(F,'      </td><br>');
-      WriteLn(F,'     </td>');
-      WriteLn(F,'    </table>');
-    end else
-    begin
-      WriteLn(F,'');
-      WriteLn(F,'Operações listadas:');
-      for I := 0 to (chkOperacoes.Items.Count -1) do
-        if chkOperacoes.Checked[I] then
-            Writeln(F,AllTrim(chkOperacoes.Items[I]));
-      WriteLn(F,'');
-    end;
-    Mauricio Parizotto 2024-05-31}
     ListaOperacoesMarcadas(F);
   end;
 
@@ -5900,17 +5705,6 @@ begin
     WriteLn(F,'  </table>');
   end;
 
-  {
-  if Form1.bHtml1 then
-  begin
-    WriteLn(F,'   </td>');
-    WriteLn(F,'  </table>');
-    Writeln(F,'  <font face="Microsoft Sans Serif" size=1><br>Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'<br></center>');
-  end else
-  begin
-    Writeln(F,'Período analisado, de ' + DateTimeToStr(dInicio) + ' até ' + DateTimeToStr(dFinal)+'');
-  end;
-  Mauriico Parizotto 2024-05-31}
   ListaPeiodoSelecionado(F,dInicio, dFinal);
 end;
 

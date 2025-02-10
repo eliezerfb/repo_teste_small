@@ -90,9 +90,9 @@ begin
   FqryDados.SQL.Add('    on (ESTOQUE.CODIGO=ITENS002.CODIGO)');
   FqryDados.SQL.Add('inner join ICM');
   FqryDados.SQL.Add('    on (ICM.NOME=COMPRAS.OPERACAO)');
-  FqryDados.SQL.Add('where');
-  FqryDados.SQL.Add('    (ITENS002.CODIGO=:XCODIGO)');
-  FqryDados.SQL.Add('order by COMPRAS.EMISSAO, COMPRAS.SAIDAH');
+  FqryDados.SQL.Add('Where (ITENS002.CODIGO=:XCODIGO)');
+  FqryDados.SQL.Add('    and COMPRAS.MERCADORIA > 0 ');
+  FqryDados.SQL.Add('Order by COMPRAS.EMISSAO, COMPRAS.SAIDAH');
   FqryDados.ParamByName('XCODIGO').AsString := FcCodigo;
   FqryDados.Open;
 
@@ -101,10 +101,12 @@ end;
 
 function TRetornaCustoMedio.CustoMedio: Double;
 var
-  nQuantidade: Currency;
+  nQuantidade: Double;//Currency;
   nCustoCompra: Double;
   nVICMS: Double;
-  nSaldoAtual: Currency;  // Saldo do momento da nota
+  nSaldoAtual: Double;//Currency;  // Saldo do momento da nota
+
+  nValor1, nValor2 : Double;
 begin
   // Fórmula do custo médio                                                                        //
   // * Primeiro                                                                                    //
@@ -135,13 +137,21 @@ begin
         Result := nCustoCompra - (nVICMS / nQuantidade)
       end else
       begin
-
         nCustoCompra := RetornaCustoCompraNota;
 
+        {Mauricio Parizotto 2025-01-27
         Result := ((nSaldoAtual * Result) +
                   (nQuantidade * (nCustoCompra - (nVICMS / nQuantidade)))) /
                   (nQuantidade + nSaldoAtual);
+        }
+        nValor1 := ((nSaldoAtual * Result) +
+                   (nQuantidade * (nCustoCompra - (nVICMS / nQuantidade))) );
+
+        nValor2 := (nQuantidade + nSaldoAtual);
+
+        Result  := Arredonda(nValor1 / nValor2, 4);
       end;
+
       nSaldoAtual := nSaldoAtual + nQuantidade;
     end;
 

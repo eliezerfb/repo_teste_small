@@ -202,7 +202,11 @@ begin
               end else
                 fDesconto := 0;
 
-              WriteLN(F,'insert into clifor (EMITENTE, NOME, CGC, IE, CEP, EMAIL, CIDADE, COMPLE, ENDERE, ESTADO, FONE, DESCONTO_CONVENIO) values ('
+              WriteLN(
+                F,
+                'insert into clifor (EMITENTE, NOME, CGC, IE, CEP, '+
+                'EMAIL, CIDADE, COMPLE, ENDERE, ESTADO, FONE, DESCONTO_CONVENIO) '+
+                ' values ('
                 +QuotedStr(sCNPJ)+', '
                 +QuotedStr(ConverteAcentosPHP(Form1.ibQuery1.FieldByname('NOME').AsString))+', '
                 +QuotedStr(LimpaNumero(Form1.ibQuery1.FieldByname('CGC').AsString))+', '
