@@ -97,6 +97,7 @@ uses
   , uclassetransacaocartao // Sandro Silva 2017-06-14
   , umfe
   , usmall_elginpay_pos
+  , System.Threading
   , usincronizamobile
   , uArquivosDAT
   , uSmallEnumerados
@@ -1066,6 +1067,7 @@ type
     HabilitarusodePOS1: TMenuItem;
     Cadastrodebandeiras1: TMenuItem;
     Abandonarvenda1: TMenuItem;
+    TimerMinhasNotas: TTimer;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1439,6 +1441,7 @@ type
     procedure Cadastrodebandeiras1Click(Sender: TObject);
     procedure HabilitarusodePOS1Click(Sender: TObject);
     procedure Abandonarvenda1Click(Sender: TObject);
+    procedure TimerMinhasNotasTimer(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1853,8 +1856,10 @@ uses
   , uFrmTransacoesItau
   , uDialogs
   , ufrmSobre
-  , uLogSistema
+  , uLogSistema  
   //, ufrmOpcoesFechamentoComCartao
+  , uMinhasNotas
+  , uSistema
   ;
 
 {$R *.DFM}
@@ -16311,6 +16316,7 @@ begin
 
   Form22.Hide; // Sandro Silva 2016-07-27 Estava no onActivate, mas ficava errado
 
+  TimerMinhasNotas.Enabled := True;
 end;
 
 procedure TForm1.AtualizarTEMTEF;
@@ -23079,6 +23085,7 @@ begin
     {Sandro Silva 2023-12-27 inicio
     _ecf99_ImprimeVenda(nil, Form1.ibDataSet150.Transaction, Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString, '', '', '', '');
     }
+    {Sandro Silva 2024-01-10 inicio
     IBQALTERACA.Close;
     IBQALTERACA.SQL.Text :=
       'select DISTINCT A.CNPJ, A.CLIFOR, ' +
@@ -23089,6 +23096,17 @@ begin
       ' and A.PEDIDO = ' + QuotedStr(Form1.ibDataSet150.FieldByName('NUMERONF').AsString) +
       ' and CAIXA = ' + QuotedStr(Form1.ibDataSet150.FieldByName('CAIXA').AsString);
     IBQALTERACA.Open;
+    }
+    IBQALTERACA.Close;
+    IBQALTERACA.SQL.Text :=
+      'select DISTINCT A.CNPJ, A.CLIFOR, ' +
+      'C.EMAIL, C.ENDERE, C.COMPLE, C.CIDADE, C.ESTADO, C.CEP ' +
+      'from ALTERACA A ' +
+      'left join CLIFOR C on (C.CGC = A.CNPJ and char_length(C.CGC) >= 11 and char_length(A.CNPJ) >= 11) or (C.NOME = A.CLIFOR)' +
+      'where A.PEDIDO = ' + QuotedStr(Form1.ibDataSet150.FieldByName('NUMERONF').AsString) +
+      ' and CAIXA = ' + QuotedStr(Form1.ibDataSet150.FieldByName('CAIXA').AsString);
+    IBQALTERACA.Open;
+
     _ecf99_ImprimeVenda(nil, Form1.ibDataSet150.Transaction, Form1.ibDataSet150.FieldByName('NUMERONF').AsString, Form1.ibDataSet150.FieldByName('CAIXA').AsString, IBQALTERACA.FieldByName('CNPJ').AsString, IBQALTERACA.FieldByName('CLIFOR').AsString, IBQALTERACA.FieldByName('EMAIL').AsString, IBQALTERACA.FieldByName('ENDERE').AsString);
     {Sandro Silva 2023-12-27 fim}
   end;
@@ -24168,7 +24186,8 @@ begin
                   IBQuery1.Close;
                   IBQuery1.SQL.Clear;
                   IBQuery1.SQL.Add('insert into CLIFOR ('
-                  +'NOME'
+                  +'IDCLIFOR'
+                  +',NOME'
                   +',CGC'
                   +',IE'
                   +',CEP'
@@ -24182,7 +24201,8 @@ begin
                   +',CADASTRO'
                   +',REGISTRO'
                   +') values ('
-                  +':NOME'
+                  +'(gen_id(G_CLIFORIDCLIFOR, 1)) '
+                  +',:NOME'
                   +',:CGC'
                   +',:IE'
                   +',:CEP'
@@ -30338,6 +30358,39 @@ begin
   else
     Label_ok.Caption := 'Caixa: '+Right('000'+Form1.sCaixa,3)+' '+DateToStr(Date)+' '+TimeToStr(Time) + ' ';
   Label_ok.Left    := Screen.Width - Label_Ok.Width - AjustaLargura(20);
+end;
+
+procedure TForm1.TimerMinhasNotasTimer(Sender: TObject);
+begin
+  TimerMinhasNotas.Enabled := False;
+
+  try
+    TTask.Run(
+    procedure()
+    var
+      bCompletado : boolean;
+    begin
+      try
+        TSistema.GetInstance.CNPJEmitente := ibDataSet13.FieldByName('CGC').AsString;
+
+        GeraEnvioMinhasNotas(IBDatabase1,
+                             bCompletado);
+      except
+      end;
+
+      TThread.Synchronize(TThread.CurrentThread,
+      procedure()
+      begin
+        if not bCompletado then
+          TimerMinhasNotas.Interval := 120000
+        else
+          TimerMinhasNotas.Interval := 3600000;
+
+        TimerMinhasNotas.Enabled  := True;
+      end);
+    end);
+  except
+  end;
 end;
 
 procedure TForm1.CarnResumido1Click(Sender: TObject);

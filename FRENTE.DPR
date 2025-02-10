@@ -119,6 +119,9 @@ uses
   uFrenteSectionsBD in '..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
   uIMendesSections in '..\unit_compartilhada\DAT\uIMendesSections.pas',
   ufrmSobre in 'ufrmSobre.pas' {frmSobre},
+  uMinhasNotas in '..\unit_compartilhada\MinhasNotas\uMinhasNotas.pas',
+  uWebServiceMinhasNotas in '..\unit_compartilhada\MinhasNotas\uWebServiceMinhasNotas.pas',
+  uSistema in '..\small-Projeto-2022\2022\units\uSistema.pas',
   ufrmOpcoesFechamentoComCartao in 'ufrmOpcoesFechamentoComCartao.pas' {FrmOpcoesFechamentoComCartao},
   uTransacionaPosOuTef in 'uTransacionaPosOuTef.pas';
 
