@@ -116,16 +116,6 @@ uses
   const TIPO_PESQUISA_ESTOQUE_INICIANDO = 'Pesquisar estoque iniciando com o texto digitado';
   const TIPO_PESQUISA_ESTOQUE_CONTENDO  = 'Pesquisar estoque contendo o texto digitado';
 
-  {Sandro Silva 2022-08-15 inicio
-  const FORMA_PAGAMENTO_A_VISTA         = 'A VISTA';
-  const FORMA_PAGAMENTO_BOLETO          = 'BOLETO';
-  const FORMA_PAGAMENTO_CARTAO          = 'CARTAO';
-  const FORMA_PAGAMENTO_CHEQUE          = 'CHEQUE'; // Sandro Silva 2016-04-19
-  }
-{Sandro Silva 2022-11-22 inicio
-  const VERSAO_ER_PAF_ECF               = '02.06'; // ER 02.06 Sandro Silva 2019-06-19  '02.05'; // Sandro Silva 2017-07-24 ER 02.05 '02.03';
-  const NUMERO_LAUDO_PAF_ECF            = 'UNO3302019';
-}
   const INFORME_CPF_OU_CNPJ             = 'Informe o CPF ou o CNPJ válido:'; // 2015-09-16
 
   const CRIPTA_SECAO_ECFS_AUTORIZADAS   = 'R24_4';
@@ -147,25 +137,10 @@ uses
 
   const TITULO_FORM_SANGRIA = 'Retirada de caixa';
 
-  {Mauricio Parizotto 2024-08-23 Inicio}
   const SQL_NFCE_ibd150         = ' Select N.*, '+
                                   '   Cast('''' as BLOB SUB_TYPE TEXT) FORMAPAGAMENTO, '+
                                   '   Cast('''' as Varchar(60) ) CLIFOR '+
                                   ' From NFCE N ';
-  {Sandro Silva 2024-10-15
-  //Movido para ufuncoes_frente.pas
-  const SQL_FORMAPAGAMENTO_LIST = ' (Select list(DISTINCT trim(substring(P.FORMA from 3 for char_length(P.FORMA))), ''; '') '+
-                                  '  From PAGAMENT P'+
-                                  '  Where P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA '+
-                                  '    and substring(P.FORMA from 1 for 2) not in (''00'', ''13'')'+
-                                  ' ) FORMAPAGAMENTO,';
-  const SQL_CLIENTE             = ' (Select First 1 A.CLIFOR'+
-                                  '  From ALTERACA A'+
-                                  '  Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
-                                  '    and coalesce(A.CLIFOR, '''') <> '''' '+
-                                  ' ) CLIFOR';
-  }
-  {Mauricio Parizotto 2024-08-23 Fim}
 
   procedure ExibeScrollCupom(bVisible: Boolean); // Sandro Silva 2016-08-03
   function Audita(sAto, sModulo, sUsuario, sHistorico: String; ValorDe, ValorPara: Double): Boolean;
@@ -188,7 +163,6 @@ uses
     ChaveIni: String; Valor: String): Boolean;
   function NumeroCupom: String;
   function MensagemPromocionalDefault: String;
-// Sandro Silva 2022-09-08  function Build: String;
   function Copyright: String;
   function Consumo: Boolean;
   function AssinaRegistro(pNome: String; DataSet: TDataSet; bAssina: Boolean): Boolean; // 2015-10-16
@@ -1469,10 +1443,6 @@ type
     procedure ExcluiRZDuplicada(IBTransaction: TIBTransaction);
     procedure ExcluiDemaisDuplicado(IBTransaction: TIBTransaction);
     procedure BlocoXReducaoZ1(SerieECF: String; sDataRecricar: String);
-    {Sandro Silva 2023-02-28 inicio
-    procedure BlocoXEstoque1(dtInicial: TDate; dtFinal: TDate;
-      sDataRecricar: String);
-    }
     function BlocoxTransmitirPendente1(sTipo: String; sSerieECF: String;
       bAlerta: Boolean = True): Integer;
     function BlocoxConsultarRecibo1: Boolean;
@@ -1583,20 +1553,17 @@ type
     Senha, Usuario: String;
     sEnderecoClifor: String;
     sCidadeClifor: String;
-    //
+
     sModeloFabricante: String;
     sOrdemAliquotaISS: String;
     sSenhaDeUsuario, sMotivoContingencia, sTipoDocumento, sTipoDocumento2, sMenuFiscal, sCreditosDF, sPromissoria, sConcomitante, sUF, sPERFIL, sMesaOuConta, sMesasOuContas, sSuperCodigo, sF4Conferencia, sMensagemMesaConferida,
     sHoraMovimento, sDataMovimento, sF, sMesas, sMesasOffLine, sStatusECF, sStatusECF_RES, sMD5DaLista, sTipo, sCPF_CNPJ_Validado,
     sPastaVoltaOffLine, sPasta, sAjuda, sAbreComOLeitor, sAviso, sPlanoDeContas, sOs, sOrcame, sProximo, sProximo27, sProximo150, sProximo027, sProximo28, sProximo38, sGertec, sTipoEtiqueta, sIdentificaConsumidor, sTef, sPastaDoExecutavel, sNumeroDeSerieDaImpressora : String;
     sHabilitarUsoPOS: String; //Sandro Silva 2024-11-06
-    //bUsaPixEstatico : Boolean;//Mauricio Parizotto 2024-04-30
     sDataDoCupom, sHoraDoCupom, sSangria, sModeloECF, sModeloECF_Reserva, sMFD_, sBalanca, sCRLF, sCortaPapel, sTipoImpressora, sCripto, sConveniado, sCaixa, sArquivo, sAtual, sAtualOnLine, OKSim, sVendedor, sGaveta,
     sRGTurbo, sUltimoItem, sPorta, sSeriais, sMensagemPromocional ,sVendedorFixo ,sAliquotas, ConfCusto,
     ConfNegat, sPrazo, ConfCasas, ConfPreco, ModoMercado,
-    //sDiretorioTEF,
     sCupomTEF,
-    //sCupomTEFReduzido,
     sCupomTEFCancelado,
     sMensagemNFMod02, sMensagemParaibaLegal,
     sPropaganda,
@@ -1608,8 +1575,6 @@ type
     sIdentificaPOS,
     sDebitoOuCredito,
     sNomeRedeTransacionada, // Sandro Silva 2024-12-05 sNomeRede,
-    //sNomeRedeParaTransacoesTEF,
-    //sTransacaTEF, // Sandro Silva 2024-12-05 sTransaca,
     sTransacaPOS, // Sandro Silva 2024-12-05
     sAutoriza,
     sFinaliza,
@@ -1829,10 +1794,8 @@ uses
   , udadospos
   , uclientetef
   , ucadadquirentes
-//  , _Small_IntegradorFiscal
   , upesquisaparaimportar
   , uatualizaestruturadb
-// Sandro Silva 2022-09-23  , urequisitospafnfce
   , upromocoesscanntech
   , uregistrosdopafecf // Sandro Silva 2022-03-29
   , upafecfmenufiscal // Sandro Silva 2022-03-29
@@ -1842,11 +1805,9 @@ uses
   , urequisitospafnfce
   , upafnfce // Sandro Silva 2022-09-23
   , ucredencialtecnospeed
-  //, uClasseValidaRecursos
   , uValidaRecursosDelphi7
   , uTypesRecursos
   , uValidaRecursos
-//  , uFuncoesPOS
   , uConverteDocumentoParaDocFiscal
   , uConfiguracaoTEF
   , uSmallConsts
@@ -1971,7 +1932,7 @@ begin
   FreeAndNil(IBQDADOS);
 end;
 
-function QtdVendaSemCommit(sCodigo: String): Real; // Sandro Silva 2019-03-18 function QtdVendaSemCommit(sCodigo: String): Integer;
+function QtdVendaSemCommit(sCodigo: String): Real;
 var
   IBQDADOS: TIBQuery;
 begin
@@ -1985,14 +1946,14 @@ begin
     'where CODIGO = ' + QuotedStr(sCodigo) +
     ' and (TIPO = ''LOKED'' or TIPO = ''DEKOL'')';
     IBQDADOS.Open;
-    Result := IBQDADOS.FieldByName('QTDTOTAL').AsFloat; // Sandro Silva 2019-03-18 Result := IBQDADOS.FieldByName('QTDTOTAL').AsInteger;
+    Result := IBQDADOS.FieldByName('QTDTOTAL').AsFloat;
   except
 
   end;
   FreeAndNil(IBQDADOS);
 end;
 
-function QtdCanceladaSemCommit(sCodigo: String): Real; // Sandro Silva 2019-03-18 function QtdCanceladaSemCommit(sCodigo: String): Integer;
+function QtdCanceladaSemCommit(sCodigo: String): Real;
 var
   IBQDADOS: TIBQuery;
 begin
@@ -2006,7 +1967,7 @@ begin
       'where CODIGO = ' + QuotedStr(sCodigo) +
       ' and (TIPO = ''CANLOK'' or TIPO = ''KOLNAC'')';
     IBQDADOS.Open;
-    Result := IBQDADOS.FieldByName('QTDTOTAL').AsFloat; // Sandro Silva 2019-03-18 Result := IBQDADOS.FieldByName('QTDTOTAL').AsInteger;
+    Result := IBQDADOS.FieldByName('QTDTOTAL').AsFloat;
   except
 
   end;
@@ -2016,22 +1977,22 @@ end;
 procedure DesabilitaHabilitaImpressoes(bHabilita: Boolean);
 begin
   Form1.Confernciademesa1.Enabled              := bHabilita;
-  Form1.RetornodeVariveisdaImpressora1.Enabled := False;//True; //bHabilita;
+  Form1.RetornodeVariveisdaImpressora1.Enabled := False;
   Form1.SuprimentoReforodecaixa1.Enabled       := bHabilita;
   Form1.Sangria1.Enabled                       := bHabilita;
   Form1.Fechamentodocaixa1.Enabled             := bHabilita;
   Form1.Cadastraraliquota1.Enabled             := bHabilita;
   Form1.Formasdepagamento1.Enabled             := bHabilita;
-  Form1.LXLeituraX1.Enabled                    := bHabilita;// Sandro Silva 2019-08-23 UnoChapeco  True;// Sandro Silva 2017-11-08 Polimig  bHabilita;
-  Form1.LMF1.Enabled                           := bHabilita;// Sandro Silva 2019-08-23 UnoChapeco  True;// Sandro Silva 2017-11-08 Polimig   bHabilita;
-  Form1.EspelhoMFD1.Enabled                    := True; //2015-09-14 bHabilita;
-  Form1.ArqMF1.Enabled                         := True; //2015-09-14 bHabilita;
-  Form1.ArqMFD1.Enabled                        := True; //2015-09-14 bHabilita;
+  Form1.LXLeituraX1.Enabled                    := bHabilita;
+  Form1.LMF1.Enabled                           := bHabilita;
+  Form1.EspelhoMFD1.Enabled                    := True;
+  Form1.ArqMF1.Enabled                         := True;
+  Form1.ArqMFD1.Enabled                        := True;
   Form1.Relatriogerancial1.Enabled             := bHabilita;
   Form1.IdentificaodoPAFECF1.Enabled           := bHabilita;
   Form1.ransfernciaentremesas1.Enabled         := bHabilita;
   Form1.MesasAbertas1.Enabled                  := bHabilita;
-  Form1.ArqAC17041.Enabled                     := True; // 2015-09-14
+  Form1.ArqAC17041.Enabled                     := True;
   Form1.ParmetrosdeConfigurao1.Enabled         := bHabilita;
   if (Consumo = False) and (Copy(Form1.sConcomitante, 1, 2) <> 'OS') then
     Form1.MeiosdePagto1.Enabled                  := True
@@ -2052,39 +2013,37 @@ begin
   sKey := CHAVE_CIFRAR;
   Form1.LbBlowfish1.GenerateKey(sKey);
   Mais1ini := TIniFile.Create(NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF); // Sandro Silva 2022-12-02 Unochapeco Mais1ini := TIniFile.Create('arquivoauxiliarcriptografadopafecfsmallsoft.ini');
-  //
+
   Mais1Ini.WriteString('ECF','SERIE', Form1.LbBlowfish1.EncryptString(alltrim('0'))); // Cripta o Edit1
   Mais1Ini.WriteString('ECF','GT', Form1.LbBlowfish1.EncryptString(alltrim('0')));   // Cripta o Edit2
   Mais1Ini.WriteString('ECF','CGC',Form1.LbBlowfish1.EncryptString(alltrim(Form1.ibDataSet13.FieldByName('CGC').AsString)));
-  //
+
   Mais1Ini.WriteString('R01','14',Form1.LbBlowfish1.EncryptString(LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF))); // CGC
   Mais1Ini.WriteString('R01','15',Form1.LbBlowfish1.EncryptString(LimpaNumero(IE_SOFTWARE_HOUSE_PAF)));      // IE
   Mais1Ini.WriteString('R01','16',Form1.LbBlowfish1.EncryptString(IM_SOFTWARE_HOUSE_PAF));          // IM
   Mais1Ini.WriteString('R01','17',Form1.LbBlowfish1.EncryptString(RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF));
-  //Mais1Ini.WriteString('R01','17',Form1.LbBlowfish1.EncryptString(RAZAO_SOCIAL_SMALLSOFT));
   Mais1Ini.WriteString('R01','18',Form1.LbBlowfish1.EncryptString('Small Commerce'));
   Mais1Ini.WriteString('R01','19',Form1.LbBlowfish1.EncryptString('0112'));
-  //
+
   Mais1Ini.WriteString('R01','99',
   Form1.LbBlowfish1.EncryptString(MD5String(Form1.ibDataSet13.FieldByName('CGC').AsString+
     LimpaNumero(CNPJ_SOFTWARE_HOUSE_PAF)+
     LimpaNumero(IE_SOFTWARE_HOUSE_PAF)+
     IM_SOFTWARE_HOUSE_PAF+
     RAZAO_SOCIAL_SOFTWARE_HOUSE_PAF+
-    //RAZAO_SOCIAL_SMALLSOFT +
     'Small Commerce'+
     '0112'+
     ''
     )) // Encrypta e grava o hash das informações
   );
-  //
+
   Mais1Ini.WriteString('DAV','I',Form1.LbBlowfish1.EncryptString('X'+LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)));
   Mais1Ini.WriteString('CONCOMITANTE','I',Form1.LbBlowfish1.EncryptString(pP1+LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)));
   Mais1Ini.WriteString('UF','I',Form1.LbBlowfish1.EncryptString(Form1.ibDataSet13.FieldByName('ESTADO').AsString+LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)));
   Mais1Ini.WriteString('PERFIL','I',Form1.LbBlowfish1.EncryptString('0'+LimpaNumero(Form1.ibDataSet13.FieldByName('CGC').AsString)));
-  //
+
   Mais1Ini.Free;
-  //
+
   if (Form1.sModeloECF <> '59') and (Form1.sModeloECF <> '65') and (Form1.sModeloECF <> '99') then
   begin
     SmallMsg('Este programa vai ser fechado para carregar as novas configurações.')
@@ -2098,7 +2057,7 @@ begin
 
   Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
   FecharAplicacao(ExtractFileName(Application.ExeName));
-  //
+
   Result := True;
 end;
 
@@ -2139,10 +2098,10 @@ begin
     except
       SmallMsg('Erro na tabela de auditoria. Cod. 1');
     end;
-    //
+
     sRegistro := '1'+StrZero(StrToInt(Form1.ibDataSet100.FieldByName('GEN_ID').AsString),9,0);
     Form1.ibDataset100.Close;
-    //
+
     Form1.ibDataSet100.Close;
     Form1.ibDataSet100.SelectSql.Clear;
     Form1.ibDataSet100.SelectSql.Add('insert into AUDIT0RIA (ATO, MODULO, USUARIO, HISTORICO, VALOR_DE, VALOR_PARA, DATA, HORA, REGISTRO) values('
@@ -2155,13 +2114,13 @@ begin
             +QuotedStr(DateToStrInvertida(Date))+', '
             +QuotedStr(TimeToStr(Time))+', '
             +QuotedStr(sRegistro)+')');
-    //
+
     Form1.ibDataSet100.Open;
-    //
+
   except
     SmallMsg('Erro na tabela de auditoria. Cod. 2'+chr(10)+chr(10)+Form1.ibDataSet100.SelectSql.Text);
   end;
-  //
+
   Result := True;
 end;
 
@@ -2177,10 +2136,8 @@ end;
 
 function TForm1.Display(sP1:String; sp2:String): Boolean;
 begin
-
   if (Form1.sModeloECF_Reserva = '59') or (Form1.sModeloECF_Reserva = '65') or (Form1.sModeloECF_Reserva = '99') or (Pos('FRENTE.EXE', AnsiUpperCase(ExtractFileName(Application.ExeName))) = 0) then
   begin
-    //if (PAFNFCe = False) or (Form1.sModeloECF_Reserva = '99') then // Sandro Silva 2023-06-27 if PAFNFCe = False then
     if PAFNFCe = False then
       sp2 := StringReplace(sp2, 'Menu Fiscal Indisponível nesta tela. ', '',[rfReplaceAll]);
   end;
@@ -2217,12 +2174,14 @@ begin
   end else
   begin
     if Form1.sModeloECF = '01' then _ecf01_MostraDisplay(sP1);
+    {
     //    if Form1.sModeloECF = '02' then _ecf02_MostraDisplay(sP1);
     if Form1.sModeloECF = '03' then _ecf03_MostraDisplay(sP1);
     if Form1.sModeloECF = '12' then _ecf12_MostraDisplay(sP1);
     if Form1.sModeloECF = '14' then _ecf14_MostraDisplay(sP1);
     //    if Form1.sModeloECF = '15' then _ecf15_MostraDisplay(sP1);
     if Form1.sModeloECF = '17' then _ecf17_MostraDisplay(sP1);// Ok 2015-08-24
+    }
     if Form1.sModeloECF = '59' then _ecf59_MostraDisplay(sP1);
     if Form1.sModeloECF = '65' then _ecf65_MostraDisplay(sP1);
     if Form1.sModeloECF = '99' then _ecf99_MostraDisplay(sP1);
@@ -2291,15 +2250,14 @@ begin
     begin
       Form1.Image2.Visible := True;
       Form1.Panel9.Visible := True;
-      //
+
       Form1.Image2.Picture.LoadFromFile(Form1.sAtualOnLine+'\logofrente.bmp');
       if bExibirNoCupomEmTela then // Controlar para não exibir em cada produto sem foto mostrado no grid de pesquisa. Sandro Silva 2018-04-26
       begin
         Form1.Image3.Center := True; // Sandro Silva 2021-07-29
-        //Form1.Image3.Picture.Bitmap := Form1.Image2.Picture.Bitmap; // Sandro Silva 2021-07-29
         Form1.Image3.Picture.LoadFromFile(Form1.sAtualOnLine+'\logofrente.bmp');
       end;
-      //
+
       if (Form1.Image2.Picture.Width = 0) or (Form1.Image2.Picture.Height = 0) then // Evitar erro quando .bmp zerado  Sandro Silva 2018-08-08
       begin
         Form1.Image2.Width  := 0;
@@ -2355,10 +2313,9 @@ begin
     else
       Form1.sConcomitante := 'CONCOMITANTE';
 
-    {Sandro Silva 2023-05-30 inicio}
     if ValidaRecursos.PermiteRecursoParaProduto = False then
       Form1.sConcomitante := 'CONCOMITANTE';
-    {Sandro Silva 2023-05-30 fim}
+
 
     if Mais2Ini.ReadString('UF','I','') <> '' then // 2015-10-20
       Form1.sUF           := Form1.LbBlowfish1.DecryptString(Mais2Ini.ReadString('UF','I',''));
@@ -2391,42 +2348,42 @@ begin
   //
   if Copy(Form1.sConcomitante,1,5) = 'CONTA' then
   begin
-    //
+
     Form22.sTitulo := 'Small Commerce - Conta de Cliente';
-    //
+
     Form1.Mesas1.Checked            := False;
     Form1.Contadecliente1.Checked   := True;
     Form1.ContadeclienteOS1.Checked := False;
     Form1.Concomitante.Checked      := False;
-    //
+
     Form1.sMesaOuConta    := 'Conta de Cliente';
     Form1.sMesasOuContas  := 'Contas de Clientes'; // Se alterar aqui deverá alterar também em ImpressaoNaoSujeitoaoICMS()
-    //
+
     Form1.Mesa          := Form1.cartao;
     Form1.sono          := Form1.cartao_sono;
     Form1.vinho         := Form1.cartao_vinho;
-    //
+
     Form1.Quantas1.Visible := True;
     Form1.Quantas1.Caption := 'Quantas '+Form1.sMesasOuContas;
-    //
+
   end;
-  //
+
   if Copy(Form1.sConcomitante,1,2) = 'OS' then
   begin
     Form22.sTitulo := 'Small Commerce - Conta de Cliente OS';
-    //
+
     Form1.Mesas1.Checked            := False;
     Form1.Contadecliente1.Checked   := False;
     Form1.ContadeclienteOS1.Checked := True;
     Form1.Concomitante.Checked      := False;
-    //
+
     Form1.sMesaOuConta    := 'Conta de Cliente';
     Form1.sMesasOuContas  := 'Contas de Clientes'; // Se alterar aqui deverá alterar também em ImpressaoNaoSujeitoaoICMS()
-    //
+
     Form1.Mesa          := Form1.cartao;
     Form1.sono          := Form1.cartao_sono;
     Form1.vinho         := Form1.cartao_vinho;
-    //
+
     Form1.Quantas1.Visible := True;
     Form1.Quantas1.Caption := 'Quantas '+Form1.sMesasOuContas;
   end;
@@ -2476,7 +2433,6 @@ begin
 
     Form12.Label2.WordWrap := False;
     Form12.Label2.Layout   := tlBottom;
-    //Form12.Label2.AutoSize := False;
     Form12.Label2.AutoSize := True;
     Form12.Label2.Width    := Form12.Edit1.Width;
     if AnsiContainsText(Form12.Label2.Caption, 'Números de Série:')
@@ -11318,7 +11274,6 @@ begin
                         Form1.ibDataSet28.FieldByName('CCF').AsString       := FormataNumeroDoCupom(iCCF);
                         Form1.ibDataSet28.FieldByName('PEDIDO').AsString    := Form1.ibDataSet27.FieldByName('PEDIDO').AsString;
                         Form1.ibDataSet28.FieldByName('GNF').AsString       := FormataNumeroDoCupom(Form1.iGNF);
-                        //Form1.ibDataSet28.FieldByName('CAIXA').AsString     := Form1.ibDataSet27.FieldByName('CAIXA').AsString; //Mauricio Parizotto 2024-12-16
                         Form1.ibDataSet28.FieldByName('CAIXA').AsString     := Form1.sCaixa;
                         Form1.ibDataSet28.FieldByName('CLIFOR').AsString    := sConveniado;
                         Form1.ibDataSet28.FieldByName('VENDEDOR').AsString  := sVendedor;
@@ -11349,8 +11304,8 @@ begin
                           Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago,
                           Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Transaca,
                           Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].NomeRede,
-                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Autorizacao, // Sandro Silva 2018-07-03
-                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Bandeira // Sandro Silva 2018-07-03
+                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Autorizacao,
+                          Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Bandeira
                           );
 
                         //Mauricio Parizotto 2024-08-21
@@ -33982,7 +33937,6 @@ begin
                 Form1.ibDataSet27.FieldByName('TIPO').AsString := 'KOLNAC';
                 Form1.ibDataSet27.Post;
               except
-                //GravaPendenciaAlteraca(Form1.ibDataSet27.Transaction.DefaultDatabase, Form1.bOffLine, Form1.ibDataSet27.FieldByName('CAIXA').AsString, Form1.ibDataSet27.FieldByName('PEDIDO').AsString, Form1.ibDataSet27.FieldByName('ITEM').AsString, 'KOLNAC'); // Sandro Silva 2019-03-21//Mauricio Parizotto 2024-12-16
                 GravaPendenciaAlteraca(Form1.ibDataSet27.Transaction.DefaultDatabase, Form1.bOffLine, Form1.sCaixa, Form1.ibDataSet27.FieldByName('PEDIDO').AsString, Form1.ibDataSet27.FieldByName('ITEM').AsString, 'KOLNAC');
                 Audita('CANCELA','FRENTE' + Form1.sModeloECF, Form15.UsuarioPub, '#28010 CX ' + Form1.sCaixa + '-' + Form1.ibDataSet27.FieldByName('PEDIDO').AsString + '-' + Form1.ibDataSet27.FieldByName('ITEM').AsString + ', '  + ExtractFileName(Application.ExeName) + ':' + LimpaNumero(Build),0,0); // Ato, Modulo, Usuário, Histórico, Valor // Sandro Silva 2020-12-03
               end;
