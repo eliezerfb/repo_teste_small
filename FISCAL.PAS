@@ -9481,7 +9481,7 @@ begin
 
             if Form1.ClienteSmallMobile.ImportandoMobile // Sandro Silva 2022-08-08 if (ImportandoMobile)
               and (Form1.ClienteSmallMobile.sVendaImportando <> '') then // 2015-06-29
-            begin
+            begin   // Importado do Mobile
 
               if sFormaPag = FORMA_PAGAMENTO_A_VISTA then
               begin
@@ -9523,6 +9523,7 @@ begin
             if (Form1.ClienteSmallMobile.ImportandoMobile = False) // Sandro Silva 2022-08-08  if (ImportandoMobile = False)
               and (Form1.ClienteSmallMobile.sVendaImportando = '') then // 2015-06-29
             begin
+              {smal-913
               // Se não é venda do mobile sendo processada e for cartão
               if Form1.bFechaRapidoCartao then
               begin
@@ -9543,6 +9544,30 @@ begin
                 Form1.ibDataSet25.Edit;
                 Form1.ibDataSet25.FieldByName('RECEBER').AsFloat     := Form1.fTotal;
                 Form1.ibDataSet25.FieldByName(sCampoForma).AsFloat   := Form1.fTotal;
+                Form1.ibDataSet25.Post;
+              end;
+              }
+
+              // Se não é venda do mobile sendo processada e for cartão
+              if Form1.bFechaRapidoCartao then
+              begin
+                Form1.bFechaRapidoCartao := False;
+                Form1.ibDataSet25.Edit;
+                Form1.ibDataSet25.FieldByName('RECEBER').AsFloat := Form1.fTotal - Form1.fDescontoNoTotal;
+                Form1.ibDataSet25.FieldByName('PAGAR').AsFloat   := Form1.fTotal - Form1.fDescontoNoTotal;
+                Form1.ibDataSet25.Post;
+              end;
+
+              //Mauricio Parizotto 2024-12-04
+              if bFechaRapidoF6 then
+              begin
+                var sCampoForma : string;
+                sCampoForma := GetCampoValorFormaExtra(StrToIntDef( copy(sFormaAtalhoF6,13,1) ,0));
+
+                Form1.bFechaRapidoF6 := False;
+                Form1.ibDataSet25.Edit;
+                Form1.ibDataSet25.FieldByName('RECEBER').AsFloat     := Form1.fTotal - Form1.fDescontoNoTotal;
+                Form1.ibDataSet25.FieldByName(sCampoForma).AsFloat   := Form1.fTotal - Form1.fDescontoNoTotal;
                 Form1.ibDataSet25.Post;
               end;
             end;
@@ -18298,7 +18323,7 @@ begin
 
       if Key = VK_F9 then
       begin
-        if (not Form1.Memo1.Visible) then // Quando tem cupom aberto não
+        if (not Form1.Memo1.Visible) then // Quando não tem cupom aberto
         begin
           Button13Click(Sender);
         end

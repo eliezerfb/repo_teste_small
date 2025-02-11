@@ -1333,7 +1333,8 @@ begin
     Form1.fDescontoNoTotal := StrToFloat(FormatFloat('0.00', Form1.ibDataSet27.FieldByname('TOTAL').AsFloat*-1)); // Sandro Silva 2021-12-23 Form1.fDescontoNoTotal := Form1.ibDataSet27.FieldByname('TOTAL').AsFloat*-1;
     if Form1.ibDataSet25.State in [dsEdit, dsInsert] = False then // Sandro Silva 2022-09-06
       Form1.ibDataSet25.Edit; // Precisa para evitar erro quando está usando POS com indentificaPOS e configurou apenas CREDITO/DEBITO sem bandeira
-    Form1.ibDataSet25.FieldByname('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', Form1.fTotal + Form1.fDescontoNoTotal)); // Sandro Silva 2021-12-23 Form1.fTotal + Form1.fDescontoNoTotal;
+    //smal-913 Form1.ibDataSet25.FieldByname('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', Form1.fTotal + Form1.fDescontoNoTotal)); // Sandro Silva 2021-12-23 Form1.fTotal + Form1.fDescontoNoTotal;
+    Form1.ibDataSet25.FieldByname('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', Form1.fTotal - Form1.fDescontoNoTotal));
   end;
 
   //
@@ -2038,7 +2039,7 @@ begin
     if (Form1.ClienteSmallMobile.sVendaImportando = '')
       or ((Form1.ClienteSmallMobile.sVendaImportando <> '') and (sFormaPag = FORMA_PAGAMENTO_A_VISTA)) then
     begin
-      fTotal1 := fTotal1 - Form1.fDescontoNoTotal;
+      fTotal1 := fTotal1 - Form1.fDescontoNoTotal; //2025-02-10
       //
       if (Form1.ibDataSet25.State in [dsInsert, dsEdit]) = False then
         Form1.ibDataSet25.Edit;
