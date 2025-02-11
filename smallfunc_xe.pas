@@ -206,7 +206,7 @@ function EnumeradoToStr(const t: variant; const AString:
   array of string; const AEnumerados: array of variant): variant;
 function SqlFiltroNFCEAutorizado(AliasTabela:string): String; //Mauricio Parizotto 2025-01-17
 function GetTipoDocumento(ACnpjCpf: String): String;
-
+function StrToFloatFormat(sFormato: String; Valor: Real): Real;
 
 var
   IMG: TImage;
@@ -2869,5 +2869,15 @@ begin
   if ACnpjCpf.Length > 11 then
     Result := 'CNPJ';
 end;
+
+
+function StrToFloatFormat(sFormato: String; Valor: Real): Real;
+begin
+  var sValorFormat := Format('%10.2n', [(Valor)]);
+  sValorFormat := StringReplace(sValorFormat, ' ', '', []);
+  sValorFormat := StringReplace(sValorFormat, '.', '', []);
+  Result := StrToFloatDef(sValorFormat, 0);
+end;
+
 
 end.
