@@ -3,7 +3,7 @@
         <ProjectGuid>{54FF425B-90CF-4D22-A144-D5CA46175B02}</ProjectGuid>
         <MainSource>small22.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -630,6 +630,14 @@
         <DCCReference Include="..\..\unit_compartilhada\MinhasNotas\uMinhasNotas.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\MinhasNotas\uWebServiceMinhasNotas.pas"/>
         <DCCReference Include="..\..\unit_compartilhada\uSmallZip.pas"/>
+        <DCCReference Include="uReportScreenBase.pas">
+            <Form>frmReportScreenBase</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uRelatorioPisCofins.pas">
+            <Form>frmRelatorioPisCofins</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -670,7 +678,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\..\..\..\Executaveis\Small Commerce\small22.exe" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="D:\Desenvolvimento\Executaveis\Small Commerce\small22.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>small22.exe</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -1494,7 +1502,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\..\..\..\Executaveis\Small Commerce\small22.exe" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="D:\Desenvolvimento\Executaveis\Small Commerce\small22.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>small22.exe</RemoteName>
                         <Overwrite>true</Overwrite>

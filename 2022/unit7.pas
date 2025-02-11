@@ -35,11 +35,10 @@ uses
   , synPDF, System.MaskUtils
   , uRetornaCustoMedio
   , uRelatorioResumoVendas
+  , uReportScreenBase
+  , uRelatorioPisCofins
   ;
 
-const SIMPLES_NACIONAL = '1';
-const SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
-const REGIME_NORMAL    = '3';
 const CAMPO_SOMENTE_LEITURA_NO_GRID = 10;
 const ID_FILTRAR_FORMAS_GERAM_BOLETO = 15;
 const ID_FILTRAR_FORMAS_GERAM_CARNE_DUPLICATA = 05;
@@ -2559,6 +2558,7 @@ type
     procedure ChamarRelResumoVendas(AenTipoRelatorio: TTipoRelatorioResumoVenda);
     procedure VerificaAlteracaoIMendes;
     function EnviaNFe: Boolean;
+    function GetInfoReportBase(): TInfoReportBase;
   public
     // Public declarations
 
@@ -2720,7 +2720,8 @@ type
   function ObservacaoOperacao(pP1:Boolean):Boolean;
   function Observacao2(pP1:Boolean):Boolean;
   function JaTem(p1:tibDataSet; p2:tField; p3: boolean):Boolean;
-  function CriaJpg(sP1: String) :Boolean;
+  function CriaJpg(sP1: String) :Boolean; deprecated 'Utilize a função SalvaJPEGLogotipo';
+  procedure SalvaJPEGLogotipo();
   function MostraLabels(tSp1: tImage; tSp2: TLabel): Boolean;
   function TraduzSql(P1: String;P2 :Boolean; AoDataSet: TIBDataSet = nil): String;
   function ConfiguraNFE : Boolean;
@@ -7039,6 +7040,23 @@ begin
 end;
 
 
+procedure SalvaJPEGLogotipo();
+begin
+  if FileExists(Form1.sAtual+'\LOGOTIP.BMP') then
+    Form14.Image1.Picture.LoadFromFile(Form1.sAtual+'\LOGOTIP.BMP')
+  else
+    Form14.Image1.Picture := Form1.Image1.Picture;
+
+  var Img := TJPEGImage.Create;
+  try
+    Img.Assign(Form14.Image1.Picture.Bitmap);
+    Img.CompressionQuality := 100;
+    Img.SaveToFile('logotip.jpg');
+  finally
+    Img.Free;
+  end;
+end;
+
 
 function CriaJpg(sP1: String) :Boolean;
 var
@@ -7055,6 +7073,7 @@ begin
     jp.CompressionQuality := 100;
     jp.SaveToFile('logotip.jpg');
   except
+    (*TO DO: Aqui deveria salvar em um log que deu erro*)
   end;
 
   Result := True;
@@ -27022,16 +27041,12 @@ end;
 
 procedure TForm7.RelatriodePISCOFINS1Click(Sender: TObject);
 begin
-  //
-  sModuloAnterior := sModulo;
-  //
-  Form38.Label2.Visible := True;
-  Form38.Label3.Visible := True;
-  Form38.DateTimePicker1.Visible := True;
-  Form38.DateTimePicker2.Visible := True;
-  sModulo := 'Relatório de PIS/COFINS (NF-e)';
-  Form38.ShowModal; // Ok
-  //
+  if TfrmRelatorioPisCofins.Execute(GetInfoReportBase(), rtNFe) then
+  begin
+    AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
+    Form7.Close;
+    Form7.Show;
+  end;
 end;
 
 procedure TForm7.Cardpio1Click(Sender: TObject);
@@ -32357,14 +32372,12 @@ end;
 
 procedure TForm7.RelatriodePISCOFINSCupomFiscal1Click(Sender: TObject);
 begin
-  sModuloAnterior := sModulo;
-
-  Form38.Label2.Visible := True;
-  Form38.Label3.Visible := True;
-  Form38.DateTimePicker1.Visible := True;
-  Form38.DateTimePicker2.Visible := True;
-  sModulo := 'Relatório de PIS/COFINS (Cupom Fiscal)';
-  Form38.ShowModal;
+  if TfrmRelatorioPisCofins.Execute(GetInfoReportBase(), rtCumpomFiscal) then
+  begin
+    AbreArquivoNoFormatoCerto(pChar(Senhas.UsuarioPub+'.HTM'));
+    Form7.Close;
+    Form7.Show;
+  end;
 end;
 
 procedure TForm7.EscolheOBancoParaGerarBoletoEEnviarEmail(Sender: TObject);
@@ -33453,6 +33466,25 @@ end;
 procedure TForm7.Relatrios5Click(Sender: TObject);
 begin
   MenuItem119.Caption    := 'Convênio '+AllTrim(ibDataSet29NOME.AsString);
+end;
+
+function TForm7.GetInfoReportBase(): TInfoReportBase;
+begin
+  SalvaJPEGLogotipo();
+
+  var InfoReportBase: TInfoReportBase;
+  with InfoReportBase do
+  begin
+    User := Usuario;
+    Html := Form1.bHtml1;
+    HtmlColor := Form1.sHtmlCor;
+    UsuarioPub := Senhas.UsuarioPub;
+    NomeEmitente := ibDataSet13NOME.AsString;
+    CRT := ibDataSet13CRT.AsString;
+    PDF := Form1.bPDF;
+    ReportImage := imgImprimir.Picture;
+  end;
+  Result := InfoReportBase
 end;
 
 function TForm7.GetMensagemCertificado(vLocal:string='') : string;
