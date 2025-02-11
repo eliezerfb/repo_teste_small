@@ -106,23 +106,18 @@ begin
 
   inherited;
 
-  Form7.ibDataSet4.DisableControls();
-  try
-    if FRelatorioPisCofinsType = rtNFe then
-      RelatorioPisCofinsNfe(
-        TextFileBaseReport,
-        DateTimePickerStart.Date,
-        DateTimePickerEnd.Date
-      )
-    else
-      RelatorioPisCofinsCupom(
-        TextFileBaseReport,
-        DateTimePickerStart.Date,
-        DateTimePickerEnd.Date
-      );
-  finally
-    Form7.ibDataSet4.EnableControls();
-  end;
+  if FRelatorioPisCofinsType = rtNFe then
+    RelatorioPisCofinsNfe(
+      TextFileBaseReport,
+      DateTimePickerStart.Date,
+      DateTimePickerEnd.Date
+    )
+  else
+    RelatorioPisCofinsCupom(
+      TextFileBaseReport,
+      DateTimePickerStart.Date,
+      DateTimePickerEnd.Date
+    );
 end;
 
 procedure TfrmRelatorioPisCofins.RelatorioPisCofinsCupom(var F: TextFile;
@@ -191,7 +186,9 @@ begin
   Form7.ibQuery99.Close;
   Form7.ibQuery99.SQL.Clear;
   Form7.ibQuery99.SQL.Add(
-    'select * from ALTERACA '+
+    'select ALTERACA.*, ESTOQUE.CF NCM '+
+    ' from ALTERACA '+
+    ' left join ESTOQUE on ESTOQUE.CODIGO=ALTERACA.CODIGO '+
     ' where DATA <= '+QuotedStr(DateToStrInvertida(dFinal))+
     ' and DATA >= ' + QuotedStr(DateToStrInvertida(dInicio))+
     ' and (TIPO = ' + QuotedStr('BALCAO')+
@@ -212,18 +209,9 @@ begin
     if Canceled then
       Break;
 
-    if (Form7.ibQuery99.FieldByName('DESCRICAO').AsString <> 'Desconto') and (Form7.ibQuery99.FieldByName('DESCRICAO').AsString <> 'Acréscimo') then
+    if (Form7.ibQuery99.FieldByName('DESCRICAO').AsString <> 'Desconto') and
+      (Form7.ibQuery99.FieldByName('DESCRICAO').AsString <> 'Acréscimo') then
     begin
-      (*TO DO: remover este select e alterar a query acima para deixar o relatório
-      mais rápido*)
-      Form7.ibDataSet4.Close;
-      Form7.ibDataSet4.Selectsql.Clear;
-      Form7.ibDataSet4.Selectsql.Add(
-        'select * from ESTOQUE where '+
-        'CODIGO='+QuotedStr(Form7.ibQuery99.FieldByName('CODIGO').AsString)+' '
-      );
-      Form7.ibDataSet4.Open;
-
       Application.ProcessMessages;
 
       Rateio.CalcularRateio(
@@ -307,7 +295,7 @@ begin
         WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%8.4n', [Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat]) + '<br></font></td>');
         WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>' + Format('%7.2n', [Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) /100]) + '<br></font></td>');
         WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CFOP').AsString + '<br></font></td>');
-        WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.IBDataSet4CF.AsString + '<br></font></td>');
+        WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('NCM').AsString + '<br></font></td>');
         WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
         WriteLn(F,'   </tr>');
       end else
@@ -324,7 +312,7 @@ begin
         Write(F,Format('%8.4n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat]) + ' ');
         Write(F,Format('%14.2n', [Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByName('TOTAL').AsFloat + Rateio.DescontoItem + Rateio.RateioDescontoItem + Rateio.RateioAcrescimoItem) / 100]) + ' ');
         Write(F,Copy(Form7.ibQuery99.FieldByname('CFOP').AsString+Replicate(' ', 4), 1, 4) + ' ');
-        Write(F,Copy(Form7.ibDataSet4CF.AsString+Replicate(' ', 9), 1, 9) + ' ');
+        Write(F,Copy(Form7.ibQuery99.FieldByname('NCM').AsString+Replicate(' ', 9), 1, 9) + ' ');
         if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
           WriteLn(F, Copy(sCSTCSOSN + Replicate(' ', 9), 1, 9) + ' ')
         else
@@ -646,12 +634,14 @@ begin
   Form7.ibQuery99.Close;
   Form7.ibQuery99.SQL.Clear;
   Form7.ibQuery99.SQL.Add(
-    'select * from ITENS001, VENDAS '+
+    'select ITENS001.*, VENDAS.*, ESTOQUE.CF NCM '+
+    ' from ITENS001 '+
+    ' inner join VENDAS on VENDAS.NUMERONF=ITENS001.NUMERONF '+
+    ' left join ESTOQUE on ESTOQUE.CODIGO=ITENS001.CODIGO '+
     ' where VENDAS.EMITIDA=''S'' '+
     ' and VENDAS.EMISSAO>='+QuotedStr(DateToStrInvertida(dInicio))+
     ' and VENDAS.EMISSAO<='+QuotedStr(DateToStrInvertida(dFinal))+
     ' and Coalesce(CST_PIS_COFINS,''XX'')<>''XX'' '+
-    ' and VENDAS.NUMERONF=ITENS001.NUMERONF '+
     FFilterByCSTPisCofins+
     ' order by VENDAS.EMISSAO, VENDAS.NUMERONF');
   Form7.ibQuery99.Open;
@@ -661,21 +651,11 @@ begin
     if Canceled then
       Break;
 
-    (*TO DO: remover este select e alterar a query acima para deixar o relatório
-    mais rápido*)
-    Form7.ibDataSet4.Close;
-    Form7.ibDataSet4.Selectsql.Clear;
-    Form7.ibDataSet4.Selectsql.Add(
-      'select * from ESTOQUE '+
-      'where CODIGO='+QuotedStr(Form7.ibQuery99.FieldByName('CODIGO').AsString)+' '
-    );
-    Form7.ibDataSet4.Open;
-
     Application.ProcessMessages;
 
     try
       if Form7.ibQuery99.FieldByname('DESCONTO').AsFloat <> 0 then
-        fRateioDoDesconto  := Arredonda((Form7.ibQuery99.FieldByname('DESCONTO').AsFloat / Form7.ibQuery99.FieldByname('MERCADORIA').AsFloat * Form7.ibQuery99.FieldByname('TOTAL').AsFloat),2)
+        fRateioDoDesconto := Arredonda((Form7.ibQuery99.FieldByname('DESCONTO').AsFloat / Form7.ibQuery99.FieldByname('MERCADORIA').AsFloat * Form7.ibQuery99.FieldByname('TOTAL').AsFloat),2)
       else
         fRateioDoDesconto := 0;
     except
@@ -755,7 +735,7 @@ begin
       WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%8.4n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat])+'<br></font></td>');
       WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=right><font face="Microsoft Sans Serif" size=1>'+Format('%7.2n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat-fRateioDoDesconto) /100])+'<br></font></td>');
       WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('CFOP').AsString + '<br></font></td>');
-      WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.IBDataSet4CF.AsString + '<br></font></td>');
+      WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + Form7.ibQuery99.FieldByname('NCM').AsString + '<br></font></td>');
       WriteLn(F,'    <td valign=top bgcolor=#FFFFFF align=left><font face="Microsoft Sans Serif" size=1>' + sCSTCSOSN + '<br></font></td>');
       WriteLn(F,'   </tr>');
     end else
@@ -771,7 +751,7 @@ begin
       Write(F,Format('%8.4n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat]) + ' ');
       Write(F,Format('%14.2n',[Form7.ibQuery99.FieldByname('ALIQ_COFINS').AsFloat * (Form7.ibQuery99.FieldByname('TOTAL').AsFloat - fRateioDoDesconto) / 100]) + ' ');
       Write(F,Copy(Form7.ibQuery99.FieldByname('CFOP').AsString+Replicate(' ', 4), 1, 4) + ' ');
-      Write(F,Copy(Form7.ibDataSet4CF.AsString+Replicate(' ', 9), 1, 9) + ' ');
+      Write(F,Copy(Form7.ibQuery99.FieldByname('NCM').AsString+Replicate(' ', 9), 1, 9) + ' ');
       if Form7.ibDataSet13CRT.AsString = REGIME_NORMAL then
         WriteLn(F, Copy(sCSTCSOSN + Replicate(' ', 9), 1, 9) + ' ')
       else
