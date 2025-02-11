@@ -2855,7 +2855,8 @@ end;
 function SqlFiltroNFCEAutorizado(AliasTabela:string): String; //Mauricio Parizotto 2025-01-17
 begin
   Result := ' and ('+
-            '      ('+AliasTabela+'.STATUS containing ''Autorizad'') '+
+            '      (coalesce('+AliasTabela+'.REGISTRO,'''') = '''') '+ //Mauricio Parizotto 2025-01-27 ECF
+            '      or ('+AliasTabela+'.STATUS containing ''Autorizad'') '+
             '      or ('+AliasTabela+'.STATUS containing ''Emitido com sucesso'')'+
             '      or ('+AliasTabela+'.STATUS containing ' + QuotedStr(_cNFCE_EMITIDA_EM_CONTINGENCIA) + ')'+
             '      or ('+AliasTabela+'.STATUS containing ' + QuotedStr(_cVENDA_GERENCIAL_FINALIZADA) + ')'+
