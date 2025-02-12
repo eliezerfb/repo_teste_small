@@ -207,7 +207,7 @@ begin
   FbConfirmarTransacao := False;
   FiTotalParcelas      := 0;
 
-  FsCupomTEF                := '';
+  FsCupomTEF           := '';
 end;
 
 function TTransacaoComPosOuTef.GetImpressaoTransacoes: String;
@@ -620,21 +620,21 @@ var
               Form1.sParcelas   := '0';
               Form1.sValorTot   := '';
               Form1.sValorSaque := '';
-              Form1.TransacaoTEF.NomeRede := ''; // Sandro Silva 2024-12-05 Form1.sNomeRede   := '';
-              Form1.sNomeRedeTransacionada     := '';
-              Form1.TransacaoTEF.Transacao   := ''; // Sandro Silva 2024-12-06 Form1.sTransaca   := '';
+              Form1.TransacaoTEF.NomeRede  := ''; // Sandro Silva 2024-12-05 Form1.sNomeRede   := '';
+              Form1.sNomeRedeTransacionada := '';
+              Form1.TransacaoTEF.Transacao := ''; // Sandro Silva 2024-12-06 Form1.sTransaca   := '';
               Form1.sTransacaPOS   := '';
               Form1.sAutoriza   := '';
               Form1.sFinaliza   := '';
               Form1.sLinha      := '';
 
-              sCupom029       := '';
-              sCupom710       := '';
-              sCupom711       := '';
-              sCupom712       := '';
-              sCupom713       := '';
-              sCupom714       := '';
-              sCupom715       := '';
+              sCupom029 := '';
+              sCupom710 := '';
+              sCupom711 := '';
+              sCupom712 := '';
+              sCupom713 := '';
+              sCupom714 := '';
+              sCupom715 := '';
 
               sRespostaTef := ''; // Inicia vazia para capturar linhas da resposta do tef
 
@@ -733,6 +733,9 @@ var
                   // Venda com pagamento no CARTAO //
 
                 end; // while not Eof(f) Do
+
+                if Form1.TransacaoTEF.NomeRede = '?' then // Quando cancelar ZPOS durante a transação
+                  Form1.TransacaoTEF.NomeRede := '';
 
                 Form1.sNomeRedeTransacionada   := Form1.TransacaoTEF.NomeRede;
 

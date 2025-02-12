@@ -2877,11 +2877,12 @@ end;
 procedure AguardaRespostaIntPosSts;
 begin
   //Precisa esperar a resposta do TEF
+  Sleep(500);
   for var I := 1 to 6 do
   begin
-    Sleep(1000);
     if FileExists('c:\'+Form1.TransacaoTEF.Cliente.Pasta+'\'+Form1.sRespTEF+'\INTPOS.STS') then
       Break;
+    Sleep(1000);
   end;
 end;
 
