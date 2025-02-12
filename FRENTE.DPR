@@ -123,7 +123,7 @@ uses
   uTransacionaPosOuTef in 'uTransacionaPosOuTef.pas',
   uMinhasNotas in '..\unit_compartilhada\MinhasNotas\uMinhasNotas.pas',
   uWebServiceMinhasNotas in '..\unit_compartilhada\MinhasNotas\uWebServiceMinhasNotas.pas',
-  uSistema in '..\small-Projeto-2022\2022\units\uSistema.pas';
+  uSistema in '..\Projeto-2022\2022\units\uSistema.pas';
 
 {$R *.RES}
 

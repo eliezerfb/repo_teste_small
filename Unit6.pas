@@ -271,10 +271,14 @@ begin
   // *****************
   // Desconto em %   *
   // *****************
-  if Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat > 0 then Form1.fDescontoNoTotal := StrToFloat(Format('%10.2f',[Form1.fTotal -(Form1.fTotal - (Form1.fTotal * Form1.ibDataSet25.FieldByName('VALOR_1').asFloat / 100))]));
-  if Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat > 0 then Form1.fDescontoNoTotal := StrToFloat(FormatFloat('0.00', Form1.fTotal - (Form1.fTotal - Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat))); // Sandro Silva 2021-12-23 Form1.fTotal - (Form1.fTotal - Form1.ibDataSet25VALOR_2.AsFloat);
-  if Form1.ibDataSet25.FieldByName('VALOR_3').AsFloat > 0 then Form1.fDescontoNoTotal := StrToFloat(Format('%10.2f',[Form1.fTotal -(Form1.fTotal + (Form1.fTotal * Form1.ibDataSet25.FieldByName('VALOR_3').AsFloat/100))]));
-  if Form1.ibDataSet25.FieldByName('VALOR_4').AsFloat > 0 then Form1.fDescontoNoTotal := StrToFloat(FormatFloat('0.00', Form1.fTotal - (Form1.fTotal + Form1.ibDataSet25.FieldByName('VALOR_4').AsFloat))); // Sandro Silva 2021-12-23 Form1.fDescontoNoTotal := Form1.fTotal - (Form1.fTotal + Form1.ibDataSet25VALOR_4.AsFloat);
+  if Form1.ibDataSet25.FieldByName('VALOR_1').AsFloat > 0 then
+    Form1.fDescontoNoTotal := StrToFloat(Format('%10.2f',[Form1.fTotal -(Form1.fTotal - (Form1.fTotal * Form1.ibDataSet25.FieldByName('VALOR_1').asFloat / 100))]));
+  if Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat > 0 then
+    Form1.fDescontoNoTotal := StrToFloat(FormatFloat('0.00', Form1.fTotal - (Form1.fTotal - Form1.ibDataSet25.FieldByName('VALOR_2').AsFloat))); // Sandro Silva 2021-12-23 Form1.fTotal - (Form1.fTotal - Form1.ibDataSet25VALOR_2.AsFloat);
+  if Form1.ibDataSet25.FieldByName('VALOR_3').AsFloat > 0 then
+    Form1.fDescontoNoTotal := StrToFloat(Format('%10.2f',[Form1.fTotal -(Form1.fTotal + (Form1.fTotal * Form1.ibDataSet25.FieldByName('VALOR_3').AsFloat/100))]));
+  if Form1.ibDataSet25.FieldByName('VALOR_4').AsFloat > 0 then
+    Form1.fDescontoNoTotal := StrToFloat(FormatFloat('0.00', Form1.fTotal - (Form1.fTotal + Form1.ibDataSet25.FieldByName('VALOR_4').AsFloat))); // Sandro Silva 2021-12-23 Form1.fDescontoNoTotal := Form1.fTotal - (Form1.fTotal + Form1.ibDataSet25VALOR_4.AsFloat);
 
   if Form2.Visible then
   begin
