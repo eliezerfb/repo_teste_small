@@ -2326,7 +2326,7 @@ begin
 
           AtualizaDadosPagament(Form1.ibDataSet28, Form1.sModeloECF, Form1.sCaixa,
             FormataNumeroDoCupom(Form1.icupom), Form1.sCaixa, FormataNumeroDoCupom(StrToInt(sCFe)), _59.CFedEmi,
-            Form1.sConveniado, Form1.sVendedor, FormasPagamento59, Form1.fTEFPago, TransacoesCartao59, ModalidadeTransacao59);
+            Form1.sConveniado, Form1.sVendedor, FormasPagamento59, Form1.fTEFPago, TransacoesCartao59, ModalidadeTransacao59, '');
           FreeAndNil(FormasPagamento59);
           FreeAndNil(TransacoesCartao59);
 

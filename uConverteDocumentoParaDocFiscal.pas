@@ -406,7 +406,7 @@ begin
 
       // Atualiza dados da tabela PAGAMENT e trás FORMASPAGAMENTO carregada com os dados
       AtualizaDadosPagament(FIBDataSet28, FModeloDocumento, sCaixaOld, FNumeroGerencial, FCaixa, sNovoNumero, dtDataNovo,
-        FConveniado, FVendedor, FormasPagamento, FValorTotalTEFPago, FTransacoesCartao, ModalidadeTransacao);
+        FConveniado, FVendedor, FormasPagamento, FValorTotalTEFPago, FTransacoesCartao, ModalidadeTransacao, '');
       {Sandro Silva 2023-08-25 fim}
 
       //Mauricio Parizotto 2024-09-12

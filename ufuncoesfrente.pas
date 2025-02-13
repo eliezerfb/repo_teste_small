@@ -311,7 +311,8 @@ procedure AtualizaDadosPagament(FIBDataSet28: TIBDataSet;
   var FormasPagamento: TPagamentoPDV;
   var FValorTotalTEFPago: Real;
   var FTransacoesCartao: TTransacaoFinanceira;
-  var ModalidadeTransacao: TTipoModalidadeTransacao
+  var ModalidadeTransacao: TTipoModalidadeTransacao;
+  FComprovante: String
   );
 function indRegraSAT(sCFOP: String): String;
 function TruncaValor(dValor: Double; iDecimais: Integer = 2): Double;
@@ -938,7 +939,8 @@ procedure AtualizaDadosPagament(FIBDataSet28: TIBDataSet;
   var FormasPagamento: TPagamentoPDV;
   var FValorTotalTEFPago: Real;
   var FTransacoesCartao: TTransacaoFinanceira;
-  var ModalidadeTransacao: TTipoModalidadeTransacao
+  var ModalidadeTransacao: TTipoModalidadeTransacao;
+  FComprovante: String
   );
 var
   IBQTRANSACAOELETRONICA: TIBQuery;
@@ -1052,7 +1054,6 @@ begin
           IBQTRANSACAOELETRONICA.FieldByName('AUTORIZACAO').AsString,
           IBQTRANSACAOELETRONICA.FieldByName('BANDEIRA').AsString,
           ModalidadeTransacao
-
         );
 
         AtualizaDadosTransacaoEletronica(

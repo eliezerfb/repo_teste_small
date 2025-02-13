@@ -374,6 +374,7 @@ var
     dTotalTransacaoTEF: Currency; //Double;
     dValorDuplReceber: Currency;
     bTEFZPOS: Boolean;
+    sComprovanteDaTransacao: String; // Armazena o comprovante da transação que está realizando.
   begin
     Result := False;
 
@@ -773,28 +774,40 @@ var
               // Quais vias serão impressas conforme fluxo
 
               // sCupom é o que vai ser impresso
-
               if AllTrim(sCupom710) <> '' then
               begin
-                FComprovanteReduzido := FComprovanteReduzido + Chr(10) + sCupom711 + DupeString('-', 40);
+                if not(AnsiContainsText(Form10.sNomedoTef, 'ZPOS')) then
+                  FComprovanteReduzido := FComprovanteReduzido + Chr(10) + sCupom711 + DupeString('-', 40);
               end else
               begin
                 if AllTrim(sCupom712) <> '' then
                 begin
-                  FComprovanteDetalhado := sCupom713;
+                  if not(AnsiContainsText(Form10.sNomedoTef, 'ZPOS')) then
+                    FComprovanteDetalhado := sCupom713;
+
+                  sComprovanteDaTransacao := sCupom713;
                 end;
               end;
 
               if AllTrim(sCupom714) <> '' then
               begin
-                FComprovanteDetalhado := FComprovanteDetalhado + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + sCupom715;
+                if not(AnsiContainsText(Form10.sNomedoTef, 'ZPOS')) then
+                  FComprovanteDetalhado := FComprovanteDetalhado + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + sCupom715;
+
+                sComprovanteDaTransacao := sCupom715;
               end else
               begin
-                FComprovanteDetalhado := FComprovanteDetalhado + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + sCupom029;
+                if not(AnsiContainsText(Form10.sNomedoTef, 'ZPOS')) then
+                begin
+                  if sCupom029 <> '' then
+                    FComprovanteDetalhado := FComprovanteDetalhado + IfThen(SuprimirLinhasEmBrancoDoComprovanteTEF, Chr(10), chr(10) + chr(10) + chr(10)) + sCupom029;
+                end;
+                sComprovanteDaTransacao := sCupom029;
               end;
 
               if AllTrim(StrTran(FComprovanteDetalhado,chr(10),'')) = '' then
                 FComprovanteDetalhado := '';
+
 
               if Form1.sValorSaque <> '' then
               begin
@@ -820,7 +833,8 @@ var
               if allTrim(sMensagem) <> ''  then
               begin
 
-                if AllTrim(FComprovanteDetalhado) <> '' then
+                // Transação tem texto do comprovante
+                if sComprovanteDaTransacao <> '' then //  if AllTrim(FComprovanteDetalhado) <> '' then
                 begin
 
                   if sBotaoOk = '0' then
@@ -858,7 +872,7 @@ var
             end;
           end; // if FileExists('c:\'+Form1.sDiretorio+'\'+Form1.sRESP+'\INTPOS.STS')  then
 
-          if (Form1.TransacaoTEF.NomeRede <> '') and (FComprovanteDetalhado <> '') then // if (Form1.TransacaoTEF.NomeRede <> '') and (sCupom <> '') then
+          if (Form1.TransacaoTEF.NomeRede <> '') and (sComprovanteDaTransacao <> '') then // if (Form1.TransacaoTEF.NomeRede <> '') and (FComprovanteDetalhado <> '') then
           begin
             // Transação feita
             Inc(FiContaCartao);
@@ -895,7 +909,16 @@ var
                 end;
 
                 //Sandro Silva 2024-12-05 Form1.TransacoesCartao.Transacoes.Adicionar(Form10.sNomeDoTEF, Form1.sDebitoOuCredito, dValorPagarCartao, Form1.sNomeRede, Form1.sTransaca, Form1.sAutoriza, Form1.IntegradorCE.TransacaoFinanceira.Tipo, ModalidadeTransacao);
-                Form1.TransacoesCartao.Transacoes.Adicionar(Form10.sNomeDoTEF, Form1.sDebitoOuCredito, dValorPagarCartao, Form1.TransacaoTEF.NomeRede, Form1.TransacaoTEF.Transacao, Form1.sAutoriza, Form1.IntegradorCE.TransacaoFinanceira.Tipo, ModalidadeTransacao);
+                Form1.TransacoesCartao.Transacoes.Adicionar(
+                  Form10.sNomeDoTEF,
+                  Form1.sDebitoOuCredito,
+                  dValorPagarCartao,
+                  Form1.TransacaoTEF.NomeRede,
+                  Form1.TransacaoTEF.Transacao,
+                  Form1.sAutoriza,
+                  Form1.IntegradorCE.TransacaoFinanceira.Tipo,
+                  ModalidadeTransacao
+                  );
 
                 iParcelas := 1;
 
@@ -987,7 +1010,8 @@ var
     if Result = True then
     begin
 
-      FsCupomTEF := FComprovanteReduzido + FComprovanteDetalhado;
+      if not(AnsiContainsText(Form10.sNomedoTef, 'ZPOS')) then
+        FsCupomTEF := FComprovanteReduzido + FComprovanteDetalhado;
 
     end;
     // ---------------------------------------------- //
@@ -1210,7 +1234,16 @@ var
         begin
           Result := True; //2025-01-14
 
-          Form1.TransacoesCartao.Transacoes.Adicionar(Form1.sNomeRedeTransacionada, IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0, 'DEBITO', 'CREDITO'), dValorPagarCartao, Form10.sNomeAdquirente, Form1.sTransacaPOS, Form1.sAutoriza, StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO',''), ModalidadeTransacao);
+          Form1.TransacoesCartao.Transacoes.Adicionar(
+            Form1.sNomeRedeTransacionada,
+            IfThen(Pos('DEBITO', ConverteAcentos(AnsiUpperCase(Form10.sNomeDoTEF))) > 0, 'DEBITO', 'CREDITO'),
+            dValorPagarCartao,
+            Form10.sNomeAdquirente,
+            Form1.sTransacaPOS,
+            Form1.sAutoriza,
+            StrTran(StrTran(Form10.sNomeDoTEF,'DEBITO',''),'CREDITO',''),
+            ModalidadeTransacao
+            );
 
           FdTotalTransacionado := FdTotalTransacionado + dValorPagarCartao;
           Form1.fTEFPago      := Form1.fTEFPago + dValorPagarCartao;
