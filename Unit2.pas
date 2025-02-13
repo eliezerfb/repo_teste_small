@@ -196,17 +196,7 @@ var
 
 implementation
 
-uses fiscal, Unit10, Unit22, Unit6, {Unit5, }_small_59, _small_1,_small_2, _small_3,
-    {Sandro Silva 2021-07-22 inicio
-   _small_4,
-   _small_5,
-   _small_6,
-   _small_7,
-   _small_8,
-   _small_9,
-   _small_10,
-   _small_11,
-   }
+uses fiscal, Unit10, Unit22, Unit6, _small_59, _small_1,_small_2, _small_3,
    _small_12,
    _small_65,
    _small_14,
@@ -350,20 +340,15 @@ begin
     Perform(Wm_NextDlgCtl,0,0);
   end;
 
-  {Sandro Silva 2020-09-17 inicio}
   if ((ssAlt in Shift) and (Key = VK_F4)) then // Evitar fechar form com ALT+F4 e não executa ibDataSet25PAGARChange
   begin
-    //SMALL_DBEdit2Exit(Sender);
-    //Form1.ibDataSet25PAGARChange(
     if CheckBox1.Checked then
     begin
       if Button1.Caption = 'F3 Finalizar' then // Sandro Silva 2021-07-02 if Button1.Caption = '&Finalizar' then
         Button1Click(Button1);
     end;
   end;
-  {Sandro Silva 2020-09-17 fim}
 
-  //
   if (Form1.ibDataSet25.FieldByname('DIFERENCA_').AsFloat <> 0) then
   begin
     Button1.Caption := 'F3 Avançar >>'; // Sandro Silva 2021-07-02 Button1.Caption := '&Avançar >>';
@@ -371,33 +356,32 @@ begin
   begin
     Button1.Caption := 'F3 Finalizar'; // Sandro Silva 2021-07-02 Button1.Caption := '&Finalizar';
   end;
-  //
+
 end;
 
 procedure TForm2.SMALL_DBEdit5Exit(Sender: TObject);
 begin
-  //
+
   if not Form1.bNFazMaisNada then
   begin
-    //
+
     if Form1.ibDataSet25.FieldByname('RECEBER').AsFloat < 0 then
       Form1.ibDataSet25.FieldByname('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', Form1.fTotal)); // Sandro Silva 2021-12-23 Form1.ibDataSet25.FieldByname('RECEBER').AsFloat := Form1.fTotal;
-    // Sandro Silva 2017-02-22 Para não permitir acréscimo acima do valor total vendido
+
     if Form1.ibDataSet25.FieldByname('RECEBER').AsFloat >= (Form1.fTotal * 2) then
       Form1.ibDataSet25.FieldByname('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', Form1.fTotal)); // Sandro Silva 2021-12-23 Form1.ibDataSet25.FieldByname('RECEBER').AsFloat := Form1.fTotal;
-    //
-    Form1.ibDataSet25.FieldByname('ACUMULADO2').AsFloat := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByname('RECEBER').AsFloat)); // Sandro Silva 2021-12-23 Form1.ibDataSet25.FieldByname('RECEBER').AsFloat;  
-    //
-    Panel5.Visible := False;
-    // Sandro Silva 2023-11-01 Form2.SMALL_DBEdit5.Enabled := False;
-    Form2.SMALL_DBEdit2.SetFocus;
-    //
-    Form1.Label_7.Caption := 'Forma de pagamento';
-    //
-  end;
-  //
-end;
 
+    Form1.ibDataSet25.FieldByname('ACUMULADO2').AsFloat := StrToFloat(FormatFloat('0.00', Form1.ibDataSet25.FieldByname('RECEBER').AsFloat)); // Sandro Silva 2021-12-23 Form1.ibDataSet25.FieldByname('RECEBER').AsFloat;
+
+    Panel5.Visible := False;
+
+    Form2.SMALL_DBEdit2.SetFocus;
+
+    Form1.Label_7.Caption := 'Forma de pagamento';
+
+  end;
+
+end;
 
 procedure TForm2.Edit2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -429,19 +413,18 @@ begin
     Form2.Edit2.Text := ConverteCpfCgc(AllTrim(LimpaNumero(Edit2.Text)));
 
     if ValidaCPFCNPJ(Edit2.Text) = False then
-      Form2.Edit2.Text := ''; // 2015-07-28
+      Form2.Edit2.Text := '';
 
-    if ValidaCPFCNPJ(Form2.Edit2.Text) then // Sandro Silva 2018-10-25 if CpfCgc(LimpaNumero(Form2.Edit2.Text)) then
+    if ValidaCPFCNPJ(Form2.Edit2.Text) then
       Form1.sCPF_CNPJ_Validado := ConverteCpfCgc(AllTrim(LimpaNumero(Form2.Edit2.Text)))
     else
-      Form1.sCPF_CNPJ_Validado := ''; // Sandro Silva 2018-10-25
+      Form1.sCPF_CNPJ_Validado := '';
 
-    //
     Form1.ibQuery65.Close;
     Form1.ibQuery65.Sql.Clear;
     Form1.ibQuery65.SQL.Text := 'select * from CLIFOR where CGC='+QuotedStr(Form2.Edit2.Text)+' ';
     Form1.ibQuery65.Open;
-    //
+
     if (Form1.IBQuery65.FieldByName('CGC').AsString = Form2.Edit2.Text)
       and (LimpaNumero(Form1.IBQuery65.FieldByName('CGC').AsString) <> '') then
     begin
@@ -449,7 +432,6 @@ begin
       Form2.Edit1.Text := Form1.IBQuery65.FieldByName('ENDERE').AsString;
       Form2.Edit3.Text := AllTrim(Form1.ibDataSet2.FieldByname('CIDADE').AsString) + ' - ' + AllTrim(Form1.ibDataSet2.FieldByName('CEP').AsString); // Sandro Silva 2016-09-30
     end;
-    //
 
     if Form2.Active then
     begin
@@ -662,16 +644,16 @@ end;
 
 procedure TForm2.Panel3Enter(Sender: TObject);
 begin
-  //
+
   if (AllTrim(Edit8.Text) = AllTrim(Form1.ibDataSet2.FieldByname('NOME').AsString))
     and (AllTrim(Form1.ibDataSet2.FieldByname('NOME').AsString) <> '') then
   begin
-    //
+
     Edit6.Text      := Edit8.Text;
-    //
+
   end else
   begin
-    //
+
     Panel4.Visible := False;
     Panel3.Visible := False;
     Panel5.Visible := True;
@@ -681,34 +663,25 @@ begin
       Edit2.SetFocus;
       SmallMsg('É necessário indicar o cliente cadastrado para vender a '+LowerCase(Form2.Label17.Caption)+'.');
     end;
-    //
+
   end;
-  //
+
 end;
 
 procedure TForm2.Edit4Exit(Sender: TObject);
 begin
   if Form1.sModeloECF = '01' then if not _ecf01_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
+  {
   if Form1.sModeloECF = '02' then if not _ecf02_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
   if Form1.sModeloECF = '03' then if not _ecf03_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
   if Form1.sModeloECF = '12' then if not _ecf12_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
   if Form1.sModeloECF = '14' then if not _ecf14_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
   if Form1.sModeloECF = '15' then if not _ecf15_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
   if Form1.sModeloECF = '17' then if not _ecf17_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
+  }
   if Form1.sModeloECF = '59' then if not _ecf59_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
   if form1.sModeloECF = '65' then if not _ecf65_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
   if Form1.sModeloECF = '99' then if not _ecf99_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
-
-  {Sandro Silva 2021-07-22 inicio
-  if Form1.sModeloECF = '04' then if not _ecf04_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
-  if Form1.sModeloECF = '05' then if not _ecf05_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
-  if Form1.sModeloECF = '06' then if not _ecf06_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
-  if Form1.sModeloECF = '07' then if not _ecf07_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
-  if Form1.sModeloECF = '08' then if not _ecf08_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
-  if Form1.sModeloECF = '09' then if not _ecf09_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
-  if Form1.sModeloECF = '10' then if not _ecf10_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
-  if Form1.sModeloECF = '11' then if not _ecf11_ImprimeCheque(Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat,StrZero(StrToInt(LimpaNumero(Edit4.Text)),3,0)) then SmallMsg('Impressora não habilitada para imprimir cheque.');
-  }
 
   Button1.SetFocus;
 end;
@@ -718,22 +691,22 @@ var
   bButton : Integer;
 begin
   // Inicia False
-  Form6.bPermiteDescontoConvenio := False; // Sandro Silva 2015-05-13 Identifica quando o usuário opta ou não por usar o desconto do convênio
-  //
+  Form6.bPermiteDescontoConvenio := False; // Identifica quando o usuário opta ou não por usar o desconto do convênio
+
   if (not Panel4.Visible) and (not Panel3.Visible) then
   begin
-    //
+
     Form1.ibDataSet2.Close;
     Form1.ibDataSet2.SelectSQL.Clear;
     Form1.ibDataSet2.SelectSQL.Add('select * from CLIFOR where Upper(NOME) like '+QuotedStr(UpperCase(Form2.Edit8.Text)+'%')+' and coalesce(ATIVO,0)=0 and trim(coalesce(NOME,'''')) <> '''' order by NOME');
     Form1.ibDataSet2.Open;
-    //
+
     if (AllTrim(Form1.ibDataSet2.FieldByName('CONVENIO').AsString) <> '')
     and (Edit8.Text =  Form1.ibDataSet2.FieldByname('NOME').AsString) then
     begin
-      //
+
       Form1.ibDataSet29.Locate('NOME',Form1.ibDataSet2.FieldByName('CONVENIO').AsString,[]);
-      //
+
       if Form1.ibDataSet29.FieldByName('DESCONTO').AsFloat <> 0 then
       begin
 
@@ -762,34 +735,30 @@ begin
           bButton := IDNO;
         end;
 
-        //
         if bButton = IDYES then
         begin
-          Form6.bPermiteDescontoConvenio := True; // Sandro Silva 2015-05-13 Identifica quando o usuário opta ou não por usar o desconto do convênio
-          //
+          Form6.bPermiteDescontoConvenio := True; // Identifica quando o usuário opta ou não por usar o desconto do convênio
 
-          {Sandro Silva 2021-11-23 inicio}
-          Form6.TipoDescontoAcrescimo  := tDescAcreSubtotal; // Sandro Silva 2021-08-23
+          Form6.TipoDescontoAcrescimo  := tDescAcreSubtotal;
           Form6.AjustaPosicaoCampos(47); //Posiciona campos de desconto/acréscimos
 
           Form6.edTotalPagar.Visible := True;
           Form6.lbTotalPagar.Visible := Form6.edTotalPagar.Visible;
-          {Sandro Silva 2021-11-23 fim}
 
           Form6.Label3.Visible         := True;
           Form6.SMALL_DBEdit3.Visible  := True;
           Form6.Label4.Visible         := True;
           Form6.SMALL_DBEdit4.Visible  := True;
           Form6.Caption                := 'Desconto';
-          //
+
           Form6.ShowModal;
-          //
+
         end;
-        //
+
       end;
     end;
   end;
-  //
+
   if Form1.ibDataSet25.FieldByname('ACUMULADO1').AsFloat <> 0 then
   begin
     Button4.Visible := True
@@ -803,7 +772,6 @@ end;
 
 procedure TForm2.Panel4Enter(Sender: TObject);
 begin
-//  Button1.Caption := '&Finalizar';
   Form1.bFlag2 := False; // Form2.Panel4Enter(
 end;
 
@@ -871,15 +839,15 @@ end;
 procedure TForm2.Edit8Enter(Sender: TObject);
 begin
   //
-  DBGrid2.BringToFront; // Sandro Silva 2020-06-01
+  DBGrid2.BringToFront;
   DBGrid2.Top        := Edit8.Top + Edit8.Height;
   DBGrid2.Height     := Panel1.BoundsRect.Bottom - DBGrid2.Top; // Sandro Silva 2022-04-06 AjustaAltura(275 - 30 - 40);
   DBGrid2.Visible    := True;
   DBGrid2.DataSource := Form1.DataSource2;
 
-  DBGrid2.DataSource.DataSet.EnableControls; // Sandro Silva 2016-08-01
+  DBGrid2.DataSource.DataSet.EnableControls;
 
-  DBGrid2.Parent := Edit8.Parent; // Sandro Silva 2022-04-05  
+  DBGrid2.Parent := Edit8.Parent; // Sandro Silva 2022-04-05
 
   if Edit8.Text = Form1.ibDataSet2.FieldByName('NOME').AsString then
     MostraFoto2(True);

@@ -2732,7 +2732,9 @@ begin
       // Último caractere do nome deve ser número maior ou igual a zero
       sNomeArquivo := StringReplace(AnsiUpperCase(ExtractFileName(sArquivoTEF)), '.BKP', '', [rfReplaceAll]);
 
-      sNomeTEFAutorizacao := Copy(sNomeArquivo, 1, Length(sNomeArquivo) - Length(IntToStr(I)));
+      //ShowMessage(sNomeArquivo + #13 + Copy(sNomeArquivo, 1, Length(sNomeArquivo) - Length(FormatFloat('00', I))) + #13 + IntToStr(Length(sNomeArquivo) - Length(IntToStr(I))));
+
+      sNomeTEFAutorizacao := Copy(sNomeArquivo, 1, Length(sNomeArquivo) - Length(FormatFloat('00', I)));
 
       sDebitoOuCreditoAutorizado := 'CREDITO';
       ModalidadeTransacao := tModalidadeCarteiraDigital; // Sandro Silva 2021-07-05
@@ -2766,7 +2768,7 @@ begin
           begin
 
             Result := Result + TEFValorTransacao(sArquivoTEF);
-            Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'), ModalidadeTransacao); // Sandro Silva 2021-07-05 Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, Form1.TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'));
+            Form1.TransacoesCartao.Transacoes.Adicionar(sNomeTEFAutorizacao, Form1.sDebitoOuCredito, TEFValorTransacao(sArquivoTEF), CampoTEF(sArquivoTEF, '010-000'), CampoTEF(sArquivoTEF, '012-000'), CampoTEF(sArquivoTEF, '013-000'), CampoTEF(sArquivoTEF,'010-000'), ModalidadeTransacao);
 
           end;
         end;

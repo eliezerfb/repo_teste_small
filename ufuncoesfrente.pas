@@ -300,6 +300,8 @@ procedure GravaPendenciaAlteraca(IBDatabase: TIBDatabase; bOffLine: Boolean;
   sCaixa: String; sPedido: String; sItem: String; sTipo: String);
 procedure AtualizaNumeroPedidoTabelaPendencia(IBTransaction: TIBTransaction;
   sCaixaOld: String; sPedidoOld: String; sPedidoNew: String; sCaixaNew: String);
+function TransacionouComZPOS(TransacoesCartao: TTransacaoFinanceira): Boolean;
+function TransacionouTefDiferenteZPOS(TransacoesCartao: TTransacaoFinanceira): Boolean;
 procedure AtualizaDadosPagament(FIBDataSet28: TIBDataSet;
   FModeloDocumento: String;
   sCaixaOld: String; sPedidoOld: String;
@@ -896,6 +898,37 @@ begin
   end;
 end;
 
+function TransacionouComZPOS(TransacoesCartao: TTransacaoFinanceira): Boolean;
+var
+  iTransacao: Integer;
+begin
+  Result := False;
+  for iTransacao := 0 to TransacoesCartao.Transacoes.Count -1 do
+  begin
+    if AnsiContainsText(TransacoesCartao.Transacoes.Items[iTransacao].NomeDoTEF, 'ZPOS') then
+    begin
+      Result := True;
+      Break;
+    end;
+  end;
+
+end;
+
+function TransacionouTefDiferenteZPOS(TransacoesCartao: TTransacaoFinanceira): Boolean;
+var
+  iTransacao: Integer;
+begin
+  Result := False;
+  for iTransacao := 0 to TransacoesCartao.Transacoes.Count -1 do
+  begin
+    if not(AnsiContainsText(TransacoesCartao.Transacoes.Items[iTransacao].NomeDoTEF, 'ZPOS')) then
+    begin
+      Result := True;
+      Break;
+    end;
+  end;
+end;
+
 procedure AtualizaDadosPagament(FIBDataSet28: TIBDataSet;
   FModeloDocumento: String;
   sCaixaOld: String; sPedidoOld: String;
@@ -1028,7 +1061,7 @@ begin
           sCaixaOld,
           IBQTRANSACAOELETRONICA.FieldByName('MODELO').AsString,
           IBQTRANSACAOELETRONICA.FieldByName('GNF').AsString,
-          dtDataNovo, // Sandro Silva 2023-08-31 IBQTRANSACAOELETRONICA.FieldByName('DATA').AsDateTime,
+          dtDataNovo,
           sNovoNumero,
           sCaixaNovo,
           FModeloDocumento
@@ -1085,7 +1118,6 @@ begin
   FreeAndNil(IBQTRANSACAOELETRONICA);
 
 end;
-{Sandro Silva 2023-08-25 fim}
 
 procedure AtualizaNumeroPedidoTabelaPendencia(IBTransaction: TIBTransaction;
   sCaixaOld: String; sPedidoOld: String; sPedidoNew: String; sCaixaNew: String);
@@ -1109,7 +1141,6 @@ begin
 end;
 
 function indRegraSAT(sCFOP: String): String;
-// Sandro Silva 2019-05-21
 // Retorna T ou A
 begin
   Result := 'A';
@@ -1118,7 +1149,6 @@ begin
 end;
 
 function TruncaValor(dValor: Double; iDecimais: Integer = 2): Double;
-// Sandro Silva 2019-05-21
 // Retorna o valor truncado com a quantidade de casas informado
 var
   iFator: Integer;
@@ -1131,33 +1161,8 @@ begin
   Result := (StrToInt(sTruncado) / iFator); // Result := (Trunc((dValor) * iFator) / iFator);
 end;
 
-{
-function UsuariosConectados(IBDatabase: TIBDatabase): Integer;
-// Sandro Silva 2019-06-19 Retorna a quantidade de IPs conectados ao banco, por protocolo (TCP/IP - XNET)
-// Para controlar o número de usuário por licença
-var
-  IBTIP: TIBTransaction;
-  IBQIP: TIBQuery;
-begin
-  IBTIP := CriaIBTransaction(IBDatabase);
-  IBQIP := CriaIBQuery(IBTIP);
-  Result := 2000; // Padrão
-  try
-    IBQIP.Close;
-    IBQIP.SQL.Text :=
-      'select count(distinct MON$REMOTE_ADDRESS) as IP from MON$ATTACHMENTS';
-    IBQIP.Open;
-    Result := IBQIP.FieldByName('IP').AsInteger;
-  except
-
-  end;
-  FreeAndNil(IBQIP);
-  FreeAndNil(IBTIP);
-end;
-}
-
 function FormatFloatXML(dValor: Double; iPrecisao: Integer = 2): String;
-// Sandro Silva 2015-12-10 Formata valor float com 2 casas decimais para usar nos elementos do xml da nfce
+// Formata valor float com 2 casas decimais para usar nos elementos do xml da nfce
 // Parâmetros:
 // dValor: Valor a ser formatado
 // iPrecisao: Quantidade de casas decimais resultante no valor formatado. Por default formata com 2 casas. Ex.: 2 = 0,00; 3 = 0,000
@@ -1170,7 +1175,6 @@ end;
 
 function XmlValueToFloat(Value: String;
   SeparadorDecimalXml: String = '.'): Double;
-// Sandro Silva 2023-05-17
 // Converte valor float de tags xml para Float
 begin
   if SeparadorDecimalXml = ',' then
@@ -1186,7 +1190,7 @@ begin
 end;
 
 function TefUsado: String;
-// Sandro Silva 2019-08-13 Retorno o Nome do tef usado 
+// Retorno o Nome do tef usado
 begin
   Result := LerParametroIni('FRENTE.INI', 'Frente de caixa', 'TEF USADO', 'TEF_DISC');
 end;
@@ -1251,33 +1255,7 @@ var
   trAux: TIBTransaction;
   dtLimite: TDate;
 begin
-  {Sandro Silva 2021-09-24 inicio
-  try
-    trAux := CriaIBTransaction(IBDATABASE);
-    qyAux := CriaIBQuery(trAux);
 
-    qyAux.Close;
-    qyAux.SQL.Clear;
-    qyAux.SQL.Add('select gen_id(G_LEGAL,0) as LEGAL from rdb$database');
-    qyAux.Open;
-
-    if qyAux.FieldByname('LEGAL').AsString <> '0' then
-    begin
-      Result := False;
-    end
-    else
-    begin
-      Result := True;
-    end;
-  except
-    on E: Exception do
-    begin
-      Result := False;
-    end;
-  end;
-  }
-
-  ///////////
   Result := True; // Começa otimista, que está tudo ok. Torna false durante validação
   try
     trAux := CriaIBTransaction(IBDATABASE);
@@ -1349,17 +1327,15 @@ begin
 
     Blowfish := TLbBlowfish.Create(Application);
 
-    {Sandro Silva 2021-09-24 inicio}
     qyAux.Close;
     qyAux.SQL.Clear;
     qyAux.SQL.Add('select gen_id(G_LEGAL,0) as LEGAL from rdb$database');
     qyAux.Open;
     sGeneratorG_Legal := qyAux.FieldByname('LEGAL').AsString;
-    {Sandro Silva 2021-09-24 fim}
 
     qyAux.Close;
     qyAux.SQL.Clear;
-    qyAux.SQL.Add('select trim(LICENCA) as LICENCA from EMITENTE'); // Sandro Silva 2021-01-08 qyAux.SQL.Add('select LICENCA from EMITENTE');
+    qyAux.SQL.Add('select trim(LICENCA) as LICENCA from EMITENTE');
     qyAux.Open;
 
     Blowfish.GenerateKey(CHAVE_CIFRAR); // Minha chave secreta
@@ -1375,16 +1351,12 @@ begin
 
         if sGeneratorG_Legal <> '0' then
         begin
-          // Sandro Silva 2022-11-14 Result := Trunc(31 - (Date - StrToDate(Copy(sGeneratorG_Legal,7,2)+'/'+Copy(sGeneratorG_Legal,5,2)+'/'+Copy(sGeneratorG_Legal,1,4))));
           // Ronei autorizou reduzir o tempo de uso do frente sem o Commerce acessar smallsoft.com.br
           sDataLimite := Copy(sGeneratorG_Legal,7,2)+'/'+Copy(sGeneratorG_Legal,5,2)+'/'+Copy(sGeneratorG_Legal,1,4);
           Result := Trunc(15 - (Date - StrToDate(sDataLimite)));
         end
         else
         begin
-          {Sandro Silva 2022-11-14 inicio
-          Result := Trunc(365 - (Date - StrToDate(Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4))));
-          }
           sDataLimite := Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),7,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),5,2)+'/'+Copy(Blowfish.DecryptString(qyAux.FieldByname('LICENCA').AsString),1,4);
           if bValidacaoNova = False then
           begin
@@ -1394,24 +1366,16 @@ begin
           begin
             Result := Trunc((StrToDate(sDataLimite) - Date));
           end;
-          {Sandro Silva 2022-11-14 fim}
         end;
-        
+
       end;
-      {Sandro Silva 2021-09-24 fim}
 
     end
     else
     begin
       Result := -1; // 0 dias ainda pode usar
-      {Sandro Silva 2021-06-22 inicio
-      Application.MessageBox(PChar('Cadastro do emitente desatualizado' + Chr(10) + Chr(10) +
-        'Entre antes no programa "Small" e confirme os dados no Cadastro do emitente.'), 'Atenção', MB_OK + MB_ICONWARNING);
-      }
       SmallMessageBox('Cadastro do emitente desatualizado' + Chr(10) + Chr(10) +
         'Entre antes no programa "Small" e confirme os dados no Cadastro do emitente.', 'Atenção', MB_OK + MB_ICONWARNING);
-      {Sandro Silva 2021-06-22 final}
-
     end;
 
   except
@@ -1419,13 +1383,8 @@ begin
     begin
       if AnsiContainsText(E.Message, 'Column unknown') and AnsiContainsText(E.Message, 'LICENCA') then
       begin
-        {Sandro Silva 2021-06-22 inicio
-        Application.MessageBox(PChar('Seu banco de dados está desatualizado' + Chr(10) + Chr(10) +
-          'Entre antes no programa "Small" para ajustar os arquivos.'), 'Atenção', MB_OK + MB_ICONWARNING);
-        }
         SmallMessageBox('Seu banco de dados está desatualizado' + Chr(10) + Chr(10) +
           'Entre antes no programa "Small" para ajustar os arquivos.', 'Atenção', MB_OK + MB_ICONWARNING);
-        {Sandro Silva 2021-06-22 final}
 
         FecharAplicacao(ExtractFileName(Application.ExeName));
         Abort;

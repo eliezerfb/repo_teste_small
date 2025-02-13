@@ -10894,10 +10894,16 @@ begin
 
           if Form1.sCupomTEF <> '' then //if Form1.TransacaoTEF.TextoImpressao <> '' then
           begin
+            {
             if AnsiContainsText(Form10.sNomeDoTEF, 'ZPOS') then
             begin
-              //if (Form1.sModeloECF = '65') then Mauricio Parizotto 2024-07-09
               if (Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') then
+                Form1.sMensagemPromocional := Form1.sMensagemPromocional + chr(10) + '|' +  'ZPOS';
+            end;
+            }
+            if (Form1.sModeloECF = '65') or (Form1.sModeloECF = '59') then
+            begin
+              if TransacionouComZPOS(Form1.TransacoesCartao) then
                 Form1.sMensagemPromocional := Form1.sMensagemPromocional + chr(10) + '|' +  'ZPOS';
             end;
           end;
@@ -11271,13 +11277,13 @@ begin
                         {Mauricio Parizotto 2024-08-21 Inicio}
                         CODIGO_TPAG := '';
 
-                        if Pos('CREDITO',Form10.sNomeDoTEF) <> 0 then
+                        if Pos('CREDITO', Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito) <> 0 then // if Pos('CREDITO',Form10.sNomeDoTEF) <> 0 then
                         begin
                           Form1.sDebitoOuCredito := 'CREDITO';
                           CODIGO_TPAG            := '03';
                         end;
 
-                        if Pos('DEBITO',Form10.sNomeDoTEF) <> 0  then
+                        if Pos('DEBITO', Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito) <> 0  then // if Pos('DEBITO',Form10.sNomeDoTEF) <> 0  then
                         begin
                           Form1.sDebitoOuCredito := 'DEBITO';
                           CODIGO_TPAG            := '04';
@@ -12216,7 +12222,8 @@ begin
                 }
                 if Form1.sModeloECF = '01' then bChave := _ecf01_CupomNaoFiscalVinculado(Form1.sCupomTEF, Form1.iCupom);
                 if Form1.sModeloECF = '59' then bChave := _ecf59_CupomNaoFiscalVinculado(Form1.sCupomTEF, Form1.iCupom);
-                if AnsiContainsText(Form10.sNomeDoTEF, 'ZPOS') = False then
+
+                if TransacionouTefDiferenteZPOS(Form1.TransacoesCartao) then // if AnsiContainsText(Form10.sNomeDoTEF, 'ZPOS') = False then
                 begin
 
                   //LogFrente('12895 vai imprimir comprovante tef ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07

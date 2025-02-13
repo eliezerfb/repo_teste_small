@@ -2550,11 +2550,6 @@ var
   var
     sDados: String;
   begin
-    {
-    if sDadosTransacaoEletronicaNoComplemento <> '' then
-      sDadosTransacaoEletronicaNoComplemento := sDadosTransacaoEletronicaNoComplemento + '|';
-    sDadosTransacaoEletronicaNoComplemento := sDadosTransacaoEletronicaNoComplemento + Trim(Bandeira) + ' - ' + Trim(CodigoAutorizacao) + ' - R$' + FormatFloat('0.00', Valor);
-    }
     sDados := Trim(Bandeira) + ' - ' + Trim(CodigoAutorizacao) + ' - R$' + FormatFloat('0.00', Valor);
     if AnsiContainsText(NomeTEF, 'ZPOS') then
       if not(AnsiContainsText(sDados, 'ZPOS')) then
@@ -4163,19 +4158,11 @@ begin
 
             sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRedeTransacionada)); // Sandro Silva 2024-12-05 sCNPJ_YA05 := SelecionaCNPJCredenciadora(Form1.ibDataSet2, BandeiraSemCreditoDebito(Form1.sNomeRede));
 
-            {Sandro Silva 2025-12-05 inicio
-            if Trim(sCNPJ_YA05) = '' then
-            begin
-              if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRede)) = False then
-                sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRede) + Chr(10);
-            end;
-            }
             if Trim(sCNPJ_YA05) = '' then
             begin
               if AnsiContainsText(sLogErroCredenciadoraCartao, AlertaCredenciadoraCartao(Form1.sNomeRedeTransacionada)) = False then
                 sLogErroCredenciadoraCartao := sLogErroCredenciadoraCartao + chr(10) + AlertaCredenciadoraCartao(Form1.sNomeRedeTransacionada) + Chr(10);
             end;
-            {Sandro Silva 2024-12-05 fim}
 
             Form1.spdNFCeDataSets1.IncluirPart('YA');
             if Pos('CREDITO', Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].DebitoOuCredito) <> 0 then
@@ -4193,8 +4180,6 @@ begin
               Form1.spdNFCeDataSets1.Campo('tPag_YA02').Value := NFCE_FORMA_04_CARTAO_DEBITO;// Sandro Silva 2017-06-15  '04'; //Forma de pagamento: 01- Dinheiro; 02 -Cheque; 03- Cartão de Crédito; 04- Cartão de Débito; 05- Crédito Loja; 10- Vale Alimentação; 11- Vale Refeição; 12- Vale Presente; 13- Vale Combustível; 99 – Outros.
             end;
 
-            {Sandro Silva 2021-07-07 inicio}
-            //Sandro Silva 2024-11-27 if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade <> tModalidadeCartao then
             if not (Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade in [tModalidadeCartaoPOS, tModalidadeCartaoTEF, tModalidadeCartaoNaoIdentificado]) then
             begin
               if Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].Modalidade = tModalidadeCarteiraDigital then
@@ -4208,8 +4193,7 @@ begin
                   Form1.spdNFCeDataSets1.Campo('xPag_YA02a').Value := ConverteAcentos2(_ecf65_DescricaoFormaExtra99);
                 end;
             end;
-            {Sandro Silva 2021-07-07 fim}
-            //
+
             Form1.spdNFCeDataSets1.Campo('vPag_YA03').Value := FormatFloatXML(Form1.TransacoesCartao.Transacoes.Items[iTransacaoCartao].ValorPago); // Valor Líquido da Fatura
 
             Form1.spdNFCeDataSets1.Campo('tpIntegra_YA04a').Value := '1'; // 1=Pagamento integrado com o sistema de automação da empresa (Ex.: equipamento TEF, Comércio Eletrônico);
@@ -5735,24 +5719,6 @@ begin
 
       if Pos('ZPOS', String(pfNFe)) > 0 then
       begin
-        {Mauricio Parizotto 2024-07-09 Inicio
-        try
-          sCaminhoZPOS := 'c:\' + LerParametroIni(FRENTE_INI, 'ZPOS', 'PASTA', '') + '\' + LerParametroIni(FRENTE_INI, 'ZPOS', 'REQ', '');
-
-          DeleteFile(sCaminhoZPOS + '\danfce.pdf');
-
-          sTamanhoPapelOld := Form1.sTamanhoPapel;
-          Form1.sTamanhoPapel := '58';
-          Form1.spdNFCe1.ExportarDanfce(psLote, pfNFe, _ecf65_ArquivoRTM, 1, sCaminhoZPOS + '\danfce.tmp');
-
-          Sleep(200);
-
-          RenameFile(sCaminhoZPOS + '\danfce.tmp', sCaminhoZPOS + '\danfce.pdf');
-
-        finally
-          Form1.sTamanhoPapel := sTamanhoPapelOld;
-        end;
-        }
         try
           sChaveNFCE := xmlNodeValue(pFNFe, '//infNFe/@Id');
 
@@ -5770,7 +5736,6 @@ begin
         finally
           FreeAndNil(sXML);
         end;
-        {Mauricio Parizotto 2024-07-09 Fim}
       end
       else
         Form1.spdNFCe1.ImprimirDanfce(psLote, pfNFe, _ecf65_ArquivoRTM, Device);

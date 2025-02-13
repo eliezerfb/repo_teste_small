@@ -1274,9 +1274,10 @@ begin
       dValorPagarCartao := FdTotalEmCartao - FdTotalTransacionado;
 
       Form1.ExibePanelMensagem('', True);
-
+      {
       if FdTotalEmCartao <> dValorPagarCartao then
         Sleep(2000);
+      }
       Form1.OcultaPanelMensagem;
 
       if TFrmOpcoesFechamentoComCartao.CriaForm(TipoTransacao) = mrCancel then
@@ -1308,26 +1309,30 @@ begin
           if Result then
           begin
 
-            Form1.sCupomTEF := FComprovanteReduzido + FComprovanteDetalhado;
-            FsCupomTEF := FComprovanteReduzido + FComprovanteDetalhado;
-
-            if SuprimirLinhasEmBrancoDoComprovanteTEF then
+            if not(AnsiContainsText(Form10.sNomedoTef, 'ZPOS')) then
             begin
-              if Pos(Chr(10) + Chr(10), Form1.sCupomTEF) > 0 then
-                Form1.sCupomTEF := StrTran(Form1.sCupomTEF, Chr(10) +Chr(10), Chr(10));
+
+              Form1.sCupomTEF := FComprovanteReduzido + FComprovanteDetalhado;
+              FsCupomTEF := FComprovanteReduzido + FComprovanteDetalhado;
+
+              if SuprimirLinhasEmBrancoDoComprovanteTEF then
+              begin
+                if Pos(Chr(10) + Chr(10), Form1.sCupomTEF) > 0 then
+                  Form1.sCupomTEF := StrTran(Form1.sCupomTEF, Chr(10) +Chr(10), Chr(10));
+              end;
+
+              // TEF Elgin retorna texto em UTF8 "CRÃ‰DITO - MASTERCARD"
+              if Utf8ToAnsi(Form1.sCupomTEF) <> '' then
+                Form1.sCupomTEF := Utf8ToAnsi(Form1.sCupomTEF);
+
+              // Ajuste para situação do TEF Elgin que pode ficar uma quebra linha no inicio.
+              // Neste caso irá remover a quebra linha do inicio do arquivo caso exista.
+              if Pos(chr(10), FsCupomTEF) = 1 then
+                FsCupomTEF := Copy(FsCupomTEF, 2, Length(FsCupomTEF));
+
+              if Pos(Chr(10), Form1.sCupomTEF) = 1 then
+                Form1.sCupomTEF := Copy(Form1.sCupomTEF, 2, Length(Form1.sCupomTEF));
             end;
-
-            {Sandro Silva (smal-778) 2024-12-30 inicio}
-            // TEF Elgin retorna texto em UTF8 "CRÃ‰DITO - MASTERCARD"
-            if Utf8ToAnsi(Form1.sCupomTEF) <> '' then
-              Form1.sCupomTEF := Utf8ToAnsi(Form1.sCupomTEF);
-            {Sandro Silva (smal-778) 2024-12-30 fim}
-
-            // Ajuste para situação do TEF Elgin que pode ficar uma quebra linha no inicio.
-            // Neste caso irá remover a quebra linha do inicio do arquivo caso exista.
-            if Pos(chr(10), FsCupomTEF) = 1 then
-              FsCupomTEF := Copy(FsCupomTEF, 2, Length(FsCupomTEF));
-
           end;
 
           if (Result = False) and (TFrmOpcoesFechamentoComCartao.QtdOpcoesTefPOSDisponiveis = 1) then
