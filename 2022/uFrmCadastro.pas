@@ -1655,6 +1655,7 @@ begin
                                      '   and Coalesce(VALOR_RECE,999999999)=0 '+
                                      ' Order by VENCIMENTO';
   Form7.ibDataSet7.Open;
+  {Mauricio Parizotto 2025-02-14
   Form7.ibDataSet7.Last;
 
   if Copy(Form7.ibDataSet7DOCUMENTO.AsString,1,2) = 'RE' then
@@ -1679,6 +1680,16 @@ begin
                                        ' Order by VENCIMENTO';
     Form7.ibDataSet7.Open;
   end else
+  }
+
+  if not Form7.ibDataSet7.IsEmpty then
+  begin
+    MensagemSistema('Não é posível fazer a renegociação. Já existe uma renogaciação em aberto.',
+                    msgAtencao);
+
+    Exit;
+  end;
+
   begin
     // Nova negociação
     try
