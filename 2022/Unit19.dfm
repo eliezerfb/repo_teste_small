@@ -5,8 +5,8 @@ object Form19: TForm19
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Configura'#231#245'es e ajustes do sistema'
-  ClientHeight = 629
-  ClientWidth = 813
+  ClientHeight = 441
+  ClientWidth = 624
   Color = clWhite
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -26,9 +26,9 @@ object Form19: TForm19
   object Orelhas: TPageControl
     Left = 20
     Top = 20
-    Width = 773
-    Height = 546
-    ActivePage = Orelha_relatorios
+    Width = 584
+    Height = 358
+    ActivePage = Orelha_permitir
     Align = alClient
     TabOrder = 0
     object Orelha_relatorios: TTabSheet
@@ -326,21 +326,21 @@ object Form19: TForm19
       ImageIndex = 1
       object Label35: TLabel
         Left = 92
-        Top = 231
+        Top = 276
         Width = 213
         Height = 13
         Caption = '% m'#225'ximo de desconto no item do or'#231'amento'
       end
       object Label36: TLabel
         Left = 92
-        Top = 259
+        Top = 304
         Width = 214
         Height = 13
         Caption = '% m'#225'ximo de desconto no total do or'#231'amento'
       end
       object chkItensDuplicadosNF: TCheckBox
         Left = 15
-        Top = 104
+        Top = 101
         Width = 194
         Height = 17
         Caption = 'Itens duplos na Nota Fiscal'
@@ -348,7 +348,7 @@ object Form19: TForm19
       end
       object chkEstoqueNegativoNF: TCheckBox
         Left = 15
-        Top = 45
+        Top = 43
         Width = 306
         Height = 17
         Caption = 'Vendas com estoque negativo ou zerado'
@@ -364,7 +364,7 @@ object Form19: TForm19
       end
       object SMALL_DBEdit4: TSMALL_DBEdit
         Left = 15
-        Top = 223
+        Top = 273
         Width = 66
         Height = 19
         DataField = 'DIFERENCA_'
@@ -374,7 +374,7 @@ object Form19: TForm19
       end
       object SMALL_DBEdit5: TSMALL_DBEdit
         Left = 15
-        Top = 251
+        Top = 301
         Width = 66
         Height = 19
         DataField = 'PAGAR'
@@ -384,7 +384,7 @@ object Form19: TForm19
       end
       object chkFabricaProdSemQtd: TCheckBox
         Left = 15
-        Top = 74
+        Top = 72
         Width = 421
         Height = 17
         Caption = 
@@ -394,7 +394,7 @@ object Form19: TForm19
       end
       object chkCalcLucroEstoque: TCheckBox
         Left = 15
-        Top = 134
+        Top = 130
         Width = 290
         Height = 17
         Caption = 'C'#225'lculo do Lucro ao alterar Pre'#231'o de venda no estoque'
@@ -402,7 +402,7 @@ object Form19: TForm19
       end
       object chkImportaMesmoOrc: TCheckBox
         Left = 15
-        Top = 164
+        Top = 158
         Width = 290
         Height = 17
         Caption = 'Importar mesmo or'#231'amento m'#250'ltiplas vezes no cupom'
@@ -410,7 +410,7 @@ object Form19: TForm19
       end
       object chkRecalculaCustoMedioRetroativo: TCheckBox
         Left = 15
-        Top = 193
+        Top = 187
         Width = 194
         Height = 17
         Hint = 
@@ -420,6 +420,26 @@ object Form19: TForm19
         ParentShowHint = False
         ShowHint = True
         TabOrder = 6
+      end
+      object chkOcultaUsoConsumoVenda: TCheckBox
+        Left = 15
+        Top = 216
+        Width = 346
+        Height = 17
+        Caption = 'Ocultar produtos de uso e consumo nas vendas'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 9
+      end
+      object chkPermiteDuplicarCNPJ: TCheckBox
+        Left = 15
+        Top = 245
+        Width = 346
+        Height = 17
+        Caption = 'Duplicar CPF/CNPJ no cadastro de clientes'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 10
       end
     end
     object Orelha_juros: TTabSheet
@@ -781,7 +801,7 @@ object Form19: TForm19
       ImageIndex = 4
       object Label23: TLabel
         Left = 80
-        Top = 15
+        Top = 18
         Width = 118
         Height = 13
         Alignment = taRightJustify
@@ -1258,59 +1278,58 @@ object Form19: TForm19
       Caption = 'Impress'#227'o'
       ImageIndex = 5
       object Label26: TLabel
-        Left = 44
-        Top = 90
-        Width = 206
+        Left = 33
+        Top = 88
+        Width = 89
         Height = 13
         Alignment = taRightJustify
-        Caption = 'Impressora matricial para nota fiscal Serie 1:'
+        Caption = 'Nota fiscal Serie 1:'
       end
       object Label29: TLabel
-        Left = 44
-        Top = 120
-        Width = 206
+        Left = 33
+        Top = 115
+        Width = 89
         Height = 13
         Alignment = taRightJustify
-        Caption = 'Impressora matricial para nota fiscal Serie 2:'
-      end
-      object Label27: TLabel
-        Left = 80
-        Top = 220
-        Width = 168
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'Impressora matricial para bloquetos:'
-        Visible = False
+        Caption = 'Nota fiscal Serie 2:'
       end
       object Label37: TLabel
-        Left = 129
-        Top = 30
-        Width = 119
+        Left = 65
+        Top = 32
+        Width = 55
         Height = 13
         Alignment = taRightJustify
-        Caption = 'Impress'#227'o do or'#231'amento:'
+        Caption = 'Or'#231'amento:'
       end
       object Label39: TLabel
-        Left = 98
-        Top = 59
-        Width = 150
+        Left = 34
+        Top = 60
+        Width = 86
         Height = 13
         Alignment = taRightJustify
-        Caption = 'Impress'#227'o da ordem de servi'#231'o:'
+        Caption = 'Ordem de servi'#231'o:'
+      end
+      object lblFormatoOrc: TLabel
+        Left = 343
+        Top = 32
+        Width = 38
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Formato'
       end
       object ComboBoxNF: TComboBox
-        Left = 253
-        Top = 90
-        Width = 200
-        Height = 21
-        TabOrder = 2
-      end
-      object ComboBoxNF2: TComboBox
-        Left = 253
-        Top = 120
+        Left = 125
+        Top = 86
         Width = 200
         Height = 21
         TabOrder = 3
+      end
+      object ComboBoxNF2: TComboBox
+        Left = 125
+        Top = 113
+        Width = 200
+        Height = 21
+        TabOrder = 4
       end
       object ComboBoxImpressora: TComboBox
         Left = 15
@@ -1321,29 +1340,34 @@ object Form19: TForm19
         Text = 'ComboBoxImpressora'
         Visible = False
       end
-      object ComboBoxBloqueto: TComboBox
-        Left = 253
-        Top = 217
-        Width = 200
-        Height = 21
-        TabOrder = 4
-        Visible = False
-      end
       object ComboBoxORCA: TComboBox
-        Left = 253
+        Left = 125
         Top = 30
         Width = 200
         Height = 22
         Style = csOwnerDrawFixed
         TabOrder = 0
+        OnChange = ComboBoxORCAChange
       end
       object ComboBoxOS: TComboBox
-        Left = 253
-        Top = 59
+        Left = 125
+        Top = 58
         Width = 200
         Height = 22
         Style = csOwnerDrawFixed
+        TabOrder = 2
+      end
+      object cboFormatoOrc: TComboBox
+        Left = 387
+        Top = 30
+        Width = 87
+        Height = 22
+        Style = csOwnerDrawFixed
         TabOrder = 1
+        Items.Strings = (
+          '80mm'
+          'A5'
+          'A5 Matricial')
       end
     end
     object Orelha_atendimento: TTabSheet
@@ -1530,12 +1554,209 @@ object Form19: TForm19
         TabOrder = 6
       end
     end
+    object tbsDashboard: TTabSheet
+      Caption = 'Dashboard'
+      ImageIndex = 11
+      DesignSize = (
+        576
+        330)
+      object imgCheck: TImage
+        Left = 446
+        Top = 3
+        Width = 20
+        Height = 18
+        AutoSize = True
+        Picture.Data = {
+          07544269746D61706E040000424D6E0400000000000036000000280000001400
+          0000120000000100180000000000380400000000000000000000000000000000
+          0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D81521D81
+          521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFFFFFFFFFF
+          81521DEFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFD
+          FDFEFEFEFFFFFFFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DED
+          F0F0EFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFD
+          FEFEFEFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DEBEEEEEDF0
+          F0EFF2F2F1F3F3F3F5F522A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFDFE
+          FEFEFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE8ECECEBEEEEEDF0F0
+          EFF2F222A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFDFEFE
+          FE81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE6EAEAE8ECECEBEEEE22A12222
+          A12222A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFD81521D
+          FFFFFFFFFFFFFFFFFFFFFFFF81521DE4E8E8E6EAEA22A12222A12222A12222A1
+          2222A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFBFCFDFD81521DFFFFFFFF
+          FFFFFFFFFFFFFFFF81521DE2E6E6E4E8E822A12222A12222A122EDF0F022A122
+          22A12222A12222A122F6F8F8F8F9F9F9FAFAFBFBFB81521DFFFFFFFFFFFFFFFF
+          FFFFFFFF81521DE0E4E4E2E6E622A12222A122E8ECECEBEEEEEDF0F022A12222
+          A12222A12222A122F6F8F8F8F9F9F9FAFA81521DFFFFFFFFFFFFFFFFFFFFFFFF
+          81521DDEE3E3E0E4E422A122E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A12222A1
+          2222A12222A122F6F8F8F8F9F981521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDD
+          E2E2DEE3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A12222A122
+          22A122F5F6F6F6F8F881521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2
+          E2DEE3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A12222A122F3
+          F5F5F5F6F681521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2
+          DEE3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F022A122F1F3F3F3F5
+          F581521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2DDE2E2DE
+          E3E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F0EFF2F2F1F3F381521D
+          FFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2DDE2E2DDE2E2DEE3
+          E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F0EFF2F281521DFFFFFFFF
+          FFFFFFFFFFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D
+          81521D81521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+        Visible = False
+      end
+      object imgUnCheck: TImage
+        Left = 482
+        Top = 3
+        Width = 20
+        Height = 18
+        AutoSize = True
+        Picture.Data = {
+          07544269746D61706E040000424D6E0400000000000036000000280000001400
+          0000120000000100180000000000380400000000000000000000000000000000
+          0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D81521D81
+          521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFFFFFFFFFF
+          81521DEFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFD
+          FDFEFEFEFFFFFFFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DED
+          F0F0EFF2F2F1F3F3F3F5F5F5F6F6F6F8F8F8F9F9F9FAFAFBFBFBFCFDFDFDFDFD
+          FEFEFEFFFFFFFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DEBEEEEEFF1
+          F1F1F3F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFFFFFFFFFFFFFFFFFFFE
+          FEFEFFFFFF81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE8ECECECEFEFEFF1F1
+          F1F3F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFFFFFFFFFFFFFDFDFDFEFE
+          FE81521DFFFFFFFFFFFFFFFFFFFFFFFF81521DE6EAEAE9ECECECEFEFEFF1F1F1
+          F3F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFFFFFFFCFDFDFDFDFD81521D
+          FFFFFFFFFFFFFFFFFFFFFFFF81521DE4E8E8E5E8E8E9ECECECEFEFEFF1F1F1F3
+          F3F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDFEFEFEFBFBFBFCFDFD81521DFFFFFFFF
+          FFFFFFFFFFFFFFFF81521DE2E6E6E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3
+          F4F5F5F6F7F7F8F9F9FAFBFBFCFDFDF9FAFAFBFBFB81521DFFFFFFFFFFFFFFFF
+          FFFFFFFF81521DE0E4E4DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4
+          F5F5F6F7F7F8F9F9FAFBFBF8F9F9F9FAFA81521DFFFFFFFFFFFFFFFFFFFFFFFF
+          81521DDEE3E3DBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4F5
+          F5F6F7F7F8F9F9F6F8F8F8F9F981521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDD
+          E2E2D9DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4F5F5
+          F6F7F7F5F6F6F6F8F881521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2D7DC
+          DCD9DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F4F5F5F3
+          F5F5F5F6F681521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2D7DCDCD7DCDC
+          D9DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1F1F3F3F1F3F3F3F5
+          F581521DFFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2D7DCDCD7DCDCD7DCDCD9
+          DEDEDBE0E0DEE2E2E2E5E5E5E8E8E9ECECECEFEFEFF1F1EFF2F2F1F3F381521D
+          FFFFFFFFFFFFFFFFFFFFFFFF81521DDDE2E2DDE2E2DDE2E2DDE2E2DDE2E2DEE3
+          E3E0E4E4E2E6E6E4E8E8E6EAEAE8ECECEBEEEEEDF0F0EFF2F281521DFFFFFFFF
+          FFFFFFFFFFFFFFFF81521D81521D81521D81521D81521D81521D81521D81521D
+          81521D81521D81521D81521D81521D81521D81521D81521DFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+        Visible = False
+      end
+      object Label27: TLabel
+        Left = 18
+        Top = 42
+        Width = 180
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Opera'#231#245'es consideradas como venda'
+      end
+      object chkDashboardAbertura: TCheckBox
+        Left = 17
+        Top = 15
+        Width = 218
+        Height = 17
+        Caption = 'Exibir dashboard na abertura do sistema'
+        TabOrder = 0
+      end
+      object dbgPrincipal: TDBGrid
+        Left = 18
+        Top = 61
+        Width = 540
+        Height = 215
+        Anchors = [akLeft, akTop, akRight]
+        BiDiMode = bdLeftToRight
+        Color = clWhite
+        Ctl3D = False
+        DataSource = DSNaturezaDash
+        DrawingStyle = gdsClassic
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        Options = [dgTitles, dgColLines, dgTabs]
+        ParentBiDiMode = False
+        ParentCtl3D = False
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = False
+        TabOrder = 1
+        TitleFont.Charset = ANSI_CHARSET
+        TitleFont.Color = clBlack
+        TitleFont.Height = -12
+        TitleFont.Name = 'Microsoft Sans Serif'
+        TitleFont.Pitch = fpFixed
+        TitleFont.Style = []
+        OnCellClick = dbgPrincipalCellClick
+        OnDrawColumnCell = dbgPrincipalDrawColumnCell
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'MARCADO'
+            ReadOnly = True
+            Width = 21
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'DESCRICAO'
+            ReadOnly = True
+            Width = 431
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CFOP'
+            ReadOnly = True
+            Width = 67
+            Visible = True
+          end>
+      end
+      object btnMarcarTodosOper: TBitBtn
+        Left = 16
+        Top = 291
+        Width = 100
+        Height = 25
+        Caption = 'Marcar todas'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 2
+        OnClick = btnMarcarTodosOperClick
+      end
+      object btnDesmarcarTodosOper: TBitBtn
+        Left = 120
+        Top = 291
+        Width = 100
+        Height = 25
+        Caption = 'Desmarcar todas'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 3
+        OnClick = btnDesmarcarTodosOperClick
+      end
+    end
   end
   object Panel2: TPanel
     Left = 0
     Top = 20
     Width = 20
-    Height = 546
+    Height = 358
     Align = alLeft
     BevelOuter = bvNone
     Color = clWhite
@@ -1553,10 +1774,10 @@ object Form19: TForm19
     end
   end
   object Panel4: TPanel
-    Left = 793
+    Left = 604
     Top = 20
     Width = 20
-    Height = 546
+    Height = 358
     Align = alRight
     BevelOuter = bvNone
     Color = clWhite
@@ -1575,8 +1796,8 @@ object Form19: TForm19
   end
   object Panel3: TPanel
     Left = 0
-    Top = 566
-    Width = 813
+    Top = 378
+    Width = 624
     Height = 63
     Align = alBottom
     BevelOuter = bvNone
@@ -1585,7 +1806,7 @@ object Form19: TForm19
     ParentCtl3D = False
     TabOrder = 3
     object btnCancelar: TButton
-      Left = 588
+      Left = 400
       Top = 19
       Width = 100
       Height = 25
@@ -1601,7 +1822,7 @@ object Form19: TForm19
       OnKeyDown = btnOKKeyDown
     end
     object btnOK: TButton
-      Left = 692
+      Left = 506
       Top = 19
       Width = 100
       Height = 25
@@ -1620,7 +1841,7 @@ object Form19: TForm19
   object Panel5: TPanel
     Left = 0
     Top = 0
-    Width = 813
+    Width = 624
     Height = 20
     Align = alTop
     BevelOuter = bvNone
@@ -1634,17 +1855,49 @@ object Form19: TForm19
     CustomColors.Strings = (
       'c0c0c0c0')
     Options = [cdFullOpen, cdPreventFullOpen, cdSolidColor]
-    Left = 746
-    Top = 300
+    Left = 368
+    Top = 160
   end
   object OpenDialog4: TOpenDialog
     InitialDir = 'c:\'
-    Left = 752
-    Top = 336
+    Left = 440
+    Top = 160
   end
   object OpenDialog3: TOpenDialog
     InitialDir = 'c:\'
-    Left = 752
-    Top = 368
+    Left = 512
+    Top = 160
+  end
+  object DSNaturezaDash: TDataSource
+    DataSet = cdsNaturezaDash
+    Left = 120
+    Top = 152
+  end
+  object cdsNaturezaDash: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    ProviderName = 'dspProdutosNota'
+    Left = 208
+    Top = 152
+    object cdsNaturezaDashMARCADO: TWideStringField
+      DisplayLabel = ' '
+      FieldName = 'MARCADO'
+      Required = True
+      FixedChar = True
+      Size = 1
+    end
+    object cdsNaturezaDashDESCRICAO: TWideStringField
+      DisplayLabel = 'Natureza da opera'#231#227'o'
+      FieldName = 'DESCRICAO'
+      Size = 45
+    end
+    object cdsNaturezaDashCFOP: TStringField
+      FieldName = 'CFOP'
+      Size = 5
+    end
+    object cdsNaturezaDashINTEGRACAO: TStringField
+      FieldName = 'INTEGRACAO'
+      Size = 8
+    end
   end
 end

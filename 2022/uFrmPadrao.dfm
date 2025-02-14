@@ -12,6 +12,7 @@ object FrmPadrao: TFrmPadrao
   Font.Height = -13
   Font.Name = 'System'
   Font.Style = []
+  Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 16
 end

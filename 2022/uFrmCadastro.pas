@@ -7,9 +7,14 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFrmFichaPadrao, Data.DB, Vcl.ComCtrls, uObjetoConsultaCEP, uConsultaCEP,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask, Vcl.DBCtrls, SMALL_DBEdit,
   uframeCampo, Winapi.ShellAPI, System.IniFiles, System.StrUtils, Videocap,
-  Vcl.Imaging.jpeg, Vcl.ExtDlgs, Vcl.Clipbrd;
+  Vcl.Imaging.jpeg, Vcl.ExtDlgs, Vcl.Clipbrd, Vcl.Grids, Vcl.DBGrids,
+  IBX.IBCustomDataSet, IBX.IBQuery, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, MaskUtils,
+  Generics.Collections;
 
 type
+  THackDBGrid = Class(TDBGrid);
   TFrmCadastro = class(TFrmFichaPadrao)
     tbsCadastro: TTabSheet;
     tbsFoto: TTabSheet;
@@ -88,6 +93,25 @@ type
     SMALL_DBEdit62: TSMALL_DBEdit;
     pnl_IE_PR: TPanel;
     chkProdRural: TDBCheckBox;
+    tbsAddress: TTabSheet;
+    PanelAddress: TPanel;
+    DBGridAddress: TDBGrid;
+    FDMemTableAddress: TFDMemTable;
+    FDMemTableAddressIDENDERECO: TIntegerField;
+    FDMemTableAddressIDCLIFOR: TIntegerField;
+    FDMemTableAddressENDERECO: TStringField;
+    DataSourceAddress: TDataSource;
+    FDMemTableAddressTIPO: TStringField;
+    FDMemTableAddressNUMERO: TStringField;
+    FDMemTableAddressBAIRRO: TStringField;
+    FDMemTableAddressCEP: TStringField;
+    FDMemTableAddressCIDADE: TStringField;
+    FDMemTableAddressTELEFONE: TStringField;
+    FDMemTableAddressESTADO: TStringField;
+    IBQueryCidades: TIBQuery;
+    DataSourceCidades: TDataSource;
+    FDMemTableAddressINVALID: TSmallintField;
+    edtRegistro: TSMALL_DBEdit;
     procedure FormShow(Sender: TObject);
     procedure edtCEPExit(Sender: TObject);
     procedure edtCEPEnter(Sender: TObject);
@@ -128,8 +152,37 @@ type
     procedure chkProdRuralClick(Sender: TObject);
     procedure memObsEnter(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FDMemTableAddressAfterInsert(DataSet: TDataSet);
+    procedure FormDeactivate(Sender: TObject);
+    procedure FDMemTableAddressTIPOGetText(Sender: TField; var Text: string;
+      DisplayText: Boolean);
+    procedure FDMemTableAddressTIPOSetText(Sender: TField; const Text: string);
+    procedure DBGridAddressKeyPress(Sender: TObject; var Key: Char);
+    procedure DBGridAddressColExit(Sender: TObject);
+    procedure DBGridAddressColEnter(Sender: TObject);
+    procedure DataSourceAddressDataChange(Sender: TObject; Field: TField);
+    procedure FDMemTableAddressESTADOChange(Sender: TField);
+    procedure DBGridAddressKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure DBGridAddressCellClick(Column: TColumn);
+    procedure FDMemTableAddressESTADOSetText(Sender: TField;
+      const Text: string);
+    procedure tbsAddressShow(Sender: TObject);
+    procedure FDMemTableAddressAfterScroll(DataSet: TDataSet);
+    procedure FDMemTableAddressAfterDelete(DataSet: TDataSet);
+    procedure FDMemTableAddressBeforeInsert(DataSet: TDataSet);
+    procedure FDMemTableAddressBeforePost(DataSet: TDataSet);
+    procedure DBGridAddressDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure tbsAddressHide(Sender: TObject);
+    procedure edtRegistroChange(Sender: TObject);
   private
     { Private declarations }
+    FInsertAddressAndWait: Boolean;
+    FOldCEPEnderecoAdicional: String;
+    FPanelCities: TPanel;
+    FDBGRidCities: TDBGrid;
+    FLastIdCliFor: Integer;
     FcCEPAnterior: String;
     sContatos : String;
     sNomeDoJPG : string;
@@ -143,6 +196,18 @@ type
     procedure SetTipoContribuinte(iTipo: integer);
     procedure DefinirLimiteDisponivel;
     procedure AtualizaTela;
+    function GetColumnIdByFieldName(AField: String): Integer;
+    procedure LoadAddress();
+    procedure PersistAddress();
+    procedure FilterCity(AUf: String; APartialName: String = '');
+    procedure SelectCity();
+    procedure ShowGridCidade();
+    procedure SetGridCidade();
+    procedure DBGridCidadesCellClick(Column: TColumn);
+    procedure DBGridCidadesKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    function ValidateCurrentAddress(): Boolean;
+    function IsBlankAddress(): Boolean;
   public
     { Public declarations }
   end;
@@ -161,14 +226,192 @@ uses unit7
   , uFuncoesBancoDados
   , MAIS
   , uFrmParcelas
-  , MAIS3, uPermissaoUsuario;
+  , MAIS3, uPermissaoUsuario
+  , uFuncoesRetaguarda, uSmallEnumerados, uSmallConsts;
 
 { TFrmCadastro }
+
+procedure TFrmCadastro.FDMemTableAddressAfterDelete(DataSet: TDataSet);
+begin
+  inherited;
+  FPanelCities.Visible := False;
+  DBGridAddress.SelectedIndex := GetColumnIdByFieldName('ENDERECO');
+  DBGridAddress.SelectedIndex := GetColumnIdByFieldName('CEP');
+end;
+
+procedure TFrmCadastro.FDMemTableAddressAfterInsert(DataSet: TDataSet);
+begin
+  inherited;
+  if not(FDMemTableAddress.CachedUpdates) then
+    Exit;
+
+  FDMemTableAddressIDENDERECO.AsInteger :=
+    IncGenerator(Form7.IBDatabase1, 'G_CLIFORENDERECOS').ToInteger;
+  FDMemTableAddressTIPO.AsString := TipoEnderecoToString(teEntrega);
+  FDMemTableAddressINVALID.AsInteger := Integer(False);
+
+  DBGridAddress.SelectedIndex := 1;
+end;
+
+procedure TFrmCadastro.FDMemTableAddressAfterScroll(DataSet: TDataSet);
+begin
+  inherited;
+  FOldCEPEnderecoAdicional := FDMemTableAddressCEP.AsString;
+end;
+
+procedure TFrmCadastro.FDMemTableAddressBeforeInsert(DataSet: TDataSet);
+begin
+  inherited;
+  if not(FDMemTableAddress.CachedUpdates) then
+    Exit;
+
+  if not(ValidateCurrentAddress()) and not(FDMemTableAddress.IsEmpty) then
+    Abort;
+end;
+
+procedure TFrmCadastro.FDMemTableAddressBeforePost(DataSet: TDataSet);
+begin
+  inherited;
+  with TIBQuery.Create(nil) do
+  begin
+    try
+      Database := Form7.IBDatabase1;
+      SQL.Text := 'select 1 from rdb$database where '+
+        ' exists (select 1 from municipios where nome = :nome and uf = :uf )';
+      ParamByName('nome').AsString := FDMemTableAddressCIDADE.AsString;
+      ParamByName('uf').AsString := FDMemTableAddressESTADO.AsString;
+      Open();
+      if not(Boolean(Fields[0].AsInteger)) then
+      begin
+        FDMemTableAddressCIDADE.AsString := '';
+        FDMemTableAddressESTADO.AsString := '';
+      end;
+    finally
+      Free;
+    end;
+  end;
+
+  if trim(FDMemTableAddressCEP.AsString) = '-' then
+    FDMemTableAddressCEP.AsString := '';
+
+  if ValidateCurrentAddress() then
+  begin
+    FDMemTableAddressINVALID.AsInteger := Integer(False);
+    Exit;
+  end;
+
+  FDMemTableAddressINVALID.AsInteger := Integer(True);
+
+  if not(Visible) or not(FDMemTableAddress.CachedUpdates) or
+  not(pgcFicha.ActivePage = tbsAddress) then
+    Exit;
+
+  if DBGridAddress.CanFocus then
+    DBGridAddress.SetFocus();
+
+  if not(IsBlankAddress) then
+    ShowMessage('Endereço incompleto.');
+end;
+
+procedure TFrmCadastro.FDMemTableAddressESTADOChange(Sender: TField);
+begin
+  inherited;
+
+  if not(FDMemTableAddress.CachedUpdates) then
+    Exit();
+
+  if not(Sender.OldValue = Sender.AsString) then
+    FDMemTableAddressCIDADE.Clear;
+end;
+
+procedure TFrmCadastro.FDMemTableAddressESTADOSetText(Sender: TField;
+  const Text: string);
+  function GetUF(AValue: String): String;
+  begin
+    Exit(Copy(AValue, 1, 2));
+  end;
+begin
+  inherited;
+
+  if not(FDMemTableAddress.CachedUpdates) then
+    Exit();
+
+
+  var Filtered: String;
+  var Value := UpperCase(GetUF(Text));
+  for var i := 1 to Length(Value) do
+  begin
+    if CharInSet(Value[i], ['A'..'Z']) then
+      Filtered := Filtered + Value[i];
+  end;
+
+  Sender.AsString := '';
+  var EstadoColumnID := GetColumnIdByFieldName('ESTADO');
+  for var i := 0 to DBGridAddress.Columns[EstadoColumnId].PickList.Count - 1 do
+  begin
+    if not(GetUF(DBGridAddress.Columns[EstadoColumnId].PickList[i]) = Filtered) then
+      Continue;
+
+    Sender.AsString := Filtered;
+  end;
+end;
+
+procedure TFrmCadastro.FDMemTableAddressTIPOGetText(Sender: TField;
+  var Text: string; DisplayText: Boolean);
+begin
+  inherited;
+  if LimpaNumero(Sender.AsString) = '' then
+  begin
+    Text := '';
+    Exit;
+  end;
+
+  Text := TipoEnderecoToStrText(
+    TTipoEndereco(Sender.AsInteger)
+  );
+end;
+
+procedure TFrmCadastro.FDMemTableAddressTIPOSetText(Sender: TField;
+  const Text: string);
+begin
+  inherited;
+  var Ok: boolean;
+  Sender.AsString := TipoEnderecoToString(StrTextTipoEndereco(Ok, Text));
+end;
+
+procedure TFrmCadastro.FilterCity(AUf, APartialName: String);
+begin
+  if not(FDMemTableAddress.CachedUpdates) then
+    Exit;
+
+  var FilterByName := '';
+  APartialName := AnsiUpperCase(Trim(APartialName));
+  if not(APartialName = '') then
+    FilterByName := 'and upper('+GetTmpCharacterSet('nome')+') like upper(:nome)';
+
+  IBQueryCidades.DisableControls;
+  try
+    IBQueryCidades.Close();
+    IBQueryCidades.SQL.Text := 'select codigo, uf, nome '+
+      'from municipios '+
+      'where uf = :uf '+FilterByName+
+      'order by nome';
+    if not(APartialName = '') then
+      IBQueryCidades.ParamByName('nome').AsString := '%'+APartialName+'%';
+    IBQueryCidades.ParamByName('uf').AsString := AUf;
+    IBQueryCidades.Open();
+  finally
+    IBQueryCidades.EnableControls;
+  end;
+
+  IBQueryCidades.Open;
+end;
 
 procedure TFrmCadastro.FormActivate(Sender: TObject);
 begin
   inherited;
   AtualizaObjComValorDoBanco;
+  tbsCadastro.Caption := GetDescritivoNavegacao;
 end;
 
 procedure TFrmCadastro.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -200,7 +443,30 @@ begin
   pnl_IE_PR.Top  := pnl_IE.Top;
   pnl_IE_PR.Left := pnl_IE.Left;
 
+  FLastIdCliFor := 0;
+
+  var ColumnId := GetColumnIdByFieldName('TIPO');
+  DBGridAddress.Columns[ColumnId].PickList.Clear;
+  for var t := Low(TTipoEndereco) to High(TTipoEndereco) do
+  begin
+    if not(t = teEntrega) then
+      continue;
+    DBGridAddress.Columns[ColumnId].PickList.Add(TipoEnderecoToStrText(t));
+  end;
+
+  ColumnId := GetColumnIdByFieldName('ESTADO');
+  for var I := 0 to High(UF_NAMES) do
+    DBGridAddress.Columns[ColumnId].PickList.Add(UF_ACRONYM[I]+' '+UF_NAMES[I]);
+
+  SetGridCidade();
+
+  inherited
+end;
+
+procedure TFrmCadastro.FormDeactivate(Sender: TObject);
+begin
   inherited;
+  PersistAddress();
 end;
 
 procedure TFrmCadastro.FormShow(Sender: TObject);
@@ -222,7 +488,15 @@ begin
     edtCPFCNPJ.SetFocus;
 
   tbsComissao.TabVisible := Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor');
+  FPanelCities.Visible := False;
 
+end;
+
+function TFrmCadastro.GetColumnIdByFieldName(AField: String): Integer;
+begin
+  for var i := 0 to DBGridAddress.Columns.Count-1 do
+    if UpperCase(DBGridAddress.Columns[i].FieldName) = UpperCase(AField) then
+      Exit(I);
 end;
 
 function TFrmCadastro.GetPaginaAjuda: string;
@@ -242,6 +516,35 @@ begin
                 Trim(ConverteAcentosPHP(Form7.ibDataSet2CIDADE.AsString))+' - '+
                 Trim(ConverteAcentosPHP(Form7.ibDataSet2ESTADO.AsString))+' '
                 ),'', '', SW_SHOWMAXIMIZED);
+end;
+
+function TFrmCadastro.IsBlankAddress(): Boolean;
+begin
+  Result := True;
+
+  var Uf := FDMemTableAddressESTADO.AsString;
+  if Trim(FDMemTableAddressCIDADE.AsString) = '' then
+    Uf := '';
+
+  var ListOfValues := TList<string>.Create;
+  ListOfValues.AddRange(
+    [
+      FDMemTableAddressENDERECO.AsString,
+      FDMemTableAddressNUMERO.AsString,
+      FDMemTableAddressBAIRRO.AsString,
+      FDMemTableAddressCIDADE.AsString,
+      Uf,
+      FDMemTableAddressTELEFONE.AsString
+    ]
+  );
+  for var Value in ListOfValues do
+  begin
+    if not(Trim(Value) = '') then
+      Exit(False);
+  end;
+
+  if Trim(FDMemTableAddressCEP.AsString).Length = 9 then
+    Exit(False);
 end;
 
 procedure TFrmCadastro.Label19Click(Sender: TObject);
@@ -283,8 +586,6 @@ begin
   inherited;
 
   AtualizaObjComValorDoBanco;
-
-  //Contador
   tbsCadastro.Caption := GetDescritivoNavegacao;
 
   try
@@ -292,6 +593,23 @@ begin
       edtCPFCNPJ.SetFocus;
   except
   end;
+end;
+
+procedure TFrmCadastro.SelectCity;
+begin
+  if not(IBQueryCidades.Active) then
+    Exit;
+
+  if FDMemTableAddress.State = dsBrowse then
+    FDMemTableAddress.Edit;
+
+  if not(FDMemTableAddressESTADO.AsString = IBQueryCidades.FieldByName('UF').AsString) then
+    FDMemTableAddressESTADO.AsString := IBQueryCidades.FieldByName('UF').AsString;
+  FDMemTableAddressCIDADE.AsString := IBQueryCidades.FieldByName('nome').AsString;
+
+  FPanelCities.Visible := False;
+  DBGridAddress.SetFocus;
+  DBGridAddress.SelectedIndex := GetColumnIdByFieldName('TELEFONE');
 end;
 
 procedure TFrmCadastro.SetaStatusUso;
@@ -332,11 +650,48 @@ begin
   cboRelacaoCom.Enabled         := not(bEstaSendoUsado) and not (bSomenteLeitura);
   btnWebCam.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
   btnSelecionarArquivo.Enabled  := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  DBGridAddress.ReadOnly := not(not(bEstaSendoUsado) and not (bSomenteLeitura));
 
 
   if Form7.sWhere  = 'where CLIFOR='+QuotedStr('Vendedor') then
   begin
     cboRelacaoCom.Enabled := False;
+  end;
+end;
+
+procedure TFrmCadastro.SetGridCidade();
+begin
+  FPanelCities := TPanel.Create(Self);
+  FDBGRidCities := TDBGrid.Create(Self);
+
+  with FPanelCities do
+  begin
+    Parent := Self;
+    BevelOuter := bvNone;
+    Caption := '';
+    Padding.SetBounds(1, 1, 1, 1);
+    ParentBackground := False;
+    Visible := True;
+    Height := 100;
+  end;
+
+  with FDBGRidCities do
+  begin
+    Parent := FPanelCities;
+    Align := alClient;
+    DataSource := DataSourceCidades;
+    Font.Height := -11;
+    Font.Name := 'Roboto';
+    Font.Style := [];
+    Options := [dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit];
+    ReadOnly := True;
+    OnCellClick := DBGridCidadesCellClick;
+    OnKeyDown := DBGridCidadesKeyDown;
+    Visible := True;
+    var ColumnCity := Columns.Add;
+    ColumnCity.FieldName := 'NOME';
+    ColumnCity.Width := 180;
+    ColumnCity.Expanded := False;
   end;
 end;
 
@@ -355,6 +710,19 @@ end;
 procedure TFrmCadastro.edtLimiteCreditoExit(Sender: TObject);
 begin
   DefinirLimiteDisponivel;
+end;
+
+procedure TFrmCadastro.edtRegistroChange(Sender: TObject);
+begin
+  //Mauricio Parizotto 2025-01-06
+  if not Self.Visible then
+    Exit;
+
+  if bGravandoRegistro then
+    Exit;
+
+  AtualizaObjComValorDoBanco;
+  tbsCadastro.Caption := GetDescritivoNavegacao;
 end;
 
 procedure TFrmCadastro.edtCEPEnter(Sender: TObject);
@@ -414,6 +782,36 @@ begin
   end;
 end;
 
+procedure TFrmCadastro.tbsAddressHide(Sender: TObject);
+begin
+  inherited;
+  if not(FPanelCities = nil) and (FPanelCities.Visible) then
+    FPanelCities.Visible := False;
+end;
+
+procedure TFrmCadastro.tbsAddressShow(Sender: TObject);
+begin
+  inherited;
+  DBGridAddress.SelectedIndex := GetColumnIdByFieldName('CEP');
+
+  if DSCadastro.DataSet.State = dsInsert then
+    LoadAddress();
+
+  if FDMemTableAddress.Active then
+  begin
+    if FDMemTableAddress.IsEmpty then
+    begin
+      FInsertAddressAndWait := True;
+      try
+        FDMemTableAddress.Insert;
+      finally
+        FInsertAddressAndWait := False;
+      end;
+    end else if FDMemTableAddress.State = dsBrowse then
+      FDMemTableAddress.First;
+  end;
+end;
+
 procedure TFrmCadastro.tbsComissaoEnter(Sender: TObject);
 begin
   try
@@ -434,6 +832,34 @@ begin
   VideoCap1.visible      := False;
   Image5.Visible         := True;
   AtualizaTela;
+end;
+
+function TFrmCadastro.ValidateCurrentAddress(): Boolean;
+begin
+  var ListOfFields := TList<String>.Create;
+  var FieldLimits := TDictionary<String, Integer>.Create;
+  var Limit := 0;
+  try
+    ListOfFields.AddRange(['ENDERECO', 'NUMERO', 'BAIRRO', 'ESTADO', 'CIDADE']);
+    FieldLimits.Add('NUMERO', 1);
+    FieldLimits.Add('ESTADO', 2);
+
+    for var Field in ListOfFields do
+    begin
+      if not FieldLimits.TryGetValue(Field, Limit) then
+        Limit := 2;
+
+      if Trim(FDMemTableAddress.FieldByName(Field).AsString).Length < Limit then
+      begin
+        DBGridAddress.SelectedIndex := GetColumnIdByFieldName(Field);
+        Exit(False);
+      end;
+    end;
+  finally
+    ListOfFields.Free;
+  end;
+
+  Result := True;
 end;
 
 procedure TFrmCadastro.cboRelacaoComChange(Sender: TObject);
@@ -557,6 +983,356 @@ begin
   memObs.SelStart := Length(memObs.Text); //move o cursor pra o final da ultima linha
 end;
 
+procedure TFrmCadastro.PersistAddress();
+begin
+  if not(FDMemTableAddress.Active) then
+    Exit;
+
+  if FDMemTableAddress.State in ([dsEdit, dsInsert]) then
+    FDMemTableAddress.Post;
+
+  if FDMemTableAddress.ChangeCount = 0 then
+    Exit;
+
+  FDMemTableAddress.DisableControls;
+
+  var MainID := DSCadastro.DataSet.FieldByName('IDCLIFOR').AsInteger;
+  var OldFilterChanges := FDMemTableAddress.FilterChanges;
+  var Qry := TIBQuery.Create(nil);
+  try
+    Qry.Database := Form7.IBDatabase1;
+    Qry.Transaction := Form7.IBTransaction1;
+    FDMemTableAddress.FilterChanges := [rtModified, rtInserted, rtDeleted];
+
+    FDMemTableAddress.First;
+    while not FDMemTableAddress.Eof do
+    begin
+      case FDMemTableAddress.UpdateStatus of
+        usInserted, usModified:
+          begin
+            if IsBlankAddress() then
+            begin
+              FDMemTableAddress.Next;
+              continue;
+            end;
+
+            Qry.SQL.Text := 'UPDATE OR INSERT INTO CLIFORENDERECOS '+
+             ' (IDENDERECO, IDCLIFOR, TIPO, ENDERECO, NUMERO, BAIRRO, '+
+             '  CEP, CIDADE, ESTADO, TELEFONE) '+
+             ' VALUES  '+
+             ' (:IDENDERECO, :IDCLIFOR, :TIPO, :ENDERECO, :NUMERO, :BAIRRO, '+
+             ' :CEP, :CIDADE, :ESTADO, :TELEFONE) '+
+             ' MATCHING (IDENDERECO) '+
+             ' RETURNING IDENDERECO;';
+            Qry.ParamByName('IDENDERECO').AsInteger :=  FDMemTableAddressIDENDERECO.AsInteger;
+            Qry.ParamByName('IDCLIFOR').AsInteger := MainID;
+            Qry.ParamByName('ENDERECO').AsString := FDMemTableAddressENDERECO.AsString;
+            Qry.ParamByName('TIPO').AsString := FDMemTableAddressTIPO.AsString;
+            Qry.ParamByName('NUMERO').AsString := FDMemTableAddressNUMERO.AsString;
+            Qry.ParamByName('BAIRRO').AsString := FDMemTableAddressBAIRRO.AsString;
+            Qry.ParamByName('CEP').AsString := FDMemTableAddressCEP.AsString;
+            Qry.ParamByName('CIDADE').AsString := FDMemTableAddressCIDADE.AsString;
+            Qry.ParamByName('ESTADO').AsString := FDMemTableAddressESTADO.AsString;
+            Qry.ParamByName('TELEFONE').AsString :=
+              LimpaNumero(FDMemTableAddressTELEFONE.AsString);
+            Qry.ExecSQL;
+          end;
+        usDeleted:
+          begin
+            Qry.SQL.Text := 'delete from CLIFORENDERECOS '+
+              ' where IDENDERECO = :IDENDERECO';
+            Qry.ParamByName('IDENDERECO').AsInteger :=
+              FDMemTableAddressIDENDERECO.AsInteger;
+            Qry.ExecSQL;
+          end;
+      end;
+      FDMemTableAddress.Next;
+    end;
+  finally
+    Qry.Free;
+    FDMemTableAddress.CommitUpdates;
+    FDMemTableAddress.FilterChanges := OldFilterChanges;
+    FDMemTableAddress.EnableControls;
+  end;
+end;
+
+procedure TFrmCadastro.DataSourceAddressDataChange(Sender: TObject;
+  Field: TField);
+begin
+  inherited;
+  if Assigned(Field) and (UpperCase(Field.FieldName) = 'ESTADO') then
+    FilterCity(FDMemTableAddressESTADO.AsString);
+end;
+
+procedure TFrmCadastro.DBGridAddressCellClick(Column: TColumn);
+begin
+  inherited;
+  ShowGridCidade();
+end;
+
+procedure TFrmCadastro.DBGridAddressColEnter(Sender: TObject);
+begin
+  inherited;
+  if (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('NUMERO')) and
+    IsBlankAddress() and (FDMemTableAddress.State = dsInsert) and
+    not(FInsertAddressAndWait) then
+  begin
+    FDMemTableAddress.Cancel;
+    btnOK.SetFocus();
+    Exit();
+  end;
+
+  if DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CEP') then
+  begin
+    FOldCEPEnderecoAdicional := FDMemTableAddressCEP.AsString;
+
+    if FDMemTableAddress.Active and FDMemTableAddress.IsEmpty
+      and (FDMemTableAddress.State = dsBrowse) then
+    begin
+      FInsertAddressAndWait := True;
+      try
+        FDMemTableAddress.Insert();
+      finally
+        FInsertAddressAndWait := False;
+      end;
+    end;
+
+    Exit();
+  end;
+
+  if (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE')) and
+    (FDMemTableAddressESTADO.AsString = 'EX') then
+  begin
+    if (FDMemTableAddress.State in [dsEdit, dsInsert]) then
+    begin
+      FDMemTableAddressCIDADE.AsString := 'Exterior';
+      DBGridAddress.SelectedIndex := GetColumnIdByFieldName('TELEFONE');
+    end;
+    Exit();
+  end;
+
+  ShowGridCidade();
+end;
+
+procedure TFrmCadastro.DBGridAddressColExit(Sender: TObject);
+begin
+  inherited;
+  FPanelCities.Visible := False;
+  var CEPIndex := GetColumnIdByFieldName('CEP');
+  if (DBGridAddress.SelectedIndex = CEPIndex) and
+    FDMemTableAddress.CachedUpdates then
+  begin
+    if FOldCEPEnderecoAdicional = FDMemTableAddressCEP.AsString then
+      Exit;
+
+    try
+      var ObjConsultaCEP := TConsultaCEP
+        .New
+        .setCEP(FDMemTableAddressCEP.Text)
+        .SolicitarDados
+        .getObjeto;
+
+      if ObjConsultaCEP = nil then
+        Exit;
+
+      if FDMemTableAddress.State = dsBrowse then
+        FDMemTableAddress.Edit;
+
+      FDMemTableAddressENDERECO.AsString := ObjConsultaCEP.logradouro;
+      FDMemTableAddressBAIRRO.AsString := ObjConsultaCEP.bairro;
+      FDMemTableAddressESTADO.AsString := ObjConsultaCEP.uf;
+      FDMemTableAddressCIDADE.AsString := ObjConsultaCEP.localidade;
+    except
+      on e:exception do
+      begin
+        DBGridAddress.SelectedIndex := CEPIndex;
+        MensagemSistema(e.Message);
+      end;
+    end;
+  end;
+
+  if FDMemTableAddress.State = dsEdit then
+    FDMemTableAddressINVALID.AsInteger := Integer(not(ValidateCurrentAddress()));
+end;
+
+procedure TFrmCadastro.DBGridAddressDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+
+  function GetColor(): TColor;
+  begin
+    if Boolean(FDMemTableAddressInvalid.AsInteger) then
+      Exit($00D9D9FF);
+
+    Result := clWhite;
+  end;
+
+begin
+  inherited;
+  DBGridAddress.Canvas.Brush.Color := GetColor();
+  DBGridAddress.DefaultDrawDataCell(Rect, Column.Field, State);
+end;
+
+procedure TFrmCadastro.DBGridAddressKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+
+  if (Key = VK_DELETE) and DBGridAddress.ReadOnly then
+    Abort;
+
+  if (Key = VK_DELETE) and
+  (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE')) and
+  not(FDMemTableAddressCIDADE.AsString = '') then
+  begin
+    if FDMemTableAddress.State = dsBrowse then
+      FDMemTableAddress.Edit;
+    FDMemTableAddressCIDADE.AsString := '';
+    FilterCity(FDMemTableAddressESTADO.AsString);
+    ShowGridCidade();
+    Exit;
+  end;
+
+  if (Key = VK_DELETE) and not(DBGridAddress.EditorMode) then
+  begin
+    if not(FDMemTableAddress.IsEmpty) then
+      FDMemTableAddress.Delete();
+    key := 0;
+    Exit;
+  end;
+
+  if (Key in [VK_DOWN, VK_RETURN]) and
+    (DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE')) then
+  begin
+    if (FPanelCities.Visible) and (DBGridAddress.CanFocus) then
+      FDBGRidCities.SetFocus;
+    Key := 0;
+    Abort;
+  end;
+end;
+
+procedure TFrmCadastro.DBGridAddressKeyPress(Sender: TObject; var Key: Char);
+var
+  Input: String;
+begin
+  inherited;
+
+  if DBGridAddress.ReadOnly then
+    Abort;
+
+  if (Key = #13) then
+  begin
+    if FPanelCities.Visible then
+      Exit();
+
+    Key := #0;
+    with TDBGrid(Sender) do
+    begin
+      if not (dgEditing in Options) then
+        Options := Options + [dgEditing];
+
+      if SelectedIndex < FieldCount - 1 then
+        SelectedIndex := SelectedIndex + 1
+      else
+      begin
+        if not DataSource.DataSet.Eof then
+          DataSource.DataSet.Next;
+
+        if (DataSource.DataSet.Eof) then
+          DataSource.DataSet.Append;
+
+        SelectedIndex := 1;
+      end;
+
+    end;
+    Exit();
+  end;
+
+  var Field := TDBGrid(Sender).SelectedField;
+  if not(Assigned(Field)) then
+    Exit();
+
+  if Field.FieldName = 'TIPO' then
+  begin
+    Key := #0;
+    Exit;
+  end;
+
+  if Field.FieldName = 'TELEFONE' then
+  begin
+    if not(Key in ['0'..'9', #8]) then
+      Abort;
+
+    if (FDMemTableAddress.State = dsBrowse) and not(FDMemTableAddress.IsEmpty) then
+      FDMemTableAddress.Edit;
+
+    Input := LimpaNumero(Field.AsString);
+
+    if Key <> #8 then
+      Input := Input + Key
+    else if Length(Input) > 0 then
+      Delete(Input, Length(Input), 1);
+
+    var Formatted := '';
+    if Input.Length > 11 then
+    begin
+      Field.AsString := Copy(Input, 1, 14);
+      Key := #0;
+      Exit;
+    end;
+
+    for var i := 1 to Input.Length do
+    begin
+      Formatted := Formatted + Input[i];
+      if i = 1 then
+        Formatted := '('+Formatted;
+      if i = 2 then
+        Formatted := Formatted+') ';
+      if (i = 6) and (Input.Length <= 10) then
+        Formatted := Formatted+'-';
+      if (i = 7) and (Input.Length = 11) then
+        Formatted := Formatted+'-'
+    end;
+
+    Field.AsString := Formatted;
+    Key := #0;
+    Exit;
+  end;
+
+  if Field.FieldName = 'CIDADE' then
+  begin
+    Input := Field.AsString;
+
+    if Key <> #8 then
+      Input := Input + Key
+    else if Length(Input) > 0 then
+      Delete(Input, Length(Input), 1);
+
+    FilterCity(FDMemTableAddressESTADO.AsString, Input);
+
+    if (FDMemTableAddress.State = dsBrowse) and not(FDMemTableAddress.IsEmpty) then
+      FDMemTableAddress.Edit;
+
+    Field.AsString := Input;
+
+    Key := #0;
+  end;
+
+end;
+
+procedure TFrmCadastro.DBGridCidadesCellClick(Column: TColumn);
+begin
+  inherited;
+  SelectCity();
+end;
+
+procedure TFrmCadastro.DBGridCidadesKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if Key = VK_RETURN then
+    SelectCity();
+end;
+
 procedure TFrmCadastro.DefineCamposCEP(AoObjeto: TObjetoConsultaCEP);
 begin
   if not Assigned(AoObjeto) then
@@ -595,20 +1371,15 @@ procedure TFrmCadastro.DSCadastroDataChange(Sender: TObject; Field: TField);
 begin
   inherited;
 
-  //Mauricio Parizotto 2024-08-29
+  if Field = nil then
+    PersistAddress();
+
   if not Self.Visible then
     Exit;
 
-  if DSCadastro.DataSet.State in ([dsEdit, dsInsert]) then
-    Exit;
-
-  if bGravandoRegistro then
-    Exit;
-
-  AtualizaObjComValorDoBanco;
-
-  //Contador
-  tbsCadastro.Caption := GetDescritivoNavegacao;
+  if Field = nil then
+    LoadAddress();
+  
 end;
 
 procedure TFrmCadastro.edtCPFCNPJChange(Sender: TObject);
@@ -639,6 +1410,65 @@ begin
   end;
 end;
 
+procedure TFrmCadastro.LoadAddress();
+  function getPhoneMask(APhone: String): String;
+  begin
+    if APhone.Length = 11 then
+      Exit('!(99) 99999-9999;0;');
+    if APhone.Length = 10 then
+      Exit('!(99) 9999-9999;0;');
+    Result := '';
+  end;
+begin
+
+  var CurrentIdCliFor := DSCadastro.DataSet.FieldByName('IDCLIFOR').AsInteger;
+
+  if CurrentIdCliFor = FLastIdCliFor then
+    Exit;
+
+  if not(FDMemTableAddress.Active) then
+    FDMemTableAddress.CreateDataSet;
+
+  FDMemTableAddress.EmptyDataSet;
+  FDMemTableAddress.CachedUpdates := False;
+  var qryAddress := TIBQuery.Create(nil);
+  try
+    qryAddress.Database := Form7.IBDatabase1;
+    qryAddress.SQL.Text := 'select * from CLIFORENDERECOS '+
+      'where idclifor = :idclifor '+
+      ' order by idendereco';
+    qryAddress.ParamByName('idclifor').AsInteger :=
+      DSCadastro.DataSet.FieldByName('idclifor').AsInteger;
+    qryAddress.Open;
+
+    while not(qryAddress.Eof) do
+    begin
+      FDMemTableAddress.Append;
+      FDMemTableAddressIDENDERECO.AsInteger := qryAddress.FieldByName('IDENDERECO').AsInteger;
+      FDMemTableAddressIDCLIFOR.AsInteger := qryAddress.FieldByName('IDCLIFOR').AsInteger;
+      FDMemTableAddressENDERECO.AsString := qryAddress.FieldByName('ENDERECO').AsString;
+      FDMemTableAddressTIPO.AsString := qryAddress.FieldByName('TIPO').AsString;
+      FDMemTableAddressNUMERO.AsString := qryAddress.FieldByName('NUMERO').AsString;
+      FDMemTableAddressBAIRRO.AsString := qryAddress.FieldByName('BAIRRO').AsString;
+      FDMemTableAddressCEP.AsString := qryAddress.FieldByName('CEP').AsString;
+      FDMemTableAddressCIDADE.AsString := qryAddress.FieldByName('CIDADE').AsString;
+      FDMemTableAddressESTADO.AsString := qryAddress.FieldByName('ESTADO').AsString;
+      var PhoneNumber := LimpaNumero(qryAddress.FieldByName('TELEFONE').AsString);
+      var PhoneMask := getPhoneMask(PhoneNumber);
+      FDMemTableAddressTELEFONE.AsString := PhoneNumber;
+      if not(PhoneNumber = '') and not(PhoneMask = '') then
+        FDMemTableAddressTELEFONE.AsString := FormatMaskText(PhoneMask, PhoneNumber);
+      FDMemTableAddress.Post;
+      qryAddress.Next;
+    end;
+
+  finally
+    FLastIdCliFor := CurrentIdCliFor;
+    qryAddress.Free;
+    FDMemTableAddress.CachedUpdates := True;
+  end;
+end;
+
 procedure TFrmCadastro.rgIEContribuinteClick(Sender: TObject);
 begin
   SetTipoContribuinte(1);
@@ -655,6 +1485,8 @@ begin
 end;
 
 procedure TFrmCadastro.AtualizaObjComValorDoBanco;
+var
+  ValorPagar : double;
 begin
   //Se não estiver ativo não carrega informações
   if not FormularioAtivo(Self) then
@@ -714,15 +1546,14 @@ begin
   
   if Trim(Form7.IBDataSet2NOME.AsString) <> '' then
   begin
-    Form7.ibQuery1.Close;
-    Form7.IBQuery1.SQL.Text := ' Select sum(VALOR_DUPL) as TOTAL '+
-                               ' From RECEBER '+
-                               ' Where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
-                               '   and coalesce(ATIVO,9)<>1 '+
-                               '   and Coalesce(VALOR_RECE,999999999)=0';
-    Form7.IBQuery1.Open;
+    ValorPagar := ExecutaComandoEscalar(Form7.IBTransaction1,
+                                        ' Select Coalesce(sum(VALOR_DUPL),0) as TOTAL '+
+                                       ' From RECEBER '+
+                                       ' Where NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString)+
+                                       '   and coalesce(ATIVO,9)<>1 '+
+                                       '   and Coalesce(VALOR_RECE,999999999)=0');
 
-    if Form7.IBQuery1.FieldByname('TOTAL').AsFloat <> 0 then
+    if ValorPagar <> 0 then
     begin
       if Form1.imgVendas.Visible then
       begin
@@ -745,6 +1576,61 @@ begin
 
     CarregaTipoContibuinte;
   except
+  end;
+end;
+
+procedure TFrmCadastro.ShowGridCidade();
+begin
+  if (not(DBGridAddress.SelectedIndex = GetColumnIdByFieldName('CIDADE'))) or
+    DBGridAddress.ReadOnly then
+    Exit();
+
+  if not(Trim(FDMemTableAddressCIDADE.AsString) = '') then
+    FilterCity(
+      FDMemTableAddressESTADO.AsString,
+      FDMemTableAddressCIDADE.AsString
+    )
+  else if (Trim(FDMemTableAddressESTADO.AsString) = '') then
+  begin
+    if FDMemTableAddress.State in ([dsInsert, dsEdit]) then
+    begin
+      if IBQueryCidades.Active and not(IBQueryCidades.FieldByName('UF').AsString = '') then
+        FDMemTableAddressESTADO.AsString := IBQueryCidades.FieldByName('UF').AsString
+      else if not(DSCadastro.DataSet.FieldByName('ESTADO').AsString = '') then
+        FDMemTableAddressESTADO.AsString := DSCadastro.DataSet.FieldByName('ESTADO').AsString;
+      FilterCity(FDMemTableAddressESTADO.AsString);
+    end;
+  end;
+
+
+  var Col := DBGridAddress.SelectedIndex;
+  var Row := THackDBGrid(DBGridAddress).Row;
+
+  var Position := ScreenToClient(
+    DBGridAddress.ClientToScreen(
+      Point(DBGridAddress.Left, DBGridAddress.Top)
+    )
+  );
+
+  var R: TRect;
+  R.Left := Position.X - PanelAddress.Padding.Left + 5;
+  for var i := 0 to Col - 1 do
+    R.Left := R.Left + DBGridAddress.Columns[i].Width;
+
+  R.Top := Position.Y;
+  for var i := THackDBGrid(DBGridAddress).TopRow to Row -1 do
+    R.Top := R.Top + THackDBGrid(DBGridAddress).DefaultRowHeight;
+
+  R.Right := R.Left + THackDBGrid(DBGridAddress).ColWidths[Col];
+  R.Bottom := R.Top + THackDBGrid(DBGridAddress).DefaultRowHeight;
+
+  with FPanelCities do
+  begin
+    Left := R.Left;
+    Top := R.Bottom;
+    Width := R.Width + 100;
+    Visible := True;
+    BringToFront;
   end;
 end;
 
@@ -776,12 +1662,10 @@ begin
     // Abre uma negociação já existente
     sNumeroNF := LimpaNumero(Form7.ibDataSet7HISTORICO.AsString);
 
-    Form7.ibQuery1.Close;
-    Form7.IBQuery1.SQL.Clear;
-    Form7.IBQuery1.SQL.Add(' Update RECEBER set PORTADOR='''', ATIVO=0 '+
-                           ' Where PORTADOR=' + QuotedStr('ACORDO '+sNumeroNF) +
-                           '   and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString));
-    Form7.IBQuery1.ExecSQL;
+    ExecutaComando(' Update RECEBER set PORTADOR='''', ATIVO=0 '+
+                   ' Where PORTADOR=' + QuotedStr('ACORDO '+sNumeroNF) +
+                   '   and NOME='+QuotedStr(Form7.IBDataSet2NOME.AsString),
+                   Form7.IBTransaction1);
 
     Form7.IBDataSet2.Edit;
     Form7.IBDataSet2MOSTRAR.AsFloat := 1;

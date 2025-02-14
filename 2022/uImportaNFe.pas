@@ -23,15 +23,17 @@ uses
   , uItensInativosImpXMLEntrada
   ;
 
-function ImportaNF(pP1: boolean; sP1: String):Boolean;
+function GetProductDescription(AxProd: String; ASizeDescricaoProd: Integer;
+  ACodigoProduto: String; AQuery: TIBQuery): String;
+function ImportaNF(AImportaNumeroNF: boolean; sP1: String):Boolean;
 function GetICMSTag(NodeSec:IXMLNode):string;
 
 implementation
 
-uses uFuncoesRetaguarda, uParametroTributacao, uDialogs,
-  uFuncoesBancoDados;
+uses
+  uFuncoesRetaguarda, uParametroTributacao, uDialogs, uFuncoesBancoDados;
 
-function ImportaNF(pP1: boolean; sP1: String):Boolean;
+function ImportaNF(AImportaNumeroNF: boolean; sP1: String):Boolean;
   function RetornarCodProdInativo: String;
   begin
     Result := QuotedStr(Form7.ibDataSet4CODIGO.AsString) + ',';
@@ -305,12 +307,13 @@ begin
 
           Form7.ibDataSet24OPERACAO.AsString    := Form7.ibDataSet14NOME.AsString;
 
-          if pP1 then
+          if AImportaNumeroNF then
           begin
             Form7.ibDataSet24NUMERONF.AsString := Right(StrZero(StrToFloat(NodeSec.ChildNodes['nNF'].Text),9,0),9)+StrZero(StrToInt(LimpaNumero('0'+NodeSec.ChildNodes['serie'].Text)),3,0);// Número da NF
 
             Form24.Edit2.Text := Right(StrZero(StrToFloat(NodeSec.ChildNodes['nNF'].Text),9,0),9)+'/'+StrZero(StrToInt(LimpaNumero('0'+NodeSec.ChildNodes['serie'].Text)),3,0);// Número da NF
             Form24.Edit2.Repaint;
+            Form24.SMALL_DBEdit40.SetFocus;
           end else
           begin
             Form7.ibDataset99.Close;
@@ -376,6 +379,29 @@ begin
                       end;
                     end;
 
+                    if (NodeTmp.ChildNodes['cEAN'].Text = '') or
+                    (NodeTmp.ChildNodes['cEAN'].Text = 'SEM GTIN')  then
+                    begin
+                      Form7.ibDataSet4.Close;
+
+                      var xProd := Trim(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd'))));
+                      Form7.ibDataSet4.SelectSQL.Text :=
+                        'select * from ESTOQUE where DESCRICAO='+QuotedStr(xProd)+
+                        ' and ( '+
+                          ' coalesce(REFERENCIA, '+QuotedStr('')+') = '+QuotedStr('')+
+                          ' or '+
+                          ' REFERENCIA = '+QuotedStr('SEM GTIN')+
+                        ' ) ';
+
+                      Form7.ibDataSet4.Open;
+                      if not(Trim(Form7.ibDataSet4CODIGO.AsString) = '') then
+                      begin
+                        bProdutoCadastrado := True;
+                        sItens := sItens + RetornarCodProdInativo;
+                      end;
+                    end;
+
+
                     //Mauricio Parizotto 2023-10-04
                     sICMSTag := GetICMSTag(NodeSec);
 
@@ -398,7 +424,7 @@ begin
                       if AllTrim(Form7.ibQuery1.FieldByname('EAN').AsString) <> '' then
                       begin
                         sCodigoDeBarrasDoFornecedor := Form7.ibQuery1.FieldByname('CODIGO').AsString;
-                        
+
                         Form7.ibDataSet4.Close;
                         Form7.ibDataSet4.SelectSQL.Clear;
                         Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where CODIGO='+QuotedStr(sCodigoDeBarrasDoFornecedor)+' ');
@@ -411,7 +437,7 @@ begin
                         end;
                       end;
                     end;
-                    
+
                     if not bProdutoCadastrado then
                     begin
                       //  Procura pelo código de barras / quando não tem descricao
@@ -424,9 +450,20 @@ begin
                       begin
                         Form7.ibDataSet4.Close;
                         Form7.ibDataSet4.SelectSQL.Clear;
-                        //Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)))+' '); Mauricio Parizotto 2023-12-19
-                        Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd),1,SizeDescricaoProd))));
+//                        //Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)))+' '); Mauricio Parizotto 2023-12-19
+//                        Form7.ibDataSet4.SelectSQL.Add('select * from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd),1,SizeDescricaoProd))));
+//                        Form7.ibDataSet4.Open;
+
+                        var Consulta :=
+                          'select * from ESTOQUE where DESCRICAO='+
+                          QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd),1,SizeDescricaoProd)));
+                        var NodecEAN := NodeTmp.ChildNodes['cEAN'].Text;
+                        if not(NodecEAN = '') and not(UpperCase(NodecEAN) = 'SEM GTIN') then
+                          Consulta := Consulta+' and REFERENCIA = '+QuotedStr(NodecEAN);
+
+                        Form7.ibDataSet4.SelectSQL.Add(Consulta);
                         Form7.ibDataSet4.Open;
+
 
                         bProdutoCadastrado := AllTrim(Form7.ibDataSet4CODIGO.AsString) <> EmptyStr;
                         if bProdutoCadastrado then
@@ -454,24 +491,33 @@ begin
                         end;
                       end;
 
-                      // Procura para ver se já existe um nome igual
-                      Form7.ibQuery1.Close;
-                      Form7.ibQuery1.Sql.Clear;
-                      //Form7.ibQuery1.Sql.Add('select DESCRICAO from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)))+' '); Mauricio Parizotto 2023-12-19
-                      Form7.ibQuery1.Sql.Add('select DESCRICAO from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd),1,SizeDescricaoProd))));
-                      Form7.ibQuery1.Open;
+//                      // Procura para ver se já existe um nome igual
+//                      Form7.ibQuery1.Close;
+//                      Form7.ibQuery1.Sql.Clear;
+//                      //Form7.ibQuery1.Sql.Add('select DESCRICAO from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)))+' '); Mauricio Parizotto 2023-12-19
+//                      Form7.ibQuery1.Sql.Add('select DESCRICAO from ESTOQUE where DESCRICAO='+QuotedStr(AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd),1,SizeDescricaoProd))));
+//                      Form7.ibQuery1.Open;
+//
+//                      //if Form7.IBQuery1.FieldByName('DESCRICAO').AsString = AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)) then Mauricio Parizotto 2023-12-19
+//                      if Form7.IBQuery1.FieldByName('DESCRICAO').AsString = AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd),1,SizeDescricaoProd)) then
+//                      begin
+//                        // Se já existe cria o nome com o código no final
+//                        //Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',39),1,39))+' '+Form7.ibDataSet4CODIGO.AsString; Mauricio Parizotto 2023-12-19
+//                        Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd-6),1,SizeDescricaoProd-6))+' '+Form7.ibDataSet4CODIGO.AsString;
+//                      end else
+//                      begin
+//                        //Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',39),1,39))+' '+Form7.ibDataSet4CODIGO.AsString; Mauricio Parizotto 2023-12-19
+//                        Form7.ibDataSet4DESCRICAO.AsString := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd-6),1,SizeDescricaoProd-6));
+//                      end;
 
-                      //if Form7.IBQuery1.FieldByName('DESCRICAO').AsString = AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',45),1,45)) then Mauricio Parizotto 2023-12-19
-                      if Form7.IBQuery1.FieldByName('DESCRICAO').AsString = AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd),1,SizeDescricaoProd)) then
-                      begin
-                        // Se já existe cria o nome com o código no final
-                        //Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',39),1,39))+' '+Form7.ibDataSet4CODIGO.AsString; Mauricio Parizotto 2023-12-19
-                        Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd-6),1,SizeDescricaoProd-6))+' '+Form7.ibDataSet4CODIGO.AsString;
-                      end else
-                      begin
-                        //Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',39),1,39))+' '+Form7.ibDataSet4CODIGO.AsString; Mauricio Parizotto 2023-12-19
-                        Form7.ibDataSet4DESCRICAO.AsString  := AllTrim(Copy(CaracteresHTML((XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd')))+Replicate(' ',SizeDescricaoProd-6),1,SizeDescricaoProd-6))+' '+Form7.ibDataSet4CODIGO.AsString;
-                      end;
+                      Form7.ibDataSet4DESCRICAO.AsString := 
+                        GetProductDescription(
+                          XmlNodeValue(NodeTmp.ChildNodes['xProd'].XML,'//xProd'),
+                          SizeDescricaoProd,
+                          Form7.ibDataSet4CODIGO.AsString,
+                          Form7.ibQuery1
+                        );
+                      
 
                       //Form7.ibDataSet4MEDIDA.AsString     := AllTrim(NodeTmp.ChildNodes['uCom'].Text); Mauricio Parizotto 2024-01-10
                       Form7.ibDataSet4MEDIDA.AsString     := Copy(AllTrim(NodeTmp.ChildNodes['uCom'].Text) ,1,3);
@@ -522,7 +568,7 @@ begin
                       Form7.ibDataSet4CODIGO_FCI.AsString := AllTrim(NodeTmp.ChildNodes['nFCI'].Text);
                       Form7.ibDataSet4.Edit;
                     end;
-                    
+
                     Form1.bFlag := False;
                     Form7.sModulo := 'NAO';
 
@@ -1142,6 +1188,41 @@ begin
     Result := 'ICMSSN500';
   if AllTrim(xmlNodeValue(NodeSec.ChildNodes.FindNode('imposto').ChildNodes.FindNode('ICMS').XML, '//ICMSSN900/CSOSN')) <> '' then
     Result := 'ICMSSN900';
+end;
+
+function GetProductDescription(AxProd: String; ASizeDescricaoProd: Integer;
+  ACodigoProduto: String; AQuery: TIBQuery): String;
+
+var xProd: String;
+
+  function ExistsDescription(): Boolean;
+  begin
+    var Consulta : String := 'SELECT 1 AS ExistsDescription '+
+      'FROM RDB$DATABASE WHERE EXISTS '+
+      '(SELECT 1 FROM Estoque WHERE Upper(Descricao) = Upper(:Descricao))';
+    AQuery.Close;
+    AQuery.Sql.Text := Consulta;
+    AQuery.ParamByName('Descricao').AsString := xProd;
+    AQuery.Open;
+    Result := AQuery.FieldByName('ExistsDescription').AsInteger = 1;
+  end;
+  
+begin
+  xProd := AllTrim(Copy(CaracteresHTML((AxProd))+
+      Replicate(' ', ASizeDescricaoProd), 1, ASizeDescricaoProd
+    )
+  );
+
+  var ProductDescription := AllTrim(CaracteresHTML(AxProd));
+  ProductDescription := Copy(ProductDescription, 1, ASizeDescricaoProd);
+
+  if ExistsDescription() then
+  begin
+    ProductDescription := Copy(ProductDescription, 1, ASizeDescricaoProd-6);
+    ProductDescription := Format('%s %s', [ProductDescription, ACodigoProduto]);
+  end;
+
+  Result := ProductDescription;
 end;
 
 end.

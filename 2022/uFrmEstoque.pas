@@ -7,9 +7,10 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFrmFichaPadrao, Data.DB, Vcl.ComCtrls, WinInet,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask, Vcl.DBCtrls, SMALL_DBEdit,
   uframeCampo, System.IniFiles, Vcl.Grids, Vcl.DBGrids, Videocap, VFrames,
-  Vcl.Imaging.jpeg, Vcl.Clipbrd, Vcl.OleCtrls, SHDocVw, Vcl.ExtDlgs,
+  Vcl.Imaging.jpeg, Vcl.Clipbrd, Vcl.OleCtrls, SHDocVw, Vcl.ExtDlgs, REST.Types, uClassesIMendes,
   Winapi.ShellAPI, uframePesquisaPadrao, uframePesquisaProduto,
-  Vcl.Imaging.pngimage;
+  Vcl.Imaging.pngimage, Vcl.Menus, REST.Json, uFrmProdutosIMendes,
+  IBX.IBCustomDataSet;
 
 type
   TFrmEstoque = class(TFrmFichaPadrao)
@@ -278,6 +279,13 @@ type
     lblNatReceita: TLabel;
     edtNaturezaReceita: TSMALL_DBEdit;
     lblGeral: TLabel;
+    pnlImendes: TPanel;
+    lblStatusImendes: TLabel;
+    DBCheckSobreIPI: TDBCheckBox;
+    ppmTributacao: TPopupMenu;
+    PorEAN1: TMenuItem;
+    PorDescrio1: TMenuItem;
+    btnConsultarTrib: TBitBtn;
     procedure FormActivate(Sender: TObject);
     procedure lblNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -398,7 +406,10 @@ type
     procedure lblIVAPorEstadoMouseLeave(Sender: TObject);
     procedure lblIVAPorEstadoMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure btnConsultarTribClick(Sender: TObject);
     procedure edtNaturezaReceitaKeyPress(Sender: TObject; var Key: Char);
+    procedure PorDescrio1Click(Sender: TObject);
+    procedure PorEAN1Click(Sender: TObject);
   private
     { Private declarations }
     cCadJaValidado: String;
@@ -429,6 +440,7 @@ type
     procedure DefineLabelImpostosAproximados;
   public
     { Public declarations }
+    procedure AtualizaStatusIMendes;
   end;
 
 var
@@ -447,7 +459,11 @@ uses unit7
 , uTestaProdutoExiste
 , uITestaProdutoExiste
 , Unit19
-, uFrmEstoqueIVA;
+, uFrmEstoqueIVA
+, uSmallConsts
+, uSistema
+, uImendes
+, uFrmIntegracaoIMendes;
 
 { TFrmEstoque }
 
@@ -847,6 +863,8 @@ begin
 
   AjustaCampoPrecoQuandoEmPromocao;
 
+  //Mauricio Parizotto 2024-10-11
+  AtualizaStatusIMendes;
 end;
 
 procedure TFrmEstoque.framePesquisaProdComposicaodbgItensPesqCellClick(
@@ -1136,6 +1154,12 @@ begin
   btnPrecoTodos.Enabled               := not(bEstaSendoUsado) and not (bSomenteLeitura);
   btnPreco.Enabled                    := not(bEstaSendoUsado) and not (bSomenteLeitura);
 
+  //Mauricio Parizotto 2024-11-04
+  lblIVAPorEstado.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  edtNaturezaReceita.Enabled          := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  btnConsultarTrib.Enabled            := not(bEstaSendoUsado) and not (bSomenteLeitura);
+  DBCheckSobreIPI.Enabled             := not(bEstaSendoUsado) and not (bSomenteLeitura);
+
   //Tags
   sgridTags.EditorMode := not(bEstaSendoUsado) and not (bSomenteLeitura);
   if (bEstaSendoUsado) or (bSomenteLeitura) then
@@ -1155,6 +1179,7 @@ begin
     dbgComposicao.Options := dbgComposicao.Options - [dgEditing]
   else
     dbgComposicao.Options := dbgComposicao.Options + [dgEditing];
+
 end;
 
 
@@ -1978,6 +2003,8 @@ begin
 end;
 
 procedure TFrmEstoque._RRClick(Sender: TObject);
+var
+  bTribInteligente : boolean;
 begin
   with Sender as TLabel do
   begin
@@ -2005,6 +2032,14 @@ begin
         Form7.ibDataSet14NOME.AsString := 'Código Interno de Tributação '+Form7.ibDataSet4ST.AsString;
         Form7.IbDataSet14.Post;
       end;
+    end;
+
+    //Mauricio Parizotto 2024-10-26
+    bTribInteligente := Form7.ibDataSet14TRIB_INTELIGENTE.AsString = 'S';
+    if (bTribInteligente)
+      and (Font.Color = clRed) then
+    begin
+      Exit;
     end;
 
     Form7.IbDataSet14.EnableControls;
@@ -2508,8 +2543,10 @@ begin
     cboCFOP_NFCe.ItemIndex := 0;
   end;
 
-
   GravaImagemEstoque;
+
+  //Mauricio Parizotto 2024-10-11
+  AtualizaStatusIMendes;
 end;
 
 
@@ -3031,6 +3068,35 @@ procedure TFrmEstoque.btnCancelarGradeClick(Sender: TObject);
 begin
   tbsGradeShow(Sender);
   FrmEstoque.Repaint;
+end;
+
+procedure TFrmEstoque.btnConsultarTribClick(Sender: TObject);
+begin
+  //Mauricio Parizotto 2024-10-04
+  if TSistema.GetInstance.ModuloImendes then
+  begin
+    ppmTributacao.Popup(FrmEstoque.Left + 28,
+                        FrmEstoque.Top + pnlBotoesPosterior.Top + 71);
+  end else
+  begin
+    if MensagemSistemaPergunta('A tributação inteligente é uma nova funcionalidade que pode transformar a gestão do seu negócio,'+
+                               ' preenchendo automaticamente as tributações dos seus produtos.'+#13#10+#13#10+
+                               'Esta função oferece uma série de benefícios que ajudam a otimizar o cadastro de produtos,'+
+                               ' reduzir erros na transmissão de documentos fiscais e garantir que a tributação esteja sempre correta,'+
+                               ' minimizando os riscos de multas.'+#13#10+#13#10+
+                               'Para ter acesso a esse recurso, entre em contato com sua revenda.'+#13#10+#13#10+
+                               'Gostaria de fazer uma simulação das tributações atuais dos seus produtos?',
+                               [mb_YesNo]) = mrYes then
+    begin
+      try
+        FrmIntegracaoIMendes := TFrmIntegracaoIMendes.Create(self);
+        FrmIntegracaoIMendes.pgcImendes.ActivePage :=  FrmIntegracaoIMendes.tbsSimulacao;
+        FrmIntegracaoIMendes.ShowModal;
+      finally
+        FreeAndNil(FrmIntegracaoIMendes);
+      end;
+    end;
+  end;
 end;
 
 procedure TFrmEstoque.btnSalvarGradeClick(Sender: TObject);
@@ -3813,6 +3879,9 @@ begin
   // 10 - Outros insumos
   // 99 - Outras
   Form7.ibDataSet4TIPO_ITEM.AsString := Copy(cboTipoItem.Items[cboTipoItem.ItemIndex]+'  ',1,2);
+
+  //Mauricio Parizotto 2024-10-11
+  AtualizaStatusIMendes;
 end;
 
 procedure TFrmEstoque.AjustaCampoPrecoQuandoEmPromocao;
@@ -4399,6 +4468,54 @@ end;
 
 
 
+procedure TFrmEstoque.PorDescrio1Click(Sender: TObject);
+var
+  CodIMendes : integer;
+begin
+  CodIMendes := DSCadastro.DataSet.FieldByName('CODIGO_IMENDES').AsInteger;
+
+  if CodIMendes = 0 then
+  begin
+    CodIMendes := GetCodImendes(LimpaNumero(Form7.ibDataSet13CGC.AsString),
+                                DSCadastro.DataSet.FieldByName('DESCRICAO').AsString);
+
+    if CodIMendes > 0 then
+    begin
+      if not (DSCadastro.DataSet.State in ([dsEdit, dsInsert]) ) then
+        DSCadastro.DataSet.Edit;
+
+      DSCadastro.DataSet.FieldByName('CODIGO_IMENDES').AsInteger := CodIMendes;
+      DSCadastro.DataSet.Post;
+      DSCadastro.DataSet.Edit;
+    end;
+  end;
+
+  if CodIMendes > 0 then
+  begin
+    //Busca tributação
+    GetTributacaoProd(TibDataSet(DSCadastro.DataSet),tpCodigo);
+    AtualizaObjComValorDoBanco;
+  end;
+end;
+
+procedure TFrmEstoque.PorEAN1Click(Sender: TObject);
+begin
+  if (Trim(DSCadastro.DataSet.FieldByName('REFERENCIA').AsString) = '')
+    or not ValidaEAN(DSCadastro.DataSet.FieldByName('REFERENCIA').AsString) then
+  begin
+    MensagemSistema('Preencha o Código de Barras para realizar a consulta ou utilize a opção Por Descrição.',msgAtencao);
+
+    if edtCodBarras.CanFocus then
+      edtCodBarras.SetFocus;
+
+    Exit;
+  end;
+
+  //Busca tributação
+  GetTributacaoProd(TibDataSet(DSCadastro.DataSet),tpEAN);
+  AtualizaObjComValorDoBanco;
+end;
+
 function TFrmEstoque.MensagemImagemWeb(Msg, Titulo : string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; Captions: array of string): Integer;
 var
   aMsgDlg: TForm;
@@ -4428,6 +4545,32 @@ begin
     end;
   end;
   Result := aMsgDlg.ShowModal;
+end;
+
+procedure TFrmEstoque.AtualizaStatusIMendes;
+var
+  sStatusImendes : string;
+begin
+  sStatusImendes  := DSCadastro.DataSet.FieldByName('STATUS_TRIBUTACAO').AsString;
+  lblStatusImendes.Caption :=  sStatusImendes + ' '+DSCadastro.DataSet.FieldByName('DATA_STATUS_TRIBUTACAO').AsString;
+
+  if sStatusImendes = _cStatusImendesConsultado then
+    lblStatusImendes.Font.Color := $00279D2D;
+
+  if sStatusImendes = _cStatusImendesNaoConsultado then
+    lblStatusImendes.Font.Color := clBlack;
+
+  if sStatusImendes = _cStatusImendesAlterado then
+    lblStatusImendes.Font.Color := $000F0FFF;
+
+  if sStatusImendes = _cStatusImendesPendente then
+    lblStatusImendes.Font.Color := $00FD6102;
+
+  if sStatusImendes = _cStatusImendesRejeitado then
+    lblStatusImendes.Font.Color := $004080FF;
+
+  btnConsultarTrib.Visible := DSCadastro.DataSet.FieldByName('TIPO_ITEM').AsString <> '09';
+  pnlImendes.Visible       := (DSCadastro.DataSet.FieldByName('TIPO_ITEM').AsString <> '09') and (TSistema.GetInstance.ModuloImendes);
 end;
 
 

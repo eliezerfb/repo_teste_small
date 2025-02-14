@@ -13,7 +13,6 @@ uses
   , smallfunc_xe
   , IniFiles
   , Unit22
-  //, Unit3
   , Mais
   , Controls
   {$IFDEF VER150}
@@ -31,17 +30,17 @@ uses
   , Variants
   , Grids
   , Graphics
-  ;
+  , uSmallEnumerados;
 
-  //type
-  //  TmensagemSis = (msgInformacao,msgAtencao,msgErro);
-
+  function Get_SQL_CliforAddress(AOnlyMainAddress: Boolean = False;
+    AFilter: String = ''): String;
   function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectCurvaAbcClientes(dtInicio: TDateTime; dtFinal: TDateTime; vFiltroAddV : string = ''): String;
   function SqlSelectGraficoVendas(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectGraficoVendasParciais(dtInicio: TDateTime; dtFinal: TDateTime): String;
   function SqlSelectMovimentacaoItem(vProduto : string): String;
   function SqlEstoqueOrcamentos(AliasPadrao:Boolean=True): String; //Mauricio Parizotto 2023-10-16
+  //function SqlFiltroNFCEAutorizado(AliasTabela:string): String; //Mauricio Parizotto 2024-12-17 2025-01-17
   function UFDescricao(sCodigo: String): String;
   function UFSigla(sCodigo: String): String;
   function UFCodigo(sUF: String): String;
@@ -79,7 +78,25 @@ uses
   function GetFatorConversaoItemCompra(CodRegItem:string; valPadrao: Double; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-02-19
   function GetIVAProduto(IDESTOQUE : integer; UF : string; Transaction: TIBTransaction):Double; //Mauricio Parizotto 2024-09-11
   function ExtrairConfiguracao(sTexto: String; sSigla: String): String; // Mauricio Parizotto 2024-10-01
+  function CodigoPlanoContaToTipo(AConta: String): TTipoPlanoConta;
+  function TipoPlanoContaToText(ATipoPlanoConta: TTipoPlanoConta): String;
+  function TipoPlanoContaToStr(ATipoPlanoConta: TTipoPlanoConta): String;
+  function RecordExists(AConnection: TIBDatabase; ATableName,
+    AFieldName: String; AKeyField: TField; AValue: String): Boolean;
+  function TipoEnderecoToString(const t: TTipoEndereco): string;
+  function TipoEnderecoToStrText(const t: TTipoEndereco): string;
+  function StrToTipoEndereco(out ok: boolean; const s: string): TTipoEndereco;
+  function StrTextTipoEndereco(out ok: boolean; const s: string): TTipoEndereco;
+  function GetTmpCharacterSet(AFieldName: String): String;
 
+  (*
+    TODO: retirado do ACBr, ao utilizar o componente essas duas funções
+    (StrToEnumerado e EnumeradoToStr) devem ser removidas daqui
+  *)
+  function StrToEnumerado(out ok: boolean; const s: string; const AString:
+    array of string; const AEnumerados: array of variant): variant;
+  function EnumeradoToStr(const t: variant; const AString:
+    array of string; const AEnumerados: array of variant): variant;
 
 implementation
 
@@ -87,6 +104,71 @@ uses uFuncoesBancoDados, uSmallConsts, Mais3;
 
 type
   TModulosSmall = (tmNenhum, tmNao, tmEstoque, tmICM, tmReceber);
+
+function Get_SQL_CliforAddress(AOnlyMainAddress: Boolean;
+  AFilter: String): String;
+begin
+  const SQL_CLIFOR_ADDRESS = 'SELECT * FROM ( '+
+    'SELECT '+
+      ENDERECO_PRINCIPAL_ENTREGA.ToString()+' IDENDERECO, '+
+      'IDCLIFOR, '+
+      '  (COALESCE(NULLIF(ENDERE, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(COMPLE, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(CIDADE, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(ESTADO, '+QuotedStr('')+'), '+QuotedStr('')+')) AS FULL_ADDRESS, '+
+      ' ENDERE ENDERECO, '+
+      ' '+QuotedStr('')+' NUMERO, '+
+      ' COMPLE BAIRRO, '+
+      ' CIDADE, '+
+      ' ESTADO, '+
+      ' municipios.CODIGO municipios_codigo, '+
+      ' CEP, '+
+      ' FONE TELEFONE, '+
+      ' 1 MAIN_ADDRESS '+
+    'FROM CLIFOR '+
+    ' left join municipios on Upper(municipios.nome) = Upper(CLIFOR.CIDADE) and '+
+        'Upper(municipios.UF) = Upper(CLIFOR.estado) '+
+
+    ' where IDCLIFOR = :IDCLIFOR '+
+
+    ' UNION ALL '+
+
+    ' SELECT '+
+      ' IDENDERECO, '+
+      ' IDCLIFOR, '+
+      ' (COALESCE(NULLIF(ENDERECO, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(NUMERO, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(BAIRRO, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(CIDADE, '+QuotedStr('')+')|| '+QuotedStr(', ')+', '+QuotedStr('')+') || '+
+      '  COALESCE(NULLIF(ESTADO, '+QuotedStr('')+'), '+QuotedStr('')+')) AS FULL_ADDRESS,  '+
+      ' ENDERECO, '+
+      ' NUMERO, '+
+      ' BAIRRO, '+
+      ' CIDADE, '+
+      ' ESTADO, '+
+      ' municipios.CODIGO municipios_codigo, '+
+      ' CEP, '+
+      ' TELEFONE, '+
+      ' 0 MAIN_ADDRESS '+
+   ' FROM CLIFORENDERECOS '+
+   ' left join municipios on Upper(municipios.nome) = Upper(cliforenderecos.cidade) and '+
+        'upper(municipios.UF) = Upper(cliforenderecos.estado) '+
+   ' where IDCLIFOR = :IDCLIFOR'+
+  ' ) '+
+  ' WHERE '+
+  ' NOT(COALESCE(FULL_ADDRESS, '+QuotedStr('')+') = '+QuotedStr('')+') '+
+  ' %s %s '+
+  ' order by '+
+  'IDENDERECO';
+
+  var SqlOnlyMainAddress := '';
+  if AOnlyMainAddress then
+    SqlOnlyMainAddress := ' and IDENDERECO = '+
+      ENDERECO_PRINCIPAL_ENTREGA.ToString();
+
+  Result := Format(SQL_CLIFOR_ADDRESS, [SqlOnlyMainAddress, AFilter]);
+
+end;
 
 function SqlSelectCurvaAbcEstoque(dtInicio: TDateTime; dtFinal: TDateTime): String; //Ficha 6237
 begin
@@ -1058,6 +1140,9 @@ begin
   if sCodigo = '51' then Result := 'Mato Grosso';
   if sCodigo = '52' then Result := 'Goiás';
   if sCodigo = '53' then Result := 'Distrito Federal';
+
+  if sCodigo = '99' then
+    Result := 'Exterior';
 end;
 
 function UFSigla(sCodigo: String): String;
@@ -1099,6 +1184,9 @@ begin
   if sCodigo = '51' then Result := 'MT';
   if sCodigo = '52' then Result := 'GO';
   if sCodigo = '53' then Result := 'DF';
+
+  if sCodigo = '99' then
+    Exit('EX');
 end;
 
 function UFCodigo(sUF: String): String;
@@ -1140,6 +1228,9 @@ begin
   if sUF = 'MT' then Result := '51';
   if sUF = 'GO' then Result := '52';
   if sUF = 'DF' then Result := '53';
+
+  if sUF = 'EX' then
+    Result := '99';
 end;
 
 procedure DBGridDrawColumnCell(Sender: TObject; const Rect: TRect;
@@ -1254,6 +1345,149 @@ begin
     end;
     Free;
   end;
+end;
+
+function CodigoPlanoContaToTipo(AConta: String): TTipoPlanoConta;
+begin
+  AConta := Trim(AConta);
+
+  var PrefixoConta := Copy(AConta, 1, 1);
+
+  if PrefixoConta = '1' then
+    Exit(tpcReceita);
+
+  if PrefixoConta = '3' then
+    Exit(tpcDespesa);
+
+  if PrefixoConta = '5' then
+    Exit(tpcBanco);
+
+  if PrefixoConta = '7' then
+    Exit(tpcRetirada);
+
+  Exit(tpcNenhum);
+end;
+
+function TipoPlanoContaToText(ATipoPlanoConta: TTipoPlanoConta): String;
+begin
+  Result := '';
+
+  if ATipoPlanoConta = tpcNenhum then
+    Exit('');
+
+  if ATipoPlanoConta = tpcReceita then
+    Exit('Receita');
+
+  if ATipoPlanoConta = tpcDespesa then
+    Exit('Despesa');
+
+  if ATipoPlanoConta = tpcBanco then
+    Exit('Banco');
+
+  if ATipoPlanoConta = tpcRetirada then
+    Exit('Retiradas');
+end;
+
+function TipoPlanoContaToStr(ATipoPlanoConta: TTipoPlanoConta): String;
+begin
+  Result := '';
+
+  if ATipoPlanoConta = tpcNenhum then
+    Exit('');
+
+  if ATipoPlanoConta = tpcReceita then
+    Exit('1');
+
+  if ATipoPlanoConta = tpcDespesa then
+    Exit('3');
+
+  if ATipoPlanoConta = tpcBanco then
+    Exit('5');
+
+  if ATipoPlanoConta = tpcRetirada then
+    Exit('7');
+end;
+
+
+function RecordExists(AConnection: TIBDatabase; ATableName, AFieldName: String;
+  AKeyField: TField; AValue: String): Boolean;
+begin
+  const SQL = 'SELECT 1 AS RecordExists '+
+    'FROM RDB$DATABASE WHERE EXISTS '+
+    '('+
+        'SELECT 1 FROM %s WHERE not(%s = :key) and Trim(Upper(%s)) = Trim(Upper(:value))'+
+    ') ';
+
+  var Query := TIBQuery.Create(nil);
+  try
+    Query.Database := AConnection;
+    Query.SQL.Text :=
+      Format(SQL, [ATableName, AKeyField.FieldName, AFieldName]);
+
+    Query.ParamByName('key').AsString := AKeyField.AsString;
+    Query.ParamByName('value').Value := AValue;
+
+    Query.Open();
+
+    Result := Query.FieldByName('RecordExists').AsInteger = 1;
+  finally
+    Query.Free;
+  end;
+end;
+
+function TipoEnderecoToString(const t: TTipoEndereco): string;
+begin
+  result := EnumeradoToStr(t, ['0', '1', '2', '3'],
+                              [tePrincipal, teEntrega, teRetirada, teCobranca]);
+end;
+
+function TipoEnderecoToStrText(const t: TTipoEndereco): string;
+begin
+  result := EnumeradoToStr(t, ['Principal', 'Entrega', 'Retirada', 'Cobrança'],
+                              [tePrincipal, teEntrega, teRetirada, teCobranca]);
+end;
+
+function StrTextTipoEndereco(out ok: boolean; const s: string): TTipoEndereco;
+begin
+  result := StrToEnumerado(ok, s, ['Principal', 'Entrega', 'Retirada', 'Cobrança'],
+                                  [tePrincipal, teEntrega, teRetirada, teCobranca]);
+end;
+
+function StrToTipoEndereco(out ok: boolean; const s: string): TTipoEndereco;
+begin
+  result := StrToEnumerado(ok, s, ['0', '1', '2', '3'],
+                                  [tePrincipal, teEntrega, teRetirada, teCobranca]);
+end;
+
+
+function StrToEnumerado(out ok: boolean; const s: string; const AString:
+  array of string; const AEnumerados: array of variant): variant;
+var
+  i: integer;
+begin
+  result := -1;
+  for i := Low(AString) to High(AString) do
+    if AnsiSameText(s, AString[i]) then
+      result := AEnumerados[i];
+  ok := result <> -1;
+  if not ok then
+    result := AEnumerados[0];
+end;
+
+function EnumeradoToStr(const t: variant; const AString:
+  array of string; const AEnumerados: array of variant): variant;
+var
+  i: integer;
+begin
+  result := '';
+  for i := Low(AEnumerados) to High(AEnumerados) do
+    if t = AEnumerados[i] then
+      result := AString[i];
+end;
+
+function GetTmpCharacterSet(AFieldName: String): String;
+begin
+  Exit(Format('cast(%s as VARCHAR(60) CHARACTER SET WIN1252)', [AFieldName]));
 end;
 
 
