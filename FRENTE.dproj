@@ -95,9 +95,9 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Frente de Caixa;FileVersion=2025.7.0.1;InternalName=frente.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=frente.exe;ProductName=Frente de Caixa;ProductVersion=2025.7.0.1;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
-        <VerInfo_MinorVer>7</VerInfo_MinorVer>
-        <VerInfo_Build>1</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=Zucchetti Software e Sistemas Ltda;FileDescription=Frente de Caixa;FileVersion=2025.8.0.0;InternalName=frente.exe;LegalCopyright=Zucchetti Software e Sistemas Ltda;LegalTrademarks=Zucchetti Software e Sistemas Ltda;OriginalFilename=frente.exe;ProductName=Frente de Caixa;ProductVersion=2025.8.0.0;Comments=;ProgramID=br.com.smallsoft.$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_MinorVer>8</VerInfo_MinorVer>
+        <VerInfo_Build>0</VerInfo_Build>
         <DCC_ExeOutput>\Desenvolvimento\Executaveis\Small Commerce\</DCC_ExeOutput>
         <Manifest_File>xp.manifest</Manifest_File>
         <VerInfo_MajorVer>2025</VerInfo_MajorVer>
@@ -1151,6 +1151,7 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
