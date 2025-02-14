@@ -189,41 +189,6 @@ begin
                                       ' and MODELO = ' + QuotedStr(FModeloOld);
       FIBDataset150.Open;
 
-      {Sandro Silva 2023-08-29 inicio
-      FIBDataset150.Delete;
-
-      FIBDataset150.Close;
-      FIBDataset150.SelectSql.Clear;
-      FIBDataset150.SelectSQL.Add('select * from NFCE where NUMERONF = ' + QuotedStr(FormataNumeroDoCupom(0)) + ' and CAIXA = ' + QuotedStr(FCaixa) + ' and MODELO = ' + QuotedStr(FModeloDocumento));
-      FIBDataset150.Open;
-
-      if FModeloDocumento = '65' then
-        sNovoNumero := FormataNumeroDoCupom(IncGeneratorToInt(FIBTransaction.DefaultDatabase, 'G_NUMERONFCE', 1));
-
-      if FModeloDocumento = '59' then
-        sNovoNumero := FormataNumeroDoCupom(IncGeneratorToInt(FIBTransaction.DefaultDatabase, 'G_NUMEROCFESAT_' + FCaixa, 1));
-
-      if sNovoNumero = '' then
-      begin
-        Exit;
-      end;
-
-      dtDataNovo := Date;
-      FIBDataset150.Append;
-      FIBDataset150.FieldByName('NUMERONF').AsString  := sNovoNumero;
-      FIBDataset150.FieldByName('DATA').AsDateTime    := dtDataNovo;
-      FIBDataset150.FieldByName('CAIXA').AsString     := FCaixa;
-      FIBDataset150.FieldByName('MODELO').AsString    := FModeloDocumento;
-      FIBDataset150.FieldByName('GERENCIAL').AsString := FNumeroGerencial;
-      if (FModeloOld <> '59') and (FModeloOld <> '65') then // Sandro Silva 2023-08-28
-      begin
-        if sGerencialOld <> '' then
-          FIBDataset150.FieldByName('GERENCIAL').AsString := sGerencialOld; // Sandro Silva 2023-08-25
-      end;
-      FIBDataset150.FieldByName('NFEXML').AsString    := sXmlOld;
-      FIBDataset150.Post;
-      }
-
       if bPrecisarGerarNovoNumero = False then
       begin
         sNovoNumero := FIBDataset150.FieldByName('NUMERONF').AsString;
@@ -313,22 +278,6 @@ begin
         sDAV     := '';
         sTIPODAV := '';
 
-        {Sandro Silva 2023-08-25 inicio
-        IBQPENDENCIA := CriaIBQuery(FIBTransaction);
-        try
-          IBQPENDENCIA.Close;
-          IBQPENDENCIA.SQL.Text :=
-            'update PENDENCIA set ' +
-            'PEDIDO = ' + QuotedStr(sNovoNumero) +
-            ', CAIXA = ' + QuotedStr(FCaixa) +
-            ' where PEDIDO = ' + QuotedStr(FNumeroGerencial) +
-            ' and CAIXA = ' + QuotedStr(sCaixaOld);
-          IBQPENDENCIA.ExecSQL;
-        except
-
-        end;
-        FreeAndNil(IBQPENDENCIA);
-        }
         AtualizaNumeroPedidoTabelaPendencia(FIBTransaction, sCaixaOld, FNumeroGerencial, sNovoNumero, FCaixa);
         {Sandro Silva 2023-08-25 fim}
         FIBDataSet27.First; // Sandro Silva 2023-08-29

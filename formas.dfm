@@ -574,7 +574,7 @@ object FormasP: TFormasP
   object cboPixExtra1: TComboBox
     Left = 821
     Top = 131
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 37
     Visible = False
@@ -586,7 +586,7 @@ object FormasP: TFormasP
   object cboPixExtra2: TComboBox
     Left = 821
     Top = 156
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 38
     Visible = False
@@ -598,7 +598,7 @@ object FormasP: TFormasP
   object cboPixExtra3: TComboBox
     Left = 821
     Top = 181
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 39
     Visible = False
@@ -610,7 +610,7 @@ object FormasP: TFormasP
   object cboPixExtra4: TComboBox
     Left = 821
     Top = 206
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 40
     Visible = False
@@ -622,7 +622,7 @@ object FormasP: TFormasP
   object cboPixExtra5: TComboBox
     Left = 821
     Top = 230
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 41
     Visible = False
@@ -634,9 +634,11 @@ object FormasP: TFormasP
   object cboPixExtra6: TComboBox
     Left = 821
     Top = 255
-    Width = 91
+    Width = 79
     Height = 21
+    ItemIndex = 2
     TabOrder = 42
+    Text = 'PIX Din'#226'mico'
     Visible = False
     Items.Strings = (
       'PIX Manual'
@@ -646,7 +648,7 @@ object FormasP: TFormasP
   object cboPixExtra7: TComboBox
     Left = 821
     Top = 280
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 43
     Visible = False
@@ -658,7 +660,7 @@ object FormasP: TFormasP
   object cboPixExtra8: TComboBox
     Left = 821
     Top = 305
-    Width = 91
+    Width = 79
     Height = 21
     TabOrder = 44
     Visible = False
@@ -666,5 +668,85 @@ object FormasP: TFormasP
       'PIX Manual'
       'PIX Est'#225'tico'
       'PIX Din'#226'mico')
+  end
+  object chkAtalhoF6_1: TCheckBox
+    Left = 920
+    Top = 133
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 45
+    Visible = False
+    OnClick = chkAtalhoF6_1Click
+  end
+  object chkAtalhoF6_2: TCheckBox
+    Left = 920
+    Top = 158
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 46
+    Visible = False
+    OnClick = chkAtalhoF6_2Click
+  end
+  object chkAtalhoF6_3: TCheckBox
+    Left = 920
+    Top = 183
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 47
+    Visible = False
+    OnClick = chkAtalhoF6_3Click
+  end
+  object chkAtalhoF6_4: TCheckBox
+    Left = 920
+    Top = 208
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 48
+    Visible = False
+    OnClick = chkAtalhoF6_4Click
+  end
+  object chkAtalhoF6_5: TCheckBox
+    Left = 920
+    Top = 232
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 49
+    Visible = False
+    OnClick = chkAtalhoF6_5Click
+  end
+  object chkAtalhoF6_6: TCheckBox
+    Left = 920
+    Top = 257
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 50
+    Visible = False
+    OnClick = chkAtalhoF6_6Click
+  end
+  object chkAtalhoF6_7: TCheckBox
+    Left = 920
+    Top = 282
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 51
+    Visible = False
+    OnClick = chkAtalhoF6_7Click
+  end
+  object chkAtalhoF6_8: TCheckBox
+    Left = 920
+    Top = 307
+    Width = 142
+    Height = 17
+    Caption = 'Finaliza'#231#227'o r'#225'pida com F6'
+    TabOrder = 52
+    Visible = False
+    OnClick = chkAtalhoF6_8Click
   end
 end

@@ -908,7 +908,7 @@ begin
         if not AssinaRegistro('ESTOQUE',Form1.ibDAtaSet4, False) then
         begin
           //LogFrente('P2 ' + sCodigo + ' ESTOQUE EVIDENCIADO'); // Sandro Silva 2018-05-09 TESTE 01
-          LogFrente('31449 P2 ' + sCodigo + ' ESTOQUE EVIDENCIADO');
+          //LogFrente('31449 P2 ' + sCodigo + ' ESTOQUE EVIDENCIADO');
           sUnd := StrTran(sUnd,' ','?');
           sEvidenciaP2 := '?'; // Sandro Silva 2016-03-08 POLIMIG
         end;

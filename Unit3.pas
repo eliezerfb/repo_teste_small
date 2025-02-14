@@ -166,7 +166,7 @@ begin
         on e:exception do
         begin
           MensagemSistema('Erro ao gravar sangria!',msgErro);
-          LogFrente('Erro ao gravar sangria no livro caixa. '+e.Message);
+          //LogFrente('Erro ao gravar sangria no livro caixa. '+e.Message);
         end;
       end;
 
@@ -207,7 +207,7 @@ begin
         on e:exception do
         begin
           MensagemSistema('Erro ao gravar sangria!',msgErro);
-          LogFrente('Erro ao gravar sangria no pagamento. '+e.Message);
+          //LogFrente('Erro ao gravar sangria no pagamento. '+e.Message);
         end;
       end;
 
@@ -220,7 +220,7 @@ begin
       or (Form1.sModeloECF = '99')  then
     begin
       ValorOperacao := Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat;
-      Commitatudo(True);
+      Commitatudo(True); // TForm3.Button1Click(
     end;
 
     if Form1.sModeloECF = '59' then _ecf59_Sangria(ValorOperacao);
@@ -278,7 +278,7 @@ begin
           on e:exception do
           begin
             MensagemSistema('Erro ao gravar suprimento!',msgErro);
-            LogFrente('Erro ao gravar suprimento no livro caixa. '+e.Message);
+            //LogFrente('Erro ao gravar suprimento no livro caixa. '+e.Message);
           end;
         end;
 
@@ -298,7 +298,7 @@ begin
           if Form1.sModeloECF = '03' then iGNF := StrToInt('0'+LimpaNumero(_ecf03_GNF(True))); //
           if Form1.sModeloECF = '14' then iGNF := StrToInt('0'+LimpaNumero(_ecf14_GNF(True))); //
           if Form1.sModeloECF = '15' then iGNF := StrToInt('0'+LimpaNumero(_ecf15_GNF(True))); //
-          if Form1.sModeloECF = '17' then iGNF := StrToInt('0'+LimpaNumero(_ecf17_GNF(True))); //          
+          if Form1.sModeloECF = '17' then iGNF := StrToInt('0'+LimpaNumero(_ecf17_GNF(True))); //
           //
           Form1.ibDataSet28.FieldByName('DATA').AsDateTime   := Date;
           Form1.ibDataSet28.FieldByName('PEDIDO').AsString   := FormataNumeroDoCupom(iCOO); // // Sandro Silva 2021-12-01 Form1.ibDataSet28.FieldByName('PEDIDO').AsString   := StrZero(iCOO,6,0); //
@@ -318,7 +318,7 @@ begin
           on e:exception do
           begin
             MensagemSistema('Erro ao gravar suprimento!',msgErro);
-            LogFrente('Erro ao gravar suprimento no pagamento. '+e.Message);
+            //LogFrente('Erro ao gravar suprimento no pagamento. '+e.Message);
           end;
         end;
 
@@ -331,7 +331,7 @@ begin
         or (Form1.sModeloECF = '99')  then
       begin
         ValorOperacao := Form1.ibDataSet25.FieldByName('ACUMULADO1').AsFloat;
-        Commitatudo(True);
+        Commitatudo(True); // TForm3.Button1Click(
       end;
 
       if Form1.sModeloECF = '59' then _ecf59_Suprimento(ValorOperacao);

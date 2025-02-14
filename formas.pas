@@ -77,6 +77,14 @@ type
     cboPixExtra6: TComboBox;
     cboPixExtra7: TComboBox;
     cboPixExtra8: TComboBox;
+    chkAtalhoF6_1: TCheckBox;
+    chkAtalhoF6_2: TCheckBox;
+    chkAtalhoF6_3: TCheckBox;
+    chkAtalhoF6_4: TCheckBox;
+    chkAtalhoF6_5: TCheckBox;
+    chkAtalhoF6_6: TCheckBox;
+    chkAtalhoF6_7: TCheckBox;
+    chkAtalhoF6_8: TCheckBox;
     procedure OkClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure Edit5KeyDown(Sender: TObject; var Key: Word;
@@ -93,12 +101,22 @@ type
     procedure cboForma06Change(Sender: TObject);
     procedure cboForma07Change(Sender: TObject);
     procedure cboForma08Change(Sender: TObject);
+    procedure chkAtalhoF6_1Click(Sender: TObject);
+    procedure chkAtalhoF6_2Click(Sender: TObject);
+    procedure chkAtalhoF6_3Click(Sender: TObject);
+    procedure chkAtalhoF6_4Click(Sender: TObject);
+    procedure chkAtalhoF6_5Click(Sender: TObject);
+    procedure chkAtalhoF6_6Click(Sender: TObject);
+    procedure chkAtalhoF6_7Click(Sender: TObject);
+    procedure chkAtalhoF6_8Click(Sender: TObject);
   private
     { Private declarations }
     sSecaoFrente: String;
+    sFormaAtalhoF6 : string;
     procedure CarregaInformacoes;
     procedure CarregaOpcaoTipoPix(ComboOpcao: Tcombobox; FormaPgto: string);
-    procedure OpcaoLancaContaReceber; // Sandro Silva 2021-07-27
+    procedure OpcaoLancaContaReceber;
+    procedure SetCheckAtalhoF6; // Sandro Silva 2021-07-27
   public
     { Public declarations }
   end;
@@ -330,15 +348,17 @@ begin
   {Sandro Silva 2021-08-30 fim}
 
 
+  //Mauricio Parizotto 2024-12-04
+  Mais1Ini.WriteString(SECAO_65,'Atalho F6', sFormaAtalhoF6);
+
   Mais1ini.Free;
-  //
+
   SmallMsg('Este Programa vai ser fechado para que as novas alterações'+Chr(10)+'tenham efeito');
   Form1.ClienteSmallMobile.EnviarLogParaMobile( // Sandro Silva 2022-08-08 EnviarLogParaMobile(
     Form1.ClienteSmallMobile.sLogRetornoMobile);
   Winexec('TASKKILL /F /IM frente.exe' , SW_HIDE ); Winexec('TASKKILL /F /IM nfce.exe' , SW_HIDE );
   FecharAplicacao(ExtractFileName(Application.ExeName));
   Close;
-  //
 end;
 
 procedure TFormasP.FormActivate(Sender: TObject);
@@ -541,6 +561,14 @@ begin
 
   if (cboPixExtra6.Visible) and (cboPixExtra6.ItemIndex = -1) then
     cboPixExtra6.ItemIndex := 0;
+
+  //Mauricio Parizotto 2024-12-04
+  chkAtalhoF6_6.Visible := cboPixExtra6.Visible;
+  if not chkAtalhoF6_6.Visible then
+  begin
+    chkAtalhoF6_6.Checked := False;
+    chkAtalhoF6_6Click(chkAtalhoF6_6);
+  end;
 end;
 
 procedure TFormasP.cboForma07Change(Sender: TObject);
@@ -551,6 +579,14 @@ begin
 
   if (cboPixExtra7.Visible) and (cboPixExtra7.ItemIndex = -1) then
     cboPixExtra7.ItemIndex := 0;
+
+  //Mauricio Parizotto 2024-12-04
+  chkAtalhoF6_7.Visible := cboPixExtra7.Visible;
+  if not chkAtalhoF6_7.Visible then
+  begin
+    chkAtalhoF6_7.Checked := False;
+    chkAtalhoF6_7Click(chkAtalhoF6_7);
+  end;
 end;
 
 procedure TFormasP.cboForma08Change(Sender: TObject);
@@ -561,6 +597,102 @@ begin
 
   if (cboPixExtra8.Visible) and (cboPixExtra8.ItemIndex = -1) then
     cboPixExtra8.ItemIndex := 0;
+
+  //Mauricio Parizotto 2024-12-04
+  chkAtalhoF6_8.Visible := cboPixExtra8.Visible;
+  if not chkAtalhoF6_8.Visible then
+  begin
+    chkAtalhoF6_8.Checked := False;
+    chkAtalhoF6_1Click(chkAtalhoF6_8);
+  end;
+end;
+
+procedure TFormasP.chkAtalhoF6_1Click(Sender: TObject);
+begin
+  if TCheckBox(Sender).Checked then
+    sFormaAtalhoF6 := 'Forma extra 1'
+  else
+    if sFormaAtalhoF6 = 'Forma extra 1' then
+      sFormaAtalhoF6 := '';
+
+  SetCheckAtalhoF6;
+end;
+
+procedure TFormasP.chkAtalhoF6_2Click(Sender: TObject);
+begin
+  if TCheckBox(Sender).Checked then
+    sFormaAtalhoF6 := 'Forma extra 2'
+  else
+    if sFormaAtalhoF6 = 'Forma extra 2' then
+      sFormaAtalhoF6 := '';
+
+  SetCheckAtalhoF6;
+end;
+
+procedure TFormasP.chkAtalhoF6_3Click(Sender: TObject);
+begin
+  if TCheckBox(Sender).Checked then
+    sFormaAtalhoF6 := 'Forma extra 3'
+  else
+    if sFormaAtalhoF6 = 'Forma extra 3' then
+      sFormaAtalhoF6 := '';
+
+  SetCheckAtalhoF6;
+end;
+
+procedure TFormasP.chkAtalhoF6_4Click(Sender: TObject);
+begin
+  if TCheckBox(Sender).Checked then
+    sFormaAtalhoF6 := 'Forma extra 4'
+  else
+    if sFormaAtalhoF6 = 'Forma extra 4' then
+      sFormaAtalhoF6 := '';
+
+  SetCheckAtalhoF6;
+end;
+
+procedure TFormasP.chkAtalhoF6_5Click(Sender: TObject);
+begin
+  if TCheckBox(Sender).Checked then
+    sFormaAtalhoF6 := 'Forma extra 5'
+  else
+    if sFormaAtalhoF6 = 'Forma extra 5' then
+      sFormaAtalhoF6 := '';
+
+  SetCheckAtalhoF6;
+end;
+
+procedure TFormasP.chkAtalhoF6_6Click(Sender: TObject);
+begin
+  if TCheckBox(Sender).Checked then
+    sFormaAtalhoF6 := 'Forma extra 6'
+  else
+    if sFormaAtalhoF6 = 'Forma extra 6' then
+      sFormaAtalhoF6 := '';
+
+  SetCheckAtalhoF6;
+end;
+
+procedure TFormasP.chkAtalhoF6_7Click(Sender: TObject);
+begin
+  if TCheckBox(Sender).Checked then
+    sFormaAtalhoF6 := 'Forma extra 7'
+  else
+    if sFormaAtalhoF6 = 'Forma extra 7' then
+      sFormaAtalhoF6 := '';
+
+  SetCheckAtalhoF6;
+end;
+
+procedure TFormasP.chkAtalhoF6_8Click(Sender: TObject);
+begin
+  if TCheckBox(Sender).Checked then
+    sFormaAtalhoF6 := 'Forma extra 8'
+  else
+    if sFormaAtalhoF6 = 'Forma extra 8' then
+      sFormaAtalhoF6 := '';
+
+  SetCheckAtalhoF6;
 end;
 
 procedure TFormasP.cboForma01Change(Sender: TObject);
@@ -571,6 +703,14 @@ begin
 
   if (cboPixExtra1.Visible) and (cboPixExtra1.ItemIndex = -1) then
     cboPixExtra1.ItemIndex := 0;
+
+  //Mauricio Parizotto 2024-12-04
+  chkAtalhoF6_1.Visible := cboPixExtra1.Visible;
+  if not chkAtalhoF6_1.Visible then
+  begin
+    chkAtalhoF6_1.Checked := False;
+    chkAtalhoF6_1Click(chkAtalhoF6_1);
+  end;
 end;
 
 procedure TFormasP.cboForma02Change(Sender: TObject);
@@ -581,6 +721,14 @@ begin
 
   if (cboPixExtra2.Visible) and (cboPixExtra2.ItemIndex = -1) then
     cboPixExtra2.ItemIndex := 0;
+
+  //Mauricio Parizotto 2024-12-04
+  chkAtalhoF6_2.Visible := cboPixExtra2.Visible;
+  if not chkAtalhoF6_2.Visible then
+  begin
+    chkAtalhoF6_2.Checked := False;
+    chkAtalhoF6_2Click(chkAtalhoF6_2);
+  end;
 end;
 
 procedure TFormasP.cboForma03Change(Sender: TObject);
@@ -591,6 +739,14 @@ begin
 
   if (cboPixExtra3.Visible) and (cboPixExtra3.ItemIndex = -1) then
     cboPixExtra3.ItemIndex := 0;
+
+  //Mauricio Parizotto 2024-12-04
+  chkAtalhoF6_3.Visible := cboPixExtra3.Visible;
+  if not chkAtalhoF6_3.Visible then
+  begin
+    chkAtalhoF6_3.Checked := False;
+    chkAtalhoF6_3Click(chkAtalhoF6_3);
+  end;
 end;
 
 procedure TFormasP.cboForma04Change(Sender: TObject);
@@ -601,6 +757,14 @@ begin
 
   if (cboPixExtra4.Visible) and (cboPixExtra4.ItemIndex = -1) then
     cboPixExtra4.ItemIndex := 0;
+
+  //Mauricio Parizotto 2024-12-04
+  chkAtalhoF6_4.Visible := cboPixExtra4.Visible;
+  if not chkAtalhoF6_4.Visible then
+  begin
+    chkAtalhoF6_4.Checked := False;
+    chkAtalhoF6_4Click(chkAtalhoF6_4);
+  end;
 end;
 
 procedure TFormasP.cboForma05Change(Sender: TObject);
@@ -611,6 +775,14 @@ begin
 
   if (cboPixExtra5.Visible) and (cboPixExtra5.ItemIndex = -1) then
     cboPixExtra5.ItemIndex := 0;
+
+  //Mauricio Parizotto 2024-12-04
+  chkAtalhoF6_5.Visible := cboPixExtra5.Visible;
+  if not chkAtalhoF6_5.Visible then
+  begin
+    chkAtalhoF6_5.Checked := False;
+    chkAtalhoF6_5Click(chkAtalhoF6_5);
+  end;
 end;
 
 procedure TFormasP.Edit5Exit(Sender: TObject);
@@ -725,6 +897,8 @@ begin
 end;
 
 procedure TFormasP.FormCreate(Sender: TObject);
+var
+  iPosLeft : integer;
 begin
   FormasP.BorderStyle := bsNone; // Sandro Silva 2021-08-09
   AjustaResolucao(FormasP); // Sandro Silva 2018-08-28
@@ -746,6 +920,7 @@ begin
   //Sandro Silva 2024.01.22 FormasP.Left   := Screen.Width - FormasP.Width div 2;
 
   //Mauricio Parizotto 2024-06-14
+  {Mauricio Parizotto 2024-12-04 Início
   cboPixExtra1.Left := chkReceberExtra1.Left + 180;
   cboPixExtra2.Left := chkReceberExtra2.Left + 180;
   cboPixExtra3.Left := chkReceberExtra3.Left + 180;
@@ -754,6 +929,30 @@ begin
   cboPixExtra6.Left := chkReceberExtra6.Left + 180;
   cboPixExtra7.Left := chkReceberExtra7.Left + 180;
   cboPixExtra8.Left := chkReceberExtra8.Left + 180;
+  }
+
+  if Screen.Width > 1900 then
+    iPosLeft := chkReceberExtra1.Left + 180
+  else
+    iPosLeft := chkReceberExtra1.Left + 150;
+
+  cboPixExtra1.Left := iPosLeft;
+  cboPixExtra2.Left := iPosLeft;
+  cboPixExtra3.Left := iPosLeft;
+  cboPixExtra4.Left := iPosLeft;
+  cboPixExtra5.Left := iPosLeft;
+  cboPixExtra6.Left := iPosLeft;
+  cboPixExtra7.Left := iPosLeft;
+  cboPixExtra8.Left := iPosLeft;
+
+  chkAtalhoF6_1.Left := cboPixExtra1.Left + cboPixExtra1.Width + 10;
+  chkAtalhoF6_2.Left := cboPixExtra2.Left + cboPixExtra2.Width + 10;
+  chkAtalhoF6_3.Left := cboPixExtra3.Left + cboPixExtra3.Width + 10;
+  chkAtalhoF6_4.Left := cboPixExtra4.Left + cboPixExtra4.Width + 10;
+  chkAtalhoF6_5.Left := cboPixExtra5.Left + cboPixExtra5.Width + 10;
+  chkAtalhoF6_6.Left := cboPixExtra6.Left + cboPixExtra6.Width + 10;
+  chkAtalhoF6_7.Left := cboPixExtra7.Left + cboPixExtra7.Width + 10;
+  chkAtalhoF6_8.Left := cboPixExtra8.Left + cboPixExtra8.Width + 10;
 end;
 
 procedure TFormasP.Button1Click(Sender: TObject);
@@ -780,10 +979,8 @@ var
     end;
   end;
 begin
-  //
-  //
   Mais1ini    := TIniFile.Create('FRENTE.INI');
-  //
+
   Edit1.Text  := Mais1Ini.ReadString('Frente de caixa','Forma Cartao'   ,'Cartao');
   Edit2.Text  := Mais1Ini.ReadString('Frente de caixa','Forma A prazo'  ,'Prazo');
   Edit3.Text  := Mais1Ini.ReadString('Frente de caixa','Forma Cheque'   ,'Cheque');
@@ -943,6 +1140,9 @@ begin
 
   Mais1ini.Free;
 
+  //Mauricio Parizotto 2024-12-04
+  sFormaAtalhoF6 := GetFormaAtalhoF6;
+
   //Mauricio Parizotto 2024-06-14
   cboForma01Change(nil);
   cboForma02Change(nil);
@@ -1008,6 +1208,36 @@ begin
 
   if not chkReceberExtra8.Enabled then
    chkReceberExtra8.Checked := True;
+end;
+
+procedure TFormasP.SetCheckAtalhoF6; //Mauricio Parizotto 2024-12-04
+begin
+  chkAtalhoF6_1.OnClick := nil;
+  chkAtalhoF6_2.OnClick := nil;
+  chkAtalhoF6_3.OnClick := nil;
+  chkAtalhoF6_4.OnClick := nil;
+  chkAtalhoF6_5.OnClick := nil;
+  chkAtalhoF6_6.OnClick := nil;
+  chkAtalhoF6_7.OnClick := nil;
+  chkAtalhoF6_8.OnClick := nil;
+
+  chkAtalhoF6_1.Checked := (sFormaAtalhoF6 = 'Forma extra 1');
+  chkAtalhoF6_2.Checked := (sFormaAtalhoF6 = 'Forma extra 2');
+  chkAtalhoF6_3.Checked := (sFormaAtalhoF6 = 'Forma extra 3');
+  chkAtalhoF6_4.Checked := (sFormaAtalhoF6 = 'Forma extra 4');
+  chkAtalhoF6_5.Checked := (sFormaAtalhoF6 = 'Forma extra 5');
+  chkAtalhoF6_6.Checked := (sFormaAtalhoF6 = 'Forma extra 6');
+  chkAtalhoF6_7.Checked := (sFormaAtalhoF6 = 'Forma extra 7');
+  chkAtalhoF6_8.Checked := (sFormaAtalhoF6 = 'Forma extra 8');
+
+  chkAtalhoF6_1.OnClick := chkAtalhoF6_1Click;
+  chkAtalhoF6_2.OnClick := chkAtalhoF6_2Click;
+  chkAtalhoF6_3.OnClick := chkAtalhoF6_3Click;
+  chkAtalhoF6_4.OnClick := chkAtalhoF6_4Click;
+  chkAtalhoF6_5.OnClick := chkAtalhoF6_5Click;
+  chkAtalhoF6_6.OnClick := chkAtalhoF6_6Click;
+  chkAtalhoF6_7.OnClick := chkAtalhoF6_7Click;
+  chkAtalhoF6_8.OnClick := chkAtalhoF6_8Click;
 end;
 
 end.

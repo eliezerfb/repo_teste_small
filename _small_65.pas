@@ -4773,16 +4773,15 @@ begin
                   bButton := Application.MessageBox(PChar('Esta numeração já foi utilizada.' + chr(10) + chr(10) + 'Definir um novo número para esta NFC-e?'), 'Atenção Duplicidade de NFC-e', mb_YesNo + mb_DefButton1 + MB_ICONWARNING);
               end;
 
-            end;// if (Form1.ClienteSmallMobile.sVendaImportando <> '') then
+            end;
 
-            //
             if bButton = IDYES then
             begin
               try
-                sNovoNumero := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 sNovoNumero := '000000';
+                sNovoNumero := FormataNumeroDoCupom(0);
                 while Form1.iCupom >= StrToInt(sNovoNumero) do
                 begin
-                  sNovoNumero := FormataNumeroDoCupom(IncrementaGenerator('G_NUMERONFCE', 1)); // Sandro Silva 2021-12-02 sNovoNumero := StrZero(IncrementaGenerator('G_NUMERONFCE', 1), 6, 0);
+                  sNovoNumero := FormataNumeroDoCupom(IncrementaGenerator('G_NUMERONFCE', 1));
                   Sleep(10); // Sandro Silva 2020-05-20
                 end;
 
@@ -5078,7 +5077,7 @@ begin
           begin
             // sRetorno está vazio
 
-            LogFrente('5102 Sem retorno sefaz ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
+            //LogFrente('5102 Sem retorno sefaz ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
 
             if Trim(sLogErro) = '' then
             begin
@@ -5127,7 +5126,7 @@ begin
         if AnsiContainsText(sStatus, 'Autoriza') or AnsiContainsText(sStatus, NFCE_EMITIDA_EM_CONTINGENCIA) then // Sandro Silva 2019-07-22
         begin
 
-          LogFrente('5151 autorizada ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
+          //LogFrente('5151 autorizada ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
 
           {Sandro Silva 2023-12-06 inicio
           if AnsiContainsText(sStatus, 'conting') then
@@ -5231,7 +5230,7 @@ begin
           sLogErro := sLogErro + 'Erro! '+E.Message;
         Result := False;
 
-        LogFrente('5255 ' + FormataNumeroDoCupom(Form1.icupom) + ' ' + sLogErro); // Sandro Silva 2023-12-07
+        //LogFrente('5255 ' + FormataNumeroDoCupom(Form1.icupom) + ' ' + sLogErro); // Sandro Silva 2023-12-07
 
         Exit;
       end;
@@ -5296,7 +5295,7 @@ begin
 
         Form1.IBDataSet150.Post;
 
-        LogFrente('5313 ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
+        //LogFrente('5313 ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
 
         // Sandro Silva 2015-03-30 Mantem ALTERACA.DATA = NFCE.DATA
         Form1.ibDataSet27.First;
@@ -5380,10 +5379,10 @@ begin
     {Sandro Silva 2023-12-06 inicio}
     if bDisponibilizarDANFCe then
     begin
-      LogFrente('5396 vai imprimir' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
+      //LogFrente('5396 vai imprimir' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
       _ecf65_DisponibilizarDANFCe(sStatus, sLote, fNFe);
 
-      LogFrente('5399 imprimiu ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
+      //LogFrente('5399 imprimiu ' + xmlNodeValue(fNFE, '//infNFe/@Id')); // Sandro Silva 2023-12-07
 
     end;
     {Sandro Silva 2023-12-06 fim}
@@ -5392,7 +5391,7 @@ begin
     if bOk = False then
     begin
 
-      LogFrente('5408 algo falhou ' + FormataNumeroDoCupom(Form1.icupom) + ' ' + sLogErro); // Sandro Silva 2023-12-07
+      //LogFrente('5408 algo falhou ' + FormataNumeroDoCupom(Form1.icupom) + ' ' + sLogErro); // Sandro Silva 2023-12-07
 
       // Gera resposta para Small Mobile em .pdf com erro;
       if Form1.Panel3.Visible then
@@ -5530,7 +5529,7 @@ begin
                         Form1.sMotivoContingencia        := NFCE_XJUST_CONTINGENCIA_AUTOMATICA;
                       end;
 
-                      LogFrente('5547 gerou contigencia para cancelamento por substituição ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
+                      //LogFrente('5547 gerou contigencia para cancelamento por substituição ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 
                       Result := _ecf65_EnviarNFCe(True); // Usa princípio da recursividade, o método chama a sí mesmo
 
@@ -5665,7 +5664,7 @@ begin
   FreeAndNil(IBQALTERACA); // Sandro Silva 2019-08-05
   ChDir(Form1.sAtual); // Sandro Silva 2017-03-31
 
-  LogFrente('5673 concluiu metodo enviarnfce ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
+  //LogFrente('5673 concluiu metodo enviarnfce ' + FormataNumeroDoCupom(Form1.icupom)); // Sandro Silva 2023-12-07
 end;
 
 function _ecf65_Visualiza_DANFECE(pSLote: String; pFNFe : WideString): Boolean;
@@ -6113,7 +6112,6 @@ begin
 
     if bExibirMensagem then
     begin
-
       if Form1.bStatusECF = False then // Só exibe caixa mensagem quando sem serviço Sandro Silva 2021-11-03
       begin
         if Result = '' then
@@ -6121,17 +6119,13 @@ begin
         else
           Application.MessageBox(PChar(Result), 'Status do Serviço', MB_ICONINFORMATION + MB_OK);
       end;
-
     end;
 
     if Form1.NFCeemContingncia1.Checked = False then // Ocultar botoes apenas se não estiver em contingência
-      Form1.Teclas_touch(True);
+      Form1.Teclas_touch;
   finally
-    //Form1.NFCeemContingncia1.Checked := bContingencia;
     Screen.Cursor := Cursor;
   end;
-
-  //SmallMsg('Teste 01 consulta fim 3124');
 end;
 
 function _ecf65_InutilizacaoNFCe: String;
@@ -6719,18 +6713,14 @@ function _ecf65_NumeroDoCupom(Pp1: Boolean):String;
 var
   Mais1Ini : tIniFile;
 begin
-  //
   try
-    //
     Mais1ini  := TIniFile.Create('FRENTE.INI');
-    //
+
     if _ecf65_CupomAberto(True) then
       Pp1 := False;
-    //
 
     if pP1 then
     begin
-      //
       while True do
       begin
 
@@ -6772,28 +6762,15 @@ begin
 
         Form1.IBDataSet150.Post;
 
-        {Sandro Silva 2023-08-22 inicio
-        Mais1Ini.WriteString('NFCE','CUPOM',Result);
-        }
-        GravaNumeroCupomFrenteINI(Result, '65'); // Sandro Silva 2023-08-22
-        {Sandro Silva 2023-08-22 fim}
-
+        GravaNumeroCupomFrenteINI(Result, '65');
       except end;
     end else
     begin
-      {Sandro Silva 2023-08-22 inicio
-      try
-        Result := FormataNumeroDoCupom(StrToInt(Mais1Ini.ReadString('NFCE','CUPOM',FormataNumeroDoCupom(1))));
-      except
-        Result := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 Result := '000000';
-      end;
-      }
       try
         Result := FormataNumeroDoCupom(StrToInt(LeNumeroCupomFrenteINI('65', FormataNumeroDoCupom(1))));
       except
-        Result := FormataNumeroDoCupom(0); // Sandro Silva 2021-12-02 Result := '000000';
+        Result := FormataNumeroDoCupom(0);
       end;
-      {Sandro Silva 2023-08-22 fim}
     end;
 
     Mais1Ini.Free;
@@ -6805,7 +6782,7 @@ begin
     Result := '000001';
 
   try
-    Result := FormataNumeroDoCupom(StrToInt(Result)); // Sandro Silva 2021-12-01
+    Result := FormataNumeroDoCupom(StrToInt(Result));
   except
   end;
 end;
@@ -8393,7 +8370,7 @@ begin
                     end;
                   end;
                 end;
-                Commitatudo2(True);
+                Commitatudo2(True); // _ecf65_EnviarNFCeContingencia()
 
                 ///////////////////////////////////////////////////////////////////////////
               end;
@@ -10294,7 +10271,7 @@ begin
   if (StrToDate(LerParametroIni(Form1.sAtual + '\NFE.INI', 'NFCE', 'Analise NFCe', FormatDateTime('dd/mm/yyyy', Date -1))) = Date) then
     Exit;
 
-  LogFrente('Iniciando CorrigeXmlNoBanco'); // Sandro Silva 2023-03-21
+  //LogFrente('Iniciando CorrigeXmlNoBanco'); // Sandro Silva 2023-03-21
 
   slArquivoEnvio := TStringList.Create;
   slListaXml     := TStringList.Create;
@@ -10338,7 +10315,7 @@ begin
   IBQCONSULTA.ParamByName('NFEXML2').AsString := '<?xml version="1.0" encoding="UTF-8"?><nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><?xml version="1.0" encoding="UTF-8"?><nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><NFe';
   IBQCONSULTA.Open;
 
-  LogFrente('Executou query ' + IBQCONSULTA.SQL.Text); // Sandro Silva 2023-03-21
+  //LogFrente('Executou query ' + IBQCONSULTA.SQL.Text); // Sandro Silva 2023-03-21
 
   if (IBQCONSULTA.IsEmpty = False) then // Sandro Silva 2023-03-21   if (IBQCONSULTA.IsEmpty = False) or (sUFEmitente = 'MG') then
   begin
@@ -10409,7 +10386,7 @@ begin
                 ArquivoXml.SalvarArquivo(Form1.sAtual + '\XmlDestinatario\NFCE\' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe') + '-nfce.xml');
                 FreeAndNil(ArquivoXml);
 
-                LogFrente('Atualizou ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'));// Sandro Silva 2023-03-21
+                //LogFrente('Atualizou ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'));// Sandro Silva 2023-03-21
 
               except
 
@@ -10441,7 +10418,7 @@ begin
         ')';
       IBQCONSULTA.Open;
 
-      LogFrente('Executou query ' + IBQCONSULTA.SQL.Text);// Sandro Silva 2023-03-21
+      //LogFrente('Executou query ' + IBQCONSULTA.SQL.Text);// Sandro Silva 2023-03-21
 
       while IBQCONSULTA.Eof = False do
       begin
@@ -10492,7 +10469,7 @@ begin
                     Audita('RECUPERA1','FRENTE', '', 'Recuperou XML NFC-e: ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'), 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
                     {Sandro Silva 2022-06-02 fim}
 
-                    LogFrente('Recupera1 NFC-e ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'));// Sandro Silva 2023-03-21
+                    //LogFrente('Recupera1 NFC-e ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'));// Sandro Silva 2023-03-21
 
                   end;
 
@@ -10520,7 +10497,7 @@ begin
         ' and (coalesce(NFEXML, '''') starting ''<nfeProc'' and coalesce(NFEXML, '''') not containing ''<?xml version='')';
       IBQCONSULTA.Open;
 
-      LogFrente('Executou query ' + IBQCONSULTA.SQL.Text); // Sandro Silva 2023-03-21
+      //LogFrente('Executou query ' + IBQCONSULTA.SQL.Text); // Sandro Silva 2023-03-21
 
       while IBQCONSULTA.Eof = False do
       begin
@@ -10552,7 +10529,7 @@ begin
               Audita('RECUPERA2','FRENTE', '', 'Corrigiu cabeçalho XML: ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'), 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
               {Sandro Silva 2022-06-02 fim}
 
-              LogFrente('Recupera2 NFC-e ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'));
+              //LogFrente('Recupera2 NFC-e ' + xmlNodeValue(sXml, '//protNFe/infProt/chNFe'));
 
             except
 
@@ -10607,7 +10584,7 @@ begin
 
                 sRetorno := ''; // Começa vazio Sandro Silva 2020-06-05
 
-                LogFrente('Localizou ' + IntToStr(slListaXml.Count) + ' xml da nota ' + sNumeroNF);// Sandro Silva 2023-03-21
+                //LogFrente('Localizou ' + IntToStr(slListaXml.Count) + ' xml da nota ' + sNumeroNF);// Sandro Silva 2023-03-21
 
                 for iArquivoEnvio := 0 to slListaXml.Count - 1 do
                 begin
@@ -10727,7 +10704,7 @@ begin
                   Audita('RECUPERA3','FRENTE', '', 'Recuperou XML NFC-e: ' + xmlNodeValue(sXmlAutorizado, '//protNFe/infProt/chNFe'), 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
                   {Sandro Silva 2022-06-02 fim}
 
-                  LogFrente('Recuper3 NFC-e ' + xmlNodeValue(sXmlAutorizado, '//protNFe/infProt/chNFe')); // Sandro Silva 2023-03-21
+                  //LogFrente('Recuper3 NFC-e ' + xmlNodeValue(sXmlAutorizado, '//protNFe/infProt/chNFe')); // Sandro Silva 2023-03-21
 
                 end;
               except
@@ -10786,7 +10763,7 @@ begin
                         Audita('RECUPERA4','FRENTE', '', 'Recuperou XML NFC-e: ' + xmlNodeValue(sXmlEnvio, '//protNFe/infProt/chNFe'), 0, 0); // Ato, Modulo, Usuário, Histórico, Valor
                         {Sandro Silva 2022-06-02 fim}
 
-                        LogFrente('Recupera4 NFC-e ' + xmlNodeValue(sXmlEnvio, '//protNFe/infProt/chNFe'));
+                        //LogFrente('Recupera4 NFC-e ' + xmlNodeValue(sXmlEnvio, '//protNFe/infProt/chNFe'));
                       end;
                     except
                     end;
@@ -10822,7 +10799,7 @@ begin
   FreeAndNil(slArquivoEnvio);
   FreeAndNil(slListaXml);
 
-  LogFrente('Finalizando CorrigeXmlNoBanco'); // Sandro Silva 2023-03-21
+  //LogFrente('Finalizando CorrigeXmlNoBanco'); // Sandro Silva 2023-03-21
 
   GravarParametroIni(Form1.sAtual + '\NFE.INI', 'NFCE', 'Analise NFCe', FormatDateTime('dd/mm/yyyy', Date));  
 end;

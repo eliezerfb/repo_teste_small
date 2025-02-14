@@ -129,7 +129,7 @@ object Form3: TForm3
     Left = 16
     Top = 88
     Width = 230
-    Height = 39
+    Height = 19
     BevelInner = bvNone
     BevelOuter = bvNone
     Color = clWhite

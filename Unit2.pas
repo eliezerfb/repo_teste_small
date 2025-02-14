@@ -1333,7 +1333,8 @@ begin
     Form1.fDescontoNoTotal := StrToFloat(FormatFloat('0.00', Form1.ibDataSet27.FieldByname('TOTAL').AsFloat*-1)); // Sandro Silva 2021-12-23 Form1.fDescontoNoTotal := Form1.ibDataSet27.FieldByname('TOTAL').AsFloat*-1;
     if Form1.ibDataSet25.State in [dsEdit, dsInsert] = False then // Sandro Silva 2022-09-06
       Form1.ibDataSet25.Edit; // Precisa para evitar erro quando está usando POS com indentificaPOS e configurou apenas CREDITO/DEBITO sem bandeira
-    Form1.ibDataSet25.FieldByname('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', Form1.fTotal + Form1.fDescontoNoTotal)); // Sandro Silva 2021-12-23 Form1.fTotal + Form1.fDescontoNoTotal;
+    //smal-913 Form1.ibDataSet25.FieldByname('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', Form1.fTotal + Form1.fDescontoNoTotal)); // Sandro Silva 2021-12-23 Form1.fTotal + Form1.fDescontoNoTotal;
+    Form1.ibDataSet25.FieldByname('RECEBER').AsFloat := StrToFloat(FormatFloat('0.00', Form1.fTotal - Form1.fDescontoNoTotal));
   end;
 
   //
@@ -2024,25 +2025,21 @@ begin
 
   end;
 
-  //
   if SMALL_DBEdit5.Focused then
     Button1.SetFocus;
-  //
+
   if Panel5.Visible then
   begin
-    //
     Form1.sConveniado := Edit8.Text;
     Form1.sVendedor   := Edit9.Text;
-    //
+
     // Desconto pelo convênio
-    //
-    //
     fTotal1 := Form1.PDV_SubTotal(True);
     //
     if (Form1.ClienteSmallMobile.sVendaImportando = '')
       or ((Form1.ClienteSmallMobile.sVendaImportando <> '') and (sFormaPag = FORMA_PAGAMENTO_A_VISTA)) then
     begin
-      fTotal1 := fTotal1 - Form1.fDescontoNoTotal;
+      fTotal1 := fTotal1 - Form1.fDescontoNoTotal; //2025-02-10
       //
       if (Form1.ibDataSet25.State in [dsInsert, dsEdit]) = False then
         Form1.ibDataSet25.Edit;
@@ -2071,15 +2068,13 @@ begin
       Form1.ibDataSet25.FieldByName('VALOR_4').AsFloat    := 0;
     end;
 
-    //
     Panel4.Visible := True;
 
     Panel5.Visible := False; // Sandro Silva 2021-07-05
 
     Button1.Caption := 'F3 Finalizar >>'; // Sandro Silva 2021-07-02 Button1.Caption := '&Finalizar >>';
-    //
+
     // Identificação do cliente
-    //
     if SMALL_DBEdit5.CanFocus then
     begin
       SMALL_DBEdit5.SelectAll;
@@ -2097,16 +2092,10 @@ begin
       //////////////////////////
       SMALL_DBEdit2.SetFocus;
     end;
-    //
-    // Sandro Silva 2021-07-05 Panel5.Visible := False;
-    //
-    //
   end else
   begin
-    //
     if Panel4.Visible then
     begin
-      //
       if Form1.ibDataSet25.FieldByname('DIFERENCA_').AsFloat <> 0 then
       begin
         Panel4.Visible := False;
@@ -2119,10 +2108,8 @@ begin
       begin
         Button2Click(Sender);
       end;
-      //
     end else
     begin
-      //
       if Panel3.Visible then
       begin
         if (StrToIntDef(LimpaNumero(MaskEdit1.Text), 0) = 0) and (Form1.ClienteSmallMobile.sVendaImportando = '') then
@@ -2133,9 +2120,7 @@ begin
         else
           Button2Click(Sender);
       end;
-      //
     end;
-    //
   end;
 
   // Se finalizando em dinheiro deve excluir parcelas a receber do documento
@@ -2158,7 +2143,6 @@ begin
 
     end;
   end;
-  //
 end;
 
 procedure TForm2.SMALL_DBEdit2Enter(Sender: TObject);

@@ -85,17 +85,25 @@ const PAGAMENTO_EM_CARTAO = 'Pagamento em Cartão';
 
 const NUMERO_FORMAS_EXTRAS = 8;
 
+{Sandro Silva (f-21891) 2024-12-10 inicio
 const SQL_FORMAPAGAMENTO_LIST = ' (Select list(DISTINCT trim(substring(P.FORMA from 3 for char_length(P.FORMA))), ''; '') '+
                                 '  From PAGAMENT P'+
                                 '  Where P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA '+
                                 '    and substring(P.FORMA from 1 for 2) not in (''00'', ''13'')'+
                                 ' ) FORMAPAGAMENTO,';
+}
+const SQL_FORMAPAGAMENTO_LIST = ' (Select list(DISTINCT trim(substring(P.FORMA from 3 for char_length(P.FORMA))), ''; '') '+
+                                '  From PAGAMENT P'+
+                                '  Where P.PEDIDO = N.NUMERONF and P.CAIXA = N.CAIXA '+
+                                '    and substring(P.FORMA from 1 for 2) not in (''00'', ''13'')'+
+                                ' ) FORMAPAGAMENTO ';
+{Sandro Silva (f-21891) 2024-12-10 fim}
 
 const SQL_CLIENTE             = ' (Select First 1 A.CLIFOR'+
                                 '  From ALTERACA A'+
                                 '  Where A.PEDIDO = N.NUMERONF and A.CAIXA = N.CAIXA'+
                                 '    and coalesce(A.CLIFOR, '''') <> '''' '+
-                                ' ) CLIFOR';
+                                ' ) CLIFOR ';
 
 type
   TDadosEmitente = class
@@ -240,9 +248,6 @@ type
   published
   end;
 
-{$IFDEF VER150}
-function GetIP: String;
-{$ENDIF}
 function LerParametroIni(sArquivo: String; sSecao: String; sParametro: String; sValorDefault: String): String;
 function GravarParametroIni(sArquivo: String; sSecao: String; sParametro: String; sValor: String): String;
 function xmlNodeXml(sXML: String; sNode: String): String;
@@ -372,6 +377,8 @@ function GetAutorizacaoPixRec(sNumeroNF, sCaixa : string; IBTRANSACTION: TIBTran
 function GetCNPJInstituicaoFinanceira(sInstituicaoFinanceira: string; IBTRANSACTION: TIBTransaction) : string;
 function GetIDFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : integer;
 function GetDescricaoFORMA(sCodTpag: string; IBTRANSACTION: TIBTransaction) : string;
+function GetFormaAtalhoF6 : string;
+function GetCampoValorFormaExtra(Forma : integer):string;
 
 var
   //cWinDir: array[0..200] of WideChar;
@@ -389,26 +396,6 @@ uses StrUtils, uTypesRecursos
 //Sandro Silva Evitar adicionar forms específico aqui , FISCAL
 ;
 
-//////////////////////////////
-{$IFDEF VER150}
-function GetIP: String;
-var
-  WSAData: TWSAData;
-  HostEnt: PHostEnt;
-  Name:string;
-begin
-  WSAStartup(2, WSAData);
-  SetLength(Name, 255);
-  Gethostname(PChar(Name), 255);
-  SetLength(Name, StrLen(PChar(Name)));
-  HostEnt := gethostbyname(PChar(Name));
-  with HostEnt^  do
-  begin
-    Result := Format('%d.%d.%d.%d',[Byte(h_addr^[0]),Byte(h_addr^[1]),Byte(h_addr^[2]),Byte(h_addr^[3])]);
-  end;
-  WSACleanup;
-end;
-{$ENDIF}
 
 function LerParametroIni(sArquivo: String; sSecao: String; sParametro: String; sValorDefault: String): String;
 var
@@ -2410,7 +2397,7 @@ begin
             //'select N.* from NFCE N where N.DATA = ' + QuotedStr(DateToStrInvertida(Data)) + Mauricio Parizotto 2024-08-23
             ' Select'+
             '   N.*,'+
-            SQL_FORMAPAGAMENTO_LIST+
+            SQL_FORMAPAGAMENTO_LIST + ', ' + // Sandro Silva (f-21891) 2024-12-10 SQL_FORMAPAGAMENTO_LIST+
             SQL_CLIENTE+
             ' From NFCE N '+
             ' Where N.DATA = ' + QuotedStr(DateToStrInvertida(Data)) +
@@ -2954,5 +2941,45 @@ begin
   end;
 end;
 
+
+function GetFormaAtalhoF6 : string; //Mauricio Parizotto 2024-12-04
+var
+  Mais1Ini: TIniFile;
+  i, QtdFormaPix : integer;
+  sFormaPixPadrao : string;
+begin
+  Result := '';
+  Mais1ini    := TIniFile.Create('FRENTE.INI');
+  Result := Mais1Ini.ReadString(SECAO_65,'Atalho F6', 'Padrão');
+
+  if Result = 'Padrão' then
+  begin
+    sFormaPixPadrao := '';
+    QtdFormaPix     := 0;
+
+    for i := 1 to 8 do
+    begin
+      if (Copy(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra '+i.ToString,''),1,2) = '17')
+        or (Copy(Mais1Ini.ReadString(SECAO_65,'Ordem forma extra '+i.ToString,''),1,2) = '20') then
+      begin
+        sFormaPixPadrao := 'Forma extra '+i.ToString;
+        Inc(QtdFormaPix);
+      end;
+    end;
+
+    //Se só tiver uma fica como padrão
+    if QtdFormaPix = 1 then
+      Result := sFormaPixPadrao
+    else
+      Result := '';
+  end;
+
+  Mais1ini.Free;
+end;
+
+function GetCampoValorFormaExtra(Forma : integer):string;
+begin
+  Result := 'VALOR0'+Forma.ToString;
+end;
 
 end.

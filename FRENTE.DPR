@@ -120,7 +120,10 @@ uses
   uWebServiceSicoob in '..\unit_compartilhada\Sicoob\uWebServiceSicoob.pas',
   uFrenteSectionsBD in '..\unit_compartilhada\DAT\uFrenteSectionsBD.pas',
   uIMendesSections in '..\unit_compartilhada\DAT\uIMendesSections.pas',
-  ufrmSobre in 'ufrmSobre.pas' {frmSobre};
+  ufrmSobre in 'ufrmSobre.pas' {frmSobre},
+  uMinhasNotas in '..\unit_compartilhada\MinhasNotas\uMinhasNotas.pas',
+  uWebServiceMinhasNotas in '..\unit_compartilhada\MinhasNotas\uWebServiceMinhasNotas.pas',
+  uSistema in '..\Projeto-2022\2022\units\uSistema.pas';
 
 {$R *.RES}
 
