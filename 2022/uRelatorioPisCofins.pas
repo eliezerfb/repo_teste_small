@@ -194,6 +194,7 @@ begin
     ' and (TIPO = ' + QuotedStr('BALCAO')+
     ' or TIPO = ' + QuotedStr('VENDA')+') '+
     ' and Coalesce(CST_PIS_COFINS,''XX'')<>''XX'' '+
+    ' and CST_PIS_COFINS<>'''' '+
     FFilterByCSTPisCofins+
     'order by DATA, PEDIDO'
   );
