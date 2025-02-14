@@ -1061,6 +1061,7 @@ type
     ibDataSet7AUTORIZACAOTRANSACAO: TIBStringField;
     Abandonarvenda1: TMenuItem;
     TimerMinhasNotas: TTimer;
+    PesarsomenteprodutosKG1: TMenuItem;
     procedure MesaMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure MesaMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1433,6 +1434,7 @@ type
     procedure mmTransmitiContingenciaAberturaClick(Sender: TObject);
     procedure Abandonarvenda1Click(Sender: TObject);
     procedure TimerMinhasNotasTimer(Sender: TObject);
+    procedure PesarsomenteprodutosKG1Click(Sender: TObject);
   private
     { Private declarations }
     bUsuarioLogado: Boolean; // Sandro Silva 2015-05-06 Controlar quando o usuário logo e não pedir novamente o login onde executa FormShow()
@@ -1441,6 +1443,7 @@ type
     bFechandoCupom: Boolean; // Sandro Silva 2016-02-10 Controlar que pressione F7 durante o fechamento do cupom e cancela a venda na impressora
     bGerarXmlReducaoRecuperada: Boolean; // Sandro Silva 2019-09-09 ER 02.06 UnoChapeco
     sUltimoPesoAutonomo: String;//Sandro Silva 2024-07-11
+    sPesarSomenteKG: String;
     bPermiteImportarMesmoOrc : Boolean; // Mauricio Parizotto 2024-08-26
     FFilterOcultaUsoConsumoVenda: String;
     procedure AberturaDoCupom;
@@ -1522,6 +1525,8 @@ type
     procedure DefineTransmiteContingenciaAbertura;
     procedure SetFilterOcultaUsoConsumoVenda(AOcultaUsoConsumoVenda: Boolean);
     function AbandonaVenda: boolean;
+    function PermiteAbrirPesado(CodigoBarras: String; QuantidadeVendida: Real;
+      Texto: String; UnidadeMedida: String): Boolean;
     procedure LimpaOS_Orcamento(sDav, sTipoDav: string; Transaction:TIBTransaction);
   protected
     procedure WndProc(var Msg: TMessage); override;
@@ -8830,6 +8835,7 @@ begin
   sSenhaDeUsuario        := Mais1Ini.ReadString('Frente de caixa', 'SDU','Não');
   sPlanoDeContas         := Mais1Ini.ReadString('Frente de caixa', 'Plano de contas','Receita de vendas ECF');
   sBAlanca               := Mais1ini.ReadString('Frente de caixa', 'Balança','Não');
+  Form1.sPesarSomenteKG  := Mais1ini.ReadString(SECAO_FRENTE_CAIXA, CHAVE_PESAR_SOMENTE_KG, _cNao);
   sFuso                  := Mais1ini.ReadString('NFCE', 'Fuso', '-03:00');
   Form1.bHorarioDeVerao  := (Mais1ini.ReadString('NFCE', 'Horario de Verao', 'Não') = 'Sim'); // Sandro Silva 2019-02-27
   sVersaoLayoutNFCe      := Mais1ini.ReadString('NFCE','Versão do Layout','4.00'); // Sandro Silva 2018-12-03 '3.10'  // Sandro Silva 2017-10-27  '3.10';
@@ -13956,6 +13962,7 @@ begin
   if Mais1Ini.ReadString('Frente de caixa','Gaveta','0')                  = '0'   then Gaveta1.Checked                  := False else Gaveta1.Checked := True;
   if Mais1Ini.ReadString('Frente de caixa','Status Gaveta','0')           = '0'   then Inverterstatusdagaveta1.Checked  := False else Inverterstatusdagaveta1.Checked := True;
   if Mais1Ini.ReadString('Frente de caixa','Balança','Não')               = 'Não' then Balana1.Checked                  := False else Balana1.Checked := True;
+  PesarsomenteprodutosKG1.Checked := Mais1Ini.ReadString(SECAO_FRENTE_CAIXA, CHAVE_PESAR_SOMENTE_KG, _cNao) = _cSim;
   DefineTemTEF;
   if Mais1Ini.ReadString('Frente de caixa','Corta papel','Sim')           = 'Sim' then CortaPapel1.Checked              := True else CortaPapel1.Checked := False;
   if Mais1Ini.ReadString('Frente de caixa','CRLF','Sim')                  = 'Sim' then CRLF2.Checked                    := True else CRLF2.Checked := False;
@@ -15733,9 +15740,8 @@ procedure TForm1.Balana1Click(Sender: TObject);
 var
   Mais1Ini : TiniFile;
 begin
-  //
   Mais1ini := TIniFile.Create('FRENTE.INI');
-  //
+
   if Mais1Ini.ReadString('Frente de caixa','Balança','Não') = 'Não' then
   begin
     Mais1Ini.WriteString('Frente de caixa','Balança','Sim');
@@ -15743,11 +15749,10 @@ begin
   end
   else
     Mais1Ini.WriteString('Frente de caixa','Balança','Não');
-  //
+
   Form1.sBalanca := Mais1Ini.ReadString('Frente de caixa','Balança','Não');
   Mais1Ini.Free;
-  //
-  //
+
 end;
 
 procedure TForm1.ibDataset88FilterRecord(DataSet: TDataSet; var Accept: Boolean);
@@ -16741,14 +16746,19 @@ begin
                 Abort;
               end;
             end;
-            
-            if (Copy(Form1.ibDataSet4.FieldByName('REFERENCIA').AsString, 1, 2) = '20') and (fQuantidadeVendida = 1) and (FileExists(sAtual + '\' + EXECUTAVEL_PESADO)) then
+
+            //if (Copy(Form1.ibDataSet4.FieldByName('REFERENCIA').AsString, 1, 2) = '20') and (fQuantidadeVendida = 1) and (FileExists(sAtual + '\' + EXECUTAVEL_PESADO)) then
+            if PermiteAbrirPesado(Form1.ibDataSet4.FieldByName('REFERENCIA').AsString, fQuantidadeVendida, Edit1.Text, Form1.ibDataSet4.FieldByName('MEDIDA').AsString) then
             begin
+              {
               if (Copy(Edit1.Text, 1, 1) = '2') and (Length(Edit1.Text) > 11) then
               begin
                 // Outros não barras interno
               end
               else
+              begin
+              }
+              //if PermiteAbrirPesado(Form1.ibDataSet4.FieldByName('REFERENCIA').AsString, fQuantidadeVendida, Edit1.Text, Form1.ibDataSet4.FieldByName('MEDIDA').AsString) then
               begin
                 bPesouAutomatico := False; // Sandro Silva 2019-01-21
                 if sBalanca = 'Sim' then
@@ -16762,7 +16772,7 @@ begin
 
                     while not FileExists(aWinDir+'\peso.txt') do
                     begin
-
+                      Sleep(100);
                     end;
                     Sleep(1000);
 
@@ -30174,6 +30184,19 @@ begin
 
 end;
 
+function TForm1.PermiteAbrirPesado(CodigoBarras: String; QuantidadeVendida: Real; Texto: String; UnidadeMedida: String): Boolean;
+begin
+  if (Copy(CodigoBarras, 1, 2) = '20') and (QuantidadeVendida = 1) and (FileExists(sAtual + '\' + EXECUTAVEL_PESADO)) then
+  begin
+    Result := True;
+    if ((Copy(Texto, 1, 1) = '2') and (Length(Texto) > 11)) or (Copy(UpperCase(UnidadeMedida), 1, 2) = 'KU') then
+    begin
+      if Form1.sPesarSomenteKG = _cSim then
+        Result := False;
+    end;
+  end;
+end;
+
 procedure TForm1.PesagemAutonoma;
 // Seleciona a próxima mesa vazia
 var
@@ -30202,6 +30225,26 @@ begin
     SendMessage(Form1.Edit1.Handle, WM_KEYUP, VK_RETURN, 0);
   end;
 
+end;
+
+procedure TForm1.PesarsomenteprodutosKG1Click(Sender: TObject);
+begin
+  PesarsomenteprodutosKG1.Checked := PesarsomenteprodutosKG1.Checked = False;
+  GravarParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_PESAR_SOMENTE_KG, IfThen(PesarsomenteprodutosKG1.Checked, _cSim, _cNao));
+  Form1.sPesarSomenteKG := IfThen(PesarsomenteprodutosKG1.Checked, _cSim, _cNao);
+  if Form1.sPesarSomenteKG = _cSim then
+  begin
+    if Not(Balana1.Checked) then
+    begin
+      {
+      GravarParametroIni(FRENTE_INI, SECAO_FRENTE_CAIXA, CHAVE_BALANCA, _cSim);
+      Balana1.Checked := True;
+      Form1.sBalanca := _cSim;
+      }
+      Balana1Click(Balana1);
+      Balana1.Checked := True;
+    end;
+  end;
 end;
 
 procedure TForm1.TimerBalancaAutonomaTimer(Sender: TObject);
