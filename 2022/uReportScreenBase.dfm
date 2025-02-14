@@ -7,15 +7,15 @@ object frmReportScreenBase: TfrmReportScreenBase
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Segoe UI'
+  Font.Height = -11
+  Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 15
+  TextHeight = 13
   object PanelBotton: TPanel
     Left = 0
     Top = 436
@@ -24,7 +24,7 @@ object frmReportScreenBase: TfrmReportScreenBase
     Align = alBottom
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -12
+    Font.Height = -11
     Font.Name = 'Microsoft Sans Serif'
     Font.Style = []
     Padding.Top = 1
@@ -32,8 +32,8 @@ object frmReportScreenBase: TfrmReportScreenBase
     Padding.Bottom = 15
     ParentFont = False
     TabOrder = 0
-    ExplicitTop = 448
-    ExplicitWidth = 1078
+    ExplicitLeft = -8
+    ExplicitTop = 460
     object BevelPrior: TBevel
       Left = 575
       Top = 2
@@ -69,9 +69,6 @@ object frmReportScreenBase: TfrmReportScreenBase
       ParentFont = False
       TabOrder = 2
       OnClick = btnCancelarClick
-      ExplicitLeft = 969
-      ExplicitTop = 6
-      ExplicitHeight = 27
     end
     object BitBtnNext: TBitBtn
       Left = 580
@@ -88,8 +85,6 @@ object frmReportScreenBase: TfrmReportScreenBase
       ParentFont = False
       TabOrder = 1
       OnClick = BitBtnNextClick
-      ExplicitLeft = 847
-      ExplicitTop = -7
     end
     object BitBtnPrior: TBitBtn
       Left = 475
@@ -106,8 +101,6 @@ object frmReportScreenBase: TfrmReportScreenBase
       ParentFont = False
       TabOrder = 0
       OnClick = BitBtnPriorClick
-      ExplicitLeft = 626
-      ExplicitTop = 17
     end
   end
   object PanelMain: TPanel
@@ -117,8 +110,6 @@ object frmReportScreenBase: TfrmReportScreenBase
     Height = 436
     Align = alClient
     TabOrder = 1
-    ExplicitWidth = 1078
-    ExplicitHeight = 448
     object Bevel4: TBevel
       Left = 136
       Top = 1
@@ -135,20 +126,23 @@ object frmReportScreenBase: TfrmReportScreenBase
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -12
+      Font.Height = -11
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      ExplicitLeft = 145
-      ExplicitWidth = 932
-      ExplicitHeight = 446
       object PanelWait: TPanel
         Left = 434
         Top = 368
         Width = 185
         Height = 41
         Caption = 'Gerando o relat'#243'rio. Aguarde...'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Microsoft Sans Serif'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 0
         Visible = False
       end
@@ -161,7 +155,7 @@ object frmReportScreenBase: TfrmReportScreenBase
       Align = alLeft
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -12
+      Font.Height = -11
       Font.Name = 'Microsoft Sans Serif'
       Font.Style = []
       Padding.Left = 42
@@ -169,7 +163,6 @@ object frmReportScreenBase: TfrmReportScreenBase
       Padding.Right = 2
       ParentFont = False
       TabOrder = 0
-      ExplicitHeight = 446
       object ImgRel: TImage
         Left = 43
         Top = 21
@@ -206,23 +199,21 @@ object frmReportScreenBase: TfrmReportScreenBase
           Align = alClient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -12
+          Font.Height = -11
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
           ParentBackground = False
           ParentFont = False
           TabOrder = 0
-          ExplicitTop = 6
-          ExplicitWidth = 643
           object Label1: TLabel
             Left = 12
             Top = 6
-            Width = 63
-            Height = 15
+            Width = 56
+            Height = 13
             Caption = 'Per'#237'odo de:'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
-            Font.Height = -12
+            Font.Height = -11
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
             ParentFont = False
@@ -230,12 +221,12 @@ object frmReportScreenBase: TfrmReportScreenBase
           object Label2: TLabel
             Left = 12
             Top = 49
-            Width = 17
-            Height = 15
+            Width = 16
+            Height = 13
             Caption = 'At'#233
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
-            Font.Height = -12
+            Font.Height = -11
             Font.Name = 'Microsoft Sans Serif'
             Font.Style = []
             ParentFont = False
