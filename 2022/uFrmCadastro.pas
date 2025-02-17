@@ -1684,7 +1684,7 @@ begin
 
   if not Form7.ibDataSet7.IsEmpty then
   begin
-    MensagemSistema('Não é posível fazer a renegociação. Já existe uma renogaciação em aberto.',
+    MensagemSistema('Não é possível fazer a renegociação. Já existe uma renegociação em aberto.',
                     msgAtencao);
 
     Exit;
