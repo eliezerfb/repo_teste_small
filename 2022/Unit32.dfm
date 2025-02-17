@@ -34,8 +34,6 @@ object Form32: TForm32
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
-    ExplicitWidth = 604
-    ExplicitHeight = 384
     DesignSize = (
       518
       280)
@@ -138,8 +136,6 @@ object Form32: TForm32
       ParentFont = False
       TabOrder = 7
       OnClick = Button5Click
-      ExplicitLeft = 381
-      ExplicitTop = 341
     end
     object Button2: TButton
       Left = 399
@@ -156,8 +152,6 @@ object Form32: TForm32
       ParentFont = False
       TabOrder = 8
       OnClick = Button2Click
-      ExplicitLeft = 485
-      ExplicitTop = 341
     end
     object Button1: TButton
       Left = 191
@@ -174,8 +168,6 @@ object Form32: TForm32
       ParentFont = False
       TabOrder = 6
       OnClick = Button1Click
-      ExplicitLeft = 277
-      ExplicitTop = 341
     end
     object DateTimePicker1: TDateTimePicker
       Left = 180
@@ -273,5 +265,9 @@ object Form32: TForm32
     PrecommittedReads = False
     Left = 112
     Top = 104
+  end
+  object PrinterSetupDialog1: TPrinterSetupDialog
+    Left = 72
+    Top = 176
   end
 end

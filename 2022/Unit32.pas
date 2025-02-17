@@ -31,6 +31,7 @@ type
     CheckBox1: TCheckBox;
     cbMovGerencial: TCheckBox;
     qryGerencial: TIBQuery;
+    PrinterSetupDialog1: TPrinterSetupDialog;
     procedure Button2Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure MaskEdit1Exit(Sender: TObject);
@@ -91,14 +92,9 @@ var
   fCustoMedio: Real; // Sandro Silva 2023-03-01
   fCustoCompra: Real; // Sandro Silva 2023-03-02
 begin
-  if not VerificaSeTemImpressora() then
-  begin
-    //ShowMessage('Não há impressora instalada no windows!'); Mauricio Parizotto 2023-10-25
-    MensagemSistema('Não há impressora instalada no windows!',msgAtencao);
-    Screen.Cursor             := crDefault;    // Cursor de Aguardo
-    Abort;
-  end;
-  
+  if not(PrinterSetupDialog1.Execute) then
+    Exit;
+
   Printer.Canvas.Pen.Width  := 1;             // Largura da linha  //
   Printer.Canvas.Font.Name  := 'Courier New'; // Tipo da fonte     //
   Printer.Canvas.Font.Size  := 8;             // Cor da fonte      //
