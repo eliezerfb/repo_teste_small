@@ -353,7 +353,7 @@ begin
   qryDescontoItemCSOSN.SQL.Add(RetornarTabelaTemporariaDocumentos(AenDocImp));
   qryDescontoItemCSOSN.SQL.Add('SELECT');
   if (qryEmitente.FieldByName('CRT').AsInteger in [2,3]) then
-    qryDescontoItemCSOSN.SQL.Add('    COALESCE(COALESCE(DESCONTO.CST_ICMS, E.CST_NFCE), E.CST) AS CSTCSOSN')
+    qryDescontoItemCSOSN.SQL.Add('    COALESCE(COALESCE(ITEM.CST_ICMS, E.CST_NFCE), E.CST) AS CSTCSOSN') /// qryDescontoItemCSOSN.SQL.Add('    COALESCE(COALESCE(DESCONTO.CST_ICMS, E.CST_NFCE), E.CST) AS CSTCSOSN')
   else
     qryDescontoItemCSOSN.SQL.Add('    CASE WHEN COALESCE(ITEM.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(ITEM.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSTCSOSN');
   qryDescontoItemCSOSN.SQL.Add('    , SUM(DESCONTO.TOTAL) AS DESCONTO');
