@@ -81,6 +81,7 @@ function GetCampoPKTabela(Banco: TIBDatabase; vTabela : string): String;
 function FloatToBD(valor:Double):string;
 function DateToBD(data:TDateTime):string;
 function CriaConexaoClone(IBDatabase: TIBDatabase) : TIBDatabase; //Mauricio Parizotto 2014-12-23
+function ConexoesAtivas(AIBDatabase: TIBDatabase): Integer;
 
 implementation
 
@@ -548,5 +549,13 @@ begin
   Result.LoginPrompt  := False;
 end;
 
+
+function ConexoesAtivas(AIBDatabase: TIBDatabase): Integer;
+begin
+  Result := ExecutaComandoEscalar(
+    AIBDatabase,
+    'select count(*) from MON$ATTACHMENTS'
+  );
+end;
 
 end.

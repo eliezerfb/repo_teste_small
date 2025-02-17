@@ -220,7 +220,9 @@ const
   SIMPLES_NACIONAL_EXCESSO_SUBLIMITE_DE_RECEITA_BRUTA = '2';
   REGIME_NORMAL = '3';
 
-
+  OUTROS_USUARIOS_SISTEMA_ABERTO = '%s'+#13#10+
+    'Existem outros usuários com o sistema aberto.'+#13#10+
+    'Feche o sistema em todos os computadores e tente novamente.';
 
 implementation
 
