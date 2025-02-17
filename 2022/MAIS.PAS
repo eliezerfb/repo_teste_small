@@ -70,7 +70,7 @@ type
     DBGrid200: TDBGrid;
     SQLMododecomando1: TMenuItem;
     Edit200: TEdit;
-    este1: TMenuItem;
+    MenuAjustarArquivos: TMenuItem;
     estardesempenho1: TMenuItem;
     Plugin1: TMenuItem;
     Liberarosmdulosparaesteusurio1: TMenuItem;
@@ -329,7 +329,6 @@ type
     procedure SQLMododecomando1Click(Sender: TObject);
     procedure Edit200KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure este1Click(Sender: TObject);
     procedure DBGrid200KeyPress(Sender: TObject; var Key: Char);
     procedure estardesempenho1Click(Sender: TObject);
     procedure PopupMenu1Change(Sender: TObject; Source: TMenuItem;
@@ -466,6 +465,7 @@ type
     procedure TimerDashboardTimer(Sender: TObject);
     procedure TimerDiagIATimer(Sender: TObject);
     procedure TimerMinhasNotasTimer(Sender: TObject);
+    procedure MenuAjustarArquivosClick(Sender: TObject);
 
   private
     FrmDashboard : TFrmDashboard;
@@ -560,6 +560,7 @@ type
     function MontaTela(sP1: Boolean): Boolean;
     procedure ValidaBuildNFe_Setup;
     procedure CarregaInformacoes(PrimeiraAbertura:Boolean);
+    procedure AjustaArquivos(AShowConfirmationMsg: Boolean; Sender: TObject);
   end;
   //
   function UploadMobile(sFile: TFileName): boolean;
@@ -5449,23 +5450,18 @@ begin
 end;
 
 procedure TForm1.Instalarpackcomasltimasalteraes1Click(Sender: TObject);
-var
-  vQtdConexoes : integer;
 begin
   // Necessario conectar com o BD antes, caso contrario ira usar o caminho definido na propriedade (dfm) do IBDataBase (unit7) - Dailon - 2023/06/07 (FICHA - 7019)
   if (not Form1.ibDataSet200.Transaction.DefaultDatabase.Connected) then
     ConectaBancoCommerce;
 
-  vQtdConexoes := ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase,
-                                        'Select Count(*) From MON$ATTACHMENTS');
-
-  if vQtdConexoes > 1 then
+  if ConexoesAtivas(ibDataSet200.Transaction.DefaultDatabase) > 1 then
   begin
-    MensagemSistema('Não foi possível iniciar a atualização.'+#13#10+
-                    'Existem outros usuários com o sistema aberto.'+#13#10+
-                    'Feche o sistema em todos os computadores e tente novamente.'
-                    ,msgAtencao);
-
+    const MSG = 'Não foi possível iniciar a atualização.';
+    MensagemSistema(
+      Format(OUTROS_USUARIOS_SISTEMA_ABERTO, [MSG]),
+      msgAtencao
+    );
     Exit;
   end;
 
@@ -6390,7 +6386,7 @@ begin
   Screen.Cursor := crDefault;
 end;
 
-procedure TForm1.este1Click(Sender: TObject);
+procedure TForm1.AjustaArquivos(AShowConfirmationMsg: Boolean; Sender: TObject);
 var
   Result : String;
   sMax   : String;
@@ -6405,6 +6401,22 @@ var
     Result := IntToStr(iNumeroArquivo);
   end;
 begin
+  if ConexoesAtivas(ibDataSet200.Transaction.DefaultDatabase) > 1 then
+  begin
+    const MSG = 'Não é possível ajustar os arquivos.';
+    MensagemSistema(
+      Format(OUTROS_USUARIOS_SISTEMA_ABERTO, [MSG]),
+      msgAtencao
+    );
+    Exit();
+  end;
+
+  if AShowConfirmationMsg and (Application.MessageBox(
+      PChar('Tem certeza que deseja realizar o ajuste de arquivos?'),
+      'Atenção', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) = id_No) then
+      Exit();
+
+
   iNumeroArquivo := -1; // Sandro Silva 2022-12-28
 
   Form22.pnlCarregamento.Visible    := True;
@@ -12313,6 +12325,11 @@ begin
                   ,msgAtencao);
 end;
 
+procedure TForm1.MenuAjustarArquivosClick(Sender: TObject);
+begin
+  AjustaArquivos(True, Sender);
+end;
+
 procedure TForm1.AjustarDataSetCamposProduto;
 var
   nSizeDescricaoProd: Integer;
@@ -12383,13 +12400,13 @@ begin
   end;
 
   // Por último valida se tem mais usuários logados
-  if ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase, 'Select Count(*) From MON$ATTACHMENTS') > 1 then
+  if ConexoesAtivas(ibDataSet200.Transaction.DefaultDatabase) > 1 then
   begin
-    MensagemSistema('Não é possível ativar o recurso de 120 caracteres.'+#13#10+
-                    'Existem outros usuários com o sistema aberto.'+#13#10+
-                    'Feche o sistema em todos os computadores e tente novamente.'
-                    ,msgAtencao);
-
+    const MSG = 'Não é possível ativar o recurso de 120 caracteres.';
+    MensagemSistema(
+      Format(OUTROS_USUARIOS_SISTEMA_ABERTO, [MSG]),
+      msgAtencao
+    );
     Exit;
   end;
   {Sandro Silva 2024-04-08 fim}

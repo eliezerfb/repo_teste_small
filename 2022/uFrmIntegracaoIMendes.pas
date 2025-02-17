@@ -153,7 +153,6 @@ end;
 procedure TFrmIntegracaoIMendes.btnSanearClick(Sender: TObject);
 var
   sFiltro : string;
-  vQtdConexoes : integer;
 begin
   if not TSistema.GetInstance.ModuloImendes then
   begin
@@ -161,16 +160,13 @@ begin
     Exit;
   end;
 
-
-  vQtdConexoes := ExecutaComandoEscalar(Form1.ibDataSet200.Transaction.DefaultDatabase,
-                                        'Select Count(*) From MON$ATTACHMENTS');
-
-  if vQtdConexoes > 1 then
+  if ConexoesAtivas(Form1.ibDataSet200.Transaction.DefaultDatabase) > 1 then
   begin
-    MensagemSistema('Não foi possível iniciar o saneamento. Existem outros usuários com o sistema aberto.'+#13#10+
-                    'Feche o sistema em todos os computadores e tente novamente.'
-                    ,msgAtencao);
-
+    const MSG = 'Não foi possível iniciar o saneamento.';
+    MensagemSistema(
+      Format(OUTROS_USUARIOS_SISTEMA_ABERTO, [MSG]),
+      msgAtencao
+    );
     Exit;
   end;
 

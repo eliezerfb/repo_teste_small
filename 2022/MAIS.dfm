@@ -14319,9 +14319,9 @@ object Form1: TForm1
         Caption = 'Limpar movimento'
         Visible = False
       end
-      object este1: TMenuItem
+      object MenuAjustarArquivos: TMenuItem
         Caption = 'Ajustar arquivos'
-        OnClick = este1Click
+        OnClick = MenuAjustarArquivosClick
       end
       object Estatisticas1: TMenuItem
         Caption = 'Estat'#237'sticas'
