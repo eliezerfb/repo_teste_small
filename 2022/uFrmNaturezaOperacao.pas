@@ -218,6 +218,7 @@ begin
       if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
         Form7.ibDataSet14.Edit;
 
+      {Mauricio Parizotto 2025-02-18
       if Form7.ibDataSet14SOBREIPI.AsString <> 'S' then
         Form7.ibDataSet14SOBREIPI.AsString := 'N';
       if Form7.ibDataSet14SOBREOUTRAS.AsString <> 'S' then
@@ -229,6 +230,20 @@ begin
       if Form7.ibDataSet14IMPOSTOMANUAL.AsString <> 'S' then
         Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'N';
       if Form7.ibDataSet14REFERENCIANOTA.AsString <> 'S' then
+        Form7.ibDataSet14REFERENCIANOTA.AsString := 'N';
+      }
+
+      if Form7.ibDataSet14SOBREIPI.AsString = '' then
+        Form7.ibDataSet14SOBREIPI.AsString := 'N';
+      if Form7.ibDataSet14SOBREOUTRAS.AsString = '' then
+        Form7.ibDataSet14SOBREOUTRAS.AsString := 'N';
+      if Form7.ibDataSet14FRETESOBREIPI.AsString = '' then
+        Form7.ibDataSet14FRETESOBREIPI.AsString := 'N';
+      if Form7.ibDataSet14IPISOBREOUTRA.AsString = '' then
+        Form7.ibDataSet14IPISOBREOUTRA.AsString := 'N';
+      if Form7.ibDataSet14IMPOSTOMANUAL.AsString = '' then
+        Form7.ibDataSet14IMPOSTOMANUAL.AsString := 'N';
+      if Form7.ibDataSet14REFERENCIANOTA.AsString = '' then
         Form7.ibDataSet14REFERENCIANOTA.AsString := 'N';
 
       cbIntegracaoFinanceira.ItemIndex := 0;
@@ -554,27 +569,32 @@ begin
   {Mauricio Parizotto 2024-10-07 Inicio}
   bTribInteligente := DSCadastro.DataSet.FieldByName('TRIB_INTELIGENTE').AsString = 'S';
 
-  dbeIcmCFOP.Enabled             := not (bTribInteligente);
-  edtDescricao.Enabled           := not (bTribInteligente);
-  edtIntegracao.Enabled          := not (bTribInteligente);
-  cbIntegracaoFinanceira.Enabled := not (bTribInteligente);
-  cbMovimentacaoEstoque.Enabled  := not (bTribInteligente);
-  fraPlanoContas.Enabled         := not (bTribInteligente);
-  edtCIT.Enabled                 := not (bTribInteligente);
-  edtBase.Enabled                := not (bTribInteligente);
-  edtISS.Enabled                 := not (bTribInteligente);
-  edtBaseICMS.Enabled            := not (bTribInteligente);
-  edtCST.Enabled                 := not (bTribInteligente);
-  edtCSOSN.Enabled               := not (bTribInteligente);
-  edtCBenef.Enabled              := not (bTribInteligente);
-  chkListaNF.Enabled             := not (bTribInteligente);
-  chkRefenciarNota.Enabled       := not (bTribInteligente);
-  chkLancaManual.Enabled         := not (bTribInteligente);
-  cboCST_PISCOFINS.Enabled       := not (bTribInteligente);
-  dbepPisSaida.Enabled           := not (bTribInteligente);
-  dbepCofinsSaida.Enabled        := not (bTribInteligente);
-  dbeIcmBCPISCOFINS.Enabled      := not (bTribInteligente);
-  chkPisCofinsSobLucro.Enabled   := not (bTribInteligente);
+  dbeIcmCFOP.Enabled             := not(bTribInteligente) and not(bEstaSendoUsado);
+  edtDescricao.Enabled           := not(bTribInteligente) and not(bEstaSendoUsado);
+  edtIntegracao.Enabled          := not(bTribInteligente) and not(bEstaSendoUsado);
+  cbIntegracaoFinanceira.Enabled := not(bTribInteligente) and not(bEstaSendoUsado);
+  cbMovimentacaoEstoque.Enabled  := not(bTribInteligente) and not(bEstaSendoUsado);
+  fraPlanoContas.Enabled         := not(bTribInteligente) and not(bEstaSendoUsado);
+  edtCIT.Enabled                 := not(bTribInteligente) and not(bEstaSendoUsado);
+  edtBase.Enabled                := not(bTribInteligente) and not(bEstaSendoUsado);
+  edtISS.Enabled                 := not(bTribInteligente) and not(bEstaSendoUsado);
+  edtBaseICMS.Enabled            := not(bTribInteligente) and not(bEstaSendoUsado);
+  edtCST.Enabled                 := not(bTribInteligente) and not(bEstaSendoUsado);
+  edtCSOSN.Enabled               := not(bTribInteligente) and not(bEstaSendoUsado);
+  edtCBenef.Enabled              := not(bTribInteligente) and not(bEstaSendoUsado);
+  chkListaNF.Enabled             := not(bTribInteligente) and not(bEstaSendoUsado);
+  chkICMS_IPI.Enabled            := not(bEstaSendoUsado);
+  chkICMS_Outras.Enabled         := not(bEstaSendoUsado);
+  chkIPI_Frete.Enabled           := not(bEstaSendoUsado);
+  chkIPI_Outras.Enabled          := not(bEstaSendoUsado);
+  chkRefenciarNota.Enabled       := not(bTribInteligente) and not(bEstaSendoUsado);
+  chkLancaManual.Enabled         := not(bTribInteligente) and not(bEstaSendoUsado);
+  memObservacao.Enabled          := not(bEstaSendoUsado);
+  cboCST_PISCOFINS.Enabled       := not(bTribInteligente) and not(bEstaSendoUsado);
+  dbepPisSaida.Enabled           := not(bTribInteligente) and not(bEstaSendoUsado);
+  dbepCofinsSaida.Enabled        := not(bTribInteligente) and not(bEstaSendoUsado);
+  dbeIcmBCPISCOFINS.Enabled      := not(bTribInteligente) and not(bEstaSendoUsado);
+  chkPisCofinsSobLucro.Enabled   := not(bTribInteligente) and not(bEstaSendoUsado);
   {Mauricio Parizotto 2024-10-07 Fim}
 end;
 
@@ -642,13 +662,18 @@ end;
 
 procedure TFrmNaturezaOperacao.lblAnteriorClick(Sender: TObject);
 begin
-  if Form7.ibDataSet14NOME.AsString <> edtDescricao.Text then
-  begin
-    btnOK.SetFocus;
-    edtDescricao.SetFocus;
+  try
+    if Form7.ibDataSet14NOME.AsString <> edtDescricao.Text then
+    begin
+      btnOK.SetFocus;
+      edtDescricao.SetFocus;
+    end;
+    Form7.DefineNovoNomeNatOperacao;
+  except
   end;
-  Form7.DefineNovoNomeNatOperacao;
+
   inherited;
+
   Form7.AtualizaVariaveisAnteriorNatOper;
 end;
 
@@ -683,13 +708,18 @@ end;
 
 procedure TFrmNaturezaOperacao.lblProximoClick(Sender: TObject);
 begin
-  if Form7.ibDataSet14NOME.AsString <> edtDescricao.Text then
-  begin
-    btnOK.SetFocus;
-    edtDescricao.SetFocus;
+  try
+    if Form7.ibDataSet14NOME.AsString <> edtDescricao.Text then
+    begin
+      btnOK.SetFocus;
+      edtDescricao.SetFocus;
+    end;
+    Form7.DefineNovoNomeNatOperacao;
+  except
   end;
-  Form7.DefineNovoNomeNatOperacao;
+
   inherited;
+
   Form7.AtualizaVariaveisAnteriorNatOper;
 end;
 

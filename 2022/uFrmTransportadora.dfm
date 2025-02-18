@@ -390,9 +390,15 @@ inherited FrmTransportadora: TFrmTransportadora
           Height = 20
           Color = clWhite
           Ctl3D = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
           ParentBackground = False
           ParentColor = False
           ParentCtl3D = False
+          ParentFont = False
           TabOrder = 3
           ExplicitLeft = 110
           ExplicitTop = 103

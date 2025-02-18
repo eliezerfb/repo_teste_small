@@ -115,6 +115,7 @@ begin
   edtEmail.Enabled        := not(bEstaSendoUsado);
   edtPlacaVeiculo.Enabled := not(bEstaSendoUsado);
   edtANTT.Enabled         := not(bEstaSendoUsado);
+  edtUFVeiculo.Enabled    := not(bEstaSendoUsado);
 end;
 
 procedure TFrmTransportadora.edtUFExit(Sender: TObject);
