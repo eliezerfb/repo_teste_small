@@ -1,12 +1,9 @@
-(*
-Rotina para realizar a importação de NF-e
-*)
 unit uImportaNFe;
 
 interface
 
 uses
-  Controls
+  Controls, System.StrUtils
   , SysUtils
   , XMLIntf
   , xmldom
@@ -20,12 +17,15 @@ uses
   , unit7
   , Unit24
   , IBQuery
+  , Winapi.msxml
   , uItensInativosImpXMLEntrada
+  , ACBrNFe, pcnConversaoNFe
   ;
 
 function GetProductDescription(AxProd: String; ASizeDescricaoProd: Integer;
   ACodigoProduto: String; AQuery: TIBQuery): String;
-function ImportaNF(AImportaNumeroNF: boolean; sP1: String):Boolean;
+procedure ImportaFatura(AXml, ANomeEmitente, ARegistro: String);
+function ImportaNF(AImportaNumeroNF: boolean; AXml: String):Boolean;
 function GetICMSTag(NodeSec:IXMLNode):string;
 
 implementation
@@ -33,13 +33,15 @@ implementation
 uses
   uFuncoesRetaguarda, uParametroTributacao, uDialogs, uFuncoesBancoDados;
 
-function ImportaNF(AImportaNumeroNF: boolean; sP1: String):Boolean;
+function ImportaNF(AImportaNumeroNF: boolean; AXml: String):Boolean;
   function RetornarCodProdInativo: String;
   begin
     Result := QuotedStr(Form7.ibDataSet4CODIGO.AsString) + ',';
   end;
 var
-  NodePrim, NodePai, NodeSec, NodeTmp: IXMLNode; // Node é um nó do XML
+  TipoIntegracaoOperacao: String;
+  RegistroCompras: String;
+  NodePrim, NodePai, NodeSec, NodeTmp: IXMLNode;
   Hora, Min, Seg, cent : Word;
   tInicio : tTime;
   sXML,
@@ -83,7 +85,7 @@ begin
   try
     SizeDescricaoProd := TamanhoCampoFB(Form7.IBDatabase1,'ESTOQUE','DESCRICAO');
 
-    if AllTrim(sP1) = '' then
+    if AllTrim(AXml) = '' then
     begin
       // Importa de um arquivo XML informado pelo usuário
       Form7.OpenDialog1.FileName := '';
@@ -127,10 +129,10 @@ begin
       // Importa atravez do XML gravado no COMPRAS automaticamento por download (ConsultarDistribuicaoDFeChave)
       try
         Form7.XMLDocument1.DOMVendor := GetDOMVendor('Open XML');
-        Form7.XMLDocument1.XML.Text  := sP1;
+        Form7.XMLDocument1.XML.Text  := AXml;
       except
         Form7.XMLDocument1.DOMVendor := GetDOMVendor('MSXML');
-        Form7.XMLDocument1.XML.Text  := sP1;
+        Form7.XMLDocument1.XML.Text  := AXml;
       end;
 
       try
@@ -205,7 +207,7 @@ begin
 
         Form7.ibDataSet2.Close;
         Form7.ibDataSet2.Selectsql.Clear;
-        Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR'); 
+        Form7.ibDataSet2.Selectsql.Add('select * from CLIFOR');
         Form7.ibDataSet2.Open;
 
 
@@ -281,7 +283,7 @@ begin
         Form7.ibDataset99.SelectSql.Add('select NUMERONF from COMPRAS where NUMERONF='+QuotedStr( Right(StrZero(StrToFloat(NodeSec.ChildNodes['nNF'].Text),9,0),9)+StrZero(StrToInt(LimpaNumero('0'+NodeSec.ChildNodes['serie'].Text)),3,0) )+' and FORNECEDOR='+QuotedStr(sNomeDaEmpresa)+' ');
         Form7.IBDataSet99.Open;
 
-        if (AllTrim(Form7.ibDAtaSet99.FieldByname('NUMERONF').AsString) <> '') and (sP1='') then
+        if (AllTrim(Form7.ibDAtaSet99.FieldByname('NUMERONF').AsString) <> '') and (AXml='') then
         begin
           //ShowMessage('Nota Fiscal Já Cadastrada.'); Mauricio Parizotto 2023-10-25
           MensagemSistema('Nota Fiscal Já Cadastrada.');
@@ -305,7 +307,9 @@ begin
           if not Form7.ibDataSet14.Locate('CFOP','2102',[]) then
             Form7.ibDataSet14.Locate('CFOP','1102',[]);
 
-          Form7.ibDataSet24OPERACAO.AsString    := Form7.ibDataSet14NOME.AsString;
+          Form7.ibDataSet24OPERACAO.AsString := Form7.ibDataSet14NOME.AsString;
+          TipoIntegracaoOperacao := Form7.ibDataSet14INTEGRACAO.AsString;
+
 
           if AImportaNumeroNF then
           begin
@@ -890,6 +894,7 @@ begin
                       Form7.ibDataSet23.Edit;
                     except
                     end;
+
                   except
                   end;
                 end;
@@ -956,6 +961,7 @@ begin
 
           try
             Form7.ibDataSet24.Post;
+            RegistroCompras := Form7.ibDataSet24REGISTRO.AsString;
             Form1.bFlag := True;
             Form7.sModulo := 'COMPRA';
             if not (Form7.ibDataset23.State in ([dsEdit, dsInsert])) then
@@ -1137,7 +1143,10 @@ begin
   except
   end;
 
-  Screen.Cursor            := crDefault;
+  if UpperCase(TipoIntegracaoOperacao) = 'PAGAR' then
+    ImportaFatura(sXML, sNomeDaEmpresa, RegistroCompras);
+
+  Screen.Cursor := crDefault;
 end;
 
 function GetICMSTag(NodeSec:IXMLNode):string;
@@ -1224,5 +1233,112 @@ begin
 
   Result := ProductDescription;
 end;
+
+procedure ImportaFatura(AXml, ANomeEmitente, ARegistro: String);
+  function NumeroNFFromXML(ANFe: TACBrNFe): String;
+  begin
+    Result := Right(StrZero(ANFe.NotasFiscais[0].NFe.Ide.nNF, 9, 0), 9)+
+      RightStr('000' + ANFe.NotasFiscais[0].NFe.Ide.serie.ToString, 3);
+  end;
+
+  function ContaPagarJaExiste(AQuery: TIBQuery; ADocumento: String): Boolean;
+  begin
+    AQuery.Close;
+    AQuery.SQL.Text := 'SELECT 1 AS ExistsPagar '+
+      'FROM RDB$DATABASE WHERE EXISTS '+
+      '(SELECT 1 FROM PAGAR '+
+      '  WHERE DOCUMENTO = :DOCUMENTO AND NOME = :NOME '+
+      ')';
+
+    AQuery.Prepare;
+    AQuery.ParamByName('DOCUMENTO').AsString := ADocumento;
+    AQuery.ParamByName('NOME').AsString := ANomeEmitente;
+    AQuery.Open;
+    Result := Boolean(AQuery.Fields[0].AsInteger);
+  end;
+begin
+  var Qry := TIBQuery.Create(nil);
+  Qry.Database := Form7.IBDatabase1;
+  Qry.Transaction := Form7.ibDataSet24.Transaction;
+
+  var QryConsulta := TIBQuery.Create(nil);
+  QryConsulta.Database := Form7.IBDatabase1;
+  QryConsulta.Transaction := Form7.ibDataSet24.Transaction;
+
+
+  var ACBrNFe := TACBrNFe.Create(nil);
+  ACBrNFe.NotasFiscais.LoadFromString(AXml);
+  var NFe := ACBrNFe.NotasFiscais[0].NFe;
+
+  if NFe.Cobr.Dup.Count = 0 then
+    Exit;
+
+  const REGISTRO =
+    'LPAD(CAST(NEXT VALUE FOR G_PAGAR AS VARCHAR(10)), 10, '+QuotedStr('0')+')';
+  var Sequencia := 65;
+  var Documento := '';
+
+  var TamanhoCampoPagar := TamanhoCampoFB(Form7.IBDatabase1, 'PAGAR', 'DOCUMENTO');
+
+  Qry.Close;
+  Qry.SQL.Text := 'insert into PAGAR ('+
+      'HISTORICO, DOCUMENTO, NOME, EMISSAO, VENCIMENTO, VALOR_DUPL, '+
+      'VALOR_PAGO, CONTA, NUMERONF, REGISTRO) ' +
+      'values '+
+      '(:HISTORICO, :DOCUMENTO, :NOME, :EMISSAO, :VENCIMENTO, :VALOR_DUPL, '+
+      ' :VALOR_PAGO, :CONTA, :NUMERONF, '+REGISTRO+
+    ') ';
+  Qry.Prepare;
+
+  Qry.ParamByName('HISTORICO').AsString :=
+    Format('Nota Fiscal: %s', [NumeroNFFromXML(ACBrNFe)]);
+  Qry.ParamByName('NOME').AsString := ANomeEmitente;
+  Qry.ParamByName('EMISSAO').AsDate := NFe.Ide.dEmi;
+  Qry.ParamByName('VALOR_PAGO').AsFloat := 0.000;
+  Qry.ParamByName('CONTA').AsString := 'Pgtos p/ fornecedores';
+  Qry.ParamByName('NUMERONF').AsString  := NumeroNFFromXML(ACBrNFe);
+
+  for var i := 0 to NFe.Cobr.Dup.Count-1 do
+  begin
+    Documento := Copy(NumeroNFFromXML(ACBrNFe), 1, 9)+Chr(Sequencia);
+    Inc(Sequencia);
+    if ContaPagarJaExiste(QryConsulta, Documento) then
+      Continue;
+
+    Qry.ParamByName('DOCUMENTO').AsString :=
+      Right(Documento, TamanhoCampoPagar);
+    Qry.ParamByName('VENCIMENTO').AsDate  := NFe.Cobr.Dup[i].dVenc;
+    Qry.ParamByName('VALOR_DUPL').AsFloat := NFe.Cobr.Dup[i].vDup;
+    Qry.ExecSQL();
+  end;
+
+  for var ii := 0 to NFe.pag.Count - 1 do
+  begin
+    if NFe.pag.Items[ii].tPag in [fpDuplicataMercantil, fpBoletoBancario, fpSemPagamento] then
+      Continue;
+
+    Documento := Copy(NumeroNFFromXML(ACBrNFe), 1, 9)+Chr(Sequencia);
+    Inc(Sequencia);
+    if ContaPagarJaExiste(QryConsulta, Documento) then
+      Continue;
+
+    Qry.ParamByName('DOCUMENTO').AsString :=
+      Right(Documento, TamanhoCampoPagar);
+    Qry.ParamByName('VENCIMENTO').AsDate  := NFe.Ide.dEmi;
+    Qry.ParamByName('VALOR_DUPL').AsFloat := NFe.pag.Items[ii].vPag;
+    Qry.ExecSQL();
+  end;
+
+
+  if not(Form7.ibDataSet24.State in ([dsInsert, dsEdit])) then
+    Form7.ibDataSet24.Edit;
+
+  Form7.ibDataSet24DUPLICATAS.AsInteger := NFe.pag.Count;
+  Form7.ibDataSet24.Post;
+
+  Qry.Free;
+  QryConsulta.Free;
+end;
+
 
 end.

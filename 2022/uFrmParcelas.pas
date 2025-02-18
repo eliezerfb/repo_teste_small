@@ -263,6 +263,8 @@ begin
       // Cria as duplicatas
       // Número das duplicatas de A - Z, ou sejá no máximo 24 duplicatas //
       I := 0;
+      Form7.ibDataSet8.Close();
+      Form7.ibDataSet8.Open();
       Form7.ibDataSet8.First;
       while not Form7.ibDataSet8.Eof do
       begin
