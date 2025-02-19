@@ -102,6 +102,8 @@ var
   bNaoDescontarIssQuandoRetido: Boolean; // Sandro Silva 2024-04-24
   dValorLiquidoNfse: Double; // Sandro Silva 2024-04-24
 
+  IMEmitente : string;
+
   procedure InformaCodVerificadorAutenticidadeParaIPM;
   begin
     if Pos('Codigo de autenticacao da NFSe',Form7.ibDAtaSet15RECIBOXML.AsString) <> 0 then
@@ -206,9 +208,14 @@ begin
 
   sResponsavelRetencao := Mais1Ini.ReadString('NFSE', 'ResponsavelRetencao', ''); // Sandro Silva 2023-01-24
 
+  if (GetCidadeUF = 'ITABIRINHAMG') then
+    IMEmitente := Form7.ibDAtaset13IM.AsString
+  else
+    IMEmitente := LimpaNumero(Form7.ibDAtaset13IM.AsString);
+
   if (Mais1Ini.ReadString('NFSE','CNPJ','')<>LimpaNumero(Form7.ibDAtaset13CGC.AsString)) or
      (Mais1Ini.ReadString('NFSE','CIDADE','')<> GetCidadeUF) or
-     (Mais1Ini.ReadString('NFSE','InscricaoMunicipal','')<>LimpaNumero(Form7.ibDAtaset13IM.AsString)) then
+     (Mais1Ini.ReadString('NFSE','InscricaoMunicipal','')<>IMEmitente) then
   begin
     Mais1ini.Free;
     Form1.ConfiguraesdaNFSe2Click(nil);

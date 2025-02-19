@@ -611,7 +611,7 @@ uses Unit11, Unit7, Unit12, Unit19, Unit24, Unit25, Unit17, Unit22,
   , uFrmIntegracaoIMendes
   , uDashboard
   , uDiagnosticoIA
-  , uMinhasNotas;
+  , uMinhasNotas, uTransmiteNFSe;
 
 {$R *.DFM}
 
@@ -11891,7 +11891,12 @@ begin
 
   Mais1Ini.WriteString('NFSE','CIDADE',UpperCase(StrTran(ConverteAcentos(Form7.ibDAtaset13MUNICIPIO.AsString),' ',''))+UpperCase(Form7.ibDAtaset13ESTADO.AsString));
   Mais1Ini.WriteString('NFSE','CNPJ',LimpaNumero(Form7.ibDAtaset13CGC.AsString));
-  Mais1Ini.WriteString('NFSE','InscricaoMunicipal',LimpaNumero(Form7.ibDAtaset13IM.AsString));
+
+  if (GetCidadeUF = 'ITABIRINHAMG') then
+    Mais1Ini.WriteString('NFSE','InscricaoMunicipal',Form7.ibDAtaset13IM.AsString)
+  else
+    Mais1Ini.WriteString('NFSE','InscricaoMunicipal',LimpaNumero(Form7.ibDAtaset13IM.AsString));
+
   Mais1ini.Free;
 
   if Form1.ExisteNfseExe(Form1.sAtual) then
