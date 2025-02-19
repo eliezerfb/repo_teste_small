@@ -1312,10 +1312,21 @@ begin
     Qry.ExecSQL();
   end;
 
-  for var ii := 0 to NFe.pag.Count - 1 do
+  var Valor: Currency;
+  for var i := 0 to NFe.pag.Count - 1 do
   begin
-    if NFe.pag.Items[ii].tPag in [fpDuplicataMercantil, fpBoletoBancario, fpSemPagamento] then
+    if NFe.pag.Items[i].tPag in [fpDuplicataMercantil, fpBoletoBancario, fpSemPagamento] then
       Continue;
+
+    Valor := NFe.pag.Items[i].vPag;
+
+    if (NFe.pag.Items[i].tPag = fpDinheiro) and (NFe.pag.vTroco > 0) and
+      (NFe.pag.vTroco < Valor) then
+    begin
+      Valor := Valor - NFe.pag.vTroco;
+      NFe.pag.vTroco := 0;
+    end;
+
 
     Documento := Copy(NumeroNFFromXML(ACBrNFe), 1, 9)+Chr(Sequencia);
     Inc(Sequencia);
@@ -1325,7 +1336,7 @@ begin
     Qry.ParamByName('DOCUMENTO').AsString :=
       Right(Documento, TamanhoCampoPagar);
     Qry.ParamByName('VENCIMENTO').AsDate  := NFe.Ide.dEmi;
-    Qry.ParamByName('VALOR_DUPL').AsFloat := NFe.pag.Items[ii].vPag;
+    Qry.ParamByName('VALOR_DUPL').AsFloat := Valor;
     Qry.ExecSQL();
   end;
 
