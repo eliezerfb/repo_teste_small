@@ -4,7 +4,7 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, IniFiles//, Unit99
+  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, IniFiles
   , smallfunc_xe
   , ShellApi, Vcl.Imaging.pngimage;
 

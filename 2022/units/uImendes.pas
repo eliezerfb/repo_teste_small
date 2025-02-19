@@ -199,6 +199,9 @@ begin
       finally
         FreeAndNil(RetTributacaoIMendesDTO);
       end;
+
+      //Mauricio Parizotto 2025-02-19
+      ibdEstoque.Post;
     end else
     begin
       MensagemSistema('Falha ao consultar tributação.',msgErro);
@@ -543,19 +546,27 @@ begin
       ibdEstoque.FieldByName('IPI').AsFloat                   := Grupo.Ipi.AliqIPI;
       ibdEstoque.FieldByName('ENQ_IPI').AsString              := Grupo.Ipi.Codenq;
     end;
-    
-    ibdEstoque.FieldByName('CST').AsString                    := Grupo.Regra[0].Cst;
+
+    if Trim(Copy(ibdEstoque.FieldByName('CST').AsString,1,1)) = '' then
+      ibdEstoque.FieldByName('CST').AsString                    := Grupo.Regra[0].Cst
+    else
+      ibdEstoque.FieldByName('CST').AsString                    := Copy(ibdEstoque.FieldByName('CST').AsString+' ',1,1) + Copy(Grupo.Regra[0].Cst,2,2);
+
+
     ibdEstoque.FieldByName('CSOSN').AsString                  := Grupo.Regra[0].Csosn;
-    
+
+    if Trim(Copy(ibdEstoque.FieldByName('CST_NFCE').AsString,1,1)) = '' then
+      ibdEstoque.FieldByName('CST_NFCE').AsString               := Grupo.Regra[0].Cst;
+
     if (Copy(Grupo.Regra[0].Cst,2,2) = '00')
-      or (Copy(Grupo.Regra[0].Cst,2,2) = '20') 
-      or (Copy(Grupo.Regra[0].Cst,2,2) = '40') 
-      or (Copy(Grupo.Regra[0].Cst,2,2) = '41') 
-      or (Copy(Grupo.Regra[0].Cst,2,2) = '60') 
-      or (Copy(Grupo.Regra[0].Cst,2,2) = '61') 
+      or (Copy(Grupo.Regra[0].Cst,2,2) = '20')
+      or (Copy(Grupo.Regra[0].Cst,2,2) = '40')
+      or (Copy(Grupo.Regra[0].Cst,2,2) = '41')
+      or (Copy(Grupo.Regra[0].Cst,2,2) = '60')
+      or (Copy(Grupo.Regra[0].Cst,2,2) = '61')
       or (Copy(Grupo.Regra[0].Cst,2,2) = '90') then
     begin
-      ibdEstoque.FieldByName('CST_NFCE').AsString             := Copy(Grupo.Regra[0].Cst,2,2);
+      ibdEstoque.FieldByName('CST_NFCE').AsString             := Copy(ibdEstoque.FieldByName('CST_NFCE').AsString+' ',1,1) + Copy(Grupo.Regra[0].Cst,2,2);
     end else
     begin
       ibdEstoque.FieldByName('CST_NFCE').Clear;

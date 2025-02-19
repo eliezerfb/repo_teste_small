@@ -27823,30 +27823,36 @@ begin
 end;
 
 procedure TForm7.ibDataSet4CFChange(Sender: TField);
+var
+  OldValue : string;
 begin
   //Mauricio Parizotto 2024-10-23
   if SaneamentoIMendes then
     Exit;
 
+  if (TField(Sender).FieldName = 'CST') then
+    if not(VarIsNull(ibDataSet4CST.OldValue)) then
+      OldValue := ibDataSet4CST.OldValue;
+
   Form7.ibQuery3.Close;
   Form7.ibQuery3.SQL.Clear;
   Form7.ibQuery3.SQL.Add('select * from IBPT_ where char_length(CODIGO) >= 8 and CODIGO='+QuotedStr(Form7.ibDataSet4CF.AsString));
   Form7.ibQuery3.Open;
-  //
+
   if Form7.ibDataSet4CF.AsString <> '' then
   begin
     Form7.ibDataSet4.Edit;
-    //
+
     // INDICE DE IMPOSTO APROXIMADO - IIA - ESTADUAL
     Form7.ibDataSet4IIA_UF.ReadOnly := False;
     Form7.ibDataSet4IIA_UF.AsFloat := Form7.ibQuery3.FieldByname('ESTADUAL').AsFloat;
     Form7.ibDataSet4IIA_UF.ReadOnly := True;
-    //
+
     // INDICE DE IMPOSTO APROXIMADO - IIA - MUNICIPAL
     Form7.ibDataSet4IIA_MUNI.ReadOnly := False;
     Form7.ibDataSet4IIA_MUNI.AsFloat := Form7.ibQuery3.FieldByname('MUNICIPAL').AsFloat;
     Form7.ibDataSet4IIA_MUNI.ReadOnly := True;
-    //
+
     if (Copy(Form7.ibDataSet4CST.AsString,1,1) = '1') or
        (Copy(Form7.ibDataSet4CST.AsString,1,1) = '2') or
        (Copy(Form7.ibDataSet4CST.AsString,1,1) = '6') or
@@ -27859,7 +27865,6 @@ begin
       // 6 - Estrangeira - Importação direta, sem similar nacional, constante em lista de Resolução CAMEX;
       // 7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX.
       // 8 - Nacional, mercadoria ou bem com Conteúdo de Importação sup. a 70%
-      //
       Form7.ibDataSet4IIA.ReadOnly := False;
       Form7.ibDataSet4IIA.AsFloat  := Form7.ibQuery3.FieldByname('IMPORTADOFEDERAL').AsFloat;
       Form7.ibDataSet4IIA.ReadOnly := True;
@@ -27869,12 +27874,11 @@ begin
       // 3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% (quarenta por cento)
       // 4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam o Decreto-Lei nº 288/1967, e as Leis nºs 8.248/1991, 8.387/1991, 10.176/2001 e 11.484/2007;
       // 5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40% (quarenta por cento)
-      //
       Form7.ibDataSet4IIA.ReadOnly := False;
       Form7.ibDataSet4IIA.AsFloat  := Form7.ibQuery3.FieldByname('NACIONALFEDERAL').AsFloat;
       Form7.ibDataSet4IIA.ReadOnly := True;
     end;
-    //
+
     Form7.ibDataSet4.Post;
     Form7.ibDataSet4.Edit;
     Form7.ibQuery3.Close;
@@ -27884,9 +27888,15 @@ begin
   if TField(Sender).FieldName = 'CST' then
     VerificaAlteracaoPerfil;
 
-  //Mauricio Parizotto 2024-10-14
+  {Mauricio Parizotto 2025-02-19
   if (TField(Sender).FieldName = 'CST')
     or (TField(Sender).FieldName = 'CF') then
+    VerificaAlteracaoIMendes;
+  }
+  if (TField(Sender).FieldName = 'CF') then
+    VerificaAlteracaoIMendes;
+
+  if (TField(Sender).FieldName = 'CST') and ( Copy(OldValue,2,2) <> Copy(ibDataSet4CST.Value,2,2) ) then
     VerificaAlteracaoIMendes;
 
 end;
@@ -34048,6 +34058,13 @@ end;
 procedure TForm7.ibDataSet4TIPO_ITEMChange(Sender: TField);
 begin
   VerificaAlteracaoPerfil;
+
+  if TField(Sender).FieldName = 'CST_NFCE' then
+  begin
+    if not VarIsNull(ibDataSet4CST_NFCE.OldValue) then
+      if Copy(ibDataSet4CST_NFCE.OldValue,2,2) = Copy(ibDataSet4CST_NFCE.Value,2,2) then
+        Exit;
+  end;
 
   //Mauricio Parizotto 2024-10-14 TIPO_ITEM
   if Sender.FieldName <> 'TIPO_ITEM' then
