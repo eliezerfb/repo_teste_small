@@ -481,7 +481,12 @@ begin
             end;
 
             Writeln(F,'CPFCNPJRemetente='+LimpaNumero(Form7.ibDAtaSet13CGC.AsString));             // CNPJ do Emitente
-            Writeln(F,'InscricaoMunicipalRemetente='+LimpaNumero(Form7.ibDAtaSet13IM.AsString));   // IM do Emitente
+            //Writeln(F,'InscricaoMunicipalRemetente='+LimpaNumero(Form7.ibDAtaSet13IM.AsString));   // IM do Emitente Mauricio Parizotto 2025-02-19
+            // IM do Emitente
+            if (GetCidadeUF = 'ITABIRINHAMG') then
+              Writeln(F,'InscricaoMunicipalRemetente='+Form7.ibDAtaSet13IM.AsString)
+            else
+              Writeln(F,'InscricaoMunicipalRemetente='+LimpaNumero(Form7.ibDAtaSet13IM.AsString));
 
             if (sCalculoDoDescontoPeloProvedor = 'Sim') then //Sandro Silva 2024-03-25 if (sPadraoSistema = 'SAATRI') and (GetCidadeUF = 'BOAVISTARR') then
               Writeln(F,'ValorTotalServicos='+StrTran(Alltrim(FormatFloat('##0.00',Form7.ibDataSet15.FieldByname('SERVICOS').AsFloat)),',','.')) // Valor Total de serviços
