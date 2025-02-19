@@ -590,6 +590,7 @@ begin
   chkRefenciarNota.Enabled       := not(bTribInteligente) and not(bEstaSendoUsado);
   chkLancaManual.Enabled         := not(bTribInteligente) and not(bEstaSendoUsado);
   memObservacao.Enabled          := not(bEstaSendoUsado);
+  pnlMapaICMS.Enabled            := not(bEstaSendoUsado);
   cboCST_PISCOFINS.Enabled       := not(bTribInteligente) and not(bEstaSendoUsado);
   dbepPisSaida.Enabled           := not(bTribInteligente) and not(bEstaSendoUsado);
   dbepCofinsSaida.Enabled        := not(bTribInteligente) and not(bEstaSendoUsado);
