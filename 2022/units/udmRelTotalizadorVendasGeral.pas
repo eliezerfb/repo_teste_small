@@ -353,7 +353,7 @@ begin
   qryDescontoItemCSOSN.SQL.Add(RetornarTabelaTemporariaDocumentos(AenDocImp));
   qryDescontoItemCSOSN.SQL.Add('SELECT');
   if (qryEmitente.FieldByName('CRT').AsInteger in [2,3]) then
-    qryDescontoItemCSOSN.SQL.Add('    COALESCE(COALESCE(DESCONTO.CST_ICMS, E.CST_NFCE), E.CST) AS CSTCSOSN')
+    qryDescontoItemCSOSN.SQL.Add('    iif(Trim(coalesce(coalesce(ITEM.CST_ICMS, E.CST_NFCE), E.CST)) = ''0'', ''000'', ITEM.CST_ICMS) AS CSTCSOSN') // ALTERACA fica com CST_ICMS = '0  ' quando muda o regime CRT
   else
     qryDescontoItemCSOSN.SQL.Add('    CASE WHEN COALESCE(ITEM.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(ITEM.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSTCSOSN');
   qryDescontoItemCSOSN.SQL.Add('    , SUM(DESCONTO.TOTAL) AS DESCONTO');
@@ -429,28 +429,28 @@ begin
   qryDadosCST.Close;
   qryDadosCST.SQL.Clear;
   qryDadosCST.SQL.Add(RetornarTabelaTemporariaDocumentos(AenDocImp));
-  qryDadosCST.SQL.Add('SELECT');
-  qryDadosCST.SQL.Add('    CASE WHEN COALESCE(A.CFOP,'''') = '''' THEN E.CFOP ELSE A.CFOP END AS CFOP');
+  qryDadosCST.SQL.Add('select');
+  qryDadosCST.SQL.Add('    case when coalesce(A.CFOP,'''') = '''' THEN E.CFOP ELSE A.CFOP END AS CFOP');
   if (qryEmitente.FieldByName('CRT').AsInteger in [2,3]) then
-    qryDadosCST.SQL.Add('    , COALESCE(COALESCE(A.CST_ICMS, E.CST_NFCE), E.CST) AS CSTCSOSN')
+    qryDadosCST.SQL.Add('    , iif(Trim(COALESCE(COALESCE(A.CST_ICMS, E.CST_NFCE), E.CST)) = ''0'', ''000'', A.CST_ICMS) AS CSTCSOSN') // ALTERACA fica com CST_ICMS = '0  ' quando muda o regime CRT
   else
     qryDadosCST.SQL.Add('    , CASE WHEN COALESCE(A.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(A.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSTCSOSN');
   qryDadosCST.SQL.Add('    , SUM(COALESCE(A.TOTAL, 0)) AS VALOR');
-  qryDadosCST.SQL.Add('FROM ALTERACA A');
-  qryDadosCST.SQL.Add('INNER JOIN DOCUMENTOS');
-  qryDadosCST.SQL.Add('    ON (DOCUMENTOS.PEDIDO=A.PEDIDO)');
-  qryDadosCST.SQL.Add('    AND (DOCUMENTOS.CAIXA=A.CAIXA)');
-  qryDadosCST.SQL.Add('    AND (DOCUMENTOS.DATA=A.DATA)');
-  qryDadosCST.SQL.Add('LEFT JOIN ESTOQUE E');
-  qryDadosCST.SQL.Add('    ON (E.CODIGO = A.CODIGO)');
-  qryDadosCST.SQL.Add('    AND (COALESCE(E.DESCRICAO,'''')<>'''')');
-  qryDadosCST.SQL.Add('WHERE');
+  qryDadosCST.SQL.Add('from ALTERACA A');
+  qryDadosCST.SQL.Add('inner join DOCUMENTOS');
+  qryDadosCST.SQL.Add('    on (DOCUMENTOS.PEDIDO=A.PEDIDO)');
+  qryDadosCST.SQL.Add('    and (DOCUMENTOS.CAIXA=A.CAIXA)');
+  qryDadosCST.SQL.Add('    and (DOCUMENTOS.DATA=A.DATA)');
+  qryDadosCST.SQL.Add('left join ESTOQUE E');
+  qryDadosCST.SQL.Add('    on (E.CODIGO = A.CODIGO)');
+  qryDadosCST.SQL.Add('    and (COALESCE(E.DESCRICAO,'''')<>'''')');
+  qryDadosCST.SQL.Add('where');
   qryDadosCST.SQL.Add('    ((A.TIPO = ''BALCAO'') OR (A.TIPO = ''LOKED''))');
   qryDadosCST.SQL.Add('    AND (A.DESCRICAO <> ''<CANCELADO>'')');
   qryDadosCST.SQL.Add('    AND (A.DESCRICAO <> ''Desconto'')');
   qryDadosCST.SQL.Add('    AND (A.DESCRICAO <> ''Acréscimo'')');
   qryDadosCST.SQL.Add('    AND (COALESCE(A.ITEM, '''') <> '''')');
-  qryDadosCST.SQL.Add('GROUP BY 1,2');
+  qryDadosCST.SQL.Add('group by 1,2');
   qryDadosCST.ParamByName('XDATAINI').AsDate := FdDataIni;
   qryDadosCST.ParamByName('XDATAFIM').AsDate := FdDataFim;
   qryDadosCST.Open;
@@ -522,7 +522,7 @@ begin
   qryItensDocumento.SQL.Add('    , A.ITEM');
   qryItensDocumento.SQL.Add('    , CASE WHEN COALESCE(A.CFOP,'''') = '''' THEN E.CFOP ELSE A.CFOP END AS CFOP');
   if (qryEmitente.FieldByName('CRT').AsInteger in [2,3]) then
-    qryItensDocumento.SQL.Add('    , COALESCE(COALESCE(A.CST_ICMS, E.CST_NFCE), E.CST) AS CSTCSOSN')
+    qryItensDocumento.SQL.Add('    , iif(trim(coalesce(coalesce(A.CST_ICMS, E.CST_NFCE), E.CST)) = ''0'', ''000'', A.CST_ICMS) AS CSTCSOSN') // ALTERACA fica com CST_ICMS = '0  ' quando muda o regime CRT
   else
     qryItensDocumento.SQL.Add('    , CASE WHEN COALESCE(A.ALIQUICM, '''') = ''ISS'' THEN ''ISS'' ELSE COALESCE(COALESCE(A.CSOSN, E.CSOSN_NFCE), E.CSOSN) END AS CSTCSOSN');
 

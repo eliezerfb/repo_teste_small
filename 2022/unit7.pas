@@ -34,7 +34,7 @@ uses
   , uSmallEnumerados
   , synPDF, System.MaskUtils
   , uRetornaCustoMedio
-  , uRelatorioResumoVendas
+  , uRelatorioResumoVendas, IBX.IBSQL
   ;
 
 const SIMPLES_NACIONAL = '1';
@@ -1748,6 +1748,10 @@ type
     ibDataSet4CODIGO_IMENDES: TIntegerField;
     ributaoInteligente1: TMenuItem;
     N3: TMenuItem;
+    IBDataSet2IDCLIFOR: TIntegerField;
+    ibDataSet15IDRECEBEDOR: TIntegerField;
+    ibDataSet15IDLOCALENTREGA: TIntegerField;
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL: TSmallintField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);
@@ -2487,6 +2491,7 @@ type
     procedure ributaoInteligente1Click(Sender: TObject);
     procedure ibDataSet4CESTChange(Sender: TField);
     procedure ibDataSet4NATUREZA_RECEITAChange(Sender: TField);
+    procedure ibDataSet15AfterEdit(DataSet: TDataSet);
     {    procedure EscondeBarra(Visivel: Boolean);}
   private
     FFilterOcultaUsoConsumoVenda: String;
@@ -17066,6 +17071,31 @@ begin
     except end;
   end;
 
+  var QryDeleteCascate := TIBSQL.Create(nil);
+  try
+    try
+      QryDeleteCascate.Database := IBDatabase1;
+      QryDeleteCascate.Transaction := IBTransaction1;
+      QryDeleteCascate.SQL.Text := 'delete from cliforenderecos '+
+        ' where idclifor = :idclifor';
+      QryDeleteCascate.ParamByName('idclifor').AsInteger :=
+        DataSet.FieldByName('idclifor').AsInteger;
+      QryDeleteCascate.ExecQuery;
+    except
+      on E:Exception do
+      begin
+        MensagemSistema(
+          'Não foi possível excluir os endereços do cliente/fornecedor.'+
+          #13+#13+'Mensagem do sistema:'+#13+E.Message,
+          msgAtencao
+        );
+        Abort;
+      end;
+    end;
+  finally
+    QryDeleteCascate.Free;
+  end;
+
   RegistraExclusaoRegistro(IBDataSet2);
 end;
 
@@ -21916,6 +21946,9 @@ begin
   ibDataSet2REGISTRO.AsString      := sProximo;
   ibDataSet2CADASTRO.AsDateTime    := Date;
   IBDataSet2PRODUTORRURAL.AsString := 'N'; //Mauricio Parizotto 2024-06-27
+
+  IBDataSet2IDCLIFOR.AsInteger :=
+    IncGenerator(IBDatabase1, 'G_CLIFORIDCLIFOR').ToInteger;
 end;
 
 procedure TForm7.DBGrid1ColEnter(Sender: TObject);
@@ -23509,6 +23542,12 @@ end;
 procedure TForm7.ibDataSet15AfterDelete(DataSet: TDataSet);
 begin
   AgendaCommit(True);
+end;
+
+procedure TForm7.ibDataSet15AfterEdit(DataSet: TDataSet);
+begin
+  if Boolean(ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger) then
+    ibDataSet15IDLOCALENTREGA.AsInteger := ENDERECO_PRINCIPAL_ENTREGA;
 end;
 
 procedure TForm7.ibDataSet24AfterDelete(DataSet: TDataSet);
@@ -30345,9 +30384,23 @@ end;
 
 procedure TForm7.ibDataSet15BeforePost(DataSet: TDataSet);
 begin
-  //
-  AssinaRegistro('VENDAS',DataSet, True);
-  //
+  if ibDataSet15IDLOCALENTREGA.AsInteger > 0 then
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger := Integer(False);
+
+  if ibDataSet15IDLOCALENTREGA.AsInteger = ENDERECO_PRINCIPAL_ENTREGA then
+  begin
+    ibDataSet15IDLOCALENTREGA.AsVariant := Null;
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsInteger := Integer(True);
+  end;
+
+  if ibDataSet15IDRECEBEDOR.AsInteger = 0 then
+  begin
+    ibDataSet15IDRECEBEDOR.AsVariant := Null;
+    ibDataSet15IDLOCALENTREGA.AsVariant := Null;
+    ibDataSet15LOCALENTREGA_END_PRINCIPAL.AsVariant := Null;
+  end;
+
+  AssinaRegistro('VENDAS', DataSet, True);
 end;
 
 procedure TForm7.ibDataSet13BeforePost(DataSet: TDataSet);

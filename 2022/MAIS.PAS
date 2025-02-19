@@ -35,7 +35,7 @@ uses
 
 const VALOR_SISTEMA_BLOQUEADO = '19670926'; // Mudando aqui precisa mudar no Frente PAF Homologado
 // Build do banco incrementa sempre par
-const BUILD_DO_BANCO = '2025004';
+const BUILD_DO_BANCO = '2025005';
 const CNPJ_SMALLSOFT = '03.916.076/0006-64'; // Sandro Silva 2022-12-02 Unochapeco '07.426.598/0001-24';
 
 const NOME_ARQUIVO_AUXILIAR_CRIPTOGRAFADO_PAF_ECF = 'arquivoauxiliarcriptografadopafecfsmallsoft.ini'; // usado também pelo SAT
@@ -3404,7 +3404,8 @@ begin
         try
           Form1.ibDataset200.Close;
           Form1.ibDataset200.SelectSql.Clear;
-          Form1.ibDataset200.SelectSql.Add('update rdb$relation_fields set rdb$null_flag = 1 where (rdb$field_name = '+QuotedStr('REGISTRO')+') and (rdb$relation_name = '+QuotedStr(sP1)+')');
+          Form1.ibDataset200.SelectSql.Add(
+          'update rdb$relation_fields set rdb$null_flag = 1 where (rdb$field_name = '+QuotedStr('REGISTRO')+') and (rdb$relation_name = '+QuotedStr(sP1)+')');
           Form1.ibDataset200.Open;
         except
         end;
@@ -6819,6 +6820,33 @@ begin
     Form1.ibQuery1.ExecSQL;
   except end;
 
+  if CampoExisteFB(Form7.IBDatabase1, 'ESTOQUE', 'IDESTOQUE') then
+  begin
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text := 'select max(IDESTOQUE)max_id from ESTOQUE';
+    Form1.ibQuery1.Open();
+    Form1.ibQuery1.SQL.Text :=
+      Format(
+        'set generator G_ESTOQUEIDESTOQUE to %d',
+        [Form1.ibQuery1.FieldByName('max_id').AsInteger]
+      );
+    Form1.ibQuery1.ExecSQL;
+  end;
+
+  if CampoExisteFB(Form7.IBDatabase1, 'CLIFOR', 'IDCLIFOR') then
+  begin
+    Form1.ibQuery1.Close;
+    Form1.ibQuery1.SQL.Text := 'select max(IDCLIFOR)max_id from CLIFOR';
+    Form1.ibQuery1.Open();
+    Form1.ibQuery1.SQL.Text :=
+      Format(
+        'set generator G_CLIFORIDCLIFOR to %d',
+        [Form1.ibQuery1.FieldByName('max_id').AsInteger]
+      );
+    Form1.ibQuery1.ExecSQL;
+  end;
+
+
   // Indices
   Mensagem22('Ajustando arquivos ' + NumeroArquivo());
 
@@ -9019,7 +9047,8 @@ begin
         IBQuery1.Close;
         IBQuery1.SQL.Clear;
         IBQuery1.SQL.Add('insert into CLIFOR ('
-        +'NOME'
+        +'IDCLIFOR '
+        +',NOME'
         +',CGC'
         +',IE'
         +',CEP'
@@ -9033,7 +9062,8 @@ begin
         +',CADASTRO'
         +',REGISTRO'
         +') values ('
-        +':NOME'
+        +'(gen_id(G_CLIFORIDCLIFOR, 1))'
+        +',:NOME'
         +',:CGC'
         +',:IE'
         +',:CEP'
