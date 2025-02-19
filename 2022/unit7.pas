@@ -1752,6 +1752,7 @@ type
     ibDataSet15IDRECEBEDOR: TIntegerField;
     ibDataSet15IDLOCALENTREGA: TIntegerField;
     ibDataSet15LOCALENTREGA_END_PRINCIPAL: TSmallintField;
+    ibDataSet14CFOP_FORA: TWideStringField;
     procedure IntegraBanco(Sender: TField);
     procedure Sair1Click(Sender: TObject);
     procedure CalculaSaldo(Sender: BooLean);

@@ -3612,6 +3612,34 @@ begin
   end;
   {Mauricio Parizotto 2025-01-10 Inicio}
 
+  if not(CampoExisteFB(Form1.ibDataSet200.Transaction.DefaultDatabase, 'ICM', 'CFOP_FORA')) then
+  begin
+    ExecutaComando('alter table ICM add CFOP_FORA varchar(5);');
+    ExecutaComando('Commit');
+
+    ExecutaComando(
+      'UPDATE ICM '+
+      'SET CFOP_FORA = '+QuotedStr('6')+' || SUBSTRING(CFOP FROM 2 FOR CHAR_LENGTH(CFOP) - 1) '+
+      'WHERE CFOP STARTING WITH '+QuotedStr('5')
+    );
+    ExecutaComando('Commit');
+
+    ExecutaComando('UPDATE ICM '+
+      'SET CFOP_FORA = CFOP '+
+      'WHERE CFOP STARTING WITH '+QuotedStr('6')
+    );
+    ExecutaComando('Commit');
+
+    ExecutaComando(
+      'UPDATE ICM '+
+      'SET CFOP = '+QuotedStr('5')+' || SUBSTRING(CFOP FROM 2 FOR CHAR_LENGTH(CFOP) - 1) '+
+      'WHERE CFOP STARTING WITH '+QuotedStr('6')
+    );
+    ExecutaComando('Commit');
+
+  end;
+
+
   Form22.Repaint;
 
   try

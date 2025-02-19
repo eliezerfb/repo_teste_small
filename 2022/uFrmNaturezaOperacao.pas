@@ -16,7 +16,7 @@ type
   TFrmNaturezaOperacao = class(TFrmFichaPadrao)
     tbsNatureza: TTabSheet;
     tbsPisCofins: TTabSheet;
-    Label73: TLabel;
+    LabelCFOPDentro: TLabel;
     Label74: TLabel;
     Label75: TLabel;
     Label76: TLabel;
@@ -92,6 +92,8 @@ type
     _RS: TLabel;
     SMALL_DBEditX: TSMALL_DBEdit;
     chkListaNF: TDBCheckBox;
+    SMALL_DBEditCFOPFora: TSMALL_DBEdit;
+    LabelCFOPFora: TLabel;
     procedure memObservacaoEnter(Sender: TObject);
     procedure memObservacaoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -103,7 +105,6 @@ type
     procedure __RRClick(Sender: TObject);
     procedure tbsNaturezaShow(Sender: TObject);
     procedure SMALL_DBEditXExit(Sender: TObject);
-    procedure dbeIcmCFOPExit(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure tbsPisCofinsEnter(Sender: TObject);
@@ -116,12 +117,17 @@ type
     procedure lblAnteriorClick(Sender: TObject);
     procedure lblProximoClick(Sender: TObject);
     procedure lblProcurarClick(Sender: TObject);
+    procedure dbeIcmCFOPKeyPress(Sender: TObject; var Key: Char);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormDeactivate(Sender: TObject);
+    procedure dbeIcmCFOPEnter(Sender: TObject);
   private
     { Private declarations }
     bTribInteligente : boolean;
     procedure AtualizaObjComValorDoBanco;
     procedure SetaStatusUso; override;
     function GetPaginaAjuda:string; override;
+    function ValidateForm(): Boolean;
   public
     { Public declarations }
   end;
@@ -463,6 +469,13 @@ begin
   FreeAndNil(FrmNaturezaOperacao); //Mauricio Parizotto 2024-11-11
 end;
 
+procedure TFrmNaturezaOperacao.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+  inherited;
+  CanClose := ValidateForm();
+end;
+
 procedure TFrmNaturezaOperacao.FormCreate(Sender: TObject);
 begin
   inherited;
@@ -471,6 +484,18 @@ begin
   cbMovimentacaoEstoque.Items.Add('');
   cbMovimentacaoEstoque.Items.Add(TEXTO_NAO_MOVIMENTA_ESTOQUE);
   cbMovimentacaoEstoque.Items.Add(TEXTO_USAR_CUSTO_DE_COMPRA_NAS_NOTAS);
+end;
+
+procedure TFrmNaturezaOperacao.FormDeactivate(Sender: TObject);
+begin
+  inherited;
+  if ValidateForm() then
+  begin
+    Close;
+    Exit;
+  end;
+
+  SetFocus;
 end;
 
 procedure TFrmNaturezaOperacao.__RRClick(Sender: TObject);
@@ -532,14 +557,20 @@ begin
   _RS.Caption := 'RS '+Form7.ibDataSet14.FieldByname('RS_').AsString+'%';
 end;
 
-procedure TFrmNaturezaOperacao.dbeIcmCFOPExit(Sender: TObject);
+procedure TFrmNaturezaOperacao.dbeIcmCFOPEnter(Sender: TObject);
 begin
-  with Sender as TSMALL_DBEdit do
-  begin
-    DataSource.DataSet.FieldByName(DataField).AsString := Trim(TSMALL_DBEdit(Sender).Text);
-  end;
+  inherited;
+  TDBEdit(Sender).SelStart := Length(Trim(TDBEdit(Sender).Text));
+  TDBEdit(Sender).SelLength := 0;
 end;
 
+procedure TFrmNaturezaOperacao.dbeIcmCFOPKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  inherited;
+  if not(Key in ['0'..'9', #13, #8]) then
+    Key := #0;
+end;
 
 procedure TFrmNaturezaOperacao.FormActivate(Sender: TObject);
 begin
@@ -600,6 +631,28 @@ procedure TFrmNaturezaOperacao.tbsPisCofinsEnter(Sender: TObject);
 begin
   if not (Form7.ibDataSet14.State in ([dsEdit, dsInsert])) then
     Form7.ibDataSet14.Edit;
+end;
+
+function TFrmNaturezaOperacao.ValidateForm(): Boolean;
+  function ValidateCFOP(Sender: TObject; ALabel: TLabel): Boolean;
+  begin
+    var DBEdit := TSMALL_DBEdit(Sender);
+    var Cfop := Trim(DBEdit.Text);
+    Result := True;
+    if (Cfop = '') or (Cfop.Length = 4) then
+    begin
+      DBEdit.DataSource.DataSet.FieldByName(DBEdit.DataField).AsString := Cfop;
+      Exit;
+    end;
+
+    ShowMessage(ALabel.Caption+' inválido.');
+    DBEdit.SetFocus();
+    Result := False;
+  end;
+begin
+  Result := ValidateCFOP(dbeIcmCFOP, LabelCFOPDentro);
+  if Result then
+    Result := ValidateCFOP(SMALL_DBEditCFOPFora, LabelCFOPFora);
 end;
 
 procedure TFrmNaturezaOperacao.cboCST_PISCOFINSChange(Sender: TObject);

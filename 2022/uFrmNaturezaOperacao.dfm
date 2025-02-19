@@ -3,6 +3,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
   Top = 178
   OnActivate = FormActivate
   OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnDeactivate = FormDeactivate
   PixelsPerInch = 96
   TextHeight = 16
   inherited Panel_branco: TPanel
@@ -18,14 +20,14 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         ParentFont = False
         OnEnter = tbsNaturezaEnter
         OnShow = tbsNaturezaShow
-        object Label73: TLabel
+        object LabelCFOPDentro: TLabel
           Left = 14
-          Top = 23
+          Top = 26
           Width = 130
           Height = 13
           Alignment = taRightJustify
           AutoSize = False
-          Caption = 'CFOP'
+          Caption = 'CFOP dentro do estado'
           Color = clBtnHighlight
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -38,7 +40,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label74: TLabel
           Left = 14
-          Top = 48
+          Top = 77
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -56,7 +58,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label75: TLabel
           Left = 14
-          Top = 74
+          Top = 102
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -74,7 +76,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label76: TLabel
           Left = 14
-          Top = 125
+          Top = 155
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -92,7 +94,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label77: TLabel
           Left = 14
-          Top = 150
+          Top = 179
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -110,7 +112,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label78: TLabel
           Left = 14
-          Top = 175
+          Top = 204
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -128,7 +130,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label79: TLabel
           Left = 14
-          Top = 225
+          Top = 254
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -146,7 +148,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label80: TLabel
           Left = 14
-          Top = 250
+          Top = 279
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -164,7 +166,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label108: TLabel
           Left = 14
-          Top = 200
+          Top = 229
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -182,7 +184,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label109: TLabel
           Left = 14
-          Top = 275
+          Top = 304
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -200,7 +202,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label110: TLabel
           Left = 14
-          Top = 325
+          Top = 351
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -218,7 +220,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label111: TLabel
           Left = 14
-          Top = 99
+          Top = 128
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -236,7 +238,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object Label1: TLabel
           Left = 14
-          Top = 300
+          Top = 329
           Width = 130
           Height = 13
           Alignment = taRightJustify
@@ -252,9 +254,27 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           ParentFont = False
           Transparent = True
         end
+        object LabelCFOPFora: TLabel
+          Left = 14
+          Top = 51
+          Width = 130
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'CFOP fora do estado'
+          Color = clBtnHighlight
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+          Transparent = True
+        end
         object dbeIcmCFOP: TSMALL_DBEdit
           Left = 150
-          Top = 23
+          Top = 22
           Width = 78
           Height = 20
           AutoSize = False
@@ -268,15 +288,17 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Height = -13
           Font.Name = 'Microsoft Sans Serif'
           Font.Style = []
+          MaxLength = 4
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 0
-          OnExit = dbeIcmCFOPExit
+          OnEnter = dbeIcmCFOPEnter
           OnKeyDown = PadraoKeyDown
+          OnKeyPress = dbeIcmCFOPKeyPress
         end
         object edtDescricao: TSMALL_DBEdit
           Left = 150
-          Top = 48
+          Top = 73
           Width = 313
           Height = 20
           AutoSize = False
@@ -292,12 +314,12 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 1
+          TabOrder = 2
           OnKeyDown = PadraoKeyDown
         end
         object edtIntegracao: TSMALL_DBEdit
           Left = 150
-          Top = 74
+          Top = 99
           Width = 313
           Height = 20
           AutoSize = False
@@ -313,13 +335,13 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 3
+          TabOrder = 4
           Visible = False
           OnKeyDown = PadraoKeyDown
         end
         object edtCIT: TSMALL_DBEdit
           Left = 150
-          Top = 150
+          Top = 175
           Width = 78
           Height = 20
           AutoSize = False
@@ -335,12 +357,12 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 6
+          TabOrder = 7
           OnKeyDown = PadraoKeyDown
         end
         object edtBase: TSMALL_DBEdit
           Left = 150
-          Top = 175
+          Top = 200
           Width = 78
           Height = 20
           AutoSize = False
@@ -356,12 +378,12 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 7
+          TabOrder = 8
           OnKeyDown = PadraoKeyDown
         end
         object edtBaseICMS: TSMALL_DBEdit
           Left = 150
-          Top = 225
+          Top = 250
           Width = 78
           Height = 20
           AutoSize = False
@@ -377,12 +399,12 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 9
+          TabOrder = 10
           OnKeyDown = PadraoKeyDown
         end
         object edtCST: TSMALL_DBEdit
           Left = 150
-          Top = 250
+          Top = 275
           Width = 78
           Height = 20
           AutoSize = False
@@ -398,12 +420,12 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 10
+          TabOrder = 11
           OnKeyDown = PadraoKeyDown
         end
         object edtISS: TSMALL_DBEdit
           Left = 150
-          Top = 200
+          Top = 225
           Width = 78
           Height = 20
           AutoSize = False
@@ -419,12 +441,12 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 8
+          TabOrder = 9
           OnKeyDown = PadraoKeyDown
         end
         object edtCSOSN: TSMALL_DBEdit
           Left = 150
-          Top = 275
+          Top = 300
           Width = 78
           Height = 20
           AutoSize = False
@@ -440,12 +462,12 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 11
+          TabOrder = 12
           OnKeyDown = PadraoKeyDown
         end
         object chkICMS_IPI: TDBCheckBox
-          Left = 293
-          Top = 210
+          Left = 277
+          Top = 231
           Width = 92
           Height = 17
           Alignment = taLeftJustify
@@ -454,15 +476,15 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'SOBREIPI'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 14
+          TabOrder = 15
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
         object chkICMS_Outras: TDBCheckBox
-          Left = 293
-          Top = 229
+          Left = 277
+          Top = 250
           Width = 109
           Height = 17
           Alignment = taLeftJustify
@@ -471,15 +493,15 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'SOBREOUTRAS'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 15
+          TabOrder = 16
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
         object chkIPI_Frete: TDBCheckBox
-          Left = 293
-          Top = 248
+          Left = 277
+          Top = 269
           Width = 89
           Height = 17
           Alignment = taLeftJustify
@@ -488,7 +510,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'FRETESOBREIPI'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 16
+          TabOrder = 17
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
@@ -496,9 +518,9 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object memObservacao: TDBMemo
           Left = 150
-          Top = 325
+          Top = 351
           Width = 625
-          Height = 82
+          Height = 65
           DataField = 'OBS'
           DataSource = DSCadastro
           Font.Charset = ANSI_CHARSET
@@ -508,19 +530,19 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           MaxLength = 32768
           ParentFont = False
-          TabOrder = 20
+          TabOrder = 21
           OnEnter = memObservacaoEnter
           OnKeyDown = memObservacaoKeyDown
           OnKeyPress = memObservacaoKeyPress
         end
         object cbMovimentacaoEstoque: TComboBox
           Left = 150
-          Top = 99
+          Top = 124
           Width = 195
           Height = 21
           Style = csDropDownList
           ItemIndex = 2
-          TabOrder = 4
+          TabOrder = 5
           Text = 'Usar custo de compra nas notas'
           OnExit = cbMovimentacaoEstoqueExit
           OnKeyDown = PadraoKeyDown
@@ -531,12 +553,12 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object cbIntegracaoFinanceira: TComboBox
           Left = 150
-          Top = 73
+          Top = 98
           Width = 195
           Height = 21
           Style = csDropDownList
           ItemIndex = 0
-          TabOrder = 2
+          TabOrder = 3
           OnExit = cbIntegracaoFinanceiraExit
           OnKeyDown = PadraoKeyDown
           Items.Strings = (
@@ -547,7 +569,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         inline fraPlanoContas: TfFrameCampo
           Left = 150
-          Top = 125
+          Top = 151
           Width = 313
           Height = 20
           Color = clWhite
@@ -561,9 +583,9 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           ParentColor = False
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 5
+          TabOrder = 6
           ExplicitLeft = 150
-          ExplicitTop = 125
+          ExplicitTop = 151
           ExplicitWidth = 313
           inherited txtCampo: TEdit
             Width = 313
@@ -588,7 +610,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
         end
         object edtCBenef: TSMALL_DBEdit
           Left = 150
-          Top = 300
+          Top = 325
           Width = 78
           Height = 20
           AutoSize = False
@@ -604,12 +626,12 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Font.Style = []
           ParentCtl3D = False
           ParentFont = False
-          TabOrder = 12
+          TabOrder = 13
           OnKeyDown = PadraoKeyDown
         end
         object chkIPI_Outras: TDBCheckBox
-          Left = 293
-          Top = 267
+          Left = 277
+          Top = 288
           Width = 93
           Height = 17
           Alignment = taLeftJustify
@@ -618,15 +640,15 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'IPISOBREOUTRA'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 17
+          TabOrder = 18
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
         object chkRefenciarNota: TDBCheckBox
-          Left = 293
-          Top = 286
+          Left = 277
+          Top = 307
           Width = 99
           Height = 17
           Alignment = taLeftJustify
@@ -635,15 +657,15 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'REFERENCIANOTA'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 18
+          TabOrder = 19
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
         end
         object chkLancaManual: TDBCheckBox
-          Left = 293
-          Top = 305
+          Left = 277
+          Top = 326
           Width = 173
           Height = 17
           Alignment = taLeftJustify
@@ -652,7 +674,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'IMPOSTOMANUAL'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 19
+          TabOrder = 20
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
@@ -665,10 +687,10 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           Height = 272
           BevelOuter = bvNone
           Color = clWhite
-          TabOrder = 21
+          TabOrder = 22
           object Image4: TImage
-            Left = 17
-            Top = 15
+            Left = 11
+            Top = 14
             Width = 245
             Height = 243
             Align = alCustom
@@ -1489,7 +1511,7 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
             Left = 32
             Top = 136
             Width = 50
-            Height = 18
+            Height = 25
             BorderStyle = bsNone
             Ctl3D = True
             DataField = 'RR_'
@@ -1508,8 +1530,8 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           end
         end
         object chkListaNF: TDBCheckBox
-          Left = 293
-          Top = 191
+          Left = 277
+          Top = 212
           Width = 124
           Height = 17
           Alignment = taLeftJustify
@@ -1518,11 +1540,34 @@ inherited FrmNaturezaOperacao: TFrmNaturezaOperacao
           DataField = 'LISTAR'
           DataSource = DSCadastro
           ParentBiDiMode = False
-          TabOrder = 13
+          TabOrder = 14
           ValueChecked = 'S'
           ValueUnchecked = 'N'
           OnClick = DBCheckSobreClick
           OnKeyDown = PadraoKeyDown
+        end
+        object SMALL_DBEditCFOPFora: TSMALL_DBEdit
+          Left = 150
+          Top = 47
+          Width = 78
+          Height = 20
+          AutoSize = False
+          BevelInner = bvLowered
+          BevelOuter = bvNone
+          Ctl3D = True
+          DataField = 'CFOP_FORA'
+          DataSource = DSCadastro
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Microsoft Sans Serif'
+          Font.Style = []
+          MaxLength = 4
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 1
+          OnKeyDown = PadraoKeyDown
+          OnKeyPress = dbeIcmCFOPKeyPress
         end
       end
       object tbsPisCofins: TTabSheet

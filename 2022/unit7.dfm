@@ -5,7 +5,7 @@ object Form7: TForm7
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = ' '
-  ClientHeight = 1211
+  ClientHeight = 1231
   ClientWidth = 1554
   Color = clWhite
   Ctl3D = False
@@ -7636,7 +7636,7 @@ object Form7: TForm7
   end
   object Panel3: TPanel
     Left = 0
-    Top = 1171
+    Top = 1191
     Width = 1554
     Height = 40
     Align = alBottom
@@ -7646,6 +7646,7 @@ object Form7: TForm7
     ParentCtl3D = False
     TabOrder = 10
     Visible = False
+    ExplicitTop = 1171
     object Button2: TButton
       Left = 260
       Top = 10
@@ -14402,29 +14403,29 @@ object Form7: TForm7
       
         '   PPIS, PCOFINS, CSOSN, CSTPISCOFINS,FRETESOBREIPI,CBENEF,PISCO' +
         'FINSLUCRO,IPISOBREOUTRA,REFERENCIANOTA,'
-      '   IMPOSTOMANUAL, LISTAR, TRIB_INTELIGENTE)'
+      '   IMPOSTOMANUAL, LISTAR, TRIB_INTELIGENTE, CFOP_FORA)'
       'values'
       
         '  (:NOME, :CFOP, :ST, :BASE, :BASEISS, :INTEGRACAO, :ISS, :AM_, ' +
-        ':AC_, :AL_, '
+        ':AC_, :AL_,'
       
         '   :AP_, :BA_, :CE_, :DF_, :ES_, :GO_, :MA_, :MG_, :MT_, :MS_, :' +
-        'PA_, :PB_, '
+        'PA_, :PB_,'
       
         '   :PE_, :PI_, :PR_, :RJ_, :RN_, :RO_, :RR_, :RS_, :SC_, :SE_, :' +
-        'SP_, :TO_, '
+        'SP_, :TO_,'
       
         '   :EX_, :OBS, :CONTA, :REGISTRO, :SOBREIPI, :SOBREFRETE, :SOBRE' +
-        'SEGURO, '
+        'SEGURO,'
       
         '   :SOBREOUTRAS, :CST, :BCPISCOFINS, :PPIS, :PCOFINS, :CSOSN, :C' +
         'STPISCOFINS,:FRETESOBREIPI,:CBENEF,:PISCOFINSLUCRO,:IPISOBREOUTR' +
         'A,:REFERENCIANOTA,'
-      '   :IMPOSTOMANUAL, :LISTAR, :TRIB_INTELIGENTE)')
+      '   :IMPOSTOMANUAL, :LISTAR, :TRIB_INTELIGENTE, :CFOP_FORA)')
     RefreshSQL.Strings = (
       'Select '
       '  NOME,'
-      '  CFOP,'
+      '  CFOP, '
       '  ST,'
       '  BASE,'
       '  BASEISS,'
@@ -14478,7 +14479,8 @@ object Form7: TForm7
       '  REFERENCIANOTA,'
       '  IMPOSTOMANUAL,'
       '  LISTAR,'
-      '  TRIB_INTELIGENTE'
+      '  TRIB_INTELIGENTE,'
+      '  CFOP_FORA'
       'from ICM '
       'where'
       '  REGISTRO = :REGISTRO')
@@ -14542,7 +14544,8 @@ object Form7: TForm7
       '  REFERENCIANOTA = :REFERENCIANOTA,'
       '  IMPOSTOMANUAL = :IMPOSTOMANUAL,'
       '  LISTAR = :LISTAR,'
-      '  TRIB_INTELIGENTE = :TRIB_INTELIGENTE'
+      '  TRIB_INTELIGENTE = :TRIB_INTELIGENTE,'
+      '  CFOP_FORA = :CFOP_FORA'
       'where'
       '  REGISTRO = :OLD_REGISTRO')
     ParamCheck = True
@@ -14551,7 +14554,6 @@ object Form7: TForm7
     Top = 629
     object ibDataSet14CFOP: TIBStringField
       FieldName = 'CFOP'
-      EditMask = '99999;1;_'
       Size = 5
     end
     object ibDataSet14NOME: TIBStringField
@@ -14955,6 +14957,11 @@ object Form7: TForm7
       Origin = 'ICM.TRIB_INTELIGENTE'
       Visible = False
       Size = 1
+    end
+    object ibDataSet14CFOP_FORA: TWideStringField
+      FieldName = 'CFOP_FORA'
+      Visible = False
+      Size = 5
     end
   end
   object DataSource14: TDataSource
