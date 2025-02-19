@@ -1142,6 +1142,8 @@ begin
     end;
   end;
 
+  PanelProdutos.Height := DEFAULT_PANELPRODUTOS_HEIGHT;
+
   Panel1.Height := PanelTop.Height
     + PageControlAddressMktp.Height
     + PanelProdutos.Height
