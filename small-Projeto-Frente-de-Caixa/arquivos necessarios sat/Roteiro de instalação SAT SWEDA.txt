@@ -1,0 +1,32 @@
+Roteiro cfesat.exe e SAT SWEDA SS-1000
+
+Roteiro básico para implantação do cfesat.exe e equipamento SWEDA SAT SS-1000.
+
+Este roteiro parte do princípio que os cadastros no Small Commerce estão preenchidos corretamente e que o contribuinte tenha efetuado todos os procedimentos junto a SEFAZ para usar o equipamento SAT.
+
+01 - Instalar o equipamento SAT seguindo as orientações do fabricante. Deixe para ativar e vincular o SAT pelo cfesat.exe;
+02 - Copiar cfesat.exe para a pasta de instalação do Small Commerce;
+03 - Copiar do cd fornecido pelo fabicante, para a pasta de instalação do Small Commerce, os arquivos .dll necessários:
+- msvcr120.dll;
+- iconv.dll;
+- libxml2.dll;
+- msvcp120.dll;
+- zlib1.dll;
+04 - Configurar no FRENTE.INI o modelo: 
+ Modelo do ECF=59
+05 - Solicitar ao suporte da Smallsoft a assinatura vinculada do CNPJ da software house e do contribuinte;
+06 - Executar o cfesat.exe após receber a assinatura vinculada. Para Windows 8.x execute-o como administrador;
+07 - Informe os dados solicitados;
+08 - Observar ao final se no equipamento SAT o segundo LED (OPER) permanece sempre ligado. 
+    Se estiver piscando indica a falta de vinculação. Informe a Smallsoft.
+    Na pasta de instalação do Small Commerce há a pasta ..\log, nela encontra-se o arquivo log_sat.txt com os comandos enviados pelo cfesat.exe
+09 - Acessar no cfesat.exe F10 Menu\CF-e-SAT e configura o ambiente para HOMOLOGAÇÃO;
+10 - Faça teste de venda e cancelamento;
+11 - Se tudo estiver ok mude o ambiente para produção;
+12 - Seu frente de caixa está pronto para efetuar vendas pelo SAT;
+13 - Para voltar a utilizar a NFC-e basta configurar no FRENTE.INI o modelo 65 e executar o NFC-e.exe:
+ Modelo do ECF=65  
+
+Em caso de dúvida entre em contato como suporte técnico da Smallsoft: (0xx49) 3482.3000 ou suporte@smallsoft.com.br 
+
+Bom trabalho.

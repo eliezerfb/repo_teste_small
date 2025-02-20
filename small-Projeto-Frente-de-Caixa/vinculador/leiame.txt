@@ -1,0 +1,25 @@
+1 - Criar arquivo .pem a partir do certificado digital cadastrado na SEFAZ/SP;
+openssl pkcs12 -in CertificadoA1.pfx -out Certificado.pem -nodes
+2 - Usar arquivo .pem para gerar assinatura .bin do cnpj da software house concatenado com o cnpj do contribuinte;
+openssl dgst -sha256 -sign Certificado.pem -out assinatura.bin CNPJs.txt
+3 - Converter o arquivo .bin gerado para um arquivo base64 com as 344 posições exigidas pelo SAT
+openssl enc -base64 -in assinatura.bin -out assinatura.txt
+4 - Eliminar quebra de linhas do arquivo base64;
+
+
+
+
+openssl base64 -d -in 03343434000182_assinatura.txt -out decodebase64.txt 
+
+FsfaR+isObgsncv0ic5gQrR496ZLyEAk0wICtKFMGvJzBmNrfb3CWEUteFuvMNDatsUrETdSJCzxGDQ+HYqhXh2r6oE3xyiJpbcupAFtaF7wjetoeY3wzncZhzNjx353+IaoLFwXiuII/flVWs3JvM/wMd0GbKDDbczaw3lO4zV6P9zFo3KBTmpyAQRYhAPqK1b+G2PhG51bQryAMWY/vTQ1C5yFl85a3refYXV30PdrylbllkcFqSlDJtjdbKI0gm/xolw2+0PhcWeLvLu4RklO0+bUWv8Yhh7MojSwCQgKMNsvmVvbI7pOsh8jSXb/cGa1lMXUa3infei6s7tNuw==
+FsfaR+isObgsncv0ic5gQrR496ZLyEAk0wICtKFMGvJzBmNrfb3CWEUteFuvMNDatsUrETdSJCzxGDQ+HYqhXh2r6oE3xyiJpbcupAFtaF7wjetoeY3wzncZhzNjx353+IaoLFwXiuII/flVWs3JvM/wMd0GbKDDbczaw3lO4zV6P9zFo3KBTmpyAQRYhAPqK1b+G2PhG51bQryAMWY/vTQ1C5yFl85a3refYXV30PdrylbllkcFqSlDJtjdbKI0gm/xolw2+0PhcWeLvLu4RklO0+bUWv8Yhh7MojSwCQgKMNsvmVvbI7pOsh8jSXb/cGa1lMXUa3infei6s7tNuw==
+
+cQPjwIaxff88xGWT3kln+g/YW9Q3BFXukf6C1fIoCcSoSJIG2Yvc6az5LZITrqNHzJYenj2QC2VwhTVJOfBFmwZ+fNrWDL5/3vpSBVMlqnPqd1Pctqq4skT4uV29IK7IE4+VcBGy7Bs3VeCSDHLnd+EGyfSUQCbjhORcXrvpkWbgaugdhGifFNR3LYMA+uo5KWetMIxBfUWi8v0TAdh4IxKa5FRQT7PZHULt2skZ/94ftaqA6JU7xrSG3X8yWD1JpIVDqZpNC4QxQUd+Hy94tL0OVYgSjGZ8mW77oLthPx0R2gMBDOQNBsXZ+Sb7kDNT7tyc/gw1mJkN0g3aALE3sQ==
+
+cQPjwIaxff88xGWT3kln+g/YW9Q3BFXukf6C1fIoCcSoSJIG2Yvc6az5LZITrqNHzJYenj2QC2VwhTVJOfBFmwZ+fNrWDL5/3vpSBVMlqnPqd1Pctqq4skT4uV29IK7IE4+VcBGy7Bs3VeCSDHLnd+EGyfSUQCbjhORcXrvpkWbgaugdhGifFNR3LYMA+uo5KWetMIxBfUWi8v0TAdh4IxKa5FRQT7PZHULt2skZ/94ftaqA6JU7xrSG3X8yWD1JpIVDqZpNC4QxQUd+Hy94tL0OVYgSjGZ8mW77oLthPx0R2gMBDOQNBsXZ+Sb7kDNT7tyc/gw1mJkN0g3aALE3sQ==
+
+CFe35150403343434000182590000026240000012421035
+
+openssl pkcs12 -in CertificadoA1.pfx -out Certificado.pem -nodes
+
+openssl pkcs12 \ -in domain.pfx \ -nodes -out domain.combined.crt
