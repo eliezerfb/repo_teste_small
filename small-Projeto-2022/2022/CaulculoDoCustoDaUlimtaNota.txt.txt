@@ -1,0 +1,12 @@
+Calculo do Custo Médio da Última Nota
+---------------------------------------------------------
+
+caneca porcelana branca
+03830 
+CUSTO MÉDIO = ((QTD_ATUAL * CUSTOMEDIO) + (QUANTIDADE * CUSTOCOMPR - (VICMS / QUANTIDADE))))/ (QUANTIDADE + QTD_ATUAL)
+21,9 = 21,9ACUCAR REFINADO CARAVELAS 1KG
+03514 
+CUSTO MÉDIO = ((QTD_ATUAL * CUSTOMEDIO) + (QUANTIDADE * CUSTOCOMPR - (VICMS / QUANTIDADE))))/ (QUANTIDADE + QTD_ATUAL)
+2,99 = ((10 * 2,99) + (10 * (2,99 - (0 / 10))))/ (10 + 10) = 
+
+

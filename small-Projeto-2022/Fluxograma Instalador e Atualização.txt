@@ -1,0 +1,297 @@
+Atualiza.exe
+Exclui meuftp.txt
+Cria meuftp.txt
+add usuario do ftp
+add senha do ftp
+add caminho destino
+add put "c:\Projeto 20**\20**\log.txt"
+add put com os .sma conforme CheckBox marcados
+Aguarda meuftp.txt ser criado
+Se tiver marcado IBPT executa \ibpt\renomear.bat
+Executa atualiza_.bat
+Executal Install Shield para gerar instalador
+Aguarda enquanto o processo do Install Shield está aberto
+Executa "Projeto 2022\2022\cdzip_.bat"
+
+
+\ibpt\renomear.bat
+Acessa a pasta "\PROJETO 20**\20**\IBPT"
+Exclui os arquivos .txt "\PROJETO 20**\20**\IBPT\*.txt"
+Copia os arquivos do IBPT que estão no server "\\192.168.210.5\Arquivos\cd_\20**\IBPT\*.CSV" /Y
+renomeia os arquivos TabelaIBPTaxAC*.csv IBPT_AC.tx
+
+atualiza_.bat
+Assina "c:\Projeto 20**\ENTRADA\INSTALAR.EXE"
+Assina "c:\Projeto 20**\mobile\mobile.exe"
+Assina "c:\Projeto 20**\update\smallcon.exe"
+Copia c:\Projeto 20**\update\smallcon.exe discos\programas
+Copia \\192.168.210.5\Arquivos\cd_\20**\nfse\nfse.exe "c:\Projeto 20**\nfs-e\nfse.exe"
+Copia \\192.168.210.5\Arquivos\cd_\20**\nfse\nfse.exe "c:\Projeto 20**\20**\nfse.exe"
+Copia \\192.168.210.5\Arquivos\cd_\20**\nfse\nfse_setup.exe "c:\Projeto 20**\nfs-e\nfse_setup.exe"
+Copia \\192.168.210.5\Arquivos\cd_\20**\nfse\nfse_setup.exe "C:\Users\Ronei Ivo Weber\Desktop\cd20**_\install\nfse_setup.exe"
+Assina "c:\Projeto 20**\nfs-e\nfse.exe"
+Copia "c:\Projeto 20**\nfs-e\nfse.exe" discos\programas
+Copia "c:\Projeto 20**\ENTRADA\INSTALAR.EXE" "C:\Users\Ronei Ivo Weber\Desktop\cd2022_\setup.exe" /y 
+Copia "C:\Users\Ronei Ivo Weber\Desktop\cd20**_\install\nfe_setup.exe" atualiza\nfe_setup.~~1 /y
+Copia "C:\Users\Ronei Ivo Weber\Desktop\cd20**_\install\nfse_setup.exe" atualiza\nfse_setup.~~1 /y
+Copia small22.exe "Small Commerce.exe"
+Assina "Small Commerce.exe"
+*Esse prcisa fazer? Copia "Small Commerce.exe" "C:\Program Files (x86)\SmallSoft\Small Commerce\Small Commerce.exe"
+Acessa pasta rar
+Exclui a pasta NFCE
+Cria pasta NFCE
+Copia com xcopy a pasta NFCE xcopy \\192.168.210.5\Arquivos\cd_\2022\cfesat\NFCE NFCE /S/Y > nul
+Compacta a pasta nfce com winrar gerarndo self-extractor
+Exclui pastanfce.~~1
+renomeia pastanfce.exe para pastanfce.~~1
+Sai da pasta rar
+Copia rar\pastanfce.~~1                        discos\programas
+Acessa pasta rar
+Exclui a pasta NFE
+Cria a pasta NFE
+Copia com xcopy a pasta NFE xcopy \\192.168.210.5\Arquivos\cd_\2022\PastaNFE\NFE NFE /S/Y  > nul
+Compacta a pasta NFE com winrar gerarndo self-extractor
+Exclui pastanfe.~~1
+Renomeia pastanfe.exe para pastanfe.~~1 
+Sai da pasta rar
+Copia rar\pastanfe.~~1                        discos\programas /Y
+Acessa a pasta rar
+Exclui a pasta NFSE
+Cria a pasta NFSE
+Copia com xcopy a pasta NFSE xcopy \\192.168.210.5\Arquivos\cd_\2022\PastaNFSE\NFSE NFSE /S/Y  > nul
+Compacta a pasta NFSE com winrar gerando self-extractor
+Exclui pastanfse.~~1
+Renomeia pastanfse.exe para pastanfse.~~1 
+Sai da pasta rar
+Copia rar\pastanfse.~~1                        discos\programas /Y
+Acessa a pasta rar
+Exclui a pasta DLLSAT
+Cria a pasta DLLSAT
+Copia com xcopy a pasta DLLSAT xcopy \\192.168.210.5\Arquivos\cd_\2022\cfesat\DLLSAT DLLSAT /S/Y  > nul
+Compacta a pasta DLLSAT com winrar gerando self-extractor
+Exclui pastadllsat.~~1
+Renomeia pastadllsat.exe para pastadllsat.~~1
+Sai da pasta rar
+copia rar\pastadllsat.~~1                        discos\programas /Y
+Acessa a pasta rar
+Exclui a pasta PAF2022
+Cria a pasta PAF2022
+Copia com xcopy a pasta PAF2022 xcopy \\192.168.210.5\Arquivos\cd_\2022\paf\paf2022 PAF2022 /S/Y  > nul
+Compacta a pasta PAF2022 com winrar
+Exclui paf2022_.~~1
+Renomaia paf2022_.exe para paf2022_.~~1 
+Sai da pasta rar
+Copia rar\paf2022_.~~1                discos\programas /Y
+Copia msgws.dll copy \\192.168.210.5\Arquivos\cd_\2022\paf\msgws.dll            discos\programas /Y
+Copia DLL da Elgin para TEF copy \\192.168.210.5\Arquivos\cd_\2022\cfesat\E1_Bridge01.dll discos\programas /Y
+Copia conversor do SaaS copy \\192.168.210.5\Arquivos\cd_\2022\saas\saas_.exe           discos\programas /Y
+Copia dll client do Firebird copy \\192.168.210.5\Arquivos\cd_\2022\hub\fbclient.dll        discos\programas /Y
+Copia cliente do smallhub mkp.exe copy \\192.168.210.5\Arquivos\cd_\2022\hub\mkp.exe             discos\programas /Y
+Copia frente SAT para pasta programas copy \\192.168.210.5\Arquivos\cd_\2022\cfesat\cfesat.exe            discos\programas /Y
+Copia frente NFC-e para pasta programas copy \\192.168.210.5\Arquivos\cd_\2022\cfesat\cfesat.exe            discos\programas\nfce.exe /Y
+Copia frente para PAF-NFC-e para pasta programas copy \\192.168.210.5\Arquivos\cd_\2022\cfesat\cfesat.exe            discos\programas\pafnfce.exe /Y
+Copia frente para MEI para pasta programas copy \\192.168.210.5\Arquivos\cd_\2022\cfesat\cfesat.exe            discos\programas\mei.exe /Y
+Copia frente para NFC-E local copy \\192.168.210.5\Arquivos\cd_\2022\cfesat\cfesat.exe            nfce.exe /Y
+Copia servidorsat para local copy \\192.168.210.5\Arquivos\cd_\2022\cfesat\servidorsat.exe       discos\programas /Y
+Copia nfce_setup.~~1 para atualiza copy \\192.168.210.5\Arquivos\cd_\2022\cfesat\nfce_setup.exe        atualiza\nfce_setup.~~1 /Y
+Copia nfce_setup.exe para pasta install copy \\192.168.210.5\Arquivos\cd_\2022\cfesat\nfce_setup.exe        "C:\Users\Ronei Ivo Weber\Desktop\cd2022_\install" /Y
+Copia consulta.exe copy \\192.168.210.5\Arquivos\cd_\2022\cfesat\consulta.exe            discos\programas /Y
+Copia fci.exe para copy \\192.168.210.5\Arquivos\cd_\2022\fci\fci.exe            discos\programas /Y
+Copia etiquetas.exe copy \\192.168.210.5\Arquivos\cd_\2022\etiquetas\etiquetas.exe            discos\programas /Y
+Copia leia-me.txt copy atualiza\leia-me.txt   discos\programas /Y
+Copia mail.exe \\192.168.210.5\Arquivos\cd_\2022\mail\mail.exe            discos\programas /Y
+Copia pesado.exe \\192.168.210.5\Arquivos\cd_\2022\pesado\pesado.exe            discos\programas /Y
+Copia spedpiscofins.exe \\192.168.210.5\Arquivos\cd_\2022\sped\pis_cofins\spedpiscofins.exe     discos\programas /Y
+Copia sped.exe \\192.168.210.5\Arquivos\cd_\2022\sped\fiscal\sped.exe                  discos\programas /Y  
+Copia monitor.ini "\\192.168.210.5\Arquivos\cd_\2022\monitor\monitor.ini"                 discos\programas /Y
+Copia monitor.fdb "\\192.168.210.5\Arquivos\cd_\2022\monitor\MONITOR.FDB"                 discos\programas /Y
+Copia smallcomandamonitor.exe "\\192.168.210.5\Arquivos\cd_\2022\monitor\SmallComandasMonitor.exe"    discos\programas /Y 
+Copia scktsrvr.exe  "\\192.168.210.5\Arquivos\cd_\2022\monitor\scktsrvr.exe"                discos\programas /Y
+Copia SmallComanda.exe "\\192.168.210.5\Arquivos\cd_\2022\monitor\SmallComandas.exe"           discos\programas /Y 
+Copia pmtg.dll "\\192.168.210.5\Arquivos\cd_\2022\monitor\pmtg.dll"                    discos\programas /Y
+Copia Sintegra.exe "\\192.168.210.5\Arquivos\cd_\2022\sintegra\sintegra.exe"               discos\programas /Y
+Copia saas_.exe "\\192.168.210.5\Arquivos\cd_\2022\SaaS\saas_.exe"               discos\programas /Y
+Copia graficos.exe para local "c:\Projeto 2022\graficos\graficos.exe"
+Copia graficos.exe para graficos.exe  discos\programas /Y
+Copia mobile.exe para local "c:\Projeto 2022\mobile\mobile.exe"
+Copia mobile.exe para mobile.exe    discos\programas /Y
+Copia firebird.exe "c:\Projeto 2022\CONVERSOR\FIREBIRD.EXE"
+Copia firebird.exe para FIREBIRD.EXE    discos\programas /Y
+Copia retaguarda.chm \\192.168.210.5\Arquivos\cd_\2022\help\retaguarda.chm            discos\programas /Y
+Copia manual_small.pdf \\192.168.210.5\Arquivos\cd_\2022\manual\manual_small.pdf "C:\Users\Ronei Ivo Weber\Desktop\cd2022_\install" /y   /Y
+Copia anvisa.exe \\192.168.210.5\Arquivos\cd_\2022\anvisa\anvisa.exe             discos\programas /Y
+Copia "small commerce.exe" para pasta do ip .5 "Small Commerce.exe"                           \\192.168.210.5\Arquivos\2022 /Y
+Copia "small commerce.exe"  "c:\PROJETO 2022\2022\Small Commerce.exe"      discos\programas               /Y
+Copia usuarios.exe "c:\PROJETO 2022\2022\user.exe"                discos\programas\usuarios.exe  /Y
+Copia firebird.exe para firebird.~~1 "c:\PROJETO 2022\CONVERSOR\firebird.exe"       discos\programas\firebird.~~1  /Y
+Copia smalldupl.exe "c:\PROJETO 2022\carne\carne.exe"              discos\programas\smalldupl.exe /Y
+Copia orca.exe "c:\PROJETO 2022\orcame\orcamento.exe"         discos\programas\orca.exe      /Y
+Copia smallzip.exe  "c:\PROJETO 2022\backup\smallzip.exe"          discos\programas               /Y
+Copia smallcon.exe "c:\PROJETO 2022\update\smallcon.exe"          discos\programas               /Y
+Copia szip.exe "c:\PROJETO 2022\szip\szip.exe"                discos\programas               /Y
+Copia IBPT ibpt\*.* discos\programas
+Exclui renomear de discos del discos\programas\renomear.bat
+Copia para pasta local  discos\programas /y
+Copia smallcon.exe para smallcon_.exe  smallcon.exe smallcon_.exe /Y
+Copia smallzip.exe para smallzip_.exe smallzip.exe smallzip_.exe /Y
+Exclui conteúdo da pasta reduzida do c:\ del c:\reduzida\*.* /q
+Gera 20221001.sma smallzip.exe backup/I small?c*.exe                     c:\reduzida\20221001.sma
+Gera 20221002.sma smallzip.exe backup/I orca.cop                         c:\reduzida\20221002.sma
+Gera 20221003.sma smallzip.exe backup/I atualiza\nfe_setup.~~1           c:\reduzida\20221003.sma
+Gera 20221004.sma smallzip.exe backup/I atualiza\nfce_setup.~~1          c:\reduzida\20221004.sma
+Gera 20221005.sma smallzip.exe backup/I discos\programas\pastanfce.~~1   c:\reduzida\20221005.sma
+Gera 20221006.sma smallzip.exe backup/I discos\programas\pastanfe.~~1    c:\reduzida\20221006.sma
+Gera 20221007.sma smallzip.exe backup/I discos\programas\pastanfse.~~1   c:\reduzida\20221007.sma
+Gera 20221008.sma smallzip.exe backup/I atualiza\nfse_setup.~~1          c:\reduzida\20221008.sma
+Gera 20221009.sma smallzip.exe backup/I nfse.exe                         c:\reduzida\20221009.sma
+Gera NFCE2022.sma smallzip.exe backup/I nfce.cop                         c:\reduzida\nfce2022.sma
+Copia os .sma para reduzida copy c:\reduzida\2022*.sma c:\reduzida\2021*.sma
+Copia o .sma da nfce para reduzida copy c:\reduzida\nfce2022.sma c:\reduzida\nfce2021.sma
+Gera .sma do IBPT para cada UF
+smallzip.exe backup/I ibpt\IBPT_AC.TXT c:\reduzida\2022_ac.sma
+smallzip.exe backup/I ibpt\IBPT_AL.TXT c:\reduzida\2022_al.sma
+smallzip.exe backup/I ibpt\IBPT_AM.TXT c:\reduzida\2022_am.sma
+smallzip.exe backup/I ibpt\IBPT_AP.TXT c:\reduzida\2022_ap.sma
+smallzip.exe backup/I ibpt\IBPT_BA.TXT c:\reduzida\2022_ba.sma
+smallzip.exe backup/I ibpt\IBPT_CE.TXT c:\reduzida\2022_ce.sma
+smallzip.exe backup/I ibpt\IBPT_DF.TXT c:\reduzida\2022_df.sma
+smallzip.exe backup/I ibpt\IBPT_ES.TXT c:\reduzida\2022_es.sma
+smallzip.exe backup/I ibpt\IBPT_GO.TXT c:\reduzida\2022_go.sma
+smallzip.exe backup/I ibpt\IBPT_MA.TXT c:\reduzida\2022_ma.sma
+smallzip.exe backup/I ibpt\IBPT_MG.TXT c:\reduzida\2022_mg.sma
+smallzip.exe backup/I ibpt\IBPT_MS.TXT c:\reduzida\2022_ms.sma
+smallzip.exe backup/I ibpt\IBPT_MT.TXT c:\reduzida\2022_mt.sma
+smallzip.exe backup/I ibpt\IBPT_PA.TXT c:\reduzida\2022_pa.sma
+smallzip.exe backup/I ibpt\IBPT_PB.TXT c:\reduzida\2022_pb.sma
+smallzip.exe backup/I ibpt\IBPT_PE.TXT c:\reduzida\2022_pe.sma
+smallzip.exe backup/I ibpt\IBPT_PI.TXT c:\reduzida\2022_pi.sma
+smallzip.exe backup/I ibpt\IBPT_PR.TXT c:\reduzida\2022_pr.sma
+smallzip.exe backup/I ibpt\IBPT_RJ.TXT c:\reduzida\2022_rj.sma
+smallzip.exe backup/I ibpt\IBPT_RN.TXT c:\reduzida\2022_rn.sma
+smallzip.exe backup/I ibpt\IBPT_RO.TXT c:\reduzida\2022_ro.sma
+smallzip.exe backup/I ibpt\IBPT_RR.TXT c:\reduzida\2022_rr.sma
+smallzip.exe backup/I ibpt\IBPT_RS.TXT c:\reduzida\2022_rs.sma
+smallzip.exe backup/I ibpt\IBPT_SC.TXT c:\reduzida\2022_sc.sma
+smallzip.exe backup/I ibpt\IBPT_SE.TXT c:\reduzida\2022_se.sma
+smallzip.exe backup/I ibpt\IBPT_SP.TXT c:\reduzida\2022_sp.sma
+smallzip.exe backup/I ibpt\IBPT_TO.TXT c:\reduzida\2022_to.sma
+Renomeia os .sma contendo IBPT para as UF
+ren "c:\reduzida\2022_ac.sma"  2022_ac.sma
+ren "c:\reduzida\2022_al.sma"  2022_al.sma
+ren "c:\reduzida\2022_am.sma"  2022_am.sma
+ren "c:\reduzida\2022_ap.sma"  2022_ap.sma
+ren "c:\reduzida\2022_ba.sma"  2022_ba.sma
+ren "c:\reduzida\2022_ce.sma"  2022_ce.sma
+ren "c:\reduzida\2022_df.sma"  2022_df.sma
+ren "c:\reduzida\2022_es.sma"  2022_es.sma
+ren "c:\reduzida\2022_go.sma"  2022_go.sma
+ren "c:\reduzida\2022_ma.sma"  2022_ma.sma
+ren "c:\reduzida\2022_mg.sma"  2022_mg.sma
+ren "c:\reduzida\2022_ms.sma"  2022_ms.sma
+ren "c:\reduzida\2022_mt.sma"  2022_mt.sma
+ren "c:\reduzida\2022_pa.sma"  2022_pa.sma
+ren "c:\reduzida\2022_pb.sma"  2022_pb.sma
+ren "c:\reduzida\2022_pe.sma"  2022_pe.sma
+ren "c:\reduzida\2022_pi.sma"  2022_pi.sma
+ren "c:\reduzida\2022_pr.sma"  2022_pr.sma
+ren "c:\reduzida\2022_rj.sma"  2022_rj.sma
+ren "c:\reduzida\2022_rn.sma"  2022_rn.sma
+ren "c:\reduzida\2022_ro.sma"  2022_ro.sma
+ren "c:\reduzida\2022_rr.sma"  2022_rr.sma
+ren "c:\reduzida\2022_rs.sma"  2022_rs.sma
+ren "c:\reduzida\2022_sc.sma"  2022_sc.sma
+ren "c:\reduzida\2022_se.sma"  2022_se.sma
+ren "c:\reduzida\2022_sp.sma"  2022_sp.sma
+ren "c:\reduzida\2022_to.sma"  2022_to.sma
+ren c:\reduzida\NFCE2022.SMA   nfce2022.sma
+Renomeia os .sma para ficar em minúsculo
+ren c:\reduzida\*.SMA *.sma
+ren c:\reduzida\*.SMA *.sma
+Adiciona a data e hora no arquivo de log
+date/T >> LOG.TXT
+time/T >> LOG.TXT
+Faz upload via FTP
+ftp -v -s:meuftp.txt 18.228.107.89
+Exclui arquivos
+del autoexec.sql
+del ibpt.txt    
+del *.~~1
+del leia-me.txt 
+del IBPT_*.TXT
+del smallcon_.exe
+del smallzip_.exe
+Copia arquivos iniciando com fire*.~~1 para pasta local
+copy discos\programas\fire*.~~1
+
+
+cdzip_.bat
+Seta código de página 860
+Exibe desenho do notebook feito com caracteres ASCII
+Acessa pasta rar_cd_
+Exclui a pasta cd2022_
+Cria a pasta cd2022_
+Copia com xcopy cd2022_ xcopy "C:\Users\Ronei Ivo Weber\Desktop\cd2022_" cd2022_ /S/Y > nul
+Compacta cd2022_ com winrar "%PROGRAMFILES(x86)%"\winrar\winrar a -r -sfx -z"cd_.conf" cd2023_.rar cd2023_
+Sai da pasta rar_cd_
+Copia cd2022_.exe copy rar_cd_\cd2022_.EXE                   "C:\Users\Ronei Ivo Weber\Desktop" /Y
+
+
+cd_.bat
+seta chcp 860
+Copia cd2022_.exe para IP .5 copy "C:\Users\Ronei Ivo Weber\Desktop\cd2022_.exe" \\192.168.210.5\Arquivos\2022
+Exibe desenho do notebook feito com caracteres ASCII
+Assina cd2022_.exe
+Copia cd2022_.exe para IP \\192.168.210.5\Arquivos\2022
+Executa FPT do cd com cdftp.txt
+
+cdftp.txt
+smallftp
+q1OHjtEGhDeBsQkSk2+LJg==
+cd /downloads/2022
+put "C:\Users\Ronei Ivo Weber\Desktop\cd2022_.exe"
+bye
+
+orca.cop
+logonfse.jpg
+autoexec.sql
+smallcon_.exe
+smallzip_.exe
+atualiza\fundo.~~1
+atualiza\leia-me.txt
+discos\programas\orca.exe
+discos\programas\Anvisa.exe
+discos\programas\Etiquetas.exe
+discos\programas\fci.exe
+discos\programas\graficos.exe
+discos\programas\consulta.exe
+discos\programas\Mail.exe
+discos\programas\mobile.exe
+discos\programas\pesado.exe
+discos\programas\retaguarda.chm
+discos\programas\sintegra.exe
+discos\programas\small.ico
+discos\programas\SmallComandas.exe
+discos\programas\SmallComandasMonitor.exe
+discos\programas\smalldupl.exe
+discos\programas\SPED.exe
+discos\programas\SPEDPISCOFINS.exe
+discos\programas\szip.exe
+discos\programas\delzip192.dll
+discos\programas\spedfiscal.dll
+discos\programas\msgws.dll
+discos\programas\small.ico
+discos\programas\DllInscE32.dll
+discos\programas\mkp.exe
+discos\programas\fbclient.dll
+discos\programas\saas_.exe
+discos\programas\banco085.bmp
+discos\programas\E1_Bridge01.dll
+
+
+rar_cd\cd_.conf
+;O comentário abaixo contém comando de sequência SFX
+
+Setup=cd2022_\setup.exe
+Silent=2
+Overwrite=1
+
