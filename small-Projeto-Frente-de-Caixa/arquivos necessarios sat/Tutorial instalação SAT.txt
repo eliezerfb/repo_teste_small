@@ -1,0 +1,27 @@
+* Lista dos arquivos necessários para compilar o frente SAT-CFe:
+- Quricol.Barcode.dll: Código barras Code128
+- Quricol.inc: Código barras Code128
+- quricol32.dll: Código barras Code128
+- quricol64.dll: Código barras Code128
+- QuricolCode.pas: Código barras QRCode
+- tnpdf.pas: Gerar pdf
+- Pacote pacotecjvd7sf: Código barras Code128
+
+* Orientações para compilar o frente SAT-CFe
+1 - Copiar os arquivos .dll, .inc e .pas para pasta do fonte do frente;
+2 - Instalar o pacote pacotecjvd7sf;
+
+* Lista dos arquivos necessários para executar o frente SAT-CFe no usuário:
+- Quricol.Barcode.dll
+- Quricol.inc
+- quricol32.dll
+- quricol64.dll
+
+* Orientações para instalação no usuário final
+1 - Copiar os arquivos .dll necessários para a pasta de instalação do small;
+2 - Alterar no frente.ini o modelo do ECF para 59;
+3 - Instalar o aplicativo emulador sat;
+4 - Instalar o aplicativo ativação;
+5 - Iniciar o aplicativo emulador;
+6 - Iniciar o aplicativo ativação e ativar o sat;
+7 - Iniciar o frente sat, informar o código de ativação usado para ativar o sat;
