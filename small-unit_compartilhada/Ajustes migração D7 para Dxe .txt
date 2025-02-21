@@ -1,0 +1,39 @@
+﻿* ETIQUETAS
+- Alterado WinExec por ShellExecute
+- Execções podem retornar diferentes. Ex: No except: (D7: File not found, no XE: The specified file was not found)
+- char para AnsiString
+- Pchar para PansiChar
+- GetFileVersionInfo alterado para VersaoExe
+- Alterar linha de impressão: WritePrinter(Handle, PAnsiChar(FComandos.Strings[I]), Length(FComandos.Strings[I]), CaracteresImpressos);
+  Adicionar AnsiString      : WritePrinter(Handle, PAnsiChar(AnsiString(FComandos.Strings[I])), Length(AnsiString(FComandos.Strings[I])), CaracteresImpressos);
+
+
+* SINTEGRA
+- Função Day agora usa DayOf
+- ShortDateFormat agora usa SysUtils.FormatSettings.ShortDateFormat
+- VersaoEXE(Application.ExeName) alterado para VersaoExe
+- Erro de campo no ibDataSet13 - Campo do dataset de TStringField para TIBStringField - (Excluir os campos do dataset e adicionar novamente ou então mudar no arquivo .dfm o tipo do campo de TStringField para TIBStringField)
+  ---------------------------
+  Project sintegra.exe raised exception class EDatabaseError with message 'ibDataSet13: Type mismatch for field 'Razão Social:', expecting: String actual: WideString'.
+  --------------------------- 
+  
+* SPED CONTRIBUIÇÕES
+- Apenas alterado para usar a nova unit de funções (smallfunc_xe)
+
+* SPED FISCAL
+- Removido uses oxmldom, pois não é usada e no xe da erro na declaração
+- Removido componente IdFTP1 e seus métodos, pois o componente não é mais usado e nem suas rotinas.
+- ThousandSeparator para SysUtils.FormatSettings.ThousandSeparator,
+- DecimalSeparator para SysUtils.FormatSettings.DecimalSeparator
+- Pchar para PansiChar
+- Remover unit md5 e usar a unit md5_unicode
+* DLL
+- Mudar uses de Dialogs para Vcl.Dialogs
+- Alterado função vChrnumValido. Parâmetro char para Ansichar
+- Compilado o projeto da dll novamente para corrigir o erro de diretório inválido
+
+* ShellExecute()
+- Usar PWideChar
+
+*DeleteFile()
+- Não usar com PAnsiChar(). Funcionou sem usar nenhuma outra função. Se preciso usar PWideChar().
